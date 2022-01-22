@@ -1,0 +1,160 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_AuctionHouseBuyDialog.lua"/>
+	
+	<Frame name="AuctionHouseBuyDialogNotificationFrameTemplate" virtual="true">
+		<Size x="1" y="1"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parentText" parentKey="Text" inherits="Number13FontWhite" justifyH="CENTER">
+					<Anchors>
+						<Anchor point="CENTER" x="-15" y="0"/>
+						<Anchor point="BOTTOM"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentButton" parentKey="Button">
+				<Size x="22" y="22"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentText" relativePoint="RIGHT" x="0" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture name="$parentHelpI" parentKey="HelpI" alphaMode="BLEND" file="Interface\common\help-i"/>
+					</Layer>
+				</Layers>
+				<HighlightTexture alphaMode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight">
+					<Size x="22" y="22"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+				</HighlightTexture>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, AuctionHouseBuyDialogNotificationButtonMixin)
+					</OnLoad>
+					<OnEnter>
+						self:OnEnter()
+					</OnEnter>
+					<OnLeave>
+						self:OnLeave()
+					</OnLeave>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseBuyDialogNotificationFrameMixin)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Button name="AuctionHouseDialogButtonTemplate" inherits="UIPanelButtonTemplate" virtual="true">
+		<Size x="120" y="22"/>
+		<Anchors>
+			<Anchor point="BOTTOM" x="0" y="18"/>
+		</Anchors>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseBuyDialogBuyNowButtonMixin)
+			</OnLoad>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Frame name="AuctionHouseBuyDialogTemplate" frameStrata="DIALOG" virtual="true">
+		<Size x="420" y="0"/>
+		<Frames>
+			<Frame name="$parentBorder" parentKey="Border" inherits="DialogBorderDarkTemplate"/>
+
+			<Button name="$parentDialogOverlay" parentKey="DialogOverlay"/>
+
+			<Frame name="$parentItemDisplay" parentKey="ItemDisplay" hidden="true">
+				<Size x="1" y="1"/>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-17"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentItemText" parentKey="ItemText" inherits="Number15FontWhite" justifyH="CENTER">
+							<Anchors>
+								<Anchor point="TOP"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentPriceFrame" parentKey="PriceFrame" inherits="MoneyDisplayFrameTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentItemDisplayItemText" relativePoint="BOTTOM" x="0" y="-6"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="hideCopper" value="true" type="boolean"/>
+					<Attribute name="resizeToFit" value="true" type="boolean"/>
+					<Attribute name="useAuctionHouseIcons" value="true" type="boolean"/>
+				</Attributes>
+			</Frame>
+
+			<Button name="$parentBuyNowButton" parentKey="BuyNowButton" inherits="AuctionHouseDialogButtonTemplate, ButtonWithDisableTooltipTemplate" text="AUCTION_HOUSE_DIALOG_BUY_NOW" hidden="true">
+				<Anchors>
+					<Anchor point="CENTER" x="-64" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, AuctionHouseBuyDialogBuyNowButtonMixin)
+					</OnLoad>
+				</Scripts>
+			</Button>
+			<Button name="$parentCancelButton" parentKey="CancelButton" inherits="AuctionHouseDialogButtonTemplate" text="CANCEL" hidden="true">
+				<Anchors>
+					<Anchor point="CENTER" x="64" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, AuctionHouseBuyDialogCancelButtonMixin)
+					</OnLoad>
+				</Scripts>
+			</Button>
+			<Button name="$parentOkayButton" parentKey="OkayButton" inherits="AuctionHouseDialogButtonTemplate" text="OKAY" hidden="true">
+				<Scripts>
+					<OnLoad>
+						Mixin(self, AuctionHouseBuyDialogOkayButtonMixin)
+					</OnLoad>
+				</Scripts>
+			</Button>
+
+			<Frame name="$parentNotification" parentKey="Notification" inherits="AuctionHouseBuyDialogNotificationFrameTemplate" hidden="true"/>
+		</Frames>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parentTimeLeftText" parentKey="TimeLeftText" inherits="NumberFontNormalRightRed" justifyH="CENTER">
+					<Anchors>
+						<Anchor point="RIGHT" x="-25" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseBuyDialogMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+			<OnUpdate>
+				self:OnUpdate()
+			</OnUpdate>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+		</Scripts>
+	</Frame>
+</Ui>

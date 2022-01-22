@@ -1,0 +1,475 @@
+<!--
+
+	Filename:	Custom_PromoCode.xml
+	Project:	Custom Game Interface
+	Author:		Nyll & Blizzard Entertainment
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="Custom_PromoCode.lua"/>
+
+	<Button name="PromoCodeLootButtonTemplate" hidden="true" virtual="true">
+		<Size x="320" y="62"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentIcon" parentKey="Icon" file="Interface/ICONS/temp">
+					<Size x="52" y="52"/>
+					<Anchors>
+						<Anchor point="LEFT" x="12" y="0" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentBackground" parentKey="Background" file="Interface\EncounterJournal\loottab-item-background">
+					<Size x="320" y="72"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0" />
+					</Anchors>
+					<TexCoords left="0" right="0.763671875" top="0" bottom="0.71875"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" parentKey="Text" inherits="GameFontNormal" justifyH="LEFT" justifyV="TOP" text="Name">
+					<Size x="190" y="30"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="6" y="0" />
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+				<FontString name="$parentCount" parentKey="Count" inherits="NumberFontNormal" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="-2" y="4"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Animations>
+			<AnimationGroup parentKey="animIn">
+				<Translation offsetX="200" offsetY="0" duration="0" order="1"/>
+				<Alpha change="-1" duration="0" order="1"/>
+				<Translation offsetX="-200" offsetY="0" duration="0.44" order="2"/>
+				<Alpha startDelay="0.25" change="1" duration="0.5" order="2"/>
+			</AnimationGroup>
+			<AnimationGroup parentKey="animOut">
+				<Translation offsetX="200" offsetY="0" duration="0.44" order="1"/>
+				<Alpha change="-1" duration="0.2" order="1"/>
+				<Scripts>
+					<OnPlay>
+						self:GetParent().Count:Hide()
+					</OnPlay>
+					<OnFinished>
+						self:GetParent():Hide()
+						self:GetParent().Count:Show()
+					</OnFinished>
+				</Scripts>
+			</AnimationGroup>
+		</Animations>
+		<Scripts>
+			<OnLoad>
+				SetParentArray(self, "rewardButtons", self)
+			</OnLoad>
+			<OnShow>
+				self.animIn:Play()
+			</OnShow>
+			<OnEnter function="PromoCodeLootButton_OnEnter"/>
+			<OnLeave>
+				GameTooltip_Hide()
+				self:GetParent().activeButton = nil
+			</OnLeave>
+		</Scripts>
+	</Button>
+
+	<Frame name="PromoCodeFrame" parent="UIParent" frameStrata="FULLSCREEN_DIALOG" inherits="GoldBorderFrameTemplate" hidden="true" enableMouse="true">
+		<Size x="400" y="280"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0" />
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="ParchmentMiddle" name="$parentParchmentMiddle" file="Interface\Store\receipt-parchment-middle">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="12" y="-10"/>
+						<Anchor point="BOTTOMRIGHT" x="-12" y="10"/>
+					</Anchors>
+					<TexCoords left="0" right="0.734375" top="0" bottom="1"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentTopLine" parentKey="TopLine" inherits="store-receipt-line">
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-106"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBottomLine" parentKey="BottomLine" inherits="store-receipt-line">
+					<Size x="350" y="3" />
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentTopLine" relativePoint="BOTTOM" x="0" y="-80" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="AlphaLayer" alphaMode="ADD">
+					<Size x="380" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentTopLine" relativePoint="BOTTOM" x="0" y="0" />
+						<Anchor point="BOTTOM" relativeTo="$parentBottomLine" relativePoint="TOP" x="0" y="2" />
+					</Anchors>
+					<Color r="1" g="1" b="1" a="0.10" />
+				</Texture>
+				<Texture name="$parentBlueGlow" parentKey="BlueGlow" inherits="store-receipt-blueglow">
+					<Size x="380" y="44" />
+					<Anchors>
+						<Anchor point="BOTTOM" x="0" y="14" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="ParchmentTop" inherits="store-receipt-parchment-top">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentParchmentMiddle" x="0" y="0"/>
+						<Anchor point="RIGHT" relativeTo="$parentParchmentMiddle" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="ParchmentBottom" inherits="store-receipt-parchment-bottom">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentBlueGlow" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBlueGlow" x="0" y="40"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentHeaderFrame" parentKey="header" toplevel="true" setAllPoints="true">
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="promoCodeActiveLabel" font="Interface\CustomFonts\futurademic.ttf" justifyV="CENTER" justifyH="CENTER" hidden="true" text="PROMOCODE_ACTIVATED_LABEL">
+							<FontHeight>
+								<AbsValue val="24"/>
+							</FontHeight>
+							<Size x="300" y="40"/>
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-54" />
+							</Anchors>
+							<Color r="0.39" g="0.21" b="0.05"/>
+							<Animations>
+								<AnimationGroup parentKey="animIn">
+									<Alpha change="-1" duration="0" order="1"/>
+									<Alpha change="1" duration="0.3" order="2"/>
+									<Scripts>
+										<OnPlay>
+											self:GetParent():Show()
+										</OnPlay>
+									</Scripts>
+								</AnimationGroup>
+							</Animations>
+						</FontString>
+						<FontString parentKey="description" inherits="SystemFont_Med1" wordwrap="true" justifyH="CENTER" text="PROMOCODE_WINDOW_DESC">
+							<Size x="310" y="64" />
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-44" />
+							</Anchors>
+							<Color r="0" g="0" b="0"/>
+							<Animations>
+								<AnimationGroup parentKey="animOut">
+									<Alpha change="-1" duration="0.3" order="1"/>
+									<Scripts>
+										<OnFinished>
+											self:GetParent():Hide()
+											self:GetParent():GetParent().promoCodeActiveLabel.animIn:Play()
+										</OnFinished>
+									</Scripts>
+								</AnimationGroup>
+							</Animations>
+						</FontString>
+						<FontString parentKey="Title" inherits="GameFontHighlight" text="PROMOCODE_WINDOW_HEADER">
+							<Size x="250" y="20" />
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-16" />
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentContainer" parentKey="Container">
+				<Size x="360" y="0"/>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentTopLine" relativePoint="BOTTOM" x="0" y="0" />
+					<Anchor point="BOTTOM" relativeTo="$parentBottomLine" relativePoint="TOP" x="0" y="2" />
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="databaseText" inherits="GameFontBlackMedium" hidden="true" justifyH="CENTER" justifyV="CENTER">
+							<Size x="320" y="60"/>
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+							<Animations>
+								<AnimationGroup parentKey="animIn">
+									<Alpha change="-1" duration="0" order="1"/>
+									<Alpha change="1" duration="0.3" order="2"/>
+									<Scripts>
+										<OnPlay>
+											self:GetParent():Show()
+										</OnPlay>
+									</Scripts>
+								</AnimationGroup>
+							</Animations>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<EditBox name="$parentPromoCodeEditBoxFrame" autoFocus="false" letters="12" parentKey="PromoCodeEditBoxFrame">
+						<Size x="360" y="70"/>
+						<Anchors>
+							<Anchor point="CENTER" x="0" y="0" />
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture name="$parentbackground" parentKey="background" file="Interface\QUESTFRAME\TalkingHeads2">
+									<Size x="300" y="70"/>
+									<Anchors>
+										<Anchor point="CENTER" x="0" y="0" />
+									</Anchors>
+									<TexCoords left="0.000976562" right="0.557617" top="0.460938" bottom="0.612305"/>
+								</Texture>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnTextChanged>
+								local text = self:GetText()
+								if text then
+									local numText = utf8len(text)
+
+									if numText > 0 then
+										self:SetText(string.upper(text))
+									end
+
+									PromoCodeFrame.ActionButton:SetEnabled(numText >= 4)
+								end
+							</OnTextChanged>
+							<OnEscapePressed>
+								self:ClearFocus()
+							</OnEscapePressed>
+						</Scripts>
+						<FontString inherits="SystemFont_Shadow_Huge4" justifyH="CENTER">
+							<Color r="1" g="0.94" b="0.78"/>
+						</FontString>
+						<Animations>
+							<AnimationGroup parentKey="animOut">
+								<Alpha change="-1" duration="0.3" order="1"/>
+								<Scripts>
+									<OnFinished>
+										self:GetParent():Hide()
+										self:GetParent():GetParent().databaseText.animIn:Play()
+									</OnFinished>
+								</Scripts>
+							</AnimationGroup>
+						</Animations>
+					</EditBox>
+				</Frames>
+			</Frame>
+			<Frame name="$parentWaitServerResponseFrame" parentKey="WaitServerResponseFrame" toplevel="true" enableMouse="true" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" x="14" y="-15" />
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" x="-14" y="14"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background">
+							<Color r="0" g="0" b="0" a="0.9"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Frame name="$parentSpinner" parentKey="Spinner" inherits="LoadingSpinnerTemplate">
+						<Anchors>
+							<Anchor point="CENTER" x="0" y="10" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self.showRetrievingText = true
+								self.Text:SetText(STORE_WAIT_SERVER_RESPONSE)
+							</OnLoad>
+							<OnShow>
+								self.Text:Show()
+								self.Dots:Show()
+
+								self.AnimFrame.Anim:Play()
+							</OnShow>
+							<OnHide>
+								self.AnimFrame.Anim:Stop()
+							</OnHide>
+						</Scripts>
+					</Frame>
+				</Frames>
+			</Frame>
+			<Button name="$parentItemButton1" parentKey="ItemButton1" inherits="PromoCodeLootButtonTemplate" virtual="true">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentBottomLine" relativePoint="BOTTOM" x="0" y="-6" />
+				</Anchors>
+			</Button>
+			<Button name="$parentItemButton2" parentKey="ItemButton2" inherits="PromoCodeLootButtonTemplate" virtual="true">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentItemButton1" relativePoint="BOTTOM" x="0" y="-2" />
+				</Anchors>
+			</Button>
+			<Button name="parentItemButton3" parentKey="ItemButton3" inherits="PromoCodeLootButtonTemplate" virtual="true">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentItemButton2" relativePoint="BOTTOM" x="0" y="-2" />
+				</Anchors>
+			</Button>
+			<ScrollFrame name="$parentScrollFrame" parentKey="ScrollFrame" hidden="true" inherits="FauxScrollFrameTemplate">
+				<Size x="320" y="200"/>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="-42" y="64"/>
+				</Anchors>
+				<Scripts>
+					<OnVerticalScroll>
+						PromoCodeScrollFrame_OnVerticalScroll(self, offset)
+					</OnVerticalScroll>
+				</Scripts>
+			</ScrollFrame>
+			<Button name="$parentActionButton" parentKey="ActionButton" inherits="StoreGoldButtonTemplate" motionScriptsWhileDisabled="true" text="STORE_SHOW_REWARDS">
+				<Size x="160" y="28"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="18" />
+				</Anchors>
+				<Scripts>
+					<OnClick function="PromoCodeFrameActionButton_OnClick"/>
+					<OnEnter>
+						if self.tooltip then
+							GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+							GameTooltip:SetText(self.tooltip, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, nil, true)
+						end
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad function="PromoCodeFrame_OnLoad"/>
+			<OnShow function="PromoCodeFrame_OnShow"/>
+			<OnHide function="PromoCodeFrame_OnHide"/>
+		</Scripts>
+	</Frame>
+	<Frame name="PromoCodeErrorFrame" frameStrata="TOOLTIP" topLevel="true" parent="UIParent" inherits="GoldBorderFrameTemplate" enableMouse="true" hidden="true">
+		<Size x="320" y="250" />
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0" />
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentParchmentMiddle" parentKey="ParchmentMiddle" file="Interface\Store\receipt-parchment-middle" horizTile="true">
+					<Size x="300" y="0" />
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-5"/>
+						<Anchor point="BOTTOM" x="0" y="10"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="Icon" file="Interface\DialogFrame\UI-Dialog-Icon-AlertOther">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="50" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentLine" parentKey="Line" inherits="store-receipt-line">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="-20" />
+					</Anchors>
+				</Texture>
+				<FontString parentKey="Title" inherits="GameFontNormalLarge">
+					<Anchors>
+						<Anchor point="BOTTOM" relativeTo="$parentLine" relativePoint="TOP" x="0" y="6" />
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Description" inherits="GameFontBlackMedium" justifyV="TOP">
+					<Size x="250" y="50" />
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentLine" relativePoint="BOTTOM" x="0" y="-6" />
+					</Anchors>
+					<Color r="0" g="0" b="0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentAcceptButton" parentKey="AcceptButton" text="CLOSE" inherits="UIPanelButtonTemplate">
+				<Size x="120" y="22" />
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="20" />
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Hide()
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+	</Frame>
+	<Frame name="PromoCodePopupFrame" frameStrata="TOOLTIP" topLevel="true" parent="UIParent" inherits="GoldBorderFrameTemplate" enableMouse="true" hidden="true">
+		<Size x="420" y="134" />
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0" />
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentParchmentMiddle" parentKey="ParchmentMiddle" file="Interface\Store\receipt-parchment-middle">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="8" y="-8"/>
+						<Anchor point="BOTTOMRIGHT" x="-8" y="8"/>
+					</Anchors>
+					<TexCoords left="0" right="0.734375" top="0" bottom="1"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentLine" parentKey="Line" inherits="store-receipt-line">
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-48" />
+					</Anchors>
+				</Texture>
+				<FontString parentKey="Title" inherits="GameFontNormalLarge" text="PROMOCODE_POPUP_FASTEN_HEAD">
+					<Anchors>
+						<Anchor point="BOTTOM" relativeTo="$parentLine" relativePoint="TOP" x="0" y="6" />
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Description" inherits="GameFontBlackMedium" justifyV="TOP" text="PROMOCODE_POPUP_FASTEN_DESC">
+					<Size x="350" y="36" />
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentLine" relativePoint="BOTTOM" x="0" y="-6" />
+					</Anchors>
+					<Color r="0" g="0" b="0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentAcceptButton" parentKey="AcceptButton" text="YES" inherits="UIPanelButtonTemplate">
+				<Size x="120" y="22" />
+				<Anchors>
+					<Anchor point="BOTTOM" x="-100" y="20" />
+				</Anchors>
+				<Scripts>
+					<OnClick function="PromoCodePopupFrameAcceptButton_OnClick"/>
+				</Scripts>
+			</Button>
+			<Button name="$parentCancelButton" parentKey="CancelButton" text="CANCEL" inherits="UIPanelButtonTemplate">
+				<Size x="120" y="22" />
+				<Anchors>
+					<Anchor point="BOTTOM" x="100" y="20" />
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Hide()
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnShow>
+				self.CloseButton:Hide()
+			</OnShow>
+		</Scripts>
+	</Frame>
+</Ui>

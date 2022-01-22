@@ -1,0 +1,356 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_AuctionHouseSharedTemplates.lua"/>
+
+	<Frame name="AuctionHouseBackgroundTemplate" virtual="true">
+		<Attributes>
+			<Attribute name="layoutType" value="InsetFrameTemplate" type="string"/>
+		</Attributes>
+		<Layers>
+			<Layer>
+				<Texture name="$parentBackground" parentKey="Background">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseBackgroundMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Button name="AuctionHouseItemDisplayBaseTemplate" inherits="AuctionHouseBackgroundTemplate" virtual="true">
+		<Attributes>
+			<Attribute name="itemButtonXOffset" value="8" type="number"/>
+			<Attribute name="itemButtonYOffset" value="0" type="number"/>
+		</Attributes>
+		<Size x="340" y="70"/>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseItemDisplayMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Button name="AuctionHouseItemDisplayTemplate" inherits="AuctionHouseItemDisplayBaseTemplate" virtual="true">
+		<Frames>
+			<Button name="$parentItemButton" parentKey="ItemButton">
+				<Attributes>
+					<Attribute name="useCircularIconBorder" value="true" type="boolean"/>
+				</Attributes>
+				<Size x="54" y="54"/>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentIcon" parentKey="Icon">
+							<Size x="52" y="52"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture name="$parentIconBorder" parentKey="IconBorder" hidden="true">
+							<Size x="68" y="68"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<Texture name="$parentIconOverlay" parentKey="IconOverlay" hidden="true"/>
+					</Layer>
+					<Layer level="OVERLAY">
+						<FontString name="$parentCount" parentKey="Count" inherits="NumberFontNormal" justifyH="RIGHT" hidden="true">
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" x="-5" y="2"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<HighlightTexture name="$parentHighlight" parentKey="Highlight" alpha="0.2" alphaMode="ADD">
+					<Size x="66" y="66"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</HighlightTexture>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, AuctionHouseItemDisplayItemButtonMixin)
+						self:OnLoad()
+					</OnLoad>
+					<OnClick>
+						self:OnClick(button)
+					</OnClick>
+					<OnEnter>
+						self:OnEnter()
+					</OnEnter>
+					<OnLeave>
+						self:OnLeave()
+					</OnLeave>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentName" parentKey="Name" inherits="SystemFont_Shadow_Large2" justifyH="LEFT">
+					<Size x="0" y="64"/>
+					<Shadow x="1" y="-1">
+						<Color r="0" g="0" b="0"/>
+					</Shadow>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Button>
+
+	<Button name="AuctionHouseInteractableItemDisplayTemplate" inherits="AuctionHouseItemDisplayBaseTemplate" enableMouse="true" virtual="true">
+		<Attributes>
+			<Attribute name="itemButtonXOffset" value="10" type="number"/>
+			<Attribute name="itemButtonYOffset" value="0" type="number"/>
+		</Attributes>
+		<Frames>
+			<Button name="$parentItemButton" parentKey="ItemButton">
+				<Size x="54" y="54"/>
+				<Anchors>
+					<Anchor point="LEFT" x="12" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentEmptyBackground" parentKey="EmptyBackground"/>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture name="$parentIcon" parentKey="Icon">
+							<Size x="50" y="50"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="2" y="-2"/>
+							</Anchors>
+							<TexCoords left="0" right="1" top="0" bottom="1"/>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<Texture name="$parentIconBorder" parentKey="IconBorder" file="Interface\Common\WhiteIconFrame" hidden="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentIcon" relativePoint="TOPLEFT"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" relativePoint="BOTTOMRIGHT"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture name="$parentIconOverlay" parentKey="IconOverlay" hidden="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentIcon" relativePoint="TOPLEFT"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" relativePoint="BOTTOMRIGHT"/>
+							</Anchors>
+						</Texture>
+						<FontString name="$parentCount" parentKey="Count" inherits="NumberFontNormal" justifyH="RIGHT" hidden="true">
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" x="-5" y="2"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<PushedTexture file="Interface\Buttons\UI-Quickslot-Depress">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentIcon" relativePoint="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" relativePoint="BOTTOMRIGHT"/>
+					</Anchors>
+				</PushedTexture>
+				<HighlightTexture name="$parentHighlight" parentKey="Highlight" file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentIcon" relativePoint="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" relativePoint="BOTTOMRIGHT"/>
+					</Anchors>
+				</HighlightTexture>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, AuctionHouseInteractableItemDisplayItemButtonMixin)
+						self:OnLoad()
+					</OnLoad>
+					<OnEnter>
+						self:OnEnter()
+					</OnEnter>
+					<OnLeave>
+						self:OnLeave()
+					</OnLeave>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentName" parentKey="Name" inherits="SystemFont_Shadow_Large" justifyH="LEFT">
+					<Size x="0" y="64"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseInteractableItemDisplayMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+			<OnClick>
+				self:OnClick()
+			</OnClick>
+			<OnReceiveDrag>
+				self:OnReceiveDrag()
+			</OnReceiveDrag>
+		</Scripts>
+	</Button>
+
+	<EditBox name="AuctionHouseQuantityInputEditBoxTemplate" letters="8" numeric="true" autoFocus="false" inherits="LargeInputBoxTemplate" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseQuantityInputBoxMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnTextChanged>
+				self:OnTextChanged(userInput)
+			</OnTextChanged>
+			<OnEnterPressed function="EditBox_ClearFocus"/>
+		</Scripts>
+	</EditBox>
+
+	<Frame name="FavoriteDropDownTemplate" inherits="UIDropDownMenuTemplate" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseFavoriteDropDownMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="AuctionHouseRefreshFrameTemplate" virtual="true">
+		<Size x="200" y="20"/>
+		<Frames>
+			<Button name="$parentRefreshButton" parentKey="RefreshButton" inherits="SquareIconButtonTemplate">
+				<Anchors>
+					<Anchor point="RIGHT"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="iconAtlas" value="UI-RefreshButton" type="string"/>
+				</Attributes>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, AuctionHouseRefreshButtonMixin)
+						self:OnLoad()
+					</OnLoad>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentTotalQuantity" parentKey="TotalQuantity" justifyH="RIGHT" inherits="GameFontNormalSmall">
+					<Anchors>
+						<Anchor point="LEFT"/>
+						<Anchor point="TOP"/>
+						<Anchor point="BOTTOM"/>
+					</Anchors>
+					<Color r="1.0" g="0.82" b="0"/>
+					<Shadow>
+						<Offset>
+							<AbsDimension x="1" y="-1"/>
+						</Offset>
+						<Color r="0" g="0" b="0"/>
+					</Shadow>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseRefreshFrameMixin)
+
+				self.TotalQuantity:SetPoint("RIGHT", self.RefreshButton, "LEFT", -3, 0)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="AuctionHouseBidFrameTemplate" virtual="true">
+		<Size x="240" y="22"/>
+		<Frames>
+			<Frame name="$parentMixin" parentKey="Mixin" hidden="true">
+				<Scripts>
+					<OnLoad>
+						Mixin(self:GetParent(), AuctionHouseBidFrameMixin);
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Frame name="$parentBidAmount" parentKey="BidAmount" inherits="MoneyInputFrameTemplate">
+				<Anchors>
+					<Anchor point="LEFT"/>
+				</Anchors>
+			</Frame>
+			<Button name="$parentBidButton" parentKey="BidButton" inherits="UIPanelButtonTemplate, ButtonWithDisableTooltipTemplate" text="AUCTION_HOUSE_BID_BUTTON">
+				<Size x="110" y="22"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentBidAmount" relativePoint="RIGHT" x="0" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, AuctionHouseBidButtonMixin)
+					</OnLoad>
+					<OnClick>
+						self:OnClick(button)
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="AuctionHouseBuyoutFrameTemplate" virtual="true">
+		<Size x="110" y="22"/>
+		<Frames>
+			<Button name="$parentBuyoutButton" parentKey="BuyoutButton" inherits="UIPanelButtonTemplate, ButtonWithDisableTooltipTemplate" text="AUCTION_HOUSE_BUYOUT_BUTTON">
+				<Size x="110" y="22"/>
+				<Anchors>
+					<Anchor point="RIGHT"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, AuctionHouseBuyoutButtonMixin)
+					</OnLoad>
+					<OnClick>
+						self:OnClick(button)
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseBuyoutFrameMixin)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>

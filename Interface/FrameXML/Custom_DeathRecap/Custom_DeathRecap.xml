@@ -1,0 +1,304 @@
+<!--
+
+	Filename:	Custom_DeathRecap.xml
+	Project:	Custom Game Interface
+	Author:		Nyll & Blizzard Entertainment
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="Custom_DeathRecap.lua"/>
+
+	<Frame name="DeathRecapEntryTemplate" parentArray="DeathRecapEntry" virtual="true">
+		<Size x="348" y="32"/>
+		<Frames>
+			<Frame parentKey="DamageInfo" name="$parentDamageInfo">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="0"/>
+					<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" x="100" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Amount" name="DeathRecapEntryAmount" inherits="GameFontNormalRight" justifyH="RIGHT" justifyV="CENTER">
+							<Size x="0" y="32"/>
+							<Anchors>
+								<Anchor point="TOPRIGHT" x="0" y="0"/>
+							</Anchors>
+							<Color r="0.75" g="0.05" b="0.05" a="1"/>
+						</FontString>
+						<FontString parentKey="AmountLarge" inherits="SystemFont_Shadow_Large2" justifyH="RIGHT" justifyV="CENTER" hidden="true">
+							<Size x="0" y="32"/>
+							<Anchors>
+								<Anchor point="TOPRIGHT" x="0" y="0"/>
+							</Anchors>
+							<Color r="1.0" g="0.07" b="0.07" a="1"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnter function="DeathRecapFrame_Amount_OnEnter"/>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Frame>
+			<Frame parentKey="SpellInfo">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentDamageInfo" relativePoint="TOPRIGHT" x="16" y="0"/>
+					<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture parentKey="Icon" name="$parentIcon">
+							<Size x="32" y="32"/>
+							<Anchors>
+								<Anchor point="LEFT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<FontString parentKey="Name" inherits="GameFontNormal" justifyH="LEFT" justifyV="BOTTOM">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="8" y="6"/>
+								<Anchor point="TOPRIGHT" x="0" y="0"/>
+							</Anchors>
+						</FontString>
+						<FontString parentKey="Caster" inherits="SystemFont_Shadow_Small" justifyH="LEFT" justifyV="TOP">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="8" y="2"/>
+								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+							<Color r="0.5" g="0.5" b="0.5" a="1"/>
+						</FontString>
+						<FontString parentKey="Time" font="Fonts\FRIZQT__.TTF" justifyH="LEFT" text="22:22:22.123" justifyV="TOP">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="8" y="-10"/>
+								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+							<Shadow>
+								<Offset>
+									<AbsDimension x="1" y="-1"/>
+								</Offset>
+								<Color r="0" g="0" b="0"/>
+							</Shadow>
+							<FontHeight>
+								<AbsValue val="8"/>
+							</FontHeight>
+							<Color r="0.5" g="0.5" b="0.5" a="1"/>
+						</FontString>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture parentKey="IconBorder" atlas="deathrecap-iconborder" useAtlasSize="true">
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="$parentIcon"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnter function="DeathRecapFrame_Spell_OnEnter"/>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				if not self:GetParent().DeathRecapEntry then
+					self:GetParent().DeathRecapEntry = {}
+				end
+
+				table.insert(self:GetParent().DeathRecapEntry, self)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="DeathRecapFrame" movable="true" clampedToScreen="true" parent="UIParent" hidden="true">
+		<Size x="380" y="326"/>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentBorderTopLeft" file="Interface\RaidFrame\RaidBorder-UpperLeft">
+					<Size x="32" y="32"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-5" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBorderTopRight" file="Interface\RaidFrame\RaidBorder-UpperRight">
+					<Size x="32" y="32"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="5" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBorderBottomLeft" file="Interface\RaidFrame\RaidBorder-BottomLeft">
+					<Size x="32" y="32"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="-5" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBorderBottomRight" file="Interface\RaidFrame\RaidBorder-BottomRight">
+					<Size x="32" y="32"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="5" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBorderTop" file="Interface\RaidFrame\RaidBorder-UpperMiddle" horizTile="true">
+					<Size x="0" y="16"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="TOPRIGHT" x="0" y="1"/>
+						<Anchor point="TOPRIGHT" relativeTo="$parentBorderTopRight" relativePoint="TOPLEFT" x="0" y="1"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBorderBottom" file="Interface\RaidFrame\RaidBorder-BottomMiddle" horizTile="true">
+					<Size x="0" y="16"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentBorderBottomLeft" relativePoint="BOTTOMRIGHT" x="0" y="-4"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBorderLeft" file="Interface\RaidFrame\RaidBorder-Left" vertTile="true">
+					<Size x="16" y="0"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="BOTTOMLEFT" x="-1" y="0"/>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentBorderBottomLeft" relativePoint="TOPLEFT" x="-1" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBorderRight" file="Interface\RaidFrame\RaidBorder-Right" vertTile="true">
+					<Size x="16" y="0"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parentBorderTopRight" relativePoint="BOTTOMRIGHT" x="2" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="TOPRIGHT" x="2" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Background" name="$parentBackground">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="BOTTOMRIGHT" x="-24" y="26"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="TOPLEFT" x="24" y="-23"/>
+					</Anchors>
+					<Color r="0" g="0" b="0" a="0.80"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="BackgroundInnerGlow" file="Interface\Durability\DeathRecap" alpha="0.6">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBackground" relativePoint="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackground" relativePoint="BOTTOMRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.001953125" right="0.580078125" top="0.00390625" bottom="0.99609375"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Title" inherits="GameFontNormal" text="DEATH_RECAP_TITLE_DONT_INFO">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="12" y="-9"/>
+					</Anchors>
+				</FontString>
+				<Texture parentKey="Divider" file="Interface\Common\UI-TooltipDivider">
+					<Size x="0" y="12"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="4" y="-20"/>
+						<Anchor point="TOPRIGHT" x="-4" y="-20"/>
+					</Anchors>
+				</Texture>
+				<FontString parentKey="Unavailable" inherits="GameFontNormal" text="DEATH_RECAP_UNAVAILABLE">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button parentKey="CloseXButton">
+				<Size x="32" y="32"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="2" y="1"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						HideUIPanel(self:GetParent())
+					</OnClick>
+				</Scripts>
+				<DisabledTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Disabled"/>
+				<NormalTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Up"/>
+				<PushedTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Down"/>
+				<HighlightTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Highlight" alphaMode="ADD"/>
+			</Button>
+			<Button parentKey="CloseButton" inherits="UIPanelButtonTemplate" text="CLOSE">
+				<Size x="144" y="21"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="15"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						HideUIPanel(DeathRecapFrame);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button parentKey="HeadHuntingButton" inherits="UIPanelButtonTemplate" hidden="true" text="DEATH_RECAP_REVENGE">
+				<Size x="144" y="21"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="80" y="15"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						HeadHuntingSetRewardExternalFrame:OpenAndSearch(self.playerName, self.GUID)
+					</OnClick>
+					<OnEnter>
+						if self.playerName then
+							GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+							GameTooltip:AddLine(DEATH_RECAP_REVENGE_TOOLTIP, 1, 1, 1)
+							GameTooltip:AddLine(string.format(DEATH_RECAP_REVENGE_TOOLTIP_BODY, self.playerName), nil, nil, nil, 1)
+							GameTooltip:Show()
+						end
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Button>
+			<Frame parentKey="Recap1" name="$parentRecap1" inherits="DeathRecapEntryTemplate">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="16" y="64"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture parentKey="tombstone" file="Interface\Durability\DeathRecap">
+							<Size x="15" y="20"/>
+							<Anchors>
+								<Anchor point="RIGHT" relativeTos="$parentAmount" relativePoint="LEFT" x="-10" y="0"/>
+							</Anchors>
+							<TexCoords left="0.658203125" right="0.6875" top="0.00390625" bottom="0.08203125"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame parentKey="Recap2" name="$parentRecap2" inherits="DeathRecapEntryTemplate">
+				<Anchors>
+					<Anchor point="BOTTOM" relativeTo="$parentRecap1" relativePoint="TOP" x="0" y="14"/>
+				</Anchors>
+			</Frame>
+			<Frame parentKey="Recap3" name="$parentRecap3" inherits="DeathRecapEntryTemplate">
+				<Anchors>
+					<Anchor point="BOTTOM" relativeTo="$parentRecap2" relativePoint="TOP" x="0" y="14"/>
+				</Anchors>
+			</Frame>
+			<Frame parentKey="Recap4" name="$parentRecap4" inherits="DeathRecapEntryTemplate">
+				<Anchors>
+					<Anchor point="BOTTOM" relativeTo="$parentRecap3" relativePoint="TOP" x="0" y="14"/>
+				</Anchors>
+			</Frame>
+			<Frame parentKey="Recap5" name="$parentRecap5" inherits="DeathRecapEntryTemplate">
+				<Anchors>
+					<Anchor point="BOTTOM" relativeTo="$parentRecap4" relativePoint="TOP" x="0" y="14"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, DeathRecapMixin)
+
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+		</Scripts>
+	</Frame>
+</Ui>

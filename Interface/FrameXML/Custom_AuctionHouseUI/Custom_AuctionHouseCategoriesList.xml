@@ -1,0 +1,250 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_AuctionHouseCategoriesList.lua"/>
+
+	<Button name="AuctionCategoryButtonTemplate" virtual="true">
+		<Size x="132" y="21"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentLines" parentKey="Lines">
+					<Anchors>
+						<Anchor point="LEFT" x="18" y="3"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentNormalTexture" parentKey="NormalTexture">
+					<Size x="136" y="32"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-2" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentHighlightTexture" parentKey="HighlightTexture" hidden="true">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentSelectedTexture" parentKey="SelectedTexture" alphaMode="ADD" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentNormalTexture" relativePoint="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentNormalTexture" relativePoint="BOTTOMRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad function="AuctionHouseFrameFilter_OnLoad"/>
+			<OnEnter function="AuctionHouseFrameFilter_OnEnter"/>
+			<OnLeave function="AuctionHouseFrameFilter_OnLeave"/>
+			<OnClick function="AuctionHouseFrameFilter_OnClick"/>
+		</Scripts>
+		<ButtonText name="$parentText" parentKey="Text" justifyH="LEFT">
+			<Size x="0" y="8"/>
+			<Anchors>
+				<Anchor point="LEFT" x="4" y="0"/>
+				<Anchor point="RIGHT" x="-4" y="0"/>
+			</Anchors>
+			<Shadow>
+				<Offset>
+					<AbsDimension x="1" y="-1"/>
+				</Offset>
+				<Color r="0" g="0" b="0"/>
+			</Shadow>
+		</ButtonText>
+		<NormalFont style="GameFontNormalSmall"/>
+		<HighlightFont style="GameFontHighlightSmall"/>
+	</Button>
+
+	<Frame name="AuctionHouseCategoriesListTemplate" virtual="true">
+		<Size x="168" y="438"/>
+		<Attributes>
+			<Attribute name="layoutType" value="InsetFrameTemplate" type="string"/>
+		</Attributes>
+		<Frames>
+			<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
+
+			<Button name="$parentAuctionFilterButton1" parentKey="AuctionFilterButton1" inherits="AuctionCategoryButtonTemplate" frameLevel="20" id="1">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="6" y="-6"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAuctionFilterButton2" parentKey="AuctionFilterButton2" inherits="AuctionCategoryButtonTemplate" frameLevel="20" id="2">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionFilterButton1" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAuctionFilterButton3" parentKey="AuctionFilterButton3" inherits="AuctionCategoryButtonTemplate" frameLevel="20" id="3">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionFilterButton2" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAuctionFilterButton4" parentKey="AuctionFilterButton4" inherits="AuctionCategoryButtonTemplate" frameLevel="20" id="4">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionFilterButton3" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAuctionFilterButton5" parentKey="AuctionFilterButton5" inherits="AuctionCategoryButtonTemplate" frameLevel="20" id="5">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionFilterButton4" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAuctionFilterButton6" parentKey="AuctionFilterButton6" inherits="AuctionCategoryButtonTemplate" frameLevel="20" id="6">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionFilterButton5" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAuctionFilterButton7" parentKey="AuctionFilterButton7" inherits="AuctionCategoryButtonTemplate" frameLevel="20" id="7">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionFilterButton6" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAuctionFilterButton8" parentKey="AuctionFilterButton8" inherits="AuctionCategoryButtonTemplate" frameLevel="20" id="8">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionFilterButton7" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAuctionFilterButton9" parentKey="AuctionFilterButton9" inherits="AuctionCategoryButtonTemplate" frameLevel="20" id="9">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionFilterButton8" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAuctionFilterButton10" parentKey="AuctionFilterButton10" inherits="AuctionCategoryButtonTemplate" frameLevel="20" id="10">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionFilterButton9" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAuctionFilterButton11" parentKey="AuctionFilterButton11" inherits="AuctionCategoryButtonTemplate" frameLevel="20" id="11">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionFilterButton10" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAuctionFilterButton12" parentKey="AuctionFilterButton12" inherits="AuctionCategoryButtonTemplate" frameLevel="20" id="12">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionFilterButton11" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAuctionFilterButton13" parentKey="AuctionFilterButton13" inherits="AuctionCategoryButtonTemplate" frameLevel="20" id="13">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionFilterButton12" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAuctionFilterButton14" parentKey="AuctionFilterButton14" inherits="AuctionCategoryButtonTemplate" frameLevel="20" id="14">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionFilterButton13" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAuctionFilterButton15" parentKey="AuctionFilterButton15" inherits="AuctionCategoryButtonTemplate" frameLevel="20" id="15">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionFilterButton14" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAuctionFilterButton16" parentKey="AuctionFilterButton16" inherits="AuctionCategoryButtonTemplate" frameLevel="20" id="16">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionFilterButton15" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAuctionFilterButton17" parentKey="AuctionFilterButton17" inherits="AuctionCategoryButtonTemplate" frameLevel="20" id="17">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionFilterButton16" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAuctionFilterButton18" parentKey="AuctionFilterButton18" inherits="AuctionCategoryButtonTemplate" frameLevel="20" id="18">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionFilterButton17" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAuctionFilterButton19" parentKey="AuctionFilterButton19" inherits="AuctionCategoryButtonTemplate" hidden="true" frameLevel="20" id="19">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionFilterButton18" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAuctionFilterButton20" parentKey="AuctionFilterButton20" inherits="AuctionCategoryButtonTemplate" hidden="true" frameLevel="20" id="20">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionFilterButton19" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentClearFiltersButton" parentKey="ClearFiltersButton" hidden="true" frameLevel="21">
+				<Size x="23" y="23"/>
+				<Anchors>
+					<Anchor point="CENTER" relativeTo="$parentAuctionFilterButton1" relativePoint="TOPRIGHT" x="0" y="3"/>
+				</Anchors>
+				<NormalTexture parentKey="NormalTexture">
+					<Size x="23" y="23"/>
+				</NormalTexture>
+				<Scripts>
+					<OnLoad>
+						self.NormalTexture:SetAtlas("auctionhouse-ui-filter-redx");
+					</OnLoad>
+					<OnClick>
+						self:GetParent():SetSelectedCategory(nil, nil, nil);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<ScrollFrame name="$parentScrollFrame" parentKey="ScrollFrame" inherits="FauxScrollFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="17" y="-4"/>
+					<Anchor point="BOTTOMRIGHT" x="-29" y="2"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BORDER">
+						<Texture name="$parentBorderTop" parentKey="scrollBorderTop" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+							<Size x="28" y="48"/>
+							<Anchors>
+								<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="28" y="4"/>
+							</Anchors>
+							<TexCoords left="0" right="0.484375" top="0" bottom="0.2"/>
+						</Texture>
+						<Texture name="$parentBorderBottom" parentKey="scrollBorderBottom" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+							<Size x="28" y="67"/>
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="28" y="-2"/>
+							</Anchors>
+							<TexCoords left="0.515625" right="1.0" top="0.1440625" bottom="0.4140625"/>
+						</Texture>
+						<Texture name="$parentBorderMiddle" parentKey="scrollBorderMiddle" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentBorderTop" relativePoint="BOTTOMLEFT"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottom" relativePoint="TOPRIGHT"/>
+							</Anchors>
+							<TexCoords left="0" right="0.484375" top="0.1640625" bottom="1"/>
+						</Texture>
+					</Layer>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentScrollBarBackground" parentKey="scrollFrameScrollBarBackground">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentBorderTop" relativePoint="TOPLEFT"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottom" relativePoint="BOTTOMRIGHT"/>
+							</Anchors>
+							<Color r="0" g="0" b="0"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnVerticalScroll>
+						FauxScrollFrame_OnVerticalScroll(self, offset, BROWSE_FILTER_HEIGHT, function() AuctionHouseFrameFilters_Update(self:GetParent()) end);
+					</OnVerticalScroll>
+				</Scripts>
+			</ScrollFrame>
+		</Frames>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseCategoriesListMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</Frame>
+</Ui>

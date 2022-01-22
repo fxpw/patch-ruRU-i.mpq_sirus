@@ -1,0 +1,403 @@
+<!--
+
+	Filename:	SpectatorInterface.xml
+	Project:	Sirus Game Interface
+	Author:		Nyll
+	E-mail:		nyll@sirus.su
+	Web:		https://sirus.su/
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="SpectatorInterface.lua"/>
+	<Script file="TargetFrame.lua"/>
+	<Script file="CastFrame.lua"/>
+	<Script file="AuraFrame.lua"/>
+	<Script file="SpellFrame.lua"/>
+	<Script file="SmallFrame.lua"/>
+	<Script file="BindFrame.lua"/>
+	<Script file="Nameplates.lua"/>
+	<Script file="CooldownFrame.lua"/>
+	<Script file="TeamFrame.lua"/>
+	<Script file="TopFrame.lua"/>
+	<Script file="UpdateFrame.lua"/>
+
+	<Button name="ezSpectator_ButtonTemplate" virtual="true">
+		<Size x="40" y="22"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentLeft" parentKey="Left" file="Interface\ArenaSpectator\TargetFrame_Normal">
+					<Size x="12" y="22"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMLEFT"/>
+					</Anchors>
+					<TexCoords left="0.1015625" right="0.21484375" top="0.265625" bottom="0.625"/>
+				</Texture>
+				<Texture name="$parentRight" parentKey="Right" file="Interface\ArenaSpectator\TargetFrame_Normal">
+					<Size x="12" y="22"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.78515625" right="0.8984375" top="0.265625" bottom="0.625"/>
+				</Texture>
+				<Texture parentKey="Middle" file="Interface\ArenaSpectator\TargetFrame_Normal">
+					<Size x="12" y="22"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0" />
+					</Anchors>
+					<TexCoords left="0.21484375" right="0.78515625" top="0.265625" bottom="0.625"/>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" file="Interface\ArenaSpectator\TargetFrame_Backdrop">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0" />
+						<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+					</Anchors>
+					<TexCoords left="0.12890625" right="0.87109375" top="0.3125" bottom="0.578125"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentScriptsFrame" parentKey="ScriptsFrame">
+				<Scripts>
+					<OnLoad>
+						self:GetParent().Middle:ClearAllPoints()
+						self:GetParent().Middle:SetPoint("TOPLEFT", self:GetParent().Left, "TOPRIGHT")
+						self:GetParent().Middle:SetPoint("BOTTOMRIGHT", self:GetParent().Right, "BOTTOMLEFT")
+
+						self:GetParent():GetHighlightTexture():SetDesaturated(true)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<ButtonText name="$parentText" parentKey="Text"/>
+		<NormalFont style="GameFontNormal13"/>
+		<HighlightFont style="GameFontNormal13"/>
+		<DisabledFont style="GameFontNormal13"/>
+		<HighlightTexture inherits="SharedUIPanelButtonHighlightTexture"/>
+	</Button>
+
+	<Frame name="ArenaSpectatorFrame" hidden="true" setAllPoints="true">
+		<Frames>
+			<Frame name="$parentReportFrame" parentKey="ReportFrame" hidden="true">
+				<Size x="300" y="294"/>
+				<Anchors>
+					<Anchor point="CENTER" x="0" y="0" />
+				</Anchors>
+				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\ArenaSpectator\TooltipEdge" tile="true">
+					<BackgroundInsets left="4" right="4" top="4" bottom="4"/>
+					<TileSize val="16"/>
+					<EdgeSize val="16"/>
+					<Color r="0" g="0" b="0" a="0.80"/>
+					<BorderColor r="0.91" g="0.78" b="0.53" a="1"/>
+				</Backdrop>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentTitle" parentKey="Title" inherits="GameFontNormal17" text="ARENAREPLAY_REPORT_LABEL">
+							<Size x="280" y="20"/>
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-14" />
+							</Anchors>
+						</FontString>
+						<FontString name="$parentDesc" parentKey="Desc" inherits="GameFontNormal12" justifyH="LEFT" justifyV="TOP" text="ARENA_SPECTATOR_REPORT_DESC">
+							<Size x="270" y="100"/>
+							<Anchors>
+								<Anchor point="TOP" relativeTo="$parentTitle" relativePoint="BOTTOM" x="0" y="-6" />
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Frame name="$parentEditBoxFrame" parentKey="EditBoxFrame">
+						<Size x="280" y="100"/>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentDesc" relativePoint="BOTTOM" x="0" y="-4" />
+						</Anchors>
+						<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\ArenaSpectator\TooltipEdge" tile="true">
+							<BackgroundInsets left="4" right="4" top="4" bottom="4"/>
+							<TileSize val="16"/>
+							<EdgeSize val="16"/>
+							<Color r="0" g="0" b="0" a="0.80"/>
+							<BorderColor r="0.91" g="0.78" b="0.53" a="1"/>
+						</Backdrop>
+						<Frames>
+							<ScrollFrame name="$parentMessageFrame" parentKey="MessageFrame" inherits="InputScrollFrameTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="6" y="-6" />
+									<Anchor point="BOTTOMRIGHT" x="-6" y="6" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self.TopLeftTex:Hide()
+										self.TopRightTex:Hide()
+										self.TopTex:Hide()
+										self.BottomLeftTex:Hide()
+										self.BottomRightTex:Hide()
+										self.BottomTex:Hide()
+										self.LeftTex:Hide()
+										self.RightTex:Hide()
+										self.MiddleTex:Hide()
+
+										self.EditBox:SetFontObject("GameFontHighlight")
+										self.EditBox.Instructions:SetFontObject("GameFontHighlight")
+										self.maxLetters = 220
+										self.instructions = INSPERT_REPORT_DESC
+										InputScrollFrame_OnLoad(self)
+									</OnLoad>
+								</Scripts>
+							</ScrollFrame>
+						</Frames>
+					</Frame>
+					<Button name="$parentSendButton" parentKey="SendButton" inherits="ezSpectator_ButtonTemplate" text="SEND_LABEL">
+						<Size x="100" y="32"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="-64" y="10" />
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								SendServerMessage("ACMSG_AR_CLAIM", string.format("%d:%s", _ezSpectator.Interface.TopFrame.MatchTime or 0, self:GetParent().EditBoxFrame.MessageFrame.EditBox:GetText()))
+								ArenaSpectatorFrame.ReportFrame:Hide()
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="$parentCancelButton" parentKey="CancelButton" inherits="ezSpectator_ButtonTemplate" text="CANCEL">
+						<Size x="100" y="32"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="64" y="10" />
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								ArenaSpectatorFrame.ReportFrame:Hide()
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+				<Scripts>
+					<OnShow>
+						ArenaSpectatorFrame.SharedReplay:Hide()
+						self.EditBoxFrame.MessageFrame.EditBox:SetText("")
+						ArenaSpectatorFrame:SetSpeed(0.01)
+					</OnShow>
+					<OnHide>
+						ArenaSpectatorFrame:SetSpeed(1)
+					</OnHide>
+				</Scripts>
+			</Frame>
+			<Frame name="$parentSharedReplay" parentKey="SharedReplay" hidden="true">
+				<Size x="300" y="220"/>
+				<Anchors>
+					<Anchor point="CENTER" x="0" y="0" />
+				</Anchors>
+				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\ArenaSpectator\TooltipEdge" tile="true">
+					<BackgroundInsets left="4" right="4" top="4" bottom="4"/>
+					<TileSize val="16"/>
+					<EdgeSize val="16"/>
+					<Color r="0" g="0" b="0" a="0.80"/>
+					<BorderColor r="0.91" g="0.78" b="0.53" a="1"/>
+				</Backdrop>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentTitle" parentKey="Title" inherits="GameFontNormal17" text="ARENAREPLAY_SHARED_REPLAY">
+							<Size x="280" y="20"/>
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-14" />
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Frame name="$parentEditBoxFrame" parentKey="EditBoxFrame">
+						<Size x="280" y="100"/>
+						<Anchors>
+							<Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="44" />
+						</Anchors>
+						<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\ArenaSpectator\TooltipEdge" tile="true">
+							<BackgroundInsets left="4" right="4" top="4" bottom="4"/>
+							<TileSize val="16"/>
+							<EdgeSize val="16"/>
+							<Color r="0" g="0" b="0" a="0.80"/>
+							<BorderColor r="0.91" g="0.78" b="0.53" a="1"/>
+						</Backdrop>
+						<Frames>
+							<ScrollFrame name="$parentMessageFrame" parentKey="MessageFrame" inherits="InputScrollFrameTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="6" y="-6" />
+									<Anchor point="BOTTOMRIGHT" x="-6" y="6" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self.TopLeftTex:Hide()
+										self.TopRightTex:Hide()
+										self.TopTex:Hide()
+										self.BottomLeftTex:Hide()
+										self.BottomRightTex:Hide()
+										self.BottomTex:Hide()
+										self.LeftTex:Hide()
+										self.RightTex:Hide()
+										self.MiddleTex:Hide()
+
+										self.EditBox:SetFontObject("GameFontHighlight")
+										self.EditBox.Instructions:SetFontObject("GameFontHighlight")
+										self.maxLetters = 150
+										self.instructions = ARENAREPLAY_SHARED_REPLAY_MESSAGE_PH
+										InputScrollFrame_OnLoad(self)
+									</OnLoad>
+									<OnHide>
+										self.EditBox:SetText("")
+									</OnHide>
+								</Scripts>
+							</ScrollFrame>
+						</Frames>
+					</Frame>
+					<Frame name="$parentDropDownMenu" parentKey="DropDownMenu" inherits="UIDropDownMenuTemplate" id="1" enableMouse="true">
+						<Size x="280" y="32"/>
+						<Anchors>
+							<Anchor point="BOTTOM" relativeTo="$parentEditBoxFrame" relativePoint="TOP" x="0" y="2" />
+						</Anchors>
+						<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\ArenaSpectator\TooltipEdge" tile="true">
+							<BackgroundInsets left="4" right="4" top="4" bottom="4"/>
+							<TileSize val="16"/>
+							<EdgeSize val="16"/>
+							<Color r="0" g="0" b="0" a="0.80"/>
+							<BorderColor r="0.91" g="0.78" b="0.53" a="1"/>
+						</Backdrop>
+						<Frames>
+							<Button name="$parentDropDownButton" parentKey="DropDownButton" inherits="ezSpectator_ButtonTemplate">
+								<Size x="24" y="24"/>
+								<Anchors>
+									<Anchor point="RIGHT" x="-4" y="0" />
+								</Anchors>
+								<Layers>
+									<Layer level="BORDER">
+										<Texture name="$parentIconUp" parentKey="IconUp" file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Up">
+											<Size x="24" y="24"/>
+											<Anchors>
+												<Anchor point="CENTER" x="0" y="0" />
+											</Anchors>
+										</Texture>
+										<Texture name="$parentIconDown" parentKey="IconDown" file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Down" hidden="true">
+											<Size x="24" y="24"/>
+											<Anchors>
+												<Anchor point="CENTER" x="0" y="0" />
+											</Anchors>
+										</Texture>
+									</Layer>
+								</Layers>
+								<Scripts>
+									<OnLoad>
+										self:GetParent().Button:Hide()
+
+										self.Background:ClearAllPoints()
+										self.Background:SetPoint("TOPLEFT", 2, 0)
+										self.Background:SetPoint("BOTTOMRIGHT", -2, 0)
+									</OnLoad>
+									<OnMouseDown>
+										self.IconUp:Hide()
+										self.IconDown:Show()
+									</OnMouseDown>
+									<OnMouseUp>
+										self.IconUp:Show()
+										self.IconDown:Hide()
+									</OnMouseUp>
+									<OnEnter>
+										local parent = self:GetParent();
+										local myscript = parent:GetScript("OnEnter");
+										if(myscript ~= nil) then
+											myscript(parent);
+										end
+									</OnEnter>
+									<OnLeave>
+										local parent = self:GetParent();
+										local myscript = parent:GetScript("OnLeave");
+										if(myscript ~= nil) then
+											myscript(parent);
+										end
+									</OnLeave>
+									<OnClick>
+										ToggleDropDownMenu(nil, nil, self:GetParent());
+										PlaySound("igMainMenuOptionCheckBoxOn");
+									</OnClick>
+								</Scripts>
+							</Button>
+						</Frames>
+						<Scripts>
+							<OnShow>
+								self.Left:Hide()
+								self.Middle:Hide()
+								self.Right:Hide()
+
+								ArenaSpectatorFrame:SharedDropDownOnLoad()
+							</OnShow>
+						</Scripts>
+					</Frame>
+					<Button name="$parentSendButton" parentKey="SendButton" inherits="ezSpectator_ButtonTemplate" text="SEND_LABEL">
+						<Size x="100" y="32"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="-64" y="10" />
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								ArenaSpectatorFrame:SendSharedReplay()
+								ArenaSpectatorFrame.SharedReplay:Hide()
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="$parentCancelButton" parentKey="CancelButton" inherits="ezSpectator_ButtonTemplate" text="CANCEL">
+						<Size x="100" y="32"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="64" y="10" />
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								ArenaSpectatorFrame.SharedReplay:Hide()
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+				<Scripts>
+					<OnShow>
+						ArenaSpectatorFrame.ReportFrame:Hide()
+					</OnShow>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ArenaSpectatorFrameMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+	<Button name="ezSpectator_DebugButton" inherits="ezSpectator_ButtonTemplate" parent="ArenaSpectatorFrame" frameStrata="TOOLTIP" text="SHOW_HIDE_LABEL">
+		<Size x="140" y="32"/>
+		<Anchors>
+			<Anchor point="TOPLEFT" x="10" y="-40" />
+		</Anchors>
+		<Scripts>
+			<OnClick>
+				UIParent:SetShown(not UIParent:IsShown())
+			</OnClick>
+		</Scripts>
+	</Button>
+	<Button name="ezSpectatorResumeReplay" inherits="ezSpectator_ButtonTemplate" parent="UIParent" frameStrata="TOOLTIP" hidden="true" text="CONTINUE_VIEWING">
+		<Size x="240" y="42"/>
+		<Anchors>
+			<Anchor point="TOP" x="0" y="-100" />
+		</Anchors>
+		<Scripts>
+			<OnClick>
+				ArenaSpectatorFrame:SetSpeed(1)
+				ArenaSpectatorFrame:Show()
+				self:Hide()
+				UIParent:Hide()
+			</OnClick>
+		</Scripts>
+	</Button>
+</Ui>

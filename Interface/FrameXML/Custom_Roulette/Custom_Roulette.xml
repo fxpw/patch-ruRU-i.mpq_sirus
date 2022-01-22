@@ -1,0 +1,771 @@
+<!--
+
+	Filename:	Custom_Roulette.xml
+	Project:	Custom Game Interface
+	Author:		Nyll & Blizzard Entertainment
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Script file="Custom_Roulette.lua"/>
+
+    <Button name="Custom_RouletteCurrencyButton" virtual="true">
+        <Size x="140" y="36"/>
+        <Layers>
+        	<Layer level="BORDER">
+                <FontString name="$parentText" parentKey="Text" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
+                    <Anchors>
+                    	<Anchor point="CENTER" x="0" y="1" />
+                    </Anchors>
+                    <Color r="0" g="0.39" b="0.52"/>
+                    <FontHeight val="10"/>
+                </FontString>
+        	</Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                if self:GetID() == 1 then
+                    self.Text:SetTextColor(0, 0, 0)
+                end
+
+                self:SetParentArray("currencyButtons")
+            </OnLoad>
+            <OnEnter>
+                self.Text:SetTextColor(0, 0, 0)
+            </OnEnter>
+            <OnLeave>
+                if not self.active then
+                    self.Text:SetTextColor(0, 0.39, 0.52)
+                end
+            </OnLeave>
+            <OnClick>
+                local stage         = self:GetParent():GetParent().stage
+                local spinButton    = self:GetParent():GetParent().SpinButton
+
+                if (stage ~= E_ROULETTE_STAGE.STOP and stage ~= E_ROULETTE_STAGE.FINISHED) or (spinButton:IsEnabled() == 0 and not spinButton.lockButton) then
+                    return
+                end
+
+                for _, button in pairs(self:GetParent().currencyButtons) do
+                    if button == self then
+                        button.active = true
+                        button.Text:SetTextColor(0, 0, 0)
+                    else
+                        button.active = false
+                        button.Text:SetTextColor(0, 0.39, 0.52)
+                    end
+                end
+
+                self:GetParent():GetParent():SelectCurrency(self:GetID())
+            </OnClick>
+        </Scripts>
+    </Button>
+    <Button name="Custom_RouletteItemButtonTemplate" virtual="true">
+        <Size x="96" y="110"/>
+        <Layers>
+        	<Layer level="BACKGROUND">
+                <Texture name="$parentBackground" parentKey="Background"/>
+        	</Layer>
+            <Layer level="ARTWORK">
+                <Texture name="$parentBorderOverlay" parentKey="BorderOverlay" alphaMode="ADD" hidden="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="0" y="0" />
+                        <Anchor point="BOTTOMRIGHT" x="0" y="0" />
+                    </Anchors>
+                    <Animations>
+                        <AnimationGroup parentKey="Light">
+                            <Alpha change="-1" duration="0" order="1"/>
+                            <Alpha change="0.8" duration="1.2" order="2"/>
+                            <Alpha change="-1" duration="1.8" order="3"/>
+                            <Scripts>
+                                <OnFinished>
+                                    self:GetParent():Hide()
+                                </OnFinished>
+                            </Scripts>
+                        </AnimationGroup>
+                    </Animations>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <ScrollFrame name="$parentOverlayFrame" parentKey="OverlayFrame">
+                <Anchors>
+                	<Anchor point="TOPLEFT" x="2" y="-2" />
+                    <Anchor point="BOTTOMRIGHT" x="-2" y="2" />
+                </Anchors>
+                <ScrollChild>
+                    <Frame name="$parentChildFrame" parentKey="ChildFrame">
+                        <Size x="92" y="110"/>
+                        <Anchors>
+                        	<Anchor point="CENTER" x="0" y="0" />
+                        </Anchors>
+                        <Layers>
+                        	<Layer level="OVERLAY">
+                                <Texture name="$parentIconBorder" parentKey="IconBorder">
+                                	<Size x="66" y="70"/>
+                                    <Anchors>
+                                    	<Anchor point="TOP" x="0" y="-6" />
+                                    </Anchors>
+                                </Texture>
+                                <Texture name="$parentIconBorderOverlay" parentKey="IconBorderOverlay" hidden="true" alphaMode="ADD">
+                                    <Size x="66" y="70"/>
+                                    <Anchors>
+                                        <Anchor point="TOP" x="0" y="-6" />
+                                    </Anchors>
+                                    <Animations>
+                                        <AnimationGroup parentKey="Light">
+                                            <Alpha change="-1" duration="0" order="1"/>
+                                            <Alpha change="0.8" duration="1.2" order="2"/>
+                                            <Alpha change="-1" duration="1.8" order="3"/>
+                                            <Scripts>
+                                                <OnFinished>
+                                                    self:GetParent():Hide()
+                                                </OnFinished>
+                                            </Scripts>
+                                        </AnimationGroup>
+                                    </Animations>
+                                </Texture>
+                                <FontString name="$parentItemName" parentKey="ItemName" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
+                                    <Size x="82" y="30"/>
+                                    <Anchors>
+                                    	<Anchor point="BOTTOM" x="0" y="5" />
+                                    </Anchors>
+                                    <Color r="1" g="1" b="1"/>
+                                    <FontHeight val="10"/>
+                                </FontString>
+                                <FontString name="$parentItemCount" parentKey="ItemCount" inherits="GameFontNormalSmall">
+                                    <Size x="44" y="14"/>
+                                    <Anchors>
+                                        <Anchor point="TOPRIGHT" x="2" y="-3" />
+                                    </Anchors>
+                                    <Color r="1" g="1" b="1"/>
+                                </FontString>
+                        	</Layer>
+                            <Layer level="ARTWORK">
+                                <Texture name="$parentIcon" parentKey="Icon">
+                                    <Size x="44" y="46"/>
+                                    <Anchors>
+                                    	<Anchor point="CENTER" relativeTo="$parentIconBorder" x="0" y="0" />
+                                    </Anchors>
+                                </Texture>
+                            </Layer>
+                            <Layer level="BORDER">
+                                <Texture name="$parentQualityLight" parentKey="QualityLight" alphaMode="ADD">
+                                    <Size x="102" y="102"/>
+                                    <Anchors>
+                                        <Anchor point="CENTER" x="0" y="0" />
+                                    </Anchors>
+                                </Texture>
+                            </Layer>
+                            <Layer level="BACKGROUND">
+                                <Texture name="$parentJackpotCircleLight1" alpha="0.7" parentKey="JackpotCircleLight1" alphaMode="ADD">
+                                    <Size x="102" y="102"/>
+                                    <Anchors>
+                                        <Anchor point="CENTER" relativeTo="$parentIconBorder" x="0" y="0" />
+                                    </Anchors>
+                                    <Animations>
+                                        <AnimationGroup looping="BOUNCE">
+                                            <Alpha change="-0.5" duration="1"/>
+                                            <Rotation order="1" duration="20" degrees="360" smoothing="IN_OUT"/>
+                                            <Scripts>
+                                                <OnLoad>
+                                                    self:Play()
+                                                </OnLoad>
+                                            </Scripts>
+                                        </AnimationGroup>
+                                    </Animations>
+                                </Texture>
+                                <Texture name="$parentJackpotCircleLight2" alpha="0.3" parentKey="JackpotCircleLight2" alphaMode="ADD">
+                                    <Size x="142" y="142"/>
+                                    <Anchors>
+                                        <Anchor point="CENTER" relativeTo="$parentIconBorder" x="0" y="0" />
+                                    </Anchors>
+                                    <Animations>
+                                        <AnimationGroup looping="BOUNCE">
+                                            <Rotation duration="20" degrees="-360" order="1" smoothing="IN_OUT"/>
+                                            <Scripts>
+                                                <OnLoad>
+                                                    self:Play()
+                                                </OnLoad>
+                                            </Scripts>
+                                        </AnimationGroup>
+                                    </Animations>
+                                </Texture>
+                                <Texture name="$parentJackpotCircleLight3" parentKey="JackpotCircleLight3" alphaMode="ADD" hidden="true">
+                                    <Size x="102" y="102"/>
+                                    <Anchors>
+                                        <Anchor point="CENTER" relativeTo="$parentIconBorder" x="0" y="0" />
+                                    </Anchors>
+                                    <Animations>
+                                        <AnimationGroup parentKey="Light">
+                                            <Alpha change="-0.5" duration="1.4" order="1"/>
+                                            <Scale duration="0.8" scaleX="1.5" scaleY="1.5" order="1"/>
+                                            <Rotation duration="1.4" degrees="360" smoothing="IN_OUT" order="1"/>
+                                            <Scale duration="0.8" scaleX="0.6" scaleY="0.6" order="2"/>
+                                            <Scripts>
+                                                <OnFinished>
+                                                    self:GetParent():Hide()
+                                                </OnFinished>
+                                            </Scripts>
+                                        </AnimationGroup>
+                                    </Animations>
+                                </Texture>
+                                <Texture name="$parentJackpotLight" parentKey="JackpotLight" alpha="0.5" alphaMode="ADD">
+                                    <Size x="160" y="100"/>
+                                    <Anchors>
+                                        <Anchor point="BOTTOM" x="0" y="-44" />
+                                    </Anchors>
+                                </Texture>
+                            </Layer>
+                        </Layers>
+                        <Scripts>
+                            <OnLoad>
+                                self.JackpotLight:SetAtlas("Roulette-item-jackpot-light-bottom")
+
+                                self.JackpotCircleLight1:SetAtlas("Roulette-item-jackpot-light-center")
+                                self.JackpotCircleLight2:SetAtlas("Roulette-item-jackpot-light-center")
+                                self.JackpotCircleLight3:SetAtlas("Roulette-item-jackpot-light-center")
+
+                                self.IconBorder:SetAtlas("Roulette-item-placeholder")
+                                self.IconBorderOverlay:SetAtlas("Roulette-item-placeholder")
+                                self.QualityLight:SetAtlas("Roulette-item-common-light")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                </ScrollChild>
+            </ScrollFrame>
+            <Frame name="$parentScriptFrame" parentKey="ScriptFrame">
+                <Scripts>
+                    <OnLoad>
+                        local self = self:GetParent()
+                        Mixin(self, RouletteItemButtonMixin)
+
+                        self:OnLoad()
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnEnter>
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+
+                if self.itemLink then
+                    GameTooltip:SetHyperlink(self.itemLink)
+                else
+                    GameTooltip:SetText(self.tooltipHeader, 1, 1, 1)
+                    GameTooltip:AddLine(self.tooltipText, nil, nil, nil, true)
+                end
+
+                GameTooltip:Show()
+            </OnEnter>
+            <OnLeave function="GameTooltip_Hide"/>
+        </Scripts>
+    </Button>
+    <Button name="Custom_RouletteRewardButtonTemplate" inherits="Custom_RouletteItemButtonTemplate" virtual="true">
+        <Layers>
+            <Layer level="BORDER">
+                <Texture name="$parentBorder" parentKey="Border">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="-2" y="2" />
+                        <Anchor point="BOTTOMRIGHT" x="2" y="-2" />
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+                <OnLoad>
+                self.Border:SetAtlas("Roulette-item-frame")
+            </OnLoad>
+        </Scripts>
+    </Button>
+    <Frame name="Custom_RouletteItemTemplate" inherits="Custom_RouletteItemButtonTemplate" virtual="true">
+        <Layers>
+            <Layer level="OVERLAY">
+                <FontString name="$parentItemID" parentKey="ItemID" inherits="GameFontNormal">
+                    <Anchors>
+                        <Anchor point="CENTER" x="0" y="0" />
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                self:GetParent():GetParent():SetParentArray("itemButtons", self)
+                self.ItemID:SetText(#self:GetParent():GetParent():GetParent())
+            </OnLoad>
+        </Scripts>
+    </Frame>
+
+    <Frame name="Custom_RouletteFrame" inherits="StandartBaseBasicFrameTemplate" enableMouse="true" frameStrata="HIGH" hidden="true">
+        <Size x="804" y="672"/>
+        <Anchors>
+            <Anchor point="CENTER" x="0" y="0" />
+        </Anchors>
+        <Layers>
+        	<Layer level="BACKGROUND">
+                <Texture name="$parentBackground" parentKey="Background" file="Interface\Roulette\roulette-background">
+                    <Anchors>
+                    	<Anchor point="TOPLEFT" x="14" y="-14" />
+                        <Anchor point="BOTTOMRIGHT" x="-14" y="14" />
+                    </Anchors>
+                    <TexCoords left="0.13330078125" right="0.8056640625" top="0.001953125" bottom="0.4970703125"/>
+                </Texture>
+        	</Layer>
+            <Layer level="BORDER">
+                <Texture name="$parentBackgroundOverlay" parentKey="BackgroundOverlay">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="14" y="-14" />
+                        <Anchor point="BOTTOMRIGHT" x="-14" y="14" />
+                    </Anchors>
+                    <Color r="0" g="0" b="0" a="0.4"/>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button name="$parentCloseButton" parentKey="closeButton">
+                <Size x="56" y="56"/>
+                <Anchors>
+                	<Anchor point="TOPRIGHT" x="8" y="8" />
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        self.NormalTexture:SetAtlas("Roulette-exit")
+                        self.PushedTexture:SetAtlas("Roulette-exit-pressed")
+                        self.HighlightTexture:SetAtlas("Roulette-exit-hover")
+                    </OnLoad>
+                    <OnClick function="UIPanelCloseButton_OnClick"/>
+                </Scripts>
+                <NormalTexture parentKey="NormalTexture"/>
+                <PushedTexture parentKey="PushedTexture"/>
+                <HighlightTexture parentKey="HighlightTexture" alphaMode="ADD" alpha="0.1"/>
+            </Button>
+            <Frame name="$parentHeaderFrame" parentKey="HeaderFrame">
+                <Size x="280" y="44"/>
+                <Anchors>
+                	<Anchor point="TOP" x="0" y="16" />
+                </Anchors>
+                <Layers>
+                	<Layer level="BACKGROUND">
+                        <Texture name="$parentBackground" parentKey="Background"/>
+                	</Layer>
+                	<Layer level="BORDER">
+                        <FontString name="$parentTitleText" parentKey="TitleText" font="Interface\CustomFonts\OpenSans-Bold.ttf" text="ROULETTE_TITLE">
+                            <Anchors>
+                                <Anchor point="CENTER" x="0" y="0" />
+                            </Anchors>
+                            <FontHeight val="15"/>
+                        </FontString>
+                	</Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        self.Background:SetAtlas("Roulette-title-background")
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+            <Frame name="$parentToggleCurrencyFrame" parentKey="ToggleCurrencyFrame">
+                <Size x="400" y="40"/>
+                <Anchors>
+                	<Anchor point="TOP" x="0" y="-48" />
+                </Anchors>
+                <Layers>
+                	<Layer level="BACKGROUND">
+                        <Texture name="$parentBackground" parentKey="Background"/>
+                	</Layer>
+                </Layers>
+                <Frames>
+                    <Button name="$parentCurrencyLuckCoins" parentKey="CurrencyLuckCoins" inherits="Custom_RouletteCurrencyButton" id="1">
+                        <Anchors>
+                            <Anchor point="CENTER" x="-76" y="0" />
+                        </Anchors>
+                    </Button>
+                    <Button name="$parentCurrencyBonus" parentKey="CurrencyBonus" inherits="Custom_RouletteCurrencyButton" id="2">
+                        <Anchors>
+                        	<Anchor point="CENTER" x="76" y="0" />
+                        </Anchors>
+                    </Button>
+                    <Frame name="$parentCurrencySelector" alpha="1" parentKey="CurrencySelector">
+                        <Size x="152" y="58"/>
+                        <Anchors>
+                            <Anchor point="CENTER" x="-76" y="0" />
+                        </Anchors>
+                        <Layers>
+                        	<Layer level="BACKGROUND">
+                                <Texture name="$parentSelector" parentKey="Selector" />
+                        	</Layer>
+                        </Layers>
+                        <Scripts>
+                            <OnLoad>
+                                self:SetFrameLevel(self:GetParent():GetFrameLevel() + 5)
+
+                                self.Selector:SetAtlas("Roulette-tab-selector")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                </Frames>
+                <Scripts>
+                    <OnLoad>
+                        self.Background:SetAtlas("Roulette-text-background")
+                    </OnLoad>
+                    <OnUpdate>
+                        self:GetParent():CurrencyFrameUpdate( elapsed )
+                    </OnUpdate>
+                </Scripts>
+            </Frame>
+            <ScrollFrame name="$parentOverlayFrame" parentKey="OverlayFrame">
+                <Size x="768" y="118"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="2" y="162" />
+                </Anchors>
+                <Layers>
+                	<Layer level="ARTWORK">
+                        <Texture name="$parentBackground" parentKey="Background">
+                            <Anchors>
+                            	<Anchor point="TOPLEFT" x="4" y="0" />
+                                <Anchor point="BOTTOMRIGHT" x="-4" y="0" />
+                            </Anchors>
+                        	<Color r="0" g="0" b="0" a="0.5"/>
+                        </Texture>
+                	</Layer>
+                </Layers>
+                <Frames>
+                    <Frame name="$parentArtOverlay" parentKey="ArtOverlay" setAllPoints="true">
+                        <Layers>
+                            <Layer level="OVERLAY">
+                                <Texture name="$parentTopBorder" parentKey="TopBorder">
+                                    <Size x="768" y="24"/>
+                                    <Anchors>
+                                        <Anchor point="TOP" x="-2" y="10" />
+                                    </Anchors>
+                                </Texture>
+                                <Texture name="$parentBottomBorder" parentKey="BottomBorder">
+                                    <Size x="768" y="24"/>
+                                    <Anchors>
+                                        <Anchor point="BOTTOM" x="-1" y="-10" />
+                                    </Anchors>
+                                </Texture>
+                            </Layer>
+                        </Layers>
+                        <Scripts>
+                            <OnLoad>
+                                self.TopBorder:SetAtlas("Roulette-nav-middle")
+                                self.TopBorder:SetSubTexCoord(0.0, 1.0, 1.0, 0.0)
+
+                                self.BottomBorder:SetAtlas("Roulette-nav-middle")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                </Frames>
+                <ScrollChild>
+                    <Frame name="$parentScrollChild" parentKey="scrollChild">
+                        <Size x="768" y="118"/>
+                        <Frames>
+                            <Frame name="$parentItem1" inherits="Custom_RouletteItemTemplate">
+                                <Anchors>
+                                    <Anchor point="LEFT" x="0" y="0" />
+                                </Anchors>
+                            </Frame>
+                            <Frame name="$parentItem2" inherits="Custom_RouletteItemTemplate">
+                                <Anchors>
+                                    <Anchor point="LEFT" relativeTo="$parentItem1" relativePoint="RIGHT" x="0" y="0" />
+                                </Anchors>
+                            </Frame>
+                            <Frame name="$parentItem3" inherits="Custom_RouletteItemTemplate">
+                                <Anchors>
+                                    <Anchor point="LEFT" relativeTo="$parentItem2" relativePoint="RIGHT" x="0" y="0" />
+                                </Anchors>
+                            </Frame>
+                            <Frame name="$parentItem4" inherits="Custom_RouletteItemTemplate">
+                                <Anchors>
+                                    <Anchor point="LEFT" relativeTo="$parentItem3" relativePoint="RIGHT" x="0" y="0" />
+                                </Anchors>
+                            </Frame>
+                            <Frame name="$parentItem5" inherits="Custom_RouletteItemTemplate">
+                                <Anchors>
+                                    <Anchor point="LEFT" relativeTo="$parentItem4" relativePoint="RIGHT" x="0" y="0" />
+                                </Anchors>
+                            </Frame>
+                            <Frame name="$parentItem6" inherits="Custom_RouletteItemTemplate">
+                                <Anchors>
+                                    <Anchor point="LEFT" relativeTo="$parentItem5" relativePoint="RIGHT" x="0" y="0" />
+                                </Anchors>
+                            </Frame>
+                            <Frame name="$parentItem7" inherits="Custom_RouletteItemTemplate">
+                                <Anchors>
+                                    <Anchor point="LEFT" relativeTo="$parentItem6" relativePoint="RIGHT" x="0" y="0" />
+                                </Anchors>
+                            </Frame>
+                            <Frame name="$parentItem8" inherits="Custom_RouletteItemTemplate">
+                                <Anchors>
+                                    <Anchor point="LEFT" relativeTo="$parentItem7" relativePoint="RIGHT" x="0" y="0" />
+                                </Anchors>
+                            </Frame>
+                            <Frame name="$parentItem9" inherits="Custom_RouletteItemTemplate">
+                                <Anchors>
+                                    <Anchor point="LEFT" relativeTo="$parentItem8" relativePoint="RIGHT" x="0" y="0" />
+                                </Anchors>
+                            </Frame>
+                        </Frames>
+                    </Frame>
+                </ScrollChild>
+            </ScrollFrame>
+            <CheckButton name="$parentSkipAnimation" inherits="OptionsBaseCheckButtonTemplate">
+                <Size x="26" y="26"/>
+                <Anchors>
+                	<Anchor point="TOPRIGHT" relativeTo="$parentOverlayFrame" relativePoint="BOTTOMRIGHT" x="-2" y="-12" />
+                </Anchors>
+                <HitRectInsets>
+                    <AbsInset left="0" right="0" top="0" bottom="0"/>
+                </HitRectInsets>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString name="$parentText" inherits="GameFontNormalSmall">
+                            <Anchors>
+                                <Anchor point="RIGHT" relativePoint="LEFT" x="0" y="1"/>
+                            </Anchors>
+                            <Color r="1" g="1" b="1"/>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        _G[self:GetName().."Text"]:SetText(ROULETTE_SKIP_ANIMATION_LABEL);
+                    </OnLoad>
+                    <OnShow>
+                        self:SetChecked( self:GetParent():isAnimationSkipped() )
+                    </OnShow>
+                    <OnClick>
+                        PlaySound("igMainMenuOptionCheckBoxOn")
+                        local checked = self:GetChecked()
+                        C_CVar:SetValue("C_CVAR_ROULETTE_SKIP_ANIMATION", checked and 1 or 0)
+                        self:GetParent():SetFastAnimationState(checked)
+                    </OnClick>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+                        GameTooltip:SetText(ROULETTE_SKIP_ANIMATION_TOOLTIP, 1, 1, 1)
+                        GameTooltip:AddLine(ROULETTE_SKIP_ANIMATION_DESC, nil, nil, nil, true)
+                        GameTooltip:Show()
+                    </OnEnter>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                    </OnLeave>
+                </Scripts>
+            </CheckButton>
+            <Button name="$parentSpinButton" motionScriptsWhileDisabled="true" parentKey="SpinButton">
+                <Size x="210" y="68"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="15" />
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture name="$parentLight" parentKey="Light" alphaMode="ADD">
+                            <Size x="240" y="86"/>
+                            <Anchors>
+                                <Anchor point="CENTER" x="0" y="0" />
+                            </Anchors>
+                            <Animations>
+                                <AnimationGroup parentKey="In">
+                                    <Alpha change="-1" duration="0" order="1"/>
+                                    <Alpha change="1" duration="0.4" order="1"/>
+                                    <Scripts>
+                                        <OnPlay>
+                                            self:GetParent():Show()
+                                        </OnPlay>
+                                    </Scripts>
+                                </AnimationGroup>
+                                <AnimationGroup parentKey="Out">
+                                    <Alpha change="-1" duration="0.4" order="1"/>
+                                    <Scripts>
+                                        <OnFinished>
+                                            self:GetParent():Hide()
+                                        </OnFinished>
+                                    </Scripts>
+                                </AnimationGroup>
+                            </Animations>
+                        </Texture>
+                        <Texture name="$parentPriceBackground" parentKey="PriceBackground">
+                            <Size x="403" y="34"/>
+                            <Anchors>
+                                <Anchor point="BOTTOM" relativePoint="TOP" x="0" y="6" />
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                    <Layer level="OVERLAY">
+                        <FontString name="$parentSpin" parentKey="Spin" font="Interface\CustomFonts\DejaVuSans-Bold.ttf" text="ROULETTE_SPIN">
+                            <Anchors>
+                                <Anchor point="CENTER" x="0" y="0" />
+                            </Anchors>
+                            <Color r="0.86" g="0.92" b="0.95"/>
+                            <FontHeight val="16"/>
+                        </FontString>
+                        <FontString name="$parentPriceText" parentKey="PriceText" font="Interface\CustomFonts\OpenSans-Semibold.ttf" text="ROULETTE_CURRENCY_PRICE_TITLE_1">
+                            <Anchors>
+                                <Anchor point="CENTER" relativeTo="$parentPriceBackground" x="0" y="0" />
+                            </Anchors>
+                            <Color r="0" g="0" b="0"/>
+                            <FontHeight val="12"/>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        self.NormalTexture:SetAtlas("Roulette-button-spin")
+                        self.PushedTexture:SetAtlas("Roulette-button-spin-pressed")
+                        self.DisabledTexture:SetAtlas("Roulette-button-spin-pressed")
+                        self.HighlightTexture:SetAtlas("Roulette-button-spin-hover")
+
+                        self.Light:SetAtlas("Roulette-button-spin-light")
+                        self.PriceBackground:SetAtlas("Roulette-text-background")
+                    </OnLoad>
+                    <OnClick>
+                        self:Disable()
+                        self:GetParent():SpinButtonOnClick()
+                    </OnClick>
+                    <OnEnable>
+                        self.Light.In:Play()
+                    </OnEnable>
+                    <OnDisable>
+                        self.Light.Out:Play()
+                    </OnDisable>
+                    <OnEnter>
+                        if self.lockButton then
+                            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                            GameTooltip:SetText(ROULETTE_NOT_ENOUGHT_CURRENCY_TOOLTIP_HEADER, 1, 1, 1)
+                            GameTooltip:AddLine(ROULETTE_NOT_ENOUGHT_CURRENCY_TOOLTIP_TEXT, nil, nil, nil, true)
+                            GameTooltip:Show()
+                        end
+                    </OnEnter>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+                <NormalTexture parentKey="NormalTexture"/>
+                <PushedTexture parentKey="PushedTexture"/>
+                <DisabledTexture parentKey="DisabledTexture"/>
+                <HighlightTexture parentKey="HighlightTexture" alphaMode="ADD" alpha="0.2"/>
+            </Button>
+            <Frame name="$parentRewardItemsFrame" parentKey="RewardItemsFrame">
+                <Size x="764" y="314"/>
+                <Anchors>
+                	<Anchor point="BOTTOM" x="0" y="4" />
+                </Anchors>
+                <Layers>
+                	<Layer level="ARTWORK">
+                        <Texture name="$parentBackground" parentKey="Background">
+                            <Anchors>
+                            	<Anchor point="TOPLEFT" x="0" y="0" />
+                                <Anchor point="BOTTOMRIGHT" x="0" y="14" />
+                            </Anchors>
+                        	<Color r="1" g="1" b="1" a="1"/>
+                            <Gradient orientation="VERTICAL">
+                                <MinColor r="0" g="0" b="0" a="1"/>
+                                <MaxColor r="0" g="0" b="0" a="0"/>
+                            </Gradient>
+                        </Texture>
+                	</Layer>
+                </Layers>
+                <Frames>
+                    <Frame name="$parentTitleFrame" parentKey="TitleFrame">
+                        <Size x="403" y="34"/>
+                        <Anchors>
+                        	<Anchor point="TOP" x="0" y="-6" />
+                        </Anchors>
+                        <Layers>
+                        	<Layer level="BACKGROUND">
+                                <Texture name="$parentBackground" parentKey="Background"/>
+                        	</Layer>
+                        	<Layer level="BORDER">
+                                <FontString name="$parentText" parentKey="Text" font="Interface\CustomFonts\OpenSans-Semibold.ttf" text="ROULETTE_REWARD_LIST_TITLE">
+                                    <Anchors>
+                                        <Anchor point="CENTER" x="0" y="1" />
+                                    </Anchors>
+                                    <Color r="0" g="0" b="0"/>
+                                    <FontHeight val="12"/>
+                                </FontString>
+                        	</Layer>
+                        </Layers>
+                        <Scripts>
+                            <OnLoad>
+                                self.Background:SetAtlas("Roulette-text-background")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                </Frames>
+                <Scripts>
+                    <OnLeave>
+                        self:SetFrameLevel(self:GetParent():GetFrameLevel())
+                    </OnLeave>
+                </Scripts>
+            </Frame>
+            <Frame name="$parentWinnerEffectFrame" parentKey="WinnerEffectFrame">
+                <Size x="96" y="110"/>
+                <Anchors>
+                	<Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture parentKey="CrestSparks" alpha="0" alphaMode="ADD">
+                            <Size x="260" y="260"/>
+                            <Animations>
+                                <AnimationGroup parentKey="Anim">
+                                    <Alpha duration="0.1" order="1" change="1"/>
+                                    <Alpha smoothing="IN" duration="1.4" order="1" change="-1"/>
+                                    <Scale duration="1.4" order="1" scaleX="1.2" scaleY="1.2"/>
+                                </AnimationGroup>
+                            </Animations>
+                            <Anchors>
+                                <Anchor point="CENTER"/>
+                            </Anchors>
+                        </Texture>
+                        <Texture parentKey="CrestSparks2" alpha="0" alphaMode="ADD">
+                            <Size x="230" y="230"/>
+                            <Animations>
+                                <AnimationGroup parentKey="Anim">
+                                    <Alpha duration="0.1" order="1" change="1"/>
+                                    <Alpha smoothing="OUT" duration="1.3" order="1" change="-1"/>
+                                    <Scale smoothing="IN" duration="1.3" order="1" scaleX="0.01" scaleY="0.01"/>
+                                </AnimationGroup>
+                            </Animations>
+                            <Anchors>
+                                <Anchor point="CENTER"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        self.CrestSparks:SetAtlas("Artifacts-Anim-Sparks-White")
+                        self.CrestSparks2:SetAtlas("Artifacts-Anim-Sparks-White")
+
+                        self.PlayAnim = function(self)
+                            self.CrestSparks.Anim:Stop()
+                            self.CrestSparks2.Anim:Stop()
+
+                            self.CrestSparks.Anim:Play()
+                            self.CrestSparks2.Anim:Play()
+                        end
+
+                        self.StopAnim = function(self)
+                            self.CrestSparks.Anim:Stop()
+                            self.CrestSparks2.Anim:Stop()
+                        end
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, RouletteFrameMixin)
+
+                self:OnLoad()
+            </OnLoad>
+            <OnHide>
+                self:Reset()
+            </OnHide>
+            <OnEvent>
+                self:OnEvent( event )
+            </OnEvent>
+            <OnUpdate>
+                self:OnUpdate( elapsed )
+            </OnUpdate>
+        </Scripts>
+    </Frame>
+</Ui>

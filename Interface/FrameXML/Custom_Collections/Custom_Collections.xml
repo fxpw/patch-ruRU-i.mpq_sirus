@@ -1,0 +1,55 @@
+<!--
+
+	Filename:	Custom_Collections.xml
+	Project:	Custom Game Interface
+	Author:		Nyll & Blizzard Entertainment
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="Custom_Collections.lua"/>
+
+	<Button name="CollectionsJournalTab" inherits="CharacterFrameTabButtonTemplate" virtual="true">
+		<Scripts>
+			<OnClick>
+				CollectionsJournal_SetTab(self:GetParent(), self:GetID());
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Frame name="CollectionsJournal" inherits="PortraitFrameTemplate" toplevel="true" frameStrata="HIGH" enableMouse="true" parent="UIParent" hidden="true">
+		<Size x="703" y="606"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0"/>
+		</Anchors>
+		<Frames>
+			<Button name="$parentTab1" inherits="CollectionsJournalTab" text="MOUNTS" id="1">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="11" y="2"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentTab2" inherits="CollectionsJournalTab" text="PETS" id="2">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab1" relativePoint="RIGHT" x="-16" y="0"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentTab3" inherits="CollectionsJournalTab" text="WARDROBE" id="3">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab2" relativePoint="RIGHT" x="-16" y="0"/>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad function="CollectionsJournal_OnLoad"/>
+			<OnEvent function="CollectionsJournal_OnEvent"/>
+			<OnShow function="CollectionsJournal_OnShow"/>
+			<OnHide function="CollectionsJournal_OnHide"/>
+		</Scripts>
+	</Frame>
+
+	<Include file="Custom_MountCollection.xml"/>
+	<Include file="Custom_PetCollection.xml"/>
+
+	<Include file="Custom_CollectionTemplates.xml"/>
+	<Include file="Custom_Wardrobe.xml"/>
+</Ui>

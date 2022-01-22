@@ -1,0 +1,127 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_AuctionHouseItemList.lua"/>
+	
+	<Button name="AuctionHouseItemListLineTemplate" virtual="true">
+		<Size x="0" y="20"/>
+		<Anchors>
+			<Anchor point="LEFT"/>
+			<Anchor point="RIGHT"/>
+		</Anchors>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parentSelectedHighlight" parentKey="SelectedHighlight" alphaMode="ADD" hidden="true"/>
+
+				<!-- Using a normal texture for highlight to control the behavior. -->
+				<Texture name="$parentHighlightTexture" parentKey="HighlightTexture" alphaMode="ADD" setAllPoints="true" hidden="true"/>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseItemListLineMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+		</Scripts>
+		<NormalTexture name="$parentNormalTexture" parentKey="NormalTexture" setAllPoints="true"/>
+	</Button>
+
+	<Button name="AuctionHouseFavoritableLineTemplate" inherits="AuctionHouseItemListLineTemplate" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseFavoritableLineMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Button>
+
+	<Frame name="AuctionHouseItemListHeadersTemplate" virtual="true">
+		<Size x="0" y="19"/>
+	</Frame>
+
+	<Frame name="AuctionHouseItemListTemplate" inherits="AuctionHouseBackgroundTemplate" virtual="true">
+		<Attributes>
+			<Attribute name="layoutType" value="InsetFrameTemplate" type="string"/>
+			<Attribute name="backgroundYOffset" value="-19" type="number"/>
+		</Attributes>
+		<Frames>
+			<Frame name="$parentRefreshFrame" parentKey="RefreshFrame" inherits="AuctionHouseRefreshFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPRIGHT"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentHeaderContainer" parentKey="HeaderContainer" inherits="AuctionHouseItemListHeadersTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="4" y="-1"/>
+					<Anchor point="TOPRIGHT" x="-26" y="-1"/>
+				</Anchors>
+			</Frame>
+			<ScrollFrame name="$parentScrollFrame" parentKey="ScrollFrame" inherits="HybridScrollFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentHeaderContainer" relativePoint="BOTTOMLEFT" x="0" y="-6"/>
+					<Anchor point="RIGHT" relativeTo="$parentHeaderContainer" relativePoint="RIGHT"/>
+					<Anchor point="BOTTOM" x="0" y="3"/>
+				</Anchors>
+				<Frames>
+					<Slider name="$parentScrollBar" parentKey="scrollBar" inherits="HybridScrollBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="4" y="-10"/>
+							<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="4" y="11"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture name="$parentBackground" parentKey="Background" file="Interface\FrameGeneral\UI-Background-Marble" horizTile="true" vertTile="true" setAllPoints="true"/>
+							</Layer>
+						</Layers>
+					</Slider>
+				</Frames>
+			</ScrollFrame>
+		</Frames>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parentResultsText" parentKey="ResultsText" inherits="Number14FontWhite" hidden="true">
+					<Size x="0" y="48"/>
+					<Color r="1" g="0.82" b="0"/>
+					<Shadow>
+						<Offset>
+							<AbsDimension x="1" y="-1"/>
+						</Offset>
+						<Color r="0" g="0" b="0"/>
+					</Shadow>
+				</FontString>
+				<Texture name="$parentLoadingSpinner" parentKey="LoadingSpinner" hidden="true">
+					<Size x="146" y="146"/>
+					<Anchors>
+						<Anchor point="CENTER" x="-12" y="0"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="SpinnerAnim" looping="REPEAT">
+							<Rotation order="1" duration="1" degrees="-360"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseItemListMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnUpdate>
+				self:OnUpdate()
+			</OnUpdate>
+		</Scripts>
+	</Frame>
+</Ui>

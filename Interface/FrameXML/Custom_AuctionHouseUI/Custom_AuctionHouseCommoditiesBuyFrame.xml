@@ -1,0 +1,140 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_AuctionHouseCommoditiesBuyFrame.lua"/>
+
+	<Frame name="AuctionHouseCommoditiesBuyDisplayTemplate" inherits="VerticalLayoutFrame, AuctionHouseBackgroundTemplate" virtual="true">
+		<Attributes>
+			<Attribute name="topPadding" value="19" type="number"/>
+			<Attribute name="bottomPadding" value="120" type="number"/>
+			<Attribute name="leftPadding" value="15" type="number"/>
+			<Attribute name="rightPadding" value="16" type="number"/>
+			
+			<Attribute name="spacing" value="15" type="number"/>
+
+			<Attribute name="backgroundAtlas" value="auctionhouse-background-buy-commodities" type="string"/>
+		</Attributes>
+		<Frames>
+			<Button name="$parentItemDisplay" parentKey="ItemDisplay" inherits="AuctionHouseItemDisplayTemplate">
+				<Size x="342" y="72"/>
+				<Attributes>
+					<Attribute name="itemButtonXOffset" value="11" type="number"/>
+					<Attribute name="itemButtonYOffset" value="0" type="number"/>
+					<Attribute name="bottomPadding" value="8" type="number"/>
+					<Attribute name="layoutIndex" value="10" type="number"/>
+				</Attributes>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture name="$parentItemHeader" parentKey="ItemHeader">
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, AuctionHouseItemDisplayMixin)
+						self:OnLoad()
+
+						self.ItemHeader:SetAtlas("auctionhouse-itemheaderframe", true);
+					</OnLoad>
+				</Scripts>
+			</Button>
+			<Frame name="$parentQuantityInput" parentKey="QuantityInput" inherits="AuctionHouseAlignedQuantityInputFrameTemplate">
+				<Attributes>
+					<Attribute name="layoutIndex" value="20" type="number"/>
+					<Attribute name="labelText" value="AUCTION_HOUSE_QUANTITY_LABEL" type="string"/>
+				</Attributes>
+			</Frame>
+			<Frame name="$parentUnitPrice" parentKey="UnitPrice" inherits="AuctionHouseAlignedPriceDisplayTemplate">
+				<Attributes>
+					<Attribute name="layoutIndex" value="30" type="number"/>
+					<Attribute name="labelText" value="AUCTION_HOUSE_UNIT_PRICE_LABEL" type="string"/>
+				</Attributes>
+			</Frame>
+			<Frame name="$parentTotalPrice" parentKey="TotalPrice" inherits="AuctionHouseAlignedPriceDisplayTemplate">
+				<Attributes>
+					<Attribute name="layoutIndex" value="40" type="number"/>
+					<Attribute name="labelText" value="AUCTION_HOUSE_TOTAL_PRICE_LABEL" type="string"/>
+				</Attributes>
+			</Frame>
+
+			<Button name="$parentBuyButton" parentKey="BuyButton" inherits="UIPanelButtonTemplate, ButtonWithDisableTooltipTemplate" text="AUCTION_HOUSE_BUY_BUTTON">
+				<Attributes>
+					<Attribute name="layoutIndex" value="50" type="number"/>
+					<Attribute name="leftPadding" value="110" type="number"/>
+				</Attributes>
+				<Size x="196" y="22"/>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, AuctionHouseCommoditiesBuyButtonMixin)
+					</OnLoad>
+					<OnClick>
+						self:OnClick()
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseCommoditiesBuyDisplayMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+		</Scripts>
+	</Frame>
+
+	<Frame name="AuctionHouseCommoditiesBuyFrameTemplate" virtual="true">
+		<Frames>
+			<Frame name="$parentMixin" parentKey="Mixin" hidden="true">
+				<Scripts>
+					<OnLoad>
+						Mixin(self:GetParent(), AuctionHouseCommoditiesBuyFrameMixin);
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Button name="$parentBackButton" parentKey="BackButton" inherits="UIPanelButtonTemplate" text="AUCTION_HOUSE_BACK_BUTTON">
+				<Size x="110" y="22"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT" x="11" y="-9"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, AuctionHouseCommoditiesBackButtonMixin)
+					</OnLoad>
+					<OnClick>
+						self:OnClick()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Frame name="$parentBuyDisplay" parentKey="BuyDisplay" inherits="AuctionHouseCommoditiesBuyDisplayTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentBackButton" relativePoint="BOTTOM" x="0" y="-10"/>
+					<Anchor point="LEFT"/>
+					<Anchor point="BOTTOM"/>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentItemList" parentKey="ItemList" inherits="AuctionHouseCommoditiesBuyListTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentBuyDisplay" relativePoint="TOPRIGHT" x="1" y="0"/>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentBuyDisplay" relativePoint="BOTTOMRIGHT" x="2" y="0"/>
+					<Anchor point="RIGHT" x="-4"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>

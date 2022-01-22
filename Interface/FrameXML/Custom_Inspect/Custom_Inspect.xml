@@ -1,0 +1,2252 @@
+<!--
+
+	Filename:	Custom_Inspect.xml
+	Project:	Custom Game Interface
+	Author:		Nyll & Blizzard Entertainment
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="Custom_Inspect.lua"/>
+
+	<Button name="CharacterFrameTabButtonLevelTemplate" inherits="CharacterFrameTabButtonTemplate" virtual="true">
+		<Scripts>
+			<OnLoad>
+				self:SetFrameLevel(0)
+			</OnLoad>
+		</Scripts>
+	</Button>
+	<Button name="InspectPaperDollItemSlotButtonTemplate" inherits="ItemButtonTemplate" virtual="true">
+        <Scripts>
+            <OnLoad function="InspectPaperDollItemSlotButton_OnLoad"/>
+            <OnEvent function="InspectPaperDollItemSlotButton_OnEvent"/>
+            <OnEnter function="InspectPaperDollItemSlotButton_OnEnter"/>
+            <OnClick>
+				HandleModifiedItemClick(GetInventoryItemLink(InspectFrame.unit, self:GetID()))
+			</OnClick>
+			<OnUpdate>
+				CursorOnUpdate(self)
+				if ( GameTooltip:IsOwned(self) ) then
+					InspectPaperDollItemSlotButton_OnEnter(self)
+				end
+			</OnUpdate>
+            <OnLeave>
+				GameTooltip:Hide();
+				ResetCursor();
+			</OnLeave>
+        </Scripts>
+		<NormalTexture file="Interface\Buttons\UI-Quickslot2">
+			<Size x="64" y="64"/>
+			<Anchors>
+				<Anchor point="CENTER" x="0" y="-1" />
+			</Anchors>
+		</NormalTexture>
+	</Button>
+	<Button name="InspectPaperDollItemSlotButtonLeftTemplate" inherits="InspectPaperDollItemSlotButtonTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="-1">
+				<Texture name="$parentFrame" inherits="Char-LeftSlot">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-4"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Button>
+	<Button name="InspectPaperDollItemSlotButtonRightTemplate" inherits="InspectPaperDollItemSlotButtonTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="-1">
+				<Texture name="$parentFrame" inherits="Char-RightSlot">
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="4"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Button>
+	<Button name="InspectPaperDollItemSlotButtonBottomTemplate" inherits="InspectPaperDollItemSlotButtonTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="-1">
+				<Texture name="$parentFrame" inherits="Char-BottomSlot">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-4" y="8"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Button>
+	<CheckButton name="InspectRightTabTemplate" virtual="true">
+		<Size x="30" y="30"/>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture file="Interface\SpellBook\SpellBook-SkillLineTab">
+					<Size x="60" y="60"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-3" y="11"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Icon" file="INTERFACE\HELPFRAME\REPORTLAGICON-CHAT">
+					<Size x="30" y="30"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+					<TexCoords left="0.03125" right="0.96875" top="0.03125" bottom="0.96875"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnShow>
+				self:GetParent():TabOnLoad(self)
+			</OnShow>
+			<OnClick>
+				self:GetParent():TabClick(self)
+			</OnClick>
+			<OnEnter>
+				local tooltipText = self:GetAttribute("tooltipText")
+
+				if tooltipText then
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+					GameTooltip:SetText(_G[tooltipText])
+					GameTooltip:Show()
+				end
+			</OnEnter>
+			<OnLeave function="GameTooltip_Hide"/>
+		</Scripts>
+		<NormalTexture/>
+		<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
+		<CheckedTexture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD"/>
+	</CheckButton>
+
+	<Frame name="InspectBattlegroundStripFrameTemplates" hidden="true" virtual="true">
+		<Size x="290" y="18"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" alpha="0.2"/>
+			</Layer>
+			<Layer level="BORDER">
+				<FontString name="$parentTitle" parentKey="Title" inherits="GameFontNormal" text="Title text:">
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="LEFT" x="4" y="0" />
+					</Anchors>
+				</FontString>
+				<FontString name="$parentToday" parentKey="Today" inherits="GameFontNormal" text="32" justifyH="CENTER" justifyV="CENTER">
+					<Size x="40" y="0"/>
+					<Anchors>
+						<Anchor point="RIGHT" relativePoint="RIGHT" x="-112" y="0" />
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+				<FontString name="$parentLifetime" parentKey="Lifetime" inherits="GameFontNormal" text="100" justifyH="CENTER" justifyV="CENTER">
+					<Size x="40" y="0"/>
+					<Anchors>
+						<Anchor point="RIGHT" relativePoint="RIGHT" x="-33" y="0" />
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+			</Layer>
+			<Layer level="ARTWORK">
+			</Layer>
+			<Layer level="OVERLAY">
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				if not self:GetParent().StipButton then
+					self:GetParent().StipButton = {}
+				end
+
+				local stripIndex = #self:GetParent().StipButton + 1
+				self:GetParent().StipButton[stripIndex] = self
+
+				if ( mod(stripIndex, 2) == 0 ) then
+					self.Background:SetTexture(1, 1, 1)
+				else
+					self.Background:SetTexture(0, 0, 0)
+				end
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Button name="InspectBattlegroundStatisticsButtonTemplate" virtual="true">
+		<Size x="298" y="42"/>
+		<Backdrop edgeFile="Interface\Glues\Common\TextPanel-Border">
+			<EdgeSize val="16"/>
+		</Backdrop>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" file="Interface\PVPFrame\Battlegrounds\BgStatBkg">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3" />
+						<Anchor point="BOTTOMRIGHT" x="-3" y="3" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<FontString name="$parentBattlegroundName" parentKey="BattlegroundName" inherits="TextStatusBarTextLarge">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="8" y="-6" />
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+				<FontString name="$parentBattleRecordLabel" parentKey="BattleRecordLabel" inherits="SystemFont_Outline_Small" text="SEASON_STATISTICS">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-40" y="-10" />
+					</Anchors>
+					<Color r="1.0" g="0.82" b="0"/>
+				</FontString>
+				<FontString name="$parentBattleRecord" parentKey="BattleRecord" inherits="GameFontHighlightSmall">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentBattleRecordLabel" relativePoint="BOTTOM" x="0" y="-2" />
+					</Anchors>
+					<Color r="1.0" g="0.82" b="0"/>
+				</FontString>
+				<FontString name="$parentTodayLabel" parentKey="TodayLabel" inherits="GameFontHighlightSmall" text="RATED_BATTLEGROUND_WEEK">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-120" y="-26" />
+					</Anchors>
+					<Color r="1.0" g="0.82" b="0"/>
+				</FontString>
+				<FontString name="$parentLifetimeLabel" parentKey="LifetimeLabel" inherits="GameFontHighlightSmall" text="RATED_BATTLEGROUND_SEASON">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-40" y="-26" />
+					</Anchors>
+					<Color r="1.0" g="0.82" b="0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentTogglePlus" parentKey="TogglePlus" hidden="true">
+				<Size x="16" y="16"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-4" y="-4" />
+				</Anchors>
+				<NormalTexture name="$parentNormalTexture" file="Interface\Buttons\UI-PlusButton-UP"/>
+				<PushedTexture name="$parentPushedTexture" file="Interface\Buttons\UI-PlusButton-DOWN"/>
+				<HighlightTexture name="$parentHighlightTexture" file="Interface\Buttons\UI-PlusButton-Hilight" alphaMode="ADD"/>
+				<Scripts>
+					<OnShow>
+						self:GetParent().ToggleMinus:Hide()
+					</OnShow>
+					<OnHide>
+						self:GetParent().ToggleMinus:Show()
+					</OnHide>
+					<OnClick>
+						self:Hide()
+
+						BattlegroundsData[self:GetParent().bgID].statistics.isCollapsed = false
+						InspectBattlegroundStatisticsUpdate()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentToggleMinus" parentKey="ToggleMinus" hidden="true">
+				<Size x="16" y="16"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-4" y="-4" />
+				</Anchors>
+				<NormalTexture name="$parentNormalTexture" file="Interface\Buttons\UI-MinusButton-UP"/>
+				<PushedTexture name="$parentPushedTexture" file="Interface\Buttons\UI-MinusButton-DOWN"/>
+				<HighlightTexture name="$parentHighlightTexture" file="Interface\Buttons\UI-PlusButton-Hilight" alphaMode="ADD"/>
+				<Scripts>
+					<OnShow>
+						self:GetParent().TogglePlus:Hide()
+					</OnShow>
+					<OnHide>
+						self:GetParent().TogglePlus:Show()
+					</OnHide>
+					<OnClick>
+						self:Hide()
+
+						BattlegroundsData[self:GetParent().bgID].statistics.isCollapsed = true
+						InspectBattlegroundStatisticsUpdate()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Frame name="$parentStatFrame1" parentKey="StatFrame1" inherits="InspectBattlegroundStripFrameTemplates">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentBattlegroundName" relativePoint="BOTTOMLEFT" x="-3" y="-37" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentStatFrame2" parentKey="StatFrame2" inherits="InspectBattlegroundStripFrameTemplates">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentStatFrame1" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentStatFrame3" parentKey="StatFrame3" inherits="InspectBattlegroundStripFrameTemplates">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentStatFrame2" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentStatFrame4" parentKey="StatFrame4" inherits="InspectBattlegroundStripFrameTemplates">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentStatFrame3" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentStatFrame5" parentKey="StatFrame5" inherits="InspectBattlegroundStripFrameTemplates">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentStatFrame4" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentStatFrame6" parentKey="StatFrame6" inherits="InspectBattlegroundStripFrameTemplates">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentStatFrame5" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentStatFrame7" parentKey="StatFrame7" inherits="InspectBattlegroundStripFrameTemplates">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentStatFrame6" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentStatFrame8" parentKey="StatFrame8" inherits="InspectBattlegroundStripFrameTemplates">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentStatFrame7" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentStatFrame9" parentKey="StatFrame9" inherits="InspectBattlegroundStripFrameTemplates">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentStatFrame8" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentStatFrame10" parentKey="StatFrame10" inherits="InspectBattlegroundStripFrameTemplates">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentStatFrame9" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnClick>
+				if not BattlegroundsData[self.bgID].statistics.isCollapsed then
+					self.ToggleMinus:Hide()
+					BattlegroundsData[self.bgID].statistics.isCollapsed = true
+				else
+					self.TogglePlus:Hide()
+					BattlegroundsData[self.bgID].statistics.isCollapsed = false
+				end
+
+				InspectBattlegroundStatisticsUpdate()
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Button name="InspectPVPTeamTemplate" inherits="StandartInsetFrameTemplate2" virtual="true">
+		<Size x="310" y="50"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Bg" file="Interface\Common\Common-Input-Border">
+					<Size x="100" y="4"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="TOPLEFT"/>
+					</Anchors>
+					<TexCoords left="0.0625" right="0.9375" top="0.25" bottom="0.375"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentData" parentKey="Data" setAllPoints="true">
+				<Layers>
+					<Layer level="BACKGROUND">
+						<FontString name="$parentTeamSize" parentKey="TeamSize" inherits="GameFontNormalLarge" text="10VS10">
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="LEFT" x="16" y="0" />
+							</Anchors>
+						</FontString>
+						<FontString name="$parentGamesLabel" parentKey="GamesLabel" inherits="GameFontDisable" text="GAMES">
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="LEFT" x="110" y="8" />
+							</Anchors>
+						</FontString>
+						<FontString name="$parentGames" parentKey="Games" inherits="GameFontHighlight" text="253">
+							<Anchors>
+								<Anchor point="TOP" relativeTo="$parentGamesLabel" relativePoint="BOTTOM" x="0" y="-3" />
+							</Anchors>
+						</FontString>
+						<FontString name="$parentWinLoseLabel" parentKey="WinLoseLabel" inherits="GameFontDisable" text="WIN_LOSS">
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentGamesLabel" relativePoint="RIGHT" x="40" y="0" />
+							</Anchors>
+						</FontString>
+						<FontString name="$parent-" inherits="GameFontHighlightSmall" text=" - ">
+							<Anchors>
+								<Anchor point="TOP" relativeTo="$parentWinLoseLabel" relativePoint="BOTTOM" x="0" y="-3" />
+							</Anchors>
+						</FontString>
+						<FontString name="$parentWins" parentKey="Wins" inherits="GameFontHighlight" text="50">
+							<Anchors>
+								<Anchor point="RIGHT" relativeTo="$parent-" relativePoint="LEFT" x="0" y="0" />
+							</Anchors>
+						</FontString>
+						<FontString name="$parentLose" parentKey="Lose" inherits="GameFontHighlight" text="248">
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parent-" relativePoint="RIGHT" x="0" y="0" />
+							</Anchors>
+						</FontString>
+						<FontString name="$parentRatingLabel" parentKey="RatingLabel" inherits="GameFontDisable" text="ARENA_TEAM_RATING">
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentWinLoseLabel" relativePoint="RIGHT" x="40" y="0" />
+							</Anchors>
+						</FontString>
+						<FontString name="$parentRating" parentKey="Rating" inherits="GameFontHighlight" text="1335">
+							<Anchors>
+								<Anchor point="TOP" relativeTo="$parentRatingLabel" relativePoint="BOTTOM" x="0" y="-3" />
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnEnter function="InspectPVPTeam_OnEnter"/>
+			<OnLeave>
+				ConquestTooltip:Hide()
+			</OnLeave>
+		</Scripts>
+	</Button>
+	<Frame name="InspectArenaTooltipStripTemplates" hidden="true" virtual="true">
+		<Size x="292" y="18"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" alpha="0.2">
+					<Color r="1" g="0" b="0"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<FontString name="$parentName" parentKey="Name" inherits="GameFontNormal" text="Name">
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="LEFT" x="8" y="0" />
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+				<FontString name="$parent-" inherits="GameFontNormal" text=" - ">
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="LEFT" x="144" y="0" />
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+				<FontString name="$parentWins" parentKey="Wins" inherits="GameFontNormal" text="100">
+					<Anchors>
+						<Anchor point="RIGHT" relativeTo="$parent-" relativePoint="LEFT" x="0" y="0" />
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+				<FontString name="$parentLose" parentKey="Lose" inherits="GameFontNormal" text="200">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parent-" relativePoint="RIGHT" x="0" y="0" />
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+				<FontString name="$parentRating" parentKey="Rating" inherits="GameFontNormal" text="2500" justifyH="CENTER">
+					<Size x="40" y="10"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="-28" y="0" />
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				if not self:GetParent().StipButton then
+					self:GetParent().StipButton = {}
+				end
+
+				local stripIndex = #self:GetParent().StipButton + 1
+				self:GetParent().StipButton[stripIndex] = self
+
+				if ( mod(stripIndex, 2) == 0 ) then
+					self.Background:SetTexture(0.8, 0.8, 0.8)
+				else
+					self.Background:SetTexture(0.3, 0.3, 0.3)
+				end
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="InspectFrame" toplevel="true" movable="true" enableMouse="true" hidden="true" parent="UIParent" inherits="ButtonFrameTemplate">
+		<Frames>
+			<Button name="InspectFrameTab1" inherits="CharacterFrameTabButtonLevelTemplate" id="1" text="CHARACTER">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="11" y="2"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick function="InspectFrameTab_OnClick"/>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+						GameTooltip:SetText(CHARACTER_INFO, 1.0,1.0,1.0 )
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Button>
+			<Button name="InspectFrameTab2" inherits="CharacterFrameTabButtonLevelTemplate" id="2" text="PVP">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="InspectFrameTab1" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="-16" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick function="InspectFrameTab_OnClick"/>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+						GameTooltip:SetText(PLAYER_V_PLAYER, 1.0,1.0,1.0 )
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Button>
+			<Button name="InspectFrameTab3" inherits="CharacterFrameTabButtonLevelTemplate" id="3" text="TALENTS">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="InspectFrameTab2" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="-16" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick function="InspectFrameTab_OnClick"/>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+						GameTooltip:SetText(TALENTS, 1.0,1.0,1.0 )
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Button>
+			<Button name="InspectFrameTab4" inherits="CharacterFrameTabButtonLevelTemplate" id="4" text="GUILD">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="InspectFrameTab3" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="-16" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick function="InspectFrameTab_OnClick"/>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+						GameTooltip:SetText(GUILD, 1.0,1.0,1.0 )
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad function="InspectFrame_OnLoad"/>
+            <OnEvent function="InspectFrame_OnEvent"/>
+            <OnShow function="InspectFrame_OnShow"/>
+			<OnHide function="InspectFrame_OnHide"/>
+			<OnUpdate function="InspectFrame_OnUpdate"/>
+        </Scripts>
+	</Frame>
+	<Frame name="InspectPaperDollFrame" setAllPoints="true" useParentLevel="true" parent="InspectFrame" id="1">
+		<Layers>
+            <Layer level="OVERLAY">
+                <FontString name="InspectLevelText" inherits="GameFontNormalSmall" text="Level level race class">
+                    <Anchors>
+                        <Anchor point="TOP">
+                            <Offset>
+                                <AbsDimension x="0" y="-27"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="InspectTitleText" inherits="GameFontNormalSmall" text="title of the player" hidden="true">
+                    <Anchors>
+                        <Anchor point="TOP" relativeTo="InspectLevelText" relativePoint="BOTTOM">
+                            <Offset>
+                                <AbsDimension x="0" y="-1"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="InspectGuildText" inherits="GameFontNormalSmall" text="title of guild" hidden="true">
+                    <Anchors>
+                        <Anchor point="TOP" relativeTo="InspectTitleText" relativePoint="BOTTOM">
+                            <Offset>
+                                <AbsDimension x="0" y="-1"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+        	<Button parentKey="ViewButton" inherits="UIPanelButtonTemplate" text="VIEW_IN_DRESSUP_FRAME">
+				<Size x="0" y="22"/>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-39"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad function="InspectPaperDollViewButton_OnLoad"/>
+					<OnClick function="InspectPaperDollViewButton_OnClick"/>
+				</Scripts>
+			</Button>
+        	<PlayerModel name="InspectModelFrame" inherits="ModelWithControlsTemplate">
+        		<Size x="231" y="320"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="52" y="-66"/>
+                </Anchors>
+                <Layers>
+					<Layer level="BORDER">
+						<Texture name="InspectModelFrameBackgroundTopLeft" parentKey="BackgroundTopLeft">
+							<Size  x="212" y="245"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+							</Anchors>
+							<TexCoords left="0.171875" right="1" top="0.0392156862745098" bottom="1"/>
+						</Texture>
+						<Texture name="InspectModelFrameBackgroundTopRight" parentKey="BackgroundTopRight">
+							<Size x="19" y="245"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="InspectModelFrameBackgroundTopLeft" relativePoint="TOPRIGHT"/>
+							</Anchors>
+							<TexCoords left="0" right="0.296875" top="0.0392156862745098" bottom="1"/>
+						</Texture>
+						<Texture name="InspectModelFrameBackgroundBotLeft" parentKey="BackgroundBotLeft">
+							<Size x="212" y="128"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="InspectModelFrameBackgroundTopLeft" relativePoint="BOTTOMLEFT"/>
+							</Anchors>
+							<TexCoords left="0.171875" right="1" top="0" bottom="1"/>
+						</Texture>
+						<Texture name="InspectModelFrameBackgroundBotRight" parentKey="BackgroundBotRight">
+							<Size x="19" y="128"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="InspectModelFrameBackgroundTopLeft" relativePoint="BOTTOMRIGHT"/>
+							</Anchors>
+							<TexCoords left="0" right="0.296875" top="0" bottom="1"/>
+						</Texture>
+					</Layer>
+					<Layer level="BACKGROUND">
+						<Texture name="InspectModelFrameBackgroundOverlay" parentKey="BackgroundOverlay">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="InspectModelFrameBackgroundTopLeft"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="InspectModelFrameBackgroundBotRight" x="0" y="52"/>
+							</Anchors>
+							<Color r="0" g="0" b="0" a="1"/>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture name="InspectModelFrameBorderTopLeft" inherits="Char-Corner-UpperLeft">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="InspectFrameInset" x="46" y="-4"/>
+							</Anchors>
+						</Texture>
+						<Texture name="InspectModelFrameBorderTopRight" inherits="Char-Corner-UpperRight">
+							<Anchors>
+								<Anchor point="TOPRIGHT" relativeTo="InspectFrameInset" x="-47" y="-4"/>
+							</Anchors>
+						</Texture>
+						<Texture name="InspectModelFrameBorderBottomLeft" inherits="Char-Corner-LowerLeft">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeTo="InspectFrameInset" x="46" y="31"/>
+							</Anchors>
+						</Texture>
+						<Texture name="InspectModelFrameBorderBottomRight" inherits="Char-Corner-LowerRight">
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" relativeTo="InspectFrameInset" x="-47" y="31"/>
+							</Anchors>
+						</Texture>
+						<Texture name="InspectModelFrameBorderLeft" inherits="Char-Inner-Left">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="InspectModelFrameBorderTopLeft" relativePoint="BOTTOMLEFT" x="-1"/>
+								<Anchor point="BOTTOMLEFT" relativeTo="InspectModelFrameBorderBottomLeft" relativePoint="TOPLEFT" x="-1"/>
+							</Anchors>
+						</Texture>
+						<Texture name="InspectModelFrameBorderRight" inherits="Char-Inner-Right">
+							<Anchors>
+								<Anchor point="TOPRIGHT" relativeTo="InspectModelFrameBorderTopRight" relativePoint="BOTTOMRIGHT" x="1"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="InspectModelFrameBorderBottomRight" relativePoint="TOPRIGHT" x="1"/>
+							</Anchors>
+						</Texture>
+						<Texture name="InspectModelFrameBorderTop" inherits="Char-Inner-Top">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="InspectModelFrameBorderTopLeft" relativePoint="TOPRIGHT" y="1"/>
+								<Anchor point="TOPRIGHT" relativeTo="InspectModelFrameBorderTopRight" relativePoint="TOPLEFT" y="1"/>
+							</Anchors>
+						</Texture>
+						<Texture name="InspectModelFrameBorderBottom" inherits="Char-Inner-Bottom">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeTo="InspectModelFrameBorderBottomLeft" relativePoint="BOTTOMRIGHT" y="-1"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="InspectModelFrameBorderBottomRight" relativePoint="BOTTOMLEFT" y="-1"/>
+							</Anchors>
+						</Texture>
+						<Texture name="InspectModelFrameBorderBottom2" inherits="Char-Inner-Bottom">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeTo="InspectFrameInset" y="27"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="InspectFrameInset" y="27"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Frame name="InspectItemLevelFrame" inherits="PaperDollFrameItemLevelTemplate">
+						<Anchors>
+							<Anchor point="BOTTOM" y="20"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+        	</PlayerModel>
+        	<Frame name="InspectPaperDollItemsFrame" setAllPoints="true">
+        		<Frames>
+        			<Button name="InspectHeadSlot" inherits="InspectPaperDollItemSlotButtonLeftTemplate">
+        				<Anchors>
+        					<Anchor point="TOPLEFT" relativeTo="InspectFrameInset" x="4" y="-2"/>
+        				</Anchors>
+        			</Button>
+        			<Button name="InspectNeckSlot" inherits="InspectPaperDollItemSlotButtonLeftTemplate">
+        				<Anchors>
+        					<Anchor point="TOPLEFT" relativeTo="InspectHeadSlot" relativePoint="BOTTOMLEFT">
+        						<Offset>
+        							<AbsDimension x="0" y="-4"/>
+        						</Offset>
+        					</Anchor>
+        				</Anchors>
+        			</Button>
+        			<Button name="InspectShoulderSlot" inherits="InspectPaperDollItemSlotButtonLeftTemplate">
+        				<Anchors>
+        					<Anchor point="TOPLEFT" relativeTo="InspectNeckSlot" relativePoint="BOTTOMLEFT">
+        						<Offset>
+        							<AbsDimension x="0" y="-4"/>
+        						</Offset>
+        					</Anchor>
+        				</Anchors>
+        			</Button>
+        			<Button name="InspectBackSlot" inherits="InspectPaperDollItemSlotButtonLeftTemplate">
+        				<Anchors>
+        					<Anchor point="TOPLEFT" relativeTo="InspectShoulderSlot" relativePoint="BOTTOMLEFT">
+        						<Offset>
+        							<AbsDimension x="0" y="-4"/>
+        						</Offset>
+        					</Anchor>
+        				</Anchors>
+        			</Button>
+        			<Button name="InspectChestSlot" inherits="InspectPaperDollItemSlotButtonLeftTemplate">
+        				<Anchors>
+        					<Anchor point="TOPLEFT" relativeTo="InspectBackSlot" relativePoint="BOTTOMLEFT">
+        						<Offset>
+        							<AbsDimension x="0" y="-4"/>
+        						</Offset>
+        					</Anchor>
+        				</Anchors>
+        			</Button>
+        			<Button name="InspectShirtSlot" inherits="InspectPaperDollItemSlotButtonLeftTemplate">
+        				<Anchors>
+        					<Anchor point="TOPLEFT" relativeTo="InspectChestSlot" relativePoint="BOTTOMLEFT">
+        						<Offset>
+        							<AbsDimension x="0" y="-4"/>
+        						</Offset>
+        					</Anchor>
+        				</Anchors>
+        			</Button>
+        			<Button name="InspectTabardSlot" inherits="InspectPaperDollItemSlotButtonLeftTemplate">
+        				<Anchors>
+        					<Anchor point="TOPLEFT" relativeTo="InspectShirtSlot" relativePoint="BOTTOMLEFT">
+        						<Offset>
+        							<AbsDimension x="0" y="-4"/>
+        						</Offset>
+        					</Anchor>
+        				</Anchors>
+        			</Button>
+        			<Button name="InspectWristSlot" inherits="InspectPaperDollItemSlotButtonLeftTemplate">
+        				<Anchors>
+        					<Anchor point="TOPLEFT" relativeTo="InspectTabardSlot" relativePoint="BOTTOMLEFT">
+        						<Offset>
+        							<AbsDimension x="0" y="-4"/>
+        						</Offset>
+        					</Anchor>
+        				</Anchors>
+        			</Button>
+        			<Button name="InspectHandsSlot" inherits="InspectPaperDollItemSlotButtonRightTemplate">
+        				<Anchors>
+        					<Anchor point="TOPRIGHT" relativeTo="InspectFrameInset" x="-4" y="-2"/>
+        				</Anchors>
+        			</Button>
+        			<Button name="InspectWaistSlot" inherits="InspectPaperDollItemSlotButtonRightTemplate">
+        				<Anchors>
+        					<Anchor point="TOPLEFT" relativeTo="InspectHandsSlot" relativePoint="BOTTOMLEFT">
+        						<Offset>
+        							<AbsDimension x="0" y="-4"/>
+        						</Offset>
+        					</Anchor>
+        				</Anchors>
+        			</Button>
+        			<Button name="InspectLegsSlot" inherits="InspectPaperDollItemSlotButtonRightTemplate">
+        				<Anchors>
+        					<Anchor point="TOPLEFT" relativeTo="InspectWaistSlot" relativePoint="BOTTOMLEFT">
+        						<Offset>
+        							<AbsDimension x="0" y="-4"/>
+        						</Offset>
+        					</Anchor>
+        				</Anchors>
+        			</Button>
+        			<Button name="InspectFeetSlot" inherits="InspectPaperDollItemSlotButtonRightTemplate">
+        				<Anchors>
+        					<Anchor point="TOPLEFT" relativeTo="InspectLegsSlot" relativePoint="BOTTOMLEFT">
+        						<Offset>
+        							<AbsDimension x="0" y="-4"/>
+        						</Offset>
+        					</Anchor>
+        				</Anchors>
+        			</Button>
+        			<Button name="InspectFinger0Slot" inherits="InspectPaperDollItemSlotButtonRightTemplate">
+        				<Anchors>
+        					<Anchor point="TOPLEFT" relativeTo="InspectFeetSlot" relativePoint="BOTTOMLEFT">
+        						<Offset>
+        							<AbsDimension x="0" y="-4"/>
+        						</Offset>
+        					</Anchor>
+        				</Anchors>
+        			</Button>
+        			<Button name="InspectFinger1Slot" inherits="InspectPaperDollItemSlotButtonRightTemplate">
+        				<Anchors>
+        					<Anchor point="TOPLEFT" relativeTo="InspectFinger0Slot" relativePoint="BOTTOMLEFT">
+        						<Offset>
+        							<AbsDimension x="0" y="-4"/>
+        						</Offset>
+        					</Anchor>
+        				</Anchors>
+        			</Button>
+        			<Button name="InspectTrinket0Slot" inherits="InspectPaperDollItemSlotButtonRightTemplate">
+        				<Anchors>
+        					<Anchor point="TOPLEFT" relativeTo="InspectFinger1Slot" relativePoint="BOTTOMLEFT">
+        						<Offset>
+        							<AbsDimension x="0" y="-4"/>
+        						</Offset>
+        					</Anchor>
+        				</Anchors>
+        			</Button>
+        			<Button name="InspectTrinket1Slot" inherits="InspectPaperDollItemSlotButtonRightTemplate">
+        				<Anchors>
+        					<Anchor point="TOPLEFT" relativeTo="InspectTrinket0Slot" relativePoint="BOTTOMLEFT">
+        						<Offset>
+        							<AbsDimension x="0" y="-4"/>
+        						</Offset>
+        					</Anchor>
+        				</Anchors>
+        			</Button>
+        			<Button name="InspectMainHandSlot" inherits="InspectPaperDollItemSlotButtonBottomTemplate">
+        				<Anchors>
+        					<Anchor point="BOTTOMLEFT">
+        						<Offset>
+        							<AbsDimension x="106" y="16"/>
+        						</Offset>
+        					</Anchor>
+        				</Anchors>
+        				<Layers>
+        					<Layer level="BACKGROUND">
+        						<Texture inherits="Char-Slot-Bottom-Left">
+        							<Anchors>
+        								<Anchor point="TOPRIGHT" relativeTo="$parentFrame" relativePoint="TOPLEFT"/>
+        							</Anchors>
+        						</Texture>
+        					</Layer>
+        				</Layers>
+        			</Button>
+        			<Button name="InspectSecondaryHandSlot" inherits="InspectPaperDollItemSlotButtonBottomTemplate">
+        				<Anchors>
+        					<Anchor point="TOPLEFT" relativeTo="InspectMainHandSlot" relativePoint="TOPRIGHT">
+        						<Offset>
+        							<AbsDimension x="5" y="0"/>
+        						</Offset>
+        					</Anchor>
+        				</Anchors>
+        			</Button>
+        			<Button name="InspectRangedSlot" inherits="InspectPaperDollItemSlotButtonBottomTemplate">
+        				<Anchors>
+        					<Anchor point="TOPLEFT" relativeTo="InspectSecondaryHandSlot" relativePoint="TOPRIGHT">
+        						<Offset>
+        							<AbsDimension x="5" y="0"/>
+        						</Offset>
+        					</Anchor>
+        				</Anchors>
+        				<Layers>
+        					<Layer level="BACKGROUND">
+        						<Texture inherits="Char-Slot-Bottom-Right">
+        							<Anchors>
+        								<Anchor point="TOPLEFT" relativeTo="$parentFrame" relativePoint="TOPRIGHT"/>
+        							</Anchors>
+        						</Texture>
+        					</Layer>
+        				</Layers>
+        			</Button>
+        		</Frames>
+        	</Frame>
+        </Frames>
+		<Scripts>
+            <OnLoad function="InspectPaperDollFrame_OnLoad"/>
+            <OnEvent function="InspectPaperDollFrame_OnEvent"/>
+            <OnShow function="InspectPaperDollFrame_OnShow"/>
+        </Scripts>
+    </Frame>
+    <Frame name="InspectPVPFrame" enableMouse="true" parent="InspectFrame" hidden="true" useParentLevel="true" frameStrata="HIGH" setAllPoints="true" id="2">
+    	<Layers>
+    		<Layer level="BORDER">
+    			<Texture 	hidden="true" name="$parentBG" file="Interface\PVPFrame\PVP-Conquest-Misc">
+    				<Size x="319" y="118"/>
+    				<Anchors>
+    					<Anchor point="TOPLEFT" x="8" y="-64"/>
+    				</Anchors>
+    				<TexCoords left="0.00097656" right="0.31445313" top="0.33789063" bottom="0.56835938"/>
+    			</Texture>
+    		</Layer>
+    		<Layer level="ARTWORK">
+    			<Texture 	hidden="true" name="$parentBottom" file="Interface\Common\ShadowOverlay-Bottom">
+    				<Size x="319" y="8"/>
+    				<Anchors>
+    					<Anchor point="BOTTOM" relativeTo="$parentBG"/>
+    				</Anchors>
+    			</Texture>
+    			<Texture 	hidden="true" name="$parentFaction" file="Interface\PVPFrame\PVP-Conquest-Misc">
+    				<Size x="55" y="66"/>
+    				<Anchors>
+    					<Anchor point="LEFT" relativeTo="$parentBG" x="6" y="0"/>
+    				</Anchors>
+    				<TexCoords left="0.63867188" right="0.69238281" top="0.60351563" bottom="0.73242188"/>
+    			</Texture>
+    			<FontString hidden="true" name="$parentToDayLabel" inherits="GameFontNormal" text="HONOR_TODAY">
+    				<Anchors>
+    					<Anchor point="CENTER" relativeTo="$parentBG" x="-10" y="40"/>
+    				</Anchors>
+    			</FontString>
+    			<FontString hidden="true" name="$parentYesterDayLabel" inherits="GameFontNormal" text="HONOR_YESTERDAY">
+    				<Anchors>
+    					<Anchor point="CENTER" relativeTo="$parentBG" x="80" y="40"/>
+    				</Anchors>
+    			</FontString>
+    			<Texture 	hidden="true" name="$parentDivider" file="Interface\FriendsFrame\UI-FriendsFrame-OnlineDivider">
+    				<Size x="270" y="0"/>
+    				<Anchors>
+    					<Anchor point="LEFT" relativeTo="$parentBG" x="60" y="30"/>
+    				</Anchors>
+    				<Color r="1" g="1" b="0" a="1"/>
+    			</Texture>
+    			<FontString hidden="true" name="$parentTotalHKLabel" text="TOTAL_KILLS" inherits="GameFontNormalLarge">
+    				<Anchors>
+    					<Anchor point="CENTER" relativeTo="$parentBG" x="0" y="-26"/>
+    				</Anchors>
+    			</FontString>
+    			<FontString hidden="true" name="$parentTotalHK" text="9999" inherits="GameFontNormalLarge">
+    				<Anchors>
+    					<Anchor point="TOP" relativeTo="$parentTotalHKLabel" relativePoint="BOTTOM" x="0" y="0"/>
+    				</Anchors>
+    				<Color r="1" g="1" b="1" a="1"/>
+    			</FontString>
+    			<FontString hidden="true" name="$parentKillsLabel" inherits="GameFontNormal" justifyH="RIGHT" text="KILLS">
+    				<Size x="60" y="0"/>
+    				<Anchors>
+    					<Anchor point="CENTER" relativeTo="$parentBG" x="-80" y="16"/>
+    				</Anchors>
+    			</FontString>
+    			<FontString hidden="true" name="$parentHonorLabel" inherits="GameFontNormal" justifyH="RIGHT" text="HONOR">
+    				<Size x="60" y="0"/>
+    				<Anchors>
+    					<Anchor point="CENTER" relativeTo="$parentBG" x="-80" y="-4"/>
+    				</Anchors>
+    			</FontString>
+    			<FontString hidden="true" name="$parentKillsToDay" inherits="GameFontNormal" text="999" justifyH="CENTER">
+    				<Size x="60" y="0"/>
+    				<Anchors>
+    					<Anchor point="CENTER" relativeTo="$parentBG" x="-10" y="16"/>
+    				</Anchors>
+    				<Color r="1" g="1" b="1" a="1"/>
+    			</FontString>
+    			<FontString hidden="true" name="$parentKillsYesterDay" inherits="GameFontNormal" text="43211" justifyH="CENTER">
+    				<Size x="60" y="0"/>
+    				<Anchors>
+    					<Anchor point="CENTER" relativeTo="$parentBG" x="80" y="16"/>
+    				</Anchors>
+    				<Color r="1" g="1" b="1" a="1"/>
+    			</FontString>
+    			<FontString hidden="true" name="$parentHonorToDay" inherits="GameFontNormal" text="90999" justifyH="CENTER">
+    				<Size x="60" y="0"/>
+    				<Anchors>
+    					<Anchor point="CENTER" relativeTo="$parentBG" x="-10" y="-4"/>
+    				</Anchors>
+    				<Color r="1" g="1" b="1" a="1"/>
+    			</FontString>
+    			<FontString hidden="true" name="$parentHonorYesterDay" inherits="GameFontNormal" text="134141" justifyH="CENTER">
+    				<Size x="60" y="0"/>
+    				<Anchors>
+    					<Anchor point="CENTER" relativeTo="$parentBG" x="80" y="-4"/>
+    				</Anchors>
+    				<Color r="1" g="1" b="1" a="1"/>
+    			</FontString>
+    		</Layer>
+    	</Layers>
+    	<Frames>
+			<Frame 	hidden="true" name="InspectPVPTeam1Standard" inherits="PVPTeamStandardTemplate">
+				<Anchors>
+					<Anchor point="LEFT">
+						<Offset>
+							<AbsDimension x="14" y="-8"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame 	hidden="true" name="InspectPVPTeam2Standard" inherits="PVPTeamStandardTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="InspectPVPTeam1Standard" relativePoint="BOTTOMLEFT" x="0" y="-14"/>
+				</Anchors>
+			</Frame>
+			<Frame 	hidden="true" name="InspectPVPTeam3Standard" inherits="PVPTeamStandardTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="InspectPVPTeam2Standard" relativePoint="BOTTOMLEFT" x="0" y="-14"/>
+				</Anchors>
+			</Frame>
+
+			<Button name="$parentTab1" inherits="TabButtonTemplate" text="SERVICES" id="1">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="50" y="-28"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="InspectPVPFrameTab_OnClick"/>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab2" inherits="TabButtonTemplate" text="STATISTICS" id="2">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab1" relativePoint="RIGHT" x="0" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="InspectPVPFrameTab_OnClick"/>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab3" inherits="TabButtonTemplate" text="LADDER" id="3">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab2" relativePoint="RIGHT" x="0" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="InspectPVPFrameTab_OnClick"/>
+				</Scripts>
+			</Button>
+
+			<Frame name="$parentService" parentKey="Service" setAllPoints="True">
+				<Frames>
+					<Frame name="$parentInset" parentKey="Inset" inherits="InsetFrameTemplateNoBackground">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="2" y="-60" />
+							<Anchor point="BOTTOMRIGHT" x="-5" y="26" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self.Bgs:SetTexture("Interface\\GuildFrame\\GuildInspect-Parts")
+								self.Bgs:SetTexCoord(0.00195313, 0.62890625, 0.00195313, 0.65429688)
+
+								self:SetFrameLevel(self:GetParent():GetFrameLevel() + 1)
+							</OnLoad>
+						</Scripts>
+					</Frame>
+					<Frame name="$parentContainer" parentKey="Container" toplevel="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentInset" x="0" y="0" />
+							<Anchor point="BOTTOMRIGHT" relativeTo="$parentInset" x="0" y="0" />
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString parentKey="YouRating" name="$parentYouRating" inherits="Shared_GameFontNormalLarge">
+									<Size x="240" y="0"/>
+									<Anchors>
+										<Anchor point="TOP" x="0" y="-16"/>
+									</Anchors>
+								</FontString>
+								<Texture parentKey="Laurel" name="$parentLaurel" atlas="honorsystem-prestige-laurel" file="Interface/PVPFrame/PvPHonorSystem" useAtlasSize="true">
+									<Size x="242" y="200"/>
+									<Anchors>
+										<Anchor point="TOP" x="0" y="-26"/>
+									</Anchors>
+								</Texture>
+								<FontString parentKey="CurrentRankLabel" name="$parentCurrentRankLabel" inherits="QuestFont_Super_Huge" text="Legionnaire">
+									<Size x="300" y="0"/>
+									<Anchors>
+										<Anchor point="TOP" relativeTo="$parentLaurel" relativePoint="BOTTOM" x="0" y="16"/>
+									</Anchors>
+									<Color r="1" g="1" b="1"/>
+								</FontString>
+								<FontString parentKey="WinsLabel" name="$parentWinsLabel" inherits="Shared_GameFontNormal" text="RATED_BATTLEGROUND_WINS">
+									<Anchors>
+										<Anchor point="BOTTOM" x="-60" y="74"/>
+									</Anchors>
+								</FontString>
+								<FontString parentKey="GamesLabel" name="$parentGamesLabel" inherits="Shared_GameFontNormal" text="RATED_BATTLEGROUND_TOTAL">
+									<Anchors>
+										<Anchor point="BOTTOM" x="20" y="74"/>
+									</Anchors>
+								</FontString>
+								<FontString parentKey="WinsProcLabel" name="$parentWinsProcLabel" inherits="Shared_GameFontNormal" text="RATED_BATTLEGROUND_PROCWINS">
+									<Anchors>
+										<Anchor point="BOTTOM" x="100" y="74"/>
+									</Anchors>
+								</FontString>
+								<Texture parentKey="TopDivider" name="$parentTopDivider" atlas="honorsystem-prestige-rewardline" file="Interface/PVPFrame/PvPHonorSystem" useAtlasSize="true">
+									<Size x="276" y="1"/>
+									<Anchors>
+										<Anchor point="BOTTOM" x="0" y="62"/>
+									</Anchors>
+									<TexCoords left="0.588867" right="0.858398" top="0.422852" bottom="0.423828"/>
+								</Texture>
+								<FontString parentKey="WeekLabel" name="$parentWeekLabel" inherits="Shared_GameFontNormal" text="RATED_BATTLEGROUND_WEEK">
+									<Anchors>
+										<Anchor point="BOTTOM" x="-114" y="44"/>
+									</Anchors>
+								</FontString>
+								<FontString parentKey="SezonLabel" name="$parentSezonLabel" inherits="Shared_GameFontNormal" text="RATED_BATTLEGROUND_SEASON">
+									<Anchors>
+										<Anchor point="BOTTOM" x="-116" y="24"/>
+									</Anchors>
+								</FontString>
+								<Texture parentKey="BottomDivider" atlas="honorsystem-prestige-rewardline" file="Interface/PVPFrame/PvPHonorSystem" useAtlasSize="true">
+									<Size x="276" y="1"/>
+									<Anchors>
+										<Anchor point="BOTTOM" x="0" y="16"/>
+									</Anchors>
+									<TexCoords left="0.588867" right="0.858398" top="0.422852" bottom="0.423828"/>
+								</Texture>
+								<FontString parentKey="WeekWins" name="$parentWeekWins" inherits="Shared_GameFontNormal" text="0">
+									<Anchors>
+										<Anchor point="BOTTOM" x="-62" y="44"/>
+									</Anchors>
+									<Color r="1" g="1" b="1"/>
+								</FontString>
+								<FontString parentKey="SezonWins" name="$parentWeekWins" inherits="Shared_GameFontNormal" text="0">
+									<Anchors>
+										<Anchor point="BOTTOM" x="-62" y="24"/>
+									</Anchors>
+									<Color r="1" g="1" b="1"/>
+								</FontString>
+								<FontString parentKey="WeekGames" name="$parentWeekGames" inherits="Shared_GameFontNormal" text="0">
+									<Anchors>
+										<Anchor point="BOTTOM" x="20" y="44"/>
+									</Anchors>
+									<Color r="1" g="1" b="1"/>
+								</FontString>
+								<FontString parentKey="SezonGames" name="$parentWeekGames" inherits="Shared_GameFontNormal" text="0">
+									<Anchors>
+										<Anchor point="BOTTOM" x="20" y="24"/>
+									</Anchors>
+									<Color r="1" g="1" b="1"/>
+								</FontString>
+								<FontString parentKey="WeekProc" name="$parentWeekProc" inherits="Shared_GameFontNormal" text="0%">
+									<Anchors>
+										<Anchor point="BOTTOM" x="100" y="44"/>
+									</Anchors>
+									<Color r="1" g="1" b="1"/>
+								</FontString>
+								<FontString parentKey="SezonProc" name="$parentWeekProc" inherits="Shared_GameFontNormal" text="0%">
+									<Anchors>
+										<Anchor point="BOTTOM" x="100" y="24"/>
+									</Anchors>
+									<Color r="1" g="1" b="1"/>
+								</FontString>
+							</Layer>
+							<Layer level="BACKGROUND">
+								<Texture parentKey="LaurelBackground" atlas="honorsystem-prestige-laurel-bg-alliance" file="Interface/PVPFrame/PvPHonorSystem" useAtlasSize="true">
+									<Size x="100" y="100"/>
+									<Anchors>
+										<Anchor point="CENTER" relativeTo="$parentLaurel" y="2"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+							<Layer level="BORDER">
+								<Texture parentKey="RankIcon">
+									<Size x="80" y="80"/>
+									<Anchors>
+										<Anchor point="CENTER" relativeTo="$parentLaurel" x="-2" y="3"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Frame>
+				</Frames>
+				<Scripts>
+					<OnShow function="InspectRatedBattleGrounds_OnShow" />
+					<OnHide function="StatisticsButtonUpdateState"/>
+				</Scripts>
+			</Frame>
+			<Frame name="$parentRating" parentKey="Rating" hidden="true" setAllPoints="True">
+				<Frames>
+					<Frame name="$parentInset" parentKey="Inset" inherits="InsetFrameTemplateNoBackground">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="2" y="-60" />
+							<Anchor point="BOTTOMRIGHT" x="-5" y="6" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self.Bgs:SetTexture("Interface\\GuildFrame\\GuildInspect-Parts")
+								self.Bgs:SetTexCoord(0.00195313, 0.62890625, 0.00195313, 0.65429688)
+
+								self:SetFrameLevel(self:GetParent():GetFrameLevel() + 1)
+							</OnLoad>
+						</Scripts>
+					</Frame>
+					<Frame name="$parentContainer" parentKey="Container" toplevel="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentInset" x="4" y="-4" />
+							<Anchor point="BOTTOMRIGHT" x="-9" y="10" />
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture name="$parentBackground" file="Interface\PVPFrame\PVP-Conquest-Misc" parentKey="Background">
+									<Anchors>
+										<Anchor point="TOPLEFT" x="0" y="0" />
+										<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+									</Anchors>
+									<TexCoords left="0.00097656" right="0.31445313" top="0.33789063" bottom="0.88476563"/>
+								</Texture>
+							</Layer>
+							<Layer level="ARTWORK">
+								<Texture name="$parentFaction" parentKey="Faction" file="Interface\PVPFrame\PVP-Conquest-Misc">
+									<Size x="55" y="66"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" x="6" y="-40"/>
+									</Anchors>
+									<TexCoords left="0.63867188" right="0.69238281" top="0.60351563" bottom="0.73242188"/>
+								</Texture>
+								<FontString name="$parentToDayLabel" inherits="GameFontNormal" text="HONOR_TODAY">
+									<Anchors>
+										<Anchor point="TOP" x="-10" y="-20"/>
+									</Anchors>
+								</FontString>
+								<FontString name="$parentYesterDayLabel" inherits="GameFontNormal" text="HONOR_YESTERDAY">
+									<Anchors>
+										<Anchor point="TOP" x="80" y="-20"/>
+									</Anchors>
+								</FontString>
+								<Texture name="$parentDivider" file="Interface\FriendsFrame\UI-FriendsFrame-OnlineDivider">
+									<Size x="270" y="0"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" x="60" y="-30"/>
+									</Anchors>
+									<Color r="1" g="1" b="0" a="1"/>
+								</Texture>
+								<FontString name="$parentTotalHKLabel" text="TOTAL_KILLS" inherits="GameFontNormalLarge">
+									<Anchors>
+										<Anchor point="TOP" x="0" y="-108"/>
+									</Anchors>
+								</FontString>
+								<FontString name="$parentTotalHK" parentKey="TotalHK" text="0" inherits="GameFontNormalLarge">
+									<Anchors>
+										<Anchor point="TOP" relativeTo="$parentTotalHKLabel" relativePoint="BOTTOM" x="0" y="-2"/>
+									</Anchors>
+									<Color r="1" g="1" b="1" a="1"/>
+								</FontString>
+								<FontString name="$parentKillsLabel" inherits="GameFontNormal" justifyH="RIGHT" text="KILLS">
+									<Size x="60" y="0"/>
+									<Anchors>
+										<Anchor point="TOP" x="-80" y="-46"/>
+									</Anchors>
+								</FontString>
+								<FontString name="$parentHonorLabel" inherits="GameFontNormal" justifyH="RIGHT" text="HONOR">
+									<Size x="60" y="0"/>
+									<Anchors>
+										<Anchor point="TOP" x="-80" y="-68"/>
+									</Anchors>
+								</FontString>
+								<FontString name="$parentKillsToDay" parentKey="KillsToDay" inherits="GameFontNormal" text="0" justifyH="CENTER">
+									<Size x="60" y="0"/>
+									<Anchors>
+										<Anchor point="TOP" x="-10" y="-46"/>
+									</Anchors>
+									<Color r="1" g="1" b="1" a="1"/>
+								</FontString>
+								<FontString name="$parentKillsYesterDay" parentKey="KillsYesterDay" inherits="GameFontNormal" text="0" justifyH="CENTER">
+									<Size x="60" y="0"/>
+									<Anchors>
+										<Anchor point="TOP" x="80" y="-46"/>
+									</Anchors>
+									<Color r="1" g="1" b="1" a="1"/>
+								</FontString>
+								<FontString name="$parentHonorToDay" parentKey="HonorToDay" inherits="GameFontNormal" text="0" justifyH="CENTER">
+									<Size x="60" y="0"/>
+									<Anchors>
+										<Anchor point="TOP" x="-10" y="-68"/>
+									</Anchors>
+									<Color r="1" g="1" b="1" a="1"/>
+								</FontString>
+								<FontString name="$parentHonorYesterDay" parentKey="HonorYesterDay" inherits="GameFontNormal" text="0" justifyH="CENTER">
+									<Size x="60" y="0"/>
+									<Anchors>
+										<Anchor point="TOP" x="80" y="-68"/>
+									</Anchors>
+									<Color r="1" g="1" b="1" a="1"/>
+								</FontString>
+							</Layer>
+							<Layer level="ARTWORK">
+							</Layer>
+							<Layer level="OVERLAY">
+							</Layer>
+						</Layers>
+						<Frames>
+							<Button name="InspectPVPTeam2" inherits="InspectPVPTeamTemplate" id="2">
+								<Anchors>
+									<Anchor point="CENTER" x="0" y="-8"/>
+								</Anchors>
+							</Button>
+							<Button name="InspectPVPTeam3" inherits="InspectPVPTeamTemplate" id="5">
+								<Anchors>
+									<Anchor point="TOP" relativeTo="InspectPVPTeam2" relativePoint="BOTTOM" x="0" y="-12" />
+								</Anchors>
+							</Button>
+							<Button name="InspectPVPTeam1" inherits="InspectPVPTeamTemplate" id="1">
+								<Anchors>
+									<Anchor point="TOP" relativeTo="InspectPVPTeam3" relativePoint="BOTTOM" x="0" y="-12" />
+								</Anchors>
+							</Button>
+						</Frames>
+					</Frame>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						self.factionEmblem = {
+							[PLAYER_FACTION_GROUP.Horde] = {0.6416015625, 0.689453125, 0.60546875, 0.73046875},
+							[PLAYER_FACTION_GROUP.Alliance] = {0.697265625, 0.7451171875, 0.60546875, 0.73046875},
+							[PLAYER_FACTION_GROUP.Renegade] = {0.7529296875, 0.80078125, 0.60546875, 0.73046875}
+						}
+					</OnLoad>
+					<OnShow>
+						local factionID = C_Unit:GetFactionID("player")
+
+						if factionID then
+							self.Container.Faction:SetTexCoord(unpack(self.factionEmblem[factionID]))
+						end
+					</OnShow>
+				</Scripts>
+			</Frame>
+			<Frame name="$parentStatistics" parentKey="Statistics" hidden="true" setAllPoints="True">
+				<Frames>
+					<Frame name="$parentInset" parentKey="Inset" inherits="InsetFrameTemplateNoBackground">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="2" y="-60" />
+							<Anchor point="BOTTOMRIGHT" x="-5" y="26" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self.Bgs:SetTexture("Interface\\GuildFrame\\GuildInspect-Parts")
+								self.Bgs:SetTexCoord(0.00195313, 0.62890625, 0.00195313, 0.65429688)
+
+								self:SetFrameLevel(self:GetParent():GetFrameLevel() + 1)
+							</OnLoad>
+						</Scripts>
+					</Frame>
+					<ScrollFrame name="InspectBattlegroundStatisticsScrollFrame" inherits="UIPanelScrollFrameTemplate" parentKey="StatisticsFrame" toplevel="true">
+						<Size x="306" y="330"/>
+						<Anchors>
+							<Anchor point="BOTTOM" relativeTo="$parentInset" relativePoint="BOTTOM" x="-6" y="2" />
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture name="$parentScrollBackground" parentKey="Background">
+									<Anchors>
+										<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="-6" y="-20"/>
+										<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="20" y="20"/>
+									</Anchors>
+									<Color r="0" b="0" g="0" a=".4"/>
+								</Texture>
+							</Layer>
+							<Layer level="ARTWORK">
+								<Texture name="$parentScrollBackgroundTop" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar" parentKey="BackgroundTop">
+									<Size x="28" y="256"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="-8" y="5"/>
+									</Anchors>
+									<TexCoords left="0" right="0.484375" top="0" bottom="1.0"/>
+								</Texture>
+								<Texture name="$parentScrollBackgroundBottom" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar" parentKey="BackgroundBottom">
+									<Size x="28" y="106"/>
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="-8" y="-2"/>
+									</Anchors>
+									<TexCoords left="0.515625" right="1.0" top="0" bottom="0.4140625"/>
+								</Texture>
+							</Layer>
+						</Layers>
+						<ScrollChild>
+							<Frame name="$parentScrollChildFrame" parentKey="ScrollChild">
+								<Size x="310" y="10"/>
+								<Anchors>
+									<Anchor point="TOPLEFT"/>
+								</Anchors>
+							</Frame>
+						</ScrollChild>
+						<Scripts>
+							<OnLoad function="InspectBattlegroundStatisticsScrollFrame_OnLoad"/>
+							<OnShow function="InspectBattlegroundStatisticsScrollFrame_OnShow"/>
+						</Scripts>
+					</ScrollFrame>
+				</Frames>
+				<Scripts>
+					<OnHide function="StatisticsButtonUpdateState"/>
+				</Scripts>
+			</Frame>
+			<Frame name="$parentLadder" parentKey="Ladder" hidden="true" setAllPoints="true">
+				<Frames>
+					<Frame name="$parentCentralContainer" parentKey="CentralContainer" inherits="StandartInsetFrameTemplate">
+						<Size x="330" y="256"/>
+						<Anchors>
+							<Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="6" />
+						</Anchors>
+						<Layers>
+							<Layer level="BORDER">
+								<Texture name="$parentBackgroundOverlay" parentKey="BackgroundOverlay"/>
+							</Layer>
+						</Layers>
+						<Frames>
+							<ScrollFrame name="$parentScrollFrame" inherits="HybridScrollFrameTemplate" parentKey="ScrollFrame">
+								<Size x="300" y="248"/>
+								<Anchors>
+									<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="4" y="4" />
+								</Anchors>
+								<Frames>
+									<Slider name="$parentScrollBar" parentKey="ScrollBar" inherits="HybridScrollBarTemplate">
+										<Anchors>
+											<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="4" y="-14"/>
+											<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="4" y="12"/>
+										</Anchors>
+										<Scripts>
+											<OnLoad>
+												self.trackBG:Show()
+												self.trackBG:SetVertexColor(0, 0, 0, 0.6)
+											</OnLoad>
+										</Scripts>
+									</Slider>
+									<Frame parentKey="ShadowOverlay" alpha="0.8" inherits="ShadowOverlaySmallTemplate" toplevel="true">
+										<Anchors>
+											<Anchor point="TOPLEFT" x="-2" y="4"/>
+											<Anchor point="BOTTOMRIGHT" x="2" y="-3"/>
+										</Anchors>
+									</Frame>
+									<Frame name="$parentTextLabelFrame" parentKey="TextLabelFrame" hidden="true" setAllPoints="true">
+										<Layers>
+											<Layer level="OVERLAY">
+												<FontString name="$paretText" parentKey="Text" inherits="GameFontHighlight" text="PVP_LADDER_SEARCH_NOT_RESULT">
+													<Size x="270" y="160"/>
+													<Anchors>
+														<Anchor point="CENTER" x="0" y="0" />
+													</Anchors>
+												</FontString>
+											</Layer>
+										</Layers>
+									</Frame>
+									<Frame name="$parentSpinner" parentKey="Spinner" setAllPoints="true">
+										<Layers>
+											<Layer level="BACKGROUND">
+												<Texture name="$parentBackground" parentKey="Background">
+													<Color r="0" g="0" b="0" a="0.9"/>
+												</Texture>
+											</Layer>
+										</Layers>
+										<Frames>
+											<Frame name="$parentLoadingSpinner" parentKey="LoadingSpinner" inherits="LoadingSpinnerTemplate">
+												<Anchors>
+													<Anchor point="CENTER" x="0" y="10" />
+												</Anchors>
+											</Frame>
+										</Frames>
+										<Scripts>
+											<OnLoad>
+												self.LoadingSpinner.showRetrievingText = true
+												self.LoadingSpinner.Text:SetText(STORE_WAIT_SERVER_RESPONSE)
+												self.LoadingSpinner.Text:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+												self.LoadingSpinner.Dots:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+											</OnLoad>
+											<OnShow>
+												self.LoadingSpinner.Text:Show()
+												self.LoadingSpinner.Dots:Show()
+
+												self.LoadingSpinner.AnimFrame.Anim:Play()
+											</OnShow>
+											<OnHide>
+												self.LoadingSpinner.AnimFrame.Anim:Stop()
+											</OnHide>
+										</Scripts>
+									</Frame>
+								</Frames>
+								<Scripts>
+									<OnShow>
+										self:SetFrameLevel(self:GetParent():GetFrameLevel() + 3)
+									</OnShow>
+								</Scripts>
+							</ScrollFrame>
+						</Frames>
+						<Scripts>
+							<OnShow>
+								self.BackgroundOverlay:SetAtlas("PVPLadder-table-background")
+							</OnShow>
+						</Scripts>
+					</Frame>
+					<Frame name="$parentTopContainer" parentKey="TopContainer">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="0" y="-54" />
+							<Anchor point="TOPRIGHT" x="0" y="0" />
+							<Anchor point="BOTTOM" relativeTo="$parentCentralContainer" relativePoint="TOP" x="0" y="2" />
+						</Anchors>
+						<Frames>
+							<Frame name="$parentStatisticsFrame" parentKey="StatisticsFrame">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="6" y="-10" />
+									<Anchor point="BOTTOMRIGHT" x="-6" y="4" />
+								</Anchors>
+								<Layers>
+									<Layer level="BACKGROUND">
+										<Texture name="$parentBackground" parentKey="Background">
+											<Color r="0" g="0" b="0" a="0.7"/>
+										</Texture>
+									</Layer>
+									<Layer level="ARTWORK">
+										<Texture name="$parentTopLeftCorner" parentKey="TopLeftCorner">
+											<Size x="36" y="39"/>
+											<Anchors>
+												<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="-4" y="6" />
+											</Anchors>
+										</Texture>
+										<Texture name="$parentTopRightCorner" parentKey="TopRightCorner">
+											<Size x="36" y="39"/>
+											<Anchors>
+												<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="4" y="6" />
+											</Anchors>
+										</Texture>
+										<Texture name="$parentBottomLeftCorner" parentKey="BottomLeftCorner">
+											<Size x="36" y="39"/>
+											<Anchors>
+												<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="-4" y="-6" />
+											</Anchors>
+										</Texture>
+										<Texture name="$parentBottomRightCorner" parentKey="BottomRightCorner">
+											<Size x="36" y="39"/>
+											<Anchors>
+												<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="4" y="-6" />
+											</Anchors>
+										</Texture>
+									</Layer>
+									<Layer level="BORDER">
+										<Texture name="$parentBottomLine" parentKey="BottomLine">
+											<Size y="16"/>
+											<Anchors>
+												<Anchor point="BOTTOMLEFT" relativeTo="$parentBottomLeftCorner" x="12" y="-2" />
+												<Anchor point="BOTTOMRIGHT" relativeTo="$parentBottomRightCorner" x="-12" y="-2" />
+											</Anchors>
+										</Texture>
+										<Texture name="$parentTopLine" parentKey="TopLine">
+											<Size y="16"/>
+											<Anchors>
+												<Anchor point="TOPLEFT" relativeTo="$parentTopLeftCorner" x="12" y="2" />
+												<Anchor point="TOPRIGHT" relativeTo="$parentTopRightCorner" x="-12" y="2" />
+											</Anchors>
+										</Texture>
+									</Layer>
+									<Layer level="OVERLAY">
+										<FontString name="$parentNoData" parentKey="NoData" inherits="GameFontNormal20" hidden="true" text="PVP_LADDER_INSPECT_NO_DATA">
+											<Anchors>
+												<Anchor point="CENTER" x="0" y="0" />
+											</Anchors>
+											<Color r="1.0" g="0.82" b="0"/>
+										</FontString>
+									</Layer>
+								</Layers>
+								<Frames>
+									<Frame name="$parentStatistics" parentKey="Statistics" setAllPoints="true">
+										<Layers>
+											<Layer level="OVERLAY">
+												<FontString name="$parentPlayerName" parentKey="PlayerName" inherits="GameFontNormal17" justifyH="LEFT">
+													<Size x="130" y="18"/>
+													<Anchors>
+														<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="20" y="-12" />
+													</Anchors>
+													<Color r="1.0" g="0.82" b="0"/>
+												</FontString>
+												<FontString name="$parentPlayerRace" parentKey="PlayerRace" inherits="GameFontNormal11" justifyH="LEFT">
+													<Size x="130" y="16"/>
+													<Anchors>
+														<Anchor point="TOP" relativeTo="$parentPlayerName" relativePoint="BOTTOM" x="0" y="0" />
+													</Anchors>
+												</FontString>
+												<FontString name="$parentPlayerRating" parentKey="PlayerRating" inherits="GameFontNormal17" justifyH="CENTER">
+													<Size x="130" y="18"/>
+													<Anchors>
+														<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="20" y="-12" />
+													</Anchors>
+													<Color r="1.0" g="0.82" b="0"/>
+												</FontString>
+												<FontString name="$parentPlayerRatingLabel" parentKey="PlayerRatingLabel" inherits="GameFontNormal11" justifyH="CENTER" text="PVP_LADDER_RATING">
+													<Size x="130" y="16"/>
+													<Anchors>
+														<Anchor point="TOP" relativeTo="$parentPlayerRating" relativePoint="BOTTOM" x="0" y="0" />
+													</Anchors>
+												</FontString>
+												<FontString name="$parentSeasonLabel" parentKey="SeasonLabel" inherits="GameFontNormal11" justifyH="CENTER" text="PVP_LADDER_SEASON">
+													<Size x="60" y="14"/>
+													<Anchors>
+														<Anchor point="BOTTOMLEFT" x="10" y="22" />
+													</Anchors>
+												</FontString>
+												<FontString name="$parentSeason" parentKey="Season" inherits="GameFontNormal11" justifyH="CENTER">
+													<Size x="60" y="14"/>
+													<Anchors>
+														<Anchor point="TOP" relativeTo="$parentSeasonLabel" relativePoint="BOTTOM" x="0" y="0" />
+													</Anchors>
+												</FontString>
+												<FontString name="$parentWeekLabel" parentKey="WeekLabel" inherits="GameFontNormal11" justifyH="CENTER" text="PVP_LADDER_WEEK">
+													<Size x="60" y="14"/>
+													<Anchors>
+														<Anchor point="BOTTOMLEFT" x="90" y="22" />
+													</Anchors>
+												</FontString>
+												<FontString name="$parentWeek" parentKey="Week" inherits="GameFontNormal11" justifyH="CENTER">
+													<Size x="60" y="14"/>
+													<Anchors>
+														<Anchor point="TOP" relativeTo="$parentWeekLabel" relativePoint="BOTTOM" x="0" y="0" />
+													</Anchors>
+												</FontString>
+												<FontString name="$parentDayLabel" parentKey="DayLabel" inherits="GameFontNormal11" justifyH="CENTER" text="PVP_LADDER_DAY">
+													<Size x="60" y="14"/>
+													<Anchors>
+														<Anchor point="BOTTOMLEFT" x="170" y="22" />
+													</Anchors>
+												</FontString>
+												<FontString name="$parentDay" parentKey="Day" inherits="GameFontNormal11" justifyH="CENTER">
+													<Size x="60" y="14"/>
+													<Anchors>
+														<Anchor point="TOP" relativeTo="$parentDayLabel" relativePoint="BOTTOM" x="0" y="0" />
+													</Anchors>
+												</FontString>
+												<FontString name="$parentAllWinsProcLabel" parentKey="AllWinsProcLabel" inherits="GameFontNormal11" justifyH="CENTER" text="PVP_LADDER_TOTAL_WINS">
+													<Size x="90" y="14"/>
+													<Anchors>
+														<Anchor point="BOTTOMLEFT" x="238" y="22" />
+													</Anchors>
+												</FontString>
+												<FontString name="$parentAllWinsProc" parentKey="AllWinsProc" inherits="GameFontNormal11" justifyH="CENTER">
+													<Size x="60" y="14"/>
+													<Anchors>
+														<Anchor point="TOP" relativeTo="$parentAllWinsProcLabel" relativePoint="BOTTOM" x="0" y="0" />
+													</Anchors>
+												</FontString>
+											</Layer>
+										</Layers>
+									</Frame>
+								</Frames>
+								<Scripts>
+									<OnLoad>
+										self.TopLeftCorner:SetAtlas("UI-CharacterCreate-Metal-Finery-Corner")
+
+										self.TopRightCorner:SetAtlas("UI-CharacterCreate-Metal-Finery-Corner")
+										SetClampedTextureRotation(self.TopRightCorner, 90)
+
+										self.BottomLeftCorner:SetAtlas("UI-CharacterCreate-Metal-Finery-Corner")
+										SetClampedTextureRotation(self.BottomLeftCorner, 270)
+
+										self.BottomRightCorner:SetAtlas("UI-CharacterCreate-Metal-Finery-Corner")
+										SetClampedTextureRotation(self.BottomRightCorner, 180)
+
+										self.BottomLine:SetAtlas("UI-CharacterCreate-MetalFrame-Horizontal")
+										self.TopLine:SetAtlas("UI-CharacterCreate-MetalFrame-Horizontal")
+										SetClampedTextureRotation(self.TopLine, 180)
+									</OnLoad>
+								</Scripts>
+							</Frame>
+						</Frames>
+					</Frame>
+					<CheckButton name="$parentRightTab1" parentKey="RightTab1" id="0" inherits="InspectRightTabTemplate">
+						<Attributes>
+							<Attribute name="icon" type="string" value="PVPLadder-IconSolo-Square"/>
+							<Attribute name="tooltipText" type="string" value="PVP_LADDER_SOLO_LABEL"/>
+						</Attributes>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="-34"/>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="$parentRightTab2" parentKey="RightTab2" id="1" inherits="InspectRightTabTemplate">
+						<Attributes>
+							<Attribute name="icon" type="string" value="PVPLadder-Icon2x2-Square"/>
+							<Attribute name="tooltipText" type="string" value="PVP_LADDER_2V2_LABEL"/>
+						</Attributes>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentRightTab1" relativePoint="BOTTOMLEFT" x="0" y="-16"/>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="$parentRightTab3" parentKey="RightTab3" id="2" inherits="InspectRightTabTemplate">
+						<Attributes>
+							<Attribute name="icon" type="string" value="PVPLadder-Icon3x3-Square"/>
+							<Attribute name="tooltipText" type="string" value="PVP_LADDER_1V1_LABEL"/>
+						</Attributes>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentRightTab2" relativePoint="BOTTOMLEFT" x="0" y="-16"/>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="$parentRightTab4" parentKey="RightTab4" id="3" inherits="InspectRightTabTemplate" hidden="true">
+						<Attributes>
+							<Attribute name="icon" type="string" value="PVPLadder-IconBattleground-Square"/>
+							<Attribute name="tooltipText" type="string" value="PVP_LADDER_BG_LABEL"/>
+						</Attributes>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentRightTab3" relativePoint="BOTTOMLEFT" x="0" y="-16"/>
+						</Anchors>
+					</CheckButton>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, PVPLadderInfoFrameMixin, InspectLadderMixin)
+						self:InitializeScrollFrame()
+					</OnLoad>
+					<OnShow>
+						self:OnShow()
+					</OnShow>
+				</Scripts>
+			</Frame>
+			<Button name="$parentToggleStatisticsButton" parentKey="ToggleStatisticsButton" inherits="MagicButtonTemplate" text="STATISTICS">
+				<Size x="140" y="22"/>
+				<Anchors>
+					<Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="4"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="ToggleStatisticsButton_OnClick"/>
+				</Scripts>
+			</Button>
+		</Frames>
+    	<Scripts>
+			<OnLoad function="InspectPVPFrame_OnLoad"/>
+			<OnShow function="InspectPVPFrame_OnShow"/>
+			<OnEvent function="InspectPVPFrame_OnEvent"/>
+		</Scripts>
+    </Frame>
+    <Frame name="InspectTalentFrame" setAllPoints="true" useParentLevel="true" enableMouse="true" parent="InspectFrame" hidden="true" id="3">
+    	<Layers>
+    		<Layer level="OVERLAY">
+    			<Texture name="InspectTalentFrameBackgroundTopLeft">
+    				<Size x="256" y="256"/>
+    				<Anchors>
+    					<Anchor point="TOPLEFT" x="6" y="-63"/>
+    				</Anchors>
+    			</Texture>
+    			<Texture name="InspectTalentFrameBackgroundTopRight">
+    				<Size x="64" y="256"/>
+    				<Anchors>
+    					<Anchor point="TOPLEFT" relativeTo="InspectTalentFrameBackgroundTopLeft" relativePoint="TOPRIGHT" x="0" y="0"/>
+    				</Anchors>
+    			</Texture>
+    			<Texture name="InspectTalentFrameBackgroundBottomLeft">
+    				<Size x="256" y="128"/>
+    				<Anchors>
+    					<Anchor point="TOPLEFT" relativeTo="InspectTalentFrameBackgroundTopLeft" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+    				</Anchors>
+    			</Texture>
+    			<Texture name="InspectTalentFrameBackgroundBottomRight">
+    				<Size  x="64" y="128"/>
+    				<Anchors>
+    					<Anchor point="TOPLEFT" relativeTo="InspectTalentFrameBackgroundTopLeft" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+    				</Anchors>
+    			</Texture>
+    		</Layer>
+    	</Layers>
+		<Frames>
+			<Button name="$parentTab1" inherits="TabButtonTemplate" text="OK" id="1">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="InspectFrameInset" relativePoint="TOPLEFT" x="50" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PanelTemplates_Tab_OnClick(self, InspectTalentFrame);
+						InspectTalentFrame_Update();
+						PlaySound("igMainMenuOptionCheckBoxOn");
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab2" inherits="TabButtonTemplate" text="OK" id="2">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab1" relativePoint="RIGHT"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PanelTemplates_Tab_OnClick(self, InspectTalentFrame);
+						InspectTalentFrame_Update();
+						PlaySound("igMainMenuOptionCheckBoxOn");
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab3" inherits="TabButtonTemplate" text="OK" id="3">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab2" relativePoint="RIGHT"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PanelTemplates_Tab_OnClick(self, InspectTalentFrame);
+						InspectTalentFrame_Update();
+						PlaySound("igMainMenuOptionCheckBoxOn");
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Frame name="InspectTalentFramePointsBar">
+				<Size x="331" y="18"/>
+				<Anchors>
+					<Anchor point="LEFT">
+						<Offset x="5" y="0"/>
+					</Anchor>
+					<Anchor point="RIGHT">
+						<Offset x="-6" y="0"/>
+					</Anchor>
+					<Anchor point="BOTTOM">
+						<Offset x="0" y="6"/>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BORDER">
+						<Texture name="$parentBorderLeft" file="Interface\Buttons\UI-Button-Borders2">
+							<Size x="6" y="18"/>
+							<Anchors>
+								<Anchor point="LEFT"/>
+							</Anchors>
+							<TexCoords left="0.0" right="0.01171875" top="0.421875" bottom="0.5625"/>
+						</Texture>
+						<Texture name="$parentBorderRight" file="Interface\Buttons\UI-Button-Borders2">
+							<Size x="6" y="18"/>
+							<Anchors>
+								<Anchor point="RIGHT"/>
+							</Anchors>
+							<TexCoords left="0.3046875" right="0.31640625" top="0.421875" bottom="0.5625"/>
+						</Texture>
+						<Texture name="$parentBorderMiddle" file="Interface\Buttons\UI-Button-Borders2">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentBorderLeft" relativePoint="TOPRIGHT"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderRight" relativePoint="BOTTOMLEFT"/>
+							</Anchors>
+							<TexCoords left="0.01171875" right="0.3046875" top="0.421875" bottom="0.5625"/>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<FontString name="InspectTalentFrameSpentPointsText" inherits="GameFontNormalSmall" justifyH="LEFT">
+							<Size x="0" y="15"/>
+							<Anchors>
+								<Anchor point="LEFT">
+									<Offset x="12" y="1"/>
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="InspectTalentFrameTalentPointsText" inherits="GameFontNormalSmall" justifyH="RIGHT">
+							<Size x="0" y="15"/>
+							<Anchors>
+								<Anchor point="RIGHT">
+									<Offset x="-12" y="1"/>
+								</Anchor>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnter function="InspectTalentFramePointsBar_OnEnter"/>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Frame>
+			<ScrollFrame name="InspectTalentFrameScrollFrame" inherits="UIPanelScrollFrameTemplate">
+				<Size x="294" y="332"/>
+				<Anchors>
+					<Anchor point="CENTER" x="-11" y="-17" />
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+							<Size x="30" y="256"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="-2" y="5" />
+							</Anchors>
+							<TexCoords left="0" right="0.484375" top="0" bottom="1.0"/>
+						</Texture>
+						<Texture file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+							<Size x="30" y="106"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="-2" y="-2" />
+							</Anchors>
+							<TexCoords left="0.515625" right="1.0" top="0" bottom="0.4140625"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<ScrollChild>
+					<Frame name="InspectTalentFrameScrollChildFrame">
+						<Size>
+							<AbsDimension x="320" y="50"/>
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture name="InspectTalentFrameBranch1" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch2" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch3" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch4" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch5" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch6" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch7" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch8" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch9" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch10" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch11" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch12" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch13" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch14" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch15" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch16" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch17" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch18" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch19" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch20" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch21" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch22" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch23" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch24" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch25" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch26" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch27" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch28" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch29" inherits="TalentBranchTemplate"/>
+								<Texture name="InspectTalentFrameBranch30" inherits="TalentBranchTemplate"/>
+							</Layer>
+						</Layers>
+						<Frames>
+							<Button name="InspectTalentFrameTalent1" inherits="TalentButtonTemplate" id="1"/>
+							<Button name="InspectTalentFrameTalent2" inherits="TalentButtonTemplate" id="2"/>
+							<Button name="InspectTalentFrameTalent3" inherits="TalentButtonTemplate" id="3"/>
+							<Button name="InspectTalentFrameTalent4" inherits="TalentButtonTemplate" id="4"/>
+							<Button name="InspectTalentFrameTalent5" inherits="TalentButtonTemplate" id="5"/>
+							<Button name="InspectTalentFrameTalent6" inherits="TalentButtonTemplate" id="6"/>
+							<Button name="InspectTalentFrameTalent7" inherits="TalentButtonTemplate" id="7"/>
+							<Button name="InspectTalentFrameTalent8" inherits="TalentButtonTemplate" id="8"/>
+							<Button name="InspectTalentFrameTalent9" inherits="TalentButtonTemplate" id="9"/>
+							<Button name="InspectTalentFrameTalent10" inherits="TalentButtonTemplate" id="10"/>
+							<Button name="InspectTalentFrameTalent11" inherits="TalentButtonTemplate" id="11"/>
+							<Button name="InspectTalentFrameTalent12" inherits="TalentButtonTemplate" id="12"/>
+							<Button name="InspectTalentFrameTalent13" inherits="TalentButtonTemplate" id="13"/>
+							<Button name="InspectTalentFrameTalent14" inherits="TalentButtonTemplate" id="14"/>
+							<Button name="InspectTalentFrameTalent15" inherits="TalentButtonTemplate" id="15"/>
+							<Button name="InspectTalentFrameTalent16" inherits="TalentButtonTemplate" id="16"/>
+							<Button name="InspectTalentFrameTalent17" inherits="TalentButtonTemplate" id="17"/>
+							<Button name="InspectTalentFrameTalent18" inherits="TalentButtonTemplate" id="18"/>
+							<Button name="InspectTalentFrameTalent19" inherits="TalentButtonTemplate" id="19"/>
+							<Button name="InspectTalentFrameTalent20" inherits="TalentButtonTemplate" id="20"/>
+							<Button name="InspectTalentFrameTalent21" inherits="TalentButtonTemplate" id="21"/>
+							<Button name="InspectTalentFrameTalent22" inherits="TalentButtonTemplate" id="22"/>
+							<Button name="InspectTalentFrameTalent23" inherits="TalentButtonTemplate" id="23"/>
+							<Button name="InspectTalentFrameTalent24" inherits="TalentButtonTemplate" id="24"/>
+							<Button name="InspectTalentFrameTalent25" inherits="TalentButtonTemplate" id="25"/>
+							<Button name="InspectTalentFrameTalent26" inherits="TalentButtonTemplate" id="26"/>
+							<Button name="InspectTalentFrameTalent27" inherits="TalentButtonTemplate" id="27"/>
+							<Button name="InspectTalentFrameTalent28" inherits="TalentButtonTemplate" id="28"/>
+							<Button name="InspectTalentFrameTalent29" inherits="TalentButtonTemplate" id="29"/>
+							<Button name="InspectTalentFrameTalent30" inherits="TalentButtonTemplate" id="30"/>
+							<Button name="InspectTalentFrameTalent31" inherits="TalentButtonTemplate" id="31"/>
+							<Button name="InspectTalentFrameTalent32" inherits="TalentButtonTemplate" id="32"/>
+							<Button name="InspectTalentFrameTalent33" inherits="TalentButtonTemplate" id="33"/>
+							<Button name="InspectTalentFrameTalent34" inherits="TalentButtonTemplate" id="34"/>
+							<Button name="InspectTalentFrameTalent35" inherits="TalentButtonTemplate" id="35"/>
+							<Button name="InspectTalentFrameTalent36" inherits="TalentButtonTemplate" id="36"/>
+							<Button name="InspectTalentFrameTalent37" inherits="TalentButtonTemplate" id="37"/>
+							<Button name="InspectTalentFrameTalent38" inherits="TalentButtonTemplate" id="38"/>
+							<Button name="InspectTalentFrameTalent39" inherits="TalentButtonTemplate" id="39"/>
+							<Button name="InspectTalentFrameTalent40" inherits="TalentButtonTemplate" id="40"/>
+
+							<Frame name="InspectTalentFrameArrowFrame" setAllPoints="true">
+								<Layers>
+									<Layer level="OVERLAY">
+										<Texture name="InspectTalentFrameArrow1" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow2" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow3" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow4" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow5" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow6" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow7" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow8" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow9" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow10" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow11" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow12" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow13" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow14" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow15" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow16" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow17" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow18" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow19" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow20" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow21" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow22" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow23" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow24" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow25" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow26" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow27" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow28" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow29" inherits="TalentArrowTemplate"/>
+										<Texture name="InspectTalentFrameArrow30" inherits="TalentArrowTemplate"/>
+									</Layer>
+								</Layers>
+							</Frame>
+						</Frames>
+					</Frame>
+				</ScrollChild>
+			</ScrollFrame>
+			<Frame name="InspectTalentFrameScrollButtonOverlay" parent="InspectTalentFrameScrollFrameScrollBarScrollDownButton" hidden="true">
+				<Size>
+					<AbsDimension x="32" y="32"/>
+				</Size>
+				<Anchors>
+					<Anchor point="CENTER">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture file="Interface\Buttons\UI-ScrollBar-Button-Overlay" setAllPoints="true" alphaMode="ADD"/>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnShow function="InspectTalentFrame_OnShow"/>
+			<OnHide function="InspectTalentFrame_OnHide"/>
+			<OnLoad function="InspectTalentFrame_OnLoad"/>
+			<OnEvent function="InspectTalentFrame_OnEvent"/>
+		</Scripts>
+	</Frame>
+	<Frame name="InspectGuildFrame" enableMouse="true" parent="InspectFrame" hidden="true" useParentLevel="true" frameStrata="HIGH" setAllPoints="true" id="4">
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentBG" file="Interface\GuildFrame\GuildInspect-Parts">
+					<Size x="321" y="334"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="InspectFrameInset" x="4" y="-4"/>
+					</Anchors>
+					<TexCoords left="0.00195313" right="0.62890625" top="0.00195313" bottom="0.65429688"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="InspectGuildFrameBanner" file="Interface\GuildFrame\GuildInspect-Parts" virtual="true" >
+					<Size x="118" y="144"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="InspectFrameInset" x="104" y="-4"/>
+					</Anchors>
+					<TexCoords left="0.23632813" right="0.46679688" top="0.70117188" bottom="0.98242188"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="InspectGuildFrameBannerBorder" file="Interface\GuildFrame\GuildInspect-Parts" virtual="true" >
+					<Size x="118" y="144"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="InspectGuildFrameBanner"/>
+					</Anchors>
+					<TexCoords left="0.00195313" right="0.23242188" top="0.70117188" bottom="0.98242188"/>
+				</Texture>
+				<Texture name="$parentEmblem" file="Interface\GuildFrame\GuildEmblemsLG_01" parentKey="emblem">
+					<Size x="84" y="84"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="InspectGuildFrameBanner" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentGuildName" inherits="GameFontNormalHuge" parentKey="guildName">
+					<Size x="300" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="CENTER" y="-18"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentGuildLevel" inherits="GameFontNormalLarge" parentKey="guildLevel">
+					<Size x="300" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentGuildName" relativePoint="BOTTOM" x="0" y="-10"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentGuildNumMembers" inherits="GameFontNormalLarge" parentKey="guildNumMembers">
+					<Size x="300" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentGuildLevel" relativePoint="BOTTOM" x="0" y="-26"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnShow function="InspectGuildFrame_OnShow"/>
+		</Scripts>
+	</Frame>
+	<Frame name="InspectArenaTooltip" parent="UIParent" frameStrata="TOOLTIP" hidden="true" clampedToScreen="true">
+		<Size x="300" y="100"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0" />
+		</Anchors>
+		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<Color r="0" b="0" g="0"/>
+			<EdgeSize val="16"/>
+		</Backdrop>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3" />
+						<Anchor point="BOTTOMRIGHT" x="-4" y="3" />
+					</Anchors>
+					<Color r="0" g="0" b="0" a="0.9"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="$parentTeamName" parentKey="TeamName" inherits="GameFontNormalLarge">
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-16" />
+					</Anchors>
+				</FontString>
+				<FontString name="$parentRating" parentKey="Rating" inherits="GameFontNormalLarge" text="INSPECT_ARENA_TOOLTIP_RATING">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentTeamName" relativePoint="BOTTOM" x="0" y="-4" />
+					</Anchors>
+				</FontString>
+				<FontString name="$parentNameLabel" parentKey="NameLabel" inherits="GameFontNormal" text="HELPFRAME_CHARACTER_TITLE">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentRating" relativePoint="BOTTOM" x="-110" y="-26" />
+					</Anchors>
+				</FontString>
+				<FontString name="$parentWinLoseLabel" parentKey="WinLoseLabel" inherits="GameFontNormal" text="WIN_LOSS">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentNameLabel" relativePoint="RIGHT" x="70" y="0" />
+					</Anchors>
+				</FontString>
+				<FontString name="$parentRatingLabel" parentKey="RatingLabel" inherits="GameFontNormal" text="RATING">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentWinLoseLabel" relativePoint="RIGHT" x="60" y="0" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentBanner" parentKey="Banner">
+				<Size x="50" y="100"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="0" y="-2" />
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBanner" parentKey="Banner" file="Interface\PVPFrame\PVP-Banner-2">
+							<Size x="45" y="90"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0" />
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture name="$parentBorder" parentKey="Border">
+							<Size x="45" y="90"/>
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="$parentBanner" relativePoint="CENTER" x="0" y="0" />
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<Texture name="$parentEmblem" parentKey="Emblem">
+							<Size x="24" y="24"/>
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="$parentBorder" relativePoint="CENTER" x="-5" y="17" />
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentStrip1" parentKey="Strip1" inherits="InspectArenaTooltipStripTemplates">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentNameLabel" relativePoint="BOTTOM" x="110" y="-1" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentStrip2" parentKey="Strip2" inherits="InspectArenaTooltipStripTemplates">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentStrip1" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentStrip3" parentKey="Strip3" inherits="InspectArenaTooltipStripTemplates">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentStrip2" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentStrip4" parentKey="Strip4" inherits="InspectArenaTooltipStripTemplates">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentStrip3" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentStrip5" parentKey="Strip5" inherits="InspectArenaTooltipStripTemplates">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentStrip4" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentStrip6" parentKey="Strip6" inherits="InspectArenaTooltipStripTemplates">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentStrip5" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentStrip7" parentKey="Strip7" inherits="InspectArenaTooltipStripTemplates">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentStrip6" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentStrip8" parentKey="Strip8" inherits="InspectArenaTooltipStripTemplates">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentStrip7" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentStrip9" parentKey="Strip9" inherits="InspectArenaTooltipStripTemplates">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentStrip8" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentStrip10" parentKey="Strip10" inherits="InspectArenaTooltipStripTemplates">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentStrip9" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+			</Frame>
+		</Frames>
+	</Frame>
+	<Frame name="InspectRatedBattlegroundTooltip" parent="UIParent" frameStrata="TOOLTIP" hidden="true" clampedToScreen="true">
+		<Size x="200" y="130"/>
+		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<Color r="0" b="0" g="0"/>
+			<EdgeSize>
+				<AbsValue val="16"/>
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="16"/>
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="4" right="4" top="4" bottom="4"/>
+			</BackgroundInsets>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="WeeklyLabel" name="$parentWeeklyLabel" inherits="GameFontNormalMed3" text="RATED_BATTLEGROUND_TOOLTIP_WEEKSTATS">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="15" y="-15"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="WeeklyBest" name="$parentWeeklyBest" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentWeeklyLabel" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="WeeklyGamesPlayed" name="$parentWeeklyGamesPlayed" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentWeeklyBest" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="SeasonLabel" name="$parentSeasonLabel" inherits="GameFontNormalMed3" text="RATED_BATTLEGROUND_TOOLTIP_TOTALSTATS">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentWeeklyGamesPlayed" relativePoint="BOTTOMLEFT" x="0" y="-13"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="SeasonBest" name="$parentSeasonBest" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentSeasonLabel" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="SeasonGamesPlayed" name="$parentSeasonGamesPlayed" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentSeasonBest" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+</Ui>

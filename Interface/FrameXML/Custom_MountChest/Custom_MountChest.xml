@@ -1,0 +1,351 @@
+<!--
+
+	Filename:	Custom_MountChest.xml
+	Project:	Custom Game Interface
+	Author:		Nyll & Blizzard Entertainment
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Script file="Custom_MountChest.lua"/>
+
+    <Button name="Custom_MountChestCardTemplate" virtual="true">
+        <Size x="90" y="100"/>
+        <Animations>
+            <AnimationGroup parentKey="HideDisabledCard">
+                <Scale duration="0.2" scaleX="1.08" scaleY="1.08" order="1"/>
+                <Scale duration="0.2" scaleX="0.9" scaleY="0.9" order="2"/>
+                <Alpha duration="0.3" change="-1" order="2"/>
+                <Scripts>
+                    <OnPlay>
+                        self:GetParent():FrameLevelUp()
+                    </OnPlay>
+                    <OnFinished>
+                        self:GetParent():FrameLevelDown()
+                        self:GetParent():Hide()
+
+                        self:GetParent():GetParent():SetAnimationStage(2)
+                    </OnFinished>
+                </Scripts>
+            </AnimationGroup>
+            <AnimationGroup parentKey="HideCard">
+                <Alpha duration="0.3" change="-1" order="1"/>
+                <Scripts>
+                    <OnFinished>
+                        self:GetParent():Hide()
+                    </OnFinished>
+                </Scripts>
+            </AnimationGroup>
+        </Animations>
+        <Layers>
+        	<Layer level="BACKGROUND">
+                <Texture parentKey="WinnerLight" alphaMode="ADD">
+                    <Size x="400" y="400"/>
+                    <Animations>
+                        <AnimationGroup parentKey="Anim" looping="REPEAT">
+                            <Rotation duration="30" degrees="-360" order="1"/>
+                        </AnimationGroup>
+                    </Animations>
+                    <Anchors>
+                    	<Anchor point="CENTER" x="0" y="0" />
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="WinnerLight2" alphaMode="ADD">
+                    <Size x="500" y="500"/>
+                    <Animations>
+                        <AnimationGroup parentKey="Anim" looping="REPEAT">
+                            <Rotation duration="30" degrees="360" order="1"/>
+                        </AnimationGroup>
+                    </Animations>
+                    <Anchors>
+                        <Anchor point="CENTER" x="0" y="0" />
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="CrestSparks" alpha="0" alphaMode="ADD">
+                    <Animations>
+                        <AnimationGroup parentKey="Anim">
+                            <Alpha duration="0" order="1" change="1"/>
+                            <Alpha smoothing="IN" duration="0.6" order="1" change="-1"/>
+                            <Scale duration="0.6" order="1" scaleX="1.2" scaleY="1.2"/>
+                        </AnimationGroup>
+                    </Animations>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="CrestSparks2" alpha="0" alphaMode="ADD">
+                    <Animations>
+                        <AnimationGroup parentKey="Anim">
+                            <Alpha duration="0" order="1" change="1"/>
+                            <Alpha smoothing="OUT" duration="0.42" order="1" change="-1"/>
+                            <Scale smoothing="IN" duration="1" order="1" scaleX="0" scaleY="0"/>
+                        </AnimationGroup>
+                    </Animations>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+        	</Layer>
+        	<Layer level="ARTWORK">
+                <Texture parentKey="Background" file="Interface\Store\CardBackground">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="2" y="-2" />
+                        <Anchor point="BOTTOMRIGHT" x="-2" y="2" />
+                    </Anchors>
+                    <TexCoords left="0.24609375" right="0.75390625" top="0.24609375" bottom="0.75390625"/>
+                    <Color r="0.8" g="0.8" b="0.8"/>
+                </Texture>
+        	</Layer>
+        </Layers>
+        <Frames>
+            <PlayerModel name="$parentModel" parentKey="Model">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="2" y="-2" />
+                    <Anchor point="BOTTOMRIGHT" x="-2" y="2" />
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        self:SetFrameLevel(self:GetParent():GetFrameLevel())
+                        self:SetCreature(130061)
+                        self:SetRotation(0.40, false)
+                    </OnLoad>
+                </Scripts>
+            </PlayerModel>
+            <Frame name="$parentNameFrame" parentKey="NameFrame" hidden="true">
+                <Size y="34"/>
+                <Anchors>
+                	<Anchor point="BOTTOMLEFT" x="0" y="0" />
+                    <Anchor point="BOTTOMRIGHT" x="0" y="0" />
+                </Anchors>
+                <Layers>
+                	<Layer level="BACKGROUND">
+                        <Texture name="$parentBackground" parentKey="Background">
+                        	<Color r="0" g="0" b="0"/>
+                        </Texture>
+                	</Layer>
+                	<Layer level="BORDER">
+                        <FontString name="$parentName" parentKey="Name" inherits="GameFontNormal9">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="8" y="2" />
+                                <Anchor point="BOTTOMRIGHT" x="-8" y="4" />
+                            </Anchors>
+                        </FontString>
+                	</Layer>
+                </Layers>
+            </Frame>
+            <Frame name="$parentDisableFrame" parentKey="DisableFrame" hidden="true">
+                <Size y="20"/>
+                <Anchors>
+                	<Anchor point="LEFT" x="0" y="0" />
+                    <Anchor point="RIGHT" x="0" y="0" />
+                </Anchors>
+                <Layers>
+                	<Layer level="BACKGROUND">
+                        <Texture name="$parentBackground" parentKey="Background">
+                        	<Color r="0.1" g="0.3" b="0.1" a="0.8"/>
+                        </Texture>
+                	</Layer>
+                	<Layer level="BORDER">
+                        <FontString name="$parentText" parentKey="Text" inherits="GameFontNormal10" text="MOUNT_CHEST_RECEIVED_LABEL">
+                            <Anchors>
+                            	<Anchor point="CENTER" x="0" y="0" />
+                            </Anchors>
+                        </FontString>
+                	</Layer>
+                </Layers>
+            </Frame>
+            <Frame name="$parentArtFrame" parentKey="ArtFrame" setAllPoints="true">
+                <Animations>
+                    <AnimationGroup parentKey="HideDisabledCard">
+                        <Scale duration="0.2" scaleX="1.08" scaleY="1.08" order="1"/>
+                        <Scale duration="0.2" scaleX="0.9" scaleY="0.9" order="2"/>
+                        <Alpha duration="0.3" change="-1" order="2"/>
+                    </AnimationGroup>
+                </Animations>
+                <Layers>
+                	<Layer level="BORDER">
+                        <Texture name="$parentBorder" parentKey="Border"/>
+                	</Layer>
+                    <Layer level="ARTWORK">
+                        <Texture name="$parentBorderGlow" alphaMode="ADD" hidden="true" alpha="0" parentKey="BorderGlow">
+                            <Animations>
+                                <AnimationGroup parentKey="Glow">
+                                    <Alpha duration="0" change="-1" order="1"/>
+                                    <Alpha duration="0.2" startDelay="0.1" change="1" order="1"/>
+                                    <Alpha duration="0.3" change="-1" order="2"/>
+                                    <Scripts>
+                                        <OnFinished>
+                                            self:GetParent():GetParent():GetParent():GetParent():SetAnimationStage(3)
+                                            self:GetParent():Hide()
+                                        </OnFinished>
+                                    </Scripts>
+                                </AnimationGroup>
+                            </Animations>
+                        </Texture>
+                    </Layer>
+                </Layers>
+            </Frame>
+            <Frame name="$parentNameArtFrame" parentKey="NameArtFrame" toplevel="true" hidden="true">
+                <Size x="280" y="58"/>
+                <Animations>
+                    <AnimationGroup parentKey="Anim">
+                        <Alpha duration="0" change="-1" order="1"/>
+                        <Alpha duration="0.4" change="1" order="2"/>
+                    </AnimationGroup>
+                </Animations>
+                <Anchors>
+                    <Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="-24" />
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture name="$parentBackground" parentKey="Background"/>
+                    </Layer>
+                    <Layer level="BORDER">
+                        <FontString name="$parentName" parentKey="Name" inherits="GameFontNormal11">
+                            <Size x="192" y="24"/>
+                            <Anchors>
+                                <Anchor point="CENTER" x="0" y="2" />
+                            </Anchors>
+                            <Color r="0.1" g="0.1" b="0.1"/>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        self:SetFrameLevel(25)
+                        self.Background:SetAtlas("UI-Frame-Alliance-Ribbon")
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, CustomMountChestCardMixin)
+                self:OnLoad()
+            </OnLoad>
+            <OnUpdate>
+                self:OnUpdate(elapsed)
+            </OnUpdate>
+            <OnEnter>
+                self:OnEnter()
+            </OnEnter>
+            <OnLeave>
+                self:OnLeave()
+            </OnLeave>
+        </Scripts>
+    </Button>
+
+    <Frame name="Custom_MountChestFrame" inherits="StandartBaseBasicFrameTemplate" enableMouse="true" toplevel="true" frameStrata="HIGH" hidden="true">
+        <Size x="640" y="620"/>
+        <Anchors>
+            <Anchor point="CENTER" x="0" y="0" />
+        </Anchors>
+        <Layers>
+        	<Layer level="BACKGROUND">
+                <Texture name="$parentBackground" parentKey="Background">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="14" y="-14" />
+                        <Anchor point="BOTTOMRIGHT" x="-14" y="14" />
+                    </Anchors>
+                	<Color r="0.2" g="0.2" b="0.2"/>
+                </Texture>
+        	</Layer>
+        	<Layer level="BORDER">
+                <Texture name="$parentBackgroundOverlay" parentKey="BackgroundOverlay" alpha="0.5" file="Interface\MountChest\background">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="14" y="-14" />
+                        <Anchor point="BOTTOMRIGHT" x="-14" y="14" />
+                    </Anchors>
+                </Texture>
+        	</Layer>
+        </Layers>
+        <Frames>
+            <Button name="$parentCloseButton" parentKey="closeButton">
+                <Size x="56" y="56"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" x="8" y="8" />
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        self.NormalTexture:SetAtlas("Roulette-exit")
+                        self.PushedTexture:SetAtlas("Roulette-exit-pressed")
+                        self.HighlightTexture:SetAtlas("Roulette-exit-hover")
+                    </OnLoad>
+                    <OnClick function="UIPanelCloseButton_OnClick"/>
+                </Scripts>
+                <NormalTexture parentKey="NormalTexture"/>
+                <PushedTexture parentKey="PushedTexture"/>
+                <HighlightTexture parentKey="HighlightTexture" alphaMode="ADD" alpha="0.1"/>
+            </Button>
+            <Frame name="$parentHeaderFrame" parentKey="HeaderFrame">
+                <Size x="280" y="44"/>
+                <Anchors>
+                    <Anchor point="TOP" x="0" y="16" />
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture name="$parentBackground" parentKey="Background"/>
+                    </Layer>
+                    <Layer level="BORDER">
+                        <FontString name="$parentTitleText" parentKey="TitleText" font="Interface\CustomFonts\OpenSans-Bold.ttf" text="MOUNT_CHEST_LABEL">
+                            <Anchors>
+                                <Anchor point="CENTER" x="0" y="0" />
+                            </Anchors>
+                            <FontHeight val="15"/>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        self.Background:SetAtlas("Roulette-title-background")
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+            <Button name="$parentTakeButton" motionScriptsWhileDisabled="true" toplevel="true" parentKey="TakeButton">
+                <Size x="167" y="46"/>
+                <Anchors>
+                    <Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="10" />
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <FontString name="$parentText" parentKey="Text" font="Interface\CustomFonts\DejaVuSans-Bold.ttf" text="MOUNT_CHEST_TAKE_LABEL">
+                            <Anchors>
+                                <Anchor point="CENTER" x="0" y="0" />
+                            </Anchors>
+                            <Color r="0.86" g="0.92" b="0.95"/>
+                            <FontHeight val="14"/>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        self.NormalTexture:SetAtlas("Roulette-button-spin")
+                        self.PushedTexture:SetAtlas("Roulette-button-spin-pressed")
+                        self.DisabledTexture:SetAtlas("Roulette-button-spin-pressed")
+                        self.HighlightTexture:SetAtlas("Roulette-button-spin-hover")
+
+                        self.DisabledTexture:SetDesaturated(true)
+                    </OnLoad>
+                    <OnClick>
+                        if self.isCloseButton then
+                            UIPanelCloseButton_OnClick(self)
+                        else
+                            self:Disable()
+                            SendServerMessage("ACMSG_LOTTERY_MOUNT_CHEST_OPEN")
+                        end
+                    </OnClick>
+                </Scripts>
+                <NormalTexture parentKey="NormalTexture"/>
+                <PushedTexture parentKey="PushedTexture"/>
+                <DisabledTexture parentKey="DisabledTexture"/>
+                <HighlightTexture parentKey="HighlightTexture" alphaMode="ADD" alpha="0.2"/>
+            </Button>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, MountChestFrameMixin)
+                self:OnLoad()
+            </OnLoad>
+        </Scripts>
+    </Frame>
+</Ui>

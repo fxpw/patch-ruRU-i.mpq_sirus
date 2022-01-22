@@ -1,0 +1,38 @@
+<!--
+
+	Filename:	Custom_ArenaSpectatorUI.xml
+	Project:	Sirus Game Interface
+	Author:		Infbelial, Merci aka loTEDve
+	E-mail:		loTEDve@GMail.CoM
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="Textures\Textures.lua"/>
+	<Script file="Sounds\Sounds.lua"/>
+
+	<Script file="Classes\Stack.lua"/>
+	<Script file="Classes\HealthBar.lua"/>
+	<Script file="Classes\PowerBar.lua"/>
+	<Script file="Classes\CastBar.lua"/>
+	<Script file="Classes\AuraIcon.lua"/>
+	<Script file="Classes\EnrageOrb.lua"/>
+	<Script file="Classes\ClickIcon.lua"/>
+	<Script file="Classes\SpellIcon.lua"/>
+	<Script file="Classes\Nameplate.lua"/>
+
+	<Include file="Interface\SpectatorInterface.xml"/>
+
+	<Script file="Handlers\Message.lua"/>
+
+	<Script file="Workers\Control.lua"/>
+	<Script file="Workers\Cast.lua"/>
+	<Script file="Workers\Spec.lua"/>
+	<Script file="Workers\Interface.lua"/>
+	<Script file="Workers\Player.lua"/>
+	<Script file="Workers\Data.lua"/>
+	<Script file="Workers\Tooltip.lua"/>
+	<Script file="Workers\Gossip.lua"/>
+
+	<Script file="Custom_ArenaSpectatorUI.lua"/>
+</Ui>

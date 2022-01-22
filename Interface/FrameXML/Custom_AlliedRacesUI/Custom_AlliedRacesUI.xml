@@ -1,0 +1,321 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="Custom_AlliedRacesUI.lua"/>
+
+	<Button name="AlliedRacesModelControlFrameButtonTemplate" virtual="true">
+		<Size x="26" y="25"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="26" y="25"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture name="$parentHighlight" parentKey="Highlight">
+					<Size x="26" y="25"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self.Icon:SetAtlas("AlliedRace-UnlockingFrame-ZoomIn", true)
+				self.Highlight:SetAtlas("AlliedRace-UnlockingFrame-BottomButtonsMouseOverGlow", true)
+			</OnLoad>
+			<OnMouseDown>
+				self.Icon:SetPoint("CENTER", 1, -1);
+			</OnMouseDown>
+			<OnMouseUp>
+				self.Icon:SetPoint("CENTER", 0, 0);
+			</OnMouseUp>
+		</Scripts>
+	</Button>
+
+	<Frame name="AlliedRaceAbilityTemplate" virtual="true">
+		<Size x="300" y="36"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" parentKey="Icon" setAllPoints="true">
+					<Size x ="33" y="33" />
+					<Anchors>
+						<Anchor point="LEFT" x="6" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="$parentText" parentKey="Text" inherits="GameFontBlackMedium" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="10" />
+					</Anchors>
+					<Color r="0.208" g="0" b="0"/>
+				</FontString>
+				<FontString name="$parentRankText" parentKey="RankText" inherits="GameFontBlackMedium" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentIcon" relativePoint="BOTTOMRIGHT" x="10" />
+					</Anchors>
+					<Color r="0.35" g="0.2" b="0"/>
+				</FontString>
+				<Texture name="$parentTraitsBorder" parentKey="TraitsBorder">
+					<Anchors>
+						<Anchor point="LEFT" x="5" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self.TraitsBorder:SetAtlas("AlliedRace-TraitsBorder", true)
+			</OnLoad>
+			<OnEnter>
+				GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -264, 0);
+				GameTooltip:SetHyperlink(GetSpellLink(self.spellID));
+				GameTooltip:Show();
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide();
+			</OnLeave>
+		</Scripts>
+	</Frame>
+
+	<Frame name="AlliedRacesFrame" toplevel="true" parent="UIParent" inherits="PortraitFrameTemplate" hidden="true">
+		<Size x="704" y="607"/>
+		<Anchors>
+			<Anchor point="LEFT" x="20" y="40"/>
+		</Anchors>
+		<Frames>
+			<DressUpModel name="$parentModelFrame" parentKey="ModelFrame" enableMouse="true" inherits="ModelTemplate">
+				<Size x="309" y="570"/>
+				<Anchors>
+					<Anchor point="LEFT" x="5" y="-9"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BORDER">
+						<Texture name="$parentModelBackground" parentKey="ModelBackground">
+							<Size x="315" y="580"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="-2" y="5"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<Texture name="$parentBackgroundOverlay" parentKey="BackgroundOverlay">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="-10" y="-10"/>
+							</Anchors>
+						</Texture>
+					 </Layer>
+				</Layers>
+				<Frames>
+					<CheckButton name="$parentAlliedRacesMaleButton" parentKey="AlliedRacesMaleButton">
+						<Size x="35" y="35"/>
+						<Anchors>
+							<Anchor point="TOPRIGHT" relativeKey="$parent" relativePoint="TOPRIGHT" x="-10" y="-10"/>
+						</Anchors>
+						<NormalTexture parentKey="NormalTexture"/>
+						<CheckedTexture parentKey="CheckedTexture"/>
+						<HighlightTexture parentKey="HighlightTexture"/>
+						<Scripts>
+							<OnClick>
+								local alliedRaceModelFrame = self:GetParent();
+								alliedRaceModelFrame.AlliedRacesFemaleButton:SetChecked(false);
+								local alliedRaceFrame = alliedRaceModelFrame:GetParent();
+								alliedRaceFrame:SetRaceNameForGender("male");
+								alliedRaceFrame:UpdateModel(self.MaleModelID);
+								PlaySound("igInventoryRotateCharacter");
+							</OnClick>
+							<OnLoad>
+								self.NormalTexture:SetAtlas("AlliedRace-UnlockingFrame-Male");
+								self.CheckedTexture:SetAtlas("AlliedRace-UnlockingFrame-GenderSelectionGlow");
+								self.HighlightTexture:SetAtlas("AlliedRace-UnlockingFrame-GenderMouseOverGlow");
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+					<CheckButton name="$parentAlliedRacesFemaleButton" parentKey="AlliedRacesFemaleButton">
+						<Size x="35" y="35"/>
+						<Anchors>
+							<Anchor point="BOTTOM" relativeTo="$parentAlliedRacesMaleButton" relativePoint="BOTTOM" y ="-35"/>
+						</Anchors>
+						<NormalTexture parentKey="NormalTexture"/>
+						<CheckedTexture parentKey="CheckedTexture"/>
+						<HighlightTexture parentKey="HighlightTexture"/>
+						<Scripts>
+							<OnClick>
+								local alliedRaceModelFrame = self:GetParent();
+								alliedRaceModelFrame.AlliedRacesMaleButton:SetChecked(false);
+								local alliedRaceFrame = alliedRaceModelFrame:GetParent();
+								alliedRaceFrame:SetRaceNameForGender("female");
+								alliedRaceFrame:UpdateModel(self.FemaleModelID);
+								PlaySound("igInventoryRotateCharacter");
+							</OnClick>
+							<OnLoad>
+								self.NormalTexture:SetAtlas("AlliedRace-UnlockingFrame-Female");
+								self.CheckedTexture:SetAtlas("AlliedRace-UnlockingFrame-GenderSelectionGlow");
+								self.HighlightTexture:SetAtlas("AlliedRace-UnlockingFrame-GenderMouseOverGlow");
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+					<Button name="$parentZoomInButton" parentKey="ZoomInButton" inherits="AlliedRacesModelControlFrameButtonTemplate">
+						<Size x="26" y="25"/>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOM" x="-50" y="10" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self.zoomIn = true
+								self.Icon:SetAtlas("AlliedRace-UnlockingFrame-ZoomIn", true)
+								self.Highlight:SetAtlas("AlliedRace-UnlockingFrame-BottomButtonsMouseOverGlow", true)
+							</OnLoad>
+							<OnClick>
+								SharedXML_Model_OnMouseWheel(self:GetParent(), 1);
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="$parentZoomOutButton" parentKey="ZoomOutButton" inherits="AlliedRacesModelControlFrameButtonTemplate">
+						<Size x="26" y="25"/>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" relativeTo="$parentZoomInButton" relativePoint="BOTTOMRIGHT"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self.zoomIn = false
+								self.Icon:SetAtlas("AlliedRace-UnlockingFrame-ZoomOut", true)
+								self.Highlight:SetAtlas("AlliedRace-UnlockingFrame-BottomButtonsMouseOverGlow", true)
+							</OnLoad>
+							<OnClick>
+								SharedXML_Model_OnMouseWheel(self:GetParent(), -1);
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="$parentRotateLeftButton" parentKey="RotateLeftButton" inherits="AlliedRacesModelControlFrameButtonTemplate">
+						<Size x="26" y="25"/>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" relativeTo="$parentZoomOutButton" relativePoint="BOTTOMRIGHT"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self.rotateDirection = "left"
+								self.Icon:SetAtlas("AlliedRace-UnlockingFrame-LeftRotation", true)
+								self.Highlight:SetAtlas("AlliedRace-UnlockingFrame-BottomButtonsMouseOverGlow", true)
+							</OnLoad>
+						</Scripts>
+					</Button>
+					<Button name="$parentRotateRightButton" parentKey="RotateRightButton" inherits="AlliedRacesModelControlFrameButtonTemplate">
+						<Size x="26" y="25"/>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" relativeTo="$parentRotateLeftButton" relativePoint="BOTTOMRIGHT"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self.rotateDirection = "right"
+								self.Icon:SetAtlas("AlliedRace-UnlockingFrame-RightRotation", true)
+								self.Highlight:SetAtlas("AlliedRace-UnlockingFrame-BottomButtonsMouseOverGlow", true)
+							</OnLoad>
+						</Scripts>
+					</Button>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						SharedXML_Model_OnLoad(self)
+					</OnLoad>
+					<OnMouseWheel function="SharedXML_Model_OnMouseWheel"/>
+				</Scripts>
+			</DressUpModel>
+			<Frame name="$parentRaceInfoFrame" parentKey="RaceInfoFrame">
+				<Size x="330" y="464"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parent" x="-26" y="-1"/>
+				</Anchors>
+				<Frames>
+					<ScrollFrame name="$parentScrollFrame" parentKey="ScrollFrame" inherits="UIPanelScrollFrameCodeTemplate">
+						<Size x="330" y="520"/>
+						<Anchors>
+							<Anchor point="RIGHT" relativeTo="AlliedRacesFrame" x="-25" y="-36"/>
+						</Anchors>
+						<ScrollChild>
+							<Frame name="$parentChild" parentKey="Child">
+								<Size x="275" y="1"/>
+								<Layers>
+									<Layer level="BACKGROUND">
+										<FontString name="$parentRaceDescriptionText" parentKey="RaceDescriptionText" inherits="QuestFont" justifyH="LEFT">
+											<Size x="255" y="0"/>
+											<Anchors>
+												<Anchor point="TOPLEFT" x="40" y="-10"/>
+											</Anchors>
+											<Color r="0.208" g="0" b="0"/>
+										</FontString>
+										<FontString name="$parentRacialTraitsLabel" parentKey="RacialTraitsLabel" inherits="QuestFont" text="RACIAL_TRAITS">
+											<Anchors>
+												<Anchor point="TOPLEFT" relativeTo="$parentRaceDescriptionText" relativePoint="BOTTOMLEFT" x="0" y="-17"/>
+											</Anchors>
+											<Color r="0.208" g="0" b="0"/>
+										</FontString>
+									</Layer>
+								</Layers>
+							</Frame>
+						</ScrollChild>
+						<Frames>
+							<Slider name="$parentScrollBar" parentKey="ScrollBar" inherits="MinimalScrollBarWithBorderTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="38"/>
+									<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="12"/>
+								</Anchors>
+							</Slider>
+						</Frames>
+						<Scripts>
+							<OnLoad>
+								ScrollFrame_OnLoad(self);
+							</OnLoad>
+						</Scripts>
+					</ScrollFrame>
+				</Frames>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="AlliedRacesRaceName" inherits="Fancy24Font" justifyH="CENTER">
+							<Size x="270" y="40"/>
+							<Anchors>
+								<Anchor point="TOPRIGHT" relativeTo="AlliedRacesFrame" x="-52" y="-38"/>
+							</Anchors>
+							<Color r="0.1" g="0.1" b="0.1"/>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentArtPortrait" parentKey="ArtPortrait">
+				<Size x="61" y="61"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="-6" y="8" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						local parent = self:GetParent()
+						parent.portrait:SetParent(self)
+						parent.portraitFrame:SetParent(self)
+						self:SetFrameLevel(self:GetFrameLevel() + 2)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="FrameBackground">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="Banner"/>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AlliedRacesFrameMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>

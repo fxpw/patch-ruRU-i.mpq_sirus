@@ -1,0 +1,191 @@
+<!--
+
+	Filename:	Custom_TutorialPointer.xml
+	Project:	Custom Game Interface
+	Author:		Nyll & Blizzard Entertainment
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="Custom_TutorialPointer.lua"/>
+
+	<Frame name="Tutorial_PointerUp" virtual="true">
+		<Size x="64" y="64" />
+		<Anchors>
+			<Anchor point="BOTTOM" y="-23" />
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="NPE_ArrowUp" file="Interface\HelpFrame\NewPlayerExperienceParts">
+					<Size x="64" y="64"/>
+					<TexCoords left="0.0009765625" right="0.0634765625" top="0.826171875" bottom="0.951171875"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="NPE_ArrowUpGlow" file="Interface\HelpFrame\NewPlayerExperienceParts" alpha="0.75" alphaMode="ADD">
+					<Size x="64" y="64"/>
+					<TexCoords left="0.0654296875" right="0.1279296875" top="0.697265625" bottom="0.822265625"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Animations>
+			<AnimationGroup parentKey="Anim">
+				<Translation offsetY="50" duration="1" order="1" smoothing="OUT"/>
+				<Alpha change="-1" duration="0.9" startDelay="0.1" order="1" smoothing="IN"/>
+				<Scripts>
+					<OnFinished>
+						self:Play()
+					</OnFinished>
+				</Scripts>
+			</AnimationGroup>
+		</Animations>
+	</Frame>
+	<Frame name="Tutorial_PointerDown" virtual="true">
+		<Size x="64" y="64" />
+		<Anchors>
+			<Anchor point="TOP" y="23" />
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="NPE_ArrowDown" file="Interface\HelpFrame\NewPlayerExperienceParts">
+					<Size x="64" y="64"/>
+					<TexCoords left="0.8935546875" right="0.9560546875" top="0.001953125" bottom="0.126953125"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="NPE_ArrowDownGlow" file="Interface\HelpFrame\NewPlayerExperienceParts" alpha="0.75" alphaMode="ADD">
+					<Size x="64" y="64"/>
+					<TexCoords left="0.8935546875" right="0.9560546875" top="0.130859375" bottom="0.255859375"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Animations>
+			<AnimationGroup parentKey="Anim">
+				<Translation offsetY="-50" duration="1" order="1" smoothing="OUT"/>
+				<Alpha change="-1" duration="0.9" startDelay="0.1" order="1" smoothing="IN"/>
+				<Scripts>
+					<OnFinished>
+						self:Play()
+					</OnFinished>
+				</Scripts>
+			</AnimationGroup>
+		</Animations>
+	</Frame>
+	<Frame name="Tutorial_PointerLeft" virtual="true">
+		<Size x="64" y="64" />
+		<Anchors>
+			<Anchor point="RIGHT" x="23" />
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="NPE_ArrowLeft" file="Interface\HelpFrame\NewPlayerExperienceParts">
+					<Size x="64" y="64"/>
+					<TexCoords left="0.8935546875" right="0.9560546875" top="0.259765625" bottom="0.384765625"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="NPE_ArrowLeftGlow" file="Interface\HelpFrame\NewPlayerExperienceParts" alpha="0.75" alphaMode="ADD">
+					<Size x="64" y="64"/>
+					<TexCoords left="0.8935546875" right="0.9560546875" top="0.388671875" bottom="0.513671875"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Animations>
+			<AnimationGroup parentKey="Anim">
+				<Translation offsetX="-50" duration="1" order="1" smoothing="OUT"/>
+				<Alpha change="-1" duration="0.9" startDelay="0.1" order="1" smoothing="IN"/>
+				<Scripts>
+					<OnFinished>
+						self:Play()
+					</OnFinished>
+				</Scripts>
+			</AnimationGroup>
+		</Animations>
+	</Frame>
+	<Frame name="Tutorial_PointerRight" virtual="true">
+		<Size x="64" y="64" />
+		<Anchors>
+			<Anchor point="LEFT" x="-23" />
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="NPE_ArrowRight" file="Interface\HelpFrame\NewPlayerExperienceParts">
+					<Size x="64" y="64"/>
+					<TexCoords left="0.8935546875" right="0.9560546875" top="0.517578125" bottom="0.642578125"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="NPE_ArrowRightGlow" file="Interface\HelpFrame\NewPlayerExperienceParts" alpha="0.75" alphaMode="ADD">
+					<Size x="64" y="64"/>
+					<TexCoords left="0.0009765625" right="0.0634765625" top="0.697265625" bottom="0.822265625"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Animations>
+			<AnimationGroup parentKey="Anim">
+				<Translation offsetX="50" duration="1" order="1" smoothing="OUT"/>
+				<Alpha change="-1" duration="0.9" startDelay="0.1" order="1" smoothing="IN"/>
+				<Scripts>
+					<OnFinished>
+						self:Play()
+					</OnFinished>
+				</Scripts>
+			</AnimationGroup>
+		</Animations>
+	</Frame>
+
+	<Frame name="TutorialPointerFrame" virtual="true" parent="UIParent" toplevel="true" frameStrata="FULLSCREEN_DIALOG">
+		<Size x="75" y="75" />
+		<Frames>
+			<Frame parentKey="Arrow_UP1" hidden="true" inherits="Tutorial_PointerUp" frameLevel="100"/>
+			<Frame parentKey="Arrow_UP2" hidden="true" inherits="Tutorial_PointerUp" frameLevel="100"/>
+			<Frame parentKey="Arrow_DOWN1" hidden="true" inherits="Tutorial_PointerDown" frameLevel="100"/>
+			<Frame parentKey="Arrow_DOWN2" hidden="true" inherits="Tutorial_PointerDown" frameLevel="100"/>
+			<Frame parentKey="Arrow_LEFT1" hidden="true" inherits="Tutorial_PointerLeft" frameLevel="100"/>
+			<Frame parentKey="Arrow_LEFT2" hidden="true" inherits="Tutorial_PointerLeft" frameLevel="100"/>
+			<Frame parentKey="Arrow_RIGHT1" hidden="true" inherits="Tutorial_PointerRight" frameLevel="100"/>
+			<Frame parentKey="Arrow_RIGHT2" hidden="true" inherits="Tutorial_PointerRight" frameLevel="100"/>
+
+			<Frame parentKey="Content" name="$parentContent" clampedToScreen="true" inherits="GlowBoxTemplate">
+				<Size x="240" y="100"/>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="Text" setAllPoints="true" inherits="GameFontNormalLarge" justifyH="LEFT">
+							<Size x="200" y="0"/>
+							<Anchors>
+								<Anchor point="CENTER" />
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+
+			<PlayerModel parentKey="Model" enableMouse="false" frameStrata="TOOLTIP" toplevel="true">
+				<Size x="232" y="232" />
+				<Anchors>
+					<Anchor point="CENTER" x="0" y="0" />
+				</Anchors>
+			</PlayerModel>
+
+			<Frame parentKey="Glow" frameLevel="110" alpha="0.25">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentContent" x="-12" y="12"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentContent" x="12" y="-12"/>
+				</Anchors>
+				<Animations>
+					<AnimationGroup looping="BOUNCE">
+						<Alpha change="1" duration="0.5" order="1"/>
+						<Scripts>
+							<OnLoad>
+								self:Play();
+							</OnLoad>
+						</Scripts>
+					</AnimationGroup>
+				</Animations>
+				<Backdrop edgeFile="Interface\TutorialFrame\UI-TutorialFrame-CalloutGlow" alphaMode="ADD">
+					<EdgeSize val="20"/>
+				</Backdrop>
+			</Frame>
+		</Frames>
+	</Frame>
+</Ui>

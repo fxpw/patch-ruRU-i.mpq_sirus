@@ -1,0 +1,216 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_AuctionHouseAuctionsFrame.lua"/>
+
+	<Button name="AuctionHouseAuctionsFrameTabTemplate" inherits="AuctionHouseFrameTopTabTemplate" virtual="true">
+		<Scripts>
+			<OnClick>
+				PlaySound("AuctionWindowOpen");
+				self:GetParent():SetTab(self:GetID());
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Button name="AuctionHouseAuctionsSummaryLineTemplate" inherits="ScrollListLineTextTemplate" virtual="true">
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="14" y="14"/>
+					<Anchors>
+						<Anchor point="LEFT" x="4" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIconBorder" parentKey="IconBorder">
+					<Size x="16" y="16"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentIcon"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseAuctionsSummaryLineMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnEvent>
+				self:OnHide()
+			</OnEvent>
+		</Scripts>
+		<HighlightTexture name="$parentHighlightTexture" parentKey="HighlightTexture" alphaMode="ADD">
+			<Anchors>
+				<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="0" y="0"/>
+				<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+			</Anchors>
+		</HighlightTexture>
+	</Button>
+
+	<Frame name="AuctionHouseAuctionsFrameTemplate" virtual="true">
+		<Frames>
+			<Button name="$parentAuctionsTab" parentKey="AuctionsTab" id="1" inherits="AuctionHouseAuctionsFrameTabTemplate" text="AUCTION_HOUSE_AUCTIONS_SUB_TAB">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="47" y="-1"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						AuctionHouseFrameTopTab_OnLoad(self)
+
+						local parent = self:GetParent()
+						if not parent.Tabs then
+							parent.Tabs = {}
+						end
+						table.insert(parent.Tabs, self)
+					</OnLoad>
+				</Scripts>
+			</Button>
+
+			<Button name="$parentBidsTab" parentKey="BidsTab" id="2" inherits="AuctionHouseAuctionsFrameTabTemplate" text="AUCTION_HOUSE_BIDS_SUB_TAB">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAuctionsTab" relativePoint="TOPRIGHT" x="0" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						AuctionHouseFrameTopTab_OnLoad(self)
+
+						local parent = self:GetParent()
+						if not parent.Tabs then
+							parent.Tabs = {}
+						end
+						table.insert(parent.Tabs, self)
+					</OnLoad>
+				</Scripts>
+			</Button>
+
+			<Button name="$parentCancelAuctionButton" parentKey="CancelAuctionButton" inherits="UIPanelButtonTemplate" text="AUCTION_HOUSE_CANCEL_AUCTION_BUTTON">
+				<Size x="158" y="22"/>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="-3" y="-22"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, CancelAuctionButtonMixin)
+					</OnLoad>
+					<OnClick>
+						self:OnClick(button)
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<Frame name="$parentBuyoutFrame" parentKey="BuyoutFrame" inherits="AuctionHouseBuyoutFrameTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentCancelAuctionButton" relativePoint="RIGHT"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentBidFrame" parentKey="BidFrame" inherits="AuctionHouseBidFrameTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentBuyoutFrame" relativePoint="LEFT" x="-60" y="0"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentSummaryList" parentKey="SummaryList" inherits="ScrollListTemplate, AuctionHouseBackgroundTemplate">
+				<Attributes>
+					<Attribute name="backgroundAtlas" value="auctionhouse-background-summarylist" type="string"/>
+				</Attributes>
+				<Size x="168" y="0"/>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentAuctionsTab" relativePoint="BOTTOM" x="0" y="2"/>
+					<Anchor point="BOTTOM" relativeTo="$parentCancelAuctionButton" relativePoint="TOP"/>
+					<Anchor point="LEFT" x="-1"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, AuctionHouseAuctionsSummaryListMixin)
+						self:OnLoad()
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Button name="$parentItemDisplay" parentKey="ItemDisplay" inherits="AuctionHouseItemDisplayTemplate" hidden="true">
+				<Attributes>
+					<Attribute name="itemButtonXOffset" value="22" type="number"/>
+					<Attribute name="itemButtonYOffset" value="-2" type="number"/>
+					<Attribute name="backgroundAtlas" value="auctionhouse-background-buy-noncommodities-header" type="string"/>
+				</Attributes>
+				<Size x="623" y="86"/>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentAuctionsTab" relativePoint="BOTTOM" y="2"/>
+					<Anchor point="LEFT" relativeTo="$parentSummaryList" relativePoint="RIGHT" x="0"/>
+				</Anchors>
+			</Button>
+
+			<Frame name="$parentAllAuctionsList" parentKey="AllAuctionsList" inherits="AuctionHouseItemListTemplate">
+				<Attributes>
+					<Attribute name="backgroundAtlas" value="auctionhouse-background-index" type="string"/>
+					<Attribute name="refreshFrameXOffset" value="-4" type="number"/>
+					<Attribute name="refreshFrameYOffset" value="34" type="number"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentSummaryList" relativePoint="TOP" x="0" y="-1"/>
+					<Anchor point="LEFT" relativeTo="$parentSummaryList" relativePoint="RIGHT" x="0" y="0"/>
+					<Anchor point="RIGHT" x="-5" y="0"/>
+					<Anchor point="BOTTOM" relativeTo="$parentSummaryList" relativePoint="BOTTOM"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentBidsList" parentKey="BidsList" inherits="AuctionHouseItemListTemplate">
+				<Attributes>
+					<Attribute name="backgroundAtlas" value="auctionhouse-background-index" type="string"/>
+					<Attribute name="refreshFrameXOffset" value="-4" type="number"/>
+					<Attribute name="refreshFrameYOffset" value="34" type="number"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAllAuctionsList" relativePoint="TOPLEFT"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentAllAuctionsList" relativePoint="BOTTOMRIGHT"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentItemList" parentKey="ItemList" inherits="AuctionHouseItemListTemplate" hidden="true">
+				<Attributes>
+					<Attribute name="backgroundAtlas" value="auctionhouse-background-auctions" type="string"/>
+					<Attribute name="refreshFrameXOffset" value="-4" type="number"/>
+					<Attribute name="refreshFrameYOffset" value="133" type="number"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentItemDisplay" relativePoint="BOTTOM" x="0" y="-14"/>
+					<Anchor point="LEFT" relativeTo="$parentItemDisplay" relativePoint="LEFT" x="0" y="0"/>
+					<Anchor point="RIGHT" relativeTo="$parentAllAuctionsList" relativePoint="RIGHT"/>
+					<Anchor point="BOTTOM" relativeTo="$parentSummaryList" relativePoint="BOTTOM"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentCommoditiesList" parentKey="CommoditiesList" inherits="AuctionHouseCommoditiesListTemplate" hidden="true">
+				<Attributes>
+					<Attribute name="backgroundAtlas" value="auctionhouse-background-auctions" type="string"/>
+					<Attribute name="searchContext" value="AuctionsCommodities" type="string"/>
+					<Attribute name="refreshFrameXOffset" value="-4" type="number"/>
+					<Attribute name="refreshFrameYOffset" value="133" type="number"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentItemList" relativePoint="TOPLEFT"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentItemList" relativePoint="BOTTOMRIGHT"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseAuctionsFrameMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+		</Scripts>
+	</Frame>
+</Ui>

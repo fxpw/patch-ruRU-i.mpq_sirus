@@ -1,0 +1,567 @@
+<!--
+
+	Filename:	AccountLogin.xml
+	Project:	Sirus Game Interface
+	Author:		Nyll
+	E-mail:		nyll@sirus.su
+	Web:		https://sirus.su/
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="AccountLogin.lua"/>
+
+	<Frame name="LoginUIFrameTemplate" frameStrata="HIGH" virtual="true">
+		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<BackgroundInsets left="5" right="5" top="5" bottom="5"/>
+			<TileSize val="16"/>
+			<EdgeSize val="16"/>
+			<Color r="0" g="0" b="0" a="0.70"/>
+			<BorderColor r="0" g="0" b="0" a="0.70"/>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentTittle" inherits="TOSFont" justifyH="CENTER" parentKey="Tittle">
+					<Color r="1" g="1" b="1"/>
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-9"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+	<EditBox name="AccountLoginEditBoxTemplate" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentTittleText" inherits="AccountLoginTextFont" justifyH="CENTER" parentKey="TittleText">
+					<Anchors>
+						<Anchor point="BOTTOM" relativePoint="TOP" y="2" x="2.5"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Glues\Common\Glue-Tooltip-Border" tile="true">
+			<BackgroundInsets left="10" right="5" top="4" bottom="9"/>
+			<TileSize val="16"/>
+			<EdgeSize val="16"/>
+			<Color r="0" g="0" b="0" a="0.70"/>
+			<BorderColor r="0.91" g="0.78" b="0.53" a="0.60"/>
+		</Backdrop>
+		<FontString inherits="GlueEditBoxFont"/>
+		<TextInsets>
+			<AbsInset left="14" right="5" bottom="5"/>
+		</TextInsets>
+		<Scripts>
+			<OnEditFocusGained>
+				self:SetBackdropBorderColor(0.91, 0.78, 0.53, 1)
+				self:HighlightText()
+			</OnEditFocusGained>
+			<OnEditFocusLost>
+				self:HighlightText(0, 0)
+				self:SetBackdropBorderColor(0.91, 0.78, 0.53, 0.60)
+			</OnEditFocusLost>
+		</Scripts>
+	</EditBox>
+
+	<ModelFFX name="AccountLogin" toplevel="true" parent="GlueParent" setAllPoints="true" enableKeyboard="true" hidden="true" fogNear="0" fogFar="1200" glow="0.08">
+		<Frames>
+			<Frame name="AccountLoginBackground" setAllPoints="true">
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture name="AccountLoginBackgroundTexture"/>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Model name="AccountLoginBackgroundModel" setAllPoints="true"/>
+				</Frames>
+				<Scripts>
+					<OnLoad function="AccountLoginBackground_OnLoad"/>
+				</Scripts>
+			</Frame>
+			<Frame name="AccountLoginUI" setAllPoints="true" toplevel="true" hidden="true">
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="Logo" file="Interface\Custom_LoginScreen\Logo">
+							<Size x="226" y="130"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="40" y="-15"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Frame name="$parentLeftButtonsFrame">
+						<Size x="200" y="125"/>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" x="20" y="20"/>
+						</Anchors>
+						<Frames>
+							<Button name="GlueForumButtons" inherits="GlueButtonCustomTemplate" text="FORUM">
+								<Size x="150" y="28"/>
+								<Anchors>
+									<Anchor point="BOTTOM" y="6"/>
+								</Anchors>
+								<Scripts>
+									<OnClick>
+										LaunchURL("https://forum.sirus.su")
+									</OnClick>
+								</Scripts>
+							</Button>
+							<Button name="GlueSiteButtons" inherits="GlueButtonCustomTemplate" text="SERVER_WEB_SITE">
+								<Size x="150" y="28"/>
+								<Anchors>
+									<Anchor point="BOTTOM" relativeTo="GlueForumButtons" relativePoint="TOP" y="6"/>
+								</Anchors>
+								<Scripts>
+									<OnClick>
+										LaunchURL("https://sirus.su")
+									</OnClick>
+								</Scripts>
+							</Button>
+							<Button name="GlueAccountCreateButtons" inherits="GlueButtonCustomTemplate" text="LOGINBUTTON_ACCOUNTCREATE">
+								<Size x="150" y="28"/>
+								<Anchors>
+									<Anchor point="BOTTOM" relativeTo="GlueSiteButtons" relativePoint="TOP" y="6"/>
+								</Anchors>
+								<Scripts>
+									<OnClick>
+										LaunchURL("https://welcome.sirus.su/")
+									</OnClick>
+								</Scripts>
+							</Button>
+						</Frames>
+					</Frame>
+					<Frame name="$parentRightButtonsFrame">
+						<Size x="200" y="90"/>
+						<Anchors>
+							<Anchor point="BOTTOMRIGHT" x="-20" y="20"/>
+						</Anchors>
+						<Frames>
+							<Button name="GlueQuitGameButtons" inherits="GlueButtonCustomTemplate">
+								<Size x="150" y="28"/>
+								<Anchors>
+									<Anchor point="BOTTOM" y="6"/>
+								</Anchors>
+								<Scripts>
+									<OnClick>
+										QuitGame()
+									</OnClick>
+									<OnLoad>
+										self:SetText(LOGINBUTTON_QUITGAME)
+									</OnLoad>
+								</Scripts>
+							</Button>
+							<Button name="GlueOptionsButtons" inherits="GlueButtonCustomTemplate">
+								<Size x="150" y="28"/>
+								<Anchors>
+									<Anchor point="BOTTOM" relativeTo="GlueQuitGameButtons" relativePoint="TOP" y="6"/>
+								</Anchors>
+								<Scripts>
+									<OnClick>
+										OptionsSelectFrame:Show()
+									</OnClick>
+									<OnLoad>
+										self:SetText(LOGINBUTTON_OPTIONS)
+									</OnLoad>
+								</Scripts>
+							</Button>
+							<Button name="GlueVoteButtons" inherits="GlueButtonCustomTemplate" text="SERVER_VOTE">
+								<Size x="150" y="28"/>
+								<Anchors>
+									<Anchor point="BOTTOM" relativeTo="GlueOptionsButtons" relativePoint="TOP" y="6"/>
+								</Anchors>
+								<Scripts>
+									<OnClick>
+										LaunchURL("https://sirus.su/vote/mmotop")
+									</OnClick>
+								</Scripts>
+							</Button>
+							<Button name="GlueDonateButtons" inherits="GlueButtonCustomTemplate" text="DONATE">
+								<Size x="150" y="28"/>
+								<Anchors>
+									<Anchor point="BOTTOM" relativeTo="GlueVoteButtons" relativePoint="TOP" y="6"/>
+								</Anchors>
+								<Scripts>
+									<OnClick>
+										LaunchURL("https://sirus.su/user/pay")
+									</OnClick>
+								</Scripts>
+							</Button>
+						</Frames>
+					</Frame>
+					<Frame name="$parentLoginBoxFrame">
+						<Size x="200" y="230"/>
+						<Anchors>
+							<Anchor point="CENTER" x="0" y="-110"/>
+						</Anchors>
+						<Frames>
+							<EditBox name="AccountLoginAccountEdit" inherits="AccountLoginEditBoxTemplate" letters="320">
+								<Size x="200" y="37"/>
+								<Anchors>
+									<Anchor point="TOP">
+										<Offset>
+											<AbsDimension x="-2" y="-30"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self.TittleText:SetText(LOGINBOX_LOGIN)
+									</OnLoad>
+									<OnTabPressed>
+										AccountLoginPasswordEdit:SetFocus()
+									</OnTabPressed>
+									<OnEscapePressed>
+										QuitGame()
+									</OnEscapePressed>
+									<OnEnterPressed>
+										AccountLogin_Login()
+									</OnEnterPressed>
+								</Scripts>
+							</EditBox>
+
+							<EditBox name="AccountLoginPasswordEdit" inherits="AccountLoginEditBoxTemplate" letters="16" password="1">
+								<Size x="200" y="37"/>
+								<Anchors>
+									<Anchor point="TOP" relativeTo="AccountLoginAccountEdit" relativePoint="BOTTOM" y="-15"/>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self.TittleText:SetText(LOGINBOX_PASSWORD)
+									</OnLoad>
+									<OnTabPressed>
+										AccountLoginAccountEdit:SetFocus()
+									</OnTabPressed>
+									<OnEscapePressed>
+										QuitGame()
+									</OnEscapePressed>
+									<OnEnterPressed>
+										AccountLogin_Login()
+									</OnEnterPressed>
+								</Scripts>
+							</EditBox>
+
+							<CheckButton name="AccountLoginSaveAccountName">
+								<Size x="25" y="25"/>
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="AccountLoginPasswordEdit" relativePoint="BOTTOMLEFT" x="10"/>
+								</Anchors>
+								<Layers>
+									<Layer level="ARTWORK">
+										<FontString name="$parentTittleText" inherits="AccountLoginTextFont" justifyH="CENTER" parentKey="TittleText">
+											<Anchors>
+												<Anchor point="LEFT" relativeTo="$parent" relativePoint="RIGHT" y="2"/>
+											</Anchors>
+										</FontString>
+									</Layer>
+								</Layers>
+								<NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
+								<PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
+								<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
+								<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
+								<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
+								<Scripts>
+									<OnLoad>
+										self.TittleText:SetText(LOGINBOX_REMEMBEME)
+									</OnLoad>
+									<OnClick>
+										if self:GetChecked() then
+										AccountLoginAutoLogin.TittleText:SetTextColor(0.91, 0.78, 0.53)
+										AccountLoginAutoLogin:Enable()
+										else
+										AccountLoginAutoLogin.TittleText:SetTextColor(0.5, 0.5, 0.5)
+										AccountLoginAutoLogin:Disable()
+										AccountLoginAutoLogin:SetChecked(0)
+										end
+									</OnClick>
+								</Scripts>
+							</CheckButton>
+
+							<CheckButton name="AccountLoginAutoLogin">
+								<Size x="25" y="25"/>
+								<Anchors>
+									<Anchor point="TOP" relativeTo="AccountLoginSaveAccountName" relativePoint="BOTTOM"/>
+								</Anchors>
+								<Layers>
+									<Layer level="ARTWORK">
+										<FontString name="$parentTittleText" inherits="AccountLoginTextFont" justifyH="CENTER" parentKey="TittleText">
+											<Anchors>
+												<Anchor point="LEFT" relativeTo="$parent" relativePoint="RIGHT" y="2"/>
+											</Anchors>
+										</FontString>
+									</Layer>
+								</Layers>
+								<NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
+								<PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
+								<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
+								<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
+								<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
+								<Scripts>
+									<OnLoad>
+										self.TittleText:SetText(LOGINBOX_AUTOLOGIN)
+										if not AccountLoginSaveAccountName:GetChecked() then
+										self.TittleText:SetTextColor(0.5, 0.5, 0.5)
+										self:Disable()
+										self:SetChecked(0)
+										end
+									</OnLoad>
+								</Scripts>
+							</CheckButton>
+
+							<Button name="AccountLoginEnter" inherits="GlueButtonCustomTemplate">
+								<Size x="160" y="40"/>
+								<Anchors>
+									<Anchor point="TOP" relativeTo="AccountLoginPasswordEdit" relativePoint="BOTTOM" y="-58"/>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self:SetText(LOGINBOX_ENTER)
+									</OnLoad>
+									<OnClick>
+										AccountLogin_Login()
+									</OnClick>
+								</Scripts>
+							</Button>
+						</Frames>
+					</Frame>
+					<Frame name="ServerAlertFrame" inherits="LoginUIFrameTemplate">
+						<Size>
+							<AbsDimension x="270" y="405"/>
+						</Size>
+						<Anchors>
+							<Anchor point="LEFT">
+								<Offset>
+									<AbsDimension x="10" y="15"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self.Tittle:SetText(USEFUL_INFORMATION)
+								self:SetBackdropBorderColor(0.91, 0.78, 0.53, 1)
+							</OnLoad>
+						</Scripts>
+						<Frames>
+							<ScrollFrame name="ServerAlertScrollFrame" inherits="GlueScrollFrameTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="ServerAlertFrame" relativePoint="TOPLEFT" x="10" y="-35"/>
+									<Anchor point="BOTTOMRIGHT" relativeTo="ServerAlertFrame" relativePoint="BOTTOMRIGHT" x="-30" y="15"/>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self.scrollBarHideable = 1;
+										GlueScrollFrame_OnScrollRangeChanged(self);
+									</OnLoad>
+									<OnScrollRangeChanged>
+										GlueScrollFrame_OnScrollRangeChanged(self, yrange);
+										if (floor(ServerAlertScrollFrame:GetVerticalScrollRange()) > 0) then
+										self.updated = 1;
+										end
+									</OnScrollRangeChanged>
+								</Scripts>
+								<ScrollChild>
+									<SimpleHTML name="ServerAlertText" hyperlinkFormat="|cff06ff07|H%s|h[%s]|h|r">
+										<Size>
+											<AbsDimension x="229" y="350"/>
+										</Size>
+										<Scripts>
+											<OnHyperlinkClick>
+												LaunchURL(link);
+											</OnHyperlinkClick>
+										</Scripts>
+										<FontString inherits="GlueFontHighlightSmall" spacing="2"/>
+										<FontStringHeader1 inherits="GlueFontNormalLarge" spacing="4"/>
+										<FontStringHeader2 inherits="GlueFontHighlight" spacing="4"/>
+									</SimpleHTML>
+								</ScrollChild>
+							</ScrollFrame>
+						</Frames>
+					</Frame>
+					<Frame name="TokenEnterDialog" toplevel="true" setAllPoints="true" hidden="true" enableMouse="true" enableKeyboard="true" frameStrata="FULLSCREEN_DIALOG">
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture setAllPoints="true">
+									<Color a="0.9" r="0" g="0" b="0"/>
+								</Texture>
+							</Layer>
+						</Layers>
+						<Frames>
+							<Frame name="$parentWindow" inherits="LoginUIFrameTemplate" frameStrata="FULLSCREEN_DIALOG" toplevel="true">
+								<Size x="530" y="200"/>
+								<Anchors>
+									<Anchor point="CENTER" x="0" y="0" />
+								</Anchors>
+								<Layers>
+									<Layer level="BACKGROUND">
+										<FontString name="$parentalertText" inherits="AccountLoginTextFont" justifyH="CENTER" parentKey="alertText">
+											<Size x="440" y="60"/>
+											<Anchors>
+												<Anchor point="TOP" x="0" y="-20" />
+											</Anchors>
+										</FontString>
+									</Layer>
+								</Layers>
+								<Frames>
+									<EditBox name="TokenEnterEditBox" inherits="AccountLoginEditBoxTemplate" numeric="true" letters="6">
+										<Size x="300" y="37"/>
+										<Anchors>
+											<Anchor point="CENTER" x="0" y="2" />
+										</Anchors>
+										<Scripts>
+											<OnShow>
+												self:SetText("")
+												self:SetFocus()
+											</OnShow>
+											<OnEscapePressed>
+												TokenEnterDialog_Cancel(self)
+											</OnEscapePressed>
+											<OnEnterPressed>
+												TokenEnterDialog_Okay(self)
+											</OnEnterPressed>
+											<OnTextChanged>
+												TokenEnterOkayButton:SetEnabled(string.len( self:GetText() ) == 6)
+											</OnTextChanged>
+										</Scripts>
+									</EditBox>
+									<Button name="TokenEnterOkayButton" inherits="GlueButtonCustomTemplate">
+										<Size x="190" y="32"/>
+										<Anchors>
+											<Anchor point="BOTTOMLEFT" x="20" y="20" />
+										</Anchors>
+										<Scripts>
+											<OnLoad>
+												self:SetText(OKAY)
+											</OnLoad>
+											<OnClick>
+												TokenEnterDialog_Okay(self)
+											</OnClick>
+										</Scripts>
+									</Button>
+									<Button name="TokenEnterCancelButton" inherits="GlueButtonCustomTemplate">
+										<Size x="190" y="32"/>
+										<Anchors>
+											<Anchor point="BOTTOMRIGHT" x="-20" y="20" />
+										</Anchors>
+										<Scripts>
+											<OnLoad>
+												self:SetText(CANCEL)
+											</OnLoad>
+											<OnClick>
+												TokenEnterDialog_Cancel(self)
+											</OnClick>
+										</Scripts>
+									</Button>
+								</Frames>
+								<Scripts>
+									<OnLoad>
+										self.alertText:SetText(ACCOUNT_TWO_FACTOR_AUTHENTICATION)
+										self.Tittle:SetText(SECURITY_CODE)
+										self:SetBackdropBorderColor(0.91, 0.78, 0.53, 1)
+									</OnLoad>
+								</Scripts>
+							</Frame>
+						</Frames>
+					</Frame>
+					<Frame name="AccountLoginDevTools" setAllPoints="true" toplevel="true" frameStrata="DIALOG" hidden="true">
+						<Frames>
+							<Frame parentKey="RealmListDropDown" name="$parentRealmListDropDown" inherits="GlueDropDownMenuTemplate">
+								<Anchors>
+									<Anchor point="TOP" relativeTo="AccountLoginUILoginBoxFrame" relativePoint="BOTTOM" x="0" y="0" />
+								</Anchors>
+								<Scripts>
+									<OnLoad function="DevToolsRealmListDropDown_OnShow"/>
+								</Scripts>
+							</Frame>
+							<Button name="$parentAccountsDropDown_Button" parentKey="AccountsDropDown_Button">
+								<Size x="32" y="32"/>
+								<Anchors>
+									<Anchor point="LEFT" relativeTo="AccountLoginAccountEdit" relativePoint="RIGHT" x="0" y="2" />
+								</Anchors>
+								<Scripts>
+									<OnClick>
+										ToggleDropDownMenu(self, 1, nil, self:GetParent().AccountsDropDown, self, 25, 25)
+									</OnClick>
+								</Scripts>
+								<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Up"/>
+								<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Down"/>
+								<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+							</Button>
+							<Frame parentKey="AccountsDropDown" name="$parentAccountsDropDown" inherits="GlueDropDownMenuTemplate">
+								<Scripts>
+									<OnShow function="DevToolsAccountsDropDown_OnShow"/>
+								</Scripts>
+							</Frame>
+						</Frames>
+					</Frame>
+				</Frames>
+				<Scripts>
+					<OnLoad function="AccountLoginUI_OnLoad"/>
+					<OnShow function="AccountLoginUI_OnShow"/>
+					<OnHide function="AccountLoginUI_OnHide"/>
+					<OnEvent function="AccountLoginUI_OnEvent"/>
+				</Scripts>
+			</Frame>
+		</Frames>
+	</ModelFFX>
+
+	<Frame name="AccountLoginConnectionErrorFrame" setAllPoints="true" toplevel="true" frameStrata="DIALOG" enableMouse="true" enableKeyboard="true" hidden="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background">
+					<Color r="0" g="0" b="0" a="0.8"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentLogo" parentKey="Logo">
+					<Size x="291" y="160"/>
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-100" />
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<SimpleHTML name="$parentHTMLFrame" hyperlinkFormat="|cff06ff07|H%s|h[%s]|h|r">
+				<Size x="450" y="250"/>
+				<Anchors>
+					<Anchor point="CENTER" x="0" y="-40" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:SetText(ERROR_CONNECTION_HTML)
+					</OnLoad>
+					<OnHyperlinkClick>
+						LaunchURL(link);
+					</OnHyperlinkClick>
+				</Scripts>
+				<FontString inherits="AccountLoginTextFont" spacing="2"/>
+				<FontStringHeader1 inherits="AccountLoginTextFont" spacing="4"/>
+				<FontStringHeader2 inherits="AccountLoginTextFont" spacing="4"/>
+			</SimpleHTML>
+			<Button name="$parentCloseButton" parentKey="CloseButton" text="CLOSE" inherits="GlueButtonCustomTemplate">
+				<Size x="120" y="30"/>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentHTMLFrame" relativePoint="BOTTOM" x="0" y="-10" />
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						QuitGame()
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				self.Logo:SetAtlas("ServerGameLogo-3")
+			</OnLoad>
+			<OnShow>
+				C_Timer:After(0.5, function()
+					StatusDialogClick()
+					GlueDialog:Hide()
+				end)
+
+				AccountLogin:Hide()
+			</OnShow>
+		</Scripts>
+	</Frame>
+</Ui>

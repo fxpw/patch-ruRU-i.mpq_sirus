@@ -1,0 +1,267 @@
+<!--
+
+	Filename:	GlueButtons.xml
+	Project:	Sirus Game Interface
+	Author:		Nyll
+	E-mail:		nyll@sirus.su
+	Web:		https://sirus.su/
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+<Script file="GlueButtons.lua"/>
+	<Button name="AccountLoginButtonsTemplate" virtual="true">
+		<NormalTexture file="Interface\Custom_LoginScreen\CharacterCustomization">
+			<TexCoords left="0.7333984375" right="0.89501953125" top="0.43701171875" bottom="0.45849609375"/>
+		</NormalTexture>
+
+		<PushedTexture file="Interface\Custom_LoginScreen\CharacterCustomization">
+			<TexCoords left="0.7333984375" right="0.89501953125" top="0.43701171875" bottom="0.45849609375"/>
+		</PushedTexture>
+
+		<HighlightTexture file="Interface\Custom_LoginScreen\CharacterCustomization">
+			<TexCoords left="0.7333984375" right="0.89501953125" top="0.46484375" bottom="0.48486328125"/>
+		</HighlightTexture>
+
+		<ButtonText>
+			<Anchors>
+				<Anchor point="CENTER" x="1.3" y="1"/>
+			</Anchors>
+		</ButtonText>
+
+		<NormalFont style="AccountLoginTextFont"/>
+		<HighlightFont style="AccountLoginTextFont"/>
+		<DisabledFont style="AccountLoginTextFont"/>
+	</Button>
+
+	<Button name="GlueButtonMasterTemplate" virtual="true" hidden="false">
+		<Scripts>
+			<OnLoad>
+				self.pulseCounter = 0;
+				self.pulseSign = 1;
+			</OnLoad>
+			<OnUpdate>
+				GlueButtonMaster_OnUpdate(self, elapsed);
+			</OnUpdate>
+			<OnEnter>
+				getglobal(self:GetName().."Rays"):Show();
+				self.startPulse = 1;
+			</OnEnter>
+			<OnLeave>
+				getglobal(self:GetName().."Rays"):Hide();
+				self.startPulse = nil;
+			</OnLeave>
+		</Scripts>
+	</Button>
+
+	<Texture name="GluePanelButtonUpTexture" file="Interface\Glues\Common\Glue-Panel-Button-Up" virtual="true">
+		<TexCoords left="0" right="0.578125" top="0" bottom="0.75"/>
+	</Texture>
+	<Texture name="GluePanelButtonDownTexture" file="Interface\Glues\Common\Glue-Panel-Button-Down" virtual="true">
+		<TexCoords left="0" right="0.578125" top="0" bottom="0.75"/>
+	</Texture>
+	<Texture name="GluePanelButtonDisabledTexture" file="Interface\Glues\Common\Glue-Panel-Button-Disabled" virtual="true">
+		<TexCoords left="0" right="0.578125" top="0" bottom="0.75"/>
+	</Texture>
+	<Texture name="GluePanelButtonHighlightTexture" file="Interface\Glues\Common\Glue-Panel-Button-Highlight" alphaMode="ADD" virtual="true">
+		<TexCoords left="0" right="0.625" top="0" bottom="0.6875"/>
+	</Texture>
+	<Texture name="GluePanelButtonUpTextureBlue" file="Interface\Glues\Common\Glue-Panel-Button-Up-Blue" virtual="true">
+		<TexCoords left="0" right="0.578125" top="0" bottom="0.75"/>
+	</Texture>
+	<Texture name="GluePanelButtonDownTextureBlue" file="Interface\Glues\Common\Glue-Panel-Button-Down-Blue" virtual="true">
+		<TexCoords left="0" right="0.578125" top="0" bottom="0.75"/>
+	</Texture>
+	<Texture name="GluePanelButtonHighlightTextureBlue" file="Interface\Glues\Common\Glue-Panel-Button-Highlight-Blue" alphaMode="ADD" virtual="true">
+		<TexCoords left="0" right="0.625" top="0" bottom="0.6875"/>
+	</Texture>
+
+	<Button name="GlueButtonTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="170" y="45"/>
+		</Size>
+		<ButtonText>
+			<Anchors>
+				<Anchor point="CENTER">
+					<Offset>
+						<AbsDimension x="-3" y="3"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</ButtonText>
+		<NormalFont style="GlueFontNormal"/>
+		<HighlightFont style="GlueFontHighlight"/>
+		<DisabledFont style="GlueFontDisable"/>
+		<NormalTexture inherits="GluePanelButtonUpTexture"/>
+		<PushedTexture inherits="GluePanelButtonDownTexture"/>
+		<DisabledTexture inherits="GluePanelButtonDisabledTexture"/>
+		<HighlightTexture inherits="GluePanelButtonHighlightTexture" alphaMode="ADD"/>
+	</Button>
+	<Button name="GlueButtonTemplateBlue" virtual="true">
+		<Size>
+			<AbsDimension x="170" y="45"/>
+		</Size>
+		<ButtonText>
+			<Anchors>
+				<Anchor point="CENTER">
+					<Offset>
+						<AbsDimension x="-3" y="3"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</ButtonText>
+		<NormalFont style="GlueFontNormal"/>
+		<HighlightFont style="GlueFontHighlight"/>
+		<DisabledFont style="GlueFontDisable"/>
+		<NormalTexture inherits="GluePanelButtonUpTexture"/>
+		<PushedTexture inherits="GluePanelButtonDownTexture"/>
+		<DisabledTexture inherits="GluePanelButtonDisabledTexture"/>
+		<HighlightTexture inherits="GluePanelButtonHighlightTexture" alphaMode="ADD"/>
+	</Button>
+	<Button name="GlueButtonSmallTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="150" y="38"/>
+		</Size>
+		<ButtonText>
+			<Anchors>
+				<Anchor point="CENTER">
+					<Offset>
+						<AbsDimension x="0" y="3"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</ButtonText>
+		<NormalFont style="GlueFontNormalSmall"/>
+		<HighlightFont style="GlueFontHighlightSmall"/>
+		<DisabledFont style="GlueFontDisableSmall"/>
+		<NormalTexture inherits="GluePanelButtonUpTexture"/>
+		<PushedTexture inherits="GluePanelButtonDownTexture"/>
+		<DisabledTexture inherits="GluePanelButtonDisabledTexture"/>
+		<HighlightTexture inherits="GluePanelButtonHighlightTexture" alphaMode="ADD"/>
+	</Button>
+	<Button name="GlueButtonSmallTemplateBlue" virtual="true">
+		<Size>
+			<AbsDimension x="150" y="38"/>
+		</Size>
+		<ButtonText>
+			<Anchors>
+				<Anchor point="CENTER">
+					<Offset>
+						<AbsDimension x="0" y="3"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</ButtonText>
+		<NormalFont style="GlueFontNormalSmall"/>
+		<HighlightFont style="GlueFontHighlightSmall"/>
+		<DisabledFont style="GlueFontDisableSmall"/>
+		<NormalTexture inherits="GluePanelButtonUpTexture"/>
+		<PushedTexture inherits="GluePanelButtonDownTexture"/>
+		<DisabledTexture inherits="GluePanelButtonDisabledTexture"/>
+		<HighlightTexture inherits="GluePanelButtonHighlightTexture" alphaMode="ADD"/>
+	</Button>
+	<Button name="GlueButtonCustomTemplate" virtual="true">
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentLeft" parentKey="Left" file="Interface\Custom_LoginScreen\CharacterCustomization">
+					<Size x="6" y="22"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMLEFT"/>
+					</Anchors>
+					<TexCoords left="0.0673828125" right="0.07568359375" top="0.796875" bottom="0.83935546875"/>
+				</Texture>
+				<Texture name="$parentRight" parentKey="Right" file="Interface\Custom_LoginScreen\CharacterCustomization">
+					<Size x="6" y="22"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.2353515625" right="0.24365234375" top="0.796875" bottom="0.83935546875"/>
+				</Texture>
+				<Texture parentKey="Middle" file="Interface\Custom_LoginScreen\CharacterCustomization">
+					<Size x="12" y="22"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0" />
+					</Anchors>
+					<TexCoords left="0.07568359375" right="0.2353515625" top="0.796875" bottom="0.83935546875"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentLeftHighlight" parentKey="LeftHighlight" file="Interface\Custom_LoginScreen\CharacterCustomization" alpha="0.4" alphaMode="ADD" hidden="true">
+					<Size x="8" y="22"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-3" y="4"/>
+						<Anchor point="BOTTOMLEFT" x="4" y="-3"/>
+					</Anchors>
+					<TexCoords left="0.06640625" right="0.076171875" top="0.73681640625" bottom="0.78173828125"/>
+				</Texture>
+				<Texture name="$parentRightHighlight" parentKey="RightHighlight" file="Interface\Custom_LoginScreen\CharacterCustomization" alpha="0.4" alphaMode="ADD" hidden="true">
+					<Size x="8" y="22"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="4" y="4"/>
+						<Anchor point="BOTTOMRIGHT" x="-4" y="-3"/>
+					</Anchors>
+					<TexCoords left="0.2353515625" right="0.2451171875" top="0.73681640625" bottom="0.78173828125"/>
+				</Texture>
+				<Texture parentKey="MiddleHighlight" file="Interface\Custom_LoginScreen\CharacterCustomization" alpha="0.4" alphaMode="ADD" hidden="true">
+					<Size x="12" y="22"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0" />
+					</Anchors>
+					<TexCoords left="0.076171875" right="0.2353515625" top="0.73681640625" bottom="0.78173828125"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentScriptsFrame" parentKey="ScriptsFrame" enableMouse="false">
+				<Scripts>
+					<OnLoad>
+						self:GetParent().Middle:ClearAllPoints()
+						self:GetParent().Middle:SetPoint("TOPLEFT", self:GetParent().Left, "TOPRIGHT")
+						self:GetParent().Middle:SetPoint("BOTTOMRIGHT", self:GetParent().Right, "BOTTOMLEFT")
+
+						self:GetParent().MiddleHighlight:ClearAllPoints()
+						self:GetParent().MiddleHighlight:SetPoint("TOPLEFT", self:GetParent().LeftHighlight, "TOPRIGHT")
+						self:GetParent().MiddleHighlight:SetPoint("BOTTOMRIGHT", self:GetParent().RightHighlight, "BOTTOMLEFT")
+
+						self:GetParent():HookScript("OnDisable", function(self)
+							self.Left:SetDesaturated(true)
+							self.Right:SetDesaturated(true)
+							self.Middle:SetDesaturated(true)
+						end)
+
+						self:GetParent():HookScript("OnEnable", function(self)
+							self.Left:SetDesaturated(false)
+							self.Right:SetDesaturated(false)
+							self.Middle:SetDesaturated(false)
+						end)
+
+						self:GetParent():HookScript("OnEnter", function(self)
+							if self:IsEnabled() == 1 then
+								self.LeftHighlight:Show()
+								self.RightHighlight:Show()
+								self.MiddleHighlight:Show()
+							end
+						end)
+
+						self:GetParent():HookScript("OnLeave", function(self)
+							self.LeftHighlight:Hide()
+							self.RightHighlight:Hide()
+							self.MiddleHighlight:Hide()
+						end)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<ButtonText>
+			<Anchors>
+				<Anchor point="CENTER" x="1.5" y="2"/>
+			</Anchors>
+		</ButtonText>
+		<NormalFont style="GlueFontButton"/>
+		<HighlightFont style="GlueFontButton"/>
+		<DisabledFont style="GlueFontButtonDisable"/>
+	</Button>
+</Ui>

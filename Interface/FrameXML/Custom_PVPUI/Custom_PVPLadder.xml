@@ -1,0 +1,1502 @@
+<!--
+
+	Filename:	Custom_PVPLadder.xml
+	Project:	Custom Game Interface
+	Author:		Nyll & Blizzard Entertainment
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="Custom_PVPLadder.lua"/>
+
+	<Button name="PVPLadderCategoryButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
+		<Size x="203" y="60"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Background" file="Interface\Common\bluemenu-main">
+					<Size x="224" y="80"/>
+					<TexCoords left="0.00390625" right="0.87890625" top="0.75195313" bottom="0.83007813"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Ring" name="$parentRing" file="Interface\TalentFrame\talent-main">
+					<Size x="100" y="100"/>
+					<Anchors>
+						<Anchor point="LEFT" x="-14" y="-1" />
+					</Anchors>
+					<TexCoords left="0.50000000" right="0.91796875" top="0.00195313" bottom="0.21093750"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="Icon">
+					<Size x="66" y="66"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentRing" x="0" y="0" />
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<ButtonText parentKey="Name" name="$parentName" inherits="GameFontNormalMed3" spacing="2" justifyH="LEFT">
+			<Size x="106" y="0"/>
+			<Anchors>
+				<Anchor point="LEFT" relativeTo="$parentRing" relativePoint="RIGHT" x="-5" y="0" />
+			</Anchors>
+		</ButtonText>
+		<HighlightTexture file="Interface\Common\bluemenu-main" alphaMode="ADD" alpha="0.8">
+			<Size x="224" y="80"/>
+			<TexCoords left="0.00390625" right="0.87890625" top="0.75195313" bottom="0.83007813"/>
+			<Anchors>
+				<Anchor point="CENTER"/>
+			</Anchors>
+		</HighlightTexture>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, PVPLadderCategoryMixin)
+				self:CategoryOnLoad()
+			</OnLoad>
+			<OnClick>
+				self:CategoryClick()
+			</OnClick>
+		</Scripts>
+	</Button>
+	<CheckButton name="PVPLadderFrameBigTabTemplate" virtual="true">
+		<Size x="30" y="30"/>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture file="Interface\SpellBook\SpellBook-SkillLineTab">
+					<Size x="60" y="60"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-3" y="11"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Icon" file="INTERFACE\HELPFRAME\REPORTLAGICON-CHAT">
+					<Size x="30" y="30"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+					<TexCoords left="0.03125" right="0.96875" top="0.03125" bottom="0.96875"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, PVPLadderTabsMixin, PVPLadderCategoryMixin)
+				self.isBigTab = true
+				self:TabOnLoad()
+			</OnLoad>
+			<OnClick>
+				self:TabClick()
+			</OnClick>
+			<OnEnter>
+				local tooltipText = self:GetAttribute("tooltipText")
+
+				if tooltipText then
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+					GameTooltip:SetText(_G[tooltipText])
+					GameTooltip:Show()
+				end
+			</OnEnter>
+			<OnLeave function="GameTooltip_Hide"/>
+		</Scripts>
+		<NormalTexture/>
+		<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
+		<CheckedTexture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD"/>
+	</CheckButton>
+	<CheckButton name="PVPLadderFrameSmallTabTemplate" virtual="true">
+		<Size x="18" y="18"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\SpellBook\SpellBook-SkillLineTab">
+					<Size x="38" y="38"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-2" y="7"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="Icon">
+					<Size x="18" y="18"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, PVPLadderTabsMixin, PVPLadderCategoryMixin)
+				self:TabOnLoad()
+			</OnLoad>
+			<OnClick>
+				self:TabClick()
+			</OnClick>
+			<OnEnter>
+				if self.localizedClassName then
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+					GameTooltip:SetText(self.localizedClassName)
+					GameTooltip:Show()
+				end
+			</OnEnter>
+			<OnLeave function="GameTooltip_Hide"/>
+		</Scripts>
+		<NormalTexture/>
+		<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
+		<CheckedTexture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD"/>
+    </CheckButton>
+	<Button name="PVPLadderScrollPlayerButtonTemplate" virtual="true">
+		<Size x="304" y="24"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0" />
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background">
+					<Color r="1" g="1" b="1" a="0.1"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentFontStringFrame" parentKey="FontStringFrame" setAllPoints="true">
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentNumber" parentKey="Number" inherits="GameFontNormal" text="1">
+							<Size x="50" y="10"/>
+							<Anchors>
+								<Anchor point="LEFT" x="1" y="0" />
+							</Anchors>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+						<FontString name="$parentPlayerName" parentKey="PlayerName" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
+							<Size x="90" y="10"/>
+							<Anchors>
+								<Anchor point="LEFT" x="58" y="0" />
+							</Anchors>
+						</FontString>
+						<FontString name="$parentRating" parentKey="Rating" inherits="GameFontNormal" justifyH="CENTER" justifyV="CENTER">
+							<Size x="60" y="10"/>
+							<Anchors>
+								<Anchor point="RIGHT" x="-13" y="0" />
+							</Anchors>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentRaceIcon" parentKey="RaceIcon">
+				<Size x="18" y="18"/>
+				<Anchors>
+					<Anchor point="CENTER" x="20" y="0" />
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture name="$parentIcon" parentKey="Icon">
+							<Size x="18" y="18"/>
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnter>
+						if self.raceName then
+							GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+							GameTooltip:SetText(self.raceName)
+							GameTooltip:Show()
+						end
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Frame>
+			<Frame name="$parentClassIcon" parentKey="ClassIcon">
+				<Size x="18" y="18"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentRaceIcon" relativePoint="RIGHT" x="2" y="0" />
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture name="$parentIcon" parentKey="Icon">
+							<Size x="18" y="18"/>
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnter>
+						if self.classLocalizedName then
+							GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+							GameTooltip:SetText(self.classLocalizedName)
+							GameTooltip:Show()
+						end
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Frame>
+			<Frame name="$parentFactionIcon" parentKey="FactionIcon">
+				<Size x="20" y="24"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentClassIcon" relativePoint="RIGHT" x="14" y="0" />
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture name="$parentIcon" parentKey="Icon">
+							<Size x="20" y="24"/>
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnter>
+						if self.factionName then
+							GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+							GameTooltip:SetText(self.factionName)
+							GameTooltip:Show()
+						end
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<HighlightTexture alphaMode="ADD" alpha="0.6" file="Interface\Buttons\UI-Listbox-Highlight2">
+			<Color r="1.0" g="0.82" b="0"/>
+		</HighlightTexture>
+		<Scripts>
+			<OnClick>
+				if PVPLadderFrame:GetDetailsPlayerIndex() == self.index then
+					PVPLadderFrame:ShowDetailsFrame(nil)
+				else
+					PVPLadderFrame:ShowDetailsFrame(self.index)
+				end
+			</OnClick>
+		</Scripts>
+	</Button>
+	<Frame name="PVPLadderInfoScrollLeftPlayerFrameTemplate" virtual="true">
+		<Size x="120" y="16"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<FontString name="$parentPlayerName" parentKey="PlayerName" inherits="GameFontNormal12" justifyH="LEFT" text="LlimpintLlimpint">
+					<Size x="100" y="16"/>
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="LEFT" x="18" y="0" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentClassIcon" parentKey="ClassIcon">
+				<Size x="14" y="14"/>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentIcon" parentKey="Icon"/>
+					</Layer>
+				</Layers>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="LEFT" x="0" y="0" />
+				</Anchors>
+				<Scripts>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+						GameTooltip:SetText(self.className)
+						GameTooltip:Show()
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				if not self:GetParent().playerLeftButtons then
+					self:GetParent().playerLeftButtons = {}
+				end
+
+				self:GetParent().playerLeftButtons[#self:GetParent().playerLeftButtons + 1] = self
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="PVPLadderInfoScrollRightPlayerFrameTemplate" virtual="true">
+		<Size x="120" y="16"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<FontString name="$parentPlayerName" parentKey="PlayerName" inherits="GameFontNormal12" justifyH="RIGHT" text="LlimpintLlimpint">
+					<Size x="100" y="16"/>
+					<Anchors>
+						<Anchor point="RIGHT" relativePoint="RIGHT" x="-18" y="0" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentClassIcon" parentKey="ClassIcon">
+				<Size x="14" y="14"/>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentIcon" parentKey="Icon"/>
+					</Layer>
+				</Layers>
+				<Anchors>
+					<Anchor point="RIGHT" relativePoint="RIGHT" x="0" y="0" />
+				</Anchors>
+				<Scripts>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+						GameTooltip:SetText(self.className)
+						GameTooltip:Show()
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				if not self:GetParent().playerRightButtons then
+					self:GetParent().playerRightButtons = {}
+				end
+
+				self:GetParent().playerRightButtons[#self:GetParent().playerRightButtons + 1] = self
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Button name="PVPLadderInfoScrollPlayerButtonTemplate" hidden="true" virtual="true">
+		<Size x="306" y="68"/> <!-- 62 -->
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0" />
+		</Anchors>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentTopBackground" parentKey="TopBackground">
+					<Size y="24"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0" />
+						<Anchor point="TOPRIGHT" x="0" y="0" />
+					</Anchors>
+					<Color r="0.8" g="0.8" b="0.8" a="0.1"/>
+				</Texture>
+				<Texture name="$parentBottomBackground" parentKey="BottomBackground">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentTopBackground" relativePoint="BOTTOMLEFT" x="0" y="-2" />
+						<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+					</Anchors>
+					<Color r="0.8" g="0.8" b="0.8" a="0.1"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="$parentResultLeft" parentKey="ResultLeft" inherits="Fancy16Font" justifyH="LEFT" text="VICTORY_TEXT_ARENA_DRAW">
+					<Size x="100" y="16"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentTopBackground" relativePoint="LEFT" x="10" y="1" />
+					</Anchors>
+					<Color r="1.0" g="0.82" b="0"/>
+				</FontString>
+				<FontString name="$parentResultRight" parentKey="ResultRight" inherits="Fancy15Font" justifyH="RIGHT" text="VICTORY_TEXT_ARENA_DRAW">
+					<Size x="100" y="16"/>
+					<Anchors>
+						<Anchor point="RIGHT" relativeTo="$parentTopBackground" relativePoint="RIGHT" x="-10" y="1" />
+					</Anchors>
+					<Color r="1.0" g="0.82" b="0"/>
+				</FontString>
+				<FontString name="$parentVSLabel" parentKey="VSLabel" inherits="GameFontNormal" justifyH="CENTER" text="vs">
+					<Size x="24" y="16"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentTopBackground" relativePoint="CENTER" x="0" y="1" />
+					</Anchors>
+				</FontString>
+				<FontString name="$parentRatingLeft" parentKey="RatingLeft" inherits="GameFontNormal" justifyH="RIGHT" text="111">
+					<Size x="60" y="16"/>
+					<Anchors>
+						<Anchor point="RIGHT" relativeTo="$parentVSLabel" relativePoint="LEFT" x="0" y="0" />
+					</Anchors>
+				</FontString>
+				<FontString name="$parentRatingRight" parentKey="RatingRight" inherits="GameFontNormal" justifyH="LEFT" text="2513">
+					<Size x="60" y="16"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentVSLabel" relativePoint="RIGHT" x="0" y="0" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentPlayerLeft1" inherits="PVPLadderInfoScrollLeftPlayerFrameTemplate" parentKey="PlayerLeft1">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentBottomBackground" x="10" y="-2" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentPlayerLeft2" inherits="PVPLadderInfoScrollLeftPlayerFrameTemplate" parentKey="PlayerLeft2">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentPlayerLeft1" relativePoint="BOTTOM" x="0" y="-4" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentPlayerLeft3" inherits="PVPLadderInfoScrollLeftPlayerFrameTemplate" parentKey="PlayerLeft3">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentPlayerLeft2" relativePoint="BOTTOM" x="0" y="-4" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentPlayerRight1" inherits="PVPLadderInfoScrollRightPlayerFrameTemplate" parentKey="PlayerRight1">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parentBottomBackground" x="-10" y="-2" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentPlayerRight2" inherits="PVPLadderInfoScrollRightPlayerFrameTemplate" parentKey="PlayerRight2">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentPlayerRight1" relativePoint="BOTTOM" x="0" y="-4" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentPlayerRight3" inherits="PVPLadderInfoScrollRightPlayerFrameTemplate" parentKey="PlayerRight3">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentPlayerRight2" relativePoint="BOTTOM" x="0" y="-4" />
+				</Anchors>
+			</Frame>
+			<Button name="$parentReplayPlayButton" parentKey="ReplayPlayButton">
+				<Size x="32" y="32"/>
+				<Anchors>
+					<Anchor point="CENTER" relativeTo="$parentBottomBackground" x="2" y="0" />
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background"/>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture name="$parentLoop" parentKey="Loop" alpha="0.6">
+							<Size x="16" y="16"/>
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+					</Layer>
+					<Layer level="OVERLAY">
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnShow>
+						self.Background:SetAtlas("pvp-ladder-loop-background")
+						self.Loop:SetAtlas("pvp-ladder-loop")
+					</OnShow>
+					<OnEnter>
+						self.Loop:SetAlpha(1)
+					</OnEnter>
+					<OnLeave>
+						self.Loop:SetAlpha(0.6)
+					</OnLeave>
+					<OnClick>
+						ArenaSpectatorFrame:WatchReplay( self:GetParent().replayID )
+					</OnClick>
+					<OnMouseDown>
+						self.Loop:SetPoint("CENTER", -1, -1)
+					</OnMouseDown>
+					<OnMouseUp>
+						self.Loop:SetPoint("CENTER", 0, 0)
+					</OnMouseUp>
+				</Scripts>
+			</Button>
+		</Frames>
+	</Button>
+
+	<Frame name="PVPLadderFrame" inherits="PortraitFrameTemplate2" toplevel="true" enableMouse="true" parent="UIParent" hidden="true">
+		<Size x="563" y="428"/>
+		<Frames>
+			<Frame parentKey="LeftInset" name="$parentLeftInset" inherits="InsetFrameTemplate4">
+				<Size x="217" y="496"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="4" y="-24" />
+					<Anchor point="BOTTOMLEFT" x="4" y="4" />
+				</Anchors>
+				<Frames>
+					<Frame name="$parentArt" parent="PVPLadderFrame" setAllPoints="true">
+						<Layers>
+							<Layer level="BORDER">
+								<Texture parentKey="Background" name="$parentBackgrounds" file="Interface\Common\bluemenu-main">
+									<Size x="209" y="399"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" x="7" y="-23" />
+									</Anchors>
+									<TexCoords left="0.00390625" right="0.82421875" top="0.18554688" bottom="0.58984375"/>
+								</Texture>
+							</Layer>
+							<Layer level="ARTWORK">
+								<Texture file="Interface\Common\bluemenu-main">
+									<Size x="185" y="55"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="$parentBackgrounds" x="12" y="-6" />
+									</Anchors>
+									<TexCoords left="0.00390625" right="0.72656250" top="0.12988281" bottom="0.18359375"/>
+								</Texture>
+								<Texture file="Interface\Common\bluemenu-main">
+									<Size x="185" y="55"/>
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" relativeTo="$parentBackgrounds" x="12" y="4" />
+									</Anchors>
+									<TexCoords left="0.26171875" right="0.98437500" top="0.06542969" bottom="0.11914063"/>
+								</Texture>
+							</Layer>
+							<Layer level="OVERLAY">
+								<Texture parentKey="TLCorner" name="$parentTLCorner" file="Interface\Common\bluemenu-main">
+									<Size x="64" y="64"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="$parentBackgrounds" x="0" y="0"/>
+									</Anchors>
+									<TexCoords left="0.00390625" right="0.25390625" top="0.00097656" bottom="0.06347656"/>
+								</Texture>
+								<Texture parentKey="TRCorner" file="Interface\Common\bluemenu-main">
+									<Size x="64" y="64"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" x="151" y="-23"/>
+									</Anchors>
+									<TexCoords left="0.51953125" right="0.76953125" top="0.00097656" bottom="0.06347656"/>
+								</Texture>
+								<Texture parentKey="BRCorner" file="Interface\Common\bluemenu-main">
+									<Size x="64" y="64"/>
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" x="151" y="7"/>
+									</Anchors>
+									<TexCoords left="0.00390625" right="0.25390625" top="0.06542969" bottom="0.12792969"/>
+								</Texture>
+								<Texture parentKey="BLCorner" name="$parentBLCorner" file="Interface\Common\bluemenu-main">
+									<Size x="64" y="64"/>
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" x="7" y="7"/>
+									</Anchors>
+									<TexCoords left="0.26171875" right="0.51171875" top="0.00097656" bottom="0.06347656"/>
+								</Texture>
+								<Texture file="Interface\Common\bluemenu-vert" vertTile="true"> 	<!-- left line -->
+									<Size x="43" y="270"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" x="7" y="-87" />
+									</Anchors>
+									<TexCoords left="0.06250000" right="0.39843750"/>
+								</Texture>
+								<Texture file="Interface\Common\bluemenu-vert" vertTile="true">	<!-- right line -->
+									<Size x="43" y="270"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" x="172" y="-87" />
+									</Anchors>
+									<TexCoords left="0.41406250" right="0.75000000"/>
+								</Texture>
+								<Texture file="Interface\Common\bluemenu-goldborder-horiz" horizTile="true">	<!-- bottom line -->
+									<Size x="80" y="43"/>
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" relativeTo="$parentBLCorner" relativePoint="BOTTOMRIGHT" x="0" y="0" />
+									</Anchors>
+									<TexCoords top="0.35937500" bottom="0.69531250"/>
+								</Texture>
+								<Texture file="Interface\Common\bluemenu-goldborder-horiz" horizTile="true">
+									<Size x="80" y="43"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="$parentTLCorner" relativePoint="TOPRIGHT" x="0" y="0" />
+									</Anchors>
+									<TexCoords top="0.00781250" bottom="0.34375000"/>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Frame>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						self:SetFrameLevel(2)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Frame parentKey="Shadows">
+				<Size x="227" y="399"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="4" y="-25" />
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture file="Interface\Common\bluemenu-shadowcovers">
+							<Size x="84" y="324"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="4" y="-36" />
+							</Anchors>
+							<TexCoords left="0.00781250" right="0.66406250" top="0.00097656" bottom="0.34960938"/>
+						</Texture>
+						<Texture file="Interface\Common\bluemenu-shadowcovers">
+							<Size x="84" y="324"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="127" y="-36" />
+							</Anchors>
+							<TexCoords left="0.00781250" right="0.66406250" top="0.35156250" bottom="0.70019531"/>
+						</Texture>
+						<Texture file="Interface\Common\bluemenu-vert" vertTile="true">
+							<Size x="5" y="403"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="211" y="3" />
+							</Anchors>
+							<TexCoords left="0.00781250" right="0.04687500"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Button name="$parentTab1" inherits="CharacterFrameTabButtonTemplate" text="LFG_TAB_NAME" id="1" parentKey="tab1">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
+						<Offset x="19" y="-30"/>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick function="PVPFrame_TabOnClick"/>
+					<OnShow function="PVPFrame_TabOnShow"/>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab2" inherits="CharacterFrameTabButtonTemplate" text="PvP" id="2" parentKey="tab2">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab1" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="-16" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick function="PVPFrame_TabOnClick"/>
+					<OnShow function="PVPFrame_TabOnShow"/>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab3" inherits="CharacterFrameTabButtonTemplate" text="PVP_LADDER_TAB_NAME" id="3" parentKey="tab3">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab2" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="-16" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick function="PVPFrame_TabOnClick"/>
+					<OnShow function="PVPFrame_TabOnShow"/>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab4" inherits="CharacterFrameTabButtonTemplate" text="RENEGADE_LADDER_TAB_NAME" id="4" parentKey="tab4">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab3" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="-16" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick function="PVPFrame_TabOnClick"/>
+					<OnShow function="PVPFrame_TabOnShow"/>
+				</Scripts>
+			</Button>
+			<Frame name="$parentContainer" parentKey="Container" setAllPoints="true">
+				<Frames>
+					<Button name="$parentCategoryButton1" inherits="PVPLadderCategoryButtonTemplate" parentKey="CategoryButton1" text="PVP_LADDER_SOLO_LABEL" id="0">
+						<Attributes>
+							<Attribute name="iconAtlas" type="string" value="PVPLadder-IconSolo-Rectangle"/>
+						</Attributes>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="10" y="-66" />
+						</Anchors>
+					</Button>
+					<Button name="$parentCategoryButton2" inherits="PVPLadderCategoryButtonTemplate" parentKey="CategoryButton1" text="PVP_LADDER_2V2_LABEL" id="1">
+						<Attributes>
+							<Attribute name="iconAtlas" type="string" value="PVPLadder-Icon2x2-Rectangle"/>
+						</Attributes>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentCategoryButton1" relativePoint="BOTTOM" x="0" y="-30" />
+						</Anchors>
+					</Button>
+					<Button name="$parentCategoryButton3" inherits="PVPLadderCategoryButtonTemplate" parentKey="CategoryButton1" text="PVP_LADDER_1V1_LABEL" id="2">
+						<Attributes>
+							<Attribute name="iconAtlas" type="string" value="PVPLadder-Icon3x3-Rectangle"/>
+						</Attributes>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentCategoryButton2" relativePoint="BOTTOM" x="0" y="-30" />
+						</Anchors>
+					</Button>
+					<Button name="$parentCategoryButton4" inherits="PVPLadderCategoryButtonTemplate" parentKey="CategoryButton1" text="PVP_LADDER_BG_LABEL" id="3">
+						<Attributes>
+							<Attribute name="iconAtlas" type="string" value="PVPLadder-IconBattleground-Rectangle"/>
+						</Attributes>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentCategoryButton3" relativePoint="BOTTOM" x="0" y="-30" />
+						</Anchors>
+					</Button>
+					<CheckButton name="$parentRightBigTab1" parentKey="RightBigTab1" id="1" inherits="PVPLadderFrameBigTabTemplate">
+						<Attributes>
+							<Attribute name="icon" type="string" value="Achievement_PVP_Legion03"/>
+							<Attribute name="tooltipText" type="string" value="TOP_PLAYERS"/>
+						</Attributes>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="-34"/>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="$parentRightBigTab2" parentKey="RightBigTab2" id="2" inherits="PVPLadderFrameBigTabTemplate">
+						<Attributes>
+							<Attribute name="icon" type="string" value="ability_rogue_combatexpertisetga"/>
+							<Attribute name="tooltipText" type="string" value="SEARCH"/>
+						</Attributes>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentRightBigTab1" relativePoint="BOTTOMLEFT" x="0" y="-16"/>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="$parentRightSmallTab1" parentKey="RightSmallTab1" id="1" inherits="PVPLadderFrameSmallTabTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="-130"/>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="$parentRightSmallTab2" parentKey="RightSmallTab2" id="2" inherits="PVPLadderFrameSmallTabTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentRightSmallTab1" relativePoint="BOTTOM" x="0" y="-12" />
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="$parentRightSmallTab3" parentKey="RightSmallTab3" id="3" inherits="PVPLadderFrameSmallTabTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentRightSmallTab2" relativePoint="BOTTOM" x="0" y="-12" />
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="$parentRightSmallTab4" parentKey="RightSmallTab4" id="4" inherits="PVPLadderFrameSmallTabTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentRightSmallTab3" relativePoint="BOTTOM" x="0" y="-12" />
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="$parentRightSmallTab5" parentKey="RightSmallTab5" id="5" inherits="PVPLadderFrameSmallTabTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentRightSmallTab4" relativePoint="BOTTOM" x="0" y="-12" />
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="$parentRightSmallTab6" parentKey="RightSmallTab6" id="6" inherits="PVPLadderFrameSmallTabTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentRightSmallTab5" relativePoint="BOTTOM" x="0" y="-12" />
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="$parentRightSmallTab7" parentKey="RightSmallTab7" id="7" inherits="PVPLadderFrameSmallTabTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentRightSmallTab6" relativePoint="BOTTOM" x="0" y="-12" />
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="$parentRightSmallTab8" parentKey="RightSmallTab8" id="8" inherits="PVPLadderFrameSmallTabTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentRightSmallTab7" relativePoint="BOTTOM" x="0" y="-12" />
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="$parentRightSmallTab9" parentKey="RightSmallTab9" id="9" inherits="PVPLadderFrameSmallTabTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentRightSmallTab8" relativePoint="BOTTOM" x="0" y="-12" />
+						</Anchors>
+					</CheckButton>
+					<CheckButton name="$parentRightSmallTab10" parentKey="RightSmallTab10" id="11" inherits="PVPLadderFrameSmallTabTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentRightSmallTab9" relativePoint="BOTTOM" x="0" y="-12" />
+						</Anchors>
+					</CheckButton>
+					<Frame name="$parentRightContainer" parentKey="RightContainer">
+						<Size x="339" y="403"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="220" y="-22"/>
+						</Anchors>
+						<Frames>
+							<Frame name="$parentBottomContainer" parentKey="BottomContainer">
+								<Size x="334" y="38"/>
+								<Anchors>
+									<Anchor point="BOTTOM" relativePoint="BOTTOM" x="-0.5" y="4" />
+								</Anchors>
+								<Layers>
+									<Layer level="BACKGROUND">
+										<Texture name="$parentBackground" parentKey="Background"/>
+									</Layer>
+									<Layer level="BORDER">
+										<Texture name="$parentShadow" parentKey="Shadow"/>
+									</Layer>
+									<Layer level="ARTWORK">
+										<Texture name="$parentBorder" parentKey="Border">
+											<Size x="344" y="46"/>
+											<Anchors>
+												<Anchor point="CENTER" x="0" y="0" />
+											</Anchors>
+										</Texture>
+									</Layer>
+									<Layer level="OVERLAY">
+										<FontString name="$parentPlayerNotRank" parentKey="PlayerNotRank" inherits="GameFontNormal13" maxLines="2" text="PVP_LADDER_NOT_RANKING" hidden="true">
+											<Size x="310" y="0"/>
+											<Anchors>
+												<Anchor point="CENTER" x="0" y="0" />
+											</Anchors>
+										</FontString>
+										<FontString name="$parentNumber" parentKey="Number" inherits="GameFontNormal">
+											<Size x="50" y="10"/>
+											<Anchors>
+												<Anchor point="LEFT" x="5" y="0" />
+											</Anchors>
+										</FontString>
+										<FontString name="$parentPlayerName" parentKey="PlayerName" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
+											<Size x="90" y="10"/>
+											<Anchors>
+												<Anchor point="LEFT" x="62" y="0" />
+											</Anchors>
+											<Color r="1" g="1" b="1"/>
+										</FontString>
+										<FontString name="$parentRating" parentKey="Rating" inherits="GameFontNormal" justifyH="CENTER" justifyV="CENTER">
+											<Size x="60" y="10"/>
+											<Anchors>
+												<Anchor point="RIGHT" x="-39" y="0" />
+											</Anchors>
+											<Color r="1" g="1" b="1"/>
+										</FontString>
+									</Layer>
+								</Layers>
+								<Frames>
+									<Frame name="$parentRaceIcon" parentKey="RaceIcon">
+										<Size x="18" y="18"/>
+										<Anchors>
+											<Anchor point="CENTER" x="8.5" y="0" />
+										</Anchors>
+										<Layers>
+											<Layer level="OVERLAY">
+												<Texture name="$parentIcon" parentKey="Icon">
+													<Size x="18" y="18"/>
+													<Anchors>
+														<Anchor point="CENTER" x="0" y="0" />
+													</Anchors>
+												</Texture>
+											</Layer>
+										</Layers>
+										<Scripts>
+											<OnEnter>
+												if self.raceName then
+												GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+												GameTooltip:SetText(self.raceName)
+												GameTooltip:Show()
+												end
+											</OnEnter>
+											<OnLeave function="GameTooltip_Hide"/>
+										</Scripts>
+									</Frame>
+									<Frame name="$parentClassIcon" parentKey="ClassIcon">
+										<Size x="18" y="18"/>
+										<Anchors>
+											<Anchor point="LEFT" relativeTo="$parentRaceIcon" relativePoint="RIGHT" x="2" y="0" />
+										</Anchors>
+										<Layers>
+											<Layer level="OVERLAY">
+												<Texture name="$parentIcon" parentKey="Icon">
+													<Size x="18" y="18"/>
+													<Anchors>
+														<Anchor point="CENTER" x="0" y="0" />
+													</Anchors>
+												</Texture>
+											</Layer>
+										</Layers>
+										<Scripts>
+											<OnEnter>
+												if self.classLocalizedName then
+												GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+												GameTooltip:SetText(self.classLocalizedName)
+												GameTooltip:Show()
+												end
+											</OnEnter>
+											<OnLeave function="GameTooltip_Hide"/>
+										</Scripts>
+									</Frame>
+									<Frame name="$parentFactionIcon" parentKey="FactionIcon">
+										<Size x="20" y="24"/>
+										<Anchors>
+											<Anchor point="LEFT" relativeTo="$parentClassIcon" relativePoint="RIGHT" x="14" y="0" />
+										</Anchors>
+										<Layers>
+											<Layer level="OVERLAY">
+												<Texture name="$parentIcon" parentKey="Icon">
+													<Size x="20" y="24"/>
+													<Anchors>
+														<Anchor point="CENTER" x="0" y="0" />
+													</Anchors>
+												</Texture>
+											</Layer>
+										</Layers>
+										<Scripts>
+											<OnEnter>
+												if self.factionName then
+													GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+													GameTooltip:SetText(self.factionName)
+													GameTooltip:Show()
+												end
+											</OnEnter>
+											<OnLeave function="GameTooltip_Hide"/>
+										</Scripts>
+									</Frame>
+								</Frames>
+								<Scripts>
+									<OnLoad>
+										self.Background:SetAtlas("PVPLadder-mystats-background")
+										self.Shadow:SetAtlas("PVPLadder-mystats-shadow")
+										self.Border:SetAtlas("PVPLadder-mystats-light")
+									</OnLoad>
+								</Scripts>
+							</Frame>
+							<Frame name="$parentCentralContainer" parentKey="CentralContainer" inherits="StandartInsetFrameTemplate">
+								<Size x="338" y="276"/>
+								<Anchors>
+									<Anchor point="BOTTOM" relativeTo="$parentBottomContainer" relativePoint="TOP" x="0" y="6" />
+								</Anchors>
+								<Layers>
+									<Layer level="BORDER">
+										<Texture name="$parentBackgroundOverlay" parentKey="BackgroundOverlay"/>
+									</Layer>
+								</Layers>
+								<Frames>
+									<ScrollFrame name="$parentScrollFrame" inherits="HybridScrollFrameTemplate" parentKey="ScrollFrame">
+										<Anchors>
+											<Anchor point="TOPLEFT" x="6" y="-8"/>
+											<Anchor point="BOTTOMRIGHT" x="-28" y="6"/>
+										</Anchors>
+										<Frames>
+											<Slider name="$parentScrollBar" parentKey="ScrollBar" inherits="HybridScrollBarTemplate">
+												<Anchors>
+													<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="4" y="-14"/>
+													<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="4" y="12"/>
+												</Anchors>
+												<Scripts>
+													<OnLoad>
+														self.trackBG:Show()
+														self.trackBG:SetVertexColor(0, 0, 0, 0.6)
+													</OnLoad>
+												</Scripts>
+											</Slider>
+											<Frame parentKey="ShadowOverlay" alpha="0.8" inherits="ShadowOverlaySmallTemplate" toplevel="true">
+												<Anchors>
+													<Anchor point="TOPLEFT" x="-2" y="2"/>
+													<Anchor point="BOTTOMRIGHT" x="2" y="-3"/>
+												</Anchors>
+											</Frame>
+											<Frame name="$parentSpinner" parentKey="Spinner" setAllPoints="true">
+												<Layers>
+													<Layer level="BACKGROUND">
+														<Texture name="$parentBackground" parentKey="Background">
+															<Color r="0" g="0" b="0" a="0.9"/>
+														</Texture>
+													</Layer>
+												</Layers>
+												<Frames>
+													<Frame name="$parentLoadingSpinner" parentKey="LoadingSpinner" inherits="LoadingSpinnerTemplate">
+														<Anchors>
+															<Anchor point="CENTER" x="0" y="10" />
+														</Anchors>
+													</Frame>
+												</Frames>
+												<Scripts>
+													<OnLoad>
+														self.LoadingSpinner.showRetrievingText = true
+														self.LoadingSpinner.Text:SetText(STORE_WAIT_SERVER_RESPONSE)
+														self.LoadingSpinner.Text:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+														self.LoadingSpinner.Dots:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+													</OnLoad>
+													<OnShow>
+														self.LoadingSpinner.Text:Show()
+														self.LoadingSpinner.Dots:Show()
+
+														self.LoadingSpinner.AnimFrame.Anim:Play()
+													</OnShow>
+													<OnHide>
+														self.LoadingSpinner.AnimFrame.Anim:Stop()
+													</OnHide>
+												</Scripts>
+											</Frame>
+											<Frame name="$parentTextLabelFrame" parentKey="TextLabelFrame" hidden="true" setAllPoints="true">
+												<Layers>
+													<Layer level="OVERLAY">
+														<FontString name="$paretText" parentKey="Text" inherits="GameFontHighlight" text="PVP_LADDER_SEARCH_TUTORIAL">
+															<Size x="270" y="160"/>
+															<Anchors>
+																<Anchor point="CENTER" x="0" y="0" />
+															</Anchors>
+														</FontString>
+													</Layer>
+												</Layers>
+											</Frame>
+										</Frames>
+										<Scripts>
+											<OnShow>
+												self:SetFrameLevel(self:GetParent():GetFrameLevel() + 3)
+											</OnShow>
+										</Scripts>
+									</ScrollFrame>
+								</Frames>
+								<Scripts>
+									<OnShow>
+										self.BackgroundOverlay:SetAtlas("PVPLadder-table-background")
+									</OnShow>
+								</Scripts>
+							</Frame>
+							<Frame name="$parentTopContainer" parentKey="TopContainer">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="0" y="0" />
+									<Anchor point="TOPRIGHT" x="0" y="0" />
+									<Anchor point="BOTTOM" relativeTo="$parentCentralContainer" relativePoint="TOP" x="0" y="0" />
+								</Anchors>
+								<Layers>
+									<Layer level="BORDER">
+										<FontString name="$parentNumber" parentKey="Number" inherits="GameFontNormal" justifyH="CENTER" justifyV="CENTER" text="№">
+											<Size x="30" y="10"/>
+											<Anchors>
+												<Anchor point="BOTTOMLEFT" x="16" y="4" />
+											</Anchors>
+										</FontString>
+										<FontString name="$parentPlayerName" parentKey="PlayerName" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER" text="CALENDAR_PLAYER_NAME">
+											<Size x="80" y="10"/>
+											<Anchors>
+												<Anchor point="BOTTOMLEFT" x="64" y="4" />
+											</Anchors>
+										</FontString>
+										<FontString name="$parentRating" parentKey="Rating" inherits="GameFontNormal" justifyH="CENTER" justifyV="CENTER" text="PVP_LADDER_RATING">
+											<Size x="60" y="10"/>
+											<Anchors>
+												<Anchor point="BOTTOMRIGHT" x="-40" y="4" />
+											</Anchors>
+										</FontString>
+									</Layer>
+								</Layers>
+								<Frames>
+									<ScrollFrame name="$parentRegionMask" parentKey="RegionMask" setAllPoints="true">
+										<ScrollChild>
+											<Frame name="$parentTextureMask" parentKey="TextureMask">
+												<Anchors>
+													<Anchor point="CENTER" x="0" y="0" />
+												</Anchors>
+												<Layers>
+													<Layer level="BACKGROUND">
+														<Texture name="$parentBackground" parentKey="Background">
+															<Size x="233" y="100"/>
+															<Anchors>
+																<Anchor point="TOP" x="0" y="0" />
+															</Anchors>
+														</Texture>
+													</Layer>
+												</Layers>
+												<Scripts>
+													<OnLoad>
+														local width, height = self:GetParent():GetParent():GetParent():GetSize()
+														self:SetSize(width, height)
+
+														self.Background:SetAtlas("PVPLadder-header-swords")
+														self:GetParent():SetFrameLevel(self:GetParent():GetParent():GetParent():GetFrameLevel())
+														self:SetFrameLevel(self:GetParent():GetParent():GetParent():GetFrameLevel())
+													</OnLoad>
+												</Scripts>
+											</Frame>
+										</ScrollChild>
+									</ScrollFrame>
+									<EditBox name="$parentSearchBox" parentKey="SearchBox" autoFocus="false" inherits="SearchBoxTemplate" toplevel="true">
+										<Size x="230" y="20"/>
+										<Anchors>
+											<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="12" y="32" />
+										</Anchors>
+										<Scripts>
+											<OnShow>
+												self:SetText("")
+											</OnShow>
+											<OnTextChanged>
+												local text = self:GetText()
+												SearchBoxTemplate_OnTextChanged(self)
+
+												self.autoCompleteParams = AUTOCOMPLETE_LIST.ALL
+												self.addHighlightedText = true
+												AutoComplete_Update(self, text, self:GetUTF8CursorPosition())
+
+												if not self:GetParent().SearchButton.Delay then
+													self:GetParent().SearchButton:SetEnabled(#text >= 2)
+												end
+											</OnTextChanged>
+											<OnEnterPressed>
+												if self:GetParent().SearchButton:IsEnabled() == 1 then
+													self:GetParent().SearchButton:Click()
+												end
+											</OnEnterPressed>
+										</Scripts>
+									</EditBox>
+									<Button name="$parentSearchButton" parentKey="SearchButton" inherits="UIPanelButtonTemplate" text="SEARCH">
+										<Size x="80" y="24"/>
+										<Anchors>
+											<Anchor point="LEFT" relativeTo="$parentSearchBox" relativePoint="RIGHT" x="8" y="0" />
+										</Anchors>
+										<Scripts>
+											<OnClick>
+												self.StartDelay = function()
+													self.Delay = 10
+													self:Disable()
+													self:SetText(self.Delay)
+
+													if self.timer then
+														self.timer:Cancel()
+														self.timer = nil
+													end
+
+													self.timer = C_Timer:NewTicker(1, function()
+														self.Delay = self.Delay - 1
+
+														if self.Delay == 0 then
+															self:Enable()
+															self:SetText(SEARCH)
+															self.Delay = nil
+														else
+															self:SetText(self.Delay)
+														end
+													end, self.Delay)
+												end
+
+												local text = self:GetParent().SearchBox:GetText()
+												local selectedCategroy = self:GetParent():GetParent():GetParent():GetParent():GetSelectedCategory()
+
+												if #text >= 2 then
+													AutoComplete_HideIfAttachedTo(self:GetParent().SearchBox)
+													SendServerMessage("ACMSG_PVP_LADDER_GET_SEARCH", string.format("%d:%s", selectedCategroy, text))
+												end
+											</OnClick>
+										</Scripts>
+									</Button>
+									<Frame name="$parentTitleFrame" parentKey="TitleFrame" setAllPoints="true">
+										<Layers>
+											<Layer level="BACKGROUND">
+												<Texture name="$parentTitleBackground" parentKey="TitleBackground" file="Interface\PVPFrame\PVPLadderTitleBackground">
+													<Size x="285" y="58"/>
+													<Anchors>
+														<Anchor point="TOP" x="0" y="0" />
+													</Anchors>
+													<TexCoords left="0" right="0.94921875" top="0" bottom="0.6015625"/>
+												</Texture>
+											</Layer>
+											<Layer level="OVERLAY">
+												<FontString name="$parentTitleText" parentKey="TitleText" inherits="QuestFont15" text="TOP_PLAYERS">
+													<Anchors>
+														<Anchor point="CENTER" relativeTo="$parentTitleBackground" x="0" y="12" />
+													</Anchors>
+													<Color r="1.0" g="0.82" b="0"/>
+												</FontString>
+											</Layer>
+										</Layers>
+										<Scripts>
+											<OnShow>
+												self:SetFrameLevel(self:GetParent():GetFrameLevel())
+											</OnShow>
+										</Scripts>
+									</Frame>
+									<Frame parentKey="ShadowOverlay" alpha="0.7" inherits="ShadowOverlaySmallTemplate" toplevel="true">
+										<Anchors>
+											<Anchor point="TOPLEFT" x="0" y="-2"/>
+											<Anchor point="BOTTOMRIGHT" x="-1" y="-33"/>
+										</Anchors>
+										<Scripts>
+											<OnShow>
+												self.BottomLeft:Hide()
+												self.BottomRight:Hide()
+												self.Bottom:Hide()
+
+												self:SetFrameLevel(self:GetParent():GetFrameLevel() + 10)
+											</OnShow>
+										</Scripts>
+									</Frame>
+								</Frames>
+							</Frame>
+						</Frames>
+					</Frame>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, PVPLadderFrameMixin, PVPLadderTabsMixin, PVPLadderCategoryMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+	<Frame name="PVPLadderInfoFrame" inherits="PortraitFrameTemplate_NineSlice" toplevel="true" enableMouse="true" hidden="true" parent="PVPLadderFrame">
+		<Size x="350" y="428"/>
+		<Anchors>
+			<Anchor point="LEFT" relativePoint="RIGHT" x="46" y="0" />
+		</Anchors>
+		<Frames>
+			<Frame name="$parentCentralContainer" parentKey="CentralContainer" inherits="StandartInsetFrameTemplate">
+				<Size x="340" y="286"/>
+				<Anchors>
+					<Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="6" />
+				</Anchors>
+				<Layers>
+					<Layer level="BORDER">
+						<Texture name="$parentBackgroundOverlay" parentKey="BackgroundOverlay"/>
+					</Layer>
+				</Layers>
+				<Frames>
+					<ScrollFrame name="$parentScrollFrame" inherits="HybridScrollFrameTemplate" parentKey="ScrollFrame">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="6" y="-8"/>
+							<Anchor point="BOTTOMRIGHT" x="-28" y="6"/>
+						</Anchors>
+						<Frames>
+							<Slider name="$parentScrollBar" parentKey="ScrollBar" inherits="HybridScrollBarTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="4" y="-14"/>
+									<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="4" y="12"/>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self.trackBG:Show()
+										self.trackBG:SetVertexColor(0, 0, 0, 0.6)
+									</OnLoad>
+								</Scripts>
+							</Slider>
+							<Frame parentKey="ShadowOverlay" alpha="0.8" inherits="ShadowOverlaySmallTemplate" toplevel="true">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="-2" y="2"/>
+									<Anchor point="BOTTOMRIGHT" x="2" y="-3"/>
+								</Anchors>
+							</Frame>
+							<Frame name="$parentTextLabelFrame" parentKey="TextLabelFrame" hidden="true" setAllPoints="true">
+								<Layers>
+									<Layer level="OVERLAY">
+										<FontString name="$paretText" parentKey="Text" inherits="GameFontHighlight" text="PVP_LADDER_SEARCH_NOT_RESULT">
+											<Size x="270" y="160"/>
+											<Anchors>
+												<Anchor point="CENTER" x="0" y="0" />
+											</Anchors>
+										</FontString>
+									</Layer>
+								</Layers>
+							</Frame>
+							<Frame name="$parentSpinner" parentKey="Spinner" setAllPoints="true">
+								<Layers>
+									<Layer level="BACKGROUND">
+										<Texture name="$parentBackground" parentKey="Background">
+											<Color r="0" g="0" b="0" a="0.9"/>
+										</Texture>
+									</Layer>
+								</Layers>
+								<Frames>
+									<Frame name="$parentLoadingSpinner" parentKey="LoadingSpinner" inherits="LoadingSpinnerTemplate">
+										<Anchors>
+											<Anchor point="CENTER" x="0" y="10" />
+										</Anchors>
+									</Frame>
+								</Frames>
+								<Scripts>
+									<OnLoad>
+										self.LoadingSpinner.showRetrievingText = true
+										self.LoadingSpinner.Text:SetText(STORE_WAIT_SERVER_RESPONSE)
+										self.LoadingSpinner.Text:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+										self.LoadingSpinner.Dots:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+									</OnLoad>
+									<OnShow>
+										self.LoadingSpinner.Text:Show()
+										self.LoadingSpinner.Dots:Show()
+
+										self.LoadingSpinner.AnimFrame.Anim:Play()
+									</OnShow>
+									<OnHide>
+										self.LoadingSpinner.AnimFrame.Anim:Stop()
+									</OnHide>
+								</Scripts>
+							</Frame>
+						</Frames>
+						<Scripts>
+							<OnShow>
+								self:SetFrameLevel(self:GetParent():GetFrameLevel() + 3)
+							</OnShow>
+						</Scripts>
+					</ScrollFrame>
+				</Frames>
+				<Scripts>
+					<OnShow>
+						self.BackgroundOverlay:SetAtlas("PVPLadder-table-background")
+					</OnShow>
+				</Scripts>
+			</Frame>
+			<Frame name="$parentTopContainer" parentKey="TopContainer">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="-20" />
+					<Anchor point="TOPRIGHT" x="0" y="0" />
+					<Anchor point="BOTTOM" relativeTo="$parentCentralContainer" relativePoint="TOP" x="0" y="2" />
+				</Anchors>
+				<Frames>
+					<Frame parentKey="ShadowOverlay" alpha="0.7" inherits="ShadowOverlaySmallTemplate" toplevel="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="0" y="-2"/>
+							<Anchor point="BOTTOMRIGHT" x="-1" y="-33"/>
+						</Anchors>
+						<Scripts>
+							<OnShow>
+								self.BottomLeft:Hide()
+								self.BottomRight:Hide()
+								self.Bottom:Hide()
+
+								self:SetFrameLevel(self:GetParent():GetFrameLevel() + 2)
+							</OnShow>
+						</Scripts>
+					</Frame>
+					<Frame name="$parentStatisticsFrame" parentKey="StatisticsFrame">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="6" y="-10" />
+							<Anchor point="BOTTOMRIGHT" x="-6" y="4" />
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture name="$parentBackground" parentKey="Background">
+									<Color r="0" g="0" b="0" a="0.7"/>
+								</Texture>
+							</Layer>
+							<Layer level="ARTWORK">
+								<Texture name="$parentTopLeftCorner" parentKey="TopLeftCorner">
+									<Size x="36" y="39"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="-4" y="6" />
+									</Anchors>
+								</Texture>
+								<Texture name="$parentTopRightCorner" parentKey="TopRightCorner">
+									<Size x="36" y="39"/>
+									<Anchors>
+										<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="4" y="6" />
+									</Anchors>
+								</Texture>
+								<Texture name="$parentBottomLeftCorner" parentKey="BottomLeftCorner">
+									<Size x="36" y="39"/>
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="-4" y="-6" />
+									</Anchors>
+								</Texture>
+								<Texture name="$parentBottomRightCorner" parentKey="BottomRightCorner">
+									<Size x="36" y="39"/>
+									<Anchors>
+										<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="4" y="-6" />
+									</Anchors>
+								</Texture>
+							</Layer>
+							<Layer level="BORDER">
+								<Texture name="$parentBottomLine" parentKey="BottomLine">
+									<Size y="16"/>
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" relativeTo="$parentBottomLeftCorner" x="12" y="-2" />
+										<Anchor point="BOTTOMRIGHT" relativeTo="$parentBottomRightCorner" x="-12" y="-2" />
+									</Anchors>
+								</Texture>
+								<Texture name="$parentTopLine" parentKey="TopLine">
+									<Size y="16"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="$parentTopLeftCorner" x="12" y="2" />
+										<Anchor point="TOPRIGHT" relativeTo="$parentTopRightCorner" x="-12" y="2" />
+									</Anchors>
+								</Texture>
+							</Layer>
+							<Layer level="OVERLAY">
+								<FontString name="$parentPlayerName" parentKey="PlayerName" inherits="GameFontNormal17" justifyH="LEFT" text="Llimpint">
+									<Size x="130" y="18"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="20" y="-16" />
+									</Anchors>
+									<Color r="1.0" g="0.82" b="0"/>
+								</FontString>
+								<FontString name="$parentPlayerRace" parentKey="PlayerRace" inherits="GameFontNormal11" justifyH="LEFT">
+									<Size x="130" y="16"/>
+									<Anchors>
+										<Anchor point="TOP" relativeTo="$parentPlayerName" relativePoint="BOTTOM" x="0" y="0" />
+									</Anchors>
+								</FontString>
+								<FontString name="$parentPlayerRating" parentKey="PlayerRating" inherits="GameFontNormal17" justifyH="CENTER" text="3438">
+									<Size x="130" y="18"/>
+									<Anchors>
+										<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="20" y="-16" />
+									</Anchors>
+									<Color r="1.0" g="0.82" b="0"/>
+								</FontString>
+								<FontString name="$parentPlayerRatingLabel" parentKey="PlayerRatingLabel" inherits="GameFontNormal11" justifyH="CENTER" text="PVP_LADDER_RATING">
+									<Size x="130" y="16"/>
+									<Anchors>
+										<Anchor point="TOP" relativeTo="$parentPlayerRating" relativePoint="BOTTOM" x="0" y="0" />
+									</Anchors>
+								</FontString>
+								<FontString name="$parentSeasonLabel" parentKey="SeasonLabel" inherits="GameFontNormal11" justifyH="CENTER" text="PVP_LADDER_SEASON">
+									<Size x="60" y="14"/>
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" x="14" y="26" />
+									</Anchors>
+								</FontString>
+								<FontString name="$parentSeason" parentKey="Season" inherits="GameFontNormal11" justifyH="CENTER" text="498/15">
+									<Size x="60" y="14"/>
+									<Anchors>
+										<Anchor point="TOP" relativeTo="$parentSeasonLabel" relativePoint="BOTTOM" x="0" y="0" />
+									</Anchors>
+								</FontString>
+								<FontString name="$parentWeekLabel" parentKey="WeekLabel" inherits="GameFontNormal11" justifyH="CENTER" text="PVP_LADDER_WEEK">
+									<Size x="60" y="14"/>
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" x="94" y="26" />
+									</Anchors>
+								</FontString>
+								<FontString name="$parentWeek" parentKey="Week" inherits="GameFontNormal11" justifyH="CENTER" text="498/15">
+									<Size x="60" y="14"/>
+									<Anchors>
+										<Anchor point="TOP" relativeTo="$parentWeekLabel" relativePoint="BOTTOM" x="0" y="0" />
+									</Anchors>
+								</FontString>
+								<FontString name="$parentDayLabel" parentKey="DayLabel" inherits="GameFontNormal11" justifyH="CENTER" text="PVP_LADDER_DAY">
+									<Size x="60" y="14"/>
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" x="174" y="26" />
+									</Anchors>
+								</FontString>
+								<FontString name="$parentDay" parentKey="Day" inherits="GameFontNormal11" justifyH="CENTER" text="498/15">
+									<Size x="60" y="14"/>
+									<Anchors>
+										<Anchor point="TOP" relativeTo="$parentDayLabel" relativePoint="BOTTOM" x="0" y="0" />
+									</Anchors>
+								</FontString>
+								<FontString name="$parentAllWinsProcLabel" parentKey="AllWinsProcLabel" inherits="GameFontNormal11" justifyH="CENTER" text="PVP_LADDER_TOTAL_WINS">
+									<Size x="90" y="14"/>
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" x="242" y="26" />
+									</Anchors>
+								</FontString>
+								<FontString name="$parentAllWinsProc" parentKey="AllWinsProc" inherits="GameFontNormal11" justifyH="CENTER" text="49.8%">
+									<Size x="60" y="14"/>
+									<Anchors>
+										<Anchor point="TOP" relativeTo="$parentAllWinsProcLabel" relativePoint="BOTTOM" x="0" y="0" />
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnLoad>
+								self.TopLeftCorner:SetAtlas("UI-CharacterCreate-Metal-Finery-Corner")
+
+								self.TopRightCorner:SetAtlas("UI-CharacterCreate-Metal-Finery-Corner")
+								SetClampedTextureRotation(self.TopRightCorner, 90)
+
+								self.BottomLeftCorner:SetAtlas("UI-CharacterCreate-Metal-Finery-Corner")
+								SetClampedTextureRotation(self.BottomLeftCorner, 270)
+
+								self.BottomRightCorner:SetAtlas("UI-CharacterCreate-Metal-Finery-Corner")
+								SetClampedTextureRotation(self.BottomRightCorner, 180)
+
+								self.BottomLine:SetAtlas("UI-CharacterCreate-MetalFrame-Horizontal")
+								self.TopLine:SetAtlas("UI-CharacterCreate-MetalFrame-Horizontal")
+								SetClampedTextureRotation(self.TopLine, 180)
+							</OnLoad>
+						</Scripts>
+					</Frame>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, PVPLadderInfoFrameMixin, PortraitFrameMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+</Ui>

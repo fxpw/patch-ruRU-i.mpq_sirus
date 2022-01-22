@@ -1,0 +1,166 @@
+<!--
+
+	Filename:	Custom_AutoQuestPopUpTracker.xml
+	Project:	Custom Game Interface
+	Author:		Nyll & Blizzard Entertainment
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="Custom_AutoQuestPopUpTracker.lua"/>
+
+	<Texture name="AutoQuestToastBorder-TopLeft" file="Interface\QuestFrame\AutoQuest-Parts" virtual="true">
+		<Size x="16" y="16"/>
+		<TexCoords left="0.02539063" right="0.05664063" top="0.01562500" bottom="0.26562500"/>
+	</Texture>
+	<Texture name="AutoQuestToastBorder-TopRight" file="Interface\QuestFrame\AutoQuest-Parts" virtual="true">
+		<Size x="16" y="16"/>
+		<TexCoords left="0.02539063" right="0.05664063" top="0.29687500" bottom="0.54687500"/>
+	</Texture>
+	<Texture name="AutoQuestToastBorder-BotLeft" file="Interface\QuestFrame\AutoQuest-Parts" virtual="true">
+		<Size x="16" y="16"/>
+		<TexCoords left="0.02539063" right="0.05664063" top="0.57812500" bottom="0.82812500"/>
+	</Texture>
+	<Texture name="AutoQuestToastBorder-BotRight" file="Interface\QuestFrame\AutoQuest-Parts" virtual="true">
+		<Size x="16" y="16"/>
+		<TexCoords left="0.06054688" right="0.09179688" top="0.01562500" bottom="0.26562500"/>
+	</Texture>
+	<Texture name="QuestIcon-Exclamation" file="Interface\QuestFrame\AutoQuest-Parts" virtual="true">
+		<Size x="19" y="33"/>
+		<TexCoords left="0.13476563" right="0.17187500" top="0.01562500" bottom="0.53125000"/>
+	</Texture>
+	<Texture name="QuestIcon-QuestionMark" file="Interface\QuestFrame\AutoQuest-Parts" virtual="true">
+		<Size x="19" y="33"/>
+		<TexCoords left="0.17578125" right="0.21289063" top="0.01562500" bottom="0.53125000"/>
+	</Texture>
+	<Texture name="QuestIcon-Large" file="Interface\QuestFrame\AutoQuest-Parts" virtual="true">
+		<Size x="60" y="60"/>
+		<TexCoords left="0.30273438" right="0.41992188" top="0.01562500" bottom="0.95312500"/>
+	</Texture>
+
+	<Button name="AutoQuestPopUpButtonTemplate" enableMouse="true" virtual="true" hidden="true">
+		<Size x="227" y="75"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Bg">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="36" y="-4"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="4"/>
+					</Anchors>
+					<Color r="0" g="0" b="0" a="0.5"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="BorderTopLeft" inherits="AutoQuestToastBorder-TopLeft">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="32" y="0" />
+					</Anchors>
+				</Texture>
+				<Texture parentKey="BorderTopRight" inherits="AutoQuestToastBorder-TopRight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="4" y="0" />
+					</Anchors>
+				</Texture>
+				<Texture parentKey="BorderBotLeft" inherits="AutoQuestToastBorder-BotLeft">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="32" y="0" />
+					</Anchors>
+				</Texture>
+				<Texture parentKey="BorderBotRight" inherits="AutoQuestToastBorder-BotRight">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="4" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="QuestIconBg" inherits="QuestIcon-Large">
+					<Anchors>
+						<Anchor point="CENTER" relativePoint="LEFT" x="36" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK" textureSubLevel="2">
+				<Texture parentKey="QuestIconBadgeBorder" atlas="AutoQuest-badgeborder" useAtlasSize="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.QuestIconBg" x="8" y="-8" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<FontString parentKey="TopText" inherits="GameFontNormalSmall" text="FOUND_QUEST">
+					<Anchors>
+						<Anchor point="TOP" x="28" y="-10"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="QuestName" inherits="QuestFont_Large">
+					<Size x="158" y="30"/>
+					<Anchors>
+						<Anchor point="CENTER" x="28"/>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+				<FontString parentKey="BottomText" inherits="GameFontDisableSmall" text="QUEST_WATCH_POPUP_CLICK_TO_VIEW">
+					<Anchors>
+						<Anchor point="BOTTOM" x="28" y="10"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Exclamation" inherits="QuestIcon-Exclamation" hidden="true">
+					<Anchors>
+						<Anchor point="CENTER" relativePoint="LEFT" x="36" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="QuestionMark" inherits="QuestIcon-QuestionMark" hidden="true">
+					<Anchors>
+						<Anchor point="CENTER" relativePoint="LEFT" x="36" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame parentKey="FlashFrame" useParentLevel="true" setAllPoints="true" hidden="false">
+				<Layers>
+					<Layer level="BORDER">
+						<Texture parentKey="Flash" inherits="UIPanelButtonHighlightTexture">
+							<Size x="180" y="28"/>
+							<Anchors>
+								<Anchor point="TOP" x="28" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnShow>
+						UIFrameFlash(self, 1, 1, -1, nil);
+					</OnShow>
+					<OnHide>
+						UIFrameFlashStop(self);
+					</OnHide>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnShow>
+				self.FlashFrame:Show()
+			</OnShow>
+		</Scripts>
+	</Button>
+
+	<Button name="AutoQuestPopUpButton" parent="UIParent" toplevel="true" inherits="AutoQuestPopUpButtonTemplate" hidden="true">
+		<Size x="227" y="75"/>
+		<Anchors>
+			<Anchor point="TOP" x="-15" y="-190"/>
+		</Anchors>
+		<Scripts>
+			<OnLoad function="AutoQuestPopUpButton_OnLoad"/>
+			<OnClick function="AutoQuestPopUpButton_OnClick"/>
+			<OnShow function="AutoQuestPopUpButton_OnShow"/>
+			<OnEvent function="AutoQuestPopUpButton_OnEvent"/>
+			<OnEnter function="AutoQuestPopUpButton_OnEnter"/>
+			<OnLeave function="AutoQuestPopUpButton_OnLeave"/>
+		</Scripts>
+	</Button>
+
+</Ui>

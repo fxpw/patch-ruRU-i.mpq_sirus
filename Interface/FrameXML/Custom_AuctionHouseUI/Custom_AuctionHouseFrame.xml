@@ -1,0 +1,233 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="Custom_AuctionHouseFrame.lua"/>
+
+	<Frame name="AuctionHouseFrame" toplevel="true" enableMouse="true" parent="UIParent" inherits="PortraitFrameTemplate" frameStrata="HIGH" hidden="true">
+		<Size x="800" y="538"/>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Frames>
+			<Frame name="$parentMixin" parentKey="Mixin" hidden="true">
+				<Scripts>
+					<OnLoad>
+						Mixin(self:GetParent(), AuctionHouseFrameMixin);
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<!-- Base Frame -->
+			<Frame name="$parentMoneyFrame" parentKey="MoneyFrameInset" inherits="InsetFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="2" y="27"/>
+					<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" x="167" y="3"/>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentMoneyFrameBorder" parentKey="MoneyFrameBorder" inherits="ThinGoldEdgeTemplate">
+				<Size x="158" y="19"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="5" y="6"/>
+				</Anchors>
+				<Frames>
+					<Frame name="$parentMoneyFrame" parentKey="MoneyFrame" inherits="MoneyDisplayFrameTemplate">
+						<Anchors>
+							<Anchor point="RIGHT" x="-6" y="0"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+				<Layers>
+					<Layer level="BORDER">
+						<Texture file="Interface\FrameGeneral\UI-Frame">
+							<Size x="13" y="23"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="-3" y="2"/>
+							</Anchors>
+							<TexCoords left="0.8984375" right="1" top="0.015625" bottom="0.1953125"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<!-- Base Frame -->
+
+			<!-- Tabs -->
+			<Button name="$parentBuyTab" parentKey="BuyTab" inherits="AuctionHouseFrameDisplayModeTabTemplate" text="AUCTION_HOUSE_BUY_TAB">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="20" y="-28"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="displayMode" value="Buy" type="string"/>
+				</Attributes>
+				<Scripts>
+					<OnLoad>
+						local parent = self:GetParent()
+						if not parent.Tabs then
+							parent.Tabs = {}
+						end
+						table.insert(parent.Tabs, self)
+					</OnLoad>
+				</Scripts>
+			</Button>
+			<Button name="$parentSellTab" parentKey="SellTab" inherits="AuctionHouseFrameDisplayModeTabTemplate" text="AUCTION_HOUSE_SELL_TAB">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentBuyTab" relativePoint="RIGHT" x="-15" y="0"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="displayMode" value="ItemSell" type="string"/>
+				</Attributes>
+				<Scripts>
+					<OnLoad>
+						local parent = self:GetParent()
+						if not parent.Tabs then
+							parent.Tabs = {}
+						end
+						table.insert(parent.Tabs, self)
+					</OnLoad>
+				</Scripts>
+			</Button>
+			<Button name="$parentAuctionsTab" parentKey="AuctionsTab" inherits="AuctionHouseFrameDisplayModeTabTemplate" text="AUCTION_HOUSE_AUCTIONS_SUB_TAB">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentSellTab" relativePoint="RIGHT" x="-15" y="0"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="displayMode" value="Auctions" type="string"/>
+				</Attributes>
+				<Scripts>
+					<OnLoad>
+						local parent = self:GetParent()
+						if not parent.Tabs then
+							parent.Tabs = {}
+						end
+						table.insert(parent.Tabs, self)
+					</OnLoad>
+				</Scripts>
+			</Button>
+			<!-- Tabs -->
+
+			<!-- DropDowns -->
+			<!-- DropDowns need to be loaded first to be referenced by other subframes. -->
+			<Frame name="$parentFavoriteDropDown" parentKey="FavoriteDropDown" inherits="FavoriteDropDownTemplate" hidden="true"/>
+			<!-- DropDowns -->
+
+			<!-- Browsing frames -->
+			<Frame name="$parentSearchBar" parentKey="SearchBar" inherits="AuctionHouseSearchBarTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-12" y="-29"/>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentCategoriesList" parentKey="CategoriesList" inherits="AuctionHouseCategoriesListTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="LEFT" x="4" y="0"/>
+					<Anchor point="TOP" relativeTo="$parentSearchBar" relativePoint="BOTTOM" x="0" y="-4"/>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentBrowseResultsFrame" parentKey="BrowseResultsFrame" inherits="AuctionHouseBrowseResultsFrameTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentCategoriesList" relativePoint="TOPRIGHT" x="0" y="0"/>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentCategoriesList" relativePoint="BOTTOMRIGHT" x="8" y="0"/>
+					<Anchor point="RIGHT" x="-23" y="0"/>
+				</Anchors>
+			</Frame>
+			<!-- Browsing frames -->
+
+			<!-- Buy frames -->
+			<Frame name="$parentCommoditiesBuyFrame" parentKey="CommoditiesBuyFrame" inherits="AuctionHouseCommoditiesBuyFrameTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentCategoriesList" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+					<Anchor point="TOP" relativeTo="$parentSearchBar" relativePoint="BOTTOM" x="0" y="0"/>
+					<Anchor point="RIGHT" x="-1" y="0"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentItemBuyFrame" parentKey="ItemBuyFrame" inherits="AuctionHouseItemBuyFrameTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentCategoriesList" relativePoint="RIGHT" x="0" y="0"/>
+					<Anchor point="RIGHT" x="-1" y="0"/>
+					<Anchor point="TOP" relativeTo="$parentSearchBar" relativePoint="BOTTOM" x="0" y="0"/>
+					<Anchor point="BOTTOM" x="0" y="5"/>
+				</Anchors>
+			</Frame>
+			<!-- Buy frames -->
+
+			<!-- Sell frames -->
+			<Frame name="$parentItemSellFrame" parentKey="ItemSellFrame" inherits="AuctionHouseItemSellFrameTemplate" hidden="true">
+				<Size x="363" y="3"/>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-69"/>
+					<Anchor point="BOTTOM" relativeTo="$parentMoneyFrameBorder" relativePoint="TOP" x="0" y="2"/>
+					<Anchor point="LEFT" x="4" y="0"/>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentItemSellList" parentKey="ItemSellList" inherits="AuctionHouseItemListTemplate" hidden="true">
+				<Attributes>
+					<Attribute name="backgroundAtlas" value="auctionhouse-background-sell-right" type="string"/>
+					<Attribute name="refreshFrameXOffset" value="-4" type="number"/>
+					<Attribute name="refreshFrameYOffset" value="30" type="number"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentItemSellFrame" relativePoint="TOPRIGHT" x="1" y="0"/>
+					<Anchor point="RIGHT" x="-5" y="0"/>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentItemSellFrame" relativePoint="BOTTOMRIGHT" x="1" y="0"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentCommoditiesSellFrame" parentKey="CommoditiesSellFrame" inherits="AuctionHouseCommoditiesSellFrameTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentItemSellFrame" relativePoint="TOPLEFT"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentItemSellFrame" relativePoint="BOTTOMRIGHT"/>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentCommoditiesSellList" parentKey="CommoditiesSellList" inherits="AuctionHouseCommoditiesSellListTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentItemSellList" relativePoint="TOPLEFT"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentItemSellList" relativePoint="BOTTOMRIGHT"/>
+				</Anchors>
+			</Frame>
+			<!-- Sell frames -->
+
+			<!-- Auctions frames -->
+			<Frame name="$parentAuctionsFrame" parentKey="AuctionsFrame" inherits="AuctionHouseAuctionsFrameTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="LEFT" x="5" y="0"/>
+					<Anchor point="RIGHT"/>
+					<Anchor point="TOP" x="0" y="-42"/>
+					<Anchor point="BOTTOM" relativeTo="$parentMoneyFrameBorder" relativePoint="TOP" x="0" y="2"/>
+				</Anchors>
+			</Frame>
+			<!-- Auctions frames -->
+
+			<!-- Dialogs -->
+			<Frame name="$parentBuyDialog" parentKey="BuyDialog" inherits="AuctionHouseBuyDialogTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="CENTER" x="0" y="50"/>
+				</Anchors>
+			</Frame>
+			<!-- Dialogs -->
+
+			<!-- Required for measuring max widths. This should always be hidden. -->
+			<Frame name="$parentDummyMoneyDisplayFrame" parentKey="DummyMoneyDisplayFrame" inherits="MoneyDisplayFrameTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="CENTER"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="hideCopper" value="true" type="boolean"/>
+					<Attribute name="useAuctionHouseIcons" value="true" type="boolean"/>
+					<Attribute name="resizeToFit" value="true" type="boolean"/>
+				</Attributes>
+			</Frame>
+			<!-- Required for measuring max widths. This should always be hidden. -->
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+</Ui>

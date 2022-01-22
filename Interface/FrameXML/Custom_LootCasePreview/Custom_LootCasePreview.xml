@@ -1,0 +1,107 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="Custom_LootCasePreview.lua"/>
+
+	<Button name="LootCasePreviewButtonTemplate" virtual="true">
+		<Size x="253" y="48"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background">
+					<Anchors>
+						<Anchor point="LEFT" x="42" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentIcon" parentKey="Icon" setAllPoints="true">
+					<Size x="38" y="38"/>
+					<Anchors>
+						<Anchor point="LEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentName" parentKey="Name" inherits="GameFontHighlight" justifyH="LEFT">
+					<Size x="190" y="0"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentBackground" x="6" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentCount" parentKey="Count" inherits="NumberFontNormal" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="-2" y="2"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture name="$parentHighlightTexture" parentKey="HighlightTexture" hidden="true">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="4" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, LootCasePreviewButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent()
+			</OnEvent>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+			<OnClick>
+				self:OnClick()
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Frame name="LootCasePreviewFrame" movable="true" clampedToScreen="true" dontSavePosition="true" frameStrata="FULLSCREEN_DIALOG" topLevel="true" inherits="ButtonFrameTemplate" parent="UIParent" enableMouse="true" hidden="true">
+		<Size x="293" y="0"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0"/>
+		</Anchors>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parentItemName" parentKey="ItemName" inherits="GameFontNormal">
+					<Size x="188" y="38"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentPortrait" relativePoint="RIGHT" x="11" y="-20"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<ScrollFrame name="$parentScrollFrame" parentKey="ScrollFrame" inherits="HybridScrollFrameTemplate">
+				<Size x="254" y="0"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="10" y="-66"/>
+				</Anchors>
+				<Frames>
+					<Slider name="$parentScrollBar" parentKey="ScrollBar" inherits="HybridScrollBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="4" y="-9"/>
+							<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="4" y="9"/>
+						</Anchors>
+					</Slider>
+				</Frames>
+			</ScrollFrame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, LootCasePreviewMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnDragStart>
+				self:StartMoving()
+			</OnDragStart>
+			<OnDragStop>
+				self:StopMovingOrSizing()
+			</OnDragStop>
+		</Scripts>
+	</Frame>
+</Ui>

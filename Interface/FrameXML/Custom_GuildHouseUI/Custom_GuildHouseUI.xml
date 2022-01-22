@@ -1,0 +1,553 @@
+<!--
+
+	Filename:	Custom_GuildHouseUI.xml
+	Project:	Custom Game Interface
+	Author:		Nyll & Blizzard Entertainment
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="Custom_GuildHouseUI.lua"/>
+
+	<Script>
+		GUILD_HOUSE_BUILDINGS_TEMP_ICONS = {"INV_INGOT_GHOSTIRON", "INV_Ingot_LivingSteel", "INV_Ingot_Manticyte", "INV_Ingot_Trillium"}
+	</Script>
+
+	<Button name="GuildHouseBuildingListButtonTemplate" virtual="true">
+		<Size x="232" y="50"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBG" parentKey="BG" atlas="Garr_ListButton" file="Interface/Garrison/GarrisonBuildingUI" useAtlasSize="true">
+					<Size x="185" y="45"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="-2"/>
+					</Anchors>
+					<TexCoords left="0.733398" right="0.936523" top="0.00195312" bottom="0.0898438"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="SelectedBG" atlas="Garr_ListButton-Selection" file="Interface/Garrison/GarrisonBuildingUI" useAtlasSize="true" alphaMode="ADD" hidden="true">
+					<Size x="185" y="45"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="-2"/>
+					</Anchors>
+					<TexCoords left="0.12793" right="0.331055" top="0.246094" bottom="0.333984"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Icon">
+					<Size x="42" y="42"/>
+					<Anchors>
+						<Anchor point="LEFT" x="2" y="1"/>
+					</Anchors>
+					<!-- <Color r="1" g="0" b="0"/> -->
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Name" inherits="GameFontNormal" justifyH="LEFT" text="Building name">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBG" x="8" y="-3"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBG" x="-8" y="6"/>
+					</Anchors>
+				</FontString>
+				<Texture parentKey="Plans" atlas="Garr_PlanIcon-List" file="Interface/Garrison/GarrisonBuildingUI" useAtlasSize="true">
+					<Size x="38" y="38"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="-5"/>
+					</Anchors>
+					<TexCoords left="0.552734" right="0.589844" top="0.123047" bottom="0.197266"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<HighlightTexture file="Interface/Garrison/GarrisonBuildingUI" useAtlasSize="true" alphaMode="ADD">
+			<Size x="185" y="45"/>
+			<Anchors>
+				<Anchor point="RIGHT" x="-2"/>
+			</Anchors>
+			<TexCoords left="0.733398" right="0.936523" top="0.09375" bottom="0.181641"/>
+		</HighlightTexture>
+		<!-- <Scripts>
+			<OnLoad>
+				self:RegisterForDrag("LeftButton");
+			</OnLoad>
+			<OnMouseDown function="GarrisonBuildingListButton_OnMouseDown"/>
+			<OnDragStart function="GarrisonBuildingListButton_OnDragStart"/>
+			<OnDragStop function="GarrisonBuildingListButton_OnDragStop"/>
+			<OnEnter function="GarrisonBuildingListButton_OnEnter"/>
+			<OnLeave function="GarrisonBuildingListButton_OnLeave"/>
+		</Scripts> -->
+		<Scripts>
+			<OnLoad>
+				self.Icon:SetTexture("Interface\\ICONS\\"..GUILD_HOUSE_BUILDINGS_TEMP_ICONS[math.random(1, #GUILD_HOUSE_BUILDINGS_TEMP_ICONS)])
+			</OnLoad>
+		</Scripts>
+	</Button>
+	<Button name="GuildHousePlotLargeTemplate" virtual="true">
+		<Size x="52" y="52"/>
+		<Attributes>
+			<Attribute name="HOUSE_SLOT_TYPE" type="number" value="1"/>
+		</Attributes>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="42" y="42"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0" />
+					</Anchors>
+					<Color r="1" g="0.33" b="0.55"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentSpikeyGlow" parentKey="SpikeyGlow" alphaMode="ADD" file="Interface/Garrison/GarrisonMissionUI2" hidden="true">
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentIcon" x="0" y="0" />
+					</Anchors>
+					<TexCoords left="0.674805" right="0.823242" top="0.305664" bottom="0.422852"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIconBorder" parentKey="IconBorder" file="Interface\GuildHouse\GuildHouseCircle">
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentIcon" x="0" y="0" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="$parentDebugID" parentKey="DebugID" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0" />
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture name="$parentHighlight" parentKey="Highlight" alphaMode="ADD" alpha="0.7" file="Interface/Garrison/GarrisonMissionUI2">
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentIcon" x="0" y="0" />
+					</Anchors>
+					<TexCoords left="0.880859" right="0.949219" top="0.613281" bottom="0.681641"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentUpgradeFrame" parentKey="UpgradeFrame" hidden="true">
+				<Size x="33" y="39"/>
+				<Anchors>
+					<Anchor point="CENTER" relativePoint="BOTTOMRIGHT" x="-6" y="14"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentUpgradeIcon" parentKey="UpgradeIcon" file="Interface/Garrison/GarrisonBuildingUI">
+							<TexCoords left="0.0908203" right="0.123047" top="0.757812" bottom="0.833984"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentLockFrame" parentKey="LockFrame" hidden="true">
+				<Size x="33" y="39"/>
+				<Anchors>
+					<Anchor point="CENTER" relativePoint="BOTTOMRIGHT" x="-6" y="14"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentLockTexture" parentKey="LockTexture" file="Interface/Garrison/GarrisonBuildingUI">
+							<TexCoords left="0.794922" right="0.827148" top="0.246094" bottom="0.322266"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad function="GuildHousePlot_OnLoad"/>
+		</Scripts>
+	</Button>
+	<Button name="GuildHousePlotMediumTemplate" inherits="GuildHousePlotLargeTemplate" virtual="true">
+		<Size x="46" y="46"/>
+		<Attributes>
+			<Attribute name="HOUSE_SLOT_TYPE" type="number" value="2"/>
+		</Attributes>
+	</Button>
+	<Button name="GuildHousePlotSmallTemplate" inherits="GuildHousePlotLargeTemplate" virtual="true">
+		<Size x="38" y="38"/>
+		<Attributes>
+			<Attribute name="HOUSE_SLOT_TYPE" type="number" value="3"/>
+		</Attributes>
+	</Button>
+
+	<Frame name="GuildHouseFrame" hidden="true" parent="UIParent">
+		<Size x="962" y="662"/>
+		<Anchors>
+			<Anchor point="CENTER" x="2" y="0" />
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="BackgroundTile" horizTile="true" vertTile="true"> <!-- file="Interface/Garrison/ClassHallInternalBackground" -->
+					<Size x="256" y="256"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+					<Color r="0.3" g="0.2" b="0.6"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="TopLeftCorner" name="$parentTopLeftCorner" file="Interface/Garrison/HordeBfAMissionFrame">
+					<Size x="166" y="166"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-6" y="6"/>
+					</Anchors>
+					<TexCoords left="0.00195312" right="0.326172" top="0.646484" bottom="0.970703"/>
+				</Texture>
+				<Texture parentKey="TopRightCorner" name="$parentTopRightCorner" file="Interface/Garrison/HordeBfAMissionFrame">
+					<Size x="166" y="166"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="6" y="6"/>
+					</Anchors>
+					<TexCoords left="0.00195312" right="0.326172" top="0.646484" bottom="0.970703"/>
+				</Texture>
+				<Texture parentKey="BotLeftCorner" name="$parentBotLeftCorner" file="Interface/Garrison/HordeBfAMissionFrame">
+					<Size x="166" y="166"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="-6" y="-6"/>
+					</Anchors>
+					<TexCoords left="0.00195312" right="0.326172" top="0.646484" bottom="0.970703"/>
+				</Texture>
+				<Texture parentKey="BotRightCorner" name="$parentBotRightCorner" file="Interface/Garrison/HordeBfAMissionFrame">
+					<Size x="166" y="166"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="6" y="-6"/>
+					</Anchors>
+					<TexCoords left="0.00195312" right="0.326172" top="0.646484" bottom="0.970703"/>
+				</Texture>
+				<Texture parentKey="Top" file="Interface/Garrison/HordeBfAMissionFrame" horizTile="true">
+					<Size x="256" y="30"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentTopLeftCorner" relativePoint="TOPRIGHT" x="0" y="0" />
+						<Anchor point="TOPRIGHT" relativeTo="$parentTopRightCorner" relativePoint="TOPLEFT" x="0" y="0" />
+					</Anchors>
+					<TexCoords top="0.347656" bottom="0.40625"/>
+				</Texture>
+				<Texture parentKey="Bottom" file="Interface/Garrison/HordeBfAMissionFrame" horizTile="true">
+					<Size x="256" y="30"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentBotLeftCorner" relativePoint="BOTTOMRIGHT" x="0" y="0" />
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBotRightCorner" relativePoint="BOTTOMLEFT" x="0" y="0" />
+					</Anchors>
+					<TexCoords top="0.285156" bottom="0.34375"/>
+				</Texture>
+				<Texture parentKey="Left" file="Interface/Garrison/HordeBfAMissionFrame2" vertTile="true">
+					<Size x="30" y="256"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentTopLeftCorner" relativePoint="BOTTOMLEFT" x="0" y="0" />
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentBotLeftCorner" relativePoint="TOPLEFT" x="0" y="0" />
+					</Anchors>
+					<TexCoords left="0.03125" right="0.96875"/>
+				</Texture>
+				<Texture parentKey="Right" file="Interface/Garrison/HordeBfAMissionFrame2" vertTile="true">
+					<Size x="30" y="256"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parentTopRightCorner" relativePoint="BOTTOMRIGHT" x="0" y="0" />
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBotRightCorner" relativePoint="TOPRIGHT" x="0" y="0" />
+					</Anchors>
+					<TexCoords left="0.03125" right="0.96875"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentHeaderFrame" parentKey="HeaderFrame" toplevel="true">
+				<Size x="268" y="32"/>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="2" />
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentLeft" parentKey="Left" file="Interface/Garrison/HordeBfAMissionFrame">
+							<Size x="78" y="61"/>
+							<Anchors>
+								<Anchor point="TOPLEFT"/>
+								<Anchor point="BOTTOMLEFT"/>
+							</Anchors>
+							<TexCoords left="0.330078" right="0.482422" top="0.646484" bottom="0.765625"/>
+						</Texture>
+						<Texture name="$parentRight" parentKey="Right" file="Interface/Garrison/HordeBfAMissionFrame">
+							<Size x="78" y="61"/>
+							<Anchors>
+								<Anchor point="TOPRIGHT"/>
+								<Anchor point="BOTTOMRIGHT"/>
+							</Anchors>
+							<TexCoords left="0.816406" right="0.96875" top="0.410156" bottom="0.529297"/>
+						</Texture>
+						<Texture name="$parentMiddle" parentKey="Middle" file="Interface/Garrison/HordeBfAMissionFrame">
+							<Size x="128" y="57"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentLeft" relativePoint="TOPRIGHT" x="0" y="0"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentRight" relativePoint="BOTTOMLEFT" x="0" y="2"/>
+							</Anchors>
+							<TexCoords left="0" right="0.25" top="0.00195312" bottom="0.113281"/>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<FontString name="$parentText" parentKey="Text" inherits="GameFontNormal" text="GUILD_HOUSE_TITLE_TEXT">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="1" />
+							</Anchors>
+							<!-- <Color r="0.192" g="0.051" b="0.008"/> -->
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+					</Layer>
+					<Layer level="ARTWORK">
+					</Layer>
+					<Layer level="OVERLAY">
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentGuildPortrait" parentKey="GuildPortrait" toplevel="true">
+				<Size x="110" y="110"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="-30" y="30" />
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background" file="Interface\GuildFrame\GuildFrame">
+							<Size x="62" y="62"/>
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+							<TexCoords left="0.63183594" right="0.69238281" top="0.61914063" bottom="0.74023438"/>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture name="$parentBorder" parentKey="Border" file="Interface\GuildFrame\GuildFrame">
+							<Size x="66" y="66"/>
+							<Anchors>
+								<Anchor point="CENTER" x="-1" y="1.5" />
+							</Anchors>
+							<TexCoords left="0.63183594" right="0.69238281" top="0.74414063" bottom="0.86523438"/>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<Texture name="$parentEmblem" parentKey="Emblem" file="Interface\GuildFrame\GuildEmblemsLG_01">
+							<Size x="58" y="58"/>
+							<Anchors>
+								<Anchor point="CENTER" x="3" y="-1" />
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture name="$parentPortraitBorder" parentKey="PortraitBorder" file="Interface\Garrison\GuildPortraitBorder"/>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentMapFrame" parentKey="MapFrame" setAllPoints="true">
+				<Layers>
+					<Layer level="BORDER">
+						<Texture name="$parentMap" parentKey="Map" file="Interface\GuildHouse\PH_GuildHouse_Map" hidden="true">
+							<Size x="940" y="650"/>
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+							<TexCoords left="0" right="0.87721893491124" top="0" bottom="0.87255859375"/> <!-- temp coord -->
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+					</Layer>
+				</Layers>
+				<Frames>
+					<Frame name="%parentLeftPanel" parentKey="LeftPanel" toplevel="true" hidden="false">
+						<Size x="260" y="560"/>
+						<Anchors>
+							<Anchor point="LEFT" x="40" y="-14" />
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture atlas="Garr_InfoBox-BackgroundTile" file="Interface/Garrison/GarrisonUIBackground" horizTile="true" vertTile="true">
+									<Size x="256" y="256"/>
+									<Anchors>
+										<Anchor point="TOPLEFT"/>
+										<Anchor point="BOTTOMRIGHT"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+							<Layer level="BORDER">
+							</Layer>
+							<Layer level="ARTWORK">
+								<Texture parentKey="TopLeftCorner" name="$parentTopLeftCorner" file="Interface\GuildHouse\GuildHouseFrame">
+									<Size x="44" y="44"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" x="-4" y="4"/>
+									</Anchors>
+									<TexCoords left="0" right="0.1640625" top="0.64453125" bottom="0.8046875"/>
+								</Texture>
+								<Texture parentKey="TopRightCorner" name="$parentTopRightCorner" file="Interface\GuildHouse\GuildHouseFrame">
+									<Size x="44" y="44"/>
+									<Anchors>
+										<Anchor point="TOPRIGHT" x="4" y="4"/>
+									</Anchors>
+									<TexCoords left="0" right="0.1640625" top="0.64453125" bottom="0.8046875"/>
+								</Texture>
+								<Texture parentKey="BotLeftCorner" name="$parentBotLeftCorner" file="Interface\GuildHouse\GuildHouseFrame">
+									<Size x="44" y="44"/>
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" x="-4" y="-4"/>
+									</Anchors>
+									<TexCoords left="0" right="0.1640625" top="0.64453125" bottom="0.8046875"/>
+								</Texture>
+								<Texture parentKey="BotRightCorner" name="$parentBotRightCorner" file="Interface\GuildHouse\GuildHouseFrame">
+									<Size x="44" y="44"/>
+									<Anchors>
+										<Anchor point="BOTTOMRIGHT" x="4" y="-4"/>
+									</Anchors>
+									<TexCoords left="0" right="0.1640625" top="0.64453125" bottom="0.8046875"/>
+								</Texture>
+								<Texture parentKey="Top" file="Interface/Garrison/HordeBfAMissionFrame" horizTile="true">
+									<Size x="182" y="16"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="$parentTopLeftCorner" relativePoint="TOPRIGHT" x="-2" y="-0.5" />
+										<Anchor point="TOPRIGHT" relativeTo="$parentTopRightCorner" relativePoint="TOPLEFT" x="2" y="0" />
+									</Anchors>
+									<TexCoords top="0.347656" bottom="0.40625"/>
+								</Texture>
+								<Texture parentKey="Bottom" file="Interface/Garrison/HordeBfAMissionFrame" horizTile="true">
+									<Size x="182" y="16"/>
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" relativeTo="$parentBotLeftCorner" relativePoint="BOTTOMRIGHT" x="-2" y="0.5" />
+										<Anchor point="BOTTOMRIGHT" relativeTo="$parentBotRightCorner" relativePoint="BOTTOMLEFT" x="2" y="0" />
+									</Anchors>
+									<TexCoords top="0.285156" bottom="0.34375"/>
+								</Texture>
+								<Texture parentKey="Left" file="Interface/Garrison/HordeBfAMissionFrame2" vertTile="true">
+									<Size x="16" y="182"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="$parentTopLeftCorner" relativePoint="BOTTOMLEFT" x="0.5" y="2" />
+										<Anchor point="BOTTOMLEFT" relativeTo="$parentBotLeftCorner" relativePoint="TOPLEFT" x="0" y="-2" />
+									</Anchors>
+									<TexCoords left="0.03125" right="0.96875"/>
+								</Texture>
+								<Texture parentKey="Right" file="Interface/Garrison/HordeBfAMissionFrame2" vertTile="true">
+									<Size x="16" y="182"/>
+									<Anchors>
+										<Anchor point="TOPRIGHT" relativeTo="$parentTopRightCorner" relativePoint="BOTTOMRIGHT" x="-0.5" y="2" />
+										<Anchor point="BOTTOMRIGHT" relativeTo="$parentBotRightCorner" relativePoint="TOPRIGHT" x="0" y="-2" />
+									</Anchors>
+									<TexCoords left="0.03125" right="0.96875"/>
+								</Texture>
+							</Layer>
+							<Layer level="OVERLAY">
+							</Layer>
+						</Layers>
+						<Frames>
+							<Button name="$parentBuildButton1" parentKey="BuildButton1" inherits="GuildHouseBuildingListButtonTemplate">
+								<Anchors>
+									<Anchor point="TOP" y="-21"/>
+								</Anchors>
+							</Button>
+							<Button name="$parentBuildButton2" parentKey="BuildButton2" inherits="GuildHouseBuildingListButtonTemplate">
+								<Anchors>
+									<Anchor point="TOP" relativeTo="$parentBuildButton1" relativePoint="BOTTOM" x="0" y="-2" />
+								</Anchors>
+							</Button>
+							<Button name="$parentBuildButton3" parentKey="BuildButton3" inherits="GuildHouseBuildingListButtonTemplate">
+								<Anchors>
+									<Anchor point="TOP" relativeTo="$parentBuildButton2" relativePoint="BOTTOM" x="0" y="-2" />
+								</Anchors>
+							</Button>
+							<Button name="$parentBuildButton4" parentKey="BuildButton4" inherits="GuildHouseBuildingListButtonTemplate">
+								<Anchors>
+									<Anchor point="TOP" relativeTo="$parentBuildButton3" relativePoint="BOTTOM" x="0" y="-2" />
+								</Anchors>
+							</Button>
+							<Button name="$parentBuildButton5" parentKey="BuildButton5" inherits="GuildHouseBuildingListButtonTemplate">
+								<Anchors>
+									<Anchor point="TOP" relativeTo="$parentBuildButton4" relativePoint="BOTTOM" x="0" y="-2" />
+								</Anchors>
+							</Button>
+							<Button name="$parentBuildButton6" parentKey="BuildButton6" inherits="GuildHouseBuildingListButtonTemplate">
+								<Anchors>
+									<Anchor point="TOP" relativeTo="$parentBuildButton5" relativePoint="BOTTOM" x="0" y="-2" />
+								</Anchors>
+							</Button>
+							<Button name="$parentBuildButton7" parentKey="BuildButton7" inherits="GuildHouseBuildingListButtonTemplate">
+								<Anchors>
+									<Anchor point="TOP" relativeTo="$parentBuildButton6" relativePoint="BOTTOM" x="0" y="-2" />
+								</Anchors>
+							</Button>
+							<Button name="$parentBuildButton8" parentKey="BuildButton8" inherits="GuildHouseBuildingListButtonTemplate">
+								<Anchors>
+									<Anchor point="TOP" relativeTo="$parentBuildButton7" relativePoint="BOTTOM" x="0" y="-2" />
+								</Anchors>
+							</Button>
+							<Button name="$parentBuildButton9" parentKey="BuildButton9" inherits="GuildHouseBuildingListButtonTemplate">
+								<Anchors>
+									<Anchor point="TOP" relativeTo="$parentBuildButton8" relativePoint="BOTTOM" x="0" y="-2" />
+								</Anchors>
+							</Button>
+							<Button name="$parentBuildButton10" parentKey="BuildButton10" inherits="GuildHouseBuildingListButtonTemplate">
+								<Anchors>
+									<Anchor point="TOP" relativeTo="$parentBuildButton9" relativePoint="BOTTOM" x="0" y="-2" />
+								</Anchors>
+							</Button>
+						</Frames>
+						<Scripts>
+							<OnLoad>
+								self.TopRightCorner:SetSubTexCoord(1.0, 0.0, 0.0, 1.0)
+								self.BotLeftCorner:SetSubTexCoord(0.0, 1.0, 1.0, 0.0)
+								self.BotRightCorner:SetSubTexCoord(1.0, 0.0, 1.0, 0.0)
+
+								self.Right:SetSubTexCoord(1.0, 0.0, 0.0, 1.0)
+							</OnLoad>
+						</Scripts>
+					</Frame>
+					<!-- Large slots -->
+					<Button name="$parentSlotLarge1" parentKey="SlotLarge1" inherits="GuildHousePlotLargeTemplate" id="1">
+						<Anchors>
+							<Anchor point="CENTER" x="-100" y="40" />
+						</Anchors>
+					</Button>
+					<Button name="$parentSlotLarge2" parentKey="SlotLarge2" inherits="GuildHousePlotLargeTemplate" id="2">
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentSlotLarge1" relativePoint="BOTTOM" x="0" y="-60" />
+						</Anchors>
+					</Button>
+					<!-- Medium slots -->
+					<Button name="$parentSlotMedium1" parentKey="SlotMedium1" inherits="GuildHousePlotMediumTemplate" id="1">
+						<Anchors>
+							<Anchor point="CENTER" x="0" y="40" />
+						</Anchors>
+					</Button>
+					<Button name="$parentSlotMedium2" parentKey="SlotMedium2" inherits="GuildHousePlotMediumTemplate" id="2">
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentSlotMedium1" relativePoint="BOTTOM" x="0" y="-60" />
+						</Anchors>
+					</Button>
+					<!-- Small slots -->
+					<Button name="$parentSlotSmall1" parentKey="SlotSmall1" inherits="GuildHousePlotSmallTemplate" id="1">
+						<Anchors>
+							<Anchor point="CENTER" x="100" y="40" />
+						</Anchors>
+					</Button>
+					<Button name="$parentSlotSmall2" parentKey="SlotSmall2" inherits="GuildHousePlotSmallTemplate" id="2">
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentSlotSmall1" relativePoint="BOTTOM" x="0" y="-60" />
+						</Anchors>
+					</Button>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						self:SetFrameLevel(self:GetParent():GetFrameLevel())
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Button parentKey="CloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
+						<Offset x="4" y="5"/>
+					</Anchor>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad function="GuildHouseFrame_OnLoad"/>
+			<OnShow function="GuildHouseFrame_OnShow"/>
+			<OnHide function="GuildHouseFrame_OnHide"/>
+		</Scripts>
+	</Frame>
+</Ui>

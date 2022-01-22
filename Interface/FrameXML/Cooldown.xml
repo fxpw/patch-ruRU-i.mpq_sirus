@@ -1,0 +1,21 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="Cooldown.lua"/>
+	<Cooldown name="CooldownFrameTemplate" setAllPoints="true" hidden="true" virtual="true"/>
+	<Frame name="CustomCooldownFrameTemplate" setAllPoints="true" hidden="true" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentOverlay" parentKey="Overlay"/>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CustomCooldownFrameMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnUpdate>
+				self:OnUpdate(elapsed)
+			</OnUpdate>
+		</Scripts>
+	</Frame>
+</Ui>

@@ -1,0 +1,113 @@
+<!--
+
+	Filename:	Custom_ChooseFaction.xml
+	Project:	Custom Game Interface
+	Author:		Nyll & Blizzard Entertainment
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Script file="Custom_ChooseFaction.lua"/>
+
+    <Button name="ShadowlandsUIButtonTemplate" virtual="true">
+        <Scripts>
+            <OnLoad>
+                self.NormalTexture:SetAtlas("ChooseFaction-button-active")
+                self.HighlightTexture:SetAtlas("ChooseFaction-button-hover")
+                self.PushedTexture:SetAtlas("ChooseFaction-button-pressed")
+            </OnLoad>
+        </Scripts>
+        <NormalTexture parentKey="NormalTexture"/>
+        <PushedTexture parentKey="PushedTexture"/>
+        <HighlightTexture parentKey="HighlightTexture" alphaMode="ADD" alpha="0.2"/>
+        <NormalFont style="ShadowlandsButtonFont"/>
+        <ButtonText>
+            <Anchors>
+            	<Anchor point="CENTER" x="0" y="1" />
+            </Anchors>
+        </ButtonText>
+    </Button>
+    <Frame name="ChooseFactionFrameTemplate" inherits="StandartBaseBasicFrameTemplate" hidden="true" virtual="true">
+        <Size x="453" y="520"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="BackgroundTile">
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="BOTTOMRIGHT"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="OVERLAY">
+                <Texture name="$parentLogo" parentKey="Logo">
+                    <Size x="210" y="247"/>
+                    <Anchors>
+                        <Anchor point="TOP" x="0" y="-48" />
+                    </Anchors>
+                    <Color r="1" g="0" b="0"/>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame parentKey="OverlayElements" frameLevel="10" setAllPoints="true">
+                <Layers>
+                    <Layer level="BORDER">
+                        <Texture parentKey="CloseButtonBorder">
+                            <Anchors>
+                                <Anchor point="CENTER" x="0" y="0" />
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+            </Frame>
+            <Button name="$parentChooseButton" parentKey="ChooseButton" inherits="ShadowlandsUIButtonTemplate">
+                <Size x="210" y="60"/>
+                <Anchors>
+                    <Anchor point="BOTTOM" x="0" y="48" />
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        self:GetParent():Choose()
+                    </OnClick>
+                </Scripts>
+            </Button>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, Custom_ChooseFactionMixin)
+
+                self:OnLoad()
+            </OnLoad>
+        </Scripts>
+    </Frame>
+
+    <Frame name="Custom_ChooseFactionFrameParent" parent="UIParent" hidden="true">
+        <Size x="0" y="520"/>
+        <Anchors>
+        	<Anchor point="CENTER" x="0" y="0" />
+        </Anchors>
+        <Frames>
+            <Frame name="$parentChooseFrame1" parentKey="ChooseFrame1" inherits="ChooseFactionFrameTemplate">
+                <Anchors>
+                	<Anchor point="TOPLEFT" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentChooseFrame2" parentKey="ChooseFrame2" inherits="ChooseFactionFrameTemplate">
+                <Anchors>
+                    <Anchor point="LEFT" relativeTo="$parentChooseFrame1" relativePoint="RIGHT" x="20" y="0" />
+                </Anchors>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, Custom_ChooseFactionParentMixin)
+
+                self:OnLoad()
+            </OnLoad>
+            <OnHide>
+                self:OnHide()
+            </OnHide>
+        </Scripts>
+    </Frame>
+
+</Ui>

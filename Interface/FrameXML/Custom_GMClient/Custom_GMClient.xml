@@ -1,0 +1,275 @@
+<!--
+
+	Filename:	Custom_GMClient.xml
+	Project:	Custom Game Interface
+	Author:		Nyll & Blizzard Entertainment
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="Custom_GMClient.lua"/>
+
+	<Button name="MuteHistoryButtonTemplate" virtual="true">
+		<Size x="262" y="60"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parentTopLine" parentKey="TopLine" inherits="GameFontNormal" justifyH="LEFT" justifyV="TOP">
+					<Size x="0" y="24"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="10" y="-10"/>
+						<Anchor point="RIGHT" x="-10" y="0"/>
+					</Anchors>
+					<Color r="0.9" g="0.9" b="0.9"/>
+				</FontString>
+				<FontString name="$parentMiddleLine" parentKey="MiddleLine" inherits="FriendsFont_Normal" justifyH="LEFT" justifyV="MIDDLE">
+					<Size x="0" y="10"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentTopLine" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
+					</Anchors>
+					<Color r="0.486" g="0.518" b="0.541" />
+				</FontString>
+			</Layer>
+		</Layers>
+		<Backdrop bgFile="Interface\Store\CollectionsBackgroundTile" edgeFile="Interface\FriendsFrame\UI-Toast-Border" tile="true">
+			<BackgroundInsets left="4" right="4" top="4" bottom="4"/>
+			<TileSize val="64"/>
+			<EdgeSize val="12"/>
+		</Backdrop>
+	</Button>
+
+	<Frame name="GMClient_MuteFrame" paret="UIParent" inherits="ButtonFrameTemplate" hidden="true" movable="true">
+		<Size x="300" y="400"/>
+		<Anchors>
+			<Anchor point="LEFT" x="40" y="0" />
+		</Anchors>
+		<Frames>
+			<Frame name="$parentTemplateDropDown" parentKey="TemplateDropDown" inherits="UIDropDownMenuTemplate">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="2" y="-30" />
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentName" inherits="GameFontNormal" justifyH="RIGHT" text="Выберите шаблон:">
+							<Size x="115" y="24"/>
+							<Anchors>
+								<Anchor point="RIGHT" relativePoint="LEFT" x="0" y="2"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnShow function="GMClient_MuteFrame_TemplateDropDown_OnShow"/>
+				</Scripts>
+			</Frame>
+			<Frame name="$parentTopInset" parentKey="TopInset" inherits="StandartInsetFrameTemplate" toplevel="true">
+				<Size x="290" y="60"/>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentInset" x="-1" y="-40" />
+				</Anchors>
+				<Frames>
+					<Frame name="$parentContainer" parentKey="Container" setAllPoints="true" toplevel="true">
+						<Frames>
+							<EditBox name="$parentReasonEditBox" parentKey="ReasonEditBox" inherits="InputBoxInstructionsTemplate" autoFocus="false">
+								<Size x="190" y="30"/>
+								<Anchors>
+									<Anchor point="TOPLEFT" x="16" y="-19" />
+								</Anchors>
+								<Layers>
+									<Layer level="OVERLAY">
+										<FontString name="$parentTitle" inherits="GameFontNormalSmall" text="Причина мута">
+											<Anchors>
+												<Anchor point="BOTTOM" relativePoint="TOP" x="0" y="-2"/>
+											</Anchors>
+										</FontString>
+									</Layer>
+								</Layers>
+								<Scripts>
+									<OnEnterPressed function="EditBox_ClearFocus"/>
+								</Scripts>
+							</EditBox>
+							<EditBox name="$parentTimeEditBox" parentKey="TimeEditBox" inherits="InputBoxInstructionsTemplate" autoFocus="false">
+								<Size x="60" y="30"/>
+								<Anchors>
+									<Anchor point="LEFT" relativeTo="$parentReasonEditBox" relativePoint="RIGHT" x="10" y="0" />
+								</Anchors>
+								<Layers>
+									<Layer level="OVERLAY">
+										<FontString name="$parentTitle" inherits="GameFontNormalSmall" text="Время">
+											<Anchors>
+												<Anchor point="BOTTOM" relativePoint="TOP" x="0" y="-3"/>
+											</Anchors>
+										</FontString>
+									</Layer>
+								</Layers>
+								<Scripts>
+									<OnEnterPressed function="EditBox_ClearFocus"/>
+								</Scripts>
+							</EditBox>
+						</Frames>
+					</Frame>
+				</Frames>
+			</Frame>
+			<Frame name="$parentBottomInset" parentKey="BottomInset" inherits="StandartInsetFrameTemplate" toplevel="true">
+				<Size x="290" y="248"/>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentNoMuteHistoryLabel" parentKey="NoMuteHistoryLabel" text="Нет истории мутов" inherits="GameFontNormalHuge" hidden="true">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<ScrollFrame name="$parentMuteHistoryScrollFrame" parentKey="MuteHistoryScrollFrame" hidden="false" inherits="HybridScrollFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent" x="6" y="-8"/>
+							<Anchor point="BOTTOMRIGHT" relativeTo="$parent" x="-22" y="5"/>
+						</Anchors>
+						<Frames>
+							<Slider name="$parentScrollBar" inherits="HybridScrollBarTrimTemplate" parentKey="scrollBar">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="4" y="-11"/>
+									<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="4" y="11"/>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self.trackBG:Show()
+										self.trackBG:SetVertexColor(0, 0, 0, 0.75)
+									</OnLoad>
+								</Scripts>
+							</Slider>
+						</Frames>
+					</ScrollFrame>
+				</Frames>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentTopInset" relativePoint="BOTTOM" x="0" y="-22" />
+				</Anchors>
+			</Frame>
+			<Button name="$parentMute" text="Выдать мут" inherits="MagicButtonTemplate">
+				<Size x="120" y="22"/>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentTopInset" relativePoint="BOTTOM" x="-80" y="0" />
+				</Anchors>
+				<Scripts>
+					<OnClick function="GMClient_MuteButton_OnClick"/>
+				</Scripts>
+			</Button>
+			<Button name="$parentUnMute" text="Снять мут" inherits="MagicButtonTemplate">
+				<Size x="120" y="22"/>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentTopInset" relativePoint="BOTTOM" x="80" y="0" />
+				</Anchors>
+				<Scripts>
+					<OnClick function="GMClient_UnMuteButton_OnClick"/>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad function="GMClient_MuteFrame_OnLoad"/>
+			<OnShow function="GMClient_MuteFrame_OnShow"/>
+			<OnDragStart>
+				self:StartMoving()
+			</OnDragStart>
+			<OnDragStop>
+				self:StopMovingOrSizing()
+			</OnDragStop>
+		</Scripts>
+	</Frame>
+	<Frame name="GMClient_BanFrame" parent="UIParent" inherits="ButtonFrameTemplate" hidden="true" movable="true">
+		<Size x="300" y="186"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0" />
+		</Anchors>
+		<Frames>
+			<Frame name="$parentContainer" parentKey="Container" toplevel="true" setAllPoints="true">
+				<Frames>
+					<EditBox name="$parentReasonEditBox" parentKey="ReasonEditBox" inherits="InputBoxInstructionsTemplate" autoFocus="false">
+						<Size x="240" y="30"/>
+						<Anchors>
+							<Anchor point="TOP" x="0" y="-40" />
+						</Anchors>
+						<Layers>
+							<Layer level="OVERLAY">
+								<FontString name="$parentTitle" inherits="GameFontNormalSmall" text="Причина бана">
+									<Anchors>
+										<Anchor point="BOTTOM" relativePoint="TOP" x="0" y="-2"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnEnterPressed function="EditBox_ClearFocus"/>
+						</Scripts>
+					</EditBox>
+					<CheckButton name="$parentUnBannedPrice" parentKey="UnBannedPrice" checked="true" inherits="UICheckButtonTemplate">
+						<Size x="24" y="24"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentReasonEditBox" relativePoint="BOTTOMLEFT" x="0" y="0" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								_G[self:GetName().."Text"]:SetText("Доступен платный разбан")
+							</OnLoad>
+							<OnShow>
+								self:SetChecked(true)
+							</OnShow>
+						</Scripts>
+					</CheckButton>
+					<Button name="$parentButton1" text="1 День" inherits="UIPanelButtonTemplate" id="1">
+						<Size x="240" y="22"/>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentReasonEditBox" relativePoint="BOTTOM" x="0" y="-30" />
+						</Anchors>
+						<Scripts>
+							<OnClick function="GMClient_BanFrame_BanButton_OnClick"/>
+						</Scripts>
+					</Button>
+					<Button name="$parentButton2" text="7 Деней" inherits="UIPanelButtonTemplate" id="2">
+						<Size x="240" y="22"/>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentButton1" relativePoint="BOTTOM" x="0" y="-4" />
+						</Anchors>
+						<Scripts>
+							<OnClick function="GMClient_BanFrame_BanButton_OnClick"/>
+						</Scripts>
+					</Button>
+					<Button name="$parentButton3" text="30 Деней" inherits="UIPanelButtonTemplate" id="3">
+						<Size x="240" y="22"/>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentButton2" relativePoint="BOTTOM" x="0" y="-4" />
+						</Anchors>
+						<Scripts>
+							<OnClick function="GMClient_BanFrame_BanButton_OnClick"/>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				ButtonFrameTemplate_HideButtonBar(self)
+				ButtonFrameTemplate_HideAttic(self)
+				ButtonFrameTemplate_HidePortrait(self)
+
+				self:RegisterForDrag("LeftButton")
+			</OnLoad>
+			<OnShow>
+				if self.playerName then
+					self.TitleText:SetText("Ban "..self.playerName)
+				else
+					self.TitleText:SetText("NOT CHARACTER SELECT")
+				end
+			</OnShow>
+			<OnHide>
+				self.playerName = nil
+			</OnHide>
+			<OnDragStart>
+				self:StartMoving()
+			</OnDragStart>
+			<OnDragStop>
+				self:StopMovingOrSizing()
+			</OnDragStop>
+		</Scripts>
+	</Frame>
+</Ui>

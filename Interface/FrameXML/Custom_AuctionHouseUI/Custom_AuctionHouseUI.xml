@@ -1,0 +1,21 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="Custom_AuctionData.lua"/>
+	<Script file="Custom_AuctionHouseUtil.lua"/>
+	<Include file="Custom_AuctionHouseTableBuilder.xml"/>
+	<Include file="Custom_AuctionHouseSharedTemplates.xml"/>
+	<Include file="Custom_AuctionHouseTab.xml"/>
+	<Include file="Custom_AuctionHouseItemList.xml"/>
+	<Include file="Custom_AuctionHouseCategoriesList.xml"/>
+	<Include file="Custom_AuctionHouseSearchBar.xml"/>
+	<Include file="Custom_AuctionHouseBrowseResultsFrame.xml"/>
+	<Include file="Custom_AuctionHouseCommoditiesList.xml"/>
+	<Include file="Custom_AuctionHouseItemBuyFrame.xml"/>
+	<Include file="Custom_AuctionHouseSellFrame.xml"/>
+	<Include file="Custom_AuctionHouseCommoditiesSellFrame.xml"/>
+	<Include file="Custom_AuctionHouseCommoditiesBuyFrame.xml"/>
+	<Include file="Custom_AuctionHouseItemSellFrame.xml"/>
+	<Include file="Custom_AuctionHouseAuctionsFrame.xml"/>
+	<Include file="Custom_AuctionHouseBuyDialog.xml"/>
+	<Include file="Custom_AuctionHouseMultisell.xml"/>
+	<Include file="Custom_AuctionHouseFrame.xml"/>
+</Ui>

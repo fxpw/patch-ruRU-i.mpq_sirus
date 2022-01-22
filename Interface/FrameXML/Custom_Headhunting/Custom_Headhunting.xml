@@ -1,0 +1,2092 @@
+<!--
+
+	Filename:	Custom_Headhunting.xml
+	Project:	Custom Game Interface
+	Author:		Nyll & Blizzard Entertainment
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Script file="Custom_Headhunting.lua"/>
+
+    <Button name="HeadHuntingTabTemplate" inherits="EncounterTierTabTemplate" virtual="true">
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingTabMixin)
+
+                self:OnLoad()
+            </OnLoad>
+            <OnClick>
+                self:OnClick()
+            </OnClick>
+        </Scripts>
+    </Button>
+    <Frame name="HeadHuntingPanelTemplate" virtual="true">
+        <Anchors>
+            <Anchor point="TOPRIGHT" x="-4" y="-46" />
+            <Anchor point="BOTTOMLEFT" x="4" y="4"/>
+        </Anchors>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingPanelMixin)
+            </OnLoad>
+            <OnShow>
+                self:OnShow()
+            </OnShow>
+            <OnHide>
+                self:OnHide()
+            </OnHide>
+        </Scripts>
+    </Frame>
+    <Frame name="HeadHuntingSuggestionSecondaryTemplate" virtual="true">
+        <Size x="344" y="161"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture name="$parentBackground" parentKey="Background"/>
+            </Layer>
+            <Layer level="ARTWORK">
+                <Texture name="$parentIcon" parentKey="Icon">
+                    <Size x="64" y="64"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="-10" y="-2" />
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="OVERLAY">
+                <Texture name="$parentIconRing" parentKey="IconRing">
+                    <Size x="94" y="95"/>
+                    <Anchors>
+                        <Anchor point="CENTER" relativeTo="$parentIcon"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame name="$parentCenterDisplay" parentKey="CenterDisplay">
+                <Size x="260" y="152"/>
+                <Anchors>
+                    <Anchor point="LEFT" x="70" y="1"/>
+                </Anchors>
+                <Frames>
+                    <Frame name="$parentTitle" parentKey="Title">
+                        <Size x="260" y="12"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" x="0" y="-40"/>
+                        </Anchors>
+                        <Layers>
+                            <Layer level="ARTWORK">
+                                <FontString parentKey="text" font="QuestFont18" justifyH="LEFT" justifyV="TOP" wordwrap="false" text="HEADHUNTING_TARGETS">
+                                    <Size x="260" y="0"/>
+                                    <Color r="0" g="0" b="0"/>
+                                </FontString>
+                            </Layer>
+                        </Layers>
+                    </Frame>
+                    <Frame name="$parentDescription" parentKey="Description">
+                        <Size x="240" y="40"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
+                        </Anchors>
+                        <Layers>
+                            <Layer level="ARTWORK">
+                                <FontString parentKey="text" font="SystemFont_Med1" justifyH="LEFT" justifyV="TOP" wordwrap="true" maxLines="4">
+                                    <Size x="240" y="0"/>
+                                    <Color r="0.2824" g="0.0157" b="0.0157"/>
+                                </FontString>
+                            </Layer>
+                        </Layers>
+                    </Frame>
+                    <Button name="$parentButtonLeft" parentKey="ButtonLeft" inherits="UIPanelButtonTemplate" text="Игроки">
+                        <Size x="110" y="22"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativeTo="$parentDescription" relativePoint="BOTTOMLEFT" x="0" y="-8" />
+                        </Anchors>
+                        <Scripts>
+                            <OnClick>
+                                local id = self:GetParent():GetParent():GetID()
+                                HeadHuntingFrame:SelectedCategory(1)
+                                HeadHuntingFrame:SelectedTab(id)
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+                    <Button name="$parentButtonRight" parentKey="ButtonRight" inherits="UIPanelButtonTemplate" text="Гильдии">
+                        <Size x="110" y="22"/>
+                        <Anchors>
+                            <Anchor point="TOPRIGHT" relativeTo="$parentDescription" relativePoint="BOTTOMRIGHT" x="0" y="-8" />
+                        </Anchors>
+                        <Scripts>
+                            <OnClick>
+                                local id = self:GetParent():GetParent():GetID()
+                                HeadHuntingFrame:SelectedCategory(2)
+                                HeadHuntingFrame:SelectedTab(id)
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+                </Frames>
+            </Frame>
+            <Frame name="$parentScripts">
+                <Scripts>
+                    <OnLoad>
+                        local self = self:GetParent()
+
+                        self.Background:SetAtlas("adventureguide-pane-small")
+                        self.IconRing:SetAtlas("adventureguide-ring")
+
+                        SetPortraitToTexture(self.Icon,"Interface\\ICONS\\Warrior_Wild_strike")
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+        </Frames>
+    </Frame>
+    <Button name="HeadHuntingColumnTemplate" virtual="true">
+        <Size x="10" y="24"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture name="$parentBackground" parentKey="Background">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="2" y="-2" />
+                        <Anchor point="BOTTOMRIGHT" x="-2" y="0" />
+                    </Anchors>
+                    <Color r="0.2" g="0.2" b="0.2" a="0.5"/>
+                </Texture>
+            </Layer>
+            <Layer level="BORDER">
+                <Texture name="$parentLeft" parentKey="Left" file="Interface\FriendsFrame\WhoFrame-ColumnTabs">
+                    <Size x="4" y="24"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                    </Anchors>
+                    <TexCoords left="0" right="0.078125" top="0" bottom="0.59375"/>
+                </Texture>
+                <Texture name="$parentRight" parentKey="Right" file="Interface\FriendsFrame\WhoFrame-ColumnTabs">
+                    <Size x="4" y="24"/>
+                    <Anchors>
+                        <Anchor point="BOTTOMRIGHT"/>
+                    </Anchors>
+                    <TexCoords left="0.90625" right="0.96875" top="0" bottom="0.59375"/>
+                </Texture>
+                <Texture name="$parentMiddle" parentKey="Middle" file="Interface\FriendsFrame\WhoFrame-ColumnTabs">
+                    <Size x="0" y="24"/>
+                    <Anchors>
+                        <Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT"/>
+                        <Anchor point="RIGHT" relativeTo="$parentRight" relativePoint="LEFT"/>
+                    </Anchors>
+                    <TexCoords left="0.078125" right="0.90625" top="0" bottom="0.59375"/>
+                </Texture>
+            </Layer>
+            <Layer level="OVERLAY">
+                <Texture name="$parentArrow" parentKey="Arrow">
+                    <Anchors>
+                    	<Anchor point="CENTER" x="0" y="0" />
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="HIGHLIGHT">
+                <Texture name="$parentLeftHighLight" parentKey="LeftHighLight" alpha="0.8" file="Interface\PaperDollInfoFrame\UI-Character-Tab-Highlight" alphaMode="ADD">
+                    <Size x="10" y="34"/>
+                    <Anchors>
+                        <Anchor point="LEFT" x="0" y="0"/>
+                    </Anchors>
+                    <TexCoords left="0" right="0.2421875" top="0" bottom="1"/>
+                </Texture>
+                <Texture name="$parentRightHighLight" parentKey="RightHighLight" alpha="0.8" file="Interface\PaperDollInfoFrame\UI-Character-Tab-Highlight" alphaMode="ADD">
+                    <Size x="10" y="34"/>
+                    <Anchors>
+                        <Anchor point="RIGHT" x="0" y="0"/>
+                    </Anchors>
+                    <TexCoords left="0.7578125" right="1" top="0" bottom="1"/>
+                </Texture>
+                <Texture name="$parentMiddleHighLight" parentKey="MiddleHighLight" alpha="0.8" file="Interface\PaperDollInfoFrame\UI-Character-Tab-Highlight" alphaMode="ADD">
+                    <Size x="0" y="34"/>
+                    <Anchors>
+                        <Anchor point="LEFT" relativeTo="$parentLeftHighLight" relativePoint="RIGHT"/>
+                        <Anchor point="RIGHT" relativeTo="$parentRightHighLight" relativePoint="LEFT"/>
+                    </Anchors>
+                    <TexCoords left="0.2421875" right="0.7578125" top="0" bottom="1"/>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingColumnMixin)
+
+                self:OnLoad()
+            </OnLoad>
+            <OnClick>
+                self:OnClick()
+            </OnClick>
+        </Scripts>
+        <ButtonText name="$parentText" parentKey="Text">
+            <Anchors>
+                <Anchor point="LEFT" x="8" y="0"/>
+            </Anchors>
+            <Color r="1.0" g="0.82" b="0"/>
+        </ButtonText>
+        <NormalFont style="GameFontHighlightSmall"/>
+    </Button>
+    <Frame name="HeadHuntingHeaderContainerTemplate" virtual="true">
+        <Size x="0" y="24"/>
+        <Anchors>
+            <Anchor point="TOPLEFT" x="0" y="0" />
+            <Anchor point="TOPRIGHT" x="-26" y="0" />
+        </Anchors>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingHeaderContainerMixin)
+
+                self:OnLoad()
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <ScrollFrame name="HeadHuntingScrollFrameTemplate" inherits="HybridScrollFrameTemplate" virtual="true">
+        <Anchors>
+            <Anchor point="TOPLEFT" x="2" y="-28"/>
+            <Anchor point="BOTTOMRIGHT" x="-28" y="6"/>
+        </Anchors>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture name="$parentBackground" parentKey="Background">
+                    <Color r="0" g="0" b="0" a="0.2"/>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Slider name="$parentScrollBar" parentKey="ScrollBar" inherits="HybridScrollBarTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="6" y="6"/>
+                    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="4" y="8"/>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        self.trackBG:Show()
+                        self.trackBG:SetVertexColor(0, 0, 0, 0.6)
+                    </OnLoad>
+                </Scripts>
+            </Slider>
+            <Frame parentKey="ShadowOverlay" alpha="0.8" inherits="ShadowOverlaySmallTemplate" toplevel="true">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="-2" y="2"/>
+                    <Anchor point="BOTTOMRIGHT" x="4" y="-6"/>
+                </Anchors>
+            </Frame>
+            <Frame name="$parentTextFrame" parentKey="TextFrame" hidden="true">
+                <Size y="200"/>
+                <Anchors>
+                	<Anchor point="LEFT" x="60" y="0" />
+                	<Anchor point="RIGHT" x="-60" y="0" />
+                </Anchors>
+                <Layers>
+                	<Layer level="BACKGROUND">
+                        <FontString name="$parentText" parentKey="Text" inherits="GlueFontHighlight" justifyV="MIDDLE" justifyH="CENTER" setAllPoints="true"/>
+                	</Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        Mixin(self, HeadHuntingScrollTextFrameMixin)
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+            <Frame name="$parentSpinner" parentKey="Spinner" setAllPoints="true" hidden="true">
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture name="$parentBackground" parentKey="Background">
+                            <Color r="0" g="0" b="0" a="0.5"/>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Frames>
+                    <Frame name="$parentLoadingSpinner" parentKey="LoadingSpinner" inherits="LoadingSpinnerTemplate">
+                        <Anchors>
+                            <Anchor point="CENTER" x="0" y="10" />
+                        </Anchors>
+                    </Frame>
+                </Frames>
+                <Scripts>
+                    <OnLoad>
+                        self.LoadingSpinner.showRetrievingText = true
+                        self.LoadingSpinner.Text:SetText(STORE_WAIT_SERVER_RESPONSE)
+                        self.LoadingSpinner.Text:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+                        self.LoadingSpinner.Dots:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+                    </OnLoad>
+                    <OnShow>
+                        self.LoadingSpinner.Text:Show()
+                        self.LoadingSpinner.Dots:Show()
+
+                        self.LoadingSpinner.AnimFrame.Anim:Play()
+                    </OnShow>
+                    <OnHide>
+                        self.LoadingSpinner.AnimFrame.Anim:Stop()
+                    </OnHide>
+                </Scripts>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingScrollFrameMixin)
+
+                self:OnLoad()
+            </OnLoad>
+        </Scripts>
+    </ScrollFrame>
+    <CheckButton name="HeadHuntingNotifyCheckButtonTemplate" inherits="OptionsBaseCheckButtonTemplate" virtual="true">
+        <Size x="26" y="26"/>
+        <HitRectInsets>
+            <AbsInset left="0" right="0" top="0" bottom="0"/>
+        </HitRectInsets>
+        <Layers>
+            <Layer level="OVERLAY">
+                <FontString name="$parentText" parentKey="Text" inherits="GameFontNormal">
+                    <Anchors>
+                        <Anchor point="LEFT" relativePoint="RIGHT" x="0" y="1"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingCheckButtonMixin)
+
+                self:OnLoad()
+            </OnLoad>
+            <OnClick>
+                self:OnClick()
+            </OnClick>
+            <OnEnter>
+                self:OnEnter()
+            </OnEnter>
+            <OnLeave function="GameTooltip_Hide"/>
+        </Scripts>
+    </CheckButton>
+    <Frame name="HeadHuntingDetailsFrameTemplate" toplevel="true" enableMouse="true" hidden="true" virtual="true">
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets left="11" right="12" top="12" bottom="11"/>
+            <TileSize val="32"/>
+            <EdgeSize val="32"/>
+        </Backdrop>
+        <Layers>
+        	<Layer level="OVERLAY">
+                <Texture name="$parentCloseCorner" parentKey="CloseCorner" file="Interface\DialogFrame\UI-DialogBox-Corner">
+                    <Size x="32" y="32"/>
+                    <Anchors>
+                        <Anchor point="TOPRIGHT" x="-6" y="-7"/>
+                    </Anchors>
+                </Texture>
+                <Texture name="$parentDivider" parentKey="Divider" file="Interface\DialogFrame\UI-DialogBox-Divider">
+                    <Size y="32"/>
+                    <Anchors>
+                    	<Anchor point="BOTTOMLEFT" x="10" y="20" />
+                    	<Anchor point="BOTTOMRIGHT" x="56" y="0" />
+                    </Anchors>
+                </Texture>
+        	</Layer>
+        </Layers>
+        <Frames>
+            <Frame name="$parentContainer" parentKey="Container">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="4" y="-28" />
+                    <Anchor point="BOTTOMRIGHT" x="-6" y="26" />
+                </Anchors>
+                <Frames>
+                    <CheckButton name="$parentNotifyWhenKilling" parentKey="NotifyWhenKilling" inherits="HeadHuntingNotifyCheckButtonTemplate">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" x="14" y="0"/>
+                        </Anchors>
+                        <Attributes>
+                            <Attribute name="text" type="string" value="HEADHUNTING_SETTINGS_NOTIFICATION_AT_KILL_LABEL"/>
+                            <Attribute name="addonMessage" type="string" value="ACMSG_HEADHUNTING_CONTRACT_CHANGE_NOTIFICATIONS"/>
+                        </Attributes>
+                    </CheckButton>
+                    <CheckButton name="$parentNotifyWhenComplete" parentKey="NotifyWhenComplete" id="1" inherits="HeadHuntingNotifyCheckButtonTemplate">
+                        <Anchors>
+                        	<Anchor point="TOP" relativeTo="$parentNotifyWhenKilling" relativePoint="BOTTOM" x="0" y="0" />
+                        </Anchors>
+                        <Attributes>
+                            <Attribute name="text" type="string" value="HEADHUNTING_SETTINGS_NOTIFICATION_AT_COMPLETE_LABEL"/>
+                            <Attribute name="addonMessage" type="string" value="ACMSG_HEADHUNTING_CONTRACT_CHANGE_NOTIFICATIONS"/>
+                        </Attributes>
+                    </CheckButton>
+                </Frames>
+            </Frame>
+            <Button name="$parentCloseButton" parentKey="CloseButton" toplevel="true" inherits="UIPanelCloseButton">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" x="-2" y="-3"/>
+                </Anchors>
+            </Button>
+            <Button name="$parentRemoveContractButton" parentKey="RemoveContractButton" inherits="UIPanelButtonTemplate" text="HEADHUNTING_WITHDRAW_AWARD"> <!--inherits="MagicButtonTemplate"-->
+                <Size x="160" y="22"/>
+                <Anchors>
+                	<Anchor point="BOTTOM" x="0" y="14" />
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        self:GetParent():RemoveContract()
+                    </OnClick>
+                </Scripts>
+            </Button>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingDetailsFrameMixin--[[, PortraitFrameMixin]])
+
+                self:OnLoad()
+            </OnLoad>
+            <OnShow>
+                self:OnShow()
+            </OnShow>
+            <OnHide>
+                self:OnHide()
+            </OnHide>
+        </Scripts>
+    </Frame>
+    <Frame name="HeadHuntingInfoFrameTemplate" toplevel="true" enableMouse="true" hidden="true" virtual="true">
+        <Backdrop edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <TileSize val="32"/>
+            <EdgeSize val="32"/>
+        </Backdrop>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture name="$parentBackgroundTile" parentKey="BackgroundTile" file="Interface\Store\CollectionsBackgroundTile" vertTile="true" horizTile="true">
+                    <Size x="256" y="256"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="4" y="-6" />
+                        <Anchor point="BOTTOMRIGHT" x="-4" y="6"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame parentKey="ShadowOverlay" inherits="ShadowOverlaySmallTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="10" y="-10"/>
+                    <Anchor point="BOTTOMRIGHT" x="-10" y="10"/>
+                </Anchors>
+            </Frame>
+            <Frame name="$parentContainer" parentKey="Container">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="12" y="-12" />
+                    <Anchor point="BOTTOMRIGHT" x="-12" y="12" />
+                </Anchors>
+                <Frames>
+                    <ScrollFrame name="$parentScrollFrame" parentKey="ScrollFrame" inherits="UIPanelScrollFrameCodeTemplate">
+                        <Anchors>
+                        	<Anchor point="TOPLEFT" x="2" y="-6" />
+                        	<Anchor point="BOTTOMRIGHT" x="-22" y="6" />
+                        </Anchors>
+                        <Frames>
+                            <Slider name="$parentScrollBar" parentKey="ScrollBar" inherits="MinimalScrollBarTemplate">
+                                <Anchors>
+                                    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="2" y="-30"/>
+                                    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="2" y="8"/>
+                                </Anchors>
+                                <Scripts>
+                                    <OnLoad>
+                                        self.trackBG:Show()
+                                        self.trackBG:SetVertexColor(0, 0, 0, 0.2)
+                                    </OnLoad>
+                                </Scripts>
+                            </Slider>
+                        </Frames>
+                        <ScrollChild>
+                            <Frame name="$parentInfo" parentKey="Info">
+                                <Size x="200" y="1"/>
+                                <Layers>
+                                	<Layer level="BACKGROUND">
+                                        <FontString name="$parentContracts" parentKey="Contracts" inherits="GameFontHighlightLeft">
+                                            <Anchors>
+                                            	<Anchor point="TOPLEFT" x="10" y="-30" />
+                                            </Anchors>
+                                        </FontString>
+                                	</Layer>
+                                </Layers>
+                                <Frames>
+                                    <Frame name="$parentPlayerFrame" parentKey="PlayerFrame" inherits="HeadHuntingPlayerFrameTemplate">
+                                        <Size x="200" y="24"/>
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" x="6" y="-2" />
+                                        </Anchors>
+                                    </Frame>
+                                    <Frame name="$parentGuildFrame" parentKey="GuildFrame" inherits="HeadHuntingGuildFrameTemplate">
+                                        <Size x="200" y="24"/>
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" x="6" y="-2" />
+                                        </Anchors>
+                                    </Frame>
+                                </Frames>
+                            </Frame>
+                        </ScrollChild>
+                    </ScrollFrame>
+                </Frames>
+                <Scripts>
+                    <OnLoad>
+                        self:SetFrameLevel(self:GetParent().ShadowOverlay:GetFrameLevel() + 2)
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+            <Button name="ReputationDetailCloseButton" toplevel="true" inherits="UIPanelCloseButton">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" x="-3" y="-3"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture name="$parentCorner" parentKey="Corner" file="Interface\DialogFrame\UI-DialogBox-Corner">
+                            <Size x="32" y="32"/>
+                            <Anchors>
+                                <Anchor point="CENTER" x="-4" y="-4" />
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        self:SetFrameLevel(self:GetParent().Container:GetFrameLevel() + 10)
+                    </OnLoad>
+                </Scripts>
+            </Button>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingInfoFrameMixin)
+
+                self:OnLoad()
+            </OnLoad>
+            <OnShow>
+                self:OnShow()
+            </OnShow>
+            <OnHide>
+                self:OnHide()
+            </OnHide>
+        </Scripts>
+    </Frame>
+    <Frame name="HeadHuntingSetRewardHelpBoxStepFrameTemplate" virtual="true">
+        <Size x="150" y="10"/>
+        <Layers>
+        	<Layer level="BACKGROUND">
+                <FontString name="$parentText" parentKey="Text" inherits="GameFontHighlightLeft">
+                    <Size x="150" y="0"/>
+                    <Anchors>
+                        <Anchor point="CENTER" x="0" y="0" />
+                    </Anchors>
+                </FontString>
+        	</Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingSetRewardHelpBoxStepFrameMixin)
+
+                self:OnLoad()
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <Frame name="HeadHuntingSearchFrameTemplate" virtual="true">
+        <Size y="30"/>
+        <Frames>
+            <EditBox name="$parentSearchBox" parentKey="SearchBox" autoFocus="false" inherits="SearchBoxTemplate" toplevel="true">
+                <Size x="290" y="20"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativePoint="LEFT" x="14" y="0" />
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        local clearData = self:GetParent():GetParent().ClearData
+
+                        if clearData then
+                            self.clearButton:HookScript("OnClick", function() clearData() end)
+                        end
+
+                        SearchBoxTemplate_OnLoad(self)
+                    </OnLoad>
+                    <OnTextChanged>
+                        self:GetParent().SearchButton:UpdateButtonState()
+                        SearchBoxTemplate_OnTextChanged(self)
+                    </OnTextChanged>
+                    <OnEnterPressed>
+                        if self:GetParent().SearchButton:IsEnabled() == 1 then
+                        self:GetParent():Search()
+                        end
+                        EditBox_ClearFocus(self)
+                    </OnEnterPressed>
+                </Scripts>
+            </EditBox>
+            <Button name="$parentSearchButton" parentKey="SearchButton" inherits="UIPanelButtonTemplate" text="SEARCH">
+                <Size x="80" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeTo="$parentSearchBox" relativePoint="RIGHT" x="8" y="0" />
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        Mixin(self, HeadHuntingSearchButtonMixin)
+                    </OnLoad>
+                    <OnClick>
+                        self:GetParent():Search()
+                    </OnClick>
+                </Scripts>
+            </Button>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingSearchFrameMixin)
+
+                self:OnLoad()
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <Frame name="HeadHuntingSetRewardFrameTemplate" inherits="PortraitFrameTemplate_NineSlice" toplevel="true" enableMouse="true" virtual="true">
+        <Frames>
+            <Frame name="$parentHelpBoxFrame" parentKey="HelpBoxFrame" inherits="GlowBoxTemplate" enableMouse="true" frameStrata="DIALOG">
+                <Size x="190" y="290"/>
+                <Anchors>
+                	<Anchor point="RIGHT" relativePoint="LEFT" x="-10" y="0" />
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <FontString name="$parentText" parentKey="Text" inherits="GameFontHighlightLeft" justifyV="TOP" text="HEADHUNTING_SET_REWARD_HELP_TITLE">
+                            <Size x="170" y="40"/>
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="16" y="-12"/>
+                            </Anchors>
+                        </FontString>
+                        <FontString name="$parentTotalMoney" parentKey="TotalMoney" inherits="GameFontHighlightLeft" justifyV="TOP">
+                            <Size x="180" y="0"/>
+                            <Anchors>
+                            	<Anchor point="BOTTOMLEFT" x="16" y="20" />
+                            </Anchors>
+                        </FontString>
+                        <FontString name="$parentMoneyError" parentKey="MoneyError" inherits="GameFontHighlightLeft" justifyV="TOP">
+                            <Size x="170" y="0"/>
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT" x="16" y="20" />
+                            </Anchors>
+                            <Color r="1" g="0" b="0"/>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Frames>
+                    <Frame name="$parentStep1" parentKey="Step1" inherits="HeadHuntingSetRewardHelpBoxStepFrameTemplate">
+                        <Anchors>
+                        	<Anchor point="TOP" x="-4" y="-60" />
+                        </Anchors>
+                        <Attributes>
+                            <Attribute name="text" type="string" value="HEADHUNTING_SET_REWARD_HELP_BOX_STEP_1"/>
+                            <Attribute name="key" type="string" value="search"/>
+                        </Attributes>
+                    </Frame>
+                    <Frame name="$parentStep2" parentKey="Step2" inherits="HeadHuntingSetRewardHelpBoxStepFrameTemplate">
+                        <Anchors>
+                        	<Anchor point="TOP" relativeTo="$parentStep1" relativePoint="BOTTOM" x="0" y="-10" />
+                        </Anchors>
+                        <Attributes>
+                            <Attribute name="text" type="string" value="HEADHUNTING_SET_REWARD_HELP_BOX_STEP_2_PLAYER"/>
+                            <Attribute name="key" type="string" value="selectedTarget"/>
+                        </Attributes>
+                    </Frame>
+                    <Frame name="$parentStep3" parentKey="Step3" inherits="HeadHuntingSetRewardHelpBoxStepFrameTemplate">
+                        <Anchors>
+                            <Anchor point="TOP" relativeTo="$parentStep2" relativePoint="BOTTOM" x="0" y="-10" />
+                        </Anchors>
+                        <Attributes>
+                            <Attribute name="text" type="string" value="HEADHUNTING_SET_REWARD_HELP_BOX_STEP_3"/>
+                            <Attribute name="key" type="string" value="setNumKills"/>
+                        </Attributes>
+                    </Frame>
+                    <Frame name="$parentStep4" parentKey="Step4" inherits="HeadHuntingSetRewardHelpBoxStepFrameTemplate">
+                        <Anchors>
+                            <Anchor point="TOP" relativeTo="$parentStep3" relativePoint="BOTTOM" x="0" y="-10" />
+                        </Anchors>
+                        <Attributes>
+                            <Attribute name="text" type="string" value="HEADHUNTING_SET_REWARD_HELP_BOX_STEP_4"/>
+                            <Attribute name="key" type="string" value="setGoldPerKill"/>
+                        </Attributes>
+                    </Frame>
+                </Frames>
+                <Scripts>
+                    <OnLoad>
+                        Mixin(self, HeadHuntingSetRewardHelpBoxFrameMixin)
+
+                        self:OnLoad()
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+            <Frame name="$parentSearchFrame" parentKey="SearchFrame" inherits="HeadHuntingSearchFrameTemplate">
+                <Anchors>
+                	<Anchor point="TOPLEFT" x="0" y="-26" />
+                    <Anchor point="TOPRIGHT" x="0" y="0" />
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        Mixin(self, HeadHuntingSearchFrameMixin)
+
+                        self:OnLoad()
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+            <Frame name="$parentCentralContainer" parentKey="CentralContainer" inherits="StandartInsetFrameTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentSearchFrame" relativePoint="BOTTOMLEFT" x="4" y="0" />
+                    <Anchor point="BOTTOMRIGHT" x="-2" y="27" />
+                </Anchors>
+                <Frames>
+                    <ScrollFrame name="$parentScrollFrame" inherits="HybridScrollFrameTemplate" parentKey="ScrollFrame">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" x="6" y="-8"/>
+                            <Anchor point="BOTTOMRIGHT" x="-28" y="6"/>
+                        </Anchors>
+                        <Frames>
+                            <Slider name="$parentScrollBar" parentKey="ScrollBar" inherits="HybridScrollBarTemplate">
+                                <Anchors>
+                                    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="4" y="-14"/>
+                                    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="4" y="12"/>
+                                </Anchors>
+                                <Scripts>
+                                    <OnLoad>
+                                        self.trackBG:Show()
+                                        self.trackBG:SetVertexColor(0, 0, 0, 0.6)
+                                    </OnLoad>
+                                </Scripts>
+                            </Slider>
+                            <Frame parentKey="ShadowOverlay" alpha="0.8" inherits="ShadowOverlaySmallTemplate" toplevel="true">
+                                <Anchors>
+                                    <Anchor point="TOPLEFT" x="-2" y="2"/>
+                                    <Anchor point="BOTTOMRIGHT" x="2" y="-3"/>
+                                </Anchors>
+                            </Frame>
+                            <Frame name="$parentSpinner" parentKey="Spinner" setAllPoints="true" hidden="true">
+                                <Layers>
+                                    <Layer level="BACKGROUND">
+                                        <Texture name="$parentBackground" parentKey="Background">
+                                            <Color r="0" g="0" b="0" a="0.9"/>
+                                        </Texture>
+                                    </Layer>
+                                </Layers>
+                                <Frames>
+                                    <Frame name="$parentLoadingSpinner" parentKey="LoadingSpinner" inherits="LoadingSpinnerTemplate">
+                                        <Anchors>
+                                            <Anchor point="CENTER" x="0" y="10" />
+                                        </Anchors>
+                                    </Frame>
+                                </Frames>
+                                <Scripts>
+                                    <OnLoad>
+                                        self.LoadingSpinner.showRetrievingText = true
+                                        self.LoadingSpinner.Text:SetText(STORE_WAIT_SERVER_RESPONSE)
+                                        self.LoadingSpinner.Text:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+                                        self.LoadingSpinner.Dots:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+                                    </OnLoad>
+                                    <OnShow>
+                                        self.LoadingSpinner.Text:Show()
+                                        self.LoadingSpinner.Dots:Show()
+
+                                        self.LoadingSpinner.AnimFrame.Anim:Play()
+                                    </OnShow>
+                                    <OnHide>
+                                        self.LoadingSpinner.AnimFrame.Anim:Stop()
+                                    </OnHide>
+                                </Scripts>
+                            </Frame>
+                            <Frame name="$parentTextFrame" parentKey="TextFrame" hidden="true">
+                                <Size y="200"/>
+                                <Anchors>
+                                    <Anchor point="LEFT" x="60" y="0" />
+                                    <Anchor point="RIGHT" x="-60" y="0" />
+                                </Anchors>
+                                <Layers>
+                                    <Layer level="BACKGROUND">
+                                        <FontString name="$parentText" parentKey="Text" inherits="GlueFontHighlight" justifyV="MIDDLE" justifyH="CENTER" setAllPoints="true"/>
+                                    </Layer>
+                                </Layers>
+                                <Scripts>
+                                    <OnLoad>
+                                        Mixin(self, HeadHuntingScrollTextFrameMixin)
+                                    </OnLoad>
+                                </Scripts>
+                            </Frame>
+                        </Frames>
+                        <Scripts>
+                            <OnLoad>
+                                Mixin(self, HeadHuntingScrollFrameMixin, HeadHuntingSearchScrollFrameMixin)
+
+                                self:OnLoad()
+                            </OnLoad>
+                        </Scripts>
+                    </ScrollFrame>
+                </Frames>
+            </Frame>
+            <EditBox name="$parentNumKills" letters="11" parentKey="NumKills" inherits="NumericInputSpinnerTemplateNoFont">
+                <Size x="80" y="20"/>
+                <Anchors>
+                	<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="34" y="6" />
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString parentKey="Instructions" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontDisableSmall" text="Убийств" setAllPoints="true">
+                            <Color r="0.35" g="0.35" b="0.35"/>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnTextChanged>
+                        local text = self:GetText()
+
+                        if text == "0" then
+                            self:SetText("")
+                        end
+
+                        self.Instructions:SetShown(text == "")
+                        NumericInputSpinner_OnTextChanged(self)
+
+                        self:GetParent().SetRewardButton:UpdateButtonState()
+                    </OnTextChanged>
+                </Scripts>
+                <FontString inherits="GameFontHighlightSmall"/>
+            </EditBox>
+            <EditBox name="$parentGoldPerKillsEditBox" parentKey="GoldPerKillsEditBox" inherits="InputBoxInstructionsTemplate" autoFocus="false" numeric="true" letters="14">
+                <Size x="120" y="20"/>
+                <Anchors>
+                	<Anchor point="BOTTOM" x="2" y="6" />
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture name="$parentGoldTexture" parentKey="GoldTexture" file="Interface\MoneyFrame\UI-MoneyIcons">
+                            <Size x="13" y="13"/>
+                            <Anchors>
+                                <Anchor point="RIGHT" x="-4" y="0"/>
+                            </Anchors>
+                            <TexCoords left="0" right="0.25" top="0" bottom="1"/>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        self.Instructions:SetText(HEADHUNTING_GOLD_FOR_KILL)
+                    </OnLoad>
+                    <OnTextChanged>
+                        local text = tonumber(self:GetText())
+
+                        if text and text > HEADHUNTING_MAX_CONTRACT_GOLD_PER_KILL then
+                            self:SetText(HEADHUNTING_MAX_CONTRACT_GOLD_PER_KILL)
+                        end
+
+                        InputBoxInstructions_OnTextChanged(self)
+                        self:GetParent().SetRewardButton:UpdateButtonState()
+                    </OnTextChanged>
+                    <OnEnterPressed function="EditBox_ClearFocus"/>
+                </Scripts>
+            </EditBox>
+            <Button name="$parentSetRewardButton" parentKey="SetRewardButton" motionScriptsWhileDisabled="true" inherits="MagicButtonTemplate" text="HEADHUNTING_SET_REWARD">
+                <Size x="126" y="22"/>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" x="-6" y="4" />
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        Mixin(self, HeadHuntingSetRewardButtonMixin)
+
+                        self:OnLoad()
+                    </OnLoad>
+                    <OnClick>
+                        self:OnClick()
+                    </OnClick>
+                    <OnEnter>
+                        self:OnEnter()
+                    </OnEnter>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Button>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingSetRewardFrameMixin, PortraitFrameMixin)
+
+                self:OnLoad()
+            </OnLoad>
+            <OnShow>
+                self:OnShow()
+            </OnShow>
+        </Scripts>
+    </Frame>
+    <Frame name="HeadHuntingStatsFrameTemplate" hidden="true" virtual="true">
+        <Size x="264" y="30"/>
+        <Layers>
+        	<Layer level="BACKGROUND">
+                <Texture name="$parentBackground" parentKey="Background" alpha="0.9">
+                    <Size x="300" y="100"/>
+                	<Anchors>
+                		<Anchor point="TOP" x="0" y="30" />
+                	</Anchors>
+                </Texture>
+        	</Layer>
+        	<Layer level="BORDER">
+                <FontString name="$parentText" parentKey="Text" inherits="GameTooltipHeader" justifyH="CENTER" justifyV="TOP">
+                    <Anchors>
+                    	<Anchor point="CENTER" x="0" y="-4" />
+                    </Anchors>
+                   <Color r="0.92" g="0.78" b="0.48"/>
+                </FontString>
+        	</Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingStatsFrameMixin)
+
+                self:OnLoad()
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <Frame name="HeadHuntingContractOnPlayerFrameTemplate" virtual="true">
+        <Size y="28"/>
+        <Layers>
+        	<Layer level="BACKGROUND">
+                <Texture name="$parentBackground" alpha="0.8" parentKey="Background">
+                	<Anchors>
+                		<Anchor point="TOPLEFT" x="4" y="-2" />
+                		<Anchor point="BOTTOMRIGHT" x="-4" y="2" />
+                	</Anchors>
+                </Texture>
+        	</Layer>
+        	<Layer level="BORDER">
+                <!-- TODO: Конвертировать в атлас. -->
+                <Texture name="$parentLeft" parentKey="Left" file="Interface\PVPFrame\PVPLadderAtlas">
+                    <Size x="8" y="28"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="BOTTOMLEFT"/>
+                    </Anchors>
+                    <TexCoords left="0.29248046875" right="0.30126953125" top="0.1552734375" bottom="0.23828125"/>
+                    <Color r="1" g="0.5" b="0"/>
+                </Texture>
+                <Texture name="$parentRight" parentKey="Right" file="Interface\PVPFrame\PVPLadderAtlas">
+                    <Size x="8" y="28"/>
+                    <Anchors>
+                        <Anchor point="TOPRIGHT"/>
+                        <Anchor point="BOTTOMRIGHT"/>
+                    </Anchors>
+                    <TexCoords left="0.29248046875" right="0.30126953125" top="0.1552734375" bottom="0.23828125"/>
+                    <Color r="1" g="0.5" b="0"/>
+                </Texture>
+                <Texture name="$parentMiddle" parentKey="Middle" file="Interface\PVPFrame\PVPLadderAtlas">
+                    <Size x="400" y="28"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentLeft" relativePoint="TOPRIGHT"/>
+                        <Anchor point="BOTTOMRIGHT" relativeTo="$parentRight" relativePoint="BOTTOMLEFT"/>
+                    </Anchors>
+                    <TexCoords left="0.30126953125" right="0.57666015625" top="0.1552734375" bottom="0.23828125"/>
+                    <Color r="1" g="0.5" b="0"/>
+                </Texture>
+        	</Layer>
+        	<Layer level="ARTWORK">
+                <FontString name="$parentNoContractText" parentKey="NoContractText" inherits="GameFontNormal14" hidden="true">
+                    <Anchors>
+                    	<Anchor point="CENTER" x="0" y="0" />
+                    </Anchors>
+                    <Color r="0.8" g="0.8" b="0.8"/>
+                </FontString>
+        	</Layer>
+        </Layers>
+        <Frames>
+            <Frame name="$parentPlayerFrame" parentKey="PlayerFrame" hidden="true" setAllPoints="true">
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <FontString name="$parentRewardForYouHead" parentKey="RewardForYouHead" inherits="GameFontNormal" justifyH="RIGHT" text="HEADHUNTING_REWARD_FOR_YOU_HEAD">
+                            <Size x="160" y="10"/>
+                            <Anchors>
+                                <Anchor point="RIGHT" relativePoint="RIGHT" x="-10" y="0" />
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Frames>
+                    <Frame name="$parentPlayerFrame" parentKey="PlayerFrame" inherits="HeadHuntingPlayerFrameTemplate">
+                        <Size x="180" y="24"/>
+                        <Anchors>
+                            <Anchor point="LEFT" x="10" y="0" />
+                        </Anchors>
+                    </Frame>
+                    <Frame name="$parentClassFrame" parentKey="ClassFrame" inherits="HeadHuntingClassFrameTemplate">
+                        <Size x="68" y="24"/>
+                        <Anchors>
+                            <Anchor point="CENTER" x="-96" y="0" />
+                        </Anchors>
+                    </Frame>
+                    <Frame name="$parentFactionFrame" parentKey="FactionFrame" inherits="HeadHuntingFactionFrameTemplate">
+                        <Size x="68" y="24"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeTo="$parentClassFrame" relativePoint="RIGHT" x="2" y="0" />
+                        </Anchors>
+                    </Frame>
+                    <Frame name="$parentRewardForKillFrame" parentKey="RewardForKillFrame" inherits="HeadHuntingMoneyFrameTemplate">
+                        <Size x="130" y="24"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeTo="$parentFactionFrame" relativePoint="RIGHT" x="0" y="0" />
+                        </Anchors>
+                    </Frame>
+                    <Frame name="$parentTotalRewardFrame" parentKey="TotalRewardFrame" inherits="HeadHuntingMoneyFrameTemplate">
+                        <Size x="118" y="24"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeTo="$parentRewardForKillFrame" relativePoint="RIGHT" x="4" y="0" />
+                        </Anchors>
+                    </Frame>
+                </Frames>
+            </Frame>
+            <Frame name="$parentGuildFrame" parentKey="GuildFrame" hidden="true" setAllPoints="true">
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <FontString name="$parentRewardForYouGuild" parentKey="RewardForYouGuild" inherits="GameFontNormal" justifyH="RIGHT" text="HEADHUNTING_REWARD_FOR_YOU_GUILD">
+                            <Size x="160" y="10"/>
+                            <Anchors>
+                                <Anchor point="RIGHT" relativePoint="RIGHT" x="-10" y="0" />
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Frames>
+                    <Frame name="$parentGuildFrame" parentKey="GuildFrame" inherits="HeadHuntingGuildFrameTemplate">
+                        <Size x="410" y="24"/>
+                        <Anchors>
+                            <Anchor point="LEFT" x="10" y="0" />
+                        </Anchors>
+                    </Frame>
+                    <Frame name="$parentFactionFrame" parentKey="FactionFrame" inherits="HeadHuntingFactionFrameTemplate">
+                        <Size x="98" y="24"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeTo="$parentGuildFrame" relativePoint="RIGHT" x="2" y="0" />
+                        </Anchors>
+                    </Frame>
+                    <Frame name="$parentRewardForKillFrame" parentKey="RewardForKillFrame" inherits="HeadHuntingMoneyFrameTemplate">
+                        <Size x="118" y="24"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeTo="$parentFactionFrame" relativePoint="RIGHT" x="2" y="0" />
+                        </Anchors>
+                    </Frame>
+                    <Frame name="$parentTotalRewardFrame" parentKey="TotalRewardFrame" inherits="HeadHuntingMoneyFrameTemplate">
+                        <Size x="118" y="24"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeTo="$parentRewardForKillFrame" relativePoint="RIGHT" x="2" y="0" />
+                        </Anchors>
+                    </Frame>
+                </Frames>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingContractOnPlayerFrameMixin)
+
+                self:OnLoad()
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <Button name="HeadHuntingDropDownMenuButtonTemplate" inherits="UIMenuButtonStretchTemplate" virtual="true">
+        <Size x="100" y="22"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture parentKey="Icon" file="Interface\ChatFrame\ChatFrameExpandArrow">
+                    <Size x="10" y="12"/>
+                    <Anchors>
+                        <Anchor point="RIGHT" relativePoint="RIGHT" x="-5"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingDropDownMenuButtonMixin)
+            </OnLoad>
+            <OnClick>
+                self:OnClick()
+            </OnClick>
+        </Scripts>
+    </Button>
+
+    <Frame name="HeadHuntingPlayerFrameTemplate" virtual="true">
+        <Layers>
+        	<Layer level="BACKGROUND">
+                <Texture name="$parentRaceIcon" parentKey="RaceIcon">
+                	<Size x="18" y="18"/>
+                    <Anchors>
+                    	<Anchor point="LEFT" x="4" y="0" />
+                    </Anchors>
+                </Texture>
+        	</Layer>
+        	<Layer level="BORDER">
+                <Texture name="$parentBorder" parentKey="Border" file="Interface\PVPFrame\PVP-Border-Wood">
+                    <Size x="22" y="22"/>
+                	<Anchors>
+                		<Anchor point="CENTER" relativeTo="$parentRaceIcon" relativePoint="CENTER" x="0" y="0" />
+                	</Anchors>
+                </Texture>
+        	</Layer>
+        	<Layer level="ARTWORK">
+                <FontString name="$parentName" parentKey="Name" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentBorder" relativePoint="TOPRIGHT" x="6" y="0" />
+                        <Anchor point="BOTTOMRIGHT" x="0" y="0" />
+                    </Anchors>
+                </FontString>
+        	</Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingPlayerFrameMixin)
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <Frame name="HeadHuntingClassFrameTemplate" virtual="true">
+        <Layers>
+        	<Layer level="BACKGROUND">
+                <Texture name="$parentClassIcon" parentKey="ClassIcon">
+                    <Size x="18" y="18"/>
+                    <Anchors>
+                    	<Anchor point="CENTER" x="0" y="0" />
+                    </Anchors>
+                </Texture>
+        	</Layer>
+        	<Layer level="BORDER">
+                <Texture name="$parentBorder" parentKey="Border" file="Interface\PVPFrame\PVP-Border-Wood">
+                    <Size x="22" y="22"/>
+                    <Anchors>
+                        <Anchor point="CENTER" relativeTo="$parentClassIcon" relativePoint="CENTER" x="0" y="0" />
+                    </Anchors>
+                </Texture>
+        	</Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingClassFrameMixin)
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <Frame name="HeadHuntingFactionFrameTemplate" virtual="true">
+        <Layers>
+        	<Layer level="BACKGROUND">
+                <Texture name="$parentFactionIcon" parentKey="FactionIcon">
+                    <Size x="20" y="24"/>
+                	<Anchors>
+                		<Anchor point="CENTER" x="0" y="0" />
+                	</Anchors>
+                </Texture>
+        	</Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingFactionFrameMixin)
+
+                self:OnLoad()
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <Frame name="HeadHuntingMoneyFrameTemplate" virtual="true">
+        <Layers>
+        	<Layer level="BACKGROUND">
+                <FontString name="$parentText" parentKey="Text" justifyV="MIDDLE" justifyH="RIGHT" inherits="GameFontNormal">
+                    <Size x="60" y="10"/>
+                    <Anchors>
+                    	<Anchor point="CENTER" x="-24" y="0" />
+                    </Anchors>
+                    <Color r="1" g="1" b="1"/>
+                </FontString>
+        	</Layer>
+        	<Layer level="BORDER">
+                <Texture name="$parentCoin" parentKey="Coin" file="Interface\MoneyFrame\UI-MoneyIcons">
+                	<Size x="16" y="16"/>
+                    <Anchors>
+                    	<Anchor point="CENTER" x="0" y="0" />
+                    </Anchors>
+                    <TexCoords left="0" right="0.25" top="0" bottom="1"/>
+                </Texture>
+        	</Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingMoneyFrameMixin)
+                self:OnLoad()
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <Frame name="HeadHuntingStatusFrameTemplate" virtual="true">
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture name="$parentStatusTexture" parentKey="StatusTexture" file="Interface\FriendsFrame\StatusIcon-Online">
+                    <Size x="16" y="16"/>
+                    <Anchors>
+                    	<Anchor point="LEFT" x="4" y="0" />
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="BORDER">
+                <FontString name="$parentStatus" parentKey="Status" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentStatusTexture" relativePoint="TOPRIGHT" x="4" y="6" />
+                        <Anchor point="BOTTOMRIGHT" x="0" y="0" />
+                    </Anchors>
+                    <Color r="1" g="1" b="1"/>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingStatusFrameMixin)
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <Frame name="HeadHuntingGuildFrameTemplate" virtual="true">
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture name="$parentBanner" parentKey="Banner" file="Interface\GuildFrame\GuildInspect-Parts" virtual="true" >
+                    <Size x="24" y="24"/>
+                    <Anchors>
+                        <Anchor point="LEFT" x="4" y="0" />
+                    </Anchors>
+                    <TexCoords left="0.23632813" right="0.46679688" top="0.70117188" bottom="0.98242188"/>
+                </Texture>
+            </Layer>
+            <Layer level="BORDER">
+                <Texture name="$parentEmblem" file="Interface\GuildFrame\GuildEmblems_01" parentKey="Emblem">
+                    <Size x="18" y="18"/>
+                    <Anchors>
+                        <Anchor point="CENTER" relativeTo="$parentBanner" x="0" y="0"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <Texture name="$parentBannerBorder" parentKey="BannerBorder" file="Interface\GuildFrame\GuildInspect-Parts" virtual="true" >
+                    <Size x="24" y="24"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentBanner"/>
+                    </Anchors>
+                    <TexCoords left="0.00195313" right="0.23242188" top="0.70117188" bottom="0.98242188"/>
+                </Texture>
+            </Layer>
+            <Layer level="OVERLAY">
+                <FontString name="$parentName" parentKey="Name" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE" text="Guild Name Text">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentBanner" relativePoint="TOPRIGHT" x="6" y="0" />
+                        <Anchor point="BOTTOMRIGHT" x="0" y="0" />
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingGuildFrameMixin)
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <Frame name="HeadHuntingKillsFrameTemplate" virtual="true">
+        <Layers>
+        	<Layer level="BACKGROUND">
+                <FontString name="$parentText" parentKey="Text" justifyV="MIDDLE" justifyH="CENTER" inherits="GameFontNormal">
+                    <Anchors>
+                    	<Anchor point="TOPLEFT" x="0" y="0" />
+                        <Anchor point="BOTTOMRIGHT" x="0" y="0" />
+                    </Anchors>
+                    <Color r="1" g="1" b="1"/>
+                </FontString>
+        	</Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingKillsFrameMixin)
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <Frame name="HeadHuntingTimeFrameTemplate" virtual="true">
+        <Layers>
+            <Layer level="BACKGROUND">
+                <FontString name="$parentText" parentKey="Text" justifyV="MIDDLE" justifyH="CENTER" inherits="GameFontNormal">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="0" y="0" />
+                        <Anchor point="BOTTOMRIGHT" x="0" y="0" />
+                    </Anchors>
+                    <Color r="1" g="1" b="1"/>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingTimeFrameMixin)
+
+                self:OnLoad()
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <Button name="HeadHuntingGuildMinimalizeFrameTemplate" virtual="true">
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture name="$parentShadowBackground" alpha="0.5" alphaMode="ADD" parentKey="ShadowBackground">
+                    <Size x="400" y="54"/>
+                    <Anchors>
+                    	<Anchor point="CENTER" x="-20" y="0" />
+                    </Anchors>
+                </Texture>
+            </Layer>
+        	<Layer level="OVERLAY">
+                <FontString name="$parentGuildName" parentKey="GuildName" inherits="GameFontNormal" wordwrap="false" justifyH="LEFT" justifyV="MIDDLE" text="Guild Name Text WWWWWWwwwwwwwwwq">
+                    <Anchors>
+                    	<Anchor point="TOPLEFT" x="2" y="-2" />
+                    	<Anchor point="BOTTOMRIGHT" x="-4" y="0" />
+                    </Anchors>
+                </FontString>
+        	</Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingGuildMinimalizeFrameMixin)
+
+                self:OnLoad()
+            </OnLoad>
+            <OnEnter>
+                self:OnEnter()
+            </OnEnter>
+            <OnLeave>
+                self:OnLeave()
+            </OnLeave>
+            <OnMouseDown>
+                self:OnMouseDown()
+            </OnMouseDown>
+        </Scripts>
+    </Button>
+
+    <Button name="HeadHuntingAllTargetsBaseScrollButtonTemplate" virtual="true">
+        <Size x="754" y="24"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture name="$parentBackground" parentKey="Background">
+                    <Color r="0.8" g="0.8" b="0.8" a="0.1"/>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingAllTargetsBaseScrollButtonTemplateMixin)
+
+                self:OnLoad()
+            </OnLoad>
+            <OnClick>
+                self:OnClick()
+            </OnClick>
+        </Scripts>
+        <HighlightTexture parentKey="HighlightTexture" alphaMode="ADD">
+            <Color r=".5" g=".5" b=".2" a="0.6"/>
+        </HighlightTexture>
+    </Button>
+    <Button name="HeadHuntingAllTargetsScrollPlayerButtonTemplate" inherits="HeadHuntingAllTargetsBaseScrollButtonTemplate" virtual="true">
+        <Frames>
+            <Frame name="$parentPlayerFrame" parentKey="PlayerFrame" inherits="HeadHuntingPlayerFrameTemplate">
+                <Size x="150" y="24"/>
+                <Anchors>
+                	<Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Button name="$parentGuildMinimalizeFrame" parentKey="GuildMinimalizeFrame" inherits="HeadHuntingGuildMinimalizeFrameTemplate">
+                <Size x="172" y="24"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Button>
+            <Frame name="$parentClassFrame" parentKey="ClassFrame" inherits="HeadHuntingClassFrameTemplate">
+                <Size x="54" y="24"/>
+                <Anchors>
+                	<Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentFactionFrame" parentKey="FactionFrame" inherits="HeadHuntingFactionFrameTemplate">
+                <Size x="68" y="24"/>
+                <Anchors>
+                	<Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentRewardForKillFrame" parentKey="RewardForKillFrame" inherits="HeadHuntingMoneyFrameTemplate">
+                <Size x="90" y="24"/>
+                <Anchors>
+                	<Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentTotalRewardFrame" parentKey="TotalRewardFrame" inherits="HeadHuntingMoneyFrameTemplate">
+                <Size x="118" y="24"/>
+                <Anchors>
+                	<Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentStatusFrame" parentKey="StatusFrame" inherits="HeadHuntingStatusFrameTemplate">
+                <Size x="104" y="24"/>
+                <Anchors>
+                	<Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentScriptFrame" parentKey="ScriptFrame">
+                <Scripts>
+                    <OnLoad>
+                        local self = self:GetParent()
+
+                        self.PlayerFrame:ClearAndSetPoint("LEFT", self, "LEFT", 6, 0)
+                        self.GuildMinimalizeFrame:ClearAndSetPoint("LEFT", self.PlayerFrame, "RIGHT", 2, 0)
+                        self.ClassFrame:ClearAndSetPoint("LEFT", self.GuildMinimalizeFrame, "RIGHT", 2, 0)
+                        self.FactionFrame:ClearAndSetPoint("LEFT", self.ClassFrame, "RIGHT", 2, 0)
+                        self.RewardForKillFrame:ClearAndSetPoint("LEFT", self.FactionFrame, "RIGHT", 0, 0)
+                        self.TotalRewardFrame:ClearAndSetPoint("LEFT", self.RewardForKillFrame, "RIGHT", 4, 0)
+                        self.StatusFrame:ClearAndSetPoint("LEFT", self.TotalRewardFrame, "RIGHT", 0, 0)
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+        </Frames>
+    </Button>
+    <Button name="HeadHuntingAllTargetsScrollGuildButtonTemplate" inherits="HeadHuntingAllTargetsBaseScrollButtonTemplate" virtual="true">
+        <Frames>
+            <Frame name="$parentGuildFrame" parentKey="GuildFrame" inherits="HeadHuntingGuildFrameTemplate">
+                <Size x="410" y="24"/>
+                <Anchors>
+                	<Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentFactionFrame" parentKey="FactionFrame" inherits="HeadHuntingFactionFrameTemplate">
+                <Size x="98" y="24"/>
+                <Anchors>
+                	<Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentRewardForKillFrame" parentKey="RewardForKillFrame" inherits="HeadHuntingMoneyFrameTemplate">
+                <Size x="118" y="24"/>
+                <Anchors>
+                	<Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentTotalRewardFrame" parentKey="TotalRewardFrame" inherits="HeadHuntingMoneyFrameTemplate">
+                <Size x="118" y="24"/>
+                <Anchors>
+                	<Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentScriptFrame" parentKey="ScriptFrame">
+                <Scripts>
+                    <OnLoad>
+                        local self = self:GetParent()
+
+                        self.GuildFrame:ClearAndSetPoint("LEFT", self, "LEFT", 6, 0)
+                        self.FactionFrame:ClearAndSetPoint("LEFT", self.GuildFrame, "RIGHT", 2, 0)
+                        self.RewardForKillFrame:ClearAndSetPoint("LEFT", self.FactionFrame, "RIGHT", 2, 0)
+                        self.TotalRewardFrame:ClearAndSetPoint("LEFT", self.RewardForKillFrame, "RIGHT", 4, 0)
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+        </Frames>
+    </Button>
+
+    <Button name="HeadHuntingYouTargetsBaseScrollButtonTemplate" virtual="true">
+        <Size x="754" y="24"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture name="$parentBackground" parentKey="Background">
+                    <Color r="0.8" g="0.8" b="0.8" a="0.1"/>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingYouTargetsBaseScrollButtonTemplateMixin)
+
+                self:OnLoad()
+            </OnLoad>
+            <OnClick>
+                self:OnClick()
+            </OnClick>
+        </Scripts>
+        <HighlightTexture parentKey="HighlightTexture" alphaMode="ADD">
+            <Color r=".5" g=".5" b=".2" a="0.6"/>
+        </HighlightTexture>
+    </Button>
+    <Button name="HeadHuntingYouTargetsScrollGuildButtonTemplate" inherits="HeadHuntingYouTargetsBaseScrollButtonTemplate" virtual="true">
+        <Frames>
+            <Frame name="$parentGuildFrame" parentKey="GuildFrame" inherits="HeadHuntingGuildFrameTemplate">
+                <Size x="346" y="24"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentFactionFrame" parentKey="FactionFrame" inherits="HeadHuntingFactionFrameTemplate">
+                <Size x="80" y="24"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentKillsFrame" parentKey="KillsFrame" inherits="HeadHuntingKillsFrameTemplate">
+                <Size x="88" y="24"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentTimeFrame" parentKey="TimeFrame" inherits="HeadHuntingTimeFrameTemplate">
+                <Size x="88" y="24"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentTotalRewardFrame" parentKey="TotalRewardFrame" inherits="HeadHuntingMoneyFrameTemplate">
+                <Size x="136" y="24"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentScriptsFrame" parentKey="ScriptsFrame">
+                <Scripts>
+                    <OnLoad>
+                        self = self:GetParent()
+
+                        self.GuildFrame:ClearAndSetPoint("LEFT", self, "LEFT", 6, 0)
+                        self.FactionFrame:ClearAndSetPoint("LEFT", self.GuildFrame, "RIGHT", 2, 0)
+                        self.KillsFrame:ClearAndSetPoint("LEFT", self.FactionFrame, "RIGHT", 2, 0)
+                        self.TimeFrame:ClearAndSetPoint("LEFT", self.KillsFrame, "RIGHT", 2, 0)
+                        self.TotalRewardFrame:ClearAndSetPoint("LEFT", self.TimeFrame, "RIGHT", 2, 0)
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+        </Frames>
+    </Button>
+    <Button name="HeadHuntingYouTargetsScrollPlayerButtonTemplate" inherits="HeadHuntingYouTargetsBaseScrollButtonTemplate" virtual="true">
+        <Frames>
+            <Frame name="$parentPlayerFrame" parentKey="PlayerFrame" inherits="HeadHuntingPlayerFrameTemplate">
+                <Size x="288" y="24"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentClassFrame" parentKey="ClassFrame" inherits="HeadHuntingClassFrameTemplate">
+                <Size x="80" y="24"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentFactionFrame" parentKey="FactionFrame" inherits="HeadHuntingFactionFrameTemplate">
+                <Size x="78" y="24"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentKillsFrame" parentKey="KillsFrame" inherits="HeadHuntingKillsFrameTemplate">
+                <Size x="88" y="24"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentTimeFrame" parentKey="TimeFrame" inherits="HeadHuntingTimeFrameTemplate">
+                <Size x="88" y="24"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentTotalRewardFrame" parentKey="TotalRewardFrame" inherits="HeadHuntingMoneyFrameTemplate">
+                <Size x="136" y="24"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentScriptsFrame" parentKey="ScriptsFrame">
+                <Scripts>
+                    <OnLoad>
+                        self = self:GetParent()
+
+                        self.PlayerFrame:ClearAndSetPoint("LEFT", self, "LEFT", 6, 0)
+                        self.ClassFrame:ClearAndSetPoint("LEFT", self.PlayerFrame, "RIGHT", 2, 0)
+                        self.FactionFrame:ClearAndSetPoint("LEFT", self.ClassFrame, "RIGHT", 2, 0)
+                        self.KillsFrame:ClearAndSetPoint("LEFT", self.FactionFrame, "RIGHT", 2, 0)
+                        self.TimeFrame:ClearAndSetPoint("LEFT", self.KillsFrame, "RIGHT", 2, 0)
+                        self.TotalRewardFrame:ClearAndSetPoint("LEFT", self.TimeFrame, "RIGHT", 2, 0)
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+        </Frames>
+    </Button>
+    <Button name="HeadHuntingSearchScrollPlayerButtonTemplate" inherits="HeadHuntingYouTargetsBaseScrollButtonTemplate" virtual="true">
+        <Frames>
+            <Frame name="$parentPlayerFrame" parentKey="PlayerFrame" inherits="HeadHuntingPlayerFrameTemplate">
+                <Size x="180" y="24"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentClassFrame" parentKey="ClassFrame" inherits="HeadHuntingClassFrameTemplate">
+                <Size x="40" y="24"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentFactionFrame" parentKey="FactionFrame" inherits="HeadHuntingFactionFrameTemplate">
+                <Size x="40" y="24"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentScriptsFrame" parentKey="ScriptsFrame">
+                <Scripts>
+                    <OnLoad>
+                        self = self:GetParent()
+
+                        self.PlayerFrame:ClearAndSetPoint("LEFT", self, "LEFT", 6, 0)
+                        self.ClassFrame:ClearAndSetPoint("LEFT", self.PlayerFrame, "RIGHT", 2, 0)
+                        self.FactionFrame:ClearAndSetPoint("LEFT", self.ClassFrame, "RIGHT", 2, 0)
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingSearchScrollButtonTemplateMixin)
+
+                self:OnLoad()
+            </OnLoad>
+            <OnClick>
+                self:OnClick()
+            </OnClick>
+        </Scripts>
+    </Button>
+    <Button name="HeadHuntingSearchScrollGuildButtonTemplate" inherits="HeadHuntingYouTargetsBaseScrollButtonTemplate" virtual="true">
+        <Frames>
+            <Frame name="$parentGuildFrame" parentKey="GuildFrame" inherits="HeadHuntingGuildFrameTemplate">
+                <Size x="200" y="24"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentFactionFrame" parentKey="FactionFrame" inherits="HeadHuntingFactionFrameTemplate">
+                <Size x="80" y="24"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentScriptsFrame" parentKey="ScriptsFrame">
+                <Scripts>
+                    <OnLoad>
+                        self = self:GetParent()
+
+                        self.GuildFrame:ClearAndSetPoint("LEFT", self, "LEFT", 6, 0)
+                        self.FactionFrame:ClearAndSetPoint("LEFT", self.GuildFrame, "RIGHT", 2, 0)
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingSearchScrollButtonTemplateMixin)
+
+                self:OnLoad()
+            </OnLoad>
+            <OnClick>
+                self:OnClick()
+            </OnClick>
+        </Scripts>
+    </Button>
+
+    <Frame name="HeadHuntingPopupFrameTemplate" toplevel="true" enableKeyboard="true" enableMouse="true" frameStrata="TOOLTIP" hidden="true" virtual="true">
+        <Size x="320" y="72"/>
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets left="11" right="12" top="12" bottom="11"/>
+            <TileSize val="32"/>
+            <EdgeSize val="32"/>
+        </Backdrop>
+        <Layers>
+        	<Layer level="OVERLAY">
+                <FontString name="$parentText" parentKey="Text" inherits="GameFontHighlight">
+                    <Size x="290" y="0"/>
+                    <Anchors>
+                        <Anchor point="TOP" x="0" y="-16"/>
+                    </Anchors>
+                </FontString>
+        	</Layer>
+        </Layers>
+        <Frames>
+            <Button name="$parentButton1" inherits="UIPanelButtonTemplate" parentKey="Button1" text="CLOSE" id="1">
+                <Size x="128" y="22"/>
+                <Anchors>
+                	<Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="16" />
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        self:GetParent():Hide()
+                    </OnClick>
+                </Scripts>
+            </Button>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingPopupFrameMixin)
+
+                self:OnLoad()
+            </OnLoad>
+            <OnHide>
+                self:OnHide()
+            </OnHide>
+        </Scripts>
+    </Frame>
+
+    <Frame name="HeadHuntingFrame" inherits="PortraitFrameTemplate" toplevel="true" enableMouse="true" parent="UIParent" hidden="true">
+        <Size x="800" y="496"/>
+        <Anchors>
+            <Anchor point="CENTER" x="0" y="0"/>
+        </Anchors>
+        <Frames>
+            <Frame name="$parentPopupFrame1" parentKey="PopupFrame1" inherits="HeadHuntingPopupFrameTemplate">
+                <Anchors>
+                	<Anchor point="TOP" x="0" y="0" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentPopupFrame2" parentKey="PopupFrame2" inherits="HeadHuntingPopupFrameTemplate">
+                <Anchors>
+                	<Anchor point="TOP" relativeTo="$parentPopupFrame1" relativePoint="BOTTOM" x="0" y="-2" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentPopupFrame3" parentKey="PopupFrame3" inherits="HeadHuntingPopupFrameTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativeTo="$parentPopupFrame2" relativePoint="BOTTOM" x="0" y="-2" />
+                </Anchors>
+            </Frame>
+            <Frame name="$parentNavBar" inherits="NavBarTemplate" parentKey="navBar">
+                <Size x="730" y="34"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="61" y="-22"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BORDER">
+                        <Texture name="$parentInsetBotLeftCorner" inherits="UI-Frame-InnerBotLeftCorner" parentKey="InsetBorderBottomLeft">
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT"  x="-3" y="-3"/>
+                            </Anchors>
+                        </Texture>
+                        <Texture name="$parentInsetBotRightCorner" inherits="UI-Frame-InnerBotRight" parentKey="InsetBorderBottomRight">
+                            <Anchors>
+                                <Anchor point="BOTTOMRIGHT"  x="3" y="-3"/>
+                            </Anchors>
+                        </Texture>
+                        <Texture name="$parentInsetBottomBorder" inherits="_UI-Frame-InnerBotTile" parentKey="InsetBorderBottom">
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT" relativeTo="$parentInsetBotLeftCorner" relativePoint="BOTTOMRIGHT"/>
+                                <Anchor point="BOTTOMRIGHT" relativeTo="$parentInsetBotRightCorner" relativePoint="BOTTOMLEFT"/>
+                            </Anchors>
+                        </Texture>
+                        <Texture name="$parentInsetLeftBorder" inherits="!UI-Frame-InnerLeftTile" parentKey="InsetBorderLeft">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="-3" y="0"/>
+                                <Anchor point="BOTTOMLEFT" relativeTo="$parentInsetBotLeftCorner" relativePoint="TOPLEFT"/>
+                            </Anchors>
+                        </Texture>
+                        <Texture name="$parentInsetRightBorder" inherits="!UI-Frame-InnerRightTile" parentKey="InsetBorderRight">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT"  x="3" y="0"/>
+                                <Anchor point="BOTTOMRIGHT" relativeTo="$parentInsetBotRightCorner" relativePoint="TOPRIGHT"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+            </Frame>
+            <Frame name="$parentInset" inherits="StandartInsetFrameTemplate" parentKey="inset">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" x="-4" y="-60" />
+                    <Anchor point="BOTTOMLEFT" x="4" y="5"/>
+                </Anchors>
+                <Frames>
+                    <Frame name="$parentScripts">
+                        <Scripts>
+                            <OnLoad>
+                                self:GetParent().IBackground:SetAtlas("UI-EJ-BattleforAzeroth")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                </Frames>
+            </Frame>
+            <Frame name="$parentContainer" parentKey="Container">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" x="-4" y="-60" />
+                    <Anchor point="BOTTOMLEFT" x="4" y="5"/>
+                </Anchors>
+                <Frames>
+                    <Button name="$parentHomeTab" parentKey="HomeTab" inherits="HeadHuntingTabTemplate" text="HEADHUNTING_HOME" id="1">
+                        <Anchors>
+                            <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="25" y="-45"/>
+                        </Anchors>
+                    </Button>
+                    <Button name="$parentAllTargetsTab" parentKey="AllTargetsTab" inherits="HeadHuntingTabTemplate" text="HEADHUNTING_TARGETS" id="2">
+                        <Anchors>
+                            <Anchor point="BOTTOMLEFT" relativeTo="$parentHomeTab" relativePoint="BOTTOMRIGHT" x="35" y="0"/>
+                        </Anchors>
+                    </Button>
+                    <Button name="$parentYouTargetsTab" parentKey="YouTargetsTab" inherits="HeadHuntingTabTemplate" text="HEADHUNTING_YOU_TARGETS" id="3">
+                        <Anchors>
+                            <Anchor point="BOTTOMLEFT" relativeTo="$parentAllTargetsTab" relativePoint="BOTTOMRIGHT" x="35" y="0"/>
+                        </Anchors>
+                    </Button>
+
+                    <Frame name="$parentHomePanel" parentKey="HomePanel" id="1" inherits="HeadHuntingPanelTemplate" hidden="true">
+                        <Frames>
+                            <Frame name="$parentSuggestionFrameLeft" parentKey="SuggestionFrameLeft">
+                                <Size x="335" y="337"/>
+                                <Anchors>
+                                    <Anchor point="TOPLEFT" x="28" y="-22" />
+                                </Anchors>
+                                <Layers>
+                                    <Layer level="BACKGROUND">
+                                        <Texture name="$parentBackground" parentKey="Background"/>
+                                    </Layer>
+                                    <Layer level="ARTWORK">
+                                        <Texture name="$parentIcon" parentKey="Icon">
+                                            <Size x="64" y="64"/>
+                                            <Anchors>
+                                                <Anchor point="TOPLEFT" x="135" y="-2" />
+                                            </Anchors>
+                                        </Texture>
+                                    </Layer>
+                                    <Layer level="OVERLAY">
+                                        <Texture name="$parentIconRing" parentKey="IconRing">
+                                            <Size x="94" y="95"/>
+                                            <Anchors>
+                                                <Anchor point="CENTER" relativeTo="$parentIcon"/>
+                                            </Anchors>
+                                        </Texture>
+                                    </Layer>
+                                </Layers>
+                                <Frames>
+                                    <Frame name="$parentCenterDisplay" parentKey="CenterDisplay">
+                                        <Size x="264" y="351"/>
+                                        <Anchors>
+                                            <Anchor point="CENTER" x="0" y="24"/>
+                                        </Anchors>
+                                        <Frames>
+                                            <Frame name="$parentTitle" parentKey="Title">
+                                                <Size x="264" y="20"/>
+                                                <Anchors>
+                                                    <Anchor point="TOPLEFT" x="0" y="-110"/>
+                                                </Anchors>
+                                                <Layers>
+                                                    <Layer level="ARTWORK">
+                                                        <FontString parentKey="text" font="QuestFont24" justifyH="CENTER" justifyV="TOP" maxLines="2" text="HEADHUNTING">
+                                                            <Size x="264" y="0"/>
+                                                            <Color r="0" g="0" b="0"/>
+                                                        </FontString>
+                                                    </Layer>
+                                                </Layers>
+                                            </Frame>
+                                            <Frame name="$parentDescription" parentKey="Description">
+                                                <Size x="264" y="100"/>
+                                                <Anchors>
+                                                    <Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT" x="0" y="-18"/>
+                                                </Anchors>
+                                                <Layers>
+                                                    <Layer level="ARTWORK">
+                                                        <FontString parentKey="text" font="GameTooltipHeader" justifyH="CENTER" justifyV="TOP" text="HEADHUNTING_DESC">
+                                                            <Size x="264" y="0"/>
+                                                            <Color r="0.2824" g="0.0157" b="0.0157"/>
+                                                        </FontString>
+                                                    </Layer>
+                                                </Layers>
+                                            </Frame>
+                                            <Frame name="$parentSummaryFrame" parentKey="SummaryFrame">
+                                                <Size x="260" y="80"/>
+                                                <Anchors>
+                                                    <Anchor point="TOP" relativeTo="$parentDescription" relativePoint="BOTTOM" x="0" y="-20" />
+                                                </Anchors>
+                                                <Frames>
+                                                    <Frame name="$parentStatsFrame1" parentKey="StatsFrame1" inherits="HeadHuntingStatsFrameTemplate" id="1">
+                                                        <Anchors>
+                                                        	<Anchor point="TOP" x="0" y="0" />
+                                                        </Anchors>
+                                                        <Attributes>
+                                                            <Attribute name="text" type="string" value="HEADHUNTING_STATS_PLAYER"/>
+                                                        </Attributes>
+                                                    </Frame>
+                                                    <Frame name="$parentStatsFrame2" parentKey="StatsFrame2" inherits="HeadHuntingStatsFrameTemplate" id="2">
+                                                        <Anchors>
+                                                            <Anchor point="TOP" relativeTo="$parentStatsFrame1" relativePoint="BOTTOM" x="0" y="-4" />
+                                                        </Anchors>
+                                                        <Attributes>
+                                                            <Attribute name="text" type="string" value="HEADHUNTING_STATS_GUILD"/>
+                                                        </Attributes>
+                                                    </Frame>
+                                                </Frames>
+                                                <Scripts>
+                                                    <OnLoad>
+                                                        Mixin(self, HeadHuntingSummaryFrameMixin)
+
+                                                        self:OnLoad()
+                                                    </OnLoad>
+                                                </Scripts>
+                                            </Frame>
+                                        </Frames>
+                                    </Frame>
+                                </Frames>
+                                <Scripts>
+                                    <OnLoad>
+                                        self.Background:SetAtlas("adventureguide-pane-large")
+                                        self.IconRing:SetAtlas("adventureguide-ring")
+
+                                        SetPortraitToTexture(self.Icon,"Interface\\ICONS\\Warrior_Wild_strike")
+                                    </OnLoad>
+                                </Scripts>
+                            </Frame>
+                            <Frame name="$parentSuggestionFrameRightTop" parentKey="SuggestionFrameRightTop" id="2" inherits="HeadHuntingSuggestionSecondaryTemplate">
+                                <Size x="344" y="161"/>
+                                <Anchors>
+                                    <Anchor point="TOPLEFT" relativePoint="TOP" x="1" y="-22" />
+                                </Anchors>
+                                <Scripts>
+                                    <OnLoad>
+                                        self.CenterDisplay.Title.text:SetText(HEADHUNTING_TARGETS)
+                                        self.CenterDisplay.Description.text:SetText(HEADHUNTING_TARGETS_DESC)
+                                        SetPortraitToTexture(self.Icon,"Interface\\ICONS\\Warrior_talent_icon_Stormbolt")
+                                    </OnLoad>
+                                </Scripts>
+                            </Frame>
+                            <Frame name="$parentSuggestionFrameRightBottom" parentKey="SuggestionFrameRightBottom" id="3" inherits="HeadHuntingSuggestionSecondaryTemplate">
+                                <Size x="344" y="161"/>
+                                <Anchors>
+                                    <Anchor point="TOPLEFT" relativeTo="$parentSuggestionFrameRightTop" relativePoint="BOTTOMLEFT" x="0" y="-11" />
+                                </Anchors>
+                                <Scripts>
+                                    <OnLoad>
+                                        self.CenterDisplay.Title.text:SetText(HEADHUNTING_YOU_TARGETS)
+                                        self.CenterDisplay.Description.text:SetText(HEADHUNTING_YOU_TARGETS_DESC)
+                                        SetPortraitToTexture(self.Icon,"Interface\\ICONS\\Warrior_talent_icon_Avatar")
+                                    </OnLoad>
+                                </Scripts>
+                            </Frame>
+                        </Frames>
+                    </Frame>
+                    <Frame name="$parentAllTargetsPanel" parentKey="AllTargetsPanel" id="2" inherits="HeadHuntingPanelTemplate" hidden="true">
+                        <Frames>
+                            <Frame name="$parentHeaderContainer" parentKey="HeaderContainer" inherits="HeadHuntingHeaderContainerTemplate"/>
+                            <ScrollFrame name="$parentScrollFrame" parentKey="ScrollFrame" inherits="HeadHuntingScrollFrametemplate">
+                                <Anchors>
+                                    <Anchor point="TOPLEFT" x="2" y="-28"/>
+                                    <Anchor point="BOTTOMRIGHT" x="-28" y="36"/>
+                                </Anchors>
+                            </ScrollFrame>
+                            <Frame name="$parentInfoFrame" parentKey="InfoFrame" inherits="HeadHuntingInfoFrameTemplate">
+                                <Size x="240" y="380"/>
+                                <Anchors>
+                                    <Anchor point="LEFT" relativeTo="HeadHuntingFrame" relativePoint="RIGHT" x="2" y="0" />
+                                </Anchors>
+                            </Frame>
+                            <Frame name="$parentContractOnPlayer" parentKey="ContractOnPlayer" inherits="HeadHuntingContractOnPlayerFrameTemplate">
+                                <Anchors>
+                                	<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="-2.1" y="-1" />
+                                	<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="2" y="0" />
+                                </Anchors>
+                            </Frame>
+                            <Button name="$parentFilterDropDownMenu" parentKey="FilterDropDownMenu" toplevel="true" text="FILTER" inherits="HeadHuntingDropDownMenuButtonTemplate">
+                                <Anchors>
+                                    <Anchor point="TOPRIGHT" x="-10" y="34" />
+                                </Anchors>
+                            </Button>
+                            <Frame name="$parentFilterDropDownMenu" parentKey="FilterDropDownMenu" inherits="UIDropDownMenuTemplate">
+                                <Scripts>
+                                    <OnLoad>
+                                        Mixin(self, HeadHuntingFilterDropDownMenuMixin)
+
+                                        self:OnLoad()
+                                    </OnLoad>
+                                </Scripts>
+                            </Frame>
+                            <Frame name="$parentSearchFrame" parentKey="SearchFrame" inherits="HeadHuntingSearchFrameTemplate">
+                                <Size x="180" y="30"/>
+                                <Anchors>
+                                	<Anchor point="RIGHT" relativeTo="$parentFilterDropDownMenu" relativePoint="LEFT" x="-120" y="0" />
+                                </Anchors>
+                                <Scripts>
+                                    <OnLoad>
+                                        Mixin(self, HeadHuntingSearchFrameMixin, HeadHuntingSearchFrameAllTargetsPanelMixin)
+
+                                        self:OnLoad()
+                                    </OnLoad>
+                                </Scripts>
+                            </Frame>
+                        </Frames>
+                        <Scripts>
+                            <OnHide>
+                                self.SearchFrame.mainFrame:SetFilterSearchName(nil)
+                                self.SearchFrame.SearchBox:SetText("")
+
+                                CloseChildWindows()
+                            </OnHide>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parentYouTargetsPanel" parentKey="YouTargetsPanel" id="3" inherits="HeadHuntingPanelTemplate" hidden="true">
+                        <Frames>
+                            <Button name="$parentSetRewardButton" parentKey="SetRewardButton" inherits="UIPanelButtonTemplate" text="HEADHUNTING_SET_REWARD">
+                                <Size x="126" y="28"/>
+                                <Anchors>
+                                	<Anchor point="TOPRIGHT" x="-8" y="36" />
+                                </Anchors>
+                                <Scripts>
+                                    <OnClick>
+                                        self:GetParent().SetRewardFrame:Show()
+                                    </OnClick>
+                                </Scripts>
+                            </Button>
+                            <Frame name="$parentHeaderContainer" parentKey="HeaderContainer" inherits="HeadHuntingHeaderContainerTemplate"/>
+                            <ScrollFrame name="$parentScrollFrame" parentKey="ScrollFrame" inherits="HeadHuntingScrollFrametemplate"/>
+                            <Frame name="$parentDetailsFrame" parentKey="DetailsFrame" inherits="HeadHuntingDetailsFrameTemplate" hidden="true">
+                                <Size x="240" y="140"/>
+                                <Anchors>
+                                	<Anchor point="LEFT" relativeTo="HeadHuntingFrame" relativePoint="RIGHT" x="2" y="100" />
+                                </Anchors>
+                            </Frame>
+                            <Frame name="$parentSetRewardFrame" parentKey="SetRewardFrame" inherits="HeadHuntingSetRewardFrameTemplate" hidden="true">
+                                <Size x="400" y="300"/>
+                                <Anchors>
+                                	<Anchor point="CENTER" x="94" y="0" />
+                                </Anchors>
+                            </Frame>
+                        </Frames>
+                        <Scripts>
+                            <OnHide>
+                                self.SetRewardFrame:Hide()
+                                self.DetailsFrame:Hide()
+                            </OnHide>
+                        </Scripts>
+                    </Frame>
+                </Frames>
+                <Scripts>
+                    <OnLoad>
+                        self:SetFrameLevel(self:GetParent().inset:GetFrameLevel() + 4)
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+            <Button name="$parentTab1" inherits="CharacterFrameTabButtonTemplate" text="ADVENTURE_JOURNAL" id="1" parentKey="tab1">
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT" x="19" y="-30"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick function="Adventure_TabOnClick"/>
+                </Scripts>
+            </Button>
+            <Button name="$parentTab2" inherits="CharacterFrameTabButtonTemplate" text="HEADHUNTING" id="2" parentKey="tab2">
+                <Anchors>
+                    <Anchor point="LEFT" relativeTo="$parentTab1" relativePoint="RIGHT" x="-16" y="0"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick function="Adventure_TabOnClick"/>
+                </Scripts>
+            </Button>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingMixin)
+                self:OnLoad()
+            </OnLoad>
+            <OnShow>
+                self:OnShow()
+            </OnShow>
+            <OnHide>
+                self:OnHide()
+            </OnHide>
+        </Scripts>
+    </Frame>
+
+    <Frame name="HeadHuntingSetRewardExternalFrame" inherits="HeadHuntingSetRewardFrameTemplate" hidden="true">
+        <Size x="400" y="300"/>
+        <Anchors>
+            <Anchor point="CENTER" x="0" y="0" />
+        </Anchors>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, HeadHuntingSetRewardExternalFrameMixin, HeadHuntingSetRewardFrameMixin, PortraitFrameMixin)
+
+                self:Init()
+            </OnLoad>
+        </Scripts>
+    </Frame>
+</Ui>

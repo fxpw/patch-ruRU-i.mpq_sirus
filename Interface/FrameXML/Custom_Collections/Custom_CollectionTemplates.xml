@@ -1,0 +1,313 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="Custom_CollectionTemplates.lua"/>
+
+	<StatusBar name="CollectionsProgressBarTemplate" virtual="true">
+		<Size x="196" y="13"/>
+		<Anchors>
+			<Anchor point="TOP" x="0" y="-39"/>
+		</Anchors>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parentText" parentKey="Text" inherits="TextStatusBarText" justifyH="CENTER">
+					<Size x="0" y="9" />
+					<Anchors>
+						<Anchor point="CENTER" y="1" />
+					</Anchors>
+				</FontString>
+				<Texture name="$parentBorder" parentKey="Border" file="Interface\PaperDollInfoFrame\UI-Character-Skills-BarBorder">
+					<Size x="205" y="29" />
+					<Anchors>
+						<Anchor point="LEFT" x="-5" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="-1"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="1"/>
+					</Anchors>
+					<Color r="0.0" g="0.0" b="0.0" a="1.0"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<BarTexture file="Interface\PaperDollInfoFrame\UI-Character-Skills-Bar"/>
+		<BarColor r="0.03125" g="0.85" b="0.0"/>
+	</StatusBar>
+
+	<Frame name="CollectionsBackgroundTemplate" inherits="InsetFrameTemplate" virtual="true">
+		<Anchors>
+			<Anchor point="TOPLEFT" relativePoint="TOPLEFT" y="-60" x="4"/>
+			<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-6" y="5"/>
+		</Anchors>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentBackgroundTile" parentKey="BackgroundTile" file="Interface\Collections\CollectionsBackgroundTile" horizTile="true" vertTile="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="4" y="-4"/>
+						<Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="ShadowLineTop" file="Interface\Collections\Collections" horizTile="true">
+					<Size x="512" y="4"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBackgroundTile" x="0" y="-9"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackgroundTile" relativePoint="TOPRIGHT" x="0" y="-13"/>
+					</Anchors>
+					<TexCoords top="0.001953" bottom="0.009766"/>
+				</Texture>
+				<Texture parentKey="ShadowLineBottom" file="Interface\Collections\Collections" horizTile="true">
+					<Size x="512" y="4"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBackgroundTile" relativePoint="BOTTOMLEFT" x="0" y="13"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackgroundTile" x="0" y="9"/>
+					</Anchors>
+					<TexCoords top="0.001953" bottom="0.009766"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentOverlayFrame" parentKey="OverlayFrame">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="4" y="-4"/>
+					<Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentShadowCornerTopLeft" parentKey="ShadowCornerTopLeft" file="Interface\Collections\Collections">
+							<Size x="145" y="147"/>
+							<Anchors>
+								<Anchor point="TOPLEFT"/>
+							</Anchors>
+							<TexCoords left="0.181641" right="0.464844" top="0.416016" bottom="0.703125"/>
+						</Texture>
+						<Texture name="$parentShadowCornerTopRight" parentKey="ShadowCornerTopRight" file="Interface\Collections\Collections">
+							<Size x="145" y="147"/>
+							<Anchors>
+								<Anchor point="TOPRIGHT"/>
+							</Anchors>
+							<TexCoords left="0.464844" right="0.181641" top="0.416016" bottom="0.703125"/>
+						</Texture>
+						<Texture name="$parentShadowCornerBottomLeft" parentKey="ShadowCornerBottomLeft" file="Interface\Collections\Collections">
+							<Size x="145" y="147"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT"/>
+							</Anchors>
+							<TexCoords left="0.181641" right="0.464844" top="0.703125" bottom="0.416016"/>
+						</Texture>
+						<Texture name="$parentShadowCornerBottomRight" parentKey="ShadowCornerBottomRight" file="Interface\Collections\Collections">
+							<Size x="145" y="147"/>
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT"/>
+							</Anchors>
+							<TexCoords left="0.464844" right="0.181641" top="0.703125" bottom="0.416016"/>
+						</Texture>
+						<Texture name="$parentShadowCornerTop" parentKey="ShadowCornerTop" file="Interface\Collections\Collections">
+							<Size x="145" y="147"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentShadowCornerTopLeft" relativePoint="TOPRIGHT"/>
+								<Anchor point="TOPRIGHT" relativeTo="$parentShadowCornerTopRight" relativePoint="TOPLEFT"/>
+							</Anchors>
+							<TexCoords left="0.464844" right="0.464844" top="0.416016" bottom="0.703125"/>
+						</Texture>
+						<Texture name="$parentShadowCornerLeft" parentKey="ShadowCornerLeft" file="Interface\Collections\Collections">
+							<Size x="145" y="147"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentShadowCornerTopLeft" relativePoint="BOTTOMLEFT"/>
+								<Anchor point="BOTTOMLEFT" relativeTo="$parentShadowCornerBottomLeft" relativePoint="TOPLEFT"/>
+							</Anchors>
+							<TexCoords left="0.181641" right="0.464844" top="0.703125" bottom="0.703125"/>
+						</Texture>
+						<Texture parentKey="ShadowCornerRight" file="Interface\Collections\Collections">
+							<Size x="145" y="147"/>
+							<Anchors>
+								<Anchor point="TOPRIGHT" relativeTo="$parentShadowCornerTopRight" relativePoint="BOTTOMRIGHT"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentShadowCornerBottomRight" relativePoint="TOPRIGHT"/>
+							</Anchors>
+							<TexCoords left="0.464844" right="0.181641" top="0.703125" bottom="0.703125"/>
+						</Texture>
+						<Texture parentKey="ShadowCornerBottom" file="Interface\Collections\Collections">
+							<Size x="145" y="147"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeTo="$parentShadowCornerBottomLeft" relativePoint="BOTTOMRIGHT"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentShadowCornerBottomRight" relativePoint="BOTTOMLEFT"/>
+							</Anchors>
+							<TexCoords left="0.464844" right="0.464844" top="0.703125" bottom="0.416016"/>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture name="$parentBGCornerFilagreeBottomLeft" parentKey="BGCornerFilagreeBottomLeft" file="Interface\Collections\Collections">
+							<Size x="151" y="109"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT"/>
+							</Anchors>
+							<TexCoords left="0.001953" right="0.296875" top="0.199219" bottom="0.412109"/>
+						</Texture>
+						<Texture name="$parentBGCornerFilagreeBottomRight" parentKey="BGCornerFilagreeBottomRight" file="Interface\Collections\Collections">
+							<Size x="151" y="109"/>
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT"/>
+							</Anchors>
+							<TexCoords left="0.296875" right="0.001953" top="0.199219" bottom="0.412109"/>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<Texture name="$parentBGCornerTopLeft" parentKey="BGCornerTopLeft" file="Interface\Collections\Collections">
+							<Size x="90" y="67"/>
+							<Anchors>
+								<Anchor point="TOPLEFT"/>
+							</Anchors>
+							<TexCoords left="0.001953" right="0.177734" top="0.013672" bottom="0.144531"/>
+						</Texture>
+						<Texture name="$parentBGCornerTopRight" parentKey="BGCornerTopRight" file="Interface\Collections\Collections">
+							<Size x="90" y="67"/>
+							<Anchors>
+								<Anchor point="TOPRIGHT"/>
+							</Anchors>
+							<TexCoords left="0.177734" right="0.001953" top="0.013672" bottom="0.144531"/>
+						</Texture>
+						<Texture name="$parentBGCornerBottomLeft" parentKey="BGCornerBottomLeft" file="Interface\Collections\Collections">
+							<Size x="90" y="67"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT"/>
+							</Anchors>
+							<TexCoords left="0.001953" right="0.177734" top="0.144531" bottom="0.013672"/>
+						</Texture>
+						<Texture name="$parentBGCornerBottomRight" parentKey="BGCornerBottomRight" file="Interface\Collections\Collections">
+							<Size x="90" y="67"/>
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT"/>
+							</Anchors>
+							<TexCoords left="0.177734" right="0.001953" top="0.144531" bottom="0.013672"/>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture name="$parentOverlayShadowTopLeft" parentKey="OverlayShadowTopLeft" file="Interface\Collections\Collections">
+							<Size x="13" y="13"/>
+							<Anchors>
+								<Anchor point="TOPLEFT"/>
+							</Anchors>
+							<TexCoords left="0.181641" right="0.207031" top="0.082031" bottom="0.107422"/>
+						</Texture>
+						<Texture name="$parentOverlayShadowTopRight" parentKey="OverlayShadowTopRight" file="Interface\Collections\Collections">
+							<Size x="13" y="13"/>
+							<Anchors>
+								<Anchor point="TOPRIGHT"/>
+							</Anchors>
+							<TexCoords left="0.207031" right="0.181641" top="0.082031" bottom="0.107422"/>
+						</Texture>
+						<Texture name="$parentOverlayShadowBottomLeft" parentKey="OverlayShadowBottomLeft" file="Interface\Collections\Collections">
+							<Size x="13" y="13"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT"/>
+							</Anchors>
+							<TexCoords left="0.181641" right="0.207031" top="0.107422" bottom="0.082031"/>
+						</Texture>
+						<Texture name="$parentOverlayShadowBottomRight" parentKey="OverlayShadowBottomRight" file="Interface\Collections\Collections">
+							<Size x="13" y="13"/>
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT"/>
+							</Anchors>
+							<TexCoords left="0.207031" right="0.181641" top="0.107422" bottom="0.082031"/>
+						</Texture>
+						<Texture name="$parentOverlayShadowTop" parentKey="OverlayShadowTop" file="Interface\Collections\Collections">
+							<Size x="13" y="13"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentOverlayShadowTopLeft" relativePoint="TOPRIGHT" x="0" y="0"/>
+								<Anchor point="TOPRIGHT" relativeTo="$parentOverlayShadowTopRight" relativePoint="TOPLEFT" x="0" y="0"/>
+							</Anchors>
+							<TexCoords left="0.207031" right="0.207031" top="0.082031" bottom="0.107422"/>
+						</Texture>
+						<Texture name="$parentOverlayShadowLeft" parentKey="OverlayShadowLeft" file="Interface\Collections\Collections">
+							<Size x="13" y="13"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentOverlayShadowTopLeft" relativePoint="BOTTOMLEFT"/>
+								<Anchor point="BOTTOMLEFT" relativeTo="$parentOverlayShadowBottomLeft" relativePoint="TOPLEFT"/>
+							</Anchors>
+							<TexCoords left="0.181641" right="0.207031" top="0.107422" bottom="0.107422"/>
+						</Texture>
+						<Texture name="$parentOverlayShadowRight" parentKey="OverlayShadowRight" file="Interface\Collections\Collections">
+							<Size x="13" y="13"/>
+							<Anchors>
+								<Anchor point="TOPRIGHT" relativeTo="$parentOverlayShadowTopRight" relativePoint="BOTTOMRIGHT"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentOverlayShadowBottomRight" relativePoint="TOPRIGHT"/>
+							</Anchors>
+							<TexCoords left="0.207031" right="0.181641" top="0.107422" bottom="0.107422"/>
+						</Texture>
+						<Texture name="$parentOverlayShadowBottom" parentKey="OverlayShadowBottom" file="Interface\Collections\Collections">
+							<Size x="13" y="13"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeTo="$parentOverlayShadowBottomLeft" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentOverlayShadowBottomRight" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+							</Anchors>
+							<TexCoords left="0.207031" right="0.207031" top="0.107422" bottom="0.082031"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+	</Frame>
+
+	<FontString name="CollectionsPageTextTemplate" inherits="GameFontWhite" justifyH="RIGHT" virtual="true"/>
+
+	<Button name="CollectionsPrevPageButton" virtual="true">
+		<Size x="32" y="32"/>
+		<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Up"/>
+		<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Down"/>
+		<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Disabled"/>
+		<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+	</Button>
+
+	<Button name="CollectionsNextPageButton" virtual="true">
+		<Size x="32" y="32"/>
+		<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Up"/>
+		<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Down"/>
+		<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Disabled"/>
+		<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+	</Button>
+
+	<Frame name="CollectionsPagingFrameTemplate" virtual="true">
+		<!-- why 33? it makes it so the button textures display without rounding fuzziness on my screen -->
+		<Size x="33" y="32"/>
+		<Frames>
+			<Button name="$parentPrevPageButton" parentKey="PrevPageButton" inherits="CollectionsPrevPageButton">
+				<Anchors>
+					<Anchor point="LEFT" x="0" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():PreviousPage();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentNextPageButton" parentKey="NextPageButton" inherits="CollectionsNextPageButton">
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="RIGHT" x="3" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():NextPage();
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentPageText" parentKey="PageText" inherits="CollectionsPageTextTemplate">
+					<Anchors>
+						<Anchor point="RIGHT" relativePoint="LEFT" x="-11" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CollectionsPagingMixin);
+				self:OnLoad();
+			</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>

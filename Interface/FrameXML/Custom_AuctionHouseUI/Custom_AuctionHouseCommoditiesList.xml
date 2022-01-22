@@ -1,0 +1,56 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_AuctionHouseCommoditiesList.lua"/>
+
+	<Frame name="AuctionHouseCommoditiesListTemplate" inherits="AuctionHouseItemListTemplate" virtual="true">
+		<Attributes>
+			<Attribute name="refreshFrameXOffset" value="-4" type="number"/>
+			<Attribute name="refreshFrameYOffset" value="30" type="number"/>
+		</Attributes>
+		<Size x="210" y="400"/>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseCommoditiesListMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+		</Scripts>
+	</Frame>
+
+	<Frame name="AuctionHouseCommoditiesBuyListTemplate" inherits="AuctionHouseCommoditiesListTemplate" virtual="true">
+		<Attributes>
+			<Attribute name="backgroundAtlas" value="auctionhouse-background-buy-commodities-market" type="string"/>
+			<Attribute name="backgroundYOffset" value="0" type="number"/>
+			<Attribute name="searchContext" value="BuyCommodities" type="string"/>
+		</Attributes>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseCommoditiesBuyListMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="AuctionHouseCommoditiesSellListTemplate" inherits="AuctionHouseCommoditiesListTemplate" virtual="true">
+		<Attributes>
+			<Attribute name="backgroundAtlas" value="auctionhouse-background-sell-right" type="string"/>
+			<Attribute name="searchContext" value="SellCommodities" type="string"/>
+			<Attribute name="refreshFrameXOffset" value="-8" type="number"/>
+			<Attribute name="refreshFrameYOffset" value="30" type="number"/>
+		</Attributes>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseCommoditiesSellListMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>

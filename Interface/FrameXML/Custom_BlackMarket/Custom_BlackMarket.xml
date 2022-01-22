@@ -1,0 +1,716 @@
+<!--
+
+	Filename:	Custom_BlackMarket.xml
+	Project:	Custom Game Interface
+	Author:		Nyll & Blizzard Entertainment
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="Custom_BlackMarket.lua"/>
+
+	<Frame name="BlackMarketColumnButtonTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Left" name="$parentLeft" file="Interface\FriendsFrame\WhoFrame-ColumnTabs">
+					<Size x="5" y="19"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+					<TexCoords left="0" right="0.078125" top="0" bottom="0.59375"/>
+				</Texture>
+				<Texture parentKey="Right" name="$parentRight" file="Interface\FriendsFrame\WhoFrame-ColumnTabs">
+					<Size x="4" y="19"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.90625" right="0.96875" top="0" bottom="0.59375"/>
+				</Texture>
+				<Texture parentKey="Middle" name="$parentMiddle" file="Interface\FriendsFrame\WhoFrame-ColumnTabs">
+					<Size x="10" y="19"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT"/>
+						<Anchor point="RIGHT" relativeTo="$parentRight" relativePoint="LEFT"/>
+					</Anchors>
+					<TexCoords left="0.078125" right="0.90625" top="0" bottom="0.59375"/>
+				</Texture>
+				<FontString parentKey="Name" name="$parentName" inherits="GameFontHighlightSmall" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-5"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+	<Frame name="WoodFrameTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBg" file="Interface\BlackMarket\BlackMarketBackground-Tile" horizTile="true" vertTile="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-21"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentTitleBg" inherits="_WoodFrameTile-Top">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-3"/>
+						<Anchor point="TOPRIGHT" x="-25" y="-3"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="TopTileStreaks" inherits="_UI-Frame-TopTileStreaks">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="-21"/>
+						<Anchor point="TOPRIGHT" x="-2" y="-21"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+			</Layer>
+			<Layer level="OVERLAY">
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame parentKey="art" setAllPoints="true">
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture parentKey="TopLeftCorner" name="$parentTopLeftCorner" inherits="UI-Frame-TopLeftCorner">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="-6" y="1"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="TopRightCorner" name="$parentTopRightCorner" inherits="UI-Frame-TopCornerRight">
+							<Anchors>
+								<Anchor point="TOPRIGHT" x="0" y="1"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="TopBorder" name="$parentTopBorder" inherits="_UI-Frame-TitleTile">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentTopLeftCorner" relativePoint="TOPRIGHT"/>
+								<Anchor point="TOPRIGHT" relativeTo="$parentTopRightCorner" relativePoint="TOPLEFT"/>
+							</Anchors>
+						</Texture>
+						<FontString parentKey="TitleText" name="$parentTitleText" inherits="GameFontNormal" text="">
+							<Anchors>
+								<Anchor point="TOP" x="-6" y="-4" />
+							</Anchors>
+						</FontString>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture parentKey="BotLeftCorner" name="$parentBotLeftCorner" inherits="UI-Frame-BotCornerLeft">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="-6" y="-5"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="BotRightCorner" name="$parentBotRightCorner" inherits="UI-Frame-BotCornerRight">
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" x="0" y="-5"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="BottomBorder" name="$parentBottomBorder" inherits="_UI-Frame-Bot">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeTo="$parentBotLeftCorner" relativePoint="BOTTOMRIGHT" y="0"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentBotRightCorner" relativePoint="BOTTOMLEFT" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="LeftBorder" name="$parentLeftBorder" inherits="!UI-Frame-LeftTile">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentTopLeftCorner" relativePoint="BOTTOMLEFT"/>
+								<Anchor point="BOTTOMLEFT" relativeTo="$parentBotLeftCorner" relativePoint="TOPLEFT"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="RightBorder" name="$parentRightBorder" inherits="!UI-Frame-RightTile">
+							<Anchors>
+								<Anchor point="TOPRIGHT" relativeTo="$parentTopRightCorner" relativePoint="BOTTOMRIGHT" x="1"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentBotRightCorner" relativePoint="TOPRIGHT"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture parentKey="WoodInsetTopLeftCorner" name="$parentWoodInsetTopLeftCorner" file="Interface\BlackMarket\WoodFrameCorner-BotLeft">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentTopLeftCorner" relativePoint="BOTTOMLEFT" x="4" y="8"/>
+							</Anchors>
+							<TexCoords left="0" right="0.78125" top="0.984375" bottom="0.234375"/>
+						</Texture>
+						<Texture parentKey="WoodInsetTopRightCorner" name="$parentWoodInsetTopRightCorner" file="Interface\BlackMarket\WoodFrameCorner-BotRight">
+							<Anchors>
+								<Anchor point="TOPRIGHT" relativeTo="$parentTopRightCorner" relativePoint="BOTTOMRIGHT" x="-2" y="10"/>
+							</Anchors>
+							<TexCoords left="0.1023622" right="0.9921875" top="0.9921875" bottom="0.1023622"/>
+						</Texture>
+						<Texture parentKey="WoodInsetBotLeftCorner" name="$parentWoodInsetBotLeftCorner" file="Interface\BlackMarket\WoodFrameCorner-BotLeft">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeTo="$parentBotLeftCorner" x="4" y="4"/>
+							</Anchors>
+							<TexCoords left="0" right="0.78125" top="0.234375" bottom="0.984375"/>
+						</Texture>
+						<Texture parentKey="WoodInsetBotRightCorner" name="$parentWoodInsetBotRightCorner" file="Interface\BlackMarket\WoodFrameCorner-BotRight">
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentBotRightCorner" x="-2" y="6"/>
+							</Anchors>
+							<TexCoords left="0.1023622" right="0.9921875" top="0.1023622" bottom="0.9921875"/>
+						</Texture>
+					</Layer>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="BottomBorder" inherits="_WoodFrameTile-Bottom">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeTo="$parentWoodInsetBotLeftCorner" x="0" y="4"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentWoodInsetBotRightCorner" x="0" y="4"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="LeftBorder" inherits="!WoodFrameTile-Left">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentWoodInsetTopLeftCorner" x="2" y="0"/>
+								<Anchor point="BOTTOMLEFT" relativeTo="$parentWoodInsetBotLeftCorner" x="2" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="RightBorder" inherits="!WoodFrameTile-Right">
+							<Anchors>
+								<Anchor point="TOPRIGHT" relativeTo="$parentWoodInsetTopRightCorner" x="-2" y="0"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentWoodInsetBotRightCorner" x="-2" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Button parentKey="CloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
+						<Offset x="4" y="5"/>
+					</Anchor>
+				</Anchors>
+			</Button>
+		</Frames>
+	</Frame>
+	<Button name="BlackMarketItemTemplate" virtual="true">
+		<Size x="570" y="37"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Left" name="$parentLeft" file="Interface\AuctionFrame\UI-AuctionItemNameFrame">
+					<Size x="10" y="35"/>
+					<Anchors>
+						<Anchor point="LEFT" x="34" y="2"/>
+					</Anchors>
+					<TexCoords left="0" right="0.078125" top="0" bottom="1.0"/>
+				</Texture>
+				<Texture parentKey="Right" name="$parentRight" file="Interface\AuctionFrame\UI-AuctionItemNameFrame">
+					<Size x="10" y="35"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="0" y="2"/>
+					</Anchors>
+					<TexCoords left="0.75" right="0.828125" top="0" bottom="1.0"/>
+				</Texture>
+				<Texture file="Interface\AuctionFrame\UI-AuctionItemNameFrame">
+					<Size x="10" y="35"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT" x="0" y="0"/>
+						<Anchor point="RIGHT" relativeTo="$parentRight" relativePoint="LEFT" x="0" y="0"/>
+					</Anchors>
+					<TexCoords left="0.078125" right="0.75" top="0" bottom="1.0"/>
+				</Texture>
+				<FontString parentKey="Name" name="$parentName" inherits="GameFontNormal" justifyH="LEFT">
+					<Size x="160" y="32"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="41" y="0"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Level" name="$parentLevel" inherits="GameFontHighlightSmall">
+					<Size x="32" y="32"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="200" y="-2"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Type" name="$parentType" inherits="GameFontHighlightSmall">
+					<Size x="75" y="32"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="238" y="-2"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Seller" name="$parentSeller" inherits="GameFontHighlightSmall">
+					<Size x="75" y="32"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="410" y="-2"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="YourBid" name="$parentYourBid" inherits="GameFontNormalSmall" justifyH="RIGHT" hidden="true" text="BLACK_MARKET_YOUR_BID">
+					<Size x="75" y="0"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-6" y="-1"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture file="Interface\HelpFrame\HelpFrameButton-Highlight" alphaMode="ADD" name="$parentSelection" parentKey="Selection">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="33" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="4"/>
+					</Anchors>
+					<TexCoords left="0" right="1.0" top="0" bottom="0.578125"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button parentKey="Item">
+				<Size x="32" y="32"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BORDER">
+						<Texture parentKey="IconTexture"/>
+						<FontString parentKey="Count" inherits="NumberFontNormal" justifyH="RIGHT" hidden="true">
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" x="-5" y="2"/>
+							</Anchors>
+						</FontString>
+						<FontString parentKey="Stock" inherits="NumberFontNormalYellow" justifyH="LEFT" hidden="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="-2"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture parentKey="IconBorder" file="Interface\Common\WhiteIconFrame" hidden="true">
+							<Size x="34" y="34"/>
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0"/>
+							</Anchors>
+							<Color r="0" g="0.8" b="1"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self.UpdateTooltip = BlackMarketItem_OnEnter
+					</OnLoad>
+					<OnEnter function="BlackMarketItem_OnEnter"/>
+					<OnLeave>
+						local parent = self:GetParent()
+						parent:UnlockHighlight()
+						GameTooltip:Hide()
+					</OnLeave>
+					<OnClick>
+						if ( IsModifiedClick() ) then
+							HandleModifiedItemClick(self:GetParent().itemLink)
+						else
+							BlackMarketItem_OnClick(self:GetParent(), button, down)
+						end
+					</OnClick>
+				</Scripts>
+				<NormalTexture file="Interface\Buttons\UI-Quickslot2">
+					<Size x="60" y="60"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+				</NormalTexture>
+				<PushedTexture file="Interface\Buttons\UI-Quickslot-Depress"/>
+				<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
+			</Button>
+			<Button parentKey="TimeLeft" enableMouse="true">
+				<Size x="75" y="32"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="327" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<FontString parentKey="Text" inherits="GameFontHighlightSmall">
+							<Size x="75" y="32"/>
+							<Anchors>
+								<Anchor point="TOP"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnter>
+						local parent = self:GetParent()
+						parent:LockHighlight()
+						if ( self.tooltip ) then
+							GameTooltip:SetOwner(self, "ANCHOR_TOP")
+							GameTooltip:SetText(self.tooltip)
+						end
+					</OnEnter>
+					<OnLeave>
+						local parent = self:GetParent()
+						parent:UnlockHighlight()
+						GameTooltip:Hide()
+					</OnLeave>
+					<OnClick>
+						if ( IsModifiedClick() ) then
+							HandleModifiedItemClick(self:GetParent().itemLink)
+						else
+							BlackMarketItem_OnClick(self:GetParent(), button, down)
+						end
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Frame parentkey="CurrentBid" name="$parentCurrentBidMoneyFrame" inherits="SmallMoneyFrameTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" x="6" y="-3"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						SmallMoneyFrame_OnLoad(self)
+						MoneyFrame_SetType(self, "BLACKMARKET")
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnClick>
+				if ( IsModifiedClick() ) then
+					HandleModifiedItemClick(self.itemLink)
+				else
+					BlackMarketItem_OnClick(self, button, down)
+				end
+			</OnClick>
+		</Scripts>
+		<HighlightTexture file="Interface\QuestFrame\UI-QuestLogTitleHighlight" alphaMode="ADD" alpha="0.8">
+			<Anchors>
+				<Anchor point="TOPLEFT" x="33" y="0"/>
+				<Anchor point="BOTTOMRIGHT" x="0" y="5"/>
+			</Anchors>
+			<Color r="0.243" g="0.570" b="1"/>
+		</HighlightTexture>
+	</Button>
+
+	<Frame name="BlackMarketFrame" inherits="WoodFrameTemplate" toplevel="true" parent="UIParent" hidden="true" enableMouse="true">
+		<Size x="890" y="504"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0" />
+		</Anchors>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture file="Interface\BlackMarket\HotItemBanner">
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-18" y="-32"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentArtwork" parentKey="Artwork" setAllPoints="true" toplevel="true">
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture file="Interface\BlackMarket\BlackMarketSign">
+							<Anchors>
+								<Anchor point="TOP" x="-2" y="32"/>
+							</Anchors>
+						</Texture>
+						<FontString inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE" parentKey="Title">
+							<Anchors>
+								<Anchor point="TOP" x="0" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame parentKey="HotDeal">
+				<Size x="212" y="270"/>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<FontString parentKey="Title" name="$parentTitle" inherits="QuestFont_Super_Huge" justifyH="CENTER" text="BLACK_MARKET_HOT_LOT">
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-10"/>
+							</Anchors>
+						</FontString>
+						<Texture parentKey="Left" name="$parentLeft" file="Interface\AuctionFrame\UI-AuctionItemNameFrame">
+							<Size x="10" y="32"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="47" y="-60"/>
+							</Anchors>
+							<TexCoords left="0" right="0.078125" top="0" bottom="1.0"/>
+						</Texture>
+						<Texture parentKey="Right" name="$parentRight" file="Interface\AuctionFrame\UI-AuctionItemNameFrame">
+							<Size x="10" y="32"/>
+							<Anchors>
+								<Anchor point="TOPRIGHT" x="-15" y="-60"/>
+							</Anchors>
+							<TexCoords left="0.75" right="0.828125" top="0" bottom="1.0"/>
+						</Texture>
+						<Texture file="Interface\AuctionFrame\UI-AuctionItemNameFrame">
+							<Size x="10" y="32"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT" x="0" y="0"/>
+								<Anchor point="RIGHT" relativeTo="$parentRight" relativePoint="LEFT" x="0" y="0"/>
+							</Anchors>
+							<TexCoords left="0.078125" right="0.75" top="0" bottom="1.0"/>
+						</Texture>
+						<FontString parentKey="Name" name="$parentName" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE">
+							<Size x="150" y="32"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentLeft" x="5" y="0"/>
+							</Anchors>
+						</FontString>
+						<FontString parentKey="Level" name="$parentLevel" inherits="GameFontHighlightCenter">
+							<Size x="32" y="0"/>
+							<Anchors>
+								<Anchor point="TOP" relativeTo="$parentLeft" relativePoint="BOTTOMLEFT" x="-15" y="-1"/>
+							</Anchors>
+						</FontString>
+						<FontString parentKey="Type" name="$parentType" inherits="GameFontHighlightLeft">
+							<Size x="150" y="0"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentLeft" relativePoint="BOTTOMLEFT" x="5" y="-1"/>
+							</Anchors>
+						</FontString>
+						<FontString parentKey="SellerTAG" name="$parentSellerTAG" inherits="GameFontHighlightCenter" text="SOLD_BY_COLON">
+							<Size x="125" y="0"/>
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-130"/>
+							</Anchors>
+						</FontString>
+						<FontString parentKey="Seller" name="$parentSeller" inherits="GameFontHighlightCenter">
+							<Size x="200" y="0"/>
+							<Anchors>
+								<Anchor point="TOP" relativeTo="$parentSellerTAG" relativePoint="BOTTOM" x="0" y="-5"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Button parentKey="Item">
+						<Size x="32" y="32"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="15" y="-60"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BORDER">
+								<Texture parentKey="IconTexture"/>
+								<FontString parentKey="Count" inherits="NumberFontNormal" justifyH="RIGHT" hidden="true">
+									<Anchors>
+										<Anchor point="BOTTOMRIGHT" x="-5" y="2"/>
+									</Anchors>
+								</FontString>
+								<FontString parentKey="Stock" inherits="NumberFontNormalYellow" justifyH="LEFT" hidden="true">
+									<Anchors>
+										<Anchor point="TOPLEFT" x="0" y="-2"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+							<Layer level="OVERLAY">
+								<Texture parentKey="IconBorder" file="Interface\Common\WhiteIconFrame" hidden="true">
+									<Size x="35" y="35"/>
+									<Anchors>
+										<Anchor point="CENTER" x="0" y="0"/>
+									</Anchors>
+									<Color r="0" g="0.8" b="1"/>
+								</Texture>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnEnter>
+								local parent = self:GetParent()
+								if ( parent.itemLink ) then
+									GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+									GameTooltip:SetHyperlink(parent.itemLink)
+								else
+									GameTooltip:Hide()
+								end
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide()
+							</OnLeave>
+							<OnClick>
+								if ( IsModifiedClick() ) then
+									HandleModifiedItemClick(self:GetParent().itemLink)
+								end
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Frame parentKey="TimeLeft" name="$parentTimeLeft" enableMouse="true">
+						<Size x="200" y="20"/>
+						<Anchors>
+							<Anchor point="TOP" x="0" y="-180"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<FontString parentKey="Text" inherits="GameFontHighlightSmall">
+									<Anchors>
+										<Anchor point="TOP"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnEnter>
+								if ( self.tooltip ) then
+									GameTooltip:SetOwner(self, "ANCHOR_TOP")
+									GameTooltip:SetText(self.tooltip)
+								end
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide()
+							</OnLeave>
+						</Scripts>
+					</Frame>
+					<Frame parentkey="BlackMarketHotItemBidPrice" name="HotItemCurrentBidMoneyFrame" inherits="SmallMoneyFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentTimeLeft" relativePoint="BOTTOM" x="0" y="-5"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<FontString parentKey="CurrentBid" inherits="GameFontHighlightSmall" justifyH="RIGHT" text="BLACK_MARKET_CURRENT_BID">
+									<Size x="75" y="0"/>
+									<Anchors>
+										<Anchor point="RIGHT" relativeTo="$parent" relativePoint="LEFT" x="-3" y="0"/>
+									</Anchors>
+								</FontString>
+								<FontString parentKey="YourBid" inherits="GameFontNormalSmall" justifyH="CENTER" hidden="true" text="BLACK_MARKET_YOUR_BID">
+									<Size x="75" y="0"/>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnLoad>
+								self.YourBid:SetPoint("TOP", self:GetParent().TimeLeft, "BOTTOM", 0, -20)
+								SmallMoneyFrame_OnLoad(self)
+								MoneyFrame_SetType(self, "BLACKMARKET")
+							</OnLoad>
+						</Scripts>
+					</Frame>
+				</Frames>
+			</Frame>
+			<Frame parentKey="ColumnName" name="$parentColumnName" inherits="BlackMarketColumnButtonTemplate">
+				<Size x="214" y="19"/>
+				<Scripts>
+					<OnLoad>
+						self.Name:SetPoint("TOPLEFT", 10, -5)
+						self.Name:SetText(NAME)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Frame parentKey="ColumnLevel" name="$parentColumnLevel" inherits="BlackMarketColumnButtonTemplate">
+				<Size x="30" y="19"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentColumnName" relativePoint="RIGHT" x="-2" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.Name:SetText(LEVEL_ABBR)
+						self.Name:SetPoint("TOPLEFT", 5, -5)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Frame parentKey="ColumnType" name="$parentColumnType" inherits="BlackMarketColumnButtonTemplate">
+				<Size x="91" y="19"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentColumnLevel" relativePoint="RIGHT" x="-2" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.Name:SetText(TYPE)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Frame parentKey="ColumnDuration" name="$parentColumnDuration" inherits="BlackMarketColumnButtonTemplate">
+				<Size x="91" y="19"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentColumnType" relativePoint="RIGHT" x="-2" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.Name:SetText(CLOSES_IN)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Frame parentKey="ColumnHighBidder" name="$parentColumnHighBidder" inherits="BlackMarketColumnButtonTemplate">
+				<Size x="76" y="19"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentColumnDuration" relativePoint="RIGHT" x="-2" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.Name:SetText(AUCTION_CREATOR)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Frame parentKey="ColumnCurrentBid" name="$parentColumnCurrentBid" inherits="BlackMarketColumnButtonTemplate">
+				<Size x="90" y="19"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentColumnHighBidder" relativePoint="RIGHT" x="-2" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.Name:SetText(CURRENT_BID)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Frame parentKey="Inset" name="$parentInset" inherits="InsetFrameTemplate2">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentColumnName" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentColumnCurrentBid" relativePoint="BOTTOMRIGHT" x="26" y="-408"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture setAllPoints="true">
+							<Color r="0" g="0" b="0" a="0.5"/>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<FontString parentKey="NoItems" inherits="QuestFont_Super_Huge" justifyH="CENTER" hidden="true">
+							<Anchors>
+								<Anchor point="TOP" y="-20"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<ScrollFrame name="BlackMarketScrollFrame" inherits="MinimalHybridScrollFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentInset" x="6" y="-7"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentInset" relativePoint="BOTTOMRIGHT" x="-27" y="7"/>
+				</Anchors>
+			</ScrollFrame>
+			<Frame parentKey="MoneyFrameBorder" name="$parentMoneyFrameBorder" inherits="ThinGoldEdgeTemplate">
+				<Size x="155" y="20"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="27" y="4"/>
+				</Anchors>
+			</Frame>
+			<Frame name="BlackMarketMoneyFrame" inherits="SmallMoneyFrameTemplate">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentMoneyFrameBorder" relativePoint="BOTTOMRIGHT" x="8" y="2"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						SmallMoneyFrame_OnLoad(self)
+						MoneyFrame_SetType(self, "PLAYER")
+						MoneyFrame_SetMaxDisplayWidth(self, 168)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Button parentKey="BidButton" name="$parentBidButton" inherits="UIPanelButtonTemplate" text="BID">
+				<Size x="80" y="22"/>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="-255" y="2"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="BlackMarketBid_OnClick"/>
+				</Scripts>
+			</Button>
+			<Frame name="BlackMarketBidPrice" inherits="MoneyInputFrameTemplate">
+				<Size x="110" y="20"/>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentBidButton" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString inherits="GameFontHighlightSmall" text="BID" justifyH="RIGHT">
+							<Anchors>
+								<Anchor point="RIGHT" relativeTo="$parent" relativePoint="LEFT" x="-10" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad function="BlackMarketFrame_OnLoad"/>
+			<OnShow function="BlackMarketFrame_OnShow"/>
+			<OnHide function="BlackMarketFrame_OnHide"/>
+		</Scripts>
+	</Frame>
+</Ui>

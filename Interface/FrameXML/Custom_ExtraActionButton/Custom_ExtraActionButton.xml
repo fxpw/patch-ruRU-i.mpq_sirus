@@ -1,0 +1,173 @@
+<!--
+
+	Filename:	Custom_ExtraActionButton.xml
+	Project:	Custom Game Interface
+	Author:		Nyll & Blizzard Entertainment
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="Custom_ExtraActionButton.lua"/>
+
+	<CheckButton name="ExtraActionButtonTemplate" inherits="ActionButtonTemplate" hidden="true" virtual="true">
+		<Size x="52" y="52"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentIcon" parentKey="icon"/>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentFlash" file="Interface\Buttons\UI-QuickslotRed" hidden="true"/>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentHotKey" parentKey="HotKey" inherits="NumberFontNormalGray">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="6" y="-6"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentCount" parentKey="Count" inherits="NumberFontNormal" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="-6" y="6"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentFlash" parentKey="Flash" file="Interface\Buttons\UI-QuickslotRed" hidden="true"/>
+				<Texture file="Interface\UnitPowerBarAlt\SpellPush-Frame" parentKey="style">
+					<Size x="256" y="128"/>
+					<Anchors>
+						<Anchor point="CENTER" x="-2" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate" parentKey="cooldown">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="5" y="-4"/>
+					<Anchor point="BOTTOMRIGHT" x="-5" y="5"/>
+				</Anchors>
+			</Cooldown>
+		</Frames>
+		<NormalTexture name="$parentNormalTexture" parentKey="NormalTexture" file="Interface\Buttons\UI-Quickslot2">
+			<Anchors>
+				<Anchor point="TOPLEFT" x="-15" y="15"/>
+				<Anchor point="BOTTOMRIGHT" x="15" y="-15"/>
+			</Anchors>
+		</NormalTexture>
+		<HighlightTexture alphaMode="ADD" file="Interface\Buttons\ButtonHilight-Square"/>
+		<CheckedTexture alphaMode="ADD" file="Interface\Buttons\CheckButtonHilight"/>
+		<Animations>
+			<AnimationGroup parentKey="intro">
+				<Alpha change="-1" duration="0" order="1"/>
+				<Alpha change="1" duration="0.3" order="1"/>
+				<Scripts>
+					<OnPlay>
+						if self:GetParent().outro:IsPlaying() then
+							self:GetParent().outro:Stop()
+						end
+						self:GetParent():Show()
+					</OnPlay>
+				</Scripts>
+			</AnimationGroup>
+			<AnimationGroup parentKey="outro">
+				<Alpha change="1" duration="0" order="1"/>
+				<Alpha change="-1" duration="0.3" order="1"/>
+				<Scripts>
+					<OnFinished>
+						self:GetParent():Hide()
+					</OnFinished>
+				</Scripts>
+			</AnimationGroup>
+		</Animations>
+		<Scripts>
+			<OnLoad>
+				self:RegisterForDrag("LeftButton")
+				self.elapsed = 0
+
+				SetParentArray(self, "ExtraButtons", self)
+			</OnLoad>
+			<OnEnter function="ExtraActionButton_OnEnter"/>
+			<OnUpdate function="ExtraActionButton_OnUpdate"/>
+			<OnDragStart>
+				ExtraActionButton_OnDragStart(self, button)
+			</OnDragStart>
+			<OnClick function="ExtraActionButton_OnClick"/>
+			<OnLeave function="GameTooltip_Hide"/>
+		</Scripts>
+	</CheckButton>
+
+	<Frame name="ExtraActionBarFrame" parent="UIParent" enableMouse="true" movable="true" clampedToScreen="true" toplevel="true" hidden="true">
+		<Size x="892" y="94"/>
+		<Anchors>
+			<Anchor point="BOTTOM" x="0" y="200" />
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background">
+					<Color r="0" g="0" b="0" a="0.2"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Animations>
+			<AnimationGroup parentKey="intro">
+				<Alpha change="-1" duration="0" order="1"/>
+				<Alpha change="1" duration="0.3" order="1"/>
+				<Scripts>
+					<OnPlay>
+						if self:GetParent().outro:IsPlaying() then
+							self:GetParent().outro:Stop()
+						end
+						self:GetParent():Show()
+					</OnPlay>
+				</Scripts>
+			</AnimationGroup>
+			<AnimationGroup parentKey="outro">
+				<Alpha change="1" duration="0" order="1"/>
+				<Alpha change="-1" duration="0.3" order="1"/>
+				<Scripts>
+					<OnFinished>
+						self:GetParent().Background:SetAlpha(0)
+						self:GetParent():Hide()
+					</OnFinished>
+				</Scripts>
+			</AnimationGroup>
+		</Animations>
+		<Frames>
+			<Button name="$parentButton1" parentKey="Button1" inherits="ExtraActionButtonTemplate">
+				<Anchors>
+					<Anchor point="CENTER" x="0" y="0"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentButton2" parentKey="Button2" inherits="ExtraActionButtonTemplate">
+				<Anchors>
+					<Anchor point="CENTER" x="0" y="0"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentButton3" parentKey="Button3" inherits="ExtraActionButtonTemplate">
+				<Anchors>
+					<Anchor point="CENTER" x="0" y="0"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentButton4" parentKey="Button4" inherits="ExtraActionButtonTemplate">
+				<Anchors>
+					<Anchor point="CENTER" x="0" y="0"/>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad function="ExtraActionBarFrame_OnLoad"/>
+			<OnEvent function="ExtraActionBarFrame_OnEvent"/>
+			<OnUpdate function="ExtraActionBarFrame_OnUpdate"/>
+			<OnDragStart>
+				if self.isMovable then
+					self:StartMoving()
+				end
+			</OnDragStart>
+			<OnDragStop>
+				if self.isMovable then
+					self:StopMovingOrSizing()
+				end
+			</OnDragStop>
+		</Scripts>
+	</Frame>
+</Ui>

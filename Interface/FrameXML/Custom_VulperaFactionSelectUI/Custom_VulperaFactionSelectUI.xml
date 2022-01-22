@@ -1,0 +1,146 @@
+<!--
+
+	Filename:	Custom_VulperaFactionSelectUI.xml
+	Project:	Custom Game Interface
+	Author:		Nyll & Blizzard Entertainment
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="Custom_VulperaFactionSelectUI.lua"/>
+
+	<Frame name="VulperaSelectFactionFrame" parent="UIParent" inherits="StandartBaseBasicFrameTemplate" hidden="true">
+		<Size x="580" y="560"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0" />
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="BackgroundTile" horizTile="true" useAtlasSize="true">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="Top" atlas="_Garr_WoodFrameTile-Top" horizTile="true" useAtlasSize="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0"/>
+						<Anchor point="TOPRIGHT" x="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame parentKey="OverlayElements" frameLevel="10" setAllPoints="true">
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture parentKey="Topper">
+							<Anchors>
+								<Anchor point="BOTTOM" relativePoint="TOP"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture parentKey="CloseButtonBorder">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentTitle" parentKey="Title">
+				<Size x="500" y="85"/>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-32" />
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentLeft" parentKey="Left" atlas="UI-Frame-Horde-TitleLeft" useAtlasSize="true">
+							<Anchors>
+								<Anchor point="LEFT"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentRight" parentKey="Right" atlas="UI-Frame-Horde-TitleRight" useAtlasSize="true">
+							<Anchors>
+								<Anchor point="RIGHT"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentMiddle" parentKey="Middle" atlas="_UI-Frame-Horde-TitleMiddle" horizTile="true">
+							<Size x="0" y="85"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT" x="-60" y="0"/>
+								<Anchor point="RIGHT" relativeTo="$parentRight" relativePoint="LEFT" x="60" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Text" inherits="SystemFont_Large" justifyH="CENTER">
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="$parentMiddle"/>
+							</Anchors>
+							<Color r="1.0" g="1.0" b="1.0"/>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentContentFrame" parentKey="ContentFrame">
+				<Size x="510" y="410"/>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentTitle" relativePoint="BOTTOM" x="0" y="-4" />
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background"/>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture name="$parentImageBackground" parentKey="ImageBackground">
+							<Size x="370" y="188"/>
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-40" />
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<Texture name="$parentImageBorder" parentKey="ImageBorder">
+							<Size x="10" y="10"/>
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="$parentImageBackground" x="0" y="0" />
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<FontString parentKey="Text" font="GameFontNormal13" justifyV="LEFT" justifyH="LEFT" text="VULPERA_FACTION_SELECT_TEXT_HORDE">
+							<Size x="400" y="120"/>
+							<Anchors>
+								<Anchor point="TOP" relativeTo="$parentImageBorder" relativePoint="BOTTOM" x="0" y="0" />
+							</Anchors>
+							<Color r="0" g="0" b="0"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Button name="$parentChooseFaction" parentKey="ChooseFaction" inherits="UIPanelButtonTemplate">
+						<Size x="180" y="26"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="0" y="20" />
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								self:GetParent():GetParent():ChooseFaction()
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, VulperaFactionSelectMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>

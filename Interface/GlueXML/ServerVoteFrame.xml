@@ -1,0 +1,74 @@
+<!--
+
+	Filename:	ServerVoteFrame.xml
+	Project:	Sirus Game Interface
+	Author:		Nyll
+	E-mail:		nyll@sirus.su
+	Web:		https://sirus.su/
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Frame name="ServerVoteFrame" toplevel="true" setAllPoints="true" hidden="true" enableMouse="true" enableKeyboard="true" frameStrata="HIGH">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture setAllPoints="true">
+					<Color a="0.75" r="0" g="0" b="0"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentSelectFrame" inherits="LoginUIFrameTemplate">
+				<Size x="360" y="185"/>
+				<Anchors>
+					<Anchor point="CENTER">
+						<Offset x="0" y="-20"/>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+					<!-- 	self.Tittle:SetText("CHOOSE_VOTE_TOP")
+						self.Tittle:SetFontObject("AccountLoginTextFont")
+						self.Tittle:SetTextColor(0.91, 0.78, 0.53, 1)
+						self:SetBackdropBorderColor(0.91, 0.78, 0.53, 1) -->
+					</OnLoad>
+				</Scripts>
+				<Frames>
+					<Button name="$parentMMOTOP" inherits="GlueButtonCustomTemplate" text="MMOTOP">
+						<Size x="220" y="34"/>
+						<Anchors>
+							<Anchor point="TOP" x="0" y="-35"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								LaunchURL("https://sirus.su/vote/mmotop")
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="$parentMMOVOTE" inherits="GlueButtonCustomTemplate" text="MMOVOTE">
+						<Size x="220" y="34"/>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentMMOTOP" relativePoint="BOTTOM" x="0" y="-10"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								LaunchURL("https://sirus.su/vote/mmovote")
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="$parentClose" inherits="GlueButtonCustomTemplate" text="CLOSE">
+						<Size x="320" y="28"/>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentMMOVOTE" relativePoint="BOTTOM" x="0" y="-20"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								ServerVoteFrame:Hide()
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+		</Frames>
+	</Frame>
+</Ui>

@@ -1,0 +1,248 @@
+<!--
+
+	Filename:	Custom_PVEFrame.xml
+	Project:	Custom Game Interface
+	Author:		Nyll & Blizzard Entertainment
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="Custom_PVEFrame.lua"/>
+
+	<Frame name="PVEFrame" enableMouse="true" parent="UIParent" hidden="false" toplevel="true">
+		<Size x="563" y="428"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0" />
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBg" file="Interface\FrameGeneral\UI-Background-Rock" horizTile="true" vertTile="true" parentKey="Bg">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-21"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentTitleBg" inherits="_UI-Frame-TitleTileBG">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-3"/>
+						<Anchor point="TOPRIGHT" x="-25" y="-3"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentBlueBg" file="Interface\Common\bluemenu-main">
+					<Size x="209" y="399"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="7" y="-23" />
+					</Anchors>
+					<TexCoords left="0.00390625" right="0.82421875" top="0.18554688" bottom="0.58984375"/>
+					<Color r="1" g="0" b="0"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentTLCorner" file="Interface\Common\bluemenu-main">
+					<Size x="64" y="64"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBlueBg" x="0" y="0"/>
+					</Anchors>
+					<TexCoords left="0.00390625" right="0.25390625" top="0.00097656" bottom="0.06347656"/>
+				</Texture>
+				<Texture name="$parentTRCorner" file="Interface\Common\bluemenu-main">
+					<Size x="64" y="64"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="151" y="-23"/>
+					</Anchors>
+					<TexCoords left="0.51953125" right="0.76953125" top="0.00097656" bottom="0.06347656"/>
+				</Texture>
+				<Texture name="$parentBRCorner" file="Interface\Common\bluemenu-main">
+					<Size x="64" y="64"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="151" y="7"/>
+					</Anchors>
+					<TexCoords left="0.00390625" right="0.25390625" top="0.06542969" bottom="0.12792969"/>
+				</Texture>
+				<Texture name="$parentBLCorner" file="Interface\Common\bluemenu-main">
+					<Size x="64" y="64"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="7" y="7"/>
+					</Anchors>
+					<TexCoords left="0.26171875" right="0.51171875" top="0.00097656" bottom="0.06347656"/>
+				</Texture>
+				<Texture name="$parentLLVert" file="Interface\Common\bluemenu-vert" vertTile="true">
+					<Size x="43" y="270"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="7" y="-87" />
+					</Anchors>
+					<TexCoords left="0.06250000" right="0.39843750"/>
+				</Texture>
+				<Texture name="$parentRLVert" file="Interface\Common\bluemenu-vert" vertTile="true">
+					<Size x="43" y="270"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="172" y="-87" />
+					</Anchors>
+					<TexCoords left="0.41406250" right="0.75000000"/>
+				</Texture>
+				<Texture name="$parentBottomLine" file="Interface\Common\bluemenu-goldborder-horiz" horizTile="true">
+					<Size x="80" y="43"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentBLCorner" relativePoint="BOTTOMRIGHT" x="0" y="0" />
+					</Anchors>
+					<TexCoords top="0.35937500" bottom="0.69531250"/>
+				</Texture>
+				<Texture name="$parentTopLine" file="Interface\Common\bluemenu-goldborder-horiz" horizTile="true">
+					<Size x="80" y="43"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentTLCorner" relativePoint="TOPRIGHT" x="0" y="0" />
+					</Anchors>
+					<TexCoords top="0.00781250" bottom="0.34375000"/>
+				</Texture>
+			</Layer>
+			<!-- <Layer level="ARTWORK">
+				<Texture name="$parentTopFiligree" file="Interface\Common\bluemenu-main">
+					<Size x="185" y="55"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBlueBg" x="12" y="-6" />
+					</Anchors>
+					<TexCoords left="0.00390625" right="0.72656250" top="0.12988281" bottom="0.18359375"/>
+				</Texture>
+				<Texture name="$parentBottomFiligree" file="Interface\Common\bluemenu-main">
+					<Size x="185" y="55"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentBlueBg" x="12" y="4" />
+					</Anchors>
+					<TexCoords left="0.26171875" right="0.98437500" top="0.06542969" bottom="0.11914063"/>
+				</Texture>
+			</Layer> -->
+		</Layers>
+		<Frames>
+			<Frame name="$parentLeftInset" parentKey="Inset">
+				<Size x="217" y="496"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="4" y="-24" />
+					<Anchor point="BOTTOMLEFT" x="4" y="4" />
+				</Anchors>
+				<Layers>
+					<Layer level="BORDER">
+						<Texture name="$parentIBackground" file="Interface\FrameGeneral\UI-Background-Marble" horizTile="true" vertTile="true" parentKey="IBackground">
+							<Anchors>
+								<Anchor point="TOPLEFT"/>
+								<Anchor point="BOTTOMRIGHT"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<Texture name="$parentInsetTopLeftCorner" inherits="UI-Frame-InnerTopLeft" parentKey="InsetBorderTopLeft">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+						</Texture>
+						<Texture name="$parentInsetTopRightCorner" inherits="UI-Frame-InnerTopRight" parentKey="InsetBorderTopRight">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+						</Texture>
+						<Texture name="$parentInsetBotLeftCorner" inherits="UI-Frame-InnerBotLeftCorner" parentKey="InsetBorderBottomLeft">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+						</Texture>
+						<Texture name="$parentInsetBotRightCorner" inherits="UI-Frame-InnerBotRight" parentKey="InsetBorderBottomRight">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+						</Texture>
+
+						<Texture name="$parentInsetTopBorder" inherits="_UI-Frame-InnerTopTile" parentKey="InsetBorderTop">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+						</Texture>
+						<Texture name="$parentInsetBottomBorder" inherits="_UI-Frame-InnerBotTile" parentKey="InsetBorderBottom">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+						</Texture>
+						<Texture name="$parentInsetLeftBorder" inherits="!UI-Frame-InnerLeftTile" parentKey="InsetBorderLeft">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+						</Texture>
+						<Texture name="$parentInsetRightBorder" inherits="!UI-Frame-InnerRightTile" parentKey="InsetBorderRight">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+						</Texture>
+					</Layer>
+					<!-- <Layer level="OVERLAY">
+						<Texture name="$parentTopFiligree" file="Interface\Common\bluemenu-main">
+							<Size x="185" y="55"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="PVEFrameBlueBg" x="12" y="-6" />
+							</Anchors>
+							<TexCoords left="0.00390625" right="0.72656250" top="0.12988281" bottom="0.18359375"/>
+						</Texture>
+						<Texture name="$parentBottomFiligree" file="Interface\Common\bluemenu-main">
+							<Size x="185" y="55"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeTo="PVEFrameBlueBg" x="12" y="4" />
+							</Anchors>
+							<TexCoords left="0.26171875" right="0.98437500" top="0.06542969" bottom="0.11914063"/>
+						</Texture>
+					</Layer> -->
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self:SetFrameLevel(self:GetParent():GetFrameLevel())
+
+						self.InsetBorderTopLeft:ClearAllPoints()
+						self.InsetBorderTopLeft:SetPoint("TOPLEFT", self.IBackground, 0, 0)
+
+						self.InsetBorderTopRight:ClearAllPoints()
+						self.InsetBorderTopRight:SetPoint("TOPRIGHT", self.IBackground, 0, 0)
+
+						self.InsetBorderBottomLeft:ClearAllPoints()
+						self.InsetBorderBottomLeft:SetPoint("BOTTOMLEFT", self.IBackground, 0, -1)
+
+						self.InsetBorderBottomRight:ClearAllPoints()
+						self.InsetBorderBottomRight:SetPoint("BOTTOMRIGHT", self.IBackground, 0, -1)
+
+						self.InsetBorderTop:ClearAllPoints()
+						self.InsetBorderTop:SetPoint("TOPLEFT", self.InsetBorderTopLeft, "TOPRIGHT", 0, 0)
+						self.InsetBorderTop:SetPoint("TOPRIGHT", self.InsetBorderTopRight, "TOPLEFT", 0, 0)
+
+						self.InsetBorderBottom:ClearAllPoints()
+						self.InsetBorderBottom:SetPoint("BOTTOMLEFT", self.InsetBorderBottomLeft, "BOTTOMRIGHT", 0, 0)
+						self.InsetBorderBottom:SetPoint("BOTTOMRIGHT", self.InsetBorderBottomRight, "BOTTOMLEFT", 0, 0)
+
+						self.InsetBorderLeft:ClearAllPoints()
+						self.InsetBorderLeft:SetPoint("TOPLEFT", self.InsetBorderTopLeft, "BOTTOMLEFT", 0, 0)
+						self.InsetBorderLeft:SetPoint("BOTTOMLEFT", self.InsetBorderBottomLeft, "TOPLEFT", 0, 0)
+
+						self.InsetBorderRight:ClearAllPoints()
+						self.InsetBorderRight:SetPoint("TOPRIGHT", self.InsetBorderTopRight, "BOTTOMRIGHT", 0, 0)
+						self.InsetBorderRight:SetPoint("BOTTOMRIGHT", self.InsetBorderBottomRight, "TOPRIGHT", 0, 0)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<!-- <Frame name="$parentArtFrame" parentKey="ArtFrame" setAllPoints="true">
+				<Layers>
+					<Layer level="BACKGROUND">
+
+					</Layer>
+					<Layer level="BORDER">
+					</Layer>
+					<Layer level="ARTWORK">
+					</Layer>
+					<Layer level="OVERLAY">
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self:SetFrameLevel(self:GetParent():GetFrameLevel() + 1)
+						print(self:GetFrameLevel(), 1)
+					</OnLoad>
+				</Scripts>
+			</Frame> -->
+		</Frames>
+	</Frame>
+</Ui>

@@ -1,0 +1,184 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_AuctionHouseSearchBar.lua"/>
+
+	<EditBox name="AuctionHouseSearchBoxTemplate" autoFocus="false" historyLines="1" bytes="64" inherits="SearchBoxTemplate" virtual="true">
+		<Size x="241" y="22"/>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseSearchBoxMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEnterPressed>
+				self:OnEnterPressed()
+			</OnEnterPressed>
+			<OnTextChanged>
+				self:OnTextChanged(userInput)
+			</OnTextChanged>
+		</Scripts>
+	</EditBox>
+	
+	<Button name="AuctionHouseFavoritesSearchButtonTemplate" inherits="SquareIconButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseFavoritesSearchButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+		</Scripts>
+	</Button>
+
+	<EditBox name="AuctionHouseLevelRangeEditBoxTemplate" inherits="InputBoxTemplate" letters="3" numeric="true" autoFocus="false" virtual="true">
+		<Size x="28" y="16"/>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseLevelRangeEditBoxMixin)
+			</OnLoad>
+			<OnTextChanged>
+				self:OnTextChanged(userInput)
+			</OnTextChanged>
+			<OnEnter>
+				UIDropDownMenu_StopCounting(self:GetParent():GetParent())
+			</OnEnter>
+			<OnLeave>
+				UIDropDownMenu_StartCounting(self:GetParent():GetParent())
+			</OnLeave>
+		</Scripts>
+	</EditBox>
+
+	<Frame name="AuctionHouseLevelRangeFrameTemplate" inherits="UIDropDownCustomMenuEntryTemplate" virtual="true">
+		<Size x="80" y="22"/>
+		<Frames>
+			<EditBox name="$parentMinLevel" parentKey="MinLevel" inherits="AuctionHouseLevelRangeEditBoxTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="8" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Dash" inherits="GameFontHighlightSmall" text="-">
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="RIGHT" x="0" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</EditBox>
+			<EditBox name="$parentMaxLevel" parentKey="MaxLevel" inherits="AuctionHouseLevelRangeEditBoxTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentMinLevel" relativePoint="RIGHT" x="10" y="0"/>
+				</Anchors>
+			</EditBox>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseLevelRangeFrameMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+	<Button name="AuctionHouseFilterButtonTemplate" inherits="UIMenuButtonStretchTemplate" text="FILTER" virtual="true">
+		<Size x="93" y="22"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" parentKey="Icon" file="Interface\ChatFrame\ChatFrameExpandArrow">
+					<Size x="10" y="12"/>
+					<Anchors>
+						<Anchor point="RIGHT" relativePoint="RIGHT" x="-5"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentClearFiltersButton" parentKey="ClearFiltersButton">
+				<Size x="23" y="23"/>
+				<Anchors>
+					<Anchor point="CENTER" relativePoint="TOPRIGHT" x="-3" y="0"/>
+				</Anchors>
+				<NormalTexture parentKey="NormalTexture">
+					<Size x="23" y="23"/>
+				</NormalTexture>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, AuctionHouseClearFiltersButtonMixin)
+
+						self.NormalTexture:SetAtlas("auctionhouse-ui-filter-redx")
+					</OnLoad>
+					<OnClick>
+						self:OnClick(button)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Frame name="$parentDropDown" parentKey="DropDown" inherits="UIDropDownMenuTemplate"/>
+			<Frame name="$parentLevelRangeFrame" parentKey="LevelRangeFrame" inherits="AuctionHouseLevelRangeFrameTemplate"/>
+		</Frames>
+		<Scripts>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+			<OnLoad>
+				Mixin(self, AuctionHouseFilterButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Button>
+
+	<Button name="AuctionHouseSearchButtonTemplate" text="AUCTION_HOUSE_SEARCH_BUTTON" inherits="UIPanelButtonTemplate" virtual="true">
+		<Size x="132" y="22"/>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseSearchButtonMixin)
+			</OnLoad>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+		</Scripts>
+	</Button>	
+
+	<Frame name="AuctionHouseSearchBarTemplate" virtual="true">
+		<Size x="618" y="40"/>
+		<Frames>
+			<Button name="$parentFavoritesSearchButton" parentKey="FavoritesSearchButton" inherits="AuctionHouseFavoritesSearchButtonTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="0" y="0"/>
+				</Anchors>
+			</Button>
+			<EditBox name="$parentSearchBox" parentKey="SearchBox" inherits="AuctionHouseSearchBoxTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentFavoritesSearchButton" relativePoint="RIGHT" x="9" y="0"/>
+				</Anchors>
+			</EditBox>
+			<Button name="$parentSearchButton" parentKey="SearchButton" inherits="AuctionHouseSearchButtonTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" x="0" y="0"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentFilterButton" parentKey="FilterButton" inherits="AuctionHouseFilterButtonTemplate">
+				<Size x="93" y="22"/>
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentSearchButton" relativePoint="LEFT" x="-10" y="0"/>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseSearchBarMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</Frame>
+</Ui>

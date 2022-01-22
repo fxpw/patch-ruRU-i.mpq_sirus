@@ -1,0 +1,74 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_AuctionHouseItemBuyFrame.lua"/>
+	
+	<Frame name="AuctionHouseItemBuyFrameTemplate" virtual="true">
+		<Size x="600" y="440"/>
+		<Frames>
+			<Button name="$parentBackButton" parentKey="BackButton" inherits="UIPanelButtonTemplate" text="AUCTION_HOUSE_BACK_BUTTON">
+				<Size x="110" y="22"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="11" y="-9"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, AuctionHouseCommoditiesBackButtonMixin)
+					</OnLoad>
+					<OnClick>
+						self:OnClick(button)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentItemDisplay" parentKey="ItemDisplay" inherits="AuctionHouseItemDisplayTemplate">
+				<Size x="622" y="86"/>
+				<Attributes>
+					<Attribute name="backgroundAtlas" value="auctionhouse-background-buy-noncommodities-header" type="string"/>
+					<Attribute name="itemButtonXOffset" value="22" type="number"/>
+					<Attribute name="itemButtonYOffset" value="-2" type="number"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentBackButton" relativePoint="BOTTOM" x="0" y="-10"/>
+					<Anchor point="LEFT"/>
+				</Anchors>
+			</Button>
+			<Frame name="$parentBuyoutFrame" parentKey="BuyoutFrame" inherits="AuctionHouseBuyoutFrameTemplate">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentBidFrame" parentKey="BidFrame" inherits="AuctionHouseBidFrameTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentBuyoutFrame" relativePoint="LEFT" x="-60" y="0"/>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentItemList" parentKey="ItemList" inherits="AuctionHouseItemListTemplate">
+				<Attributes>
+					<Attribute name="backgroundAtlas" value="auctionhouse-background-buy-noncommodities-market" type="string"/>
+					<Attribute name="refreshFrameXOffset" value="-4" type="number"/>
+					<Attribute name="refreshFrameYOffset" value="132" type="number"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentItemDisplay" relativePoint="BOTTOM" x="0" y="-14"/>
+					<Anchor point="LEFT"/>
+					<Anchor point="BOTTOM" relativeTo="$parentBuyoutFrame" relativePoint="TOP"/>
+					<Anchor point="RIGHT" relativeTo="$parentBuyoutFrame" relativePoint="RIGHT" x="-4"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, AuctionHouseItemBuyFrameMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+		</Scripts>
+	</Frame>
+</Ui>

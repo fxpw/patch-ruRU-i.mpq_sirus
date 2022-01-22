@@ -1,0 +1,855 @@
+<!--
+
+	Filename:	Custom_RenegadeLadder.xml
+	Project:	Custom Game Interface
+	Author:		Nyll & Blizzard Entertainment
+
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Script file="Custom_RenegadeLadder.lua"/>
+
+    <CheckButton name="Custom_RenegadeLadderBigTabTemplate" inherits="PVPLadderFrameBigTabTemplate" virtual="true">
+        <Scripts>
+            <OnLoad>
+                Mixin(self, RenegadeLadderTabsMixin)
+                self:OnLoad()
+            </OnLoad>
+            <OnClick>
+                self:OnClick()
+            </OnClick>
+        </Scripts>
+    </CheckButton>
+    <CheckButton name="Custom_RenegadeLadderTabTemplate" inherits="PVPLadderFrameSmallTabTemplate" virtual="true">
+        <Scripts>
+            <OnLoad>
+                Mixin(self, RenegadeLadderTabsMixin)
+                self:OnLoad()
+            </OnLoad>
+            <OnClick>
+                self:OnClick()
+            </OnClick>
+        </Scripts>
+    </CheckButton>
+    <Frame name="Custom_RenegadeLadderKingFrame" virtual="true">
+        <Size x="204" y="60"/>
+        <Layers>
+        	<Layer level="BACKGROUND">
+                <Texture name="$parentBackground" parentKey="Background">
+                    <Size x="243" y="60"/>
+                    <Anchors>
+                    	<Anchor point="CENTER" x="0" y="0" />
+                    </Anchors>
+                </Texture>
+        	</Layer>
+        	<Layer level="BORDER">
+                <Texture name="$parentCrown" parentKey="Crown" alpha="0.9" alphaMode="ADD">
+                	<Size x="60" y="60"/>
+                    <Anchors>
+                    	<Anchor point="LEFT" x="8" y="4" />
+                    </Anchors>
+                </Texture>
+        	</Layer>
+        	<Layer level="ARTWORK">
+                <Texture name="$parentKillsBackground" parentKey="KillsBackground">
+                    <Size x="80" y="40"/>
+                	<Anchors>
+                		<Anchor point="CENTER" relativeTo="$parentCrown" x="0" y="-11" />
+                	</Anchors>
+                </Texture>
+        	</Layer>
+        	<Layer level="OVERLAY">
+                <FontString name="$parentName" parentKey="Name" inherits="GameFontNormal12" justifyH="LEFT" text="Playernameewename">
+                    <Size x="140" y="10"/>
+                    <Anchors>
+                        <Anchor point="TOP" x="38" y="-10" />
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentLocation" parentKey="Location" inherits="GameFontNormal9" justifyH="LEFT">
+                    <Size x="130" y="30"/>
+                    <Anchors>
+                        <Anchor point="TOP" x="34" y="-19" />
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentKills" parentKey="Kills" inherits="GameFontNormal14" justifyH="LEFT" text="9999">
+                    <Anchors>
+                        <Anchor point="CENTER" relativeTo="$parentCrown" x="0" y="-10" />
+                    </Anchors>
+                </FontString>
+        	</Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, RenegadeLadderKingsMixin)
+                self:OnLoad()
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <Button name="RenegadeLadderScrollPlayerButtonTemplate" inherits="PVPLadderScrollPlayerButtonTemplate" virtual="true">
+        <Scripts>
+            <OnClick></OnClick>
+        </Scripts>
+    </Button>
+
+    <Frame name="RenegadeLadderFrame" inherits="PortraitFrameTemplate2" toplevel="true" enableMouse="true" parent="UIParent" hidden="true">
+        <Size x="563" y="428"/>
+        <Frames>
+            <Frame parentKey="LeftInset" name="$parentLeftInset" inherits="InsetFrameTemplate4">
+                <Size x="217" y="496"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="4" y="-24" />
+                    <Anchor point="BOTTOMLEFT" x="4" y="4" />
+                </Anchors>
+                <Frames>
+                    <Frame name="$parentArt" parent="RenegadeLadderFrame" setAllPoints="true">
+                        <Layers>
+                            <Layer level="BORDER">
+                                <Texture parentKey="Background" name="$parentBackgrounds" file="Interface\Common\bluemenu-main">
+                                    <Size x="209" y="399"/>
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" x="7" y="-23" />
+                                    </Anchors>
+                                    <TexCoords left="0.00390625" right="0.82421875" top="0.18554688" bottom="0.58984375"/>
+                                </Texture>
+                            </Layer>
+                            <Layer level="ARTWORK">
+                                <Texture file="Interface\Common\bluemenu-main">
+                                    <Size x="185" y="55"/>
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" relativeTo="$parentBackgrounds" x="12" y="-6" />
+                                    </Anchors>
+                                    <TexCoords left="0.00390625" right="0.72656250" top="0.12988281" bottom="0.18359375"/>
+                                </Texture>
+                                <Texture file="Interface\Common\bluemenu-main">
+                                    <Size x="185" y="55"/>
+                                    <Anchors>
+                                        <Anchor point="BOTTOMLEFT" relativeTo="$parentBackgrounds" x="12" y="4" />
+                                    </Anchors>
+                                    <TexCoords left="0.26171875" right="0.98437500" top="0.06542969" bottom="0.11914063"/>
+                                </Texture>
+                            </Layer>
+                            <Layer level="OVERLAY">
+                                <Texture parentKey="TLCorner" name="$parentTLCorner" file="Interface\Common\bluemenu-main">
+                                    <Size x="64" y="64"/>
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" relativeTo="$parentBackgrounds" x="0" y="0"/>
+                                    </Anchors>
+                                    <TexCoords left="0.00390625" right="0.25390625" top="0.00097656" bottom="0.06347656"/>
+                                </Texture>
+                                <Texture parentKey="TRCorner" file="Interface\Common\bluemenu-main">
+                                    <Size x="64" y="64"/>
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" x="151" y="-23"/>
+                                    </Anchors>
+                                    <TexCoords left="0.51953125" right="0.76953125" top="0.00097656" bottom="0.06347656"/>
+                                </Texture>
+                                <Texture parentKey="BRCorner" file="Interface\Common\bluemenu-main">
+                                    <Size x="64" y="64"/>
+                                    <Anchors>
+                                        <Anchor point="BOTTOMLEFT" x="151" y="7"/>
+                                    </Anchors>
+                                    <TexCoords left="0.00390625" right="0.25390625" top="0.06542969" bottom="0.12792969"/>
+                                </Texture>
+                                <Texture parentKey="BLCorner" name="$parentBLCorner" file="Interface\Common\bluemenu-main">
+                                    <Size x="64" y="64"/>
+                                    <Anchors>
+                                        <Anchor point="BOTTOMLEFT" x="7" y="7"/>
+                                    </Anchors>
+                                    <TexCoords left="0.26171875" right="0.51171875" top="0.00097656" bottom="0.06347656"/>
+                                </Texture>
+                                <Texture file="Interface\Common\bluemenu-vert" vertTile="true">
+                                    <Size x="43" y="270"/>
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" x="7" y="-87" />
+                                    </Anchors>
+                                    <TexCoords left="0.06250000" right="0.39843750"/>
+                                </Texture>
+                                <Texture file="Interface\Common\bluemenu-vert" vertTile="true">
+                                    <Size x="43" y="270"/>
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" x="172" y="-87" />
+                                    </Anchors>
+                                    <TexCoords left="0.41406250" right="0.75000000"/>
+                                </Texture>
+                                <Texture file="Interface\Common\bluemenu-goldborder-horiz" horizTile="true">
+                                    <Size x="80" y="43"/>
+                                    <Anchors>
+                                        <Anchor point="BOTTOMLEFT" relativeTo="$parentBLCorner" relativePoint="BOTTOMRIGHT" x="0" y="0" />
+                                    </Anchors>
+                                    <TexCoords top="0.35937500" bottom="0.69531250"/>
+                                </Texture>
+                                <Texture file="Interface\Common\bluemenu-goldborder-horiz" horizTile="true">
+                                    <Size x="80" y="43"/>
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" relativeTo="$parentTLCorner" relativePoint="TOPRIGHT" x="0" y="0" />
+                                    </Anchors>
+                                    <TexCoords top="0.00781250" bottom="0.34375000"/>
+                                </Texture>
+                            </Layer>
+                        </Layers>
+                    </Frame>
+                </Frames>
+                <Scripts>
+                    <OnLoad>
+                        self:SetFrameLevel(2)
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="Shadows">
+                <Size x="227" y="399"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="4" y="-25" />
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture file="Interface\Common\bluemenu-shadowcovers">
+                            <Size x="84" y="324"/>
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="4" y="-36" />
+                            </Anchors>
+                            <TexCoords left="0.00781250" right="0.66406250" top="0.00097656" bottom="0.34960938"/>
+                        </Texture>
+                        <Texture file="Interface\Common\bluemenu-shadowcovers">
+                            <Size x="84" y="324"/>
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="127" y="-36" />
+                            </Anchors>
+                            <TexCoords left="0.00781250" right="0.66406250" top="0.35156250" bottom="0.70019531"/>
+                        </Texture>
+                        <Texture file="Interface\Common\bluemenu-vert" vertTile="true">
+                            <Size x="5" y="403"/>
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="211" y="3" />
+                            </Anchors>
+                            <TexCoords left="0.00781250" right="0.04687500"/>
+                        </Texture>
+                    </Layer>
+                </Layers>
+            </Frame>
+            <Button name="$parentTab1" inherits="CharacterFrameTabButtonTemplate" text="LFG_TAB_NAME" id="1" parentKey="tab1">
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
+                        <Offset x="19" y="-30"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick function="PVPFrame_TabOnClick"/>
+                    <OnShow function="PVPFrame_TabOnShow"/>
+                </Scripts>
+            </Button>
+            <Button name="$parentTab2" inherits="CharacterFrameTabButtonTemplate" text="PvP" id="2" parentKey="tab2">
+                <Anchors>
+                    <Anchor point="LEFT" relativeTo="$parentTab1" relativePoint="RIGHT">
+                        <Offset>
+                            <AbsDimension x="-16" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick function="PVPFrame_TabOnClick"/>
+                    <OnShow function="PVPFrame_TabOnShow"/>
+                </Scripts>
+            </Button>
+            <Button name="$parentTab3" inherits="CharacterFrameTabButtonTemplate" text="PVP_LADDER_TAB_NAME" id="3" parentKey="tab3">
+                <Anchors>
+                    <Anchor point="LEFT" relativeTo="$parentTab2" relativePoint="RIGHT">
+                        <Offset>
+                            <AbsDimension x="-16" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick function="PVPFrame_TabOnClick"/>
+                    <OnShow function="PVPFrame_TabOnShow"/>
+                </Scripts>
+            </Button>
+            <Button name="$parentTab4" inherits="CharacterFrameTabButtonTemplate" text="RENEGADE_LADDER_TAB_NAME" id="4" parentKey="tab4">
+                <Anchors>
+                    <Anchor point="LEFT" relativeTo="$parentTab3" relativePoint="RIGHT">
+                        <Offset>
+                            <AbsDimension x="-16" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick function="PVPFrame_TabOnClick"/>
+                    <OnShow function="PVPFrame_TabOnShow"/>
+                </Scripts>
+            </Button>
+            <Frame name="$parentContainer" parentKey="Container" setAllPoints="true">
+                <Frames>
+                    <Button name="$parentCategoryButton1" inherits="PVPLadderCategoryButtonTemplate" parentKey="CategoryButton1" text="RENEGADE_LABEL">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" x="10" y="-66" />
+                        </Anchors>
+                        <Attributes>
+                            <Attribute name="icon" type="string" value="scorpio_64x64"/>
+                        </Attributes>
+                        <Scripts>
+                            <OnLoad>
+                                local icon 			= self:GetAttribute("icon")
+                                local iconAtlas 	= self:GetAttribute("iconAtlas")
+
+                                if icon then
+                                    SetPortraitToTexture(self.Icon, "Interface\\Icons\\"..icon)
+                                end
+
+                                if iconAtlas then
+                                    self.Icon:SetAtlas(iconAtlas)
+                                end
+
+                                self.Background:SetTexCoord(0.00390625, 0.87890625, 0.59179688, 0.66992188)
+                            </OnLoad>
+                            <OnClick>
+                                -- ph
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+                    <Frame name="$parentKingFrame1" parentKey="KingFrame1" inherits="Custom_RenegadeLadderKingFrame" id="1">
+                        <Anchors>
+                            <Anchor point="TOP" relativeTo="$parentCategoryButton1" relativePoint="BOTTOM" x="0" y="-30" />
+                        </Anchors>
+                        <Attributes>
+                            <Attribute name="crown" type="string" value="Renegade-Crown-1"/>
+                        </Attributes>
+                    </Frame>
+                    <Frame name="$parentKingFrame2" parentKey="KingFrame2" inherits="Custom_RenegadeLadderKingFrame" id="2">
+                        <Anchors>
+                            <Anchor point="TOP" relativeTo="$parentKingFrame1" relativePoint="BOTTOM" x="0" y="-30" />
+                        </Anchors>
+                        <Attributes>
+                            <Attribute name="crown" type="string" value="Renegade-Crown-2"/>
+                        </Attributes>
+                    </Frame>
+                    <Frame name="$parentKingFrame3" parentKey="KingFrame3" inherits="Custom_RenegadeLadderKingFrame" id="3">
+                        <Anchors>
+                            <Anchor point="TOP" relativeTo="$parentKingFrame2" relativePoint="BOTTOM" x="0" y="-30" />
+                        </Anchors>
+                        <Attributes>
+                            <Attribute name="crown" type="string" value="Renegade-Crown-3"/>
+                        </Attributes>
+                    </Frame>
+                    <CheckButton name="$parentRightBigTab1" parentKey="RightBigTab1" id="1" inherits="Custom_RenegadeLadderBigTabTemplate">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="-34"/>
+                        </Anchors>
+                        <Attributes>
+                            <Attribute name="icon" type="string" value="Achievement_PVP_Legion03"/>
+                            <Attribute name="tooltipText" type="string" value="TOP_PLAYERS"/>
+                        </Attributes>
+                    </CheckButton>
+                    <CheckButton name="$parentRightBigTab2" parentKey="RightBigTab2" id="2" inherits="Custom_RenegadeLadderBigTabTemplate">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativeTo="$parentRightBigTab1" relativePoint="BOTTOMLEFT" x="0" y="-16"/>
+                        </Anchors>
+                        <Attributes>
+                            <Attribute name="icon" type="string" value="ability_rogue_combatexpertisetga"/>
+                            <Attribute name="tooltipText" type="string" value="SEARCH"/>
+                        </Attributes>
+                    </CheckButton>
+                    <CheckButton name="$parentRightSmallTab1" parentKey="RightSmallTab1" id="3" inherits="Custom_RenegadeLadderTabTemplate">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="-130"/>
+                        </Anchors>
+                    </CheckButton>
+                    <CheckButton name="$parentRightSmallTab2" parentKey="RightSmallTab2" id="4" inherits="Custom_RenegadeLadderTabTemplate">
+                        <Anchors>
+                            <Anchor point="TOP" relativeTo="$parentRightSmallTab1" relativePoint="BOTTOM" x="0" y="-12" />
+                        </Anchors>
+                    </CheckButton>
+                    <CheckButton name="$parentRightSmallTab3" parentKey="RightSmallTab3" id="5" inherits="Custom_RenegadeLadderTabTemplate">
+                        <Anchors>
+                            <Anchor point="TOP" relativeTo="$parentRightSmallTab2" relativePoint="BOTTOM" x="0" y="-12" />
+                        </Anchors>
+                    </CheckButton>
+                    <CheckButton name="$parentRightSmallTab4" parentKey="RightSmallTab4" id="6" inherits="Custom_RenegadeLadderTabTemplate">
+                        <Anchors>
+                            <Anchor point="TOP" relativeTo="$parentRightSmallTab3" relativePoint="BOTTOM" x="0" y="-12" />
+                        </Anchors>
+                    </CheckButton>
+                    <CheckButton name="$parentRightSmallTab5" parentKey="RightSmallTab5" id="7" inherits="Custom_RenegadeLadderTabTemplate">
+                        <Anchors>
+                            <Anchor point="TOP" relativeTo="$parentRightSmallTab4" relativePoint="BOTTOM" x="0" y="-12" />
+                        </Anchors>
+                    </CheckButton>
+                    <CheckButton name="$parentRightSmallTab6" parentKey="RightSmallTab6" id="8" inherits="Custom_RenegadeLadderTabTemplate">
+                        <Anchors>
+                            <Anchor point="TOP" relativeTo="$parentRightSmallTab5" relativePoint="BOTTOM" x="0" y="-12" />
+                        </Anchors>
+                    </CheckButton>
+                    <CheckButton name="$parentRightSmallTab7" parentKey="RightSmallTab7" id="9" inherits="Custom_RenegadeLadderTabTemplate">
+                        <Anchors>
+                            <Anchor point="TOP" relativeTo="$parentRightSmallTab6" relativePoint="BOTTOM" x="0" y="-12" />
+                        </Anchors>
+                    </CheckButton>
+                    <CheckButton name="$parentRightSmallTab8" parentKey="RightSmallTab8" id="10" inherits="Custom_RenegadeLadderTabTemplate">
+                        <Anchors>
+                            <Anchor point="TOP" relativeTo="$parentRightSmallTab7" relativePoint="BOTTOM" x="0" y="-12" />
+                        </Anchors>
+                    </CheckButton>
+                    <CheckButton name="$parentRightSmallTab9" parentKey="RightSmallTab9" id="11" inherits="Custom_RenegadeLadderTabTemplate">
+                        <Anchors>
+                            <Anchor point="TOP" relativeTo="$parentRightSmallTab8" relativePoint="BOTTOM" x="0" y="-12" />
+                        </Anchors>
+                    </CheckButton>
+                    <CheckButton name="$parentRightSmallTab10" parentKey="RightSmallTab10" id="13" inherits="Custom_RenegadeLadderTabTemplate">
+                        <Anchors>
+                            <Anchor point="TOP" relativeTo="$parentRightSmallTab9" relativePoint="BOTTOM" x="0" y="-12" />
+                        </Anchors>
+                    </CheckButton>
+                    <Frame name="$parentRightContainer" parentKey="RightContainer">
+                        <Size x="339" y="403"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" x="220" y="-22"/>
+                        </Anchors>
+                        <Frames>
+                            <Frame name="$parentBottomContainer" parentKey="BottomContainer">
+                                <Size x="334" y="38"/>
+                                <Anchors>
+                                    <Anchor point="BOTTOM" relativePoint="BOTTOM" x="-0.5" y="4" />
+                                </Anchors>
+                                <Layers>
+                                    <Layer level="BACKGROUND">
+                                        <Texture name="$parentBackground" parentKey="Background"/>
+                                    </Layer>
+                                    <Layer level="BORDER">
+                                        <Texture name="$parentShadow" parentKey="Shadow"/>
+                                    </Layer>
+                                    <Layer level="ARTWORK">
+                                        <Texture name="$parentBorder" parentKey="Border">
+                                            <Size x="344" y="46"/>
+                                            <Anchors>
+                                                <Anchor point="CENTER" x="0" y="0" />
+                                            </Anchors>
+                                        </Texture>
+                                    </Layer>
+                                    <Layer level="OVERLAY">
+                                        <FontString name="$parentPlayerNotRank" parentKey="PlayerNotRank" inherits="GameFontNormal13" maxLines="2" text="RENEGADE_LADDER_NOT_RANK" hidden="true">
+                                            <Size x="310" y="0"/>
+                                            <Anchors>
+                                                <Anchor point="CENTER" x="0" y="0" />
+                                            </Anchors>
+                                        </FontString>
+                                        <FontString name="$parentNumber" parentKey="Number" inherits="GameFontNormal">
+                                            <Size x="50" y="10"/>
+                                            <Anchors>
+                                                <Anchor point="LEFT" x="5" y="0" />
+                                            </Anchors>
+                                        </FontString>
+                                        <FontString name="$parentPlayerName" parentKey="PlayerName" inherits="GameFontNormal" justifyH="LEFT">
+                                            <Size x="90" y="10"/>
+                                            <Anchors>
+                                                <Anchor point="LEFT" x="62" y="0" />
+                                            </Anchors>
+                                            <Color r="1" g="1" b="1"/>
+                                        </FontString>
+                                        <FontString name="$parentRating" parentKey="Rating" inherits="GameFontNormal" justifyH="CENTER">
+                                            <Size x="60" y="10"/>
+                                            <Anchors>
+                                                <Anchor point="RIGHT" x="-39" y="0" />
+                                            </Anchors>
+                                            <Color r="1" g="1" b="1"/>
+                                        </FontString>
+                                    </Layer>
+                                </Layers>
+                                <Frames>
+                                    <Frame name="$parentRaceIcon" parentKey="RaceIcon">
+                                        <Size x="18" y="18"/>
+                                        <Anchors>
+                                            <Anchor point="CENTER" x="8.5" y="0" />
+                                        </Anchors>
+                                        <Layers>
+                                            <Layer level="OVERLAY">
+                                                <Texture name="$parentIcon" parentKey="Icon">
+                                                    <Size x="18" y="18"/>
+                                                    <Anchors>
+                                                        <Anchor point="CENTER" x="0" y="0" />
+                                                    </Anchors>
+                                                </Texture>
+                                            </Layer>
+                                        </Layers>
+                                        <Scripts>
+                                            <OnEnter>
+                                                if self.raceName then
+                                                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                                                GameTooltip:SetText(self.raceName)
+                                                GameTooltip:Show()
+                                                end
+                                            </OnEnter>
+                                            <OnLeave function="GameTooltip_Hide"/>
+                                        </Scripts>
+                                    </Frame>
+                                    <Frame name="$parentClassIcon" parentKey="ClassIcon">
+                                        <Size x="18" y="18"/>
+                                        <Anchors>
+                                            <Anchor point="LEFT" relativeTo="$parentRaceIcon" relativePoint="RIGHT" x="2" y="0" />
+                                        </Anchors>
+                                        <Layers>
+                                            <Layer level="OVERLAY">
+                                                <Texture name="$parentIcon" parentKey="Icon">
+                                                    <Size x="18" y="18"/>
+                                                    <Anchors>
+                                                        <Anchor point="CENTER" x="0" y="0" />
+                                                    </Anchors>
+                                                </Texture>
+                                            </Layer>
+                                        </Layers>
+                                        <Scripts>
+                                            <OnEnter>
+                                                if self.classLocalizedName then
+                                                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                                                GameTooltip:SetText(self.classLocalizedName)
+                                                GameTooltip:Show()
+                                                end
+                                            </OnEnter>
+                                            <OnLeave function="GameTooltip_Hide"/>
+                                        </Scripts>
+                                    </Frame>
+                                    <Frame name="$parentFactionIcon" parentKey="FactionIcon">
+                                        <Size x="20" y="24"/>
+                                        <Anchors>
+                                            <Anchor point="LEFT" relativeTo="$parentClassIcon" relativePoint="RIGHT" x="14" y="0" />
+                                        </Anchors>
+                                        <Layers>
+                                            <Layer level="OVERLAY">
+                                                <Texture name="$parentIcon" parentKey="Icon">
+                                                    <Size x="20" y="24"/>
+                                                    <Anchors>
+                                                        <Anchor point="CENTER" x="0" y="0" />
+                                                    </Anchors>
+                                                </Texture>
+                                            </Layer>
+                                        </Layers>
+                                        <Scripts>
+                                            <OnEnter>
+                                                if self.factionName then
+                                                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                                                GameTooltip:SetText(self.factionName)
+                                                GameTooltip:Show()
+                                                end
+                                            </OnEnter>
+                                            <OnLeave function="GameTooltip_Hide"/>
+                                        </Scripts>
+                                    </Frame>
+                                </Frames>
+                                <Scripts>
+                                    <OnLoad>
+                                        self.Background:SetAtlas("PVPLadder-mystats-background")
+                                        self.Shadow:SetAtlas("PVPLadder-mystats-shadow")
+                                        self.Border:SetAtlas("PVPLadder-mystats-light")
+
+                                        self.SetDisabled = function(self, isDisable)
+                                            self.PlayerNotRank:SetShown(isDisable)
+                                            self.Background:SetDesaturated(isDisable)
+                                            self.Border:SetDesaturated(isDisable)
+
+                                            self.RaceIcon:SetShown(not isDisable)
+                                            self.ClassIcon:SetShown(not isDisable)
+                                            self.FactionIcon:SetShown(not isDisable)
+
+                                            self.Number:SetShown(not isDisable)
+                                            self.PlayerName:SetShown(not isDisable)
+                                            self.Rating:SetShown(not isDisable)
+                                        end
+                                    </OnLoad>
+                                </Scripts>
+                            </Frame>
+                            <Frame name="$parentCentralContainer" parentKey="CentralContainer" inherits="StandartInsetFrameTemplate">
+                                <Size x="338" y="276"/>
+                                <Anchors>
+                                    <Anchor point="BOTTOM" relativeTo="$parentBottomContainer" relativePoint="TOP" x="0" y="6" />
+                                </Anchors>
+                                <Layers>
+                                    <Layer level="BORDER">
+                                        <Texture name="$parentBackgroundOverlay" parentKey="BackgroundOverlay"/>
+                                    </Layer>
+                                </Layers>
+                                <Frames>
+                                    <ScrollFrame name="$parentScrollFrame" inherits="HybridScrollFrameTemplate" parentKey="ScrollFrame">
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" x="6" y="-8"/>
+                                            <Anchor point="BOTTOMRIGHT" x="-28" y="6"/>
+                                        </Anchors>
+                                        <Frames>
+                                            <Slider name="$parentScrollBar" parentKey="ScrollBar" inherits="HybridScrollBarTemplate">
+                                                <Anchors>
+                                                    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="4" y="-14"/>
+                                                    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="4" y="12"/>
+                                                </Anchors>
+                                                <Scripts>
+                                                    <OnLoad>
+                                                        self.trackBG:Show()
+                                                        self.trackBG:SetVertexColor(0, 0, 0, 0.6)
+                                                    </OnLoad>
+                                                </Scripts>
+                                            </Slider>
+                                            <Frame parentKey="ShadowOverlay" alpha="0.8" inherits="ShadowOverlaySmallTemplate" toplevel="true">
+                                                <Anchors>
+                                                    <Anchor point="TOPLEFT" x="-2" y="2"/>
+                                                    <Anchor point="BOTTOMRIGHT" x="2" y="-3"/>
+                                                </Anchors>
+                                            </Frame>
+                                            <Frame name="$parentSpinner" parentKey="Spinner" setAllPoints="true">
+                                                <Layers>
+                                                    <Layer level="BACKGROUND">
+                                                        <Texture name="$parentBackground" parentKey="Background">
+                                                            <Color r="0" g="0" b="0" a="0.9"/>
+                                                        </Texture>
+                                                    </Layer>
+                                                </Layers>
+                                                <Frames>
+                                                    <Frame name="$parentLoadingSpinner" parentKey="LoadingSpinner" inherits="LoadingSpinnerTemplate">
+                                                        <Anchors>
+                                                            <Anchor point="CENTER" x="0" y="10" />
+                                                        </Anchors>
+                                                    </Frame>
+                                                </Frames>
+                                                <Scripts>
+                                                    <OnLoad>
+                                                        self.LoadingSpinner.showRetrievingText = true
+                                                        self.LoadingSpinner.Text:SetText(STORE_WAIT_SERVER_RESPONSE)
+                                                        self.LoadingSpinner.Text:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+                                                        self.LoadingSpinner.Dots:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+                                                    </OnLoad>
+                                                    <OnShow>
+                                                        self.LoadingSpinner.Text:Show()
+                                                        self.LoadingSpinner.Dots:Show()
+
+                                                        self.LoadingSpinner.AnimFrame.Anim:Play()
+                                                    </OnShow>
+                                                    <OnHide>
+                                                        self.LoadingSpinner.AnimFrame.Anim:Stop()
+                                                    </OnHide>
+                                                </Scripts>
+                                            </Frame>
+                                            <Frame name="$parentTextLabelFrame" parentKey="TextLabelFrame" hidden="true" setAllPoints="true">
+                                                <Layers>
+                                                    <Layer level="OVERLAY">
+                                                        <FontString name="$paretText" parentKey="Text" inherits="GameFontHighlight" text="PVP_LADDER_SEARCH_TUTORIAL">
+                                                            <Size x="270" y="160"/>
+                                                            <Anchors>
+                                                                <Anchor point="CENTER" x="0" y="0" />
+                                                            </Anchors>
+                                                        </FontString>
+                                                    </Layer>
+                                                </Layers>
+                                            </Frame>
+                                        </Frames>
+                                        <Scripts>
+                                            <OnShow>
+                                                self:SetFrameLevel(self:GetParent():GetFrameLevel() + 3)
+                                            </OnShow>
+                                        </Scripts>
+                                    </ScrollFrame>
+                                </Frames>
+                                <Scripts>
+                                    <OnShow>
+                                        self.BackgroundOverlay:SetAtlas("PVPLadder-table-background")
+                                    </OnShow>
+                                </Scripts>
+                            </Frame>
+                            <Frame name="$parentTopContainer" parentKey="TopContainer">
+                                <Anchors>
+                                    <Anchor point="TOPLEFT" x="0" y="0" />
+                                    <Anchor point="TOPRIGHT" x="0" y="0" />
+                                    <Anchor point="BOTTOM" relativeTo="$parentCentralContainer" relativePoint="TOP" x="0" y="0" />
+                                </Anchors>
+                                <Layers>
+                                    <Layer level="BORDER">
+                                        <FontString name="$parentNumber" parentKey="Number" inherits="GameFontNormal" justifyH="CENTER" text="№">
+                                            <Size x="30" y="10"/>
+                                            <Anchors>
+                                                <Anchor point="BOTTOMLEFT" x="16" y="4" />
+                                            </Anchors>
+                                        </FontString>
+                                        <FontString name="$parentPlayerName" parentKey="PlayerName" inherits="GameFontNormal" justifyH="LEFT" text="CALENDAR_PLAYER_NAME">
+                                            <Size x="80" y="10"/>
+                                            <Anchors>
+                                                <Anchor point="BOTTOMLEFT" x="64" y="4" />
+                                            </Anchors>
+                                        </FontString>
+                                        <FontString name="$parentKills" parentKey="Kills" inherits="GameFontNormal" justifyH="CENTER" text="RENEGADE_LADDER_KILLS">
+                                            <Size x="60" y="10"/>
+                                            <Anchors>
+                                                <Anchor point="BOTTOMRIGHT" x="-40" y="4" />
+                                            </Anchors>
+                                        </FontString>
+                                    </Layer>
+                                </Layers>
+                                <Frames>
+                                    <ScrollFrame name="$parentRegionMask" parentKey="RegionMask" setAllPoints="true">
+                                        <ScrollChild>
+                                            <Frame name="$parentTextureMask" parentKey="TextureMask">
+                                                <Anchors>
+                                                    <Anchor point="CENTER" x="0" y="0" />
+                                                </Anchors>
+                                                <Layers>
+                                                    <Layer level="BACKGROUND">
+                                                        <Texture name="$parentBackground" parentKey="Background">
+                                                            <Size x="233" y="100"/>
+                                                            <Anchors>
+                                                                <Anchor point="TOP" x="0" y="0" />
+                                                            </Anchors>
+                                                        </Texture>
+                                                    </Layer>
+                                                </Layers>
+                                                <Scripts>
+                                                    <OnLoad>
+                                                        local width, height = self:GetParent():GetParent():GetParent():GetSize()
+                                                        self:SetSize(width, height)
+
+                                                        self.Background:SetAtlas("PVPLadder-header-swords")
+                                                        self:GetParent():SetFrameLevel(self:GetParent():GetParent():GetParent():GetFrameLevel())
+                                                        self:SetFrameLevel(self:GetParent():GetParent():GetParent():GetFrameLevel())
+                                                    </OnLoad>
+                                                </Scripts>
+                                            </Frame>
+                                        </ScrollChild>
+                                    </ScrollFrame>
+                                    <Frame name="$parentSearchFrame" parentKey="SearchFrame" setAllPoints="true">
+                                        <Frames>
+                                            <EditBox name="$parentSearchBox" parentKey="SearchBox" autoFocus="false" inherits="SearchBoxTemplate" toplevel="true">
+                                                <Size x="230" y="20"/>
+                                                <Anchors>
+                                                    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="12" y="32" />
+                                                </Anchors>
+                                                <Scripts>
+                                                    <OnShow>
+                                                        local mainFrame = self:GetParent():GetParent():GetParent():GetParent():GetParent()
+                                                        local cache = mainFrame:GetCache("LADDER_PLAYERS_CACHE_2")
+
+                                                        if not cache then
+                                                            self:SetText("")
+                                                        else
+                                                            local searchTextCache = mainFrame:GetCache("SEARCH_TEXT")
+                                                            if searchTextCache then
+                                                                self:SetText(searchTextCache)
+                                                            end
+                                                        end
+                                                    </OnShow>
+                                                    <OnTextChanged>
+                                                        local text = self:GetText()
+                                                        SearchBoxTemplate_OnTextChanged(self)
+
+                                                        self.autoCompleteParams = AUTOCOMPLETE_LIST.ALL
+                                                        self.addHighlightedText = true
+                                                        AutoComplete_Update(self, text, self:GetUTF8CursorPosition())
+
+                                                        if not self:GetParent().SearchButton.Delay then
+                                                        self:GetParent().SearchButton:SetEnabled(#text >= 2)
+                                                        end
+                                                    </OnTextChanged>
+                                                    <OnEnterPressed>
+                                                        if self:GetParent().SearchButton:IsEnabled() == 1 then
+                                                        self:GetParent().SearchButton:Click()
+                                                        end
+                                                    </OnEnterPressed>
+                                                </Scripts>
+                                            </EditBox>
+                                            <Button name="$parentSearchButton" parentKey="SearchButton" inherits="UIPanelButtonTemplate" text="SEARCH">
+                                                <Size x="80" y="24"/>
+                                                <Anchors>
+                                                    <Anchor point="LEFT" relativeTo="$parentSearchBox" relativePoint="RIGHT" x="8" y="0" />
+                                                </Anchors>
+                                                <Scripts>
+                                                    <OnClick>
+                                                        self.StartDelay = function()
+                                                        self.Delay = 10
+                                                        self:Disable()
+                                                        self:SetText(self.Delay)
+
+                                                        if self.timer then
+                                                        self.timer:Cancel()
+                                                        self.timer = nil
+                                                        end
+
+                                                        self.timer = C_Timer:NewTicker(1, function()
+                                                        self.Delay = self.Delay - 1
+
+                                                        if self.Delay == 0 then
+                                                        self:Enable()
+                                                        self:SetText(SEARCH)
+                                                        self.Delay = nil
+                                                        else
+                                                        self:SetText(self.Delay)
+                                                        end
+                                                        end, self.Delay)
+                                                        end
+
+                                                        local text = self:GetParent().SearchBox:GetText()
+
+                                                        if #text >= 2 then
+                                                        local mainFrame = self:GetParent():GetParent():GetParent():GetParent():GetParent()
+                                                        mainFrame:SetCache("RENEGADE_SEARCH_TEXT", text, true)
+
+                                                        AutoComplete_HideIfAttachedTo(self:GetParent().SearchBox)
+                                                        SendServerMessage("ACMSG_PVP_LADDER_GET_SEARCH", string.format("%d:%s", E_LADDER_BRACKET.RENEGADE, text))
+                                                        end
+                                                    </OnClick>
+                                                </Scripts>
+                                            </Button>
+                                        </Frames>
+                                    </Frame>
+                                    <Frame name="$parentTitleFrame" parentKey="TitleFrame" setAllPoints="true">
+                                        <Layers>
+                                        	<Layer level="BACKGROUND">
+                                                <Texture name="$parentTitleBackground" parentKey="TitleBackground" file="Interface\PVPFrame\PVPLadderTitleBackground">
+                                                    <Size x="285" y="58"/>
+                                                    <Anchors>
+                                                        <Anchor point="TOP" x="0" y="0" />
+                                                    </Anchors>
+                                                    <TexCoords left="0" right="0.94921875" top="0" bottom="0.6015625"/>
+                                                </Texture>
+                                        	</Layer>
+                                        	<Layer level="OVERLAY">
+                                                <FontString name="$parentTitleText" parentKey="TitleText" inherits="QuestFont15" text="TOP_PLAYERS">
+                                                    <Anchors>
+                                                        <Anchor point="CENTER" relativeTo="$parentTitleBackground" x="0" y="12" />
+                                                    </Anchors>
+                                                    <Color r="1.0" g="0.82" b="0"/>
+                                                </FontString>
+                                        	</Layer>
+                                        </Layers>
+                                        <Scripts>
+                                            <OnShow>
+                                                self:SetFrameLevel(self:GetParent():GetFrameLevel())
+                                            </OnShow>
+                                        </Scripts>
+                                    </Frame>
+                                    <Frame parentKey="ShadowOverlay" alpha="0.7" inherits="ShadowOverlaySmallTemplate" toplevel="true">
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" x="0" y="-2"/>
+                                            <Anchor point="BOTTOMRIGHT" x="-1" y="-33"/>
+                                        </Anchors>
+                                        <Scripts>
+                                            <OnShow>
+                                                self.BottomLeft:Hide()
+                                                self.BottomRight:Hide()
+                                                self.Bottom:Hide()
+
+                                                self:SetFrameLevel(self:GetParent():GetFrameLevel() + 10)
+                                            </OnShow>
+                                        </Scripts>
+                                    </Frame>
+                                </Frames>
+                            </Frame>
+                        </Frames>
+                    </Frame>
+                </Frames>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                Mixin(self, RenegadeLadderFrameMixin)
+                self:OnLoad()
+            </OnLoad>
+            <OnShow>
+                self:OnShow()
+            </OnShow>
+            <OnHide>
+                UpdateMicroButtons()
+                LAST_FINDPARTY_FRAME = self
+            </OnHide>
+        </Scripts>
+    </Frame>
+</Ui>
