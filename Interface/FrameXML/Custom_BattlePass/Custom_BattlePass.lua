@@ -255,6 +255,42 @@ local function ExpForLevel( level )
     return exp
 end
 
+function BattlePassFrameMixin:HasNotReceivedRewards()
+    local currentLevel = self:GetLevelInfo();
+    local isBuyPremium = self:IsBuyPremium();
+
+    if currentLevel == 0 then
+        return false;
+    end
+
+    local foundCurLevel;
+    for page = 0, self:GetPageCount() do
+        for index = 1, self.maxCard do
+            local level = index + (self.maxCard - 1) * page;
+            local premiumCardData, normalCardData = self:GetCardLevelReward(level);
+
+            if isBuyPremium and #premiumCardData > 0 and not self:IsRewardTaken(level, E_BATTLEPASS_REWARD_TYPE.PREMIUM) then
+                return true;
+            end
+
+            if #normalCardData > 0 and not self:IsRewardTaken(level, E_BATTLEPASS_REWARD_TYPE.NORMAL) then
+                return true;
+            end
+
+            if currentLevel == level then
+                foundCurLevel = true;
+                break;
+            end
+        end
+
+        if foundCurLevel then
+            break;
+        end
+    end
+
+    return false;
+end
+
 function BattlePassFrameMixin:GetLevelInfoByXP( xp )
     local level = ExpToLevel( xp )
 
@@ -1240,7 +1276,7 @@ function BattlePassBuyFrameBuyButtonMixin:OnClick()
 
     parent:GetParent():Hide()
 
-    SendServerMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d:%d:0:0", parent.storeID, parent.buyCount or 1))
+    SendServerMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d:%d:0:0:0", parent.storeID, parent.buyCount or 1))
 end
 
 BattlePassTutorialButtonMixin = {}

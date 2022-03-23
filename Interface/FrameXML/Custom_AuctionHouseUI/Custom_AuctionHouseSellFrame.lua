@@ -399,14 +399,6 @@ function AuctionHouseSellFrameMixin:UpdatePostState()
 
 	local quantity = self.QuantityInput:GetQuantity();
 	self.QuantityInput.MaxButton:SetEnabled(quantity < self:GetMaxQuantity());
-
-	local price = self.PriceInput:GetAmount();
-	local searchResultPrice = self:GetSearchResultPrice();
-	if searchResultPrice and price == (searchResultPrice - COPPER_PER_SILVER) then
---		self:ShowHelpTip();
-	else
---		self:HideHelpTip();
-	end
 end
 
 function AuctionHouseSellFrameMixin:UpdateFocusTabbing()
@@ -552,23 +544,6 @@ end
 
 function AuctionHouseSellFrameMixin:UpdateTotalPrice()
 	self.TotalPrice:SetAmount(self:GetTotalPrice());
-end
-
-function AuctionHouseSellFrameMixin:ShowHelpTip()
-	local helpTipInfo = {
-		text = AUCTION_HOUSE_UNDERCUT_TUTORIAL,
-		buttonStyle = HelpTip.ButtonStyle.GotIt,
-		targetPoint = HelpTip.Point.RightEdgeCenter,
-		alignment = HelpTip.Alignment.CENTER,
-		offsetX = -6,
-		offsetY = 2,
-	};
-
-	HelpTip:Show(self, helpTipInfo, self.PriceInput.MoneyInputFrame);
-end
-
-function AuctionHouseSellFrameMixin:HideHelpTip()
-	HelpTip:Acknowledge(self, AUCTION_HOUSE_UNDERCUT_TUTORIAL);
 end
 
 function AuctionHouseSellFrameMixin:GetDepositAmount()

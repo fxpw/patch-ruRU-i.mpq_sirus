@@ -1252,7 +1252,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "Legionnaire"
     },
     ["PVPHONORFRAME_TUTORIAL_2"] = {
-        ruRU = "До достижения лимита дневных игр вы будете получать очки чести.\nПосле достижения дневного лимита игр - вы с некоторой вероятностью сможете получать сундук с добычей.",
+        ruRU = "До достижения лимита дневных игр вы будете получать очки чести.\nПосле достижения дневного лимита вы с некоторой вероятностью сможете получить сундук с добычей.",
         enGB = "You will receive Honor Points until you reach the daily games limit.\nAfter reaching the daily games limit, you may receive a loot chest."
     },
     ["INCREASE_POTENTIAL"] = {
@@ -2892,7 +2892,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "Your pet has|cffffd200 %s|r |4unspent talent point:unspent talent points;."
     },
     ["CONQUESTFRAME_TUTORIAL_1"] = {
-        ruRU = "Под недельным лимитом подразумевается количество очков арены, которое вы можете получить за неделю.\nОчки арены можно получить за победы на аренах.\n\nДля того чтобы увеличить свой лимит очков требуется:\n- Заполнить шкалу лимита за текущую неделю\n- Набрать рейтинг арены выше 1500 ед.",
+        ruRU = "Под недельным лимитом подразумевается количество очков арены, которое вы можете получить за неделю.\nОчки арены можно получить за победы на аренах.\n\nДля того, чтобы увеличить свой лимит очков, требуется:\n- Заполнить шкалу лимит за текущую неделю\n- Набрать рейтинг арены выше 1500 ед.",
         enGB = "The weekly limit is the number of Arena Points that you can get in a week.\nYou can earn Arena Points by being victorious in arena combat.\n\nTo increase your point limit:\n- Fill up the limit bar for the current week\n- Have an arena rating above 1500"
     },
     ["BATTLEGROUND_HOLIDAY"] = {
@@ -3840,7 +3840,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "Show messages when a spell or ability grants additional attacks, such as Windfury Weapon or Sword Specialization."
     },
     ["RATED_BATTLEGROUND_TUTORIAL_1"] = {
-        ruRU = "Узнайте какое звание будет следующим, отслеживайте сколько очков рейтинга вам осталось.",
+        ruRU = "Узнайте, какое звание следующее, отслеживайте, сколько очков рейтинга вам осталось.",
         enGB = "Find out which rank will be next and track how many rating points you still need."
     },
     ["VOICEMACRO_0_Tr_1_FEMALE"] = {
@@ -4308,8 +4308,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "%4$s is afflicted by %2$s (%9$s)."
     },
     ["STORE_EXTRA_SUBSCRIBE_BUY_TIME"] = {
-        ruRU = "Экстра-поставки Джулии %d |4день:дня:дней;",
-        enGB = "Extra Julia's supplies for %d |4day:days:days;"
+        ruRU = "Экстра-%s %d |4день:дня:дней;",
+        enGB = "Extra %s for %d |4day:days:days;"
     },
     ["CALENDAR_REPEAT_WEEKLY"] = {
         ruRU = "Раз в неделю",
@@ -5504,8 +5504,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "Sets Target of Target to display when you are in a raid."
     },
     ["ITEM_MOD_SPELL_HEALING_DONE_SHORT"] = {
-        ruRU = "к дополнительному исцелению",
-        enGB = "Bonus Healing"
+        ruRU = "к рейтингу натиска",
+        enGB = "Onslaught rating"
     },
     ["MOVIE_RECORDING_RECORDING_STOPPED"] = {
         ruRU = "Запись ролика \"%s\" завершена.",
@@ -7776,8 +7776,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "I need healing!"
     },
     ["STORE_EXTRA_SUBSCRIBE_BUYUP_TIME"] = {
-        ruRU = "Экстра-поставки Джулии %d |4день:дня:дней;",
-        enGB = "Extra Julia's supplies for %d |4day:days:days;"
+        ruRU = "Экстра-%s %d |4день:дня:дней;",
+        enGB = "Extra %s for %d |4day:days:days;"
     },
     ["PVP_RANK_16_1_FEMALE"] = {
         ruRU = "Маршал",
@@ -9264,7 +9264,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "You have learned a new spell: %s."
     },
     ["PVPHONORFRAME_TUTORIAL_1"] = {
-        ruRU = "Под недельным лимитом подразумевается количество очков чести, которое вы можете получить за неделю.\nОчки чести можно получить за победы на полях боя, за почетные убийства игроков и за убийства предводителей фракций.\n\nДля того, чтобы увеличить свой недельный лимит очков чести требуется повысить свое звание \"Службы\".",
+        ruRU = "Под недельным лимитом подразумевается количество очков чести, которое вы можете получить за неделю.\nОчки чести можно получить за победы на полях боя, за почетные убийства игроков и за убийство предводителей фракции.\n\nДля того, чтобы увеличить свой лимит очков чести, требуется повысить свое звание \"Службы\".",
         enGB = "The weekly limit is the number of Honor Points that you can get in a week.\nYou can earn Honor Points for being victorious in battlegrounds, for honorable kills of players, and for killing faction leaders.\n\nTo increase your weekly Honor Point limit, improve your Service standing."
     },
     ["NEWBIE_TOOLTIP_HONOR_CONTRIBUTION_POINTS"] = {
@@ -10960,7 +10960,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "Heal me!"
     },
     ["VIP_SELECTED_TUTORIAL_2"] = {
-        ruRU = "При нажатии вы можете выбрать одну из доступных вам VIP аур.\n\nВыбранная аура будет отображаться, но не повлияет на характеристики.",
+        ruRU = "При нажатии вы можете выбрать одну из доступных вам VIP-аур.\n\nВыбранная аура будет отображаться, но не повлияет на характеристики.",
         enGB = "Press this button to select one of the VIP auras available to you.\n\nThe selected aura will be displayed, but will not affect your stats."
     },
     ["SLASH_YELL5"] = {
@@ -16177,7 +16177,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "/officer"
     },
     ["CONQUESTFRAME_TUTORIAL_2"] = {
-        ruRU = "До достижения лимита дневных игр вы будете получать очки арены.\nПосле достижения дневного лимита игр - вы с некоторой вероятностью сможете получать сундук с добычей.",
+        ruRU = "До достижения лимита дневных игр вы будете получать очки арены.\nПосле достижения дневного лимита вы с некоторой вероятностью сможете получить сундук с добычей.",
         enGB = "You will receive Arena Points until you reach the daily games limit.\nAfter reaching the daily games limit, you may receive a loot chest."
     },
     ["ERR_NOT_DURING_ARENA_MATCH"] = {
@@ -18083,6 +18083,22 @@ local SIRUS_LOCALIZATION = {
     ["STORE_CATEGORY_9"] = {
         ruRU = "Поставки",
         enGB = "Supplies"
+    },
+    ["STORE_SUB_CATEGORY_9_1"] = {
+		ruRU = "Питомцы",
+        enGB = "Pets"
+    },
+    ["STORE_SUB_CATEGORY_9_2"] = {
+		ruRU = "Транспорт",
+        enGB = "Mounts"
+    },
+    ["STORE_SUB_CATEGORY_9_3"] = {
+		ruRU = "Иллюзии",
+        enGB = "Illusions"
+	},
+    ["STORE_SUB_CATEGORY_9_4"] = {
+        ruRU = "Всё включено",
+        enGB = "All-in-one"
     },
     ["ITEM_ENCHANT_DISCLAIMER"] = {
         ruRU = "Предмет не будет передан при обмене!",
@@ -21277,8 +21293,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "There are no gems in this"
     },
     ["ITEM_MOD_SPELL_HEALING_DONE"] = {
-        ruRU = "Увеличивает целительное действие магических заклинаний и эффектов на %d ед.",
-        enGB = "Increases healing done by magical spells and effects by up to %d."
+        ruRU = "Увеличивает рейтинг натиска на %d ед.",
+        enGB = "Increases onslaught rating up to %d."
     },
     ["CHAT_CHANNEL_OWNER_NOTICE"] = {
         ruRU = "|Hchannel:%d|h[%s]|h Владелец канала – %s.",
@@ -22085,7 +22101,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "Highlight damage numbers in combat messages."
     },
     ["VIP_SELECTED_TUTORIAL_1"] = {
-        ruRU = "Вам доступна новая возможность переключение VIP статуса.",
+        ruRU = "Вам доступна новая возможность переключения VIP-статуса.",
         enGB = "You now can switch your VIP status."
     },
     ["PLUS_AMMO_SCHOOL_DAMAGE_TEMPLATE"] = {
@@ -22097,7 +22113,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "You have no friend requests"
     },
     ["FORBS_ISLAND_TUTORIAL_3"] = {
-        ruRU = "Используйте это заклинание чтобы переместится на Остров Форбс.\n\n|cffFFFFFFТолько никому не рассказывайте об этом!|r",
+        ruRU = "Используйте это заклинание, чтобы переместиться на Остров Форбс.\n\n|cffFFFFFFТолько никому не рассказывайте об этом!|r",
         enGB = "Use this spell to teleport yourself to the Forbes Island.\n\n|cffFFFFFFJust don't tell anyone about it!|r"
     },
     ["ENABLE_PET_SOUNDS"] = {
@@ -25425,8 +25441,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "|cff7F7F7FPenalty |cff%s%d%%|r|r"
     },
     ["STORE_EXTRA_SUBSCRIBE_BUY_DESCRIPTION"] = {
-        ruRU = "Вы приобретаете подписку на ежедневные экстра-поставки от Джулии.\nПредметы будут ежедневно поступать вам на внутри игровую почту в 12:00 и в 20:00.",
-        enGB = "You will get subscription to everyday extra-supplies from Julia.\nItems will be arriving to you everyday at 12:00 and 20:00."
+        ruRU = "Вы приобретаете подписку на ежедневные экстра-%s.\nПредметы будут ежедневно поступать вам на внутри игровую почту в 12:00 и в 20:00.",
+        enGB = "You will get subscription to everyday extra-supplies %s.\nItems will be arriving to you everyday at 12:00 and 20:00."
     },
     ["REQUEST_SIGNATURE"] = {
         ruRU = "Попросить подпись",
@@ -25437,8 +25453,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "Raid Options"
     },
     ["STORE_SUBSCRIBE_BUY_DESCRIPTION"] = {
-        ruRU = "Вы приобретаете подписку на ежедневные поставки от Джулии.\nПредметы будут ежедневно поступать вам на внутри игровую почту в 12:00.",
-        enGB = "You will get subscription to everyday supplies from Julia.\nItems will be arriving to you everyday at 12:00."
+        ruRU = "Вы приобретаете подписку на ежедневные %s.\nПредметы будут ежедневно поступать вам на внутри игровую почту в 12:00.",
+        enGB = "You will get subscription to everyday supplies %s.\nItems will be arriving to you everyday at 12:00."
     },
     ["ERR_ARENA_TEAM_INTERNAL"] = {
         ruRU = "Внутренняя ошибка команды арены",
@@ -25469,8 +25485,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "Repairs"
     },
     ["STORE_SUBSCRIBE_BUY_TIME"] = {
-        ruRU = "Поставки Джулии %d дней",
-        enGB = "Julia's supplies for %d days"
+        ruRU = "%s %d дней",
+        enGB = "%s for %d days"
     },
     ["STORE_STARTER_KIT_NAME"] = {
         ruRU = "Стартовый комплект",
@@ -32269,7 +32285,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "Under round-robin rules, group members take turns looting the monsters that they help the group to kill. Money is automatically divided between group members."
     },
     ["RATED_BATTLEGROUND_TUTORIAL_2"] = {
-        ruRU = "Зарабатывайте рейтинг сражаясь с соперниками на полях боя. Чем выше ваша эффективность на полях боя - тем больше рейтинга вы получаете и тем меньше теряете.",
+        ruRU = "Зарабатывайте рейтинг, сражаясь с соперниками на полях боя. Чем выше ваша эффективность на поле боя, тем больше рейтинга вы получаете и тем меньше теряете.",
         enGB = "Earn rating by fighting your opponents in battlegrounds. The more efficient you are in battlegrounds, the more rating you get and the less you lose."
     },
     ["TUTORIAL_TITLE40"] = {
@@ -34401,8 +34417,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "/snort"
     },
     ["STRING_SCHOOL_SPELLSHADOW"] = {
-        ruRU = "Чары тьмы",
-        enGB = "Spellshadow"
+        ruRU = "Магия крови",
+        enGB = "Bloodmagic"
     },
     ["ATTACK_COLON"] = {
         ruRU = "Атака:",
@@ -42141,7 +42157,7 @@ local SIRUS_LOCALIZATION = {
         enGB = ""
     },
     ["BATTLEPASS_TUTORIAL_TEXT_4"] = {
-        ruRU = "Достигнув 101-го уровня Боевого Пропуска, вы больше не будете зависимы от суточного ограничения на опыт Боевого Пропуска - и сможете продолжать получение дополнительных наград практически бесконечно - до тех пор, пока сезон не будет завершен. При наличии активного \"Премиум\" статуса Боевого Пропуска - вы также будете получать отдельный дополнительный сундучок за каждый из \"бесконечных уровней\".",
+        ruRU = "Достигнув 101-го уровня Боевого Пропуска, вы больше не будете зависимы от суточного ограничения на опыт Боевого Пропуска - и сможете продолжать получение дополнительных наград практически бесконечно - до тех пор, пока сезон не будет завершен. При наличии активного \"Премиум\" статуса Боевого Пропуска вы также будете получать отдельный дополнительный сундучок за каждый из \"бесконечных уровней\".",
         enGB = ""
     },
     ["BATTLEPASS_TUTORIAL_TEXT_5"] = {
@@ -42234,6 +42250,10 @@ local SIRUS_LOCALIZATION = {
     },
     ["STORE_TRANSMOGRIFY_WEAPON_LABEL"] = {
         ruRU = "Вид оружия",
+        enGB = ""
+    },
+    ["STORE_TRANSMOGRIFY_FILTER_NEW"] = {
+        ruRU = "Новинки",
         enGB = ""
     },
     ["STORE_TRANSMOGRIFY_FILTER_ALL_WEAPON"] = {
@@ -42848,10 +42868,6 @@ local SIRUS_LOCALIZATION = {
 	    ruRU = "Итоговая цена",
 	    enGB = "Total Price"
     },
-    ["AUCTION_HOUSE_UNDERCUT_TUTORIAL"] = {
-	    ruRU = "Вы можете не снижать цену!|n|nТовары, выставленные позже по той же цене, продаются в первую очередь.",
-	    enGB = "There's no need to undercut!|n|nAuctions posted later (at the same price) are sold first."
-    },
     ["AUCTION_HOUSE_UNIT_PRICE_LABEL"] = {
 	    ruRU = "Цена",
 	    enGB = "Unit Price"
@@ -43259,6 +43275,10 @@ local SIRUS_LOCALIZATION = {
     ["COLLECTION_PET_SOURCE_9"] = {
 	    ruRU = "Боевой пропуск",
 	    enGB = "Battle Pass"
+    },
+    ["COLLECTION_PET_SOURCE_10"] = {
+	    ruRU = "Черный рынок",
+	    enGB = "Black Market"
     },
     ["COLLECTION_PET_NAME_1"] = {
 	    ruRU = "Водный",
@@ -43696,13 +43716,25 @@ local SIRUS_LOCALIZATION = {
         ruRU = "броня:",
         enGB = "armor:"
     },
+    ["STORE_SEARCH_OPTION_ARMOR_DESC"] = {
+        ruRU = "тип брони",
+        enGB = ""
+    },
     ["STORE_SEARCH_OPTION_STATISTIC"] = {
         ruRU = "стат:",
         enGB = "stat:"
     },
+    ["STORE_SEARCH_OPTION_STATISTIC_DESC"] = {
+        ruRU = "характеристика",
+        enGB = ""
+    },
     ["STORE_SEARCH_OPTION_NAME"] = {
         ruRU = "имя:",
         enGB = "name:"
+    },
+    ["STORE_SEARCH_OPTION_NAME_DESC"] = {
+        ruRU = "предмета",
+        enGB = ""
     },
     ["STORE_SORT_OPTION"] = {
         ruRU = "Нажмите правой кнопкой мыши для дополнительных фильтров.",
@@ -43711,6 +43743,146 @@ local SIRUS_LOCALIZATION = {
     ["DISCORD_NAME_LEVEL_RACE_CLASS"] = {
         ruRU = "%s - %s %s %s-го уровня",
         enGB = "%s - %s %s Level %s"
+    },
+    ["MINI_GAMES"] = {
+	    ruRU = "Мини-игры",
+	    enGB = ""
+    },
+    ["FIND_A_MINI_GAME"] = {
+	    ruRU = "Найти игру",
+	    enGB = ""
+    },
+    ["MINI_GAME_IS_READY"] = {
+	    ruRU = "Сформирована игра:",
+	    enGB = ""
+    },
+    ["YOUR_GOAL"] = {
+	    ruRU = "Ваша цель",
+	    enGB = ""
+    },
+    ["ENTER_MINI_GAME"] = {
+	    ruRU = "В игру",
+	    enGB = ""
+    },
+    ["MINI_GAME_QUEUE_NAME"] = {
+	    ruRU = "Мини-игра: %s",
+	    enGB = ""
+    },
+    ["LEAVE_MINI_GAME"] = {
+	    ruRU = "Покинуть мини-игру",
+	    enGB = ""
+    },
+    ["MINI_GAME_FRAGILEFLOOR_STAT_NAME"] = {
+	    ruRU = "Имя",
+	    enGB = ""
+    },
+    ["MINI_GAME_FRAGILEFLOOR_STAT_POSITION"] = {
+	    ruRU = "№",
+	    enGB = ""
+    },
+    ["MINI_GAME_FRAGILEFLOOR_STAT_PLATFORMS"] = {
+	    ruRU = "Платформы",
+	    enGB = ""
+    },
+    ["MINI_GAME_FRAGILEFLOOR_STAT_TIME"] = {
+	    ruRU = "Время",
+	    enGB = ""
+    },
+    ["MINI_GAME_TIME_CLOSED"] = {
+        ruRU = "Мини-игра закроется через:",
+        enGB = "Mini-game closing in:"
+    },
+    ["MINI_GAME_COMPLETE_MESSAGE"] = {
+        ruRU = "Игра завершена. Мини-игра закроется через %s.",
+        enGB = "The game has ended. This mini-game will close in %s"
+    },
+    ["MINI_GAME_ERR_NOT_ELIGIBLE"] = {
+        ruRU = "Ваша группа встала в очередь на мини-игры, но вы не можете этого сделать.",
+        enGB = "Your group has joined a minigame queue, but you are not eligible"
+    },
+    ["MINI_GAME_ERR_CANT_USE_IN_LFG"] = {
+        ruRU = "Вы не можете встать в очередь на мини-игры, пока используете поиск подземелий.",
+        enGB = "You cannot queue for a minigame while using the dungeon system."
+    },
+    ["MINI_GAME_ERR_PARTY_SIZE_TOO_BIG"] = {
+        ruRU = "Вы не можете встать в очередь на мини-игры группой с таким количеством игроков.",
+        enGB = "Party size too big for this minigame."
+    },
+    ["MINI_GAME_ERR_JOIN_FAILED"] = {
+        ruRU = "Ваша группа не смогла встать в очередь на мини-игры.",
+        enGB = "Join as a group failed"
+    },
+    ["MINI_GAME_ERR_TOO_MANY_QUEUES"] = {
+        ruRU = "Вы не можете встать в очередь на более чем 8 мини-игр.",
+        enGB = "You can only be queued for 8 minigames at once"
+    },
+    ["MINI_GAME_ERR_SECOND_WINDOW"] = {
+        ruRU = "Вы не можете встать в очередь на мини-игры.",
+        enGB = "You can only be queued in one game window"
+    },
+    ["MINI_GAME_ERR_CANT_USE_IN_BG"] = {
+        ruRU = "Вы не можете встать в очередь на мини-игры, пока находитесь на поле боя или арене.",
+        enGB = "You cannot queue for a minigame while in a battleground."
+    },
+    ["MINI_GAME_MEMBERS"] = {
+        ruRU = "Участники",
+        enGB = ""
+    },
+    ["MINI_GAME_MEMBERS_NUMBER"] = {
+        ruRU = "Эта мини-игра рассчитана не более чем на %d игроков",
+        enGB = ""
+    },
+    ["HELP_TIP_BUTTON_GOT_IT"] = {
+        ruRU = "Ясно",
+        enGB = "Got It"
+    },
+    ["MINI_GAME_FRAGILEFLOOR_TUTORIAL"] = {
+        ruRU = "Хрупкий пол:\n\n- По окончанию подготовки вы будете перемещены на верхнюю платформу. \n- Как только вы наступите на платформу, спустя короткий промежуток времени, она пропадёт. \n- При прыжке или падении старайтесь попасть на следующий уровень платформ. \n- Падение в сторону платформ или ниже последнего уровня - проигрыш. \n- Планируйте путь через платформы так, чтобы продержаться на уровне как можно дольше и отделить соперников. \n- Чтобы открыть статистику, нажмите на |TInterface\lfgframe\battlenetworking0.blp:20:20:3:0:64:64:12:58:12:58|t",
+        enGB = ""
+    },
+    ["SLASH_CHAT_INVISIBLE1"] = {
+        ruRU = "/невидимка",
+        enGB = "/invisible"
+    },
+    ["SLASH_CHAT_INVISIBLE2"] = {
+        ruRU = "/invisible",
+        enGB = "/invisible"
+    },
+    ["MARKED_INVIS_MESSAGE"] = {
+        ruRU = "Вы скрыты от общения и невидимы в игре. Любая коммуникация кроме группового чата сделает вас видимым.",
+        enGB = "You are hidden from communication and invisible in the game. Any communication other than a group chat will make you visible."
+    },
+    ["CLEARED_INVIS"] = {
+        ruRU = "Вы больше не скрыты от общения.",
+        enGB = "You are no longer hidden from communication."
+    },
+    ["LFG_CALL_TO_ARMS"] = {
+        ruRU = "Призыв к оружию: %s",
+        enGB = "Call To Arms: %s"
+    },
+    ["LFG_CALL_TO_ARMS_EXPLANATION"] = {
+        ruRU = "Взяв на себя эту роль, вы получите дополнительные награды!",
+        enGB = "If you perform this role, you will receive bonus rewards!"
+    },
+    ["TOAST_TITLE_26"] = {
+	    ruRU = "Набор для маскировки",
+	    enGB = ""
+    },
+    ["TOAST_BODY_26"] = {
+	    ruRU = "Чтобы находиться в Даларане ренегату необходимо применить маскировку. Купить её можно в Бухте торговцев или в Клоаке Даларана.",
+	    enGB = ""
+    },
+    ["STORE_AVAILABLE_TO_PAY_ALT_CURRENCY"] = {
+	    ruRU = "Возможна оплата другой валютой",
+	    enGB = ""
+    },
+    ["CR_ONSLAUGHT_RATING_REDUSE_TOOLTIP"] = {
+	    ruRU = "Рейтинг натиска: %d (рейтинг устойчивости противника снижен на %d ед.)",
+	    enGB = ""
+    },
+    ["CR_ONSLAUGHT_RATING_INCREASE_TOOLTIP"] = {
+	    ruRU = "Рейтинг натиска: %d (рейтинг устойчивости противника увеличен на %d ед.)",
+	    enGB = ""
     },
 }
 

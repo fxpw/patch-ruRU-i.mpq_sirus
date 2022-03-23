@@ -2,6 +2,8 @@
 --	Project:	Custom Game Interface
 --	Author:		Nyll & Blizzard Entertainment
 
+local LAST_SECOND_TALENT_GROUP
+
 C_Talent = {}
 
 ---@param key string
@@ -32,12 +34,16 @@ end
 
 ---@return number lastSecondTalentGroupID
 function C_Talent.GetLastSecondTalentGroup()
-    return TALENT_CACHE:Get("secondTalentGroupID")
+    return LAST_SECOND_TALENT_GROUP
+
+    --return TALENT_CACHE:Get("secondTalentGroupID")
 end
 
 ---@param secondTalentGroupID number
 function C_Talent.SetLastSecondTalentGroup( secondTalentGroupID )
-    TALENT_CACHE:Set("secondTalentGroupID", secondTalentGroupID)
+    LAST_SECOND_TALENT_GROUP = secondTalentGroupID
+
+    --TALENT_CACHE:Set("secondTalentGroupID", secondTalentGroupID)
 end
 
 ---@return number selectedCurrencyID

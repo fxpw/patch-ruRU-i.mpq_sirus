@@ -172,7 +172,7 @@
 		</Scripts>
 	</Button>
 
-	<Frame name="ChooseItemFrame" parent="UIParent" toplevel="true" enableMouse="true" hidden="true">
+	<Frame name="ChooseItemFrame" parent="UIParent" frameStrata="HIGH" toplevel="true" enableMouse="true" hidden="true">
 		<Size x="380" y="368"/>
 		<!-- 1 - 380 -->
 		<!-- 230 -->

@@ -3054,7 +3054,7 @@ function CalendarViewEventFrame_Update()
 	local eventTex = _CalendarFrame_GetEventTexture(textureIndex, eventType);
 	if ( eventTex ) then
 		-- set the event type
-		CalendarViewEventTypeName:SetFormattedText(CALENDAR_VIEW_EVENTTYPE, safeselect(eventType, CalendarEventGetTypes()), eventTex.title);
+		CalendarViewEventTypeName:SetFormattedText(CALENDAR_VIEW_EVENTTYPE, safeselect(eventType, CalendarEventGetTypes()), GetDungeonNameWithDifficulty(eventTex.title, eventTex.difficultyName));
 		-- set the eventTex texture
 		if ( eventTex.texture ~= "" ) then
 			CalendarViewEventIcon:SetTexture(CALENDAR_EVENTTYPE_TEXTURE_PATHS[eventType]..eventTex.texture);
@@ -3683,7 +3683,7 @@ function CalendarCreateEventTexture_Update()
 	local eventTex = _CalendarFrame_GetEventTexture(textureIndex, eventType);
 	if ( eventTex ) then
 		-- set the eventTex name since we have one
-		CalendarCreateEventTextureName:SetText(eventTex.title);
+		CalendarCreateEventTextureName:SetText(GetDungeonNameWithDifficulty(eventTex.title, eventTex.difficultyName));
 		CalendarCreateEventTextureName:Show();
 		-- set the eventTex texture
 		if ( eventTex.texture ~= "" ) then
@@ -5056,7 +5056,7 @@ function CalendarTexturePickerScrollFrame_Update()
 				end
 
 				-- set the eventTex title
-				buttonTitle:SetText(eventTex.title);
+				buttonTitle:SetText(GetDungeonNameWithDifficulty(eventTex.title, eventTex.difficultyName));
 				buttonTitle:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
 				buttonTitle:ClearAllPoints();
 				buttonTitle:SetPoint("LEFT", buttonIcon, "RIGHT");

@@ -280,6 +280,15 @@ function Method_UnregisterCustomEvent(self, event)
 	end
 end
 
+function Method_IsTruncated(fontString)
+	local stringWidth = fontString:GetStringWidth();
+	local width = fontString:GetWidth();
+	fontString:SetWidth(width + 10000);
+	local isTruncated = fontString:GetStringWidth() ~= stringWidth;
+	fontString:SetWidth(width);
+	return isTruncated;
+ end
+
 -- Frame Method
 function Frame.__index:SetShown( ... ) Method_SetShown( self, ... ) end
 function Frame.__index:FixOpenPanel( ... ) Method_FixOpenPanel( self, ... ) end
@@ -345,6 +354,7 @@ function FontString.__index:SetParentArray( arrayName, element, setInSelf ) Meth
 function FontString.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
 function FontString.__index:GetEffectiveScale() return self:GetParent():GetEffectiveScale() end
 function FontString.__index:GetScaledRect() return Method_GetScaledRect(self) end
+function FontString.__index:IsTruncated() return Method_IsTruncated(self) end
 
 -- ScrollFrame Method
 function ScrollFrame.__index:SetShown( ... ) Method_SetShown( self, ... ) end

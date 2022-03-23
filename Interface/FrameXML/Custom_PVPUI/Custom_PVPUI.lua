@@ -1933,6 +1933,7 @@ function BattlegroundInviteMixin:OnShow()
 	else
 		self.PopupFrame.EnterButton:SetShown(self.inviteState == 1)
 		self.PopupFrame.CancelButton:SetShown(self.inviteState == 1)
+		self.PopupFrame.HideButton:SetShown(self.inviteState == 1)
 		self.PopupFrame.ReadyButtonFrame:SetShown(self.inviteState == 2)
 
 		local time = self.remainingTime - time()
@@ -1945,7 +1946,7 @@ function BattlegroundInviteMixin:OnShow()
 		self.PopupFrame.Timer:SetText(SecondsToClock(time))
 	end
 
-	PlaySound("HornOfAwakening")
+	PlaySound("PVPTHROUGHQUEUE")
 end
 
 function BattlegroundInviteMixin:OnHide()
@@ -1980,10 +1981,10 @@ function BattlegroundInviteMixin:OnUpdate( elapsed )
 
 		if time >= 0 then
 			if time == 10 then
-				PlaySound("HornOfAwakening")
+				PlaySound("PVPTHROUGHQUEUE")
 			else
 				if self.elapsedHorn >= 20 then
-					PlaySound("HornOfAwakening")
+					PlaySound("PVPTHROUGHQUEUE")
 					self.elapsedHorn = 0
 				end
 			end
@@ -2365,7 +2366,7 @@ function ArenaPlayerReadyStatusButton_UpdateText( forceUpdate )
 			local data = C_CacheInstance:Get("ASMSG_ARENA_READY_STATUS")
 
 			if data and data.bracket and data.readyCount then
-				button.ReadyText:SetFormattedText("%d / %d", data.readyCount, (data.bracket * 2))
+				button.ReadyText:SetFormattedText("%d / %d", data.readyCount, data.bracket)
 				button.ReadyTextDescription:SetText(READY_ARENA_WAIT_PLAYER_LABEL)
 			end
 		else
@@ -2392,12 +2393,14 @@ function ArenaPlayerReadyStatusButton_OnLeave( self, ... )
 	self.Selection:SetAlpha(0.2)
 end
 
-function ArenaPlayerReadyStatusButtonToggle( times )
+function ArenaPlayerReadyStatusButtonToggle( times, timerType )
 	if ArenaPlayerReadyStatusButton and TimerTrackerTimer1 then
-		if times > 12 and not ArenaPlayerReadyStatusButton:IsShown() then
+		local hidingTime = timerType == "2" and 15 or 12;
+
+		if times > hidingTime and not ArenaPlayerReadyStatusButton:IsShown() then
 			ArenaPlayerReadyStatusButton:Show()
 			ArenaPlayerReadyStatusButton.AnimIn:Play()
-		elseif times < 12 and ArenaPlayerReadyStatusButton:IsShown() then
+		elseif times < hidingTime and ArenaPlayerReadyStatusButton:IsShown() then
 			ArenaPlayerReadyStatusButton.AnimOut:Play()
 		end
 		ArenaPlayerReadyStatusButton:ClearAllPoints()

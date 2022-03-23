@@ -602,5 +602,31 @@ function InitCustonAchievementUI()
 		SwitchAchievementSearchTab(id);
 	end
 
+	function AchievementFrameComparison_UpdateStatusBars(id)
+		if not id then
+			return;
+		end
+
+		local numAchievements, numCompleted = GetCategoryNumAchievements(id);
+		local name = GetCategoryInfo(id);
+
+		if id == ACHIEVEMENT_COMPARISON_SUMMARY_ID then
+			name = ACHIEVEMENT_SUMMARY_CATEGORY;
+		end
+
+		local statusBar = AchievementFrameComparisonSummaryPlayerStatusBar;
+		statusBar:SetMinMaxValues(0, numAchievements);
+		statusBar:SetValue(numCompleted);
+		statusBar.title:SetText(string.format(ACHIEVEMENTS_COMPLETED_CATEGORY, name));
+		statusBar.text:SetText(numCompleted.."/"..numAchievements);
+
+		local friendCompleted = GetComparisonCategoryNumAchievements(id);
+
+		statusBar = AchievementFrameComparisonSummaryFriendStatusBar;
+		statusBar:SetMinMaxValues(0, numAchievements);
+		statusBar:SetValue(friendCompleted);
+		statusBar.text:SetText(friendCompleted.."/"..numAchievements);
+	end
+
 	init = true;
 end

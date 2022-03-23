@@ -190,6 +190,43 @@
 			<OnClick function="StoreCategory_OnClick" />
 		</Scripts>
 	</Button>
+	<Button name="StoreSubCategoryTemplate" virtual="true">
+		<Size x="172" y="22" />
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Category" inherits="store-category-subcategory">
+					<Anchors>
+						<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="SelectedTexture" inherits="store-category-subcategory-selected" hidden="true" alphaMode="ADD">
+					<Anchors>
+						<Anchor point="CENTER" relativePoint="CENTER" x="0" y="2" />
+					</Anchors>
+				</Texture>
+				<Texture parentKey="HighlightTexture" inherits="store-category-subcategory-hover" hidden="true" alphaMode="ADD">
+					<Anchors>
+						<Anchor point="CENTER" relativePoint="CENTER" x="0" y="2" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Text" inherits="GameFontNormal" wordwrap="true" justifyH="LEFT">
+					<Size x="120" y="38" />
+					<Anchors>
+						<Anchor point="LEFT" x="14" y="1" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnEnter function="StoreSubCategory_OnEnter" />
+			<OnLeave function="StoreSubCategory_OnLeave" />
+			<OnClick function="StoreSubCategory_OnClick" />
+		</Scripts>
+	</Button>
 	<Button name="StoreItemListButtonTemplate" hidden="true" virtual="true">
 		<Size x="560" y="54"/>
 		<Layers>
@@ -234,6 +271,12 @@
 					<Size x="33" y="33" />
 					<Anchors>
 						<Anchor point="RIGHT" x="-70" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentAltCurrencyIcon" parentKey="AltCurrencyIcon">
+					<Size x="21" y="21"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentMoneyIcon" relativePoint="RIGHT" x="-3" y="0" />
 					</Anchors>
 				</Texture>
 				<FontString parentKey="Name" inherits="GameFontNormalMed3" justifyV="TOP" wordwrap="true">
@@ -1059,6 +1102,12 @@
 					<Size x="28" y="28"/>
 					<Anchors>
 						<Anchor point="BOTTOMLEFT" x="5" y="5"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentAltCurrencyIcon" parentKey="AltCurrencyIcon">
+					<Size x="18" y="18"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentMoneyIcon" relativePoint="RIGHT" x="-3" y="-2" />
 					</Anchors>
 				</Texture>
 				<FontString name="$parentProductNormalPrice" parentKey="NormalPrice" hidden="true" font="AchievementPointsFontSmall" justifyH="CENTER" justifyV="MIDDLE">
@@ -2271,6 +2320,86 @@
 		</Scripts>
 	</Frame>
 
+	<CheckButton name="StoreConfirmationFrameMoneyCheckButtonTemplate" virtual="true">
+		<Size x="16" y="16"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" parentKey="Text" inherits="GameFontBlack" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="LEFT" x="18" y="0"/>
+					</Anchors>
+					<Color r="0" g="0" b="0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<NormalTexture file="Interface\Buttons\UI-RadioButton">
+			<TexCoords left="0" right="0.25" top="0" bottom="1"/>
+		</NormalTexture>
+		<HighlightTexture file="Interface\Buttons\UI-RadioButton" alphaMode="ADD">
+			<TexCoords left="0.5" right="0.75" top="0" bottom="1"/>
+		</HighlightTexture>
+		<CheckedTexture file="Interface\Buttons\UI-RadioButton">
+			<TexCoords left="0.25" right="0.5" top="0" bottom="1"/>
+		</CheckedTexture>
+	</CheckButton>
+
+	<Button name="StoreConfirmationFrameMoneySelectFrameTemplate" virtual="true">
+		<Size x="0" y="16"/>
+		<Frames>
+			<CheckButton name="$parentSelectButton" parentKey="SelectButton" inherits="StoreConfirmationFrameMoneyCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="0" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="StoreConfirmationFrameMoneySelectFrame_OnClick"/>
+				</Scripts>
+			</CheckButton>
+			<Button name="$parentMoneyFrame" parentKey="MoneyFrame">
+				<Size x="34" y="34"/>
+				<Anchors>
+					<Anchor point="RIGHT"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture name="$parentIcon" parentKey="Icon" setAllPoints="true">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<FontString name="$parentPrice" parentKey="Price" inherits="GameFontNormalShadowHuge12">
+							<Anchors>
+								<Anchor point="RIGHT" relativeTo="$parentIcon" relativePoint="LEFT" x="-3" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self.id = self:GetParent():GetID();
+
+						if self.id == 1 then
+							self.Price:SetPoint("RIGHT", self.Icon, "LEFT", 0, 0);
+						end
+					</OnLoad>
+					<OnEnter>
+						if self.id == 2 then
+							local altCurrency = self:GetParent().currency
+							if altCurrency and altCurrency ~= 0 then
+								GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+								GameTooltip:SetHyperlink(string.format("item:%d", altCurrency))
+								GameTooltip:Show()
+							end
+						end
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnClick function="StoreConfirmationFrameMoneySelectFrame_OnClick"/>
+		</Scripts>
+	</Button>
+
 	<Frame name="StoreFrame" frameStrata="HIGH" inherits="PortraitFrameTemplateNoCloseButton" enableMouse="true" hidden="true">
 		<Size x="800" y="537" />
 		<Anchors>
@@ -3300,6 +3429,321 @@
 									</OnHide>
 								</Scripts>
 							</Frame>
+							<Frame name="$parentHeartGliderOffer" parentKey="HeartGliderOffer" hidden="true" setAllPoints="true">
+								<Frames>
+									<Frame name="$parentLeftPanel" parentKey="LeftPanel" setAllPoints="true">
+										<Layers>
+											<Layer level="OVERLAY">
+												<FontString name="$parentTimerText" parentKey="TimerText" text="23:59:59" justifyH="CENTER" font="Interface\CustomFonts\futurademic.ttf">
+													<FontHeight>
+														<AbsValue val="28"/>
+													</FontHeight>
+													<Size x="174" y="30"/>
+													<Anchors>
+														<Anchor point="TOPLEFT" x="18" y="-12" />
+													</Anchors>
+													<Color r="1.0" g="0.30" b="0.30"/>
+												</FontString>
+												<FontString name="$parentTitleText" parentKey="TitleText" text="STORE_THE_23TH_OF_FEBRUARY_CAPS" justifyH="LEFT" font="Interface\CustomFonts\OpenSans-Bold.ttf">
+													<FontHeight>
+														<AbsValue val="12"/>
+													</FontHeight>
+													<Size x="164" y="12"/>
+													<Anchors>
+														<Anchor point="TOPLEFT" x="18" y="-52" />
+													</Anchors>
+													<Color r="0.97" g="0.86" b="0.80"/>
+												</FontString>
+												<FontString name="$parentNameText" parentKey="NameText" font="Interface\CustomFonts\futurademic.ttf">
+													<FontHeight>
+														<AbsValue val="18"/>
+													</FontHeight>
+													<Anchors>
+														<Anchor point="TOPLEFT" x="18" y="-64" />
+													</Anchors>
+													<Color r="1.0" g="0.3" b="0.3"/>
+												</FontString>
+												<FontString name="$parentDescriptionText" parentKey="DescriptionText" justifyH="LEFT" justifyV="TOP" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
+													<FontHeight>
+														<AbsValue val="11"/>
+													</FontHeight>
+													<Size x="164" y="70"/>
+													<Anchors>
+														<Anchor point="LEFT" x="16" y="-20" />
+													</Anchors>
+													<Color r="0.97" g="0.86" b="0.80"/>
+												</FontString>
+												<FontString name="$parentPriceLabel" parentKey="PriceLabel" text="STORE_COST" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
+													<FontHeight>
+														<AbsValue val="13"/>
+													</FontHeight>
+													<Anchors>
+														<Anchor point="LEFT" x="16" y="-62" />
+													</Anchors>
+													<Color r="1.0" g="0.30" b="0.30"/>
+												</FontString>
+												<FontString name="$parentPrice" parentKey="Price" text="299" font="Interface\CustomFonts\futurademic.ttf">
+													<FontHeight>
+														<AbsValue val="18"/>
+													</FontHeight>
+													<Anchors>
+														<Anchor point="LEFT" x="122" y="-62" />
+													</Anchors>
+													<Color r="1" g="0.9" b="0.9"/>
+												</FontString>
+												<Texture name="$parentBonusIcon" parentKey="BonusIcon" file="Interface\Store\coins">
+													<Size x="32" y="32"/>
+													<Anchors>
+														<Anchor point="LEFT" relativeTo="$parentPrice" relativePoint="RIGHT" x="0" y="0" />
+													</Anchors>
+												</Texture>
+											</Layer>
+										</Layers>
+									</Frame>
+									<PlayerModel parentKey="MountModel" enableMouse="false">
+										<Size x="432" y="529" />
+										<Anchors>
+											<Anchor point="RIGHT" x="60" y="-174" />
+										</Anchors>
+										<Scripts>
+											<OnLoad>
+												self:SetRotation(-0.68)
+											</OnLoad>
+											<OnShow>
+												self:SetCreature(131231)
+												self:SetLight(1, 0, -0.67399996519089, -0.42799997329712, 0.5200001001358, 1, 0.70196080207825, 0.70196080207825, 0.70196080207825, 1, 1, 1, 0.80000007152557)
+											</OnShow>
+										</Scripts>
+									</PlayerModel>
+								</Frames>
+								<Scripts>
+									<OnShow>
+									</OnShow>
+									<OnHide>
+									</OnHide>
+								</Scripts>
+							</Frame>
+							<Frame name="$parentDeathBreathOffer" parentKey="DeathBreathOffer" hidden="true" setAllPoints="true">
+								<Frames>
+									<Frame name="$parentLeftPanel" parentKey="LeftPanel" setAllPoints="true">
+										<Anchors>
+											<Anchor point="TOPRIGHT" x="-380" y="-1" />
+											<Anchor point="BOTTOMLEFT" x="1" y="1" />
+										</Anchors>
+										<Layers>
+											<Layer level="BACKGROUND">
+												<Texture parentKey="Background">
+													<Color r="0" g="0" b="0" a="0.7"/>
+												</Texture>
+											</Layer>
+											<Layer level="OVERLAY">
+												<FontString name="$parentTimerText" parentKey="TimerText" text="23:59:59" justifyH="CENTER" font="Interface\CustomFonts\futurademic.ttf">
+													<FontHeight>
+														<AbsValue val="28"/>
+													</FontHeight>
+													<Size x="174" y="30"/>
+													<Anchors>
+														<Anchor point="TOPLEFT" x="18" y="-12" />
+													</Anchors>
+													<Color r="0.71" g="0.84" b="0.65"/>
+												</FontString>
+												<FontString name="$parentTitleText" parentKey="TitleText" text="STORE_THE_23TH_OF_FEBRUARY_CAPS" justifyH="LEFT" font="Interface\CustomFonts\OpenSans-Bold.ttf">
+													<FontHeight>
+														<AbsValue val="12"/>
+													</FontHeight>
+													<Size x="164" y="12"/>
+													<Anchors>
+														<Anchor point="TOPLEFT" x="18" y="-52" />
+													</Anchors>
+													<Color r="1" g="1" b="1"/>
+												</FontString>
+												<FontString name="$parentNameText" parentKey="NameText" font="Interface\CustomFonts\futurademic.ttf">
+													<FontHeight>
+														<AbsValue val="18"/>
+													</FontHeight>
+													<Anchors>
+														<Anchor point="TOPLEFT" x="18" y="-64" />
+													</Anchors>
+													<Color r="0.71" g="0.84" b="0.65"/>
+												</FontString>
+												<FontString name="$parentDescriptionText" parentKey="DescriptionText" justifyH="LEFT" justifyV="TOP" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
+													<FontHeight>
+														<AbsValue val="11"/>
+													</FontHeight>
+													<Size x="164" y="70"/>
+													<Anchors>
+														<Anchor point="LEFT" x="16" y="-20" />
+													</Anchors>
+													<Color r="1" g="1" b="1"/>
+												</FontString>
+												<FontString name="$parentPriceLabel" parentKey="PriceLabel" text="STORE_COST" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
+													<FontHeight>
+														<AbsValue val="13"/>
+													</FontHeight>
+													<Anchors>
+														<Anchor point="LEFT" x="16" y="-62" />
+													</Anchors>
+													<Color r="0.71" g="0.84" b="0.65"/>
+												</FontString>
+												<FontString name="$parentPrice" parentKey="Price" text="299" font="Interface\CustomFonts\futurademic.ttf">
+													<FontHeight>
+														<AbsValue val="18"/>
+													</FontHeight>
+													<Anchors>
+														<Anchor point="LEFT" x="122" y="-62" />
+													</Anchors>
+													<Color r="1" g="1" b="1"/>
+												</FontString>
+												<Texture name="$parentBonusIcon" parentKey="BonusIcon" file="Interface\Store\coins">
+													<Size x="32" y="32"/>
+													<Anchors>
+														<Anchor point="LEFT" relativeTo="$parentPrice" relativePoint="RIGHT" x="0" y="0" />
+													</Anchors>
+												</Texture>
+											</Layer>
+										</Layers>
+									</Frame>
+									<PlayerModel parentKey="MountModel" enableMouse="false">
+										<Size x="202" y="299" />
+										<Anchors>
+											<Anchor point="RIGHT" x="-90" y="-10" />
+										</Anchors>
+										<Scripts>
+											<OnLoad>
+												self:SetRotation(-0.28)
+											</OnLoad>
+											<OnShow>
+												self:SetCreature(74539)
+												self:SetLight(1, 0, -0.67399996519089, -0.42799997329712, 0.5200001001358, 1, 0.70196080207825, 0.70196080207825, 0.70196080207825, 1, 1, 1, 0.80000007152557)
+											</OnShow>
+										</Scripts>
+									</PlayerModel>
+									<PlayerModel parentKey="PetModel" enableMouse="false">
+										<Size x="172" y="172" />
+										<Anchors>
+											<Anchor point="BOTTOMRIGHT" x="30" y="60" />
+										</Anchors>
+										<Scripts>
+											<OnLoad>
+												self:SetRotation(0.1)
+											</OnLoad>
+											<OnShow>
+												self:SetCreature(74383)
+											</OnShow>
+										</Scripts>
+									</PlayerModel>
+								</Frames>
+								<Scripts>
+									<OnShow>
+									</OnShow>
+									<OnHide>
+									</OnHide>
+								</Scripts>
+							</Frame>
+							<Frame name="$parentSirinOffer" parentKey="SirinOffer" hidden="true" setAllPoints="true">
+								<Frames>
+									<Frame name="$parentLeftPanel" parentKey="LeftPanel" setAllPoints="true">
+										<Anchors>
+											<Anchor point="TOPRIGHT" x="-380" y="-1" />
+											<Anchor point="BOTTOMLEFT" x="1" y="1" />
+										</Anchors>
+										<Layers>
+											<Layer level="BACKGROUND">
+												<Texture parentKey="Background">
+													<Color r="0" g="0" b="0" a="0.7"/>
+												</Texture>
+											</Layer>
+											<Layer level="OVERLAY">
+												<FontString name="$parentTimerText" parentKey="TimerText" text="23:59:59" justifyH="CENTER" font="Interface\CustomFonts\futurademic.ttf">
+													<FontHeight>
+														<AbsValue val="28"/>
+													</FontHeight>
+													<Size x="174" y="30"/>
+													<Anchors>
+														<Anchor point="TOPLEFT" x="18" y="-12" />
+													</Anchors>
+													<Color r="0.67" g="0.34" b="0.63"/>
+												</FontString>
+												<FontString name="$parentTitleText" parentKey="TitleText" text="STORE_THE_23TH_OF_FEBRUARY_CAPS" justifyH="LEFT" font="Interface\CustomFonts\OpenSans-Bold.ttf">
+													<FontHeight>
+														<AbsValue val="12"/>
+													</FontHeight>
+													<Size x="164" y="12"/>
+													<Anchors>
+														<Anchor point="TOPLEFT" x="18" y="-52" />
+													</Anchors>
+													<Color r="1" g="1" b="1"/>
+												</FontString>
+												<FontString name="$parentNameText" parentKey="NameText" font="Interface\CustomFonts\futurademic.ttf">
+													<FontHeight>
+														<AbsValue val="18"/>
+													</FontHeight>
+													<Size x="164" y="50"/>
+													<Anchors>
+														<Anchor point="TOPLEFT" x="18" y="-64" />
+													</Anchors>
+													<Color r="0.67" g="0.34" b="0.63"/>
+												</FontString>
+												<FontString name="$parentDescriptionText" parentKey="DescriptionText" justifyH="LEFT" justifyV="TOP" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
+													<FontHeight>
+														<AbsValue val="11"/>
+													</FontHeight>
+													<Size x="164" y="70"/>
+													<Anchors>
+														<Anchor point="LEFT" x="16" y="-20" />
+													</Anchors>
+													<Color r="1" g="1" b="1"/>
+												</FontString>
+												<FontString name="$parentPriceLabel" parentKey="PriceLabel" text="STORE_COST" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
+													<FontHeight>
+														<AbsValue val="13"/>
+													</FontHeight>
+													<Anchors>
+														<Anchor point="LEFT" x="16" y="-62" />
+													</Anchors>
+													<Color r="0.67" g="0.34" b="0.63"/>
+												</FontString>
+												<FontString name="$parentPrice" parentKey="Price" text="299" font="Interface\CustomFonts\futurademic.ttf">
+													<FontHeight>
+														<AbsValue val="18"/>
+													</FontHeight>
+													<Anchors>
+														<Anchor point="LEFT" x="122" y="-62" />
+													</Anchors>
+													<Color r="1" g="1" b="1"/>
+												</FontString>
+												<Texture name="$parentBonusIcon" parentKey="BonusIcon" file="Interface\Store\coins">
+													<Size x="32" y="32"/>
+													<Anchors>
+														<Anchor point="LEFT" relativeTo="$parentPrice" relativePoint="RIGHT" x="0" y="0" />
+													</Anchors>
+												</Texture>
+											</Layer>
+										</Layers>
+									</Frame>
+									<PlayerModel parentKey="MountModel" enableMouse="false">
+										<Size x="382" y="229" />
+										<Anchors>
+											<Anchor point="RIGHT" x="0" y="-10" />
+										</Anchors>
+										<Scripts>
+											<OnLoad>
+												self:SetRotation(-0.28)
+											</OnLoad>
+											<OnShow>
+												self:SetCreature(131250)
+												self:SetLight(1, 0, -0.67399996519089, -0.42799997329712, 0.5200001001358, 1, 0.70196080207825, 0.70196080207825, 0.70196080207825, 1, 1, 1, 0.80000007152557)
+											</OnShow>
+										</Scripts>
+									</PlayerModel>
+								</Frames>
+								<Scripts>
+									<OnShow>
+									</OnShow>
+									<OnHide>
+									</OnHide>
+								</Scripts>
+							</Frame>
                             <Frame name="$parentLeffelOffer" parentKey="LeffelOffer" hidden="true" setAllPoints="true">
 								<Frames>
 									<Frame name="$parentLeftPanel" parentKey="LeftPanel" setAllPoints="true">
@@ -4135,12 +4579,12 @@
 				</Texture>
 			</Layer>
 			<Layer level="OVERLAY">
-				<Texture inherits="store-receipt-line">
+				<Texture parentKey="Line1" inherits="store-receipt-line">
 					<Anchors>
 						<Anchor point="TOP" relativeTo="$parentParchmentMiddle" relativePoint="TOP" x="0" y="-116"/>
 					</Anchors>
 				</Texture>
-				<Texture inherits="store-receipt-line">
+				<Texture parentKey="Line2" inherits="store-receipt-line">
 					<Size x="350" y="3" />
 					<Anchors>
 						<Anchor point="BOTTOM" relativeTo="$parentParchmentMiddle" relativePoint="BOTTOM" x="0" y="60"/>
@@ -4193,17 +4637,17 @@
 								<Anchor point="BOTTOMLEFT" x="40" y="24" />
 							</Anchors>
 						</FontString>
-						<FontString name="$parentPrice" parentKey="Price" inherits="GameFontNormalShadowHuge2">
-							<Anchors>
-								<Anchor point="BOTTOMRIGHT" x="-66" y="20"/>
-							</Anchors>
-						</FontString>
 						<Texture name="$parentMoneyIcon" parentKey="MoneyIcon">
-							<Size x="34" y="34"/>
+							<Size x="30" y="30"/>
 							<Anchors>
 								<Anchor point="BOTTOMRIGHT" x="-34" y="15"/>
 							</Anchors>
 						</Texture>
+						<FontString name="$parentPrice" parentKey="Price" inherits="GameFontNormalShadowHuge17">
+							<Anchors>
+								<Anchor point="RIGHT" relativeTo="$parentMoneyIcon" relativePoint="LEFT" x="0" y="0"/>
+							</Anchors>
+						</FontString>
 						<FontString name="$parentNotice" parentKey="Notice" inherits="GameFontBlackMedium" justifyH="LEFT" justifyV="TOP">
 							<Size x="280" y="0"/>
 							<Anchors>
@@ -4211,9 +4655,28 @@
 							</Anchors>
 							<Color r="0" g="0" b="0"/>
 						</FontString>
+						<FontString name="$parentAltCurrencyLabel" parentKey="AltCurrencyLabel" text="STORE_AVAILABLE_TO_PAY_ALT_CURRENCY" inherits="GameFontBlackMedium">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="32" y="62"/>
+							</Anchors>
+						</FontString>
 					</Layer>
 				</Layers>
 				<Frames>
+					<Button name="$parentMoneySelectFrame" parentKey="MoneySelectFrame" hidden="true" id="1" inherits="StoreConfirmationFrameMoneySelectFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentAltCurrencyLabel" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+							<Anchor point="RIGHT" x="-28" y="0"/>
+						</Anchors>
+					</Button>
+
+					<Button name="$parentAltCurrencySelectButton" parentKey="AltCurrencySelectFrame" id="2" hidden="true" inherits="StoreConfirmationFrameMoneySelectFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentMoneySelectFrame" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+							<Anchor point="RIGHT" x="-28" y="0"/>
+						</Anchors>
+					</Button>
+
 					<CheckButton name="StoreConfirmationSendGiftCheckButton" inherits="ChatConfigBaseCheckButtonTemplate">
 						<Size x="28" y="28"/>
 						<Anchors>
@@ -4237,6 +4700,12 @@
 								_G[self:GetName().."Text"]:SetText(STORE_SEND_AS_GIFT)
 							</OnLoad>
 							<OnClick function="StoreConfirmationSendGiftCheckButton_OnClick"/>
+							<OnEnable>
+								self.Text:SetTextColor(0, 0, 0);
+							</OnEnable>
+							<OnDisable>
+								self.Text:SetTextColor(0.3, 0.3, 0.3);
+							</OnDisable>
 						</Scripts>
 					</CheckButton>
 					<Frame name="StoreConfirmationGiftFrame" hidden="true" setAllPoints="true">
@@ -5228,12 +5697,7 @@
 							<Anchor point="LEFT" x="-38" y="-122" />
 						</Anchors>
 						<Scripts>
-							<OnShow>
-								if C_Service:IsStrengthenStatsRealm() then
-									self:SetRotation(0.40)
-									self:SetCreature(50001)
-								end
-							</OnShow>
+							<OnShow function="StoreSubscribeSetupModel"/>
 						</Scripts>
 					</PlayerModel>
 					<Button name="StoreSubscribeItemButton1" inherits="StoreSubscribeItemTemplate" id="1">
@@ -6355,7 +6819,13 @@
 										<Texture name="$parentPriceIcon" parentKey="PriceIcon" file="Interface\Store\coins">
 											<Size x="32" y="32"/>
 											<Anchors>
-												<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-20" y="68" />
+												<Anchor point="BOTTOMRIGHT" x="-20" y="68" />
+											</Anchors>
+										</Texture>
+										<Texture name="$parentAltCurrencyIcon" parentKey="AltCurrencyIcon">
+											<Size x="20" y="20"/>
+											<Anchors>
+												<Anchor point="LEFT" relativeTo="$parentPriceIcon" relativePoint="RIGHT" x="-3" y="0" />
 											</Anchors>
 										</Texture>
 										<FontString name="$parentPrice" parentKey="Price" inherits="GameFontNormal16" maxLines="0" justifyH="RIGHT">

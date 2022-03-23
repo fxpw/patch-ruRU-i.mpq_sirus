@@ -41,6 +41,11 @@ LFG_INSTANCE_INVALID_CODES = { --Any other codes are unspecified conditions (e.g
 	
 }
 
+LFG_ROLE_SHORTAGE_RARE = 1;
+LFG_ROLE_SHORTAGE_UNCOMMON = 2;
+LFG_ROLE_SHORTAGE_PLENTIFUL = 3;
+LFG_ROLE_NUM_SHORTAGE_TYPES = 3;
+
 local tankIcon = "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES.blp:16:16:0:%d:64:64:0:19:22:41|t";
 local healerIcon = "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES.blp:16:16:0:%d:64:64:20:39:1:20|t";
 local damageIcon = "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES.blp:16:16:0:%d:64:64:20:39:22:41|t";
@@ -180,6 +185,11 @@ function LFG_PermanentlyDisableRoleButton(button)
 	if ( button.background ) then
 		button.background:Hide();
 	end
+	if ( button.shortageBorder ) then
+		button.shortageBorder:SetVertexColor(0.5, 0.5, 0.5);
+		button.incentiveIcon.texture:SetVertexColor(0.5, 0.5, 0.5);
+		button.incentiveIcon.border:SetVertexColor(0.5, 0.5, 0.5);
+	end
 end
 
 function LFG_DisableRoleButton(button)
@@ -192,6 +202,11 @@ function LFG_DisableRoleButton(button)
 	if ( button.background ) then
 		button.background:Hide();
 	end
+	if ( button.shortageBorder ) then
+		button.shortageBorder:SetVertexColor(0.5, 0.5, 0.5);
+		button.incentiveIcon.texture:SetVertexColor(0.5, 0.5, 0.5);
+		button.incentiveIcon.border:SetVertexColor(0.5, 0.5, 0.5);
+	end
 end
 
 function LFG_EnableRoleButton(button)
@@ -203,6 +218,11 @@ function LFG_EnableRoleButton(button)
 	button.checkButton:Enable();
 	if ( button.background ) then
 		button.background:Show();
+	end
+	if ( button.shortageBorder ) then
+		button.shortageBorder:SetVertexColor(1, 1, 1);
+		button.incentiveIcon.texture:SetVertexColor(1, 1, 1);
+		button.incentiveIcon.border:SetVertexColor(1, 1, 1);
 	end
 end
 
@@ -265,6 +285,40 @@ function LFG_UpdateRoleCheckboxes()
 	LFDRoleCheckPopupRoleButtonDPS.checkButton:SetChecked(dps);
 end
 
+function LFGFrame_SendUpdateCurrentRoles()
+	local leader, tank, healer, dps = GetLFGRoles();
+
+	local selectedRoles = 0;
+	if ( leader ) then
+		selectedRoles = selectedRoles + 1;
+	end
+	if ( tank ) then
+		selectedRoles = selectedRoles + 2;
+	end
+	if ( healer ) then
+		selectedRoles = selectedRoles + 4;
+	end
+	if ( dps ) then
+		selectedRoles = selectedRoles + 8;
+	end
+
+	SendServerMessage("ACMSG_LFG_UPDATE_SELECTED_ROLES", string.format("%d", selectedRoles));
+end
+
+function EventHandler:ASMSG_LFG_UPDATE_CALLTOARMS_ROLES(msg)
+	local rolesMask = tonumber(msg);
+
+	if rolesMask then
+		local tank = bit.band(rolesMask, 2) ~= 0;
+		local healer = bit.band(rolesMask, 4) ~= 0;
+		local dps = bit.band(rolesMask, 8) ~= 0;
+
+		LFG_SetRoleIconIncentive(LFDQueueFrameRoleButtonTank, tank and 1);
+		LFG_SetRoleIconIncentive(LFDQueueFrameRoleButtonHealer, healer and 1);
+		LFG_SetRoleIconIncentive(LFDQueueFrameRoleButtonDPS, dps and 1);
+	end
+end
+
 function LFG_UpdateRolesChangeable()
 	local mode, subMode = GetLFGMode();
 	if ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "proposal" ) then
@@ -281,6 +335,32 @@ function LFG_UpdateRolesChangeable()
 	else
 		LFG_UpdateAvailableRoles();
 	end
+end
+
+function LFG_SetRoleIconIncentive(roleButton, incentiveIndex)
+	if ( incentiveIndex ) then
+		local tex;
+		if ( incentiveIndex == LFG_ROLE_SHORTAGE_PLENTIFUL ) then
+			tex = "Interface\\Icons\\INV_Misc_Coin_19";
+		elseif ( incentiveIndex == LFG_ROLE_SHORTAGE_UNCOMMON ) then
+			tex = "Interface\\Icons\\INV_Misc_Coin_18";
+		elseif ( incentiveIndex == LFG_ROLE_SHORTAGE_RARE ) then
+			tex = "Interface\\Icons\\INV_Misc_Coin_17";
+		end
+		SetPortraitToTexture(roleButton.incentiveIcon.texture, tex);
+		roleButton.incentiveIcon:Show();
+		roleButton.shortageBorder:Show();
+	else
+		roleButton.incentiveIcon:Hide();
+		roleButton.shortageBorder:Hide();
+	end
+end
+
+function LFGRoleIconIncentive_OnEnter(self)
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+	GameTooltip:SetText(format(LFG_CALL_TO_ARMS, _G[self:GetParent().role]), 1, 1, 1);
+	GameTooltip:AddLine(LFG_CALL_TO_ARMS_EXPLANATION, nil, nil, nil, true);
+	GameTooltip:Show();
 end
 
 function LFGSpecificChoiceEnableButton_SetIsRadio(button, isRadio)

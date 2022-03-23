@@ -30,7 +30,8 @@ local realmCardsData = {
 		typesTooltip = "Переключаемый в столицах режим пвп",
 		description = "Прогрессивный игровой мир с преуспевающим освоением как PvP, так и PvE-аспектов. Сочетает в себе множество внутриигровых изменений и лучших кастомных внедрений в стандартный клиент. Scourge готов подарить Вам максимум приятных впечатлений от игры. Однако, если Вы хотите стать легендой, то придётся приложить немало усилий. Что бы Вы ни любили: рейды, подземелья, поля боя или арены - этому миру будет что Вам предложить.",
 		logo = "ServerGameLogo-3",
-		desingKey = "Frostmourne"
+		desingKey = "Frostmourne",
+		proxyName = SHARED_SCOURGE_PROXY_REALM_NAME,
 	},
 	[SHARED_SIRUS_REALM_NAME] = {
 		name = "Sirus",
@@ -48,7 +49,17 @@ local realmCardsData = {
 		typesTooltip = "Неотключаемый PvP режим",
 		description = "Активно развивающийся игровой мир без системы категорий, очков усилений и других кастомных изменений. Перед нами стояла задача сохранить для Вас привычный баланс в PvP времён 3.3.5а с применением только лучших наработок, которые были оценены игроками по достоинству. Поэтапное PvE-освоение и полный набор PvP-атрибутов позволят Вам открыть для себя WoTLK по-новому.",
 		logo = "ServerGameLogo-4",
-		desingKey = "Algalon"
+		desingKey = "Algalon",
+		proxyName = SHARED_ALGALON_PROXY_REALM_NAME,
+	},
+}
+
+local proxyRealmCardsData = {
+	[SHARED_SCOURGE_PROXY_REALM_NAME] = {
+		realm = SHARED_SCOURGE_REALM_NAME,
+	},
+	[SHARED_ALGALON_PROXY_REALM_NAME] = {
+		realm = SHARED_ALGALON_REALM_NAME,
 	},
 }
 
@@ -167,6 +178,7 @@ function RealmList_Update()
 	local realmCount = _GetNumRealms()
 	local cardCount = 0
 	local miniCardCount = 0
+	local proxyCardCount = 0
 
 	if not realmCount or realmCount == 0 then
 		RealmList.NoRealmText:Show()
@@ -339,6 +351,8 @@ function RealmList_Update()
 
 					card.PVP.typesTooltip = data.typesTooltip
 
+					card.proxyName = data.proxyName;
+
 					card:Show()
 				end
 			elseif realmCardsData and realmCardsData[name] and realmCardsData[name].minimize then
@@ -354,6 +368,22 @@ function RealmList_Update()
 					card.Logo:SetAtlas(data.logo)
 
 					dump(data)
+
+					card:Show()
+				end
+			elseif proxyRealmCardsData[name] then
+				proxyCardCount = proxyCardCount + 1;
+
+				local card = _G["RealmListProxyRealmCard"..proxyCardCount];
+
+				if card then
+					card.ProxyButton.realmID = realmID;
+					card.ProxyButton.realmZone = realmZone;
+
+					card.name = name;
+
+					card.BORDER:SetDesaturated(realmDown);
+					card.ProxyButton:SetEnabled(not realmDown);
 
 					card:Show()
 				end
@@ -377,11 +407,19 @@ function RealmList_Update()
 		end
 	end
 
+	for i = 4, proxyCardCount + 1, -1 do
+		local card = _G["RealmListProxyRealmCard"..i]
+
+		if card then
+			card:Hide()
+		end
+	end
+
 	for i = realmCount + 1, #RealmList.buttonsList do
 		RealmList.buttonsList[i]:Hide()
 	end
 
-	if realmCount <= (cardCount + miniCardCount) and (cardCount > 0 or miniCardCount > 0) then
+	if realmCount <= (cardCount + miniCardCount + proxyCardCount) and (cardCount > 0 or miniCardCount > 0 or proxyCardCount > 0) then
 		for i = 1, #RealmList.buttonsList do
 			RealmList.buttonsList[i]:Hide()
 		end
@@ -404,6 +442,26 @@ function RealmList_Update()
 		if card:IsShown() then
 			card:SetPoint("LEFT", RealmList, 20, -((110 / 2) * miniCardCount) + 110 * miniCardOffset + 50)
 			miniCardOffset = miniCardOffset + 1
+		end
+	end
+
+	for i = 1, proxyCardCount do
+		local proxyCard = _G["RealmListProxyRealmCard"..i];
+		if proxyCard:IsShown() then
+			local foundRealm;
+			for j = 1, cardCount do
+				local card = _G["RealmListRealmCard"..j];
+				if card:IsShown() and card.proxyName == proxyCard.name then
+					proxyCard:ClearAllPoints();
+					proxyCard:SetPoint("TOP", card, "BOTTOM", 0, -12);
+
+					foundRealm = true;
+					break;
+				end
+			end
+			if not foundRealm then
+				proxyCard:Hide();
+			end
 		end
 	end
 end

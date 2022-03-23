@@ -2286,6 +2286,8 @@
 							<OnLoad>
 								WhoFrameColumn_SetWidth(self, 38);
 								self.sortType = "name";
+
+								self:Disable();
 							</OnLoad>
 						</Scripts>
 					</Button>

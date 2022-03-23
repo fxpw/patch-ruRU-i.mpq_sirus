@@ -497,6 +497,9 @@ CUSTOM_GOSSIP_TEXTS[CUSTOM_GOSSIP_TEXT_6] = "portraitroledamager";
 CUSTOM_GOSSIP_TEXTS[CUSTOM_GOSSIP_TEXT_7] = "portraitrolehealer";
 CUSTOM_GOSSIP_TEXTS[CUSTOM_GOSSIP_TEXT_8] = "portraitrolehealer";
 
+-- HelpTip bitfield flags
+LE_FRAME_TUTORIAL_MINI_GAME_FRAGILEFLOOR = 1;
+
 PET_TYPE_SUFFIX = {
 	[1] = "Water",
 	[2] = "Humanoid",

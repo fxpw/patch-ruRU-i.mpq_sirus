@@ -127,4 +127,8 @@ C_CVar:RegisterDefaultValue("C_CVAR_WARDROBE_SHOW_COLLECTED", "1", true)
 C_CVar:RegisterDefaultValue("C_CVAR_WARDROBE_SHOW_UNCOLLECTED", "1", true)
 C_CVar:RegisterDefaultValue("C_CVAR_WARDROBE_SOURCE_FILTERS", "0", true)
 C_CVar:RegisterDefaultValue("C_CVAR_LAST_TRANSMOG_OUTFIT_ID", "")
+
+C_CVar:RegisterDefaultValue("C_CVAR_HIDE_HELPTIPS", "0", true)
+C_CVar:RegisterDefaultValue("C_CVAR_CLOSED_INFO_FRAMES", "0")
+C_CVar:RegisterDefaultValue("C_CVAR_CLOSED_INFO_FRAMES_ACCOUNT_WIDE", "0", true)
 --C_CVar:RegisterDefaultValue("C_CVAR_SHOW_HEAD_HUNTING_TOAST", "1")

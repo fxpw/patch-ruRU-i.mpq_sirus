@@ -92,16 +92,18 @@ function C_UnitMixin:GetFactionByDebuff( unit )
 	assert(unit, "C_UnitMixin:GetFactionByDebuff: не указан unit.")
 
 	for i = 1, 255 do
-		local _, _, _, _, _, _, _, _, _, _, spellID = UnitDebuff(unit, i)
+		local name, _, _, _, _, _, _, _, _, _, spellID = UnitDebuff(unit, i)
 
-		if not spellID then
-			return
+		if not name then
+			break
 		end
 
-		local factionID = FACTION_OVERRIDE_BY_DEBUFFS[spellID]
+		if spellID then
+			local factionID = FACTION_OVERRIDE_BY_DEBUFFS[spellID]
 
-		if factionID then
-			return factionID
+			if factionID then
+				return factionID
+			end
 		end
 	end
 end

@@ -404,8 +404,6 @@ function CharacterSelect_OnEvent(self, event, ...)
 		end
 
 		if self.deletedLock then
-			self.deletedLock = false
-
 			CharSelectCreateCharacterButton:Hide()
 			CharSelectUndeleteCharacterButton:Hide()
 			CharSelectChangeRealmButton:Hide()
@@ -521,6 +519,7 @@ function CharacterSelect_OnEvent(self, event, ...)
 		elseif prefix == "SMSG_CHARACTERS_LIST_INFO" then
 			local deletedCount, characterCount, price = strsplit(":", content)
 
+			self.undeleteCurrentPage = 1
 			self.undeletePrice = tonumber(price)
 			self.undeleteMaxPage = min(tonumber(deletedCount), 255)
 			self.charactersMaxPage = min(tonumber(characterCount), 255)

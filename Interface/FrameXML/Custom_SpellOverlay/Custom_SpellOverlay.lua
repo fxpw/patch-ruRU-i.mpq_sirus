@@ -90,9 +90,16 @@ function SpellOverlay_RegisterAuraTracker()
 
 				for _, spell in pairs(auraTriggerData) do
 					if type(spell) == "table" then
-						if spell[1] == spellID and spell[2] == count then
-							showThisOverlay = {true, true}
-							break
+						if spell[3] then
+							if spell[1] == spellID then
+								showThisOverlay = {true, false, spell[2] > count, spell[3]}
+								break
+							end
+						else
+							if spell[1] == spellID and spell[2] == count then
+								showThisOverlay = {true, true}
+								break
+							end
 						end
 					else
 						if spell == spellID then
@@ -119,6 +126,10 @@ function SpellOverlay_RegisterAuraTracker()
 						end
 
 						SpellActivationOverlay_ShowAllOverlays(SpellActivationOverlayFrame, spellID, texturePath, positions, scale, r, g, b, vFlip, hFlip)
+
+						if showThisOverlay[3] and showThisOverlay[4] then
+							SpellActivationOverlay_HideOverlaysByPosition(SpellActivationOverlayFrame, spellID, showThisOverlay[4]);
+						end
 					end
 
 					for _, spell in pairs(spellOverlayData or {}) do
@@ -303,6 +314,20 @@ function SpellActivationOverlay_GetOverlay(self, spellID, position)
 	end
 
 	return overlay
+end
+
+function SpellActivationOverlay_HideOverlaysByPosition(self, spellID, position)
+	local overlayList = self.overlaysInUse[spellID];
+	if overlayList then
+		for i = 1, #overlayList do
+			local overlay = overlayList[i];
+
+			if overlay.position == position then
+				overlay.pulse:Pause();
+				overlay.animOut:Play();
+			end
+		end
+	end
 end
 
 function SpellActivationOverlay_HideOverlays(self, spellID)

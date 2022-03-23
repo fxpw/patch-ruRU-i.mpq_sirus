@@ -1788,7 +1788,7 @@ end
 
 function StatusBarWidgetMixin:UNIT_AURA( _, _, _, _, _, count, _, _, _, _, _, _, spellID )
 	if spellID == 63050 then
-		self:SetValue(count)
+		self:SetValue(tonumber(count))
 	end
 end
 
@@ -1841,4 +1841,275 @@ function StatusBarWidgetMixin:SetValue( value )
 	self.Spark:SetShown(value < 100)
 
 	self.Text:SetFormattedText(SANITY_COUNT, value, self:GetMaxValue())
+end
+
+MiniGameScoreRowMixin = CreateFromMixins(TableBuilderRowMixin);
+
+function MiniGameScoreRowMixin:Populate(rowData, dataIndex)
+	if rowData.position == 1 then
+		self.BackgroundLeft:SetVertexColor(0.19, 0.57, 0.11)
+		self.BackgroundRight:SetVertexColor(0.19, 0.57, 0.11)
+	elseif rowData.position then
+		self.BackgroundLeft:SetVertexColor(0.52, 0.075, 0.18)
+		self.BackgroundRight:SetVertexColor(0.5, 0.075, 0.18)
+	else
+		self.BackgroundLeft:SetVertexColor(0.85, 0.71, 0.26)
+		self.BackgroundRight:SetVertexColor(0.85, 0.71, 0.26)
+	end
+end
+
+MiniGameScoreHeaderMixin = CreateFromMixins(TableBuilderElementMixin);
+
+function MiniGameScoreHeaderMixin:Init(sortType, tooltipText)
+	self.sortType = sortType;
+	self.tooltipText = tooltipText;
+end
+
+function MiniGameScoreHeaderMixin:OnClick()
+	local sortType = self.sortType;
+	if sortType then
+        C_MiniGames.SortScoreData(sortType);
+	end
+
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+end
+
+function MiniGameScoreHeaderMixin:OnEnter()
+	local tooltipText = self.tooltipText;
+	if tooltipText then
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+		GameTooltip_AddColoredLine(GameTooltip, tooltipText, WHITE_FONT_COLOR, true);
+		GameTooltip:Show();
+	end
+end
+
+function MiniGameScoreHeaderMixin:OnLeave()
+	GameTooltip:Hide();
+end
+
+MiniGameScoreHeaderStringMixin = CreateFromMixins(MiniGameScoreHeaderMixin);
+
+function MiniGameScoreHeaderStringMixin:Init(textID, textAlignment, sortType, tooltipText, textWidth)
+	MiniGameScoreHeaderMixin.Init(self, sortType, tooltipText)
+	self.textID = textID;
+
+	local text = self.Text;
+	text:SetJustifyH(textAlignment or "CENTER");
+	text:SetText(self.textID);
+
+	if textWidth then
+		text:SetWidth(textWidth);
+		self:SetWidth(textWidth);
+	end
+end
+
+MiniGameScoreCellStatMixin = CreateFromMixins(TableBuilderCellMixin);
+
+function MiniGameScoreCellStatMixin:Init(dataProviderKey, textAlignment)
+	self.dataProviderKey = dataProviderKey;
+	self.textAlignment = textAlignment;
+end
+
+function MiniGameScoreCellStatMixin:OnEnter()
+	self:GetParent():LockHighlight();
+end
+
+function MiniGameScoreCellStatMixin:OnLeave()
+	self:GetParent():UnlockHighlight();
+end
+
+function MiniGameScoreCellStatMixin:Populate(rowData, dataIndex)
+	local value = rowData[self.dataProviderKey];
+	local text = self.Text;
+	text:SetJustifyH(self.textAlignment or "CENTER");
+	text:SetText(value or "?");
+end
+
+MiniGameScoreMixin = {};
+
+UIPanelWindows["MiniGameScoreFrame"] = {area = "center", pushable = 0, whileDead = 1};
+
+local MINI_GAME_SHUTDOWN_TIMER = 0;
+local MINI_GAME_TIMER_THRESHOLD_INDEX = 1;
+local PREVIOUS_MINI_GAME_MOD = 0;
+
+function MiniGameScoreMixin:OnLoad()
+	ButtonFrameTemplate_HidePortrait(self);
+	self.Inset:SetPoint("TOPLEFT", PANEL_INSET_LEFT_OFFSET, -60);
+	self.Inset:SetPoint("BOTTOMRIGHT", PANEL_INSET_RIGHT_OFFSET, 40);
+	_G[self:GetName().."BtnCornerLeft"]:Hide();
+	_G[self:GetName().."BtnCornerRight"]:Hide();
+	_G[self:GetName().."ButtonBottomBorder"]:Hide();
+
+	HybridScrollFrame_OnLoad(self.Content.ScrollFrame);
+	HybridScrollFrame_CreateButtons(self.Content.ScrollFrame, "MiniGameScoreTemplate");
+	self.Content.ScrollFrame.update = function()
+		self:UpdateContent();
+	end
+	self.Content.ScrollFrame.ScrollBar.doNotHide = true;
+
+	self.Content:SetFrameLevel(3);
+
+	self:RegisterEvent("PLAYER_ENTERING_WORLD");
+	self:RegisterCustomEvent("UPDATE_MINI_GAME_SCORE");
+	self:RegisterCustomEvent("UPDATE_MINI_GAMES_STATUS");
+
+	self.tableBuilder = CreateTableBuilder(HybridScrollFrame_GetButtons(self.Content.ScrollFrame));
+	self.tableBuilder:SetHeaderContainer(self.Content.ScrollCategories);
+
+	self:ConstructTable(self.tableBuilder);
+
+	self.requestTimer = 0;
+end
+
+function MiniGameScoreMixin:OnShow()
+	local miniGameID = C_MiniGames.GetActiveID();
+	if miniGameID then
+		local name = C_MiniGames.GetGameInfo(miniGameID);
+		PortraitFrameTemplate_SetTitle(self, name);
+	end
+
+	self:ConstructTable(self.tableBuilder);
+
+	self:UpdateContent();
+end
+
+function MiniGameScoreMixin:OnEvent(event, ...)
+	if event == "UPDATE_MINI_GAME_SCORE" then
+		if C_MiniGames.GetWinner() then
+			ShowUIPanel(self);
+		else
+			self:UpdateContent();
+		end
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		MINI_GAME_SHUTDOWN_TIMER = 0;
+
+		HideUIPanel(self);
+	elseif event == "UPDATE_MINI_GAMES_STATUS" then
+		for i = 1, C_MiniGames.GetMaxQueues() do
+			local status = C_MiniGames.GetQueueInfo(i);
+			if status and status == "active" then
+				MINI_GAME_SHUTDOWN_TIMER = C_MiniGames.GetInstanceExpiration() / 1000;
+
+				if MINI_GAME_SHUTDOWN_TIMER > 0 then
+					MinGameTimerFrame:SetScript("OnUpdate", MiniGameTimerFrame_OnUpdate);
+				end
+
+				MINI_GAME_TIMER_THRESHOLD_INDEX = 1;
+				PREVIOUS_MINI_GAME_MOD = 0;
+				break;
+			end
+		end
+	end
+end
+
+function MiniGameScoreMixin:OnUpdate(elapsed)
+	self.requestTimer = self.requestTimer + elapsed;
+	if self.requestTimer > 2 then
+		if not C_MiniGames.GetWinner() then
+			C_MiniGames.RequestScoreData();
+		end
+
+		self.requestTimer = 0;
+	end
+
+	local instanceRunTime = C_MiniGames.GetInstanceRunTime() / 1000;
+	if instanceRunTime > 0 then
+		self.ElapsedTimeLabel:Show();
+		self.ElapsedTime:Show();
+		self.ElapsedTime:SetText(SecondsToTime(instanceRunTime));
+	else
+		self.ElapsedTimeLabel:Hide();
+		self.ElapsedTime:Hide();
+	end
+end
+
+function MiniGameScoreMixin:ConstructTable(tableBuilder)
+	local textPadding = 18;
+
+	tableBuilder:Reset();
+	tableBuilder:SetDataProvider(C_MiniGames.GetScore);
+	tableBuilder:SetTableMargins(5);
+
+	local statColumns = C_MiniGames.GetStatColumns();
+
+	local frameWidth = 0;
+
+	for columnIndex, statColumn in ipairs(statColumns) do
+		frameWidth = frameWidth + ((statColumn.width or 0) + textPadding);
+
+		local column = tableBuilder:AddColumn();
+		column:ConstructHeader("BUTTON", "MiniGameHeaderStringTemplate", statColumn.text, statColumn.alignment, statColumn.sortType or statColumn.name, statColumn.tooltip, statColumn.width);
+		column:ConstrainToHeader(textPadding);
+		column:ConstructCells("FRAME", "MiniGameCellStatTemplate", statColumn.name, statColumn.alignment);
+
+		if not statColumn.width then
+			column:SetFillConstraints(1);
+		end
+	end
+
+	MiniGameScoreFrame:SetWidth(frameWidth + 38);
+	MiniGameScoreFrame.Content.ScrollFrame.ScrollChild:SetWidth(frameWidth);
+
+	tableBuilder:Arrange();
+end
+
+function MiniGameScoreMixin:UpdateContent()
+	local scrollFrame = self.Content.ScrollFrame;
+	local buttons = scrollFrame.buttons;
+	local numButtons = #scrollFrame.buttons;
+
+	local numScores = C_MiniGames.GetNumScores();
+
+	local offset = HybridScrollFrame_GetOffset(scrollFrame);
+	local populateCount = math.min(numButtons, numScores);
+	self.tableBuilder:Populate(offset, populateCount);
+
+	for i = 1, numButtons do
+		buttons[i]:SetShown(i <= numScores);
+	end
+
+	HybridScrollFrame_Update(scrollFrame, numScores * 16, scrollFrame:GetHeight());
+
+	local winner = C_MiniGames.GetWinner();
+	self.CloseTimeLabel:SetShown(winner);
+	self.CloseTime:SetShown(winner);
+end
+
+function ToggleMiniGameScoreFrame()
+	if MiniGameScoreFrame:IsShown() then
+		HideUIPanel(MiniGameScoreFrame);
+	else
+		if QueueStatus_InActiveMiniGame() then
+			C_MiniGames.RequestScoreData();
+
+			ShowUIPanel(MiniGameScoreFrame);
+		end
+	end
+end
+
+function MiniGameTimerFrame_OnUpdate(self, elapsed)
+	if MINI_GAME_SHUTDOWN_TIMER <= 0 then
+		self:SetScript("OnUpdate", nil);
+	end
+
+	MINI_GAME_SHUTDOWN_TIMER = MINI_GAME_SHUTDOWN_TIMER - elapsed;
+
+	MiniGameScoreFrame.CloseTime:SetText(SecondsToTime(MINI_GAME_SHUTDOWN_TIMER, nil, true));
+
+	local threshold = BATTLEFIELD_TIMER_THRESHOLDS[MINI_GAME_TIMER_THRESHOLD_INDEX];
+	if MINI_GAME_SHUTDOWN_TIMER > 0 then
+		if MINI_GAME_SHUTDOWN_TIMER < threshold and MINI_GAME_TIMER_THRESHOLD_INDEX ~= #BATTLEFIELD_TIMER_THRESHOLDS then
+			MINI_GAME_TIMER_THRESHOLD_INDEX = MINI_GAME_TIMER_THRESHOLD_INDEX + 1;
+		else
+			local currentMod = floor(MINI_GAME_SHUTDOWN_TIMER / threshold);
+			if PREVIOUS_MINI_GAME_MOD ~= currentMod then
+				local info = ChatTypeInfo["SYSTEM"];
+				DEFAULT_CHAT_FRAME:AddMessage(format(MINI_GAME_COMPLETE_MESSAGE, SecondsToTime(ceil(MINI_GAME_SHUTDOWN_TIMER / threshold) * threshold)), info.r, info.g, info.b, info.id);
+				PREVIOUS_MINI_GAME_MOD = currentMod;
+			end
+		end
+	else
+		MINI_GAME_SHUTDOWN_TIMER = 0;
+	end
 end

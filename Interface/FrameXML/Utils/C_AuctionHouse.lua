@@ -1121,6 +1121,14 @@ local COMMODITY_QUOTE_TIME;
 
 SIRUS_AUCTION_HOUSE_FAVORITE_ITEMS = {};
 
+local ITEMS_CACHE_NAME = GetLocale() == "ruRU" and 2 or 1;
+local ITEMS_CACHE_RARITY = 3;
+local ITEMS_CACHE_MINLEVEL = 5;
+local ITEMS_CACHE_TYPE = 6;
+local ITEMS_CACHE_SUBTYPE = 7;
+local ITEMS_CACHE_STACK_COUNT = 8;
+local ITEMS_CACHE_TEXTURE = 10;
+
 local browse = AuctionHouseUtil:CreateBrowse();
 local search = AuctionHouseUtil:CreateSearch();
 local ownerAuction = AuctionHouseUtil:CreateAuctions();
@@ -1310,6 +1318,8 @@ function C_AuctionHouse.GetAuctionItemSubClasses(classID)
 	return subClasses;
 end
 
+local LOCKED_WITH_SPELL = string.gsub(LOCKED_WITH_SPELL, "%%s", "");
+
 local function IsSellItemValid(bagID, slotID)
 	scanTooltip:SetOwner(WorldFrame, "ANCHOR_NONE");
 	scanTooltip:ClearLines();
@@ -1317,23 +1327,45 @@ local function IsSellItemValid(bagID, slotID)
 	scanTooltip:Show();
 
 	local obj = AuctionHouseUtilScanTooltipTextLeft1;
-	local text = obj:GetText();
 	if not obj then
-		return true;
+		return false;
+	end
+
+	local text = obj:GetText();
+	if text == RETRIEVING_ITEM_INFO then
+		return false;
 	end
 
 	if AUCTION_HOUSE_BIND_TYPES[text] == 0 then
 		return false;
 	end
 
-	for i = 2, ENABLE_COLORBLIND_MODE == "1" and 5 or 4 do
+	local foundLockbox;
+
+	local bindLines = ENABLE_COLORBLIND_MODE == "1" and 5 or 4;
+
+	for i = 2, scanTooltip:NumLines() do
 		obj = _G["AuctionHouseUtilScanTooltipTextLeft"..i];
 		if not obj then
 			return true;
 		end
 
 		text = obj:GetText();
-		if AUCTION_HOUSE_BIND_TYPES[text] == 0 then
+
+		if text == LOCKED or text == ITEM_OPENABLE or string.find(text, LOCKED_WITH_SPELL) then
+			if not foundLockbox then
+				local itemID = GetContainerItemID(bagID, slotID);
+				local itemCache = itemID and ItemsCache[itemID];
+
+				if itemCache and itemCache[ITEMS_CACHE_TYPE] == 15 and itemCache[ITEMS_CACHE_SUBTYPE] == 0 then
+					return true, true;
+				end
+			end
+
+			foundLockbox = true;
+		end
+
+		if i <= bindLines and AUCTION_HOUSE_BIND_TYPES[text] == 0 then
 			return false;
 		end
 	end
@@ -1567,13 +1599,6 @@ function C_AuctionHouse.GetItemKeyFromItem(item)
 end
 
 local ITEM_KEY_INFO = {};
-
-local ITEMS_CACHE_NAME = GetLocale() == "ruRU" and 2 or 1;
-local ITEMS_CACHE_RARITY = 3;
-local ITEMS_CACHE_MINLEVEL = 5;
-local ITEMS_CACHE_TYPE = 6;
-local ITEMS_CACHE_STACK_COUNT = 8;
-local ITEMS_CACHE_TEXTURE = 10;
 
 local function GetItemKeyInfo(itemKey, restrictQualityToFilter)
 	local itemID = itemKey.itemID;
@@ -2018,23 +2043,22 @@ local function PostItem(item, duration, quantity, bid, buyout)
 		local bagID, slotID = item:GetBagAndSlot();
 		local itemID = GetContainerItemID(bagID, slotID);
 
+		post:Clear();
+
 		if itemID then
 			post:SetInfo(bid, buyout, duration, quantity, itemID);
 
 			local isMultiSale = quantity > 1;
 			post:SetMultiSale(isMultiSale);
 
-			if isMultiSale then
-				FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_MULTISELL_START);
-				FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_MULTISELL_UPDATE, 1, quantity);
-			end
-
-			post:SetProgress(1);
-
 			ClickAuctionSellItemButton();
 			ClearCursor();
 
 			SendServerMessage("ACMSG_AUCTION_SELL_ITEM", format("%s:%s:%s:%s:%s:%s:%d", ACTION_HOUSE_NPC_GUID, bid, buyout, duration, bagID, slotID, 1));
+
+			if isMultiSale then
+				FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_MULTISELL_START, quantity);
+			end
 		end
 
 		return true;
@@ -2310,7 +2334,7 @@ local function SendBrowseQuery(query)
 
 		local filtersMask, searchString, minLevel, maxLevel, classID, subClassID, itemInvType = browse:GetFilterInfo();
 
-		SendServerMessage("ACMSG_AUCTION_BROWSE_QUERY", format("%s:%d:%d:%s:%d:%d:%d:%d:%d:%d:%d", ACTION_HOUSE_NPC_GUID, filtersMask, browse:GetOffset(), searchString, minLevel, maxLevel, classID, subClassID, itemInvType, browse:GetSortOrder(), browse:GetReverseSort()));
+		SendServerMessage("ACMSG_AUCTION_BROWSE_QUERY", format("%s|%d|%d|%s|%d|%d|%d|%d|%d|%d|%d", ACTION_HOUSE_NPC_GUID, filtersMask, browse:GetOffset(), searchString, minLevel, maxLevel, classID, subClassID, itemInvType, browse:GetSortOrder(), browse:GetReverseSort()));
 
 		return true;
 	end
@@ -2334,7 +2358,7 @@ local function RequestMoreBrowseResults()
 
 			local filtersMask, searchString, minLevel, maxLevel, classID, subClassID, itemInvType = browse:GetFilterInfo();
 
-			SendServerMessage("ACMSG_AUCTION_BROWSE_QUERY", format("%s:%d:%d:%s:%d:%d:%d:%d:%d:%d:%d", ACTION_HOUSE_NPC_GUID, filtersMask, browse:GetOffset(), searchString, minLevel, maxLevel, classID, subClassID, itemInvType, browse:GetSortOrder(), browse:GetReverseSort()));
+			SendServerMessage("ACMSG_AUCTION_BROWSE_QUERY", format("%s|%d|%d|%s|%d|%d|%d|%d|%d|%d|%d", ACTION_HOUSE_NPC_GUID, filtersMask, browse:GetOffset(), searchString, minLevel, maxLevel, classID, subClassID, itemInvType, browse:GetSortOrder(), browse:GetReverseSort()));
 
 			return true;
 		end
@@ -3020,18 +3044,8 @@ function EventHandler:ASMSG_AUCTION_LIST_BIDDED_ITEMS_RESULT(msg)
 	end
 end
 
-local function PostMultiSaleItem(bid, buyout, duration, postBagID, postSlodID, quantity)
+local function PostMultiSaleItem(bid, buyout, duration, postBagID, postSlodID)
 	SendServerThrottledMessage("ACMSG_AUCTION_SELL_ITEM", format("%s:%s:%s:%s:%s:%s:%d", ACTION_HOUSE_NPC_GUID, bid, buyout, duration, postBagID, postSlodID, 1));
-
-	post:SetProgress(1);
-
-	local progress = post:GetProgress();
-
-	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_MULTISELL_UPDATE, progress, quantity);
-
-	if progress == quantity then
-		post:Clear();
-	end
 
 	return true;
 end
@@ -3045,13 +3059,15 @@ function EventHandler:ASMSG_AUCTION_COMMAND_RESULT(msg)
 	if errorCode == AUCTION_HOUSE_ERROR.OK then
 		if auctionCommand == AUCTION_HOUSE_COMMAND.SELL_ITEM then
 			if auctionID then
-				FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_AUCTION_CREATED, auctionID);
-
-				SendChatMessageType(ERR_AUCTION_STARTED, "SYSTEM");
-
 				if ACTION_HOUSE_NPC_GUID and post:IsMultiSelling() then
 					local bid, buyout, duration, quantity, itemID = post:GetInfo();
 					if itemID then
+						post:SetProgress(1);
+
+						local progress = post:GetProgress();
+
+						FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_MULTISELL_UPDATE, progress, quantity);
+
 						local postBagID, postSlodID;
 
 						for bagID = 0, NUM_BAG_SLOTS do
@@ -3065,15 +3081,21 @@ function EventHandler:ASMSG_AUCTION_COMMAND_RESULT(msg)
 							end
 						end
 
-						if postBagID and postSlodID then
-							SendServerThrottledMessage(PostMultiSaleItem, bid, buyout, duration, postBagID, postSlodID, quantity);
+						if postBagID and postSlodID and progress < quantity then
+							SendServerThrottledMessage(PostMultiSaleItem, bid, buyout, duration, postBagID, postSlodID);
 						else
 							post:Clear();
 
-							FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_MULTISELL_FAILURE);
+							if progress ~= quantity then
+								FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_MULTISELL_FAILURE);
+							end
 						end
 					end
 				end
+
+				FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_AUCTION_CREATED, auctionID);
+
+				SendChatMessageType(ERR_AUCTION_STARTED, "SYSTEM");
 			end
 		elseif auctionCommand == AUCTION_HOUSE_COMMAND.CANCEL then
 			SendChatMessageType(ERR_AUCTION_REMOVED, "SYSTEM");
@@ -3220,11 +3242,12 @@ function EventHandler:ASMSG_AUCTION_HOUSE_STATUS(msg)
 	elseif status == "3" then
 		ACTION_HOUSE_NPC_GUID = npcGUID;
 
-		if TradeSkillFrame and TradeSkillFrame:IsShown() then
+		local minimalizeMode = GetCVarBool("miniTradeSkillFrame");
+		if not minimalizeMode and (TradeSkillFrame and TradeSkillFrame:IsShown()) then
 			TradeSkillFrame.minimalizeMode = true;
 			SetCVar("miniTradeSkillFrame", 1);
 
-			TradeSkillFrame_ToggleMode(GetCVarBool("miniTradeSkillFrame"));
+			TradeSkillFrame_ToggleMode(true);
 		end
 
 		ShowUIPanel(AuctionHouseFrame);
@@ -3233,6 +3256,15 @@ function EventHandler:ASMSG_AUCTION_HOUSE_STATUS(msg)
 	else
 		ACTION_HOUSE_NPC_GUID = nil;
 		HideUIPanel(AuctionHouseFrame);
+
+		if TradeSkillFrame.minimalizeMode then
+			TradeSkillFrame.minimalizeMode = false;
+			SetCVar("miniTradeSkillFrame", 0);
+
+			if TradeSkillFrame and TradeSkillFrame:IsShown() then
+				TradeSkillFrame_ToggleMode(false);
+			end
+		end
 
 		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_CLOSED);
 	end

@@ -874,6 +874,7 @@
 								</Anchors>
 								<Scripts>
 									<OnClick>
+										CharacterSelect.deletedLock = false
                                         SendPacket("010");
 										GetCharacterListUpdate()
 									</OnClick>

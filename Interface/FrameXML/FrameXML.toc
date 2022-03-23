@@ -24,6 +24,7 @@
 ..\SharedXML\AnchorUtil.xml
 ..\SharedXML\CircularBuffer.lua
 ..\SharedXML\Opcodes.lua
+..\SharedXML\TypeUtil.lua
 
 ..\SharedXML\C_TimerAugment.lua
 ..\SharedXML\ItemsCache.lua
@@ -69,6 +70,7 @@ Utils\C_LookingForGuild.lua
 Utils\C_PetJournal.lua
 Utils\C_TransmogCollection.lua
 Utils\C_Transmog.lua
+Utils\C_MiniGames.lua
 
 
 TrinityCoreAPI.lua
@@ -219,6 +221,7 @@ LevelUpDisplay.xml
 SpellFlyout.xml
 Custom_Achievements_FactionData.lua
 QueueStatusFrame.xml
+HelpTip.xml
 
 TransmogUtil.lua
 CollectionsUtil.lua

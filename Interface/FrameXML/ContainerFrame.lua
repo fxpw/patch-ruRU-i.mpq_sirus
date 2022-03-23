@@ -1008,6 +1008,9 @@ function ContainerFrameItemButton_OnClick(self, button)
 
 		-- this hack for right click when custom auction is open
 		if AuctionHouseFrame and AuctionHouseFrame:IsShown() then
+			local bagItemLocation = ItemLocation:CreateFromBagAndSlot(bagID, slotID);
+			local valid, isLockbox = C_AuctionHouse.IsSellItemValid(bagItemLocation);
+
 			local auctionSellFrame = AuctionHouseFrame.ItemSellFrame:IsShown() and AuctionHouseFrame.ItemSellFrame or AuctionHouseFrame.CommoditiesSellFrame;
 
 			if GetAuctionSellItemInfo() then
@@ -1019,19 +1022,24 @@ function ContainerFrameItemButton_OnClick(self, button)
 					end
 				end
 
-				PickupContainerItem(bagID, slotID);
+				if not isLockbox then
+					PickupContainerItem(bagID, slotID);
+				end
+
 				ClickAuctionSellItemButton();
 				ClearCursor();
 
-				if select(3, GetContainerItemInfo(bagID, slotID)) then
-					auctionSellFrame.ItemDisplay:SetItemLocation(ItemLocation:CreateFromBagAndSlot(bagID, slotID), nil, true);
+				if isLockbox or select(3, GetContainerItemInfo(bagID, slotID)) then
+					auctionSellFrame.ItemDisplay:SetItemLocation(bagItemLocation, nil, true);
 				end
 			else
-				PickupContainerItem(bagID, slotID);
-				ClickAuctionSellItemButton();
+				if not isLockbox then
+					PickupContainerItem(bagID, slotID);
+					ClickAuctionSellItemButton();
+				end
 
-				if GetAuctionSellItemInfo() then
-					auctionSellFrame.ItemDisplay:SetItemLocation(ItemLocation:CreateFromBagAndSlot(bagID, slotID), nil, true);
+				if isLockbox or GetAuctionSellItemInfo() then
+					auctionSellFrame.ItemDisplay:SetItemLocation(bagItemLocation, nil, true);
 				else
 					ClearCursor();
 				end

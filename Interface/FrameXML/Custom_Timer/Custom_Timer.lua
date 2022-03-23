@@ -240,8 +240,9 @@ function StartTimer_BigNumberOnUpdate(self, elasped)
 	local minutes, seconds = floor(self.time/60), floor(mod(self.time, 60)) 
     self.updateTime = self.updateTime + elasped
 
-	if GetCVar("BattlegroundTimerType") ~= "0" then
-		ArenaPlayerReadyStatusButtonToggle(self.time)
+	local timerType = GetCVar("BattlegroundTimerType");
+	if timerType ~= "0" then
+		ArenaPlayerReadyStatusButtonToggle(self.time, timerType)
 	end
 
 	if self.time < 12 then

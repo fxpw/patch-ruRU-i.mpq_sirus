@@ -1,6 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 	<Script file="LFDFrame.lua"/>
+	<Button name="LFDRoleButtonTemplate" inherits="LFGRoleButtonWithBackgroundAndRewardTemplate" virtual="true"/>
 	<Frame name="LFDFrameDungeonChoiceTemplate" enableMouse="true" inherits="LFGSpecificChoiceTemplate" virtual="true">
 		<Scripts>
 			<OnLoad>
@@ -922,6 +923,390 @@
 		</Scripts>
 	</Button>
 
+	<Button name="MiniGameButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
+		<Size x="72" y="72"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parentRing" file="Interface\TalentFrame\talent-main" parentKey="Ring">
+					<Size x="102" y="103"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+					<TexCoords left="0.50000000" right="0.91796875" top="0.00195313" bottom="0.21093750"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="65" y="65"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentRing" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+
+			</OnLoad>
+			<OnEnter>
+				if self.name then
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+					GameTooltip:SetText(self.name, nil, nil, nil, nil, true);
+				end
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide();
+			</OnLeave>
+			<OnMouseUp>
+				self.Icon:SetPoint("CENTER", self.Ring, 0, 0);
+			</OnMouseUp>
+			<OnMouseDown>
+				self.Icon:SetPoint("CENTER", self.Ring, 1, -1);
+			</OnMouseDown>
+			<OnClick>
+				MiniGamesParentFrame:SetSelectedGame(self:GetID());
+			</OnClick>
+		</Scripts>
+		<HighlightTexture file="Interface\TalentFrame\talent-main" alphaMode="ADD">
+			<Size x="102" y="103"/>
+			<Anchors>
+				<Anchor point="CENTER" x="0" y="0"/>
+			</Anchors>
+			<TexCoords left="0.50000000" right="0.91796875" top="0.00195313" bottom="0.21093750"/>
+		</HighlightTexture>
+	</Button>
+	<Button name="MiniGameLootTemplate" inherits="LargeItemButtonTemplate" virtual="true">
+		<Scripts>
+			<OnLoad>
+				self.hasItem = 1;
+			</OnLoad>
+			<OnEnter>
+				local itemID = self.itemID;
+				if itemID then
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+					GameTooltip:SetHyperlink(string.format("item:%d", itemID));
+					CursorUpdate(self);
+				end
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide();
+				ResetCursor();
+			</OnLeave>
+			<OnUpdate>
+				CursorOnUpdate(self, elapsed);
+			</OnUpdate>
+			<OnClick>
+				local itemLink = self.itemLink;
+				if itemLink then
+					HandleModifiedItemClick(itemLink);
+				end
+			</OnClick>
+		</Scripts>
+	</Button>
+	<Frame name="MiniGameReadyRewardTemplate" virtual="true">
+		<Size x="40" y="40"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentTexture" parentKey="Texture">
+					<Size x="30" y="30"/>
+					<Anchors>
+						<Anchor point="CENTER" x="-3" y="3"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentBorder" setAllPoints="true" file="Interface\LFGFrame\UI-LFG-ICON-REWARDRING">
+					<TexCoords left="0" right="0.675" top="0" bottom="0.675"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnEnter function="MiniGameReadyDialogReward_OnEnter"/>
+			<OnLeave function="GameTooltip_Hide"/>
+		</Scripts>
+	</Frame>
+	<Frame name="MiniGameReadyStatusPlayerTemplate" virtual="true">
+		<Size x="55" y="55"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentTexture" file="Interface\LFGFrame\UI-LFG-ICON-ROLES" setAllPoints="true" parentKey="Texture"/>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentStatusIcon"  file="Interface\RaidFrame\ReadyCheck-Waiting" parentKey="StatusIcon">
+					<Size x="30" y="30"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="5" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Frame>
+	<Frame name="MiniGameReadyStatusRoleWithCountTemplate" inherits="MiniGameReadyStatusPlayerTemplate" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentCount" inherits="GameFontHighlight" parentKey="Count">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parent" relativePoint="BOTTOM" x="0" y="-2"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+	<Frame name="MiniGameReadyPopup" parent="UIParent" frameStrata="DIALOG" hidden="true">
+		<Size x="306" y="223"/>
+		<Frames>
+			<Frame name="MiniGameReadyStatus" toplevel="true" enableMouse="true">
+				<Size x="306" y="130"/>
+				<Anchors>
+					<Anchor point="TOP"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="$parentLabel" inherits="GameFontHighlight" justifyH="CENTER" text="READY_CHECK">
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-15"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+					<BackgroundInsets>
+						<AbsInset left="11" right="12" top="12" bottom="11"/>
+					</BackgroundInsets>
+					<TileSize>
+						<AbsValue val="32"/>
+					</TileSize>
+					<EdgeSize>
+						<AbsValue val="32"/>
+					</EdgeSize>
+				</Backdrop>
+				<Frames>
+					<Button name="$parentCloseButton">
+						<Size x="32" y="32"/>
+						<Anchors>
+							<Anchor point="TOPRIGHT" x="-2" y="-2"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								StaticPopupSpecial_Hide(MiniGameReadyPopup);
+							</OnClick>
+						</Scripts>
+						<NormalTexture file="Interface\Buttons\UI-Panel-HideButton-Up"/>
+						<PushedTexture file="Interface\Buttons\UI-Panel-HideButton-Down"/>
+						<HighlightTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Highlight" alphaMode="ADD"/>
+					</Button>
+					<Frame name="$parentRoleless" parentKey="Roleless">
+						<Size x="306" y="55"/>
+						<Anchors>
+							<Anchor point="CENTER" x="0" y="0"/>
+						</Anchors>
+						<Frames>
+							<Frame name="$parentReady" inherits="MiniGameReadyStatusRoleWithCountTemplate" parentKey="Ready">
+								<Anchors>
+									<Anchor point="CENTER" x="0" y="0"/>
+								</Anchors>
+							</Frame>
+						</Frames>
+						<Scripts>
+							<OnLoad>
+								self.Ready.Texture:SetTexCoord(0.5234375, 0.78125, 0, 0.2578125);
+								self.Ready.StatusIcon:Hide();
+							</OnLoad>
+						</Scripts>
+					</Frame>
+				</Frames>
+			</Frame>
+			<Frame name="MiniGameReadyDialog" setAllPoints="true" toplevel="true" enableMouse="true">
+				<Size x="306" y="193"/>
+				<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+					<BackgroundInsets>
+						<AbsInset left="11" right="12" top="12" bottom="11"/>
+					</BackgroundInsets>
+					<TileSize>
+						<AbsValue val="32"/>
+					</TileSize>
+					<EdgeSize>
+						<AbsValue val="32"/>
+					</EdgeSize>
+				</Backdrop>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background" file="Interface\LFGFrame\UI-LFG-BACKGROUND-RANDOMDUNGEON">
+							<Size x="294" y="118"/>
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-11"/>
+								<Anchor point="BOTTOM" x="0" y="64"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<FontString name="$parentLabel" parentKey="Label" inherits="GameFontHighlight" justifyH="CENTER" text="MINI_GAME_IS_READY">
+							<Size x="150" y="0"/>
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-15"/>
+							</Anchors>
+						</FontString>
+						<Texture name="$parentFiligree" file="Interface\LFGFrame\UI-LFG-FILIGREE">
+							<Size x="292" y="54"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="7" y="-3"/>
+								<Anchor point="TOPRIGHT" x="-7" y="-3"/>
+							</Anchors>
+							<TexCoords left="0.02734" right="0.59765" top="0.578125" bottom="1.0"/>
+						</Texture>
+						<Texture name="$parentBottomArt" file="Interface\LFGFrame\UI-LFG-FILIGREE">
+							<Size x="287" y="72"/>
+							<Anchors>
+								<Anchor point="BOTTOM" x="0" y="55"/>
+							</Anchors>
+							<TexCoords left="0.0" right="0.5605" top="0.0" bottom="0.5625"/>
+						</Texture>
+						<FontString name="$parentYourGoalDescription" inherits="GameFontHighlightExtraSmall" text="YOUR_GOAL">
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" x="108" y="93"/>
+							</Anchors>
+						</FontString>
+						<FontString name="$parentGoalLabel" parentKey="GoalLabel" inherits="GameFontNormalLarge">
+							<Anchors>
+								<Anchor point="TOPRIGHT" relativeTo="$parentYourGoalDescription" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Button name="$parentCloseButton">
+						<Size x="32" y="32"/>
+						<Anchors>
+							<Anchor point="TOPRIGHT" x="-2" y="-2"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB);
+								StaticPopupSpecial_Hide(MiniGameReadyPopup);
+							</OnClick>
+						</Scripts>
+						<NormalTexture file="Interface\Buttons\UI-Panel-HideButton-Up"/>
+						<PushedTexture file="Interface\Buttons\UI-Panel-HideButton-Down"/>
+						<HighlightTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Highlight" alphaMode="ADD"/>
+					</Button>
+					<Button name="$parentEnterButton" inherits="UIPanelButtonTemplate" text="ENTER_MINI_GAME" parentKey="EnterButton">
+						<Size x="115" y="22"/>
+						<Anchors>
+							<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOM" x="-7" y="25"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								local inviteID = self:GetParent().inviteID;
+								if inviteID then
+									PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB);
+									C_MiniGames.AcceptInvite(inviteID);
+								end
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="$parentLeaveQueueButton" inherits="UIPanelButtonTemplate" text="LEAVE_QUEUE" parentKey="LeaveButton">
+						<Size x="115" y="22"/>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" relativePoint="BOTTOM" x="7" y="25"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								local inviteID = self:GetParent().inviteID;
+								if inviteID then
+									PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB);
+									C_MiniGames.DeclineInvite(inviteID);
+								end
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Frame name="$parentInstanceIcon" parentKey="InstanceIcon">
+						<Size x="67" y="67"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="-1" y="54"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture name="$parentRing" parentKey="Ring" file="Interface\TalentFrame\talent-main">
+									<Size x="90" y="90"/>
+									<Anchors>
+										<Anchor point="CENTER" x="0" y="0"/>
+									</Anchors>
+									<TexCoords left="0.50000000" right="0.91796875" top="0.00195313" bottom="0.21093750"/>
+								</Texture>
+							</Layer>
+							<Layer level="BORDER">
+								<Texture name="$parentTexture" parentKey="Texture">
+									<Size x="58" y="58"/>
+									<Anchors>
+										<Anchor point="CENTER" x="0" y="0"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Frame>
+					<Frame name="$parentInstanceInfoFrame" parentKey="InstanceInfo">
+						<Size x="170" y="50"/>
+						<Anchors>
+							<Anchor point="BOTTOM" relativeTo="$parentInstanceIcon" relativePoint="TOP" x="0" y="10"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture file="Interface\LFGFrame\UI-LFG-SEPARATOR">
+									<Size x="170" y="40"/>
+									<Anchors>
+										<Anchor point="TOP" x="0" y="0"/>
+									</Anchors>
+									<TexCoords left="0" right="0.6640625" top="0" bottom="0.3125"/>
+								</Texture>
+							</Layer>
+							<Layer level="ARTWORK">
+								<FontString name="$parentName" inherits="GameFontNormalLarge" justifyH="CENTER" parentKey="Name">
+									<Anchors>
+										<Anchor point="TOP" x="0" y="-13"/>
+									</Anchors>
+								</FontString>
+								<FontString name="$parentStatusText" inherits="GameFontNormal" justifyH="CENTER" parentKey="StatusText">
+									<Anchors>
+										<Anchor point="BOTTOM"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+					</Frame>
+					<Frame name="$parentRewardsFrame" parentKey="RewardsFrame">
+						<Size x="72" y="40"/>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" relativeTo="$parentInstanceIcon" relativePoint="BOTTOMRIGHT" x="19" y="15"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString name="$parentLabel" parentKey="Label" inherits="GameFontNormalSmall" justifyH="CENTER" text="LFD_REWARDS">
+									<Anchors>
+										<Anchor point="BOTTOM"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnLoad>
+								self.rewardPool = CreateFramePool("Frame", self, "MiniGameReadyRewardTemplate");
+							</OnLoad>
+						</Scripts>
+					</Frame>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, MiniGameReadyPopupMixin);
+			</OnLoad>
+			<OnHide>
+				self.inviteID = nil;
+				self.miniGameID = nil;
+			</OnHide>
+		</Scripts>
+	</Frame>
+
 	<Frame name="LFDParentFrame" inherits="PortraitFrameTemplate2" toplevel="true" hidden="true" enableMouse="true" parent="UIParent">
 		<Size x="563" y="428"/>
 		<Anchors>
@@ -1115,6 +1500,11 @@
 					<Anchor point="TOPLEFT" x="10" y="-131" />
 				</Anchors>
 			</Button>
+			<Button name="$parentGroupButton2" inherits="GroupFinderGroupButtonTemplate" parentKey="groupButton2" id="2">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentGroupButton1" relativePoint="BOTTOM" x="0" y="-30"/>
+				</Anchors>
+			</Button>
 			<Frame name="LFDQueueParentFrame">
 				<Size x="338" y="428"/>
 				<Anchors>
@@ -1174,7 +1564,7 @@
 							</Layer>
 						</Layers>
 						<Frames>
-							<Button name="$parentRoleButtonTank" inherits="LFGRoleButtonWithBackgroundTemplate" id="2">
+							<Button name="$parentRoleButtonTank" inherits="LFDRoleButtonTemplate" id="2">
 								<Anchors>
 									<Anchor point="BOTTOMLEFT">
 										<Offset>
@@ -1188,10 +1578,11 @@
 										self.background:SetTexCoord(GetBackgroundTexCoordsForRole("TANK"));
 										self.background:SetAlpha(0.6);
 										self.checkButton.onClick = LFDFrameRoleCheckButton_OnClick;
+										self.role = "TANK";
 									</OnLoad>
 								</Scripts>
 							</Button>
-							<Button name="$parentRoleButtonHealer" inherits="LFGRoleButtonWithBackgroundTemplate" id="3">
+							<Button name="$parentRoleButtonHealer" inherits="LFDRoleButtonTemplate" id="3">
 								<Anchors>
 									<Anchor point="LEFT" relativeTo="$parentRoleButtonTank" relativePoint="RIGHT">
 										<Offset>
@@ -1205,10 +1596,11 @@
 										self.background:SetTexCoord(GetBackgroundTexCoordsForRole("HEALER"));
 										self.background:SetAlpha(0.4);
 										self.checkButton.onClick = LFDFrameRoleCheckButton_OnClick;
+										self.role = "HEALER";
 									</OnLoad>
 								</Scripts>
 							</Button>
-							<Button name="$parentRoleButtonDPS" inherits="LFGRoleButtonWithBackgroundTemplate" id="1">
+							<Button name="$parentRoleButtonDPS" inherits="LFDRoleButtonTemplate" id="1">
 								<Anchors>
 									<Anchor point="LEFT" relativeTo="$parentRoleButtonHealer" relativePoint="RIGHT">
 										<Offset>
@@ -1222,6 +1614,7 @@
 										self.background:SetTexCoord(GetBackgroundTexCoordsForRole("DAMAGER"));
 										self.background:SetAlpha(0.6);
 										self.checkButton.onClick = LFDFrameRoleCheckButton_OnClick;
+										self.role = "DAMAGER";
 									</OnLoad>
 								</Scripts>
 							</Button>
@@ -2010,12 +2403,525 @@
 					</Frame>
 				</Frames>
 			</Frame>
+			<Frame name="MiniGamesParentFrame" hidden="true">
+				<Size x="338" y="428"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="224" y="0"/>
+				</Anchors>
+				<Frames>
+					<Frame name="$parentTopInset" inherits="InsetFrameTemplate" parentKey="TopInset">
+						<Size x="329" y="111"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="3" y="-21"/>
+						</Anchors>
+						<Layers>
+							<Layer level="OVERLAY">
+								<Texture name="$parentTopTileStreaks" inherits="_UI-Frame-TopTileStreaks" parentKey="TopTileStreaks">
+									<Anchors>
+										<Anchor point="TOPLEFT" x="-2" y="0"/>
+										<Anchor point="TOPRIGHT" x="-2" y="0"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+						<Frames>
+							<ScrollFrame name="$parentScrollFrame" parentKey="ScrollFrame">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="4" y="0"/>
+									<Anchor point="BOTTOMRIGHT" x="-4" y="0"/>
+								</Anchors>
+								<ScrollChild>
+									<Frame name="$parentChildFrame" parentKey="ChildFrame">
+										<Size x="10" y="111"/>
+									</Frame>
+								</ScrollChild>
+								<Scripts>
+									<OnMouseWheel>
+										if delta > 0 then
+											MiniGamesParentFrame:SetValue(MiniGamesParentFrame:GetValue() - 80);
+										else
+											MiniGamesParentFrame:SetValue(MiniGamesParentFrame:GetValue() + 80);
+										end
+									</OnMouseWheel>
+								</Scripts>
+							</ScrollFrame>
+						</Frames>
+					</Frame>
+					<Frame name="$parentBottomInset" inherits="InsetFrameTemplate" parentKey="BottomInset">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentTopInset" relativePoint="BOTTOMLEFT" x="0" y="-12"/>
+							<Anchor point="BOTTOMRIGHT" x="-6" y="26"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture name="$parentBackground" parentKey="Background" file="Interface\LFGFrame\UI-LFG-BACKGROUND-QUESTPAPER">
+									<Size x="512" y="256"/>
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+						<Frames>
+							<ScrollFrame name="$parentScrollFrame" parentKey="ScrollFrame" inherits="UIPanelScrollFrameTemplate">
+								<Size x="303" y="239"/>
+								<Anchors>
+									<Anchor point="TOPLEFT" x="3" y="-10"/>
+								</Anchors>
+								<Layers>
+									<Layer level="BACKGROUND">
+										<Texture name="$parentScrollBackground">
+											<Anchors>
+												<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="-4" y="7"/>
+												<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="24" y="-9"/>
+											</Anchors>
+											<Color r="0" b="0" g="0" a=".65"/>
+										</Texture>
+									</Layer>
+									<Layer level="ARTWORK">
+										<Texture name="$parentScrollBackgroundTopLeft" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+											<Size x="31" y="256"/>
+											<Anchors>
+												<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="-5" y="12"/>
+											</Anchors>
+											<TexCoords left="0" right="0.484375" top="0" bottom="1.0"/>
+										</Texture>
+										<Texture name="$parentScrollBackgroundBottomRight" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+											<Size x="31" y="106"/>
+											<Anchors>
+												<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="-5" y="-11"/>
+											</Anchors>
+											<TexCoords left="0.515625" right="1.0" top="0" bottom="0.4140625"/>
+										</Texture>
+									</Layer>
+								</Layers>
+								<Scripts>
+									<OnLoad>
+										local myName = self:GetName();
+										_G[myName.."ScrollBackground"]:SetParent(_G[myName.."ScrollBar"]);
+										_G[myName.."ScrollBackgroundTopLeft"]:SetParent(_G[myName.."ScrollBar"]);
+										_G[myName.."ScrollBackgroundBottomRight"]:SetParent(_G[myName.."ScrollBar"]);
+
+										local scrollBar = _G[myName.."ScrollBar"];
+										scrollBar:ClearAllPoints();
+										scrollBar:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 3, 7);
+										scrollBar:SetPoint("TOPLEFT", self, "TOPRIGHT", 3, -9);
+
+										self.scrollBarHideable = true;
+										ScrollFrame_OnLoad(self);
+									</OnLoad>
+								</Scripts>
+								<ScrollChild>
+									<Frame name="$parentChildFrame" parentKey="ChildFrame">
+										<Size x="1" y="1"/>
+										<Layers>
+											<Layer level="ARTWORK">
+												<FontString name="$parentTitle" inherits="QuestTitleFontBlackShadow" justifyH="LEFT" parentKey="Title">
+													<Anchors>
+														<Anchor point="TOPLEFT" x="10" y="-10"/>
+													</Anchors>
+												</FontString>
+												<FontString name="$parentDescription" inherits="QuestFont" justifyH="LEFT" parentKey="Description">
+													<Size x="280" y="0"/>
+													<Anchors>
+														<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT" x="0" y="-5"/>
+													</Anchors>
+												</FontString>
+												<FontString name="$parentMembersLabel" inherits="QuestTitleFontBlackShadow" justifyH="LEFT" parentKey="MembersLabel" text="MINI_GAME_MEMBERS" hidden="true">
+													<Anchors>
+														<Anchor point="TOPLEFT" relativeTo="$parentDescription" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
+													</Anchors>
+												</FontString>
+												<FontString name="$parentMembersDescription" inherits="QuestFont" justifyH="LEFT" parentKey="MembersDescription" hidden="true">
+													<Size x="280" y="0"/>
+													<Anchors>
+														<Anchor point="TOPLEFT" relativeTo="$parentMembersLabel" relativePoint="BOTTOMLEFT" x="0" y="-5"/>
+													</Anchors>
+													<Color r="1" g="1" b="1"/>
+												</FontString>
+												<FontString name="$parentRewardsLabel" inherits="QuestTitleFontBlackShadow" justifyH="LEFT" parentKey="RewardsLabel" text="LFD_REWARDS" hidden="true">
+													<Anchors>
+														<Anchor point="TOPLEFT" relativeTo="$parentMembersDescription" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
+													</Anchors>
+												</FontString>
+												<FontString name="$parentRewardsDescription" inherits="QuestFont" justifyH="LEFT" parentKey="RewardsDescription" text="LFD_RANDOM_REWARD_EXPLANATION1" hidden="true">
+													<Size x="280" y="0"/>
+													<Anchors>
+														<Anchor point="TOPLEFT" relativeTo="$parentRewardsLabel" relativePoint="BOTTOMLEFT" x="0" y="-5"/>
+													</Anchors>
+												</FontString>
+												<FontString name="$parentMoneyLabel" inherits="QuestFont" justifyH="LEFT" parentKey="MoneyLabel" text="MONEY_COLON" hidden="true">
+													<Anchors>
+														<Anchor point="TOPLEFT" relativeTo="$parentRewardsLabel" relativePoint="BOTTOMLEFT" x="20" y="-10"/>
+													</Anchors>
+												</FontString>
+											</Layer>
+										</Layers>
+										<Frames>
+											<Frame name="$parentMoneyFrame" inherits="MoneyFrameTemplate" parentKey="MoneyFrame" hidden="true">
+												<Anchors>
+													<Anchor point="LEFT" relativeTo="$parentMoneyLabel" relativePoint="RIGHT" x="10" y="0"/>
+												</Anchors>
+												<Scripts>
+													<OnLoad>
+														SmallMoneyFrame_OnLoad(self);
+														MoneyFrame_SetType(self, "STATIC");
+													</OnLoad>
+												</Scripts>
+											</Frame>
+											<Frame name="$parentSpacer" parentKey="Spacer">
+												<Size x="2" y="2"/>
+												<Anchors>
+													<Anchor point="TOPLEFT" relativeTo="$parentMoneyFrame" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
+												</Anchors>
+											</Frame>
+										</Frames>
+										<Scripts>
+											<OnLoad>
+												self.Description:SetTextColor(1, 1, 1);
+												self.RewardsDescription:SetTextColor(1, 1, 1);
+												self.MoneyLabel:SetTextColor(1, 1, 1);
+											</OnLoad>
+										</Scripts>
+									</Frame>
+								</ScrollChild>
+							</ScrollFrame>
+						</Frames>
+					</Frame>
+					<Button name="$parentFindGroupButton" parentKey="FindGroupButton" inherits="MagicButtonTemplate" text="FIND_A_GROUP">
+						<Size x="135" y="22"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="0" y="3"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								self:GetParent():JoinMiniGame();
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Frame name="MiniGamesFrame" toplevel="true" setAllPoints="true">
+						<Scripts>
+							<OnLoad>
+								RaiseFrameLevelByThree(self)
+							</OnLoad>
+							<OnShow>
+								UpdateMicroButtons();
+								PlaySound("igCharacterInfoOpen");
+							</OnShow>
+							<OnHide>
+								UpdateMicroButtons();
+								PlaySound("igCharacterInfoClose");
+							</OnHide>
+						</Scripts>
+					</Frame>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, MiniGamesFrameMixin);
+						self:OnLoad();
+					</OnLoad>
+					<OnShow>
+						self:OnShow();
+					</OnShow>
+					<OnEvent>
+						self:OnEvent(event, ...);
+					</OnEvent>
+				</Scripts>
+			</Frame>
 		</Frames>
 		<Scripts>
 			<OnLoad function="LFDFrame_OnLoad"/>
 			<OnEvent function="LFDFrame_OnEvent"/>
 			<OnShow function="LFDFrame_OnShow"/>
 			<OnHide function="LFDFrame_OnHide"/>
+		</Scripts>
+	</Frame>
+
+	<Frame name="MiniGamesBanner" parent="UIParent" frameStrata="FULLSCREEN_DIALOG" hidden="true" alpha="1">
+		<Size x="128" y="156"/>
+		<Anchors>
+			<Anchor point="TOP" x="0" y="-120"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentBannerTop" parentKey="BannerTop" alphaMode="BLEND">
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-44"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Alpha duration="0" order="1" change="-1"/>
+							<Scale duration="0" order="1" scaleX="0.1" scaleY="1"/>
+							<Alpha startDelay="0.35" duration="0.25" order="2" change="1"/>
+							<Scale startDelay="0.25" duration="0.3" order="2" scaleX="10" scaleY="1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<Texture name="$parentBannerTopGlow" parentKey="BannerTopGlow" alpha="0" alphaMode="ADD">
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-44"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Scale duration="0" order="1" scaleX="0.5" scaleY="1"/>
+							<Alpha startDelay="1.15" duration="0.25" order="2" change="1"/>
+							<Scale startDelay="1.15" duration="0.5" order="2" scaleX="3.2" scaleY="1"/>
+							<Alpha startDelay="1.25" duration="0.6" order="2" change="-1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<Texture name="$parentBannerBottom" parentKey="BannerBottom" alphaMode="BLEND">
+					<Anchors>
+						<Anchor point="BOTTOM" x="0" y="0"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Alpha duration="0" order="1" change="-1"/>
+							<Scale duration="0" order="1" scaleX="0.1" scaleY="1"/>
+							<Alpha startDelay="0.35" duration="0.25" order="2" change="1"/>
+							<Scale startDelay="0.25" duration="0.3" order="2" scaleX="10" scaleY="1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<Texture name="$parentBannerBottomGlow" parentKey="BannerBottomGlow" alpha="0" alphaMode="ADD">
+					<Anchors>
+						<Anchor point="BOTTOM" x="0" y="0"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Scale duration="0" order="1" scaleX="0.5" scaleY="1"/>
+							<Alpha startDelay="1.15" duration="0.25" order="2" change="1"/>
+							<Scale startDelay="1.15" duration="0.5" order="2" scaleX="3.2" scaleY="1"/>
+							<Alpha startDelay="1.25" duration="0.6" order="2" change="-1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBannerMiddle" parentKey="BannerMiddle" alphaMode="BLEND">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBannerTop" x="0" y="-34"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBannerBottom" x="0" y="25"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Alpha duration="0" order="1" change="-1"/>
+							<Scale duration="0" order="1" scaleX="0.1" scaleY="1"/>
+							<Alpha startDelay="0.35" duration="0.25" order="2" change="1"/>
+							<Scale startDelay="0.25" duration="0.3" order="2" scaleX="10" scaleY="1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<Texture name="$parentBannerMiddleGlow" parentKey="BannerMiddleGlow" alpha="0" alphaMode="ADD">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBannerTop" x="0" y="-34"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBannerBottom" x="0" y="25"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Scale duration="0" order="1" scaleX="0.5" scaleY="1"/>
+							<Alpha startDelay="1.15" duration="0.25" order="2" change="1"/>
+							<Scale startDelay="1.15" duration="0.5" order="2" scaleX="3.2" scaleY="1"/>
+							<Alpha startDelay="1.25" duration="0.6" order="2" change="-1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentSkullCircle" parentKey="SkullCircle" alphaMode="BLEND">
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentBannerTop" x="0" y="36"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Scale duration="0" order="1" scaleX="5" scaleY="5"/>
+							<Alpha duration="0" order="1" change="-1"/>
+							<Scale duration="0.15" order="2" scaleX="0.2" scaleY="0.2"/>
+							<Alpha duration="0.1" order="2" change="1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentBottomFillagree" parentKey="BottomFillagree" alphaMode="BLEND">
+					<Anchors>
+						<Anchor point="BOTTOM" x="0" y="8"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Alpha duration="0" order="1" change="-1"/>
+							<Alpha startDelay="0.30" duration="0.15" order="2" change="1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<Texture name="$parentSkullSpikes" parentKey="SkullSpikes" alphaMode="BLEND">
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentSkullCircle" x="-1" y="6"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Scale duration="0" order="1" scaleX="0.5" scaleY="0.5"/>
+							<Alpha duration="0" order="1" change="-1"/>
+							<Scale startDelay="0.25" duration="0.1" order="2" scaleX="2" scaleY="2"/>
+							<Alpha startDelay="0.15" duration="0.1" order="2" change="1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<Texture name="$parentRightFillagree" parentKey="RightFillagree" alphaMode="BLEND">
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentSkullCircle" x="10" y="6"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Alpha duration="0" order="1" change="-1"/>
+							<Scale duration="0" order="1" scaleX="0.5" scaleY="0.5"/>
+							<Alpha startDelay="0.15" duration="0.1" order="2" change="1"/>
+							<Translation parentKey="Translation" startDelay="0.30" duration="0.15" order="2"/>
+							<Scale parentKey="Scale" startDelay="0.30" duration="0.15" order="2" scaleX="2" scaleY="2">
+								<Origin point="LEFT">
+									<Offset x="0" y="0"/>
+								</Origin>
+							</Scale>
+							<Scripts>
+								<OnFinished>
+									local banner = self:GetParent():GetParent();
+									banner.RightFillagree:SetPoint("CENTER", banner.SkullCircle, "CENTER", 47, 6);
+								</OnFinished>
+							</Scripts>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<Texture name="$parentLeftFillagree" parentKey="LeftFillagree" alphaMode="BLEND">
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentSkullCircle" x="-10" y="6"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Alpha duration="0" order="1" change="-1"/>
+							<Scale duration="0" order="1" scaleX="0.5" scaleY="0.5"/>
+							<Alpha startDelay="0.15" duration="0.1" order="2" change="1"/>
+							<Translation parentKey="Translation" startDelay="0.30" duration="0.15" order="2"/>
+							<Scale parentKey="Scale" startDelay="0.30" duration="0.15" order="2" scaleX="2" scaleY="2">
+								<Origin point="RIGHT">
+									<Offset x="0" y="0"/>
+								</Origin>
+							</Scale>
+							<Scripts>
+								<OnFinished>
+									local banner = self:GetParent():GetParent();
+									banner.LeftFillagree:SetPoint("CENTER", banner.SkullCircle, "CENTER", -47, 6);
+								</OnFinished>
+							</Scripts>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<FontString name="$parentTitle" parentKey="Title" font="Fonts\MORPHEUS.ttf">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentBannerTop" x="0" y="-47"/>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="30"/>
+					</FontHeight>
+					<Color r="1" g="0" b="0" a="1"/>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Alpha duration="0" order="1" change="-1"/>
+							<Alpha startDelay="0.15" duration="0.25" order="2" change="1"/>
+						</AnimationGroup>
+					</Animations>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentOverlay" parentKey="Overlay" setAllPoints="true">
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="FlashBurst" alpha="0" alphaMode="ADD">
+							<Animations>
+								<AnimationGroup parentKey="AnimIn">
+									<Scale duration="0" order="1" scaleX="1" scaleY="0.75"/>
+									<Alpha startDelay="0.25" duration="0.25" order="2" change="1"/>
+									<Scale parentKey="Scale" startDelay="0.25" duration="0.4" order="2" scaleX="1.25" scaleY="1">
+										<Origin point="LEFT">
+											<Offset x="0" y="0"/>
+										</Origin>
+									</Scale>
+									<Translation parentKey="Translation" startDelay="0.25" duration="0.5" order="2"/>
+									<Alpha startDelay="0.25" duration="0.4" order="2" change="-1"/>
+								</AnimationGroup>
+							</Animations>
+						</Texture>
+						<Texture parentKey="FlashBurstLeft" alpha="0" alphaMode="ADD">
+							<Animations>
+								<AnimationGroup parentKey="AnimIn">
+									<Scale duration="0" order="1" scaleX="1" scaleY="0.75"/>
+									<Alpha startDelay="0.4" duration="0.25" order="2" change="1"/>
+									<Scale parentKey="Scale" startDelay="0.4" duration="0.5" order="2" scaleX="1.25" scaleY="1">
+										<Origin point="RIGHT">
+											<Offset x="0" y="0"/>
+										</Origin>
+									</Scale>
+									<Translation parentKey="Translation" startDelay="0.4" duration="0.5" order="2"/>
+									<Alpha startDelay="0.4" duration="0.5" order="2" change="-1"/>
+								</AnimationGroup>
+							</Animations>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture parentKey="FlashBurstCenter" alpha="0" alphaMode="ADD">
+							<Animations>
+								<AnimationGroup parentKey="AnimIn">
+									<Alpha startDelay="0.4" duration="0.25" order="1" change="1"/>
+									<Scale startDelay="0.4" duration="0.5" order="1" scaleX="1.25" scaleY="1.25"/>
+									<Alpha startDelay="0.4" duration="0.5" order="1" change="-1"/>
+								</AnimationGroup>
+							</Animations>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture parentKey="RedFlash" alpha="0" alphaMode="ADD">
+							<Animations>
+								<AnimationGroup parentKey="AnimIn">
+									<Scale duration="0" order="1" scaleX="2.5" scaleY="2.5"/>
+									<Alpha startDelay="0.15" duration="0.1" order="2" change="1"/>
+									<Scale startDelay="0.15" smoothing="IN" duration="0.25" order="2" scaleX="0.375" scaleY="0.375"/>
+									<Alpha startDelay="0.4" duration="0.5" order="2" change="-1"/>
+								</AnimationGroup>
+							</Animations>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						local banner = self:GetParent();
+						self.FlashBurst:ClearAllPoints();
+						self.FlashBurst:SetPoint("CENTER", banner.SkullSpikes, 15, -4);
+						self.FlashBurstLeft:ClearAllPoints();
+						self.FlashBurstLeft:SetPoint("CENTER", banner.SkullSpikes, -15, -4);
+						self.FlashBurstCenter:ClearAllPoints();
+						self.FlashBurstCenter:SetPoint("CENTER", banner.SkullSpikes, 0, 0);
+						self.RedFlash:ClearAllPoints();
+						self.RedFlash:SetPoint("CENTER", banner.SkullSpikes, 1, -4);
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Animations>
+			<AnimationGroup parentKey="AnimOut">
+				<Alpha duration="0.5" order="1" change="-1"/>
+				<Scripts>
+					<OnFinished function="MiniGamesBanner_OnAnimOutFinished"/>
+				</Scripts>
+			</AnimationGroup>
+		</Animations>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, MiniGamesBannerMixin);
+				self:OnLoad();
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...);
+			</OnEvent>
 		</Scripts>
 	</Frame>
 </Ui>

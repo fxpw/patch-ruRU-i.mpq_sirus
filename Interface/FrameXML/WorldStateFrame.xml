@@ -1828,4 +1828,179 @@
 			</OnLoad>
 		</Scripts>
 	</Frame>
+
+	<Frame name="MiniGameScoreTemplate" virtual="true">
+		<Size y="16"/>
+		<Anchors>
+			<Anchor point="TOPLEFT"/>
+			<Anchor point="TOPRIGHT"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackgroundLeft" parentKey="BackgroundLeft" file="Interface\WorldStateFrame\WorldStateFinalScore-Highlight">
+					<TexCoords left="0" right="1" top="0" bottom="1"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOM"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBackgroundRight" parentKey="BackgroundRight" file="Interface\WorldStateFrame\WorldStateFinalScore-Highlight">
+					<TexCoords left="1" right="0" top="0" bottom="1"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentBackgroundLeft" relativePoint="BOTTOMRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture name="$parentBackgroundLeft2" parentKey="BackgroundLeft2" file="Interface\WorldStateFrame\WorldStateFinalScore-Highlight" alphaMode="ADD">
+					<TexCoords left="0" right="1" top="0" bottom="1"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOM"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBackgroundRight2" parentKey="BackgroundRight2" file="Interface\WorldStateFrame\WorldStateFinalScore-Highlight" alphaMode="ADD">
+					<TexCoords left="1" right="0" top="0" bottom="1"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentBackgroundLeft2" relativePoint="BOTTOMRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, MiniGameScoreRowMixin);
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="MiniGameCellStatTemplate" enableMouse="true" virtual="true">
+		<Size y="16"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<FontString parentKey="Text" inherits="GameFontHighlightSmall" setAllPoints="true"/>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, MiniGameScoreCellStatMixin);
+			</OnLoad>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+		</Scripts>
+	</Frame>
+	<Button name="MiniGameHeaderStringTemplate" enableMouse="true" virtual="true">
+		<Size y="16"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<FontString parentKey="Text" inherits="GameFontHighlightSmall" setAllPoints="true"/>
+				<!--Texture setAllPoints="true">
+					<Color r="1" g="0" b="0" a="0.3"/>
+				</Texture-->
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, MiniGameScoreHeaderStringMixin);
+			</OnLoad>
+			<OnClick>
+				self:OnClick(button);
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Frame name="MiniGameScoreFrame" inherits="ButtonFrameTemplate" toplevel="true" parent="UIParent" enableMouse="true" frameStrata="FULLSCREEN" hidden="true">
+		<Size x="760" y="426"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0"/>
+		</Anchors>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentElapsedTimeLabel" parentKey="ElapsedTimeLabel" inherits="GameFontHighlightSmall" text="TIME_ELAPSED">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-18" y="24" />
+					</Anchors>
+				</FontString>
+				<FontString name="$parentElapsedTime" parentKey="ElapsedTime" inherits="GameFontNormalSmall">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parentElapsedTimeLabel" relativePoint="BOTTOMRIGHT" x="0" y="-4"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentCloseTimeLabel" parentKey="CloseTimeLabel" inherits="GameFontHighlightSmall" justifyH="LEFT" text="MINI_GAME_TIME_CLOSED">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="18" y="24"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentCloseTime" parentKey="CloseTime" inherits="GameFontNormalSmall" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentCloseTimeLabel" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentContent" parentKey="Content">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="8" y="-27"/>
+					<Anchor point="BOTTOMRIGHT" x="-30" y="44"/>
+				</Anchors>
+				<Frames>
+					<Frame name="$parentScrollCategories" parentKey="ScrollCategories">
+						<Size y="36"/>
+						<Anchors>
+							<Anchor point="TOPLEFT"/>
+							<Anchor point="TOPRIGHT"/>
+						</Anchors>
+					</Frame>
+					<ScrollFrame name="$parentScrollFrame" parentKey="ScrollFrame" inherits="HybridScrollFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentScrollCategories" relativePoint="BOTTOMLEFT"/>
+							<Anchor point="BOTTOMRIGHT"/>
+						</Anchors>
+						<Frames>
+							<Slider name="$parentScrollBar" parentKey="ScrollBar" inherits="HybridScrollBarTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" y="-14"/>
+									<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" y="14"/>
+								</Anchors>
+							</Slider>
+						</Frames>
+					</ScrollFrame>
+				</Frames>
+			</Frame>
+			<Button name="$parentLeaveButton" inherits="UIPanelButtonTemplate" text="LEAVE_MINI_GAME">
+				<Size x="153" y="24"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="6" />
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						C_MiniGames.Leave();
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, MiniGameScoreMixin);
+				self:OnLoad();
+			</OnLoad>
+			<OnShow>
+				self:OnShow();
+			</OnShow>
+			<OnEvent>
+				self:OnEvent(event, ...);
+			</OnEvent>
+			<OnUpdate>
+				self:OnUpdate(elapsed);
+			</OnUpdate>
+		</Scripts>
+	</Frame>
+
+	<Frame name="MinGameTimerFrame"/>
 </Ui>

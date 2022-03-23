@@ -216,11 +216,17 @@ end
 
 function AcceptBattlefieldPort(index, accept)
 	if not accept or accept == 0 then
-		SendServerMessage("ACMSG_BATTLEFIELD_QUEUE_LEAVE", index)
+		local statusInfo = C_BattlefieldStatusManager.statusData[index]
 
-		if C_BattlefieldStatusManager.statusData[index] then
-			C_BattlefieldStatusManager.statusData[index].canceled = true
+		if statusInfo then
+			if statusInfo.status == "confirm" and statusInfo.teamSize ~= 0 then
+				return;
+			end
+
+			statusInfo.canceled = true
 		end
+
+		SendServerMessage("ACMSG_BATTLEFIELD_QUEUE_LEAVE", index)
 	else
 		SendServerMessage("ACMSG_BATTLEFIELD_QUEUE_ACCEPT", index)
 	end

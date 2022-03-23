@@ -52,6 +52,9 @@ local GUILD_COMMENT_HEIGHT = 50;
 local GUILD_COMMENT_BORDER = 10;
 local INTEREST_TYPES = {"QUEST", "DUNGEON", "RAID", "PVP", "RP"};
 
+local GUILD_ROSTER_BUTTON_OFFSET = 2;
+local GUILD_ROSTER_BUTTON_HEIGHT = 20;
+
 StaticPopupDialogs["GUILD_REWARDS_CONFIRM_BUY"] = {
 	text = CONFIRM_HIGH_COST_ITEM,
 	button1 = BUY,
@@ -930,7 +933,6 @@ function GuildRoster_Update()
 	local button, index, class
 	local totalMembers = GetNumGuildMembers()
 	local selectedGuildMember = GetGuildRosterSelection()
-	local displayedHeight = 0
 	local guildName, guildRankName, guildRankIndex = GetGuildInfo("player")
 	local maxRankIndex = GuildControlGetNumRanks() - 1
 
@@ -1036,8 +1038,9 @@ function GuildRoster_Update()
 		end
 	end
 
-	local totalHeight = totalMembers * buttons[1]:GetHeight() + (totalMembers - 1) * 2
-	HybridScrollFrame_Update(scrollFrame, totalHeight, scrollFrame:GetHeight())
+	local totalHeight = totalMembers * (GUILD_ROSTER_BUTTON_HEIGHT + GUILD_ROSTER_BUTTON_OFFSET);
+	local displayedHeight = numButtons * (GUILD_ROSTER_BUTTON_HEIGHT + GUILD_ROSTER_BUTTON_OFFSET);
+	HybridScrollFrame_Update(scrollFrame, totalHeight, displayedHeight)
 end
 
 function GuildRoster_UpdateTradeSkills()
@@ -1047,7 +1050,6 @@ function GuildRoster_UpdateTradeSkills()
 	local numButtons = #buttons
 	local button, index, class
 	local numTradeSkill = GetNumGuildTradeSkill()
-	local displayedHeight = 0
 
 	for i = 1, numButtons do
 		button = buttons[i]
@@ -1099,7 +1101,6 @@ function GuildRoster_UpdateTradeSkills()
 				end
 				button.header.skillID = skillID
 				button:Show()
-				displayedHeight = displayedHeight + button:GetHeight()
 			elseif ( playerName ) then
 				GuildRosterButton_SetStringText(button.string1, playerName, online, classFileName)
 				GuildRosterButton_SetStringText(button.string2, isMobile and REMOTE_CHAT or zone, online)
@@ -1108,7 +1109,6 @@ function GuildRoster_UpdateTradeSkills()
 				end
 				button.header:Hide()
 				button:Show()
-				displayedHeight = displayedHeight + button:GetHeight()
 			else
 				button:Hide()
 			end
@@ -1123,7 +1123,8 @@ function GuildRoster_UpdateTradeSkills()
 		end
 	end
 
-	local totalHeight = numTradeSkill * buttons[1]:GetHeight() + 30
+	local totalHeight = numTradeSkill * (GUILD_ROSTER_BUTTON_HEIGHT + GUILD_ROSTER_BUTTON_OFFSET);
+	local displayedHeight = numButtons * (GUILD_ROSTER_BUTTON_HEIGHT + GUILD_ROSTER_BUTTON_OFFSET);
 	HybridScrollFrame_Update(scrollFrame, totalHeight, displayedHeight)
 end
 

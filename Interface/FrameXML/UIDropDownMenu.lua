@@ -365,10 +365,14 @@ function UIDropDownMenu_AddButton(info, level)
 
 		-- Set icon
 		if ( info.icon ) then
-			icon:SetSize(16,16);
+			icon:SetSize(info.iconSize or 16, info.iconSize or 16);
 			icon:SetTexture(info.icon);
 			icon:ClearAllPoints();
-			icon:SetPoint("RIGHT");
+			if info.iconPoint then
+				icon:SetPoint(info.iconPoint);
+			else
+				icon:SetPoint("RIGHT");
+			end
 
 			if ( info.tCoordLeft ) then
 				icon:SetTexCoord(info.tCoordLeft, info.tCoordRight, info.tCoordTop, info.tCoordBottom);
@@ -434,6 +438,8 @@ function UIDropDownMenu_AddButton(info, level)
 	button.tooltipOnButton = info.tooltipOnButton;
 	button.noClickSound = info.noClickSound;
 	button.padding = info.padding;
+	button.iconPoint = info.iconPoint;
+	button.iconSize = info.iconSize;
 
 	if ( info.value ) then
 		button.value = info.value;
@@ -459,18 +465,23 @@ function UIDropDownMenu_AddButton(info, level)
 		displayInfo = icon;
 	end
 
+	local xOffset = 0;
+	if info.iconPoint then
+		xOffset = info.iconSize or 16;
+	end
+
 	displayInfo:ClearAllPoints();
 	if ( info.notCheckable ) then
 		if ( info.justifyH and info.justifyH == "CENTER" ) then
-			displayInfo:SetPoint("CENTER", button, "CENTER", -7, 0);
+			displayInfo:SetPoint("CENTER", button, "CENTER", -7 + xOffset, 0);
 		else
-			displayInfo:SetPoint("LEFT", button, "LEFT", 0, 0);
+			displayInfo:SetPoint("LEFT", button, "LEFT", 0 + xOffset, 0);
 		end
 		xPos = xPos + 10;
 
 	else
 		xPos = xPos + 12;
-		displayInfo:SetPoint("LEFT", button, "LEFT", 20, 0);
+		displayInfo:SetPoint("LEFT", button, "LEFT", 20 + xOffset, 0);
 	end
 
 	-- Adjust offset if displayMode is menu
@@ -631,6 +642,8 @@ function UIDropDownMenu_GetButtonWidth(button)
 		if ( button.icon ) then
 			-- Add padding for the icon
 			width = width + 10;
+		elseif ( button.iconPoint ) then
+			width = width + (button.iconSize or 16);
 		end
 	else
 		return minWidth;

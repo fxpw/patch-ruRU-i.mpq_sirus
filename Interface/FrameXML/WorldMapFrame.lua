@@ -724,7 +724,7 @@ function WorldMapFrame_Update()
 				worldMapPOI.HighlightTexture:SetSize(16, 16)
 			end
 
-			if textureIndex == 41 then
+			if textureIndex == 41 or (textureIndex == 174 and C_Service:GetRealmID() == E_REALM_ID.ALGALON) then
 				worldMapPOI:SetShown(C_Service:IsGM())
 			else
 				worldMapPOI:Show()

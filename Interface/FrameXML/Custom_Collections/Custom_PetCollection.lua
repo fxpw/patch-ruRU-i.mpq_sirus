@@ -177,7 +177,7 @@ function PetJournalListItem_OnClick(self, button)
 			if MacroFrame and MacroFrame:IsShown() then
 				ChatEdit_InsertLink(GetSpellInfo(spellID));
 			else
-				ChatEdit_InsertLink(GetSpellLink(spellID));
+				ChatEdit_InsertLink(C_PetJournal.GetPetLink(self.petID));
 			end
 		end
 	elseif button == "RightButton" then
@@ -223,7 +223,7 @@ function PetJournalDragButton_OnClick(self, button)
 			if MacroFrame and MacroFrame:IsShown() then
 				ChatEdit_InsertLink(GetSpellInfo(spellID));
 			else
-				ChatEdit_InsertLink(GetSpellLink(spellID));
+				ChatEdit_InsertLink(C_PetJournal.GetPetLink(self:GetParent().petID));
 			end
 		end
 	elseif button == "RightButton" then

@@ -270,6 +270,24 @@ function EventHandler:BONUS_STATS( msg )
 	end
 end
 
+local ONSLAUGHT_RATING = 0;
+
+function EventHandler:ASMSG_CR_41(msg)
+	local onslaughtRating = tonumber(msg);
+	if onslaughtRating then
+		ONSLAUGHT_RATING = onslaughtRating;
+
+		local framesRegistered = {GetFramesRegisteredForEvent("UNIT_STATS")};
+		for i = 1, #framesRegistered do
+			ExecuteFrameScript(framesRegistered[i], "OnEvent", "UNIT_STATS", "player");
+		end
+	end
+end
+
+function GetOnslaughtRating()
+	return ONSLAUGHT_RATING;
+end
+
 function PaperDollFrame_OnEvent (self, event, ...)
 	local unit = ...;
 
@@ -675,6 +693,14 @@ function PaperDollFrame_SetResilience(statFrame)
 	PaperDollFrame_SetLabelAndText(statFrame, STAT_RESILIENCE, minResilience);
 	statFrame.tooltip = HIGHLIGHT_FONT_COLOR_CODE..format(PAPERDOLLFRAME_TOOLTIP_FORMAT, STAT_RESILIENCE).." "..minResilience..FONT_COLOR_CODE_CLOSE;
 	statFrame.tooltip2 = format(RESILIENCE_TOOLTIP, lowestRatingBonus, min(lowestRatingBonus * RESILIENCE_CRIT_CHANCE_TO_DAMAGE_REDUCTION_MULTIPLIER, maxRatingBonus), lowestRatingBonus * RESILIENCE_CRIT_CHANCE_TO_CONSTANT_DAMAGE_REDUCTION_MULTIPLIER);
+
+	local onslaughtRating = GetOnslaughtRating();
+	if onslaughtRating < 0 then
+		statFrame.tooltip2 = statFrame.tooltip2 .. "\n\n" .. format(CR_ONSLAUGHT_RATING_INCREASE_TOOLTIP, onslaughtRating, onslaughtRating);
+	else
+		statFrame.tooltip2 = statFrame.tooltip2 .. "\n\n" .. format(CR_ONSLAUGHT_RATING_REDUSE_TOOLTIP, onslaughtRating, onslaughtRating);
+	end
+
 	statFrame:Show();
 end
 
@@ -1566,11 +1592,14 @@ function PaperDollItemSlotButton_Update (self)
 	local link = GetInventoryItemLink("player", self:GetID())
 	local itemName, _, _, _, _, _, _, _, _, originalTexture = GetItemInfo(link)
 
-	if not self:GetParent():GetParent().equipmentItemsList then
-		self:GetParent():GetParent().equipmentItemsList = {}
-	end
+	local parent = self:GetParent();
+	if parent and parent:GetParent() then
+		if not parent:GetParent().equipmentItemsList then
+			parent:GetParent().equipmentItemsList = {};
+		end
 
-	self:GetParent():GetParent().equipmentItemsList[self:GetID()] = itemName
+		parent:GetParent().equipmentItemsList[self:GetID()] = itemName;
+	end
 
 	if ( textureName ) then
 		if link and self:GetID() < 20 then

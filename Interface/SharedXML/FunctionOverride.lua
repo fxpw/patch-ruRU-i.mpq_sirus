@@ -76,6 +76,16 @@ function GetCVar( CVar )
 	return _GetCVar(CVar)
 end
 
+local _GetCVarBool = _GetCVarBool or GetCVarBool
+
+function GetCVarBool(CVar)
+	if C_CVar and string.Left(CVar, 7) == "C_CVAR_" then
+		return ValueToBoolean(C_CVar:GetValue(CVar));
+	end
+
+	return _GetCVarBool(CVar);
+end
+
 local _GetCVarDefault = _GetCVarDefault or GetCVarDefault
 
 function GetCVarDefault( CVar )

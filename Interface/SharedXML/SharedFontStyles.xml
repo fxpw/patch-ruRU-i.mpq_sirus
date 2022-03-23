@@ -1102,6 +1102,28 @@
 			<AbsValue val="24"/>
 		</FontHeight>
 	</Font>
+	<Font name="GameFontNormalShadowHuge17" font="Fonts\FRIZQT__.TTF" outline="NORMAL" virtual="true">
+		<Shadow>
+			<Offset>
+				<AbsDimension x="1" y="-1"/>
+			</Offset>
+			<Color r="1.0" g="0.82" b="0"/>
+		</Shadow>
+		<FontHeight>
+			<AbsValue val="17"/>
+		</FontHeight>
+	</Font>
+	<Font name="GameFontNormalShadowHuge12" font="Fonts\FRIZQT__.TTF" outline="NORMAL" virtual="true">
+		<Shadow>
+			<Offset>
+				<AbsDimension x="1" y="-1"/>
+			</Offset>
+			<Color r="1.0" g="0.82" b="0"/>
+		</Shadow>
+		<FontHeight>
+			<AbsValue val="12"/>
+		</FontHeight>
+	</Font>
 	<Font name="SystemFont_Tiny" font="Fonts\FRIZQT__.TTF" virtual="true">
 		<FontHeight>
 			<AbsValue val="9"/>

@@ -458,26 +458,35 @@ end
 
 function AuctionHouseInteractableItemDisplayMixin:SetItemLocation(itemLocation, skipCallback, isBag)
 	if not skipCallback and not isBag then
-		if itemLocation and not C_AuctionHouse.IsSellItemValid(itemLocation) then
-			return
+		local _, isLockbox;
+
+		if itemLocation then
+			_, isLockbox = C_AuctionHouse.IsSellItemValid(itemLocation);
 		end
 
 		if GetAuctionSellItemInfo() then
-			ClickAuctionSellItemButton();
+			if not isLockbox then
+				ClickAuctionSellItemButton();
+			end
+
 			ClearCursor();
 
-			if itemLocation and itemLocation:IsValid() then
-				local bagID, slotID = itemLocation:GetBagAndSlot();
-				if bagID and slotID and not select(3, GetContainerItemInfo(bagID, slotID)) then
-					PickupContainerItem(bagID, slotID);
-					return false;
+			if isLockbox then
+				ClickAuctionSellItemButton();
+			else
+				if itemLocation and itemLocation:IsValid() then
+					local bagID, slotID = itemLocation:GetBagAndSlot();
+					if bagID and slotID and not select(3, GetContainerItemInfo(bagID, slotID)) then
+						PickupContainerItem(bagID, slotID);
+						return false;
+					end
 				end
 			end
 		else
-			ClickAuctionSellItemButton();
-
-			if not GetAuctionSellItemInfo() then
-				itemLocation = nil;
+			if not isLockbox then
+				ClickAuctionSellItemButton();
+			else
+				ClearCursor();
 			end
 		end
 	end
@@ -495,14 +504,12 @@ function AuctionHouseInteractableItemDisplayMixin:SwitchItemWithCursor(skipCallb
 	local cursorItem = C_Cursor.GetCursorItem();
 	local currentItemLocation = self:GetItemLocation();
 	if self:SetItemLocation(cursorItem, skipCallback) or cursorItem == nil then
-		if currentItemLocation ~= nil then
-			ClearCursor();
+		ClearCursor();
 
-			if currentItemLocation ~= nil then
-				local bagID, slotID = currentItemLocation:GetBagAndSlot();
-				if bagID and slotID then
-					PickupContainerItem(bagID, slotID);
-				end
+		if currentItemLocation ~= nil then
+			local bagID, slotID = currentItemLocation:GetBagAndSlot();
+			if bagID and slotID then
+				PickupContainerItem(bagID, slotID);
 			end
 		end
 	end

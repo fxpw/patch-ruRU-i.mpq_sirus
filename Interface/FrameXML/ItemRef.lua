@@ -208,14 +208,28 @@ function SetItemRef(link, text, button, chatFrame)
 		return
 	elseif ( strsub(link, 1, 10) == "collection" ) then
 		local _, collectionType, itemID = strsplit(":", link);
+		collectionType, itemID = tonumber(collectionType), tonumber(itemID);
+
 		if ( IsModifiedClick("CHATLINK") ) then
-			if ( tonumber(collectionType) == CHAR_COLLECTION_APPEARANCE ) then
-				local itemLink = select(6, C_TransmogCollection.GetAppearanceSourceInfo(itemID));
-				HandleModifiedItemClick(itemLink);
-			end
+			local fixedLink = GetFixedLink(text);
+			HandleModifiedItemClick(fixedLink);
 		else
 			if ( CollectionsJournal ) then
-				if ( tonumber(collectionType) == CHAR_COLLECTION_APPEARANCE ) then
+				if ( collectionType == CHAR_COLLECTION_MOUNT ) then
+					for index, data in ipairs(COLLECTION_MOUNTDATA) do
+						if ( data.itemID == itemID and data.creatureID ) then
+							SetCollectionsJournalShown(true, COLLECTIONS_JOURNAL_TAB_INDEX_MOUNTS);
+							MountJournal_Select(index);
+							break;
+						end
+					end
+				elseif ( collectionType == CHAR_COLLECTION_PET ) then
+					local _, petID = C_PetJournal.GetPetInfoByItemID(itemID);
+					if ( petID ) then
+						SetCollectionsJournalShown(true, COLLECTIONS_JOURNAL_TAB_INDEX_PETS);
+						PetJournal_SelectByPetID(petID);
+					end
+				elseif ( collectionType == CHAR_COLLECTION_APPEARANCE ) then
 					TransmogUtil.OpenCollectionToItem(itemID);
 				end
 			end

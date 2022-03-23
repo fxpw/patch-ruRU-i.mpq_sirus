@@ -20,6 +20,7 @@
 ..\SharedXML\CircularBuffer.lua
 ..\SharedXML\Opcodes.lua
 ..\SharedXML\EventHandler.lua
+..\SharedXML\TypeUtil.lua
 
 ..\SharedXML\S_Dump.lua
 ..\SharedXML\SoundKitConstants.lua

@@ -35,7 +35,7 @@
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
-				
+
 			</Layer>
 		</Layers>
 		<Frames>
@@ -65,7 +65,7 @@
 						</FontString>
 						<FontString parentKey="TextInfo" font="SystemFont_Outline2" justifyH="LEFT" justifyV="TOP">
 							<Size x="200" y="170"/>
-							<Anchors>    
+							<Anchors>
 								<Anchor point="BOTTOM" x="6" y="52"/>
 							</Anchors>
 							<Color r="1" g="1" b="1"/>
@@ -236,6 +236,43 @@
 			</OnLoad>
 		</Scripts>
 	</Frame>
+	<Frame name="RealmListProxyMainSelectTemplate" alpha="0.7" hidden="true" virtual="true">
+		<Size x="250" y="34"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="BG">
+					<Color r="0.6" g="0.5" b="0.3" a="0.3"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="BORDER">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="1" y="-1"/>
+						<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
+					</Anchors>
+					<Color r="0" g="0" b="0" a="1"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentProxyButton" text="PROXY" parentKey="ProxyButton" frameStrata="DIALOG" toplevel="true" inherits="GlueButtonTemplate">
+				<Size x="130" y="26"/>
+				<Anchors>
+					<Anchor point="CENTER"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="RealmListRealmSelect_OnClick"/>
+					<OnEnter>
+						GlueTooltip_SetOwner(self, nil, nil, nil, nil, "TOPRIGHT")
+						GlueTooltip_SetText(PROXY_DESCRIPTION, GlueTooltip, 1.0, 1.0, 1.0, 1.0, 1)
+					</OnEnter>
+					<OnLeave>
+						GlueTooltip:Hide()
+					</OnLeave>
+				</Scripts>
+			</Button>
+		</Frames>
+	</Frame>
 
 
 	<Frame name="RealmList" toplevel="true" parent="GlueParent" setAllPoints="true" enableMouse="true" enableKeyboard="true" frameStrata="DIALOG" hidden="true">
@@ -263,6 +300,10 @@
 			<Frame name="$parentMiniRealmCard2" inherits="RealmListMiniMainSelectTemplate"/>
 			<Frame name="$parentMiniRealmCard3" inherits="RealmListMiniMainSelectTemplate"/>
 			<Frame name="$parentMiniRealmCard4" inherits="RealmListMiniMainSelectTemplate"/>
+			<Frame name="$parentProxyRealmCard1" inherits="RealmListProxyMainSelectTemplate"/>
+			<Frame name="$parentProxyRealmCard2" inherits="RealmListProxyMainSelectTemplate"/>
+			<Frame name="$parentProxyRealmCard3" inherits="RealmListProxyMainSelectTemplate"/>
+			<Frame name="$parentProxyRealmCard4" inherits="RealmListProxyMainSelectTemplate"/>
 			<Button name="$parentCancel" inherits="GlueButtonTemplate" toplevel="true" text="CANCEL">
 				<Size x="235" y="54"/>
 				<Anchors>

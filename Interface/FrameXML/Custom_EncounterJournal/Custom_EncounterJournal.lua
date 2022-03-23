@@ -345,30 +345,41 @@ local INSTANCE_REALM_FLAG = {
 	[E_REALM_ID.ALGALON] = 256,
 };
 
+local function SortInstances(aData, bData)
+	return aData[EJ_CONST_INSTANCE_ORDERINDEX] < bData[EJ_CONST_INSTANCE_ORDERINDEX]
+end
+
 function EJ_GetInstanceByIndex( index, isRaid )
-	local currIndex = 1
 	local tierID = select(3, EJ_GetTierInfo(EJ_GetCurrentTier())) or 1
 
 	local realmFlag = INSTANCE_REALM_FLAG[C_Service:GetRealmID() or 0] or 0;
 
+	local buffer = {}
+
 	for id, data in pairs(JOURNALINSTANCE) do
 		if JOURNALTIERXINSTANCE[data[EJ_CONST_INSTANCE_ID]] == tierID and bit.band(data[EJ_CONST_INSTANCE_FLAGS], realmFlag) == 0 then
 			if EJ_IsRaid(data[EJ_CONST_INSTANCE_ID]) == isRaid then
-				if currIndex == index then
-					local instanceID = data[EJ_CONST_INSTANCE_ID]
-					local name = data[EJ_CONST_INSTANCE_NAME]
-					local description = data[EJ_CONST_INSTANCE_DESCRIPTION]
-					local bgImage = data[EJ_CONST_INSTANCE_BACKGROUND]
-					local buttonImage = data[EJ_CONST_INSTANCE_BUTTONICON]
-					local loreImage = data[EJ_CONST_INSTANCE_LOREBACKGROUND]
-					local mapID = data[EJ_CONST_INSTANCE_MAPID]
-					local areaID = data[EJ_CONST_INSTANCE_AREAID]
-					local hyperlink = EJ_LinkGenerate( name, 0, instanceID, nil )
-
-					return instanceID, name, description, bgImage, buttonImage, loreImage, mapID, areaID, hyperlink
-				end
-				currIndex = currIndex + 1
+				buffer[#buffer + 1] = data
 			end
+		end
+	end
+
+	if #buffer > 0 then
+		table.sort(buffer, SortInstances)
+
+		local data = buffer[index]
+		if data then
+			local instanceID = data[EJ_CONST_INSTANCE_ID]
+			local name = data[EJ_CONST_INSTANCE_NAME]
+			local description = data[EJ_CONST_INSTANCE_DESCRIPTION]
+			local bgImage = data[EJ_CONST_INSTANCE_BACKGROUND]
+			local buttonImage = data[EJ_CONST_INSTANCE_BUTTONICON]
+			local loreImage = data[EJ_CONST_INSTANCE_LOREBACKGROUND]
+			local mapID = data[EJ_CONST_INSTANCE_MAPID]
+			local areaID = data[EJ_CONST_INSTANCE_AREAID]
+			local hyperlink = EJ_LinkGenerate( name, 0, instanceID, nil )
+
+			return instanceID, name, description, bgImage, buttonImage, loreImage, mapID, areaID, hyperlink
 		end
 	end
 

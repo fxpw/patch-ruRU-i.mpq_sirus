@@ -76,6 +76,7 @@ local MountJournalFilterDropDown_Data = {
 				MOUNTJOURNAL_FILTER_SOURCE_STORE = true
 				MOUNTJOURNAL_FILTER_SOURCE_VOTE = true
 				MOUNTJOURNAL_FILTER_SOURCE_BATTLE_BASS = true
+				MOUNTJOURNAL_FILTER_SOURCE_BLACK_MARKET = true
 
 				CloseDropDownMenus()
 			end,
@@ -95,6 +96,7 @@ local MountJournalFilterDropDown_Data = {
 				MOUNTJOURNAL_FILTER_SOURCE_STORE = false
 				MOUNTJOURNAL_FILTER_SOURCE_VOTE = false
 				MOUNTJOURNAL_FILTER_SOURCE_BATTLE_BASS = false
+				MOUNTJOURNAL_FILTER_SOURCE_BLACK_MARKET = false
 
 				CloseDropDownMenus()
 			end,
@@ -155,6 +157,12 @@ local MountJournalFilterDropDown_Data = {
 			isNotRadio = true,
 			notCheckable = false,
 			keyValue = "SOURCE_BATTLE_BASS"
+		},
+		{
+			text = COLLECTION_PET_SOURCE_10,
+			isNotRadio = true,
+			notCheckable = false,
+			keyValue = "SOURCE_BLACK_MARKET"
 		},
 	},
 	{
@@ -818,6 +826,7 @@ local FilterData = {
 	"MOUNTJOURNAL_FILTER_SOURCE_STORE",
 	"MOUNTJOURNAL_FILTER_SOURCE_VOTE",
 	"MOUNTJOURNAL_FILTER_SOURCE_BATTLE_BASS",
+	"MOUNTJOURNAL_FILTER_SOURCE_BLACK_MARKET",
 
 	"MOUNTJOURNAL_FILTER_EXPANSION_CLASSIC",
 	"MOUNTJOURNAL_FILTER_EXPANSION_BURNING_CRUSADE",
@@ -1331,6 +1340,13 @@ function MountJournal_CheckFilter( data )
 		end
 	end
 
+	if MOUNTJOURNAL_FILTER_SOURCE_BLACK_MARKET then
+		countFiltre = countFiltre + 1
+		if data.lootType == 17 then
+			return true
+		end
+	end
+
 	if MOUNTJOURNAL_FILTER_EXPANSION_CLASSIC then
 		countFiltre = countFiltre + 1
 		if data.expansion == LE_EXPANSION_CLASSIC then
@@ -1632,6 +1648,7 @@ function MountJournal_UpdateMountList()
 			button.hash = data.hash
 			button.spellID = data.spellID
 			button.creatureID = data.creatureID
+			button.itemID = data.itemID
 			button.mountIndex = nil
 			button.data = data
 
@@ -1681,6 +1698,7 @@ function MountJournal_UpdateMountList()
 			button.icon:SetTexture("Interface\\PetBattles\\MountJournalEmptyIcon")
 			button.index = nil
 			button.spellID = 0
+			button.itemID = nil
 			button.selected = false
 			button.unusable:Hide()
 			button.DragButton.ActiveTexture:Hide()
@@ -1708,7 +1726,8 @@ end
 
 function MountListDragButton_OnClick( self, button, ... )
 	local parent = self:GetParent()
-	local id = parent.spellID
+	local spellID = parent.spellID;
+	local itemID = parent.itemID;
 
 	if ( button ~= "LeftButton" ) then
 		if parent.mountIndex then
@@ -1716,11 +1735,10 @@ function MountListDragButton_OnClick( self, button, ... )
 		end
 	elseif ( IsModifiedClick("CHATLINK") ) then
 		if ( MacroFrame and MacroFrame:IsShown() ) then
-			local spellName = GetSpellInfo(id)
+			local spellName = GetSpellInfo(spellID)
 			ChatEdit_InsertLink(spellName)
-		else
-			local spellLink = GetSpellLink(id)
-			ChatEdit_InsertLink(spellLink)
+		elseif itemID then
+			ChatEdit_InsertLink(string.format(COLLECTION_MOUNTS_HYPERLINK_FORMAT, itemID, GetSpellInfo(spellID) or ""));
 		end
 	else
 		if parent.mountIndex then
@@ -1790,13 +1808,14 @@ function MountListItem_OnClick( self, button, ... )
 			MountJournal_ShowMountDropdown(self.mountIndex, self, 0, 0)
 		end
 	elseif ( IsModifiedClick("CHATLINK") ) then
-		local id = self.spellID
+		local spellID = self.spellID;
+		local itemID = self.itemID;
+
 		if ( MacroFrame and MacroFrame:IsShown() ) then
-			local spellName = GetSpellInfo(id)
+			local spellName = GetSpellInfo(spellID)
 			ChatEdit_InsertLink(spellName)
-		else
-			local spellLink = GetSpellLink(id)
-			ChatEdit_InsertLink(spellLink)
+		elseif itemID then
+			ChatEdit_InsertLink(string.format(COLLECTION_MOUNTS_HYPERLINK_FORMAT, itemID, GetSpellInfo(spellID) or ""));
 		end
 	elseif ( self.spellID ~= MountJournal.selectedItemID ) then
 		MountJournal_Select(self.index)

@@ -1971,6 +1971,10 @@ SlashCmdList["CHAT_DND"] = function(msg)
 	SendChatMessage(msg, "DND");
 end
 
+SlashCmdList["CHAT_INVISIBLE"] = function(msg)
+	PlayerInvisibleChange();
+end
+
 SlashCmdList["WHO"] = function(msg)
 	if ( msg == "" ) then
 		msg = WhoFrame_GetDefaultWhoCommand();

@@ -12,6 +12,7 @@ local selectedSpecialOfferPage = 1
 local selectedShowAllItemCheckBox = 0
 local selectedSpecID = nil
 local selectedPremiumID = nil
+local selectedSubsID = 0
 
 local selectedRemoveOffer = nil
 
@@ -21,6 +22,7 @@ local STORE_SLIDER_HOVER_UPDATE = 30
 local STORE_REFUND_DATA = {}
 local STORE_REFUND_DATA_BY_GUID = {}
 local STORE_CATEGORIES_DATA = {}
+local STORE_SUB_CATEGORY_DATA = {}
 local STORE_SUBSCRIBE_DATA = {}
 local STORE_PRODUCT_DATA = {}
 local STORE_PRODUCT_LIST = {}
@@ -245,7 +247,8 @@ STORE_CATEGORIES_DATA[1] = {
 		Color = {r = 0, g = 1, b = 0},
 		Debuff = 90004,
 		Level = 80,
-		dontItemRequest = true
+		dontItemRequest = true,
+		SlideOther = true
 	},
 	{
 		Icon = "category-icon-clothes",
@@ -256,6 +259,33 @@ STORE_CATEGORIES_DATA[1] = {
 		ChieldFrame = "StoreTransmogrifySubCategoryFrame",
 		subCategoryFrame = "StoreTransmogrifyFrame",
 		dontItemRequest = true
+	},
+}
+
+STORE_SUB_CATEGORY_DATA[9] = {
+	{
+		Name = STORE_SUB_CATEGORY_9_1,
+		SubCategoryId = 2,
+		CategoryId = 9,
+		Callback = function() selectedSubCategoryID = 2; StoreSubscribeSetup() end
+	},
+	{
+		Name = STORE_SUB_CATEGORY_9_2,
+		SubCategoryId = 3,
+		CategoryId = 9,
+		Callback = function() selectedSubCategoryID = 3; StoreSubscribeSetup() end
+	},
+	{
+		Name = STORE_SUB_CATEGORY_9_3,
+		SubCategoryId = 4,
+		CategoryId = 9,
+		Callback = function() selectedSubCategoryID = 4; StoreSubscribeSetup() end
+	},
+	{
+		Name = STORE_SUB_CATEGORY_9_4,
+		SubCategoryId = 5,
+		CategoryId = 9,
+		Callback = function() selectedSubCategoryID = 5; StoreSubscribeSetup() end
 	},
 }
 
@@ -307,15 +337,74 @@ STORE_CATEGORIES_DATA[4] = {
 	text = STORE_CATEGORY_INFO_3
 }
 
-STORE_SPECIAL_OFFER_FOXES_ID = 33
-STORE_SPECIAL_OFFER_MEAT_ID = 47
-STORE_SPECIAL_OFFER_PINK_FOXES_ID = 35
-STORE_SPECIAL_OFFER_FLY_RAT_ID = 36
-STORE_SPECIAL_OFFER_RAINBOW_STEED_ID = 42
-STORE_SPECIAL_OFFER_LEFFEL_ID = 48
-STORE_SPECIAL_OFFER_ENDLESS_BAGS = 50
-STORE_SPECIAL_OFFER_HAND_OF_SUFFER_ID = 53
-STORE_SPECIAL_OFFER_MUR_MUR_ID = 54
+STORE_SPECIAL_OFFERS_3D = {
+	[33] = {
+		Name = "Foxy",
+		VertexColor =  {0.38, 0.88, 1},
+		PopupCreature = 130523,
+		BannerModelInfo = {130523, 0.1, "BOTTOM", "TOP", 0, -40, 280, 280, 1},
+	}, -- Foxes
+	[47] = {
+		Name = "Meat",
+		VertexColor =  {1, 0.3, 0.3},
+		PopupCreature = 130945,
+		BannerModelInfo = {130945, -0.3, "BOTTOM", "TOP", 10, -60, 200, 200, 1},
+	}, -- Meat wagon
+	[35] = {
+		Name = "FoxyPink",
+		VertexColor =  {1, 0.3, 0.3},
+		PopupCreature = 130521,
+		BannerModelInfo = {130521, -0.6, "BOTTOM", "TOP", 0, -74, 280, 280, 1},
+	}, -- Pink foxes
+	[36] = {
+		Name = "FlyRat",
+		VertexColor =  {0.98, 0.65, 0.68},
+		PopupCreature = 200041,
+		BannerModelInfo = {200041, -0.5, "BOTTOM", "TOP", 0, 0, 200, 200, 1},
+	}, -- Fly rat offer
+	[42] = {
+		Name = "RainbowSteed",
+		VertexColor =  {0.38, 0.88, 1},
+		PopupCreature = nil,
+		BannerModelInfo = nil,
+	}, -- Rainbow steed
+	[48] = {
+		Name = "Leffel",
+		VertexColor =  {0.38, 0.88, 1},
+		PopupCreature = 130893,
+		BannerModelInfo = {130893, -0.68, "BOTTOM", "TOP", 0, 0, 200, 200, 0.7},
+	}, -- Leffel
+	[53] = {
+		Name = "HandOfSuffer",
+		VertexColor =  {0.82, 0.34, 0.12},
+		PopupCreature = 131067,
+		BannerModelInfo = {131067, -0.68, "BOTTOM", "TOP", 0, -70, 400, 400, 0.7},
+	}, -- Hand of suffer
+	[54] = {
+		Name = "MurMur",
+		VertexColor =  {0.82, 0.34, 0.12},
+		PopupCreature = 131209,
+		BannerModelInfo = {131209, -0.68, "BOTTOM", "TOP", -50, -50, 350, 320, 0.7},
+	}, -- Mur mur
+	[55] = {
+		Name = "HeartGlider",
+		VertexColor =  {1, 0.3, 0.3},
+		PopupCreature = 131231,
+		BannerModelInfo = {131231, -0.68, "BOTTOM", "TOP", 0, -250, 350, 420, 0.7},
+	}, -- Heart glider
+	[56] = {
+		Name = "DeathBreath",
+		VertexColor =  {1, 0.3, 0.3},
+		PopupCreature = 74539,
+		BannerModelInfo = {74539, -0.68, "BOTTOM", "TOP", 0, -30, 150, 220, 0.7},
+	}, -- Death Breath
+	[57] = {
+		Name = "Sirin",
+		VertexColor =  {1, 0.3, 0.3},
+		PopupCreature = 131250,
+		BannerModelInfo = {131250, -0.38, "BOTTOM", "TOP", 0, 20, 350, 220, 0.7},
+	}, -- Sirin
+}
 
 STORE_CACHE = C_Cache("SIRUS_STORE_CACHE", true)
 
@@ -323,9 +412,11 @@ local NO_CLASS_FILTER = 0
 local ALL_EXPANSION_FILTER = -1
 local ALL_SOURCE_FILTER = 0
 local ALL_WEAPON_FILTER = 0
+local ALL_WEAPON_NEW_FILTER = -2
 
 local storeTransmogrifySetsData = {}
 local storeTransmogrifySourceDataByStoreID = {}
+local storeTransmogrifyNewWeaponTypes = {}
 
 storeTransmogrifyShowShoulders = true
 
@@ -358,6 +449,10 @@ STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNT 		= 5
 STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNTPRICE 	= 6
 STORE_TRANSMOGRIFY_SERVER_STOREFLAGS 			= 7
 STORE_TRANSMOGRIFY_SERVER_ISPVP 				= 8
+STORE_TRANSMOGRIFY_SERVER_ALT_CURRENCY 			= 9
+STORE_TRANSMOGRIFY_SERVER_ALT_PRICE 			= 10
+STORE_TRANSMOGRIFY_SERVER_ALT_CURRENCY_NAME 	= 11
+STORE_TRANSMOGRIFY_SERVER_ALT_CURRENCY_ICON 	= 12
 
 STORE_STORAGE_DATA_ID 							= 1
 STORE_STORAGE_DATA_ENTRY 						= 2
@@ -368,8 +463,10 @@ STORE_STORAGE_DATA_DISCOUNT 					= 6
 STORE_STORAGE_DATA_DISCOUNTEDPRICE 				= 7
 STORE_STORAGE_DATA_CREATUREENTRY 				= 8
 STORE_STORAGE_DATA_FLAGS 						= 9
-STORE_STORAGE_DATA_ISPVP 						= 10
-STORE_STORAGE_DATA_DISCOUNTSHOW 				= 11
+STORE_STORAGE_DATA_ALT_CURRENCY 				= 10
+STORE_STORAGE_DATA_ALT_PRICE    				= 11
+STORE_STORAGE_DATA_ISPVP 						= 12
+STORE_STORAGE_DATA_DISCOUNTSHOW 				= 13
 
 local STORE_TRANSMOGRIFY_WEAPON_SUB_CLASSES = {
 	ITEM_SUB_CLASS_2_0, ITEM_SUB_CLASS_2_1, ITEM_SUB_CLASS_2_2, ITEM_SUB_CLASS_2_3, ITEM_SUB_CLASS_2_4, ITEM_SUB_CLASS_2_5, ITEM_SUB_CLASS_2_6, ITEM_SUB_CLASS_2_7, ITEM_SUB_CLASS_2_8,
@@ -475,22 +572,28 @@ function StoreTransmogrifyValidation( data )
 		return false
 	end
 
+	local storeID = data[STORE_TRANSMOGRIFY_SETS_STOREID];
+	local serverData = STORE_TRANSMOGRIFY_SERVER_DATA[storeID];
+
+	if not serverData then
+		return false;
+	end
+
 	local isValidation = true
 	local isDisable = false
 
 	if selectedSubCategoryID ~= 2 then
-		local storeID = data[STORE_TRANSMOGRIFY_SETS_STOREID]
 		local classID = data[STORE_TRANSMOGRIFY_SETS_CLASSID]
 		local expansionID = data[STORE_TRANSMOGRIFY_SETS_EXPANSION]
 		local isPVP = false
 
-		if STORE_TRANSMOGRIFY_SERVER_DATA[storeID] then
-			if STORE_TRANSMOGRIFY_SERVER_DATA[storeID][STORE_TRANSMOGRIFY_SERVER_ISPVP] then
-				isPVP = STORE_TRANSMOGRIFY_SERVER_DATA[storeID][STORE_TRANSMOGRIFY_SERVER_ISPVP]
+		if serverData then
+			if serverData[STORE_TRANSMOGRIFY_SERVER_ISPVP] then
+				isPVP = serverData[STORE_TRANSMOGRIFY_SERVER_ISPVP]
 			end
 
-			if STORE_TRANSMOGRIFY_SERVER_DATA[storeID][STORE_TRANSMOGRIFY_SERVER_STOREFLAGS] then
-				local flags = STORE_TRANSMOGRIFY_SERVER_DATA[storeID][STORE_TRANSMOGRIFY_SERVER_STOREFLAGS]
+			if serverData[STORE_TRANSMOGRIFY_SERVER_STOREFLAGS] then
+				local flags = serverData[STORE_TRANSMOGRIFY_SERVER_STOREFLAGS]
 
 				isDisable = bit.band(flags, 512) == 512
 			end
@@ -516,7 +619,11 @@ function StoreTransmogrifyValidation( data )
 			end
 		end
 	elseif selectedSubCategoryID == 2 then
-		if STORE_TRANSMOGRIFY_FILTER_WEAPON ~= ALL_WEAPON_FILTER then
+		if STORE_TRANSMOGRIFY_FILTER_WEAPON == ALL_WEAPON_NEW_FILTER then
+			if not storeID or not serverData or bit.band(serverData[STORE_TRANSMOGRIFY_SERVER_STOREFLAGS] or 0, STORE_ITEM_FLAG_NEW) == 0 then
+				isValidation = false
+			end
+		elseif STORE_TRANSMOGRIFY_FILTER_WEAPON ~= ALL_WEAPON_FILTER then
 			if STORE_TRANSMOGRIFY_FILTER_WEAPON ~= data[STORE_TRANSMOGRIFY_SETS_WEAPONTYPE] then
 				isValidation = false
 			end
@@ -568,9 +675,22 @@ function StoreTransmogrifyGenerateData( isFiltered )
 	local index = 1
 	storeTransmogrifySetsData = {}
 	storeTransmogrifySourceDataByStoreID = {}
+	storeTransmogrifyNewWeaponTypes = {}
 
 	for _, data in pairs(STORE_TRANSMOGRIFY_SETS_DATA[selectedSubCategoryID] or {}) do
-		storeTransmogrifySourceDataByStoreID[data[STORE_TRANSMOGRIFY_SETS_STOREID]] = data
+		local storeID = data[STORE_TRANSMOGRIFY_SETS_STOREID]
+
+		if selectedSubCategoryID == 2 then
+			local weaponType = data[STORE_TRANSMOGRIFY_SETS_WEAPONTYPE];
+
+			if weaponType and weaponType ~= -1 then
+				if STORE_TRANSMOGRIFY_SERVER_DATA[storeID] and bit.band(STORE_TRANSMOGRIFY_SERVER_DATA[storeID][STORE_TRANSMOGRIFY_SERVER_STOREFLAGS] or 0, STORE_ITEM_FLAG_NEW) ~= 0 then
+					storeTransmogrifyNewWeaponTypes[weaponType] = true;
+				end
+			end
+		end
+
+		storeTransmogrifySourceDataByStoreID[storeID] = data
 		if StoreTransmogrifyValidation(data) and StoreTransmogrifySearchValidation(data) then
 			storeTransmogrifySetsData[index] = data
 			index = index + 1
@@ -602,23 +722,27 @@ function GetStoreTransmogrifySetsInfo( index )
 	local storeID 		= data[STORE_TRANSMOGRIFY_SETS_STOREID]
 	local setName 		= data[STORE_TRANSMOGRIFY_SETS_NAME]
 	local iconTexture 	= data[STORE_TRANSMOGRIFY_SETS_ICON]
-	local isPVP 		= nil --data[STORE_TRANSMOGRIFY_SETS_ISPVP]
+--	local isPVP 		= nil --data[STORE_TRANSMOGRIFY_SETS_ISPVP]
 	local classID 		= data[STORE_TRANSMOGRIFY_SETS_CLASSID]
 	local expansionID 	= data[STORE_TRANSMOGRIFY_SETS_EXPANSION]
 	local qualityID 	= data[STORE_TRANSMOGRIFY_SETS_QUALITY]
 	local itemsStoreID 	= data[STORE_TRANSMOGRIFY_SETS_ITEMS]
 
 	local serverData = STORE_TRANSMOGRIFY_SERVER_DATA[storeID]
-	local storePrice, storeDiscount, storeDiscountPrice, isPVP
+	local storePrice, storeDiscount, storeDiscountPrice, isPVP, altCurrency, altPrice, altCurrencyName, altCurrencyIcon
 
 	if serverData then
 		storePrice 			= serverData[STORE_TRANSMOGRIFY_SERVER_STOREPRICE]
 		storeDiscount 		= serverData[STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNT]
 		storeDiscountPrice 	= serverData[STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNTPRICE]
 		isPVP 				= serverData[STORE_TRANSMOGRIFY_SERVER_ISPVP]
+		altCurrency 		= serverData[STORE_TRANSMOGRIFY_SERVER_ALT_CURRENCY];
+		altPrice 			= serverData[STORE_TRANSMOGRIFY_SERVER_ALT_PRICE];
+		altCurrencyName 	= serverData[STORE_TRANSMOGRIFY_SERVER_ALT_CURRENCY_NAME];
+		altCurrencyIcon 	= serverData[STORE_TRANSMOGRIFY_SERVER_ALT_CURRENCY_ICON];
 	end
 
-	return storeID, setName, iconTexture, isPVP, classID, expansionID, qualityID, itemsStoreID, storePrice, storeDiscount, storeDiscountPrice, isPVP
+	return storeID, setName, iconTexture, isPVP, classID, expansionID, qualityID, itemsStoreID, storePrice, storeDiscount, storeDiscountPrice, isPVP, altCurrency, altPrice, altCurrencyName, altCurrencyIcon;
 end
 
 function GetNumStoreTransmogrifySets()
@@ -671,17 +795,20 @@ function GetStoreTransmogrifyItemsInfo( index )
 	local itemRarity 	= data[STORE_TRANSMOGRIFY_ITEM_QUALITY]
 
 	local serverData = STORE_TRANSMOGRIFY_SERVER_DATA[storeID]
-	local storePrice, storeDiscount, storeDiscountPrice, isPVP
+	local storePrice, storeDiscount, storeDiscountPrice, isPVP, altCurrency, altPrice, altCurrencyName, altCurrencyIcon;
 
 	if serverData then
 		storePrice 			= serverData[STORE_TRANSMOGRIFY_SERVER_STOREPRICE]
 		storeDiscount 		= serverData[STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNT]
 		storeDiscountPrice 	= serverData[STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNTPRICE]
 		isPVP 				= serverData[STORE_TRANSMOGRIFY_SERVER_ISPVP]
+		altCurrency 		= serverData[STORE_TRANSMOGRIFY_SERVER_ALT_CURRENCY];
+		altPrice 			= serverData[STORE_TRANSMOGRIFY_SERVER_ALT_PRICE];
+		altCurrencyName 	= serverData[STORE_TRANSMOGRIFY_SERVER_ALT_CURRENCY_NAME];
+		altCurrencyIcon 	= serverData[STORE_TRANSMOGRIFY_SERVER_ALT_CURRENCY_ICON];
 	end
 
-
-	return storeID, itemID, iconTexture, itemLink, itemRarity, storePrice, storeDiscount, storeDiscountPrice, isPVP
+	return storeID, itemID, iconTexture, itemLink, itemRarity, storePrice, storeDiscount, storeDiscountPrice, isPVP, altCurrency, altPrice, altCurrencyName, altCurrencyIcon;
 end
 
 function StoreGetSpecialOfferByOfferID( offerID )
@@ -731,6 +858,7 @@ end
 
 function StoreFrame_OnLoad( self, ... )
 	self.CategoryFrames = {}
+	self.SubCategoryFrames = {}
 
 	self:RegisterEvent("VARIABLES_LOADED")
 	self:RegisterEvent("PLAYER_LEVEL_UP")
@@ -835,6 +963,7 @@ function StoreFrame_OnEvent( self, event, ... )
 		SendServerMessage("ACMSG_SHOP_CATEGORY_NEW_ITEMS_REQUEST")
 		SendServerMessage("ACMSG_SHOP_BALANCE_REQUEST")
 		SendServerMessage("ACMSG_SHOP_SUBSCRIPTION_LIST_REQUEST")
+		STORE_SUBSCRIBE_DATA = {}
 	elseif event == "VARIABLES_LOADED" then
 		StoreCacheDataGenerate()
 
@@ -1015,7 +1144,7 @@ function StoreCategory_OnLoad( self, ... )
 end
 
 function StoreCategory_OnClick( self, ... )
-	if self:GetID() == selectedCategoryID and self:GetID() ~= 2 and self:GetID() ~= STORE_TRANSMOGRIFY_CATEGORY_ID then
+	if self:GetID() == selectedCategoryID and self:GetID() ~= 2 and self:GetID() ~= STORE_TRANSMOGRIFY_CATEGORY_ID and self.data.SlideOther == nil and selectedSubCategoryID ~= 0 then
 		return
 	end
 
@@ -1068,6 +1197,59 @@ function StoreSelectCategory( categoryID, subCategoryID )
 		self.SelectedTexture:Show()
 
 		StoreRefreshMountListButton:SetShown(categoryID == 3 or categoryID == 4)
+		
+		for _, button in pairs(StoreFrame.SubCategoryFrames) do
+			button:Hide()
+		end
+		
+		if self.data.SlideOther then
+			local prevFrame = nil
+			local height = 22 * #STORE_SUB_CATEGORY_DATA[categoryID]
+			for i, button in pairs(StoreFrame.CategoryFrames) do
+				local isHidden = button.data.Hidden or (i == 5 and C_Service:IsLockStrengthenStatsFeature());
+
+				if not isHidden then
+					if i > categoryID and i ~= 1 then
+						button:SetPoint("TOPLEFT", StoreFrame.CategoryFrames[i-1], "BOTTOMLEFT", 0, -height)
+					end
+
+					prevFrame = button;
+				end
+			end
+
+			for i = 1, #STORE_SUB_CATEGORY_DATA[categoryID] do
+				local subFrame = StoreFrame.SubCategoryFrames[i]
+
+				if ( not subFrame ) then
+					subFrame = CreateFrame("Button", "StoreSubCategoryButton"..i, StoreFrameLeftInset, "StoreSubCategoryTemplate")
+					if i == 1 then
+						subFrame:SetPoint("TOP", StoreFrame.CategoryFrames[categoryID], "BOTTOM", 0, 0)
+					else
+						subFrame:SetPoint("TOPLEFT", prevFrame, "BOTTOMLEFT", 0, 0)
+					end
+					StoreFrame.SubCategoryFrames[i] = subFrame
+				end
+				prevFrame = subFrame
+				StoreFrame.SubCategoryFrames[i].data = STORE_SUB_CATEGORY_DATA[categoryID][i]
+				subFrame:SetID(i)
+				subFrame.Text:SetText(STORE_SUB_CATEGORY_DATA[categoryID][i].Name)
+				subFrame.SelectedTexture:Hide()
+				subFrame:Show()
+			end
+		else
+			local prevFrame;
+			for i, button in pairs(StoreFrame.CategoryFrames) do
+				local isHidden = button.data.Hidden or (i == 5 and C_Service:IsLockStrengthenStatsFeature());
+
+				if not isHidden then
+					if i ~= 1 then
+						button:SetPoint("TOPLEFT", prevFrame, "BOTTOMLEFT", 0, 0)
+					end
+
+					prevFrame = button;
+				end
+			end
+		end
 	end
 	StoreItemListUpdate()
 	StoreFrame.TutorialButton:SetShown(selectedCategoryID == 1)
@@ -1079,6 +1261,22 @@ end
 
 function StoreCategory_OnLeave( self, ... )
 	self.HighlightTexture:Hide()
+end
+
+function StoreSubCategory_OnEnter( self, ... )
+	self.HighlightTexture:Show()
+end
+
+function StoreSubCategory_OnLeave( self, ... )
+	self.HighlightTexture:Hide()
+end
+
+function StoreSubCategory_OnClick( self, ... )
+	for _, button in pairs(StoreFrame.SubCategoryFrames) do
+		button.SelectedTexture:Hide()
+	end
+	self.SelectedTexture:Show()
+	self.data.Callback()
 end
 
 function StoreItemListFrame_OnLoad( self, ... )
@@ -1260,75 +1458,12 @@ function StoreSpecialOfferSortUpdate()
 		local isNew_A = a and a.IsNew or false
 		local isNew_B = b and b.IsNew or false
 
-		local isFoxy_A = a and a.offerID == STORE_SPECIAL_OFFER_FOXES_ID
-		local isFoxy_B = b and b.offerID == STORE_SPECIAL_OFFER_FOXES_ID
+		local is3D_A = a and STORE_SPECIAL_OFFERS_3D[a.offerID] or false
+		local is3D_B = b and STORE_SPECIAL_OFFERS_3D[b.offerID] or false
 
-		local isMeat_A = a and a.offerID == STORE_SPECIAL_OFFER_MEAT_ID
-		local isMeat_B = b and b.offerID == STORE_SPECIAL_OFFER_MEAT_ID
-
-		local isPinkFoxy_A = a and a.offerID == STORE_SPECIAL_OFFER_PINK_FOXES_ID
-		local isPinkFoxy_B = b and b.offerID == STORE_SPECIAL_OFFER_PINK_FOXES_ID
-
-		local isFlyRat_A = a and a.offerID == STORE_SPECIAL_OFFER_FLY_RAT_ID
-		local isFlyRat_B = b and b.offerID == STORE_SPECIAL_OFFER_FLY_RAT_ID
-
-		local isRainbowSteed_A = a and a.offerID == STORE_SPECIAL_OFFER_RAINBOW_STEED_ID
-		local isRainbowSteed_B = b and b.offerID == STORE_SPECIAL_OFFER_RAINBOW_STEED_ID
-
-		local isLefffel_A = a and a.offerID == STORE_SPECIAL_OFFER_LEFFEL_ID
-		local isLefffel_B = b and b.offerID == STORE_SPECIAL_OFFER_LEFFEL_ID
-
-		local isHandOfSuffer_A = a and a.offerID == STORE_SPECIAL_OFFER_HAND_OF_SUFFER_ID
-		local isHandOfSuffer_B = b and b.offerID == STORE_SPECIAL_OFFER_HAND_OF_SUFFER_ID
-
-		local isMurMur_A = a and a.offerID == STORE_SPECIAL_OFFER_MUR_MUR_ID
-		local isMurMur_B = b and b.offerID == STORE_SPECIAL_OFFER_MUR_MUR_ID
-
-		if isFoxy_A and not isFoxy_B then
+		if is3D_A and not is3D_B then
 			return true
-		elseif not isFoxy_A and isFoxy_B then
-			return false
-		end
-
-		if isMeat_A and not isMeat_B then
-			return true
-		elseif not isMeat_A and isMeat_B then
-			return false
-		end
-
-		if isPinkFoxy_A and not isPinkFoxy_B then
-			return true
-		elseif not isPinkFoxy_A and isPinkFoxy_B then
-			return false
-		end
-
-		if isFlyRat_A and not isFlyRat_B then
-			return true
-		elseif not isFlyRat_A and isFlyRat_B then
-			return false
-		end
-
-		if isRainbowSteed_A and not isRainbowSteed_B then
-			return true
-		elseif not isRainbowSteed_A and isRainbowSteed_B then
-			return false
-		end
-
-		if isLefffel_A and not isLefffel_B then
-			return true
-		elseif not isLefffel_A and isLefffel_B then
-			return false
-		end
-
-		if isHandOfSuffer_A and not isHandOfSuffer_B then
-			return true
-		elseif not isHandOfSuffer_A and isHandOfSuffer_B then
-			return false
-		end
-
-		if isMurMur_A and not isMurMur_B then
-			return true
-		elseif not isMurMur_A and isMurMur_B then
+		elseif not is3D_A and is3D_B then
 			return false
 		end
 
@@ -1510,7 +1645,6 @@ function StoreConfirmationFrame_OnShow( self, ... )
 
 	SetPortraitToTexture(self.Art.Icon, self.data.Texture)
 	self.Art.ProductName:SetText(self.data.Name)
-	self.NoticeFrame.MoneyIcon:SetTexture("Interface\\Store\\"..STORE_PRODUCT_MONEY_ICON[selectedMoneyID])
 
 	self.MailBackgroundRight:Hide()
 	self.MailBackgroundLeft:Hide()
@@ -1523,11 +1657,10 @@ function StoreConfirmationFrame_OnShow( self, ... )
 		self.BuyButton:SetPoint("BOTTOM", 0, 17)
 	end
 
-	if self.data.DiscountedPrice then
-		self.NoticeFrame.Price:SetText(self.data.DiscountedPrice)
-	else
-		self.NoticeFrame.Price:SetText(self.data.Price)
-	end
+	self.isAltCurrency = false;
+	self.NoticeFrame.AltCurrencySelectFrame.currency = self.data.AltCurrency;
+
+	StoreConfirmationFrame_Update(self);
 
 	if self.data.DescriptionText then
 		self.NoticeFrame.Notice:SetText(self.data.DescriptionText)
@@ -1574,18 +1707,12 @@ function StoreConfirmationFrame_OnShow( self, ... )
 
 			button:SetShown(StoreSpecialOfferDetailFrame.selectRole == i)
 		end
-	elseif self.data.selfSize then
-		self:SetSize(self.data.selfSize[1], self.data.selfSize[2])
-
-		if self.data.noticeSize then
-			self.NoticeFrame:SetSize(self.data.noticeSize[1], self.data.noticeSize[2])
-		end
 	else
 		selectedSpecID = nil
 		StoreConfirmationSelectSpec:Hide()
-		self:SetSize(403, 396)
-		self.NoticeFrame:SetSize(400, 208)
 	end
+
+	StoreConfirmationFrame_UpdateSize(self);
 
 	if selectedMoneyID == 4 or selectedMoneyID == 3 or selectedMoneyID == 2 then
 		if self.data.CreatureEntry then
@@ -1598,6 +1725,20 @@ function StoreConfirmationFrame_OnShow( self, ... )
 			StoreModelPreviewFrame:SetPoint("LEFT", StoreFrame, "RIGHT", 6, 0)
 		end
 	end
+end
+
+function StoreConfirmationFrameMoneySelectFrame_OnClick(self)
+	local id;
+
+	if self.SelectButton then
+		id = self:GetID();
+	else
+		id = self:GetParent():GetID();
+	end
+
+	StoreConfirmationFrame.isAltCurrency = id == 2 and true or false;
+
+	StoreConfirmationFrame_Update(StoreConfirmationFrame);
 end
 
 function SelectedStyleDropDown_OnLoad( self, ... )
@@ -1654,14 +1795,18 @@ end
 
 function StoreConfirmationSendGiftCheckButton_OnClick( self, ... )
 	StoreConfirmationFrame_UpdateState(self)
+
+	StoreConfirmationFrame_Update(StoreConfirmationFrame);
+	StoreConfirmationFrame_UpdateSize(StoreConfirmationFrame);
 end
 
 function StoreConfirmationButton_OnClick( self, ... )
-	local data = self:GetParent().data
+	local parent = self:GetParent();
+	local data = parent.data
 
 	if data.confirmationFunc then
 		data.confirmationFunc()
-		self:GetParent():Hide()
+		parent:Hide()
 		return
 	end
 
@@ -1679,18 +1824,27 @@ function StoreConfirmationButton_OnClick( self, ... )
 		SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d:%d:1:%s:%d:%s", data.ID, data.buyCount or 1, name, dropDown.Key, text), "WHISPER", UnitName("player"))
 	else
 		if data.SelectedSpec and StoreSpecialOfferDetailFrame.selectRole and StoreSpecialOfferDetailFrame.selectRole ~= 0 then
-			SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d:%d:0:%d", data.ID, data.buyCount or 1, StoreSpecialOfferDetailFrame.selectRole), "WHISPER", UnitName("player"))
+--			if parent.hasAltCurrency then
+				SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d:%d:0:%d:%d", data.ID, data.buyCount or 1, StoreSpecialOfferDetailFrame.selectRole, parent.isAltCurrency and 1 or 0), "WHISPER", UnitName("player"))
+--			else
+--				SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d:%d:0:%d", data.ID, data.buyCount or 1, StoreSpecialOfferDetailFrame.selectRole), "WHISPER", UnitName("player"))
+--			end
 		elseif data.isSubscribe then
 			SendAddonMessage("ACMSG_SHOP_SUBSCRIBE", string.format("%d:%d", data.ID, data.Time), "WHISPER", UnitName("player"))
+			STORE_SUBSCRIBE_DATA = {}
 		else
-			SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d:%d:0:0", data.ID, data.buyCount or 1), "WHISPER", UnitName("player"))
+--			if parent.hasAltCurrency then
+				SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d:%d:0:0:%d", data.ID, data.buyCount or 1, parent.isAltCurrency and 1 or 0), "WHISPER", UnitName("player"))
+--			else
+--				SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d:%d:0:0", data.ID, data.buyCount or 1), "WHISPER", UnitName("player"))
+--			end
 		end
 	end
 
 	if not data.IsReusable and data.Title then
 		selectedRemoveOffer = data.pageID
 	end
-	self:GetParent():Hide()
+	parent:Hide()
 end
 
 function StorePurchaseAlertFrame_OnShow( self, ... )
@@ -1831,7 +1985,7 @@ end
 function StoreSpecialOfferBannerDetails_OnClick( self, ... )
 	local data = StoreGetSpecialOfferByIndex(selectedSpecialOfferPage)
 	if data.Price == 0 and not data.FreeSubscribe then
-		SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d:1:0:0", data.ID), "WHISPER", UnitName("player"))
+		SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d:1:0:0:0", data.ID), "WHISPER", UnitName("player"))
 		if not data.IsReusable and data.Title then
 			StoreRemoveOffer(data.pageID)
 			selectedSpecialOfferPage = 1
@@ -2034,6 +2188,7 @@ end
 
 function StoreSubscribeFrame_OnShow( self, ... )
 	SendAddonMessage("ACMSG_SHOP_SUBSCRIPTION_LIST_REQUEST", nil, "WHISPER", UnitName("player"))
+	STORE_SUBSCRIBE_DATA = {}
 end
 
 function StoreSubscribeItem_OnShow( self, ... )
@@ -2050,8 +2205,9 @@ function StoreSubscribeItem_OnEnter( self, ... )
 end
 
 function StoreSubscribeBuyButton_OnClick( self, ... )
-	if STORE_SUBSCRIBE_DATA.ShowTrial then
-		SendAddonMessage("ACMSG_SHOP_SUBSCRIBE", string.format("%d:%d", STORE_SUBSCRIBE_DATA.ID, 1), "WHISPER", UnitName("player"))
+	if STORE_SUBSCRIBE_DATA[selectedSubsID].ShowTrial then
+		SendAddonMessage("ACMSG_SHOP_SUBSCRIBE", string.format("%d:%d", STORE_SUBSCRIBE_DATA[selectedSubsID].ID, 1), "WHISPER", UnitName("player"))
+		STORE_SUBSCRIBE_DATA = {}
 	else
 		StoreFrame_ProductBuy(self.SubscribeData)
 	end
@@ -2491,29 +2647,54 @@ function StoreSpecialOfferDetailFrame_OnClick( self, ... )
 end
 
 function StoreSubscribeSetup()
-	local data = STORE_SUBSCRIBE_DATA
+	-- main subs always first
+	selectedSubsID = selectedSubCategoryID > 0 and selectedSubCategoryID or 1
+	local data = STORE_SUBSCRIBE_DATA[selectedSubsID]
+	if data == nil then
+		return
+	end
+
+	StoreSubscribeSetupModel();
 
 	if StoreSubscribeFrame.Ticker then
 		StoreSubscribeFrame.Ticker:Cancel()
 		StoreSubscribeFrame.Ticker = nil
 	end
 
-	StoreSubscribeContainer.Active.timer1:SetRemainingTime(STORE_SUBSCRIBE_DATA.Seconds)
+	StoreSubscribeContainer.Active.timer1:SetRemainingTime(STORE_SUBSCRIBE_DATA[selectedSubsID].Seconds)
 	StoreSubscribeFrame.Ticker = C_Timer:NewTicker(1, function()
-		STORE_SUBSCRIBE_DATA.Seconds = STORE_SUBSCRIBE_DATA.Seconds - 1
+		STORE_SUBSCRIBE_DATA[selectedSubsID].Seconds = STORE_SUBSCRIBE_DATA[selectedSubsID].Seconds - 1
 		if StoreSubscribeContainer.Active.timer1:IsVisible() then
-			StoreSubscribeContainer.Active.timer1:SetRemainingTime(STORE_SUBSCRIBE_DATA.Seconds)
+			StoreSubscribeContainer.Active.timer1:SetRemainingTime(STORE_SUBSCRIBE_DATA[selectedSubsID].Seconds)
 		else
 			StoreSubscribeFrame.Ticker:Cancel()
 			StoreSubscribeFrame.Ticker = nil
 		end
 	end, data.Seconds)
+	
+	for d = 1, 3 do
+		local button = _G["StoreSubscribeItemButton"..d]
+		button:Hide()
+	end
 
-	for i = 1, #data.EveryDayItem do
-		local button = _G["StoreSubscribeItemButton"..i]
+	for k = 1, 1 do
+		local button = _G["StoreSubscribeSubItemButton"..k]
+		button:Hide()
+	end
+
+	for i = 1, 4 do
+		local button = _G["StoreSubscribeContainerBuyButton"..i]
+
 		if button then
-			local Entry = data.EveryDayItem[i].Entry
-			local Count = data.EveryDayItem[i].Count
+			button:Hide()
+		end
+	end
+
+	if #data.EveryDayItem == 1 then
+		local button = _G["StoreSubscribeItemButton"..2]
+		if button then
+			local Entry = data.EveryDayItem[1].Entry
+			local Count = data.EveryDayItem[1].Count
 			local name, link, _, _, _, _, _, _, _, texture = GetItemInfo(tonumber(Entry))
 			button.Link = link
 
@@ -2522,6 +2703,22 @@ function StoreSubscribeSetup()
 			button.count:SetText(Count)
 
 			button:Show()
+		end
+	else
+		for i = 1, #data.EveryDayItem do
+			local button = _G["StoreSubscribeItemButton"..i]
+			if button then
+				local Entry = data.EveryDayItem[i].Entry
+				local Count = data.EveryDayItem[i].Count
+				local name, link, _, _, _, _, _, _, _, texture = GetItemInfo(tonumber(Entry))
+				button.Link = link
+
+				button.iconTexture:SetTexture(texture)
+				button.name:SetText(name)
+				button.count:SetText(Count)
+
+				button:Show()
+			end
 		end
 	end
 
@@ -2540,24 +2737,6 @@ function StoreSubscribeSetup()
 		end
 	end
 
-	for d = #data.EveryDayItem + 1, 3 do
-		local button = _G["StoreSubscribeItemButton"..d]
-		button:Hide()
-	end
-
-	for k = #data.EveryDayItem + 1, 1 do
-		local button = _G["StoreSubscribeSubItemButton"..k]
-		button:Hide()
-	end
-
-	for i = 1, 4 do
-		local button = _G["StoreSubscribeContainerBuyButton"..i]
-
-		if button then
-			button:Hide()
-		end
-	end
-
 	if data.Dayz then
 		StoreSubscribeFrame.BackgroundTile:SetVertexColor(0.6, 1, 0.6)
 		StoreSubscribeContainer.Active.timer2:SetFormattedText(STORE_SUBSCRIBE_ACTIVE_TIME_LABEL, data.Dayz)
@@ -2567,6 +2746,8 @@ function StoreSubscribeSetup()
 		StoreSubscribeContainer.Inactive.BuyText:SetShown(#data.OnSubscribeItem <= 0)
 	end
 
+	local subData = STORE_SUBSCRIBE_DATA[selectedSubsID];
+
 	if data.ShowTrial and not data.Dayz then
 		StoreSubscribeContainer.BuyButton1:SetText(STORE_BUY_FOR_FREE)
 
@@ -2575,8 +2756,8 @@ function StoreSubscribeSetup()
 		StoreSubscribeContainer.BuyButton1:SetFormattedText(STORE_SUBSCRIBE_BUY_1, data.ShortPrice)
 		StoreSubscribeContainer.BuyButton2:SetFormattedText(STORE_SUBSCRIBE_BUY_2, data.LongPrice)
 
-		StoreSubscribeContainer.BuyButton1.SubscribeData = StoreConfigurateSubscribeData(2, string.format(STORE_SUBSCRIBE_BUY_TIME, 7), data.ShortPrice, STORE_SUBSCRIBE_BUY_DESCRIPTION)
-		StoreSubscribeContainer.BuyButton2.SubscribeData = StoreConfigurateSubscribeData(3, string.format(STORE_SUBSCRIBE_BUY_TIME, 30), data.LongPrice, STORE_SUBSCRIBE_BUY_DESCRIPTION)
+		StoreSubscribeContainer.BuyButton1.SubscribeData = StoreConfigurateSubscribeData(2, string.format(STORE_SUBSCRIBE_BUY_TIME, subData.Name, 7), data.ShortPrice, string.format(STORE_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
+		StoreSubscribeContainer.BuyButton2.SubscribeData = StoreConfigurateSubscribeData(3, string.format(STORE_SUBSCRIBE_BUY_TIME, subData.Name, 30), data.LongPrice, string.format(STORE_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
 
 		StoreSubscribeContainer.BuyButton1:Show()
 		StoreSubscribeContainer.BuyButton2:Show()
@@ -2585,9 +2766,9 @@ function StoreSubscribeSetup()
 		StoreSubscribeContainer.BuyButton2:SetFormattedText(STORE_SUBSCRIBE_PROLONG_2, data.LongPrice)
 		StoreSubscribeContainer.BuyButton3:SetFormattedText(STORE_EXTRA_SUBSCRIBE_UPGRADE, data.ExtraPrice)
 
-		StoreSubscribeContainer.BuyButton1.SubscribeData = StoreConfigurateSubscribeData(2, string.format(STORE_SUBSCRIBE_BUY_TIME, 7 + 1), data.ShortPrice, STORE_SUBSCRIBE_BUY_DESCRIPTION)
-		StoreSubscribeContainer.BuyButton2.SubscribeData = StoreConfigurateSubscribeData(3, string.format(STORE_SUBSCRIBE_BUY_TIME, 30 + 3), data.LongPrice, STORE_SUBSCRIBE_BUY_DESCRIPTION)
-		StoreSubscribeContainer.BuyButton3.SubscribeData = StoreConfigurateSubscribeData(4, string.format(STORE_EXTRA_SUBSCRIBE_BUYUP_TIME, data.Dayz), data.ExtraPrice, STORE_EXTRA_SUBSCRIBE_BUY_DESCRIPTION)
+		StoreSubscribeContainer.BuyButton1.SubscribeData = StoreConfigurateSubscribeData(2, string.format(STORE_SUBSCRIBE_BUY_TIME, subData.Name, 7 + 1), data.ShortPrice, string.format(STORE_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
+		StoreSubscribeContainer.BuyButton2.SubscribeData = StoreConfigurateSubscribeData(3, string.format(STORE_SUBSCRIBE_BUY_TIME, subData.Name, 30 + 3), data.LongPrice, string.format(STORE_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
+		StoreSubscribeContainer.BuyButton3.SubscribeData = StoreConfigurateSubscribeData(4, string.format(STORE_EXTRA_SUBSCRIBE_BUYUP_TIME, subData.Name, data.Dayz), data.ExtraPrice, string.format(STORE_EXTRA_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
 
 		StoreSubscribeContainer.BuyButton3:ShowGlow(true)
 
@@ -2598,8 +2779,8 @@ function StoreSubscribeSetup()
 		StoreSubscribeContainer.BuyButton1:SetFormattedText(STORE_SUBSCRIBE_PROLONG_1, data.ShortPrice)
 		StoreSubscribeContainer.BuyButton2:SetFormattedText(STORE_SUBSCRIBE_PROLONG_2, data.LongPrice)
 
-		StoreSubscribeContainer.BuyButton1.SubscribeData = StoreConfigurateSubscribeData(2, string.format(STORE_EXTRA_SUBSCRIBE_BUY_TIME, 7 + 1), data.ShortPrice, STORE_EXTRA_SUBSCRIBE_BUY_DESCRIPTION)
-		StoreSubscribeContainer.BuyButton2.SubscribeData = StoreConfigurateSubscribeData(3, string.format(STORE_EXTRA_SUBSCRIBE_BUY_TIME, 30 + 3), data.LongPrice, STORE_EXTRA_SUBSCRIBE_BUY_DESCRIPTION)
+		StoreSubscribeContainer.BuyButton1.SubscribeData = StoreConfigurateSubscribeData(2, string.format(STORE_EXTRA_SUBSCRIBE_BUY_TIME, subData.Name, 7 + 1), data.ShortPrice, STORE_EXTRA_SUBSCRIBE_BUY_DESCRIPTION)
+		StoreSubscribeContainer.BuyButton2.SubscribeData = StoreConfigurateSubscribeData(3, string.format(STORE_EXTRA_SUBSCRIBE_BUY_TIME, subData.Name, 30 + 3), data.LongPrice, STORE_EXTRA_SUBSCRIBE_BUY_DESCRIPTION)
 
 		StoreSubscribeContainer.BuyButton1:ShowGlow(nil, 0.5)
 		StoreSubscribeContainer.BuyButton2:ShowGlow(nil, 0.5)
@@ -2624,17 +2805,29 @@ function StoreSubscribeSetup()
 	StoreSubscribeContainer.Active:SetShown(data.Dayz)
 end
 
+function StoreSubscribeSetupModel(self)
+	self = self or StoreSubscribeContainer.ModelLeft;
+
+	if selectedSubsID ~= 1 then
+		self:SetRotation(0.40);
+		self:SetCreature(9000295);
+	elseif C_Service:IsStrengthenStatsRealm() then
+		self:SetRotation(0.40);
+		self:SetCreature(50001);
+	end
+end
+
 function StoreConfigurateSubscribeData( ID, name, cost, description, icon )
 	local SubscribeData = {
 		Texture = icon or "Interface\\ICONS\\inv_misc_crystalepic",
 		Name = name,
 		Price = cost,
 		isSubscribe = true,
-		ID = STORE_SUBSCRIBE_DATA.ID,
+		ID = STORE_SUBSCRIBE_DATA[selectedSubsID].ID,
 		Time = ID,
 		DescriptionText = description
 	}
-
+	
 	return SubscribeData
 end
 
@@ -2675,23 +2868,10 @@ function StoreFrame_SpecialOfferSetup()
 		self.data = offerData
 
 		local leftPanel
+		local offer3DName = STORE_SPECIAL_OFFERS_3D[offerData.offerID] and STORE_SPECIAL_OFFERS_3D[offerData.offerID].Name or ""
 
-		if offerData.offerID == STORE_SPECIAL_OFFER_FOXES_ID then
-			leftPanel = self.FoxyOffer.LeftPanel
-		elseif offerData.offerID == STORE_SPECIAL_OFFER_MEAT_ID then
-			leftPanel = self.MeatOffer.LeftPanel
-		elseif offerData.offerID == STORE_SPECIAL_OFFER_PINK_FOXES_ID then
-			leftPanel = self.FoxyPinkOffer.LeftPanel
-		elseif offerData.offerID == STORE_SPECIAL_OFFER_FLY_RAT_ID then
-			leftPanel = self.FlyRatOffer.LeftPanel
-		elseif offerData.offerID == STORE_SPECIAL_OFFER_RAINBOW_STEED_ID then
-			leftPanel = self.RainbowSteedOffer.LeftPanel
-		elseif offerData.offerID == STORE_SPECIAL_OFFER_LEFFEL_ID then
-			leftPanel = self.LeffelOffer.LeftPanel
-		elseif offerData.offerID == STORE_SPECIAL_OFFER_HAND_OF_SUFFER_ID then
-			leftPanel = self.HandOfSufferOffer.LeftPanel
-		elseif offerData.offerID == STORE_SPECIAL_OFFER_MUR_MUR_ID then
-			leftPanel = self.MurMurOffer.LeftPanel
+		if offer3DName ~= "" then
+			leftPanel = self[offer3DName .. "Offer"].LeftPanel
 		else
 			leftPanel = self.LeftPanel
 		end
@@ -2793,18 +2973,6 @@ function StoreFrame_SpecialOfferSetup()
 	StoreSpecialOfferSetupTemplate(self)
 end
 
-SpecialOfferCustomBanners = {
-	[STORE_SPECIAL_OFFER_FOXES_ID] 		    = "StoreSpecialOfferBannerFoxyOffer",
-	[STORE_SPECIAL_OFFER_MEAT_ID] 		    = "StoreSpecialOfferBannerMeatOffer",
-	[STORE_SPECIAL_OFFER_PINK_FOXES_ID]     = "StoreSpecialOfferBannerFoxyPinkOffer",
-	[STORE_SPECIAL_OFFER_FLY_RAT_ID]        = "StoreSpecialOfferBannerFlyRatOffer",
-	[STORE_SPECIAL_OFFER_RAINBOW_STEED_ID] 	= "StoreSpecialOfferBannerRainbowSteedOffer",
-	[STORE_SPECIAL_OFFER_LEFFEL_ID] 	    = "StoreSpecialOfferBannerLeffelOffer",
-	[STORE_SPECIAL_OFFER_HAND_OF_SUFFER_ID] = "StoreSpecialOfferBannerHandOfSufferOffer",
-	[STORE_SPECIAL_OFFER_MUR_MUR_ID] 		= "StoreSpecialOfferBannerMurMurOffer",
-
-}
-
 function StoreSpecialOfferSetupTemplate( self )
 	local offerCount = StoreGetSpecialOfferCount()
 
@@ -2812,31 +2980,19 @@ function StoreSpecialOfferSetupTemplate( self )
 		local data = self.data
 
 		if data.offerID then
-			self.FoxyOffer:SetShown(data.offerID == STORE_SPECIAL_OFFER_FOXES_ID)
-			self.MeatOffer:SetShown(data.offerID == STORE_SPECIAL_OFFER_MEAT_ID)
-			self.FoxyPinkOffer:SetShown(data.offerID == STORE_SPECIAL_OFFER_PINK_FOXES_ID)
-			self.FlyRatOffer:SetShown(data.offerID == STORE_SPECIAL_OFFER_FLY_RAT_ID)
-			self.RainbowSteedOffer:SetShown(data.offerID == STORE_SPECIAL_OFFER_RAINBOW_STEED_ID)
-			self.LeffelOffer:SetShown(data.offerID == STORE_SPECIAL_OFFER_LEFFEL_ID)
-			self.HandOfSufferOffer:SetShown(data.offerID == STORE_SPECIAL_OFFER_HAND_OF_SUFFER_ID)
-			self.MurMurOffer:SetShown(data.offerID == STORE_SPECIAL_OFFER_MUR_MUR_ID)
-
-			if data.offerID and SpecialOfferCustomBanners[data.offerID] then
-				StoreSpecialOfferCustomUpdateState(_G[SpecialOfferCustomBanners[data.offerID]])
-			else
-				StoreSpecialOfferCustomUpdateState(StoreSpecialOfferBannerFoxyOffer)
+			local offer3DName = STORE_SPECIAL_OFFERS_3D[data.offerID] and STORE_SPECIAL_OFFERS_3D[data.offerID].Name or ""
+			for k, v in pairs(STORE_SPECIAL_OFFERS_3D) do
+				if k ~= data.offerID and self[v.Name .. "Offer"]:IsShown() then
+					self[v.Name .. "Offer"]:SetShown(false)
+				end
 			end
 
-			if data.offerID == STORE_SPECIAL_OFFER_FOXES_ID
-				or data.offerID == STORE_SPECIAL_OFFER_MEAT_ID
-				or data.offerID == STORE_SPECIAL_OFFER_PINK_FOXES_ID
-				or data.offerID == STORE_SPECIAL_OFFER_FLY_RAT_ID
-				or data.offerID == STORE_SPECIAL_OFFER_RAINBOW_STEED_ID
-				or data.offerID == STORE_SPECIAL_OFFER_LEFFEL_ID
-				or data.offerID == STORE_SPECIAL_OFFER_ENDLESS_BAGS
-				or data.offerID == STORE_SPECIAL_OFFER_HAND_OF_SUFFER_ID
-				or data.offerID == STORE_SPECIAL_OFFER_MUR_MUR_ID
-			then
+			if offer3DName ~= "" and not self[offer3DName .. "Offer"]:IsShown() then
+				self[offer3DName .. "Offer"]:SetShown(true);
+				StoreSpecialOfferCustomUpdateState(_G["StoreSpecialOfferBanner" .. offer3DName .. "Offer"])
+			end
+
+			if offer3DName ~= "" then
 				data.Flags = STORE_ITEM_FLAG_ITEM_GIFT
 			end
 		end
@@ -2853,31 +3009,8 @@ function StoreSpecialOfferCustomUpdateState( self )
 		self:GetParent().NavigationBar.PageText:SetPoint("TOPRIGHT", -74, -17)
 		self:GetParent().NavigationBar.PrevPageButton:SetPoint("TOPRIGHT", -40, -7)
 
-		if self:GetParent().data.offerID == STORE_SPECIAL_OFFER_FOXES_ID then
-			self:GetParent().Background:SetTexture("Interface\\Store\\SpecialOfferBanner\\f1")
-			self:GetParent().Border:SetVertexColor(0.38, 0.88, 1)
-		elseif self:GetParent().data.offerID == STORE_SPECIAL_OFFER_MEAT_ID then
-			self:GetParent().Background:SetTexture("Interface\\Store\\SpecialOfferBanner\\c1")
-			self:GetParent().Border:SetVertexColor(1, 0.3, 0.3)
-		elseif self:GetParent().data.offerID == STORE_SPECIAL_OFFER_PINK_FOXES_ID then
-			self:GetParent().Background:SetTexture("Interface\\Store\\SpecialOfferBanner\\c2")
-			self:GetParent().Border:SetVertexColor(1, 0.3, 0.3)
-		elseif self:GetParent().data.offerID == STORE_SPECIAL_OFFER_FLY_RAT_ID then
-			self:GetParent().Background:SetTexture("Interface\\Store\\SpecialOfferBanner\\c3")
-			self:GetParent().Border:SetVertexColor(0.98, 0.65, 0.68)
-		elseif self:GetParent().data.offerID == STORE_SPECIAL_OFFER_RAINBOW_STEED_ID then
-			self:GetParent().Background:SetTexture("Interface\\Store\\SpecialOfferBanner\\z6")
-			self:GetParent().Border:SetVertexColor(0.38, 0.88, 1)
-		elseif self:GetParent().data.offerID == STORE_SPECIAL_OFFER_LEFFEL_ID then
-			self:GetParent().Background:SetTexture("Interface\\Store\\SpecialOfferBanner\\f5")
-			self:GetParent().Border:SetVertexColor(0.38, 0.88, 1)
-		elseif self:GetParent().data.offerID == STORE_SPECIAL_OFFER_HAND_OF_SUFFER_ID then
-			self:GetParent().Background:SetTexture("Interface\\Store\\SpecialOfferBanner\\d2")
-			self:GetParent().Border:SetVertexColor(0.82, 0.34, 0.12)
-		elseif self:GetParent().data.offerID == STORE_SPECIAL_OFFER_MUR_MUR_ID then
-			self:GetParent().Background:SetTexture("Interface\\Store\\SpecialOfferBanner\\d3")
-			self:GetParent().Border:SetVertexColor(0.82, 0.34, 0.12)
-		end
+		local color = STORE_SPECIAL_OFFERS_3D[self:GetParent().data.offerID] and STORE_SPECIAL_OFFERS_3D[self:GetParent().data.offerID].VertexColor or nil
+		self:GetParent().Border:SetVertexColor(color[1], color[2], color[3])
 
 		self:GetParent().Background:SetTexCoord(0, 0.564453125, 0.015625, 1)
 
@@ -2938,14 +3071,100 @@ function StoreShowErrorFrame( title, text, parent, dontHide )
 	StoreErrorFrame.CloseButton:Hide()
 end
 
+function StoreConfirmationFrame_Update(self)
+	local giftChecked = StoreConfirmationSendGiftCheckButton:IsShown() and StoreConfirmationSendGiftCheckButton:GetChecked();
+	local hasAltCurrency = not giftChecked and self.data.AltCurrency and self.data.AltCurrency ~= 0;
+	self.hasAltCurrency = hasAltCurrency;
+
+	self.NoticeFrame.TotalLabel:SetShown(not hasAltCurrency);
+	self.NoticeFrame.AltCurrencyLabel:SetShown(hasAltCurrency);
+
+	self.NoticeFrame.MoneyIcon:SetShown(not hasAltCurrency);
+	self.NoticeFrame.Price:SetShown(not hasAltCurrency);
+	self.NoticeFrame.MoneySelectFrame:SetShown(hasAltCurrency);
+	self.NoticeFrame.AltCurrencySelectFrame:SetShown(hasAltCurrency);
+
+	local moneyIcon = "Interface\\Store\\"..STORE_PRODUCT_MONEY_ICON[selectedMoneyID];
+	local price = self.data.DiscountedPrice and self.data.DiscountedPrice or self.data.Price;
+	self.NoticeFrame.Price:SetText(price);
+	self.NoticeFrame.MoneyIcon:SetTexture(moneyIcon);
+
+	if hasAltCurrency then
+		local moneyData = STORE_MONEY_BUTTON_DATA[selectedMoneyID or 1];
+		self.NoticeFrame.MoneySelectFrame.SelectButton.Text:SetText(moneyData.Name);
+		self.NoticeFrame.MoneySelectFrame.MoneyFrame.Icon:SetTexture(moneyIcon);
+		self.NoticeFrame.MoneySelectFrame.MoneyFrame.Price:SetText(price);
+
+		self.NoticeFrame.AltCurrencySelectFrame.SelectButton.Text:SetText(self.data.AltCurrencyName);
+		self.NoticeFrame.AltCurrencySelectFrame.MoneyFrame.Icon:SetTexture(self.data.AltCurrencyIcon);
+		self.NoticeFrame.AltCurrencySelectFrame.MoneyFrame.Price:SetText(self.data.AltPrice);
+	end
+
+	self.AlphaLayer:SetPoint("BOTTOMRIGHT", self.ParchmentMiddle, 0, hasAltCurrency and 82 or 62);
+	self.Line2:SetPoint("BOTTOM", self.ParchmentMiddle, "BOTTOM", 0, hasAltCurrency and 80 or 60);
+
+	if giftChecked then
+		self.isAltCurrency = false;
+	end
+
+	if self.isAltCurrency then
+		self.NoticeFrame.MoneySelectFrame.SelectButton:SetChecked(nil);
+		self.NoticeFrame.AltCurrencySelectFrame.SelectButton:SetChecked(1);
+
+		self.NoticeFrame.MoneySelectFrame.MoneyFrame.Icon:SetSize(20, 20);
+		self.NoticeFrame.AltCurrencySelectFrame.MoneyFrame.Icon:SetSize(26, 26);
+		self.NoticeFrame.MoneySelectFrame.MoneyFrame.Price:SetFontObject(GameFontNormalShadowHuge12);
+		self.NoticeFrame.AltCurrencySelectFrame.MoneyFrame.Price:SetFontObject(GameFontNormalShadowHuge17);
+	else
+		self.NoticeFrame.MoneySelectFrame.SelectButton:SetChecked(1);
+		self.NoticeFrame.AltCurrencySelectFrame.SelectButton:SetChecked(nil);
+
+		self.NoticeFrame.MoneySelectFrame.MoneyFrame.Icon:SetSize(30, 30);
+		self.NoticeFrame.AltCurrencySelectFrame.MoneyFrame.Icon:SetSize(17, 17);
+		self.NoticeFrame.MoneySelectFrame.MoneyFrame.Price:SetFontObject(GameFontNormalShadowHuge17);
+		self.NoticeFrame.AltCurrencySelectFrame.MoneyFrame.Price:SetFontObject(GameFontNormalShadowHuge12);
+	end
+
+	StoreConfirmationSendGiftCheckButton:SetEnabled(not self.isAltCurrency);
+end
+
+function StoreConfirmationFrame_UpdateSize(self)
+	local giftChecked = StoreConfirmationSendGiftCheckButton:IsShown() and StoreConfirmationSendGiftCheckButton:GetChecked();
+
+	local width, height = 403, 396;
+	local noticeWidth, noticeHeight = 396, 208;
+
+	if not self.data.SelectedSpec and self.data.selfSize then
+		width, height = self.data.selfSize[1], self.data.selfSize[2];
+
+		if self.data.noticeSize then
+			noticeWidth, noticeHeight = self.data.noticeSize[1], self.data.noticeSize[2];
+		end
+	end
+
+	if self.data.SelectedSpec then
+		height = height + 60;
+		noticeHeight = noticeHeight + 60;
+	else
+		if giftChecked then
+			height = height + 180;
+			noticeHeight = noticeHeight + 180;
+		end
+		if self.hasAltCurrency then
+			height = height + 20;
+			noticeHeight = noticeHeight + 20;
+		end
+	end
+
+	self:SetSize(width, height);
+	self.NoticeFrame:SetSize(noticeWidth, noticeHeight);
+end
+
+
 function StoreConfirmationFrame_UpdateState( self )
 	if self:GetChecked() then
-		StoreConfirmationFrame:SetSize(403, 576)
-		StoreConfirmationFrame.NoticeFrame:SetSize(400, 388)
 		StoreConfirmationGiftFrame:Show()
 	else
-		StoreConfirmationFrame:SetSize(403, 396)
-		StoreConfirmationFrame.NoticeFrame:SetSize(400, 208)
 		StoreConfirmationGiftFrame:Hide()
 		StoreConfirmationFrame.MailBackgroundRight:Hide()
 		StoreConfirmationFrame.MailBackgroundLeft:Hide()
@@ -2990,6 +3209,12 @@ function StoreFrame_UpdateItemCard()
 			end
 			button.Name:SetText(data.Name)
 			button.MoneyIcon:SetTexture("Interface\\Store\\"..STORE_PRODUCT_MONEY_ICON[selectedMoneyID])
+
+			local hasAltCurrency = data.AltCurrency and data.AltCurrency ~= 0;
+			button.AltCurrencyIcon:SetShown(hasAltCurrency);
+			if hasAltCurrency then
+				button.AltCurrencyIcon:SetTexture(data.AltCurrencyIcon);
+			end
 
 			button.Count:SetShown(data.Count)
 
@@ -3060,6 +3285,21 @@ function StoreFrame_UpdateItemList()
 			button.data = data
 
 			button.MoneyIcon:SetTexture("Interface\\Store\\"..STORE_PRODUCT_MONEY_ICON[selectedMoneyID])
+
+			local hasAltCurrency = data.AltCurrency and data.AltCurrency ~= 0;
+			button.AltCurrencyIcon:SetShown(hasAltCurrency);
+
+			button.CurrentPrice:ClearAllPoints();
+			button.NormalPrice:ClearAllPoints();
+			if hasAltCurrency then
+				button.AltCurrencyIcon:SetTexture(data.AltCurrencyIcon);
+
+				button.CurrentPrice:SetPoint("LEFT", button.AltCurrencyIcon, "RIGHT", 3, 0);
+				button.NormalPrice:SetPoint("LEFT", button.AltCurrencyIcon, "RIGHT", 5, 6);
+			else
+				button.CurrentPrice:SetPoint("LEFT", button.MoneyIcon, "RIGHT", 0, 0);
+				button.NormalPrice:SetPoint("LEFT", button.MoneyIcon, "RIGHT", 2, 6);
+			end
 
 			button.Name:SetText(data.Name)
 			button.iLevel:SetText(data.Ilevel)
@@ -3254,6 +3494,13 @@ function StoreItemListUpdate()
 				else
 					if storage.data then
 						for storeID, data in pairs(storage.data) do
+							local altCurrency = data[STORE_STORAGE_DATA_ALT_CURRENCY];
+
+							local altCurrencyName, altCurrencyIcon = "", "";
+							if altCurrency and altCurrency ~= 0 then
+								altCurrencyName, _, _, _, _, _, _, _, _, altCurrencyIcon = GetItemInfo(data[STORE_STORAGE_DATA_ALT_CURRENCY])
+							end
+
 							if selectedMoneyID == 1 and selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID then
 								STORE_TRANSMOGRIFY_SERVER_DATA[storeID] = {
 									storeID,
@@ -3263,7 +3510,11 @@ function StoreItemListUpdate()
 									data[STORE_STORAGE_DATA_DISCOUNT],
 									data[STORE_STORAGE_DATA_DISCOUNTEDPRICE],
 									data[STORE_STORAGE_DATA_FLAGS],
-									data[STORE_STORAGE_DATA_ISPVP]
+									data[STORE_STORAGE_DATA_ISPVP],
+									altCurrency,
+									data[STORE_STORAGE_DATA_ALT_PRICE],
+									altCurrencyName,
+									altCurrencyIcon,
 								}
 							else
 								local name, link, quality, ilevel, _, _, _, _, _, texture = GetItemInfo(data[STORE_STORAGE_DATA_ENTRY])
@@ -3278,13 +3529,17 @@ function StoreItemListUpdate()
 									DiscountedPrice = data[STORE_STORAGE_DATA_DISCOUNTEDPRICE],
 									CreatureEntry 	= data[STORE_STORAGE_DATA_CREATUREENTRY],
 									Flags 			= data[STORE_STORAGE_DATA_FLAGS],
+									AltCurrency		= altCurrency,
+									AltPrice		= data[STORE_STORAGE_DATA_ALT_PRICE],
+									AltCurrencyName	= altCurrencyName,
+									AltCurrencyIcon	= altCurrencyIcon,
 									Name 			= name,
 									Link 			= link,
 									Quality 		= quality,
 									Ilevel 			= ilevel,
 									Texture 		= texture,
 									IsPVP 			= data[STORE_STORAGE_DATA_ISPVP],
-									DiscountShow	= data[STORE_STORAGE_DATA_DISCOUNTSHOW]
+									DiscountShow	= data[STORE_STORAGE_DATA_DISCOUNTSHOW],
 								})
 							end
 						end
@@ -3315,6 +3570,15 @@ function StoreFrame_UpdateCategories( self )
 	local categories = STORE_CATEGORIES_DATA[selectedMoneyID]
 
 	StoreFrameLeftInset.BrowseNotice:Hide()
+
+	for _, button in pairs(StoreFrame.SubCategoryFrames) do
+		button:Hide()
+	end
+	for i, button in pairs(StoreFrame.CategoryFrames) do
+		if i ~= 1 then
+			button:SetPoint("TOPLEFT", StoreFrame.CategoryFrames[i-1], "BOTTOMLEFT", 0, 0)
+		end
+	end
 
 	local prevFrame
 	if categories and #categories > 0 then
@@ -3500,7 +3764,7 @@ local searchStats = {}
 local searchBoxFilters = {
 	{
 		name = STORE_SEARCH_OPTION_ARMOR,
-		desc = "тип брони",
+		desc = STORE_SEARCH_OPTION_ARMOR_DESC,
 		filters = {
 			"ITEM_SUB_CLASS_4_1",
 			"ITEM_SUB_CLASS_4_2",
@@ -3520,7 +3784,7 @@ local searchBoxFilters = {
 	},
 	{
 		name = STORE_SEARCH_OPTION_STATISTIC,
-		desc = "характеристика",
+		desc = STORE_SEARCH_OPTION_STATISTIC_DESC,
 		func = function(option, filter, itemID, itemLink, itemName)
 			if itemLink then
 				table.wipe(searchStats);
@@ -3607,7 +3871,7 @@ local searchBoxFilters = {
 	},
 	{
 		name = STORE_SEARCH_OPTION_NAME,
-		desc = "предмета",
+		desc = STORE_SEARCH_OPTION_NAME_DESC,
 		func = function(option, filter, itemID, itemLink, itemName)
 			return itemName and itemName ~= "" and string.find(strlower(itemName), filter, 1, true)
 		end,
@@ -4484,14 +4748,14 @@ function StoreTransmogrifyItemButton_OnLeave( self, ... )
 end
 
 function StoreTransmogrifyUpdatePrice()
-	local storePrice, storeDiscount, storeDiscountPrice
+	local _, storePrice, storeDiscount, storeDiscountPrice, altCurrency, altCurrencyIcon;
 	local containerFrame = StoreTransmogrifyFrame.RightContainer.ContentFrame.OverlayElements
 	local selectedItem = StoreTransmogrifyFrame.RightContainer.ContentFrame.selectedItem
 
 	if selectedItem then
-		_, _, _, _, _, storePrice, storeDiscount, storeDiscountPrice = GetStoreTransmogrifyItemsInfo(selectedItem)
+		_, _, _, _, _, storePrice, storeDiscount, storeDiscountPrice, _, altCurrency, _, _, altCurrencyIcon = GetStoreTransmogrifyItemsInfo(selectedItem)
 	else
-		_, _, _, _, _, _, _, _, storePrice, storeDiscount, storeDiscountPrice = GetStoreTransmogrifySetsInfo()
+		_, _, _, _, _, _, _, _, storePrice, storeDiscount, storeDiscountPrice, _, altCurrency, _, _, altCurrencyIcon = GetStoreTransmogrifySetsInfo()
 	end
 
 	if not storePrice or not storeDiscountPrice then
@@ -4502,6 +4766,16 @@ function StoreTransmogrifyUpdatePrice()
 		containerFrame.Price:SetFontObject(GameFontNormal13)
 	else
 		containerFrame.Price:SetFontObject(GameFontNormal16)
+	end
+
+	local hasAltCurrency = altCurrency and altCurrency ~= 0;
+	containerFrame.AltCurrencyIcon:SetShown(hasAltCurrency);
+	if hasAltCurrency then
+		containerFrame.AltCurrencyIcon:SetTexture(altCurrencyIcon);
+
+		containerFrame.PriceIcon:SetPoint("BOTTOMRIGHT", -40, 68);
+	else
+		containerFrame.PriceIcon:SetPoint("BOTTOMRIGHT", -20, 68);
 	end
 
 	containerFrame.Price:SetText(storePrice)
@@ -4659,6 +4933,8 @@ function StoreTransmogrifyResetAllFilter()
 	StoreTransmogrifyFrame_ClearSearch(StoreTransmogrifyFrame.LeftContainer.searchBox)
 end
 
+local newIconString = "|TInterface\\Store\\Store-Main.blp:18:18:2:0:1024:1024:957:967:286:304|t";
+
 function StoreTransmogrifyFilterDropDown_Initialize( self, level )
 	local info = UIDropDownMenu_CreateInfo()
 
@@ -4719,6 +4995,12 @@ function StoreTransmogrifyFilterDropDown_Initialize( self, level )
 			UIDropDownMenu_AddButton(info, level)
 		end
 	elseif selectedSubCategoryID == 2 and UIDROPDOWNMENU_MENU_VALUE == 4 then
+		info.text = STORE_TRANSMOGRIFY_FILTER_NEW
+		info.checked = STORE_TRANSMOGRIFY_FILTER_WEAPON == ALL_WEAPON_NEW_FILTER
+		info.arg1 = ALL_WEAPON_NEW_FILTER
+		info.func = StoreTransmogrifySetWeaponFilter
+		UIDropDownMenu_AddButton(info, level)
+
 		info.text = STORE_TRANSMOGRIFY_FILTER_ALL_WEAPON
 		info.checked = STORE_TRANSMOGRIFY_FILTER_WEAPON == ALL_WEAPON_FILTER
 		info.arg1 = ALL_WEAPON_FILTER
@@ -4730,7 +5012,12 @@ function StoreTransmogrifyFilterDropDown_Initialize( self, level )
 				subClass = INVTYPE_WEAPONOFFHAND
 			end
 
-			info.text = subClass
+			if storeTransmogrifyNewWeaponTypes[i] then
+				info.text = subClass..newIconString
+			else
+				info.text = subClass
+			end
+
 			info.checked = STORE_TRANSMOGRIFY_FILTER_WEAPON == i
 			info.arg1 = i
 			info.func = StoreTransmogrifySetWeaponFilter
@@ -4929,12 +5216,12 @@ end
 
 function StoreTransmogrifyBuyButton_OnClick( self, ... )
 	local containerFrame = StoreTransmogrifyFrame.RightContainer.ContentFrame
-	local storeID, name, iconTexture, isPVP, classID, expansionID, qualityID, itemsStoreID, storePrice, storeDiscount, storeDiscountPrice, isPVP, price
+	local storeID, name, itemID, iconTexture, itemLink, itemRarity, isPVP, classID, expansionID, qualityID, itemsStoreID, storePrice, storeDiscount, storeDiscountPrice, isPVP, price, altCurrency, altPrice, altCurrencyName, altCurrencyIcon
 
 	if containerFrame.selectedItem then
-		storeID, itemID, iconTexture, itemLink, itemRarity, storePrice, storeDiscount, storeDiscountPrice, isPVP = GetStoreTransmogrifyItemsInfo(containerFrame.selectedItem)
+		storeID, itemID, iconTexture, itemLink, itemRarity, storePrice, storeDiscount, storeDiscountPrice, isPVP, altCurrency, altPrice, altCurrencyName, altCurrencyIcon = GetStoreTransmogrifyItemsInfo(containerFrame.selectedItem)
 	else
-		storeID, name, iconTexture, isPVP, classID, expansionID, qualityID, itemsStoreID, storePrice, storeDiscount, storeDiscountPrice, isPVP = GetStoreTransmogrifySetsInfo()
+		storeID, name, iconTexture, isPVP, classID, expansionID, qualityID, itemsStoreID, storePrice, storeDiscount, storeDiscountPrice, isPVP, altCurrency, altPrice, altCurrencyName, altCurrencyIcon = GetStoreTransmogrifySetsInfo()
 	end
 
 	name 	= name or GetItemInfo(itemID)
@@ -4945,7 +5232,11 @@ function StoreTransmogrifyBuyButton_OnClick( self, ... )
 		Name 			= name,
 		Price 			= price,
 		ID 				= storeID,
-		Flags 			= STORE_TRANSMOGRIFY_SERVER_DATA[storeID][STORE_TRANSMOGRIFY_SERVER_STOREFLAGS]
+		Flags 			= STORE_TRANSMOGRIFY_SERVER_DATA[storeID][STORE_TRANSMOGRIFY_SERVER_STOREFLAGS],
+		AltCurrency 	= altCurrency,
+		AltPrice 		= altPrice,
+		AltCurrencyName = altCurrencyName,
+		AltCurrencyIcon = altCurrencyIcon,
 	}
 
 
@@ -5015,7 +5306,12 @@ function StoreFrame_MultipleBuyUpdateCount(self)
 		return
 	end
 
-	confirmFrame.NoticeFrame.Price:SetText((confirmFrame.data.DiscountedPrice or confirmFrame.data.Price) * text)
+	local price = (confirmFrame.data.DiscountedPrice or confirmFrame.data.Price) * text
+	confirmFrame.NoticeFrame.Price:SetText(price)
+	if confirmFrame.hasAltCurrency then
+		confirmFrame.NoticeFrame.MoneySelectFrame.MoneyFrame.Price:SetText(price);
+		confirmFrame.NoticeFrame.AltCurrencySelectFrame.MoneyFrame.Price:SetText(confirmFrame.data.AltPrice * text);
+	end
 	confirmFrame.data.buyCount = text
 end
 
@@ -5067,7 +5363,7 @@ function EventHandler:ASMSG_SHOP_CATEGORY_NEW_ITEMS_RESPONSE( msg )
 end
 
 function EventHandler:ASMSG_SHOP_ITEM( msg )
-	local ID, Entry, count, Price, Discount, DiscountedPrice, creatureEntry, Flags, categoryID, subCategoryID = strsplit(":", msg)
+	local ID, Entry, count, Price, Discount, DiscountedPrice, creatureEntry, Flags, altCurrency, altPrice, categoryID, subCategoryID = strsplit(":", msg)
 
 	local storeID 				= tonumber(ID)
 	local itemEntry 			= tonumber(Entry)
@@ -5122,6 +5418,8 @@ function EventHandler:ASMSG_SHOP_ITEM( msg )
 		storeDiscountPrice,
 		creatureEntry,
 		storeFlags,
+		tonumber(altCurrency),
+		tonumber(altPrice),
 		isPVP,
 		false,
 	}
@@ -5251,43 +5549,17 @@ function EventHandler:ASMSG_SHOP_SPECIAL_OFFER_POPUP_SMALL( msg )
 		StoreToastButton.MiddleLine:SetText(STORE_TOAST_SPECIAL_OFFER_BODY)
 		StoreToastButton:Show()
 
-		StoreToastButton.ModelFrame:SetShown(offerID == STORE_SPECIAL_OFFER_FOXES_ID
-		or offerID == STORE_SPECIAL_OFFER_MEAT_ID
-		or offerID == STORE_SPECIAL_OFFER_PINK_FOXES_ID
-		or offerID == STORE_SPECIAL_OFFER_LEFFEL_ID
-		or offerID == STORE_SPECIAL_OFFER_HAND_OF_SUFFER_ID
-		or offerID == STORE_SPECIAL_OFFER_MUR_MUR_ID)
+		local offer3DModel = STORE_SPECIAL_OFFERS_3D[offerID] and STORE_SPECIAL_OFFERS_3D[offerID].PopupCreature or nil
 
-		if offerID == STORE_SPECIAL_OFFER_FOXES_ID then
-			StoreToastButton.ModelFrame:SetCreature(130523)
-		elseif offerID == STORE_SPECIAL_OFFER_MEAT_ID then
-			StoreToastButton.ModelFrame:SetCreature(130945)
-		elseif offerID == STORE_SPECIAL_OFFER_PINK_FOXES_ID then
-			StoreToastButton.ModelFrame:SetCreature(130521)
-		elseif offerID == STORE_SPECIAL_OFFER_FLY_RAT_ID then
-			StoreToastButton.ModelFrame:SetCreature(200041)
-		elseif offerID == STORE_SPECIAL_OFFER_LEFFEL_ID then
-			StoreToastButton.ModelFrame:SetCreature(130893)
-		elseif offerID == STORE_SPECIAL_OFFER_HAND_OF_SUFFER_ID then
-			StoreToastButton.ModelFrame:SetCreature(131067)
-		elseif offerID == STORE_SPECIAL_OFFER_MUR_MUR_ID then
-			StoreToastButton.ModelFrame:SetCreature(131209)
+		StoreToastButton.ModelFrame:SetShown(offer3DModel ~= nil)
+
+		if offer3DModel ~= nil then
+			StoreToastButton.ModelFrame:SetCreature(offer3DModel)
 		end
 	else
-		if offerID == STORE_SPECIAL_OFFER_FOXES_ID then
-			StoreFrame.Popup = NPE_TutorialPointerFrame:Show(splitData[2], "DOWN", StoreMicroButton, 0, -5, nil, nil, {130523, 0.1, "BOTTOM", "TOP", 0, -40, 280, 280, 1})
-		elseif offerID == STORE_SPECIAL_OFFER_MEAT_ID then
-			StoreFrame.Popup = NPE_TutorialPointerFrame:Show(splitData[2], "DOWN", StoreMicroButton, 0, -5, nil, nil, {130945, -0.3, "BOTTOM", "TOP", 10, -60, 200, 200, 1})
-		elseif offerID == STORE_SPECIAL_OFFER_PINK_FOXES_ID then
-			StoreFrame.Popup = NPE_TutorialPointerFrame:Show(splitData[2], "DOWN", StoreMicroButton, 0, -5, nil, nil, {130521, -0.6, "BOTTOM", "TOP", 0, -74, 280, 280, 1})
-		elseif offerID == STORE_SPECIAL_OFFER_FLY_RAT_ID then
-			StoreFrame.Popup = NPE_TutorialPointerFrame:Show(splitData[2], "DOWN", StoreMicroButton, 0, -5, nil, nil, {200041, -0.5, "BOTTOM", "TOP", 0, 0, 200, 200, 1})
-        elseif offerID == STORE_SPECIAL_OFFER_LEFFEL_ID then
-			StoreFrame.Popup = NPE_TutorialPointerFrame:Show(splitData[2], "DOWN", StoreMicroButton, 0, -5, nil, nil, {130893, -0.68, "BOTTOM", "TOP", 0, 0, 200, 200, 0.7})
-        elseif offerID == STORE_SPECIAL_OFFER_HAND_OF_SUFFER_ID then
-			StoreFrame.Popup = NPE_TutorialPointerFrame:Show(splitData[2], "DOWN", StoreMicroButton, 0, -5, nil, nil, {131067, -0.68, "BOTTOM", "TOP", 0, -70, 400, 400, 0.7})
-        elseif offerID == STORE_SPECIAL_OFFER_MUR_MUR_ID then
-			StoreFrame.Popup = NPE_TutorialPointerFrame:Show(splitData[2], "DOWN", StoreMicroButton, 0, -5, nil, nil, {131209, -0.68, "BOTTOM", "TOP", -50, -50, 350, 320, 0.7})
+		local offerBanner3DModel = STORE_SPECIAL_OFFERS_3D[offerID] and STORE_SPECIAL_OFFERS_3D[offerID].BannerModelInfo or nil
+		if offerBanner3DModel ~= nil then
+			StoreFrame.Popup = NPE_TutorialPointerFrame:Show(splitData[2], "DOWN", StoreMicroButton, 0, -5, nil, nil, offerBanner3DModel)
 		else
 			StoreFrame.Popup = NPE_TutorialPointerFrame:Show(splitData[2], "DOWN", StoreMicroButton, 0, -5)
 		end
@@ -5380,7 +5652,7 @@ function EventHandler:ASMSG_SHOP_SUBSCRIPTION_INFO( msg )
 	ActiveTrial = ActiveTrial ~= "0"
 	ActiveExtra = ActiveExtra ~= "0"
 
-	STORE_SUBSCRIBE_DATA = {
+	local tempTable = {
 		ID 					= tonumber(ID),
 		ShortPrice 			= tonumber(ShortPrice),
 		LongPrice 			= tonumber(LongPrice),
@@ -5396,6 +5668,8 @@ function EventHandler:ASMSG_SHOP_SUBSCRIPTION_INFO( msg )
         Name                = Name,
 		Description			= Description
 	}
+	
+	table.insert(STORE_SUBSCRIBE_DATA, tempTable)
 
 	StoreSubscribeSetup()
 end

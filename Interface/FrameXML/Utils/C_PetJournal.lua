@@ -1,6 +1,6 @@
 local NUM_PET_FILTERS = 2;
 local NUM_PET_TYPES = 10;
-local NUM_PET_SOURCES = 9;
+local NUM_PET_SOURCES = 10;
 local NUM_PET_EXPANSIONS = 9;
 
 local FACTION_FLAGS = {
@@ -19,6 +19,7 @@ local SOURCE_TYPES = {
 	[10] = 7, [11] = 7, [14] = 7,
 	[15] = 8,
 	[16] = 9,
+	[17] = 10,
 };
 
 local SEARCH_FILTER = "";
@@ -105,6 +106,10 @@ local function PetMathesFilter(isOwned, subCategoryID, sourceType, expansion, na
 		return false;
 	end
 
+	if next(PET_SOURCE_CHECKED) and not sourceType then
+		return false;
+	end
+
 	if PET_TYPE_CHECKED[subCategoryID] or PET_SOURCE_CHECKED[sourceType] or PET_EXPANSION_CHECKED[expansion] then
 		return false;
 	end
@@ -136,7 +141,7 @@ local function FilteredPetJornal()
 		local isOwned = petIndex and true or false;
 		local isFavorite = SIRUS_COLLECTION_FAVORITE_PET[data.hash] and true or false;
 		local currency = petInfoByHash and petInfoByHash.currency or data.currency;
-		local sourceType = (currency ~= 0 and 7 or SOURCE_TYPES[data.lootType]) or data.lootType;
+		local sourceType = (currency ~= 0 and 7 or SOURCE_TYPES[data.lootType]);
 
 		if isOwned then
 			NUM_OWNED_PETS = NUM_OWNED_PETS + 1;
@@ -205,7 +210,7 @@ frame:SetScript("OnEvent", function(_, event, arg1)
 		end
 
 		for index = 1, NUM_PET_SOURCES do
-			PET_SOURCE_CHECKED[index] = C_CVar:GetCVarBitfield("C_CVAR_PET_JOURNAL_SOURCE_FILTERS", index);
+			PET_SOURCE_CHECKED[index] = C_CVar:GetCVarBitfield("C_CVAR_PET_JOURNAL_SOURCE_FILTERS", index) and true or nil;
 		end
 
 		for index = 1, NUM_PET_EXPANSIONS do
@@ -358,7 +363,7 @@ function C_PetJournal.SetPetSourceChecked(petSourceIndex, value)
 	if petSourceIndex > 0 and petSourceIndex <= NUM_PET_SOURCES then
 		C_CVar:SetCVarBitfield("C_CVAR_PET_JOURNAL_SOURCE_FILTERS", petSourceIndex, not value);
 
-		PET_SOURCE_CHECKED[petSourceIndex] = not value;
+		PET_SOURCE_CHECKED[petSourceIndex] = not value and true or nil;
 
 		FilteredPetJornal();
 	end
@@ -372,7 +377,7 @@ function C_PetJournal.IsPetSourceChecked(petSourceIndex)
 		error("Usage: local isChecked = C_PetJournal.IsPetSourceChecked(petSourceIndex)", 2);
 	end
 
-	return not PET_SOURCE_CHECKED[petSourceIndex];
+	return not PET_SOURCE_CHECKED[petSourceIndex] and true or false;
 end
 
 function C_PetJournal.SetAllPetSourcesChecked(checked)
@@ -386,7 +391,7 @@ function C_PetJournal.SetAllPetSourcesChecked(checked)
 	for index = 1, NUM_PET_SOURCES do
 		C_CVar:SetCVarBitfield("C_CVAR_PET_JOURNAL_SOURCE_FILTERS", index, not checked);
 
-		PET_SOURCE_CHECKED[index] = not checked;
+		PET_SOURCE_CHECKED[index] = not checked and true or nil;
 	end
 
 	FilteredPetJornal();
@@ -531,6 +536,15 @@ function C_PetJournal.SetFavorite(petID, isFavorite)
 			SIRUS_COLLECTION_FAVORITE_PET[hash] = nil;
 		end
 	end
+end
+
+function C_PetJournal.GetPetLink(petID)
+	local petInfo = PET_INFO_BY_PET_ID[petID];
+	if petInfo and petInfo.itemID then
+		return string.format(COLLECTION_PETS_HYPERLINK_FORMAT, petInfo.itemID, GetSpellInfo(petInfo.spellID) or "")
+	end
+
+	return "";
 end
 
 function EventHandler:ACMSG_C_P_ADD_TO_FAVORITES(msg)

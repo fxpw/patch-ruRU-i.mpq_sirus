@@ -2286,17 +2286,29 @@ function FriendsFrameStatusDropDown_Initialize()
 	info.notCheckable = 1;
 	info.func = FriendsFrame_SetOnlineStatus;
 
-	info.text = string.format(optionText, FRIENDS_TEXTURE_ONLINE, FRIENDS_LIST_AVAILABLE);
+	info.text = FRIENDS_LIST_AVAILABLE;
+	info.icon = FRIENDS_TEXTURE_ONLINE;
+	info.iconPoint = "LEFT";
+	info.iconSize = 12;
 	UIDropDownMenu_AddButton(info);
 
-	info.text = string.format(optionText, FRIENDS_TEXTURE_AFK, FRIENDS_LIST_AWAY);
+	info.text = FRIENDS_LIST_AWAY;
+	info.icon = FRIENDS_TEXTURE_AFK;
+	info.iconPoint = "LEFT";
+	info.iconSize = 12;
 	UIDropDownMenu_AddButton(info);
 
-	info.text = string.format(optionText, FRIENDS_TEXTURE_DND, FRIENDS_LIST_BUSY);
+	info.text = FRIENDS_LIST_BUSY;
+	info.icon = FRIENDS_TEXTURE_DND;
+	info.iconPoint = "LEFT";
+	info.iconSize = 12;
 	UIDropDownMenu_AddButton(info);
 
-	if IsGMAccount() then
-		info.text = string.format(optionText, FRIENDS_TEXTURE_OFFLINE, FRIENDS_LIST_INVISIBLE);
+	if UnitLevel("player") == 80 then
+		info.text = FRIENDS_LIST_INVISIBLE;
+		info.icon = FRIENDS_TEXTURE_OFFLINE;
+		info.iconPoint = "LEFT";
+		info.iconSize = 12;
 		UIDropDownMenu_AddButton(info);
 	end
 end
@@ -2304,15 +2316,15 @@ end
 function FriendsFrameStatusDropDown_Update(self)
 	local status;
 	self = self or FriendsFrameStatusDropDown;
-	if ( UnitIsAFK("player") ) then
+	if ( PlayerIsInvisible() ) then
+		FriendsFrameStatusDropDownStatus:SetTexture(FRIENDS_TEXTURE_OFFLINE);
+		status = 4;
+	elseif ( UnitIsAFK("player") ) then
 		FriendsFrameStatusDropDownStatus:SetTexture(FRIENDS_TEXTURE_AFK);
 		status = 2;
 	elseif ( UnitIsDND("player") ) then
 		FriendsFrameStatusDropDownStatus:SetTexture(FRIENDS_TEXTURE_DND);
 		status = 3;
-	elseif ( PlayerIsInvisible() ) then
-		FriendsFrameStatusDropDownStatus:SetTexture(FRIENDS_TEXTURE_OFFLINE);
-		status = 4;
 	else
 		FriendsFrameStatusDropDownStatus:SetTexture(FRIENDS_TEXTURE_ONLINE);
 		status = 1;

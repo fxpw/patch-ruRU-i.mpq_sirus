@@ -4232,17 +4232,32 @@ function EventHandler:ASMSG_ENABLE_X1_RATE(msg)
 end
 
 local INVISIBLE_STATUS;
+local INVISIBLE_CHANGED;
 
 function PlayerIsInvisible()
 	return INVISIBLE_STATUS;
 end
 
 function PlayerInvisibleChange()
-	SendServerMessage("ACMSG_INVISIBLE_CHANGE");
+	if not INVISIBLE_CHANGED then
+		INVISIBLE_CHANGED = true;
+	end
+
+	if UnitLevel("player") == 80 then
+		SendServerMessage("ACMSG_INVISIBLE_CHANGE");
+	end
 end
 
 function EventHandler:ASMSG_INVISIBLE_STATUS(msg)
 	INVISIBLE_STATUS = tonumber(msg) == 1;
+
+	if INVISIBLE_CHANGED then
+		if INVISIBLE_STATUS then
+			SendChatMessageType(MARKED_INVIS_MESSAGE, "SYSTEM")
+		else
+			SendChatMessageType(CLEARED_INVIS, "SYSTEM")
+		end
+	end
 
 	if FriendsFrameStatusDropDown_Update then
 		FriendsFrameStatusDropDown_Update();

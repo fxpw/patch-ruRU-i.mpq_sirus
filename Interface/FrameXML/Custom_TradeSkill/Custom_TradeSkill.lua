@@ -41,7 +41,7 @@ function CloseTradeSkill()
 end
 
 function TradeSkillFrame_Show()
-	if (AuctionFrame and AuctionFrame:IsShown() or AuctionHouseFrame and AuctionHouseFrame:IsShown()) and MaximizeMinimizeFrame:IsShown() then
+	if ((AuctionFrame and AuctionFrame:IsShown() or (AuctionHouseFrame and AuctionHouseFrame:IsShown())) or GetMaxUIPanelsWidth() <= 1100) and MaximizeMinimizeFrame:IsShown() then
 		SetCVar("miniTradeSkillFrame", 1)
 		TradeSkillFrame.minimalizeMode = true
 	end
@@ -203,14 +203,6 @@ local LEARNED_TAB = 1
 local UNLEARNED_TAB = 2
 
 function TradeSkillFrame_OnLoad(self)
-	if GetMaxUIPanelsWidth() <= 1100 then
-		SetCVar("miniTradeSkillFrame", 1)
-	else
-		SetCVar("miniTradeSkillFrame", 0)
-	end
-
-	MaximizeMinimizeFrame:SetShown(GetMaxUIPanelsWidth() > 1100)
-
 	self:RegisterEvent("TRADE_SKILL_UPDATE");
 	self:RegisterEvent("TRADE_SKILL_FILTER_UPDATE");
 	self:RegisterEvent("UNIT_PORTRAIT_UPDATE");

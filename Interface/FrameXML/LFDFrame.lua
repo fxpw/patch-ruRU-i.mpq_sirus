@@ -19,6 +19,8 @@ LFD_MAX_SHOWN_LEVEL_DIFF = 15;
 
 local NUM_STATISTIC_TYPES = 1;
 
+local groupFrames = {"LFDQueueParentFrame", "MiniGamesParentFrame"}
+
 -------------------------------------
 -----------LFD Frame--------------
 -------------------------------------
@@ -39,7 +41,9 @@ function LFDFrame_OnLoad(self)
 	self:RegisterEvent("LFG_UPDATE_RANDOM_INFO");
 	self:RegisterEvent("LFG_OPEN_FROM_GOSSIP");
 	self:RegisterEvent("GOSSIP_CLOSED");
-	self:RegisterEvent("VARIABLES_LOADED")
+	self:RegisterEvent("VARIABLES_LOADED");
+
+	self:RegisterCustomEvent("UPDATE_AVAILABLE_MINI_GAMES");
 
 	LFDQueueParentFrame.Inset:SetPoint("TOPLEFT", LFDQueueParentFrame, "BOTTOMLEFT", 2, 284)
 	LFDQueueParentFrame.Inset:SetPoint("BOTTOMRIGHT", LFDQueueParentFrame, "BOTTOMRIGHT", -2, 26)
@@ -52,10 +56,19 @@ function LFDFrame_OnLoad(self)
 	SetPortraitToTexture(self.groupButton1.icon, "Interface\\Icons\\INV_Helmet_08")
 	self.groupButton1.name:SetText(LOOKING_FOR_DUNGEON)
 	self.groupButton1.bg:SetTexCoord(0.00390625, 0.87890625, 0.59179688, 0.66992188)
+
+	self.groupButton2:SetEnabled(false);
+	SetPortraitToTexture(self.groupButton2.icon, "Interface\\Icons\\inv_misc_toy_07")
+	self.groupButton2.name:SetText(MINI_GAMES)
+	self.groupButton2.name:SetTextColor(0.6, 0.6, 0.6);
+	self.groupButton2.icon:SetDesaturated(true);
+	self.groupButton2.ring:SetDesaturated(true);
+	self.groupButton2.bg:SetTexCoord(0.00390625, 0.87890625, 0.59179688, 0.66992188)
 end
 
 function GroupFinderFrameGroupButton_OnClick( self, ... )
-	-- body
+	local frameName = groupFrames[self:GetID()];
+	LFDFrame_ShowGroupFrame(_G[frameName]);
 end
 
 
@@ -116,6 +129,18 @@ function LFDFrame_OnEvent(self, event, ...)
 		end
 	elseif event == "VARIABLES_LOADED" then
 		UpdatePVPTabs(self)
+	elseif event == "UPDATE_AVAILABLE_MINI_GAMES" then
+		local isAvailableMiniGames = C_MiniGames.GetNumGames() > 0;
+
+		self.groupButton2:SetEnabled(isAvailableMiniGames);
+		self.groupButton2.icon:SetDesaturated(not isAvailableMiniGames);
+		self.groupButton2.ring:SetDesaturated(not isAvailableMiniGames);
+
+		if isAvailableMiniGames then
+			self.groupButton2.name:SetTextColor(1.0, 0.82, 0);
+		else
+			self.groupButton2.name:SetTextColor(0.6, 0.6, 0.6);
+		end
 	end
 	LFDQueueFrame_UpdatePortrait();
 end
@@ -124,6 +149,8 @@ function LFDFrame_OnShow(self)
 	LFDFrame_UpdateBackfill(true);
 	PanelTemplates_SetTab(self, 1)
 	UpdateMicroButtons()
+
+	LFDFrame_ShowGroupFrame();
 
 	if UnitLevel("player") < 15 then
 		HideUIPanel(self)
@@ -141,6 +168,37 @@ function LFDFrame_OnHide(self)
 	end
 
 	LAST_FINDPARTY_FRAME = self
+
+	LFG_SetRoleIconIncentive(LFDQueueFrameRoleButtonTank, nil);
+	LFG_SetRoleIconIncentive(LFDQueueFrameRoleButtonHealer, nil);
+	LFG_SetRoleIconIncentive(LFDQueueFrameRoleButtonDPS, nil);
+end
+
+function LFDFrame_ShowGroupFrame(frame)
+	frame = frame or LFDParentFrame.selection or LFDQueueParentFrame;
+	for index, frameName in pairs(groupFrames) do
+		local groupFrame = _G[frameName];
+		if groupFrame == frame then
+			LFDFrame_SelectGroupButton(index);
+		else
+			groupFrame:Hide();
+		end
+	end
+	frame:Show();
+	LFDParentFrame.selection = frame;
+end
+
+function LFDFrame_SelectGroupButton(index)
+	for i = 1, #groupFrames do
+		local button = LFDParentFrame["groupButton"..i];
+		if i == index then
+			button.bg:SetTexCoord(0.00390625, 0.87890625, 0.59179688, 0.66992188);
+		else
+			button.bg:SetTexCoord(0.00390625, 0.87890625, 0.75195313, 0.83007813);
+		end
+	end
+
+	LFDParentFrame.selectionIndex = index
 end
 
 function LFDQueueFrame_UpdatePortrait()
@@ -173,6 +231,8 @@ function LFDQueueFrame_SetRoles()
 		LFDQueueFrameRoleButtonTank.checkButton:GetChecked(),
 		LFDQueueFrameRoleButtonHealer.checkButton:GetChecked(),
 		LFDQueueFrameRoleButtonDPS.checkButton:GetChecked());
+
+	LFGFrame_SendUpdateCurrentRoles();
 end
 
 function LFDFrameRoleCheckButton_OnClick(self)
@@ -1246,3 +1306,451 @@ function LFDList_DefaultFilterFunction(dungeonID)
 end
 
 LFD_CURRENT_FILTER = LFDList_DefaultFilterFunction
+
+function MiniGameReadyDialogReward_OnEnter(self)
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+	if self.money and self.money > 0 then
+		GameTooltip:AddLine(REWARD_ITEMS_ONLY);
+
+		SetTooltipMoney(GameTooltip, self.money, nil);
+	elseif self.itemLink then
+		GameTooltip:SetHyperlink(self.itemLink);
+	end
+	GameTooltip:Show();
+end
+
+MiniGamesFrameMixin = {}
+
+function MiniGamesFrameMixin:OnLoad()
+	self:RegisterEvent("PARTY_MEMBERS_CHANGED");
+	self:RegisterCustomEvent("UPDATE_MINI_GAMES_STATUS");
+	self:RegisterCustomEvent("UPDATE_MINI_GAME");
+	self:RegisterCustomEvent("MINI_GAME_INVITE");
+	self:RegisterCustomEvent("MINI_GAME_INVITE_STATUS");
+	self:RegisterCustomEvent("MINI_GAME_INVITE_ACCEPT");
+	self:RegisterCustomEvent("MINI_GAME_INVITE_ABADDON");
+
+	self.gameButtonPool = CreateFramePool("Button", self.TopInset.ScrollFrame.ChildFrame, "MiniGameButtonTemplate");
+	self.items = {};
+	self.lootPool = CreateFramePool("Button", self.BottomInset.ScrollFrame.ChildFrame, "MiniGameLootTemplate");
+
+	self:UpdateGames();
+	self:UpdateFindGroupButton();
+end
+
+function MiniGamesFrameMixin:OnShow()
+	local numGames = C_MiniGames.GetNumGames();
+	if numGames > 0 then
+		self:SetSelectedGame(self.selectedGameID or 1);
+	end
+
+	self:UpdateGames();
+end
+
+function MiniGamesFrameMixin:OnEvent(event, ...)
+	if event == "PARTY_MEMBERS_CHANGED" or event == "UPDATE_MINI_GAMES_STATUS" then
+		self:UpdateFindGroupButton();
+	elseif event == "UPDATE_MINI_GAME" then
+		local miniGameID = ...;
+
+		if self.selectedGameID == miniGameID then
+			self:SetSelectedGame(miniGameID);
+		end
+
+		if MiniGameReadyDialog:IsShown() and MiniGameReadyDialog.miniGameID == miniGameID then
+			MiniGameReadyPopup:UpdateInstance(miniGameID);
+			MiniGameReadyPopup:UpdateRewards(miniGameID);
+		end
+	elseif event == "MINI_GAME_INVITE" then
+		local miniGameID, inviteID, remainingTime = ...;
+
+		if miniGameID and inviteID then
+			MiniGameReadyPopup:ShowReadyDialog(inviteID, miniGameID);
+			PlaySound("ReadyCheck");
+		end
+	elseif event == "MINI_GAME_INVITE_STATUS" then
+		local isPlayerReady, acceptedPlayers, maxPlayers = ...;
+
+		if isPlayerReady and acceptedPlayers and maxPlayers then
+			MiniGameReadyPopup:ShowReadyStatus(acceptedPlayers, maxPlayers);
+		end
+	elseif event == "MINI_GAME_INVITE_ACCEPT" or event == "MINI_GAME_INVITE_ABADDON" then
+		StaticPopupSpecial_Hide(MiniGameReadyPopup);
+	end
+end
+
+function MiniGamesFrameMixin:JoinMiniGame()
+	if self.selectedGameID then
+		if self.FindGroupButton.queueIndex then
+			C_MiniGames.QueueLeave(self.FindGroupButton.queueIndex);
+		else
+			C_MiniGames.QueueJoin(self.selectedGameID, GetNumPartyMembers() >= 1);
+		end
+	end
+end
+
+function MiniGamesFrameMixin:UpdateFindGroupButton()
+	local foundQueue;
+
+	for i = 1, C_MiniGames.GetMaxQueues() do
+		local status, _, miniGameID = C_MiniGames.GetQueueInfo(i);
+
+		if status == "queued" and self.selectedGameID and miniGameID == self.selectedGameID then
+			self.FindGroupButton:SetText(LEAVE_QUEUE);
+			self.FindGroupButton.queueIndex = i;
+			foundQueue = true;
+			break;
+		end
+	end
+
+	if not foundQueue then
+		self.FindGroupButton.queueIndex = nil;
+
+		if GetNumPartyMembers() > 0 or GetNumRaidMembers() > 0 then
+			self.FindGroupButton:SetText(JOIN_AS_PARTY);
+		else
+			self.FindGroupButton:SetText(FIND_A_MINI_GAME);
+		end
+
+		self.FindGroupButton:SetEnabled(self.selectedGameID and LFR_IsEmpowered());
+	else
+		self.FindGroupButton:SetEnabled(true);
+	end
+end
+
+function MiniGamesFrameMixin:SetMinMaxValues(minValue, maxValue)
+	self.minValue = minValue;
+	self.maxValue = maxValue;
+end
+
+function MiniGamesFrameMixin:GetMinMaxValues()
+	return self.minValue or 0, self.maxValue or 0;
+end
+
+function MiniGamesFrameMixin:SetValue(value)
+	self.value = Clamp(value, self.minValue, self.maxValue);
+	self.TopInset.ScrollFrame:SetHorizontalScroll(self.value);
+end
+
+function MiniGamesFrameMixin:GetValue()
+	return self.value or 0;
+end
+
+function MiniGamesFrameMixin:SetSelectedGame(miniGameID)
+	local name, description, icon, background, _, maxPlayers = C_MiniGames.GetGameInfo(miniGameID);
+	if not icon then
+		return;
+	end
+
+	self.BottomInset.Background:SetTexture(background);
+
+	local scrollFrame = self.BottomInset.ScrollFrame;
+	local scrollChild = scrollFrame.ChildFrame;
+	scrollChild.Title:SetText(name);
+	scrollChild.Description:SetText(description);
+
+	table.wipe(self.items);
+
+	self.lootPool:ReleaseAll();
+
+	local doneToday, money, rewards = C_MiniGames.GetGameRewards(miniGameID);
+	local numRewards = rewards and #rewards or 0;
+
+	local lastFrame = scrollChild.Description;
+
+	if maxPlayers then
+		scrollChild.MembersDescription:SetFormattedText(MINI_GAME_MEMBERS_NUMBER, maxPlayers);
+		scrollChild.MembersLabel:Show();
+		scrollChild.MembersDescription:Show();
+		lastFrame = scrollChild.MembersDescription;
+	else
+		scrollChild.MembersLabel:Hide();
+		scrollChild.MembersDescription:Hide();
+	end
+
+	scrollChild.RewardsLabel:SetPoint("TOPLEFT", lastFrame, "BOTTOMLEFT", 0, -10);
+
+	if doneToday then
+		scrollChild.RewardsDescription:SetText(LFD_HOLIDAY_REWARD_EXPLANATION2);
+	else
+		scrollChild.RewardsDescription:SetText(LFD_HOLIDAY_REWARD_EXPLANATION1);
+	end
+
+	lastFrame = scrollChild.RewardsLabel;
+
+	if numRewards > 0 then
+		for index, rewardInfo in ipairs(rewards) do
+			local itemID = rewardInfo.itemID;
+
+			local frame = self.lootPool:Acquire();
+
+			if index == 1 then
+				frame:SetPoint("TOPLEFT", scrollChild.RewardsDescription, "BOTTOMLEFT", 0, -10);
+			elseif mod(index, 2) == 0 then
+				frame:SetPoint("LEFT", self.items[index - 1], "RIGHT", 0, 0);
+			else
+				frame:SetPoint("TOPLEFT", self.items[index - 2], "BOTTOMLEFT", 0, -5);
+			end
+
+			local itemName, itemLink, _, _, _, _, _, _, _, itemIcon = GetItemInfo(itemID);
+
+			frame.Name:SetText(itemName);
+			SetItemButtonTexture(frame, itemIcon);
+			SetItemButtonCount(frame, rewardInfo.itemCount);
+
+			frame.itemID = itemID;
+			frame.itemLink = itemLink;
+			frame:Show();
+
+			self.items[index] = frame;
+		end
+	end
+
+	if numRewards > 0 or money > 0 then
+		scrollChild.RewardsLabel:Show();
+		scrollChild.RewardsDescription:Show();
+		lastFrame = scrollChild.RewardsDescription;
+	else
+		scrollChild.RewardsLabel:Hide();
+		scrollChild.RewardsDescription:Hide();
+	end
+
+	if numRewards > 0 then
+		lastFrame = self.items[numRewards - mod(numRewards + 1, 2)];
+	end
+
+	if money > 0 then
+		MoneyFrame_Update(scrollChild.MoneyFrame, money);
+		scrollChild.MoneyLabel:SetPoint("TOPLEFT", lastFrame, "BOTTOMLEFT", 20, -10);
+		scrollChild.MoneyLabel:Show();
+		scrollChild.MoneyFrame:Show();
+
+		lastFrame = scrollChild.MoneyLabel;
+	else
+		scrollChild.MoneyLabel:Hide();
+		scrollChild.MoneyFrame:Hide();
+	end
+
+	scrollChild.Spacer:SetPoint("TOPLEFT", lastFrame, "BOTTOMLEFT", 0, -10);
+
+	self.selectedGameID = miniGameID;
+
+	self:UpdateFindGroupButton();
+end
+
+function MiniGamesFrameMixin:UpdateGames()
+	local numGames = C_MiniGames.GetNumGames();
+
+	self.gameButtonPool:ReleaseAll();
+
+	local lastGameButton;
+	for i = 1, numGames do
+		local gameButton = self.gameButtonPool:Acquire();
+
+		if i == 1 then
+			gameButton:SetPoint("LEFT", self.TopInset.ScrollFrame.ChildFrame, 4, 0);
+		--	gameButton:SetPoint("CENTER", self.TopInset.ScrollFrame.ChildFrame, -((numGames - 1) * (72 + 8) * 0.5), 0);
+		else
+			gameButton:SetPoint("LEFT", lastGameButton, "RIGHT", 8, 0);
+		end
+
+		local name, _, icon = C_MiniGames.GetGameInfo(i);
+		SetPortraitToTexture(gameButton.Icon, icon);
+
+		gameButton.name = name;
+		gameButton:SetID(i);
+		gameButton:Show();
+
+		lastGameButton = gameButton;
+	end
+
+	local maxValue = (numGames - 4) * (72 + 8);
+	if numGames < 4 then
+		local value = maxValue * 0.5;
+		self:SetMinMaxValues(value, value);
+		self:SetValue(value);
+	else
+		self:SetMinMaxValues(0, maxValue);
+		self:SetValue(0);
+	end
+end
+
+MiniGameReadyPopupMixin = {}
+
+function MiniGameReadyPopupMixin:UpdateInstance(miniGameID)
+	local name, _, icon, _, objective = C_MiniGames.GetGameInfo(miniGameID);
+	MiniGameReadyDialog.GoalLabel:SetText(objective);
+
+	MiniGameReadyDialog.InstanceInfo.Name:SetText(name);
+
+	SetPortraitToTexture(MiniGameReadyDialog.InstanceIcon.Texture, icon);
+end
+
+function MiniGameReadyPopupMixin:UpdateRewards(miniGameID)
+	MiniGameReadyDialog.RewardsFrame.rewardPool:ReleaseAll();
+
+	local doneToday, money, rewards = C_MiniGames.GetGameRewards(miniGameID);
+
+	local lastFrame;
+	local hasMoney = money > 0 and 1 or 0;
+
+	local positionPerIcon = 1 / (2 * (#rewards + hasMoney)) * 72;
+	local iconOffset = 2 * positionPerIcon - 40;
+
+	if hasMoney > 0 then
+		local frame = MiniGameReadyDialog.RewardsFrame.rewardPool:Acquire();
+		frame:SetPoint("CENTER", MiniGameReadyDialog.RewardsFrame, "LEFT", positionPerIcon, 5);
+
+		SetPortraitToTexture(frame.Texture, "Interface\\Icons\\inv_misc_coin_02");
+
+		frame.itemID = nil;
+		frame.itemLink = nil;
+		frame.money = money;
+		frame:Show();
+
+		lastFrame = frame;
+	end
+
+	MiniGameReadyDialog.RewardsFrame.Label:SetShown(money > 0 or #rewards > 0);
+
+	for index, rewardInfo in ipairs(rewards) do
+		local itemID = rewardInfo.itemID;
+
+		local frame = MiniGameReadyDialog.RewardsFrame.rewardPool:Acquire();
+		frame:SetPoint("LEFT", lastFrame, "RIGHT", iconOffset, 0);
+
+		local _, itemLink, _, _, _, _, _, _, _, itemIcon = GetItemInfo(itemID);
+		SetPortraitToTexture(frame.Texture, itemIcon);
+
+		frame.itemID = itemID;
+		frame.itemLink = itemLink;
+		frame.money = nil;
+		frame:Show();
+
+		lastFrame = frame;
+	end
+end
+
+function MiniGameReadyPopupMixin:ShowReadyDialog(inviteID, miniGameID)
+	StaticPopupSpecial_Show(self);
+	MiniGameReadyStatus:Hide();
+	MiniGameReadyDialog:Show();
+	MiniGameReadyDialog.inviteID = inviteID;
+	MiniGameReadyDialog.miniGameID = miniGameID;
+
+	self:UpdateInstance(miniGameID);
+	self:UpdateRewards(miniGameID);
+end
+
+function MiniGameReadyPopupMixin:ShowReadyStatus(acceptedPlayers, maxPlayers)
+	StaticPopupSpecial_Show(self);
+	MiniGameReadyDialog:Hide();
+	MiniGameReadyStatus:Show();
+	MiniGameReadyStatus.Roleless.Ready.Count:SetFormattedText("%d / %d", acceptedPlayers, maxPlayers);
+end
+
+MiniGamesBannerMixin = {};
+
+function MiniGamesBannerMixin:OnLoad()
+	self:RegisterCustomEvent("MINI_GAME_LOST");
+	self:RegisterCustomEvent("MINI_GAME_WON");
+end
+
+function MiniGamesBannerMixin:OnEvent(event, ...)
+	if event == "MINI_GAME_LOST" then
+		self:PlayBanner({title = LOSS, isRedBanner = true});
+	elseif event == "MINI_GAME_WON" then
+		self:PlayBanner({title = WIN, isRedBanner = false});
+	end
+end
+
+function MiniGamesBannerMixin:PlayBanner(data)
+	self:StopBanner();
+
+	self.Title:SetText(data.title);
+	local isRedBanner = data.isRedBanner;
+	if isRedBanner then
+		self.Title:SetTextColor(1, 0, 0, 1);
+	else
+		self.Title:SetTextColor(207 / 255, 168 / 255, 22 / 255, 1);
+	end
+
+	local bannerAtlas = isRedBanner and "BossBannerRed" or "BossBannerYellow";
+	self.BannerTop:SetAtlas(strconcat(bannerAtlas, "-BgBanner-Top"), true);
+	self.BannerTopGlow:SetAtlas(strconcat(bannerAtlas, "-BgBanner-Top"), true);
+	self.BannerBottom:SetAtlas(strconcat(bannerAtlas, "-BgBanner-Bottom"), true);
+	self.BannerBottomGlow:SetAtlas(strconcat(bannerAtlas, "-BgBanner-Bottom"), true);
+	self.BannerMiddle:SetAtlas(strconcat(bannerAtlas, "-BgBanner-Mid"), true);
+	self.BannerMiddleGlow:SetAtlas(strconcat(bannerAtlas, "-BgBanner-Mid"), true);
+	self.SkullCircle:SetAtlas(strconcat(bannerAtlas, "-SkullCircle"), true);
+	self.BottomFillagree:SetAtlas(strconcat(bannerAtlas, "-BottomFillagree"), true);
+	self.SkullSpikes:SetAtlas(strconcat(bannerAtlas, "-SkullSpikes"), true);
+	self.RightFillagree:SetAtlas(strconcat(bannerAtlas, "-RightFillagree"), true);
+	self.LeftFillagree:SetAtlas(strconcat(bannerAtlas, "-LeftFillagree"), true);
+	self.Overlay.FlashBurst:SetAtlas(strconcat(bannerAtlas, "-RedLightning"), true);
+	self.Overlay.FlashBurstLeft:SetAtlas(strconcat(bannerAtlas, "-RedLightning"), true);
+	self.Overlay.FlashBurstCenter:SetAtlas(strconcat(bannerAtlas, "-RedLightning"), true);
+	self.Overlay.RedFlash:SetAtlas(strconcat(bannerAtlas, "-RedFlash"), true);
+
+	local scale = self:GetEffectiveScale();
+	local fillagreeScale = 0.5;
+	self.RightFillagree:SetPoint("CENTER", self.SkullCircle, "CENTER", 10, 6);
+	self.RightFillagree.AnimIn.Translation:SetOffset(37 * scale * fillagreeScale, 0);
+	self.LeftFillagree:SetPoint("CENTER", self.SkullCircle, "CENTER", -10, 6);
+	self.LeftFillagree.AnimIn.Translation:SetOffset(-(37 * scale * fillagreeScale), 0);
+	self.Overlay.FlashBurst.AnimIn.Translation:SetOffset(10 * scale, 0);
+	self.Overlay.FlashBurstLeft.AnimIn.Translation:SetOffset(-(10 * scale), 0);
+	self.SkullCircle.AnimIn:Play();
+	self.BannerTop.AnimIn:Play();
+	self.BannerBottom.AnimIn:Play();
+	self.BannerMiddle.AnimIn:Play();
+	self.BottomFillagree.AnimIn:Play();
+	self.SkullSpikes.AnimIn:Play();
+	self.RightFillagree.AnimIn:Play();
+	self.LeftFillagree.AnimIn:Play();
+	self.BannerTopGlow.AnimIn:Play();
+	self.BannerBottomGlow.AnimIn:Play();
+	self.BannerMiddleGlow.AnimIn:Play();
+	self.Title.AnimIn:Play();
+	self.Overlay.RedFlash.AnimIn:Play();
+	self.Overlay.FlashBurst.AnimIn:Play();
+	self.Overlay.FlashBurstLeft.AnimIn:Play();
+	self.Overlay.FlashBurstCenter.AnimIn:Play();
+	self:Show();
+
+	self.AnimOutTimer = C_Timer:NewTicker(data.timeToHold or 8, GenerateClosure(self.PerformAnimOut, self), 1);
+end
+
+function MiniGamesBannerMixin:StopBanner()
+	if self.AnimOutTimer then
+		self.AnimOutTimer:Cancel();
+		self.AnimOutTimer = nil;
+	end
+
+	self.SkullCircle.AnimIn:Stop();
+	self.BannerTop.AnimIn:Stop();
+	self.BannerBottom.AnimIn:Stop();
+	self.BannerMiddle.AnimIn:Stop();
+	self.BottomFillagree.AnimIn:Stop();
+	self.SkullSpikes.AnimIn:Stop();
+	self.RightFillagree.AnimIn:Stop();
+	self.LeftFillagree.AnimIn:Stop();
+	self.BannerTopGlow.AnimIn:Stop();
+	self.BannerBottomGlow.AnimIn:Stop();
+	self.BannerMiddleGlow.AnimIn:Stop();
+	self.Title.AnimIn:Stop();
+	self.Overlay.RedFlash.AnimIn:Stop();
+	self.Overlay.FlashBurst.AnimIn:Stop();
+	self.Overlay.FlashBurstLeft.AnimIn:Stop();
+	self.Overlay.FlashBurstCenter.AnimIn:Stop();
+	self:Hide();
+end
+
+function MiniGamesBannerMixin:PerformAnimOut()
+    self.AnimOut:Play();
+end
+
+function MiniGamesBanner_OnAnimOutFinished(self)
+	local banner = self:GetParent();
+	banner:Hide();
+end

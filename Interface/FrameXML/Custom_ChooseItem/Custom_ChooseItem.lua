@@ -6,7 +6,7 @@
 
 local CHOOSEITEM_DATA = {}
 
-UIPanelWindows["ChooseItemFrame"] =	{ area = "center",	pushable = 0,	whileDead = 1 };
+UIPanelWindows["ChooseItemFrame"] =	{ area = "center",	pushable = 0,	whileDead = 1, allowOtherPanels = 1 };
 
 function QuestChoiceOption_OnLoad( self, ... )
 	local _, classFileName = UnitClass("player")

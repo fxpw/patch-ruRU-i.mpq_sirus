@@ -2,9 +2,10 @@ local AcceptBattlefieldPort = AcceptBattlefieldPort
 
 local QueueStatusSuspendType = {
 	LFG = 1,
-	Battleground = 2,
-	WorldPVP = 3,
-	ActiveWorldPVP = 4,
+	MiniGames = 2,
+	Battleground = 3,
+	WorldPVP = 4,
+	ActiveWorldPVP = 5,
 };
 
 local QueueStatusActiveType, QueueStatusActiveIndex
@@ -36,14 +37,32 @@ function QueueStatusMinimapButton_OnClick(self, button)
 			return
 		end
 
+		local inMiniGame = QueueStatus_InActiveMiniGame();
 		local inBattlefield, showScoreboard = QueueStatus_InActiveBattlefield();
-		if ( inBattlefield and showScoreboard ) then
+		if ( inMiniGame ) then
+			ToggleMiniGameScoreFrame();
+		elseif ( inBattlefield and showScoreboard ) then
 			ToggleWorldStateScoreFrame();
 		else
-			--Just show the dropdown
-			QueueStatusDropDown_Show(self.DropDown, self:GetName());
+			local bgInviteData = C_CacheInstance:Get("ASMSG_SEND_BG_INVITE");
+			local miniGameInviteID, miniGameID, acceptedPlayers, maxPlayers = C_MiniGames.GetInviteID();
+
+			if bgInviteData and bgInviteData.inviteID then
+				BattlegroundInviteFrame:ShowInviteFrame();
+			elseif miniGameID then
+				if miniGameInviteID then
+					MiniGameReadyPopup:ShowReadyDialog(miniGameInviteID, miniGameID);
+				elseif acceptedPlayers and maxPlayers then
+					MiniGameReadyPopup:ShowReadyStatus(acceptedPlayers, maxPlayers);
+				end
+			else
+				--Just show the dropdown
+				QueueStatusDropDown_Show(self.DropDown, self:GetName());
+			end
 		end
 	end
+
+	HelpTip:HideAll(QueueStatusMinimapButton);
 end
 
 function QueueStatusMinimapButton_OnShow(self)
@@ -84,6 +103,12 @@ function QueueStatusFrame_OnLoad(self)
 	self:RegisterEvent("BATTLEFIELD_MGR_EJECT_PENDING");
 	self:RegisterEvent("BATTLEFIELD_MGR_EJECTED");
 	self:RegisterEvent("BATTLEFIELD_MGR_ENTERED");
+
+	--MiniGames
+	self:RegisterCustomEvent("UPDATE_MINI_GAMES_STATUS");
+	self:RegisterCustomEvent("MINI_GAME_INVITE");
+	self:RegisterCustomEvent("MINI_GAME_INVITE_ACCEPT");
+	self:RegisterCustomEvent("MINI_GAME_INVITE_ABADDON");
 
 	self:SetBackdropBorderColor(TOOLTIP_DEFAULT_COLOR.r, TOOLTIP_DEFAULT_COLOR.g, TOOLTIP_DEFAULT_COLOR.b);
 	self:SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLOR.r, TOOLTIP_DEFAULT_BACKGROUND_COLOR.g, TOOLTIP_DEFAULT_BACKGROUND_COLOR.b);
@@ -136,7 +161,7 @@ do
     local function QueueStatusEntryResetter(pool, frame)
 	    frame:Hide();
 	    frame:ClearAllPoints();
-    
+
 	    frame.EntrySeparator:Show();
 	    frame.active = false;
 	    frame.orderIndex = nil;
@@ -148,6 +173,7 @@ do
 end
 
 function QueueStatusFrame_Update(self)
+	local helpTipInfo;
 	local animateEye;
 	local shownHearthAndRes;
 
@@ -169,6 +195,50 @@ function QueueStatusFrame_Update(self)
 		if ( mode == "queued" or mode == "listed" or mode == "rolecheck" ) then
 			animateEye = true;
 		end
+	end
+
+	--Try all MiniGames queues
+	for i=1, C_MiniGames.GetMaxQueues() do
+		local status, name, miniGameID = C_MiniGames.GetQueueInfo(i);
+		if ( status and status ~= "none" ) then
+			local entry = QueueStatusFrame_GetEntry(self, nextEntry);
+			QueueStatusEntry_SetUpMiniGame(entry, i);
+			entry:Show();
+			totalHeight = totalHeight + entry:GetHeight();
+			nextEntry = nextEntry + 1;
+
+			if ( status == "queued" ) then
+				animateEye = true;
+			end
+
+			local _, _, _, _, _, _, gameName, mapAreaID = C_MiniGames.GetGameInfo(miniGameID);
+
+			if not helpTipInfo and gameName then
+				if gameName == "FRAGILEFLOOR" then
+					local currentMapAreaID = GetCurrentMapAreaID();
+
+					if status == "active" and mapAreaID and mapAreaID == currentMapAreaID and C_MiniGames.GetInstanceRunTime() == 0 then
+						helpTipInfo = {
+							text = MINI_GAME_FRAGILEFLOOR_TUTORIAL,
+							textJustifyH = "LEFT",
+							checkCVars = true,
+							cvarBitfield = "C_CVAR_CLOSED_INFO_FRAMES",
+							bitfieldFlag = LE_FRAME_TUTORIAL_MINI_GAME_FRAGILEFLOOR,
+							buttonStyle = HelpTip.ButtonStyle.None,
+							targetPoint = HelpTip.Point.LeftEdgeCenter,
+							alignment = HelpTip.Alignment.Top,
+							acknowledgeOnHide = true,
+						};
+					end
+				end
+			end
+		end
+	end
+
+	if helpTipInfo then
+		HelpTip:Show(QueueStatusMinimapButton, helpTipInfo);
+	else
+		HelpTip:HideAll(QueueStatusMinimapButton);
 	end
 
 	--Try all PvP queues
@@ -264,6 +334,28 @@ function QueueStatusEntry_SetUpLFG(entry)
 	end
 end
 
+function QueueStatusEntry_SetUpMiniGame(entry, idx)
+	local status, mapName, id = C_MiniGames.GetQueueInfo(idx);
+
+	if ( status == "queued" ) then
+		if ( QueueStatusActiveType and ( QueueStatusActiveType ~= QueueStatusSuspendType.MiniGames or QueueStatusActiveIndex ~= idx ) ) then
+			QueueStatusEntry_SetMinimalDisplay(entry, mapName, QUEUED_STATUS_SUSPENDED);
+		else
+			local queuedTime = GetTime() - C_MiniGames.GetQueueTimeWaited(idx) / 1000;
+			local estimatedTime = C_MiniGames.GetQueueEstimatedWaitTime(idx) / 1000;
+			QueueStatusEntry_SetFullDisplay(entry, mapName, queuedTime, estimatedTime);
+		end
+	elseif ( status == "confirm" ) then
+		QueueStatusEntry_SetMinimalDisplay(entry, mapName, QUEUED_STATUS_PROPOSAL);
+	elseif ( status == "active" ) then
+		QueueStatusEntry_SetMinimalDisplay(entry, mapName, QUEUED_STATUS_IN_PROGRESS);
+	elseif ( status == "locked" ) then
+		QueueStatusEntry_SetMinimalDisplay(entry, mapName, QUEUED_STATUS_LOCKED, QUEUED_STATUS_LOCKED_EXPLANATION);
+	else
+		QueueStatusEntry_SetMinimalDisplay(entry, mapName, QUEUED_STATUS_UNKNOWN);
+	end
+end
+
 function QueueStatusEntry_SetUpBattlefield(entry, idx)
 	local status, mapName, instanceID, levelRangeMin, levelRangeMax, teamSize, registeredMatch = GetBattlefieldStatus(idx);
 
@@ -354,7 +446,7 @@ end
 
 function QueueStatusEntry_SetFullDisplay(entry, title, queuedTime, myWait, isTank, isHealer, isDPS, totalTanks, totalHealers, totalDPS, tankNeeds, healerNeeds, dpsNeeds, subTitle, extraText)
 	local height = 14;
-	
+
 	entry.Title:SetText(title);
 	height = height + entry.Title:GetHeight();
 
@@ -480,6 +572,14 @@ local function wrapFunc(func) --Lets us directly set .func = on dropdown entries
 	return wrappedFuncs[func];
 end
 
+local function BattlegroundInviteFrame_Accept()
+	if BattlegroundInviteFrame then
+		BattlegroundInviteFrame:ShowInviteFrame();
+
+		BattlegroundInviteFrame:Accept();
+	end
+end
+
 function QueueStatusDropDown_Update()
 	local numQueuesInQueued = 0;
 
@@ -490,6 +590,17 @@ function QueueStatusDropDown_Update()
 
 		if mode == "queued" then
 			numQueuesInQueued = numQueuesInQueued + 1;
+		end
+	end
+
+	for i=1, C_MiniGames.GetMaxQueues() do
+		local status = C_MiniGames.GetQueueInfo(i);
+		if ( status and status ~= "none" ) then
+			QueueStatusDropDown_AddMiniGamesButtons(i);
+
+			if status == "queued" then
+				numQueuesInQueued = numQueuesInQueued + 1;
+			end
 		end
 	end
 
@@ -623,6 +734,15 @@ function QueueStatusDropDown_AddBattlefieldButtons(idx, shownHearthAndRes)
 		end
 
 		if ( status == "queued" ) then
+			local bgInviteData = C_CacheInstance:Get("ASMSG_SEND_BG_INVITE");
+			if bgInviteData and bgInviteData.inviteID then
+				info.text = ENTER;
+				info.func = wrapFunc(BattlegroundInviteFrame_Accept);
+				info.arg1 = nil;
+				info.arg2 = nil;
+				UIDropDownMenu_AddButton(info);
+			end
+
 			info.text = LEAVE_QUEUE;
 			info.func = wrapFunc(AcceptBattlefieldPort);
 			info.arg1 = idx;
@@ -686,6 +806,63 @@ function QueueStatusDropDown_AddBattlefieldButtons(idx, shownHearthAndRes)
 			end
 		end
 
+		UIDropDownMenu_AddButton(info);
+	end
+
+	return shownHearthAndRes;
+end
+
+function QueueStatusDropDown_AddMiniGamesButtons(idx)
+	local info = UIDropDownMenu_CreateInfo();
+	local status, mapName = C_MiniGames.GetQueueInfo(idx);
+
+	local name = mapName;
+	if ( name and status == "active" ) then
+		name = "|cff19ff19"..name.."|r";
+	end
+	info.text = name;
+	info.isTitle = 1;
+	info.notCheckable = 1;
+	UIDropDownMenu_AddButton(info);
+
+	info.disabled = false;
+	info.isTitle = nil;
+	info.leftPadding = 10;
+
+	if ( status == "queued" or status == "confirm" ) then
+		if ( status == "queued" ) then
+			local inviteID = C_MiniGames.GetInviteID();
+			if inviteID then
+				info.text = ENTER_MINI_GAME;
+				info.func = wrapFunc(C_MiniGames.AcceptInvite);
+				info.arg1 = inviteID;
+				info.arg2 = nil;
+				UIDropDownMenu_AddButton(info);
+			end
+
+			info.text = LEAVE_QUEUE;
+			info.func = wrapFunc(C_MiniGames.QueueLeave);
+			info.arg1 = idx;
+			info.arg2 = nil;
+			UIDropDownMenu_AddButton(info);
+		elseif ( status == "confirm" ) then
+
+		end
+	elseif ( status == "locked" ) then
+		info.text = INSTANCE_LEAVE;
+		info.disabled = true;
+		UIDropDownMenu_AddButton(info);
+	elseif ( status == "active" ) then
+		info.text = TOGGLE_SCOREBOARD;
+		info.func = wrapFunc(ToggleMiniGameScoreFrame);
+		info.arg1 = nil;
+		info.arg2 = nil;
+		UIDropDownMenu_AddButton(info);
+
+		info.text = INSTANCE_LEAVE;
+		info.func = wrapFunc(C_MiniGames.Leave);
+		info.arg1 = nil;
+		info.arg2 = nil;
 		UIDropDownMenu_AddButton(info);
 	end
 
@@ -770,10 +947,26 @@ function QueueStatus_InActiveBattlefield()
 	end
 end
 
+function QueueStatus_InActiveMiniGame()
+	for i=1, C_MiniGames.GetMaxQueues() do
+		local status = C_MiniGames.GetQueueInfo(i);
+		if status == "active" then
+			return true;
+		end
+	end
+end
+
 function QueueStatus_IsActiveQueue()
 	local mode = GetLFGMode()
 	if mode and (mode == "proposal" or mode == "rolecheck" or mode == "lfgparty" or mode == "abandonedInDungeon") then
 		return QueueStatusSuspendType.LFG
+	end
+
+	for index = 1, C_MiniGames.GetMaxQueues() do
+		local status = C_MiniGames.GetQueueInfo(index)
+		if status and (status == "confirm" or status == "active") then
+			return QueueStatusSuspendType.MiniGames, index
+		end
 	end
 
 	for index = 1, C_BattlefieldStatusManager:GetMaxID() do
@@ -800,6 +993,13 @@ function QueueStatus_LeaveAllQueues()
 	local mode = GetLFGMode();
 	if mode == "queued" then
 		LeaveLFG();
+	end
+
+	for i = 1, C_MiniGames.GetMaxQueues() do
+		local status = C_MiniGames.GetQueueInfo(i);
+		if status and status == "queued" then
+			C_MiniGames.QueueLeave(i);
+		end
 	end
 
 	for index = 1, C_BattlefieldStatusManager:GetMaxID() do

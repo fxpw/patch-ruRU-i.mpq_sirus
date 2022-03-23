@@ -1180,18 +1180,19 @@
 										self.Shadow:SetAtlas("GarMission_ChestPercentageShadow")
 									</OnLoad>
 									<OnShow>
-										if BattlePassFrame:GetEndTime() == 0 then
+										local isDisabled = BattlePassFrame:GetEndTime() == 0 and not BattlePassFrame:HasNotReceivedRewards();
+										if isDisabled then
 											self:GetParent():Disable()
 										end
 
-										local textColor = BattlePassFrame:GetEndTime() == 0 and GRAY_FONT_COLOR or NORMAL_FONT_COLOR
+										local textColor = isDisabled and GRAY_FONT_COLOR or NORMAL_FONT_COLOR
 
 										self:GetParent().Name:SetTextColor(textColor.r, textColor.g, textColor.b)
 
-										self:GetParent().Icon:SetDesaturated(BattlePassFrame:GetEndTime() == 0)
-										self.Wreath:SetDesaturated(BattlePassFrame:GetEndTime() == 0)
-										self:GetParent().Ring:SetDesaturated(BattlePassFrame:GetEndTime() == 0)
-										self:GetParent().Background:SetDesaturated(BattlePassFrame:GetEndTime() == 0)
+										self:GetParent().Icon:SetDesaturated(isDisabled)
+										self.Wreath:SetDesaturated(isDisabled)
+										self:GetParent().Ring:SetDesaturated(isDisabled)
+										self:GetParent().Background:SetDesaturated(isDisabled)
 
 										self.Wreath:SetAlpha(BattlePassFrame:IsBuyPremium() and 1 or 0.3)
 
@@ -3209,6 +3210,7 @@
 						</Scripts>
 					</Button>
 					<Button name="$prentCancelButton" parentKey="CancelButton" inherits="UIPanelCloseButtonNoScripts">
+						<HitRectInsets left="7" right="6" top="7" bottom="6"/>
 						<Anchors>
 							<Anchor point="TOPRIGHT" x="-10" y="-42" />
 						</Anchors>
@@ -3223,6 +3225,26 @@
 								self:GetParent():GetParent():Abandon()
 							</OnClick>
 						</Scripts>
+					</Button>
+					<Button name="$prentHideButton" parentKey="HideButton" inherits="UIPanelCloseButtonNoScripts">
+						<HitRectInsets left="7" right="6" top="7" bottom="6"/>
+						<Anchors>
+							<Anchor point="RIGHT" relativeTo="$prentCancelButton" relativePoint="LEFT" x="8" y="0"/>
+						</Anchors>
+						<Animations>
+							<AnimationGroup parentKey="showHideButton">
+								<Alpha change="-1" duration="0" order="1" smoothing="IN"/>
+								<Alpha change="1" duration="1" order="2" smoothing="IN"/>
+							</AnimationGroup>
+						</Animations>
+						<Scripts>
+							<OnClick>
+								self:GetParent():GetParent():Hide()
+							</OnClick>
+						</Scripts>
+						<DisabledTexture file="Interface\Buttons\UI-Panel-HideButton-Disabled"/>
+						<NormalTexture file="Interface\Buttons\UI-Panel-HideButton-Up"/>
+						<PushedTexture file="Interface\Buttons\UI-Panel-HideButton-Down"/>
 					</Button>
 					<Frame name="$parentReadyButtonFrame" parentKey="ReadyButtonFrame">
 						<Size x="400" y="30"/>
@@ -3248,6 +3270,7 @@
 							self:GetParent():GetParent().PopupFrame.showPopup:Play()
 							self:GetParent():GetParent().PopupFrame.EnterButton.showEnterButton:Play()
 							self:GetParent():GetParent().PopupFrame.CancelButton.showCancelButton:Play()
+							self:GetParent():GetParent().PopupFrame.HideButton.showHideButton:Play()
 						</OnPlay>
 					</Scripts>
 				</Alpha>
