@@ -10,6 +10,7 @@ CharacterBoostStep = 1
 local SelectMainProfession
 local SelectAdditionalProffesion
 local SelectCharacterSpec
+local SelectCharacterPvPSpec
 local SelectCharacterFaction = 0
 local accountBonusCount = nil
 local characterBoostPrice = nil
@@ -33,9 +34,9 @@ GlueDialogTypes["CHARACTER_SERVICES_BOOST_CONFIRM"] = {
 	escapeHides = false,
 	OnAccept = function ()
 		if inRealmScourge() then
-			SendPacket("00", CharSelectServicesFlowFrame.CharSelect, SelectAdditionalProffesion, SelectMainProfession, SelectCharacterSpec, SelectCharacterFaction)
+			SendPacket("00", CharSelectServicesFlowFrame.CharSelect, SelectAdditionalProffesion, SelectMainProfession, SelectCharacterSpec, SelectCharacterPvPSpec, SelectCharacterFaction)
 		else
-			C_SendOpcode(CMSG_SIRUS_BOOST_CHARACTER, GetCharIDFromIndex(CharSelectServicesFlowFrame.CharSelect), SelectAdditionalProffesion, SelectMainProfession, SelectCharacterSpec, SelectCharacterFaction)
+			C_SendOpcode(CMSG_SIRUS_BOOST_CHARACTER, GetCharIDFromIndex(CharSelectServicesFlowFrame.CharSelect), SelectAdditionalProffesion, SelectMainProfession, SelectCharacterSpec, SelectCharacterPvPSpec, SelectCharacterFaction)
 		end
 		WaitingDialogFrame:Show()
 		WaitingDialogFrame.Text:SetText(WAIT_SERVER_RESPONCE)
@@ -226,9 +227,9 @@ function CharacterServicesMaster_OnShow( self, ... )
 	CharacterSelectBackButton:Disable()
 	CharacterSelectDeleteButton:Disable()
 	self.NextButton:Show()
-    
+
     self.CharacterServicesMaster.step1.choose.CreateNewCharacter:SetEnabled(self.characterCreateStatus == 1)
-    
+
 	self.CharacterServicesMaster.step1.choose:Show()
 	self.CharacterServicesMaster.step1.finish:Hide()
 
@@ -243,6 +244,10 @@ function CharacterServicesMaster_OnShow( self, ... )
 	self.CharacterServicesMaster.step4:Hide()
 	self.CharacterServicesMaster.step4.choose:Show()
 	self.CharacterServicesMaster.step4.finish:Hide()
+
+	self.CharacterServicesMaster.step5:Hide()
+	self.CharacterServicesMaster.step5.choose:Show()
+	self.CharacterServicesMaster.step5.finish:Hide()
 	self.GlowBox:Show()
 
 	CharacterBoost_CharacterInit(true)
@@ -314,7 +319,7 @@ function CharacterServicesMaster_OnHide( self, ... )
 	if self.characterUndeleteStatus == 1 then
 		CharSelectUndeleteCharacterButton:Enable()
 	end
-    
+
     if self.characterCreateStatus == 1 then
         CharSelectCreateCharacterButton:Enable()
     end
@@ -416,20 +421,54 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 			CheckedSpec = false
 			frame.CharacterServicesMaster.step3.choose:Hide()
 			frame.CharacterServicesMaster.step3.finish:Show()
+			CharacterBoostStep = CharacterBoostStep + 1;
 
-			if self.race == PANDAREN_ALLIANCE or self.race == RACE_VULPERA_NEUTRAL then
-				CharacterBoostStep = CharacterBoostStep + 1
-				frame.CharacterServicesMaster.step4:Show()
-			else
-				self:Hide()
-				GlueDialog_Show("CHARACTER_SERVICES_BOOST_CONFIRM")
+			local name, race, class, level = GetCharacterInfo(GetCharIDFromIndex(CharSelectServicesFlowFrame.CharSelect));
+			local classInfo = C_CreatureInfo.GetClassInfo(class);
+
+			for i = 1, 3 do
+				local button = frame.CharacterServicesMaster.step4.choose.SpecButtons[i];
+				local spec = SHARED_CONSTANTS_SPECIALIZATION[classInfo.classFile][i];
+				button.SpecName:SetText(spec.name);
+				button.RoleIcon:SetTexCoord(GetTexCoordsForRole(spec.role));
+				button.SpecIcon:SetTexture(spec.icon);
 			end
+
+			frame.CharacterServicesMaster.step4.choose.SpecButtons[4]:Hide();
+			frame.CharacterServicesMaster.step4:Show()
 		end
 	elseif CharacterBoostStep == 4 then
-		local SelectFaction = (frame.CharacterServicesMaster.step4.choose.FactionButtons[1]:GetChecked()) and FACTION_HORDE or FACTION_ALLIANCE
+		local CheckedSpec = false;
+
+		for _, button in ipairs(frame.CharacterServicesMaster.step4.choose.SpecButtons) do
+			if button:GetChecked() then
+				CheckedSpec = true;
+				SelectCharacterPvPSpec = button:GetID();
+				frame.CharacterServicesMaster.step4.finish.Spec:SetText(button.SpecName:GetText());
+				break;
+			end
+		end
+
+		if not CheckedSpec then
+			GlueDialog_Show("OKAY", CHOOSE_PVP_SPECIALIZATION);
+		else
+			CheckedSpec = false
+			frame.CharacterServicesMaster.step4.choose:Hide();
+			frame.CharacterServicesMaster.step4.finish:Show();
+
+			if self.race == PANDAREN_ALLIANCE or self.race == RACE_VULPERA_NEUTRAL then
+				CharacterBoostStep = CharacterBoostStep + 1;
+				frame.CharacterServicesMaster.step5:Show();
+			else
+				self:Hide();
+				GlueDialog_Show("CHARACTER_SERVICES_BOOST_CONFIRM");
+			end
+		end
+	elseif CharacterBoostStep == 5 then
+		local SelectFaction = (frame.CharacterServicesMaster.step5.choose.FactionButtons[1]:GetChecked()) and FACTION_HORDE or FACTION_ALLIANCE
 		local CheckFaction = false
 
-		for _, button in pairs(frame.CharacterServicesMaster.step4.choose.FactionButtons) do
+		for _, button in pairs(frame.CharacterServicesMaster.step5.choose.FactionButtons) do
 			if button:GetChecked() then
 				SelectCharacterFaction = button:GetID()
 				CheckFaction = true
@@ -439,9 +478,9 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 			GlueDialog_Show("OKAY", CHOOSE_FACTION)
 		else
 			CheckFaction = false
-			frame.CharacterServicesMaster.step4.choose:Hide()
-			frame.CharacterServicesMaster.step4.finish:Show()
-			frame.CharacterServicesMaster.step4.finish.Faction:SetText(SelectFaction)
+			frame.CharacterServicesMaster.step5.choose:Hide()
+			frame.CharacterServicesMaster.step5.finish:Show()
+			frame.CharacterServicesMaster.step5.finish.Faction:SetText(SelectFaction)
 
 			self:Hide()
 			GlueDialog_Show("CHARACTER_SERVICES_BOOST_CONFIRM")

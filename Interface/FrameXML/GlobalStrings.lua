@@ -5504,8 +5504,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "Sets Target of Target to display when you are in a raid."
     },
     ["ITEM_MOD_SPELL_HEALING_DONE_SHORT"] = {
-        ruRU = "к рейтингу натиска",
-        enGB = "Onslaught rating"
+        ruRU = "к дополнительному исцелению",
+        enGB = "Bonus Healing"
     },
     ["MOVIE_RECORDING_RECORDING_STOPPED"] = {
         ruRU = "Запись ролика \"%s\" завершена.",
@@ -7180,8 +7180,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "/lie"
     },
     ["STRING_SCHOOL_STORMSTRIKE"] = {
-        ruRU = "Удар бури",
-        enGB = "Stormstrike"
+        ruRU = "Шоковое оружие",
+        enGB = "Shock weapon"
     },
     ["VOICEMACRO_LABEL_OUTOFMANA1"] = {
         ruRU = "нм",
@@ -10324,8 +10324,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "/headache"
     },
     ["STRING_SCHOOL_FLAMESTRIKE"] = {
-        ruRU = "Огненный столб",
-        enGB = "Flamestrike"
+        ruRU = "Пламенное оружие",
+        enGB = "Fiery weapon"
     },
     ["BENCHMARK_TAXI_MIN_FPS"] = {
         ruRU = "Кадров в сек. (мин.) %.3f",
@@ -16373,8 +16373,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "A vote has been initiated to remove %1$s from the group.\n\nThe reason given was:\n|cffffd200%2$s|r\n\nDo you want to kick %1$s?"
     },
     ["STRING_SCHOOL_FIRESTORM"] = {
-        ruRU = "Огненная буря",
-        enGB = "Firestorm"
+        ruRU = "Скверна",
+        enGB = "Fel"
     },
     ["TUTORIAL_TITLE30"] = {
         ruRU = "Отдых",
@@ -18797,8 +18797,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "/shush"
     },
     ["STRING_SCHOOL_SHADOWSTRIKE"] = {
-        ruRU = "Удар Тьмы",
-        enGB = "Shadowstrike"
+        ruRU = "Проклятое оружие",
+        enGB = "Cursed weaponry"
     },
     ["CREATE_MACROS"] = {
         ruRU = "Создание макросов",
@@ -18929,8 +18929,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "Real ID Whisper"
     },
     ["STRING_SCHOOL_FROSTSTRIKE"] = {
-        ruRU = "Удар льда",
-        enGB = "Froststrike"
+        ruRU = "Хладное железо",
+        enGB = "Coldsteel"
     },
     ["SPELL_FAILED_ONLY_MOUNTED"] = {
         ruRU = "Вы должны находиться на средстве передвижения.",
@@ -20237,8 +20237,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "Requires %1$d |4point:points; in %2$s"
     },
     ["STRING_SCHOOL_FROSTSTORM"] = {
-        ruRU = "Ледяная буря",
-        enGB = "Froststorm"
+        ruRU = "Рунический",
+        enGB = "Runic"
     },
     ["TUTORIAL14"] = {
         ruRU = "Чтобы получить новые умения, обратитесь к учителю вашего класса. Щелкните по учителю |cffffd200правой кнопкой мыши|r, чтобы поговорить с ним.|n|nУчителей можно найти во многих городах и поселках, а также во всех начальных зонах. Иногда, чтобы найти нужного, приходится потратить какое-то время.",
@@ -21293,7 +21293,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "There are no gems in this"
     },
     ["ITEM_MOD_SPELL_HEALING_DONE"] = {
-        ruRU = "Увеличивает рейтинг натиска на %d ед.",
+        ruRU = "Рейтинг натиска +%d.",
         enGB = "Increases onslaught rating up to %d."
     },
     ["CHAT_CHANNEL_OWNER_NOTICE"] = {
@@ -21321,7 +21321,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "Right SHIFT"
     },
     ["STRING_SCHOOL_ELEMENTAL"] = {
-        ruRU = "Силы стихий",
+        ruRU = "Стихийный",
         enGB = "Elemental"
     },
     ["TRANSMOGRIFY_ERROR_6"] = {
@@ -32949,8 +32949,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "Register a Guild Charter"
     },
     ["STRING_SCHOOL_SPELLSTRIKE"] = {
-        ruRU = "Сокрушительная магия",
-        enGB = "Spellstrike"
+        ruRU = "Зачарованное оружие",
+        enGB = "Enchanted weaponry"
     },
     ["EMOTE33_CMD1"] = {
         ruRU = "/любопытство",
@@ -33517,8 +33517,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "Reset View 5"
     },
     ["STRING_SCHOOL_HOLYSTRIKE"] = {
-        ruRU = "Святой удар",
-        enGB = "Holystrike"
+        ruRU = "Карающее оружие",
+        enGB = "Smite weapnry"
     },
     ["EMOTE29_CMD2"] = {
         ruRU = "/испуг",

@@ -442,3 +442,24 @@ function RemoveFriend(name)
 		return _RemoveFriend(name)
 	end
 end
+
+local _GetInstanceInfo = _GetInstanceInfo or GetInstanceInfo;
+function GetInstanceInfo()
+	local name, type, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic = _GetInstanceInfo();
+	if difficultyIndex == 1 and type == "raid" and maxPlayers == 25 then
+		difficultyIndex = 2;
+	end
+	return name, type, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic;
+end
+
+local _GetInstanceDifficulty = _GetInstanceDifficulty or GetInstanceDifficulty;
+function GetInstanceDifficulty()
+	local difficulty = _GetInstanceDifficulty();
+	if difficulty == 1 then
+		local _, type, difficultyIndex, _, maxPlayers = _GetInstanceInfo();
+		if difficultyIndex == 1 and type == "raid" and maxPlayers == 25 then
+			difficulty = 2;
+		end
+	end
+	return difficulty;
+end

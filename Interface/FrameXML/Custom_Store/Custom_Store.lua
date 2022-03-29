@@ -1283,6 +1283,9 @@ function StoreItemListFrame_OnLoad( self, ... )
 	StoreItemListScrollFrame.update = StoreFrame_UpdateItemList
 	HybridScrollFrame_CreateButtons(StoreItemListScrollFrame, "StoreItemListButtonTemplate", 0, 0, nil, nil, 0, -5)
 	HybridScrollFrame_OnLoad(StoreItemListScrollFrame)
+
+	self.reverseSort = true;
+	self.activeSortId = 5;
 end
 
 function StoreItemListFrame_OnShow( self, ... )
@@ -1326,6 +1329,9 @@ function StoreItemListFrame_SetShownSearchBox(show)
 end
 
 function StoreItemListFrame_ResetFilters()
+	StoreItemListFrame.reverseSort = true;
+	StoreItemListFrame.activeSortId = 5;
+
 	StoreItemListFrame_SetShownSearchBox(false);
 	StoreItemListFrameContainer.SortItemlevel.NumericBox:Hide();
 
@@ -3401,6 +3407,60 @@ function StoreFrame_UpdateItemList()
 	end
 end
 
+local function sortItemList(a, b)
+	if StoreItemListFrame.activeSortId == 5 then
+		if a.Price ~= b.Price then
+			if StoreItemListFrame.reverseSort then
+				return a.Price > b.Price;
+			else
+				return a.Price < b.Price;
+			end
+		end
+	elseif StoreItemListFrame.activeSortId == 4 then
+		if a.IsPVP ~= b.IsPVP then
+			if StoreItemListFrame.reverseSort then
+				return b.IsPVP and not a.IsPVP;
+			else
+				return a.IsPVP and not b.IsPVP;
+			end
+		end
+	elseif StoreItemListFrame.activeSortId == 3 then
+		if a.Ilevel ~= b.Ilevel then
+			if StoreItemListFrame.reverseSort then
+				return a.Ilevel > b.Ilevel;
+			else
+				return a.Ilevel < b.Ilevel;
+			end
+		end
+	elseif StoreItemListFrame.activeSortId == 2 then
+		if a.DiscountShow ~= b.DiscountShow then
+			if StoreItemListFrame.reverseSort then
+				return b.DiscountShow and not a.DiscountShow;
+			else
+				return a.DiscountShow and not b.DiscountShow;
+			end
+		end
+	elseif StoreItemListFrame.activeSortId == 1 then
+		if a.Name ~= b.Name then
+			if StoreItemListFrame.reverseSort then
+				return a.Name > b.Name;
+			else
+				return a.Name < b.Name;
+			end
+		end
+	end
+
+	if a.Quality ~= b.Quality then
+		return a.Quality > b.Quality;
+	elseif a.Name ~= b.Name then
+		return a.Name < b.Name;
+	elseif a.Price ~= b.Price then
+		return a.Price > b.Price;
+	else
+		return (a.Count or 1) > (b.Count or 1);
+	end
+end
+
 function StoreDataTableCopy(useFilter)
 	local hasUseFilters = StoreItemListFrame.isPvP or StoreItemListFrame.isDiscount or StoreItemListFrame.iLvl;
 
@@ -3418,9 +3478,7 @@ function StoreDataTableCopy(useFilter)
 		STORE_PRODUCT_LIST = STORE_PRODUCT_DATA
 	end
 
-	table.sort(STORE_PRODUCT_LIST, function(a, b)
-		return a.Price > b.Price
-	end)
+	table.sort(STORE_PRODUCT_LIST, sortItemList);
 
 	StoreFrame_UpdateItemList()
 	StoreFrame_UpdateItemCard()
@@ -3535,7 +3593,7 @@ function StoreItemListUpdate()
 									AltCurrencyIcon	= altCurrencyIcon,
 									Name 			= name,
 									Link 			= link,
-									Quality 		= quality,
+									Quality 		= quality or 1,
 									Ilevel 			= ilevel,
 									Texture 		= texture,
 									IsPVP 			= data[STORE_STORAGE_DATA_ISPVP],
@@ -3683,70 +3741,38 @@ function StoreFrame_UpdateCategories( self )
 end
 
 function StoreSortButton_OnClick( self, button, ... )
-	local id = self:GetID()
+	local id = self:GetID();
 
-	if id == 0 then
-		StoreItemListFrame_ResetFilters();
-		StoreDataTableCopy()
-	elseif id == 1 then
-		if button == "RightButton" then
-			StoreItemListFrame_SetShownSearchBox(true);
+	if button == "LeftButton" then
+		if id == 0 then
+			StoreItemListFrame_ResetFilters();
+			StoreDataTableCopy();
 		else
-			if self.sort then
-				table.sort(STORE_PRODUCT_LIST, function(a, b) return a.Name > b.Name end)
-			else
-				table.sort(STORE_PRODUCT_LIST, function(a, b) return a.Name < b.Name end)
-			end
+			StoreItemListFrame.reverseSort = id ~= StoreItemListFrame.activeSortId and false or not StoreItemListFrame.reverseSort;
+			StoreItemListFrame.activeSortId = id;
+
+			table.sort(STORE_PRODUCT_LIST, sortItemList);
 		end
-	elseif id == 2 then
-		if button == "RightButton" then
+
+		StoreFrame_UpdateItemList();
+	elseif button == "RightButton" then
+		if id == 1 then
+			StoreItemListFrame_SetShownSearchBox(true);
+		elseif id == 2 then
 			StoreItemListFrame.isDiscount = not StoreItemListFrame.isDiscount;
 
 			StoreDataTableCopy(true);
-		else
-			if self.sort then
-				table.sort(STORE_PRODUCT_LIST, function(a, b) return a.DiscountShow and not b.DiscountShow end)
-			else
-				table.sort(STORE_PRODUCT_LIST, function(a, b) return b.DiscountShow and not a.DiscountShow end)
-			end
-		end
-	elseif id == 3 then
-		if button == "RightButton" then
+		elseif id == 3 then
 			local numericBox = self.NumericBox;
 			if numericBox and not numericBox:IsShown() then
 				numericBox:Show();
 				numericBox:SetText("");
 			end
-		else
-			if self.sort then
-				table.sort(STORE_PRODUCT_LIST, function(a, b) return a.Ilevel > b.Ilevel end)
-			else
-				table.sort(STORE_PRODUCT_LIST, function(a, b) return a.Ilevel < b.Ilevel end)
-			end
-		end
-	elseif id == 4 then
-		if button == "RightButton" then
+		elseif id == 4 then
 			StoreItemListFrame.isPvP = not StoreItemListFrame.isPvP;
 
 			StoreDataTableCopy(true);
-		else
-			if self.sort then
-				table.sort(STORE_PRODUCT_LIST, function(a, b) return b.IsPVP and not a.IsPVP end)
-			else
-				table.sort(STORE_PRODUCT_LIST, function(a, b) return a.IsPVP and not b.IsPVP end)
-			end
 		end
-	elseif id == 5 then
-		if self.sort then
-			table.sort(STORE_PRODUCT_LIST, function(a, b) return a.Price > b.Price end)
-		else
-			table.sort(STORE_PRODUCT_LIST, function(a, b) return a.Price < b.Price end)
-		end
-	end
-
-	if button == "LeftButton" then
-		self.sort = not self.sort
-		StoreFrame_UpdateItemList()
 	end
 end
 

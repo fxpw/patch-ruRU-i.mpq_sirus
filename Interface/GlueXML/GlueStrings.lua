@@ -707,6 +707,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Выберите специализацию",
 		enGB = "Choose Your Specialization"
 	},
+	["CHOOSE_PVP_SPECIALIZATION"] = {
+		ruRU = "Выберите PVP специализацию",
+		enGB = "Choose Your PVP Specialization"
+	},
 	["TRADESKILL_BLACKSMITHING"] = {
 		ruRU = "Кузнечное дело",
 		enGB = "Blacksmithing"
@@ -2170,6 +2174,10 @@ local SIRUS_LOCALIZATION = {
 	["SPECIALIZATION_LABEL"] = {
 		ruRU = "Специализация:",
 		enGB = "Specialization:"
+	},
+	["PVP_SPECIALIZATION_LABEL"] = {
+		ruRU = "PVP Специализация:",
+		enGB = "PVP Specialization:"
 	},
 	["CLASS_INFO_SHAMAN4"] = {
 		ruRU = "- На время зачаровывает оружие своими заклинаниями.",

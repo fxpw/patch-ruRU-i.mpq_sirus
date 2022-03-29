@@ -753,7 +753,7 @@
 					<Frame name="$parentStep2" parentKey="step2" frameStrata="DIALOG" hidden="true">
 						<Size x="300" y="100"/>
 						<Anchors>
-							<Anchor point="TOP" x="0" y="-105"/>
+							<Anchor point="TOP" x="0" y="-85"/>
 						</Anchors>
 						<Frames>
 							<Frame name="$parentChoose" parentKey="choose" frameStrata="DIALOG" hidden="false" setAllPoints="true">
@@ -848,7 +848,7 @@
 					<Frame name="$parentStep3" parentKey="step3" frameStrata="DIALOG" hidden="true">
 						<Size x="300" y="100"/>
 						<Anchors>
-							<Anchor point="TOP" x="0" y="-210"/>
+							<Anchor point="TOP" x="0" y="-170"/>
 						</Anchors>
 						<Frames>
 							<Frame name="$parentChoose" parentKey="choose" frameStrata="DIALOG" hidden="false" setAllPoints="true">
@@ -932,7 +932,7 @@
 					<Frame name="$parentStep4" parentKey="step4" frameStrata="DIALOG" hidden="true">
 						<Size x="300" y="100"/>
 						<Anchors>
-							<Anchor point="TOP" x="0" y="-315"/>
+							<Anchor point="TOP" x="0" y="-255"/>
 						</Anchors>
 						<Frames>
 							<Frame name="$parentChoose" parentKey="choose" frameStrata="DIALOG" hidden="false" setAllPoints="true">
@@ -945,6 +945,63 @@
 											</Anchors>
 										</FontString>
 										<Texture parentKey="StepNumber" inherits="services-number-4">
+											<Anchors>
+												<Anchor point="TOPLEFT" x="-35" y="5"/>
+											</Anchors>
+										</Texture>
+										<FontString name="$parentChooseTitle" parentKey="ChooseTitle" inherits="GlueFontHighlight" text="CHOOSE_PVP_SPECIALIZATION">
+											<Anchors>
+												<Anchor point="TOPLEFT" x="50" y="-10"/>
+											</Anchors>
+										</FontString>
+									</Layer>
+								</Layers>
+								<Scripts>
+									<OnLoad>
+										CharacterServices_UpdateSpecButtons(self, self)
+									</OnLoad>
+								</Scripts>
+							</Frame>
+							<Frame name="$parentFinish" parentKey="finish" frameStrata="DIALOG" hidden="true" setAllPoints="true">
+								<Layers>
+									<Layer level="ARTWORK">
+										<Texture parentKey="Checkmark" inherits="services-checkmark">
+											<Anchors>
+												<Anchor point="TOPLEFT" x="-20" y="5"/>
+											</Anchors>
+										</Texture>
+										<FontString name="$parentSpecTitle" parentKey="SpecTitle" inherits="GlueFontHighlight" text="PVP_SPECIALIZATION_LABEL">
+											<Color r="0.5" g="0.5" b="0.5"/>
+											<Anchors>
+												<Anchor point="TOPLEFT" x="35" y="-5"/>
+											</Anchors>
+										</FontString>
+										<FontString name="$parentSpec" parentKey="Spec" inherits="GlueFontHighlight">
+											<Anchors>
+												<Anchor point="LEFT" x="35" y="20"/>
+											</Anchors>
+										</FontString>
+									</Layer>
+								</Layers>
+							</Frame>
+						</Frames>
+					</Frame>
+					<Frame name="$parentStep5" parentKey="step5" frameStrata="DIALOG" hidden="true">
+						<Size x="300" y="100"/>
+						<Anchors>
+							<Anchor point="TOP" x="0" y="-340"/>
+						</Anchors>
+						<Frames>
+							<Frame name="$parentChoose" parentKey="choose" frameStrata="DIALOG" hidden="false" setAllPoints="true">
+								<Layers>
+									<Layer level="ARTWORK">
+										<FontString name="$parentStepLabel" parentKey="stepLabel" inherits="GlueFontHighlightLeft" text="STEP">
+											<Color r="1.0" g="0.78" b="0"/>
+											<Anchors>
+												<Anchor point="TOPLEFT" x="-15" y="5"/>
+											</Anchors>
+										</FontString>
+										<Texture parentKey="StepNumber" inherits="services-number-5">
 											<Anchors>
 												<Anchor point="TOPLEFT" x="-35" y="5"/>
 											</Anchors>
