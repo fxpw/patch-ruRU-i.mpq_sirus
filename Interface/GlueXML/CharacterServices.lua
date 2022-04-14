@@ -434,8 +434,19 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 				button.SpecIcon:SetTexture(spec.icon);
 			end
 
-			frame.CharacterServicesMaster.step4.choose.SpecButtons[4]:Hide();
-			frame.CharacterServicesMaster.step4:Show()
+			if CharacterBoostButton.isBoostPVPEnabled then
+				frame.CharacterServicesMaster.step4.choose.SpecButtons[4]:Hide();
+				frame.CharacterServicesMaster.step4:Show()
+			else
+				SelectCharacterPvPSpec = 1
+				if self.race == PANDAREN_ALLIANCE or self.race == RACE_VULPERA_NEUTRAL then
+					CharacterBoostStep = CharacterBoostStep + 1;
+					frame.CharacterServicesMaster.step5:Show();
+				else
+					self:Hide();
+					GlueDialog_Show("CHARACTER_SERVICES_BOOST_CONFIRM");
+				end
+			end
 		end
 	elseif CharacterBoostStep == 4 then
 		local CheckedSpec = false;
@@ -560,7 +571,7 @@ function CharacterBoostBuyFrameBuyButton_OnClick( self, ... )
 end
 
 function CharacterServicesMaster_OnEvent( self, event, ts, ss, body )
-	local opcode, arg, arg2, arg3, arg4, arg5, arg6, arg7, arg8 = strsplit(":", body)
+	local opcode, arg, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9 = strsplit(":", body)
 	--          activ price balans sale nprice psale timer
 	arg = tonumber(arg)
 	arg2 = tonumber(arg2)
@@ -570,8 +581,9 @@ function CharacterServicesMaster_OnEvent( self, event, ts, ss, body )
 	arg6 = tonumber(arg6)
 	arg7 = tonumber(arg7)
 	arg8 = tonumber(arg8)
+	arg9 = tonumber(arg9)
 
-	-- printc("opcode", opcode, "activ:", arg,  "price:", arg2, "balans:", arg3, "sale:", arg4, "nprice:", arg5, "psale:", arg6, "timer:", arg7, "arg8:", arg8)
+	-- printc("opcode", opcode, "activ:", arg,  "price:", arg2, "balans:", arg3, "sale:", arg4, "nprice:", arg5, "psale:", arg6, "timer:", arg7, "arg8:", arg8, arg9)
 
 	if opcode and arg then
 		if opcode == "SMSG_BOOST_STATUS" then
@@ -579,6 +591,7 @@ function CharacterServicesMaster_OnEvent( self, event, ts, ss, body )
 
 			CharacterBoostButton.isBoostDisable = arg == -1
 			CharacterBoostButton_UpdateState(CharacterBoostButton.isBoostDisable)
+			CharacterBoostButton.isBoostPVPEnabled = arg9 == 1
 
 			CharacterBoostButton.MainPanel.Status1:SetShown(arg == 1)
 			CharacterBoostButton.MainPanel.Status2:SetShown(arg ~= 1)

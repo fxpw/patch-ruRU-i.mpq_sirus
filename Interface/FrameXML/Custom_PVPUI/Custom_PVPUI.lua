@@ -3216,7 +3216,6 @@ function EventHandler:ASMSG_BRAWL_SELECTED( msg )
 	local brawlInfo = {}
 
 	brawlInfo.id = msg[1]
-	dump(msg)
 	if brawlInfo.id == "0" then
 		return
 	end
