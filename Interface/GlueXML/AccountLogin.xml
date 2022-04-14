@@ -195,14 +195,11 @@
 							<Anchor point="CENTER" x="0" y="-110"/>
 						</Anchors>
 						<Frames>
+
 							<EditBox name="AccountLoginAccountEdit" inherits="AccountLoginEditBoxTemplate" letters="320">
 								<Size x="200" y="37"/>
 								<Anchors>
-									<Anchor point="TOP">
-										<Offset>
-											<AbsDimension x="-2" y="-30"/>
-										</Offset>
-									</Anchor>
+									<Anchor point="TOP" x="-2" y="-30"/>
 								</Anchors>
 								<Scripts>
 									<OnLoad>
@@ -219,7 +216,6 @@
 									</OnEnterPressed>
 								</Scripts>
 							</EditBox>
-
 							<EditBox name="AccountLoginPasswordEdit" inherits="AccountLoginEditBoxTemplate" letters="16" password="1">
 								<Size x="200" y="37"/>
 								<Anchors>
@@ -240,7 +236,6 @@
 									</OnEnterPressed>
 								</Scripts>
 							</EditBox>
-
 							<CheckButton name="AccountLoginSaveAccountName">
 								<Size x="25" y="25"/>
 								<Anchors>
@@ -255,11 +250,6 @@
 										</FontString>
 									</Layer>
 								</Layers>
-								<NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
-								<PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
-								<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
-								<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
-								<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
 								<Scripts>
 									<OnLoad>
 										self.TittleText:SetText(LOGINBOX_REMEMBEME)
@@ -275,8 +265,12 @@
 										end
 									</OnClick>
 								</Scripts>
+								<NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
+								<PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
+								<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
+								<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
+								<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
 							</CheckButton>
-
 							<CheckButton name="AccountLoginAutoLogin">
 								<Size x="25" y="25"/>
 								<Anchors>
@@ -291,11 +285,6 @@
 										</FontString>
 									</Layer>
 								</Layers>
-								<NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
-								<PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
-								<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
-								<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
-								<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
 								<Scripts>
 									<OnLoad>
 										self.TittleText:SetText(LOGINBOX_AUTOLOGIN)
@@ -306,8 +295,12 @@
 										end
 									</OnLoad>
 								</Scripts>
+								<NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
+								<PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
+								<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
+								<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
+								<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
 							</CheckButton>
-
 							<Button name="AccountLoginEnter" inherits="GlueButtonCustomTemplate">
 								<Size x="160" y="40"/>
 								<Anchors>
@@ -322,6 +315,16 @@
 									</OnClick>
 								</Scripts>
 							</Button>
+							<Frame name="AccountLoginChooseRealmDropDown" parentKey="ChooseRealmDropDown" hidden="true" inherits="GlueDropDownMenuTemplate">
+								<Anchors>
+									<Anchor point="TOP" relativeTo="AccountLoginEnter" relativePoint="BOTTOM" x="0" y="-10" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										Mixin(self, AccountLoginChooseRealmDropDownMixin)
+									</OnLoad>
+								</Scripts>
+							</Frame>
 						</Frames>
 					</Frame>
 					<Frame name="ServerAlertFrame" inherits="LoginUIFrameTemplate">
@@ -466,7 +469,7 @@
 						<Frames>
 							<Frame parentKey="RealmListDropDown" name="$parentRealmListDropDown" inherits="GlueDropDownMenuTemplate">
 								<Anchors>
-									<Anchor point="TOP" relativeTo="AccountLoginUILoginBoxFrame" relativePoint="BOTTOM" x="0" y="0" />
+									<Anchor point="TOP" relativeTo="AccountLoginUILoginBoxFrame" relativePoint="BOTTOM" x="0" y="-40" />
 								</Anchors>
 								<Scripts>
 									<OnLoad function="DevToolsRealmListDropDown_OnShow"/>

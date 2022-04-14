@@ -590,13 +590,6 @@
 								<Anchor point="TOP" relativeTo="$parentTittle" relativePoint="BOTTOM" x="0" y="-8"/>
 							</Anchors>
 						</FontString>
-						<FontString name="$parentWarning" parentKey="Warning" inherits="SystemFont_Shadow_Med1C" justifyH="LEFT" text="CHARACTER_SERVICES_BUYWARNING">
-							<Size x="275" y="0"/>
-							<Anchors>
-								<Anchor point="TOP" relativeTo="$parentDescription" relativePoint="BOTTOM" x="0" y="-8"/>
-							</Anchors>
-							<Color r="1" g="0" b="0" a="1"/>
-						</FontString>
 						<FontString name="$parentCost" parentKey="Cost" inherits="GameFontNormalHugeOutline1" justifyH="CENTER" text="CHARACTER_SERVICES_BUYCOST">
 							<Anchors>
 								<Anchor point="BOTTOM" x="-5" y="74"/>

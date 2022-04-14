@@ -32,7 +32,11 @@ enum:E_BATTLEPASS_INFO_REWARD {
     "TYPE"
 }
 
-local DAY_LIMIT = 200
+enum:E_BATTLEPASS_SETTINGS {
+    "DAY_AMOUNT",
+    "POINTS_BG",
+    "POINTS_ARENA",
+}
 
 BattlePassFrameMixin = {}
 
@@ -561,7 +565,7 @@ function BattlePassFrameMixin:ASMSG_BATTLEPASS_EXP( msg )
 
     if infoData then
         infoData.totalXP    = infoData.totalXP + newXP
-        infoData.dayXP      = DAY_LIMIT - capXP
+        infoData.dayXP      = capXP
         infoData.levelXP    = CalculateLevelXP(infoData.totalXP)
 
 	    PVPQueueFrame.BattlePassToggleButton.LevelFrame.Level:SetText(ExpToLevel(infoData.totalXP))
@@ -582,7 +586,7 @@ function BattlePassFrameMixin:ASMSG_BATTLEPASS_INFO( msg )
         totalXP     = totalXP,
         levelXP     = CalculateLevelXP(totalXP),
         isPremium   = tonumber(infoStorage[E_BATTLEPASS_INFO.IS_PREMIUM]),
-        dayXP       = DAY_LIMIT - tonumber(infoStorage[E_BATTLEPASS_INFO.DAY_XP]),
+        dayXP       = tonumber(infoStorage[E_BATTLEPASS_INFO.DAY_XP]),
         endTime     = tonumber(infoStorage[E_BATTLEPASS_INFO.END_TIME]),
         rewardData  = {}
     })
@@ -627,6 +631,18 @@ function BattlePassFrameMixin:ASMSG_BATTLEPASS_TAKE_REWARD( msg )
     end
 
     self:UpdateLevelCards()
+end
+
+function BattlePassFrameMixin:ASMSG_BATTLEPASS_SETTINGS( msg )
+    local infoStorage       = C_Split(msg, ":")
+
+    C_CacheInstance:Set("ASMSG_BATTLEPASS_SETTINGS", {
+        dayAmount   	  = tonumber(infoStorage[E_BATTLEPASS_SETTINGS.DAY_AMOUNT]),
+        totalAmount   	  = tonumber(infoStorage[E_BATTLEPASS_SETTINGS.DAY_AMOUNT]) * 3,
+        pointsBG   		  = tonumber(infoStorage[E_BATTLEPASS_SETTINGS.POINTS_BG]),
+        pointsArena   	  = tonumber(infoStorage[E_BATTLEPASS_SETTINGS.POINTS_ARENA]),
+        pointsArena1vs1   = tonumber(infoStorage[E_BATTLEPASS_SETTINGS.POINTS_ARENA]) / 5,
+    })
 end
 
 BattlePassTitleFrameTemplateMixin = {}
@@ -923,7 +939,7 @@ function BattlePassLevelProgressBarTemplateMixin:OnEnter()
         GameTooltip:AddLine(BATTLEPASS_MAX_LEVEL, nil, nil, nil, 1)
     else
         GameTooltip:SetText(BATTLEPASS_DAY_LIMIT_TITLE, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
-        GameTooltip:AddLine(string.format(BATTLEPASS_DAY_LIMIT, self.mainFrame:GetCapXP(), DAY_LIMIT), nil, nil, nil, 1)
+        GameTooltip:AddLine(string.format(BATTLEPASS_DAY_LIMIT, self.mainFrame:GetCapXP()), nil, nil, nil, 1)
     end
     GameTooltip:Show()
 end
@@ -1345,6 +1361,10 @@ end
 function BattlePassTutorialButtonMixin:OnClick()
     if ( self.helpPlateData and not HelpPlate_IsShowing(self.helpPlateData) ) then
         self:UpdateHelpPlateData()
+		
+		local infoData  = C_CacheInstance:Get("ASMSG_BATTLEPASS_SETTINGS")
+		
+		self.helpPlateData[1].ToolTipText = string.format(BATTLEPASS_TUTORIAL_TEXT_1, infoData.pointsBG, infoData.pointsArena, infoData.pointsArena1vs1, infoData.dayAmount, infoData.totalAmount, infoData.dayAmount)
 
         HelpPlate_Show( self.helpPlateData, self.mainFrame, self )
     else

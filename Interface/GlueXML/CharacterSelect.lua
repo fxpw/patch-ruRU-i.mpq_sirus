@@ -235,18 +235,20 @@ function CharacterSelect_OnShow()
 	CharacterBoostButton:Show()
 	CharacterBoostInfoFrame:Hide()
 
-	if serverName == SHARED_SIRUS_REALM_NAME then
-		CharacterSelectLogoFrameLogo:SetAtlas("ServerGameLogo-1")
-	elseif serverName == SHARED_SCOURGE_REALM_NAME then
+	if serverName == SHARED_SIRUS_REALM_NAME or serverName == "Proxy "..SHARED_SIRUS_REALM_NAME then
+		CharacterSelectLogoFrameLogo:SetAtlas("ServerGameLogo-11")
+	elseif serverName == SHARED_SCOURGE_REALM_NAME or serverName == "Proxy "..SHARED_SCOURGE_REALM_NAME then
+		CharacterSelectLogoFrameLogo:SetAtlas("ServerGameLogo-12")
+	elseif serverName == SHARED_FROSTMOURNE_REALM_NAME or serverName == "Proxy "..SHARED_FROSTMOURNE_REALM_NAME then
 		CharacterSelectLogoFrameLogo:SetAtlas("ServerGameLogo-3")
-	elseif serverName == SHARED_FROSTMOURNE_REALM_NAME then
-		CharacterSelectLogoFrameLogo:SetAtlas("ServerGameLogo-3")
-	elseif serverName == SHARED_NELTHARION_REALM_NAME then
+	elseif serverName == SHARED_NELTHARION_REALM_NAME or serverName == "Proxy "..SHARED_NELTHARION_REALM_NAME then
 		CharacterSelectLogoFrameLogo:SetAtlas("ServerGameLogo-2")
-	elseif serverName == SHARED_ALGALON_REALM_NAME then
-		CharacterSelectLogoFrameLogo:SetAtlas("ServerGameLogo-4")
+	elseif serverName == SHARED_ALGALON_REALM_NAME or serverName == "Proxy "..SHARED_ALGALON_REALM_NAME then
+		CharacterSelectLogoFrameLogo:SetAtlas("ServerGameLogo-13")
+	elseif serverName == SHARED_LEGACY_X10_REALM_NAME or serverName == "Proxy "..SHARED_LEGACY_X10_REALM_NAME then
+		CharacterSelectLogoFrameLogo:SetAtlas("ServerGameLogo-1")
 	else
-		CharacterSelectLogoFrameLogo:SetAtlas("ServerGameLogo-3")
+		CharacterSelectLogoFrameLogo:SetAtlas("ServerGameLogo-11")
 	end
 end
 

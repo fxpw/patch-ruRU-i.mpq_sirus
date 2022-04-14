@@ -9,18 +9,35 @@ function C_ConnectManagerMixin:OnLoad()
     self:RegisterHookListener()
 
     self.realmListStorage = {}
+    self.realmListCollect = {}
+    self.firstChange = true
 end
 
 function C_ConnectManagerMixin:SHOW_SERVER_ALERT(_, serverAlertText)
     local ipList, alert = string.match(serverAlertText, "%:%{(.*)%}%:(.*)")
 
     if ipList then
-        self.realmListStorage = C_Split(ipList, ", ")
+        local splitData = C_Split(ipList, ", ")
+
+        for _, ipStorage in pairs(splitData) do
+            local realmData = C_Split(ipStorage, "|")
+
+            table.insert(self.realmListStorage, realmData[1])
+
+            table.insert(self.realmListCollect, {
+                name = realmData[2],
+                ip = realmData[1]
+            })
+        end
 
         AccountLoginUI_UpdateServerAlertText(alert..">")
+
+        AccountLoginChooseRealmDropDown:Init()
     else
         AccountLoginUI_UpdateServerAlertText(serverAlertText)
     end
+
+    AccountLoginChooseRealmDropDown:SetShown(ipList)
 end
 
 function C_ConnectManagerMixin:OPEN_STATUS_DIALOG(_, dialogKey)
@@ -28,8 +45,12 @@ function C_ConnectManagerMixin:OPEN_STATUS_DIALOG(_, dialogKey)
         if not self:GetRealmList() then
             self:RestartGameState()
             return
-        else
+        end
+
+        if self.firstChange then
+            self.firstChange = false
             self:SetRealmList()
+        else
             self:RemoveCurrentRealmList()
         end
 
@@ -37,6 +58,10 @@ function C_ConnectManagerMixin:OPEN_STATUS_DIALOG(_, dialogKey)
         GlueDialog:Hide()
         AccountLogin_Login()
     end
+end
+
+function C_ConnectManagerMixin:GetAllRealmList()
+    return self.realmListCollect or {}
 end
 
 function C_ConnectManagerMixin:RemoveCurrentRealmList()

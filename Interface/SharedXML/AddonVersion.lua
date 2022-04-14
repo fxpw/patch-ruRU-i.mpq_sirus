@@ -17,7 +17,7 @@ S_ADDON_VERSION = {
 	{1, "Capping", {"Capping"}},
 	{1, "Clique", {"Clique"}},
 	{2, "DiminishingReturns-Sirus", {"DiminishingReturns", "DiminishingReturns_Config"}},
-	{2, "DrDamage", {"DrDamage"}},
+	{3, "DrDamage", {"DrDamage"}},
 	{1, "FishingBuddy", {"FishingBuddy"}},
 	{1, "GnomishVendorShrinker", {"GnomishVendorShrinker"}},
 	{1, "HealBot", {"HealBot", "TitanHealBot"}},

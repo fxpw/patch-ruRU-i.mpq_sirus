@@ -6,7 +6,7 @@
 
 selectedCategoryID = nil
 selectedMoneyID = nil
-local selectedSubCategoryID = 0
+selectedSubCategoryID = 0
 local selectedItemCardPage = 1
 local selectedSpecialOfferPage = 1
 local selectedShowAllItemCheckBox = 0
@@ -38,7 +38,8 @@ local STORE_BLOODLINE_BOOK_ITEMS = {
 	[320184] = true,
 }
 
-local STORE_TRANSMOGRIFY_CATEGORY_ID = 10
+local STORE_TRANSMOGRIFY_CATEGORY_ID = 6
+local STORE_SUBSCRIPTIONS_CATEGORY_ID = 5
 
 local STORE_FRAME_DATA = {
 	"StoreItemListFrame",
@@ -196,47 +197,22 @@ STORE_CATEGORIES_DATA[1] = {
 	},
 	{
 		Icon = "category-icon-mounts",
-		Name = STORE_CATEGORY_3,
+		Name = STORE_CATEGORY_3_NEW,
 		IsNew = false,
 		Disable = false,
 		ChieldFrame = "StoreItemCardFrame",
-	},
-	{
-		Icon = "category-icon-pets",
-		Name = STORE_CATEGORY_4,
-		IsNew = false,
-		Disable = false,
-		ChieldFrame = "StoreItemCardFrame",
+		SlideOther = true,
+		subCategoryDefault = true
 	},
 	{
 		Icon = "category-icon-hot",
-		Name = STORE_CATEGORY_5,
+		Name = STORE_CATEGORY_4_NEW,
 		IsNew = false,
 		Disable = false,
 		ChieldFrame = "StoreItemListFrame",
-		Level = 80
-	},
-	{
-		Icon = "category-icon-scroll",
-		Name = STORE_CATEGORY_6,
-		IsNew = false,
-		Disable = false,
-		ChieldFrame = "StoreItemListFrame",
-		Level = 19
-	},
-	{
-		Icon = "category-icon-services",
-		Name = STORE_CATEGORY_7,
-		IsNew = false,
-		Disable = false,
-		ChieldFrame = "StoreItemListFrame",
-	},
-	{
-		Icon = "category-icon-bag",
-		Name = STORE_CATEGORY_8,
-		IsNew = false,
-		Disable = false,
-		ChieldFrame = "StoreItemListFrame"
+		Level = 80,
+		SlideOther = true,
+		subCategoryDefault = true
 	},
 	{
 		Icon = "category-icon-box",
@@ -262,7 +238,7 @@ STORE_CATEGORIES_DATA[1] = {
 	},
 }
 
-STORE_SUB_CATEGORY_DATA[9] = {
+STORE_SUB_CATEGORY_DATA[STORE_SUBSCRIPTIONS_CATEGORY_ID] = {
 	{
 		Name = STORE_SUB_CATEGORY_9_1,
 		SubCategoryId = 2,
@@ -287,6 +263,80 @@ STORE_SUB_CATEGORY_DATA[9] = {
 		CategoryId = 9,
 		Callback = function() selectedSubCategoryID = 5; StoreSubscribeSetup() end
 	},
+}
+
+STORE_SUB_CATEGORY_DATA[3] = {
+	{
+		Name = STORE_SUB_CATEGORY_3_1,
+		SubCategoryId = 1,
+		CategoryId = 3,
+		Callback = function() selectedSubCategoryID = 1; StoreSubCategorySelectClick() end
+	},
+	{
+		Name = STORE_SUB_CATEGORY_3_2,
+		SubCategoryId = 2,
+		CategoryId = 3,
+		Callback = function() selectedSubCategoryID = 2; StoreSubCategorySelectClick() end
+	},
+	{
+		Name = STORE_SUB_CATEGORY_3_3,
+		SubCategoryId = 3,
+		CategoryId = 3,
+		Disabled = true,
+		Callback = function() selectedSubCategoryID = 3; StoreSubCategorySelectClick() end
+	}
+}
+
+STORE_SUB_CATEGORY_DATA[4] = {
+	{
+		Name = STORE_SUB_CATEGORY_4_1,
+		SubCategoryId = 1,
+		CategoryId = 4,
+		Callback = function() selectedSubCategoryID = 1; StoreSubCategorySelectClick() end
+	},
+	{
+		Name = STORE_SUB_CATEGORY_4_2,
+		SubCategoryId = 2,
+		CategoryId = 4,
+		Callback = function() selectedSubCategoryID = 2; StoreSubCategorySelectClick() end
+	},
+	{
+		Name = STORE_SUB_CATEGORY_4_3,
+		SubCategoryId = 3,
+		CategoryId = 4,
+		Callback = function() selectedSubCategoryID = 3; StoreSubCategorySelectClick() end
+	},
+	{
+		Name = STORE_SUB_CATEGORY_4_4,
+		SubCategoryId = 4,
+		CategoryId = 4,
+		Callback = function() selectedSubCategoryID = 4; StoreSubCategorySelectClick() end
+	},
+	{
+		Name = STORE_SUB_CATEGORY_4_5,
+		SubCategoryId = 5,
+		CategoryId = 4,
+		Callback = function() selectedSubCategoryID = 5; StoreSubCategorySelectClick() end
+	},
+	{
+		Name = STORE_SUB_CATEGORY_4_6,
+		SubCategoryId = 6,
+		CategoryId = 4,
+		Callback = function() selectedSubCategoryID = 6; StoreSubCategorySelectClick() end
+	},
+	{
+		Name = STORE_SUB_CATEGORY_4_7,
+		SubCategoryId = 7,
+		CategoryId = 4,
+		Callback = function() selectedSubCategoryID = 7; StoreSubCategorySelectClick() end
+	},
+	{
+		Name = STORE_SUB_CATEGORY_4_8,
+		SubCategoryId = 8,
+		CategoryId = 4,
+		Callback = function() selectedSubCategoryID = 8; StoreSubCategorySelectClick() end,
+		Check = function() return (not C_Service:IsLockStrengthenStatsFeature()) end
+	}
 }
 
 local STORE_GIFT_DATA = {
@@ -852,8 +902,8 @@ function GetStoreProductVersion()
 	return STORE_CACHE:Get("ASMSG_SHOP_VERSION")
 end
 
-function GetStoreMountVersion()
-	return PackNumber(STORE_CACHE:Get("MOUNT_RENEW_WEEK", 0), STORE_CACHE:Get("MOUNT_DROP_COUNT", 0))
+function GetStoreRolledItemsVersion(categoryId)
+	return PackNumber(STORE_CACHE:Get("MOUNT_RENEW_WEEK", 0), STORE_CACHE:Get("CATEGORY_DROP_COUNT"..categoryId, 0))
 end
 
 function StoreFrame_OnLoad( self, ... )
@@ -918,6 +968,17 @@ function StoreCacheDataGenerate( reset )
 						STORE_PRODUCT_CACHE[moneyID][categoryID][subCategoryID] = {}
 					end
 
+					for filter = 0, 1 do
+						if not STORE_PRODUCT_CACHE[moneyID][categoryID][subCategoryID][filter] then
+							STORE_PRODUCT_CACHE[moneyID][categoryID][subCategoryID][filter] = {}
+						end
+					end
+				end
+			elseif STORE_SUB_CATEGORY_DATA[categoryID] and #STORE_SUB_CATEGORY_DATA[categoryID] > 0 then
+				for subCategoryID = 1, #STORE_SUB_CATEGORY_DATA[categoryID] do
+					if not STORE_PRODUCT_CACHE[moneyID][categoryID][subCategoryID] then
+						STORE_PRODUCT_CACHE[moneyID][categoryID][subCategoryID] = {}
+					end
 					for filter = 0, 1 do
 						if not STORE_PRODUCT_CACHE[moneyID][categoryID][subCategoryID][filter] then
 							STORE_PRODUCT_CACHE[moneyID][categoryID][subCategoryID][filter] = {}
@@ -1150,12 +1211,18 @@ function StoreCategory_OnClick( self, ... )
 
 	selectedCategoryID = self:GetID()
 	selectedSubCategoryID = 0
+	if StoreFrame.CategoryFrames[selectedCategoryID].data.subCategoryDefault then
+		selectedSubCategoryID = 1
+	end
 
 	selectedShowAllItemCheckBox = 0
 	StoreShowAllItemCheckButton:SetChecked(false)
 
 	if StoreItemListUpdate() then
-		StoreSelectCategory(selectedCategoryID)
+		StoreSelectCategory(selectedCategoryID, selectedSubCategoryID)
+	end
+	if StoreFrame.CategoryFrames[selectedCategoryID].data.subCategoryDefault then
+		StoreSubCategory_OnClick(StoreFrame.SubCategoryFrames[selectedCategoryID * 1000 + 1])
 	end
 end
 
@@ -1196,9 +1263,11 @@ function StoreSelectCategory( categoryID, subCategoryID )
 
 		self.SelectedTexture:Show()
 
-		StoreRefreshMountListButton:SetShown(categoryID == 3 or categoryID == 4)
-		
-		for _, button in pairs(StoreFrame.SubCategoryFrames) do
+		StoreRefreshMountListButton:SetShown(categoryID == 3 and (selectedSubCategoryID == 1 or selectedSubCategoryID == 2))
+		StoreRefreshTransmogListButton:SetShown(categoryID == STORE_TRANSMOGRIFY_CATEGORY_ID)
+		StoreRefundButton:SetShown(selectedMoneyID == 1 and categoryID == 2 and #STORE_REFUND_DATA > 0);
+
+		for i, button in pairs(StoreFrame.SubCategoryFrames) do
 			button:Hide()
 		end
 		
@@ -1206,11 +1275,13 @@ function StoreSelectCategory( categoryID, subCategoryID )
 			local prevFrame = nil
 			local height = 22 * #STORE_SUB_CATEGORY_DATA[categoryID]
 			for i, button in pairs(StoreFrame.CategoryFrames) do
-				local isHidden = button.data.Hidden or (i == 5 and C_Service:IsLockStrengthenStatsFeature());
+				local isHidden = button.data.Hidden;
 
-				if not isHidden then
-					if i > categoryID and i ~= 1 then
+				if not isHidden and i ~= 1 then
+					if i == (categoryID + 1) then
 						button:SetPoint("TOPLEFT", StoreFrame.CategoryFrames[i-1], "BOTTOMLEFT", 0, -height)
+					else
+						button:SetPoint("TOPLEFT", StoreFrame.CategoryFrames[i-1], "BOTTOMLEFT", 0, 0)
 					end
 
 					prevFrame = button;
@@ -1218,7 +1289,8 @@ function StoreSelectCategory( categoryID, subCategoryID )
 			end
 
 			for i = 1, #STORE_SUB_CATEGORY_DATA[categoryID] do
-				local subFrame = StoreFrame.SubCategoryFrames[i]
+				local data = STORE_SUB_CATEGORY_DATA[categoryID][i]
+				local subFrame = StoreFrame.SubCategoryFrames[categoryID * 1000 + i]
 
 				if ( not subFrame ) then
 					subFrame = CreateFrame("Button", "StoreSubCategoryButton"..i, StoreFrameLeftInset, "StoreSubCategoryTemplate")
@@ -1227,19 +1299,29 @@ function StoreSelectCategory( categoryID, subCategoryID )
 					else
 						subFrame:SetPoint("TOPLEFT", prevFrame, "BOTTOMLEFT", 0, 0)
 					end
-					StoreFrame.SubCategoryFrames[i] = subFrame
+					StoreFrame.SubCategoryFrames[categoryID * 1000 + i] = subFrame
 				end
 				prevFrame = subFrame
-				StoreFrame.SubCategoryFrames[i].data = STORE_SUB_CATEGORY_DATA[categoryID][i]
+				StoreFrame.SubCategoryFrames[categoryID * 1000 + i].data = data
 				subFrame:SetID(i)
-				subFrame.Text:SetText(STORE_SUB_CATEGORY_DATA[categoryID][i].Name)
-				subFrame.SelectedTexture:Hide()
+				subFrame.Text:SetText(data.Name)
+				if data.Disabled or (data.Check and not data.Check()) then
+					subFrame:Disable()
+					subFrame.Category:SetDesaturated(1)
+					subFrame.Text:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
+				end
+				if (categoryID * 1000 + i) == (categoryID * 1000 + selectedSubCategoryID) then
+					subFrame.SelectedTexture:Show()
+				else
+					subFrame.SelectedTexture:Hide()
+				end
+				
 				subFrame:Show()
 			end
 		else
 			local prevFrame;
 			for i, button in pairs(StoreFrame.CategoryFrames) do
-				local isHidden = button.data.Hidden or (i == 5 and C_Service:IsLockStrengthenStatsFeature());
+				local isHidden = button.data.Hidden;
 
 				if not isHidden then
 					if i ~= 1 then
@@ -1676,7 +1758,7 @@ function StoreConfirmationFrame_OnShow( self, ... )
 			self.data.noticeSize = {400, 268};
 
 			self.NoticeFrame.Notice:SetFormattedText("%s\n\n%s", STORE_CONFIRM_NOTICE_WARNING2, STORE_CONFIRM_NOTICE)
-		elseif selectedCategoryID == 7 or (selectedCategoryID == 10 and selectedMoneyID == 1) then
+		elseif selectedCategoryID == 7 or (selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID and selectedMoneyID == 1) then
 			self.NoticeFrame.Notice:SetFormattedText("%s\n\n%s", STORE_CONFIRM_NOTICE_WARNING, STORE_CONFIRM_NOTICE)
 		else
 			self.NoticeFrame.Notice:SetText(STORE_CONFIRM_NOTICE)
@@ -2126,6 +2208,10 @@ end
 function StoreSubCategorySelectButton_OnClick( self, ... )
 	selectedSubCategoryID = self:GetID()
 
+	StoreSubCategorySelectClick()
+end
+
+function StoreSubCategorySelectClick()
 	selectedShowAllItemCheckBox = 0
 	StoreShowAllItemCheckButton:SetChecked(false)
 
@@ -3536,17 +3622,16 @@ function StoreItemListUpdate()
 	if storage and storage.version then
 		if GetStoreProductVersion() == storage.version then
 			local unitFaction = UnitFactionGroup("player") or "Alliance"
-
 			if not storage.unitFaction or storage.unitFaction ~= unitFaction then
 				clearStorage()
 				STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][selectedShowAllItemCheckBox].unitFaction = unitFaction
-				STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][selectedShowAllItemCheckBox].mountVersion = GetStoreMountVersion()
+				STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][selectedShowAllItemCheckBox].rolledItemsVersion = GetStoreRolledItemsVersion(selectedCategoryID)
 
 				StoreRequestShopItems( selectedMoneyID, selectedCategoryID, selectedSubCategoryID, selectedShowAllItemCheckBox )
 			else
-				if (selectedCategoryID == 3 or selectedCategoryID == 4) and (not storage.mountVersion or storage.mountVersion ~= GetStoreMountVersion()) then
+				if ((selectedCategoryID == 3 and (selectedSubCategoryID == 1 or selectedSubCategoryID == 2)) or selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID) and (not storage.rolledItemsVersion or storage.rolledItemsVersion ~= GetStoreRolledItemsVersion(selectedCategoryID)) then
 					clearStorage()
-					STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][selectedShowAllItemCheckBox].mountVersion = GetStoreMountVersion()
+					STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][selectedShowAllItemCheckBox].rolledItemsVersion = GetStoreRolledItemsVersion(selectedCategoryID)
 
 					StoreRequestShopItems( selectedMoneyID, selectedCategoryID, selectedSubCategoryID, selectedShowAllItemCheckBox )
 				else
@@ -3707,14 +3792,8 @@ function StoreFrame_UpdateCategories( self )
 					frame.isHighlight = true
 				end
 			end
-
-			if data.Hidden or (i == 5 and C_Service:IsLockStrengthenStatsFeature()) then
-				frame:Hide()
-			else
-				prevFrame = frame
-
-				frame:Show()
-			end
+			prevFrame = frame
+			frame:Show()
 		end
 	else
 		selectedCategoryID = 0
@@ -5415,6 +5494,9 @@ function EventHandler:ASMSG_SHOP_ITEM( msg )
 		local subCategoryID = tonumber(count)
 
 		storage.version = GetStoreProductVersion()
+		if STORE_SUB_CATEGORY_DATA[categoryID] then
+			STORE_SUB_CATEGORY_DATA[categoryID][subCategoryID].Disabled = (not storage.data) and true or false
+		end
 
 		StoreSelectCategory(categoryID, subCategoryID)
 
@@ -5645,12 +5727,12 @@ end
 
 function EventHandler:ASMSG_SHOP_SUBSCRIPTION_INFO( msg )
 	if tonumber(msg) == -1 then
-		STORE_CATEGORIES_DATA[1][9].Hidden = true
+		STORE_CATEGORIES_DATA[1][STORE_SUBSCRIPTIONS_CATEGORY_ID].Hidden = true
 		return
 	end
 
-	if STORE_CATEGORIES_DATA[1][9].Disable then
-		STORE_CATEGORIES_DATA[1][9].Disable = false
+	if STORE_CATEGORIES_DATA[1][STORE_SUBSCRIPTIONS_CATEGORY_ID].Disable then
+		STORE_CATEGORIES_DATA[1][STORE_SUBSCRIPTIONS_CATEGORY_ID].Disable = false
 	end
 
 	local everyDayItem = {}
@@ -5798,8 +5880,6 @@ function EventHandler:ASMSG_SHOP_REFUNDABLE_PURCHASE_LIST( msg )
 		end
 	end
 
-	StoreRefundButton:SetShown(#STORE_REFUND_DATA > 0)
-
 	StoreRefundListScrollFrame_UpdateItemList()
 end
 
@@ -5823,9 +5903,10 @@ function EventHandler:ASMSG_SHOP_ROLLED_TEMS_INFO( msg )
 	local renewWeeks 		= tonumber(msg)
 	local cacheRenewWeeks 	= STORE_CACHE:Get("MOUNT_RENEW_WEEK", 0)
 
-	if cacheRenewWeeks ~= renewWeeks or not STORE_CACHE:Get("MOUNT_DROP_COUNT", 0) then
+	if cacheRenewWeeks ~= renewWeeks then
 		STORE_CACHE:Set("MOUNT_RENEW_WEEK", renewWeeks)
-		STORE_CACHE:Set("MOUNT_DROP_COUNT", 1)
+		STORE_CACHE:Set("CATEGORY_DROP_COUNT"..3, 1)
+		STORE_CACHE:Set("CATEGORY_DROP_COUNT"..6, 1)
 
 		ButtonPulse_StopPulse(StoreMicroButton)
 		ButtonPulse_StopPulse(GameMenuButtonStore)
@@ -5868,6 +5949,26 @@ function EventHandler:ASMSG_SHOP_RENEW_PETS( msg )
 	if responseID == 0 then
 		local cacheDropsCount = STORE_CACHE:Get("MOUNT_DROP_COUNT", 0)
 		STORE_CACHE:Set("MOUNT_DROP_COUNT", cacheDropsCount + 1)
+		StoreToggleLoadingScreen(true, true)
+
+		StoreItemListUpdate()
+		StoreFrame_UpdateItemCard()
+	else
+		StoreShowErrorFrame(STORE_ERROR, STORE_BUY_ITEM_ERROR_5)
+	end
+end
+
+function EventHandler:ASMSG_SHOP_RENEW_ITEMS( msg )
+	local answer = C_Split(msg, ":")
+	local responseID = tonumber(answer[1])
+	local categoryId = tonumber(answer[2])
+
+	if responseID == 0 then
+		local cacheDropsCount = STORE_CACHE:Get("CATEGORY_DROP_COUNT"..categoryId, 0)
+		STORE_CACHE:Set("CATEGORY_DROP_COUNT"..categoryId, cacheDropsCount + 1)
+		if categoryId == STORE_TRANSMOGRIFY_CATEGORY_ID then
+			STORE_TRANSMOGRIFY_SERVER_DATA = {}
+		end
 		StoreToggleLoadingScreen(true, true)
 
 		StoreItemListUpdate()

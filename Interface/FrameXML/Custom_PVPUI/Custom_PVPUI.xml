@@ -2144,12 +2144,12 @@
 													<Frame parentKey="Contents" inherits="PVPBonusBattlegroundContentsTemplate">
 														<Layers>
 															<Layer level="ARTWORK">
-																<FontString parentKey="Title" name="$parentTitle" inherits="GameFontHighlightLarge" text="PVP_NUCLEAR_WINTER">
+																<FontString parentKey="Title" name="$parentTitle" inherits="GameFontHighlightLarge" text="PVP_BRAWL">
 																	<Anchors>
 																		<Anchor point="TOPLEFT" x="14" y="-7"/>
 																	</Anchors>
 																</FontString>
-																<FontString parentKey="BattlegroundName" text="PVP_NUCLEAR_WINTER_DESC" inherits="GameFontNormal">
+																<FontString parentKey="BattlegroundName" text="PVP_BRAWL_DESC" inherits="GameFontNormal">
 																	<Anchors>
 																		<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
 																	</Anchors>
@@ -2159,16 +2159,42 @@
 														</Layers>
 													</Frame>
 												</Frames>
-												<!-- <Scripts>
-													<OnLoad>
-														self.NormalTexture:SetAlpha(0.7)
-														self:Disable()
-													</OnLoad>
-													<OnMouseUp>
-													</OnMouseUp>
-													<OnMouseDown>
-													</OnMouseDown>
-												</Scripts> -->
+												<Scripts>
+													<OnEnter>
+															local info = C_CacheInstance:Get("ASMSG_BRAWL_SELECTED", "")
+															if info == "" or info.id == "0" then
+																return
+															end
+															GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+															GameTooltip:AddLine(BATTLEGROUND_BRAWL_TOOLTIP_HEADER)
+															GameTooltip:AddLine(string.format(BATTLEGROUND_LOCK_TOOLTIP_BGNAME, info.name), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, 1)
+
+															for index, rewardInfo in pairs(info.rewards) do
+																GameTooltip:AddLine("|n")
+																GameTooltip:AddLine(_G["BATTLEGROUND_BRAWL_TOOLTIP_REWARDS_"..index])
+																for k, v in pairs(rewardInfo) do
+																	GameTooltip:AddLine(v.name .. " x" .. v.count, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, 1)
+																end
+															end
+
+															GameTooltip:Show()
+													</OnEnter>
+													<OnLeave>
+														GameTooltip_Hide(self)
+													</OnLeave>
+													<OnShow>
+														local info = C_CacheInstance:Get("ASMSG_BRAWL_SELECTED", "")
+														if info == "" or info.id == "0" then
+															self.NormalTexture:SetDesaturated(1)
+															self:Disable()
+															self.Contents.Title:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
+															return
+														end
+														self.Contents.Title:SetTextColor(NORMAL_FONT_COLOR_CODE.r, NORMAL_FONT_COLOR_CODE.g, NORMAL_FONT_COLOR_CODE.b)
+														self.NormalTexture:SetDesaturated(0)
+														self:Enable()
+													</OnShow>
+												</Scripts>
 											</Button>
 										</Frames>
 										<Scripts>

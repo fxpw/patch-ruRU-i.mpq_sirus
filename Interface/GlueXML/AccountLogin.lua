@@ -149,7 +149,7 @@ function AccountLoginUI_OnLoad( self, ... )
 end
 
 function AccountLoginUI_OnShow( self, ... )
-	self.Logo:SetAtlas("ServerGameLogo-"..math.random(4))
+	self.Logo:SetAtlas("ServerGameLogo-11")--..math.random(11, 13))
 end
 
 function AccountLoginUI_OnHide( self, ... )
@@ -271,4 +271,51 @@ function DevToolsAccountsDropDown_Initialize()
 			end
 		end
 	end
+end
+
+AccountLoginChooseRealmDropDownMixin = {}
+
+local function ChooseRealmDropdown_OnClick( button, ... )
+	GlueDropDownMenu_SetSelectedValue(AccountLoginChooseRealmDropDown, button.value)
+	SetCVar('realmList', button.value)
+end
+
+local function ChooseRealmDropdownInit()
+	local info = GlueDropDownMenu_CreateInfo()
+
+	info.func = ChooseRealmDropdown_OnClick
+
+	for k, v in pairs(AccountLoginChooseRealmDropDown.realmStorage) do
+		info.text = v.name
+		info.value = v.ip
+		info.checked = nil
+		GlueDropDownMenu_AddButton(info)
+	end
+end
+
+
+function AccountLoginChooseRealmDropDownMixin:Init()
+	self.realmStorage = C_ConnectManager:GetAllRealmList()
+
+	GlueDropDownMenu_Initialize(self, ChooseRealmDropdownInit)
+
+	local currentRealmList = GetCVar("realmList")
+	local selectedValue = self.realmStorage[1].ip
+	
+	if string.sub(currentRealmList,1,string.len("127.0.0.1"))=="127.0.0.1" then
+		return
+	end
+
+	for k, v in pairs(self.realmStorage) do
+		if v.ip == currentRealmList then
+			selectedValue = v.ip
+			break
+		end
+	end
+
+	GlueDropDownMenu_SetSelectedValue(self, selectedValue)
+	SetCVar('realmList', selectedValue)
+
+	GlueDropDownMenu_SetWidth(180, self)
+	GlueDropDownMenu_JustifyText("CENTER", self)
 end

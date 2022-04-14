@@ -4771,6 +4771,42 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Питомцы",
         enGB = "Pets"
     },
+    ["STORE_CATEGORY_4_NEW"] = {
+        ruRU = "Особые услуги",
+        enGB = "Specials"
+    },
+    ["STORE_SUB_CATEGORY_4_1"] = {
+		ruRU = "Сервисы",
+        enGB = "Services"
+    },
+    ["STORE_SUB_CATEGORY_4_2"] = {
+		ruRU = "Профессии",
+        enGB = "Professions"
+    },
+    ["STORE_SUB_CATEGORY_4_3"] = {
+		ruRU = "Расходуемое",
+        enGB = "Consumables"
+    },
+    ["STORE_SUB_CATEGORY_4_4"] = {
+		ruRU = "Реагенты",
+        enGB = "Reagents"
+    },
+    ["STORE_SUB_CATEGORY_4_5"] = {
+		ruRU = "Задания",
+        enGB = "Quests"
+    },
+    ["STORE_SUB_CATEGORY_4_6"] = {
+		ruRU = "Репутации",
+        enGB = "Reputations"
+    },
+    ["STORE_SUB_CATEGORY_4_7"] = {
+		ruRU = "Валюта",
+        enGB = "Currencies"
+    },
+    ["STORE_SUB_CATEGORY_4_8"] = {
+		ruRU = "Категории",
+        enGB = "Categories"
+    },
     ["VOICEMACRO_5_Ta_0_FEMALE"] = {
         ruRU = "Мне нужно восполнить ману!",
         enGB = "My mana must be replenished!"
@@ -10585,6 +10621,10 @@ local SIRUS_LOCALIZATION = {
     },
     ["STORE_PET_REFRESH_TITLE"] = {
         ruRU = "Обновление списка питомцев",
+        enGB = ""
+    },
+    ["STORE_TRANSMOGRIFY_REFRESH_TITLE"] = {
+        ruRU = "Обновление списка трансмогрификации",
         enGB = ""
     },
     ["ITEM_DURATION_SEC"] = {
@@ -22160,6 +22200,14 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Ядерная зима",
         enGB = "Nuclear winter"
     },
+    ["PVP_BRAWL"] = {
+        ruRU = "Потасовка",
+        enGB = "Brawl"
+    },
+    ["PVP_BRAWL_DESC"] = {
+        ruRU = "Новые правила и свежие эмоции!",
+        enGB = "New rules and fresh emotions!"
+    },
     ["ACHIEVEMENTS_COMPLETED_CATEGORY"] = {
         ruRU = "Получено %s достижений",
         enGB = "%s Achievements Earned"
@@ -25671,6 +25719,22 @@ local SIRUS_LOCALIZATION = {
     ["STORE_CATEGORY_3"] = {
         ruRU = "Ездовые животные",
         enGB = "Mounts"
+    },
+    ["STORE_CATEGORY_3_NEW"] = {
+        ruRU = "Коллекции",
+        enGB = "Collections"
+    },
+    ["STORE_SUB_CATEGORY_3_1"] = {
+        ruRU = "Транспорт",
+        enGB = "Mounts"
+    },
+    ["STORE_SUB_CATEGORY_3_2"] = {
+        ruRU = "Питомцы",
+        enGB = "Pets"
+    },
+    ["STORE_SUB_CATEGORY_3_3"] = {
+        ruRU = "Игрушки",
+        enGB = "Toys"
     },
     ["STORE_CATEGORY_1"] = {
         ruRU = "Спец. предложения",
@@ -41992,6 +42056,18 @@ local SIRUS_LOCALIZATION = {
     	ruRU = "На этой неделе неактивны следующие поля боя:",
     	enGB = ""
     },
+    ["BATTLEGROUND_BRAWL_TOOLTIP_HEADER"] = {
+    	ruRU = "Активная на этой неделе потасовка:",
+    	enGB = ""
+    },
+    ["BATTLEGROUND_BRAWL_TOOLTIP_REWARDS_1"] = {
+    	ruRU = "За первую победу в день вы получите:",
+    	enGB = ""
+    },
+    ["BATTLEGROUND_BRAWL_TOOLTIP_REWARDS_2"] = {
+    	ruRU = "За остальные победы вы получите:",
+    	enGB = ""
+    },
     ["BATTLEGROUND_LOCK_TOOLTIP_BGNAME"] = {
         ruRU = "- %s",
         enGB = ""
@@ -42129,7 +42205,7 @@ local SIRUS_LOCALIZATION = {
     	enGB = ""
     },
     ["BATTLEPASS_DAY_LIMIT"] = {
-        ruRU = "На сегодня ваш лимит получаемого опыта Боевого пропуска составляет %s ед. из %s возможных.",
+        ruRU = "Сегодня вы можете получить ещё %s ед. опыта боевого пропуска.",
         enGB = ""
     },
     ["BATTLEPASS_MAX_LEVEL_TITLE"] = {
@@ -42145,7 +42221,7 @@ local SIRUS_LOCALIZATION = {
         enGB = ""
     },
     ["BATTLEPASS_TUTORIAL_TEXT_1"] = {
-    	ruRU = "Одерживая победу на Поле Боя, вы получаете 40 ед. опыта Боевого пропуска, а при победе на Арене - 10 ед. (за исключением арены 1на1). Со временем, требуемое количество опыта для последующих уровней растет - как и растет качество и количество наград.\nОбратите внимание, что дневное ограничение на количество опыта, которое вы можете получить, составляет 200 ед.",
+    	ruRU = "Одерживая победу на Поле Боя, вы получаете %s ед. опыта Боевого пропуска, а при победе на Арене - %s ед. (%s в 1на1). Со временем, требуемое количество опыта для последующих уровней растет - как и растет качество и количество наград.\n\nКаждый день вы можете заработать %s ед. опыта, то, что вы не успели заработать будет перенесено на следующий день, но не более %s ед. суммарно.\nОбратите внимание, что бонусы к опыту боевого пропуска действуют только на первые %s ед..",
     	enGB = ""
     },
     ["BATTLEPASS_TUTORIAL_TEXT_2"] = {

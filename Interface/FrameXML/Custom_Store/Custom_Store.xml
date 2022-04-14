@@ -2540,6 +2540,32 @@
 							</OnClick>
 						</Scripts>
 					</Button>
+					<Button name="StoreRefreshTransmogListButton" inherits="StoreGoldButtonTemplate" hidden="true" text="STORE_REFRESH_MOUNT">
+						<Size x="140" y="34"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="0" y="26" />
+						</Anchors>
+						<Scripts>
+						<OnClick>
+							local data = {
+								ID = -1,
+								Texture = "Interface\\Store\\Wow-Store-Circle",
+								Name = STORE_TRANSMOGRIFY_REFRESH_TITLE,
+								DescriptionText = STORE_REFRESH_DESC,
+								Flags = 0,
+								Price = 10,
+								smallFormat = true,
+								selfSize = {403, 320},
+								noticeSize = {400, 132},
+								confirmationFunc = function()
+									SendServerMessage("ACMSG_SHOP_RENEW_ITEMS", selectedCategoryID .. ":" .. selectedSubCategoryID)
+								end
+							}
+
+							StoreFrame_ProductBuy(data)
+						</OnClick>
+					</Scripts>
+					</Button>
 				</Frames>
 			</Frame>
 			<Frame name="StoreFrameRightInset" inherits="StoreInsetFrameTemplate">
@@ -4359,11 +4385,7 @@
 							selfSize = {403, 320},
 							noticeSize = {400, 132},
 							confirmationFunc = function()
-								if selectedCategoryID == 3 then
-									SendServerMessage("ACMSG_SHOP_RENEW_MOUNTS")
-								elseif selectedCategoryID == 4 then
-									SendServerMessage("ACMSG_SHOP_RENEW_PETS")
-								end
+								SendServerMessage("ACMSG_SHOP_RENEW_ITEMS", selectedCategoryID .. ":" .. selectedSubCategoryID)
 							end
 						}
 

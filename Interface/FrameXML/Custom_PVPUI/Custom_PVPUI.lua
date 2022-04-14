@@ -228,6 +228,30 @@ BattlegroundsData = {
 		longDescription = "",
 		showOnlyGM = true,
 	},
+	[61] = {
+		battleGroundID = 61,
+		maxPlayers = 0,
+		icon = "",
+		gameType = "",
+		longDescription = "",
+		showOnlyGM = true,
+	},
+	[62] = {
+		battleGroundID = 62,
+		maxPlayers = 0,
+		icon = "",
+		gameType = "",
+		longDescription = "",
+		showOnlyGM = true,
+	},
+	[63] = {
+		battleGroundID = 63,
+		maxPlayers = 0,
+		icon = "",
+		gameType = "",
+		longDescription = "",
+		showOnlyGM = true,
+	},
 }
 
 UIPanelWindows["PVPUIFrame"] = { area = "left",	pushable = 0, whileDead = 1, xOffset = "15", yOffset = "-10", width = 563, height = 428 }
@@ -937,7 +961,7 @@ function PVPHonorFrame_OnShow( self, ... )
 		worldPVP2Button.Contents.TimeText:SetRemainingTime(wintergraspWaitTime or 0)
 	end)
 
-	PVPHonorFrame.BottomInset.BonusBattlefieldContainer.CallToArmsButton:SetID(33)
+	PVPHonorFrame.BottomInset.BonusBattlefieldContainer.CallToArmsButton:SetID(63)
 
 	for i = 1, GetNumBattlegroundTypes() do
 		local BGname, canEnter, isHoliday, isRandom, BattleGroundID = GetBattlegroundInfo(i)
@@ -1584,8 +1608,8 @@ function HonorFrame_Queue(isParty, forceSolo)
 	elseif ( PVPHonorFrame.type == "bonus" and PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton ) then
 		if ( PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton:GetID() == 0 ) then
 			SendAddonMessage("ACMSG_JOIN_WINTERGRASP_REQUEST", nil, "WHISPER", UnitName("player"))
-		elseif PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton:GetID() == 33 then
-			Sirus_BattlegroundRegister(33, isParty)
+		elseif PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton:GetID() == 63 then
+			Sirus_BattlegroundRegister(63, isParty)
 		else
 			RequestBattlegroundInstanceInfo(PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton:GetID())
 			JoinBattlefield(PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton:GetID(), isParty)
@@ -3185,4 +3209,33 @@ function EventHandler:ASMSG_BATTLEGROUND_LOCKED( msg )
 	end
 
 	C_CacheInstance:Set("ASMSG_BATTLEGROUND_LOCKED", battlegroundLockIDStorage)
+end
+
+function EventHandler:ASMSG_BRAWL_SELECTED( msg )
+	local msg = C_Split(msg, "|")
+	local brawlInfo = {}
+
+	brawlInfo.id = msg[1]
+	dump(msg)
+	if brawlInfo.id == "0" then
+		return
+	end
+	brawlInfo.name = GetBattlegroundInfoByID(msg[1])
+	brawlInfo.rewards = {}
+
+	for i=1,2 do
+		brawlInfo.rewards[i] = {}
+		local questRewards = C_Split(msg[i+1], ";")
+		for index, rewardInfo in pairs(questRewards) do
+			rewardInfo = C_Split(rewardInfo, ",")
+			if rewardInfo then
+				brawlInfo.rewards[i][index] = {}
+				brawlInfo.rewards[i][index].id = rewardInfo[1]
+				brawlInfo.rewards[i][index].count = rewardInfo[2]
+				brawlInfo.rewards[i][index].name = GetItemInfo(rewardInfo[1])
+			end
+		end
+	end
+
+	C_CacheInstance:Set("ASMSG_BRAWL_SELECTED", brawlInfo)
 end

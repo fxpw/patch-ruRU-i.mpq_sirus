@@ -188,13 +188,12 @@
 						--self:SetPosition(-0.409000, 0.070000, 2.031000, 0.000000)
 						self:SetPosition(-0.158000, 0.230000, 1.438000, 0.000000)
 					</OnLoad>
-
 				</Scripts>
 			</Model>
 		</Frames>
 	</Frame>
 	<Frame name="RealmListMiniMainSelectTemplate" alpha="0.7" hidden="true" virtual="true">
-		<Size x="180" y="100"/>
+		<Size x="180" y="60"/>
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture parentKey="BG">
@@ -211,33 +210,29 @@
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
-				<Texture name="$parentLogo" parentKey="Logo">
-					<Size x="120" y="60"/>
+				<FontString name="$parentRealmName" parentKey="RealmName" font="Interface\CustomFonts\OpenSans-Bold.ttf">
 					<Anchors>
-						<Anchor point="TOP" x="0" y="-4" />
+						<Anchor point="TOP" x="0" y="-8" />
 					</Anchors>
-				</Texture>
+					<FontHeight val="14"/>
+					<Color r="1" g="0.968" b="0.898"/>
+				</FontString>
 			</Layer>
 		</Layers>
 		<Frames>
-			<Button name="$parentRealmButton" text="CHOOSE" parentKey="RealmButton" frameStrata="DIALOG" toplevel="true" inherits="GlueButtonTemplate">
-				<Size x="130" y="26"/>
+			<Button name="$parentRealmButton" text="CHOOSE" parentKey="RealmButton" frameStrata="DIALOG" toplevel="true" inherits="UIPanelButtonTemplate">
+				<Size x="130" y="24"/>
 				<Anchors>
-					<Anchor point="BOTTOM"/>
+					<Anchor point="BOTTOM" x="0" y="8" />
 				</Anchors>
 				<Scripts>
 					<OnClick function="RealmListRealmSelect_OnClick"/>
 				</Scripts>
 			</Button>
 		</Frames>
-		<Scripts>
-			<OnLoad>
-				self.Logo:SetAtlas("ServerGameLogo-3")
-			</OnLoad>
-		</Scripts>
 	</Frame>
-	<Frame name="RealmListProxyMainSelectTemplate" alpha="0.7" hidden="true" virtual="true">
-		<Size x="250" y="34"/>
+	<Frame name="RealmListProxyMainSelectTemplate" alpha="0.5" hidden="true" virtual="true">
+		<Size x="150" y="34"/>
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture parentKey="BG">
@@ -255,7 +250,7 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Button name="$parentProxyButton" text="PROXY" parentKey="ProxyButton" frameStrata="DIALOG" toplevel="true" inherits="GlueButtonTemplate">
+			<Button name="$parentProxyButton" text="PROXY" parentKey="ProxyButton" frameStrata="DIALOG" toplevel="true" inherits="UIPanelButtonTemplate2">
 				<Size x="130" y="26"/>
 				<Anchors>
 					<Anchor point="CENTER"/>
@@ -274,6 +269,530 @@
 		</Frames>
 	</Frame>
 
+<!--	TODO: Переделать все в 1 темплейт, когда будет время. -->
+	<Frame name="RealmListCardSirusTemplate" virtual="true">
+		<Size x="250" y="440"/>
+		<Frames>
+			<Frame name="$parentOverlayFrame" parentKey="OverlayFrame" frameLevel="11">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="3" y="-3" />
+					<Anchor point="BOTTOMRIGHT" x="-3" y="3" />
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentOverlay" parentKey="Overlay" alphaMode="ADD"/>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentLogoFrame" parentKey="LogoFrame" frameLevel="13">
+				<Size x="180" y="108"/>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-14" />
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentLogo" parentKey="Logo"/>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentLabelFrame" parentKey="LabelFrame" frameLevel="12">
+				<Size x="0" y="120"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="3" y="-66" />
+					<Anchor point="TOPRIGHT" x="-3" y="0" />
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background">
+							<Color r="1" g="0" b="0"/>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<FontString name="$parentText" inherits="GameFontNormal9" parentKey="Text" text="НОВЫЙ ИГРОВОЙ МИР">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="-5" />
+							</Anchors>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentBackgroundFrame" parentKey="BackgroundFrame" frameLevel="10" setAllPoints="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="0" />
+					<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background"/>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Model name="$parentBackgroundModel" parentKey="BackgroundModel" file="World\Expansion02\doodads\ulduar\ul_banister01.m2">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="2" y="-2" />
+							<Anchor point="BOTTOMRIGHT" x="-2" y="2" />
+						</Anchors>
+						<Scripts>
+								<OnLoad>
+								self:SetModelScale(0.037000000476837)
+								self:SetPosition(0.076000101864338, 0.23600010573864, 0)
+							</OnLoad>
+						</Scripts>
+					</Model>
+					<Model name="$parentBackgroundModel2" parentKey="BackgroundModel2" alpha="0.7" file="spells\s_realm_card_fx.m2">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="2" y="-2" />
+							<Anchor point="BOTTOMRIGHT" x="-2" y="2" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self:SetModelScale(0.003000000026077)
+								self:SetPosition(0.072000101208687, 0.22200010716915, 0)
+							</OnLoad>
+						</Scripts>
+					</Model>
+				</Frames>
+			</Frame>
+			<Frame name="$parentBorderFrame" parentKey="BorderFrame" frameLevel="20" setAllPoints="true">
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBorder" parentKey="Border" alphaMode="ADD"/>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentContentFrame" parentKey="ContentFrame" frameLevel="12">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentLabelFrame" relativePoint="BOTTOMLEFT" x="0" y="36" />
+					<Anchor point="BOTTOMRIGHT" x="0" y="40" />
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="$parentRealmName" parentKey="RealmName" font="Interface\CustomFonts\OpenSans-Bold.ttf" text="SIRUS x5">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="30" y="0" />
+							</Anchors>
+							<FontHeight val="17"/>
+							<Color r="1" g="0.968" b="0.898"/>
+						</FontString>
+						<FontString name="$parentRealmDescription" spacing="2" justifyV="TOP" justifyH="LEFT" parentKey="RealmDescription" font="Interface\CustomFonts\OpenSans-Semibold.ttf" text="REALM_SIRUS_DESCRIPTION">
+							<Size x="194" y="160"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="30" y="-26" />
+							</Anchors>
+							<FontHeight val="9"/>
+							<Color r="0.921" g="0.870" b="0.760"/>
+						</FontString>
+						<FontString name="$parentRealmRateLabel" justifyV="TOP" justifyH="LEFT" parentKey="RealmRateLabel" font="Interface\CustomFonts\futurademic.ttf" text="РЕЙТ">
+							<Size x="60" y="20"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentRealmDescription" relativePoint="BOTTOMLEFT" x="0" y="-6" />
+							</Anchors>
+							<FontHeight val="8"/>
+							<Color r="0.984" g="0.819" b="0.576"/>
+						</FontString>
+						<FontString name="$parentRealmRate" justifyV="TOP" justifyH="LEFT" parentKey="RealmRate" font="Interface\CustomFonts\futurademic.ttf" text="x5">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentRealmRateLabel" relativePoint="TOPRIGHT" x="14" y="2" />
+							</Anchors>
+							<FontHeight val="10"/>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+						<FontString name="$parentRealmPVPStatusLabel" justifyV="TOP" justifyH="LEFT" parentKey="RealmPVPStatusLabel" font="Interface\CustomFonts\futurademic.ttf" text="РЕЖИМ PVP">
+							<Size x="60" y="20"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentRealmRateLabel" relativePoint="BOTTOMLEFT" x="0" y="-4" />
+							</Anchors>
+							<FontHeight val="8"/>
+							<Color r="0.984" g="0.819" b="0.576"/>
+						</FontString>
+						<FontString name="$parentRealmPVPStatus" justifyV="TOP" justifyH="LEFT" parentKey="RealmPVPStatus" font="Interface\CustomFonts\futurademic.ttf" text="Всегда включен">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentRealmPVPStatusLabel" relativePoint="TOPRIGHT" x="14" y="2" />
+							</Anchors>
+							<FontHeight val="10"/>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Button name="$parentEnterButton" parentKey="EnterButton" frameLevel="12" text="Играть">
+				<Size x="150" y="46"/>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentContentFrame" relativePoint="BOTTOM" x="0" y="10" />
+				</Anchors>
+				<HitRectInsets>
+					<AbsInset left="10" right="10" top="8" bottom="8"/>
+				</HitRectInsets>
+				<Scripts>
+					<OnClick>
+						RealmListRealmSelect_OnClick(self:GetParent())
+					</OnClick>
+					<OnLoad>
+						self.NormalTexture:SetAtlas("RealmList-Card-Sirus-Button-Static")
+						self.PushedTexture:SetAtlas("RealmList-Card-Sirus-Button-Press")
+						self.HighlightTexture:SetAtlas("RealmList-Card-Sirus-Button-Static")
+					</OnLoad>
+					<OnEnable>
+						self.NormalTexture:SetDesaturated(false)
+						self.PushedTexture:SetDesaturated(false)
+						self.HighlightTexture:SetDesaturated(false)
+					</OnEnable>
+					<OnDisable>
+						self.NormalTexture:SetDesaturated(true)
+						self.PushedTexture:SetDesaturated(true)
+						self.HighlightTexture:SetDesaturated(true)
+					</OnDisable>
+				</Scripts>
+				<NormalTexture name="$parentNormalTexture" parentKey="NormalTexture" />
+				<PushedTexture name="$parentPushedTexture" parentKey="PushedTexture" />
+				<HighlightTexture name="$parentHighlightTexture" alpha="0.1" alphaMode="ADD" parentKey="HighlightTexture">
+				</HighlightTexture>
+				<ButtonText name="$parentText" font="Interface\CustomFonts\OpenSans-Semibold.ttf" justifyH="LEFT" parentKey="text">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0" />
+					</Anchors>
+					<FontHeight val="11"/>
+					<Color r="1" g="1" b="1"/>
+				</ButtonText>
+			</Button>
+			<Frame name="$parentProxyFrame" parentKey="ProxyFrame" inherits="RealmListProxyMainSelectTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOP" relativePoint="BOTTOM" x="0" y="-10" />
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, RealmListCardSirusTemplateMixin)
+
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="RealmListCardScourgeTemplate" virtual="true">
+		<Size x="250" y="400"/>
+		<Frames>
+			<Frame name="$parentLogoFrame" parentKey="LogoFrame" frameLevel="13">
+				<Size x="180" y="108"/>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-14" />
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentLogo" parentKey="Logo"/>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentBackgroundFrame" parentKey="BackgroundFrame" frameLevel="10" setAllPoints="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="0" />
+					<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background"/>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Model name="$parentBackgroundModel" parentKey="BackgroundModel" alpha="0.1" file="World\Expansion02\doodads\generic\scourge\sc_castingcircle_01.m2">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="2" y="-2" />
+							<Anchor point="BOTTOMRIGHT" x="-2" y="2" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self:SetModelScale(0.021000001579523)
+								self:SetPosition(0.079000100493431, 0.20900011062622, 0)
+							</OnLoad>
+						</Scripts>
+					</Model>
+					<Model name="$parentBackgroundModel2" parentKey="BackgroundModel2" alpha="0.2" file="World\Expansion02\doodads\generic\scourge\sc_spirits_01.m2">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="2" y="-2" />
+							<Anchor point="BOTTOMRIGHT" x="-2" y="2" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self:SetModelScale(0.011000000871718)
+								self:SetPosition(0.072000101208687, 0.20200011134148, 0)
+							</OnLoad>
+						</Scripts>
+					</Model>
+				</Frames>
+			</Frame>
+			<Frame name="$parentBorderFrame" parentKey="BorderFrame" frameLevel="20" setAllPoints="true">
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBorder" parentKey="Border" alphaMode="ADD"/>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentContentFrame" parentKey="ContentFrame" frameLevel="12">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="-130" />
+					<Anchor point="BOTTOMRIGHT" x="0" y="40" />
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="$parentRealmName" parentKey="RealmName" font="Interface\CustomFonts\OpenSans-Bold.ttf" text="SCOURGE x2">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="30" y="0" />
+							</Anchors>
+							<FontHeight val="17"/>
+							<Color r="1" g="0.968" b="0.898"/>
+						</FontString>
+						<FontString name="$parentRealmDescription" spacing="2" justifyV="TOP" justifyH="LEFT" parentKey="RealmDescription" font="Interface\CustomFonts\OpenSans-Semibold.ttf" text="REALM_SCOURGE_DESCRIPTION">
+							<Size x="194" y="160"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="30" y="-26" />
+							</Anchors>
+							<FontHeight val="9"/>
+							<Color r="0.921" g="0.870" b="0.760"/>
+						</FontString>
+						<FontString name="$parentRealmRateLabel" justifyV="TOP" justifyH="LEFT" parentKey="RealmRateLabel" font="Interface\CustomFonts\futurademic.ttf" text="РЕЙТ">
+							<Size x="60" y="20"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentRealmDescription" relativePoint="BOTTOMLEFT" x="0" y="-6" />
+							</Anchors>
+							<FontHeight val="8"/>
+							<Color r="0.984" g="0.819" b="0.576"/>
+						</FontString>
+						<FontString name="$parentRealmRate" justifyV="TOP" justifyH="LEFT" parentKey="RealmRate" font="Interface\CustomFonts\futurademic.ttf" text="x2">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentRealmRateLabel" relativePoint="TOPRIGHT" x="14" y="2" />
+							</Anchors>
+							<FontHeight val="10"/>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+						<FontString name="$parentRealmPVPStatusLabel" justifyV="TOP" justifyH="LEFT" parentKey="RealmPVPStatusLabel" font="Interface\CustomFonts\futurademic.ttf" text="РЕЖИМ PVP">
+							<Size x="60" y="20"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentRealmRateLabel" relativePoint="BOTTOMLEFT" x="0" y="-4" />
+							</Anchors>
+							<FontHeight val="8"/>
+							<Color r="0.984" g="0.819" b="0.576"/>
+						</FontString>
+						<FontString name="$parentRealmPVPStatus" justifyV="TOP" justifyH="LEFT" parentKey="RealmPVPStatus" font="Interface\CustomFonts\futurademic.ttf" text="Режим войны">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentRealmPVPStatusLabel" relativePoint="TOPRIGHT" x="14" y="2" />
+							</Anchors>
+							<FontHeight val="10"/>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Button name="$parentEnterButton" parentKey="EnterButton" frameLevel="12" text="Играть">
+				<Size x="150" y="46"/>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentContentFrame" relativePoint="BOTTOM" x="0" y="6" />
+				</Anchors>
+				<HitRectInsets>
+					<AbsInset left="10" right="10" top="8" bottom="8"/>
+				</HitRectInsets>
+				<Scripts>
+					<OnClick>
+						RealmListRealmSelect_OnClick(self:GetParent())
+					</OnClick>
+					<OnLoad>
+						self.NormalTexture:SetAtlas("RealmList-Card-Scourge-Button-Static")
+						self.PushedTexture:SetAtlas("RealmList-Card-Scourge-Button-Press")
+						self.HighlightTexture:SetAtlas("RealmList-Card-Scourge-Button-Static")
+					</OnLoad>
+					<OnEnable>
+						self.NormalTexture:SetDesaturated(false)
+						self.PushedTexture:SetDesaturated(false)
+						self.HighlightTexture:SetDesaturated(false)
+					</OnEnable>
+					<OnDisable>
+						self.NormalTexture:SetDesaturated(true)
+						self.PushedTexture:SetDesaturated(true)
+						self.HighlightTexture:SetDesaturated(true)
+					</OnDisable>
+				</Scripts>
+				<NormalTexture name="$parentNormalTexture" parentKey="NormalTexture" />
+				<PushedTexture name="$parentPushedTexture" parentKey="PushedTexture" />
+				<HighlightTexture name="$parentHighlightTexture" alpha="0.1" alphaMode="ADD" parentKey="HighlightTexture">
+				</HighlightTexture>
+				<ButtonText name="$parentText" font="Interface\CustomFonts\OpenSans-Semibold.ttf" justifyH="LEFT" parentKey="text">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0" />
+					</Anchors>
+					<FontHeight val="11"/>
+					<Color r="1" g="1" b="1"/>
+				</ButtonText>
+			</Button>
+			<Frame name="$parentProxyFrame" parentKey="ProxyFrame" inherits="RealmListProxyMainSelectTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOP" relativePoint="BOTTOM" x="0" y="-10" />
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, RealmListCardScourgeTemplateMixin)
+
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="RealmListCardAlgalonTemplate" virtual="true">
+		<Size x="250" y="400"/>
+		<Frames>
+			<Frame name="$parentLogoFrame" parentKey="LogoFrame" frameLevel="13">
+				<Size x="180" y="108"/>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-14" />
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentLogo" parentKey="Logo"/>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentBackgroundFrame" parentKey="BackgroundFrame" frameLevel="10" setAllPoints="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="0" />
+					<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background"/>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Model name="$parentBackgroundModel" parentKey="BackgroundModel" alpha="0.4" file="World\Expansion02\doodads\ulduar\ul_brain_01.m2">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="2" y="-2" />
+							<Anchor point="BOTTOMRIGHT" x="-2" y="2" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self:SetModelScale(0.0080000003799796)
+								self:SetPosition(0.082000099122524, 0.20600010454655, 0)
+							</OnLoad>
+						</Scripts>
+					</Model>
+				</Frames>
+			</Frame>
+			<Frame name="$parentBorderFrame" parentKey="BorderFrame" frameLevel="20" setAllPoints="true">
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBorder" parentKey="Border" alphaMode="ADD"/>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentContentFrame" parentKey="ContentFrame" frameLevel="12">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="-130" />
+					<Anchor point="BOTTOMRIGHT" x="0" y="40" />
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="$parentRealmName" parentKey="RealmName" font="Interface\CustomFonts\OpenSans-Bold.ttf" text="ALGALON x4">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="30" y="0" />
+							</Anchors>
+							<FontHeight val="17"/>
+							<Color r="1" g="0.968" b="0.898"/>
+						</FontString>
+						<FontString name="$parentRealmDescription" spacing="2" justifyV="TOP" justifyH="LEFT" parentKey="RealmDescription" font="Interface\CustomFonts\OpenSans-Semibold.ttf" text="REALM_ALGALON_DESCRIPTION">
+							<Size x="194" y="160"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="30" y="-26" />
+							</Anchors>
+							<FontHeight val="9"/>
+							<Color r="0.921" g="0.870" b="0.760"/>
+						</FontString>
+						<FontString name="$parentRealmRateLabel" justifyV="TOP" justifyH="LEFT" parentKey="RealmRateLabel" font="Interface\CustomFonts\futurademic.ttf" text="РЕЙТ">
+							<Size x="60" y="20"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentRealmDescription" relativePoint="BOTTOMLEFT" x="0" y="-6" />
+							</Anchors>
+							<FontHeight val="8"/>
+							<Color r="0.984" g="0.819" b="0.576"/>
+						</FontString>
+						<FontString name="$parentRealmRate" justifyV="TOP" justifyH="LEFT" parentKey="RealmRate" font="Interface\CustomFonts\futurademic.ttf" text="x4">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentRealmRateLabel" relativePoint="TOPRIGHT" x="14" y="2" />
+							</Anchors>
+							<FontHeight val="10"/>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+						<FontString name="$parentRealmPVPStatusLabel" justifyV="TOP" justifyH="LEFT" parentKey="RealmPVPStatusLabel" font="Interface\CustomFonts\futurademic.ttf" text="РЕЖИМ PVP">
+							<Size x="60" y="20"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentRealmRateLabel" relativePoint="BOTTOMLEFT" x="0" y="-4" />
+							</Anchors>
+							<FontHeight val="8"/>
+							<Color r="0.984" g="0.819" b="0.576"/>
+						</FontString>
+						<FontString name="$parentRealmPVPStatus" justifyV="TOP" justifyH="LEFT" parentKey="RealmPVPStatus" font="Interface\CustomFonts\futurademic.ttf" text="Всегда включен">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentRealmPVPStatusLabel" relativePoint="TOPRIGHT" x="14" y="2" />
+							</Anchors>
+							<FontHeight val="10"/>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Button name="$parentEnterButton" parentKey="EnterButton" frameLevel="12" text="Играть">
+				<Size x="150" y="46"/>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentContentFrame" relativePoint="BOTTOM" x="0" y="6" />
+				</Anchors>
+				<HitRectInsets>
+					<AbsInset left="10" right="10" top="8" bottom="8"/>
+				</HitRectInsets>
+				<Scripts>
+					<OnClick>
+						RealmListRealmSelect_OnClick(self:GetParent())
+					</OnClick>
+					<OnLoad>
+						self.NormalTexture:SetAtlas("RealmList-Card-Algalon-Button-Static")
+						self.PushedTexture:SetAtlas("RealmList-Card-Algalon-Button-Press")
+						self.HighlightTexture:SetAtlas("RealmList-Card-Algalon-Button-Static")
+					</OnLoad>
+					<OnEnable>
+						self.NormalTexture:SetDesaturated(false)
+						self.PushedTexture:SetDesaturated(false)
+						self.HighlightTexture:SetDesaturated(false)
+					</OnEnable>
+					<OnDisable>
+						self.NormalTexture:SetDesaturated(true)
+						self.PushedTexture:SetDesaturated(true)
+						self.HighlightTexture:SetDesaturated(true)
+					</OnDisable>
+				</Scripts>
+				<NormalTexture name="$parentNormalTexture" parentKey="NormalTexture" />
+				<PushedTexture name="$parentPushedTexture" parentKey="PushedTexture" />
+				<HighlightTexture name="$parentHighlightTexture" alpha="0.1" alphaMode="ADD" parentKey="HighlightTexture">
+				</HighlightTexture>
+				<ButtonText name="$parentText" font="Interface\CustomFonts\OpenSans-Semibold.ttf" justifyH="LEFT" parentKey="text">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0" />
+					</Anchors>
+					<FontHeight val="11"/>
+					<Color r="1" g="1" b="1"/>
+				</ButtonText>
+			</Button>
+			<Frame name="$parentProxyFrame" parentKey="ProxyFrame" inherits="RealmListProxyMainSelectTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOP" relativePoint="BOTTOM" x="0" y="-10" />
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, RealmListCardAlgalonTemplateMixin)
+
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
 
 	<Frame name="RealmList" toplevel="true" parent="GlueParent" setAllPoints="true" enableMouse="true" enableKeyboard="true" frameStrata="DIALOG" hidden="true">
 		<Layers>
@@ -282,16 +801,31 @@
 					<Color a="0.9" r="0" g="0" b="0"/>
 				</Texture>
 			</Layer>
-			<layer level="ARTWORK">
+			<Layer level="ARTWORK">
 				<FontString parentKey="NoRealmText" inherits="GameFontNormalHugeOutline" justifyH="CENTER" text="LOADING_REALM_LIST" justifyV="TOP">
 					<Color r="0.91" g="0.78" b="0.53"/>
 					<Anchors>
 						<Anchor point="CENTER" x="0" y="0"/>
 					</Anchors>
 				</FontString>
-			</layer>
+			</Layer>
 		</Layers>
 		<Frames>
+			<Frame name="$parentSirusRealmCard" parentKey="SirusRealmCard" inherits="RealmListCardSirusTemplate">
+				<Anchors>
+					<Anchor point="CENTER" x="0" y="0" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentScourgeRealmCard" parentKey="ScourgeRealmCard" inherits="RealmListCardScourgeTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentSirusRealmCard" relativePoint="LEFT" x="-20" y="0" />
+				</Anchors>
+			</Frame>
+			<Frame name="$parentAlgalonRealmCard" parentKey="AlgalonRealmCard" inherits="RealmListCardAlgalonTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentSirusRealmCard" relativePoint="RIGHT" x="20" y="0" />
+				</Anchors>
+			</Frame>
 			<Frame name="$parentRealmCard1" inherits="RealmListMainSelectTemplate"/>
 			<Frame name="$parentRealmCard2" inherits="RealmListMainSelectTemplate"/>
 			<Frame name="$parentRealmCard3" inherits="RealmListMainSelectTemplate"/>
@@ -322,4 +856,94 @@
 			<OnKeyDown function="RealmList_OnKeyDown"/>
 		</Scripts>
 	</Frame>
+
+	<Slider name="DEVRealmDesignSliderTemplate" virtual="true"  minValue="-2" maxValue="2" valueStep="0.00001" defaultValue="1">
+		<Size x="16" y="360"/>
+		<Backdrop bgFile="Interface\Buttons\UI-SliderBar-Background" edgeFile="Interface\Buttons\UI-SliderBar-Border" tile="true">
+			<EdgeSize val="8"/>
+			<TileSize val="8"/>
+			<BackgroundInsets left="3" right="3" top="6" bottom="6"/>
+		</Backdrop>
+		<Scripts>
+			<OnMouseWheel>
+				if delta ~= 1 then
+					self:SetValue(self:GetValue() + 0.001)
+				else
+					self:SetValue(self:GetValue() - 0.001)
+				end
+			</OnMouseWheel>
+			<OnValueChanged>
+				local key = self:GetAttribute("key")
+
+				if not key then return end
+
+				self:GetParent().settings[key] = self:GetValue()
+				self:GetParent():UpdateValue()
+			</OnValueChanged>
+		</Scripts>
+		<ThumbTexture file="Interface\Buttons\UI-SliderBar-Button-Vertical">
+			<Size x="32" y="32"/>
+		</ThumbTexture>
+	</Slider>
+
+<!--	<Frame name="DEVRealmDesignFrame" parent="RealmList" movable="true" hidden="true">-->
+<!--		<Size x="126" y="380"/>-->
+<!--		<Anchors>-->
+<!--			<Anchor point="LEFT" x="10" y="0" />-->
+<!--		</Anchors>-->
+<!--		<Layers>-->
+<!--			<Layer level="BACKGROUND">-->
+<!--				<Texture name="$parentBackground" parentKey="Background">-->
+<!--					<Color r="1" g="1" b="1" a="0.3"/>-->
+<!--				</Texture>-->
+<!--			</Layer>-->
+<!--		</Layers>-->
+<!--		<Frames>-->
+<!--			<Slider name="$parentSlider1" parentKey="Slider1" inherits="DEVRealmDesignSliderTemplate">-->
+<!--				<Anchors>-->
+<!--					<Anchor point="LEFT" x="2" y="0" />-->
+<!--				</Anchors>-->
+<!--				<Attributes>-->
+<!--					<Attribute name="key" type="string" value="xCoord"/>-->
+<!--				</Attributes>-->
+<!--			</Slider>-->
+<!--			<Slider name="$parentSlider2" parentKey="Slider2" inherits="DEVRealmDesignSliderTemplate">-->
+<!--				<Anchors>-->
+<!--					<Anchor point="LEFT" relativeTo="$parentSlider1" relativePoint="RIGHT" x="10" y="0" />-->
+<!--				</Anchors>-->
+<!--				<Attributes>-->
+<!--					<Attribute name="key" type="string" value="yCoord"/>-->
+<!--				</Attributes>-->
+<!--			</Slider>-->
+<!--			<Slider name="$parentSlider3" parentKey="Slider3" inherits="DEVRealmDesignSliderTemplate">-->
+<!--				<Anchors>-->
+<!--					<Anchor point="LEFT" relativeTo="$parentSlider2" relativePoint="RIGHT" x="10" y="0" />-->
+<!--				</Anchors>-->
+<!--				<Attributes>-->
+<!--					<Attribute name="key" type="string" value="zCoord"/>-->
+<!--				</Attributes>-->
+<!--			</Slider>-->
+<!--			<Slider name="$parentSlider4" parentKey="Slider4" minValue="0" maxValue="1" inherits="DEVRealmDesignSliderTemplate">-->
+<!--				<Anchors>-->
+<!--					<Anchor point="LEFT" relativeTo="$parentSlider3" relativePoint="RIGHT" x="10" y="0" />-->
+<!--				</Anchors>-->
+<!--				<Attributes>-->
+<!--					<Attribute name="key" type="string" value="scale"/>-->
+<!--				</Attributes>-->
+<!--			</Slider>-->
+<!--		</Frames>-->
+<!--		<Scripts>-->
+<!--			<OnLoad>-->
+<!--				Mixin(self, DEVRealmDesignFrameMixin)-->
+
+<!--				self:OnLoad()-->
+<!--			</OnLoad>-->
+<!--			<OnDragStart>-->
+<!--				self:StartMoving()-->
+<!--			</OnDragStart>-->
+<!--			<OnDragStop>-->
+<!--				self:StopMovingOrSizing()-->
+<!--			</OnDragStop>-->
+<!--		</Scripts>-->
+<!--	</Frame>-->
 </Ui>

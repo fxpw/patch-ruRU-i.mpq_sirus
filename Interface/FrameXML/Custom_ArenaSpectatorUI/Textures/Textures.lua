@@ -354,14 +354,16 @@ function ezSpectator_Textures:Sirus_Logo(Frame)
     local Texture = self:Load(Frame, 'Interface\\Custom_LoginScreen\\Logo')
     local id = GetServerID()
 
-    if id == 5 then
-        id = 1
-    elseif id == 16 then
-        id = 2
+    if id == 57 then
+        id = 11
     elseif id == 9 then
-        id = 3
-    else
-        id = math.random(1, 3)
+        id = 12
+    elseif id == 33 then
+        id = 13
+    elseif id == 21 then
+        id = 2
+    elseif id == 5 then
+        id = 1
     end
 
     Texture:SetAtlas("ServerGameLogo-"..id)

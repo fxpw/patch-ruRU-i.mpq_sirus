@@ -5,7 +5,7 @@
 --	Web:		https://sirus.su/
 
 local realmCardsData = {
-	[SHARED_NELTHARION_REALM_NAME] = {
+	["Legacy x3 - 3.3.5a+"] = {
 		name = "Neltharion",
 		rate = "x3",
 		types = "PvP",
@@ -31,9 +31,8 @@ local realmCardsData = {
 		description = "Прогрессивный игровой мир с преуспевающим освоением как PvP, так и PvE-аспектов. Сочетает в себе множество внутриигровых изменений и лучших кастомных внедрений в стандартный клиент. Scourge готов подарить Вам максимум приятных впечатлений от игры. Однако, если Вы хотите стать легендой, то придётся приложить немало усилий. Что бы Вы ни любили: рейды, подземелья, поля боя или арены - этому миру будет что Вам предложить.",
 		logo = "ServerGameLogo-3",
 		desingKey = "Frostmourne",
-		proxyName = SHARED_SCOURGE_PROXY_REALM_NAME,
 	},
-	[SHARED_SIRUS_REALM_NAME] = {
+	["Legacy x10 - 3.3.5а+"] = {
 		name = "Sirus",
 		rate = "x10",
 		types = "FFA",
@@ -50,18 +49,27 @@ local realmCardsData = {
 		description = "Активно развивающийся игровой мир без системы категорий, очков усилений и других кастомных изменений. Перед нами стояла задача сохранить для Вас привычный баланс в PvP времён 3.3.5а с применением только лучших наработок, которые были оценены игроками по достоинству. Поэтапное PvE-освоение и полный набор PvP-атрибутов позволят Вам открыть для себя WoTLK по-новому.",
 		logo = "ServerGameLogo-4",
 		desingKey = "Algalon",
-		proxyName = SHARED_ALGALON_PROXY_REALM_NAME,
 	},
 }
 
-local proxyRealmCardsData = {
-	[SHARED_SCOURGE_PROXY_REALM_NAME] = {
-		realm = SHARED_SCOURGE_REALM_NAME,
-	},
-	[SHARED_ALGALON_PROXY_REALM_NAME] = {
-		realm = SHARED_ALGALON_REALM_NAME,
-	},
-}
+--{ "test4 - dev-siletjim", 4 },
+--{ "Sirus x5 - 3.3.5a+", 4 },
+--{ "Legacy x10 - 3.3.5а+", 4 },
+--{ "Proxy Scourge x2 - 3.3.5a+", 4 },
+--{ "test3 - dev-tulen-new", 4 },
+--{ "Scourge x2 - 3.3.5a+", 4 },
+--{ "test2 - dev-renegades-backup", 4 },
+--{ "test1 - dev-faction-split", 4 },
+--{ "test9 - БДСМ", 4 },
+--{ "test5 - dev-elimination-formatio", 4 },
+--{ "Algalon x4 - 3.3.5a", 4 },
+--{ "test10 - dev", 4 },
+--{ "test8 - dll", 4 },
+--{ "Proxy Algalon x4 - 3.3.5a", 4 },
+--{ "test6 - prod-dev", 4 },
+--{ "test11 - dll2", 4 },
+--{ "Legacy x3 - 3.3.5a+", 4 },
+--{ "test7 - prod-renegades", 4 },
 
 local REALM_ZONE = 2
 local MAX_REALM_ZONE = 37
@@ -108,6 +116,8 @@ end
 
 function RealmList_OnLoad( self, ... )
 	self.buttonsList = {}
+
+	--self:Show()
 
 	self:RegisterEvent("OPEN_REALM_LIST")
 end
@@ -171,6 +181,16 @@ function RealmListCancel_OnClick( self, ... )
 	RealmListDialogCancelled()
 end
 
+function GetRealmByName( _name )
+	local realmCount = _GetNumRealms()
+	for i = 1, realmCount do
+		local name, numCharacters, invalidRealm, realmDown, currentRealm, pvp, rp, load, locked, major, minor, revision, build, types, realmZone, realmID = _GetRealmInfo(i)
+
+		if _name == name then
+			return name, numCharacters, invalidRealm, realmDown, currentRealm, pvp, rp, load, locked, major, minor, revision, build, types, realmZone, realmID
+		end
+	end
+end
 
 function RealmList_Update()
 	RequestRealmList()
@@ -178,44 +198,84 @@ function RealmList_Update()
 	local realmCount = _GetNumRealms()
 	local cardCount = 0
 	local miniCardCount = 0
-	local proxyCardCount = 0
+	local isNonPlayer = false;
 
 	if not realmCount or realmCount == 0 then
 		RealmList.NoRealmText:Show()
 	end
 
+	local realmCards = {
+		["Sirus x5 - 3.3.5a+"] = {
+			cardFrame = "RealmListSirusRealmCard",
+		},
+		["Scourge x2 - 3.3.5a+"] = {
+			cardFrame = "RealmListScourgeRealmCard",
+		},
+		["Algalon x4 - 3.3.5a"] = {
+			cardFrame = "RealmListAlgalonRealmCard",
+		},
+	}
+	
+	local buttonsCount = 1
+
 	for i = 1, realmCount do
 		local name, numCharacters, invalidRealm, realmDown, currentRealm, pvp, rp, load, locked, major, minor, revision, build, types, realmZone, realmID = _GetRealmInfo(i)
 
 		if name then
-			local button = RealmList.buttonsList[i]
+			local realmcardSettings = realmCards[name]
 
-			if not button then
-				button = CreateFrame("Button", "RealmSelectButton"..i, RealmList, "NormalChoiceButtonTemplate")
+			if realmcardSettings then
+				local frame = _G[realmcardSettings.cardFrame]
 
-				if i == 1 then
-					button:SetPoint("TOPLEFT", 12, -20)
-				elseif mod(i - 1, 4) == 0 then
-					button:SetPoint("TOP", RealmList.buttonsList[i - 4], "BOTTOM", 0, 0)
-				else
-					button:SetPoint("LEFT", RealmList.buttonsList[i - 1], "RIGHT", -14, 0)
+				frame.realmZone = realmZone
+				frame.realmID = realmID
+				frame:SetDisabledRealm(realmDown)
+
+				local _, _, _, proxyRealmDown, _, _, _, _, _, _, _, _, _, _, proxyRealmZone, proxyRealmID = GetRealmByName("Proxy " .. name)
+
+				if (proxyRealmID) then
+					frame.ProxyFrame.ProxyButton.realmZone = proxyRealmZone
+					frame.ProxyFrame.ProxyButton.realmID = proxyRealmID
+
+					frame.ProxyFrame.ProxyButton:SetEnabled(not proxyRealmDown)
 				end
 
-				RealmList.buttonsList[i] = button
+				frame.ProxyFrame:SetShown(proxyRealmID)
+
+				realmcardSettings.setup = true
 			end
 
-			button.realmID = realmID
-			button.realmZone = realmZone
+			if string.find(name, "3.3.5") == nil then
+				local button = RealmList.buttonsList[buttonsCount]
 
-			button:SetEnabled(not realmDown)
-			button:SetText(name)
-			button:Show()
+				if not button then
+					button = CreateFrame("Button", "RealmSelectButton"..buttonsCount, RealmList, "NormalChoiceButtonTemplate")
+
+					if buttonsCount == 1 then
+						button:SetPoint("TOPLEFT", 12, -20)
+					elseif mod(buttonsCount - 1, 4) == 0 then
+						button:SetPoint("TOP", RealmList.buttonsList[buttonsCount - 4], "BOTTOM", 0, 0)
+					else
+						button:SetPoint("LEFT", RealmList.buttonsList[buttonsCount - 1], "RIGHT", -14, 0)
+					end
+
+					RealmList.buttonsList[buttonsCount] = button
+				end
+
+				button.realmID = realmID
+				button.realmZone = realmZone
+
+				button:SetEnabled(not realmDown)
+				button:SetText(name)
+				button:Show()
+				buttonsCount = buttonsCount + 1
+			end
 
 			if RealmList.NoRealmText:IsShown() then
 				RealmList.NoRealmText:Hide()
 			end
 
-			if realmCardsData and realmCardsData[name] and not realmCardsData[name].minimize then
+			if false and realmCardsData and realmCardsData[name] and not realmCardsData[name].minimize then
 				cardCount = cardCount + 1
 
 				local data = realmCardsData[name]
@@ -296,8 +356,6 @@ function RealmList_Update()
 						card.RealmButton:SetPushedAtlas("Algalon-Button-Pushed")
 						card.RealmButton:GetHighlightTexture():SetVertexColor(0, 1, 1)
 
-						--card.RealmButton:SetBlendMode("DISABLE")
-
 						local color = {0.71,0.81,0.9}
 						card.Art.TextInfo:SetTextColor(unpack(color))
 						card.XP.Text:SetTextColor(unpack(color))
@@ -351,9 +409,7 @@ function RealmList_Update()
 
 					card.PVP.typesTooltip = data.typesTooltip
 
-					card.proxyName = data.proxyName;
-
-					card:Show()
+					--card:Show()
 				end
 			elseif realmCardsData and realmCardsData[name] and realmCardsData[name].minimize then
 				miniCardCount = miniCardCount + 1
@@ -365,29 +421,18 @@ function RealmList_Update()
 					card.RealmButton.realmID = realmID
 					card.RealmButton.realmZone = realmZone
 
-					card.Logo:SetAtlas(data.logo)
-
-					dump(data)
-
-					card:Show()
-				end
-			elseif proxyRealmCardsData[name] then
-				proxyCardCount = proxyCardCount + 1;
-
-				local card = _G["RealmListProxyRealmCard"..proxyCardCount];
-
-				if card then
-					card.ProxyButton.realmID = realmID;
-					card.ProxyButton.realmZone = realmZone;
-
-					card.name = name;
-
-					card.BORDER:SetDesaturated(realmDown);
-					card.ProxyButton:SetEnabled(not realmDown);
+					card.RealmName:SetText(name)
 
 					card:Show()
 				end
 			end
+		end
+	end
+
+	for _, v in pairs(realmCards) do
+		if not v.setup then
+			local frame = _G[v.cardFrame]
+			frame:SetDisabledRealm(true)
 		end
 	end
 
@@ -407,24 +452,6 @@ function RealmList_Update()
 		end
 	end
 
-	for i = 4, proxyCardCount + 1, -1 do
-		local card = _G["RealmListProxyRealmCard"..i]
-
-		if card then
-			card:Hide()
-		end
-	end
-
-	for i = realmCount + 1, #RealmList.buttonsList do
-		RealmList.buttonsList[i]:Hide()
-	end
-
-	if realmCount <= (cardCount + miniCardCount + proxyCardCount) and (cardCount > 0 or miniCardCount > 0 or proxyCardCount > 0) then
-		for i = 1, #RealmList.buttonsList do
-			RealmList.buttonsList[i]:Hide()
-		end
-	end
-
 	local mainCardOffset = 0
 
 	for i = 1, cardCount do
@@ -440,28 +467,8 @@ function RealmList_Update()
 	for i = 1, miniCardCount do
 		local card = _G["RealmListMiniRealmCard"..i]
 		if card:IsShown() then
-			card:SetPoint("LEFT", RealmList, 20, -((110 / 2) * miniCardCount) + 110 * miniCardOffset + 50)
+			card:SetPoint("LEFT", RealmList, 20, -((110 / 2) * miniCardCount) + 80 * miniCardOffset + 50)
 			miniCardOffset = miniCardOffset + 1
-		end
-	end
-
-	for i = 1, proxyCardCount do
-		local proxyCard = _G["RealmListProxyRealmCard"..i];
-		if proxyCard:IsShown() then
-			local foundRealm;
-			for j = 1, cardCount do
-				local card = _G["RealmListRealmCard"..j];
-				if card:IsShown() and card.proxyName == proxyCard.name then
-					proxyCard:ClearAllPoints();
-					proxyCard:SetPoint("TOP", card, "BOTTOM", 0, -12);
-
-					foundRealm = true;
-					break;
-				end
-			end
-			if not foundRealm then
-				proxyCard:Hide();
-			end
 		end
 	end
 end
@@ -473,3 +480,93 @@ function RealmList_OnKeyDown( self, key, ... )
 		Screenshot()
 	end
 end
+
+local function realmCardDisabled( frame, toggle )
+	frame.BackgroundFrame.Background:SetDesaturated(toggle)
+	frame.BorderFrame.Border:SetDesaturated(toggle)
+	frame.LogoFrame.Logo:SetDesaturated(toggle)
+
+	if frame.LabelFrame then
+		frame.LabelFrame.Background:SetDesaturated(toggle)
+	end
+
+	if frame.OverlayFrame then
+		frame.OverlayFrame.Overlay:SetDesaturated(toggle)
+	end
+
+	frame.EnterButton:SetEnabled(not toggle)
+end
+
+RealmListCardSirusTemplateMixin = {}
+
+function RealmListCardSirusTemplateMixin:OnLoad()
+	self.BackgroundFrame.Background:SetAtlas("RealmList-Card-Sirus-Background")
+	self.BorderFrame.Border:SetAtlas("RealmList-Card-Sirus-Border")
+
+	self.LogoFrame.Logo:SetAtlas("ServerGameLogo-11")
+	self.LabelFrame.Background:SetAtlas("RealmList-Card-Sirus-Driver")
+	self.OverlayFrame.Overlay:SetAtlas("RealmList-Card-Sirus-Overlay")
+end
+
+function RealmListCardSirusTemplateMixin:SetDisabledRealm( toggle )
+	realmCardDisabled(self, toggle)
+end
+
+RealmListCardScourgeTemplateMixin = {}
+
+function RealmListCardScourgeTemplateMixin:OnLoad()
+	self.BackgroundFrame.Background:SetAtlas("RealmList-Card-Scourge-Background")
+	self.BorderFrame.Border:SetAtlas("RealmList-Card-Scourge-Border")
+	self.LogoFrame.Logo:SetAtlas("ServerGameLogo-12")
+end
+
+function RealmListCardScourgeTemplateMixin:SetDisabledRealm( toggle )
+	realmCardDisabled(self, toggle)
+end
+
+RealmListCardAlgalonTemplateMixin = {}
+
+function RealmListCardAlgalonTemplateMixin:OnLoad()
+	self.BackgroundFrame.Background:SetAtlas("RealmList-Card-Algalon-Background")
+	self.BorderFrame.Border:SetAtlas("RealmList-Card-Algalon-Border")
+	self.LogoFrame.Logo:SetAtlas("ServerGameLogo-13")
+end
+
+function RealmListCardAlgalonTemplateMixin:SetDisabledRealm( toggle )
+	realmCardDisabled(self, toggle)
+end
+
+DEVRealmDesignFrameMixin = {}
+
+function DEVRealmDesignFrameMixin:OnLoad()
+	self.settings = {};
+
+	self:RegisterForDrag("LeftButton")
+
+	C_Timer:After(0.5, function() self:Init() end)
+end
+
+function DEVRealmDesignFrameMixin:Init()
+	self.target = RealmList.AlgalonRealmCard.BackgroundFrame.BackgroundModel
+
+	local x, y, z = self.target:GetPosition()
+	local scale = self.target:GetModelScale()
+
+	self.Slider1:SetValue(x or 0)
+	self.Slider2:SetValue(y or 0)
+	self.Slider3:SetValue(z or 0)
+	self.Slider4:SetValue(scale or 0)
+end
+
+function DEVRealmDesignFrameMixin:UpdateValue()
+	if not self.target then
+		return
+	end
+
+	printc(self.settings["xCoord"], self.settings["yCoord"], self.settings["zCoord"])
+	printc(self.settings["scale"])
+
+	self.target:SetPosition(self.settings["xCoord"], self.settings["yCoord"], self.settings["zCoord"])
+	self.target:SetModelScale(self.settings["scale"] or 0)
+end
+
