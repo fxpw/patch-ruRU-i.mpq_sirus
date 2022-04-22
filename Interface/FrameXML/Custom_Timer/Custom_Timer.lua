@@ -24,6 +24,11 @@ local TIMER_NUMBERS_SETS = {
 	}
 }
 
+local TIMER_TYPE_DATA = {
+	[0] = { totalTime = 120, fadeTime = 12 }, -- Battleground
+	[1] = { totalTime = 60, fadeTime = 12 }, -- Arena
+	[2] = { totalTime = 30, fadeTime = 7 }, -- Mini-games
+}
 
 function AnimationsToggle_FADEBARIN( self, isStop )
 	if isStop then
@@ -224,11 +229,7 @@ function TimerTracker_OnEvent(self, event, ...)
 			if cvarTime > 0 then
 				local times = cvarTime - time()
 				if times > 0 then
-					if GetCVar("BattlegroundTimerType") == "0" then
-						TimerTracker_OnEvent(TimerTracker, "START_TIMER", 1, times, 120)
-					else
-						TimerTracker_OnEvent(TimerTracker, "START_TIMER", 1, times, 60)
-					end
+					TimerTracker_OnEvent(TimerTracker, "START_TIMER", 1, times, StartTimer_GetTimerTypeInfo(tonumber(GetCVar("BattlegroundTimerType")) or 0) or 60)
 				end
 			end
 		end
@@ -237,15 +238,17 @@ end
 
 function StartTimer_BigNumberOnUpdate(self, elasped)
 	self.time = self.endTime - GetTime()
-	local minutes, seconds = floor(self.time/60), floor(mod(self.time, 60)) 
+	local minutes, seconds = floor(self.time/60), floor(mod(self.time, 60))
     self.updateTime = self.updateTime + elasped
 
-	local timerType = GetCVar("BattlegroundTimerType");
-	if timerType ~= "0" then
-		ArenaPlayerReadyStatusButtonToggle(self.time, timerType)
+	local timerType = tonumber(GetCVar("BattlegroundTimerType")) or 0;
+	local fadeTime = TIMER_TYPE_DATA[timerType] and TIMER_TYPE_DATA[timerType].fadeTime or 12;
+
+	if timerType ~= 0 then
+		ArenaPlayerReadyStatusButtonToggle(self.time, fadeTime);
 	end
 
-	if self.time < 12 then
+	if self.time < fadeTime then
 		AnimationsToggle_FADEBAROUT(self)
 		self.barShowing = false
 		self.anchorCenter = false
@@ -377,5 +380,12 @@ function StartTimer_StopAllTimers()
 		AnimationsToggle_STARTNUMBERS(timer, true)
 		AnimationsToggle_FACTIONANIM(timer, true)
 		timer.bar:Hide()
+	end
+end
+
+function StartTimer_GetTimerTypeInfo(timerType)
+	local info = TIMER_TYPE_DATA[timerType];
+	if info then
+		return info.totalTime, info.fadeTime;
 	end
 end

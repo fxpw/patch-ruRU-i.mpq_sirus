@@ -2190,7 +2190,7 @@
 															self.Contents.Title:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
 															return
 														end
-														self.Contents.Title:SetTextColor(NORMAL_FONT_COLOR_CODE.r, NORMAL_FONT_COLOR_CODE.g, NORMAL_FONT_COLOR_CODE.b)
+														self.Contents.Title:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 														self.NormalTexture:SetDesaturated(0)
 														self:Enable()
 													</OnShow>

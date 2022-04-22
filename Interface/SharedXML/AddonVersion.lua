@@ -12,6 +12,7 @@ S_ADDON_VERSION = {
 	{1, "BadBoy", {"BadBoy"}},
 	{1, "BadBoy_CCleaner", {"BadBoy_CCleaner"}},
 	{2, "Bagnon", {"Bagnon", "Bagnon_Config", "Bagnon_Forever", "Bagnon_GuildBank", "Bagnon_Tooltips"}},
+	{1, "BankStack", {"BankStack"}},
 	{4, "Bartender4", {"Bartender4"}},
 	{3, "BigAuras", {"BigAuras", "BigAurasOptions"}},
 	{1, "Capping", {"Capping"}},

@@ -2417,14 +2417,14 @@ function ArenaPlayerReadyStatusButton_OnLeave( self, ... )
 	self.Selection:SetAlpha(0.2)
 end
 
-function ArenaPlayerReadyStatusButtonToggle( times, timerType )
+function ArenaPlayerReadyStatusButtonToggle( times, fadeTime )
 	if ArenaPlayerReadyStatusButton and TimerTrackerTimer1 then
-		local hidingTime = timerType == "2" and 15 or 12;
+		fadeTime = fadeTime or 12;
 
-		if times > hidingTime and not ArenaPlayerReadyStatusButton:IsShown() then
+		if times > fadeTime and not ArenaPlayerReadyStatusButton:IsShown() then
 			ArenaPlayerReadyStatusButton:Show()
 			ArenaPlayerReadyStatusButton.AnimIn:Play()
-		elseif times < hidingTime and ArenaPlayerReadyStatusButton:IsShown() then
+		elseif times < fadeTime and ArenaPlayerReadyStatusButton:IsShown() then
 			ArenaPlayerReadyStatusButton.AnimOut:Play()
 		end
 		ArenaPlayerReadyStatusButton:ClearAllPoints()
@@ -2944,13 +2944,13 @@ function EventHandler:ASMSG_BG_EVENT_START_TIMER( msg )
 		local splitData = C_Split(msg, ":")
 		local times = ( tonumber( splitData[1] ) / 1000 )
 		local timerType = tonumber( splitData[2] )
+		local totalTime = StartTimer_GetTimerTypeInfo(timerType) or 60;
 
-		if timerType == 0 then
-			TimerTracker_OnEvent(TimerTracker, "START_TIMER", 1, times, 120)
-		else
-			StartTimer_StopAllTimers()
-			TimerTracker_OnEvent(TimerTracker, "START_TIMER", 1, times, 60)
+		if timerType ~= 0 then
+			StartTimer_StopAllTimers();
 		end
+
+		TimerTracker_OnEvent(TimerTracker, "START_TIMER", 1, times, totalTime);
 
 		if not GetCVar("BattlegroundTimerType") then
 			RegisterCVar("BattlegroundTimerType", timerType)

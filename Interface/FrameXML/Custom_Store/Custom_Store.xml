@@ -219,6 +219,11 @@
 						<Anchor point="LEFT" x="14" y="1" />
 					</Anchors>
 				</FontString>
+				<Texture parentKey="NewItems" inherits="store-icon-new" hidden="true">
+					<Anchors>
+						<Anchor point="RIGHT" x="-10" y="2"/>
+					</Anchors>
+				</Texture>
 			</Layer>
 		</Layers>
 		<Scripts>
@@ -2558,7 +2563,7 @@
 								selfSize = {403, 320},
 								noticeSize = {400, 132},
 								confirmationFunc = function()
-									SendServerMessage("ACMSG_SHOP_RENEW_ITEMS", selectedCategoryID .. ":" .. selectedSubCategoryID)
+									SendServerMessage("ACMSG_SHOP_RENEW_ITEMS", selectedCategoryID .. ":1")
 								end
 							}
 

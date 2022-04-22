@@ -364,6 +364,8 @@ function ezSpectator_Textures:Sirus_Logo(Frame)
         id = 2
     elseif id == 5 then
         id = 1
+    else
+        id = 1
     end
 
     Texture:SetAtlas("ServerGameLogo-"..id)

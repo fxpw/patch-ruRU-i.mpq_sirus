@@ -271,7 +271,7 @@
 
 <!--	TODO: Переделать все в 1 темплейт, когда будет время. -->
 	<Frame name="RealmListCardSirusTemplate" virtual="true">
-		<Size x="250" y="440"/>
+		<Size x="250" y="400"/>
 		<Frames>
 			<Frame name="$parentOverlayFrame" parentKey="OverlayFrame" frameLevel="11">
 				<Anchors>
@@ -295,7 +295,7 @@
 					</Layer>
 				</Layers>
 			</Frame>
-			<Frame name="$parentLabelFrame" parentKey="LabelFrame" frameLevel="12">
+			<Frame name="$parentLabelFrame" parentKey="LabelFrame" hidden="true" frameLevel="12">
 				<Size x="0" y="120"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" x="3" y="-66" />
@@ -334,9 +334,9 @@
 							<Anchor point="BOTTOMRIGHT" x="-2" y="2" />
 						</Anchors>
 						<Scripts>
-								<OnLoad>
+							<OnLoad>
 								self:SetModelScale(0.037000000476837)
-								self:SetPosition(0.076000101864338, 0.23600010573864, 0)
+								self:SetPosition(0.076000101864338, 0.20900011062622, 0)
 							</OnLoad>
 						</Scripts>
 					</Model>
@@ -348,7 +348,7 @@
 						<Scripts>
 							<OnLoad>
 								self:SetModelScale(0.003000000026077)
-								self:SetPosition(0.072000101208687, 0.22200010716915, 0)
+								self:SetPosition(0.072000101208687, 0.20900011062622, 0)
 							</OnLoad>
 						</Scripts>
 					</Model>
@@ -363,9 +363,13 @@
 			</Frame>
 			<Frame name="$parentContentFrame" parentKey="ContentFrame" frameLevel="12">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentLabelFrame" relativePoint="BOTTOMLEFT" x="0" y="36" />
+					<Anchor point="TOPLEFT" x="0" y="-130" />
 					<Anchor point="BOTTOMRIGHT" x="0" y="40" />
 				</Anchors>
+<!--				<Anchors>-->
+<!--					<Anchor point="TOPLEFT" relativeTo="$parentLabelFrame" relativePoint="BOTTOMLEFT" x="0" y="36" />-->
+<!--					<Anchor point="BOTTOMRIGHT" x="0" y="40" />-->
+<!--				</Anchors>-->
 				<Layers>
 					<Layer level="ARTWORK">
 						<FontString name="$parentRealmName" parentKey="RealmName" font="Interface\CustomFonts\OpenSans-Bold.ttf" text="SIRUS x5">
@@ -419,7 +423,7 @@
 			<Button name="$parentEnterButton" parentKey="EnterButton" frameLevel="12" text="Играть">
 				<Size x="150" y="46"/>
 				<Anchors>
-					<Anchor point="TOP" relativeTo="$parentContentFrame" relativePoint="BOTTOM" x="0" y="10" />
+					<Anchor point="TOP" relativeTo="$parentContentFrame" relativePoint="BOTTOM" x="0" y="6" />
 				</Anchors>
 				<HitRectInsets>
 					<AbsInset left="10" right="10" top="8" bottom="8"/>
@@ -811,19 +815,20 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Frame name="$parentSirusRealmCard" parentKey="SirusRealmCard" inherits="RealmListCardSirusTemplate">
+			<Frame name="$parentScourgeRealmCard" parentKey="ScourgeRealmCard" inherits="RealmListCardScourgeTemplate">
 				<Anchors>
 					<Anchor point="CENTER" x="0" y="0" />
 				</Anchors>
+
 			</Frame>
-			<Frame name="$parentScourgeRealmCard" parentKey="ScourgeRealmCard" inherits="RealmListCardScourgeTemplate">
+			<Frame name="$parentSirusRealmCard" parentKey="SirusRealmCard" inherits="RealmListCardSirusTemplate">
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentSirusRealmCard" relativePoint="LEFT" x="-20" y="0" />
+					<Anchor point="LEFT" relativeTo="$parentScourgeRealmCard" relativePoint="RIGHT" x="20" y="0" />
 				</Anchors>
 			</Frame>
 			<Frame name="$parentAlgalonRealmCard" parentKey="AlgalonRealmCard" inherits="RealmListCardAlgalonTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentSirusRealmCard" relativePoint="RIGHT" x="20" y="0" />
+					<Anchor point="RIGHT" relativeTo="$parentScourgeRealmCard" relativePoint="LEFT" x="-20" y="0" />
 				</Anchors>
 			</Frame>
 			<Frame name="$parentRealmCard1" inherits="RealmListMainSelectTemplate"/>
@@ -886,7 +891,7 @@
 		</ThumbTexture>
 	</Slider>
 
-<!--	<Frame name="DEVRealmDesignFrame" parent="RealmList" movable="true" hidden="true">-->
+<!--	<Frame name="DEVRealmDesignFrame" parent="RealmList" movable="true" hidden="false">-->
 <!--		<Size x="126" y="380"/>-->
 <!--		<Anchors>-->
 <!--			<Anchor point="LEFT" x="10" y="0" />-->

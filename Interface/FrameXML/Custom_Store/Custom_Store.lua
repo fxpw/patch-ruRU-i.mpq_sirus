@@ -210,7 +210,6 @@ STORE_CATEGORIES_DATA[1] = {
 		IsNew = false,
 		Disable = false,
 		ChieldFrame = "StoreItemListFrame",
-		Level = 80,
 		SlideOther = true,
 		subCategoryDefault = true
 	},
@@ -270,7 +269,8 @@ STORE_SUB_CATEGORY_DATA[3] = {
 		Name = STORE_SUB_CATEGORY_3_1,
 		SubCategoryId = 1,
 		CategoryId = 3,
-		Callback = function() selectedSubCategoryID = 1; StoreSubCategorySelectClick() end
+		Callback = function() selectedSubCategoryID = 1; StoreSubCategorySelectClick() end,
+		Check = function(self) return (20 <= UnitLevel("player")) end
 	},
 	{
 		Name = STORE_SUB_CATEGORY_3_2,
@@ -292,7 +292,8 @@ STORE_SUB_CATEGORY_DATA[4] = {
 		Name = STORE_SUB_CATEGORY_4_1,
 		SubCategoryId = 1,
 		CategoryId = 4,
-		Callback = function() selectedSubCategoryID = 1; StoreSubCategorySelectClick() end
+		Callback = function() selectedSubCategoryID = 1; StoreSubCategorySelectClick() end,
+		Check = function(self) return (80 <= UnitLevel("player")) end
 	},
 	{
 		Name = STORE_SUB_CATEGORY_4_2,
@@ -316,13 +317,15 @@ STORE_SUB_CATEGORY_DATA[4] = {
 		Name = STORE_SUB_CATEGORY_4_5,
 		SubCategoryId = 5,
 		CategoryId = 4,
-		Callback = function() selectedSubCategoryID = 5; StoreSubCategorySelectClick() end
+		Callback = function() selectedSubCategoryID = 5; StoreSubCategorySelectClick() end,
+		Check = function(self) return (80 <= UnitLevel("player")) end
 	},
 	{
 		Name = STORE_SUB_CATEGORY_4_6,
 		SubCategoryId = 6,
 		CategoryId = 4,
-		Callback = function() selectedSubCategoryID = 6; StoreSubCategorySelectClick() end
+		Callback = function() selectedSubCategoryID = 6; StoreSubCategorySelectClick() end,
+		Check = function(self) return (80 <= UnitLevel("player")) end
 	},
 	{
 		Name = STORE_SUB_CATEGORY_4_7,
@@ -335,7 +338,7 @@ STORE_SUB_CATEGORY_DATA[4] = {
 		SubCategoryId = 8,
 		CategoryId = 4,
 		Callback = function() selectedSubCategoryID = 8; StoreSubCategorySelectClick() end,
-		Check = function() return (not C_Service:IsLockStrengthenStatsFeature()) end
+		Check = function(self) return (not C_Service:IsLockStrengthenStatsFeature() and 80 <= UnitLevel("player")) end
 	}
 }
 
@@ -1213,6 +1216,13 @@ function StoreCategory_OnClick( self, ... )
 	selectedSubCategoryID = 0
 	if StoreFrame.CategoryFrames[selectedCategoryID].data.subCategoryDefault then
 		selectedSubCategoryID = 1
+		for i = 1, #STORE_SUB_CATEGORY_DATA[selectedCategoryID] do
+			data = STORE_SUB_CATEGORY_DATA[selectedCategoryID][i]
+			if (not data.Check or (data.Check and data.Check())) and not IsSubCategoryEmpty(i) then
+				selectedSubCategoryID = i
+				break
+			end
+		end
 	end
 
 	selectedShowAllItemCheckBox = 0
@@ -1222,7 +1232,7 @@ function StoreCategory_OnClick( self, ... )
 		StoreSelectCategory(selectedCategoryID, selectedSubCategoryID)
 	end
 	if StoreFrame.CategoryFrames[selectedCategoryID].data.subCategoryDefault then
-		StoreSubCategory_OnClick(StoreFrame.SubCategoryFrames[selectedCategoryID * 1000 + 1])
+		StoreSubCategory_OnClick(StoreFrame.SubCategoryFrames[selectedCategoryID * 1000 + selectedSubCategoryID])
 	end
 end
 
@@ -1305,10 +1315,19 @@ function StoreSelectCategory( categoryID, subCategoryID )
 				StoreFrame.SubCategoryFrames[categoryID * 1000 + i].data = data
 				subFrame:SetID(i)
 				subFrame.Text:SetText(data.Name)
-				if data.Disabled or (data.Check and not data.Check()) then
+
+				subFrame.NewItems:SetShown(StoreFrame_SubCategoryIsNew(selectedMoneyID, selectedCategoryID, i));
+
+				if data.Disabled or (data.Check and not data.Check()) or IsSubCategoryEmpty(i) then
 					subFrame:Disable()
 					subFrame.Category:SetDesaturated(1)
 					subFrame.Text:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
+					subFrame.NewItems:SetDesaturated(1)
+				else
+					subFrame:Enable()
+					subFrame.Category:SetDesaturated(0)
+					subFrame.Text:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
+					subFrame.NewItems:SetDesaturated(0)
 				end
 				if (categoryID * 1000 + i) == (categoryID * 1000 + selectedSubCategoryID) then
 					subFrame.SelectedTexture:Show()
@@ -1332,6 +1351,12 @@ function StoreSelectCategory( categoryID, subCategoryID )
 				end
 			end
 		end
+
+		if selectedCategoryID == 3 then
+			StoreItemListFrame.activeSortId = 6
+		else
+			StoreItemListFrame.activeSortId = 5
+		end
 	end
 	StoreItemListUpdate()
 	StoreFrame.TutorialButton:SetShown(selectedCategoryID == 1)
@@ -1354,6 +1379,9 @@ function StoreSubCategory_OnLeave( self, ... )
 end
 
 function StoreSubCategory_OnClick( self, ... )
+	if not self then
+		return
+	end
 	for _, button in pairs(StoreFrame.SubCategoryFrames) do
 		button.SelectedTexture:Hide()
 	end
@@ -3494,7 +3522,17 @@ function StoreFrame_UpdateItemList()
 end
 
 local function sortItemList(a, b)
-	if StoreItemListFrame.activeSortId == 5 then
+	if StoreItemListFrame.activeSortId == 6 then
+		local IsNewA = bit.band(a.Flags, STORE_ITEM_FLAG_NEW) == STORE_ITEM_FLAG_NEW
+		local IsNewB = bit.band(b.Flags, STORE_ITEM_FLAG_NEW) == STORE_ITEM_FLAG_NEW
+		if IsNewA and not IsNewB then
+			return true
+		elseif not isNewA and IsNewB then
+			return false
+		else
+			return a.Price > b.Price;
+		end
+	elseif StoreItemListFrame.activeSortId == 5 then
 		if a.Price ~= b.Price then
 			if StoreItemListFrame.reverseSort then
 				return a.Price > b.Price;
@@ -3618,7 +3656,7 @@ function StoreItemListUpdate()
 	local function clearStorage()
 		STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][selectedShowAllItemCheckBox] = {}
 	end
-
+	
 	if storage and storage.version then
 		if GetStoreProductVersion() == storage.version then
 			local unitFaction = UnitFactionGroup("player") or "Alliance"
@@ -5494,9 +5532,6 @@ function EventHandler:ASMSG_SHOP_ITEM( msg )
 		local subCategoryID = tonumber(count)
 
 		storage.version = GetStoreProductVersion()
-		if STORE_SUB_CATEGORY_DATA[categoryID] then
-			STORE_SUB_CATEGORY_DATA[categoryID][subCategoryID].Disabled = (not storage.data) and true or false
-		end
 
 		StoreSelectCategory(categoryID, subCategoryID)
 
@@ -6110,4 +6145,13 @@ function StoreTransmogrifySubCategoryFrameButtonMixin:OnClick()
 	if CharacterCreateZoomDebugPanel and IsDevClient() then
 		CharacterCreateZoomDebugPanel:InitPosition()
 	end
+end
+
+function IsSubCategoryEmpty(id)
+	local storage = STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][id][selectedShowAllItemCheckBox]
+
+	if not storage.data and storage.version then
+		return true
+	end
+	return false
 end
