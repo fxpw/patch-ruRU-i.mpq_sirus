@@ -254,31 +254,34 @@ function UIDropDownMenu_CreateFrames(level, index)
 	end
 end
 
-function UIDropDownMenu_AddSeparator(info, level)
-	info.text = nil;
-	info.hasArrow = false;
-	info.dist = 0;
-	info.isTitle = true;
-	info.isUninteractable = true;
-	info.notCheckable = true;
-	info.iconOnly = true;
-	info.icon = "Interface\\Common\\UI-TooltipDivider-Transparent";
-	info.tCoordLeft = 0;
-	info.tCoordRight = 1;
-	info.tCoordTop = 0;
-	info.tCoordBottom = 1;
-	info.tSizeX = 0;
-	info.tSizeY = 8;
-	info.tFitDropDownSizeX = true;
-	info.iconInfo = { tCoordLeft = info.tCoordLeft,
-	                  tCoordRight = info.tCoordRight,
-	                  tCoordTop = info.tCoordTop,
-	                  tCoordBottom = info.tCoordBottom,
-	                  tSizeX = info.tSizeX,
-	                  tSizeY = info.tSizeY,
-	                  tFitDropDownSizeX = info.tFitDropDownSizeX };
+function UIDropDownMenu_AddSeparator(level)
+	local separatorInfo = {
+		hasArrow = false;
+		dist = 0;
+		isTitle = true;
+		isUninteractable = true;
+		notCheckable = true;
+		iconOnly = true;
+		icon = "Interface\\Common\\UI-TooltipDivider-Transparent";
+		tCoordLeft = 0;
+		tCoordRight = 1;
+		tCoordTop = 0;
+		tCoordBottom = 1;
+		tSizeX = 0;
+		tSizeY = 8;
+		tFitDropDownSizeX = true;
+		iconInfo = {
+			tCoordLeft = 0,
+			tCoordRight = 1,
+			tCoordTop = 0,
+			tCoordBottom = 1,
+			tSizeX = 0,
+			tSizeY = 8,
+			tFitDropDownSizeX = true
+		}
+	};
 
-	UIDropDownMenu_AddButton(info, level);
+	UIDropDownMenu_AddButton(separatorInfo, level);
 end
 
 function UIDropDownMenu_AddSpace(level)

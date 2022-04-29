@@ -93,7 +93,7 @@
 					</Layer>
 				</Layers>
 				<Frames>
-					<Frame name="MainMenuBarOverlayFrame" frameStrata="DIALOG">
+					<Frame name="MainMenuBarOverlayFrame" frameStrata="HIGH">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="MainMenuBar"/>
 							<Anchor point="BOTTOMRIGHT" relativeTo="MainMenuBar"/>
@@ -366,7 +366,7 @@
 			</OnLoad>
 		</Scripts>
 	</Frame>
-	<Button name="ExhaustionTick" parent="MainMenuBar" hidden="false" frameStrata="DIALOG">
+	<Button name="ExhaustionTick" parent="MainMenuBar" hidden="false" frameStrata="HIGH">
 		<Size>
 			<AbsDimension x="32" y="32"/>
 		</Size>

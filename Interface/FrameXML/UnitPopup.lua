@@ -288,7 +288,7 @@ local function UnitPopup_CheckAddSubsection(dropdownMenu, info, menuLevel, curre
 	if previousButton and previousButton.isSubsection then
 		if not currentButton.isSubsection then
 			if previousButton.isSubsectionSeparator then
-				UIDropDownMenu_AddSeparator(info);
+				UIDropDownMenu_AddSeparator(menuLevel);
 			end
 
 			if previousButton.isSubsectionTitle and info then

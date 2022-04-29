@@ -343,6 +343,7 @@ end
 local INSTANCE_REALM_FLAG = {
 	[E_REALM_ID.SCOURGE] = 128,
 	[E_REALM_ID.ALGALON] = 256,
+	[E_REALM_ID.SIRUS] = 512,
 };
 
 local function SortInstances(aData, bData)
@@ -690,6 +691,7 @@ end
 local ITEM_REALM_FLAG = {
 	[E_REALM_ID.SCOURGE] = 4,
 	[E_REALM_ID.ALGALON] = 8,
+	[E_REALM_ID.SIRUS] = 16,
 };
 
 function EJ_BuildLootData()
@@ -3237,6 +3239,12 @@ function EncounterJournal_UpdateSearchPreview()
 		local button = EncounterJournal.searchBox.searchPreview[index]
 		if index <= numResults then
 			local name, icon, path, typeText, displayInfo, itemID, stype, itemLink = EncounterJournal_GetSearchDisplay(index)
+			if stype == EJ_STYPE_INSTANCE then
+				button.icon:SetTexCoord(0.16796875, 0.51171875, 0.03125, 0.71875)
+			else
+				button.icon:SetTexCoord(0, 1, 0, 1)
+			end
+
 			button.name:SetText(name)
 			button.icon:SetTexture(icon)
 			button.link = itemLink
@@ -3457,10 +3465,10 @@ function EncounterJournalSearchBox_OnEnterPressed( self, ... )
 	EncounterJournal_HideSearchPreview()
 end
 
-function EncounterJournalSearchBox_OnKeyDown( self, ... )
-	if key == "UP" then
+function EncounterJournalSearchBox_OnTabPressed( self, ... )
+	if IsShiftKeyDown() then
 		EncounterJournal_SetSearchPreviewSelection(EncounterJournal.searchBox.selectedIndex - 1)
-	elseif key == "DOWN" then
+	else
 		EncounterJournal_SetSearchPreviewSelection(EncounterJournal.searchBox.selectedIndex + 1)
 	end
 end

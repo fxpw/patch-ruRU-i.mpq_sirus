@@ -391,6 +391,14 @@ function AchievementFrameSearchBox_OnEnterPressed(self)
 	end
 end
 
+function AchievementFrameSearchBox_OnTabPressed(self)
+	if IsShiftKeyDown() then
+		AchievementFrame_SetSearchPreviewSelection(AchievementFrame.searchBox.selectedIndex - 1)
+	else
+		AchievementFrame_SetSearchPreviewSelection(AchievementFrame.searchBox.selectedIndex + 1)
+	end
+end
+
 function AchievementFrameSearchBox_OnFocusLost(self)
 	SearchBoxTemplate_OnEditFocusLost(self);
 	AchievementFrame_HideSearchPreview();
@@ -399,6 +407,7 @@ end
 function AchievementFrameSearchBox_OnFocusGained(self)
 	SearchBoxTemplate_OnEditFocusGained(self);
 	AchievementFrame.searchResults:Hide();
+	AchievementFrame_SetSearchPreviewSelection(1)
 	AchievementFrame_UpdateSearchPreview();
 end
 

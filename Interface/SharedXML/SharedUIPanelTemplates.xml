@@ -2927,78 +2927,26 @@
 			</Layer>
 		</Layers>
 		<Scripts>
+			<OnLoad>
+				Mixin(self, UIMenuButtonStretchMixin);
+			</OnLoad>
 			<OnMouseDown>
-				if self:IsEnabled() ~= 0 then
-					self.TopLeft:SetTexture("Interface\\Buttons\\UI-Silver-Button-Down")
-					self.TopRight:SetTexture("Interface\\Buttons\\UI-Silver-Button-Down")
-					self.BottomLeft:SetTexture("Interface\\Buttons\\UI-Silver-Button-Down")
-					self.BottomRight:SetTexture("Interface\\Buttons\\UI-Silver-Button-Down")
-					self.TopMiddle:SetTexture("Interface\\Buttons\\UI-Silver-Button-Down")
-					self.MiddleLeft:SetTexture("Interface\\Buttons\\UI-Silver-Button-Down")
-					self.MiddleRight:SetTexture("Interface\\Buttons\\UI-Silver-Button-Down")
-					self.BottomMiddle:SetTexture("Interface\\Buttons\\UI-Silver-Button-Down")
-					self.MiddleMiddle:SetTexture("Interface\\Buttons\\UI-Silver-Button-Down")
-					if ( self.Icon ) then
-						if ( not self.Icon.oldPoint ) then
-							local point, relativeTo, relativePoint, x, y = self.Icon:GetPoint(1)
-							self.Icon.oldPoint = point
-							self.Icon.oldX = x
-							self.Icon.oldY = y
-						end
-						self.Icon:SetPoint(self.Icon.oldPoint, self.Icon.oldX + 1, self.Icon.oldY - 1)
-					end
-				end
+				self:OnMouseDown(button);
 			</OnMouseDown>
 			<OnMouseUp>
-				if self:IsEnabled() ~= 0 then
-					self.TopLeft:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-					self.TopRight:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-					self.BottomLeft:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-					self.BottomRight:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-					self.TopMiddle:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-					self.MiddleLeft:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-					self.MiddleRight:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-					self.BottomMiddle:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-					self.MiddleMiddle:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-					if ( self.Icon ) then
-						self.Icon:SetPoint(self.Icon.oldPoint, self.Icon.oldX, self.Icon.oldY)
-					end
-				end
+				self:OnMouseUp(button);
 			</OnMouseUp>
 			<OnShow>
-				if self:IsEnabled() ~= 0 then
-					-- we need to reset our textures just in case we were hidden before a mouse up fired
-					self.TopLeft:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-					self.TopRight:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-					self.BottomLeft:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-					self.BottomRight:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-					self.TopMiddle:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-					self.MiddleLeft:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-					self.MiddleRight:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-					self.BottomMiddle:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-					self.MiddleMiddle:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-				end
+				self:OnShow();
 			</OnShow>
 			<OnEnable>
-				self.TopLeft:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-				self.TopRight:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-				self.BottomLeft:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-				self.BottomRight:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-				self.TopMiddle:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-				self.MiddleLeft:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-				self.MiddleRight:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-				self.BottomMiddle:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
-				self.MiddleMiddle:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
+				self:OnEnable();
 			</OnEnable>
 			<OnEnter>
-				if(self.tooltipText ~= nil) then
-					GameTooltip_AddNewbieTip(self, self.tooltipText, 1.0, 1.0, 1.0, self.newbieText)
-				end
+				self:OnEnter();
 			</OnEnter>
 			<OnLeave>
-				if(self.tooltipText ~= nil) then
-					GameTooltip:Hide()
-				end
+				self:OnLeave();
 			</OnLeave>
 		</Scripts>
 		<ButtonText parentKey="Text" name="$parentText">
@@ -3012,6 +2960,40 @@
 		<HighlightTexture file="Interface\Buttons\UI-Silver-Button-Highlight" alphaMode="ADD">
 			<TexCoords left="0" right="1.0" top="0.03" bottom="0.7175"/>
 		</HighlightTexture>
+	</Button>
+
+	<Button name="UIResettableDropdownButtonTemplate" inherits="UIMenuButtonStretchTemplate" virtual="true">
+		<Size x="93" y="22"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" parentKey="Icon" file="Interface\ChatFrame\ChatFrameExpandArrow">
+					<Size x="10" y="12"/>
+					<Anchors>
+						<Anchor point="RIGHT" relativeTo="$parentMiddleRight" relativePoint="RIGHT" x="-5"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentResetButton" parentKey="ResetButton" hidden="true">
+				<Size x="23" y="23"/>
+				<Anchors>
+					<Anchor point="CENTER" relativePoint="TOPRIGHT" x="-3" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.NormalTexture:SetAtlas("auctionhouse-ui-filter-redx");
+					</OnLoad>
+				</Scripts>
+				<NormalTexture parentKey="NormalTexture"/>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, UIResettableDropdownButtonMixin);
+				self:OnLoad();
+			</OnLoad>
+		</Scripts>
 	</Button>
 
 	<Frame name="UIDropDownMenuTemplate2" virtual="true">
@@ -4600,8 +4582,8 @@
 				</Anchors>
 				<Scripts>
 					<OnMouseDown>
-						if self:IsEnabled() then
-						NumericInputSpinner_StartIncrement(self:GetParent())
+						if self:IsEnabled() == 1 then
+							NumericInputSpinner_StartIncrement(self:GetParent(), self)
 						end
 					</OnMouseDown>
 					<OnMouseUp>
@@ -4620,8 +4602,8 @@
 				</Anchors>
 				<Scripts>
 					<OnMouseDown>
-						if self:IsEnabled() then
-						NumericInputSpinner_StartDecrement(self:GetParent())
+						if self:IsEnabled() == 1 then
+							NumericInputSpinner_StartDecrement(self:GetParent(), self)
 						end
 					</OnMouseDown>
 					<OnMouseUp>

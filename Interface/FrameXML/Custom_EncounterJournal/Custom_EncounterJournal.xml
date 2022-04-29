@@ -6,7 +6,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_EncounterJournal.lua"/>
 	<Script file="Custom_EncounterJournal_Data.lua"/>
 	<Script file="Custom_EncounterJournal_Loot_Data.lua"/>
@@ -114,7 +115,7 @@
 				if not self:GetParent().Tabs then
 					self:GetParent().Tabs = {}
 				end
-				
+
 				self:GetParent().Tabs[self:GetID()] = self
 				self.storedHeight = self:GetHeight()
 				self:SetHeight(self.storedHeight-4)
@@ -927,14 +928,14 @@
 	<Button name="EncounterSearchSMTemplate" virtual="true">
 		<Size x="275" y="27"/>
 		<Layers>
-			<Layer level="BORDER">
-				<Texture parentKey="selectedTexture" file="Interface\Common\Search" hidden="true">
+			<Layer level="OVERLAY">
+				<Texture name="$parentSelectedTexture" parentKey="selectedTexture" file="Interface\Common\Search" hidden="true">
 					<Size x="126" y="27"/>
 					<Anchors>
 						<Anchor point="TOPLEFT"/>
 						<Anchor point="BOTTOMRIGHT"/>
 					</Anchors>
-					<TexCoords left="0.00195312" right="0.248047" top="0.617188" bottom="0.828125"/>
+					<TexCoords left="0.001953" right="0.248047" top="0.617188" bottom="0.828125"/>
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
@@ -945,14 +946,14 @@
 					</Anchors>
 				</Texture>
 			</Layer>
-			<Layer level="OVERLAY">
-				<Texture name="$parentIcon" file="Interface\Icons\Ability_ThunderClap" parentKey="icon">
+			<Layer level="BORDER">
+				<Texture name="$parentIcon" parentKey="icon" file="Interface\Icons\Ability_ThunderClap">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentIconFrame" x="1" y="-2"/>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIconFrame" x="-1" y="1"/>
 					</Anchors>
 				</Texture>
-				<FontString name="$parentName" inherits="GameFontNormalSmall" justifyH="LEFT" parentKey="name" text="ENCOUNTER">
+				<FontString name="$parentName" parentKey="name" inherits="GameFontNormalSmall" justifyH="LEFT" text="ENCOUNTER">
 					<Size x="400" y="0"/>
 					<Anchors>
 						<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="5" y="0"/>
@@ -962,14 +963,15 @@
 				</FontString>
 			</Layer>
 		</Layers>
-		<NormalTexture inherits="_SearchBarSm">
+		<NormalTexture parentKey="normalTexture" inherits="_SearchBarSm">
 		</NormalTexture>
-		<PushedTexture inherits="_SearchBarSm">
+		<PushedTexture parentKey="pushedTexture" inherits="_SearchBarSm">
 		</PushedTexture>
-		<HighlightTexture inherits="UI-EJ-SearchBarHighlightLg">
-		</HighlightTexture>
 		<Scripts>
 			<OnLoad>
+				self.normalTexture:SetDrawLayer("BACKGROUND");
+				self.pushedTexture:SetDrawLayer("BACKGROUND");
+
 				if not self:GetParent().searchPreview then
 					self:GetParent().searchPreview = {}
 				end
@@ -1066,8 +1068,8 @@
 		</Layers>
 		<!-- <NormalTexture inherits="_SearchBarLg">
 		</NormalTexture> -->
-		<PushedTexture inherits="_SearchBarLg">
-		</PushedTexture>
+		<!-- <PushedTexture inherits="_SearchBarLg">
+		</PushedTexture> -->
 		<HighlightTexture inherits="UI-EJ-SearchBarHighlightLg">
 		</HighlightTexture>
 		<Scripts>
@@ -1427,13 +1429,15 @@
 								</FontString>
 							</Layer>
 						</Layers>
-						<NormalTexture inherits="_SearchBarSm">
+						<NormalTexture parentKey="normalTexture" inherits="_SearchBarSm">
 						</NormalTexture>
-						<PushedTexture inherits="_SearchBarSm">
+						<PushedTexture parentKey="pushedTexture" inherits="_SearchBarSm">
 						</PushedTexture>
-						<HighlightTexture inherits="UI-EJ-SearchBarHighlightLg">
-						</HighlightTexture>
 						<Scripts>
+							<OnLoad>
+								self.normalTexture:SetDrawLayer("BACKGROUND");
+								self.pushedTexture:SetDrawLayer("BACKGROUND");
+							</OnLoad>
 							<OnShow>
 								self:SetFrameLevel(self:GetParent():GetFrameLevel() + 10)
 							</OnShow>
@@ -1549,12 +1553,12 @@
 					<OnHide function="EncounterJournalSearchBox_OnHide"/>
 					<OnTextChanged function="EncounterJournalSearchBox_OnTextChanged"/>
 					<OnEnterPressed function="EncounterJournalSearchBox_OnEnterPressed"/>
-					<OnKeyDown function="EncounterJournalSearchBox_OnKeyDown"/>
+					<OnTabPressed function="EncounterJournalSearchBox_OnTabPressed"/>
 					<OnEditFocusLost function="EncounterJournalSearchBox_OnFocusLost"/>
 					<OnEditFocusGained function="EncounterJournalSearchBox_OnFocusGained"/>
 				</Scripts>
 			</EditBox>
-			<Frame name="$parentSearchResults" parentKey="searchResults" frameStrata="DIALOG" hidden="true">
+			<Frame name="$parentSearchResults" parentKey="searchResults" frameStrata="DIALOG" enableMouse="true" hidden="true">
 				<Size x="600" y="400"/>
 				<Anchors>
 					<Anchor point="BOTTOM" x="0" y="7"/>

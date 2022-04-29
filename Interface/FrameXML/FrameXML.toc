@@ -47,6 +47,7 @@ WorldMapFrameData.lua
 ..\SharedXML\ScrollList.xml
 ..\SharedXML\SharedTooltipTemplates.lua
 ..\SharedXML\TableBuilder.lua
+..\SharedXML\EnumUtil.lua
 
 ..\SharedXML\Utils\C_Cache.lua
 ..\SharedXML\Utils\C_Service.lua
@@ -222,6 +223,7 @@ SpellFlyout.xml
 Custom_Achievements_FactionData.lua
 QueueStatusFrame.xml
 HelpTip.xml
+FilterDropdown.lua
 
 TransmogUtil.lua
 CollectionsUtil.lua

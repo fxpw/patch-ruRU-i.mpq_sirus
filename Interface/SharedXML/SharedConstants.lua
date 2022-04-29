@@ -72,11 +72,12 @@ enum:E_CLIEN_CUSTOM_EVENTS {
 }
 
 enum:E_REALM_ID {
-	[5] = "SIRUS",
+	[5] = "LEGACY_X10",
 	[9] = "SCOURGE",
 	[16] = "FROSTMOURNE",
 	[21] = "NELTHARION",
 	[33] = "ALGALON",
+	[57] = "SIRUS",
 }
 
 SHARED_SIRUS_REALM_NAME = "Sirus x5 - 3.3.5a+"

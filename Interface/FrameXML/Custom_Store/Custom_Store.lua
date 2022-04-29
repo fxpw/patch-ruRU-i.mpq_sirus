@@ -3636,6 +3636,7 @@ end
 function StoreRequestBattlePass()
 	selectedMoneyID = 1
 	selectedCategoryID = 1
+	selectedSubCategoryID = 0
 
 	StoreRequestShopItems(1, 101, 1)
 	StoreRequestShopItems(1, 101, 2)
@@ -5249,7 +5250,7 @@ function StoreTransmogrifyFilterDropDown_Initialize( self, level )
 			UIDropDownMenu_AddButton(info, level)
 		end
 
-		UIDropDownMenu_AddSeparator(info)
+		UIDropDownMenu_AddSeparator(level)
 
 		local info = UIDropDownMenu_CreateInfo()
 
@@ -5394,7 +5395,7 @@ local StoreTransmogrify_HelpPlate = {
 }
 
 function StoreTransmogrify_ToggleTutorial( self, ... )
-	local titleHeight = StoreTransmogrifyFrame.RightContainer.ContentFrame.Title:GetStringHeight()
+	local titleHeight = StoreTransmogrifyFrame.RightContainer.ContentFrame.OverlayElements.Title:GetStringHeight()
 
 	if titleHeight > 20 then
 		StoreTransmogrify_HelpPlate[2] = { ButtonPos = { x = 390, y = -97 }, HighLightBox = { x = 246, y = -67, width = 340, height = 50 }, ToolTipDir = "DOWN", ToolTipText = STORE_TRANSMOGRIFY_TUTORIAL_2 }
@@ -5440,15 +5441,25 @@ function StoreFrame_SubCategoryIsNew( currency, category, subCategory )
 end
 
 function StoreFrame_MultipleBuyUpdateCount(self)
-	local confirmFrame = self:GetParent():GetParent()
-	local text = tonumber(self:GetText())
+	local text = self:GetNumber()
 
-	if not text or text < 1 then
+	if text < 1 then
 		self:SetText(1)
-		confirmFrame.data.buyCount = 1
 		return
 	end
 
+	if text >= (10 ^ self:GetMaxLetters() - 1) then
+		self.IncrementButton:Disable()
+		self.DecrementButton:Enable()
+	elseif text <= 1 then
+		self.IncrementButton:Enable()
+		self.DecrementButton:Disable()
+	else
+		self.IncrementButton:Enable()
+		self.DecrementButton:Enable()
+	end
+
+	local confirmFrame = self:GetParent():GetParent()
 	local price = (confirmFrame.data.DiscountedPrice or confirmFrame.data.Price) * text
 	confirmFrame.NoticeFrame.Price:SetText(price)
 	if confirmFrame.hasAltCurrency then

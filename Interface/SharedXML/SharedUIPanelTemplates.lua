@@ -687,8 +687,9 @@ local MAX_TIME_BETWEEN_CHANGES_SEC = .5;
 local MIN_TIME_BETWEEN_CHANGES_SEC = .075;
 local TIME_TO_REACH_MAX_SEC = 3;
 
-function NumericInputSpinner_StartIncrement( self )
+function NumericInputSpinner_StartIncrement( self, inputButton )
 	self.incrementing = true;
+	self.inputButton = inputButton;
 	self.startTime = GetTime();
 	self.nextUpdate = MAX_TIME_BETWEEN_CHANGES_SEC;
 	self:SetScript("OnUpdate", NumericInputSpinner_OnUpdate);
@@ -699,6 +700,11 @@ end
 function NumericInputSpinner_OnUpdate( self, elapsed )
 	self.nextUpdate = self.nextUpdate - elapsed;
 	if self.nextUpdate <= 0 then
+		if self.inputButton and self.inputButton:IsEnabled() ~= 1 then
+			self:SetScript("OnUpdate", nil);
+			return
+		end
+
 		if self.incrementing then
 			NumericInputSpinner_Increment(self)
 		else
@@ -716,8 +722,9 @@ function NumericInputSpinner_EndIncrement( self )
 	self:SetScript("OnUpdate", nil)
 end
 
-function NumericInputSpinner_StartDecrement( self )
+function NumericInputSpinner_StartDecrement( self, inputButton )
 	self.incrementing = false;
+	self.inputButton = inputButton;
 	self.startTime = GetTime();
 	self.nextUpdate = MAX_TIME_BETWEEN_CHANGES_SEC;
 	self:SetScript("OnUpdate", NumericInputSpinner_OnUpdate);
@@ -1106,6 +1113,84 @@ function LoadingSpinnerRetrieving_OnUpdate( self, elapsed, ... )
 	end
 end
 
+UIMenuButtonStretchMixin = {};
+
+function UIMenuButtonStretchMixin:SetTextures(texture)
+	self.TopLeft:SetTexture(texture);
+	self.TopRight:SetTexture(texture);
+	self.BottomLeft:SetTexture(texture);
+	self.BottomRight:SetTexture(texture);
+	self.TopMiddle:SetTexture(texture);
+	self.MiddleLeft:SetTexture(texture);
+	self.MiddleRight:SetTexture(texture);
+	self.BottomMiddle:SetTexture(texture);
+	self.MiddleMiddle:SetTexture(texture);
+end
+
+function UIMenuButtonStretchMixin:OnMouseDown(button)
+	if self:IsEnabled() == 1 then
+		self:SetTextures("Interface\\Buttons\\UI-Silver-Button-Down");
+		if self.Icon then
+			if not self.Icon.oldPoint then
+				local point, relativeTo, relativePoint, x, y = self.Icon:GetPoint(1);
+				self.Icon.oldPoint = point;
+				self.Icon.oldX = x;
+				self.Icon.oldY = y;
+			end
+			self.Icon:SetPoint(self.Icon.oldPoint, self.Icon.oldX + 1, self.Icon.oldY - 1);
+		end
+	end
+end
+
+function UIMenuButtonStretchMixin:OnMouseUp(button)
+	if self:IsEnabled() == 1 then
+		self:SetTextures("Interface\\Buttons\\UI-Silver-Button-Up");
+		if self.Icon then
+			self.Icon:SetPoint(self.Icon.oldPoint, self.Icon.oldX, self.Icon.oldY);
+		end
+	end
+end
+
+function UIMenuButtonStretchMixin:OnShow()
+	-- we need to reset our textures just in case we were hidden before a mouse up fired
+	self:SetTextures("Interface\\Buttons\\UI-Silver-Button-Up");
+end
+
+function UIMenuButtonStretchMixin:OnEnable()
+	self:SetTextures("Interface\\Buttons\\UI-Silver-Button-Up");
+end
+
+function UIMenuButtonStretchMixin:OnEnter()
+	if self.tooltipText ~= nil then
+		GameTooltip_AddNewbieTip(self, self.tooltipText, 1.0, 1.0, 1.0, self.newbieText)
+	end
+end
+
+function UIMenuButtonStretchMixin:OnLeave()
+	if self.tooltipText ~= nil then
+		GameTooltip:Hide();
+	end
+end
+
+UIResettableDropdownButtonMixin = CreateFromMixins(UIMenuButtonStretchMixin);
+
+function UIResettableDropdownButtonMixin:OnLoad()
+	self.ResetButton:SetScript("OnClick", function(button, buttonName, down)
+		if self.resetFunction then
+			self.resetFunction();
+		end
+
+		self.ResetButton:Hide();
+	end);
+end
+
+function UIResettableDropdownButtonMixin:OnMouseDown()
+	UIMenuButtonStretchMixin.OnMouseDown(self, button);
+end
+
+function UIResettableDropdownButtonMixin:SetResetFunction(resetFunction)
+	self.resetFunction = resetFunction;
+end
 
 SquareIconButtonMixin = {};
 

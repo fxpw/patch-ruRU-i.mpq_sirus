@@ -143,7 +143,7 @@ function ArenaSpectatorFrameMixin:SharedDropDownInit( level )
 		UIDropDownMenu_AddButton(info)
 	end
 
-	UIDropDownMenu_AddSeparator(info)
+	UIDropDownMenu_AddSeparator()
 
 	local info = UIDropDownMenu_CreateInfo()
 	info.text = OTHER

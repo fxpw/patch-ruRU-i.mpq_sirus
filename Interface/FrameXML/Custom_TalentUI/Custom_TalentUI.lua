@@ -439,7 +439,7 @@ function PlayerTalentLinkToDropDownInit(_, _)
         UIDropDownMenu_AddButton(info)
     end
 
-    UIDropDownMenu_AddSeparator(info)
+    UIDropDownMenu_AddSeparator()
 
     info              = UIDropDownMenu_CreateInfo()
     info.text         = OTHER
@@ -640,7 +640,7 @@ end
 function PlayerTalentFrame_Toggle(pet)
     local hidden;
     local selectedTab = PanelTemplates_GetSelectedTab(PlayerTalentFrame);
-    
+
     if (not PlayerTalentFrame:IsShown()) then
         ShowUIPanel(PlayerTalentFrame);
         hidden = false;

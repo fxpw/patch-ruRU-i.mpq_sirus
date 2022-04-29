@@ -4872,8 +4872,8 @@
 								</Anchors>
 								<Scripts>
 									<OnMouseDown>
-										if self:IsEnabled() then
-											NumericInputSpinner_StartIncrement(self:GetParent())
+										if self:IsEnabled() == 1 then
+											NumericInputSpinner_StartIncrement(self:GetParent(), self)
 										end
 									</OnMouseDown>
 									<OnMouseUp>
@@ -4882,7 +4882,7 @@
 								</Scripts>
 								<NormalTexture file="Interface\Buttons\UI-PlusButton-Up"/>
 								<PushedTexture file="Interface\Buttons\UI-PlusButton-Down"/>
-								<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Disabled"/>
+								<DisabledTexture file="Interface\Buttons\UI-PlusButton-Disabled"/>
 								<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
 							</Button>
 							<Button name="$parentDecrementButton" parentKey="DecrementButton">
@@ -4892,8 +4892,8 @@
 								</Anchors>
 								<Scripts>
 									<OnMouseDown>
-										if self:IsEnabled() then
-										NumericInputSpinner_StartDecrement(self:GetParent())
+										if self:IsEnabled() == 1 then
+											NumericInputSpinner_StartDecrement(self:GetParent(), self)
 										end
 									</OnMouseDown>
 									<OnMouseUp>
@@ -4902,7 +4902,7 @@
 								</Scripts>
 								<NormalTexture file="Interface\Buttons\UI-MinusButton-Up"/>
 								<PushedTexture file="Interface\Buttons\UI-MinusButton-Down"/>
-								<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Disabled"/>
+								<DisabledTexture file="Interface\Buttons\UI-MinusButton-Disabled"/>
 								<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
 							</Button>
 						</Frames>
@@ -6679,6 +6679,8 @@
 								ToggleDropDownMenu(1, nil, StoreTransmogrifyFilterDropDown, self, 74, 15)
 							</OnClick>
 							<OnEnable>
+								UIMenuButtonStretchMixin.OnEnable(self)
+
 								self.Icon:SetDesaturated(false)
 							</OnEnable>
 							<OnDisable>

@@ -2013,7 +2013,9 @@ end
 function SpellBook_GetCurrentPage()
 	local currentPage, maxPages;
 	local numPetSpells = HasPetSpells() or 0;
-	if ( SpellBookFrame.bookType == BOOKTYPE_PET ) then
+	if ( SpellBookFrame.bookType == BOOKTYPE_PROFESSION ) then
+		currentPage, maxPages =  1, 1;
+	elseif ( SpellBookFrame.bookType == BOOKTYPE_PET ) then
 		currentPage = SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET];
 		maxPages = ceil(SpellBookFrame.selectedSkillLineNumSpells[1]/SPELLS_PER_PAGE);
 	elseif ( SpellBookCompanionsFrame.mode and SpellBookFrame.bookType == BOOKTYPE_MOUNT or SpellBookFrame.bookType == BOOKTYPE_COMPANION) then

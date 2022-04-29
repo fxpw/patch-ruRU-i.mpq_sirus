@@ -2324,7 +2324,7 @@ function HeadHuntingFilterDropDownMenuMixin:Init( level )
     end
 end
 
-HeadHuntingDropDownMenuButtonMixin = {}
+HeadHuntingDropDownMenuButtonMixin = CreateFromMixins(UIMenuButtonStretchMixin);
 
 function HeadHuntingDropDownMenuButtonMixin:OnClick()
     ToggleDropDownMenu(1, nil, self:GetParent().FilterDropDownMenu, self, 0, 0)

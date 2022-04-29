@@ -260,12 +260,14 @@
 				</Layers>
 				<Scripts>
 					<OnClick>
-						if self:IsEnabled() then
+						if self:IsEnabled() == 1 then
 							PlaySound("igMainMenuOptionCheckBoxOn");
 							ToggleDropDownMenu(1, nil, WardrobeFilterDropDown, self, 74, 15);
 						end
 					</OnClick>
 					<OnEnable>
+						UIMenuButtonStretchMixin.OnEnable(self);
+
 						self.Icon:SetDesaturated(false);
 					</OnEnable>
 					<OnDisable>

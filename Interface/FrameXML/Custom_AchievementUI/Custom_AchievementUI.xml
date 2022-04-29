@@ -1,4 +1,5 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_AchievementUI.lua"/>
 
 	<Button name="AchievementSearchPreviewButton" parentArray="searchPreviews" virtual="true">
@@ -127,6 +128,7 @@
 			<OnTextChanged function="AchievementFrameSearchBox_OnTextChanged"/>
 			<OnEditFocusLost function="AchievementFrameSearchBox_OnFocusLost"/>
 			<OnEditFocusGained function="AchievementFrameSearchBox_OnFocusGained"/>
+			<OnTabPressed function="AchievementFrameSearchBox_OnTabPressed"/>
 		</Scripts>
 	</EditBox>
 
@@ -332,7 +334,7 @@
 		<BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
 	</StatusBar>
 
-	<Frame name="CustomAchievementSearchResults" parentKey="searchResults" hidden="true" virtual="true">
+	<Frame name="CustomAchievementSearchResults" parentKey="searchResults" enableMouse="true" hidden="true" virtual="true">
 		<Size x="600" y="382"/>
 		<Anchors>
 			<Anchor point="BOTTOM" x="0" y="7"/>

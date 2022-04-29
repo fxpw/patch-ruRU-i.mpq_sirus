@@ -524,7 +524,7 @@
 							<Button name="OpenAllMailButton" text="OPEN_ALL_MAIL_BUTTON" inherits="UIPanelButtonTemplate">
 								<Size x="180" y="28"/>
 								<Anchors>
-									<Anchor point="BOTTOM" x="-16" y="8" />
+									<Anchor point="BOTTOM" x="0" y="8" />
 								</Anchors>
 								<Scripts>
 									<OnLoad>
@@ -1788,4 +1788,3 @@
 		</Scripts>
 	</Frame>
 </Ui>
-

@@ -152,7 +152,7 @@ end
 -- Inbox functions
 
 local realmColors = {
-	[E_REALM_ID.SIRUS] = CreateColor(0.87, 0.19, 0.2),
+	[E_REALM_ID.LEGACY_X10] = CreateColor(0.87, 0.19, 0.2),
 	[E_REALM_ID.SCOURGE] = CreateColor(0.73, 0.5, 0.88),
 	[E_REALM_ID.FROSTMOURNE] = CreateColor(0.45, 0.56, 1)
 }

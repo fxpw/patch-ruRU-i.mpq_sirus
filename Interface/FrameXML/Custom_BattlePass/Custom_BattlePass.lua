@@ -1270,15 +1270,25 @@ function BattlePassMultipleBuyEditBoxMixin:OnLoad()
 end
 
 function BattlePassMultipleBuyEditBoxMixin:Update()
+    local text = self:GetNumber()
+
+	if text < 1 then
+		self:SetText(1)
+		return
+	end
+
+	if text >= (10 ^ self:GetMaxLetters() - 1) then
+		self.IncrementButton:Disable()
+		self.DecrementButton:Enable()
+	elseif text <= 1 then
+		self.IncrementButton:Enable()
+		self.DecrementButton:Disable()
+	else
+		self.IncrementButton:Enable()
+		self.DecrementButton:Enable()
+	end
+
     local confirmFrame = self:GetParent():GetParent()
-    local text = tonumber(self:GetText())
-
-    if not text or text < 1 then
-        self:SetText(1)
-        confirmFrame.buyCount = 1
-        return
-    end
-
     confirmFrame.NoticeFrame.Price:SetText((confirmFrame.price or 0) * text)
     confirmFrame.buyCount = text
 

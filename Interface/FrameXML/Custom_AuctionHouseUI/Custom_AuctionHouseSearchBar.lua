@@ -78,7 +78,7 @@ function AuctionHouseFavoritesSearchButtonMixin:UpdateState()
 end
 
 
-AuctionHouseFilterButtonMixin = {};
+AuctionHouseFilterButtonMixin = CreateFromMixins(UIMenuButtonStretchMixin);
 
 local function AuctionHouseFilterDropDownMenu_Initialize(self)
 	local filterButton = self:GetParent();

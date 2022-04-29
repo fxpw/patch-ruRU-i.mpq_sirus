@@ -1475,7 +1475,7 @@ local realmFilterData = {
 	[E_REALM_ID.FROSTMOURNE] = 1,
 	[E_REALM_ID.SCOURGE] = 2,
 	[E_REALM_ID.NELTHARION] = 4,
-	[E_REALM_ID.SIRUS] = 8,
+	[E_REALM_ID.LEGACY_X10] = 8,
 }
 
 function MountJournal_CreateData()
