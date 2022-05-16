@@ -2071,7 +2071,7 @@ function WorldMapFrame_UpdateQuests()
 	local numPOINumeric = 0
 	local numPOICompleteSwap = 0
 
-	numEntries = QuestMapUpdateAllQuests()
+	local numEntries = QuestMapUpdateAllQuests()
 	WorldMapFrame_ClearQuestPOIs()
 	QuestPOIUpdateIcons()
 	if ( WorldMapQuestScrollFrame.highlightedFrame ) then
@@ -2084,7 +2084,7 @@ function WorldMapFrame_UpdateQuests()
 		if ( questLogIndex and questLogIndex > 0 ) then
 			questCount = questCount + 1
 			title, level, questTag, suggestedGroup, isHeader, isCollapsed, isComplete, isDaily = GetQuestLogTitle(questLogIndex)
-			requiredMoney = GetQuestLogRequiredMoney(questLogIndex)
+			local requiredMoney = GetQuestLogRequiredMoney(questLogIndex)
 			numObjectives = GetNumQuestLeaderBoards(questLogIndex)
 			if ( isComplete and isComplete < 0 ) then
 				isComplete = false
@@ -2125,7 +2125,7 @@ function WorldMapFrame_UpdateQuests()
 				local dashText = ""
 				local numLines
 				for j = 1, numObjectives do
-					text, _, finished = GetQuestLogLeaderBoard(j, questLogIndex)
+					local text, _, finished = GetQuestLogLeaderBoard(j, questLogIndex)
 					if ( text and not finished ) then
 						questText = questText..WorldMapFrame_ReverseQuestObjective(text).."|n"
 					end
@@ -2369,7 +2369,7 @@ end
 function WorldMapQuestFrame_UpdateMouseOver()
 	if ( WorldMapQuestScrollFrame:IsMouseOver() ) then
 		for i = 1, WorldMapFrame.numQuests do
-			questFrame = _G["WorldMapQuestFrame"..i]
+			local questFrame = _G["WorldMapQuestFrame"..i]
 			if ( questFrame:IsMouseOver() ) then
 				WorldMapQuestFrame_OnEnter(questFrame)
 				break
@@ -2419,7 +2419,7 @@ function WorldMapQuestPOI_SetTooltip(poiButton, questLogIndex, numObjectives)
 			end
 		end
 	else
-		local text, finished
+		local text, _, finished
 		local numItemDropTooltips = GetNumQuestItemDrops(questLogIndex)
 		if(numItemDropTooltips and numItemDropTooltips > 0) then
 			for i = 1, numItemDropTooltips do

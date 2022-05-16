@@ -1866,7 +1866,7 @@ SlashCmdList["TEAM_DISBAND"] = function(msg)
 				if ( teamsizeID ) then
 					local teamName, teamSize = GetArenaTeam(teamsizeID);
 					for i = 1, teamSize * 2 do
-						name, rank = GetArenaTeamRosterInfo(teamsizeID, i);
+						local name, rank = GetArenaTeamRosterInfo(teamsizeID, i);
 						if ( rank == 0 ) then
 							if ( name == UnitName("player") ) then
 								local dialog = StaticPopup_Show("CONFIRM_TEAM_DISBAND", teamName);

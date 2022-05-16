@@ -255,7 +255,7 @@ function ezSpectator_GossipWorker:ParseMatch(Data, Index)
 
         if not IsParsed then
             --noinspection StringConcatenationInLoops
-            Result['info' .. PlayerTeam] = Result['info' .. PlayerTeam] .. string.gsub(Parameter, '[\(\)]', '')
+            Result['info' .. PlayerTeam] = Result['info' .. PlayerTeam] .. string.gsub(Parameter, '[%(%)]', '')
         end
     end
 

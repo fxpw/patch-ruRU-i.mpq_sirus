@@ -204,7 +204,7 @@ function TalentFrame_Update(TalentFrame)
 				GetTalentInfo(selectedTab, i, TalentFrame.inspect, TalentFrame.pet, TalentFrame.talentGroup);
 
 			-- Temp hack - For now, we are just ignoring the "goldBorder" flag and putting the gold border on any "exceptional" talents
-			goldBorder = isExceptional;
+			local goldBorder = isExceptional;
 
 			if ( name and tier <= MAX_NUM_TALENT_TIERS) then
 				local displayRank;

@@ -410,6 +410,7 @@ function HelpPlate_GetButton()
 
 	if ( not frame ) then
 		frame = CreateFrame( "Button", nil, HelpPlate, "HelpPlateButton" );
+		frame:SetFrameStrata(HelpPlate:GetParent():GetFrameStrata());
 		frame.box = CreateFrame( "Frame", nil, HelpPlate, "HelpPlateBox" );
 		frame.box.button = frame;
 		frame.boxHighlight = CreateFrame( "Frame", nil, HelpPlate, "HelpPlateBoxHighlight" );
@@ -459,6 +460,8 @@ function HelpPlate_Show( self, parent, mainHelpButton )
 		HelpPlate_Hide();
 	end
 
+	HelpPlate:SetParent(parent);
+
 	HELP_PLATE_CURRENT_PLATE = self;
 	HELP_PLATE_CURRENT_PLATE.mainHelpButton = mainHelpButton;
 	for i = 1, #self do
@@ -492,7 +495,6 @@ function HelpPlate_Show( self, parent, mainHelpButton )
 		end
 	end
 
-	HelpPlate:SetParent(parent)
 	HelpPlate:SetPoint( "TOPLEFT", parent, "TOPLEFT", self.FramePos.x, self.FramePos.y );
 	HelpPlate:SetSize( self.FrameSize.width, self.FrameSize.height );
 	HelpPlate:Show();

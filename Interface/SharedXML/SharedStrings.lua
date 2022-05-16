@@ -179,10 +179,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Ледяной тролль",
 		enGB = "Ice Troll"
 	},
-	["RACE_GOBLIN"] = {
-		ruRU = "Гоблин",
-		enGB = "Goblin"
-	},
 	["RACE_FELORC"] = {
 		ruRU = "Орк Скверны",
 		enGB = "Fel Orc"
@@ -357,14 +353,6 @@ local SIRUS_LOCALIZATION = {
 	},
 	["RACE_NIGHTBORNE_FEMALE"] = {
 		ruRU = "Ночнорожденная",
-		enGB = ""
-	},
-	["RACE_VOIDELF"] = {
-		ruRU = "Эльф Бездны",
-		enGB = ""
-	},
-	["RACE_VOIDELF_FEMALE"] = {
-		ruRU = "Эльфийка Бездны",
 		enGB = ""
 	},
 	["LESS_THAN_OPERAND"] = {

@@ -1384,7 +1384,8 @@ function MiniGamesFrameMixin:JoinMiniGame()
 		if self.FindGroupButton.queueIndex then
 			C_MiniGames.QueueLeave(self.FindGroupButton.queueIndex);
 		else
-			C_MiniGames.QueueJoin(self.selectedGameID, GetNumPartyMembers() >= 1);
+			local isGroup = (GetNumPartyMembers() > 0 or GetNumRaidMembers() > 0) and (IsPartyLeader() or IsRaidLeader());
+			C_MiniGames.QueueJoin(self.selectedGameID, isGroup);
 		end
 	end
 end
@@ -1407,14 +1408,14 @@ function MiniGamesFrameMixin:UpdateFindGroupButton()
 		self.FindGroupButton.queueIndex = nil;
 
 		if GetNumPartyMembers() > 0 or GetNumRaidMembers() > 0 then
-			self.FindGroupButton:SetText(JOIN_AS_PARTY);
+			if IsPartyLeader() or IsRaidLeader() then
+				self.FindGroupButton:SetText(JOIN_AS_PARTY);
+			else
+				self.FindGroupButton:SetText(FIND_A_MINI_GAME);
+			end
 		else
 			self.FindGroupButton:SetText(FIND_A_MINI_GAME);
 		end
-
-		self.FindGroupButton:SetEnabled(self.selectedGameID and LFR_IsEmpowered());
-	else
-		self.FindGroupButton:SetEnabled(true);
 	end
 end
 

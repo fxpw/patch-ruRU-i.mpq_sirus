@@ -865,8 +865,6 @@ function QueueStatusDropDown_AddMiniGamesButtons(idx)
 		info.arg2 = nil;
 		UIDropDownMenu_AddButton(info);
 	end
-
-	return shownHearthAndRes;
 end
 
 function QueueStatusDropDown_AddLFGButtons()

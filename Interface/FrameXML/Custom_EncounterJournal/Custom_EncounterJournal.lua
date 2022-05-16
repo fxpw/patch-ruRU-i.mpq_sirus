@@ -166,6 +166,10 @@ local EJ_CONST_TIER_NAME = 2
 local BOSS_LOOT_BUTTON_HEIGHT = 45
 local INSTANCE_LOOT_BUTTON_HEIGHT = 64
 
+local BOSS_BUTTON_FIRST_OFFSET = 10;
+local BOSS_BUTTON_SECOND_OFFSET = 15;
+local BOSS_BUTTON_HEIGHT = 55;
+
 local EJ_CONST_INSTANCE_NAME = 1
 local EJ_CONST_INSTANCE_DESCRIPTION = 2
 local EJ_CONST_INSTANCE_BUTTONICON = 3
@@ -934,7 +938,7 @@ function EJ_GetClassFilterValidation( subclass, armorType, itemEntry )
 	end
 
 	local _, _, _, _, _, _, _, _, invtype = GetItemInfo(itemEntry)
-	
+
 	if armorType == ITEM_CLASS_2 or invtype == INVTYPE_CLOAK or (armorType == ITEM_CLASS_4 and tContains(subClassWhiteList, subclass)) then
 		local classItemMask = weaponClassFilterMask[subclass]
 		local classMask = classLootData[EJ_GetLootFilter()].flag
@@ -1796,9 +1800,9 @@ function EncounterJournal_DisplayInstance( instanceID, noButton )
 		if not bossButton then
 			bossButton = CreateFrame("BUTTON", "EncounterJournalBossButton"..bossIndex, EncounterJournal.encounter.bossesFrame, "EncounterBossButtonTemplate")
 			if bossIndex > 1 then
-				bossButton:SetPoint("TOPLEFT", _G["EncounterJournalBossButton"..(bossIndex-1)], "BOTTOMLEFT", 0, -15)
+				bossButton:SetPoint("TOPLEFT", _G["EncounterJournalBossButton"..(bossIndex-1)], "BOTTOMLEFT", 0, -BOSS_BUTTON_SECOND_OFFSET)
 			else
-				bossButton:SetPoint("TOPLEFT", EncounterJournal.encounter.bossesFrame, "TOPLEFT", 0, -10)
+				bossButton:SetPoint("TOPLEFT", EncounterJournal.encounter.bossesFrame, "TOPLEFT", 0, -BOSS_BUTTON_FIRST_OFFSET)
 			end
 		end
 
@@ -1954,7 +1958,7 @@ function EncounterJournal_GetRootAfterOverviews(rootSectionID)
 	return nextSectionID
 end
 
-function EncounterJournal_DisplayEncounter(encounterID, noButton)
+function EncounterJournal_DisplayEncounter(encounterID, noButton, scrollToEncounter)
 	if encounterID == -1 then
 		return
 	end
@@ -2024,6 +2028,8 @@ function EncounterJournal_DisplayEncounter(encounterID, noButton)
 
 	EncounterJournal.encounterList = {}
 
+	local selectedEncounterIndex;
+
 	local bossIndex = 1
 	local name, description, bossID, _, link = EJ_GetEncounterInfoByIndex(bossIndex)
 	local bossButton
@@ -2032,9 +2038,9 @@ function EncounterJournal_DisplayEncounter(encounterID, noButton)
 		if not bossButton then
 			bossButton = CreateFrame("BUTTON", "EncounterJournalBossButton"..bossIndex, EncounterJournal.encounter.bossesFrame, "EncounterBossButtonTemplate")
 			if bossIndex > 1 then
-				bossButton:SetPoint("TOPLEFT", _G["EncounterJournalBossButton"..(bossIndex-1)], "BOTTOMLEFT", 0, -15)
+				bossButton:SetPoint("TOPLEFT", _G["EncounterJournalBossButton"..(bossIndex-1)], "BOTTOMLEFT", 0, -BOSS_BUTTON_SECOND_OFFSET)
 			else
-				bossButton:SetPoint("TOPLEFT", EncounterJournal.encounter.bossesFrame, "TOPLEFT", 0, -10)
+				bossButton:SetPoint("TOPLEFT", EncounterJournal.encounter.bossesFrame, "TOPLEFT", 0, -BOSS_BUTTON_FIRST_OFFSET)
 			end
 		end
 
@@ -2049,6 +2055,7 @@ function EncounterJournal_DisplayEncounter(encounterID, noButton)
 
 		if (encounterID == bossID) then
 			bossButton:LockHighlight()
+			selectedEncounterIndex = bossIndex;
 		else
 			bossButton:UnlockHighlight()
 		end
@@ -2057,6 +2064,24 @@ function EncounterJournal_DisplayEncounter(encounterID, noButton)
 
 		bossIndex = bossIndex + 1
 		name, description, bossID, _, link = EJ_GetEncounterInfoByIndex(bossIndex)
+	end
+
+	if selectedEncounterIndex and scrollToEncounter then
+		bossIndex = bossIndex - 1;
+
+		local numBosses = bossIndex;
+		local buttonSize = BOSS_BUTTON_HEIGHT + BOSS_BUTTON_SECOND_OFFSET;
+		local scrollHeight = EncounterJournal.encounter.info.bossesScroll:GetHeight();
+		local visibleButtons = scrollHeight / buttonSize;
+
+		local toScrollButtons = (selectedEncounterIndex * buttonSize - visibleButtons * buttonSize);
+		local toCenterPx = scrollHeight / 2;
+		local targetScrollValue = toScrollButtons + toCenterPx - buttonSize / 2;
+
+		local maxScrollRange = math.ceil((numBosses - visibleButtons) * buttonSize) - 2;
+
+		ScrollFrame_OnScrollRangeChanged(EncounterJournal.encounter.info.bossesScroll, 0, math.max(0, maxScrollRange));
+		EncounterJournal.encounter.info.bossesScroll.ScrollBar:SetValue(math.min(math.max(targetScrollValue, 0), maxScrollRange));
 	end
 
 	local id, name, displayInfo, iconImage
@@ -2131,6 +2156,7 @@ end
 
 local toggleTempList = {}
 local headerCount = 0
+local loopedSections = {}
 
 function EncounterJournal_ToggleHeaders(self, doNotShift)
 	local numAdded = 0
@@ -2230,9 +2256,21 @@ function EncounterJournal_ToggleHeaders(self, doNotShift)
 				topLevelSection = true
 			end
 
+			local pass
 			while nextSectionID do
-				local title, description, headerType, abilityIcon, displayInfo, siblingID, _, fileredByDifficulty, link, startsOpen, creatureEntry, flag1, flag2, flag3, flag4 = EJ_GetSectionInfo(nextSectionID)
-				if not title then
+				local title, description, headerType, abilityIcon, displayInfo, siblingID, nextNextSectionID, fileredByDifficulty, link, startsOpen, creatureEntry, flag1, flag2, flag3, flag4 = EJ_GetSectionInfo(nextSectionID)
+
+				if nextNextSectionID and nextNextSectionID ~= 0 then
+					local _, childSectionID = EJ_GetSectionPath(nextSectionID)
+					if childSectionID == nextNextSectionID then
+						loopedSections[#loopedSections + 1] = nextSectionID
+						pass = true
+					end
+				end
+
+				if pass then
+					pass = nil
+				elseif not title then
 					break
 				elseif not fileredByDifficulty then
 					if #freeHeaders == 0 then
@@ -2251,7 +2289,7 @@ function EncounterJournal_ToggleHeaders(self, doNotShift)
 					infoHeader.parentID = parentID
 					infoHeader.myID = nextSectionID
 
-					description = description:gsub("\|cffffffff(.-)\|r", "%1")
+					description = description:gsub("|cffffffff(.-)|r", "%1")
 
                     description = EncounterJournal_ParseDifficultyMacros(description);
 
@@ -2370,6 +2408,11 @@ function EncounterJournal_ToggleHeaders(self, doNotShift)
 
 			if topLevelSection and usedHeaders[1] then
 				usedHeaders[1]:SetPoint("TOPRIGHT", 0 , -8 - EncounterJournal.encounter.infoFrame.descriptionHeight - SECTION_BUTTON_OFFSET)
+			end
+
+			if not doNotShift and #loopedSections ~= 0 then
+				StaticPopup_Show("ENCOUNTER_JOURNAL_SECTION_LOOP_ERROR_DIALOG", table.concat(loopedSections, ", "))
+				table.wipe(loopedSections)
 			end
 		elseif (not self.overviewIndex) then
 			for i = 1, #self.overviews do
@@ -2676,7 +2719,7 @@ function EncounterJournal_SetBullets(object, description, hideBullets)
 	local parentWidth = 60
 	local characterHeight = 16
 
-	if (not string.find(description, "\$bullet;")) then
+	if (not string.find(description, "%$bullet;")) then
 		object.Text:SetText(description)
 		object.textString = description
 		local Height = (utf8len(description) / parentWidth) * characterHeight
@@ -2686,7 +2729,7 @@ function EncounterJournal_SetBullets(object, description, hideBullets)
 		return
 	end
 
-	local desc = string.match(description, "(.-)\$bullet;")
+	local desc = string.match(description, "(.-)%$bullet;")
 
 	if (desc) then
 		object.Text:SetText(desc)
@@ -2697,7 +2740,7 @@ function EncounterJournal_SetBullets(object, description, hideBullets)
 	end
 
 	local bullets = {}
-	for v in string.gmatch(description,"\$bullet;([^$]+)") do
+	for v in string.gmatch(description,"%$bullet;([^$]+)") do
 		tinsert(bullets, v)
 	end
 
@@ -3324,7 +3367,7 @@ function EncounterJournal_OpenJournal(difficultyID, instanceID, encounterID, sec
 					end
 				end
 			end
-			EncounterJournal_DisplayEncounter(encounterID)
+			EncounterJournal_DisplayEncounter(encounterID, nil, true)
 			if sectionID then
 				if (EncounterJournal_CheckForOverview(sectionID) or not EncounterJournal_SearchForOverview(instanceID)) then
 					EncounterJournal.encounter.info.overviewTab:Click()

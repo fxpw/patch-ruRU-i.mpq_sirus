@@ -523,7 +523,7 @@ STORE_STORAGE_DATA_DISCOUNTSHOW 				= 13
 
 local STORE_TRANSMOGRIFY_WEAPON_SUB_CLASSES = {
 	ITEM_SUB_CLASS_2_0, ITEM_SUB_CLASS_2_1, ITEM_SUB_CLASS_2_2, ITEM_SUB_CLASS_2_3, ITEM_SUB_CLASS_2_4, ITEM_SUB_CLASS_2_5, ITEM_SUB_CLASS_2_6, ITEM_SUB_CLASS_2_7, ITEM_SUB_CLASS_2_8,
-	ITEM_SUB_CLASS_2_10, ITEM_SUB_CLASS_2_13, ITEM_SUB_CLASS_2_14, ITEM_SUB_CLASS_2_15, ITEM_SUB_CLASS_2_16, ITEM_SUB_CLASS_2_18, ITEM_SUB_CLASS_2_19,
+	ITEM_SUB_CLASS_2_10, ITEM_SUB_CLASS_2_13, ITEM_SUB_CLASS_2_15, ITEM_SUB_CLASS_2_16, ITEM_SUB_CLASS_2_18, ITEM_SUB_CLASS_2_19,
 	ITEM_SUB_CLASS_4_6
 }
 
@@ -1172,7 +1172,7 @@ function StoreMoneyButton_OnClick( self, ... )
 		StoreItemListScrollFrame:SetScript("OnUpdate", nil)
 	end
 
-	StoreFrame.TutorialButton:SetShown(id == 1)
+	StoreUpdateGenericButtons()
 end
 
 function StoreMoneyButton_OnEnter( self, ... )
@@ -1232,8 +1232,18 @@ function StoreCategory_OnClick( self, ... )
 		StoreSelectCategory(selectedCategoryID, selectedSubCategoryID)
 	end
 	if StoreFrame.CategoryFrames[selectedCategoryID].data.subCategoryDefault then
-		StoreSubCategory_OnClick(StoreFrame.SubCategoryFrames[selectedCategoryID * 1000 + selectedSubCategoryID])
+		StoreSubCategory_OnClick(StoreFrame.SubCategoryFrames[selectedSubCategoryID])
 	end
+end
+
+function StoreUpdateGenericButtons()
+	StoreFrame.TutorialButton:SetShown(selectedMoneyID == 1 and selectedCategoryID == 1)
+	StoreRefundButton:SetShown(selectedMoneyID == 1 and selectedCategoryID == 2 and #STORE_REFUND_DATA > 0);
+	StoreRefreshMountListButton:SetShown(selectedMoneyID == 1 and selectedCategoryID == 3 and (selectedSubCategoryID == 1 or selectedSubCategoryID == 2))
+	StoreRefreshTransmogListButton:SetShown(selectedMoneyID == 1 and selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID)
+	StoreFrameLeftInset.ReferAFriendFrame:SetShown(selectedMoneyID == 3)
+	StoreFrameLeftInset.InviteFriendButton:SetShown(selectedMoneyID == 3)
+	StoreFrameLeftInset.ReferDetailsButton:SetShown(selectedMoneyID == 3)
 end
 
 function StoreSelectCategory( categoryID, subCategoryID )
@@ -1273,10 +1283,6 @@ function StoreSelectCategory( categoryID, subCategoryID )
 
 		self.SelectedTexture:Show()
 
-		StoreRefreshMountListButton:SetShown(categoryID == 3 and (selectedSubCategoryID == 1 or selectedSubCategoryID == 2))
-		StoreRefreshTransmogListButton:SetShown(categoryID == STORE_TRANSMOGRIFY_CATEGORY_ID)
-		StoreRefundButton:SetShown(selectedMoneyID == 1 and categoryID == 2 and #STORE_REFUND_DATA > 0);
-
 		for i, button in pairs(StoreFrame.SubCategoryFrames) do
 			button:Hide()
 		end
@@ -1300,19 +1306,22 @@ function StoreSelectCategory( categoryID, subCategoryID )
 
 			for i = 1, #STORE_SUB_CATEGORY_DATA[categoryID] do
 				local data = STORE_SUB_CATEGORY_DATA[categoryID][i]
-				local subFrame = StoreFrame.SubCategoryFrames[categoryID * 1000 + i]
+				local subFrame = StoreFrame.SubCategoryFrames[i]
 
 				if ( not subFrame ) then
 					subFrame = CreateFrame("Button", "StoreSubCategoryButton"..i, StoreFrameLeftInset, "StoreSubCategoryTemplate")
-					if i == 1 then
-						subFrame:SetPoint("TOP", StoreFrame.CategoryFrames[categoryID], "BOTTOM", 0, 0)
-					else
-						subFrame:SetPoint("TOPLEFT", prevFrame, "BOTTOMLEFT", 0, 0)
-					end
-					StoreFrame.SubCategoryFrames[categoryID * 1000 + i] = subFrame
+					StoreFrame.SubCategoryFrames[i] = subFrame
 				end
+
+				subFrame:ClearAllPoints();
+				if i == 1 then
+					subFrame:SetPoint("TOP", StoreFrame.CategoryFrames[categoryID], "BOTTOM", 0, 0)
+				else
+					subFrame:SetPoint("TOPLEFT", prevFrame, "BOTTOMLEFT", 0, 0)
+				end
+
 				prevFrame = subFrame
-				StoreFrame.SubCategoryFrames[categoryID * 1000 + i].data = data
+				StoreFrame.SubCategoryFrames[i].data = data
 				subFrame:SetID(i)
 				subFrame.Text:SetText(data.Name)
 
@@ -1329,7 +1338,7 @@ function StoreSelectCategory( categoryID, subCategoryID )
 					subFrame.Text:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
 					subFrame.NewItems:SetDesaturated(0)
 				end
-				if (categoryID * 1000 + i) == (categoryID * 1000 + selectedSubCategoryID) then
+				if i == selectedSubCategoryID then
 					subFrame.SelectedTexture:Show()
 				else
 					subFrame.SelectedTexture:Hide()
@@ -1359,7 +1368,7 @@ function StoreSelectCategory( categoryID, subCategoryID )
 		end
 	end
 	StoreItemListUpdate()
-	StoreFrame.TutorialButton:SetShown(selectedCategoryID == 1)
+	StoreUpdateGenericButtons()
 end
 
 function StoreCategory_OnEnter( self, ... )
@@ -1881,7 +1890,7 @@ function SelectedStyleDropDown_Initialize( self, ... )
 		info.text = data.Text
 		info.func = SelectedStyleDropDown_OnClick
 		info.value = data.Value
-		info.checked = checked
+		info.checked = false
 		info.owner = UIDROPDOWNMENU_OPEN_MENU
 		UIDropDownMenu_AddButton(info)
 	end
@@ -1937,23 +1946,15 @@ function StoreConfirmationButton_OnClick( self, ... )
 			return
 		end
 
-		SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d:%d:1:%s:%d:%s", data.ID, data.buyCount or 1, name, dropDown.Key, text), "WHISPER", UnitName("player"))
+		SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d|%d|1|%s|%d|%s", data.ID, data.buyCount or 1, name, dropDown.Key, text), "WHISPER", UnitName("player"))
 	else
 		if data.SelectedSpec and StoreSpecialOfferDetailFrame.selectRole and StoreSpecialOfferDetailFrame.selectRole ~= 0 then
---			if parent.hasAltCurrency then
-				SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d:%d:0:%d:%d", data.ID, data.buyCount or 1, StoreSpecialOfferDetailFrame.selectRole, parent.isAltCurrency and 1 or 0), "WHISPER", UnitName("player"))
---			else
---				SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d:%d:0:%d", data.ID, data.buyCount or 1, StoreSpecialOfferDetailFrame.selectRole), "WHISPER", UnitName("player"))
---			end
+			SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d|%d|0|%d|%d", data.ID, data.buyCount or 1, StoreSpecialOfferDetailFrame.selectRole, parent.isAltCurrency and 1 or 0), "WHISPER", UnitName("player"))
 		elseif data.isSubscribe then
 			SendAddonMessage("ACMSG_SHOP_SUBSCRIBE", string.format("%d:%d", data.ID, data.Time), "WHISPER", UnitName("player"))
 			STORE_SUBSCRIBE_DATA = {}
 		else
---			if parent.hasAltCurrency then
-				SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d:%d:0:0:%d", data.ID, data.buyCount or 1, parent.isAltCurrency and 1 or 0), "WHISPER", UnitName("player"))
---			else
---				SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d:%d:0:0", data.ID, data.buyCount or 1), "WHISPER", UnitName("player"))
---			end
+			SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d|%d|0|0|%d", data.ID, data.buyCount or 1, parent.isAltCurrency and 1 or 0), "WHISPER", UnitName("player"))
 		end
 	end
 
@@ -2101,7 +2102,7 @@ end
 function StoreSpecialOfferBannerDetails_OnClick( self, ... )
 	local data = StoreGetSpecialOfferByIndex(selectedSpecialOfferPage)
 	if data.Price == 0 and not data.FreeSubscribe then
-		SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d:1:0:0:0", data.ID), "WHISPER", UnitName("player"))
+		SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d|1|0|0|0", data.ID), "WHISPER", UnitName("player"))
 		if not data.IsReusable and data.Title then
 			StoreRemoveOffer(data.pageID)
 			selectedSpecialOfferPage = 1
@@ -2213,6 +2214,8 @@ function StoreSubCategorySelectButton_OnLoad( self, ... )
 		self.Icon:ClearAllPoints()
 		self.Icon:SetPoint("LEFT", 0, 0)
 		self.Background:SetSize(180, 42)
+		self.BackgroundHighlight:SetSize(162, 42)
+		self:SetHitRectInsets(0, 14, 0, 0)
 		self:SetSize(180, 42)
 	end
 
@@ -3527,7 +3530,7 @@ local function sortItemList(a, b)
 		local IsNewB = bit.band(b.Flags, STORE_ITEM_FLAG_NEW) == STORE_ITEM_FLAG_NEW
 		if IsNewA and not IsNewB then
 			return true
-		elseif not isNewA and IsNewB then
+		elseif not IsNewA and IsNewB then
 			return false
 		else
 			return a.Price > b.Price;
@@ -3840,10 +3843,6 @@ function StoreFrame_UpdateCategories( self )
 		StoreFrameLeftInset.BrowseNotice:SetText(categories.text)
 	end
 
-	StoreFrameLeftInset.ReferAFriendFrame:SetShown(selectedMoneyID == 3)
-	StoreFrameLeftInset.InviteFriendButton:SetShown(selectedMoneyID == 3)
-	StoreFrameLeftInset.ReferDetailsButton:SetShown(selectedMoneyID == 3)
-
 	for i = #categories + 1, #self.CategoryFrames do
 		self.CategoryFrames[i]:Hide()
 	end
@@ -3856,6 +3855,8 @@ function StoreFrame_UpdateCategories( self )
 
 	StoreShowAllItemCheckButton:ClearAllPoints()
 	StoreShowAllItemCheckButton:SetPoint("TOPLEFT", prevFrame, "BOTTOMLEFT", 0, -4)
+
+	StoreUpdateGenericButtons()
 end
 
 function StoreSortButton_OnClick( self, button, ... )
@@ -3914,6 +3915,43 @@ local searchBoxFilters = {
 			"ITEM_SUB_CLASS_4_2",
 			"ITEM_SUB_CLASS_4_3",
 			"ITEM_SUB_CLASS_4_4",
+		},
+		func = function(option, filter, itemID, itemLink, itemName)
+			if itemID then
+				local _, _, _, _, _, _, itemSubType = GetItemInfo(itemID);
+				local nameName = _G[filter];
+
+				if nameName and itemSubType and itemSubType == nameName then
+					return true;
+				end
+			end
+		end,
+	},
+	{
+		name = STORE_SEARCH_OPTION_WEAPON,
+		desc = STORE_SEARCH_OPTION_WEAPON_DESC,
+		filters = {
+			"ITEM_SUB_CLASS_2_0",
+			"ITEM_SUB_CLASS_2_1",
+			"ITEM_SUB_CLASS_2_2",
+			"ITEM_SUB_CLASS_2_3",
+			"ITEM_SUB_CLASS_2_4",
+			"ITEM_SUB_CLASS_2_5",
+			"ITEM_SUB_CLASS_2_6",
+			"ITEM_SUB_CLASS_2_7",
+			"ITEM_SUB_CLASS_2_8",
+			"ITEM_SUB_CLASS_2_10",
+			"ITEM_SUB_CLASS_2_13",
+			"ITEM_SUB_CLASS_2_14",
+			"ITEM_SUB_CLASS_2_15",
+			"ITEM_SUB_CLASS_2_16",
+			"ITEM_SUB_CLASS_2_18",
+			"ITEM_SUB_CLASS_2_19",
+			"ITEM_SUB_CLASS_4_6",
+			"ITEM_SUB_CLASS_4_7",
+			"ITEM_SUB_CLASS_4_8",
+			"ITEM_SUB_CLASS_4_9",
+			"ITEM_SUB_CLASS_4_10",
 		},
 		func = function(option, filter, itemID, itemLink, itemName)
 			if itemID then
@@ -5152,10 +5190,6 @@ function StoreTransmogrifyFilterDropDown_Initialize( self, level )
 		UIDropDownMenu_AddButton(info, level)
 
 		for i, subClass in ipairs(STORE_TRANSMOGRIFY_WEAPON_SUB_CLASSES) do
-			if subClass == ITEM_SUB_CLASS_2_14 then
-				subClass = INVTYPE_WEAPONOFFHAND
-			end
-
 			if storeTransmogrifyNewWeaponTypes[i] then
 				info.text = subClass..newIconString
 			else
@@ -5883,7 +5917,7 @@ function EventHandler:ASMSG_SHOP_SPECIAL_OFFER_DETAILS( msg )
 		if itemData then
 			local items = {strsplit(":", itemData)}
 			for i = 1, #items do
-				local itemID, role, count = string.match( items[i], "(%d+)\<(%d+)\>\<(%d+)\>" )
+				local itemID, role, count = string.match( items[i], "(%d+)<(%d+)><(%d+)>" )
 				if itemID and role and count then
 					itemID = tonumber( itemID )
 					role = tonumber( role )

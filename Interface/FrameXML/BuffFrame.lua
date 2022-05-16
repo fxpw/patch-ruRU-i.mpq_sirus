@@ -301,7 +301,7 @@ function BuffFrame_UpdateAllBuffAnchors()
 			end
 		else
 			numBuffs = numBuffs + 1;
-			index = numBuffs + slack;
+			local index = numBuffs + slack;
 			if ( buff.parent ~= BuffFrame ) then
 				buff.count:SetFontObject(NumberFontNormal);
 				buff:SetParent(BuffFrame);

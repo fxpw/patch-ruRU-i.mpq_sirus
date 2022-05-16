@@ -441,7 +441,7 @@ function CharacterSelect_OnEvent(self, event, ...)
 			CharacterBoostButton:SetEnabled(numCharacters > 0)
 
 			for i=1, MAX_CHARACTERS_DISPLAYED, 1 do
-				button = _G["CharSelectCharacterButton"..i]
+				local button = _G["CharSelectCharacterButton"..i]
 				if button then
 					button.UndeleteButton:Hide()
 				end
@@ -1052,6 +1052,7 @@ function CharacterSelect_ManageAccount()
 end
 
 function RealmSplit_GetFormatedChoice(formatText)
+	local realmChoice
 	if ( SERVER_SPLIT_CLIENT_STATE == 1 ) then
 		realmChoice = SERVER_SPLIT_SERVER_ONE;
 	else

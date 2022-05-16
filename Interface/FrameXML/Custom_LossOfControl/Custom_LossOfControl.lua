@@ -62,6 +62,25 @@ local DISPLAY_TYPE_NONE = 0
 
 local ACTIVE_INDEX = 1
 
+local playerClass = select(2, UnitClass("player"))
+local CLASS_MECHANIC_FILTER = {
+	MAGE = {
+		[MECHANIC_DISARM] = true,
+	},
+	WARLOCK = {
+		[MECHANIC_DISARM] = true,
+	},
+	DRUID = {
+		[MECHANIC_DISARM] = true,
+	},
+	ROGUE = {
+		[MECHANIC_SILENCE] = true,
+	},
+	PRIEST = {
+		[MECHANIC_DISARM] = true,
+	},
+}
+
 function LossOfControlFrame_AnimPlay( self )
 	self.RedLineTop.Anim:Play()
 	self.RedLineBottom.Anim:Play()
@@ -126,11 +145,16 @@ local lossOfControlMechanicData = {
     [MECHANIC_ENRAGED]          = {LOCALE_SPELL_MECHANIC_ENRAGED, 0},
 }
 
+local MECHANIC_OVERRIDE = {
+	[47700] = MECHANIC_STUN,
+}
+
 local lossOfControlData = {}
 local tempLossOfControlData = {}
 
 function LossOfControlFrame_OnLoad(self)
 	self:RegisterEvent("UNIT_AURA")
+	self:RegisterEvent("VARIABLES_LOADED")
 
 	self.AnimPlay = LossOfControlFrame_AnimPlay
 	self.AnimStop = LossOfControlFrame_AnimStop
@@ -142,12 +166,22 @@ function LossOfControlFrame_OnLoad(self)
 	LossOfControlFrame_OnEvent(self, "UNIT_AURA", "player")
 end
 
+local function LossOfControlFrame_SortData(a, b)
+	if a.priority ~= b.priority then
+		return a.priority > b.priority;
+	end
+
+	return a.expirationTime > b.expirationTime;
+end
+
 function LossOfControlFrame_UpdateData()
 	lossOfControlData = {}
 
 	for _, spellData in pairs(tempLossOfControlData) do
 		table.insert(lossOfControlData, spellData)
 	end
+
+	table.sort(lossOfControlData, LossOfControlFrame_SortData);
 
 	local self = LossOfControlFrame
 	local eventIndex = #lossOfControlData
@@ -195,29 +229,25 @@ function LossOfControlGetEventInfo( index )
 	return locType, spellID, text, iconTexture, startTime, timeRemaining, duration, lockoutSchool, priority, displayType
 end
 
-function LossOfControlAddOrUpdateDebuff( spellID, name, icon, duration, expirationTime )
-	local LOCSpellMechanic = LOSS_OF_CONTROL_SPELL_DATA[spellID]
+function LossOfControlAddOrUpdateDebuff( spellID, name, icon, duration, expirationTime, mechanicID )
+	local startTime = GetTime()
+	local priority = lossOfControlMechanicData[mechanicID][2] or 0
+	local text = lossOfControlMechanicData[mechanicID][1] or name
 
-	if LOCSpellMechanic then
-		local startTime = GetTime()
-		local priority = lossOfControlMechanicData[LOCSpellMechanic][2] or 0
-		local text = lossOfControlMechanicData[LOCSpellMechanic][1] or name
+	tempLossOfControlData[spellID] = {
+		locType 		= mechanicID,
+		spellID 		= spellID,
+		text 			= text,
+		name 			= name,
+		iconTexture 	= icon,
+		startTime 		= startTime,
+		duration 		= duration,
+		priority 		= priority,
+		expirationTime  = expirationTime or 0,
+		displayType 	= DISPLAY_TYPE_FULL -- TEMP (maby)
+	}
 
-		tempLossOfControlData[spellID] = {
-			locType 		= LOCSpellMechanic,
-			spellID 		= spellID,
-			text 			= text,
-			name 			= name,
-			iconTexture 	= icon,
-			startTime 		= startTime,
-			duration 		= duration,
-			priority 		= priority,
-			expirationTime  = expirationTime,
-			displayType 	= DISPLAY_TYPE_FULL -- TEMP (maby)
-		}
-
-		LossOfControlFrame_UpdateData()
-	end
+	LossOfControlFrame_UpdateData()
 end
 
 function LossOfControlRemoveDebuff( spellID )
@@ -227,25 +257,30 @@ end
 
 local auraTrackerStorage = {}
 function LossOfControlFrame_OnEvent(self, event, unit)
-	if event == "UNIT_AURA" and unit == "player" then
+	if event == "VARIABLES_LOADED" then
+		LossOfControlFrame_SetScale(self, tonumber(C_CVar:GetValue("C_CVAR_LOSS_OF_CONTROL_SCALE")) or 1);
+	elseif event == "UNIT_AURA" and unit == "player" then
 		for auraIndex = 1, 40 do
 			local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, shouldConsolidate, spellID, canApplyAura, isBossDebuff, isCastByPlayer, value2, value3 = UnitAura("player", auraIndex, "HARMFUL")
 
 			if name and spellID then
-				local hasAura = auraTrackerStorage[spellID] and auraTrackerStorage[spellID][1]
+				local mechanicID = MECHANIC_OVERRIDE[spellID] or LOSS_OF_CONTROL_SPELL_DATA[spellID]
+				if mechanicID and not (CLASS_MECHANIC_FILTER[playerClass] and CLASS_MECHANIC_FILTER[playerClass][mechanicID]) then
+					local hasAura = auraTrackerStorage[spellID] and auraTrackerStorage[spellID][1]
 
-				if hasAura == nil then
-					LossOfControlAddOrUpdateDebuff(spellID, name, icon, duration, expirationTime)
-				else
-					local saveDuration = auraTrackerStorage[spellID][2] - GetTime()
-					local newBuffDuation = expirationTime - GetTime()
+					if hasAura == nil then
+						LossOfControlAddOrUpdateDebuff(spellID, name, icon, duration, expirationTime, mechanicID)
+					else
+						local saveDuration = auraTrackerStorage[spellID][2] - GetTime()
+						local newBuffDuation = expirationTime - GetTime()
 
-					if newBuffDuation > saveDuration then
-						LossOfControlAddOrUpdateDebuff(spellID, name, icon, duration, expirationTime)
+						if newBuffDuation > saveDuration then
+							LossOfControlAddOrUpdateDebuff(spellID, name, icon, duration, expirationTime, mechanicID)
+						end
 					end
-				end
 
-				auraTrackerStorage[spellID] = {false, expirationTime}
+					auraTrackerStorage[spellID] = {false, expirationTime}
+				end
 			end
 		end
 
@@ -361,6 +396,12 @@ function LossOfControlFrame_UpdateDisplay(self)
 	else
 		self:Hide()
 	end
+end
+
+function LossOfControlFrame_SetScale(self, scale)
+	self:SetScale(scale or 1);
+
+	LossOfControlFrame_SetUpDisplay(self, false);
 end
 
 function LossOfControlTimeLeftFrame_SetTime(self, timeRemaining)

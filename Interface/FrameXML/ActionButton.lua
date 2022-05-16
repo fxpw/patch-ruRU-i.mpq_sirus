@@ -744,12 +744,14 @@ function ActionButton_OnEvent (self, event, ...)
 	if ( event == "ACTIONBAR_SLOT_CHANGED" ) then
 		if ( arg1 == 0 or arg1 == tonumber(self.action) ) then
 			ActionButton_Update(self);
+			ExtraActionBarFrame_OnActionBarSlotUpdate(ExtraActionBarFrame);
 		end
 		return;
 	end
 	if ( event == "PLAYER_ENTERING_WORLD" or event == "UPDATE_SHAPESHIFT_FORM" ) then
 		-- need to listen for UPDATE_SHAPESHIFT_FORM because attack icons change when the shapeshift form changes
 		ActionButton_Update(self);
+		ExtraActionBarFrame_OnActionBarSlotUpdate(ExtraActionBarFrame);
 		return;
 	end
 	if ( event == "ACTIONBAR_PAGE_CHANGED" or event == "UPDATE_BONUS_ACTIONBAR" ) then

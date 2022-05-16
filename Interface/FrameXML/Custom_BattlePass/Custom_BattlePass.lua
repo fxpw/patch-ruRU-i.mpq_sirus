@@ -58,6 +58,8 @@ function BattlePassFrameMixin:OnLoad()
 end
 
 function BattlePassFrameMixin:OnShow()
+    GameTooltip_Hide()
+
     if self.tutorial then
         NPE_TutorialPointerFrame:Hide(self.Tutorial)
         self.tutorial = nil
@@ -1302,7 +1304,7 @@ function BattlePassBuyFrameBuyButtonMixin:OnClick()
 
     parent:GetParent():Hide()
 
-    SendServerMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d:%d:0:0:0", parent.storeID, parent.buyCount or 1))
+    SendServerMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d|%d|0|0|0", parent.storeID, parent.buyCount or 1))
 end
 
 BattlePassTutorialButtonMixin = {}

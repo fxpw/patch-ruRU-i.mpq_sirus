@@ -200,8 +200,8 @@ local SIRUS_LOCALIZATION = {
 		enGB = "SPD %d"
 	},
 	["SERVER_ALERT_URL"] = {
-		ruRU = "http://94.247.129.46/",
-		enGB = "http://94.247.129.46/"
+		ruRU = "http://91.215.139.94/",
+		enGB = "http://91.215.139.94/"
 	},
 	["CHARACTER_SERVICES_COST"] = {
 		ruRU = "%d |4бонус:бонуса:бонусов;",
@@ -1324,7 +1324,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Great news! Our Gnomish engineers were able to invent a time machine and bring your future self back in time! We can now even edit this future and teach you anything you want, just like in the Goblin Matrix!\n\nYour hero will receive excellent equipment, learn a couple of professions, and instantly reach level 80!"
 	},
 	["CHARACTER_SERVICES_BUYWARNING"] = {
-		ruRU = "Данная услуга не может быть использована на персонажа 80-го уровня.",
+		ruRU = "<html><body><p align=\"CENTER\">|cffff0000«Внимание! Есть ограничения!»|r<br/><br/><a href=\"https://forum.sirus.su/threads/60978/\">Подробности</a></p></body></html>",
 		enGB = ""
 	},
 	["EMAIL_ADDRESS"] = {

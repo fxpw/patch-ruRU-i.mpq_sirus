@@ -667,7 +667,7 @@ function UIParent_OnEvent(_, event, ...)
 		-- print(arg1, arg2, arg3, arg4, arg5, arg6)
 		if C_CVar:GetValue("C_CVAR_BLOCK_GUILD_INVITES") == "1" then
 			DeclineGuild()
-			GuildInviteFrame:Hide()
+			StaticPopupSpecial_Hide(GuildInviteFrame)
 			GUILD_INVITE_REQUEST_TEXT = string.format(ERR_INVITED_TO_GUILD_SSS, arg1, arg1, arg2)
 			return
 		end
@@ -679,7 +679,7 @@ function UIParent_OnEvent(_, event, ...)
 	end
 	if ( event == "GUILD_INVITE_CANCEL" ) then
 		-- StaticPopup_Hide("GUILD_INVITE");
-		GuildInviteFrame:Hide()
+		StaticPopupSpecial_Hide(GuildInviteFrame)
 		return;
 	end
 	if ( event == "ARENA_TEAM_INVITE_REQUEST" ) then
@@ -3138,6 +3138,7 @@ function Model_OnLoad (self, isZooming)
 	self.isZooming = isZooming
 
 	if isZooming then
+		local _
 		self.originZoom, _, _ = self:GetPosition()
 		self.newZoom = self.originZoom
 	end

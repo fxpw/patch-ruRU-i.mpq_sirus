@@ -578,16 +578,10 @@
 				</Anchors>
 				<Layers>
 					<Layer level="ARTWORK">
-						<FontString name="$parentTittle" inherits="SystemFont_Shadow_Med1C" justifyH="CENTER" text="CHARACTER_SERVICES_BUYTITTLE">
-							<Size x="250" y="0"/>
-							<Anchors>
-								<Anchor point="TOP" x="-5" y="-4"/>
-							</Anchors>
-						</FontString>
 						<FontString name="$parentDescription" inherits="SystemFont_Shadow_Med1C" justifyH="LEFT" text="CHARACTER_SERVICES_BUYDESCRIPTION">
 							<Size x="275" y="0"/>
 							<Anchors>
-								<Anchor point="TOP" relativeTo="$parentTittle" relativePoint="BOTTOM" x="0" y="-8"/>
+								<Anchor point="TOP" x="-5" y="-4"/>
 							</Anchors>
 						</FontString>
 						<FontString name="$parentCost" parentKey="Cost" inherits="GameFontNormalHugeOutline1" justifyH="CENTER" text="CHARACTER_SERVICES_BUYCOST">
@@ -604,6 +598,21 @@
 					</Layer>
 				</Layers>
 				<Frames>
+					<SimpleHTML name="$parentWarning" parentKey="Warning" hyperlinkFormat="|cff1010ff|H%s|h[%s]|h|r">
+						<Size x="275" y="300"/>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentDescription" relativePoint="BOTTOM" x="0" y="-8"/>
+						</Anchors>
+						<Scripts>
+							<OnHyperlinkClick>
+								LaunchURL(link);
+							</OnHyperlinkClick>
+							<OnLoad>
+								self:SetText(CHARACTER_SERVICES_BUYWARNING);
+							</OnLoad>
+						</Scripts>
+						<FontString inherits="SystemFont_Shadow_Med1C"/>
+					</SimpleHTML>
 					<Button name="$parentBuyButton" parentKey="BuyButton" inherits="CharacterBoostButtonsTemplate" hidden="false" text="CHARACTER_SERVICES_BUY">
 						<Size x="150" y="52"/>
 						<Anchors>

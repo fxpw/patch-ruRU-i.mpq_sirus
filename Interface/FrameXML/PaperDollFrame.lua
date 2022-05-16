@@ -2759,7 +2759,7 @@ function RecalculateGearManagerDialogPopup()
 
 	GearManagerDialogPopup_SearchUpdate();
 
-	local texture;
+	local texture, _;
 	if(popup.selectedTexture) then
 		local index = 1;
 		local foundIndex = nil;
@@ -2865,7 +2865,7 @@ function GearManagerDialogPopup_Update ()
 	local offset = FauxScrollFrame_GetOffset(GearManagerDialogPopupScrollFrame) or 0;
 	local button;
 	-- Icon list
-	local texture, index, textureIndex, realIndex;
+	local texture, index, textureIndex, realIndex, _;
 	for i=1, NUM_GEARSET_ICONS_SHOWN do
 		button = buttons[i];
 		index = (offset * NUM_GEARSET_ICONS_PER_ROW) + i;

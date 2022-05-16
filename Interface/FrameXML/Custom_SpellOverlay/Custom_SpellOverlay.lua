@@ -47,20 +47,20 @@ function AuraTrackerFrame_UpdateAura()
 		local auraFilter = auraFilterStorage[i]
 
 		for auraIndex = 1, 40 do
-			local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, shouldConsolidate, spellID, canApplyAura, isBossDebuff, isCastByPlayer, value2, value3 = UnitAura("player", auraIndex, auraFilter)
+			local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, shouldConsolidate, spellID = UnitAura("player", auraIndex, auraFilter)
 
 			if name and spellID then
 				local hasAura = auraTrackerStorage[spellID] and auraTrackerStorage[spellID][1]
 
 				if hasAura == nil then
-					Hook:FireEvent("UNIT_AURA", auraFilter, "ADD_AURA", name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, shouldConsolidate, spellID, canApplyAura, isBossDebuff, isCastByPlayer, value2, value3)
+					Hook:FireEvent("UNIT_AURA", auraFilter, "ADD_AURA", name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, shouldConsolidate, spellID)
 				else
 					local data = auraTrackerStorage[spellID]
 
 					if data[3] ~= count then
-						Hook:FireEvent("UNIT_AURA", auraFilter, "UPDATE_COUNT", name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, shouldConsolidate, spellID, canApplyAura, isBossDebuff, isCastByPlayer, value2, value3)
+						Hook:FireEvent("UNIT_AURA", auraFilter, "UPDATE_COUNT", name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, shouldConsolidate, spellID)
 					elseif data[4] ~= expirationTime then
-						Hook:FireEvent("UNIT_AURA", auraFilter, "UPDATE_EXPIRATION_TIME", name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, shouldConsolidate, spellID, canApplyAura, isBossDebuff, isCastByPlayer, value2, value3)
+						Hook:FireEvent("UNIT_AURA", auraFilter, "UPDATE_EXPIRATION_TIME", name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, shouldConsolidate, spellID)
 					end
 				end
 
@@ -73,7 +73,7 @@ function AuraTrackerFrame_UpdateAura()
 		if not auraData[1] then
 			auraTrackerStorage[spellID][1] = true
 		else
-			Hook:FireEvent("UNIT_AURA", auraTrackerStorage[spellID][2], "REMOVE_AURA", name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, shouldConsolidate, spellID, canApplyAura, isBossDebuff, isCastByPlayer, value2, value3)
+			Hook:FireEvent("UNIT_AURA", auraTrackerStorage[spellID][2], "REMOVE_AURA", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, spellID)
 			auraTrackerStorage[spellID] = nil
 		end
 	end

@@ -17,9 +17,7 @@
 	</Button>
 
 	<Frame name="InterfaceOptionsFrame" toplevel="true" parent="UIParent" hidden="true" enableMouse="true" frameStrata="HIGH">
-		<Size>
-			<AbsDimension x="648" y="520"/>
-		</Size>
+		<Size x="858" y="660"/>
 		<Anchors>
 			<Anchor point="CENTER"/>
 		</Anchors>
@@ -124,9 +122,7 @@
 				</Scripts>
 			</Button>
 			<Frame name="$parentCategories" inherits="OptionsFrameListTemplate">
-				<Size>
-					<AbsDimension x="175" y="429"/>
-				</Size>
+				<Size x="175" y="569"/>
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
@@ -143,9 +139,7 @@
 				</Scripts>
 			</Frame>
 			<Frame name="$parentAddOns" inherits="OptionsFrameListTemplate" hidden="true">
-				<Size>
-					<AbsDimension x="175" y="429"/>
-				</Size>
+				<Size x="175" y="569"/>
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
@@ -214,7 +208,7 @@
 				</Scripts>
 				<Layers>
 					<Layer level="BACKGROUND">
-						<Texture name="$parentTabSpacer" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer">	
+						<Texture name="$parentTabSpacer" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer">
 							<Size>
 								<AbsDimension x="85" y="16"/>
 							</Size>
@@ -245,10 +239,10 @@
 						PanelTemplates_UpdateTabs(InterfaceOptionsFrame);
 						InterfaceOptionsFrame_TabOnClick();
 					</OnClick>
-				</Scripts>				
+				</Scripts>
 				<Layers>
 					<Layer level="BACKGROUND">
-						<Texture name="$parentTabSpacer1" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true">	
+						<Texture name="$parentTabSpacer1" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true">
 							<Size>
 								<AbsDimension x="64" y="16"/>
 							</Size>
@@ -261,7 +255,7 @@
 								<Anchor point="LEFT" relativeTo="InterfaceOptionsFrameAddOnsTopLeft" relativePoint="RIGHT"/>
 							</Anchors>
 						</Texture>
-						<Texture name="$parentTabSpacer2" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true">	
+						<Texture name="$parentTabSpacer2" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true">
 							<Size>
 								<AbsDimension x="16" y="16"/>
 							</Size>
@@ -275,7 +269,7 @@
 							</Anchors>
 						</Texture>
 					</Layer>
-				</Layers>				
+				</Layers>
 			</Button>
 		</Frames>
 		<Scripts>

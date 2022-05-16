@@ -1852,7 +1852,7 @@ end
 
 local ConquestFrame_HelpPlate = {
 	FramePos = { x = 0, y = 0 },
-	FrameSize = { width = 343, height = 428 },
+	FrameSize = { width = 342, height = 406 },
 	[1] = { ButtonPos = { x = 312, y = -10 }, HighLightBox = { x = 2, y = -2, width = 336, height = 60 }, ToolTipDir = "DOWN", ToolTipText = CONQUESTFRAME_TUTORIAL_1 },
 	[2] = { ButtonPos = { x = 312, y = -86 }, HighLightBox = { x = 250, y = -92, width = 84, height = 36 }, ToolTipDir = "RIGHT", ToolTipText = CONQUESTFRAME_TUTORIAL_2 },
 	-- [5] = { ButtonPos = { x = 294, y = -280 }, HighLightBox = { x = 20, y = -280, width = 298, height = 42 }, ToolTipDir = "RIGHT", ToolTipText = CONQUESTFRAME_TUTORIAL_4 },
@@ -1879,10 +1879,10 @@ end
 
 local PVPHonorFrame_HelpPlate = {
 	FramePos = { x = 0, y = 0 },
-	FrameSize = { width = 343, height = 428 },
+	FrameSize = { width = 342, height = 406 },
 	[1] = { ButtonPos = { x = 312, y = -10 }, HighLightBox = { x = 2, y = -2, width = 336, height = 60 }, ToolTipDir = "DOWN", ToolTipText = PVPHONORFRAME_TUTORIAL_1 },
-	[2] = { ButtonPos = { x = 312, y = -86 }, HighLightBox = { x = 250, y = -92, width = 84, height = 36 }, ToolTipDir = "RIGHT", ToolTipText = PVPHONORFRAME_TUTORIAL_2 },
-	[3] = { ButtonPos = { x = 312, y = -234 }, HighLightBox = { x = 250, y = -238, width = 84, height = 36 }, ToolTipDir = "RIGHT", ToolTipText = PVPHONORFRAME_TUTORIAL_2 },
+	[2] = { ButtonPos = { x = 312, y = -87 }, HighLightBox = { x = 250, y = -92, width = 84, height = 36 }, ToolTipDir = "RIGHT", ToolTipText = PVPHONORFRAME_TUTORIAL_2 },
+	[3] = { ButtonPos = { x = 312, y = -231 }, HighLightBox = { x = 250, y = -235, width = 84, height = 36 }, ToolTipDir = "RIGHT", ToolTipText = PVPHONORFRAME_TUTORIAL_2 },
 }
 
 function PVPHonorFrame_ToggleTutorial( ... )
@@ -1903,7 +1903,7 @@ end
 
 local RatedBattlegroundFrame_HelpPlate = {
 	FramePos = { x = 0, y = 0 },
-	FrameSize = { width = 343, height = 428 },
+	FrameSize = { width = 342, height = 406 },
 	[1] = { ButtonPos = { x = 312, y = 0 }, HighLightBox = { x = 6, y = -16, width = 330, height = 45 }, ToolTipDir = "RIGHT", ToolTipText = RATED_BATTLEGROUND_TUTORIAL_1 },
 	[2] = { ButtonPos = { x = 312, y = -56 }, HighLightBox = { x = 6, y = -65, width = 330, height = 28 }, ToolTipDir = "RIGHT", ToolTipText = RATED_BATTLEGROUND_TUTORIAL_2 },
 	[3] = { ButtonPos = { x = 312, y = -166 }, HighLightBox = { x = 6, y = -97, width = 330, height = 186 }, ToolTipDir = "RIGHT", ToolTipText = RATED_BATTLEGROUND_TUTORIAL_3 },
@@ -2757,11 +2757,15 @@ function ConquestFrameButton_OnShow( self, ... )
 	local buttonID = self:GetID()
 	local pvpStats = C_CacheInstance:Get("ASMSG_PVP_STATS", {})
 
+	local pvpRating = pvpStats[buttonID] and pvpStats[buttonID].pvpRating or 0;
+
 	if buttonID ~= 3 then -- TEMP
 		self.Wins:SetText(pvpStats[buttonID] and pvpStats[buttonID].seasonWins or 0)
 		self.BestRating:SetText(pvpStats[buttonID] and pvpStats[buttonID].seasonGames - pvpStats[buttonID].seasonWins or 0)
-		self.CurrentRating:SetText(pvpStats[buttonID] and pvpStats[buttonID].pvpRating or 0)
+		self.CurrentRating:SetText(pvpRating)
 	end
+
+	self.RatingAlertFrame:SetShown(pvpRating > 0 and UnitLevel("player") < 80);
 end
 
 local function CalculateArenaLimit( rating )

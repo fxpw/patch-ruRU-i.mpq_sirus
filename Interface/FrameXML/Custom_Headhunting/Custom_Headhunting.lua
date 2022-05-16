@@ -191,6 +191,18 @@ StaticPopupDialogs["HEADHUNTING_REMOVE_CONTRACT"] = {
     hideOnEscape = 1
 };
 
+StaticPopupDialogs["HEADHUNTING_SETREWARD_CONFIRMATION"] = {
+    text = "%s",
+    button1 = ACCEPT,
+    button2 = CANCEL,
+    OnAccept = function(self)
+        self.data[1]:SendServerRequest("ACMSG_HEADHUNTING_CONTRACT_REGISTER", self.data[2])
+    end,
+    OnCancel = function()
+    end,
+    timeout = 0,
+}
+
 HeadHuntingMixin = {}
 
 function HeadHuntingMixin:OnLoad()
@@ -388,57 +400,45 @@ function HeadHuntingMixin:UpdateContent( onlyUpdate, dontUpdateColumns )
 end
 
 function HeadHuntingMixin:ShowLoading()
-    if self.loadingTimer then
-        self.loadingTimer:Cancel()
-        self.loadingTimer = nil
+    self:ShowError(nil)
+
+    if self.isLoading then return end
+    self.isLoading = true
+
+    local selectedTab = self:GetSelectedTab()
+    local panel = self.Container[self.panels[selectedTab].name]
+
+    panel.ScrollFrame.Spinner:Show()
+
+    if panel.SetRewardFrame then
+        panel.SetRewardButton:Disable()
+
+        panel.SetRewardFrame.CloseButton:Disable()
+        panel.SetRewardFrame.CentralContainer.ScrollFrame.Spinner:Show()
+        panel.SetRewardFrame.SearchFrame.SearchButton:SetButtonState(true)
+        panel.SetRewardFrame.SearchFrame.SearchBox.clearButton:Disable()
+        panel.SetRewardFrame.SetRewardButton:SetButtonState(true)
     end
 
-    self.loadingTimer = C_Timer:NewTicker(0.300, function()
-        local selectedTab = self:GetSelectedTab()
-        local panel = self.Container[self.panels[selectedTab].name]
+    if panel.DetailsFrame then
+        panel.DetailsFrame.Container.NotifyWhenKilling:Disable()
+        panel.DetailsFrame.Container.NotifyWhenComplete:Disable()
+        panel.DetailsFrame.RemoveContractButton:Disable()
+    end
 
-        panel.ScrollFrame.Spinner:Show()
+    for _, tab in pairs(self.topTabs) do
+        tab:SetButtonState(true)
+    end
 
-        if panel.SetRewardFrame then
-            panel.SetRewardButton:Disable()
+    for _, columnButton in pairs(self.columnButtons) do
+        columnButton:SetButtonState(true)
+    end
 
-            panel.SetRewardFrame.CloseButton:Disable()
-            panel.SetRewardFrame.CentralContainer.ScrollFrame.Spinner:Show()
-            panel.SetRewardFrame.SearchFrame.SearchButton:SetButtonState(true)
-            panel.SetRewardFrame.SearchFrame.SearchBox.clearButton:Disable()
-            panel.SetRewardFrame.SetRewardButton:SetButtonState(true)
-        end
-
-        if panel.DetailsFrame then
-            panel.DetailsFrame.Container.NotifyWhenKilling:Disable()
-            panel.DetailsFrame.Container.NotifyWhenComplete:Disable()
-            panel.DetailsFrame.RemoveContractButton:Disable()
-        end
-
-        for _, tab in pairs(self.topTabs) do
-            tab:SetButtonState(true)
-        end
-
-        for _, columnButton in pairs(self.columnButtons) do
-            columnButton:SetButtonState(true)
-        end
-
-        self.isLoading = true
-        self:UpdateNavBar()
-    end, 1)
-
-    self:ShowError(nil)
+    self:UpdateNavBar()
 end
 
 function HeadHuntingMixin:HideLoading()
-    if self.loadingTimer then
-        self.loadingTimer:Cancel()
-        self.loadingTimer = nil
-
-        if not self.isLoading then
-            return
-        end
-    end
+    if not self.isLoading then return end
 
     local selectedTab = self:GetSelectedTab()
     local panel = self.Container[self.panels[selectedTab].name]
@@ -1260,7 +1260,12 @@ function HeadHuntingFactionFrameMixin:OnLoad()
 end
 
 function HeadHuntingFactionFrameMixin:SetFaction( factionID )
-    self.FactionIcon:SetAtlas("objectivewidget-icon-"..self.factionIcons[factionID])
+    if self.factionIcons[factionID] then
+        self.FactionIcon:SetAtlas("objectivewidget-icon-"..self.factionIcons[factionID])
+    else
+        self.FactionIcon:SetTexture("Interface\\TARGETINGFRAME\\UI-PVP-FFA")
+        self.FactionIcon:SetTexCoord(0.046875, 0.578125, 0, 0.640625)
+    end
 end
 
 HeadHuntingMoneyFrameMixin = {}
@@ -1505,6 +1510,11 @@ function HeadHuntingSetRewardFrameMixin:OnShow()
     self:ClearData()
 end
 
+function HeadHuntingSetRewardFrameMixin:OnHide()
+    self:SetSelectedButton(nil)
+    StaticPopup_Hide("HEADHUNTING_SETREWARD_CONFIRMATION")
+end
+
 function HeadHuntingSetRewardFrameMixin:GetNumRecords()
     local data = C_CacheInstance:Get("ASMSG_HEADHUNTING_SEARCH_RESPONSE", {})
     local numRecords = tCount(data[self.mainFrame:GetSelectedCategory()])
@@ -1554,6 +1564,14 @@ end
 
 function HeadHuntingSetRewardFrameMixin:GetSelectedGUID()
     return self.selectedGUID
+end
+
+function HeadHuntingSetRewardFrameMixin:SetSelectedButton( button )
+    self.selectedButton = button
+end
+
+function HeadHuntingSetRewardFrameMixin:GetSelectedButton()
+    return self.selectedButton
 end
 
 function HeadHuntingSetRewardFrameMixin:ASMSG_HEADHUNTING_CONTRACT_REGISTER( msg )
@@ -1735,6 +1753,7 @@ function HeadHuntingSearchScrollButtonTemplateMixin:OnClick()
     local selectedGUID = self.setRewardFrame:GetSelectedGUID()
     if not selectedGUID or selectedGUID ~= self.GUID then
         self.setRewardFrame:SelectedGUID(self.GUID)
+        self.setRewardFrame:SetSelectedButton(self)
     else
         self.setRewardFrame:SelectedGUID(nil)
     end
@@ -1753,16 +1772,18 @@ function HeadHuntingSetRewardButtonMixin:OnLoad()
 end
 
 function HeadHuntingSetRewardButtonMixin:OnClick()
-    local numKills          = self.numKillsEditBox:GetText()
-    local goldPerKill       = self.goldPerKillEditBox:GetText()
+    local numKills          = self.numKillsEditBox:GetNumber()
+    local goldPerKill       = self.goldPerKillEditBox:GetNumber()
     local selectedCategory  = self.setRewardFrame.mainFrame:GetSelectedCategory() - 1
     local selectedGUID      = self.setRewardFrame:GetSelectedGUID()
+    local name              = self.setRewardFrame:GetSelectedButton().stylishName
 
-    if (not numKills or numKills == "") or (not goldPerKill or goldPerKill == "") then
+    if numKills == 0 or goldPerKill == 0 then
         return
     end
 
-    self.setRewardFrame.mainFrame:SendServerRequest("ACMSG_HEADHUNTING_CONTRACT_REGISTER", string.format("%s,%s,%s,%s", selectedCategory, selectedGUID, numKills, goldPerKill))
+    StaticPopup_Show("HEADHUNTING_SETREWARD_CONFIRMATION", string.format(HEADHUNTING_TOAST_CONTRACT_CONFIRMATION_REQUEST, goldPerKill, numKills, name), nil,
+        {self.setRewardFrame.mainFrame, string.format("%s,%s,%s,%s", selectedCategory, selectedGUID, numKills, goldPerKill)})
 end
 
 function HeadHuntingSetRewardButtonMixin:SetButtonState( isDisabled )

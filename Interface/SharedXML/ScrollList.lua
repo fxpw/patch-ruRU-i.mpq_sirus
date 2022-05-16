@@ -118,7 +118,7 @@ function ScrollListMixin:UpdatedSelectedHighlight()
 end
 
 function ScrollListMixin:SetSelectedListIndex(listIndex, skipUpdates)
-	local sameIndex = selectedListIndex == listIndex;
+	local sameIndex = self.selectedListIndex == listIndex;
 	self.selectedListIndex = listIndex;
 
 	if not skipUpdates then

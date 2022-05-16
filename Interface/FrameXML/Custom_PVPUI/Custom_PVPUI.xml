@@ -6,7 +6,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_PVPUI.lua"/>
 
 	<Button name="PVPQueueFrameButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
@@ -142,6 +143,31 @@
 				</FontString>
 			</Layer>
 		</Layers>
+		<Frames>
+			<Button name="$parentRatingAlertFrame" parentKey="RatingAlertFrame" hidden="true">
+				<Size x="32" y="32"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="10" y="10"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentIcon" parentKey="Icon" file="Interface\BUTTONS\AdventureGuideMicrobuttonAlert"/>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnShow>
+						self:SetFrameLevel(self:GetParent():GetFrameLevel() + 5);
+					</OnShow>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT");
+						GameTooltip:AddLine(PVPFRAME_ARANA_RATING_ALERT, nil, nil, nil, 1);
+						GameTooltip:Show();
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+				<HighlightTexture parentKey="HighlightTexture" alpha="0.5" alphaMode="ADD" file="Interface\BUTTONS\AdventureGuideMicrobuttonAlert"/>
+			</Button>
+		</Frames>
 		<NormalTexture parentKey="NormalTexture" file="Interface\PVPFrame\PvPMegaQueue">
 			<TexCoords left="0.00195313" right="0.58789063" top="0.87304688" bottom="0.92773438"/>
 		</NormalTexture>

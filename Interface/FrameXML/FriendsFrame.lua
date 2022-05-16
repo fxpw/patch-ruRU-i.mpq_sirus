@@ -660,7 +660,7 @@ end
 
 function PendingList_Scroll(offset)
 	local button, buttonHeight;
-	local name, surname, message;
+	local inviteID, givenName, surname, message, timeSent, days;
 	local heightUsed = 0;
 	local scrollFrame = FriendsFramePendingScrollFrame;
 	local scrollHeight = scrollFrame.scrollHeight;
@@ -2124,7 +2124,6 @@ function FriendsFrame_SetButton(button, index, firstButton)
 	local nameText, nameColor, infoText, broadcastText;
 		
 	if ( firstButton ) then
-		friendsCounter = 0
 		FriendsFrameOfflineHeader:Hide();
 		DynamicScrollFrame_UnlockAllHighlights(FriendsFrameFriendsScrollFrame);	
 	end

@@ -24,6 +24,8 @@ local function GetFilterName(filter)
 	return AUCTION_HOUSE_FILTER_STRINGS[filter] or "";
 end
 
+local AUCTION_HOUSE_NUM_HISTORY_PREVIEWS = 10;
+
 
 AuctionHouseSearchButtonMixin = {};
 
@@ -236,25 +238,73 @@ function AuctionHouseSearchBoxMixin:OnLoad()
 		end);
 
 		self.HasStickyFocus = function()
+			local historyPreview = self:GetHistoryPreview();
+
+			if historyPreview then
+				return DoesAncestryInclude(self, GetMouseFocus()) or DoesAncestryInclude(historyPreview, GetMouseFocus());
+			end
+
 			return DoesAncestryInclude(self, GetMouseFocus());
 		end
 	end
 end
 
 function AuctionHouseSearchBoxMixin:OnEnterPressed()
+	local historyPreview = self:GetHistoryPreview();
+	if historyPreview then
+		local preview = historyPreview.buttons[historyPreview.selectedIndex];
+		if preview and preview:IsShown() then
+			preview:Click();
+		end
+	end
+
 	EditBox_ClearFocus(self);
 	self:GetParent():StartSearch();
 end
 
+function AuctionHouseSearchBoxMixin:OnTabPressed()
+	local historyPreview = self:GetHistoryPreview();
+	if historyPreview then
+		if IsShiftKeyDown() then
+			historyPreview:SetSelection(historyPreview.selectedIndex - 1);
+		else
+			historyPreview:SetSelection(historyPreview.selectedIndex + 1);
+		end
+	end
+end
+
+function AuctionHouseSearchBoxMixin:OnEditFocusLost()
+	local historyPreview = self:GetHistoryPreview();
+	if historyPreview then
+		historyPreview:Hide();
+	end
+end
+
+function AuctionHouseSearchBoxMixin:OnEditFocusGained()
+	SearchBoxTemplate_OnEditFocusGained(self);
+
+	local historyPreview = self:GetHistoryPreview();
+	if historyPreview then
+		historyPreview:ShowResults(self:GetText());
+	end
+end
+
 function AuctionHouseSearchBoxMixin:OnTextChanged(userInput)
-	if (not self:HasFocus() or not userInput) and self:GetText() == "" then
+	local text = self:GetText();
+	if (not self:HasFocus() or not userInput) and text == "" then
 		self.searchIcon:SetVertexColor(0.6, 0.6, 0.6);
 		self.clearButton:Hide()
 	else
 		self.searchIcon:SetVertexColor(1.0, 1.0, 1.0);
 		self.clearButton:Show();
 	end
+
 	InputBoxInstructions_OnTextChanged(self);
+
+	local historyPreview = self:GetHistoryPreview();
+	if historyPreview and self:HasFocus() then
+		historyPreview:ShowResults(text);
+	end
 end
 
 function AuctionHouseSearchBoxMixin:Reset()
@@ -265,6 +315,120 @@ function AuctionHouseSearchBoxMixin:GetSearchString()
 	return self:GetText();
 end
 
+function AuctionHouseSearchBoxMixin:GetHistoryPreview()
+	return self:GetParent().SearchHistory;
+end
+
+AuctionHouseSearchHistoryMixin = {};
+
+function AuctionHouseSearchHistoryMixin:OnLoad()
+	self.buttons = {};
+	self.buttonPool = CreateFramePool("Button", self, "AuctionHouseSearchHistoryButton");
+
+	self:ReleaseButtons();
+end
+
+function AuctionHouseSearchHistoryMixin:OnShow()
+	self:SetFrameLevel(self:GetParent():GetFrameLevel() + 11);
+end
+
+function AuctionHouseSearchHistoryMixin:OnHide()
+	for index = 1, AUCTION_HOUSE_NUM_HISTORY_PREVIEWS do
+		self.buttons[index]:Hide();
+	end
+end
+
+function AuctionHouseSearchHistoryMixin:ReleaseButtons()
+	table.wipe(self.buttons);
+	self.buttonPool:ReleaseAll();
+	for i = 1, AUCTION_HOUSE_NUM_HISTORY_PREVIEWS do
+		local button = self.buttonPool:Acquire();
+		button:SetID(i);
+
+		if i == 1 then
+			button:SetPoint("TOPLEFT");
+		else
+			button:SetPoint("TOPLEFT", self.buttons[i - 1], "BOTTOMLEFT");
+		end
+
+		self.buttons[i] = button;
+	end
+end
+
+function AuctionHouseSearchHistoryMixin:GetSearchBox()
+	return self:GetParent().SearchBox;
+end
+
+function AuctionHouseSearchHistoryMixin:SetSelection(selectedIndex)
+	local numShown = 0;
+	for index = 1, AUCTION_HOUSE_NUM_HISTORY_PREVIEWS do
+		local button = self.buttons[index];
+		button.SelectedTexture:Hide();
+
+		if button:IsShown() then
+			numShown = numShown + 1;
+		end
+	end
+
+	if numShown == 0 or selectedIndex > numShown then
+		selectedIndex = 0;
+	end
+
+	self.selectedIndex = selectedIndex;
+	if selectedIndex > 0 then
+		self.buttons[selectedIndex].SelectedTexture:Show();
+	end
+end
+
+function AuctionHouseSearchHistoryMixin:ShowResults(text)
+	text = text or "";
+
+	local historyResults = C_AuctionHouse.GetSearchHistory(text);
+	local numHistoryResults = #historyResults;
+
+	if numHistoryResults > 0 then
+		self:SetSelection(0);
+	else
+		self:Hide();
+		return;
+	end
+
+	local lastButton;
+
+	for index = 1, AUCTION_HOUSE_NUM_HISTORY_PREVIEWS do
+		local button = self.buttons[index];
+
+		if index <= numHistoryResults then
+			button.Text:SetText(historyResults[index]);
+			button:Show();
+			lastButton = button;
+		else
+			button:Hide();
+		end
+	end
+
+	if lastButton then
+		self:Show();
+		self.BorderAnchor:SetPoint("BOTTOM", lastButton, "BOTTOM", 0, -8);
+		self.Background:Hide();
+	else
+		self:Hide();
+	end
+end
+
+AuctionHouseSearchHistoryButtonMixin = {};
+
+function AuctionHouseSearchHistoryButtonMixin:OnClick()
+	if AuctionHouseFrame:SetSearchText(self.Text:GetText()) then
+		AuctionHouseFrame.SearchBar:StartSearch();
+		AuctionHouseFrame.SearchBar.SearchBox:ClearFocus();
+	end
+end
+
+function AuctionHouseSearchHistoryButtonMixin:OnEnter()
+	local historyPreview = self:GetParent();
+	historyPreview:SetSelection(self:GetID());
+end
 
 AuctionHouseSearchBarMixin = CreateFromMixins(AuctionHouseSystemMixin);
 

@@ -56,7 +56,7 @@ function C_CVarMixin:GetCVarBitfield(name, index)
 	end
 
     if self._defaultValue[name] then
-		return bit.band(tonumber(self._cache:Get(name, nil, 0, self._globalValues[name]) or self._defaultValue[key]) or 0, bit.lshift(1, index - 1)) ~= 0;
+		return bit.band(tonumber(self._cache:Get(name, nil, 0, self._globalValues[name]) or self._defaultValue[name]) or 0, bit.lshift(1, index - 1)) ~= 0;
 	end
 end
 
@@ -77,9 +77,9 @@ function C_CVarMixin:SetCVarBitfield(name, index, value, scriptCVar)
 		end
 
 		if value then
-			self._cache:Set(name, bit.bor(tonumber(self._cache:Get(name, nil, 0, self._globalValues[name]) or self._defaultValue[key]) or 0, bit.lshift(1, index - 1)), 0, self._globalValues[name]);
+			self._cache:Set(name, bit.bor(tonumber(self._cache:Get(name, nil, 0, self._globalValues[name]) or self._defaultValue[name]) or 0, bit.lshift(1, index - 1)), 0, self._globalValues[name]);
 		else
-			self._cache:Set(name, bit.band(tonumber(self._cache:Get(name, nil, 0, self._globalValues[name]) or self._defaultValue[key]) or 0, bit.bnot(bit.lshift(1, index - 1))), 0, self._globalValues[name]);
+			self._cache:Set(name, bit.band(tonumber(self._cache:Get(name, nil, 0, self._globalValues[name]) or self._defaultValue[name]) or 0, bit.bnot(bit.lshift(1, index - 1))), 0, self._globalValues[name]);
 		end
 
 		if scriptCVar then
@@ -104,6 +104,7 @@ C_CVar:OnLoad()
 
 -- Регистрация дефолтных значений.
 C_CVar:RegisterDefaultValue("C_CVAR_AUTOJOIN_TO_LFG", "1")
+C_CVar:RegisterDefaultValue("C_CVAR_LOSS_OF_CONTROL_SCALE", "1")
 C_CVar:RegisterDefaultValue("C_CVAR_SHOW_SOCIAL_TOAST", "1")
 C_CVar:RegisterDefaultValue("C_CVAR_WHISPER_MODE", "inline")
 C_CVar:RegisterDefaultValue("C_CVAR_STATUS_TEXT_DISPLAY", "NUMERIC")

@@ -100,7 +100,11 @@ end
 
 function QuestChoiceOpticonSelectButton_OnClick( self, ... )
 	self = self:GetParent()
-	SendAddonMessage("ACMSG_TRADE_TOKEN", string.format("%d:%d", self.data.tokenID, self.data.itemID), "WHISPER", UnitName("player"))
+	if self.data.itemGUID then
+		SendAddonMessage("ACMSG_UPGRADE_TOKEN", string.format("%d:%d:%d", self.data.tokenID, self.data.itemID, self.data.itemGUID), "WHISPER", UnitName("player"))
+	else
+		SendAddonMessage("ACMSG_TRADE_TOKEN", string.format("%d:%d", self.data.tokenID, self.data.itemID), "WHISPER", UnitName("player"))
+	end
 	HideUIPanel(ChooseItemFrame)
 end
 
@@ -128,6 +132,30 @@ function EventHandler:ASMSG_SHOW_TOKEN_TRADE( msg )
 	ShowUIPanel(ChooseItemFrame)
 end
 
+function EventHandler:ASMSG_SHOW_TOKEN_UPGRADE(msg)
+	local data = {strsplit("|", msg)};
+	local tokenID, itemGUID = data[1], data[2];
+
+	table.wipe(CHOOSEITEM_DATA);
+
+	for i = 3, #data do
+		if data[i] then
+			local specID, iconID, itemID = string.match(data[i], "(%d+):(%d+):(%d+)")
+			if specID and iconID and itemID and tokenID then
+				CHOOSEITEM_DATA[i - 2] = {
+					specID = tonumber(specID),
+					iconID = tonumber(iconID),
+					itemID = tonumber(itemID),
+					tokenID = tonumber(tokenID),
+					itemGUID = tonumber(itemGUID),
+				}
+			end
+		end
+	end
+
+	ShowUIPanel(ChooseItemFrame)
+end
+
 function EventHandler:ASMSG_TRADE_TOKEN_RESPONSE( msg )
 	local errorID = tonumber(msg)
 
@@ -137,5 +165,17 @@ function EventHandler:ASMSG_TRADE_TOKEN_RESPONSE( msg )
 		UIErrorsFrame:AddMessage(CHOOSE_ITEM_ERROR_2, 1.0, 0.1, 0.1, 1.0)
 	elseif errorID == 3 then
 		UIErrorsFrame:AddMessage(CHOOSE_ITEM_ERROR_3, 1.0, 0.1, 0.1, 1.0)
+	end
+end
+
+function EventHandler:ACMSG_UPGRADE_TOKEN_RESPONSE(msg)
+	local errorID = tonumber(msg);
+
+	if errorID and errorID ~= 0 then
+		local errorString = _G["TOKEN_UPGRAGE_ERROR_" .. errorID];
+
+		if errorString then
+			UIErrorsFrame:AddMessage(errorString, 1.0, 0.1, 0.1, 1.0);
+		end
 	end
 end

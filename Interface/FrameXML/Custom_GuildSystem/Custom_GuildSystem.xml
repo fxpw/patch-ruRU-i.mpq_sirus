@@ -3536,7 +3536,7 @@
 					<OnClick>
 						AcceptGuild()
 						GuildInviteFrame.accepted = true
-						GuildInviteFrame:Hide()
+						StaticPopupSpecial_Hide(GuildInviteFrame)
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -3548,7 +3548,7 @@
 				<Scripts>
 					<OnClick>
 						DeclineGuild()
-						GuildInviteFrame:Hide()
+						StaticPopupSpecial_Hide(GuildInviteFrame)
 					</OnClick>
 				</Scripts>
 			</Button>

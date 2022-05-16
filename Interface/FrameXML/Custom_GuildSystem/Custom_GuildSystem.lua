@@ -141,7 +141,7 @@ function GenerateGuildTradeSkillInfo()
 
 			local numPlayers = tCount(data.players) or 0
 
-			TradeSkillbuffer[#TradeSkillbuffer + 1] = {skillID, data.isCollapsed, data.iconTexture, data.headerName, data.numOnline, data.numVisible, numPlayers, playerName, class, online, zone, skill, classFileName}
+			TradeSkillbuffer[#TradeSkillbuffer + 1] = {skillID, data.isCollapsed, data.iconTexture, data.headerName, data.numOnline, data.numVisible, numPlayers}
 
 			for _, player in pairs(data.players) do
 				if GUILD_MEMBER_INFO_BY_NAME_DATA[player.name] then
@@ -157,7 +157,7 @@ function GenerateGuildTradeSkillInfo()
 
 					if data.isCollapsed == false then
 						local classFileName = GetClassFile(playerClass)
-						TradeSkillbuffer[#TradeSkillbuffer + 1] = {skillID, isCollapsed, iconTexture, headerName, numOnline, numVisible, numPlayers, playerName, playerClass, playerOnline, playerZone, player.currentSkill, classFileName}
+						TradeSkillbuffer[#TradeSkillbuffer + 1] = {skillID, false, nil, nil, nil, nil, nil, playerName, playerClass, playerOnline, playerZone, player.currentSkill, classFileName}
 					end
 				end
 			end
@@ -617,7 +617,7 @@ function GuildMemberDetailSetInfo()
 	else
 		GuildMemberRemoveButton:Disable()
 	end
-	if ( (UnitName("player") == name) or (not online) or isMobile ) then
+	if ( (UnitName("player") == name) or (not online) ) then
 		GuildMemberGroupInviteButton:Disable()
 	else
 		GuildMemberGroupInviteButton:Enable()
@@ -1103,7 +1103,7 @@ function GuildRoster_UpdateTradeSkills()
 				button:Show()
 			elseif ( playerName ) then
 				GuildRosterButton_SetStringText(button.string1, playerName, online, classFileName)
-				GuildRosterButton_SetStringText(button.string2, isMobile and REMOTE_CHAT or zone, online)
+				GuildRosterButton_SetStringText(button.string2, zone, online)
 				if skill then
 					GuildRosterButton_SetStringText(button.string3, "["..skill.."]", online)
 				end

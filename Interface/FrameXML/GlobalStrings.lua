@@ -20924,6 +20924,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tОповещения срабатывания эффектов",
         enGB = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tSpell Proc Alerts"
     },
+    ["SETTINGS_LOSSOFCONTROLL_TITLE"] = {
+        ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tОповещения потери контроля",
+        enGB = ""
+    },
     ["OPTION_TOOLTIP_SHOW_BATTLENET_TOASTS"] = {
         ruRU = "Отображать системные сообщения Battle.net во всплывающем окне.",
         enGB = "Enable this to have Battle.net system messages appear in a popup window."
@@ -25899,6 +25903,10 @@ local SIRUS_LOCALIZATION = {
     ["SETTINGS_SPELLOVERLAY_DESC"] = {
         ruRU = "Степень видимости оповещений при срабатывании определенных талантов.",
         enGB = "Visibility of alerts when certain spells proc."
+    },
+    ["SETTINGS_LOSSOFCONTROLL_DESC"] = {
+        ruRU = "Размер оповещения при потере контроля над персонажем",
+        enGB = ""
     },
     ["ACTION_SPELL_LEECH_POSSESSIVE"] = {
         ruRU = "1",
@@ -41760,6 +41768,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Контракт подтвержден.",
         enGB = ""
     },
+    ["HEADHUNTING_TOAST_CONTRACT_CONFIRMATION_REQUEST"] = {
+        ruRU = "Вы уверены, что хотите назначить %d|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:0|t\nза %d |4убийство:убийства:убийств; персонажа %s ?",
+        enGB = ""
+    },
     ["TOAST_TITLE_3"] = {
         ruRU = "Охота за головами",
         enGB = ""
@@ -43796,6 +43808,14 @@ local SIRUS_LOCALIZATION = {
         ruRU = "тип брони",
         enGB = ""
     },
+    ["STORE_SEARCH_OPTION_WEAPON"] = {
+        ruRU = "оружие:",
+        enGB = "weapon:"
+    },
+    ["STORE_SEARCH_OPTION_WEAPON_DESC"] = {
+        ruRU = "тип оружия",
+        enGB = ""
+    },
     ["STORE_SEARCH_OPTION_STATISTIC"] = {
         ruRU = "стат:",
         enGB = "stat:"
@@ -43958,6 +43978,54 @@ local SIRUS_LOCALIZATION = {
     },
     ["CR_ONSLAUGHT_RATING_INCREASE_TOOLTIP"] = {
 	    ruRU = "Рейтинг натиска: %d (рейтинг устойчивости противника увеличен на %d ед.)",
+	    enGB = ""
+    },
+    ["ENCOUNTER_JOURNAL_SECTION_LOOP_ERROR"] = {
+	    ruRU = "Возникла ошибка при попытке открыть путеводитель по приключениям.\nСообщите нам на форуме следующую информацию:\nСекция: № %s",
+	    enGB = ""
+    },
+	["TOKEN_UPGRAGE_ERROR_1"] = {
+		ruRU = "Недостаточно реагентов",
+		enGB = "Not enough reagents"
+	},
+	["TOKEN_UPGRAGE_ERROR_2"] = {
+		ruRU = "Неверные параметры",
+		enGB = "Invalid parameters"
+	},
+	["TOKEN_UPGRAGE_ERROR_3"] = {
+		ruRU = "Нет доступных предметов за токен",
+		enGB = "No available items for token"
+	},
+	["TOKEN_UPGRAGE_ERROR_4"] = {
+		ruRU = "Выбранного предмета нет в списке доступных",
+		enGB = "Requested item is not in list of available items"
+	},
+	["TOKEN_UPGRAGE_ERROR_5"] = {
+		ruRU = "Целевой предмет не найден",
+		enGB = "Target item not found"
+	},
+	["TOKEN_UPGRAGE_ERROR_6"] = {
+		ruRU = "Токен не найден",
+		enGB = "Token not found"
+	},
+	["TOKEN_UPGRAGE_ERROR_7"] = {
+		ruRU = "Вы не владеете целевым предметом",
+		enGB = "Target item not owned by player"
+	},
+	["TOKEN_UPGRAGE_ERROR_8"] = {
+		ruRU = "Информация о токене не найдена",
+		enGB = "Token information not found"
+	},
+	["PVPFRAME_ARANA_RATING_ALERT"] = {
+		ruRU = "Внимание! Весь полученный рейтинг будет сброшен по достижении 80-го уровня!",
+		enGB = ""
+	},
+    ["TOAST_TITLE_27"] = {
+	    ruRU = "Паучий кокон",
+	    enGB = ""
+    },
+    ["TOAST_BODY_27"] = {
+	    ruRU = "Вы попытались выпутаться из кокона, но паутина всё ещё сковывает вас. Члены вашей гильдии могут вам помочь.",
 	    enGB = ""
     },
 }

@@ -395,7 +395,7 @@ function ContainerFrame_Update(frame)
 	local id = frame:GetID();
 	local name = frame:GetName();
 	local itemButton;
-	local texture, itemCount, locked, quality, readable, itemEntry
+	local texture, itemCount, locked, quality, readable, itemEntry, _
 	local isQuestItem, questId, isActive, questTexture, newItemTexture
 	local tooltipOwner = GameTooltip:GetOwner();
 	for i=1, frame.size, 1 do
@@ -877,7 +877,7 @@ function ContainerFrame_GetExtendedPriceString(itemButton, isEquipped, quantity)
 	MerchantFrame.honorPoints = honorPoints;
 	MerchantFrame.arenaPoints = arenaPoints;
 
-	local refundItemTexture, refundItemLink;
+	local refundItemTexture, refundItemLink, _;
 	if ( isEquipped ) then
 		refundItemTexture = GetInventoryItemTexture("player", slot);
 		refundItemLink = GetInventoryItemLink("player", slot);

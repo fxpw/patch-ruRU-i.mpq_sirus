@@ -203,7 +203,7 @@ function BattlefieldTimerFrame_OnUpdate(self, elapsed)
 end
 
 function BattlefieldFrame_UpdateStatus(tooltipOnly, mapIndex)
-	local status, mapName, instanceID, queueID, levelRangeMin, levelRangeMax, teamSize, registeredMatch;
+	local status, mapName, instanceID, queueID, levelRangeMin, levelRangeMax, teamSize, registeredMatch, isSoloq;
 --[[
 	local numberQueues = 0;
 	local waitTime, timeInQueue;
@@ -606,7 +606,7 @@ end
 
 function MiniMapBattlefieldDropDown_Initialize()
 	local info;
-	local status, mapName, instanceID, queueID, levelRangeMin, levelRangeMax, teamSize, registeredMatch;
+	local status, mapName, instanceID, queueID, levelRangeMin, levelRangeMax, teamSize, registeredMatch, isSoloq;
 	local numQueued = 0;
 	local numShown = 0;
 

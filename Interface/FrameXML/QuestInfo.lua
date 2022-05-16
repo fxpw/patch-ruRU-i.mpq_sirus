@@ -34,6 +34,7 @@ end
 function QuestInfo_Display(template, parentFrame, acceptButton, cancelButton, material)
 	local lastFrame = nil;
 	local shownFrame = nil;	
+	local bottomShownFrame = nil;	
 	local elementsTable = template.elements;
 	
 	QuestInfoFrame.questLog = template.questLog;
@@ -141,7 +142,7 @@ end
 
 function QuestInfo_DoReputations(anchor)
 	local numReputations = GetNumQuestLogRewardFactions();
-	local factionName, amount, factionId, isHeader;
+	local factionName, amount, factionId, isHeader, hasRep, _;
 	local index = 0;
 	for i = 1, numReputations do		
 		factionId, amount = GetQuestLogRewardFactionInfo(i);
@@ -232,7 +233,7 @@ function QuestInfo_ShowObjectivesHeader()
 end
 
 function QuestInfo_ShowObjectivesText()
-	local questObjectives;
+	local questObjectives, _;
 	if ( QuestInfoFrame.questLog ) then
 		_, questObjectives = GetQuestLogQuestText();
 	else

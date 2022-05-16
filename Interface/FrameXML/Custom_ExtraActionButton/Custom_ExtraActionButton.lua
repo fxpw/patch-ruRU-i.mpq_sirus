@@ -160,32 +160,33 @@ function ExtraActionBarFrame_OnLoad( self, ... )
 	Mixin(self, ExtraActionButtonMixIn)
 
 	self:RegisterEvent("UPDATE_BINDINGS")
-	self:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
 	self:RegisterEvent("CVAR_UPDATE")
 
 	self:RegisterForDrag("LeftButton")
 end
 
+function ExtraActionBarFrame_OnActionBarSlotUpdate(self)
+	for entityID, button in pairs(self.RegisteredButtons) do
+		if self:FindOnActionBar(entityID) then
+			if not button.hidden then
+				button.hidden = true
+			--	button.outro:Play()
+				button:Hide()
+			end
+		else
+			if button.hidden then
+				button.hidden = false
+			--	button.intro:Play()
+				button:Show()
+			end
+		end
+	end
+	self:UpdateButtonPosition()
+end
+
 function ExtraActionBarFrame_OnEvent( self, event, ... )
 	if event == "UPDATE_BINDINGS" then
 		self:UpdateBindings()
-	elseif event == "ACTIONBAR_SLOT_CHANGED" then
-		for entityID, button in pairs(self.RegisteredButtons) do
-			if self:FindOnActionBar(entityID) then
-				if not button.hidden then
-					button.hidden = true
-					-- button.outro:Play()
-					button:Hide()
-				end
-			else
-				if button.hidden then
-					button.hidden = false
-					-- button.intro:Play()
-					button:Show()
-				end
-			end
-		end
-		self:UpdateButtonPosition()
 	elseif event == "CVAR_UPDATE" then
 		-- self:ToggleMoveBar( GetCVarBool("unlockMoveExtraButton") )
 	end

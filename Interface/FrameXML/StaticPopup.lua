@@ -533,7 +533,7 @@ StaticPopupDialogs["CONFIRM_BATTLEFIELD_ENTRY"] = {
         local elapsedTime = self.elapsedTime
         elapsedTime = elapsedTime + elapsed
         self.elapsedTime = elapsedTime
-        fromValue = self.fromValue
+        local fromValue = self.fromValue
 
 		self.bar:SetValue(linear(elapsedTime, fromValue, -fromValue, self.animTime))
 		self.bar.timeText:SetText(string.format("%d:%02d", minutes, seconds))
@@ -3657,6 +3657,13 @@ StaticPopupDialogs["TRANSMOG_APPLY_WARNING"] = {
 	hasItemFrame = 1,
 }
 
+StaticPopupDialogs["ENCOUNTER_JOURNAL_SECTION_LOOP_ERROR_DIALOG"] = {
+	text = ENCOUNTER_JOURNAL_SECTION_LOOP_ERROR,
+	button1 = OKAY,
+	timeout = 0,
+	whileDead = 1,
+	hideOnEscape = 1,
+};
 
 function EventHandler:ASMSG_ALLIED_RACE_STANDART( raceID )
 	raceID = tonumber(raceID)

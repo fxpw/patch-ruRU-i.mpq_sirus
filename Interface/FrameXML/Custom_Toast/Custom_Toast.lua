@@ -191,7 +191,7 @@ function SocialToastSystemMixin:AddToast( categoryID, toastData )
     end
 
     if #self.toastFrames < C_CVar:GetValue("C_CVAR_NUM_DISPLAY_SOCIAL_TOASTS") then
-        self:ShowToast(toastFrame)
+        self:ShowToast()
     end
 end
 

@@ -354,20 +354,12 @@ function AuctionHouseSellFrameMixin:OnShow()
 	self.fixedHeight = self:GetHeight();
 	self:Layout();
 
-	if not IsAnyBagOpen() then
-		OpenAllBags();
-		self.bagClosed = true;
-	end
+	OpenAllBags(true);
 end
 
 function AuctionHouseSellFrameMixin:OnHide()
 	FrameUtil.UnregisterFrameForEvents(self, AUCTION_HOUSE_SELL_FRAME_EVENTS);
 	FrameUtil.UnregisterFrameForCustomEvents(self, AUCTION_HOUSE_SELL_FRAME_CUSTOM_EVENTS);
-
-	if self.bagClosed then
-		CloseAllBags();
-	end
-	self.bagClosed = nil;
 end
 
 function AuctionHouseSellFrameMixin:OnEvent(event, ...)

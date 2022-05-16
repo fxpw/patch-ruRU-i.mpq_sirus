@@ -119,6 +119,8 @@ local BROWSE_QUERY_FILTER_MASK = {
 
 local AUCTION_HOUSE_DURATION = {720, 1440, 2880};
 
+local MAX_COUNT_SEARCH_HISTORY = 10;
+
 local AUCTION_LIST_ITEMS_RESULT_DEFAULT = {
 	HasBidInfo = 1,
 	HasAccountItem = 2,
@@ -630,7 +632,7 @@ function AuctionHouseBrowseUtilMixin:Clear()
 	AuctionHouseItemsListUtilMixin.Clear(self);
 end
 
-function AuctionHouseBrowseUtilMixin:GetFilterInfo()
+function AuctionHouseBrowseUtilMixin:GetFilterInfo(addSearchHistory)
 	local filtersMask = 0;
 	if next(self.sorts.filters) then
 		for _, filter in pairs(self.sorts.filters) do
@@ -652,7 +654,34 @@ function AuctionHouseBrowseUtilMixin:GetFilterInfo()
 		end
 	end
 
-	return filtersMask, self.sorts.searchString and lower(self.sorts.searchString) or "", self.sorts.minLevel or 0, self.sorts.maxLevel or 0, classID, subClassID, itemInvType;
+	local searchString = string.trim(self.sorts.searchString or "");
+	local lowerSearchString = lower(searchString);
+
+	if addSearchHistory then
+		if type(AH_SEARCH_HISTORY) == "table" and searchString ~= "" then
+			local foundSearchHistory = false;
+			for _, searchText in ipairs(AH_SEARCH_HISTORY) do
+				if lower(searchText) == lowerSearchString then
+					foundSearchHistory = true;
+					break;
+				end
+			end
+
+			if not foundSearchHistory then
+				for index = #AH_SEARCH_HISTORY, 1, -1 do
+					if index >= MAX_COUNT_SEARCH_HISTORY then
+						table.remove(AH_SEARCH_HISTORY, index);
+					else
+						break
+					end
+				end
+
+				tinsert(AH_SEARCH_HISTORY, 1, searchString);
+			end
+		end
+	end
+
+	return filtersMask, lowerSearchString, self.sorts.minLevel or 0, self.sorts.maxLevel or 0, classID, subClassID, itemInvType;
 end
 
 function AuctionHouseBrowseUtilMixin:SetExtraInfo(itemKey, extraInfo)
@@ -2332,7 +2361,7 @@ local function SendBrowseQuery(query)
 		browse:Clear();
 		browse:SetSorts(query);
 
-		local filtersMask, searchString, minLevel, maxLevel, classID, subClassID, itemInvType = browse:GetFilterInfo();
+		local filtersMask, searchString, minLevel, maxLevel, classID, subClassID, itemInvType = browse:GetFilterInfo(true);
 
 		SendServerMessage("ACMSG_AUCTION_BROWSE_QUERY", format("%s|%d|%d|%s|%d|%d|%d|%d|%d|%d|%d", ACTION_HOUSE_NPC_GUID, filtersMask, browse:GetOffset(), searchString, minLevel, maxLevel, classID, subClassID, itemInvType, browse:GetSortOrder(), browse:GetReverseSort()));
 
@@ -2500,6 +2529,39 @@ function C_AuctionHouse.StartCommoditiesPurchase(itemID, quantity)
 	SendServerThrottledMessage(StartCommoditiesPurchase, itemID, quantity);
 end
 
+function C_AuctionHouse.GetSearchHistory(searchString, historyTable)
+	if type(searchString) ~= "nil" and type(searchString) ~= "string" then
+		error("Usage: local searchHistory = C_AuctionHouse.GetSearchHistory([, searchString, historyTable]))", 2);
+	end
+	if type(historyTable) ~= "nil" and type(historyTable) ~= "table" then
+		error("Usage: local searchHistory = C_AuctionHouse.GetSearchHistory([, searchString, historyTable]))", 2);
+	end
+
+	if historyTable then
+		twipe(historyTable);
+	end
+
+	local searchHistory = historyTable or {};
+
+	if AH_SEARCH_HISTORY and next(AH_SEARCH_HISTORY) then
+		if searchString then
+			for _, searchText in ipairs(AH_SEARCH_HISTORY) do
+				if find(lower(searchText), lower(searchString), 1, 1) == 1 then
+					searchHistory[#searchHistory + 1] = searchText;
+				end
+			end
+		else
+			for _, searchText in ipairs(AH_SEARCH_HISTORY) do
+				searchHistory[#searchHistory + 1] = searchText;
+			end
+		end
+
+		table.sort(searchHistory);
+	end
+
+	return searchHistory;
+end
+
 AH_CACHE = C_Cache("AUCTION_HOUSE_CACHE", true);
 
 local frame = CreateFrame("Frame");
@@ -2515,6 +2577,8 @@ frame:SetScript("OnEvent", function(self, event)
 			if not AUCTION_FAVORITE_ITEMS[itemKey.itemID] then AUCTION_FAVORITE_ITEMS[itemKey.itemID] = {}; end
 			AUCTION_FAVORITE_ITEMS[itemKey.itemID][itemKey.itemSuffix or 0] = true;
 		end
+
+		AH_SEARCH_HISTORY = AH_CACHE:Get("SEARCH_HISTORY", {});
 
 		g_activeBidAuctionIDs = AH_CACHE:Get("BID_AUCTION_IDS") or AH_CACHE:Get("BID_AUCTION_IDS", {});
 

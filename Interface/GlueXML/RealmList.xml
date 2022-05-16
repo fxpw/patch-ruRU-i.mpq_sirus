@@ -317,7 +317,7 @@
 					</Layer>
 				</Layers>
 			</Frame>
-			<Frame name="$parentBackgroundFrame" parentKey="BackgroundFrame" frameLevel="10" setAllPoints="true">
+			<Frame name="$parentBackgroundFrame" parentKey="BackgroundFrame" frameLevel="10">
 				<Anchors>
 					<Anchor point="TOPLEFT" x="0" y="0" />
 					<Anchor point="BOTTOMRIGHT" x="0" y="0" />
@@ -488,7 +488,7 @@
 					</Layer>
 				</Layers>
 			</Frame>
-			<Frame name="$parentBackgroundFrame" parentKey="BackgroundFrame" frameLevel="10" setAllPoints="true">
+			<Frame name="$parentBackgroundFrame" parentKey="BackgroundFrame" frameLevel="10">
 				<Anchors>
 					<Anchor point="TOPLEFT" x="0" y="0" />
 					<Anchor point="BOTTOMRIGHT" x="0" y="0" />
@@ -655,7 +655,7 @@
 					</Layer>
 				</Layers>
 			</Frame>
-			<Frame name="$parentBackgroundFrame" parentKey="BackgroundFrame" frameLevel="10" setAllPoints="true">
+			<Frame name="$parentBackgroundFrame" parentKey="BackgroundFrame" frameLevel="10">
 				<Anchors>
 					<Anchor point="TOPLEFT" x="0" y="0" />
 					<Anchor point="BOTTOMRIGHT" x="0" y="0" />

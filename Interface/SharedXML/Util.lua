@@ -350,7 +350,7 @@ end
 function toBits(num)
     local t = {}
     while num > 0 do
-        rest = math.fmod(num, 2)
+        local rest = math.fmod(num, 2)
         t[#t + 1] = rest
         num = (num - rest) / 2
     end
@@ -462,16 +462,10 @@ function utf8len(s)
     local bytes = string.len(s)
     local len = 0
 
-    while pos <= bytes and len ~= chars do
-        local c = string.byte(s,pos)
-        len = len + 1
-
-        pos = pos + utf8charbytes(s, pos)
-    end
-
-    if chars ~= nil then
-        return pos - 1
-    end
+	while pos <= bytes do
+		len = len + 1
+		pos = pos + utf8charbytes(s, pos)
+	end
 
     return len
 end

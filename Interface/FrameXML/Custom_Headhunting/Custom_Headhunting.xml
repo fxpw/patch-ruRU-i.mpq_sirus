@@ -810,7 +810,7 @@
                     </ScrollFrame>
                 </Frames>
             </Frame>
-            <EditBox name="$parentNumKills" letters="11" parentKey="NumKills" inherits="NumericInputSpinnerTemplateNoFont">
+            <EditBox name="$parentNumKills" letters="4" parentKey="NumKills" inherits="NumericInputSpinnerTemplateNoFont">
                 <Size x="80" y="20"/>
                 <Anchors>
                 	<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="34" y="6" />
@@ -838,7 +838,7 @@
                 </Scripts>
                 <FontString inherits="GameFontHighlightSmall"/>
             </EditBox>
-            <EditBox name="$parentGoldPerKillsEditBox" parentKey="GoldPerKillsEditBox" inherits="InputBoxInstructionsTemplate" autoFocus="false" numeric="true" letters="14">
+            <EditBox name="$parentGoldPerKillsEditBox" parentKey="GoldPerKillsEditBox" inherits="InputBoxInstructionsTemplate" autoFocus="false" numeric="true" letters="5">
                 <Size x="120" y="20"/>
                 <Anchors>
                 	<Anchor point="BOTTOM" x="2" y="6" />
@@ -901,6 +901,9 @@
             <OnShow>
                 self:OnShow()
             </OnShow>
+            <OnHide>
+                self:OnHide()
+            </OnHide>
         </Scripts>
     </Frame>
     <Frame name="HeadHuntingStatsFrameTemplate" hidden="true" virtual="true">

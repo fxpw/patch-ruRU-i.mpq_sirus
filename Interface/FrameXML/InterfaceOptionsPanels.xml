@@ -295,7 +295,7 @@
 				<Texture name="$parentColorblindFiltersSeparator">
 					<Size x="393" y="1"/>
 					<Anchors>
-						<Anchor point="LEFT" relativePoint="TOPLEFT" x="10" y="-320"/>
+						<Anchor point="LEFT" relativePoint="BOTTOMLEFT" x="10" y="210"/>
 					</Anchors>
 					<Color r="0.25" g="0.25" b="0.25"/>
 				</Texture>
@@ -308,6 +308,18 @@
 					<Size y="32" x="0"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentTitle2" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+						<Anchor point="RIGHT" x="-12" y="0"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentTitle3" text="SETTINGS_LOSSOFCONTROLL_TITLE" inherits="GameFontNormalLarge" justifyH="LEFT" justifyV="TOP">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentColorblindFiltersSeparator" relativePoint="BOTTOMLEFT" x="6" y="-110"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentSubText4" text="SETTINGS_LOSSOFCONTROLL_DESC" inherits="GameFontHighlightSmall" nonspacewrap="true" maxLines="3" justifyH="LEFT" justifyV="TOP">
+					<Size y="32" x="0"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentTitle3" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
 						<Anchor point="RIGHT" x="-12" y="0"/>
 					</Anchors>
 				</FontString>
@@ -416,7 +428,7 @@
 			</CheckButton>
 			<Slider name="SpellOverlay_SpellHighlightAlphaSlider" valueStep="0.01" minValue="0" maxValue="1" inherits="OptionsSliderTemplate">
 				<Anchors>
-					<Anchor point="BOTTOM" relativePoint="BOTTOM" x="-100" y="22" />
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentColorblindFiltersSeparator" x="24" y="-88"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -437,7 +449,7 @@
 			</Slider>
 			<Slider name="SpellOverlay_OverlayArtAlphaSlider" valueStep="0.01" minValue="0" maxValue="1" inherits="OptionsSliderTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="SpellOverlay_SpellHighlightAlphaSlider" relativePoint="RIGHT" x="60" y="0"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentColorblindFiltersSeparator" x="-24" y="-88"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -455,6 +467,27 @@
 					<OnEvent>
 						self.value = S_INTERFACE_OPTIONS_CACHE:Get("SPELL_OVERLAY_ART", 0)
 						self:SetValue(self.value)
+					</OnEvent>
+				</Scripts>
+			</Slider>
+			<Slider name="$parentLossOfControlScale" valueStep="0.05" minValue="0.5" maxValue="1.5" inherits="OptionsSliderTemplate">
+				<Anchors>
+					<Anchor point="BOTTOM" relativeTo="$parentColorblindFiltersSeparator" x="0" y="-188"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:RegisterEvent("VARIABLES_LOADED");
+
+						self.Text:SetText(SETTINGS_SPELLOVERLAY_SLIDER_2);
+					</OnLoad>
+					<OnValueChanged>
+						self.value = value;
+						C_CVar:SetValue("C_CVAR_LOSS_OF_CONTROL_SCALE", tostring(value));
+						LossOfControlFrame_SetScale(LossOfControlFrame, value);
+					</OnValueChanged>
+					<OnEvent>
+						self.value = tonumber(C_CVar:GetValue("C_CVAR_LOSS_OF_CONTROL_SCALE")) or 1;
+						self:SetValue(self.value);
 					</OnEvent>
 				</Scripts>
 			</Slider>
