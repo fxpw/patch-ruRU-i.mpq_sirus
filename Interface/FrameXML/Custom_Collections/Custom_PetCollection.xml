@@ -1,4 +1,5 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_PetCollection_Data.lua"/>
 	<Script file="Custom_PetCollection.lua"/>
 
@@ -210,21 +211,10 @@
 					<OnTextChanged function="PetJournal_OnSearchTextChanged"/>
 				</Scripts>
 			</EditBox>
-			<Button name="$parentFilterButton" toplevel="true" parentKey="FilterButton" inherits="UIMenuButtonStretchTemplate" text="FILTER">
-				<Size x="93" y="22"/>
+			<Button name="$parentFilterButton" parentKey="FilterButton" inherits="UIResettableDropdownButtonTemplate" text="FILTER" frameLevel="10">
 				<Anchors>
 					<Anchor point="TOPRIGHT" relativeTo="$parentLeftInset" x="-5" y="-9"/>
 				</Anchors>
-				<Layers>
-					<Layer level="ARTWORK">
-						<Texture parentKey="Icon" file="Interface\ChatFrame\ChatFrameExpandArrow">
-							<Size x="10" y="12"/>
-							<Anchors>
-								<Anchor point="RIGHT" relativeTo="$parentMiddleRight" relativePoint="RIGHT" x="-5"/>
-							</Anchors>
-						</Texture>
-					</Layer>
-				</Layers>
 				<Scripts>
 					<OnClick>
 						PlaySound("igMainMenuOptionCheckBoxOn")
@@ -480,12 +470,12 @@
 										<Anchors>
 											<Anchor point="BOTTOM" x="0" y="0" />
 										</Anchors>
-										<scripts>
+										<Scripts>
 											<OnShow>
 												self:SetEnabled(IsStoreEnable())
 											</OnShow>
 											<OnClick function="PetJournalBuyButton_OnClick"/>
-										</scripts>
+										</Scripts>
 									</Button>
 								</Frames>
 							</Frame>

@@ -2573,11 +2573,6 @@ frame:SetScript("OnEvent", function(self, event)
 	if event == "VARIABLES_LOADED" then
 		AH_CACHE:Set("FAVORITE_ITEMS", nil); -- Remove later, unused
 
-		for _, itemKey in pairs(SIRUS_AUCTION_HOUSE_FAVORITE_ITEMS) do
-			if not AUCTION_FAVORITE_ITEMS[itemKey.itemID] then AUCTION_FAVORITE_ITEMS[itemKey.itemID] = {}; end
-			AUCTION_FAVORITE_ITEMS[itemKey.itemID][itemKey.itemSuffix or 0] = true;
-		end
-
 		AH_SEARCH_HISTORY = AH_CACHE:Get("SEARCH_HISTORY", {});
 
 		g_activeBidAuctionIDs = AH_CACHE:Get("BID_AUCTION_IDS") or AH_CACHE:Get("BID_AUCTION_IDS", {});
@@ -2603,6 +2598,11 @@ frame:SetScript("OnEvent", function(self, event)
 	elseif event == "PLAYER_TALENT_UPDATE" then
 		frame:UnregisterEvent("COMMENTATOR_ENTER_WORLD");
 		frame:UnregisterEvent(event);
+
+		for _, itemKey in pairs(SIRUS_AUCTION_HOUSE_FAVORITE_ITEMS) do
+			if not AUCTION_FAVORITE_ITEMS[itemKey.itemID] then AUCTION_FAVORITE_ITEMS[itemKey.itemID] = {}; end
+			AUCTION_FAVORITE_ITEMS[itemKey.itemID][itemKey.itemSuffix or 0] = true;
+		end
 	end
 end);
 

@@ -278,6 +278,7 @@ AccountLoginChooseRealmDropDownMixin = {}
 local function ChooseRealmDropdown_OnClick( button, ... )
 	GlueDropDownMenu_SetSelectedValue(AccountLoginChooseRealmDropDown, button.value)
 	SetCVar('realmList', button.value)
+	C_GlueCVars.SetCVar("ENTRY_POINT", button.value)
 end
 
 local function ChooseRealmDropdownInit()
@@ -302,11 +303,21 @@ function AccountLoginChooseRealmDropDownMixin:Init()
 	local currentRealmList = GetCVar("realmList")
 	local selectedValue = self.realmStorage[1].ip
 	
-	if string.sub(currentRealmList,1,string.len("127.0.0.1"))=="127.0.0.1" then
+	if string.find(currentRealmList, "127.0.0.1", 1, true) then
 		return
 	end
 
-	for k, v in pairs(self.realmStorage) do
+	local entryPoint = C_GlueCVars.GetCVar("ENTRY_POINT")
+	if entryPoint ~= "" then
+		for _, d in ipairs(self.realmStorage) do
+			if d.ip == entryPoint then
+				currentRealmList = entryPoint
+				break
+			end
+		end
+	end
+
+	for _, v in ipairs(self.realmStorage) do
 		if v.ip == currentRealmList then
 			selectedValue = v.ip
 			break

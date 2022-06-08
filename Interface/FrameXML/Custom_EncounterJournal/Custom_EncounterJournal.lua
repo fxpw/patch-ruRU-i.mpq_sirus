@@ -2068,20 +2068,10 @@ function EncounterJournal_DisplayEncounter(encounterID, noButton, scrollToEncoun
 
 	if selectedEncounterIndex and scrollToEncounter then
 		bossIndex = bossIndex - 1;
-
-		local numBosses = bossIndex;
-		local buttonSize = BOSS_BUTTON_HEIGHT + BOSS_BUTTON_SECOND_OFFSET;
-		local scrollHeight = EncounterJournal.encounter.info.bossesScroll:GetHeight();
-		local visibleButtons = scrollHeight / buttonSize;
-
-		local toScrollButtons = (selectedEncounterIndex * buttonSize - visibleButtons * buttonSize);
-		local toCenterPx = scrollHeight / 2;
-		local targetScrollValue = toScrollButtons + toCenterPx - buttonSize / 2;
-
-		local maxScrollRange = math.ceil((numBosses - visibleButtons) * buttonSize) - 2;
-
-		ScrollFrame_OnScrollRangeChanged(EncounterJournal.encounter.info.bossesScroll, 0, math.max(0, maxScrollRange));
-		EncounterJournal.encounter.info.bossesScroll.ScrollBar:SetValue(math.min(math.max(targetScrollValue, 0), maxScrollRange));
+	
+		local value, maxScrollRange = ScrollFrame_GetScrollValueForIndex(EncounterJournal.encounter.info.bossesScroll, selectedEncounterIndex, bossIndex, BOSS_BUTTON_HEIGHT, BOSS_BUTTON_SECOND_OFFSET)
+		ScrollFrame_OnScrollRangeChanged(EncounterJournal.encounter.info.bossesScroll, 0, maxScrollRange);
+		EncounterJournal.encounter.info.bossesScroll.ScrollBar:SetValue(value);
 	end
 
 	local id, name, displayInfo, iconImage

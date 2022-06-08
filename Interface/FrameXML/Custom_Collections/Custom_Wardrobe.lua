@@ -676,6 +676,8 @@ function WardrobeCollectionFrameMixin:OnLoad()
 			C_Item.cacheTooltip:SetHyperlink(string.format("item:%d", itemID));
 		end
 	end
+
+	self.FilterButton:SetResetFunction(WardrobeFilterDropDown_ResetFilters);
 end
 
 function WardrobeCollectionFrameMixin:OnEvent(event, ...)
@@ -716,6 +718,8 @@ function WardrobeCollectionFrameMixin:OnShow()
 		self:SetTab(self.selectedCollectionTab);
 	end
 	self:UpdateTabButtons();
+
+	WardrobeResetFiltersButton_UpdateVisibility();
 end
 
 function WardrobeCollectionFrameMixin:OnHide()
@@ -2092,62 +2096,59 @@ function WardrobeFilterDropDown_Initialize(self, level)
 	end
 end
 
-function WardrobeFilterDropDown_InitializeItems(self, level)
-	local info = UIDropDownMenu_CreateInfo();
-	info.keepShownOnClick = true;
-	local atTransmogrifier = C_Transmog.IsAtTransmogNPC();
+function WardrobeFilterDropDown_SetAllSourceTypeFilters(value)
+	C_TransmogCollection.SetAllSourceTypeFilters(value);
+	UIDropDownMenu_Refresh(WardrobeFilterDropDown, UIDROPDOWNMENU_MENU_VALUE, UIDROPDOWNMENU_MENU_LEVEL);
+end
 
-	if level == 1 and not atTransmogrifier then
-		info.text = COLLECTED
-		info.func = function(_, _, _, value)
-			C_TransmogCollection.SetCollectedShown(value);
-		end
-		info.checked = C_TransmogCollection.GetCollectedShown();
-		info.isNotRadio = true;
-		UIDropDownMenu_AddButton(info, level)
-		info.text = NOT_COLLECTED
-		info.func = function(_, _, _, value)
-			C_TransmogCollection.SetUncollectedShown(value);
-		end
-		info.checked = C_TransmogCollection.GetUncollectedShown();
-		info.isNotRadio = true;
-		UIDropDownMenu_AddButton(info, level)
-		info.checked = 	nil;
-		info.isNotRadio = nil;
-		info.func =  nil;
-		info.hasArrow = true;
-		info.notCheckable = true;
-		info.text = SOURCES
-		info.value = 1;
-		UIDropDownMenu_AddButton(info, level)
-	else
-		if level == 2 or atTransmogrifier then
-			local refreshLevel = atTransmogrifier and 1 or 2;
-			info.hasArrow = false;
-			info.isNotRadio = true;
-			info.notCheckable = true;
-			info.text = CHECK_ALL
-			info.func = function()
-				C_TransmogCollection.SetAllSourceTypeFilters(true);
-				UIDropDownMenu_Refresh(WardrobeFilterDropDown, 1, refreshLevel);
-			end
-			UIDropDownMenu_AddButton(info, level)
-			info.text = UNCHECK_ALL
-			info.func = function()
-				C_TransmogCollection.SetAllSourceTypeFilters(false);
-				UIDropDownMenu_Refresh(WardrobeFilterDropDown, 1, refreshLevel);
-			end
-			UIDropDownMenu_AddButton(info, level)
-			info.notCheckable = false;
-			local numSources = C_TransmogCollection.GetNumTransmogSources();
-			for i = 1, numSources do
-				info.text = _G["TRANSMOG_SOURCE_"..i];
-				info.func = function(_, _, _, value)
-					C_TransmogCollection.SetSourceTypeFilter(i, value);
-				end
-				info.checked = function() return not C_TransmogCollection.IsSourceTypeFilterChecked(i) end;
-				UIDropDownMenu_AddButton(info, level);
-			end
-		end
+function WardrobeFilterDropDown_InitializeItems(self, level)
+	-- Transmog NPC only uses source filters
+	local sourceFilters = {
+		{ type = FilterComponent.TextButton,
+		  text = CHECK_ALL,
+		  set = function() WardrobeFilterDropDown_SetAllSourceTypeFilters(true) end,
+		},
+		{ type = FilterComponent.TextButton,
+		  text = UNCHECK_ALL,
+		  set = function() WardrobeFilterDropDown_SetAllSourceTypeFilters(false) end,
+		},
+		{ type = FilterComponent.DynamicFilterSet,
+		  buttonType = FilterComponent.Checkbox,
+		  set = C_TransmogCollection.SetSourceTypeFilter,
+		  isSet = C_TransmogCollection.IsSourceTypeFilterChecked,
+		  numFilters = C_TransmogCollection.GetNumTransmogSources,
+		  globalPrepend = "TRANSMOG_SOURCE_",
+		},
+	};
+
+	local appearanceCollectionFilters = {
+		{ type = FilterComponent.Checkbox, text = COLLECTED, set = C_TransmogCollection.SetCollectedShown, isSet = C_TransmogCollection.GetCollectedShown },
+		{ type = FilterComponent.Checkbox, text = NOT_COLLECTED, set = C_TransmogCollection.SetUncollectedShown, isSet = C_TransmogCollection.GetUncollectedShown },
+		{ type = FilterComponent.Submenu, text = SOURCES, value = 1, childrenInfo = {
+				-- "Appearances" Collection tab has collection filters + source filters
+				filters = sourceFilters,
+			},
+		},
+	};
+
+	local atTransmogrifier = C_Transmog.IsAtTransmogNPC();
+	local filterSystem = {
+		onUpdate = WardrobeResetFiltersButton_UpdateVisibility,
+		filters = (atTransmogrifier and sourceFilters or appearanceCollectionFilters),
+	};
+
+	FilterDropDownSystem.Initialize(self, filterSystem, level);
+end
+
+function WardrobeFilterDropDown_ResetFilters()
+	if WardrobeCollectionFrame:GetSearchType() == Enum.TransmogSearchType.Items then
+		C_TransmogCollection.SetDefaultFilters();
+	end
+	WardrobeCollectionFrame.FilterButton.ResetButton:Hide();
+end
+
+function WardrobeResetFiltersButton_UpdateVisibility()
+	if WardrobeCollectionFrame:GetSearchType() == Enum.TransmogSearchType.Items then
+		WardrobeCollectionFrame.FilterButton.ResetButton:SetShown(not C_TransmogCollection.IsUsingDefaultFilters());
 	end
 end

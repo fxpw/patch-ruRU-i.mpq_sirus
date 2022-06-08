@@ -5307,10 +5307,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Имитация движений головы персонажа при использовании вида от первого лица.",
         enGB = "Simulate head bobbing when in first-person perspective."
     },
-    ["ZONE_UNDER_ATTACK"] = {
-        ruRU = "|cffffff00|3-8(%s) подвергается нападению!|r",
-        enGB = "|cffffff00%s is under attack!|r"
-    },
+	["ZONE_UNDER_ATTACK"] = {
+		ruRU = "|cffffff00%s подвергается нападению!|r",
+		enGB = "|cffffff00%s is under attack!|r"
+	},
     ["UNLEARN"] = {
         ruRU = "Забыть навык",
         enGB = "Unlearn"
@@ -10625,6 +10625,10 @@ local SIRUS_LOCALIZATION = {
     },
     ["STORE_TRANSMOGRIFY_REFRESH_TITLE"] = {
         ruRU = "Обновление списка трансмогрификации",
+        enGB = ""
+    },
+    ["STORE_TRANSMOGRIFY_REFRESH_TOOLTIP"] = {
+        ruRU = "Обновить ассортимент трансмогрификации",
         enGB = ""
     },
     ["ITEM_DURATION_SEC"] = {
@@ -19859,6 +19863,30 @@ local SIRUS_LOCALIZATION = {
     ["EXPANSION_NAME2"] = {
         ruRU = "Wrath of the Lich King",
         enGB = "Wrath of the Lich King"
+    },
+    ["EXPANSION_NAME3"] = {
+        ruRU = "Cataclysm",
+        enGB = "Cataclysm"
+    },
+    ["EXPANSION_NAME4"] = {
+        ruRU = "Mists of Pandaria",
+        enGB = "Mists of Pandaria"
+    },
+    ["EXPANSION_NAME5"] = {
+        ruRU = "Warlords of Draenor",
+        enGB = "Warlords of Draenor"
+    },
+    ["EXPANSION_NAME6"] = {
+        ruRU = "Legion",
+        enGB = "Legion"
+    },
+    ["EXPANSION_NAME7"] = {
+        ruRU = "Battle for Azeroth",
+        enGB = "Battle for Azeroth"
+    },
+    ["EXPANSION_NAME8"] = {
+        ruRU = "Shadowlands",
+        enGB = "Shadowlands"
     },
     ["LAUGH_WORD1"] = {
         ruRU = "лол",
@@ -42040,10 +42068,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Открыть",
         enGB = ""
     },
-    ["FORBS_ISLE"] = {
-    	ruRU = "Остров Форбс",
-    	enGB = ""
-    },
     ["CONFIRM_DESTROY_EQUIPMENTSET_ITEM"] = {
     	ruRU = "Вы собираетесь удалить предмет, который является частью сохраненного комплекта экипировки. Вы уверены?",
     	enGB = ""
@@ -44028,6 +44052,78 @@ local SIRUS_LOCALIZATION = {
 	    ruRU = "Вы попытались выпутаться из кокона, но паутина всё ещё сковывает вас. Члены вашей гильдии могут вам помочь.",
 	    enGB = ""
     },
+    ["CONFIRM_RETURN_INBOX_ITEM_TEXT"] = {
+	    ruRU = "Вы уверены, что хотите вернуть письмо? Убедитесь, что персонаж, которому хотите вернуть письмо, не удалён.",
+	    enGB = ""
+    },
+    ["EASTERN_KINGDOMS"] = {
+    	ruRU = "Восточные королевства",
+    	enGB = "Eastern Kingdoms"
+    },
+    ["KALIMDOR"] = {
+    	ruRU = "Калимдор",
+    	enGB = "Kalimdor"
+    },
+    ["OUTLAND"] = {
+    	ruRU = "Запределье",
+    	enGB = "Outland"
+    },
+    ["NORTHREND"] = {
+    	ruRU = "Нордскол",
+    	enGB = "Northrend"
+    },
+    ["FELYARD"] = {
+    	ruRU = "Фельярд",
+    	enGB = "Felyard"
+    },
+	["COLLECTION_MOUNT_FACTION_1"] = {
+		ruRU = "Альянс",
+		enGB = "Alliance"
+	},
+	["COLLECTION_MOUNT_FACTION_2"] = {
+		ruRU = "Орда",
+		enGB = "Horde"
+	},
+	["COLLECTION_MOUNT_FACTION_3"] = {
+		ruRU = "Нейтральный",
+		enGB = "Neutral"
+	},
+	["COLLECTION_MOUNT_FACTION_4"] = {
+		ruRU = "Ренегаты",
+		enGB = "Renegade"
+	},
+	["STORE_RENEW_TIME_DESCRIPTION"] = {
+		ruRU = "До обновления ассортимента:",
+		enGB = ""
+	},
+	["STORE_RENEW_TIME_LEFT_MOUNTS_TOOLTIP"] = {
+		ruRU = "Обновление ассортимента происходит 1 раз в неделю.",
+		enGB = ""
+	},
+	["STORE_RENEW_TIME_LEFT_TMOG_TOOLTIP"] = {
+		ruRU = "Обновление ассортимента происходит 1 раз в 2 недели.",
+		enGB = ""
+	},
+	["STORE_RENEW_TIME_LEFT_SECONDS"] = {
+        ruRU = "%d |4секунда:секунды:секунд;.",
+        enGB = "%d |4second:seconds;."
+	},
+	["STORE_RENEW_TIME_LEFT_MINUTES"] = {
+		ruRU = "%d |4минутa:минуты:минут;.",
+		enGB = "%d |4minute:minutes;."
+	},
+	["STORE_RENEW_TIME_LEFT_MINUTES"] = {
+		ruRU = "%d |4минутa:минуты:минут;.",
+		enGB = "%d |4minute:minutes;."
+	},
+	["STORE_RENEW_TIME_LEFT_HOURS"] = {
+        ruRU = "%d |4час:часа:часов;.",
+        enGB = "%d |4hour:hours;."
+	},
+	["STORE_RENEW_TIME_LEFT_DAYS"] = {
+        ruRU = "%d |4день:дня:дней;.",
+        enGB = "%d |4day:days;."
+	},
 }
 
 setmetatable(SIRUS_LOCALIZATION, {

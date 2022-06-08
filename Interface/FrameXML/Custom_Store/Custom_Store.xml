@@ -2564,14 +2564,116 @@
 								selfSize = {403, 320},
 								noticeSize = {400, 132},
 								confirmationFunc = function()
+									if selectedSubCategoryID == 0 then
+										StoreToggleLoadingScreen(true, true)
+									end
+
 									SendServerMessage("ACMSG_SHOP_RENEW_ITEMS", selectedCategoryID .. ":1")
 								end
 							}
 
 							StoreFrame_ProductBuy(data)
 						</OnClick>
+						<OnEnter>
+							GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+							GameTooltip:SetText(STORE_TRANSMOGRIFY_REFRESH_TOOLTIP, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, 1, 1)
+							GameTooltip:Show()
+						</OnEnter>
+						<OnLeave function="GameTooltip_Hide"/>
 					</Scripts>
 					</Button>
+					<CheckButton name="StoreShowAllItemCheckButton" inherits="ChatConfigBaseCheckButtonTemplate" hidden="true">
+						<Size x="28" y="28"/>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" relativeTo="StoreFrameLeftInset" x="12" y="45" />
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString name="$parentText" text="STORE_SHOW_ALL_ITEMS_LABEL" parentKey="Text" inherits="GameFontNormal">
+									<Anchors>
+										<Anchor point="LEFT" relativePoint="RIGHT" x="-2" y="2"/>
+									</Anchors>
+									<Color r="1" g="1" b="1"/>
+								</FontString>
+							</Layer>
+						</Layers>
+						<HitRectInsets>
+							<AbsInset left="0" right="-140" top="0" bottom="0"/>
+						</HitRectInsets>
+						<Scripts>
+							<OnLoad>
+								self.tooltip = STORE_SHOW_ALL_ITEMS_TOOLTIP
+							</OnLoad>
+							<OnClick function="StoreShowAllItemCheckButton_OnClick"/>
+						</Scripts>
+					</CheckButton>
+					<Frame name="StoreRenewTimeFrame" hidden="true">
+						<Size x="172" y="74"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="0" y="65"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString name="$parentDescription" parentKey="Description" numLines="2" text="STORE_RENEW_TIME_DESCRIPTION" inherits="GameFontNormal">
+									<Size x="172" y="48"/>
+									<Anchors>
+										<Anchor point="TOP" x="0" y="-6"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Frames>
+							<Frame name="$parentTimerFrame" parentKey="TimerFrame">
+								<Layers>
+									<Layer level="ARTWORK">
+										<FontString name="$parentTimerText" parentKey="TimerText" inherits="GameFontNormal16" justifyH="CENTER" justifyV="CENTER" text="125 дней.">
+											<Color r="0" g="1" b="0"/>
+										</FontString>
+									</Layer>
+								</Layers>
+								<Scripts>
+									<OnEnter>
+										GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+
+										if selectedCategoryID == 3 then
+											GameTooltip:AddLine(STORE_RENEW_TIME_LEFT_MOUNTS_TOOLTIP, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, true);
+										elseif selectedCategoryID == 6 then
+											GameTooltip:AddLine(STORE_RENEW_TIME_LEFT_TMOG_TOOLTIP, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, true);
+										end
+
+										GameTooltip:Show();
+									</OnEnter>
+									<OnLeave function="GameTooltip_Hide"/>
+								</Scripts>
+							</Frame>
+						</Frames>
+						<Scripts>
+							<OnLoad>
+								self.TimerFrame.TimerText:ClearAllPoints()
+								self.TimerFrame.TimerText:SetPoint("BOTTOM", self, 0, 6)
+
+								self.TimerFrame:ClearAllPoints()
+								self.TimerFrame:SetPoint("TOPLEFT", self.TimerFrame.TimerText, -12, 12)
+								self.TimerFrame:SetPoint("BOTTOMRIGHT", self.TimerFrame.TimerText, 12, -12)
+							</OnLoad>
+							<OnShow>
+								if self.Timer then
+									self.Timer:Cancel();
+									self.Timer = nil;
+								end
+
+								self.Timer = C_Timer:NewTicker(1, StoreRenewTimeFrame_UpdateTime);
+
+								StoreRenewTimeFrame_UpdateTime();
+							</OnShow>
+							<OnHide>
+								if self.Timer then
+									self.Timer:Cancel();
+									self.Timer = nil;
+								end
+							</OnHide>
+						</Scripts>
+					</Frame>
 				</Frames>
 			</Frame>
 			<Frame name="StoreFrameRightInset" inherits="StoreInsetFrameTemplate">
@@ -2745,31 +2847,6 @@
 							</Slider>
 						</Frames>
 					</ScrollFrame>
-					<CheckButton name="StoreShowAllItemCheckButton" inherits="ChatConfigBaseCheckButtonTemplate" hidden="true">
-						<Size x="28" y="28"/>
-						<Anchors>
-							<Anchor point="BOTTOMLEFT" relativeTo="StoreFrameLeftInset" x="12" y="45" />
-						</Anchors>
-						<Layers>
-							<Layer level="ARTWORK">
-								<FontString name="$parentText" text="STORE_SHOW_ALL_ITEMS_LABEL" parentKey="Text" inherits="GameFontNormal">
-									<Anchors>
-										<Anchor point="LEFT" relativePoint="RIGHT" x="-2" y="2"/>
-									</Anchors>
-									<Color r="1" g="1" b="1"/>
-								</FontString>
-							</Layer>
-						</Layers>
-						<HitRectInsets>
-							<AbsInset left="0" right="-140" top="0" bottom="0"/>
-						</HitRectInsets>
-						<Scripts>
-							<OnLoad>
-								self.tooltip = STORE_SHOW_ALL_ITEMS_TOOLTIP
-							</OnLoad>
-							<OnClick function="StoreShowAllItemCheckButton_OnClick"/>
-						</Scripts>
-					</CheckButton>
 					<Button name="$ParentResetSort" inherits="StoreSortButtonTemplate" id="0">
 						<Size x="60" y="31"/>
 						<Anchors>

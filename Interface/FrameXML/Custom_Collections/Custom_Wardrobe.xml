@@ -243,21 +243,10 @@
 					<Anchor point="TOPLEFT" relativeTo="$parentTab1" relativePoint="TOPLEFT" x="195" y="-11"/>
 				</Anchors>
 			</StatusBar>
-			<Button name="$parentFilterButton" parentKey="FilterButton" inherits="UIMenuButtonStretchTemplate" text="FILTER" frameLevel="10">
-				<Size x="93" y="22"/>
+			<Button name="$parentFilterButton" parentKey="FilterButton" inherits="UIResettableDropdownButtonTemplate" text="FILTER" frameLevel="10">
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentSearchBox" relativePoint="RIGHT" x="2" y="-1"/>
 				</Anchors>
-				<Layers>
-					<Layer level="ARTWORK">
-						<Texture name="$parentIcon" parentKey="Icon" file="Interface\ChatFrame\ChatFrameExpandArrow">
-							<Size x="10" y="12"/>
-							<Anchors>
-								<Anchor point="RIGHT" relativeTo="$parentMiddleRight" relativePoint="RIGHT" x="-5"/>
-							</Anchors>
-						</Texture>
-					</Layer>
-				</Layers>
 				<Scripts>
 					<OnClick>
 						if self:IsEnabled() == 1 then
@@ -272,6 +261,7 @@
 					</OnEnable>
 					<OnDisable>
 						self.Icon:SetDesaturated(true);
+						self.ResetButton:Hide();
 					</OnDisable>
 				</Scripts>
 			</Button>

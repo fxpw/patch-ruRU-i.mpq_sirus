@@ -99,6 +99,7 @@ function MailFrame_OnEvent(self, event, ...)
 	elseif ( event == "MAIL_CLOSED" ) then
 		HideUIPanel(MailFrame)
 		StaticPopup_Hide("CONFIRM_MAIL_ITEM_UNREFUNDABLE")
+		StaticPopup_Hide("CONFIRM_RETURN_INBOX_ITEM")
 	elseif ( event == "CLOSE_INBOX_ITEM" ) then
 		local arg1 = ...
 		if ( arg1 == InboxFrame.openMailID ) then
@@ -294,6 +295,7 @@ end
 
 function InboxFrame_OnClick(self, index)
 	if ( self:GetChecked() ) then
+		StaticPopup_Hide("CONFIRM_RETURN_INBOX_ITEM")
 		InboxFrame.openMailID = index
 		OpenMailFrame.updateButtonPositions = true
 		OpenMail_Update()
@@ -382,6 +384,7 @@ end
 
 function OpenMailFrame_OnHide()
 	StaticPopup_Hide("DELETE_MAIL")
+	StaticPopup_Hide("CONFIRM_RETURN_INBOX_ITEM")
 	if ( not InboxFrame.openMailID ) then
 		InboxFrame_Update()
 		PlaySound("igSpellBookClose")
@@ -848,8 +851,9 @@ function OpenMail_Delete()
 			DeleteInboxItem(InboxFrame.openMailID)
 		end
 	else
-		ReturnInboxItem(InboxFrame.openMailID)
 		StaticPopup_Hide("COD_CONFIRMATION")
+		StaticPopup_Show("CONFIRM_RETURN_INBOX_ITEM")
+		return
 	end
 	InboxFrame.openMailID = nil
 	HideUIPanel(OpenMailFrame)

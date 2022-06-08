@@ -22,6 +22,14 @@ local WORLDMAP_POI_MIN_Y = -12
 local WORLDMAP_POI_MAX_X			-- changes based on current scale, see WorldMapFrame_SetPOIMaxBounds
 local WORLDMAP_POI_MAX_Y			-- changes based on current scale, see WorldMapFrame_SetPOIMaxBounds
 
+local WORLDMAP_CONTINENTS = {
+	[EASTERN_KINGDOMS] = 1,
+	[KALIMDOR] = 1,
+	[OUTLAND] = 1,
+	[NORTHREND] = 1,
+	[FELYARD] = 1,
+};
+
 BAD_BOY_UNITS = {}
 BAD_BOY_COUNT = 0
 
@@ -959,7 +967,7 @@ function WorldMapFrame_LoadContinents(...)
 	for i=1, select("#", ...), 1 do
 		local text = select(i, ...)
 
-		if text ~= FORBS_ISLE then
+		if WORLDMAP_CONTINENTS[text] then
 			info.text = text
 			info.func = WorldMapContinentButton_OnClick
 			info.checked = GetCurrentMapContinent() == i
@@ -1921,7 +1929,7 @@ function WorldMap_ToggleSizeDown()
 	WorldMapFrameMiniBorderRight:Show()
 	WorldMapFrameSizeUpButton:Show()
 	-- floor dropdown
-	WorldMapLevelDropDown:SetPoint("TOPRIGHT", WorldMapPositioningGuide, "TOPRIGHT", -441, -35)
+	WorldMapLevelDropDown:SetPoint("TOPRIGHT", WorldMapPositioningGuide, "TOPRIGHT", -421, -21)
 	WorldMapLevelDropDown:SetFrameLevel(WORLDMAP_POI_FRAMELEVEL + 2)
 	WorldMapLevelDropDown.header:Hide()
 	-- tiny adjustments

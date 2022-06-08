@@ -547,6 +547,32 @@ function C_PetJournal.GetPetLink(petID)
 	return "";
 end
 
+function C_PetJournal.SetDefaultFilters()
+	C_CVar:SetValue("C_CVAR_PET_JOURNAL_FILTERS", "0");
+	C_CVar:SetValue("C_CVAR_PET_JOURNAL_TYPE_FILTERS", "0");
+	C_CVar:SetValue("C_CVAR_PET_JOURNAL_SOURCE_FILTERS", "0");
+	C_CVar:SetValue("C_CVAR_PET_JOURNAL_EXPANSION_FILTERS", "0");
+
+	table.wipe(PET_FILTER_CHECKED);
+	table.wipe(PET_TYPE_CHECKED);
+	table.wipe(PET_SOURCE_CHECKED);
+	table.wipe(PET_EXPANSION_CHECKED);
+
+	FilteredPetJornal();
+end
+
+function C_PetJournal.IsUsingDefaultFilters()
+	if tonumber(C_CVar:GetValue("C_CVAR_PET_JOURNAL_FILTERS")) ~= 0
+	or tonumber(C_CVar:GetValue("C_CVAR_PET_JOURNAL_TYPE_FILTERS")) ~= 0
+	or tonumber(C_CVar:GetValue("C_CVAR_PET_JOURNAL_SOURCE_FILTERS")) ~= 0
+	or tonumber(C_CVar:GetValue("C_CVAR_PET_JOURNAL_EXPANSION_FILTERS")) ~= 0
+	then
+		return false;
+	end
+
+ 	return true;
+end
+
 function EventHandler:ACMSG_C_P_ADD_TO_FAVORITES(msg)
 	SIRUS_COLLECTION_FAVORITE_PET[msg] = true;
 

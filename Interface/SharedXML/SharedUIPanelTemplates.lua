@@ -1094,6 +1094,20 @@ local height, range, scroll, size, cursorOffset;
 	end
 end
 
+function ScrollFrame_GetScrollValueForIndex(scroll, itemIndex, numItems, itemHeight, itemOffsetY)
+	local scrollHeight = scroll:GetHeight()
+	local buttonSize = itemHeight + (itemOffsetY or 0)
+	local visibleButtons = scrollHeight / buttonSize
+
+	local toScrollButtons = (itemIndex * buttonSize - visibleButtons * buttonSize)
+	local toCenterPx = scrollHeight / 2
+	local targetScrollValue = toScrollButtons + toCenterPx - buttonSize / 2
+
+	local maxScrollRange = math.max(0, math.ceil((numItems - visibleButtons) * buttonSize) - 2)
+
+	return math.min(math.max(targetScrollValue, 0), maxScrollRange), maxScrollRange
+end
+
 ------------------------------------
 -- Loading Spinner
 ------------------------------------

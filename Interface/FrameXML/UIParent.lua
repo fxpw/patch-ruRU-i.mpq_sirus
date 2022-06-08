@@ -2522,6 +2522,10 @@ function RaiseFrameLevel(frame)
 	frame:SetFrameLevel(frame:GetFrameLevel()+1);
 end
 
+function ParentFrameLevel(frame)
+	frame:SetFrameLevel(frame:GetParent():GetFrameLevel());
+end
+
 -- Function to reposition frames if they get dragged off screen
 function ValidateFramePosition(frame, offscreenPadding, returnOffscreen)
 	if ( not frame ) then

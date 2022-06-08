@@ -1320,7 +1320,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Normal = No special rules on this realm.\nPvP = Player versus Player.\nRP = Roleplaying realm.\nRPPvP = Roleplaying, Player versus Player realm."
 	},
 	["CHARACTER_SERVICES_BUYDESCRIPTION"] = {
-		ruRU = "Отличные новости! Наши гномские инженеры смогли изобрести машину времени и достать вас из будущего! Более того, мы можем это будущее отредактировать и научить вас всему чему вы хотите, прямо как в гоблиноматрице!\n\nВаш герой получит превосходную экипировку, обучится паре профессий и мигом достигнет 80-го уровня!",
+		ruRU = "Отличные новости! Наши гномские инженеры смогли изобрести машину времени и достать вас из будущего! Более того, мы можем это будущее отредактировать и научить вас всему чему вы хотите, прямо как в гоблиноматрице!\n\nВаш герой получит прекрасную экипировку, обучится паре профессий и мигом достигнет 80-го уровня!",
 		enGB = "Great news! Our Gnomish engineers were able to invent a time machine and bring your future self back in time! We can now even edit this future and teach you anything you want, just like in the Goblin Matrix!\n\nYour hero will receive excellent equipment, learn a couple of professions, and instantly reach level 80!"
 	},
 	["CHARACTER_SERVICES_BUYWARNING"] = {

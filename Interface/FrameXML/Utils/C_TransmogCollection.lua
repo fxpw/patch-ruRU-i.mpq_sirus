@@ -903,6 +903,47 @@ function C_TransmogCollection.GetCategoryCollectedCount(category, subCategory)
 	return count;
 end
 
+function C_TransmogCollection.GetCategory(classID, subClassID, invType)
+	if type(classID) == "string" then
+		classID = tonumber(classID);
+	end
+	if type(subClassID) == "string" then
+		subClassID = tonumber(subClassID);
+	end
+	if type(classID) ~= "number" or type(subClassID) ~= "number" then
+		error("Usage: local isUsable, category, subCategory = C_TransmogCollection.GetCategoryByClass(classID, subClassID[, invType])", 2);
+	end
+
+	local categoryID, subCategoryID;
+
+	if invType then
+		if ARMOR_CATEGORY_NAME_BY_INVENTORY_TYPE[invType] then
+			categoryID = Enum.TransmogCollectionType[ARMOR_CATEGORY_NAME_BY_INVENTORY_TYPE[invType]];
+			subCategoryID = subClassID;
+		elseif WEAPON_SUB_CATEGORY_BY_INVENTORY_TYPE[invType] then
+			categoryID = Enum.TransmogCollectionType[WEAPON_SUB_CATEGORY_BY_INVENTORY_TYPE[invType]];
+		end
+	elseif WEAPON_SUB_CATEGORY_BY_CLASS_ID[classID] and WEAPON_SUB_CATEGORY_BY_CLASS_ID[classID][subClassID] then
+		categoryID = Enum.TransmogCollectionType[WEAPON_SUB_CATEGORY_BY_CLASS_ID[classID][subClassID]];
+	end
+
+	if categoryID then
+		if subCategoryID then
+			local armorSkillID = ARMOR_SKILL_ID_BY_SUB_CLASS[classID] and ARMOR_SKILL_ID_BY_SUB_CLASS[classID][subClassID];
+			local isSkillKnown = armorSkillID and PLAYER_SKILLS[armorSkillID];
+
+			return not armorSkillID or isSkillKnown, categoryID, subCategoryID;
+		else
+			local weaponSkillID = WEAPON_SKILL_ID_BY_CATEGORY[categoryID];
+			local isSkillKnown = weaponSkillID and PLAYER_SKILLS[weaponSkillID];
+
+			return not weaponSkillID or isSkillKnown, categoryID;
+		end
+	end
+
+	return false;
+end
+
 function C_TransmogCollection.GetCategoryInfo(category)
 	if type(category) == "string" then
 		category = tonumber(category);
@@ -1084,7 +1125,11 @@ function C_TransmogCollection.IsSourceTypeFilterChecked(index)
 		error("Usage: local checked = C_TransmogCollection.IsSourceTypeFilterChecked(index)", 2);
 	end
 
-	return SOURCE_TYPE_FILTER[index] and true or false;
+	if not SOURCE_TYPE_FILTER[index] then
+		return true;
+	else
+		return false;
+	end
 end
 
 function C_TransmogCollection.ModifyOutfit(outfitID, itemTransmogInfoList)
@@ -1318,6 +1363,26 @@ end
 
 function C_TransmogCollection.UpdateUsableAppearances()
 
+end
+
+function C_TransmogCollection.SetDefaultFilters()
+	C_CVar:SetValue("C_CVAR_WARDROBE_SHOW_COLLECTED", "1");
+	C_CVar:SetValue("C_CVAR_WARDROBE_SHOW_UNCOLLECTED", "1");
+	C_CVar:SetValue("C_CVAR_WARDROBE_SOURCE_FILTERS", "0");
+
+	COLLECTED_SHOWN = true;
+	UNCOLLECTED_SHOWN = true;
+	table.wipe(SOURCE_TYPE_FILTER);
+
+	SearchAndFilterCategory();
+end
+
+function C_TransmogCollection.IsUsingDefaultFilters()
+	if tonumber(C_CVar:GetValue("C_CVAR_WARDROBE_SHOW_COLLECTED")) ~= 1 or tonumber(C_CVar:GetValue("C_CVAR_WARDROBE_SHOW_UNCOLLECTED")) ~= 1 or tonumber(C_CVar:GetValue("C_CVAR_WARDROBE_SOURCE_FILTERS")) ~= 0 then
+		return false;
+	end
+
+ 	return true;
 end
 
 function EventHandler:ASMSG_C_I_GET_MODELS(msg)

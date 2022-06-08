@@ -33,7 +33,7 @@ function MacroFrame_OnShow(self)
 	else
 		MacroFrame_SetCharacterMacros()
 	end
-	
+
 	MacroFrame_Update();
 	PlaySound("igCharacterInfoOpen");
 	UpdateMicroButtons();
@@ -149,7 +149,7 @@ function MacroFrame_Update()
 		MacroFrame_HideDetails();
 		MacroDeleteButton:Disable();
 	end
-	
+
 	--Update New Button
 	if ( numMacros < MacroFrame.macroMax ) then
 		MacroNewButton:Enable();
@@ -251,8 +251,26 @@ function MacroPopupFrame_OnShow(self)
 	if ( self.mode == "new" ) then
 		MacroFrameText:Hide();
 		MacroPopupButton_SelectTexture(1);
+	elseif ( self.mode == "edit" ) then
+		MacroPopupSearchBox:SetText("")
+
+		local _, texture = GetMacroInfo(MacroFrame.selectedMacro)
+		local textureIndex
+		for index = 1, GetNumMacroIcons() do
+			local texture2 = GetMacroIconInfo(index)
+			if texture == texture2 then
+				textureIndex = index
+				break
+			end
+		end
+
+		if textureIndex then
+			MacroPopupButton_SelectTexture(textureIndex)
+			local value = ScrollFrame_GetScrollValueForIndex(MacroPopupScrollFrame, math.ceil(textureIndex / NUM_ICONS_PER_ROW) + 1, GetNumMacroIcons(), MACRO_ICON_ROW_HEIGHT)
+			MacroPopupScrollFrame.ScrollBar:SetValue(value);
+		end
 	end
-	
+
 	-- Disable Buttons
 	MacroEditButton:Disable();
 	MacroDeleteButton:Disable();
@@ -266,7 +284,7 @@ function MacroPopupFrame_OnHide(self)
 		MacroFrameText:Show();
 		MacroFrameText:SetFocus();
 	end
-	
+
 	-- Enable Buttons
 	MacroEditButton:Enable();
 	MacroDeleteButton:Enable();
@@ -319,7 +337,7 @@ function MacroPopupFrame_Update(self)
 		local name, texture, body = GetMacroInfo(MacroFrame.selectedMacro);
 		MacroPopupEditBox:SetText(name);
 	end
-	
+
 	-- Icon list
 	local texture, textureIndex;
 	for i=1, NUM_MACRO_ICONS_SHOWN do
@@ -345,7 +363,7 @@ function MacroPopupFrame_Update(self)
 			macroPopupButton:SetChecked(nil);
 		end
 	end
-	
+
 	-- Scrollbar stuff
 	FauxScrollFrame_Update(MacroPopupScrollFrame, ceil(numMacroIcons / NUM_ICONS_PER_ROW) , NUM_ICON_ROWS, MACRO_ICON_ROW_HEIGHT );
 end

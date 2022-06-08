@@ -2810,7 +2810,7 @@ StaticPopupDialogs["GOSSIP_ENTER_CODE"] = {
 	end,
 	EditBoxOnEnterPressed = function(self, data)
 		local parent = self:GetParent();
-		SelectGossipOption(data, parent.editBox:GetText());
+		SelectGossipOption(data, parent.editBox:GetText(), true);
 		parent:Hide();
 	end,
 	EditBoxOnEscapePressed = function(self)
@@ -2838,7 +2838,7 @@ StaticPopupDialogs["GOSSIP_EDIT_BOX"] = {
 	end,
 	EditBoxOnEnterPressed = function(self, data)
 		local parent = self:GetParent();
-		SelectGossipOption(data, parent.editBox:GetText());
+		SelectGossipOption(data, parent.editBox:GetText(), true);
 		parent:Hide();
 	end,
 	EditBoxOnEscapePressed = function(self)
@@ -3663,6 +3663,41 @@ StaticPopupDialogs["ENCOUNTER_JOURNAL_SECTION_LOOP_ERROR_DIALOG"] = {
 	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = 1,
+};
+
+StaticPopupDialogs["CONFIRM_RETURN_INBOX_ITEM"] = {
+	text = CONFIRM_RETURN_INBOX_ITEM_TEXT,
+	button1 = YES,
+	button2 = NO,
+	OnAccept = function(self)
+		ReturnInboxItem(InboxFrame.openMailID);
+		InboxFrame.openMailID = nil;
+		HideUIPanel(OpenMailFrame);
+
+		self.timeLeft = nil;
+	end,
+	OnShow = function(self)
+		self.button1:Disable();
+		self.timeLeft = 3;
+	end,
+	OnUpdate = function(self, elapsed)
+		if self.timeLeft then
+			local timeLeft = self.timeLeft - elapsed;
+			if timeLeft <= 0 then
+				self.timeLeft = nil;
+				self.button1:SetText(YES);
+				self.button1:Enable();
+				return;
+			end
+			self.timeLeft = timeLeft;
+			self.button1:SetText(ceil(timeLeft));
+		end
+	end,
+	OnCancel = function(self)
+		self.timeLeft = nil;
+	end,
+	timeout = 0,
+	hideOnEscape = 1
 };
 
 function EventHandler:ASMSG_ALLIED_RACE_STANDART( raceID )

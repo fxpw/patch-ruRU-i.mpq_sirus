@@ -55,7 +55,7 @@
 						<Anchor point="LEFT" x="47" y="8"/>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentSubject" parentKey="Subject" inherits="GameFontNormalSmall" maxlines="1" justifyV="TOP" justifyH="LEFT">
+				<FontString name="$parentSubject" parentKey="Subject" inherits="GameFontNormalSmall" maxLines="1" justifyV="TOP" justifyH="LEFT">
 					<Size x="248" y="0"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentSender" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
@@ -398,9 +398,12 @@
 	</Frame>
 
 	<Frame name="MailFrame" toplevel="true" parent="UIParent" enableMouse="true" hidden="true" inherits="ButtonFrameTemplate_NineSlice">
-		<Size x="666‬" y="424"/>
+		<Size x="666" y="424"/>
+		<Anchors>
+			<Anchor point="TOPLEFT" x="0" y="-104"/>
+		</Anchors>
 		<Layers>
-			<Layer level="OVERLAY" textureSubLevel="-1">
+			<Layer level="OVERLAY">
 				<Texture file="Interface\MailFrame\Mail-Icon">
 					<Size x="58" y="58"/>
 					<Anchors>
@@ -1037,7 +1040,7 @@
 									</CheckButton>
 								</Frames>
 							</Frame>
-							<Frame name="SendMailMoneyInset" inherits="InsetFrameTemplate" useParentLevel="true">
+							<Frame name="SendMailMoneyInset" inherits="InsetFrameTemplate">
 								<Anchors>
 									<Anchor point="BOTTOMLEFT" x="4" y="92"/>
 									<Anchor point="TOPRIGHT" relativePoint="BOTTOMLEFT" x="170" y="115"/>
@@ -1328,7 +1331,7 @@
 			</OnHide>
 		</Scripts>
 	</Frame>
-<!-- Open Mail -->
+	<!-- Open Mail -->
 	<Frame name="OpenMailFrame" toplevel="true" hidden="true" parent="UIParent" enableMouse="true" inherits="ButtonFrameTemplate_NineSlice">
 		<Anchors>
 			<Anchor point="TOPLEFT" relativeTo="MailFrame" relativePoint="TOPRIGHT" x="20" y="0"/>

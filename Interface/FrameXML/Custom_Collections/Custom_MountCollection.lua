@@ -4,339 +4,33 @@
 --	E-mail:		nyll@sirus.su
 --	Web:		https://sirus.su/
 
-local MountJournalFilterDropDown_Data = {
-	{
-		{
-			text = COLLECTED,
-			isNotRadio = true,
-			keyValue = "RECEIVED",
-			checked = true,
-		},
-		{
-			text = NOT_COLLECTED,
-			isNotRadio = true,
-			keyValue = "NO_RECEIVED"
-		},
-		{
-			text = MOUNT_GROUND,
-			func = function(self,_,_,_) _G["MOUNTJOURNAL_FILTER_"..self.keyValue] = not _G["MOUNTJOURNAL_FILTER_"..self.keyValue] and self.value end,
-			isNotRadio = true,
-			keyValue = "IS_GROUND",
-			value = 1
-		},
-		{
-			text = MOUNT_FLY,
-			func = function(self,_,_,_) _G["MOUNTJOURNAL_FILTER_"..self.keyValue] = not _G["MOUNTJOURNAL_FILTER_"..self.keyValue] and self.value end,
-			isNotRadio = true,
-			keyValue = "IS_FLY",
-			value = 2
-		},
-		{
-			text = MOUNT_WATER,
-			func = function(self,_,_,_) _G["MOUNTJOURNAL_FILTER_"..self.keyValue] = not _G["MOUNTJOURNAL_FILTER_"..self.keyValue] and self.value end,
-			isNotRadio = true,
-			keyValue = "IS_WATER",
-			value = 4
-		},
-		{
-			text = SOURCES,
-			isNotRadio = nil,
-			func = nil,
-			hasArrow = true,
-			notCheckable = true,
-			value = 2
-		},
-		{
-			text = EXPANSION_FILTER_TEXT,
-			isNotRadio = nil,
-			func = nil,
-			hasArrow = true,
-			notCheckable = true,
-			value = 3,
-		},
-		{
-			text = FACTION,
-			isNotRadio = nil,
-			func = nil,
-			hasArrow = true,
-			notCheckable = true,
-			value = 4,
-		},
-	},
-	{
-		{
-			text = CHECK_ALL,
-			func = function(_,_,_,_)
-				MOUNTJOURNAL_FILTER_SOURCE_LOOT = true
-				MOUNTJOURNAL_FILTER_SOURCE_QUEST = true
-				MOUNTJOURNAL_FILTER_SOURCE_VENDOR = true
-				MOUNTJOURNAL_FILTER_SOURCE_CRAFT = true
-				MOUNTJOURNAL_FILTER_SOURCE_ACHIEVEMENT = true
-				MOUNTJOURNAL_FILTER_SOURCE_EVENT = true
-				MOUNTJOURNAL_FILTER_SOURCE_STORE = true
-				MOUNTJOURNAL_FILTER_SOURCE_VOTE = true
-				MOUNTJOURNAL_FILTER_SOURCE_BATTLE_BASS = true
-				MOUNTJOURNAL_FILTER_SOURCE_BLACK_MARKET = true
+local mountTypeStrings = {
+	[1] = MOUNT_GROUND,
+	[2] = MOUNT_FLY,
+	[3] = MOUNT_WATER,
+};
 
-				CloseDropDownMenus()
-			end,
-			hasArrow = false,
-			isNotRadio = true,
-			notCheckable = true
-		},
-		{
-			text = UNCHECK_ALL,
-			func = function(_,_,_,_)
-				MOUNTJOURNAL_FILTER_SOURCE_LOOT = false
-				MOUNTJOURNAL_FILTER_SOURCE_QUEST = false
-				MOUNTJOURNAL_FILTER_SOURCE_VENDOR = false
-				MOUNTJOURNAL_FILTER_SOURCE_CRAFT = false
-				MOUNTJOURNAL_FILTER_SOURCE_ACHIEVEMENT = false
-				MOUNTJOURNAL_FILTER_SOURCE_EVENT = false
-				MOUNTJOURNAL_FILTER_SOURCE_STORE = false
-				MOUNTJOURNAL_FILTER_SOURCE_VOTE = false
-				MOUNTJOURNAL_FILTER_SOURCE_BATTLE_BASS = false
-				MOUNTJOURNAL_FILTER_SOURCE_BLACK_MARKET = false
-
-				CloseDropDownMenus()
-			end,
-			hasArrow = false,
-			isNotRadio = true,
-			notCheckable = true
-		},
-		{
-			text = COLLECTION_PET_SOURCE_1,
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "SOURCE_LOOT"
-		},
-		{
-			text = COLLECTION_PET_SOURCE_2,
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "SOURCE_QUEST"
-		},
-		{
-			text = COLLECTION_PET_SOURCE_3,
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "SOURCE_VENDOR"
-		},
-		{
-			text = COLLECTION_PET_SOURCE_4,
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "SOURCE_CRAFT"
-		},
-		{
-			text = COLLECTION_PET_SOURCE_5,
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "SOURCE_ACHIEVEMENT"
-		},
-		{
-			text = COLLECTION_PET_SOURCE_6,
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "SOURCE_EVENT"
-		},
-		{
-			text = COLLECTION_PET_SOURCE_7,
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "SOURCE_STORE"
-		},
-		{
-			text = COLLECTION_PET_SOURCE_8,
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "SOURCE_VOTE"
-		},
-		{
-			text = COLLECTION_PET_SOURCE_9,
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "SOURCE_BATTLE_BASS"
-		},
-		{
-			text = COLLECTION_PET_SOURCE_10,
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "SOURCE_BLACK_MARKET"
-		},
-	},
-	{
-		{
-			text = CHECK_ALL,
-			func = function(_,_,_,_)
-				MOUNTJOURNAL_FILTER_EXPANSION_CLASSIC = true
-				MOUNTJOURNAL_FILTER_EXPANSION_BURNING_CRUSADE = true
-				MOUNTJOURNAL_FILTER_EXPANSION_LICH_KING = true
-				MOUNTJOURNAL_FILTER_EXPANSION_CATACLYSM = true
-				MOUNTJOURNAL_FILTER_EXPANSION_MISTS_OF_PANDARIA = true
-				MOUNTJOURNAL_FILTER_EXPANSION_WARLORDS_OF_DRAENOR = true
-				MOUNTJOURNAL_FILTER_EXPANSION_LEGION = true
-				MOUNTJOURNAL_FILTER_EXPANSION_BATTLE_FOR_AZEROTH = true
-				MOUNTJOURNAL_FILTER_EXPANSION_SHADOWLANDS = true
-
-				CloseDropDownMenus()
-			end,
-			hasArrow = false,
-			isNotRadio = true,
-			notCheckable = true
-		},
-		{
-			text = UNCHECK_ALL,
-			func = function(_,_,_,_)
-				MOUNTJOURNAL_FILTER_EXPANSION_CLASSIC = false
-				MOUNTJOURNAL_FILTER_EXPANSION_BURNING_CRUSADE = false
-				MOUNTJOURNAL_FILTER_EXPANSION_LICH_KING = false
-				MOUNTJOURNAL_FILTER_EXPANSION_CATACLYSM = false
-				MOUNTJOURNAL_FILTER_EXPANSION_MISTS_OF_PANDARIA = false
-				MOUNTJOURNAL_FILTER_EXPANSION_WARLORDS_OF_DRAENOR = false
-				MOUNTJOURNAL_FILTER_EXPANSION_LEGION = false
-				MOUNTJOURNAL_FILTER_EXPANSION_BATTLE_FOR_AZEROTH = false
-				MOUNTJOURNAL_FILTER_EXPANSION_SHADOWLANDS = false
-
-				CloseDropDownMenus()
-			end,
-			hasArrow = false,
-			isNotRadio = true,
-			notCheckable = true
-		},
-		{
-			text = "World of Warcraft: Classic",
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "EXPANSION_CLASSIC"
-		},
-		{
-			text = "World of Warcraft: The Burning Crusade",
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "EXPANSION_BURNING_CRUSADE"
-		},
-		{
-			text = "World of Warcraft: Wrath of Lich King",
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "EXPANSION_LICH_KING"
-		},
-		{
-			text = "World of Warcraft: Cataclysm",
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "EXPANSION_CATACLYSM"
-		},
-		{
-			text = "World of Warcraft: Mists of Pandaria",
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "EXPANSION_MISTS_OF_PANDARIA"
-		},
-		{
-			text = "World of Warcraft: Warlords of Draenor",
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "EXPANSION_WARLORDS_OF_DRAENOR"
-		},
-		{
-			text = "World of Warcraft: Legion",
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "EXPANSION_LEGION"
-		},
-		{
-			text = "World of Warcraft: Battle for Azeroth",
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "EXPANSION_BATTLE_FOR_AZEROTH"
-		},
-		{
-			text = "World of Warcraft: Shadowlands",
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "EXPANSION_SHADOWLANDS"
-		},
-	},
-	{
-		{
-			text = CHECK_ALL,
-			func = function(_,_,_,_)
-				MOUNTJOURNAL_FILTER_FACTION_ALLIANCE = true
-				MOUNTJOURNAL_FILTER_FACTION_HORDE = true
-				MOUNTJOURNAL_FILTER_FACTION_NEUTRAL = true
-				MOUNTJOURNAL_FILTER_FACTION_RENEGATE = true
-
-				CloseDropDownMenus()
-			end,
-			hasArrow = false,
-			isNotRadio = true,
-			notCheckable = true
-		},
-		{
-			text = UNCHECK_ALL,
-			func = function(_,_,_,_)
-				MOUNTJOURNAL_FILTER_FACTION_ALLIANCE = false
-				MOUNTJOURNAL_FILTER_FACTION_HORDE = false
-				MOUNTJOURNAL_FILTER_FACTION_NEUTRAL = false
-				MOUNTJOURNAL_FILTER_FACTION_RENEGATE = false
-
-				CloseDropDownMenus()
-			end,
-			hasArrow = false,
-			isNotRadio = true,
-			notCheckable = true
-		},
-		{
-			text = FACTION_ALLIANCE,
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "FACTION_ALLIANCE"
-		},
-		{
-			text = FACTION_HORDE,
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "FACTION_HORDE"
-		},
-		{
-			text = COMBATLOG_FILTER_STRING_NEUTRAL_UNITS,
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "FACTION_NEUTRAL"
-		},
-		{
-			text = BATTLEGROUND_CROSS_FACTION_2,
-			isNotRadio = true,
-			notCheckable = false,
-			keyValue = "FACTION_RENEGATE"
-		},
-	}
-}
+local SUB_CATEGORY_COLLECTIONS = -1;
+local SUB_CATEGORY_FAVORITES = -2;
 
 local categoryData = {
 	{
 		text = MY_COLLECTIONS,
 		id = 0,
+		sortID = SUB_CATEGORY_COLLECTIONS,
 		parent = nil,
 		collapsed = false,
 		isCategory = true,
 		icon = "Interface\\ICONS\\INV_Misc_SkullRed_01",
-		func = function()
-			MOUNTJOURNAL_FILTER_RECEIVED = true
-		end
 	},
 	{
 		text = FAVORITES,
 		id = 0,
+		sortID = SUB_CATEGORY_FAVORITES,
 		parent = nil,
 		collapsed = false,
 		isCategory = true,
 		icon = "Interface\\ICONS\\INV_Misc_SkullRed_02",
-		func = function()
-			MOUNTJOURNAL_FILTER_IS_FAVORITE = true
-		end
 	},
 	{
 		text = ANIMALS,
@@ -790,7 +484,7 @@ local categoryData = {
 		collapsed = false,
 		isCategory = true,
 		icon = "Interface\\ICONS\\INV_Misc_SkullRed_07",
-		func = function() end
+		func = function() MountJournal_SetDefaultCategory(true); end
 	},
 }
 
@@ -806,67 +500,30 @@ local MOUNTJOURNAL_MASTER_DATA = {}
 STORE_PRODUCT_MONEY_ICON = {"coins", "mmotop", "refer", "loyal"}
 
 local totalMounts
-local subCategoryFilter
 local mountDataBuffer = {}
 local displayCategories = {}
 
-local FilterData = {
-	"MOUNTJOURNAL_FILTER_RECEIVED",
-	"MOUNTJOURNAL_FILTER_NO_RECEIVED",
-	"MOUNTJOURNAL_FILTER_IS_GROUND",
-	"MOUNTJOURNAL_FILTER_IS_FLY",
-	"MOUNTJOURNAL_FILTER_IS_WATER",
+local SUB_CATEGORY_FILTER;
 
-	"MOUNTJOURNAL_FILTER_SOURCE_LOOT",
-	"MOUNTJOURNAL_FILTER_SOURCE_QUEST",
-	"MOUNTJOURNAL_FILTER_SOURCE_VENDOR",
-	"MOUNTJOURNAL_FILTER_SOURCE_CRAFT",
-	"MOUNTJOURNAL_FILTER_SOURCE_ACHIEVEMENT",
-	"MOUNTJOURNAL_FILTER_SOURCE_EVENT",
-	"MOUNTJOURNAL_FILTER_SOURCE_STORE",
-	"MOUNTJOURNAL_FILTER_SOURCE_VOTE",
-	"MOUNTJOURNAL_FILTER_SOURCE_BATTLE_BASS",
-	"MOUNTJOURNAL_FILTER_SOURCE_BLACK_MARKET",
-
-	"MOUNTJOURNAL_FILTER_EXPANSION_CLASSIC",
-	"MOUNTJOURNAL_FILTER_EXPANSION_BURNING_CRUSADE",
-	"MOUNTJOURNAL_FILTER_EXPANSION_LICH_KING",
-	"MOUNTJOURNAL_FILTER_EXPANSION_CATACLYSM",
-	"MOUNTJOURNAL_FILTER_EXPANSION_MISTS_OF_PANDARIA",
-	"MOUNTJOURNAL_FILTER_EXPANSION_WARLORDS_OF_DRAENOR",
-	"MOUNTJOURNAL_FILTER_EXPANSION_LEGION",
-	"MOUNTJOURNAL_FILTER_EXPANSION_BATTLE_FOR_AZEROTH",
-	"MOUNTJOURNAL_FILTER_EXPANSION_SHADOWLANDS",
-
-	"MOUNTJOURNAL_FILTER_FACTION_ALLIANCE",
-	"MOUNTJOURNAL_FILTER_FACTION_HORDE",
-	"MOUNTJOURNAL_FILTER_FACTION_NEUTRAL",
-	"MOUNTJOURNAL_FILTER_FACTION_RENEGATE",
-
-	"MOUNTJOURNAL_FILTER_IS_FAVORITE",
-}
+local MOUNTJOURNAL_FILTER_COLLECTED;
+local MOUNTJOURNAL_FILTER_NOT_COLLECTED;
+local MOUNTJOURNAL_FILTER_TYPES = {};
+local MOUNTJOURNAL_FILTER_SOURCES = {};
+local MOUNTJOURNAL_FILTER_EXPANSIONS = {};
+local MOUNTJOURNAL_FILTER_FACTIONS = {};
 
 local function keyConcat( a, b )
 	return tostring(a) .. tostring(b)
 end
 
-function MountJournal_ResetVar()
-	for i = 1, #FilterData do
-		_G[FilterData[i]] = false
-	end
-
-	subCategoryFilter = nil
-end
-
 function MountJournal_OnLoad( self, ... )
-	MountJournal_ResetVar()
 	totalMounts = #COLLECTION_MOUNTDATA
 
 	local homeData = {
 		name = CATEGORYES,
 		OnClick = function()
+			SUB_CATEGORY_FILTER = nil;
 			MountJournal.selectCategoryID = nil
-			MountJournal_ResetVar()
 			if self.ListScrollFrame:IsShown() then
 				self.ListScrollFrame:Hide()
 				self.CategoryScrollFrame:Show()
@@ -879,6 +536,8 @@ function MountJournal_OnLoad( self, ... )
 	self.navBar.home:SetText(CATEGORYES)
 	NavBar_ReconsultationSize(self.navBar.home)
 	NavBar_Initialize(self.navBar, "NavButtonTemplate", homeData, self.navBar.home, self.navBar.overflow)
+
+	MountJournal_SetDefaultCategory();
 
 	self.ListScrollFrame.update = MountJournal_UpdateMountList
 	self.ListScrollFrame.scrollBar.doNotHide = true
@@ -1022,33 +681,19 @@ function MountJournal_UpdateCollectionList()
 	return displayCategories
 end
 
-function ListScrollFrame_OnShow( _, ... )
-	if not subCategoryFilter and not MountJournal_CanUseFilter() then
+function ListScrollFrame_OnShow(self)
+	if not SUB_CATEGORY_FILTER then
 		MountJournal_FilterToggle(true)
 	end
 	MountJournal.LeftInset.Bgs:SetVertexColor(1, 1, 1, 1)
 end
 
-function MountJournal_CanUseFilter()
-	local canUseFilter = false
-
-	for i = 1, #FilterData do
-		if _G[FilterData[i]] then
-			canUseFilter = true
-			break
-		end
-	end
-
-	return canUseFilter
-end
-
-function CategoryScrollFrame_OnShow( _, ... )
+function CategoryScrollFrame_OnShow(self)
 	MountJournal_FilterToggle(false)
-	MountJournal_ResetVar()
 	MountJournal.LeftInset.Bgs:SetVertexColor(1, 0, 0, 0.9)
 end
 
-function MountJournal_FilterToggle( value )
+function MountJournal_FilterToggle(value)
 	if value then
 		MountJournal.FilterButton:Enable()
 		MountJournal.searchBox:EnableMouse(1)
@@ -1057,6 +702,20 @@ function MountJournal_FilterToggle( value )
 		MountJournal.searchBox:SetText("")
 		MountJournal.searchBox:ClearFocus()
 		MountJournal.searchBox:EnableMouse(0)
+	end
+end
+
+function MountJournal_SetDefaultCategory(notResetNavBar)
+	SUB_CATEGORY_FILTER = nil;
+	MountJournal.selectCategoryID = nil;
+
+	MountJournal_SetDefaultFilters();
+
+	if not notResetNavBar then
+		NavBar_Reset(MountJournal.navBar);
+		NavBar_AddButton(MountJournal.navBar, {
+			name = ALL_MOUNTS
+		});
 	end
 end
 
@@ -1122,7 +781,6 @@ function Categorylist_SelectButton( button )
 
 	if data.func then
 		MountJournal.selectCategoryID = nil
-		MountJournal_ResetVar()
 		data.func()
 
 		MountJournal.ListScrollFrame:Show()
@@ -1139,7 +797,7 @@ function Categorylist_SelectButton( button )
 	end
 
 	if data.sortID then
-		subCategoryFilter = data.sortID
+		SUB_CATEGORY_FILTER = data.sortID
 
 		local buttonData = {
 			name = data.text
@@ -1168,10 +826,9 @@ end
 function MountJournal_OnShow( self, ... )
 	SetPortraitToTexture(CollectionsJournalPortrait, "Interface\\Icons\\MountJournalPortrait");
 
-	RaiseFrameLevelByThree(self.searchBox)
-	RaiseFrameLevelByThree(self.FilterButton)
-	RaiseFrameLevelByThree(self.MountDisplay)
-	RaiseFrameLevelByThree(self.MountCount)
+	ParentFrameLevel(self.LeftInset);
+	ParentFrameLevel(self.RightTopInset);
+	ParentFrameLevel(self.RightBottomInset);
 
 	self.selectCategoryID = nil
 	self.IsOpenStore = nil
@@ -1206,6 +863,8 @@ function MountJournal_OnShow( self, ... )
 
 	MountJournal_CreateData()
 	MountJournal_UpdateFilter(true)
+
+	self.FilterButton:SetResetFunction(MountJournalFilterDropdown_ResetFilters);
 end
 
 function MountJournal_OnHide( self, ... )
@@ -1217,9 +876,9 @@ function MountJournal_OnHide( self, ... )
 
 		CollectionsJournal.resetPositionTimer = C_Timer:After(5, function()
 			-- print("Reset OnHide timer")
-			MountJournal.selectCategoryID = nil
+			MountJournal_SetDefaultCategory()
+
 			MountJournal.searchBox:SetText("")
-			MountJournal_ResetVar()
 			MountJournal_UpdateScrollPos(MountJournalListScrollFrame, 1)
 			MountJournal_UpdateFilter()
 			MountJournal_Select(1)
@@ -1242,226 +901,127 @@ function MountJournal_OnSearchTextChanged( self, ... )
 	end
 end
 
-function MountJournal_CheckFilter( data )
-	local countFiltre = 0
-
-	if MOUNTJOURNAL_FILTER_RECEIVED then
-		countFiltre = countFiltre + 1
+local function MountJournal_CheckSubCategoryFilter(data)
+	if SUB_CATEGORY_FILTER == SUB_CATEGORY_COLLECTIONS then
 		if data.mountIndex then
-			return true
+			return true;
 		end
-	end
-
-	if MOUNTJOURNAL_FILTER_NO_RECEIVED then
-		countFiltre = countFiltre + 1
-		if not data.mountIndex then
-			return true
-		end
-	end
-
-	local inhabitFilterData = {"MOUNTJOURNAL_FILTER_IS_GROUND", "MOUNTJOURNAL_FILTER_IS_FLY", "MOUNTJOURNAL_FILTER_IS_WATER"}
-	local inhabitFilterMask = 0
-
-	for i = 1, #inhabitFilterData do
-		local _data = _G[inhabitFilterData[i]]
-
-		if _data then
-			inhabitFilterMask = bit.bor(inhabitFilterMask, _data)
-		end
-	end
-
-	if inhabitFilterMask ~= 0 then
-		countFiltre = countFiltre + 1
-		if bit.band(inhabitFilterMask, data.inhabitType) ~= 0 then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_SOURCE_LOOT then
-		countFiltre = countFiltre + 1
-		if data.lootType == 1 or data.lootType == 2 or data.lootType == 3 then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_SOURCE_QUEST then
-		countFiltre = countFiltre + 1
-		if data.lootType == 8 then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_SOURCE_VENDOR then
-		countFiltre = countFiltre + 1
-		if data.lootType == 6 then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_SOURCE_CRAFT then
-		countFiltre = countFiltre + 1
-		if data.lootType == 9 then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_SOURCE_ACHIEVEMENT then
-		countFiltre = countFiltre + 1
-		if data.lootType == 7 then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_SOURCE_EVENT then
-		countFiltre = countFiltre + 1
-		if data.lootType == 70 then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_SOURCE_STORE then
-		countFiltre = countFiltre + 1
-		if data.currency ~= 0 or data.lootType == 10 or data.lootType == 11 then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_SOURCE_VOTE then
-		countFiltre = countFiltre + 1
-		if data.lootType == 15 then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_SOURCE_BATTLE_BASS then
-		countFiltre = countFiltre + 1
-		if data.lootType == 16 then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_SOURCE_BLACK_MARKET then
-		countFiltre = countFiltre + 1
-		if data.lootType == 17 then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_EXPANSION_CLASSIC then
-		countFiltre = countFiltre + 1
-		if data.expansion == LE_EXPANSION_CLASSIC then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_EXPANSION_BURNING_CRUSADE then
-		countFiltre = countFiltre + 1
-		if data.expansion == LE_EXPANSION_BURNING_CRUSADE then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_EXPANSION_LICH_KING then
-		countFiltre = countFiltre + 1
-		if data.expansion == LE_EXPANSION_WRATH_OF_THE_LICH_KING then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_EXPANSION_CATACLYSM then
-		countFiltre = countFiltre + 1
-		if data.expansion == LE_EXPANSION_CATACLYSM then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_EXPANSION_MISTS_OF_PANDARIA then
-		countFiltre = countFiltre + 1
-		if data.expansion == LE_EXPANSION_MISTS_OF_PANDARIA then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_EXPANSION_WARLORDS_OF_DRAENOR then
-		countFiltre = countFiltre + 1
-		if data.expansion == LE_EXPANSION_WARLORDS_OF_DRAENOR then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_EXPANSION_LEGION then
-		countFiltre = countFiltre + 1
-		if data.expansion == LE_EXPANSION_LEGION then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_EXPANSION_BATTLE_FOR_AZEROTH then
-		countFiltre = countFiltre + 1
-		if data.expansion == LE_EXPANSION_BATTLE_FOR_AZEROTH then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_EXPANSION_SHADOWLANDS then
-		countFiltre = countFiltre + 1
-		if data.expansion == 256 then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_FACTION_ALLIANCE then
-		countFiltre = countFiltre + 1
-		if data.factionSide == 1 then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_FACTION_HORDE then
-		countFiltre = countFiltre + 1
-		if data.factionSide == 2 then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_FACTION_NEUTRAL then
-		countFiltre = countFiltre + 1
-		if data.factionSide == 0 then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_FACTION_RENEGATE then
-		countFiltre = countFiltre + 1
-		if data.factionSide == 4 then
-			return true
-		end
-	end
-
-	if MOUNTJOURNAL_FILTER_IS_FAVORITE then
-		countFiltre = countFiltre + 1
+	elseif SUB_CATEGORY_FILTER == SUB_CATEGORY_FAVORITES then
 		if data.isFavorite then
-			return true
+			return true;
+		end
+	else
+		return SUB_CATEGORY_FILTER == data.subCategoryID;
+	end
+
+	return false;
+end
+
+local SOURCE_TYPES = {
+	[1] = 1, [2] = 1, [3] = 1,
+	[8] = 2, [12] = 2,
+	[6] = 3, [13] = 3,
+	[9] = 4,
+	[7] = 5,
+	[10] = 7, [11] = 7, [14] = 7,
+	[15] = 8,
+	[16] = 9,
+	[17] = 10,
+};
+
+local function MountJournal_CheckFilter(data, hasHiddenType, hasHiddenSource, hasHiddenExpansion, hasHiddenFaction)
+	if MOUNTJOURNAL_FILTER_COLLECTED and data.mountIndex or MOUNTJOURNAL_FILTER_NOT_COLLECTED and not data.mountIndex then
+		return false;
+	end
+
+	if hasHiddenType then
+		if data.inhabitType == 0 then
+			return false;
+		elseif bit.band(data.inhabitType, 1) ~= 0 then
+			if MOUNTJOURNAL_FILTER_TYPES[1] then
+				return false;
+			end
+		elseif bit.band(data.inhabitType, 2) ~= 0 then
+			if MOUNTJOURNAL_FILTER_TYPES[2] then
+				return false;
+			end
+		elseif bit.band(data.inhabitType, 4) ~= 0 then
+			if MOUNTJOURNAL_FILTER_TYPES[3] then
+				return false;
+			end
 		end
 	end
 
-	if subCategoryFilter then
-		countFiltre = countFiltre + 1
-		if subCategoryFilter == data.subCategoryID then
-			return true
+	if hasHiddenSource then
+		local sourceType = (data.currency ~= 0 and 7 or SOURCE_TYPES[data.lootType]);
+		if not sourceType or MOUNTJOURNAL_FILTER_SOURCES[sourceType] then
+			return false;
 		end
 	end
 
-	if countFiltre == 0 then
-		NavBar_Reset(MountJournal.navBar)
-		local buttonData = {
-			name = ALL_MOUNTS
-		}
-		NavBar_AddButton(MountJournal.navBar, buttonData)
-		return true
+	if hasHiddenExpansion then
+		if data.expansion == 0 then
+			return false;
+		elseif bit.band(data.expansion, 1) ~= 0 then
+			if MOUNTJOURNAL_FILTER_EXPANSIONS[1] then
+				return false;
+			end
+		elseif bit.band(data.expansion, 2) ~= 0 then
+			if MOUNTJOURNAL_FILTER_EXPANSIONS[2] then
+				return false;
+			end
+		elseif bit.band(data.expansion, 4) ~= 0 then
+			if MOUNTJOURNAL_FILTER_EXPANSIONS[3] then
+				return false;
+			end
+		elseif bit.band(data.expansion, 8) ~= 0 then
+			if MOUNTJOURNAL_FILTER_EXPANSIONS[4] then
+				return false;
+			end
+		elseif bit.band(data.expansion, 16) ~= 0 then
+			if MOUNTJOURNAL_FILTER_EXPANSIONS[5] then
+				return false;
+			end
+		elseif bit.band(data.expansion, 32) ~= 0 then
+			if MOUNTJOURNAL_FILTER_EXPANSIONS[6] then
+				return false;
+			end
+		elseif bit.band(data.expansion, 64) ~= 0 then
+			if MOUNTJOURNAL_FILTER_EXPANSIONS[7] then
+				return false;
+			end
+		elseif bit.band(data.expansion, 128) ~= 0 then
+			if MOUNTJOURNAL_FILTER_EXPANSIONS[8] then
+				return false;
+			end
+		elseif bit.band(data.expansion, 256) ~= 0 then
+			if MOUNTJOURNAL_FILTER_EXPANSIONS[9] then
+				return false;
+			end
+		end
 	end
 
-	return false
+	if hasHiddenFaction then
+		if data.factionSide == 0 then
+			if MOUNTJOURNAL_FILTER_FACTIONS[3] then
+				return false;
+			end
+		elseif bit.band(data.factionSide, 1) ~= 0 then
+			if MOUNTJOURNAL_FILTER_FACTIONS[1] then
+				return false;
+			end
+		elseif bit.band(data.factionSide, 2) ~= 0 then
+			if MOUNTJOURNAL_FILTER_FACTIONS[2] then
+				return false;
+			end
+		elseif bit.band(data.factionSide, 4) ~= 0 then
+			if MOUNTJOURNAL_FILTER_FACTIONS[4] then
+				return false;
+			end
+		end
+	end
+
+	return true;
 end
 
 function MountJournal_UpdateScrollPos(self, visibleIndex)
@@ -1546,10 +1106,16 @@ function MountJournal_UpdateFilter(doNotUpdateScroll)
 
 	MOUNTJOURNAL_MASTER_DATA = {}
 
+	local hasHiddenType = next(MOUNTJOURNAL_FILTER_TYPES);
+	local hasHiddenSource = next(MOUNTJOURNAL_FILTER_SOURCES);
+	local hasHiddenExpansion = next(MOUNTJOURNAL_FILTER_EXPANSIONS);
+	local hasHiddenFaction = next(MOUNTJOURNAL_FILTER_FACTIONS);
+
 	for i = 1, #sourceData do
 		local data = sourceData[i]
-		if string.find( data.name, text, 1, true ) then
-			if MountJournal_CheckFilter( MOUNTJOURNAL_MOUNT_DATA_BY_HASH[data.hash] ) then
+
+		if SUB_CATEGORY_FILTER then
+			if MountJournal_CheckSubCategoryFilter(MOUNTJOURNAL_MOUNT_DATA_BY_HASH[data.hash]) then
 				if mountDataBuffer[keyConcat(data.creatureID, data.spellID)] then
 					local mountData = mountDataBuffer[keyConcat(data.creatureID, data.spellID)]
 					MOUNTJOURNAL_MOUNT_DATA_BY_HASH[data.hash].mountIndex = mountData.mountIndex
@@ -1557,6 +1123,18 @@ function MountJournal_UpdateFilter(doNotUpdateScroll)
 				end
 
 				table.insert(MOUNTJOURNAL_MASTER_DATA, data)
+			end
+		else
+			if string.find(data.name, text, 1, true) then
+				if MountJournal_CheckFilter(MOUNTJOURNAL_MOUNT_DATA_BY_HASH[data.hash], hasHiddenType, hasHiddenSource, hasHiddenExpansion, hasHiddenFaction) then
+					if mountDataBuffer[keyConcat(data.creatureID, data.spellID)] then
+						local mountData = mountDataBuffer[keyConcat(data.creatureID, data.spellID)]
+						MOUNTJOURNAL_MOUNT_DATA_BY_HASH[data.hash].mountIndex = mountData.mountIndex
+						MOUNTJOURNAL_MOUNT_DATA_BY_HASH[data.hash].mountActive = mountData.active
+					end
+
+					table.insert(MOUNTJOURNAL_MASTER_DATA, data)
+				end
 			end
 		end
 	end
@@ -1956,9 +1534,9 @@ function MountJournalBuyButton_OnClick(_ , ... )
 
 	CollectionsJournal.resetPositionTimer = C_Timer:After(30, function()
 		-- print("Reset open store")
-		MountJournal.selectCategoryID = nil
+		MountJournal_SetDefaultCategory()
+
 		MountJournal.searchBox:SetText("")
-		MountJournal_ResetVar()
 		MountJournal_UpdateScrollPos(MountJournalListScrollFrame, 1)
 		MountJournal_UpdateFilter()
 		MountJournal_Select(1)
@@ -2036,48 +1614,192 @@ function MountJournalFilterDropDown_OnLoad( self, ... )
 	UIDropDownMenu_Initialize(self, MountJournalFilterDropDown_Initialize, "MENU")
 end
 
-function MountJournalFilterDropDown_Initialize(_ ,level )
-	local _level = level ~= 1 and UIDROPDOWNMENU_MENU_VALUE or level
-	if MountJournalFilterDropDown_Data and MountJournalFilterDropDown_Data[_level] then
-		for i = 1, #MountJournalFilterDropDown_Data[_level] do
-			local data = MountJournalFilterDropDown_Data[_level][i]
-			local info = UIDropDownMenu_CreateInfo()
+function MountJournalFilterDropdown_ResetFilters()
+	MountJournal_SetDefaultFilters();
+	MountJournal_UpdateScrollPos(MountJournalListScrollFrame, 1);
+	MountJournal_UpdateFilter();
+	MountJournalFilterButton.ResetButton:Hide();
+end
 
-			info.keepShownOnClick = true
+function MountJournalResetFiltersButton_UpdateVisibility()
+	MountJournal_UpdateScrollPos(MountJournalListScrollFrame, 1);
+	MountJournal_UpdateFilter();
 
-			if data.keyValue then
-				info.keyValue = data.keyValue
-				info.checked = _G["MOUNTJOURNAL_FILTER_"..data.keyValue] or false
-			end
+	MountJournalFilterButton.ResetButton:SetShown(not MountJournal_IsUsingDefaultFilters());
+end
 
-			info.text = data.text
-			info.func = function( self, _, _, value )
-				if data.func then
-					data.func( self, _, _, value )
-				else
-					if self.keyValue then
-						_G["MOUNTJOURNAL_FILTER_"..self.keyValue] = not _G["MOUNTJOURNAL_FILTER_"..self.keyValue]
-					end
-				end
-				MountJournal_UpdateScrollPos(MountJournalListScrollFrame, 1)
-				MountJournal_UpdateFilter()
-			end
-			info.isNotRadio = data.isNotRadio
+function MountJournal_SetDefaultFilters()
+	MOUNTJOURNAL_FILTER_COLLECTED = nil;
+	MOUNTJOURNAL_FILTER_NOT_COLLECTED = nil;
+	table.wipe(MOUNTJOURNAL_FILTER_TYPES);
+	table.wipe(MOUNTJOURNAL_FILTER_SOURCES);
+	table.wipe(MOUNTJOURNAL_FILTER_EXPANSIONS);
+	table.wipe(MOUNTJOURNAL_FILTER_FACTIONS);
+end
 
-			if data.hasArrow then
-				info.hasArrow = data.hasArrow
-			end
+function MountJournal_IsUsingDefaultFilters()
+	if MOUNTJOURNAL_FILTER_COLLECTED or MOUNTJOURNAL_FILTER_NOT_COLLECTED then
+		return false;
+	end
+	if next(MOUNTJOURNAL_FILTER_TYPES) or next(MOUNTJOURNAL_FILTER_SOURCES) or next(MOUNTJOURNAL_FILTER_EXPANSIONS) or next(MOUNTJOURNAL_FILTER_FACTIONS) then
+		return false;
+	end
+	return true;
+end
 
-			if data.notCheckable then
-				info.notCheckable = data.notCheckable
-			end
+function MountJournal_SetCollectedFilter(value)
+	MOUNTJOURNAL_FILTER_COLLECTED = not value;
+end
 
-			if data.value then
-				info.value = data.value
-			end
+function MountJournal_GetCollectedFilter()
+	return not MOUNTJOURNAL_FILTER_COLLECTED;
+end
 
-			UIDropDownMenu_AddButton(info, level)
+function MountJournal_SetNotCollectedFilter(value)
+	MOUNTJOURNAL_FILTER_NOT_COLLECTED = not value;
+end
+
+function MountJournal_GetNotCollectedFilter()
+	return not MOUNTJOURNAL_FILTER_NOT_COLLECTED;
+end
+
+function MountJournal_SetTypeFilter(i, value)
+	MOUNTJOURNAL_FILTER_TYPES[i] = not value and true or nil;
+end
+
+function MountJournal_GetTypeFilter(i)
+	return not MOUNTJOURNAL_FILTER_TYPES[i];
+end
+
+function MountJournal_SetSourceFilter(i, value)
+	MOUNTJOURNAL_FILTER_SOURCES[i] = not value and true or nil;
+end
+
+function MountJournal_GetSourceFilter(i)
+	return not MOUNTJOURNAL_FILTER_SOURCES[i];
+end
+
+function MountJournal_SetAllSourceFilters(value)
+	for i = 1, C_PetJournal.GetNumPetSources() do
+		MOUNTJOURNAL_FILTER_SOURCES[i] = not value and true or nil;
+	end
+	UIDropDownMenu_Refresh(MountJournalFilterDropDown, UIDROPDOWNMENU_MENU_VALUE, UIDROPDOWNMENU_MENU_LEVEL);
+end
+
+function MountJournal_SetExpansionTypeFilter(i, value)
+	MOUNTJOURNAL_FILTER_EXPANSIONS[i] = not value and true or nil;
+end
+
+function MountJournal_GetExpansionTypeFilter(i)
+	return not MOUNTJOURNAL_FILTER_EXPANSIONS[i];
+end
+
+function MountJournal_SetAllExpansionTypeFilters(value)
+	for i = 1, 9 do
+		MOUNTJOURNAL_FILTER_EXPANSIONS[i] = not value and true or nil;
+	end
+	UIDropDownMenu_Refresh(MountJournalFilterDropDown, UIDROPDOWNMENU_MENU_VALUE, UIDROPDOWNMENU_MENU_LEVEL);
+end
+
+function MountJournal_SetFactionFilter(i, value)
+	MOUNTJOURNAL_FILTER_FACTIONS[i] = not value and true or nil;
+end
+
+function MountJournal_GetFactionFilter(i)
+	return not MOUNTJOURNAL_FILTER_FACTIONS[i];
+end
+
+function MountJournal_SetAllFactionFilters(value)
+	for i = 1, 4 do
+		MOUNTJOURNAL_FILTER_FACTIONS[i] = not value and true or nil;
+	end
+	UIDropDownMenu_Refresh(MountJournalFilterDropDown, UIDROPDOWNMENU_MENU_VALUE, UIDROPDOWNMENU_MENU_LEVEL);
+end
+
+function MountJournalFilterDropDown_Initialize(self, level)
+	local filterSystem = {
+		onUpdate = MountJournalResetFiltersButton_UpdateVisibility,
+		filters = {
+			{ type = FilterComponent.Checkbox, text = COLLECTED, set = MountJournal_SetCollectedFilter, isSet = MountJournal_GetCollectedFilter },
+			{ type = FilterComponent.Checkbox, text = NOT_COLLECTED, set = MountJournal_SetNotCollectedFilter, isSet = MountJournal_GetNotCollectedFilter },
+			{ type = FilterComponent.CustomFunction, customFunc = MountJournal_AddInMountTypes, },
+			{ type = FilterComponent.Submenu, text = SOURCES, value = 1, childrenInfo = {
+					filters = {
+						{ type = FilterComponent.TextButton,
+						  text = CHECK_ALL,
+						  set = function() MountJournal_SetAllSourceFilters(true); end,
+						},
+						{ type = FilterComponent.TextButton,
+						  text = UNCHECK_ALL,
+						  set = function() MountJournal_SetAllSourceFilters(false); end,
+						},
+						{ type = FilterComponent.DynamicFilterSet,
+						  buttonType = FilterComponent.Checkbox,
+						  set = MountJournal_SetSourceFilter,
+						  isSet = MountJournal_GetSourceFilter,
+						  numFilters = C_PetJournal.GetNumPetSources,
+						  globalPrepend = "COLLECTION_PET_SOURCE_",
+						},
+					},
+				},
+			},
+			{ type = FilterComponent.Submenu, text = EXPANSION_FILTER_TEXT, value = 2, childrenInfo = {
+					filters = {
+						{ type = FilterComponent.TextButton,
+						  text = CHECK_ALL,
+						  set = function() MountJournal_SetAllExpansionTypeFilters(true); end,
+						},
+						{ type = FilterComponent.TextButton,
+						  text = UNCHECK_ALL,
+						  set = function() MountJournal_SetAllExpansionTypeFilters(false); end,
+						},
+						{ type = FilterComponent.DynamicFilterSet,
+						  buttonType = FilterComponent.Checkbox,
+						  set = MountJournal_SetExpansionTypeFilter,
+						  isSet = MountJournal_GetExpansionTypeFilter,
+						  numFilters = function () return 9; end,
+						  globalPrepend = "EXPANSION_NAME",
+						  -- We want to list all expansions up to i-1 since the global strings for expansions are 0 - Max Expansion
+						  globalPrependOffset = -1,
+						},
+					},
+				},
+			},
+			{ type = FilterComponent.Submenu, text = FACTION, value = 3, childrenInfo = {
+					filters = {
+						{ type = FilterComponent.TextButton,
+						  text = CHECK_ALL,
+						  set = function() MountJournal_SetAllFactionFilters(true); end,
+						},
+						{ type = FilterComponent.TextButton,
+						  text = UNCHECK_ALL,
+						  set = function() MountJournal_SetAllFactionFilters(false); end,
+						},
+						{ type = FilterComponent.DynamicFilterSet,
+						  buttonType = FilterComponent.Checkbox,
+						  set = MountJournal_SetFactionFilter,
+						  isSet = MountJournal_GetFactionFilter,
+						  numFilters = function () return 4; end,
+						  globalPrepend = "COLLECTION_MOUNT_FACTION_",
+						},
+					},
+				},
+			},
+		},
+	};
+
+	FilterDropDownSystem.Initialize(self, filterSystem, level);
+end
+
+function MountJournal_AddInMountTypes(level)
+	for i = 1, #mountTypeStrings do
+		local set = function(_, _, _, value)
+			MountJournal_SetTypeFilter(i, value);
+			MountJournalResetFiltersButton_UpdateVisibility();
 		end
+
+		local isSet = function() return MountJournal_GetTypeFilter(i) end;
+		FilterDropDownSystem.AddCheckBoxButton(mountTypeStrings[i], set, isSet, level);
 	end
 end
 

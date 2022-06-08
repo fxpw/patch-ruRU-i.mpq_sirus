@@ -37,6 +37,7 @@
 ..\SharedXML\Utils\C_Service.lua
 
 Utils\C_ConnectManager.lua
+Utils\C_GlueCVars.lua
 
 GlueStrings.lua
 DevTools\AccountLoginManagerData.lua

@@ -293,7 +293,7 @@ STORE_SUB_CATEGORY_DATA[4] = {
 		SubCategoryId = 1,
 		CategoryId = 4,
 		Callback = function() selectedSubCategoryID = 1; StoreSubCategorySelectClick() end,
-		Check = function(self) return (80 <= UnitLevel("player")) end
+		Check = function(self) return (20 <= UnitLevel("player")) end
 	},
 	{
 		Name = STORE_SUB_CATEGORY_4_2,
@@ -522,14 +522,27 @@ STORE_STORAGE_DATA_ISPVP 						= 12
 STORE_STORAGE_DATA_DISCOUNTSHOW 				= 13
 
 local STORE_TRANSMOGRIFY_WEAPON_SUB_CLASSES = {
-	ITEM_SUB_CLASS_2_0, ITEM_SUB_CLASS_2_1, ITEM_SUB_CLASS_2_2, ITEM_SUB_CLASS_2_3, ITEM_SUB_CLASS_2_4, ITEM_SUB_CLASS_2_5, ITEM_SUB_CLASS_2_6, ITEM_SUB_CLASS_2_7, ITEM_SUB_CLASS_2_8,
-	ITEM_SUB_CLASS_2_10, ITEM_SUB_CLASS_2_13, ITEM_SUB_CLASS_2_15, ITEM_SUB_CLASS_2_16, ITEM_SUB_CLASS_2_18, ITEM_SUB_CLASS_2_19,
-	ITEM_SUB_CLASS_4_6
+	{name = ITEM_SUB_CLASS_2_0, classID = 2, subClassID = 0},
+	{name = ITEM_SUB_CLASS_2_1, classID = 2, subClassID = 1},
+	{name = ITEM_SUB_CLASS_2_2, classID = 2, subClassID = 2},
+	{name = ITEM_SUB_CLASS_2_3, classID = 2, subClassID = 3},
+	{name = ITEM_SUB_CLASS_2_4, classID = 2, subClassID = 4},
+	{name = ITEM_SUB_CLASS_2_5, classID = 2, subClassID = 5},
+	{name = ITEM_SUB_CLASS_2_6, classID = 2, subClassID = 6},
+	{name = ITEM_SUB_CLASS_2_7, classID = 2, subClassID = 7},
+	{name = ITEM_SUB_CLASS_2_8, classID = 2, subClassID = 8},
+	{name = ITEM_SUB_CLASS_2_10, classID = 2, subClassID = 10},
+	{name = ITEM_SUB_CLASS_2_13, classID = 2, subClassID = 13},
+	{name = ITEM_SUB_CLASS_2_15, classID = 2, subClassID = 15},
+	{name = ITEM_SUB_CLASS_2_16, classID = 2, subClassID = 16},
+	{name = ITEM_SUB_CLASS_2_18, classID = 2, subClassID = 18},
+	{name = ITEM_SUB_CLASS_2_19, classID = 2, subClassID = 19},
+	{name = ITEM_SUB_CLASS_4_6, classID = 4, subClassID = 6, inventoryType = 14},
 }
 
 STORE_TRANSMOGRIFY_WEAPON_TYPES = {}
 for i = 1, #STORE_TRANSMOGRIFY_WEAPON_SUB_CLASSES do
-	STORE_TRANSMOGRIFY_WEAPON_TYPES[STORE_TRANSMOGRIFY_WEAPON_SUB_CLASSES[i]] = i
+	STORE_TRANSMOGRIFY_WEAPON_TYPES[STORE_TRANSMOGRIFY_WEAPON_SUB_CLASSES[i].name] = i
 end
 
 STORE_TRANSMOGRIFY_SETS_DATA = {}
@@ -632,62 +645,48 @@ function StoreTransmogrifyValidation( data )
 		return false;
 	end
 
-	local isValidation = true
-	local isDisable = false
+	local flags = serverData[STORE_TRANSMOGRIFY_SERVER_STOREFLAGS];
+	if flags and bit.band(flags, 512) == 512 then
+		return false;
+	end
 
 	if selectedSubCategoryID ~= 2 then
-		local classID = data[STORE_TRANSMOGRIFY_SETS_CLASSID]
-		local expansionID = data[STORE_TRANSMOGRIFY_SETS_EXPANSION]
-		local isPVP = false
-
-		if serverData then
-			if serverData[STORE_TRANSMOGRIFY_SERVER_ISPVP] then
-				isPVP = serverData[STORE_TRANSMOGRIFY_SERVER_ISPVP]
-			end
-
-			if serverData[STORE_TRANSMOGRIFY_SERVER_STOREFLAGS] then
-				local flags = serverData[STORE_TRANSMOGRIFY_SERVER_STOREFLAGS]
-
-				isDisable = bit.band(flags, 512) == 512
-			end
-		end
-
 		if STORE_TRANSMOGRIFY_FILTER_CLASSID ~= NO_CLASS_FILTER then
+			local classID = data[STORE_TRANSMOGRIFY_SETS_CLASSID];
+
 			if STORE_TRANSMOGRIFY_FILTER_CLASSID ~= classID and classID ~= NO_CLASS_FILTER and classID ~= -1 then
-				isValidation = false
+				return false;
 			end
 		end
 
 		if STORE_TRANSMOGRIFY_FILTER_EXPANSION ~= ALL_EXPANSION_FILTER then
+			local expansionID = data[STORE_TRANSMOGRIFY_SETS_EXPANSION];
+
 			if bit.lshift(1, STORE_TRANSMOGRIFY_FILTER_EXPANSION) ~= expansionID then
-				isValidation = false
+				return false;
 			end
 		end
 
 		if STORE_TRANSMOGRIFY_FILTER_SOURCE ~= ALL_SOURCE_FILTER then
-			local _isPVP = STORE_TRANSMOGRIFY_FILTER_SOURCE == 1
+			local isPvP = not not serverData[STORE_TRANSMOGRIFY_SERVER_ISPVP];
 
-			if _isPVP ~= isPVP then
-				isValidation = false
+			if STORE_TRANSMOGRIFY_FILTER_SOURCE == 1 ~= isPvP then
+				return false;
 			end
 		end
 	elseif selectedSubCategoryID == 2 then
 		if STORE_TRANSMOGRIFY_FILTER_WEAPON == ALL_WEAPON_NEW_FILTER then
-			if not storeID or not serverData or bit.band(serverData[STORE_TRANSMOGRIFY_SERVER_STOREFLAGS] or 0, STORE_ITEM_FLAG_NEW) == 0 then
-				isValidation = false
+			if not storeID or bit.band(serverData[STORE_TRANSMOGRIFY_SERVER_STOREFLAGS] or 0, STORE_ITEM_FLAG_NEW) == 0 then
+				return false;
 			end
 		elseif STORE_TRANSMOGRIFY_FILTER_WEAPON ~= ALL_WEAPON_FILTER then
 			if STORE_TRANSMOGRIFY_FILTER_WEAPON ~= data[STORE_TRANSMOGRIFY_SETS_WEAPONTYPE] then
-				isValidation = false
+				return false;
 			end
 		end
 	end
 
-	if isDisable then
-		isValidation = false
-	end
-
-	return isValidation
+	return true;
 end
 
 function StoreTransmogrifySearchValidation( data )
@@ -1240,10 +1239,13 @@ function StoreUpdateGenericButtons()
 	StoreFrame.TutorialButton:SetShown(selectedMoneyID == 1 and selectedCategoryID == 1)
 	StoreRefundButton:SetShown(selectedMoneyID == 1 and selectedCategoryID == 2 and #STORE_REFUND_DATA > 0);
 	StoreRefreshMountListButton:SetShown(selectedMoneyID == 1 and selectedCategoryID == 3 and (selectedSubCategoryID == 1 or selectedSubCategoryID == 2))
+	StoreShowAllItemCheckButton:SetShown(selectedMoneyID == 1 and (selectedCategoryID == 2 or selectedCategoryID == 6) and selectedSubCategoryID ~= 0)
 	StoreRefreshTransmogListButton:SetShown(selectedMoneyID == 1 and selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID)
 	StoreFrameLeftInset.ReferAFriendFrame:SetShown(selectedMoneyID == 3)
 	StoreFrameLeftInset.InviteFriendButton:SetShown(selectedMoneyID == 3)
 	StoreFrameLeftInset.ReferDetailsButton:SetShown(selectedMoneyID == 3)
+
+	StoreRenewTimeFrame:SetShown(StoreRefreshMountListButton:IsShown() or StoreRefreshTransmogListButton:IsShown());
 end
 
 function StoreSelectCategory( categoryID, subCategoryID )
@@ -1286,7 +1288,7 @@ function StoreSelectCategory( categoryID, subCategoryID )
 		for i, button in pairs(StoreFrame.SubCategoryFrames) do
 			button:Hide()
 		end
-		
+
 		if self.data.SlideOther then
 			local prevFrame = nil
 			local height = 22 * #STORE_SUB_CATEGORY_DATA[categoryID]
@@ -1343,7 +1345,7 @@ function StoreSelectCategory( categoryID, subCategoryID )
 				else
 					subFrame.SelectedTexture:Hide()
 				end
-				
+
 				subFrame:Show()
 			end
 		else
@@ -1408,8 +1410,6 @@ function StoreItemListFrame_OnLoad( self, ... )
 end
 
 function StoreItemListFrame_OnShow( self, ... )
-	StoreShowAllItemCheckButton:SetShown(selectedCategoryID == 2 and selectedMoneyID == 1)
-
 	StoreItemListFrameContainerSortDiscount:SetShown(selectedMoneyID ~= 4 and selectedMoneyID ~= 3)
 	StoreItemListFrameContainerSortItemlevel:SetShown(selectedMoneyID ~= 4 and selectedMoneyID ~= 3)
 	StoreItemListFrameContainerSortPVP:SetShown(selectedMoneyID ~= 4 and selectedMoneyID ~= 3)
@@ -2794,7 +2794,7 @@ function StoreSubscribeSetup()
 			StoreSubscribeFrame.Ticker = nil
 		end
 	end, data.Seconds)
-	
+
 	for d = 1, 3 do
 		local button = _G["StoreSubscribeItemButton"..d]
 		button:Hide()
@@ -2950,7 +2950,7 @@ function StoreConfigurateSubscribeData( ID, name, cost, description, icon )
 		Time = ID,
 		DescriptionText = description
 	}
-	
+
 	return SubscribeData
 end
 
@@ -3660,7 +3660,7 @@ function StoreItemListUpdate()
 	local function clearStorage()
 		STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][selectedShowAllItemCheckBox] = {}
 	end
-	
+
 	if storage and storage.version then
 		if GetStoreProductVersion() == storage.version then
 			local unitFaction = UnitFactionGroup("player") or "Alliance"
@@ -3678,6 +3678,11 @@ function StoreItemListUpdate()
 					StoreRequestShopItems( selectedMoneyID, selectedCategoryID, selectedSubCategoryID, selectedShowAllItemCheckBox )
 				else
 					if storage.data then
+						local isTransmogCategorySelected = selectedMoneyID == 1 and selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID;
+						if isTransmogCategorySelected then
+							table.wipe(STORE_TRANSMOGRIFY_SERVER_DATA);
+						end
+
 						for storeID, data in pairs(storage.data) do
 							local altCurrency = data[STORE_STORAGE_DATA_ALT_CURRENCY];
 
@@ -3686,7 +3691,7 @@ function StoreItemListUpdate()
 								altCurrencyName, _, _, _, _, _, _, _, _, altCurrencyIcon = GetItemInfo(data[STORE_STORAGE_DATA_ALT_CURRENCY])
 							end
 
-							if selectedMoneyID == 1 and selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID then
+							if isTransmogCategorySelected then
 								STORE_TRANSMOGRIFY_SERVER_DATA[storeID] = {
 									storeID,
 									data[STORE_STORAGE_DATA_ENTRY],
@@ -5117,6 +5122,30 @@ end
 
 local newIconString = "|TInterface\\Store\\Store-Main.blp:18:18:2:0:1024:1024:957:967:286:304|t";
 
+function StoreTransmogrify_IsValidClassFilter(classID)
+	if classID == 10 then -- temp remove demonhunter
+		return false;
+	end
+
+	if selectedShowAllItemCheckBox == 0 then
+		local _, _, playerClassID = UnitClass("player")
+
+		if classID ~= playerClassID then
+			return false;
+		end
+	end
+
+	return true;
+end
+
+function StoreTransmogrify_IsValidWeaponFilter(classID, subClassID, inventoryType)
+	if selectedShowAllItemCheckBox == 0 then
+		return C_TransmogCollection.GetCategory(classID, subClassID, inventoryType);
+	end
+
+	return true;
+end
+
 function StoreTransmogrifyFilterDropDown_Initialize( self, level )
 	local info = UIDropDownMenu_CreateInfo()
 
@@ -5131,7 +5160,7 @@ function StoreTransmogrifyFilterDropDown_Initialize( self, level )
 			local numClasses = GetNumClasses()
 			for i = 1, numClasses do
 				local classDisplayName, classTag, classID, classMask = GetClassInfo(i)
-				if classID ~= 10 then -- temp remove demonhunter
+				if StoreTransmogrify_IsValidClassFilter(classID) then
 					info.text = classDisplayName
 					info.checked = STORE_TRANSMOGRIFY_FILTER_CLASSID == classMask
 					info.arg1 = classMask
@@ -5189,17 +5218,19 @@ function StoreTransmogrifyFilterDropDown_Initialize( self, level )
 		info.func = StoreTransmogrifySetWeaponFilter
 		UIDropDownMenu_AddButton(info, level)
 
-		for i, subClass in ipairs(STORE_TRANSMOGRIFY_WEAPON_SUB_CLASSES) do
-			if storeTransmogrifyNewWeaponTypes[i] then
-				info.text = subClass..newIconString
-			else
-				info.text = subClass
-			end
+		for i, subClassInfo in ipairs(STORE_TRANSMOGRIFY_WEAPON_SUB_CLASSES) do
+			if StoreTransmogrify_IsValidWeaponFilter(subClassInfo.classID, subClassInfo.subClassID, subClassInfo.inventoryType) then
+				if storeTransmogrifyNewWeaponTypes[i] then
+					info.text = subClassInfo.name .. newIconString
+				else
+					info.text = subClassInfo.name
+				end
 
-			info.checked = STORE_TRANSMOGRIFY_FILTER_WEAPON == i
-			info.arg1 = i
-			info.func = StoreTransmogrifySetWeaponFilter
-			UIDropDownMenu_AddButton(info, level)
+				info.checked = STORE_TRANSMOGRIFY_FILTER_WEAPON == i
+				info.arg1 = i
+				info.func = StoreTransmogrifySetWeaponFilter
+				UIDropDownMenu_AddButton(info, level)
+			end
 		end
 	end
 
@@ -5443,6 +5474,51 @@ function StoreTransmogrify_ToggleTutorial( self, ... )
 	else
 		HelpPlate_Hide(true)
 	end
+end
+
+local function GetRenewTimeTextFormat(seconds)
+	if seconds < 60 then
+		return STORE_RENEW_TIME_LEFT_SECONDS, seconds;
+	elseif seconds < 3600 then
+		return STORE_RENEW_TIME_LEFT_MINUTES, math.floor(seconds / 60);
+	elseif seconds < 86400 then
+		return STORE_RENEW_TIME_LEFT_HOURS, math.floor(seconds / 3600);
+	else
+		return STORE_RENEW_TIME_LEFT_DAYS, math.floor(seconds / 86400);
+	end
+end
+
+function StoreRenewTimeFrame_UpdateTime()
+	local frame = StoreRenewTimeFrame;
+
+	local renewTime;
+	if selectedCategoryID == 3 then
+		renewTime = STORE_CACHE:Get("MOUNT_RENEW_TIME_LEFT", -1);
+	elseif selectedCategoryID == 6 then
+		renewTime = STORE_CACHE:Get("T_MOG_RENEW_TIME_LEFT", -1);
+	end
+
+	local storeRenewMsgTime = STORE_CACHE:Get("RENEW_TIME", -1);
+
+	if not storeRenewMsgTime or not renewTime or renewTime == -1 then
+		frame:Hide();
+	end
+
+	local timeLeft = storeRenewMsgTime - (time() - renewTime);
+	if timeLeft <= 0 then
+		local renewWeeks = STORE_CACHE:Get("MOUNT_RENEW_WEEK", 0);
+
+		if renewWeeks ~= 0 then
+			STORE_CACHE:Set("MOUNT_RENEW_WEEK", 0);
+			STORE_CACHE:Set("CATEGORY_DROP_COUNT"..3, 1);
+			STORE_CACHE:Set("CATEGORY_DROP_COUNT"..6, 1);
+		end
+
+		frame:Hide();
+	end
+
+	local timeFormat, timeText = GetRenewTimeTextFormat(timeLeft);
+	frame.TimerFrame.TimerText:SetFormattedText(timeFormat, timeText);
 end
 
 local Store_HelpPlate = {
@@ -5856,7 +5932,7 @@ function EventHandler:ASMSG_SHOP_SUBSCRIPTION_INFO( msg )
         Name                = Name,
 		Description			= Description
 	}
-	
+
 	table.insert(STORE_SUBSCRIBE_DATA, tempTable)
 
 	StoreSubscribeSetup()
@@ -5980,7 +6056,17 @@ end
 function EventHandler:ASMSG_SHOP_ROLLED_TEMS_INFO( msg )
 	ReportBug("Configuration")
 
-	local renewWeeks 		= tonumber(msg)
+	local temsInfo = C_Split(msg, ":");
+	local renewWeeks = tonumber(temsInfo[1]);
+	local mountTimeRenew = tonumber(temsInfo[2]);
+	local tmogTimeRenew = tonumber(temsInfo[3]);
+
+	storeRenewMsgTime = time();
+
+	STORE_CACHE:Set("RENEW_TIME", time());
+	STORE_CACHE:Set("MOUNT_RENEW_TIME_LEFT", mountTimeRenew or -1);
+	STORE_CACHE:Set("T_MOG_RENEW_TIME_LEFT", tmogTimeRenew or -1);
+
 	local cacheRenewWeeks 	= STORE_CACHE:Get("MOUNT_RENEW_WEEK", 0)
 
 	if cacheRenewWeeks ~= renewWeeks then
@@ -6046,15 +6132,23 @@ function EventHandler:ASMSG_SHOP_RENEW_ITEMS( msg )
 	if responseID == 0 then
 		local cacheDropsCount = STORE_CACHE:Get("CATEGORY_DROP_COUNT"..categoryId, 0)
 		STORE_CACHE:Set("CATEGORY_DROP_COUNT"..categoryId, cacheDropsCount + 1)
-		if categoryId == STORE_TRANSMOGRIFY_CATEGORY_ID then
-			STORE_TRANSMOGRIFY_SERVER_DATA = {}
-		end
-		StoreToggleLoadingScreen(true, true)
 
-		StoreItemListUpdate()
-		StoreFrame_UpdateItemCard()
+		if selectedSubCategoryID ~= 0 then
+			if categoryId == STORE_TRANSMOGRIFY_CATEGORY_ID then
+				STORE_TRANSMOGRIFY_SERVER_DATA = {}
+			end
+
+			StoreToggleLoadingScreen(true, true)
+
+			StoreItemListUpdate()
+			StoreFrame_UpdateItemCard()
+		end
 	else
 		StoreShowErrorFrame(STORE_ERROR, STORE_BUY_ITEM_ERROR_5)
+	end
+
+	if selectedSubCategoryID == 0 then
+		StoreToggleLoadingScreen(false, true)
 	end
 end
 
