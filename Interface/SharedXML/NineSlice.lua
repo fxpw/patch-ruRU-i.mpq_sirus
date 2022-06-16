@@ -253,6 +253,30 @@ local layouts =
 		BottomLeftCorner =	{ atlas = "Roulette-left-bottom-corner", x = 3, y = -6, },
 		BottomRightCorner =	{ atlas = "Roulette-right-bottom-corner", x = 5.6, y = -5.8, },
 	},
+
+	GlueDarkTemplate =
+	{
+		TopLeftCorner =		{ layer = "OVERLAY", atlas = "GlueDark-border-CornerTopLeft", x = -8, y = 8, },
+		TopRightCorner =	{ layer = "OVERLAY", atlas = "GlueDark-border-CornerTopRight", x = 8, y = 8, },
+		BottomLeftCorner =	{ layer = "OVERLAY", atlas = "GlueDark-border-CornerBottomLeft", x = -8, y = -8, },
+		BottomRightCorner =	{ layer = "OVERLAY", atlas = "GlueDark-border-CornerBottomRight", x = 8, y = -8, },
+		TopEdge =			{ layer = "OVERLAY", atlas = "GlueDark-border-Top", },
+		BottomEdge =		{ layer = "OVERLAY", atlas = "GlueDark-border-Bottom", },
+		LeftEdge =			{ layer = "OVERLAY", atlas = "GlueDark-border-Left", },
+		RightEdge =			{ layer = "OVERLAY", atlas = "GlueDark-border-Right", },
+	},
+
+	GlueDarkDropDownTemplate =
+	{
+		TopLeftCorner =		{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-CornerTopLeft", x = -2, y = 2, },
+		TopRightCorner =	{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-CornerTopRight", x = 2, y = 2, },
+		BottomLeftCorner =	{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-CornerBottomLeft", x = -2, y = -2, },
+		BottomRightCorner =	{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-CornerBottomRight", x = 2, y = -2, },
+		TopEdge =			{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-Top", },
+		BottomEdge =		{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-Bottom", },
+		LeftEdge =			{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-Left", },
+		RightEdge =			{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-Right", },
+	},
 }
 
 --------------------------------------------------
@@ -299,9 +323,18 @@ function NineSlicePanelMixin:GetFrameLayoutType()
 	return self:GetAttribute("layoutType") or self:GetParent():GetAttribute("layoutType")
 end
 
+function NineSlicePanelMixin:SetParentFrameLevel()
+	if self:GetAttribute("layoutParentFrameLevel") == true then
+		self:SetFrameLevel(self:GetFrameLevel())
+	elseif self:GetParent():GetAttribute("layoutParentFrameLevel") == true then
+		self:SetFrameLevel(self:GetParent():GetFrameLevel())
+	end
+end
+
 function NineSlicePanelMixin:OnLoad()
 	local layout = NineSliceUtil.GetLayout(self:GetFrameLayoutType())
 	if layout then
 		NineSliceUtil.ApplyLayout(self, layout)
+		self:SetParentFrameLevel()
 	end
 end

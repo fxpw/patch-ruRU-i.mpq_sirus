@@ -901,6 +901,8 @@ function printc(...)
     end
 end
 
+print = print or printc
+
 function printec( ... )
 	if S_PrintConsole then
 		S_PrintConsole(strjoin(" ", tostringall(...)))
@@ -954,6 +956,10 @@ function IsDevClient()
 	return S_IsDevClient and S_IsDevClient()
 end
 
+function IsInterfaceDevClient()
+	return S_IsInterfaceDevClient and S_IsInterfaceDevClient()
+end
+
 function IsNyllClient()
 	return S_IsNyllClient and S_IsNyllClient()
 end
@@ -999,39 +1005,6 @@ function GetLocalizedName(varName)
 	return varName.."_"..GetLocale():upper()
 end
 
--- TEEMP -_-
-function inRealmScourge()
-	-- local realmName = GetServerName()
-
-	-- if realmName then
-	-- 	return realmName == "Scourge x2 - 3.3.5a+"
-	-- end
-
-	return true
-end
-
-function SendPacket( opcode, ... )
-    local val = {...}
-    local size = 4
-
-    -- printc("SendPacket", opcode, ..., time())
-
-    SetRealmSplitState(2)
-    SetRealmSplitState(2)
-    for o = 1, string.len(opcode) do
-        local subs = tostring(opcode):sub(o, o)
-        SetRealmSplitState(tonumber(subs))
-    end
-    SetRealmSplitState(2)
-
-    for v = 1, #val do
-        local bits = toBits(val[v])
-        for i = 0, size - #bits - 1 do
-            SetRealmSplitState(0)
-        end
-
-        for s = 1, #bits do
-            SetRealmSplitState(bits[s])
-        end
-    end
+function IsWideScreen()
+	return GetScreenWidth() > 1024
 end

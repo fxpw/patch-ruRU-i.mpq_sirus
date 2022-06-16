@@ -8,7 +8,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
 	<Script file="CharacterServices.lua"/>
 
 	<Texture name="services-checkmark" file="Interface\Store\Services" virtual="true" >
@@ -132,34 +133,6 @@
 		<TexCoords left="0.70507813" right="0.95214844" top="0.08300781" bottom="0.33300781"/>
 	</Texture>
 
-
-	<CheckButton name="UIRadioButtonTemplate" virtual="true">
-		<Size>
-			<AbsDimension x="16" y="16"/>
-		</Size>
-		<Layers>
-			<Layer level="BACKGROUND">
-				<FontString name="$parentText" inherits="GameFontNormalSmall">
-					<Anchors>
-						<Anchor point="LEFT" relativePoint="RIGHT">
-							<Offset>
-								<AbsDimension x="5" y="0"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
-		<NormalTexture file="Interface\Buttons\UI-RadioButton">
-			<TexCoords left="0" right="0.25" top="0" bottom="1"/>
-		</NormalTexture>
-		<HighlightTexture file="Interface\Buttons\UI-RadioButton" alphaMode="ADD">
-			<TexCoords left="0.5" right="0.75" top="0" bottom="1"/>
-		</HighlightTexture>
-		<CheckedTexture file="Interface\Buttons\UI-RadioButton">
-			<TexCoords left="0.25" right="0.5" top="0" bottom="1"/>
-		</CheckedTexture>
-	</CheckButton>
 	<Button name="CharacterBoostButtonsTemplate" toplevel="true" virtual="true">
 		<NormalTexture file="Interface\GLUES\CharacterBoost\upgrade-texture">
 			<TexCoords left="0.00097656" right="0.22363281" top="0.09179688" bottom="0.18066406"/>
@@ -184,80 +157,79 @@
 		<HighlightFont style="AccountLoginTextFont"/>
 		<DisabledFont style="AccountLoginTextFont"/>
 	</Button>
-	<CheckButton name="CharacterUpgradeSelectFactionRadioButtonTemplate" inherits="UIRadioButtonTemplate" virtual="true">
+	<CheckButton name="CharacterUpgradeSelectFactionRadioButtonTemplate" inherits="GlueDark_RadioButtonTemplate" virtual="true">
 		<Layers>
-			<Layer level="ARTWORK">
-				<Texture name="$parentFactionOverlay" file="Interface\AchievementFrame\UI-Achievement-IconFrame" parentKey="Frame">
-					<Anchors>
-						<Anchor point="LEFT" relativePoint="RIGHT" x="5" y="0"/>
-					</Anchors>
-					<Size x="46" y="46"/>
-					<TexCoords left="0" right="0.5625" top="0" bottom="0.5625"/>
-				</Texture>
-			</Layer>
 			<Layer level="BACKGROUND">
 				<Texture name="$parentFactionIcon" parentKey="FactionIcon">
-					<Size x="38" y="38"/>
+					<Size x="34" y="34"/>
 					<Anchors>
-						<Anchor point="LEFT" relativePoint="RIGHT" x="9.5" y="0"/>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentFactionName" inherits="GlueFontHighlightLeft" justifyH="LEFT" parentKey="FactionName">
-					<Color r="1.0" g="0.78" b="0"/>
-					<Size>
-						<AbsDimension x="150" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="LEFT" x="75" y="0"/>
-					</Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
-		<HitRectInsets left="0" right="-160" top="-18" bottom="-18"/>
-		<Scripts>
-			<OnClick function="CharacterUpgradeSelectFactionRadioButton_OnClick"/>
-		</Scripts>
-	</CheckButton>
-	<CheckButton name="CharacterUpgradeSelectSpecRadioButtonTemplate" inherits="UIRadioButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
-		<Layers>
-			<Layer level="OVERLAY">
-				<Texture name="$parentRoleIcon" file="Interface\LFGFrame\UI-LFG-ICON-ROLES"	parentKey="RoleIcon">
-					<Size x="20" y="20"/>
-					<Anchors>
-						<Anchor point="CENTER" relativeKey="$parent.Frame" relativePoint="CENTER" x="48" y="-10" />
+						<Anchor point="LEFT" x="25" y="0"/>
 					</Anchors>
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
-				<Texture name="$parentSpecOverlay" file="Interface\AchievementFrame\UI-Achievement-IconFrame" parentKey="Frame">
+				<Texture name="$parentIconBackdrop" parentKey="IconBackdrop" inherits="GlueDark_iconBorder">
+					<Size x="36" y="36"/>
 					<Anchors>
-						<Anchor point="LEFT" relativePoint="RIGHT" x="5" y="0"/>
+						<Anchor point="CENTER" relativeTo="$parentFactionIcon" x="0" y="0"/>
 					</Anchors>
-					<Size x="46" y="46"/>
-					<TexCoords left="0" right="0.5625" top="0" bottom="0.5625"/>
 				</Texture>
 			</Layer>
-			<Layer level="BACKGROUND">
-				<Texture name="$parentSpecIcon" parentKey="SpecIcon">
-					<Size x="34" y="34"/>
-					<Anchors>
-						<Anchor point="LEFT" relativePoint="RIGHT" x="9.5" y="0"/>
-					</Anchors>
-				</Texture>
-				<FontString parentKey="SpecName" inherits="GlueFontHighlightLeft" justifyH="LEFT" justifyV="TOP" wordwrap="false">
-					<Color r="1.0" g="0.78" b="0"/>
+			<Layer level="ARTWORK">
+				<FontString name="$parentFactionName" parentKey="FactionName" inherits="GlueDark_Font_Shadow_16" justifyH="LEFT" wordwrap="false">
 					<Size x="150" y="0"/>
 					<Anchors>
 						<Anchor point="LEFT" x="75" y="0"/>
 					</Anchors>
+					<Color r="1" g="0.77647058823529" b="0"/>
 				</FontString>
 			</Layer>
 		</Layers>
-		<HitRectInsets left="0" right="-160" top="-18" bottom="-18"/>
+		<HitRectInsets left="0" right="-180" top="-17" bottom="-17"/>
+		<Scripts>
+			<OnClick function="CharacterUpgradeSelectFactionRadioButton_OnClick"/>
+		</Scripts>
+	</CheckButton>
+	<CheckButton name="CharacterUpgradeSelectSpecRadioButtonTemplate" inherits="GlueDark_RadioButtonTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentSpecIcon" parentKey="SpecIcon">
+					<Size x="34" y="34"/>
+					<Anchors>
+						<Anchor point="LEFT" x="25" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentIconBackdrop" parentKey="IconBackdrop" inherits="GlueDark_iconBorder">
+					<Size x="36" y="36"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentSpecIcon" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentRoleIcon" parentKey="RoleIcon" inherits="GlueDark_iconRole-DAMAGER">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIconBackdrop" x="5" y="-5" />
+					</Anchors>
+				</Texture>
+				<FontString name="$parentSpecName" parentKey="SpecName" inherits="GlueDark_Font_Shadow_16" justifyH="LEFT" wordwrap="false">
+					<Size x="150" y="0"/>
+					<Anchors>
+						<Anchor point="LEFT" x="75" y="0"/>
+					</Anchors>
+					<Color r="1" g="0.77647058823529" b="0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<HitRectInsets left="0" right="-180" top="-17" bottom="-17"/>
 		<Scripts>
 			<OnClick function="CharacterUpgradeSelectSpecRadioButton_OnClick"/>
 		</Scripts>
 	</CheckButton>
+
 	<Frame name="UpgradeFrameBorderedTemplate" virtual="true">
 		<Layers>
 			<Layer level="ARTWORK">
@@ -334,9 +306,11 @@
 			</OnLoad>
 		</Scripts>
 	</Frame>
-
-	<Frame name="CharacterBoostInfoFrame" parent="CharacterSelectUI" inherits="UpgradeFrameBorderedTemplate">
+	<Frame name="CharacterBoostInfoFrame" parent="CharacterSelectUI" inherits="UpgradeFrameBorderedTemplate" hidden="true">
 		<Size x="224" y="246"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0" />
+		</Anchors>
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture parentKey="TestBG">
@@ -376,9 +350,6 @@
 				</FontString>
 			</Layer>
 		</Layers>
-		<Anchors>
-			<Anchor point="TOP" relativeTo="CharacterSelectLogoFrame" relativePoint="BOTTOM" x="0" y="-38" />
-		</Anchors>
 		<Scripts>
 			<OnShow>
 				self:SetFrameLevel(2)
@@ -389,219 +360,204 @@
 		</Scripts>
 	</Frame>
 
-	<Button name="CharacterBoostButton" parent="CharacterSelectUI" motionScriptsWhileDisabled="true" inherits="GlueButtonTemplate" text="CHARACTER_SERVICES_BUYBOOST">
-		<Size x="214" y="60"/>
-		<Anchors>
-			<Anchor point="TOP" relativeTo="CharacterSelectLogoFrame" relativePoint="BOTTOM" x="0" y="-16" />
-		</Anchors>
-		<Layers>
-			<Layer level="BACKGROUND">
-				<Texture name="$parentChains1" parentKey="Chains1" file="Interface\Glues\AccountUpgrade\golden-main">
-					<Size x="20" y="62"/>
-					<Anchors>
-						<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="TOPLEFT" x="38" y="-15"/>
-					</Anchors>
-					<TexCoords left="0.148" right="0.227" top="0.508" bottom="0.777"/>
-				</Texture>
-				<Texture name="$parentChains2" parentKey="Chains2" file="Interface\Glues\AccountUpgrade\golden-main">
-					<Size x="20" y="62"/>
-					<Anchors>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT" x="-38" y="-15"/>
-					</Anchors>
-					<TexCoords left="0.148" right="0.227" top="0.508" bottom="0.777"/>
-				</Texture>
-			</Layer>
-			<Layer level="OVERLAY">
-				<Texture name="$parentBorder" parentKey="Border" file="Interface\Glues\AccountUpgrade\golden-main">
-					<Size x="214" y="60"/>
-					<Anchors>
-						<Anchor point="CENTER" x="-2" y="3"/>
-					</Anchors>
-					<TexCoords left="0.14843750" right="0.96093750" top="0.00390625" bottom="0.28515625"/>
-				</Texture>
-			</Layer>
-		</Layers>
-		<Scripts>
-			<OnShow function="CharacterBoostButton_OnShow"/>
-			<OnClick>
-				CharacterSelect.ServiceLoad = false
-				if inRealmScourge() then
-					SendPacket("0")
-				else
-					C_SendOpcode(CMSG_SIRUS_BOOST_STATUS)
-				end
-
-				if not CharSelectServicesFlowFrame:IsShown() and not CharacterSelect.ServiceLoad and CharacterSelect.AllowService then
-					CharSelectServicesFlowFrame:Show()
-				elseif not CharacterBoostBuyFrame:IsShown() and not CharacterSelect.ServiceLoad and not CharacterSelect.AllowService then
-					CharacterBoostBuyFrame:Show()
-				end
-			</OnClick>
-			<OnEnable>
-				if self.isBoostDisable then
-					self:Disable()
-				end
-			</OnEnable>
-			<OnEnter>
-				if self.tooltip then
-					GlueTooltip_SetOwner(self)
-					GlueTooltip_SetText(self.tooltip, GlueTooltip, 1.0, 1.0, 1.0)
-				end
-			</OnEnter>
-			<OnLeave>
-				GlueTooltip:Hide()
-			</OnLeave>
-		</Scripts>
+	<Frame name="CharacterFixDialog" parent="CharacterSelect" inherits="GlueDark_DialogFrameTemplate" toplevel="true" frameStrata="DIALOG" setAllPoints="true" enableMouse="true" hidden="true">
 		<Frames>
-			<Frame name="$parentMainPanel" parentKey="MainPanel" inherits="UpgradeFrameBorderedTemplate">
-				<Size x="224" y="66"/>
+			<Frame name="$parentContainer" parentKey="Container">
+				<Size x="410" y="230"/>
 				<Anchors>
-					<Anchor point="TOP" relativeTo="$parent" relativePoint="BOTTOM" x="0" y="-34"/>
+					<Anchor point="CENTER" x="0" y="35"/>
 				</Anchors>
+				<Attributes>
+					<Attribute name="layoutType" value="GlueDarkTemplate" type="string"/>
+					<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
+				</Attributes>
+
 				<Layers>
 					<Layer level="BACKGROUND">
-						<Texture parentKey="TestBG">
-							<Color r="0" g="0" b="0" a="0.85"/>
-						</Texture>
+						<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_backdrop"/>
 					</Layer>
 					<Layer level="BORDER">
-						<Texture name="$parentChains1" parentKey="Chains1" file="Interface\Glues\AccountUpgrade\golden-main">
-							<Size x="20" y="62"/>
+						<Texture name="$parentTopShadow" parentKey="TopShadow" inherits="GlueDark_backdropTopSplash2">
+							<Size x="0" y="182"/>
 							<Anchors>
-								<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="TOPLEFT" x="38" y="-8"/>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+								<Anchor point="TOPRIGHT" x="0" y="0"/>
 							</Anchors>
-							<TexCoords left="0.148" right="0.227" top="0.508" bottom="0.777"/>
 						</Texture>
-						<Texture name="$parentChains2" parentKey="Chains2" file="Interface\Glues\AccountUpgrade\golden-main">
-							<Size x="20" y="62"/>
+					</Layer>
+					<Layer level="ARTWORK">
+						<FontString name="$parentTitle" parentKey="Title" inherits="GlueDark_Font_Shadow_19" justifyH="CENTER" justifyV="TOP" text="CHARACTER_SELECT_FIX_CHARACTER_TITLE">
 							<Anchors>
-								<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT" x="-38" y="-8"/>
+								<Anchor point="TOP" x="0" y="-16"/>
 							</Anchors>
-							<TexCoords left="0.148" right="0.227" top="0.508" bottom="0.777"/>
+						</FontString>
+						<Texture name="$parentSeparator" parentKey="Separator" inherits="GlueDark_separator">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeTo="$parentTitle" x="-55" y="-11"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentTitle" x="55" y="-11"/>
+							</Anchors>
 						</Texture>
+						<FontString name="$parentCharacter" parentKey="Character" inherits="GlueDark_Font_Shadow_16" justifyH="CENTER">
+							<Size x="400" y="0"/>
+							<Anchors>
+								<Anchor point="TOP" relativeTo="$parentTitle" relativePoint="BOTTOM" x="0" y="-3"/>
+							</Anchors>
+						</FontString>
+						<FontString name="$parentDescription" parentKey="Description" inherits="GlueDark_Font_12" spacing="2" justifyH="CENTER" text="CHARACTER_SELECT_FIX_CHARACTER_DESC">
+							<Size x="370" y="0"/>
+							<Anchors>
+								<Anchor point="TOP" relativeTo="$parentCharacter" relativePoint="BOTTOM" x="0" y="-7"/>
+							</Anchors>
+							<Color r="0.66274509803922" g="0.66274509803922" b="0.66274509803922"/>
+						</FontString>
+						<FontString name="$parentNote" parentKey="Note" inherits="GlueDark_Font_12" spacing="2" justifyH="CENTER" text="CHARACTER_SELECT_FIX_CHARACTER_NOTE">
+							<Size x="335" y="0"/>
+							<Anchors>
+								<Anchor point="TOP" relativeTo="$parentDescription" relativePoint="BOTTOM" x="0" y="-10"/>
+							</Anchors>
+							<Color r="0.97647058823529" g="0.43529411764706" b="0.43529411764706"/>
+						</FontString>
 					</Layer>
 				</Layers>
 				<Frames>
-					<Frame name="$parentStatus1" parentKey="Status1" hidden="true" setAllPoints="true">
-						<Layers>
-							<Layer level="BACKGROUND">
-								<FontString name="$parentStatus" text="AVAILABLE" inherits="SystemFont_Huge6" justifyH="CENTER" parentKey="Status">
-									<Anchors>
-										<Anchor point="TOP" relativePoint="TOP" x="0" y="-12" />
-									</Anchors>
-									<Color r="0" g="1" b="0"/>
-								</FontString>
-								<FontString name="$parentTimeRemaning" inherits="GameFontNormal16" justifyH="CENTER" parentKey="TimeRemaning" hidden="true">
-									<Anchors>
-										<Anchor point="TOP" relativeTo="$parentStatus" relativePoint="BOTTOM" x="0" y="-2" />
-									</Anchors>
-									<Color r="0" g="1" b="0"/>
-								</FontString>
-							</Layer>
-						</Layers>
-					</Frame>
-					<Frame name="$parentStatus2" parentKey="Status2" hidden="true" setAllPoints="true">
-						<Layers>
-							<Layer level="BACKGROUND">
-								<FontString name="$parentStatus1" inherits="SystemFont_Shadow_Large2" justifyH="CENTER" parentKey="Status1">
-									<Anchors>
-										<Anchor point="CENTER" x="0" y="10" />
-									</Anchors>
-									<Color r="1" g="1" b="1"/>
-									<Animations>
-										<AnimationGroup parentKey="Anim">
-											<Alpha change="-1" duration="0.5" order="1"/>
-											<Alpha change="1" duration="0.5" startDelay="0.5" order="2"/>
-										</AnimationGroup>
-									</Animations>
-								</FontString>
-								<FontString name="$parentStatus2" inherits="SystemFont_Shadow_Large2" justifyH="CENTER" parentKey="Status2">
-									<Anchors>
-										<Anchor point="CENTER" x="0" y="-10" />
-									</Anchors>
-									<Color r="0" g="1" b="0"/>
-								</FontString>
-							</Layer>
-						</Layers>
-					</Frame>
+					<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
+
+					<Button name="$parentInfoIcon" parentKey="InfoIcon" inherits="GlueDark_InfoButtonTemplate">
+						<Size x="20" y="20"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="20" y="-15"/>
+						</Anchors>
+					</Button>
+					<Button name="$parentOKButton" parentKey="OKButton" inherits="GlueDark_ButtonTemplate" hidden="false" text="OKAY">
+						<Size x="86" y="26"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="-60" y="22"/>
+						</Anchors>
+						<Scripts>
+							<OnClick function="CharacterSelect_FixCharacter_OKButton_OnClick"/>
+						</Scripts>
+					</Button>
+					<Button name="$parentCancelButton" parentKey="CancelButton" inherits="GlueDark_ButtonTemplate" hidden="false" text="CANCEL">
+						<Size x="86" y="26"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="60" y="22"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								self:GetParent():GetParent():Hide()
+							</OnClick>
+						</Scripts>
+					</Button>
 				</Frames>
-				<Scripts>
-					<OnShow>
-						self:SetFrameLevel(2)
-						self.Chains1:SetDesaturated(1)
-						self.Chains2:SetDesaturated(1)
-					</OnShow>
-				</Scripts>
 			</Frame>
 		</Frames>
-	</Button>
+		<Scripts>
+			<OnLoad>
+				self.Container.TopShadow:SetVertexColor(0, 0, 0, 0.4)
+				CharacterSelect_FixCharacter_OnLoad(self)
+			</OnLoad>
+			<OnHide function="CharacterSelect_FixCharacter_OnHide"/>
+		</Scripts>
+	</Frame>
 
-	<Frame name="CharacterBoostBuyFrame" enableMouse="true" parent="CharacterSelect" toplevel="true" hidden="true">
-		<Size x="563" y="385"/>
-		<Anchors>
-			<Anchor point="CENTER"/>
-		</Anchors>
-		<Layers>
-			<Layer level="BACKGROUND">
-				<Texture file="Interface\GLUES\CharacterBoost\CharacterBoostPopup">
-					<TexCoords left="0" right="0.7841796875" top="0" bottom="0.51953125"/>
-				</Texture>
-			</Layer>
-			<Layer level="ARTWORK">
-				<FontString parentKey="Title" inherits="GameFontNormalHugeOutline1" justifyH="CENTER" justifyV="TOP" text="CHARACTER_SERVICES_BUYBOOST">
-					<Anchors>
-						<Anchor point="TOP" x="0" y="-39"/>
-					</Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
+	<Frame name="CharacterBoostBuyFrame" parent="CharacterSelect" inherits="GlueDark_DialogFrameTemplate" toplevel="true" frameStrata="DIALOG" setAllPoints="true" enableMouse="true" hidden="true">
 		<Frames>
-			<Button name="$parentCloseButton">
-				<Size x="32" y="32"/>
-				<Anchors>
-					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-8" y="-8"/>
-				</Anchors>
-				<Scripts>
-					<OnClick>
-						self:GetParent():Hide()
-					</OnClick>
-				</Scripts>
-				<DisabledTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Disabled"/>
-				<NormalTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Up"/>
-				<PushedTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Down"/>
-				<HighlightTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Highlight" alphaMode="ADD"/>
-			</Button>
 			<Frame name="$parentContainer" parentKey="Container">
-				<Size x="287" y="275"/>
+				<Size x="563" y="385"/>
 				<Anchors>
-					<Anchor point="RIGHT" x="-28" y="-26"/>
+					<Anchor point="CENTER"/>
 				</Anchors>
+				<Attributes>
+					<Attribute name="layoutType" value="GlueDarkTemplate" type="string"/>
+					<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
+				</Attributes>
+
 				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_backdrop"/>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture name="$parentTopShadow" parentKey="TopShadow" inherits="GlueDark_backdropTopSplash2">
+							<Size x="0" y="182"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+								<Anchor point="TOPRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentSaleBackdrop" parentKey="SaleBackdrop" inherits="GlueDark_saleBackdrop">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="13" y="30"/>
+							</Anchors>
+						</Texture>
+					</Layer>
 					<Layer level="ARTWORK">
-						<FontString name="$parentDescription" inherits="SystemFont_Shadow_Med1C" justifyH="LEFT" text="CHARACTER_SERVICES_BUYDESCRIPTION">
-							<Size x="275" y="0"/>
+						<Texture name="$parentArtwork" parentKey="Artwork" inherits="GlueDark_wolf">
 							<Anchors>
-								<Anchor point="TOP" x="-5" y="-4"/>
+								<Anchor point="TOPRIGHT" x="-7" y="-72"/>
+							</Anchors>
+						</Texture>
+						<FontString name="$parentTitle" parentKey="Title" inherits="GlueDark_Font_Shadow_26" justifyH="CENTER" justifyV="TOP" text="CHARACTER_SERVICES_BUYBOOST">
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-27"/>
 							</Anchors>
 						</FontString>
-						<FontString name="$parentCost" parentKey="Cost" inherits="GameFontNormalHugeOutline1" justifyH="CENTER" text="CHARACTER_SERVICES_BUYCOST">
+						<Texture name="$parentSeparator" parentKey="Separator" inherits="GlueDark_separator">
 							<Anchors>
-								<Anchor point="BOTTOM" x="-5" y="74"/>
+								<Anchor point="BOTTOMLEFT" relativeTo="$parentTitle" x="-100" y="-13"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentTitle" x="100" y="-13"/>
+							</Anchors>
+						</Texture>
+						<FontString name="$parentPreDescription" parentKey="PreDescription" inherits="GlueDark_Font_Shadow_13" hidden="true" spacing="2.5" justifyH="LEFT" text="CHARACTER_SERVICES_BUYTITTLE">
+							<Size x="250" y="0"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="18" y="-83"/>
 							</Anchors>
 						</FontString>
-						<FontString name="$parentMyBonus" parentKey="MyBonus" inherits="SystemFont_Shadow_Med1B" justifyH="CENTER">
-							<Size x="275" y="0"/>
+						<FontString name="$parentDescription" parentKey="Description" inherits="GlueDark_Font_Shadow_13" spacing="2.5" justifyH="LEFT" text="CHARACTER_SERVICES_BUYDESCRIPTION">
+							<Size x="300" y="0"/>
 							<Anchors>
-								<Anchor point="BOTTOM" x="-5" y="60"/>
+								<Anchor point="TOPLEFT" x="18" y="-83"/>
 							</Anchors>
 						</FontString>
+						<Texture name="$parentCurrencyIconPrice" parentKey="CurrencyIconPrice" file="Interface\Store\coins">
+							<Size x="22" y="22"/>
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="$parentSaleBackdrop" x="30" y="2"/>
+							</Anchors>
+						</Texture>
+						<FontString name="$parentNoPrice" parentKey="NoPrice" inherits="GlueDark_FontBold_19" justifyH="CENTER" hidden="true" text="CHARACTER_SERVICES_BOOST_COST_FREE">
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="$parentSaleBackdrop" x="0" y="2"/>
+							</Anchors>
+						</FontString>
+						<FontString name="$parentMyBonus" parentKey="MyBonus" inherits="GlueDark_Font_16" justifyH="CENTER"/>
+						<Texture name="$parentCurrencyIcon" parentKey="CurrencyIcon" file="Interface\Store\coins">
+							<Size x="22" y="22"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentMyBonus" relativePoint="RIGHT" x="6" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture name="$parentStrikeThrough" parentKey="StrikeThrough" inherits="GlueDark_strikeThrough" hidden="true"/>
 					</Layer>
 				</Layers>
 				<Frames>
-					<SimpleHTML name="$parentWarning" parentKey="Warning" hyperlinkFormat="|cff1010ff|H%s|h[%s]|h|r">
+					<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
+
+					<Button name="$parentCloseButton" parentKey="CloseButton" inherits="GlueDark_CloseButtonTemplate">
+						<Scripts>
+							<OnClick>
+								PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
+								self:GetParent():GetParent():Hide()
+							</OnClick>
+						</Scripts>
+					</Button>
+
+					<SimpleHTML name="$parentWarning" parentKey="Warning" hyperlinkFormat="|cffffc600|H%s|h[%s]|h|r">
 						<Size x="275" y="300"/>
 						<Anchors>
-							<Anchor point="TOP" relativeTo="$parentDescription" relativePoint="BOTTOM" x="0" y="-8"/>
+							<Anchor point="TOP" relativeTo="$parentDescription" relativePoint="BOTTOM" x="0" y="-10"/>
 						</Anchors>
 						<Scripts>
 							<OnHyperlinkClick>
@@ -611,12 +567,12 @@
 								self:SetText(CHARACTER_SERVICES_BUYWARNING);
 							</OnLoad>
 						</Scripts>
-						<FontString inherits="SystemFont_Shadow_Med1C"/>
+						<FontString inherits="GlueDark_Font_16" spacing="2.5"/>
 					</SimpleHTML>
-					<Button name="$parentBuyButton" parentKey="BuyButton" inherits="CharacterBoostButtonsTemplate" hidden="false" text="CHARACTER_SERVICES_BUY">
-						<Size x="150" y="52"/>
+					<Button name="$parentBuyButton" parentKey="BuyButton" inherits="GlueDark_ButtonBoldTemplate" text="CHARACTER_SERVICES_BUY">
+						<Size x="148" y="37" />
 						<Anchors>
-							<Anchor point="BOTTOM" x="-5" y="7"/>
+							<Anchor point="BOTTOMRIGHT" x="-86" y="37"/>
 						</Anchors>
 						<Scripts>
 							<OnClick function="CharacterBoostBuyFrameBuyButton_OnClick"/>
@@ -625,61 +581,75 @@
 				</Frames>
 			</Frame>
 		</Frames>
+		<Scripts>
+			<OnLoad>
+				self.Container.TopShadow:SetVertexColor(0, 0, 0, 0.7)
+				self.Container.MyBonus:SetPoint("TOP", self.Container.BuyButton, "BOTTOM", -11, -9)
+				CharacterBoostBuyFrame_OnLoad(self)
+			</OnLoad>
+		</Scripts>
 	</Frame>
-	<Frame name="CharSelectServicesFlowFrame" frameStrata="DIALOG" toplevel="true" parent="CharacterSelect" enableMouse="true" hidden="true">
-		<Size x="421" y="724"/>
+
+	<Frame name="CharSelectServicesFlowFrame" parent="CharacterSelect" inherits="GlueDark_DialogFrameTemplate" frameStrata="DIALOG" toplevel="true" enableMouse="true" hidden="true">
+		<Size x="387" y="652"/>
 		<Anchors>
-			<Anchor point="LEFT" x="8" y="16"/>
+			<Anchor point="LEFT" x="26" y="13"/>
 		</Anchors>
+		<Attributes>
+			<Attribute name="layoutType" value="GlueDarkTemplate" type="string"/>
+			<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
+		</Attributes>
+
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture inherits="services-cover" setAllPoints="true"/>
+				<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_backdrop"/>
 			</Layer>
 			<Layer level="BORDER">
-				<Texture parentKey="Icon" file="Interface\Store\Achievement_Level_80_circle">
-					<Size x="64" y="64" />
+				<Texture name="$parentTopShadow" parentKey="TopShadow" inherits="GlueDark_backdropTopSplash2">
+					<Size x="0" y="182"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" x="36" y="-36" />
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBottomShadow" parentKey="BottomShadow" inherits="GlueDark_backdropBottomShadow">
+					<Size x="0" y="182"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
 					</Anchors>
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
-				<Texture parentKey="IconBorder" inherits="services-cover-ring">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="28" y="-30"/>
-					</Anchors>
-				</Texture>
-				<FontString parentKey="TitleText" inherits="GlueFontNormalLarge" justifyH="LEFT" text="CHARACTER_SERVICES_BOOST">
+				<FontString name="$parentTitleText" parentKey="TitleText" inherits="GlueDark_Font_26" justifyH="CENTER" text="CHARACTER_SERVICES_BOOST">
 					<Size x="260" y="0"/>
 					<Anchors>
-						<Anchor point="TOP" x="80" y="-60"/>
+						<Anchor point="TOP" x="0" y="-30"/>
 					</Anchors>
 				</FontString>
+				<Texture name="$parentSeparator" parentKey="Separator" inherits="GlueDark_separator">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentTitleText" x="-35" y="-31"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentTitleText" x="35" y="-31"/>
+					</Anchors>
+				</Texture>
 			</Layer>
 		</Layers>
+
 		<Frames>
-			<Button parentKey="CloseButton">
-				<Size>
-					<AbsDimension x="32" y="32"/>
-				</Size>
+			<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
+			<Button name="$parentCloseButton" parentKey="CloseButton" inherits="GlueDark_CloseButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-13" y="-14" />
+					<Anchor point="TOPRIGHT" x="-12" y="-12"/>
 				</Anchors>
-				<Scripts>
-					<OnClick>
-						self:GetParent():Hide();
-					</OnClick>
-				</Scripts>
-				<DisabledTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Disabled"/>
-				<NormalTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Up"/>
-				<PushedTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Down"/>
-				<HighlightTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Highlight" alphaMode="ADD"/>
 			</Button>
+
 			<Frame name="CharacterServicesMaster" parentKey="CharacterServicesMaster" frameStrata="DIALOG">
 				<Size x="300" y="450"/>
 				<Anchors>
-					<Anchor point="TOP" x="0" y="-150"/>
+					<Anchor point="TOP" x="0" y="-100"/>
 				</Anchors>
+
 				<Frames>
 					<Frame name="$parentStep1" parentKey="step1" frameStrata="DIALOG" hidden="false">
 						<Size x="300" y="100"/>
@@ -689,35 +659,37 @@
 						<Frames>
 							<Frame name="$parentChoose" parentKey="choose" frameStrata="DIALOG" hidden="false" setAllPoints="true">
 								<Layers>
-									<Layer level="ARTWORK">
-										<FontString name="$parentStepLabel" parentKey="stepLabel" inherits="GlueFontHighlightLeft" text="STEP">
-											<Color r="1.0" g="0.78" b="0"/>
+									<Layer level="BORDER">
+										<Texture name="$parentStepBackdrop" parentKey="StepBackdrop" inherits="GlueDark_stageBackdrop">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="-15" y="5"/>
-											</Anchors>
-										</FontString>
-										<Texture parentKey="StepNumber" inherits="services-number-1">
-											<Anchors>
-												<Anchor point="TOPLEFT" x="-35" y="5"/>
+												<Anchor point="TOPLEFT" x="-31" y="1"/>
 											</Anchors>
 										</Texture>
-										<FontString name="$parentChooseTitle" parentKey="ChooseTitle" inherits="GlueFontHighlight" text="CHOOSE_CHARACTER_RIGHT">
+									</Layer>
+									<Layer level="ARTWORK">
+										<Texture parentKey="StepNumber" inherits="GlueDark_fqtc1" hidden="false">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="50" y="-10"/>
+												<Anchor point="CENTER" relativeTo="$parentStepBackdrop" x="1" y="1"/>
+											</Anchors>
+										</Texture>
+										<FontString name="$parentChooseTitle" parentKey="ChooseTitle" inherits="GlueDark_Font_Shadow_15" text="CHOOSE_CHARACTER_RIGHT">
+											<Anchors>
+												<Anchor point="TOPLEFT" relativeTo="$parentStepBackdrop" relativePoint="TOPRIGHT" x="16" y="-20"/>
 											</Anchors>
 										</FontString>
-										<FontString name="$parentChooseOr" parentKey="ChooseTitle" inherits="GlueFontDisableLeft" text="OR">
+										<FontString name="$parentChooseOr" parentKey="ChooseTitle" inherits="GlueDark_Font_Shadow_15" text="OR">
 											<Anchors>
-												<Anchor point="LEFT" x="50" y="-4"/>
+												<Anchor point="TOP" relativeTo="$parentChooseTitle" relativePoint="BOTTOM" x="0" y="-3"/>
 											</Anchors>
+											<Color r="0.5" g="0.5" b="0.5"/>
 										</FontString>
 									</Layer>
 								</Layers>
 								<Frames>
-									<Button name="$parentCreateCharacter" inherits="GluePanelButtonTemplate" parentKey="CreateNewCharacter" hidden="false" text="CHARACTER_CREATE">
-										<Size x="190" y="40"/>
+									<Button name="$parentCreateCharacter" inherits="GlueDark_ButtonTemplate" parentKey="CreateNewCharacter" hidden="false" text="CHARACTER_CREATE">
+										<Size x="166" y="26"/>
 										<Anchors>
-											<Anchor point="BOTTOMLEFT" x="40" y="-3"/>
+											<Anchor point="TOP" relativeTo="$parentChooseOr" relativePoint="BOTTOM" x="0" y="-6"/>
 										</Anchors>
 										<Scripts>
 											<OnClick>
@@ -730,21 +702,35 @@
 							</Frame>
 							<Frame name="$parentFinish" parentKey="finish" frameStrata="DIALOG" hidden="true" setAllPoints="true">
 								<Layers>
-									<Layer level="ARTWORK">
-										<Texture parentKey="Checkmark" inherits="services-checkmark">
+									<Layer level="BORDER">
+										<Texture name="$parentStepBackdrop" parentKey="StepBackdrop" inherits="GlueDark_stageBackdrop">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="-20" y="5"/>
+												<Anchor point="TOPLEFT" x="-31" y="1"/>
 											</Anchors>
 										</Texture>
-										<FontString name="$parentCharacterTitle" parentKey="CharacterTitle" inherits="GlueFontHighlight" text="CHARACTER_BOOST_CHARACTER_LABEL">
-											<Color r="0.5" g="0.5" b="0.5"/>
+									</Layer>
+									<Layer level="ARTWORK">
+										<Texture name="$parentCheckmark" parentKey="Checkmark" inherits="GlueDark_stageCheckMark">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="35" y="-5"/>
+												<Anchor point="CENTER" relativeTo="$parentStepBackdrop"/>
+											</Anchors>
+										</Texture>
+										<FontString name="$parentCharacterTitle" parentKey="CharacterTitle" inherits="GlueDark_Font_Shadow_15" text="CHARACTER_BOOST_CHARACTER_LABEL">
+											<Anchors>
+												<Anchor point="TOPLEFT" relativeTo="$parentStepBackdrop" relativePoint="TOPRIGHT" x="1" y="-25"/>
+											</Anchors>
+											<Color r="0.5" g="0.5" b="0.5"/>
+										</FontString>
+										<FontString name="$parentCharacter" parentKey="Character" wordwrap="false" justifyH="LEFT" inherits="GlueDark_Font_Shadow_15">
+											<Size x="265" y="0"/>
+											<Anchors>
+												<Anchor point="TOPLEFT" relativeTo="$parentCharacterTitle" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
 											</Anchors>
 										</FontString>
-										<FontString name="$parentCharacter" parentKey="Character" inherits="GlueFontHighlight">
+										<FontString name="$parentCharacterInfo" parentKey="CharacterInfo" wordwrap="false" justifyH="LEFT" inherits="GlueDark_Font_Shadow_15">
+											<Size x="265" y="0"/>
 											<Anchors>
-												<Anchor point="LEFT" x="35" y="20"/>
+												<Anchor point="TOPLEFT" relativeTo="$parentCharacter" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
 											</Anchors>
 										</FontString>
 									</Layer>
@@ -760,64 +746,63 @@
 						<Frames>
 							<Frame name="$parentChoose" parentKey="choose" frameStrata="DIALOG" hidden="false" setAllPoints="true">
 								<Layers>
-									<Layer level="ARTWORK">
-										<FontString name="$parentStepLabel" parentKey="stepLabel" inherits="GlueFontHighlightLeft" text="STEP">
-											<Color r="1.0" g="0.78" b="0"/>
+									<Layer level="BORDER">
+										<Texture name="$parentStepBackdrop" parentKey="StepBackdrop" inherits="GlueDark_stageBackdrop">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="-15" y="5"/>
-											</Anchors>
-										</FontString>
-										<Texture parentKey="StepNumber" inherits="services-number-2">
-											<Anchors>
-												<Anchor point="TOPLEFT" x="-35" y="5"/>
+												<Anchor point="TOPLEFT" x="-31" y="-49"/>
 											</Anchors>
 										</Texture>
-										<FontString name="$parentChooseTitle" parentKey="ChooseTitle" inherits="GlueFontHighlight" text="CHARACTER_BOOST_CHOOSE_CHARACTER_PROFESSION">
+									</Layer>
+									<Layer level="BACKGROUND">
+										<Texture name="$parentStepLine" parentKey="StepLine" inherits="GlueDark_stepLine"/>
+									</Layer>
+									<Layer level="ARTWORK">
+										<Texture parentKey="StepNumber" inherits="GlueDark_fqtc2" hidden="false">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="50" y="-10"/>
+												<Anchor point="CENTER" relativeTo="$parentStepBackdrop" x="1" y="1"/>
+											</Anchors>
+										</Texture>
+										<FontString name="$parentChooseTitle" parentKey="ChooseTitle" inherits="GlueDark_Font_Shadow_15" text="CHARACTER_BOOST_CHOOSE_CHARACTER_PROFESSION">
+											<Anchors>
+												<Anchor point="TOPLEFT" relativeTo="$parentStepBackdrop" relativePoint="TOPRIGHT" x="0" y="-13"/>
 											</Anchors>
 										</FontString>
-										<FontString name="$parentMainProffesion" parentKey="MainProffesion" inherits="GlueFontDisableLeft" text="MAIN_PROFESSION">
+										<FontString name="$parentMainProffesion" parentKey="MainProffesion" inherits="GlueDark_Font_Shadow_15" text="MAIN_PROFESSION">
 											<Anchors>
-												<Anchor point="LEFT" x="50" y="0"/>
+												<Anchor point="TOPLEFT" relativeTo="$parentChooseTitle" relativePoint="BOTTOMLEFT" x="0" y="-18"/>
 											</Anchors>
 										</FontString>
-										<FontString name="$parentAdditionalProffesion" parentKey="AdditionalProffesion" inherits="GlueFontDisableLeft" text="SECONDARY_PROFESSION">
+										<FontString name="$parentAdditionalProffesion" parentKey="AdditionalProffesion" inherits="GlueDark_Font_Shadow_15" text="SECONDARY_PROFESSION">
 											<Anchors>
-												<Anchor point="LEFT" x="50" y="-65"/>
+												<Anchor point="TOPLEFT" relativeTo="$parentMainProffesion" relativePoint="BOTTOMLEFT" x="0" y="-44"/>
 											</Anchors>
 										</FontString>
 									</Layer>
 								</Layers>
 								<Frames>
-									<Frame name="ChooseMainProffesionDropDown" inherits="GlueDropDownMenuTemplate">
+									<Frame name="ChooseMainProffesionDropDown" inherits="GlueDark_DropDownMenuTemplate">
 										<Anchors>
-											<Anchor point="LEFT" x="31" y="-25"/>
+											<Anchor point="TOPLEFT" relativeTo="$parentMainProffesion" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
 										</Anchors>
 										<Scripts>
 											<OnLoad>
-												GlueDropDownMenu_SetWidth(174, self);
-												GlueDropDownMenu_SetSelectedValue(self, 1);
-												GlueDropDownMenu_Initialize(self, CharacterServicesMasterMainDropDown_Initialize);
+												GlueDark_DropDownMenu_SetWidth(self, 140, true);
+												GlueDark_DropDownMenu_SetSelectedValue(self, 1);
+												GlueDark_DropDownMenu_Initialize(self, CharacterServicesMasterMainDropDown_Initialize);
 												ChooseMainProffesionDropDownText:SetJustifyH("LEFT");
-
-												_G[self:GetName().."Button"]:SetHitRectInsets(-168, 0, 0, 0)
 											</OnLoad>
 										</Scripts>
 									</Frame>
-
-									<Frame name="ChooseAdditionalProffesionDropDown" inherits="GlueDropDownMenuTemplate">
+									<Frame name="ChooseAdditionalProffesionDropDown" inherits="GlueDark_DropDownMenuTemplate">
 										<Anchors>
-											<Anchor point="LEFT" x="31" y="-90"/>
+											<Anchor point="TOPLEFT" relativeTo="$parentAdditionalProffesion" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
 										</Anchors>
 										<Scripts>
 											<OnLoad>
-												GlueDropDownMenu_SetWidth(174, self);
-												GlueDropDownMenu_SetSelectedValue(self, 1);
-												GlueDropDownMenu_Initialize(self, CharacterServicesMasterAdditionalDropDown_Initialize);
+												GlueDark_DropDownMenu_SetWidth(self, 140, true);
+												GlueDark_DropDownMenu_SetSelectedValue(self, 1);
+												GlueDark_DropDownMenu_Initialize(self, CharacterServicesMasterAdditionalDropDown_Initialize);
 												ChooseAdditionalProffesionDropDownText:SetJustifyH("LEFT");
-
-												_G[self:GetName().."Button"]:SetHitRectInsets(-168, 0, 0, 0)
 											</OnLoad>
 										</Scripts>
 									</Frame>
@@ -825,21 +810,31 @@
 							</Frame>
 							<Frame name="$parentFinish" parentKey="finish" frameStrata="DIALOG" hidden="true" setAllPoints="true">
 								<Layers>
-									<Layer level="ARTWORK">
-										<Texture parentKey="Checkmark" inherits="services-checkmark">
+									<Layer level="BORDER">
+										<Texture name="$parentStepBackdrop" parentKey="StepBackdrop" inherits="GlueDark_stageBackdrop">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="-20" y="5"/>
+												<Anchor point="TOPLEFT" x="-31" y="1"/>
 											</Anchors>
 										</Texture>
-										<FontString name="$parentProfessionTitle" parentKey="ProfessionTitle" inherits="GlueFontHighlight" text="PROFESSION_LABEL">
-											<Color r="0.5" g="0.5" b="0.5"/>
+									</Layer>
+									<Layer level="BACKGROUND">
+										<Texture name="$parentStepLine" parentKey="StepLine" inherits="GlueDark_stepLine"/>
+									</Layer>
+									<Layer level="ARTWORK">
+										<Texture name="$parentCheckmark" parentKey="Checkmark" inherits="GlueDark_stageCheckMark">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="35" y="-5"/>
+												<Anchor point="CENTER" relativeTo="$parentStepBackdrop"/>
 											</Anchors>
-										</FontString>
-										<FontString name="$parentProffesion" parentKey="Proffesion" inherits="GlueFontHighlight">
+										</Texture>
+										<FontString name="$parentProfessionTitle" parentKey="ProfessionTitle" inherits="GlueDark_Font_Shadow_15" text="PROFESSION_LABEL">
 											<Anchors>
-												<Anchor point="LEFT" x="35" y="20"/>
+												<Anchor point="TOPLEFT" relativeTo="$parentStepBackdrop" relativePoint="TOPRIGHT" x="1" y="-35"/>
+											</Anchors>
+											<Color r="0.5" g="0.5" b="0.5"/>
+										</FontString>
+										<FontString name="$parentProffesion" parentKey="Proffesion" inherits="GlueDark_Font_Shadow_15">
+											<Anchors>
+												<Anchor point="TOPLEFT" relativeTo="$parentProfessionTitle" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
 											</Anchors>
 										</FontString>
 									</Layer>
@@ -855,75 +850,94 @@
 						<Frames>
 							<Frame name="$parentChoose" parentKey="choose" frameStrata="DIALOG" hidden="false" setAllPoints="true">
 								<Layers>
-									<Layer level="ARTWORK">
-										<FontString name="$parentStepLabel" parentKey="stepLabel" inherits="GlueFontHighlightLeft" text="STEP">
-											<Color r="1.0" g="0.78" b="0"/>
+									<Layer level="BORDER">
+										<Texture name="$parentStepBackdrop" parentKey="StepBackdrop" inherits="GlueDark_stageBackdrop">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="-15" y="5"/>
-											</Anchors>
-										</FontString>
-										<Texture parentKey="StepNumber" inherits="services-number-3">
-											<Anchors>
-												<Anchor point="TOPLEFT" x="-35" y="5"/>
+												<Anchor point="TOPLEFT" x="-31" y="-39"/>
 											</Anchors>
 										</Texture>
-										<FontString name="$parentChooseTitle" parentKey="ChooseTitle" inherits="GlueFontHighlight" text="CHOOSE_SPECIALIZATION">
+									</Layer>
+									<Layer level="BACKGROUND">
+										<Texture name="$parentStepLine" parentKey="StepLine" inherits="GlueDark_stepLine"/>
+									</Layer>
+									<Layer level="ARTWORK">
+										<Texture parentKey="StepNumber" inherits="GlueDark_fqtc3" hidden="false">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="50" y="-10"/>
+												<Anchor point="CENTER" relativeTo="$parentStepBackdrop" x="1" y="1"/>
+											</Anchors>
+										</Texture>
+										<FontString name="$parentChooseTitle" parentKey="ChooseTitle" inherits="GlueDark_Font_Shadow_15" text="CHOOSE_SPECIALIZATION">
+											<Anchors>
+												<Anchor point="TOPLEFT" relativeTo="$parentStepBackdrop" relativePoint="TOPRIGHT" x="0" y="-13"/>
 											</Anchors>
 										</FontString>
 									</Layer>
 								</Layers>
 								<Frames>
-									<Button name="$parentHelpButton" parentKey="HelpButton">
-										<Size x="28" y="28"/>
+									<Button name="$parentHelpButton" parentKey="HelpButton" inherits="GlueDark_InfoButtonTemplate">
+										<Size x="16" y="16"/>
 										<Anchors>
-											<Anchor point="LEFT" relativeTo="$parentChooseTitle" relativePoint="RIGHT" x="2" y="-1" />
+											<Anchor point="LEFT" relativeTo="$parentChooseTitle" relativePoint="RIGHT" x="10" y="0"/>
 										</Anchors>
-										<NormalTexture file="Interface\common\help-i"/>
-										<HighlightTexture file="Interface\common\help-i" alphaMode="ADD" hidden="true">
-											<Size x="36" y="36"/>
-											<Anchors>
-												<Anchor point="CENTER"/>
-											</Anchors>
-											<Color r="1" g="1" b="1" a=".2"/>
-										</HighlightTexture>
 										<Scripts>
-											<OnEnter>
-												GlueTooltip:SetOwner(self)
-												GlueTooltip:SetText(CHARACTER_BOOST_HELP_CHOOSE_SPEC)
-												GlueTooltip:AddLine(CHARACTER_BOOST_HELP_CHOOSE_SPEC_DESC, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, 1, true)
-												GlueTooltip:Show()
-											</OnEnter>
-											<OnLeave>
-												GlueTooltip:Hide()
-											</OnLeave>
+											<OnLoad>
+												self.InfoHeader = CHARACTER_BOOST_HELP_CHOOSE_SPEC
+												self.InfoText = CHARACTER_BOOST_HELP_CHOOSE_SPEC_DESC
+											</OnLoad>
 										</Scripts>
 									</Button>
+									<CheckButton name="$parentSpecButton1" parentKey="SpecButton1" id="1" inherits="CharacterUpgradeSelectSpecRadioButtonTemplate">
+										<Anchors>
+											<Anchor point="TOPLEFT" relativeTo="$parentChooseTitle" relativePoint="BOTTOMLEFT" x="0" y="-25"/>
+										</Anchors>
+									</CheckButton>
+									<CheckButton name="$parentSpecButton2" parentKey="SpecButton2" id="2" inherits="CharacterUpgradeSelectSpecRadioButtonTemplate">
+										<Anchors>
+											<Anchor point="TOPLEFT" relativeTo="$parentSpecButton1" relativePoint="BOTTOMLEFT" x="0" y="-35"/>
+										</Anchors>
+									</CheckButton>
+									<CheckButton name="$parentSpecButton3" parentKey="SpecButton3" id="3" inherits="CharacterUpgradeSelectSpecRadioButtonTemplate">
+										<Anchors>
+											<Anchor point="TOPLEFT" relativeTo="$parentSpecButton2" relativePoint="BOTTOMLEFT" x="0" y="-35"/>
+										</Anchors>
+									</CheckButton>
+									<CheckButton name="$parentSpecButton4" parentKey="SpecButton4" id="4" hidden="true" inherits="CharacterUpgradeSelectSpecRadioButtonTemplate">
+										<Anchors>
+											<Anchor point="TOPLEFT" relativeTo="$parentSpecButton3" relativePoint="BOTTOMLEFT" x="0" y="-35"/>
+										</Anchors>
+									</CheckButton>
 								</Frames>
 								<Scripts>
-									<OnLoad>
-										CharacterServices_UpdateSpecButtons(self, self)
-									</OnLoad>
+									<OnLoad function="CharacterServices_StepSpec_OnLoad"/>
 								</Scripts>
 							</Frame>
 							<Frame name="$parentFinish" parentKey="finish" frameStrata="DIALOG" hidden="true" setAllPoints="true">
 								<Layers>
-									<Layer level="ARTWORK">
-										<Texture parentKey="Checkmark" inherits="services-checkmark">
+									<Layer level="BORDER">
+										<Texture name="$parentStepBackdrop" parentKey="StepBackdrop" inherits="GlueDark_stageBackdrop">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="-20" y="5"/>
+												<Anchor point="TOPLEFT" x="-31" y="1"/>
 											</Anchors>
 										</Texture>
-										<FontString name="$parentSpecTitle" parentKey="SpecTitle" inherits="GlueFontHighlight" text="SPECIALIZATION_LABEL">
-											<Color r="0.5" g="0.5" b="0.5"/>
+									</Layer>
+									<Layer level="BACKGROUND">
+										<Texture name="$parentStepLine" parentKey="StepLine" inherits="GlueDark_stepLine"/>
+									</Layer>
+									<Layer level="ARTWORK">
+										<Texture name="$parentCheckmark" parentKey="Checkmark" inherits="GlueDark_stageCheckMark">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="35" y="-5"/>
+												<Anchor point="CENTER" relativeTo="$parentStepBackdrop"/>
 											</Anchors>
-										</FontString>
-										<FontString name="$parentSpec" parentKey="Spec" inherits="GlueFontHighlight">
+										</Texture>
+										<FontString name="$parentSpecTitle" parentKey="SpecTitle" inherits="GlueDark_Font_Shadow_15" text="SPECIALIZATION_LABEL">
 											<Anchors>
-												<Anchor point="LEFT" x="35" y="20"/>
+												<Anchor point="TOPLEFT" relativeTo="$parentStepBackdrop" relativePoint="TOPRIGHT" x="1" y="-35"/>
+											</Anchors>
+											<Color r="0.5" g="0.5" b="0.5"/>
+										</FontString>
+										<FontString name="$parentSpec" parentKey="Spec" inherits="GlueDark_Font_Shadow_15">
+											<Anchors>
+												<Anchor point="TOPLEFT" relativeTo="$parentSpecTitle" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
 											</Anchors>
 										</FontString>
 									</Layer>
@@ -939,48 +953,82 @@
 						<Frames>
 							<Frame name="$parentChoose" parentKey="choose" frameStrata="DIALOG" hidden="false" setAllPoints="true">
 								<Layers>
-									<Layer level="ARTWORK">
-										<FontString name="$parentStepLabel" parentKey="stepLabel" inherits="GlueFontHighlightLeft" text="STEP">
-											<Color r="1.0" g="0.78" b="0"/>
+									<Layer level="BORDER">
+										<Texture name="$parentStepBackdrop" parentKey="StepBackdrop" inherits="GlueDark_stageBackdrop">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="-15" y="5"/>
-											</Anchors>
-										</FontString>
-										<Texture parentKey="StepNumber" inherits="services-number-4">
-											<Anchors>
-												<Anchor point="TOPLEFT" x="-35" y="5"/>
+												<Anchor point="TOPLEFT" x="-31" y="1"/>
 											</Anchors>
 										</Texture>
-										<FontString name="$parentChooseTitle" parentKey="ChooseTitle" inherits="GlueFontHighlight" text="CHOOSE_PVP_SPECIALIZATION">
+									</Layer>
+									<Layer level="BACKGROUND">
+										<Texture name="$parentStepLine" parentKey="StepLine" inherits="GlueDark_stepLine"/>
+									</Layer>
+									<Layer level="ARTWORK">
+										<Texture parentKey="StepNumber" inherits="GlueDark_fqtc4" hidden="false">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="50" y="-10"/>
+												<Anchor point="CENTER" relativeTo="$parentStepBackdrop" x="1" y="1"/>
+											</Anchors>
+										</Texture>
+										<FontString name="$parentChooseTitle" parentKey="ChooseTitle" inherits="GlueDark_Font_Shadow_15" text="CHOOSE_PVP_SPECIALIZATION">
+											<Anchors>
+												<Anchor point="TOPLEFT" relativeTo="$parentStepBackdrop" relativePoint="TOPRIGHT" x="0" y="-13"/>
 											</Anchors>
 										</FontString>
 									</Layer>
 								</Layers>
+								<Frames>
+									<CheckButton name="$parentSpecButton1" parentKey="SpecButton1" id="1" inherits="CharacterUpgradeSelectSpecRadioButtonTemplate">
+										<Anchors>
+											<Anchor point="TOPLEFT" relativeTo="$parentChooseTitle" relativePoint="BOTTOMLEFT" x="0" y="-25"/>
+										</Anchors>
+									</CheckButton>
+									<CheckButton name="$parentSpecButton2" parentKey="SpecButton2" id="2" inherits="CharacterUpgradeSelectSpecRadioButtonTemplate">
+										<Anchors>
+											<Anchor point="TOPLEFT" relativeTo="$parentSpecButton1" relativePoint="BOTTOMLEFT" x="0" y="-35"/>
+										</Anchors>
+									</CheckButton>
+									<CheckButton name="$parentSpecButton3" parentKey="SpecButton3" id="3" inherits="CharacterUpgradeSelectSpecRadioButtonTemplate">
+										<Anchors>
+											<Anchor point="TOPLEFT" relativeTo="$parentSpecButton2" relativePoint="BOTTOMLEFT" x="0" y="-35"/>
+										</Anchors>
+									</CheckButton>
+									<CheckButton name="$parentSpecButton4" parentKey="SpecButton4" id="4" hidden="true" inherits="CharacterUpgradeSelectSpecRadioButtonTemplate">
+										<Anchors>
+											<Anchor point="TOPLEFT" relativeTo="$parentSpecButton3" relativePoint="BOTTOMLEFT" x="0" y="-35"/>
+										</Anchors>
+									</CheckButton>
+								</Frames>
 								<Scripts>
-									<OnLoad>
-										CharacterServices_UpdateSpecButtons(self, self)
-									</OnLoad>
+									<OnLoad function="CharacterServices_StepSpec_OnLoad"/>
 								</Scripts>
 							</Frame>
 							<Frame name="$parentFinish" parentKey="finish" frameStrata="DIALOG" hidden="true" setAllPoints="true">
 								<Layers>
-									<Layer level="ARTWORK">
-										<Texture parentKey="Checkmark" inherits="services-checkmark">
+									<Layer level="BORDER">
+										<Texture name="$parentStepBackdrop" parentKey="StepBackdrop" inherits="GlueDark_stageBackdrop">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="-20" y="5"/>
+												<Anchor point="TOPLEFT" x="-31" y="1"/>
 											</Anchors>
 										</Texture>
-										<FontString name="$parentSpecTitle" parentKey="SpecTitle" inherits="GlueFontHighlight" text="PVP_SPECIALIZATION_LABEL">
-											<Color r="0.5" g="0.5" b="0.5"/>
+									</Layer>
+									<Layer level="BACKGROUND">
+										<Texture name="$parentStepLine" parentKey="StepLine" inherits="GlueDark_stepLine"/>
+									</Layer>
+									<Layer level="ARTWORK">
+										<Texture name="$parentCheckmark" parentKey="Checkmark" inherits="GlueDark_stageCheckMark">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="35" y="-5"/>
+												<Anchor point="CENTER" relativeTo="$parentStepBackdrop"/>
 											</Anchors>
-										</FontString>
-										<FontString name="$parentSpec" parentKey="Spec" inherits="GlueFontHighlight">
+										</Texture>
+										<FontString name="$parentSpecTitle" parentKey="SpecTitle" inherits="GlueDark_Font_Shadow_15" text="PVP_SPECIALIZATION_LABEL">
 											<Anchors>
-												<Anchor point="LEFT" x="35" y="20"/>
+												<Anchor point="TOPLEFT" relativeTo="$parentStepBackdrop" relativePoint="TOPRIGHT" x="1" y="-35"/>
+											</Anchors>
+											<Color r="0.5" g="0.5" b="0.5"/>
+										</FontString>
+										<FontString name="$parentSpec" parentKey="Spec" inherits="GlueDark_Font_Shadow_15">
+											<Anchors>
+												<Anchor point="TOPLEFT" relativeTo="$parentSpecTitle" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
 											</Anchors>
 										</FontString>
 									</Layer>
@@ -996,48 +1044,72 @@
 						<Frames>
 							<Frame name="$parentChoose" parentKey="choose" frameStrata="DIALOG" hidden="false" setAllPoints="true">
 								<Layers>
-									<Layer level="ARTWORK">
-										<FontString name="$parentStepLabel" parentKey="stepLabel" inherits="GlueFontHighlightLeft" text="STEP">
-											<Color r="1.0" g="0.78" b="0"/>
+									<Layer level="BORDER">
+										<Texture name="$parentStepBackdrop" parentKey="StepBackdrop" inherits="GlueDark_stageBackdrop">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="-15" y="5"/>
-											</Anchors>
-										</FontString>
-										<Texture parentKey="StepNumber" inherits="services-number-5">
-											<Anchors>
-												<Anchor point="TOPLEFT" x="-35" y="5"/>
+												<Anchor point="TOPLEFT" x="-31" y="1"/>
 											</Anchors>
 										</Texture>
-										<FontString name="$parentChooseTitle" parentKey="ChooseTitle" inherits="GlueFontHighlight" text="CHARACTER_BOOST_CHOOSE_CHARACTER_FACTION">
+									</Layer>
+									<Layer level="BACKGROUND">
+										<Texture name="$parentStepLine" parentKey="StepLine" inherits="GlueDark_stepLine"/>
+									</Layer>
+									<Layer level="ARTWORK">
+										<Texture parentKey="StepNumber" inherits="GlueDark_fqtc5" hidden="false">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="50" y="-10"/>
+												<Anchor point="CENTER" relativeTo="$parentStepBackdrop" x="1" y="1"/>
+											</Anchors>
+										</Texture>
+										<FontString name="$parentChooseTitle" parentKey="ChooseTitle" inherits="GlueDark_Font_Shadow_15" text="CHARACTER_BOOST_CHOOSE_CHARACTER_FACTION">
+											<Anchors>
+												<Anchor point="TOPLEFT" relativeTo="$parentStepBackdrop" relativePoint="TOPRIGHT" x="0" y="-13"/>
 											</Anchors>
 										</FontString>
 									</Layer>
 								</Layers>
-								<Scripts>
-									<OnLoad>
-										CharacterServices_UpdateFactionButtons(self, self)
-									</OnLoad>
-								</Scripts>
+							<Frames>
+								<CheckButton name="$parentFactionButton1" parentKey="FactionButton1" id="1" inherits="CharacterUpgradeSelectFactionRadioButtonTemplate">
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="$parentChooseTitle" relativePoint="BOTTOMLEFT" x="0" y="-25"/>
+									</Anchors>
+								</CheckButton>
+								<CheckButton name="$parentFactionButton2" parentKey="FactionButton2" id="2" inherits="CharacterUpgradeSelectFactionRadioButtonTemplate">
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="$parentFactionButton1" relativePoint="BOTTOMLEFT" x="0" y="-35"/>
+									</Anchors>
+								</CheckButton>
+							</Frames>
+							<Scripts>
+								<OnLoad function="CharacterServices_StepFaction_OnLoad"/>
+							</Scripts>
 							</Frame>
 							<Frame name="$parentFinish" parentKey="finish" frameStrata="DIALOG" hidden="true" setAllPoints="true">
 								<Layers>
-									<Layer level="ARTWORK">
-										<Texture parentKey="Checkmark" inherits="services-checkmark">
+									<Layer level="BORDER">
+										<Texture name="$parentStepBackdrop" parentKey="StepBackdrop" inherits="GlueDark_stageBackdrop">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="-20" y="5"/>
+												<Anchor point="TOPLEFT" x="-31" y="1"/>
 											</Anchors>
 										</Texture>
-										<FontString name="$parentFactionTitle" parentKey="FactionTitle" inherits="GlueFontHighlight" text="FACTION_LABEL">
-											<Color r="0.5" g="0.5" b="0.5"/>
+									</Layer>
+									<Layer level="BACKGROUND">
+										<Texture name="$parentStepLine" parentKey="StepLine" inherits="GlueDark_stepLine"/>
+									</Layer>
+									<Layer level="ARTWORK">
+										<Texture name="$parentCheckmark" parentKey="Checkmark" inherits="GlueDark_stageCheckMark">
 											<Anchors>
-												<Anchor point="TOPLEFT" x="35" y="-5"/>
+												<Anchor point="CENTER" relativeTo="$parentStepBackdrop"/>
 											</Anchors>
-										</FontString>
-										<FontString name="$parentFaction" parentKey="Faction" inherits="GlueFontHighlight">
+										</Texture>
+										<FontString name="$parentFactionTitle" parentKey="FactionTitle" inherits="GlueDark_Font_Shadow_15" text="FACTION_LABEL">
 											<Anchors>
-												<Anchor point="LEFT" x="35" y="20"/>
+												<Anchor point="TOPLEFT" relativeTo="$parentStepBackdrop" relativePoint="TOPRIGHT" x="1" y="-35"/>
+											</Anchors>
+											<Color r="0.5" g="0.5" b="0.5"/>
+										</FontString>
+										<FontString name="$parentFaction" parentKey="Faction" inherits="GlueDark_Font_Shadow_15">
+											<Anchors>
+												<Anchor point="TOPLEFT" relativeTo="$parentFactionTitle" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
 											</Anchors>
 										</FontString>
 									</Layer>
@@ -1047,27 +1119,31 @@
 					</Frame>
 				</Frames>
 			</Frame>
-			<Button parentKey="BackButton" inherits="GlueButtonSmallTemplate" text="BACK" hidden="true">
-				<Size x="100" y="38"/>
+
+			<Button name="$parentNextButton" parentKey="NextButton" inherits="GlueDark_ButtonTemplate" text="CHARACTER_BOOST_NEXT" hidden="false">
+				<Size x="120" y="26"/>
 				<Anchors>
-					<Anchor point="BOTTOMLEFT" x="40" y="52"/>
-				</Anchors>
-				<Scripts>
-					<!-- <OnClick function="CharacterServicesMasterBackButton_OnClick"/> -->
-				</Scripts>
-			</Button>
-			<Button parentKey="NextButton" inherits="GlueButtonSmallTemplate" text="CHARACTER_BOOST_NEXT" hidden="false" disable="true">
-				<Anchors>
-					<Anchor point="BOTTOM" x="0" y="50"/>
+					<Anchor point="BOTTOM" x="0" y="20"/>
 				</Anchors>
 				<Scripts>
 					<OnClick function="CharacterServicesMasterNextButton_OnClick"/>
 				</Scripts>
 			</Button>
-			<Frame parentKey="GlowBox">
-				<Size x="244" y="180"/>
+			<Button name="$parentBackButton" parentKey="BackButton" inherits="GlueDark_ButtonTemplate" text="BACK" hidden="true">
+				<Size x="86" y="26"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentNextButton" relativePoint="RIGHT" x="20" y="0"/>
+				</Anchors>
+			<!--
+				<Scripts>
+					<OnClick function="CharacterServicesMasterBackButton_OnClick"/>
+				</Scripts>
+			-->
+			</Button>
+
+			<Frame parentKey="GlowBox" hidden="true">
 				<Layers>
-					<Layer level="ARTWORK" textureSubLevel="-1">
+					<Layer level="ARTWORK">
 						<Texture name="$parentGlowTopLeft" file="Interface\Store\HelpBox" parentKey="GlowTopLeft" alphaMode="ADD">
 							<Size x="4" y="4"/>
 							<Anchors>
@@ -1144,37 +1220,13 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				self:RegisterEvent("SERVER_SPLIT_NOTICE")
+				self.TopShadow:SetVertexColor(0, 0, 0, 0.4)
+				CharacterServicesMaster_OnLoad(self)
 			</OnLoad>
 			<OnEvent function="CharacterServicesMaster_OnEvent"/>
 			<OnShow function="CharacterServicesMaster_OnShow"/>
 			<OnHide function="CharacterServicesMaster_OnHide"/>
+			<OnKeyDown function="CharacterServicesMaster_OnKeyDown"/>
 		</Scripts>
-	</Frame>
-	<Frame name="WaitingDialogFrame" frameStrata="FULLSCREEN" toplevel="true" setAllPoints="true" enableMouse="true" parent="CharacterSelect" hidden="true">
-		<Layers>
-			<Layer level="BACKGROUND">
-				<Texture parentKey="TestBG">
-					<Color r="0" g="0" b="0" a="0.40"/>
-				</Texture>
-			</Layer>
-			<Layer level="ARTWORK">
-				<Texture file="Interface\GLUES\CharacterBoost\challenges-main">
-					<Size x="587" y="101"/>
-					<Anchors>
-						<Anchor point="CENTER" x="0" y="0"/>
-					</Anchors>
-					<TexCoords left="0.072265625" right="0.6455078125" top="0.03515625" bottom="0.232421875"/>
-				</Texture>
-				<FontString parentKey="Text" inherits="GameFontNormalHugeOutline" justifyH="CENTER" justifyV="TOP">
-					<Color r="0.91" g="0.78" b="0.53"/>
-					<Anchors>
-						<Anchor point="CENTER" x="0" y="0"/>
-					</Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
-		<Frames>
-		</Frames>
 	</Frame>
 </Ui>

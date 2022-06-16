@@ -600,6 +600,62 @@ UI_CAMERA_ID = {
 	[877] = {1.540, -0.010, -0.090, -0.368}, -- Transmog-DarkIronDwarf-Female-Chest
 	[879] = {0.000, 0.000, 0.000, 0.000}, -- Transmog-Set-Details-DarkIronDwarf-Female
 	[880] = {0.000, 0.000, 0.000, 0.000}, -- Transmog-Set-Vendor-DarkIronDwarf-Female
+	[881] = {3.010, 0.030, -1.140, -0.310}, -- Transmog-ZandalariTroll-Male-Head
+	[882] = {2.930, -0.370, -0.920, 0.070}, -- Transmog-ZandalariTroll-Male-Shoulder
+	[883] = {2.250, -0.060, -0.220, -2.800}, -- Transmog-ZandalariTroll-Male-Back
+	[884] = {2.230, -0.000, -0.180, -0.010}, -- Transmog-ZandalariTroll-Male-Robe
+	[885] = {3.100, 0.010, -0.660, -0.120}, -- Transmog-ZandalariTroll-Male-Shirt
+	[886] = {3.150, 0.010, -0.660, 0.120}, -- Transmog-ZandalariTroll-Male-Tabard
+	[887] = {3.180, -0.360, -0.300, -0.580}, -- Transmog-ZandalariTroll-Male-Wrist
+	[888] = {2.940, -0.380, -0.210, -0.340}, -- Transmog-ZandalariTroll-Male-Hands
+	[889] = {3.350, 0.000, -0.350, 0.050}, -- Transmog-ZandalariTroll-Male-Waist
+	[890] = {2.950, 0.000, 0.050, -0.640}, -- Transmog-ZandalariTroll-Male-Legs
+	[891] = {2.810, -0.020, 0.540, -0.450}, -- Transmog-ZandalariTroll-Male-Feet
+	[892] = {3.100, 0.010, -0.660, -0.120}, -- Transmog-ZandalariTroll-Male-Chest
+	[894] = {0.000, 0.000, 0.000, 0.000}, -- Transmog-Set-Details-ZandalariTroll-Male
+	[895] = {0.000, 0.000, 0.000, 0.000}, -- Transmog-Set-Vendor-ZandalariTroll-Male
+	[896] = {3.290, -0.010, -1.130, -0.400}, -- Transmog-ZandalariTroll-Female-Head
+	[897] = {3.180, -0.270, -0.880, -0.468}, -- Transmog-ZandalariTroll-Female-Shoulder
+	[898] = {2.350, -0.100, -0.200, -2.860}, -- Transmog-ZandalariTroll-Female-Back
+	[899] = {2.320, -0.010, -0.190, 0.140}, -- Transmog-ZandalariTroll-Female-Robe
+	[900] = {3.240, -0.010, -0.640, 0.000}, -- Transmog-ZandalariTroll-Female-Shirt
+	[901] = {3.360, -0.010, -0.660, 0.310}, -- Transmog-ZandalariTroll-Female-Tabard
+	[902] = {3.320, -0.270, -0.320, -0.600}, -- Transmog-ZandalariTroll-Female-Wrist
+	[903] = {3.150, -0.260, -0.270, -0.680}, -- Transmog-ZandalariTroll-Female-Hands
+	[904] = {3.440, -0.000, -0.380, 0.040}, -- Transmog-ZandalariTroll-Female-Waist
+	[905] = {2.880, -0.050, 0.080, -0.550}, -- Transmog-ZandalariTroll-Female-Legs
+	[906] = {3.060, -0.060, 0.600, -0.820}, -- Transmog-ZandalariTroll-Female-Feet
+	[907] = {3.240, -0.010, -0.640, 0.000}, -- Transmog-ZandalariTroll-Female-Chest
+	[909] = {0.000, 0.000, 0.000, 0.000}, -- Transmog-Set-Details-ZandalariTroll-Female
+	[910] = {0.000, 0.000, 0.000, 0.000}, -- Transmog-Set-Vendor-ZandalariTroll-Female
+	[911] = {3.430, 0.100, -0.870, -0.447}, -- Transmog-Lightforged-Male-Head
+	[912] = {3.040, -0.380, -0.670, -0.614}, -- Transmog-Lightforged-Male-Shoulder
+	[913] = {2.880, -0.050, 0.000, -3.485}, -- Transmog-Lightforged-Male-Back
+	[914] = {2.690, 0.110, -0.040, -0.837}, -- Transmog-Lightforged-Male-Robe
+	[915] = {3.270, 0.120, -0.410, -0.897}, -- Transmog-Lightforged-Male-Shirt
+	[916] = {3.070, 0.070, -0.250, -0.333}, -- Transmog-Lightforged-Male-Tabard
+	[917] = {3.470, -0.360, -0.130, -0.651}, -- Transmog-Lightforged-Male-Wrist
+	[918] = {3.480, -0.430, 0.000, -0.328}, -- Transmog-Lightforged-Male-Hands
+	[919] = {3.420, 0.050, -0.040, -0.333}, -- Transmog-Lightforged-Male-Waist
+	[920] = {3.150, 0.010, 0.310, 0.195}, -- Transmog-Lightforged-Male-Legs
+	[921] = {3.460, 0.090, 0.700, 0.172}, -- Transmog-Lightforged-Male-Feet
+	[922] = {3.210, 0.090, -0.410, -0.897}, -- Transmog-Lightforged-Male-Chest
+	[924] = {0.000, 0.000, 0.000, 0.000}, -- Transmog-Set-Details-Lightforged-Male
+	[925] = {0.000, 0.000, 0.000, 0.000}, -- Transmog-Set-Vendor-Lightforged-Male
+	[926] = {2.950, -0.040, -0.920, -0.420}, -- Transmog-Lightforged-Female-Head
+	[927] = {2.950, -0.260, -0.730, -0.468}, -- Transmog-Lightforged-Female-Shoulder
+	[928] = {2.340, 0.010, -0.090, -3.059}, -- Transmog-Lightforged-Female-Back
+	[929] = {2.610, 0.010, -0.270, -0.363},-- Transmog-Lightforged-Female-Robe
+	[930] = {2.980, -0.030, -0.490, -0.412}, -- Transmog-Lightforged-Female-Shirt
+	[931] = {2.920, -0.030, -0.400, -0.165}, -- Transmog-Lightforged-Female-Tabard
+	[932] = {3.110, -0.250, -0.250, -0.598}, -- Transmog-Lightforged-Female-Wrist
+	[933] = {2.830, -0.220, -0.140, -0.897}, -- Transmog-Lightforged-Female-Hands
+	[934] = {3.070, -0.040, -0.250, -0.068}, -- Transmog-Lightforged-Female-Waist
+	[935] = {2.710, -0.040, 0.110, -0.206}, -- Transmog-Lightforged-Female-Legs
+	[936] = {2.660, -0.060, 0.610, -1.533}, -- Transmog-Lightforged-Female-Feet
+	[937] = {2.960, -0.030, -0.480, -0.412}, -- Transmog-Lightforged-Female-Chest
+	[939] = {0.000, 0.000, 0.000, 0.000}, -- Transmog-Set-Details-Lightforged-Female
+	[940] = {0.000, 0.000, 0.000, 0.000}, -- Transmog-Set-Vendor-Lightforged-Female
 };
 
 UI_CAMERA = {
@@ -683,6 +739,14 @@ UI_CAMERA = {
 		["Male"] = {[1] = 851, [2] = 852, [3] = 853, [4] = 854, [5] = 855, [6] = 856, [7] = 857, [8] = 858, [9] = 859, [10] = 860, [11] = 861, [12] = 862, [14] = 864, [15] = 865},
 		["Female"] = {[1] = 866, [2] = 867, [3] = 868, [4] = 869, [5] = 870, [6] = 871, [7] = 872, [8] = 873, [9] = 874, [10] = 875, [11] = 876, [12] = 877, [14] = 879, [15] = 880},
 	},
+	["ZandalariTroll"] = {
+		["Male"] = {[1] = 881, [2] = 882, [3] = 883, [4] = 884, [5] = 885, [6] = 886, [7] = 887, [8] = 888, [9] = 889, [10] = 890, [11] = 891, [12] = 892, [14] = 894, [15] = 895},
+		["Female"] = {[1] = 896, [2] = 897, [3] = 898, [4] = 899, [5] = 900, [6] = 901, [7] = 902, [8] = 903, [9] = 904, [10] = 905, [11] = 906, [12] = 907, [14] = 909, [15] = 910},
+	},
+	["Lightforged"] = {
+		["Male"] = {[1] = 911, [2] = 912, [3] = 913, [4] = 914, [5] = 915, [6] = 916, [7] = 917, [8] = 918, [9] = 919, [10] = 920, [11] = 921, [12] = 922, [14] = 924, [15] = 925},
+		["Female"] = {[1] = 926, [2] = 927, [3] = 928, [4] = 929, [5] = 930, [6] = 931, [7] = 932, [8] = 933, [9] = 934, [10] = 935, [11] = 936, [12] = 937, [14] = 939, [15] = 940},
+	},
 };
 
 MODELFRAME_DRAG_ROTATION_CONSTANT = 0.010
@@ -734,6 +798,10 @@ local ModelSettings = {
 	["EredarFemale"] = { panMaxLeft = -0.3, panMaxRight = 0.3, panMaxTop = 1.4, panMaxBottom = -0.3, panValue = 31 },
 	["DarkIronDwarfMale"] = { panMaxLeft = -0.4, panMaxRight = 0.6, panMaxTop = 0.9, panMaxBottom = -0.2, panValue = 44 },
 	["DarkIronDwarfFemale"] = { panMaxLeft = -0.3, panMaxRight = 0.3, panMaxTop = 0.9, panMaxBottom = -0.2, panValue = 47 },
+	["ZandalariTrollMale"] = { panMaxLeft = -0.5, panMaxRight = 0.6, panMaxTop = 1.3, panMaxBottom = -0.4, panValue = 27 },
+	["ZandalariTrollFemale"] = { panMaxLeft = -0.4, panMaxRight = 0.4, panMaxTop = 1.5, panMaxBottom = -0.4, panValue = 31 },
+	["LightforgedMale"] = { panMaxLeft = -0.6, panMaxRight = 0.6, panMaxTop = 1.4, panMaxBottom = -0.4, panValue = 28 },
+	["LightforgedFemale"] = { panMaxLeft = -0.3, panMaxRight = 0.3, panMaxTop = 1.4, panMaxBottom = -0.3, panValue = 31 },
 }
 
 local playerRaceSex

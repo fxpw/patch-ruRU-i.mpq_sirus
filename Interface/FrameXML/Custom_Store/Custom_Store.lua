@@ -457,6 +457,12 @@ STORE_SPECIAL_OFFERS_3D = {
 		PopupCreature = 131250,
 		BannerModelInfo = {131250, -0.38, "BOTTOM", "TOP", 0, 20, 350, 220, 0.7},
 	}, -- Sirin
+	[58] = {
+		Name = "VenLo",
+		VertexColor = {1, 0.3, 0.3},
+		PopupCreature = 131261,
+		BannerModelInfo = {131261, -0.645, "BOTTOM", "TOP", 0, -60, 400, 320, 0.5},
+	}, -- VenLo
 }
 
 STORE_CACHE = C_Cache("SIRUS_STORE_CACHE", true)
@@ -1964,6 +1970,16 @@ function StoreConfirmationButton_OnClick( self, ... )
 	parent:Hide()
 end
 
+function StoreConfirmationButton_OnEnter(self)
+	if self:IsEnabled() == 0 then
+		if selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID and selectedSubCategoryID ~= 0 then
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+			GameTooltip:AddLine(STORE_BUY_TRANSMOG_WARNING, 1, 0, 0, 1, 1)
+			GameTooltip:Show()
+		end
+	end
+end
+
 function StorePurchaseAlertFrame_OnShow( self, ... )
 	self.animIn:Play()
 	self.waitAndAnimOut:Play()
@@ -2243,8 +2259,20 @@ function StoreSubCategorySelectButton_OnClick( self, ... )
 end
 
 function StoreSubCategorySelectClick()
-	selectedShowAllItemCheckBox = 0
-	StoreShowAllItemCheckButton:SetChecked(false)
+	if selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID then
+		local isShowAllItems = tonumber(C_CVar:GetValue("C_CVAR_STORE_SHOW_ALL_TRANSMOG_ITEMS")) == 1;
+		if isShowAllItems then
+			selectedShowAllItemCheckBox = 0;
+			StoreItemListUpdate();
+			selectedShowAllItemCheckBox = 1;
+		else
+			selectedShowAllItemCheckBox = 0;
+		end
+		StoreShowAllItemCheckButton:SetChecked(isShowAllItems);
+	else
+		selectedShowAllItemCheckBox = 0
+		StoreShowAllItemCheckButton:SetChecked(false)
+	end
 
 	if StoreItemListUpdate() then
 		StoreSelectCategory(selectedCategoryID, selectedSubCategoryID)
@@ -2253,6 +2281,11 @@ end
 
 function StoreShowAllItemCheckButton_OnClick( self, ... )
 	selectedShowAllItemCheckBox = self:GetChecked() and 1 or 0
+
+	if selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID then
+		C_CVar:SetValue("C_CVAR_STORE_SHOW_ALL_TRANSMOG_ITEMS", tostring(selectedShowAllItemCheckBox));
+	end
+
 	StoreItemListUpdate()
 end
 
@@ -3249,6 +3282,13 @@ function StoreConfirmationFrame_Update(self)
 	end
 
 	StoreConfirmationSendGiftCheckButton:SetEnabled(not self.isAltCurrency);
+
+	if not giftChecked and self.data.ID ~= -1 and selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID and selectedSubCategoryID ~= 0 and selectedShowAllItemCheckBox == 1 then
+		local storage = STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][0];
+		StoreConfirmationFrameBuyButton:SetEnabled(storage.data and storage.data[self.data.ID] and true or false);
+	else
+		StoreConfirmationFrameBuyButton:SetEnabled(true);
+	end
 end
 
 function StoreConfirmationFrame_UpdateSize(self)
@@ -6270,14 +6310,20 @@ STORE_TRANSMOGRIFY_CAMERA_SETTINGS_HEAD = {
 	["Nightborne3"] = {2.839001, 1.021001, 0.426001},
 	["VoidElf2"] = {2.582000, 1.044001, 0.431001},
 	["VoidElf3"] = {2.839001, 0.968001, 0.426001},
+	["Eredar2"] = {3.863001, 1.000000, 0.224000},
+	["Eredar3"] = {3.402001, 0.951001, 0.175000},
+	["DarkIronDwarf2"] = {2.734001, 0.993001, 0.532000},
+	["DarkIronDwarf3"] = {1.988001, 0.962001, 0.574000},
+	["ZandalariTroll2"] = {3.707000, 1.06400, -0.122000},
+	["ZandalariTroll3"] = {3.802000, 1.10600, -0.135000},
+	["Lightforged2"] = {3.863001, 1.000000, 0.224000},
+	["Lightforged3"] = {3.402001, 0.951001, 0.175000},
 }
 
 function StoreTransmogrifySubCategoryFrameButtonMixin:OnClick()
 	selectedSubCategoryID = self:GetParent():GetID()
 
-	if StoreItemListUpdate() then
-		StoreSelectCategory(selectedCategoryID, selectedSubCategoryID)
-	end
+	StoreSubCategorySelectClick()
 
 	StoreTransmogrifyFrame.RightContainer.ContentFrame.OverlayElements.ShowShoulders:SetShown(selectedSubCategoryID == 1)
 

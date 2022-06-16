@@ -6,28 +6,28 @@
 
 	<Frame name="VideoOptionsFrame" inherits="OptionsFrameTemplate">
 		<Frames>
-			<Button name="$parentCancel" inherits="GlueButtonCustomTemplate" text="CANCEL">
+			<Button name="$parentCancel" parentKey="cancel" inherits="GlueDark_ButtonTemplate" text="CANCEL">
 				<Size x="100" y="30"/>
 				<Anchors>
-					<Anchor point="BOTTOMRIGHT" x="-22" y="16"/>
+					<Anchor point="BOTTOMRIGHT" x="-24" y="16"/>
 				</Anchors>
 				<Scripts>
 					<OnClick function="VideoOptionsFrameCancel_OnClick"/>
 				</Scripts>
 			</Button>
-			<Button name="$parentOkay" inherits="GlueButtonCustomTemplate" text="OKAY">
+			<Button name="$parentOkay" parentKey="okay" inherits="GlueDark_ButtonTemplate" text="OKAY">
 				<Size x="100" y="30"/>
 				<Anchors>
-					<Anchor point="BOTTOMRIGHT" relativeTo="$parentCancel" relativePoint="BOTTOMLEFT" x="-2"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentCancel" relativePoint="BOTTOMLEFT" x="-3" y="0"/>
 				</Anchors>
 				<Scripts>
 					<OnClick function="VideoOptionsFrameOkay_OnClick"/>
 				</Scripts>
 			</Button>
-			<Button name="$parentDefault" inherits="GlueButtonCustomTemplate" text="DEFAULTS">
+			<Button name="$parentDefault" parentKey="default" inherits="GlueDark_ButtonTemplate" text="DEFAULTS">
 				<Size x="172" y="30"/>
 				<Anchors>
-					<Anchor point="BOTTOMLEFT" x="24" y="16"/>
+					<Anchor point="BOTTOMLEFT" x="20" y="16"/>
 				</Anchors>
 				<Scripts>
 					<OnClick>

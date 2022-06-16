@@ -4272,6 +4272,102 @@
 									</OnHide>
 								</Scripts>
 							</Frame>
+							<Frame name="$parentVenLoOffer" parentKey="VenLoOffer" hidden="true" setAllPoints="true">
+								<Frames>
+									<Frame name="$parentLeftPanel" parentKey="LeftPanel">
+										<Anchors>
+											<Anchor point="TOPRIGHT" x="-380" y="-1" />
+											<Anchor point="BOTTOMLEFT" x="1" y="1" />
+										</Anchors>
+										<Layers>
+											<Layer level="BACKGROUND">
+												<Texture parentKey="Background">
+													<Color r="0" g="0" b="0" a="0.7"/>
+												</Texture>
+											</Layer>
+											<Layer level="OVERLAY">
+												<FontString name="$parentTimerText" parentKey="TimerText" text="23:59:59" justifyH="CENTER" font="Interface\CustomFonts\futurademic.ttf">
+													<Size x="174" y="30"/>
+													<Anchors>
+														<Anchor point="TOPLEFT" x="18" y="-12" />
+													</Anchors>
+													<FontHeight val="28"/>
+													<Color r="0.67" g="0.34" b="0.63"/>
+												</FontString>
+												<FontString name="$parentTitleText" parentKey="TitleText" text="STORE_THE_23TH_OF_FEBRUARY_CAPS" justifyH="LEFT" font="Interface\CustomFonts\OpenSans-Bold.ttf">
+													<Size x="164" y="12"/>
+													<Anchors>
+														<Anchor point="TOPLEFT" x="18" y="-52" />
+													</Anchors>
+													<FontHeight val="12"/>
+													<Color r="1" g="1" b="1"/>
+												</FontString>
+												<FontString name="$parentNameText" parentKey="NameText" font="Interface\CustomFonts\futurademic.ttf">
+													<Size x="164" y="50"/>
+													<Anchors>
+														<Anchor point="TOPLEFT" x="18" y="-64" />
+													</Anchors>
+													<FontHeight val="18"/>
+													<Color r="0.67" g="0.34" b="0.63"/>
+												</FontString>
+												<FontString name="$parentDescriptionText" parentKey="DescriptionText" justifyH="LEFT" justifyV="TOP" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
+													<Size x="164" y="70"/>
+													<Anchors>
+														<Anchor point="LEFT" x="16" y="-20" />
+													</Anchors>
+													<FontHeight val="11"/>
+													<Color r="1" g="1" b="1"/>
+												</FontString>
+												<FontString name="$parentPriceLabel" parentKey="PriceLabel" text="STORE_COST" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
+													<Anchors>
+														<Anchor point="LEFT" x="16" y="-62" />
+													</Anchors>
+													<FontHeight val="13"/>
+													<Color r="0.67" g="0.34" b="0.63"/>
+												</FontString>
+												<FontString name="$parentPrice" parentKey="Price" text="299" font="Interface\CustomFonts\futurademic.ttf">
+													<Anchors>
+														<Anchor point="LEFT" x="122" y="-62" />
+													</Anchors>
+													<FontHeight val="18"/>
+													<Color r="1" g="1" b="1"/>
+												</FontString>
+												<Texture name="$parentBonusIcon" parentKey="BonusIcon" file="Interface\Store\coins">
+													<Size x="32" y="32"/>
+													<Anchors>
+														<Anchor point="LEFT" relativeTo="$parentPrice" relativePoint="RIGHT" x="0" y="0" />
+													</Anchors>
+												</Texture>
+											</Layer>
+										</Layers>
+									</Frame>
+									<PlayerModel parentKey="MountModel" enableMouse="false">
+										<Size x="379" y="250"/>
+										<Anchors>
+											<Anchor point="TOPRIGHT" x="-1" y="-1"/>
+										</Anchors>
+										<Scripts>
+											<OnLoad>
+												self:SetRotation(-0.6457718232379)
+											</OnLoad>
+											<OnShow>
+												self:SetCreature(131261)
+												self:SetModelScale(0.5)
+												self:SetLight(1, 0, -0.67399996519089, -0.42799997329712, 0.5200001001358, 1, 0.70196080207825, 0.70196080207825, 0.70196080207825, 1, 1, 1, 0.80000007152557)
+											</OnShow>
+											<OnHide>
+												print("HIDE")
+											</OnHide>
+										</Scripts>
+									</PlayerModel>
+								</Frames>
+								<Scripts>
+									<OnShow>
+									</OnShow>
+									<OnHide>
+									</OnHide>
+								</Scripts>
+							</Frame>
 							<Frame name="$parentNavigationBar" parentKey="NavigationBar" setAllPoints="true">
 								<Layers>
 									<Layer level="OVERLAY">
@@ -5000,13 +5096,15 @@
 					</EditBox>
 				</Frames>
 			</Frame>
-			<Button name="$parentBuyButton" parentKey="BuyButton" inherits="StoreGoldButtonTemplate" text="PURCHASE" enableMouse="true">
+			<Button name="$parentBuyButton" parentKey="BuyButton" inherits="StoreGoldButtonTemplate" text="PURCHASE" enableMouse="true" motionScriptsWhileDisabled="true">
 				<Size x="140" y="32" />
 				<Anchors>
 					<Anchor point="BOTTOM" x="0" y="17" />
 				</Anchors>
 				<Scripts>
 					<OnClick function="StoreConfirmationButton_OnClick"/>
+					<OnEnter function="StoreConfirmationButton_OnEnter"/>
+					<OnLeave function="GameTooltip_Hide"/>
 				</Scripts>
 			</Button>
 			<Button name="$parentBackButton" parentKey="BackButton" inherits="StoreGoldButtonTemplate" text="BACK" enableMouse="true" hidden="true">

@@ -3,33 +3,29 @@
 	<!-- This frame exists only to load the script and execute it, inline script has some issues -->
 	<Script file="GlueLocalizationPost.lua"/>
 	<!-- This frame exists only to load the script and execute it, inline script has some issues -->
-	<Frame name="DeclensionTemplate"  virtual="true">
-		<Size x="300" y="40"/>
+	<Frame name="DeclensionTemplate" virtual="true">
+		<Size x="480" y="40"/>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<FontString name="$parentType" inherits="GlueFontNormal">
+				<FontString name="$parentType" inherits="GlueDark_Font_16" justifyH="LEFT">
 					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="0" y="0"/>
-						</Anchor>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
 					</Anchors>
+					<Color r="1" g="0.77647058823529" b="0"/>
 				</FontString>
-				<FontString name="$parentExample" inherits="GlueFontHighlightExtraSmall">
+				<FontString name="$parentExample" inherits="GlueDark_Font_11" justifyH="LEFT">
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentType" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="0"/>
-						</Anchor>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentType" relativePoint="BOTTOMRIGHT" x="10" y="2"/>
 					</Anchors>
+					<Color r="0.81176470588235" g="0.81176470588235" b="0.81176470588235"/>
 				</FontString>
 			</Layer>
 		</Layers>
 		<Frames>
-			<EditBox name="$parentEdit" inherits="AccountLoginEditBoxTemplate" letters="16">
-				<Size x="160" y="37"/>
+			<EditBox name="$parentEdit" inherits="GlueDark_EditBoxTemplate" letters="16">
+				<Size x="470" y="37"/>
 				<Anchors>
-					<Anchor point="LEFT">
-						<Offset x="250" y="2"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentType" relativePoint="BOTTOMLEFT" x="-7" y="-3"/>
 				</Anchors>
 				<Scripts>
 					<OnEscapePressed>
@@ -39,7 +35,7 @@
 						DeclensionFrame_OnOkay();
 					</OnEnterPressed>
 					<OnTabPressed>
-						EditBox_HandleTabbing(RUSSIAN_DECLENSION_TAB_LIST);
+						EditBox_HandleTabbing(self, RUSSIAN_DECLENSION_TAB_LIST);
 					</OnTabPressed>
 					<OnEditFocusLost>
 						this:HighlightText(0, 0);
@@ -48,134 +44,109 @@
 						this:HighlightText();
 					</OnEditFocusGained>
 					<OnTextChanged>
-						getglobal(this:GetParent():GetName().."Example"):SetText(format(getglobal("RUSSIAN_DECLENSION_EXAMPLE_"..this:GetParent():GetID()), this:GetText()));
+						_G[this:GetParent():GetName().."Example"]:SetFormattedText(DECLENSION_EXAMPLE_PRE, string.format(_G["RUSSIAN_DECLENSION_EXAMPLE_"..this:GetParent():GetID()], string.format("|cffffc100%s|r", this:GetText())));
 					</OnTextChanged>
 				</Scripts>
-				<TextInsets>
-					<AbsInset left="10" bottom="3"/>
-				</TextInsets>
 			</EditBox>
 		</Frames>
 	</Frame>
-	<Frame name="DeclensionFrame" toplevel="true" parent="GlueParent" movable="false" enableMouse="true" inherits="LoginUIFrameTemplate" hidden="true">
-		<Size x="450" y="330"/>
+	<Frame name="DeclensionFrame" parent="GlueParent" frameStrata="DIALOG" toplevel="true" movable="false" enableMouse="true" hidden="true">
+		<Size x="540" y="460"/>
 		<Anchors>
-			<Anchor point="CENTER">
-				<Offset x="0" y="0"/>
-			</Anchor>
+			<Anchor point="CENTER" x="0" y="0"/>
 		</Anchors>
+		<Attributes>
+			<Attribute name="layoutType" value="GlueDarkTemplate" type="string"/>
+			<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
+		</Attributes>
+
 		<Layers>
-			<Layer level="OVERLAY">
-				<FontString name="$parentNominative" inherits="GlueFontNormalHuge">
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_backdrop"/>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentTopShadow" parentKey="TopShadow" inherits="GlueDark_backdropTopSplash2">
+					<Size x="0" y="182"/>
 					<Anchors>
-						<Anchor point="TOP">
-							<Offset x="0" y="-16"/>
-						</Anchor>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
 					</Anchors>
-				</FontString>
-				<FontString inherits="GlueFontHighlightSmall" text="RUSSIAN_DECLENSION">
+				</Texture>
+			</Layer>
+
+			<Layer level="OVERLAY">
+				<FontString name="$parentNominative" inherits="GlueDark_Font_22">
 					<Anchors>
-						<Anchor point="CENTER" relativeTo="$parentNominative">
-							<Offset x="0" y="-16"/>
-						</Anchor>
+						<Anchor point="TOP" x="0" y="-25"/>
+					</Anchors>
+					<Color r="1" g="0.77647058823529" b="0"/>
+				</FontString>
+				<Texture name="$parentSeparator" parentKey="Separator" inherits="GlueDark_separator">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentNominative" x="-100" y="-10"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentNominative" x="100" y="-10"/>
+					</Anchors>
+				</Texture>
+				<FontString inherits="GlueDark_Font_15" text="RUSSIAN_DECLENSION">
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentNominative" x="0" y="-35"/>
 					</Anchors>
 				</FontString>
 			</Layer>
 		</Layers>
 		<Frames>
+			<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
+
 			<Frame name="$parentDeclension1" inherits="DeclensionTemplate" id="1">
-				<Size x="300" y="40"/>
+				<Size x="480" y="59"/>
 				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="20" y="-64"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" x="39" y="-96"/>
 				</Anchors>
 			</Frame>
 			<Frame name="$parentDeclension2" inherits="DeclensionTemplate" id="2">
-				<Size x="300" y="40"/>
+				<Size x="480" y="60"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentDeclension1" relativePoint="BOTTOMLEFT">
-						<Offset x="0" y="0"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentDeclension1" relativePoint="BOTTOMLEFT" x="0" y="0"/>
 				</Anchors>
 			</Frame>
 			<Frame name="$parentDeclension3" inherits="DeclensionTemplate" id="3">
-				<Size x="300" y="40"/>
+				<Size x="480" y="60"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentDeclension2" relativePoint="BOTTOMLEFT">
-						<Offset x="0" y="0"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentDeclension2" relativePoint="BOTTOMLEFT" x="0" y="0"/>
 				</Anchors>
 			</Frame>
 			<Frame name="$parentDeclension4" inherits="DeclensionTemplate" id="4">
-				<Size x="300" y="40"/>
+				<Size x="480" y="60"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentDeclension3" relativePoint="BOTTOMLEFT">
-						<Offset x="0" y="0"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentDeclension3" relativePoint="BOTTOMLEFT" x="0" y="0"/>
 				</Anchors>
 			</Frame>
 			<Frame name="$parentDeclension5" inherits="DeclensionTemplate" id="5">
-				<Size x="300" y="40"/>
+				<Size x="480" y="60"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentDeclension4" relativePoint="BOTTOMLEFT">
-						<Offset x="0" y="0"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentDeclension4" relativePoint="BOTTOMLEFT" x="0" y="0"/>
 				</Anchors>
 			</Frame>
 			<Frame name="$parentSet">
 				<Size x="150" y="24"/>
 				<Anchors>
-					<Anchor point="BOTTOM">
-						<Offset x="0" y="50"/>
-					</Anchor>
+					<Anchor point="BOTTOM" x="0" y="65"/>
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
-						<FontString name="$parentPage" inherits="GlueFontNormalSmall" text="1 of 2">
-							<Size>
-								<AbsDimension x="50" y="16"/>
-							</Size>
+						<FontString name="$parentPage" inherits="GlueDark_Font_Shadow_13" text="1 of 2">
+							<Size x="50" y="16"/>
 							<Anchors>
-								<Anchor point="CENTER">
-									<Offset x="0" y="0"/>
-								</Anchor>
+								<Anchor point="CENTER" x="0" y="0"/>
 							</Anchors>
 						</FontString>
 					</Layer>
 				</Layers>
 				<Frames>
-					<Button name="$parentNext">
-						<Size>
-							<AbsDimension x="20" y="20"/>
-						</Size>
+					<Button name="$parentPrev" parentKey="Prev" inherits="GlueDark_ButtonPreviousTemplate">
+						<Size x="22" y="22"/>
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="$parentPage" relativePoint="RIGHT">
-								<Offset x="10" y="0"/>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnClick>
-								DeclensionFrame_Next();
-								PlaySound("igMainMenuOptionCheckBoxOn");
-							</OnClick>
-						</Scripts>
-						<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Up"/>
-						<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Down"/>
-						<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Disabled"/>
-						<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
-						<PushedTextOffset>
-							<AbsDimension x="0" y="0"/>
-						</PushedTextOffset>
-					</Button>
-					<Button name="$parentPrev">
-						<Size>
-							<AbsDimension x="20" y="20"/>
-						</Size>
-						<Anchors>
-							<Anchor point="RIGHT" relativeTo="$parentPage" relativePoint="LEFT">
-								<Offset x="-10" y="0"/>
-							</Anchor>
+							<Anchor point="RIGHT" relativeTo="$parentPage" relativePoint="LEFT" x="-10" y="0"/>
 						</Anchors>
 						<Scripts>
 							<OnClick>
@@ -183,20 +154,25 @@
 								PlaySound("igMainMenuOptionCheckBoxOn");
 							</OnClick>
 						</Scripts>
-						<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Up"/>
-						<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Down"/>
-						<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Disabled"/>
-						<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
-						<PushedTextOffset>
-							<AbsDimension x="0" y="0"/>
-						</PushedTextOffset>
+					</Button>
+					<Button name="$parentNext" parentKey="Next" inherits="GlueDark_ButtonNextTemplate">
+						<Size x="22" y="22"/>
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parentPage" relativePoint="RIGHT" x="10" y="0"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								DeclensionFrame_Next();
+								PlaySound("igMainMenuOptionCheckBoxOn");
+							</OnClick>
+						</Scripts>
 					</Button>
 				</Frames>
 			</Frame>
-			<Button name="$parentOkayButton" parentKey="OkayButton" inherits="GlueButtonCustomTemplate" text="OKAY">
-				<Size x="180" y="28"/>
+			<Button name="$parentOkayButton" parentKey="OkayButton" inherits="GlueDark_ButtonTemplate" text="OKAY">
+				<Size x="86" y="26"/>
 				<Anchors>
-					<Anchor point="BOTTOM" x="-100" y="12" />
+					<Anchor point="BOTTOM" x="-70" y="25"/>
 				</Anchors>
 				<Scripts>
 					<OnClick>
@@ -204,10 +180,10 @@
 					</OnClick>
 				</Scripts>
 			</Button>
-			<Button name="$parentCancelButton" parentKey="CancelButton" inherits="GlueButtonCustomTemplate" text="CANCEL">
-				<Size x="180" y="28"/>
+			<Button name="$parentCancelButton" parentKey="CancelButton" inherits="GlueDark_ButtonTemplate" text="CANCEL">
+				<Size x="86" y="26"/>
 				<Anchors>
-					<Anchor point="BOTTOM" x="100" y="12" />
+					<Anchor point="BOTTOM" x="70" y="25"/>
 				</Anchors>
 				<Scripts>
 					<OnClick>
@@ -218,14 +194,17 @@
 		</Frames>
 		<Scripts>
 			<OnShow>
+				GlueParent_AddModalFrame(self)
 				DeclensionFrame_Update();
 			</OnShow>
+			<OnHide>
+				GlueParent_RemoveModalFrame(self)
+			</OnHide>
 			<OnEvent>
 				DeclensionFrame_OnEvent(self, event, ...);
 			</OnEvent>
 			<OnLoad>
-				self:SetBackdropBorderColor(0.91, 0.78, 0.53, 1)
-				self:SetBackdropColor(0, 0, 0, 1)
+				self.TopShadow:SetVertexColor(0, 0, 0, 0.4)
 
 				self:RegisterEvent("FORCE_DECLINE_CHARACTER");
 				self.set = 1;

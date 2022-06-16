@@ -36,14 +36,16 @@ function C_CreatureInfo.GetFactionInfo( race )
 
 	local raceData = S_CHARACTER_RACES_INFO[race] or S_CHARACTER_RACES_INFO_LOCALIZATION_ASSOC[race]
 
-	raceData = raceData or {
-		raceName = "Человек",
-		clientFileString = "Human",
-		raceID = 1,
-		factionID = 1
-	}
+	--assert(raceData, "C_CreatureInfo.GetFactionInfo: расса "..race.." не найдена.")
 
-	assert(raceData, "C_CreatureInfo.GetFactionInfo: расса "..race.." не найдена.")
+	if not raceData then
+		raceData = {
+			raceName = "RACE_HUMAN",
+			clientFileString = "Human",
+			raceID = 1,
+			factionID = 1
+		}
+	end
 
 	local FactionInfo = {}
 	local factionTag  = PLAYER_FACTION_GROUP[raceData.factionID]
@@ -64,14 +66,16 @@ function C_CreatureInfo.GetRaceInfo( race )
 
 	local raceData = S_CHARACTER_RACES_INFO[race] or S_CHARACTER_RACES_INFO_LOCALIZATION_ASSOC[race]
 
-	raceData = raceData or {
-		raceName = "Человек",
-		clientFileString = "Human",
-		raceID = 1,
-		factionID = 1
-	}
+	--assert(raceData, "C_CreatureInfo.GetRaceInfo: расса "..race.." не найдена.")
 
-	assert(raceData, "C_CreatureInfo.GetRaceInfo: расса "..race.." не найдена.")
+	if not raceData then
+		raceData = {
+			raceName = "RACE_HUMAN",
+			clientFileString = "Human",
+			raceID = 1,
+			factionID = 1
+		}
+	end
 
 	local RaceInfo  = {}
 

@@ -202,6 +202,7 @@ ACCOUNT_MSG_HEADERS_LOADED = false;
 ACCOUNT_MSG_BODY_LOADED = false;
 ACCOUNT_MSG_CURRENT_INDEX = nil;
 
+local INITIAL_BACKGROUND_SET
 
 function SetGlueScreen(name)
 	local newFrame;
@@ -213,6 +214,11 @@ function SetGlueScreen(name)
 				newFrame = frame;
 			end
 		end
+	end
+
+	if not INITIAL_BACKGROUND_SET then
+		INITIAL_BACKGROUND_SET = true
+		CharacterModelMixin:SetBackground("Alliance")
 	end
 
 	if ( newFrame ) then
@@ -303,9 +309,9 @@ function GlueParent_OnEvent(event, arg1, arg2, arg3)
 	elseif ( event == "DISCONNECTED_FROM_SERVER" ) then
 		SetGlueScreen("login");
 		if ( arg1 == 4 ) then
-			GlueDialog_Show("PARENTAL_CONTROL");
+			GlueDialog:ShowDialog("PARENTAL_CONTROL");
 		else
-			GlueDialog_Show("DISCONNECTED");
+			GlueDialog:ShowDialog("DISCONNECTED");
 		end
 		AddonList:Hide();
 	elseif ( event == "GET_PREFERRED_REALM_INFO" ) then
@@ -554,16 +560,33 @@ function TriStateCheckbox_SetState(checked, checkButton)
 	elseif ( checked == 2 ) then
 		-- 2 is a normal
 		checkButton:SetChecked(1);
-		checkedTexture:SetVertexColor(1, 1, 1);
-		checkedTexture:SetDesaturated(0);
+
+		if checkButton.__dark then
+			checkedTexture:SetAtlas("GlueDark-checkBoxMark");
+			checkedTexture:SetAllPoints()
+			checkedTexture:SetAlpha(1)
+		else
+			checkedTexture:SetVertexColor(1, 1, 1);
+			checkedTexture:SetDesaturated(0);
+		end
+
 		checkButton.state = 2;
 	else
 		-- 1 is a gray check
 		checkButton:SetChecked(1);
-		local shaderSupported = checkedTexture:SetDesaturated(1);
-		if ( not shaderSupported ) then
-			checkedTexture:SetVertexColor(0.5, 0.5, 0.5);
+
+		if checkButton.__dark then
+			checkedTexture:SetAtlas("GlueDark-radioButtonChecked");
+			checkedTexture:SetPoint("TOPLEFT", 7, -7)
+			checkedTexture:SetPoint("BOTTOMRIGHT", -7, 7)
+			checkedTexture:SetAlpha(0.8)
+		else
+			local shaderSupported = checkedTexture:SetDesaturated(1);
+			if ( not shaderSupported ) then
+				checkedTexture:SetVertexColor(0.5, 0.5, 0.5);
+			end
 		end
+
 		checkButton.state = 1;
 	end
 end
@@ -584,4 +607,213 @@ end
 
 function InGlue()
 	return true
+end
+
+function nop()
+end
+
+local modalFrames = {}
+
+function GlueParent_AddModalFrame(frame)
+	local index = tIndexOf(modalFrames, frame)
+	if index then return end
+
+	table.insert(modalFrames, frame);
+
+	if #modalFrames == 1 then
+		GlueParent.BlockingFrame:Show()
+	end
+end
+
+function GlueParent_RemoveModalFrame(frame)
+	local index = tIndexOf(modalFrames, frame)
+	if not index then return end
+
+	table.remove(modalFrames, index)
+
+	if #modalFrames == 0 then
+		GlueParent.BlockingFrame:Hide()
+	end
+end
+
+function GlueParentBlockingFrame_OnKeyDown(self, key)
+	if key == "ESCAPE" then
+		modalFrames[#modalFrames]:Hide()
+	elseif key == "PRINTSCREEN" then
+		Screenshot()
+	end
+end
+
+GlueEasingAnimMixin = {}
+
+function GlueEasingAnimMixin:Init()
+
+end
+
+function GlueEasingAnimMixin:SetPosition( easing )
+
+end
+
+function GlueEasingAnimMixin:OnLoad()
+	self:Init()
+
+	self.playAnimation = false
+	self.elapsed = 0
+end
+
+function GlueEasingAnimMixin:IsAnimPlaying()
+	return self.playAnimation
+end
+
+function GlueEasingAnimMixin:PlayAnim(isRevers, finishCallback, resetAnimation)
+	self:Show()
+
+	self.isRevers = isRevers
+	self.finishCallback = finishCallback
+
+	if resetAnimation or not self.playAnimation then
+		self.elapsed = 0
+		self.playAnimation = true
+	else
+		self.elapsed = -self.elapsed + self.duration
+	end
+
+	if isRevers then
+		self:SetPosition(C_inOutSine(self.elapsed, self.endPoint, self.startPoint, self.duration), self.elapsed / self.duration)
+	else
+		self:SetPosition(C_inOutSine(self.elapsed, self.startPoint, self.endPoint, self.duration), self.elapsed / self.duration)
+	end
+
+	self:SetScript("OnUpdate", self.OnUpdate)
+end
+
+function GlueEasingAnimMixin:Reset()
+	self.playAnimation = false
+	self.elapsed = 0
+
+	self:SetScript("OnUpdate", nil)
+
+	if self.finishCallback then
+		local finishCallback = self.finishCallback
+		self.finishCallback = nil
+		finishCallback(self)
+	end
+end
+
+function GlueEasingAnimMixin:OnUpdate( elapsed )
+	if self.playAnimation then
+		self.elapsed = self.elapsed + elapsed
+
+		if self.elapsed >= self.duration then
+			self:Reset()
+			self:SetPosition()
+		else
+			if self.isRevers then
+				self:SetPosition(C_inOutSine(self.elapsed, self.endPoint, self.startPoint, self.duration), self.elapsed / self.duration)
+			else
+				self:SetPosition(C_inOutSine(self.elapsed, self.startPoint, self.endPoint, self.duration), self.elapsed / self.duration)
+			end
+		end
+	end
+end
+
+FOV_MODELS = {
+	["Vulpera"] = "UI_Dwarf",
+}
+
+CHARACTER_CAMERA_SETTINGS = {
+	["Alliance"]	= {-0.751, 0.733, 0.345},
+	["Horde"]		= {-0.900, 0.690, 0.420},
+	["DeathKnight"]	= {-0.635, 0.626, 0.262},
+	["Vulpera"]		= {1.560, 0.040, 0.040},
+	["Pandaren"]	= {-0.560, 0.590, 0.380},
+}
+CHARACTER_CAMERA_SETTINGS.Pandaren_DeathKnight = CHARACTER_CAMERA_SETTINGS.DeathKnight
+CHARACTER_CAMERA_SETTINGS.Zandalar_Horde = CHARACTER_CAMERA_SETTINGS.Horde
+CHARACTER_CAMERA_SETTINGS.Zandalar_Alliance = CHARACTER_CAMERA_SETTINGS.Alliance
+CHARACTER_CAMERA_SETTINGS.Zandalar_DeathKnight = CHARACTER_CAMERA_SETTINGS.DeathKnight
+
+CHARACTER_MODEL_LIGHT = {
+	["Alliance"]	= {2.199000, -4.000000, -3.444000, 0.405020, 1.000000, 1.000000, 1.000000, 1.000000, 1.000000, 1.000000, 1.000000},
+	["Horde"]		= {10.000000, -9.240000, -10.000000, 0.749100, 1.000000, 0.579930, 0.568460, 0.505380, 1.000000, 0.278850, 0.273120},
+	["DeathKnight"]	= {2.287001, -4.996000, -2.301000, 0.333330, 0.565590, 0.855200, 1.000000, 1.000000, 0.419360, 0.769180, 1.000000},
+	["Vulpera"]		= {0.796001, 2.459001, -5.455000, 0.301790, 1.000000, 1.000000, 1.000000, 1.000000, 1.000000, 0.405020, 0.109680},
+	["Pandaren"]	= {3.152250, -2.238738, 1.287381, 1.000000, 0.780392, 0.780392, 0.780392, 1.000000, 1.000000, 1.000000, 1.000000}
+}
+CHARACTER_MODEL_LIGHT.Pandaren_DeathKnight = CHARACTER_MODEL_LIGHT.DeathKnight
+CHARACTER_MODEL_LIGHT.Zandalar_Horde = CHARACTER_MODEL_LIGHT.Horde
+CHARACTER_MODEL_LIGHT.Zandalar_Alliance = CHARACTER_MODEL_LIGHT.Alliance
+CHARACTER_MODEL_LIGHT.Zandalar_DeathKnight = CHARACTER_MODEL_LIGHT.DeathKnight
+
+CharacterModelMixin = {}
+
+function CharacterModelMixin:SetBackground(modelName)
+	local cameraSettings = CHARACTER_CAMERA_SETTINGS[modelName]
+
+	if not cameraSettings then
+		error(string.format("CharacterModelMixin:SetBackground: не найдены настройки камеры для модели %s", modelName), 2)
+	end
+
+	local inCharCreate = C_CharacterCreation.IsInCharacterCreate()
+
+	if CharacterModelMixin.currentModelName ~= modelName or CharacterModelMixin.inCharCreate ~= inCharCreate then
+		local lightSettings = CHARACTER_MODEL_LIGHT[modelName]
+
+		if not lightSettings then
+			error(string.format("CharacterModelMixin:SetBackground: Не найдены настройки света для модели %s", modelName), 2)
+		end
+
+		local setCharBackgroundFunc = inCharCreate and C_CharacterCreation.SetCharCustomizeBackground or SetCharSelectBackground
+
+		CharacterModelMixin.currentModelName = modelName
+		CharacterModelMixin.inCharCreate = inCharCreate
+
+		setCharBackgroundFunc(string.format("Interface\\GLUES\\Models\\%s\\%s.m2", FOV_MODELS[modelName] or "UI_BLOODELF", FOV_MODELS[modelName] or "UI_BLOODELF"))
+		GlueFFXModel:SetCamera(0)
+		setCharBackgroundFunc(string.format("Interface\\GLUES\\Models\\UI_%s\\UI_%s.m2", modelName, modelName))
+
+		GlueFFXModel:ResetLights()
+
+		GlueFFXModel:AddCharacterLight(LIGHT_LIVE, 1, 0, unpack(lightSettings))
+		GlueFFXModel:AddLight(LIGHT_LIVE, 1, 0, unpack(lightSettings))
+		GlueFFXModel:AddPetLight(LIGHT_LIVE, 1, 0, unpack(lightSettings))
+	end
+
+	GlueFFXModel:SetPosition(unpack(cameraSettings))
+
+	FireCustomClientEvent(inCharCreate and "GLUE_CHARACTER_CREATE_BACKGROUND_UPDATE" or "GLUE_CHARACTER_SELECT_BACKGROUND_UPDATE")
+end
+
+local MODEL_RESOLUTION_SCALE = {
+	[1792] = 1.23,
+	[1365] = 1,
+	[1024] = 0.81,
+	[960] = 0.78,
+}
+
+ModelFFXMixin = {}
+
+function ModelFFXMixin:OnLoad()
+	SetCharSelectModelFrame(self:GetName())
+	C_CharacterCreation.SetCharCustomizeFrame(self)
+
+	local screenWidth = math.floor(GetScreenWidth() + 0.5)
+	local scale = MODEL_RESOLUTION_SCALE[screenWidth]
+	if not scale then
+		local widthDiff = (1365 - screenWidth)
+		local scalePerPixel = 18 * 100
+		if widthDiff ~= 0 then
+			scale = 1 - (widthDiff / scalePerPixel)
+		end
+	end
+
+	if scale ~= 1 then
+		self:SetModelScale(scale)
+
+		for _, lightData in pairs(CHARACTER_MODEL_LIGHT) do
+			lightData[3] = lightData[3] * scale
+			lightData[4] = lightData[4] * scale
+		--	lightData[5] = lightData[5] * scale
+		end
+	end
 end

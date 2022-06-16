@@ -4,8 +4,6 @@
 --	E-mail:		nyll@sirus.su
 --	Web:		https://sirus.su/
 
--- Ебаная хуйня, срочно переписать, ужасный быдлокод, пиздец просто (с) Nyll
-
 CharacterBoostStep = 1
 local SelectMainProfession
 local SelectAdditionalProffesion
@@ -33,13 +31,8 @@ GlueDialogTypes["CHARACTER_SERVICES_BOOST_CONFIRM"] = {
 	button2 = NO,
 	escapeHides = false,
 	OnAccept = function ()
-		if inRealmScourge() then
-			SendPacket("00", CharSelectServicesFlowFrame.CharSelect, SelectAdditionalProffesion, SelectMainProfession, SelectCharacterSpec, SelectCharacterPvPSpec, SelectCharacterFaction)
-		else
-			C_SendOpcode(CMSG_SIRUS_BOOST_CHARACTER, GetCharIDFromIndex(CharSelectServicesFlowFrame.CharSelect), SelectAdditionalProffesion, SelectMainProfession, SelectCharacterSpec, SelectCharacterPvPSpec, SelectCharacterFaction)
-		end
-		WaitingDialogFrame:Show()
-		WaitingDialogFrame.Text:SetText(WAIT_SERVER_RESPONCE)
+		C_GluePackets:SendPacket(C_GluePackets.OpCodes.RequestBoostCharacter, CharSelectServicesFlowFrame.CharSelect, SelectAdditionalProffesion, SelectMainProfession, SelectCharacterSpec, SelectCharacterPvPSpec, SelectCharacterFaction)
+		GlueDialog:ShowDialog("SERVER_WAITING")
 	end,
 	OnCancel = function()
 		CharSelectServicesFlowFrame:Hide()
@@ -69,144 +62,131 @@ local factionLabels = {
 	[2] = FACTION_ALLIANCE,
 }
 
-function CharacterBoost_DisableCharacterSelect( index, bool )
-	local button = _G["CharSelectCharacterButton"..index]
-	local nameText = button.buttonText.name
-	local infoText = button.buttonText.Info
-	local locationText = button.buttonText.Location
-
-	if bool then
-		nameText:SetTextColor(0.30, 0.3, 0.31)
-		infoText:SetTextColor(0.30, 0.3, 0.31)
-		locationText:SetTextColor(0.30, 0.3, 0.31)
-		button:Disable()
-	else
-		nameText:SetTextColor(1.0, 0.78, 0)
-		infoText:SetTextColor(1, 1, 1)
-		locationText:SetTextColor(0.5, 0.5, 0.5)
-		button:Enable()
-	end
-end
-
-function CharacterBoost_CharacterInit( bool )
+function CharacterBoost_CharacterInit(isBoostMode)
 	local numChars = GetNumCharacters()
 	local characterLimit = min(numChars, MAX_CHARACTERS_DISPLAYED)
-	for i=1, characterLimit, 1 do
+
+	for i = 1, characterLimit do
 		local name, race, class, level = GetCharacterInfo(GetCharIDFromIndex(i))
 		local button = _G["CharSelectCharacterButton"..i]
-		if bool then
-			if level < 80 then
-				CharacterBoost_DisableCharacterSelect(i, false)
-				button.Arrow:Show()
-				button.selection:Hide()
+		if isBoostMode then
+			if level < BOOST_MAX_LEVEL then
+				button:Enable()
+				button:SetBoostMode(true, true)
+
+				if CharacterSelect.selectedIndex == i then
+					button:Click()
+				end
 			else
-				CharacterBoost_DisableCharacterSelect(i, true)
-				button.selection:Hide()
+				button:Disable()
+				button:SetBoostMode(true)
 			end
 		else
-			CharacterBoost_DisableCharacterSelect(i, false)
-			button.Arrow:Hide()
+			button:Enable()
+			button:SetBoostMode(false)
 		end
 	end
-	CharSelectServicesFlowFrame.GlowBox:SetHeight(58 * characterLimit)
-	CharSelectServicesFlowFrame.GlowBox:SetPoint("TOP", CharacterSelectCharacterFrame, 0.5, -60)
-	CharSelectServicesFlowFrame.GlowBox:SetWidth(248)
+
+	if isBoostMode then
+	--	CharSelectServicesFlowFrame.GlowBox:SetSize(310, (66 * characterLimit))
+		CharSelectServicesFlowFrame.GlowBox:SetPoint("TOP", CharacterSelectCharacterFrame, -10, 0)
+	end
 end
 
 local MainProffesionList = {}
 local AdditionalProffesionList = {}
 
 function ChooseMainProffesionDropDown_OnClick( self )
-	GlueDropDownMenu_SetSelectedValue(ChooseMainProffesionDropDown, self.value)
+	GlueDark_DropDownMenu_SetSelectedValue(ChooseMainProffesionDropDown, self.value)
 end
 
 function ChooseAdditionalProffesionDropDown_OnClick( self )
-	GlueDropDownMenu_SetSelectedValue(ChooseAdditionalProffesionDropDown, self.value)
+	GlueDark_DropDownMenu_SetSelectedValue(ChooseAdditionalProffesionDropDown, self.value)
 end
 
  MainProffesionList[1] = {
  	["text"] = TRADESKILL_ALCHEMY,
 	["value"] = 1,
- 	["selected"] = selected,
+ 	["selected"] = false,
  	func = ChooseMainProffesionDropDown_OnClick
  }
  MainProffesionList[2] = {
  	["text"] = TRADESKILL_ENGINEERING,
 	["value"] = 2,
- 	["selected"] = selected,
+ 	["selected"] = false,
  	func = ChooseMainProffesionDropDown_OnClick
  }
  MainProffesionList[3] = {
  	["text"] = TRADESKILL_LEATHERWORKING,
 	["value"] = 3,
- 	["selected"] = selected,
+ 	["selected"] = false,
  	func = ChooseMainProffesionDropDown_OnClick
  }
  MainProffesionList[4] = {
  	["text"] = TRADESKILL_BLACKSMITHING,
 	["value"] = 4,
- 	["selected"] = selected,
+ 	["selected"] = false,
  	func = ChooseMainProffesionDropDown_OnClick
  }
  MainProffesionList[5] = {
  	["text"] = TRADESKILL_ENCHANTING,
 	["value"] = 5,
- 	["selected"] = selected,
+ 	["selected"] = false,
  	func = ChooseMainProffesionDropDown_OnClick
  }
  MainProffesionList[6] = {
  	["text"] = TRADESKILL_INSCRIPTION,
 	["value"] = 6,
- 	["selected"] = selected,
+ 	["selected"] = false,
  	func = ChooseMainProffesionDropDown_OnClick
  }
  MainProffesionList[7] = {
  	["text"] = TRADESKILL_JEWELCRAFTING,
 	["value"] = 7,
- 	["selected"] = selected,
+ 	["selected"] = false,
  	func = ChooseMainProffesionDropDown_OnClick
  }
  MainProffesionList[8] = {
  	["text"] = TRADESKILL_TAILORING,
 	["value"] = 8,
- 	["selected"] = selected,
+ 	["selected"] = false,
  	func = ChooseMainProffesionDropDown_OnClick
  }
 
  AdditionalProffesionList[1] = {
  	["text"] = TRADESKILL_MINING,
 	["value"] = 1,
- 	["selected"] = selected,
+ 	["selected"] = false,
  	func = ChooseAdditionalProffesionDropDown_OnClick
  }
  AdditionalProffesionList[2] = {
  	["text"] = TRADESKILL_HERBALISM,
 	["value"] = 2,
- 	["selected"] = selected,
+ 	["selected"] = false,
  	func = ChooseAdditionalProffesionDropDown_OnClick
  }
  AdditionalProffesionList[3] = {
  	["text"] = TRADESKILL_SKINNING,
 	["value"] = 3,
- 	["selected"] = selected,
+ 	["selected"] = false,
  	func = ChooseAdditionalProffesionDropDown_OnClick
  }
 
 function CharacterServicesMasterMainDropDown_Initialize()
-	local selectedValueMain = GlueDropDownMenu_GetSelectedValue(ChooseMainProffesionDropDown)
+	local selectedValueMain = GlueDark_DropDownMenu_GetSelectedValue(ChooseMainProffesionDropDown)
 
 	for i = 1, #MainProffesionList do
 		MainProffesionList[i].checked = (MainProffesionList[i].text == selectedValueMain)
-		GlueDropDownMenu_AddButton(MainProffesionList[i])
+		GlueDark_DropDownMenu_AddButton(MainProffesionList[i])
 	end
 end
 
 function CharacterServicesMasterAdditionalDropDown_Initialize()
-	local selectedValueAdditional = GlueDropDownMenu_GetSelectedValue(ChooseAdditionalProffesionDropDown)
+	local selectedValueAdditional = GlueDark_DropDownMenu_GetSelectedValue(ChooseAdditionalProffesionDropDown)
 
 	for i = 1, #AdditionalProffesionList do
-		AdditionalProffesionList[i].checked = (AdditionalProffesionList[i].text == selectedValueMain)
-		GlueDropDownMenu_AddButton(AdditionalProffesionList[i])
+		AdditionalProffesionList[i].checked = (AdditionalProffesionList[i].text == selectedValueAdditional)
+		GlueDark_DropDownMenu_AddButton(AdditionalProffesionList[i])
 	end
 end
 
@@ -215,20 +195,21 @@ function CharacterServicesMaster_OnShow( self, ... )
 	SelectCharacterFaction = 0
 	CharSelectServicesFlowFrame.CharSelect = nil
 
-	self.characterUndeleteStatus = CharSelectUndeleteCharacterButton:IsEnabled()
-    self.characterCreateStatus   = CharSelectCreateCharacterButton:IsEnabled()
+	CharacterServicesMaster_UpdateSteps()
 
-	CharSelectUndeleteCharacterButton:Disable()
+	CharSelectChangeListStateButton:Disable()
 	CharacterBoostButton:Hide()
 	CharSelectEnterWorldButton:Disable()
 	CharSelectCreateCharacterButton:Disable()
 	CharacterSelectAddonsButton:Hide()
 	CharSelectChangeRealmButton:Disable()
 	CharacterSelectBackButton:Disable()
-	CharacterSelectDeleteButton:Disable()
+	CharSelectCharPageButtonPrev:Disable()
+	CharSelectCharPageButtonNext:Disable()
+
 	self.NextButton:Show()
 
-    self.CharacterServicesMaster.step1.choose.CreateNewCharacter:SetEnabled(self.characterCreateStatus == 1)
+	self.CharacterServicesMaster.step1.choose.CreateNewCharacter:SetEnabled(not IsCharacterSelectInUndeleteMode())
 
 	self.CharacterServicesMaster.step1.choose:Show()
 	self.CharacterServicesMaster.step1.finish:Hide()
@@ -253,13 +234,13 @@ function CharacterServicesMaster_OnShow( self, ... )
 	CharacterBoost_CharacterInit(true)
 
 	for i = 1, #MainProffesionList do
-		GlueDropDownMenu_SetSelectedName(ChooseMainProffesionDropDown, nil)
-		GlueDropDownMenu_SetText(MAIN_PROFESSION, ChooseMainProffesionDropDown)
+		GlueDark_DropDownMenu_SetSelectedName(ChooseMainProffesionDropDown, nil)
+		GlueDark_DropDownMenu_SetText(ChooseMainProffesionDropDown, MAIN_PROFESSION)
 	end
 
 	for i = 1, #AdditionalProffesionList do
-		GlueDropDownMenu_SetSelectedName(ChooseAdditionalProffesionDropDown, nil)
-		GlueDropDownMenu_SetText(SECONDARY_PROFESSION, ChooseAdditionalProffesionDropDown)
+		GlueDark_DropDownMenu_SetSelectedName(ChooseAdditionalProffesionDropDown, nil)
+		GlueDark_DropDownMenu_SetText(ChooseAdditionalProffesionDropDown, SECONDARY_PROFESSION)
 	end
 end
 
@@ -314,25 +295,31 @@ function CharacterUpgradeSelectSpecRadioButton_OnClick(self, button, down)
 end
 
 function CharacterServicesMaster_OnHide( self, ... )
-	local numChars = GetNumCharacters()
-
-	if self.characterUndeleteStatus == 1 then
-		CharSelectUndeleteCharacterButton:Enable()
+	if CHARACTER_SELECT_LIST.deleted.numPages > 0 then
+		CharSelectChangeListStateButton:Enable()
 	end
-
-    if self.characterCreateStatus == 1 then
-        CharSelectCreateCharacterButton:Enable()
-    end
+	if GetNumCharacters() > 0 then
+		CharSelectCreateCharacterButton:Enable()
+	end
 
 	CharacterBoostButton:Show()
 	CharSelectEnterWorldButton:Enable()
 	UpdateAddonButton()
 	CharSelectChangeRealmButton:Enable()
 	CharacterSelectBackButton:Enable()
-	CharacterSelectDeleteButton:Enable()
 	UpdateCharacterSelection()
 
 	CharacterBoost_CharacterInit(false)
+end
+
+function CharacterServicesMaster_OnKeyDown(self, key)
+	if key == "ESCAPE" then
+		self:Hide()
+	elseif key == "ENTER" then
+		CharacterServicesMasterNextButton_OnClick(self.NextButton)
+	elseif key == "PRINTSCREEN" then
+		Screenshot()
+	end
 end
 
 function CharacterServicesMasterNextButton_OnClick( self, ... )
@@ -350,24 +337,28 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 
 			local classInfo = C_CreatureInfo.GetClassInfo(class)
 			local _, _, _, color = GetClassColor(classInfo.classFile)
-			frame.CharacterServicesMaster.step1.finish.Character:SetFormattedText(CHARACTER_BOOST_CHARACTER_PATTERN, color, name, level, class)
+			frame.CharacterServicesMaster.step1.finish.Character:SetFormattedText(CHARACTER_BOOST_CHARACTER_NAME, color, name)
+			frame.CharacterServicesMaster.step1.finish.CharacterInfo:SetFormattedText(CHARACTER_BOOST_CHARACTER_INFO, level, color, class)
 
 			for i=1, characterLimit, 1 do
 				local button = _G["CharSelectCharacterButton"..i]
 				button.Arrow:Hide()
 
 				if i ~= frame.CharSelect then
-					CharacterBoost_DisableCharacterSelect(i, true)
+					button:Disable()
 				end
 			end
 			CharacterBoostStep = CharacterBoostStep + 1
+
+			PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
 			frame.CharacterServicesMaster.step2:Show()
 		else
-			GlueDialog_Show("OKAY", "Персонаж не выбран")
+			PlaySound(SOUNDKIT.GS_TITLE_OPTIONS)
+			GlueDialog:ShowDialog("OKAY", "Персонаж не выбран")
 		end
 	elseif CharacterBoostStep == 2 then
-		SelectMainProfession = GlueDropDownMenu_GetSelectedValue(ChooseMainProffesionDropDown)
-		SelectAdditionalProffesion = GlueDropDownMenu_GetSelectedValue(ChooseAdditionalProffesionDropDown)
+		SelectMainProfession = GlueDark_DropDownMenu_GetSelectedValue(ChooseMainProffesionDropDown)
+		SelectAdditionalProffesion = GlueDark_DropDownMenu_GetSelectedValue(ChooseAdditionalProffesionDropDown)
 		if SelectMainProfession and SelectAdditionalProffesion then
 			frame.CharacterServicesMaster.step2.choose:Hide()
 			frame.CharacterServicesMaster.step2.finish:Show()
@@ -384,14 +375,14 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 				local button = frame.CharacterServicesMaster.step3.choose.SpecButtons[i]
 				local spec = SHARED_CONSTANTS_SPECIALIZATION[classInfo.classFile][i]
 				button.SpecName:SetText(spec.name)
-				button.RoleIcon:SetTexCoord(GetTexCoordsForRole(spec.role))
+				button.RoleIcon:SetAtlas(spec.role and ("GlueDark-iconRole-"..spec.role) or "GlueDark-iconRole-DAMAGER")
 				button.SpecIcon:SetTexture(spec.icon)
 			end
 
 			local extraButton = frame.CharacterServicesMaster.step3.choose.SpecButtons[4];
 			if classInfo.classFile == "DEATHKNIGHT" then
 				extraButton.SpecName:SetText(ROLE_TANK);
-				extraButton.RoleIcon:SetTexCoord(GetTexCoordsForRole("TANK"));
+				extraButton.RoleIcon:SetAtlas("GlueDark-iconRole-TANK");
 				extraButton.SpecIcon:SetTexture("Interface\\Icons\\spell_deathknight_bloodpresence");
 				extraButton.SpecIcon:SetDesaturated(true);
 				extraButton:Show();
@@ -399,9 +390,11 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 				extraButton:Hide();
 			end
 
+			PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
 			frame.CharacterServicesMaster.step3:Show()
 		else
-			GlueDialog_Show("OKAY", CHOOSE_ALL_PROFESSION)
+			PlaySound(SOUNDKIT.GS_TITLE_OPTIONS)
+			GlueDialog:ShowDialog("OKAY", CHOOSE_ALL_PROFESSION)
 		end
 	elseif CharacterBoostStep == 3 then
 		local CheckedSpec = false
@@ -416,7 +409,7 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 		end
 
 		if not CheckedSpec then
-			GlueDialog_Show("OKAY", CHOOSE_SPECIALIZATION)
+			GlueDialog:ShowDialog("OKAY", CHOOSE_SPECIALIZATION)
 		else
 			CheckedSpec = false
 			frame.CharacterServicesMaster.step3.choose:Hide()
@@ -430,21 +423,24 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 				local button = frame.CharacterServicesMaster.step4.choose.SpecButtons[i];
 				local spec = SHARED_CONSTANTS_SPECIALIZATION[classInfo.classFile][i];
 				button.SpecName:SetText(spec.name);
-				button.RoleIcon:SetTexCoord(GetTexCoordsForRole(spec.role));
+				button.RoleIcon:SetAtlas(spec.role and ("GlueDark-iconRole-"..spec.role) or "GlueDark-iconRole-DAMAGER")
 				button.SpecIcon:SetTexture(spec.icon);
 			end
 
 			if CharacterBoostButton.isBoostPVPEnabled then
+				PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
 				frame.CharacterServicesMaster.step4.choose.SpecButtons[4]:Hide();
 				frame.CharacterServicesMaster.step4:Show()
 			else
 				SelectCharacterPvPSpec = 1
 				if self.race == PANDAREN_ALLIANCE or self.race == RACE_VULPERA_NEUTRAL then
+					PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
 					CharacterBoostStep = CharacterBoostStep + 1;
 					frame.CharacterServicesMaster.step5:Show();
 				else
+					PlaySound(SOUNDKIT.GS_TITLE_OPTIONS)
 					self:Hide();
-					GlueDialog_Show("CHARACTER_SERVICES_BOOST_CONFIRM");
+					GlueDialog:ShowDialog("CHARACTER_SERVICES_BOOST_CONFIRM");
 				end
 			end
 		end
@@ -461,18 +457,21 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 		end
 
 		if not CheckedSpec then
-			GlueDialog_Show("OKAY", CHOOSE_PVP_SPECIALIZATION);
+			PlaySound(SOUNDKIT.GS_TITLE_OPTIONS)
+			GlueDialog:ShowDialog("OKAY", CHOOSE_PVP_SPECIALIZATION);
 		else
 			CheckedSpec = false
 			frame.CharacterServicesMaster.step4.choose:Hide();
 			frame.CharacterServicesMaster.step4.finish:Show();
 
 			if self.race == PANDAREN_ALLIANCE or self.race == RACE_VULPERA_NEUTRAL then
+				PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
 				CharacterBoostStep = CharacterBoostStep + 1;
 				frame.CharacterServicesMaster.step5:Show();
 			else
+				PlaySound(SOUNDKIT.GS_TITLE_OPTIONS)
 				self:Hide();
-				GlueDialog_Show("CHARACTER_SERVICES_BOOST_CONFIRM");
+				GlueDialog:ShowDialog("CHARACTER_SERVICES_BOOST_CONFIRM");
 			end
 		end
 	elseif CharacterBoostStep == 5 then
@@ -486,55 +485,35 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 			end
 		end
 		if not CheckFaction then
-			GlueDialog_Show("OKAY", CHOOSE_FACTION)
+			GlueDialog:ShowDialog("OKAY", CHOOSE_FACTION)
 		else
 			CheckFaction = false
 			frame.CharacterServicesMaster.step5.choose:Hide()
 			frame.CharacterServicesMaster.step5.finish:Show()
 			frame.CharacterServicesMaster.step5.finish.Faction:SetText(SelectFaction)
 
+			PlaySound(SOUNDKIT.GS_TITLE_OPTIONS)
 			self:Hide()
-			GlueDialog_Show("CHARACTER_SERVICES_BOOST_CONFIRM")
+			GlueDialog:ShowDialog("CHARACTER_SERVICES_BOOST_CONFIRM")
 		end
 	end
 end
 
-function CharacterServices_UpdateFactionButtons(parentFrame, owner)
-	parentFrame.FactionButtons = {}
-	for i = 1, 2 do
-		parentFrame.FactionButtons[i] = CreateFrame("CheckButton", nil, parentFrame, "CharacterUpgradeSelectFactionRadioButtonTemplate")
-		if i == 1 then
-			parentFrame.FactionButtons[i]:SetPoint("LEFT", 50, -15)
-		else
-			parentFrame.FactionButtons[i]:SetPoint("LEFT", 50, -70)
-		end
-		parentFrame.FactionButtons[i]:SetID(i)
-
-
-		local button = parentFrame.FactionButtons[i]
-		button.owner = owner
-		button.FactionIcon:SetTexture(factionLogoTextures[i])
-		button.FactionName:SetText(factionLabels[i])
-		button:SetChecked(0)
-		button:Show()
-	end
-end
-
-function CharacterServices_UpdateSpecButtons(parentFrame, owner)
-	parentFrame.SpecButtons = {}
+function CharacterServices_StepSpec_OnLoad(self)
+	self.SpecButtons = {}
 	for i = 1, 4 do
-		parentFrame.SpecButtons[i] = CreateFrame("CheckButton", nil, parentFrame, "CharacterUpgradeSelectSpecRadioButtonTemplate")
-		if i == 1 then
-			parentFrame.SpecButtons[i]:SetPoint("LEFT", 50, -15)
-		else
-			parentFrame.SpecButtons[i]:SetPoint("TOP", parentFrame.SpecButtons[i - 1], "BOTTOM", 0, -35)
-		end
-		parentFrame.SpecButtons[i]:SetID(i)
+		self.SpecButtons[i] = self["SpecButton"..i]
+		self.SpecButtons[i].owner = self
+	end
+end
 
-		local button = parentFrame.SpecButtons[i]
-		button.owner = owner
-		button:SetChecked(0)
-		button:Show()
+function CharacterServices_StepFaction_OnLoad(self)
+	self.FactionButtons = {}
+	for i = 1, 2 do
+		self.FactionButtons[i] = self["FactionButton"..i]
+		self.FactionButtons[i].owner = self
+		self.FactionButtons[i].FactionIcon:SetTexture(factionLogoTextures[i])
+		self.FactionButtons[i].FactionName:SetText(factionLabels[i])
 	end
 end
 
@@ -557,83 +536,217 @@ end
 function CharacterBoostBuyFrameBuyButton_OnClick( self, ... )
 	if self.NoBonus then
 		CharacterBoostBuyFrame:Hide()
+		PlaySound(SOUNDKIT.GS_LOGIN_NEW_ACCOUNT)
 		LaunchURL("https://sirus.su/user/pay#/?bonuses="..CharacterBoost_CalculatePayBonuses())
 	else
-		if inRealmScourge() then
-			SendPacket("1")
-		else
-			C_SendOpcode(CMSG_SIRUS_BOOST_BUY)
-		end
+		PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
 		CharacterBoostBuyFrame:Hide()
-		WaitingDialogFrame:Show()
-		WaitingDialogFrame.Text:SetText(WAIT_SERVER_RESPONCE)
+		C_GluePackets:SendPacket(C_GluePackets.OpCodes.RequestBoostBuy)
+		GlueDialog:ShowDialog("SERVER_WAITING")
 	end
 end
 
-function CharacterServicesMaster_OnEvent( self, event, ts, ss, body )
-	local opcode, arg, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9 = strsplit(":", body)
-	--          activ price balans sale nprice psale timer
-	arg = tonumber(arg)
-	arg2 = tonumber(arg2)
-	arg3 = tonumber(arg3)
-	arg4 = tonumber(arg4)
-	arg5 = tonumber(arg5)
-	arg6 = tonumber(arg6)
-	arg7 = tonumber(arg7)
-	arg8 = tonumber(arg8)
-	arg9 = tonumber(arg9)
+function CharacterBoostBuyFrame_OnLoad(self)
+	local resetFunc = function(this, obj)
+		obj:Hide()
+		obj:ClearAllPoints()
+		obj:SetAlpha(1)
+	end
 
-	-- printc("opcode", opcode, "activ:", arg,  "price:", arg2, "balans:", arg3, "sale:", arg4, "nprice:", arg5, "psale:", arg6, "timer:", arg7, "arg8:", arg8, arg9)
+	self.texturePool = CreateTexturePool(self.Container, "ARTWORK", nil, "GlueDark_fqtcAngled0", resetFunc)
 
-	if opcode and arg then
-		if opcode == "SMSG_BOOST_STATUS" then
-			local statusFrame = CharacterBoostButton.MainPanel.Status1
+	local PRICE_WIDTH, PRICE_HEIGHT								= 21, 32
+	local PRICE_WS_WIDTH, PRICE_WS_HEIGHT						= 17, 26
+	local PRICE_SALE_WIDTH, PRICE_SALE_HEIGHT					= 11, 16
+	local PRICE_PADDING_X, PRICE_PADDING_Y						= -1, 1
+	local PRICE_WS_BASE_OFFSET_X, PRICE_WS_BASE_OFFSET_Y		= -21, 0
+	local PRICE_SALE_BASE_OFFSET_X, PRICE_SALE_BASE_OFFSET_Y	= 38, 5
 
-			CharacterBoostButton.isBoostDisable = arg == -1
-			CharacterBoostButton_UpdateState(CharacterBoostButton.isBoostDisable)
-			CharacterBoostButton.isBoostPVPEnabled = arg9 == 1
+	self.SetPrice = function(this, price, oldPrice)
+		price = tostring(price)
+		this.texturePool:ReleaseAll()
 
-			CharacterBoostButton.MainPanel.Status1:SetShown(arg == 1)
-			CharacterBoostButton.MainPanel.Status2:SetShown(arg ~= 1)
+		if price == "" or price == "0" or price == "nil" then
+			this.Container.NoPrice:Show()
+			this.Container.CurrencyIconPrice:Hide()
+			this.Container.StrikeThrough:Hide()
+			this.Container.BuyButton:SetText(CHARACTER_SERVICES_USE)
+			return
+		else
+			this.Container.NoPrice:Hide()
+			this.Container.CurrencyIconPrice:Show()
+			this.Container.BuyButton:SetText(CHARACTER_SERVICES_BUY)
+		end
 
-			statusFrame.Status:ClearAllPoints()
+		local haveOldPrice, firstTexture, prevTexture
+		local length
 
-			if arg8 and arg8 > 0 then
-				statusFrame.Status:SetPoint("TOP", statusFrame, "TOP", 0, -12)
-			else
-				statusFrame.Status:SetPoint("CENTER", 0, 0)
+		while price do
+			length = string.len(price)
+			for i = 1, length do
+				local number = string.sub(price, i, i)
+				local texture = this.texturePool:Acquire()
+				texture:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-fqtcAngled"..number], 3, 6))
+
+				if haveOldPrice then
+					texture:SetSize(PRICE_SALE_WIDTH, PRICE_SALE_HEIGHT)
+					texture:SetAlpha(0.8)
+				elseif oldPrice then
+					texture:SetSize(PRICE_WS_WIDTH, PRICE_WS_HEIGHT)
+				else
+					texture:SetSize(PRICE_WIDTH, PRICE_HEIGHT)
+				end
+
+				if i == 1 then
+					firstTexture = texture
+
+					if haveOldPrice then	-- preSale price position
+						texture:SetPoint("CENTER", this.Container.SaleBackdrop, "CENTER", PRICE_SALE_BASE_OFFSET_X + -(math.ceil((length * (PRICE_SALE_WIDTH + PRICE_PADDING_X) - PRICE_PADDING_X) / 2)), PRICE_SALE_BASE_OFFSET_Y + length * -PRICE_PADDING_Y)
+					elseif oldPrice then	-- sale price position
+						texture:SetPoint("CENTER", this.Container.SaleBackdrop, "CENTER", PRICE_WS_BASE_OFFSET_X + (math.ceil((length * (-PRICE_WS_WIDTH + PRICE_PADDING_X) - PRICE_PADDING_X) / 2)), PRICE_WS_BASE_OFFSET_Y + length * -PRICE_PADDING_Y)
+					else					-- price position
+						texture:SetPoint("CENTER", this.Container.SaleBackdrop, "CENTER", math.ceil(length * (-PRICE_WIDTH + PRICE_PADDING_X) / 2), length * -PRICE_PADDING_Y)
+					end
+				else
+					texture:SetPoint("BOTTOMLEFT", prevTexture, "BOTTOMRIGHT", PRICE_PADDING_X, PRICE_PADDING_Y)
+				end
+
+				texture:Show()
+				prevTexture = texture
 			end
 
-			if arg ~= 1 and arg2 and arg3 then
+			if not haveOldPrice then
+				price = oldPrice and tostring(oldPrice) or nil
+				haveOldPrice = price and true or false
+			else
+				break
+			end
+		end
 
-				local cost = arg5 ~= 0 and arg5 or arg2
-				local sale = math.floor(( 1 - (arg5 / arg2)) * 100)
-				local tick = 0
-				local ticktime = 7
+		if haveOldPrice then
+			this.Container.CurrencyIconPrice:SetPoint("CENTER", "$parentSaleBackdrop", 4, 0)
 
-				accountBonusCount = arg3
+			this.Container.StrikeThrough:SetRotation(math.rad(4 + length * 2))
+			this.Container.StrikeThrough:ClearAllPoints()
+			this.Container.StrikeThrough:SetPoint("BOTTOMLEFT", firstTexture, "BOTTOMLEFT", 0, PRICE_SALE_HEIGHT / 2 - 15)
+			this.Container.StrikeThrough:SetPoint("BOTTOMRIGHT", prevTexture, "BOTTOMRIGHT", 2, PRICE_SALE_HEIGHT / 2 - 3)
+			this.Container.StrikeThrough:Show()
+		else
+			this.Container.CurrencyIconPrice:SetPoint("CENTER", "$parentSaleBackdrop", 30, 2)
+			this.Container.StrikeThrough:Hide()
+		end
+	end
+end
+
+function CharacterServicesMaster_UpdateSteps()
+	if CharacterBoostButton.isBoostPVPEnabled then
+		CharacterServicesMaster.step5:SetPoint("TOP", 0, -340)
+		CharacterServicesMaster.step5.choose.StepNumber:SetAtlas("GlueDark-fqtc5")
+
+		CharacterServicesMaster.step5.choose.StepLine:ClearAllPoints()
+		CharacterServicesMaster.step5.choose.StepLine:SetPoint("TOP", CharacterServicesMaster.step4.finish.StepBackdrop, "BOTTOM", 0, 20)
+		CharacterServicesMaster.step5.choose.StepLine:SetPoint("BOTTOM", CharacterServicesMaster.step5.choose.StepBackdrop, "TOP", 1, -20)
+
+		CharacterServicesMaster.step5.finish.StepLine:ClearAllPoints()
+		CharacterServicesMaster.step5.finish.StepLine:SetPoint("TOP", CharacterServicesMaster.step4.finish.StepBackdrop, "BOTTOM", 0, 20)
+		CharacterServicesMaster.step5.finish.StepLine:SetPoint("BOTTOM", CharacterServicesMaster.step5.finish.StepBackdrop, "TOP", 1, -20)
+	else
+		CharacterServicesMaster.step5:SetPoint("TOP", 0, -255)
+		CharacterServicesMaster.step5.choose.StepNumber:SetAtlas("GlueDark-fqtc4")
+
+		CharacterServicesMaster.step5.choose.StepLine:ClearAllPoints()
+		CharacterServicesMaster.step5.choose.StepLine:SetPoint("TOP", CharacterServicesMaster.step3.finish.StepBackdrop, "BOTTOM", 0, 20)
+		CharacterServicesMaster.step5.choose.StepLine:SetPoint("BOTTOM", CharacterServicesMaster.step5.choose.StepBackdrop, "TOP", 1, -20)
+
+		CharacterServicesMaster.step5.finish.StepLine:ClearAllPoints()
+		CharacterServicesMaster.step5.finish.StepLine:SetPoint("TOP", CharacterServicesMaster.step3.finish.StepBackdrop, "BOTTOM", 0, 20)
+		CharacterServicesMaster.step5.finish.StepLine:SetPoint("BOTTOM", CharacterServicesMaster.step5.finish.StepBackdrop, "TOP", 1, -20)
+	end
+end
+
+function CharacterServicesMaster_OnLoad(self)
+	self.BottomShadow:SetVertexColor(0, 0, 0, 0.4)
+
+	for i = 2, 4 do
+		local f = self.CharacterServicesMaster["step"..i]
+		f.choose.StepLine:ClearAllPoints()
+		f.choose.StepLine:SetPoint("TOP", self.CharacterServicesMaster["step" .. (i - 1)].finish.StepBackdrop, "BOTTOM", 0, 20)
+		f.choose.StepLine:SetPoint("BOTTOM", f.choose.StepBackdrop, "TOP", 1, -20)
+
+		f.finish.StepLine:ClearAllPoints()
+		f.finish.StepLine:SetPoint("TOP", self.CharacterServicesMaster["step" .. (i - 1)].finish.StepBackdrop, "BOTTOM", 0, 20)
+		f.finish.StepLine:SetPoint("BOTTOM", f.finish.StepBackdrop, "TOP", 1, -20)
+	end
+
+	CharacterServicesMaster_UpdateSteps()
+
+	self:RegisterEvent("SERVER_SPLIT_NOTICE")
+end
+
+function CharacterServicesMaster_OnEvent( self, event, ts, ss, body )
+	local opcode, status, content = string.split(":", body, 3)
+	status = tonumber(status)
+
+	if opcode and status then
+		if opcode == "SMSG_BOOST_STATUS" then
+			local boostPrice, balance, haveDiscount, newPrice, isPersonalSale, seconds, expireAt, isPVP = string.split(":", content)
+
+			boostPrice = tonumber(boostPrice)
+			balance = tonumber(balance)
+			haveDiscount = tonumber(haveDiscount) == 1
+			newPrice = tonumber(newPrice)
+			isPersonalSale = tonumber(isPersonalSale) == 1
+			seconds = tonumber(seconds)
+			expireAt = tonumber(expireAt)
+			isPVP = tonumber(isPVP) == 1
+
+			local statusFrame = CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1
+
+			CharacterBoostButton.isBoostDisable = status == -1
+			CharacterBoostButton_UpdateState(CharacterBoostButton.isBoostDisable)
+			CharacterBoostButton.isBoostPVPEnabled = isPVP
+
+			CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1:SetShown(status ~= 0)
+			CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2:SetShown(status == 0 and boostPrice and balance)
+
+			statusFrame.CharacterBoost:ClearAllPoints()
+			statusFrame.Status:ClearAllPoints()
+
+			if expireAt and expireAt > 0 then
+				statusFrame.CharacterBoost:SetPoint("TOP", 0, 0)
+				statusFrame.Status:SetPoint("BOTTOM", 0, 15)
+			else
+				statusFrame.CharacterBoost:SetPoint("TOP", 0, -5)
+				statusFrame.Status:SetPoint("BOTTOM", 0, 5)
+			end
+
+			if status == 0 and boostPrice and balance then
+				local cost = newPrice ~= 0 and newPrice or boostPrice
+				local discountAmount = math.floor(( 1 - (newPrice / boostPrice)) * 100)
+
+				accountBonusCount = balance
 				characterBoostPrice = cost
 
-				if arg4 == 1 and arg5 == 0 then
-					CharacterBoostBuyFrame.Container.Cost:SetText(CHARACTER_SERVICES_BOOST_COST_FREE)
+				if haveDiscount and newPrice == 0 then
+					CharacterBoostBuyFrame:SetPrice(0) -- CHARACTER_SERVICES_BOOST_COST_FREE
 				else
-					CharacterBoostBuyFrame.Container.Cost:SetFormattedText(CHARACTER_SERVICES_BOOST_COST, cost)
+					CharacterBoostBuyFrame:SetPrice(cost, boostPrice)
 				end
-				CharacterBoostBuyFrame.Container.MyBonus:SetFormattedText(CHARACTER_SERVICES_YOU_HAVE_BONUS, arg3)
-				CharacterBoostBuyFrame.Container.BuyButton:SetText(CHARACTER_SERVICES_BUY)
-				CharacterBoostBuyFrame.Container.BuyButton.NoBonus = false
 
-				if arg3 == 0 and not arg4 == 1 and not arg5 == 0 then
-					CharacterBoostBuyFrame.Container.MyBonus:SetText(CHARACTER_SERVICES_YOU_DONT_HAVE_BONUS)
+				local actualPrice = newPrice > 0 and newPrice or boostPrice
+
+				if actualPrice ~= 0 and balance < actualPrice and not C_Service:IsGM() then
 					CharacterBoostBuyFrame.Container.BuyButton:SetText(REPLENISH)
 					CharacterBoostBuyFrame.Container.BuyButton.NoBonus = true
-				elseif arg3 < arg2 and not arg4 == 1 and not arg5 == 0 then
-					CharacterBoostBuyFrame.Container.MyBonus:SetFormattedText(CHARACTER_SERVICES_YOU_HAVE_BONUS, arg3)
-					CharacterBoostBuyFrame.Container.BuyButton:SetText(REPLENISH)
-					CharacterBoostBuyFrame.Container.BuyButton.NoBonus = true
+				else
+					CharacterBoostBuyFrame.Container.BuyButton:SetText(CHARACTER_SERVICES_BUY)
+					CharacterBoostBuyFrame.Container.BuyButton.NoBonus = false
 				end
+
+				CharacterBoostBuyFrame.Container.MyBonus:SetFormattedText(CHARACTER_SERVICES_YOU_HAVE_BONUS, balance)
+
 --[[
-				if arg2 == 0 then
+				if boostPrice == 0 then
 					CharacterBoostButton:Hide()
 					return
 				end
@@ -643,64 +756,60 @@ function CharacterServicesMaster_OnEvent( self, event, ts, ss, body )
 					CharacterBoostButton.ticker = nil
 				end
 
-				if arg7 < 86400 then
-					CharacterBoostButton.MainPanel.Status2.Status1:SetTextColor(1, 0, 0)
+				if seconds < 86400 then
+					CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status1:SetTextColor(1, 0, 0)
 				else
-					CharacterBoostButton.MainPanel.Status2.Status1:SetTextColor(1, 1, 1)
+					CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status1:SetTextColor(1, 1, 1)
 				end
 
-				if arg5 > 0 then
-					if arg6 == 0 then
-						CharacterBoostButton.MainPanel.Status2.Status1:SetText(CHARACTER_SERVICES_SPECIAL_OFFER)
-					elseif arg6 == 1 then
-						CharacterBoostButton.MainPanel.Status2.Status1:SetText(CHARACTER_SERVICES_PERSONAL_OFFER)
-					end
+				if newPrice > 0 then
+					CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status1:SetText(isPersonalSale and CHARACTER_SERVICES_PERSONAL_OFFER or CHARACTER_SERVICES_SPECIAL_OFFER)
+
+					local tick = 0
+					local ticktime = 7
+
 					CharacterBoostButton.ticker = C_Timer:NewTicker(1, function()
-						if CharacterBoostButton.MainPanel.Status2.Status1:IsVisible() then
-							arg7 = arg7 - 1
+						if CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status1:IsVisible() then
+							seconds = seconds - 1
 							tick = tick + 1
 
 							if tick >= 0 and tick <= ticktime then
-								if arg6 == 0 then
-									CharacterBoostButton.MainPanel.Status2.Status1:SetText(CHARACTER_SERVICES_SPECIAL_OFFER)
-								elseif arg6 == 1 then
-									CharacterBoostButton.MainPanel.Status2.Status1:SetText(CHARACTER_SERVICES_PERSONAL_OFFER)
-								end
+								CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status1:SetText(isPersonalSale and CHARACTER_SERVICES_PERSONAL_OFFER or CHARACTER_SERVICES_SPECIAL_OFFER)
+
 								if tick >= ticktime then
-									CharacterBoostButton.MainPanel.Status2.Status1.Anim:Play()
+									CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status1.Anim:Play()
 								end
 							elseif tick >= ticktime and tick <= ticktime * 2 then
-								CharacterBoostButton.MainPanel.Status2.Status1:SetRemainingTime(arg7)
+								CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status1:SetRemainingTime(seconds)
+
 								if tick >= ticktime * 2 then
 									tick = 0
-									CharacterBoostButton.MainPanel.Status2.Status1.Anim:Play()
+									CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status1.Anim:Play()
 								end
 							end
-
 						else
 							CharacterBoostButton.ticker:Cancel()
 							CharacterBoostButton.ticker = nil
 						end
-					end, arg7)
-					CharacterBoostButton.MainPanel.Status2.Status2:SetFormattedText(CHARACTER_SERVICES_DISCOUNT, sale)
+					end, seconds)
+
+					CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status2:SetFormattedText(CHARACTER_SERVICES_DISCOUNT, discountAmount)
 				end
 
-				if arg5 == 0 and arg4 == 1 then
-					CharacterBoostButton.MainPanel.Status2.Status1:SetText(CHARACTER_SERVICES_VIP_GIFT)
-					CharacterBoostButton.MainPanel.Status2.Status2:SetText(CHARACTER_SERVICES_BOOST_FREE)
+				if newPrice == 0 and haveDiscount then
+					CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status1:SetText(CHARACTER_SERVICES_VIP_GIFT)
+					CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status2:SetText(CHARACTER_SERVICES_BOOST_FREE)
+				elseif status ~= 1 and newPrice == 0 and not haveDiscount then
+					CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status1:SetText(CHARACTER_SERVICES_BUYBOOST)
+					CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status2:SetFormattedText(CHARACTER_SERVICES_COST, cost)
 				end
 
-
-				if arg ~= 1 and arg5 == 0 and arg4 ~= 1 then
-					CharacterBoostButton.MainPanel.Status2.Status1:SetText(CHARACTER_SERVICES_BUY)
-					CharacterBoostButton.MainPanel.Status2.Status2:SetFormattedText(CHARACTER_SERVICES_COST, cost)
-				end
 				CharacterSelect.AllowService = false
-			elseif arg == 1 then
-				statusFrame.TimeRemaning:SetShown(arg8 and arg8 > 0)
+			elseif status == 1 then
+				statusFrame.TimeRemaning:SetShown(expireAt and expireAt > 0)
 
-				if arg8 and arg8 > 0 then
-					statusFrame.TimeRemaning.Timestamp = time() + arg8
+				if expireAt and expireAt > 0 then
+					statusFrame.TimeRemaning.Timestamp = time() + expireAt
 
 					local remaningTime = statusFrame.TimeRemaning.Timestamp - time()
 
@@ -713,68 +822,78 @@ function CharacterServicesMaster_OnEvent( self, event, ts, ss, body )
 
 					if remaningTime <= 86400 then
 						statusFrame.TimeRemaning.Timer = C_Timer:NewTicker(1, function()
-							local remaningTime = statusFrame.TimeRemaning.Timestamp - time()
-							statusFrame.TimeRemaning:SetFormattedText(TIME_REMANING, GetRemainingTime(remaningTime, true))
+							local remaningTime2 = statusFrame.TimeRemaning.Timestamp - time()
+							statusFrame.TimeRemaning:SetFormattedText(TIME_REMANING, GetRemainingTime(remaningTime2, true))
 						end)
 					end
 				end
 
+				CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1.Status:SetText(AVAILABLE)
+				CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1.Status:SetTextColor(0, 1, 0)
+
 				CharacterSelect.AllowService = true
+			else -- status == -1
+				if CharacterBoostButton.ticker then
+					CharacterBoostButton.ticker:Cancel()
+					CharacterBoostButton.ticker = nil
+				end
+
+				CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1.Status:SetText(UNAVAILABLE)
+				CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1.Status:SetTextColor(1, 0, 0)
+
+				CharacterSelect.AllowService = false
 			end
+
+			CharacterBoostButton:SetText(CharacterSelect.AllowService and CHARACTER_SERVICES_USE or CHARACTER_SERVICES_BUY)
 		elseif opcode == "SMSG_BUY_BOOST_RESULT" then
-			if arg == 0 then
-				SendPacket("0")
+			GlueDialog:HideDialog("SERVER_WAITING")
+
+			if status == 0 then
+				C_GluePackets:SendPacket(C_GluePackets.OpCodes.RequestBoostStatus)
 
 				if CharacterBoostButton.ticker then
 					CharacterBoostButton.ticker:Cancel()
 					CharacterBoostButton.ticker = nil
 				end
 
-				CharacterBoostButton.MainPanel.Status1:Show()
+				CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1:Show()
 				CharacterBoostBuyFrame:Hide()
+
 				if not CharSelectServicesFlowFrame:IsShown() then
 					CharSelectServicesFlowFrame:Show()
 				end
-				GlueDialog_Show("OKAY", CHARACTER_SERVICES_BUY_BOOST_RESULT)
-			elseif arg == 1 then
+
+				GlueDialog:ShowDialog("OKAY", CHARACTER_SERVICES_BUY_BOOST_RESULT)
+			elseif status == 1 then
 				CharacterBoostBuyFrame:Hide()
-				GlueDialog_Show("BOOST_ERROR_NOT_ENOUGH_BONUES")
-			elseif arg == 11 then
-				GlueDialog_Show("OKAY_HTML", CHARACTER_BOOST_DISABLE_SUSPECT_ACCOUNT)
-			elseif arg then
-				local errorText = _G[string.format("CHARACTER_SERVICES_BOOST_ERROR_%d", arg)]
+				GlueDialog:ShowDialog("BOOST_ERROR_NOT_ENOUGH_BONUES")
+			elseif status == 11 then
+				GlueDialog:ShowDialog("OKAY_HTML", CHARACTER_BOOST_DISABLE_SUSPECT_ACCOUNT)
+			elseif status then
+				local errorText = _G[string.format("CHARACTER_SERVICES_BOOST_ERROR_%d", status)]
 				if errorText then
-					GlueDialog_Show("OKAY", errorText)
+					GlueDialog:ShowDialog("OKAY", errorText)
 				end
 			end
-			WaitingDialogFrame:Hide()
 		elseif opcode == "SMG_FINISH_BOOST_RESULT" then
-			if arg == 0 then
-				WaitingDialogFrame:Hide()
+			GlueDialog:HideDialog("SERVER_WAITING")
+
+			if status == 0 then
 				CharSelectServicesFlowFrame:Hide()
 				GetCharacterListUpdate()
 				CharacterSelect.AutoEnterWorld = true
-			elseif arg == 6 or arg == 11 then
-				GlueDialog_Show("OKAY_HTML", CHARACTER_BOOST_DISABLE_SUSPECT_ACCOUNT)
-				WaitingDialogFrame:Hide()
+			elseif status == 6 or status == 11 then
+				GlueDialog:ShowDialog("OKAY", CHARACTER_BOOST_DISABLE_SUSPECT_ACCOUNT)
 				CharSelectServicesFlowFrame:Hide()
-			elseif arg == 12 then
-				GlueDialog_Show("OKAY", CHARACTER_BOOST_DISABLE_REALM)
-				WaitingDialogFrame:Hide()
+			elseif status == 12 then
+				GlueDialog:ShowDialog("OKAY", CHARACTER_BOOST_DISABLE_REALM)
 				CharSelectServicesFlowFrame:Hide()
 			else
-				GlueDialog_Show("OKAY", CHARACTER_SERVICES_BOOST_ERROR .. arg)
-				WaitingDialogFrame:Hide()
+				GlueDialog:ShowDialog("OKAY", CHARACTER_SERVICES_BOOST_ERROR .. status)
 				CharSelectServicesFlowFrame:Hide()
 			end
 		end
 	end
-end
-
-function CharacterBoostButton_OnShow( self, ... )
-	self.Chains1:SetDesaturated(1)
-	self.Chains2:SetDesaturated(1)
-	self.Border:SetDesaturated(1)
 end
 
 function CharacterBoostButton_UpdateState( state )
@@ -785,140 +904,5 @@ function CharacterBoostButton_UpdateState( state )
 		CharacterBoostButton.tooltip = nil
 	end
 	CharacterBoostButton:SetEnabled(not state)
-	CharacterBoostButton.MainPanel:SetShown(not state)
-end
-
-function EventHandler:SMSG_SIRUS_BOOST_STATUS(active, boostPrice, balance, haveDiscount, newPrice, isPersonal, seconds)
-    CharacterBoostButton.MainPanel.Status1:SetShown(active)
-	CharacterBoostButton.MainPanel.Status2:SetShown(not active)
-
-	if not active and boostPrice and balance then
-		local cost = newPrice ~= 0 and newPrice or boostPrice
-		local sale = math.floor(( 1 - (newPrice / boostPrice)) * 100)
-		local tick = 0
-		local ticktime = 7
-
-		if haveDiscount == 1 and newPrice == 0 then
-			CharacterBoostBuyFrame.Container.Cost:SetText(CHARACTER_SERVICES_BOOST_COST_FREE)
-		else
-			CharacterBoostBuyFrame.Container.Cost:SetFormattedText(CHARACTER_SERVICES_BOOST_COST, cost)
-		end
-
-		CharacterBoostBuyFrame.Container.MyBonus:SetFormattedText(CHARACTER_SERVICES_YOU_HAVE_BONUS, balance)
-		CharacterBoostBuyFrame.Container.BuyButton:SetText(CHARACTER_SERVICES_BUY)
-		CharacterBoostBuyFrame.Container.BuyButton.NoBonus = false
-
-		if balance == 0 and not haveDiscount == 1 and not newPrice == 0 then
-			CharacterBoostBuyFrame.Container.MyBonus:SetText(CHARACTER_SERVICES_YOU_DONT_HAVE_BONUS)
-			CharacterBoostBuyFrame.Container.BuyButton:SetText(REPLENISH)
-			CharacterBoostBuyFrame.Container.BuyButton.NoBonus = true
-		elseif balance < boostPrice and not haveDiscount == 1 and not newPrice == 0 then
-			CharacterBoostBuyFrame.Container.MyBonus:SetFormattedText(CHARACTER_SERVICES_YOU_HAVE_BONUS, balance)
-			CharacterBoostBuyFrame.Container.BuyButton:SetText(REPLENISH)
-			CharacterBoostBuyFrame.Container.BuyButton.NoBonus = true
-		end
-
-		if boostPrice == 0 then
-			CharacterBoostButton:Hide()
-			return
-		end
-
-		if CharacterBoostButton.ticker then
-			CharacterBoostButton.ticker:Cancel()
-			CharacterBoostButton.ticker = nil
-		end
-
-		if seconds < 86400 then
-			CharacterBoostButton.MainPanel.Status2.Status1:SetTextColor(1, 0, 0)
-		else
-			CharacterBoostButton.MainPanel.Status2.Status1:SetTextColor(1, 1, 1)
-		end
-
-		if newPrice > 0 then
-			if isPersonal == 0 then
-				CharacterBoostButton.MainPanel.Status2.Status1:SetText(CHARACTER_SERVICES_SPECIAL_OFFER)
-			elseif isPersonal == 1 then
-				CharacterBoostButton.MainPanel.Status2.Status1:SetText(CHARACTER_SERVICES_PERSONAL_OFFER)
-			end
-			CharacterBoostButton.ticker = C_Timer:NewTicker(1, function()
-				if CharacterBoostButton.MainPanel.Status2.Status1:IsVisible() then
-					seconds = seconds - 1
-					tick = tick + 1
-
-					if tick >= 0 and tick <= ticktime then
-						if isPersonal == 0 then
-							CharacterBoostButton.MainPanel.Status2.Status1:SetText(CHARACTER_SERVICES_SPECIAL_OFFER)
-						elseif isPersonal == 1 then
-							CharacterBoostButton.MainPanel.Status2.Status1:SetText(CHARACTER_SERVICES_PERSONAL_OFFER)
-						end
-						if tick >= ticktime then
-							CharacterBoostButton.MainPanel.Status2.Status1.Anim:Play()
-						end
-					elseif tick >= ticktime and tick <= ticktime * 2 then
-						CharacterBoostButton.MainPanel.Status2.Status1:SetRemainingTime(seconds)
-						if tick >= ticktime * 2 then
-							tick = 0
-							CharacterBoostButton.MainPanel.Status2.Status1.Anim:Play()
-						end
-					end
-
-				else
-					CharacterBoostButton.ticker:Cancel()
-					CharacterBoostButton.ticker = nil
-				end
-			end, seconds)
-			CharacterBoostButton.MainPanel.Status2.Status2:SetFormattedText(CHARACTER_SERVICES_DISCOUNT, sale)
-		end
-
-		if newPrice == 0 and haveDiscount == 1 then
-			CharacterBoostButton.MainPanel.Status2.Status1:SetText(CHARACTER_SERVICES_VIP_GIFT)
-			CharacterBoostButton.MainPanel.Status2.Status2:SetText(CHARACTER_SERVICES_BOOST_FREE)
-		end
-
-
-		if not active and newPrice == 0 and haveDiscount ~= 1 then
-			CharacterBoostButton.MainPanel.Status2.Status1:SetText(CHARACTER_SERVICES_BUY)
-			CharacterBoostButton.MainPanel.Status2.Status2:SetText(CHARACTER_SERVICES_199_BONUS)
-		end
-		CharacterSelect.AllowService = false
-	elseif active then
-		CharacterSelect.AllowService = true
-	end
-end
-
-function EventHandler:SMSG_SIRUS_BOOST_BUY(status)
-	if status == 0 then
-		C_SendOpcode(CMSG_SIRUS_BOOST_STATUS)
-
-		if CharacterBoostButton.ticker then
-			CharacterBoostButton.ticker:Cancel()
-			CharacterBoostButton.ticker = nil
-		end
-
-		CharacterBoostButton.MainPanel.Status1:Show()
-		CharacterBoostBuyFrame:Hide()
-
-		if not CharSelectServicesFlowFrame:IsShown() then
-			CharSelectServicesFlowFrame:Show()
-		end
-
-		GlueDialog_Show("OKAY", CHARACTER_SERVICES_BUY_BOOST_RESULT)
-	elseif status == 1 then
-		CharacterBoostBuyFrame:Hide()
-		GlueDialog_Show("BOOST_ERROR_NOT_ENOUGH_BONUES")
-	end
-	WaitingDialogFrame:Hide()
-end
-
-function EventHandler:SMSG_SIRUS_BOOST_CHARACTER(status)
-	if status == 0 then
-		WaitingDialogFrame:Hide()
-		CharSelectServicesFlowFrame:Hide()
-		GetCharacterListUpdate()
-		CharacterSelect.AutoEnterWorld = true
-	else
-		GlueDialog_Show("OKAY", CHARACTER_SERVICES_BOOST_ERROR .. status)
-		WaitingDialogFrame:Hide()
-		CharSelectServicesFlowFrame:Hide()
-	end
+	CharacterSelectLeftPanel.CharacterBoostInfoFrame:SetShown(not state)
 end

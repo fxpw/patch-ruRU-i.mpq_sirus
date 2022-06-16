@@ -39,7 +39,7 @@ AccountLogin_Models = {
 }
 
 AccountLogin_Models_Lights = {
-
+	{1, 0, 0, -0.707, -0.707, 0.7, 1.0, 1.0, 1.0, 0, 1.0, 1.0, 0.8}
 }
 
 function AccountLoginBackground_OnLoad( self, ... )
@@ -48,18 +48,17 @@ function AccountLoginBackground_OnLoad( self, ... )
 	PlayGlueMusic(CurrentGlueMusic)
 
 	AccountLoginBackgroundModel:SetModel(AccountLogin_Background)
-	--AccountLoginBackgroundTexture:SetTexture(AccountLogin_Texture)
+--	AccountLoginBackgroundTexture:SetTexture(AccountLogin_Texture)
 
 	for i = 1, #AccountLogin_Models do
-		local model = self.Models[i]
 		local data = AccountLogin_Models[i]
 
-		model = CreateFrame("Model", "AccountLoginModel"..i, self)
+		local model = self.Models[i] or CreateFrame("Model", "AccountLoginModel"..i, self)
 		model:SetModel(data[14] or "Character\\Human\\Male\\HumanMale.mdx")
 		model:SetPoint("CENTER", 0, 0)
 		model:SetSize(self:GetWidth() / data[10], self:GetHeight() / data[11])
 		model:SetCamera(1)
-		model:SetLight(unpack(data[8] or {1, 0, 0, -0.707, -0.707, 0.7, 1.0, 1.0, 1.0, 0, 1.0, 1.0, 0.8}))
+		model:SetLight(unpack(data[8] or AccountLogin_Models_Lights[1]))
 		model:SetAlpha(data[7])
 		model:Hide()
 
@@ -72,7 +71,6 @@ function AccountLoginBackground_OnLoad( self, ... )
 	end
 
 	self.renderUpdate = C_Timer:NewTicker(0.01, function()
-
 		for i = 1, #self.Models do
 			local model = self.Models[i]
 			local data = AccountLogin_Models[i]
@@ -138,12 +136,12 @@ function AccountLoginUI_OnLoad( self, ... )
 	self:RegisterEvent("PLAYER_ENTER_TOKEN")
 
 	local accountName = GetSavedAccountName()
-	if ( not accountName ) or accountName == ""  then
+	if not accountName or accountName == "" then
 		SetSavedAccountName("")
 		AccountLoginSaveAccountName:SetChecked(0)
 	else
 		AccountLoginSaveAccountName:SetChecked(1)
-		AccountLoginAutoLogin.TittleText:SetTextColor(0.91, 0.78, 0.53)
+		AccountLoginAutoLogin.TitleText:SetTextColor(1, 1, 1)
 		AccountLoginAutoLogin:Enable()
 	end
 end
@@ -189,7 +187,7 @@ function AccountLogin_Login()
 	local Password = AccountLoginPasswordEdit:GetText()
 
 	if string.find(Login, "@") then
-		GlueDialog_Show("OKAY", LOGIN_EMAIL_ERROR)
+		GlueDialog:ShowDialog("OKAY", LOGIN_EMAIL_ERROR)
 		return
 	end
 
@@ -202,6 +200,7 @@ function AccountLogin_Login()
 			SetSavedAccountName("")
 		end
 
+		PlaySound(SOUNDKIT.GS_LOGIN)
 		DefaultServerLogin(Login, Password)
 	end
 end
@@ -211,19 +210,19 @@ function AccountLogin_AutoLogin(Login, Password)
 end
 
 function DevToolsRealmListDropDown_OnShow( self, ... )
-	GlueDropDownMenu_Initialize(self, DevToolsRealmListDropDown_Initialize)
-	GlueDropDownMenu_SetSelectedValue(self, GetCVar("realmList"))
-	GlueDropDownMenu_SetWidth(180, self)
-	GlueDropDownMenu_JustifyText("LEFT", self)
+	GlueDark_DropDownMenu_Initialize(self, DevToolsRealmListDropDown_Initialize)
+	GlueDark_DropDownMenu_SetSelectedValue(self, GetCVar("realmList"))
+	GlueDark_DropDownMenu_SetWidth(self, 170, true)
+	GlueDark_DropDownMenu_JustifyText(self, "LEFT")
 end
 
 function DevToolsRealmListDropDown_OnClick( button, ... )
 	SetCVar("realmList", button.value)
-	GlueDropDownMenu_SetSelectedValue(AccountLoginDevTools.RealmListDropDown, button.value)
+	GlueDark_DropDownMenu_SetSelectedValue(AccountLoginDevTools.RealmListDropDown, button.value)
 end
 
 function DevToolsRealmListDropDown_Initialize()
-	local info = GlueDropDownMenu_CreateInfo()
+	local info = GlueDark_DropDownMenu_CreateInfo()
 
 	info.func = DevToolsRealmListDropDown_OnClick
 
@@ -237,14 +236,14 @@ function DevToolsRealmListDropDown_Initialize()
 				info.value = realmData[2]
 				info.checked = GetCVar("realmList") == info.value
 
-				GlueDropDownMenu_AddButton(info)
+				GlueDark_DropDownMenu_AddButton(info)
 			end
 		end
 	end
 end
 
 function DevToolsAccountsDropDown_OnShow( self, ... )
-	GlueDropDownMenu_Initialize(self, DevToolsAccountsDropDown_Initialize, "MENU")
+	GlueDark_DropDownMenu_Initialize(self, DevToolsAccountsDropDown_Initialize, "MENU")
 end
 
 function DevToolsAccountsDropDown_OnClick( button, ... )
@@ -253,7 +252,7 @@ function DevToolsAccountsDropDown_OnClick( button, ... )
 end
 
 function DevToolsAccountsDropDown_Initialize()
-	local info = GlueDropDownMenu_CreateInfo()
+	local info = GlueDark_DropDownMenu_CreateInfo()
 
 	info.func = DevToolsAccountsDropDown_OnClick
 
@@ -263,11 +262,11 @@ function DevToolsAccountsDropDown_Initialize()
 
 			if accountData then
 
-				info.text = i.." - "..string.sub(accountData[1], 2, -2)
+				info.text = string.format("%i - %s", i, string.sub(accountData[1], 2, -2))
 				info.value = {accountData[1], accountData[2]}
 				info.checked = nil
 
-				GlueDropDownMenu_AddButton(info)
+				GlueDark_DropDownMenu_AddButton(info)
 			end
 		end
 	end
@@ -276,13 +275,13 @@ end
 AccountLoginChooseRealmDropDownMixin = {}
 
 local function ChooseRealmDropdown_OnClick( button, ... )
-	GlueDropDownMenu_SetSelectedValue(AccountLoginChooseRealmDropDown, button.value)
+	GlueDark_DropDownMenu_SetSelectedValue(AccountLoginChooseRealmDropDown, button.value)
 	SetCVar('realmList', button.value)
 	C_GlueCVars.SetCVar("ENTRY_POINT", button.value)
 end
 
 local function ChooseRealmDropdownInit()
-	local info = GlueDropDownMenu_CreateInfo()
+	local info = GlueDark_DropDownMenu_CreateInfo()
 
 	info.func = ChooseRealmDropdown_OnClick
 
@@ -290,7 +289,7 @@ local function ChooseRealmDropdownInit()
 		info.text = v.name
 		info.value = v.ip
 		info.checked = nil
-		GlueDropDownMenu_AddButton(info)
+		GlueDark_DropDownMenu_AddButton(info)
 	end
 end
 
@@ -298,11 +297,11 @@ end
 function AccountLoginChooseRealmDropDownMixin:Init()
 	self.realmStorage = C_ConnectManager:GetAllRealmList()
 
-	GlueDropDownMenu_Initialize(self, ChooseRealmDropdownInit)
+	GlueDark_DropDownMenu_Initialize(self, ChooseRealmDropdownInit)
 
 	local currentRealmList = GetCVar("realmList")
 	local selectedValue = self.realmStorage[1].ip
-	
+
 	if string.find(currentRealmList, "127.0.0.1", 1, true) then
 		return
 	end
@@ -324,9 +323,9 @@ function AccountLoginChooseRealmDropDownMixin:Init()
 		end
 	end
 
-	GlueDropDownMenu_SetSelectedValue(self, selectedValue)
+	GlueDark_DropDownMenu_SetSelectedValue(self, selectedValue)
 	SetCVar('realmList', selectedValue)
 
-	GlueDropDownMenu_SetWidth(180, self)
-	GlueDropDownMenu_JustifyText("CENTER", self)
+	GlueDark_DropDownMenu_SetWidth(self, 170, true)
+	GlueDark_DropDownMenu_JustifyText(self, "CENTER")
 end

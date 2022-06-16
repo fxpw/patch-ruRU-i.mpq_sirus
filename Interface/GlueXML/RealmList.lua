@@ -4,8 +4,84 @@
 --	E-mail:		nyll@sirus.su
 --	Web:		https://sirus.su/
 
+local MAX_REALM_ZONE = 37
+local MAX_REALM_COUNT = 18
+
+REALM_SET = {}
+REALM_ARRAY = {}
+
+_G._GetNumRealms = GetNumRealms
+function _G.GetNumRealms()
+	return #REALM_ARRAY
+end
+
+_G._GetRealmInfo = GetRealmInfo
+function GetRealmInfo(realmIndex, ...)
+	if not REALM_ARRAY[realmIndex] then return end
+	return unpack(REALM_ARRAY[realmIndex])
+end
+
+local function padNumber(x)
+	return string.format("%03d", x)
+end
+local function sortRealms(a, b)
+	return a[1]:lower():gsub("%d+", padNumber) < b[1]:lower():gsub("%d+", padNumber)
+end
+
+_G._RequestRealmList = RequestRealmList
+function _G.RequestRealmList(...)
+	_RequestRealmList(...)
+
+	table.wipe(REALM_SET)
+	table.wipe(REALM_ARRAY)
+
+	local name, numCharacters, invalidRealm, realmDown, currentRealm, pvp, rp, load, locked, major, minor, revision, build, types
+
+	for realmZone = 1, MAX_REALM_ZONE do
+		for realmID = 1, MAX_REALM_COUNT do
+			name, numCharacters, invalidRealm, realmDown, currentRealm, pvp, rp, load, locked, major, minor, revision, build, types = _GetRealmInfo(realmZone, realmID)
+
+			if name and not REALM_SET[name] then
+				REALM_ARRAY[#REALM_ARRAY + 1] = {name, numCharacters, invalidRealm, realmDown, currentRealm, pvp, rp, load, locked, major, minor, revision, build, types, realmZone, realmID}
+				REALM_SET[name] = -1
+			end
+		end
+	end
+
+	table.sort(REALM_ARRAY, sortRealms)
+
+	for realmIndex = 1, #REALM_ARRAY do
+		REALM_SET[REALM_ARRAY[realmIndex][1]] = realmIndex
+	end
+end
+
+function GetRealmByName(realmName)
+	if not REALM_SET[realmName] then return end
+	return unpack(REALM_ARRAY[REALM_SET[realmName]])
+end
+
+_G._RealmListUpdateRate = RealmListUpdateRate
+function RealmListUpdateRate()
+	if S_IsDevClient and S_IsDevClient() then
+		return 1
+	end
+	return _RealmListUpdateRate()
+end
+
+local realmCards = {
+	[SHARED_SIRUS_REALM_NAME] = {
+		cardFrame = "RealmListSirusRealmCard",
+	},
+	[SHARED_SCOURGE_REALM_NAME] = {
+		cardFrame = "RealmListScourgeRealmCard",
+	},
+	[SHARED_ALGALON_REALM_NAME] = {
+		cardFrame = "RealmListAlgalonRealmCard",
+	},
+}
+
 local realmCardsData = {
-	["Legacy x3 - 3.3.5a+"] = {
+	[SHARED_NELTHARION_REALM_NAME] = {
 		name = "Neltharion",
 		rate = "x3",
 		types = "PvP",
@@ -32,7 +108,7 @@ local realmCardsData = {
 		logo = "ServerGameLogo-3",
 		desingKey = "Frostmourne",
 	},
-	["Legacy x10 - 3.3.5а+"] = {
+	[SHARED_LEGACY_X10_REALM_NAME] = {
 		name = "Sirus",
 		rate = "x10",
 		types = "FFA",
@@ -52,93 +128,26 @@ local realmCardsData = {
 	},
 }
 
---{ "test4 - dev-siletjim", 4 },
---{ "Sirus x5 - 3.3.5a+", 4 },
---{ "Legacy x10 - 3.3.5а+", 4 },
---{ "Proxy Scourge x2 - 3.3.5a+", 4 },
---{ "test3 - dev-tulen-new", 4 },
---{ "Scourge x2 - 3.3.5a+", 4 },
---{ "test2 - dev-renegades-backup", 4 },
---{ "test1 - dev-faction-split", 4 },
---{ "test9 - БДСМ", 4 },
---{ "test5 - dev-elimination-formatio", 4 },
---{ "Algalon x4 - 3.3.5a", 4 },
---{ "test10 - dev", 4 },
---{ "test8 - dll", 4 },
---{ "Proxy Algalon x4 - 3.3.5a", 4 },
---{ "test6 - prod-dev", 4 },
---{ "test11 - dll2", 4 },
---{ "Legacy x3 - 3.3.5a+", 4 },
---{ "test7 - prod-renegades", 4 },
-
-local REALM_ZONE = 2
-local MAX_REALM_ZONE = 37
-local MAX_REALM_COUNT = 18
-
-local realmDataStorage = {}
-
-function GenerateRealmData()
-	realmDataStorage = {}
-
-	for realmZone = 1, MAX_REALM_ZONE do
-		for realmID = 1, MAX_REALM_COUNT do
-			local name, numCharacters, invalidRealm, realmDown, currentRealm, pvp, rp, load, locked, major, minor, revision, build, types = GetRealmInfo(realmZone, realmID)
-
-			if name and not realmDataStorage[name] then
-				realmDataStorage[name] = {name, numCharacters, invalidRealm, realmDown, currentRealm, pvp, rp, load, locked, major, minor, revision, build, types, realmZone, realmID}
-			end
-		end
-	end
-end
-
-function _GetNumRealms()
-	GenerateRealmData()
-
-	return tCount(realmDataStorage)
-end
-
-function _GetRealmInfo( realmIndex )
-	if not realmIndex then
-		return
-	end
-
-	GenerateRealmData()
-
-	local buffer = {}
-	for _, data in pairs(realmDataStorage) do
-		buffer[#buffer + 1] = data
-	end
-
-	if buffer[realmIndex] then
-		return unpack(buffer[realmIndex])
-	end
-end
-
-function RealmList_OnLoad( self, ... )
+function RealmList_OnLoad(self)
 	self.buttonsList = {}
-
-	--self:Show()
-
 	self:RegisterEvent("OPEN_REALM_LIST")
 end
 
-function RealmList_OnShow( self, ... )
-	if WaitingDialogFrame then
-		WaitingDialogFrame:Hide()
+function RealmList_OnEvent(self, event)
+	if event == "OPEN_REALM_LIST" then
+		self:Show()
 	end
+end
+
+function RealmList_OnShow(self)
+	GlueDialog:HideDialog("SERVER_WAITING")
 
 	if self.updateList then
 		self.updateList:Cancel()
 		self.updateList = nil
 	end
 
-	local updateTime = RealmListUpdateRate()
-
-	if S_IsDevClient and S_IsDevClient() then
-		updateTime = 1
-	end
-
-	self.updateList = C_Timer:NewTicker(updateTime, function()
+	self.updateList = C_Timer:NewTicker(RealmListUpdateRate(), function()
 		if not self:IsShown() and self.updateList then
 			self.updateList:Cancel()
 			self.updateList = nil
@@ -151,75 +160,35 @@ function RealmList_OnShow( self, ... )
 	RealmList_Update()
 end
 
-function RealmList_OnHide( self, ... )
+function RealmList_OnHide(self)
 	if self.updateList then
 		self.updateList:Cancel()
 		self.updateList = nil
 	end
 end
 
-function RealmList_OnEvent( self, event, ... )
-	if event == "OPEN_REALM_LIST" then
-		-- printc("RealmList_OnEvent", event, ...)
-		self:Show()
-	end
-end
-
-function RealmList_OnKeyDown( self, ... )
-	-- body
-end
-
-function RealmListRealmSelect_OnClick( self, ... )
-	if self.realmID then
-		RealmList:Hide()
-		ChangeRealm(self.realmZone , self.realmID)
-	end
-end
-
-function RealmListCancel_OnClick( self, ... )
-	RealmList:Hide()
-	RealmListDialogCancelled()
-end
-
-function GetRealmByName( _name )
-	local realmCount = _GetNumRealms()
-	for i = 1, realmCount do
-		local name, numCharacters, invalidRealm, realmDown, currentRealm, pvp, rp, load, locked, major, minor, revision, build, types, realmZone, realmID = _GetRealmInfo(i)
-
-		if _name == name then
-			return name, numCharacters, invalidRealm, realmDown, currentRealm, pvp, rp, load, locked, major, minor, revision, build, types, realmZone, realmID
-		end
+function RealmList_OnKeyDown( self, key, ... )
+	if ( key == "ESCAPE" ) then
+		RealmListCancel_OnClick()
+	elseif ( key == "PRINTSCREEN" ) then
+		Screenshot()
 	end
 end
 
 function RealmList_Update()
 	RequestRealmList()
 
-	local realmCount = _GetNumRealms()
+	local realmCount = GetNumRealms()
 	local cardCount = 0
 	local miniCardCount = 0
-	local isNonPlayer = false;
+	local buttonsCount = 0
 
-	if not realmCount or realmCount == 0 then
+	if realmCount == 0 then
 		RealmList.NoRealmText:Show()
 	end
 
-	local realmCards = {
-		["Sirus x5 - 3.3.5a+"] = {
-			cardFrame = "RealmListSirusRealmCard",
-		},
-		["Scourge x2 - 3.3.5a+"] = {
-			cardFrame = "RealmListScourgeRealmCard",
-		},
-		["Algalon x4 - 3.3.5a"] = {
-			cardFrame = "RealmListAlgalonRealmCard",
-		},
-	}
-	
-	local buttonsCount = 1
-
-	for i = 1, realmCount do
-		local name, numCharacters, invalidRealm, realmDown, currentRealm, pvp, rp, load, locked, major, minor, revision, build, types, realmZone, realmID = _GetRealmInfo(i)
+	for realmIndex = 1, realmCount do
+		local name, numCharacters, invalidRealm, realmDown, currentRealm, pvp, rp, load, locked, major, minor, revision, build, types, realmZone, realmID = GetRealmInfo(realmIndex)
 
 		if name then
 			local realmcardSettings = realmCards[name]
@@ -245,18 +214,19 @@ function RealmList_Update()
 				realmcardSettings.setup = true
 			end
 
-			if string.find(name, "3.3.5") == nil then
+			if not string.find(name, "3.3.5", 1, true) then
+				buttonsCount = buttonsCount + 1
 				local button = RealmList.buttonsList[buttonsCount]
 
 				if not button then
 					button = CreateFrame("Button", "RealmSelectButton"..buttonsCount, RealmList, "NormalChoiceButtonTemplate")
 
 					if buttonsCount == 1 then
-						button:SetPoint("TOPLEFT", 12, -20)
+						button:SetPoint("TOPLEFT", 15, -15)
 					elseif mod(buttonsCount - 1, 4) == 0 then
-						button:SetPoint("TOP", RealmList.buttonsList[buttonsCount - 4], "BOTTOM", 0, 0)
+						button:SetPoint("TOP", RealmList.buttonsList[buttonsCount - 4], "BOTTOM", 0, -5)
 					else
-						button:SetPoint("LEFT", RealmList.buttonsList[buttonsCount - 1], "RIGHT", -14, 0)
+						button:SetPoint("LEFT", RealmList.buttonsList[buttonsCount - 1], "RIGHT", 10, 0)
 					end
 
 					RealmList.buttonsList[buttonsCount] = button
@@ -268,7 +238,6 @@ function RealmList_Update()
 				button:SetEnabled(not realmDown)
 				button:SetText(name)
 				button:Show()
-				buttonsCount = buttonsCount + 1
 			end
 
 			if RealmList.NoRealmText:IsShown() then
@@ -473,100 +442,160 @@ function RealmList_Update()
 	end
 end
 
-function RealmList_OnKeyDown( self, key, ... )
-	if ( key == "ESCAPE" ) then
-		RealmListCancel_OnClick()
-	elseif ( key == "PRINTSCREEN" ) then
-		Screenshot()
+function RealmListRealmSelect_OnClick( self, ... )
+	if self.realmID then
+		PlaySound(SOUNDKIT.GS_LOGIN_CHANGE_REALM_OK)
+		RealmList:Hide()
+		ChangeRealm(self.realmZone , self.realmID)
 	end
 end
 
-local function realmCardDisabled( frame, toggle )
-	frame.BackgroundFrame.Background:SetDesaturated(toggle)
-	frame.BorderFrame.Border:SetDesaturated(toggle)
-	frame.LogoFrame.Logo:SetDesaturated(toggle)
+function RealmListCancel_OnClick( self, ... )
+	PlaySound(SOUNDKIT.GS_LOGIN_CHANGE_REALM_CANCEL)
+	RealmList:Hide()
+	RealmListDialogCancelled()
+end
 
-	if frame.LabelFrame then
-		frame.LabelFrame.Background:SetDesaturated(toggle)
+local REALM_CARDS = {
+	Sirus = {
+		name = "SIRUS",
+		desc = REALM_SIRUS_DESCRIPTION,
+		rate = 5,
+		pvp = "Всегда включен",
+		logo = "ServerGameLogo-11",
+	--	label = "НОВЫЙ ИГРОВОЙ МИР",
+		overlay = true,
+		models = {
+			{
+				file = [[World\Expansion02\doodads\ulduar\ul_banister01.m2]],
+				scale = 0.037,
+				position = {0.076, 0.209, 0},
+			},
+			{
+				file = [[spells\s_realm_card_fx.m2]],
+				scale = 0.003,
+				position = {0.072, 0.209, 0},
+				alpha = 0.7,
+			},
+		},
+	},
+	Algalon = {
+		name = "ALGALON",
+		desc = REALM_ALGALON_DESCRIPTION,
+		rate = 4,
+		pvp = "Всегда включен",
+		logo = "ServerGameLogo-13",
+		models = {
+			{
+				file = [[World\Expansion02\doodads\ulduar\ul_brain_01.m2]],
+				scale = 0.008,
+				position = {0.082, 0.206, 0},
+				alpha = 0.4,
+			},
+		},
+	},
+	Scourge = {
+		name = "SCOURGE",
+		desc = REALM_SCOURGE_DESCRIPTION,
+		rate = 2,
+		pvp = "Режим войны",
+		logo = "ServerGameLogo-12",
+		models = {
+			{
+				file = [[World\Expansion02\doodads\generic\scourge\sc_castingcircle_01.m2]],
+				scale = 0.021,
+				position = {0.079, 0.209, 0},
+				alpha = 0.1,
+			},
+			{
+				file = [[World\Expansion02\doodads\generic\scourge\sc_spirits_01.m2]],
+				scale = 0.011,
+				position = {0.072, 0.202, 0},
+				alpha = 0.2,
+			},
+		},
+	},
+}
+
+local baseHeight = 768
+local baseWidth = 1920 / 1080 * baseHeight
+local baseCamera = math.sqrt(baseWidth * baseWidth + baseHeight * baseHeight)
+
+local function GetScaledModelPosition(model, x, y, z)
+	local effectiveScale = model:GetEffectiveScale()
+	local width = GetScreenWidth() * effectiveScale
+	local height = GetScreenHeight() * effectiveScale
+	local scaledCamera = math.sqrt(width * width + height * height)
+	local mult = (baseCamera / scaledCamera)
+
+	return x * mult, y * mult, z * mult
+end
+
+RealmListCardTemplateMixin = {}
+
+function RealmListCardTemplateMixin:OnLoad()
+	local cardName = self:GetAttribute("card")
+	local card = REALM_CARDS[cardName]
+	if not (cardName and card) then
+		error(string.format("Card with '%s' name not found", tostring(cardName)), 2)
 	end
 
-	if frame.OverlayFrame then
-		frame.OverlayFrame.Overlay:SetDesaturated(toggle)
+	local frameLevel = self:GetFrameLevel()
+	self.BackgroundFrame:SetFrameLevel(frameLevel)
+	self.ContentFrame:SetFrameLevel(frameLevel + #card.models + 1)
+	self.OverlayFrame:SetFrameLevel(frameLevel + #card.models + 2)
+	self.LogoFrame:SetFrameLevel(frameLevel + #card.models + 3)
+	self.EnterButton:SetFrameLevel(frameLevel + #card.models + 4)
+	self.BorderFrame:SetFrameLevel(frameLevel + #card.models + 5)
+	self.ProxyFrame:SetFrameLevel(frameLevel)
+
+	self.BackgroundFrame.Background:SetAtlas(("RealmList-Card-%s-Background"):format(cardName))
+	self.BorderFrame.Border:SetAtlas(("RealmList-Card-%s-Border"):format(cardName))
+	self.LogoFrame.Logo:SetAtlas(card.logo)
+
+	self.EnterButton.NormalTexture:SetAtlas(("RealmList-Card-%s-Button-Static"):format(cardName))
+	self.EnterButton.PushedTexture:SetAtlas(("RealmList-Card-%s-Button-Press"):format(cardName))
+	self.EnterButton.HighlightTexture:SetAtlas(("RealmList-Card-%s-Button-Static"):format(cardName))
+
+	self.ContentFrame.RealmName:SetFormattedText("%s x%i", card.name, card.rate)
+	self.ContentFrame.RealmDescription:SetText(card.desc)
+	self.ContentFrame.RealmRate:SetFormattedText("x%i", card.rate)
+	self.ContentFrame.RealmPVPStatus:SetText(card.pvp)
+
+	if card.overlay then
+		self.OverlayFrame.Overlay:SetAtlas(("RealmList-Card-%s-Overlay"):format(cardName))
+		self.OverlayFrame:Show()
 	end
 
-	frame.EnterButton:SetEnabled(not toggle)
-end
-
-RealmListCardSirusTemplateMixin = {}
-
-function RealmListCardSirusTemplateMixin:OnLoad()
-	self.BackgroundFrame.Background:SetAtlas("RealmList-Card-Sirus-Background")
-	self.BorderFrame.Border:SetAtlas("RealmList-Card-Sirus-Border")
-
-	self.LogoFrame.Logo:SetAtlas("ServerGameLogo-11")
-	self.LabelFrame.Background:SetAtlas("RealmList-Card-Sirus-Driver")
-	self.OverlayFrame.Overlay:SetAtlas("RealmList-Card-Sirus-Overlay")
-end
-
-function RealmListCardSirusTemplateMixin:SetDisabledRealm( toggle )
-	realmCardDisabled(self, toggle)
-end
-
-RealmListCardScourgeTemplateMixin = {}
-
-function RealmListCardScourgeTemplateMixin:OnLoad()
-	self.BackgroundFrame.Background:SetAtlas("RealmList-Card-Scourge-Background")
-	self.BorderFrame.Border:SetAtlas("RealmList-Card-Scourge-Border")
-	self.LogoFrame.Logo:SetAtlas("ServerGameLogo-12")
-end
-
-function RealmListCardScourgeTemplateMixin:SetDisabledRealm( toggle )
-	realmCardDisabled(self, toggle)
-end
-
-RealmListCardAlgalonTemplateMixin = {}
-
-function RealmListCardAlgalonTemplateMixin:OnLoad()
-	self.BackgroundFrame.Background:SetAtlas("RealmList-Card-Algalon-Background")
-	self.BorderFrame.Border:SetAtlas("RealmList-Card-Algalon-Border")
-	self.LogoFrame.Logo:SetAtlas("ServerGameLogo-13")
-end
-
-function RealmListCardAlgalonTemplateMixin:SetDisabledRealm( toggle )
-	realmCardDisabled(self, toggle)
-end
-
-DEVRealmDesignFrameMixin = {}
-
-function DEVRealmDesignFrameMixin:OnLoad()
-	self.settings = {};
-
-	self:RegisterForDrag("LeftButton")
-
-	C_Timer:After(0.5, function() self:Init() end)
-end
-
-function DEVRealmDesignFrameMixin:Init()
-	self.target = RealmList.AlgalonRealmCard.BackgroundFrame.BackgroundModel
-
-	local x, y, z = self.target:GetPosition()
-	local scale = self.target:GetModelScale()
-
-	self.Slider1:SetValue(x or 0)
-	self.Slider2:SetValue(y or 0)
-	self.Slider3:SetValue(z or 0)
-	self.Slider4:SetValue(scale or 0)
-end
-
-function DEVRealmDesignFrameMixin:UpdateValue()
-	if not self.target then
-		return
+	if card.label then
+		self.LabelFrame.Background:SetAtlas(("RealmList-Card-%s-Driver"):format(cardName))
+		self.LabelFrame.Text:SetText(card.label)
+		self.LabelFrame:Show()
 	end
 
-	printc(self.settings["xCoord"], self.settings["yCoord"], self.settings["zCoord"])
-	printc(self.settings["scale"])
+	self.models = {}
 
-	self.target:SetPosition(self.settings["xCoord"], self.settings["yCoord"], self.settings["zCoord"])
-	self.target:SetModelScale(self.settings["scale"] or 0)
+	for i, modelData in ipairs(card.models) do
+		local model = CreateFrame("Model", ("$parentBackgroundModel%i"):format(i), self.BackgroundFrame)
+		model:SetPoint("TOPLEFT", 2, -2)
+		model:SetPoint("BOTTOMRIGHT", 2, -2)
+		model:SetFrameLevel(self.BackgroundFrame:GetFrameLevel() + i)
+
+		model:SetModel(modelData.file)
+		model:SetPosition(GetScaledModelPosition(model, unpack(modelData.position)))
+		model:SetModelScale(modelData.scale or 1)
+		model:SetAlpha(modelData.alpha or 1)
+
+		self.models[i] = model
+	end
 end
 
+function RealmListCardTemplateMixin:SetDisabledRealm(toggle)
+	self.BackgroundFrame.Background:SetDesaturated(toggle)
+	self.BorderFrame.Border:SetDesaturated(toggle)
+	self.LogoFrame.Logo:SetDesaturated(toggle)
+	self.LabelFrame.Background:SetDesaturated(toggle)
+	self.OverlayFrame.Overlay:SetDesaturated(toggle)
+
+	self.EnterButton:SetEnabled(not toggle)
+end

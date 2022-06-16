@@ -43,21 +43,17 @@
 			<OnLoad>
 				VideoOptionsResolutionPanel_OnLoad(self);
 			</OnLoad>
-		</Scripts>	
+		</Scripts>
 		<Frames>
-			<Frame name="$parentResolutionDropDown" inherits="GlueDropDownMenuTemplate" enableMouse="true">
+			<Frame name="$parentResolutionDropDown" inherits="GlueDark_DropDownMenuTemplate" enableMouse="true">
 				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="0" y="-92"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" x="16" y="-92"/>
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
 						<FontString name="$parentLabel" inherits="OptionsFontSmall" text="RESOLUTION">
 							<Anchors>
-								<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
-									<Offset x="21" y="0"/>
-								</Anchor>
+								<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="5" y="0"/>
 							</Anchors>
 						</FontString>
 					</Layer>
@@ -65,7 +61,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_DROPDOWN;
-						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());					
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
 						VideoOptionsResolutionPanelResolutionDropDown_OnLoad(self);
 					</OnLoad>
 					<OnEnter>
@@ -77,19 +73,15 @@
 					</OnLeave>
 				</Scripts>
 			</Frame>
-			<Frame name="$parentRefreshDropDown" inherits="GlueDropDownMenuTemplate" id="2">
+			<Frame name="$parentRefreshDropDown" inherits="GlueDark_DropDownMenuTemplate" id="2">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentResolutionDropDown" relativePoint="BOTTOMLEFT">
-						<Offset x="0" y="-16"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentResolutionDropDown" relativePoint="BOTTOMLEFT" x="0" y="-16"/>
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
 						<FontString name="$parentLabel" inherits="OptionsFontSmall" text="REFRESH_RATE">
 							<Anchors>
-								<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
-									<Offset x="21" y="0"/>
-								</Anchor>
+								<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="5" y="0"/>
 							</Anchors>
 						</FontString>
 					</Layer>
@@ -97,7 +89,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_DROPDOWN;
-						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());						
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
 						VideoOptionsResolutionPanelRefreshDropDown_OnLoad(self);
 					</OnLoad>
 					<OnEnter>
@@ -109,19 +101,15 @@
 					</OnLeave>
 				</Scripts>
 			</Frame>
-			<Frame name="$parentMultiSampleDropDown" inherits="GlueDropDownMenuTemplate" id="4">
+			<Frame name="$parentMultiSampleDropDown" inherits="GlueDark_DropDownMenuTemplate" id="4">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentResolutionDropDown" relativePoint="RIGHT">
-						<Offset x="0" y="0"/>
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentResolutionDropDown" relativePoint="RIGHT" x="16" y="0"/>
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
 						<FontString name="$parentLabel" inherits="OptionsFontSmall" text="MULTISAMPLE">
 							<Anchors>
-								<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
-									<Offset x="21" y="0"/>
-								</Anchor>
+								<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="5" y="0"/>
 							</Anchors>
 						</FontString>
 					</Layer>
@@ -129,7 +117,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_DROPDOWN;
-						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());	
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
 						VideoOptionsResolutionPanelMultiSampleDropDown_OnLoad(self);
 					</OnLoad>
 					<OnEnter>
@@ -143,9 +131,7 @@
 			</Frame>
 			<CheckButton name="$parentVSync" inherits="OptionsSmallCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentRefreshDropDown" relativePoint="BOTTOMLEFT">
-						<Offset x="16" y="-8"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentRefreshDropDown" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -155,14 +141,10 @@
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
 					</OnLoad>
 				</Scripts>
-			</CheckButton>				
+			</CheckButton>
 			<CheckButton name="$parentTripleBuffer" inherits="OptionsSmallCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentVSync" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="16" y="-4"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentVSync" relativePoint="BOTTOMLEFT" x="16" y="-4"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -176,11 +158,7 @@
 			</CheckButton>
 			<CheckButton name="$parentHardwareCursor" inherits="OptionsSmallCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentTripleBuffer" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="-16" y="-4"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentTripleBuffer" relativePoint="BOTTOMLEFT" x="-16" y="-4"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -193,11 +171,7 @@
 			</CheckButton>
 			<CheckButton name="$parentFixInputLag" inherits="OptionsSmallCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentHardwareCursor" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="-4"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentHardwareCursor" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -210,9 +184,7 @@
 			</CheckButton>
 			<CheckButton name="$parentWindowed" inherits="OptionsSmallCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentVSync" relativePoint="RIGHT">
-						<Offset x="164" y="0"/>
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentVSync" relativePoint="RIGHT" x="164" y="0"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -223,12 +195,10 @@
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
 					</OnLoad>
 				</Scripts>
-			</CheckButton>	
+			</CheckButton>
 			<CheckButton name="$parentMaximized" inherits="OptionsSmallCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentWindowed" relativePoint="BOTTOMLEFT">
-						<Offset x="16" y="-4"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentWindowed" relativePoint="BOTTOMLEFT" x="16" y="-4"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -239,12 +209,10 @@
 						BlizzardOptionsPanel_SetupDependentControl(VideoOptionsResolutionPanelWindowed, self);
 					</OnLoad>
 				</Scripts>
-			</CheckButton>			
+			</CheckButton>
 			<CheckButton name="$parentDisableResize" inherits="OptionsSmallCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentMaximized" relativePoint="BOTTOMLEFT">
-						<Offset x="0" y="-4"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentMaximized" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -257,39 +225,31 @@
 						end
 					</OnLoad>
 				</Scripts>
-			</CheckButton>		
+			</CheckButton>
 			<Frame name="$parentBrightness" inherits="OptionsBoxTemplate">
 				<Size x="380" y="96"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentFixInputLag" relativePoint="BOTTOMLEFT">
-						<Offset x="0" y="-20"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentFixInputLag" relativePoint="BOTTOMLEFT" x="0" y="-20"/>
 				</Anchors>
 				<Layers>
 					<Layer level="ARTWORK">
 						<Texture name="$parentGrayScale" file="Interface\OptionsFrame\21stepgrayscale">
 							<Size x="356" y="32"/>
 							<Anchors>
-								<Anchor point="BOTTOMLEFT">
-									<Offset x="12" y="12"/>
-								</Anchor>
+								<Anchor point="BOTTOMLEFT" x="12" y="12"/>
 							</Anchors>
 						</Texture>
 					</Layer>
 				</Layers>
 				<Scripts>
 					<OnLoad>
-						self:SetBackdropBorderColor(0.4, 0.4, 0.4);
-						self:SetBackdropColor(0.15, 0.15, 0.15);
 						_G[self:GetName().."Title"]:SetText(OPTIONS_BRIGHTNESS);
 					</OnLoad>
 				</Scripts>
-			</Frame>			
+			</Frame>
 			<CheckButton name="$parentDesktopGamma" inherits="OptionsSmallCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentBrightness" relativePoint="TOPLEFT">
-						<Offset x="12" y="-8"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentBrightness" relativePoint="TOPLEFT" x="12" y="-8"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -312,15 +272,11 @@
 						end
 					</OnClick>
 				</Scripts>
-			</CheckButton>		
+			</CheckButton>
 			<Slider name="$parentGammaSlider" inherits="OptionsSliderTemplate">
 				<Size x="154" y="17"/>
 				<Anchors>
-					<Anchor point="TOPRIGHT" relativeTo="$parentBrightness" relativePoint="TOPRIGHT">
-						<Offset>
-							<AbsDimension x="-16" y="-16"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPRIGHT" relativeTo="$parentBrightness" relativePoint="TOPRIGHT" x="-16" y="-16"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -342,9 +298,9 @@
 						end
 					</OnValueChanged>
 				</Scripts>
-			</Slider>	
+			</Slider>
 		</Frames>
-	</Frame>	
+	</Frame>
 
 	<!-- Effects Panel -->
 
@@ -353,28 +309,14 @@
 			<Layer level="ARTWORK">
 				<FontString name="$parentTitle" text="EFFECTS_LABEL" inherits="OptionsFontLarge" justifyH="LEFT" justifyV="TOP">
 					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="16" y="-16"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" x="16" y="-16"/>
 					</Anchors>
 				</FontString>
 				<FontString name="$parentSubText" text="EFFECTS_SUBTEXT" inherits="OptionsFontHighlightSmall" nonspacewrap="true" maxLines="3" justifyH="LEFT" justifyV="TOP">
-					<Size>
-						<AbsDimension y="32" x="0"/>
-					</Size>
+					<Size y="32" x="0"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-8"/>
-							</Offset>
-						</Anchor>
-						<Anchor point="RIGHT">
-							<Offset>
-								<AbsDimension x="-32" y="0"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+						<Anchor point="RIGHT" x="-32" y="0"/>
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -383,63 +325,45 @@
 			<OnLoad>
 				VideoOptionsEffectsPanel_OnLoad(self);
 			</OnLoad>
-		</Scripts>	
+		</Scripts>
 		<Frames>
 			<Frame name="$parentQuality" inherits="OptionsBoxTemplate">
 				<Size x="380" y="88"/>
 				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="16" y="-72"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" x="16" y="-72"/>
 				</Anchors>
 				<Layers>
 					<Layer level="ARTWORK">
 						<FontString name="$parentLabel" inherits="OptionsFontLeft" text="LOW">
 							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset x="16" y="-8"/>
-								</Anchor>
-								<Anchor point="RIGHT">
-									<Offset x="-16" y="0"/>
-								</Anchor>
+								<Anchor point="TOPLEFT" x="16" y="-8"/>
+								<Anchor point="RIGHT" x="-16" y="0"/>
 							</Anchors>
 						</FontString>
 						<FontString name="$parentSubText" inherits="OptionsFontHighlightSmallLeftTop" text="This is a description of what happens when you set the quality slider to its Low setting.">
 							<Size x="350" y="42"/>
 							<Anchors>
-								<Anchor point="TOPLEFT" relativeTo="$parentLabel" relativePoint="BOTTOMLEFT">
-									<Offset x="0" y="-2"/>
-								</Anchor>
+								<Anchor point="TOPLEFT" relativeTo="$parentLabel" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
 							</Anchors>
 						</FontString>
 					</Layer>
 				</Layers>
 				<Scripts>
 					<OnLoad>
-						self:SetBackdropBorderColor(0.4, 0.4, 0.4);
-						self:SetBackdropColor(0.15, 0.15, 0.15);
 						_G[self:GetName().."Title"]:Hide();
 					</OnLoad>
 				</Scripts>
-			</Frame>		
+			</Frame>
 			<Slider name="$parentQualitySlider" inherits="OptionsSliderTemplate">
 				<Size x="348" y="17"/>
 				<Anchors>
-					<Anchor point="BOTTOMLEFT" relativeTo="$parentQuality" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="16" y="16"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentQuality" relativePoint="BOTTOMLEFT" x="16" y="16"/>
 				</Anchors>
 				<Layers>
 					<Layer level="ARTWORK">
 						<FontString name="$parentCustom" inherits="OptionsFontHighlightSmall" text="CUSTOM">
 							<Anchors>
-								<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT">
-									<Offset>
-										<AbsDimension x="4" y="3"/>
-									</Offset>
-								</Anchor>
+								<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="4" y="3"/>
 							</Anchors>
 						</FontString>
 					</Layer>
@@ -462,13 +386,11 @@
 						end
 					</OnValueChanged>
 				</Scripts>
-			</Slider>	
+			</Slider>
 			<Slider name="$parentViewDistance" inherits="OptionsSliderTemplate">
 				<Size x="112" y="17"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentQuality" relativePoint="BOTTOMLEFT">
-						<Offset x="2" y="-20"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentQuality" relativePoint="BOTTOMLEFT" x="2" y="-20"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -489,13 +411,11 @@
 						end
 					</OnValueChanged>
 				</Scripts>
-			</Slider>		
+			</Slider>
 			<Slider name="$parentTerrainDetail" inherits="OptionsSliderTemplate">
 				<Size x="112" y="17"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentViewDistance" relativePoint="BOTTOMLEFT">
-						<Offset x="0" y="-24"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentViewDistance" relativePoint="BOTTOMLEFT" x="0" y="-24"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -517,13 +437,11 @@
 						end
 					</OnValueChanged>
 				</Scripts>
-			</Slider>			
+			</Slider>
 			<Slider name="$parentParticleDensity" inherits="OptionsSliderTemplate">
 				<Size x="112" y="17"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentTerrainDetail" relativePoint="BOTTOMLEFT">
-						<Offset x="0" y="-24"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentTerrainDetail" relativePoint="BOTTOMLEFT" x="0" y="-24"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -545,13 +463,11 @@
 						end
 					</OnValueChanged>
 				</Scripts>
-			</Slider>		
+			</Slider>
 			<Slider name="$parentShadowQuality" inherits="OptionsSliderTemplate">
 				<Size x="112" y="17"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentParticleDensity" relativePoint="BOTTOMLEFT">
-						<Offset x="0" y="-24"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentParticleDensity" relativePoint="BOTTOMLEFT" x="0" y="-24"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -573,13 +489,11 @@
 						end
 					</OnValueChanged>
 				</Scripts>
-			</Slider>			
+			</Slider>
 			<Slider name="$parentEnvironmentDetail" inherits="OptionsSliderTemplate">
 				<Size x="112" y="17"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentViewDistance" relativePoint="TOPRIGHT">
-						<Offset x="20" y="0"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentViewDistance" relativePoint="TOPRIGHT" x="20" y="0"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -600,13 +514,11 @@
 						end
 					</OnValueChanged>
 				</Scripts>
-			</Slider>		
+			</Slider>
 			<Slider name="$parentClutterDensity" inherits="OptionsSliderTemplate">
 				<Size x="112" y="17"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentEnvironmentDetail" relativePoint="BOTTOMLEFT">
-						<Offset x="0" y="-24"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentEnvironmentDetail" relativePoint="BOTTOMLEFT" x="0" y="-24"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -627,13 +539,11 @@
 						end
 					</OnValueChanged>
 				</Scripts>
-			</Slider>		
+			</Slider>
 			<Slider name="$parentClutterRadius" inherits="OptionsSliderTemplate">
 				<Size x="112" y="17"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentClutterDensity" relativePoint="BOTTOMLEFT">
-						<Offset x="0" y="-24"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentClutterDensity" relativePoint="BOTTOMLEFT" x="0" y="-24"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -654,13 +564,11 @@
 						end
 					</OnValueChanged>
 				</Scripts>
-			</Slider>					
+			</Slider>
 			<Slider name="$parentTextureResolution" inherits="OptionsSliderTemplate">
 				<Size x="112" y="17"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentEnvironmentDetail" relativePoint="TOPRIGHT">
-						<Offset x="20" y="0"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentEnvironmentDetail" relativePoint="TOPRIGHT" x="20" y="0"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -687,13 +595,11 @@
 						end
 					</OnValueChanged>
 				</Scripts>
-			</Slider>	
+			</Slider>
 			<Slider name="$parentTextureFiltering" inherits="OptionsSliderTemplate">
 				<Size x="112" y="17"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentTextureResolution" relativePoint="BOTTOMLEFT">
-						<Offset x="0" y="-24"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentTextureResolution" relativePoint="BOTTOMLEFT" x="0" y="-24"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -714,13 +620,11 @@
 						end
 					</OnValueChanged>
 				</Scripts>
-			</Slider>				
+			</Slider>
 			<Slider name="$parentWeatherIntensity" inherits="OptionsSliderTemplate">
 				<Size x="112" y="17"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentTextureFiltering" relativePoint="BOTTOMLEFT">
-						<Offset x="0" y="-24"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentTextureFiltering" relativePoint="BOTTOMLEFT" x="0" y="-24"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -741,13 +645,11 @@
 						end
 					</OnValueChanged>
 				</Scripts>
-			</Slider>	
+			</Slider>
 			<Slider name="$parentPlayerTexture" inherits="OptionsSliderTemplate">
 				<Size x="112" y="17"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentWeatherIntensity" relativePoint="BOTTOMLEFT">
-						<Offset x="0" y="-24"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentWeatherIntensity" relativePoint="BOTTOMLEFT" x="0" y="-24"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -768,27 +670,21 @@
 						end
 					</OnValueChanged>
 				</Scripts>
-			</Slider>	
+			</Slider>
 			<Frame name="$parentShaders" inherits="OptionsBoxTemplate">
 				<Size x="380" y="76"/>
 				<Anchors>
-					<Anchor point="BOTTOMLEFT">
-						<Offset x="16" y="8"/>
-					</Anchor>
+					<Anchor point="BOTTOMLEFT" x="16" y="8"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						self:SetBackdropBorderColor(0.4, 0.4, 0.4);
-						self:SetBackdropColor(0.15, 0.15, 0.15);
 						_G[self:GetName().."Title"]:SetText("");
 					</OnLoad>
 				</Scripts>
-			</Frame>	
+			</Frame>
 			<CheckButton name="$parentSpecularLighting" inherits="OptionsSmallCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentShaders" relativePoint="TOPLEFT">
-						<Offset x="12" y="-8"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentShaders" relativePoint="TOPLEFT" x="12" y="-8"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -799,12 +695,10 @@
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
 					</OnLoad>
 				</Scripts>
-			</CheckButton>	
+			</CheckButton>
 			<CheckButton name="$parentFullScreenGlow" inherits="OptionsSmallCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentSpecularLighting" relativePoint="BOTTOMLEFT">
-						<Offset x="0" y="-8"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentSpecularLighting" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -814,12 +708,10 @@
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
 					</OnLoad>
 				</Scripts>
-			</CheckButton>		
+			</CheckButton>
 			<CheckButton name="$parentDeathEffect" inherits="OptionsSmallCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentShaders">
-						<Offset x="180" y="-8"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentShaders" x="180" y="-8"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -837,28 +729,14 @@
 			<Layer level="ARTWORK">
 				<FontString name="$parentTitle" text="STEREO_VIDEO_LABEL" inherits="OptionsFontLeft" justifyH="LEFT" justifyV="TOP">
 					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="16" y="-16"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" x="16" y="-16"/>
 					</Anchors>
 				</FontString>
 				<FontString name="$parentSubText" text="STEREO_VIDEO_SUBTEXT" inherits="OptionsFontHighlightSmall" nonspacewrap="true" maxLines="3" justifyH="LEFT" justifyV="TOP">
-					<Size>
-						<AbsDimension y="32" x="0"/>
-					</Size>
+					<Size y="32" x="0"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-8"/>
-							</Offset>
-						</Anchor>
-						<Anchor point="RIGHT">
-							<Offset>
-								<AbsDimension x="-32" y="0"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+						<Anchor point="RIGHT" x="-32" y="0"/>
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -867,13 +745,11 @@
 			<OnLoad>
 				VideoOptionsStereoPanel_OnLoad(self);
 			</OnLoad>
-		</Scripts>	
-		<Frames>		
+		</Scripts>
+		<Frames>
 			<CheckButton name="$parentEnabled" inherits="OptionsSmallCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOP">
-						<Offset x="-125" y="-92"/>
-					</Anchor>
+					<Anchor point="TOP" x="-125" y="-92"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -886,11 +762,7 @@
 			</CheckButton>
 			<CheckButton name="$parentHardwareCursor" inherits="OptionsSmallCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentEnabled" relativePoint="RIGHT">
-						<Offset>
-							<AbsDimension x="135" y="0"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentEnabled" relativePoint="RIGHT" x="135" y="0"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -904,9 +776,7 @@
 			<Slider name="$parentConvergence" inherits="OptionsSliderTemplate">
 				<Size x="270" y="17"/>
 				<Anchors>
-					<Anchor point="TOP" relativePoint="TOP">
-						<Offset x="0" y="-150"/>
-					</Anchor>
+					<Anchor point="TOP" relativePoint="TOP" x="0" y="-150"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -931,9 +801,7 @@
 			<Slider name="$parentEyeSeparation" inherits="OptionsSliderTemplate">
 				<Size x="270" y="17"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentConvergence" relativePoint="BOTTOMLEFT">
-						<Offset x="0" y="-70"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentConvergence" relativePoint="BOTTOMLEFT" x="0" y="-70"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -954,8 +822,7 @@
 						BlizzardOptionsPanel_SetCVarSafe(self.cvar, self:GetValue())
 					</OnValueChanged>
 				</Scripts>
-			</Slider>		
+			</Slider>
 		</Frames>
 	</Frame>
 </Ui>
-

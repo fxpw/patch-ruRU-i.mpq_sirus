@@ -17,10 +17,11 @@ function DeclensionFrame_OnEvent(self, event, ...)
 
 		local errors = ...;
 		if ( errors ) then
+			PlaySound(SOUNDKIT.GS_TITLE_OPTIONS)
 			if errors == "CHAR_NAME_RESERVED" then
-				GlueDialog_Show("DECLINE_FAILED", DECLENSION_NAME_RESERVED);
+				GlueDialog:ShowDialog("DECLINE_FAILED", DECLENSION_NAME_RESERVED);
 			else
-				GlueDialog_Show("DECLINE_FAILED", _G[errors]);
+				GlueDialog:ShowDialog("DECLINE_FAILED", _G[errors]);
 			end
 		else
 			self:Show();
@@ -49,7 +50,7 @@ function DeclensionFrame_Update()
 	-- Hide the paging tool if there is only one set
 	if ( count > 1 ) then
 		DeclensionFrameSetPage:SetText(format(DECLENSION_SET, set, count));
-		DeclensionFrame:SetHeight(330);
+		DeclensionFrame:SetHeight(480);
 		DeclensionFrameSet:Show();
 		if ( set == 1 and set < count ) then
 			DeclensionFrameSetNext:Enable();
@@ -62,7 +63,7 @@ function DeclensionFrame_Update()
 			DeclensionFrameSetPrev:Enable();
 		end
 	else
-		DeclensionFrame:SetHeight(310);
+		DeclensionFrame:SetHeight(460);
 		DeclensionFrameSet:Hide();
 	end
 
@@ -75,14 +76,14 @@ function DeclensionFrame_Update()
 	end
 
 	for i=1, RUSSIAN_DECLENSION_PATTERNS do
-		declensionButton = getglobal("DeclensionFrameDeclension"..i.."Type");
-		exampleButton = getglobal("DeclensionFrameDeclension"..i.."Example");
-		declensionBox = getglobal("DeclensionFrameDeclension"..i.."Edit");
+		declensionButton = _G["DeclensionFrameDeclension"..i.."Type"];
+		exampleButton = _G["DeclensionFrameDeclension"..i.."Example"];
+		declensionBox = _G["DeclensionFrameDeclension"..i.."Edit"];
 		-- declensionBox:SetBackdropBorderColor(backdropColor[1], backdropColor[2], backdropColor[3]);
 		-- declensionBox:SetBackdropColor(backdropColor[4], backdropColor[5], backdropColor[6]);
 		declensionBox:SetText(names[i]);
-		declensionButton:SetText(getglobal("RUSSIAN_DECLENSION_"..i));
-		exampleButton:SetText(format(getglobal("RUSSIAN_DECLENSION_EXAMPLE_"..i), names[i]));
+		declensionButton:SetFormattedText("%s:", _G["RUSSIAN_DECLENSION_"..i]);
+		exampleButton:SetFormattedText("прим. %s", string.format(_G["RUSSIAN_DECLENSION_EXAMPLE_"..i], string.format("|cffffc100%s|r", names[i])));
 	end
 end
 
@@ -90,7 +91,7 @@ function DeclensionFrame_OnOkay()
 	local valid;
 	local names = {};
 	for i=1, RUSSIAN_DECLENSION_PATTERNS do
-		names[i] = getglobal("DeclensionFrameDeclension"..i.."Edit"):GetText();
+		names[i] = _G["DeclensionFrameDeclension"..i.."Edit"]:GetText();
 		if ( names[i] ) then
 			valid = 1;
 		else

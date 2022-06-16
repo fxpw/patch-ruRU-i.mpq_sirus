@@ -1052,6 +1052,18 @@
 			<AbsValue val="20"/>
 		</FontHeight>
 	</Font>
+	<Font name="GameFontNormalHugeOutline4" inherits="SystemFont_Shadow_Outline_Huge" virtual="true">
+		<Color r="1.0" g="0.82" b="0"/>
+		<Shadow>
+			<Offset>
+				<AbsDimension x="0" y="0"/>
+			</Offset>
+			<Color r="1" g="1" b="1"/>
+		</Shadow>
+		<FontHeight>
+			<AbsValue val="20"/>
+		</FontHeight>
+	</Font>
 	<Font name="SystemFont_Shadow_Med1C" font="Fonts\FRIZQT__.TTF" virtual="true">
 		<Color r="0" g="0" b="0"/>
 		<FontHeight>
@@ -1927,5 +1939,22 @@
 	<Font name="ShadowlandsButtonFont" font="Interface\CustomFonts\futurademic.ttf" virtual="true">
 		<FontHeight val="17"/>
 		<Color r="0" g="0" b="0"/>
+	</Font>
+
+
+	<Font name="GameFontNormal14Gray" inherits="GameFontNormal14" virtual="true" >
+		<Color r="0.8" g="0.8" b="0.8"/>
+	</Font>
+	<Font name="GameFontNormal18Gray" inherits="GameFontNormal18" virtual="true" >
+		<Color r="0.8" g="0.8" b="0.8"/>
+	</Font>
+	<Font name="GameFontNormal14Disable" inherits="GameFontNormal14" virtual="true" >
+		<Color r="0.5" g="0.5" b="0.5"/>
+	</Font>
+	<Font name="GameFontNormal14White" inherits="GameFontNormal14" virtual="true" >
+		<Color r="1" g="1" b="1"/>
+	</Font>
+	<Font name="GameFontNormal18White" inherits="GameFontNormal18" virtual="true" >
+		<Color r="1" g="1" b="1"/>
 	</Font>
 </Ui>

@@ -4,7 +4,7 @@
 --	Web:		https://sirus.su/
 
 function FireCustomClientEvent(eventID, ...)
-	local eventName = E_CLIEN_CUSTOM_EVENTS[eventID];
+	local eventName = type(eventID) == "number" and E_CLIEN_CUSTOM_EVENTS[eventID] or eventID;
 
 	if eventName and REGISTERED_CUSTOM_EVENTS[eventName] then
 		for frame in pairs(REGISTERED_CUSTOM_EVENTS[eventName]) do
