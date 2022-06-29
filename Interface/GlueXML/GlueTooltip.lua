@@ -8,7 +8,7 @@ function GlueTooltip_OnLoad(self)
 	self.SetText = function(self, text, tooltip, r, g, b, a, wrap) GlueTooltip_SetText(text, tooltip, r, g, b, a, wrap) end
 	self.SetOwner = function(_self, self, tooltip, xOffset, yOffset, myPoint, ownerPoint) GlueTooltip_SetOwner(self, tooltip, xOffset, yOffset, myPoint, ownerPoint) end
 	self:SetBackdropBorderColor(1.0, 1.0, 1.0)
-	self:SetBackdropColor(0.09, 0.09, 0.19 )
+	self:SetBackdropColor(0, 0, 0)
 	self.defaultColor = NORMAL_FONT_COLOR
 end
 
@@ -37,13 +37,16 @@ function GlueTooltip_SetOwner(self, tooltip, xOffset, yOffset, myPoint, ownerPoi
 	yOffset = yOffset or 0
 	myPoint = myPoint or "BOTTOMLEFT"
 	ownerPoint = ownerPoint or "TOPRIGHT"
+
+	tooltip:Hide()
+	tooltip:ClearAllPoints()
 	tooltip:SetPoint(myPoint, self, ownerPoint, xOffset, yOffset)
-	tooltip:Show()
 end
 
 function GlueTooltip_SetText(text, _, r, g, b, a, wrap)
 	GlueTooltip:Clear()
 	GlueTooltip:AddLine(text, r, g, b, a, wrap)
+	GlueTooltip:Show()
 end
 
 function GlueTooltip_SetFont(self, font)
@@ -126,3 +129,38 @@ function GlueTooltip_AddLine(self, text, r, g, b, a, wrap, indentedWordWrap)
 	self:SetHeight(height)
 end
 
+CharacterCreateAbilityListMixin = {}
+
+function CharacterCreateAbilityListMixin:OnLoad()
+	self.buttonPool = CreateFramePool("FRAME", self, "CharacterCreateFrameAbilityTemplate");
+end
+
+function CharacterCreateAbilityListMixin:SetupAbilties(abilities)
+	self.buttonPool:ReleaseAll()
+
+	for index, abilityInfo in ipairs(abilities) do
+		local button = self.buttonPool:Acquire()
+		button:SetupAbilties(abilityInfo, index)
+		button:Show()
+	end
+
+	self:Layout()
+end
+
+CharacterCreateFrameAbilityMixin = {};
+
+function CharacterCreateFrameAbilityMixin:OnLoad()
+	self.IconOverlay:SetAtlas("dressingroom-itemborder-gray")
+end
+
+function CharacterCreateFrameAbilityMixin:SetupAbilties(abilityData, index)
+	self.abilityData = abilityData
+	self.layoutIndex = index + 1
+
+	if not self.Icon:SetTexture(abilityData.icon) then
+		self.Icon:SetTexture("Interface/Icons/INV_Misc_QuestionMark")
+	end
+	self.Text:SetText(abilityData.description)
+
+	self:Layout()
+end

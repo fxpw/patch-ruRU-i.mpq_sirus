@@ -1,0 +1,342 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<!-- if you change something here you probably want to change the frame version too -->
+
+	<Script file="OptionsFrameTemplates.lua"/>
+
+	<!-- OptionsTooltip -->
+	<!-- because glue screens don't have a GameTooltip -->
+
+	<Frame name="OptionsTooltip" frameStrata="TOOLTIP" hidden="true" clampedToScreen="true">
+		<Size x="268" y="0"/>
+		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<EdgeSize val="16"/>
+			<TileSize val="16"/>
+			<BackgroundInsets left="5" right="5" top="5" bottom="5"/>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText1" inherits="GlueFontNormal" justifyH="LEFT">
+					<Size x="250" y="0"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="10" y="-10"/>
+						<Anchor point="RIGHT" x="-8" y="0"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentText2" inherits="GlueFontNormalSmall" justifyH="LEFT">
+					<Size x="250" y="0"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentText1" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+						<Anchor point="RIGHT" x="-8" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				OptionsTooltip_OnLoad(self);
+			</OnLoad>
+			<OnShow>
+				OptionsTooltip_OnShow(self);
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<!-- Options Frame Templates -->
+
+	<Button name="OptionsFrameTabButtonTemplate" virtual="true">
+		<Size x="115" y="24"/>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentLeftDisabled" file="Interface\OptionsFrame\UI-OptionsFrame-ActiveTab">
+					<Size x="20" y="24"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="0" y="-3"/>
+					</Anchors>
+					<TexCoords left="0" right="0.15625" top="0" bottom="1.0"/>
+				</Texture>
+				<Texture name="$parentMiddleDisabled" file="Interface\OptionsFrame\UI-OptionsFrame-ActiveTab">
+					<Size x="88" y="24"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentLeftDisabled" relativePoint="RIGHT"/>
+					</Anchors>
+					<TexCoords left="0.15625" right="0.84375" top="0" bottom="1.0"/>
+				</Texture>
+				<Texture name="$parentRightDisabled" file="Interface\OptionsFrame\UI-OptionsFrame-ActiveTab">
+					<Size x="20" y="24"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentMiddleDisabled" relativePoint="RIGHT"/>
+					</Anchors>
+					<TexCoords left="0.84375" right="1.0" top="0" bottom="1.0"/>
+				</Texture>
+				<Texture name="$parentLeft" file="Interface\OptionsFrame\UI-OptionsFrame-InActiveTab">
+					<Size x="20" y="24"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+					<TexCoords left="0" right="0.15625" top="0" bottom="1.0"/>
+				</Texture>
+				<Texture name="$parentMiddle" file="Interface\OptionsFrame\UI-OptionsFrame-InActiveTab">
+					<Size x="88" y="24"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT"/>
+					</Anchors>
+					<TexCoords left="0.15625" right="0.84375" top="0" bottom="1.0"/>
+				</Texture>
+				<Texture name="$parentRight" file="Interface\OptionsFrame\UI-OptionsFrame-InActiveTab">
+					<Size x="20" y="24"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentMiddle" relativePoint="RIGHT"/>
+					</Anchors>
+					<TexCoords left="0.84375" right="1.0" top="0" bottom="1.0"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self:SetFrameLevel(self:GetFrameLevel() + 4);
+			</OnLoad>
+			<OnShow>
+				PanelTemplates_TabResize(self, 0);
+				_G[self:GetName().."HighlightTexture"]:SetWidth(self:GetTextWidth() + 30);
+			</OnShow>
+		</Scripts>
+		<ButtonText name="$parentText">
+			<Anchors>
+				<Anchor point="CENTER" x="0" y="-3"/>
+			</Anchors>
+		</ButtonText>
+		<NormalFont style="GlueFontNormalSmall"/>
+		<HighlightFont style="GlueFontHighlightSmall"/>
+		<DisabledFont style="GlueFontHighlightSmall"/>
+		<HighlightTexture name="$parentHighlightTexture" file="Interface\PaperDollInfoFrame\UI-Character-Tab-Highlight" alphaMode="ADD">
+			<Anchors>
+				<Anchor point="LEFT" x="10" y="-4"/>
+				<Anchor point="RIGHT" x="-10" y="-4"/>
+			</Anchors>
+		</HighlightTexture>
+	</Button>
+	<Frame name="OptionsFrameListTemplate" virtual="true">
+		<Attributes>
+			<Attribute name="layoutType" value="GlueDarkDropDownTemplate" type="string"/>
+			<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
+		</Attributes>
+<!--
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_scrollBackdrop"/>
+			</Layer>
+		</Layers>
+-->
+		<Frames>
+			<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="-4"/>
+					<Anchor point="BOTTOMRIGHT" x="0" y="4"/>
+				</Anchors>
+			</Frame>
+
+			<ScrollFrame name="$parentList" hidden="true">
+				<Size x="24" y="0"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-3" y="-3"/>
+					<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						GlueScrollFrame_OnLoad(self);
+					</OnLoad>
+					<OnMouseWheel>
+						GlueScrollFrameTemplate_OnMouseWheel(self, delta);
+					</OnMouseWheel>
+					<OnVerticalScroll>
+						FauxScrollFrame_OnVerticalScroll(self, offset, self:GetParent().buttonHeight, OptionsListScroll_Update);
+					</OnVerticalScroll>
+				</Scripts>
+				<Frames>
+					<Slider name="$parentScrollBar" inherits="GlueScrollBarTemplate">
+						<Anchors>
+							<Anchor point="TOPRIGHT" x="0" y="-20"/>
+							<Anchor point="BOTTOMLEFT" x="0" y="19"/>
+						</Anchors>
+						<Scripts>
+							<OnValueChanged>
+								self:GetParent():SetVerticalScroll(value);
+							</OnValueChanged>
+						</Scripts>
+					</Slider>
+					<Frame name="$parentScrollChildFrame" hidden="true"/>
+				</Frames>
+			</ScrollFrame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				OptionsList_OnLoad(self);
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Button name="OptionsListButtonTemplate" virtual="true">
+		<Size x="175" y="18"/>
+		<Frames>
+			<Button name="$parentToggle">
+				<Size x="14" y="14"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT" x="-6" y="-1"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:GetParent().toggle = self;
+						self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
+					</OnLoad>
+					<OnClick>
+						PlaySound("igMainMenuOptionCheckBoxOn");
+						OptionsFrame_ToggleSubCategories(self);
+					</OnClick>
+				</Scripts>
+				<NormalTexture name="$parentNormalTexture" file="Interface\Buttons\UI-MinusButton-UP"/>
+				<PushedTexture name="$parentPushedTexture" file="Interface\Buttons\UI-MinusButton-DOWN"/>
+				<HighlightTexture name="$parentHighlightTexture" file="Interface\Buttons\UI-PlusButton-Hilight" alphaMode="ADD"/>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				OptionsListButton_OnLoad(self);
+			</OnLoad>
+			<OnClick>
+				PlaySound("igMainMenuOptionCheckBoxOn");
+				OptionsListButton_OnClick(self, button);
+			</OnClick>
+		</Scripts>
+		<ButtonText name="$parentText" justifyH="LEFT">
+			<Anchors>
+				<Anchor point="RIGHT" relativeTo="$parentToggle" relativePoint="LEFT" x="-2" y="0"/>
+			</Anchors>
+		</ButtonText>
+		<NormalFont style="GlueFontNormal"/>
+		<HighlightFont style="GlueFontHighlight"/>
+		<HighlightTexture file="Interface\QuestFrame\UI-QuestLogTitleHighlight" alphaMode="ADD">
+			<Anchors>
+				<Anchor point="TOPLEFT" x="0" y="1"/>
+				<Anchor point="BOTTOMRIGHT" x="0" y="1"/>
+			</Anchors>
+		</HighlightTexture>
+	</Button>
+
+	<Frame name="OptionsFrameTemplate" toplevel="true" parent="GlueParent" virtual="true" hidden="true" enableMouse="true" enableKeyboard="true" frameStrata="HIGH">
+		<Size x="648" y="520"/>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+
+		<Attributes>
+			<Attribute name="layoutType" value="GlueDarkTemplate" type="string"/>
+			<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
+		</Attributes>
+
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_backdrop"/>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentTopShadow" parentKey="TopShadow" inherits="GlueDark_backdropTopSplash1">
+					<Size x="0" y="182"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBottomShadow" parentKey="BottomShadow" inherits="GlueDark_backdropBottomShadow">
+					<Size x="0" y="182"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentHeaderText" parentKey="HeaderText" inherits="GlueFontNormal" text="OPTIONS">
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-12"/>
+
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentBackdrop" enableMouse="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="GlueParent" relativePoint="TOPLEFT"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="GlueParent" relativePoint="BOTTOMRIGHT"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture setAllPoints="true">
+							<Color r="0" g="0" b="0" a=".75"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self:SetFrameLevel(self:GetParent():GetFrameLevel() - 1);
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			
+			<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
+
+			<Frame name="$parentCategoryFrame" parentKey="categoryFrame" inherits="OptionsFrameListTemplate">
+				<Size x="175" y="429"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="22" y="-40"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						--self.labelText = CATEGORY;
+						OptionsList_OnLoad(self);
+						self.update = OptionsCategoryFrame_Update;
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Frame name="$parentPanelContainer" parentKey="panelContainer">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentCategoryFrame" relativePoint="TOPRIGHT" x="16" y="0"/>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentCategoryFrame" relativePoint="BOTTOMRIGHT" x="16" y="1"/>
+					<Anchor point="RIGHT" x="-22" y="0"/>
+				</Anchors>
+
+				<Attributes>
+					<Attribute name="layoutType" value="GlueDarkDropDownTemplate" type="string"/>
+					<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
+				</Attributes>
+
+				<!-- <Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_scrollBackdrop"/>
+					</Layer>
+				</Layers> -->
+				<Frames>
+					<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-4"/>
+							<Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				OptionsFrame_OnLoad(self);
+			</OnLoad>
+			<OnShow>
+				OptionsFrame_OnShow(self);
+			</OnShow>
+			<OnHide>
+				OptionsFrame_OnHide(self);
+			</OnHide>
+			<OnKeyDown>
+				OptionsFrame_OnKeyDown(self, key);
+			</OnKeyDown>
+		</Scripts>
+	</Frame>
+</Ui>

@@ -36,6 +36,8 @@ enum:E_BATTLEPASS_SETTINGS {
     "DAY_AMOUNT",
     "POINTS_BG",
     "POINTS_ARENA",
+    "POINTS_ARENA_SOLOQ",
+    "POINTS_ARENA_1VS1",
 }
 
 BattlePassFrameMixin = {}
@@ -643,7 +645,8 @@ function BattlePassFrameMixin:ASMSG_BATTLEPASS_SETTINGS( msg )
         totalAmount   	  = tonumber(infoStorage[E_BATTLEPASS_SETTINGS.DAY_AMOUNT]) * 3,
         pointsBG   		  = tonumber(infoStorage[E_BATTLEPASS_SETTINGS.POINTS_BG]),
         pointsArena   	  = tonumber(infoStorage[E_BATTLEPASS_SETTINGS.POINTS_ARENA]),
-        pointsArena1vs1   = tonumber(infoStorage[E_BATTLEPASS_SETTINGS.POINTS_ARENA]) / 5,
+        pointsArenaSoloq  = tonumber(infoStorage[E_BATTLEPASS_SETTINGS.POINTS_ARENA_SOLOQ]),
+        pointsArena1vs1   = tonumber(infoStorage[E_BATTLEPASS_SETTINGS.POINTS_ARENA_1VS1]),
     })
 end
 
@@ -1376,7 +1379,7 @@ function BattlePassTutorialButtonMixin:OnClick()
 		
 		local infoData  = C_CacheInstance:Get("ASMSG_BATTLEPASS_SETTINGS")
 		
-		self.helpPlateData[1].ToolTipText = string.format(BATTLEPASS_TUTORIAL_TEXT_1, infoData.pointsBG, infoData.pointsArena, infoData.pointsArena1vs1, infoData.dayAmount, infoData.totalAmount, infoData.dayAmount)
+		self.helpPlateData[1].ToolTipText = string.format(BATTLEPASS_TUTORIAL_TEXT_1, infoData.pointsBG, infoData.pointsArena, infoData.pointsArenaSoloq, infoData.pointsArena1vs1, infoData.dayAmount, infoData.totalAmount, infoData.dayAmount)
 
         HelpPlate_Show( self.helpPlateData, self.mainFrame, self )
     else

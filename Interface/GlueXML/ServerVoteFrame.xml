@@ -8,7 +8,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
 	<Frame name="ServerVoteFrame" toplevel="true" setAllPoints="true" hidden="true" enableMouse="true" enableKeyboard="true" frameStrata="HIGH">
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -21,15 +22,13 @@
 			<Frame name="$parentSelectFrame" inherits="LoginUIFrameTemplate">
 				<Size x="360" y="185"/>
 				<Anchors>
-					<Anchor point="CENTER">
-						<Offset x="0" y="-20"/>
-					</Anchor>
+					<Anchor point="CENTER" x="0" y="-20"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-					<!-- 	self.Tittle:SetText("CHOOSE_VOTE_TOP")
-						self.Tittle:SetFontObject("AccountLoginTextFont")
-						self.Tittle:SetTextColor(0.91, 0.78, 0.53, 1)
+					<!-- 	self.Title:SetText("CHOOSE_VOTE_TOP")
+						self.Title:SetFontObject("GlueDark_Font_Outline_13")
+						self.Title:SetTextColor(0.91, 0.78, 0.53, 1)
 						self:SetBackdropBorderColor(0.91, 0.78, 0.53, 1) -->
 					</OnLoad>
 				</Scripts>

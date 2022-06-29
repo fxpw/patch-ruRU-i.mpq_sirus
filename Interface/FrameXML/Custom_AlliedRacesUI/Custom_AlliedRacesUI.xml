@@ -35,7 +35,41 @@
 		</Scripts>
 	</Button>
 
-	<Frame name="AlliedRaceAbilityTemplate" virtual="true">
+	<CheckButton name="AlliedRaceAbilityFlyoutButtonTemplate" virtual="true">
+		<Size x ="33" y="33" />
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" parentKey="Icon" setAllPoints="true">
+					<Size x ="33" y="33"/>
+					<Anchors>
+						<Anchor point="LEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentTraitsBorder" parentKey="TraitsBorder">
+					<Anchors>
+						<Anchor point="LEFT" x="-1" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self.TraitsBorder:SetAtlas("AlliedRace-TraitsBorder", true);
+			</OnLoad>
+			<OnEnter>
+				GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 4, 4);
+				GameTooltip:SetHyperlink(string.format("spell:%d", self.spellID));
+				GameTooltip:Show();
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide();
+			</OnLeave>
+		</Scripts>
+	</CheckButton>
+
+	<Button name="AlliedRaceAbilityTemplate" virtual="true">
 		<Size x="300" y="36"/>
 		<Layers>
 			<Layer level="ARTWORK">
@@ -66,20 +100,77 @@
 				</Texture>
 			</Layer>
 		</Layers>
+		<Frames>
+			<Frame name="$parentFlyoutArrow" parentKey="FlyoutArrow" hidden="true">
+				<Size x ="33" y="33" />
+				<Anchors>
+					<Anchor point="LEFT" x="6" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture name="$parentArrow" file="Interface\Buttons\ActionBarFlyoutButton" parentKey="Arrow">
+							<Size x="23" y="11"/>
+							<Anchors>
+								<Anchor point="RIGHT" x="2" y="0"/>
+							</Anchors>
+							<TexCoords left="0.62500000" right="0.98437500" top="0.74218750" bottom="0.82812500"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentFlyoutFrame" parentKey="FlyoutFrame" enableMouse="true" hidden="true"/>
+		</Frames>
 		<Scripts>
 			<OnLoad>
-				self.TraitsBorder:SetAtlas("AlliedRace-TraitsBorder", true)
+				self.TraitsBorder:SetAtlas("AlliedRace-TraitsBorder", true);
+
+				self.flyoutPool = CreateFramePool("Button", self.FlyoutFrame, "AlliedRaceAbilityFlyoutButtonTemplate");
 			</OnLoad>
+			<OnClick>
+				local flyoutFrameIsShown = self.FlyoutFrame:IsShown();
+
+				local name, _, numSlots = GetFlyoutInfo(self.spellID);
+				if name and numSlots > 0 and not flyoutFrameIsShown then
+					local prevButton;
+
+					self.flyoutPool:ReleaseAll();
+					for i = 1, numSlots do
+						local button = self.flyoutPool:Acquire();
+						if prevButton then
+							button:SetPoint("LEFT", prevButton, "RIGHT", 4, 0);
+						else
+							button:SetPoint("LEFT", 0, 0);
+						end
+
+						local flyoutSpellID = GetFlyoutSlotInfo(self.spellID, i);
+						local _, _, icon = GetSpellInfo(flyoutSpellID);
+						button.Icon:SetTexture(icon);
+						button.spellID = flyoutSpellID;
+						button:Show();
+
+						prevButton = button;
+					end
+
+					self.FlyoutFrame:SetPoint("LEFT", self.Icon, "RIGHT", 10, 0);
+					self.FlyoutFrame:SetHeight(33);
+					self.FlyoutFrame:SetWidth((33 + 4) * numSlots - 4);
+					self.FlyoutFrame:Show();
+				elseif flyoutFrameIsShown then
+					self.FlyoutFrame:Hide();
+				end
+			</OnClick>
 			<OnEnter>
-				GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -264, 0);
-				GameTooltip:SetHyperlink(GetSpellLink(self.spellID));
-				GameTooltip:Show();
+				if type(self.spellID) == "number" then
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -264, 0);
+					GameTooltip:SetHyperlink(string.format("spell:%d", self.spellID));
+					GameTooltip:Show();
+				end
 			</OnEnter>
 			<OnLeave>
 				GameTooltip:Hide();
 			</OnLeave>
 		</Scripts>
-	</Frame>
+	</Button>
 
 	<Frame name="AlliedRacesFrame" toplevel="true" parent="UIParent" inherits="PortraitFrameTemplate" hidden="true">
 		<Size x="704" y="607"/>
@@ -275,9 +366,9 @@
 				<Layers>
 					<Layer level="ARTWORK">
 						<FontString parentKey="AlliedRacesRaceName" inherits="Fancy24Font" justifyH="CENTER">
-							<Size x="270" y="40"/>
+							<Size x="310" y="40"/>
 							<Anchors>
-								<Anchor point="TOPRIGHT" relativeTo="AlliedRacesFrame" x="-52" y="-38"/>
+								<Anchor point="TOPRIGHT" relativeTo="AlliedRacesFrame" x="-36" y="-38"/>
 							</Anchors>
 							<Color r="0.1" g="0.1" b="0.1"/>
 						</FontString>

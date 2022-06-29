@@ -149,12 +149,14 @@ UnitPopupButtons["GM_INFO_PLAYER"] 			= { text = "Персонаж", dist = 0 }
 UnitPopupButtons["GM_INFO_ACCOUNT"] 		= { text = "Aккаунт", dist = 0 }
 UnitPopupButtons["GM_INFO_IP"] 				= { text = "IP адрес", dist = 0 }
 UnitPopupButtons["GM_INFO_CONFIG"] 			= { text = "Конфиг", dist = 0 }
+UnitPopupButtons["GM_INFO_MUTEHISTORY"] 	= { text = "История мутов", dist = 0 }
 
 UnitPopupButtons["GM_INTERACT"] 			= { text = "Действие с игроком", dist = 0, nested = 1 }
 UnitPopupButtons["GM_INTERACT_MUTE"] 		= { text = "Блокировка чата", dist = 0 }
 UnitPopupButtons["GM_INTERACT_PLAYER_BAN"] 	= { text = "Блокировка персонажа", dist = 0 }
 UnitPopupButtons["GM_INTERACT_APPEAR"] 		= { text = "Телепорт к персонажу", dist = 0 }
 UnitPopupButtons["GM_INTERACT_SUMMON"] 		= { text = "Телепорт персонажа к себе", dist = 0 }
+UnitPopupButtons["GM_INTERACT_DUMP"] 		= { text = "Копировать персонажа", dist = 0 }
 
 UnitPopupButtons["INTERACT_SUBSECTION_TITLE"] = makeUnitPopupSubsectionTitle(UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_INTERACT)
 UnitPopupButtons["LOOT_SUBSECTION_TITLE"] = makeUnitPopupSubsectionTitle(UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_LOOT)
@@ -246,8 +248,8 @@ UnitPopupMenus["OPT_OUT_LOOT_TITLE"] = { "OPT_OUT_LOOT_ENABLE", "OPT_OUT_LOOT_DI
 UnitPopupMenus["DUNGEON_DIFFICULTY"] = { "DUNGEON_DIFFICULTY1", "DUNGEON_DIFFICULTY2" };
 UnitPopupMenus["RAID_DIFFICULTY"] = { "RAID_DIFFICULTY1", "RAID_DIFFICULTY2", "RAID_DIFFICULTY3", "RAID_DIFFICULTY4" };
 UnitPopupMenus["BN_REPORT"] = { "BN_REPORT_SPAM", "BN_REPORT_ABUSE", "BN_REPORT_NAME" };
-UnitPopupMenus["GM_INFO"] = { "GM_INFO_PLAYER", "GM_INFO_ACCOUNT", "GM_INFO_IP", "GM_INFO_CONFIG" }
-UnitPopupMenus["GM_INTERACT"] = { "GM_INTERACT_MUTE", "GM_INTERACT_PLAYER_BAN", "GM_INTERACT_APPEAR", "GM_INTERACT_SUMMON" }
+UnitPopupMenus["GM_INFO"] = { "GM_INFO_PLAYER", "GM_INFO_ACCOUNT", "GM_INFO_IP", "GM_INFO_CONFIG", "GM_INFO_MUTEHISTORY" }
+UnitPopupMenus["GM_INTERACT"] = { "GM_INTERACT_MUTE", "GM_INTERACT_PLAYER_BAN", "GM_INTERACT_APPEAR", "GM_INTERACT_SUMMON", "GM_INTERACT_DUMP" }
 UnitPopupMenus["HEADHUNTING_SETTINGS"] = { "HEADHUNTING_ENABLE", "HEADHUNTING_DISABLE" }
 
 UnitPopupShown = {};
@@ -487,6 +489,10 @@ function UnitPopup_ShowMenu (dropdownMenu, which, unit, name, userData)
 			elseif value == "HEADHUNTING_DISABLE" then
 				if C_CacheInstance:Get("ASMSG_HEADHUNTING_ZONE_NOTIFICATIONS", 0) == 0 then
 					info.checked = 1
+				end
+			elseif value == "GM_INFO_ACCOUNT" or value == "GM_INFO_IP" or value == "GM_INFO_CONFIG" or value == "GM_INFO_MUTEHISTORY" then
+				if not name or not GMClientMixIn.accountDataByName[name] then
+					info.disabled = 1
 				end
 			end
 
@@ -1417,10 +1423,8 @@ function UnitPopup_OnUpdate (elapsed)
 						if unitLevel == 80 and (realmID and realmID == E_REALM_ID.NELTHARION) then
 							enable = 0
 						end
-					elseif value == "GM_INFO_ACCOUNT" or value == "GM_INFO_IP" or value == "GM_INFO_CONFIG" then
-						if currentDropDown.name and GMClientMixIn.accountDataByName[currentDropDown.name] then
-							enable = 1
-						else
+					elseif value == "GM_INFO_ACCOUNT" or value == "GM_INFO_IP" or value == "GM_INFO_CONFIG" or value == "GM_INFO_MUTEHISTORY" then
+						if not currentDropDown.name or not GMClientMixIn.accountDataByName[currentDropDown.name] then
 							enable = 0
 						end
 					end
@@ -1692,10 +1696,16 @@ function UnitPopup_OnClick (self)
 		SendChatMessage(".lo pl ip "..(GMClientMixIn.accountDataByName[dropdownFrame.name] and GMClientMixIn.accountDataByName[dropdownFrame.name].lastIP or ""), "WHISPER", nil, UnitName("player"))
 	elseif ( button == "GM_INFO_CONFIG" ) then
 		SendChatMessage(".lo pl config "..(GMClientMixIn.accountDataByName[dropdownFrame.name] and GMClientMixIn.accountDataByName[dropdownFrame.name].config or ""), "WHISPER", nil, UnitName("player"))
+	elseif ( button == "GM_INFO_MUTEHISTORY" ) then
+		SendChatMessage(".mutehistory "..(GMClientMixIn.accountDataByName[dropdownFrame.name] and GMClientMixIn.accountDataByName[dropdownFrame.name].accountLogin or ""), "WHISPER", nil, UnitName("player"))
 	elseif ( button == "GM_INTERACT_APPEAR" ) then
 		SendChatMessage(".app "..name, "WHISPER", nil, UnitName("player"))
 	elseif ( button == "GM_INTERACT_SUMMON" ) then
 		SendChatMessage(".summ "..name, "WHISPER", nil, UnitName("player"))
+	elseif ( button == "GM_INTERACT_DUMP" ) then
+		if dropdownFrame.name then
+			GMClientMixIn:PDumpCharacter(dropdownFrame.name);
+		end
 	elseif ( button == "GM_INTERACT_MUTE" ) then
 		GMClientMixIn:ShowMuteWindow( name )
 	elseif ( button == "GM_INTERACT_PLAYER_BAN" ) then

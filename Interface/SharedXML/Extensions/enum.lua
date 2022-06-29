@@ -17,7 +17,7 @@ function mt.__call(...)
             if not _G[nm.."_"..v] then
                 _G[nm.."_"..v] = k
             else
-                printc(string.format("enum: Переменная %s, уже существует!", nm, v))
+                printc(string.format("enum: Переменная %s, уже существует! %s", nm, v, k))
             end
         else
             _G[nm][k] = v

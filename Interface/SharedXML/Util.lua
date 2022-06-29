@@ -470,6 +470,44 @@ function utf8len(s)
     return len
 end
 
+function utf8sub(s, i, j)
+	j = j or -1
+
+	local pos = 1
+	local bytes = strlen(s)
+	local len = 0
+
+	-- only set l if i or j is negative
+	local l = (i >= 0 and j >= 0) or utf8len(s)
+	local startChar = (i >= 0) and i or l + i + 1
+	local endChar = (j >= 0) and j or l + j + 1
+
+	-- can't have start before end!
+	if startChar > endChar then
+		return ""
+	end
+
+	-- byte offsets to pass to string.sub
+	local startByte, endByte = 1, bytes
+
+	while pos <= bytes do
+		len = len + 1
+
+		if len == startChar then
+			startByte = pos
+		end
+
+		pos = pos + utf8charbytes(s, pos)
+
+		if len == endChar then
+			endByte = pos - 1
+			break
+		end
+	end
+
+	return strsub(s, startByte, endByte)
+end
+
 function BitMaskCalculate( ... )
 	local value = {...}
 	local mask = 0
@@ -901,6 +939,8 @@ function printc(...)
     end
 end
 
+print = print or printc
+
 function printec( ... )
 	if S_PrintConsole then
 		S_PrintConsole(strjoin(" ", tostringall(...)))
@@ -954,6 +994,10 @@ function IsDevClient()
 	return S_IsDevClient and S_IsDevClient()
 end
 
+function IsInterfaceDevClient()
+	return S_IsInterfaceDevClient and S_IsInterfaceDevClient()
+end
+
 function IsNyllClient()
 	return S_IsNyllClient and S_IsNyllClient()
 end
@@ -999,39 +1043,6 @@ function GetLocalizedName(varName)
 	return varName.."_"..GetLocale():upper()
 end
 
--- TEEMP -_-
-function inRealmScourge()
-	-- local realmName = GetServerName()
-
-	-- if realmName then
-	-- 	return realmName == "Scourge x2 - 3.3.5a+"
-	-- end
-
-	return true
-end
-
-function SendPacket( opcode, ... )
-    local val = {...}
-    local size = 4
-
-    -- printc("SendPacket", opcode, ..., time())
-
-    SetRealmSplitState(2)
-    SetRealmSplitState(2)
-    for o = 1, string.len(opcode) do
-        local subs = tostring(opcode):sub(o, o)
-        SetRealmSplitState(tonumber(subs))
-    end
-    SetRealmSplitState(2)
-
-    for v = 1, #val do
-        local bits = toBits(val[v])
-        for i = 0, size - #bits - 1 do
-            SetRealmSplitState(0)
-        end
-
-        for s = 1, #bits do
-            SetRealmSplitState(bits[s])
-        end
-    end
+function IsWideScreen()
+	return GetScreenWidth() > 1024
 end

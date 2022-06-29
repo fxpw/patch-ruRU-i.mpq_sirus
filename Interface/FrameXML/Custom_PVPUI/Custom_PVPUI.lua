@@ -130,7 +130,7 @@ BattlegroundsData = {
     },
     [12] = { -- Сверкающие копи
         battleGroundID = 12,
-        maxPlayers = 10,
+        maxPlayers = 15,
         icon = "LFGIcon-SilvershardMines",
         gameType = ESCORT,
         longDescription = BATTLEGROUND_SILVERSHARD_MINES_DESC,
@@ -142,7 +142,7 @@ BattlegroundsData = {
     },
 	[18] = { -- Битва за Гильнеас
 		battleGroundID = 18,
-		maxPlayers = 10,
+		maxPlayers = 15,
 		icon = "LFGICON-THEBATTLEFORGILNEAS",
 		gameType = SUPERIORITY,
 		longDescription = BATTLEGROUND_BATTLEFOR_GILNEAS_DESC,
@@ -166,7 +166,7 @@ BattlegroundsData = {
 	},
 	[20] = { -- Храмовый город Ала'ваште
 		battleGroundID = 20,
-		maxPlayers = 15,
+		maxPlayers = 20,
 		icon = "LFGICON-TEMPLEOFALAWASHTE",
 		gameType = CAPTURE_THE_FLAG,
 		longDescription = BATTLEGROUND_TEMPLE_OF_ALAWASHTE,

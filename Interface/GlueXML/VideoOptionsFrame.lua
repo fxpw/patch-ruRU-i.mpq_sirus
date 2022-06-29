@@ -10,12 +10,10 @@ end
 
 function VideoOptionsFrame_SetAllToDefaults ()
 	OptionsFrame_SetAllToDefaults(VideoOptionsFrame);
-	VideoOptionsFrameApply:Disable();
 end
 
 function VideoOptionsFrame_SetCurrentToDefaults ()
 	OptionsFrame_SetCurrentToDefaults(VideoOptionsFrame);
-	VideoOptionsFrameApply:Disable();
 end
 
 function VideoOptionsFrame_OnLoad (self)
@@ -28,7 +26,7 @@ function VideoOptionsFrame_OnHide (self)
 	OptionsFrame_OnHide(self);
 
 	if ( VideoOptionsFrame.gameRestart ) then
-		GlueDialog_Show("CLIENT_RESTART_ALERT");
+		GlueDialog:ShowDialog("CLIENT_RESTART_ALERT");
 		VideoOptionsFrame.gameRestart = nil;
 	end
 end
@@ -59,6 +57,6 @@ end
 function VideoOptionsFrameDefault_OnClick (self, button)
 	OptionsFrameDefault_OnClick(VideoOptionsFrame);
 
-	GlueDialog_Show("CONFIRM_RESET_VIDEO_SETTINGS");
+	GlueDialog:ShowDialog("CONFIRM_RESET_VIDEO_SETTINGS");
 end
 

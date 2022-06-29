@@ -1,11 +1,14 @@
 
 -- Mixin code
 function Mixin(object, ...)
-	local mixins = {...}
-
-	for _, mixin in pairs(mixins) do
-		for k,v in pairs(mixin) do
-			object[k] = v
+	for i = 1, select("#", ...) do
+		local mixin = select(i, ...)
+		if type(mixin) == "table" then
+			for k, v in pairs(mixin) do
+				object[k] = v
+			end
+		else
+			geterrorhandler()(string.format("Bad argument #%i to \"Mixin\" (table expected, got %s)", i + 1, type(mixin)))
 		end
 	end
 

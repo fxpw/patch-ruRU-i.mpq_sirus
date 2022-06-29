@@ -1,38 +1,43 @@
 ADDON_BUTTON_HEIGHT = 16;
 MAX_ADDONS_DISPLAYED = 16;
 
-function C_GetAddOnInfo( addonIndex )
-	if not addonIndex then
-		return
+local addonList = {}
+
+function C_GetAddOnInfo(addonIndex)
+	if not addonIndex then return end
+
+	local numAddons = GetNumAddOns()
+	if not addonList or addonList.numAddons ~= numAddons then
+		table.wipe(addonList)
+		addonList.numAddons = numAddons
+
+		for i = 1, numAddons do
+			local name, title, notes, url, loadable, reason, security, newVersion, needUpdate, build = GetAddOnInfo(i)
+
+			if name then
+				addonList[#addonList + 1] = {name, title, newVersion, i}
+			end
+		end
+
+		table.sort(addonList, function(a, b)
+			if a[3] and not b[3] then
+				return true
+			end
+			if not a[3] and b[3] then
+				return false
+			end
+
+			if a[2] and b[2] then
+				return a[2] < b[2]
+			else
+				return a[1] < b[1]
+			end
+		end)
 	end
 
-	local buffer = {}
-
-	for i = 1, GetNumAddOns() do
-		local name, title, notes, url, loadable, reason, security, newVersion, needUpdate, build = GetAddOnInfo(i)
-
-		if name then
-			buffer[#buffer + 1] = {name, title, notes, url, loadable, reason, security, newVersion, needUpdate, build, i}
-		end
-	end
-
-	table.sort(buffer, function(a, b)
-		if a[8] and not b[8] then
-			return true
-		end
-		if not a[8] and b[8] then
-			return false
-		end
-
-		if a[2] and b[2] then
-			return a[2] < b[2]
-		else
-			return a[1] < b[1]
-		end
-	end)
-
-	if buffer[addonIndex] then
-		return unpack(buffer[addonIndex])
+	if addonList[addonIndex] then
+		local name, title, notes, url, loadable, reason, security, newVersion, needUpdate, build = GetAddOnInfo(addonList[addonIndex][4])
+		return name, title, notes, url, loadable, reason, security, newVersion, needUpdate, build, addonList[addonIndex][4]
 	end
 end
 
@@ -40,7 +45,7 @@ function UpdateAddonButton()
 	if ( GetNumAddOns() > 0 ) then
 		-- Check to see if any of them are out of date and not disabled
 		if ( IsAddonVersionCheckEnabled() and AddonList_HasOutOfDate() and not HasShownAddonOutOfDateDialog ) then
-			AddonDialog_Show("ADDONS_OUT_OF_DATE");
+			GlueDialog:QueueDialog("ADDONS_OUT_OF_DATE")
 			HasShownAddonOutOfDateDialog = true;
 		end
 
@@ -64,6 +69,7 @@ end
 
 function AddonList_OnLoad(self)
 	self.offset = 0;
+	self.Container.TopShadow:SetVertexColor(0, 0, 0, 0.25)
 end
 
 function AddonList_Update()
@@ -72,7 +78,7 @@ function AddonList_Update()
 	local button, checkbox, string, status, urlButton, securityIcon, versionButton;
 
 	-- Get the character from the current list (nil is all characters)
-	local character = GlueDropDownMenu_GetSelectedValue(AddonCharacterDropDown);
+	local character = GlueDark_DropDownMenu_GetSelectedValue(AddonCharacterDropDown);
 	if ( character == ALL ) then
 		character = nil;
 	end
@@ -97,11 +103,11 @@ function AddonList_Update()
 			end
 
 			if (loadable or (enabled and (reason == "DEP_DEMAND_LOADED" or reason == "DEMAND_LOADED"))) then
-				titleColor = {1.0, 0.78, 0.0}
+				titleColor = {1.0, 1.0, 1.0}
 			elseif enabled and reason ~= "DEP_DISABLED" then
-				titleColor = {1.0, 0.1, 0.1}
+				titleColor = {0.58984375, 0.2578125, 0.2578125}
 			else
-				titleColor = {0.5, 0.5, 0.5}
+				titleColor = {0.4765625, 0.4765625, 0.4765625}
 			end
 
 			if title then
@@ -124,22 +130,14 @@ function AddonList_Update()
 			if newVersion then
 				titleColor = {1.0, 0.1, 0.1}
 
-				button.BackgroundLeft:SetVertexColor(1, 0, 0)
-				button.BackgroundRight:SetVertexColor(1, 0, 0)
-
-				button.BackgroundLeft:SetAlpha(0.4)
-				button.BackgroundRight:SetAlpha(0.4)
+				button.Background:SetVertexColor(0.58984375, 0.2578125, 0.2578125)
+				button.Background:SetAlpha(0.4)
 
 				DisableAddOn(nil, index)
 			else
-				button.BackgroundLeft:SetVertexColor(0.91, 0.78, 0.53)
-				button.BackgroundRight:SetVertexColor(0.91, 0.78, 0.53)
-
-				button.BackgroundLeft:SetAlpha(0.25)
-				button.BackgroundRight:SetAlpha(0.25)
-
-				button.BackgroundLeftHighlight:Hide()
-				button.BackgroundRightHighlight:Hide()
+				button.Background:SetVertexColor(0.91, 0.78, 0.53)
+				button.Background:SetAlpha(0.25)
+				button.BackgroundHighlight:Hide()
 			end
 
 			button.DownloadButton:SetShown(newVersion)
@@ -176,6 +174,7 @@ end
 function AddonTooltip_Update(owner)
 	AddonTooltip.owner = owner;
 	local name, title, notes,_,_,_, security = GetAddOnInfo(owner:GetID());
+	local deps
 	if ( security == "BANNED" ) then
 		AddonTooltipTitle:SetText(ADDON_BANNED_TOOLTIP);
 		AddonTooltipNotes:SetText("");
@@ -186,14 +185,27 @@ function AddonTooltip_Update(owner)
 		else
 			AddonTooltipTitle:SetText(name);
 		end
+
 		AddonTooltipNotes:SetText(notes);
-		AddonTooltipDeps:SetText(AddonTooltip_BuildDeps(GetAddOnDependencies(owner:GetID())));
+
+		deps = AddonTooltip_BuildDeps(GetAddOnDependencies(owner:GetID()))
+		AddonTooltipDeps:SetText(deps);
+
+		if owner.newVersion then
+			AddonTooltipInfo:ClearAllPoints()
+			AddonTooltipInfo:SetPoint("TOPLEFT", (deps and deps ~= "") and AddonTooltipDeps or AddonTooltipNotes, "BOTTOMLEFT", 0, -2)
+			AddonTooltipInfo:SetText(ADDON_CLICK_TO_OPEN_UPDATE_PAGE, 1.0, 1.0, 1.0);
+			AddonTooltipInfo:Show()
+		else
+			AddonTooltipInfo:Hide()
+		end
 	end
 
 	local titleHeight = AddonTooltipTitle:GetHeight();
-	local notesHeight = AddonTooltipNotes:GetHeight();
-	local depsHeight = AddonTooltipDeps:GetHeight();
-	AddonTooltip:SetHeight(10+titleHeight+2+notesHeight+2+depsHeight+10);
+	local notesHeight = (notes and notes ~= "") and (AddonTooltipNotes:GetHeight() + 2) or 0;
+	local depsHeight = (deps and deps ~= "") and (AddonTooltipDeps:GetHeight() + 2) or 0;
+	local infoHeight = owner.newVersion and (AddonTooltipInfo:GetHeight() + 2) or 0
+	AddonTooltip:SetHeight(10+titleHeight+2+notesHeight+depsHeight+infoHeight+10);
 end
 
 function AddonList_OnKeyDown(key)
@@ -207,7 +219,7 @@ function AddonList_OnKeyDown(key)
 end
 
 function AddonList_Enable(index, enabled)
-	local character = GlueDropDownMenu_GetSelectedValue(AddonCharacterDropDown);
+	local character = GlueDark_DropDownMenu_GetSelectedValue(AddonCharacterDropDown);
 	if ( character == ALL ) then
 		character = nil;
 	end
@@ -289,135 +301,21 @@ function AddonList_HasNewVersion()
 	return hasNewVersion;
 end
 
-AddonDialogTypes = { };
-
-AddonDialogTypes["ADDONS_OUT_OF_DATE"] = {
-	text = ADDONS_OUT_OF_DATE,
-	button1 = DISABLE_ADDONS,
-	button2 = LOAD_ADDONS,
-	OnAccept = function()
-		AddonDialog_Show("CONFIRM_DISABLE_ADDONS");
-	end,
-	OnCancel = function()
-		AddonDialog_Show("CONFIRM_LOAD_ADDONS");
-	end,
-}
-
-AddonDialogTypes["CONFIRM_LOAD_ADDONS"] = {
-	text = CONFIRM_LOAD_ADDONS,
-	button1 = OKAY,
-	button2 = CANCEL,
-	OnAccept = function()
-		SetAddonVersionCheck(0);
-	end,
-	OnCancel = function()
-		AddonDialog_Show("ADDONS_OUT_OF_DATE");
-	end,
-}
-
-AddonDialogTypes["CONFIRM_DISABLE_ADDONS"] = {
-	text = CONFIRM_DISABLE_ADDONS,
-	button1 = OKAY,
-	button2 = CANCEL,
-	OnAccept = function()
-		AddonList_DisableOutOfDate();
-	end,
-	OnCancel = function()
-		AddonDialog_Show("ADDONS_OUT_OF_DATE");
-	end,
-}
-
-AddonDialogTypes["CONFIRM_LAUNCH_ADDON_URL"] = {
-	text = CONFIRM_LAUNCH_UPLOAD_ADDON_URL,
-	button1 = OKAY,
-	button2 = CANCEL,
-	OnAccept = function()
-		local url = AddonList.openURL
-		if url then
-			LaunchURL(url)
-		end
-	end
-}
-
-function AddonDialog_Show(which, arg1)
-	-- Set the text of the dialog
-	if ( arg1 ) then
-		AddonDialogText:SetFormattedText(AddonDialogTypes[which].text, arg1);
-	else
-		AddonDialogText:SetText(AddonDialogTypes[which].text);
-	end
-
-	-- Set the buttons of the dialog
-	if ( AddonDialogTypes[which].button2 ) then
-		AddonDialogButton1:ClearAllPoints();
-		AddonDialogButton1:SetPoint("BOTTOMRIGHT", "AddonDialogBackground", "BOTTOM", -6, 16);
-		AddonDialogButton2:ClearAllPoints();
-		AddonDialogButton2:SetPoint("LEFT", "AddonDialogButton1", "RIGHT", 13, 0);
-		AddonDialogButton2:SetText(AddonDialogTypes[which].button2);
-		AddonDialogButton2:Show();
-	else
-		AddonDialogButton1:ClearAllPoints();
-		AddonDialogButton1:SetPoint("BOTTOM", "AddonDialogBackground", "BOTTOM", 0, 16);
-		AddonDialogButton2:Hide();
-	end
-
-	AddonDialogButton1:SetText(AddonDialogTypes[which].button1);
-
-	-- Set the miscellaneous variables for the dialog
-	AddonDialog.which = which;
-
-	-- Finally size and show the dialog
-	AddonDialogBackground:SetHeight(16 + AddonDialogText:GetHeight() + 8 + AddonDialogButton1:GetHeight() + 16);
-	AddonDialog:Show();
-end
-
-function AddonDialog_OnClick(index)
-	AddonDialog:Hide();
-	if ( index == 1 ) then
-		local OnAccept = AddonDialogTypes[AddonDialog.which].OnAccept;
-		if ( OnAccept ) then
-			OnAccept();
-		end
-	else
-		local OnCancel = AddonDialogTypes[AddonDialog.which].OnCancel;
-		if ( OnCancel ) then
-			OnCancel();
-		end
-	end
-end
-
-function AddonDialog_OnKeyDown(key)
-	if ( key == "PRINTSCREEN" ) then
-		Screenshot();
-		return;
-	end
-
-	if ( key == "ESCAPE" ) then
-		if ( AddonDialogButton2:IsShown() ) then
-			AddonDialogButton2:Click();
-		else
-			AddonDialogButton1:Click();
-		end
-	elseif (key == "ENTER" ) then
-		AddonDialogButton1:Click();
-	end
-end
-
 function AddonListCharacterDropDown_OnClick(self)
-	GlueDropDownMenu_SetSelectedValue(AddonCharacterDropDown, self.value);
+	GlueDark_DropDownMenu_SetSelectedValue(AddonCharacterDropDown, self.value);
 	AddonList_Update();
 end
 
 function AddonListCharacterDropDown_Initialize()
-	local selectedValue = GlueDropDownMenu_GetSelectedValue(AddonCharacterDropDown);
-	local info = GlueDropDownMenu_CreateInfo();
+	local selectedValue = GlueDark_DropDownMenu_GetSelectedValue(AddonCharacterDropDown);
+	local info = GlueDark_DropDownMenu_CreateInfo();
 	info.text = ALL;
 	info.value = ALL;
 	info.func = AddonListCharacterDropDown_OnClick;
 	if ( not selectedValue ) then
 		info.checked = 1;
 	end
-	GlueDropDownMenu_AddButton(info);
+	GlueDark_DropDownMenu_AddButton(info);
 
 	for i=1, GetNumCharacters() do
 		info.text = GetCharacterInfo(i);
@@ -428,6 +326,6 @@ function AddonListCharacterDropDown_Initialize()
 		else
 			info.checked = nil;
 		end
-		GlueDropDownMenu_AddButton(info);
+		GlueDark_DropDownMenu_AddButton(info);
 	end
 end

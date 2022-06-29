@@ -160,7 +160,6 @@ GlueDialogTypes["INVALID_NAME"] = {
 GlueDialogTypes["CANCEL"] = {
 	text = "",
 	button1 = CANCEL,
-	button2 = nil,
 	OnAccept = function()
 		StatusDialogClick();
 	end,
@@ -281,7 +280,6 @@ GlueDialogTypes["CLIENT_TRIAL"] = {
 	end,
 }
 
-
 GlueDialogTypes["SCANDLL_DOWNLOAD"] = {
 	text = "",
 	button1 = QUIT,
@@ -316,7 +314,7 @@ GlueDialogTypes["SCANDLL_HACKFOUND"] = {
 	showAlert = 1,
 	OnAccept = function()
 		local formatString = _G["SCANDLL_MESSAGE_"..AccountLogin.hackType.."FOUND_CONFIRM"];
-		GlueDialog_Show("SCANDLL_HACKFOUND_CONFIRM", format(formatString, AccountLogin.hackName, AccountLogin.hackURL));
+		GlueDialog:ShowDialog("SCANDLL_HACKFOUND_CONFIRM", format(formatString, AccountLogin.hackName, AccountLogin.hackURL));
 	end,
 	OnCancel = function()
 		AccountLogin_Exit();
@@ -456,6 +454,7 @@ GlueDialogTypes["CONFIRM_LAUNCH_UPLOAD_ADDON_URL"] = {
 	button1 = OKAY,
 	button2 = CANCEL,
 	html = 1,
+	cover = true,
 	escapeHides = true,
 	OnAccept = function()
 		local url = AddonList.openURL
@@ -481,26 +480,6 @@ GlueDialogTypes["ADDON_INVALID_VERSION_DIALOG"] = {
 	end,
 }
 
-GlueDialogTypes["CHARACTER_SELECT_FIX_CHARACTER_POPUP"] = {
-	text = CHARACTER_SELECT_FIX_CHARACTER_POPUP,
-	button1 = CHARACTER_SELECT_FIX_CHARACTER_LABEL,
-	button2 = CANCEL,
-	ignoreKeys = true,
-	helpButton = true,
-	OnShow = function()
-		GlueDialogHelpButton.tooltipHeadText = CHARACTER_FIX_HELP_HEAD
-		GlueDialogHelpButton.tooltipText = CHARACTER_FIX_HELP_TEXT
-	end,
-	OnAccept = function()
-		WaitingDialogFrame:Show()
-		WaitingDialogFrame.Text:SetText(WAIT_SERVER_RESPONCE)
-
-		AddPacketMessage("000", CharacterSelect.selectedIndex)
-	end,
-	OnCancel = function()
-	end,
-}
-
 GlueDialogTypes["CONFIRM_PAID_FACTION_CHANGE"] = {
 	text = CONFIRM_PAID_FACTION_CHANGE,
 	button1 = DONE,
@@ -512,272 +491,518 @@ GlueDialogTypes["CONFIRM_PAID_FACTION_CHANGE"] = {
 	end,
 }
 
-function GlueDialog_Show(which, text, data)
-	local dialogInfo = GlueDialogTypes[which];
+GlueDialogTypes["CONFIRM_CHARACTER_CREATE"] = {
+--	text = CONFIRM_CHARACTER_CREATE,
+	button1 = CHARACTER_CREATE,
+	button2 = CANCEL,
+	escapeHides = true,
+	enableEnter = true,
+	OnShow = function(dialog)
+		if dialog.data[2] then
+			dialog.Container.Button1:SetText(dialog.data[2])
+		end
+	end,
+	OnAccept = function(dialog)
+		C_CharacterCreation.CreateCharacter(dialog.data[1])
+	end,
+}
+
+GlueDialogTypes["CONFIRM_CHARACTER_CREATE_CUSTOMIZATION"] = {
+--	text = CONFIRM_CHARACTER_CREATE_CUSTOMIZATION,
+	button1 = CHARACTER_CREATE,
+	button2 = CANCEL,
+	button3 = CHARACTER_CREATE_CUSTOMIZATION_LABEL,
+	escapeHides = true,
+	enableEnter = true,
+	OnShow = function(dialog)
+		if dialog.data[2] then
+			dialog.Container.Button1:SetText(dialog.data[2])
+		end
+	end,
+	OnAccept = function(dialog)
+		C_CharacterCreation.CreateCharacter(dialog.data[1])
+	end,
+	OnAlt = function()
+		CharacterCreate.GenderFrame.CustomizationButton:Click()
+	end,
+}
+
+GlueDialogTypes["FORCE_CHOOSE_FACTION"] = {
+	text = CHOOSE_FACTION,
+	button1 = FACTION_ALLIANCE,
+	button2 = FACTION_HORDE,
+	ignoreKeys = true,
+	OnAccept = function()
+		C_CharacterCreation.PaidChange_ChooseFaction(PLAYER_FACTION_GROUP.Alliance, true)
+	end,
+	OnCancel = function()
+		C_CharacterCreation.PaidChange_ChooseFaction(PLAYER_FACTION_GROUP.Horde, true)
+	end,
+}
+
+GlueDialogTypes["SERVER_WAITING"] = {
+	text = WAIT_SERVER_RESPONCE,
+	ignoreKeys = true,
+	spinner = true,
+}
+
+GlueDialogTypes["ADDONS_OUT_OF_DATE"] = {
+	text = ADDONS_OUT_OF_DATE,
+	button1 = DISABLE_ADDONS,
+	button2 = LOAD_ADDONS,
+	OnAccept = function()
+		GlueDialog:QueueDialog("CONFIRM_DISABLE_ADDONS")
+	end,
+	OnCancel = function()
+		GlueDialog:QueueDialog("CONFIRM_LOAD_ADDONS")
+	end,
+}
+
+GlueDialogTypes["CONFIRM_LOAD_ADDONS"] = {
+	text = CONFIRM_LOAD_ADDONS,
+	button1 = OKAY,
+	button2 = CANCEL,
+	OnAccept = function()
+		SetAddonVersionCheck(0);
+	end,
+	OnCancel = function()
+		GlueDialog:QueueDialog("ADDONS_OUT_OF_DATE");
+	end,
+}
+
+GlueDialogTypes["CONFIRM_DISABLE_ADDONS"] = {
+	text = CONFIRM_DISABLE_ADDONS,
+	button1 = OKAY,
+	button2 = CANCEL,
+	OnAccept = function()
+		AddonList_DisableOutOfDate()
+	end,
+	OnCancel = function()
+		GlueDialog:QueueDialog("ADDONS_OUT_OF_DATE")
+	end,
+}
+
+GlueDialogTypes["CONFIRM_LAUNCH_ADDON_URL"] = {
+	text = CONFIRM_LAUNCH_UPLOAD_ADDON_URL,
+	button1 = OKAY,
+	button2 = CANCEL,
+	OnAccept = function()
+		local url = AddonList.openURL
+		if url then
+			LaunchURL(url)
+		end
+	end
+}
+
+local DELAYED_DIALOGUES = {
+	[CHAR_LIST_RETRIEVING] = true,
+}
+
+local DIALOG_BACKGROUND_OFFSET_X = 100
+local DIALOG_BACKGROUND_OFFSET_Y = 32
+local DIALOG_BUTTON_OFFSET_X = 15
+local DIALOG_BUTTON_OFFSET_Y = 10
+local DIALOG_BUTTON_OFFSET_BOTTOM = 5
+local DIALOG_EDITBOX_OFFSET_Y = -5
+
+GlueDialogMixin = {}
+
+function GlueDialogMixin:OnLoad()
+	self:RegisterHookListener()
+
+	self:EnableMouseWheel(true)
+
+	self.queuedDialogs = {}
+
+	self.Container.Spinner.AnimFrame.Anim:Play()
+	self.Container.HTML:SetTextColor(1, 1, 1)
+
+	self.Container.alertWidth = 640
+	self.Container.origWidth = self.Container:GetWidth()
+	self.Container.Text.origWidth = self.Container.Text:GetWidth()
+end
+
+function GlueDialogMixin:OPEN_STATUS_DIALOG(event, which, text, data)
+	if self.dialogTimer then
+		self.dialogTimer:Cancel()
+		self.dialogTimer = nil
+	end
+
+	if DELAYED_DIALOGUES[text] then
+		self.dialogTimer = C_Timer:NewTicker(0.5, function()
+			self:ShowDialog(which, text, data)
+		end, 1)
+	else
+		self:ShowDialog(which, text, data)
+	end
+end
+
+function GlueDialogMixin:UPDATE_STATUS_DIALOG(event, text, buttonText)
+	if not text or text == "" then return end
+
+	local info = GlueDialogTypes[self.which]
+
+	local textHeight
+
+	if info and info.html then
+		self.Container.HTML:SetText(text)
+		textHeight = select(4, self.Container.HTML:GetBoundsRect())
+	else
+		self.Container.Text:SetText(text)
+		textHeight = self.Container.Text:GetHeight()
+	end
+
+	if buttonText then
+		self.Container.Button1:SetText(buttonText)
+		textHeight = textHeight + DIALOG_BUTTON_OFFSET_Y + DIALOG_BUTTON_OFFSET_BOTTOM + self.Container.Button1:GetHeight()
+	elseif info and info.button1 then
+		self.Container.Button1:SetText(info.button1)
+		textHeight = textHeight + DIALOG_BUTTON_OFFSET_Y + DIALOG_BUTTON_OFFSET_BOTTOM + self.Container.Button1:GetHeight()
+	end
+
+	self.Container:SetHeight(textHeight + DIALOG_BACKGROUND_OFFSET_Y * 2)
+end
+
+function GlueDialogMixin:CLOSE_STATUS_DIALOG(...)
+	if self.dialogTimer then
+		self.dialogTimer:Cancel()
+		self.dialogTimer = nil
+	end
+
+	self:Hide()
+end
+
+function GlueDialogMixin:QueueDialog(which, text, data)
+	table.insert(self.queuedDialogs, {which = which, text = text, data = data})
+end
+
+function GlueDialogMixin:CheckQueuedDialogs()
+	if #self.queuedDialogs > 0 and not self:IsShown() then
+		self:ShowDialog(self.queuedDialogs[1].which, self.queuedDialogs[1].text, self.queuedDialogs[1].data);
+		table.remove(self.queuedDialogs, 1);
+	end
+end
+
+function GlueDialogMixin:ShowDialog(which, text, data)
+	local dialogInfo = GlueDialogTypes[which]
 	-- Pick a free dialog to use
-	if ( GlueDialog:IsShown() ) then
-		if ( GlueDialog.which ~= which ) then -- We don't actually want to hide, we just want to redisplay?
-			if ( GlueDialogTypes[GlueDialog.which].OnHide ) then
-				GlueDialogTypes[GlueDialog.which].OnHide();
+	if self:IsShown() then
+		if self.which ~= which then -- We don't actually want to hide, we just want to redisplay?
+			if GlueDialogTypes[self.which].OnHide then
+				GlueDialogTypes[self.which].OnHide(self)
 			end
 
-			GlueDialog:Hide();
+			self:Hide()
 		end
 	end
 
-	GlueDialog.data = data;
-	local glueText;
-	if ( dialogInfo.html ) then
-		glueText = GlueDialogHTML;
-		GlueDialogHTML:Show();
-		GlueDialogText:Hide();
+	self.Container:ClearAllPoints()
+	if dialogInfo.anchorPoint then
+		self.Container:SetPoint(dialogInfo.anchorPoint, dialogInfo.anchorOffsetX or 0, dialogInfo.anchorOffsetY or 0)
 	else
-		glueText = GlueDialogText;
-		GlueDialogHTML:Hide();
-		GlueDialogText:Show();
+		self.Container:SetPoint("CENTER", 0, 35)
 	end
 
-	GlueDialogHelpButton:SetShown(dialogInfo.helpButton)
+	self.data = data
+
+	local glueText
+	if dialogInfo.html then
+		glueText = self.Container.HTML
+		self.Container.HTML:Show()
+		self.Container.Text:Hide()
+	else
+		glueText = self.Container.Text
+		self.Container.HTML:Hide()
+		self.Container.Text:Show()
+	end
+
+	if dialogInfo.infoIcon then
+		self.Container.InfoIcon:ClearAllPoints()
+		self.Container.InfoIcon:SetPoint("TOPRIGHT", glueText, 25, 0)
+		self.Container.InfoIcon:Show()
+	else
+		self.Container.InfoIcon:Hide()
+	end
 
 	-- Set the text of the dialog
-	if ( text ) then
-		glueText:SetText(text);
-	else
-		glueText:SetText(dialogInfo.text);
-	end
+	glueText:SetText(text or dialogInfo.text)
+
+	-- set the optional title
+	self.Container.Title:Hide()
+	glueText:ClearAllPoints()
+	glueText:SetPoint("TOP", 0, -32)
 
 	-- Set the buttons of the dialog
-	if ( dialogInfo.button3 ) then
-		GlueDialogButton1:ClearAllPoints();
-		GlueDialogButton2:ClearAllPoints();
-		GlueDialogButton3:ClearAllPoints();
+	if dialogInfo.button3 then
+		self.Container.Button1:ClearAllPoints()
+		self.Container.Button2:ClearAllPoints()
+		self.Container.Button3:ClearAllPoints()
 
-		if ( dialogInfo.displayVertical ) then
-			GlueDialogButton3:SetPoint("BOTTOM", "GlueDialogBackground", "BOTTOM", 0, 16);
-			GlueDialogButton2:SetPoint("BOTTOM", "GlueDialogButton3", "TOP", 0, 0);
-			GlueDialogButton1:SetPoint("BOTTOM", "GlueDialogButton2", "TOP", 0, 0);
+		if dialogInfo.displayVertical then
+			self.Container.Button3:SetPoint("BOTTOM", self.Container, "BOTTOM", 0, DIALOG_BUTTON_OFFSET_BOTTOM + DIALOG_BACKGROUND_OFFSET_Y)
+			self.Container.Button2:SetPoint("BOTTOM", self.Container.Button3, "TOP", 0, DIALOG_BUTTON_OFFSET_Y)
+			self.Container.Button1:SetPoint("BOTTOM", self.Container.Button2, "TOP", 0, DIALOG_BUTTON_OFFSET_Y)
 		else
-			GlueDialogButton1:SetPoint("BOTTOMLEFT", "GlueDialogBackground", "BOTTOMLEFT", 60, 16);
-			GlueDialogButton2:SetPoint("LEFT", "GlueDialogButton1", "RIGHT", -8, 0);
-			GlueDialogButton3:SetPoint("LEFT", "GlueDialogButton2", "RIGHT", -8, 0);
+			self.Container.Button2:SetPoint("BOTTOM", self.Container, "BOTTOM", 0, DIALOG_BUTTON_OFFSET_BOTTOM + DIALOG_BACKGROUND_OFFSET_Y)
+			self.Container.Button1:SetPoint("RIGHT", self.Container.Button2, "LEFT", -DIALOG_BUTTON_OFFSET_X, 0)
+			self.Container.Button3:SetPoint("LEFT", self.Container.Button2, "RIGHT", DIALOG_BUTTON_OFFSET_X, 0)
 		end
 
-		GlueDialogButton2:SetText(dialogInfo.button2);
-		GlueDialogButton2:Show();
-		GlueDialogButton3:SetText(dialogInfo.button3);
-		GlueDialogButton3:Show();
-	elseif ( dialogInfo.button2 ) then
-		GlueDialogButton1:ClearAllPoints();
-		GlueDialogButton2:ClearAllPoints();
+		self.Container.Button1:SetText(dialogInfo.button1)
+		self.Container.Button1:Show()
+		self.Container.Button2:SetText(dialogInfo.button2)
+		self.Container.Button2:Show()
+		self.Container.Button3:SetText(dialogInfo.button3)
+		self.Container.Button3:Show()
+	elseif dialogInfo.button2 then
+		self.Container.Button1:ClearAllPoints()
+		self.Container.Button2:ClearAllPoints()
 
-		if ( dialogInfo.displayVertical ) then
-			GlueDialogButton2:SetPoint("BOTTOM", "GlueDialogBackground", "BOTTOM", 0, 16);
-			GlueDialogButton1:SetPoint("BOTTOM", "GlueDialogButton2", "TOP", 0, 0);
+		if dialogInfo.displayVertical then
+			self.Container.Button2:SetPoint("BOTTOM", self.Container, "BOTTOM", 0, DIALOG_BUTTON_OFFSET_BOTTOM + DIALOG_BACKGROUND_OFFSET_Y)
+			self.Container.Button1:SetPoint("BOTTOM", self.Container.Button2, "TOP", 0, DIALOG_BUTTON_OFFSET_Y)
 		else
-			GlueDialogButton1:SetPoint("BOTTOMRIGHT", "GlueDialogBackground", "BOTTOM", -6, 16);
-			GlueDialogButton2:SetPoint("LEFT", "GlueDialogButton1", "RIGHT", 13, 0);
+			self.Container.Button1:SetPoint("BOTTOMRIGHT", self.Container, "BOTTOM", -6, DIALOG_BUTTON_OFFSET_BOTTOM + DIALOG_BACKGROUND_OFFSET_Y)
+			self.Container.Button2:SetPoint("LEFT", self.Container.Button1, "RIGHT", DIALOG_BUTTON_OFFSET_X, 0)
 		end
 
-		GlueDialogButton2:SetText(dialogInfo.button2);
-		GlueDialogButton2:Show();
-		GlueDialogButton3:Hide();
+		self.Container.Button1:SetText(dialogInfo.button1)
+		self.Container.Button1:Show()
+		self.Container.Button2:SetText(dialogInfo.button2)
+		self.Container.Button2:Show()
+		self.Container.Button3:Hide()
+	elseif dialogInfo.button1 then
+		self.Container.Button1:ClearAllPoints()
+		self.Container.Button1:SetPoint("BOTTOM", self.Container, "BOTTOM", 0, DIALOG_BUTTON_OFFSET_BOTTOM + DIALOG_BACKGROUND_OFFSET_Y)
+		self.Container.Button1:SetText(dialogInfo.button1)
+		self.Container.Button1:Show()
+		self.Container.Button2:Hide()
+		self.Container.Button3:Hide()
 	else
-		GlueDialogButton1:ClearAllPoints();
-		GlueDialogButton1:SetPoint("BOTTOM", "GlueDialogBackground", "BOTTOM", 0, 16);
-		GlueDialogButton2:Hide();
-		GlueDialogButton3:Hide();
+		self.Container.Button1:Hide()
+		self.Container.Button2:Hide()
+		self.Container.Button3:Hide()
 	end
-
-	GlueDialogButton1:SetText(dialogInfo.button1);
 
 	-- Set the miscellaneous variables for the dialog
-	GlueDialog.which = which;
-	GlueDialog.data = data;
+	self.which = which
+	self.data = data
 
 	-- Show or hide the alert icon
-	if ( dialogInfo.showAlert ) then
-		GlueDialogBackground:SetWidth(GlueDialogBackground.alertWidth);
-		GlueDialogAlertIcon:Show();
+	if dialogInfo.showAlert then
+		self.Container:SetWidth(self.Container.alertWidth)
+		self.Container.AlertIcon:Show()
 	else
-		GlueDialogBackground:SetWidth(GlueDialogBackground.origWidth);
-		GlueDialogAlertIcon:Hide();
+		self.Container:SetWidth(self.Container.origWidth)
+		self.Container.AlertIcon:Hide()
 	end
-	GlueDialogText:SetWidth(GlueDialogText.origWidth);
+
+	self.Container.Text:SetWidth(self.Container.Text.origWidth)
 
 	-- Editbox setup
-	if ( dialogInfo.hasEditBox ) then
-		GlueDialogEditBox:Show();
-		if ( dialogInfo.maxLetters ) then
-			GlueDialogEditBox:SetMaxLetters(dialogInfo.maxLetters);
+	if dialogInfo.hasEditBox then
+		self.Container.EditBox:Show()
+		if dialogInfo.maxLetters then
+			self.Container.EditBox:SetMaxLetters(dialogInfo.maxLetters)
 		end
-		if ( dialogInfo.maxBytes ) then
-			GlueDialogEditBox:SetMaxBytes(dialogInfo.maxBytes);
+		if dialogInfo.maxBytes then
+			self.Container.EditBox:SetMaxBytes(dialogInfo.maxBytes)
 		end
 	else
-		GlueDialogEditBox:Hide();
+		self.Container.EditBox:Hide()
+	end
+
+	-- Spinner setup
+	self.Container.Spinner:SetShown(dialogInfo.spinner)
+
+	-- Get the width of the text to aid in determining the width of the dialog
+	local textWidth = 0
+	if dialogInfo.html then
+		textWidth = select(3, self.Container.HTML:GetBoundsRect())
+	else
+		textWidth = self.Container.Text:GetWidth()
 	end
 
 	-- size the width first
-	if( dialogInfo.displayVertical ) then
-		GlueDialogBackground:SetWidth(16 + GlueDialogButton1:GetWidth() + 16);
-	elseif ( dialogInfo.button3 ) then
-		local displayWidth = 45 + GlueDialogButton1:GetWidth() + 8 + GlueDialogButton2:GetWidth() + 8 + GlueDialogButton3:GetWidth() + 45;
-		GlueDialogBackground:SetWidth(displayWidth);
-		GlueDialogText:SetWidth(displayWidth - 40);
+	if dialogInfo.displayVertical then
+		local backgroundWidth = math.max(self.Container.Button1:GetWidth(), textWidth)
+		self.Container:SetWidth(backgroundWidth + DIALOG_BACKGROUND_OFFSET_X * 2)
+	elseif dialogInfo.button3 then
+		local displayWidth = DIALOG_BACKGROUND_OFFSET_X * 3 + DIALOG_BUTTON_OFFSET_X * 2 + self.Container.Button1:GetWidth() + self.Container.Button2:GetWidth() + self.Container.Button3:GetWidth()
+		self.Container:SetWidth(displayWidth)
+		self.Container.Text:SetWidth(displayWidth - DIALOG_BACKGROUND_OFFSET_X * 3)
 	end
 
 	-- Get the height of the string
-	local textHeight, _;
-	if ( dialogInfo.html ) then
-		_,_,_,textHeight = GlueDialogHTML:GetBoundsRect();
+	local _, textHeight
+	if dialogInfo.html then
+		_, _, _, textHeight = self.Container.HTML:GetBoundsRect()
 	else
-		textHeight = GlueDialogText:GetHeight();
+		textHeight = self.Container.Text:GetHeight()
 	end
 
 	-- now size the dialog box height
-	if ( dialogInfo.hasEditBox ) then
-		GlueDialogBackground:SetHeight(16 + textHeight + 8 + GlueDialogEditBox:GetHeight() + 8 + GlueDialogButton1:GetHeight() + 16);
-	elseif( dialogInfo.displayVertical ) then
-		local displayHeight = 16 + textHeight + 8 + GlueDialogButton1:GetHeight() + 16;
-		if ( dialogInfo.button2 ) then
-			displayHeight = displayHeight + 8 + GlueDialogButton2:GetHeight();
+	local displayHeight = textHeight + DIALOG_BACKGROUND_OFFSET_Y * 2
+	if dialogInfo.displayVertical then
+		if dialogInfo.button1 then
+			displayHeight = displayHeight + DIALOG_BUTTON_OFFSET_Y + DIALOG_BUTTON_OFFSET_BOTTOM + self.Container.Button1:GetHeight()
+			if dialogInfo.button2 then
+				displayHeight = displayHeight + DIALOG_BUTTON_OFFSET_Y + self.Container.Button2:GetHeight()
+				if dialogInfo.button3 then
+					displayHeight = displayHeight + DIALOG_BUTTON_OFFSET_Y + self.Container.Button3:GetHeight()
+				end
+			end
 		end
-		if ( dialogInfo.button3 ) then
-			displayHeight = displayHeight + 8 + GlueDialogButton3:GetHeight();
-		end
-		GlueDialogBackground:SetHeight(displayHeight);
-	else
-		GlueDialogBackground:SetHeight(16 + textHeight + 8 + GlueDialogButton1:GetHeight() + 16);
+	elseif dialogInfo.button1 then
+		displayHeight = displayHeight + DIALOG_BUTTON_OFFSET_Y + DIALOG_BUTTON_OFFSET_BOTTOM + self.Container.Button1:GetHeight()
 	end
 
-	GlueDialog:Show();
-end
-
-function GlueDialog_Hide( which )
-	if GlueDialog.which == which then
-		GlueDialog:Hide()
+	if dialogInfo.hasEditBox then
+		displayHeight = displayHeight + DIALOG_BUTTON_OFFSET_Y + self.Container.EditBox:GetHeight()
 	end
-end
 
-function GlueDialog_OnLoad(self)
-	self:RegisterEvent("OPEN_STATUS_DIALOG");
-	self:RegisterEvent("UPDATE_STATUS_DIALOG");
-	self:RegisterEvent("CLOSE_STATUS_DIALOG");
-	GlueDialogText.origWidth = GlueDialogText:GetWidth();
-	GlueDialogBackground.origWidth = GlueDialogBackground:GetWidth();
-	GlueDialogBackground.alertWidth = 600;
-end
-
-function GlueDialog_OnShow(self)
-	local OnShow = GlueDialogTypes[self.which].OnShow;
-	if ( OnShow ) then
-		OnShow();
+	if dialogInfo.spinner then
+		displayHeight = displayHeight + self.Container.Spinner:GetHeight()
 	end
+
+	self.Container:SetHeight(math.floor(displayHeight + 0.5))
+
+	self:Show()
 end
 
-function GlueDialog_OnUpdate(self, elapsed)
-	for i=1, MAX_NUM_GLUE_DIALOG_BUTTONS do
-		local button = _G[ "GlueDialogButton"..i ];
-		if ( button and (CURRENT_GLUE_SCREEN == "login") or (CURRENT_GLUE_SCREEN == "realmwizard") or CURRENT_GLUE_SCREEN == "movie" ) then
-		-- 	button:SetNormalTexture("Interface\\Glues\\Common\\Glue-Panel-Button-Up-Blue");
-		-- 	button:SetPushedTexture("Interface\\Glues\\Common\\Glue-Panel-Button-Down-Blue");
-		-- 	button:SetHighlightTexture("Interface\\Glues\\Common\\Glue-Panel-Button-Highlight-Blue");
-		-- else
-		-- 	button:SetNormalTexture("Interface\\Glues\\Common\\Glue-Panel-Button-Up");
-		-- 	button:SetPushedTexture("Interface\\Glues\\Common\\Glue-Panel-Button-Down");
-		-- 	button:SetHighlightTexture("Interface\\Glues\\Common\\Glue-Panel-Button-Highlight");
-		end
+function GlueDialogMixin:HideDialog(which, text)
+	if (which and self.which ~= which)
+	or (text and self.Container.Text:GetText() ~= text)
+	then
+		return false
 	end
+
+	self:Hide()
+
+	return true
 end
 
-function GlueDialog_OnEvent(self, event, arg1, arg2, arg3)
-	if ( event == "OPEN_STATUS_DIALOG" ) then
-		if arg1 ~= "CONNECTION_HELP_HTML" then
-			GlueDialog_Show(arg1, arg2, arg3);
-		end
-	elseif ( event == "UPDATE_STATUS_DIALOG" and arg1 and (strlen(arg1) > 0) ) then
-		GlueDialogText:SetText(arg1);
-		local buttonText = nil;
-		if ( arg2 ) then
-			buttonText = arg2;
-		elseif ( GlueDialogTypes[GlueDialog.which] ) then
-			buttonText = GlueDialogTypes[GlueDialog.which].button1;
-		end
-		if ( buttonText ) then
-			GlueDialogButton1:SetText(buttonText);
-		end
-		GlueDialogBackground:SetHeight(32 + GlueDialogText:GetHeight() + 8 + GlueDialogButton1:GetHeight() + 16);
-	elseif ( event == "CLOSE_STATUS_DIALOG" ) then
-		GlueDialog:Hide();
+function GlueDialogMixin:IsDialogShown(which, text)
+	if (which and self.which ~= which)
+	or (text and self.Container.Text:GetText() ~= text)
+	then
+		return false
+	end
+
+	return self:IsShown() == 1
+end
+
+function GlueDialogMixin:OnShow()
+	self:Raise()
+	local onShow = GlueDialogTypes[self.which].OnShow
+	if onShow then
+		onShow(self)
+	end
+	if GlueDialogTypes[self.which].cover then
+		GlueParent_AddModalFrame(GlueDialog)
 	end
 end
 
-function GlueDialog_OnHide( self, ... )
-	GlueDialogHelpButton.tooltipHeadText = nil
-	GlueDialogHelpButton.tooltipText = nil
+function GlueDialogMixin:OnHide()
+	self.Container.InfoIcon.InfoHeader = nil
+	self.Container.InfoIcon.InfoText = nil
 
 	if self.which then
 		local dialogInfo = GlueDialogTypes[self.which]
 
 		if dialogInfo then
 			if dialogInfo.OnHide then
-				dialogInfo.OnHide()
+				dialogInfo.OnHide(self)
 			end
 		end
 	end
---	PlaySound("igMainMenuClose");
+
+	if GlueDialogTypes[self.which].cover then
+		GlueParent_RemoveModalFrame(GlueDialog)
+	end
+
+--	PlaySound("igMainMenuClose")
 end
 
-function GlueDialog_OnClick(index)
-	GlueDialog:Hide();
-	if ( index == 1 ) then
-		local OnAccept = GlueDialogTypes[GlueDialog.which].OnAccept;
-		if ( OnAccept ) then
-			OnAccept();
-		end
-	elseif ( index == 2 ) then
-		local OnCancel = GlueDialogTypes[GlueDialog.which].OnCancel;
-		if ( OnCancel ) then
-			OnCancel();
-		end
-	elseif ( index == 3 ) then
-		local OnAlt = GlueDialogTypes[GlueDialog.which].OnAlt;
-		if ( OnAlt ) then
-			OnAlt();
-		end
-	end
-	PlaySound("gsTitleOptionOK");
-end
-
-function GlueDialog_OnKeyDown(key)
-	if ( key == "PRINTSCREEN" ) then
-		Screenshot();
-		return;
+function GlueDialogMixin:OnKeyDown(key)
+	if key == "PRINTSCREEN" then
+		Screenshot()
+		return
 	end
 
-	local info = GlueDialogTypes[GlueDialog.which];
-	if ( not info or info.ignoreKeys ) then
-		return;
-	end
+	local info = GlueDialogTypes[self.which]
+	if info and info.ignoreKeys then return end
 
-	if ( info and info.escapeHides ) then
-		if ( info.hideSound ) then
-			PlaySound(info.hideSound);
-		end
-		GlueDialog:Hide();
-	elseif ( key == "ESCAPE" ) then
-		if ( GlueDialogButton2:IsShown() ) then
-			GlueDialogButton2:Click();
+	if key == "ESCAPE" then
+		if info.escapeHides then
+			self:Hide()
+		elseif self.Container.Button3:IsShown() then
+			self.Container.Button3:Click()
+		elseif self.Container.Button2:IsShown() then
+			self.Container.Button2:Click()
 		else
-			GlueDialogButton1:Click();
+			self.Container.Button1:Click()
 		end
-		if ( info.hideSound ) then
-			PlaySound(info.hideSound);
+
+		if info.hideSound then
+			PlaySound(info.hideSound)
 		end
-	elseif (key == "ENTER" ) then
-		GlueDialogButton1:Click();
-		if ( info.hideSound ) then
-			PlaySound(info.hideSound);
+	elseif key == "ENTER" then
+		if not self.Container.Button3:IsShown() or info.enableEnter then
+			self.Container.Button1:Click()
+		end
+
+		if info.hideSound then
+			PlaySound(info.hideSound)
 		end
 	end
+end
+
+GlueDialogEditBoxMixin = {}
+
+function GlueDialogEditBoxMixin:OnLoad()
+	self.dialog = self:GetParent():GetParent()
+end
+
+function GlueDialogEditBoxMixin:OnEnterPressed()
+	self.dialog:OnKeyDown("ENTER")
+end
+
+function GlueDialogEditBoxMixin:OnEscapePressed()
+	self.dialog:OnKeyDown("ESCAPE")
+end
+
+GlueDialogButtonMixin = {}
+
+function GlueDialogButtonMixin:OnLoad()
+	self.dialog = self:GetParent():GetParent()
+	self:SetParentArray("buttons")
+
+--	if self:IsEnabled() ~= 1 then
+--		self:SetAlpha(0.5)
+--	end
+end
+
+function GlueDialogButtonMixin:OnClick()
+	self.dialog:Hide()
+
+	local id = self:GetID()
+	if id == 1 then
+		local OnAccept = GlueDialogTypes[self.dialog.which].OnAccept
+		if OnAccept then
+			OnAccept(self.dialog)
+		end
+	elseif id == 2 then
+		local OnCancel = GlueDialogTypes[self.dialog.which].OnCancel
+		if OnCancel then
+			OnCancel(self.dialog)
+		end
+	elseif id == 3 then
+		local OnAlt = GlueDialogTypes[self.dialog.which].OnAlt
+		if OnAlt then
+			OnAlt(self.dialog)
+		end
+	end
+
+	PlaySound("gsTitleOptionOK")
 end

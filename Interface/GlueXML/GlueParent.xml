@@ -2,6 +2,21 @@
 ..\FrameXML\UI.xsd">
 	<Script file="GlueParent.lua"/>
 	<Frame name="GlueParent" setAllPoints="true">
+		<Frames>
+			<Frame name="$parentBlockingFrame" parentKey="BlockingFrame" setAllPoints="true" frameStrata="HIGH" frameLevel="100" hidden="true" enableMouse="true">
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture setAllPoints="true">
+							<Color r="0" g="0" b="0" a="0.75"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnKeyDown function="GlueParentBlockingFrame_OnKeyDown"/>
+					<OnMouseWheel function="nop"/>
+				</Scripts>
+			</Frame>
+		</Frames>
 		<Scripts>
 			<!-- Register here for any events you want to monitor globally -->
 			<OnLoad>
@@ -20,4 +35,23 @@
 			</OnUpdate>
 		</Scripts>
 	</Frame>
+
+	<ModelFFX name="GlueFFXModel" parent="GlueParent" setAllPoints="true">
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parentBackground" parentKey="Background" alpha="0.2" file="Interface\Custom_Glues\UI-CharacterSelect-Background">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-14" y="10" />
+						<Anchor point="BOTTOMRIGHT" x="14" y="-10" />
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ModelFFXMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</ModelFFX>
 </Ui>

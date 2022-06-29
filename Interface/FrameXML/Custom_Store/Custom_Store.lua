@@ -31,13 +31,8 @@ local STORE_SPECIAL_OFFER_POPUP = {}
 local STPRE_SPECIAL_OFFER_DETAILS_DATA = {}
 local STORE_SMALL_SPECIAL_OFFER_BUFFER = {}
 local STORE_PRODUCT_MONEY_ICON = {"coins", "mmotop", "refer", "loyal"}
-local STORE_BLOODLINE_BOOK_ITEMS = {
-	[99990] = true,
-	[99991] = true,
-	[320156] = true,
-	[320184] = true,
-}
 
+local STORE_COLLECTIONS_CATEGORY_ID = 3
 local STORE_TRANSMOGRIFY_CATEGORY_ID = 6
 local STORE_SUBSCRIPTIONS_CATEGORY_ID = 5
 
@@ -457,6 +452,12 @@ STORE_SPECIAL_OFFERS_3D = {
 		PopupCreature = 131250,
 		BannerModelInfo = {131250, -0.38, "BOTTOM", "TOP", 0, 20, 350, 220, 0.7},
 	}, -- Sirin
+	[58] = {
+		Name = "VenLo",
+		VertexColor = {1, 0.3, 0.3},
+		PopupCreature = 131261,
+		BannerModelInfo = {131261, -0.645, "BOTTOM", "TOP", 0, -60, 400, 320, 0.5},
+	}, -- VenLo
 }
 
 STORE_CACHE = C_Cache("SIRUS_STORE_CACHE", true)
@@ -1480,7 +1481,7 @@ function StoreItemListButton_OnEnter( self, ... )
 	self.Icon:SetSize(44 + 5, 44 + 5)
 	self.IconBorder:SetSize(53 + 5, 53 + 5)
 
-	if selectedMoneyID == 4 or selectedMoneyID == 3 or selectedMoneyID == 2 then
+	if selectedMoneyID == 4 or selectedMoneyID == 3 or selectedMoneyID == 2 or (selectedMoneyID == 1 and self.data.Entry == 54311) then
 		if self.data.CreatureEntry and not StoreConfirmationFrame:IsShown() then
 			StoreModelPreviewFrame:Hide()
 			StoreModelPreviewFrame.data = self.data
@@ -1790,12 +1791,7 @@ function StoreConfirmationFrame_OnShow( self, ... )
 	if self.data.DescriptionText then
 		self.NoticeFrame.Notice:SetText(self.data.DescriptionText)
 	else
-		if self.data and self.data.Entry and STORE_BLOODLINE_BOOK_ITEMS[self.data.Entry] then
-			self.data.selfSize = {403, 456};
-			self.data.noticeSize = {400, 268};
-
-			self.NoticeFrame.Notice:SetFormattedText("%s\n\n%s", STORE_CONFIRM_NOTICE_WARNING2, STORE_CONFIRM_NOTICE)
-		elseif selectedCategoryID == 7 or (selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID and selectedMoneyID == 1) then
+		if selectedCategoryID == 7 or (selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID and selectedMoneyID == 1) then
 			self.NoticeFrame.Notice:SetFormattedText("%s\n\n%s", STORE_CONFIRM_NOTICE_WARNING, STORE_CONFIRM_NOTICE)
 		else
 			self.NoticeFrame.Notice:SetText(STORE_CONFIRM_NOTICE)
@@ -1962,6 +1958,16 @@ function StoreConfirmationButton_OnClick( self, ... )
 		selectedRemoveOffer = data.pageID
 	end
 	parent:Hide()
+end
+
+function StoreConfirmationButton_OnEnter(self)
+	if self:IsEnabled() == 0 then
+		if selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID and selectedSubCategoryID ~= 0 then
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+			GameTooltip:AddLine(STORE_BUY_TRANSMOG_WARNING, 1, 0, 0, 1, 1)
+			GameTooltip:Show()
+		end
+	end
 end
 
 function StorePurchaseAlertFrame_OnShow( self, ... )
@@ -2243,8 +2249,20 @@ function StoreSubCategorySelectButton_OnClick( self, ... )
 end
 
 function StoreSubCategorySelectClick()
-	selectedShowAllItemCheckBox = 0
-	StoreShowAllItemCheckButton:SetChecked(false)
+	if selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID then
+		local isShowAllItems = tonumber(C_CVar:GetValue("C_CVAR_STORE_SHOW_ALL_TRANSMOG_ITEMS")) == 1;
+		if isShowAllItems then
+			selectedShowAllItemCheckBox = 0;
+			StoreItemListUpdate();
+			selectedShowAllItemCheckBox = 1;
+		else
+			selectedShowAllItemCheckBox = 0;
+		end
+		StoreShowAllItemCheckButton:SetChecked(isShowAllItems);
+	else
+		selectedShowAllItemCheckBox = 0
+		StoreShowAllItemCheckButton:SetChecked(false)
+	end
 
 	if StoreItemListUpdate() then
 		StoreSelectCategory(selectedCategoryID, selectedSubCategoryID)
@@ -2253,6 +2271,11 @@ end
 
 function StoreShowAllItemCheckButton_OnClick( self, ... )
 	selectedShowAllItemCheckBox = self:GetChecked() and 1 or 0
+
+	if selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID then
+		C_CVar:SetValue("C_CVAR_STORE_SHOW_ALL_TRANSMOG_ITEMS", tostring(selectedShowAllItemCheckBox));
+	end
+
 	StoreItemListUpdate()
 end
 
@@ -3249,6 +3272,13 @@ function StoreConfirmationFrame_Update(self)
 	end
 
 	StoreConfirmationSendGiftCheckButton:SetEnabled(not self.isAltCurrency);
+
+	if not giftChecked and self.data.ID ~= -1 and selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID and selectedSubCategoryID ~= 0 and selectedShowAllItemCheckBox == 1 then
+		local storage = STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][0];
+		StoreConfirmationFrameBuyButton:SetEnabled(storage.data and storage.data[self.data.ID] and true or false);
+	else
+		StoreConfirmationFrameBuyButton:SetEnabled(true);
+	end
 end
 
 function StoreConfirmationFrame_UpdateSize(self)
@@ -5502,6 +5532,7 @@ function StoreRenewTimeFrame_UpdateTime()
 
 	if not storeRenewMsgTime or not renewTime or renewTime == -1 then
 		frame:Hide();
+		return
 	end
 
 	local timeLeft = storeRenewMsgTime - (time() - renewTime);
@@ -5515,6 +5546,7 @@ function StoreRenewTimeFrame_UpdateTime()
 		end
 
 		frame:Hide();
+		return
 	end
 
 	local timeFormat, timeText = GetRenewTimeTextFormat(timeLeft);
@@ -6074,6 +6106,32 @@ function EventHandler:ASMSG_SHOP_ROLLED_TEMS_INFO( msg )
 		STORE_CACHE:Set("CATEGORY_DROP_COUNT"..3, 1)
 		STORE_CACHE:Set("CATEGORY_DROP_COUNT"..6, 1)
 
+		local moneyID = 1
+		if STORE_PRODUCT_CACHE[moneyID] and STORE_PRODUCT_CACHE[moneyID][STORE_COLLECTIONS_CATEGORY_ID] then
+			local category = STORE_PRODUCT_CACHE[moneyID][STORE_COLLECTIONS_CATEGORY_ID]
+			for subCategoryID = 1, #STORE_SUB_CATEGORY_DATA[STORE_COLLECTIONS_CATEGORY_ID] do
+				if category[subCategoryID] then
+					for filter = 0, 1 do
+						if category[subCategoryID][filter] and category[subCategoryID][filter].data then
+							table.wipe(category[subCategoryID][filter].data)
+						end
+					end
+				end
+			end
+		end
+		if STORE_PRODUCT_CACHE[moneyID] and STORE_PRODUCT_CACHE[moneyID][STORE_TRANSMOGRIFY_CATEGORY_ID] then
+			local category = STORE_PRODUCT_CACHE[moneyID][STORE_TRANSMOGRIFY_CATEGORY_ID]
+			for subCategoryID = 1, 4 do
+				if category[subCategoryID] then
+					for filter = 0, 1 do
+						if category[subCategoryID][filter] and category[subCategoryID][filter].data then
+							table.wipe(category[subCategoryID][filter].data)
+						end
+					end
+				end
+			end
+		end
+
 		ButtonPulse_StopPulse(StoreMicroButton)
 		ButtonPulse_StopPulse(GameMenuButtonStore)
 
@@ -6270,14 +6328,20 @@ STORE_TRANSMOGRIFY_CAMERA_SETTINGS_HEAD = {
 	["Nightborne3"] = {2.839001, 1.021001, 0.426001},
 	["VoidElf2"] = {2.582000, 1.044001, 0.431001},
 	["VoidElf3"] = {2.839001, 0.968001, 0.426001},
+	["Eredar2"] = {3.863001, 1.000000, 0.224000},
+	["Eredar3"] = {3.402001, 0.951001, 0.175000},
+	["DarkIronDwarf2"] = {2.734001, 0.993001, 0.532000},
+	["DarkIronDwarf3"] = {1.988001, 0.962001, 0.574000},
+	["ZandalariTroll2"] = {3.707000, 1.06400, -0.122000},
+	["ZandalariTroll3"] = {3.802000, 1.10600, -0.135000},
+	["Lightforged2"] = {3.863001, 1.000000, 0.224000},
+	["Lightforged3"] = {3.402001, 0.951001, 0.175000},
 }
 
 function StoreTransmogrifySubCategoryFrameButtonMixin:OnClick()
 	selectedSubCategoryID = self:GetParent():GetID()
 
-	if StoreItemListUpdate() then
-		StoreSelectCategory(selectedCategoryID, selectedSubCategoryID)
-	end
+	StoreSubCategorySelectClick()
 
 	StoreTransmogrifyFrame.RightContainer.ContentFrame.OverlayElements.ShowShoulders:SetShown(selectedSubCategoryID == 1)
 

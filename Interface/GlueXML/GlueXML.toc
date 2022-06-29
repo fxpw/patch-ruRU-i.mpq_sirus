@@ -14,7 +14,6 @@
 ..\SharedXML\Pools.lua
 ..\SharedXML\Utils\C_Texture.lua
 ..\SharedXML\Utils\C_CreatureInfo.lua
-..\SharedXML\Utils\C_CharacterCreation.lua
 ..\SharedXML\Util.lua
 ..\SharedXML\AnchorUtil.xml
 ..\SharedXML\CircularBuffer.lua
@@ -33,11 +32,16 @@
 ..\SharedXML\SharedFontStyles.xml
 ..\SharedXML\FunctionOverride.lua
 
+..\SharedXML\FrameUtil.lua
+..\SharedXML\LayoutFrame.xml
+
 ..\SharedXML\Utils\C_Cache.lua
 ..\SharedXML\Utils\C_Service.lua
 
 Utils\C_ConnectManager.lua
+Utils\C_GluePackets.lua
 Utils\C_GlueCVars.lua
+Utils\C_CharacterCreation.lua
 
 GlueStrings.lua
 DevTools\AccountLoginManagerData.lua
@@ -48,6 +52,7 @@ GlueParent.xml
 ..\SharedXML\HybridScrollFrame.xml
 GlueButtons.xml
 GlueTemplates.xml
+GlueDarkTemplates.xml
 GlueDialog.xml
 GlueDropDownMenu.xml
 GlueTooltip.xml

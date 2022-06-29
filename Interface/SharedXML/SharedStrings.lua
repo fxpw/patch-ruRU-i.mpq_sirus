@@ -396,7 +396,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = ""
 	},
 	["RACE_EREDAR_FEMALE"] = {
-		ruRU = "Эредар",
+		ruRU = "Эредарка",
 		enGB = ""
 	},
 	["RACE_DARKIRONDWARF"] = {
@@ -421,6 +421,38 @@ local SIRUS_LOCALIZATION = {
 	},
 	["RACE_DARKIRONDWARF_FEMALE_CONFIRM"] = {
 		ruRU = "Дворф Черного Железа",
+		enGB = ""
+	},
+	["RACE_ZANDALARITROLL"] = {
+		ruRU = "Зандалар",
+		enGB = ""
+	},
+	["RACE_ZANDALARITROLL_FEMALE"] = {
+		ruRU = "Зандаларка",
+		enGB = ""
+	},
+	["RACE_LIGHTFORGED"] = {
+		ruRU = "Озаренный дреней",
+		enGB = ""
+	},
+	["RACE_LIGHTFORGED_FEMALE"] = {
+		ruRU = "Озаренный дреней",
+		enGB = ""
+	},
+	["RACE_ZANDALARITROLL_CONFIRM"] = {
+		ruRU = "Зандаларом",
+		enGB = ""
+	},
+	["RACE_ZANDALARITROLL_FEMALE_CONFIRM"] = {
+		ruRU = "Зандаларкой",
+		enGB = ""
+	},
+	["RACE_LIGHTFORGED_CONFIRM"] = {
+		ruRU = "Озаренным дренеем",
+		enGB = ""
+	},
+	["RACE_LIGHTFORGED_FEMALE_CONFIRM"] = {
+		ruRU = "Озаренным дренеем",
 		enGB = ""
 	},
 }

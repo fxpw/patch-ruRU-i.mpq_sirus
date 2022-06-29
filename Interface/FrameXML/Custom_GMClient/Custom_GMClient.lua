@@ -50,12 +50,49 @@ function GMClientMixIn:MuteHistoryHandler( data )
 	end
 end
 
-function GMClientMixIn:RequestPlayerInfoByName( playerName, callback, message )
+function GMClientMixIn:PDumpCharacterCallback(playerName, unitAccountData)
+	local unitName = UnitName("player");
+
+	if not unitAccountData then
+		unitAccountData = self.accountDataByName[unitName];
+	end
+
+	if unitAccountData and unitAccountData.accountLogin and unitAccountData.accountLogin ~= "" and playerName then
+		local lenPlayerName = strlenutf8(playerName);
+		local isUTF8Name = lenPlayerName ~= string.len(playerName);
+		local newPlayerName = lenPlayerName > 10 and utf8sub(playerName, 1, 10) or playerName;
+
+		SendChatMessage(string.format(".pdump copy %s %s %s", playerName, unitAccountData.accountLogin, (newPlayerName .. (isUTF8Name and "пд" or "pd"))), "WHISPER", nil, unitName);
+	end
+end
+
+function GMClientMixIn:PDumpCharacter(playerName)
+	if type(playerName) ~= "string" or playerName == "" then
+		return;
+	end
+
+	local unitName = UnitName("player");
+
+	if not self.accountDataByName[unitName] then
+		self:RequestPlayerInfoByName(unitName, self.PDumpCharacterCallback, nil, self, playerName);
+		return;
+	end
+
+	self:PDumpCharacterCallback(playerName, self.accountDataByName[unitName]);
+end
+
+function GMClientMixIn:RequestPlayerInfoByName(playerName, callback, message, ...)
+	local args = select("#", ...) > 0 and {...} or nil;
+
 	TrinityCoreMixIn:SendCommand("pinfo "..playerName, function( data )
 		GMClientMixIn:PlayerInfoHandler( data, message )
 
 		if callback then
-			callback()
+			if args then
+				callback(unpack(args))
+			else
+				callback()
+			end
 		end
 	end)
 end

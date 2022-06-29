@@ -43,6 +43,28 @@ ALLIEDRACES_DATA = {
 		bannerColor = {r = 1, g = 0.54, b = 0},
 		allDisplayInfo = {316152, 316153, 316157, 316160, 316161, 316162},
 	},
+	[E_CHARACTER_RACES.RACE_ZANDALARITROLL] = { -- ZandalariTroll
+		maleModelID = 83401,
+		femaleModelID = 83402,
+		maleName = RACE_ZANDALARITROLL,
+		femaleName = RACE_ZANDALARITROLL_FEMALE,
+		crestAtlas = "AlliedRace-Crest-Zandalari",
+		modelBackgroundAtlas = "AlliedRace-UnlockingFrame-ModelBackground-Zandalari",
+		raceFileString = "ZandalariTroll",
+		bannerColor = {r = 0.93, g = 0.74, b = 0.15},
+		allDisplayInfo = {319324, 310801, 319325, 310800, 310810, 319326},
+	},
+	[E_CHARACTER_RACES.RACE_LIGHTFORGED] = { -- Lightforged
+		maleModelID = 83357,
+		femaleModelID = 83358,
+		maleName = RACE_LIGHTFORGED,
+		femaleName = RACE_LIGHTFORGED_FEMALE,
+		crestAtlas = "AlliedRace-Crest-Lightforge",
+		modelBackgroundAtlas = "AlliedRace-UnlockingFrame-ModelBackground-Lightforge",
+		raceFileString = "Lightforged",
+		bannerColor = {r = 1, g = 0.96, b = 0.73},
+		allDisplayInfo = {310791, 319316, 319318, 319320, 319322, 319321},
+	},
 }
 
 C_AlliedRaces = {}
@@ -65,6 +87,13 @@ end
 
 function AlliedRacesFrameMixin:SetFrameText(name, description)
 	self.TitleText:SetText(name);
+
+	if self.raceID == E_CHARACTER_RACES.RACE_DARKIRONDWARF then
+		self.RaceInfoFrame.AlliedRacesRaceName:SetFontObject(Fancy16Font);
+	else
+		self.RaceInfoFrame.AlliedRacesRaceName:SetFontObject(Fancy24Font);
+	end
+
 	self.RaceInfoFrame.AlliedRacesRaceName:SetText(name);
 	self.RaceInfoFrame.ScrollFrame.Child.RaceDescriptionText:SetText(description);
 end
@@ -73,6 +102,15 @@ function AlliedRacesFrameMixin:SetupAbilityPool(index, spellID)
 	local name, rank, icon = GetSpellInfo(spellID);
 	local childFrame = self.RaceInfoFrame.ScrollFrame.Child;
 	local abilityButton = self.abilityPool:Acquire();
+
+	if GetFlyoutInfo(spellID) then
+		SetClampedTextureRotation(abilityButton.FlyoutArrow.Arrow, 90);
+		abilityButton.FlyoutArrow:Show();
+	else
+		abilityButton.FlyoutArrow:Hide();
+	end
+
+	abilityButton.FlyoutFrame:Hide();
 
 	if (index == 1) then
 		abilityButton:SetPoint("TOPLEFT", childFrame.RacialTraitsLabel, "BOTTOMLEFT", -7, -19);

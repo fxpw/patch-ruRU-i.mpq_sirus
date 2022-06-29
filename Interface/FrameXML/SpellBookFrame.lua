@@ -537,7 +537,7 @@ function SpellBookFrame_UpdateSpellRender()
 			if not spellbookMainProfessionValue[skillName] then
 				spellbookMainProfessionValue[skillName] = {}
 			end
-			spellbookMainProfessionValue[skillName] = {skillIndex = i, skillName = skillName, skillRank = skillRank, skillMaxRank = skillMaxRank, downSpell = nil, upSpell = nil}
+			spellbookMainProfessionValue[skillName] = {skillIndex = i, skillName = skillName, skillRank = skillRank, skillMaxRank = skillMaxRank, skillModifier = skillModifier, downSpell = nil, upSpell = nil}
 		end
 		if spellbookSecondaryProfessionData[skillName] then
 			spellbookSecondaryProfessionData[skillName].isLearned = true
@@ -545,6 +545,7 @@ function SpellBookFrame_UpdateSpellRender()
 			spellbookSecondaryProfessionData[skillName].skillName = skillName
 			spellbookSecondaryProfessionData[skillName].skillRank = skillRank
 			spellbookSecondaryProfessionData[skillName].skillMaxRank = skillMaxRank
+			spellbookSecondaryProfessionData[skillName].skillModifier = skillModifier
 		end
 	end
 
@@ -784,7 +785,12 @@ function PrimaryProfession_Update()
 
 			_frame.statusBar.rankText:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 			_frame.statusBar.tooltip = nil
-			_frame.statusBar.rankText:SetFormattedText("%d/%d", v.skillRank, v.skillMaxRank)
+
+			if v.skillMaxRank > 1 and v.skillModifier and v.skillModifier > 0 then
+				_frame.statusBar.rankText:SetFormattedText("%d (+%d)/%d", v.skillRank, v.skillModifier, v.skillMaxRank)
+			else
+				_frame.statusBar.rankText:SetFormattedText("%d/%d", v.skillRank, v.skillMaxRank)
+			end
 
 			frame.Learn:Show()
 			frame.Missing:Hide()
@@ -850,7 +856,12 @@ function PrimaryProfession_Update()
 
 			_frame.statusBar.rankText:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 			_frame.statusBar.tooltip = nil
-			_frame.statusBar.rankText:SetFormattedText("%d/%d", c.skillRank, c.skillMaxRank)
+
+			if c.skillMaxRank > 1 and c.skillModifier and c.skillModifier > 0 then
+				_frame.statusBar.rankText:SetFormattedText("%d (+%d)/%d", c.skillRank, c.skillModifier, c.skillMaxRank)
+			else
+				_frame.statusBar.rankText:SetFormattedText("%d/%d", c.skillRank, c.skillMaxRank)
+			end
 
 			frame.Learn:Show()
 			frame.Missing:Hide()

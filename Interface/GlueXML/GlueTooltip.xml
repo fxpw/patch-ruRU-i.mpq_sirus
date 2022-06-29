@@ -112,560 +112,159 @@
 		</Anchors>
 	</Frame>
 
-	<Frame name="GlueTooltipClassTemplate" frameStrata="TOOLTIP" hidden="true" clampedToScreen="true" virtual="true">
-		<Size>
-			<AbsDimension x="300" y="300"/>
-		</Size>
-		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-			<Color r="0" g="0" b="0"/>
-			<EdgeSize>
-				<AbsValue val="16"/>
-			</EdgeSize>
-			<TileSize>
-				<AbsValue val="16"/>
-			</TileSize>
-			<BackgroundInsets>
-				<AbsInset left="3" right="3" top="3" bottom="3"/>
-			</BackgroundInsets>
-		</Backdrop>
+	<Frame name="CharacterCreateFrameAbilityTemplate" inherits="ResizeLayoutFrame" virtual="true">
 		<Layers>
 			<Layer level="ARTWORK">
-				<FontString name="$parentHeader1" inherits="GlueFontNormal" justifyH="CENTER" hidden="true" parentKey="Header1">
-					<Color r="1" g="1" b="1"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x ="28" y="28"/>
 					<Anchors>
-						<Anchor point="TOP">
-							<Offset>
-								<AbsDimension x="0" y="-10"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="LEFT" x="1" y="0"/>
 					</Anchors>
-				</FontString>
-
-				<FontString name="$parentWarning1" inherits="SystemFont_Shadow_Outline_Small" justifyH="LEFT" hidden="true" parentKey="Warning1">
-					<Color r="1" g="0" b="0"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
+				</Texture>
+				<FontString parentKey="Text" inherits="Shared_GameFontNormal" justifyH="LEFT">
+					<Size x ="240" y="0"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentHeader1" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-3"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentRole1" inherits="SystemFont_Shadow_Outline_Small" justifyH="LEFT" hidden="true" parentKey="Role1">
-					<Color r="0.47" g="0.72" b="0.93"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentWarning1" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-3"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentDescription1" inherits="SystemFont_Shadow_Outline_Small" justifyH="LEFT" hidden="true" parentKey="Description1">
-					<Color r="1" g="0.82" b="0"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentRole1" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-10"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentHeader2" inherits="GlueFontNormal" justifyH="CENTER" hidden="true" parentKey="Header2">
-					<Color r="1" g="1" b="1"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentDescription1" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-10"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentDescription2" inherits="SystemFont_Shadow_Med1" justifyH="LEFT" hidden="true" parentKey="Description2">
-					<Color r="0.61" g="0.61" b="0.61"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentHeader2" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-10"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentSpellName1" inherits="OptionsFontHighlight" justifyH="LEFT" hidden="true" parentKey="SpellName1">
-					<!-- <Color r="1" g="0.82" b="0"/> -->
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentDescription2" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-5"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentSpellDescription1" inherits="OptionsFontHighlightSmall" justifyH="LEFT" hidden="true" parentKey="SpellDescription1">
-					<Color r="1" g="0.82" b="0"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellName1" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-1"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentSpellName2" inherits="OptionsFontHighlight" justifyH="LEFT" hidden="true" parentKey="SpellName2">
-					<!-- <Color r="1" g="0.82" b="0"/> -->
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellDescription1" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-3"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentSpellDescription2" inherits="OptionsFontHighlightSmall" justifyH="LEFT" hidden="true" parentKey="SpellDescription2">
-					<Color r="1" g="0.82" b="0"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellName2" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-1"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentSpellName3" inherits="OptionsFontHighlight" justifyH="LEFT" hidden="true" parentKey="SpellName3">
-					<!-- <Color r="1" g="0.82" b="0"/> -->
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellDescription2" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-3"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentSpellDescription3" inherits="OptionsFontHighlightSmall" justifyH="LEFT" hidden="true" parentKey="SpellDescription3">
-					<Color r="1" g="0.82" b="0"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellName3" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-1"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentDescription3" inherits="SystemFont_Shadow_Med1" justifyH="LEFT" hidden="true" parentKey="Description3">
-					<Color r="0.61" g="0.61" b="0.61"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellDescription3" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-10"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentSpellName4" inherits="OptionsFontHighlight" justifyH="LEFT" hidden="true" parentKey="SpellName4">
-					<!-- <Color r="1" g="0.82" b="0"/> -->
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentDescription3" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-5"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentSpellDescription4" inherits="OptionsFontHighlightSmall" justifyH="LEFT" hidden="true" parentKey="SpellDescription4">
-					<Color r="1" g="0.82" b="0"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellName4" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-1"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentSpellName5" inherits="OptionsFontHighlight" justifyH="LEFT" hidden="true" parentKey="SpellName5">
-					<!-- <Color r="1" g="0.82" b="0"/> -->
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellDescription4" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-3"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentSpellDescription5" inherits="OptionsFontHighlightSmall" justifyH="LEFT" hidden="true" parentKey="SpellDescription5">
-					<Color r="1" g="0.82" b="0"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellName5" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-1"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="6" y="0"/>
 					</Anchors>
 				</FontString>
 			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="IconOverlay">
+					<Size x ="28" y="28"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentIcon"/>
+					</Anchors>
+				</Texture>
+			</Layer>
 		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ResizeLayoutMixin, CharacterCreateFrameAbilityMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="CharacterCreate_AbilityList" parentKey="AbilityList" inherits="VerticalLayoutFrame" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentLabel" parentKey="Label" font="Shared_GameFontNormal">
+					<Color r="1.0" g="1.0" b="1.0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, LayoutMixin, VerticalLayoutMixin, CharacterCreateAbilityListMixin)
+
+				self.spacing = 10
+				self.fixedWidth = 280
+
+				self.Label.layoutIndex = 0
+				self.Label.bottomPadding = 0
+
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="GlueTooltipClassTemplate" frameStrata="TOOLTIP" hidden="true" clampedToScreen="true" virtual="true">
+		<Size x="300" y="300"/>
+		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<Color r="0" g="0" b="0"/>
+			<EdgeSize val="16"/>
+			<TileSize val="16"/>
+			<BackgroundInsets left="3" right="3" top="3" bottom="3"/>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentHeader" parentKey="Header" inherits="GlueFontNormal" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="10" y="-10"/>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+
+				<FontString name="$parentDescription" parentKey="Description" inherits="Shared_GameFontNormal" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentHeader" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
+					</Anchors>
+					<Color r="1" g="0.82" b="0"/>
+				</FontString>
+
+				<FontString name="$parentRole" parentKey="Role" inherits="Shared_GameFontNormal" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentDescription" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
+					</Anchors>
+					<Color r="1" g="0.82" b="0"/>
+				</FontString>
+
+				<FontString name="$parentWarning" parentKey="Warning" inherits="Shared_GameFontNormal" justifyH="LEFT" hidden="true">
+					<Color r="1" g="0" b="0"/>
+				</FontString>
+
+				<FontString name="$parentClickInfo" parentKey="ClickInfo" inherits="Shared_GameFontNormal" justifyH="LEFT">
+					<Color r="0.61" g="0.61" b="0.61"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentAbilityList" parentKey="AbilityList" inherits="CharacterCreate_AbilityList" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRole" relativePoint="BOTTOMLEFT" x="0" y="-15"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				self.AbilityList.Label:SetText(CLASS_TRAITS_TOOLTIP)
+			</OnLoad>
+		</Scripts>
 	</Frame>
 
 	<Frame name="GlueTooltipRaceTemplate" frameStrata="TOOLTIP" hidden="true" clampedToScreen="true" virtual="true">
-		<Size>
-			<AbsDimension x="300" y="300"/>
-		</Size>
+		<Size x="300" y="300"/>
 		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 			<Color r="0" g="0" b="0"/>
-			<EdgeSize>
-				<AbsValue val="16"/>
-			</EdgeSize>
-			<TileSize>
-				<AbsValue val="16"/>
-			</TileSize>
-			<BackgroundInsets>
-				<AbsInset left="3" right="3" top="3" bottom="3"/>
-			</BackgroundInsets>
+			<EdgeSize val="16"/>
+			<TileSize val="16"/>
+			<BackgroundInsets left="3" right="3" top="3" bottom="3"/>
 		</Backdrop>
 		<Layers>
 			<Layer level="ARTWORK">
-				<FontString name="$parentHeader1" inherits="GlueFontNormal" justifyH="CENTER" hidden="true" parentKey="Header1">
-					<Color r="1" g="1" b="1"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
+				<FontString name="$parentHeader" parentKey="Header" inherits="GlueFontNormal" justifyH="LEFT">
 					<Anchors>
-						<Anchor point="TOP">
-							<Offset>
-								<AbsDimension x="0" y="-10"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" x="10" y="-10"/>
 					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+				<FontString name="$parentDescription" parentKey="Description" inherits="Shared_GameFontNormal" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentHeader" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
+					</Anchors>
+					<Color r="1" g="0.82" b="0"/>
 				</FontString>
 
-				<FontString name="$parentWarning1" inherits="SystemFont_Shadow_Outline_Small" justifyH="LEFT" hidden="true" parentKey="Warning1" text="Warning1">
+				<FontString name="$parentWarning" parentKey="Warning" inherits="Shared_GameFontNormal" justifyH="LEFT" hidden="true">
 					<Color r="1" g="0" b="0"/>
-					<Size x="0" y="0"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentHeader1" relativePoint="BOTTOMLEFT" x="0" y="-3"/>
-					</Anchors>
 				</FontString>
 
-				<FontString name="$parentDescription1" inherits="SystemFont_Shadow_Outline_Small" justifyH="LEFT" hidden="true" parentKey="Description1">
-					<Color r="1" g="0.82" b="0"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentHeader1" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-3"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentHeader2" inherits="GlueFontNormal" justifyH="CENTER" hidden="true" parentKey="Header2">
-					<Color r="1" g="1" b="1"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentDescription1" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-10"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentDescription2" inherits="SystemFont_Shadow_Outline_Small" justifyH="LEFT" hidden="true" parentKey="Description2">
-					<Color r="1" g="0.82" b="0"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentHeader2" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-3"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentDescription3" inherits="SystemFont_Shadow_Med1" justifyH="LEFT" hidden="true" parentKey="Description3">
+				<FontString name="$parentClickInfo" parentKey="ClickInfo" inherits="Shared_GameFontNormal" justifyH="LEFT">
 					<Color r="0.61" g="0.61" b="0.61"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentDescription2" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-10"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentSpellName1" inherits="OptionsFontHighlight" justifyH="LEFT" hidden="true" parentKey="SpellName1">
-					<!-- <Color r="1" g="0.82" b="0"/> -->
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentDescription3" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-5"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentSpellDescription1" inherits="OptionsFontHighlightSmall" justifyH="LEFT" hidden="true" parentKey="SpellDescription1">
-					<Color r="1" g="0.82" b="0"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellName1" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-1"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentSpellName2" inherits="OptionsFontHighlight" justifyH="LEFT" hidden="true" parentKey="SpellName2">
-					<!-- <Color r="1" g="0.82" b="0"/> -->
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellDescription1" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-3"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentSpellDescription2" inherits="OptionsFontHighlightSmall" justifyH="LEFT" hidden="true" parentKey="SpellDescription2">
-					<Color r="1" g="0.82" b="0"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellName2" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-1"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentSpellName3" inherits="OptionsFontHighlight" justifyH="LEFT" hidden="true" parentKey="SpellName3">
-					<!-- <Color r="1" g="0.82" b="0"/> -->
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellDescription2" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-3"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentSpellDescription3" inherits="OptionsFontHighlightSmall" justifyH="LEFT" hidden="true" parentKey="SpellDescription3">
-					<Color r="1" g="0.82" b="0"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellName3" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-1"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentSpellName4" inherits="OptionsFontHighlight" justifyH="LEFT" hidden="true" parentKey="SpellName4">
-					<!-- <Color r="1" g="0.82" b="0"/> -->
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellDescription3" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-3"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentSpellDescription4" inherits="OptionsFontHighlightSmall" justifyH="LEFT" hidden="true" parentKey="SpellDescription4">
-					<Color r="1" g="0.82" b="0"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellName4" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-1"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentDescription4" inherits="SystemFont_Shadow_Med1" justifyH="LEFT" hidden="true" parentKey="Description4">
-					<Color r="0.61" g="0.61" b="0.61"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellDescription4" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-10"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentSpellName5" inherits="OptionsFontHighlight" justifyH="LEFT" hidden="true" parentKey="SpellName5">
-					<!-- <Color r="1" g="0.82" b="0"/> -->
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentDescription4" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-5"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentSpellDescription5" inherits="OptionsFontHighlightSmall" justifyH="LEFT" hidden="true" parentKey="SpellDescription5">
-					<Color r="1" g="0.82" b="0"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellName5" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-1"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentSpellName6" inherits="OptionsFontHighlight" justifyH="LEFT" hidden="true" parentKey="SpellName6">
-					<!-- <Color r="1" g="0.82" b="0"/> -->
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellDescription5" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-3"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentSpellDescription6" inherits="OptionsFontHighlightSmall" justifyH="LEFT" hidden="true" parentKey="SpellDescription6">
-					<Color r="1" g="0.82" b="0"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellName6" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-1"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-
-				<FontString name="$parentSpellName7" inherits="OptionsFontHighlight" justifyH="LEFT" hidden="true" parentKey="SpellName7">
-					<!-- <Color r="1" g="0.82" b="0"/> -->
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellDescription6" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-3"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentSpellDescription7" inherits="OptionsFontHighlightSmall" justifyH="LEFT" hidden="true" parentKey="SpellDescription7">
-					<Color r="1" g="0.82" b="0"/>
-					<Size>
-						<AbsDimension x="0" y="0"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentSpellName7" relativePoint="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-1"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
 				</FontString>
 			</Layer>
 		</Layers>
+		<Frames>
+			<Frame name="$parentAbilityList" parentKey="AbilityList" inherits="CharacterCreate_AbilityList" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentDescription" relativePoint="BOTTOMLEFT" x="0" y="-15"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				self.AbilityList.Label:SetText(RACIAL_TRAITS_TOOLTIP)
+			</OnLoad>
+		</Scripts>
 	</Frame>
 	<Frame name="GlueRaceTooltip" frameStrata="TOOLTIP" hidden="true" parent="GlueParent" inherits="GlueTooltipRaceTemplate"/>
 	<Frame name="GlueClassTooltip" frameStrata="TOOLTIP" hidden="true" parent="GlueParent" inherits="GlueTooltipClassTemplate"/>

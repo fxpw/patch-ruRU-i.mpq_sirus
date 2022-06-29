@@ -78,6 +78,8 @@ function GetDressUpTexturePath( unit )
 		fileName = "Nightborne"
 	elseif string.upper(fileName) == "NAGA" then
 		fileName = "NightElf"
+	elseif string.upper(fileName) == "LIGHTFORGED" then
+		fileName = "LightforgedDraenei"
 	end
 
 	if not fileName then

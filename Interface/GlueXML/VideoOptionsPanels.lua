@@ -176,11 +176,11 @@ function VideoOptionsResolutionPanelResolutionDropDown_OnLoad(self)
 	self.value = value;
 	self.restart = true;
 
-	GlueDropDownMenu_SetWidth(110, self);
-	GlueDropDownMenu_Initialize(self, VideoOptionsResolutionPanelResolutionDropDown_Initialize);
-	GlueDropDownMenu_SetSelectedID(self, value, 1);
+	GlueDark_DropDownMenu_SetWidth(self, 120, true);
+	GlueDark_DropDownMenu_Initialize(self, VideoOptionsResolutionPanelResolutionDropDown_Initialize);
+	GlueDark_DropDownMenu_SetSelectedID(self, value, 1);
 
-	self.SetValue = 
+	self.SetValue =
 		function (self, value)
 			SetScreenResolution(value);
 		end
@@ -188,43 +188,55 @@ function VideoOptionsResolutionPanelResolutionDropDown_OnLoad(self)
 		function (self)
 			return GetCurrentResolution();
 		end
-	self.RefreshValue = 
+	self.RefreshValue =
 		function (self)
 			local value = GetCurrentResolution();
-			GlueDropDownMenu_Initialize(self, VideoOptionsResolutionPanelResolutionDropDown_Initialize);
-			GlueDropDownMenu_SetSelectedID(self, value, 1);
+			GlueDark_DropDownMenu_Initialize(self, VideoOptionsResolutionPanelResolutionDropDown_Initialize);
+			GlueDark_DropDownMenu_SetSelectedID(self, value, 1);
 			self.value = value;
 			self.newValue = value;
 		end
 end
 
 function VideoOptionsResolutionPanelResolutionDropDown_Initialize()
-	VideoOptionsResolutionPanelResolutionDropDown_LoadResolutions(GetScreenResolutions());	
+	VideoOptionsResolutionPanelResolutionDropDown_LoadResolutions(GetScreenResolutions());
 end
 
+local commonAspectRatios = {
+	[(4 / 3)]	= "(4:3)",
+	[(5 / 4)]	= "(5:4)",
+	[(16 / 9)]	= "(16:9)",
+	[(16 / 10)]	= "(16:10)",
+	[(21 / 9)]	= "(21:9)",
+}
+
 function VideoOptionsResolutionPanelResolutionDropDown_LoadResolutions(...)
-	local info = GlueDropDownMenu_CreateInfo();
+	local info = GlueDark_DropDownMenu_CreateInfo();
 	local resolution, xIndex, width, height;
+	local aspectRatio
 	for i=1, select("#", ...) do
 		resolution = (select(i, ...));
 		xIndex = strfind(resolution, "x");
 		width = strsub(resolution, 1, xIndex-1);
 		height = strsub(resolution, xIndex+1, strlen(resolution));
-		if ( width/height > 4/3 ) then
+		aspectRation = width / height
+		if commonAspectRatios[aspectRation] then
+			resolution = resolution.." "..commonAspectRatios[aspectRation];
+		elseif ( width/height > 4/3 ) then
 			resolution = resolution.." "..WIDESCREEN_TAG;
 		end
 		info.text = resolution;
 		info.value = resolution;
 		info.func = VideoOptionsResolutionPanelResolutionDropDown_OnClick;
 		info.checked = nil;
-		GlueDropDownMenu_AddButton(info);
+		GlueDark_DropDownMenu_AddButton(info);
 	end
 end
 
 function VideoOptionsResolutionPanelResolutionDropDown_OnClick(self)
 	local value = self:GetID();
 	local dropdown = VideoOptionsResolutionPanelResolutionDropDown;
-	GlueDropDownMenu_SetSelectedID(dropdown, value, 1);
+	GlueDark_DropDownMenu_SetSelectedID(dropdown, value, 1);
 	if ( dropdown.value == value ) then
 		dropdown.newValue = nil;
 	else
@@ -241,23 +253,23 @@ function VideoOptionsResolutionPanelRefreshDropDown_OnLoad(self)
 	self.value = value;
 	self.restart = true;
 
-	GlueDropDownMenu_SetWidth(110, self);
-	GlueDropDownMenu_Initialize(self, VideoOptionsResolutionPanelRefreshDropDown_Initialize);
-	GlueDropDownMenu_SetSelectedValue(self, value);
+	GlueDark_DropDownMenu_SetWidth(self, 78, true);
+	GlueDark_DropDownMenu_Initialize(self, VideoOptionsResolutionPanelRefreshDropDown_Initialize);
+	GlueDark_DropDownMenu_SetSelectedValue(self, value);
 
 	self.SetValue =
-		function (self, value) 
+		function (self, value)
 			BlizzardOptionsPanel_SetCVarSafe(self.cvar, value);
 		end;
 	self.GetValue =
 		function (self)
 			return BlizzardOptionsPanel_GetCVarSafe(self.cvar);
-		end
-	self.RefreshValue = 
+	end
+	self.RefreshValue =
 		function (self)
 			local value = BlizzardOptionsPanel_GetCVarSafe(self.cvar);
-			GlueDropDownMenu_Initialize(self, VideoOptionsResolutionPanelRefreshDropDown_Initialize);
-			GlueDropDownMenu_SetSelectedValue(self, value);
+			GlueDark_DropDownMenu_Initialize(self, VideoOptionsResolutionPanelRefreshDropDown_Initialize);
+			GlueDark_DropDownMenu_SetSelectedValue(self, value);
 			self.value = value;
 			self.newValue = value;
 		end
@@ -268,7 +280,7 @@ function VideoOptionsResolutionPanelRefreshDropDown_Initialize()
 end
 
 function VideoOptionsResolutionPanel_GetRefreshRates(...)
-	local info = GlueDropDownMenu_CreateInfo();
+	local info = GlueDark_DropDownMenu_CreateInfo();
 	if ( select("#", ...) == 1 and select(1, ...) == 0 ) then
 		VideoOptionsResolutionPanelRefreshDropDownButton:Disable();
 		VideoOptionsResolutionPanelRefreshDropDownLabel:SetVertexColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
@@ -279,21 +291,21 @@ function VideoOptionsResolutionPanel_GetRefreshRates(...)
 		info.text = select(i, ...)..HERTZ;
 		info.func = VideoOptionsResolutionPanelRefreshDropDown_OnClick;
 
-		if ( GlueDropDownMenu_GetSelectedValue(VideoOptionsResolutionPanelRefreshDropDown) and tonumber(GlueDropDownMenu_GetSelectedValue(VideoOptionsResolutionPanelRefreshDropDown)) == select(i, ...) ) then
+		if ( GlueDark_DropDownMenu_GetSelectedValue(VideoOptionsResolutionPanelRefreshDropDown) and tonumber(GlueDark_DropDownMenu_GetSelectedValue(VideoOptionsResolutionPanelRefreshDropDown)) == select(i, ...) ) then
 			info.checked = 1;
-			GlueDropDownMenu_SetText(info.text, VideoOptionsResolutionPanelRefreshDropDown);
+			GlueDark_DropDownMenu_SetText(VideoOptionsResolutionPanelRefreshDropDown, info.text);
 		else
 			info.checked = nil;
 		end
 		info.value = select(i, ...)
-		GlueDropDownMenu_AddButton(info);
+		GlueDark_DropDownMenu_AddButton(info);
 	end
 end
 
 function VideoOptionsResolutionPanelRefreshDropDown_OnClick(self)
 	local value = self.value;
 	local dropdown = VideoOptionsResolutionPanelRefreshDropDown;
-	GlueDropDownMenu_SetSelectedValue(dropdown, value);
+	GlueDark_DropDownMenu_SetSelectedValue(dropdown, value);
 	if ( dropdown.value == value ) then
 		dropdown.newValue = nil;
 	else
@@ -308,27 +320,23 @@ function VideoOptionsResolutionPanelMultiSampleDropDown_OnLoad(self)
 	self.value = value;
 	self.restart = true;
 
-	GlueDropDownMenu_SetWidth(160, self);
-	GlueDropDownMenu_SetAnchor(self, -200, 23, "TOPRIGHT", "VideoOptionsResolutionPanelMultiSampleDropDownRight", "BOTTOMRIGHT");
-	GlueDropDownMenu_Initialize(self, VideoOptionsResolutionPanelMultiSampleDropDown_Initialize);
-	GlueDropDownMenu_SetSelectedID(self, value);
+	GlueDark_DropDownMenu_SetWidth(self, 78, true);
+	GlueDark_DropDownMenu_Initialize(self, VideoOptionsResolutionPanelMultiSampleDropDown_Initialize);
+	GlueDark_DropDownMenu_SetSelectedID(self, value);
 
-	self.SetValue = 
-		function (self, value)
-			SetMultisampleFormat(value);
-		end;
-	self.GetValue =
-		function (self)
-			return GetCurrentMultisampleFormat();
-		end
-	self.RefreshValue = 
-		function (self)
-			local value = GetCurrentMultisampleFormat();
-			GlueDropDownMenu_Initialize(self, VideoOptionsResolutionPanelMultiSampleDropDown_Initialize);
-			GlueDropDownMenu_SetSelectedID(self, value);
-			self.value = value;
-			self.newValue = value;
-		end
+	self.SetValue = function(self, value)
+		SetMultisampleFormat(value);
+	end;
+	self.GetValue = function(self)
+		return GetCurrentMultisampleFormat();
+	end
+	self.RefreshValue = function(self)
+		local value = GetCurrentMultisampleFormat();
+		GlueDark_DropDownMenu_Initialize(self, VideoOptionsResolutionPanelMultiSampleDropDown_Initialize);
+		GlueDark_DropDownMenu_SetSelectedID(self, value);
+		self.value = value;
+		self.newValue = value;
+	end
 end
 
 function VideoOptionsResolutionPanelMultiSampleDropDown_Initialize()
@@ -337,22 +345,22 @@ end
 
 function VideoOptionsResolutionPanel_GetMultisampleFormats(...)
 	local colorBits, depthBits, multiSample;
-	local info = GlueDropDownMenu_CreateInfo();
+	local info = GlueDark_DropDownMenu_CreateInfo();
 	local checked;
 	local index = 1;
 	for i=1, select("#", ...), 3 do
 		colorBits, depthBits, multiSample = select(i, ...);
 		info.text = format(MULTISAMPLING_FORMAT_STRING, colorBits, depthBits, multiSample);
 		info.func = VideoOptionsResolutionPanelMultiSampleDropDown_OnClick;
-		
-		if ( index == GlueDropDownMenu_GetSelectedID(VideoOptionsResolutionPanelMultiSampleDropDown) ) then
+
+		if ( index == GlueDark_DropDownMenu_GetSelectedID(VideoOptionsResolutionPanelMultiSampleDropDown) ) then
 			checked = 1;
-			GlueDropDownMenu_SetText(info.text, VideoOptionsResolutionPanelMultiSampleDropDown);
+			GlueDark_DropDownMenu_SetText(VideoOptionsResolutionPanelMultiSampleDropDown, info.text);
 		else
 			checked = nil;
 		end
 		info.checked = checked;
-		GlueDropDownMenu_AddButton(info);
+		GlueDark_DropDownMenu_AddButton(info);
 		index = index + 1;
 	end
 end
@@ -360,7 +368,7 @@ end
 function VideoOptionsResolutionPanelMultiSampleDropDown_OnClick(self)
 	local value = self:GetID();
 	local dropdown = VideoOptionsResolutionPanelMultiSampleDropDown;
-	GlueDropDownMenu_SetSelectedID(dropdown, value);
+	GlueDark_DropDownMenu_SetSelectedID(dropdown, value);
 	if ( dropdown.value == value ) then
 		dropdown.newValue = nil;
 	else
@@ -379,7 +387,7 @@ EffectsPanelOptions = {
 	groundEffectDensity = { text = "GROUND_DENSITY", minValue = 16, maxValue = 64, valueStep = 8},
 	groundEffectDist = { text = "GROUND_RADIUS", minValue = 70, maxValue = 140, valueStep = 10 },
 	BaseMip = { text = "TEXTURE_DETAIL", minValue = 0, maxValue = 1, valueStep = 1, tooltipPoint = "BOTTOMRIGHT", tooltipOwnerPoint = "TOPLEFT", },
-	extShadowQuality = { text = "SHADOW_QUALITY", minValue = 0, maxValue = 4, valueStep = 1 },	
+	extShadowQuality = { text = "SHADOW_QUALITY", minValue = 0, maxValue = 4, valueStep = 1 },
 	textureFilteringMode = { text = "ANISOTROPIC", minValue = 0, maxValue = 5, valueStep = 1, gameRestart = 1, tooltipPoint = "BOTTOMRIGHT", tooltipOwnerPoint = "TOPLEFT", tooltipRequirement = OPTION_RESTART_REQUIREMENT, },
 	weatherDensity = { text = "WEATHER_DETAIL", minValue = 0, maxValue = 3, valueStep = 1, tooltipPoint = "BOTTOMRIGHT", tooltipOwnerPoint = "TOPLEFT", },
 	componentTextureLevel = { text = "PLAYER_DETAIL", minValue = 8, maxValue = 9, valueStep = 1, tooltipPoint = "BOTTOMRIGHT", tooltipOwnerPoint = "TOPLEFT", gameRestart = 1, tooltipRequirement = OPTION_RESTART_REQUIREMENT, },
@@ -428,7 +436,7 @@ function VideoOptionsEffectsPanel_OnEvent (self, event, ...)
 		-- need to fixup the quality levels now
 		VideoOptionsEffectsPanel_FixupQualityLevels();
 		VideoOptionsEffectsPanel_UpdateVideoQuality();
-		
+
 		if ( not IsPlayerResolutionAvailable() ) then
 			VideoOptionsEffectsPanelPlayerTexture:Disable();
 		end
@@ -470,7 +478,7 @@ function VideoOptionsEffectsPanel_SetVideoQualityLabels (quality)
 end
 
 function VideoOptionsEffectsPanel_GetVideoQuality ()
-	for quality, controls in ipairs(GraphicsQualityLevels) do 
+	for quality, controls in ipairs(GraphicsQualityLevels) do
 		local mismatch = false;
 		for control, value in next, controls do
 			control = _G[control];
@@ -570,7 +578,7 @@ end
 
 function VideoOptionsStereoPanel_OnEvent(self, event, ...)
 	BlizzardOptionsPanel_OnEvent(self, event, ...);
-	
+
 	if ( event == "SET_GLUE_SCREEN" ) then
 		-- don't allow systems that don't support features to enable them
 		local anisotropic, pixelShaders, vertexShaders, trilinear, buffering, maxAnisotropy, hardwareCursor = GetVideoCaps();

@@ -289,6 +289,14 @@ function Method_IsTruncated(fontString)
 	return isTruncated;
  end
 
+function Method_SetDisabled( self, ... )
+	if ... then
+		self:Disable()
+	else
+		self:Enable()
+	end
+end
+
 -- Frame Method
 function Frame.__index:SetShown( ... ) Method_SetShown( self, ... ) end
 function Frame.__index:FixOpenPanel( ... ) Method_FixOpenPanel( self, ... ) end
@@ -372,6 +380,7 @@ function CheckButton.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( se
 function CheckButton.__index:GetScaledRect() return Method_GetScaledRect(self) end
 function CheckButton.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
 function CheckButton.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
+function CheckButton.__index:SetDisabled( ... ) Method_SetDisabled( self, ... ) end
 
 -- DressUpModel
 if DressUpModel then

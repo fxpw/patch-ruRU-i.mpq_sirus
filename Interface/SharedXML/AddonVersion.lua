@@ -14,7 +14,7 @@ S_ADDON_VERSION = {
 	{3, "Bagnon", {"Bagnon", "Bagnon_Config", "Bagnon_Forever", "Bagnon_GuildBank", "Bagnon_Tooltips"}},
 	{1, "BankStack", {"BankStack"}},
 	{4, "Bartender4", {"Bartender4"}},
-	{3, "BigAuras", {"BigAuras", "BigAurasOptions"}},
+	{4, "BigAuras", {"BigAuras"}},
 	{1, "Capping", {"Capping"}},
 	{1, "ChatBar", {"ChatBar"}},
 	{1, "Clique", {"Clique"}},
@@ -33,7 +33,7 @@ S_ADDON_VERSION = {
 	{1, "Recount", {"Recount"}},
 	{2, "RecountGuessedAbsorbs", {"RecountGuessedAbsorbs"}},
 	{1, "RecountHealAndGuessedAbsorbs", {"RecountHealAndGuessedAbsorbs"}},
-	{1, "sArena", {"sArena"}},
+	{2, "sArena", {"sArena"}},
 	{1, "SellJunk", {"SellJunk"}},
 	{2, "TipTac", {"TipTac", "TipTacItemRef", "TipTacOptions", "TipTacTalents"}},
 }

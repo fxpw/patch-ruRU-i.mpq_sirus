@@ -2593,11 +2593,15 @@ frame:SetScript("OnEvent", function(self, event)
 		frame:RegisterEvent("COMMENTATOR_ENTER_WORLD");
 		frame:UnregisterEvent(event);
 	elseif event == "COMMENTATOR_ENTER_WORLD" then
-		table.wipe(SIRUS_AUCTION_HOUSE_FAVORITE_ITEMS);
+		twipe(SIRUS_AUCTION_HOUSE_FAVORITE_ITEMS);
 		frame:UnregisterEvent(event);
 	elseif event == "PLAYER_TALENT_UPDATE" then
 		frame:UnregisterEvent("COMMENTATOR_ENTER_WORLD");
 		frame:UnregisterEvent(event);
+	end
+
+	if event == "COMMENTATOR_ENTER_WORLD" or event == "PLAYER_TALENT_UPDATE" then
+		twipe(AUCTION_FAVORITE_ITEMS);
 
 		for _, itemKey in pairs(SIRUS_AUCTION_HOUSE_FAVORITE_ITEMS) do
 			if not AUCTION_FAVORITE_ITEMS[itemKey.itemID] then AUCTION_FAVORITE_ITEMS[itemKey.itemID] = {}; end

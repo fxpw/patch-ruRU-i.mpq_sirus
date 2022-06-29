@@ -4,1248 +4,1293 @@
 --	E-mail:		nyll@sirus.su
 --	Web:		https://sirus.su/
 
--- CHARACTER_FACING_INCREMENT = 2
-MAX_RACES = C_CharacterCreation.GetNumAvailableRaces()
-MAX_CLASSES_PER_RACE = 11
-NUM_CHAR_CUSTOMIZATIONS = 5
-MIN_CHAR_NAME_LENGTH = 2
-CHARACTER_CREATE_ROTATION_START_X = nil
-CHARACTER_CREATE_INITIAL_FACING = nil
-NUM_PREVIEW_FRAMES = 14
-PANDAREN_RACE_ID = 7
-local featureIndex = 1
-local FeatureType = 1
-
 PAID_CHARACTER_CUSTOMIZATION = 1
 PAID_RACE_CHANGE = 2
 PAID_FACTION_CHANGE = 3
 PAID_SERVICE_CHARACTER_ID = nil
 PAID_SERVICE_TYPE = nil
 
-PREVIEW_FRAME_HEIGHT = 130
-PREVIEW_FRAME_X_OFFSET = 19
-PREVIEW_FRAME_Y_OFFSET = -7
-
-FACTION_BACKDROP_COLOR_TABLE = {
-	["Alliance"] = {0.5, 0.5, 0.5, 0.09, 0.09, 0.19, 0, 0, 0.2, 0.29, 0.33, 0.91},
-	["Horde"] = {0.5, 0.2, 0.2, 0.19, 0.05, 0.05, 0.2, 0, 0, 0.90, 0.05, 0.07},
-	["Player"] = {0.2, 0.5, 0.2, 0.05, 0.2, 0.05, 0.05, 0.2, 0.05, 1, 1, 1},
+local PAID_RACE_SERVICE_OVERRIDE_FACTIONS = {
+	[FACTION_HORDE] = PLAYER_FACTION_GROUP.Alliance,
+	[FACTION_ALLIANCE] = PLAYER_FACTION_GROUP.Horde,
 }
-FRAMES_TO_BACKDROP_COLOR = {
-	"CharacterCreateCharacterRace",
-	"CharacterCreateCharacterClass",
---	"CharacterCreateCharacterFaction",
-	"CharacterCreateNameEdit",
-}
-RACE_ICON_TCOORDS = {
-	["HUMAN_MALE"]		= {0, 0.125, 0, 0.125},
-	["DWARF_MALE"]		= {0.125, 0.25, 0, 0.125},
-	["GNOME_MALE"]		= {0.25, 0.375, 0, 0.125},
-	["NIGHTELF_MALE"]	= {0.375, 0.5, 0, 0.125},
-	["GOBLIN_MALE"]		= {0.625, 0.75, 0.125, 0.25},
 
-	["TAUREN_MALE"]		= {0, 0.125, 0.125, 0.25},
-	["SCOURGE_MALE"]	= {0.125, 0.25, 0.125, 0.25},
-	["TROLL_MALE"]		= {0.25, 0.375, 0.125, 0.25},
-	["ORC_MALE"]		= {0.375, 0.5, 0.125, 0.25},
-
-	["HUMAN_FEMALE"]	= {0, 0.125, 0.25, 0.375},
-	["DWARF_FEMALE"]	= {0.125, 0.25, 0.25, 0.375},
-	["GNOME_FEMALE"]	= {0.25, 0.375, 0.25, 0.375},
-	["NIGHTELF_FEMALE"]	= {0.375, 0.5, 0.25, 0.375},
-	["GOBLIN_FEMALE"]	= {0.625, 0.75, 0.375, 0.5},
-
-	["TAUREN_FEMALE"]	= {0, 0.125, 0.375, 0.5},
-	["SCOURGE_FEMALE"]	= {0.125, 0.25, 0.375, 0.5},
-	["TROLL_FEMALE"]	= {0.25, 0.375, 0.375, 0.5},
-	["ORC_FEMALE"]		= {0.375, 0.5, 0.375, 0.5},
-
-	["BROKEN_MALE"]		= {0.875, 1, 0.125, 0.25},
-	["BROKEN_FEMALE"]	= {0.875, 1, 0.375, 0.5},
-
-	["NAGA_MALE"]		= {0.875, 1, 0, 0.125},
-	["NAGA_FEMALE"]		= {0.875, 1, 0.25, 0.375},
-
-	["PANDAREN_MALE"]	= {0.75, 0.875, 0, 0.125},
-	["PANDAREN_FEMALE"]	= {0.75, 0.875, 0.25, 0.375},
-
-	["WORGEN_MALE"]		= {0, 0.125, 0.5, 0.625},
-	["WORGEN_FEMALE"]	= {0.125, 0.25, 0.5, 0.625},
-
-	["BLOODELF_MALE"]	= {0.5, 0.625, 0.125, 0.25},
-	["BLOODELF_FEMALE"]	= {0.5, 0.625, 0.375, 0.5},
-
-	["QUELDO_MALE"]		= {0.875, 1, 0.125, 0.25},
-	["QUELDO_FEMALE"]	= {0.875, 1, 0.375, 0.5},
-
-	["PANDAREN_MALE"]	= {0.75, 0.875, 0, 0.125},
-	["PANDAREN_FEMALE"]	= {0.75, 0.875, 0.25, 0.375},
-
-	["DRAENEI_MALE"]	= {0.5, 0.625, 0, 0.125},
-	["DRAENEI_FEMALE"]	= {0.5, 0.625, 0.25, 0.375},
-
-	["DH_NIGHTELF_MALE"]	= {0.375, 0.5, 0, 0.125},
-	["DH_NIGHTELF_FEMALE"]	= {0.375, 0.5, 0.25, 0.375},
-
-	["DH_BLOODELF_MALE"]	= {0.5, 0.625, 0.125, 0.25},
-	["DH_BLOODELF_FEMALE"]	= {0.5, 0.625, 0.375, 0.5},
-}
-CLASS_ICON_TCOORDS = {
-	["WARRIOR"]	= {1024, 1024, 80, 55, 164, 146},
-	["MAGE"]	= {1024, 1024, 398, 223, 164, 146},
-	["ROGUE"]	= {1024, 1024, 558, 55, 164, 146},
-	["DRUID"]	= {1024, 1024, 238, 391, 164, 146},
-	["HUNTER"]	= {1024, 1024, 398, 55, 164, 146},
-	["SHAMAN"]	= {1024, 1024, 238, 223, 164, 146},
-	["PRIEST"]	= {1024, 1024, 558, 391, 164, 146},
-	["WARLOCK"]	= {1024, 1024, 558, 223, 164, 146},
-	["PALADIN"]	= {1024, 1024, 238, 55, 164, 146},
-	["DEATHKNIGHT"]	= {1024, 1024, 80, 223, 164, 146},
-	["DEMONHUNTER"]	= {1024, 1024, 398, 391, 164, 146},
-}
-MODEL_CAMERA_CONFIG = {
-	[2] = {
-		["Draenei"] = { tx = 0.191, ty = -0.015, tz = 2.302, cz = 2.160, distance = 1.116, light =  0.80 },
-		["NightElf"] = { tx = 0.095, ty = -0.008, tz = 2.240, cz = 2.045, distance = 0.830, light =  0.85 },
-		["Naga"] = { tx = 0.095, ty = -0.008, tz = 2.240, cz = 2.045, distance = 0.830, light =  0.85 },
-		["Scourge"] = { tx = 0.094, ty = -0.172, tz = 1.675, cz = 1.478, distance = 0.691, light =  0.80 },
-		["Orc"] = { tx = 0.346, ty = -0.001, tz = 1.878, cz = 1.793, distance = 1.074, light =  0.80 },
-		["Gnome"] = { tx = 0.051, ty = 0.015, tz = 0.845, cz = 0.821, distance = 0.821, light =  0.85 },
-		["Dwarf"] = { tx = 0.037, ty = 0.009, tz = 1.298, cz = 1.265, distance = 0.839, light =  0.85 },
-		["Tauren"] = { tx = 0.516, ty = -0.003, tz = 1.654, cz = 1.647, distance = 1.266, light =  0.80 },
-		["Troll"] = { tx = 0.402, ty = 0.016, tz = 2.076, cz = 1.980, distance = 0.943, light =  0.75 },
-		["BloodElf"] = { tx = 0.009, ty = -0.120, tz = 1.914, cz = 1.712, distance = 0.727, light =  0.80 },
-		["Queldo"] = { tx = 0.009, ty = -0.120, tz = 1.914, cz = 1.712, distance = 0.727, light =  0.80 },
-		["Human"] = { tx = 0.055, ty = 0.006, tz = 1.863, cz = 1.749, distance = 0.714, light =  0.75 },
-		["Pandaren"] = { tx = 0.046, ty = -0.020, tz = 2.125, cz = 2.201, distance = 1.240, light =  0.90 },
-		["Goblin"] = { tx = 0.046, ty = -0.020, tz = 2.125, cz = 2.201, distance = 1.240, light =  0.90 },
-		["Worgen"] = { tx = 0.046, ty = -0.020, tz = 2.125, cz = 2.201, distance = 1.240, light =  0.90 },
+local PAID_RACE_SERVICE_OVERRIDE_RACES = {
+	[FACTION_ALLIANCE] = {
+		[E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE] = E_CHARACTER_RACES.RACE_PANDAREN_HORDE,
+		[E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL] = E_CHARACTER_RACES.RACE_VULPERA_HORDE,
+		[E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE] = E_CHARACTER_RACES.RACE_VULPERA_HORDE,
 	},
-	[3] = {
-		["Draenei"] = { tx = 0.155, ty = 0.009, tz = 2.177, cz = 1.971, distance = 0.734, light =  0.75 },
-		["NightElf"] = { tx = 0.071, ty = 0.034, tz = 2.068, cz = 2.055, distance = 0.682, light =  0.85 },
-		["Naga"] = { tx = 0.071, ty = 0.034, tz = 2.068, cz = 2.055, distance = 0.682, light =  0.85 },
-		["Scourge"] = { tx = 0.198, ty = 0.001, tz = 1.669, cz = 1.509, distance = 0.563, light =  0.75 },
-		["Orc"] = { tx = -0.069, ty = -0.007, tz = 1.863, cz = 1.718, distance = 0.585, light =  0.75 },
-		["Gnome"] = { tx = 0.031, ty = 0.009, tz = 0.787, cz = 0.693, distance = 0.726, light =  0.85 },
-		["Dwarf"] = { tx = -0.060, ty = -0.010, tz = 1.326, cz = 1.343, distance = 0.720, light =  0.80 },
-		["Tauren"] = { tx = 0.337, ty = -0.008, tz = 1.918, cz = 1.855, distance = 0.891, light =  0.75 },
-		["Troll"] = { tx = 0.031, ty = -0.082, tz = 2.226, cz = 2.248, distance = 0.674, light =  0.75 },
-		["BloodElf"] = { tx = -0.072, ty = 0.009, tz = 1.789, cz = 1.792, distance = 0.717, light =  0.80 },
-		["Queldo"] = { tx = -0.072, ty = 0.009, tz = 1.789, cz = 1.792, distance = 0.717, light =  0.80 },
-		["Human"] = { tx = -0.044, ty = -0.015, tz = 1.755, cz = 1.689, distance = 0.612, light =  0.75 },
-		["Pandaren"] = { tx = 0.122, ty = -0.002, tz = 1.999, cz = 1.925, distance = 1.065, light =  0.90 },
-		["Goblin"] = { tx = 0.046, ty = -0.020, tz = 2.125, cz = 2.201, distance = 1.240, light =  0.90 },
-		["Worgen"] = { tx = 0.046, ty = -0.020, tz = 2.125, cz = 2.201, distance = 1.240, light =  0.90 },
+	[FACTION_HORDE] = {
+		[E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE] = E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE,
+		[E_CHARACTER_RACES.RACE_PANDAREN_HORDE] = E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE,
+		[E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL] = E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE,
+		[E_CHARACTER_RACES.RACE_VULPERA_HORDE] = E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE,
 	}
 }
 
-BANNER_DEFAULT_TEXTURE_COORDS = {0.109375, 0.890625, 0.201171875, 0.80078125}
-BANNER_DEFAULT_SIZE = {200, 308}
-
-function CharacterCustomizeScreenShow()
-	CharCreateClassFrame:Hide()
-	CharCreateRaceFrame:Hide()
-	CharacterCreateTOPBalka:Hide()
-
-	CharCreateCustomizationFrame:Show()
-	CharacterCreateRandomNames:Show()
-	CharacterCreateNameEdit:Show()
-
-	CharCreateNextButtons:SetPoint("RIGHT", CharCreateClassFrame, -60, -10)
-	CharCreateBackButtons:SetPoint("LEFT", CharCreateClassFrame, 60, -10)
-
-	CharCreateMaleButton:SetPoint("TOP", CharCreateCustomizationFrame, -19, 1)
-	CharCreateFemaleButton:SetPoint("TOP", CharCreateCustomizationFrame, 19.5, 1)
-end
-
-function CharacterCreateScreenShow()
-    CharCreateBackButtons:Show()
-	CharCreateClassFrame:Show()
-	CharCreateRaceFrame:Show()
-	CharacterCreateTOPBalka:Show()
-
-	CharCreateCustomizationFrame:Hide()
-	CharacterCreateRandomNames:Hide()
-	CharacterCreateNameEdit:Hide()
-	-- CharCreateCustomizationFrameTopBalka:Hide()
-
-	CharCreateNextButtons:SetPoint("RIGHT", CharCreateClassFrame, -60, 60)
-	CharCreateBackButtons:SetPoint("LEFT", CharCreateClassFrame, 60, 60)
-
-	CharCreateMaleButton:SetPoint("TOP", CharCreateClassFrame, -18.7, -16)
-	CharCreateFemaleButton:SetPoint("TOP", CharCreateClassFrame, 18, -16)
-
-	CharCreateMaleButton:SetSize(43, 43)
-	CharCreateFemaleButton:SetSize(43, 43)
-
-	CharCreateCustomizationFrame:SetAlpha(1)
-	CharacterCreateRandomNames:SetAlpha(1)
-	CharacterCreateNameEdit:SetAlpha(1)
-	CharCreateNextButtons:SetAlpha(1)
-	CharCreateBackButtons:SetAlpha(1)
-	CharCreateMaleButton:SetAlpha(1)
-	CharCreateFemaleButton:SetAlpha(1)
-end
-
-CHAR_CUSTOMIZE_HAIR_COLOR = 4
-
-function RaceIDToFactionColor( id )
-	local Alliance = {1, 2, 3, 4, 5, 6, 8}
-	local Horde = {10, 11, 12, 14, 13, 16, 15}
-
-	for _, r_AID in pairs(Alliance) do
-		if r_AID == id then
-			return {26 / 255, 144 / 255, 240 / 255, "Alliance"}
-		end
-	end
-
-	for _, r_HID in pairs(Horde) do
-		if r_HID == id then
-			return {255 / 255, 0, 0, "Horde"}
-		end
-	end
-
-	if id == 7 or id == 17 then
-		return {1, 1, 1}
-	end
-end
-
-function CharacterCreate_OnLoad(self)
-	self:RegisterEvent("RANDOM_CHARACTER_NAME_RESULT")
-
-	self.faceZoom = false
-	modelZoomX, modelZoomY, modelZoomZ = 0, 0, 0
-
-	CharacterCreate.numRaces = 0
-	CharacterCreate.selectedRace = 0
-	CharacterCreate.numClasses = 0
-	CharacterCreate.selectedClass = 0
-	CharacterCreate.selectedGender = 0
-
-	SetCharCustomizeFrame("CharacterCreate")
-
-	for i=1, NUM_CHAR_CUSTOMIZATIONS, 1 do
-		_G["CharCreateCustomizationButton"..i].text:SetText(_G["CHAR_CUSTOMIZATION"..i.."_DESC"])
-	end
-
-	-- Color edit box backdrop
-	local backdropColor = FACTION_BACKDROP_COLOR_TABLE["Alliance"]
-	CharacterCreateNameEdit:SetBackdropBorderColor(backdropColor[1], backdropColor[2], backdropColor[3])
-	CharacterCreateNameEdit:SetBackdropColor(backdropColor[4], backdropColor[5], backdropColor[6])
-
-	CharacterCreateFrame.state = "CLASSRACE"
-
-	CharCreatePreviewFrame.previews = { }
-end
-
-function CharCustomizeButtonClick(id)
-	CycleCharCustomization(id, 1)
-end
-
-function CharacterCreate_OnShow()
-	CharacterCreate.lastSelectedRaceButton 	= nil
-	CharacterCreate.lastSelectedClassButton = nil
-	CharacterCreate.faceZoom 				= false
-
-	if PAID_SERVICE_TYPE then
-		CustomizeExistingCharacter( PAID_SERVICE_CHARACTER_ID )
-		CharacterCreateNameEdit:SetText( PaidChange_GetName() )
-	else
-		ResetCharCustomize()
-		CharacterCreateNameEdit:SetText("")
-	end
-
-	CharacterCreateEnumerateRaces()
---	CharacterCreateEnumerateClasses(GetAvailableClasses())
-
-	if GetSelectedSex() == E_SEX.MALE then
-		CharCreateMaleButton:Click()
-	else
-		CharCreateFemaleButton:Click()
-	end
-
-	CharacterChangeFixup()
-
-	if CharacterCreateFrame.forceCustomization then
-		CharacterCreate_Forward()
-	end
-end
-
-function CharacterCreate_OnHide()
-	CharacterCreateFrame.forceCustomization = nil
-	PAID_SERVICE_CHARACTER_ID = nil
-	PAID_SERVICE_TYPE = nil
-	if ( CharacterCreateFrame.state == "CUSTOMIZATION" ) then
-		CharacterCreate_Back()
-	end
-	CharCreatePreviewFrame.rebuildPreviews = true
-    CharCreateBackButtons:Show()
-end
-
-function CharacterCreate_OnEvent(event, arg1, arg2, arg3)
-	if ( event == "RANDOM_CHARACTER_NAME_RESULT" ) then
-		if ( arg1 == 0 ) then
-			-- Failed.  Generate a random name locally.
-			CharacterCreateNameEdit:SetText(GenerateRandomName())
-		else
-			-- Succeeded.  Use what the server sent.
-			CharacterCreateNameEdit:SetText(arg2)
-		end
-		CharacterCreateRandomName:Enable()
-		CharCreateOkayButton:Enable()
-		PlaySound("gsCharacterCreationLook")
-	end
-end
-
-function CharacterCreateFrame_OnMouseDown(button)
-	if ( button == "LeftButton" ) then
-		CHARACTER_CREATE_ROTATION_START_X = GetCursorPosition()
-		CHARACTER_CREATE_INITIAL_FACING = GetCharacterCreateFacing()
-	end
-end
-
-function CharacterCreateFrame_OnMouseUp(button)
-	if ( button == "LeftButton" ) then
-		CHARACTER_CREATE_ROTATION_START_X = nil
-	end
-end
-
-function CharacterCreateFrame_OnUpdate(self, elapsed)
-	if ( CHARACTER_CREATE_ROTATION_START_X ) then
-		local x = GetCursorPosition()
-		local diff = (x - CHARACTER_CREATE_ROTATION_START_X) * CHARACTER_ROTATION_CONSTANT
-		CHARACTER_CREATE_ROTATION_START_X = GetCursorPosition()
-		SetCharacterCreateFacing(GetCharacterCreateFacing() + diff)
-	end
-	CharacterCreateWhileMouseDown_Update(elapsed)
-end
-
-function CharacterCreateEnumerateRaces()
-	CharacterCreate.numRaces = C_CharacterCreation.GetNumAvailableRaces()
-
-	for i = 1, CharacterCreate.numRaces do
-		local button = CharacterCreate.raceButtons[i]
-
-		if button then
-			local RaceInfo = C_CharacterCreation.GetRaceInfo(i)
-
-			button.index 		= RaceInfo.raceIndex
-			button.raceInfo 	= RaceInfo
-
-			button.nameFrame.text:SetText(RaceInfo.raceName)
-
-			button:GetNormalTexture():SetTexture(RaceInfo.iconTexture)
-			button:GetPushedTexture():SetTexture(RaceInfo.iconTexture)
-
-			button:Enable()
-			SetButtonDesaturated(button)
-
-			button:SetShown(not button:GetAttribute("IsDevShow") or (button:GetAttribute("IsDevShow") and IsDevClient()))
-		end
-	end
-
-	if not CharacterCreate.lastSelectedRaceButton and not PAID_SERVICE_TYPE then
-		_G["CharCreateRaceButton1"]:Click()
-	end
-end
-
-local ClassBGColor = {
-	["DEMONHUNTER"] = {0.64, 0.19, 0.79},
-	["DRUID"] = {1.00, 0.49, 0.04},
-	["HUNTER"] = {0.67, 0.83, 0.45},
-	["DEATHKNIGHT"] = {0.77, 0.12, 0.23},
-	["PALADIN"] = {0.96, 0.55, 0.73},
-	["ROGUE"] = {1.00, 0.96, 0.41},
-	["PRIEST"] = {1.00, 1.00, 1.00},
-	["MAGE"] = {0.41, 0.80, 0.94},
-	["SHAMAN"] = {0.0, 0.44, 0.87},
-	["WARLOCK"] = {0.58, 0.51, 0.79},
-	["WARRIOR"] = {0.78, 0.61, 0.43}
+local PAID_FACTION_SERVICE_OVERRIDE_RACES = {
+	[FACTION_ALLIANCE] = {
+		[E_CHARACTER_RACES.RACE_PANDAREN_HORDE] = E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE,
+		[E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE] = E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE,
+		[E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL] = E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE,
+		[E_CHARACTER_RACES.RACE_VULPERA_HORDE] = E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE,
+		[E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE] = E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE,
+		[E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL] = E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE,
+	},
+	[FACTION_HORDE] = {
+		[E_CHARACTER_RACES.RACE_PANDAREN_HORDE] = E_CHARACTER_RACES.RACE_PANDAREN_HORDE,
+		[E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE] = E_CHARACTER_RACES.RACE_PANDAREN_HORDE,
+		[E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL] = E_CHARACTER_RACES.RACE_PANDAREN_HORDE,
+		[E_CHARACTER_RACES.RACE_VULPERA_HORDE] = E_CHARACTER_RACES.RACE_VULPERA_HORDE,
+		[E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE] = E_CHARACTER_RACES.RACE_VULPERA_HORDE,
+		[E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL] = E_CHARACTER_RACES.RACE_VULPERA_HORDE,
+	}
 }
 
-local classAssocData = {}
-function CharacterCreateEnumerateClasses(...)
-	CharacterCreate.numClasses = select("#", ...)/3
-	if ( CharacterCreate.numClasses > MAX_CLASSES_PER_RACE ) then
-		message("Too many classes!  Update MAX_CLASSES_PER_RACE")
+local PAID_SERVICE_ORIGINAL_FACTION = {
+	[FACTION_HORDE] = PLAYER_FACTION_GROUP.Horde,
+	[FACTION_ALLIANCE] = PLAYER_FACTION_GROUP.Alliance,
+}
+
+local PAID_SERVICE_ORIGINAL_RACE = {
+	[E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE] = E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE,
+	[E_CHARACTER_RACES.RACE_PANDAREN_HORDE] = E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE,
+	[E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE] = E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL,
+	[E_CHARACTER_RACES.RACE_VULPERA_HORDE] = E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL,
+}
+
+local CAMERA_ZOOM_LEVEL_AMOUNT = 80
+
+local TOOLTIP_MAX_CLASS_ABLILITIES = 5
+local TOOLTIP_MAX_RACE_ABLILITIES = 7
+local TOOLTIPS_EXPANDED = false
+
+CharacterCreateMixin = CreateFromMixins(CharacterModelMixin)
+
+enum:E_PAID_SERVICE {
+	"CUSTOMIZATION",
+	"CHANGE_RACE",
+	"CHANGE_FACTION"
+}
+
+enum:E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE {
+	"ACTIVE",
+	"INACTIVE"
+}
+
+local pullButtonReset = function(framePool, frame)
+	FramePool_HideAndClearAnchors(framePool, frame)
+	frame:Enable()
+end
+
+function CharacterCreateMixin:OnLoad()
+	self:RegisterHookListener()
+
+	self.raceButtonPerLine = 5
+
+	self.clientRaceData = {}
+	self.clientClassData = {}
+
+	self.allianceRaceButtonPool = CreateFramePool("CheckButton", self.AllianceRacesFrame, "CharacterCreateRaceButtonTemplate", pullButtonReset)
+	self.hordeRaceButtonPool 	= CreateFramePool("CheckButton", self.HordeRacesFrame, "CharacterCreateRaceButtonTemplate", pullButtonReset)
+	self.neutralRaceButtonPool 	= CreateFramePool("CheckButton", self.NeutralRacesFrame, "CharacterCreateRaceButtonTemplate", pullButtonReset)
+
+	self.classButtonPool 		= CreateFramePool("CheckButton", self.ClassesFrame, "CharacterCreateClassButtonTemplate", pullButtonReset)
+
+	self.genderButtonPool 		= CreateFramePool("CheckButton", self.GenderFrame, "CharacterCreateGenderButtonTemplate", pullButtonReset)
+
+	self.NavigationFrame.CreateNameEditBox:SetPoint("BOTTOM", self.GenderFrame.CustomizationButton, "TOP", 0, 5)
+end
+
+function CharacterCreateMixin:OnShow()
+	C_CharacterCreation.SetInCharacterCreate(true)
+
+	if PAID_SERVICE_TYPE then
+		C_CharacterCreation.CustomizeExistingCharacter(PAID_SERVICE_CHARACTER_ID)
+		self.NavigationFrame.CreateNameEditBox:SetText(PaidChange_GetName() or "")
+		self.NavigationFrame.CreateButton:SetText(CHARACTER_CREATE_ACCEPT)
+	else
+		C_CharacterCreation.ResetCharCustomize()
+		self.NavigationFrame.CreateNameEditBox:SetText("")
+		self.NavigationFrame.CreateButton:SetText(CHARACTER_CREATE)
+	end
+
+	self:UpdateBackground()
+
+	if PAID_SERVICE_TYPE == PAID_FACTION_CHANGE and select(3, C_CharacterCreation.PaidChange_GetCurrentFaction()) == PLAYER_FACTION_GROUP.Neutral then
+		self.NavigationFrame.CreateNameEditBox:SetAutoFocus(false)
+		self.NavigationFrame.CreateNameEditBox:ClearFocus()
+		self.GenderFrame.CustomizationButton:Hide()
+		self.AllianceRacesFrame:Hide()
+		self.HordeRacesFrame:Hide()
+
+		PlaySound(SOUNDKIT.GS_TITLE_OPTIONS)
+		self:RegisterCustomEvent("GLUE_CHARACTER_CREATE_FORCE_RACE_CHANGE")
+		GlueDialog:ShowDialog("FORCE_CHOOSE_FACTION")
+
 		return
 	end
-	-- local coords
-	local index = 1
-	local button
-	for i=1, select("#", ...), 3 do
-		_G["CharCreateClassButton"..index.."NormalTexture"]:SetTexture("Interface\\Custom_LoginScreen\\ClassIcon\\CLASS_ICON_"..select(i + 1, ...))
-		_G["CharCreateClassButton"..index.."PushedTexture"]:SetTexture("Interface\\Custom_LoginScreen\\ClassIcon\\CLASS_ICON_"..select(i + 1, ...))
 
-		button = _G["CharCreateClassButton"..index]
-		button:Show()
-		if ( select(i+2, ...) == 1 ) then
-			if (IsRaceClassValid(GetSelectedRace(), index)) then
-				button:Enable()
-				SetButtonDesaturated(button)
-				button.tooltip = select(i, ...)
-				button.Tcolor = ClassBGColor[select(i + 1, ...)]
-				button.IsDisable = false
-				button.ename = select(i+1, ...)
-			else
-				button:Disable()
-				SetButtonDesaturated(button, 1)
-				button.tooltip = select(i, ...)
-				button.Tcolor = ClassBGColor[select(i + 1, ...)]
-				button.IsDisable = true
-				button.ename = select(i+1, ...)
-			end
-		else
-			button:Disable()
-			SetButtonDesaturated(button, 1)
-			button.tooltip = _G[strupper(select(i+1, ...).."_".."DISABLED")]
-		end
-		classAssocData[select(i, ...)] = index
-		index = index + 1
-	end
+	self:CreateUpdateButtons()
+	self.skipCustomizationConfirmation = false
 
-	if not CharacterCreate.lastSelectedClassButton and not PAID_SERVICE_TYPE then
-		_G["CharCreateClassButton1"]:Click()
+	C_CharacterCreation.EnableMouseWheel(true)
+end
+
+function CharacterCreateMixin:OnHide()
+	C_CharacterCreation.SetInCharacterCreate(false)
+	PAID_SERVICE_TYPE = nil
+	self.CustomizationFrame:Hide()
+	self:ResetSelectRaceAndClassAnim()
+	C_CharacterCreation.EnableMouseWheel(false)
+end
+
+function CharacterCreateMixin:OnEvent(event, ...)
+	if event == "GLUE_CHARACTER_CREATE_FORCE_RACE_CHANGE" then
+		self.NavigationFrame.CreateNameEditBox:SetAutoFocus(true)
+		self.NavigationFrame.CreateNameEditBox:SetFocus()
+		self.NavigationFrame.CreateNameEditBox:HighlightText(0, 0)
+		self.GenderFrame.CustomizationButton:Show()
+		self.AllianceRacesFrame:Show()
+		self.HordeRacesFrame:Show()
+
+		self:CreateUpdateButtons()
 	end
 end
 
-function SetCharacterClass(id)
-	CharacterCreate.selectedClass = id
-	C_CharacterCreation.SetBackgroundModel()
-
-	for i=1, CharacterCreate.numClasses, 1 do
-		local button = _G["CharCreateClassButton"..i]
-		if ( i == id ) then
-			button:SetChecked(1)
+local RESET_ROTATION_TIME = 0.5
+function CharacterCreateMixin:OnUpdate( elapsed )
+	if self.rotationStartX then
+		local x = GetCursorPosition()
+		local diff = (x - self.rotationStartX) * 0.6
+		self.rotationStartX = x
+		C_CharacterCreation.SetCharacterCreateFacing(C_CharacterCreation.GetCharacterCreateFacing() + diff)
+	elseif self.rotationResetStep then
+		self.elapsed = self.elapsed + elapsed
+		if self.elapsed < self.rotationResetTime then
+			C_CharacterCreation.SetCharacterCreateFacing(self.rotationResetCur + self.rotationResetStep * self.elapsed)
 		else
-			button:SetChecked(0)
-			button.selection:Hide()
+			self.elapsed = 0
+			self.rotationResetTime = nil
+			self.rotationResetCur = nil
+			self.rotationResetStep = nil
+			C_CharacterCreation.SetCharacterCreateFacing(C_CharacterCreation.GetDefaultCharacterCreateFacing())
 		end
 	end
 end
 
-function CharacterCreate_OnChar()
-end
-
-function CharacterCreate_OnKeyDown(key)
-	if ( key == "ESCAPE" ) then
-		CharacterCreate_Back()
-	elseif ( key == "ENTER" ) then
-		CharacterCreate_Forward()
-	elseif ( key == "PRINTSCREEN" ) then
+function CharacterCreateMixin:OnKeyDown(key)
+	if key == "ESCAPE" then
+		if self.CustomizationFrame:IsShown() and not (self.CustomizationFrame:IsAnimPlaying() and self.CustomizationFrame.isRevers) then
+			self.CustomizationFrame:PlayToggleAnim()
+			PlaySound(SOUNDKIT.GS_CHARACTER_CREATION_LOOK)
+		else
+			self:BackToCharacterSelect()
+		end
+	elseif key == "ENTER" then
+		self.NavigationFrame.CreateButton:Click()
+	elseif key == "PRINTSCREEN" then
 		Screenshot()
 	end
 end
 
-function CharacterCreate_Finish()
-	PlaySound("gsCharacterCreationCreateChar")
-
-	if ( PAID_SERVICE_TYPE ) then
-		if PAID_SERVICE_TYPE == PAID_FACTION_CHANGE then
-			GlueDialog_Show("CONFIRM_PAID_FACTION_CHANGE")
-		else
-			GlueDialog_Show("CONFIRM_PAID_SERVICE")
+function CharacterCreateMixin:OnMouseUp( button )
+	if button == "LeftButton" then
+		self.rotationStartX = nil
+		self.rotationResetTime = nil
+		self.rotationResetCur = nil
+		self.rotationResetStep = nil
+	elseif button == "RightButton" and not self.rotationStartX then
+		local defaultDeg = C_CharacterCreation.GetDefaultCharacterCreateFacing()
+		local deg = C_CharacterCreation.GetCharacterCreateFacing()
+		if deg ~= defaultDeg then
+			local change = (defaultDeg - deg + 540) % 360 - 180
+			self.elapsed = 0
+			self.rotationResetTime = math.abs(change / 180 * RESET_ROTATION_TIME)
+			self.rotationResetCur = deg
+			self.rotationResetStep = change / self.rotationResetTime
 		end
-	else
-		CharCreateNextButtons:Disable()
-		C_Timer:After(0.200, function() CharCreateNextButtons:Enable() end)
-		CreateCharacter(CharacterCreateNameEdit:GetText())
 	end
 end
 
-function CharacterCreate_Back()
-	if CharacterCreateFrame.forceCustomization then
-		PlaySound("gsCharacterCreationCancel")
-		CHARACTER_SELECT_BACK_FROM_CREATE = true
-		SetGlueScreen("charselect")
-		return
+function CharacterCreateMixin:OnMouseDown( button )
+	if button == "LeftButton" then
+		self.rotationResetX = nil
+		self.rotationResetCur = nil
+		self.rotationStartX = GetCursorPosition()
 	end
+end
 
-	C_CharacterCreation.FaceZoomOut()
+function CharacterCreateMixin:CreateUpdateButtons()
+	self:BuildRaceData()
+	self:CreateRaceButtons()
+	self:UpdateRaceButtons()
 
-	if ( CharacterCreateFrame.state == "CUSTOMIZATION" ) and CharCreateBackButtons:IsShown() then
-		PlaySound("gsCharacterCreationCancel")
-		CharacterCreateFrame.state = "CLASSRACE"
-		CharacterCreateScreenShow()
-		return
+	self:BuildClassData()
+	self:CreateClassButtons()
+	self:UpdateClassButtons()
+
+	self:CreateGenderButtons()
+	self:UpdateGenderButtons()
+
+	self.Overlay.showAnim:Play()
+	self:PlaySelectRaceAndClassAnim()
+end
+
+function CharacterCreateMixin:CreateGenderButtons()
+	self.genderButtonPool:ReleaseAll()
+
+	for _, genderID in ipairs(C_CharacterCreation.GetAvailableGenders()) do
+		local button = self.genderButtonPool:Acquire()
+		button.index = genderID
+		button.Icon:SetAtlas("GLUE-GENDER-"..E_SEX[genderID])
+		button:SetPoint(genderID == E_SEX.MALE and "LEFT" or "RIGHT", 0, 0)
+		button:Show()
 	end
+end
 
-    if not CharCreateBackButtons:IsShown() then
-        CharacterCreateFrame.state = "CLASSRACE"
-        CharacterCreateScreenShow()
-    end
+function CharacterCreateMixin:BuildClassData()
+	self.clientClassData = C_CharacterCreation.GetAvailableClasses()
+end
 
+function CharacterCreateMixin:CreateClassButtons()
+	self.classButtonPool:ReleaseAll()
+
+	local prevButton
+
+	for _, data in ipairs(self.clientClassData) do
+		if not data.disabled then
+			local button = self.classButtonPool:Acquire()
+			button.index = data.index
+			button.Icon:SetAtlas("CIRCLE_CLASS_ICON_"..data.clientFileString)
+			if not prevButton then
+				button:SetPoint("LEFT", 47, 0)
+			else
+				button:SetPoint("LEFT", prevButton, "RIGHT", 15, 0)
+			end
+			button:Show()
+
+			prevButton = button
+		end
+	end
+end
+
+function CharacterCreateMixin:GetClientRaceInfo( raceIndex )
+	return self.clientRaceData[raceIndex]
+end
+
+function CharacterCreateMixin:BuildRaceData()
+	self.clientRaceData = C_CharacterCreation.GetAvailableRaces()
+end
+
+function CharacterCreateMixin:CreateRaceButtons()
+	self.allianceRaceButtonPool:ReleaseAll()
+	self.hordeRaceButtonPool:ReleaseAll()
+	self.neutralRaceButtonPool:ReleaseAll()
+
+	local buffer = {}
+
+	for index, data in ipairs(C_CharacterCreation.GetAvailableRacesForCreation()) do
+		local button
+
+		local isNeutralFaction = data.factionID == PLAYER_FACTION_GROUP.Neutral or not not PAID_SERVICE_ORIGINAL_RACE[data.raceID]
+
+		local factionID = isNeutralFaction and PLAYER_FACTION_GROUP.Neutral or data.factionID
+
+		if factionID == PLAYER_FACTION_GROUP.Alliance then
+			button = self.allianceRaceButtonPool:Acquire()
+		elseif factionID == PLAYER_FACTION_GROUP.Horde then
+			button = self.hordeRaceButtonPool:Acquire()
+		elseif factionID == PLAYER_FACTION_GROUP.Neutral then
+			button = self.neutralRaceButtonPool:Acquire()
+
+			if PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_RACE or PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION then
+				local faction = C_CharacterCreation.PaidChange_GetCurrentFaction()
+
+				local overrideRaceID
+				local overrideFactionID
+
+				if PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION then
+					overrideRaceID = PAID_RACE_SERVICE_OVERRIDE_RACES[faction] and PAID_RACE_SERVICE_OVERRIDE_RACES[faction][data.raceID]
+					overrideFactionID = PAID_RACE_SERVICE_OVERRIDE_FACTIONS[faction]
+				else
+					overrideRaceID = PAID_FACTION_SERVICE_OVERRIDE_RACES[faction] and PAID_FACTION_SERVICE_OVERRIDE_RACES[faction][data.raceID]
+					overrideFactionID = PAID_SERVICE_ORIGINAL_FACTION[faction]
+				end
+
+				if overrideRaceID and overrideFactionID then
+					data.raceID = overrideRaceID
+					data.factionID = overrideFactionID
+				end
+			else
+				local raceID = PAID_SERVICE_ORIGINAL_RACE[data.raceID]
+				if raceID then
+					data.raceID = raceID
+					data.factionID = PLAYER_FACTION_GROUP.Neutral
+				end
+			end
+		end
+
+		if not buffer[factionID] then
+			buffer[factionID] = {}
+		end
+
+		table.insert(buffer[factionID], button)
+
+		local buttonCount = #buffer[factionID]
+
+		if mod(buttonCount - 1, self.raceButtonPerLine) == 0 then
+			if buttonCount == 1 then
+				if factionID == PLAYER_FACTION_GROUP.Alliance then
+					button:SetPoint("TOPLEFT", 40, -40)
+				elseif factionID == PLAYER_FACTION_GROUP.Horde then
+					button:SetPoint("TOPRIGHT", -40, -40)
+				else
+					button:SetPoint("LEFT", 0, 0)
+				end
+			else
+				if factionID == PLAYER_FACTION_GROUP.Alliance then
+					button:SetPoint("LEFT", buffer[factionID][buttonCount - self.raceButtonPerLine], "RIGHT", 26, -30)
+				elseif factionID == PLAYER_FACTION_GROUP.Horde then
+					button:SetPoint("RIGHT", buffer[factionID][buttonCount - self.raceButtonPerLine], "LEFT", -26, -30)
+				end
+			end
+		else
+			if factionID == PLAYER_FACTION_GROUP.Neutral then
+				button:SetPoint("LEFT", buffer[factionID][buttonCount - 1], "RIGHT", 40, 0)
+			else
+				button:SetPoint("TOP", buffer[factionID][buttonCount - 1], "BOTTOM", 0, -30)
+			end
+		end
+
+		button.data = data
+
+		if C_CharacterCreation.IsAlliedRace(data.raceID) then
+			button.AlliedBorder1:Show()
+			button.AlliedBorder1.Anim.Rotation:SetDegrees((index % 2 == 0) and -360 or 360)
+			button.AlliedBorder1.Anim:Play()
+			button.AlliedBorder2:Show()
+			button.AlliedBorder2.Anim:Play()
+			button.AlliedBorder2.Pulse:Play()
+		else
+			button.AlliedBorder1.Anim:Stop()
+			button.AlliedBorder1:Hide()
+			button.AlliedBorder2.Anim:Stop()
+			button.AlliedBorder2.Pulse:Stop()
+			button.AlliedBorder2:Hide()
+		end
+
+		button:Show()
+
+		if IsInterfaceDevClient() then
+			button.ArtFrame.RaceID:SetText(data.raceID)
+		end
+	end
+end
+
+local function updateButtonMacro( frame, onlyDeselected, ignoredButton )
+	if onlyDeselected then
+		if frame ~= ignoredButton then
+			frame:SetChecked(false)
+			frame:UpdateChecked()
+		end
+	else
+		frame:UpdateButton()
+	end
+end
+
+function CharacterCreateMixin:UpdateRaceButtons( onlyDeselected, ignoredButton )
+	for frame in self.allianceRaceButtonPool:EnumerateActive() do
+		updateButtonMacro(frame, onlyDeselected, ignoredButton)
+	end
+	for frame in self.hordeRaceButtonPool:EnumerateActive() do
+		updateButtonMacro(frame, onlyDeselected, ignoredButton)
+	end
+	for frame in self.neutralRaceButtonPool:EnumerateActive() do
+		updateButtonMacro(frame, onlyDeselected, ignoredButton)
+	end
+end
+
+function CharacterCreateMixin:UpdateClassButtons( onlyDeselected, ignoredButton )
+	for frame in self.classButtonPool:EnumerateActive() do
+		updateButtonMacro(frame, onlyDeselected, ignoredButton)
+	end
+end
+
+function CharacterCreateMixin:UpdateGenderButtons( onlyDeselected, ignoredButton )
+	for frame in self.genderButtonPool:EnumerateActive() do
+		updateButtonMacro(frame, onlyDeselected, ignoredButton)
+	end
+end
+
+function CharacterCreateMixin:PlaySelectRaceAndClassAnim( isReverce, callback )
+	self.AllianceRacesFrame:PlayAnim(isReverce, callback)
+	self.HordeRacesFrame:PlayAnim(isReverce)
+	self.NeutralRacesFrame:PlayAnim(isReverce)
+	self.ClassesFrame:PlayAnim(isReverce)
+	self.GenderFrame:PlayAnim(isReverce)
+end
+
+function CharacterCreateMixin:ResetSelectRaceAndClassAnim()
+	self.AllianceRacesFrame:Reset()
+	self.HordeRacesFrame:Reset()
+	self.NeutralRacesFrame:Reset()
+	self.ClassesFrame:Reset()
+	self.GenderFrame:Reset()
+end
+
+function CharacterCreateMixin:BackToCharacterSelect()
+	self.BlockingFrame:Show()
+	self.Overlay.hideAnim:Play()
 	PlaySound("gsCharacterCreationCancel")
-	CHARACTER_SELECT_BACK_FROM_CREATE = true
-	SetGlueScreen("charselect")
+	self:PlaySelectRaceAndClassAnim(true, function ()
+		self.BlockingFrame:Hide()
+		SetGlueScreen("charselect")
+	end)
 end
 
-local function ChooseFaction( factionID )
-	local raceInfo = C_CharacterCreation.GetRaceInfo( C_CharacterCreation.GetSelectedRace() )
+function CharacterCreateMixin:UpdateBackground()
+	CharacterModelMixin.SetBackground(self, C_CharacterCreation.GetSelectedModelName())
+end
 
-	if isOneOf(raceInfo.raceID, E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE, E_CHARACTER_RACES.RACE_VULPERA_HORDE) or CharacterCreateFrame.IsNeutralVulpera then
-		if factionID == 0 then
-			C_CharacterCreation.SetSelectedRace(18, true)
-		else
-			C_CharacterCreation.SetSelectedRace(17, true)
+CharacterCreateRaceButtonMixin = {}
+
+function CharacterCreateRaceButtonMixin:OnLoad()
+	self.mainFrame = CharacterCreate
+
+	self.Border:SetAtlas("UI-Frame-jailerstower-Portrait")
+	self.FactionBorder:SetAtlas("UI-Frame-jailerstower-Portrait-border")
+	self.ArtFrame.CheckedTexture:SetAtlas("charactercreate-ring-select")
+	self.ArtFrame.HighlightTexture:SetAtlas("UI-Frame-jailerstower-Portrait-border")
+	self.ArtFrame.Border2:SetAtlas("UI-Frame-jailerstower-Portrait")
+	self.ArtFrame.Border3:SetAtlas("UI-Frame-jailerstower-Portrait")
+
+	self.AlliedBorder1:SetAtlas("services-ring-large-glowpulse")
+	self.AlliedBorder2:SetAtlas("Roulette-item-jackpot-light-center")
+end
+
+function CharacterCreateRaceButtonMixin:UpdateChecked()
+	self.ArtFrame.CheckedTexture:SetShown(self:GetChecked())
+end
+
+function CharacterCreateRaceButtonMixin:OnMouseDown(button)
+	if self:IsEnabled() == 1 then
+		self.Icon:SetPoint("CENTER", 1, -1)
+		self.Border:SetPoint("CENTER", 1, -1)
+		self.FactionBorder:SetPoint("CENTER", 1, -1)
+		self.ArtFrame:SetPoint("TOPLEFT", 1, -1)
+		self.ArtFrame:SetPoint("BOTTOMRIGHT", 1, -1)
+	end
+end
+
+function CharacterCreateRaceButtonMixin:OnMouseUp(button)
+	self.Icon:SetPoint("CENTER", 0, 0)
+	self.Border:SetPoint("CENTER", 0, 0)
+	self.FactionBorder:SetPoint("CENTER", 0, 0)
+	self.ArtFrame:SetPoint("TOPLEFT", 0, 0)
+	self.ArtFrame:SetPoint("BOTTOMRIGHT", 0, 0)
+
+	if button == "LeftButton" then
+		if self:IsEnabled() == 1 or self.alliedRaceLocked then
+			PlaySound("gsCharacterCreationClass")
+
+			local isSet = C_CharacterCreation.SetSelectedRace(self.index)
+			if not isSet then return end
+
+			self:SetChecked(true)
+
+			self.mainFrame:UpdateRaceButtons( true, self )
+			self:UpdateChecked()
+
+			self.mainFrame:UpdateClassButtons()
+			self.mainFrame:UpdateBackground()
+			self.mainFrame.CustomizationFrame:UpdateCustomizationButtonFrame(true)
+			self.mainFrame.skipCustomizationConfirmation = self.mainFrame.CustomizationFrame:IsShown()
+
+			local enabled = self:IsEnabled() == 1
+			self.mainFrame.NavigationFrame.CreateButton:SetEnabled(enabled)
+			self.mainFrame.NavigationFrame.CreateNameEditBox:SetShown(enabled)
+			self.mainFrame.NavigationFrame.RandomNameButton:SetShown(enabled)
 		end
-	elseif isOneOf(raceInfo.raceID, E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE, E_CHARACTER_RACES.RACE_PANDAREN_HORDE) then
-		if factionID == 0 then
-			C_CharacterCreation.SetSelectedRace(21, true)
-		else
-			C_CharacterCreation.SetSelectedRace(15, true)
-		end
+	elseif button == "RightButton" and self:IsMouseOver() and self.tooltip then
+		TOOLTIPS_EXPANDED = not TOOLTIPS_EXPANDED
+		CharCreateRaceButtonTemplate_OnEnter(self)
+	end
+end
+
+function CharacterCreateRaceButtonMixin:OnEnter()
+	for i = 2, 3 do
+		self.ArtFrame["Border"..i].HideAnim:Stop()
+		self.ArtFrame["Border"..i]:Show()
+
+		self.ArtFrame["Border"..i].Anim:Play()
+		self.ArtFrame["Border"..i].ShowAnim:Play()
 	end
 
-    CreateCharacter(CharacterCreateNameEdit:GetText())
-end
+	self.ArtFrame.HighlightTexture:Show()
 
-GlueDialogTypes["CHOOSE_FACTION"] = {
-	text = CHOOSE_FACTION,
-	button1 = FACTION_ALLIANCE,
-	button2 = FACTION_HORDE,
-	escapeHides = true,
-	OnAccept = function()
-		ChooseFaction(1)
-	end,
-	OnCancel = function()
-		ChooseFaction(0)
-	end,
-}
+	if self:IsEnabled() == 1 then
+		self.tooltip = true
+	elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CUSTOMIZATION then
+		self.tooltip = nil
+	elseif C_CharacterCreation.IsAlliedRace(self.index) then
+		if PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION or PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_RACE then
+			local currentFaction = C_CharacterCreation.PaidChange_GetCurrentFaction()
+			local factionID = S_CHARACTER_RACES_INFO[self.index].factionID
 
-function CharacterCreate_Forward()
-	if ( CharacterCreateFrame.state == "CLASSRACE" ) then
-		CharacterCreateFrame.state = "CUSTOMIZATION"
-		PlaySound("gsCharacterSelectionCreateNew")
-		CharacterCustomizeScreenShow()
-		if PAID_SERVICE_TYPE == PAID_FACTION_CHANGE then
-            local raceButtonID = C_CharacterCreation.GetAssociateRaces(PaidChange_GetCurrentRaceIndex())
-			local raceInfo = C_CharacterCreation.GetRaceInfo(raceButtonID)
-
-			if isOneOf(raceInfo.raceID,
-				E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE,
-				E_CHARACTER_RACES.RACE_PANDAREN_HORDE,
-				E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE,
-				E_CHARACTER_RACES.RACE_VULPERA_HORDE) then
-
-				--GlueDialog_Show("CHOOSE_FACTION" -- Временно нет необходимости в этом.
+			if PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION then
+				self.tooltip = factionID == PAID_RACE_SERVICE_OVERRIDE_FACTIONS[currentFaction]
+			else
+				self.tooltip = factionID == PAID_SERVICE_ORIGINAL_FACTION[currentFaction]
 			end
-		end
-	else
-		CharacterCreate_Finish()
-	end
-end
-
-function CharCreateCustomizationFrame_OnShow ()
-	-- check each button and hide it if there are no values select
-	local resize = 0
-	local lastGood = 0
-	local isSkinVariantHair = false --GetSkinVariationIsHairColor(CharacterCreate.selectedRace)
-	local isDefaultSet = 0
-	local checkedButton = 1
-
-	-- check if this was set, if not, default to 1
-	if ( CharacterCreateFrame.customizationType == 0 or CharacterCreateFrame.customizationType == nil ) then
-		CharacterCreateFrame.customizationType = 1
-	end
-	for i=1, NUM_CHAR_CUSTOMIZATIONS, 1 do
-		if ( ( 5 <= 1 ) or ( isSkinVariantHair and i == CHAR_CUSTOMIZE_HAIR_COLOR ) ) then
-			resize = resize + 1
-			_G["CharCreateCustomizationButton"..i]:Hide()
 		else
-			-- this must be done since a selected button can 'disappear' when swapping genders
-			if ( isDefaultSet == 0 and CharacterCreateFrame.customizationType == i) then
-				isDefaultSet = 1
-				checkedButton = i
-			end
-			-- set your anchor to be the last good, this currently means button 1 HAS to be shown
-			if (i > 1) then
-				_G["CharCreateCustomizationButton"..i]:SetPoint( "TOP",_G["CharCreateCustomizationButton"..lastGood]:GetName() , "BOTTOM")
-			end
-			lastGood = i
+			self.tooltip = true
 		end
 	end
 
-	if (isDefaultSet == 0) then
-		CharacterCreateFrame.customizationType = lastGood
-		checkedButton = lastGood
-	end
-
-	if (resize > 0) then
-	-- we need to resize and remap the banner texture
-		local buttonx, buttony = CharCreateCustomizationButton1:GetSize()
-		local screenamount = resize*buttony
-		local frameX, frameY = CharCreateCustomizationFrameBanner:GetSize()
-		local pctShrink = .2*resize
-		local uvXDefaultSize = BANNER_DEFAULT_TEXTURE_COORDS[2] - BANNER_DEFAULT_TEXTURE_COORDS[1]
-		local uvYDefaultSize = BANNER_DEFAULT_TEXTURE_COORDS[4] - BANNER_DEFAULT_TEXTURE_COORDS[3]
-		local newYUV = pctShrink*uvYDefaultSize + BANNER_DEFAULT_TEXTURE_COORDS[3]
-		-- end coord stay the same
-		CharCreateCustomizationFrameBanner:SetTexCoord(BANNER_DEFAULT_TEXTURE_COORDS[1], BANNER_DEFAULT_TEXTURE_COORDS[2], newYUV, BANNER_DEFAULT_TEXTURE_COORDS[4])
-		CharCreateCustomizationFrameBanner:SetSize(frameX, frameY - screenamount)
+	if self.tooltip then
+		CharCreateRaceButtonTemplate_OnEnter(self)
 	end
 end
 
-function CharacterClass_OnClick(self, id)
-	if( self:IsEnabled() ) then
-		PlaySound("gsCharacterCreationClass")
-		local _,_,currClass = GetSelectedClass()
+function CharacterCreateRaceButtonMixin:OnLeave()
+	for i = 2, 3 do
+		self.ArtFrame["Border"..i].HideAnim:Play()
+		self.ArtFrame["Border"..i].ShowAnim:Stop()
+	end
 
-		if ( currClass ~= id ) then
-			CharacterCreate.lastSelectedClassButton = id
+	self.ArtFrame.HighlightTexture:Hide()
 
-			SetSelectedClass(id)
-			SetCharacterClass(id)
-			-- CharacterChangeFixup()
-		else
-			self:SetChecked(1)
-		end
+	if self.tooltip then
+		self.tooltip = nil
+		CharCreateRaceButtonTemplate_OnLeave(self)
+	end
+end
+
+function CharacterCreateRaceButtonMixin:OnDisable()
+	self.FactionBorder:SetDesaturated(true)
+	self.ArtFrame.HighlightTexture:SetDesaturated(true)
+	self.ArtFrame.Border2:SetDesaturated(true)
+	self.ArtFrame.Border3:SetDesaturated(true)
+	self.Icon:SetDesaturated(true)
+	self.alliedRaceDisabled = C_CharacterCreation.IsAlliedRace(self.index)
+end
+
+function CharacterCreateRaceButtonMixin:OnEnable()
+	self.FactionBorder:SetDesaturated(false)
+	self.ArtFrame.HighlightTexture:SetDesaturated(false)
+	self.ArtFrame.Border2:SetDesaturated(false)
+	self.ArtFrame.Border3:SetDesaturated(false)
+	self.Icon:SetDesaturated(false)
+	self.alliedRaceDisabled = nil
+end
+
+function CharacterCreateRaceButtonMixin:UpdateButton()
+	local clientData = self.mainFrame:GetClientRaceInfo(self.data.raceID)
+	local factionColor = PLAYER_FACTION_COLORS[self.data.factionID]
+
+	self.Border:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
+	self.FactionBorder:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
+	self.ArtFrame.Border2:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
+	self.ArtFrame.Border3:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
+
+	if C_CharacterCreation.IsPandarenRace(clientData.index) or C_CharacterCreation.IsVulperaRace(clientData.index) then
+		self.data.name = _G[string.upper(clientData.clientFileString)]
 	else
-		self:SetChecked(0)
-	end
-end
-
-function CharacterRace_OnClick(self)
-	if( self:IsEnabled() ) then
-		PlaySound("gsCharacterCreationClass")
-		if not CharacterCreate.lastSelectedRaceButton or CharacterCreate.lastSelectedRaceButton ~= self.index then
-			C_CharacterCreation.SetSelectedRace( self:GetID() )
-
-			local _,_,classIndex = GetSelectedClass()
-			if ( PAID_SERVICE_TYPE ) then
-				classIndex = PaidChange_GetCurrentClassIndex()
-				SetSelectedClass(classIndex)
-			end
-
-			CharacterCreate.lastSelectedRaceButton = self.index
-
-			SetCharacterCreateFacing(0)
-			CharacterCreate_UpdateHairCustomization()
-			-- CharacterChangeFixup()
-		else
-			self:SetChecked(1)
-		end
-	else
-		self:SetChecked(0)
-	end
-end
-
-function CharacterCustomization_Left(id)
-	PlaySound("gsCharacterCreationLook")
-	if isOneOf(id, 2, 3, 4, 5) then
-		C_CharacterCreation.FaceZoomIn()
-	else
-		C_CharacterCreation.FaceZoomOut()
-	end
-	CycleCharCustomization(id, -1)
-end
-
-function CharacterCustomization_Right(id)
-	PlaySound("gsCharacterCreationLook")
-	if isOneOf(id, 2, 3, 4, 5) then
-		C_CharacterCreation.FaceZoomIn()
-	else
-		C_CharacterCreation.FaceZoomOut()
-	end
-	CycleCharCustomization(id, 1)
-end
-
-function CharacterCreate_GenerateRandomName(button)
-	button:Disable()
-	CharacterCreateNameEdit:SetText("...")
-	RequestRandomName()
-end
-
-function CharacterCreate_Randomize()
-	PlaySound("gsCharacterCreationLook")
-	RandomizeCharCustomization()
-end
-
-function CharacterCreateRotateRight_OnUpdate(self)
-	if ( self:GetButtonState() == "PUSHED" ) then
-		SetCharacterCreateFacing(GetCharacterCreateFacing() + CHARACTER_FACING_INCREMENT)
-	end
-end
-
-function CharacterCreateRotateLeft_OnUpdate(self)
-	if ( self:GetButtonState() == "PUSHED" ) then
-		SetCharacterCreateFacing(GetCharacterCreateFacing() - CHARACTER_FACING_INCREMENT)
-	end
-end
-
-function CharacterCreate_UpdateHairCustomization()
-	if not _G["HAIR_"..GetHairCustomization().."_STYLE"] or _G["HAIR_"..GetHairCustomization().."_STYLE"] == "" then
-		CharCreateCustomizationButton3:Hide()
-		CharCreateCustomizationButton4:SetPoint("TOP", CharCreateCustomizationButton2, "BOTTOM", 0, -20)
-	else
-		CharCreateCustomizationButton3:Show()
-		CharCreateCustomizationButton3.text:SetText(_G["HAIR_"..GetHairCustomization().."_STYLE"])
-		CharCreateCustomizationButton4:SetPoint("TOP", CharCreateCustomizationButton3, "BOTTOM", 0, -20)
+		self.data.name = clientData.name
 	end
 
-	if not _G["HAIR_"..GetHairCustomization().."_COLOR"] or _G["HAIR_"..GetHairCustomization().."_COLOR"] == "" or _G["HAIR_"..GetHairCustomization().."_COLOR"] == HAIR_VULPERA_COLOR then
-		CharCreateCustomizationButton4:Hide()
-		if CharCreateCustomizationButton3:IsShown() then
-			CharCreateCustomizationButton5:SetPoint("TOP", CharCreateCustomizationButton3, "BOTTOM", 0, -20)
-		else
-			CharCreateCustomizationButton5:SetPoint("TOP", CharCreateCustomizationButton2, "BOTTOM", 0, -20)
-		end
-	else
-		CharCreateCustomizationButton4:Show()
-		CharCreateCustomizationButton4.text:SetText(_G["HAIR_"..GetHairCustomization().."_COLOR"])
-		CharCreateCustomizationButton5:SetPoint("TOP", CharCreateCustomizationButton4, "BOTTOM", 0, -20)
+	self.data.clientFileString = clientData.clientFileString
+
+	local atlas = string.format("RACE_ICON_%s_%s_%s", string.upper(clientData.clientFileString), E_SEX[C_CharacterCreation.GetSelectedSex()], string.upper(PLAYER_FACTION_GROUP[self.data.factionID]))
+
+	if not S_ATLAS_STORAGE[atlas] then
+		atlas = "RACE_ICON_HUMAN_MALE_HORDE"
 	end
 
-	if not _G["FACIAL_HAIR_"..GetFacialHairCustomization()] or _G["FACIAL_HAIR_"..GetFacialHairCustomization()] == "" then
-		CharCreateCustomizationButton5:Hide()
-	else
-		CharCreateCustomizationButton5:Show()
-		CharCreateCustomizationButton5.text:SetText(_G["FACIAL_HAIR_"..GetFacialHairCustomization()])
-	end
-end
+	self.Icon:SetAtlas(atlas)
 
-function SetButtonDesaturated(button, desaturated)
-	if ( not button ) then
-		return
-	end
-	local icon = button:GetNormalTexture()
-	if ( not icon ) then
-		return
-	end
+	self.index = clientData.index
 
-	icon:SetDesaturated(desaturated)
-end
+	local allow = false
+	local alliedRaceLocked
 
-function GetFlavorText(tagname, sex)
-	local primary, secondary
-	if ( sex == E_SEX.MALE ) then
-		primary = ""
-		secondary = "_FEMALE"
-	else
-		primary = "_FEMALE"
-		secondary = ""
-	end
-	local text = _G[tagname..primary]
-	if ( (text == nil) or (text == "") ) then
-		text = _G[tagname..secondary]
-	end
-	return text
-end
-
-local function disabledButton( button, toggle, isAlliedRace )
-	button:SetEnabled(not toggle)
-	button:SetChecked(false)
-	button.alliedRaceDisabled = isAlliedRace and toggle or nil
-	SetButtonDesaturated(button, toggle)
-end
-
-enum: E_ALLIED_RACE_ID_TO_INDEX {
-	[17] = E_CHARACTER_RACES.RACE_VOIDELF,
-	[18] = E_CHARACTER_RACES.RACE_NIGHTBORNE,
-}
-
-function CharacterChangeFixup( dontAutoSelectRace )
 	if PAID_SERVICE_TYPE then
-		local raceButtonID = C_CharacterCreation.GetAssociateRaces(PaidChange_GetCurrentRaceIndex())
-		local classButtonID = PaidChange_GetCurrentClassIndex()
+		local faction = C_CharacterCreation.PaidChange_GetCurrentFaction()
 
-        if not raceButtonID or raceButtonID == 0 then -- ХОТФИКС потом обязательно убрать
-            raceButtonID = 16
-        end
-
-		CharCreateClassFrame:SetAlpha(0.5)
-
-		local raceButton 	= _G["CharCreateRaceButton"..raceButtonID]
-		local classButton 	= _G["CharCreateClassButton"..classButtonID]
-
-		assert(raceButton, "CharacterChangeFixup: не найдена кнопка рассы по ID "..raceButtonID)
-		assert(classButton, "CharacterChangeFixup: не найдена кнопка класса по ID "..classButtonID)
-
-        if not dontAutoSelectRace then
-            raceButton:Click()
-        end
-
-        classButton:Click()
-
-		for buttonID, button in pairs(CharacterCreate.classButtons) do
-			button:SetEnabled(buttonID == classButtonID)
-			button:SetChecked(buttonID == classButtonID)
-			SetButtonDesaturated(button, buttonID ~= classButtonID)
-		end
-
-		local factionTag = raceButton.raceInfo.FactionInfo.groupTag
-
-        if C_CharacterCreation.GetSelectedRace() ~= raceButtonID then
-            raceButtonID = C_CharacterCreation.GetSelectedRace()
-        end
-
-		for buttonID, button in pairs(CharacterCreate.raceButtons) do
-			if buttonID == raceButtonID then
-				button:SetEnabled(true)
-				button:SetChecked(true)
-			else
-				local allow = false
-
-				if PAID_SERVICE_TYPE == PAID_FACTION_CHANGE then
-					allow = button.raceInfo.FactionInfo.groupTag ~= factionTag
-
-                    -- Хардкод скрытие кнопок при смене фракции
-                    CharCreateRaceButton17:SetShown(factionTag == "Horde") -- Вульпер Альянс
-                    CharCreateRaceButton15:SetShown(factionTag == "Horde") -- Пандарен Альянс
-
-                    CharCreateRaceButton18:SetShown(factionTag == "Alliance") -- Вульпер Орда
-                    CharCreateRaceButton21:SetShown(factionTag == "Alliance") -- Пандарен Орда
-
-                    if factionTag == "Neutral" then
-                        CharacterCreateFrame.state = "CUSTOMIZATION"
-                        PlaySound("gsCharacterSelectionCreateNew")
-                        CharacterCustomizeScreenShow()
-                        CharCreateBackButtons:Hide()
-
-                        GlueDialog_Show("CHOOSE_FACTION")
-                    end
-
-                    CharacterCreateFrame.IsNeutralVulpera = factionTag == "Neutral"
-				elseif PAID_SERVICE_TYPE == PAID_RACE_CHANGE then
-					local ovverideData = CharacterSelect.overrideData[PAID_SERVICE_CHARACTER_ID]
-
-					if C_Service:IsLockRenegadeFeatures() then
-						allow = button.raceInfo.FactionInfo.groupTag == factionTag
-					else
-						if ovverideData then
-							local ovverideFactionTag = SERVER_PLAYER_FACTION_GROUP[ovverideData]
-
-							if PLAYER_FACTION_GROUP[ovverideFactionTag] == PLAYER_FACTION_GROUP.Renegade then
-								allow = button.raceInfo.FactionInfo.groupTag == factionTag
-							else
-								allow = button.raceInfo.FactionInfo.groupTag == ovverideFactionTag
-								factionTag = ovverideFactionTag
-							end
-						end
-					end
-
-                    CharCreateRaceButton17:SetShown(factionTag == "Alliance") -- Вульпер Альянс
-                    CharCreateRaceButton15:SetShown(factionTag == "Alliance") -- Пандарен Альянс
-
-                    CharCreateRaceButton18:SetShown(factionTag == "Horde") -- Вульпер Орда
-                    CharCreateRaceButton21:SetShown(factionTag == "Horde") -- Пандарен Орда
-				end
-
-				if isOneOf(button.raceInfo.raceID,
-					E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL,
-					E_CHARACTER_RACES.RACE_BLOODELF_DH,
-					E_CHARACTER_RACES.RACE_NIGHTELF_DH) then
-
-					allow = false
-				end
-
-				if isOneOf(button.raceInfo.raceID, E_CHARACTER_RACES.RACE_NIGHTBORNE, E_CHARACTER_RACES.RACE_VOIDELF, E_CHARACTER_RACES.RACE_DARKIRONDWARF, E_CHARACTER_RACES.RACE_EREDAR) then
-					if raceButtonID == button.raceInfo.raceID then
-						allow = true
-					elseif not IsGMAccount() and allow and CharacterCreate.alliedRacesUnlock and not CharacterCreate.alliedRacesUnlock[button.raceInfo.raceID] then
-						allow = not allow
-					end
-				end
-
-				button:SetEnabled(allow)
-				button:SetChecked(false)
-				SetButtonDesaturated(button, not allow)
-			end
+		if C_CharacterCreation.IsNeutralRace(self.index) then
+			allow = false
+		elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_RACE then
+			allow = (faction == C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
+		elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION then
+			allow = (faction ~= C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
+		elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CUSTOMIZATION then
+			allow = self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex()
 		end
 	else
-        CharCreateRaceButton16:Show()
+		allow = true
+	end
 
-        CharCreateRaceButton17:Hide()
-        CharCreateRaceButton18:Hide()
-        CharCreateRaceButton21:Hide()
+	if allow and C_CharacterCreation.IsAlliedRace(self.index) and not C_CharacterCreation.IsAlliedRacesUnlocked(self.index) then
+		allow = false
+		alliedRaceLocked = true
+	end
 
-		if not IsGMAccount() then
-			if CharacterCreate.alliedRacesUnlock then
-				disabledButton(CharCreateRaceButton22, not CharacterCreate.alliedRacesUnlock[E_CHARACTER_RACES.RACE_VOIDELF], true)
-				disabledButton(CharCreateRaceButton23, not CharacterCreate.alliedRacesUnlock[E_CHARACTER_RACES.RACE_NIGHTBORNE], true)
-				disabledButton(CharCreateRaceButton24, not CharacterCreate.alliedRacesUnlock[E_CHARACTER_RACES.RACE_DARKIRONDWARF])
-				disabledButton(CharCreateRaceButton25, not CharacterCreate.alliedRacesUnlock[E_CHARACTER_RACES.RACE_EREDAR])
-			else
-				disabledButton(CharCreateRaceButton22, true, true)
-				disabledButton(CharCreateRaceButton23, true, true)
-				disabledButton(CharCreateRaceButton24, true)
-				disabledButton(CharCreateRaceButton25, true)
-			end
-		end
+	self.alliedRaceLocked = alliedRaceLocked
+	self:SetEnabled(allow)
 
-		CharCreateClassFrame:SetAlpha(1)
+	self:SetChecked(C_CharacterCreation.GetSelectedRace() == self.index)
+	self:UpdateChecked()
+end
+
+CharacterCreateClassButtonMixin = {}
+
+function CharacterCreateClassButtonMixin:OnLoad()
+	self.mainFrame = CharacterCreate
+
+	self.Border:SetAtlas("charactercreate-ring-metaldark")
+	self.HighlightTexture:SetAtlas("charactercreate-ring-metallight")
+	self.CheckedTexture:SetAtlas("charactercreate-ring-select")
+end
+
+function CharacterCreateClassButtonMixin:OnEnter()
+	self.HighlightTexture:Show()
+
+	self.tooltip = self:IsEnabled() == 1
+	if self.tooltip then
+		CharCreateClassButtonTemplate_OnEnter(self)
 	end
 end
 
-function CharCreate_ChangeFeatureVariation(delta)
-	local numVariations = 8--GetNumFeatureVariations()
-	local startIndex = featureIndex--GetSelectedFeatureVariation()
-	local endIndex = startIndex + delta
-	if ( endIndex < 1 or endIndex > numVariations ) then
+function CharacterCreateClassButtonMixin:OnLeave()
+	self.HighlightTexture:Hide()
+
+	if self.tooltip then
+		self.tooltip = nil
+		CharCreateClassButtonTemplate_OnLeave(self)
+	end
+end
+
+function CharacterCreateClassButtonMixin:UpdateChecked()
+	self.CheckedTexture:SetShown(self:GetChecked())
+end
+
+function CharacterCreateClassButtonMixin:OnDisable()
+	self.Icon:SetDesaturated(true)
+	self.Border:SetDesaturated(true)
+	self.HighlightTexture:SetDesaturated(true)
+	self.CheckedTexture:SetDesaturated(true)
+end
+
+function CharacterCreateClassButtonMixin:OnEnable()
+	self.Icon:SetDesaturated(false)
+	self.Border:SetDesaturated(false)
+	self.HighlightTexture:SetDesaturated(false)
+	self.CheckedTexture:SetDesaturated(false)
+end
+
+function CharacterCreateClassButtonMixin:OnMouseDown(button)
+	if self:IsEnabled() == 1 then
+		self.Icon:SetPoint("CENTER", 1, -1)
+		self.Border:SetPoint("CENTER", 1, -1)
+		self.HighlightTexture:SetPoint("CENTER", 1, -1)
+		self.CheckedTexture:SetPoint("CENTER", 1, -1)
+	end
+end
+
+function CharacterCreateClassButtonMixin:OnMouseUp(button)
+	self.Icon:SetPoint("CENTER", 0, 0)
+	self.Border:SetPoint("CENTER", 0, 0)
+	self.HighlightTexture:SetPoint("CENTER", 0, 0)
+	self.CheckedTexture:SetPoint("CENTER", 0, 0)
+
+	if button == "LeftButton" then
+		if self:IsEnabled() == 1 then
+			PlaySound("gsCharacterCreationClass")
+
+			local isSet = C_CharacterCreation.SetSelectedClass(self.index)
+			if not isSet then return end
+
+			self:SetChecked(true)
+
+			self.mainFrame:UpdateClassButtons( true, self )
+			self:UpdateChecked()
+
+			self.mainFrame:UpdateBackground()
+			self.mainFrame.CustomizationFrame:UpdateCustomizationButtonFrame(true)
+			self.mainFrame.skipCustomizationConfirmation = self.mainFrame.CustomizationFrame:IsShown()
+		end
+	elseif button == "RightButton" and self:IsMouseOver() and self.tooltip then
+		TOOLTIPS_EXPANDED = not TOOLTIPS_EXPANDED
+		CharCreateClassButtonTemplate_OnEnter(self)
+	end
+end
+
+function CharacterCreateClassButtonMixin:UpdateButton()
+	local _, _, classID = C_CharacterCreation.GetSelectedClass()
+
+	local clientClassData = self.index and self.mainFrame.clientClassData[self.index]
+	if clientClassData then
+		self.name = clientClassData.name
+		self.clientFileString = clientClassData.clientFileString
+	end
+
+	if PAID_SERVICE_TYPE then
+		self:SetEnabled(self.index == classID)
+	else
+		self:SetEnabled(C_CharacterCreation.IsRaceClassValid(C_CharacterCreation.GetSelectedRace(), self.index))
+	end
+
+
+	self:SetChecked(classID == self.index)
+	self:UpdateChecked()
+end
+
+CharacterCreateGenderButtonMixin = {}
+
+function CharacterCreateGenderButtonMixin:OnLoad()
+	self.mainFrame = CharacterCreate
+
+	self.Border:SetAtlas("charactercreate-ring-metaldark")
+	self.HighlightTexture:SetAtlas("charactercreate-ring-metallight")
+	self.CheckedTexture:SetAtlas("charactercreate-ring-select")
+end
+
+function CharacterCreateGenderButtonMixin:OnMouseDown(button)
+	if self:IsEnabled() == 1 then
+		self.Icon:SetPoint("CENTER", 1, -1)
+		self.Border:SetPoint("CENTER", 1, -1)
+		self.HighlightTexture:SetPoint("CENTER", 1, -1)
+		self.CheckedTexture:SetPoint("CENTER", 1, -1)
+	end
+end
+
+function CharacterCreateGenderButtonMixin:OnMouseUp(button)
+	self.Icon:SetPoint("CENTER", 0, 0)
+	self.Border:SetPoint("CENTER", 0, 0)
+	self.HighlightTexture:SetPoint("CENTER", 0, 0)
+	self.CheckedTexture:SetPoint("CENTER", 0, 0)
+
+	if button == "LeftButton" then
+		PlaySound("gsCharacterCreationClass")
+
+		local isSet = C_CharacterCreation.SetSelectedSex(self.index)
+		if not isSet then return end
+
+		self:SetChecked(true)
+
+		self.mainFrame:UpdateGenderButtons( true, self )
+		self:UpdateChecked()
+
+		self.mainFrame:BuildRaceData()
+		self.mainFrame:UpdateRaceButtons()
+		self.mainFrame:BuildClassData()
+		self.mainFrame:UpdateClassButtons()
+
+		self.mainFrame.CustomizationFrame:UpdateCustomizationButtonFrame(true)
+		self.mainFrame.skipCustomizationConfirmation = self.mainFrame.CustomizationFrame:IsShown()
+
+		C_CharacterCreation.ZoomCamera(0, nil, true)
+	end
+end
+
+function CharacterCreateGenderButtonMixin:OnEnter()
+	self.HighlightTexture:Show()
+
+	GlueTooltip_SetOwner(self, GlueTooltip, 0, 0, "BOTTOM", "TOP")
+	GlueTooltip_SetText(_G[E_SEX[self.index]], GlueTooltip, 1, 1, 1)
+end
+
+function CharacterCreateGenderButtonMixin:OnLeave()
+	self.HighlightTexture:Hide()
+
+	GlueTooltip:Hide()
+end
+
+function CharacterCreateGenderButtonMixin:UpdateChecked()
+	self.CheckedTexture:SetShown(self:GetChecked())
+end
+
+function CharacterCreateGenderButtonMixin:UpdateButton()
+	self:SetChecked(C_CharacterCreation.GetSelectedSex() == self.index)
+	self:UpdateChecked()
+end
+
+CharacterCreateAllianceRacesFrameMixin = {}
+
+function CharacterCreateAllianceRacesFrameMixin:Init()
+	self.startPoint = -400
+	self.endPoint = 10
+	self.duration = 0.500
+end
+
+function CharacterCreateAllianceRacesFrameMixin:SetPosition( easing )
+	if easing then
+		self:ClearAndSetPoint("TOPLEFT", easing, -70)
+	else
+		self:ClearAndSetPoint("TOPLEFT", self.isRevers and self.startPoint or self.endPoint, -70)
+	end
+end
+
+CharacterCreateHordeRacesFrameMixin = {}
+
+function CharacterCreateHordeRacesFrameMixin:Init()
+	self.startPoint = 400
+	self.endPoint = -10
+	self.duration = 0.500
+end
+
+function CharacterCreateHordeRacesFrameMixin:SetPosition( easing )
+	if easing then
+		self:ClearAndSetPoint("TOPRIGHT", easing, -70)
+	else
+		self:ClearAndSetPoint("TOPRIGHT", self.isRevers and self.startPoint or self.endPoint, -70)
+	end
+end
+
+CharacterCreateNeutralRacesFrameMixin = {}
+
+function CharacterCreateNeutralRacesFrameMixin:Init()
+	self.startPoint = 100
+	self.endPoint = -30
+	self.duration = 0.500
+end
+
+function CharacterCreateNeutralRacesFrameMixin:SetPosition( easing )
+	if easing then
+		self:ClearAndSetPoint("TOP", 0, easing)
+	else
+		self:ClearAndSetPoint("TOP", 0, self.isRevers and self.startPoint or self.endPoint)
+	end
+end
+
+CharacterCreateClassesFrameMixin = {}
+
+function CharacterCreateClassesFrameMixin:Init()
+	self.startPoint = -80
+	self.endPoint = 10
+	self.duration = 0.500
+end
+
+function CharacterCreateClassesFrameMixin:SetPosition( easing )
+	if easing then
+		self:ClearAndSetPoint("BOTTOM", 0, easing)
+	else
+		self:ClearAndSetPoint("BOTTOM", 0, 10)
+	end
+end
+
+CharacterCreateGenderFrameMixin = {}
+
+function CharacterCreateGenderFrameMixin:Init()
+	self.startPoint = 20
+	self.endPoint = 70
+	self.duration = 0.500
+end
+
+function CharacterCreateGenderFrameMixin:SetPosition( easing )
+	if easing then
+		self:ClearAndSetPoint("BOTTOM", 0, easing)
+	else
+		self:ClearAndSetPoint("BOTTOM", 0, self.isRevers and self.startPoint or self.endPoint)
+	end
+end
+
+CharacterCreateInteractiveButtonAlphaAnimMixin = {}
+
+function CharacterCreateInteractiveButtonAlphaAnimMixin:InitAlpha()
+	self.initMinAlpha 	= 0.4
+	self.initMaxAlpha 	= 1
+
+	self.elapsed 		= 0
+	self.animationTime 	= 0.4
+
+	self.startAlpha 	= nil
+	self.endAlpha 		= nil
+end
+
+function CharacterCreateInteractiveButtonAlphaAnimMixin:InFade()
+	self.startAlpha 	= self.initMinAlpha
+	self.endAlpha 		= self.initMaxAlpha
+end
+
+function CharacterCreateInteractiveButtonAlphaAnimMixin:OutFade()
+	self.startAlpha 	= self.initMaxAlpha
+	self.endAlpha 		= self.initMinAlpha
+end
+
+function CharacterCreateInteractiveButtonAlphaAnimMixin:UpdateAlpha( elapsed )
+	if not self.startAlpha or not self.endAlpha then
 		return
 	end
-	PlaySound("gsCharacterCreationClass")
-	featureIndex = endIndex
-	CharCreatePreviewFrame_SelectFeatureVariation(endIndex)
+
+	self.elapsed = self.elapsed + elapsed
+
+	local easing 	= C_outCirc(self.elapsed, self.startAlpha, self.endAlpha, self.animationTime)
+
+	self:SetAlpha(easing)
+
+	if self.elapsed > self.animationTime then
+		self:SetAlpha(self.endAlpha)
+
+		self.elapsed 		= 0
+		self.animationState = nil
+
+		self.startAlpha 	= nil
+		self.endAlpha 		= nil
+	end
 end
 
-function CharCreatePreviewFrameButton_OnClick(self)
-	PlaySound("gsCharacterCreationClass")
-	CharCreatePreviewFrame_SelectFeatureVariation(self.index)
+CharacterCreateCustomizationButtonMixin = {}
+
+function CharacterCreateCustomizationButtonMixin:OnLoad()
+	self.parentFrame = self:GetParent():GetParent()
 end
 
-function CharCreatePreviewFrame_SelectFeatureVariation(endIndex)
-	local self = CharCreatePreviewFrame
-	if ( self.animating ) then
-		if ( not self.queuedIndex ) then
-			self.queuedIndex = endIndex
-		end
+function CharacterCreateCustomizationButtonMixin:OnClick()
+	self.parentFrame.CustomizationFrame:PlayToggleAnim()
+	PlaySound(SOUNDKIT.GS_CHARACTER_CREATION_LOOK)
+end
+
+CharacterCreateCustomizationFrameMixin = {}
+
+function CharacterCreateCustomizationFrameMixin:OnLoad()
+	self.parentFrame = self:GetParent()
+	self.customizationButtonFramePool = CreateFramePool("Frame", self, "CharacterCreateCustomizationButtonFrameTemplate")
+
+	self.sourceXOffset = 200
+	self.startPoint = -200
+	self.endPoint = self.sourceXOffset
+	self.duration = 0.500
+end
+
+function CharacterCreateCustomizationFrameMixin:SetPosition(easing, progress)
+	if easing then
+		self.parentFrame.CustomizationVignette:SetAlpha(self.isRevers and ((1 - progress) * 0.75) or (progress * 0.75))
+		self:SetAlpha(self.isRevers and (1 - progress) or progress)
+		self:SetPoint("LEFT", easing, 200)
 	else
-		local startIndex = featureIndex--GetSelectedFeatureVariation()
-		--SelectFeatureVariation(endIndex)
-		for i=1,endIndex do
-			CycleCharCustomization(FeatureType, 1)
-		end
-		CharCreatePreviewFrame_UpdateStyleButtons()
-		featureIndex = endIndex
-		CharCreatePreviewFrame_StartAnimating(startIndex, endIndex)
+		self.parentFrame.CustomizationVignette:SetAlpha(self.isRevers and 0 or 0.75)
+		self:SetAlpha(self.isRevers and 0 or 1)
+		self:SetPoint("LEFT", self.isRevers and self.startPoint or self.sourceXOffset, 200)
 	end
 end
 
-function CharCreatePreviewFrame_StartAnimating(startIndex, endIndex)
-	local self = CharCreatePreviewFrame
-	if ( self.animating ) then
-		return
-	else
-		self.startIndex = startIndex
-		self.currentIndex = startIndex
-		self.endIndex = endIndex
-		self.queuedIndex = nil
-		self.direction = 1
-		if ( self.startIndex > self.endIndex ) then
-			self.direction = -1
-		end
-		self.movedTotal = 0
-		self.moveUntilUpdate = PREVIEW_FRAME_HEIGHT
-		self.animating = true
-	end
-end
+function CharacterCreateCustomizationFrameMixin:UpdateCustomizationButtonFrame(selectedChanged)
+	if selectedChanged and not self:IsShown() == 1 then return end
 
-function CharCreatePreviewFrame_StopAnimating()
-	local self = CharCreatePreviewFrame
-	if ( self.animating ) then
-		self.animating = false
-	end
-end
+	self.customizationButtonFramePool:ReleaseAll()
 
-local ANIMATION_SPEED = 5
-function CharCreatePreviewFrame_OnUpdate(self, elapsed)
-	if ( self.animating ) then
-		local moveIncrement = PREVIEW_FRAME_HEIGHT * elapsed * ANIMATION_SPEED
-		self.movedTotal = self.movedTotal + moveIncrement
-		self.scrollFrame:SetVerticalScroll((self.startIndex - 1) * PREVIEW_FRAME_HEIGHT + self.movedTotal * self.direction)
-		self.moveUntilUpdate = self.moveUntilUpdate - moveIncrement
-		if ( self.moveUntilUpdate <= 0 ) then
-			self.currentIndex = self.currentIndex + self.direction
-			self.moveUntilUpdate = PREVIEW_FRAME_HEIGHT
-			-- reset movedTotal to account for rounding errors
-			self.movedTotal = abs(self.startIndex - self.currentIndex) * PREVIEW_FRAME_HEIGHT
-			-- CharCreate_DisplayPreviewModels(self.currentIndex)
-		end
-		if ( self.currentIndex == self.endIndex ) then
-			self.animating = false
-			-- CharCreate_DisplayPreviewModels()
-			if ( self.queuedIndex ) then
-				local newIndex = self.queuedIndex
-				self.queuedIndex = nil
-				--SelectFeatureVariation(newIndex)
-				featureIndex = newIndex
-				CycleCharCustomization(FeatureType, featureIndex)
-				CharCreatePreviewFrame_UpdateStyleButtons()
-				CharCreatePreviewFrame_StartAnimating(self.endIndex, newIndex)
-			end
-		end
-	end
-end
+	local prevFrame
 
-function CharCreatePreviewFrame_UpdateStyleButtons()
-	local selectionIndex = math.random(1,5)--GetSelectedFeatureVariation()
-	local numVariations = 8--GetNumFeatureVariations()
-	if ( selectionIndex == 1 ) then
-		CharCreateStyleUpButton:Enable()
-		CharCreateStyleUpButton.arrow:SetDesaturated(true)
-	else
-		CharCreateStyleUpButton:Enable()
-		CharCreateStyleUpButton.arrow:SetDesaturated(false)
-	end
-	if ( selectionIndex == numVariations ) then
-		CharCreateStyleDownButton:Disable()
-		CharCreateStyleDownButton.arrow:SetDesaturated(true)
-	else
-		CharCreateStyleDownButton:Disable(true)
-		CharCreateStyleDownButton.arrow:SetDesaturated(false)
-	end
-end
+	for _, style in ipairs(C_CharacterCreation.GetAvailableCustomizations()) do
+		local frame = self.customizationButtonFramePool:Acquire()
 
-local TotalTime = 0
-local KeepScrolling = nil
-local TIME_TO_SCROLL = 0.5
-function CharacterCreateWhileMouseDown_OnMouseDown(direction)
-	TIME_TO_SCROLL = 0.5
-	TotalTime = 0
-	KeepScrolling = direction
-end
-function CharacterCreateWhileMouseDown_OnMouseUp()
-	KeepScrolling = nil
-end
-function CharacterCreateWhileMouseDown_Update(elapsed)
-	if ( KeepScrolling ) then
-		TotalTime = TotalTime + elapsed
-		if ( TotalTime >= TIME_TO_SCROLL ) then
-			CharCreate_ChangeFeatureVariation(KeepScrolling)
-			TIME_TO_SCROLL = 0.25
-			TotalTime = 0
-		end
-	end
-end
-
-function CharCreateRaceButtonTemplate_OnEnter( self, ... )
-	if self.raceInfo then
-		local factionTag 	= self.raceInfo.FactionInfo.groupTag
-		local factionID  	= PLAYER_FACTION_GROUP[factionTag]
-		local tooltipHeight = 0
-
-		assert(factionID, "CharCreateRaceButtonTemplate_OnEnter: Не найлена фракция по ключу "..factionTag)
-
-		local factionColor 		= PLAYER_FACTION_COLORS[factionID] or CreateColor(1, 1, 1)
-		local raceFileString 	= string.upper(self.raceInfo.clientFileString)
-
-		GlueRaceTooltip:SetBackdropBorderColor(factionColor.r, factionColor.g, factionColor.b)
-
-		GlueRaceTooltip.Warning1:SetShown(self.alliedRaceDisabled)
-
-		if self.alliedRaceDisabled then
-			GlueRaceTooltip.Description1:ClearAndSetPoint("TOPLEFT", GlueRaceTooltip.Warning1, "BOTTOMLEFT", 0, -3)
-
-			local text = _G["ALLIED_RACE_DISABLE_REASON_"..string.upper(self.raceInfo.clientFileString)]
-
-			if text then
-				GlueRaceTooltip.Warning1:SetText(text)
-				GlueRaceTooltip.Warning1:SetWidth(GlueRaceTooltip:GetWidth() - 20)
-			else
-				GlueRaceTooltip.Description1:ClearAndSetPoint("TOPLEFT", GlueRaceTooltip.Header1, "BOTTOMLEFT", 0, -3)
-				GlueRaceTooltip.Warning1:Hide()
-			end
+		if not prevFrame then
+			frame:SetPoint("LEFT", 0, 200)
 		else
-			GlueRaceTooltip.Description1:ClearAndSetPoint("TOPLEFT", GlueRaceTooltip.Header1, "BOTTOMLEFT", 0, -3)
+			frame:SetPoint("TOP", prevFrame, "BOTTOM", 0, -20)
 		end
 
-		if GlueRaceTooltip.Warning1:IsShown() then
-			tooltipHeight = tooltipHeight + GlueRaceTooltip.Warning1:GetHeight() + 5
+		prevFrame = frame
+
+		frame.CustomizationIndex = style.orderIndex
+		frame.CustomizationName:SetText(style.name)
+		frame:Show()
+	end
+
+	self.RandomizeCustomizationButton:ClearAndSetPoint("TOP", prevFrame, "BOTTOM", 0, -40)
+end
+
+local function CustomizationButtonChangeState(framePool, state)
+	for frame in framePool:EnumerateActive() do
+		if state == E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.INACTIVE then
+			if frame:IsEnabled() == 1 then
+				frame.animDisable = true
+			end
+
+			frame:Disable()
+			frame:OutFade()
+		elseif state == E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.ACTIVE then
+			frame:SetEnabled(frame.animDisable)
+			frame.animDisable = false
+
+			frame:InFade()
 		end
-
-		GlueRaceTooltip.Header1:SetText(self.raceInfo.raceName)
-		GlueRaceTooltip.Header2:SetText(SPELLS)
-		GlueRaceTooltip.Description1:SetText(_G[string.format("CHARACTER_CREATE_INFO_RACE_%s_DESC", raceFileString)])
-		GlueRaceTooltip.Description2:SetText(SPELLS_HELP_1)
-		GlueRaceTooltip.Description3:SetText(SPELLS_PASSIVE)
-		GlueRaceTooltip.Description4:SetText(SPELLS_ACTIVE)
-
-		GlueRaceTooltip:ClearAllPoints()
-
-		if factionTag == "Alliance" then
-			GlueRaceTooltip:SetPoint("RIGHT", CharacterCreateFlagAlliance, 301, 0)
-		elseif factionTag == "Horde" then
-			GlueRaceTooltip:SetPoint("LEFT", CharacterCreateFlagHorde, -300, 0)
-		else
-			GlueRaceTooltip:SetPoint("TOP", self, "BOTTOM", 0, -10)
-		end
-
-		for i = 1, 7 do
-			local headerLine 			= _G["GlueRaceTooltipHeader"..i]
-			local descriptionLine 		= _G["GlueRaceTooltipDescription"..i]
-			local spellNameLine 		= _G["GlueRaceTooltipSpellName"..i]
-			local spellDescriptionLine 	= _G["GlueRaceTooltipSpellDescription"..i]
-
-			if headerLine then
-				headerLine:SetWidth(GlueRaceTooltip:GetWidth() - 20)
-				tooltipHeight = tooltipHeight + headerLine:GetHeight() + 5
-
-				GlueRaceTooltip:SetWidth(max(GlueRaceTooltip:GetWidth(), headerLine:GetWidth() + 20))
-
-				headerLine:Show()
-			end
-
-			if descriptionLine then
-				descriptionLine:SetWidth(GlueRaceTooltip:GetWidth() - 20)
-				tooltipHeight = tooltipHeight + descriptionLine:GetHeight() + 5
-
-				GlueRaceTooltip:SetWidth(max(GlueRaceTooltip:GetWidth(), descriptionLine:GetWidth() + 20))
-
-				descriptionLine:Show()
-			end
-
-			if spellNameLine then
-				local spellName = _G[string.format("CHARACTER_CREATE_INFO_RACE_%s_SPELL%d", raceFileString, i)]
-
-				spellNameLine:SetText(spellName or "")
-
-				spellNameLine:SetWidth(GlueRaceTooltip:GetWidth() - 20)
-				tooltipHeight = tooltipHeight + spellNameLine:GetHeight() + 5
-
-				GlueRaceTooltip:SetWidth(max(GlueRaceTooltip:GetWidth(), spellNameLine:GetWidth() + 20))
-
-				spellNameLine:Show()
-			end
-
-			if spellDescriptionLine then
-				local spellDesc = _G[string.format("CHARACTER_CREATE_INFO_RACE_%s_SPELL%d_DESC", raceFileString, i)]
-
-				spellDescriptionLine:SetText(spellDesc or "")
-
-				spellDescriptionLine:SetWidth(GlueRaceTooltip:GetWidth() - 20)
-				tooltipHeight = tooltipHeight + spellDescriptionLine:GetHeight() + 5
-
-				GlueRaceTooltip:SetWidth(max(GlueRaceTooltip:GetWidth(), spellDescriptionLine:GetWidth() + 20))
-
-				spellDescriptionLine:Show()
-			end
-		end
-
-		GlueRaceTooltip:SetHeight(tooltipHeight)
-		GlueRaceTooltip:Show()
 	end
 end
 
-function CharCreateClassButtonTemplate_OnEnter( self, ... )
-	if ( self.tooltip ) then
-		local height = 18
-		local classTag = string.upper(self.ename)
+function CharacterCreateCustomizationFrameMixin:PlayToggleAnim()
+	self.show = not self.show
 
-		if not classTag then
-			return
-		end
+	if self.show then
+		self:Show()
+		self.sourceXOffset = not IsWideScreen() and 100 or 200
+		self.endPoint = self.sourceXOffset
 
-		if self.Tcolor then
-			GlueClassTooltip:SetBackdropBorderColor(self.Tcolor[1], self.Tcolor[2], self.Tcolor[3])
-		end
-		GlueClassTooltip:ClearAllPoints()
-		GlueClassTooltip:SetPoint("BOTTOM", self, "TOP", 0, 10)
-		GlueClassTooltip:Show()
-
-		if self.IsDisable then
-			GlueClassTooltip.Warning1:SetText(RACE_CLASS_ERROR)
-			if self.tooltip == DEMON_HUNTER then
-				GlueClassTooltip.Warning1:SetText(DEMON_HUNTER_DISABLE)
-			end
-		end
-		GlueClassTooltip.Header1:SetText(self.tooltip)
-		GlueClassTooltip.Role1:SetText(_G[string.format("CHARACTER_CREATE_INFO_CLASS_%s_ROLE", classTag)])
-		GlueClassTooltip.Description1:SetText(_G[string.format("CHARACTER_CREATE_INFO_CLASS_%s_DESC", classTag)])
-		GlueClassTooltip.Header2:SetText(SPELL_EXAMPLE)
-		GlueClassTooltip.Description2:SetText(SPELLS_PASSIVE)
-		GlueClassTooltip.Description3:SetText(SPELLS_ACTIVE)
-
-		for h = 1, 2 do
-			local Headerline = _G["GlueClassTooltipHeader"..h]
-
-			if ( Headerline ) then
-				Headerline:Show()
-			end
-
-			if ( Headerline:IsShown() ) then
-				Headerline:SetWidth(GlueClassTooltip:GetWidth() - 20)
-				height = height + Headerline:GetHeight() + 5
-
-				GlueClassTooltip:SetWidth(max(GlueClassTooltip:GetWidth(), Headerline:GetWidth() + 20))
-			end
-		end
-
-		for d = 1, 1 do
-			local Warningline = _G["GlueClassTooltipWarning"..d]
-
-			if ( Warningline and self.IsDisable ) then
-				Warningline:Show()
-			else
-				Warningline:Hide()
-			end
-
-			if ( Warningline:IsShown() ) then
-				Warningline:SetWidth(GlueClassTooltip:GetWidth() - 20)
-				height = height + Warningline:GetHeight() + 5
-
-				GlueClassTooltip:SetWidth(max(GlueClassTooltip:GetWidth(), Warningline:GetWidth() + 20))
-			end
-		end
-
-		for d = 1, 1 do
-			local Roleline = _G["GlueClassTooltipRole"..d]
-
-			if _G["GlueClassTooltipWarning1"]:IsShown() then
-				Roleline:SetPoint("TOPLEFT", _G["GlueClassTooltipWarning1"], "BOTTOMLEFT", 0, -3)
-			else
-				Roleline:SetPoint("TOPLEFT", _G["GlueClassTooltipHeader1"], "BOTTOMLEFT", 0, -3)
-			end
-
-			if ( Roleline ) then
-				Roleline:Show()
-			end
-
-			if ( Roleline:IsShown() ) then
-				Roleline:SetWidth(GlueClassTooltip:GetWidth() - 20)
-				height = height + Roleline:GetHeight() + 4.5
-
-				GlueClassTooltip:SetWidth(max(GlueClassTooltip:GetWidth(), Roleline:GetWidth() + 20))
-			end
-		end
-
-		for d = 1, 3 do
-			local Descriptionline = _G["GlueClassTooltipDescription"..d]
-
-			if ( Descriptionline ) then
-				Descriptionline:Show()
-			end
-
-			if ( Descriptionline:IsShown() ) then
-				Descriptionline:SetWidth(GlueClassTooltip:GetWidth() - 20)
-				height = height + Descriptionline:GetHeight() + 4.5
-
-				GlueClassTooltip:SetWidth(max(GlueClassTooltip:GetWidth(), Descriptionline:GetWidth() + 20))
-			end
-		end
-
-		for s = 1, 5 do
-			local SpellNameline = _G["GlueClassTooltipSpellName"..s]
-			SpellNameline:SetText(_G[string.format("CHARACTER_CREATE_INFO_CLASS_%s_SPELL%d", classTag, s)])
-
-			if ( SpellNameline ) then
-				SpellNameline:Show()
-			end
-
-			if ( SpellNameline:IsShown() ) then
-				SpellNameline:SetWidth(GlueClassTooltip:GetWidth() - 20)
-				height = height + SpellNameline:GetHeight() + 4.5
-
-				GlueClassTooltip:SetWidth(max(GlueClassTooltip:GetWidth(), SpellNameline:GetWidth() + 20))
-			end
-		end
-
-		for sd = 1, 5 do
-			local SpellDescriptionline = _G["GlueClassTooltipSpellDescription"..sd]
-			SpellDescriptionline:SetText(_G[string.format("CHARACTER_CREATE_INFO_CLASS_%s_SPELL%d_DESC", classTag, sd)])
-
-			if ( SpellDescriptionline ) then
-				SpellDescriptionline:Show()
-			end
-
-			if ( SpellDescriptionline:IsShown() ) then
-				SpellDescriptionline:SetWidth(GlueClassTooltip:GetWidth() - 20)
-				height = height + SpellDescriptionline:GetHeight() + 4.5
-
-				GlueClassTooltip:SetWidth(max(GlueClassTooltip:GetWidth(), SpellDescriptionline:GetWidth() + 20))
-			end
-		end
-		GlueClassTooltip:SetHeight(height)
+		self:UpdateCustomizationButtonFrame()
+		self:AnimOnShow()
+	else
+		self:AnimOnHide()
 	end
+end
+
+function CharacterCreateCustomizationFrameMixin:AnimOnShow()
+	self:PlayAnim(false)
+
+	CustomizationButtonChangeState(self.parentFrame.classButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.INACTIVE)
+	CustomizationButtonChangeState(self.parentFrame.allianceRaceButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.INACTIVE)
+	CustomizationButtonChangeState(self.parentFrame.hordeRaceButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.INACTIVE)
+	CustomizationButtonChangeState(self.parentFrame.neutralRaceButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.INACTIVE)
+
+	self.parentFrame:PlaySelectRaceAndClassAnim(true, function()
+		self.parentFrame.AllianceRacesFrame:Hide()
+		self.parentFrame.HordeRacesFrame:Hide()
+		self.parentFrame.NeutralRacesFrame:Hide()
+		self.parentFrame.ClassesFrame:Hide()
+	end)
+
+	self.parentFrame.GenderFrame.CustomizationButton:SetText(CHARACTER_CREATE_RACE_LABEL)
+
+	C_CharacterCreation.ZoomCamera(CAMERA_ZOOM_LEVEL_AMOUNT - C_CharacterCreation.GetCurrentCameraZoom(), nil, true)
+end
+
+function CharacterCreateCustomizationFrameMixin:AnimOnHide()
+	self:PlayAnim(true, function()
+		self:Hide()
+	end)
+
+	self.parentFrame:PlaySelectRaceAndClassAnim(false, function()
+		self.parentFrame.AllianceRacesFrame:Show()
+		self.parentFrame.HordeRacesFrame:Show()
+		self.parentFrame.NeutralRacesFrame:Show()
+		self.parentFrame.ClassesFrame:Show()
+	end)
+
+	CustomizationButtonChangeState(self.parentFrame.classButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.ACTIVE)
+	CustomizationButtonChangeState(self.parentFrame.allianceRaceButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.ACTIVE)
+	CustomizationButtonChangeState(self.parentFrame.hordeRaceButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.ACTIVE)
+	CustomizationButtonChangeState(self.parentFrame.neutralRaceButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.ACTIVE)
+
+	self.parentFrame.GenderFrame.CustomizationButton:SetText(CHARACTER_CREATE_CUSTOMIZATION_LABEL)
+
+	C_CharacterCreation.ZoomCamera(C_CharacterCreation.GetMaxCameraZoom() * -1, nil, true)
+end
+
+function CharacterCreateCustomizationFrameMixin:OnShow()
+	self.parentFrame.skipCustomizationConfirmation = true
+end
+
+function CharacterCreateCustomizationFrameMixin:OnHide()
+	self:Reset()
+
+	if self.show then
+		self.show = false
+
+		self:SetPoint("LEFT", self.startPoint, 200)
+		self:SetAlpha(0)
+		self.parentFrame.CustomizationVignette:SetAlpha(0)
+
+		CustomizationButtonChangeState(self.parentFrame.classButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.ACTIVE)
+		CustomizationButtonChangeState(self.parentFrame.allianceRaceButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.ACTIVE)
+		CustomizationButtonChangeState(self.parentFrame.hordeRaceButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.ACTIVE)
+		CustomizationButtonChangeState(self.parentFrame.neutralRaceButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.ACTIVE)
+	end
+end
+
+CharacterCreateCustomizationButtonFrameTemplateMixin = {}
+
+function CharacterCreateCustomizationButtonFrameTemplateMixin:OnLoad()
+	self.Background:SetAtlas("Glue-Shadow-Button-Normal")
+end
+
+CharacterCreateNavigationFrameMixin = {}
+
+function CharacterCreateNavigationFrameMixin:OnLoad()
+	self:RegisterHookListener()
+
+	self.sourceYOffset = 0
+end
+
+function CharacterCreateNavigationFrameMixin:FRAMES_LOADED()
+	self.sourceYOffset = not IsWideScreen() and 58 or 0
+	self.endPoint = self.sourceYOffset
+
+	self:SetPoint("BOTTOMLEFT", 0, self.sourceYOffset)
+	self:SetPoint("BOTTOMRIGHT", 0, 0)
+end
+
+CharacterCreateCircleShadowButtonTemplateMixin = {}
+
+function CharacterCreateCircleShadowButtonTemplateMixin:OnLoad()
+	self.normalTextureH = self:GetAttribute("normalTextureSizeH")
+	self.normalTextureW = self:GetAttribute("normalTextureSizeW")
+
+	self.PushedTexture:SetSize(self.normalTextureH, self.normalTextureW)
+end
+
+function CharCreateRaceButtonTemplate_OnEnter(self)
+	if not self.data then return end
+
+	local factionID = self.data.factionID
+	assert(PLAYER_FACTION_GROUP[factionID], "CharCreateRaceButtonTemplate_OnEnter: Не найдена фракция по ключу "..factionID)
+
+	local factionColor = PLAYER_FACTION_COLORS[factionID] or CreateColor(1, 1, 1)
+	local raceFileString = string.upper(self.data.clientFileString)
+
+	local tooltip = GlueRaceTooltip
+	local alliedRaceText = self.alliedRaceDisabled and _G["ALLIED_RACE_DISABLE_REASON_"..raceFileString]
+
+	tooltip:Hide()
+	tooltip:SetBackdropBorderColor(factionColor.r, factionColor.g, factionColor.b)
+
+	local tooltipHeight = 10
+
+	tooltip.Header:SetText(self.data.name)
+	tooltip.Description:SetText(_G[string.format("CHARACTER_CREATE_INFO_RACE_%s_DESC", raceFileString)])
+
+	tooltip.Header:SetWidth(tooltip:GetWidth() - 20)
+	tooltip:SetWidth(math.max(tooltip:GetWidth(), tooltip.Header:GetWidth() + 20))
+
+	tooltip.Description:SetWidth(tooltip:GetWidth() - 20)
+	tooltip:SetWidth(math.max(tooltip:GetWidth(), tooltip.Description:GetWidth() + 20))
+
+	tooltipHeight = tooltipHeight + tooltip.Description:GetHeight() + tooltip.Header:GetHeight() + 30
+
+	if TOOLTIPS_EXPANDED then
+		local abilities = {}
+
+		for abilityIndex = 1, TOOLTIP_MAX_RACE_ABLILITIES do
+			local ability = _G[string.format("CHARACTER_CREATE_INFO_RACE_%s_SPELL%i_DESC_SHORT", raceFileString, abilityIndex)]
+			if ability then
+				local icon, desc = string.match(ability, "([^|]*)|(.+)")
+				abilities[#abilities + 1] = {
+					icon = string.format("Interface/Icons/%s", icon or "INV_Misc_QuestionMark"),
+					description = desc,
+				}
+			end
+		end
+
+		tooltip.AbilityList:SetupAbilties(abilities)
+		tooltip.AbilityList:Show()
+
+		tooltip.ClickInfo:SetText(RIGHT_CLICK_FOR_LESS)
+		tooltip.ClickInfo:SetPoint("TOPLEFT", alliedRaceText and tooltip.Warning or tooltip.AbilityList, "BOTTOMLEFT", 0, -15)
+
+		tooltipHeight = tooltipHeight + tooltip.AbilityList:GetHeight() + tooltip.ClickInfo:GetHeight() + 20
+	else
+		tooltip.AbilityList:Hide()
+		tooltip.ClickInfo:SetText(RIGHT_CLICK_FOR_MORE)
+		tooltip.ClickInfo:SetPoint("TOPLEFT", alliedRaceText and tooltip.Warning or tooltip.Description, "BOTTOMLEFT", 0, -15)
+
+		tooltipHeight = tooltipHeight + tooltip.ClickInfo:GetHeight() + 5
+	end
+
+	if alliedRaceText then
+		tooltip.Warning:SetText(alliedRaceText)
+		tooltip.Warning:SetWidth(tooltip:GetWidth() - 20)
+		tooltip.Warning:SetPoint("TOPLEFT", tooltip.AbilityList:IsShown() and tooltip.AbilityList or tooltip.Description, "BOTTOMLEFT", 0, -15)
+		tooltip.Warning:Show()
+
+		tooltipHeight = tooltipHeight + tooltip.Warning:GetHeight() + 15
+	else
+		tooltip.Warning:Hide()
+	end
+
+	if self:GetParent() == self.mainFrame.AllianceRacesFrame then
+		tooltip:ClearAndSetPoint("LEFT", self.mainFrame.AllianceRacesFrame, "RIGHT", 0, 0)
+	elseif self:GetParent() == self.mainFrame.HordeRacesFrame then
+		tooltip:ClearAndSetPoint("RIGHT", self.mainFrame.HordeRacesFrame, "LEFT", 0, 0)
+	else
+		tooltip:ClearAndSetPoint("TOP", self, "BOTTOM", 0, -10)
+	end
+
+	tooltip:SetHeight(tooltipHeight)
+	tooltip:Show()
+end
+
+function CharCreateRaceButtonTemplate_OnLeave(self)
+	GlueRaceTooltip:Hide()
+end
+
+function CharCreateClassButtonTemplate_OnEnter(self)
+	if not self.name then return end
+
+	local classTag = self.clientFileString and string.upper(self.clientFileString)
+	if not classTag then return end
+
+	local tooltip = GlueClassTooltip
+	tooltip:Hide()
+
+	if self.Tcolor then
+		tooltip:SetBackdropBorderColor(self.Tcolor[1], self.Tcolor[2], self.Tcolor[3])
+	end
+
+	local tooltipHeight = 10
+
+	tooltip.Header:SetText(self.name)
+	tooltip.Description:SetText(_G[string.format("CHARACTER_CREATE_INFO_CLASS_%s_DESC", classTag)])
+	tooltip.Role:SetText(_G[string.format("CHARACTER_CREATE_INFO_CLASS_%s_ROLE", classTag)])
+
+	tooltip.Header:SetWidth(tooltip:GetWidth() - 20)
+	tooltip:SetWidth(math.max(tooltip:GetWidth(), tooltip.Header:GetWidth() + 20))
+
+	tooltip.Description:SetWidth(tooltip:GetWidth() - 20)
+	tooltip:SetWidth(math.max(tooltip:GetWidth(), tooltip.Description:GetWidth() + 20))
+
+	tooltip.Role:SetWidth(tooltip:GetWidth() - 20)
+	tooltip:SetWidth(math.max(tooltip:GetWidth(), tooltip.Role:GetWidth() + 20))
+
+	tooltipHeight = tooltipHeight + tooltip.Header:GetHeight() + tooltip.Description:GetHeight() + tooltip.Role:GetHeight() + 40
+
+	if TOOLTIPS_EXPANDED then
+		local abilities = {}
+
+		for abilityIndex = 1, TOOLTIP_MAX_CLASS_ABLILITIES do
+			local ability = _G[string.format("CHARACTER_CREATE_INFO_CLASS_%s_SPELL%i_DESC_SHORT", classTag, abilityIndex)]
+			if ability then
+				local icon, desc = string.match(ability, "([^|]*)|(.+)")
+				abilities[#abilities + 1] = {
+					icon = string.format("Interface/Icons/%s", icon or "INV_Misc_QuestionMark"),
+					description = desc,
+				}
+			end
+		end
+
+		tooltip.AbilityList:SetupAbilties(abilities)
+		tooltip.AbilityList:Show()
+
+		tooltip.ClickInfo:SetText(RIGHT_CLICK_FOR_LESS)
+		tooltip.ClickInfo:SetPoint("TOPLEFT", self:IsEnabled() ~= 1 and tooltip.Warning or tooltip.AbilityList, "BOTTOMLEFT", 0, -15)
+
+		tooltipHeight = tooltipHeight + tooltip.AbilityList:GetHeight() + tooltip.ClickInfo:GetHeight() + 20
+	else
+		tooltip.AbilityList:Hide()
+		tooltip.ClickInfo:SetText(RIGHT_CLICK_FOR_MORE)
+		tooltip.ClickInfo:SetPoint("TOPLEFT", self:IsEnabled() ~= 1 and tooltip.Warning or tooltip.Role, "BOTTOMLEFT", 0, -15)
+
+		tooltipHeight = tooltipHeight + tooltip.ClickInfo:GetHeight() + 5
+	end
+
+	if self:IsEnabled() ~= 1 then
+		tooltip.Warning:SetText(self.name == DEMON_HUNTER and DEMON_HUNTER_DISABLE or RACE_CLASS_ERROR)
+		tooltip.Warning:SetWidth(tooltip:GetWidth() - 20)
+		tooltip:SetWidth(math.max(tooltip:GetWidth(), tooltip.Warning:GetWidth() + 20))
+		tooltip.Warning:SetPoint("TOPLEFT", tooltip.AbilityList:IsShown() and tooltip.AbilityList or tooltip.Role, "BOTTOMLEFT", 0, -15)
+		tooltip.Warning:Show()
+
+		tooltipHeight = tooltipHeight + tooltip.Warning:GetHeight() + 15
+	else
+		tooltip.Warning:Hide()
+	end
+
+	tooltip:SetHeight(tooltipHeight)
+	tooltip:ClearAllPoints()
+	tooltip:SetPoint("BOTTOM", self, "TOP", 0, 10)
+	tooltip:Show()
+end
+
+function CharCreateClassButtonTemplate_OnLeave(self)
+	GlueClassTooltip:Hide()
 end

@@ -42,7 +42,7 @@ function AudioOptionsFrame_OnHide (self)
 	OptionsFrame_OnHide(self);
 
 	if ( AudioOptionsFrame.gameRestart ) then
-		GlueDialog_Show("CLIENT_RESTART_ALERT");
+		GlueDialog:ShowDialog("CLIENT_RESTART_ALERT");
 		AudioOptionsFrame.gameRestart = nil;
 	end
 end
@@ -74,5 +74,5 @@ end
 function AudioOptionsFrameDefault_OnClick ()
 	OptionsFrameDefault_OnClick(AudioOptionsFrame);
 
-	GlueDialog_Show("CONFIRM_RESET_AUDIO_SETTINGS");
+	GlueDialog:ShowDialog("CONFIRM_RESET_AUDIO_SETTINGS");
 end
