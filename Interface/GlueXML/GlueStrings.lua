@@ -1120,7 +1120,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Sometimes you just don’t want to wait and want to start adventuring right away..."
 	},
 	["CHARACTER_SERVICES_BUYDESCRIPTION"] = {
-		ruRU = "Отличные новости! Наши гномские инженеры смогли изобрести машину времени и достать вас из будущего! Более того, мы можем это будущее отредактировать и научить вас всему чему вы хотите, прямо как в гоблиноматрице!\n\nВаш герой получит прекрасную экипировку, обучится паре профессий и мигом достигнет 80-го уровня!",
+		ruRU = "Отличные новости! Наши гномские инженеры смогли изобрести машину времени и достать вас из будущего! Более того, мы можем это будущее отредактировать и научить вас всему чему вы хотите, прямо как в гоблиноматрице!\n\nВаш герой получит превосходную экипировку, обучится паре профессий и мигом достигнет 80-го уровня!",
 		enGB = "Great news! Our Gnomish engineers were able to invent a time machine and bring your future self back in time! We can now even edit this future and teach you anything you want, just like in the Goblin Matrix!\n\nYour hero will receive excellent equipment, learn a couple of professions, and instantly reach level 80!"
 	},
 	["CHARACTER_SERVICES_BUYWARNING"] = {
@@ -4207,21 +4207,13 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Активно развивающийся игровой мир без системы категорий, очков усилений и других кастомных изменений. Перед нами стояла задача сохранить для Вас привычный баланс в PvP времён 3.3.5а с применением только лучших наработок, которые были оценены игроками по достоинству. Поэтапное PvE-освоение и полный набор PvP-атрибутов позволят Вам открыть для себя WoTLK по-новому.",
 		enGB = ""
 	},
-	["CONFIRM_PAID_SERVICE"] = {
-		ruRU = "Вы уверены, что завершили изменение персонажа |c%s%s|r?",
-		enGB = "Are you sure you are done changing your character |c%s%s|r?"
-	},
 	["CONFIRM_CHARACTER_CREATE"] = {
-		ruRU = "Вы уверены, что хотите завершить создание персонажа |c%s%s|r?",
+		ruRU = "Вы уверены что хотите завершить создание персонажа |c%s%s|r?",
 		enGB = ""
 	},
 	["CONFIRM_CHARACTER_CREATE_CUSTOMIZATION"] = {
-		ruRU = "\nНе забудьте выбрать внешность!",
+		ruRU = "Вы уверены что хотите завершить создание персонажа |c%s%s|r?\nНе забудьте выбрать внешность!",
 		enGB = ""
-	},
-	["RENEGADE"] = {
-		ruRU = "Ренегат",
-		enGB = "Renegade",
 	},
 	["NEUTRAL"] = {
 		ruRU = "Нейтрал",
@@ -5953,8 +5945,8 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Spell_Misc_WarsongFocus|Increases your total Strength by 6%, your Stamina by 3%, and your expertise by 6.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_SPELL4_DESC_SHORT"] = {
-		ruRU = "Ability_DeathKnight_BoneShield|Вокруг рыцаря смерти начинают вращаться 3 кости. Каждая атака, нанесшая урон рыцарю смерти, уничтожает 1 кость. До тех пор, пока остается хотя бы одна кость, рыцарь смерти получает на 20% меньше урона и наносит на 2% больше урона всеми атаками, заклинаниями и способностями.",
-		enGB = "Ability_DeathKnight_BoneShield|The Death Knight is surrounded by 3 whirling bones. Each damaging attack that lands consumes 1 bone. While at least 1 bone remains, the Death Knight takes 20% less damage from all sources and deals 2% more damage with all attacks, spells and abilities.",
+		ruRU = "Spell_Shadow_CallofBone|Вокруг рыцаря смерти начинают вращаться 3 кости. Каждая атака, нанесшая урон рыцарю смерти, уничтожает 1 кость. До тех пор, пока остается хотя бы одна кость, рыцарь смерти получает на 20% меньше урона и наносит на 2% больше урона всеми атаками, заклинаниями и способностями.",
+		enGB = "Spell_Shadow_CallofBone|The Death Knight is surrounded by 3 whirling bones. Each damaging attack that lands consumes 1 bone. While at least 1 bone remains, the Death Knight takes 20% less damage from all sources and deals 2% more damage with all attacks, spells and abilities.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_SPELL5_DESC_SHORT"] = {
 		ruRU = "Spell_DeathKnight_BladedArmor|Погружает дружественную цель в кровожадное безумие на 30 сек. Цель впадает в исступление: наносимый ею физический урон увеличивается на 20%, но каждую секунду она теряет 1% от максимального запаса здоровья.",
@@ -6250,7 +6242,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL1_DESC_SHORT"] = {
-		ruRU = "racial_highpurpose|Повышает показатель силы атаки и силы заклинаний участников группы на 1%.",
+		ruRU = "ability_racial_higherpurpose|Повышает показатель силы атаки и силы заклинаний участников группы на 1%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL2_DESC_SHORT"] = {
@@ -6458,7 +6450,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL6_DESC_SHORT"] = {
-		ruRU = "spell_bloodmage_soulgem|Расходует \"Фрагмент души\", повышая наносимый урон и исцеление на 5% и понижая получаемый урон на 5% сроком на 20 сек.",
+		ruRU = "spell_bloodmage_soulgem|Расходует \"Фрагмент души\", повышая наносимый урон и исцеление на 5% сроком на 20 сек.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL1_DESC_SHORT"] = {

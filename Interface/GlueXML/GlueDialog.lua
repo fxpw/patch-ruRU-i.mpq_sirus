@@ -492,35 +492,33 @@ GlueDialogTypes["CONFIRM_PAID_FACTION_CHANGE"] = {
 }
 
 GlueDialogTypes["CONFIRM_CHARACTER_CREATE"] = {
---	text = CONFIRM_CHARACTER_CREATE,
+	text = CONFIRM_CHARACTER_CREATE,
 	button1 = CHARACTER_CREATE,
 	button2 = CANCEL,
 	escapeHides = true,
 	enableEnter = true,
 	OnShow = function(dialog)
-		if dialog.data[2] then
-			dialog.Container.Button1:SetText(dialog.data[2])
-		end
+		local _, _, _, hexColor = GetClassColor(dialog.data.class)
+		dialog.Container.Text:SetFormattedText(CONFIRM_CHARACTER_CREATE, hexColor or "ffffff", dialog.data.name or "Без имени")
 	end,
 	OnAccept = function(dialog)
-		C_CharacterCreation.CreateCharacter(dialog.data[1])
+		C_CharacterCreation.CreateCharacter(dialog.data.name)
 	end,
 }
 
 GlueDialogTypes["CONFIRM_CHARACTER_CREATE_CUSTOMIZATION"] = {
---	text = CONFIRM_CHARACTER_CREATE_CUSTOMIZATION,
+	text = CONFIRM_CHARACTER_CREATE_CUSTOMIZATION,
 	button1 = CHARACTER_CREATE,
 	button2 = CANCEL,
 	button3 = CHARACTER_CREATE_CUSTOMIZATION_LABEL,
 	escapeHides = true,
 	enableEnter = true,
 	OnShow = function(dialog)
-		if dialog.data[2] then
-			dialog.Container.Button1:SetText(dialog.data[2])
-		end
+		local _, _, _, hexColor = GetClassColor(dialog.data.class)
+		dialog.Container.Text:SetFormattedText(CONFIRM_CHARACTER_CREATE_CUSTOMIZATION, hexColor or "ffffff", dialog.data.name or "Без имени")
 	end,
 	OnAccept = function(dialog)
-		C_CharacterCreation.CreateCharacter(dialog.data[1])
+		C_CharacterCreation.CreateCharacter(dialog.data.name)
 	end,
 	OnAlt = function()
 		CharacterCreate.GenderFrame.CustomizationButton:Click()

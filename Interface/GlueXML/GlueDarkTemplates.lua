@@ -630,7 +630,6 @@ function GlueDark_DropDownMenu_SetWidth(frame, width, fullWidthButtonHitRect)
 	frame.Middle:SetWidth(width)
 	frame:SetWidth(width + 25 + 25);
 	frame.Text:SetWidth(width)
-	frame.fullWidthButtonHitRect = fullWidthButtonHitRect
 	if fullWidthButtonHitRect then
 		frame.Button:SetHitRectInsets(-(width + 11), -1, -3, -3)
 	else

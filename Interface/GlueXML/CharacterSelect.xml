@@ -1595,13 +1595,6 @@
 						</Anchors>
 
 						<Scripts>
-							<OnTextChanged>
-								if utf8len(self:GetText()) > 1 then
-									self:GetParent().OKButton:Enable()
-								else
-									self:GetParent().OKButton:Disable()
-								end
-							</OnTextChanged>
 							<OnEnterPressed>
 								if ( RenameCharacter(GetCharIDFromIndex(CharacterSelect.selectedIndex), self:GetText()) ) then
 									CharacterRenameDialog:Hide();

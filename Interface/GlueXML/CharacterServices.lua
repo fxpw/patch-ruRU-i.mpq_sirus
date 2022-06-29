@@ -383,14 +383,11 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 
 			local button = frame.CharacterServicesMaster.step3.choose.SpecButtons[4];
 			if classInfo.classFile == "DEATHKNIGHT" then
-				local spec = SHARED_CONSTANTS_SPECIALIZATION[classInfo.classFile][4]
-				button.SpecName:SetText(spec.name)
-				button.RoleIcon:SetAtlas(spec.role and ("GlueDark-iconRole-"..spec.role) or "GlueDark-iconRole-TANK")
-				button.SpecIcon:SetTexture(spec.icon or "Interface\\Icons\\Ability_druid_catform")
-				button.SpecIcon:SetDesaturated(spec.iconDesaturate)
-				button.HelpButton.InfoHeader = spec.name
-				button.HelpButton.InfoText = spec.description
-				button:Show()
+				extraButton.SpecName:SetText(ROLE_TANK);
+				extraButton.RoleIcon:SetAtlas("GlueDark-iconRole-TANK");
+				extraButton.SpecIcon:SetTexture("Interface\\Icons\\spell_deathknight_bloodpresence");
+				extraButton.SpecIcon:SetDesaturated(true);
+				extraButton:Show();
 			else
 				button:Hide()
 			end
@@ -570,10 +567,6 @@ function CharacterBoostBuyFrame_OnLoad(self)
 	local PRICE_SALE_BASE_OFFSET_X, PRICE_SALE_BASE_OFFSET_Y	= 38, 5
 
 	self.SetPrice = function(this, price, oldPrice)
-		if oldPrice == price then
-			oldPrice = nil
-		end
-
 		price = tostring(price)
 		this.texturePool:ReleaseAll()
 
@@ -647,6 +640,10 @@ function CharacterBoostBuyFrame_OnLoad(self)
 			this.Container.StrikeThrough:Hide()
 		end
 	end
+
+	CharacterServicesMaster_UpdateSteps()
+
+	self:RegisterEvent("SERVER_SPLIT_NOTICE")
 end
 
 function CharacterServicesMaster_UpdateSteps()

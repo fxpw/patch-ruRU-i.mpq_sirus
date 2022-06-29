@@ -492,7 +492,7 @@ function CharacterCreateRaceButtonMixin:OnMouseUp(button)
 	self.ArtFrame:SetPoint("BOTTOMRIGHT", 0, 0)
 
 	if button == "LeftButton" then
-		if self:IsEnabled() == 1 or self.alliedRaceLocked then
+		if self:IsEnabled() == 1 then
 			PlaySound("gsCharacterCreationClass")
 
 			local isSet = C_CharacterCreation.SetSelectedRace(self.index)
@@ -507,11 +507,6 @@ function CharacterCreateRaceButtonMixin:OnMouseUp(button)
 			self.mainFrame:UpdateBackground()
 			self.mainFrame.CustomizationFrame:UpdateCustomizationButtonFrame(true)
 			self.mainFrame.skipCustomizationConfirmation = self.mainFrame.CustomizationFrame:IsShown()
-
-			local enabled = self:IsEnabled() == 1
-			self.mainFrame.NavigationFrame.CreateButton:SetEnabled(enabled)
-			self.mainFrame.NavigationFrame.CreateNameEditBox:SetShown(enabled)
-			self.mainFrame.NavigationFrame.RandomNameButton:SetShown(enabled)
 		end
 	elseif button == "RightButton" and self:IsMouseOver() and self.tooltip then
 		TOOLTIPS_EXPANDED = not TOOLTIPS_EXPANDED
@@ -570,6 +565,7 @@ end
 
 function CharacterCreateRaceButtonMixin:OnDisable()
 	self.FactionBorder:SetDesaturated(true)
+	self.ArtFrame.CheckedTexture:SetDesaturated(true)
 	self.ArtFrame.HighlightTexture:SetDesaturated(true)
 	self.ArtFrame.Border2:SetDesaturated(true)
 	self.ArtFrame.Border3:SetDesaturated(true)
@@ -579,6 +575,7 @@ end
 
 function CharacterCreateRaceButtonMixin:OnEnable()
 	self.FactionBorder:SetDesaturated(false)
+	self.ArtFrame.CheckedTexture:SetDesaturated(false)
 	self.ArtFrame.HighlightTexture:SetDesaturated(false)
 	self.ArtFrame.Border2:SetDesaturated(false)
 	self.ArtFrame.Border3:SetDesaturated(false)
@@ -614,7 +611,6 @@ function CharacterCreateRaceButtonMixin:UpdateButton()
 	self.index = clientData.index
 
 	local allow = false
-	local alliedRaceLocked
 
 	if PAID_SERVICE_TYPE then
 		local faction = C_CharacterCreation.PaidChange_GetCurrentFaction()
@@ -634,10 +630,8 @@ function CharacterCreateRaceButtonMixin:UpdateButton()
 
 	if allow and C_CharacterCreation.IsAlliedRace(self.index) and not C_CharacterCreation.IsAlliedRacesUnlocked(self.index) then
 		allow = false
-		alliedRaceLocked = true
 	end
 
-	self.alliedRaceLocked = alliedRaceLocked
 	self:SetEnabled(allow)
 
 	self:SetChecked(C_CharacterCreation.GetSelectedRace() == self.index)

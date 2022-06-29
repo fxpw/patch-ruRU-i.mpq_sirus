@@ -1142,24 +1142,6 @@
 				GlueDark_ToggleDropDownMenu(self);
 				PlaySound("igMainMenuOptionCheckBoxOn");
 			</OnClick>
-			<OnEnter>
-				local parent = self:GetParent()
-				if parent.fullWidthButtonHitRect then
-					local script = parent:GetScript("OnEnter")
-					if script then
-						script(parent)
-					end
-				end
-			</OnEnter>
-			<OnLeave>
-				local parent = self:GetParent()
-				if parent.fullWidthButtonHitRect then
-					local script = parent:GetScript("OnLeave")
-					if script then
-						script(parent)
-					end
-				end
-			</OnLeave>
 		</Scripts>
 	</Button>
 	<Frame name="GlueDark_DropDownMenuTemplate" virtual="true">
