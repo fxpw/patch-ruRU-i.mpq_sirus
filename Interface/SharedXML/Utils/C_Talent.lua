@@ -111,7 +111,7 @@ function C_Talent.SendRequestSecondSpec( talentGroupID )
     SendServerMessage("ACMSG_SET_SECOND_SPEC", talentGroupID)
 end
 
----@param talentGroupID number
+---@param talentGroupID? number
 function C_Talent.SelectTalentGroup( talentGroupID )
     local lastSecondTalentGroupID = C_Talent.GetLastSecondTalentGroup()
     talentGroupID = talentGroupID or lastSecondTalentGroupID
@@ -141,7 +141,7 @@ function C_Talent.SelectTalentGroup( talentGroupID )
     end
 end
 
----@param talentGroupID number
+---@param talentGroupID? number
 function C_Talent.SetActiveTalentGroup( talentGroupID )
     talentGroupID = talentGroupID or C_Talent.GetLastSecondTalentGroup()
 

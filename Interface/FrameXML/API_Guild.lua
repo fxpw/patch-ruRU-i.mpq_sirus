@@ -48,6 +48,7 @@ function EventHandler:ASMSG_GUILD_LEVEL_INFO( msg )
 	API_Guild.LevelData = { tonumber(level), tonumber(experience), tonumber(nextLevelxperience), tonumber(remaining) }
 
 	GuildLevelFrameText:SetText(level)
+	GuildXPFrame.Text:SetFormattedText(GUILD_LEVEL, level);
 
 	if GuildFrame:IsShown() and PanelTemplates_GetSelectedTab(GuildFrame) == 2 then
 		GuildBar_SetProgress(GuildXPBar, tonumber(experience), tonumber(nextLevelxperience), tonumber(remaining))

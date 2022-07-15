@@ -33,6 +33,7 @@ function ChooseItemFrame_OnShow( self, ... )
 				frame.Item.Name:SetText(itemName)
 				frame.Item.Icon:SetTexture(itemTexture)
 				frame.Item.IconBorder:SetVertexColor(r, g, b)
+				frame.Item.glow:SetVertexColor(r, g, b)
 
 				frame.Item.Name:SetTextColor(r, g, b)
 			end
@@ -68,7 +69,6 @@ function ChooseItemFrame_OnShow( self, ... )
 			frame.Header.Text:SetText(name)
 
 			frame.Item.glow:Show()
-			frame.Item.glow:SetVertexColor(r, g, b, 1)
 			frame.Item.glow.animIn:Play()
 
 			width = i == 1 and 380 or width + 230

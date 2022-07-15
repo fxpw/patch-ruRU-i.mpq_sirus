@@ -1020,7 +1020,7 @@ function SetSafeCVar(cvar, value, raiseEvent)
     end
 end
 
----@param value
+---@param value any
 ---@return boolean
 function isset( value )
 	return value and true or false

@@ -15,6 +15,11 @@ enum:E_ROULETTE_STAGE {
     "FINISHED"
 }
 
+enum:E_ROULETTE_CURRENCY {
+	"LUCKY_COIN",
+	"BONUS",
+}
+
 function RouletteFrameMixin:OnLoad()
     self:RegisterEventListener()
     self:RegisterHookListener()
@@ -86,7 +91,7 @@ function RouletteFrameMixin:OnEvent( event )
             end
         end
     elseif event == "VARIABLES_LOADED" then
-        if C_CacheInstance:Get("ASMSG_LOTTERY_REWARDS_LIST") then
+		if C_CacheInstance:Get("ASMSG_LOTTERY_INFO") then
             self:Initialize()
         end
 
@@ -95,14 +100,24 @@ function RouletteFrameMixin:OnEvent( event )
 end
 
 function RouletteFrameMixin:UpdateSpinButton()
-    local isEnabled = ((self:GetSelectedCurrency() == 2 and (self.currentBonuses and self.currentBonuses > 2)) or (self:GetSelectedCurrency() == 1 and (self.currentLuckiCoin and self.currentLuckiCoin > 0)))
-    local color     = isEnabled and HIGHLIGHT_FONT_COLOR or CreateColor(0.8, 0.8, 0.8)
+	local selectedCurrency = self:GetSelectedCurrency()
+	local isEnabled, rollPrice
 
+	if selectedCurrency == E_ROULETTE_CURRENCY.LUCKY_COIN then
+		self.SpinButton.PriceText:SetText(_G[string.format("ROULETTE_CURRENCY_PRICE_TITLE_%d", selectedCurrency)])
+		rollPrice = 1
+		isEnabled = self.currentLuckiCoin and self.currentLuckiCoin >= rollPrice
+	elseif selectedCurrency == E_ROULETTE_CURRENCY.BONUS then
+		self.SpinButton.PriceText:SetFormattedText(_G[string.format("ROULETTE_CURRENCY_PRICE_TITLE_%d", selectedCurrency)], self.bonusPrice)
+		rollPrice = self.bonusPrice or 999
+		isEnabled = self.currentBonuses and self.currentBonuses >= rollPrice
+	end
+
+	local color = isEnabled and HIGHLIGHT_FONT_COLOR or CreateColor(0.8, 0.8, 0.8)
     self.SpinButton:SetEnabled(isEnabled)
     self.SpinButton.DisabledTexture:SetDesaturated(not isEnabled)
     self.SpinButton.Spin:SetTextColor(color.r, color.g, color.b)
     self.SpinButton.lockButton = not isEnabled
-    self.SpinButton.PriceText:SetText(_G[string.format("ROULETTE_CURRENCY_PRICE_TITLE_%d", self:GetSelectedCurrency())])
 end
 
 ---@param pieceName string
@@ -168,8 +183,8 @@ function RouletteFrameMixin:CurrencyFrameUpdate( elapsed )
     end
 
     local selectedCurrency  = self:GetSelectedCurrency()
-    local startOffset       = selectedCurrency == 1 and 76 or -76
-    local endOfset          = selectedCurrency == 1 and -76 or 76
+    local startOffset       = selectedCurrency == E_ROULETTE_CURRENCY.LUCKY_COIN and 76 or -76
+    local endOfset          = selectedCurrency == E_ROULETTE_CURRENCY.LUCKY_COIN and -76 or 76
 
     local xOffset = C_outCirc(self.currencyFrameElapsed, startOffset, endOfset, 0.300)
 
@@ -228,32 +243,36 @@ function RouletteFrameMixin:Initialize()
     self.winnerRewardData   = nil
     self.winnerButton       = nil
 
-    self.rewardData = C_CacheInstance:Get("ASMSG_LOTTERY_REWARDS_LIST", {})
+	self.rewardData = C_CacheInstance:Get("ASMSG_LOTTERY_INFO", {})
 
     local cardsPerLine = 7
 
     for index, data in pairs(self.rewardData) do
-        if index >= 15 then
-            break
-        end
+		if index == 0 then
+			self.bonusPrice = data
+		else
+			if index >= 15 then
+				break
+			end
 
-        self.rewardButtons[index] = self.rewardButtons[index] or CreateFrame("Button", "RouletteRewardButton"..index, self.RewardItemsFrame, "Custom_RouletteRewardButtonTemplate")
+			self.rewardButtons[index] = self.rewardButtons[index] or CreateFrame("Button", "RouletteRewardButton"..index, self.RewardItemsFrame, "Custom_RouletteRewardButtonTemplate")
 
-        if index == 1 then
-            self.rewardButtons[index]:SetPoint("TOPLEFT", 10, -48)
-        elseif mod(index - 1, cardsPerLine) == 0 then
-            self.rewardButtons[index]:SetPoint("TOP", self.rewardButtons[index - cardsPerLine], "BOTTOM", 0, -12)
-        else
-            self.rewardButtons[index]:SetPoint("LEFT", self.rewardButtons[index - 1], "RIGHT", 12, 0)
-        end
+			if index == 1 then
+				self.rewardButtons[index]:SetPoint("TOPLEFT", 10, -48)
+			elseif mod(index - 1, cardsPerLine) == 0 then
+				self.rewardButtons[index]:SetPoint("TOP", self.rewardButtons[index - cardsPerLine], "BOTTOM", 0, -12)
+			else
+				self.rewardButtons[index]:SetPoint("LEFT", self.rewardButtons[index - 1], "RIGHT", 12, 0)
+			end
 
-        self.rewardButtons[index]:SetItem(data)
-        self.rewardButtons[index]:SetShown(data)
+			self.rewardButtons[index]:SetItem(data)
+			self.rewardButtons[index]:SetShown(data)
 
-        self.rewardDataAssociate[string.format("%d:%d:%d", data.itemEntry, data.itemCountMin and data.itemCountMin or 0, data.isJackpot and 1 or 0)] = data
+			self.rewardDataAssociate[string.format("%d:%d:%d", data.itemEntry, data.itemCountMin and data.itemCountMin or 0, data.isJackpot and 1 or 0)] = data
 
-        self.indexes[data] = index
-        self.itemsList[index] = data
+			self.indexes[data] = index
+			self.itemsList[index] = data
+		end
     end
 
     self.initialization = true
@@ -342,6 +361,7 @@ function RouletteFrameMixin:OnUpdate()
 
                     if targetId == 3 then
                         if not self.winnerRewardData then
+                            local color = RED_FONT_COLOR
                             UIErrorsFrame:AddMessage(ROULETTE_ERROR_UNKNOWN, color.r, color.g, color.b)
 
                             HideUIPanel(self)
@@ -409,7 +429,7 @@ function RouletteFrameMixin:SpinButtonOnClick()
     end
 
     local selectedCurrency = self:GetSelectedCurrency()
-    SendServerMessage("ACMSG_LOTTERY_PLAY", selectedCurrency == 1 and 1 or 0)
+    SendServerMessage("ACMSG_LOTTERY_PLAY", selectedCurrency == E_ROULETTE_CURRENCY.LUCKY_COIN and 1 or 0)
 
     if self.winnerButton then
         self.winnerButton:HideWinnerEffect()
@@ -523,8 +543,9 @@ function RouletteFrameMixin:ASMSG_LOTTERY_REWARD(msg)
     end
 end
 
-function RouletteFrameMixin:ASMSG_LOTTERY_REWARDS_LIST(msg)
-    local splitData = C_Split(msg, "|")
+function RouletteFrameMixin:ASMSG_LOTTERY_INFO(msg)
+	local bonusPrice, itemListStr = string.split("|", msg, 2)
+	local splitData = C_Split(itemListStr, "|")
     local buffer    = {}
 
     for _, data in pairs(splitData) do
@@ -546,7 +567,10 @@ function RouletteFrameMixin:ASMSG_LOTTERY_REWARDS_LIST(msg)
         return a.quality < b.quality
     end)
 
-    C_CacheInstance:Set("ASMSG_LOTTERY_REWARDS_LIST", buffer)
+	self.bonusPrice = tonumber(bonusPrice)
+	buffer[0] = self.bonusPrice
+
+	C_CacheInstance:Set("ASMSG_LOTTERY_INFO", buffer)
 
     self:Initialize()
 end

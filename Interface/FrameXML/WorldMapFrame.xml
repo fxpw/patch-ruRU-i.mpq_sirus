@@ -32,8 +32,6 @@
 					<TexCoords left="0.46484375" right="0.498046875" top="0" bottom="0.1328125"/>
 				</Texture>
 			</Layer>
-			<Layer level="OVERLAY">
-			</Layer>
 			<Layer level="HIGHLIGHT">
 				<Texture name="$parentHighlightTexture" parentKey="HighlightTexture" alphaMode="ADD" alpha="0.4" file="Interface\Minimap\POIIcons">
 					<Size x="16" y="16"/>

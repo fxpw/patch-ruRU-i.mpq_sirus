@@ -43,7 +43,7 @@ end
 function C_ConnectManagerMixin:OPEN_STATUS_DIALOG(_, dialogKey)
     if dialogKey == "CONNECTION_HELP_HTML" then
         if not self:GetRealmList() then
-            self:RestartGameState()
+			self:RestartGameState(dialogKey)
             return
         end
 
@@ -55,7 +55,7 @@ function C_ConnectManagerMixin:OPEN_STATUS_DIALOG(_, dialogKey)
         end
 
         StatusDialogClick()
-        GlueDialog:Hide()
+		GlueDialog:HideDialog(dialogKey)
         AccountLogin_Login()
     end
 end
@@ -80,9 +80,9 @@ function C_ConnectManagerMixin:SetRealmList()
     end
 end
 
-function C_ConnectManagerMixin:RestartGameState()
+function C_ConnectManagerMixin:RestartGameState(dialogKey)
     StatusDialogClick()
-    GlueDialog:Hide()
+	GlueDialog:HideDialog(dialogKey)
 
     AccountLoginConnectionErrorFrame:Show()
 end

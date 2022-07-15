@@ -22,7 +22,7 @@ S_ADDON_VERSION = {
 	{3, "DrDamage", {"DrDamage"}},
 	{1, "FishingBuddy", {"FishingBuddy"}},
 	{1, "GnomishVendorShrinker", {"GnomishVendorShrinker"}},
-	{1, "HealBot", {"HealBot", "TitanHealBot"}},
+	{2, "HealBot", {"HealBot", "TitanHealBot"}},
 	{1, "MikScrollingBattleText", {"MikScrollingBattleText", "MSBTOptions"}},
 	{8, "MoveAnything", {"MoveAnything"}},
 	{1, "Omen", {"Omen"}},

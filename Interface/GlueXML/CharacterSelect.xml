@@ -228,19 +228,50 @@
 								</FontString>
 							</Layer>
 						</Layers>
+					</Frame>
+					<Button name="$parentMailIcon" parentKey="MailIcon" hidden="true">
+						<Size x="24" y="16"/>
+						<Anchors>
+							<Anchor point="TOPRIGHT" x="16" y="6"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture name="$parentIcon" parentKey="Icon" file="Interface\Custom_Glues\GlueMailIcon">
+									<Size x="16" y="16"/>
+									<Anchors>
+										<Anchor point="CENTER" x="0" y="0"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
 						<Scripts>
 							<OnLoad>
-								Mixin(self, CharacterSelectLevelFrameMixin)
-
+								Mixin(self, CharacterSelectButtonMailMixin)
 								self:OnLoad()
 							</OnLoad>
+							<OnEnter>
+								self:OnEnter()
+							</OnEnter>
+							<OnLeave>
+								self:OnLeave()
+							</OnLeave>
+							<OnEnable>
+								self:OnEnable()
+							</OnEnable>
+							<OnDisable>
+								self:OnDisable()
+							</OnDisable>
 						</Scripts>
-					</Frame>
+					</Button>
 				</Frames>
 				<Scripts>
 					<OnLoad>
 						self.Border:SetAtlas("UI-Frame-jailerstower-Portrait")
 						self.FactionBorder:SetAtlas("UI-Frame-jailerstower-Portrait-border")
+
+						self.LevelFrame.Border:SetAtlas("UI-Frame-jailerstower-Portrait")
+
+						self.MailIcon:SetFrameLevel(self:GetFrameLevel() + 1)
 					</OnLoad>
 				</Scripts>
 			</Frame>
@@ -261,6 +292,13 @@
 							<Anchors>
 								<Anchor point="TOPLEFT" relativeTo="$parentName" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
 							</Anchors>
+						</FontString>
+						<FontString name="$parentItemLevel" parentKey="ItemLevel" inherits="GlueFontNormalExtraSmall" justifyV="TOP" justifyH="LEFT" hidden="true">
+							<Size x="170" y="20"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentName" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
+							</Anchors>
+							<Color r="0.5" g="0.5" b="0.5"/>
 						</FontString>
 					</Layer>
 				</Layers>
@@ -311,20 +349,9 @@
 				</HighlightTexture>
 			</Button>
 
-			<Button name="$parentServiceButton1" parentKey="ServiceButton1" id="1" inherits="CharacterSelectServiceButtonTemplate">
-				<Anchors>
-					<Anchor point="BOTTOM" x="-60" y="14" />
-				</Anchors>
-				<Attributes>
-					<Attribute name="normalTextureAtlas" type="string" value="CharacterSelect-Service-Fix-Normal"/>
-					<Attribute name="pushedTextureAtlas" type="string" value="CharacterSelect-Service-Fix-Pushed"/>
-					<Attribute name="highlightTextureAtlas" type="string" value="CharacterSelect-Service-Fix-Highlight"/>
-					<Attribute name="tooltipText" type="string" value="CHARACTER_SERVICES_FIX_CHARACTER"/>
-				</Attributes>
-			</Button>
 			<Button name="$parentServiceButton2" parentKey="ServiceButton2" id="2" inherits="CharacterSelectServiceButtonTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentServiceButton1" relativePoint="RIGHT" x="4" y="0" />
+					<Anchor point="BOTTOMRIGHT" x="-50" y="14" />
 				</Anchors>
 				<Attributes>
 					<Attribute name="normalTextureAtlas" type="string" value="CharacterSelect-Service-Delete-Normal"/>
@@ -333,9 +360,20 @@
 					<Attribute name="tooltipText" type="string" value="CHARACTER_SERVICES_DELETE"/>
 				</Attributes>
 			</Button>
+			<Button name="$parentServiceButton1" parentKey="ServiceButton1" id="1" inherits="CharacterSelectServiceButtonTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentServiceButton2" relativePoint="LEFT" x="-4" y="0" />
+				</Anchors>
+				<Attributes>
+					<Attribute name="normalTextureAtlas" type="string" value="CharacterSelect-Service-Fix-Normal"/>
+					<Attribute name="pushedTextureAtlas" type="string" value="CharacterSelect-Service-Fix-Pushed"/>
+					<Attribute name="highlightTextureAtlas" type="string" value="CharacterSelect-Service-Fix-Highlight"/>
+					<Attribute name="tooltipText" type="string" value="CHARACTER_SERVICES_FIX_CHARACTER"/>
+				</Attributes>
+			</Button>
 			<Button name="$parentServiceButton3" parentKey="ServiceButton3" id="3" inherits="CharacterSelectServiceButtonTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentServiceButton2" relativePoint="RIGHT" x="4" y="0" />
+					<Anchor point="RIGHT" relativeTo="$parentServiceButton1" relativePoint="LEFT" x="-4" y="0" />
 				</Anchors>
 				<Attributes>
 					<Attribute name="normalTextureAtlas" type="string" value="CharacterSelect-Service-Boost-Normal"/>
@@ -1166,6 +1204,10 @@
 							<Anchor point="BOTTOM" relativeTo="CharacterSelectCharacterFrame" relativePoint="TOP" x="0" y="10"/>
 						</Anchors>
 						<Scripts>
+							<OnLoad>
+								Mixin(self, GlueDark_ButtonMixin)
+								self:OnLoadStyle(true)
+							</OnLoad>
 							<OnClick function="CharSelectChangeListState_OnClick" />
 							<OnEnter>
 								if self:IsEnabled() ~= 1 then
@@ -1595,6 +1637,13 @@
 						</Anchors>
 
 						<Scripts>
+							<OnTextChanged>
+								if utf8len(self:GetText()) > 1 then
+									self:GetParent().OKButton:Enable()
+								else
+									self:GetParent().OKButton:Disable()
+								end
+							</OnTextChanged>
 							<OnEnterPressed>
 								if ( RenameCharacter(GetCharIDFromIndex(CharacterSelect.selectedIndex), self:GetText()) ) then
 									CharacterRenameDialog:Hide();

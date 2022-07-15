@@ -109,7 +109,7 @@ function C_FactionManagerMixin:RunFactionOverrideCallback()
                         table.remove(self.callbackFunc, i)
                     end
                 end, function(err)
-                    _ERRORMESSAGE(err)
+                    geterrorhandler()(err)
                 end)
             end
         end

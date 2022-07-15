@@ -363,6 +363,10 @@ function C_CharacterCreation.IsAlliedRacesUnlocked(raceID)
 	return IsGMAccount() or ALLIED_RACES_UNLOCK[raceID] or false
 end
 
+function C_CharacterCreation.IsAlliedRacesUnlockedRaw(raceID)
+	return ALLIED_RACES_UNLOCK[raceID] or false
+end
+
 function C_CharacterCreation.SetAlliedRacesData(unlockData)
 	if not unlockData then
 		table.wipe(ALLIED_RACES_UNLOCK)
@@ -745,6 +749,11 @@ function C_CharacterCreation.PaidChange_GetCurrentFaction()
 	if FACTION_OVERRIDE[PAID_SERVICE_CHARACTER_ID] and not PAID_OVERRIDE_CURRENT_RACE_INDEX then
 		local factionID = FACTION_OVERRIDE[PAID_SERVICE_CHARACTER_ID]
 		local faction = SERVER_PLAYER_FACTION_GROUP[factionID]
+
+		if PLAYER_FACTION_GROUP[faction] == PLAYER_FACTION_GROUP.Renegade then
+			return C_CharacterCreation.GetFactionForRace(C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
+		end
+
 		local factionLocalized = _G[string.upper(faction)]
 		return factionLocalized, faction, factionID
 	end

@@ -673,9 +673,10 @@ function PVPMicroButton_SetNormal()
 end
 
 PVPUIFRAME_PORTRAIT_DATA = {
-	[0] = "Interface\\Icons\\INV_BannerPVP_01",
-	[1] = "Interface\\Icons\\INV_BannerPVP_02",
-	[2] = "Interface\\Icons\\INV_BannerPVP_03_2",
+	[PLAYER_FACTION_GROUP.Horde] = "Interface\\Icons\\INV_BannerPVP_01",
+	[PLAYER_FACTION_GROUP.Alliance] = "Interface\\Icons\\INV_BannerPVP_02",
+	[PLAYER_FACTION_GROUP.Renegade] = "Interface\\Icons\\INV_BannerPVP_03_2",
+	[PLAYER_FACTION_GROUP.Neutral] = "Interface\\Icons\\INV_BannerPVP_03_2",
 }
 
 function PVPUIFrame_OnLoad( self, ... )
@@ -1237,13 +1238,11 @@ function BottomInsetTypeDropDown_Initialize( self, ... )
 
 	info.text = RATED_BATTLE_LABEL
 	info.value = 1
-	info.checked = checked
 	info.func = BottomInsetTypeDropDown_OnClick
 	UIDropDownMenu_AddButton(info)
 
 	info.text = SKIRMISH_LABEL
 	info.value = 2
-	info.checked = checked
 	info.func = BottomInsetTypeDropDown_OnClick
 	UIDropDownMenu_AddButton(info)
 end
@@ -1552,7 +1551,7 @@ function PVPUI_ArenaTeamDetails_Update( id )
 	end
 end
 
-function PVPUI_ArenaTeamDetails_OnClick( self, ... )
+function PVPUI_ArenaTeamDetails_OnClick( self, button )
 	if ( button == "LeftButton" ) then
 		PVPUI_ArenaTeamDetails.previousSelectedTeamMember = PVPUI_ArenaTeamDetails.selectedTeamMember
 		PVPUI_ArenaTeamDetails.selectedTeamMember = self.teamIndex
@@ -1764,13 +1763,15 @@ end
 PVPFRAME_PRESTIGE_LARGE_BACKGROUNDS = {
 	[PLAYER_FACTION_GROUP.Horde] = {0.755859, 0.886719, 0.217773, 0.348633},
 	[PLAYER_FACTION_GROUP.Alliance] = {0.623047, 0.753906, 0.217773, 0.348633},
-	[PLAYER_FACTION_GROUP.Renegade] = {0.3154296875, 0.4462890625, 0.5009765625, 0.6318359375}
+	[PLAYER_FACTION_GROUP.Renegade] = {0.3154296875, 0.4462890625, 0.5009765625, 0.6318359375},
+	[PLAYER_FACTION_GROUP.Neutral] = {0.755859, 0.886719, 0.217773, 0.348633},
 }
 
 PVPFRAME_PRESTIGE_FACTION_ICONS = {
 	[PLAYER_FACTION_GROUP.Horde] = {0.513672, 0.628906, 0.597656, 0.732422},
 	[PLAYER_FACTION_GROUP.Alliance] = {0.380859, 0.496094, 0.730469, 0.865234},
-	[PLAYER_FACTION_GROUP.Renegade] = {0.5166015625, 0.626953125, 0.7314453125, 0.8671875}
+	[PLAYER_FACTION_GROUP.Renegade] = {0.5166015625, 0.626953125, 0.7314453125, 0.8671875},
+	[PLAYER_FACTION_GROUP.Neutral] = {0.513672, 0.628906, 0.597656, 0.732422},
 }
 
 function RatedBattlegroundFrame_OnShow( self, ... )
@@ -1926,6 +1927,7 @@ function BattlegroundInviteMixin:OnLoad()
 		[PLAYER_FACTION_GROUP.Horde]    = "right",
 		[PLAYER_FACTION_GROUP.Alliance] = "left",
 		[PLAYER_FACTION_GROUP.Renegade] = "Renegade",
+		[PLAYER_FACTION_GROUP.Neutral] = "Neutral",
 	}
 
 	local function UpdateFactionArt()
@@ -3073,10 +3075,10 @@ function EventHandler:ASMSG_PVP_REWARDS( msg )
 end
 
 function EventHandler:ASMSG_PVP_STATS( msg )
-	local splitData = C_Split(msg, "|")
+	local msgData = C_Split(msg, "|")
 	local pvpStats = C_CacheInstance:Get("ASMSG_PVP_STATS", {})
 
-	for _, splittedMSG in pairs(splitData) do
+	for _, splittedMSG in pairs(msgData) do
 		local splitData = C_Split(splittedMSG, ":")
 
 		local pvpType = tonumber(splitData[1])
@@ -3087,6 +3089,7 @@ function EventHandler:ASMSG_PVP_STATS( msg )
 		local weekWins = tonumber(splitData[6])
 		local TodayGames = tonumber(splitData[7])
 		local TodayWins = tonumber(splitData[8])
+		local qualifiedWeeks = tonumber(splitData[9])
 
 		pvpStats[pvpType] = {
 			pvpType = pvpType,
@@ -3096,7 +3099,8 @@ function EventHandler:ASMSG_PVP_STATS( msg )
 			weekGames = weekGames,
 			weekWins = weekWins,
 			TodayGames = TodayGames,
-			TodayWins = TodayWins
+			TodayWins = TodayWins,
+			qualifiedWeeks = qualifiedWeeks,
 		}
 	end
 end

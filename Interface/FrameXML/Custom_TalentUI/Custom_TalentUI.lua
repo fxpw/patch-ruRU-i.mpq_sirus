@@ -724,6 +724,7 @@ function PlayerTalentFrame_OpenGlyphFrame(talentGroup)
         ShowUIPanel(PlayerTalentFrame);
         -- open the spec with the requested talent group
         PlayerSpecTab_OnClick(PlayerTalentFrame.specTabs[talentGroup])
+        PlayerTalentFrameTab_OnClick(PlayerTalentFrameTab3)
     end
 end
 
@@ -1568,8 +1569,10 @@ function PlayerTalentFrame_UpdateActiveSpec(activeTalentGroup, numTalentGroups)
     PlayerTalentFrame.EtherealLines:SetShown(selectedTalentGroup > 2)
     PlayerTalentFrame.EtherealLinesGlow1:SetShown(selectedTalentGroup > 2)
 
-    --AnimationStopAndPlay(PlayerTalentFrame.EtherealLines.animIn, PlayerTalentFrame.EtherealLines.animIn)
-    AnimationStopAndPlay(PlayerTalentFrame.EtherealLinesGlow1.animIn, PlayerTalentFrame.EtherealLinesGlow1.animIn)
+	if not PlayerTalentFrame.EtherealLinesGlow1.animIn:IsPlaying() then
+	--	AnimationStopAndPlay(PlayerTalentFrame.EtherealLines.animIn, PlayerTalentFrame.EtherealLines.animIn)
+		AnimationStopAndPlay(PlayerTalentFrame.EtherealLinesGlow1.animIn, PlayerTalentFrame.EtherealLinesGlow1.animIn)
+	end
 end
 
 function PlayerTalentCurrency_OnClick( self )

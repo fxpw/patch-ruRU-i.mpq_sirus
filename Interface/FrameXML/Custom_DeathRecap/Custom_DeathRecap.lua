@@ -10,7 +10,6 @@ DeathRecapMixin = {}
 
 function DeathRecapMixin:OnLoad()
 	self:RegisterEvent("COMBAT_LOG_EVENT")
-	self:RegisterEvent("PLAYER_REGEN_DISABLED")
 	self:RegisterEvent("PLAYER_DEAD")
 
 	self.deathRecapData = {}
@@ -21,12 +20,10 @@ function DeathRecapMixin:OnLoad()
 end
 
 function DeathRecapMixin:OnEvent( event, ... )
-	if event == "PLAYER_REGEN_DISABLED" then
-		self.deathRecapData = {}
-	elseif event == "COMBAT_LOG_EVENT" then
+	if event == "COMBAT_LOG_EVENT" then
 		local args = {...}
 
-		if args[7] ~= UnitName("player") then
+		if bit.band(args[8], COMBATLOG_FILTER_ME) ~= COMBATLOG_FILTER_ME then
 			return
 		end
 
@@ -54,6 +51,10 @@ function DeathRecapMixin:InsertEvent( timestamp, subEvent, casterGUID, casterNam
 	end
 
 	if spellName and texture then
+		if #self.deathRecapData > 0 and timestamp > self.deathRecapData[#self.deathRecapData].timestamp + 10 then
+			table.wipe(self.deathRecapData)
+		end
+
 		table.insert(self.deathRecapData, {
 			timestamp 	= timestamp,
 			casterGUID 	= casterGUID,
@@ -65,7 +66,7 @@ function DeathRecapMixin:InsertEvent( timestamp, subEvent, casterGUID, casterNam
 			texture 	= texture
 		})
 
-		if #self.deathRecapData >= 6 then
+		if #self.deathRecapData > 5 then
 			table.remove(self.deathRecapData, 1)
 		end
 	end
@@ -107,8 +108,8 @@ function DeathRecapMixin:RegisterDeath()
 	local unitMaxHealth = UnitHealthMax("player")
 	local unitName = UnitName("player")
 
-	for _, data in pairs(self.deathRecapData) do
-		deathRecapRegisterString = deathRecapRegisterString .. string.format("%s:%s:%s:%s:%s:%s:%d:%s:",
+	for _, data in ipairs(self.deathRecapData) do
+		deathRecapRegisterString = strconcat(deathRecapRegisterString, string.format("%s:%s:%s:%s:%s:%s:%d:%s:",
 			data.timestamp 	or "",
 			data.casterGUID or "",
 			data.casterName or "",
@@ -117,7 +118,7 @@ function DeathRecapMixin:RegisterDeath()
 			data.spellID 	or "",
 			data.unitHealth or "",
 			data.texture 	or ""
-		)
+		))
 	end
 
 	SendServerMessage("ACMSG_REGISTER_DEATH_REQUEST", string.format("%s|%s|%s",
@@ -129,10 +130,10 @@ function DeathRecapMixin:RegisterDeath()
 	table.insert(self.deathRecapBuffer, {
 		unitName 		= unitName,
 		unitMaxHealth 	= unitMaxHealth,
-		recapData 		= self.deathRecapData
+		recapData		= CopyTable(self.deathRecapData)
 	})
 
-	self.deathRecapData = {}
+	table.wipe(self.deathRecapData)
 	self.lastDeathRecapRegisterID = nil
 end
 
@@ -231,7 +232,7 @@ function DeathRecapMixin:OpenDeathRecap( deathRecapData )
 		local killOwnerData = {}
 		local GUID = C_ObjectGUID:CreateGUID()
 
-		for index, recapData in pairs(deathRecapData.recapData) do
+		for index, recapData in ipairs(deathRecapData.recapData) do
 			local recapEntry = self.DeathRecapEntry[index]
 
 			if recapData.damage then

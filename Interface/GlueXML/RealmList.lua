@@ -68,6 +68,12 @@ function RealmListUpdateRate()
 	return _RealmListUpdateRate()
 end
 
+local ENTRY_LIST = {
+	{"", "Россия/Беларусь", "РУ"},
+	{"ProxyEU", "Украина/Европа", "EU"},
+	{"Proxy", "Другое", "ДР"},
+}
+
 local realmCards = {
 	[SHARED_SIRUS_REALM_NAME] = {
 		cardFrame = "RealmListSirusRealmCard",
@@ -131,6 +137,8 @@ local realmCardsData = {
 function RealmList_OnLoad(self)
 	self.buttonsList = {}
 	self:RegisterEvent("OPEN_REALM_LIST")
+
+	self.entryPointIndex = tonumber(C_GlueCVars.GetCVar("REALM_ENTRY_POINT"))
 end
 
 function RealmList_OnEvent(self, event)
@@ -165,6 +173,9 @@ function RealmList_OnHide(self)
 		self.updateList:Cancel()
 		self.updateList = nil
 	end
+
+	CancelRealmListQuery()
+	GlueTooltip:Hide()
 end
 
 function RealmList_OnKeyDown( self, key, ... )
@@ -187,6 +198,10 @@ function RealmList_Update()
 		RealmList.NoRealmText:Show()
 	end
 
+	for _, v in pairs(realmCards) do
+		table.wipe(_G[v.cardFrame].entryList)
+	end
+
 	for realmIndex = 1, realmCount do
 		local name, numCharacters, invalidRealm, realmDown, currentRealm, pvp, rp, load, locked, major, minor, revision, build, types, realmZone, realmID = GetRealmInfo(realmIndex)
 
@@ -198,18 +213,31 @@ function RealmList_Update()
 
 				frame.realmZone = realmZone
 				frame.realmID = realmID
-				frame:SetDisabledRealm(realmDown)
+				frame.entryList[#frame.entryList + 1] = {
+					realmZone = realmZone,
+					realmID = realmID,
+					realmDown = realmDown == 1,
+				}
 
-				local _, _, _, proxyRealmDown, _, _, _, _, _, _, _, _, _, _, proxyRealmZone, proxyRealmID = GetRealmByName("Proxy " .. name)
+				for entryIndex = 2, #ENTRY_LIST do
+					local entryRealmName = string.format("%s %s", ENTRY_LIST[entryIndex][1], name)
+					local _, _, _, proxyRealmDown, _, _, _, _, _, _, _, _, _, _, proxyRealmZone, proxyRealmID = GetRealmByName(entryRealmName)
 
-				if (proxyRealmID) then
-					frame.ProxyFrame.ProxyButton.realmZone = proxyRealmZone
-					frame.ProxyFrame.ProxyButton.realmID = proxyRealmID
+					if (proxyRealmID) then
+						frame.entryList[#frame.entryList + 1] = {
+							realmZone = proxyRealmZone,
+							realmID = proxyRealmID,
+							realmDown = proxyRealmDown == 1,
+						}
 
-					frame.ProxyFrame.ProxyButton:SetEnabled(not proxyRealmDown)
+						if ENTRY_LIST[entryIndex][1] == "Proxy" then
+							frame.ProxyFrame.ProxyButton.realmZone = proxyRealmZone
+							frame.ProxyFrame.ProxyButton.realmID = proxyRealmID
+
+							frame.ProxyFrame.ProxyButton:SetEnabled(not proxyRealmDown)
+						end
+					end
 				end
-
-				frame.ProxyFrame:SetShown(proxyRealmID)
 
 				realmcardSettings.setup = true
 			end
@@ -398,13 +426,6 @@ function RealmList_Update()
 		end
 	end
 
-	for _, v in pairs(realmCards) do
-		if not v.setup then
-			local frame = _G[v.cardFrame]
-			frame:SetDisabledRealm(true)
-		end
-	end
-
 	for i = 4, cardCount + 1, -1 do
 		local card = _G["RealmListRealmCard"..i]
 
@@ -440,13 +461,75 @@ function RealmList_Update()
 			miniCardOffset = miniCardOffset + 1
 		end
 	end
+
+	local entryList = {}
+
+	for _, v in pairs(realmCards) do
+		local frame = _G[v.cardFrame]
+		if not v.setup then
+			frame:SetDisabledRealm(true)
+		else
+		--	-- TODO: TEMP
+		--	if #frame.entryList > 1 then
+		--		frame.entryList[3] = CopyTable(frame.entryList[2])
+		--		frame.entryList[3].realmDown = true
+		--	end
+		--	-- TODO: TEMP
+
+			if #frame.entryList > 2 then
+				local realmDown = true
+				for entryIndex, entry in ipairs(frame.entryList) do
+					entryList[entryIndex] = entryList[entryIndex] or {}
+					if entryList[entryIndex].realmDown ~= false then
+						entryList[entryIndex].realmDown = entry.realmDown
+					end
+
+					if realmDown and not entry.realmDown then
+						realmDown = false
+					end
+				end
+
+				frame:SetDisabledRealm(realmDown)
+				frame.ProxyFrame:SetShown(false)
+			else
+				frame:SetDisabledRealm(frame.entryList[1].realmDown)
+				frame.ProxyFrame:SetShown(true)
+			end
+		end
+	end
+
+	if #entryList > 2 then
+		RealmList.EntryPoint:SetProxyList(entryList)
+
+		if not RealmList.entryPointIndex then
+			RealmProxyDialog:Show()
+		end
+	end
+
+	RealmList.EntryPoint:SetShown(#entryList > 2)
 end
 
 function RealmListRealmSelect_OnClick( self, ... )
 	if self.realmID then
-		PlaySound(SOUNDKIT.GS_LOGIN_CHANGE_REALM_OK)
+		local entryRealmZone, entryRealmID
+
+		if self.entryList and RealmList.EntryPoint:IsShown() then
+			local realmEntryIndex = RealmList.entryPointIndex or 1
+			local entryData = self.entryList[realmEntryIndex] or self.entryList[1]
+			if not entryData.realmDown then
+				entryRealmZone = entryData.realmZone
+				entryRealmID = entryData.realmID
+			else
+				RealmProxyDialog.skipHelp = true
+				RealmProxyDialog:Show()
+				RealmProxyDialog:UpdateProxyList(self.entryList)
+				return
+			end
+		end
+
 		RealmList:Hide()
-		ChangeRealm(self.realmZone , self.realmID)
+		PlaySound(SOUNDKIT.GS_LOGIN_CHANGE_REALM_OK)
+		ChangeRealm(entryRealmZone or self.realmZone, entryRealmID or self.realmID)
 	end
 end
 
@@ -573,6 +656,7 @@ function RealmListCardTemplateMixin:OnLoad()
 		self.LabelFrame:Show()
 	end
 
+	self.entryList = {}
 	self.models = {}
 
 	for i, modelData in ipairs(card.models) do
@@ -598,4 +682,271 @@ function RealmListCardTemplateMixin:SetDisabledRealm(toggle)
 	self.OverlayFrame.Overlay:SetDesaturated(toggle)
 
 	self.EnterButton:SetEnabled(not toggle)
+end
+
+RealmProxyDialogMixin = {}
+
+function RealmProxyDialogMixin:OnLoad()
+	self.buttonPool = CreateFramePool("Button", self.Container, "GlueDark_ButtonTemplate")
+end
+
+function RealmProxyDialogMixin:OnShow()
+	self:SetStep(1)
+	self:UpdateProxyList()
+end
+
+function RealmProxyDialogMixin:OnHide()
+	self.step = nil
+	self.skipHelp = nil
+	self.selectedEntryIndex = nil
+end
+
+function RealmProxyDialogMixin:OnKeyDown(key)
+	if key == "ESCAPE" then
+		self:Cancel()
+	elseif key == "ENTER" and self.step == 2 then
+		self:SetStep(3)
+	end
+end
+
+function RealmProxyDialogMixin:SetStep(step)
+	self.step = step
+
+	if step == 1 then
+		self.Container.OKButton:Hide()
+		self.Container.CancelButton:Show()
+		self.Background:Show()
+		self.Container:SetWidth(250)
+		self.Container.Title:Show()
+		self.Container.Text:Hide()
+	elseif step == 2 then
+		self.Container.OKButton:Show()
+		self.Container.CancelButton:Hide()
+		self.buttonPool:ReleaseAll()
+		self.Background:Hide()
+		self.Container:SetSize(410, 170)
+		self.Container.Title:Hide()
+		self.Container.Text:SetFormattedText(WORLD_PROXY_LOCATION_TEXT, ENTRY_LIST[self.selectedEntryIndex][3])
+		self.Container.Text:Show()
+
+		C_GlueCVars.SetCVar("REALM_ENTRY_POINT", self.selectedEntryIndex)
+		RealmList.entryPointIndex = self.selectedEntryIndex
+		RealmList.EntryPoint:SetProxyList(nil, true)
+
+		self:SetupHelpFrame()
+	elseif step == 3 then
+		RealmList.EntryPoint.BG:Hide()
+		RealmList.EntryPoint:SetFrameStrata(RealmList.EntryPoint._strata)
+		RealmList.EntryPoint:SetFrameLevel(RealmList.EntryPoint._flevel)
+		RealmList.EntryPoint._strata = nil
+		RealmList.EntryPoint._flevel = nil
+		self:Hide()
+	end
+end
+
+function RealmProxyDialogMixin:NextStep(hide)
+	self:SetStep(self.step + 1)
+	if self.step == 2 and self.skipHelp then
+		self:SetStep(self.step + 1)
+	end
+	PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
+end
+
+function RealmProxyDialogMixin:Cancel()
+	if self.step == 1 then
+		RealmList.entryPointIndex = 1
+		C_GlueCVars.SetCVar("REALM_ENTRY_POINT", 1)
+		RealmList.EntryPoint:SetProxyList(nil, true)
+		self:Hide()
+	elseif self.step == 2 then
+		self:SetStep(3)
+	end
+end
+
+local selectEntryButtonOnClick = function(self, button)
+	if button ~= "LeftButton" then return end
+	self.parent.selectedEntryIndex = self:GetID()
+	self.parent:NextStep()
+end
+
+function RealmProxyDialogMixin:UpdateProxyList(entryList)
+	self.buttonPool:ReleaseAll()
+
+	local realmProxyIndex = 1
+
+	local prevButton
+	for i = 1, #ENTRY_LIST do
+		local button = self.buttonPool:Acquire()
+		button.parent = self
+		button:SetFormattedText("%i. %s", i, ENTRY_LIST[i][2])
+		button:SetID(i)
+
+		if i == 1 then
+			button:SetPoint("TOP", self.Container, "TOP", 0, -50)
+		else
+			button:SetPoint("TOPLEFT", prevButton, "BOTTOMLEFT", 0, -10)
+		end
+
+		button:SetScript("OnClick", selectEntryButtonOnClick)
+
+		if entryList then
+			button:SetEnabled(not entryList[i].realmDown)
+		else
+			button:Enable()
+		end
+
+		button:Show()
+		prevButton = button
+	end
+
+	self.Container:SetHeight(#ENTRY_LIST * 20 + 180)
+	self.selectedEntryIndex = realmProxyIndex
+end
+
+function RealmProxyDialogMixin:SetupHelpFrame()
+	self.HelpHightlight.Left:ClearAllPoints()
+	self.HelpHightlight.Left:SetPoint("TOPRIGHT", RealmList.EntryPoint, "TOPLEFT", -5, 0)
+	self.HelpHightlight.Left:SetPoint("BOTTOMRIGHT", RealmList.EntryPoint, "BOTTOMLEFT", -5, 0)
+	self.HelpHightlight.Left:SetPoint("LEFT", GlueParent, "LEFT", 0, 0)
+
+	self.HelpHightlight.Right:ClearAllPoints()
+	self.HelpHightlight.Right:SetPoint("TOPLEFT", RealmList.EntryPoint, "TOPRIGHT", 5, 0)
+	self.HelpHightlight.Right:SetPoint("BOTTOMLEFT", RealmList.EntryPoint, "BOTTOMRIGHT", 5, 0)
+	self.HelpHightlight.Right:SetPoint("RIGHT", GlueParent, "RIGHT", 0, 0)
+
+	self.HelpHightlight.Top:ClearAllPoints()
+	self.HelpHightlight.Top:SetPoint("TOPLEFT", GlueParent, "TOPLEFT", 0, 0)
+	self.HelpHightlight.Top:SetPoint("BOTTOMRIGHT", self.HelpHightlight.Right, "TOPRIGHT", 0, 5)
+
+	self.HelpHightlight.Bottom:ClearAllPoints()
+	self.HelpHightlight.Bottom:SetPoint("BOTTOMLEFT", GlueParent, "BOTTOMLEFT", 0, 0)
+	self.HelpHightlight.Bottom:SetPoint("TOPRIGHT", self.HelpHightlight.Right, "BOTTOMRIGHT", 0, -5)
+
+	RealmList.EntryPoint.BG:Show()
+	RealmList.EntryPoint._strata = RealmList.EntryPoint:GetFrameStrata()
+	RealmList.EntryPoint._flevel = RealmList.EntryPoint:GetFrameLevel()
+	RealmList.EntryPoint:SetFrameStrata("FULLSCREEN")
+	RealmList.EntryPoint:SetFrameLevel(50)
+
+	self.HelpHightlight:Show()
+end
+
+RealmEntryPointMixin = {}
+
+function RealmEntryPointMixin:OnLoad()
+	self.buttonPool = CreateFramePool("Button", self, "RealmEntrySelectButtonTemplate")
+end
+
+local ENTRY_BUTTON_OFFSET = -3
+local ENTRY_BUTTON_HEIGHT = 32
+local ENTRY_BUTTON_WIDTH = 32
+function RealmEntryPointMixin:SetProxyList(entryList, forceUpdate)
+	if forceUpdate and not entryList then
+		entryList = self.entryList
+	elseif not forceUpdate and self.entryList and tCompare(self.entryList, entryList) then
+		return
+	end
+
+	self.entryList = entryList
+	self.buttonPool:ReleaseAll()
+
+	if #entryList == 0 then
+		self:Hide()
+		return
+	end
+
+	local realmEntryIndex = RealmList.entryPointIndex or 1
+
+	local prevButton
+	for i, entry in ipairs(entryList) do
+		local button = self.buttonPool:Acquire()
+		button.parent = self
+		button:SetFormattedText(ENTRY_LIST[i][3])
+		button:SetID(i)
+
+		if i == 1 then
+			button:SetPoint("LEFT", self, "LEFT", 0, 0)
+		else
+			button:SetPoint("LEFT", prevButton, "RIGHT", ENTRY_BUTTON_OFFSET, 0)
+		end
+
+	--	button.realmZone = entry.realmZone
+	--	button.realmID = entry.realmID
+
+		button:SetWidth(ENTRY_BUTTON_WIDTH)
+		button:SetActive(i == realmEntryIndex)
+		button:SetEnabled(not entry.realmDown)
+
+		button:Show()
+		prevButton = button
+	end
+
+	self.selectedEntryIndex = realmEntryIndex
+	self:SetWidth((#entryList - 1) * (ENTRY_BUTTON_WIDTH + ENTRY_BUTTON_OFFSET) + ENTRY_BUTTON_WIDTH)
+	self:SetHeight(ENTRY_BUTTON_HEIGHT)
+	self:Show()
+end
+
+function RealmEntryPointMixin:OnEnter()
+	local text = string.format(WORLD_PROXY_LOCATION_TEXT, ENTRY_LIST[self.selectedEntryIndex][2])
+	GlueTooltip_SetOwner(self, nil, nil, nil, nil, "TOPRIGHT")
+	GlueTooltip_SetText(text, GlueTooltip, 1.0, 1.0, 1.0, 1.0, 1)
+end
+
+function RealmEntryPointMixin:OnLeave()
+	GlueTooltip:Hide()
+end
+
+RealmEntrySelectButtonMixin = {}
+
+function RealmEntrySelectButtonMixin:OnLoad()
+	self.BorderHightlight.Left:SetVertexColor(0.5, 0.5, 0)
+	self.BorderHightlight.Middle:SetVertexColor(0.5, 0.5, 0)
+	self.BorderHightlight.Right:SetVertexColor(0.5, 0.5, 0)
+end
+
+function RealmEntrySelectButtonMixin:OnEnter()
+	GlueTooltip_SetOwner(self, nil, nil, nil, nil, "TOPRIGHT")
+	if self:IsEnabled() == 1 then
+		GlueTooltip_SetText(ENTRY_LIST[self:GetID()][2], GlueTooltip, 1, 1, 1, 1, 1)
+	else
+		GlueTooltip_SetText(ENTRY_LIST[self:GetID()][2], GlueTooltip, 0.5, 0.5, 0.5, 1, 1)
+		GlueTooltip:AddLine(CHAR_LOGIN_NO_WORLD, 1, 1, 1, 1, 1)
+	end
+end
+
+function RealmEntrySelectButtonMixin:OnLeave()
+	GlueTooltip:Hide()
+end
+
+function RealmEntrySelectButtonMixin:OnClick(button)
+	if button ~= "LeftButton" then return end
+
+	local index = self:GetID()
+
+	if self.parent.selectedEntryIndex == index then
+		self:SetActive(true)
+		return
+	end
+
+	for buttonObj in self.parent.buttonPool:EnumerateActive() do
+		if buttonObj ~= self then
+			buttonObj:SetActive(false)
+		end
+	end
+
+	self:SetActive(true)
+
+	self.parent.selectedEntryIndex = index
+	RealmList.entryPointIndex = index
+	C_GlueCVars.SetCVar("REALM_ENTRY_POINT", index)
+
+	GlueTooltip:Hide()
+	self:GetParent():OnEnter()
+
+	PlaySound("igMainMenuOptionCheckBoxOn")
+end
+
+function RealmEntrySelectButtonMixin:SetActive(active)
+	self.BorderHightlight:SetShown(active)
 end

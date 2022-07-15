@@ -163,9 +163,11 @@ local itemSlotButtons = {};
 local StrengthenStats = {SPELL_STAT1_NAME, SPELL_STAT2_NAME, SPELL_STAT3_NAME, SPELL_STAT4_NAME, SPELL_STAT5_NAME, PAPERDOLLFRAME_UPS_SPELL_POWER, ATTACK_POWER}
 
 function PaperDollFrame_OnLoad (self)
+	self.equipmentItemsList = {}
+
 	StrengthenFrame = {}
 	for i = 1, #StrengthenStats do
-		StrengthenFrame[i] = CreateFrame("Frame", nil, PaperDollFrameStrengthenFrame, "CharacterStrengthenFrameTemplate")
+		StrengthenFrame[i] = CreateFrame("Frame", string.format("$parentStat%i", i), PaperDollFrameStrengthenFrame, "CharacterStrengthenFrameTemplate")
 		local frame = StrengthenFrame[i]
 		if i == 1 then
 			frame:SetPoint("TOP", -8, -57)
@@ -256,6 +258,10 @@ function EventHandler:UPS_INFO( msg )
 			StrengthenFrame[i].Plus:GetDisabledTexture():SetDesaturated(false)
 		end
 	end
+
+	if PaperDollFrameStrengthenFrame.StrengthenTittle:IsMouseOver() and GameTooltip:GetOwner() == PaperDollFrameStrengthenFrame.StrengthenTittle then
+		PaperDollFrameStrengthenFrame.StrengthenTittle:GetScript("OnEnter")()
+	end
 end
 
 function EventHandler:BONUS_STATS( msg )
@@ -291,6 +297,22 @@ end
 function PaperDollFrame_OnEvent (self, event, ...)
 	local unit = ...;
 
+	if event == "PLAYER_ENTERING_WORLD"
+	or (event == "UNIT_INVENTORY_CHANGED" and unit == "player")
+	then
+		table.wipe(self.equipmentItemsList)
+
+		for slotID = INVSLOT_FIRST_EQUIPPED, INVSLOT_LAST_EQUIPPED do
+			local link = GetInventoryItemLink("player", slotID)
+			if link then
+				local itemName = GetItemInfo(link)
+				if itemName then
+					self.equipmentItemsList[itemName:lower()] = link
+				end
+			end
+		end
+	end
+
 	if event == "PLAYER_EQUIPMENT_CHANGED" then
 		SendServerMessage("ACMSG_TRANSMOGRIFICATION_INFO_REQUEST", UnitGUID("player"))
 	end
@@ -300,9 +322,9 @@ function PaperDollFrame_OnEvent (self, event, ...)
 	end
 
 	if ( event == "ADDON_LOADED" ) then
-		local arg = {...}
-		if arg[1] == "Blizzard_InspectUI" then
+		if ... == "Blizzard_InspectUI" then
 			hooksecurefunc("InspectPaperDollItemSlotButton_OnEnter", InspectTransmogTooltipAddLine)
+			self:UnregisterEvent(event)
 		end
 	end
 	if ( event == "PLAYER_TARGET_CHANGED" or event == "PARTY_MEMBERS_CHANGED" or event == "UNIT_INVENTORY_CHANGED") then
@@ -1590,16 +1612,7 @@ function PaperDollItemSlotButton_Update (self)
 	local cooldown = _G[self:GetName().."Cooldown"];
 
 	local link = GetInventoryItemLink("player", self:GetID())
-	local itemName, _, _, _, _, _, _, _, _, originalTexture = GetItemInfo(link)
-
-	local parent = self:GetParent();
-	if parent and parent:GetParent() then
-		if not parent:GetParent().equipmentItemsList then
-			parent:GetParent().equipmentItemsList = {};
-		end
-
-		parent:GetParent().equipmentItemsList[self:GetID()] = itemName;
-	end
+	local _, _, _, _, _, _, _, _, _, originalTexture = GetItemInfo(link)
 
 	if ( textureName ) then
 		if link and self:GetID() < 20 then

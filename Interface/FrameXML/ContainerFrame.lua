@@ -887,7 +887,7 @@ function ContainerFrame_GetExtendedPriceString(itemButton, isEquipped, quantity)
 	local itemName, _, itemQuality = GetItemInfo(refundItemLink);
 	local r, g, b = GetItemQualityColor(itemQuality);
 	StaticPopupDialogs["CONFIRM_REFUND_TOKEN_ITEM"].hasMoneyFrame = (money ~= 0) and 1 or nil;
-	StaticPopup_Show("CONFIRM_REFUND_TOKEN_ITEM", itemsString, "", {["texture"] = refundItemTexture, ["name"] = itemName, ["color"] = {r, g, b, 1}, ["link"] = refundItemLink, ["index"] = index, ["count"] = count * quantity});
+	StaticPopup_Show("CONFIRM_REFUND_TOKEN_ITEM", itemsString, "", {["texture"] = refundItemTexture, ["name"] = itemName, ["color"] = {r, g, b, 1}, ["link"] = refundItemLink, ["count"] = count * quantity});
 	return true;
 end
 
@@ -1072,6 +1072,18 @@ function ContainerFrameItemButton_OnClick(self, button)
 			UseContainerItem(bagID, slotID);
 		end
 		StackSplitFrame:Hide();
+	end
+end
+
+function ContainerFrameItemButton_CustomClickHandler(self, button)
+	if button == "RightButton" and IsShiftKeyDown() then
+		local containerID = self:GetParent():GetID()
+		local slotID = self:GetID()
+		local itemID = GetContainerItemID(containerID, slotID)
+		if itemID and JEWELERS_PIN_SWAP[itemID] then
+			SendAddonMessage("ACMSG_JEWELERS_STUD_SWAP", string.format("%i:%i", containerID, slotID), "WHISPER", UnitName("player"))
+			return true
+		end
 	end
 end
 

@@ -82,6 +82,6 @@ function C_OnReceiveOpcodeHandler(opcode, ...)
     	-- printc(opcode, unpack(args))
         EventHandler:Handle(opcode, nil, unpack(args))
     end, function(err)
-        _ERRORMESSAGE(err)
+        geterrorhandler()(err)
     end)
 end

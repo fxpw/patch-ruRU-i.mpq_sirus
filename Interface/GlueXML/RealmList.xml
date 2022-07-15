@@ -266,6 +266,24 @@
 			</Button>
 		</Frames>
 	</Frame>
+	<Button name="RealmEntrySelectButtonTemplate" inherits="GlueDark_ButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, GlueDark_ButtonMixin, RealmEntrySelectButtonMixin)
+				self:OnLoadStyle(true)
+				self:OnLoad()
+			</OnLoad>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+		</Scripts>
+	</Button>
 
 	<Frame name="RealmListCardTemplate" virtual="true">
 		<Size x="250" y="400"/>
@@ -459,6 +477,125 @@
 		</Attributes>
 	</Frame>
 
+	<Frame name="RealmProxyDialog" parent="GlueParent" frameStrata="FULLSCREEN" setAllPoints="true" enableMouse="true" enableKeyboard="true" hidden="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Background" setAllPoints="true">
+					<Color r="0" g="0" b="0" a="0.75"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentContainer" frameStrata="FULLSCREEN_DIALOG" parentKey="Container">
+				<Size x="250" y="0"/>
+				<Anchors>
+					<Anchor point="CENTER" x="0" y="35"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="layoutType" value="GlueDarkTemplate" type="string"/>
+					<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
+				</Attributes>
+
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_backdrop" />
+					</Layer>
+					<Layer level="BORDER">
+						<Texture name="$parentTopShadow" parentKey="TopShadow" inherits="GlueDark_backdropTopSplash2">
+							<Size x="0" y="182"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+								<Anchor point="TOPRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<FontString name="$parentTitle" parentKey="Title" inherits="GlueDark_Font_Shadow_16" justifyH="CENTER" justifyV="TOP" text="WORLD_PROXY_LOCATION_HEADER">
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-16"/>
+							</Anchors>
+						</FontString>
+						<FontString name="$parentText" parentKey="Text" inherits="GlueDark_Font_Shadow_15" text="WORLD_PROXY_LOCATION_TEXT" hidden="true">
+							<Size x="400" y="0"/>
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-16"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+
+				<Frames>
+					<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
+
+					<Button name="$parentOKButton" parentKey="OKButton" inherits="GlueDark_ButtonTemplate" text="VIRTUAL_KEYPAD_OKAY">
+						<Size x="140" y="32"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="0" y="20"/>
+						</Anchors>
+
+						<Scripts>
+							<OnClick>
+								self:GetParent():GetParent():NextStep()
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="$parentCancelButton" parentKey="CancelButton" inherits="GlueDark_ButtonTemplate" text="CANCEL">
+						<Size x="140" y="32"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="0" y="20"/>
+						</Anchors>
+
+						<Scripts>
+							<OnClick>
+								self:GetParent():GetParent():Cancel()
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+			
+				<Scripts>
+					<OnLoad>
+						self.TopShadow:SetVertexColor(0, 0, 0, 0.4)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Frame name="$parentHelpHightlight" parentKey="HelpHightlight" frameStrata="FULLSCREEN" setAllPoints="true" hidden="true">
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentLeft" parentKey="Left">
+							<Color r="0" g="0" b="0" a="0.75"/>
+						</Texture>
+						<Texture name="$parentRight" parentKey="Right">
+							<Color r="0" g="0" b="0" a="0.75"/>
+						</Texture>
+						<Texture name="$parentTop" parentKey="Top">
+							<Color r="0" g="0" b="0" a="0.75"/>
+						</Texture>
+						<Texture name="$parentBottom" parentKey="Bottom">
+							<Color r="0" g="0" b="0" a="0.75"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, RealmProxyDialogMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+			<OnKeyDown>
+				self:OnKeyDown(key)
+			</OnKeyDown>
+			<OnMouseWheel function="nop"/>
+		</Scripts>
+	</Frame>
+
 	<Frame name="RealmList" toplevel="true" parent="GlueParent" setAllPoints="true" enableMouse="true" enableKeyboard="true" frameStrata="DIALOG" hidden="true">
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -503,6 +640,45 @@
 			<Frame name="$parentProxyRealmCard2" inherits="RealmListProxyMainSelectTemplate"/>
 			<Frame name="$parentProxyRealmCard3" inherits="RealmListProxyMainSelectTemplate"/>
 			<Frame name="$parentProxyRealmCard4" inherits="RealmListProxyMainSelectTemplate"/>
+
+			<Frame name="$parentEntryPoint" parentKey="EntryPoint" hidden="true">
+				<Size x="150" y="34"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="110"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="BG" hidden="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="-5" y="5"/>
+								<Anchor point="BOTTOMRIGHT" x="5" y="-5"/>
+							</Anchors>
+							<Color r="1" g="1" b="0" a="0.3"/>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<FontString name="$parentHeader" parentKey="Header" inherits="GlueFontNormal" justifyH="CENTER" text="WORLD_PROXY_LOCATION">
+							<Anchors>
+								<Anchor point="TOP" x="0" y="20"/>
+							</Anchors>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, RealmEntryPointMixin)
+						self:OnLoad()
+					</OnLoad>
+					<OnEnter>
+						self:OnEnter()
+					</OnEnter>
+					<OnLeave>
+						self:OnLeave()
+					</OnLeave>
+				</Scripts>
+			</Frame>
+
 			<Button name="$parentCancel" inherits="GlueDark_ButtonBoldTemplate" toplevel="true" text="CANCEL">
 				<Size x="200" y="36"/>
 				<Anchors>

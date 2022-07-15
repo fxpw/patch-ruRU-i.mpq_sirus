@@ -267,7 +267,7 @@ function AuctionFrame_LoadUI()
 end
 
 function BattlefieldMinimap_LoadUI()
-	UIParentLoadAddOn("Blizzard_BattlefieldMinimap");
+--	UIParentLoadAddOn("Blizzard_BattlefieldMinimap");
 end
 
 function ClassTrainerFrame_LoadUI()
@@ -2525,8 +2525,8 @@ function RaiseFrameLevel(frame)
 	frame:SetFrameLevel(frame:GetFrameLevel()+1);
 end
 
-function ParentFrameLevel(frame)
-	frame:SetFrameLevel(frame:GetParent():GetFrameLevel());
+function SetParentFrameLevel(frame, offset)
+	frame:SetFrameLevel(frame:GetParent():GetFrameLevel() + (offset or 0));
 end
 
 -- Function to reposition frames if they get dragged off screen
@@ -3180,18 +3180,17 @@ function Model_RotateRight(model, rotationIncrement)
 	PlaySound("igInventoryRotateCharacter");
 end
 
-function Model_OnUpdate(self, elapsedTime, rotationsPerSecond)
+function Model_OnUpdate(self, elapsedTime, rotationsPerSecond, leftButton, rightButton)
 	if ( not rotationsPerSecond ) then
 		rotationsPerSecond = ROTATIONS_PER_SECOND;
 	end
-	if ( _G[self:GetName().."RotateLeftButton"]:GetButtonState() == "PUSHED" ) then
+	if ( (leftButton or _G[self:GetName().."RotateLeftButton"]):GetButtonState() == "PUSHED" ) then
 		self.rotation = self.rotation + (elapsedTime * 2 * PI * rotationsPerSecond);
 		if ( self.rotation < 0 ) then
 			self.rotation = self.rotation + (2 * PI);
 		end
 		self:SetRotation(self.rotation);
-	end
-	if ( _G[self:GetName().."RotateRightButton"]:GetButtonState() == "PUSHED" ) then
+	elseif ( (rightButton or _G[self:GetName().."RotateRightButton"]):GetButtonState() == "PUSHED" ) then
 		self.rotation = self.rotation - (elapsedTime * 2 * PI * rotationsPerSecond);
 		if ( self.rotation > (2 * PI) ) then
 			self.rotation = self.rotation - (2 * PI);
@@ -4269,6 +4268,18 @@ function EventHandler:ASMSG_INVISIBLE_STATUS(msg)
 
 	if FriendsFrameStatusDropDown_Update then
 		FriendsFrameStatusDropDown_Update();
+	end
+end
+
+function EventHandler:ASMSG_QUEST_ACCEPTED(msg)
+	local questID = tonumber(msg);
+
+	if questID then
+		local acceptedText = _G["QUEST_ACCEPTED_"..questID.."_POPUP_TEXT"];
+
+		if acceptedText then
+			StaticPopup_Show("QUEST_ACCEPTED", acceptedText);
+		end
 	end
 end
 

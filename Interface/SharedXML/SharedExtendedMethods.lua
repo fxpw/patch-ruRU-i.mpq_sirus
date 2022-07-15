@@ -4,7 +4,7 @@
 --	E-mail:		nyll@sirus.su
 --	Web:		https://sirus.su/
 
-local Texture, FontString, DressUpModel
+local Texture, FontString, DressUpModel, TabardModel
 local Frame = getmetatable(CreateFrame("Frame"))
 local Button = getmetatable(CreateFrame("Button"))
 local Slider = getmetatable(CreateFrame("Slider"))
@@ -20,6 +20,7 @@ EditBox = getmetatable(EditBox)
 
 if WorldFrame then
 	DressUpModel = getmetatable(CreateFrame("DressUpModel"))
+	TabardModel = getmetatable(CreateFrame("TabardModel"))
 end
 
 -- local Cooldown = getmetatable(CreateFrame("Cooldown"))
@@ -203,24 +204,35 @@ local function Method_SmoothSetValue( self, value )
 end
 
 local function Method_SetUnit( self, unit, isCustomPosition, positionData )
+	local objectType = self:GetObjectType()
+
 	if isCustomPosition then
-		self:SetPosition(1, 1, 1)
+		if objectType == "TabardModel" then
+			self:SetPosition(0, 0, 0)
+		else
+			self:SetPosition(1, 1, 1)
+		end
 	end
 
 	self:__SetUnit(unit)
 
 	if isCustomPosition then
-		local unitSex = UnitSex("player") or 2
-		local _, unitRace = UnitRace("player")
-		local positionStorage = positionData or DRESSUPMODEL_CAMERA_POSITION
+		local unitSex = UnitSex(unit) or 2
+		local _, unitRace = UnitRace(unit)
+		local positionStorage = positionData or (objectType == "TabardModel" and TABARDMODEL_CAMERA_POSITION or DRESSUPMODEL_CAMERA_POSITION)
 		local data = positionStorage[string.format("%s%d", unitRace or "Human", unitSex)]
 
 		if data then
 			local positionX, positionY, positionZ = unpack(data)
+
 			self.positionX = positionX
 			self.positionY = positionY
 			self.positionZ = positionZ
 			self:SetPosition(positionX, positionY, positionZ)
+
+			if data[4] then
+				self:SetFacing(math.rad(data[4]))
+			end
 		end
 	end
 end
@@ -391,6 +403,17 @@ if DressUpModel then
 	function DressUpModel.__index:GetScaledRect() return Method_GetScaledRect(self) end
 	function DressUpModel.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
 	function DressUpModel.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
+end
+
+-- TabardModel
+if TabardModel then
+	TabardModel.__index.__SetUnit = TabardModel.__index.__SetUnit or TabardModel.__index.SetUnit
+	function TabardModel.__index:SetUnit( ... ) Method_SetUnit( self, ... ) end
+	function TabardModel.__index:SetParentArray( arrayName, element, setInSelf ) Method_SetParentArray( self, arrayName, element, setInSelf ) end
+	function TabardModel.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
+	function TabardModel.__index:GetScaledRect() return Method_GetScaledRect(self) end
+	function TabardModel.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
+	function TabardModel.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
 end
 
 -- Model

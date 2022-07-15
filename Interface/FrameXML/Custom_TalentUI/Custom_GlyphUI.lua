@@ -239,6 +239,14 @@ function GlyphFrameGlyph_OnUpdate (self, elapsed)
 		self.highlight:SetAlpha(0.0);
 		self.highlight.glow:Stop();
 	end
+
+	if self.hasCursor and SpellIsTargeting() then
+		if GlyphMatchesSocket(id) then
+			SetCursor("CAST_CURSOR")
+		else
+			SetCursor("CAST_ERROR_CURSOR")
+		end
+	end
 end
 
 function GlyphFrameGlyph_OnClick (self, button)
@@ -276,7 +284,7 @@ function GlyphFrameGlyph_OnEnter (self)
 	-- if ( self.background:IsShown() ) then
 	-- 	self.highlight:Show();
 	-- end
-	self.highlight:Show()
+	self.highlight:SetAlpha(1)
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 	GameTooltip:SetGlyph(self:GetID(), PlayerTalentFrame and PlayerTalentFrame.talentGroup);
 	GameTooltip:Show();
@@ -284,7 +292,7 @@ end
 
 function GlyphFrameGlyph_OnLeave (self)
 	self.hasCursor = nil;
-	self.highlight:Hide();
+	self.highlight:SetAlpha(0)
 	GameTooltip:Hide();
 end
 

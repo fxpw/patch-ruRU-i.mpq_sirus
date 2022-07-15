@@ -251,9 +251,9 @@ function ExtraActionButton_OnClick( self, button )
 	if spell then
 		local spellID = tonumber(spell)
 		if ( spellID) then
-			CastSpellByID(spellID, unit)
+			CastSpellByID(spellID)
 		elseif ( spell ) then
-			CastSpellByName(spell, unit)
+			CastSpellByName(spell)
 		end
 	else
 		local item = SecureButton_GetModifiedAttribute(self, "item", button)
@@ -262,7 +262,7 @@ function ExtraActionButton_OnClick( self, button )
 		if ( IsEquippableItem(name) and not IsEquippedItem(name) ) then
 			EquipItemByName(name)
 		else
-			SecureCmdUseItem(name, bag, slot, unit)
+			SecureCmdUseItem(name, bag, slot)
 		end
 	end
 end

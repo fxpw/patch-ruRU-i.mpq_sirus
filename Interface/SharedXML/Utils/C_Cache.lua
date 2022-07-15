@@ -57,7 +57,7 @@ end
 
 ---@param key string
 ---@param value string | table | boolean | number
----@param timeToLife number
+---@param timeToLife? number
 function C_CacheMixin:Set( key, value, timeToLife )
     self._cache[key] = {
         ttl = timeToLife and timeToLife + time() or 0,
@@ -66,8 +66,8 @@ function C_CacheMixin:Set( key, value, timeToLife )
 end
 
 ---@param key string
----@param value string | table | boolean | number
----@param timeToLife number
+---@param value? string | table | boolean | number
+---@param timeToLife? number
 function C_CacheMixin:Get( key, value, timeToLife )
     if (self._cache[key] and self._cache[key].ttl) and self._cache[key].ttl ~= 0 and self._cache[key].ttl < time() then
         self._cache[key] = nil

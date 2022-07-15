@@ -4355,9 +4355,6 @@
 												self:SetModelScale(0.5)
 												self:SetLight(1, 0, -0.67399996519089, -0.42799997329712, 0.5200001001358, 1, 0.70196080207825, 0.70196080207825, 0.70196080207825, 1, 1, 1, 0.80000007152557)
 											</OnShow>
-											<OnHide>
-												print("HIDE")
-											</OnHide>
 										</Scripts>
 									</PlayerModel>
 								</Frames>

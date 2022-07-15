@@ -581,7 +581,7 @@
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
-						<FontString name="$parentChannelName" inherits="GameFontNormalSmall" text="Channel Name" justifyH="LEFT">
+						<FontString name="$parentChannelName" inherits="GameFontNormalSmall" text="CHANNEL_CHANNEL_NAME" justifyH="LEFT">
 							<Anchors>
 								<Anchor point="TOPLEFT">
 									<Offset x="-115" y="20"/>

@@ -1256,16 +1256,12 @@ function HeadHuntingFactionFrameMixin:OnLoad()
         [PLAYER_FACTION_GROUP.Horde]    = "right",
         [PLAYER_FACTION_GROUP.Alliance] = "left",
         [PLAYER_FACTION_GROUP.Renegade] = "Renegade",
+		[PLAYER_FACTION_GROUP.Neutral] = "Neutral",
     }
 end
 
 function HeadHuntingFactionFrameMixin:SetFaction( factionID )
-    if self.factionIcons[factionID] then
-        self.FactionIcon:SetAtlas("objectivewidget-icon-"..self.factionIcons[factionID])
-    else
-        self.FactionIcon:SetTexture("Interface\\TARGETINGFRAME\\UI-PVP-FFA")
-        self.FactionIcon:SetTexCoord(0.046875, 0.578125, 0, 0.640625)
-    end
+	self.FactionIcon:SetAtlas("objectivewidget-icon-"..self.factionIcons[factionID])
 end
 
 HeadHuntingMoneyFrameMixin = {}
@@ -1774,16 +1770,24 @@ end
 function HeadHuntingSetRewardButtonMixin:OnClick()
     local numKills          = self.numKillsEditBox:GetNumber()
     local goldPerKill       = self.goldPerKillEditBox:GetNumber()
-    local selectedCategory  = self.setRewardFrame.mainFrame:GetSelectedCategory() - 1
+    local selectedCategory  = self.setRewardFrame.mainFrame:GetSelectedCategory()
     local selectedGUID      = self.setRewardFrame:GetSelectedGUID()
-    local name              = self.setRewardFrame:GetSelectedButton().stylishName
+
+    local name, confirmationText
+    if selectedCategory == E_HEADHUNTING_CATEGORY.REWARD_FOR_GUILD then
+        name = self.setRewardFrame:GetSelectedButton().name
+        confirmationText = HEADHUNTING_TOAST_CONTRACT_GUILD_CONFIRMATION_REQUEST
+    else
+        name = self.setRewardFrame:GetSelectedButton().stylishName
+        confirmationText = HEADHUNTING_TOAST_CONTRACT_CONFIRMATION_REQUEST
+    end
 
     if numKills == 0 or goldPerKill == 0 then
         return
     end
 
-    StaticPopup_Show("HEADHUNTING_SETREWARD_CONFIRMATION", string.format(HEADHUNTING_TOAST_CONTRACT_CONFIRMATION_REQUEST, goldPerKill, numKills, name), nil,
-        {self.setRewardFrame.mainFrame, string.format("%s,%s,%s,%s", selectedCategory, selectedGUID, numKills, goldPerKill)})
+    StaticPopup_Show("HEADHUNTING_SETREWARD_CONFIRMATION", string.format(confirmationText, (goldPerKill * numKills), numKills, name), nil,
+        {self.setRewardFrame.mainFrame, string.format("%s,%s,%s,%s", (selectedCategory - 1), selectedGUID, numKills, goldPerKill)})
 end
 
 function HeadHuntingSetRewardButtonMixin:SetButtonState( isDisabled )

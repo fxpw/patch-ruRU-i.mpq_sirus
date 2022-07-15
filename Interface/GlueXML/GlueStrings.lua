@@ -1120,7 +1120,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Sometimes you just don’t want to wait and want to start adventuring right away..."
 	},
 	["CHARACTER_SERVICES_BUYDESCRIPTION"] = {
-		ruRU = "Отличные новости! Наши гномские инженеры смогли изобрести машину времени и достать вас из будущего! Более того, мы можем это будущее отредактировать и научить вас всему чему вы хотите, прямо как в гоблиноматрице!\n\nВаш герой получит превосходную экипировку, обучится паре профессий и мигом достигнет 80-го уровня!",
+		ruRU = "Отличные новости! Наши гномские инженеры смогли изобрести машину времени и достать вас из будущего! Более того, мы можем это будущее отредактировать и научить вас всему чему вы хотите, прямо как в гоблиноматрице!\n\nВаш герой получит прекрасную экипировку, обучится паре профессий и мигом достигнет 80-го уровня!",
 		enGB = "Great news! Our Gnomish engineers were able to invent a time machine and bring your future self back in time! We can now even edit this future and teach you anything you want, just like in the Goblin Matrix!\n\nYour hero will receive excellent equipment, learn a couple of professions, and instantly reach level 80!"
 	},
 	["CHARACTER_SERVICES_BUYWARNING"] = {
@@ -4151,6 +4151,34 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Смена фракции приведет к сбросу всех принятых вами заданий, при этом их прогресс будет полностью утерян.\nВы уверены, что хотите сменить фракцию прямо сейчас?",
 		enGB = ""
 	},
+	["ALLIED_RACE_UNLOCKED"] = {
+		ruRU = "|cff00ff00Вы получили поддержку %s и имеете доступ к этой расе|r",
+		enGB = "",
+	},
+	["ALLIED_RACE_UNLOCKED_NIGHTBORNE"] = {
+		ruRU = "|cff00ff00Вы получили поддержку Ночнорожденных и имеете доступ к этой расе|r",
+		enGB = ""
+	},
+	["ALLIED_RACE_UNLOCKED_EREDAR"] = {
+		ruRU = "|cff00ff00Вы получили поддержку Эредаров и имеете доступ к этой расе|r",
+		enGB = ""
+	},
+	["ALLIED_RACE_UNLOCKED_ZANDALARITROLL"] = {
+		ruRU = "|cff00ff00Вы получили поддержку Зандалар и имеете доступ к этой расе|r",
+		enGB = ""
+	},
+	["ALLIED_RACE_UNLOCKED_VOIDELF"] = {
+		ruRU = "|cff00ff00Вы получили поддержку Эльфов Бездны и имеете доступ к этой расе|r",
+		enGB = ""
+	},
+	["ALLIED_RACE_UNLOCKED_DARKIRONDWARF"] = {
+		ruRU = "|cff00ff00Вы получили поддержку Дворфов Черного Железа и имеете доступ к этой расе|r",
+		enGB = ""
+	},
+	["ALLIED_RACE_UNLOCKED_LIGHTFORGED"] = {
+		ruRU = "|cff00ff00Вы получили поддержку Озаренных дренеев и имеете доступ к этой расе|r",
+		enGB = ""
+	},
 	["ALLIED_RACE_DISABLE_REASON_NIGHTBORNE"] = {
 		ruRU = "Чтобы получить возможность создания персонажа данной расы - добейтесь превознесения Дома Селентрис и выполните задание \"Цвет Ночи\".",
 		enGB = ""
@@ -4207,13 +4235,21 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Активно развивающийся игровой мир без системы категорий, очков усилений и других кастомных изменений. Перед нами стояла задача сохранить для Вас привычный баланс в PvP времён 3.3.5а с применением только лучших наработок, которые были оценены игроками по достоинству. Поэтапное PvE-освоение и полный набор PvP-атрибутов позволят Вам открыть для себя WoTLK по-новому.",
 		enGB = ""
 	},
+	["CONFIRM_PAID_SERVICE"] = {
+		ruRU = "Вы уверены, что завершили изменение персонажа |c%s%s|r?",
+		enGB = "Are you sure you are done changing your character |c%s%s|r?"
+	},
 	["CONFIRM_CHARACTER_CREATE"] = {
-		ruRU = "Вы уверены что хотите завершить создание персонажа |c%s%s|r?",
+		ruRU = "Вы уверены, что хотите завершить создание персонажа |c%s%s|r?",
 		enGB = ""
 	},
 	["CONFIRM_CHARACTER_CREATE_CUSTOMIZATION"] = {
-		ruRU = "Вы уверены что хотите завершить создание персонажа |c%s%s|r?\nНе забудьте выбрать внешность!",
+		ruRU = "\nНе забудьте выбрать внешность!",
 		enGB = ""
+	},
+	["RENEGADE"] = {
+		ruRU = "Ренегат",
+		enGB = "Renegade",
 	},
 	["NEUTRAL"] = {
 		ruRU = "Нейтрал",
@@ -4271,12 +4307,40 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Классовые способности",
 		enGB = "Class Traits",
 	},
-	["RACIAL_TRAITS_TOOLTIP"] = {
-		ruRU = "Расовые способности",
+	["RACIAL_TRAITS_ACTIVE_TOOLTIP"] = {
+		ruRU = "Активные способности",
 		enGB = "Racial Traits",
+	},
+	["RACIAL_TRAITS_PASSIVE_TOOLTIP"] = {
+		ruRU = "Пассивные способности",
+		enGB = "Passive"
 	},
 	["DECLENSION_EXAMPLE_PRE"] = {
 		ruRU = "прим. %s",
+		enGB = "",
+	},
+	["UNREAD_MAILS"] = {
+		ruRU = "Непрочитанных писем: %i",
+		enGB = "",
+	},
+	["CHARACTER_ITEM_LEVEL"] = {
+		ruRU = "Ур. предметов",
+		enGB = "",
+	},
+	["WORLD_PROXY_LOCATION_HEADER"] = {
+		ruRU = "Выберите свою локацию",
+		enGB = "",
+	},
+	["WORLD_PROXY_LOCATION"] = {
+		ruRU = "Выберите ваш регион",
+		enGB = "",
+	},
+	["WORLD_PROXY_LOCATION_TEXT"] = {
+		ruRU = "Вы выбрали |cffffd200%s|r и будете играть через специально настроенное соединение.\nВ случае если сервера будут недоступны, у вас увеличится количество разрывов соединений или будет слишком высокая задержка, то вы можете изменить локацию.",
+		enGB = "",
+	},
+	["WORLD_PROXY_LOCATION_HELP"] = {
+		ruRU = "Нажмите на одну из этих кнопок чтобы выбрать другое соединение",
 		enGB = "",
 	},
 	["CHARACTER_SELECT_CHARACTER_LIST"] = {
@@ -4924,7 +4988,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL1_DESC"] = {
-		ruRU = "Несмотря на потерю бессмертия, Ночные эльфы сохранили близость к природе, которая поддерживает их в час нужды. Применение целительных или наносящих урон способностей и заклинаний с шансом 20% восстановит 20 ед. силы рун, ярости, энергии или 10% от базового запаса маны (в зависимости от того, какой ресурс используется). Применяемая способность должна расходовать хотя бы один из ваших ресурсов, будь то мана, ярость, энергия, сила рун или руны.",
+		ruRU = "Несмотря на потерю бессмертия, Ночные эльфы сохранили близость к природе, которая поддерживает их в час нужды. Применение целительных или наносящих урон способностей и заклинаний с шансом 25% восстановит 6 ед. силы рун, ярости, энергии или 2% от базового запаса маны (в зависимости от того, какой ресурс используется). Применяемая способность должна расходовать хотя бы один из ваших ресурсов, будь то мана, ярость, энергия, сила рун или руны.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL2_DESC"] = {
@@ -5152,7 +5216,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL2_DESC"] = {
-		ruRU = "Бездна подпитывает вас в час нужды. Пока ваш показатель основного ресурса ниже 50%, раз в 2 сек. вы восстанавливаете 5 ед. ярости, 7 ед. энергии, 5 ед. силы рун, или 5% от базовой маны.",
+		ruRU = "Бездна подпитывает вас в час нужды. Пока ваш показатель основного ресурса ниже 50%, раз в 2 сек. вы восстанавливаете 3 ед. силы рун, ярости, энергии, или 2% от базовой маны.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL3_DESC"] = {
@@ -5264,11 +5328,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL5_DESC"] = {
-		ruRU = "Путы Света вяжут указанного вами противника, пытающего скрыться от неизбежного и праведного отмщения. Мгновенно снижает скорость передвижения противника на 95%. С каждой секундой к противнику возвращается 5% от обычной скорости передвижения. Время действия - 10 сек.",
+		ruRU = "Путы Света вяжут указанного вами противника, пытающего скрыться от неизбежного и праведного отмщения. Мгновенно снижает скорость передвижения противника на 95%. С каждой секундой к противнику возвращается 5% от обычной скорости передвижения. Время действия - 10 сек.\nПерезарядка: 90 сек.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL6_DESC"] = {
-		ruRU = "Свет беспощаден к своим врагам. Вы становитесь проводником его воли, поражая противника зарядом лучезарной энергии, нанося испепеляющий урон в размере 115% от силы атаки или 230% от силы заклинаний (в зависимости от того, какой показатель больше) и клеймите его, увеличивая получаемый им от вас урон на 6% сроком на 10 сек.",
+		ruRU = "Свет беспощаден к своим врагам. Вы становитесь проводником его воли, поражая противника зарядом лучезарной энергии, нанося испепеляющий урон в размере 115% от силы атаки или 230% от силы заклинаний (в зависимости от того, какой показатель больше) и клеймите его, увеличивая получаемый им от вас урон на 6% сроком на 10 сек.\nПерезарядка: 60 сек.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_ORC_DESC"] = {
@@ -5612,7 +5676,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL2_DESC"] = {
-		ruRU = "Многолетняя выучка и природная одаренность Ночнорожденных позволяют достичь вершин в магическом или воинском искусстве, с некоторой вероятностью восстанавливая 20% своего основного ресурса при начале боя, будь то мана, энергия, ярость или сила рун.",
+		ruRU = "Многолетняя выучка и природная одаренность Ночнорожденных позволяют достичь вершин в магическом или воинском искусстве, восстанавливая 9 ед. энергии, ярости, силы рун или 3% от базовой маны раз в 2 сек. в течение 60 сек. Срабатывает не чаще, чем раз в 180 сек.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL3_DESC"] = {
@@ -5680,7 +5744,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL6_DESC"] = {
-		ruRU = "Вы раскалываете \"Фрагмент души\", освобождая всю содержащуюся в нем мощь, усиливая себя на краткое время. Наносимый вами урон и эффективность исцеления повышаются на 5%, а получаемый урон снижается на 5%.\nПерезарядка: \"Не имеет времени перезарядки.\"",
+		ruRU = "Вы раскалываете \"Фрагмент души\", освобождая всю содержащуюся в нем мощь, усиливая себя на краткое время. Наносимый вами урон и эффективность исцеления повышаются на 4%, а получаемый урон снижается на 4%.\nПерезарядка: \"Не имеет времени перезарядки.\"",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_DESC"] = {
@@ -5728,11 +5792,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL5_DESC"] = {
-		ruRU = "Вы помещаете неуязвимый тотем в указанную точку в радиусе 20 м. Тотем оживает, превращаясь в сторожевого змея, который рассеивает эффекты скрытности и незаметности всех противников в радиусе 20 м. (в пределах поля зрения), а также обстреливает случайного из них сгустками пламени раз в 1 сек. (если тот не находится под действием некоторых эффектов контроля), нанося урон в размере 2% от вашего базового запаса здоровья. Время жизни тотема - 10 сек.",
+		ruRU = "Вы помещаете неуязвимый тотем в указанную точку в радиусе 20 м. Тотем оживает, превращаясь в сторожевого змея, который рассеивает эффекты скрытности и незаметности всех противников в радиусе 20 м. (в пределах поля зрения), а также обстреливает случайного из них сгустками пламени раз в 1 сек. (если тот не находится под действием некоторых эффектов контроля), нанося урон в размере 2% от вашего базового запаса здоровья. Время жизни тотема - 10 сек.\nПерезарядка: 120 сек.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL6_DESC"] = {
-		ruRU = "Вы пробуждаете скрытую силу чистой крови, унаследованную от множества поколений ваших предков. Вы восполняете 40% от максимального запаса здоровья за 10 сек., при этом ваша скорость атаки и произнесения заклинаний повышается на 10%, а модификатор критического урона и исцеления - на 12%.",
+		ruRU = "Вы пробуждаете скрытую силу чистой крови, унаследованную от множества поколений ваших предков. Вы восполняете 40% от максимального запаса здоровья за 10 сек., при этом ваша скорость атаки и произнесения заклинаний повышается на 10%, а модификатор критического урона и исцеления - на 12%.\nПерезарядка: 60 сек.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_PANDAREN_DESC"] = {
@@ -5945,8 +6009,8 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Spell_Misc_WarsongFocus|Increases your total Strength by 6%, your Stamina by 3%, and your expertise by 6.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_SPELL4_DESC_SHORT"] = {
-		ruRU = "Spell_Shadow_CallofBone|Вокруг рыцаря смерти начинают вращаться 3 кости. Каждая атака, нанесшая урон рыцарю смерти, уничтожает 1 кость. До тех пор, пока остается хотя бы одна кость, рыцарь смерти получает на 20% меньше урона и наносит на 2% больше урона всеми атаками, заклинаниями и способностями.",
-		enGB = "Spell_Shadow_CallofBone|The Death Knight is surrounded by 3 whirling bones. Each damaging attack that lands consumes 1 bone. While at least 1 bone remains, the Death Knight takes 20% less damage from all sources and deals 2% more damage with all attacks, spells and abilities.",
+		ruRU = "Ability_DeathKnight_BoneShield|Вокруг рыцаря смерти начинают вращаться 3 кости. Каждая атака, нанесшая урон рыцарю смерти, уничтожает 1 кость. До тех пор, пока остается хотя бы одна кость, рыцарь смерти получает на 20% меньше урона и наносит на 2% больше урона всеми атаками, заклинаниями и способностями.",
+		enGB = "Ability_DeathKnight_BoneShield|The Death Knight is surrounded by 3 whirling bones. Each damaging attack that lands consumes 1 bone. While at least 1 bone remains, the Death Knight takes 20% less damage from all sources and deals 2% more damage with all attacks, spells and abilities.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_SPELL5_DESC_SHORT"] = {
 		ruRU = "Spell_DeathKnight_BladedArmor|Погружает дружественную цель в кровожадное безумие на 30 сек. Цель впадает в исступление: наносимый ею физический урон увеличивается на 20%, но каждую секунду она теряет 1% от максимального запаса здоровья.",
@@ -6053,472 +6117,472 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Ability_Druid_ImprovedMoonkinForm|Shapeshift into Moonkin Form. While in this form the armor contribution from items is increased by 370%, damage taken while stunned is reduced by 15%, and all party and raid members within 100 yards have their spell critical chance increased by 5%. Single target spell critical strikes in this form have a chance to instantly regenerate 2% of your total mana. The Moonkin can not cast healing or resurrection spells while shapeshifted.",
 	},
 
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL1_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL_PASSIVE1_DESC_SHORT"] = {
 		ruRU = "inv_cape_battlepvps1_d_01_alliance|Сила, ловкость и интеллект повышены на 2%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "inv_sword_05|Меткость повышена на 1%, Мастерство - на 2 ед.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "ability_warrior_rallyingcry|Весь получаемый урон снижен на 2%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL4_DESC_SHORT"] = {
-		ruRU = "Spell_Shadow_Charm|Развеивает эффекты потери контроля контроля над персонажем (кроме Ужаса и Превращения)",
+	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "Spell_Shadow_Charm|Развеивает эффекты потери контроля контроля над персонажем (кроме Ужаса и Превращения)\nПерезарядка: 120 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL5_DESC_SHORT"] = {
-		ruRU = "ability_rogue_quickrecovery|Повышает наносимый урон и исцеление на 5%, а также снижает получаемый урон на 5% на 10 сек.",
+	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "ability_rogue_quickrecovery|Повышает наносимый урон и исцеление на 5%, а также снижает получаемый урон на 5% на 10 сек.\nПерезарядка: 30 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL1_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL_PASSIVE1_DESC_SHORT"] = {
 		ruRU = "achievement_dungeon_ulduarraid_irondwarf_01|Повышает скорость атаки и произнесения заклинаний участников группы на 1%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "spell_shaman_primalstrike|Модификатор критического урона и исцеления всех атак и заклинаний увеличен на 4%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "ability_golemthunderclap|Показатель блокирования увеличен на 15%, а вероятность блокирования - на 3%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL4_DESC_SHORT"] = {
-		ruRU = "warrior_talent_icon_avatar|Развеивает эффекты болезней, яда и кровотечения, предоставляет невосприимчивость к ним и оглушению, ошеломлению, параличу сроком на 3 сек.",
+	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "warrior_talent_icon_avatar|Развеивает эффекты болезней, яда и кровотечения, предоставляет невосприимчивость к ним и оглушению, ошеломлению, параличу сроком на 3 сек.\nПерезарядка: 120 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL5_DESC_SHORT"] = {
-		ruRU = "ability_hunter_harass|Повышает основные характеристики участников групы на 2% сроком на 10 сек.",
+	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "ability_hunter_harass|Повышает основные характеристики участников групы на 2% сроком на 10 сек.\nПерезарядка: 30 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL1_DESC_SHORT"] = {
-		ruRU = "ability_hunter_onewithnature|Применение способностей с шансом 20% восстановит вам небольшое количество затраченного ресурса.",
+	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL_PASSIVE1_DESC_SHORT"] = {
+		ruRU = "ability_hunter_onewithnature|Применение способностей с шансом 25% восстановит вам небольшое количество затраченного ресурса.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "spell_holy_elunesgrace|Скорость атаки и произнесения заклинаний увеличена на 2%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "spell_nature_spiritarmor|Вероятность уклонения увеличена на 3%, получаемый магический урон снижен на 1%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL4_DESC_SHORT"] = {
-		ruRU = "ability_vanish|Наделяет вас невидимостью. Действует до отмены или любого движения. По окончании действия снижает вероятность попадания по вам.",
+	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "ability_vanish|Наделяет вас невидимостью. Действует до отмены или любого движения. По окончании действия снижает вероятность попадания по вам.\nПерезарядка: 120 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL5_DESC_SHORT"] = {
-		ruRU = "spell_nature_moonglow|Благословляет цель, повышая вероятность критического удара и показатель сопротивления.",
+	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "spell_nature_moonglow|Благословляет цель, повышая вероятность критического удара и показатель сопротивления.\nПерезарядка: 30 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL1_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL_PASSIVE1_DESC_SHORT"] = {
 		ruRU = "inv_engineering_90_scope_blue|Повышает меткость участников группы на 1%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "inv_engineering_90_math|Увеличивает максимальный показатель используемого ресурса (мана, энергия, итд.)",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "inv_engineering_90_gizmo|Вероятность уклонения увеличена на 3%, а вероятность получения критического удара снижена на 2%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL4_DESC_SHORT"] = {
-		ruRU = "ability_rogue_sprint_blue|Развеивает обездвиживание и замедление, а также наделяет вас невосприимчивостью к ним и активации ловушек.",
+	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "ability_rogue_sprint_blue|Развеивает обездвиживание и замедление, а также наделяет вас невосприимчивостью к ним и активации ловушек.\nПерезарядка: 120 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL5_DESC_SHORT"] = {
-		ruRU = "spell_arcane_mindmastery|Гарантирует критический эффект следующей способности или заклинания, наносящего урон.",
+	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "spell_arcane_mindmastery|Гарантирует критический эффект следующей способности или заклинания, наносящего урон.\nПерезарядка: 20 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL1_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL_PASSIVE1_DESC_SHORT"] = {
 		ruRU = "spell_holy_healingfocus|Повышает показатель выносливости участников группы на 2%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "inv_misc_book_17|Показатель интеллекта увеличен на 4%, а меткость в ближнем и дальнем бою - на 1%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "spell_holy_divinespirit|Получаемый магический урон снижен на 2%, физический - на 1%, а длительность страха и оглушения сокращена на 10%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL4_DESC_SHORT"] = {
-		ruRU = "spell_holy_holyprotection|Восполняет цели 25% от максимального запаса здоровья за 10 сек.",
+	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "spell_holy_holyprotection|Восполняет цели 25% от максимального запаса здоровья за 10 сек.\nПерезарядка: 120 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL5_DESC_SHORT"] = {
-		ruRU = "ability_paladin_savedbythelight|Отмечает цель. При получении урона цель будет испускать волны света, исцеляющие союзников или наносящие урон врагом (в зависимости от того, друг цель или нет).",
+	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "ability_paladin_savedbythelight|Отмечает цель. При получении урона цель будет испускать волны света, исцеляющие союзников или наносящие урон врагом (в зависимости от того, друг цель или нет).\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL1_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL_PASSIVE1_DESC_SHORT"] = {
 		ruRU = "spell_hunter_lonewolf|Повышая показатель ловкости участников группы на 2%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "ability_druid_rake|Применяя способности, вы повышаете свою скорость атаки и произнесения заклинаний на 1% вплоть до 3% сроком на 10 сек.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "ability_hunter_longevity|Вероятность уклонения увеличена на 3%, а показатель брони - на 2%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL4_DESC_SHORT"] = {
-		ruRU = "ability_racial_darkflight|Ускоряет ваше перемещения на 50% сроком на 10 сек. Скорость перемещения не может быть снижена ниже 100%.",
+	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "ability_racial_darkflight|Ускоряет ваше перемещения на 50% сроком на 10 сек. Скорость перемещения не может быть снижена ниже 100%.\nПерезарядка: 90 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL5_DESC_SHORT"] = {
-		ruRU = "ability_druid_berserk|Повышает урон и эффективность исцеления, творимых членами группы на 1% сроком на 10 сек.",
+	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "ability_druid_berserk|Повышает урон и эффективность исцеления, творимых членами группы на 1% сроком на 10 сек.\nПерезарядка: 30 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL1_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL_PASSIVE1_DESC_SHORT"] = {
 		ruRU = "spell_holy_arcaneintellect|Повышает показатель интеллекта участников группы на 2%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "spell_arcane_arcanepotency|Меткость и вероятность критического эффекта повышены на 1%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "spell_arcane_invocation|Получаемый магический урон снижен на 2%. С вероятностью 2% вы отразите заклинание обратно в противника (если это возможно).",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL4_DESC_SHORT"] = {
-		ruRU = "spell_arcane_arcaneresilience|Наделяет вас невосприимчивостью к 1 следующему магическому эффекту потери контроля над персонажем, полученному в течении 2 сек.",
+	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "spell_arcane_arcaneresilience|Наделяет вас невосприимчивостью к 1 следующему магическому эффекту потери контроля над персонажем, полученному в течении 2 сек.\nПерезарядка: 90 сек",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL5_DESC_SHORT"] = {
-		ruRU = "spell_arcane_blast|Отмечает цель. Отмеченный противник получает на 7% больше урона от вас, а союзник - на 7% больше получаемого от вас исцеления.",
+	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "spell_arcane_blast|Отмечает цель. Отмеченный противник получает на 7% больше урона от вас, а союзник - на 7% больше получаемого от вас исцеления.\nПерезарядка: 30 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL1_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL_PASSIVE1_DESC_SHORT"] = {
 		ruRU = "inv_enchant_voidcrystal|Повышает максимальный показатель основного ресурса участников группы.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "spell_priest_voidshift|Восполняет ваш основной ресурс, пока его показатель находится на 50% или ниже.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "spell_shadow_twilight|Применяя способности, вы с некоторой вероятностью повысите свою силу атаки или силу заклинаний.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL4_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL_PASSIVE4_DESC_SHORT"] = {
 		ruRU = "spell_shadow_possession|Снижает скорость передвижения противников в радиусе 8 м. на 5%, их вероятность попадания - на 1%, а урон, наносимый их атаками ближнего боя - на 1%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL5_DESC_SHORT"] = {
-		ruRU = "ability_priest_voidentropy|Окутывает указанную область зоной Бездны. Любой противник, находящийся в этой зоне, будет замедлен, а союзник - ускорен.",
+	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "ability_priest_voidentropy|Окутывает указанную область зоной Бездны. Любой противник, находящийся в этой зоне, будет замедлен, а союзник - ускорен.\nПерезарядка: 90 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL6_DESC_SHORT"] = {
-		ruRU = "spell_priest_voidtendrils|Умение, снижающее время восстановления следующей произнесенной способности или заклинания на 7 сек.",
+	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "spell_priest_voidtendrils|Умение, снижающее время восстановления следующей произнесенной способности или заклинания на 7 сек.\nПерезарядка: 35 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL1_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL_PASSIVE1_DESC_SHORT"] = {
 		ruRU = "spell_fire_sealoffire|Повышает множитель критического эффекта участников группы на 2%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "spell_fire_rune|Длительность замедления, сковывания, ошеломления, оглушения, сна, изгнания, немоты и контроля над разумом сокращена на 10%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "inv_shoulder_leather_firelandsdruid_d_01|Множитель критического эффекта увеличен на 2%, а вероятность критического удара - на 1%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL4_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL_PASSIVE4_DESC_SHORT"] = {
 		ruRU = "ability_racial_fireblood|Показатель брони увеличен на 4%. Получение урона с некоторой вероятностью восстановите вам 2% от максимального запаса здоровья.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL5_DESC_SHORT"] = {
-		ruRU = "inv_hammer_unique_sulfuras|Бросок молота, оглушающий указанного противника на 3 сек.",
+	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "inv_hammer_unique_sulfuras|Бросок молота, оглушающий указанного противника на 3 сек.\nПерезарядка: 90 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL6_DESC_SHORT"] = {
-		ruRU = "ability_rhyolith_lavapool|Покрывает указанную область шлаком, повышая урон, получаемый от вас противниками и исцеление, получаемое от вас союзниками на 6%.",
+	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "ability_rhyolith_lavapool|Покрывает указанную область шлаком, повышая урон, получаемый от вас противниками и исцеление, получаемое от вас союзниками на 6%.\nПерезарядка: 30 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL1_DESC_SHORT"] = {
-		ruRU = "ability_racial_higherpurpose|Повышает показатель силы атаки и силы заклинаний участников группы на 1%.",
+	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL_PASSIVE1_DESC_SHORT"] = {
+		ruRU = "racial_highpurpose|Повышает показатель силы атаки и силы заклинаний участников группы на 1%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "ability_paladin_longarmofthelaw|При смерти исцеляет союзников в радиусе 20 м. и увеличивает получаемое ими исцеление.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "spell_holy_surgeoflight|Повышает наносимый урон и эффективность исцеления на 2%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL4_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL_PASSIVE4_DESC_SHORT"] = {
 		ruRU = "spell_holy_greaterblessingoflight|Получаемый магический урон снижен на 1%. Падение уровня здоровья вызывает щит, снижающий получаемый урон.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL5_DESC_SHORT"] = {
-		ruRU = "ability_paladin_blindinglight|Снижает скорость передвижения указанного противника на 95%, после чего тот медленно восстанавливает скорость за 10 сек.",
+	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "ability_paladin_blindinglight|Снижает скорость передвижения указанного противника на 95%, после чего тот медленно восстанавливает скорость за 10 сек.\nПерезарядка: 90 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL6_DESC_SHORT"] = {
-		ruRU = "ability_paladin_infusionoflight|Наносит испепеляющий урон цели, зависящий от вашей силы атаки или силы заклинаний, и повышает получаемый ею от вас урон.",
+	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "ability_paladin_infusionoflight|Наносит испепеляющий урон цели, зависящий от вашей силы атаки или силы заклинаний, и повышает получаемый ею от вас урон.\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL1_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL_PASSIVE1_DESC_SHORT"] = {
 		ruRU = "ui_horde_honorboundmedal|Повышает показатель силы участников группы на 2%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "ability_warrior_strengthofarms|Множитель критического эффекта всех атак, способностей и заклинаний увеличен на 2%, а мастерство - на 2 ед.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "warrior_talent_icon_innerrage|Показатель блокирования увеличен на 20%, а вероятность парирования - на 2%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL4_DESC_SHORT"] = {
-		ruRU = "ability_warrior_improveddisciplines|Предоставляет вам временную невосприимчивость к замедлению и сковыванию.",
+	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "ability_warrior_improveddisciplines|Предоставляет вам временную невосприимчивость к замедлению и сковыванию.\nПерезарядка: 120 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL5_DESC_SHORT"] = {
-		ruRU = "ability_warrior_endlessrage|Временно повышает модификатор критического урона и исцеления на 25%.",
+	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "ability_warrior_endlessrage|Временно повышает модификатор критического урона и исцеления на 25%.\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL1_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL_PASSIVE1_DESC_SHORT"] = {
 		ruRU = "spell_necro_deathall|Применяя способности вы с некоторой вероятностью увеличите силу атаки или силу заклинаний на 1% вплоть до 3%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "spell_shadow_skull|Показатель духа увеличен на 4%, а меткость в ближнем и дальнем бою - на 1%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "inv_gauntlets_09|Пока ваш уровень здоровья находится на отметке 50% или ниже, вы получаете на 4% меньше урона.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL4_DESC_SHORT"] = {
-		ruRU = "spell_shadow_animatedead|Развеивает любые эффекты контроля над разумом, страха, ужаса, ошеломления и паралича.",
+	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "spell_shadow_animatedead|Развеивает любые эффекты контроля над разумом, страха, ужаса, ошеломления и паралича.\nПерезарядка: 120 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL5_DESC_SHORT"] = {
-		ruRU = "spell_shadow_fingerofdeath|Наносит периодический урон цели, восстанавливая вам здоровье в том же объеме.",
+	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "spell_shadow_fingerofdeath|Наносит периодический урон цели, восстанавливая вам здоровье в том же объеме.\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL1_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL_PASSIVE1_DESC_SHORT"] = {
 		ruRU = "ability_druid_giftoftheearthmother|Снижает физический урон, получаемый участниками группы на 1%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "spell_shaman_unleashweapon_wind|Показатель силы увеличен на 2%, а вероятность критического эффекта заклинаний - на 1%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "inv_misc_tournaments_symbol_tauren|Показатель выносливости увеличен на 4%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL4_DESC_SHORT"] = {
-		ruRU = "ability_warstomp|Вы оглушаете всех противников в радиусе 8 м. на 2 сек.",
+	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "ability_warstomp|Вы оглушаете всех противников в радиусе 8 м. на 2 сек.\nПерезарядка: 90 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL5_DESC_SHORT"] = {
-		ruRU = "ability_bullrush|Прерывает произносимые целью заклинания и повышает весь получаемый ею урон.",
+	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "ability_bullrush|Прерывает произносимые целью заклинания и повышает весь получаемый ею урон.\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL1_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL_PASSIVE1_DESC_SHORT"] = {
 		ruRU = "shaman_talent_unleashedfury|Повышает показатель духа участников группы на 2%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "spell_nature_bloodlust|Применение способностей с некоторой вероятностью повысит шанс нанести критический удар на 1% вплоть до 3%, сроком на 10 сек.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "spell_nature_regenerate|Повышает эффективность получаемого вами исцеления и периодически восстанавливает ваше здоровье.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL4_DESC_SHORT"] = {
-		ruRU = "racial_troll_berserk|Предоставляет невосприимчивость к эффектам ослепления, страха, ужаса и контроля над разумом,, а также повышает скорость перемещения на 20%.",
+	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "racial_troll_berserk|Предоставляет невосприимчивость к эффектам ослепления, страха, ужаса и контроля над разумом,, а также повышает скорость перемещения на 20%.\nПерезарядка: 120 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL5_DESC_SHORT"] = {
-		ruRU = "inv_hand_1h_trollshaman_c_01|Повышает скорость ваших атак и заклинаний на 20% сроком на 10 сек.",
+	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "inv_hand_1h_trollshaman_c_01|Повышает скорость ваших атак и заклинаний на 20% сроком на 10 сек.\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL1_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL_PASSIVE1_DESC_SHORT"] = {
 		ruRU = "ability_siege_engineer_pattern_recognition|Скорость атаки и произнесения заклинаний, а также вероятность критического удара увеличены на 1%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "ability_siege_engineer_protective_frenzy|Применение способностей с некоторой вероятностью повышает модификатор критического эффекта на 2% вплоть до 6%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "achievement_guildperk_ladyluck_rank2|Вероятность уклонения увеличена на 3%, а вероятность попадания по вам снижена на 1%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL4_DESC_SHORT"] = {
-		ruRU = "ability_racial_rocketjump|Развеивает эффекты сковывания, замедления и позволяет вам совершить реактивный прыжок вперед.",
+	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "ability_racial_rocketjump|Развеивает эффекты сковывания, замедления и позволяет вам совершить реактивный прыжок вперед.\nПерезарядка: 90 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL5_DESC_SHORT"] = {
-		ruRU = "ability_racial_rocketbarrage|Запускает в цель ракету, наносящую урон противнику или исцеляющую союзника.",
+	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "ability_racial_rocketbarrage|Запускает в цель ракету, наносящую урон противнику или исцеляющую союзника.\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL1_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL_PASSIVE1_DESC_SHORT"] = {
 		ruRU = "inv_misc_nagamale|Снижает магический урон, получаемый участниками группы, на 1%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "spell_frost_summonwaterelemental|Показатель силы атаки или силы заклинаний повышен на 2%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "spell_naga_armor_racial|Показатель брони увеличен на 5%, получаемый физический урон снижен на 1%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL4_DESC_SHORT"] = {
-		ruRU = "spell_naga_weapon_racial|Предоставляет невосприимчивость к эффектам немоты, прерывания, а также обезоруживания.",
+	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "spell_naga_weapon_racial|Предоставляет невосприимчивость к эффектам немоты, прерывания, а также обезоруживания.\nПерезарядка: 120 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL5_DESC_SHORT"] = {
-		ruRU = "inv_elemental_crystal_water|Повышает показатель основных характеристик отмеченной цели на 10%.",
+	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "inv_elemental_crystal_water|Повышает показатель основных характеристик отмеченной цели на 10%.\nПерезарядка: 30 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL1_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL_PASSIVE1_DESC_SHORT"] = {
 		ruRU = "inv_misc_tournaments_banner_bloodelf|Повышает вероятность критического удара участников группы на 1%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "sha_ability_rogue_bloodyeye_nightmare|Меткость и скорость атак и произнесения заклинаний - на 1%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "spell_shadow_antimagicshell|Получаемый магический урон снижен на 4%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL4_DESC_SHORT"] = {
-		ruRU = "spell_shadow_teleport|Вызывает немоту у всех противников в радиусе 8 м. на 3 сек. и восстанавливаете небольшой процент основного ресурса.",
+	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "spell_shadow_teleport|Вызывает немоту у всех противников в радиусе 8 м. на 3 сек. и восстанавливаете небольшой процент основного ресурса.\nПерезарядка: 90 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL5_DESC_SHORT"] = {
-		ruRU = "inv_misc_gem_bloodstone_01|Повышает вероятность критического удара на 20%.",
+	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "inv_misc_gem_bloodstone_01|Повышает вероятность критического удара на 20%.\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL1_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_PASSIVE1_DESC_SHORT"] = {
 		ruRU = "sha_spell_warlock_demonsoul_nightborne|Повышает максимальный показатель основного ресурса участников группы.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL2_DESC_SHORT"] = {
-		ruRU = "sha_ability_rogue_sturdyrecuperate_nightborne|С некоторой вероятностью восстанавливает 20% вашего основного ресурса при начале боя.",
+	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_PASSIVE2_DESC_SHORT"] = {
+		ruRU = "sha_ability_rogue_sturdyrecuperate_nightborne|Вступая в бой, вы восстанавливаете 9 ед. энергии, ярости, силы рун или 3% от базовой маны раз в 2 сек. в течение 60 сек.\nСрабатывает не чаще, чем раз в 180 сек.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "spell_mage_supernova_nightborne|Позволяет вам игнорировать 2% от показателя брони противника, а также с некоторой вероятностью снижать его показатель сопротивления.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL4_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_PASSIVE4_DESC_SHORT"] = {
 		ruRU = "spell_arcane_prismaticcloak|Показатель брони увеличен на 3%, а получаемый магический урон снижен на 1%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL5_DESC_SHORT"] = {
-		ruRU = "spell_arcane_arcane01_nightborne|Увеличивает время перезарядки следующей примененной способности, примененной противником, на 10 сек.",
+	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "spell_arcane_arcane01_nightborne|Увеличивает время перезарядки следующей примененной способности, примененной противником, на 10 сек.\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL6_DESC_SHORT"] = {
-		ruRU = "sha_ability_rogue_bloodyeye_nightborne|Предоставляет невосприимчивость к эффектам прерывания и немоты, а также снижает расход основного ресурса.",
+	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "sha_ability_rogue_bloodyeye_nightborne|Предоставляет невосприимчивость к эффектам прерывания и немоты, а также снижает расход основного ресурса.\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL1_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL_PASSIVE1_DESC_SHORT"] = {
 		ruRU = "ability_bloodmage_drain|Повышает множитель критического эффекта участников группы на 2%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "passive_eredar_gift|При смерти вы наносите ближайшим противникам урон от огня и повышаете наносимый участниками группы урон на 5% сроком на 10 сек.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "ability_bloodmage_hotstreak_red|Одержание победы над противником предоставляет вам \"Фрагмент души\", повышающий урон и исцеление на 2%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL4_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL_PASSIVE4_DESC_SHORT"] = {
 		ruRU = "passive_demonskin_racial|Повышает сопротивление магии. Также увеличивает показатель брони на 2%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL5_DESC_SHORT"] = {
-		ruRU = "spell_warlock_demonicportal_green|Перемещает вас в указанную точку на расстоянии 20 м.",
+	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "spell_warlock_demonicportal_green|Перемещает вас в указанную точку на расстоянии 20 м.\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL6_DESC_SHORT"] = {
-		ruRU = "spell_bloodmage_soulgem|Расходует \"Фрагмент души\", повышая наносимый урон и исцеление на 5% сроком на 20 сек.",
+	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "spell_bloodmage_soulgem|Расходует \"Фрагмент души\", повышая наносимый урон и исцеление на 4% и понижая получаемый урон на 4% сроком на 20 сек.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL1_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL_PASSIVE1_DESC_SHORT"] = {
 		ruRU = "ability_racial_wardoftheloa|Повышает показатели силы атаки и силы заклинаний участников группы на 1%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "ability_racial_embracetheloa|Зандалары верны традициям, и лоа - неотъемлимая часть их жизни. Обращаясь к тому лоа, с которым вы заключили контракт, вы получаете его опеку и поддержку.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "ability_racial_zandalariempire|Повышает модификатор критического урона и исцеления на 4%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL4_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL_PASSIVE4_DESC_SHORT"] = {
 		ruRU = "spell_nature_bloodlust|Увеличивает получаемое исцеление на 5%, а вероятность уклонения - на 2%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL5_DESC_SHORT"] = {
-		ruRU = "ability_zandalari_serpentguard|Помещает в указанную область тотем-змею, которая обнаруживает невидимость и периодически наносит урон противникам в радиусе 20 м.",
+	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "ability_zandalari_serpentguard|Помещает в указанную область тотем-змею, которая обнаруживает невидимость и периодически наносит урон противникам в радиусе 20 м.\nПерезарядка: 120 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL6_DESC_SHORT"] = {
-		ruRU = "Ability_racial_regeneratin|Восполняет 40% запаса здоровья за 10 сек., увеличивает скорость атаки и произнесения на 10%, а модификатор критического эффекта - на 12%.",
+	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "Ability_racial_regeneratin|Восполняет 40% запаса здоровья за 10 сек., увеличивает скорость атаки и произнесения на 10%, а модификатор критического эффекта - на 12%.\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL1_DESC_SHORT"] = {
-		ruRU = "ability_monk_domeofmist|Скорость произнесения заклинаний увеличена на 2%, а мастерство - на 2 ед.",
+	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL_PASSIVE1_DESC_SHORT"] = {
+		ruRU = "ability_monk_domeofmist|Скорость атаки и произнесения заклинаний увеличена на 2%, а мастерство - на 2 ед.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "ability_monk_drunkenhaze|Наносимый вами урон и исцеление усиливаются в зависимости от степени вашего опьянения.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "monk_ability_avertharm|Получаемый физический урон снижен на 4%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL4_DESC_SHORT"] = {
-		ruRU = "ability_monk_paralysis|Парализует противника на 1 минуту (или на 5 сек., если целью является игрок). Эффект паралича будет развеян, если цель получит урон.",
+	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "ability_monk_paralysis|Парализует противника на 1 минуту (или на 5 сек., если целью является игрок). Эффект паралича будет развеян, если цель получит урон.\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL5_DESC_SHORT"] = {
-		ruRU = "ability_monk_sparring|Усиливает следующие 5 ваших атак, нанося дополнительный урон способностью \"Искусный удар\"",
+	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "ability_monk_sparring|Усиливает следующие 5 ваших атак, нанося дополнительный урон способностью \"Искусный удар\"\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL6_DESC_SHORT"] = {
-		ruRU = "ability_monk_effuse|Запускает 5 стрел энергии Ци в указанного противника за 2 сек. Можно применять во время передвижения.",
+	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL_ACTIVE3_DESC_SHORT"] = {
+		ruRU = "ability_monk_effuse|Запускает 5 стрел энергии Ци в указанного противника за 2 сек. Можно применять во время передвижения.\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL1_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL_PASSIVE1_DESC_SHORT"] = {
 		ruRU = "inv_inscription_80_contract_vulpera|Модификатор критического исцеления увеличен на 6%, а расходы маны на исцеляющие заклинания - снижены на 2%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL2_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL_PASSIVE2_DESC_SHORT"] = {
 		ruRU = "spell_sandelemental|Снижает получаемый вами физический или магический урон, при этом повышая наносимый урон того же типа.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL3_DESC_SHORT"] = {
+	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL_PASSIVE3_DESC_SHORT"] = {
 		ruRU = "ability_priest_phantasm|Снижает вероятность обнаружения во время незаметности и снижает получаемый периодический урон на 5%.",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL4_DESC_SHORT"] = {
-		ruRU = "spell_sandbolt|Опутывает цель на короткое время. Если эффект не будет развеян - то дополнительно оглушает цель.",
+	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "spell_sandbolt|Опутывает цель на короткое время. Если эффект не будет развеян - то дополнительно оглушает цель.\nПерезарядка: 90 секунд",
 		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL5_DESC_SHORT"] = {
-		ruRU = "spell_quicksand|Создает руну в позиции персонажа, повышающую наносимый вами урон и исцеление на 6%, пока вы находитесь на расстоянии не более чем 10 м. от неё",
+	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "spell_quicksand|Создает руну в позиции персонажа, повышающую наносимый вами урон и исцеление на 6%, пока вы находитесь на расстоянии не более чем 10 м. от неё\nПерезарядка: 30 сек",
 		enGB = "",
 	},
 }

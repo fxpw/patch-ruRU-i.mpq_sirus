@@ -65,7 +65,7 @@ function Hook:FireEvent(events, ...)
 						return unpack(args)
 					end
 				else
-					_ERRORMESSAGE(args[2])
+					geterrorhandler()(args[2])
 					return
 				end
 			end
@@ -84,7 +84,7 @@ function Hook:FireEvent(events, ...)
 							return unpack(args)
 						end
 					else
-						_ERRORMESSAGE(args[2])
+						geterrorhandler()(args[2])
 						return
 					end
 				end

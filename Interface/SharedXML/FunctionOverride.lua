@@ -249,26 +249,25 @@ end
 
 local _SecureCmdOptionParse = _SecureCmdOptionParse or SecureCmdOptionParse
 
+local fixSpecIDs = function(specStr)
+	for specID in string.gmatch(specStr, "(%d+)") do
+		if C_Talent.GetActiveTalentGroup() == tonumber(specID) then
+			return "spec:1"
+		end
+	end
+	return "spec:0"
+end
+
 ---@param options string
 ---@return string value
-function SecureCmdOptionParse( options )
-    local specID = options:match("spec:(%d+)")
+function SecureCmdOptionParse(options)
+	local specs = options:match("spec:([^,%]]+)")
 
-    if specID then
-        specID = tonumber(specID)
-
-        if C_Talent.GetSelectedTalentGroup() == specID then
-            return _SecureCmdOptionParse(options:gsub("spec:(%d+)", ""))
-        else
-            local lastOptions = options:match(";(.*)")
-
-            if lastOptions and lastOptions ~= "" then
-                return string.TrimLeft(lastOptions, " ")
-            end
-        end
-    else
-        return _SecureCmdOptionParse(options)
-    end
+	if specs then
+		return _SecureCmdOptionParse(options:gsub("spec:([^,%]]+)", fixSpecIDs))
+	else
+		return _SecureCmdOptionParse(options)
+	end
 end
 
 local _FillLocalizedClassList = _FillLocalizedClassList or FillLocalizedClassList
@@ -462,4 +461,54 @@ function GetInstanceDifficulty()
 		end
 	end
 	return difficulty;
+end
+
+local customAddons = {
+	Blizzard_BattlefieldMinimap = true,
+	Blizzard_Calendar = true,
+	Blizzard_GlyphUI = true,
+	Blizzard_InspectUI = true,
+	Blizzard_ItemSocketingUI = true,
+	Blizzard_MacroUI = true,
+	Blizzard_TalentUI = true,
+	Blizzard_TimeManager = true,
+	Blizzard_TokenUI = true,
+	Blizzard_TradeSkillUI = true,
+	Blizzard_TrainerUI = true,
+}
+
+local isCustomAddon = function(addon)
+	if type(addon) == "number" then
+		local addonName = GetAddOnInfo(addon)
+		return customAddons[addonName]
+	elseif type(addon) == "string" then
+		return customAddons[addon]
+	end
+end
+
+local LoadAddOn = LoadAddOn
+_G.LoadAddOn = function(addon)
+	if isCustomAddon(addon) then
+		return true, nil
+	end
+
+	return LoadAddOn(addon)
+end
+
+local IsAddOnLoaded = IsAddOnLoaded
+_G.IsAddOnLoaded = function(addon)
+	if isCustomAddon(addon) then
+		return true
+	end
+
+	return IsAddOnLoaded(addon)
+end
+
+local IsAddOnLoadOnDemand = IsAddOnLoadOnDemand
+_G.IsAddOnLoadOnDemand = function(addon)
+	if isCustomAddon(addon) then
+		return nil
+	end
+
+	return IsAddOnLoadOnDemand(addon)
 end

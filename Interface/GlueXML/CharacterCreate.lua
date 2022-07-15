@@ -63,7 +63,8 @@ local PAID_SERVICE_ORIGINAL_RACE = {
 local CAMERA_ZOOM_LEVEL_AMOUNT = 80
 
 local TOOLTIP_MAX_CLASS_ABLILITIES = 5
-local TOOLTIP_MAX_RACE_ABLILITIES = 7
+local TOOLTIP_MAX_RACE_ABLILITIES_PASSIVE = 4
+local TOOLTIP_MAX_RACE_ABLILITIES_ACTIVE = 3
 local TOOLTIPS_EXPANDED = false
 
 CharacterCreateMixin = CreateFromMixins(CharacterModelMixin)
@@ -367,6 +368,7 @@ function CharacterCreateMixin:CreateRaceButtons()
 		button.data = data
 
 		if C_CharacterCreation.IsAlliedRace(data.raceID) then
+			button.alliedRace = true
 			button.AlliedBorder1:Show()
 			button.AlliedBorder1.Anim.Rotation:SetDegrees((index % 2 == 0) and -360 or 360)
 			button.AlliedBorder1.Anim:Play()
@@ -374,6 +376,7 @@ function CharacterCreateMixin:CreateRaceButtons()
 			button.AlliedBorder2.Anim:Play()
 			button.AlliedBorder2.Pulse:Play()
 		else
+			button.alliedRace = nil
 			button.AlliedBorder1.Anim:Stop()
 			button.AlliedBorder1:Hide()
 			button.AlliedBorder2.Anim:Stop()
@@ -492,7 +495,7 @@ function CharacterCreateRaceButtonMixin:OnMouseUp(button)
 	self.ArtFrame:SetPoint("BOTTOMRIGHT", 0, 0)
 
 	if button == "LeftButton" then
-		if self:IsEnabled() == 1 then
+		if self:IsEnabled() == 1 or self.alliedRaceLocked then
 			PlaySound("gsCharacterCreationClass")
 
 			local isSet = C_CharacterCreation.SetSelectedRace(self.index)
@@ -507,6 +510,11 @@ function CharacterCreateRaceButtonMixin:OnMouseUp(button)
 			self.mainFrame:UpdateBackground()
 			self.mainFrame.CustomizationFrame:UpdateCustomizationButtonFrame(true)
 			self.mainFrame.skipCustomizationConfirmation = self.mainFrame.CustomizationFrame:IsShown()
+
+			local enabled = self:IsEnabled() == 1
+			self.mainFrame.NavigationFrame.CreateButton:SetEnabled(enabled)
+			self.mainFrame.NavigationFrame.CreateNameEditBox:SetShown(enabled)
+			self.mainFrame.NavigationFrame.RandomNameButton:SetShown(enabled)
 		end
 	elseif button == "RightButton" and self:IsMouseOver() and self.tooltip then
 		TOOLTIPS_EXPANDED = not TOOLTIPS_EXPANDED
@@ -565,7 +573,6 @@ end
 
 function CharacterCreateRaceButtonMixin:OnDisable()
 	self.FactionBorder:SetDesaturated(true)
-	self.ArtFrame.CheckedTexture:SetDesaturated(true)
 	self.ArtFrame.HighlightTexture:SetDesaturated(true)
 	self.ArtFrame.Border2:SetDesaturated(true)
 	self.ArtFrame.Border3:SetDesaturated(true)
@@ -575,7 +582,6 @@ end
 
 function CharacterCreateRaceButtonMixin:OnEnable()
 	self.FactionBorder:SetDesaturated(false)
-	self.ArtFrame.CheckedTexture:SetDesaturated(false)
 	self.ArtFrame.HighlightTexture:SetDesaturated(false)
 	self.ArtFrame.Border2:SetDesaturated(false)
 	self.ArtFrame.Border3:SetDesaturated(false)
@@ -611,6 +617,7 @@ function CharacterCreateRaceButtonMixin:UpdateButton()
 	self.index = clientData.index
 
 	local allow = false
+	local alliedRaceLocked
 
 	if PAID_SERVICE_TYPE then
 		local faction = C_CharacterCreation.PaidChange_GetCurrentFaction()
@@ -630,8 +637,11 @@ function CharacterCreateRaceButtonMixin:UpdateButton()
 
 	if allow and C_CharacterCreation.IsAlliedRace(self.index) and not C_CharacterCreation.IsAlliedRacesUnlocked(self.index) then
 		allow = false
+		alliedRaceLocked = true
 	end
 
+	self.alliedRaceGMAllowed = not C_CharacterCreation.IsAlliedRacesUnlockedRaw(self.index)
+	self.alliedRaceLocked = alliedRaceLocked
 	self:SetEnabled(allow)
 
 	self:SetChecked(C_CharacterCreation.GetSelectedRace() == self.index)
@@ -1128,13 +1138,23 @@ function CharCreateRaceButtonTemplate_OnEnter(self)
 	if not self.data then return end
 
 	local factionID = self.data.factionID
-	assert(PLAYER_FACTION_GROUP[factionID], "CharCreateRaceButtonTemplate_OnEnter: Не найдена фракция по ключу "..factionID)
+	if not factionID or not PLAYER_FACTION_GROUP[factionID] then
+		error(string.format("CharCreateRaceButtonTemplate_OnEnter: Unknown faction (%i, %i, %i)", self.index, factionID or -1, PAID_SERVICE_TYPE or -1), 1)
+	end
 
 	local factionColor = PLAYER_FACTION_COLORS[factionID] or CreateColor(1, 1, 1)
 	local raceFileString = string.upper(self.data.clientFileString)
 
 	local tooltip = GlueRaceTooltip
-	local alliedRaceText = self.alliedRaceDisabled and _G["ALLIED_RACE_DISABLE_REASON_"..raceFileString]
+	local alliedRaceText
+
+	if self.alliedRace then
+		if self.alliedRaceDisabled or self.alliedRaceGMAllowed then
+			alliedRaceText = _G[string.format("ALLIED_RACE_DISABLE_REASON_%s", raceFileString)]
+		else
+			alliedRaceText = _G[string.format("ALLIED_RACE_UNLOCKED_%s", raceFileString)] or string.format(_G["ALLIED_RACE_UNLOCKED"], self.data.name)
+		end
+	end
 
 	tooltip:Hide()
 	tooltip:SetBackdropBorderColor(factionColor.r, factionColor.g, factionColor.b)
@@ -1154,9 +1174,21 @@ function CharCreateRaceButtonTemplate_OnEnter(self)
 
 	if TOOLTIPS_EXPANDED then
 		local abilities = {}
+		local abilitiesPassive = {}
 
-		for abilityIndex = 1, TOOLTIP_MAX_RACE_ABLILITIES do
-			local ability = _G[string.format("CHARACTER_CREATE_INFO_RACE_%s_SPELL%i_DESC_SHORT", raceFileString, abilityIndex)]
+		for abilityIndex = 1, TOOLTIP_MAX_RACE_ABLILITIES_PASSIVE do
+			local ability = _G[string.format("CHARACTER_CREATE_INFO_RACE_%s_SPELL_PASSIVE%i_DESC_SHORT", raceFileString, abilityIndex)]
+			if ability then
+				local icon, desc = string.match(ability, "([^|]*)|(.+)")
+				abilitiesPassive[#abilitiesPassive + 1] = {
+					icon = string.format("Interface/Icons/%s", icon or "INV_Misc_QuestionMark"),
+					description = desc,
+				}
+			end
+		end
+
+		for abilityIndex = 1, TOOLTIP_MAX_RACE_ABLILITIES_ACTIVE do
+			local ability = _G[string.format("CHARACTER_CREATE_INFO_RACE_%s_SPELL_ACTIVE%i_DESC_SHORT", raceFileString, abilityIndex)]
 			if ability then
 				local icon, desc = string.match(ability, "([^|]*)|(.+)")
 				abilities[#abilities + 1] = {
@@ -1166,14 +1198,17 @@ function CharCreateRaceButtonTemplate_OnEnter(self)
 			end
 		end
 
+		tooltip.PassiveList:SetupAbilties(abilitiesPassive)
+		tooltip.PassiveList:Show()
 		tooltip.AbilityList:SetupAbilties(abilities)
 		tooltip.AbilityList:Show()
 
 		tooltip.ClickInfo:SetText(RIGHT_CLICK_FOR_LESS)
 		tooltip.ClickInfo:SetPoint("TOPLEFT", alliedRaceText and tooltip.Warning or tooltip.AbilityList, "BOTTOMLEFT", 0, -15)
 
-		tooltipHeight = tooltipHeight + tooltip.AbilityList:GetHeight() + tooltip.ClickInfo:GetHeight() + 20
+		tooltipHeight = tooltipHeight + tooltip.PassiveList:GetHeight() + 15 + tooltip.AbilityList:GetHeight() + tooltip.ClickInfo:GetHeight() + 20
 	else
+		tooltip.PassiveList:Hide()
 		tooltip.AbilityList:Hide()
 		tooltip.ClickInfo:SetText(RIGHT_CLICK_FOR_MORE)
 		tooltip.ClickInfo:SetPoint("TOPLEFT", alliedRaceText and tooltip.Warning or tooltip.Description, "BOTTOMLEFT", 0, -15)

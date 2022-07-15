@@ -77,13 +77,6 @@ function InspectFrame_UnitChanged(self)
 
 	InspectSwitchTabs(1)
 	SendServerMessage("ACMSG_BG_STATS_REQUEST", UnitGUID(self.unit))
-
-	if self.UpdateTimer then
-		self.UpdateTimer:Cancel()
-		self.UpdateTimer = nil
-	end
-
-	self.UpdateTimer = C_Timer:NewTicker(0.1, InspectPaperDollFrame_UpdateButtons, 5)
 end
 
 function InspectFrame_OnShow(self)
@@ -123,22 +116,30 @@ function InspectFrame_OnHide(self)
 end
 
 function InspectPaperDollFrame_OnLoad( self )
+	self.equipmentItemsList = {}
+
+	self:RegisterEvent("UNIT_INVENTORY_CHANGED")
 	self:RegisterEvent("UNIT_MODEL_CHANGED")
 	self:RegisterEvent("UNIT_LEVEL")
 end
 
 function InspectPaperDollFrame_OnEvent(self, event, unit)
-	if (InspectFrame:IsShown()) then
-		if ( unit and unit == InspectFrame.unit ) then
-			if ( event == "UNIT_MODEL_CHANGED" ) then
-				InspectModelFrame:RefreshUnit()
-			elseif ( event == "UNIT_LEVEL" ) then
-				InspectPaperDollFrame_SetLevel()
+	if unit and unit == InspectFrame.unit and InspectFrame:IsShown() then
+		if event == "UNIT_INVENTORY_CHANGED" then
+			InspectPaperDollFrame_SetLevel()
+			InspectPaperDollFrame_UpdateButtons()
+
+			if InspectFrame.UpdateTimer then
+				InspectFrame.UpdateTimer:Cancel()
+				InspectFrame.UpdateTimer = nil
 			end
-			return
+
+			InspectFrame.UpdateTimer = C_Timer:NewTicker(0.1, InspectPaperDollFrame_UpdateButtons, 5)
+		elseif event == "UNIT_MODEL_CHANGED" then
+			InspectModelFrame:RefreshUnit()
+		elseif event == "UNIT_LEVEL" then
+			InspectPaperDollFrame_SetLevel()
 		end
-		InspectPaperDollFrame_SetLevel()
-		InspectPaperDollFrame_UpdateButtons()
 	end
 end
 
@@ -250,8 +251,6 @@ function InspectModelRotateRightButton_OnClick()
 end
 
 function InspectPaperDollItemSlotButton_OnLoad( self, ... )
-	self:RegisterEvent("UNIT_INVENTORY_CHANGED")
-
 	local slotName = self:GetName()
 	local id
 	local textureName
@@ -262,16 +261,7 @@ function InspectPaperDollItemSlotButton_OnLoad( self, ... )
 	texture:SetTexture(textureName)
 	self.backgroundTextureName = textureName
 	self.checkRelic = checkRelic
-end
-
-function InspectPaperDollItemSlotButton_OnEvent(self, event, ...)
-	if ( event == "UNIT_INVENTORY_CHANGED" ) then
-		local arg1 = ...
-		if ( arg1 == InspectFrame.unit ) then
-			InspectPaperDollItemSlotButton_Update(self)
-		end
-		return
-	end
+	self.paperDoll = self:GetParent():GetParent()
 end
 
 function InspectPaperDollItemSlotButton_OnEnter(self)
@@ -300,26 +290,25 @@ function InspectPaperDollItemSlotButton_Update(button)
 	local unit = InspectFrame.unit
 
 	if unit then
-		local link = GetInventoryItemLink(unit, button:GetID())
 		local textureName = GetInventoryItemTexture(unit, button:GetID())
 
-		local itemName, _, quality, _, _, _, _, _, _, texture = GetItemInfo(link)
-
-		if not button:GetParent():GetParent().equipmentItemsList then
-			button:GetParent():GetParent().equipmentItemsList = {}
-		end
-
-		button:GetParent():GetParent().equipmentItemsList[button:GetID()] = textureName and itemName
-
 		if ( textureName ) then
+			local link = GetInventoryItemLink(unit, button:GetID())
+
 			if link then
-				SetItemButtonQuality(button, quality)
-				SetItemButtonTexture(button, texture)
+				local itemName, _, quality, _, _, _, _, _, _, originalTexture = GetItemInfo(link)
+				if itemName then
+					textureName = originalTexture
+					button.paperDoll.equipmentItemsList[itemName:lower()] = link
+					SetItemButtonQuality(button, quality)
+				end
 			end
+
+			SetItemButtonTexture(button, textureName)
 			SetItemButtonCount(button, GetInventoryItemCount(unit, button:GetID()))
 			button.hasItem = 1
 		else
-			local textureName = button.backgroundTextureName
+			textureName = button.backgroundTextureName
 			if ( button.checkRelic and UnitHasRelicSlot(unit) ) then
 				textureName = "Interface\\Paperdoll\\UI-PaperDoll-Slot-Relic.blp"
 			end
@@ -329,7 +318,7 @@ function InspectPaperDollItemSlotButton_Update(button)
 			button.hasItem = nil
 		end
 		if ( GameTooltip:IsOwned(button) ) then
-			if ( texture ) then
+			if ( textureName ) then
 	            if ( not GameTooltip:SetInventoryItem(InspectFrame.unit, button:GetID()) ) then
 					GameTooltip:SetText(_G[strupper(strsub(button:GetName(), 8))])
 				end
@@ -370,6 +359,8 @@ function SetPaperDollBackground(model, unit)
 end
 
 function InspectPaperDollFrame_UpdateButtons()
+	table.wipe(InspectPaperDollFrame.equipmentItemsList)
+
 	InspectPaperDollItemSlotButton_Update(InspectHeadSlot)
 	InspectPaperDollItemSlotButton_Update(InspectNeckSlot)
 	InspectPaperDollItemSlotButton_Update(InspectShoulderSlot)
@@ -390,7 +381,6 @@ function InspectPaperDollFrame_UpdateButtons()
 	InspectPaperDollItemSlotButton_Update(InspectSecondaryHandSlot)
 	InspectPaperDollItemSlotButton_Update(InspectRangedSlot)
 end
-
 
 function InspectPVPFrame_OnLoad(self)
 	self:RegisterEvent("INSPECT_HONOR_UPDATE")

@@ -1,4 +1,4 @@
-..\..\InterfaceDebug\Utils\ErrorsCollection.xml
+..\..\InterfaceDebug\GlueXMLPre.xml
 
 ..\SharedXML\AtlasStorage.lua
 ..\SharedXML\Extensions\math.lua
@@ -85,9 +85,5 @@ ServerVoteFrame.xml
 # This Always Runs Last, Add New Items above it.
 GlueLocalizationPost.xml
 
-# Debug Tools
-..\..\InterfaceDebug\Public\GlueXML\GlueXML.xml
-
 # Dev Tools
-..\..\InterfaceDebug\DeveloperTools.xml
-..\..\InterfaceDebug\GlueXML\GlueXML.xml
+..\..\InterfaceDebug\GlueXML.xml

@@ -26,16 +26,9 @@ function LookingForGuildFrame_OnLoad(self)
 	LookingForGuildFrameTabardBackground:SetVertexColor(0.5, 0.5, 0.5);
 
 	LookingForGuildFrameTabardEmblem:Show()
-	LookingForGuildFrameTabardEmblem:SetSize(47, 47)
-
-	local factionGroup = UnitFactionGroup("player");
-	if ( factionGroup == "Alliance" ) then
-		LookingForGuildFrameTabardEmblem:SetTexture("Interface\\FriendsFrame\\PlusManz-Alliance");
-		LookingForGuildFrameTabardEmblem:SetPoint("TOPLEFT", 1, 0);
-	else
-		LookingForGuildFrameTabardEmblem:SetTexture("Interface\\FriendsFrame\\PlusManz-Horde");
-		LookingForGuildFrameTabardEmblem:SetPoint("TOPLEFT", 0, 0);
-	end
+	LookingForGuildFrameTabardEmblem:SetTexture("Interface\\PVPFrame\\PvPQueue");
+	LookingForGuildFrameTabardEmblem:SetSize(47, 57);
+	LookingForGuildFrameTabardEmblem:SetPoint("TOPLEFT", 1, 5);
 
 	LookingForGuildFrameTabardBorder:Show()
 	LookingForGuildFrameTabardBorder:SetTexCoord(0.63183594, 0.69238281, 0.74414063, 0.86523438);
@@ -85,6 +78,12 @@ end
 
 function LookingForGuildFrame_OnShow(self)
 	PlaySound("igCharacterInfoOpen");
+
+	local factionID = C_Unit:GetFactionID("player");
+	if factionID then
+		LookingForGuildFrameTabardEmblem:SetTexCoord(unpack(PVPFRAME_PRESTIGE_FACTION_ICONS[factionID]));
+	end
+
 	local canBeTank, canBeHealer, canBeDPS = UnitGetAvailableRoles("player");
 
 	LookingForGuild_UpdateRoleButton(LookingForGuildTankButton, canBeTank);

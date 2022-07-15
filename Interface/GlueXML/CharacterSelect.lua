@@ -35,6 +35,13 @@ CHARACTER_SELECT_LIST = {
 CHARACTER_SELECT_LIST.current = CHARACTER_SELECT_LIST.characters
 
 FACTION_OVERRIDE = {}
+CHAR_SERVICES_DATA = {}
+
+CHAR_DATA_TYPE = {
+	FORCE_CUSTOMIZATION = 1,
+	MAIL_COUNT = 2,
+	ITEM_LEVEL = 3,
+}
 
 local SERVICE_BUTTON_ACTIVATION_DELAY = 0.400
 local AWAIT_FIX_CHAR_INDEX
@@ -75,8 +82,6 @@ function CharacterSelect_OnLoad(self)
 
 	C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.RequestBoostStatus)
 
-	self.forceCustomizationData = {}
-
 	self.ServiceLoad = true
 
 	self.createIndex = 0;
@@ -105,6 +110,7 @@ function CharacterSelect_OnShow()
 	AccountLoginConnectionErrorFrame:Hide()
 
 	table.wipe(FACTION_OVERRIDE)
+	table.wipe(CHAR_SERVICES_DATA)
 
 	-- request account data times from the server (so we know if we should refresh keybindings, etc...)
 	ReadyForAccountDataTimes()
@@ -662,22 +668,27 @@ function CharacterSelect_OnEvent(self, event, ...)
 			local characterIndex, factionIndex = string.split(":", content)
 			FACTION_OVERRIDE[tonumber(characterIndex) + 1] = tonumber(factionIndex)
 		elseif prefix == "ASMSG_CHAR_SERVICES" then
-			local contentStorage = C_Split(content, ",")
+			local characterID, forceCustomization, mailCount, itemLevel = string.split(":", content)
+			characterID = tonumber(characterID) + 1
+			forceCustomization = tonumber(forceCustomization)
+			mailCount = tonumber(mailCount)
+			itemLevel = tonumber(itemLevel)
 
-			CharacterSelect.forceCustomizationData = {}
+			if not CHAR_SERVICES_DATA[characterID] then
+				CHAR_SERVICES_DATA[characterID] = {}
+			end
 
-			for _, contentData in pairs(contentStorage) do
-				local data = C_Split(contentData, ":")
+			CHAR_SERVICES_DATA[characterID][CHAR_DATA_TYPE.FORCE_CUSTOMIZATION] = forceCustomization or 0
+			CHAR_SERVICES_DATA[characterID][CHAR_DATA_TYPE.MAIL_COUNT] = mailCount or 0
+			CHAR_SERVICES_DATA[characterID][CHAR_DATA_TYPE.ITEM_LEVEL] = itemLevel or 0
 
-				if data[1] and data[2] then
-					CharacterSelect.forceCustomizationData[tonumber(data[1]) + 1] = tonumber(data[2])
-				end
+			if CharacterSelectCharacterFrame.characterSelectButtons[characterID] then
+				CharacterSelectCharacterFrame.characterSelectButtons[characterID]:UpdateCharData()
 			end
 		elseif prefix == "ASMSG_ALLIED_RACES" then
 			C_CharacterCreation.SetAlliedRacesData(C_Split(content, ":"))
 		elseif prefix == "ASMSG_SERVICE_MSG" then
 			C_CharacterCreation.SetAlliedRacesData(nil)
-			CharacterSelect.forceCustomizationData = {}
 		end
 	end
 end
@@ -808,7 +819,7 @@ function UpdateCharacterSelection()
 		if ( button ) then
 			button.selection:Show()
 			if ( button:IsMouseOver() ) then
-                CharacterSelectButton_ShowMoveButtons(button)
+				button:OnEnter()
             end
 		end
 	end
@@ -894,7 +905,7 @@ function UpdateCharacterList( dontUpdateSelect )
 
 			name = GetClassColorObj(classInfo.classFile):WrapTextInColorCode(name)
 			name = inDeletedView and (name .. DELETED) or name
-			_G["CharSelectCharacterButton"..index.."ButtonTextName"]:SetText(name);
+			button.buttonText.name:SetText(name);
 
 			button.PortraitFrame.LevelFrame.Level:SetText(level)
 
@@ -904,7 +915,7 @@ function UpdateCharacterList( dontUpdateSelect )
 			--	_G["CharSelectCharacterButton"..index.."ButtonTextInfo"]:SetFormattedText(CHARACTER_SELECT_INFO, class);
 			--end
 
-			_G["CharSelectCharacterButton"..index.."ButtonTextLocation"]:SetText(zone == "" and UNKNOWN_ZONE or zone);
+			button.buttonText.Location:SetText(zone == "" and UNKNOWN_ZONE or zone);
 		end
 
 		SetFactionEmblem(button, factionInfo, raceInfo, GetCharIDFromIndex(i))
@@ -913,6 +924,7 @@ function UpdateCharacterList( dontUpdateSelect )
 		button.index = i
 		button:Show()
 
+		button:UpdateCharData()
 		CharacterSelect_UpdatePAID(i)
 
 		index = index + 1;
@@ -1090,7 +1102,7 @@ function CharacterSelect_SelectCharacter(id, noCreate)
 				end
 			end
 
-			if CharacterSelect.forceCustomizationData[id] == 1 then
+			if CHAR_SERVICES_DATA[id] and CHAR_SERVICES_DATA[id][CHAR_DATA_TYPE.FORCE_CUSTOMIZATION] == 1 then
 				CharSelectEnterWorldButton:SetText("Завершить настройку")
 			else
 				CharSelectEnterWorldButton:SetText(ENTER_WORLD)
@@ -1106,7 +1118,7 @@ function CharacterSelect_EnterWorld()
 
 	if CharacterSelect.selectedIndex then
 		local charID = GetCharIDFromIndex(CharacterSelect.selectedIndex)
-		if CharacterSelect.forceCustomizationData[charID] == 1 then
+		if CHAR_SERVICES_DATA[charID] and CHAR_SERVICES_DATA[charID][CHAR_DATA_TYPE.FORCE_CUSTOMIZATION] == 1 then
 			PAID_SERVICE_CHARACTER_ID = charID
 			PAID_SERVICE_TYPE = PAID_CHARACTER_CUSTOMIZATION
 
@@ -1221,7 +1233,7 @@ function CharacterSelect_PaidServiceOnClick(self,_ ,_ ,service)
 	SetGlueScreen("charcreate");
 end
 
-function CharacterSelectButton_HideMoveButtons( self )
+function CharacterSelectButton_HideMoveButtons(self)
 	self.buttonText.Location:Show()
 	self.upButton:Hide()
 	self.downButton:Hide()
@@ -1230,45 +1242,54 @@ function CharacterSelectButton_HideMoveButtons( self )
 	for _, serviceButton in ipairs(self.serviceButtons) do
 		serviceButton:Hide()
 	end
+
+	self.buttonText.Location:Show()
+	self.buttonText.ItemLevel:Hide()
 end
 
-function CharacterSelectButton_ShowMoveButtons(button)
+function CharacterSelectButton_ShowMoveButtons(self)
 	if IsCharacterSelectInUndeleteMode() or CharSelectServicesFlowFrame:IsShown() then return end
-    local numCharacters = GetNumCharacters()
+	local numCharacters = GetNumCharacters()
 
-    if not CharacterSelect.draggedIndex then
-		for index, serviceButton in ipairs(button.serviceButtons) do
-			if index ~= 3 or (button.charLevel < BOOST_MAX_LEVEL and not CharacterBoostButton.isBoostDisable) then
+	if not CharacterSelect.draggedIndex then
+		for index, serviceButton in ipairs(self.serviceButtons) do
+			if index ~= 3 or (self.charLevel < BOOST_MAX_LEVEL and not CharacterBoostButton.isBoostDisable) then
 				serviceButton:Show()
 			end
 		end
 
-		button.buttonText.Location:Hide()
-        button.upButton:Show()
-        button.upButton.normalTexture:SetPoint("CENTER", 0, 0)
-        button.upButton.highlightTexture:SetPoint("CENTER", 0, 0)
-        button.downButton:Show()
-        button.downButton.normalTexture:SetPoint("CENTER", 0, 0)
-        button.downButton.highlightTexture:SetPoint("CENTER", 0, 0)
+		self.buttonText.Location:Hide()
+		self.upButton:Show()
+		self.upButton.normalTexture:SetPoint("CENTER", 0, 0)
+		self.upButton.highlightTexture:SetPoint("CENTER", 0, 0)
+		self.downButton:Show()
+		self.downButton.normalTexture:SetPoint("CENTER", 0, 0)
+		self.downButton.highlightTexture:SetPoint("CENTER", 0, 0)
 
-        button.FactionEmblem:Hide()
+		self.FactionEmblem:Hide()
 
-        if button.index == 1 then
-            button.upButton:Disable()
-            button.upButton:SetAlpha(0.35)
-        else
-            button.upButton:Enable()
-            button.upButton:SetAlpha(1)
-        end
+		if self.index == 1 then
+			self.upButton:Disable()
+			self.upButton:SetAlpha(0.35)
+		else
+			self.upButton:Enable()
+			self.upButton:SetAlpha(1)
+		end
 
-        if button.index == numCharacters then
-            button.downButton:Disable()
-            button.downButton:SetAlpha(0.35)
-        else
-            button.downButton:Enable()
-            button.downButton:SetAlpha(1)
-        end
-    end
+		if self.index == numCharacters then
+			self.downButton:Disable()
+			self.downButton:SetAlpha(0.35)
+		else
+			self.downButton:Enable()
+			self.downButton:SetAlpha(1)
+		end
+
+		local charData = CHAR_SERVICES_DATA[GetCharIDFromIndex(self:GetID())]
+		if charData and charData[CHAR_DATA_TYPE.ITEM_LEVEL] then
+			self.buttonText.ItemLevel:Show()
+			self.buttonText.Location:Hide()
+		end
+	end
 end
 
 function CharacterSelectButton_OnDragUpdate(self)
@@ -1336,7 +1357,7 @@ function CharacterSelectButton_OnDragStop(self)
         end
         if button.selection:IsShown() and button:IsMouseOver() then
         	stopIndex = button:GetID()
-            CharacterSelectButton_ShowMoveButtons(button)
+			button:OnEnter()
         end
     end
 
@@ -1794,6 +1815,7 @@ end
 function CharacterSelectButtonMixin:OnEnable()
 	self.PortraitFrame.Icon:SetVertexColor(1, 1, 1)
 	self.PortraitFrame.LevelFrame.Level:SetTextColor(1, 1, 1)
+	self.PortraitFrame.MailIcon:Enable()
 
 	self.buttonText.name:SetTextColor(1, 0.78, 0)
 --	self.buttonText.Info:SetTextColor(1, 1, 1)
@@ -1805,6 +1827,7 @@ end
 function CharacterSelectButtonMixin:OnDisable()
 	self.PortraitFrame.Icon:SetVertexColor(0.3, 0.3, 0.3)
 	self.PortraitFrame.LevelFrame.Level:SetTextColor(0.3, 0.3, 0.31)
+	self.PortraitFrame.MailIcon:Disable()
 
 	self.buttonText.name:SetTextColor(0.3, 0.3, 0.31)
 --	self.buttonText.Info:SetTextColor(0.3, 0.3, 0.31)
@@ -1853,6 +1876,9 @@ function CharacterSelectButtonMixin:OnEnter()
 	if self.selection:IsShown() then
 		CharacterSelectButton_ShowMoveButtons(self)
 	end
+
+	self.buttonText.ItemLevel:Show()
+	self.buttonText.Location:Hide()
 end
 
 function CharacterSelectButtonMixin:OnLeave()
@@ -1865,14 +1891,19 @@ function CharacterSelectButtonMixin:OnLeave()
 	if self.upButton:IsShown() and not (self.upButton:IsMouseOver() or self.downButton:IsMouseOver()) then
 		CharacterSelectButton_HideMoveButtons(self)
 	end
+
+	self.buttonText.Location:Show()
+	self.buttonText.ItemLevel:Hide()
 end
 
 function CharacterSelectButtonMixin:SetBoostMode(state, selectable)
 	if state then
 		self.selection:Hide()
 		self.PAIDButton:Disable()
+		self.PortraitFrame.MailIcon:Disable()
 	else
 		self.PAIDButton:Enable()
+		self.PortraitFrame.MailIcon:Enable()
 	end
 
 	self.Arrow:SetShown(state and selectable)
@@ -1882,6 +1913,83 @@ end
 
 function CharacterSelectButtonMixin:IsInBoostMode()
 	return self.inBoostMode
+end
+
+local itemLevelColors = {
+	[1] = CreateColor(0.65882, 0.65882, 0.65882),
+	[2] = CreateColor(0.08235, 0.70196, 0),
+	[3] = CreateColor(0, 0.56863, 0.94902),
+	[4] = CreateColor(0.78431, 0.27059, 0.98039),
+	[5] = CreateColor(1, 0.50196, 0),
+	[6] = CreateColor(1, 0, 0),
+}
+local function getItemLevelColor(itemLevel)
+	if C_InRange(itemLevel, 0, 100) then
+		return itemLevelColors[1]
+	elseif C_InRange(itemLevel, 100, 150) then
+		return itemLevelColors[1]
+	elseif C_InRange(itemLevel, 150, 185) then
+		return itemLevelColors[2]
+	elseif C_InRange(itemLevel, 185, 200) then
+		return itemLevelColors[3]
+	elseif C_InRange(itemLevel, 200, 277) then
+		return itemLevelColors[4]
+	elseif C_InRange(itemLevel, 277, 296) then
+		return itemLevelColors[5]
+	else
+		return itemLevelColors[6]
+	end
+end
+
+function CharacterSelectButtonMixin:UpdateCharData()
+	local charData = CHAR_SERVICES_DATA[GetCharIDFromIndex(self:GetID())]
+
+	self.PortraitFrame.MailIcon:SetShown(charData and charData[CHAR_DATA_TYPE.MAIL_COUNT] and charData[CHAR_DATA_TYPE.MAIL_COUNT] > 0)
+
+	local itemLevelShown
+
+	if charData and charData[CHAR_DATA_TYPE.ITEM_LEVEL] then
+		local color = getItemLevelColor(charData[CHAR_DATA_TYPE.ITEM_LEVEL])
+		self.buttonText.ItemLevel:SetFormattedText("%s |cff%2x%2x%2x%i", CHARACTER_ITEM_LEVEL, color.r * 255, color.g * 255, color.b * 255, charData[CHAR_DATA_TYPE.ITEM_LEVEL])
+
+		if self:IsMouseOver() then
+			self.buttonText.Location:Hide()
+			self.buttonText.ItemLevel:Show()
+			itemLevelShown = true
+		end
+	end
+
+	if not itemLevelShown then
+		self.buttonText.Location:Show()
+		self.buttonText.ItemLevel:Hide()
+	end
+end
+
+CharacterSelectButtonMailMixin = {}
+
+function CharacterSelectButtonMailMixin:OnLoad()
+	self.charButton = self:GetParent():GetParent()
+end
+
+function CharacterSelectButtonMailMixin:OnEnter()
+	self.charButton:OnEnter()
+
+	local charData = CHAR_SERVICES_DATA[GetCharIDFromIndex(self.charButton:GetID())]
+	GlueTooltip_SetOwner(self, GlueTooltip, 0, 0, "BOTTOMRIGHT", "TOPLEFT")
+	GlueTooltip_SetText(string.format(UNREAD_MAILS, charData[CHAR_DATA_TYPE.MAIL_COUNT]), GlueTooltip)
+end
+
+function CharacterSelectButtonMailMixin:OnLeave()
+	GlueTooltip:Hide()
+	self.charButton:OnLeave()
+end
+
+function CharacterSelectButtonMailMixin:OnEnable()
+	self.Icon:SetVertexColor(1, 1, 1)
+end
+
+function CharacterSelectButtonMailMixin:OnDisable()
+	self.Icon:SetVertexColor(0.5, 0.5, 0.5)
 end
 
 CharacterSelectButtonDropDownMenuMixin = {}
@@ -1978,14 +2086,6 @@ function CharacterSelectButtonDropDownMenuButtonMixin:OnClick()
 	self:GetParent():Hide()
 end
 
-CharacterSelectLevelFrameMixin = {}
-
-function CharacterSelectLevelFrameMixin:OnLoad()
-	--self.Border:SetAtlas("UI-Frame-jailerstower-Portrait-border")
-	self.Border:SetAtlas("UI-Frame-jailerstower-Portrait")
-	--self.Border3:SetAtlas("UI-Frame-jailerstower-Portrait")
-end
-
 CharacterSelectServiceButtonMixin = {}
 
 function CharacterSelectServiceButtonMixin:OnLoad()
@@ -2002,13 +2102,18 @@ end
 
 function CharacterSelectServiceButtonMixin:OnClick()
 	local id = self:GetID()
+	local parent = self:GetParent()
 	if id == 1 then
-		CharacterSelect_FixCharacter(self:GetParent():GetID())
+		CharacterSelect_FixCharacter(parent:GetID())
 	elseif id == 2 then
-		CharacterSelect_Delete(self:GetParent():GetID())
+		CharacterSelect_Delete(parent:GetID())
 	elseif id == 3 then
-		CharacterSelect_OpenBoost(self:GetParent():GetID())
+		CharacterSelect_OpenBoost(parent:GetID())
 	end
+
+	CharacterSelectButton_HideMoveButtons(parent)
+	parent.buttonText.Location:Show()
+	parent.buttonText.ItemLevel:Hide()
 end
 
 function CharacterSelectServiceButtonMixin:OnShow()

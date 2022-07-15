@@ -309,23 +309,14 @@ function GameTooltip_OnTooltipSetItem( self, ... )
 	C_Tooltip_CustomRender( self, ... )
 end
 
-local function IsItemEquip( table, itemName )
-	if not table then
-		return false
-	end
-
-	for _, _itemName in pairs(table) do
-		if _itemName == itemName then
-			return true
-		end
-	end
-end
-
 local equipSetsItemColor = CreateColor(0.999, 0.999, 0.592, 0.999)
 local grayTextColor = CreateColor(0.501, 0.501, 0.501, 0.999)
 local greenTextColor = CreateColor(0, 0.999, 0, 0.999)
 
 function C_Tooltip_CustomRender( self, ... )
+	local owner = self:GetOwner()
+
+	local setTextChecked
 	local startEquipmentSetLine, endEquipmentSetLine
 	local currentSetItems, totalSetItems
 	local setNumItems = 0
@@ -349,12 +340,14 @@ function C_Tooltip_CustomRender( self, ... )
 		if line then
 			local text = line:GetText()
 			local rbgTitle
-			local levelLine
 
 			if not totalSetItems then
 				currentSetItems, totalSetItems = string.match(text, "%((%d+)/(%d+)%)$")
 
 				if totalSetItems then
+					currentSetItems = tonumber(currentSetItems)
+					totalSetItems = tonumber(totalSetItems)
+
 					startEquipmentSetLine = i + 1
 					endEquipmentSetLine = i + totalSetItems
 				end
@@ -364,10 +357,9 @@ function C_Tooltip_CustomRender( self, ... )
 				local itemName = string.match(text, "%s+(.*)")
 
 				if itemName then
-					local sourceFrame = self:GetOwner() and self:GetOwner():GetParent() and self:GetOwner():GetParent():GetParent() or PaperDollFrame
-
-					if sourceFrame and sourceFrame.equipmentItemsList then
-						if IsItemEquip(sourceFrame.equipmentItemsList, itemName) then
+					local equipmentItemsList = owner and owner.paperDoll and owner.paperDoll.equipmentItemsList or PaperDollFrame.equipmentItemsList
+					if equipmentItemsList then
+						if equipmentItemsList[itemName:lower()] then
 							setNumItems = setNumItems + 1
 							line:SetTextColor(equipSetsItemColor.r, equipSetsItemColor.g, equipSetsItemColor.b)
 						else
@@ -377,14 +369,22 @@ function C_Tooltip_CustomRender( self, ... )
 				end
 			end
 
+			if not setTextChecked and endEquipmentSetLine and i > endEquipmentSetLine then
+				if setNumItems > currentSetItems and setNumItems <= totalSetItems then
+					local setHeaderLine = _G[self:GetName().."TextLeft"..(startEquipmentSetLine - 1)]
+					setHeaderLine:SetText(setHeaderLine:GetText():gsub("%((%d+)/(%d+)%)$", string.format("(%i/%s)", setNumItems, "%2")))
+				end
+				setTextChecked = true
+			end
+
 			local setBonus = string.match(text, EQUIPMENT_SET_PATTERN)
 
 			if setBonus then
-				local _setNumItems = tonumber(string.match(text, "%((%d+) .*%)"))
+				local numRequiredSetItems = tonumber(string.match(text, ITEM_SET_BONUS_GRAY_PATTERN))
 
-				if not _setNumItems and setNumItems > 0 then
+				if not numRequiredSetItems and setNumItems > 0 then
 					line:SetTextColor(greenTextColor.r, greenTextColor.g, greenTextColor.b)
-				elseif _setNumItems and setNumItems >= _setNumItems then
+				elseif numRequiredSetItems and setNumItems >= numRequiredSetItems then
 					line:SetTextColor(greenTextColor.r, greenTextColor.g, greenTextColor.b)
 				else
 					line:SetTextColor(grayTextColor.r, grayTextColor.g, grayTextColor.b)

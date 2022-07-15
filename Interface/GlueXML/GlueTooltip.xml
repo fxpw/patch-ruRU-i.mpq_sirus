@@ -144,7 +144,7 @@
 			</OnLoad>
 		</Scripts>
 	</Frame>
-	<Frame name="CharacterCreate_AbilityList" parentKey="AbilityList" inherits="VerticalLayoutFrame" virtual="true">
+	<Frame name="CharacterCreate_AbilityList" inherits="VerticalLayoutFrame" virtual="true">
 		<Layers>
 			<Layer level="ARTWORK">
 				<FontString name="$parentLabel" parentKey="Label" font="Shared_GameFontNormal">
@@ -254,15 +254,21 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Frame name="$parentAbilityList" parentKey="AbilityList" inherits="CharacterCreate_AbilityList" hidden="true">
+			<Frame name="$parentPassiveList" parentKey="PassiveList" inherits="CharacterCreate_AbilityList" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentDescription" relativePoint="BOTTOMLEFT" x="0" y="-15"/>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentAbilityList" parentKey="AbilityList" inherits="CharacterCreate_AbilityList" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentPassiveList" relativePoint="BOTTOMLEFT" x="0" y="-15"/>					
 				</Anchors>
 			</Frame>
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				self.AbilityList.Label:SetText(RACIAL_TRAITS_TOOLTIP)
+				self.PassiveList.Label:SetText(RACIAL_TRAITS_PASSIVE_TOOLTIP)
+				self.AbilityList.Label:SetText(RACIAL_TRAITS_ACTIVE_TOOLTIP)
 			</OnLoad>
 		</Scripts>
 	</Frame>

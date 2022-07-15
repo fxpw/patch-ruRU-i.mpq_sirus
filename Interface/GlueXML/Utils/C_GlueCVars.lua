@@ -6,6 +6,7 @@ C_GlueCVars = {}
 enum:E_GLUE_CVARS {
 	"VERSION",
 	"ENTRY_POINT",
+	"REALM_ENTRY_POINT",
 }
 
 local function validateCVarName(cvarName)
@@ -39,6 +40,10 @@ local function getCVarValues(createNew)
 	end
 
 	local values = {string.split("|", cvarValue)}
+	for i = #values + 1, #E_GLUE_CVARS do
+		values[i] = ""
+	end
+
 --	if values[1] ~= STORAGE_VERSION then
 --		-- upgrade
 --	end

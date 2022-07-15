@@ -6,10 +6,11 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_DeathRecap.lua"/>
 
-	<Frame name="DeathRecapEntryTemplate" parentArray="DeathRecapEntry" virtual="true">
+	<Frame name="DeathRecapEntryTemplate" virtual="true">
 		<Size x="348" y="32"/>
 		<Frames>
 			<Frame parentKey="DamageInfo" name="$parentDamageInfo">
@@ -19,14 +20,14 @@
 				</Anchors>
 				<Layers>
 					<Layer level="ARTWORK">
-						<FontString parentKey="Amount" name="DeathRecapEntryAmount" inherits="GameFontNormalRight" justifyH="RIGHT" justifyV="CENTER">
+						<FontString parentKey="Amount" name="$parentAmount" inherits="GameFontNormalRight" justifyH="RIGHT" justifyV="MIDDLE">
 							<Size x="0" y="32"/>
 							<Anchors>
 								<Anchor point="TOPRIGHT" x="0" y="0"/>
 							</Anchors>
 							<Color r="0.75" g="0.05" b="0.05" a="1"/>
 						</FontString>
-						<FontString parentKey="AmountLarge" inherits="SystemFont_Shadow_Large2" justifyH="RIGHT" justifyV="CENTER" hidden="true">
+						<FontString parentKey="AmountLarge" inherits="SystemFont_Shadow_Large2" justifyH="RIGHT" justifyV="MIDDLE" hidden="true">
 							<Size x="0" y="32"/>
 							<Anchors>
 								<Anchor point="TOPRIGHT" x="0" y="0"/>
@@ -40,7 +41,7 @@
 					<OnLeave function="GameTooltip_Hide"/>
 				</Scripts>
 			</Frame>
-			<Frame parentKey="SpellInfo">
+			<Frame parentKey="SpellInfo" name="$parentSpellInfo">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentDamageInfo" relativePoint="TOPRIGHT" x="16" y="0"/>
 					<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
@@ -72,22 +73,20 @@
 								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
 							</Anchors>
 							<Shadow>
-								<Offset>
-									<AbsDimension x="1" y="-1"/>
-								</Offset>
+								<Offset x="1" y="-1"/>
 								<Color r="0" g="0" b="0"/>
 							</Shadow>
-							<FontHeight>
-								<AbsValue val="8"/>
-							</FontHeight>
+							<FontHeight val="8"/>
 							<Color r="0.5" g="0.5" b="0.5" a="1"/>
 						</FontString>
 					</Layer>
 					<Layer level="OVERLAY">
-						<Texture parentKey="IconBorder" atlas="deathrecap-iconborder" useAtlasSize="true">
+						<Texture parentKey="IconBorder" file="Interface\Durability\DeathRecap">
+							<Size x="36" y="36"/>
 							<Anchors>
 								<Anchor point="CENTER" relativeTo="$parentIcon"/>
 							</Anchors>
+							<TexCoords left="0.583984" right="0.654297" top="0.003906" bottom="0.144531"/>
 						</Texture>
 					</Layer>
 				</Layers>
@@ -99,16 +98,12 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				if not self:GetParent().DeathRecapEntry then
-					self:GetParent().DeathRecapEntry = {}
-				end
-
-				table.insert(self:GetParent().DeathRecapEntry, self)
+				self:SetParentArray("DeathRecapEntry")
 			</OnLoad>
 		</Scripts>
 	</Frame>
 
-	<Frame name="DeathRecapFrame" movable="true" clampedToScreen="true" parent="UIParent" hidden="true">
+	<Frame name="DeathRecapFrame" frameStrata="HIGH" movable="true" clampedToScreen="true" parent="UIParent" hidden="true">
 		<Size x="380" y="326"/>
 		<Anchors>
 			<Anchor point="CENTER"/>
@@ -183,7 +178,7 @@
 						<Anchor point="TOPLEFT" relativeTo="$parentBackground" relativePoint="TOPLEFT"/>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackground" relativePoint="BOTTOMRIGHT"/>
 					</Anchors>
-					<TexCoords left="0.001953125" right="0.580078125" top="0.00390625" bottom="0.99609375"/>
+					<TexCoords left="0.001953" right="0.580078" top="0.003906" bottom="0.996094"/>
 				</Texture>
 			</Layer>
 			<Layer level="OVERLAY">
@@ -221,6 +216,23 @@
 				<NormalTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Up"/>
 				<PushedTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Down"/>
 				<HighlightTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Highlight" alphaMode="ADD"/>
+			</Button>
+			<Button parentKey="DragButton">
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+					<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="0" y="-32"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:RegisterForDrag("LeftButton");
+					</OnLoad>
+					<OnDragStart>
+						self:GetParent():StartMoving();
+					</OnDragStart>
+					<OnDragStop>
+						self:GetParent():StopMovingOrSizing();
+					</OnDragStop>
+				</Scripts>
 			</Button>
 			<Button parentKey="CloseButton" inherits="UIPanelButtonTemplate" text="CLOSE">
 				<Size x="144" y="21"/>
@@ -262,7 +274,7 @@
 						<Texture parentKey="tombstone" file="Interface\Durability\DeathRecap">
 							<Size x="15" y="20"/>
 							<Anchors>
-								<Anchor point="RIGHT" relativeTos="$parentAmount" relativePoint="LEFT" x="-10" y="0"/>
+								<Anchor point="RIGHT" relativeTo="$parent" relativePoint="LEFT" x="-10" y="0"/>
 							</Anchors>
 							<TexCoords left="0.658203125" right="0.6875" top="0.00390625" bottom="0.08203125"/>
 						</Texture>

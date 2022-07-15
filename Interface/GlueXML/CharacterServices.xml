@@ -191,6 +191,7 @@
 		</Scripts>
 	</CheckButton>
 	<CheckButton name="CharacterUpgradeSelectSpecRadioButtonTemplate" inherits="GlueDark_RadioButtonTemplate" virtual="true">
+		<HitRectInsets left="0" right="-210" top="-17" bottom="-17"/>
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture name="$parentSpecIcon" parentKey="SpecIcon">
@@ -224,7 +225,20 @@
 				</FontString>
 			</Layer>
 		</Layers>
-		<HitRectInsets left="0" right="-180" top="-17" bottom="-17"/>
+		<Frames>
+			<Button name="$parentHelpButton" parentKey="HelpButton" inherits="GlueDark_InfoButtonTemplate">
+				<Size x="16" y="16"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentSpecName" relativePoint="RIGHT" x="10" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.InfoHeader = CHARACTER_BOOST_HELP_CHOOSE_SPEC
+						self.InfoText = CHARACTER_BOOST_HELP_CHOOSE_SPEC_DESC
+					</OnLoad>
+				</Scripts>
+			</Button>
+		</Frames>
 		<Scripts>
 			<OnClick function="CharacterUpgradeSelectSpecRadioButton_OnClick"/>
 		</Scripts>

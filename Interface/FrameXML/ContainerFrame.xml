@@ -30,7 +30,7 @@
 			<Frame name="$parentHighlightFrame" parentKey="HighlightFrame" hidden="true" setAllPoints="true">
 				<Layers>
 					<Layer level="ARTWORK">
-						<Texture parentKey="NewItemTexture" alpha="1" alphaMode="ADD" file="Interface/ContainerFrame/Bags" useAtlasSize="true" hidden="true">
+						<Texture parentKey="NewItemTexture" alpha="1" alphaMode="ADD" file="Interface/ContainerFrame/Bags" hidden="true">
 							<Size x="39" y="39"/>
 							<Anchors>
 								<Anchor point="CENTER"/>
@@ -80,6 +80,10 @@
 		</Frames>
 		<Scripts>
 			<OnClick>
+				if ContainerFrameItemButton_CustomClickHandler(self, button) then
+					return
+				end
+
 				local modifiedClick = IsModifiedClick();
 				-- If we can loot the item and autoloot toggle is active, then do a normal click
 				if ( button ~= "LeftButton" and modifiedClick and IsModifiedClick("AUTOLOOTTOGGLE") ) then
@@ -246,20 +250,6 @@
 								</Texture>
 							</Layer>
 						</Layers>
-						<HighlightTexture file="Interface\ContainerFrame\ZoneAbilityGeneric" alphaMode="ADD">
-							<Size x="37" y="37"/>
-							<Anchors>
-								<Anchor point="CENTER"/>
-							</Anchors>
-							<TexCoords left="0.3125" right="0.55078125" top="0.46875" bottom="0.9609375"/>
-						</HighlightTexture>
-						<PushedTexture file="Interface\ContainerFrame\ZoneAbilityGeneric" alphaMode="ADD">
-							<Size x="37" y="37"/>
-							<Anchors>
-								<Anchor point="CENTER"/>
-							</Anchors>
-							<TexCoords left="0.3125" right="0.55078125" top="0.46875" bottom="0.9609375"/>
-						</PushedTexture>
 						<Scripts>
 							<OnLoad>
 								self:SetID(KEYRING_CONTAINER);
@@ -284,6 +274,20 @@
 							</OnEnter>
 							<OnLeave function="GameTooltip_Hide"/>
 						</Scripts>
+						<HighlightTexture file="Interface\ContainerFrame\ZoneAbilityGeneric" alphaMode="ADD">
+							<Size x="37" y="37"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+							<TexCoords left="0.3125" right="0.55078125" top="0.46875" bottom="0.9609375"/>
+						</HighlightTexture>
+						<PushedTexture file="Interface\ContainerFrame\ZoneAbilityGeneric" alphaMode="ADD">
+							<Size x="37" y="37"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+							<TexCoords left="0.3125" right="0.55078125" top="0.46875" bottom="0.9609375"/>
+						</PushedTexture>
 					</CheckButton>
 				</Frames>
 			</Frame>

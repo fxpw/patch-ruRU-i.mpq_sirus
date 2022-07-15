@@ -10,13 +10,13 @@ enum:E_WORLDMAP_MAP_NAME_BY_ID {
     "AREA_NAME_RURU"
 }
 
----@param mapAreaID
+---@param mapAreaID integer
 ---@return string areaName
 function C_MapMixin:GetAreaNameByID( mapAreaID )
     return WORLDMAP_MAP_NAME_BY_ID[mapAreaID] and WORLDMAP_MAP_NAME_BY_ID[mapAreaID][E_WORLDMAP_MAP_NAME_BY_ID[GetLocalizedName("AREA_NAME")]]
 end
 
----@param mapAreaID
+---@param mapAreaID integer
 ---@return number parentMapID
 function C_MapMixin:GetParentMapID( mapAreaID )
     return WORLDMAP_MAP_NAME_BY_ID[mapAreaID] and WORLDMAP_MAP_NAME_BY_ID[mapAreaID][E_WORLDMAP_MAP_NAME_BY_ID.PARENT_WORLD_MAP_ID]

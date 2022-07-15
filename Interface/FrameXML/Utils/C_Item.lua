@@ -77,7 +77,7 @@ function C_ItemMixin:GetLocaleIndex()
 end
 
 ---@param itemEntry number | string
----@param callbackFunc function
+---@param callbackFunc? function
 function C_ItemMixin:RequestServerCache( itemEntry, callbackFunc )
     itemEntry = tonumber(itemEntry)
 

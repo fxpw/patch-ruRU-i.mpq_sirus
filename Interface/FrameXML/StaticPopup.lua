@@ -138,6 +138,54 @@ StaticPopupDialogs["CONFIRM_PURCHASE_TOKEN_ITEM"] = {
 	hasItemFrame = 1,
 }
 
+StaticPopupDialogs["CONFIRM_EXCHANGE_LEGENDARY_ITEM"] = {
+	text = CONFIRM_EXCHANGE_LEGENDARY_ITEM,
+	button1 = YES,
+	button2 = NO,
+	OnAccept = function()
+		BuyMerchantItem(MerchantFrame.itemIndex, MerchantFrame.count);
+	end,
+	OnCancel = function()
+
+	end,
+	OnShow = function(self)
+		self.button1:Disable();
+		self.button2:Enable();
+		self.editBox:SetFocus();
+		self.HelpBox.Text:SetText(CONFIRM_EXCHANGE_LEGENDARY_INFO)
+		_G[self:GetName().."ItemFrame"]:SetPoint("BOTTOM", self.button1, "TOP", 0, 58)
+	end,
+	OnHide = function(self)
+		ChatEdit_FocusActiveWindow();
+		self.editBox:SetText("");
+		_G[self:GetName().."ItemFrame"]:SetPoint("BOTTOM", self.button1, "TOP", 0, 8)
+	end,
+	EditBoxOnEnterPressed = function(self)
+		if ( self:GetParent().button1:IsEnabled() == 1 ) then
+			BuyMerchantItem(MerchantFrame.itemIndex, MerchantFrame.count);
+			self:GetParent():Hide();
+		end
+	end,
+	EditBoxOnTextChanged = function (self)
+		local parent = self:GetParent()
+		if string.upper(parent.editBox:GetText()) == CONFIRM_EXCHANGE_LEGENDARY_TEXT then
+			parent.button1:Enable()
+		else
+			parent.button1:Disable()
+		end
+	end,
+	EditBoxOnEscapePressed = function(self)
+		self:GetParent():Hide()
+		ClearCursor()
+	end,
+	timeout = 0,
+	hideOnEscape = 1,
+	hasItemFrame = 1,
+	hasEditBox = 1,
+	maxLetters = 32,
+	HelpBox = 1,
+}
+
 StaticPopupDialogs["CONFIRM_REFUND_TOKEN_ITEM"] = {
 	text = CONFIRM_REFUND_TOKEN_ITEM,
 	button1 = YES,
@@ -3698,6 +3746,13 @@ StaticPopupDialogs["CONFIRM_RETURN_INBOX_ITEM"] = {
 	end,
 	timeout = 0,
 	hideOnEscape = 1
+};
+
+StaticPopupDialogs["QUEST_ACCEPTED"] = {
+	text = "%s",
+	button1 = QUEST_ACCEPTED_BUTTON_POPUP_TEXT,
+	timeout = 0,
+	whileDead = 1,
 };
 
 function EventHandler:ASMSG_ALLIED_RACE_STANDART( raceID )

@@ -21,6 +21,13 @@ function QuestPOI_DisplayButton(parentName, buttonType, buttonIndex, questId)
 	local swapButton;
 	
 	if ( not poiButton ) then
+		if (not QUEST_POI_BUTTONS_MAX[parentName..buttonType] and buttonIndex > 1)
+		or (QUEST_POI_BUTTONS_MAX[parentName..buttonType] and (QUEST_POI_BUTTONS_MAX[parentName..buttonType] + 1 < buttonIndex))
+		then
+		--	error("Возникла ошибка при попытке добавить точку интереса на карту. Сообщите нам на форуме следующую информацию:", 2)
+			return
+		end
+
 		if ( buttonType == QUEST_POI_COMPLETE_SWAP ) then
 			poiButton = CreateFrame("Button", buttonName, _G[parentName], "QuestPOICompletedTemplate");
 			if ( not QUEST_POI_SWAP_BUTTONS[parentName] ) then
@@ -150,6 +157,9 @@ function QuestPOI_SelectButton(poiButton)
 			swapButton:Show();
 			poiButton:Hide();
 		end
+		if ( not WorldMapFrame:IsShown() ) then
+			poiButton.selectionGlow:Hide();
+		end
 	end
 end
 
@@ -201,6 +211,7 @@ function QuestPOI_HideButtons(parentName, buttonType, buttonIndex)
 				QuestPOI_DeselectButton(poiButton);
 			end
 			poiButton:Hide();
+			poiButton.questId = nil;
 		end
 	end
 end
@@ -219,6 +230,7 @@ function QuestPOI_HideAllButtons(parentName)
 					QuestPOI_DeselectButton(poiButton);
 				end
 				poiButton:Hide();
+				poiButton.questId = nil;
 			end
 		end
 	end

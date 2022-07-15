@@ -137,18 +137,21 @@ VEHICLE_TEXTURES["Minecart"] = {
 	"Interface\\Minimap\\Vehicle-SilvershardMines-MineCart",
 	width=64,
 	height=64,
+	belowPlayerBlips = true,
 }
 VEHICLE_TEXTURES["Minecart Red"] = {
 	"Interface\\Minimap\\Vehicle-SilvershardMines-MineCartRed",
 	"Interface\\Minimap\\Vehicle-SilvershardMines-MineCartRed",
 	width=64,
 	height=64,
+	belowPlayerBlips = true,
 }
 VEHICLE_TEXTURES["Minecart Blue"] = {
 	"Interface\\Minimap\\Vehicle-SilvershardMines-MineCartBlue",
 	"Interface\\Minimap\\Vehicle-SilvershardMines-MineCartBlue",
 	width=64,
 	height=64,
+	belowPlayerBlips = true,
 }
 VEHICLE_TEXTURES["Orb_0"] = {
 	"Interface\\Minimap\\Vehicle-Sphere-Blue",

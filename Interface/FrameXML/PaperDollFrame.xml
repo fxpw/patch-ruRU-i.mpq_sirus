@@ -544,8 +544,8 @@
 									<OnEnter>
 										GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 										GameTooltip:SetText(PAPERDOLLFRAME_UPS_TOOLTIP_1, 1.0, 1.0, 1.0);
-										GameTooltip:AddLine(string.format(PAPERDOLLFRAME_UPS_TOOLTIP_2, self.Total), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1);
-										GameTooltip:AddLine(string.format(PAPERDOLLFRAME_UPS_TOOLTIP_3, self.Maximum), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1);
+										GameTooltip:AddLine(string.format(PAPERDOLLFRAME_UPS_TOOLTIP_2, self.Total or 0), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1);
+										GameTooltip:AddLine(string.format(PAPERDOLLFRAME_UPS_TOOLTIP_3, self.Maximum or 0), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1);
 										GameTooltip:Show()
 									</OnEnter>
 									<OnLeave>

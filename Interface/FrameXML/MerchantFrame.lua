@@ -560,9 +560,22 @@ function MerchantFrame_ConfirmExtendedItemCost(itemButton, quantity)
 	MerchantFrame.itemIndex = index;
 	MerchantFrame.count = quantity;
 
-	local itemName, _, itemQuality = GetItemInfo(itemButton.link);
+	if not itemButton.link then
+		itemButton.link = GetMerchantItemLink(index)
+	end
+
+	if not itemButton.link then return end
+
+	local itemName, _, itemQuality = GetItemInfo(itemButton.link)
 	local r, g, b = GetItemQualityColor(itemQuality);
-	StaticPopup_Show("CONFIRM_PURCHASE_TOKEN_ITEM", itemsString, "", {["texture"] = itemButton.texture, ["name"] = itemName, ["color"] = {r, g, b, 1}, ["link"] = itemButton.link, ["index"] = index, ["count"] = count * quantity});
+	local itemID = string.match(itemButton.link, "item:(%d+)")
+	local itemData = {texture = itemButton.texture, name = itemName, color = {r, g, b, 1}, link = itemButton.link, index = index, count = count * quantity}
+
+	if tonumber(itemID) == 104020 then
+		StaticPopup_Show("CONFIRM_EXCHANGE_LEGENDARY_ITEM", itemsString, "", itemData);
+	else
+		StaticPopup_Show("CONFIRM_PURCHASE_TOKEN_ITEM", itemsString, "", itemData);
+	end
 end
 
 function MerchantFrame_ResetRefundItem()
@@ -579,9 +592,18 @@ function MerchantFrame_ConfirmHighCostItem(itemButton, quantity)
 	quantity = (quantity or 1);
 	local index = itemButton:GetID();
 
+	if not itemButton.price then
+		itemButton.price = (select(3, GetMerchantItemInfo(index)))
+	end
+
+	if not itemButton.link then
+		itemButton.link = GetMerchantItemLink(index)
+	end
+
+
 	MerchantFrame.itemIndex = index;
 	MerchantFrame.count = quantity;
-	MerchantFrame.price = itemButton.price;
+	MerchantFrame.price = itemButton.price or 0;
 
 	StaticPopup_Show("CONFIRM_HIGH_COST_ITEM", itemButton.link);
 end

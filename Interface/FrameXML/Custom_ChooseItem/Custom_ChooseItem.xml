@@ -6,7 +6,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_ChooseItem.lua"/>
 
 	<Texture name="QuestChoiceLeftHide" file="Interface\QuestionFrame\Question-Main" virtual="true">
@@ -44,8 +45,6 @@
 					</Anchors>
 					<Color r="0" g="0" b="0" a="0.2"/>
 				</Texture>
-			</Layer>
-			<Layer level="BORDER">
 			</Layer>
 			<Layer level="ARTWORK">
 				<Texture parentKey="RoleBorder" file="Interface\QuestionFrame\Question_ItemMain">
@@ -164,11 +163,6 @@
 		</Frames>
 		<Scripts>
 			<OnLoad function="QuestChoiceOption_OnLoad"/>
-			<OnShow>
-				self.Item.glow:Show()
-				self.Item.glow:SetVertexColor(0.78431, 0.27059, 0.98039, 1)
-				self.Item.glow.animIn:Play()
-			</OnShow>
 		</Scripts>
 	</Button>
 

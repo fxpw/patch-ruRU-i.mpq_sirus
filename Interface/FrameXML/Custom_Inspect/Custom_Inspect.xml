@@ -6,7 +6,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_Inspect.lua"/>
 
 	<Button name="CharacterFrameTabButtonLevelTemplate" inherits="CharacterFrameTabButtonTemplate" virtual="true">
@@ -19,7 +20,6 @@
 	<Button name="InspectPaperDollItemSlotButtonTemplate" inherits="ItemButtonTemplate" virtual="true">
         <Scripts>
             <OnLoad function="InspectPaperDollItemSlotButton_OnLoad"/>
-            <OnEvent function="InspectPaperDollItemSlotButton_OnEvent"/>
             <OnEnter function="InspectPaperDollItemSlotButton_OnEnter"/>
             <OnClick>
 				HandleModifiedItemClick(GetInventoryItemLink(InspectFrame.unit, self:GetID()))
@@ -131,24 +131,20 @@
 						<Anchor point="LEFT" relativePoint="LEFT" x="4" y="0" />
 					</Anchors>
 				</FontString>
-				<FontString name="$parentToday" parentKey="Today" inherits="GameFontNormal" text="32" justifyH="CENTER" justifyV="CENTER">
+				<FontString name="$parentToday" parentKey="Today" inherits="GameFontNormal" text="32" justifyH="CENTER" justifyV="MIDDLE">
 					<Size x="40" y="0"/>
 					<Anchors>
 						<Anchor point="RIGHT" relativePoint="RIGHT" x="-112" y="0" />
 					</Anchors>
 					<Color r="1" g="1" b="1"/>
 				</FontString>
-				<FontString name="$parentLifetime" parentKey="Lifetime" inherits="GameFontNormal" text="100" justifyH="CENTER" justifyV="CENTER">
+				<FontString name="$parentLifetime" parentKey="Lifetime" inherits="GameFontNormal" text="100" justifyH="CENTER" justifyV="MIDDLE">
 					<Size x="40" y="0"/>
 					<Anchors>
 						<Anchor point="RIGHT" relativePoint="RIGHT" x="-33" y="0" />
 					</Anchors>
 					<Color r="1" g="1" b="1"/>
 				</FontString>
-			</Layer>
-			<Layer level="ARTWORK">
-			</Layer>
-			<Layer level="OVERLAY">
 			</Layer>
 		</Layers>
 		<Scripts>
@@ -221,9 +217,6 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT" x="-4" y="-4" />
 				</Anchors>
-				<NormalTexture name="$parentNormalTexture" file="Interface\Buttons\UI-PlusButton-UP"/>
-				<PushedTexture name="$parentPushedTexture" file="Interface\Buttons\UI-PlusButton-DOWN"/>
-				<HighlightTexture name="$parentHighlightTexture" file="Interface\Buttons\UI-PlusButton-Hilight" alphaMode="ADD"/>
 				<Scripts>
 					<OnShow>
 						self:GetParent().ToggleMinus:Hide()
@@ -238,15 +231,15 @@
 						InspectBattlegroundStatisticsUpdate()
 					</OnClick>
 				</Scripts>
+				<NormalTexture name="$parentNormalTexture" file="Interface\Buttons\UI-PlusButton-UP"/>
+				<PushedTexture name="$parentPushedTexture" file="Interface\Buttons\UI-PlusButton-DOWN"/>
+				<HighlightTexture name="$parentHighlightTexture" file="Interface\Buttons\UI-PlusButton-Hilight" alphaMode="ADD"/>
 			</Button>
 			<Button name="$parentToggleMinus" parentKey="ToggleMinus" hidden="true">
 				<Size x="16" y="16"/>
 				<Anchors>
 					<Anchor point="TOPRIGHT" x="-4" y="-4" />
 				</Anchors>
-				<NormalTexture name="$parentNormalTexture" file="Interface\Buttons\UI-MinusButton-UP"/>
-				<PushedTexture name="$parentPushedTexture" file="Interface\Buttons\UI-MinusButton-DOWN"/>
-				<HighlightTexture name="$parentHighlightTexture" file="Interface\Buttons\UI-PlusButton-Hilight" alphaMode="ADD"/>
 				<Scripts>
 					<OnShow>
 						self:GetParent().TogglePlus:Hide()
@@ -261,6 +254,9 @@
 						InspectBattlegroundStatisticsUpdate()
 					</OnClick>
 				</Scripts>
+				<NormalTexture name="$parentNormalTexture" file="Interface\Buttons\UI-MinusButton-UP"/>
+				<PushedTexture name="$parentPushedTexture" file="Interface\Buttons\UI-MinusButton-DOWN"/>
+				<HighlightTexture name="$parentHighlightTexture" file="Interface\Buttons\UI-PlusButton-Hilight" alphaMode="ADD"/>
 			</Button>
 			<Frame name="$parentStatFrame1" parentKey="StatFrame1" inherits="InspectBattlegroundStripFrameTemplates">
 				<Anchors>
@@ -1023,7 +1019,7 @@
 				</Scripts>
 			</Button>
 
-			<Frame name="$parentService" parentKey="Service" setAllPoints="True">
+			<Frame name="$parentService" parentKey="Service" setAllPoints="true">
 				<Frames>
 					<Frame name="$parentInset" parentKey="Inset" inherits="InsetFrameTemplateNoBackground">
 						<Anchors>
@@ -1165,7 +1161,7 @@
 					<OnHide function="StatisticsButtonUpdateState"/>
 				</Scripts>
 			</Frame>
-			<Frame name="$parentRating" parentKey="Rating" hidden="true" setAllPoints="True">
+			<Frame name="$parentRating" parentKey="Rating" hidden="true" setAllPoints="true">
 				<Frames>
 					<Frame name="$parentInset" parentKey="Inset" inherits="InsetFrameTemplateNoBackground">
 						<Anchors>
@@ -1273,10 +1269,6 @@
 									<Color r="1" g="1" b="1" a="1"/>
 								</FontString>
 							</Layer>
-							<Layer level="ARTWORK">
-							</Layer>
-							<Layer level="OVERLAY">
-							</Layer>
 						</Layers>
 						<Frames>
 							<Button name="InspectPVPTeam2" inherits="InspectPVPTeamTemplate" id="2">
@@ -1314,7 +1306,7 @@
 					</OnShow>
 				</Scripts>
 			</Frame>
-			<Frame name="$parentStatistics" parentKey="Statistics" hidden="true" setAllPoints="True">
+			<Frame name="$parentStatistics" parentKey="Statistics" hidden="true" setAllPoints="true">
 				<Frames>
 					<Frame name="$parentInset" parentKey="Inset" inherits="InsetFrameTemplateNoBackground">
 						<Anchors>
@@ -1362,6 +1354,10 @@
 								</Texture>
 							</Layer>
 						</Layers>
+						<Scripts>
+							<OnLoad function="InspectBattlegroundStatisticsScrollFrame_OnLoad"/>
+							<OnShow function="InspectBattlegroundStatisticsScrollFrame_OnShow"/>
+						</Scripts>
 						<ScrollChild>
 							<Frame name="$parentScrollChildFrame" parentKey="ScrollChild">
 								<Size x="310" y="10"/>
@@ -1370,10 +1366,6 @@
 								</Anchors>
 							</Frame>
 						</ScrollChild>
-						<Scripts>
-							<OnLoad function="InspectBattlegroundStatisticsScrollFrame_OnLoad"/>
-							<OnShow function="InspectBattlegroundStatisticsScrollFrame_OnShow"/>
-						</Scripts>
 					</ScrollFrame>
 				</Frames>
 				<Scripts>
@@ -1649,40 +1641,40 @@
 						</Frames>
 					</Frame>
 					<CheckButton name="$parentRightTab1" parentKey="RightTab1" id="0" inherits="InspectRightTabTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="-34"/>
+						</Anchors>
 						<Attributes>
 							<Attribute name="icon" type="string" value="PVPLadder-IconSolo-Square"/>
 							<Attribute name="tooltipText" type="string" value="PVP_LADDER_SOLO_LABEL"/>
 						</Attributes>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="-34"/>
-						</Anchors>
 					</CheckButton>
 					<CheckButton name="$parentRightTab2" parentKey="RightTab2" id="1" inherits="InspectRightTabTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentRightTab1" relativePoint="BOTTOMLEFT" x="0" y="-16"/>
+						</Anchors>
 						<Attributes>
 							<Attribute name="icon" type="string" value="PVPLadder-Icon2x2-Square"/>
 							<Attribute name="tooltipText" type="string" value="PVP_LADDER_2V2_LABEL"/>
 						</Attributes>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentRightTab1" relativePoint="BOTTOMLEFT" x="0" y="-16"/>
-						</Anchors>
 					</CheckButton>
 					<CheckButton name="$parentRightTab3" parentKey="RightTab3" id="2" inherits="InspectRightTabTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentRightTab2" relativePoint="BOTTOMLEFT" x="0" y="-16"/>
+						</Anchors>
 						<Attributes>
 							<Attribute name="icon" type="string" value="PVPLadder-Icon3x3-Square"/>
 							<Attribute name="tooltipText" type="string" value="PVP_LADDER_1V1_LABEL"/>
 						</Attributes>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentRightTab2" relativePoint="BOTTOMLEFT" x="0" y="-16"/>
-						</Anchors>
 					</CheckButton>
 					<CheckButton name="$parentRightTab4" parentKey="RightTab4" id="3" inherits="InspectRightTabTemplate" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentRightTab3" relativePoint="BOTTOMLEFT" x="0" y="-16"/>
+						</Anchors>
 						<Attributes>
 							<Attribute name="icon" type="string" value="PVPLadder-IconBattleground-Square"/>
 							<Attribute name="tooltipText" type="string" value="PVP_LADDER_BG_LABEL"/>
 						</Attributes>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentRightTab3" relativePoint="BOTTOMLEFT" x="0" y="-16"/>
-						</Anchors>
 					</CheckButton>
 				</Frames>
 				<Scripts>

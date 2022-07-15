@@ -63,7 +63,7 @@ ALLIEDRACES_DATA = {
 		modelBackgroundAtlas = "AlliedRace-UnlockingFrame-ModelBackground-Lightforge",
 		raceFileString = "Lightforged",
 		bannerColor = {r = 1, g = 0.96, b = 0.73},
-		allDisplayInfo = {310791, 310793, 319316, 319318, 319320, 319322, 319321},
+		allDisplayInfo = {310791, 319316, 319318, 319320, 319322, 319321},
 	},
 }
 

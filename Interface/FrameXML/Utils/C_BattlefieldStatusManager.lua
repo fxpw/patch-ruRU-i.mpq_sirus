@@ -164,7 +164,7 @@ function C_BattlefieldStatusManagerMixin:ASMSG_BATTLEFIELD_STATUS_FAKE(msg)
 		local onEventFunc = frame:GetScript("OnEvent")
 
 		if onEventFunc then
-			onEventFunc(frame, "UPDATE_BATTLEFIELD_STATUS", index)
+			onEventFunc(frame, "UPDATE_BATTLEFIELD_STATUS")
 		end
 	end
 end

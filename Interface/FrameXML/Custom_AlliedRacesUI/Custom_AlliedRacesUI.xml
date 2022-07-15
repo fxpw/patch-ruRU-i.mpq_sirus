@@ -1,4 +1,5 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\UI.xsd">
 	<Script file="Custom_AlliedRacesUI.lua"/>
 
 	<Button name="AlliedRacesModelControlFrameButtonTemplate" virtual="true">
@@ -172,7 +173,7 @@
 		</Scripts>
 	</Button>
 
-	<Frame name="AlliedRacesFrame" toplevel="true" parent="UIParent" inherits="PortraitFrameTemplate" hidden="true">
+	<Frame name="AlliedRacesFrame" toplevel="true" parent="UIParent" inherits="PortraitFrameTemplate" enableMouse="true" hidden="true">
 		<Size x="704" y="607"/>
 		<Anchors>
 			<Anchor point="LEFT" x="20" y="40"/>
@@ -204,11 +205,8 @@
 					<CheckButton name="$parentAlliedRacesMaleButton" parentKey="AlliedRacesMaleButton">
 						<Size x="35" y="35"/>
 						<Anchors>
-							<Anchor point="TOPRIGHT" relativeKey="$parent" relativePoint="TOPRIGHT" x="-10" y="-10"/>
+							<Anchor point="TOPRIGHT" x="-10" y="-10"/>
 						</Anchors>
-						<NormalTexture parentKey="NormalTexture"/>
-						<CheckedTexture parentKey="CheckedTexture"/>
-						<HighlightTexture parentKey="HighlightTexture"/>
 						<Scripts>
 							<OnClick>
 								local alliedRaceModelFrame = self:GetParent();
@@ -224,15 +222,15 @@
 								self.HighlightTexture:SetAtlas("AlliedRace-UnlockingFrame-GenderMouseOverGlow");
 							</OnLoad>
 						</Scripts>
+						<NormalTexture parentKey="NormalTexture"/>
+						<HighlightTexture parentKey="HighlightTexture"/>
+						<CheckedTexture parentKey="CheckedTexture"/>
 					</CheckButton>
 					<CheckButton name="$parentAlliedRacesFemaleButton" parentKey="AlliedRacesFemaleButton">
 						<Size x="35" y="35"/>
 						<Anchors>
 							<Anchor point="BOTTOM" relativeTo="$parentAlliedRacesMaleButton" relativePoint="BOTTOM" y ="-35"/>
 						</Anchors>
-						<NormalTexture parentKey="NormalTexture"/>
-						<CheckedTexture parentKey="CheckedTexture"/>
-						<HighlightTexture parentKey="HighlightTexture"/>
 						<Scripts>
 							<OnClick>
 								local alliedRaceModelFrame = self:GetParent();
@@ -248,6 +246,9 @@
 								self.HighlightTexture:SetAtlas("AlliedRace-UnlockingFrame-GenderMouseOverGlow");
 							</OnLoad>
 						</Scripts>
+						<NormalTexture parentKey="NormalTexture"/>
+						<HighlightTexture parentKey="HighlightTexture"/>
+						<CheckedTexture parentKey="CheckedTexture"/>
 					</CheckButton>
 					<Button name="$parentZoomInButton" parentKey="ZoomInButton" inherits="AlliedRacesModelControlFrameButtonTemplate">
 						<Size x="26" y="25"/>
@@ -326,6 +327,19 @@
 						<Anchors>
 							<Anchor point="RIGHT" relativeTo="AlliedRacesFrame" x="-25" y="-36"/>
 						</Anchors>
+						<Frames>
+							<Slider name="$parentScrollBar" parentKey="ScrollBar" inherits="MinimalScrollBarWithBorderTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="38"/>
+									<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="12"/>
+								</Anchors>
+							</Slider>
+						</Frames>
+						<Scripts>
+							<OnLoad>
+								ScrollFrame_OnLoad(self);
+							</OnLoad>
+						</Scripts>
 						<ScrollChild>
 							<Frame name="$parentChild" parentKey="Child">
 								<Size x="275" y="1"/>
@@ -348,19 +362,6 @@
 								</Layers>
 							</Frame>
 						</ScrollChild>
-						<Frames>
-							<Slider name="$parentScrollBar" parentKey="ScrollBar" inherits="MinimalScrollBarWithBorderTemplate">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="38"/>
-									<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="12"/>
-								</Anchors>
-							</Slider>
-						</Frames>
-						<Scripts>
-							<OnLoad>
-								ScrollFrame_OnLoad(self);
-							</OnLoad>
-						</Scripts>
 					</ScrollFrame>
 				</Frames>
 				<Layers>

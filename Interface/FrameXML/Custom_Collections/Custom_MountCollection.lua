@@ -826,9 +826,9 @@ end
 function MountJournal_OnShow( self, ... )
 	SetPortraitToTexture(CollectionsJournalPortrait, "Interface\\Icons\\MountJournalPortrait");
 
-	ParentFrameLevel(self.LeftInset);
-	ParentFrameLevel(self.RightTopInset);
-	ParentFrameLevel(self.RightBottomInset);
+	SetParentFrameLevel(self.LeftInset);
+	SetParentFrameLevel(self.RightTopInset);
+	SetParentFrameLevel(self.RightBottomInset);
 
 	self.selectCategoryID = nil
 	self.IsOpenStore = nil

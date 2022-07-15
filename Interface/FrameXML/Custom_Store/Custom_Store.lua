@@ -6345,8 +6345,8 @@ function StoreTransmogrifySubCategoryFrameButtonMixin:OnClick()
 
 	StoreTransmogrifyFrame.RightContainer.ContentFrame.OverlayElements.ShowShoulders:SetShown(selectedSubCategoryID == 1)
 
-	if CharacterCreateZoomDebugPanel and IsDevClient() then
-		CharacterCreateZoomDebugPanel:InitPosition()
+	if Dev_ModelControl and IsDevClient() then
+		Dev_ModelControl:SetModelFrame(StoreTransmogrifyFrame.RightContainer.ContentFrame.Model)
 	end
 end
 
