@@ -1774,7 +1774,7 @@
 						<Anchor point="RIGHT" x="-60"/>
 					</Anchors>
 				</FontString>
-				<Texture name="$parentTabardEmblem" file="Interface\GuildFrame\GuildEmblemsLG_01" hidden="true">
+				<Texture name="$parentTabardEmblem" parentKey="TabardEmblem" file="Interface\GuildFrame\GuildEmblemsLG_01" hidden="true">
 					<Size x="58" y="58"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="-5" y="6"/>
@@ -1816,7 +1816,7 @@
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBotRightCorner" relativePoint="TOPRIGHT"/>
 					</Anchors>
 				</Texture>
-				<Texture name="$parentTabardBackground" file="Interface\GuildFrame\GuildFrame" hidden="true">
+				<Texture name="$parentTabardBackground" parentKey="TabardBackground" file="Interface\GuildFrame\GuildFrame" hidden="true">
 					<Size x="56" y="56"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="-3" y="5"/>
@@ -1831,7 +1831,7 @@
 						<Anchor point="TOPLEFT" x="-6" y="8" />
 					</Anchors>
 				</Texture>
-				<Texture name="$parentTabardBorder" file="Interface\GuildFrame\GuildFrame" hidden="true">
+				<Texture name="$parentTabardBorder" parentKey="TabardBorder" file="Interface\GuildFrame\GuildFrame" hidden="true">
 					<Size x="60" y="60"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="-6" y="6"/>

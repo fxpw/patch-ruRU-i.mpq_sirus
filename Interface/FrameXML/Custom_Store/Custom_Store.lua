@@ -3273,6 +3273,35 @@ function StoreConfirmationFrame_Update(self)
 
 	StoreConfirmationSendGiftCheckButton:SetEnabled(not self.isAltCurrency);
 
+	local giftOverride
+	if selectedMoneyID == 1 then
+		local currentLoyal = StoreMoneyButton4.data[4]
+		if (currentLoyal >= 30) then
+			StoreConfirmationSendGiftCheckButton:SetShown(true)
+
+			if giftChecked and not (self.data.Flags and bit.band(self.data.Flags, STORE_ITEM_FLAG_ITEM_GIFT) == STORE_ITEM_FLAG_ITEM_GIFT) then
+				self.NoticeFrame.OriginalPrice:SetText(price)
+				self.NoticeFrame.OriginalPrice:Show()
+				self.NoticeFrame.Strikethrough:Show()
+				local newPrice = price * 1.1;
+				if not tostring(newPrice):match("^%-?%d+$") then
+					newPrice = math.ceil(newPrice)
+				end
+				self.NoticeFrame.Price:SetText(newPrice)
+				self.NoticeFrame.Price:SetPoint("RIGHT", self.NoticeFrame.MoneyIcon, "LEFT", 0, -8)
+				self.NoticeFrame.Price:SetTextColor(0.3, 0.7, 1)
+				giftOverride = true
+			end
+		end
+	end
+
+	if not giftOverride then
+		self.NoticeFrame.Price:SetTextColor(1, 1, 1)
+		self.NoticeFrame.Price:SetPoint("RIGHT", self.NoticeFrame.MoneyIcon, "LEFT", 0, 0)
+		self.NoticeFrame.OriginalPrice:Hide()
+		self.NoticeFrame.Strikethrough:Hide()
+	end
+
 	if not giftChecked and self.data.ID ~= -1 and selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID and selectedSubCategoryID ~= 0 and selectedShowAllItemCheckBox == 1 then
 		local storage = STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][0];
 		StoreConfirmationFrameBuyButton:SetEnabled(storage.data and storage.data[self.data.ID] and true or false);
@@ -6332,8 +6361,8 @@ STORE_TRANSMOGRIFY_CAMERA_SETTINGS_HEAD = {
 	["Eredar3"] = {3.402001, 0.951001, 0.175000},
 	["DarkIronDwarf2"] = {2.734001, 0.993001, 0.532000},
 	["DarkIronDwarf3"] = {1.988001, 0.962001, 0.574000},
-	["ZandalariTroll2"] = {3.707000, 1.06400, -0.122000},
-	["ZandalariTroll3"] = {3.802000, 1.10600, -0.135000},
+	["ZandalariTroll2"] = {3.958000, 1.053000, 0.026000},
+	["ZandalariTroll3"] = {4.252000, 1.080000, 0.065000},
 	["Lightforged2"] = {3.863001, 1.000000, 0.224000},
 	["Lightforged3"] = {3.402001, 0.951001, 0.175000},
 }

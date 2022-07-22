@@ -648,12 +648,21 @@
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
-						<Texture parentKey="BG" hidden="true">
+						<Texture name="$parentBG" parentKey="BG" hidden="true">
 							<Anchors>
 								<Anchor point="TOPLEFT" x="-5" y="5"/>
 								<Anchor point="BOTTOMRIGHT" x="5" y="-5"/>
 							</Anchors>
 							<Color r="1" g="1" b="0" a="0.3"/>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture parentKey="HelpArrow" file="Interface\Store\Services" hidden="true">
+							<Size x="54" y="96"/>
+							<Anchors>
+								<Anchor point="BOTTOM" relativeTo="$parentBG" relativePoint="TOP" x="0" y="60"/>
+							</Anchors>
+							<TexCoords left="0.00097656" right="0.01855469" top="0.13476563" bottom="0.16601563"/>
 						</Texture>
 					</Layer>
 					<Layer level="ARTWORK">

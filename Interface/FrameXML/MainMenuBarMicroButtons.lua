@@ -193,6 +193,14 @@ function GuildMicroButton_OnEvent(self, event, ...)
 		end
 	elseif ( event == "PLAYER_GUILD_UPDATE" ) then
 		UpdateMicroButtons();
+	elseif ( event == "LF_GUILD_RECRUIT_LIST_CHANGED" ) then
+		if GuildFrame and not GuildFrame:IsShown() then
+			MicroButtonPulse(GuildMicroButton);
+		end
+	elseif ( event == "LF_GUILD_MEMBERSHIP_LIST_CHANGED" ) then
+		if LookingForGuildFrame and not LookingForGuildFrame:IsShown() then
+			MicroButtonPulse(GuildMicroButton);
+		end
 	end
 end
 

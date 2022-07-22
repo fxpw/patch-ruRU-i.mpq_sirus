@@ -655,7 +655,7 @@
 									HideUIPanel(TradeSkillFrame)
 								end
 								local parent = self:GetParent();
-								StaticPopup_Show("UNLEARN_SKILL", parent.skillName, nil, parent.skillIndex);
+								StaticPopup_Show("UNLEARN_PROFESSION", parent.skillName, nil, parent.skillIndex);
 							</OnClick>
 						</Scripts>
 					</Button>

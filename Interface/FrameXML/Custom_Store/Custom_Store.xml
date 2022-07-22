@@ -4846,6 +4846,12 @@
 								<Anchor point="RIGHT" relativeTo="$parentMoneyIcon" relativePoint="LEFT" x="0" y="0"/>
 							</Anchors>
 						</FontString>
+						<FontString name="$parentOriginalPrice" parentKey="OriginalPrice" inherits="GameFontNormalShadowHuge17" hidden="true">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeTo="$parentPrice" relativePoint="TOPLEFT" x="0" y="3"/>
+							</Anchors>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
 						<FontString name="$parentNotice" parentKey="Notice" inherits="GameFontBlackMedium" justifyH="LEFT" justifyV="TOP">
 							<Size x="280" y="0"/>
 							<Anchors>
@@ -4858,6 +4864,16 @@
 								<Anchor point="BOTTOMLEFT" x="32" y="62"/>
 							</Anchors>
 						</FontString>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture parentKey="Strikethrough" file="Interface/Buttons/White8x8" hidden="true">
+							<Size x="0" y="3"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentOriginalPrice" x="-3" y="-1"/>
+								<Anchor point="RIGHT" relativeTo="$parentOriginalPrice" x="1" y="0"/>
+							</Anchors>
+							<Color r="1" g="0" b="0"/>
+						</Texture>
 					</Layer>
 				</Layers>
 				<Frames>

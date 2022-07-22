@@ -321,6 +321,12 @@ function GuildFrame_Toggle()
 end
 
 function GuildFrame_TabClicked( newID )
+	if newID == 5 then
+		ToggleFrame(LookingForGuildFrame);
+		GuildFrameRightTab5:SetChecked(false);
+		return;
+	end
+
 	local level, experience, nextLevelxperience, remaining = GetGuildXP()
 	local reputationRank, reputationMin, reputationMax = GetGuildReputation()
 
@@ -1435,24 +1441,21 @@ end
 function GuildInfoFrame_OnLoad(self)
 	PanelTemplates_SetNumTabs(self, 3);
 
-	--	self:RegisterEvent("LF_GUILD_POST_UPDATED");
-	--	self:RegisterEvent("LF_GUILD_RECRUITS_UPDATED");
-	--	self:RegisterEvent("LF_GUILD_RECRUIT_LIST_CHANGED");
-
+	self:RegisterCustomEvent("LF_GUILD_POST_UPDATED");
+	self:RegisterCustomEvent("LF_GUILD_RECRUITS_UPDATED");
+	self:RegisterCustomEvent("LF_GUILD_RECRUIT_LIST_CHANGED");
 end
 
 function GuildInfoFrame_OnEvent(self, event, arg1)
 	if ( event == "LF_GUILD_POST_UPDATED" ) then
-		local bQuest, bDungeon, bRaid, bPvP, bRP, bWeekdays, bWeekends, bTank, bHealer, bDamage, bAnyLevel, bMaxLevel, bListed = GetGuildRecruitmentSettings();
+		local bQuest, bDungeon, bRaid, bPvP, bRP, _, _, _, _, _, _, bTank, bHealer, bDamage, bAnyLevel, bMaxLevel, bListed = GetGuildRecruitmentSettings();
 		-- interest
 		GuildRecruitmentQuestButton:SetChecked(bQuest);
 		GuildRecruitmentDungeonButton:SetChecked(bDungeon);
 		GuildRecruitmentRaidButton:SetChecked(bRaid);
 		GuildRecruitmentPvPButton:SetChecked(bPvP);
 		GuildRecruitmentRPButton:SetChecked(bRP);
-		-- availability
-		GuildRecruitmentWeekdaysButton:SetChecked(bWeekdays);
-		GuildRecruitmentWeekendsButton:SetChecked(bWeekends);
+
 		-- roles
 		GuildRecruitmentTankButton.checkButton:SetChecked(bTank);
 		GuildRecruitmentHealerButton.checkButton:SetChecked(bHealer);
@@ -1601,13 +1604,13 @@ end
 
 function GuildInfoFrameRecruitment_OnLoad(self)
 	GuildRecruitmentInterestFrameText:SetText(GUILD_INTEREST);
-	GuildRecruitmentInterestFrame:SetHeight(63);
-	GuildRecruitmentAvailabilityFrameText:SetText(GUILD_AVAILABILITY);
-	GuildRecruitmentAvailabilityFrame:SetHeight(43);
+	GuildRecruitmentInterestFrame:SetHeight(61);
+	GuildRecruitmentAvailabilityFrameText:SetText();
+	GuildRecruitmentAvailabilityFrame:SetHeight(49);
 	GuildRecruitmentRolesFrameText:SetText(CLASS_ROLES);
-	GuildRecruitmentRolesFrame:SetHeight(80);
+	GuildRecruitmentRolesFrame:SetHeight(78);
 	GuildRecruitmentLevelFrameText:SetText(GUILD_RECRUITMENT_LEVEL);
-	GuildRecruitmentLevelFrame:SetHeight(43);
+	GuildRecruitmentLevelFrame:SetHeight(41);
 	GuildRecruitmentCommentFrame:SetHeight(72);
 
 	-- defaults until data is retrieved
@@ -1639,12 +1642,12 @@ function GuildRecruitmentRoleButton_OnClick(self)
 	else
 		PlaySound("igMainMenuOptionCheckBoxOff");
 	end
-	SetGuildRecruitmentSettings(self:GetParent().param, checked);
+	SetGuildRecruitmentSettings(self:GetParent().param, checked == 1);
 	GuildRecruitmentListGuildButton_Update();
 end
 
 function GuildRecruitmentListGuildButton_Update()
-	local bQuest, bDungeon, bRaid, bPvP, bRP, bWeekdays, bWeekends, bTank, bHealer, bDamage, bAnyLevel, bMaxLevel, bListed = GetGuildRecruitmentSettings();
+	local bQuest, bDungeon, bRaid, bPvP, bRP, bWeekdays, bWeekends, _, _, _, _, bTank, bHealer, bDamage, bAnyLevel, bMaxLevel, bListed = GetGuildRecruitmentSettings();
 	-- need to have at least 1 interest, 1 time, and 1 role checked to be able to list
 	if ( bQuest or bDungeon or bRaid or bPvP or bRP ) and ( bWeekdays or bWeekends ) and ( bTank or bHealer or bDamage ) then
 		GuildRecruitmentListGuildButton:Enable();
@@ -1661,7 +1664,7 @@ end
 
 function GuildRecruitmentListGuildButton_OnClick(self)
 	PlaySound("igMainMenuOptionCheckBoxOn");
-	local bQuest, bDungeon, bRaid, bPvP, bRP, bWeekdays, bWeekends, bTank, bHealer, bDamage, bAnyLevel, bMaxLevel, bListed = GetGuildRecruitmentSettings();
+	local bListed = GetGuildRecruitmentSettingsByIndex(LFGUILD_PARAM_LOOKING);
 	bListed = not bListed;
 	if ( bListed and GuildRecruitmentCommentEditBox:HasFocus() ) then
 		GuildRecruitmentComment_SaveText();
@@ -1754,7 +1757,7 @@ function GuildInfoFrameApplicants_Update()
 	for i = 1, numButtons do
 		button = buttons[i];
 		index = offset + i;
-		local name, level, class, _, _, _, _, _, _, _, isTank, isHealer, isDamage, comment, timeSince, timeLeft = GetGuildApplicantInfo(index);
+		local name, isOnline, level, class, _, _, _, _, _, _, _, isTank, isHealer, isDamage, _, _, _, _, comment, timeSince, timeLeft = GetGuildApplicantInfo(index);
 		if ( name ) then
 			button.name:SetText(name);
 			button.levelFrame.level:SetText(level);
@@ -1849,7 +1852,7 @@ function GuildRecruitmentApplicant_OnClick(self, button)
 end
 
 function GuildRecruitmentApplicant_ShowTooltip(self)
-	local name, level, class, bQuest, bDungeon, bRaid, bPvP, bRP, bWeekdays, bWeekends, bTank, bHealer, bDamage, comment, timeSince, timeLeft = GetGuildApplicantInfo(self.index);
+	local name, isOnline, level, class, bQuest, bDungeon, bRaid, bPvP, bRP, bWeekdays, bWeekends, bTank, bHealer, bDamage, bMorning, bDay, bEvening, bNight, comment, timeSince, timeLeft = GetGuildApplicantInfo(self.index);
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 	GameTooltip:SetText(name);
 	local buf = "";
@@ -1859,12 +1862,22 @@ function GuildRecruitmentApplicant_ShowTooltip(self)
 	if ( bRaid ) then buf = buf.."\n"..QUEST_DASH..GUILD_INTEREST_RAID; end
 	if ( bPvP ) then buf = buf.."\n"..QUEST_DASH..GUILD_INTEREST_PVP; end
 	if ( bRP ) then buf = buf.."\n"..QUEST_DASH..GUILD_INTEREST_RP; end
+	if ( buf == "" ) then buf = buf.."\n"..QUEST_DASH..LOOKING_FOR_GUILD_ANY_FLAG; end;
 	GameTooltip:AddLine(GUILD_INTEREST..HIGHLIGHT_FONT_COLOR_CODE..buf);
 	-- availability
 	buf = "";
 	if ( bWeekdays ) then buf = buf.."\n"..QUEST_DASH..GUILD_AVAILABILITY_WEEKDAYS; end
 	if ( bWeekends ) then buf = buf.."\n"..QUEST_DASH..GUILD_AVAILABILITY_WEEKENDS; end
+	if ( buf == "" ) then buf = buf.."\n"..QUEST_DASH..LOOKING_FOR_GUILD_ANY_FLAG; end;
 	GameTooltip:AddLine(GUILD_AVAILABILITY..HIGHLIGHT_FONT_COLOR_CODE..buf);
+	-- activitytime
+	buf = "";
+	if ( bMorning ) then buf = buf.."\n"..QUEST_DASH..GUILD_ACTIVITY_TIME_MORNING; end
+	if ( bDay ) then buf = buf.."\n"..QUEST_DASH..GUILD_ACTIVITY_TIME_DAY; end
+	if ( bEvening ) then buf = buf.."\n"..QUEST_DASH..GUILD_ACTIVITY_TIME_EVENING; end
+	if ( bNight ) then buf = buf.."\n"..QUEST_DASH..GUILD_ACTIVITY_TIME_NIGHT; end
+	if ( buf == "" ) then buf = buf.."\n"..QUEST_DASH..LOOKING_FOR_GUILD_ANY_FLAG; end;
+	GameTooltip:AddLine(GUILD_ACTIVITY_TIME..HIGHLIGHT_FONT_COLOR_CODE..buf);
 
 	GameTooltip:Show();
 end
@@ -1872,8 +1885,12 @@ end
 -- GetRealmID
 
 function GuildRecruitmentDropDown_Initialize(self)
+	if not GuildRecruitmentDropDown.index then
+		return
+	end
+
 	local info = UIDropDownMenu_CreateInfo();
-	local name, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, guid = GetGuildApplicantInfo(GuildRecruitmentDropDown.index);
+	local name, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, guid = GetGuildApplicantInfo(GuildRecruitmentDropDown.index);
 	if not name then
 		name = UNKNOWN;
 	end
@@ -1913,7 +1930,7 @@ function GuildRecruitmentDropDown_Initialize(self)
 end
 
 function GuildRecruitmentDropDown_OnClick(button, action)
-	local name, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, guid = GetGuildApplicantInfo(GuildRecruitmentDropDown.index);
+	local name, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, guid = GetGuildApplicantInfo(GuildRecruitmentDropDown.index);
 	if ( not name ) then
 		return;
 	end
@@ -1924,10 +1941,108 @@ function GuildRecruitmentDropDown_OnClick(button, action)
 	elseif ( action == "addfriend" ) then
 		AddOrRemoveFriend(name);
 	elseif ( action == "url" ) then
-		StaticPopup_Show("GUILD_RECRUITMENT_URL", nil, nil, string.format("https://sirus.su/base/character/%d/%d", C_Service:GetRealmID(), guid or 0));
+		StaticPopup_Show("LOOKING_FOR_GUILD_URL", GUILD_RECRUITMENT_URL_TEXT, nil, string.format("https://sirus.su/base/character/%d/%d", C_Service:GetRealmID(), guid or 0));
 	elseif ( action == "decline" ) then
 		DeclineGuildApplicant(GuildRecruitmentDropDown.index);
 	end
+end
+
+local function GuildRecruitmentAvailabilityUpdateDropdownText(self)
+	local selectedCount = 0;
+	if GetGuildRecruitmentSettingsByIndex(LFGUILD_PARAM_WEEKDAYS) then
+		selectedCount = selectedCount + 1;
+	end
+	if GetGuildRecruitmentSettingsByIndex(LFGUILD_PARAM_WEEKENDS) then
+		selectedCount = selectedCount + 1;
+	end
+	if selectedCount > 1 then
+		UIDropDownMenu_SetText(self, LOOKING_FOR_GUILD_MULTIPLE_CHECKED);
+	elseif selectedCount == 0 then
+		UIDropDownMenu_SetText(self, LOOKING_FOR_GUILD_ANY_FLAG);
+	else
+		UIDropDownMenu_Refresh(self);
+	end
+end
+
+local function GuildRecruitmentAvailabilitySetDropdownInfoForPreferences(self, info, value)
+	GuildRecruitmentAvailabilityUpdateDropdownText(self);
+
+	info.checked = function() return GetGuildRecruitmentSettingsByIndex(value) end;
+	info.func = function()
+		SetGuildRecruitmentSettings(value, not GetGuildRecruitmentSettingsByIndex(value));
+		GuildRecruitmentAvailabilityUpdateDropdownText(self);
+	end
+end
+
+function GuildRecruitmentAvailabilityDropDown_Initialize(self)
+	local info = UIDropDownMenu_CreateInfo();
+	info.isNotRadio = true;
+	info.keepShownOnClick = true;
+	info.minWidth = 130;
+
+	info.text = GUILD_AVAILABILITY_WEEKDAYS;
+	GuildRecruitmentAvailabilitySetDropdownInfoForPreferences(self, info, LFGUILD_PARAM_WEEKDAYS);
+	UIDropDownMenu_AddButton(info);
+
+	info.text = GUILD_AVAILABILITY_WEEKENDS;
+	GuildRecruitmentAvailabilitySetDropdownInfoForPreferences(self, info, LFGUILD_PARAM_WEEKENDS);
+	UIDropDownMenu_AddButton(info);
+end
+
+local function GuildRecruitmentActivityUpdateDropdownText(self)
+	local selectedCount = 0;
+	if GetGuildRecruitmentSettingsByIndex(LFGUILD_PARAM_MORNING) then
+		selectedCount = selectedCount + 1;
+	end
+	if GetGuildRecruitmentSettingsByIndex(LFGUILD_PARAM_DAY) then
+		selectedCount = selectedCount + 1;
+	end
+	if GetGuildRecruitmentSettingsByIndex(LFGUILD_PARAM_EVENING) then
+		selectedCount = selectedCount + 1;
+	end
+	if GetGuildRecruitmentSettingsByIndex(LFGUILD_PARAM_NIGHT) then
+		selectedCount = selectedCount + 1;
+	end
+	if selectedCount > 1 then
+		UIDropDownMenu_SetText(self, LOOKING_FOR_GUILD_MULTIPLE_CHECKED);
+	elseif selectedCount == 0 then
+		UIDropDownMenu_SetText(self, LOOKING_FOR_GUILD_ANY_FLAG);
+	else
+		UIDropDownMenu_Refresh(self);
+	end
+end
+
+local function GuildRecruitmentActivitySetDropdownInfoForPreferences(self, info, value)
+	GuildRecruitmentActivityUpdateDropdownText(self);
+
+	info.checked = function() return GetGuildRecruitmentSettingsByIndex(value) end;
+	info.func = function()
+		SetGuildRecruitmentSettings(value, not GetGuildRecruitmentSettingsByIndex(value));
+		GuildRecruitmentActivityUpdateDropdownText(self);
+	end
+end
+
+function GuildRecruitmentActivityDropDown_Initialize(self)
+	local info = UIDropDownMenu_CreateInfo();
+	info.isNotRadio = true;
+	info.keepShownOnClick = true;
+	info.minWidth = 130;
+
+	info.text = GUILD_ACTIVITY_TIME_MORNING;
+	GuildRecruitmentActivitySetDropdownInfoForPreferences(self, info, LFGUILD_PARAM_MORNING);
+	UIDropDownMenu_AddButton(info);
+
+	info.text = GUILD_ACTIVITY_TIME_DAY;
+	GuildRecruitmentActivitySetDropdownInfoForPreferences(self, info, LFGUILD_PARAM_DAY);
+	UIDropDownMenu_AddButton(info);
+
+	info.text = GUILD_ACTIVITY_TIME_EVENING;
+	GuildRecruitmentActivitySetDropdownInfoForPreferences(self, info, LFGUILD_PARAM_EVENING);
+	UIDropDownMenu_AddButton(info);
+
+	info.text = GUILD_ACTIVITY_TIME_NIGHT;
+	GuildRecruitmentActivitySetDropdownInfoForPreferences(self, info, LFGUILD_PARAM_NIGHT);
+	UIDropDownMenu_AddButton(info);
 end
 
 function GuildFramePopup_Toggle(frame)

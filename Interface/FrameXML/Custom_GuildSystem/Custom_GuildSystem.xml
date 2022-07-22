@@ -6,7 +6,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_GuildSystem.lua"/>
 
 	<Button name="GuildFrameTabButtonTemplate" inherits="CharacterFrameTabButtonTemplate" virtual="true">
@@ -307,12 +308,6 @@
 				</Texture>
 			</Layer>
 		</Layers>
-		<NormalTexture file="Interface\ClassTrainerFrame\TrainerTextures">
-			<TexCoords left="0.00195313" right="0.57421875" top="0.65820313" bottom="0.75000000"/>
-		</NormalTexture>
-		<HighlightTexture name="$parentHighlight" file="Interface\ClassTrainerFrame\TrainerTextures" alphaMode="ADD">
-			<TexCoords left="0.00195313" right="0.57421875" top="0.75390625" bottom="0.84570313"/>
-		</HighlightTexture>
 		<Scripts>
 			<OnLoad>
 				self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
@@ -324,6 +319,12 @@
 			</OnLeave>
 			<OnClick function="GuildRewardsButton_OnClick"/>
 		</Scripts>
+		<NormalTexture file="Interface\ClassTrainerFrame\TrainerTextures">
+			<TexCoords left="0.00195313" right="0.57421875" top="0.65820313" bottom="0.75000000"/>
+		</NormalTexture>
+		<HighlightTexture name="$parentHighlight" file="Interface\ClassTrainerFrame\TrainerTextures" alphaMode="ADD">
+			<TexCoords left="0.00195313" right="0.57421875" top="0.75390625" bottom="0.84570313"/>
+		</HighlightTexture>
 	</Button>
 	<Button name="GuildRosterColumnButtonTemplate" virtual="true">
 		<Size x="10" y="24"/>
@@ -604,7 +605,7 @@
 				else
 					PlaySound("igMainMenuOptionCheckBoxOff");
 				end
-				SetGuildRecruitmentSettings(self:GetID(), self:GetChecked());
+				SetGuildRecruitmentSettings(self:GetID(), self:GetChecked() == 1);
 				GuildRecruitmentListGuildButton_Update();
 			</OnClick>
 			<OnEnter function="GuildRecruitmentCheckButton_OnEnter"/>
@@ -633,7 +634,7 @@
 			<Layer level="ARTWORK">
 				<FontString name="$parentText" inherits="GameFontNormal">
 					<Anchors>
-						<Anchor point="TOPLEFT" x="8" y="-5"/>
+						<Anchor point="TOPLEFT" x="8" y="-4"/>
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -717,7 +718,7 @@
 			</BackgroundInsets>
 		</Backdrop>
 		<Layers>
-			<Layer level="BORDER" textureSubLevel="-1">
+			<Layer level="BORDER">
 				<Texture parentKey="selectedTex" file="Interface\ClassTrainerFrame\TrainerTextures" hidden="true" alphaMode="ADD">
 					<Anchors>
 						<Anchor point="TOPLEFT" x="1" y="-1"/>
@@ -853,7 +854,7 @@
 		<Size x="270" y="21"/>
 		<Layers>
 			<Layer level="OVERLAY">
-				<FontString inherits="GameFontHighlight" parentKey="label" justifyH="LEFT" maxlines="2">
+				<FontString inherits="GameFontHighlight" parentKey="label" justifyH="LEFT" maxLines="2">
 					<Anchors>
 						<Anchor point="LEFT" relativeTo="$parent" x="18" y="0"/>
 						<Anchor point="RIGHT" relativeTo="$parent" x="-45" y="0"/>
@@ -1036,6 +1037,17 @@
 					<OnLoad>
 						self.Icon:SetTexture("Interface\\Icons\\inv_misc_scrollunrolled01")
 						self.tooltip = HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(GUILD_INFORMATION)
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentRightTab5" parentKey="RightTab5" id="5" inherits="GuildFrameTabTemplate">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="36"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.Icon:SetTexture("Interface\\Icons\\inv_misc_spyglass_03")
+						self.tooltip = HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(SEARCH)
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
@@ -1654,7 +1666,7 @@
 			<Frame name="GuildInfoFrameInfo" setAllPoints="true">
 				<Layers>
 					<Layer level="ARTWORK">
-						<Texture name="$parentBar1Left" hidden="ture" file="Interface\ClassTrainerFrame\UI-ClassTrainer-HorizontalBar">
+						<Texture name="$parentBar1Left" hidden="true" file="Interface\ClassTrainerFrame\UI-ClassTrainer-HorizontalBar">
 							<Size x="256" y="16"/>
 							<Anchors>
 								<Anchor point="LEFT" x="-3" y="0"/>
@@ -1758,7 +1770,7 @@
 							<Anchor point="TOP" x="28" y="36" />
 						</Anchors>
 						<Frames>
-							<StatusBar name="GuildBuildingProgressBar" minValue="0" maxValue="1" defaultValue="0.3" toplevel="true" enableMouse="ture">
+							<StatusBar name="GuildBuildingProgressBar" minValue="0" maxValue="1" defaultValue="0.3" toplevel="true" enableMouse="true">
 								<Size x="220" y="24"/>
 								<Anchors>
 									<Anchor point="CENTER" x="10" y="0" />
@@ -1772,8 +1784,8 @@
 											</Anchors>
 											<Color r="1" g="1" b="1" a="0.55"/>
 											<Gradient orientation="VERTICAL">
-												<MaxColor r="0.3" g="0.2" b="0.07"/>
 												<MinColor r="0" g="0" b="0"/>
+												<MaxColor r="0.3" g="0.2" b="0.07"/>
 											</Gradient>
 										</Texture>
 									</Layer>
@@ -1802,31 +1814,31 @@
 										</Texture>
 									</Layer>
 								</Layers>
-								<BarTexture name="$parentBar" parentKey="Bar" file="Interface\TargetingFrame\UI-StatusBar" />
-								<BarColor r="0.25" g="0.40" b="0.86" a="0.5" />
 								<Scripts>
 									<OnEnter function="GuildInfoHeaderFrame_OnEnter"/>
 									<OnLeave function="GameTooltip_Hide"/>
 								</Scripts>
+								<BarTexture name="$parentBar" parentKey="Bar" file="Interface\TargetingFrame\UI-StatusBar" />
+								<BarColor r="0.25" g="0.40" b="0.86" a="0.5" />
 							</StatusBar>
 						</Frames>
 					</Frame>
-					<Frame name="$parentChallenge1" parentArray="Challenges" inherits="GuildChallengeTemplate" id="1">
+					<Frame name="$parentChallenge1" inherits="GuildChallengeTemplate" id="1">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parentHeader1" relativePoint="BOTTOMLEFT" x="0" y="-1"/>
 						</Anchors>
 					</Frame>
-					<Frame name="$parentChallenge2" parentArray="Challenges" inherits="GuildChallengeTemplate" id="2">
+					<Frame name="$parentChallenge2" inherits="GuildChallengeTemplate" id="2">
 						<Anchors>
 							<Anchor point="TOP" relativeTo="$parentChallenge1" relativePoint="BOTTOM" x="0" y="-7"/>
 						</Anchors>
 					</Frame>
-					<Frame name="$parentChallenge3" parentArray="Challenges" inherits="GuildChallengeTemplate" id="3">
+					<Frame name="$parentChallenge3" inherits="GuildChallengeTemplate" id="3">
 						<Anchors>
 							<Anchor point="TOP" relativeTo="$parentChallenge2" relativePoint="BOTTOM" x="0" y="-7"/>
 						</Anchors>
 					</Frame>
-					<Frame name="$parentChallenge4" parentArray="Challenges" inherits="GuildChallengeTemplate" id="4">
+					<Frame name="$parentChallenge4" inherits="GuildChallengeTemplate" id="4">
 						<Anchors>
 							<Anchor point="TOP" relativeTo="$parentChallenge3" relativePoint="BOTTOM" x="0" y="-7"/>
 						</Anchors>
@@ -1836,8 +1848,17 @@
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parentHeader2" relativePoint="BOTTOMLEFT" x="14" y="-2"/>
 						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self.scrollBarHideable = true;
+								self.noScrollThumb = true;
+								ScrollBar_AdjustAnchors(GuildInfoFrameInfoMOTDScrollFrameScrollBar, 2, -2);
+								GuildInfoFrameInfoMOTDScrollFrameScrollBar:Hide();
+								ScrollFrame_OnLoad(self);
+							</OnLoad>
+						</Scripts>
 						<ScrollChild>
-							<SimpleHTML name="GuildInfoMOTD" disallowFormatting="true">
+							<SimpleHTML name="GuildInfoMOTD">
 								<Size x="284" y="44"/>
 								<Scripts>
 									<OnHyperlinkClick>
@@ -1849,15 +1870,6 @@
 								</FontString>
 							</SimpleHTML>
 						</ScrollChild>
-						<Scripts>
-							<OnLoad>
-								self.scrollBarHideable = true;
-								self.noScrollThumb = true;
-								ScrollBar_AdjustAnchors(GuildInfoFrameInfoMOTDScrollFrameScrollBar, 2, -2);
-								GuildInfoFrameInfoMOTDScrollFrameScrollBar:Hide();
-								ScrollFrame_OnLoad(self);
-							</OnLoad>
-						</Scripts>
 					</ScrollFrame>
 					<Button name="GuildInfoEditMOTDButton" text="GUILD_EDIT_TEXT_LINK" hidden="true">
 						<Anchors>
@@ -2001,12 +2013,12 @@
 							<Layer level="ARTWORK">
 								<FontString name="GuildRecruitmentQuestText" inherits="GameFontHighlightSmall" text="GUILD_INTEREST_QUEST">
 									<Anchors>
-										<Anchor point="TOPLEFT" x="31" y="-26"/>
+										<Anchor point="TOPLEFT" x="31" y="-25"/>
 									</Anchors>
 								</FontString>
 								<FontString name="GuildRecruitmentRaidText" inherits="GameFontHighlightSmall" text="GUILD_INTEREST_RAID">
 									<Anchors>
-										<Anchor point="TOPRIGHT" x="-12" y="-26"/>
+										<Anchor point="TOPRIGHT" x="-12" y="-25"/>
 									</Anchors>
 								</FontString>
 							</Layer>
@@ -2101,50 +2113,54 @@
 							<Anchor point="TOPLEFT" relativeTo="GuildRecruitmentInterestFrame" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
 						</Anchors>
 						<Frames>
-							<CheckButton name="GuildRecruitmentWeekdaysButton" inherits="GuildRecruitmentCheckButtonTemplate" id="6">
-								<Size>
-									<AbsDimension x="20" y="20"/>
-								</Size>
+							<Frame name="$parentAvailabilityDropdown" parentKey="AvailabilityDropdown" inherits="UIDropDownMenuTemplate">
+								<Size x="100" y="20"/>
 								<Anchors>
-									<Anchor point="TOP" x="0" y="-21"/>
-									<Anchor point="LEFT" relativeTo="GuildRecruitmentQuestButton" relativePoint="LEFT"/>
+									<Anchor point="LEFT" x="-12" y="-8"/>
 								</Anchors>
 								<Layers>
 									<Layer level="ARTWORK">
-										<FontString name="$parentText" inherits="GameFontHighlightSmall" text="GUILD_AVAILABILITY_WEEKDAYS">
+										<FontString name="$parentLabel" parentKey="Label" text="GUILD_AVAILABILITY" justifyH="LEFT" inherits="GameFontNormal">
 											<Anchors>
-												<Anchor point="LEFT" relativePoint="RIGHT">
-													<Offset>
-														<AbsDimension x="3" y="0"/>
-													</Offset>
-												</Anchor>
+												<Anchor point="TOPLEFT" x="20" y="13"/>
 											</Anchors>
 										</FontString>
 									</Layer>
 								</Layers>
-							</CheckButton>
-							<CheckButton name="GuildRecruitmentWeekendsButton" inherits="GuildRecruitmentCheckButtonTemplate" id="7">
-								<Size>
-									<AbsDimension x="20" y="20"/>
-								</Size>
+								<Scripts>
+									<OnLoad>
+										UIDropDownMenu_SetWidth(self, 120);
+										UIDropDownMenu_JustifyText(self, "LEFT");
+									</OnLoad>
+									<OnShow>
+										UIDropDownMenu_Initialize(self, GuildRecruitmentAvailabilityDropDown_Initialize);
+									</OnShow>
+								</Scripts>
+							</Frame>
+							<Frame name="$parentActivityDropdown" parentKey="ActivityDropdown" inherits="UIDropDownMenuTemplate">
+								<Size x="100" y="20"/>
 								<Anchors>
-									<Anchor point="TOP" x="0" y="-21"/>
-									<Anchor point="LEFT" relativeTo="GuildRecruitmentDungeonButton" relativePoint="LEFT"/>
+									<Anchor point="RIGHT" x="12" y="-8"/>
 								</Anchors>
 								<Layers>
 									<Layer level="ARTWORK">
-										<FontString name="$parentText" inherits="GameFontHighlightSmall" text="GUILD_AVAILABILITY_WEEKENDS">
+										<FontString name="$parentLabel" parentKey="Label" text="GUILD_ACTIVITY_TIME" justifyH="LEFT" inherits="GameFontNormal">
 											<Anchors>
-												<Anchor point="LEFT" relativePoint="RIGHT">
-													<Offset>
-														<AbsDimension x="3" y="0"/>
-													</Offset>
-												</Anchor>
+												<Anchor point="TOPLEFT" x="20" y="13"/>
 											</Anchors>
 										</FontString>
 									</Layer>
 								</Layers>
-							</CheckButton>
+								<Scripts>
+									<OnLoad>
+										UIDropDownMenu_SetWidth(self, 120);
+										UIDropDownMenu_JustifyText(self, "LEFT");
+									</OnLoad>
+									<OnShow>
+										UIDropDownMenu_Initialize(self, GuildRecruitmentActivityDropDown_Initialize);
+									</OnShow>
+								</Scripts>
+							</Frame>
 						</Frames>
 					</Frame>
 					<Frame name="GuildRecruitmentRolesFrame" inherits="GuildRecruitmentSectionTemplate">
@@ -2156,7 +2172,7 @@
 								<Anchors>
 									<Anchor point="TOPLEFT">
 										<Offset>
-											<AbsDimension x="30" y="-24"/>
+											<AbsDimension x="30" y="-23"/>
 										</Offset>
 									</Anchor>
 								</Anchors>
@@ -2172,7 +2188,7 @@
 								<Anchors>
 									<Anchor point="TOP">
 										<Offset>
-											<AbsDimension x="1" y="-24"/>
+											<AbsDimension x="1" y="-23"/>
 										</Offset>
 									</Anchor>
 								</Anchors>
@@ -2188,7 +2204,7 @@
 								<Anchors>
 									<Anchor point="TOPRIGHT">
 										<Offset>
-											<AbsDimension x="-30" y="-24"/>
+											<AbsDimension x="-30" y="-23"/>
 										</Offset>
 									</Anchor>
 								</Anchors>
@@ -2210,13 +2226,13 @@
 							<Layer level="ARTWORK">
 								<FontString name="GuildRecruitmentLevelAnyText" inherits="GameFontHighlightSmall" text="GUILD_RECRUITMENT_ANYLEVEL">
 									<Anchors>
-										<Anchor point="TOP" x="0" y="-26"/>
+										<Anchor point="TOP" x="0" y="-25"/>
 										<Anchor point="LEFT" relativeTo="GuildRecruitmentQuestText"/>
 									</Anchors>
 								</FontString>
 								<FontString name="GuildRecruitmentLevelMaxText" inherits="GameFontHighlightSmall" text="GUILD_RECRUITMENT_MAXLEVEL">
 									<Anchors>
-										<Anchor point="TOP" x="0" y="-26"/>
+										<Anchor point="TOP" x="0" y="-25"/>
 										<Anchor point="LEFT" relativeTo="GuildRecruitmentDungeonText"/>
 									</Anchors>
 								</FontString>

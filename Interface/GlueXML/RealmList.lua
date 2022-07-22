@@ -35,16 +35,18 @@ function _G.RequestRealmList(...)
 	table.wipe(REALM_SET)
 	table.wipe(REALM_ARRAY)
 
-	local name, numCharacters, invalidRealm, realmDown, currentRealm, pvp, rp, load, locked, major, minor, revision, build, types
-
 	for realmZone = 1, MAX_REALM_ZONE do
-		for realmID = 1, MAX_REALM_COUNT do
-			name, numCharacters, invalidRealm, realmDown, currentRealm, pvp, rp, load, locked, major, minor, revision, build, types = _GetRealmInfo(realmZone, realmID)
+		local realmID = 1
+		local name, numCharacters, invalidRealm, realmDown, currentRealm, pvp, rp, load, locked, major, minor, revision, build, types = _GetRealmInfo(realmZone, realmID)
 
+		while name do
 			if name and not REALM_SET[name] then
 				REALM_ARRAY[#REALM_ARRAY + 1] = {name, numCharacters, invalidRealm, realmDown, currentRealm, pvp, rp, load, locked, major, minor, revision, build, types, realmZone, realmID}
 				REALM_SET[name] = -1
 			end
+
+			realmID = realmID + 1
+			name, numCharacters, invalidRealm, realmDown, currentRealm, pvp, rp, load, locked, major, minor, revision, build, types = _GetRealmInfo(realmZone, realmID)
 		end
 	end
 
@@ -492,8 +494,8 @@ function RealmList_Update()
 				frame:SetDisabledRealm(realmDown)
 				frame.ProxyFrame:SetShown(false)
 			else
-				frame:SetDisabledRealm(frame.entryList[1].realmDown)
-				frame.ProxyFrame:SetShown(true)
+				frame:SetDisabledRealm(#frame.entryList == 0 or frame.entryList[1].realmDown)
+				frame.ProxyFrame:SetShown(#frame.entryList ~= 0)
 			end
 		end
 	end
@@ -736,6 +738,7 @@ function RealmProxyDialogMixin:SetStep(step)
 		self:SetupHelpFrame()
 	elseif step == 3 then
 		RealmList.EntryPoint.BG:Hide()
+		RealmList.EntryPoint.HelpArrow:Hide()
 		RealmList.EntryPoint:SetFrameStrata(RealmList.EntryPoint._strata)
 		RealmList.EntryPoint:SetFrameLevel(RealmList.EntryPoint._flevel)
 		RealmList.EntryPoint._strata = nil
@@ -805,24 +808,25 @@ end
 
 function RealmProxyDialogMixin:SetupHelpFrame()
 	self.HelpHightlight.Left:ClearAllPoints()
-	self.HelpHightlight.Left:SetPoint("TOPRIGHT", RealmList.EntryPoint, "TOPLEFT", -5, 0)
-	self.HelpHightlight.Left:SetPoint("BOTTOMRIGHT", RealmList.EntryPoint, "BOTTOMLEFT", -5, 0)
+	self.HelpHightlight.Left:SetPoint("TOPRIGHT", RealmList.EntryPoint.BG, "TOPLEFT", 0, 0)
+	self.HelpHightlight.Left:SetPoint("BOTTOMRIGHT", RealmList.EntryPoint.BG, "BOTTOMLEFT", 0, 0)
 	self.HelpHightlight.Left:SetPoint("LEFT", GlueParent, "LEFT", 0, 0)
 
 	self.HelpHightlight.Right:ClearAllPoints()
-	self.HelpHightlight.Right:SetPoint("TOPLEFT", RealmList.EntryPoint, "TOPRIGHT", 5, 0)
-	self.HelpHightlight.Right:SetPoint("BOTTOMLEFT", RealmList.EntryPoint, "BOTTOMRIGHT", 5, 0)
+	self.HelpHightlight.Right:SetPoint("TOPLEFT", RealmList.EntryPoint.BG, "TOPRIGHT", 0, 0)
+	self.HelpHightlight.Right:SetPoint("BOTTOMLEFT", RealmList.EntryPoint.BG, "BOTTOMRIGHT", 0, 0)
 	self.HelpHightlight.Right:SetPoint("RIGHT", GlueParent, "RIGHT", 0, 0)
 
 	self.HelpHightlight.Top:ClearAllPoints()
 	self.HelpHightlight.Top:SetPoint("TOPLEFT", GlueParent, "TOPLEFT", 0, 0)
-	self.HelpHightlight.Top:SetPoint("BOTTOMRIGHT", self.HelpHightlight.Right, "TOPRIGHT", 0, 5)
+	self.HelpHightlight.Top:SetPoint("BOTTOMRIGHT", self.HelpHightlight.Right, "TOPRIGHT", 0, 0)
 
 	self.HelpHightlight.Bottom:ClearAllPoints()
 	self.HelpHightlight.Bottom:SetPoint("BOTTOMLEFT", GlueParent, "BOTTOMLEFT", 0, 0)
-	self.HelpHightlight.Bottom:SetPoint("TOPRIGHT", self.HelpHightlight.Right, "BOTTOMRIGHT", 0, -5)
+	self.HelpHightlight.Bottom:SetPoint("TOPRIGHT", self.HelpHightlight.Right, "BOTTOMRIGHT", 0, 0)
 
 	RealmList.EntryPoint.BG:Show()
+	RealmList.EntryPoint.HelpArrow:Show()
 	RealmList.EntryPoint._strata = RealmList.EntryPoint:GetFrameStrata()
 	RealmList.EntryPoint._flevel = RealmList.EntryPoint:GetFrameLevel()
 	RealmList.EntryPoint:SetFrameStrata("FULLSCREEN")
@@ -835,6 +839,7 @@ RealmEntryPointMixin = {}
 
 function RealmEntryPointMixin:OnLoad()
 	self.buttonPool = CreateFramePool("Button", self, "RealmEntrySelectButtonTemplate")
+	SetClampedTextureRotation(self.HelpArrow, 90)
 end
 
 local ENTRY_BUTTON_OFFSET = -3

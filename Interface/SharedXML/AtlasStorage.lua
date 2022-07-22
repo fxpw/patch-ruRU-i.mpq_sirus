@@ -4914,4 +4914,11 @@ S_ATLAS_STORAGE = {
 	["GlueDark-stageCheckMark"] = { 78, 78, 0.189453125, 0.341796875, 0.45703125, 0.609375, false, false, "Interface/Custom_Glues/GlueDark/generic" },
 	["GlueDark-stepLine"] = { 1, 147, 0.6953125, 0.697265625, 0.5859375, 0.873046875, false, false, "Interface/Custom_Glues/GlueDark/generic" },
 	["GlueDark-xMark"] = { 31, 31, 0.1328125, 0.193359375, 0.865234375, 0.92578125, false, false, "Interface/Custom_Glues/GlueDark/generic" },
+
+	["guildfinder-card-guildbanner-background"] = {246, 168, 0.176758, 0.416992, 0.080078, 0.2441405, false, false, "Interface/GuildFrame/CommunitiesFinder"},
+	["guildfinder-card-guildbanner-border"] = {246, 168, 0.176758, 0.416992, 0.246094, 0.410156, false, false, "Interface/GuildFrame/CommunitiesFinder"},
+	["guildfinder-card-guildbanner-shadow"] = {246, 168, 0.418945, 0.65918, 0.080078, 0.2441405, false, false, "Interface/GuildFrame/CommunitiesFinder"},
+	["guildfinder-card"] = {178, 264, 0.000976562, 0.174805, 0.00097656, 0.258789, false, false, "Interface/GuildFrame/CommunitiesFinder"},
+	["communitiesfinder-card"] = {570, 71, 0.418945, 0.975586, 0.246094, 0.3154295, false, false, "Interface/GuildFrame/CommunitiesFinder"},
+	["communitiesfinder_card_highlight"] = {578, 79, 0.176758, 0.741211, 0.00097656, 0.078125, false, false, "Interface/GuildFrame/CommunitiesFinder"},
 }

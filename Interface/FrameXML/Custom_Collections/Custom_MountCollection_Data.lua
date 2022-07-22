@@ -7719,7 +7719,7 @@ COLLECTION_MOUNTDATA = {
         expansion = 0,
         inhabitType = 0,
         priceText = "",
-        descriptionText = [[]],
+        descriptionText = [[Самый верный оруженосец никогда не подведет тебя, и проведет сквозь облака, горы и грязь, но последнее - не точно.]],
         flags = 0,
     },
     {
@@ -8445,7 +8445,7 @@ COLLECTION_MOUNTDATA = {
         expansion = 0,
         inhabitType = 0,
         priceText = "",
-        descriptionText = [[]],
+        descriptionText = [[Грозный корабль, поднятый со дна морского лиходеями Пиратской Бухты, несет свое ужасающее приветствие в каждый порт Азерота.]],
         flags = 0,
     },
     {
@@ -28249,7 +28249,7 @@ COLLECTION_MOUNTDATA = {
         expansion = 256,
         inhabitType = 2,
         priceText = "",
-        descriptionText = [[]],
+        descriptionText = [[Сотворенный из драгоценностей и оживленный самой госпожой Удачей, Везунчик Юнь бороздит Азерот и дарит везение всем, кто его увидит.]],
         flags = 0,
     },
     {

@@ -594,8 +594,28 @@ GlueDialogTypes["CONFIRM_LAUNCH_ADDON_URL"] = {
 	end
 }
 
+GlueDialogTypes["OKAY_REALM_DOWN"] = {
+	text = "",
+	button1 = OKAY,
+	button2 = nil,
+	OnAccept = function()
+		StatusDialogClick()
+		if RealmList:IsShown() then
+			RealmListUpdate()
+		else
+			RequestRealmList(1)
+		end
+	end,
+	OnCancel = function()
+	end,
+}
+
 local DELAYED_DIALOGUES = {
 	[CHAR_LIST_RETRIEVING] = true,
+}
+
+local REALM_DOWN_DIALOGUES = {
+	[REALM_LIST_REALM_NOT_FOUND] = true,
 }
 
 local DIALOG_BACKGROUND_OFFSET_X = 100
@@ -632,6 +652,8 @@ function GlueDialogMixin:OPEN_STATUS_DIALOG(event, which, text, data)
 		self.dialogTimer = C_Timer:NewTicker(0.5, function()
 			self:ShowDialog(which, text, data)
 		end, 1)
+	elseif which == "OKAY" and REALM_DOWN_DIALOGUES[text] then
+		self:ShowDialog("OKAY_REALM_DOWN", text, data)
 	else
 		self:ShowDialog(which, text, data)
 	end

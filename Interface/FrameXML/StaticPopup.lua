@@ -168,7 +168,7 @@ StaticPopupDialogs["CONFIRM_EXCHANGE_LEGENDARY_ITEM"] = {
 	end,
 	EditBoxOnTextChanged = function (self)
 		local parent = self:GetParent()
-		if string.upper(parent.editBox:GetText()) == CONFIRM_EXCHANGE_LEGENDARY_TEXT then
+		if string.upper(parent.editBox:GetText()) == CONFIRM_TEXT_AGREE then
 			parent.button1:Enable()
 		else
 			parent.button1:Disable()
@@ -1555,6 +1555,9 @@ StaticPopupDialogs["PARTY_INVITE"] = {
 	OnShow = function(self)
 		if GetCVarBool("devPartyAutoJoin") then
 			AcceptGroup()
+			self.inviteAccepted = 1
+			self:Hide()
+			return
 		end
 		self.inviteAccepted = nil;
 	end,
@@ -2431,6 +2434,48 @@ StaticPopupDialogs["UNLEARN_SKILL"] = {
 	exclusive = 1,
 	whileDead = 1,
 	showAlert = 1,
+	hideOnEscape = 1
+};
+StaticPopupDialogs["UNLEARN_PROFESSION"] = {
+	text = UNLEARN_PROFESSION,
+	button1 = DECLINE,
+	button2 = CANCEL,
+	OnAccept = function(self, index)
+		AbandonSkill(index);
+	end,
+	OnShow = function(self)
+		self.button1:Disable();
+		self.button2:Enable();
+		self.editBox:SetFocus();
+	end,
+	OnHide = function(self)
+		ChatEdit_FocusActiveWindow();
+		self.editBox:SetText("");
+	end,
+	EditBoxOnEnterPressed = function(self, index)
+		if ( self:GetParent().button1:IsEnabled() == 1 ) then
+			AbandonSkill(index);
+			self:GetParent():Hide();
+		end
+	end,
+	EditBoxOnTextChanged = function(self)
+		local parent = self:GetParent()
+		if string.upper(parent.editBox:GetText()) == CONFIRM_TEXT_AGREE then
+			parent.button1:Enable()
+		else
+			parent.button1:Disable()
+		end
+	end,
+	EditBoxOnEscapePressed = function(self)
+		self:GetParent():Hide()
+		ClearCursor()
+	end,
+	timeout = 60,
+	exclusive = 1,
+	whileDead = 1,
+	showAlert = 1,
+	hasEditBox = 1,
+	maxLetters = 32,
 	hideOnEscape = 1
 };
 StaticPopupDialogs["XP_LOSS"] = {
@@ -3576,8 +3621,8 @@ StaticPopupDialogs["WARMODE_TOGGLE"] = {
 	hideOnEscape = 1,
 };
 
-StaticPopupDialogs["GUILD_RECRUITMENT_URL"] = {
-	text = GUILD_RECRUITMENT_URL_TEXT,
+StaticPopupDialogs["LOOKING_FOR_GUILD_URL"] = {
+	text = "%s",
 	button1 = OKAY,
 	hasEditBox = 1,
 	hasWideEditBox = 1,

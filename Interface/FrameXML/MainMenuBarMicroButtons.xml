@@ -352,6 +352,9 @@
 				self.Description = NEWBIE_TOOLTIP_LOOKINGFORGUILDTAB
 				self:RegisterEvent("UPDATE_BINDINGS")
 				self:RegisterEvent("PLAYER_GUILD_UPDATE")
+
+				self:RegisterCustomEvent("LF_GUILD_RECRUIT_LIST_CHANGED")
+				self:RegisterCustomEvent("LF_GUILD_MEMBERSHIP_LIST_CHANGED")
 			</OnLoad>
 			<OnEvent function="GuildMicroButton_OnEvent"/>
 			<OnClick>

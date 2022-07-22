@@ -36692,7 +36692,7 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Обратите внимание что вы отдадите торговцу предмет легендарного качества, это действие будет невозможно отменить.",
 		enGB = ""
 	},
-	["CONFIRM_EXCHANGE_LEGENDARY_TEXT"] = {
+	["CONFIRM_TEXT_AGREE"] = {
 		ruRU = "СОГЛАСЕН",
 		enGB = ""
 	},
@@ -39732,6 +39732,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Утратить навык \"%s\"?",
         enGB = "Do you want to unlearn %s?"
     },
+	["UNLEARN_PROFESSION"] = {
+		ruRU = "Вы хотите отказаться от профессии \"%s\"\nВведите \"Согласен\" для подтверждения действия.",
+		enGB = ""
+	},
     ["ENTERING_COMBAT"] = {
         ruRU = "Бой начинается",
         enGB = "Entering Combat"
@@ -43212,6 +43216,38 @@ local SIRUS_LOCALIZATION = {
 	    ruRU = "%d |4участник:участника:участников;",
 	    enGB = "%d members"
     },
+    ["GUILD_ACTIVITY_TIME"] = {
+	    ruRU = "Время активности",
+	    enGB = ""
+    },
+    ["GUILD_ACTIVITY_TIME_MORNING"] = {
+	    ruRU = "Утро (08-12 по мск)",
+	    enGB = ""
+    },
+    ["GUILD_ACTIVITY_TIME_DAY"] = {
+	    ruRU = "День (12-18 по мск)",
+	    enGB = ""
+    },
+    ["GUILD_ACTIVITY_TIME_EVENING"] = {
+	    ruRU = "Вечер (18-23 по мск)",
+	    enGB = ""
+    },
+    ["GUILD_ACTIVITY_TIME_NIGHT"] = {
+	    ruRU = "Ночь (23-08 по мск)",
+	    enGB = ""
+    },
+    ["GUILD_SMALL"] = {
+	    ruRU = "Небольшая",
+	    enGB = "Small"
+    },
+    ["GUILD_MEDIUM"] = {
+	    ruRU = "Средняя",
+	    enGB = "Medium"
+    },
+    ["GUILD_LARGE"] = {
+	    ruRU = "Большая",
+	    enGB = "Large"
+    },
     ["GUILD_AVAILABILITY"] = {
 	    ruRU = "Доступность",
 	    enGB = "Availability"
@@ -43348,16 +43384,76 @@ local SIRUS_LOCALIZATION = {
 	    ruRU = "Ваша гильдия ищет лекаря.",
 	    enGB = "Indicates your guild is looking for a healer."
     },
-    ["LOOKINGFORGUILD"] = {
-	    ruRU = "Поиск гильдии",
-	    enGB = "Guild Finder"
-    },
+	["LOOKING_FOR_GUILD_CANCEL_APPLICATION"] = {
+		ruRU = "Отменить заявку",
+		enGB = "Cancel Application"
+	},
+	["LOOKING_FOR_GUILD_PENDING_LIST"] = {
+		ruRU = "Ваши заявки",
+		enGB = "Pending List"
+	},
+	["LOOKING_FOR_GUILD_MULTIPLE_CHECKED"] = {
+		ruRU = "Несколько",
+		enGB = "Multiple"
+	},
+	["LOOKING_FOR_GUILD_ANY_FLAG"] = {
+		ruRU = "Неважно",
+		enGB = "Any"
+	},
+	["LOOKING_FOR_GUILD_SIZE"] = {
+		ruRU = "Размер гильдии",
+		enGB = "Guild Size"
+	},
+	["LOOKING_FOR_GUILD_REQUEST_TO_JOIN"] = {
+		ruRU = "Отправить запрос",
+		enGB = "Request to Join"
+	},
+	["LOOKING_FOR_GUILD_FOCUS_STRING"] = {
+		ruRU = "Цель: %s",
+		enGB = "Focus: %s"
+	},
+	["LOOKING_FOR_GUILD_FOCUS_STRING"] = {
+		ruRU = "Цель: %s",
+		enGB = "Focus: %s"
+	},
+	["LOOKING_FOR_GUILD_PENDING_REQUESTS"] = {
+		ruRU = "Запросы (%d)",
+		enGB = "Pending (%d)"
+	},
+	["LOOKING_FOR_GUILD_NO_OPTIONS_SELECTED_GUILD_MESSAGE"] = {
+		ruRU = "Гильдия – это сплоченная группа игроков, которые вместе ищут приключений. Членство в гильдии дает множество преимуществ вроде общего банка и чата.\n\nС помощью этой функции вы легко найдете гильдию себе по вкусу.",
+		enGB = "A guild is a tight-knit group of players who want to enjoy the game together. By joining a guild, you'll gain access to many benefits, including a shared guild bank and a guild chat channel.\n\nUse this tool to find a guild that fits your playstyle."
+	},
+	["LOOKING_FOR_GUILD_SEARCH_NOTHING_FOUND"] = {
+		ruRU = "Ничего не найдено. Попробуйте изменить условия поиска.",
+		enGB = "No results found. Try adjusting your search criteria."
+	},
+	["LOOKING_FOR_GUILD_RECRUITING_NOTE"] = {
+		ruRU = "Сообщение для лидера (необязательно).",
+		enGB = "Optional note to the leader."
+	},
+	["LOOKING_FOR_GUILD_FINDER_LOOKING_FOR"] = {
+		ruRU = "Мы ищем:",
+		enGB = "Looking For:"
+	},
+	["LOOKING_FOR_GUILD_GUILD_LEVEL"] = {
+		ruRU = "Уровень гильдии: |cffffffff%d|r",
+		enGB = "Guild Level |cffffffff%d|r"
+	},
+	["LOOKING_FOR_GUILD_ACTIVE_MEMBERS"] = {
+		ruRU = "Активных участников: |cffffffff%d|r",
+		enGB = "Active Members: |cffffffff%d|r"
+	},
     ["NEWBIE_TOOLTIP_LOOKINGFORGUILDTAB"] = {
 	    ruRU = "Позволяет найти себе гильдию.",
 	    enGB = "Allows you to find a guild."
     },
     ["GUILD_RECRUITMENT_URL_TEXT"] = {
 	    ruRU = "Ссылка для просмотра персонажа на сайте указана ниже.",
+	    enGB = ""
+    },
+    ["GUILD_RECRUITING_URL_TEXT"] = {
+	    ruRU = "Ссылка для просмотра гильдии на сайте указана ниже.",
 	    enGB = ""
     },
     ["TALENT_FRAME_POPUP_TEXT"] = {
