@@ -165,7 +165,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						if ( GetNumAddOns() == 0 or true ) then
+						if ( GetNumAddOns() == 0 ) then
 							self:SetParent(GameMenuButtonMacros);
 							self:SetPoint("TOP", GameMenuButtonMacros, "BOTTOM", 0, -1);
 							GameMenuFrame:SetHeight(270);

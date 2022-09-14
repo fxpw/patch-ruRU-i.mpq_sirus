@@ -663,7 +663,10 @@
 						</Frames>
 						<Scripts>
 							<OnShow>
-								local faction = UnitFactionGroup("player") or "Alliance"
+								local faction = UnitFactionGroup("player")
+								if not faction or faction == "Neutral" then
+									faction = "Alliance"
+								end
 								self.FactionLogo:SetAtlas("BfAMissionsLandingPage-Background-"..faction, true)
 							</OnShow>
 						</Scripts>
@@ -858,7 +861,7 @@
 										<Texture name="$parentLeft" file="Interface\Common\Common-Input-Border">
 											<Size x="8" y="20"/>
 											<Anchors>
-												<Anchor point="TOPLEFT" x="-8" y="0"/>
+												<Anchor point="LEFT" x="-8" y="0"/>
 											</Anchors>
 											<TexCoords left="0" right="0.0625" top="0" bottom="0.625"/>
 										</Texture>

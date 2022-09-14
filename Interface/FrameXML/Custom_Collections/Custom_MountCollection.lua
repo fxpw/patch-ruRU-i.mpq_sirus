@@ -490,7 +490,6 @@ local categoryData = {
 
 local CastSpellByID = CastSpellByID
 
-SIRUS_MOUNTJOURNAL_FAVORITE_PET = {}
 SIRUS_MOUNTJOURNAL_PRODUCT_DATA = {}
 
 local MOUNTJOURNAL_MOUNT_DATA_BY_HASH = {}
@@ -508,7 +507,7 @@ local SUB_CATEGORY_FILTER;
 local MOUNTJOURNAL_FILTER_COLLECTED;
 local MOUNTJOURNAL_FILTER_NOT_COLLECTED;
 local MOUNTJOURNAL_FILTER_TYPES = {};
-local MOUNTJOURNAL_FILTER_SOURCES = {};
+local MOUNTJOURNAL_FILTER_SOURCES = 0;
 local MOUNTJOURNAL_FILTER_EXPANSIONS = {};
 local MOUNTJOURNAL_FILTER_FACTIONS = {};
 
@@ -553,9 +552,6 @@ function MountJournal_OnLoad( self, ... )
 	self:RegisterEvent("PLAYER_LOGIN")
 	self:RegisterEvent("UNIT_ENTERED_VEHICLE")
 
-	self:RegisterEvent("PLAYER_ENTERING_WORLD");
-	self:RegisterEvent("PLAYER_TALENT_UPDATE");
-
 	UIDropDownMenu_Initialize(self.mountOptionsMenu, MountOptionsMenu_Init, "MENU")
 end
 
@@ -577,15 +573,6 @@ function MountJournal_OnEvent( self, event, arg1, ... )
 		if self:IsVisible() then
 			MountJournal_UpdateFilter(true)
 		end
-	elseif event == "PLAYER_ENTERING_WORLD" then
-		self:RegisterEvent("COMMENTATOR_ENTER_WORLD");
-		self:UnregisterEvent(event);
-	elseif event == "COMMENTATOR_ENTER_WORLD" then
-		table.wipe(SIRUS_MOUNTJOURNAL_FAVORITE_PET);
-		self:UnregisterEvent(event);
-	elseif event == "PLAYER_TALENT_UPDATE" then
-		self:UnregisterEvent("COMMENTATOR_ENTER_WORLD");
-		self:UnregisterEvent(event);
 	end
 end
 
@@ -846,12 +833,6 @@ function MountJournal_OnShow( self, ... )
 	MountJournal.bottomFrame:SetShown(false)
 	MountJournal.RightBottomInset:SetShown(false)
 
-	for _, v in pairs(SIRUS_MOUNTJOURNAL_FAVORITE_PET) do
-		if MOUNTJOURNAL_MOUNT_DATA_BY_HASH and MOUNTJOURNAL_MOUNT_DATA_BY_HASH[v] then
-			MOUNTJOURNAL_MOUNT_DATA_BY_HASH[v].isFavorite = true
-		end
-	end
-
 	for i = 1, #SIRUS_MOUNTJOURNAL_PRODUCT_DATA do
 		local data = SIRUS_MOUNTJOURNAL_PRODUCT_DATA[i]
 		if data and data.hash and MOUNTJOURNAL_MOUNT_DATA_BY_HASH and MOUNTJOURNAL_MOUNT_DATA_BY_HASH[data.hash] then
@@ -907,7 +888,7 @@ local function MountJournal_CheckSubCategoryFilter(data)
 			return true;
 		end
 	elseif SUB_CATEGORY_FILTER == SUB_CATEGORY_FAVORITES then
-		if data.isFavorite then
+		if SIRUS_MOUNTJOURNAL_FAVORITE_PET[data.hash] then
 			return true;
 		end
 	else
@@ -953,8 +934,12 @@ local function MountJournal_CheckFilter(data, hasHiddenType, hasHiddenSource, ha
 	end
 
 	if hasHiddenSource then
-		local sourceType = (data.currency ~= 0 and 7 or SOURCE_TYPES[data.lootType]);
-		if not sourceType or MOUNTJOURNAL_FILTER_SOURCES[sourceType] then
+		local sourceFlag = data.lootType ~= 0 and bit.lshift(1, ((data.currency ~= 0 and data.lootType ~= 15 and 7 or SOURCE_TYPES[data.lootType]) or 1) - 1) or 0;
+		if data.holidayText ~= "" then
+			sourceFlag = bit.bor(sourceFlag, bit.lshift(1, 6 - 1));
+		end
+
+		if bit.band(MOUNTJOURNAL_FILTER_SOURCES, sourceFlag) ~= sourceFlag then
 			return false;
 		end
 	end
@@ -1107,7 +1092,7 @@ function MountJournal_UpdateFilter(doNotUpdateScroll)
 	MOUNTJOURNAL_MASTER_DATA = {}
 
 	local hasHiddenType = next(MOUNTJOURNAL_FILTER_TYPES);
-	local hasHiddenSource = next(MOUNTJOURNAL_FILTER_SOURCES);
+	local hasHiddenSource = MOUNTJOURNAL_FILTER_SOURCES ~= 0;
 	local hasHiddenExpansion = next(MOUNTJOURNAL_FILTER_EXPANSIONS);
 	local hasHiddenFaction = next(MOUNTJOURNAL_FILTER_FACTIONS);
 
@@ -1156,10 +1141,10 @@ function MountJournal_UpdateSort()
 			return false
 		end
 		if a.mountIndex and b.mountIndex then
-			if a.isFavorite and not b.isFavorite then
+			if SIRUS_MOUNTJOURNAL_FAVORITE_PET[a.hash] and not SIRUS_MOUNTJOURNAL_FAVORITE_PET[b.hash] then
 				return true
 			end
-			if not a.isFavorite and b.isFavorite then
+			if not SIRUS_MOUNTJOURNAL_FAVORITE_PET[a.hash] and SIRUS_MOUNTJOURNAL_FAVORITE_PET[b.hash] then
 				return false
 			end
 		end
@@ -1263,7 +1248,7 @@ function MountJournal_UpdateMountList()
 				button.name:SetFontObject("GameFontDisable")
 			end
 
-			button.favorite:SetShown(data.isFavorite)
+			button.favorite:SetShown(not not SIRUS_MOUNTJOURNAL_FAVORITE_PET[data.hash])
 			button.MountJournalIcons_Horde:SetShown(data.factionSide and data.factionSide == 2)
 			button.MountJournalIcons_Alliance:SetShown(data.factionSide and data.factionSide == 1)
 
@@ -1359,12 +1344,12 @@ function MountOptionsMenu_Init(_ ,level, ... )
 	UIDropDownMenu_AddButton(info, level)
 
 	if data.mountIndex then
-		if data.isFavorite then
+		if SIRUS_MOUNTJOURNAL_FAVORITE_PET[data.hash] then
 			info.text = DELETE_FAVORITE
-			info.func = function() SendAddonMessage("ACMSG_C_M_REMOVE_FROM_FAVORITES", data.hash, "WHISPER", UnitName("player")) end
+			info.func = function() SendServerMessage("ACMSG_C_R_F", string.format("%d|%s", CHAR_COLLECTION_MOUNT, data.hash)) end
 		else
 			info.text = COMMUNITIES_LIST_DROP_DOWN_FAVORITE
-			info.func = function() SendAddonMessage("ACMSG_C_M_ADD_TO_FAVORITES", data.hash, "WHISPER", UnitName("player")) end
+			info.func = function() SendServerMessage("ACMSG_C_A_F", string.format("%d|%s", CHAR_COLLECTION_MOUNT, data.hash)) end
 		end
 		UIDropDownMenu_AddButton(info, level)
 	end
@@ -1443,7 +1428,7 @@ function MountJournal_UpdateMountDisplay()
 
 	MountJournal.MountDisplay.ModelScene.InfoButton.Icon:SetTexture(data.spellTexture)
 	MountJournal.MountDisplay.ModelScene.InfoButton.Name:SetText(data.spellName)
-	MountJournal.MountDisplay.ModelScene.InfoButton.Source:SetText(data.priceText)
+	MountJournal.MountDisplay.ModelScene.InfoButton.Source:SetFormattedText("%s%s", data.holidayText ~= "" and string.format("%s\n", data.holidayText) or "", data.priceText)
 	MountJournal.MountDisplay.ModelScene.InfoButton.Lore:SetText(data.descriptionText)
 
 	MountJournal.MountDisplay.ModelScene:Hide()
@@ -1489,7 +1474,7 @@ function MountJournal_UpdateFavoriteData()
 	if data then
 		MountJournal.MountDisplay.ModelScene.InfoButton.favoriteButton:SetShown(data.mountIndex)
 
-		if data.isFavorite then
+		if SIRUS_MOUNTJOURNAL_FAVORITE_PET[data.hash] then
 			MountJournal.MountDisplay.ModelScene.InfoButton.favoriteButton:SetChecked(true)
 			MountJournal.MountDisplay.ModelScene.InfoButton.favoriteButton.isFavorite = true
 		else
@@ -1502,10 +1487,10 @@ end
 function FavoriteButton_OnClick(_ , ... )
 	local data = MountJournal.data
 
-	if data.isFavorite then
-		SendAddonMessage("ACMSG_C_M_REMOVE_FROM_FAVORITES", data.hash, "WHISPER", UnitName("player"))
+	if SIRUS_MOUNTJOURNAL_FAVORITE_PET[data.hash] then
+		SendServerMessage("ACMSG_C_R_F", string.format("%d|%s", CHAR_COLLECTION_MOUNT, data.hash));
 	else
-		SendAddonMessage("ACMSG_C_M_ADD_TO_FAVORITES", data.hash, "WHISPER", UnitName("player"))
+		SendServerMessage("ACMSG_C_A_F", string.format("%d|%s", CHAR_COLLECTION_MOUNT, data.hash));
 	end
 end
 
@@ -1632,7 +1617,7 @@ function MountJournal_SetDefaultFilters()
 	MOUNTJOURNAL_FILTER_COLLECTED = nil;
 	MOUNTJOURNAL_FILTER_NOT_COLLECTED = nil;
 	table.wipe(MOUNTJOURNAL_FILTER_TYPES);
-	table.wipe(MOUNTJOURNAL_FILTER_SOURCES);
+	MOUNTJOURNAL_FILTER_SOURCES = 0;
 	table.wipe(MOUNTJOURNAL_FILTER_EXPANSIONS);
 	table.wipe(MOUNTJOURNAL_FILTER_FACTIONS);
 end
@@ -1641,7 +1626,7 @@ function MountJournal_IsUsingDefaultFilters()
 	if MOUNTJOURNAL_FILTER_COLLECTED or MOUNTJOURNAL_FILTER_NOT_COLLECTED then
 		return false;
 	end
-	if next(MOUNTJOURNAL_FILTER_TYPES) or next(MOUNTJOURNAL_FILTER_SOURCES) or next(MOUNTJOURNAL_FILTER_EXPANSIONS) or next(MOUNTJOURNAL_FILTER_FACTIONS) then
+	if next(MOUNTJOURNAL_FILTER_TYPES) or MOUNTJOURNAL_FILTER_SOURCES ~= 0 or next(MOUNTJOURNAL_FILTER_EXPANSIONS) or next(MOUNTJOURNAL_FILTER_FACTIONS) then
 		return false;
 	end
 	return true;
@@ -1672,16 +1657,25 @@ function MountJournal_GetTypeFilter(i)
 end
 
 function MountJournal_SetSourceFilter(i, value)
-	MOUNTJOURNAL_FILTER_SOURCES[i] = not value and true or nil;
+	value = not value
+
+	if value then
+		MOUNTJOURNAL_FILTER_SOURCES = bit.bor(MOUNTJOURNAL_FILTER_SOURCES, bit.lshift(1, i - 1));
+	else
+		MOUNTJOURNAL_FILTER_SOURCES = bit.band(MOUNTJOURNAL_FILTER_SOURCES, bit.bnot(bit.lshift(1, i - 1)));
+	end
 end
 
 function MountJournal_GetSourceFilter(i)
-	return not MOUNTJOURNAL_FILTER_SOURCES[i];
+	if bit.band(MOUNTJOURNAL_FILTER_SOURCES, bit.lshift(1, i - 1)) ~= 0 then
+		return false;
+	end
+	return true;
 end
 
 function MountJournal_SetAllSourceFilters(value)
 	for i = 1, C_PetJournal.GetNumPetSources() do
-		MOUNTJOURNAL_FILTER_SOURCES[i] = not value and true or nil;
+		MountJournal_SetSourceFilter(i, value);
 	end
 	UIDropDownMenu_Refresh(MountJournalFilterDropDown, UIDROPDOWNMENU_MENU_VALUE, UIDROPDOWNMENU_MENU_LEVEL);
 end
@@ -1831,34 +1825,6 @@ function MountColorButton_OnClick( self, ... )
 		if button and button:GetID() ~= self:GetID() then
 			button.CheckGlow:Hide()
 			button.LockIcon.CheckGlow:Hide()
-		end
-	end
-end
-
-function EventHandler:ACMSG_C_M_ADD_TO_FAVORITES( msg )
-	if MOUNTJOURNAL_MOUNT_DATA_BY_HASH[msg] then
-		MOUNTJOURNAL_MOUNT_DATA_BY_HASH[msg].isFavorite = true
-		table.insert(SIRUS_MOUNTJOURNAL_FAVORITE_PET, msg)
-	end
-
-	MountJournal_CreateData()
-	MountJournal_UpdateMountList()
-end
-
-function EventHandler:ASMSG_C_M_REMOVE_FROM_FAVORITES_R( msg )
-	if MOUNTJOURNAL_MOUNT_DATA_BY_HASH[msg] then
-		MOUNTJOURNAL_MOUNT_DATA_BY_HASH[msg].isFavorite = false
-		tDeleteItem(SIRUS_MOUNTJOURNAL_FAVORITE_PET, msg)
-	end
-
-	MountJournal_CreateData()
-	MountJournal_UpdateMountList()
-end
-
-function EventHandler:ASMSG_C_M_FAVORITES_LIST( msg )
-	for _, v in pairs({strsplit(",", msg)}) do
-		if v then
-			table.insert(SIRUS_MOUNTJOURNAL_FAVORITE_PET, v)
 		end
 	end
 end

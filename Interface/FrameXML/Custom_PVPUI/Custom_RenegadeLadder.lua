@@ -109,7 +109,7 @@ end
 
 ---@param key string
 ---@param value string | number | table
----@param isNeedTTL boolean
+---@param isNeedTTL? boolean
 function RenegadeLadderFrameMixin:SetCache( key, value, isNeedTTL )
     C_CacheInstance:Set(key, value, isNeedTTL and self.CacheTTL)
 end

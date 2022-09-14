@@ -1,4 +1,3 @@
----@class string
 local string = string
 local math = math
 
@@ -229,6 +228,9 @@ end
 	Desc: Removes leading and trailing spaces from a string.
 			Optionally pass char to trim that character from the ends instead of space
 -----------------------------------------------------------]]
+---@param s string
+---@param char string
+---@return string str
 function string.Trim( s, char )
 	if ( char ) then char = char:PatternSafe() else char = "%s" end
 	return string.match( s, "^" .. char .. "*(.-)" .. char .. "*$" ) or s
@@ -239,6 +241,9 @@ end
 	Desc: Removes trailing spaces from a string.
 			Optionally pass char to trim that character from the ends instead of space
 -----------------------------------------------------------]]
+---@param s string
+---@param char string
+---@return string str
 function string.TrimRight( s, char )
 	if ( char ) then char = char:PatternSafe() else char = "%s" end
 	return string.match( s, "^(.-)" .. char .. "*$" ) or s
@@ -249,6 +254,9 @@ end
 	Desc: Removes leading spaces from a string.
 			Optionally pass char to trim that character from the ends instead of space
 -----------------------------------------------------------]]
+---@param s string
+---@param char string
+---@return string str
 function string.TrimLeft( s, char )
 	if ( char ) then char = char:PatternSafe() else char = "%s" end
 	return string.match( s, "^" .. char .. "*(.+)$" ) or s

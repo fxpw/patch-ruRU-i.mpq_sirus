@@ -9,6 +9,7 @@ enum:E_SERVICE_DATA {
     "REALM_FLAG"
 }
 
+---@class C_ServiceMixin : Mixin
 C_ServiceMixin = {}
 
 function C_ServiceMixin:OnLoad()
@@ -105,7 +106,7 @@ function C_ServiceMixin:VARIABLES_LOADED()
     Hook:FireEvent("SERVICE_DATA_RECEIVED", self:IsGM(), self:GetRealmID(), self:IsStoreEnabled(), self:GetAccountID(), self:IsRenegadeRealm())
 end
 
----@class C_ServiceMixin
+---@class C_Service : C_ServiceMixin
 C_Service = CreateFromMixins(C_ServiceMixin)
 C_Service:OnLoad()
 

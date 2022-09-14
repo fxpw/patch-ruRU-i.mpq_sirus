@@ -711,7 +711,7 @@
 						<DisabledTexture file="Interface\ChatFrame\UI-ChatIcon-ScrollEnd-Disabled"/>
 						<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
 					</Button>
-					<Slider name="$parentScrollBar" parentKey="ScrollBar" obeyStepOnDrag="true" valueStep="1" minValue="0" maxValue="1" alpha="0" topLevel="true">
+					<Slider name="$parentScrollBar" parentKey="ScrollBar" obeyStepOnDrag="true" valueStep="1" minValue="0" maxValue="1" alpha="0" toplevel="true">
 						<Size x="22" y="0"/>
 						<ThumbTexture name="$parentThumbTexture" parentKey="ThumbTexture" atlas="chatframe-scrollbar-knob" file="Interface/ChatFrame/ChatFrame" useAtlasSize="true">
 							<Size x="21" y="19"/>
@@ -950,11 +950,11 @@
 		</Anchors>
 		<Layers>
 			<Layer level="ARTWORK">
-				<Fontstring name="$parentCount" inherits="GameFontHighlightSmall" text="0">
+				<FontString name="$parentCount" inherits="GameFontHighlightSmall" text="0">
 					<Anchors>
 						<Anchor point="BOTTOM" relativeTo="$parent" relativePoint="BOTTOM" x="0" y="4"/>
 					</Anchors>
-				</Fontstring>
+				</FontString>
 			</Layer>
 		</Layers>
 		<Scripts>

@@ -6,7 +6,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_PVPLadder.lua"/>
 
 	<Button name="PVPLadderCategoryButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
@@ -171,13 +172,13 @@
 							</Anchors>
 							<Color r="1" g="1" b="1"/>
 						</FontString>
-						<FontString name="$parentPlayerName" parentKey="PlayerName" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
+						<FontString name="$parentPlayerName" parentKey="PlayerName" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE">
 							<Size x="90" y="10"/>
 							<Anchors>
 								<Anchor point="LEFT" x="58" y="0" />
 							</Anchors>
 						</FontString>
-						<FontString name="$parentRating" parentKey="Rating" inherits="GameFontNormal" justifyH="CENTER" justifyV="CENTER">
+						<FontString name="$parentRating" parentKey="Rating" inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE">
 							<Size x="60" y="10"/>
 							<Anchors>
 								<Anchor point="RIGHT" x="-13" y="0" />
@@ -471,10 +472,6 @@
 							</Anchors>
 						</Texture>
 					</Layer>
-					<Layer level="ARTWORK">
-					</Layer>
-					<Layer level="OVERLAY">
-					</Layer>
 				</Layers>
 				<Scripts>
 					<OnShow>
@@ -511,7 +508,7 @@
 					<Anchor point="BOTTOMLEFT" x="4" y="4" />
 				</Anchors>
 				<Frames>
-					<Frame name="$parentArt" parent="PVPLadderFrame" setAllPoints="true">
+					<Frame name="$parentLeftArt" parent="PVPLadderFrame" setAllPoints="true">
 						<Layers>
 							<Layer level="BORDER">
 								<Texture parentKey="Background" name="$parentBackgrounds" file="Interface\Common\bluemenu-main">
@@ -827,14 +824,14 @@
 												<Anchor point="LEFT" x="5" y="0" />
 											</Anchors>
 										</FontString>
-										<FontString name="$parentPlayerName" parentKey="PlayerName" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
+										<FontString name="$parentPlayerName" parentKey="PlayerName" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE">
 											<Size x="90" y="10"/>
 											<Anchors>
 												<Anchor point="LEFT" x="62" y="0" />
 											</Anchors>
 											<Color r="1" g="1" b="1"/>
 										</FontString>
-										<FontString name="$parentRating" parentKey="Rating" inherits="GameFontNormal" justifyH="CENTER" justifyV="CENTER">
+										<FontString name="$parentRating" parentKey="Rating" inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE">
 											<Size x="60" y="10"/>
 											<Anchors>
 												<Anchor point="RIGHT" x="-39" y="0" />
@@ -1002,7 +999,7 @@
 											<Frame name="$parentTextLabelFrame" parentKey="TextLabelFrame" hidden="true" setAllPoints="true">
 												<Layers>
 													<Layer level="OVERLAY">
-														<FontString name="$paretText" parentKey="Text" inherits="GameFontHighlight" text="PVP_LADDER_SEARCH_TUTORIAL">
+														<FontString name="$parentText" parentKey="Text" inherits="GameFontHighlight" text="PVP_LADDER_SEARCH_TUTORIAL">
 															<Size x="270" y="160"/>
 															<Anchors>
 																<Anchor point="CENTER" x="0" y="0" />
@@ -1033,19 +1030,19 @@
 								</Anchors>
 								<Layers>
 									<Layer level="BORDER">
-										<FontString name="$parentNumber" parentKey="Number" inherits="GameFontNormal" justifyH="CENTER" justifyV="CENTER" text="№">
+										<FontString name="$parentNumber" parentKey="Number" inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE" text="№">
 											<Size x="30" y="10"/>
 											<Anchors>
 												<Anchor point="BOTTOMLEFT" x="16" y="4" />
 											</Anchors>
 										</FontString>
-										<FontString name="$parentPlayerName" parentKey="PlayerName" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER" text="CALENDAR_PLAYER_NAME">
+										<FontString name="$parentPlayerName" parentKey="PlayerName" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE" text="CALENDAR_PLAYER_NAME">
 											<Size x="80" y="10"/>
 											<Anchors>
 												<Anchor point="BOTTOMLEFT" x="64" y="4" />
 											</Anchors>
 										</FontString>
-										<FontString name="$parentRating" parentKey="Rating" inherits="GameFontNormal" justifyH="CENTER" justifyV="CENTER" text="PVP_LADDER_RATING">
+										<FontString name="$parentRating" parentKey="Rating" inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE" text="PVP_LADDER_RATING">
 											<Size x="60" y="10"/>
 											<Anchors>
 												<Anchor point="BOTTOMRIGHT" x="-40" y="4" />
@@ -1256,7 +1253,7 @@
 							<Frame name="$parentTextLabelFrame" parentKey="TextLabelFrame" hidden="true" setAllPoints="true">
 								<Layers>
 									<Layer level="OVERLAY">
-										<FontString name="$paretText" parentKey="Text" inherits="GameFontHighlight" text="PVP_LADDER_SEARCH_NOT_RESULT">
+										<FontString name="$parentText" parentKey="Text" inherits="GameFontHighlight" text="PVP_LADDER_SEARCH_NOT_RESULT">
 											<Size x="270" y="160"/>
 											<Anchors>
 												<Anchor point="CENTER" x="0" y="0" />

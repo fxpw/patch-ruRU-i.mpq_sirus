@@ -257,10 +257,10 @@
 				</Layers>
 			</Frame>
 			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate"/>
-			<Frame name="$textureTrainBook" hidden="true" parentKey="TrainBook" setAllPoints="true">
+			<Frame name="$parentTrainBook" hidden="true" parentKey="TrainBook" setAllPoints="true">
 				<Layers>
 					<Layer level="ARTWORK">
-						<Texture name="$parentTrainBook" inherits="Spellbook-TrainBook" parentKey="Icon">
+						<Texture name="$parentTrainBookTexture" inherits="Spellbook-TrainBook" parentKey="Icon">
 							<Anchors>
 								<Anchor point="TOPLEFT" x="20" y="3"/>
 							</Anchors>
@@ -297,12 +297,6 @@
 							<TexCoords left="0.363281" right="0.535156" top="0.00390625" bottom="0.175781"/>
 							<Color r="1" g="0.5" b="0.5"/>
 						</Texture>
-					</Layer>
-					<Layer level="BORDER">
-					</Layer>
-					<Layer level="ARTWORK">
-					</Layer>
-					<Layer level="OVERLAY">
 					</Layer>
 				</Layers>
 			</Frame>
@@ -563,13 +557,6 @@
 	</StatusBar>
 	<Frame name="PrimaryProfessionTemplate" virtual="true">
 		<Size x="212" y="118"/>
-		<Layers>
-			<Layer level="BACKGROUND">
-				<texture setAllPoints="true" hidden="true">
-					<Color r="1" g="1" b="1"/>
-				</texture>
-			</Layer>
-		</Layers>
 		<Frames>
 			<Frame name="$parentMissing" parentKey="Missing" setAllPoints="true" hidden="true">
 				<Layers>

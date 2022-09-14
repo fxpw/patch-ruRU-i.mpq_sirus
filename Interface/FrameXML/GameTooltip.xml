@@ -18,7 +18,6 @@
 					_G[self:GetName().."TextLeft1"]:SetTextColor(GameTooltip_UnitColor("mouseover"));
 				end
 			</OnTooltipSetUnit>
-			<OnTooltipSetItem function="GameTooltip_OnTooltipSetItem" />
 			<OnTooltipSetSpell function="GameTooltip_OnTooltipSetSpell" />
 			<OnHide>
 				GameTooltip_OnHide(self);

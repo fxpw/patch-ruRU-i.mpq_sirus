@@ -480,6 +480,35 @@ GlueDialogTypes["ADDON_INVALID_VERSION_DIALOG"] = {
 	end,
 }
 
+GlueDialogTypes["ADDON_INVALID_VERSION_DIALOG_NSA"] = {
+	text = ADDON_INVALID_VERSION_DIALOG,
+	button1 = ADDON_INVALID_VERSION_OKAY_HIDE,
+	button2 = ADDONS,
+	button3 = NEVER_SHOW_AGAIN,
+	ignoreKeys = true,
+	OnShow = function(this)
+		this.button3Width = this.Container.Button3:GetWidth()
+		local newWidth = math.max(this.button3Width, math.floor(this.Container.Button3:GetTextWidth() + 0.5) + 15)
+		this.Container.Button3:SetWidth(newWidth)
+		this.Container.Button2:SetPoint("BOTTOM", this.Container, "BOTTOM", (this.button3Width - newWidth) / 2, 25)
+	end,
+	OnHide = function(this)
+		this.Container.Button3:SetWidth(this.button3Width or 130)
+		this.button3Width = nil
+	end,
+	OnAccept = function()
+		GlueParent.dontShowInvalidVersionAddonDialog = true
+	end,
+	OnCancel = function()
+		GlueParent.dontShowInvalidVersionAddonDialog = true
+		AddonList:Show()
+	end,
+	OnAlt = function()
+		C_GlueCVars.SetCVar("IGNORE_ADDON_VERSION", "1")
+		GlueParent.dontShowInvalidVersionAddonDialog = true
+	end,
+}
+
 GlueDialogTypes["CONFIRM_PAID_FACTION_CHANGE"] = {
 	text = CONFIRM_PAID_FACTION_CHANGE,
 	button1 = DONE,

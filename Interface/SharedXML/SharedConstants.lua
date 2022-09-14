@@ -83,6 +83,8 @@ enum:E_CLIEN_CUSTOM_EVENTS {
 	"LF_GUILD_RECRUIT_LIST_CHANGED",
 	"LF_GUILD_MEMBERSHIP_LIST_CHANGED",
 	"LF_GUILD_MEMBERSHIP_LIST_UPDATED",
+
+	"TOYS_UPDATED",
 }
 
 enum:E_REALM_ID {
@@ -1425,9 +1427,10 @@ end
 -- ##################################################################################
 
 FLYOUT_STORAGE = {}
-FLYOUT_STORAGE[308230] = {308228, 308221, 308222, 308223, 308224, 308225, 308226, 308227}
+FLYOUT_STORAGE[308230] = {308228, 308221, 308222, 308223, 308224, 308225, 308226, 308227, 313090, 313093}
 FLYOUT_STORAGE[316451] = {316452, 316453}
 FLYOUT_STORAGE[310801] = {310802, 310803, 310804, 310807, 310808, 310809}
+FLYOUT_STORAGE[319875] = {316414, 319870, 319871, 319872, 319874}
 
 S_CATEGORY_SPELL_ID = {
 	90036, 302100, 302101, 302102, 302103, 302104, 302105, 302106, 302107, 90028, 90029, 90030,
@@ -1471,18 +1474,16 @@ S_VIP_STATUS_DATA = {
 		category 	= 3,
 		color 		= CreateColor(0.47, 1, 0.47),
 	},
---[[
-	[] = {
-		spellID 	= ,
+	[313090] = {
+		spellID 	= 313090,
 		category 	= 3,
 		color 		= CreateColor(0.38, 0.56, 1),
 	},
-	[] = {
-		spellID 	= ,
+	[313093] = {
+		spellID 	= 313093,
 		category 	= 3,
 		color 		= CreateColor(1, 0.3, 0.34),
 	},
-]]
 }
 
 enum:E_SEX {

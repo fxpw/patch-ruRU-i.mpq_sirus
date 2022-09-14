@@ -3,6 +3,7 @@ INTERFACEOPTIONS_ADDONCATEGORIES = {};
 
 local blizzardCategories = {};
 
+local securecall = securecall;
 local next = next;
 local function SecureNext(elements, key)
 	return securecall(next, elements, key);
@@ -311,12 +312,12 @@ function InterfaceOptionsOptionsFrame_RefreshAddOns ()
 	end
 end
 
-uvarInfo = {
+local UVARINFO = {
 	["REMOVE_CHAT_DELAY"] = { default = "0", cvar = "removeChatDelay", event = "REMOVE_CHAT_DELAY_TEXT" },
 	["SHOW_NEWBIE_TIPS"] = { default = "1", cvar = "showNewbieTips", event = "SHOW_NEWBIE_TIPS_TEXT" },
 	["LOCK_ACTIONBAR"] = { default = "0", cvar = "lockActionBars", event = "LOCK_ACTIONBAR_TEXT" },
 	["SHOW_BUFF_DURATIONS"] = { default = "0", cvar = "buffDurations", event = "SHOW_BUFF_DURATION_TEXT" },
-	["ALWAYS_SHOW_MULTIBARS"] = { default = "0", cvar = "alwaysShowActionBars", event = "ALWAYS_SHOW_MULTIBARS_TEXT" },
+--	["ALWAYS_SHOW_MULTIBARS"] = { default = "0", cvar = "alwaysShowActionBars", event = "ALWAYS_SHOW_MULTIBARS_TEXT" },
 	["SHOW_PARTY_PETS"] = { default = "1", cvar = "showPartyPets", event = "SHOW_PARTY_PETS_TEXT" },
 	["QUEST_FADING_DISABLE"] = { default = "0", cvar = "questFadingDisable", event = "SHOW_QUEST_FADING_TEXT" },
 	["SHOW_PARTY_BACKGROUND"] = { default = "0", cvar = "showPartyBackground", event = "SHOW_PARTY_BACKGROUND_TEXT" },
@@ -353,14 +354,14 @@ uvarInfo = {
 
 function InterfaceOptionsFrame_InitializeUVars ()
 	-- Setup UVars that keep settings
-	for uvar, setting in SecureNext, uvarInfo do
+	for uvar, setting in SecureNext, UVARINFO do
 		_G[uvar] = setting.default;
 	end
 end
 
 function InterfaceOptionsFrame_LoadUVars ()
 	local variable, cvarValue
-	for uvar, setting in SecureNext, uvarInfo do
+	for uvar, setting in SecureNext, UVARINFO do
 		variable = _G[uvar];
 		cvarValue = GetCVar(setting.cvar);
 		if ( cvarValue == setting.default and variable ~= setting.default ) then

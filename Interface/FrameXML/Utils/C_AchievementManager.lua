@@ -2,6 +2,14 @@
 --	Project:	Custom Game Interface
 --	Author:		Nyll & Blizzard Entertainment
 
+ACHIEVEMENTS_FACTION_CHANGE = {
+	[6411] = PLAYER_FACTION_GROUP.Horde,
+	[6413] = PLAYER_FACTION_GROUP.Horde,
+	[6412] = PLAYER_FACTION_GROUP.Alliance,
+	[6414] = PLAYER_FACTION_GROUP.Alliance,
+}
+
+---@class C_AchievementManagerMixin : Mixin
 C_AchievementManagerMixin = {}
 
 function C_AchievementManagerMixin:OnLoad()
@@ -44,7 +52,16 @@ function C_AchievementManagerMixin:ValidationFaction( entry )
 	local achievementFactionID = self:GetAchievementFactionID(entry)
 
 	if not achievementFactionID then
-		return true
+		if ACHIEVEMENTS_FACTION_CHANGE[entry] then
+			local faction = C_CreatureInfo.GetFactionInfo(UnitRace("player"))
+			if faction.factionID == PLAYER_FACTION_GROUP.Neutral then
+				return false
+			else
+				return faction.factionID == ACHIEVEMENTS_FACTION_CHANGE[entry]
+			end
+		else
+			return true
+		end
 	elseif (achievementFactionID ~= 2 and C_Unit:GetServerFactionID("player") ~= achievementFactionID) then
 		return false
 	elseif achievementFactionID == 2 and C_Service:IsLockRenegadeFeatures() then
@@ -82,7 +99,8 @@ function C_AchievementManagerMixin:GetAchievementInfo( ... )
 end
 
 ---@param categoryID number
----@return number totalAchievement, completedAchievement
+---@return number totalAchievement
+---@return number completedAchievement
 function C_AchievementManagerMixin:GetCategoryNumAchievements( categoryID )
     if AchievementFrame and not AchievementFrame:IsShown() then
         return self._GetCategoryNumAchievements(categoryID)
@@ -114,7 +132,7 @@ function C_AchievementManagerMixin:GetCategoryNumAchievements( categoryID )
     return self.counter[categoryID].total, self.counter[categoryID].completed
 end
 
----@class C_AchievementManagerMixin
+---@class C_AchievementManager : C_AchievementManagerMixin
 C_AchievementManager = CreateFromMixins(C_AchievementManagerMixin)
 C_AchievementManager:OnLoad()
 

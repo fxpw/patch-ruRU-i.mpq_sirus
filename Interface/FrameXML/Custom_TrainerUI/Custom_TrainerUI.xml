@@ -6,7 +6,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_TrainerUI.lua"/>
 
 	<Frame name="ClassTrainerFrame" toplevel="true" movable="true" parent="UIParent" enableMouse="true" hidden="true">
@@ -475,7 +476,7 @@
 					</Frame>
 				</ScrollChild>
 			</ScrollFrame>
-			<Button name="ClassTrainerTrainButton" inherits="UIPanelButtonTemplate" text="TRAIN" jumpNavigateStart="true">
+			<Button name="ClassTrainerTrainButton" inherits="UIPanelButtonTemplate" text="TRAIN">
 				<Size>
 					<AbsDimension x="80" y="22"/>
 				</Size>

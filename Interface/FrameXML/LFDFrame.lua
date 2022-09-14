@@ -1209,9 +1209,9 @@ function LFDSearchStatus_Update()
 		return;
 	end
 
-	if ( instancetype == TYPEID_HEROIC_DIFFICULTY ) then
-		instanceName = format(HEROIC_PREFIX, instanceName);
-	end
+--	if ( instancetype == TYPEID_HEROIC_DIFFICULTY ) then
+--		instanceName = format(HEROIC_PREFIX, instanceName);
+--	end
 
 	--This won't work if we decide the makeup is, say, 3 healers, 1 damage, 1 tank.
 	LFDSearchStatusPlayer_SetFound(LFDSearchStatusTank1, (tankNeeds == 0))

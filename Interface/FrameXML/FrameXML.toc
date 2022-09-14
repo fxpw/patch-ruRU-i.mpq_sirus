@@ -13,6 +13,7 @@
 ..\SharedXML\DataDumper.lua
 ..\SharedXML\UUID.lua
 ..\SharedXML\CacheSystem.lua
+..\SharedXML\FunctionUtil.lua
 ..\SharedXML\EventHandler.lua
 ..\SharedXML\Hook.lua
 ..\SharedXML\MixIn.lua
@@ -42,7 +43,6 @@ WorldMapFrameData.lua
 ..\SharedXML\TimeUtil.lua
 ..\SharedXML\CallbackRegistry.lua
 ..\SharedXML\FrameUtil.lua
-..\SharedXML\FunctionUtil.lua
 ..\SharedXML\LayoutFrame.xml
 ..\SharedXML\ScrollList.xml
 ..\SharedXML\SharedTooltipTemplates.lua
@@ -72,6 +72,7 @@ Utils\C_PetJournal.lua
 Utils\C_TransmogCollection.lua
 Utils\C_Transmog.lua
 Utils\C_MiniGames.lua
+Utils\C_ToyBox.lua
 
 Hardcodeids.lua
 TrinityCoreAPI.lua

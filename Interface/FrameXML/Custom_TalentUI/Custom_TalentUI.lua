@@ -39,6 +39,8 @@ NUM_TALENT_POPUP_ICONS_PER_ROW = 5
 NUM_TALENT_POPUP_ICON_ROWS = 7
 TALENT_POPUP_ICON_ROW_HEIGHT = 36
 
+local SECOND_SPEC_PRICE = 10000000
+
 -- speed references
 local next                                          = next;
 local ipairs                                        = ipairs;
@@ -219,14 +221,15 @@ function GetTalentHyperlinkInfo(link)
 end
 
 function TalentLetterDecode(letter)
-    local point = (string.find(talentPattern, letter) - 1)
+	local point = string.find(talentPattern, letter)
+	if point then
+		point = point - 1
 
-    if point then
-        local value1 = point % 6
-        local value2 = (point - value1) / 6
+		local value1 = point % 6
+		local value2 = (point - value1) / 6
 
-        return value2, value1
-    end
+		return value2, value1
+	end
 
     return nil
 end
@@ -240,14 +243,22 @@ function TalentPreviewExport()
     buffer.glyphData[GLYPHTYPE_MAJOR] = {}
     buffer.glyphData[GLYPHTYPE_MINOR] = {}
 
+	local talentGroup
+	local lastSecondTalentGroup = C_Talent.GetLastSecondTalentGroup()
+	if not lastSecondTalentGroup then
+		talentGroup = C_Talent.GetActiveTalentGroup()
+	else
+		talentGroup = C_Talent.GetActiveTalentGroup() ~= lastSecondTalentGroup and 2 or 1
+	end
+
     for talentTree = 1, 3 do
-        local _, _, pointsSpent, _, previewPointsSpent = GetTalentTabInfo(talentTree, PlayerTalentFrame.inspect, PlayerTalentFrame.pet, GetActiveTalentGroup())
+        local _, _, pointsSpent, _, previewPointsSpent = GetTalentTabInfo(talentTree, PlayerTalentFrame.inspect, PlayerTalentFrame.pet, talentGroup)
         specPointSpent[talentTree]                     = (pointsSpent + previewPointsSpent)
 
         buffer.talentData[talentTree]                  = ""
 
         for talentIndex = 1, 40 do
-            local _, _, _, _, rank, _, _, _, _, _ = GetTalentInfo(talentTree, talentIndex, PlayerTalentFrame.inspect, PlayerTalentFrame.pet, GetActiveTalentGroup())
+            local _, _, _, _, rank, _, _, _, _, _ = GetTalentInfo(talentTree, talentIndex, PlayerTalentFrame.inspect, PlayerTalentFrame.pet, talentGroup)
             buffer.talentData[talentTree]         = buffer.talentData[talentTree] .. rank
         end
 
@@ -281,7 +292,7 @@ function TalentPreviewExport()
     end
 
     for i = 1, 6 do
-        local _, glyphType, glyphSpell, _ = GetGlyphSocketInfo(i, GetActiveTalentGroup())
+        local _, glyphType, glyphSpell, _ = GetGlyphSocketInfo(i, talentGroup)
 
         if glyphSpell and glyphType then
             table.insert(buffer.glyphData[glyphType], glyphSpell)
@@ -472,60 +483,50 @@ function TalentFramePreviewHide(skippServerMessage)
     PlayerGlyphPreviewFrame:Hide()
 end
 
-function PlayerGlyphPreviewFrame_OnShow(_, ...)
+function PlayerGlyphPreviewFrame_SetGlyph(frame, glyphID)
+	if not frame then return end
+
+	if glyphID then
+		local name, _, icon, _, _, _, _, _, _ = GetSpellInfo(glyphID)
+
+		frame.spellID = glyphID
+
+		frame.Name:SetText(name)
+		frame.Name:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+		SetItemButtonTexture(frame, icon)
+		SetItemButtonTextureVertexColor(frame, 1, 1, 1)
+	else
+		frame.spellID = nil
+
+		frame.Name:SetText(EMPTY)
+		frame.Name:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
+		SetItemButtonTexture(frame, "Interface\\PaperDoll\\UI-PaperDoll-Slot-Back")
+		SetItemButtonTextureVertexColor(frame, 0.5, 0.5, 0.5)
+	end
+end
+
+function PlayerGlyphPreviewFrame_OnLoad(self)
+	self.MajorSlots = {self.MajorSlot1, self.MajorSlot2, self.MajorSlot3}
+	self.MinorSlots = {self.MinorSlot1, self.MinorSlot2, self.MinorSlot3}
+end
+
+function PlayerGlyphPreviewFrame_OnShow(self)
     if SIRUS_TALENT_CACHE.glyphData and SIRUS_TALENT_CACHE.glyphData[1] and SIRUS_TALENT_CACHE.glyphData[2] then
         for i = 1, 3 do
-            local majorGlyphID = SIRUS_TALENT_CACHE.glyphData[1][i]
-            local majorframe   = _G["PlayerGlyphPreviewFrameMajorSlot" .. i]
-
-            local minorGlyphID = SIRUS_TALENT_CACHE.glyphData[2][i]
-            local minorframe   = _G["PlayerGlyphPreviewFrameMinorSlot" .. i]
-
-            if majorframe then
-                if majorGlyphID then
-                    local name, _, icon, _, _, _, _, _, _ = GetSpellInfo(majorGlyphID)
-
-                    majorframe.spellID                    = majorGlyphID
-
-                    majorframe.Name:SetText(name)
-                    majorframe.Name:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
-                    SetItemButtonTexture(majorframe, icon)
-                    SetItemButtonTextureVertexColor(majorframe, 1, 1, 1)
-                else
-                    majorframe.spellID = nil
-
-                    majorframe.Name:SetText(EMPTY)
-                    majorframe.Name:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
-                    SetItemButtonTexture(majorframe, "Interface\\PaperDoll\\UI-PaperDoll-Slot-Back")
-                    SetItemButtonTextureVertexColor(majorframe, 0.5, 0.5, 0.5)
-                end
-            end
-
-            if minorframe then
-                if minorGlyphID then
-                    local name, _, icon, _, _, _, _, _, _ = GetSpellInfo(minorGlyphID)
-
-                    minorframe.spellID                    = minorGlyphID
-
-                    minorframe.Name:SetText(name)
-                    minorframe.Name:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
-                    SetItemButtonTexture(minorframe, icon)
-                    SetItemButtonTextureVertexColor(minorframe, 1, 1, 1)
-                else
-                    minorframe.spellID = nil
-
-                    minorframe.Name:SetText(EMPTY)
-                    minorframe.Name:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
-                    SetItemButtonTexture(minorframe, "Interface\\PaperDoll\\UI-PaperDoll-Slot-Back")
-                    SetItemButtonTextureVertexColor(minorframe, 0.5, 0.5, 0.5)
-                end
-            end
+			PlayerGlyphPreviewFrame_SetGlyph(self.MajorSlots[i], SIRUS_TALENT_CACHE.glyphData[1][i])
+			PlayerGlyphPreviewFrame_SetGlyph(self.MinorSlots[i], SIRUS_TALENT_CACHE.glyphData[2][i])
         end
     end
 end
 
 function TalentFrameSetupPreviewTalents()
     if SIRUS_TALENT_CACHE and SIRUS_TALENT_CACHE.talentData then
+		if C_Talent.GetSelectedTalentGroup() ~= C_Talent.GetActiveTalentGroup() then
+			C_Talent.SelectTalentGroup(C_Talent.GetActiveTalentGroup())
+		end
+
+		local pointsSpent = {0, 0, 0}
+
         for i = 1, 3 do
             local data = SIRUS_TALENT_CACHE.talentData[i]
 
@@ -533,9 +534,14 @@ function TalentFrameSetupPreviewTalents()
                 for t = 1, #data do
                     local talentCount = data[t]
                     AddPreviewTalentPoints(i, t, talentCount)
+					pointsSpent[i] = pointsSpent[i] + t
                 end
             end
         end
+
+		for i = 1, 3 do
+			_G["PlayerTalentFramePanel"..i].HeaderIcon.PointsSpent:SetText(pointsSpent[i])
+		end
     end
 end
 
@@ -638,29 +644,20 @@ function PlayerTalentFrameResetCVar()
 end
 
 function PlayerTalentFrame_Toggle(pet)
-    local hidden;
     local selectedTab = PanelTemplates_GetSelectedTab(PlayerTalentFrame);
 
     if (not PlayerTalentFrame:IsShown()) then
         ShowUIPanel(PlayerTalentFrame);
-        hidden = false;
     else
         if not PlayerTalentFrame.previewState then
             if (selectedTab == TALENTS_TAB and not pet) then
                 -- if a talent tab is selected then toggle the frame off
                 HideUIPanel(PlayerTalentFrame);
-                hidden = true;
             elseif (selectedTab == PET_TALENTS_TAB and pet) then
                 HideUIPanel(PlayerTalentFrame);
-                hidden = true;
             elseif selectedTab == GLYPH_TALENT_TAB then
                 HideUIPanel(PlayerTalentFrame);
-                hidden = true;
-            else
-                hidden = false;
             end
-        else
-            hidden = false
         end
     end
 end
@@ -735,6 +732,7 @@ function PlayerTalentFrame_ShowGlyphFrame()
         if (GlyphFrame:IsShown()) then
             GlyphFrame_Update();
         else
+			PlayerTalentFrame.LoadingFrame:SetAllPoints(PlayerTalentFrame.Inset)
             GlyphFrame:Show();
         end
     end
@@ -773,6 +771,9 @@ end
 
 local TalentFrameCloseTime
 function PlayerTalentFrame_OnShow(self)
+	SetParentFrameLevel(PlayerTalentFramePetTalents, 2)
+	SetParentFrameLevel(self.LoadingFrame, 9)
+
     PlayerFrame_UpdateSpecTabs(self)
 
     local currentTime = time()
@@ -786,13 +787,6 @@ function PlayerTalentFrame_OnShow(self)
     if (self.secureLastTabIndex) then
         lastTab = _G["PlayerTalentFrameTab" .. self.secureLastTabIndex]
     end
-
-    if not self.advertisingButton then
-        self.advertisingButton = CreateFrame("CheckButton", "PlayerSpecTabAdvertising", self, "PlayerSpecTabAdvertisingTemplate")
-    end
-
-    self.advertisingButton:ClearAndSetPoint("TOPLEFT", self.specTabs[#self.specTabs], "BOTTOMLEFT", 0, -22)
-    self.advertisingButton:SetShown(false) -- #self.specTabs < 3
 
     -- Stop buttons from flashing after skill up
     SetButtonPulse(TalentMicroButton, 0, 1);
@@ -1005,6 +999,8 @@ function PlayerFrame_UpdateSpecTabs(self)
 			specTab.specIndex = i
 
 			self.specTabs[i] = specTab
+
+			self.specPurchaseButton:SetPoint("TOPLEFT", specTab, "BOTTOMLEFT", 0, -22)
 		end
 
 		if i == 1 then
@@ -1040,6 +1036,16 @@ function PlayerFrame_UpdateSpecTabs(self)
 
 		specTab:GetNormalTexture():SetTexture(specTab.tabInfo[primaryTabIndex]and specTab.tabInfo[primaryTabIndex].icon or "Interface\\Icons\\Ability_Marksmanship")
 	end
+
+	if #self.specTabs <= 1 and not PlayerTalentFrame.pet and not PlayerTalentFrame.previewState then
+		local enabled = UnitLevel("player") >= 40
+		self.specPurchaseButton.NormalTexture:SetTexture(enabled and [[Interface\Icons\Misc_ArrowLUP]] or [[Interface\Icons\Ability_Marksmanship]])
+		self.specPurchaseButton.NormalTexture:SetDesaturated(not enabled)
+		self.specPurchaseButton:SetEnabled(enabled)
+		self.specPurchaseButton:Show()
+	else
+		self.specPurchaseButton:Hide()
+	end
 end
 
 function PlayerTalentFrame_UpdatePetInfo(self)
@@ -1067,6 +1073,9 @@ function PlayerTalentFrame_UpdatePetInfo(self)
 end
 
 function PlayerTalentFrame_ShowTalentTab()
+	PlayerTalentFrame.LoadingFrame:ClearAllPoints()
+	PlayerTalentFrame.LoadingFrame:SetPoint("TOPLEFT", 14, -102)
+	PlayerTalentFrame.LoadingFrame:SetPoint("BOTTOMRIGHT", -16, 30)
     PlayerTalentFrameTalents:Show()
 end
 
@@ -1075,6 +1084,9 @@ function PlayerTalentFrame_HideTalentTab()
 end
 
 function PlayerTalentFrame_ShowPetTalentTab()
+	PlayerTalentFrame.LoadingFrame:ClearAllPoints()
+	PlayerTalentFrame.LoadingFrame:SetPoint("TOPLEFT", 397, -64)
+	PlayerTalentFrame.LoadingFrame:SetPoint("BOTTOMRIGHT", -11, 148)
     PlayerTalentFramePetTalents:Show()
 end
 
@@ -1641,7 +1653,7 @@ function PlayerTalentFrame_UpdateControls(_, numTalentGroups)
     if (showActivateButton) then
         local selectedTab = PanelTemplates_GetSelectedTab(PlayerTalentFrame)
 
-        PlayerTalentFrameActivateButton:SetShown(selectedTab ~= 3);
+        PlayerTalentFrameActivateButton:SetShown(selectedTab ~= 3 and not PlayerTalentFrame.previewState);
         PlayerTalentFrame.CurrencySelectFrame:SetShown(selectedTab ~= 3 and C_Talent.GetSelectedTalentGroup() > 2)
         PlayerTalentFrameStatusFrame:Hide();
     else
@@ -1680,8 +1692,8 @@ function PlayerTalentFrame_UpdateControls(_, numTalentGroups)
     local unspentPreviewPoints = talentPoints - GetGroupPreviewTalentPointsSpent(PlayerTalentFrame.pet, PlayerTalentFrame.talentGroup)
     local selectedTab          = PanelTemplates_GetSelectedTab(PlayerTalentFrame)
 
-    PlayerTalentFrameResetButton:SetShown(selectedTab ~= GLYPH_TALENT_TAB)
-    PlayerTalentFrameLearnButton:SetShown(selectedTab ~= GLYPH_TALENT_TAB)
+    PlayerTalentFrameResetButton:SetShown(selectedTab ~= GLYPH_TALENT_TAB and preview)
+    PlayerTalentFrameLearnButton:SetShown(selectedTab ~= GLYPH_TALENT_TAB and preview)
 
     if PlayerTalentFrameHeaderText then
         if PlayerTalentFrame.previewState then
@@ -1694,12 +1706,10 @@ function PlayerTalentFrame_UpdateControls(_, numTalentGroups)
         PlayerTalentFrameHeaderFrame:SetShown(unspentPreviewPoints and unspentPreviewPoints > 0 and selectedTab ~= GLYPH_TALENT_TAB and isActiveSpec)
     end
 
-    PlayerTalentFrameResetButton:SetShown(preview)
-    PlayerTalentFrameLearnButton:SetShown(preview)
     PlayerTalentFrameBackButton:SetShown(PlayerTalentFrame.previewState)
     PlayerTalentFrameScreenshotButton:SetShown(PlayerTalentFrame.previewState)
 
-    PlayerTalentLinkButton:SetShown(not showActivateButton and selectedTab == TALENTS_TAB and not PlayerTalentFrame.previewState)
+	PlayerTalentLinkButton:SetShown(selectedTab == TALENTS_TAB and not PlayerTalentFrame.previewState)
 
     if PlayerTalentFrame.previewState then
         for i = 1, #toggleElements do
@@ -2320,6 +2330,7 @@ function PlayerTalentPopupFrame_OnLoad(self)
 end
 
 function PlayerTalentPopupFrame_OnShow(self)
+	SetParentFrameLevel(self.BorderBox, 1)
     PlayerTalentPopupFrame_UpdateSettings(self)
 end
 
@@ -2410,6 +2421,46 @@ function PlayerTalentPopupOkayButton_OnClick(self)
     PlayerTalentFrame_UpdateActiveSpec(GetActiveTalentGroup(), GetNumTalentGroups())
     PlayerTalentFrame_RefreshSpecTabs()
     PlaySound("gsTitleOptionOK")
+end
+
+function PlayerSpecTabAdvertising_OnLoad(self)
+	self:RegisterForClicks("LeftButtonUp")
+end
+
+function PlayerSpecTabAdvertising_Process(confirmation)
+	if InCombatLockdown() then
+		UIErrorsFrame:AddMessage(ERR_NOT_IN_COMBAT, 1.0, 0.1, 0.1, 1.0)
+	elseif UnitIsDeadOrGhost("player") then
+		UIErrorsFrame:AddMessage(ERR_PLAYER_DEAD, 1.0, 0.1, 0.1, 1.0)
+	elseif GetMoney() < SECOND_SPEC_PRICE then
+		UIErrorsFrame:AddMessage(ERR_NOT_ENOUGH_MONEY, 1.0, 0.1, 0.1, 1.0)
+	elseif not confirmation then
+		StaticPopup_Show("PLAYER_TALENT_PURCHASE_SPEC", nil, nil, SECOND_SPEC_PRICE)
+		PlaySound("igCharacterInfoTab");
+	else
+		SendServerMessage("ACMSG_L_S_S")
+		HideUIPanel(PlayerTalentFrame)
+	end
+end
+
+function PlayerSpecTabAdvertising_OnClick(self, button)
+	PlayerSpecTabAdvertising_Process()
+end
+
+function PlayerSpecTabAdvertising_OnEnter(self)
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+
+	GameTooltip:SetText(TALENTS_SECOND_SPEC_HINT)
+
+	if self:IsEnabled() == 1 then
+		GameTooltip:AddLine(TALENTS_SECOND_SPEC_LEARN_HINT, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, true)
+		GameTooltip:AddLine(TALENTS_SECOND_SPEC_CLICK_HINT, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
+		SetTooltipMoney(GameTooltip, SECOND_SPEC_PRICE, nil, COSTS_LABEL)
+	else
+		GameTooltip:AddLine(TALENTS_SECOND_SPEC_LOW_LEVEL_HINT, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b, true)
+	end
+
+	GameTooltip:Show()
 end
 
 function EventHandler:ASMSG_PLAYER_FAKE_TALENTS(msg)

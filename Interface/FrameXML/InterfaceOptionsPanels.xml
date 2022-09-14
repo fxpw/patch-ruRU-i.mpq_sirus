@@ -46,6 +46,69 @@
 		</Layers>
 	</CheckButton>
 
+	<CheckButton name="InterfaceOptionsCheckAudioTestButtonTemplate" virtual="true" inherits="InterfaceOptionsCheckButtonTemplate">
+		<Frames>
+			<Button name="$parentPlaySoundButton" parentKey="PlaySoundButton">
+				<Size x="16" y="16"/>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="RIGHT" x="3" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture name="$parentTexture" parentKey="Texture" file="Interface\Common\VoiceChat-Speaker">
+							<Size x="16" y="16"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="HIGHLIGHT">
+						<Texture name="$parentHighlight" parentKey="Highlight" file="Interface\Common\VoiceChat-On">
+							<Size x="16" y="16"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<HitRectInsets left="-4" right="-4" top="-5" bottom="-5"/>
+				<Scripts>
+					<OnMouseDown>
+						self.Texture:SetPoint("CENTER", 1, -1)
+						self.Highlight:SetPoint("CENTER", 1, -1)
+					</OnMouseDown>
+					<OnMouseUp>
+						self.Texture:SetPoint("CENTER", 0, 0)
+						self.Highlight:SetPoint("CENTER", 0, 0)
+
+						if button == "LeftButton" and self:GetParent().soundName then
+							PlaySound(self:GetParent().soundName)
+						end
+					</OnMouseUp>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnEnable>
+				self.PlaySoundButton.Texture:SetDesaturated(false)				
+				self.PlaySoundButton:Enable()
+			</OnEnable>
+			<OnDisable>
+				self.PlaySoundButton.Texture:SetDesaturated(true)
+				self.PlaySoundButton:Disable()
+			</OnDisable>
+			<OnShow>
+				if self.soundName then
+					self.Text:SetPoint("LEFT", self.PlaySoundButton, "RIGHT", 2, 0)
+					self.PlaySoundButton:Show()
+				else
+					self.PlaySoundButton:Hide()
+					self.Text:SetPoint("LEFT", self, "RIGHT", 0, 0)
+				end
+			</OnShow>
+		</Scripts>
+	</CheckButton>
+
 	<!-- Controls Panel -->
 	<Frame name="InterfaceOptionsControlsPanel" hidden="false" parent="InterfaceOptionsFramePanelContainer">
 		<Layers>
@@ -1650,13 +1713,13 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
-				<Scripts>
-					<!-- <OnLoad>
+				<!-- <Scripts>
+					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX;
 						self.cvar = "unlockMoveExtraButton";
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
-					</OnLoad> -->
-				</Scripts>
+					</OnLoad>
+				</Scripts> -->
 			</CheckButton>
 		</Frames>
 		<Scripts>
@@ -4042,6 +4105,111 @@
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
+
+			<CheckButton name="$parentToastSound" inherits="InterfaceOptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentAuctionHouseToast" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX
+						self.cvar = "C_CVAR_PLAY_TOAST_SOUND"
+
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentSocialToastSound" inherits="InterfaceOptionsCheckAudioTestButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentToastSound" relativePoint="BOTTOMLEFT" x="16" y="0" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX
+						self.cvar = "C_CVAR_SOCIAL_TOAST_SOUND"
+
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelToastSound, self)
+						self:RegisterEvent("PLAYER_ENTERING_WORLD")
+					</OnLoad>
+					<OnEvent>
+						self.soundName = E_TOAST_DATA[E_TOAST_CATEGORY.FRIENDS].sound
+					</OnEvent>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentHeadHuntingToastSound" inherits="InterfaceOptionsCheckAudioTestButtonTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentSocialToastSound" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX
+						self.cvar = "C_CVAR_HEAD_HUNTING_TOAST_SOUND"
+
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelToastSound, self)
+						self:RegisterEvent("PLAYER_ENTERING_WORLD")
+					</OnLoad>
+					<OnEvent>
+						self.soundName = E_TOAST_DATA[E_TOAST_CATEGORY.HEAD_HUNTING].sound
+					</OnEvent>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentBattlePassToastSound" inherits="InterfaceOptionsCheckAudioTestButtonTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentHeadHuntingToastSound" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX
+						self.cvar = "C_CVAR_BATTLE_PASS_TOAST_SOUND"
+
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelToastSound, self)
+						self:RegisterEvent("PLAYER_ENTERING_WORLD")
+					</OnLoad>
+					<OnEvent>
+						self.soundName = E_TOAST_DATA[E_TOAST_CATEGORY.BATTLE_PASS].sound
+					</OnEvent>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentQueueToastSound" inherits="InterfaceOptionsCheckAudioTestButtonTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentBattlePassToastSound" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX
+						self.cvar = "C_CVAR_QUEUE_TOAST_SOUND"
+
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelToastSound, self)
+						self:RegisterEvent("PLAYER_ENTERING_WORLD")
+					</OnLoad>
+					<OnEvent>
+						self.soundName = E_TOAST_DATA[E_TOAST_CATEGORY.QUEUE].sound
+					</OnEvent>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentAuctionHouseToastSound" inherits="InterfaceOptionsCheckAudioTestButtonTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentQueueToastSound" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX
+						self.cvar = "C_CVAR_AUCTION_HOUSE_TOAST_SOUND"
+
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelToastSound, self)
+						self:RegisterEvent("PLAYER_ENTERING_WORLD")
+					</OnLoad>
+					<OnEvent>
+						self.soundName = E_TOAST_DATA[E_TOAST_CATEGORY.AUCTION_HOUSE].sound
+					</OnEvent>
+				</Scripts>
+			</CheckButton>
+
 			<Button name="$parentResetPosition" inherits="UIPanelButtonTemplate" text="TOAST_CLEAR_POSITION">
 				<Size x="136" y="22"/>
 				<Anchors>

@@ -2757,7 +2757,7 @@ end
 
 function ChatFrame_MessageEventHandler(self, event, ...)
 	if ( strsub(event, 1, 8) == "CHAT_MSG" ) then
-		local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12 = ...;
+		local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 = ...;
 		local type = strsub(event, 10);
 		local info = ChatTypeInfo[type];
 
@@ -2908,6 +2908,7 @@ function ChatFrame_MessageEventHandler(self, event, ...)
 		elseif ( type == "BN_CONVERSATION_LIST" ) then
 			local channelLink = format(CHAT_BN_CONVERSATION_GET_LINK, arg8, MAX_WOW_CHAT_CHANNELS + arg8);
 			local message = format(CHAT_BN_CONVERSATION_LIST, channelLink, arg1);
+			local accessID, typeID
 			self:AddMessage(message, info.r, info.g, info.b, info.id, false, accessID, typeID);
 		elseif ( type == "BN_INLINE_TOAST_ALERT" ) then
 			local globalstring = _G["BN_INLINE_TOAST_"..arg1];
@@ -4338,7 +4339,7 @@ function ChatMenu_Yell(self)
 end
 
 function ChatMenu_Whisper(self)
-	local editBox = ChatFrame_OpenChat(SLASH_WHISPER1.." ", chatFrame);
+	local editBox = ChatFrame_OpenChat(SLASH_WHISPER1.." ");
 	editBox:SetText(SLASH_WHISPER1.." "..editBox:GetText());
 end
 
@@ -4354,6 +4355,69 @@ function ChatMenu_VoiceMacro(self)
 	ChatMenu_SetChatType(self:GetParent().chatFrame, "YELL");
 end
 
+local createShoutPopup = function()
+	local f = CreateFrame("Frame", "StoreShoutFrame", UIParent, "StorePopupFrameTemplate")
+	f:SetFrameStrata("HIGH") -- TODO: fix conflicts with static popups
+	f:SetSettings({
+		titleText = SHOUT_MESSAGE,
+		textTop = SHOUT_MESSAGE_POPUP_TEXT,
+		textMiddle = SHOUT_MESSAGE_POPUP_HELPBOX_TEXT,
+		priceValue = 99,
+
+		button1Text = SEND_LABEL,
+		button2Text = PREVIEW_MESSAGE,
+
+		editBoxMultiLine = false,
+
+		EditBox_OnTextChanged = function(this)
+			local currentBonuses = GetPlayerBalance()
+			local text = string.trim(this:GetText() or "")
+			local enabled = (currentBonuses >= 99 or C_Service:IsGM()) and text ~= ""
+			this.PopupFrame.Button1:SetEnabled(enabled)
+			this.PopupFrame.Button2:SetEnabled(enabled)
+		end,
+
+		Button1_OnClick = function(this, button)
+			if button == "LeftButton" then
+				local text = this.PopupFrame.editBox:GetText()
+				if text and string.trim(text) ~= "" then
+					this.PopupFrame:Block()
+					StaticPopup_Show("SHOUT_CHAT_MESSAGE", nil, nil, {popup = this.PopupFrame, text = text});
+				end
+			end
+		end,
+		Button2_OnClick = function(this, button)
+			if button == "LeftButton" then
+				local text = this.PopupFrame.editBox:GetText()
+				if text and string.trim(text) ~= "" then
+					local msg = string.format(SHOUT_MESSAGE_PREVIEW, UnitName("player"), string.trim(text))
+					for _, ef in ipairs({GetFramesRegisteredForEvent("CHAT_MSG_SYSTEM")}) do
+						local onEvent = ef:GetScript("OnEvent")
+						if onEvent then
+							onEvent(ef, "CHAT_MSG_SYSTEM", msg, "", "", "", "", "", 0, 0, "", 0, 36, "", 0)
+						end
+					end
+				end
+			end
+		end,
+	})
+end
+
+function ChatMenu_Shout(self)
+	if not StoreShoutFrame then
+		createShoutPopup()
+		createShoutPopup = nil
+	end
+	StoreShoutFrame:Show()
+end
+
+local function ChatMenu_ShoutIsShown()
+	if select(4, GetPlayerBalance()) >= 30 or C_Service:IsGM() then
+		return true;
+	end
+	return false;
+end
+
 function ChatMenu_OnLoad(self)
 	self.chatFrame = DEFAULT_CHAT_FRAME;
 
@@ -4364,6 +4428,7 @@ function ChatMenu_OnLoad(self)
 	UIMenu_AddButton(self, BATTLEGROUND_MESSAGE, SLASH_BATTLEGROUND1, ChatMenu_Battleground);
 	UIMenu_AddButton(self, GUILD_MESSAGE, SLASH_GUILD1, ChatMenu_Guild);
 	UIMenu_AddButton(self, YELL_MESSAGE, SLASH_YELL1, ChatMenu_Yell);
+	UIMenu_AddButton(self, SHOUT_MESSAGE, "|TInterface\\Store\\coins:22:22:4:0|t", ChatMenu_Shout, nil, nil, ChatMenu_ShoutIsShown);
 	UIMenu_AddButton(self, WHISPER_MESSAGE, SLASH_WHISPER1, ChatMenu_Whisper);
 	UIMenu_AddButton(self, EMOTE_MESSAGE, SLASH_EMOTE1, ChatMenu_Emote, "EmoteMenu");
 	UIMenu_AddButton(self, REPLY_MESSAGE, SLASH_REPLY1, ChatMenu_Reply);

@@ -313,7 +313,7 @@ STORE_SUB_CATEGORY_DATA[4] = {
 		SubCategoryId = 5,
 		CategoryId = 4,
 		Callback = function() selectedSubCategoryID = 5; StoreSubCategorySelectClick() end,
-		Check = function(self) return (80 <= UnitLevel("player")) end
+		Check = function(self) return (10 <= UnitLevel("player")) end
 	},
 	{
 		Name = STORE_SUB_CATEGORY_4_6,
@@ -386,78 +386,234 @@ STORE_CATEGORIES_DATA[4] = {
 }
 
 STORE_SPECIAL_OFFERS_3D = {
-	[33] = {
+	[33] = { -- Foxes
 		Name = "Foxy",
-		VertexColor =  {0.38, 0.88, 1},
+		BorderColor = {0.38, 0.88, 1},
 		PopupCreature = 130523,
-		BannerModelInfo = {130523, 0.1, "BOTTOM", "TOP", 0, -40, 280, 280, 1},
-	}, -- Foxes
-	[47] = {
-		Name = "Meat",
-		VertexColor =  {1, 0.3, 0.3},
-		PopupCreature = 130945,
-		BannerModelInfo = {130945, -0.3, "BOTTOM", "TOP", 10, -60, 200, 200, 1},
-	}, -- Meat wagon
-	[35] = {
+		PopupModelInfo = {130523, 0.1, "BOTTOM", "TOP", 0, -40, 280, 280, 1},
+
+		Banner = {
+			TimerColor			= {0.92, 0.9, 1},
+			TitleColor			= {0.99, 0.2, 0.68},
+			NameColor			= {0.92, 0.9, 1},
+			DescriptionColor	= {1, 0.3, 0.78},
+			PriceLabelColor		= {0.92, 0.9, 1},
+			PriceColor			= {0.92, 0.9, 1},
+			NoSideBG = true,
+
+			SceneInfo = {
+				{130519, 462, 469, {"RIGHT", nil, "RIGHT", 50, 0}, -39},
+				{130523, 232, 232, {"BOTTOMRIGHT", nil, "BOTTOMRIGHT", 40, -60}, 6},
+			},
+		},
+	},
+	[35] = { -- Pink foxes
 		Name = "FoxyPink",
-		VertexColor =  {1, 0.3, 0.3},
+		BorderColor = {1, 0.3, 0.3},
 		PopupCreature = 130521,
-		BannerModelInfo = {130521, -0.6, "BOTTOM", "TOP", 0, -74, 280, 280, 1},
-	}, -- Pink foxes
-	[36] = {
+		PopupModelInfo = {130521, -0.6, "BOTTOM", "TOP", 0, -74, 280, 280, 1},
+
+		Banner = {
+			TimerColor			= {0.92, 0.90, 1},
+			TitleColor			= {0.99, 0.2, 0.68},
+			NameColor			= {0.92, 0.90, 1},
+			DescriptionColor	= {0.99, 0.2, 0.68},
+			PriceLabelColor		= {0.92, 0.90, 1},
+			PriceColor			= {0.92, 0.90, 1},
+			NoSideBG = true,
+
+			SceneInfo = {
+				{130521, 382, 389, {"RIGHT", nil, "RIGHT", 60, -10}, -39, nil, nil, {1, 0, -0.663, 0.827, -0.417, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
+			},
+		},
+	},
+	[36] = { -- Fly rat
 		Name = "FlyRat",
-		VertexColor =  {0.98, 0.65, 0.68},
+		BorderColor = {0.98, 0.65, 0.68},
 		PopupCreature = 200041,
-		BannerModelInfo = {200041, -0.5, "BOTTOM", "TOP", 0, 0, 200, 200, 1},
-	}, -- Fly rat offer
-	[42] = {
-		Name = "RainbowSteed",
-		VertexColor =  {0.38, 0.88, 1},
-		PopupCreature = nil,
-		BannerModelInfo = nil,
-	}, -- Rainbow steed
-	[48] = {
+		PopupModelInfo = {200041, -0.5, "BOTTOM", "TOP", 0, 0, 200, 200, 1},
+
+		Banner = {
+			TimerColor			= {1, 0.89, 0.88},
+			TitleColor			= {1, 0.2, 0.2},
+			NameColor			= {1, 0.89, 0.88},
+			DescriptionColor	= {1, 0.2, 0.2},
+			PriceLabelColor		= {1, 0.89, 0.88},
+			PriceColor			= {1, 0.89, 0.88},
+			NoSideBG = true,
+
+			SceneInfo = {
+				{200041, 322, 322, {"CENTER", nil, "CENTER", 0, 6}, -39, nil, nil, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
+			},
+		},
+	},
+	[48] = { -- Leffel
 		Name = "Leffel",
-		VertexColor =  {0.38, 0.88, 1},
+		BorderColor = {0.38, 0.88, 1},
 		PopupCreature = 130893,
-		BannerModelInfo = {130893, -0.68, "BOTTOM", "TOP", 0, 0, 200, 200, 0.7},
-	}, -- Leffel
-	[53] = {
+		PopupModelInfo = {130893, -0.68, "BOTTOM", "TOP", 0, 0, 200, 200, 0.7},
+
+		Banner = {
+			TimerColor			= {1, 0.9, 0.9},
+			TitleColor			= {1, 0.2, 0.2},
+			NameColor			= {1, 0.9, 0.9},
+			DescriptionColor	= {1, 0.2, 0.2},
+			PriceLabelColor		= {1, 0.9, 0.9},
+			PriceColor			= {1, 0.9, 0.9},
+			NoSideBG = true,
+
+			SceneInfo = {
+				{130893, nil, nil, nil, -39, nil, {-0.490, 0.670, 0.500}, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
+			},
+		},
+	},
+	[42] = { -- Rainbow steed
+		Name = "RainbowSteed",
+		BorderColor = {0.38, 0.88, 1},
+
+		Banner = {
+			TimerColor			= {1, 1, 1},
+			TitleColor			= {1, 0.9294, 0.7607},
+			NameColor			= {1, 1, 1},
+			DescriptionColor	= {1, 0.9294, 0.7607},
+			PriceLabelColor		= {1, 0.9, 0.9},
+			PriceColor			= {1, 0.9, 0.9},
+		},
+	},
+	[47] = { -- Meat wagon
+		Name = "Meat",
+		BorderColor = {1, 0.3, 0.3},
+		PopupCreature = 130945,
+		PopupModelInfo = {130945, -0.3, "BOTTOM", "TOP", 10, -60, 200, 200, 1},
+
+		Banner = {
+			TimerColor			= {1, 0.9, 0.9},
+			TitleColor			= {0.45, 0.14, 0.77},
+			NameColor			= {1, 0.9, 0.9},
+			DescriptionColor	= {0.45, 0.14, 0.77},
+			PriceLabelColor		= {1, 0.9, 0.9},
+			PriceColor			= {1, 0.9, 0.9},
+
+			SceneInfo = {
+				{130945, 362, 369, {"RIGHT", nil, "RIGHT", 0, -24}, -39, nil, nil, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
+			},
+		},
+	},
+	[53] = { -- Hand of suffer
 		Name = "HandOfSuffer",
-		VertexColor =  {0.82, 0.34, 0.12},
+		BorderColor = {0.82, 0.34, 0.12},
 		PopupCreature = 131067,
-		BannerModelInfo = {131067, -0.68, "BOTTOM", "TOP", 0, -70, 400, 400, 0.7},
-	}, -- Hand of suffer
-	[54] = {
+		PopupModelInfo = {131067, -0.68, "BOTTOM", "TOP", 0, -70, 400, 400, 0.7},
+
+		Banner = {
+			TimerColor			= {0.98, 0.63, 0.1},
+			TitleColor			= {0.82, 0.34, 0.12},
+			NameColor			= {0.98, 0.63, 0.1},
+			DescriptionColor	= {0.82, 0.34, 0.12},
+			PriceLabelColor		= {0.98, 0.63, 0.1},
+			PriceColor			= {1, 0.9, 0.9},
+
+			SceneInfo = {
+				{131067, 362, 469, {"CENTER", nil, "CENTER", 0, 14}, -39, nil, nil, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
+			},
+		},
+	},
+	[54] = { -- Mur mur
 		Name = "MurMur",
-		VertexColor =  {0.82, 0.34, 0.12},
+		BorderColor = {0.82, 0.34, 0.12},
 		PopupCreature = 131209,
-		BannerModelInfo = {131209, -0.68, "BOTTOM", "TOP", -50, -50, 350, 320, 0.7},
-	}, -- Mur mur
-	[55] = {
+		PopupModelInfo = {131209, -0.68, "BOTTOM", "TOP", -50, -50, 350, 320, 0.7},
+
+		Banner = {
+			TimerColor			= {0.94, 0.6, 0.4},
+			TitleColor			= {0.97, 0.86, 0.8},
+			NameColor			= {0.94, 0.6, 0.4},
+			DescriptionColor	= {0.97, 0.86, 0.8},
+			PriceLabelColor		= {0.94, 0.6, 0.4},
+			PriceColor			= {1, 0.9, 0.9},
+
+			SceneInfo = {
+				{131209, 462, 219, {"CENTER", nil, "CENTER", 0, 14}, 39, nil, nil, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
+			},
+		},
+	},
+	[55] = { -- Heart glider
 		Name = "HeartGlider",
-		VertexColor =  {1, 0.3, 0.3},
+		BorderColor = {1, 0.3, 0.3},
 		PopupCreature = 131231,
-		BannerModelInfo = {131231, -0.68, "BOTTOM", "TOP", 0, -250, 350, 420, 0.7},
-	}, -- Heart glider
-	[56] = {
+		PopupModelInfo = {131231, -0.68, "BOTTOM", "TOP", 0, -250, 350, 420, 0.7},
+
+		Banner = {
+			TimerColor			= {1, 0.3, 0.3},
+			TitleColor			= {0.97, 0.86, 0.8},
+			NameColor			= {1, 0.3, 0.3},
+			DescriptionColor	= {0.97, 0.86, 0.8},
+			PriceLabelColor		= {1, 0.3, 0.3},
+			PriceColor			= {1, 0.9, 0.9},
+
+			SceneInfo = {
+				{131231, 432, 529, {"RIGHT", nil, "RIGHT", 60, -174}, -39, nil, nil, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
+			},
+		},
+	},
+	[56] = { -- Death Breath
 		Name = "DeathBreath",
-		VertexColor =  {1, 0.3, 0.3},
+		BorderColor = {1, 0.3, 0.3},
 		PopupCreature = 74539,
-		BannerModelInfo = {74539, -0.68, "BOTTOM", "TOP", 0, -30, 150, 220, 0.7},
-	}, -- Death Breath
-	[57] = {
+		PopupModelInfo = {74539, -0.68, "BOTTOM", "TOP", 0, -30, 150, 220, 0.7},
+
+		Banner = {
+			TimerColor			= {0.71, 0.84, 0.65},
+			TitleColor			= {1, 1, 1},
+			NameColor			= {0.71, 0.84, 0.65},
+			DescriptionColor	= {1, 1, 1},
+			PriceLabelColor		= {0.71, 0.84, 0.65},
+			PriceColor			= {1, 1, 1},
+
+			SceneInfo = {
+				{74539, 202, 299, {"RIGHT", nil, "RIGHT", -90, -10}, -16, nil, nil, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
+				{74383, 172, 172, {"BOTTOMRIGHT", nil, "BOTTOMRIGHT", 30, 60}, -6},
+			},
+		},
+	},
+	[57] = { -- Sirin
 		Name = "Sirin",
-		VertexColor =  {1, 0.3, 0.3},
+		BorderColor = {1, 0.3, 0.3},
 		PopupCreature = 131250,
-		BannerModelInfo = {131250, -0.38, "BOTTOM", "TOP", 0, 20, 350, 220, 0.7},
-	}, -- Sirin
-	[58] = {
+		PopupModelInfo = {131250, -0.38, "BOTTOM", "TOP", 0, 20, 350, 220, 0.7},
+
+		Banner = {
+			TimerColor			= {0.67, 0.34, 0.63},
+			TitleColor			= {1, 1, 1},
+			NameColor			= {0.67, 0.34, 0.63},
+			DescriptionColor	= {1, 1, 1},
+			PriceLabelColor		= {0.67, 0.34, 0.63},
+			PriceColor			= {1, 1, 1},
+
+			SceneInfo = {
+				{131250, 382, 229, {"RIGHT", nil, "RIGHT", 0, -10}, -16, nil, nil, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
+			},
+		},
+	},
+	[58] = { -- VenLo
 		Name = "VenLo",
-		VertexColor = {1, 0.3, 0.3},
+		BorderColor = {1, 0.3, 0.3},
 		PopupCreature = 131261,
-		BannerModelInfo = {131261, -0.645, "BOTTOM", "TOP", 0, -60, 400, 320, 0.5},
-	}, -- VenLo
+		PopupModelInfo = {131261, -0.645, "BOTTOM", "TOP", 0, -60, 400, 320, 0.5},
+
+		Banner = {
+			TimerColor			= {0.67, 0.34, 0.63},
+			TitleColor			= {1, 1, 1},
+			NameColor			= {0.67, 0.34, 0.63},
+			DescriptionColor	= {1, 1, 1},
+			PriceLabelColor		= {0.67, 0.34, 0.63},
+			PriceColor			= {1, 1, 1},
+
+			SceneInfo = {
+				{131261, 379, 250, {"TOPRIGHT", nil, "TOPRIGHT", -1, -1}, -37, 0.5, nil, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
+			},
+		},
+	},
 }
 
 STORE_CACHE = C_Cache("SIRUS_STORE_CACHE", true)
@@ -575,6 +731,11 @@ local StoreRequestIgnoreFilters
 
 local storeRequestQueue = {}
 local storeQueueTimer
+
+local storeBalance = {};
+function GetPlayerBalance()
+	return storeBalance.Bonus or -1, storeBalance.Vote or -1, storeBalance.Refer or -1, storeBalance.loyalLevel or -1;
+end
 
 function GetStoreHyperlinkInfo( link )
 	local splitData = C_Split(link, ":")
@@ -1683,6 +1844,7 @@ end
 
 function StoreSpecialOfferBanner_OnShow( self, ... )
 	selectedItemCardPage = 1
+	SetParentFrameLevel(self.LeftPanel.BuyButton, 2)
 end
 
 function StoreSpecialOfferBanner_OnHide( self, ... )
@@ -1694,6 +1856,14 @@ function StoreSpecialOfferBanner_OnEnter( self, ... )
 end
 
 function StoreSpecialOfferBanner_OnLeave( self, ... )
+	StoreSliderSetup(STORE_SLIDER_NORMAL_UPDATE)
+end
+
+function StoreSpecialOfferBannerNextPrevPageButton_OnEnter(self)
+	StoreSliderSetup(STORE_SLIDER_HOVER_UPDATE)
+end
+
+function StoreSpecialOfferBannerNextPrevPageButton_OnLeave(self)
 	StoreSliderSetup(STORE_SLIDER_NORMAL_UPDATE)
 end
 
@@ -2941,6 +3111,10 @@ function StoreSubscribeSetup()
 		StoreSubscribeContainer.HeaderText:SetText(data.Name)
 	end
 
+	local headerWidth = StoreSubscribeContainer.HeaderText:GetStringWidth() + 70
+	StoreSubscribeContainer.HeaderBackground:SetWidth(math.max(256, headerWidth))
+	StoreSubscribeContainer.HeaderBackgroundAlpha:SetWidth(math.max(262, headerWidth + 6))
+
     StoreSubscribeContainer.infotext:SetText(data.Description)
 
 	StoreSubscribeContainer.VIPBackground:SetShown(data.Dayz and data.ActiveExtra)
@@ -3037,14 +3211,10 @@ function StoreFrame_SpecialOfferSetup()
 		leftPanel.NameText:SetText(offerData.Title)
 		leftPanel.DescriptionText:SetText(offerData.Description)
 
-		if offerData.Price == 0 then
-			self.LeftPanel.BuyButton:SetText(STORE_SPECIAL_OFFER_FREE_LABEL)
+		if offerData.FreeSubscribe or offerData.Price ~= 0 then
+			self.LeftPanel.BuyButton:SetText(STORE_SPECIAL_OFFER_MORE_LABEL)
 		else
-			self.LeftPanel.BuyButton:SetText(STORE_SPECIAL_OFFER_MORE_LABEL)
-		end
-
-		if offerData.FreeSubscribe then
-			self.LeftPanel.BuyButton:SetText(STORE_SPECIAL_OFFER_MORE_LABEL)
+			self.LeftPanel.BuyButton:SetText(STORE_SPECIAL_OFFER_FREE_LABEL)
 		end
 
 		leftPanel.TimerText:SetShown(offerData.EndTime)
@@ -3133,9 +3303,13 @@ function StoreSpecialOfferSetupTemplate( self )
 				end
 			end
 
-			if offer3DName ~= "" and not self[offer3DName .. "Offer"]:IsShown() then
-				self[offer3DName .. "Offer"]:SetShown(true);
-				StoreSpecialOfferCustomUpdateState(_G["StoreSpecialOfferBanner" .. offer3DName .. "Offer"])
+			if offer3DName ~= "" then
+				if not self[offer3DName .. "Offer"]:IsShown() then
+					self[offer3DName .. "Offer"]:SetShown(true);
+					StoreSpecialOfferCustomUpdateState(_G["StoreSpecialOfferBanner" .. offer3DName .. "Offer"])
+				else
+					self.LeftPanel:Hide()
+				end
 			end
 
 			if offer3DName ~= "" then
@@ -3147,38 +3321,43 @@ end
 
 function StoreSpecialOfferCustomUpdateState( self )
 	local isShown = self:IsShown()
+	local offerFrame = self:GetParent()
 
 	if isShown then
-		self:GetParent().NavigationBar.PageText:ClearAllPoints()
-		self:GetParent().NavigationBar.PrevPageButton:ClearAllPoints()
+		offerFrame.NavigationBar.PageText:ClearAllPoints()
+		offerFrame.NavigationBar.PrevPageButton:ClearAllPoints()
 
-		self:GetParent().NavigationBar.PageText:SetPoint("TOPRIGHT", -74, -17)
-		self:GetParent().NavigationBar.PrevPageButton:SetPoint("TOPRIGHT", -40, -7)
+		offerFrame.NavigationBar.PageText:SetPoint("TOPRIGHT", -74, -17)
+		offerFrame.NavigationBar.PrevPageButton:SetPoint("TOPRIGHT", -40, -7)
 
-		local color = STORE_SPECIAL_OFFERS_3D[self:GetParent().data.offerID] and STORE_SPECIAL_OFFERS_3D[self:GetParent().data.offerID].VertexColor or nil
-		self:GetParent().Border:SetVertexColor(color[1], color[2], color[3])
+		local color = STORE_SPECIAL_OFFERS_3D[offerFrame.data.offerID] and STORE_SPECIAL_OFFERS_3D[offerFrame.data.offerID].BorderColor
+		if color then
+			offerFrame.Border:SetVertexColor(color[1], color[2], color[3])
+		else
+			offerFrame.Border:SetVertexColor(0.38, 0.88, 1)
+		end
 
-		self:GetParent().Background:SetTexCoord(0, 0.564453125, 0.015625, 1)
+		offerFrame.Background:SetTexCoord(0, 0.564453125, 0.015625, 1)
 
-		if self:GetParent().data then
-			self.LeftPanel.Price:SetText(self:GetParent().data.Price or 0)
+		if offerFrame.data then
+			self.LeftPanel.Price:SetText(offerFrame.data.Price or 0)
 		end
 	else
 		local offerCount = StoreGetSpecialOfferCount()
 
 		if offerCount > 0 then
-			self:GetParent().NavigationBar.PageText:ClearAllPoints()
-			self:GetParent().NavigationBar.PrevPageButton:ClearAllPoints()
+			offerFrame.NavigationBar.PageText:ClearAllPoints()
+			offerFrame.NavigationBar.PrevPageButton:ClearAllPoints()
 
-			self:GetParent().NavigationBar.PageText:SetPoint("BOTTOMRIGHT", -74, 17)
-			self:GetParent().NavigationBar.PrevPageButton:SetPoint("BOTTOMRIGHT", -40, 7)
+			offerFrame.NavigationBar.PageText:SetPoint("BOTTOMRIGHT", -74, 17)
+			offerFrame.NavigationBar.PrevPageButton:SetPoint("BOTTOMRIGHT", -40, 7)
 
-			self:GetParent().Background:SetTexCoord(0, 0.5634765625, 0.02734375, 1)
-			self:GetParent().Border:SetVertexColor(1, 1, 1)
+			offerFrame.Background:SetTexCoord(0, 0.5634765625, 0.02734375, 1)
+			offerFrame.Border:SetVertexColor(1, 1, 1)
 		end
 	end
 
-	self:GetParent().LeftPanel:SetShown(not isShown)
+	offerFrame.LeftPanel:SetShown(not isShown)
 end
 
 function StoreLoyalProgressBarSetValue( minv, maxv )
@@ -3274,7 +3453,7 @@ function StoreConfirmationFrame_Update(self)
 	StoreConfirmationSendGiftCheckButton:SetEnabled(not self.isAltCurrency);
 
 	local giftOverride
-	if selectedMoneyID == 1 then
+	if selectedMoneyID == 1 and selectedCategoryID ~= 5 and self.data.Entry then
 		local currentLoyal = StoreMoneyButton4.data[4]
 		if (currentLoyal >= 30) then
 			StoreConfirmationSendGiftCheckButton:SetShown(true)
@@ -5658,6 +5837,12 @@ function EventHandler:ASMSG_SHOP_BALANCE_RESPONSE( msg )
 	_G["StoreMoneyButton4"].data = {loyalCurrent, loyalMax, loyalMin, loyalLevel}
 
 	Hook:FireEvent("PLAYER_BALANCE_UPDATE", Bonus, Vote, Refer, loyalLevel, loyalMin, loyalMax, loyalCurrent)
+
+	table.wipe(storeBalance);
+	storeBalance.Bonus = Bonus;
+	storeBalance.Vote = Vote;
+	storeBalance.Refer = Refer;
+	storeBalance.loyalLevel = loyalLevel;
 end
 
 function EventHandler:ASMSG_SHOP_CATEGORY_NEW_ITEMS_RESPONSE( msg )
@@ -5882,7 +6067,7 @@ function EventHandler:ASMSG_SHOP_SPECIAL_OFFER_POPUP_SMALL( msg )
 			StoreToastButton.ModelFrame:SetCreature(offer3DModel)
 		end
 	else
-		local offerBanner3DModel = STORE_SPECIAL_OFFERS_3D[offerID] and STORE_SPECIAL_OFFERS_3D[offerID].BannerModelInfo or nil
+		local offerBanner3DModel = STORE_SPECIAL_OFFERS_3D[offerID] and STORE_SPECIAL_OFFERS_3D[offerID].PopupModelInfo or nil
 		if offerBanner3DModel ~= nil then
 			StoreFrame.Popup = NPE_TutorialPointerFrame:Show(splitData[2], "DOWN", StoreMicroButton, 0, -5, nil, nil, offerBanner3DModel)
 		else
@@ -6386,4 +6571,177 @@ function IsSubCategoryEmpty(id)
 		return true
 	end
 	return false
+end
+
+local OFFER_DELAY_MODEL_UPDATE = false
+
+StoreOfferMixin = {}
+
+local offerModelPool_HideAndClearAnchors = function(framePool, frame)
+	frame:Hide()
+	frame:ClearAllPoints()
+	frame.index = nil
+end
+
+function StoreOfferMixin:OnLoad()
+	self.offerID = self:GetID()
+	self.offerData = STORE_SPECIAL_OFFERS_3D[self.offerID]
+
+	if not self.offerData then
+		GMError(string.format("Unknown offer id [%i]", self.offerID))
+		return
+	end
+
+	if self.offerData.Banner.SceneInfo then
+		self.playerModelPool = CreateFramePool("PlayerModel", self, "StoreOfferPlayerModelTemplate", offerModelPool_HideAndClearAnchors)
+		self.dressupModelPool = CreateFramePool("DressUpModel", self, "StoreOfferDressUpModelTemplate", offerModelPool_HideAndClearAnchors)
+	end
+
+	self.LeftPanel.Background:SetShown(not self.offerData.Banner.NoSideBG)
+
+	if self.offerData.Banner.TimerColor then
+		self.LeftPanel.TimerText:SetTextColor(unpack(self.offerData.Banner.TimerColor))
+	end
+	if self.offerData.Banner.TitleColor then
+		self.LeftPanel.TitleText:SetTextColor(unpack(self.offerData.Banner.TitleColor))
+	end
+	if self.offerData.Banner.NameColor then
+		self.LeftPanel.NameText:SetTextColor(unpack(self.offerData.Banner.NameColor))
+	end
+	if self.offerData.Banner.DescriptionColor then
+		self.LeftPanel.DescriptionText:SetTextColor(unpack(self.offerData.Banner.DescriptionColor))
+	end
+	if self.offerData.Banner.PriceLabelColor then
+		self.LeftPanel.PriceLabel:SetTextColor(unpack(self.offerData.Banner.PriceLabelColor))
+	end
+	if self.offerData.Banner.PriceColor then
+		self.LeftPanel.Price:SetTextColor(unpack(self.offerData.Banner.PriceColor))
+	end
+end
+
+function StoreOfferMixin:UpdateModels()
+	if not self.offerData then return end
+
+	self.playerModelPool:ReleaseAll()
+	self.dressupModelPool:ReleaseAll()
+
+	for index, modelInfo in ipairs(self.offerData.Banner.SceneInfo) do
+		local model = modelInfo[9] and self.dressupModelPool:Acquire() or self.playerModelPool:Acquire()
+		model.index = index
+		model:SetSettings(modelInfo)
+		model:Show()
+	end
+end
+
+function StoreOfferMixin:GetModelByIndex(index)
+	if self.playerModelPool then
+		for model in self.playerModelPool:EnumerateActive() do
+			if model.index == index then
+				return model
+			end
+		end
+	end
+	if self.dressupModelPool then
+		for model in self.dressupModelPool:EnumerateActive() do
+			if model.index == index then
+				return model
+			end
+		end
+	end
+end
+
+function StoreOfferMixin:OnShow()
+	if self.offerData and self.offerData.Banner.SceneInfo then
+		self:UpdateModels()
+	end
+end
+
+function StoreOfferMixin:Show()
+	if self:IsShown() then
+		self:OnShow()
+	else
+		getmetatable(self).__index.Show(self)
+	end
+end
+
+StoreOfferModelMixin = {}
+
+function StoreOfferModelMixin:OnLoad()
+	self.settings = {}
+end
+
+local defaultModelPoint = {"CENTER", "$parentRightPanel"}
+function StoreOfferModelMixin:SetSettings(settings)
+	table.wipe(self.settings)
+
+	self.settings.creatureID = settings[1]
+	self.settings.width = settings[2] or self:GetParent().RightPanel:GetWidth()
+	self.settings.hieght = settings[3] or self:GetParent().RightPanel:GetHeight()
+	self.settings.point = settings[4]
+	self.settings.rotation = settings[5] or 0
+	self.settings.scale = settings[6] or 1
+	self.settings.position = settings[7]
+	self.settings.light = settings[8]
+	self.settings.raceID = settings[9]
+
+	if not self.settings.point then
+		self.settings.point = defaultModelPoint
+		self.settings.updateRelativePoint = nil
+	elseif self.settings.point[2] == nil then
+		self.settings.point[2] = self:GetParent().RightPanel
+		self.settings.updateRelativePoint = nil
+	elseif type(self.settings.point[2]) == "number" then
+		self.settings.updateRelativePoint = true
+	end
+end
+
+function StoreOfferModelMixin:UpdateModel()
+	if not next(self.settings) then return end
+
+	if self.settings.point then
+		self:SetSize(self.settings.width, self.settings.hieght)
+		self:ClearAllPoints()
+
+		if self.settings.updateRelativePoint then
+			local point, rel, relPoint, x, y = unpack(self.settings.point)
+			rel = self:GetParent():GetModelByIndex(rel) or self:GetParent().RightPanel
+			self:SetPoint(point, rel, relPoint, x, y)
+		else
+			self:SetPoint(unpack(self.settings.point))
+		end
+	else
+		self:SetAllPoints()
+	end
+
+	self:SetRotation(math.rad(self.settings.rotation))
+
+	if OFFER_DELAY_MODEL_UPDATE then
+		self:SetScript("OnUpdate", self.DelayedUpdate)
+	else
+		self:DelayedUpdate()
+	end
+end
+
+function StoreOfferModelMixin:DelayedUpdate(elapsed)
+	if OFFER_DELAY_MODEL_UPDATE then
+		self:SetScript("OnUpdate", nil)
+		if not next(self.settings) then
+			return
+		end
+	end
+
+	self:SetCreature(self.settings.creatureID)
+	self:SetModelScale(self.settings.scale)
+
+	if self.settings.position then
+		self:SetPosition(unpack(self.settings.position, 1, 3))
+	end
+
+	if self.settings.light then
+		self:SetLight(unpack(self.settings.light))
+	end
+end
+
+function StoreOfferModelMixin:OnShow()
+	self:UpdateModel()
 end

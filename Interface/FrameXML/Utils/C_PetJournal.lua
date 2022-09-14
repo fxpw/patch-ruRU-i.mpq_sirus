@@ -25,12 +25,10 @@ local SOURCE_TYPES = {
 local SEARCH_FILTER = "";
 local PET_FILTER_CHECKED = {};
 local PET_TYPE_CHECKED = {};
-local PET_SOURCE_CHECKED = {};
 local PET_EXPANSION_CHECKED = {};
 
 local PET_SORT_PARAMETER = 1;
 
-SIRUS_COLLECTION_FAVORITE_PET = {};
 local COMPANION_INFO = {};
 local PET_INFO_BY_INDEX = {};
 local PET_INFO_BY_PET_ID = {};
@@ -97,7 +95,7 @@ local function SortedPetJornal(a, b)
 	return c < d;
 end
 
-local function PetMathesFilter(isOwned, subCategoryID, sourceType, expansion, name)
+local function PetMathesFilter(isOwned, subCategoryID, sourceShown, expansion, name)
 	if PET_FILTER_CHECKED[LE_PET_JOURNAL_FILTER_COLLECTED] and isOwned then
 		return false;
 	end
@@ -106,11 +104,11 @@ local function PetMathesFilter(isOwned, subCategoryID, sourceType, expansion, na
 		return false;
 	end
 
-	if next(PET_SOURCE_CHECKED) and not sourceType then
+	if not sourceShown then
 		return false;
 	end
 
-	if PET_TYPE_CHECKED[subCategoryID] or PET_SOURCE_CHECKED[sourceType] or PET_EXPANSION_CHECKED[expansion] then
+	if PET_TYPE_CHECKED[subCategoryID] or PET_EXPANSION_CHECKED[expansion] then
 		return false;
 	end
 
@@ -124,6 +122,8 @@ end
 local function FilteredPetJornal()
 	NUM_OWNED_PETS = 0;
 	table.wipe(PET_INFO_BY_INDEX);
+
+	local sourceFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_PET_JOURNAL_SOURCE_FILTERS")) or 0;
 
 	for i = 1, #COLLECTION_PETDATA do
 		local data = COLLECTION_PETDATA[i];
@@ -141,13 +141,17 @@ local function FilteredPetJornal()
 		local isOwned = petIndex and true or false;
 		local isFavorite = SIRUS_COLLECTION_FAVORITE_PET[data.hash] and true or false;
 		local currency = petInfoByHash and petInfoByHash.currency or data.currency;
-		local sourceType = (currency ~= 0 and 7 or SOURCE_TYPES[data.lootType]);
+
+		local sourceFlag = data.lootType ~= 0 and bit.lshift(1, ((currency ~= 0 and data.lootType ~= 15 and 7 or SOURCE_TYPES[data.lootType]) or 1) - 1) or 0;
+		if data.holidayText ~= "" then
+			sourceFlag = bit.bor(sourceFlag, bit.lshift(1, 6 - 1));
+		end
 
 		if isOwned then
 			NUM_OWNED_PETS = NUM_OWNED_PETS + 1;
 		end
 
-		if PetMathesFilter(isOwned, data.subCategoryID, sourceType, data.expansion or 0, name or "") then
+		if PetMathesFilter(isOwned, data.subCategoryID, sourceFiltersFlag == 0 or bit.band(sourceFiltersFlag, sourceFlag) ~= sourceFlag, data.expansion or 0, name or "") then
 			PET_INFO_BY_INDEX[#PET_INFO_BY_INDEX + 1] = {
 				hash = data.hash,
 				petID = petID,
@@ -209,10 +213,6 @@ frame:SetScript("OnEvent", function(_, event, arg1)
 			PET_TYPE_CHECKED[index] = C_CVar:GetCVarBitfield("C_CVAR_PET_JOURNAL_TYPE_FILTERS", index);
 		end
 
-		for index = 1, NUM_PET_SOURCES do
-			PET_SOURCE_CHECKED[index] = C_CVar:GetCVarBitfield("C_CVAR_PET_JOURNAL_SOURCE_FILTERS", index) and true or nil;
-		end
-
 		for index = 1, NUM_PET_EXPANSIONS do
 			PET_EXPANSION_CHECKED[index] = C_CVar:GetCVarBitfield("C_CVAR_PET_JOURNAL_EXPANSION_FILTERS", index);
 		end
@@ -224,7 +224,10 @@ frame:SetScript("OnEvent", function(_, event, arg1)
 		frame:RegisterEvent("COMMENTATOR_ENTER_WORLD");
 		frame:UnregisterEvent(event);
 	elseif event == "COMMENTATOR_ENTER_WORLD" then
+		table.wipe(SIRUS_MOUNTJOURNAL_FAVORITE_PET);
 		table.wipe(SIRUS_COLLECTION_FAVORITE_PET);
+		table.wipe(SIRUS_COLLECTION_FAVORITE_APPEARANCES);
+		table.wipe(SIRUS_COLLECTION_FAVORITE_TOY);
 		frame:UnregisterEvent(event);
 	elseif event == "PLAYER_TALENT_UPDATE" then
 		frame:UnregisterEvent("COMMENTATOR_ENTER_WORLD");
@@ -363,8 +366,6 @@ function C_PetJournal.SetPetSourceChecked(petSourceIndex, value)
 	if petSourceIndex > 0 and petSourceIndex <= NUM_PET_SOURCES then
 		C_CVar:SetCVarBitfield("C_CVAR_PET_JOURNAL_SOURCE_FILTERS", petSourceIndex, not value);
 
-		PET_SOURCE_CHECKED[petSourceIndex] = not value and true or nil;
-
 		FilteredPetJornal();
 	end
 end
@@ -377,7 +378,11 @@ function C_PetJournal.IsPetSourceChecked(petSourceIndex)
 		error("Usage: local isChecked = C_PetJournal.IsPetSourceChecked(petSourceIndex)", 2);
 	end
 
-	return not PET_SOURCE_CHECKED[petSourceIndex] and true or false;
+	if C_CVar:GetCVarBitfield("C_CVAR_PET_JOURNAL_SOURCE_FILTERS", petSourceIndex) then
+		return false;
+	end
+
+	return true;
 end
 
 function C_PetJournal.SetAllPetSourcesChecked(checked)
@@ -390,8 +395,6 @@ function C_PetJournal.SetAllPetSourcesChecked(checked)
 
 	for index = 1, NUM_PET_SOURCES do
 		C_CVar:SetCVarBitfield("C_CVAR_PET_JOURNAL_SOURCE_FILTERS", index, not checked);
-
-		PET_SOURCE_CHECKED[index] = not checked and true or nil;
 	end
 
 	FilteredPetJornal();
@@ -456,20 +459,20 @@ function C_PetJournal.GetPetInfoByItemID(itemID)
 	local petInfo = PET_INFO_BY_ITEM_ID[itemID] or {};
 	local hash = petInfo.hash;
 	local isFavorite = hash and SIRUS_COLLECTION_FAVORITE_PET[hash];
-	return isFavorite, petInfo.petID, petInfo.name, petInfo.icon, petInfo.subCategoryID, petInfo.lootType, petInfo.currency, petInfo.price, petInfo.creatureID, petInfo.spellID, petInfo.itemID, petInfo.priceText, petInfo.descriptionText;
+	return isFavorite, petInfo.petID, petInfo.name, petInfo.icon, petInfo.subCategoryID, petInfo.lootType, petInfo.currency, petInfo.price, petInfo.creatureID, petInfo.spellID, petInfo.itemID, petInfo.priceText, petInfo.descriptionText, petInfo.holidayText;
 end
 
 function C_PetJournal.GetPetInfoByPetID(petID)
 	local petInfo = PET_INFO_BY_PET_ID[petID] or {};
 	local hash = petInfo.hash;
 	local isFavorite = hash and SIRUS_COLLECTION_FAVORITE_PET[hash];
-	return petInfo.hash, petInfo.petIndex, isFavorite, petInfo.name, petInfo.icon, petInfo.subCategoryID, petInfo.lootType, petInfo.currency, petInfo.price, petInfo.creatureID, petInfo.spellID, petInfo.itemID, petInfo.priceText, petInfo.descriptionText;
+	return petInfo.hash, petInfo.petIndex, isFavorite, petInfo.name, petInfo.icon, petInfo.subCategoryID, petInfo.lootType, petInfo.currency, petInfo.price, petInfo.creatureID, petInfo.spellID, petInfo.itemID, petInfo.priceText, petInfo.descriptionText, petInfo.holidayText;
 end
 
 function C_PetJournal.GetPetInfoByPetHash(hash)
 	local petInfo = PET_INFO_BY_PET_HASH[hash] or {};
 	local isFavorite = hash and SIRUS_COLLECTION_FAVORITE_PET[hash];
-	return petInfo.petIndex, isFavorite, petInfo.name, petInfo.icon, petInfo.subCategoryID, petInfo.lootType, petInfo.currency, petInfo.price, petInfo.productID, petInfo.creatureID, petInfo.spellID, petInfo.itemID, petInfo.priceText, petInfo.descriptionText;
+	return petInfo.petIndex, isFavorite, petInfo.name, petInfo.icon, petInfo.subCategoryID, petInfo.lootType, petInfo.currency, petInfo.price, petInfo.productID, petInfo.creatureID, petInfo.spellID, petInfo.itemID, petInfo.priceText, petInfo.descriptionText, petInfo.holidayText;
 end
 
 function C_PetJournal.GetSummonedPetID()
@@ -529,11 +532,9 @@ function C_PetJournal.SetFavorite(petID, isFavorite)
 	local hash = PET_INFO_BY_PET_ID[petID] and PET_INFO_BY_PET_ID[petID].hash;
 	if hash then
 		if isFavorite then
-			SendAddonMessage("ACMSG_C_P_ADD_TO_FAVORITES", hash, "WHISPER", UnitName("player"));
-			SIRUS_COLLECTION_FAVORITE_PET[hash] = true;
+			SendServerMessage("ACMSG_C_A_F", string.format("%d|%s", CHAR_COLLECTION_PET, hash));
 		else
-			SendAddonMessage("ACMSG_C_P_REMOVE_FROM_FAVORITES", hash, "WHISPER", UnitName("player"));
-			SIRUS_COLLECTION_FAVORITE_PET[hash] = nil;
+			SendServerMessage("ACMSG_C_R_F", string.format("%d|%s", CHAR_COLLECTION_PET, hash));
 		end
 	end
 end
@@ -555,7 +556,6 @@ function C_PetJournal.SetDefaultFilters()
 
 	table.wipe(PET_FILTER_CHECKED);
 	table.wipe(PET_TYPE_CHECKED);
-	table.wipe(PET_SOURCE_CHECKED);
 	table.wipe(PET_EXPANSION_CHECKED);
 
 	FilteredPetJornal();
@@ -573,28 +573,6 @@ function C_PetJournal.IsUsingDefaultFilters()
  	return true;
 end
 
-function EventHandler:ACMSG_C_P_ADD_TO_FAVORITES(msg)
-	SIRUS_COLLECTION_FAVORITE_PET[msg] = true;
-
-	FilteredPetJornal();
-	PetJournal_UpdatePetList();
-end
-
-function EventHandler:ASMSG_C_P_REMOVE_FROM_FAVORITES_R(msg)
-	SIRUS_COLLECTION_FAVORITE_PET[msg] = nil;
-
-	FilteredPetJornal();
-	PetJournal_UpdatePetList();
-end
-
-function EventHandler:ASMSG_C_P_FAVORITES_LIST(msg)
-	for _, v in pairs({strsplit(",", msg)}) do
-		if v then
-			SIRUS_COLLECTION_FAVORITE_PET[v] = true;
-		end
-	end
-end
-
 function EventHandler:ASMSG_COLLECTION_PET_IN_SHOP(msg)
 	local blockData = {strsplit("|", msg)};
 	for i = 1, #blockData do
@@ -607,4 +585,91 @@ function EventHandler:ASMSG_COLLECTION_PET_IN_SHOP(msg)
 		end
 	end
 	FilteredPetJornal();
+end
+
+SIRUS_MOUNTJOURNAL_FAVORITE_PET = {};
+SIRUS_COLLECTION_FAVORITE_PET = {};
+SIRUS_COLLECTION_FAVORITE_APPEARANCES = {};
+SIRUS_COLLECTION_FAVORITE_TOY = {};
+
+function EventHandler:ASMSG_C_F_L(msg)
+	local collectionType, favoriteList = string.split("|", msg);
+	collectionType = tonumber(collectionType);
+	if collectionType == CHAR_COLLECTION_MOUNT then
+		for _, item in ipairs({string.split(",", favoriteList)}) do
+			if item then
+				SIRUS_MOUNTJOURNAL_FAVORITE_PET[item] = true;
+			end
+		end
+	elseif collectionType == CHAR_COLLECTION_PET then
+		for _, item in ipairs({string.split(",", favoriteList)}) do
+			if item then
+				SIRUS_COLLECTION_FAVORITE_PET[item] = true;
+			end
+		end
+	elseif collectionType == CHAR_COLLECTION_APPEARANCE then
+		for _, item in ipairs({string.split(",", favoriteList)}) do
+			item = tonumber(item);
+			if item then
+				SIRUS_COLLECTION_FAVORITE_APPEARANCES[item] = true;
+			end
+		end
+	elseif collectionType == CHAR_COLLECTION_TOY then
+		for _, item in ipairs({string.split(",", favoriteList)}) do
+			if item then
+				SIRUS_COLLECTION_FAVORITE_TOY[item] = true;
+			end
+		end
+	end
+end
+
+function EventHandler:ASMSG_C_A_F(msg)
+	local collectionType, item = string.split("|", msg);
+	collectionType = tonumber(collectionType);
+
+	if collectionType == CHAR_COLLECTION_MOUNT then
+		SIRUS_MOUNTJOURNAL_FAVORITE_PET[item] = true;
+
+		MountJournal_CreateData();
+		MountJournal_UpdateMountList();
+	elseif collectionType == CHAR_COLLECTION_PET then
+		SIRUS_COLLECTION_FAVORITE_PET[item] = true;
+
+		FilteredPetJornal();
+		PetJournal_UpdatePetList();
+	elseif collectionType == CHAR_COLLECTION_APPEARANCE then
+		SIRUS_COLLECTION_FAVORITE_APPEARANCES[tonumber(item)] = true;
+
+		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOG_COLLECTION_UPDATED);
+	elseif collectionType == CHAR_COLLECTION_TOY then
+		SIRUS_COLLECTION_FAVORITE_TOY[item] = true;
+
+		C_ToyBox.ForceToyRefilter();
+	end
+end
+
+function EventHandler:ASMSG_C_R_F(msg)
+	local collectionType, item = string.split("|", msg);
+	collectionType = tonumber(collectionType);
+
+	if collectionType == CHAR_COLLECTION_MOUNT then
+		SIRUS_MOUNTJOURNAL_FAVORITE_PET[item] = nil;
+
+		MountJournal_CreateData();
+		MountJournal_UpdateMountList();
+		MountJournal_UpdateFavoriteData();
+	elseif collectionType == CHAR_COLLECTION_PET then
+		SIRUS_COLLECTION_FAVORITE_PET[item] = nil;
+
+		FilteredPetJornal();
+		PetJournal_UpdatePetList();
+	elseif collectionType == CHAR_COLLECTION_APPEARANCE then
+		SIRUS_COLLECTION_FAVORITE_APPEARANCES[tonumber(item)] = nil;
+
+		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOG_COLLECTION_UPDATED);
+	elseif collectionType == CHAR_COLLECTION_TOY then
+		SIRUS_COLLECTION_FAVORITE_TOY[item] = nil;
+
+		C_ToyBox.ForceToyRefilter();
+	end
 end

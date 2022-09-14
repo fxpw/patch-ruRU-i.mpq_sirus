@@ -456,20 +456,6 @@ function utf8charbytes(s, i)
     end
 end
 
--- returns the number of characters in a UTF-8 string
-function utf8len(s)
-    local pos = 1
-    local bytes = string.len(s)
-    local len = 0
-
-	while pos <= bytes do
-		len = len + 1
-		pos = pos + utf8charbytes(s, pos)
-	end
-
-    return len
-end
-
 function utf8sub(s, i, j)
 	j = j or -1
 
@@ -478,7 +464,7 @@ function utf8sub(s, i, j)
 	local len = 0
 
 	-- only set l if i or j is negative
-	local l = (i >= 0 and j >= 0) or utf8len(s)
+	local l = (i >= 0 and j >= 0) or strlenutf8(s)
 	local startChar = (i >= 0) and i or l + i + 1
 	local endChar = (j >= 0) and j or l + j + 1
 
@@ -982,12 +968,12 @@ function HookFunction(name, callback)
 end
 
 function isOneOf(val, ...)
-    for k,v in pairs({...}) do
-        if val == v then
-            return true
-        end
-    end
-    return false
+	for i = 1, select("#", ...) do
+		if select(i, ...) == val then
+			return true
+		end
+	end
+	return false
 end
 
 function IsDevClient()
@@ -1045,4 +1031,10 @@ end
 
 function IsWideScreen()
 	return GetScreenWidth() > 1024
+end
+
+function GMError(err)
+	if C_Service:IsGM() then
+		geterrorhandler()(err)
+	end
 end

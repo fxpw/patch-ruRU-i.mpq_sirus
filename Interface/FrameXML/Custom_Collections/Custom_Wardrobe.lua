@@ -170,11 +170,11 @@ function TransmogFrameMixin:Update()
 	self:UpdateApplyButton();
 	self.OutfitDropDown:UpdateSaveButton();
 
-	if not self.selectedSlotButton or not self.selectedSlotButton:IsEnabled() then
+	if not self.selectedSlotButton or self.selectedSlotButton:IsEnabled() ~= 1 then
 		-- select first valid slot or clear selection
 		local validSlotButton;
 		for i, slotButton in ipairs(self.SlotButtons) do
-			if slotButton:IsEnabled() and slotButton.transmogLocation:IsAppearance() then
+			if slotButton:IsEnabled() == 1 and slotButton.transmogLocation:IsAppearance() then
 				validSlotButton = slotButton;
 				break;
 			end
@@ -355,7 +355,7 @@ function TransmogSlotButtonMixin:OnEnter()
 		end
 
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 14, 0);
-		if not canTransmogrify and not hasUndo then
+		if --[[not canTransmogrify and]] not hasUndo then
 			GameTooltip:SetText(_G[self.slot]);
 			--[[
 			local tag = TRANSMOG_INVALID_CODES[cannotTransmogrifyReason];

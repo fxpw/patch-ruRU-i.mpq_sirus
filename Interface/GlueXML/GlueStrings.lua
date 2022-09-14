@@ -616,8 +616,8 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Damager"
 	},
 	["CHOOSE_SPECIALIZATION"] = {
-		ruRU = "Выберите специализацию",
-		enGB = "Choose Your Specialization"
+		ruRU = "Выберите PVE специализацию",
+		enGB = "Choose Your PVE Specialization"
 	},
 	["CHOOSE_PVP_SPECIALIZATION"] = {
 		ruRU = "Выберите PVP специализацию",
@@ -1944,8 +1944,8 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Alchemy"
 	},
 	["LOGIN_SUSPENDED"] = {
-		ruRU = "<html><body><p align=\"CENTER\">Данная учетная запись World of Warcraft временно заблокирована. Более подробную информацию вы найдете в Личном Кабинете на сайте: <a href=\"https://forum.sirus.su/threads/vasha-uchetnaja-zapis-zablokirovana.17670/\">https://forum.sirus.su/threads/vasha-uchetnaja-zapis-zablokirovana.17670</a>.</p></body></html>",
-		enGB = "<html><body><p align=\"CENTER\">This World of Warcraft account has been temporarily suspended. Please go to <a href=\"http://www.worldofwarcraft.com/misc/banned.html\">http://www.worldofwarcraft.com/misc/banned.html</a> for further information.</p></body></html>"
+		ruRU = "<html><body><p align=\"CENTER\">Данная учетная запись World of Warcraft временно заблокирована. Более подробную информацию вы найдете в Личном Кабинете на сайте: <a href=\"https://forum.sirus.su/threads/17670/\">https://forum.sirus.su/threads/17670/</a>.</p></body></html>",
+		enGB = "<html><body><p align=\"CENTER\">This World of Warcraft account has been temporarily suspended. Please go to <a href=\"https://forum.sirus.su/threads/17670/\">https://forum.sirus.su/threads/17670/</a> for further information.</p></body></html>"
 	},
 	["VIDEO_QUALITY_SUBTEXT2"] = {
 		ruRU = "Средний уровень детализации текстур, маленькое расстояние видимости объектов, низкое качество эффектов заклинаний. Настройки, позволяющие добиться хорошей производительности.",
@@ -2564,8 +2564,8 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Healer"
 	},
 	["CHARACTER_UNDELETE_STATUS_5"] = {
-		ruRU = "<html><body><p align=\"CENTER\">Недостаточно бонусов!</p><p align=\"CENTER\">Внести добровольное пожертвование в <a href=\"https://sirus.su/user/pay\">личном кабинете</a></p></body></html>",
-		enGB = "<html><body><p align=\"\"CENTER\"\">Not enough bonuses!</p><p align=\"\"CENTER\"\">Make a donation in <a href=\"\"https://sirus.su/user/pay\"\">your account</a></p></body></html>"
+		ruRU = "<html><body><p align=\"CENTER\">Недостаточно бонусов!</p><p align=\"CENTER\">Внести добровольное пожертвование в <a href=\"https://sirus.su/pay\">личном кабинете</a></p></body></html>",
+		enGB = "<html><body><p align=\"\"CENTER\"\">Not enough bonuses!</p><p align=\"\"CENTER\"\">Make a donation in <a href=\"\"https://sirus.su/pay\"\">your account</a></p></body></html>"
 	},
 	["SPEED"] = {
 		ruRU = "СКР",
@@ -3392,7 +3392,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Near"
 	},
 	["LOGIN_FAILED"] = {
-		ruRU = "<html><body><p align=\"CENTER\">Ошибка подключения. Пожалуйста, попробуйте подключиться позднее. Если вы постоянно получаете это сообщение, то свяжитесь со службой технической поддержки. Более подробно в <a href=\"https://forum.sirus.su/threads/chitat-vsem-oshibka-podkljuchenija.2347/\">теме</a>.</p></body></html>",
+		ruRU = "<html><body><p align=\"CENTER\">Ошибка подключения. Пожалуйста, попробуйте подключиться позднее. Если вы постоянно получаете это сообщение, то свяжитесь со службой технической поддержки. Более подробно в <a href=\"https://forum.sirus.su/threads/2347/\">теме</a>.</p></body></html>",
 		enGB = ""
 	},
 	["FACIAL_HAIR_MARKINGS"] = {
@@ -4048,8 +4048,8 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Hair"
 	},
 	["CHARACTER_DELETE_RESTORE_ERROR_5"] = {
-		ruRU = "<html><body><p align=\"CENTER\">Недостаточно бонусов!</p><p align=\"CENTER\">Внести добровольное пожертвование в <a href=\"https://sirus.su/user/pay\">личном кабинете</a></p></body></html>",
-		enGB = "<html><body><p align=\"\"CENTER\"\">Not enough bonuses!</p><p align=\"\"CENTER\"\">Make a donation in <a href=\"\"https://sirus.su/user/pay\"\">your account</a></p></body></html>"
+		ruRU = "<html><body><p align=\"CENTER\">Недостаточно бонусов!</p><p align=\"CENTER\">Внести добровольное пожертвование в <a href=\"https://sirus.su/pay\">личном кабинете</a></p></body></html>",
+		enGB = "<html><body><p align=\"\"CENTER\"\">Not enough bonuses!</p><p align=\"\"CENTER\"\">Make a donation in <a href=\"\"https://sirus.su/pay\"\">your account</a></p></body></html>"
 	},
 	["SERVER_ALERT_TITLE"] = {
 		ruRU = "Последние новости",
@@ -4152,31 +4152,31 @@ local SIRUS_LOCALIZATION = {
 		enGB = ""
 	},
 	["ALLIED_RACE_UNLOCKED"] = {
-		ruRU = "|cff00ff00Вы получили поддержку %s и имеете доступ к этой расе|r",
+		ruRU = "|cff00ff00Вы получили поддержку %s и имеете доступ к этой расе.|r",
 		enGB = "",
 	},
 	["ALLIED_RACE_UNLOCKED_NIGHTBORNE"] = {
-		ruRU = "|cff00ff00Вы получили поддержку Ночнорожденных и имеете доступ к этой расе|r",
+		ruRU = "|cff00ff00Вы получили поддержку Ночнорожденных и имеете доступ к этой расе.|r",
 		enGB = ""
 	},
 	["ALLIED_RACE_UNLOCKED_EREDAR"] = {
-		ruRU = "|cff00ff00Вы получили поддержку Эредаров и имеете доступ к этой расе|r",
+		ruRU = "|cff00ff00Вы получили поддержку Эредаров и имеете доступ к этой расе.|r",
 		enGB = ""
 	},
 	["ALLIED_RACE_UNLOCKED_ZANDALARITROLL"] = {
-		ruRU = "|cff00ff00Вы получили поддержку Зандалар и имеете доступ к этой расе|r",
+		ruRU = "|cff00ff00Вы получили поддержку Зандалар и имеете доступ к этой расе.|r",
 		enGB = ""
 	},
 	["ALLIED_RACE_UNLOCKED_VOIDELF"] = {
-		ruRU = "|cff00ff00Вы получили поддержку Эльфов Бездны и имеете доступ к этой расе|r",
+		ruRU = "|cff00ff00Вы получили поддержку Эльфов Бездны и имеете доступ к этой расе.|r",
 		enGB = ""
 	},
 	["ALLIED_RACE_UNLOCKED_DARKIRONDWARF"] = {
-		ruRU = "|cff00ff00Вы получили поддержку Дворфов Черного Железа и имеете доступ к этой расе|r",
+		ruRU = "|cff00ff00Вы получили поддержку Дворфов Черного Железа и имеете доступ к этой расе.|r",
 		enGB = ""
 	},
 	["ALLIED_RACE_UNLOCKED_LIGHTFORGED"] = {
-		ruRU = "|cff00ff00Вы получили поддержку Озаренных дренеев и имеете доступ к этой расе|r",
+		ruRU = "|cff00ff00Вы получили поддержку Озаренных дренеев и имеете доступ к этой расе.|r",
 		enGB = ""
 	},
 	["ALLIED_RACE_DISABLE_REASON_NIGHTBORNE"] = {
@@ -4184,7 +4184,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = ""
 	},
 	["ALLIED_RACE_DISABLE_REASON_EREDAR"] = {
-		ruRU = "Чтобы получить возможность создания персонажа данной расы - добейтесь превознесения Саргерайских раскольников и выполните задание \"Пылающая месть\"",
+		ruRU = "Чтобы получить возможность создания персонажа данной расы - добейтесь превознесения Саргерайских раскольников и выполните задание \"Пылающая месть\".",
 		enGB = ""
 	},
 	["ALLIED_RACE_DISABLE_REASON_ZANDALARITROLL"] = {
@@ -4196,7 +4196,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = ""
 	},
 	["ALLIED_RACE_DISABLE_REASON_DARKIRONDWARF"] = {
-		ruRU = "Чтобы получить возможность создания персонажа данной расы - добейтесь превознесения Стражей Кузни и выполните задание \"Пламя перерождения\"",
+		ruRU = "Чтобы получить возможность создания персонажа данной расы - добейтесь превознесения Стражей Кузни и выполните задание \"Пламя перерождения\".",
 		enGB = ""
 	},
 	["ALLIED_RACE_DISABLE_REASON_LIGHTFORGED"] = {
@@ -4327,6 +4327,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Ур. предметов",
 		enGB = "",
 	},
+	["NEVER_SHOW_AGAIN"] = {
+		ruRU = "Больше не показывать",
+		enGB = "",
+	},
 	["WORLD_PROXY_LOCATION_HEADER"] = {
 		ruRU = "Выберите свою локацию",
 		enGB = "",
@@ -4392,7 +4396,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "When activated you become enraged, increasing your physical damage by 20% but increasing all damage taken by 5%.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_SPELL5_DESC"] = {
-		ruRU = "Посылает перед воином силовую волну, наносящую ед. урона (величина зависит от силы атаки) и оглушающую всех противников на расстоянии 10 м перед ним на 4 sec.",
+		ruRU = "Посылает перед воином силовую волну, наносящую урон (величина зависит от силы атаки) и оглушающую всех противников на расстоянии 10 м. перед ним на 4 сек.",
 		enGB = "Sends a wave of force in front of the warrior, causing a certain amount of damage (based on attack power) and stunning all enemy targets within 10 yards in a frontal cone for 4 sec.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_PALADIN_DESC"] = {
@@ -4428,11 +4432,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "As champions of order, paladins are extremely potent in a group – their blessings and auras can improve damage and survivability for both themselves and their party.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL2_DESC"] = {
-		ruRU = "Увеличивает вероятность критического удара заклинания Молот гнева на 50%, сокращает время восстановления заклинания Гнев карателя на 60 с. Когда паладин находитесь под действием заклинания Гнев карателя, 50% наносимого паладином урона игнорируют все снижающие урон эффекты.",
+		ruRU = "Увеличивает вероятность критического удара заклинания Молот гнева на 50%, сокращает время восстановления заклинания Гнев карателя на 60 с. Когда паладин находится под действием заклинания Гнев карателя, 50% наносимого паладином урона игнорируют все снижающие урон эффекты.",
 		enGB = "Increases the critical strike chance of Hammer of Wrath by 50%, reduces the cooldown of Avenging Wrath by 60 secs and while affected by Avenging Wrath 50% of all damage caused bypasses damage reduction effects.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL3_DESC"] = {
-		ruRU = "Если при получении удара уровень здоровья паладин падает ниже 35%, весь получаемый вами урон снижается на 20%. Удары, которые могли бы оказаться смертельными, вместо этого восстанавливают паладину до 30% от максимального запаса здоровья (количество восполненного здоровья зависит от защиты).",
+		ruRU = "Если при получении удара уровень здоровья паладина падает ниже 35%, весь получаемый вами урон снижается на 20%. Удары, которые могли бы оказаться смертельными, вместо этого восстанавливают паладину до 30% от максимального запаса здоровья (количество восполненного здоровья зависит от защиты).",
 		enGB = "Damage that takes you below 35% health is reduced by 20%. In addition, attacks which would otherwise kill you cause you to be healed by up to 30% of your maximum health (amount healed based on defense).",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL4_DESC"] = {
@@ -4476,11 +4480,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Hunters tame the beasts of the wild, and those beasts serve in return by assaulting their enemies and shielding them from harm.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL2_DESC"] = {
-		ruRU = "Повышает вероятность критического удара способности Убийственный выстрел на 15%. Если охотник не двигается в течение 6 с, на него накладывается эффект Навыки снайпера, увеличивающий урон от способностей Верный выстрел, Прицельный выстрел, Черная стрела и Разрывной выстрел на 6%.",
+		ruRU = "Повышает вероятность критического удара способности Убийственный выстрел на 15%. Если охотник не двигается в течение 6 сек., на него накладывается эффект Навыки снайпера, увеличивающий урон от способностей Верный выстрел, Прицельный выстрел, Черная стрела и Разрывной выстрел на 6%.",
 		enGB = "Increases the critical strike chance of your Kill Shot ability by 15%, and while standing still for 6 sec, you gain Sniper Training increasing the damage done by your Steady Shot, Aimed Shot, Black Arrow and Explosive Shot by 6%.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL3_DESC"] = {
-		ruRU = "Если при автоматической стрельбе выстрел охотника наносит урон, он с вероятностью 12% делаете дополнительный выстрел, наносящий 80% урона от оружия. Этот урон считается уроном от сил природы. Боеприпасы при этом не расходуются.",
+		ruRU = "Если при автоматической стрельбе выстрел охотника наносит урон, он с вероятностью 12% делает дополнительный выстрел, наносящий 80% урона от оружия. Этот урон считается уроном от сил природы. Боеприпасы при этом не расходуются.",
 		enGB = "You have a 12% chance to shoot an additional shot when doing damage with your auto shot, dealing 80% weapon nature damage. Wild Quiver consumes no ammo.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL4_DESC"] = {
@@ -4760,7 +4764,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Haunt",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL1_DESC"] = {
-		ruRU = "Чернокнижники подчиняют своей воле демонов: обитатели круговерти пустоты защищают своих хозяев и сражаются с их врагами.",
+		ruRU = "Чернокнижники подчиняют своей воле демонов: обитатели Круговерти Пустоты защищают своих хозяев и сражаются с их врагами.",
 		enGB = "Warlocks bind demons to their will; these infernal denizens defend their masters with their lives or rain death upon their enemies.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL2_DESC"] = {
@@ -4768,11 +4772,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "When you cast Conflagrate, the cast time and global cooldown of your next three Destruction spells is reduced by 30%.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL3_DESC"] = {
-		ruRU = "При нанесении урона Порчей чернонижик с 6%-й вероятностью может увеличить скорость применения заклинаний на 20%.",
+		ruRU = "При нанесении урона Порчей чернокнижник с 6%-й вероятностью может увеличить скорость применения заклинаний на 20%.",
 		enGB = "When you deal damage with Corruption, you have 6% chance to increase your spell casting speed by 20%.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL4_DESC"] = {
-		ruRU = "Чернокнижник превращаетесь в демона на 30 sec. Его броня усиливается на 600%, наносимый урон увеличивается на 20%, вероятность, что атаки ближнего боя нанесут ему критическое повреждение, уменьшается на 6%, а длительность действия эффектов оглушения и сковывания снижается на 50%. Чернокнижник приобретает уникальные демонические способности вдобавок к своим обычным.",
+		ruRU = "Чернокнижник превращается в демона на 30 sec. Его броня усиливается на 600%, наносимый урон увеличивается на 20%, вероятность, что атаки ближнего боя нанесут ему критическое повреждение, уменьшается на 6%, а длительность действия эффектов оглушения и сковывания снижается на 50%. Чернокнижник приобретает уникальные демонические способности вдобавок к своим обычным.",
 		enGB = "You transform into a Demon for 30 sec. This form increases your armor contribution from items by 600%, damage by 20%, reduces the chance you'll be critically hit by melee attacks by 6% and reduces the duration of stun and snare effects by 50%. You gain some unique demon abilities in addition to your normal abilities.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL5_DESC"] = {
@@ -4988,7 +4992,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL1_DESC"] = {
-		ruRU = "Несмотря на потерю бессмертия, Ночные эльфы сохранили близость к природе, которая поддерживает их в час нужды. Применение целительных или наносящих урон способностей и заклинаний с шансом 25% восстановит 6 ед. силы рун, ярости, энергии или 2% от базового запаса маны (в зависимости от того, какой ресурс используется). Применяемая способность должна расходовать хотя бы один из ваших ресурсов, будь то мана, ярость, энергия, сила рун или руны.",
+		ruRU = "Несмотря на потерю бессмертия, Ночные эльфы сохранили близость к природе, которая поддерживает их в час нужды. Применение способностей и заклинаний с шансом 25% восстановит вам 9 ед. силы рун, ярости, энергии или 6% от базового запаса маны (в зависимости от того, какой ресурс используется).",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL2_DESC"] = {
@@ -5000,7 +5004,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL5_DESC"] = {
-		ruRU = "Вы сливаетесь с тенями, понижая вероятность того, что противник вас заметит. Действует до отмены или любого движения. По окончании действия эффекта восстанавливается прежний уровень угрозы по отношению к еще сражающимся противникам, при этом вероятность попадания по вам любыми атаками и заклинаниями снижается на 50% сроком на 3 сек.\nПерезарядка: 120 сек.",
+		ruRU = "Вы сливаетесь с тенями, понижая вероятность того, что противник вас заметит. Действует до отмены или любого движения. По окончании действия эффекта восстанавливается прежний уровень угрозы по отношению к еще сражающимся противникам, при этом получаемый вами урон от атак и заклинаний снижается на 50% сроком на 3 сек.\nПерезарядка: 120 сек.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL6_DESC"] = {
@@ -5096,7 +5100,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_WORGEN_DESC"] = {
-		ruRU = "Первые упоминания о воргенах в Восточных королевствах относятся ко временам Третьей войны, куда они попали благодаря стараниям верховного мага Аругала. Сначала зверей использовали как живое оружие против Плети, но вскоре они стали бременем куда более тяжким, чем народ Лордерона мог вынести. Тех, кто сражался бок о бок с воргенами, поразило проклятье, заставлявшее их обращаться в таких же зверей. Занесенная в Гилнеас болезнь мгновенно распространилась, превратив добровольное затворничество граждан в вынужденную изоляцию. Все, кто выжил после страшного проклятья, ищут новый путь, которым последует их народ, и пытаются предугадать судьбу, которая его ожидает.",
+		ruRU = "Первые упоминания о воргенах в Восточных королевствах относятся ко временам Третьей войны, куда они попали благодаря стараниям верховного мага Аругала. Сначала зверей использовали как живое оружие против Плети, но вскоре они стали бременем куда более тяжким, чем народ Лордерона мог вынести. Тех, кто сражался бок о бок с воргенами, поразило проклятье, заставлявшее их обращаться в таких же зверей. Занесенная в Гилнеас болезнь мгновенно распространилась, превратив добровольное затворничество граждан в вынужденную изоляцию. Все, кто выжил после страшного проклятья, ищут новый путь, которому последует их народ, и пытаются предугадать судьбу, которая его ожидает.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL1"] = {
@@ -5176,7 +5180,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL5_DESC"] = {
-		ruRU = "Магический барьер окружает вас, наделяя невосприимчивостью к 1 следующему магическому эффекту потери контроля над персонажем, полученному в течении 2 сек.\nПерезарядка: 90 сек.",
+		ruRU = "Магический барьер окружает вас, наделяя невосприимчивостью к 1 следующему магическому эффекту потери контроля над персонажем, полученному в течение 2 сек.\nПерезарядка: 90 сек.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL6_DESC"] = {
@@ -5184,7 +5188,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_VOIDELF_DESC"] = {
-		ruRU = "В результате самонадеянного плана Кель'таса связанного с манагорнами, и рокового стечения обстоятельств, группа Син'дорай чудом пережила столкновение с чудовищным Повелителем Бездны - там, у Предела Тенебры - но дорогой ценой. Скитальцев Тенебры преобразили силы тени, навсегда изменив их тела и души, но железная воля эльфов оказалась не по зубам даже первозданной тьме. Воодушевленные своим возвращением на Азерот, они ищут способы обуздать новообретенные способности и уберечься от губительного влияния Бездны.",
+		ruRU = "В результате самонадеянного плана Кель'таса, связанного с манагорнами, и рокового стечения обстоятельств, группа Син'дорай чудом пережила столкновение с чудовищным Повелителем Бездны - там, у Предела Тенебры - но дорогой ценой. Скитальцев Тенебры преобразили силы тени, навсегда изменив их тела и души, но железная воля эльфов оказалась не по зубам даже первозданной тьме. Воодушевленные своим возвращением на Азерот, они ищут способы обуздать новообретенные способности и уберечься от губительного влияния Бездны.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL1"] = {
@@ -5452,7 +5456,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL2_DESC"] = {
-		ruRU = "Таурены обладают природной силой и твердостью рук и ума, которым могут позавидовать иные расы. Показатель силы увеличен на 2%, а вероятность критического эффекта заклинаний - на 1%.",
+		ruRU = "Таурены обладают природной силой и твердостью рук и ума, которым могут позавидовать иные расы. Показатель силы атаки увеличен на 2%, а вероятность критического эффекта заклинаний - на 2%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL3_DESC"] = {
@@ -5596,7 +5600,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL6_DESC"] = {
-		ruRU = "Вы взываете к силе волн, наделяя себя или члена вашей групы или рейда благословением Волн, которое повышает показатель основных характеристик отмеченной цели на 10% сроком на 10 сек.\nПерезарядка: 30 сек.",
+		ruRU = "Вы взываете к силе волн, наделяя себя или члена вашей группы или рейда благословением Волн, которое повышает показатель основных характеристик отмеченной цели на 10% сроком на 10 сек.\nПерезарядка: 30 сек.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_BLOODELF_DESC"] = {
@@ -5644,7 +5648,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_DESC"] = {
-		ruRU = "Выжившие в чудовищной Войне Древних, и пережившие катаклизм, последовавший после уничтожения Колодца Вечности, Ночнорожденные скрывались в Сурамаре, за магическим куполом, от любых угроз внешнего мира. Магия служила им инструментом, защитой, и пищей - и стала их сутью. Дом Селентрис - изгнанники-ночнорожденные, которые стремятся обрести новый дом в мире за пределами Сурамара, а также справиться с жаждой магии прежде, чем она их погубит.",
+		ruRU = "Выжившие в чудовищной Войне Древних и пережившие катаклизм, последовавший после уничтожения Колодца Вечности, Ночнорожденные скрывались в Сурамаре за магическим куполом от любых угроз внешнего мира. Магия служила им инструментом, защитой, и пищей - и стала их сутью. Дом Селентрис - изгнанники-ночнорожденные, которые стремятся обрести новый дом в мире за пределами Сурамара, а также справиться с жаждой магии прежде, чем она их погубит.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL1"] = {
@@ -5680,7 +5684,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL3_DESC"] = {
-		ruRU = "Дар ночнорожденных улучшает ваши физические способности, позволяя атакам и способностям ближнего боя игнорировать 2% брони противников, а также позволяет вашим способностям и заклинаниям с некоторой вероятностью поразить противника, снижая его показатель сопротивления на 0.4 ед. за каждый уровень персонажа (вплоть до -32 ед.) сроком на 10 сек.",
+		ruRU = "Дар ночнорожденных улучшает ваши физические способности, позволяя атакам и способностям ближнего боя игнорировать $s2% брони противника (сочетается с 100% рейтингом пробивания брони), а также позволяет вашим способностям и заклинаниям с некоторой вероятностью поразить противника, снижая его показатель сопротивления на 0.4 ед. за каждый уровень персонажа (вплоть до -32 ед.) сроком на 10 сек.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL4_DESC"] = {
@@ -5780,7 +5784,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL2_DESC"] = {
-		ruRU = "Зандалары верны традициям, и лоа - неотъемлимая часть их жизни. Обращаясь к тому лоа, с которым вы заключили контракт, вы получаете его опеку и поддержку.",
+		ruRU = "Зандалары верны традициям, и лоа - неотъемлемая часть их жизни. Обращаясь к тому лоа, с которым вы заключили контракт, вы получаете его опеку и поддержку.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL3_DESC"] = {
@@ -5913,7 +5917,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Spell_Shadow_DeathPact|When activated you become enraged, increasing your physical damage by 20% but increasing all damage taken by 5%.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_SPELL5_DESC_SHORT"] = {
-		ruRU = "Ability_Warrior_Shockwave|Посылает перед воином силовую волну, наносящую ед. урона (величина зависит от силы атаки) и оглушающую всех противников на расстоянии 10 м перед ним на 4 сек.",
+		ruRU = "Ability_Warrior_Shockwave|Посылает перед воином силовую волну, наносящую урона (величина зависит от силы атаки) и оглушающую всех противников на расстоянии 10 м. перед ним на 4 сек.",
 		enGB = "Ability_Warrior_Shockwave|Sends a wave of force in front of the warrior, causing a certain amount of damage (based on attack power) and stunning all enemy targets within 10 yards in a frontal cone for 4 sec.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL1_DESC_SHORT"] = {
@@ -5921,11 +5925,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Spell_Holy_DevotionAura|As champions of order, paladins are extremely potent in a group – their blessings and auras can improve damage and survivability for both themselves and their party.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL2_DESC_SHORT"] = {
-		ruRU = "Ability_Paladin_SanctifiedWrath|Увеличивает вероятность критического удара заклинания Молот гнева на 50%, сокращает время восстановления заклинания Гнев карателя на 60 сек. Когда паладин находитесь под действием заклинания Гнев карателя, 50% наносимого паладином урона игнорируют все снижающие урон эффекты.",
+		ruRU = "Ability_Paladin_SanctifiedWrath|Увеличивает вероятность критического удара заклинания Молот гнева на 50%, сокращает время восстановления заклинания Гнев карателя на 60 сек. Когда паладин находится под действием заклинания Гнев карателя, 50% наносимого паладином урона игнорируют все снижающие урон эффекты.",
 		enGB = "Ability_Paladin_SanctifiedWrath|Increases the critical strike chance of Hammer of Wrath by 50%, reduces the cooldown of Avenging Wrath by 60 secs and while affected by Avenging Wrath 50% of all damage caused bypasses damage reduction effects.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL3_DESC_SHORT"] = {
-		ruRU = "Spell_Holy_ArdentDefender|Если при получении удара уровень здоровья паладин падает ниже 35%, весь получаемый вами урон снижается на 20%. Удары, которые могли бы оказаться смертельными, вместо этого восстанавливают паладину до 30% от максимального запаса здоровья (количество восполненного здоровья зависит от защиты).",
+		ruRU = "Spell_Holy_ArdentDefender|Если при получении удара уровень здоровья паладина падает ниже 35%, весь получаемый вами урон снижается на 20%. Удары, которые могли бы оказаться смертельными, вместо этого восстанавливают паладину до 30% от максимального запаса здоровья (количество восполненного здоровья зависит от защиты).",
 		enGB = "Spell_Holy_ArdentDefender|Damage that takes you below 35% health is reduced by 20%. In addition, attacks which would otherwise kill you cause you to be healed by up to 30% of your maximum health (amount healed based on defense).",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL4_DESC_SHORT"] = {
@@ -5941,11 +5945,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Ability_Hunter_BeastTaming|Hunters tame the beasts of the wild, and those beasts serve in return by assaulting their enemies and shielding them from harm.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL2_DESC_SHORT"] = {
-		ruRU = "Ability_Hunter_LongShots|Повышает вероятность критического удара способности Убийственный выстрел на 15%. Если охотник не двигается в течение 6 с, на него накладывается эффект Навыки снайпера, увеличивающий урон от способностей Верный выстрел, Прицельный выстрел, Черная стрела и Разрывной выстрел на 6%.",
+		ruRU = "Ability_Hunter_LongShots|Повышает вероятность критического удара способности Убийственный выстрел на 15%. Если охотник не двигается в течение 6 сек., на него накладывается эффект Навыки снайпера, увеличивающий урон от способностей Верный выстрел, Прицельный выстрел, Черная стрела и Разрывной выстрел на 6%.",
 		enGB = "Ability_Hunter_LongShots|Increases the critical strike chance of your Kill Shot ability by 15%, and while standing still for 6 sec, you gain Sniper Training increasing the damage done by your Steady Shot, Aimed Shot, Black Arrow and Explosive Shot by 6%.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL3_DESC_SHORT"] = {
-		ruRU = "Ability_Hunter_WildQuiver|Если при автоматической стрельбе выстрел охотника наносит урон, он с вероятностью 12% делаете дополнительный выстрел, наносящий 80% урона от оружия. Этот урон считается уроном от сил природы. Боеприпасы при этом не расходуются.",
+		ruRU = "Ability_Hunter_WildQuiver|Если при автоматической стрельбе выстрел охотника наносит урон, он с вероятностью 12% делает дополнительный выстрел, наносящий 80% урона от оружия. Этот урон считается уроном от сил природы. Боеприпасы при этом не расходуются.",
 		enGB = "Ability_Hunter_WildQuiver|You have a 12% chance to shoot an additional shot when doing damage with your auto shot, dealing 80% weapon nature damage. Wild Quiver consumes no ammo.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL4_DESC_SHORT"] = {
@@ -6057,7 +6061,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Spell_Fire_SelfDestruct|When activated, this spell increases your critical strike damage bonus with Fire damage spells by 50%, and causes each of your Fire damage spell hits to increase your critical strike chance with Fire damage spells by 10%. This effect lasts until you have caused 3 non-periodic critical strikes with Fire spells.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL1_DESC_SHORT"] = {
-		ruRU = "Spell_Shadow_SummonImp|Чернокнижники подчиняют своей воле демонов: обитатели круговерти пустоты защищают своих хозяев и сражаются с их врагами.",
+		ruRU = "Spell_Shadow_SummonImp|Чернокнижники подчиняют своей воле демонов: обитатели Круговерти Пустоты защищают своих хозяев и сражаются с их врагами.",
 		enGB = "Spell_Shadow_SummonImp|Warlocks bind demons to their will; these infernal denizens defend their masters with their lives or rain death upon their enemies.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL2_DESC_SHORT"] = {
@@ -6065,11 +6069,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Ability_Warlock_Backdraft|When you cast Conflagrate, the cast time and global cooldown of your next three Destruction spells is reduced by 30%.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL3_DESC_SHORT"] = {
-		ruRU = "Ability_Warlock_Eradication|При нанесении урона Порчей чернонижик с 6%-й вероятностью может увеличить скорость применения заклинаний на 20%.",
+		ruRU = "Ability_Warlock_Eradication|При нанесении урона Порчей чернокнижник с 6%-й вероятностью может увеличить скорость применения заклинаний на 20%.",
 		enGB = "Ability_Warlock_Eradication|When you deal damage with Corruption, you have 6% chance to increase your spell casting speed by 20%.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL4_DESC_SHORT"] = {
-		ruRU = "Spell_Shadow_DemonForm|Чернокнижник превращаетесь в демона на 30 сек. Его броня усиливается на 600%, наносимый урон увеличивается на 20%, вероятность, что атаки ближнего боя нанесут ему критическое повреждение, уменьшается на 6%, а длительность действия эффектов оглушения и сковывания снижается на 50%. Чернокнижник приобретает уникальные демонические способности вдобавок к своим обычным.",
+		ruRU = "Spell_Shadow_DemonForm|Чернокнижник превращается в демона на 30 сек. Его броня усиливается на 600%, наносимый урон увеличивается на 20%, вероятность, что атаки ближнего боя нанесут ему критическое повреждение, уменьшается на 6%, а длительность действия эффектов оглушения и сковывания снижается на 50%. Чернокнижник приобретает уникальные демонические способности вдобавок к своим обычным.",
 		enGB = "Spell_Shadow_DemonForm|You transform into a Demon for 30 sec. This form increases your armor contribution from items by 600%, damage by 20%, reduces the chance you'll be critically hit by melee attacks by 6% and reduces the duration of stun and snare effects by 50%. You gain some unique demon abilities in addition to your normal abilities.",
 	},
 	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL5_DESC_SHORT"] = {
@@ -6130,7 +6134,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL_ACTIVE1_DESC_SHORT"] = {
-		ruRU = "Spell_Shadow_Charm|Развеивает эффекты потери контроля контроля над персонажем (кроме Ужаса и Превращения)\nПерезарядка: 120 секунд",
+		ruRU = "Spell_Shadow_Charm|Развеивает эффекты потери контроля над персонажем (кроме Ужаса и Превращения)\nПерезарядка: 120 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL_ACTIVE2_DESC_SHORT"] = {
@@ -6154,11 +6158,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL_ACTIVE2_DESC_SHORT"] = {
-		ruRU = "ability_hunter_harass|Повышает основные характеристики участников групы на 2% сроком на 10 сек.\nПерезарядка: 30 секунд",
+		ruRU = "ability_racial_avatar|Повышает наносимый вами урон и творимое исцеление на 10%, а также снижает получаемый физический урон на 20% сроком на 10 сек.\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL_PASSIVE1_DESC_SHORT"] = {
-		ruRU = "ability_hunter_onewithnature|Применение способностей с шансом 25% восстановит вам небольшое количество затраченного ресурса.",
+		ruRU = "ability_hunter_onewithnature|Применение способностей и заклинаний с шансом 25% восполнит 9 ед. вашей ярости, энергии, силы рун или 6% от базовой маны.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL_PASSIVE2_DESC_SHORT"] = {
@@ -6170,11 +6174,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL_ACTIVE1_DESC_SHORT"] = {
-		ruRU = "ability_vanish|Наделяет вас невидимостью. Действует до отмены или любого движения. По окончании действия снижает вероятность попадания по вам.\nПерезарядка: 120 секунд",
+		ruRU = "ability_vanish|Наделяет вас невидимостью. Действует до отмены или любого движения. По окончанию действия снижает получаемый вами урон от игроков на 50% на 3 сек.\nПерезарядка: 120 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL_ACTIVE2_DESC_SHORT"] = {
-		ruRU = "spell_nature_moonglow|Благословляет цель, повышая вероятность критического удара и показатель сопротивления.\nПерезарядка: 30 секунд",
+		ruRU = "spell_nature_moonglow|Благословляет цель (или вас), повышая наносимый урон и исцеление на 4% и показатель сопротивления на 1.25 за каждый уровень персонажа.\nПерезарядка: 30 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL_PASSIVE1_DESC_SHORT"] = {
@@ -6182,7 +6186,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL_PASSIVE2_DESC_SHORT"] = {
-		ruRU = "inv_engineering_90_math|Увеличивает максимальный показатель используемого ресурса (мана, энергия, итд.)",
+		ruRU = "inv_engineering_90_math|Увеличивает максимальный показатель используемого ресурса (мана, энергия, и т. д.)",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL_PASSIVE3_DESC_SHORT"] = {
@@ -6194,7 +6198,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL_ACTIVE2_DESC_SHORT"] = {
-		ruRU = "spell_arcane_mindmastery|Гарантирует критический эффект следующей способности или заклинания, наносящего урон.\nПерезарядка: 20 секунд",
+		ruRU = "spell_arcane_mindmastery|Гарантирует критический эффект следующей способности или заклинания, наносящего урон.\nНе работает на эффекты периодического урона, длительность которых способна продлеваться вечно с помощью талантов или иных эффектов.\nПерезарядка: 20 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL_PASSIVE1_DESC_SHORT"] = {
@@ -6214,11 +6218,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL_ACTIVE2_DESC_SHORT"] = {
-		ruRU = "ability_paladin_savedbythelight|Отмечает цель. При получении урона цель будет испускать волны света, исцеляющие союзников или наносящие урон врагом (в зависимости от того, друг цель или нет).\nПерезарядка: 60 секунд",
+		ruRU = "ability_paladin_savedbythelight|Отмечает цель. При получении урона цель будет испускать волны света, поглощающие получаемый союзниками урон или наносящие урон врагам (в зависимости от того, друг цель или нет).\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL_PASSIVE1_DESC_SHORT"] = {
-		ruRU = "spell_hunter_lonewolf|Повышая показатель ловкости участников группы на 2%.",
+		ruRU = "spell_hunter_lonewolf|Повышает показатель ловкости участников группы на 2%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL_PASSIVE2_DESC_SHORT"] = {
@@ -6230,11 +6234,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL_ACTIVE1_DESC_SHORT"] = {
-		ruRU = "ability_racial_darkflight|Ускоряет ваше перемещения на 50% сроком на 10 сек. Скорость перемещения не может быть снижена ниже 100%.\nПерезарядка: 90 секунд",
+		ruRU = "ability_racial_darkflight|Ускоряет ваше перемещение на 50% сроком на 10 сек. Скорость перемещения не может быть снижена ниже 100%.\nПерезарядка: 90 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL_ACTIVE2_DESC_SHORT"] = {
-		ruRU = "ability_druid_berserk|Повышает урон и эффективность исцеления, творимых членами группы на 1% сроком на 10 сек.\nПерезарядка: 30 секунд",
+		ruRU = "ability_racial_viciousness|Освобождает звериную ярость, повышая наносимый урон и творимое исцеление на 1% (вплоть до 10%) раз в 1 сек. в течение 10 сек.\nПерезарядка: 30 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL_PASSIVE1_DESC_SHORT"] = {
@@ -6250,7 +6254,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL_ACTIVE1_DESC_SHORT"] = {
-		ruRU = "spell_arcane_arcaneresilience|Наделяет вас невосприимчивостью к 1 следующему магическому эффекту потери контроля над персонажем, полученному в течении 2 сек.\nПерезарядка: 90 сек",
+		ruRU = "spell_arcane_arcaneresilience|Наделяет вас невосприимчивостью к 1 следующему магическому эффекту потери контроля над персонажем, полученному в течение 2 сек.\nПерезарядка: 90 сек",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL_ACTIVE2_DESC_SHORT"] = {
@@ -6294,7 +6298,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL_PASSIVE4_DESC_SHORT"] = {
-		ruRU = "ability_racial_fireblood|Показатель брони увеличен на 4%. Получение урона с некоторой вероятностью восстановите вам 2% от максимального запаса здоровья.",
+		ruRU = "ability_racial_fireblood|Показатель брони увеличен на 4%. Получение урона с некоторой вероятностью восстановит вам 2% от максимального запаса здоровья.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL_ACTIVE1_DESC_SHORT"] = {
@@ -6350,7 +6354,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL_PASSIVE1_DESC_SHORT"] = {
-		ruRU = "spell_necro_deathall|Применяя способности вы с некоторой вероятностью увеличите силу атаки или силу заклинаний на 1% вплоть до 3%.",
+		ruRU = "spell_necro_deathall|Применяя способности, вы с некоторой вероятностью увеличите силу атаки или силу заклинаний на 1% вплоть до 3%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL_PASSIVE2_DESC_SHORT"] = {
@@ -6370,11 +6374,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL_PASSIVE1_DESC_SHORT"] = {
-		ruRU = "ability_druid_giftoftheearthmother|Снижает физический урон, получаемый участниками группы на 1%.",
+		ruRU = "ability_druid_giftoftheearthmother|Снижает физический урон, получаемый участниками группы, на 1%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL_PASSIVE2_DESC_SHORT"] = {
-		ruRU = "spell_shaman_unleashweapon_wind|Показатель силы увеличен на 2%, а вероятность критического эффекта заклинаний - на 1%.",
+		ruRU = "spell_shaman_unleashweapon_wind|Показатель силы атаки увеличен на 2%, а вероятность критического эффекта только заклинаний - на 2%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL_PASSIVE3_DESC_SHORT"] = {
@@ -6386,7 +6390,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL_ACTIVE2_DESC_SHORT"] = {
-		ruRU = "ability_bullrush|Прерывает произносимые целью заклинания и повышает весь получаемый ею урон.\nПерезарядка: 60 секунд",
+		ruRU = "ability_smash|Повышает модификатор критического урона способности или заклинания, примененного в течение 1 сек., на 100%.\nПерезарядка: 30 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL_PASSIVE1_DESC_SHORT"] = {
@@ -6394,7 +6398,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL_PASSIVE2_DESC_SHORT"] = {
-		ruRU = "spell_nature_bloodlust|Применение способностей с некоторой вероятностью повысит шанс нанести критический удар на 1% вплоть до 3%, сроком на 10 сек.",
+		ruRU = "spell_nature_bloodlust|Применение способностей с некоторой вероятностью повысит шанс нанести критический удар на 1% вплоть до 3% сроком на 10 сек.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL_PASSIVE3_DESC_SHORT"] = {
@@ -6402,7 +6406,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL_ACTIVE1_DESC_SHORT"] = {
-		ruRU = "racial_troll_berserk|Предоставляет невосприимчивость к эффектам ослепления, страха, ужаса и контроля над разумом,, а также повышает скорость перемещения на 20%.\nПерезарядка: 120 секунд",
+		ruRU = "racial_troll_berserk|Предоставляет невосприимчивость к эффектам ослепления, страха, ужаса и контроля над разумом, а также повышает скорость перемещения на 20%.\nПерезарядка: 120 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL_ACTIVE2_DESC_SHORT"] = {
@@ -6446,7 +6450,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL_ACTIVE2_DESC_SHORT"] = {
-		ruRU = "inv_elemental_crystal_water|Повышает показатель основных характеристик отмеченной цели на 10%.\nПерезарядка: 30 секунд",
+		ruRU = "inv_elemental_crystal_water|Повышает показатель одной из выбранных характеристик (сила, ловкость, выносливость, интеллект, дух) отмеченной цели на 20% сроком на 10 сек.\nПерезарядка: 30 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL_PASSIVE1_DESC_SHORT"] = {
@@ -6454,7 +6458,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL_PASSIVE2_DESC_SHORT"] = {
-		ruRU = "sha_ability_rogue_bloodyeye_nightmare|Меткость и скорость атак и произнесения заклинаний - на 1%.",
+		ruRU = "sha_ability_rogue_bloodyeye_nightmare|Повышает меткость, скорость атак и произнесения заклинаний - на 1%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL_PASSIVE3_DESC_SHORT"] = {
@@ -6462,7 +6466,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL_ACTIVE1_DESC_SHORT"] = {
-		ruRU = "spell_shadow_teleport|Вызывает немоту у всех противников в радиусе 8 м. на 3 сек. и восстанавливаете небольшой процент основного ресурса.\nПерезарядка: 90 секунд",
+		ruRU = "spell_shadow_teleport|Вызывает немоту у всех противников в радиусе 8 м. на 3 сек. и восстаналивает небольшой процент основного ресурса.\nПерезарядка: 90 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL_ACTIVE2_DESC_SHORT"] = {
@@ -6478,7 +6482,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_PASSIVE3_DESC_SHORT"] = {
-		ruRU = "spell_mage_supernova_nightborne|Позволяет вам игнорировать 2% от показателя брони противника, а также с некоторой вероятностью снижать его показатель сопротивления.",
+		ruRU = "spell_mage_supernova_nightborne|С некоторой вероятностью вы можете повысить магический урон, получаемый от вас противником, на 4%, при этом ваши атаки и способности будут игнорировать 4% от его брони.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_PASSIVE4_DESC_SHORT"] = {
@@ -6486,11 +6490,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_ACTIVE1_DESC_SHORT"] = {
-		ruRU = "spell_arcane_arcane01_nightborne|Увеличивает время перезарядки следующей примененной способности, примененной противником, на 10 сек.\nПерезарядка: 60 секунд",
+		ruRU = "spell_arcane_arcane01_nightborne|Отмечает противника. Метка увеличивает время перезарядки следующей способности, которую применит противником, на 10 сек.\nПерезарядка: 30 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_ACTIVE2_DESC_SHORT"] = {
-		ruRU = "sha_ability_rogue_bloodyeye_nightborne|Предоставляет невосприимчивость к эффектам прерывания и немоты, а также снижает расход основного ресурса.\nПерезарядка: 60 секунд",
+		ruRU = "sha_ability_rogue_bloodyeye_nightborne|Предоставляет невосприимчивость к эффектам прерывания и немоты, а также снижает расход ресурсов на все способности на 50% на 10 сек.\nПерезарядка: 30 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL_PASSIVE1_DESC_SHORT"] = {
@@ -6522,7 +6526,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL_PASSIVE2_DESC_SHORT"] = {
-		ruRU = "ability_racial_embracetheloa|Зандалары верны традициям, и лоа - неотъемлимая часть их жизни. Обращаясь к тому лоа, с которым вы заключили контракт, вы получаете его опеку и поддержку.",
+		ruRU = "ability_racial_embracetheloa|Зандалары верны традициям, и лоа - неотъемлемая часть их жизни. Обращаясь к тому лоа, с которым вы заключили контракт, вы получаете его опеку и поддержку.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL_PASSIVE3_DESC_SHORT"] = {
@@ -6538,7 +6542,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL_ACTIVE2_DESC_SHORT"] = {
-		ruRU = "Ability_racial_regeneratin|Восполняет 40% запаса здоровья за 10 сек., увеличивает скорость атаки и произнесения на 10%, а модификатор критического эффекта - на 12%.\nПерезарядка: 60 секунд",
+		ruRU = "Ability_racial_regeneratin|Восполняет 40% запаса здоровья за 10 сек., увеличивает скорость атаки и произнесения заклинаний на 10%, а модификатор критического эффекта - на 12%.\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL_PASSIVE1_DESC_SHORT"] = {
@@ -6582,7 +6586,27 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL_ACTIVE2_DESC_SHORT"] = {
-		ruRU = "spell_quicksand|Создает руну в позиции персонажа, повышающую наносимый вами урон и исцеление на 6%, пока вы находитесь на расстоянии не более чем 10 м. от неё\nПерезарядка: 30 сек",
+		ruRU = "spell_quicksand|Создает руну в позиции персонажа, повышающую наносимый вами урон и исцеление на 6%, пока вы находитесь на расстоянии не более чем 10 м. от неё.\nПерезарядка: 30 сек",
+		enGB = "",
+	},
+	["CHARACTER_NO_NAME"] = {
+		ruRU = "Без имени",
+		enGB = "",
+	},
+	["REALM_CARD_RATE"] = {
+		ruRU = "РЕЙТ",
+		enGB = "",
+	},
+	["REALM_CARD_PVP_MODE"] = {
+		ruRU = "РЕЖИМ PVP",
+		enGB = "",
+	},
+	["REALM_CARD_PLAY"] = {
+		ruRU = "Играть",
+		enGB = "",
+	},
+	["SUPPORT"] = {
+		ruRU = "Поддержка",
 		enGB = "",
 	},
 }

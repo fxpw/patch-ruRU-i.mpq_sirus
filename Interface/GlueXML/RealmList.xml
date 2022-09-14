@@ -329,7 +329,7 @@
 							<FontHeight val="9"/>
 							<Color r="0.921" g="0.870" b="0.760"/>
 						</FontString>
-						<FontString name="$parentRealmRateLabel" justifyV="TOP" justifyH="LEFT" parentKey="RealmRateLabel" font="Interface\CustomFonts\futurademic.ttf" text="РЕЙТ">
+						<FontString name="$parentRealmRateLabel" justifyV="TOP" justifyH="LEFT" parentKey="RealmRateLabel" font="Interface\CustomFonts\futurademic.ttf" text="REALM_CARD_RATE">
 							<Size x="60" y="20"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" relativeTo="$parentRealmDescription" relativePoint="BOTTOMLEFT" x="0" y="-6" />
@@ -344,7 +344,7 @@
 							<FontHeight val="10"/>
 							<Color r="1" g="1" b="1"/>
 						</FontString>
-						<FontString name="$parentRealmPVPStatusLabel" justifyV="TOP" justifyH="LEFT" parentKey="RealmPVPStatusLabel" font="Interface\CustomFonts\futurademic.ttf" text="РЕЖИМ PVP">
+						<FontString name="$parentRealmPVPStatusLabel" justifyV="TOP" justifyH="LEFT" parentKey="RealmPVPStatusLabel" font="Interface\CustomFonts\futurademic.ttf" text="REALM_CARD_PVP_MODE">
 							<Size x="60" y="20"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" relativeTo="$parentRealmRateLabel" relativePoint="BOTTOMLEFT" x="0" y="-4" />
@@ -411,7 +411,7 @@
 				</Layers>
 			</Frame>
 
-			<Button name="$parentEnterButton" parentKey="EnterButton" text="Играть">
+			<Button name="$parentEnterButton" parentKey="EnterButton" text="REALM_CARD_PLAY">
 				<Size x="150" y="46"/>
 				<Anchors>
 					<Anchor point="TOP" relativeTo="$parentContentFrame" relativePoint="BOTTOM" x="0" y="6" />

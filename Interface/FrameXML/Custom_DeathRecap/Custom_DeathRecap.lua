@@ -41,6 +41,10 @@ function DeathRecapMixin:OnEvent( event, ... )
 	end
 end
 
+function DeathRecapMixin:OnHide()
+	self.recapID = nil
+end
+
 function DeathRecapMixin:InsertEvent( timestamp, subEvent, casterGUID, casterName, damage, spellID, environmentalType )
 	local spellName, texture = self:GetSpellInfoBySubEvent(subEvent, environmentalType)
 	local unitHealth = UnitHealth("player")
@@ -158,7 +162,7 @@ function DeathRecapMixin:OnHyperlinkClick( link )
 	local deathRecapData = self.deathRecapStorage[deathRecapID]
 
 	if deathRecapData then
-		self:OpenDeathRecap(deathRecapData)
+		self:OpenDeathRecap(deathRecapData, deathRecapID)
 	else
 		SendServerMessage("ACMSG_GET_DEATH_INFO_REQUEST", deathRecapID)
 	end
@@ -192,10 +196,10 @@ function DeathRecapMixin:ConvertStringToDeathRecapData( deathRecapDataString )
 		recapData 		= recapData
 	}
 
-	self:OpenDeathRecap(self.deathRecapStorage[deathRecapID])
+	self:OpenDeathRecap(self.deathRecapStorage[deathRecapID], deathRecapID)
 end
 
-function DeathRecapMixin:OpenDeathRecap( deathRecapData )
+function DeathRecapMixin:OpenDeathRecap(deathRecapData, recapID)
 	if not deathRecapData then
 		deathRecapData = self.deathRecapStorage[self.lastDeathRecapRegisterID]
 	end
@@ -203,15 +207,17 @@ function DeathRecapMixin:OpenDeathRecap( deathRecapData )
 	if type(deathRecapData) ~= "table" then
 		self:ConvertStringToDeathRecapData(deathRecapData)
 	else
-		if self:IsShown() then
+		if self:IsShown() and recapID == self.recapID then
+			self.recapID = nil
 			HideUIPanel(self)
 			return
 		end
 
+		self.recapID = recapID
+		ShowUIPanel(self)
+
 		local numRecapData 	= #deathRecapData.recapData
 		local numRecapEntry = #self.DeathRecapEntry
-
-		ShowUIPanel(self)
 
 		if numRecapData <= 0 then
 			for i = 1, numRecapEntry do

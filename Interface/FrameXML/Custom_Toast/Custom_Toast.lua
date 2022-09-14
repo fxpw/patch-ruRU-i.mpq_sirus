@@ -2,6 +2,24 @@
 --	Project:	Custom Game Interface
 --	Author:		Nyll & Blizzard Entertainment
 
+enum:E_TOAST_CATEGORY {
+	UNKNOWN = 0,
+	FRIENDS = 1,
+	HEAD_HUNTING = 2,
+	BATTLE_PASS = 3,
+	QUEUE = 4,
+	AUCTION_HOUSE = 5,
+}
+
+E_TOAST_DATA = {
+	[E_TOAST_CATEGORY.UNKNOWN]			= { sound = SOUNDKIT.UI_BNET_TOAST },
+	[E_TOAST_CATEGORY.FRIENDS]			= { sound = SOUNDKIT.UI_BNET_TOAST,				cvar = "C_CVAR_SOCIAL_TOAST_SOUND" },
+	[E_TOAST_CATEGORY.HEAD_HUNTING]		= { sound = "UI_PetBattles_InitiateBattle",		cvar = "C_CVAR_HEAD_HUNTING_TOAST_SOUND" },
+	[E_TOAST_CATEGORY.BATTLE_PASS]		= { sound = "UI_FightClub_Start",				cvar = "C_CVAR_BATTLE_PASS_TOAST_SOUND" },
+	[E_TOAST_CATEGORY.QUEUE]			= { sound = "UI_GroupFinderReceiveApplication",	cvar = "C_CVAR_QUEUE_TOAST_SOUND" },
+	[E_TOAST_CATEGORY.AUCTION_HOUSE]	= { sound = "UI_DigsiteCompletion_Toast",		cvar = "C_CVAR_AUCTION_HOUSE_TOAST_SOUND" },
+}
+
 DefaultAnimOutMixin = {}
 
 function DefaultAnimOutMixin:OnFinished()
@@ -21,13 +39,6 @@ end
 function SocialToastCloseButtonMixin:OnClick()
     self:GetParent():Hide()
 end
-
-enum:E_TOAST_DATA {
-    "TEXT_ID",
-    "CATEGORY_ID",
-    "ICONSOURCE",
-    "TITLE_PARAMS_COUNT",
-}
 
 SocialToastMixin = {}
 
@@ -150,17 +161,24 @@ function SocialToastSystemMixin:ShowToast(toastFrame)
         local _, _, _, _, _, _, _, _, _, itemTexture = GetItemInfo(iconSource, false, setIcon)
 
         if itemTexture then
-            setIcon(_, _, _, _, _, _, _, _, _, itemTexture)
+			toastFrame.Icon:SetTexture(itemTexture)
         else
-            setIcon(_, _, _, _, _, _, _, _, _, "Interface\\ICONS\\INV_Misc_QuestionMark")
+			toastFrame.Icon:SetTexture("Interface\\ICONS\\INV_Misc_QuestionMark")
         end
     else
-        toastFrame.Icon:SetTexture("Interface\\ICONS\\"..iconSource)
+		toastFrame.Icon:SetTexture("Interface\\ICONS\\"..iconSource)
     end
 
     toastFrame.categoryID = categoryID
 
-    PlaySound(SOUNDKIT.UI_BNET_TOAST)
+	if C_CVar:GetValue("C_CVAR_PLAY_TOAST_SOUND") ~= "0" and E_TOAST_DATA[categoryID] then
+		if C_CVar:GetValue(E_TOAST_DATA[categoryID].cvar) ~= "0" then
+			PlaySound(E_TOAST_DATA[categoryID].sound or E_TOAST_DATA[E_TOAST_CATEGORY.UNKNOWN].sound)
+		end
+	else
+		PlaySound(E_TOAST_DATA[E_TOAST_CATEGORY.UNKNOWN].sound)
+	end
+
     AlertFrame_ShowNewAlert(toastFrame)
 end
 
@@ -237,13 +255,12 @@ function SocialToastSystemMixin:ClearPosition()
     C_CVar:SetValue("C_CVAR_TOAST_POSITION", nil)
 end
 
-enum:E_TOAST_CATEGORY {
-    [0] = "UNKNOWN",
-    [1] = "FRIENDS",
-    [2] = "HEAD_HUNTING",
-    [3] = "BATTLE_PASS",
-    [4] = "QUEUE",
-    [5] = "AUCTION_HOUSE"
+local TOAST_MESSAGE_DATA = {
+	TEXT_ID				= 1,
+	CATEGORY_ID			= 2,
+	FLAGS				= 3,
+	ICONSOURCE			= 4,
+	TITLE_PARAMS_COUNT	= 5,
 }
 
 function SocialToastSystemMixin:ASMSG_TOAST( msg )

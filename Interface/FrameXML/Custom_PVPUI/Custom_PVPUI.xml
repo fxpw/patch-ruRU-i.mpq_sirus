@@ -271,7 +271,7 @@
 			</OnLoad>
 			<OnClick function="PVPConquestSkirmishButton_OnClick"/>
 			<OnMouseDown>
-				if ( self:IsEnabled() ) then
+				if ( self:IsEnabled() == 1 ) then
 					self.TeamSizeText:SetPoint("CENTER", -1, -1)
 				end
 			</OnMouseDown>
@@ -533,14 +533,14 @@
 						<Anchor point="LEFT" relativePoint="LEFT" x="4" y="0" />
 					</Anchors>
 				</FontString>
-				<FontString name="$parentToday" parentKey="Today" inherits="GameFontNormal" text="32" justifyH="CENTER" justifyV="CENTER">
+				<FontString name="$parentToday" parentKey="Today" inherits="GameFontNormal" text="32" justifyH="CENTER" justifyV="MIDDLE">
 					<Size x="40" y="0"/>
 					<Anchors>
 						<Anchor point="RIGHT" relativePoint="RIGHT" x="-114" y="0" />
 					</Anchors>
 					<Color r="1" g="1" b="1"/>
 				</FontString>
-				<FontString name="$parentLifetime" parentKey="Lifetime" inherits="GameFontNormal" text="100" justifyH="CENTER" justifyV="CENTER">
+				<FontString name="$parentLifetime" parentKey="Lifetime" inherits="GameFontNormal" text="100" justifyH="CENTER" justifyV="MIDDLE">
 					<Size x="40" y="0"/>
 					<Anchors>
 						<Anchor point="RIGHT" relativePoint="RIGHT" x="-34" y="0" />
@@ -831,7 +831,7 @@
 										<Anchor point="RIGHT" relativePoint="RIGHT" x="-4" y="1" />
 									</Anchors>
 								</Texture>
-								<FontString name="$parentCount" parentKey="Count" inherits="GameFontNormal" justifyH="RIGHT" justifyV="CENTER">
+								<FontString name="$parentCount" parentKey="Count" inherits="GameFontNormal" justifyH="RIGHT" justifyV="MIDDLE">
 									<Size x="60" y="20"/>
 									<Anchors>
 										<Anchor point="RIGHT" relativeTo="$parentIcon" relativePoint="LEFT" x="-4" y="0" />
@@ -944,7 +944,7 @@
 					<Anchor point="BOTTOMLEFT" x="4" y="4" />
 				</Anchors>
 				<Frames>
-					<Frame name="$parentArt" parent="PVPUIFrame" setAllPoints="true">
+					<Frame name="$parentLeftArt" parent="PVPUIFrame" setAllPoints="true">
 						<Layers>
 							<Layer level="BORDER">
 								<Texture parentKey="Background" name="$parentBackgrounds" file="Interface\Common\bluemenu-main">
@@ -1570,7 +1570,7 @@
 												<Anchor point="TOP" relativeTo="$parentWinLabel" relativePoint="BOTTOM" x="14" y="0" />
 											</Anchors>
 										</Texture>
-										<FontString parentKey="Amount" name="$parentAmount" text="200" justifyH="RIGHT" justifyV="CENTER" inherits="GameFontNormalMed3">
+										<FontString parentKey="Amount" name="$parentAmount" text="200" justifyH="RIGHT" justifyV="MIDDLE" inherits="GameFontNormalMed3">
 											<Size x="46" y="16"/>
 											<Anchors>
 												<Anchor point="RIGHT" relativeTo="$parentIcon" relativePoint="LEFT" x="-4" y="0"/>
@@ -2203,7 +2203,7 @@
 														</Texture>
 													</Layer> -->
 													<!-- <Layer level="OVERLAY">
-														<FontString name="$parentTempLabel" parentKey="TempLabel" inherits="GameFontNormalLarge" text="Скоро">
+														<FontString name="$parentTempLabel" parentKey="TempLabel" inherits="GameFontNormalLarge" text="SOON">
 															<Anchors>
 																<Anchor point="CENTER" x="0" y="0" />
 															</Anchors>
@@ -2539,9 +2539,9 @@
 											<Layer level="ARTWORK">
 												<Texture parentKey="Frame" name="$parentFrame" atlas="honorsystem-bar-frame-small" file="Interface/PVPFrame/PvPHonorSystem" useAtlasSize="true">
 													<Size x="314" y="43"/>
-													<Anchor>
+													<Anchors>
 														<Anchor point="CENTER"/>
-													</Anchor>
+													</Anchors>
 													<TexCoords left="0.511719" right="0.818359" top="0.376953" bottom="0.418945"/>
 												</Texture>
 											</Layer>
@@ -2563,7 +2563,7 @@
 												<Texture parentKey="Background" atlas="honorsystem-bar-background" file="Interface/PVPFrame/PvPHonorSystem">
 													<Size x="270" y="18"/>
 													<Anchors>
-														<Anchor point="CENTER" relativeKey="$parentFrame" relativePoint="CENTER" x="10"/>
+														<Anchor point="CENTER" relativeTo="$parentFrame" relativePoint="CENTER" x="10"/>
 													</Anchors>
 													<TexCoords left="0.126953" right="0.586914" top="0.422852" bottom="0.44043"/>
 												</Texture>
@@ -3264,13 +3264,13 @@
 						</Texture>
 					</Layer>
 					<Layer level="ARTWORK">
-						<FontString nme="$parentTitle" parentKey="Title" inherits="QuestTitleFont" text="YOU_CAN_ENTER_BATTLEGROUND">
+						<FontString name="$parentTitle" parentKey="Title" inherits="QuestTitleFont" text="YOU_CAN_ENTER_BATTLEGROUND">
 							<Anchors>
 								<Anchor point="TOP" x="0" y="-58" />
 							</Anchors>
 							<Color r="0" g="0" b="0"/>
 						</FontString>
-						<FontString nme="$parentTimer" parentKey="Timer" inherits="SystemFont_Huge6" text="0:29">
+						<FontString name="$parentTimer" parentKey="Timer" inherits="SystemFont_Huge6" text="0:29">
 							<Anchors>
 								<Anchor point="TOP" x="0" y="-86" />
 							</Anchors>
@@ -3306,8 +3306,7 @@
 							</OnClick>
 						</Scripts>
 					</Button>
-					<Button name="$prentCancelButton" parentKey="CancelButton" inherits="UIPanelCloseButtonNoScripts">
-						<HitRectInsets left="7" right="6" top="7" bottom="6"/>
+					<Button name="$parentCancelButton" parentKey="CancelButton" inherits="UIPanelCloseButtonNoScripts">
 						<Anchors>
 							<Anchor point="TOPRIGHT" x="-10" y="-42" />
 						</Anchors>
@@ -3317,16 +3316,16 @@
 								<Alpha change="1" duration="1" order="2" smoothing="IN"/>
 							</AnimationGroup>
 						</Animations>
+						<HitRectInsets left="7" right="6" top="7" bottom="6"/>
 						<Scripts>
 							<OnClick>
 								self:GetParent():GetParent():Abandon()
 							</OnClick>
 						</Scripts>
 					</Button>
-					<Button name="$prentHideButton" parentKey="HideButton" inherits="UIPanelCloseButtonNoScripts">
-						<HitRectInsets left="7" right="6" top="7" bottom="6"/>
+					<Button name="$parentHideButton" parentKey="HideButton" inherits="UIPanelCloseButtonNoScripts">
 						<Anchors>
-							<Anchor point="RIGHT" relativeTo="$prentCancelButton" relativePoint="LEFT" x="8" y="0"/>
+							<Anchor point="RIGHT" relativeTo="$parentCancelButton" relativePoint="LEFT" x="8" y="0"/>
 						</Anchors>
 						<Animations>
 							<AnimationGroup parentKey="showHideButton">
@@ -3334,6 +3333,7 @@
 								<Alpha change="1" duration="1" order="2" smoothing="IN"/>
 							</AnimationGroup>
 						</Animations>
+						<HitRectInsets left="7" right="6" top="7" bottom="6"/>
 						<Scripts>
 							<OnClick>
 								self:GetParent():GetParent():Hide()

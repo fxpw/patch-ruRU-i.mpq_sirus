@@ -7,6 +7,7 @@ enum:E_PLAYER_FACTION_CHANGE {
     "FACTION_ID"
 }
 
+---@class C_FactionManagerMixin : Mixin
 C_FactionManagerMixin = {}
 
 function C_FactionManagerMixin:OnLoad()
@@ -125,6 +126,6 @@ function C_FactionManagerMixin:ASMSG_PLAYER_FACTION_CHANGE(msg)
     self:SetFactionOverride(factionID)
 end
 
----@class C_FactionManagerMixin
+---@class C_FactionManager : C_FactionManagerMixin
 C_FactionManager = CreateFromMixins(C_FactionManagerMixin)
 C_FactionManager:OnLoad()

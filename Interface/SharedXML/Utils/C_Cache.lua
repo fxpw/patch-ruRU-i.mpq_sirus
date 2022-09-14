@@ -2,6 +2,7 @@
 --	Project:	Custom Game Interface
 --	Author:		Nyll & Blizzard Entertainment
 
+---@class C_CacheMixin : Mixin
 C_CacheMixin = {}
 
 function C_CacheMixin:OnLoad()
@@ -87,6 +88,6 @@ function C_CacheMixin:Get( key, value, timeToLife )
     return self._cache[key].value
 end
 
----@class C_CacheMixin
+---@class C_CacheInstance : C_CacheMixin
 C_CacheInstance = CreateFromMixins(C_CacheMixin)
 C_CacheInstance:OnLoad()

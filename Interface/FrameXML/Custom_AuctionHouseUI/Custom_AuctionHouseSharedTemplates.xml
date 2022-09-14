@@ -117,7 +117,8 @@
 			<Layer level="ARTWORK">
 				<FontString name="$parentName" parentKey="Name" inherits="SystemFont_Shadow_Large2" justifyH="LEFT">
 					<Size x="0" y="64"/>
-					<Shadow x="1" y="-1">
+					<Shadow>
+						<Offset x="1" y="-1"/>
 						<Color r="0" g="0" b="0"/>
 					</Shadow>
 				</FontString>

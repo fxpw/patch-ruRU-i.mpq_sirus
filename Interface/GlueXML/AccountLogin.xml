@@ -151,7 +151,19 @@
 								<Scripts>
 									<OnClick>
 										PlaySound(SOUNDKIT.GS_LOGIN_NEW_ACCOUNT)
-										LaunchURL("https://sirus.su/user/pay")
+										LaunchURL("https://sirus.su/pay")
+									</OnClick>
+								</Scripts>
+							</Button>
+							<Button name="GlueSupportButtons" inherits="GlueDark_ButtonTemplate" text="SUPPORT">
+								<Size x="150" y="28"/>
+								<Anchors>
+									<Anchor point="BOTTOM" relativeTo="GlueDonateButtons" relativePoint="TOP" y="6"/>
+								</Anchors>
+								<Scripts>
+									<OnClick>
+										PlaySound(SOUNDKIT.GS_LOGIN_NEW_ACCOUNT)
+										LaunchURL("https://forum.sirus.su/categories/4/")
 									</OnClick>
 								</Scripts>
 							</Button>

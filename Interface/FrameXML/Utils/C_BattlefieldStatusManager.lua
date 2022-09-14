@@ -138,11 +138,7 @@ function C_BattlefieldStatusManagerMixin:ASMSG_BATTLEFIELD_STATUS(msg)
 		end
 
 		for _, frame in ipairs({GetFramesRegisteredForEvent("UPDATE_BATTLEFIELD_STATUS")}) do
-			local onEventFunc = frame:GetScript("OnEvent")
-
-			if onEventFunc then
-				onEventFunc(frame, "UPDATE_BATTLEFIELD_STATUS", index)
-			end
+			ExecuteFrameScript(frame, "OnEvent", "UPDATE_BATTLEFIELD_STATUS", index);
 		end
 	end
 end
@@ -161,11 +157,7 @@ function C_BattlefieldStatusManagerMixin:ASMSG_BATTLEFIELD_STATUS_FAKE(msg)
 	end
 
 	for _, frame in ipairs({GetFramesRegisteredForEvent("UPDATE_BATTLEFIELD_STATUS")}) do
-		local onEventFunc = frame:GetScript("OnEvent")
-
-		if onEventFunc then
-			onEventFunc(frame, "UPDATE_BATTLEFIELD_STATUS")
-		end
+		ExecuteFrameScript(frame, "OnEvent", "UPDATE_BATTLEFIELD_STATUS");
 	end
 end
 
@@ -190,11 +182,7 @@ function C_BattlefieldStatusManagerMixin:ASMSG_BF_QUEUE_STATUS(msg)
 		end
 
 		for _, frame in ipairs({GetFramesRegisteredForEvent("UPDATE_BATTLEFIELD_STATUS")}) do
-			local onEventFunc = frame:GetScript("OnEvent")
-
-			if onEventFunc then
-				onEventFunc(frame, "UPDATE_BATTLEFIELD_STATUS", index)
-			end
+			ExecuteFrameScript(frame, "OnEvent", "UPDATE_BATTLEFIELD_STATUS", index);
 		end
 	end
 end

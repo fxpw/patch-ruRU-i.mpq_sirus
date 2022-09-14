@@ -125,72 +125,22 @@
 			<Button name="$parentSummonButton" inherits="ActionButtonTemplate" hidden="true" parentKey="summonButton">
 				<Size x="26" y="26"/>
 				<Anchors>
-					<Anchor point="TOPRIGHT">
-						<Offset x="-4" y="-4"/>
-					</Anchor>
+					<Anchor point="TOPRIGHT" x="-4" y="-4"/>
 				</Anchors>
-				<Layers>
-					<Layer level="BACKGROUND">
-						<Texture name="$parentIcon"/>
-					</Layer>
-					<Layer level="ARTWORK">
-						<Texture name="$parentFlash" file="Interface\Buttons\UI-QuickslotRed" hidden="true"/>
-						<FontString name="$parentHotKey" inherits="NumberFontNormalSmallGray" justifyH="RIGHT">
-							<Size>
-								<AbsDimension x="32" y="10"/>
-							</Size>
-							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset>
-										<AbsDimension x="-2" y="-2"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>
-						<FontString name="$parentCount" inherits="NumberFontNormal" justifyH="RIGHT">
-							<Anchors>
-								<Anchor point="BOTTOMRIGHT">
-									<Offset>
-										<AbsDimension x="-2" y="2"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>
-					</Layer>
-					<Layer level="OVERLAY">
-						<FontString name="$parentName" inherits="GameFontHighlightSmallOutline">
-							<Size>
-								<AbsDimension x="32" y="10"/>
-							</Size>
-							<Anchors>
-								<Anchor point="BOTTOM">
-									<Offset>
-										<AbsDimension x="0" y="2"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>
-					</Layer>
-				</Layers>
-				<Frames>
-					<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate">
-						<Size x="28" y="28"/>
-						<Anchors>
-							<Anchor point="CENTER">
-								<Offset>
-									<AbsDimension x="0" y="-1"/>
-								</Offset>
-							</Anchor>
-						</Anchors> 
-					</Cooldown>
-				</Frames>
 				<Scripts>
 					<OnLoad>
-						_G[self:GetName().."Icon"]:SetTexture("Interface\\Icons\\Spell_Shadow_Teleport");
 						self:RegisterEvent("SPELL_UPDATE_COOLDOWN");
+
+						_G[self:GetName().."Icon"]:SetTexture("Interface\\Icons\\Spell_Shadow_Teleport");
+
 						local normalTexture = _G[self:GetName().."NormalTexture"];
-						normalTexture:SetWidth(40);
-						normalTexture:SetHeight(40);
+						normalTexture:ClearAllPoints();
+						normalTexture:SetPoint("CENTER");
+						normalTexture:SetSize(40, 40);
+
+						self:GetPushedTexture():SetSize(40, 40);
+
+						self.cooldown:SetSize(self:GetSize());
 					</OnLoad>
 					<OnEvent>
 						FriendsFrame_SummonButton_OnEvent(self, event, ...);

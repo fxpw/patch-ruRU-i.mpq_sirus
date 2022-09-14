@@ -78,17 +78,13 @@
 			</Button>
 -->
 			<Button name="$parentCancel" inherits="UIPanelButtonTemplate" text="CANCEL">
-				<Size>
-					<AbsDimension x="96" y="22"/>
-				</Size>
+				<Size x="96" y="22"/>
 				<Anchors>
 					<!--
 					<Anchor point="BOTTOMRIGHT" relativeTo="$parentApply" relativePoint="BOTTOMLEFT"/>
 					-->
 					<Anchor point="BOTTOMRIGHT">
-						<Offset>
-							<AbsDimension x="-16" y="16"/>
-						</Offset>
+						<Offset x="-16" y="16"/>
 					</Anchor>
 				</Anchors>
 				<Scripts>
@@ -96,9 +92,7 @@
 				</Scripts>
 			</Button>
 			<Button name="$parentOkay" inherits="UIPanelButtonTemplate" text="OKAY">
-				<Size>
-					<AbsDimension x="96" y="22"/>
-				</Size>
+				<Size x="96" y="22"/>
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" relativeTo="$parentCancel" relativePoint="BOTTOMLEFT"/>
 				</Anchors>
@@ -107,15 +101,9 @@
 				</Scripts>
 			</Button>
 			<Button name="$parentDefaults" inherits="UIPanelButtonGrayTemplate" text="DEFAULTS">
-				<Size>
-					<AbsDimension x="96" y="22"/>
-				</Size>
+				<Size x="96" y="22"/>
 				<Anchors>
-					<Anchor point="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="16" y="16"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="BOTTOMLEFT" x="16" y="16"/>
 				</Anchors>
 				<Scripts>
 					<OnClick function="InterfaceOptionsFrameDefaults_OnClick"/>
@@ -125,9 +113,7 @@
 				<Size x="175" y="569"/>
 				<Anchors>
 					<Anchor point="TOPLEFT">
-						<Offset>
-							<AbsDimension x="22" y="-40"/>
-						</Offset>
+						<Offset x="22" y="-40"/>
 					</Anchor>
 				</Anchors>
 				<Scripts>
@@ -141,11 +127,7 @@
 			<Frame name="$parentAddOns" inherits="OptionsFrameListTemplate" hidden="true">
 				<Size x="175" y="569"/>
 				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset>
-							<AbsDimension x="22" y="-40"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" x="22" y="-40"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -158,19 +140,13 @@
 			<Frame name="$parentPanelContainer">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentCategories" relativePoint="TOPRIGHT">
-						<Offset>
-							<AbsDimension x="16" y="0"/>
-						</Offset>
+						<Offset x="16" y="0"/>
 					</Anchor>
 					<Anchor point="BOTTOMLEFT" relativeTo="$parentCategories" relativePoint="BOTTOMRIGHT">
-						<Offset>
-							<AbsDimension x="16" y="1"/>
-						</Offset>
+						<Offset x="16" y="1"/>
 					</Anchor>
 					<Anchor point="RIGHT">
-						<Offset>
-							<AbsDimension x="-22" y="0"/>
-						</Offset>
+						<Offset x="-22" y="0"/>
 					</Anchor>
 				</Anchors>
 				<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
@@ -192,11 +168,7 @@
 			</Frame>
 			<Button name="$parentTab1" inherits="OptionsFrameTabButtonTemplate" text="GAME" id="1" hidden="true">
 				<Anchors>
-					<Anchor point="BOTTOMLEFT" relativeTo="$parentCategories" relativePoint="TOPLEFT">
-						<Offset>
-							<AbsDimension x="6" y="-3"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentCategories" relativePoint="TOPLEFT" x="6" y="-3"/>
 				</Anchors>
 				<Scripts>
 					<OnClick>
@@ -226,11 +198,7 @@
 			</Button>
 			<Button name="$parentTab2" inherits="OptionsFrameTabButtonTemplate" text="ADDONS" id="2" hidden="true">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentTab1" relativePoint="TOPRIGHT">
-						<Offset>
-							<AbsDimension x="-16" y="0"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentTab1" relativePoint="TOPRIGHT" x="-16" y="0"/>
 				</Anchors>
 				<Scripts>
 					<OnClick>

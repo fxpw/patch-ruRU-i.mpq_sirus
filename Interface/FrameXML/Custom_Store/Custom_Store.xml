@@ -7,7 +7,7 @@
 -->
 
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\UI.xsd">
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_Store.lua"/>
 	<Script file="Custom_StoreTransmogrifyData.lua"/>
 
@@ -1033,7 +1033,7 @@
 						self.Texture:SetAlpha(0.5);
 					</OnLeave>
 					<OnMouseDown>
-						if self:IsEnabled() then
+						if self:IsEnabled() == 1 then
 							self.Texture:SetPoint("TOPLEFT", self, "TOPLEFT", 1, -1);
 						end
 					</OnMouseDown>
@@ -1286,8 +1286,6 @@
 					<TexCoords left="0.24609375" right="0.35546875" top="0.013671875" bottom="0.123046875"/>
 				</Texture>
 			</Layer>
-			<Layer level="OVERLAY">
-			</Layer>
 		</Layers>
 		<Scripts>
 			<OnEnter function="StoreSpecialOfferItem_OnEnter"/>
@@ -1295,7 +1293,7 @@
 			<OnClick function="StoreSpecialOfferItem_OnClick"/>
 		</Scripts>
 	</Button>
-	<Frame name="StoreSelectSpecButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
+	<CheckButton name="StoreSelectSpecButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
 		<Size x="34" y="34"/>
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -1360,7 +1358,7 @@
 				end
 			</OnLeave>
 		</Scripts>
-	</Frame>
+	</CheckButton>
 	<Button name="StoreSubCategorySelectButtonTemplate" virtual="true">
 		<Size x="208" y="53"/>
 		<Layers>
@@ -1480,9 +1478,7 @@
 		</Layers>
 	</Button>
 	<CheckButton name="StorePremiumSelectCheckButtonTemplate" inherits="UIRadioButtonTemplate" virtual="true">
-		<HitRectInsets>
-			<AbsInset left="0" right="-280" top="-20" bottom="-20"/>
-		</HitRectInsets>
+		<HitRectInsets left="0" right="-290" top="-10" bottom="-10"/>
 		<Layers>
 			<Layer level="OVERLAY">
 				<FontString name="$parentSched" parentKey="Sched" justifyH="LEFT" inherits="SystemFont_Med4">
@@ -2130,7 +2126,7 @@
 		</Animations>
 		<Scripts>
 			<OnLoad>
-				if ( not self:IsEnabled() ) then
+				if ( self:IsEnabled() ~= 1 ) then
 					self.Left:SetTexCoord(0.26464844, 0.31542969, 0.89160156, 0.92285156)
 					self.Middle:SetTexCoord(0.18457031, 0.25683594, 0.96484375, 0.99609375)
 					self.Right:SetTexCoord(0.98046875, 0.99707031, 0.29980469, 0.33105469)
@@ -2406,6 +2402,135 @@
 		</Scripts>
 	</Button>
 
+	<Frame name="StoreOfferTemplate" setAllPoints="true" hidden="true" virtual="true">
+		<Frames>
+			<Frame name="$parentLeftPanel" parentKey="LeftPanel">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-380" y="-1"/>
+					<Anchor point="BOTTOMLEFT" x="1" y="1"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="Background">
+							<Color r="0" g="0" b="0" a="0.7"/>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<FontString name="$parentTimerLabel" parentKey="TimerLabel" inherits="GameFontNormal" text="STORE_TO_END" hidden="true">
+							<Size x="184" y="10"/>
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-4" />
+							</Anchors>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+						<FontString name="$parentTimerText" parentKey="TimerText" justifyH="CENTER" font="Interface\CustomFonts\futurademic.ttf">
+							<Size x="174" y="30"/>
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-12"/>
+							</Anchors>
+							<FontHeight val="28"/>
+							<Color r="0.67" g="0.34" b="0.63"/>
+						</FontString>
+						<FontString name="$parentTitleText" parentKey="TitleText" justifyH="LEFT" font="Interface\CustomFonts\OpenSans-Bold.ttf">
+							<Size x="164" y="12"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="18" y="-52"/>
+							</Anchors>
+							<FontHeight val="12"/>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+						<FontString name="$parentNameText" parentKey="NameText" font="Interface\CustomFonts\futurademic.ttf">
+							<Size x="164" y="50"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="18" y="-64"/>
+							</Anchors>
+							<FontHeight val="18"/>
+							<Color r="0.67" g="0.34" b="0.63"/>
+						</FontString>
+						<FontString name="$parentDescriptionText" parentKey="DescriptionText" justifyH="LEFT" justifyV="TOP" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
+							<Size x="164" y="70"/>
+							<Anchors>
+								<Anchor point="LEFT" x="16" y="-20"/>
+							</Anchors>
+							<FontHeight val="11"/>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+						<FontString name="$parentPriceLabel" parentKey="PriceLabel" text="STORE_COST" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
+							<Anchors>
+								<Anchor point="LEFT" x="16" y="-62"/>
+							</Anchors>
+							<FontHeight val="13"/>
+							<Color r="0.67" g="0.34" b="0.63"/>
+						</FontString>
+						<FontString name="$parentPrice" parentKey="Price" justifyH="RIGHT" font="Interface\CustomFonts\futurademic.ttf">
+							<Anchors>
+								<Anchor point="RIGHT" x="-44" y="-62"/>
+							</Anchors>
+							<FontHeight val="18"/>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+						<Texture name="$parentBonusIcon" parentKey="BonusIcon" file="Interface\Store\coins">
+							<Size x="32" y="32"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentPrice" relativePoint="RIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Button name="$parentBuyButton" text="PURCHASE" parentKey="BuyButton" inherits="StoreGoldButtonTemplate">
+						<Size x="140" y="30"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="0" y="4" />
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								StoreFrame_ProductBuy(self:GetParent():GetParent():GetParent().data)
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+			<Frame name="$parentRightPanel" parentKey="RightPanel">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-1" y="-1"/>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentLeftPanel" relativePoint="BOTTOMRIGHT" x="1" y="1"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreOfferMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</Frame>
+	<PlayerModel name="StoreOfferPlayerModelTemplate" enableMouse="false" hidden="true" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreOfferModelMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</PlayerModel>
+	<PlayerModel name="StoreOfferDressUpModelTemplate" enableMouse="false" hidden="true" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreOfferModelMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</PlayerModel>
+
 	<Frame name="StoreFrame" frameStrata="HIGH" inherits="PortraitFrameTemplateNoCloseButton" enableMouse="true" hidden="true">
 		<Size x="800" y="537" />
 		<Anchors>
@@ -2626,7 +2751,7 @@
 							<Frame name="$parentTimerFrame" parentKey="TimerFrame">
 								<Layers>
 									<Layer level="ARTWORK">
-										<FontString name="$parentTimerText" parentKey="TimerText" inherits="GameFontNormal16" justifyH="CENTER" justifyV="CENTER" text="125 дней.">
+										<FontString name="$parentTimerText" parentKey="TimerText" inherits="GameFontNormal16" justifyH="CENTER" justifyV="MIDDLE">
 											<Color r="0" g="1" b="0"/>
 										</FontString>
 									</Layer>
@@ -2713,6 +2838,7 @@
 						<Anchors>
 							<Anchor point="RIGHT" x="-16" y="0" />
 						</Anchors>
+						<HitRectInsets left="-14" right="-3" top="-5" bottom="-7"/>
 						<Layers>
 							<Layer level="BACKGROUND">
 								<Texture name="$parentBackground" parentKey="Background">
@@ -3082,1289 +3208,7 @@
 									<OnLeave function="StoreSpecialOfferBanner_OnLeave"/>
 								</Scripts>
 							</Frame>
-							<Frame name="$parentFoxyOffer" parentKey="FoxyOffer" hidden="true" setAllPoints="true">
-								<Frames>
-									<Frame name="$parentLeftPanel" parentKey="LeftPanel" setAllPoints="true">
-										<Layers>
-											<Layer level="OVERLAY">
-												<FontString name="$parentTimerText" parentKey="TimerText" text="23:59:59" justifyH="CENTER" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="32"/>
-													</FontHeight>
-													<Size x="164" y="30"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-12" />
-													</Anchors>
-													<Color r="0.92" g="0.90" b="1"/>
-												</FontString>
-												<FontString name="$parentTitleText" parentKey="TitleText" text="STORE_THE_14TH_OF_FEBRUARY_CAPS" font="Interface\CustomFonts\OpenSans-Bold.ttf">
-													<FontHeight>
-														<AbsValue val="12"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="103" y="-52" />
-													</Anchors>
-													<Color r="0.99" g="0.2" b="0.68"/>
-												</FontString>
-												<FontString name="$parentNameText" parentKey="NameText" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-64" />
-													</Anchors>
-													<Color r="0.92" g="0.90" b="1"/>
-												</FontString>
-												<FontString name="$parentDescriptionText" parentKey="DescriptionText" justifyH="LEFT" justifyV="TOP" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="11"/>
-													</FontHeight>
-													<Size x="164" y="70"/>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-20" />
-													</Anchors>
-													<Color r="1" g="0.3" b="0.78"/>
-												</FontString>
-												<FontString name="$parentPriceLabel" parentKey="PriceLabel" text="STORE_COST" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="13"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-62" />
-													</Anchors>
-													<Color r="0.92" g="0.90" b="1"/>
-												</FontString>
-												<FontString name="$parentPrice" parentKey="Price" text="299" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="122" y="-62" />
-													</Anchors>
-													<Color r="0.92" g="0.90" b="1"/>
-												</FontString>
-												<Texture name="$parentBonusIcon" parentKey="BonusIcon" file="Interface\Store\coins">
-													<Size x="32" y="32"/>
-													<Anchors>
-														<Anchor point="LEFT" relativeTo="$parentPrice" relativePoint="RIGHT" x="0" y="0" />
-													</Anchors>
-												</Texture>
-											</Layer>
-										</Layers>
-									</Frame>
-									<PlayerModel parentKey="MountModel" enableMouse="false">
-										<Size x="462" y="469" />
-										<Anchors>
-											<Anchor point="RIGHT" x="50" y="0" />
-										</Anchors>
-										<Scripts>
-											<OnLoad>
-												self:SetRotation(-0.68)
-											</OnLoad>
-											<OnShow>
-												self:SetCreature(130519)
-											</OnShow>
-										</Scripts>
-									</PlayerModel>
-									<PlayerModel parentKey="PetModel" enableMouse="false">
-										<Size x="232" y="232" />
-										<Anchors>
-											<Anchor point="BOTTOMRIGHT" x="40" y="-60" />
-										</Anchors>
-										<Scripts>
-											<OnLoad>
-												self:SetRotation(0.1)
-											</OnLoad>
-											<OnShow>
-												self:SetCreature(130523)
-											</OnShow>
-										</Scripts>
-									</PlayerModel>
-									<Button name="$parentBuyButton" text="PURCHASE" parentKey="BuyButton" inherits="StoreGoldButtonTemplate">
-										<Size x="140" y="30"/>
-										<Anchors>
-											<Anchor point="BOTTOMLEFT" x="28" y="10" />
-										</Anchors>
-										<Scripts>
-											<OnClick>
-												StoreFrame_ProductBuy(self:GetParent():GetParent().data)
-											</OnClick>
-										</Scripts>
-									</Button>
-								</Frames>
-								<Scripts>
-									<OnShow>
-										self:GetParent().NavigationBar.PageText:ClearAllPoints()
-										self:GetParent().NavigationBar.PrevPageButton:ClearAllPoints()
 
-										self:GetParent().NavigationBar.PageText:SetPoint("TOPRIGHT", -74, -17)
-										self:GetParent().NavigationBar.PrevPageButton:SetPoint("TOPRIGHT", -40, -7)
-
-										self:GetParent().LeftPanel:Hide()
-
-										self:GetParent().Background:SetTexCoord(0, 0.564453125, 0.015625, 1)
-										self:GetParent().Border:SetVertexColor(0.38, 0.88, 1)
-									</OnShow>
-									<OnHide>
-										local offerCount = StoreGetSpecialOfferCount()
-
-										if offerCount > 0 then
-											self:GetParent().NavigationBar.PageText:ClearAllPoints()
-											self:GetParent().NavigationBar.PrevPageButton:ClearAllPoints()
-
-											self:GetParent().NavigationBar.PageText:SetPoint("BOTTOMRIGHT", -74, 17)
-											self:GetParent().NavigationBar.PrevPageButton:SetPoint("BOTTOMRIGHT", -40, 7)
-
-											self:GetParent().LeftPanel:Show()
-
-											self:GetParent().Background:SetTexCoord(0, 0.5634765625, 0.02734375, 1)
-											self:GetParent().Border:SetVertexColor(1, 1, 1)
-										end
-									</OnHide>
-								</Scripts>
-							</Frame>
-							<Frame name="$parentMeatOffer" parentKey="MeatOffer" hidden="true" setAllPoints="true">
-								<Frames>
-									<Frame name="$parentLeftPanel" parentKey="LeftPanel" setAllPoints="true">
-										<Layers>
-											<Layer level="OVERLAY">
-												<FontString name="$parentTimerText" parentKey="TimerText" text="23:59:59" justifyH="CENTER" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="28"/>
-													</FontHeight>
-													<Size x="164" y="30"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-12" />
-													</Anchors>
-													<Color r="1" g="0.9" b="0.9"/>
-												</FontString>
-												<FontString name="$parentTitleText" parentKey="TitleText" text="STORE_THE_23TH_OF_FEBRUARY_CAPS" justifyH="LEFT" font="Interface\CustomFonts\OpenSans-Bold.ttf">
-													<FontHeight>
-														<AbsValue val="12"/>
-													</FontHeight>
-													<Size x="164" y="12"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-52" />
-													</Anchors>
-													<Color r="0.45" g="0.14" b="0.77"/>
-												</FontString>
-												<FontString name="$parentNameText" parentKey="NameText" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-64" />
-													</Anchors>
-													<Color r="1" g="0.9" b="0.9"/>
-												</FontString>
-												<FontString name="$parentDescriptionText" parentKey="DescriptionText" justifyH="LEFT" justifyV="TOP" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="11"/>
-													</FontHeight>
-													<Size x="164" y="70"/>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-20" />
-													</Anchors>
-													<Color r="0.45" g="0.14" b="0.77"/>
-												</FontString>
-												<FontString name="$parentPriceLabel" parentKey="PriceLabel" text="STORE_COST" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="13"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-62" />
-													</Anchors>
-													<Color r="1" g="0.9" b="0.9"/>
-												</FontString>
-												<FontString name="$parentPrice" parentKey="Price" text="299" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="122" y="-62" />
-													</Anchors>
-													<Color r="1" g="0.9" b="0.9"/>
-												</FontString>
-												<Texture name="$parentBonusIcon" parentKey="BonusIcon" file="Interface\Store\coins">
-													<Size x="32" y="32"/>
-													<Anchors>
-														<Anchor point="LEFT" relativeTo="$parentPrice" relativePoint="RIGHT" x="0" y="0" />
-													</Anchors>
-												</Texture>
-											</Layer>
-										</Layers>
-									</Frame>
-									<PlayerModel parentKey="MountModel" enableMouse="false">
-										<Size x="362" y="369" />
-										<Anchors>
-											<Anchor point="RIGHT" x="10" y="-24" />
-										</Anchors>
-										<Scripts>
-											<OnLoad>
-												self:SetRotation(-0.68)
-											</OnLoad>
-											<OnShow>
-												self:SetCreature(130945)
-												self:SetLight(1, 0, -0.67399996519089, -0.42799997329712, 0.5200001001358, 1, 0.70196080207825, 0.70196080207825, 0.70196080207825, 1, 1, 1, 0.80000007152557)
-											</OnShow>
-										</Scripts>
-									</PlayerModel>
-									<Button name="$parentBuyButton" text="PURCHASE" parentKey="BuyButton" inherits="StoreGoldButtonTemplate">
-										<Size x="140" y="30"/>
-										<Anchors>
-											<Anchor point="BOTTOMLEFT" x="28" y="10" />
-										</Anchors>
-										<Scripts>
-											<OnClick>
-												StoreFrame_ProductBuy(self:GetParent():GetParent().data)
-											</OnClick>
-										</Scripts>
-									</Button>
-								</Frames>
-								<Scripts>
-									<OnShow>
-									</OnShow>
-									<OnHide>
-									</OnHide>
-								</Scripts>
-							</Frame>
-							<Frame name="$parentHandOfSufferOffer" parentKey="HandOfSufferOffer" hidden="true" setAllPoints="true">
-								<Frames>
-									<Frame name="$parentLeftPanel" parentKey="LeftPanel" setAllPoints="true">
-										<Layers>
-											<Layer level="OVERLAY">
-												<FontString name="$parentTimerText" parentKey="TimerText" text="23:59:59" justifyH="CENTER" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="28"/>
-													</FontHeight>
-													<Size x="164" y="30"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-12" />
-													</Anchors>
-													<Color r="0.98" g="0.63" b="0.10"/>
-												</FontString>
-												<FontString name="$parentTitleText" parentKey="TitleText" text="STORE_THE_23TH_OF_FEBRUARY_CAPS" justifyH="LEFT" font="Interface\CustomFonts\OpenSans-Bold.ttf">
-													<FontHeight>
-														<AbsValue val="12"/>
-													</FontHeight>
-													<Size x="164" y="12"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-52" />
-													</Anchors>
-													<Color r="0.82" g="0.34" b="0.12"/>
-												</FontString>
-												<FontString name="$parentNameText" parentKey="NameText" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-64" />
-													</Anchors>
-													<Color r="0.98" g="0.63" b="0.10"/>
-												</FontString>
-												<FontString name="$parentDescriptionText" parentKey="DescriptionText" justifyH="LEFT" justifyV="TOP" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="11"/>
-													</FontHeight>
-													<Size x="164" y="70"/>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-20" />
-													</Anchors>
-													<Color r="0.82" g="0.34" b="0.12"/>
-												</FontString>
-												<FontString name="$parentPriceLabel" parentKey="PriceLabel" text="STORE_COST" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="13"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-62" />
-													</Anchors>
-													<Color r="0.98" g="0.63" b="0.10"/>
-												</FontString>
-												<FontString name="$parentPrice" parentKey="Price" text="299" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="122" y="-62" />
-													</Anchors>
-													<Color r="1" g="0.9" b="0.9"/>
-												</FontString>
-												<Texture name="$parentBonusIcon" parentKey="BonusIcon" file="Interface\Store\coins">
-													<Size x="32" y="32"/>
-													<Anchors>
-														<Anchor point="LEFT" relativeTo="$parentPrice" relativePoint="RIGHT" x="0" y="0" />
-													</Anchors>
-												</Texture>
-											</Layer>
-										</Layers>
-									</Frame>
-									<PlayerModel parentKey="MountModel" enableMouse="false">
-										<Size x="362" y="469" />
-										<Anchors>
-											<Anchor point="RIGHT" x="0" y="14" />
-										</Anchors>
-										<Scripts>
-											<OnLoad>
-												self:SetRotation(-0.68)
-											</OnLoad>
-											<OnShow>
-												self:SetCreature(131067)
-												self:SetLight(1, 0, -0.67399996519089, -0.42799997329712, 0.5200001001358, 1, 0.70196080207825, 0.70196080207825, 0.70196080207825, 1, 1, 1, 0.80000007152557)
-											</OnShow>
-										</Scripts>
-									</PlayerModel>
-									<Button name="$parentBuyButton" text="PURCHASE" parentKey="BuyButton" inherits="StoreGoldButtonTemplate">
-										<Size x="140" y="30"/>
-										<Anchors>
-											<Anchor point="BOTTOMLEFT" x="28" y="10" />
-										</Anchors>
-										<Scripts>
-											<OnClick>
-												StoreFrame_ProductBuy(self:GetParent():GetParent().data)
-											</OnClick>
-										</Scripts>
-									</Button>
-								</Frames>
-								<Scripts>
-									<OnShow>
-									</OnShow>
-									<OnHide>
-									</OnHide>
-								</Scripts>
-							</Frame>
-							<Frame name="$parentMurMurOffer" parentKey="MurMurOffer" hidden="true" setAllPoints="true">
-								<Frames>
-									<Frame name="$parentLeftPanel" parentKey="LeftPanel" setAllPoints="true">
-										<Layers>
-											<Layer level="OVERLAY">
-												<FontString name="$parentTimerText" parentKey="TimerText" text="23:59:59" justifyH="CENTER" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="28"/>
-													</FontHeight>
-													<Size x="174" y="30"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-12" />
-													</Anchors>
-													<Color r="0.94" g="0.60" b="0.40"/>
-												</FontString>
-												<FontString name="$parentTitleText" parentKey="TitleText" text="STORE_THE_23TH_OF_FEBRUARY_CAPS" justifyH="LEFT" font="Interface\CustomFonts\OpenSans-Bold.ttf">
-													<FontHeight>
-														<AbsValue val="12"/>
-													</FontHeight>
-													<Size x="164" y="12"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-52" />
-													</Anchors>
-													<Color r="0.97" g="0.86" b="0.80"/>
-												</FontString>
-												<FontString name="$parentNameText" parentKey="NameText" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-64" />
-													</Anchors>
-													<Color r="0.94" g="0.60" b="0.40"/>
-												</FontString>
-												<FontString name="$parentDescriptionText" parentKey="DescriptionText" justifyH="LEFT" justifyV="TOP" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="11"/>
-													</FontHeight>
-													<Size x="164" y="70"/>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-20" />
-													</Anchors>
-													<Color r="0.97" g="0.86" b="0.80"/>
-												</FontString>
-												<FontString name="$parentPriceLabel" parentKey="PriceLabel" text="STORE_COST" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="13"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-62" />
-													</Anchors>
-													<Color r="0.94" g="0.60" b="0.40"/>
-												</FontString>
-												<FontString name="$parentPrice" parentKey="Price" text="299" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="122" y="-62" />
-													</Anchors>
-													<Color r="1" g="0.9" b="0.9"/>
-												</FontString>
-												<Texture name="$parentBonusIcon" parentKey="BonusIcon" file="Interface\Store\coins">
-													<Size x="32" y="32"/>
-													<Anchors>
-														<Anchor point="LEFT" relativeTo="$parentPrice" relativePoint="RIGHT" x="0" y="0" />
-													</Anchors>
-												</Texture>
-											</Layer>
-										</Layers>
-									</Frame>
-									<PlayerModel parentKey="MountModel" enableMouse="false">
-										<Size x="462" y="219" />
-										<Anchors>
-											<Anchor point="RIGHT" x="0" y="14" />
-										</Anchors>
-										<Scripts>
-											<OnLoad>
-												self:SetRotation(0.68)
-											</OnLoad>
-											<OnShow>
-												self:SetCreature(131209)
-												self:SetLight(1, 0, -0.67399996519089, -0.42799997329712, 0.5200001001358, 1, 0.70196080207825, 0.70196080207825, 0.70196080207825, 1, 1, 1, 0.80000007152557)
-											</OnShow>
-										</Scripts>
-									</PlayerModel>
-									<Button name="$parentBuyButton" text="PURCHASE" parentKey="BuyButton" inherits="StoreGoldButtonTemplate">
-										<Size x="140" y="30"/>
-										<Anchors>
-											<Anchor point="BOTTOMLEFT" x="28" y="10" />
-										</Anchors>
-										<Scripts>
-											<OnClick>
-												StoreFrame_ProductBuy(self:GetParent():GetParent().data)
-											</OnClick>
-										</Scripts>
-									</Button>
-								</Frames>
-								<Scripts>
-									<OnShow>
-									</OnShow>
-									<OnHide>
-									</OnHide>
-								</Scripts>
-							</Frame>
-							<Frame name="$parentHeartGliderOffer" parentKey="HeartGliderOffer" hidden="true" setAllPoints="true">
-								<Frames>
-									<Frame name="$parentLeftPanel" parentKey="LeftPanel" setAllPoints="true">
-										<Layers>
-											<Layer level="OVERLAY">
-												<FontString name="$parentTimerText" parentKey="TimerText" text="23:59:59" justifyH="CENTER" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="28"/>
-													</FontHeight>
-													<Size x="174" y="30"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-12" />
-													</Anchors>
-													<Color r="1.0" g="0.30" b="0.30"/>
-												</FontString>
-												<FontString name="$parentTitleText" parentKey="TitleText" text="STORE_THE_23TH_OF_FEBRUARY_CAPS" justifyH="LEFT" font="Interface\CustomFonts\OpenSans-Bold.ttf">
-													<FontHeight>
-														<AbsValue val="12"/>
-													</FontHeight>
-													<Size x="164" y="12"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-52" />
-													</Anchors>
-													<Color r="0.97" g="0.86" b="0.80"/>
-												</FontString>
-												<FontString name="$parentNameText" parentKey="NameText" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-64" />
-													</Anchors>
-													<Color r="1.0" g="0.3" b="0.3"/>
-												</FontString>
-												<FontString name="$parentDescriptionText" parentKey="DescriptionText" justifyH="LEFT" justifyV="TOP" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="11"/>
-													</FontHeight>
-													<Size x="164" y="70"/>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-20" />
-													</Anchors>
-													<Color r="0.97" g="0.86" b="0.80"/>
-												</FontString>
-												<FontString name="$parentPriceLabel" parentKey="PriceLabel" text="STORE_COST" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="13"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-62" />
-													</Anchors>
-													<Color r="1.0" g="0.30" b="0.30"/>
-												</FontString>
-												<FontString name="$parentPrice" parentKey="Price" text="299" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="122" y="-62" />
-													</Anchors>
-													<Color r="1" g="0.9" b="0.9"/>
-												</FontString>
-												<Texture name="$parentBonusIcon" parentKey="BonusIcon" file="Interface\Store\coins">
-													<Size x="32" y="32"/>
-													<Anchors>
-														<Anchor point="LEFT" relativeTo="$parentPrice" relativePoint="RIGHT" x="0" y="0" />
-													</Anchors>
-												</Texture>
-											</Layer>
-										</Layers>
-									</Frame>
-									<PlayerModel parentKey="MountModel" enableMouse="false">
-										<Size x="432" y="529" />
-										<Anchors>
-											<Anchor point="RIGHT" x="60" y="-174" />
-										</Anchors>
-										<Scripts>
-											<OnLoad>
-												self:SetRotation(-0.68)
-											</OnLoad>
-											<OnShow>
-												self:SetCreature(131231)
-												self:SetLight(1, 0, -0.67399996519089, -0.42799997329712, 0.5200001001358, 1, 0.70196080207825, 0.70196080207825, 0.70196080207825, 1, 1, 1, 0.80000007152557)
-											</OnShow>
-										</Scripts>
-									</PlayerModel>
-								</Frames>
-								<Scripts>
-									<OnShow>
-									</OnShow>
-									<OnHide>
-									</OnHide>
-								</Scripts>
-							</Frame>
-							<Frame name="$parentDeathBreathOffer" parentKey="DeathBreathOffer" hidden="true" setAllPoints="true">
-								<Frames>
-									<Frame name="$parentLeftPanel" parentKey="LeftPanel">
-										<Anchors>
-											<Anchor point="TOPRIGHT" x="-380" y="-1" />
-											<Anchor point="BOTTOMLEFT" x="1" y="1" />
-										</Anchors>
-										<Layers>
-											<Layer level="BACKGROUND">
-												<Texture parentKey="Background">
-													<Color r="0" g="0" b="0" a="0.7"/>
-												</Texture>
-											</Layer>
-											<Layer level="OVERLAY">
-												<FontString name="$parentTimerText" parentKey="TimerText" text="23:59:59" justifyH="CENTER" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="28"/>
-													</FontHeight>
-													<Size x="174" y="30"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-12" />
-													</Anchors>
-													<Color r="0.71" g="0.84" b="0.65"/>
-												</FontString>
-												<FontString name="$parentTitleText" parentKey="TitleText" text="STORE_THE_23TH_OF_FEBRUARY_CAPS" justifyH="LEFT" font="Interface\CustomFonts\OpenSans-Bold.ttf">
-													<FontHeight>
-														<AbsValue val="12"/>
-													</FontHeight>
-													<Size x="164" y="12"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-52" />
-													</Anchors>
-													<Color r="1" g="1" b="1"/>
-												</FontString>
-												<FontString name="$parentNameText" parentKey="NameText" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-64" />
-													</Anchors>
-													<Color r="0.71" g="0.84" b="0.65"/>
-												</FontString>
-												<FontString name="$parentDescriptionText" parentKey="DescriptionText" justifyH="LEFT" justifyV="TOP" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="11"/>
-													</FontHeight>
-													<Size x="164" y="70"/>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-20" />
-													</Anchors>
-													<Color r="1" g="1" b="1"/>
-												</FontString>
-												<FontString name="$parentPriceLabel" parentKey="PriceLabel" text="STORE_COST" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="13"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-62" />
-													</Anchors>
-													<Color r="0.71" g="0.84" b="0.65"/>
-												</FontString>
-												<FontString name="$parentPrice" parentKey="Price" text="299" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="122" y="-62" />
-													</Anchors>
-													<Color r="1" g="1" b="1"/>
-												</FontString>
-												<Texture name="$parentBonusIcon" parentKey="BonusIcon" file="Interface\Store\coins">
-													<Size x="32" y="32"/>
-													<Anchors>
-														<Anchor point="LEFT" relativeTo="$parentPrice" relativePoint="RIGHT" x="0" y="0" />
-													</Anchors>
-												</Texture>
-											</Layer>
-										</Layers>
-									</Frame>
-									<PlayerModel parentKey="MountModel" enableMouse="false">
-										<Size x="202" y="299" />
-										<Anchors>
-											<Anchor point="RIGHT" x="-90" y="-10" />
-										</Anchors>
-										<Scripts>
-											<OnLoad>
-												self:SetRotation(-0.28)
-											</OnLoad>
-											<OnShow>
-												self:SetCreature(74539)
-												self:SetLight(1, 0, -0.67399996519089, -0.42799997329712, 0.5200001001358, 1, 0.70196080207825, 0.70196080207825, 0.70196080207825, 1, 1, 1, 0.80000007152557)
-											</OnShow>
-										</Scripts>
-									</PlayerModel>
-									<PlayerModel parentKey="PetModel" enableMouse="false">
-										<Size x="172" y="172" />
-										<Anchors>
-											<Anchor point="BOTTOMRIGHT" x="30" y="60" />
-										</Anchors>
-										<Scripts>
-											<OnLoad>
-												self:SetRotation(0.1)
-											</OnLoad>
-											<OnShow>
-												self:SetCreature(74383)
-											</OnShow>
-										</Scripts>
-									</PlayerModel>
-								</Frames>
-								<Scripts>
-									<OnShow>
-									</OnShow>
-									<OnHide>
-									</OnHide>
-								</Scripts>
-							</Frame>
-							<Frame name="$parentSirinOffer" parentKey="SirinOffer" hidden="true" setAllPoints="true">
-								<Frames>
-									<Frame name="$parentLeftPanel" parentKey="LeftPanel">
-										<Anchors>
-											<Anchor point="TOPRIGHT" x="-380" y="-1" />
-											<Anchor point="BOTTOMLEFT" x="1" y="1" />
-										</Anchors>
-										<Layers>
-											<Layer level="BACKGROUND">
-												<Texture parentKey="Background">
-													<Color r="0" g="0" b="0" a="0.7"/>
-												</Texture>
-											</Layer>
-											<Layer level="OVERLAY">
-												<FontString name="$parentTimerText" parentKey="TimerText" text="23:59:59" justifyH="CENTER" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="28"/>
-													</FontHeight>
-													<Size x="174" y="30"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-12" />
-													</Anchors>
-													<Color r="0.67" g="0.34" b="0.63"/>
-												</FontString>
-												<FontString name="$parentTitleText" parentKey="TitleText" text="STORE_THE_23TH_OF_FEBRUARY_CAPS" justifyH="LEFT" font="Interface\CustomFonts\OpenSans-Bold.ttf">
-													<FontHeight>
-														<AbsValue val="12"/>
-													</FontHeight>
-													<Size x="164" y="12"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-52" />
-													</Anchors>
-													<Color r="1" g="1" b="1"/>
-												</FontString>
-												<FontString name="$parentNameText" parentKey="NameText" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Size x="164" y="50"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-64" />
-													</Anchors>
-													<Color r="0.67" g="0.34" b="0.63"/>
-												</FontString>
-												<FontString name="$parentDescriptionText" parentKey="DescriptionText" justifyH="LEFT" justifyV="TOP" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="11"/>
-													</FontHeight>
-													<Size x="164" y="70"/>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-20" />
-													</Anchors>
-													<Color r="1" g="1" b="1"/>
-												</FontString>
-												<FontString name="$parentPriceLabel" parentKey="PriceLabel" text="STORE_COST" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="13"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-62" />
-													</Anchors>
-													<Color r="0.67" g="0.34" b="0.63"/>
-												</FontString>
-												<FontString name="$parentPrice" parentKey="Price" text="299" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="122" y="-62" />
-													</Anchors>
-													<Color r="1" g="1" b="1"/>
-												</FontString>
-												<Texture name="$parentBonusIcon" parentKey="BonusIcon" file="Interface\Store\coins">
-													<Size x="32" y="32"/>
-													<Anchors>
-														<Anchor point="LEFT" relativeTo="$parentPrice" relativePoint="RIGHT" x="0" y="0" />
-													</Anchors>
-												</Texture>
-											</Layer>
-										</Layers>
-									</Frame>
-									<PlayerModel parentKey="MountModel" enableMouse="false">
-										<Size x="382" y="229" />
-										<Anchors>
-											<Anchor point="RIGHT" x="0" y="-10" />
-										</Anchors>
-										<Scripts>
-											<OnLoad>
-												self:SetRotation(-0.28)
-											</OnLoad>
-											<OnShow>
-												self:SetCreature(131250)
-												self:SetLight(1, 0, -0.67399996519089, -0.42799997329712, 0.5200001001358, 1, 0.70196080207825, 0.70196080207825, 0.70196080207825, 1, 1, 1, 0.80000007152557)
-											</OnShow>
-										</Scripts>
-									</PlayerModel>
-								</Frames>
-								<Scripts>
-									<OnShow>
-									</OnShow>
-									<OnHide>
-									</OnHide>
-								</Scripts>
-							</Frame>
-                            <Frame name="$parentLeffelOffer" parentKey="LeffelOffer" hidden="true" setAllPoints="true">
-								<Frames>
-									<Frame name="$parentLeftPanel" parentKey="LeftPanel" setAllPoints="true">
-										<Layers>
-											<Layer level="OVERLAY">
-												<FontString name="$parentTimerText" parentKey="TimerText" text="23:59:59" justifyH="CENTER" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="28"/>
-													</FontHeight>
-													<Size x="164" y="30"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-12" />
-													</Anchors>
-													<Color r="1" g="0.9" b="0.9"/>
-												</FontString>
-												<FontString name="$parentTitleText" parentKey="TitleText" text="STORE_THE_23TH_OF_FEBRUARY_CAPS" justifyH="LEFT" font="Interface\CustomFonts\OpenSans-Bold.ttf">
-													<FontHeight>
-														<AbsValue val="12"/>
-													</FontHeight>
-													<Size x="164" y="12"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-52" />
-													</Anchors>
-													<Color r="1" g="0.2" b="0.2"/>
-												</FontString>
-												<FontString name="$parentNameText" parentKey="NameText" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-64" />
-													</Anchors>
-													<Color r="1" g="0.9" b="0.9"/>
-												</FontString>
-												<FontString name="$parentDescriptionText" parentKey="DescriptionText" justifyH="LEFT" justifyV="TOP" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="11"/>
-													</FontHeight>
-													<Size x="164" y="80"/>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-5" />
-													</Anchors>
-													<Color r="1" g="0.2" b="0.2"/>
-												</FontString>
-												<FontString name="$parentPriceLabel" parentKey="PriceLabel" text="STORE_COST" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="13"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-62" />
-													</Anchors>
-													<Color r="1" g="0.9" b="0.9"/>
-												</FontString>
-												<FontString name="$parentPrice" parentKey="Price" text="149" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="122" y="-62" />
-													</Anchors>
-													<Color r="1" g="0.9" b="0.9"/>
-												</FontString>
-												<Texture name="$parentBonusIcon" parentKey="BonusIcon" file="Interface\Store\coins">
-													<Size x="32" y="32"/>
-													<Anchors>
-														<Anchor point="LEFT" relativeTo="$parentPrice" relativePoint="RIGHT" x="0" y="0" />
-													</Anchors>
-												</Texture>
-											</Layer>
-										</Layers>
-									</Frame>
-									<PlayerModel parentKey="MountModel" enableMouse="false">
-										<Size x="380" y="380" />
-										<Anchors>
-											<Anchor point="RIGHT" x="-40" y="14" />
-										</Anchors>
-										<Scripts>
-											<OnLoad>
-												self.creatureID = 130893
-
-												self:SetRotation(-0.68)
-
-												self:SetPosition(1, 1, 1, 1)
-												self:SetCreature(self.creatureID)
-
-												self:SetPosition(0.049000, 0.945000, 0.561000, 0.000000)
-											</OnLoad>
-											<OnShow>
-												self:SetPosition(1, 1, 1, 1)
-												self:SetCreature(self.creatureID)
-
-												C_Timer:After(0.02, function()
-													self:SetPosition(0.049000, 0.945000, 0.561000, 0.000000)
-												end)
-
-												self:SetLight(1, 0, -0.67399996519089, -0.42799997329712, 0.5200001001358, 1, 0.70196080207825, 0.70196080207825, 0.70196080207825, 1, 1, 1, 0.80000007152557)
-											</OnShow>
-										</Scripts>
-									</PlayerModel>
-									<Button name="$parentBuyButton" text="PURCHASE" parentKey="BuyButton" inherits="StoreGoldButtonTemplate">
-										<Size x="140" y="30"/>
-										<Anchors>
-											<Anchor point="BOTTOMLEFT" x="28" y="10" />
-										</Anchors>
-										<Scripts>
-											<OnClick>
-												StoreFrame_ProductBuy(self:GetParent():GetParent().data)
-											</OnClick>
-										</Scripts>
-									</Button>
-								</Frames>
-								<Scripts>
-									<OnShow>
-									</OnShow>
-									<OnHide>
-									</OnHide>
-								</Scripts>
-							</Frame>
-							<Frame name="$parentFoxyPinkOffer" parentKey="FoxyPinkOffer" hidden="true" setAllPoints="true">
-								<Frames>
-									<Frame name="$parentLeftPanel" parentKey="LeftPanel" setAllPoints="true">
-										<Layers>
-											<Layer level="OVERLAY">
-												<FontString name="$parentTimerText" parentKey="TimerText" text="23:59:59" justifyH="CENTER" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="28"/>
-													</FontHeight>
-													<Size x="164" y="30"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-12" />
-													</Anchors>
-													<Color r="0.92" g="0.90" b="1"/>
-												</FontString>
-												<FontString name="$parentTitleText" parentKey="TitleText" text="STORE_THE_23TH_OF_FEBRUARY_CAPS" justifyH="LEFT" font="Interface\CustomFonts\OpenSans-Bold.ttf">
-													<FontHeight>
-														<AbsValue val="12"/>
-													</FontHeight>
-													<Size x="164" y="12"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-52" />
-													</Anchors>
-													<Color r="0.99" g="0.2" b="0.68"/>
-												</FontString>
-												<FontString name="$parentNameText" parentKey="NameText" text="БРУТАЛЬНОСТЬ" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-64" />
-													</Anchors>
-													<Color r="0.92" g="0.90" b="1"/>
-												</FontString>
-												<FontString name="$parentDescriptionText" parentKey="DescriptionText" text="Покажи всем насколько ты суров. Оседлай эту колесницу смерти. Или подари своему другу!" justifyH="LEFT" justifyV="TOP" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="11"/>
-													</FontHeight>
-													<Size x="164" y="70"/>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-20" />
-													</Anchors>
-													<Color r="0.99" g="0.2" b="0.68"/>
-												</FontString>
-												<FontString name="$parentPriceLabel" parentKey="PriceLabel" text="STORE_COST" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="13"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-62" />
-													</Anchors>
-													<Color r="0.92" g="0.90" b="1"/>
-												</FontString>
-												<FontString name="$parentPrice" parentKey="Price" text="299" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="122" y="-62" />
-													</Anchors>
-													<Color r="0.92" g="0.90" b="1"/>
-												</FontString>
-												<Texture name="$parentBonusIcon" parentKey="BonusIcon" file="Interface\Store\coins">
-													<Size x="32" y="32"/>
-													<Anchors>
-														<Anchor point="LEFT" relativeTo="$parentPrice" relativePoint="RIGHT" x="0" y="0" />
-													</Anchors>
-												</Texture>
-											</Layer>
-										</Layers>
-									</Frame>
-									<PlayerModel parentKey="MountModel" enableMouse="false">
-										<Size x="382" y="389" />
-										<Anchors>
-											<Anchor point="RIGHT" x="60" y="-10" />
-										</Anchors>
-										<Scripts>
-											<OnLoad>
-												self:SetRotation(-0.68)
-											</OnLoad>
-											<OnShow>
-												self:SetCreature(130521)
-												self:SetLight(1, 0, -0.66299998760223, 0.82700008153915, -0.41699996590614, 1, 0.70196080207825, 0.70196080207825, 0.70196080207825, 1, 1, 1, 0.80000007152557)
-											</OnShow>
-										</Scripts>
-									</PlayerModel>
-									<Button name="$parentBuyButton" text="PURCHASE" parentKey="BuyButton" inherits="StoreGoldButtonTemplate">
-										<Size x="140" y="30"/>
-										<Anchors>
-											<Anchor point="BOTTOMLEFT" x="28" y="10" />
-										</Anchors>
-										<Scripts>
-											<OnClick>
-												StoreFrame_ProductBuy(self:GetParent():GetParent().data)
-											</OnClick>
-										</Scripts>
-									</Button>
-								</Frames>
-							</Frame>
-							<Frame name="$parentFlyRatOffer" parentKey="FlyRatOffer" hidden="true" setAllPoints="true">
-								<Frames>
-									<Frame name="$parentLeftPanel" parentKey="LeftPanel" setAllPoints="true">
-										<Layers>
-											<Layer level="OVERLAY">
-												<FontString name="$parentTimerText" parentKey="TimerText" text="23:59:59" justifyH="CENTER" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="28"/>
-													</FontHeight>
-													<Size x="164" y="30"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-12" />
-													</Anchors>
-													<Color r="1" g="0.89" b="0.88"/>
-												</FontString>
-												<FontString name="$parentTitleText" parentKey="TitleText" text="STORE_THE_23TH_OF_FEBRUARY_CAPS" justifyH="LEFT" font="Interface\CustomFonts\OpenSans-Bold.ttf">
-													<FontHeight>
-														<AbsValue val="12"/>
-													</FontHeight>
-													<Size x="164" y="12"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-52" />
-													</Anchors>
-													<Color r="1" g="0.2" b="0.2"/>
-												</FontString>
-												<FontString name="$parentNameText" parentKey="NameText" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-64" />
-													</Anchors>
-													<Color r="1" g="0.89" b="0.88"/>
-												</FontString>
-												<FontString name="$parentDescriptionText" parentKey="DescriptionText" justifyH="LEFT" justifyV="TOP" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="11"/>
-													</FontHeight>
-													<Size x="164" y="70"/>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-20" />
-													</Anchors>
-													<Color r="1" g="0.2" b="0.2"/>
-												</FontString>
-												<FontString name="$parentPriceLabel" parentKey="PriceLabel" text="STORE_COST" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="13"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-62" />
-													</Anchors>
-													<Color r="1" g="0.89" b="0.88"/>
-												</FontString>
-												<FontString name="$parentPrice" parentKey="Price" text="299" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="122" y="-62" />
-													</Anchors>
-													<Color r="1" g="0.89" b="0.88"/>
-												</FontString>
-												<Texture name="$parentBonusIcon" parentKey="BonusIcon" file="Interface\Store\coins">
-													<Size x="32" y="32"/>
-													<Anchors>
-														<Anchor point="LEFT" relativeTo="$parentPrice" relativePoint="RIGHT" x="0" y="0" />
-													</Anchors>
-												</Texture>
-											</Layer>
-										</Layers>
-									</Frame>
-									<PlayerModel parentKey="MountModel">
-										<Size x="322" y="322" />
-										<Anchors>
-											<Anchor point="CENTER" x="100" y="6" />
-										</Anchors>
-										<Scripts>
-											<OnLoad>
-												self:SetRotation(-0.68)
-											</OnLoad>
-											<OnShow>
-												self:SetCreature(200041)
-												self:SetLight(1, 0, -0.67399996519089, -0.42799997329712, 0.5200001001358, 1, 0.70196080207825, 0.70196080207825, 0.70196080207825, 1, 1, 1, 0.80000007152557)
-											</OnShow>
-										</Scripts>
-									</PlayerModel>
-									<Button name="$parentBuyButton" text="PURCHASE" parentKey="BuyButton" inherits="StoreGoldButtonTemplate">
-										<Size x="140" y="30"/>
-										<Anchors>
-											<Anchor point="BOTTOMLEFT" x="28" y="10" />
-										</Anchors>
-										<Scripts>
-											<OnClick>
-												StoreFrame_ProductBuy(self:GetParent():GetParent().data)
-											</OnClick>
-										</Scripts>
-									</Button>
-								</Frames>
-								<Scripts>
-									<OnShow>
-									</OnShow>
-									<OnHide>
-									</OnHide>
-								</Scripts>
-							</Frame>
-							<Frame name="$parentRainbowSteedOffer" parentKey="RainbowSteedOffer" hidden="true">
-								<Anchors>
-									<Anchor point="TOPRIGHT" x="-380" y="-1" />
-									<Anchor point="BOTTOMLEFT" x="1" y="1" />
-								</Anchors>
-								<Layers>
-									<Layer level="BACKGROUND">
-										<Texture parentKey="Background">
-											<Color r="0" g="0" b="0" a="0.7"/>
-										</Texture>
-									</Layer>
-								</Layers>
-								<Frames>
-									<Frame name="$parentLeftPanel" parentKey="LeftPanel" setAllPoints="true">
-										<Layers>
-											<Layer level="OVERLAY">
-												<FontString name="$parentTimerLabel" parentKey="TimerLabel" inherits="GameFontNormal" text="STORE_TO_END">
-													<Size x="184" y="10"/>
-													<Anchors>
-														<Anchor point="TOP" x="0" y="-4" />
-													</Anchors>
-													<Color r="1" g="1" b="1"/>
-												</FontString>
-												<FontString name="$parentTimerText" parentKey="TimerText" inherits="GameFontNormalHuge">
-													<Size x="184" y="20"/>
-													<Anchors>
-														<Anchor point="TOP" relativeTo="$parentTimerLabel" relativePoint="BOTTOM" x="0" y="-2" />
-													</Anchors>
-													<Color r="1" g="1" b="1"/>
-												</FontString>
-												<FontString name="$parentTitleText" parentKey="TitleText" font="QuestFont_Large" justifyH="LEFT" justifyV="TOP">
-													<Size x="184" y="20"/>
-													<Anchors>
-														<Anchor point="TOP" relativeTo="$parentTimerText" relativePoint="BOTTOM" x="0" y="-8" />
-													</Anchors>
-													<Color r="1.0" g="0.9294" b="0.7607"/>
-												</FontString>
-												<FontString name="$parentNameText" parentKey="NameText" font="SystemFont_Shadow_Huge5" maxLines="2" justifyH="LEFT" justifyV="TOP">
-													<Size x="184" y="50"/>
-													<Anchors>
-														<Anchor point="TOP" relativeTo="$parentTitleText" relativePoint="BOTTOM" x="0" y="-2" />
-													</Anchors>
-													<Color r="1" g="1" b="1"/>
-												</FontString>
-												<FontString name="$parentDescriptionText" parentKey="DescriptionText" font="AchievementDescriptionFont" justifyH="LEFT" justifyV="TOP">
-													<Size x="178" y="90"/>
-													<Anchors>
-														<Anchor point="TOP" relativeTo="$parentNameText" relativePoint="BOTTOM" x="3" y="-4" />
-													</Anchors>
-													<Color r="1.0" g="0.9294" b="0.7607"/>
-												</FontString>
-												<FontString name="$parentPriceLabel" parentKey="PriceLabel" text="STORE_COST" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<FontHeight>
-														<AbsValue val="13"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-62" />
-													</Anchors>
-													<Color r="1" g="0.9" b="0.9"/>
-												</FontString>
-												<FontString name="$parentPrice" parentKey="Price" text="299" font="Interface\CustomFonts\futurademic.ttf">
-													<FontHeight>
-														<AbsValue val="18"/>
-													</FontHeight>
-													<Anchors>
-														<Anchor point="LEFT" x="122" y="-62" />
-													</Anchors>
-													<Color r="1" g="0.9" b="0.9"/>
-												</FontString>
-												<Texture name="$parentBonusIcon" parentKey="BonusIcon" file="Interface\Store\coins">
-													<Size x="32" y="32"/>
-													<Anchors>
-														<Anchor point="LEFT" relativeTo="$parentPrice" relativePoint="RIGHT" x="0" y="0" />
-													</Anchors>
-												</Texture>
-											</Layer>
-										</Layers>
-									</Frame>
-									<Button name="$parentBuyButton" text="PURCHASE" parentKey="BuyButton" inherits="StoreGoldButtonTemplate">
-										<Size x="140" y="30"/>
-										<Anchors>
-											<Anchor point="BOTTOMLEFT" x="28" y="10" />
-										</Anchors>
-										<Scripts>
-											<OnClick>
-												StoreFrame_ProductBuy(self:GetParent():GetParent().data)
-											</OnClick>
-										</Scripts>
-									</Button>
-								</Frames>
-								<Scripts>
-									<OnShow>
-									</OnShow>
-									<OnHide>
-									</OnHide>
-								</Scripts>
-							</Frame>
-							<Frame name="$parentVenLoOffer" parentKey="VenLoOffer" hidden="true" setAllPoints="true">
-								<Frames>
-									<Frame name="$parentLeftPanel" parentKey="LeftPanel">
-										<Anchors>
-											<Anchor point="TOPRIGHT" x="-380" y="-1" />
-											<Anchor point="BOTTOMLEFT" x="1" y="1" />
-										</Anchors>
-										<Layers>
-											<Layer level="BACKGROUND">
-												<Texture parentKey="Background">
-													<Color r="0" g="0" b="0" a="0.7"/>
-												</Texture>
-											</Layer>
-											<Layer level="OVERLAY">
-												<FontString name="$parentTimerText" parentKey="TimerText" text="23:59:59" justifyH="CENTER" font="Interface\CustomFonts\futurademic.ttf">
-													<Size x="174" y="30"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-12" />
-													</Anchors>
-													<FontHeight val="28"/>
-													<Color r="0.67" g="0.34" b="0.63"/>
-												</FontString>
-												<FontString name="$parentTitleText" parentKey="TitleText" text="STORE_THE_23TH_OF_FEBRUARY_CAPS" justifyH="LEFT" font="Interface\CustomFonts\OpenSans-Bold.ttf">
-													<Size x="164" y="12"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-52" />
-													</Anchors>
-													<FontHeight val="12"/>
-													<Color r="1" g="1" b="1"/>
-												</FontString>
-												<FontString name="$parentNameText" parentKey="NameText" font="Interface\CustomFonts\futurademic.ttf">
-													<Size x="164" y="50"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" x="18" y="-64" />
-													</Anchors>
-													<FontHeight val="18"/>
-													<Color r="0.67" g="0.34" b="0.63"/>
-												</FontString>
-												<FontString name="$parentDescriptionText" parentKey="DescriptionText" justifyH="LEFT" justifyV="TOP" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<Size x="164" y="70"/>
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-20" />
-													</Anchors>
-													<FontHeight val="11"/>
-													<Color r="1" g="1" b="1"/>
-												</FontString>
-												<FontString name="$parentPriceLabel" parentKey="PriceLabel" text="STORE_COST" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-													<Anchors>
-														<Anchor point="LEFT" x="16" y="-62" />
-													</Anchors>
-													<FontHeight val="13"/>
-													<Color r="0.67" g="0.34" b="0.63"/>
-												</FontString>
-												<FontString name="$parentPrice" parentKey="Price" text="299" font="Interface\CustomFonts\futurademic.ttf">
-													<Anchors>
-														<Anchor point="LEFT" x="122" y="-62" />
-													</Anchors>
-													<FontHeight val="18"/>
-													<Color r="1" g="1" b="1"/>
-												</FontString>
-												<Texture name="$parentBonusIcon" parentKey="BonusIcon" file="Interface\Store\coins">
-													<Size x="32" y="32"/>
-													<Anchors>
-														<Anchor point="LEFT" relativeTo="$parentPrice" relativePoint="RIGHT" x="0" y="0" />
-													</Anchors>
-												</Texture>
-											</Layer>
-										</Layers>
-									</Frame>
-									<PlayerModel parentKey="MountModel" enableMouse="false">
-										<Size x="379" y="250"/>
-										<Anchors>
-											<Anchor point="TOPRIGHT" x="-1" y="-1"/>
-										</Anchors>
-										<Scripts>
-											<OnLoad>
-												self:SetRotation(-0.6457718232379)
-											</OnLoad>
-											<OnShow>
-												self:SetCreature(131261)
-												self:SetModelScale(0.5)
-												self:SetLight(1, 0, -0.67399996519089, -0.42799997329712, 0.5200001001358, 1, 0.70196080207825, 0.70196080207825, 0.70196080207825, 1, 1, 1, 0.80000007152557)
-											</OnShow>
-										</Scripts>
-									</PlayerModel>
-								</Frames>
-								<Scripts>
-									<OnShow>
-									</OnShow>
-									<OnHide>
-									</OnHide>
-								</Scripts>
-							</Frame>
 							<Frame name="$parentNavigationBar" parentKey="NavigationBar" setAllPoints="true">
 								<Layers>
 									<Layer level="OVERLAY">
@@ -4376,7 +3220,7 @@
 									</Layer>
 								</Layers>
 								<Frames>
-									<Button name="$parentPrevPageButton" parentKey="PrevPageButton">
+									<Button name="$parentPrevPageButton" parentKey="PrevPageButton" motionScriptsWhileDisabled="true">
 										<Size>
 											<AbsDimension x="32" y="32"/>
 										</Size>
@@ -4385,13 +3229,15 @@
 										</Anchors>
 										<Scripts>
 											<OnClick function="StoreSpecialOfferBannerPrevPageButton_OnClick"/>
+											<OnEnter function="StoreSpecialOfferBannerNextPrevPageButton_OnEnter"/>
+											<OnLeave function="StoreSpecialOfferBannerNextPrevPageButton_OnLeave"/>
 										</Scripts>
 										<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Up"/>
 										<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Down"/>
 										<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Disabled"/>
 										<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
 									</Button>
-									<Button name="$parentNextPageButton" parentKey="NextPageButton">
+									<Button name="$parentNextPageButton" parentKey="NextPageButton" motionScriptsWhileDisabled="true">
 										<Size>
 											<AbsDimension x="32" y="32"/>
 										</Size>
@@ -4400,6 +3246,8 @@
 										</Anchors>
 										<Scripts>
 											<OnClick function="StoreSpecialOfferBannerNextPageButton_OnClick"/>
+											<OnEnter function="StoreSpecialOfferBannerNextPrevPageButton_OnEnter"/>
+											<OnLeave function="StoreSpecialOfferBannerNextPrevPageButton_OnLeave"/>
 										</Scripts>
 										<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Up"/>
 										<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Down"/>
@@ -4408,6 +3256,19 @@
 									</Button>
 								</Frames>
 							</Frame>
+
+							<Frame name="$parentFoxyOffer" parentKey="FoxyOffer" inherits="StoreOfferTemplate" id="33"/>
+							<Frame name="$parentFoxyPinkOffer" parentKey="FoxyPinkOffer" inherits="StoreOfferTemplate" id="35"/>
+							<Frame name="$parentFlyRatOffer" parentKey="FlyRatOffer" inherits="StoreOfferTemplate" id="36"/>
+							<Frame name="$parentRainbowSteedOffer" parentKey="RainbowSteedOffer" inherits="StoreOfferTemplate" id="42"/>
+							<Frame name="$parentMeatOffer" parentKey="MeatOffer" inherits="StoreOfferTemplate" id="47"/>
+							<Frame name="$parentLeffelOffer" parentKey="LeffelOffer" inherits="StoreOfferTemplate" id="48"/>
+							<Frame name="$parentHandOfSufferOffer" parentKey="HandOfSufferOffer" inherits="StoreOfferTemplate" id="53"/>
+							<Frame name="$parentMurMurOffer" parentKey="MurMurOffer" inherits="StoreOfferTemplate" id="54"/>
+							<Frame name="$parentHeartGliderOffer" parentKey="HeartGliderOffer" inherits="StoreOfferTemplate" id="55"/>
+							<Frame name="$parentDeathBreathOffer" parentKey="DeathBreathOffer" inherits="StoreOfferTemplate" id="56"/>
+							<Frame name="$parentSirinOffer" parentKey="SirinOffer" inherits="StoreOfferTemplate" id="57"/>
+							<Frame name="$parentVenLoOffer" parentKey="VenLoOffer" inherits="StoreOfferTemplate" id="58"/>
 						</Frames>
 						<Scripts>
 							<OnLoad function="StoreSpecialOfferBanner_OnLoad"/>
@@ -4576,13 +3437,13 @@
 			<OnHide function="StoreItemCardFrame_OnHide"/>
 		</Scripts>
 	</Frame>
-	<Frame name="StoreModelPreviewFrame" movable="true" dontSavePosition="true" frameStrata="FULLSCREEN_DIALOG" topLevel="true" inherits="ButtonFrameTemplate" parent="StoreFrame" enableMouse="true" clampedToScreen="true" hidden="true">
+	<Frame name="StoreModelPreviewFrame" movable="true" dontSavePosition="true" frameStrata="FULLSCREEN_DIALOG" toplevel="true" inherits="ButtonFrameTemplate" parent="StoreFrame" enableMouse="true" clampedToScreen="true" hidden="true">
 		<Size x="415" y="565"/>
 		<Anchors>
 			<Anchor point="CENTER" relativePoint="CENTER" x="0" y="40"/>
 		</Anchors>
 		<Frames>
-			<Frame parentKey="Display" topLevel="true">
+			<Frame parentKey="Display" toplevel="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentInset" relativePoint="TOPLEFT" x="3" y="-3"/>
 					<Anchor point="BOTTOMRIGHT" relativeTo="$parentInset" relativePoint="BOTTOMRIGHT" x="-3" y="3"/>
@@ -4676,7 +3537,7 @@
 					</PlayerModel>
 				</Frames>
 			</Frame>
-			<Button name="$parentCloseButton" inherits="MagicButtonTemplate" parentKey="CloseButton" text="CLOSE">
+			<Button name="$parentCloseButton2" inherits="MagicButtonTemplate" parentKey="CloseButton2" text="CLOSE">
 				<Size x="80" y="22"/>
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
@@ -4720,7 +3581,7 @@
 			</OnDragStop>
 		</Scripts>
 	</Frame>
-	<Frame name="StoreConfirmationFrame" frameStrata="FULLSCREEN_DIALOG" topLevel="true" inherits="GoldBorderFrameTemplate" parent="StoreFrame" enableMouse="true" hidden="true">
+	<Frame name="StoreConfirmationFrame" frameStrata="FULLSCREEN_DIALOG" toplevel="true" inherits="GoldBorderFrameTemplate" parent="StoreFrame" enableMouse="true" hidden="true">
 		<Size x="403" y="396"/>
 		<Anchors>
 			<Anchor point="CENTER" x="0" y="15"/>
@@ -5135,7 +3996,7 @@
 			<OnHide function="StoreConfirmationFrame_OnHide"/>
 		</Scripts>
 	</Frame>
-	<Frame name="StoreErrorFrame" frameStrata="FULLSCREEN_DIALOG" topLevel="true" parent="StoreFrame" inherits="GoldBorderFrameTemplate" enableMouse="true" hidden="true">
+	<Frame name="StoreErrorFrame" frameStrata="FULLSCREEN_DIALOG" toplevel="true" parent="StoreFrame" inherits="GoldBorderFrameTemplate" enableMouse="true" hidden="true">
 		<Size x="320" y="250" />
 		<Anchors>
 			<Anchor point="CENTER" x="0" y="0" />
@@ -5222,18 +4083,18 @@
 				<Texture parentKey="Icon">
 					<Size x="44" y="44"/>
 					<Anchors>
-						<Anchor point="LEFT" relativeKey="$parent" relativePoint="LEFT" x="21" y="0"/>
+						<Anchor point="LEFT" x="21" y="0"/>
 					</Anchors>
 				</Texture>
 				<FontString parentKey="Title" inherits="GameFontNormalLarge" text="Title" justifyV="MIDDLE">
 					<Size x="200" y="24"/>
 					<Anchors>
-						<Anchor point="TOP" relativeKey="$parent" relativePoint="TOP" x="30" y="-15"/>
+						<Anchor point="TOP" x="30" y="-15"/>
 					</Anchors>
 				</FontString>
 				<FontString parentKey="Description" inherits="GameFontHighlight" text="STPRE_YOUR_REWARD_DELIVERED_LABEL">
 					<Anchors>
-						<Anchor point="BOTTOM" relativeKey="$parent" relativePoint="BOTTOM" x="30" y="23"/>
+						<Anchor point="BOTTOM" x="30" y="23"/>
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -5318,7 +4179,7 @@
 			</Layer>
 		</Layers>
 	</Frame>
-	<Frame name="SpecialOfferInfoFrame" frameStrata="FULLSCREEN_DIALOG" topLevel="true" inherits="GoldBorderFrameTemplate" parent="UIParent" enableMouse="true" hidden="true">
+	<Frame name="SpecialOfferInfoFrame" frameStrata="FULLSCREEN_DIALOG" toplevel="true" inherits="GoldBorderFrameTemplate" parent="UIParent" enableMouse="true" hidden="true">
 		<Size x="578" y="354"/>
 		<Anchors>
 			<Anchor point="CENTER" x="0" y="0" />
@@ -5540,7 +4401,7 @@
 			</Frame>
 		</Frames>
 	</Frame>
-	<Frame name="SpecialOfferDetailsInfoFrame" frameStrata="FULLSCREEN_DIALOG" topLevel="true" inherits="GoldBorderFrameTemplate" parent="StoreFrame" enableMouse="true" hidden="true">
+	<Frame name="SpecialOfferDetailsInfoFrame" frameStrata="FULLSCREEN_DIALOG" toplevel="true" inherits="GoldBorderFrameTemplate" parent="StoreFrame" enableMouse="true" hidden="true">
 		<Size x="490" y="520"/>
 		<Anchors>
 			<Anchor point="CENTER" x="0" y="0" />
@@ -5681,7 +4542,7 @@
 			</Button>
 		</Frames>
 	</Frame>
-	<Frame name="StoreBuyPremiumFrame" frameStrata="FULLSCREEN_DIALOG" topLevel="true" inherits="GoldBorderFrameTemplate" parent="StoreFrame" enableMouse="true" hidden="true">
+	<Frame name="StoreBuyPremiumFrame" frameStrata="FULLSCREEN_DIALOG" toplevel="true" inherits="GoldBorderFrameTemplate" parent="StoreFrame" enableMouse="true" hidden="true">
 		<Size x="403" y="460"/>
 		<Anchors>
 			<Anchor point="CENTER" x="0" y="0" />
@@ -5862,7 +4723,7 @@
 							</Anchors>
 							<Color r="0" g="0" b="0"/>
 						</FontString>
-						<FontString name="$parentInfoText" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER" parentKey="infotext">
+						<FontString name="$parentInfoText" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE" parentKey="infotext">
 							<Size x="424" y="76"/>
 							<Anchors>
 								<Anchor point="TOP" x="0" y="-42"/>
@@ -5897,7 +4758,7 @@
 							</Anchors>
 							<TexCoords left="0.00390625" right="0.8203125" top="0.00390625" bottom="0.609375"/>
 						</Texture>
-						<FontString name="$parentAlertText" inherits="GameFontNormalLarge" justifyH="CENTER" justifyV="CENTER" hidden="true" parentKey="AlertText" text="STORE_EXTRA_SUBSCRIBE_PROLONG_LABEL">
+						<FontString name="$parentAlertText" inherits="GameFontNormalLarge" justifyH="CENTER" justifyV="MIDDLE" hidden="true" parentKey="AlertText" text="STORE_EXTRA_SUBSCRIBE_PROLONG_LABEL">
 							<Size x="300" y="60"/>
 							<Anchors>
 								<Anchor point="BOTTOM" x="0" y="40" />
@@ -6227,13 +5088,13 @@
 			</Button>
 		</Frames>
 	</Frame>
-	<Frame name="StoreDressUPFrame" movable="true" clampedToScreen="true" dontSavePosition="true" frameStrata="FULLSCREEN_DIALOG" topLevel="true" inherits="ButtonFrameTemplate" parent="StoreFrame" enableMouse="true" hidden="true">
+	<Frame name="StoreDressUPFrame" movable="true" clampedToScreen="true" dontSavePosition="true" frameStrata="FULLSCREEN_DIALOG" toplevel="true" inherits="ButtonFrameTemplate" parent="StoreFrame" enableMouse="true" hidden="true">
 		<Size x="415" y="565"/>
 		<Anchors>
 			<Anchor point="CENTER" relativePoint="CENTER" x="0" y="40"/>
 		</Anchors>
 		<Frames>
-			<Frame parentKey="Display" topLevel="true">
+			<Frame parentKey="Display" toplevel="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentInset" relativePoint="TOPLEFT" x="3" y="-3"/>
 					<Anchor point="BOTTOMRIGHT" relativeTo="$parentInset" relativePoint="BOTTOMRIGHT" x="-3" y="3"/>
@@ -6294,7 +5155,7 @@
 			</OnDragStop>
 		</Scripts>
 	</Frame>
-	<Frame name="StoreSpecialOfferDetailFrame" parent="UIParent" topLevel="true" enableMouse="true" frameStrata="FULLSCREEN_DIALOG" inherits="GoldBorderFrameTemplate" hidden="true">
+	<Frame name="StoreSpecialOfferDetailFrame" parent="UIParent" toplevel="true" enableMouse="true" frameStrata="FULLSCREEN_DIALOG" inherits="GoldBorderFrameTemplate" hidden="true">
 		<Size x="400" y="600"/>
 		<Anchors>
 			<Anchor point="CENTER" x="0" y="0" />
@@ -6484,7 +5345,7 @@
 					</Layer>
 				</Layers>
 			</Frame>
-			<Frame name="$parentRoleFrame" parentKey="Role" topLevel="true">
+			<Frame name="$parentRoleFrame" parentKey="Role" toplevel="true">
 				<Size x="300" y="72"/>
 				<Anchors>
 					<Anchor point="BOTTOM" relativeTo="$parentNoItemsFrame" relativePoint="TOP" x="0" y="13" /> <!-- 132 -->
@@ -6514,7 +5375,7 @@
 			<OnHide function="StoreSpecialOfferDetailFrame_OnHide"/>
 		</Scripts>
 	</Frame>
-	<Frame name="SpecialOfferFullScreenBanner" topLevel="true" frameStrata="FULLSCREEN_DIALOG" enableMouse="true" hidden="true">
+	<Frame name="SpecialOfferFullScreenBanner" toplevel="true" frameStrata="FULLSCREEN_DIALOG" enableMouse="true" hidden="true">
 		<Size y="160"/>
 		<Anchors>
 			<Anchor point="RIGHT" x="0" y="0" />
@@ -6857,7 +5718,7 @@
 								<Texture parentKey="Icon" file="Interface\ChatFrame\ChatFrameExpandArrow">
 									<Size x="10" y="12"/>
 									<Anchors>
-										<Anchor point="RIGHT" relativeKey="$parent.Right" relativePoint="RIGHT" x="-5"/>
+										<Anchor point="RIGHT" relativeTo="$parentMiddleRight" relativePoint="RIGHT" x="-5"/>
 									</Anchors>
 								</Texture>
 							</Layer>
@@ -7082,7 +5943,7 @@
 										</HitRectInsets>
 										<Layers>
 											<Layer level="ARTWORK">
-												<FontString name="$parentText" inherits="GameFontNormalSmall" text="Отображать плечи">
+												<FontString name="$parentText" inherits="GameFontNormalSmall" text="SHOW_SHOULDERS">
 													<Anchors>
 														<Anchor point="LEFT" relativePoint="RIGHT" x="0" y="1"/>
 													</Anchors>
@@ -7436,12 +6297,12 @@
                         <Anchor point="CENTER" x="0" y="0" />
                     </Anchors>
                 </Texture>
-                <FontString parentKey="Title" inherits="GameFontNormalLarge" text="Обновление">
+                <FontString parentKey="Title" inherits="GameFontNormalLarge" text="STORE_UPDATE_TITLE">
                     <Anchors>
                         <Anchor point="BOTTOM" relativeTo="$parentLine" relativePoint="TOP" x="0" y="6" />
                     </Anchors>
                 </FontString>
-                <FontString parentKey="Description" inherits="GameFontBlackMedium" justifyV="TOP" text="Спасибо, что обновились до последней версии. Это обновление было большего размера, чем обычно, но оно очень необходимо для дальнейшего развития нашего проекта. В качестве компенсации вы получаете три дня поставок.">
+                <FontString parentKey="Description" inherits="GameFontBlackMedium" justifyV="TOP" text="STORE_REPACK_PROMO_DESC">
                     <Size x="350" y="0" />
                     <Anchors>
                         <Anchor point="TOP" relativeTo="$parentLine" relativePoint="BOTTOM" x="0" y="-6" />
@@ -7456,7 +6317,7 @@
             </OnLoad>
         </Scripts>
         <Frames>
-            <Button name="$parentAcceptButton" parentKey="AcceptButton" text="Получить поставки" inherits="UIPanelButtonTemplate">
+            <Button name="$parentAcceptButton" parentKey="AcceptButton" text="STORE_GET_SUPPLIES" inherits="UIPanelButtonTemplate">
                 <Size x="120" y="22" />
                 <Anchors>
                     <Anchor point="BOTTOM" x="0" y="20" />

@@ -1412,7 +1412,7 @@
 									<Frame name="$parentTextLabelFrame" parentKey="TextLabelFrame" hidden="true" setAllPoints="true">
 										<Layers>
 											<Layer level="OVERLAY">
-												<FontString name="$paretText" parentKey="Text" inherits="GameFontHighlight" text="PVP_LADDER_SEARCH_NOT_RESULT">
+												<FontString name="$parentText" parentKey="Text" inherits="GameFontHighlight" text="PVP_LADDER_SEARCH_NOT_RESULT">
 													<Size x="270" y="160"/>
 													<Anchors>
 														<Anchor point="CENTER" x="0" y="0" />

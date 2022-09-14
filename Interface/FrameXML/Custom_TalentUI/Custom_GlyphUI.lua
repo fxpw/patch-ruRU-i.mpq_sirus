@@ -233,11 +233,11 @@ end
 function GlyphFrameGlyph_OnUpdate (self, elapsed)
 	local id = self:GetID();
 	if GlyphMatchesSocket(id) then
-		self.highlight:SetAlpha(0.5);
+		self.highlight:SetAlpha(1);
 		self.highlight.glow:Play();
 	else
-		self.highlight:SetAlpha(0.0);
 		self.highlight.glow:Stop();
+		self.highlight:SetAlpha(0);
 	end
 
 	if self.hasCursor and SpellIsTargeting() then
@@ -315,6 +315,8 @@ end
 
 
 function GlyphFrame_OnShow (self)
+	SetParentFrameLevel(self, 2)
+	SetParentFrameLevel(self.sparkleFrame, 2)
 	GlyphFrame_Update();
 end
 

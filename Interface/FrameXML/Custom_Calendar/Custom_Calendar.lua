@@ -39,7 +39,7 @@ StaticPopupDialogs["CALENDAR_ERROR"] = {
 
 -- UIParent integration
 tinsert(UIMenus, "CalendarContextMenu");
-UIPanelWindows["CalendarFrame"] = { area = "doublewide", pushable = 0, width = 840,	whileDead = 1, yOffset = 20, xOffset = 10 };
+UIPanelWindows["CalendarFrame"] = { area = "doublewide", pushable = 0,	whileDead = 1, xOffset = 11, yOffset = 7 };
 
 -- CalendarMenus is an ORDERED table of frames, one of which will close when you press Escape.
 local CalendarMenus = {
@@ -1160,6 +1160,18 @@ function CalendarFrame_OnHide(self)
 	PlaySound("igSpellBookClose");
 end
 
+function CalendarFrame_OnMouseWheel(self, value)
+	if ( value > 0 ) then
+		if ( CalendarPrevMonthButton:IsEnabled() == 1 ) then
+			CalendarPrevMonthButton_OnClick();
+		end
+	else
+		if ( CalendarNextMonthButton:IsEnabled() == 1 ) then
+			CalendarNextMonthButton_OnClick();
+		end	
+	end
+end
+
 function CalendarFrame_InitWeekday(index)
 	local backgroundName = "CalendarWeekday"..index.."Background";
 	local background = _G[backgroundName];
@@ -1701,7 +1713,6 @@ function CalendarFrame_SetSelectedDay(dayButton)
 end
 
 function CalendarFrame_SetToday(dayButton)
-	-- dayButton:SetJumpNavigateStart(true);
 	--CalendarTodayTexture:SetParent(dayButton);
 	--CalendarTodayTexture:ClearAllPoints();
 	--CalendarTodayTexture:SetPoint("CENTER", anchor, "CENTER");
@@ -1834,7 +1845,7 @@ function CalendarFilterDropDown_Initialize(self)
 end
 
 function CalendarFilterDropDown_OnClick(self)
-	SetCVar(CALENDAR_FILTER_CVARS[self:GetID()].cvar, UIDropDownMenuButton_GetChecked(self));
+	SetCVar(CALENDAR_FILTER_CVARS[self:GetID()].cvar, UIDropDownMenuButton_GetChecked(self) and "1" or "0");
 	CalendarFrame_Update();
 end
 
@@ -2064,16 +2075,16 @@ end
 
 -- CalendarDayContextMenu
 
-function CalendarDayContextMenu_Initialize(menu, flags, dayButton, eventButton)
-	UIMenu_Initialize(menu);
+function CalendarDayContextMenu_Initialize(self, flags, dayButton, eventButton)
+	UIMenu_Initialize(self);
 
 	-- unlock old highlights
 	CalendarDayContextMenu_UnlockHighlights();
 
 	-- record the new day and event buttons
-	menu.dayButton = dayButton;
-	menu.eventButton = eventButton;
-	menu.flags = flags;
+	self.dayButton = dayButton;
+	self.eventButton = eventButton;
+	self.flags = flags;
 
 	local day = dayButton.day;
 	local monthOffset = dayButton.monthOffset;
@@ -2092,11 +2103,11 @@ function CalendarDayContextMenu_Initialize(menu, flags, dayButton, eventButton)
 	local needSpacer = false;
 	if ( showDay ) then
 		-- add guild selections if the player has a guild
-		UIMenu_AddButton(menu, CALENDAR_CREATE_EVENT, nil, CalendarDayContextMenu_CreateEvent);
+		UIMenu_AddButton(self, CALENDAR_CREATE_EVENT, nil, CalendarDayContextMenu_CreateEvent);
 		if ( CanEditGuildEvent() ) then
---			UIMenu_AddButton(menu, CALENDAR_CREATE_GUILDWIDE_EVENT, nil, CalendarDayContextMenu_CreateGuildWideEvent);
-			UIMenu_AddButton(menu, CALENDAR_CREATE_GUILD_EVENT, nil, CalendarDayContextMenu_CreateGuildEvent);
-			UIMenu_AddButton(menu, CALENDAR_CREATE_GUILD_ANNOUNCEMENT, nil, CalendarDayContextMenu_CreateGuildAnnouncement);
+--			UIMenu_AddButton(self, CALENDAR_CREATE_GUILDWIDE_EVENT, nil, CalendarDayContextMenu_CreateGuildWideEvent);
+			UIMenu_AddButton(self, CALENDAR_CREATE_GUILD_EVENT, nil, CalendarDayContextMenu_CreateGuildEvent);
+			UIMenu_AddButton(self, CALENDAR_CREATE_GUILD_ANNOUNCEMENT, nil, CalendarDayContextMenu_CreateGuildAnnouncement);
 		end
 --[[
 		-- add arena team selection if the player has an arena team
@@ -2116,40 +2127,40 @@ function CalendarDayContextMenu_Initialize(menu, flags, dayButton, eventButton)
 			if ( CalendarContextEventCanEdit(monthOffset, day, eventIndex) ) then
 				-- spacer
 				if ( needSpacer ) then
-					UIMenu_AddButton(menu, "");
+					UIMenu_AddButton(self, "");
 				end
 				-- copy
-				UIMenu_AddButton(menu, CALENDAR_COPY_EVENT, nil, CalendarDayContextMenu_CopyEvent);
+				UIMenu_AddButton(self, CALENDAR_COPY_EVENT, nil, CalendarDayContextMenu_CopyEvent);
 				-- paste
 				if ( canPaste ) then
-					UIMenu_AddButton(menu, CALENDAR_PASTE_EVENT, nil, CalendarDayContextMenu_PasteEvent);
+					UIMenu_AddButton(self, CALENDAR_PASTE_EVENT, nil, CalendarDayContextMenu_PasteEvent);
 				end
 				-- delete
-				UIMenu_AddButton(menu, CALENDAR_DELETE_EVENT, nil, CalendarDayContextMenu_DeleteEvent);
+				UIMenu_AddButton(self, CALENDAR_DELETE_EVENT, nil, CalendarDayContextMenu_DeleteEvent);
 				-- report spam
 				if ( CalendarContextEventCanComplain(monthOffset, day, eventIndex) ) then
-					UIMenu_AddButton(menu, "");
-					UIMenu_AddButton(menu, REPORT_SPAM, nil, CalendarDayContextMenu_ReportSpam);
+					UIMenu_AddButton(self, "");
+					UIMenu_AddButton(self, REPORT_SPAM, nil, CalendarDayContextMenu_ReportSpam);
 				end
 				needSpacer = true;
 			elseif ( canPaste ) then
 				if ( needSpacer ) then
-					UIMenu_AddButton(menu, "");
+					UIMenu_AddButton(self, "");
 				end
 				-- paste
-				UIMenu_AddButton(menu, CALENDAR_PASTE_EVENT, nil, CalendarDayContextMenu_PasteEvent);
+				UIMenu_AddButton(self, CALENDAR_PASTE_EVENT, nil, CalendarDayContextMenu_PasteEvent);
 				-- report spam
 				if ( CalendarContextEventCanComplain(monthOffset, day, eventIndex) ) then
-					UIMenu_AddButton(menu, "");
-					UIMenu_AddButton(menu, REPORT_SPAM, nil, CalendarDayContextMenu_ReportSpam);
+					UIMenu_AddButton(self, "");
+					UIMenu_AddButton(self, REPORT_SPAM, nil, CalendarDayContextMenu_ReportSpam);
 				end
 				needSpacer = true;
 			elseif ( CalendarContextEventCanComplain(monthOffset, day, eventIndex) ) then
 				if ( needSpacer ) then
-					UIMenu_AddButton(menu, "");
+					UIMenu_AddButton(self, "");
 				end
 				-- report spam
-				UIMenu_AddButton(menu, REPORT_SPAM, nil, CalendarDayContextMenu_ReportSpam);
+				UIMenu_AddButton(self, REPORT_SPAM, nil, CalendarDayContextMenu_ReportSpam);
 				needSpacer = true;
 			end
 			if ( calendarType ~= "GUILD_ANNOUNCEMENT" ) then
@@ -2159,27 +2170,27 @@ function CalendarDayContextMenu_Initialize(menu, flags, dayButton, eventButton)
 						if ( inviteStatus == CALENDAR_INVITESTATUS_NOT_SIGNEDUP ) then
 							-- sign up
 							if ( needSpacer ) then
-								UIMenu_AddButton(menu, "");
+								UIMenu_AddButton(self, "");
 							end
-							UIMenu_AddButton(menu, CALENDAR_SIGNUP, nil, CalendarDayContextMenu_SignUp);
+							UIMenu_AddButton(self, CALENDAR_SIGNUP, nil, CalendarDayContextMenu_SignUp);
 						else
 							-- cancel sign up
 							if ( needSpacer ) then
-								UIMenu_AddButton(menu, "");
+								UIMenu_AddButton(self, "");
 							end
-							UIMenu_AddButton(menu, CALENDAR_REMOVE_SIGNUP, nil, CalendarDayContextMenu_RemoveInvite);
+							UIMenu_AddButton(self, CALENDAR_REMOVE_SIGNUP, nil, CalendarDayContextMenu_RemoveInvite);
 						end
 					else
 						if ( needSpacer ) then
-							UIMenu_AddButton(menu, "");
+							UIMenu_AddButton(self, "");
 						end
 						-- accept invitation
 						if ( inviteStatus ~= CALENDAR_INVITESTATUS_ACCEPTED ) then
-							UIMenu_AddButton(menu, CALENDAR_ACCEPT_INVITATION, nil, CalendarDayContextMenu_AcceptInvite);
+							UIMenu_AddButton(self, CALENDAR_ACCEPT_INVITATION, nil, CalendarDayContextMenu_AcceptInvite);
 						end
 						-- decline invitation
 						if ( inviteStatus ~= CALENDAR_INVITESTATUS_DECLINED ) then
-							UIMenu_AddButton(menu, CALENDAR_DECLINE_INVITATION, nil, CalendarDayContextMenu_DeclineInvite);
+							UIMenu_AddButton(self, CALENDAR_DECLINE_INVITATION, nil, CalendarDayContextMenu_DeclineInvite);
 						end
 					end
 					needSpacer = false;
@@ -2187,28 +2198,28 @@ function CalendarDayContextMenu_Initialize(menu, flags, dayButton, eventButton)
 				if ( _CalendarFrame_CanRemoveEvent(modStatus, calendarType, inviteType, inviteStatus) ) then
 					-- spacer
 					if ( needSpacer ) then
-						UIMenu_AddButton(menu, "");
+						UIMenu_AddButton(self, "");
 					end
 					-- remove event
-					UIMenu_AddButton(menu, CALENDAR_REMOVE_INVITATION, nil, CalendarDayContextMenu_RemoveInvite);
+					UIMenu_AddButton(self, CALENDAR_REMOVE_INVITATION, nil, CalendarDayContextMenu_RemoveInvite);
 				end
 			end
 		elseif ( canPaste ) then
 			-- add paste if we have a clipboard
 			if ( needSpacer ) then
-				UIMenu_AddButton(menu, "");
+				UIMenu_AddButton(self, "");
 			end
-			UIMenu_AddButton(menu, CALENDAR_PASTE_EVENT, nil, CalendarDayContextMenu_PasteEvent);
+			UIMenu_AddButton(self, CALENDAR_PASTE_EVENT, nil, CalendarDayContextMenu_PasteEvent);
 		end
 	elseif ( canPaste ) then
 		-- add paste if we have a clipboard
 		if ( needSpacer ) then
-			UIMenu_AddButton(menu, "");
+			UIMenu_AddButton(self, "");
 		end
-		UIMenu_AddButton(menu, CALENDAR_PASTE_EVENT, nil, CalendarDayContextMenu_PasteEvent);
+		UIMenu_AddButton(self, CALENDAR_PASTE_EVENT, nil, CalendarDayContextMenu_PasteEvent);
 	end
 
-	if ( UIMenu_FinishInitializing(menu) ) then
+	if ( UIMenu_FinishInitializing(self) ) then
 		-- lock new highlights
 		if ( dayButton ) then
 			dayButton:LockHighlight();
@@ -2560,23 +2571,6 @@ function CalendarDayButtonMoreEventsButton_OnLeave(self)
 end
 
 function CalendarDayButtonMoreEventsButton_OnClick(self, button)
---[[
-	local dayButton = self:GetParent();
-	local dayChanged = CalendarFrame.selectedDayButton ~= dayButton;
-
-	CalendarDayButton_Click(dayButton);
-
-	if ( button == "LeftButton" ) then
-		CalendarEventPickerFrame_Toggle(dayButton);
-	elseif ( button == "RightButton" ) then
-		local flags = CALENDAR_CONTEXTMENU_FLAG_SHOWDAY;
-		if ( dayChanged ) then
-			CalendarContextMenu_Show(self, CalendarDayContextMenu_Initialize, "cursor", 3, -3, flags, dayButton);
-		else
-			CalendarContextMenu_Toggle(self, CalendarDayContextMenu_Initialize, "cursor", 3, -3, flags, dayButton);
-		end
-	end
---]]
 	local dayButton = self:GetParent();
 
 	if ( button == "LeftButton" ) then
@@ -2586,25 +2580,10 @@ function CalendarDayButtonMoreEventsButton_OnClick(self, button)
 		local dayChanged = CalendarFrame.selectedDayButton ~= dayButton;
 
 		local flags = CALENDAR_CONTEXTMENU_FLAG_SHOWDAY;
-		if ( firstEventButton ) then
-			local eventChanged =
-				CalendarContextMenu.eventButton ~= self or
-				CalendarContextMenu.dayButton ~= dayButton;
-
-			local flags = CALENDAR_CONTEXTMENU_FLAG_SHOWDAY + CALENDAR_CONTEXTMENU_FLAG_SHOWEVENT;
-			if ( eventChanged ) then
-				CalendarContextMenu_Show(self, CalendarDayContextMenu_Initialize, "cursor", 3, -3, flags, dayButton, self);
-			else
-				CalendarContextMenu_Toggle(self, CalendarDayContextMenu_Initialize, "cursor", 3, -3, flags, dayButton, self);
-			end
-			flags = flags + CALENDAR_CONTEXTMENU_FLAG_SHOWEVENT;
-
+		if ( dayChanged ) then
+			CalendarContextMenu_Show(self, CalendarDayContextMenu_Initialize, "cursor", 3, -3, flags, dayButton);
 		else
-			if ( dayChanged ) then
-				CalendarContextMenu_Show(self, CalendarDayContextMenu_Initialize, "cursor", 3, -3, flags, dayButton);
-			else
-				CalendarContextMenu_Toggle(self, CalendarDayContextMenu_Initialize, "cursor", 3, -3, flags, dayButton);
-			end
+			CalendarContextMenu_Toggle(self, CalendarDayContextMenu_Initialize, "cursor", 3, -3, flags, dayButton);
 		end
 	end
 
@@ -2889,13 +2868,8 @@ function CalendarEventInviteList_AnchorSortButtons(inviteList)
 	local inviteButtonName = inviteButton:GetName();
 
 	local nameSortButton = inviteList.sortButtons.name;
-	if ( inviteList.partyMode ) then
-		local inviteName = _G[inviteButtonName.."Name"];
-		nameSortButton:SetPoint("LEFT", inviteName, "LEFT");
-	else
-		local invitePartyIcon = _G[inviteButtonName.."PartyIcon"];
-		nameSortButton:SetPoint("LEFT", invitePartyIcon, "LEFT");
-	end
+	local invitePartyIcon = _G[inviteButtonName.."PartyIcon"];
+	nameSortButton:SetPoint("LEFT", invitePartyIcon, "LEFT");
 
 	local classSortButton = inviteList.sortButtons.class;
 	local inviteClass = _G[inviteButtonName.."Class"];
@@ -3131,8 +3105,18 @@ function CalendarViewEventDescriptionScrollFrame_OnLoad(self)
 end
 
 function CalendarViewEventRSVPButton_OnUpdate(self)
-	local name = self:GetName();
-	_G[name.."FlashTexture"]:SetAlpha(CalendarViewEventFrame.flashValue);
+	self.flashTexture:SetAlpha(CalendarViewEventFrame.flashValue);
+end
+
+function CalendarViewEventAcceptButton_OnEnter(self)
+	GameTooltip:SetOwner(self, "ANCHOR_LEFT");
+	if ( CalendarViewEventFrame.inviteType == CALENDAR_INVITETYPE_SIGNUP ) then
+		GameTooltip:SetText(CALENDAR_TOOLTIP_SIGNUPBUTTON, nil, nil, nil, nil, 1);
+	else
+		GameTooltip:SetText(CALENDAR_TOOLTIP_AVAILABLEBUTTON, nil, nil, nil, nil, 1);
+	end
+	GameTooltip:Show();
+	--GameTooltip_AddNewbieTip(self, nil, 1.0, 1.0, 1.0, CALENDAR_TOOLTIP_AVAILABLEBUTTON, 1);
 end
 
 function CalendarViewEventAcceptButton_OnClick(self)
@@ -3143,8 +3127,26 @@ function CalendarViewEventAcceptButton_OnClick(self)
 	end
 end
 
+function CalendarViewEventDeclineButton_OnEnter(self)
+	GameTooltip:SetOwner(self, "ANCHOR_LEFT");
+	GameTooltip:SetText(CALENDAR_TOOLTIP_DECLINEBUTTON, nil, nil, nil, nil, 1);
+	GameTooltip:Show();
+	--GameTooltip_AddNewbieTip(self, nil, 1.0, 1.0, 1.0, CALENDAR_TOOLTIP_DECLINEBUTTON, 1);
+end
+
 function CalendarViewEventDeclineButton_OnClick(self)
 	CalendarEventDecline();
+end
+
+function CalendarViewEventRemoveButton_OnEnter(self)
+	GameTooltip:SetOwner(self, "ANCHOR_LEFT");
+	if ( CalendarViewEventFrame.inviteType == CALENDAR_INVITETYPE_SIGNUP ) then
+		GameTooltip:SetText(CALENDAR_TOOLTIP_REMOVESIGNUPBUTTON, nil, nil, nil, nil, 1);
+	else
+		GameTooltip:SetText(CALENDAR_TOOLTIP_REMOVEBUTTON, nil, nil, nil, nil, 1);
+	end
+	GameTooltip:Show();
+	--GameTooltip_AddNewbieTip(self, nil, 1.0, 1.0, 1.0, CALENDAR_TOOLTIP_REMOVEBUTTON, 1);
 end
 
 function CalendarViewEventRemoveButton_OnClick(self)
@@ -3220,9 +3222,6 @@ function CalendarViewEventRSVP_Update()
 end
 
 function CalendarViewEventInviteList_Update()
---	CalendarViewEventInviteList.partyMode = GetRealNumPartyMembers() > 0 or GetRealNumRaidMembers() > 0;
-	CalendarViewEventInviteList.partyMode = false;
-
 	CalendarViewEventInviteListScrollFrame_Update();
 	CalendarEventInviteList_AnchorSortButtons(CalendarViewEventInviteList);
 	CalendarEventInviteList_UpdateSortButtons(CalendarViewEventInviteList);
@@ -3264,17 +3263,7 @@ function CalendarViewEventInviteListScrollFrame_Update()
 				buttonModIcon:SetTexture();
 				buttonModIcon:Hide();
 			end
---[[
-			-- setup party status
-			buttonPartyIcon = _G[buttonName.."PartyIcon"];
-			if ( not CalendarViewEventInviteList.partyMode or not UnitInParty(name) or not UnitInRaid(name) ) then
-				buttonPartyIcon:Hide();
-			else
-				buttonPartyIcon:Show();
-				-- the party icon overrides the mod icon
-				buttonModIcon:Hide();
-			end
---]]
+
 			-- setup name
 			-- NOTE: classFilename could be invalid when a character is being transferred
 			local classColor = (classFilename and RAID_CLASS_COLORS[classFilename]) or NORMAL_FONT_COLOR;
@@ -3292,15 +3281,10 @@ function CalendarViewEventInviteListScrollFrame_Update()
 			buttonStatus:SetTextColor(inviteStatusInfo.color.r, inviteStatusInfo.color.g, inviteStatusInfo.color.b);
 
 			-- fixup anchors
-			if ( CalendarViewEventInviteList.partyMode ) then
-				buttonNameString:SetPoint("LEFT", buttonPartyIcon, "RIGHT");
-				--buttonClass:SetPoint("LEFT", buttonNameString, "RIGHT", -buttonPartyIcon:GetWidth(), 0);
-			elseif ( buttonModIcon:IsShown() ) then
+			if ( buttonModIcon:IsShown() ) then
 				buttonNameString:SetPoint("LEFT", buttonModIcon, "RIGHT");
-				--buttonClass:SetPoint("LEFT", buttonNameString, "RIGHT", -buttonModIcon:GetWidth(), 0);
 			else
 				buttonNameString:SetPoint("LEFT", button, "LEFT");
-				--buttonClass:SetPoint("LEFT", buttonNameString, "RIGHT", 0, 0);
 			end
 
 			-- set the selected button
@@ -3308,13 +3292,6 @@ function CalendarViewEventInviteListScrollFrame_Update()
 				CalendarViewEventFrame_SetSelectedInvite(button);
 			else
 				button:UnlockHighlight();
-			end
-
-			if ( inviteIsMine ) then
-				-- we need to know which invite belongs to the player because this is the only invite that
-				-- gets context menu options
-				-- MFS NOTE: uncomment this line to show the context menu for your own invite
-				--CalendarViewEventFrame.myInviteIndex = inviteIndex;
 			end
 
 			button:Show();
@@ -3665,6 +3642,14 @@ function CalendarCreateEventTitleEdit_OnEditFocusLost(self)
 	self:HighlightText(0, 0);
 end
 
+function CalendarCreateEventDescriptionEdit_OnTextChanged(self, userChanged)
+	if userChanged then
+		ScrollingEdit_OnTextChanged(self, self:GetParent());
+		CalendarEventSetDescription(self:GetText());
+	end
+	CalendarCreateEventCreateButton_Update();
+end
+
 function CalendarCreateEventCreatorName_Update()
 	if ( CalendarCreateEventTextureName:IsShown() ) then
 		CalendarCreateEventCreatorName:SetPoint("TOPLEFT", CalendarCreateEventTextureName, "BOTTOMLEFT");
@@ -3979,9 +3964,6 @@ function CalendarCreateEvent_SetLockEvent()
 end
 
 function CalendarCreateEventInviteList_Update()
---	CalendarCreateEventInviteList.partyMode = CalendarCreateEventFrame.mode == "edit" and GetRealNumPartyMembers() > 0 and GetRealNumRaidMembers() > 0;
-	CalendarCreateEventInviteList.partyMode = false;
-
 	CalendarCreateEventInviteListScrollFrame_Update();
 	CalendarEventInviteList_AnchorSortButtons(CalendarCreateEventInviteList);
 	CalendarEventInviteList_UpdateSortButtons(CalendarCreateEventInviteList);
@@ -4026,17 +4008,7 @@ function CalendarCreateEventInviteListScrollFrame_Update()
 				buttonModIcon:SetTexture();
 				buttonModIcon:Hide();
 			end
---[[
-			-- setup party status
-			buttonPartyIcon = _G[buttonName.."PartyIcon"];
-			if ( not CalendarCreateEventInviteList.partyMode or not UnitInParty(name) or not UnitInRaid(name) ) then
-				buttonPartyIcon:Hide();
-			else
-				buttonPartyIcon:Show();
-				-- the party icon overrides the mod icon
-				buttonModIcon:Hide();
-			end
---]]
+
 			-- setup name
 			-- NOTE: classFilename could be invalid when a character is being transferred
 			local classColor = (classFilename and RAID_CLASS_COLORS[classFilename]) or NORMAL_FONT_COLOR;
@@ -4054,15 +4026,10 @@ function CalendarCreateEventInviteListScrollFrame_Update()
 			buttonStatus:SetTextColor(inviteStatusInfo.color.r, inviteStatusInfo.color.g, inviteStatusInfo.color.b);
 
 			-- fixup anchors
-			if ( CalendarCreateEventInviteList.partyMode ) then
-				buttonNameString:SetPoint("LEFT", buttonPartyIcon, "RIGHT");
-				--buttonClass:SetPoint("LEFT", buttonNameString, "RIGHT", -buttonPartyIcon:GetWidth(), 0);
-			elseif ( buttonModIcon:IsShown() ) then
+			if ( buttonModIcon:IsShown() ) then
 				buttonNameString:SetPoint("LEFT", buttonModIcon, "RIGHT");
-				--buttonClass:SetPoint("LEFT", buttonNameString, "RIGHT", -buttonModIcon:GetWidth(), 0);
 			else
 				buttonNameString:SetPoint("LEFT", button, "LEFT");
-				--buttonClass:SetPoint("LEFT", buttonNameString, "RIGHT", 0, 0);
 			end
 
 			-- set the selected button

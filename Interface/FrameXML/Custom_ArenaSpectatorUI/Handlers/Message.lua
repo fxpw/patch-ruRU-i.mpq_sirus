@@ -21,10 +21,10 @@ end
 
 
 --noinspection UnusedDef
-function ezSpectator_MessageHandler:EventHandler(Event, ...)
+function ezSpectator_MessageHandler:EventHandler(Event, prefix, message, distribution, sender)
     if Event == 'CHAT_MSG_ADDON' then
-        if arg1 == 'ARENASPEC' and arg3 == 'WHISPER' and arg4 == '' then
-            self.Parent:ProcessMessage(arg2)
+        if prefix == 'ARENASPEC' and distribution == 'WHISPER' and sender == '' then
+            self.Parent:ProcessMessage(message)
         end
     end
 end

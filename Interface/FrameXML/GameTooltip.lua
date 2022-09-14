@@ -49,6 +49,10 @@ function GameTooltip_OnLoad(self)
 end
 
 function GameTooltip_OnTooltipAddMoney(self, cost, maxcost)
+	if self.isToyByItemID then
+		return;
+	end
+
 	if( not maxcost ) then --We just have 1 price to display
 		SetTooltipMoney(self, cost, nil, string.format("%s:", SELL_PRICE));
 	else
@@ -321,15 +325,50 @@ function C_Tooltip_CustomRender( self, ... )
 	local currentSetItems, totalSetItems
 	local setNumItems = 0
 
+	local newLines
 	local showAppearanceLine = false;
 
 	local _, itemLink = self:GetItem();
 	if itemLink then
 		local itemID = tonumber(string.match(itemLink, ":(%d+)"));
-		if itemID and ITEM_MODIFIED_APPEARANCE_STORAGE[itemID] and not SIRUS_COLLECTION_COLLECTED_APPEARANCES[ITEM_MODIFIED_APPEARANCE_STORAGE[itemID][1]] then
-			local _, _, _, isKnown, isUsable = GetItemModifiedAppearanceCategoryInfo(itemID, true);
-			if isKnown and isUsable then
-				showAppearanceLine = true;
+		if itemID then
+			if IsBattlePassExpItem(itemID) then
+				local bpInfo = C_CacheInstance:Get("ASMSG_BATTLEPASS_INFO")
+
+				if bpInfo then
+					local addExp
+
+					for i = 1, self:NumLines() do
+						local line = _G[self:GetName().."TextLeft"..i]
+						if line then
+							local text = line:GetText()
+							if text ~= "" then
+								local exp = string.match(text:lower(), BATTLEPASS_ITEM_EXP_PATTERN)
+								if exp then
+									addExp = tonumber(exp)
+									break
+								end
+							end
+						end
+					end
+
+					if addExp then
+						local addLevels, expToNextLevel = BattlePassFrameMixin.GetLevelsByExp(BattlePassFrameMixin, addExp)
+
+						if addLevels == 0 then
+							self:AddLine(string.format(BATTLEPASS_ITEM_EXP_TO_LEVEL, expToNextLevel), 0.53, 0.67, 1)
+						else
+							self:AddLine(string.format(BATTLEPASS_ITEM_ADD_LEVELS, addLevels), 0.53, 0.67, 1)
+						end
+
+						newLines = true
+					end
+				end
+			elseif ITEM_MODIFIED_APPEARANCE_STORAGE[itemID] and not SIRUS_COLLECTION_COLLECTED_APPEARANCES[ITEM_MODIFIED_APPEARANCE_STORAGE[itemID][1]] then
+				local _, _, _, isKnown, isUsable = GetItemModifiedAppearanceCategoryInfo(itemID, true);
+				if isKnown and isUsable then
+					showAppearanceLine = true;
+				end
 			end
 		end
 	end
@@ -479,6 +518,10 @@ function C_Tooltip_CustomRender( self, ... )
 
 	if showAppearanceLine then
 		self:AddLine(TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN, 0.53, 0.67, 1);
+		newLines = true
+	end
+
+	if newLines then
 		self:Show();
 	end
 end
@@ -655,9 +698,58 @@ function GameTooltip_HideResetCursor()
 	ResetCursor();
 end
 
+local function GameTooltip_OnToyByItemID(self)
+	if not self.isToyByItemID then
+		return;
+	end
+
+	local _, itemLink = self:GetItem();
+	if itemLink then
+		local itemID = tonumber(string.match(itemLink, ":(%d+)"));
+		if itemID then
+			local _, spellID, _, _, _, descriptionText, priceText, holidayText = C_ToyBox.GetToyInfo(itemID);
+			if spellID then
+
+				local name, rank = GetSpellInfo(spellID);
+				local start, duration = GetSpellCooldown(name, rank);
+
+				if start and start > 0 and duration and duration > 0 then
+					local time = duration - (GetTime() - start);
+					GameTooltip_AddHighlightLine(self, string.format(ITEM_COOLDOWN_TIME, SecondsToTime(time, time >= 60)), 1);
+				end
+
+				if descriptionText ~= "" then
+					GameTooltip_AddBlankLineToTooltip(self);
+					GameTooltip_AddNormalLine(self, descriptionText, 1);
+				end
+
+				local addBlankLine = true;
+				if holidayText ~= "" then
+					addBlankLine = false;
+					GameTooltip_AddBlankLineToTooltip(self);
+					GameTooltip_AddHighlightLine(self, holidayText, 1);
+				end
+
+				if priceText ~= "" then
+					if addBlankLine then
+						GameTooltip_AddBlankLineToTooltip(self);
+					end
+					GameTooltip_AddHighlightLine(self, priceText, 1);
+				end
+
+				self:Show();
+			end
+		end
+	end
+
+	self.isToyByItemID = nil;
+end
+
 GameTooltipMixin = {}
 
 function GameTooltipMixin:OnLoad()
+	self:SetScript("OnTooltipSetItem", GameTooltip_OnTooltipSetItem);
+
 	self:RegisterEventListener()
 
 	GameTooltip_OnLoad(self)
@@ -668,6 +760,43 @@ function GameTooltipMixin:OnLoad()
 	end)
 
 	self.transmogrifySlotData = {}
+end
+
+function GameTooltipMixin:SetScript(handler, func)
+	if handler == "OnTooltipSetItem" then
+		if type(func) == "function" then
+			local function hook()
+				GameTooltip_OnToyByItemID(self);
+
+				local ok, ret = pcall(func, self);
+				if not ok then
+					geterrorhandler()(ret);
+					return;
+				end
+				return ret;
+			end
+
+			return getmetatable(self).__index.SetScript(self, handler, hook);
+		end
+	end
+
+	return getmetatable(self).__index.SetScript(self, handler, func);
+end
+
+function GameTooltipMixin:SetToyByItemID(itemID)
+	if type(itemID) == "string" then
+		itemID = tonumber(itemID);
+	end
+
+	if type(itemID) ~= "number" then
+		return false;
+	end
+
+	self.isToyByItemID = true;
+	self:SetHyperlink(string.format("item:%d", itemID));
+	self.isToyByItemID = nil;
+
+	return true;
 end
 
 enum:E_TRANSMOGRIFICATION_INFO {

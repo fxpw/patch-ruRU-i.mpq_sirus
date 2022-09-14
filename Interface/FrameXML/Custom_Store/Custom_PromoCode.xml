@@ -6,7 +6,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_PromoCode.lua"/>
 
 	<Button name="PromoCodeLootButtonTemplate" hidden="true" virtual="true">
@@ -143,7 +144,7 @@
 			<Frame name="$parentHeaderFrame" parentKey="header" toplevel="true" setAllPoints="true">
 				<Layers>
 					<Layer level="ARTWORK">
-						<FontString parentKey="promoCodeActiveLabel" font="Interface\CustomFonts\futurademic.ttf" justifyV="CENTER" justifyH="CENTER" hidden="true" text="PROMOCODE_ACTIVATED_LABEL">
+						<FontString parentKey="promoCodeActiveLabel" font="Interface\CustomFonts\futurademic.ttf" justifyV="MIDDLE" justifyH="CENTER" hidden="true" text="PROMOCODE_ACTIVATED_LABEL">
 							<FontHeight>
 								<AbsValue val="24"/>
 							</FontHeight>
@@ -199,7 +200,7 @@
 				</Anchors>
 				<Layers>
 					<Layer level="OVERLAY">
-						<FontString parentKey="databaseText" inherits="GameFontBlackMedium" hidden="true" justifyH="CENTER" justifyV="CENTER">
+						<FontString parentKey="databaseText" inherits="GameFontBlackMedium" hidden="true" justifyH="CENTER" justifyV="MIDDLE">
 							<Size x="320" y="60"/>
 							<Anchors>
 								<Anchor point="CENTER" x="0" y="0" />
@@ -239,7 +240,7 @@
 							<OnTextChanged>
 								local text = self:GetText()
 								if text then
-									local numText = utf8len(text)
+									local numText = strlenutf8(text)
 
 									if numText > 0 then
 										self:SetText(string.upper(text))
@@ -353,7 +354,7 @@
 			<OnHide function="PromoCodeFrame_OnHide"/>
 		</Scripts>
 	</Frame>
-	<Frame name="PromoCodeErrorFrame" frameStrata="TOOLTIP" topLevel="true" parent="UIParent" inherits="GoldBorderFrameTemplate" enableMouse="true" hidden="true">
+	<Frame name="PromoCodeErrorFrame" frameStrata="TOOLTIP" toplevel="true" parent="UIParent" inherits="GoldBorderFrameTemplate" enableMouse="true" hidden="true">
 		<Size x="320" y="250" />
 		<Anchors>
 			<Anchor point="CENTER" x="0" y="0" />
@@ -409,7 +410,7 @@
 			</Button>
 		</Frames>
 	</Frame>
-	<Frame name="PromoCodePopupFrame" frameStrata="TOOLTIP" topLevel="true" parent="UIParent" inherits="GoldBorderFrameTemplate" enableMouse="true" hidden="true">
+	<Frame name="PromoCodePopupFrame" frameStrata="TOOLTIP" toplevel="true" parent="UIParent" inherits="GoldBorderFrameTemplate" enableMouse="true" hidden="true">
 		<Size x="420" y="134" />
 		<Anchors>
 			<Anchor point="CENTER" x="0" y="0" />

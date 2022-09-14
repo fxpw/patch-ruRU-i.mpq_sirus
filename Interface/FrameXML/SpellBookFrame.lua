@@ -26,7 +26,7 @@ SIRUS_SPELLBOOK_SKILLLINE = {}
 local secondaryProfessionName = {}
 
 spellbookCustomRender = {}
-local spellbookCustomHiddenChatSpell = {
+spellbookCustomHiddenChatSpell = {
 	[305310] = "",
 	[305355] = ""
 }
@@ -502,6 +502,10 @@ function IsSpellIgnore( spellID )
 		return false
 	end
 
+	if IsToy(spellID) then
+		return true;
+	end
+
 	for _, floyutData in pairs(FLYOUT_STORAGE) do
 		for _, flyoutSpellID in pairs(floyutData) do
 			if flyoutSpellID == spellID then
@@ -719,7 +723,7 @@ function ProfessionButton_OnEnter( self, ... )
 		self.UpdateTooltip = nil
 	end
 end
-
+-- /run local _PrimaryProfession_Update = PrimaryProfession_Update function PrimaryProfession_Update() print("123") _PrimaryProfession_Update() end
 function PrimaryProfession_Update()
 	SpellBookFrame_UpdateSpellRender()
 
@@ -1374,7 +1378,7 @@ end
 function SpellBookFrame_UpdateSpellState()
 	for i = 1, SPELLS_PER_PAGE do
 		local spellButton = _G["SpellButton" .. i]
-		if (spellButton.data and SpellBookFrame.searchSpellID) and SpellBookFrame.searchSpellID ~= spellButton.data then
+		if (spellButton.data and SpellBookFrame.searchText) and not string.find(string.upper(GetSpellInfo(spellButton.data)), SpellBookFrame.searchText, 1, true) then
 			spellButton:SetAlpha(0.4)
 		else
 			spellButton:SetAlpha(1)
@@ -2095,7 +2099,7 @@ function SpellBook_GetSpellLocation( spellName )
 			for spellIndex, spellData in pairs(skillLineData) do
 				local _spellName = GetSpellInfo(spellData.spellID)
 
-				if string.find(string.upper(_spellName), string.upper(spellName)) then
+				if string.find(string.upper(_spellName), spellName, 1, true) then
 					return skillLineID, math.ceil(spellIndex / 12), spellIndex, spellData.spellID
 				end
 			end
@@ -2107,8 +2111,9 @@ function SpellBookSearchBox_OnTextChanged( self )
 	SearchBoxTemplate_OnTextChanged(self)
 	local text = self:GetText()
 
-	if text and utf8len(text) >= 2 then
-		local skillLineID, page, spellIndex, spellID = SpellBook_GetSpellLocation(text)
+	if text and strlenutf8(text) >= 2 then
+		local searchText = string.upper(text);
+		local skillLineID, page, spellIndex, spellID = SpellBook_GetSpellLocation(searchText)
 
 		if skillLineID then
 			if SpellBookFrame.selectedSkillLine and SpellBookFrame.selectedSkillLine ~= skillLineID then
@@ -2117,7 +2122,7 @@ function SpellBookSearchBox_OnTextChanged( self )
 
 			local currentPage = SpellBook_GetCurrentPage()
 
-			SpellBookFrame.searchSpellID = spellID
+			SpellBookFrame.searchText = searchText
 
 			if currentPage ~= page then
 				SPELLBOOK_PAGENUMBERS[skillLineID] = page
@@ -2125,10 +2130,10 @@ function SpellBookSearchBox_OnTextChanged( self )
 				return
 			end
 		else
-			SpellBookFrame.searchSpellID = nil
+			SpellBookFrame.searchText = nil
 		end
 	else
-		SpellBookFrame.searchSpellID = nil
+		SpellBookFrame.searchText = nil
 	end
 
 	SpellBookFrame_UpdateSpellState()

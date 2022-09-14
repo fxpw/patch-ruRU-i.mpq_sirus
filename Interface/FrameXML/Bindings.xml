@@ -715,6 +715,9 @@
 	<Binding name="TOGGLECOLLECTIONSWARDROBE">
 		ToggleCollectionsJournal(COLLECTIONS_JOURNAL_TAB_INDEX_APPEARANCES);
 	</Binding>
+	<Binding name="TOGGLECOLLECTIONSTOYBOX">
+		ToggleCollectionsJournal(COLLECTIONS_JOURNAL_TAB_INDEX_TOYS);
+	</Binding>
 	<Binding name="TOGGLECHATTAB">
 		ToggleFriendsFrame(3);
 	</Binding>

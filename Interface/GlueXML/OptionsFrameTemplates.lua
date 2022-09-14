@@ -227,7 +227,7 @@ function OptionsListButton_OnClick (self, mouseButton)
 	OptionsList_DisplayPanel(self.element);
 end
 
-function OptionsListButton_ToggleSubCategories (button)
+function OptionsListButton_ToggleSubCategories (self)
 	local element = self.element;
 
 	element.collapsed = not element.collapsed;

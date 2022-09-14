@@ -6,7 +6,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_TradeSkill.lua"/>
 
 	<Button name="TradeSkillReagentTemplate" parentArray="Reagents" inherits="LargeItemButtonTemplate" hidden="true" virtual="true">
@@ -658,7 +659,7 @@
 						<Texture parentKey="Icon" file="Interface\ChatFrame\ChatFrameExpandArrow">
 							<Size x="10" y="12"/>
 							<Anchors>
-								<Anchor point="RIGHT" relativeKey="$parent.Right" relativePoint="RIGHT" x="-5"/>
+								<Anchor point="RIGHT" relativeTo="$parentMiddleRight" relativePoint="RIGHT" x="-5"/>
 							</Anchors>
 						</Texture>
 					</Layer>

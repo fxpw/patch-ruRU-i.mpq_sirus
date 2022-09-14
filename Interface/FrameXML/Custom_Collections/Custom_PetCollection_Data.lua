@@ -17,6 +17,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Профессия: |rИнженерное дело|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -37,6 +38,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rДонни Антания|n|cFFFFD200Зона: |rЭлвиннский лес|n|cFFFFD200Цена: |r0.4 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -57,6 +59,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rДонни Антания|n|cFFFFD200Зона: |rЭлвиннский лес|n|cFFFFD200Цена: |r0.4 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -77,6 +80,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rДонни Антания|n|cFFFFD200Зона: |rЭлвиннский лес|n|cFFFFD200Цена: |r0.4 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -97,6 +101,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rДонни Антания|n|cFFFFD200Зона: |rЭлвиннский лес|n|cFFFFD200Цена: |r0.4 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -117,6 +122,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rМалыш Тимми|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r0.6 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -137,6 +143,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rДелец Рашаад|n|cFFFFD200Зона: |rШтормовая Вершина(Пустоверть)|n|cFFFFD200Цена: |r0.6 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -157,6 +164,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Источник: |rЧарокнижник Янтарной мельницы, Даларанский стражник со щитом, Даларанский чудотворец, Даларанский призыватель|n|cFFFFD200Зона: |rЯнтарная мельница(Серебряный бор)|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -177,6 +185,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Источник: |rПират из Братства Справедливости|n|cFFFFD200Зона: |rМертвые копи|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -197,6 +206,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -217,6 +227,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rНаркк|n|cFFFFD200Зона: |rПиратская Бухта(Тернистая долина)|n|cFFFFD200Цена: |r0.4 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -237,6 +248,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rНаркк|n|cFFFFD200Зона: |rПиратская Бухта(Тернистая долина)|n|cFFFFD200Цена: |r0.4 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -257,6 +269,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rЯрлин Янтарлен|n|cFFFFD200Зона: |rФерма Янтарленов(Дун Морог)|n|cFFFFD200Цена: |r0.2 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -277,6 +290,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Источник: |rМечтательный дракончик, Юный дракончик|n|cFFFFD200Зона: |rПещера Итара(Болото Печали)|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -297,6 +311,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Источник: |rКрасный дракончик, Багровый дракончик, Огнедышащий дракончик|n|cFFFFD200Зона: |rБолотина|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -317,6 +332,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rШиленаи|n|cFFFFD200Зона: |rДарнас|n|cFFFFD200Цена: |r0.5 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -337,6 +353,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rШиленаи|n|cFFFFD200Зона: |rДарнас|n|cFFFFD200Цена: |r0.5 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -357,6 +374,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rКсан'Тиш|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r0.5 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -377,6 +395,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rКсан'Тиш|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r0.5 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -397,6 +416,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rДелец Рашаад, Ксан'Тиш|n|cFFFFD200Зона: |rШтормовая Вершина(Пустоверть),|nОргриммар|n|cFFFFD200Цена: |r0.5 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -417,6 +437,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rДелец Рашаад, Иеремия Пейсон|n|cFFFFD200Зона: |rШтормовая Вершина(Пустоверть),|nПодгород|n|cFFFFD200Цена: |r0.5 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -437,6 +458,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rХальпа|n|cFFFFD200Зона: |rГромовой Утес|n|cFFFFD200Цена: |r0.5 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -457,6 +479,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Задание: |rСобственный ККХ|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -477,6 +500,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Источник: |rОбжигающий дракончик, Опаляющий дракончик|n|cFFFFD200Зона: |rДолина Летлор(Бесплодные земли),|nДраконьи топи(Пылевые топи)|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -497,6 +521,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rВолхв Тирт|n|cFFFFD200Зона: |rВиражи на Миражах(Тысяча Игл)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -517,6 +542,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rФлик|n|cFFFFD200Зона: |rЛес Тероккар,|nЗлатоземье(Элвиннский лес),|nМулгор|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Ярмарка Новолуния",
         flags = 0,
     },
     {
@@ -537,6 +563,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rФлик|n|cFFFFD200Зона: |rЛес Тероккар,|nЗлатоземье(Элвиннский лес),|nМулгор|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Ярмарка Новолуния",
         flags = 0,
     },
     {
@@ -557,6 +584,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Источник: |rДеревенское куриное яйцо|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -577,6 +605,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Источник: |rЛетучий хамелеон|n|cFFFFD200Зона: |rФералас|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -597,6 +626,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Профессия: |rИнженерное дело|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -617,6 +647,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Профессия: |rИнженерное дело|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -637,6 +668,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -657,6 +689,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Задание: |rРедкие звери Киблера|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -677,6 +710,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Задание: |rТовар на любителя|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -697,6 +731,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r8|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -717,6 +752,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r1|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -737,6 +773,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r3|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -757,6 +794,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Профессия: |rИнженерное дело|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -777,6 +815,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -797,6 +836,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -817,6 +857,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -837,6 +878,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -857,6 +899,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -877,6 +920,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -897,6 +941,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Источник: |rПропитанная слизью сумка|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -917,6 +962,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Профессия: |rИнженерное дело|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -937,6 +983,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Источник: |rПодарок в яркой упаковке|n|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Зимний Покров",
         flags = 0,
     },
     {
@@ -957,6 +1004,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Источник: |rПодарок в яркой упаковке|n|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Зимний Покров",
         flags = 0,
     },
     {
@@ -977,6 +1025,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Источник: |rПодарок в яркой упаковке|n|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Зимний Покров",
         flags = 0,
     },
     {
@@ -997,6 +1046,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Источник: |rПодарок в яркой упаковке|n|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Зимний Покров",
         flags = 0,
     },
     {
@@ -1017,6 +1067,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1037,6 +1088,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rМилая продавщица|n|n|cFFFFD200Цена: |r40 |TInterface\\Icons\\INV_ValentinesCard01.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Любовная лихорадка",
         flags = 0,
     },
     {
@@ -1057,6 +1109,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1077,6 +1130,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1097,6 +1151,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Задание: |rОпекун Орды, Опекун Альянса|n|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Детская неделя",
         flags = 0,
     },
     {
@@ -1117,6 +1172,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Задание: |rОпекун Орды, Опекун Альянса|n|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Детская неделя",
         flags = 0,
     },
     {
@@ -1137,6 +1193,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Задание: |rОпекун Орды, Опекун Альянса|n|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Детская неделя",
         flags = 0,
     },
     {
@@ -1157,6 +1214,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "|cFFFFD200Торговец: |rПоставщица праздника Огненного солнцеворота|n|n|cFFFFD200Цена: |r350 |TInterface\\Icons\\INV_SummerFest_FireFlower.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Огненный солнцеворот",
         flags = 0,
     },
     {
@@ -1177,6 +1235,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1197,6 +1256,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1217,6 +1277,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r13|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1237,6 +1298,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1257,6 +1319,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Торговец: |rДелец Рашаад|n|cFFFFD200Зона: |rШтормовая Вершина(Пустоверть)|n|cFFFFD200Цена: |r40 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1277,6 +1340,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Торговец: |rДелец Рашаад|n|cFFFFD200Зона: |rШтормовая Вершина(Пустоверть)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1297,6 +1361,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Торговец: |rСиксс|n|cFFFFD200Зона: |rЭкзодар|n|cFFFFD200Цена: |r0.5 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1317,6 +1382,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Торговец: |rДелец Рашаад|n|cFFFFD200Зона: |rШтормовая Вершина(Пустоверть)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1337,6 +1403,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Торговец: |rСиксс|n|cFFFFD200Зона: |rЭкзодар|n|cFFFFD200Цена: |r0.5 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1357,6 +1424,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Торговец: |rСиксс|n|cFFFFD200Зона: |rЭкзодар|n|cFFFFD200Цена: |r0.5 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1377,6 +1445,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Торговец: |rДжиланна|n|cFFFFD200Зона: |rДеревня Легкий Ветерок(Леса Вечной Песни)|n|cFFFFD200Цена: |r0.5 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1397,6 +1466,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Торговец: |rДжиланна|n|cFFFFD200Зона: |rДеревня Легкий Ветерок(Леса Вечной Песни)|n|cFFFFD200Цена: |r0.5 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1417,6 +1487,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Торговец: |rДжиланна|n|cFFFFD200Зона: |rДеревня Легкий Ветерок(Леса Вечной Песни)|n|cFFFFD200Цена: |r0.5 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1437,6 +1508,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Торговец: |rДелец Рашаад|n|cFFFFD200Зона: |rШтормовая Вершина(Пустоверть)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1457,6 +1529,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Источник: |rБолотный иглокол|n|cFFFFD200Зона: |rЗангартопь|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1477,6 +1550,7 @@ COLLECTION_PETDATA = {
         expansion = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1497,6 +1571,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Задание: |rНебокрыл|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1517,6 +1592,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Торговец: |rРай'ма, Бликс Чиништукс, Ларкин Громовар, Белби Быстросмен|n|n|cFFFFD200Цена: |r0.5 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Хмельной фестиваль",
         flags = 0,
     },
     {
@@ -1537,6 +1613,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Задание: |r1000 купонов - Счастливая монета|n|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Ярмарка Новолуния",
         flags = 0,
     },
     {
@@ -1557,6 +1634,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Торговец: |rМей Франкис|n|cFFFFD200Зона: |rДаларан|n|cFFFFD200Цена: |r5 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1577,6 +1655,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Задание: |rВозвращение в приют|n|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Детская неделя",
         flags = 0,
     },
     {
@@ -1597,6 +1676,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Задание: |rВозвращение в приют|n|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Детская неделя",
         flags = 0,
     },
     {
@@ -1617,6 +1697,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Задание: |rВозвращение в приют|n|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Детская неделя",
         flags = 0,
     },
     {
@@ -1637,6 +1718,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Источник: |rПригоршня конфет, Заполненная добычей тыква|n|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Тыквовин",
         flags = 0,
     },
     {
@@ -1657,6 +1739,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Источник: |rМешок рыбацких сокровищ|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1677,6 +1760,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Источник: |rМешок рыбацких сокровищ|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1697,6 +1781,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1717,6 +1802,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1737,6 +1823,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Торговец: |rМикаа|n|cFFFFD200Зона: |rСпореггар(Зангартопь)|n|cFFFFD200Цена: |r30 |TInterface\\Icons\\INV_Mushroom_02.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1757,6 +1844,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1777,6 +1865,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Нужно очков голосования: |r250|TInterface\\Store\\mmotop.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1797,6 +1886,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1817,6 +1907,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Источник: |rДраконья чаровязка, Синий чешуйчатый губитель, Лорд-маг драконов|n|cFFFFD200Зона: |rОзеро Меннар(Азшара)|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1837,6 +1928,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1857,6 +1949,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Огненный солнцеворот",
         flags = 0,
     },
     {
@@ -1877,6 +1970,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Источник: |rМешок рыбацких сокровищ|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1897,6 +1991,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Источник: |rМешок рыбацких сокровищ|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1917,6 +2012,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Источник: |rКель'тас Солнечный Скиталец|n|cFFFFD200Зона: |rТерраса Магистров|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1937,6 +2033,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1957,6 +2054,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1977,6 +2075,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Торговец: |rПродавец душ Фирадин|n|n|cFFFFD200Цена: |r350 |TInterface\\Icons\\ability_racial_etherealconnection.BLP:16:16|t|n",
         descriptionText = [[Можно получить, заключив сделку с таинственным дельцом Фирадином, который иногда прогуливается в Шаттрате в поиске деловых партнеров. За приличное количество кредитов, разумеется. Ох уж эти жадные эфириалы...]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1997,6 +2096,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Торговец: |rГрелла|n|cFFFFD200Зона: |rЛагерь Черного Ветра(Лес Тероккар)|n|cFFFFD200Цена: |r40 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2017,6 +2117,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2037,6 +2138,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r23|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2057,6 +2159,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2077,6 +2180,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Источник: |rТреснутое яйцо|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2097,6 +2201,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Источник: |rТреснутое яйцо|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2117,6 +2222,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Источник: |rТреснутое яйцо|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2137,6 +2243,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Торговец: |rДарахир|n|cFFFFD200Зона: |rКлоака|n|cFFFFD200Цена: |r40 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2157,6 +2264,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Достижение: |rМаленькая такая компания|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2177,6 +2285,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2197,6 +2306,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2217,6 +2327,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Источник: |rТреснутое яйцо|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2237,6 +2348,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Торговец: |rТанайка, Сайрук|n|cFFFFD200Зона: |rКамагуа(Ревущий фьорд),|nГавань Моа'ки(Драконий Погост)|n|cFFFFD200Цена: |r12 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2257,6 +2369,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2277,6 +2390,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Торговец: |rТорговец Сада чудес, Продавец Сада чудес|n|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\Achievement_Noblegarden_Chocolate_Egg.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Сад чудес",
         flags = 0,
     },
     {
@@ -2297,6 +2411,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Достижение: |rСтранник|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2317,6 +2432,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2337,6 +2453,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Торговец: |rБреанни|n|cFFFFD200Зона: |rДаларан|n|cFFFFD200Цена: |r50 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2357,6 +2474,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Достижение: |rОхотник на мелкую дичь|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2377,6 +2495,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Торговец: |rРуок Хищная Хватка|n|cFFFFD200Зона: |rПавильон Серебряного союза(Ледяная Корона)|n|cFFFFD200Цена: |r40 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2397,6 +2516,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Торговец: |rДеррик Пегобород|n|cFFFFD200Зона: |rПавильон Серебряного союза(Ледяная Корона)|n|cFFFFD200Цена: |r40 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2417,6 +2537,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Торговец: |rЭлиза Киллиан|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r40 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2437,6 +2558,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2457,6 +2579,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Торговец: |rФрека Кровавый Топор|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r40 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2477,6 +2600,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Торговец: |rКапрал Артур Флю|n|cFFFFD200Зона: |rПавильон Серебряного союза(Ледяная Корона)|n|cFFFFD200Цена: |r40 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2497,6 +2621,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Торговец: |rДору Громовой Рог|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r40 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2517,6 +2642,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Торговец: |rТреллис Утреннее Солнце|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r40 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2537,6 +2663,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Источник: |rМешок рыбацких сокровищ|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2557,6 +2684,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Торговец: |rИризи|n|cFFFFD200Зона: |rПавильон Серебряного союза(Ледяная Корона)|n|cFFFFD200Цена: |r40 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2577,6 +2705,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Задание: |rРождение героя|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2597,6 +2726,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Торговец: |rРилли Веретень|n|cFFFFD200Зона: |rПавильон Серебряного союза(Ледяная Корона)|n|cFFFFD200Цена: |r40 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2617,6 +2747,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Задание: |rРождение героя|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2637,6 +2768,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Источник: |rСПАРТАНЕЦ!|n|n",
         descriptionText = [[Содержится в сундуке специального предложения "Спартанец".]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2657,6 +2789,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Торговец: |rСамамба|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r40 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2677,6 +2810,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2697,6 +2831,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Источник: |rУзлодревень|n|cFFFFD200Зона: |rБотаника|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2717,6 +2852,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Торговец: |rБреанни|n|cFFFFD200Зона: |rДаларан|n|cFFFFD200Цена: |r50 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2737,6 +2873,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Задание: |rВозвращение в приют|n|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Детская неделя",
         flags = 0,
     },
     {
@@ -2757,6 +2894,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Задание: |rВозвращение в приют|n|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Детская неделя",
         flags = 0,
     },
     {
@@ -2777,6 +2915,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|cFFFFD200Торговец: |rБелби Быстросмен, Ларкин Громовар, Рай'ма, Бликс Чиништукс|n|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\INV_Misc_Coin_01.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Хмельной фестиваль",
         flags = 0,
     },
     {
@@ -2797,6 +2936,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2817,6 +2957,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r17|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2837,6 +2978,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Торговец: |rХайрен Певец Преданий|n|cFFFFD200Зона: |rПавильон Серебряного союза(Ледяная Корона)|n|cFFFFD200Цена: |r40 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2857,6 +2999,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Торговец: |rВасарин Красный Рассвет|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r40 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2877,6 +3020,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Источник: |rГнездо Дарта|n|cFFFFD200Зона: |rПылевые топи|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2897,6 +3041,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Источник: |rЗагадочный страж, Загадочный опустошитель|n|cFFFFD200Зона: |rПещеры Стенаний|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2917,6 +3062,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Источник: |rЯщер Гундрака|n|cFFFFD200Зона: |rЗул'Драк|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2937,6 +3083,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Источник: |rГнездо Такка|n|cFFFFD200Зона: |rСтепи|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2957,6 +3104,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Торговец: |rБреанни|n|cFFFFD200Зона: |rДаларан|n|cFFFFD200Цена: |r50 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2977,6 +3125,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Источник: |rГнездо равазавра-матриарха|n|cFFFFD200Зона: |rКратер Ун'Горо|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2997,6 +3146,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Источник: |rГнездо острозуба-матриарха|n|cFFFFD200Зона: |rГряда Ящеров(Болотина)|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3017,6 +3167,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Источник: |rЯщер Раззаши|n|cFFFFD200Зона: |rЗул'Гуруб|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3037,6 +3188,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3057,6 +3209,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3077,6 +3230,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3097,6 +3251,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3117,6 +3272,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "",
         descriptionText = [[Подарок при подключении двухфакторной аутентификации в личном кабинете.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3137,6 +3293,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3157,6 +3314,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3177,6 +3335,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3197,6 +3356,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r5|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3217,6 +3377,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r7|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3237,6 +3398,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Достижение: |rИщу всех!|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3257,6 +3419,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Источник: |rКоробочка в виде сердца|n|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Любовная лихорадка",
         flags = 0,
     },
     {
@@ -3277,6 +3440,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Источник: |rСумка с замороженными товарами|n|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Огненный солнцеворот",
         flags = 0,
     },
     {
@@ -3297,6 +3461,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Торговец: |rЗаводной помощник, Джепетто Таратор|n|cFFFFD200Зона: |rДаларан|n|cFFFFD200Цена: |r50 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3317,6 +3482,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r15|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3337,6 +3503,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r10|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3357,6 +3524,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "|cFFFFD200Источник: |rСтраж Бездны|n|cFFFFD200Зона: |rКрепость Бурь|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3377,6 +3545,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3397,6 +3566,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Достижение: |rЭто не игрушки|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3417,6 +3587,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Нужно очков голосования: |r200|TInterface\\Store\\mmotop.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3437,6 +3608,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3457,6 +3629,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3477,6 +3650,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3497,6 +3671,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Награда за репутацию в гильдии|r",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3517,6 +3692,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3537,6 +3713,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3557,6 +3734,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3577,6 +3755,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3597,6 +3776,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3617,6 +3797,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Нужно очков голосования: |r80|TInterface\\Store\\mmotop.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3637,6 +3818,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3657,6 +3839,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Достижение: |rЗоомагазинчик|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3677,6 +3860,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3697,6 +3881,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3717,6 +3902,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3737,6 +3923,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3757,6 +3944,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3777,6 +3965,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Нужно очков голосования: |r60|TInterface\\Store\\mmotop.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3797,6 +3986,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Источник: |rСартарион|n|cFFFFD200Зона: |rОбсидиановое святилище|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3817,6 +4007,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r11|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3837,6 +4028,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3857,6 +4049,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3877,6 +4070,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3897,6 +4091,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3917,6 +4112,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3937,6 +4133,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3957,6 +4154,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Источник: |rЧерная Охотница|n|cFFFFD200Зона: |rНижетопь|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3977,6 +4175,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3997,6 +4196,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Достижение: |rЗверинец|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4017,6 +4217,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4037,6 +4238,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4057,6 +4259,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Достижение: |rЗоопарк питомцев|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4077,6 +4280,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4097,6 +4301,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4117,6 +4322,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4137,6 +4343,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Источник: |rКороль воронов Айкисс|n|cFFFFD200Зона: |rСетеккские залы|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4152,11 +4359,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 1,
-        lootType = 16,
+        isActive = 0,
+        lootType = 0,
         expansion = 8,
-        priceText = "|cFFFFD200Доступно на 50 уровне боевого пропуска|r",
-        descriptionText = [[]],
+        priceText = "",
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4177,6 +4385,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Источник: |rВождь Каргат Острорук|n|cFFFFD200Зона: |rРазрушенные залы|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4197,6 +4406,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4217,6 +4427,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Достижение: |rГде взять столько корма?!|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4237,6 +4448,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Нужно очков голосования: |r60|TInterface\\Store\\mmotop.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4257,6 +4469,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4277,6 +4490,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4297,6 +4511,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4317,6 +4532,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4337,6 +4553,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4357,6 +4574,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Источник: |rСкрытень из глубин, Горе'лац|n|cFFFFD200Зона: |rЗмеиное святилище|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4377,6 +4595,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Торговец: |rВаладар Звездная Песня|n|n|cFFFFD200Цена: |r20 |TInterface\\Icons\\INV_Misc_ElvenCoins.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Лунный фестиваль",
         flags = 0,
     },
     {
@@ -4397,6 +4616,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Торговец: |rВаладар Звездная Песня|n|n|cFFFFD200Цена: |r20 |TInterface\\Icons\\INV_Misc_ElvenCoins.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Лунный фестиваль",
         flags = 0,
     },
     {
@@ -4417,6 +4637,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4437,6 +4658,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r37|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4457,6 +4679,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r35|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4477,6 +4700,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4497,6 +4721,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4517,6 +4742,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4537,6 +4763,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4557,6 +4784,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4577,6 +4805,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4592,11 +4821,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 1,
-        lootType = 16,
+        isActive = 0,
+        lootType = 0,
         expansion = 16,
-        priceText = "|cFFFFD200Доступно на 78 уровне боевого пропуска|r",
+        priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4617,6 +4847,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4637,6 +4868,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Задание: |r[Приключения новичка] Рулетка Тысячелетия|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4657,6 +4889,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4677,6 +4910,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4697,6 +4931,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4717,6 +4952,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4737,6 +4973,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4757,6 +4994,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4777,6 +5015,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r2250 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4797,6 +5036,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4817,6 +5057,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4837,6 +5078,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4857,6 +5099,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4877,6 +5120,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4897,6 +5141,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4917,6 +5162,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rПолководец Калитреш|n|cFFFFD200Зона: |rПаровое подземелье|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4937,6 +5183,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4957,6 +5204,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4977,6 +5225,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4997,6 +5246,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5017,6 +5267,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5037,6 +5288,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rКели'дан Разрушитель|n|cFFFFD200Зона: |rКузня Крови|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5057,6 +5309,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rАл'ар|n|cFFFFD200Зона: |rКрепость Бурь|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5077,6 +5330,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rЭонус|n|cFFFFD200Зона: |rЧерные топи|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5097,6 +5351,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rПринц Шаффар|n|cFFFFD200Зона: |rГробницы Маны|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5117,6 +5372,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rСундук с темными рунами|n|cFFFFD200Зона: |rОчищение Стратхольма|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5137,6 +5393,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rСклад изобретателя|n|cFFFFD200Зона: |rУльдуар|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5157,6 +5414,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rГлут|n|cFFFFD200Зона: |rНаксрамас|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5177,6 +5435,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rМексна|n|cFFFFD200Зона: |rНаксрамас|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5197,6 +5456,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5217,6 +5477,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rЛотхиб|n|cFFFFD200Зона: |rНаксрамас|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5237,6 +5498,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5257,6 +5519,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5277,6 +5540,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5297,6 +5561,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rБритвосмерт Неукротимый|n|cFFFFD200Зона: |rЛогово Крыла Тьмы|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5317,6 +5582,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rПредводитель драконов Разящий Бич|n|cFFFFD200Зона: |rЛогово Крыла Тьмы|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5337,6 +5603,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rХромаггус|n|cFFFFD200Зона: |rЛогово Крыла Тьмы|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5357,6 +5624,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rЗыбун|n|cFFFFD200Зона: |rУзилище|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5377,6 +5645,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rИмператор Век'лор, Император Век'нилаш|n|cFFFFD200Зона: |rАн'Кираж|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5397,6 +5666,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rПредвестник Скайрисс|n|cFFFFD200Зона: |rАркатрац|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5417,6 +5687,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5437,6 +5708,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5457,6 +5729,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rПаталеон Вычислитель|n|cFFFFD200Зона: |rМеханар|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5477,6 +5750,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5497,6 +5771,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5517,6 +5792,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5537,6 +5813,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5557,6 +5834,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5577,6 +5855,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5597,6 +5876,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5617,6 +5897,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5637,6 +5918,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5657,6 +5939,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5677,6 +5960,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5697,6 +5981,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5717,6 +6002,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5737,6 +6023,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5757,6 +6044,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5777,6 +6065,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5797,6 +6086,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5817,6 +6107,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5837,6 +6128,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5857,6 +6149,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5877,6 +6170,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5897,6 +6191,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|cFFFFD200Источник: |rДеревянный сундук с сокровищами|n|n",
         descriptionText = [[Отправляйтесь в путешествие и закончите историю Гархата, собрав все обрывки неизвестной карты и отыскав сундук с сокровищами!]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5917,6 +6212,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5932,11 +6228,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 1,
-        lootType = 16,
+        isActive = 0,
+        lootType = 0,
         expansion = 128,
-        priceText = "|cFFFFD200Доступно на 98 уровне боевого пропуска|r",
+        priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5957,6 +6254,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5977,6 +6275,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5997,6 +6296,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6017,6 +6317,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6037,6 +6338,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r2250 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6057,6 +6359,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6077,6 +6380,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6097,6 +6401,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6112,11 +6417,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 1,
-        lootType = 16,
+        isActive = 0,
+        lootType = 0,
         expansion = 32,
-        priceText = "|cFFFFD200Доступно на 58 уровне боевого пропуска|r",
+        priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6137,6 +6443,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6157,6 +6464,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Достижение: |rВсе белочки найдут свой дом|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6177,6 +6485,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6192,11 +6501,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 1,
-        lootType = 16,
+        isActive = 0,
+        lootType = 0,
         expansion = 128,
-        priceText = "|cFFFFD200Доступно на 5 уровне боевого пропуска|r",
+        priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6217,6 +6527,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6237,6 +6548,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6257,6 +6569,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6277,6 +6590,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6297,6 +6611,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6317,6 +6632,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6337,6 +6653,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6357,6 +6674,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r2250 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6377,6 +6695,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6397,6 +6716,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6416,7 +6736,8 @@ COLLECTION_PETDATA = {
         lootType = 0,
         expansion = 128,
         priceText = "",
-        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6437,6 +6758,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6457,6 +6779,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6477,6 +6800,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6497,6 +6821,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6517,6 +6842,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6537,6 +6863,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6557,6 +6884,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6577,6 +6905,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6597,6 +6926,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6617,6 +6947,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6637,6 +6968,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6657,6 +6989,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6677,6 +7010,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6697,6 +7031,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6717,6 +7052,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6732,11 +7068,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 1,
-        lootType = 16,
+        isActive = 0,
+        lootType = 0,
         expansion = 128,
-        priceText = "|cFFFFD200Доступно на 93 уровне боевого пропуска|r",
+        priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6757,6 +7094,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6777,6 +7115,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6797,6 +7136,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6817,6 +7157,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6837,6 +7178,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r500 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6857,6 +7199,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6877,6 +7220,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6897,6 +7241,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6917,6 +7262,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6937,6 +7283,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6957,6 +7304,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6977,6 +7325,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6997,6 +7346,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7017,6 +7367,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7037,6 +7388,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r500 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7057,6 +7409,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7077,6 +7430,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7097,6 +7451,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7117,6 +7472,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7137,6 +7493,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r500 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7157,6 +7514,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7177,6 +7535,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7197,6 +7556,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7212,11 +7572,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 1,
-        lootType = 16,
+        isActive = 0,
+        lootType = 0,
         expansion = 128,
-        priceText = "|cFFFFD200Доступно на 82 уровне боевого пропуска|r",
+        priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7237,6 +7598,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7257,6 +7619,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7277,6 +7640,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7297,6 +7661,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7317,6 +7682,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7337,6 +7703,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7357,6 +7724,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7377,6 +7745,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7397,6 +7766,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7417,6 +7787,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7437,6 +7808,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7457,6 +7829,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7477,6 +7850,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7497,6 +7871,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7517,6 +7892,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7537,6 +7913,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "|cFFFFD200Торговец: |rПоставщица праздника Огненного солнцеворота, Торговка праздника Огненного солнцеворота|n|n|cFFFFD200Цена: |r150 |TInterface\\Icons\\INV_SummerFest_FireFlower.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7557,6 +7934,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7577,6 +7955,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7597,6 +7976,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7612,11 +7992,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 1,
-        lootType = 16,
+        isActive = 0,
+        lootType = 0,
         expansion = 128,
-        priceText = "|cFFFFD200Доступно на 27 уровне боевого пропуска|r",
+        priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7637,6 +8018,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7657,6 +8039,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7677,6 +8060,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7697,6 +8081,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7717,6 +8102,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|cFFFFD200Достижение: |rЖабьих дел мастер|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7737,6 +8123,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7757,6 +8144,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7777,6 +8165,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7797,6 +8186,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r32|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7817,6 +8207,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7832,11 +8223,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 1,
-        lootType = 16,
+        isActive = 0,
+        lootType = 0,
         expansion = 128,
-        priceText = "|cFFFFD200Доступно на 90 уровне боевого пропуска|r",
+        priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7857,6 +8249,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7877,6 +8270,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7897,6 +8291,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|cFFFFD200Источник: |rЛедяной золотой сундук|n|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Зимний Покров",
         flags = 0,
     },
     {
@@ -7917,6 +8312,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|cFFFFD200Достижение: |rПрохладная бронза|n|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Зимний Покров",
         flags = 0,
     },
     {
@@ -7937,6 +8333,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7952,11 +8349,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 1,
-        lootType = 16,
+        isActive = 0,
+        lootType = 0,
         expansion = 128,
-        priceText = "|cFFFFD200Доступно на 8 уровне боевого пропуска|r",
+        priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7977,6 +8375,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7997,6 +8396,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8017,6 +8417,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8037,6 +8438,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8057,6 +8459,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rПринц Малчезар|n|cFFFFD200Зона: |rКаражан|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8077,6 +8480,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8097,6 +8501,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8117,6 +8522,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8137,6 +8543,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8157,6 +8564,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8177,6 +8585,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8197,6 +8606,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8217,6 +8627,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8237,6 +8648,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|cFFFFD200Источник: |rТреснутое неопознанное яйцо|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8257,6 +8669,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8277,6 +8690,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8297,6 +8711,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8317,6 +8732,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8337,6 +8753,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8357,6 +8774,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8377,6 +8795,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8397,6 +8816,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8417,6 +8837,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|cFFFFD200Источник: |rТреснутое неопознанное яйцо|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8437,6 +8858,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8457,6 +8879,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8477,6 +8900,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8497,6 +8921,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8517,6 +8942,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8537,6 +8963,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8557,6 +8984,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8577,6 +9005,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8597,6 +9026,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8617,6 +9047,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8637,6 +9068,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8657,6 +9089,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8677,6 +9110,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8697,6 +9131,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8717,6 +9152,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8737,6 +9173,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8757,6 +9194,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8777,6 +9215,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8797,6 +9236,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8817,6 +9257,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8837,6 +9278,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8857,6 +9299,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8877,6 +9320,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8897,6 +9341,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8917,6 +9362,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8937,6 +9383,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8957,6 +9404,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8977,6 +9425,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8997,6 +9446,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9017,6 +9467,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Источник: |rТреснутое неопознанное яйцо|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9037,6 +9488,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9057,6 +9509,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9077,6 +9530,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9097,6 +9551,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9117,6 +9572,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9137,6 +9593,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9157,6 +9614,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9177,6 +9635,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9197,6 +9656,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9217,6 +9677,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9237,6 +9698,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9257,6 +9719,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9277,6 +9740,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9297,6 +9761,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9317,6 +9782,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9337,6 +9803,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9357,6 +9824,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9377,6 +9845,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9397,6 +9866,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9417,6 +9887,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9437,6 +9908,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9457,6 +9929,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9477,6 +9950,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9497,6 +9971,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9517,6 +9992,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9537,6 +10013,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9557,6 +10034,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9577,6 +10055,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9597,6 +10076,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9617,6 +10097,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9637,6 +10118,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9657,6 +10139,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9677,6 +10160,7 @@ COLLECTION_PETDATA = {
         expansion = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9697,6 +10181,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9717,6 +10202,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|cFFFFD200Торговец: |rЭлисандр|n|cFFFFD200Зона: |rДаларан(Даларан)|n|cFFFFD200Цена: |r 50 |TInterface\\Icons\\ability_racial_etherealconnection.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9737,6 +10223,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9757,6 +10244,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9777,6 +10265,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9797,6 +10286,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9817,6 +10307,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9837,6 +10328,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9857,6 +10349,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9877,6 +10370,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[Этот обаятельный и игривый котик обожает проводить время со своими большими мурлыкающими собратьями. Буквально ходит за ними по пятам!]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9897,6 +10391,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|cFFFFD200Источник: |rПригоршня конфет|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9917,6 +10412,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9937,6 +10433,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9957,6 +10454,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|cFFFFD200Источник: |rТреснутое неопознанное яйцо|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9977,6 +10475,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9997,6 +10496,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10017,6 +10517,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10037,6 +10538,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10057,6 +10559,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10077,6 +10580,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10097,6 +10601,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10117,6 +10622,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10137,6 +10643,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10151,12 +10658,13 @@ COLLECTION_PETDATA = {
         colorData = {},
         currency = 2,
         price = 200,
-        productID = 24119,
+        productID = 24095,
         isActive = 1,
         lootType = 15,
         expansion = 256,
         priceText = "|cFFFFD200Нужно очков голосования: |r200|TInterface\\Store\\mmotop.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10177,6 +10685,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10197,6 +10706,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10217,6 +10727,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10237,6 +10748,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10257,6 +10769,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10277,6 +10790,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10297,6 +10811,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10317,6 +10832,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10337,6 +10853,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10357,6 +10874,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10377,6 +10895,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10397,6 +10916,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10417,6 +10937,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10437,6 +10958,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10457,6 +10979,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10477,6 +11000,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10497,6 +11021,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10517,6 +11042,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10537,6 +11063,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10557,6 +11084,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10577,6 +11105,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10597,6 +11126,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10617,6 +11147,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10637,6 +11168,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10657,6 +11189,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10677,6 +11210,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10697,6 +11231,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10717,6 +11252,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10737,6 +11273,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10757,6 +11294,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10777,6 +11315,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10797,6 +11336,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10817,6 +11357,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|cFFFFD200Источник: |rОхотник Вечности|n|cFFFFD200Зона: |rСтарые предгорья Хилсбрада|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10837,6 +11378,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|cFFFFD200Источник: |rОсквернитель из рода Бесконечности|n|cFFFFD200Зона: |rОчищение Стратхольма|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10857,6 +11399,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10877,6 +11420,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10897,6 +11441,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10917,6 +11462,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10937,6 +11483,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10957,6 +11504,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10977,6 +11525,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10997,6 +11546,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11012,11 +11562,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 1,
-        lootType = 16,
+        isActive = 0,
+        lootType = 0,
         expansion = 16,
-        priceText = "|cFFFFD200Доступно на 69 уровне боевого пропуска|r",
+        priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11037,6 +11588,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11057,6 +11609,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11077,6 +11630,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11097,6 +11651,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11117,6 +11672,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11137,6 +11693,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11157,6 +11714,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11177,6 +11735,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11197,6 +11756,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11217,6 +11777,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11237,6 +11798,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11257,6 +11819,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11277,6 +11840,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11297,6 +11861,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11317,6 +11882,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11337,6 +11903,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11357,6 +11924,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11377,6 +11945,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11397,6 +11966,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11417,6 +11987,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11437,6 +12008,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11457,6 +12029,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11477,6 +12050,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11497,6 +12071,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11517,6 +12092,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11537,6 +12113,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11557,6 +12134,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|cFFFFD200Торговец: |rЗабытый|n|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\INV_MISC_TRINKETPANDA_08.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11577,6 +12155,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11597,6 +12176,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11617,6 +12197,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11637,6 +12218,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11657,6 +12239,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11677,6 +12260,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11697,6 +12281,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11717,6 +12302,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11737,6 +12323,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11757,6 +12344,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11777,6 +12365,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11797,6 +12386,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11817,6 +12407,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11837,6 +12428,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11857,6 +12449,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11877,6 +12470,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11897,6 +12491,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11917,6 +12512,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11937,6 +12533,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11957,6 +12554,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11977,6 +12575,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11997,6 +12596,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12012,11 +12612,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 0,
-        lootType = 0,
+        isActive = 1,
+        lootType = 16,
         expansion = 64,
-        priceText = "",
-        descriptionText = [[]],
+        priceText = "|cFFFFD200Доступно на 50 уровне боевого пропуска|r",
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12037,6 +12638,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12057,6 +12659,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12077,6 +12680,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12097,6 +12701,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12112,11 +12717,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 0,
-        lootType = 0,
+        isActive = 1,
+        lootType = 16,
         expansion = 256,
-        priceText = "",
-        descriptionText = [[]],
+        priceText = "|cFFFFD200Доступно на 8 уровне боевого пропуска|r",
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12137,6 +12743,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12157,6 +12764,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12177,6 +12785,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12197,6 +12806,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[Подобно своей защитнице Сирин, эта светлоспинка так же грациозна и обаятельна.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12217,6 +12827,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12237,6 +12848,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12257,6 +12869,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12277,6 +12890,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12297,6 +12911,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|cFFFFD200Торговец: |rЗабытый|n|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\INV_MISC_TRINKETPANDA_08.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12317,6 +12932,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12337,6 +12953,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12357,6 +12974,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12372,11 +12990,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 0,
-        lootType = 0,
+        isActive = 1,
+        lootType = 16,
         expansion = 16,
-        priceText = "",
-        descriptionText = [[]],
+        priceText = "|cFFFFD200Доступно на 69 уровне боевого пропуска|r",
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12397,6 +13016,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12417,6 +13037,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12437,6 +13058,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[... от его взора не скроются ни живые, ни мертвые, ни в этой жизни ни после нее.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12457,6 +13079,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12477,6 +13100,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12497,6 +13121,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12517,6 +13142,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12532,11 +13158,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 0,
-        lootType = 0,
+        isActive = 1,
+        lootType = 16,
         expansion = 256,
-        priceText = "",
-        descriptionText = [[]],
+        priceText = "|cFFFFD200Доступно на 82 уровне боевого пропуска|r",
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12557,6 +13184,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12572,11 +13200,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 0,
-        lootType = 0,
+        isActive = 1,
+        lootType = 16,
         expansion = 256,
-        priceText = "",
-        descriptionText = [[]],
+        priceText = "|cFFFFD200Доступно на 78 уровне боевого пропуска|r",
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12597,6 +13226,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12617,6 +13247,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12637,6 +13268,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12657,6 +13289,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12677,6 +13310,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12697,6 +13331,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12717,6 +13352,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12737,6 +13373,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12757,6 +13394,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12772,11 +13410,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 0,
-        lootType = 0,
+        isActive = 1,
+        lootType = 7,
         expansion = 128,
-        priceText = "",
+        priceText = "|cFFFFD200Достижение: |r|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12797,6 +13436,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12817,6 +13457,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12832,11 +13473,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 0,
-        lootType = 0,
+        isActive = 1,
+        lootType = 16,
         expansion = 128,
-        priceText = "",
-        descriptionText = [[]],
+        priceText = "|cFFFFD200Доступно на 58 уровне боевого пропуска|r",
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12857,6 +13499,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12877,6 +13520,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12897,6 +13541,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12917,6 +13562,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12937,6 +13583,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[Является наградой за участие в событии "Кошмар наяву", приуроченном к вторжению Зорта в Азерот.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12957,6 +13604,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12977,6 +13625,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12997,6 +13646,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13017,6 +13667,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13037,6 +13688,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13057,6 +13709,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13072,11 +13725,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 0,
-        lootType = 0,
+        isActive = 1,
+        lootType = 16,
         expansion = 64,
-        priceText = "",
-        descriptionText = [[]],
+        priceText = "|cFFFFD200Доступно на 98 уровне боевого пропуска|r",
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13097,6 +13751,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13117,6 +13772,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13137,6 +13793,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13157,6 +13814,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13177,6 +13835,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13197,6 +13856,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13217,6 +13877,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13237,6 +13898,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13257,6 +13919,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13277,6 +13940,7 @@ COLLECTION_PETDATA = {
         expansion = 8,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13297,6 +13961,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13317,6 +13982,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Торговец: |rПродавец Сада чудес, Торговец Сада чудес|n|n|cFFFFD200Цена: |r200 |TInterface\\Icons\\Achievement_Noblegarden_Chocolate_Egg.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Сад чудес",
         flags = 0,
     },
     {
@@ -13337,6 +14003,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13357,6 +14024,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13377,6 +14045,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13397,6 +14066,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13417,6 +14087,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13437,6 +14108,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13457,6 +14129,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13477,6 +14150,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13497,6 +14171,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13517,6 +14192,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13537,6 +14213,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13552,11 +14229,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 0,
-        lootType = 0,
+        isActive = 1,
+        lootType = 16,
         expansion = 128,
-        priceText = "",
-        descriptionText = [[]],
+        priceText = "|cFFFFD200Доступно на 27 уровне боевого пропуска|r",
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13577,6 +14255,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13597,6 +14276,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13617,6 +14297,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13637,6 +14318,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13657,6 +14339,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13677,6 +14360,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13697,6 +14381,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13717,6 +14402,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13732,11 +14418,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 0,
-        lootType = 0,
+        isActive = 1,
+        lootType = 16,
         expansion = 64,
-        priceText = "",
-        descriptionText = [[]],
+        priceText = "|cFFFFD200Доступно на 98 уровне боевого пропуска|r",
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13757,6 +14444,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13777,6 +14465,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13797,6 +14486,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13812,11 +14502,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 0,
-        lootType = 0,
+        isActive = 1,
+        lootType = 16,
         expansion = 256,
-        priceText = "",
-        descriptionText = [[]],
+        priceText = "|cFFFFD200Доступно на 5 уровне боевого пропуска|r",
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13837,6 +14528,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13857,6 +14549,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13877,6 +14570,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13897,6 +14591,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13917,6 +14612,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13937,6 +14633,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13957,6 +14654,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13977,6 +14675,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13997,6 +14696,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14017,6 +14717,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|cFFFFD200Торговец: |rЭлисандр|n|cFFFFD200Зона: |rДаларан(Даларан)|n|cFFFFD200Цена: |r 50 |TInterface\\Icons\\ability_racial_etherealconnection.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14037,6 +14738,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14057,6 +14759,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14077,6 +14780,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14097,6 +14801,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14111,12 +14816,13 @@ COLLECTION_PETDATA = {
         colorData = {},
         currency = 2,
         price = 200,
-        productID = 24120,
+        productID = 24096,
         isActive = 1,
         lootType = 15,
         expansion = 32,
         priceText = "|cFFFFD200Нужно очков голосования: |r200|TInterface\\Store\\mmotop.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14137,6 +14843,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14157,6 +14864,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14172,11 +14880,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 0,
-        lootType = 0,
+        isActive = 1,
+        lootType = 16,
         expansion = 32,
-        priceText = "",
-        descriptionText = [[]],
+        priceText = "|cFFFFD200Доступно на 93 уровне боевого пропуска|r",
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14197,6 +14906,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "|cFFFFD200Торговец: |rМилая продавщица|n|n|cFFFFD200Цена: |r40 |TInterface\\Icons\\INV_ValentinesCard01.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Любовная лихорадка",
         flags = 0,
     },
     {
@@ -14217,6 +14927,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14237,6 +14948,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14257,6 +14969,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14272,11 +14985,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 0,
-        lootType = 0,
+        isActive = 1,
+        lootType = 16,
         expansion = 16,
-        priceText = "",
-        descriptionText = [[]],
+        priceText = "|cFFFFD200Доступно на 90 уровне боевого пропуска|r",
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14297,6 +15011,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14317,6 +15032,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14337,6 +15053,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14357,6 +15074,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14377,6 +15095,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14397,6 +15116,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14417,6 +15137,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14437,6 +15158,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14457,6 +15179,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14477,6 +15200,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14497,6 +15221,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14517,6 +15242,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14537,6 +15263,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|cFFFFD200Источник: |rНоригорн|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14557,6 +15284,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14577,6 +15305,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14597,6 +15326,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14617,6 +15347,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14637,6 +15368,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14657,6 +15389,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14677,6 +15410,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14697,6 +15431,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14717,6 +15452,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[Однажды лед лужи треснет, и тогда владениями Мизмата станет Весь Азерот!]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14737,6 +15473,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14757,6 +15494,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14777,6 +15515,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14797,6 +15536,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14817,6 +15557,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14837,6 +15578,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14857,6 +15599,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14877,6 +15620,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14897,6 +15641,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14917,6 +15662,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14937,6 +15683,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14957,6 +15704,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14977,6 +15725,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14997,6 +15746,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15017,6 +15767,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15037,6 +15788,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "|cFFFFD200Торговец: |rЭлисандр|n|cFFFFD200Зона: |rДаларан(Даларан)|n|cFFFFD200Цена: |r 50 |TInterface\\Icons\\ability_racial_etherealconnection.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15057,6 +15809,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15077,6 +15830,7 @@ COLLECTION_PETDATA = {
         expansion = 16,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15097,6 +15851,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "|cFFFFD200Источник: |rПожиратель Магии|n|cFFFFD200Зона: |rТол'Гародская тюрьма|n",
         descriptionText = [[Маленькая мерзость с большой тягой к разрушениям.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15117,6 +15872,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "|cFFFFD200Торговец: |rПродавец Сада чудес, Торговец Сада чудес|n|n|cFFFFD200Цена: |r200 |TInterface\\Icons\\Achievement_Noblegarden_Chocolate_Egg.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Сад чудес",
         flags = 0,
     },
     {
@@ -15137,6 +15893,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "|cFFFFD200Торговец: |rБелби Быстросмен, Бликс Чиништукс, Ларкин Громовар, Рай'ма|n|cFFFFD200Зона: |rДун Морог,|nФерма Каменного Клыка(Дуротар),|nСтальгорн,|nОргриммар|n|cFFFFD200Цена: |r150 |TInterface\\Icons\\INV_Misc_Coin_01.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Хмельной фестиваль",
         flags = 0,
     },
     {
@@ -15157,6 +15914,7 @@ COLLECTION_PETDATA = {
         expansion = 32,
         priceText = "",
         descriptionText = [[Можно приобрести у любого торговца Пиршества странников за скромное количество золотых монет.]],
+        holidayText = "|cFFFFD200Игровое событие:|r Пиршество странников",
         flags = 0,
     },
     {
@@ -15177,6 +15935,7 @@ COLLECTION_PETDATA = {
         expansion = 4,
         priceText = "",
         descriptionText = [[Сир Белич Фундукт Второй.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15197,6 +15956,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|cFFFFD200Источник: |rЯщичек с пушистыми подарками|n|n|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[Содержится в сундуке специального предложения "Ушастые милахи!".]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15217,6 +15977,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|cFFFFD200Достижение: |r2-я годовщина Scourge|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15237,6 +15998,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15257,6 +16019,7 @@ COLLECTION_PETDATA = {
         expansion = 64,
         priceText = "|cFFFFD200Достижение: |r3-я годовщина Scourge|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15277,6 +16040,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "|cFFFFD200Достижение: |r1-я годовщина Algalon|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15297,6 +16061,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15317,6 +16082,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15337,6 +16103,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15357,6 +16124,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15377,6 +16145,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15397,6 +16166,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15417,6 +16187,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15437,6 +16208,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[Несмотря на воинственное имя и звание - его любимые занятия это поедание сладостей Айми и воровство морковок у снеговиков.]],
+        holidayText = "|cFFFFD200Игровое событие:|r Зимний Покров",
         flags = 0,
     },
     {
@@ -15455,8 +16227,9 @@ COLLECTION_PETDATA = {
         isActive = 0,
         lootType = 0,
         expansion = 256,
-        priceText = "|n|nМожет встретиться во внутриигровом магазине.",
+        priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15477,6 +16250,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15497,6 +16271,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15517,6 +16292,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15537,6 +16313,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[Дар древнего инженера, топливом для которого служит восхищение окружающих, испытываемая любовь и завистливые взгляды. Магия - это химия.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15557,6 +16334,7 @@ COLLECTION_PETDATA = {
         expansion = 256,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15572,11 +16350,12 @@ COLLECTION_PETDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 1,
-        lootType = 16,
+        isActive = 0,
+        lootType = 0,
         expansion = 256,
-        priceText = "|cFFFFD200Доступно на 98 уровне боевого пропуска|r",
+        priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15597,6 +16376,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15617,6 +16397,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15637,6 +16418,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15657,6 +16439,7 @@ COLLECTION_PETDATA = {
         expansion = 128,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
 }

@@ -367,7 +367,18 @@ function CharacterSelect_OnUpdate(self, elapsed)
     local factionEvent = GetSafeCVar("ForceChangeFactionEvent")
 	if not GlueDialog:IsShown() and not GlueParent.dontShowInvalidVersionAddonDialog and (not factionEvent or factionEvent ~= 1) then
 		if AddonList_HasNewVersion() then
-			GlueDialog:ShowDialog("ADDON_INVALID_VERSION_DIALOG")
+			if C_GlueCVars.GetCVar("IGNORE_ADDON_VERSION") ~= "1" then
+				if IsGMAccount() then
+					GlueDialog:ShowDialog("ADDON_INVALID_VERSION_DIALOG_NSA")
+				else
+					GlueDialog:ShowDialog("ADDON_INVALID_VERSION_DIALOG")
+				end
+			else
+				GlueParent.dontShowInvalidVersionAddonDialog = true
+			end
+		else
+			C_GlueCVars.SetCVar("IGNORE_ADDON_VERSION", nil)
+			GlueParent.dontShowInvalidVersionAddonDialog = true
 		end
 	end
 
@@ -403,7 +414,7 @@ function CharacterSelect_OnKeyDown(self,key)
 				CharacterSelect_SelectCharacter(numChars);
 			end
 		end
-	elseif ( arg1 == "DOWN" or arg1 == "RIGHT" ) then
+	elseif ( key == "DOWN" or key == "RIGHT" ) then
 		local numChars = GetNumCharacters();
 		if ( numChars > 1 ) then
 			if ( self.selectedIndex < GetNumCharacters() ) then

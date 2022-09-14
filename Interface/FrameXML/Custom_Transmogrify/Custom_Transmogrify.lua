@@ -131,7 +131,7 @@ function TransmogrifySlotButton_OnShow( self, ... )
 	TransmogrifySlotButtonUpdate(self)
 end
 
-function TransmogrifySlotButton_OnEvent( self, ... )
+function TransmogrifySlotButton_OnEvent( self, event, ... )
 	if ( event == "MODIFIER_STATE_CHANGED" ) then
 		if ( IsModifiedClick("SHOWITEMFLYOUT") and self:IsMouseOver() ) then
 			TransmogrifySlotButton_OnEnter(self)
@@ -564,7 +564,7 @@ function TransmogrifyFlyoutFrameMixin:UpdateContent()
 	end
 
 	if self.numItems > 0 then
-		ownerSlot.PopoutButton:SetDisplay(isVerticalCheck(slotID), true)
+		ownerSlot.PopoutButton:SetDisplay(isVerticalCheck(ownerSlot.id), true)
 	else
 		ownerSlot.PopoutButton:Hide()
 	end

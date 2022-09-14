@@ -2,6 +2,7 @@
 --	Project:	Custom Game Interface
 --	Author:		Nyll & Blizzard Entertainment
 
+---@class C_GuildMixin : Mixin
 C_GuildMixin = {}
 
 function C_GuildMixin:GetTabardEmblemCoords( emblemSize, columns, offset, emblemID )
@@ -31,5 +32,5 @@ function C_GuildMixin:GetTabardBorderColor( borderStyleID, colorID )
     return GUILD_TABARD_BORDER_COLOR[borderStyleID] and GUILD_TABARD_BORDER_COLOR[borderStyleID][colorID] or GUILD_TABARD_BORDER_COLOR["ALL"][colorID]
 end
 
----@class C_GuildMixin
+---@class C_Guild : C_GuildMixin
 C_Guild = CreateFromMixins(C_GuildMixin)

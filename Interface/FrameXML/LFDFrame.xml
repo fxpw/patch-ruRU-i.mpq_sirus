@@ -1320,7 +1320,7 @@
 					<Anchor point="BOTTOMLEFT" x="4" y="4" />
 				</Anchors>
 				<Frames>
-					<Frame name="$parentArt" parent="LFDParentFrame" setAllPoints="true">
+					<Frame name="$parentLeftArt" parent="LFDParentFrame" setAllPoints="true">
 						<Layers>
 							<Layer level="BORDER">
 								<Texture parentKey="Background" name="$parentBackgrounds" file="Interface\Common\bluemenu-main">

@@ -231,6 +231,8 @@ function SetItemRef(link, text, button, chatFrame)
 					end
 				elseif ( collectionType == CHAR_COLLECTION_APPEARANCE ) then
 					TransmogUtil.OpenCollectionToItem(itemID);
+				elseif ( collectionType == CHAR_COLLECTION_TOY ) then
+					SetCollectionsJournalShown(true, COLLECTIONS_JOURNAL_TAB_INDEX_TOYS);
 				end
 			end
 		end

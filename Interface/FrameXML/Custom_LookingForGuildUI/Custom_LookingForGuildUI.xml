@@ -179,7 +179,7 @@
 						<Anchor point="RIGHT" relativeTo="$parentMemberCount" relativePoint="RIGHT" x="25" y="0"/>
 					</Anchors>
 				</Texture>
-				<FontString name="$parentDescription" parentKey="Description" justifyH="CENTER" inherits="GameFontNormal" text="Description">
+				<FontString name="$parentDescription" parentKey="Description" maxLines="6" justifyH="CENTER" inherits="GameFontNormal" text="Description">
 					<Size x="155" y="95"/>
 					<Anchors>
 						<Anchor point="CENTER" relativePoint="CENTER" x="0" y="-32"/>

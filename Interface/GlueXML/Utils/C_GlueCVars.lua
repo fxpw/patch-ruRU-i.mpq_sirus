@@ -7,6 +7,7 @@ enum:E_GLUE_CVARS {
 	"VERSION",
 	"ENTRY_POINT",
 	"REALM_ENTRY_POINT",
+	"IGNORE_ADDON_VERSION",
 }
 
 local function validateCVarName(cvarName)

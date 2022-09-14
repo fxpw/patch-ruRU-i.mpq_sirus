@@ -98,9 +98,6 @@
 				<Anchors>
 					<Anchor point="CENTER" x="0" y="-1"/>
 				</Anchors>
-				<SwipeTexture>
-					<Color r="1" g="1" b="1" a="0.8"/>
-				</SwipeTexture>
 			</Cooldown>
 		</Frames>
 		<NormalTexture name="$parentNormalTexture" file="Interface\Buttons\UI-Quickslot2">
@@ -120,4 +117,3 @@
 		<CheckedTexture alphaMode="ADD" file="Interface\Buttons\CheckButtonHilight"/>
 	</CheckButton>
 </Ui>
-

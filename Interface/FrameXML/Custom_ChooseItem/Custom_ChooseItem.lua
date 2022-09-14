@@ -4,6 +4,8 @@
 --	E-mail:		nyll@sirus.su
 --	Web:		https://sirus.su/
 
+local CREATED_FRAMES = 4;
+local MAX_UNSCALED_FRAMES = 4;
 local CHOOSEITEM_DATA = {}
 
 UIPanelWindows["ChooseItemFrame"] =	{ area = "center",	pushable = 0,	whileDead = 1, allowOtherPanels = 1 };
@@ -22,11 +24,19 @@ function ChooseItemFrame_OnShow( self, ... )
 		"HEALER"
 	}
 
-	local width = 380
-	for i = 1, 4 do
+	local numData = #CHOOSEITEM_DATA;
+
+	local width = 64 * 2;
+	for i = 1, numData do
 		local data = CHOOSEITEM_DATA[i]
 		local frame = _G["ChooseItemOption"..i]
-		if data and frame then
+		if data then
+			if not frame then
+				frame = CreateFrame("Frame", "ChooseItemOption"..i, ChooseItemFrame, "QuestChoiceOptionTemplate");
+				frame:SetPoint("LEFT", _G["ChooseItemOption"..(i - 1)], "RIGHT", 24, 0);
+				CREATED_FRAMES = CREATED_FRAMES + 1;
+			end
+
 			local function ItemInfoResponceCallback(itemName, _, itemRarity, _, _, _, _, _, _, itemTexture)
 				local r, g, b = GetItemQualityColor(itemRarity)
 
@@ -71,13 +81,24 @@ function ChooseItemFrame_OnShow( self, ... )
 			frame.Item.glow:Show()
 			frame.Item.glow.animIn:Play()
 
-			width = i == 1 and 380 or width + 230
+			width = width + (i == 1 and 210 or 234)
 			frame:Show()
-		else
+		elseif frame then
 			frame:Hide()
 		end
 	end
-	self:SetWidth(width)
+
+	for i = numData + 1, CREATED_FRAMES do
+		_G["ChooseItemOption"..i]:Hide();
+	end
+
+	self:SetWidth(width);
+
+	if numData > MAX_UNSCALED_FRAMES then
+		self:SetScale(1 - ((numData - MAX_UNSCALED_FRAMES) * 0.155));
+	else
+		self:SetScale(1);
+	end
 end
 
 function QuestChoiceOption_OnEnter( self, ... )

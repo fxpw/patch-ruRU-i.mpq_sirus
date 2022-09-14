@@ -750,21 +750,21 @@
 		</Layers>
 		<Scripts>
 			<OnLoad>
-				if ( not self:IsEnabled() ) then
+				if ( self:IsEnabled() ~= 1 ) then
 				self.Left:SetTexCoord(0.26464844, 0.31542969, 0.89160156, 0.92285156)
 				self.Middle:SetTexCoord(0.18457031, 0.25683594, 0.96484375, 0.99609375)
 				self.Right:SetTexCoord(0.98046875, 0.99707031, 0.29980469, 0.33105469)
 				end
 			</OnLoad>
 			<OnMouseDown>
-				if ( self:IsEnabled() ) then
+				if ( self:IsEnabled() == 1 ) then
 				self.Left:SetTexCoord(0.31738281, 0.36816406, 0.89160156, 0.92285156)
 				self.Middle:SetTexCoord(0.18457031, 0.25683594, 0.93164063, 0.96289063)
 				self.Right:SetTexCoord(0.98046875, 0.99707031, 0.33300781, 0.36425781)
 				end
 			</OnMouseDown>
 			<OnMouseUp>
-				if ( self:IsEnabled() ) then
+				if ( self:IsEnabled() == 1 ) then
 				self.Left:SetTexCoord(0.30859375, 0.35937500, 0.85156250, 0.88281250)
 				self.Middle:SetTexCoord(0.73925781, 0.81152344, 0.41992188, 0.45117188)
 				self.Right:SetTexCoord(0.98242188, 0.99902344, 0.15917969, 0.19042969)
@@ -2831,7 +2831,7 @@
 						self.texture:SetAlpha(0.5)
 					</OnLeave>
 					<OnMouseDown>
-						if self:IsEnabled() then
+						if self:IsEnabled() == 1 then
 							self.texture:SetPoint("TOPLEFT", self, "TOPLEFT", 1, -1)
 						end
 					</OnMouseDown>
@@ -3428,21 +3428,21 @@
 		</Layers>
 		<Scripts>
 			<OnLoad>
-				if ( not self:IsEnabled() ) then
+				if ( self:IsEnabled() ~= 1 ) then
 				self.Left:SetTexCoord(0.26464844, 0.31542969, 0.89160156, 0.92285156);
 				self.Middle:SetTexCoord(0.18457031, 0.25683594, 0.96484375, 0.99609375);
 				self.Right:SetTexCoord(0.98046875, 0.99707031, 0.29980469, 0.33105469);
 				end
 			</OnLoad>
 			<OnMouseDown>
-				if ( not self:IsEnabled() ) then
+				if ( self:IsEnabled() ~= 1 ) then
 				self.Left:SetTexCoord(0.31738281, 0.36816406, 0.89160156, 0.92285156);
 				self.Middle:SetTexCoord(0.18457031, 0.25683594, 0.93164063, 0.96289063);
 				self.Right:SetTexCoord(0.98046875, 0.99707031, 0.33300781, 0.36425781);
 				end
 			</OnMouseDown>
 			<OnMouseUp>
-				if ( not self:IsEnabled() ) then
+				if ( self:IsEnabled() ~= 1 ) then
 				self.Left:SetTexCoord(0.30859375, 0.35937500, 0.85156250, 0.88281250);
 				self.Middle:SetTexCoord(0.73925781, 0.81152344, 0.41992188, 0.45117188);
 				self.Right:SetTexCoord(0.98242188, 0.99902344, 0.15917969, 0.19042969);
@@ -4623,7 +4623,7 @@
 				</Anchors>
 				<Scripts>
 					<OnMouseWheel>
-						if self:GetParent():IsEnabled() then
+						if self:GetParent():IsEnabled() == 1 then
 						local amount = IsShiftKeyDown() and 10 or 1;
 						if delta > 0 then
 						NumericInputSpinner_Increment(self:GetParent(), amount)
@@ -5178,4 +5178,242 @@
 		<DisabledTexture file="Interface\Buttons\UI-SquareButton-Disabled"/>
 		<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
 	</Button>
+
+	<Button name="StorePopupButtonTemplate" inherits="StoreGoldButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StorePopupButtonTemplateMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+		</Scripts>
+	</Button>
+
+	<Frame name="StorePopupFrameTemplate" inherits="GoldBorderFrameTemplate" parent="UIParent" frameStrata="DIALOG" toplevel="true" enableMouse="true" hidden="true" virtual="true">
+		<Size x="460" y="360"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="15"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentParchmentMiddle" parentKey="ParchmentMiddle" file="Interface\Store\receipt-parchment-middle">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="8" y="-14"/>
+						<Anchor point="BOTTOMRIGHT" x="-8" y="64"/>
+					</Anchors>
+					<TexCoords left="0" right="0.734375" top="0" bottom="1"/>
+				</Texture>
+				<Texture parentKey="BlueGlow" inherits="store-receipt-blueglow">
+					<Size x="376" y="44" />
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="8" y="14" />
+						<Anchor point="BOTTOMRIGHT" x="-8" y="14" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="AlphaLayer" alphaMode="ADD">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentParchmentMiddle" x="0" y="-116"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentParchmentMiddle" x="0" y="62"/>
+					</Anchors>
+					<Color r="1" g="1" b="1" a="0.10" />
+				</Texture>
+				<Texture parentKey="ParchmentBottom" inherits="store-receipt-parchment-bottom">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="8" y="54" />
+						<Anchor point="BOTTOMRIGHT" x="-8" y="54" />
+					</Anchors>
+				</Texture>
+				<Texture parentKey="ParchmentTop" inherits="store-receipt-parchment-top">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="8" y="-14" />
+						<Anchor point="TOPRIGHT" x="-8" y="-14" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Title" inherits="GameFontHighlight">
+					<Size x="180" y="20" />
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-16" />
+					</Anchors>
+				</FontString>
+				<Texture parentKey="Line1" inherits="store-receipt-line">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentParchmentMiddle" relativePoint="TOP" x="0" y="-116"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="Line2" inherits="store-receipt-line">
+					<Anchors>
+						<Anchor point="BOTTOM" relativeTo="$parentParchmentMiddle" relativePoint="BOTTOM" x="0" y="60"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentBlockingFrame" parentKey="BlockingFrame" enableMouse="true" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="14" y="-14"/>
+					<Anchor point="BOTTOMRIGHT" x="-14" y="14"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture setAllPoints="true">
+							<Color r="0" g="0" b="0" a="0.75"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnMouseWheel function="nop"/>
+				</Scripts>
+			</Frame>
+
+			<Frame name="$parentContent" parentKey="Content">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="14" y="-38"/>
+					<Anchor point="BOTTOMRIGHT" x="-14" y="58"/>
+				</Anchors>
+				<Frames>
+					<Frame name="$parentSectionTop" parentKey="SectionTop">
+						<Size x="0" y="92"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="0" y="0"/>
+							<Anchor point="TOPRIGHT" x="0" y="0"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString name="$parentText" parentKey="Text" inherits="GameFontBlackMedium" justifyH="LEFT" justifyV="TOP">
+									<Anchors>
+										<Anchor point="TOPLEFT" x="35" y="-15"/>
+										<Anchor point="BOTTOMRIGHT" x="-35" y="15"/>
+									</Anchors>
+									<Color r="0" g="0" b="0"/>
+								</FontString>
+							</Layer>
+						</Layers>
+					</Frame>
+					<Frame name="$parentSectionBottom" parentKey="SectionBottom">
+						<Size x="0" y="68"/>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+							<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString name="$parentBalance" parentKey="Balance" inherits="GameFontNormalShadowHuge17">
+									<Anchors>
+										<Anchor point="LEFT" x="34" y="0"/>
+									</Anchors>
+								</FontString>
+								<Texture name="$parentMoneyIcon" parentKey="MoneyIcon" file="Interface\Store\coins">
+									<Size x="30" y="30"/>
+									<Anchors>
+										<Anchor point="RIGHT" x="-34" y="0"/>
+									</Anchors>
+								</Texture>
+								<FontString name="$parentPrice" parentKey="Price" inherits="GameFontNormalShadowHuge17">
+									<Anchors>
+										<Anchor point="RIGHT" relativeTo="$parentMoneyIcon" relativePoint="LEFT" x="0" y="0"/>
+									</Anchors>
+								</FontString>
+								<FontString name="$parentOriginalPrice" parentKey="OriginalPrice" inherits="GameFontNormalShadowHuge17" hidden="true">
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" relativeTo="$parentPrice" relativePoint="TOPLEFT" x="0" y="3"/>
+									</Anchors>
+									<Color r="1" g="1" b="1"/>
+								</FontString>
+							</Layer>
+							<Layer level="OVERLAY">
+								<Texture parentKey="Strikethrough" file="Interface/Buttons/White8x8" hidden="true">
+									<Size x="0" y="3"/>
+									<Anchors>
+										<Anchor point="LEFT" relativeTo="$parentOriginalPrice" x="-3" y="-1"/>
+										<Anchor point="RIGHT" relativeTo="$parentOriginalPrice" x="1" y="0"/>
+									</Anchors>
+									<Color r="1" g="0" b="0"/>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Frame>
+					<Frame name="$parentSectionMiddle" parentKey="SectionMiddle">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentSectionTop" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+							<Anchor point="BOTTOMRIGHT" relativeTo="$parentSectionBottom" relativePoint="TOPRIGHT" x="0" y="0"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString name="$parentText" parentKey="Text" inherits="GameFontBlackMedium" justifyH="LEFT" justifyV="TOP">
+									<Size x="0" y="0"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" x="35" y="-15"/>
+										<Anchor point="TOPRIGHT" x="-35" y="-15"/>
+									</Anchors>
+									<Color r="0" g="0" b="0"/>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Frames>
+							<ScrollFrame name="$parentEditBoxFrame" parentKey="EditBoxFrame" inherits="InputScrollFrameTemplate">
+								<Size x="0" y="72"/>
+								<Anchors>
+									<Anchor point="BOTTOMLEFT" x="35" y="15"/>
+									<Anchor point="BOTTOMRIGHT" x="-35" y="15"/>
+								</Anchors>
+								<Layers>
+									<Layer level="BACKGROUND">
+										<Texture parentKey="DarkBox">
+											<Anchors>
+												<Anchor point="TOPLEFT" x="-2" y="1" />
+												<Anchor point="BOTTOMRIGHT" x="3" y="-2" />
+											</Anchors>
+											<Color r="0" g="0" b="0" a="0.7" />
+										</Texture>
+									</Layer>
+								</Layers>
+								<Scripts>
+									<OnLoad>
+										Mixin(self, StorePopupFrameTemplateEditBoxMixin)
+										self:OnLoad()
+									</OnLoad>
+								</Scripts>
+							</ScrollFrame>
+						</Frames>
+					</Frame>
+				</Frames>
+			</Frame>
+			<Button name="$parentButton1" parentKey="Button1" inherits="StorePopupButtonTemplate" id="1">
+				<Size x="140" y="32" />
+				<Anchors>
+					<Anchor point="BOTTOM" x="-75" y="17" />
+				</Anchors>
+			</Button>
+			<Button name="$parentButton2" parentKey="Button2" inherits="StorePopupButtonTemplate" id="2">
+				<Size x="140" y="32" />
+				<Anchors>
+					<Anchor point="BOTTOM" x="75" y="17" />
+				</Anchors>
+			</Button>
+		</Frames>
+	<Scripts>
+		<OnLoad>
+			Mixin(self, StorePopupFrameTemplateMixin)
+			self:OnLoad()
+		</OnLoad>
+		<OnShow>
+			self:OnShow()
+		</OnShow>
+		<OnHide>
+			self:OnHide()
+		</OnHide>
+	</Scripts>
+	</Frame>
 </Ui>

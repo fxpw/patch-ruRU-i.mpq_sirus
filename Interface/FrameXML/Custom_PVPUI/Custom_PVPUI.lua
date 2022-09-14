@@ -2780,13 +2780,19 @@ local function CalculateHonorLimit()
 end
 
 function PVPQueueFrameCapTopFrameLockOverlayCompleteFrame_OnEnter( self, ... )
-	local pvpStats = C_CacheInstance:Get("ASMSG_PVP_STATS", {})
 	local timeData = C_CacheInstance:Get("ASMSG_PVP_LIMITS_TIMERS", {})
-	local arenaRating = math.max(pvpStats[1].pvpRating, pvpStats[2].pvpRating)
-	local _, _, _, _, battlegroundRating = GetRatedBattlegroundRankInfo()
 
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 	if PVPQueueFrame.selectedCategory == 2 then
+		local pvpStats = C_CacheInstance:Get("ASMSG_PVP_STATS", {})
+		local arenaRating
+
+		if ConquestFrame.selectedButton == ConquestFrame.BottomInset.SoloArenaContainer.ArenaSolo then
+			arenaRating = pvpStats[1].pvpRating
+		else
+			arenaRating = pvpStats[2].pvpRating
+		end
+
 		GameTooltip:SetText(PVPFRAME_CONQUEST_CAPBAR_COMPLETEFRAME_TOOLTIP_HEAD)
 		GameTooltip:AddLine(string.format(PVPFRAME_CONQUEST_CAPBAR_COMPLETEFRAME_TOOLTIP, CalculateArenaLimit(arenaRating)), 1, 1, 1, true)
 	elseif PVPQueueFrame.selectedCategory == 3 then
@@ -2801,14 +2807,7 @@ end
 
 function PVPQueueFrameCapTopFrameStatusBar_OnEnter( self, ... )
 	local _, maxValue = self:GetMinMaxValues()
-	local pvpStats = C_CacheInstance:Get("ASMSG_PVP_STATS", {})
 	local timeData = C_CacheInstance:Get("ASMSG_PVP_LIMITS_TIMERS", {})
-	local limitData = C_CacheInstance:Get("ASMSG_PVP_WEEKLY_LIMIT", {})
-	local arenaRating = 0
-
-	if pvpStats[1] and pvpStats[2] then
-		arenaRating = math.max(pvpStats[1].pvpRating, pvpStats[2].pvpRating)
-	end
 
 	if self:GetValue() ~= maxValue then
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")

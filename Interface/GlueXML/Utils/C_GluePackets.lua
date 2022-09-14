@@ -1,10 +1,10 @@
-local PACKET_THROTTLE = 0.1
+local PACKET_THROTTLE = 0.3
 
 C_GluePackets = {}
 
 C_GluePackets.OpCodes = {
 	RequestBoostStatus				= "0",
-	RequestBoostBuy					= "1",
+	RequestBoostBuy					= "101",
 	RequestBoostCharacter			= "00",
 	RequestCharacterListInfo		= "01",
 	RequestCharacterDeletedList		= "11",

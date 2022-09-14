@@ -101,7 +101,7 @@ end
 local _SortBattlefieldScoreData = _SortBattlefieldScoreData or SortBattlefieldScoreData
 local sortData = {
 	["name"] 	= "WorldStateScoreFrameName",
-	["team"] 	= "WorldStateScoreFrameTeam",
+--	["team"] 	= "WorldStateScoreFrameTeam",
 	["kills"] 	= "WorldStateScoreFrameKB",
 	["deaths"] 	= "WorldStateScoreFrameDeaths",
 	["hk"] 		= "WorldStateScoreFrameHK",

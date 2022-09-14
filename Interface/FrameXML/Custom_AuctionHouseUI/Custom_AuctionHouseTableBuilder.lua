@@ -373,6 +373,7 @@ end
 AuctionHouseTableExtraInfoMixin = CreateFromMixins(AuctionHouseTableCellMixin);
 
 function AuctionHouseTableExtraInfoMixin:Init()
+	local owner
 	AuctionHouseTableCellMixin.Init(self, owner);
 
 	self.Icon:SetAtlas("auctionhouse-icon-socket", true);
@@ -762,6 +763,7 @@ end
 AuctionHouseTableCellMinPriceMixin = CreateFromMixins(AuctionHouseTablePriceDisplayMixin);
 
 function AuctionHouseTableCellMinPriceMixin:Init(rowData, dataIndex)
+	local owner
 	AuctionHouseTableCellMixin.Init(self, owner);
 
 	self.Checkmark:ClearAllPoints();

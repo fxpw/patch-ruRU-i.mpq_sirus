@@ -7,6 +7,8 @@
 S_ADDON_VERSION = {
 	-- |@Version: 1@|
 	-- {build, "url", {"folder1", "folder2"}}
+	{2, "AdvancedWotLKCombatLog", {"AdvancedWotLKCombatLog"}},
+	{2, "AdvancedWotLKCombatLog_Helper", {"AdvancedWotLKCombatLog_Helper"}},
 	{3, "ATT", {"ATT"}},
 	{2, "Auctionator", {"Auctionator"}},
 	{1, "BadBoy", {"BadBoy"}},
@@ -16,11 +18,11 @@ S_ADDON_VERSION = {
 	{4, "Bartender4", {"Bartender4"}},
 	{4, "BigAuras", {"BigAuras"}},
 	{1, "Capping", {"Capping"}},
-	{1, "ChatBar", {"ChatBar"}},
+	{2, "ChatBar", {"ChatBar"}},
 	{1, "Clique", {"Clique"}},
 	{3, "DiminishingReturns-Sirus", {"DiminishingReturns", "DiminishingReturns_Config"}},
 	{3, "DrDamage", {"DrDamage"}},
-	{1, "FishingBuddy", {"FishingBuddy"}},
+	{2, "FishingBuddy", {"FishingBuddy"}},
 	{1, "GnomishVendorShrinker", {"GnomishVendorShrinker"}},
 	{2, "HealBot", {"HealBot", "TitanHealBot"}},
 	{1, "MikScrollingBattleText", {"MikScrollingBattleText", "MSBTOptions"}},

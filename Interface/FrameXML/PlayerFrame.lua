@@ -451,16 +451,6 @@ categorySpellID = {
 		90019, 90020, 90001, 90002, 90003, 90004, 90005, 90006, 90007, 90008, 90009, 90010, 90011, 90012, 90013, 90014
 	}
 
-vipStatusSpellID = {
-	[308221] = {r = 0.80, g = 0.49, b = 0.19},
-	[308222] = {r = 1, g = 1, b = 1},
-	[308223] = {r = 1, g = 0.84, b = 0},
-	[308224] = {r = 0.80, g = 0.49, b = 0.19},
-	[308225] = {r = 1, g = 1, b = 1},
-	[308226] = {r = 1, g = 0.84, b = 0},
-	[308227] = {r = 0, g = 0, b = 0},
-}
-
 function PlayerFrame_OnUpdate (self, elapsed)
 	if ( PlayerStatusTexture:IsShown() ) then
 		local alpha = 255;

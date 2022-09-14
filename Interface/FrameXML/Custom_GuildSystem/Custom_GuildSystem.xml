@@ -1843,8 +1843,41 @@
 							<Anchor point="TOP" relativeTo="$parentChallenge3" relativePoint="BOTTOM" x="0" y="-7"/>
 						</Anchors>
 					</Frame>
+					<Button name="GuildGMImpeachButton" hidden="true">
+						<Size x="319" y="18"/>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="TOPLEFT" x="4" y="-4"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture name="$parentLockTexture">
+									<Color r="0.2" g="0.0" b="0.0"/>
+								</Texture>
+							</Layer>
+							<Layer level="OVERLAY">
+								<FontString name="$parentText" inherits="GameFontHighlightSmall" justifyH="LEFT" wordwrap="false" text="GUILD_IMPEACH_BUTTON_TEXT">
+									<Anchors>
+										<Anchor point="LEFT" x="24" y="-1"/>
+										<Anchor point="RIGHT" x="-8" y="-1"/>
+									</Anchors>
+								</FontString>
+								<Texture name="$parentAlert" file="Interface\DialogFrame\UI-Dialog-Icon-AlertNew">
+									<Size x="14" y="14"/>
+									<Anchors>
+										<Anchor point="LEFT" x="3" y="-1"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnClick>
+								StaticPopup_Show("GUILD_IMPEACH");
+							</OnClick>
+						</Scripts>
+						<HighlightTexture file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" setAllPoints="true" alphaMode="ADD"/>
+					</Button>
 					<ScrollFrame name="$parentMOTDScrollFrame" toplevel="true" inherits="MinimalScrollFrameTemplate">
-						<Size x="284" y="44"/>
+						<Size x="284" y="72"/>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parentHeader2" relativePoint="BOTTOMLEFT" x="14" y="-2"/>
 						</Anchors>
@@ -2542,7 +2575,7 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Button name="$parentCloseButton" inherits="UIPanelCloseButton">
+			<Button name="$parentCloseButton2" inherits="UIPanelCloseButton">
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
@@ -2655,7 +2688,7 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Button name="$parentCloseButton" inherits="UIPanelCloseButton">
+			<Button name="$parentCloseButton2" inherits="UIPanelCloseButton">
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>

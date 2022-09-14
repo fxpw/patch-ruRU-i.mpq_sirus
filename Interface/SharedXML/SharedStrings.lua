@@ -455,6 +455,30 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Озаренным дренеем",
 		enGB = ""
 	},
+	["DRAG_MODEL"] = {
+		ruRU = "Перетащить",
+		enGB = "Drag",
+	},
+	["DRAG_MODEL_TOOLTIP"] = {
+		ruRU = "Зажмите ПКМ и тащите курсор, чтобы переместить персонажа.",
+		enGB = "Right-click on character and drag to move it within the window.",
+	},
+	["RESET_POSITION"] = {
+		ruRU = "Сброс позиции",
+		enGB = "Reset Position",
+	},
+	["ROTATE_LEFT"] = {
+		ruRU = "Сброс позиции",
+		enGB = "Rotate Left",
+	},
+	["ROTATE_RIGHT"] = {
+		ruRU = "Вращение вправо",
+		enGB = "Rotate Right",
+	},
+	["ROTATE_TOOLTIP"] = {
+		ruRU = "Зажмите ЛКМ и тащите курсор, чтобы вращать изображение.",
+		enGB = "Left-click on character and drag to rotate.",
+	},
 }
 
 setmetatable(SIRUS_LOCALIZATION, {

@@ -68,7 +68,7 @@ function MailFrame_OnEvent(self, event, ...)
 		OpenAllMailButton:SetEnabled(not OpenAllMailButton.workState and numItems > 0)
 		AdditionalMailFunctionalButton:SetEnabled(not OpenAllMailButton.workState and numItems > 0)
 
-		OpenBackpack()
+		OpenAllBags(self)
 		SendMailFrame_Update()
 		MailFrameTab_OnClick(nil, 1)
 		CheckInbox()
@@ -1376,6 +1376,7 @@ function MailManagmentMixin:StopManagment()
 
 	InboxFrame.WaitFrame:Hide()
 	self:PrintTakeItemList()
+	self.takeMoney = nil
 
 	self:Reset()
 	self:SetText(OPEN_ALL_MAIL_BUTTON)
@@ -1385,16 +1386,6 @@ function MailManagmentMixin:StopManagment()
 
 	self:SetEnabled(numItems > 0)
 	AdditionalMailFunctionalButton:SetEnabled(numItems > 0)
-
-	if self.takeMoney then
-		local money = GetMoney() - self.takeMoney
-
-		if money > 0 then
-			DEFAULT_CHAT_FRAME:AddMessage(string.format(LOOT_ITEM_SELF, GetMoneyString(money)), SYSTEM_FONT_COLOR.r, SYSTEM_FONT_COLOR.g, SYSTEM_FONT_COLOR.b)
-		end
-
-		self.takeMoney = nil
-	end
 end
 
 function MailManagmentMixin:FoundAttachment()
@@ -1631,6 +1622,14 @@ function MailManagmentMixin:PrintTakeItemList()
 				else
 					DEFAULT_CHAT_FRAME:AddMessage(string.format(LOOT_ITEM_SELF, link), color.r, color.g, color.b)
 				end
+			end
+		end
+
+		if self.takeMoney then
+			local money = takeAttachments[-1] or (GetMoney() - self.takeMoney)
+
+			if money and money > 0 then
+				DEFAULT_CHAT_FRAME:AddMessage(string.format(LOOT_ITEM_SELF, GetMoneyString(money)), SYSTEM_FONT_COLOR.r, SYSTEM_FONT_COLOR.g, SYSTEM_FONT_COLOR.b)
 			end
 		end
 	end

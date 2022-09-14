@@ -6,7 +6,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_BattlePass_Data.lua"/>
     <Script file="Custom_BattlePass.lua"/>
 
@@ -322,7 +323,7 @@
 			</Anchors>
 		</HighlightTexture>
 	</Button>
-	<Button name="BattlePassTakeRewardButtonTemplate" inherits="UIPanelButtonTemplate" text="Забрать" hidden="true" virtual="true">
+	<Button name="BattlePassTakeRewardButtonTemplate" inherits="UIPanelButtonTemplate" text="BATTLEPASS_TAKE" hidden="true" virtual="true">
 		<Size x="90" y="30"/>
 		<Scripts>
 			<OnClick>
@@ -548,7 +549,7 @@
 		<Size x="470" y="160"/>
 		<Layers>
 			<Layer level="BORDER">
-				<FontString name="$parentCurrentAndMaxLevel" parentKey="CurrentAndMaxLevel" justifyH="RIGHT" justifyV="MIDDLE" font="Interface\CustomFonts\OpenSans-Semibold.ttf" text="BATTLEPASS_LEVEL">
+				<FontString name="$parentCurrentAndMaxLevel" parentKey="CurrentAndMaxLevel" justifyH="RIGHT" justifyV="MIDDLE" font="Interface\CustomFonts\OpenSans-Semibold.ttf" text="1">
 					<Size x="50" y="14"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="20" y="-40" />
@@ -557,7 +558,7 @@
 						<AbsValue val="22"/>
 					</FontHeight>
 				</FontString>
-				<FontString name="$parentLevelLabel" parentKey="LevelLabel" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal16" text="уровень">
+				<FontString name="$parentLevelLabel" parentKey="LevelLabel" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal16" text="BATTLEPASS_LEVEL">
 					<Size x="100" y="14"/>
 					<Anchors>
 						<Anchor point="LEFT" relativeTo="$parentCurrentAndMaxLevel" relativePoint="RIGHT" x="4" y="-1" />
@@ -806,6 +807,13 @@
 									</Anchors>
 									<Color r="0.2" g="0.2" b="0.2"/>
 								</FontString>
+								<FontString name="$parentExpInfo" parentKey="ExpInfo" justifyH="LEFT" justifyV="TOP" inherits="GameFontNormal13" hidden="true">
+									<Size x="320" y="40"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="$parentItemName" relativePoint="BOTTOMLEFT" x="0" y="-50" />
+									</Anchors>
+									<Color r="0.2" g="0.2" b="0.2"/>
+								</FontString>
 							</Layer>
 						</Layers>
 						<Frames>
@@ -982,12 +990,12 @@
 				<Scripts>
 					<OnLoad>
 						Mixin(self, BattlePassBuyOverlayFrameMixin)
-
 						self:OnLoad()
 					</OnLoad>
 					<OnShow>
 						self:OnShow()
 					</OnShow>
+					<OnMouseWheel function="nop"/>
 				</Scripts>
 			</Frame>
 		</Frames>

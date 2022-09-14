@@ -120,7 +120,7 @@
 		</Layers>
 		<Scripts>
 			<OnEnter>
-				if ( self:IsEnabled() ) then
+				if ( self:IsEnabled() == 1 ) then
 					if ( self.tooltipText ) then
 						GameTooltip:SetOwner(self, self.tooltipOwnerPoint or "ANCHOR_RIGHT");
 						GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, 1);
@@ -144,7 +144,7 @@
 	<Frame name="OptionsBoxTemplate" virtual="true">
 		<Layers>
 			<Layer level="BACKGROUND">
-				<FontString name="$parentTitle" inherits="GameFontHighlightSmall">
+				<FontString name="$parentTitle" parentKey="Title" inherits="GameFontHighlightSmall">
 					<Anchors>
 						<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
 							<Offset>

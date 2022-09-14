@@ -7,10 +7,10 @@
 		<Size x="208" y="46"/>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<texture name="$parentBackground" parentKey="Background" file="Interface\BUTTONS\ListButtons">
+				<Texture name="$parentBackground" parentKey="Background" file="Interface\BUTTONS\ListButtons">
 					<Size x="209" y="46"/>
 					<TexCoords left="0.00390625" right="0.8203125" top="0.00390625" bottom="0.18359375"/>
-				</texture>
+				</Texture>
 				<Texture name="$parentIcon" parentKey="Icon">
 					<Size x="38" y="38"/>
 					<Anchors>
@@ -145,7 +145,7 @@
 					</Layer>
 				</Layers>
 			</Frame>
-			<Button name="$parentSummonRandomFavoritePetButton" parentKey="SummonRandomFavoritePetButton" inherits="SecureFrameTemplate">
+			<Button name="$parentSummonRandomFavoritePetButton" parentKey="SummonRandomFavoritePetButton">
 				<Size x="33" y="33"/>
 				<Anchors>
 					<Anchor point="CENTER" relativePoint="TOPRIGHT" x="-24" y="-42"/>

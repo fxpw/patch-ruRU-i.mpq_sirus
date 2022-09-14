@@ -61,14 +61,14 @@ function BattlefieldFrame_OnEvent (self, event, ...)
 		if(not loggingIn) then
 			if(accepted) then
 				if(warmup) then
-					StaticPopup_Show("BFMGR_CONFIRM_WORLD_PVP_QUEUED_WARMUP", "Wintergrasp", nil, arg1);
+					StaticPopup_Show("BFMGR_CONFIRM_WORLD_PVP_QUEUED_WARMUP", "Wintergrasp", nil, battleID);
 				elseif (inArea) then
-					StaticPopup_Show("BFMGR_EJECT_PENDING", "Wintergrasp", nil, arg1);
+					StaticPopup_Show("BFMGR_EJECT_PENDING", "Wintergrasp", nil, battleID);
 				else
-					StaticPopup_Show("BFMGR_CONFIRM_WORLD_PVP_QUEUED", "Wintergrasp", nil, arg1);
+					StaticPopup_Show("BFMGR_CONFIRM_WORLD_PVP_QUEUED", "Wintergrasp", nil, battleID);
 				end
 			else
-				StaticPopup_Show("BFMGR_DENY_WORLD_PVP_QUEUED", "Wintergrasp", nil, arg1);
+				StaticPopup_Show("BFMGR_DENY_WORLD_PVP_QUEUED", "Wintergrasp", nil, battleID);
 			end
 		end
 		BattlefieldFrame_UpdateStatus(false);
@@ -76,9 +76,9 @@ function BattlefieldFrame_OnEvent (self, event, ...)
 	elseif ( event == "BATTLEFIELD_MGR_EJECT_PENDING" ) then
 		local battleID, remote = ...;
 		if(remote) then
-			local dialog = StaticPopup_Show("BFMGR_EJECT_PENDING_REMOTE", "Wintergrasp", nil, arg1);
+			StaticPopup_Show("BFMGR_EJECT_PENDING_REMOTE", "Wintergrasp", nil, battleID);
 		else
-		local dialog = StaticPopup_Show("BFMGR_EJECT_PENDING", "Wintergrasp", nil, arg1);
+			StaticPopup_Show("BFMGR_EJECT_PENDING", "Wintergrasp", nil, battleID);
 		end
 		BattlefieldFrame_UpdateStatus(false);
 		BattlefieldFrame_Update();
@@ -89,25 +89,25 @@ function BattlefieldFrame_OnEvent (self, event, ...)
 		StaticPopup_Hide("BFMGR_INVITED_TO_ENTER");
 		StaticPopup_Hide("BFMGR_EJECT_PENDING");
 		if(lowLevel) then
-			local dialog = StaticPopup_Show("BFMGR_PLAYER_LOW_LEVEL", "Wintergrasp", nil, arg1);
+			StaticPopup_Show("BFMGR_PLAYER_LOW_LEVEL", "Wintergrasp", nil, battleID);
 		elseif (playerExited and battleActive and not relocated) then
-			local dialog = StaticPopup_Show("BFMGR_PLAYER_EXITED_BATTLE", "Wintergrasp", nil, arg1);
+			StaticPopup_Show("BFMGR_PLAYER_EXITED_BATTLE", "Wintergrasp", nil, battleID);
 		end
 		BattlefieldFrame_UpdateStatus(false);
 		BattlefieldFrame_Update();
 	elseif ( event == "BATTLEFIELD_MGR_QUEUE_INVITE" ) then
 		local battleID, warmup = ...;
 		if(warmup) then
-			local dialog = StaticPopup_Show("BFMGR_INVITED_TO_QUEUE_WARMUP", "Wintergrasp", nil, arg1);
+			StaticPopup_Show("BFMGR_INVITED_TO_QUEUE_WARMUP", "Wintergrasp", nil, battleID);
 		else
-			local dialog = StaticPopup_Show("BFMGR_INVITED_TO_QUEUE", "Wintergrasp", nil, arg1);
+			StaticPopup_Show("BFMGR_INVITED_TO_QUEUE", "Wintergrasp", nil, battleID);
 		end
 		StaticPopup_Hide("BFMGR_EJECT_PENDING");
 		BattlefieldFrame_UpdateStatus(false);
 		BattlefieldFrame_Update();
 	elseif ( event == "BATTLEFIELD_MGR_ENTRY_INVITE" ) then
 		local battleID = ...;
-		local dialog = StaticPopup_Show("BFMGR_INVITED_TO_ENTER", "Wintergrasp", nil, arg1);
+		StaticPopup_Show("BFMGR_INVITED_TO_ENTER", "Wintergrasp", nil, battleID);
 		StaticPopup_Hide("BFMGR_EJECT_PENDING");
 		BattlefieldFrame_UpdateStatus(false);
 		BattlefieldFrame_Update();

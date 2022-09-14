@@ -454,7 +454,7 @@ function WardrobeOutfitEditFrameMixin:OnDelete()
 end
 
 function WardrobeOutfitEditFrameMixin:OnAccept()
-	if not self.AcceptButton:IsEnabled() then
+	if self.AcceptButton:IsEnabled() ~= 1 then
 		return;
 	end
 	StaticPopupSpecial_Hide(self);

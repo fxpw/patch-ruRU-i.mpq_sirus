@@ -19,6 +19,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Класс: |rРыцарь смерти|n|n",
         descriptionText = [[Некоторые лошади просто принимают сторону Тьмы. Этот конь родился во Тьме и пропитан ею насквозь.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -41,6 +42,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Класс: |rПаладин|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -63,6 +65,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Класс: |rПаладин|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -85,6 +88,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Класс: |rЧернокнижник|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -107,6 +111,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Класс: |rЧернокнижник|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -129,6 +134,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Класс: |rПаладин|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -151,6 +157,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Класс: |rПаладин|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -173,6 +180,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rОгунаро Волкопас|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вой этого волка разносится на километры вокруг.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -195,6 +203,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rУнгер Уппперт|n|cFFFFD200Зона: |rГавань Менетилов(Болотина)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[По слухам, агенты ШРУ предпочитают использовать этих лошадей для ночных вылазок из-за их темной шерсти.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -217,6 +226,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rКати Охотница, Унгер Уппперт, Меридет Карлсон, Грегор Маквинс|n|cFFFFD200Зона: |rЛесопилка Восточной долины(Элвиннский лес),|nГавань Менетилов(Болотина),|nЮжнобережье(Предгорья Хилсбрада),|nОстров Терамор(Пылевые топи)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Мирный характер этих лошадей идеально подходит для обучения детей верховой езде.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -239,6 +249,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rКати Охотница, Унгер Уппперт, Меридет Карлсон, Грегор Маквинс|n|cFFFFD200Зона: |rЛесопилка Восточной долины(Элвиннский лес),|nГавань Менетилов(Болотина),|nЮжнобережье(Предгорья Хилсбрада),|nОстров Терамор(Пылевые топи)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Сильная и выносливая. "Лошадь, которая построила Штормград".]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -261,6 +272,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rКати Охотница, Унгер Уппперт, Меридет Карлсон, Грегор Маквинс|n|cFFFFD200Зона: |rЛесопилка Восточной долины(Элвиннский лес),|nГавань Менетилов(Болотина),|nЮжнобережье(Предгорья Хилсбрада),|nОстров Терамор(Пылевые топи)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Стражи Штормграда любят их за терпение и выносливость.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -283,6 +295,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rОгунаро Волкопас|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Когда-то считалось, что этот вид вымер везде, кроме дальнего севера. Всякий, кто готовится к зиме, желает заполучить такого волка.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -305,6 +318,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rОгунаро Волкопас|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вой этого волка разносится на километры вокруг.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -327,6 +341,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rВерон Янтарлен|n|cFFFFD200Зона: |rФерма Янтарленов(Дун Морог)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Самцы баранов могут часами бодаться, чтобы впечатлить самку. В этом отношении они очень похожи на дворфов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -349,6 +364,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rВерон Янтарлен|n|cFFFFD200Зона: |rФерма Янтарленов(Дун Морог)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Самцы баранов могут часами бодаться, чтобы впечатлить самку. В этом отношении они очень похожи на дворфов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -371,6 +387,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rВерон Янтарлен|n|cFFFFD200Зона: |rФерма Янтарленов(Дун Морог)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Самцы баранов могут часами бодаться, чтобы впечатлить самку. В этом отношении они очень похожи на дворфов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -393,6 +410,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rМилли Перосвист|n|cFFFFD200Зона: |rПоселок Сталежара(Дун Морог)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Террадинамические экзоплоттеры соединяются с равновесными усилителями гидравлической системой..." – Бинджи Перосвист.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -415,6 +433,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Эта порода выведена из самых свирепых особей. Заводчики гарантируют, что они не кусаются (ну, разве что иногда).]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -437,6 +456,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЗьольнир|n|cFFFFD200Зона: |rДеревня Сен'джин(Дуротар)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Эта порода выведена из самых свирепых особей. Заводчики гарантируют, что они не кусаются (ну, разве что иногда).]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -459,6 +479,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЗьольнир|n|cFFFFD200Зона: |rДеревня Сен'джин(Дуротар)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Эта порода выведена из самых свирепых особей. Заводчики гарантируют, что они не кусаются (ну, разве что иногда).]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -481,6 +502,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЗьольнир|n|cFFFFD200Зона: |rДеревня Сен'джин(Дуротар)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Эта порода выведена из самых свирепых особей. Заводчики гарантируют, что они не кусаются (ну, разве что иногда).]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -503,6 +525,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rМилли Перосвист|n|cFFFFD200Зона: |rПоселок Сталежара(Дун Морог)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Террадинамические экзоплоттеры соединяются с равновесными усилителями гидравлической системой..." – Бинджи Перосвист.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -525,6 +548,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛеланай|n|cFFFFD200Зона: |rАнклав Кенария(Дарнас)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Саблезубы недаром считаются одними из лучших хищников Азерота: эти ловкие охотники могут пробираться через густые леса, не издавая ни звука.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -547,6 +571,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Секретное средство передвижения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -569,6 +594,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛеланай|n|cFFFFD200Зона: |rАнклав Кенария(Дарнас)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Из-за своего ненасытного аппетита эти животные получили прозвище, которое на языке ночных эльфов означает "драконье брюхо". ]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -591,6 +617,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛеланай|n|cFFFFD200Зона: |rАнклав Кенария(Дарнас)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Из-за своего ненасытного аппетита эти животные получили прозвище, которое на языке ночных эльфов означает "драконье брюхо". ]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -613,6 +640,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Отсутствие пятен или полосок на шкуре этого зверя говорит о том, что он прямой потомок древнейшей линии ледопардов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -635,6 +663,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Саблезубы недаром считаются одними из лучших хищников Азерота: эти ловкие охотники могут пробираться через густые леса, не издавая ни звука.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -657,6 +686,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -679,6 +709,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -701,6 +732,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -723,6 +755,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Во всем Азероте остались единицы рыжих волков. Только ветеранам доведется увидеть этого зверя.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -745,6 +778,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Этих свирепых волков, когда-то считавшихся исчезнувшими, иногда можно встретить рядом с закаленными воинами Орды. Их верность и свирепость общеизвестна как среди Орды, так и среди Альянса.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -767,6 +801,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Сильный и непокорный белый жеребец часто фигурирует в мифах древних людских племен.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -789,6 +824,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Аристократы долгое время отдавали предпочтение именно этой величественной породе лошадей за ее золотистый ворс и струящуюся белую гриву.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -811,6 +847,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rРиверн Холодный Ветер|n|cFFFFD200Зона: |rУступ Ледопардов(Зимние Ключи)|n|cFFFFD200Цена: |r100 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Укрощение этой дикой породы потребует терпения, силы и огромного запаса игрушечных мышек на веревочках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -833,6 +870,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Эта порода выведена из самых свирепых особей. Заводчики гарантируют, что они не кусаются (ну, разве что иногда).]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -855,6 +893,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rМилли Перосвист|n|cFFFFD200Зона: |rПоселок Сталежара(Дун Морог)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Террадинамические экзоплоттеры соединяются с равновесными усилителями с помощью гидравлической системы..." – Бинджи Перосвист.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -877,6 +916,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rМилли Перосвист|n|cFFFFD200Зона: |rПоселок Сталежара(Дун Морог)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Террадинамические экзоплоттеры соединяются с равновесными усилителями гидравлической системой..." – Бинджи Перосвист.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -899,6 +939,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -921,6 +962,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -943,6 +985,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Гномские инженеры были вынуждены снять с производства эту модель из-за поступающих жалоб на "барахлящую дроссельную заслонку". Дефектному прототипу присвоено кодовое название "модель Б".]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -965,6 +1008,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Это произведение гномской инженерии было отправлено на пенсию из-за крайне капризного гироскометра.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -987,6 +1031,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [["Я не видел эту породу уже много лет, но своего упрямства она за эти годы не растеряла", – Верон Янтарлен.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1009,6 +1054,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [["Я не видел эту породу уже много лет, но своего упрямства она за эти годы не растеряла", – Верон Янтарлен.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1031,6 +1077,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЗахария Пост|n|cFFFFD200Зона: |rБрилл(Тирисфальские леса)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Отрекшиеся верят, что даже скитающиеся вьючные звери страдают, будучи нежитью.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1053,6 +1100,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЗахария Пост|n|cFFFFD200Зона: |rБрилл(Тирисфальские леса)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Отрекшиеся верят, что даже скитающиеся вьючные звери страдают, будучи нежитью.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1075,6 +1123,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЗахария Пост|n|cFFFFD200Зона: |rБрилл(Тирисфальские леса)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Отрекшиеся верят, что даже скитающиеся вьючные звери страдают, будучи нежитью.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1097,6 +1146,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЗахария Пост|n|cFFFFD200Зона: |rБрилл(Тирисфальские леса)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Когда павших героев обращают в нежить, та же участь постигает и их скакунов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1119,6 +1169,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rБарон Ривендер|n|cFFFFD200Зона: |rСтратхольм|n",
         descriptionText = [[Когда барон Ривендер стал командиром Плети, он обрек своего любимого коня на службу ему в мире нежити.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1141,6 +1192,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rХарб Точеное Копыто|n|cFFFFD200Зона: |rДеревня Кровавого Копыта(Мулгор)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Кодо – опора нашего народа. Торгует ли Орда, кочует или сражается – могучие кодо всегда с нами", – Харб Точеное Копыто.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1163,6 +1215,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rХарб Точеное Копыто|n|cFFFFD200Зона: |rДеревня Кровавого Копыта(Мулгор)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Кодо – опора нашего народа. Торгует ли Орда, кочует или сражается – могучие кодо всегда с нами", – Харб Точеное Копыто.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1185,6 +1238,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Этот альфа-самец – воплощение могущества кодо, бродящих по Пустошам.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1207,6 +1261,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [["Кодо – опора нашего народа. Торгует ли Орда, кочует или сражается – могучие кодо всегда с нами", – Харб Точеное Копыто.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1229,6 +1284,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛеланай|n|cFFFFD200Зона: |rАнклав Кенария(Дарнас)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Ночные эльфы выращивают котят ледопарда с раннего детства, создавая между наездником и зверем нерушимые узы доверия длиною в жизнь.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1251,6 +1307,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛеланай|n|cFFFFD200Зона: |rАнклав Кенария(Дарнас)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Некоторые историки считают, что эта порода получила свою туманную серую шкуру в ходе экспериментов древних высокорожденных над ночными саблезубами.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1273,6 +1330,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1295,6 +1353,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rМилли Перосвист|n|cFFFFD200Зона: |rПоселок Сталежара(Дун Морог)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Мы внесли множество улучшений, но они все еще основаны на чертежах Меггакрута", – Милли Перосвист.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1317,6 +1376,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rМилли Перосвист|n|cFFFFD200Зона: |rПоселок Сталежара(Дун Морог)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Мы внесли множество улучшений, но они все еще основаны на чертежах Меггакрута", – Милли Перосвист.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1339,6 +1399,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rМилли Перосвист|n|cFFFFD200Зона: |rПоселок Сталежара(Дун Морог)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Мы внесли множество улучшений, но они все еще основаны на чертежах Меггакрута", – Милли Перосвист.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1361,6 +1422,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rКати Охотница, Меридет Карлсон, Грегор Маквинс|n|cFFFFD200Зона: |rЛесопилка Восточной долины(Элвиннский лес),|nЮжнобережье(Предгорья Хилсбрада),|nОстров Терамор(Пылевые топи)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Коневоды ценят эту породу за выдержку и стойкость.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1383,6 +1445,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rКати Охотница, Меридет Карлсон, Грегор Маквинс|n|cFFFFD200Зона: |rЛесопилка Восточной долины(Элвиннский лес),|nЮжнобережье(Предгорья Хилсбрада),|nОстров Терамор(Пылевые топи)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Ветеран, закаленный в самых тяжелых боях Серебряного Авангарда.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1405,6 +1468,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rКати Охотница, Меридет Карлсон, Грегор Маквинс|n|cFFFFD200Зона: |rЛесопилка Восточной долины(Элвиннский лес),|nЮжнобережье(Предгорья Хилсбрада),|nОстров Терамор(Пылевые топи)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Ветеран, закаленный в самых тяжелых боях Серебряного Авангарда.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1427,6 +1491,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rВерон Янтарлен|n|cFFFFD200Зона: |rФерма Янтарленов(Дун Морог)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[У баранов Барак Торола толстый череп и массивные рога, что помогает им с легкостью таранить отряды бронированных врагов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1449,6 +1514,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rВерон Янтарлен|n|cFFFFD200Зона: |rФерма Янтарленов(Дун Морог)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[У баранов Барак Торола толстый череп и массивные рога, что помогает им с легкостью таранить отряды бронированных врагов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1471,6 +1537,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rВерон Янтарлен|n|cFFFFD200Зона: |rФерма Янтарленов(Дун Морог)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[У баранов Барак Торола толстый череп и массивные рога, что помогает им с легкостью таранить отряды бронированных врагов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1493,6 +1560,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЗьольнир|n|cFFFFD200Зона: |rДеревня Сен'джин(Дуротар)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Давние союзники троллей, эти охотники джунглей создают особую связь со своим наездником. Они становятся не просто ездовым животным, а другом и защитником.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1515,6 +1583,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЗьольнир|n|cFFFFD200Зона: |rДеревня Сен'джин(Дуротар)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Давние союзники троллей, эти охотники джунглей создают особую связь со своим наездником. Они становятся не просто ездовым животным, а другом и защитником.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1537,6 +1606,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЗьольнир|n|cFFFFD200Зона: |rДеревня Сен'джин(Дуротар)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Давние союзники троллей, эти охотники джунглей создают особую связь со своим наездником. Они становятся не просто ездовым животным, а другом и защитником.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1559,6 +1629,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЗахария Пост|n|cFFFFD200Зона: |rБрилл(Тирисфальские леса)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Когда павших героев обращают в нежить, та же участь постигает и их скакунов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1581,6 +1652,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rХарб Точеное Копыто|n|cFFFFD200Зона: |rДеревня Кровавого Копыта(Мулгор)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Редкий кодо-альбинос, впервые обнаруженный в Пустошах. Кентавры считают, что белый кодо – это вестник рока.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1603,6 +1675,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rХарб Точеное Копыто|n|cFFFFD200Зона: |rДеревня Кровавого Копыта(Мулгор)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Этот альфа-самец – воплощение могущества кодо, бродящих по Северным степям.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1625,6 +1698,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rХарб Точеное Копыто|n|cFFFFD200Зона: |rДеревня Кровавого Копыта(Мулгор)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Этот альфа-самец – воплощение могущества кодо, бродящих по Пустошам.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1647,6 +1721,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rОгунаро Волкопас|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Волки Орды – это союзники, а не прирученные звери.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1669,6 +1744,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rОгунаро Волкопас|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Волки Орды – это союзники, а не прирученные звери.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1691,6 +1767,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rОгунаро Волкопас|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Волки Орды – это союзники, а не прирученные звери.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1713,6 +1790,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛеланай|n|cFFFFD200Зона: |rАнклав Кенария(Дарнас)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[По слухам, эта порода получила название в честь любимого заклинания шаманов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1735,6 +1813,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rГрюнда Волчье Сердце, Джорек Железнобок|n|cFFFFD200Зона: |rАльтеракские горы|n|cFFFFD200Цена: |r50 |TInterface\\Icons\\INV_Jewelry_Necklace_21.BLP:16:16|t|n",
         descriptionText = [[Порода волков, выращенных в Альтеракских горах кланом Северного Волка.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1757,6 +1836,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rГаелден Кузнечный Молот, Тантальдис Снегоблеск|n|cFFFFD200Зона: |rВысокий отрог(Альтеракские горы)|n|cFFFFD200Цена: |r50 |TInterface\\Icons\\INV_Jewelry_Necklace_21.BLP:16:16|t|n",
         descriptionText = [[У учителей верховой езды клана Грозовой Вершины есть традиция: они гравируют свои имена на левом роге каждого выращенного ими барана.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1779,6 +1859,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rМандокир Повелитель Крови|n|cFFFFD200Зона: |rЗемли Хаккари(Зул'Гуруб)|n",
         descriptionText = [[Единственные известные в природе ящеры Раззаши содержались в Зул'Гурубе под опекой Мандокира Повелителя Крови. Эту породу никто не видел уже много лет.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1801,6 +1882,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rВерховный жрец Текал|n|cFFFFD200Зона: |rХолм Ширвалла(Зул'Гуруб)|n",
         descriptionText = [[Последние зульские тигры жили в Зул'Гурубе – под покровительством верховного жрец Текала. Говорят, что сейчас их уже истребили полностью.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1823,6 +1905,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Задание: |rБей в гонг!|n|n",
         descriptionText = [[Многие виды киражских боевых танков можно найти в руинах Ан'Киража, однако самые темные особи исчезли после того, как прогремел гонг Скарабея.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1845,6 +1928,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rКиражский воитель, Киражский душегуб, Обсидиановый искоренитель, Киражский плеточник, Анубисат-часовой|n|cFFFFD200Зона: |rАн'Кираж|n",
         descriptionText = [[Эти сравнительно одомашненные силитиды чувствуют себя как дома только в пустынных песках Ан'Киража.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1867,6 +1951,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rАнубисат-часовой, Анубисат-хранитель, Обсидиановый искоренитель, Киражский воитель, Обсидиановый губитель|n|cFFFFD200Зона: |rАн'Кираж|n",
         descriptionText = [[Эти сравнительно одомашненные силитиды чувствуют себя как дома только в пустынных песках Ан'Киража.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1889,6 +1974,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rКиражский душегуб, Анубисат-защитник, Киражский поглотитель разума, Анубисат-хранитель, Анубисат-часовой|n|cFFFFD200Зона: |rАн'Кираж|n",
         descriptionText = [[Эти сравнительно одомашненные силитиды чувствуют себя как дома только в пустынных песках Ан'Киража.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1911,6 +1997,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rАнубисат-хранитель, Обсидиановый губитель, Киражский душегуб, Киражский поглотитель разума, Анубисат-защитник|n|cFFFFD200Зона: |rАн'Кираж|n",
         descriptionText = [[Эти сравнительно одомашненные силитиды чувствуют себя как дома только в пустынных песках Ан'Киража.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1933,6 +2020,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1955,6 +2043,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 4,
         priceText = "|cFFFFD200Источник: |rКоробка с подарками Ландро|n|n",
         descriptionText = [[Двигаясь медленно и постепенно, гонку ты не выиграешь... но к месту назначения точно прибудешь.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1977,6 +2066,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rБрюнн Жаробород, Дурган Громовой Клюв, Грунда Бронзовое Крыло, Мей Франкис|n|cFFFFD200Зона: |rЦитадель Громового Молота(Долина Призрачной Луны),|nДаларан(Даларан),|nОплот Чести(Полуостров Адского Пламени),|nКрепость Отваги(Борейская тундра)|n|cFFFFD200Цена: |r50 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["В Штормграде любят львов, а грифон как раз наполовину лев. Только им не понравится, что это как раз та половина, которая без гривы", – укротитель грифонов Разящий Коготь.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -1999,6 +2089,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rБрюнн Жаробород, Дурган Громовой Клюв, Грунда Бронзовое Крыло, Мей Франкис|n|cFFFFD200Зона: |rЦитадель Громового Молота(Долина Призрачной Луны),|nДаларан(Даларан),|nОплот Чести(Полуостров Адского Пламени),|nКрепость Отваги(Борейская тундра)|n|cFFFFD200Цена: |r50 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["В Штормграде любят львов, а грифон как раз наполовину лев. Только им не понравится, что это как раз та половина, которая без гривы", – укротитель грифонов Разящий Коготь.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2021,6 +2112,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rБрюнн Жаробород, Дурган Громовой Клюв, Грунда Бронзовое Крыло, Мей Франкис|n|cFFFFD200Зона: |rЦитадель Громового Молота(Долина Призрачной Луны),|nДаларан(Даларан),|nОплот Чести(Полуостров Адского Пламени),|nКрепость Отваги(Борейская тундра)|n|cFFFFD200Цена: |r50 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["В Штормграде любят львов, а грифон как раз наполовину лев. Только им не понравится, что это как раз та половина, которая без гривы", – укротитель грифонов Разящий Коготь.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2043,6 +2135,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rБрюнн Жаробород, Дурган Громовой Клюв, Грунда Бронзовое Крыло, Мей Франкис|n|cFFFFD200Зона: |rЦитадель Громового Молота(Долина Призрачной Луны),|nДаларан(Даларан),|nОплот Чести(Полуостров Адского Пламени),|nКрепость Отваги(Борейская тундра)|n|cFFFFD200Цена: |r100 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["У Орды были драконы, а у нас грифоны. Победа в войне была за нами", – Ильса Бурное Варево.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2065,6 +2158,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rДама Буйногривая, Бана Буйногривая, Мей Франкис, Тохфо Небесное Копыто|n|cFFFFD200Зона: |rДеревня Призрачной Луны(Долина Призрачной Луны),|nДаларан(Даларан),|nТраллмар(Полуостров Адского Пламени),|nКрепость Песни Войны(Борейская тундра)|n|cFFFFD200Цена: |r50 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Многие ветрокрылы стали ценными компаньонами Орды после того, как Кэрн и Тралл освободили их от злобных гарпий.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2087,6 +2181,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rДама Буйногривая, Бана Буйногривая, Мей Франкис, Тохфо Небесное Копыто|n|cFFFFD200Зона: |rДеревня Призрачной Луны(Долина Призрачной Луны),|nДаларан(Даларан),|nТраллмар(Полуостров Адского Пламени),|nКрепость Песни Войны(Борейская тундра)|n|cFFFFD200Цена: |r50 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Многие ветрокрылы стали ценными компаньонами Орды после того, как Кэрн и Тралл освободили их от злобных гарпий.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2109,6 +2204,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rДама Буйногривая, Бана Буйногривая, Мей Франкис, Тохфо Небесное Копыто|n|cFFFFD200Зона: |rДеревня Призрачной Луны(Долина Призрачной Луны),|nДаларан(Даларан),|nТраллмар(Полуостров Адского Пламени),|nКрепость Песни Войны(Борейская тундра)|n|cFFFFD200Цена: |r50 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Многие ветрокрылы стали ценными компаньонами Орды после того, как Кэрн и Тралл освободили их от злобных гарпий.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2131,6 +2227,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rДама Буйногривая, Бана Буйногривая, Мей Франкис, Тохфо Небесное Копыто|n|cFFFFD200Зона: |rДеревня Призрачной Луны(Долина Призрачной Луны),|nДаларан(Даларан),|nТраллмар(Полуостров Адского Пламени),|nКрепость Песни Войны(Борейская тундра)|n|cFFFFD200Цена: |r100 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Никак не возьму в толк, почему они летают быстрее, если их заковать в броню", – Дракма.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2153,6 +2250,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rБрюнн Жаробород, Дурган Громовой Клюв, Грунда Бронзовое Крыло, Мей Франкис|n|cFFFFD200Зона: |rЦитадель Громового Молота(Долина Призрачной Луны),|nДаларан(Даларан),|nОплот Чести(Полуостров Адского Пламени),|nКрепость Отваги(Борейская тундра)|n|cFFFFD200Цена: |r100 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["У Орды были драконы, а у нас грифоны. Победа в войне была за нами", – Ильса Бурное Варево.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2175,6 +2273,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rБрюнн Жаробород, Дурган Громовой Клюв, Грунда Бронзовое Крыло, Мей Франкис|n|cFFFFD200Зона: |rЦитадель Громового Молота(Долина Призрачной Луны),|nДаларан(Даларан),|nОплот Чести(Полуостров Адского Пламени),|nКрепость Отваги(Борейская тундра)|n|cFFFFD200Цена: |r100 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["У Орды были драконы, а у нас грифоны. Победа в войне была за нами", – Ильса Бурное Варево.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2197,6 +2296,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rБрюнн Жаробород, Дурган Громовой Клюв, Грунда Бронзовое Крыло, Мей Франкис|n|cFFFFD200Зона: |rЦитадель Громового Молота(Долина Призрачной Луны),|nДаларан(Даларан),|nОплот Чести(Полуостров Адского Пламени),|nКрепость Отваги(Борейская тундра)|n|cFFFFD200Цена: |r100 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["У Орды были драконы, а у нас грифоны. Победа в войне была за нами", – Ильса Бурное Варево.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2219,6 +2319,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rДама Буйногривая, Бана Буйногривая, Мей Франкис, Тохфо Небесное Копыто|n|cFFFFD200Зона: |rДеревня Призрачной Луны(Долина Призрачной Луны),|nДаларан(Даларан),|nТраллмар(Полуостров Адского Пламени),|nКрепость Песни Войны(Борейская тундра)|n|cFFFFD200Цена: |r100 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Никак не возьму в толк, почему они летают быстрее, если их заковать в броню", – Дракма.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2241,6 +2342,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rДама Буйногривая, Бана Буйногривая, Мей Франкис, Тохфо Небесное Копыто|n|cFFFFD200Зона: |rДеревня Призрачной Луны(Долина Призрачной Луны),|nДаларан(Даларан),|nТраллмар(Полуостров Адского Пламени),|nКрепость Песни Войны(Борейская тундра)|n|cFFFFD200Цена: |r100 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Никак не возьму в толк, почему они летают быстрее, если их заковать в броню", – Дракма.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2263,6 +2365,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rДама Буйногривая, Бана Буйногривая, Мей Франкис, Тохфо Небесное Копыто|n|cFFFFD200Зона: |rДеревня Призрачной Луны(Долина Призрачной Луны),|nДаларан(Даларан),|nТраллмар(Полуостров Адского Пламени),|nКрепость Песни Войны(Борейская тундра)|n|cFFFFD200Цена: |r100 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Никак не возьму в толк, почему они летают быстрее, если их заковать в броню", – Дракма.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2285,6 +2388,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rТораллиус Пастух|n|cFFFFD200Зона: |rЭкзодар|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Терпеливые и могучие элекки словно разделяют отношение дренеев к тяготам жизни.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2307,6 +2411,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rКориэль, Алдраан|n|cFFFFD200Зона: |rХалаа(Награнд)|n|cFFFFD200Цена: |r70 |TInterface\\Icons\\INV_Misc_Rune_08.BLP:16:16|t15 |TInterface\\Icons\\INV_Misc_Rune_09.BLP:16:16|t|n",
         descriptionText = [[Когда-то орки охотились на этих грациозных стадных животных, как того требовал ритуал инициации ом'риггор.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2329,6 +2434,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rВинестра|n|cFFFFD200Зона: |rСтойла Турона(Леса Вечной Песни)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Некоторые из наших сородичей отдают предпочтение лошадям, но истинным символом Луносвета навсегда останутся крылобеги", – Винестра.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2351,6 +2457,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rВинестра|n|cFFFFD200Зона: |rСтойла Турона(Леса Вечной Песни)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["У них самые красивые перья. Незаметность – для серых мышек! Или для других... птиц", – Виера Шепот Солнца.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2373,6 +2480,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rПоставщик Несела|n|cFFFFD200Зона: |rГарадар(Награнд)|n|cFFFFD200Цена: |r100 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Обычно эти животные ведут себя покладисто, однако, если им грозит опасность, они могут забодать насмерть даже опытного охотника.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2395,6 +2503,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rПоставщик Несела|n|cFFFFD200Зона: |rГарадар(Награнд)|n|cFFFFD200Цена: |r100 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Обычно эти животные ведут себя покладисто, однако, если им грозит опасность, они могут забодать насмерть даже опытного охотника.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2417,6 +2526,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rПоставщик Несела|n|cFFFFD200Зона: |rГарадар(Награнд)|n|cFFFFD200Цена: |r100 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Обычно эти животные ведут себя покладисто, однако, если им грозит опасность, они могут забодать насмерть даже опытного охотника.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2439,6 +2549,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rПоставщик Несела|n|cFFFFD200Зона: |rГарадар(Награнд)|n|cFFFFD200Цена: |r100 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Обычно эти животные ведут себя покладисто, однако, если им грозит опасность, они могут забодать насмерть даже опытного охотника.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2461,6 +2572,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rВинестра|n|cFFFFD200Зона: |rСтойла Турона(Леса Вечной Песни)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Некоторые из наших сородичей отдают предпочтение лошадям, но истинным символом Луносвета навсегда останутся крылобеги", – Винестра.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2483,6 +2595,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rВинестра|n|cFFFFD200Зона: |rСтойла Турона(Леса Вечной Песни)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Некоторые из наших сородичей отдают предпочтение лошадям, но истинным символом Луносвета навсегда останутся крылобеги", – Винестра.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2505,6 +2618,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rВинестра|n|cFFFFD200Зона: |rСтойла Турона(Леса Вечной Песни)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Некоторые из наших сородичей отдают предпочтение лошадям, но истинным символом Луносвета навсегда останутся крылобеги", – Винестра.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2527,6 +2641,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rВинестра|n|cFFFFD200Зона: |rСтойла Турона(Леса Вечной Песни)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["У них самый красивый окрас. Незаметность – для серых мышек! Или для других... птиц", – Виера Шепот Солнца.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2549,6 +2664,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rВинестра|n|cFFFFD200Зона: |rСтойла Турона(Леса Вечной Песни)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["У них самый красивый окрас. Незаметность – для серых мышек! Или для других... птиц", – Виера Шепот Солнца.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2571,6 +2687,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rТорговец Нарасу|n|cFFFFD200Зона: |rТелаар(Награнд)|n|cFFFFD200Цена: |r100 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Обычно эти животные ведут себя покладисто, однако, если им грозит опасность, они могут забодать насмерть даже опытного охотника.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2593,6 +2710,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rКориэль, Алдраан|n|cFFFFD200Зона: |rХалаа(Награнд)|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\INV_Misc_Rune_08.BLP:16:16|t20 |TInterface\\Icons\\INV_Misc_Rune_09.BLP:16:16|t|n",
         descriptionText = [[Обычно эти животные ведут себя покладисто, однако, если им грозит опасность, они могут забодать насмерть даже опытного охотника.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2615,6 +2733,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rТорговец Нарасу|n|cFFFFD200Зона: |rТелаар(Награнд)|n|cFFFFD200Цена: |r100 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Обычно эти животные ведут себя покладисто, однако, если им грозит опасность, они могут забодать насмерть даже опытного охотника.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2637,6 +2756,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rТорговец Нарасу|n|cFFFFD200Зона: |rТелаар(Награнд)|n|cFFFFD200Цена: |r100 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Обычно эти животные ведут себя покладисто, однако, если им грозит опасность, они могут забодать насмерть даже опытного охотника.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2659,6 +2779,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rТорговец Нарасу|n|cFFFFD200Зона: |rТелаар(Награнд)|n|cFFFFD200Цена: |r100 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Обычно эти животные ведут себя покладисто, однако, если им грозит опасность, они могут забодать насмерть даже опытного охотника.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2681,6 +2802,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛейтенант Картер|n|cFFFFD200Зона: |rШтормград,|nЗал Защитника|n|cFFFFD200Цена: |r3000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [["Гном на поле боя, которому сообщено необходимое ускорение, – страшная красота", – главный механик Меггакрут.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2703,6 +2825,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rНалетчик Борк|n|cFFFFD200Зона: |rОргриммар,|nЗал Легенд|n|cFFFFD200Цена: |r3000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[В кор'кронских стойлах этих животных разводят исключительно из-за непредсказуемого поведения и агрессии. Топот черного боевого кодо возвещает о том, что скоро прольется кровь.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2725,6 +2848,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛейтенант Картер|n|cFFFFD200Зона: |rШтормград,|nЗал Защитника|n|cFFFFD200Цена: |r3000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[Дворфы ценят своих верховых баранов за бесстрашие, с которым те несутся в битву.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2747,6 +2871,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛейтенант Картер|n|cFFFFD200Зона: |rШтормград,|nЗал Защитника|n|cFFFFD200Цена: |r3000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[Скакуны, обученные выдерживать самые свирепые схватки в ближнем бою. ]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2769,6 +2894,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rНалетчик Борк|n|cFFFFD200Зона: |rОргриммар,|nЗал Легенд|n|cFFFFD200Цена: |r3000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[Эти волки ценятся стражниками Оргриммара за превосходный нюх.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2791,6 +2917,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rНалетчик Борк|n|cFFFFD200Зона: |rОргриммар,|nЗал Легенд|n|cFFFFD200Цена: |r3000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[Когда павших героев обращают в нежить, та же участь постигает и их скакунов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2813,6 +2940,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛейтенант Картер|n|cFFFFD200Зона: |rШтормград,|nЗал Защитника|n|cFFFFD200Цена: |r3000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[Как и их родичи ночные саблезубы, черные боевые саблезубы известны своими бритвенно-острыми когтями, невероятной ловкостью и громким мурчанием, если их почесать за ушком.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2835,6 +2963,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rНалетчик Борк|n|cFFFFD200Зона: |rОргриммар,|nЗал Легенд|n|cFFFFD200Цена: |r3000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[Эта порода является преемником злобных ящеров, сородичей Огана, которые принесли победу империи Гурубаши.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2857,6 +2986,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rТораллиус Пастух|n|cFFFFD200Зона: |rЭкзодар|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Терпеливые и могучие элекки словно разделяют отношение дренеев к тяготам жизни.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2879,6 +3009,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rТораллиус Пастух|n|cFFFFD200Зона: |rЭкзодар|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Терпеливые и могучие элекки словно разделяют отношение дренеев к тяготам жизни.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2901,6 +3032,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rТораллиус Пастух|n|cFFFFD200Зона: |rЭкзодар|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Этот альфа-самец – воплощение могущества элекков, бродящих по землям северного Награнда.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2923,6 +3055,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rТораллиус Пастух|n|cFFFFD200Зона: |rЭкзодар|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Этот альфа-самец – воплощение могущества элекков, бродящих по землям северного Награнда.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2945,6 +3078,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rТораллиус Пастух|n|cFFFFD200Зона: |rЭкзодар|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Этот альфа-самец – воплощение могущества элекков, бродящих по землям северного Награнда.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2967,6 +3101,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rЛовчий Аттумен|n|cFFFFD200Зона: |rКаражан|n",
         descriptionText = [[Один из самых непокорных скакунов в стойлах Каражана. ]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -2989,6 +3124,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Самые агрессивные из драконов Пустоты стали наградой приверженцам гладиаторской арены, проявившим на ней значительное мастерство.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3011,6 +3147,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rПоставщик Несела|n|cFFFFD200Зона: |rГарадар(Награнд)|n|cFFFFD200Цена: |r70 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Когда-то орки охотились на этих грациозных стадных животных, как того требовал ритуал инициации ом'риггор.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3033,6 +3170,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rТорговец Нарасу|n|cFFFFD200Зона: |rТелаар(Награнд)|n|cFFFFD200Цена: |r70 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Когда-то орки охотились на этих грациозных стадных животных, как того требовал ритуал инициации ом'риггор.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3055,6 +3193,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rПоставщик Несела|n|cFFFFD200Зона: |rГарадар(Награнд)|n|cFFFFD200Цена: |r70 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Когда-то орки охотились на этих грациозных стадных животных, как того требовал ритуал инициации ом'риггор.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3077,6 +3216,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rТорговец Нарасу|n|cFFFFD200Зона: |rТелаар(Награнд)|n|cFFFFD200Цена: |r70 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Когда-то орки охотились на этих грациозных стадных животных, как того требовал ритуал инициации ом'риггор.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3099,6 +3239,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rПоставщик Несела|n|cFFFFD200Зона: |rГарадар(Награнд)|n|cFFFFD200Цена: |r70 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Когда-то орки охотились на этих грациозных стадных животных, как того требовал ритуал инициации ом'риггор.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3121,6 +3262,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rТорговец Нарасу|n|cFFFFD200Зона: |rТелаар(Награнд)|n|cFFFFD200Цена: |r70 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Когда-то орки охотились на этих грациозных стадных животных, как того требовал ритуал инициации ом'риггор.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3143,6 +3285,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rПоставщик Несела|n|cFFFFD200Зона: |rГарадар(Награнд)|n|cFFFFD200Цена: |r70 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Когда-то орки охотились на этих грациозных стадных животных, как того требовал ритуал инициации ом'риггор.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3165,6 +3308,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rТорговец Нарасу|n|cFFFFD200Зона: |rТелаар(Награнд)|n|cFFFFD200Цена: |r70 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Когда-то орки охотились на этих грациозных стадных животных, как того требовал ритуал инициации ом'риггор.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3187,6 +3331,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rГрелла|n|cFFFFD200Зона: |rЛагерь Черного Ветра(Лес Тероккар)|n|cFFFFD200Цена: |r200 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Верховые скаты – одни из самых надежных и универсальных верховых животных в Запределье и за его границами.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3209,6 +3354,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rГрелла|n|cFFFFD200Зона: |rЛагерь Черного Ветра(Лес Тероккар)|n|cFFFFD200Цена: |r200 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Верховые скаты – одни из самых надежных и универсальных верховых животных в Запределье и за его границами.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3231,6 +3377,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rГрелла|n|cFFFFD200Зона: |rЛагерь Черного Ветра(Лес Тероккар)|n|cFFFFD200Цена: |r200 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Верховые скаты – одни из самых надежных и универсальных верховых животных в Запределье и за его границами.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3253,6 +3400,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rГрелла|n|cFFFFD200Зона: |rЛагерь Черного Ветра(Лес Тероккар)|n|cFFFFD200Цена: |r200 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Верховые скаты – одни из самых надежных и универсальных верховых животных в Запределье и за его границами.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3275,6 +3423,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rГрелла|n|cFFFFD200Зона: |rЛагерь Черного Ветра(Лес Тероккар)|n|cFFFFD200Цена: |r200 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Верховые скаты – одни из самых надежных и универсальных верховых животных в Запределье и за его границами.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3297,6 +3446,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rКель'тас Солнечный Скиталец|n|cFFFFD200Зона: |rКрепость Бурь|n",
         descriptionText = [[Ал'ар был любимым питомцем Кель'таса Солнечного Скитальца, который всегда хвастался, что смерть до него никогда не доберется. Что ж, по-видимому, он был прав.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3319,6 +3469,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rАнзу|n|cFFFFD200Зона: |rСетеккские залы|n",
         descriptionText = [["А прочих позабудут, и они станут позорно ковылять с подрезанными крыльями по земле", – гласит "Слово Ворона".]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3341,6 +3492,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rПродавец драконов Харлунк|n|cFFFFD200Зона: |rЛагерь Драконьей Пасти(Долина Призрачной Луны)|n|cFFFFD200Цена: |r200 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Пообещав долететь с вами до края Запределья, дракон Крыльев Пустоты в конце концов воспарил и в голубом небе Азерота.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3363,6 +3515,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rПродавец драконов Харлунк|n|cFFFFD200Зона: |rЛагерь Драконьей Пасти(Долина Призрачной Луны)|n|cFFFFD200Цена: |r200 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Пообещав долететь с вами до края Запределья, дракон Крыльев Пустоты в конце концов воспарил и в голубом небе Азерота.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3385,6 +3538,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rПродавец драконов Харлунк|n|cFFFFD200Зона: |rЛагерь Драконьей Пасти(Долина Призрачной Луны)|n|cFFFFD200Цена: |r200 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Пообещав долететь с вами до края Запределья, дракон Крыльев Пустоты в конце концов воспарил и в голубом небе Азерота.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3407,6 +3561,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rПродавец драконов Харлунк|n|cFFFFD200Зона: |rЛагерь Драконьей Пасти(Долина Призрачной Луны)|n|cFFFFD200Цена: |r200 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Пообещав долететь с вами до края Запределья, дракон Крыльев Пустоты в конце концов воспарил и в голубом небе Азерота.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3429,6 +3584,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rПродавец драконов Харлунк|n|cFFFFD200Зона: |rЛагерь Драконьей Пасти(Долина Призрачной Луны)|n|cFFFFD200Цена: |r200 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Пообещав долететь с вами до края Запределья, дракон Крыльев Пустоты в конце концов воспарил и в голубом небе Азерота.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3451,6 +3607,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rПродавец драконов Харлунк|n|n|cFFFFD200Цена: |r200 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Пообещав долететь с вами до края Запределья, дракон Крыльев Пустоты в конце концов воспарил и в голубом небе Азерота.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3473,6 +3630,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r31|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[Историки считают, что эти бесплотные звери появились после разрушения Дренора. Высвободившаяся тогда энергия изменила флору и фауну всего мира.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3495,6 +3653,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rСундучок Танзара, Сумка Харкора , Тюк Краза , Сумка Эшли|n|n",
         descriptionText = [[Только самым искусным исследователям храма троллей Зул'Аман удавалось подчинить себе этих редких боевых животных.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3517,6 +3676,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rДриз Неуклюга, Пол Янтарлен|n|cFFFFD200Зона: |rДун Морог,|nДуротар|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Хмелеварам пришлось отказаться от использования этих животных для глашатайства, так как многие считали их слишком норовистыми для большого города.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3539,6 +3699,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rСундук сокровищ в форме бочонка|n|n",
         descriptionText = [[Дворфы приписывают покладистый характер этой породы тщательной дрессировке, но другие народы считают, что все дело в элевой диете.]],
+        holidayText = "|cFFFFD200Игровое событие:|r Хмельной фестиваль",
         flags = 0,
     },
     {
@@ -3561,6 +3722,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rФедриен Быстрое Копье|n|cFFFFD200Зона: |rКенарийский оплот(Зангартопь)|n|cFFFFD200Цена: |r2000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Члены круга Кенария многие годы состоят в плодотворном союзе с гиппогрифами. Если конфликт неизбежен, кенарийские боевые гиппогрифы всегда придут на помощь.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3583,6 +3745,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Профессия: |rИнженерное дело|n|n",
         descriptionText = [[Основной костяк воздушных сил Альянса составляют быстрые и маневренные гномские ветролеты.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3605,6 +3768,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Профессия: |rИнженерное дело|n|n",
         descriptionText = [[Только самые талантливые и смелые инженеры способны создать летательный аппарат, который может похвастаться стабильностью и безопасностью. Но турбоветролеты просто безумны!]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3627,6 +3791,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Самые агрессивные из драконов Пустоты стали наградой приверженцам гладиаторской арены, проявившим на ней значительное мастерство.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3649,6 +3814,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rНалетчик Борк|n|cFFFFD200Зона: |rОргриммар,|nЗал Легенд|n|cFFFFD200Цена: |r3000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [["Если на хозяина этого крылобега нападут, птица покажет себя с совершенно другой стороны", – Налетчик Борк.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3671,6 +3837,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Модель Х-51 изначально задумывалась как усилитель для большей ракеты, однако она проявила идеальную тягу при полезной нагрузке весом в одного наездника. ]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3693,6 +3860,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Недостаток безопасности с лихвой компенсируется скоростью и дизайном этой модели. Не для слабонервных. ]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3715,6 +3883,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rКель'тас Солнечный Скиталец|n|cFFFFD200Зона: |rТерраса Магистров|n",
         descriptionText = [["Я могу поставить под сомнение лояльность принца Кель'Таса, но только не его стиль", – Элродан.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3737,6 +3906,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛейтенант Картер|n|cFFFFD200Зона: |rШтормград,|nЗал Защитника|n|cFFFFD200Цена: |r3000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[Самых задиристых самцов элекков пастухи сбывают эфириальным торговцам. Те тренируют животных для боя и перепродают тем покупателям, которых не заботит безопасность езды.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3759,6 +3929,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗаполненная добычей тыква|n|n",
         descriptionText = [[Этот скакун промчится сквозь огонь, воду и медные трубы.]],
+        holidayText = "|cFFFFD200Игровое событие:|r Тыквовин",
         flags = 0,
     },
     {
@@ -3781,6 +3952,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Самые агрессивные из драконов Пустоты стали наградой приверженцам гладиаторской арены, проявившим на ней значительное мастерство.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3803,6 +3975,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Жевры редко седлаются в Азероте, поскольку они очень упрямы и все время кусаются.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3825,6 +3998,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Вам никак не удается вспомнить, как именно вы получили этого кодо. По правде говоря, вам не удается вспомнить почти ничего, что произошло на Хмельном фестивале.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3847,6 +4021,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rСундук сокровищ в форме бочонка|n|n",
         descriptionText = [[Корен Худовар выиграл этот приз после того, как перепил тауренского друида в форме медведя. Это был один из самых незабываемых моментов в жизни Худовара.]],
+        holidayText = "|cFFFFD200Игровое событие:|r Хмельной фестиваль",
         flags = 0,
     },
     {
@@ -3869,6 +4044,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Он большой, он готов к бою, и он медведь. Что еще может быть нужно от зверя?]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3891,6 +4067,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rВластелин Ужаса Таланор|n|cFFFFD200Зона: |rАкерус: Черный оплот(Восточные Чумные земли)|n|cFFFFD200Цена: |r1000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[В жизни или смерти – ты будешь со мной.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3913,6 +4090,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Ледяные врайкулы верят, что ожерелье из когтей северного медведя наделит их силой других миров.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3935,6 +4113,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Профессия: |rИнженерное дело|n|n",
         descriptionText = [[Сложная конструкция, проблемный техосмотр... Любой уже давно плюнул бы на все эти затраты, если бы не вау-фактор модели.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3957,6 +4136,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Самые агрессивные из драконов Пустоты стали наградой приверженцам гладиаторской арены, проявившим на ней значительное мастерство.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -3979,6 +4159,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Когда вы седлаете этого зверя, вам не терпится носиться, гласом мощным к убийству призывая и мурлоков волны спуская!]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4001,6 +4182,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rОсквернитель из рода Бесконечности|n|cFFFFD200Зона: |rОчищение Стратхольма|n",
         descriptionText = [["Потерянное время никогда не вернуть. Ой! Вот оно, нашла..." – Хронорму.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4023,6 +4205,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rДар Алекстразы|n|n",
         descriptionText = [[Всегда будьте вежливы с разгневанным драконом.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4045,6 +4228,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЛарь хранителя энергии|n|n",
         descriptionText = [[Не стой между драконом и яростью его.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4067,6 +4251,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rСартарион|n|cFFFFD200Зона: |rОбсидиановое святилище|n",
         descriptionText = [[Но самое важное правило, которое ни в коем случае нельзя забывать, как сильно бы он ни плакал, как бы ни умолял – никогда не кормить его после полуночи.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4089,6 +4274,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rНебостраза|n|cFFFFD200Зона: |rХрам Драконьего Покоя(Драконий Погост)|n|cFFFFD200Цена: |r2000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Все, о чем поют менестрели – глупые выдумки. Дракон и мухи не обидит, только если на него не напасть первым.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4111,6 +4297,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rРыцарь Дамерон|n|cFFFFD200Зона: |rКрепость Ледяных Оков(Озеро Ледяных Оков)|n|cFFFFD200Цена: |r300 |TInterface\\Icons\\INV_Misc_Platnumdisks.BLP:16:16|t|n",
         descriptionText = [[В дикой природе эти умные звери ведут себя очень спокойно, но будучи оседланными, они устанавливают особую связь с наездником и бесстрашно и преданно рвутся в бой.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4133,6 +4320,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛиллехофф|n|cFFFFD200Зона: |rДун Ниффелем(Грозовая Гряда)|n|cFFFFD200Цена: |r1000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Многие ледяные гиганты утверждают, что научили своих любимцев трубить так, чтобы с гор сошла лавина.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4155,6 +4343,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rТоравон Страж Льда, Эмалон Страж Бури, Коралон Страж Огня, Аркавон Страж Камня|n|cFFFFD200Зона: |rСклеп Аркавона|n",
         descriptionText = [[Когда-то эти мамонты перевозили тяжело бронированных гигантов, поэтому они без труда увезут на себе несколько наездников размером поменьше.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4177,6 +4366,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛиллехофф|n|cFFFFD200Зона: |rДун Ниффелем(Грозовая Гряда)|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Из-за сильных ветров и лавин Сыны Ходира не советуют путешествовать по Грозовой гряде в одиночку.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4199,6 +4389,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rХильдские трофеи|n|n",
         descriptionText = [[Ледяные врайкулы верят, что ожерелье из когтей северного медведя наделит их силой других миров.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4221,6 +4412,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4243,6 +4435,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Таунка используют шкуры черных северных медведей в своих ритуалах. Чаще всего на похоронах охотников на черных северных медведей.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4265,6 +4458,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rСартарион|n|cFFFFD200Зона: |rОбсидиановое святилище|n",
         descriptionText = [[На свете нет ничего такого, ради чего стоило бы выводить из себя живого дракона.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4287,6 +4481,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rКаменный страж Мукар|n|cFFFFD200Зона: |rКрепость Ледяных Оков(Озеро Ледяных Оков)|n|cFFFFD200Цена: |r300 |TInterface\\Icons\\INV_Misc_Platnumdisks.BLP:16:16|t|n",
         descriptionText = [[Твердая поступь и невозмутимое спокойствие в бою – вот что ценится в этих темношкурых мамонтах.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4309,6 +4504,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛиллехофф|n|cFFFFD200Зона: |rДун Ниффелем(Грозовая Гряда)|n|cFFFFD200Цена: |r1000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Сыны Ходира верят, что наезднику на ледяном мамонте не страшны обморожение и снежная слепота.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4331,6 +4527,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rТоравон Страж Льда, Эмалон Страж Бури, Коралон Страж Огня, Аркавон Страж Камня|n|cFFFFD200Зона: |rСклеп Аркавона|n",
         descriptionText = [[Иногда один мамонт из помета рождается гораздо сильнее и послушнее своих сверстников. Таких особей нарекают "большими", и они везут на передовую сразу несколько всадников.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4353,6 +4550,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛиллехофф|n|cFFFFD200Зона: |rДун Ниффелем(Грозовая Гряда)|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[На узких тропинках Грозовой гряды эти мамонты чувствуют себя как дома, поэтому ледяные гиганты доверяют им перевозку грузов и сразу нескольких всадников.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4375,6 +4573,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rСкади Безжалостный|n|cFFFFD200Зона: |rВершина Утгард|n",
         descriptionText = [["Грозовая гряда! Вот тут-то мы и найдем зверя, достаточно сильного, чтобы я мог отправиться на нем в бой", – Скади Безжалостный.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4397,6 +4596,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rСлава герою|n|n",
         descriptionText = [[Врайкулы первыми обнаружили потенциал в этих драконах. Или вторыми... Зависит от точки зрения...]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4419,6 +4619,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Эта порода была выведена специально, чтобы чествовать героев, проявивших исключительную стойкость и силу духа в Нордсколе.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4441,6 +4642,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗатерянный во времени протодракон|n|cFFFFD200Зона: |rГрозовая Гряда,|nВалькирион(Грозовая Гряда),|nУльдуар(Грозовая Гряда),|nДыхание Бора(Грозовая Гряда)|n",
         descriptionText = [[Единственная причина существования времени — чтобы все не случалось одновременно.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4463,6 +4665,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Эта порода была выведена специально, чтобы чествовать героев, проявивших исключительную доблесть и упорство в Нордсколе.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4485,6 +4688,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rДолгое и странное путешествие, Долгое и странное путешествие|n|n",
         descriptionText = [["Я никак не могу перестать думать о том, что случилось бы, если бы титаны вывели еще один драконий род", – Алекстраза.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4507,6 +4711,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rКомандир кавалерии|n|n",
         descriptionText = [["Даже тесты ассоциации по контролю распространения драконов не помогли определить, принадлежит ли этот дракон-альбинос к какому-либо из известных драконьих родов", – Бреанни.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4529,6 +4734,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Достижение: |rЗа Альянс!|n|n",
         descriptionText = [[Убить вождей Орды – уже достижение, а этот страшный зверь станет еще и отличным трофеем. ]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4551,6 +4757,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Достижение: |rЗа Орду!|n|n",
         descriptionText = [[Этого грозного зверя можно получить, окропив свое оружие кровью командиров Альянса. Но убивать их безвозмездно не менее весело.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4573,6 +4780,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rМей Франкис|n|cFFFFD200Зона: |rДаларан(Даларан)|n|cFFFFD200Цена: |r750 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Стремительность этого медведя усилена его тяжелой броней, зачарованной магами Кирин-Тора.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4595,6 +4803,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rМей Франкис|n|cFFFFD200Зона: |rДаларан(Даларан)|n|cFFFFD200Цена: |r750 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Клич "За Орду!" звучит как нельзя более устрашающе со спины этого бронированного монстра, на всех парах раскатывающего Альянс по земле.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4617,6 +4826,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rМей Франкис|n|cFFFFD200Зона: |rДаларан(Даларан)|n|cFFFFD200Цена: |r1000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Шерстистые мамонты являются прямыми потомками древних прародителей своего вида. Они куда ближе к природе, чем их короткошерстные родственники.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4639,6 +4849,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rМей Франкис|n|cFFFFD200Зона: |rДаларан(Даларан)|n|cFFFFD200Цена: |r1000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Этот дикий вид не разводят для верховой езды. Большинство шерстистых мамонтов попадают в капкан охотников в дикой природе. Их свирепость и хитрость – результат укрощения и тренировок.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4661,6 +4872,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rМей Франкис|n|cFFFFD200Зона: |rДаларан(Даларан)|n|cFFFFD200Цена: |r20000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[В путешествиях через холодную тундру всадники и купцы единодушно доверяют только этим сильным и выносливым мамонтам.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4683,6 +4895,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rМей Франкис|n|cFFFFD200Зона: |rДаларан(Даларан)|n|cFFFFD200Цена: |r20000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Древние манускрипты изображают купцов, путешествующих по ледяной тундре верхом на этих огромных зверях. Эти изображения привели ученых к догадке, что мамонты были первыми одомашненными ездовыми животными.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4705,6 +4918,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Профессия: |rИнженерное дело|n|n",
         descriptionText = [[Это чудо техники – один из немногих в Азероте мотоциклов, рассчитанных на двух седоков.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4727,6 +4941,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Профессия: |rПортняжное дело|n|n",
         descriptionText = [[Прыгайте на летающий ковер, чтобы вознестись над сияющим, бесконечно прекрасным Азеротом.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4749,6 +4964,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Профессия: |rПортняжное дело|n|n",
         descriptionText = [[При покупке ковра вы получаете крепкую пропитанную ледяную ткань, укрепленную настоящим шелком паука-ледопряда. Также отдельно вы можете приобрести запасную подушку.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4771,6 +4987,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rМей Франкис|n|cFFFFD200Зона: |rДаларан(Даларан)|n|cFFFFD200Цена: |r2000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Когда эти грифоны атакуют, кровь почти не оставляет пятен у них на перьях. Здорово, а?" – Мей Франкис.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4793,6 +5010,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rМей Франкис|n|cFFFFD200Зона: |rДаларан(Даларан)|n|cFFFFD200Цена: |r2000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Нордскол для ветрокрылов не родная земля, но они удивительно хорошо приспособились к холоду", – Мей Франкис.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4815,6 +5033,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rТреснутое яйцо|n|n",
         descriptionText = [[Врайкулы первыми обнаружили потенциал в этих драконах. Или вторыми... Зависит от точки зрения...]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4837,6 +5056,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rНе имей 100 рублей, а имей 100 коней|n|n",
         descriptionText = [[Дракондоры являются одними из самых смертоносных хищников среди известных в мире. Они способны обнаружить добычу с огромного расстояния, кинуться на нее и распотрошить когтями и клювом.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4859,6 +5079,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rНе имей 100 рублей, а имей 100 коней|n|n",
         descriptionText = [[Дракондоры являются одними из самых смертоносных хищников среди известных в мире. Они способны обнаружить добычу с огромного расстояния, кинуться на нее и распотрошить когтями и клювом.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4881,6 +5102,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rКапрал Артур Флю|n|cFFFFD200Зона: |rПавильон Серебряного союза(Ледяная Корона)|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Хоть эта порода и была выведена в Штормграде, она невероятно устойчива к холодному климату Ледяной Короны.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4903,6 +5125,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rДеррик Пегобород|n|cFFFFD200Зона: |rПавильон Серебряного союза(Ледяная Корона)|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Знаток истории клана Громового Молота утверждает, что эта порода была первой одомашнена дворфами, когда те переселились в Дун Морог.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4925,6 +5148,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rРилли Веретень|n|cFFFFD200Зона: |rПавильон Серебряного союза(Ледяная Корона)|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [["Когда вам кровь из носу нужно где-то оказаться сию секунду", – Рилли Веретень.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4947,6 +5171,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИризи|n|cFFFFD200Зона: |rПавильон Серебряного союза(Ледяная Корона)|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Экзодарские элекки были освящены О'росом – наару, который отправился из Дренора в Азерот с Веленом и его последователями. ]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4969,6 +5194,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rРуок Хищная Хватка|n|cFFFFD200Зона: |rПавильон Серебряного союза(Ледяная Корона)|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Когда саблезуб ночного эльфа погибает, наездник традиционно оставляет один из его клыков себе на память.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -4991,6 +5217,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rДору Громовой Рог|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Этот альфа-самец – воплощение могущества кодо, бродящих по равнинам Мулгора.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5013,6 +5240,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСамамба|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Драккари были первыми, кто начал разводить этих ящеров, но затем они перешли племени Черного Копья в Нордсколе.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5035,6 +5263,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rФрека Кровавый Топор|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Недолгое время среди орков бытовало выражение "голодный как оргриммарский волк". Оно до сих пор иногда в шутку используется эльфами крови.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5057,6 +5286,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rТреллис Утреннее Солнце|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [["И я такой говорю, что мне чего-то захотелось курицы. А потом лежу распластанный на полу, а эта тварюга пытается попробовать на вкус мои глаза", – Беззл Рвизасов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5079,6 +5309,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЭлиза Киллиан|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Когда павших героев обращают в нежить, та же участь постигает и их скакунов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5101,6 +5332,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЙогг-Сарон|n|cFFFFD200Зона: |rУльдуар|n",
         descriptionText = [[Игрушка титанов, чем-то приглянувшаяся древнему богу Йогг-Сарону. На данный момент это самая большая голова механического гнома в Азероте.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5123,6 +5355,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rТреллис Утреннее Солнце, Дору Громовой Рог, Элиза Киллиан, Капрал Артур Флю, Самамба|n|cFFFFD200Зона: |rПавильон Серебряного союза(Ледяная Корона),|nПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r150 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Гиппогриф Серебряного Авангарда позволит оседлать себя только самым отважным чемпионам, закаленным в бою.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5145,6 +5378,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rСлава рейдеру Ульдуара (25 игроков)|n|n",
         descriptionText = [[Ни меч, ни копье не оставят следа: бронею железной покрыты бока.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5167,6 +5401,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rСлава рейдеру Ульдуара (10 игроков)|n|n",
         descriptionText = [["Конечно, сверкает он не так ярко, как другие, но находка все равно ценная", – Бранн Бронзобород.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5189,6 +5424,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rОгунаро Волкопас|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вой этого волка разносится на километры вокруг.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5211,6 +5447,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rХарб Точеное Копыто|n|cFFFFD200Зона: |rДеревня Кровавого Копыта(Мулгор)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [["Кодо – опора нашего народа. Торгует ли Орда, кочует или сражается – могучие кодо всегда с нами", – Харб Точеное Копыто.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5233,6 +5470,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Задание: |rОни так быстро растут, Приготовьтесь к поездке|n|n",
         descriptionText = [[Вы вырастили этого равазавра из чешуйчатой ящерки, Мор'век бы вами гордился. А еще он бы быстро заставил вас убрать то, что ящер наделал в углу.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5255,6 +5493,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 4,
         priceText = "",
         descriptionText = [[При сопутствующей удаче эту удивительную черепашку можно выловить в любой рыбной лунке Нордскола.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5277,6 +5516,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Некоторые из самых могущественных драконов Азерота были призваны сквозь завесу между жизнью и смертью, чтобы быть обращенными в нежить и беспрекословно служить новым хозяевам.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5299,6 +5539,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЗахария Пост|n|cFFFFD200Зона: |rБрилл(Тирисфальские леса)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Отрекшиеся верят, что даже скитающиеся вьючные звери страдают, будучи нежитью.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5321,6 +5562,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Эти воскрешенные вестники разрушения не боятся смерти, они приносят ее.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5343,6 +5585,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСамамба|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r5 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Давние союзники троллей, эти охотники джунглей создают особую связь со своим наездником. Они становятся не просто ездовым животным, а другом и защитником.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5365,6 +5608,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rРуок Хищная Хватка|n|cFFFFD200Зона: |rПавильон Серебряного союза(Ледяная Корона)|n|cFFFFD200Цена: |r5 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Многие ночные эльфы почитают этих могучих зверей, так как их мерцающая шкура символизирует богиню Луны, Элуну.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5387,6 +5631,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИризи|n|cFFFFD200Зона: |rПавильон Серебряного союза(Ледяная Корона)|n|cFFFFD200Цена: |r5 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[После прибытия Экзодара в Азерот на свет появились доселе невиданные в Награнде красные детеныши элекка. Некоторые скотоводы считают, что такой цвет был вызван тем же излучением, что обрушилось на остров Кровавой Дымки.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5409,6 +5654,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЭлиза Киллиан|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r5 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Когда павших героев обращают в нежить, та же участь постигает и их скакунов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5431,6 +5677,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rРилли Веретень|n|cFFFFD200Зона: |rПавильон Серебряного союза(Ледяная Корона)|n|cFFFFD200Цена: |r5 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [["Это не зеркало заднего вида, это чтобы враги видели хоть что-то кроме твоих выхлопных труб", – Рилли Веретень.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5453,6 +5700,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rДеррик Пегобород|n|cFFFFD200Зона: |rПавильон Серебряного союза(Ледяная Корона)|n|cFFFFD200Цена: |r5 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[У баранов Барак Торола толстый череп и массивные рога, что помогает им с легкостью таранить отряды бронированных врагов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5475,6 +5723,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rФрека Кровавый Топор|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r5 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Волки Орды – это союзники, а не прирученные звери.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5497,6 +5746,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rДору Громовой Рог|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r5 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Этот альфа-самец – воплощение могущества кодо, бродящих по Южным степям.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5519,6 +5769,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rТреллис Утреннее Солнце|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r5 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [["Кто крашеная? Ах, птица! Мы совсем немножко добавили красного", – Треллис Утреннее Солнце.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5541,6 +5792,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rКапрал Артур Флю|n|cFFFFD200Зона: |rПавильон Серебряного союза(Ледяная Корона)|n|cFFFFD200Цена: |r5 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Ветеран, закаленный в самых тяжелых боях Серебряного Авангарда.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5563,6 +5815,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rФрека Кровавый Топор|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r5 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Волки Орды – это союзники, а не прирученные звери.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5585,6 +5838,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rТреллис Утреннее Солнце|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r5 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [["Кто крашеная? Ах, птица! Мы совсем немножко добавили красного", – Треллис Утреннее Солнце.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5607,6 +5861,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЭлиза Киллиан|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r5 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Когда павших героев обращают в нежить, та же участь постигает и их скакунов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5629,6 +5884,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Магия в руках искусника способна творить удивительные и прекрасные вещи, а в руках идиота ее только и хватает, что на огромного петуха.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5651,6 +5907,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rХайрен Певец Преданий|n|cFFFFD200Зона: |rПавильон Серебряного союза(Ледяная Корона)|n|cFFFFD200Цена: |r150 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Гиппогрифы Серебряного союза истово преданы как своему наезднику, так и всему Альянсу.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5673,6 +5930,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rВасарин Красный Рассвет|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r150 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Похитители Солнца Даларана седлают только самых быстрых и грозных дракондоров.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5695,6 +5953,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rХайрен Певец Преданий|n|cFFFFD200Зона: |rПавильон Серебряного союза(Ледяная Корона)|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Этот скакун – прямой потомок лошадей, которые когда-то паслись на берегах Источника Вечности.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5717,6 +5976,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rВасарин Красный Рассвет|n|cFFFFD200Зона: |rПавильон Похитителей Солнца(Ледяная Корона)|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [["На поле боя от скакуна мне нужны скорость, грация и послушание. Этот крылобег отвечает всем требованиям", – Эрессея Певица Рассвета.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5739,6 +5999,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛеланай|n|cFFFFD200Зона: |rАнклав Кенария(Дарнас)|n|cFFFFD200Цена: |r1 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[В незапамятные времена ночные эльфы верили, что увидеть этого светлого саблезуба – дурное предзнаменование.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5761,6 +6022,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЗахария Пост|n|cFFFFD200Зона: |rБрилл(Тирисфальские леса)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Когда павших героев обращают в нежить, та же участь постигает и их скакунов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5783,6 +6045,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rКавалер-дама Эвники Капсалис|n|cFFFFD200Зона: |rСеребряный павильон(Ледяная Корона)|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Этот скакун позволит оседлать себя только поборнику Света.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5805,6 +6068,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rКавалер-дама Эвники Капсалис|n|cFFFFD200Зона: |rСеребряный павильон(Ледяная Корона)|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\Ability_Paladin_ArtofWar.BLP:16:16|t|n",
         descriptionText = [[Лишь тот, кто станет чемпионом Серебряного Турнира, получит этого скакуна.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5827,6 +6091,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Неукротимые при жизни, эти существа были сломлены некромантией и эзотерическими ритуалами, а их воля теперь подвластна желаниям наездника.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5849,6 +6114,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rСундук с наградами Серебряного Авангарда|n|n",
         descriptionText = [[Самые быстрые и выносливые скакуны Серебряного Авангарда стали наградой членам Альянса, проявившим себя во время Серебряного Турнира.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5871,6 +6137,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rСундук с наградами Серебряного Авангарда|n|n",
         descriptionText = [[Несколько самых быстрых волков Серебряного Авангарда стали наградой ордынцам, проявившим себя на турнире Ледяной Короны.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5893,6 +6160,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Достижение: |rДань бессмертию|n|n",
         descriptionText = [[Эти кони были выбраны для членов Альянса из личных конюшен Тириона Фордринга, чтобы стать наградой самым искусным чемпионам испытания крестоносца.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5915,6 +6183,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Достижение: |rДань бессмертию|n|n",
         descriptionText = [[Награда самым умелым чемпионам испытания крестоносца, эти кони были выбраны для ордынцев из личных конюшен Тириона Фордринга.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5937,6 +6206,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rОниксия|n|cFFFFD200Зона: |rЛогово Ониксии|n",
         descriptionText = [["У нее много общего с матерью, разве что ее не убивали и не возвращали потом к жизни. Но она еще молода", – Малориак.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -5959,6 +6229,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rКоробочка в виде сердца|n|n",
         descriptionText = [[Аптекарь Хаммел выкрасил этот шедевр техники в ярко-розовый, страдая от неразделенной любви.]],
+        holidayText = "|cFFFFD200Игровое событие:|r Любовная лихорадка",
         flags = 0,
     },
     {
@@ -5981,6 +6252,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Многие верят, что в прошлой жизни эти змеи были вынуждены сражаться с себе подобными на потеху другим. Возможно, именно это объясняет их исключительно боевой норов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6003,6 +6275,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rКороль-лич|n|cFFFFD200Зона: |rЛедяной Трон(Цитадель Ледяной Короны)|n",
         descriptionText = [[Знаменитый жеребец Артаса Менетила служил принцу и при жизни, и после смерти. Оседлать его – поистине великий подвиг.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6026,6 +6299,7 @@ COLLECTION_MOUNTDATA = {
         priceText = "|cFFFFD200Достижение: |rСлава рейдеру Ледяной Короны (10 игроков)|n|n",
         descriptionText = [[Обагренными ледяными покорителями называют ледяных змеев, чья прежняя жизнь оборвалась особенно ужасно и кроваво.
 ]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6048,6 +6322,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rСлава рейдеру Ледяной Короны (25 игроков)|n|n",
         descriptionText = [[Выращенные в студеных глубинах Ледяной Короны, ледяные покорители считаются самыми ожесточенными и беспощадными среди всех ледяных змеев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6070,6 +6345,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Задание: |rВоссоединение Могрейна|n|n",
         descriptionText = [[Кони в стойлах Цитадели Ледяной Короны служат самым приближенным приспешникам Короля-лича.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6092,6 +6368,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[После того, как Тоби "Матушка Гусыня" Железоболт поймал этого лохматого носорога в Борейской Тундре, большой зверь затаил обиду на маленького гнома.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6114,6 +6391,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Гиппогрифы чрезвычайно умные и чуткие существа, а далеко не обычные "верховые животные".]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6136,6 +6414,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Профессия: |rПортняжное дело|n|n",
         descriptionText = [["Я помню свой первый ковер-самолет из шерсти йети и мешковины... Даже в подметки не годится этому", – Ледо Прославленный.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6158,6 +6437,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Маяк надежды, путеводная звезда в темноте.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6180,6 +6460,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r200000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Идея в одиночку прокатиться на огромном баке, заполненном взрывоопасным гоблинским топливом, кажется вам безумной?.. Тогда захватите друга!]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6202,6 +6483,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6224,6 +6506,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rАнуб'арак|n|cFFFFD200Зона: |rИспытание крестоносца|n",
         descriptionText = [[Считается, что у тол'вирского волшебника Аз'акира был скипетр, позволявший ему контролировать киражские боевые танки за пределами Силитуса.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6246,6 +6529,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Дракондоры, освобожденные от гнета троллей, считаются самыми преданными среди всех своих родственников.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6268,6 +6552,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6290,6 +6575,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Броня предназначена для защиты коня во время столкновений в бою.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6312,6 +6598,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[По приказу вождя Адского Крика дрессировщики Орды вывели породу волков, в которых во время свирепого боя пробуждается ярость.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6334,6 +6621,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Этот жизнерадостный вид можно встретить только в лесах Острова Новолуния.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6356,6 +6644,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rМагтеридон|n|cFFFFD200Зона: |rЛогово Магтеридона|n",
         descriptionText = [[Тысячу лет назад этот доблестный дракон сражался с Пылающим Легионом, но скверна взяла верх, когда его тело более не смогло сопротивляться демонической магии.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6378,6 +6667,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rСундук таинственных существ|n|n",
         descriptionText = [[Эти вьючные животные могут поднять вес, в пять раз превышающий их собственный, а в путешествии могут протянуть несколько дней без еды и воды.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6400,6 +6690,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Ездовые яки менее массивные и более ловкие, чем их сородичи.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6422,6 +6713,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rСундук таинственных существ|n|n",
         descriptionText = [[Золотистый облачный змей, как сокровище, радует взор всякого гостя Пандарии.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6444,6 +6736,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Очищенный от янтарной эссенции кипарий менее подвержен коррозии, вызываемой ракетным топливом.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6466,6 +6759,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Эта ракета была создана, чтобы ускорить вращение планеты и сократить длительность ночи. Гномы с бессонницей весьма амбициозны.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6488,6 +6782,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rСундук таинственных существ|n|n",
         descriptionText = [[Новорожденные небесные ониксовые облачные змеи полностью покрыты светло-сиреневыми чешуйками, которые со временем темнеют до цвета оникса.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6510,6 +6805,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rВпервые на сервере! Покоритель космоса!|n|n",
         descriptionText = [[Считается, что астральные облачные змеи знают разгадки величайших тайн жизни. Жаль, что они не могут разговаривать.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6532,6 +6828,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Эти величественные журавли – ценные друзья пандаренов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6554,6 +6851,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Нужно очков голосования: |r170|TInterface\\Store\\mmotop.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6576,6 +6874,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [["Обновленная комплектация включает в себя парные противотуманные фонари, запасной бочонок с отваром и сиденье из подлинной кожи Тань-цзи", – смотритель черепах Одай.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6598,6 +6897,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [["Обновленная комплектация включает в себя парные противотуманные фонари, запасной бочонок с хмелем и сиденье из подлинной кожи Тань-цзи", – смотритель черепах Одай.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6620,6 +6920,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [["Обновленная комплектация включает в себя парные противотуманные фонари, запасной бочонок с хмелем и сиденье из подлинной кожи Тань-цзи", – смотритель черепах Одай.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6642,6 +6943,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Чтобы оседлать строптивого горного козла, понадобится недюжинное терпение и ласковая рука.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6664,6 +6966,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Эти массивные мушаны с детства обучены врываться в бой, перенося в седле отряд сауроков.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6686,6 +6989,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Этот свирепый зверь широко известен среди ловцов виверн. Он был одним из первых оседлан ордынской Армией Покорителей.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6708,6 +7012,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rЯ и есть Олдскул|n|n",
         descriptionText = [[Только героические души, преодолевшие все испытания деспотов могу, с гордостью рассекают облака на небесном крикуне, всегда готовом ринуться в бой.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6730,6 +7035,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Нужно очков голосования: |r170|TInterface\\Store\\mmotop.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6752,6 +7058,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rСундук преодолевающего трудности|n|n",
         descriptionText = [[Эта чудовищная плотоядная летучая мышь является бесспорным хозяином ночного неба.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6774,6 +7081,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Для тех, кто очень хочет обратить на себя внимание... и ради этого готов пристегнуться к огромному колесу, что вот-вот развалится на куски.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6796,6 +7104,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Чудо гоблинского механоциклостроения. Чудо, что оно еще не взорвалось.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6818,6 +7127,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Чудо гоблинского механоциклостроения. Чудо, что оно еще не взорвалось.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6840,6 +7150,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Достижение: |rЛедяное золото|n|n",
         descriptionText = [[Первозданный Азерот в свое время буквально кишел самыми разными созданиями стихий.]],
+        holidayText = "|cFFFFD200Игровое событие:|r Зимний Покров",
         flags = 0,
     },
     {
@@ -6862,6 +7173,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Один из немногих в Азероте мотоциклов, рассчитанных на двух седоков теперь цветах Золотого Скорпида.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6884,6 +7196,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Верный спутник любого вульпера-путешественника.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6906,6 +7219,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Верный спутник любого вульпера-путешественника.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6928,6 +7242,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Верный спутник любого вульпера-путешественника, теперь с навесом и фонарем!]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6950,6 +7265,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Верный спутник любого вульпера-путешественника.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6972,6 +7288,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Верный спутник любого вульпера-путешественника.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -6994,6 +7311,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Верный спутник любого вульпера-путешественника.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7016,6 +7334,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |r1-й на сервере! Персонаж 80-го уровня|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7038,6 +7357,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Достижение: |r1-й на сервере! Друид 80-го уровня, 1-й на сервере! Паладин 80-го уровня, 1-й на сервере! Шаман 80-го уровня, 1-й на сервере! Жрец 80-го уровня, 1-й на сервере! Рыцарь смерти 80 ур.|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7060,6 +7380,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Достижение: |r1-й на сервере! Гном 80-го уровня, 1-й на сервере! Отрекшийся 80 уровня, 1-й на сервере! Тролль 80-го уровня, 1-й на сервере! Таурен 80-го уровня, 1-й на сервере! Орк 80-го уровня|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7082,6 +7403,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7104,6 +7426,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7126,6 +7449,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7148,6 +7472,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7170,6 +7495,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7192,6 +7518,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7214,6 +7541,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7236,6 +7564,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7258,6 +7587,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7280,6 +7610,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7302,6 +7633,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Как и все рапторы, приближенные к Гонку, любит золото и хорошую охоту.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7324,6 +7656,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7346,6 +7679,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7368,6 +7702,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7390,6 +7725,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7412,6 +7748,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7434,6 +7771,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Награда за приобретение поставок Джулии (Игровой мир Scourge) или поставок Даларана (Игровой мир Algalon).]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7456,6 +7794,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7478,6 +7817,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7500,6 +7840,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7522,6 +7863,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[Воющий вихрь замученных душ, оседлать который сможет лишь тот, кто не боится боли и страданий.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7544,6 +7886,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7565,7 +7908,8 @@ COLLECTION_MOUNTDATA = {
         expansion = 0,
         inhabitType = 0,
         priceText = "|cFFFFD200Доступно на 9 уровне боевого пропуска|r",
-        descriptionText = [[]],
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7588,6 +7932,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7610,6 +7955,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rНоригорн|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7632,6 +7978,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7654,6 +8001,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7675,7 +8023,8 @@ COLLECTION_MOUNTDATA = {
         expansion = 0,
         inhabitType = 0,
         priceText = "|cFFFFD200Доступно на 60 уровне боевого пропуска|r",
-        descriptionText = [[]],
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7698,6 +8047,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7720,6 +8070,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[Самый верный оруженосец никогда не подведет тебя, и проведет сквозь облака, горы и грязь, но последнее - не точно.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7742,6 +8093,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7764,6 +8116,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7786,6 +8139,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rАурелий Флос|n|n|cFFFFD200Цена: |r240 |TInterface\\Icons\\achievement_zone_tolbarad.BLP:16:16|t|n",
         descriptionText = [[Высеченный из камня мастерами Штормграда, этот грифон символизирует непреклонную отвагу защитников Альянса.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7808,6 +8162,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rБартилий Цум|n|n|cFFFFD200Цена: |r240 |TInterface\\Icons\\achievement_zone_tolbarad.BLP:16:16|t|n",
         descriptionText = [[Высеченный из камня мастерами Оргриммара, этот ветрокрыл символизирует неумолимую мощь Орды.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7830,6 +8185,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7852,6 +8208,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7874,6 +8231,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7887,15 +8245,16 @@ COLLECTION_MOUNTDATA = {
         factionSide = 0,
         unique = {},
         colorData = {},
-        currency = 0,
-        price = 0,
-        productID = 0,
-        isActive = 0,
-        lootType = 0,
+        currency = 2,
+        price = 500,
+        productID = 24093,
+        isActive = 1,
+        lootType = 15,
         expansion = 0,
         inhabitType = 0,
-        priceText = "",
+        priceText = "|cFFFFD200Нужно очков голосования: |r500|TInterface\\Store\\mmotop.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7918,6 +8277,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7939,7 +8299,8 @@ COLLECTION_MOUNTDATA = {
         expansion = 0,
         inhabitType = 0,
         priceText = "|cFFFFD200Доступно на 10 уровне боевого пропуска|r",
-        descriptionText = [[]],
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7962,6 +8323,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -7984,6 +8346,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8006,6 +8369,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8028,6 +8392,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8050,6 +8415,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8072,6 +8438,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rДеревянный сундук с сокровищами|n|n",
         descriptionText = [[Отправляйтесь в путешествие и закончите историю Гархата, собрав все обрывки неизвестной карты и отыскав сундук с сокровищами!]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8094,6 +8461,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8116,6 +8484,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8138,6 +8507,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8160,6 +8530,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rИллиан Мраконосец|n|n|cFFFFD200Цена: |r240 |TInterface\\Icons\\achievement_zone_tolbarad.BLP:16:16|t|n",
         descriptionText = [[Весьма редко некромантам достаются целые трупы для их мрачной работы, и еще реже - целые трупы редких созданий. Этот некрорух - результат именно такого случая.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8182,6 +8553,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8204,6 +8576,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8226,6 +8599,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8248,6 +8622,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8270,6 +8645,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8292,6 +8668,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[Является наградой за участие в событии "Кошмар наяву", приуроченном к вторжению Зорта в Азерот.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8314,6 +8691,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Предоставляется выдающимся игрокам режима арены SoloQ вместе со званием "Идеал" сроком на 1 неделю.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8336,6 +8714,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Предоставляется выдающимся игрокам режима арены 2х2 вместе со званием "Мастер" сроком на 1 неделю.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8358,6 +8737,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8380,6 +8760,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8402,6 +8783,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8424,6 +8806,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8446,6 +8829,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[Грозный корабль, поднятый со дна морского лиходеями Пиратской Бухты, несет свое ужасающее приветствие в каждый порт Азерота.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8468,6 +8852,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЭлисандр|n|cFFFFD200Зона: |rДаларан(Даларан)|n|cFFFFD200Цена: |r150 |TInterface\\Icons\\ability_racial_etherealconnection.BLP:16:16|t|n",
         descriptionText = [[Хищное существо, еще недавно обитавшее в бескрайний морях, но ныне вышедшее на сушу в поисках пищи.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8490,6 +8875,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8512,6 +8898,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8534,6 +8921,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8556,6 +8944,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8578,6 +8967,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8600,6 +8990,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8622,6 +9013,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rИнтендант Умбра|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\Faction-Badge-Horde.BLP:16:16|t100 |TInterface\\Icons\\Faction-Badge-Renegade.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8644,6 +9036,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8666,6 +9059,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rИнтендант Крагнош|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\Faction-Badge-Alliance.BLP:16:16|t100 |TInterface\\Icons\\Faction-Badge-Renegade.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8688,6 +9082,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8710,6 +9105,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8732,6 +9128,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8754,6 +9151,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rТорговец Сада чудес, Продавец Сада чудес|n|n|cFFFFD200Цена: |r500 |TInterface\\Icons\\Achievement_Noblegarden_Chocolate_Egg.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Сад чудес",
         flags = 0,
     },
     {
@@ -8776,6 +9174,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rМилая продавщица|n|n|cFFFFD200Цена: |r250 |TInterface\\Icons\\INV_ValentinesCard01.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Любовная лихорадка",
         flags = 0,
     },
     {
@@ -8798,6 +9197,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8820,6 +9220,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8842,6 +9243,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Нужно приглашенных друзей: |r20|TInterface\\Store\\refer.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8864,6 +9266,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8886,6 +9289,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8908,6 +9312,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8930,6 +9335,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rОхотник Вечности|n|cFFFFD200Зона: |rСтарые предгорья Хилсбрада|n",
         descriptionText = [[Познавшим шторм претит покой.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8952,6 +9358,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rБормотун|n|cFFFFD200Зона: |rТемный лабиринт|n",
         descriptionText = [[Пронизанные стихийными силами бури, эти величественные звери трещат, словно молния, и гремят, словно гром.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8974,6 +9381,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -8996,6 +9404,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rСауль Отверженный|n|cFFFFD200Зона: |rКруг Воли(Даларан)|n|cFFFFD200Цена: |r7500 |TInterface\\PVPFrame\\PVPCurrency-Conquest1-Team.BLP:16:16|t30000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9018,6 +9427,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rСауль Отверженный|n|cFFFFD200Зона: |rКруг Воли(Даларан)|n|cFFFFD200Цена: |r7500 |TInterface\\PVPFrame\\PVPCurrency-Conquest1-Team.BLP:16:16|t30000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9040,6 +9450,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9062,6 +9473,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9084,6 +9496,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9106,6 +9519,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9128,6 +9542,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r21|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9150,6 +9565,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Нужно приглашенных друзей: |r30|TInterface\\Store\\refer.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9172,6 +9588,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9194,6 +9611,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Награда за репутацию в гильдии|r|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9216,6 +9634,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9238,6 +9657,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9260,6 +9680,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9282,6 +9703,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9304,6 +9726,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r15000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9326,6 +9749,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Награда за репутацию в гильдии|r",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9348,6 +9772,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9370,6 +9795,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r15000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9392,6 +9818,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Нужно приглашенных друзей: |r75|TInterface\\Store\\refer.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9414,6 +9841,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r15000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9436,6 +9864,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9458,6 +9887,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r6|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9480,6 +9910,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9502,6 +9933,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9524,6 +9956,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9546,6 +9979,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Награда за репутацию в гильдии|r",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9568,6 +10002,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rГруул Драконобой|n|cFFFFD200Зона: |rЛогово Груула(Острогорье),|nЛогово Груула|n",
         descriptionText = [[Данное ездовое животное содержится в добыче босса Груул Драконобой в Логове Груула (героич.)]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9590,6 +10025,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9612,6 +10048,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9634,6 +10071,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9656,6 +10094,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9678,6 +10117,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9700,6 +10140,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9722,6 +10163,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r28|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9744,6 +10186,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9766,6 +10209,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой за приобретение поставок Джулии (Игровой мир Scourge) или поставок Даларана (Игровой мир Algalon). Более недоступен к получению.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9788,6 +10232,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Награда за репутацию в гильдии|r",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9810,6 +10255,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9832,6 +10278,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Награда за репутацию в гильдии|r",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9854,6 +10301,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9876,6 +10324,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rТрофеи войны|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9898,6 +10347,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r15000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9920,6 +10370,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9942,6 +10393,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9964,6 +10416,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -9986,6 +10439,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10008,6 +10462,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r22|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10030,6 +10485,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10052,6 +10508,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Нужно приглашенных друзей: |r200|TInterface\\Store\\refer.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10074,6 +10531,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10096,6 +10554,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10118,6 +10577,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10140,6 +10600,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10162,6 +10623,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10184,6 +10646,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10206,6 +10669,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10228,6 +10692,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10250,6 +10715,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10272,6 +10738,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10294,6 +10761,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10316,6 +10784,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r24|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10338,6 +10807,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10360,6 +10830,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Нужно приглашенных друзей: |r5|TInterface\\Store\\refer.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10382,6 +10853,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10404,6 +10876,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10426,6 +10899,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10448,6 +10922,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10470,6 +10945,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10492,6 +10968,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10514,6 +10991,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r14|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10536,6 +11014,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Нужно приглашенных друзей: |r50|TInterface\\Store\\refer.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10558,6 +11037,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10580,6 +11060,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10602,6 +11083,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10624,6 +11106,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Зимний Покров",
         flags = 0,
     },
     {
@@ -10646,6 +11129,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10668,6 +11152,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10690,6 +11175,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10712,6 +11198,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10734,6 +11221,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10756,6 +11244,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10778,6 +11267,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10800,6 +11290,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10822,6 +11313,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10844,6 +11336,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10866,6 +11359,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10888,6 +11382,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10910,6 +11405,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10932,6 +11428,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10954,6 +11451,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10976,6 +11474,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rБезумный Полярник|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -10998,6 +11497,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Нужно очков голосования: |r500|TInterface\\Store\\mmotop.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11020,6 +11520,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11042,6 +11543,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11064,6 +11566,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rПовелитель храма Котмогу|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11086,6 +11589,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11108,6 +11612,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11130,6 +11635,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11152,6 +11658,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11174,6 +11681,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rМаршал Магрудер, Чемпион Рос'слай|n|cFFFFD200Зона: |rКрепость Ледяных Оков(Озеро Ледяных Оков)|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11196,6 +11704,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11218,6 +11727,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11240,6 +11750,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11262,6 +11773,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11284,6 +11796,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r27|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11306,6 +11819,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11328,6 +11842,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11350,6 +11865,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11372,6 +11888,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11394,6 +11911,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11416,6 +11934,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11438,6 +11957,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11460,6 +11980,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11482,6 +12003,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11504,6 +12026,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11526,6 +12049,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11548,6 +12072,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11570,6 +12095,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11592,6 +12118,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11614,6 +12141,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11636,6 +12164,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11658,6 +12187,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11680,6 +12210,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11702,6 +12233,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11724,6 +12256,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11746,6 +12279,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11768,6 +12302,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Является наградой первого сезона Боевого Пропуска (2020). На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11790,6 +12325,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11812,6 +12348,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r18|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11834,6 +12371,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11856,6 +12394,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11878,6 +12417,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11900,6 +12440,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11922,6 +12463,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Является наградой за достижение "l'epilogue".]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11944,6 +12486,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11966,6 +12509,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -11988,6 +12532,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Нужно приглашенных друзей: |r15|TInterface\\Store\\refer.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12010,6 +12555,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12032,6 +12578,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12054,6 +12601,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12076,6 +12624,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12098,6 +12647,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r15000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12120,6 +12670,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12142,6 +12693,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12164,6 +12716,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12186,6 +12739,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r16|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12208,6 +12762,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12230,6 +12785,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rГерой Долины Узников|n|n",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12252,6 +12808,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12274,6 +12831,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12296,6 +12854,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rСундук Бобби|n|n",
         descriptionText = [[Золотое свечение явно намекает о высоком статусе его всадника.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12318,6 +12877,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Нужно приглашенных друзей: |r10|TInterface\\Store\\refer.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12340,6 +12900,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12362,6 +12923,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12384,6 +12946,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12406,6 +12969,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12428,6 +12992,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12450,6 +13015,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12472,6 +13038,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12494,6 +13061,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12516,6 +13084,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12538,6 +13107,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12560,6 +13130,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12582,6 +13153,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12604,6 +13176,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12626,6 +13199,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12648,6 +13222,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12670,6 +13245,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12692,6 +13268,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12714,6 +13291,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12736,6 +13314,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12758,6 +13337,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12780,6 +13360,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12802,6 +13383,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r12|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12824,6 +13406,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12846,6 +13429,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12868,6 +13452,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Нужно очков голосования: |r170|TInterface\\Store\\mmotop.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12890,6 +13475,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12912,6 +13498,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Нужно приглашенных друзей: |r7|TInterface\\Store\\refer.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12934,6 +13521,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12956,6 +13544,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -12978,6 +13567,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Достижение: |rЧем больше, тем лучше|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13000,6 +13590,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13022,6 +13613,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13044,6 +13636,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13066,6 +13659,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13088,6 +13682,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13110,6 +13705,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13132,6 +13728,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13154,6 +13751,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Умбра|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13176,6 +13774,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13198,6 +13797,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13220,6 +13820,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13242,6 +13843,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13264,6 +13866,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13286,6 +13889,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r4|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13308,6 +13912,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13330,6 +13935,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13352,6 +13958,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13374,6 +13981,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Нужно приглашенных друзей: |r3|TInterface\\Store\\refer.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13396,6 +14004,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13418,6 +14027,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13440,6 +14050,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13462,6 +14073,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13484,6 +14096,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Нужно очков голосования: |r500|TInterface\\Store\\mmotop.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13506,6 +14119,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13528,6 +14142,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13550,6 +14165,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13572,6 +14188,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13594,6 +14211,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13616,6 +14234,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13638,6 +14257,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13660,6 +14280,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13682,6 +14303,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13704,6 +14326,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13726,6 +14349,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13748,6 +14372,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13770,6 +14395,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Нужно приглашенных друзей: |r1|TInterface\\Store\\refer.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13792,6 +14418,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13814,6 +14441,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13836,6 +14464,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13858,6 +14487,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13880,6 +14510,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13902,6 +14533,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13924,6 +14556,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13946,6 +14579,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r2|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13968,6 +14602,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -13990,6 +14625,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14012,6 +14648,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14034,6 +14671,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14056,6 +14694,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14078,6 +14717,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14100,6 +14740,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14122,6 +14763,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14144,6 +14786,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14166,6 +14809,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14188,6 +14832,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14210,6 +14855,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Достижение: |rВпервые на сервере! Повелитель Запределья!|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14232,6 +14878,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14254,6 +14901,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14276,6 +14924,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14298,6 +14947,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14320,6 +14970,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Нужно приглашенных друзей: |r100|TInterface\\Store\\refer.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14342,6 +14993,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14364,6 +15016,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14386,6 +15039,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14408,6 +15062,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14430,6 +15085,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r29|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14452,6 +15108,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14474,6 +15131,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14496,6 +15154,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14518,6 +15177,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Нужно приглашенных друзей: |r25|TInterface\\Store\\refer.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14540,6 +15200,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14562,6 +15223,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14584,6 +15246,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14606,6 +15269,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14628,6 +15292,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14650,6 +15315,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14672,6 +15338,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14694,6 +15361,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14716,6 +15384,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rТрофеи войны|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14738,6 +15407,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14760,6 +15430,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14782,6 +15453,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14804,6 +15476,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14826,6 +15499,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14848,6 +15522,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14870,6 +15545,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14892,6 +15568,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14914,6 +15591,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14936,6 +15614,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14958,6 +15637,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -14980,6 +15660,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15002,6 +15683,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15024,6 +15706,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15046,6 +15729,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15068,6 +15752,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15090,6 +15775,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15112,6 +15798,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15134,6 +15821,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15156,6 +15844,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15178,6 +15867,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15200,6 +15890,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15222,6 +15913,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15244,6 +15936,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15266,6 +15959,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15288,6 +15982,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15310,6 +16005,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15332,6 +16028,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15354,6 +16051,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15376,6 +16074,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15398,6 +16097,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Крагнош|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15420,6 +16120,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15442,6 +16143,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15464,6 +16166,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15486,6 +16189,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15508,6 +16212,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15530,6 +16235,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15552,6 +16258,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Нужно приглашенных друзей: |r40|TInterface\\Store\\refer.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15574,6 +16281,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15596,6 +16304,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15618,6 +16327,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rТрофеи войны|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15640,6 +16350,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15662,6 +16373,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15684,6 +16396,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15706,6 +16419,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15728,6 +16442,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15750,6 +16465,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15772,6 +16488,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15794,6 +16511,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15816,6 +16534,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15838,6 +16557,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15860,6 +16580,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15882,6 +16603,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15904,6 +16626,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15926,6 +16649,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15948,6 +16672,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15970,6 +16695,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -15992,6 +16718,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16014,6 +16741,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rМаршал Магрудер|n|cFFFFD200Зона: |rКрепость Ледяных Оков(Озеро Ледяных Оков)|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16036,6 +16764,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЧемпион Рос'слай|n|cFFFFD200Зона: |rКрепость Ледяных Оков(Озеро Ледяных Оков)|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16058,6 +16787,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r20|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16080,6 +16810,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16102,6 +16833,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16124,6 +16856,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСауль Отверженный|n|cFFFFD200Зона: |rКруг Воли(Даларан)|n|cFFFFD200Цена: |r5000 |TInterface\\PVPFrame\\PVPCurrency-Conquest1-Team.BLP:16:16|t20000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16146,6 +16879,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16168,6 +16902,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Крагнош|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16190,6 +16925,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16212,6 +16948,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16234,6 +16971,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16256,6 +16994,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rТрофеи войны|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16278,6 +17017,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16300,6 +17040,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16322,6 +17063,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16344,6 +17086,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16366,6 +17109,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16388,6 +17132,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16410,6 +17155,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Нужно приглашенных друзей: |r2|TInterface\\Store\\refer.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16432,6 +17178,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16454,6 +17201,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16476,6 +17224,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16498,6 +17247,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16520,6 +17270,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16542,6 +17293,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16564,6 +17316,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16586,6 +17339,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16608,6 +17362,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r19|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16630,6 +17385,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Крагнош|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16652,6 +17408,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16674,6 +17431,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16696,6 +17454,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16718,6 +17477,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16740,6 +17500,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16762,6 +17523,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16778,12 +17540,13 @@ COLLECTION_MOUNTDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 0,
-        lootType = 0,
+        isActive = 1,
+        lootType = 6,
         expansion = 4,
         inhabitType = 1,
-        priceText = "",
+        priceText = "|cFFFFD200Торговец: |rЭльдара Вестница Зари|n|cFFFFD200Зона: |rПодготовительный плацдарм Расколотого Солнца(Остров Кель'Данас)|n|cFFFFD200Цена: |r180 |TInterface\\Icons\\INV_Shield_48.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16806,6 +17569,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16828,6 +17592,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16850,6 +17615,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r9|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16872,6 +17638,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [["Как правило, из них выходит хорошая наживка, но ты только посмотри в его милые глазки... Как о таком можно даже подумать?!" – Нат Пэгл.|n|nСодержится в добыче босса Леди Вайш в обычной версии Змеиного Святилища.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16894,6 +17661,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Умбра|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16916,6 +17684,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16938,6 +17707,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rМаршал Магрудер|n|cFFFFD200Зона: |rКрепость Ледяных Оков(Озеро Ледяных Оков)|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16960,6 +17730,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -16982,6 +17753,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17004,6 +17776,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Умбра|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17026,6 +17799,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Умбра|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17048,6 +17822,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСауль Отверженный|n|cFFFFD200Зона: |rКруг Воли(Даларан)|n|cFFFFD200Цена: |r5000 |TInterface\\PVPFrame\\PVPCurrency-Conquest1-Team.BLP:16:16|t20000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17070,6 +17845,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17092,6 +17868,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСауль Отверженный|n|cFFFFD200Зона: |rКруг Воли(Даларан)|n|cFFFFD200Цена: |r5000 |TInterface\\PVPFrame\\PVPCurrency-Conquest1-Team.BLP:16:16|t20000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17114,6 +17891,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Крагнош|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17136,6 +17914,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17158,6 +17937,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСауль Отверженный|n|cFFFFD200Зона: |rКруг Воли(Даларан)|n|cFFFFD200Цена: |r5000 |TInterface\\PVPFrame\\PVPCurrency-Conquest1-Team.BLP:16:16|t20000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17180,6 +17960,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Умбра|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17202,6 +17983,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17222,8 +18004,9 @@ COLLECTION_MOUNTDATA = {
         lootType = 0,
         expansion = 6,
         inhabitType = 2,
-        priceText = "",
+        priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17244,8 +18027,9 @@ COLLECTION_MOUNTDATA = {
         lootType = 0,
         expansion = 6,
         inhabitType = 2,
-        priceText = "",
+        priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17266,8 +18050,9 @@ COLLECTION_MOUNTDATA = {
         lootType = 0,
         expansion = 6,
         inhabitType = 2,
-        priceText = "",
+        priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17288,8 +18073,9 @@ COLLECTION_MOUNTDATA = {
         lootType = 0,
         expansion = 6,
         inhabitType = 2,
-        priceText = "",
+        priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17310,8 +18096,9 @@ COLLECTION_MOUNTDATA = {
         lootType = 0,
         expansion = 6,
         inhabitType = 2,
-        priceText = "",
+        priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17332,8 +18119,9 @@ COLLECTION_MOUNTDATA = {
         lootType = 0,
         expansion = 6,
         inhabitType = 2,
-        priceText = "",
+        priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17356,6 +18144,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17378,6 +18167,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17400,6 +18190,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17422,6 +18213,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17444,6 +18236,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17466,6 +18259,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17488,6 +18282,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17510,6 +18305,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17532,6 +18328,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17554,6 +18351,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17576,6 +18374,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17598,6 +18397,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r30|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17620,6 +18420,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Достижение: |rВпервые на сервере! Эредарский Принц!|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17642,6 +18443,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17664,6 +18466,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17686,6 +18489,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r26|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17708,6 +18512,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17730,6 +18535,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17752,6 +18558,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r25|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17774,6 +18581,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Достижение: |rВпервые на сервере! Повелитель Гроннов!|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17796,6 +18604,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17818,6 +18627,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17840,6 +18650,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17862,6 +18673,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rНовогодний подарок|n|n",
         descriptionText = [[Это ездовое животное было приурочено к празднованию наступления 2019 года. Более недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17884,6 +18696,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17906,6 +18719,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rТрофеи войны|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17928,6 +18742,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rАйшали|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17950,6 +18765,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17972,6 +18788,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -17994,6 +18811,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18016,6 +18834,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18038,6 +18857,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Достижение: |rВперед в 2018!|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18060,6 +18880,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18082,6 +18903,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЧемпион Рос'слай|n|cFFFFD200Зона: |rКрепость Ледяных Оков(Озеро Ледяных Оков)|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18104,6 +18926,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Крагнош|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18126,6 +18949,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18148,6 +18972,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18170,6 +18995,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18192,6 +19018,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18214,6 +19041,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЛурген|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\PVECURRENCY-VALOR.BLP:16:16|t|n",
         descriptionText = [[Вы можете приобрести это средство передвижения у странствующего продавца экзотических животных. Для получения дополнительной информации разыщите эфириала Элисандра в Даларане, возможно, он поможет вам в поисках.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18236,6 +19064,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18258,6 +19087,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18280,6 +19110,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18302,6 +19133,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18324,6 +19156,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18346,6 +19179,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18368,6 +19202,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18390,6 +19225,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18412,6 +19248,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18434,6 +19271,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rЗачарованная шкатулка верховых животных|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18456,6 +19294,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[Любимое оружие Короля-лича в его арсенале – из-за осадной мощи и ласкающих слух звуков, издаваемых при запускании вдаль кусков мяса]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18478,6 +19317,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18500,6 +19340,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[Нет слов. Просто нет слов. Он прекрасен.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18522,6 +19363,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[Золото шелком струится по шерстке этого чудного зверя, мирного и прекрасного созидателя непостижимых красот самого космоса.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18544,6 +19386,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[Нет слов. Просто нет слов. Он прекрасен.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18566,6 +19409,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Является наградой за достижение "1-й на сервере: Слезы Скорби".]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18588,6 +19432,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Является частью добычи с секретного босса в Цитадели Ледяной Короны (25 гер).]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18610,6 +19455,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18626,12 +19472,13 @@ COLLECTION_MOUNTDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 0,
-        lootType = 0,
+        isActive = 1,
+        lootType = 3,
         expansion = 2,
         inhabitType = 1,
-        priceText = "",
+        priceText = "|cFFFFD200Источник: |rПеченье с предсказанием|n|n",
         descriptionText = [[В песках пустыни Вол'Дун обитает множество странных созданий, но редко кто не боится руки чужака и способен верно служить и в путешествиях и в битвах. Этот жемчужный кролуск на удивление дружелюбен к вам!]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18654,6 +19501,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r34|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[Как правило, фуражиров интересуют только цветы и мед, но эта особь жаждет приключений далеко за пределами долины Штормов. Еще более удивительным является то, что это милое создание изъявляет желание быть средством передвижения. И ему это удается!]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18676,6 +19524,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[Первозданный Азерот в свое время буквально кишел самыми разными созданиями стихий.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18698,6 +19547,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r32|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[Говорят, протодраконы чувствуют страх. А это закованное в железо чудовище им ПИТАЕТСЯ.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18720,6 +19570,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r40|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[Звездные пантеры это энергичные и редкие создания, способные изменять цвет, ощутив энергию живого существа.|nЭти величественные звери не встречаются вне Аргуса и нужно обладать невообразимым везением, чтобы встретить такую пантеру и заслужить её доверие!]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18742,6 +19593,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Достижение: |rВперед в 2020!|n|n",
         descriptionText = [[Зимний К.Р.Ы.С., прибывший к нам из будущего!]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18762,8 +19614,9 @@ COLLECTION_MOUNTDATA = {
         lootType = 0,
         expansion = 2,
         inhabitType = 2,
-        priceText = "|n|nМожет встретиться во внутриигровом магазине.",
+        priceText = "",
         descriptionText = [[Среди обитателей Полугорья ходят слухи, что каждый раз, когда пропадает зерно, инструменты или корзина с ягодами, можно услышать язвительный писк. В этом случае лучше не ловить вора и довольствоваться тем, что имеешь.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18786,6 +19639,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Умбра|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18808,6 +19662,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Крагнош|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18830,6 +19685,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Умбра|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18852,6 +19708,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Крагнош|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18874,6 +19731,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rОхота за головами в Азероте|n|n",
         descriptionText = [[Устрашающие и свирепые хищники, охотящиеся на промерзших териториях Ледяной Короны. Нужно иметь железную выдержку и значительный опыт, чтобы удержать подобное создание на привязи, и уж тем более - чтобы приручить его.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18896,6 +19754,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rВерье|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Рунические олени, обитающие в Сурамаре, стали верными друзьями и спутниками изгнанников-ночнорожденных. Их руны вспыхивают при приближении врага, предупреждая хозяев об опасности.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18918,6 +19777,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18940,6 +19800,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rВерье|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Рунические олени, обитающие в Сурамаре, стали верными друзьями и спутниками изгнанников-ночнорожденных. Их руны вспыхивают при приближении врага, предупреждая хозяев об опасности.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18962,6 +19823,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rВерье|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Рунические олени, обитающие в Сурамаре, стали верными друзьями и спутниками изгнанников-ночнорожденных. Их руны вспыхивают при приближении врага, предупреждая хозяев об опасности.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -18984,6 +19846,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19006,6 +19869,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19028,6 +19892,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19050,6 +19915,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19072,6 +19938,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19094,6 +19961,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19116,6 +19984,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19138,6 +20007,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19160,6 +20030,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19182,6 +20053,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Механических львов никогда не видели в пределах Азерота. А "Идеальный" лев - это настоящее ожившее произведение инженерского искусства, заполучить которого захочет любой, у кого есть вкус и тяга к прекрасному.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19204,6 +20076,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19226,6 +20099,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19248,6 +20122,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19270,6 +20145,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19292,6 +20168,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19314,6 +20191,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19336,6 +20214,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19358,6 +20237,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19380,6 +20260,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19402,6 +20283,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19424,6 +20306,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19446,6 +20329,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19468,6 +20352,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19490,6 +20375,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19512,6 +20398,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19534,6 +20421,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[Вопреки своему внушительному названию, этот обитатель Фельярда на самом деле очень миролюбивый и надежный ездовой зверь. Диковинки из Фельярда редко попадают во внешний мир, уж очень закрыт и неизучен этот остров, но, видимо, вам повезло!]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19556,6 +20444,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Ночные ужасы и кровопийцы, закованные в броню, то, что нужно для бесшумных перелетов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19578,6 +20467,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Ночные ужасы и кровопийцы, закованные в броню, то, что нужно для бесшумных перелетов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19600,6 +20490,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Ночные ужасы и кровопийцы, закованные в броню, то, что нужно для бесшумных перелетов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19622,6 +20513,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Ночные ужасы и кровопийцы, закованные в броню, то, что нужно для бесшумных перелетов.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19644,6 +20536,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19666,6 +20559,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19688,6 +20582,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[Создания из других миров - не редкость в Азероте, но этой любопытной лани каким-то образом удалось преодолеть барьер между Темными Землями и Азеротом. Встреча с этим созданием свяжет вас узами дружбы и преданности.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19710,6 +20605,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19732,6 +20628,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19754,6 +20651,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19776,6 +20674,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rРозье|n|cFFFFD200Зона: |rПорт Штормграда(Штормград)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Потомки благородных скакунов, взятых Странниками с собой в экспедицию на Дренор после Второй Войны, эти кони стали верными спутниками эльфов Талтрессара. Лишь немногих из них удалось спасти с предела Тенебры; остальных сгубила Бездна.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19798,6 +20697,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rРозье|n|cFFFFD200Зона: |rПорт Штормграда(Штормград)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Потомки благородных скакунов, взятых Странниками с собой в экспедицию на Дренор после Второй Войны, эти кони стали верными спутниками эльфов Талтрессара. Лишь немногих из них удалось спасти с предела Тенебры; остальных сгубила Бездна.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19820,6 +20720,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rРозье|n|cFFFFD200Зона: |rПорт Штормграда(Штормград)|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Потомки благородных скакунов, взятых Странниками с собой в экспедицию на Дренор после Второй Войны, эти кони стали верными спутниками эльфов Талтрессара. Лишь немногих из них удалось спасти с предела Тенебры; остальных сгубила Бездна.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19842,6 +20743,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19864,6 +20766,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19886,6 +20789,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19908,6 +20812,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Выкованная из пыточного инструмента железной девы броня служит верной защитой для этой выносливой гончии.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19930,6 +20835,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Крагнош|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\Faction-Badge-Alliance.BLP:16:16|t100 |TInterface\\Icons\\Faction-Badge-Renegade.BLP:16:16|t|n",
         descriptionText = [[Выкованная из пыточного инструмента железной девы броня служит верной защитой для этой выносливой гончии.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19952,6 +20858,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Умбра|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r100 |TInterface\\Icons\\Faction-Badge-Horde.BLP:16:16|t100 |TInterface\\Icons\\Faction-Badge-Renegade.BLP:16:16|t|n",
         descriptionText = [[Выкованная из пыточного инструмента железной девы броня служит верной защитой для этой выносливой гончии.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19974,6 +20881,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -19996,6 +20904,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИллиан Мраконосец|n|n|cFFFFD200Цена: |r180 |TInterface\\Icons\\achievement_zone_tolbarad.BLP:16:16|t|n",
         descriptionText = [[На первый взгляд неловкое и неповоротливое, это творение некромантов отличается удивительной резвостью, особенно для нежити такого размера.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20018,6 +20927,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20040,6 +20950,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20062,6 +20973,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20084,6 +20996,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rНе имей 100 рублей, а имей 100 коней|n|n",
         descriptionText = [[Данное ездовое животное можно получить за достижение "Не имей 100 рублей, а имей 100 коней", доступное только Ренегатам.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20106,6 +21019,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20128,6 +21042,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20150,6 +21065,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Умбра|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20172,6 +21088,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Крагнош|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20194,6 +21111,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r33|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[Могучий и добрый, а также игривый и верный - этот Крылатый Лев неведомым образом потерял дорогу в свой мир и остался в Азероте. Но подобные создания тоскуют в одиночестве и мечтают обрести друга и соратника.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20216,6 +21134,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20238,6 +21157,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20260,6 +21180,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСауль Отверженный|n|n|cFFFFD200Цена: |r18000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[Восставшее из мертвых пустынное ископаемое, подчиненное и обращенное в оружие совокупными усилиями некромантов и чернокнижников Альянса.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20282,6 +21203,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСауль Отверженный|n|n|cFFFFD200Цена: |r18000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[Восставшее из мертвых пустынное ископаемое, подчиненное и обращенное в оружие совокупными усилиями некромантов и чернокнижников Орды.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20304,6 +21226,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСауль Отверженный|n|n|cFFFFD200Цена: |r18000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[Восставшее из мертвых пустынное ископаемое, подчиненное и обращенное в оружие неким могущественным некромантом из числа Изгоев, пожелавшим остаться неизвестным.]],
+        holidayText = "",
         flags = 11,
     },
     {
@@ -20327,6 +21250,7 @@ COLLECTION_MOUNTDATA = {
         priceText = "|cFFFFD200Торговец: |rСауль Отверженный|n|n|cFFFFD200Цена: |r3000 |TInterface\\PVPFrame\\PVPCurrency-Conquest1-Team.BLP:16:16|t|n",
         descriptionText = [[Лучший боевой конь из числа находящихся в конюшнях Седьмого Легиона, выучка и яростный натиск которого окажут честь любому представителю Альянса.
 |cffFF0000ВНИМАНИЕ: Представленный облик соответствует показателю рейтинга арены в 2500+.|r]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20350,6 +21274,7 @@ COLLECTION_MOUNTDATA = {
         priceText = "|cFFFFD200Торговец: |rСауль Отверженный|n|n|cFFFFD200Цена: |r3000 |TInterface\\PVPFrame\\PVPCurrency-Conquest1-Team.BLP:16:16|t|n",
         descriptionText = [[Лучший боевой волк, вскормленный в псарнях Элиты Кор'Крона, послушность, верность и злоба которого окажут честь любому представителю Орды.
 |cffFF0000ВНИМАНИЕ: Представленный облик соответствует показателю рейтинга арены в 2500+.|r]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20372,6 +21297,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20394,6 +21320,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20416,6 +21343,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20438,6 +21366,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20460,6 +21389,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20482,6 +21412,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20504,6 +21435,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20526,6 +21458,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20548,6 +21481,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[Рожденные в кристаллических лесах, эти драконы преображаются в зависимости от кристаллов, рядом с которыми они проводят свои детские годы, впитывая их силу и меняя цвет чешуи. Желтый - один из редчайших кристаллов. Удивительный зверь!]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20570,6 +21504,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20592,6 +21527,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20614,6 +21550,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20636,6 +21573,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20658,6 +21596,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20680,6 +21619,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rНочная Погибель|n|cFFFFD200Зона: |rКаражан|n",
         descriptionText = [[Данное ездовое животное содержится в добыче босса Ночная Погибель в Каражане (героич.)]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20702,6 +21642,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rКелира|n|n|cFFFFD200Цена: |r600 |TInterface\\Icons\\INV_Shield_48.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20724,6 +21665,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20746,6 +21688,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20768,6 +21711,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20790,6 +21734,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rСлава рейдеру Логова Груула (гер.)|n|n",
         descriptionText = [[Неизвестно, как дракона Пустоты занесло в Огненные Просторы, но, выбравшись оттуда, он навсегда изменился.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20812,6 +21757,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rСлава рейдеру Каражана (гер.)|n|n",
         descriptionText = [[Неизвестно, как дракона Пустоты занесло в Огненные Просторы, но, выбравшись оттуда, он навсегда изменился.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20834,6 +21780,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rСлава рейдеру Логова Магтеридона (гер.)|n|n",
         descriptionText = [[Рожденный в потоках лавы, этот протодракон вырвался из жерла вулкана в поисках новой добычи.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20856,6 +21803,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rСлава рейдеру Змеиного Святилища|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20878,6 +21826,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rСлава рейдеру Крепости бурь|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20900,6 +21849,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rПригоршня конфет|n|n",
         descriptionText = [[Крылатый страх, восставший благодаря духу Тыквовина и темной магии.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20922,6 +21872,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rКел'Тузад|n|cFFFFD200Зона: |rНаксрамас|n",
         descriptionText = [[Крылатый ужас, восставший благодаря духу Тыквовина и темной магии.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20944,6 +21895,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rИнтендант Умбра|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20966,6 +21918,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rИнтендант Крагнош|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -20986,8 +21939,9 @@ COLLECTION_MOUNTDATA = {
         lootType = 0,
         expansion = 4,
         inhabitType = 2,
-        priceText = "",
+        priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[Скакун, порожденный причудливым слиянием эфемерных сущностей множеств стихий. Удивительное создание.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21010,6 +21964,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rМурозонд|n|cFFFFD200Зона: |rБронзовое святилище|n",
         descriptionText = [[Данное средство передвижения можно получить из добычи Мурозонда в Бронзовом святилище 25 (гер) при активном усложненном режиме, при этом должно остаться не менее 30 попыток.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21032,6 +21987,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21054,6 +22010,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЭлисандр|n|cFFFFD200Зона: |rДаларан(Даларан)|n|cFFFFD200Цена: |r150 |TInterface\\Icons\\ability_racial_etherealconnection.BLP:16:16|t|n",
         descriptionText = [[Сказания араккоа гласят о любопытном вороне, что плутал в мире духов так долго, что по возвращению в обычный мир так и остался наполовину духом.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21076,6 +22033,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21097,7 +22055,8 @@ COLLECTION_MOUNTDATA = {
         expansion = 4,
         inhabitType = 1,
         priceText = "|cFFFFD200Доступно на 50 уровне боевого пропуска|r",
-        descriptionText = [[]],
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21120,6 +22079,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21142,6 +22102,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21164,6 +22125,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Можно получить с добычи существ Змеиного святилища (все сложности).]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21186,6 +22148,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Можно получить с добычи существ Змеиного святилища (все сложности).]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21208,6 +22171,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Можно получить с добычи существ Змеиного святилища (все сложности).]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21230,6 +22194,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Можно получить с добычи существ Змеиного святилища (все сложности).]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21252,6 +22217,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСауль Отверженный|n|n|cFFFFD200Цена: |r500 |TInterface\\PVPFrame\\PVPCurrency-Conquest1-Team.BLP:16:16|t6000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21274,6 +22240,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21296,6 +22263,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21318,6 +22286,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЭлисандр|n|cFFFFD200Зона: |rДаларан(Даларан)|n|cFFFFD200Цена: |r150 |TInterface\\Icons\\ability_racial_etherealconnection.BLP:16:16|t|n",
         descriptionText = [[Никого более дружелюбного и очаровательного вы не видели.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21340,6 +22309,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21362,6 +22332,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rВаладар Звездная Песня|n|n|cFFFFD200Цена: |r50 |TInterface\\Icons\\INV_Misc_ElvenCoins.BLP:16:16|t|n",
         descriptionText = [[Хоть и мала, но шустра и надежна!]],
+        holidayText = "|cFFFFD200Игровое событие:|r Лунный фестиваль",
         flags = 0,
     },
     {
@@ -21384,6 +22355,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Умбра|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21406,6 +22378,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Крагнош|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21428,6 +22401,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Умбра|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21450,6 +22424,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Умбра|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21472,6 +22447,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Крагнош|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21494,6 +22470,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Умбра|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21516,6 +22493,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Крагнош|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21538,6 +22516,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Крагнош|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21560,6 +22539,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Умбра|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21582,6 +22562,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Крагнош|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21604,6 +22585,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rИнтендант Умбра|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r2 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21626,6 +22608,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rИнтендант Крагнош|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r2 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21648,6 +22631,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Крагнош|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21670,6 +22654,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Умбра|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21692,6 +22677,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21714,6 +22700,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21736,6 +22723,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21758,6 +22746,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21780,6 +22769,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21802,6 +22792,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21824,6 +22815,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21846,6 +22838,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r36|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[Когда произошел катаклизм у предела Тенебры, он изменил не только бывших слуг Кель'Таса, обратив их в Эльфов Бездны, но и их ездовых крылобегов. Этому крылобегу "повезло" - он стал слиянием сил Бездны и Крови. Покорить его может лишь настоящий мастер.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21868,6 +22861,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Достижение: |rГерой Храмового города Ала'ваште|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21890,6 +22884,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21912,6 +22907,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21934,6 +22930,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rБелби Быстросмен, Бликс Чиништукс, Ларкин Громовар, Рай'ма|n|cFFFFD200Зона: |rДун Морог,|nДуротар,|nСтальгорн,|nОргриммар|n|cFFFFD200Цена: |r150 |TInterface\\Icons\\INV_Misc_Coin_01.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Хмельной фестиваль",
         flags = 0,
     },
     {
@@ -21956,6 +22953,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -21978,6 +22976,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22000,6 +22999,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rБартилий Цум|n|n|cFFFFD200Цена: |r180 |TInterface\\Icons\\achievement_zone_tolbarad.BLP:16:16|t|n",
         descriptionText = [[Несмотря на то, что лошади повсеместно использовались именно людьми, их первыми врагами в Азероте, некоторые орки смогли не только успешно выращивать и обучать скакунов, но даже выводить новые породы посредством селекции.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22022,6 +23022,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22044,6 +23045,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22066,6 +23068,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22088,6 +23091,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22110,6 +23114,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22132,6 +23137,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rАурелий Флос|n|n|cFFFFD200Цена: |r180 |TInterface\\Icons\\achievement_zone_tolbarad.BLP:16:16|t|n",
         descriptionText = [[Несмотря на то, что разведение волков и выращивание их в ездовых животных является исконно-орочьей традицией, некоторые мастера-псари Альянса успешно адаптировали их умение.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22154,6 +23160,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22174,8 +23181,9 @@ COLLECTION_MOUNTDATA = {
         lootType = 0,
         expansion = 128,
         inhabitType = 2,
-        priceText = "|n|nМожет встретиться во внутриигровом магазине.",
+        priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22198,6 +23206,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22218,8 +23227,9 @@ COLLECTION_MOUNTDATA = {
         lootType = 0,
         expansion = 128,
         inhabitType = 2,
-        priceText = "|n|nМожет встретиться во внутриигровом магазине.",
+        priceText = "",
         descriptionText = [[Покровительница романтиков и вестница любви, Леффель унесет вас на своих крыльях туда, где царит счастье и восторг!]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22242,6 +23252,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22264,6 +23275,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22286,6 +23298,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22308,6 +23321,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22330,6 +23344,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22352,6 +23367,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[Вороны магических потоков рождаются в магии, для них она и пища, и сила, и убежище. Этот же сроднился с пугающей Скверной и каким-то непостижимым образом избежал и смерти, и превращения в демона. Приручить такую диковинку - настоящее достижение.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22374,6 +23390,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22396,6 +23413,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22418,6 +23436,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22440,6 +23459,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22462,6 +23482,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22484,6 +23505,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Достижение: |rНа волне!|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22506,6 +23528,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22528,6 +23551,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rЛеди Вайш|n|cFFFFD200Зона: |rЗмеиное святилище|n",
         descriptionText = [[Данное ездовое животное содержится в добыче босса Леди Вайш в Змеином Святилище (героич.)]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22550,6 +23574,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Двухместный летательный аппарат, идеально подходящий для тех, кто намерен стать следующим Харрисоном Джонсом. Судя по торчащим из корпуса стрелам и многочисленным следам починки - он повидал немало приключений и повидает еще больше в будущем.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22572,6 +23597,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Достижение: |rВперед в 2021!|n|n",
         descriptionText = [[Создан, чтобы дарить праздничное настроение всем вокруг!]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22594,6 +23620,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22616,6 +23643,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22638,6 +23666,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22660,6 +23689,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22682,6 +23712,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r37|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22704,6 +23735,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22726,6 +23758,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22747,7 +23780,8 @@ COLLECTION_MOUNTDATA = {
         expansion = 4,
         inhabitType = 2,
         priceText = "|cFFFFD200Доступно на 75 уровне боевого пропуска|r",
-        descriptionText = [[]],
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22770,6 +23804,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[Каждый, кто захочет приручить это создание должен задать себе вопрос: сможет ли он приручить само естество скверны и разрушения?]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22792,6 +23827,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22814,6 +23850,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r38|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[Древние технологии эредаров Аргуса были сохранены изгнанниками-дренеями. Неустанный труд над особым материалом и магия Света завершили воссоздание этого уникального средства передвижения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22836,6 +23873,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22858,6 +23896,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rРабби Снегман|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\s_marbled_snow.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22880,6 +23919,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22902,6 +23942,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22924,6 +23965,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22946,6 +23988,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22968,6 +24011,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -22990,6 +24034,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23012,6 +24057,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23034,6 +24080,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23056,6 +24103,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23078,6 +24126,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23100,6 +24149,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23122,6 +24172,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23144,6 +24195,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23166,6 +24218,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Для этого байка нет преград, и даже врата ада будут разбиты, если ваш путь будет лежать туда.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23188,6 +24241,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rПастух Батос|n|cFFFFD200Зона: |rПодгород|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Благодаря яростному темпераменту из пораженных Скверной элекков выходят неудержимые и бесстрашные верховые звери, которых под силу удержать лишь самыми прочными цепями.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23210,6 +24264,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rЭлисандр|n|cFFFFD200Зона: |rДаларан(Даларан)|n|cFFFFD200Цена: |r175 |TInterface\\Icons\\ability_racial_etherealconnection.BLP:16:16|t|n",
         descriptionText = [[Овеществленный сон о смертной вьюге и ледяной пустоши, обращенный в плоть рунической упряжью. Опасный скакун для опасного всадника.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23232,6 +24287,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rЗаполненная добычей тыква|n|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Тыквовин",
         flags = 0,
     },
     {
@@ -23254,6 +24310,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Требуется уровень лояльности: |r35|TInterface\\Store\\loyal.BLP:16:16|t",
         descriptionText = [[Легенды гласят, что в прошедшую эпоху своей молодости, драконьи Аспекты отдали по частичке своей силы, создав удивительное существо, призванное служить достойному смертному. И сейчас оно обрело хозяина.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23276,6 +24333,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23298,6 +24356,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23320,6 +24379,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23342,6 +24402,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[Его ярость подобна огню, который он извергает, - всепоглощающая и безграничная.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23362,8 +24423,9 @@ COLLECTION_MOUNTDATA = {
         lootType = 0,
         expansion = 64,
         inhabitType = 2,
-        priceText = "|n|nМожет встретиться во внутриигровом магазине.",
+        priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23386,6 +24448,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rПастух Батос|n|cFFFFD200Зона: |rПодгород|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Тлеющие бивни этого элекка могут пробить даже самую прочную броню, однако к ужасной вони привыкнуть удастся далеко не сразу.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23408,6 +24471,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rПастух Батос|n|cFFFFD200Зона: |rПодгород|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Жертва безграничных амбиций саргераев, стремящихся в равной степени овладеть силами Тьмы и Скверны, этот зверь еще сохраняет остатки здравого сознания... пока что.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23430,6 +24494,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rКортан Сталемуфель|n|cFFFFD200Зона: |rСтальгорн|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Взращенный в землях клана Черного Железа, этот бесстрашный скакун готов отправиться за своим хозяином в самое пекло.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23452,6 +24517,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Взращенный в землях клана Черного Железа, этот бесстрашный скакун готов отправиться за своим хозяином в самое пекло.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23474,6 +24540,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rКортан Сталемуфель|n|cFFFFD200Зона: |rСтальгорн|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Взращенный в землях клана Черного Железа, этот бесстрашный скакун готов отправиться за своим хозяином в самое пекло.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23496,6 +24563,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rКортан Сталемуфель|n|cFFFFD200Зона: |rСтальгорн|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Взращенный в землях клана Черного Железа, этот бесстрашный скакун готов отправиться за своим хозяином в самое пекло.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23518,6 +24586,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Взращенный в землях клана Черного Железа, этот бесстрашный скакун готов отправиться за своим хозяином в самое пекло.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23540,6 +24609,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Взращенный в землях клана Черного Железа, этот бесстрашный скакун готов отправиться за своим хозяином в самое пекло.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23562,6 +24632,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rКак приручить дракона?|n|n",
         descriptionText = [[Существо, окутанное тайной и ореолом мрака.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23584,6 +24655,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[Странники проводят всю жизнь в вечных скитаниях в поисках того, чего никому не понять.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23606,6 +24678,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23628,6 +24701,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23650,6 +24724,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "|cFFFFD200Торговец: |rСауль Отверженный|n|cFFFFD200Зона: |rКруг Воли(Даларан)|n|cFFFFD200Цена: |r500 |TInterface\\PVPFrame\\PVPCurrency-Conquest1-Team.BLP:16:16|t6000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23672,6 +24747,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23694,6 +24770,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23716,6 +24793,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23738,6 +24816,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23760,6 +24839,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23782,6 +24862,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23804,6 +24885,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "|cFFFFD200Торговец: |rСауль Отверженный|n|cFFFFD200Зона: |rКруг Воли(Даларан)|n|cFFFFD200Цена: |r7500 |TInterface\\PVPFrame\\PVPCurrency-Conquest1-Team.BLP:16:16|t30000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23826,6 +24908,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23848,6 +24931,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23870,6 +24954,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23892,6 +24977,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23914,6 +25000,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23936,6 +25023,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23958,6 +25046,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -23980,6 +25069,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24002,6 +25092,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rЭлисандр|n|cFFFFD200Зона: |rДаларан(Даларан)|n|cFFFFD200Цена: |r300 |TInterface\\Icons\\ability_racial_etherealconnection.BLP:16:16|t|n",
         descriptionText = [[На удивление миролюбивый и спокойный для своих размеров зверь, которого не тревожит ни массивная конструкция упряжки на его спине, ни торговцы-тортоланны, путешествующие с ним.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24024,6 +25115,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24046,6 +25138,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24068,6 +25161,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24090,6 +25184,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24112,6 +25207,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24134,6 +25230,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24156,6 +25253,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24178,6 +25276,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24199,7 +25298,8 @@ COLLECTION_MOUNTDATA = {
         expansion = 0,
         inhabitType = 0,
         priceText = "|cFFFFD200Доступно на 30 уровне боевого пропуска|r",
-        descriptionText = [[]],
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24222,6 +25322,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24244,6 +25345,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24266,6 +25368,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24288,6 +25391,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24310,6 +25414,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24332,6 +25437,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24354,6 +25460,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rЭлисандр|n|cFFFFD200Зона: |rДаларан|n|cFFFFD200Цена: |r175 |TInterface\\Icons\\ability_racial_etherealconnection.BLP:16:16|t|n",
         descriptionText = [[Крикуны выращивались в культуре Зандалари как звери, посвященные лоа. Верность одного из них считается большой честью.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24376,6 +25483,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24398,6 +25506,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24420,6 +25529,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24442,6 +25552,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24464,6 +25575,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24486,6 +25598,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24508,6 +25621,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24530,6 +25644,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24552,6 +25667,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24574,6 +25690,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24596,6 +25713,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24618,6 +25736,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24640,6 +25759,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24662,6 +25782,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24684,6 +25805,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24706,6 +25828,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24728,6 +25851,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24750,6 +25874,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24772,6 +25897,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24794,6 +25920,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24816,6 +25943,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24838,6 +25966,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24860,6 +25989,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24882,6 +26012,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24904,6 +26035,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24926,6 +26058,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24948,6 +26081,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24970,6 +26104,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -24992,6 +26127,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25014,6 +26150,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25036,6 +26173,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25058,6 +26196,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "|cFFFFD200Торговец: |rЗабытый|n|n|cFFFFD200Цена: |r500 |TInterface\\Icons\\INV_MISC_TRINKETPANDA_08.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25080,6 +26219,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25102,6 +26242,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25124,6 +26265,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25146,6 +26288,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25168,6 +26311,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25190,6 +26334,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25212,6 +26357,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25234,6 +26380,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25256,6 +26403,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25278,6 +26426,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25300,6 +26449,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[Являлся наградой за победу в мини-игре Хрупкий пол во время бета-тестирования.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25322,6 +26472,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25344,6 +26495,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25366,6 +26518,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "|cFFFFD200Источник: |rКосяк огнеперого луциана, Небольшой косяк масляного черноротика|n|cFFFFD200Зона: |rБолотина|n",
         descriptionText = [[Синие болотные прыгуны любят уединение, не вздумайте тревожить их по пустякам!]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25388,6 +26541,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "|cFFFFD200Источник: |rКосяк спороуса, Косяк морской рыбы, Косяк ершей|n|cFFFFD200Зона: |rЗангартопь|n",
         descriptionText = [[Зеленые болотные прыгуны отличаются привередливостью и особо важным видом.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25410,6 +26564,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "|cFFFFD200Источник: |rСтайка медуз|n|cFFFFD200Зона: |rНизина Шолазар|n",
         descriptionText = [[Желтый болотный прыгун имеет крутой нрав, несмотря на внешнюю безобидность. Обладатель странных предпочтений в еде, но не стоит осуждать это удивительное создание.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25432,6 +26587,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25454,6 +26610,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25476,6 +26633,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25498,6 +26656,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25520,6 +26679,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "|cFFFFD200Достижение: |rГлавное - друзья, а место найдется!|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25542,6 +26702,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25564,6 +26725,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25586,6 +26748,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rТреснутое неопознанное яйцо|n|n",
         descriptionText = [[Огнеястребы - очень сильные и непредсказуемые создания, но этот - особенно опасен, источник его силы - не первородный огонь элементалей, а хаотический поток магии Азерота, чье поведение невозможно предсказать.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25608,6 +26771,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rЭлисандр|n|cFFFFD200Зона: |rДаларан(Даларан)|n|cFFFFD200Цена: |r300 |TInterface\\Icons\\ability_racial_etherealconnection.BLP:16:16|t|n",
         descriptionText = [[Рожденный в чистом первозданном огне Огненных Просторов, это грозное создание не ведает жалости. Чтобы покорить его, нужно невиданное упорство и сила.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25630,6 +26794,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |rКавалерию вызывали?|n|n",
         descriptionText = [[Этот ворон рожден из течений тайной магии Азерота, отражая в своих крыльях блики иных измерений. Кто же сможет приручить столь удивительное создание?]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25652,6 +26817,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25674,6 +26840,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25696,6 +26863,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25718,6 +26886,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25740,6 +26909,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25762,6 +26932,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25784,6 +26955,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25806,6 +26978,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25828,6 +27001,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25850,6 +27024,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25872,6 +27047,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25892,8 +27068,9 @@ COLLECTION_MOUNTDATA = {
         lootType = 0,
         expansion = 0,
         inhabitType = 0,
-        priceText = "",
+        priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25916,6 +27093,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[Аресмир - крайне изменчивое существо, по веянию души своего владельца он может стать как кошмаром праведников, так и лучем надежды в темнейший час.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25938,6 +27116,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25960,6 +27139,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -25982,6 +27162,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "|cFFFFD200Торговец: |rСауль Отверженный|n|cFFFFD200Зона: |rКруг Воли(Даларан)|n|cFFFFD200Цена: |r5000 |TInterface\\PVPFrame\\PVPCurrency-Conquest1-Team.BLP:16:16|t20000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26004,6 +27185,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26025,7 +27207,8 @@ COLLECTION_MOUNTDATA = {
         expansion = 0,
         inhabitType = 0,
         priceText = "|cFFFFD200Доступно на 96 уровне боевого пропуска|r",
-        descriptionText = [[]],
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26048,6 +27231,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26070,6 +27254,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26092,6 +27277,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26114,6 +27300,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26136,6 +27323,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26158,6 +27346,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26180,6 +27369,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26202,6 +27392,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26224,6 +27415,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26246,6 +27438,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26268,6 +27461,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26290,6 +27484,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26312,6 +27507,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26334,6 +27530,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26356,6 +27553,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26378,6 +27576,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26400,6 +27599,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "|cFFFFD200Достижение: |rКоллекционер шкатулок|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26422,6 +27622,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26444,6 +27645,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26466,6 +27668,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26488,6 +27691,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "|cFFFFD200Достижение: |rВперед в 2022!|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26510,6 +27714,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26532,6 +27737,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26554,6 +27760,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26576,6 +27783,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 0,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26598,6 +27806,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rМешочек сокровищ|n|n",
         descriptionText = [[Среди пандаренов ходят легенда о герое, чьим испытанием Сюэня был поиск небесной эссенции. Сюэнь поведал герою, что порой нужно уметь не желать чего-то, чтобы достичь этого - это один из способов обрести ясность ума и спокойствие духа.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26621,6 +27830,7 @@ COLLECTION_MOUNTDATA = {
         priceText = "|cFFFFD200Источник: |rКосяк королевского морского дьявола, Косяк ракушечного подкаменщика, Косяк дракоперой рыбы-ангела, Косяк клыкозубой сельди, Косяк ледникового лосося|n|cFFFFD200Зона: |rТол'Гарод|n",
         descriptionText = [[Гродо - это огромная демоническая жаба, обитающая в туманных болотах Тол'Гарода и питающаяся местным зверьем. Требуется быть сущим дьяволом, чтобы поймать и укротить этого зверя.
 Для получения необходимо иметь достижение "Жабьих дел мастер".]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26644,6 +27854,7 @@ COLLECTION_MOUNTDATA = {
         priceText = "|cFFFFD200Источник: |rКосяк борейского медузника, Стайка медуз, Косяк ледоспинки, Косяк глубоководного чуда-юда, Косяк лунной каракатицы|n|cFFFFD200Зона: |rТол'Гарод|n",
         descriptionText = [[Кригвус заслужил свое прозвище буквально выев все живое на окраинах Пустошей. Его поймали, доставили на Тол'Гарод, но упустили. Найдется ли храбрец, что отыщет и обуздает это чудовище?
 Для получения необходимо иметь достижение "Жабьих дел мастер".]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26666,6 +27877,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26688,6 +27900,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26710,6 +27923,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26732,6 +27946,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26754,6 +27969,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26776,6 +27992,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26798,6 +28015,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26820,6 +28038,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26842,6 +28061,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26864,6 +28084,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26886,6 +28107,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26908,6 +28130,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26930,6 +28153,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26952,6 +28176,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rБыло замечено на черном рынке|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26974,6 +28199,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -26996,6 +28222,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27018,6 +28245,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[Закованный в тяжелые доспехи этот дух скакуна несет важное напоминание живым: ужасы, находящие за гранью смерти, гораздо страшнее всего, что они видели при жизни.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27040,6 +28268,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27062,6 +28291,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Источник: |rСундук Бобби|n|n",
         descriptionText = [[Массивная золотая броня этого коня была выкована специально для одного из павших королей Азерота.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27084,6 +28314,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27106,6 +28337,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27128,6 +28360,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27150,6 +28383,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27172,6 +28406,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27194,6 +28429,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27216,6 +28452,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27238,6 +28475,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27260,6 +28498,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27282,6 +28521,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27304,6 +28544,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27326,6 +28567,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27348,6 +28590,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27370,6 +28613,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27392,6 +28636,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27414,6 +28659,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27436,6 +28682,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27458,6 +28705,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27480,6 +28728,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27502,6 +28751,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27524,6 +28774,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27546,6 +28797,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСауль Отверженный|n|cFFFFD200Зона: |rКруг Воли(Даларан)|n|cFFFFD200Цена: |r7500 |TInterface\\PVPFrame\\PVPCurrency-Conquest1-Team.BLP:16:16|t30000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27568,6 +28820,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27590,6 +28843,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27612,6 +28866,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСауль Отверженный|n|cFFFFD200Зона: |rКруг Воли(Даларан)|n|cFFFFD200Цена: |r18000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27634,6 +28889,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27656,6 +28912,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27678,6 +28935,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27700,6 +28958,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27722,6 +28981,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27744,6 +29004,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27766,6 +29027,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27788,6 +29050,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27810,6 +29073,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27832,6 +29096,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Зандалары гордятся тем, что первыми начали разводить и обучать самых свирепых ящеров на всем Азероте.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27854,6 +29119,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rДиномант Талуту|n|cFFFFD200Зона: |rЛуносвет|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Зандалары гордятся тем, что первыми начали разводить и обучать самых свирепых ящеров на всем Азероте.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27876,6 +29142,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rДиномант Талуту|n|cFFFFD200Зона: |rЛуносвет|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Зандалары гордятся тем, что первыми начали разводить и обучать самых свирепых ящеров на всем Азероте.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27898,6 +29165,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rДиномант Талуту|n|cFFFFD200Зона: |rЛуносвет|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[Зандалары гордятся тем, что первыми начали разводить и обучать самых свирепых ящеров на всем Азероте.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27920,6 +29188,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Зандалары гордятся тем, что первыми начали разводить и обучать самых свирепых ящеров на всем Азероте.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27942,6 +29211,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСорвос|n|cFFFFD200Зона: |rЭкзодар|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[После того как Велен рассказал о том, насколько полезны могут быть звери, с давних пор бывшие верными спутниками дренеев, элекки стали излюбленными боевыми скакунами Связанных Светом.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27964,6 +29234,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[После того как Велен рассказал о том, насколько полезны могут быть звери, с давних пор бывшие верными спутниками дренеев, элекки стали излюбленными боевыми скакунами Связанных Светом.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -27986,6 +29257,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСорвос|n|cFFFFD200Зона: |rЭкзодар|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[После того как Велен рассказал о том, насколько полезны могут быть звери, с давних пор бывшие верными спутниками дренеев, элекки стали излюбленными боевыми скакунами Связанных Светом.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28008,6 +29280,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСорвос|n|cFFFFD200Зона: |rЭкзодар|n|cFFFFD200Цена: |r10 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[После того как Велен рассказал о том, насколько полезны могут быть звери, с давних пор бывшие верными спутниками дренеев, элекки стали излюбленными боевыми скакунами Связанных Светом.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28030,6 +29303,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28052,6 +29326,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28074,6 +29349,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28096,6 +29372,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28118,6 +29395,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28140,6 +29418,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28162,6 +29441,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28184,6 +29464,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28206,6 +29487,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28228,6 +29510,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28250,6 +29533,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Сотворенный из драгоценностей и оживленный самой госпожой Удачей, Везунчик Юнь бороздит Азерот и дарит везение всем, кто его увидит.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28272,6 +29556,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Достижение: |r5-я годовщина Scourge|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28294,6 +29579,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28316,6 +29602,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28338,6 +29625,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28360,6 +29648,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28382,6 +29671,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28404,6 +29694,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28425,7 +29716,8 @@ COLLECTION_MOUNTDATA = {
         expansion = 128,
         inhabitType = 2,
         priceText = "|cFFFFD200Доступно на 37 уровне боевого пропуска|r",
-        descriptionText = [[]],
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28448,6 +29740,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28470,6 +29763,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28492,6 +29786,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28514,6 +29809,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28536,6 +29832,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28558,6 +29855,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28580,6 +29878,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28602,6 +29901,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28624,6 +29924,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28646,6 +29947,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28668,6 +29970,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28690,6 +29993,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28712,6 +30016,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28734,6 +30039,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28756,6 +30062,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28778,6 +30085,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28800,6 +30108,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28822,6 +30131,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28844,6 +30154,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28866,6 +30177,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28888,6 +30200,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28910,6 +30223,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28932,6 +30246,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28954,6 +30269,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28976,6 +30292,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -28998,6 +30315,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Торговец: |rРабби Снегман|n|n|cFFFFD200Цена: |r10000 |TInterface\\Icons\\s_marbled_snow.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "|cFFFFD200Игровое событие:|r Зимний Покров",
         flags = 0,
     },
     {
@@ -29020,6 +30338,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Источник: |rМурозонд|n|cFFFFD200Зона: |rБронзовое святилище|n",
         descriptionText = [[Данное средство передвижения можно получить из добычи Мурозонда в Бронзовом святилище 25 (об) при активном усложненном режиме, при этом должно остаться не менее 30 попыток.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29042,6 +30361,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29064,6 +30384,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29086,6 +30407,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29108,6 +30430,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29130,6 +30453,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29152,6 +30476,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29174,6 +30499,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29196,6 +30522,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29218,6 +30545,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29240,6 +30568,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29262,6 +30591,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29284,6 +30614,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29306,6 +30637,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29328,6 +30660,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29350,6 +30683,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29372,6 +30706,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29393,7 +30728,8 @@ COLLECTION_MOUNTDATA = {
         expansion = 4,
         inhabitType = 2,
         priceText = "|cFFFFD200Доступно на 57 уровне боевого пропуска|r",
-        descriptionText = [[]],
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29416,6 +30752,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29438,6 +30775,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29460,6 +30798,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29482,6 +30821,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29504,6 +30844,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29525,7 +30866,8 @@ COLLECTION_MOUNTDATA = {
         expansion = 4,
         inhabitType = 1,
         priceText = "|cFFFFD200Доступно на 80 уровне боевого пропуска|r",
-        descriptionText = [[]],
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29548,6 +30890,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29570,6 +30913,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29592,6 +30936,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29614,6 +30959,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29636,6 +30982,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29657,7 +31004,8 @@ COLLECTION_MOUNTDATA = {
         expansion = 4,
         inhabitType = 1,
         priceText = "|cFFFFD200Доступно на 101 уровне боевого пропуска|r",
-        descriptionText = [[]],
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29680,6 +31028,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29702,6 +31051,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29724,6 +31074,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29746,6 +31097,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29768,6 +31120,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29790,6 +31143,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29812,6 +31166,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29834,6 +31189,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29856,6 +31212,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|n|nМожет встретиться во внутриигровом магазине.",
         descriptionText = [[Багровой поступью идет он по мирозданию, и там, где он оказался, неминуемо царит хаос и разрушение.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29878,6 +31235,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Мурмуровоз - единственный и неповторимый любитель рыбки, летающий кот невероятных размеров, чье мурлыканье греет душу.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29900,6 +31258,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Создан для того, чтобы сокращать дистанции между двумя влюбленными сердцами.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29922,6 +31281,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Достижение: |rПоход по Тол'Гародской тюрьме|n|cFFFFD200Зона: |rТол'Гародская тюрьма|n",
         descriptionText = [[Повергатель героев, разрушитель оков, истощающий все живое, крадущий последние капли жизни.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29943,7 +31303,8 @@ COLLECTION_MOUNTDATA = {
         expansion = 4,
         inhabitType = 1,
         priceText = "|cFFFFD200Доступно на 59 уровне боевого пропуска|r",
-        descriptionText = [[]],
+        descriptionText = [[Являлся наградой завершенного сезона Боевого Пропуска. На данный момент недоступен для получения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29966,6 +31327,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Умбра|n|cFFFFD200Зона: |rШтормград|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -29988,6 +31350,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rИнтендант Крагнош|n|cFFFFD200Зона: |rОргриммар|n|cFFFFD200Цена: |r1 |TInterface\\Icons\\achievement_bg_kill_on_mount.BLP:16:16|t|n",
         descriptionText = [[Ренегаты могут приобрести данное ездовое животное у Интенданта Возрога в Бухте Торговцев.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30010,6 +31373,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30032,6 +31396,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30054,6 +31419,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30076,6 +31442,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСауль Отверженный|n|cFFFFD200Зона: |rКруг Воли(Даларан)|n|cFFFFD200Цена: |r50000 |TInterface\\PVPFrame\\PVPCurrency-Honor1-Team.BLP:16:16|t|n",
         descriptionText = [[Если для вас сражение - это обыденность, а звуки боя - музыка для ушей, то самые гордые представители этого боевого рода будут служить вам верно и вести вас в новые бои.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30098,6 +31465,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30120,6 +31488,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСауль Отверженный|n|cFFFFD200Зона: |rКруг Воли(Даларан)|n|cFFFFD200Цена: |r12500 |TInterface\\PVPFrame\\PVPCurrency-Conquest1-Team.BLP:16:16|t|n",
         descriptionText = [[Закаленные во множестве боев среди сородичей на острове Форбс данные птицы несут на себе не только могучего воина, но и честь и опыт каждого своего сражения.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30142,6 +31511,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30164,6 +31534,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30186,6 +31557,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30208,6 +31580,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30224,12 +31597,13 @@ COLLECTION_MOUNTDATA = {
         currency = 0,
         price = 0,
         productID = 0,
-        isActive = 0,
-        lootType = 0,
+        isActive = 1,
+        lootType = 7,
         expansion = 4,
         inhabitType = 1,
-        priceText = "",
-        descriptionText = [[Последний принц знатного рода кошачьих, не смотря на избалованный вид по-прежнему готов снять корону и отстоять честь своего дома в любом сражении и на любом пиру.]],
+        priceText = "|cFFFFD200Достижение: |r|n|n",
+        descriptionText = [[Последний принц знатного рода кошачьих, несмотря на избалованный вид по-прежнему готов снять корону и отстоять честь своего дома в любом сражении и на любом пиру.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30252,6 +31626,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30274,6 +31649,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30296,6 +31672,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30318,6 +31695,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Древние – надежные защитники лесов Азерота. Они известны своими прекрасными лиственными шевелюрами, меняющими цвет в зависимости от сезона.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30340,6 +31718,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Невероятной красоты Сирин всегда стремилась к защите добродетельных созданий подобных ей, ничто сущее не будет в опасности там, где она оставила свой след.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30362,6 +31741,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30384,6 +31764,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30406,6 +31787,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Величественная Царка всегда защищала свой род, и даже после смерти в буре маны ее душа готова раздирать любое существо, угрожающее ее потомству.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30428,6 +31810,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Древнее божество пандаренов издревле защищало водопои и реки их родных земель, а ныне оно странствует по Азероту, защищая жизнь каждого, кому требуется помощь.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30450,6 +31833,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[В его крике слышно отчаяние каждого друида, не проснувшегося от кошмара.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30472,6 +31856,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Дух процветания и жизни, стоящий на вечной страже своих господ и готовый прийти на помощь в любую минуту.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30494,6 +31879,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[Из его клюва сочится магическая эссенция, а любой чародей видит в нем потенциальную угрозу свой жизни.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30516,6 +31902,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Озаренный божественным светом Наару, этот скакун не боится даже самых темных уголков вселенной.]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30538,6 +31925,122 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "",
         descriptionText = [[Нрав чудовища идет под стать тем, кого награждают ими - смелых и безрассудных.]],
+        holidayText = "",
+        flags = 0,
+    },
+    {
+        hash = "675220398858582",
+        itemID = 157212,
+        spellID = 319830,
+        creatureID = 131264,
+        categoryID = 4,
+        subCategoryID = 49,
+        isUsable = true,
+        factionSide = 0,
+        unique = {},
+        colorData = {},
+        currency = 0,
+        price = 0,
+        productID = 0,
+        isActive = 0,
+        lootType = 0,
+        expansion = 64,
+        inhabitType = 1,
+        priceText = "",
+        descriptionText = [[Словно метеорит света несется он в гущу сражений с полчащами легиона.]],
+        holidayText = "",
+        flags = 0,
+    },
+    {
+        hash = "675224693825881",
+        itemID = 157213,
+        spellID = 319833,
+        creatureID = 131265,
+        categoryID = 1,
+        subCategoryID = 33,
+        isUsable = true,
+        factionSide = 0,
+        unique = {},
+        colorData = {},
+        currency = 0,
+        price = 0,
+        productID = 0,
+        isActive = 0,
+        lootType = 0,
+        expansion = 128,
+        inhabitType = 1,
+        priceText = "",
+        descriptionText = [[... и не существует во всех пустынях такого оазиса, к которому не отсыкала бы путь великолепная Хоззи!]],
+        holidayText = "",
+        flags = 0,
+    },
+    {
+        hash = "675228988793180",
+        itemID = 157214,
+        spellID = 319836,
+        creatureID = 131266,
+        categoryID = 4,
+        subCategoryID = 59,
+        isUsable = true,
+        factionSide = 0,
+        unique = {},
+        colorData = {},
+        currency = 0,
+        price = 0,
+        productID = 0,
+        isActive = 0,
+        lootType = 0,
+        expansion = 4,
+        inhabitType = 1,
+        priceText = "",
+        descriptionText = [[В его коллекции вы пробудете дольше, чем он в вашей.]],
+        holidayText = "",
+        flags = 0,
+    },
+    {
+        hash = "675233283760479",
+        itemID = 157215,
+        spellID = 319839,
+        creatureID = 131267,
+        categoryID = 4,
+        subCategoryID = 2,
+        isUsable = true,
+        factionSide = 0,
+        unique = {},
+        colorData = {},
+        currency = 0,
+        price = 0,
+        productID = 0,
+        isActive = 0,
+        lootType = 0,
+        expansion = 128,
+        inhabitType = 2,
+        priceText = "",
+        descriptionText = [[]],
+        holidayText = "",
+        flags = 0,
+    },
+    {
+        hash = "675237578727781",
+        itemID = 157216,
+        spellID = 319845,
+        creatureID = 131268,
+        categoryID = 4,
+        subCategoryID = 2,
+        isUsable = true,
+        factionSide = 0,
+        unique = {},
+        colorData = {},
+        currency = 0,
+        price = 0,
+        productID = 0,
+        isActive = 0,
+        lootType = 0,
+        expansion = 128,
+        inhabitType = 2,
+        priceText = "",
+        descriptionText = [[Каждый кусок стали на его теле несет тяжкое напоминание о его страшной жизни до встречи с вами]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30560,6 +32063,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "|cFFFFD200Задание: |rСокровищница Линда|n|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30582,6 +32086,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30604,6 +32109,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 2,
         priceText = "",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
     {
@@ -30626,6 +32132,7 @@ COLLECTION_MOUNTDATA = {
         inhabitType = 1,
         priceText = "|cFFFFD200Торговец: |rСаралет|n|n|cFFFFD200Цена: |r50000 |TINTERFACE\\MONEYFRAME\\UI-GOLDICON.BLP:16:16|t|n",
         descriptionText = [[]],
+        holidayText = "",
         flags = 0,
     },
 }

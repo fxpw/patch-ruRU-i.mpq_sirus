@@ -1200,7 +1200,7 @@ function UIResettableDropdownButtonMixin:OnLoad()
 	end);
 end
 
-function UIResettableDropdownButtonMixin:OnMouseDown()
+function UIResettableDropdownButtonMixin:OnMouseDown(button)
 	UIMenuButtonStretchMixin.OnMouseDown(self, button);
 end
 
@@ -1242,7 +1242,7 @@ function SquareIconButtonMixin:SetTooltipInfo(tooltipTitle, tooltipText)
 end
 
 function SquareIconButtonMixin:OnMouseDown()
-	if self:IsEnabled() then
+	if self:IsEnabled() == 1 then
 		self.Icon:SetPoint("CENTER", self, "CENTER", -2, -1);
 	end
 end
@@ -1279,4 +1279,180 @@ end
 function SquareIconButtonMixin:SetEnabledState(enabled)
 	self:SetEnabled(enabled);
 	self.Icon:SetDesaturated(not enabled);
+end
+
+StorePopupFrameTemplateMixin = {};
+
+function StorePopupFrameTemplateMixin:OnLoad()
+	self.baseHeight = 360
+	self.editBox = self.Content.SectionMiddle.EditBoxFrame.EditBox
+end
+
+function StorePopupFrameTemplateMixin:SetSettings(settings)
+	if not settings then return end
+
+	self.Title:SetText(settings.titleText)
+
+	self.Button1:SetText(settings.button1Text or BUY)
+
+	if settings.button2Text then
+		self.Button2:SetText(settings.button2Text)
+
+		self.Button1:ClearAllPoints()
+		self.Button1:SetPoint("BOTTOM", -75, 17)
+
+		self.Button2:ClearAllPoints()
+		self.Button2:SetPoint("BOTTOM", 75, 17)
+
+		self.Button2:Show()
+	else
+		self.Button2:Hide()
+
+		self.Button1:ClearAllPoints()
+		self.Button1:SetPoint("BOTTOM", 0, 17)
+	end
+
+	self.Content.SectionTop.Text:SetText(settings.textTop)
+
+	self.Content.SectionMiddle.Text:SetText(settings.textMiddle or "")
+	self.Content.SectionMiddle.Text:SetShown(settings.textMiddle ~= nil)
+
+	self.Content.SectionBottom.Price:SetText(settings.priceValue)
+
+	if settings.editBoxInstructions then
+		self.Content.SectionMiddle.EditBoxFrame.instructions = settings.editBoxInstructions
+		self.Content.SectionMiddle.EditBoxFrame.EditBox.Instructions:SetText(settings.editBoxInstructions)
+	else
+		self.Content.SectionMiddle.EditBoxFrame.instructions = SHOP_POPUP_EDITBOX_INSTRUCTION
+		self.Content.SectionMiddle.EditBoxFrame.EditBox.Instructions:SetText(SHOP_POPUP_EDITBOX_INSTRUCTION)
+	end
+
+	self.Content.SectionMiddle.EditBoxFrame.EditBox.multiLine = settings.editBoxMultiLine and true or false
+
+	self.Popup_OnShow = settings.Popup_OnShow
+	self.Popup_OnHide = settings.Popup_OnHide
+	self.Button1_OnClick = settings.Button1_OnClick
+	self.Button2_OnClick = settings.Button2_OnClick
+	self.EditBox_OnTextChanged = settings.EditBox_OnTextChanged
+
+	self.Button1.Button_OnClick = settings.Button1_OnClick
+	self.Button1.TooltipText = settings.button1TooltipText
+	self.Button1.DisabledTooltipText = settings.button1DisabledTooltipText
+
+	self.Button2.Button_OnClick = settings.Button2_OnClick
+	self.Button2.TooltipText = settings.button2TooltipText
+	self.Button2.DisabledTooltipText = settings.button2DisabledTooltipText
+end
+
+function StorePopupFrameTemplateMixin:OnShow()
+	self:Unblock()
+	self:UpdateBalance()
+
+	if self.Content.SectionMiddle.Text:IsShown() then
+		self.Content.SectionMiddle.Text:SetWidth(self.Content.SectionMiddle:GetWidth() - 70)	-- Force recalculate text rect
+		self:SetHeight(self.baseHeight + self.Content.SectionMiddle.Text:GetHeight() + 15)
+	else
+		self:SetHeight(self.baseHeight)
+	end
+
+	if self.Popup_OnShow then
+		self.Popup_OnShow(self)
+	end
+end
+
+function StorePopupFrameTemplateMixin:OnHide()
+	self.editBox:SetText("")
+
+	if self.Popup_OnHide then
+		self.Popup_OnHide(self)
+	end
+end
+
+function StorePopupFrameTemplateMixin:UpdateBalance()
+	self.Content.SectionBottom.Balance:SetFormattedText(SHOP_POPUP_BALANCE, GetPlayerBalance())
+end
+
+function StorePopupFrameTemplateMixin:Block()
+	SetParentFrameLevel(self.BlockingFrame, 10)
+	self.BlockingFrame:Show()
+end
+
+function StorePopupFrameTemplateMixin:Unblock()
+	self.BlockingFrame:Hide()
+end
+
+StorePopupButtonTemplateMixin = {}
+
+function StorePopupButtonTemplateMixin:OnLoad()
+	self.PopupFrame = self:GetParent()
+end
+
+function StorePopupButtonTemplateMixin:OnClick(button)
+	if self.Button_OnClick then
+		self.Button_OnClick(self, button)
+	end
+end
+
+function StorePopupButtonTemplateMixin:OnEnter()
+	if self:IsEnabled() == 1 then
+		if self.TooltipText then
+			GameTooltip:SetOwner(self, "TOP")
+			GameTooltip:SetText(self.TooltipText)
+			GameTooltip:Show()
+		end
+	else
+		if self.DisabledTooltipText then
+			GameTooltip:SetOwner(self, "TOP")
+			GameTooltip:SetText(self.DisabledTooltipText)
+			GameTooltip:Show()
+		end
+	end
+end
+
+function StorePopupButtonTemplateMixin:OnLeave()
+	if self:IsEnabled() == 1 then
+		if self.TooltipText then
+			GameTooltip:Hide()
+		end
+	else
+		if self.DisabledTooltipText then
+			GameTooltip:Hide()
+		end
+	end
+end
+
+StorePopupFrameTemplateEditBoxMixin = {}
+
+function StorePopupFrameTemplateEditBoxMixin:OnLoad()
+	self.EditBox:SetFontObject("GameFontHighlight")
+	self.EditBox.Instructions:SetFontObject("GameFontHighlight")
+	self.maxLetters = 255
+	self.instructions = SHOP_POPUP_EDITBOX_INSTRUCTION
+	InputScrollFrame_OnLoad(self)
+
+	self.PopupFrame = self:GetParent():GetParent():GetParent()
+	self.EditBox.PopupFrame = self.PopupFrame
+
+	self.EditBox:HookScript("OnTextChanged", function(this, userInput)
+		if not this.multiLine then
+			local text = this:GetText()
+			if text then
+				local x
+				text, x = text:gsub("\n", " ")
+				if x then
+					this:SetText(text)
+				end
+			end
+		end
+
+		if self.PopupFrame.EditBox_OnTextChanged then
+			self.PopupFrame.EditBox_OnTextChanged(this, userInput)
+		end
+	end)
+end
+
+function CreateStorePopup(name, settings)
+	local f = CreateFrame("Frame", name, UIParent, "StorePopupFrameTemplate")
+	f:SetSettings(settings)
+	return f
 end

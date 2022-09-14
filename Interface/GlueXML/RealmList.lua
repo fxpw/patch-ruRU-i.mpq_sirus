@@ -221,6 +221,8 @@ function RealmList_Update()
 					realmDown = realmDown == 1,
 				}
 
+				frame:SetDisabledRealm(realmDown == 1)
+
 				for entryIndex = 2, #ENTRY_LIST do
 					local entryRealmName = string.format("%s %s", ENTRY_LIST[entryIndex][1], name)
 					local _, _, _, proxyRealmDown, _, _, _, _, _, _, _, _, _, _, proxyRealmZone, proxyRealmID = GetRealmByName(entryRealmName)
@@ -471,30 +473,20 @@ function RealmList_Update()
 		if not v.setup then
 			frame:SetDisabledRealm(true)
 		else
-		--	-- TODO: TEMP
-		--	if #frame.entryList > 1 then
-		--		frame.entryList[3] = CopyTable(frame.entryList[2])
-		--		frame.entryList[3].realmDown = true
-		--	end
-		--	-- TODO: TEMP
-
 			if #frame.entryList > 2 then
-				local realmDown = true
 				for entryIndex, entry in ipairs(frame.entryList) do
-					entryList[entryIndex] = entryList[entryIndex] or {}
-					if entryList[entryIndex].realmDown ~= false then
-						entryList[entryIndex].realmDown = entry.realmDown
+					if not entryList[entryIndex] then
+						entryList[entryIndex] = {}
+						entryList[entryIndex].realmDown = true
 					end
 
-					if realmDown and not entry.realmDown then
-						realmDown = false
+					if not entry.realmDown then
+						entryList[entryIndex].realmDown = false
 					end
 				end
 
-				frame:SetDisabledRealm(realmDown)
 				frame.ProxyFrame:SetShown(false)
 			else
-				frame:SetDisabledRealm(#frame.entryList == 0 or frame.entryList[1].realmDown)
 				frame.ProxyFrame:SetShown(#frame.entryList ~= 0)
 			end
 		end

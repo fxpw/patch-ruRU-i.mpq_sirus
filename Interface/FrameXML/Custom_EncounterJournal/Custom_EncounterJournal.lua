@@ -106,13 +106,14 @@ local armorClassFilterMask = {
 
 local weaponClassFilterMask = {
 	[ITEM_SUB_CLASS_2_0] = 111,
-	[ITEM_SUB_CLASS_2_10] = 1424,
+	[ITEM_SUB_CLASS_2_10] = 1428,
 	[ITEM_SUB_CLASS_2_3] = 13,
 	[ITEM_SUB_CLASS_2_2] = 13,
 	[ITEM_SUB_CLASS_2_18] = 13,
 	[ITEM_SUB_CLASS_2_7] = 431,
 	[ITEM_SUB_CLASS_2_13] = 72,
 	[ITEM_SUB_CLASS_2_15] = 1501,
+	[ITEM_SUB_CLASS_2_16] = 13,
 	[ITEM_SUB_CLASS_2_19] = 400,
 	[ITEM_SUB_CLASS_2_4] = 1147,
 	[ITEM_SUB_CLASS_2_6] = 1028,
@@ -275,6 +276,10 @@ local LOOTJOURNAL_CLASSFILTER
 local LOOTJOURNAL_SPECFILTER
 
 UIPanelWindows["EncounterJournal"] = { area = "left", pushable = 0, whileDead = 1, width = 830, xOffset = "15", yOffset = "-10"}
+
+if IsInterfaceDevClient() then
+	_G.EJ_SearchData = EJ_SearchData
+end
 
 function EJ_GetDifficulty()
 	return SelectedDifficulty
@@ -566,7 +571,7 @@ function EJ_GetCreatureInfo( index, encounterID )
 
 	local buffer = {}
 
-	for encounterID, data in pairs(JOURNALENCOUNTERCREATURE[encounterID]) do
+	for _, data in ipairs(JOURNALENCOUNTERCREATURE[encounterID]) do
 		table.insert(buffer, data)
 	end
 
@@ -850,7 +855,15 @@ function EJ_BuildLootData()
 				return false
 			end
 
-			return a[3] < b[3]
+			if a[3] and b[3] then
+				return a[3] < b[3]
+			elseif a[3] then
+				return true
+			elseif b[3] then
+				return false
+			else
+				return a[1] < b[1]
+			end
 		end)
 	end
 end
@@ -941,11 +954,15 @@ function EJ_GetClassFilterValidation( subclass, armorType, itemEntry )
 
 	if armorType == ITEM_CLASS_2 or invtype == INVTYPE_CLOAK or (armorType == ITEM_CLASS_4 and tContains(subClassWhiteList, subclass)) then
 		local classItemMask = weaponClassFilterMask[subclass]
-		local classMask = classLootData[EJ_GetLootFilter()].flag
 
-		if classItemMask and classMask then
-			if bit.band(classItemMask, classMask) ~= 0 then
-				return true
+		if classItemMask == -1 then
+			return true
+		else
+			local classMask = classLootData[EJ_GetLootFilter()].flag
+			if classItemMask and classMask then
+				if bit.band(classItemMask, classMask) ~= 0 then
+					return true
+				end
 			end
 		end
 	elseif tContains(itemClassWhiteList, subclass) or invtype == "INVTYPE_CLOAK" then
@@ -965,10 +982,11 @@ function EJ_GetClassFilterValidation( subclass, armorType, itemEntry )
 end
 
 function EJ_SetSearch( text )
-	EJ_SearchBuffer = {}
+	table.wipe(EJ_SearchBuffer)
+	text = string.upper(text)
 
-	for _, data in pairs(EJ_SearchData) do
-		if string.find( string.upper( data.name ), string.upper( text ), 1, true ) then
+	for _, data in ipairs(EJ_SearchData) do
+		if string.find(string.upper(data.name), text, 1, true) then
 			table.insert(EJ_SearchBuffer, data)
 		end
 	end
@@ -1119,7 +1137,7 @@ function EJ_GetTierIndex( tierID )
 		return
 	end
 
-	for k, v in pairs(JOURNALTIER) do
+	for k, v in ipairs(JOURNALTIER) do
 		if tierID == v[EJ_CONST_TIER_ID] then
 			return k
 		end
@@ -1180,10 +1198,10 @@ end
 function EncounterJournal_OnLoad( self, ... )
 	SetPortraitToTexture(self.encounter.info.instanceButton.icon, "Interface\\EncounterJournal\\UI-EJ-Home-Icon")
 
-	EJ_SearchData = {}
+	table.wipe(EJ_SearchData)
 
 	for _, container in pairs(JOURNALENCOUNTERITEM) do
-		for _, v in pairs(container) do
+		for _, v in ipairs(container) do
 			local name, link, quality, iLevel, reqLevel, armorType, subclass, maxStack, equipSlot, icon, vendorPrice = GetItemInfo(v[1])
 			if name then
 				v.name 			= name
@@ -1214,14 +1232,14 @@ function EncounterJournal_OnLoad( self, ... )
 	end
 
 	for _, container in pairs(JOURNALENCOUNTER) do
-		for _, data in pairs(container) do
+		for _, data in ipairs(container) do
 			local name = data[EJ_CONST_ENCOUNTER_NAME]
 			local id = data[EJ_CONST_ENCOUNTER_ID]
 			local stype = EJ_STYPE_ENCOUNTER
 			local difficulty = data[EJ_CONST_ENCOUNTER_DIFFICULTYMASK]
 			local instanceID = data[EJ_CONST_ENCOUNTER_INSTANCEID]
 			local encounterID = id
-			local link = GetSpellLink(id)
+			local link = nil
 
 			JOURNALENCOUNTER_BY_ENCOUNTER[encounterID] = data
 
@@ -1230,7 +1248,7 @@ function EncounterJournal_OnLoad( self, ... )
 	end
 
 	for _, container in pairs(JOURNALENCOUNTERCREATURE) do
-		for _, data in pairs(container) do
+		for _, data in ipairs(container) do
 			local name = data[EJ_CONST_ENCOUNTERCREATURE_NAME]
 			local id = data[EJ_CONST_ENCOUNTERCREATURE_ID]
 			local stype = EJ_STYPE_CREATURE
@@ -1244,7 +1262,7 @@ function EncounterJournal_OnLoad( self, ... )
 	end
 
 	for _, container in pairs(JOURNALENCOUNTERITEM) do
-		for _, data in pairs(container) do
+		for _, data in ipairs(container) do
 			local name = data.name
 			local id = data[EJ_CONST_ENCOUNTERITEM_ITEMENTRY]
 			local stype = EJ_STYPE_ITEM
@@ -2712,7 +2730,7 @@ function EncounterJournal_SetBullets(object, description, hideBullets)
 	if (not string.find(description, "%$bullet;")) then
 		object.Text:SetText(description)
 		object.textString = description
-		local Height = (utf8len(description) / parentWidth) * characterHeight
+		local Height = (strlenutf8(description) / parentWidth) * characterHeight
 		object:SetHeight(Height)
 		-- object:SetHeight(object.Text:GetContentHeight())
 		EncounterJournal_CleanBullets(parent)
@@ -2724,7 +2742,7 @@ function EncounterJournal_SetBullets(object, description, hideBullets)
 	if (desc) then
 		object.Text:SetText(desc)
 		object.textString = desc
-		local Height = (utf8len(desc) / parentWidth) * characterHeight
+		local Height = (strlenutf8(desc) / parentWidth) * characterHeight
 		object:SetHeight(Height)
 		-- object:SetHeight(object.Text:GetContentHeight())
 	end
@@ -2765,7 +2783,7 @@ function EncounterJournal_SetBullets(object, description, hideBullets)
 			end
 			bullet.Text:SetText(text)
 
-			local Height = (utf8len(text) / parentWidth) * characterHeight or 0
+			local Height = (strlenutf8(text) / parentWidth) * characterHeight or 0
 			if (Height ~= 0) then
 				bullet:SetHeight(Height)
 			end
@@ -3702,11 +3720,11 @@ function LootJournal_GenerateLootData()
 			local specID 		= data[6]
 			local isPVP 		= data[7] == 1
 			local tempitems 	= data[8]
-			local items 		= {}
 			local factionID 	= data[9] or 0
 
 			if LootJournal_CheckFilterValidation( classID, specID ) and LootJournal_FactionValidation(factionID) then
 				local numItems = 0
+				local items = {}
 
 				if tempitems and #tempitems > 0 then
 					numItems = #tempitems
@@ -3760,6 +3778,23 @@ function LootJournalItemSetsScrollFrame_OnShow( self, ... )
 end
 
 function LootJournalItemButton_OnEnter( self, ... )
+	if not self.itemLink then
+		local linkFound
+
+		if self.itemID then
+			local _, itemLink, _, _, _, _, _, _, _, itemTexture = GetItemInfo(self.itemID)
+			if itemLink then
+				self.Icon:SetTexture(itemTexture or "Interface\\ICONS\\temp")
+				self.itemLink = itemLink
+				linkFound = true
+			end
+		end
+
+		if not linkFound then
+			return
+		end
+	end
+
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 	GameTooltip:SetHyperlink(self.itemLink)
 

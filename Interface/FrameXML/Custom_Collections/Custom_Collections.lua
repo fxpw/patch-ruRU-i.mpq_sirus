@@ -22,6 +22,7 @@ function CollectionsJournal_UpdateSelectedTab(self)
 	MountJournal:SetShown(selected == 1);
 	PetJournal:SetShown(selected == 2);
 	WardrobeCollectionFrame:SetShown(selected == 3);
+	ToyBox:SetShown(selected == 4);
 	-- don't touch the wardrobe frame if it's used by the transmogrifier
 	if WardrobeCollectionFrame:GetParent() == self or not WardrobeCollectionFrame:GetParent():IsShown() then
 		if selected == 3 then
@@ -38,6 +39,8 @@ function CollectionsJournal_UpdateSelectedTab(self)
 		CollectionsJournalTitleText:SetText(PETS);
 	elseif selected == 3 then
 		CollectionsJournalTitleText:SetText(WARDROBE);
+	elseif selected == 4 then
+		CollectionsJournalTitleText:SetText(TOY_BOX);
 	end
 end
 
@@ -46,7 +49,7 @@ function CollectionsJournal_OnLoad(self)
 
 	SetPortraitToTexture(CollectionsJournalPortrait, "Interface\\Icons\\MountJournalPortrait");
 
-	PanelTemplates_SetNumTabs(self, 3);
+	PanelTemplates_SetNumTabs(self, 4);
 end
 
 function CollectionsJournal_OnEvent(self, event)

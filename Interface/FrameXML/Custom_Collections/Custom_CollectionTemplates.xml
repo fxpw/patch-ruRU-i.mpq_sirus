@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\FrameXML\UI.xsd">
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_CollectionTemplates.lua"/>
 
 	<StatusBar name="CollectionsProgressBarTemplate" virtual="true">
@@ -35,6 +35,120 @@
 		<BarTexture file="Interface\PaperDollInfoFrame\UI-Character-Skills-Bar"/>
 		<BarColor r="0.03125" g="0.85" b="0.0"/>
 	</StatusBar>
+
+	<CheckButton name="CollectionsSpellButtonTemplate" virtual="true">
+		<Size x="50" y="50"/>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentIconTexture" parentKey="IconTexture" hidden="true">
+					<Size x="42" y="42"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="1"/>
+					</Anchors>
+					<TexCoords left="0.04347826" right="0.95652173" top="0.04347826" bottom="0.95652173"/>
+				</Texture>
+				<Texture name="$parentIconTextureUncollected" parentKey="IconTextureUncollected" alpha="0.18" hidden="true">
+					<Size x="42" y="41" />
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="2"/>
+					</Anchors>
+					<TexCoords left="0.063" right="0.938" top="0.063" bottom="0.917"/>
+				</Texture>
+				<Texture name="$parentSlotFrameUncollectedInnerGlow" parentKey="SlotFrameUncollectedInnerGlow" alpha="0.18" hidden="true">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="2"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentName" parentKey="Name" inherits="GameFontNormal" maxLines="3" justifyH="LEFT">
+					<Size x="135" y="0" />
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="RIGHT" x="9" y="3" />
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="$parentNew" parentKey="New" inherits="GameFontHighlight" maxLines="1" justifyH="CENTER" text="NEW_CAPS" hidden="true">
+					<Anchors>
+						<Anchor point="CENTER" x="8" y="0" relativePoint="TOPLEFT"/>
+					</Anchors>
+					<Shadow>
+						<Color r="0.32" g="0.5" b="1.0"/>
+					</Shadow>
+				</FontString>
+				<Texture name="$parentNewGlow" parentKey="NewGlow" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentNew" x="-20" y="10"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentNew" x="20" y="-10"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentSlotFrameCollected" parentKey="SlotFrameCollected">
+					<Size x="56" y="56" />
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentSlotFrameUncollected" parentKey="SlotFrameUncollected" hidden="true">
+					<Size x="50" y="50" />
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="2"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Cooldown name="$parentCooldown" parentKey="Cooldown" inherits="CooldownFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="5" y="-4"/>
+					<Anchor point="BOTTOMRIGHT" x="-5" y="7"/>
+				</Anchors>
+			</Cooldown>
+			<Frame name="$parentCooldownWrapper" parentKey="CooldownWrapper" setAllPoints="true">
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture name="$parentSlotFavorite" parentKey="SlotFavorite" hidden="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="-12" y="13" relativePoint="TOPLEFT"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+
+		<Scripts>
+			<OnLoad function="CollectionsButton_OnLoad"/>
+			<OnEvent function="CollectionsButton_OnEvent"/>
+			<PreClick>
+				self:SetChecked(false);
+			</PreClick>
+			<OnShow function="CollectionsSpellButton_OnShow"/>
+			<OnHide function="CollectionsSpellButton_OnHide"/>
+			<OnLeave>
+				GameTooltip_Hide();
+				ResetCursor();
+			</OnLeave>
+		</Scripts>
+		<PushedTexture file="Interface\Buttons\UI-Quickslot-Depress">
+			<Size x="42" y="42"/>
+			<Anchors>
+				<Anchor point="CENTER" x="0" y="1"/>
+			</Anchors>
+		</PushedTexture>
+		<HighlightTexture parentKey="HighlightTexture" file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD">
+			<Size x="48" y="48"/>
+			<Anchors>
+				<Anchor point="CENTER" x="0" y="2"/>
+			</Anchors>
+		</HighlightTexture>
+		<CheckedTexture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD">
+			<Size x="42" y="42"/>
+			<Anchors>
+				<Anchor point="CENTER" x="0" y="1"/>
+			</Anchors>
+		</CheckedTexture>
+	</CheckButton>
 
 	<Frame name="CollectionsBackgroundTemplate" inherits="InsetFrameTemplate" virtual="true">
 		<Anchors>

@@ -4,6 +4,7 @@
 --	E-mail:		nyll@sirus.su
 --	Web:		https://sirus.su/
 
+---@class C_UnitMixin : Mixin
 C_UnitMixin = {}
 
 function C_UnitMixin:GetCategoryInfo( unit )
@@ -53,12 +54,10 @@ function C_UnitMixin:GetClassification( unit )
 				elseif classificationInfo.vipCategory == 3 then
 					if classificationInfo.vipSpellID == 308227 then
 						classificationInfo.unitFrameTexture = "UI-TARGETINGFRAME-EMERALD"
---[[
-					elseif classificationInfo.vipSpellID ==  then
+					elseif classificationInfo.vipSpellID == 313090 then
 						classificationInfo.unitFrameTexture = "UI-TARGETINGFRAME-SAPPHIRE"
-					elseif classificationInfo.vipSpellID ==  then
+					elseif classificationInfo.vipSpellID == 313093 then
 						classificationInfo.unitFrameTexture = "UI-TARGETINGFRAME-RUBY"
-]]
 					end
 				end
 
@@ -134,5 +133,5 @@ function C_UnitMixin:IsRenegade( unit )
 	return self:GetFactionID(unit) == PLAYER_FACTION_GROUP.Renegade
 end
 
----@class C_UnitMixin
+---@class C_Unit : C_UnitMixin
 C_Unit = CreateFromMixins(C_UnitMixin)

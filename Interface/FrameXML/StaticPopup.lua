@@ -3202,6 +3202,17 @@ StaticPopupDialogs["CONFIRM_REMOVE_FRIEND"] = {
 	hideOnEscape = 1
 };
 
+StaticPopupDialogs["GUILD_IMPEACH"] = {
+	text = GUILD_IMPEACH_POPUP_TEXT ,
+	button1 = GUILD_IMPEACH_POPUP_CONFIRM,
+	button2 = CANCEL,
+	OnAccept = function (self) ReplaceGuildMaster(); end,
+	OnCancel = function (self) end,
+	hideOnEscape = 1,
+	timeout = 0,
+	exclusive = 1,
+}
+
 StaticPopupDialogs["CONFIRM_LEAVE_BATTLEFIELDS"] = {
 	text = CONFIRM_LEAVE_BATTLEFIELD,
 	button1 = YES,
@@ -3408,7 +3419,7 @@ StaticPopupDialogs["ARENA_REPLAY_CONFIRMATION_WATCH"] = {
 	button1 = YES,
 	button2 = CANCEL,
 	OnShow = function(self, data)
-		local resultLabel = {[0] = self.ReplayInfoFrame.ResultLeft, [1] = self.ReplayInfoFrame.ResultRight}
+		local resultLabel = {[1] = self.ReplayInfoFrame.ResultLeft, [0] = self.ReplayInfoFrame.ResultRight}
 
 		if data[4] == 2 then
 			self.ReplayInfoFrame.ResultLeft:SetText(VICTORY_TEXT2)
@@ -3657,7 +3668,7 @@ StaticPopupDialogs["NAME_TRANSMOG_OUTFIT"] = {
 		self.editBox:SetText("");
 	end,
 	EditBoxOnEnterPressed = function(self)
-		if self:GetParent().button1:IsEnabled() then
+		if self:GetParent().button1:IsEnabled() == 1 then
 			StaticPopup_OnClick(self:GetParent(), 1);
 		end
 	end,
@@ -3800,6 +3811,45 @@ StaticPopupDialogs["QUEST_ACCEPTED"] = {
 	whileDead = 1,
 };
 
+StaticPopupDialogs["SHOUT_CHAT_MESSAGE"] = {
+	text = SHOUT_MESSAGE_CONFIRMATION,
+	button1 = YES,
+	button2 = CANCEL,
+	OnAccept = function(self)
+		SendServerMessage("ACMSG_WORLD_YELL", string.trim(self.data.text))
+		self.data.popup:Hide()
+	end,
+	OnHide = function(self)
+		self.data.popup:Unblock()
+	end,
+	timeout = 0,
+	whileDead = 1,
+};
+
+StaticPopupDialogs["TOYBOX_LOAD_ERROR_DIALOG"] = {
+	text = TOYBOX_LOAD_ERROR,
+	button1 = OKAY,
+	timeout = 0,
+	whileDead = 1,
+	hideOnEscape = 1,
+};
+
+StaticPopupDialogs["PLAYER_TALENT_PURCHASE_SPEC"] = {
+	text = TALENTS_SECOND_SPEC_PURCHASE_CONFIRMATION,
+	button1 = ACCEPT,
+	button2 = CANCEL,
+	OnShow = function(self)
+		MoneyFrame_Update(self.moneyFrame, self.data);
+	end,
+	OnAccept = function(self)
+		PlayerSpecTabAdvertising_Process(true)
+	end,
+	timeout = 0,
+	whileDead = 1,
+	hideOnEscape = 1,
+	hasMoneyFrame = 1,
+};
+
 function EventHandler:ASMSG_ALLIED_RACE_STANDART( raceID )
 	raceID = tonumber(raceID)
 
@@ -3840,6 +3890,8 @@ function StaticPopup_Resize(dialog, which, hiddenButton)
 		width = 420;
 	elseif ( which == "HELP_TICKET" ) then
 		width = 350;
+	elseif ( which == "GUILD_IMPEACH" ) then
+		width = 375;
 	end
 
 	if which == "DEATH" and hiddenButton then
@@ -3865,7 +3917,13 @@ function StaticPopup_Resize(dialog, which, hiddenButton)
 		if ( info.hasWideEditBox  ) then
 
 		end
-		height = height + 8 + editBox:GetHeight();
+		local editBoxHeight = editBox:GetHeight();
+		if info.hasMultiLine then
+			local wideEditBox = _G[dialog:GetName().."WideEditBox"];
+			local multiLineEditBox = wideEditBox:IsShown() and wideEditBox or editBox;
+			editBoxHeight = 8 + multiLineEditBox:GetHeight() or 16;
+		end
+		height = height + 8 + editBoxHeight;
 	elseif ( info.hasMoneyFrame ) then
 		height = height + 16;
 	elseif ( info.hasMoneyInputFrame ) then
@@ -4079,6 +4137,14 @@ function StaticPopup_Show(which, text_arg1, text_arg2, data)
 			wideEditBox:Show();
 			editBox:Hide();
 
+			if info.hasMultiLine then
+				wideEditBox:SetHeight(64);
+				wideEditBox:SetMultiLine(true);
+			else
+				wideEditBox:SetMultiLine(false);
+				wideEditBox:SetHeight(14);
+			end
+
 			if ( info.maxLetters ) then
 				wideEditBox:SetMaxLetters(info.maxLetters);
 			end
@@ -4089,6 +4155,14 @@ function StaticPopup_Show(which, text_arg1, text_arg2, data)
 		else
 			wideEditBox:Hide();
 			editBox:Show();
+
+			if info.hasMultiLine then
+				editBox:SetHeight(32);
+				editBox:SetMultiLine(true);
+			else
+				editBox:SetMultiLine(false);
+				wideEditBox:SetHeight(32);
+			end
 
 			if ( info.maxLetters ) then
 				editBox:SetMaxLetters(info.maxLetters);
@@ -4101,6 +4175,11 @@ function StaticPopup_Show(which, text_arg1, text_arg2, data)
 	else
 		wideEditBox:Hide();
 		editBox:Hide();
+
+		wideEditBox:SetMultiLine(false);
+		editBox:SetMultiLine(false);
+		wideEditBox:SetHeight(14);
+		editBox:SetHeight(32);
 	end
 
 	-- Show or hide money frame
@@ -4149,6 +4228,17 @@ function StaticPopup_Show(which, text_arg1, text_arg2, data)
 	local button1 = _G[dialog:GetName().."Button1"];
 	local button2 = _G[dialog:GetName().."Button2"];
 	local button3 = _G[dialog:GetName().."Button3"];
+
+	if type(info.button1Tooltip) == "function" then
+		button1:SetMotionScriptsWhileDisabled(true);
+		button1:SetScript("OnEnter", info.button1Tooltip);
+		button1:SetScript("OnLeave", GameTooltip_Hide);
+	else
+		button1:SetMotionScriptsWhileDisabled(false);
+		button1:SetScript("OnEnter", nil);
+		button1:SetScript("OnLeave", nil);
+	end
+
 	if ( info.button3 and ( not info.DisplayButton3 or info.DisplayButton3() ) ) then
 		button1:ClearAllPoints();
 		button2:ClearAllPoints();
@@ -4230,6 +4320,8 @@ function StaticPopup_Show(which, text_arg1, text_arg2, data)
 
 	editBox.autoCompleteParams = info.autoCompleteParams;
 	wideEditBox.autoCompleteParams = info.autoCompleteParams;
+	editBox.hasMultiLine = info.hasMultiLine;
+	wideEditBox.hasMultiLine = info.hasMultiLine;
 
 	editBox.autoCompleteRegex = info.autoCompleteRegex;
 	wideEditBox.autoCompleteRegex = info.autoCompleteRegex;
@@ -4432,10 +4524,16 @@ function StaticPopup_EditBoxOnEscapePressed(self)
 end
 
 function StaticPopup_EditBoxOnTextChanged(self, userInput)
+	local parent = self:GetParent();
+
+	if self.hasMultiLine then
+		StaticPopup_OnEvent(parent);
+	end
+
 	if ( not self.autoCompleteParams or not AutoCompleteEditBox_OnTextChanged(self, userInput) ) then
-		local EditBoxOnTextChanged = StaticPopupDialogs[self:GetParent().which].EditBoxOnTextChanged;
+		local EditBoxOnTextChanged = StaticPopupDialogs[parent.which].EditBoxOnTextChanged;
 		if ( EditBoxOnTextChanged ) then
-			EditBoxOnTextChanged(self, self:GetParent().data);
+			EditBoxOnTextChanged(self, parent.data);
 		end
 	end
 end

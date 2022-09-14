@@ -378,6 +378,7 @@ function AuctionHouseUtil.FormatTimeLeftTooltip(timeLeftSeconds, rowData)
 	local timeLeftMinutes = math.ceil(timeLeftSeconds / 60);
 	local color = (useNormalFontColor or timeLeftMinutes >= RED_TEXT_MINUTES_THRESHOLD) and WHITE_FONT_COLOR or RED_FONT_COLOR;
 	local text = color:WrapTextInColorCode(AuctionHouseUtil.TimeLeftTooltipFormatter:Format(timeLeftSeconds));
+	local sold
 	return sold and AUCTION_HOUSE_TIME_LEFT_FORMAT_SOLD:format(text) or AUCTION_HOUSE_TIME_LEFT_FORMAT_ACTIVE:format(text);
 end
 

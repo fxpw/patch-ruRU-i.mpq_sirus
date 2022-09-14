@@ -45,7 +45,7 @@ GlueDialogTypes["BOOST_ERROR_NOT_ENOUGH_BONUES"] = {
 	button2 = CLOSE,
 	escapeHides = false,
 	OnAccept = function ()
-		LaunchURL("https://sirus.su/user/pay#/?bonuses="..CharacterBoost_CalculatePayBonuses())
+		LaunchURL("https://sirus.su/pay?bonuses="..CharacterBoost_CalculatePayBonuses())
 	end,
 	OnCancel = function()
 		-- printc("OnCancel")
@@ -295,6 +295,22 @@ function CharacterUpgradeSelectSpecRadioButton_OnClick(self, button, down)
 end
 
 function CharacterServicesMaster_OnHide( self, ... )
+	for _, button in ipairs(self.CharacterServicesMaster.step3.choose.SpecButtons) do
+		if button:GetChecked() then
+			button:SetChecked(false)
+		end
+	end
+	for _, button in ipairs(self.CharacterServicesMaster.step4.choose.SpecButtons) do
+		if button:GetChecked() then
+			button:SetChecked(false)
+		end
+	end
+	for _, button in ipairs(self.CharacterServicesMaster.step5.choose.FactionButtons) do
+		if button:GetChecked() then
+			button:SetChecked(false)
+		end
+	end
+
 	if CHARACTER_SELECT_LIST.deleted.numPages > 0 then
 		CharSelectChangeListStateButton:Enable()
 	end
@@ -545,7 +561,7 @@ function CharacterBoostBuyFrameBuyButton_OnClick( self, ... )
 	if self.NoBonus then
 		CharacterBoostBuyFrame:Hide()
 		PlaySound(SOUNDKIT.GS_LOGIN_NEW_ACCOUNT)
-		LaunchURL("https://sirus.su/user/pay#/?bonuses="..CharacterBoost_CalculatePayBonuses())
+		LaunchURL("https://sirus.su/pay?bonuses="..CharacterBoost_CalculatePayBonuses())
 	else
 		PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
 		CharacterBoostBuyFrame:Hide()

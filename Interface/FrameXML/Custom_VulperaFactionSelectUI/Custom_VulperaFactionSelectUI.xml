@@ -6,10 +6,11 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_VulperaFactionSelectUI.lua"/>
 
-	<Frame name="VulperaSelectFactionFrame" parent="UIParent" inherits="StandartBaseBasicFrameTemplate" hidden="true">
+	<Frame name="VulperaSelectFactionFrame" parent="UIParent" inherits="StandartBaseBasicFrameTemplate" enableMouse="true" hidden="true">
 		<Size x="580" y="560"/>
 		<Anchors>
 			<Anchor point="CENTER" x="0" y="0" />
@@ -112,7 +113,7 @@
 						</Texture>
 					</Layer>
 					<Layer level="OVERLAY">
-						<FontString parentKey="Text" font="GameFontNormal13" justifyV="LEFT" justifyH="LEFT" text="VULPERA_FACTION_SELECT_TEXT_HORDE">
+						<FontString parentKey="Text" font="GameFontNormal13" justifyV="MIDDLE" justifyH="LEFT" text="VULPERA_FACTION_SELECT_TEXT_HORDE">
 							<Size x="400" y="120"/>
 							<Anchors>
 								<Anchor point="TOP" relativeTo="$parentImageBorder" relativePoint="BOTTOM" x="0" y="0" />

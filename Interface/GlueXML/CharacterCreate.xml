@@ -624,7 +624,7 @@
 									local buttonText = PAID_SERVICE_TYPE ~= nil and ACCEPT or nil
 									local text = PAID_SERVICE_TYPE ~= nil and CONFIRM_PAID_SERVICE or CONFIRM_CHARACTER_CREATE
 									local confirmation = skipCustomization and "" or CONFIRM_CHARACTER_CREATE_CUSTOMIZATION
-									text = string.format(text, hexColor or "ffffff", name or "Без имени")
+									text = string.format(text, hexColor or "ffffff", name or CHARACTER_NO_NAME)
 									text = string.format("%s%s", text, confirmation)
 
 									GlueDialog:ShowDialog(skipCustomization and "CONFIRM_CHARACTER_CREATE" or "CONFIRM_CHARACTER_CREATE_CUSTOMIZATION", text, {name, buttonText})
@@ -667,7 +667,7 @@
 								self.PushedTexture:SetAtlas("common-button-square-gray-down")
 							</OnLoad>
 							<OnMouseDown>
-								if self:IsEnabled() then
+								if self:IsEnabled() == 1 then
 									self.Icon:SetPoint("CENTER", self.PushedTexture, 0, -1);
 								end
 							</OnMouseDown>

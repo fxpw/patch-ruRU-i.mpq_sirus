@@ -6,7 +6,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_GlyphUI.lua"/>
 
 	<Button name="GlyphTemplate" alpha="1" virtual="true">
@@ -40,8 +41,10 @@
 					</Anchors>
 					<Animations>
 						<AnimationGroup looping="REPEAT" parentKey="glow">
-							<Alpha change="0.5" duration="0.8" smoothing="IN_OUT" order="1"/>
-							<Alpha change="-0.5" duration="0.8" smoothing="IN_OUT" order="2"/>
+							<Alpha change="-0.5" duration="0" smoothing="IN_OUT" order="1"/>
+							<Alpha change="0.5" duration="0.8" smoothing="IN_OUT" order="2"/>
+							<Alpha change="-0.5" duration="0.8" smoothing="IN_OUT" order="3"/>
+							<Alpha change="0.5" duration="0" smoothing="IN_OUT" order="4"/>
 						</AnimationGroup>
 					</Animations>
 				</Texture>
@@ -81,7 +84,7 @@
 			</OnUpdate>
 		</Scripts>
 	</Button>
-	<Frame name="RequiredLevelGlyphTemplate" hidden="true" toplevel="true" virtual="true">
+	<Frame name="RequiredLevelGlyphTemplate" hidden="true" virtual="true">
 		<Size x="100" y="100"/>
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -129,7 +132,7 @@
 		<TexCoords left="0.3984375" right="0.4453125" top="0.40234375" bottom="0.44921875"/>
 	</Texture>
 
-	<Frame name="GlyphFrame" parent="PlayerTalentFrame" toplevel="true" hidden="true">
+	<Frame name="GlyphFrame" parent="PlayerTalentFrame" hidden="true">
 		<Size x="530" y="520"/>
 		<Anchors>
 			<Anchor point="TOPLEFT" relativeTo="PlayerTalentFrameInsetBgs" x="0" y="-3" />
@@ -302,7 +305,7 @@
 						</Texture>
 					</Layer>
 					<Layer level="ARTWORK">
-						<Texture name="$parentSpecIcon" parentKey="specIcon" alpha="0.5" ALPHAMODE="ADD">
+						<Texture name="$parentSpecIcon" parentKey="specIcon" alpha="0.5">
 							<Size x="79" y="79"/>
 							<Anchors>
 								<Anchor point="CENTER" relativeTo="$parentSpecRing" x="1" y="1"/>

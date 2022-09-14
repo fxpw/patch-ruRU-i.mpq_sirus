@@ -75,7 +75,7 @@
 		</Layers>
 		<Scripts>
 			<OnEnter>
-				if ( self:IsEnabled() ) then
+				if ( self:IsEnabled() == 1 ) then
 					if ( self.tooltipText ) then
 						OptionsTooltip:SetOwner(self, self.tooltipOwnerPoint, self.tooltipPoint);
 						OptionsTooltip:SetText(self.tooltipText, nil, nil, nil, nil);

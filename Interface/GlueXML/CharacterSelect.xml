@@ -1239,10 +1239,23 @@
 								</Scripts>
 							</Button>
 
-							<Button name="CharacterSelectOptionsButton" inherits="GlueDark_ButtonTemplate" text="LOGINBUTTON_OPTIONS">
+							<Button name="CharacterSelectSupportButton" inherits="GlueDark_ButtonTemplate" text="SUPPORT">
 								<Size x="160" y="32"/>
 								<Anchors>
 									<Anchor point="BOTTOMLEFT" relativeTo="CharacterSelectBackButton" relativePoint="TOPLEFT" x="0" y="10"/>
+								</Anchors>
+								<Scripts>
+									<OnClick>
+										PlaySound(SOUNDKIT.GS_LOGIN_NEW_ACCOUNT)
+										LaunchURL("https://forum.sirus.su/categories/4/")
+									</OnClick>
+								</Scripts>
+							</Button>
+
+							<Button name="CharacterSelectOptionsButton" inherits="GlueDark_ButtonTemplate" text="LOGINBUTTON_OPTIONS">
+								<Size x="160" y="32"/>
+								<Anchors>
+									<Anchor point="BOTTOMLEFT" relativeTo="CharacterSelectSupportButton" relativePoint="TOPLEFT" x="0" y="10"/>
 								</Anchors>
 								<Scripts>
 									<OnClick>
@@ -1638,7 +1651,7 @@
 
 						<Scripts>
 							<OnTextChanged>
-								if utf8len(self:GetText()) > 1 then
+								if strlenutf8(self:GetText()) > 1 then
 									self:GetParent().OKButton:Enable()
 								else
 									self:GetParent().OKButton:Disable()

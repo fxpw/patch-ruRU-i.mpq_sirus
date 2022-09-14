@@ -533,6 +533,7 @@ COMBAT_CONFIG_MESSAGETYPES_RIGHT = {
 				func = function (self, checked) ToggleMessageType(checked, "SPELL_ENERGIZE"); end;
 				tooltip = POWER_GAINS_COMBATLOG_TOOLTIP,
 			},
+--[[
 			[5] = {
 				text = DRAINS,
 				type = {"SPELL_DRAIN", "SPELL_LEECH"};
@@ -547,6 +548,7 @@ COMBAT_CONFIG_MESSAGETYPES_RIGHT = {
 				func = function (self, checked) ToggleMessageType(checked, "SPELL_INTERRUPT"); end;
 				tooltip = SPELL_INTERRUPT_COMBATLOG_TOOLTIP,
 			},
+--]]
 			[5] = {
 				text = SPECIAL,
 				type = {"SPELL_INSTAKILL"};

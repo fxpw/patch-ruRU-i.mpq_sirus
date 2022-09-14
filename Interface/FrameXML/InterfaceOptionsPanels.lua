@@ -1,10 +1,10 @@
-S_INTERFACE_OPTIONS_CACHE = C_Cache("INTERFACE_OPTIONS_CACHE", true)
-
+local securecall = securecall;
 local next = next;
 local function SecureNext(elements, key)
 	return securecall(next, elements, key);
 end
 
+S_INTERFACE_OPTIONS_CACHE = C_Cache("INTERFACE_OPTIONS_CACHE", true)
 
 -- [[ Generic Interface Options Panel ]] --
 
@@ -1920,7 +1920,14 @@ LanguagesPanelOptions = {
 NotificationPanelOptions = {
 	C_CVAR_SHOW_SOCIAL_TOAST = { text = "SETTINGS_SHOW_SOCIAL_TOAST" },
 	C_CVAR_SHOW_BATTLE_PASS_TOAST = { text = "SETTINGS_SHOW_BATTLE_PASS_TOAST" },
-	C_CVAR_SHOW_AUCTION_HOUSE_TOAST = { text = "SETTINGS_SHOW_AUCTION_HOUSE_TOAST" }
+	C_CVAR_SHOW_AUCTION_HOUSE_TOAST = { text = "SETTINGS_SHOW_AUCTION_HOUSE_TOAST" },
+
+	C_CVAR_PLAY_TOAST_SOUND				= { text = "SETTINGS_SOCIAL_SOUND" },
+	C_CVAR_SOCIAL_TOAST_SOUND			= { text = "SETTINGS_SOCIAL_TOAST_SOUND" },
+	C_CVAR_HEAD_HUNTING_TOAST_SOUND		= { text = "SETTINGS_HEAD_HUNTING_TOAST_SOUND" },
+	C_CVAR_BATTLE_PASS_TOAST_SOUND		= { text = "SETTINGS_BATTLE_PASS_TOAST_SOUND" },
+	C_CVAR_QUEUE_TOAST_SOUND			= { text = "SETTINGS_QUEUE_TOAST_SOUND" },
+	C_CVAR_AUCTION_HOUSE_TOAST_SOUND	= { text = "SETTINGS_AUCTION_HOUSE_TOAST_SOUND" },
 }
 
 function InterfaceOptionsLanguagesPanel_OnLoad (panel)

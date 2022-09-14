@@ -6,7 +6,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
     <Script file="Custom_ChooseFaction.lua"/>
 
     <Button name="ShadowlandsUIButtonTemplate" virtual="true">
@@ -27,7 +28,7 @@
             </Anchors>
         </ButtonText>
     </Button>
-    <Frame name="ChooseFactionFrameTemplate" inherits="StandartBaseBasicFrameTemplate" hidden="true" virtual="true">
+    <Frame name="ChooseFactionFrameTemplate" inherits="StandartBaseBasicFrameTemplate" enableMouse="true" hidden="true" virtual="true">
         <Size x="453" y="520"/>
         <Layers>
             <Layer level="BACKGROUND">

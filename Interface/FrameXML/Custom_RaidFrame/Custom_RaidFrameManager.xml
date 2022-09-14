@@ -6,7 +6,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_RaidFrameManager.lua"/>
 
 	<Button name="CRFManagerRaidIconButtonTemplate" virtual="true">
@@ -30,7 +31,7 @@
 				SetRaidTarget("target", self:GetID())
 			</OnClick>
 			<OnMouseDown>
-				if ( self:IsEnabled() ) then
+				if ( self:IsEnabled() == 1 ) then
 					self:GetNormalTexture():SetPoint("CENTER", self, "CENTER", -1, -1)
 				end
 			</OnMouseDown>
@@ -102,7 +103,7 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Frame name="$parentContainerResizeFrame" frameStrata="LOW" movable="true" parentKey="containerResizeFrame">
+			<Frame name="$parentContainerResizeFrame" frameStrata="LOW" movable="true" parentKey="containerResizeFrame" hidden="true">
 				<Size x="300" y="200"/>
 				<Layers>
 					<Layer level="BORDER">
@@ -427,7 +428,7 @@
 					</Button>
 				</Frames>
 			</Frame>
-			<Button name="$parentResizer" parentKey="resizer">
+			<Button name="$parentResizer" parentKey="resizer" hidden="true">
 				<Size x="32" y="16"/>
 				<Anchors>
 					<Anchor point="BOTTOM" relativeTo="$parent" x="0" y="-5"/>

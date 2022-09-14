@@ -6,7 +6,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_MountCollection.lua"/>
 	<Script file="Custom_MountCollection_Data.lua"/>
 
@@ -14,10 +15,10 @@
 		<Size x="208" y="46"/>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<texture name="$parentbackground" parentKey="background" file="Interface\BUTTONS\ListButtons">
+				<Texture name="$parentbackground" parentKey="background" file="Interface\BUTTONS\ListButtons">
 					<Size x="209" y="46"/>
 					<TexCoords left="0.00390625" right="0.8203125" top="0.00390625" bottom="0.18359375"/>
-				</texture>
+				</Texture>
 				<Texture parentKey="icon" name="$parenticon">
                     <Size x="38" y="38"/>
                     <Anchors>
@@ -285,7 +286,7 @@
 
 	<Frame name="MountJournal" parent="CollectionsJournal" setAllPoints="true" hidden="true">
 		<Frames>
-			<Button name="$parentSummonRandomFavoriteButton" parentKey="SummonRandomFavoriteButton" inherits="SecureFrameTemplate">
+			<Button name="$parentSummonRandomFavoriteButton" parentKey="SummonRandomFavoriteButton">
 				<Size>
 					<AbsDimension x="33" y="33"/>
 				</Size>
@@ -632,12 +633,12 @@
 										<Anchors>
 											<Anchor point="BOTTOM" x="0" y="0" />
 										</Anchors>
-										<scripts>
+										<Scripts>
 											<OnShow>
 												self:SetEnabled(IsStoreEnable())
 											</OnShow>
 											<OnClick function="MountJournalBuyButton_OnClick"/>
-										</scripts>
+										</Scripts>
 									</Button>
 								</Frames>
 							</Frame>
@@ -678,9 +679,9 @@
 				<Anchors>
 					<Anchor point="TOP" relativeTo="$parentRightBottomInset" relativePoint="BOTTOM"/>
 				</Anchors>
-				<scripts>
+				<Scripts>
 					<OnClick function="MountJournalMountButton_OnClick"/>
-				</scripts>
+				</Scripts>
 			</Button>
 			<Frame name="$parentButtomFrame" parentKey="bottomFrame">
 				<Anchors>

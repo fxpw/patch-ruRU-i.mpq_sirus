@@ -260,7 +260,7 @@ function EventHandler:UPS_INFO( msg )
 	end
 
 	if PaperDollFrameStrengthenFrame.StrengthenTittle:IsMouseOver() and GameTooltip:GetOwner() == PaperDollFrameStrengthenFrame.StrengthenTittle then
-		PaperDollFrameStrengthenFrame.StrengthenTittle:GetScript("OnEnter")()
+		PaperDollFrameStrengthenFrame.StrengthenTittle:GetScript("OnEnter")(PaperDollFrameStrengthenFrame.StrengthenTittle)
 	end
 end
 

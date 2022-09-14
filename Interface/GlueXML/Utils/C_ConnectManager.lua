@@ -2,6 +2,7 @@
 --	Project:	Custom Game Interface
 --	Author:		Nyll & Blizzard Entertainment
 
+---@class C_ConnectManagerMixin : Mixin
 C_ConnectManagerMixin = {}
 
 function C_ConnectManagerMixin:OnLoad()
@@ -87,6 +88,6 @@ function C_ConnectManagerMixin:RestartGameState(dialogKey)
     AccountLoginConnectionErrorFrame:Show()
 end
 
----@class C_ConnectManagerMixin
+---@class C_ConnectManager : C_ConnectManagerMixin
 C_ConnectManager = CreateFromMixins(C_ConnectManagerMixin)
 C_ConnectManager:OnLoad()

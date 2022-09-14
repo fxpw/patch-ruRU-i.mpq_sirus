@@ -77,6 +77,10 @@ function MerchantFrame_OnHide()
 end
 
 function MerchantFrame_Update()
+	if ( MerchantFrame.lastTab ~= MerchantFrame.selectedTab ) then
+		MerchantFrame_CloseStackSplitFrame();
+		MerchantFrame.lastTab = MerchantFrame.selectedTab;
+	end
 	if ( MerchantFrame.selectedTab == 1 ) then
 		MerchantFrame_UpdateMerchantInfo();
 	else
@@ -395,13 +399,27 @@ end
 function MerchantPrevPageButton_OnClick()
 	PlaySound("igMainMenuOptionCheckBoxOn");
 	MerchantFrame.page = MerchantFrame.page - 1;
+	MerchantFrame_CloseStackSplitFrame();
 	MerchantFrame_Update();
 end
 
 function MerchantNextPageButton_OnClick()
 	PlaySound("igMainMenuOptionCheckBoxOn");
 	MerchantFrame.page = MerchantFrame.page + 1;
+	MerchantFrame_CloseStackSplitFrame();
 	MerchantFrame_Update();
+end
+
+function MerchantFrame_CloseStackSplitFrame()
+	if ( StackSplitFrame:IsShown() ) then
+		local numButtons = max(MERCHANT_ITEMS_PER_PAGE, BUYBACK_ITEMS_PER_PAGE);
+		for i = 1, numButtons do
+			if ( StackSplitFrame.owner == _G["MerchantItem"..i.."ItemButton"] ) then
+				StackSplitFrameCancel_Click();
+				return;
+			end
+		end
+	end
 end
 
 function MerchantItemBuybackButton_OnLoad(self)
@@ -668,5 +686,17 @@ function MerchantFrame_UpdateRepairButtons()
 		MerchantRepairAllButton:Hide();
 		MerchantRepairItemButton:Hide();
 		MerchantGuildBankRepairButton:Hide();
+	end
+end
+
+function MerchantFrame_OnMouseWheel(self, delta)
+	if delta > 0 then
+		if MerchantPrevPageButton:IsShown() and MerchantPrevPageButton:IsEnabled() == 1 then
+			MerchantPrevPageButton_OnClick()
+		end
+	else
+		if MerchantNextPageButton:IsShown() and MerchantNextPageButton:IsEnabled() == 1 then
+			MerchantNextPageButton_OnClick()
+		end
 	end
 end

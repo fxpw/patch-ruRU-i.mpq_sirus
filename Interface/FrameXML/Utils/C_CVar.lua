@@ -1,7 +1,11 @@
 --	Filename:	C_CVarMixin.lua
 --	Project:	Custom Game Interface
 --	Author:		Nyll & Blizzard Entertainment
+local SetCVar = SetCVar;
 
+local EVENT_TRIGGER_CVAR = "readTerminationWithoutNotice";
+
+---@class C_CVarMixin : Mixin
 C_CVarMixin = {}
 
 function C_CVarMixin:OnLoad()
@@ -14,15 +18,8 @@ function C_CVarMixin:SetValue( key, value, raiseEvent )
     self._cache:Set(key, value, 0, self._globalValues[key])
 
     if raiseEvent then
-        for _, frame in pairs({GetFramesRegisteredForEvent("CVAR_UPDATE")}) do
-            if frame then
-                local onEventFunc = frame:GetScript("OnEvent")
-
-                if onEventFunc then
-                    onEventFunc(frame, "CVAR_UPDATE", raiseEvent, value)
-                end
-            end
-        end
+        SetCVar(EVENT_TRIGGER_CVAR, value, raiseEvent);
+        SetCVar(EVENT_TRIGGER_CVAR, "0");
     end
 
     Hook:FireEvent("C_SETTINGS_UPDATE_STORAGE")
@@ -83,38 +80,27 @@ function C_CVarMixin:SetCVarBitfield(name, index, value, scriptCVar)
 		end
 
 		if scriptCVar then
-			local frames = {GetFramesRegisteredForEvent("CVAR_UPDATE")};
-			for i = 1, #frames do
-				local frame = frames[i];
-
-				local onEventFunc = frame:GetScript("OnEvent");
-				if onEventFunc then
-					onEventFunc(frame, "CVAR_UPDATE", scriptCVar, value);
-				end
-			end
+			SetCVar(EVENT_TRIGGER_CVAR, value, scriptCVar);
+			SetCVar(EVENT_TRIGGER_CVAR, "0");
 		end
 
 		return true;
 	end
 end
 
----@class C_CVarMixin
+---@class C_CVar : C_CVarMixin
 C_CVar = CreateFromMixins(C_CVarMixin)
 C_CVar:OnLoad()
 
 -- Регистрация дефолтных значений.
 C_CVar:RegisterDefaultValue("C_CVAR_AUTOJOIN_TO_LFG", "1")
 C_CVar:RegisterDefaultValue("C_CVAR_LOSS_OF_CONTROL_SCALE", "1")
-C_CVar:RegisterDefaultValue("C_CVAR_SHOW_SOCIAL_TOAST", "1")
 C_CVar:RegisterDefaultValue("C_CVAR_WHISPER_MODE", "inline")
 C_CVar:RegisterDefaultValue("C_CVAR_STATUS_TEXT_DISPLAY", "NUMERIC")
-C_CVar:RegisterDefaultValue("C_CVAR_SHOW_BATTLE_PASS_TOAST", "1")
 C_CVar:RegisterDefaultValue("C_CVAR_STORE_SHOW_ALL_TRANSMOG_ITEMS", "1")
-C_CVar:RegisterDefaultValue("C_CVAR_SHOW_AUCTION_HOUSE_TOAST", "1")
 C_CVar:RegisterDefaultValue("C_CVAR_SHOW_ACHIEVEMENT_TOOLTIP", "0")
 C_CVar:RegisterDefaultValue("C_CVAR_BLOCK_GUILD_INVITES", "0")
 C_CVar:RegisterDefaultValue("C_CVAR_AUCTION_HOUSE_DURATION_DROPDOWN", "1")
-C_CVar:RegisterDefaultValue("C_CVAR_NUM_DISPLAY_SOCIAL_TOASTS", 1)
 C_CVar:RegisterDefaultValue("C_CVAR_ROULETTE_SKIP_ANIMATION", 0)
 C_CVar:RegisterDefaultValue("C_CVAR_FL_GUILD_SETTINGS2", 0)
 C_CVar:RegisterDefaultValue("C_CVAR_FL_GUILD_COMMENT", "")
@@ -133,4 +119,19 @@ C_CVar:RegisterDefaultValue("C_CVAR_LAST_TRANSMOG_OUTFIT_ID", "")
 C_CVar:RegisterDefaultValue("C_CVAR_HIDE_HELPTIPS", "0", true)
 C_CVar:RegisterDefaultValue("C_CVAR_CLOSED_INFO_FRAMES", "0")
 C_CVar:RegisterDefaultValue("C_CVAR_CLOSED_INFO_FRAMES_ACCOUNT_WIDE", "0", true)
+
+C_CVar:RegisterDefaultValue("C_CVAR_NUM_DISPLAY_SOCIAL_TOASTS", 1)
+C_CVar:RegisterDefaultValue("C_CVAR_SHOW_SOCIAL_TOAST", "1")
 --C_CVar:RegisterDefaultValue("C_CVAR_SHOW_HEAD_HUNTING_TOAST", "1")
+C_CVar:RegisterDefaultValue("C_CVAR_SHOW_BATTLE_PASS_TOAST", "1")
+C_CVar:RegisterDefaultValue("C_CVAR_SHOW_AUCTION_HOUSE_TOAST", "1")
+
+C_CVar:RegisterDefaultValue("C_CVAR_PLAY_TOAST_SOUND", "1")
+C_CVar:RegisterDefaultValue("C_CVAR_SOCIAL_TOAST_SOUND", "1")
+C_CVar:RegisterDefaultValue("C_CVAR_HEAD_HUNTING_TOAST_SOUND", "1")
+C_CVar:RegisterDefaultValue("C_CVAR_BATTLE_PASS_TOAST_SOUND", "1")
+C_CVar:RegisterDefaultValue("C_CVAR_QUEUE_TOAST_SOUND", "1")
+C_CVar:RegisterDefaultValue("C_CVAR_AUCTION_HOUSE_TOAST_SOUND", "1")
+
+C_CVar:RegisterDefaultValue("C_CVAR_TOY_BOX_COLLECTED_FILTERS", "0", true)
+C_CVar:RegisterDefaultValue("C_CVAR_TOY_BOX_SOURCE_FILTERS", "0", true)

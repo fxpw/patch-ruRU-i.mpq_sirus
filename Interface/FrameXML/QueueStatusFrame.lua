@@ -677,11 +677,13 @@ function QueueStatusDropDown_AddWorldPvPButtons(idx, shownHearthAndRes)
 
 	if ( status == "queued" or status == "confirm" ) then
 		if ( CanHearthAndResurrectFromArea() and not shownHearthAndRes and GetRealZoneText() == mapName ) then
-			info.text = format(LEAVE_ZONE, GetRealZoneText());
-			info.func = wrapFunc(HearthAndResurrectFromArea);
-			info.notCheckable = 1;
-			UIDropDownMenu_AddButton(info);
-			shownHearthAndRes = true;
+			if not (mapName:lower() == WINTERGRASP:lower() and GetWintergraspWaitTime()) then
+				info.text = format(LEAVE_ZONE, GetRealZoneText());
+				info.func = wrapFunc(HearthAndResurrectFromArea);
+				info.notCheckable = 1;
+				UIDropDownMenu_AddButton(info);
+				shownHearthAndRes = true;
+			end
 		end
 
 		if ( status == "queued" ) then
@@ -697,9 +699,9 @@ function QueueStatusDropDown_AddWorldPvPButtons(idx, shownHearthAndRes)
 			UIDropDownMenu_AddButton(info);
 
 			info.text = LEAVE_QUEUE;
-			info.func = wrapFunc(BattlefieldMgrExitRequest);
+			info.func = wrapFunc(BattlefieldMgrEntryInviteResponse);
 			info.arg1 = queueID;
-			info.arg2 = nil;
+			info.arg2 = 0;
 			UIDropDownMenu_AddButton(info);
 		end
 	end

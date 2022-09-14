@@ -2837,7 +2837,7 @@ function EncounterJournal_AddMapButtons()
 				bossButton = CreateFrame("Button", "EJMapButton"..index, WorldMapBossButtonFrame, "EncounterMapButtonTemplate")
 			end
 
-			local descriptionLen = utf8len(description)
+			local descriptionLen = strlenutf8(description)
 
 			if descriptionLen and descriptionLen >= 500 then
 				local endPosition = string.find(description, "\n", 500)

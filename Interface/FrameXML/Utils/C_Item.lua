@@ -2,6 +2,7 @@
 --	Project:	Custom Game Interface
 --	Author:		Nyll & Blizzard Entertainment
 
+---@class C_ItemMixin : Mixin
 C_ItemMixin = {}
 
 enum:E_ITEM_INFO {
@@ -182,7 +183,7 @@ function C_ItemMixin:GetItemInfo( itemIdentifier, skipClientCache, callbackFunc 
     return itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice
 end
 
----@class C_ItemMixin
+---@class C_Item : C_ItemMixin
 C_Item = CreateFromMixins(C_ItemMixin)
 C_Item:Init()
 

@@ -827,7 +827,7 @@
 					<Frame name="$parentCounter" parentKey="Counter" setAllPoints="true" toplevel="true">
 						<Layers>
 							<Layer level="OVERLAY">
-								<FontString name="$parentCount" parentKey="Count" inherits="PurpleGameFontNormal" justifyH="CENTER" justifyV="CENTER">
+								<FontString name="$parentCount" parentKey="Count" inherits="PurpleGameFontNormal" justifyH="CENTER" justifyV="MIDDLE">
 									<Size x="40" y="24"/>
 									<Anchors>
 										<Anchor point="CENTER" x="-1" y="0" />

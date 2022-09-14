@@ -121,7 +121,7 @@ function SecondsFormatterMixin:GetFormatString(interval, abbreviation, convertTo
 end
 
 function SecondsFormatterMixin:FormatZero(abbreviation, toLower)
-	local minInterval = self:GetMinInterval(seconds)
+	local minInterval = self:GetMinInterval()
 	local formatString = self:GetFormatString(minInterval, abbreviation)
 	return formatString:format(self:GetMinValue())
 end

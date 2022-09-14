@@ -2,6 +2,7 @@
 --	Project:	Custom Game Interface
 --	Author:		Nyll & Blizzard Entertainment
 
+---@class C_MapMixin : Mixin
 C_MapMixin = {}
 
 enum:E_WORLDMAP_MAP_NAME_BY_ID {
@@ -22,5 +23,5 @@ function C_MapMixin:GetParentMapID( mapAreaID )
     return WORLDMAP_MAP_NAME_BY_ID[mapAreaID] and WORLDMAP_MAP_NAME_BY_ID[mapAreaID][E_WORLDMAP_MAP_NAME_BY_ID.PARENT_WORLD_MAP_ID]
 end
 
----@class C_MapMixin
+---@class C_Map : C_MapMixin
 C_Map = CreateFromMixins(C_MapMixin)

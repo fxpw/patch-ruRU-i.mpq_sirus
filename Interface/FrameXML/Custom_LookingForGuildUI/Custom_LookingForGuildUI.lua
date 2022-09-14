@@ -386,7 +386,8 @@ function LookingForGuildCardMixin:OnEnter()
 
 	if comment ~= "" then
 		GameTooltip_AddBlankLineToTooltip(GameTooltip);
-		GameTooltip_AddColoredLine(GameTooltip, string.format("\"%s\"", comment), GRAY_FONT_COLOR);
+		GameTooltip_AddNormalLine(GameTooltip, COMMENT);
+		GameTooltip_AddHighlightLine(GameTooltip, string.format("\"%s\"", comment));
 	end
 
 	GameTooltip:Show();

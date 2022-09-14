@@ -9,6 +9,9 @@ GUILDS_SUBFRAMES = { "GuildRosterFrame", "GuildPerksFrame", "GuildRewardsFrame",
 
 local GuildInvite = GuildInvite
 
+local REPLACE_GUILD_MASTER_DAYS = 90
+local CAN_REPLACE_GUILD_MASTER = false
+
 local GUILD_LEVEL_DATA = {}
 local GUILD_REPUTATION_DATA = {}
 GUILD_CHARACTER_ILEVEL_DATA = {}
@@ -1379,9 +1382,8 @@ function GuildPerksButton_OnEnter(self)
 	GameTooltip:SetHyperlink(GetSpellLink(self.spellID))
 end
 
-function GuildRewardsButton_OnClick( self, ... )
-	if ( IsModifiedClick("CHATLINK") ) then
-		GuildFrame_LinkItem(_, self.itemID)
+function GuildRewardsButton_OnClick(self, button)
+	if HandleModifiedItemClick(select(2, GetItemInfo(self.itemID))) then
 		return
 	end
 
@@ -1530,6 +1532,35 @@ function GuildInfoFrameInfo_OnShow( self, ... )
 end
 
 function GuildInfoFrame_UpdatePermissions()
+	do
+		local canReplace
+		for i = 1, GetNumGuildMembers() do
+			local name, rank, rankIndex = GetGuildRosterInfo(i)
+			if rankIndex == 0 then
+				local year, month, day, hour = GetGuildRosterLastOnline(i)
+				day = (day or 0) + (month and month * 30 or 0)
+				if day >= REPLACE_GUILD_MASTER_DAYS then
+					if CanGuildInvite() then
+						canReplace = true
+					end
+				end
+				break
+			end
+		end
+
+		CAN_REPLACE_GUILD_MASTER = canReplace or false
+	end
+
+	if ( CanReplaceGuildMaster() ) then
+		GuildGMImpeachButton:Show();
+		GuildInfoFrameInfo:SetPoint("TOPLEFT", 0, -18)
+		GuildInfoFrameInfoMOTDScrollFrame:SetHeight(54)
+	else
+		GuildGMImpeachButton:Hide();
+		GuildInfoFrameInfo:SetPoint("TOPLEFT", 0, 0)
+		GuildInfoFrameInfoMOTDScrollFrame:SetHeight(72)
+	end
+
 	if ( CanEditMOTD() ) then
 		GuildInfoEditMOTDButton:Show();
 	else
@@ -1543,12 +1574,8 @@ function GuildInfoFrame_UpdatePermissions()
 	local guildInfoFrame = GuildInfoFrame;
 	if ( IsGuildLeader() ) then
 		GuildControlButton:Enable();
-		GuildInfoFrameTab2:Show();
-		GuildInfoFrameTab3:SetPoint("LEFT", GuildInfoFrameTab2, "RIGHT");
 	else
 		GuildControlButton:Disable();
-		GuildInfoFrameTab2:Hide();
-		GuildInfoFrameTab3:SetPoint("LEFT", GuildInfoFrameTab1, "RIGHT");
 	end
 	if ( CanGuildInvite() ) then
 		GuildAddMemberButton:Enable();
@@ -1556,6 +1583,7 @@ function GuildInfoFrame_UpdatePermissions()
 		if ( not guildInfoFrame.tabsShowing ) then
 			guildInfoFrame.tabsShowing = true;
 			GuildInfoFrameTab1:Show();
+			GuildInfoFrameTab2:Show();
 			GuildInfoFrameTab3:Show();
 			GuildInfoFrameTab3:SetText(GUILDINFOTAB_APPLICANTS_NONE);
 			PanelTemplates_SetTab(guildInfoFrame, 1);
@@ -1568,6 +1596,7 @@ function GuildInfoFrame_UpdatePermissions()
 		if ( guildInfoFrame.tabsShowing ) then
 			guildInfoFrame.tabsShowing = nil;
 			GuildInfoFrameTab1:Hide();
+			GuildInfoFrameTab2:Hide();
 			GuildInfoFrameTab3:Hide();
 			if ( PanelTemplates_GetSelectedTab(guildInfoFrame) ~= 1 ) then
 				PanelTemplates_SetTab(guildInfoFrame, 1);
@@ -1971,6 +2000,7 @@ local function GuildRecruitmentAvailabilitySetDropdownInfoForPreferences(self, i
 	info.func = function()
 		SetGuildRecruitmentSettings(value, not GetGuildRecruitmentSettingsByIndex(value));
 		GuildRecruitmentAvailabilityUpdateDropdownText(self);
+		GuildRecruitmentListGuildButton_Update();
 	end
 end
 
@@ -2359,4 +2389,20 @@ end
 function EventHandler:ASMSG_GUILD_TEAM( msg )
 	C_CacheInstance:Set("ASMSG_GUILD_TEAM", SERVER_PLAYER_FACTION_GROUP[tonumber(msg)])
 	Hook:FireEvent("ASMSG_GUILD_TEAM")
+end
+
+function CanReplaceGuildMaster()
+	return CAN_REPLACE_GUILD_MASTER
+end
+
+function ReplaceGuildMaster()
+	if CAN_REPLACE_GUILD_MASTER then
+		SendServerMessage("ACMSG_GUILD_REPLACE_GUILD_MASTER")
+	end
+end
+
+function EventHandler:ASMSG_GUILD_REPLACE_GUILD_MASTER(msg)
+	local oldGM, newGM = string.split(",", msg)
+	local info = ChatTypeInfo["SYSTEM"]
+	DEFAULT_CHAT_FRAME:AddMessage(string.format(ERR_GUILD_LEADER_REPLACED, oldGM, newGM), info.r, info.g, info.b, info.id)
 end

@@ -8,11 +8,7 @@ function FireCustomClientEvent(eventID, ...)
 
 	if eventName and REGISTERED_CUSTOM_EVENTS[eventName] then
 		for frame in pairs(REGISTERED_CUSTOM_EVENTS[eventName]) do
-			local eventFunc = frame:GetScript("OnEvent");
-
-			if eventFunc then
-				eventFunc(frame, eventName, ...);
-			end
+			ExecuteFrameScript(frame, "OnEvent", eventName, ...);
 		end
 	end
 end
@@ -36,13 +32,7 @@ EventHandler = setmetatable(
 
 						if clientEvent then
 							for _, frame in pairs({GetFramesRegisteredForEvent(clientEvent)}) do
-								if frame then
-									local onEventFunc = frame:GetScript("OnEvent")
-
-									if onEventFunc then
-										onEventFunc(frame, clientEvent, unpack(params))
-									end
-								end
+								ExecuteFrameScript(frame, "OnEvent", clientEvent, unpack(params));
 							end
 						end
 					end

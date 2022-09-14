@@ -601,7 +601,7 @@
 			</Frame>
 		</Frames>
 		<Scripts>
-			<ONUpdate function="TradeFrame_OnUpdate"/>
+			<OnUpdate function="TradeFrame_OnUpdate"/>
 			<OnEvent function="TradeFrame_OnEvent"/>
 			<OnShow>
 				TradeFrame_OnShow(self);

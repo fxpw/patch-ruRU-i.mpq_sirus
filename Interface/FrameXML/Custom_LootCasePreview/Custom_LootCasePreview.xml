@@ -1,4 +1,5 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_LootCasePreview.lua"/>
 
 	<Button name="LootCasePreviewButtonTemplate" virtual="true">
@@ -60,7 +61,7 @@
 		</Scripts>
 	</Button>
 
-	<Frame name="LootCasePreviewFrame" movable="true" clampedToScreen="true" dontSavePosition="true" frameStrata="FULLSCREEN_DIALOG" topLevel="true" inherits="ButtonFrameTemplate" parent="UIParent" enableMouse="true" hidden="true">
+	<Frame name="LootCasePreviewFrame" movable="true" clampedToScreen="true" dontSavePosition="true" frameStrata="FULLSCREEN_DIALOG" toplevel="true" inherits="ButtonFrameTemplate" parent="UIParent" enableMouse="true" hidden="true">
 		<Size x="293" y="0"/>
 		<Anchors>
 			<Anchor point="CENTER" x="0" y="0"/>

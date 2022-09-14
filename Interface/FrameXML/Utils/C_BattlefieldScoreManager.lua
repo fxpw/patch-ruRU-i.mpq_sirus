@@ -2,6 +2,7 @@
 --	Project:	Custom Game Interface
 --	Author:		Nyll & Blizzard Entertainment
 
+---@class C_BattlefieldScoreManagerMixin : Mixin
 C_BattlefieldScoreManagerMixin = {}
 
 function C_BattlefieldScoreManagerMixin:OnLoad()
@@ -83,7 +84,7 @@ function C_BattlefieldScoreManagerMixin:UPDATE_BATTLEFIELD_SCORE()
     self:GenerateScoreData()
 end
 
----@class C_BattlefieldScoreManagerMixin
+---@class C_BattlefieldScoreManager : C_BattlefieldScoreManagerMixin
 C_BattlefieldScoreManager = CreateFromMixins(C_BattlefieldScoreManagerMixin)
 C_BattlefieldScoreManager:OnLoad()
 

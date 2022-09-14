@@ -8,7 +8,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
 	<Script file="ModelFrames.lua"/>
 
 	<Button name="ModelControlButtonTemplate" virtual="true">
@@ -117,8 +118,8 @@
 							<OnLoad>
 								self:RegisterForClicks("AnyUp")
 								self.icon:SetTexCoord(0.29687500, 0.54687500, 0.28906250, 0.41406250)
-								self.tooltip = "Перетащить"
-								self.tooltipText = "Зажмите правую кнопку мыши и тащите курсор, чтобы переместить персонажа."
+								self.tooltip = DRAG_MODEL
+								self.tooltipText = "DRAG_MODEL_TOOLTIP"
 							</OnLoad>
 							<OnMouseDown>
 								ModelControlButton_OnMouseDown(self)
@@ -140,8 +141,8 @@
 							<OnLoad>
 								self:RegisterForClicks("AnyUp")
 								self.icon:SetTexCoord(0.01562500, 0.26562500, 0.28906250, 0.41406250)
-								self.tooltip = "Вращение влево"
-								self.tooltipText = "Зажмите левую кнопку мыши и тащите курсор, чтобы вращать изображение."
+								self.tooltip = ROTATE_LEFT
+								self.tooltipText = ROTATE_TOOLTIP
 							</OnLoad>
 							<OnClick>
 								SharedXML_Model_RotateLeft(self:GetParent():GetParent())
@@ -156,8 +157,8 @@
 							<OnLoad>
 								self:RegisterForClicks("AnyUp")
 								self.icon:SetTexCoord(0.57812500, 0.82812500, 0.28906250, 0.41406250)
-								self.tooltip = "Вращение вправо"
-								self.tooltipText = "Зажмите левую кнопку мыши и тащите курсор, чтобы вращать изображение."
+								self.tooltip = ROTATE_RIGHT
+								self.tooltipText = ROTATE_TOOLTIP
 							</OnLoad>
 							<OnClick>
 								SharedXML_Model_RotateRight(self:GetParent():GetParent())
@@ -171,7 +172,7 @@
 						<Scripts>
 							<OnLoad>
 								self:RegisterForClicks("AnyUp")
-								self.tooltip = "Сброс позиции"
+								self.tooltip = RESET_POSITION
 							</OnLoad>
 							<OnClick>
 								SharedXML_Model_Reset(self:GetParent():GetParent())

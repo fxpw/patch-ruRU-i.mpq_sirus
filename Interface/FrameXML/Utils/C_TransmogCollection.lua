@@ -216,7 +216,6 @@ local MAX_PLAYER_OUTFITS = 16;
 
 SIRUS_COLLECTION_COLLECTED_APPEARANCES = {};
 SIRUS_COLLECTION_COLLECTED_ITEM_APPEARANCES = {};
-SIRUS_COLLECTION_FAVORITE_APPEARANCES = {};
 SIRUS_COLLECTION_RECEIVED_APPEARANCES = {};
 SIRUS_COLLECTION_PLAYER_OUTFITS = {};
 
@@ -1265,9 +1264,9 @@ function C_TransmogCollection.SetIsAppearanceFavorite(itemAppearanceID, isFavori
 	end
 
 	if isFavorite then
-		SendServerMessage("ACMSG_C_I_ADD_FAVORITE", itemAppearanceID);
+		SendServerMessage("ACMSG_C_A_F", string.format("%d|%d", CHAR_COLLECTION_APPEARANCE, itemAppearanceID));
 	else
-		SendServerMessage("ACMSG_C_I_REMOVE_FAVORITE", itemAppearanceID);
+		SendServerMessage("ACMSG_C_R_F", string.format("%d|%d", CHAR_COLLECTION_APPEARANCE, itemAppearanceID));
 	end
 
 	SIRUS_COLLECTION_FAVORITE_APPEARANCES[itemAppearanceID] = isFavorite;
@@ -1497,20 +1496,6 @@ function EventHandler:ASMSG_C_I_REMOVE_MODEL(msg)
 	end
 
 	SearchAndFilterCategory();
-end
-
-function EventHandler:ASMSG_C_I_FAVORITES_LIST(msg)
-	if not SIRUS_COLLECTION_FAVORITE_APPEARANCES then
-		SIRUS_COLLECTION_FAVORITE_APPEARANCES = {};
-	end
-
-	for _, appearanceID in pairs({strsplit(",", msg)}) do
-		appearanceID = tonumber(appearanceID);
-
-		if appearanceID then
-			SIRUS_COLLECTION_FAVORITE_APPEARANCES[appearanceID] = true;
-		end
-	end
 end
 
 function EventHandler:ASMS_C_I_TRANSMOGRIFY_SETS(msg)

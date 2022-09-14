@@ -6,7 +6,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_TalentUI.lua"/>
 
 	<CheckButton name="PlayerSpecTabTemplate" virtual="true">
@@ -60,42 +61,9 @@
 				GameTooltip:Hide();
 			</OnLeave>
 		</Scripts>
-		<NormalTexture/>
+		<NormalTexture parentKey="NormalTexture"/>
 		<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
 		<CheckedTexture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD"/>
-	</CheckButton>
-	<CheckButton name="PlayerSpecTabAdvertisingTemplate" motionScriptsWhileDisabled="true" inherits="PlayerSpecTabTemplate" virtual="true">
-		<Scripts>
-			<OnLoad>
-				self:GetNormalTexture():SetTexture("Interface\\Icons\\Ability_Marksmanship")
-				self:GetNormalTexture():SetDesaturated()
-				self:Disable()
-			</OnLoad>
-			<OnEnter>
-				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-				GameTooltip:SetText(TALENT_ADDITIONAL_SPEC)
-
-				if #PlayerTalentFrame.specTabs == 1 then
-					local unitLevel = UnitLevel("player")
-
-					local color = unitLevel &lt; 40 and GRAY_FONT_COLOR or HIGHLIGHT_FONT_COLOR
-					GameTooltip:AddLine(TALENT_SPEC_TAB_AD_1, color.r, color.g, color.b, true)
-
-					if unitLevel &lt; 40 then
-						GameTooltip:AddLine(" ")
-						GameTooltip:AddLine(TALENT_SPEC_TAB_AD_1_LEVEL_ERROR, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, true)
-					end
-				else
-					GameTooltip:AddLine(TALENT_SPEC_TAB_AD_2, 1, 1, 1, true)
-				end
-
-				GameTooltip:Show()
-			</OnEnter>
-			<OnClick>
-				-- ph
-			</OnClick>
-			<OnLeave function="GameTooltip_Hide"/>
-		</Scripts>
 	</CheckButton>
 	<Button name="PlayerTalentTabTemplate" inherits="CharacterFrameTabButtonTemplate" virtual="true">
 		<Scripts>
@@ -575,16 +543,6 @@
 					<Anchor point="TOPRIGHT" relativeTo="$parentHeaderBackground" x="-6" y="-9"/>
 				</Anchors>
 			</Frame>
-			<Frame name = "$parentRoleIcon2" inherits="PlayerTalentFrameRoleIconTemplate" parentKey="RoleIcon2" hidden="true">
-				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentRoleIcon" relativePoint="LEFT" x="-1" />
-				</Anchors>
-			</Frame>
-			<Frame name="$parentRoleIcon" inherits="PlayerTalentFrameRoleIconTemplate" parentKey="RoleIcon" hidden="true">
-				<Anchors>
-					<Anchor point="TOPRIGHT" relativeTo="$parentHeaderBackground" x="-6" y="-9"/>
-				</Anchors>
-			</Frame>
 			<Frame name="$parentRoleIcon2" inherits="PlayerTalentFrameRoleIconTemplate" parentKey="RoleIcon2" hidden="true">
 				<Anchors>
 					<Anchor point="RIGHT" relativeTo="$parentRoleIcon" relativePoint="LEFT" x="-1" />
@@ -666,7 +624,7 @@
 					</Layer>
 				</Layers>
 			</Frame>
-			<Frame name="$parentHeaderIcon" toplevel="true" parentKey="HeaderIcon">
+			<Frame name="$parentHeaderIcon" parentKey="HeaderIcon">
 				<Size x="36" y="36"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentHeaderBackground"/>
@@ -1198,7 +1156,7 @@
 				if self:GetID() == 1 then
 					self.Icon:SetTexture("Interface\\Icons\\inv_misc_crystalspec1")
 				else
-					self.Icon:SetTexture("Interface\\Icons\\Inv_misc_gem_amethystrough_03")
+					self.Icon:SetTexture("Interface\\Icons\\inv_jewelcrafting_argusgemcut_purple_miscicons")
 				end
 
 				self.epicColor = BAG_ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_EPIC]
@@ -1248,6 +1206,9 @@
 
 	<Frame name="PlayerTalentFrame" enableMouse="true" toplevel="true" parent="UIParent" hidden="true" frameStrata="HIGH" inherits="ButtonFrameTemplate">
 		<Size x="646" y="588"/>
+		<Anchors>
+			<Anchor point="TOPLEFT" x="15" y="-114"/>
+		</Anchors>
 		<Layers>
             <Layer level="BORDER">
                 <Texture name="$parentEtherealBackground" parentKey="EtherealBackground" setAllPoints="true">
@@ -1318,7 +1279,7 @@
 			</Layer>
 		</Layers>
 		<Frames>
-            <Frame name="$parentLoadingFrame" parentKey="LoadingFrame" toplevel="true" enableMouse="true" hidden="true">
+            <Frame name="$parentLoadingFrame" parentKey="LoadingFrame" enableMouse="true" hidden="true">
                 <Anchors>
                     <Anchor point="TOPLEFT" x="14" y="-102" />
                     <Anchor point="BOTTOMRIGHT" x="-16" y="30" />
@@ -1454,7 +1415,9 @@
 					<Anchor point="BOTTOMRIGHT"/>
 				</Anchors>
 				<Scripts>
-                    <OnClick function="TalentFramePreviewHide"/>
+					<OnClick>
+						TalentFramePreviewHide()
+					</OnClick>
 				</Scripts>
 			</Button>
 			<Button name="PlayerTalentFrameLearnButton" inherits="TalentFrameMagicButtonTemplate" text="LEARN">
@@ -1565,6 +1528,28 @@
 					</OnLoad>
 				</Scripts>
 			</Frame>
+
+			<Button name="PlayerTalentLinkButton" parentKey="LinkToButton">
+				<Size x="30" y="30"/>
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="PlayerTalentFrameImportFrameButton" relativePoint="LEFT" x="8" y="2"/>
+				</Anchors>
+				<HitRectInsets left="4" right="4" top="6" bottom="4"/>
+				<Scripts>
+					<OnClick function="PlayerTalentLinkToButton_OnClick"/>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT");
+						GameTooltip:SetText(LINK_TALENTS_PREVIEW_TOOLTIP, nil, nil, nil, nil, true);
+						GameTooltip:Show();
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+				<NormalTexture file="Interface\Buttons\UI-LinkProfession-Up"/>
+				<PushedTexture file="Interface\Buttons\UI-LinkProfession-Down"/>
+				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+			</Button>
+			<Frame parentKey="LinkToDropDown" name="PlayerTalentLinkToDropDown" inherits="UIDropDownMenuTemplate"/>
+
 			<Frame name="PlayerTalentFrameTalents" setAllPoints="true">
 				<Frames>
 					<Frame name="PlayerTalentFramePanel1" inherits="PlayerTalentFramePanelTemplate">
@@ -1658,7 +1643,7 @@
 					</OnLoad>
 				</Scripts>
 			</Frame>
-			<Frame name="PlayerTalentFramePetTalents" toplevel="true" setAllPoints="true">
+			<Frame name="PlayerTalentFramePetTalents" setAllPoints="true">
 				<Layers>
 					<Layer level="BACKGROUND">
 						<Texture name="PlayerTalentFramePetModelBg" file="Interface\TalentFrame\PetTalent-PetBG">
@@ -2050,25 +2035,6 @@
 					</OnShow>
 				</Scripts>
 			</Frame>
-			<Button name="PlayerTalentLinkButton" parentKey="LinkToButton">
-				<Size x="30" y="30"/>
-				<Anchors>
-					<Anchor point="TOPRIGHT" x="-6" y="-26" />
-				</Anchors>
-				<Scripts>
-					<OnClick function="PlayerTalentLinkToButton_OnClick"/>
-					<OnEnter>
-						GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT");
-						GameTooltip:SetText(LINK_TALENTS_PREVIEW_TOOLTIP, nil, nil, nil, nil, true);
-						GameTooltip:Show();
-					</OnEnter>
-					<OnLeave function="GameTooltip_Hide"/>
-				</Scripts>
-				<NormalTexture file="Interface\Buttons\UI-LinkProfession-Up"/>
-				<PushedTexture file="Interface\Buttons\UI-LinkProfession-Down"/>
-				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
-			</Button>
-			<Frame parentKey="LinkToDropDown" name="PlayerTalentLinkToDropDown" inherits="UIDropDownMenuTemplate"/>
 
 			<Frame name="PlayerTalentFrameStatusFrame" hidden="true" alpha="0">
 				<Size x="264" y="20"/>
@@ -2262,6 +2228,15 @@
 					</Frame>
 				</Frames>
 			</Frame>
+
+			<Button name="PlayerTalentFrameSpecPurchaseButton" parentKey="specPurchaseButton" inherits="PlayerSpecTabTemplate" motionScriptsWhileDisabled="true" hidden="true">
+				<Scripts>
+					<OnLoad function="PlayerSpecTabAdvertising_OnLoad"/>
+					<OnClick function="PlayerSpecTabAdvertising_OnClick"/>
+					<OnEnter function="PlayerSpecTabAdvertising_OnEnter"/>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Button>
 		</Frames>
 		<Scripts>
 			<OnShow function="PlayerTalentFrame_OnShow"/>
@@ -2272,7 +2247,7 @@
 		</Scripts>
 	</Frame>
 
-	<Frame name="PlayerTalentPopupFrame" toplevel="true" parent="PlayerTalentFrame" movable="true" enableMouse="true" hidden="true">
+	<Frame name="PlayerTalentPopupFrame" toplevel="true" frameStrata="HIGH" parent="PlayerTalentFrame" movable="true" enableMouse="true" hidden="true">
 		<Size x="297" y="434"/>
 		<Anchors>
 			<Anchor point="TOPLEFT" relativeTo="PlayerTalentFrame" relativePoint="TOPRIGHT" x="38" y="4"/>
@@ -2289,7 +2264,7 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Frame parentKey="BorderBox" frameLevel="60" setAllPoints="true" hidden="false">
+			<Frame parentKey="BorderBox" setAllPoints="true" hidden="false">
 				<Layers>
 					<Layer level="BORDER">
 						<Texture name="$parentTopLeft" parentKey="TopLeft" file="Interface\MacroFrame\MacroPopup">
@@ -2466,7 +2441,7 @@
 		</Scripts>
 	</Frame>
 
-	<Frame name="PlayerGlyphPreviewFrame" parent="PlayerTalentFrame" enableMouse="true" toplevel="true" frameStrata="MEDIUM" inherits="TranslucentFrameTemplate" hidden="true">
+	<Frame name="PlayerGlyphPreviewFrame" parent="PlayerTalentFrame" enableMouse="true" toplevel="true" frameStrata="HIGH" inherits="TranslucentFrameTemplate" hidden="true">
 		<Size x="220" y="380"/>
 		<Anchors>
 			<Anchor point="TOPLEFT" relativeTo="PlayerTalentFrame" relativePoint="TOPRIGHT" x="4" y="0" />
@@ -2524,9 +2499,8 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-			<!-- <OnLoad function="PlayerGlyphPreviewFrame_OnLoad"/> -->
+			<OnLoad function="PlayerGlyphPreviewFrame_OnLoad"/>
 			<OnShow function="PlayerGlyphPreviewFrame_OnShow"/>
-			<!-- <OnHide function="PlayerGlyphPreviewFrame_OnHide"/> -->
 		</Scripts>
 	</Frame>
 </Ui>

@@ -324,7 +324,7 @@ function PetJournal_UpdatePetDisplay()
 		PetJournal.PetDisplay.ModelScene:Show();
 		PetJournal.PetDisplay.InfoButton:Show();
 
-		local hash, petIndex, isFavorite, name, icon, petType, lootType, currency, price, creatureID, spellID, itemID, sourceText, descriptionText = C_PetJournal.GetPetInfoByPetID(PetJournal.selectedPetID);
+		local hash, petIndex, isFavorite, name, icon, petType, lootType, currency, price, creatureID, spellID, itemID, sourceText, descriptionText, holidayText = C_PetJournal.GetPetInfoByPetID(PetJournal.selectedPetID);
 		if IsGMAccount() then
 			PetJournal.PetDisplay.ModelScene.DebugInfo:SetFormattedText("CreatureID: %s", creatureID);
 			PetJournal.PetDisplay.ModelScene.DebugInfo:Show();
@@ -337,6 +337,7 @@ function PetJournal_UpdatePetDisplay()
 		PetJournal.PetDisplay.InfoButton.Icon:SetTexture(icon);
 
 		PetJournal.PetDisplay.InfoButton.Source:SetText(sourceText);
+		PetJournal.PetDisplay.InfoButton.Source:SetFormattedText("%s%s", holidayText ~= "" and string.format("%s\n", holidayText) or "", sourceText);
 		PetJournal.PetDisplay.InfoButton.Lore:SetText(descriptionText);
 
 		PetJournal.PetDisplay.ModelScene:SetCreature(creatureID);

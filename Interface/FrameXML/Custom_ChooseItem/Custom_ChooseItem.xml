@@ -297,22 +297,22 @@
 		<Frames>
 			<Frame name="ChooseItemOption1" parentKey="Option1" inherits="QuestChoiceOptionTemplate">
 				<Anchors>
-					<Anchor point="LEFT" x="86" y="4" />
+					<Anchor point="LEFT" x="64" y="4" />
 				</Anchors>
 			</Frame>
 			<Frame name="ChooseItemOption2" parentKey="Option2" inherits="QuestChoiceOptionTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="ChooseItemOption1" relativePoint="RIGHT" x="25" y="0" />
+					<Anchor point="LEFT" relativeTo="ChooseItemOption1" relativePoint="RIGHT" x="24" y="0" />
 				</Anchors>
 			</Frame>
 			<Frame name="ChooseItemOption3" parentKey="Option3" inherits="QuestChoiceOptionTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="ChooseItemOption2" relativePoint="RIGHT" x="26" y="0" />
+					<Anchor point="LEFT" relativeTo="ChooseItemOption2" relativePoint="RIGHT" x="24" y="0" />
 				</Anchors>
 			</Frame>
 			<Frame name="ChooseItemOption4" parentKey="Option4" inherits="QuestChoiceOptionTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="ChooseItemOption3" relativePoint="RIGHT" x="26" y="0" />
+					<Anchor point="LEFT" relativeTo="ChooseItemOption3" relativePoint="RIGHT" x="24" y="0" />
 				</Anchors>
 			</Frame>
 			<Button parentKey="CloseButton" inherits="UIPanelCloseButton">

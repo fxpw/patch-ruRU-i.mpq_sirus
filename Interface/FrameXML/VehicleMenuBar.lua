@@ -1011,7 +1011,7 @@ function VehicleSeatIndicatorButton_OnClick(self, button)
 end
 
 function VehicleSeatIndicatorButton_OnEnter(self)
-	if ( not self:IsEnabled() ) then
+	if ( self:IsEnabled() ~= 1 ) then
 		return;
 	end
 	

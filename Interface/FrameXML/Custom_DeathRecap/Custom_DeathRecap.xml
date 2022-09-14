@@ -311,6 +311,9 @@
 			<OnEvent>
 				self:OnEvent(event, ...)
 			</OnEvent>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
 		</Scripts>
 	</Frame>
 </Ui>

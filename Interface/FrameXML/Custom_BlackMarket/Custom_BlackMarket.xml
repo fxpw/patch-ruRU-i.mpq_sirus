@@ -6,7 +6,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 	<Script file="Custom_BlackMarket.lua"/>
 
 	<Frame name="BlackMarketColumnButtonTemplate" virtual="true">
@@ -346,7 +347,7 @@
 					</OnClick>
 				</Scripts>
 			</Button>
-			<Frame parentkey="CurrentBid" name="$parentCurrentBidMoneyFrame" inherits="SmallMoneyFrameTemplate">
+			<Frame parentKey="CurrentBid" name="$parentCurrentBidMoneyFrame" inherits="SmallMoneyFrameTemplate">
 				<Anchors>
 					<Anchor point="RIGHT" x="6" y="-3"/>
 				</Anchors>
@@ -546,7 +547,7 @@
 							</OnLeave>
 						</Scripts>
 					</Frame>
-					<Frame parentkey="BlackMarketHotItemBidPrice" name="HotItemCurrentBidMoneyFrame" inherits="SmallMoneyFrameTemplate">
+					<Frame parentKey="BlackMarketHotItemBidPrice" name="HotItemCurrentBidMoneyFrame" inherits="SmallMoneyFrameTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parentTimeLeft" relativePoint="BOTTOM" x="0" y="-5"/>
 						</Anchors>

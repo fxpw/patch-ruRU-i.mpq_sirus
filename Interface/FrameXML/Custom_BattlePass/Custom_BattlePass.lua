@@ -40,6 +40,12 @@ enum:E_BATTLEPASS_SETTINGS {
     "POINTS_ARENA_1VS1",
 }
 
+local BATTLEPASS_ITEMS = {
+	[149192] = true,
+	[149193] = true,
+	[149194] = true,
+}
+
 BattlePassFrameMixin = {}
 
 function BattlePassFrameMixin:OnLoad()
@@ -261,6 +267,49 @@ local function ExpForLevel( level )
     end
 
     return exp
+end
+
+function IsBattlePassExpItem(itemID)
+	return BATTLEPASS_ITEMS[itemID] ~= nil
+end
+
+local function CalculateAddedExp(currentLevel, totalXP, exp)
+	local maxRawLevel = #BATTLEPASS_LEVELS - 1
+	local newExp = totalXP + exp
+	local addLevels = 0
+	local expToNextLevel = 0
+
+	if newExp >= BATTLEPASS_LEVELS[maxRawLevel] then
+		local diff = newExp - BATTLEPASS_LEVELS[maxRawLevel]
+		local bonusLevelExp = BATTLEPASS_LEVELS[maxRawLevel + 1]
+
+		if diff > bonusLevelExp then
+			local bonusLevels = math.abs(diff / bonusLevelExp)
+			addLevels = maxRawLevel + bonusLevels - currentLevel
+			expToNextLevel = math.fmod(diff, bonusLevelExp)
+		else
+			addLevels = (maxRawLevel + 1) - currentLevel
+			expToNextLevel = BATTLEPASS_LEVELS[maxRawLevel] + bonusLevelExp - totalXP
+		end
+	else
+		for level = currentLevel + 1, maxRawLevel do
+			local xpMax = BATTLEPASS_LEVELS[level]
+			if xpMax > newExp then
+				addLevels = (level - 1) - currentLevel
+				expToNextLevel = xpMax - totalXP
+				break
+			end
+		end
+	end
+
+	return addLevels, expToNextLevel
+end
+
+function BattlePassFrameMixin:GetLevelsByExp(exp, ammount)
+	local totalXP = self:GetTotalXP()
+	local currentLevel = self:GetLevelInfoByXP(totalXP)
+
+	return CalculateAddedExp(currentLevel, totalXP, exp * (ammount or 1))
 end
 
 function BattlePassFrameMixin:HasNotReceivedRewards()
@@ -1068,7 +1117,7 @@ end
 function BattlePassInfoFrameTemplateMixin:UpdateInfo( rerenderProgressBar )
     local level, levelXP, totalXP, maxLevelXP = self.mainFrame:GetLevelInfo()
 
-    self.CurrentAndMaxLevel:SetFormattedText(BATTLEPASS_LEVEL, level)
+    self.CurrentAndMaxLevel:SetFormattedText(BATTLEPASS_LEVEL_FORMAT, level)
     self.CurrentAndMaxLevel:SetShown(level > 0)
     self.LevelLabel:SetShown(level > 0)
 
@@ -1096,7 +1145,7 @@ function BattlePassInfoFrameTemplateMixin:OnUpdate( elapsed )
 
     local level, maxLevelXP, levelXP = self.mainFrame:GetLevelInfoByXP(self.oldXP + self.easing)
 
-    self.CurrentAndMaxLevel:SetFormattedText(BATTLEPASS_LEVEL, level)
+    self.CurrentAndMaxLevel:SetFormattedText(BATTLEPASS_LEVEL_FORMAT, level)
     self.ProgressBar:SetValue(levelXP, maxLevelXP, self.mainFrame:GetCapXP())
 
     if self.elapsed > 1 then
@@ -1105,7 +1154,7 @@ function BattlePassInfoFrameTemplateMixin:OnUpdate( elapsed )
         self.mainFrame.newXP    = 0
         self.runAnimation       = false
 
-        self.CurrentAndMaxLevel:SetFormattedText(BATTLEPASS_LEVEL, level)
+        self.CurrentAndMaxLevel:SetFormattedText(BATTLEPASS_LEVEL_FORMAT, level)
         self.CurrentAndMaxLevel:SetShown(level > 0)
         self.LevelLabel:SetShown(level > 0)
 
@@ -1268,6 +1317,27 @@ function BattlePassBuyOverlayFrameMixin:OnShow()
     end
 end
 
+function BattlePassBuyOverlayFrameMixin:UpdateExpInfo()
+	local itemID = self.ConfirmationFrame.itemEntry
+	if not BATTLEPASS_ITEMS[itemID] then
+		self.ConfirmationFrame.ExpInfo:Hide()
+		return
+	end
+
+	local exp = tonumber(string.match(_G["BATTLEPASS_XP_ITEM_DESCRIPTION_"..itemID], BATTLEPASS_XP_ITEM_DESCRIPTION_EXP_PATTERN))
+
+	local amount = self.ConfirmationFrame.MultipleBuyFrame.EditBox:GetNumber() or 1
+	local addLevels, expToNextLevel = self:GetParent():GetLevelsByExp(exp, amount)
+
+	if addLevels == 0 then
+		self.ConfirmationFrame.ExpInfo:SetFormattedText(BATTLEPASS_ITEM_EXP_TO_LEVEL, expToNextLevel)
+	else
+		self.ConfirmationFrame.ExpInfo:SetFormattedText(BATTLEPASS_ITEM_ADD_LEVELS, addLevels)
+	end
+
+	self.ConfirmationFrame.ExpInfo:Show()
+end
+
 BattlePassMultipleBuyEditBoxMixin = {}
 
 function BattlePassMultipleBuyEditBoxMixin:OnLoad()
@@ -1296,6 +1366,7 @@ function BattlePassMultipleBuyEditBoxMixin:Update()
     local confirmFrame = self:GetParent():GetParent()
     confirmFrame.NoticeFrame.Price:SetText((confirmFrame.price or 0) * text)
     confirmFrame.buyCount = text
+	confirmFrame:GetParent():UpdateExpInfo()
 
     NumericInputSpinner_OnTextChanged(self)
 end

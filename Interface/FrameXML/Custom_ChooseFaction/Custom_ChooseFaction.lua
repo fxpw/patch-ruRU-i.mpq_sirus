@@ -133,7 +133,7 @@ function Custom_ChooseFactionMixin:Open( factionID, questID )
     self:SetupFaction(factionID)
 
     local parent = self:GetParent()
-    parent:SetWidth((parent:GetWidth() + self:GetWidth()) + 10)
+    parent:SetWidth((parent:GetWidth() + self:GetWidth()))
 
     self:Show()
 end

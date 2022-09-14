@@ -30,7 +30,7 @@ function AuctionHouseFrameFilters_UpdateCategories(categoriesList, forceSelectio
 
 	-- Display the list of open filters
 	local offset = FauxScrollFrame_GetOffset(categoriesList.ScrollFrame);
-	if ( forceSelectionIntoView and selectedCategoryIndex and ( not selectedSubCategoryIndex and not selectedSubSubCategoryIndex ) ) then
+	if ( forceSelectionIntoView and selectedCategoryIndex and ( not selectedSubCategoryIndex --[[and not selectedSubSubCategoryIndex]] ) ) then
 		if ( selectedCategoryIndex <= offset ) then
 			FauxScrollFrame_OnVerticalScroll(categoriesList.ScrollFrame, math.max(0.0, (selectedCategoryIndex - 1) * BROWSE_FILTER_HEIGHT), BROWSE_FILTER_HEIGHT);
 			offset = FauxScrollFrame_GetOffset(categoriesList.ScrollFrame);

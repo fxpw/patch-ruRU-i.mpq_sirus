@@ -9,6 +9,8 @@
 ..\SharedXML\SharedStrings.lua
 ..\SharedXML\DataDumper.lua
 ..\SharedXML\UUID.lua
+..\SharedXML\FunctionUtil.lua
+..\SharedXML\EventHandler.lua
 ..\SharedXML\Hook.lua
 ..\SharedXML\MixIn.lua
 ..\SharedXML\Pools.lua
@@ -18,7 +20,6 @@
 ..\SharedXML\AnchorUtil.xml
 ..\SharedXML\CircularBuffer.lua
 ..\SharedXML\Opcodes.lua
-..\SharedXML\EventHandler.lua
 ..\SharedXML\TypeUtil.lua
 
 ..\SharedXML\S_Dump.lua

@@ -1,11 +1,3 @@
-<!--
-
-	Filename:	Custom_CalendarTemplates.xml
-	Project:	Custom Game Interface
-	Author:		Nyll & Blizzard Entertainment
-
--->
-
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\..\FrameXML\UI.xsd">
 	<!-- Calendar Day Templates -->
@@ -258,17 +250,13 @@
 	</Frame>
 	<Button name="CalendarCloseButtonTemplate" inherits="UIPanelCloseButton" virtual="true">
 		<Anchors>
-			<Anchor point="TOPRIGHT">
-				<Offset x="0" y="0"/>
-			</Anchor>
+			<Anchor point="TOPRIGHT" x="-3" y="-3"/>
 		</Anchors>
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture file="Interface\DialogFrame\UI-DialogBox-Corner">
 					<Anchors>
-						<Anchor point="TOPRIGHT">
-							<Offset x="-4" y="-4"/>
-						</Anchor>
+						<Anchor point="TOPRIGHT" x="-4" y="-4"/>
 					</Anchors>
 				</Texture>
 			</Layer>
@@ -380,13 +368,6 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-					--[[
-						if ( self:GetParent().partyMode ) then
-							self.criterion = "party";
-						else
-							self.criterion = "name";
-						end
-					--]]
 						self.criterion = "name";
 						CalendarEventInviteSortButton_OnClick(self);
 					</OnClick>
@@ -423,9 +404,7 @@
 			</Button>
 		</Frames>
 		<Scripts>
-			<OnLoad>
-				CalendarEventInviteList_OnLoad(self);
-			</OnLoad>
+			<OnLoad function="CalendarEventInviteList_OnLoad"/>
 		</Scripts>
 	</Frame>
 	<Button name="CalendarEventInviteListButtonTemplate" virtual="true">
@@ -481,6 +460,27 @@
 	</Button>
 
 	<!-- Calendar View Event Templates -->
+	<Button name="CalendarViewEventRSVPButtonTemplate" inherits="CalendarEventButtonTemplate" virtual="true">
+		<Size x="128" y="22"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parentFlashTexture" parentKey="flashTexture" alphaMode="ADD" file="Interface\Buttons\UI-Panel-Button-Glow">
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset x="-11" y="7"/>
+						</Anchor>
+						<Anchor point="BOTTOMRIGHT">
+							<Offset x="11" y="-7"/>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0.0" right="0.75" top="0.0" bottom="0.609375"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnUpdate function="CalendarViewEventRSVPButton_OnUpdate"/>
+		</Scripts>
+	</Button>
 	<Button name="CalendarViewEventInviteListButtonTemplate" inherits="CalendarEventInviteListButtonTemplate" virtual="true">
 		<Scripts>
 			<OnClick>

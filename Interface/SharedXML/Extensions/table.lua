@@ -722,7 +722,8 @@ local type = type
 local rawset = rawset
 local rawget = rawget
 
-local array_mt = {
+local array_mt
+array_mt = {
     __index = function(t, k)
         local i = tostring(k):sub(1, 1) == "#"
         local v = rawget(t, i and k:sub(2, k:len()) or k)
