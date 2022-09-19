@@ -99,7 +99,7 @@
 							<Alpha startDelay="0.3" duration="0.2" change="1" order="1"/>
 							<Scripts>
 								<OnFinished>
-									C_Timer:After(0, function()
+									RunNextFrame(function()
 										local frame = self:GetParent():GetParent()
 										local frameWidth, frameHeight = frame:GetSize()
 										frame.spark:SetAlpha(0)

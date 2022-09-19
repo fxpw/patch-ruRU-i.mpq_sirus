@@ -36,7 +36,7 @@ function BaseLayoutMixin:AddLayoutChildren(layoutChildren, ...)
 	end
 end
 
-local function LayoutIndexComparator(left, right)
+function LayoutIndexComparator(left, right)
 	local leftLayoutIndex = left.layoutIndex or (left.GetAttribute and left:GetAttribute("layoutIndex"))
 	local rightLayoutIndex = right.layoutIndex or (right.GetAttribute and right:GetAttribute("layoutIndex"))
 	if (leftLayoutIndex == rightLayoutIndex and left ~= right) then
@@ -126,6 +126,10 @@ function LayoutMixin:GetChildPadding(child)
 	end
 end
 
+local function GetSize(desired, fixed, minimum, maximum)
+	return fixed or Clamp(desired, minimum or desired, maximum or desired);
+end
+
 function LayoutMixin:CalculateFrameSize(childrenWidth, childrenHeight)
 	local frameWidth, frameHeight;
 	local leftPadding, rightPadding, topPadding, bottomPadding = self:GetPadding();
@@ -148,7 +152,7 @@ function LayoutMixin:CalculateFrameSize(childrenWidth, childrenHeight)
 	else
 		frameHeight = fixedHeight or childrenHeight;
 	end
-	return frameWidth, frameHeight;
+	return GetSize(frameWidth, nil, self.minimumWidth or self:GetAttribute("minimumWidth"), self.maximumWidth or self:GetAttribute("maximumWidth")), GetSize(frameHeight, nil, self.minimumHeight or self:GetAttribute("minimumWidth"), self.maximumHeight or self:GetAttribute("maximumWidth"));
 end
 
 function LayoutMixin:Layout()
@@ -295,10 +299,6 @@ local function GetExtents(childFrame, left, right, top, bottom, layoutFrameScale
 	bottom = bottom and math.min(frameBottom, bottom) or frameBottom;
 
 	return left, right, top, bottom, defaulted;
-end
-
-local function GetSize(desired, fixed, minimum, maximum)
-	return fixed or Clamp(desired, minimum or desired, maximum or desired);
 end
 
 function ResizeLayoutMixin:IgnoreLayoutIndex()

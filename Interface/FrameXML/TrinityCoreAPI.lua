@@ -54,7 +54,7 @@ Hook:RegisterCallback("TrinityCoreMixIn", {"PLAYER_ENTERING_WORLD", "CHAT_MSG_AD
 				local op, counter, text = message:match("^([afom])([0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z])(.*)$")
 
 				if not op then
-					printf("Unknown message %s - unknown opcode or server error?", message)
+					print(string.format("Unknown message %s - unknown opcode or server error?", message))
 				end
 
 				if not TrinityCoreMixIn.callback[counter] then

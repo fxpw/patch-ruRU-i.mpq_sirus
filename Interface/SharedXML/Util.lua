@@ -4,6 +4,10 @@
 --	E-mail:		nyll@sirus.su
 --	Web:		https://sirus.su/
 
+local select = select
+local UnitName = UnitName
+local SendAddonMessage = SendAddonMessage
+
 local LOCAL_ToStringAllTemp = {};
 function tostringall(...)
     local n = select('#', ...)
@@ -543,10 +547,6 @@ function C_Split( str, delimiter )
     return string.Explode( delimiter, str )
 end
 
-function printf( msg, ... )
-	print( string.format( msg, ... ) )
-end
-
 function C_InRange( value, min, max )
 	return value and value >= min and value <= max or false
 end
@@ -700,9 +700,13 @@ function GetFactionColor(factionGroupTag)
 	return PLAYER_FACTION_COLORS[PLAYER_FACTION_GROUP[factionGroupTag]]
 end
 
-function SendServerMessage( Header, ... )
-	 --printec("Send ->", Header, ...)
-	SendAddonMessage(Header, strjoin(" ", tostringall(...)), "WHISPER", UnitName("player"))
+function SendServerMessage(prefix, ...)
+--	printec("Send ->", prefix, ...)
+	if select("#", ...) > 1 then
+		SendAddonMessage(prefix, strjoin(" ", tostringall(...)), "WHISPER", UnitName("player"))
+	else
+		SendAddonMessage(prefix, ..., "WHISPER", UnitName("player"))
+	end
 end
 
 function AnimateTexCoordsBFA(texture, textureWidth, textureHeight, frameWidth, frameHeight, numFrames, elapsed, throttle)
@@ -955,18 +959,6 @@ function AnimationStopAndPlay( object, ... )
 	end
 end
 
-function HookFunction(name, callback)
-    if not _G[name] then
-        error(("No such method '%s' in '_G' table"):format(name or "N/A"))
-    end
-
-    local method = _G[name]
-    _G[name] = function(...)
-        local args = {callback(...)}
-        return method(unpack(args))
-    end
-end
-
 function isOneOf(val, ...)
 	for i = 1, select("#", ...) do
 		if select(i, ...) == val then
@@ -1004,12 +996,6 @@ function SetSafeCVar(cvar, value, raiseEvent)
     if isCVar then
         SetCVar(cvar, value , raiseEvent)
     end
-end
-
----@param value any
----@return boolean
-function isset( value )
-	return value and true or false
 end
 
 function PackNumber(n1, n2)

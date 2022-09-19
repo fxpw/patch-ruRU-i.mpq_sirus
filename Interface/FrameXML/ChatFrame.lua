@@ -4985,10 +4985,3 @@ function SendChatMessageType(message, messageType)
 		end
 	end
 end
-
--- HookFunction("SendChatMessage", function(text, ...)
--- 	if string.find(text, "http") then
--- 		text = ParseURLsInText(text)
--- 	end
--- 	return text, ...
--- end)

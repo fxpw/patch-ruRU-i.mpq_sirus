@@ -146,7 +146,7 @@ function GMClientMixIn:PlayerInfoHandler( data, message )
 	data.isOffline = lineData[1][1] == "(не в сети) "
 	data.playerName = lineData[1][2]
 	data.playerGUID = tonumber(lineData[1][3])
-	data.isGMStatusActive = isset(lineData[2])
+	data.isGMStatusActive = lineData[2] and true or false
 	data.phase = data.isGMStatusActive and tonumber(lineData[2][1]) or nil
 	data.accountLogin = lineData[3][1]
 	data.accountGUID = tonumber(lineData[3][2])

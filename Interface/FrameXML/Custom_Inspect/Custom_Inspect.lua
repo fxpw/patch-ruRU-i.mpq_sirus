@@ -1025,7 +1025,7 @@ function EventHandler:ASMSG_INSPECT_GUILD_INFO_RESPONSE( msg )
 	emblemBorderStyle = tonumber(emblemBorderStyle)
 	emblemBorderColor = tonumber(emblemBorderColor)
 	emblemBackgroundColor = tonumber(emblemBackgroundColor)
-	factionID = isset(factionID) and SERVER_PLAYER_TEAM_TO_GAME_FACTION[tonumber(factionID)]
+	factionID = factionID and SERVER_PLAYER_TEAM_TO_GAME_FACTION[tonumber(factionID)]
 
 	InspectGuildFrame.guildName:SetText(guildName)
 	InspectGuildFrame.guildLevel:SetFormattedText(INSPECT_GUILD_LEVEL, level, factionID and _G["FACTION_"..string.upper(PLAYER_FACTION_GROUP[factionID])] or factionName)

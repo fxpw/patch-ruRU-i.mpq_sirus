@@ -2659,7 +2659,7 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								SendAddonMessage("ACMSG_SHOP_REFUNDABLE_PURCHASE_LIST_REQUEST", nil, "WHISPER", UnitName("player"))
+								SendServerMessage("ACMSG_SHOP_REFUNDABLE_PURCHASE_LIST_REQUEST")
 								StoreConfirmationFrame:Hide()
 								StoreModelPreviewFrame:Hide()
 								StoreErrorFrame:Hide()
@@ -2897,7 +2897,7 @@
 							<OnLeave function="StorePremiumButtons_OnLeave"/>
 							<OnClick function="StorePremiumButtons_OnClick"/>
 							<OnLoad>
-								SendAddonMessage("ACMSG_PREMIUM_INFO_REQUEST", nil, "WHISPER", UnitName("player"))
+								SendServerMessage("ACMSG_PREMIUM_INFO_REQUEST")
 								SetPortraitToTexture(self.Icon, "Interface\\ICONS\\VIP")
 							</OnLoad>
 						</Scripts>

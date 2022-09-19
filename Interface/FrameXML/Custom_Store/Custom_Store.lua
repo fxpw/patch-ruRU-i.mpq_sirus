@@ -1218,9 +1218,9 @@ function StoreFrame_OnShow( self, ... )
 	selectedCategoryID = 1
 	selectedMoneyID = 1
 
-	SendAddonMessage("ACMSG_PREMIUM_INFO_REQUEST", nil, "WHISPER", UnitName("player"))
-	SendAddonMessage("ACMSG_SHOP_BALANCE_REQUEST", nil, "WHISPER", UnitName("player"))
-	SendAddonMessage("ACMSG_SHOP_REFUNDABLE_PURCHASE_LIST_REQUEST", nil, "WHISPER", UnitName("player"))
+	SendServerMessage("ACMSG_PREMIUM_INFO_REQUEST")
+	SendServerMessage("ACMSG_SHOP_BALANCE_REQUEST")
+	SendServerMessage("ACMSG_SHOP_REFUNDABLE_PURCHASE_LIST_REQUEST")
 
 	self.Ticker = C_Timer:NewTicker(1, function()
 		for d = 1, #STORE_PRODUCT_DATA do
@@ -2112,15 +2112,15 @@ function StoreConfirmationButton_OnClick( self, ... )
 			return
 		end
 
-		SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d|%d|1|%s|%d|%s", data.ID, data.buyCount or 1, name, dropDown.Key, text), "WHISPER", UnitName("player"))
+		SendServerMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d|%d|1|%s|%d|%s", data.ID, data.buyCount or 1, name, dropDown.Key, text))
 	else
 		if data.SelectedSpec and StoreSpecialOfferDetailFrame.selectRole and StoreSpecialOfferDetailFrame.selectRole ~= 0 then
-			SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d|%d|0|%d|%d", data.ID, data.buyCount or 1, StoreSpecialOfferDetailFrame.selectRole, parent.isAltCurrency and 1 or 0), "WHISPER", UnitName("player"))
+			SendServerMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d|%d|0|%d|%d", data.ID, data.buyCount or 1, StoreSpecialOfferDetailFrame.selectRole, parent.isAltCurrency and 1 or 0))
 		elseif data.isSubscribe then
-			SendAddonMessage("ACMSG_SHOP_SUBSCRIBE", string.format("%d:%d", data.ID, data.Time), "WHISPER", UnitName("player"))
+			SendServerMessage("ACMSG_SHOP_SUBSCRIBE", string.format("%d:%d", data.ID, data.Time))
 			STORE_SUBSCRIBE_DATA = {}
 		else
-			SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d|%d|0|0|%d", data.ID, data.buyCount or 1, parent.isAltCurrency and 1 or 0), "WHISPER", UnitName("player"))
+			SendServerMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d|%d|0|0|%d", data.ID, data.buyCount or 1, parent.isAltCurrency and 1 or 0))
 		end
 	end
 
@@ -2278,7 +2278,7 @@ end
 function StoreSpecialOfferBannerDetails_OnClick( self, ... )
 	local data = StoreGetSpecialOfferByIndex(selectedSpecialOfferPage)
 	if data.Price == 0 and not data.FreeSubscribe then
-		SendAddonMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d|1|0|0|0", data.ID), "WHISPER", UnitName("player"))
+		SendServerMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d|1|0|0|0", data.ID))
 		if not data.IsReusable and data.Title then
 			StoreRemoveOffer(data.pageID)
 			selectedSpecialOfferPage = 1
@@ -2498,12 +2498,12 @@ function StoreBuyPremiumFrame_OnShow( self, ... )
 end
 
 function StorePremiumBuyButton_OnClick( self, ... )
-	SendAddonMessage("ACMSG_PREMIUM_RENEW_REQUEST", selectedPremiumID, "WHISPER", UnitName("player"))
+	SendServerMessage("ACMSG_PREMIUM_RENEW_REQUEST", selectedPremiumID)
 	StoreBuyPremiumFrame:Hide()
 end
 
 function StoreSubscribeFrame_OnShow( self, ... )
-	SendAddonMessage("ACMSG_SHOP_SUBSCRIPTION_LIST_REQUEST", nil, "WHISPER", UnitName("player"))
+	SendServerMessage("ACMSG_SHOP_SUBSCRIPTION_LIST_REQUEST")
 	STORE_SUBSCRIBE_DATA = {}
 end
 
@@ -2522,7 +2522,7 @@ end
 
 function StoreSubscribeBuyButton_OnClick( self, ... )
 	if STORE_SUBSCRIBE_DATA[selectedSubsID].ShowTrial then
-		SendAddonMessage("ACMSG_SHOP_SUBSCRIBE", string.format("%d:%d", STORE_SUBSCRIBE_DATA[selectedSubsID].ID, 1), "WHISPER", UnitName("player"))
+		SendServerMessage("ACMSG_SHOP_SUBSCRIBE", string.format("%d:%d", STORE_SUBSCRIBE_DATA[selectedSubsID].ID, 1))
 		STORE_SUBSCRIBE_DATA = {}
 	else
 		StoreFrame_ProductBuy(self.SubscribeData)
@@ -2659,7 +2659,7 @@ end
 function RefundButton_OnClick( self, ... )
 	if STORE_REFUND_DATA and STORE_REFUND_DATA[StoreRefundFrame.selectedIndex] then
 		local data = STORE_REFUND_DATA[StoreRefundFrame.selectedIndex]
-		SendAddonMessage("ACMSG_SHOP_PURCHASE_REFUND", data.itemGUID, "WHISPER", UnitName("player"))
+		SendServerMessage("ACMSG_SHOP_PURCHASE_REFUND", data.itemGUID)
 
 		StoreRefundFrame.RefundButton:Disable()
 		StoreRefundFrame:Hide()
@@ -2927,7 +2927,7 @@ function StoreSpecialOfferDetailRoleButton_OnClick( self, ... )
 		StoreSpecialOfferDetailFrame.Shown = false
 		StoreSpecialOfferDetailFrame.ListScrollFrame.AnimIn:Play()
 
-		StoreSpecialOfferDetailFrame.ScaleTimer = C_Timer:NewTicker(0.0001, function()
+		StoreSpecialOfferDetailFrame.ScaleTimer = RunNextFrame(function()
 			sizeY = sizeY + 6
 			StoreSpecialOfferDetailFrame:SetSize(400, sizeY)
 			if sizeY >= 600 and StoreSpecialOfferDetailFrame.ScaleTimer then
@@ -2977,11 +2977,12 @@ function StoreSubscribeSetup()
 		StoreSubscribeFrame.Ticker = nil
 	end
 
+	local currentSubID = selectedSubsID
 	StoreSubscribeContainer.Active.timer1:SetRemainingTime(STORE_SUBSCRIBE_DATA[selectedSubsID].Seconds)
 	StoreSubscribeFrame.Ticker = C_Timer:NewTicker(1, function()
-		STORE_SUBSCRIBE_DATA[selectedSubsID].Seconds = STORE_SUBSCRIBE_DATA[selectedSubsID].Seconds - 1
-		if StoreSubscribeContainer.Active.timer1:IsVisible() then
-			StoreSubscribeContainer.Active.timer1:SetRemainingTime(STORE_SUBSCRIBE_DATA[selectedSubsID].Seconds)
+		if StoreSubscribeContainer.Active.timer1:IsVisible() and STORE_SUBSCRIBE_DATA[currentSubID] then
+			STORE_SUBSCRIBE_DATA[currentSubID].Seconds = STORE_SUBSCRIBE_DATA[currentSubID].Seconds - 1
+			StoreSubscribeContainer.Active.timer1:SetRemainingTime(STORE_SUBSCRIBE_DATA[currentSubID].Seconds)
 		else
 			StoreSubscribeFrame.Ticker:Cancel()
 			StoreSubscribeFrame.Ticker = nil
@@ -5963,7 +5964,7 @@ function EventHandler:ASMSG_SHOP_BUY_ITEM_RESPONSE( msg )
 		local name, _, _, _, _, _, _, _, _, texture = GetItemInfo(tonumber(value))
 		StoreShowPurchaseAlert(name, texture)
 
-		SendAddonMessage("ACMSG_SHOP_REFUNDABLE_PURCHASE_LIST_REQUEST", nil, "WHISPER", UnitName("player"))
+		SendServerMessage("ACMSG_SHOP_REFUNDABLE_PURCHASE_LIST_REQUEST")
 
 		if selectedRemoveOffer then
 			selectedSpecialOfferPage = 1
@@ -6292,7 +6293,7 @@ function EventHandler:ASMSG_SHOP_PURCHASE_REFUND_RESPONSE( msg )
 		StoreShowPurchaseAlert(STORE_BONUS_COIN_LABEL, "Interface\\ICONS\\WoW_Store")
 		StoreRefundFrame.RefundButton:Enable()
 
-		SendAddonMessage("ACMSG_SHOP_REFUNDABLE_PURCHASE_LIST_REQUEST", nil, "WHISPER", UnitName("player"))
+		SendServerMessage("ACMSG_SHOP_REFUNDABLE_PURCHASE_LIST_REQUEST")
 	else
 		StoreShowErrorFrame(STORE_ERROR, STORE_REFUND_ERROR_PERFORM_ANOTHER_OPERATION)
 		StoreRefundFrame.RefundButton:Disable()

@@ -723,7 +723,7 @@ function ProfessionButton_OnEnter( self, ... )
 		self.UpdateTooltip = nil
 	end
 end
--- /run local _PrimaryProfession_Update = PrimaryProfession_Update function PrimaryProfession_Update() print("123") _PrimaryProfession_Update() end
+
 function PrimaryProfession_Update()
 	SpellBookFrame_UpdateSpellRender()
 

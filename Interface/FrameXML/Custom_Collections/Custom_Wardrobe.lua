@@ -158,7 +158,8 @@ end
 function TransmogFrameMixin:Update()
 	self.dirty = false;
 
-	WardrobeTransmogFrame.ModelFrame:Dress()
+	DummyWardrobeUnitModel:Dress();
+	WardrobeTransmogFrame.ModelFrame:Undress();
 
 	for i, slotButton in ipairs(self.SlotButtons) do
 		slotButton:Update();
@@ -522,9 +523,16 @@ end
 function TransmogSlotButtonMixin:RefreshItemModel()
 	local appearanceID = self:GetEffectiveTransmogID();
 	if appearanceID ~= NO_TRANSMOG_VISUAL_ID then
+		local slotID = self.transmogLocation:GetSlotID();
+		local isEitherHand = self.transmogLocation:IsEitherHand();
+
 		local canTryOn = true;
 
-		if self.transmogLocation:IsEitherHand() then
+		if slotID == INVSLOT_HEAD and not ShowingHelm() then
+			canTryOn = false;
+		elseif slotID == INVSLOT_BACK and not ShowingCloak() then
+			canTryOn = false;
+		elseif isEitherHand then
 			local selectedTransmogLocation = self:GetParent():GetSelectedTransmogLocation();
 
 			if selectedTransmogLocation then
@@ -557,6 +565,17 @@ function TransmogSlotButtonMixin:RefreshItemModel()
 ]]
 
 		if canTryOn then
+			if isEitherHand then
+				local itemLink = GetInventoryItemLink("player", slotID);
+				if itemLink then
+					local illusionID = tonumber(string.match(itemLink, "item:%d+:(%d+)"));
+					if illusionID then
+						WardrobeTransmogFrame.ModelFrame:TryOn(string.format("item:%d:%d", appearanceID, illusionID));
+						return;
+					end
+				end
+			end
+
 			WardrobeTransmogFrame.ModelFrame:TryOn(appearanceID);
 		end
 	end

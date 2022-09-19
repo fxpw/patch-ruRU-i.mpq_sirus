@@ -45,10 +45,14 @@ local closureGeneration = {
 };
 
 function GenerateClosure(f, ...)
-    local count = select("#", ...);
-    local generator = closureGeneration[count + 1];
-    if generator then
-    	return generator(f, ...);
-    end
-    error("Closure generation does not support more than "..(#closureGeneration - 1).." parameters");
+	local count = select("#", ...);
+	local generator = closureGeneration[count + 1];
+	if generator then
+		return generator(f, ...);
+	end
+	error("Closure generation does not support more than "..(#closureGeneration - 1).." parameters");
  end
+
+ function RunNextFrame(callback)
+	C_Timer:After(0, callback);
+end

@@ -297,8 +297,9 @@ function RouletteFrameMixin:SetFastAnimationState( state )
     self.fastAnimation = state
 end
 
-function RouletteFrameMixin:OnUpdate()
-    if self.stage == E_ROULETTE_STAGE.STOP then
+local TARGET_FPS = 1 / 60
+function RouletteFrameMixin:OnUpdate(elapsed)
+	if self.stage == E_ROULETTE_STAGE.STOP or self.stage == E_ROULETTE_STAGE.FINISHED then
         return
     end
 
@@ -341,11 +342,7 @@ function RouletteFrameMixin:OnUpdate()
             end
         end
 
-        if GetFramerate() > 60 then
-            self.timer = self.timer + self.speed / (GetFramerate() / 60)
-        else
-            self.timer = self.timer + self.speed
-        end
+		self.timer = self.timer + self.speed / (TARGET_FPS / elapsed)
 
         self.lastOffset = self.offset
         self.offset = (self.timer % self.blockSize)
@@ -438,7 +435,7 @@ end
 
 ---@return boolean ringOfLuckEquipment
 function RouletteFrameMixin:IsRingOfLuckEquipment()
-    return isset(self.ringOfLuckEquipment)
+	return self.ringOfLuckEquipment
 end
 
 ---@param newStage number

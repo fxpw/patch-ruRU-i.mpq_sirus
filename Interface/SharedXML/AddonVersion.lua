@@ -7,7 +7,7 @@
 S_ADDON_VERSION = {
 	-- |@Version: 1@|
 	-- {build, "url", {"folder1", "folder2"}}
-	{2, "AdvancedWotLKCombatLog", {"AdvancedWotLKCombatLog"}},
+	{3, "AdvancedWotLKCombatLog", {"AdvancedWotLKCombatLog"}},
 	{2, "AdvancedWotLKCombatLog_Helper", {"AdvancedWotLKCombatLog_Helper"}},
 	{3, "ATT", {"ATT"}},
 	{2, "Auctionator", {"Auctionator"}},
