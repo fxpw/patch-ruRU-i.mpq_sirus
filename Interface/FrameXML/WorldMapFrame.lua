@@ -2415,6 +2415,8 @@ end
 
 function WorldMapQuestPOI_SetTooltip(poiButton, questLogIndex, numObjectives)
 	local title = GetQuestLogTitle(questLogIndex)
+	if not title then return end
+
 	WorldMapTooltip:SetOwner(WorldMapFrame, "ANCHOR_CURSOR_RIGHT", 5, 2)
 	WorldMapTooltip:SetText(title)
 	if ( poiButton and poiButton.type == QUEST_POI_COMPLETE_SWAP ) then

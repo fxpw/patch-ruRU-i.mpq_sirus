@@ -1,7 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<!-- if you change something here you probably want to change the glue version too -->
-
+	<Script file="OptionsPanelTemplates.lua"/>
 	<Button name="OptionsButtonTemplate" inherits="UIPanelButtonTemplate" virtual="true">
 		<Size>
 			<AbsDimension x="90" y="21"/>
@@ -61,7 +60,7 @@
 	<CheckButton name="OptionsSmallCheckButtonTemplate" virtual="true" inherits="OptionsBaseCheckButtonTemplate">
 		<Layers>
 			<Layer level="ARTWORK">
-				<FontString name="$parentText" inherits="GameFontNormalSmall">
+				<FontString name="$parentText" parentKey="Text" inherits="GameFontNormalSmall">
 					<Anchors>
 						<Anchor point="LEFT" relativePoint="RIGHT">
 							<Offset>
@@ -73,24 +72,8 @@
 			</Layer>
 		</Layers>
 	</CheckButton>
-	<Slider name="OptionsSliderTemplate" orientation="HORIZONTAL" virtual="true" enableMouse="true">
-		<Size>
-			<AbsDimension x="144" y="17"/>
-		</Size>
-		<HitRectInsets>
-			<AbsInset left="0" right="0" top="-10" bottom="-10"/>
-		</HitRectInsets>
-		<Backdrop bgFile="Interface\Buttons\UI-SliderBar-Background" edgeFile="Interface\Buttons\UI-SliderBar-Border" tile="true">
-			<EdgeSize>
-				<AbsValue val="8"/>
-			</EdgeSize>
-			<TileSize>
-				<AbsValue val="8"/>
-			</TileSize>
-			<BackgroundInsets>
-				<AbsInset left="3" right="3" top="6" bottom="6"/>
-			</BackgroundInsets>
-		</Backdrop>
+	<Slider name="OptionsSliderTemplate" inherits="HorizontalSliderTemplate" virtual="true">
+		<Size x="144" y="17"/>
 		<Layers>
 			<Layer level="ARTWORK">
 				<FontString name="$parentText" parentKey="Text" inherits="GameFontHighlight">
@@ -107,7 +90,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentHigh" inherits="GameFontHighlightSmall" text="HIGH">
+				<FontString name="$parentHigh" parentKey="High" inherits="GameFontHighlightSmall" text="HIGH">
 					<Anchors>
 						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT">
 							<Offset>
@@ -119,6 +102,9 @@
 			</Layer>
 		</Layers>
 		<Scripts>
+			<OnLoad>
+				self.type = CONTROLTYPE_SLIDER
+			</OnLoad>
 			<OnEnter>
 				if ( self:IsEnabled() == 1 ) then
 					if ( self.tooltipText ) then
@@ -135,12 +121,14 @@
 				GameTooltip:Hide();
 			</OnLeave>
 		</Scripts>
-		<ThumbTexture name="$parentThumb" file="Interface\Buttons\UI-SliderBar-Button-Horizontal">
-			<Size>
-				<AbsDimension x="32" y="32"/>
-			</Size>
-		</ThumbTexture>
 	</Slider>
+	<Frame name="OptionsDropdownTemplate" inherits="UIDropDownMenuTemplate" enableMouse="true" virtual="true">
+		<Scripts>
+			<OnLoad>
+				self.type = CONTROLTYPE_DROPDOWN
+			</OnLoad>
+		</Scripts>
+	</Frame>
 	<Frame name="OptionsBoxTemplate" virtual="true">
 		<Layers>
 			<Layer level="BACKGROUND">

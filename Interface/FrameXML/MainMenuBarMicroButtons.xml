@@ -401,8 +401,11 @@
 				LoadMicroButtonTextures(self, "Mounts")
 				self.tooltipText = MicroButtonTooltipText(COLLECTIONS, "TOGGLECOLLECTIONS")
 				self.newbieText = MAINMENUBAR_COLLECTIONS_BUTTON_DESC
+				self:RegisterEvent("COMPANION_LEARNED");
+				self:RegisterCustomEvent("TOYS_UPDATED");
 			</OnLoad>
 			<OnEvent>
+				CollectionsMicroButton_OnEvent(self, event, ...);
 				LoadMicroButtonTextures(self, "Mounts")
 				self.tooltipText = MicroButtonTooltipText(COLLECTIONS, "TOGGLECOLLECTIONS")
 				self.newbieText = MAINMENUBAR_COLLECTIONS_BUTTON_DESC
@@ -496,18 +499,7 @@
 			</Anchor>
 		</Anchors>
 		<Scripts>
-			<OnLoad>
-				LoadMicroButtonTextures(self, "MainMenu")
-				self.tooltipText = MicroButtonTooltipText(MAINMENU_BUTTON, "TOGGLEGAMEMENU")
-				self.newbieText = NEWBIE_TOOLTIP_MAINMENU
-
-				PERFORMANCEBAR_LOW_LATENCY = 300
-				PERFORMANCEBAR_MEDIUM_LATENCY = 600
-				PERFORMANCEBAR_UPDATE_INTERVAL = 10
-				self.hover = nil
-				self.updateInterval = 0
-				self:RegisterForClicks("LeftButtonDown", "RightButtonDown", "LeftButtonUp", "RightButtonUp")
-			</OnLoad>
+			<OnLoad function="MainMenuMicroButton_OnLoad"/>
 			<OnUpdate>
 				if (self.updateInterval > 0) then
 					self.updateInterval = self.updateInterval - elapsed

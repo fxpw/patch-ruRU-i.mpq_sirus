@@ -2814,7 +2814,7 @@
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
-			<CheckButton name="$parentPartyInRaid" inherits="InterfaceOptionsCheckButtonTemplate">
+			<CheckButton name="$parentPartyInRaid" inherits="InterfaceOptionsCheckButtonTemplate" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentPartyBackground" relativePoint="BOTTOMLEFT">
 						<Offset>
@@ -2822,7 +2822,7 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
-				<Scripts>
+				<!-- <Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX;
 						self.cvar = "hidePartyInRaid";
@@ -2830,11 +2830,11 @@
 						self.setFunc = function (value) RaidOptionsFrame_UpdatePartyFrames(); end;
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
 					</OnLoad>
-				</Scripts>
+				</Scripts> -->
 			</CheckButton>
 			<CheckButton name="$parentPartyPets" inherits="InterfaceOptionsCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentPartyInRaid" relativePoint="BOTTOMLEFT">
+					<Anchor point="TOPLEFT" relativeTo="$parentPartyBackground" relativePoint="BOTTOMLEFT">
 						<Offset>
 							<AbsDimension x="0" y="-8"/>
 						</Offset>
@@ -2850,7 +2850,7 @@
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
-			<CheckButton name="$parentRaidRange" inherits="InterfaceOptionsCheckButtonTemplate">
+			<CheckButton name="$parentRaidRange" inherits="InterfaceOptionsCheckButtonTemplate" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentPartyPets" relativePoint="BOTTOMLEFT">
 						<Offset>
@@ -2875,7 +2875,7 @@
 			</CheckButton>
 			<CheckButton name="$parentArenaEnemyFrames" inherits="InterfaceOptionsCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentRaidRange" relativePoint="BOTTOMLEFT">
+					<Anchor point="TOPLEFT" relativeTo="$parentPartyPets" relativePoint="BOTTOMLEFT">
 						<Offset>
 							<AbsDimension x="0" y="-8"/>
 						</Offset>

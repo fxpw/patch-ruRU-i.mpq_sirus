@@ -3578,7 +3578,7 @@
 		<Scripts>
 			<OnLoad>
 				self:RegisterEvent("PLAYER_ENTERING_WORLD")
-				<!-- C_Timer:After(0.5, function() TimerTracker_OnEvent(TimerTracker, "START_TIMER", 1, 1200, 1200) end) -->
+				<!-- C_Timer:After(0.5, function() FireCustomClientEvent("START_TIMER", TIMER_TYPE_PVP, 1200, 1200) end) -->
 			</OnLoad>
 			<OnEvent function="ArenaPlayerReadyStatusButton_OnEvent"/>
 			<OnShow>

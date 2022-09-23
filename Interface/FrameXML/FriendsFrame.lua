@@ -199,12 +199,10 @@ function FriendsFrame_OnLoad(self)
 	self:RegisterEvent("FRIENDLIST_SHOW");
 	self:RegisterEvent("FRIENDLIST_UPDATE");
 	self:RegisterEvent("IGNORELIST_UPDATE");
-	self:RegisterEvent("MUTELIST_UPDATE");
 	self:RegisterEvent("WHO_LIST_UPDATE");
 	self:RegisterEvent("GUILD_ROSTER_UPDATE");
 	-- self:RegisterEvent("PLAYER_GUILD_UPDATE");
 	-- self:RegisterEvent("GUILD_MOTD");
-	self:RegisterEvent("VOICE_CHAT_ENABLED_UPDATE");
 	self:RegisterEvent("PARTY_MEMBERS_CHANGED");
 	self:RegisterEvent("PLAYER_FLAGS_CHANGED");
 	self:RegisterEvent("BN_FRIEND_LIST_SIZE_CHANGED");
@@ -243,7 +241,6 @@ function FriendsFrame_OnLoad(self)
 end
 
 function FriendsFrame_OnShow()
-	VoiceChat_Toggle();
 	FriendsList_Update();
 	FriendsFrame_Update();
 	UpdateMicroButtons();
@@ -1214,7 +1211,7 @@ function FriendsFrame_OnEvent(self, event, ...)
 		PendingList_Update();
 	elseif ( event == "BN_FRIEND_INVITE_REMOVED" ) then
 		PendingList_Update();
-	elseif ( event == "IGNORELIST_UPDATE" or event == "MUTELIST_UPDATE" or event == "BN_BLOCK_LIST_UPDATED" ) then
+	elseif ( event == "IGNORELIST_UPDATE" or event == "BN_BLOCK_LIST_UPDATED" ) then
 		IgnoreList_Update();
 	elseif ( event == "WHO_LIST_UPDATE" ) then
 		WhoList_Update();
@@ -1240,8 +1237,6 @@ function FriendsFrame_OnEvent(self, event, ...)
 	elseif ( event == "GUILD_MOTD") then
 		CURRENT_GUILD_MOTD = ...;
 		GuildFrameNotesText:SetText(CURRENT_GUILD_MOTD);
-	elseif ( event == "VOICE_CHAT_ENABLED_UPDATE" ) then
-		VoiceChat_Toggle();
 	elseif ( event == "PLAYER_FLAGS_CHANGED" ) then
 		SynchronizeBNetStatus();
 		FriendsFrameStatusDropDown_Update();

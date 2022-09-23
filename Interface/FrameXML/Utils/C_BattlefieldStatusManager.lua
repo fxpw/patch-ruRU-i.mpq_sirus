@@ -1,3 +1,5 @@
+local securecall = securecall
+
 local BattlegroundStatus = {
 	[-1] = "error",
 	[0] = "none",
@@ -137,9 +139,7 @@ function C_BattlefieldStatusManagerMixin:ASMSG_BATTLEFIELD_STATUS(msg)
 			self.statusData[index] = nil
 		end
 
-		for _, frame in ipairs({GetFramesRegisteredForEvent("UPDATE_BATTLEFIELD_STATUS")}) do
-			ExecuteFrameScript(frame, "OnEvent", "UPDATE_BATTLEFIELD_STATUS", index);
-		end
+		FireClientEvent("UPDATE_BATTLEFIELD_STATUS", index)
 	end
 end
 
@@ -156,9 +156,7 @@ function C_BattlefieldStatusManagerMixin:ASMSG_BATTLEFIELD_STATUS_FAKE(msg)
 		end
 	end
 
-	for _, frame in ipairs({GetFramesRegisteredForEvent("UPDATE_BATTLEFIELD_STATUS")}) do
-		ExecuteFrameScript(frame, "OnEvent", "UPDATE_BATTLEFIELD_STATUS");
-	end
+	FireClientEvent("UPDATE_BATTLEFIELD_STATUS")
 end
 
 function C_BattlefieldStatusManagerMixin:ASMSG_BATTLEFIELD_QUEUE_ACCEPT(msg)
@@ -181,9 +179,7 @@ function C_BattlefieldStatusManagerMixin:ASMSG_BF_QUEUE_STATUS(msg)
 			self.bfStatusData[index] = nil
 		end
 
-		for _, frame in ipairs({GetFramesRegisteredForEvent("UPDATE_BATTLEFIELD_STATUS")}) do
-			ExecuteFrameScript(frame, "OnEvent", "UPDATE_BATTLEFIELD_STATUS", index);
-		end
+		FireClientEvent("UPDATE_BATTLEFIELD_STATUS", index)
 	end
 end
 

@@ -25,6 +25,18 @@ function ChannelFrame_OnLoad(self)
 	self:RegisterEvent("CHANNEL_COUNT_UPDATE");
 	self:RegisterEvent("CHANNEL_ROSTER_UPDATE");
 	FauxScrollFrame_SetOffset(ChannelRosterScrollFrame, 0);
+
+	for i = 2, 20 do
+		local button = CreateFrame("Button", "ChannelButton"..i, ChannelListScrollChildFrame, "ChannelButtonTemplate");
+		button:SetID(i);
+		button:SetPoint("TOPLEFT", _G["ChannelButton"..(i-1)], "BOTTOMLEFT");
+	end
+	for i = 2, 22 do
+		local button = CreateFrame("Button", "ChannelMemberButton"..i, ChannelRoster, "ChannelRosterButtonTemplate");
+		button:SetID(i);
+		button:SetPoint("TOPLEFT", _G["ChannelMemberButton"..(i-1)], "BOTTOMLEFT");
+	end
+
 	ChannelFrame_Update();
 end
 
@@ -50,12 +62,11 @@ end
 function ChannelFrame_Update()
 	local id = GetSelectedDisplayChannel();
 	if ( not id ) then
-		id = GetActiveVoiceChannel();
+		id = 0;
 	end
 	ChannelList_Update();
 	ChannelList_UpdateHighlight(id);
 	ChannelRoster_Update(id);
-	--ChannelFrame_UpdateJoin();
 end
 
 function ChannelFrame_OnUpdate(self, elapsed)
@@ -165,11 +176,8 @@ function ChannelList_Update()
 		buttonSpeaker = _G["ChannelButton"..i.."SpeakerFrame"];
 		if ( i <= channelCount) then
 			name, header, collapsed, channelNumber, count, active, category, voiceEnabled, voiceActive = GetChannelDisplayInfo(i);
-			if ( IsVoiceChatEnabled() ) then
-				ChannelList_UpdateVoice(i, voiceEnabled, voiceActive);
-			else
-				ChannelList_UpdateVoice(i, nil, nil);
-			end
+
+			ChannelList_UpdateVoice(i, nil, nil);
 			button.header = header;
 			button.collapsed = collapsed;
 			if ( header ) then
@@ -407,42 +415,6 @@ function ChannelListDropDown_Initialize()
 	local count = 0;
 	local info;
 	if ( not ChannelListDropDown.global ) then
-		if ( IsVoiceChatEnabled() ) then
-			-- Enable Voice Chat option if Voice Chat is enabled.
-			if ( not ChannelListDropDown.voice and IsDisplayChannelOwner() ) then
-				info = UIDropDownMenu_CreateInfo();
-				info.text = CHAT_VOICE_ON;
-				info.notCheckable = 1;
-				info.func = ChannelListDropDown_StripSelf
-				info.arg1 = DisplayChannelVoiceOn;
-				info.arg2 = ChannelListDropDown.id;
-				UIDropDownMenu_AddButton(info);
-				count = count + 1;
-			end
-			-- Voice Chat option if Voice Chat is enabled.
-			if ( ChannelListDropDown.voice and not ChannelListDropDown.voiceActive ) then
-				info = UIDropDownMenu_CreateInfo();
-				info.text = CHAT_VOICE;
-				info.notCheckable = 1;
-				info.func = ChannelListDropDown_StripSelf				
-				info.arg1 = SetActiveVoiceChannel;
-				info.arg2 = ChannelListDropDown.id;
-				UIDropDownMenu_AddButton(info);
-				count = count + 1;
-
-			--[[ Disable Voice Chat option if Voice Chat is enabled and not a group channel.
-				if ( not ChannelListDropDown.group and IsDisplayChannelOwner() ) then
-					info = UIDropDownMenu_CreateInfo();
-					info.text = CHAT_VOICE_OFF;
-					info.notCheckable = 1;
-					info.func = SetActiveVoiceChannel;
-					info.arg1 = ChannelListDropDown.id;
-					UIDropDownMenu_AddButton(info);
-					count = count + 1;
-				end]]--
-			end
-		end
-
 		-- SET PASSWORD if it is a custom Channel and is owner
 		if ( ChannelListDropDown.custom and IsDisplayChannelOwner() ) then
 			info = UIDropDownMenu_CreateInfo();
@@ -535,6 +507,7 @@ function ChannelList_ShowDropdown(id)
 	ChannelListDropDown.voiceActive = voiceActive;
 	ChannelListDropDown.active = active;
 	ChannelListDropDown.channelName = name;
+	ChannelListDropDown.onHide = function() ChannelListDropDown.clicked = nil; end;
 	ToggleDropDownMenu(1, nil, ChannelListDropDown, "cursor");
 end
 
@@ -644,11 +617,7 @@ function ChannelRoster_Update(id)
 			else
 				buttonRank:Hide();
 			end
-			if ( IsVoiceChatEnabled() ) then
-				ChannelRoster_UpdateVoice(i, enabled, active, muted);
-			else
-				ChannelRoster_UpdateVoice(i, nil, nil, nil);			
-			end
+			ChannelRoster_UpdateVoice(i, nil, nil, nil);			
 
 			button:SetID(rosterIndex);
 			button:Show();
@@ -973,19 +942,6 @@ function ChannelPulloutRoster_OnEvent (rosterFrame, event, ...)
 end
 
 function ChannelPulloutRoster_GetActiveSession ()
-	local name, active;
-	for i = 1, GetNumVoiceSessions() do
-		name, active = GetVoiceSessionInfo(i);
-		if ( active ) then
-			return name, i;
-		end
-	end
-
-	name = GetVoiceSessionInfo(1);
-	if ( name ) then
-		return name, 1, true;
-	end
-	
 	return false;
 end
 
@@ -1021,18 +977,7 @@ function ChannelPulloutRoster_GetSessionInfo (roster)
 	end
 	
 	ChannelPulloutTab_UpdateText(CHANNELPULLOUT_OPTIONS.name);
-		
-	local numMembers = GetNumVoiceSessionMembersBySessionID(CHANNELPULLOUT_OPTIONS.session) or 0;
-	for i = 1, numMembers do
-		rosterFrame.members[i] = { GetVoiceSessionMemberInfoBySessionID(CHANNELPULLOUT_OPTIONS.session, i) };
-	end
-		
-	if ( numMembers < #rosterFrame.members ) then
-		for i = #rosterFrame.members, numMembers + 1, -1 do
-			rosterFrame.members[i] = nil;
-		end
-	end
-	
+
 	table.sort(rosterFrame.members, ChannelPulloutRoster_Sort);
 end
 

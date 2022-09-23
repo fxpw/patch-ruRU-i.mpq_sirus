@@ -1,19 +1,11 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<!-- if you change something here you probably want to change the glue version too -->
-
 	<Script file="GraphicsQualityLevels.lua"/>
-	<Script file="OptionsPanelTemplates.lua"/>
 	<Script file="VideoOptionsPanels.lua"/>
 
 	<CheckButton name="VideoOptionsSmallCheckButtonTemplate" inherits="OptionsSmallCheckButtonTemplate" virtual="true">
 		<Scripts>
 			<OnClick>
-				if ( self:GetChecked() ) then
-					PlaySound("igMainMenuOptionCheckBoxOn");
-				else
-					PlaySound("igMainMenuOptionCheckBoxOff");
-				end
 				BlizzardOptionsPanel_CheckButton_OnClick(self);
 				VideoOptionsFrameApply:Enable();
 			</OnClick>
@@ -949,4 +941,3 @@
 		</Frames>
 	</Frame>
 </Ui>
-

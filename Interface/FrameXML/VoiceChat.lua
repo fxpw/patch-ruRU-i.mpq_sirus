@@ -2,37 +2,17 @@ VOICECHAT_DELAY = 1.25;
 VOICECHAT_BUTTON_OFFSET = 45;
 VOICECHAT_UPDATE_FREQ = 0.05
 VOICECHAT_TALKERS_PADDING = 16;
-MOVING_FRAME = nil; 
+MOVING_FRAME = nil;
 
 VOICECHAT_TALKERS = {};
 local timeSinceLast = 0;
 
 local function AddTalker(name, unit)
-	assert(name, "Usage: AddTalker(name, <unitToken>)");
-	for index, talker in ipairs(VOICECHAT_TALKERS) do
-		if ( name == talker.name ) then
-			talker.fadeout = nil;
-			return;
-		end
-	end
-	
-	local talker = {}
-	talker.name = name;
-	talker.unit = unit;
-	tinsert(VOICECHAT_TALKERS, talker);
-	if ( not VoiceChatTalkers:GetScript("OnUpdate") ) then
-		VoiceChatTalkers:SetScript("OnUpdate", VoiceChatTalkers_OnUpdate);
-	end
+
 end
 
 local function RemoveTalker(name)
-	assert(name, "Usage: RemoveTalker(name)");
-	for index, talker in next, VOICECHAT_TALKERS do
-		if ( name == talker.name ) then
-			tremove(VOICECHAT_TALKERS, index);
-			return;
-		end
-	end
+
 end
 
 function VoiceChatTalkers_OnLoad()
@@ -55,7 +35,7 @@ function VoiceChatTalkers_OnEvent(self, event, ...)
 		if ( arg1 and (not arg2 or not UnitIsUnit(arg2, "player")) ) then
 			AddTalker(arg1, arg2);
 			VoiceChatTalkers_Update();
-		end	
+		end
 	elseif ( event == "VOICE_PLATE_STOP" ) then
 		if ( arg1 and (not arg2 or not UnitIsUnit(arg2, "player")) ) then
 			for _, talker in next, VOICECHAT_TALKERS do
@@ -78,11 +58,11 @@ function VoiceChatTalkers_OnUpdate(self, elapsed)
 				update = true;
 			end
 		end
-		
+
 		if ( update ) then
 			VoiceChatTalkers_Update();
 		end
-		
+
 		if ( #VOICECHAT_TALKERS == 0 ) then
 			VoiceChatTalkers:SetScript("OnUpdate", nil);
 		end
@@ -102,7 +82,7 @@ function VoiceChatTalkers_FadeOut()
 end
 
 function VoiceChatTalkers_CanHide()
-	return (#VOICECHAT_TALKERS == 0) and (not VoiceChatTalkers.speakerLock) and (not VoiceChatTalkers.optionsLock) and (not VoiceChatTalkers.mouseoverLock);
+	return true;
 end
 
 function VoiceChatTalkers_Update()
@@ -117,7 +97,7 @@ function VoiceChatTalkers_Update()
 		end
 		VoiceChatTalkers_ResizeFrame(1);
 		VoiceChatTalkers.speakerLock = nil;
-		
+
 		if ( VoiceChatTalkers.visible > 0 and VoiceChatTalkers_CanHide() ) then
 			--Only run this if we're actually changing from a number of talkers greater than zero to zero.
 			VoiceChatTalkers_FadeOut();
@@ -136,7 +116,7 @@ function VoiceChatTalkers_Update()
 			VoiceChatTalkers.buttons[i]:Hide();
 		end
 	end
-	
+
 	VoiceChatTalkersSpeaker:Hide();
 	VoiceChatTalkers.speakerLock = true;
 	VoiceChatTalkers:SetAlpha(1);
@@ -146,7 +126,7 @@ end
 
 function VoiceChatTalkers_CreateButtons (maxButtons)
 	assert(maxButtons)
-	
+
 	local buttonFrame;
 	for i = #VoiceChatTalkers.buttons + 1, maxButtons do
 		buttonFrame = CreateFrame("FRAME", VoiceChatTalkers:GetName() .. "Button" .. i, VoiceChatTalkers, "VoiceChatButtonTemplate");
@@ -159,7 +139,7 @@ end
 
 function VoiceChatTalkers_ResizeFrame(visible)
 	local visibleButtons = visible;
-	
+
 	if ( not visibleButtons ) then
 		for i = 1, #VoiceChatTalkers.buttons do
 			if ( VoiceChatTalkers.buttons[i]:IsShown() ) then
@@ -167,7 +147,7 @@ function VoiceChatTalkers_ResizeFrame(visible)
 			end
 		end
 	end
-	
+
 	if ( visibleButtons > 0 ) then
 		VoiceChatTalkers:SetHeight(visibleButtons * VoiceChatTalkers.buttons[1]:GetHeight() + VOICECHAT_TALKERS_PADDING);
 	else
@@ -176,60 +156,24 @@ function VoiceChatTalkers_ResizeFrame(visible)
 end
 
 function VoiceChat_OnUpdate(self, elapsed)
-	if ( not self.show ) then
-		if ( self.unit ) then
-			if ( self.name == UnitName("player") ) then
-				return;
-			elseif ( self.timer ) then
-				if ( self.timer < 0 ) then
-					UIFrameFadeOut(self, 0.35); 
-					self.timer = nil;
-					self.unit = nil;
-					self.name = nil;
-				else
-					self.timer = self.timer - elapsed;
-				end
-			end
-		end
-	end
+	self:Hide();
 end
 
 function VoiceChat_Animate(frame, animate)
 	local frameName = frame:GetName();
-	if ( animate ) then
-		UIFrameFlash(_G[frameName.."Flash"], 0.35, 0.35, -1);
-	else
-		UIFrameFlashStop(_G[frameName.."Flash"]);
-		frame:Hide();
-	end
+	UIFrameFlashStop(_G[frameName.."Flash"]);
+	frame:Hide();
 end
 
 
 function MiniMapVoiceChat_Update()
-	local count = GetNumVoiceSessions();
-	if ( IsVoiceChatEnabled() ) then
-		if ( GetNumVoiceSessions() ) then
-			MiniMapVoiceChatFrame:Show();
-			if ( count ~= MiniMapVoiceChatFrame.count ) then
-				VoiceChatShineFadeIn();
-			end
-			MiniMapVoiceChatFrame.count = count;
-		end
-	else
-		MiniMapVoiceChatFrame:Hide();
-	end
+	MiniMapVoiceChatFrame:Hide();
 end
 
 --- Global Voice Chat Switch
 function VoiceChat_Toggle()
-	if ( IsVoiceChatEnabled() ) then
-		-- Options Frame Enable
-		ChannelFrameAutoJoin:Show();
-		VoiceChatTalkers:Show();
-	else
-		ChannelFrameAutoJoin:Hide();
-		VoiceChatTalkers:Hide();
-	end
+	ChannelFrameAutoJoin:Hide();
+	VoiceChatTalkers:Hide();
 end
 
 --[ Minimap DropDown Functions ]--
@@ -240,29 +184,13 @@ end
 
 function MiniMapVoiceChatDropDown_Initialize()
 	local name, active, checked;
-	local count = GetNumVoiceSessions();
 	local info;
-	for id=1, count do
-		name, active = GetVoiceSessionInfo(id);
 
-		info = UIDropDownMenu_CreateInfo();
-		info.text = name;
-		info.checked = active;
-		info.func = function (self, id) SetActiveVoiceChannelBySessionID(id) end;
-		info.arg1 = id;
-		UIDropDownMenu_AddButton(info);
-	end
-
-	if ( not GetVoiceCurrentSessionID() ) then
-		checked = 1;
-	else
-		checked = nil;
-	end
+	checked = nil;
 
 	info = UIDropDownMenu_CreateInfo();
 	info.text = NONE;
 	info.checked = checked;
-	info.func = function (self, id) SetActiveVoiceChannelBySessionID(id) end;
 	info.arg1 = 0;
 	UIDropDownMenu_AddButton(info);
 
@@ -282,9 +210,5 @@ function VoiceChatShineFadeOut()
 end
 
 function SetSelfMuteState()
-	if ( (GetCVar("VoiceChatSelfMute") == "1") and (GetCVar("VoiceChatMode") == "1") ) then
-		MiniMapVoiceChatFrameIconMuted:Show();
-	else
-		MiniMapVoiceChatFrameIconMuted:Hide();
-	end
+	MiniMapVoiceChatFrameIconMuted:Hide();
 end

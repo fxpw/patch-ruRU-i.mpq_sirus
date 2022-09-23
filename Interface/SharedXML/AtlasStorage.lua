@@ -4014,10 +4014,13 @@ S_ATLAS_STORAGE = {
 	["PVPLadder-IconSolo-Rectangle"] = {128, 128, 0.253906, 0.503906, 0.507813, 0.757813, false, false, "Interface/PVPFrame/PVPLadderCategoryIcons"},
 	["PVPLadder-Icon2x2-Square"] = {128, 128, 0.253906, 0.503906, 0.000000, 0.250000, false, false, "Interface/PVPFrame/PVPLadderCategoryIcons"},
 	["PVPLadder-Icon3x3-Square"] = {128, 128, 0.253906, 0.503906, 0.253906, 0.503906, false, false, "Interface/PVPFrame/PVPLadderCategoryIcons"},
-	["CharacterSelection_Alliance_Icon"] = {20, 26, 0, 0.21875, 0, 0.2734375, false, false, "interface/CharacterSelection/CharacterSelectionHordeAllianceIcon"},
-	["CharacterSelection_Horde_Icon"] = {15, 27, 0.21875, 0.3828125, 0, 0.28125, false, false, "interface/CharacterSelection/CharacterSelectionHordeAllianceIcon"},
-	["CharacterSelection_Vulpera_Icon"] = {15, 27, 0.390625, 0.578125, 0, 0.2734375, false, false, "interface/CharacterSelection/CharacterSelectionHordeAllianceIcon"},
-	["CharacterSelection_Renegade_Icon"] = {20, 27, 0.578125, 0.78125, 0, 0.2734375, false, false, "interface/CharacterSelection/CharacterSelectionHordeAllianceIcon"},
+
+	["CharacterSelect-FactionIcon-Alliance"] = { 36, 36, 0.0234375, 0.3046875, 0.0234375, 0.3046875, false, false, "Interface/Custom_Glues/FactionIcons" },
+	["CharacterSelect-FactionIcon-Horde"] = { 36, 36, 0.3359375, 0.6171875, 0.0234375, 0.3046875, false, false, "Interface/Custom_Glues/FactionIcons" },
+	["CharacterSelect-FactionIcon-Vulpera"] = { 36, 36, 0.0234375, 0.3046875, 0.3359375, 0.6171875, false, false, "Interface/Custom_Glues/FactionIcons" },
+	["CharacterSelect-FactionIcon-Pandaren"] = { 36, 36, 0.3359375, 0.6171875, 0.3359375, 0.6171875, false, false, "Interface/Custom_Glues/FactionIcons" },
+	["CharacterSelect-FactionIcon-Renegade"] = { 36, 36, 0.6484375, 0.9296875, 0.0234375, 0.3046875, false, false, "Interface/Custom_Glues/FactionIcons" },
+
 	["Roulette-button-spin-light"] = {782, 291, 0.189453, 0.571289, 0.206055, 0.348145, false, false, "Interface/Roulette/Roulette_atlas"},
 	["Roulette-item-border"] = {7, 40, 0.573730, 0.583984, 0.206055, 0.315918, false, false, "Interface/Roulette/Roulette_atlas"},
 	["Roulette-exit"] = {161, 161, 0.707031, 0.785645, 0.350586, 0.429199, false, false, "Interface/Roulette/Roulette_atlas"},

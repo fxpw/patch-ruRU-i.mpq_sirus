@@ -209,10 +209,6 @@ function UIParent_OnLoad(self)
 	self:RegisterEvent("ENABLE_TAXI_BENCHMARK");
 	self:RegisterEvent("DISABLE_TAXI_BENCHMARK");
 
-	-- Push to talk
-	self:RegisterEvent("VOICE_PUSH_TO_TALK_START");
-	self:RegisterEvent("VOICE_PUSH_TO_TALK_STOP");
-
 	-- Events for BarberShop Handling
 	self:RegisterEvent("BARBER_SHOP_OPEN");
 	self:RegisterEvent("BARBER_SHOP_CLOSE");
@@ -298,7 +294,7 @@ function MacroFrame_SaveMacro()
 end
 
 function RaidFrame_LoadUI()
-	UIParentLoadAddOn("Blizzard_RaidUI");
+--	UIParentLoadAddOn("Blizzard_RaidUI");
 end
 
 function TalentFrame_LoadUI()
@@ -354,7 +350,7 @@ function GMChatFrame_LoadUI(...)
 end
 
 function Arena_LoadUI()
-	UIParentLoadAddOn("Blizzard_ArenaUI");
+--	UIParentLoadAddOn("Blizzard_ArenaUI");
 end
 
 function ShowMacroFrame()
@@ -571,6 +567,7 @@ function UIParent_OnEvent(self, event, ...)
 			GMChatFrame:AddMessage(format(GM_CHAT_LAST_SESSION, "|TInterface\\ChatFrame\\UI-ChatIcon-Blizz.blp:0:2:0:-3|t "..
 			"|HplayerGM:"..lastTalkedToGM.."|h".."["..lastTalkedToGM.."]".."|h"), info.r, info.g, info.b, info.id);
 		end
+		TargetFrame_OnVariablesLoaded();
 
 		if not NPE_TutorialPointerFrame:GetKey("AURA_309133") then
 			Hook:RegisterCallback("UIPARENT", "UNIT_AURA", function(auraFilter, auraEvent, name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, shouldConsolidate, spellID, canApplyAura, isBossDebuff, isCastByPlayer, value2, value3)
@@ -596,6 +593,12 @@ function UIParent_OnEvent(self, event, ...)
 	elseif ( event == "PLAYER_ALIVE" or event == "RAISED_AS_GHOUL" ) then
 		StaticPopup_Hide("DEATH");
 		StaticPopup_Hide("RESURRECT_NO_SICKNESS");
+
+		local resurrectOfferer = ResurrectGetOfferer();
+		if resurrectOfferer then
+			ShowResurrectRequest(resurrectOfferer);
+		end
+
 		if ( UnitIsGhost("player") ) then
 			GhostFrame:Show();
 		else
@@ -755,8 +758,6 @@ function UIParent_OnEvent(self, event, ...)
 			GetArenaTeam(i);
 		end
 
-		VoiceChat_Toggle();
-
 		-- Fix for Bug 124392
 		StaticPopup_Hide("LEVEL_GRANT_PROPOSED");
 
@@ -768,6 +769,14 @@ function UIParent_OnEvent(self, event, ...)
 			GhostFrame:Show();
 		else
 			GhostFrame:Hide();
+		end
+		if ( GetReleaseTimeRemaining() > 0 or GetReleaseTimeRemaining() == -1 ) then
+			StaticPopup_Show("DEATH");
+		end
+
+		local resurrectOfferer = ResurrectGetOfferer();
+		if resurrectOfferer then
+			ShowResurrectRequest(resurrectOfferer);
 		end
 	elseif ( event == "RAID_ROSTER_UPDATE" ) then
 		-- Hide/Show party member frames
@@ -1034,8 +1043,8 @@ function UIParent_OnEvent(self, event, ...)
 		local hairCustomization = GetHairCustomization()
 		local raceInfo 			= C_CreatureInfo.GetRaceInfo(UnitRace("player"))
 
-		if _G["HAIR_"..hairCustomization.."_COLOR"] == EMPTY_HAIR_COLOR or
-				((raceInfo.raceID == E_CHARACTER_RACES.RACE_PANDAREN_HORDE or raceInfo.raceID == E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE) and UnitSex("player") == E_SEX.MALE) then
+		if _G["HAIR_"..hairCustomization.."_COLOR"] == EMPTY_HAIR_COLOR
+		or (UnitSex("player") == E_SEX.MALE and (raceInfo.raceID == E_CHARACTER_RACES.RACE_PANDAREN_HORDE or raceInfo.raceID == E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE or raceInfo.raceID == E_CHARACTER_RACES.RACE_PANDAREN_NEUTRAL)) then
 			BarberShopFrameSelector2:Hide()
 
 			BarberShopFrameSelector3:ClearAllPoints()
@@ -1179,24 +1188,6 @@ function UIParent_OnEvent(self, event, ...)
 		end
 		local info = ChatTypeInfo["SYSTEM"];
 		DEFAULT_CHAT_FRAME:AddMessage(BENCHMARK_TAXI_MODE_OFF, info.r, info.g, info.b, info.id);
-
-	-- Push to talk
-	elseif ( event == "VOICE_PUSH_TO_TALK_START" and GetVoiceCurrentSessionID() ) then
-		if ( GetCVarBool("PushToTalkSound") ) then
-			PlaySound("VoiceChatOn");
-		end
-		-- Animate the player frame speaker even if not broadcasting
-		if  ( GetCVar("VoiceChatMode") == "0" ) then
-			UIFrameFadeIn(PlayerSpeakerFrame, 0.2, PlayerSpeakerFrame:GetAlpha(), 1);
-		end
-	elseif ( event == "VOICE_PUSH_TO_TALK_STOP" ) then
-		if ( GetCVarBool("PushToTalkSound") and GetVoiceCurrentSessionID() ) then
-			PlaySound("VoiceChatOff");
-		end
-		-- Stop Animation
-		if  ( GetCVar("VoiceChatMode") == "0" and PlayerSpeakerFrame:GetAlpha() > 0 ) then
-			UIFrameFadeOut(PlayerSpeakerFrame, 0.2, PlayerSpeakerFrame:GetAlpha(), 0);
-		end
 	elseif ( event == "LEVEL_GRANT_PROPOSED" ) then
 		StaticPopup_Show("LEVEL_GRANT_PROPOSED", arg1);
 	elseif ( event == "CHAT_MSG_WHISPER" and arg6 == "GM" ) then	--GMChatUI
@@ -1251,6 +1242,33 @@ function UpdateMenuBarTop ()
 	end
 end
 
+function UIParent_UpdateTopFramePositions()
+	local topOffset = 0;
+	local yOffset = 0;
+	local xOffset = -180;
+
+	local playerLeftOffset = 0
+
+	if PlayerFrame and not PlayerFrame:IsUserPlaced() and not PlayerFrame_IsAnimatedOut(PlayerFrame) then
+		if PlayerFrame.state ~= "vehicle" then
+			local classificationInfo = C_UnitMixin:GetClassification("player")
+
+			if classificationInfo.vipCategory == 1 then
+				playerLeftOffset = playerLeftOffset + 4
+			elseif classificationInfo.vipCategory == 2 then
+				playerLeftOffset = playerLeftOffset + 23
+			elseif classificationInfo.vipCategory == 3 then
+				playerLeftOffset = playerLeftOffset + 34
+			end
+		end
+
+		PlayerFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -19 + playerLeftOffset, -4 - topOffset)
+	end
+
+	if TargetFrame and not TargetFrame:IsUserPlaced() then
+		TargetFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 250 + playerLeftOffset, -4 - topOffset);
+	end
+end
 UIPARENT_MANAGED_FRAME_POSITIONS = {
 	--Items with baseY set to "true" are positioned based on the value of menuBarTop and their offset needs to be repeatedly evaluated as menuBarTop can change.
 	--"yOffset" gets added to the value of "baseY", which is used for values based on menuBarTop.
@@ -2020,21 +2038,23 @@ function FramePositionDelegate:UIParentManageFramePositions()
 		CONTAINER_OFFSET_X = CONTAINER_OFFSET_X + 16
 	end
 
-	local numArenaOpponents = GetNumArenaOpponents();
-	if ( not WatchFrame:IsUserPlaced() and ArenaEnemyFrames and ArenaEnemyFrames:IsShown() and (numArenaOpponents > 0) ) then
-		WatchFrame:ClearAllPoints();
-		WatchFrame:SetPoint("TOPRIGHT", "ArenaEnemyFrame"..numArenaOpponents, "BOTTOMRIGHT", 2 - 12, -35 - 12);
-	elseif ( not WatchFrame:IsUserPlaced() ) then -- We're using Simple Quest Tracking, automagically size and position!
-		WatchFrame:ClearAllPoints();
-		-- move up if only the minimap cluster is above, move down a little otherwise
-		if ( anchorY == 0 ) then
-			anchorY = 20;
+	if ( WatchFrame and not WatchFrame:IsUserPlaced() ) then
+		local numArenaOpponents = GetNumArenaOpponents();
+		if ( ArenaEnemyFrames and ArenaEnemyFrames:IsShown() and (numArenaOpponents > 0) ) then
+			WatchFrame:ClearAllPoints();
+			WatchFrame:SetPoint("TOPRIGHT", ArenaEnemyFrames_GetBestAnchorUnitFrameForOppponent(numArenaOpponents), "BOTTOMRIGHT", 2 - 12, -35 - 12);
+		else
+			-- We're using Simple Quest Tracking, automagically size and position!
+			WatchFrame:ClearAllPoints();
+			-- move up if only the minimap cluster is above, move down a little otherwise
+			if ( anchorY == 0 ) then
+				anchorY = 20;
+			end
+			WatchFrame:SetPoint("TOPRIGHT", "MinimapCluster", "BOTTOMRIGHT", -CONTAINER_OFFSET_X, anchorY - 10);
+			-- OnSizeChanged for WatchFrame handles its redraw
 		end
-		WatchFrame:SetPoint("TOPRIGHT", "MinimapCluster", "BOTTOMRIGHT", -CONTAINER_OFFSET_X, anchorY - 10);
-		-- OnSizeChanged for WatchFrame handles its redraw
+		WatchFrame:SetPoint("BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -CONTAINER_OFFSET_X, CONTAINER_OFFSET_Y);
 	end
-
-	WatchFrame:SetPoint("BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -CONTAINER_OFFSET_X, CONTAINER_OFFSET_Y);
 
 	-- Update chat dock since the dock could have moved
 	FCF_DockUpdate();
@@ -2072,10 +2092,6 @@ function ShowUIPanel(frame, force)
 end
 
 function HideUIPanel(frame, skipSetPoint)
-	if frame and type(frame) == "string" then
-		frame = _G[frame]
-	end
-
 	if ( not frame or not frame:IsShown() ) then
 		return;
 	end
@@ -2306,6 +2322,10 @@ end
 
 function SetParentFrameLevel(frame, offset)
 	frame:SetFrameLevel(frame:GetParent():GetFrameLevel() + (offset or 0));
+end
+
+function PassClickToParent(self, ...)
+	self:GetParent():Click(...);
 end
 
 -- Function to reposition frames if they get dragged off screen
@@ -3762,9 +3782,17 @@ function BetterDate(formatString, timeVal)
 	return date(formatString, timeVal);
 end
 
-function UIPanelCheckAndHide( frame )
-	if frame and frame:IsShown() then
-		HideUIPanel(frame)
+function GetDisplayedAllyFrames()
+	local useCompact = GetCVar("C_CVAR_USE_COMPACT_PARTY_FRAMES") == "1"
+
+	if ( IsActiveBattlefieldArena() and not useCompact ) then
+		return "party";
+	elseif ( (GetNumRaidMembers() > 0 or (GetNumPartyMembers() > 0 and useCompact)) ) then
+		return "raid";
+	elseif ( GetNumPartyMembers() > 0 ) then
+		return "party";
+	else
+		return nil;
 	end
 end
 
@@ -3955,6 +3983,10 @@ end)
 
 LAST_FINDPARTY_FRAME = nil
 function ToggleLFDParentFrame()
+	if C_Unit.IsNeutral("player") then
+		return
+	end
+
 	for _, frameName in pairs(pvpTabPanels) do
 		local frame = _G[frameName.name]
 

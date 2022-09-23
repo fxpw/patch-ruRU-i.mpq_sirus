@@ -980,24 +980,6 @@ function IsNyllClient()
 	return S_IsNyllClient and S_IsNyllClient()
 end
 
-function GetSafeCVar(cvar, dafault)
-	local isSuccess, pCallValue = pcall(function() return GetCVar(cvar) end)
-
-	if isSuccess and pCallValue then
-		return pCallValue
-	elseif dafault then
-		return dafault
-	end
-end
-
-function SetSafeCVar(cvar, value, raiseEvent)
-    local isCVar = GetSafeCVar(cvar)
-
-    if isCVar then
-        SetCVar(cvar, value , raiseEvent)
-    end
-end
-
 function PackNumber(n1, n2)
 	return bit.bor(n1, bit.lshift(n2, 16))
 end

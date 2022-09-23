@@ -134,3 +134,48 @@ do	-- UnitIsGroupLeader
 		return false
 	end
 end
+
+do	-- UnitInRangeIndex
+	local ITEM_FRIENDLY = {
+		[40] = 34471,
+	}
+	local UNIT_RANGE_INDEXES = {10, 28, 38, 40}
+
+	local eventHandler = CreateFrame("Frame")
+	eventHandler:RegisterEvent("PLAYER_ENTERING_WORLD")
+	eventHandler:SetScript("OnEvent", function(self, event)
+		for _, itemID in pairs(ITEM_FRIENDLY) do
+			C_Item:RequestServerCache(itemID)
+		end
+		self:UnregisterEvent(event)
+	end)
+
+	function UnitInRangeIndex(unit, rangeIndex)
+		if rangeIndex == 0 then
+			return true
+		elseif not UnitExists(unit) or not UNIT_RANGE_INDEXES[rangeIndex] then
+			return false
+		elseif UnitIsUnit(unit, "player") then
+			return true
+		end
+
+		local range = UNIT_RANGE_INDEXES[rangeIndex]
+
+		if range == 10 then
+			return CheckInteractDistance(unit, 3) == 1
+		elseif range == 28 then
+			return CheckInteractDistance(unit, 1) == 1
+		elseif range == 38 then
+			return UnitInRange(unit) == 1
+		elseif ITEM_FRIENDLY[range] then
+			local itemID = ITEM_FRIENDLY[range]
+			local result = IsItemInRange(itemID, unit)
+			if not result or result == -1 then
+				-- invalide spell, fallback to 38yrd check
+				return UnitInRange(unit) == 1
+			else
+				return result == 1
+			end
+		end
+	end
+end

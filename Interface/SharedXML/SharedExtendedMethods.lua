@@ -435,15 +435,6 @@ if WorldFrame then
 	local GameTooltip = getmetatable(CreateFrame("GameTooltip"))
 	local PlayerModel = getmetatable(CreateFrame("PlayerModel"))
 
-	local _SetUnitDebuff = _SetUnitDebuff or GameTooltip.__index.SetUnitDebuff
-	function GameTooltip.__index.SetUnitDebuff(self, unit, index, filter)
-		if AURA_CACHE[unit] and AURA_CACHE[unit][index] then
-			_SetUnitDebuff(self, unit, AURA_CACHE[unit][index], filter)
-		else
-			_SetUnitDebuff(self, unit, index, filter)
-		end
-	end
-
 	function GameTooltip.__index:SetTransmogrifyItem( Entry ) Method_SetTransmogrifyItem( self, Entry ) end
 	function GameTooltip.__index:GetScaledRect() return Method_GetScaledRect(self) end
 	function GameTooltip.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end

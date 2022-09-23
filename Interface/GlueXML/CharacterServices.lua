@@ -343,21 +343,22 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 	local frame = self:GetParent()
 	if CharacterBoostStep == 1 then
 		if ( frame.CharSelect ) then
-			local name, race, class, level = GetCharacterInfo(GetCharIDFromIndex(frame.CharSelect))
-			self.race = race
-			local numChars = GetNumCharacters()
-			local characterLimit = min(numChars, MAX_CHARACTERS_DISPLAYED)
+			local name, race, class, level = GetCharacterInfo(GetCharIDFromIndex(CharSelectServicesFlowFrame.CharSelect));
+			local classInfo = C_CreatureInfo.GetClassInfo(class)
+			local factionInfo = C_CreatureInfo.GetFactionInfo(race)
+	
+			self.classInfo = classInfo
+			self.factionInfo = factionInfo
+
+			local _, _, _, color = GetClassColor(classInfo.classFile)
+			frame.CharacterServicesMaster.step1.finish.Character:SetFormattedText(CHARACTER_BOOST_CHARACTER_NAME, color, name)
+			frame.CharacterServicesMaster.step1.finish.CharacterInfo:SetFormattedText(CHARACTER_BOOST_CHARACTER_INFO, level, color, class)
 
 			frame.CharacterServicesMaster.step1.choose:Hide()
 			frame.CharacterServicesMaster.step1.finish:Show()
 			frame.GlowBox:Hide()
 
-			local classInfo = C_CreatureInfo.GetClassInfo(class)
-			local _, _, _, color = GetClassColor(classInfo.classFile)
-			frame.CharacterServicesMaster.step1.finish.Character:SetFormattedText(CHARACTER_BOOST_CHARACTER_NAME, color, name)
-			frame.CharacterServicesMaster.step1.finish.CharacterInfo:SetFormattedText(CHARACTER_BOOST_CHARACTER_INFO, level, color, class)
-
-			for i=1, characterLimit, 1 do
+			for i = 1, math.min(GetNumCharacters(), MAX_CHARACTERS_DISPLAYED) do
 				local button = _G["CharSelectCharacterButton"..i]
 				button.Arrow:Hide()
 
@@ -365,6 +366,7 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 					button:Disable()
 				end
 			end
+
 			CharacterBoostStep = CharacterBoostStep + 1
 
 			PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
@@ -385,12 +387,9 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 				))
 			CharacterBoostStep = CharacterBoostStep + 1
 
-			local name, race, class, level = GetCharacterInfo(GetCharIDFromIndex(CharSelectServicesFlowFrame.CharSelect));
-			local classInfo = C_CreatureInfo.GetClassInfo(class)
-
 			for i = 1, 3 do
 				local button = frame.CharacterServicesMaster.step3.choose.SpecButtons[i]
-				local spec = SHARED_CONSTANTS_SPECIALIZATION[classInfo.classFile][i]
+				local spec = SHARED_CONSTANTS_SPECIALIZATION[self.classInfo.classFile][i]
 				button.SpecName:SetText(spec.name)
 				button.RoleIcon:SetAtlas(spec.role and ("GlueDark-iconRole-"..spec.role) or "GlueDark-iconRole-DAMAGER")
 				button.SpecIcon:SetTexture(spec.icon)
@@ -399,8 +398,8 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 			end
 
 			local button = frame.CharacterServicesMaster.step3.choose.SpecButtons[4];
-			if classInfo.classFile == "DEATHKNIGHT" or classInfo.classFile == "DRUID" then
-				local spec = SHARED_CONSTANTS_SPECIALIZATION[classInfo.classFile][4]
+			if self.classInfo.classFile == "DEATHKNIGHT" or self.classInfo.classFile == "DRUID" then
+				local spec = SHARED_CONSTANTS_SPECIALIZATION[self.classInfo.classFile][4]
 				button.SpecName:SetText(spec.name)
 				button.RoleIcon:SetAtlas(spec.role and ("GlueDark-iconRole-"..spec.role) or "GlueDark-iconRole-TANK")
 				button.SpecIcon:SetTexture(spec.icon or "Interface\\Icons\\Ability_druid_catform")
@@ -438,12 +437,9 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 			frame.CharacterServicesMaster.step3.finish:Show()
 			CharacterBoostStep = CharacterBoostStep + 1;
 
-			local name, race, class, level = GetCharacterInfo(GetCharIDFromIndex(CharSelectServicesFlowFrame.CharSelect));
-			local classInfo = C_CreatureInfo.GetClassInfo(class);
-
 			for i = 1, 3 do
 				local button = frame.CharacterServicesMaster.step4.choose.SpecButtons[i];
-				local spec = SHARED_CONSTANTS_SPECIALIZATION[classInfo.classFile][i];
+				local spec = SHARED_CONSTANTS_SPECIALIZATION[self.classInfo.classFile][i];
 				button.SpecName:SetText(spec.name);
 				button.RoleIcon:SetAtlas(spec.role and ("GlueDark-iconRole-"..spec.role) or "GlueDark-iconRole-DAMAGER")
 				button.SpecIcon:SetTexture(spec.icon);
@@ -457,7 +453,7 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 				frame.CharacterServicesMaster.step4:Show()
 			else
 				SelectCharacterPvPSpec = 1
-				if self.race == PANDAREN_ALLIANCE or self.race == RACE_VULPERA_NEUTRAL then
+				if self.factionInfo.factionID == PLAYER_FACTION_GROUP.Neutral then
 					PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
 					CharacterBoostStep = CharacterBoostStep + 1;
 					frame.CharacterServicesMaster.step5:Show();
@@ -488,7 +484,7 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 			frame.CharacterServicesMaster.step4.choose:Hide();
 			frame.CharacterServicesMaster.step4.finish:Show();
 
-			if self.race == PANDAREN_ALLIANCE or self.race == RACE_VULPERA_NEUTRAL then
+			if self.factionInfo.factionID == PLAYER_FACTION_GROUP.Neutral then
 				PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
 				CharacterBoostStep = CharacterBoostStep + 1;
 				frame.CharacterServicesMaster.step5:Show();

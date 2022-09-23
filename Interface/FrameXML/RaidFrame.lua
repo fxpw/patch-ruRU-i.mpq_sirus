@@ -7,10 +7,9 @@ MAX_RAID_INFOS = 20;
 function RaidFrame_OnLoad(self)
 	self:RegisterEvent("PLAYER_LOGIN");
 	self:RegisterEvent("RAID_ROSTER_UPDATE");
-	self:RegisterEvent("UPDATE_INSTANCE_INFO");
 	self:RegisterEvent("PARTY_MEMBERS_CHANGED");
+	self:RegisterEvent("UPDATE_INSTANCE_INFO");
 	self:RegisterEvent("PARTY_LEADER_CHANGED");
-	self:RegisterEvent("VOICE_STATUS_UPDATE");
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 	self:RegisterEvent("READY_CHECK");
 	self:RegisterEvent("READY_CHECK_CONFIRM");
@@ -22,6 +21,18 @@ function RaidFrame_OnLoad(self)
 	RaidFrame_Update();
 
 	RaidFrame.hasRaidInfo = nil;
+end
+
+function RaidFrame_OnShow(self)
+	RaidFrame_Update();
+
+	if ( GetNumSavedInstances() > 0 ) then
+		RaidFrameRaidInfoButton:Enable();
+	else
+		RaidFrameRaidInfoButton:Disable();
+	end
+
+	RequestRaidInfo();
 end
 
 function RaidFrame_OnEvent(self, event, ...)
@@ -57,8 +68,7 @@ function RaidFrame_OnEvent(self, event, ...)
 			RaidFrameRaidInfoButton:Disable();
 		end
 		RaidInfoFrame_Update(true);
-	elseif ( event == "PARTY_MEMBERS_CHANGED" or event == "PARTY_LEADER_CHANGED" or
-		event == "VOICE_STATUS_UPDATE" or event == "PARTY_LFG_RESTRICTED" ) then
+	elseif ( event == "PARTY_MEMBERS_CHANGED" or event == "PARTY_LEADER_CHANGED" or event == "PARTY_LFG_RESTRICTED" ) then
 		RaidFrame_Update();
 	end
 end
@@ -83,9 +93,13 @@ function RaidFrame_Update()
 	end
 end
 
+function RaidFrame_ConvertToRaid()
+	ConvertToRaid();
+end
+
 -- Function for raid options
 function RaidOptionsFrame_UpdatePartyFrames()
-	if ( HIDE_PARTY_INTERFACE == "1" and GetNumRaidMembers() > 0) then
+	if ( GetDisplayedAllyFrames() ~= "party" ) then
 		HidePartyFrame();
 	else
 		HidePartyFrame();
@@ -97,7 +111,7 @@ end
 -- Populates Raid Info Data
 function RaidInfoFrame_Update(scrollToSelected)
 	RaidInfoFrame_UpdateSelectedIndex();
-	
+
 	local scrollFrame = RaidInfoScrollFrame;
 	local savedInstances = GetNumSavedInstances();
 	local instanceName, instanceID, instanceReset, instanceDifficulty, locked, extended, instanceIDMostSig, isRaid, maxPlayers, difficultyName;
@@ -106,7 +120,7 @@ function RaidInfoFrame_Update(scrollToSelected)
 	local buttons = scrollFrame.buttons;
 	local numButtons = #buttons;
 	local buttonHeight = buttons[1]:GetHeight();
-	
+
 	if ( scrollToSelected == true and RaidInfoFrame.selectedIndex ) then --Using == true in case the HybridScrollFrame .update is changed to pass in the parent.
 		local button = buttons[RaidInfoFrame.selectedIndex - offset]
 		if ( not button or (button:GetTop() > scrollFrame:GetTop()) or (button:GetBottom() < scrollFrame:GetBottom()) ) then
@@ -127,7 +141,7 @@ function RaidInfoFrame_Update(scrollToSelected)
 		local frame = buttons[i];
 		local index = i + offset;
 
-		if ( index <=  savedInstances) then
+		if ( index <= savedInstances) then
 			instanceName, instanceID, instanceReset, instanceDifficulty, locked, extended, instanceIDMostSig, isRaid, maxPlayers, difficultyName = GetSavedInstanceInfo(index);
 
 			frame.instanceID = instanceID;
@@ -149,21 +163,21 @@ function RaidInfoFrame_Update(scrollToSelected)
 				frame.reset:SetFormattedText("|cff808080%s|r", RAID_INSTANCE_EXPIRES_EXPIRED);
 				frame.name:SetFormattedText("|cff808080%s|r", instanceName);
 			end
-			
+
 			if ( extended ) then
 				frame.extended:Show();
 			else
 				frame.extended:Hide();
 			end
-			
+
 			frame:Show();
-			
+
 			if ( mouseIsOverScrollFrame and frame:IsMouseOver() ) then
 				RaidInfoInstance_OnEnter(frame);
 			end
 		else
 			frame:Hide();
-		end	
+		end
 	end
 	HybridScrollFrame_Update(scrollFrame, savedInstances * buttonHeight, scrollFrame:GetHeight());
 end
@@ -202,7 +216,7 @@ function RaidInfoFrame_UpdateSelectedIndex()
 	local savedInstances = GetNumSavedInstances();
 	for index=1, savedInstances do
 		local instanceName, instanceID, instanceReset, instanceDifficulty, locked, extended, instanceIDMostSig = GetSavedInstanceInfo(index);
-		if ( format("%x%x", instanceIDMostSig, instanceID) == RaidInfoFrame.selectedRaidID ) then
+		if ( string.format("%x%x", instanceIDMostSig, instanceID) == RaidInfoFrame.selectedRaidID ) then
 			RaidInfoFrame.selectedIndex = index;
 			RaidInfoExtendButton:Enable();
 			if ( extended ) then
@@ -227,4 +241,15 @@ function RaidInfoExtendButton_OnClick(self)
 	SetSavedInstanceExtend(RaidInfoFrame.selectedIndex, self.doExtend);
 	RequestRaidInfo();
 	RaidInfoFrame_Update();
+end
+
+function RaidFrameAllAssistCheckButton_UpdateAvailable(self)
+	self:SetChecked(IsEveryoneAssistant());
+	if ( IsRaidLeader() ) then
+		self:Enable();
+		self.text:SetFontObject(GameFontNormalSmall);
+	else
+		self:Disable();
+		self.text:SetFontObject(GameFontDisableSmall);
+	end
 end

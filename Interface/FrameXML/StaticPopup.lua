@@ -3478,16 +3478,16 @@ StaticPopupDialogs["ARENA_REPLAY_CONFIRMATION_WATCH"] = {
 	replayInfo = 1
 };
 
-StaticPopupDialogs["VULPERA_SELECT_FACTION"] = {
-	text = VULPERA_SELECT_FACTION,
+StaticPopupDialogs["FACTION_SELECT_CONFIRMATION"] = {
+	text = FACTION_SELECT_CONFIRMATION_TEXT,
 	button1 = ACCEPT,
 	button2 = CANCEL,
 	OnShow = function(self, factionID)
-		self.HelpBox.Text:SetText(VULPERA_SELECT_FACTION_HELP)
+		self.HelpBox.Text:SetText(FACTION_SELECT_CONFIRMATION_HELP)
 	end,
 	OnAccept = function(self, factionID)
 		SendServerMessage("SELECT_FACTION", factionID + 1)
-		HideUIPanel(VulperaSelectFactionFrame)
+		HideUIPanel(FactionSelectFrame)
 	end,
 	timeout = 0,
 	whileDead = 1,

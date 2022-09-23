@@ -287,7 +287,7 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Высшая эльфийка",
 		enGB = ""
 	},
-	["RACE_PANDAREN_HORDE_HORDE_FEMALE"] = {
+	["RACE_PANDAREN_HORDE_FEMALE"] = {
 		ruRU = "Пандарен (Орда)",
 		enGB = ""
 	},

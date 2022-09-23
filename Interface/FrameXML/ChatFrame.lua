@@ -6,6 +6,7 @@ NUM_CHAT_WINDOWS = 10;
 DEFAULT_CHAT_FRAME = ChatFrame1;
 NUM_REMEMBERED_TELLS = 10;
 MAX_WOW_CHAT_CHANNELS = 10;
+MAX_COUNTDOWN_SECONDS = 3600; -- One Hour
 
 CHAT_TIMESTAMP_FORMAT = nil;		-- gets set from Interface Options
 CHAT_SHOW_IME = false;
@@ -2325,6 +2326,14 @@ SlashCmdList["CLEAR_WORLD_MARKER"] = function(msg)
 	end
 end
 
+SlashCmdList["COUNTDOWN"] = function(msg)
+	local num1 = gsub(msg, "(%s*)(%d+)", "%2");
+	local number = tonumber(num1);
+	if(number and number <= MAX_COUNTDOWN_SECONDS) then
+		TimerTracker_DoCountdown(number);
+	end
+end
+
 for index, value in pairs(ChatTypeInfo) do
 	value.r = 1.0;
 	value.g = 1.0;
@@ -4391,12 +4400,7 @@ local createShoutPopup = function()
 				local text = this.PopupFrame.editBox:GetText()
 				if text and string.trim(text) ~= "" then
 					local msg = string.format(SHOUT_MESSAGE_PREVIEW, UnitName("player"), string.trim(text))
-					for _, ef in ipairs({GetFramesRegisteredForEvent("CHAT_MSG_SYSTEM")}) do
-						local onEvent = ef:GetScript("OnEvent")
-						if onEvent then
-							onEvent(ef, "CHAT_MSG_SYSTEM", msg, "", "", "", "", "", 0, 0, "", 0, 36, "", 0)
-						end
-					end
+					FireClientEvent("CHAT_MSG_SYSTEM", msg, "", "", "", "", "", 0, 0, "", 0, 36, "", 0)
 				end
 			end
 		end,

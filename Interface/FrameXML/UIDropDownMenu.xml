@@ -13,23 +13,9 @@
 			</OnLoad>
 		</Scripts>
 	</Button>
-	<Button name="DropDownList2" toplevel="true" frameStrata="FULLSCREEN_DIALOG" inherits="UIDropDownListTemplate" hidden="true" id="2">
+	<Button name="DropDownList2" toplevel="true" frameStrata="FULLSCREEN_DIALOG" inherits="UIDropDownListTemplate" clampedToScreen="true" hidden="true" id="2">
 		<Size>
 			<AbsDimension x="180" y="10"/>
 		</Size>
 	</Button>
-
-	<Frame name="UIDropDownCustomMenuEntryTemplate" enableMouse="true" hidden="true" virtual="true">
-		<Scripts>
-			<OnLoad>
-				Mixin(self, UIDropDownCustomMenuEntryMixin)
-			</OnLoad>
-			<OnEnter>
-				UIDropDownMenu_StopCounting(self:GetParent())
-			</OnEnter>
-			<OnLeave>
-				UIDropDownMenu_StartCounting(self:GetParent())
-			</OnLeave>
-		</Scripts>
-	</Frame>
 </Ui>

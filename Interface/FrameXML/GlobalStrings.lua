@@ -1659,10 +1659,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Требуется %d |4единица:единицы:единиц; силы рун",
         enGB = "%d Runic Power"
     },
-    ["VULPERA_JOIN_TO_ALLIANCE"] = {
-        ruRU = "Присоединиться к Альянсу!",
-        enGB = ""
-    },
     ["ACTIVATE"] = {
         ruRU = "Применить",
         enGB = "Activate"
@@ -6406,10 +6402,6 @@ local SIRUS_LOCALIZATION = {
     ["PHYSICAL_HARASSMENT_TEXT6"] = {
         ruRU = "Приводить компанию\" (навести врагов на другого игрока, чтобы вынудить его вступить в бой)",
         enGB = "Training\" (leading enemies to another player to force combat)"
-    },
-    ["VULPERA_SELECT_FACTION_HELP"] = {
-        ruRU = "Согласившись сейчас, вы станете представителем выбранной вами фракции и не сможете уже выбрать другую.",
-        enGB = ""
     },
     ["ERR_ALREADY_INVITED_TO_GUILD_S"] = {
         ruRU = "%s уже состоит в гильдии.",
@@ -11363,10 +11355,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Click - Добавить одно усиление",
         enGB = "Click - Add one enhancement"
     },
-    ["VULPERA_SELECT_FACTION"] = {
-        ruRU = "Вы уверены что хотите вступить в %s?",
-        enGB = ""
-    },
     ["COMPLETE"] = {
         ruRU = "Выполнено",
         enGB = "Complete"
@@ -12450,10 +12438,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_MUST_EQUIP_ITEM"] = {
         ruRU = "Чтобы использовать этот предмет, его нужно выбрать в качестве экипировки.",
         enGB = "You must equip that item to use it."
-    },
-    ["ALLIANCE_CHEER"] = {
-        ruRU = "За Альянс!",
-        enGB = "For the Alliance!"
     },
     ["ERR_LFG_MISMATCHED_SLOTS"] = {
         ruRU = "Нельзя одновременно вставать в очередь на прохождение случайных и конкретных подземелий и рейдов.",
@@ -13670,10 +13654,6 @@ local SIRUS_LOCALIZATION = {
     ["FACTION_STANDING_LABEL2"] = {
         ruRU = "Враждебность",
         enGB = "Hostile"
-    },
-    ["CHOOSE_THE_ALLIANCE"] = {
-        ruRU = "Благородные расы Альянса связаны между собой высокими законами чести, верности, справедливости и самопожертвования.\n\nНароды Альянса сообща пользуются своими техническими, магическими и духовными знаниями, чтобы жить в мире и справедливости.\n\nВыбери это знамя, чтобы представлять высокие идеалы Альянса во всем Азероте и за его пределами.",
-        enGB = "The noble races of the Alliance are bound together by proud traditions of nobility, honor, faith, justice, and sacrifice.\n\nThe many different Alliance peoples all contribute their technical, arcane, and spiritual wisdom toward the goal of a peaceful and just world.\n\nTake up their banner to represent the high ideals of the Alliance throughout Azeroth and beyond."
     },
     ["ERR_TAXINOPATH"] = {
         ruRU = "Выбранный путь не существует!",
@@ -17840,10 +17820,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/hello",
         enGB = "/hello"
     },
-    ["JOIN_THE_ALLIANCE"] = {
-        ruRU = "Присоединиться\nк Альянсу",
-        enGB = "Join\nThe Alliance"
-    },
     ["OR_CAPS"] = {
         ruRU = "ИЛИ",
         enGB = "OR"
@@ -20244,10 +20220,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/пароль",
         enGB = "/password"
     },
-    ["VULPERA_TITLE_TEXT_ALLIANCE"] = {
-        ruRU = "Отправляемся в Штормград!",
-        enGB = ""
-    },
     ["ACTION_SPELL_AURA_REMOVED_DOSE_DEBUFF_POSSESSIVE"] = {
         ruRU = "1",
         enGB = "1"
@@ -21601,7 +21573,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "Defense Rating"
     },
     ["PLAYER_OFFLINE"] = {
-        ruRU = "Вышел из сети",
+		ruRU = "Не в сети",
         enGB = "Offline"
     },
     ["VOICEMACRO_16_Gn_0"] = {
@@ -22064,25 +22036,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Владыка Смерти: Подгород",
         enGB = "Deathlord of the Undercity"
     },
-    ["DECIDED_FEMALE"] = {
-        ruRU = "решила",
-        enGB = ""
-    },
-    ["DECIDED_MALE"] = {
-        ruRU = "решил",
-        enGB = ""
-    },
     ["KEY_BUTTON15"] = {
         ruRU = "Кнопка мыши 15",
         enGB = "Mouse Button 15"
-    },
-    ["VULPERA_TITLE_TEXT_HORDE"] = {
-        ruRU = "Отправляемся в Оргриммар!",
-        enGB = ""
-    },
-    ["VULPERA_JOIN_TO_HORDE"] = {
-        ruRU = "Присоединиться к Орде!",
-        enGB = ""
     },
     ["EMOTE22_CMD4"] = {
         ruRU = "/chicken",
@@ -22104,17 +22060,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Цена продажи",
         enGB = "Sell Price"
     },
-    ["VULPERA_FACTION_SELECT_TEXT_DK_ALLIANCE"] = {
-        ruRU = "Благородные расы Альянса связаны между собой высокими законами чести, верности, справедливости и самопожертвования.\n\nНароды Альянса сообща пользуются своими техническими, магическими и духовными знаниями, чтобы жить в мире и справедливости.",
-        enGB = ""
-    },
     ["STORE_CHARACTER_NAME_LABEL"] = {
         ruRU = "Имя персонажа",
         enGB = "Character name"
-    },
-    ["VULPERA_FACTION_SELECT_TEXT_HORDE"] = {
-        ruRU = "Старина Хоззик не растерял своей харизмы! Не зря я обучался тимбилдингу в университете Кезана.\n\nМоя начальница в лагере Черного Копья уже в курсе происходящего. Уверен, после всей этой передряги я могу рассчитывать на небольшой отпуск. Так что смело отправляемся в Оргриммар, сердце Орды!",
-        enGB = ""
     },
     ["ITEMSLOTTEXT"] = {
         ruRU = "Ячейки для предметов",
@@ -23580,6 +23528,14 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы получили новое средство передвижения.\n\n|cFF00FFFFНажмите на значок|r чтобы посмотреть подробности.",
         enGB = "You have received a new mount.\n\n|cFF00FFFFClick on this icon|r to see more."
     },
+	["NEW_PET_HELP_1"] = {
+		ruRU = "Вы получили нового спутника.\n\n|cFF00FFFFНажмите на значок|r чтобы посмотреть подробности.",
+		enGB = "You have received a new mount.\n\n|cFF00FFFFClick on this icon|r to see more."
+	},
+	["NEW_TOY_HELP_1"] = {
+		ruRU = "Вы получили новую игрушку.\n\n|cFF00FFFFНажмите на значок|r чтобы посмотреть подробности.",
+		enGB = "You have received a new mount.\n\n|cFF00FFFFClick on this icon|r to see more."
+	},
     ["ERR_AUCTION_LIMITED_DURATION_ITEM"] = {
         ruRU = "Нельзя выставить на аукцион предмет с ограниченным сроком действия.",
         enGB = "You cannot auction items with a limited duration."
@@ -23700,10 +23656,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Откройте вкладку \"Информация\" в окне гильдии, чтобы переименовать её",
         enGB = "To rename the guild, open the Information tab in the guild window"
     },
-    ["HORDE_CHEER"] = {
-        ruRU = "За Орду!",
-        enGB = "For the Horde!"
-    },
     ["EMOTE143_CMD1"] = {
         ruRU = "/встать",
         enGB = "/stand"
@@ -23720,10 +23672,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/crossarms",
         enGB = "/crossarms"
     },
-    ["CHOOSE_THE_HORDE"] = {
-        ruRU = "Гордые и свободолюбивые расы Орды объединились в борьбе против враждебного внешнего мира, который стремится их уничтожить.\n\nЦелеустремленные и свирепые, воины Орды ценят честь и силу, но порой не могут сдержать излишней агрессии.\n\nПрисоединяйся к Орде, чтобы вместе с ордынцами строить мир, в котором вы все сможете жить свободно.",
-        enGB = "The proud nations of the Horde are loosely joined in an alliance of convenience against a hostile world that would see them destroyed.\n\nFocused, ferocious, and sometimes monstrous, the Horde values strength and honor, but struggles to keep aggression in check.\n\nJoin the Horde and fight to build a world where their people can live free."
-    },
     ["VOICEMACRO_16_Ta_1_FEMALE"] = {
         ruRU = "Вы очень добры.",
         enGB = "How kind of you."
@@ -23731,10 +23679,6 @@ local SIRUS_LOCALIZATION = {
     ["PUBLIC_NOTE"] = {
         ruRU = "Общедоступное сообщение",
         enGB = "Public Note"
-    },
-    ["JOIN_THE_HORDE"] = {
-        ruRU = "Присоединиться\nк Орде",
-        enGB = "Join\nthe Horde"
     },
     ["CHOOSEITEM_SELECT_ITEM"] = {
         ruRU = "Выберите предмет",
@@ -29575,10 +29519,6 @@ local SIRUS_LOCALIZATION = {
     ["NEWBIE_TOOLTIP_BATTLEFIELDMINIMAP_OPTIONS"] = {
         ruRU = "Щелкните правой кнопкой мыши по этому окну, чтобы просмотреть список возможных действий. С помощью левой кнопки мыши можно переместить окно в другое место.",
         enGB = "Right-click to get a list of customizable options for this window. Left-click and drag to move the window."
-    },
-    ["VULPERA_FACTION_SELECT_TEXT_DK_HORDE"] = {
-        ruRU = "Гордые и свободолюбивые расы Орды объединились в борьбе против враждебного внешнего мира, который стремится их уничтожить.\n\nЦелеустремленные и свирепые, воины Орды ценят честь и силу, но порой не могут сдержать излишней агрессии.",
-        enGB = ""
     },
     ["NEWBIE_TOOLTIP_GROUPINVITE"] = {
         ruRU = "Пригласить выбранного игрока присоединиться к группе.",
@@ -37704,10 +37644,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/замной",
         enGB = "/followme"
     },
-    ["SPELLBOOK_TUTORIAL_MOUNT_1"] = {
-        ruRU = "Перейдите на вкладку, чтобы увидеть список доступных средств передвижения.",
-        enGB = "Click the tab to see the list of available mounts."
-    },
     ["UNITNAME_TITLE_MINION"] = {
         ruRU = "Прислужник |3-1(%s)",
         enGB = "%s's Minion"
@@ -37779,10 +37715,6 @@ local SIRUS_LOCALIZATION = {
     ["WEEKDAY_SATURDAY"] = {
         ruRU = "Суббота",
         enGB = "Saturday"
-    },
-    ["VULPERA_FACTION_SELECT_TEXT_ALLIANCE"] = {
-        ruRU = "Значит, ты %s отправиться со мной? Готов поспорить, ты ни на минуту не разочаруешься в своем выборе!\n\nЯ отправил весточку союзникам в лагере Песни Сирены, так что мы можем отправляться прямиком в Штормград. Там ты увидишь, что из себя представляет Альянс, и найдешь применение своим навыкам.",
-        enGB = ""
     },
     ["ITEM_CLASS_15"] = {
         ruRU = "Разное",
@@ -44128,6 +44060,314 @@ local SIRUS_LOCALIZATION = {
 	    ruRU = "Рейтинг натиска: %d (рейтинг устойчивости противника увеличен на %d ед.)",
 	    enGB = ""
     },
+    ["AUTO_ACTIVATE_DISABLED_IN_PARTY"] = {
+        ruRU = "Для автоматического включения необходимо использовать рейдовый интерфейс для группы.",
+        enGB = "Raid-Style Party Frames must be enabled to auto-activate with this number of players."
+    },
+    ["CONFIRM_COMPACT_UNIT_FRAME_PROFILE_DELETION"] = {
+        ruRU = "Вы уверены, что хотите удалить профиль |cffffffff%s|r?",
+		enGB = "Are you sure you want to permanently delete |cffffffff%s|r?"
+    },
+    ["CONFIRM_COMPACT_UNIT_FRAME_PROFILE_UNSAVED_CHANGES"] = {
+        ruRU = "Профиль |cffffffff%s|r содержит несохраненные изменения, которые будут потеряны при выполнении этого действия. Хотите сохранить изменения?",
+		enGB = "|cffffffff%s|r contains unsaved changes that will be lost when performing this action. Would you like to save before proceeding?"
+    },
+    ["SHOW"] = {
+        ruRU = "Показать",
+        enGB = ""
+    },
+    ["LOCK"] = {
+        ruRU = "Закрепить",
+        enGB = ""
+    },
+    ["UNLOCK"] = {
+        ruRU = "Открепить",
+        enGB = ""
+    },
+    ["USE_RAID_STYLE_PARTY_FRAMES"] = {
+        ruRU = "Рейдовый интерфейс для группы",
+        enGB = ""
+    },
+    ["AUTO_ACTIVATE_ON"] = {
+        ruRU = "Автоматически задействовать",
+        enGB = ""
+    },
+    ["AUTO_ACTIVATE_PROFILE_NO_SIZE"] = {
+        ruRU = "Профиль не будет активироваться автоматически, пока вы не выберете размер группы.",
+        enGB = ""
+    },
+    ["AUTO_ACTIVATE_PROFILE_NO_ENEMYTYPE"] = {
+        ruRU = "Профиль не будет активироваться автоматически, пока вы не выберете PvP или PvE.",
+        enGB = ""
+    },
+    ["WIDE"] = {
+        ruRU = "Шире",
+        enGB = ""
+    },
+    ["NARROW"] = {
+        ruRU = "Уже",
+        enGB = ""
+    },
+    ["TALL"] = {
+        ruRU = "Выше",
+        enGB = ""
+    },
+    ["SHORT"] = {
+        ruRU = "Ниже",
+        enGB = ""
+    },
+    ["GROUP_NUMBER"] = {
+        ruRU = "%d-я группа",
+        enGB = ""
+    },
+    ["RESET_POSITION"] = {
+        ruRU = "Сброс позиции",
+        enGB = ""
+    },
+    ["DEFAULT_CUF_PROFILE_NAME"] = {
+        ruRU = "Основной",
+        enGB = "Primary"
+    },
+    ["NEW_COMPACT_UNIT_FRAME_PROFILE"] = {
+        ruRU = "Новый профиль",
+		enGB = "New Profile"
+    },
+    ["CREATE_NEW_COMPACT_UNIT_FRAME_PROFILE"] = {
+        ruRU = "Новый профиль",
+		enGB = "Create a New Profile"
+    },
+    ["DONT_SAVE"] = {
+        ruRU = "Не сохранять",
+        enGB = ""
+    },
+    ["USE_EXISTING_PROFILE"] = {
+        ruRU = "Импортировать из:",
+        enGB = ""
+    },
+    ["CREATE_COMPACT_UNIT_FRAME_PROFILE"] = {
+        ruRU = "Создать",
+		enGB = "Create"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILES"] = {
+        ruRU = "Профили рейда",
+		enGB = "Raid Profiles"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILES_LABEL"] = {
+        ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tПрофили рейда",
+		enGB = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tRaid Profiles"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILES_RESTORE"] = {
+        ruRU = "Восстановить",
+        enGB = ""
+    },
+    ["CONFIRM_COMPACT_UNIT_FRAME_PROFILE_RESTORED"] = {
+        ruRU = "Вы уверены, что хотите восстановить настройки по умолчанию?",
+        enGB = ""
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_AUTOACTIVATE10PLAYERS"] = {
+        ruRU = "в группе из 10 игроков",
+		enGB = "10 Player Group"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_AUTOACTIVATE15PLAYERS"] = {
+        ruRU = "в группе из 15 игроков",
+		enGB = "15 Player Group"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_AUTOACTIVATE25PLAYERS"] = {
+        ruRU = "в группе из 25 игроков",
+		enGB = "25 Player Group"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_AUTOACTIVATE2PLAYERS"] = {
+        ruRU = "в группе из 2 игроков",
+		enGB = "2 Player Group"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_AUTOACTIVATE3PLAYERS"] = {
+        ruRU = "в группе из 3 игроков",
+		enGB = "3 Player Group"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_AUTOACTIVATE40PLAYERS"] = {
+        ruRU = "в группе из 40 игроков",
+		enGB = "40 Player Group"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_AUTOACTIVATE5PLAYERS"] = {
+        ruRU = "в группе из 5 игроков",
+		enGB = "5 Player Group"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_AUTOACTIVATEPVE"] = {
+        ruRU = "в PvE",
+		enGB = "PvE"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_AUTOACTIVATEPVP"] = {
+        ruRU = "в PvP",
+		enGB = "PvP"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_DISPLAYAGGROHIGHLIGHT"] = {
+        ruRU = "Индикатор угрозы",
+		enGB = "Display Aggro Highlight"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_DISPLAYBORDER"] = {
+        ruRU = "Показывать границы",
+		enGB = "Display Border"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_DISPLAYMAINTANKANDASSIST"] = {
+        ruRU = "Показывать главного танка и наводчика",
+		enGB = "Display Main Tank and Assist"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_DISPLAYPETS"] = {
+        ruRU = "Показывать питомцев",
+		enGB = "Display Pets"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_DISPLAYPOWERBAR"] = {
+        ruRU = "Индикаторы ресурсов",
+		enGB = "Display Power Bars"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_FRAMEHEIGHT"] = {
+        ruRU = "Высота рамки рейда",
+		enGB = "Frame Height"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_FRAMEWIDTH"] = {
+        ruRU = "Ширина рамки рейда",
+		enGB = "Frame Width"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT"] = {
+        ruRU = "Отображение здоровья",
+		enGB = "Display Health Text"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_HEALTH"] = {
+        ruRU = "Оставшееся здоровье",
+		enGB = "Health Lost"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_LOSTHEALTH"] = {
+        ruRU = "Потерянное здоровье",
+        enGB = ""
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_NONE"] = {
+        ruRU = "Не отображать",
+		enGB = "None"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_PERC"] = {
+        ruRU = "Здоровье в процентах",
+		enGB = "Health Percentage"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_HORIZONTALGROUPS"] = {
+        ruRU = "Горизонтально",
+		enGB = "Horizontal Groups"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_KEEPGROUPSTOGETHER"] = {
+        ruRU = "Группы вместе",
+		enGB = "Keep Groups Together"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_SORTBY"] = {
+        ruRU = "Сортировка:",
+		enGB = "Sort By:"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_SORTBY_ALPHABETICAL"] = {
+        ruRU = "по алфавиту",
+		enGB = "Alphabetical"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_SORTBY_GROUP"] = {
+        ruRU = "по группам",
+		enGB = "Group"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_SUBTYPE_ALL"] = {
+        ruRU = "Общие настройки",
+		enGB = "General Options"
+    },
+    ["COMPACT_UNIT_FRAME_PROFILE_USECLASSCOLORS"] = {
+        ruRU = "Цвета классов",
+		enGB = "Display Class Colors"
+    },
+	["COMPACT_UNIT_FRAME_PROFILE_DISPLAYNONBOSSDEBUFFS"] = {
+		ruRU = "Показывать все отрицательные эффекты",
+		enGB = "Show all Debuffs"
+	},
+	["COMPACT_UNIT_FRAME_PROFILE_DISPLAYONLYDISPELLABLEDEBUFFS"] = {
+		ruRU = "Только рассеиваемые отрицательные эффекты",
+		enGB = "Display Only Dispellable Debuffs"
+	},
+	["COMPACT_UNIT_FRAME_PROFILE_DISPLAYRAIDROLEGROUPICON"] = {
+		ruRU = "Показывать иконки лидера и помощника",
+		enGB = "Display Leader and Assistant icons"
+	},
+	["COMPACT_UNIT_FRAME_PROFILE_RANGECHECK"] = {
+		ruRU = "Проверять дистанцию",
+		enGB = "Check distance"
+	},
+	["COMPACT_UNIT_FRAME_PROFILE_RANGECHECK_0"] = {
+		ruRU = "Не проверять",
+		enGB = "Don't check"
+	},
+	["COMPACT_UNIT_FRAME_PROFILE_RANGECHECK_1"] = {
+		ruRU = "10 метров",
+		enGB = "10 yards"
+	},
+	["COMPACT_UNIT_FRAME_PROFILE_RANGECHECK_2"] = {
+		ruRU = "28 метров",
+		enGB = "28 yards"
+	},
+	["COMPACT_UNIT_FRAME_PROFILE_RANGECHECK_3"] = {
+		ruRU = "38 метров",
+		enGB = "38 yards"
+	},
+	["COMPACT_UNIT_FRAME_PROFILE_RANGECHECK_4"] = {
+		ruRU = "40 метров",
+		enGB = "40 yards"
+	},
+	["COMPACT_UNIT_FRAME_PROFILE_RAIDTARGETICON"] = {
+		ruRU = "Метка цели",
+		enGB = "Raid Target Icon"
+	},
+	["LOST_HEALTH"] = {
+		ruRU = "-%d",
+		enGB = "-%d"
+	},
+	["INCOMING_SUMMON_TOOLTIP_SUMMON_PENDING"] = {
+		ruRU = "Призыв ждет ответа",
+		enGB = "Summon Pending"
+	},
+	["INCOMING_SUMMON_TOOLTIP_SUMMON_ACCEPTED"] = {
+		ruRU = "Призыв принят",
+		enGB = "Summon Accepted"
+	},
+	["INCOMING_SUMMON_TOOLTIP_SUMMON_DECLINED"] = {
+		ruRU = "Призыв отклонен",
+		enGB = "Summon Declined"
+	},
+	["ALL_ASSIST_DESCRIPTION"] = {
+		ruRU = "Все участники рейда получают права помощника лидера рейда",
+		enGB = "If checked, all raid members will have the permissions of a Raid Assistant."
+	},
+	["ALL_ASSIST_LABEL"] = {
+		ruRU = "Все |TInterface\\GroupFrame\\UI-Group-AssistantIcon:20:20:0:1|t",
+		enGB = "All |TInterface\\GroupFrame\\UI-Group-AssistantIcon:20:20:0:1|t"
+	},
+	["ALL_ASSIST_LABEL_LONG"] = {
+		ruRU = "Назначить всех помощниками.",
+		enGB = "Make Everyone Assistant"
+	},
+	["ALL_ASSIST_NOT_LEADER_ERROR"] = {
+		ruRU = "Эту настройку может менять только лидер рейда.",
+		enGB = "Only the Raid Leader may change this option."
+	},
+	["PLAYER_COUNTDOWN_BUTTON"] = {
+		ruRU = "Обратный отсчет",
+		enGB = "Countdown"
+	},
+	["SLASH_COUNTDOWN1"] = {
+		ruRU = "/отсчет",
+		enGB = "/countdown",
+	},
+	["SLASH_COUNTDOWN2"] = {
+		ruRU = "/countdown",
+		enGB = "/countdown",
+	},
+	["SLASH_COUNTDOWN3"] = {
+		ruRU = "/cd",
+		enGB = "/cd",
+	},
+	["SLASH_COUNTDOWN4"] = {
+		ruRU = "/cd",
+		enGB = "/cd",
+	},
     ["ENCOUNTER_JOURNAL_SECTION_LOOP_ERROR"] = {
 	    ruRU = "Возникла ошибка при попытке открыть путеводитель по приключениям.\nСообщите нам на форуме следующую информацию:\nСекция: № %s",
 	    enGB = ""
@@ -44431,6 +44671,122 @@ local SIRUS_LOCALIZATION = {
 	["TALENTS_SECOND_SPEC_PURCHASE_CONFIRMATION"] = {
 		ruRU = "Вы уверены, что хотите оплатить вторую специализацию?",
 		enGB = "Are you sure you want to acquire a second specialization??"
+	},
+	["COLLECTIONS_JOURNAL_TUTORIAL_MOUNT_1"] = {
+		ruRU = "Перейдите на вкладку, чтобы увидеть список доступных средств передвижения.",
+		enGB = "Click the tab to see the list of available mounts."
+	},
+	["COLLECTIONS_JOURNAL_TUTORIAL_PET_1"] = {
+		ruRU = "Перейдите во вкладку, чтобы посмотреть список доступных спутников.",
+		enGB = ""
+	},
+	["COLLECTIONS_JOURNAL_TUTORIAL_TOY_1"] = {
+		ruRU = "Перейдите во вкладку, чтобы посмотреть список доступных игрушек.",
+		enGB = ""
+	},
+	["ALLIANCE_CHEER"] = {
+		ruRU = "За Альянс!",
+		enGB = "For the Alliance!"
+	},
+	["HORDE_CHEER"] = {
+		ruRU = "За Орду!",
+		enGB = "For the Horde!"
+	},
+	["JOIN_THE_ALLIANCE"] = {
+		ruRU = "Присоединиться\nк Альянсу",
+		enGB = "Join\nThe Alliance"
+	},
+	["JOIN_THE_HORDE"] = {
+		ruRU = "Присоединиться\nк Орде",
+		enGB = "Join\nthe Horde"
+	},
+	["CHOOSE_THE_ALLIANCE"] = {
+		ruRU = "Благородные расы Альянса связаны между собой высокими законами чести, верности, справедливости и самопожертвования.\n\nНароды Альянса сообща пользуются своими техническими, магическими и духовными знаниями, чтобы жить в мире и справедливости.\n\nВыбери это знамя, чтобы представлять высокие идеалы Альянса во всем Азероте и за его пределами.",
+		enGB = "The noble races of the Alliance are bound together by proud traditions of nobility, honor, faith, justice, and sacrifice.\n\nThe many different Alliance peoples all contribute their technical, arcane, and spiritual wisdom toward the goal of a peaceful and just world.\n\nTake up their banner to represent the high ideals of the Alliance throughout Azeroth and beyond."
+	},
+	["CHOOSE_THE_HORDE"] = {
+		ruRU = "Гордые и свободолюбивые расы Орды объединились в борьбе против враждебного внешнего мира, который стремится их уничтожить.\n\nЦелеустремленные и свирепые, воины Орды ценят честь и силу, но порой не могут сдержать излишней агрессии.\n\nПрисоединяйся к Орде, чтобы вместе с ордынцами строить мир, в котором вы все сможете жить свободно.",
+		enGB = "The proud nations of the Horde are loosely joined in an alliance of convenience against a hostile world that would see them destroyed.\n\nFocused, ferocious, and sometimes monstrous, the Horde values strength and honor, but struggles to keep aggression in check.\n\nJoin the Horde and fight to build a world where their people can live free."
+	},
+	["FACTION_SELECT_CONFIRMATION_TEXT"] = {
+		ruRU = "Вы уверены что хотите вступить в %s?",
+		enGB = ""
+	},
+	["FACTION_SELECT_CONFIRMATION_HELP"] = {
+		ruRU = "Согласившись сейчас, вы станете представителем выбранной вами фракции и не сможете уже выбрать другую.",
+		enGB = ""
+	},
+	["FACTION_SELECT_TITLE_ALLIANCE"] = {
+		ruRU = "Отправляемся в Штормград!",
+		enGB = ""
+	},
+	["FACTION_SELECT_TITLE_HORDE"] = {
+		ruRU = "Отправляемся в Оргриммар!",
+		enGB = ""
+	},
+	["FACTION_SELECT_BUTTON_JOIN_ALLIANCE"] = {
+		ruRU = "Присоединиться к Альянсу!",
+		enGB = ""
+	},
+	["FACTION_SELECT_BUTTON_JOIN_HORDE"] = {
+		ruRU = "Присоединиться к Орде!",
+		enGB = ""
+	},
+	["FACTION_SELECT_DECIDED_FEMALE"] = {
+		ruRU = "решила",
+		enGB = ""
+	},
+	["FACTION_SELECT_DECIDED_MALE"] = {
+		ruRU = "решил",
+		enGB = ""
+	},
+	["FACTION_SELECT_TEXT_DK_HORDE"] = {
+		ruRU = "Гордые и свободолюбивые расы Орды объединились в борьбе против враждебного внешнего мира, который стремится их уничтожить.\n\nЦелеустремленные и свирепые, воины Орды ценят честь и силу, но порой не могут сдержать излишней агрессии.",
+		enGB = "The proud nations of the Horde are loosely joined in an alliance of convenience against a hostile world that would see them destroyed.\n\nFocused, ferocious, and sometimes monstrous, the Horde values strength and honor, but struggles to keep aggression in check."
+	},
+	["FACTION_SELECT_TEXT_DK_ALLIANCE"] = {
+		ruRU = "Благородные расы Альянса связаны между собой высокими законами чести, верности, справедливости и самопожертвования.\n\nНароды Альянса сообща пользуются своими техническими, магическими и духовными знаниями, чтобы жить в мире и справедливости.",
+		enGB = "The noble races of the Alliance are bound together by proud traditions of nobility, honor, faith, justice, and sacrifice.\n\nThe many different Alliance peoples all contribute their technical, arcane, and spiritual wisdom toward the goal of a peaceful and just world."
+	},
+	["FACTION_SELECT_TEXT_VULPERA_HORDE"] = {
+		ruRU = "Старина Хоззик не растерял своей харизмы! Не зря я обучался тимбилдингу в университете Кезана.\n\nМоя начальница в лагере Черного Копья уже в курсе происходящего. Уверен, после всей этой передряги я могу рассчитывать на небольшой отпуск. Так что смело отправляемся в Оргриммар, сердце Орды!",
+		enGB = ""
+	},
+	["FACTION_SELECT_TEXT_VULPERA_ALLIANCE"] = {
+		ruRU = "Значит, ты %s отправиться со мной? Готов поспорить, ты ни на минуту не разочаруешься в своем выборе!\n\nЯ отправил весточку союзникам в лагере Песни Сирены, так что мы можем отправляться прямиком в Штормград. Там ты увидишь, что из себя представляет Альянс, и найдешь применение своим навыкам.",
+		enGB = ""
+	},
+	["FACTION_SELECT_TEXT_PANDAREN_HORDE"] = {
+		ruRU = "Магия Клариссы Хладовей помогла мне повергнуть пробуждающего духов Шань-Цзитуна и пробраться в рудники Гуанси.\n\nПо её рассказам гордые и свободолюбивые расы объединились под флагом Орды в борьбе против враждебного внешнего мира, который стремится их уничтожить.",
+		enGB = ""
+	},
+	["FACTION_SELECT_TEXT_PANDAREN_ALLIANCE"] = {
+		ruRU = "Силы природы друидов Муна Снежной Лапы и Телнаса Тихой Осоки научили меня усмирять зверей и пользоваться их силой, только благодаря им удалось, превратившись в ворона, разведать Террасу Вечной Славы.\n\nОни поведали о благородных расах Альянса, которые связаны между собой высокими законами чести, верности, справедливости и самопожертвования.",
+		enGB = ""
+	},
+	["PLAYER_FRAME_SHOW_CASTBARS"] = {
+		ruRU = "Индикатор применения заклинаний под портретом",
+		enGB = "Cast Bar Underneath"
+	},
+	["UNLOCK_FRAME"] = {
+		ruRU = "Разблокировать рамку",
+		enGB = "Unlock Frame"
+	},
+	["LOCK_FRAME"] = {
+		ruRU = "Заблокировать рамку",
+		enGB = "Lock Frame"
+	},
+	["MOVE_FRAME"] = {
+		ruRU = "Перемещение рамки",
+		enGB = "Move Frame"
+	},
+	["BUFFS_ON_TOP"] = {
+		ruRU = "Эффекты сверху",
+		enGB = "Buffs On Top"
+	},
+	["IGNORE_REMOVE"] = {
+		ruRU = "Больше не игнорировать",
+		enGB = "Stop Ignoring"
 	},
 }
 

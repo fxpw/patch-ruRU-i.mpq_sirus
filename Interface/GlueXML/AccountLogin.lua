@@ -101,6 +101,7 @@ function AccountLoginBackground_OnLoad( self, ... )
 		AccountLoginDevTools:SetShown(IsDevClient())
 	end, 5)
 
+--[[
 	if self.parallaxUpdate then
 		self.parallaxUpdate:Cancel()
 		self.parallaxUpdate = nil
@@ -123,6 +124,7 @@ function AccountLoginBackground_OnLoad( self, ... )
 			end
 		end
 	end, nil)
+--]]
 end
 
 function AccountLoginUI_OnLoad( self, ... )
@@ -209,11 +211,17 @@ function AccountLogin_AutoLogin(Login, Password)
 	DefaultServerLogin(Login, Password)
 end
 
+function AccountLoginDevTools_OnShow(self)
+	if not SIRUS_DEV_ACCOUNT_LOGIN_MANAGER then return end
+	self.AccountsDropDown_Button:SetShown(type(SIRUS_DEV_ACCOUNT_LOGIN_MANAGER.accounts) == "table" and next(SIRUS_DEV_ACCOUNT_LOGIN_MANAGER.accounts))
+	self.RealmListDropDown:SetShown(type(SIRUS_DEV_ACCOUNT_LOGIN_MANAGER.realmList) == "table" and next(SIRUS_DEV_ACCOUNT_LOGIN_MANAGER.realmList))
+end
+
 function DevToolsRealmListDropDown_OnShow( self, ... )
 	GlueDark_DropDownMenu_Initialize(self, DevToolsRealmListDropDown_Initialize)
 	GlueDark_DropDownMenu_SetSelectedValue(self, GetCVar("realmList"))
-	GlueDark_DropDownMenu_SetWidth(self, 170, true)
-	GlueDark_DropDownMenu_JustifyText(self, "LEFT")
+	GlueDark_DropDownMenu_SetWidth(self, 185, true)
+	GlueDark_DropDownMenu_JustifyText(self, "CENTER")
 end
 
 function DevToolsRealmListDropDown_OnClick( button, ... )
@@ -293,7 +301,6 @@ local function ChooseRealmDropdownInit()
 	end
 end
 
-
 function AccountLoginChooseRealmDropDownMixin:Init()
 	self.realmStorage = C_ConnectManager:GetAllRealmList()
 
@@ -326,6 +333,6 @@ function AccountLoginChooseRealmDropDownMixin:Init()
 	GlueDark_DropDownMenu_SetSelectedValue(self, selectedValue)
 	SetCVar('realmList', selectedValue)
 
-	GlueDark_DropDownMenu_SetWidth(self, 170, true)
+	GlueDark_DropDownMenu_SetWidth(self, 185, true)
 	GlueDark_DropDownMenu_JustifyText(self, "CENTER")
 end

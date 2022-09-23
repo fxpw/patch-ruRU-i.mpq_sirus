@@ -1,219 +1,198 @@
---	Filename:	Sirus_Timer.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
+TIMER_MINUTES_DISPLAY = "%d:%02d"
+TIMER_TYPE_PVP = 1;
+TIMER_TYPE_CHALLENGE_MODE = 2;
+TIMER_TYPE_PLAYER_COUNTDOWN = 3;
+TIMER_TYPE_ARENA = 4
+TIMER_TYPE_MINIGAMES = 5;
 
-local TIMER_MINUTES_DISPLAY = "%d:%02d"
-local TIMER_TYPE_PVP = 1
-local TIMER_TYPE_CHALLENGE_MODE = 2
+TIMER_DATA = {
+	[1] = { mediumMarker = 11, largeMarker = 6, updateInterval = 10 },
+	[2] = { mediumMarker = 100, largeMarker = 100, updateInterval = 100 },
+	[3] = { mediumMarker = 31, largeMarker = 11, updateInterval = 10, finishedSoundKitID = SOUNDKIT.UI_COUNTDOWN_FINISHED, bigNumberSoundKitID = SOUNDKIT.UI_COUNTDOWN_TIMER, mediumNumberFinishedSoundKitID = SOUNDKIT.UI_COUNTDOWN_MEDIUM_NUMBER_FINISHED, barShowSoundKitID = SOUNDKIT.UI_COUNTDOWN_BAR_STATE_STARTS, barHideSoundKitID = SOUNDKIT.UI_COUNTDOWN_BAR_STATE_FINISHED},
+	[4] = { mediumMarker = 11, largeMarker = 6, updateInterval = 10 },
+	[5] = { mediumMarker = 11, largeMarker = 6, updateInterval = 10 },
+};
 
-local TIMER_DATA = {
-	{ mediumMarker = 11, largeMarker = 6, updateInterval = 10 },
-	{ mediumMarker = 100, largeMarker = 100, updateInterval = 100 },
+TIMER_SUBTYPE_DATA = {
+	[0] = { timerType = TIMER_TYPE_PVP, totalTime = 120 },		-- Battleground
+	[1] = { timerType = TIMER_TYPE_ARENA, totalTime = 60 },		-- Arena
+	[2] = { timerType = TIMER_TYPE_MINIGAMES, totalTime = 30 },	-- Mini-games
 }
 
-local TIMER_NUMBERS_SETS = {
-	["BigGold"] = {
-		texture = "Interface\\Timer\\BigTimerNumbers",
-		w 		= 256, 
-		h 		= 170, 
-		texW 	= 1024, 
-		texH 	= 512,
-		numberHalfWidths = {35/128, 14/128, 33/128, 32/128, 36/128, 32/128, 33/128, 29/128, 31/128, 31/128,}
-	}
+TIMER_NUMBERS_SETS = {};
+TIMER_NUMBERS_SETS["BigGold"] = {
+	texture = "Interface\\Timer\\BigTimerNumbers",
+	w 		= 256,
+	h 		= 170,
+	texW 	= 1024,
+	texH 	= 512,
+	numberHalfWidths = {35/128, 14/128, 33/128, 32/128, 36/128, 32/128, 33/128, 29/128, 31/128, 31/128}
 }
 
-local TIMER_TYPE_DATA = {
-	[0] = { totalTime = 120, fadeTime = 12 }, -- Battleground
-	[1] = { totalTime = 60, fadeTime = 12 }, -- Arena
-	[2] = { totalTime = 30, fadeTime = 7 }, -- Mini-games
-}
+local function getBattlegroundTimerType()
+	local timerType = tonumber(GetCVar("BattlegroundTimerType"))
+	return timerType or 0
+end
 
-function AnimationsToggle_FADEBARIN( self, isStop )
-	if isStop then
-		self.bar.fadeBarIn:Stop()
+local soundTick
+local function PlaySoundTick(soundkitID)
+	if soundkitID == SOUNDKIT.UI_COUNTDOWN_TIMER or soundkitID == SOUNDKIT.UI_BATTLEGROUND_COUNTDOWN_TIMER then
+		soundTick = not soundTick
+		PlaySound(soundTick and SOUNDKIT.UI_COUNTDOWN_TIMER or SOUNDKIT.UI_BATTLEGROUND_COUNTDOWN_TIMER)
 	else
-		self.bar.fadeBarIn:Play()
+		PlaySound(soundkitID)
 	end
 end
 
-function AnimationsToggle_FADEBAROUT( self, isStop )
-	if isStop then
-		self.bar.fadeBarOut:Stop()
+function TimerTracker_GetTimerTypeInfo(timerSubType)
+	local info = TIMER_SUBTYPE_DATA[timerSubType];
+	if info then
+		return info.timerType, info.totalTime;
 	else
-		self.bar.fadeBarOut:Play()
+		return 1, 60
 	end
 end
 
-function AnimationsToggle_STARTNUMBERS( self, isStop )
-	if isStop then
-		self.digit1.startNumbers:Stop()
-		self.digit2.startNumbers:Stop()
-		self.glow1.startNumbers:Stop()
-		self.glow2.startNumbers:Stop()
-	else
-		self.digit1.startNumbers:Play()
-		self.digit2.startNumbers:Play()
-		self.glow1.startNumbers:Play()
-		self.glow2.startNumbers:Play()
-	end
-end
-
-function AnimationsToggle_FACTIONANIM( self, isStop )
-	if isStop then
-		self.faction.factionAnim:Stop()
-		self.factionGlow.factionAnim:Stop()
-	else
-		self.faction.factionAnim:Play()
-		self.factionGlow.factionAnim:Play()
-	end
-end
-
-
-function TimerTracker_OnLoad( self, ... )
-	self.timerList = {}
-	self.updateTime = 0
-
-	self:RegisterEvent("PLAYER_ENTERING_WORLD")
+function TimerTracker_OnLoad(self)
+	self.timerList = {};
+	self:RegisterCustomEvent("START_TIMER")
+	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 	self:RegisterEvent("PLAYER_ENTERING_BATTLEGROUND")
-	-- self:RegisterAllEvents()
 end
 
-function StartTimer_OnLoad( self, ... )
+function StartTimer_OnLoad(self)
 	self.updateTime = 0
+	SetParentFrameLevel(self)
+
+	self.fadeBarIn = CreateAnimationGroupOfGroups(self, self.bar.fadeBarIn)
+	self.fadeBarOut = CreateAnimationGroupOfGroups(self, self.bar.fadeBarOut)
+	self.GoTextureAnim = CreateAnimationGroupOfGroups(self, self.GoTexture.GoTextureAnim, self.GoTextureGlow.GoTextureAnim)
+	self.startNumbers = CreateAnimationGroupOfGroups(self, self.digit1.startNumbers, self.digit2.startNumbers, self.glow1.startNumbers, self.glow2.startNumbers)
 end
 
 function StartTimer_OnShow(self)
-	self.time = self.endTime - GetTime()
+	self.time = self.endTime - GetTime();
 	if self.time <= 0 then
-		self:Hide()
-		self.isFree = true
-	elseif self.digit1.startNumbers:IsPlaying() then
-		AnimationsToggle_STARTNUMBERS(self, true)
-		AnimationsToggle_STARTNUMBERS(self)
+		FreeTimerTrackerTimer(self);
+		self:Hide();
+	elseif self.startNumbers:IsPlaying() then
+		self.startNumbers:Stop();
+		self.startNumbers:Play();
 	end
 end
 
 function GetPlayerFactionGroup()
-	local factionGroup = UnitFactionGroup("player")
+	local factionGroup = UnitFactionGroup("player");
+--[[
+	if ( not IsActiveBattlefieldArena()) then
+		factionGroup = PLAYER_FACTION_GROUP[GetBattlefieldArenaFaction()];
+	end
+--]]
 
-	-- if ( not IsActiveBattlefieldArena() ) then
-	-- 	factionGroup = PLAYER_FACTION_GROUP[GetBattlefieldArenaFaction()]
-	-- end
-	
 	return factionGroup
 end
 
+function FreeTimerTrackerTimer(timer)
+	timer:SetScript("OnUpdate", nil);
+	timer.fadeBarOut:Stop();
+	timer.fadeBarIn:Stop();
+	timer.startNumbers:Stop();
+	timer.GoTextureAnim:Stop();
+	timer.bar:Hide();
+	timer.time = nil;
+	timer.type = nil;
+	timer.isFree = true;
+	timer.barShowing = false;
+end
+
+function FreeAllTimerTrackerTimer()
+	for _, timer in pairs(TimerTracker.timerList) do
+		FreeTimerTrackerTimer(timer)
+	end
+end
+
 function TimerTracker_OnEvent(self, event, ...)
-	if event == "START_TIMER" and not TimerTracker:IsShown() then
-		local timerType, timeSeconds, totalTime  = ...
-		local timer
-		local numTimers = 0
-		local isTimerRuning = false
-		
+	if event == "START_TIMER" then
+		local timerType, timeSeconds, totalTime = ...;
+		local timer;
+		local numTimers = 0;
+		local isTimerRunning = false;
+
+		if timerType ~= TIMER_TYPE_PLAYER_COUNTDOWN and timerType ~= TIMER_TYPE_CHALLENGE_MODE and TimerTracker:IsShown() then
+			return
+		end
+
 		for a,b in pairs(self.timerList) do
 			if b.type == timerType and not b.isFree then
-				timer = b
-				isTimerRuning = true
-				break
+				timer = b;
+				isTimerRunning = true;
+				break;
 			end
 		end
 
-		if isTimerRuning then
+		if isTimerRunning and timer.type ~= TIMER_TYPE_PLAYER_COUNTDOWN then
 			-- don't interupt the final count down
-			if not timer.digit1.startNumbers:IsPlaying() then
-				timer.time = timeSeconds
-			end
-			
-			local factionGroup = GetPlayerFactionGroup()
-
-			if ( not timer.factionGroup or (timer.factionGroup ~= factionGroup) ) then
-				if GetCVar("BattlegroundTimerType") == "0" then
-					timer.faction:SetTexture("Interface\\Timer\\"..factionGroup.."-Logo")
-					timer.factionGlow:SetTexture("Interface\\Timer\\"..factionGroup.."Glow-Logo")
-				else
-					timer.faction:SetTexture("Interface\\Timer\\Countdown")
-					timer.factionGlow:SetTexture("Interface\\Timer\\Countdown")
-
-					timer.faction:SetTexCoord(0, 0.25, 0, 0.5)
-					timer.factionGlow:SetTexCoord(0.25, 0.5, 0, 0.5)
-				end
-
-				timer.factionGroup = factionGroup
+			if not timer.startNumbers:IsPlaying() then
+				timer.time = timeSeconds;
+				timer.endTime = GetTime() + timeSeconds;
 			end
 		else
 			for a,b in pairs(self.timerList) do
 				if not timer and b.isFree then
-					timer = b
+					timer = b;
 				else
-					numTimers = numTimers + 1
+					numTimers = numTimers + 1;
 				end
 			end
-			
-			
+
+			if(timer and timer.type == TIMER_TYPE_PLAYER_COUNTDOWN) then
+				FreeTimerTrackerTimer(timer);
+			end
+
 			if not timer then
-				timer = CreateFrame("FRAME", self:GetName().."Timer"..(#self.timerList+1), UIParent, "StartTimerBar")
-				self.timerList[#self.timerList+1] = timer
+				timer = CreateFrame("FRAME", self:GetName().."Timer"..(#self.timerList+1), UIParent, "StartTimerBar");
+				self.timerList[#self.timerList+1] = timer;
 			end
-			
-			
-			timer:ClearAllPoints()
-			timer:SetPoint("TOP", 0, -155--[[ - (24*numTimers)]])
-			
-			timer.isFree = false
-			timer.type = timerType
-			timer.time = timeSeconds
-			timer.endTime = GetTime() + timeSeconds
-            timer.duration = timeSeconds
-            timer.startValue = timeSeconds / totalTime
+
+			timer:ClearAllPoints();
+			timer:SetPoint("TOP", 0, -155 - (24*numTimers));
+
+			timer.isFree = false;
+			timer.type = timerType;
+			timer.time = timeSeconds;
+			timer.endTime = GetTime() + timeSeconds;
+			timer.duration = timeSeconds
+			timer.startValue = timeSeconds / totalTime
+			timer.bar:SetMinMaxValues(0, 1);
 			timer.bar:Show()
-			timer.bar:SetMinMaxValues(0, 1)
-			timer.style = TIMER_NUMBERS_SETS["BigGold"]
-			
-			timer.digit1:SetTexture(timer.style.texture)
-			timer.digit2:SetTexture(timer.style.texture)
-			timer.digit1:SetSize(timer.style.w/2, timer.style.h/2)
-			timer.digit2:SetSize(timer.style.w/2, timer.style.h/2)
+			timer.style = TIMER_NUMBERS_SETS["BigGold"];
+
+			timer.digit1:SetTexture(timer.style.texture);
+			timer.digit2:SetTexture(timer.style.texture);
+			timer.digit1:SetSize(timer.style.w/2, timer.style.h/2);
+			timer.digit2:SetSize(timer.style.w/2, timer.style.h/2);
 			--This is to compensate texture size not affecting GetWidth() right away.
-			-- print("========", timer.style.w/2, timer.style.w/2)
-			timer.digit1.width, timer.digit2.width = timer.style.w/2, timer.style.w/2
-			
-			timer.digit1.glow = timer.glow1
-			timer.digit2.glow = timer.glow2
-			timer.glow1:SetTexture(timer.style.texture.."Glow")
-			timer.glow2:SetTexture(timer.style.texture.."Glow")
-			
-			local factionGroup = GetPlayerFactionGroup()
-			if ( factionGroup ) then
-				if GetCVar("BattlegroundTimerType") == "0" then
-					timer.faction:SetTexture("Interface\\Timer\\"..factionGroup.."-Logo")
-					timer.factionGlow:SetTexture("Interface\\Timer\\"..factionGroup.."Glow-Logo")
-				else
-					timer.faction:SetTexture("Interface\\Timer\\Countdown")
-					timer.factionGlow:SetTexture("Interface\\Timer\\Countdown")
+			timer.digit1.width, timer.digit2.width = timer.style.w/2, timer.style.w/2;
 
-					timer.faction:SetTexCoord(0, 0.25, 0, 0.5)
-					timer.factionGlow:SetTexCoord(0.25, 0.5, 0, 0.5)
-				end
-			end
-			timer.factionGroup = factionGroup
-			timer.updateTime = 0
-			timer:SetScript("OnUpdate", StartTimer_BigNumberOnUpdate)
-			timer:Show()
+			timer.digit1.glow = timer.glow1;
+			timer.digit2.glow = timer.glow2;
+			timer.glow1:SetTexture(timer.style.texture.."Glow");
+			timer.glow2:SetTexture(timer.style.texture.."Glow");
+
+--			timer.updateTime = TIMER_DATA[timer.type].updateInterval;
+			timer:SetScript("OnUpdate", StartTimer_BigNumberOnUpdate);
+			timer:Show();
 		end
+		StartTimer_SetGoTexture(timer);
 	elseif event == "PLAYER_ENTERING_WORLD" then
+		local hasPVPTimer
 		for a,timer in pairs(self.timerList) do
-			timer.time = nil
-			timer.type = nil
-			timer.isFree = nil
-			timer:SetScript("OnUpdate", nil)
-			AnimationsToggle_FADEBAROUT(timer, true)
-			AnimationsToggle_FADEBARIN(timer, true)
-			AnimationsToggle_STARTNUMBERS(timer, true)
-			AnimationsToggle_FACTIONANIM(timer, true)
-			timer.bar:Hide()
-
+			if(timer.type == TIMER_TYPE_PVP) then
+				FreeTimerTrackerTimer(timer);
+				hasPVPTimer = true
+			end
+		end
+		if hasPVPTimer then
 			local _, instanceTyp = IsInInstance()
 
 			if instanceTyp == "none" then
@@ -227,165 +206,279 @@ function TimerTracker_OnEvent(self, event, ...)
 		if cvarTime then
 			cvarTime = tonumber(cvarTime)
 			if cvarTime > 0 then
-				local times = cvarTime - time()
-				if times > 0 then
-					TimerTracker_OnEvent(TimerTracker, "START_TIMER", 1, times, StartTimer_GetTimerTypeInfo(tonumber(GetCVar("BattlegroundTimerType")) or 0) or 60)
+				local timeRemaining = cvarTime - time()
+				if timeRemaining > 0 then
+					local timerType, totalTime = TimerTracker_GetTimerTypeInfo(getBattlegroundTimerType())
+					FireCustomClientEvent("START_TIMER", timerType, timeRemaining, totalTime)
 				end
 			end
 		end
 	end
 end
 
-function StartTimer_BigNumberOnUpdate(self, elasped)
-	self.time = self.endTime - GetTime()
-	local minutes, seconds = floor(self.time/60), floor(mod(self.time, 60))
-    self.updateTime = self.updateTime + elasped
+function StartTimer_BigNumberOnUpdate(self, elapsed)
+	self.time = self.endTime - GetTime();
 
-	local timerType = tonumber(GetCVar("BattlegroundTimerType")) or 0;
-	local fadeTime = TIMER_TYPE_DATA[timerType] and TIMER_TYPE_DATA[timerType].fadeTime or 12;
+	self.updateTime = self.updateTime + elapsed;
+	local minutes, seconds = floor(self.time/60), floor(mod(self.time, 60));
 
-	if timerType ~= 0 then
-		ArenaPlayerReadyStatusButtonToggle(self.time, fadeTime);
+	if self.type == TIMER_TYPE_ARENA then
+		ArenaPlayerReadyStatusButtonToggle(self.time, TIMER_DATA[self.type].mediumMarker);
 	end
 
-	if self.time < fadeTime then
-		AnimationsToggle_FADEBAROUT(self)
-		self.barShowing = false
-		self.anchorCenter = false
-		self:SetScript("OnUpdate", nil)
+	if ( self.time < TIMER_DATA[self.type].mediumMarker ) then
+		self.anchorCenter = false;
+		if self.time < TIMER_DATA[self.type].largeMarker then
+			StartTimer_SwitchToLargeDisplay(self);
+		end
+		self:SetScript("OnUpdate", nil);
+		if ( self.barShowing ) then
+			self.barShowing = false;
+			self.fadeBarOut:Play();
+			if (TIMER_DATA[self.type].barHideSoundKitID) then
+				PlaySound(TIMER_DATA[self.type].barHideSoundKitID);
+			end
+		else
+			self.bar:Hide()
+			self.startNumbers:Play();
+		end
 	elseif not self.barShowing then
-		AnimationsToggle_FADEBARIN(self)
-		self.barShowing = true
+		self.fadeBarIn:Play();
+		self.barShowing = true;
+		if (TIMER_DATA[self.type].barShowSoundKitID) then
+			PlaySound(TIMER_DATA[self.type].barShowSoundKitID);
+		end
+--	elseif self.updateTime <= 0 then
+--		self.updateTime = TIMER_DATA[self.type].updateInterval;
 	end
 
 	self.bar:SetValue(linear(self.updateTime, self.startValue, -self.startValue, self.duration))
-	self.bar.timeText:SetText(string.format(TIMER_MINUTES_DISPLAY, minutes, seconds))
+	self.bar.timeText:SetText(string.format(TIMER_MINUTES_DISPLAY, minutes, seconds));
 end
-function StartTimer_BarOnlyOnUpdate(self, elasped)
-	self.time = self.endTime - GetTime()
-	local minutes, seconds = floor(self.time/60), mod(self.time, 60)
+
+function StartTimer_BarOnlyOnUpdate(self, elapsed)
+	self.time = self.endTime - GetTime();
+	local minutes, seconds = floor(self.time/60), mod(self.time, 60);
 
 	self.bar:SetValue(linear(self.updateTime, self.startValue, -self.startValue, self.duration))
-	self.bar.timeText:SetText(string.format(TIMER_MINUTES_DISPLAY, minutes, seconds))
-	
+	self.bar.timeText:SetText(string.format(TIMER_MINUTES_DISPLAY, minutes, seconds));
+
 	if self.time < 0 then
 		self:SetScript("OnUpdate", nil)
 		self.barShowing = false
 		self.isFree = true
-		self:Hide()
+		self:Hide();
 	end
-	
+
 	if not self.barShowing then
-		AnimationsToggle_FADEBARIN(self)
-		self.barShowing = true
+		self.fadeBarIn:Play();
+		self.barShowing = true;
 	end
 end
 
-local timerTick = false
 function StartTimer_SetTexNumbers(self, ...)
 	local digits = {...}
-	local timeDigits = floor(self.time)
-	local digit
-	local style = self.style
-	local i = 1
-	
-	local texCoW = style.w/style.texW
-	local texCoH = style.h/style.texH
-	local l,r,t,b
-	local columns = floor(style.texW/style.w)
-	local numberOffset = 0
-	local numShown = 0
+	local timeDigits = floor(self.time);
+	local digit;
+	local style = self.style;
+	local i = 1;
 
-	while digits[i] do
+	local texCoW = style.w/style.texW;
+	local texCoH = style.h/style.texH;
+	local l,r,t,b;
+	local columns = floor(style.texW/style.w);
+	local numberOffset = 0;
+	local numShown = 0;
+
+	while digits[i] do -- THIS WILL DISPLAY SECOND AS A NUMBER 2:34 would be 154
 		if timeDigits > 0 then
-			digit = mod(timeDigits, 10)
-			
-			digits[i].hw = style.numberHalfWidths[digit+1]*digits[i].width
-			numberOffset  = numberOffset + digits[i].hw
-			
-			l = mod(digit, columns) * texCoW
-			r = l + texCoW
-			t = floor(digit/columns) * texCoH
-			b = t + texCoH
+			digit = mod(timeDigits, 10);
 
-			digits[i]:SetTexCoord(l,r,t,b)
-			digits[i].glow:SetTexCoord(l,r,t,b)
-			
-			timeDigits = floor(timeDigits/10)	
-			numShown = numShown + 1			
+			digits[i].hw = style.numberHalfWidths[digit+1]*digits[i].width;
+			numberOffset = numberOffset + digits[i].hw;
+
+			l = mod(digit, columns) * texCoW;
+			r = l + texCoW;
+			t = floor(digit/columns) * texCoH;
+			b = t + texCoH;
+
+			digits[i]:SetTexCoord(l,r,t,b);
+			digits[i].glow:SetTexCoord(l,r,t,b);
+
+			timeDigits = floor(timeDigits/10);
+			numShown = numShown + 1;
 		else
-			digits[i]:SetTexCoord(0,0,0,0)
-			digits[i].glow:SetTexCoord(0,0,0,0)
+			digits[i]:SetTexCoord(0,0,0,0);
+			digits[i].glow:SetTexCoord(0,0,0,0);
 		end
-		i = i + 1
+		i = i + 1;
 	end
-	
-	if numberOffset > 0 then
-		timerTick = not timerTick
-		if timerTick then
-			PlaySound("ui_battlegroundcountdown_timer")
-		else
-			PlaySound("ui_battlegroundcountdown_timer2")
-		end
-		
-		for j = 1, #digits do
-			digits[j]:ClearAllPoints()
 
-			if self.anchorCenter then
-				digits[j]:SetPoint("CENTER", UIParent, 0, 0)
-			else
-				digits[j]:SetPoint("CENTER", self, "CENTER", numberOffset - digits[1].hw, 0)
+	if numberOffset > 0 then
+		if(TIMER_DATA[self.type].bigNumberSoundKitID and numShown < TIMER_DATA[self.type].largeMarker ) then
+			PlaySoundTick(TIMER_DATA[self.type].bigNumberSoundKitID);
+		else
+			PlaySoundTick(SOUNDKIT.UI_BATTLEGROUND_COUNTDOWN_TIMER)
+		end
+
+		digits[1]:ClearAllPoints();
+		if self.anchorCenter then
+			digits[1]:SetPoint("CENTER", UIParent, "CENTER", numberOffset - digits[1].hw, 0);
+		else
+			digits[1]:SetPoint("CENTER", self, "CENTER", numberOffset - digits[1].hw, 0);
+		end
+
+		for i=2,numShown do
+			digits[i]:ClearAllPoints();
+			digits[i]:SetPoint("CENTER", digits[i-1], "CENTER", -(digits[i].hw + digits[i-1].hw), 0)
+			i = i + 1;
+		end
+	end
+end
+
+function StartTimer_SetGoTexture(timer)
+	if ( timer.type == TIMER_TYPE_PVP or timer.type == TIMER_TYPE_ARENA ) then
+		if timer.type ~= TIMER_TYPE_PVP then
+			timer.GoTexture:SetAtlas("countdown-swords");
+			timer.GoTextureGlow:SetAtlas("countdown-swords-glow");
+
+			StartTimer_SwitchToLargeDisplay(timer);
+		else
+			local factionGroup = GetPlayerFactionGroup();
+			if ( factionGroup and factionGroup ~= "Neutral" ) then
+				timer.GoTexture:SetTexture("Interface\\Timer\\"..factionGroup.."-Logo");
+				timer.GoTextureGlow:SetTexture("Interface\\Timer\\"..factionGroup.."Glow-Logo");
 			end
 		end
-		
-		for i = 2, numShown do
-			digits[i]:ClearAllPoints()
-			digits[i]:SetPoint("CENTER", digits[i-1], "CENTER", -(digits[i].hw + digits[i-1].hw), 0)
-			i = i + 1
-		end
+	elseif ( timer.type == TIMER_TYPE_CHALLENGE_MODE ) then
+		timer.GoTexture:SetTexture("Interface\\Timer\\Challenges-Logo");
+		timer.GoTextureGlow:SetTexture("Interface\\Timer\\ChallengesGlow-Logo");
+	elseif (timer.type == TIMER_TYPE_PLAYER_COUNTDOWN) then
+		timer.GoTexture:SetTexture("")
+		timer.GoTextureGlow:SetTexture("")
 	end
 end
 
 function StartTimer_NumberAnimOnFinished(self)
-	self.time = self.time - 1
-	if self.time > 1 then
-		if self.time < 6 then
-			if not self.anchorCenter then
-				self.anchorCenter = true
+	self.time = self.time - 1;
+	if self.time > 0 then
+		if self.time < TIMER_DATA[self.type].largeMarker then
+			StartTimer_SwitchToLargeDisplay(self);
+		end
+		if self.digit2.startNumbers:IsPlaying() then
+			self.digit2.startNumbers:Stop()
+		end
+		if self.glow2.startNumbers:IsPlaying() then
+			self.glow2.startNumbers:Stop()
+		end
+		self.startNumbers:Play();
+	else
+		if(TIMER_DATA[self.type].finishedSoundKitID) then
+			PlaySound(TIMER_DATA[self.type].finishedSoundKitID);
+		else
+			PlaySound("ui_battlegroundcountdown_end")
+		end
+		self:SetScript("OnUpdate", nil)
+		self.isFree = true
+		self.barShowing = false
+		self.GoTextureAnim:Play();
+	end
+end
 
-				self.digit1.width, self.digit2.width = self.style.w, self.style.w
-				self.digit1:SetSize(self.style.w, self.style.h)
-				self.digit2:SetSize(self.style.w, self.style.h)
+function StartTimer_SwitchToLargeDisplay(self)
+	if not self.anchorCenter then
+		self.anchorCenter = true;
+		--This is to compensate texture size not affecting GetWidth() right away.
+		self.digit1.width, self.digit2.width = self.style.w, self.style.w;
+		self.digit1:SetSize(self.style.w, self.style.h);
+		self.digit2:SetSize(self.style.w, self.style.h);
+
+		if(TIMER_DATA[self.type].mediumNumberFinishedSoundKitID) then
+			PlaySound(TIMER_DATA[self.type].mediumNumberFinishedSoundKitID);
+		end
+	end
+end
+
+local TIMEOUT_LIST = {}
+local COUNTDOUWN_TIMEOUT_SECONDS = 10
+local COUNTDOUWN_TIMEOUT_MAX_COUNT = 5
+
+do
+	local eventHandler = CreateFrame("Frame")
+	eventHandler:Hide()
+	eventHandler:RegisterEvent("CHAT_MSG_ADDON")
+	eventHandler:SetScript("OnEvent", function(self, event, prefix, msg, distribution, sender)
+		if event == "CHAT_MSG_ADDON" and prefix == "SIRUS_START_TIMER" then
+			if UnitIsGroupLeader(sender) or (UnitInRaid(sender) and select(2, GetRaidRosterInfo(UnitInRaid(sender) + 1)) > 0) then
+				if not TIMEOUT_LIST[sender] or TIMEOUT_LIST[sender][2] < COUNTDOUWN_TIMEOUT_MAX_COUNT then
+					local seconds = tonumber(msg)
+					if seconds and seconds > 3 then
+						local _, instanceType = GetInstanceInfo()
+						if instanceType == "pvp" or instanceType == "arena" then
+							return
+						end
+
+						if not TIMEOUT_LIST[sender] then
+							TIMEOUT_LIST[sender] = {0, 1}
+							self:Show()
+						else
+							TIMEOUT_LIST[sender][2] = TIMEOUT_LIST[sender][2] + 1
+						end
+
+						seconds = seconds + 0.9
+						FireCustomClientEvent("START_TIMER", TIMER_TYPE_PLAYER_COUNTDOWN, seconds, seconds)
+					end
+				end
 			end
 		end
-	
-		AnimationsToggle_STARTNUMBERS(self)
+	end)
+	eventHandler:SetScript("OnUpdate", function(self, elapsed)
+		for sender, timeoutData in pairs(TIMEOUT_LIST) do
+			timeoutData[1] = timeoutData[1] + elapsed
+			if timeoutData[1] >= COUNTDOUWN_TIMEOUT_SECONDS then
+				TIMEOUT_LIST[sender] = nil
+			end
+		end
+		if not next(TIMEOUT_LIST) then
+			self:Hide()
+		end
+	end)
+end
+
+function TimerTracker_DoCountdown(seconds)
+	if type(seconds) == "string" then
+		seconds = tonumber(seconds)
+	end
+	if type(seconds) ~= "number" then
+		error("Usage: C_PartyInfo_DoCountdown(seconds)", 2)
+	end
+
+	if seconds < 3 then
+		return
+	end
+
+	if not IsPartyLeader() and not IsRaidLeader() and not IsRaidOfficer() then
+		return
+	end
+
+	local distribution
+	if GetNumRaidMembers() > 0 then
+		distribution = "RAID"
+	elseif GetNumPartyMembers() > 0 then
+		distribution = "PARTY"
 	else
-		self.isFree = true
-		-- PlaySoundKitID(25478)
-		PlaySound("ui_battlegroundcountdown_end")
-		AnimationsToggle_FACTIONANIM(self)
+		return
 	end
-end
 
-
-function StartTimer_StopAllTimers()
-	for a,timer in pairs(TimerTracker.timerList) do
-		timer.time = nil
-		timer.type = nil
-		timer.isFree = nil
-		timer:SetScript("OnUpdate", nil)
-		AnimationsToggle_FADEBAROUT(timer, true)
-		AnimationsToggle_FADEBARIN(timer, true)
-		AnimationsToggle_STARTNUMBERS(timer, true)
-		AnimationsToggle_FACTIONANIM(timer, true)
-		timer.bar:Hide()
+	local _, instanceType = GetInstanceInfo()
+	if instanceType == "pvp" or instanceType == "arena" then
+		return
 	end
-end
 
-function StartTimer_GetTimerTypeInfo(timerType)
-	local info = TIMER_TYPE_DATA[timerType];
-	if info then
-		return info.totalTime, info.fadeTime;
+	local playerName = UnitName("player")
+	if not TIMEOUT_LIST[playerName] or TIMEOUT_LIST[playerName][2] < COUNTDOUWN_TIMEOUT_MAX_COUNT then
+		SendAddonMessage("SIRUS_START_TIMER", seconds, distribution)
+	else
+		UIErrorsFrame:AddMessage(ERR_GENERIC_THROTTLE, 1.0, 0.1, 0.1, 1.0)
 	end
 end

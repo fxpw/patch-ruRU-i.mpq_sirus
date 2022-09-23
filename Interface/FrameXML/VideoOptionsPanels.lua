@@ -1,5 +1,3 @@
--- if you change something here you probably want to change the glue version too
-
 local OPTIONS_FARCLIP_MIN = 177;
 local OPTIONS_FARCLIP_MAX = 1277;
 
@@ -7,13 +5,12 @@ local VIDEO_OPTIONS_CUSTOM_QUALITY = 6;
 
 local VIDEO_OPTIONS_COMPARISON_EPSILON = 0.000001;
 
-
 -- [[ Generic Video Options Panel ]] --
 
 function VideoOptionsPanel_Okay (self)
 	for _, control in next, self.controls do
 		if ( control.newValue ) then
-			if ( control.value ~= control.newValue ) then
+			if ( control.value ~= control.newValue and (abs(control.newValue - control.value) > VIDEO_OPTIONS_COMPARISON_EPSILON) ) then
 				if ( control.gameRestart ) then
 					VideoOptionsFrame.gameRestart = true;
 				end
@@ -30,6 +27,10 @@ function VideoOptionsPanel_Okay (self)
 		elseif ( control.value ) then
 			control:SetValue(control.value);
 		end
+	end
+	if ( VideoOptionsFrame.gxRestart ) then
+		RestartGx();
+		VideoOptionsFrame.gxRestart = nil;
 	end
 end
 
@@ -48,6 +49,8 @@ function VideoOptionsPanel_Cancel (self)
 			control:SetValue(control.value);
 		end
 	end
+	VideoOptionsFrame.gxRestart = nil;
+	VideoOptionsFrame.gameRestart = nil;
 end
 
 function VideoOptionsPanel_Default (self)
@@ -261,10 +264,12 @@ function VideoOptionsResolutionPanelRefreshDropDown_OnLoad(self)
 
 	self.SetValue =
 		function (self, value)
+		--	self.newValue = value;
 			BlizzardOptionsPanel_SetCVarSafe(self.cvar, value);
 		end;
 	self.GetValue =
 		function (self)
+		--	return self.newValue or self.value;
 			return BlizzardOptionsPanel_GetCVarSafe(self.cvar);
 		end
 	self.RefreshValue =
@@ -332,10 +337,12 @@ function VideoOptionsResolutionPanelMultiSampleDropDown_OnLoad(self)
 
 	self.SetValue =
 		function (self, value)
+		--	self.newValue = value;
 			SetMultisampleFormat(value);
 		end;
 	self.GetValue =
 		function (self)
+		--	return self.newValue or self.value;
 			return GetCurrentMultisampleFormat();
 		end
 	self.RefreshValue =

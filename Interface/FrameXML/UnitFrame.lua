@@ -1,6 +1,5 @@
 ﻿
 PowerBarColor = {};
-PowerBarColor["DEMON_RAGE"] = { r = 0.788, g = 0.259, b = 0.992 };
 PowerBarColor["MANA"] = { r = 0.00, g = 0.00, b = 1.00 };
 PowerBarColor["RAGE"] = { r = 1.00, g = 0.00, b = 0.00 };
 PowerBarColor["FOCUS"] = { r = 1.00, g = 0.50, b = 0.25 };
@@ -8,6 +7,7 @@ PowerBarColor["ENERGY"] = { r = 1.00, g = 1.00, b = 0.00 };
 PowerBarColor["HAPPINESS"] = { r = 0.00, g = 1.00, b = 1.00 };
 PowerBarColor["RUNES"] = { r = 0.50, g = 0.50, b = 0.50 };
 PowerBarColor["RUNIC_POWER"] = { r = 0.00, g = 0.82, b = 1.00 };
+PowerBarColor["DEMON_RAGE"] = { r = 0.788, g = 0.259, b = 0.992 };
 -- vehicle colors
 PowerBarColor["AMMOSLOT"] = { r = 0.80, g = 0.60, b = 0.00 };
 PowerBarColor["FUEL"] = { r = 0.0, g = 0.55, b = 0.5 };
@@ -29,6 +29,10 @@ local CUSTOM_TARGETING_TEXTURES = {
 	["Interface\\TargetingFrame\\UI-TARGETINGFRAME-SAPPHIRE"] = true,
 }
 
+function GetPowerBarColor(powerType)
+	return PowerBarColor[powerType];
+end
+
 --[[
 	This system uses "update" functions as OnUpdate, and OnEvent handlers.
 	This "Initialize" function registers the events to handle.
@@ -38,7 +42,6 @@ local CUSTOM_TARGETING_TEXTURES = {
 	TT: I had to make the spellbar system differ from the norm.
 	I needed a seperate OnUpdate and OnEvent handlers. And needed to parse the event.
 ]]--
-
 
 function UnitFrame_Initialize (self, unit, name, portrait, healthbar, healthtext, manabar, manatext, threatIndicator, threatFeedbackUnit, threatNumericIndicator)
 	self.unit = unit;
@@ -55,19 +58,14 @@ function UnitFrame_Initialize (self, unit, name, portrait, healthbar, healthtext
 		self.manabar.capNumericDisplay = true;
 	end
 
-	-- TODO: Исправить в дальнейшем на стороне сервера и убрать эту заглушку.
-	if self:GetName():sub(1, 15) == "ArenaEnemyFrame" and self.threatIndicator then
-		self.threatIndicator:SetTexCoord(0, 0, 0, 0)
-	end
-
 	UnitFrameHealthBar_Initialize(unit, healthbar, healthtext, true);
-	UnitFrameManaBar_Initialize(unit, manabar, manatext, (unit == "player" or unit == "pet" or unit == "vehicle"));
+	UnitFrameManaBar_Initialize(unit, manabar, manatext, (unit == "player" or unit == "pet" or unit == "vehicle" or unit == "target" or unit == "focus"));
 	UnitFrameThreatIndicator_Initialize(unit, self, threatFeedbackUnit);
 	UnitFrame_Update(self);
 	self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
 	self:RegisterEvent("UNIT_NAME_UPDATE");
-	self:RegisterEvent("UNIT_PORTRAIT_UPDATE");
 	self:RegisterEvent("UNIT_DISPLAYPOWER");
+	self:RegisterEvent("UNIT_PORTRAIT_UPDATE")
 
 	if unit == "player" or unit == "target" or unit == "focus" then
 		hooksecurefunc(self.borderTexture, "SetTexture", function(texture, texturePath)
@@ -98,7 +96,7 @@ end
 
 function UnitFrame_SetUnit (self, unit, healthbar, manabar)
 	self.unit = unit;
-	healthbar.unit = unit;
+	UnitFrameHealthBar_SetUnit(healthbar, unit)
 	if ( manabar ) then	--Party Pet frames don't have a mana bar.
 		manabar.unit = unit;
 	end
@@ -120,7 +118,7 @@ function UnitFrame_SetUnit (self, unit, healthbar, manabar)
 	securecall("UnitFrame_Update", self);
 end
 
-function UnitFrame_Update (self)
+function UnitFrame_Update (self, isParty)
 	if ( self.overrideName ) then
 		self.name:SetText(GetUnitName(self.overrideName));
 	else
@@ -161,6 +159,8 @@ function UnitFrameCategory_Update( self )
 	end
 end
 
+local PLAYER_CATEGORY_INDEX = 0
+
 function UnitFrameVip_Update( self )
 	local frame, texture
 
@@ -194,6 +194,11 @@ function UnitFrameVip_Update( self )
 	end
 
 	if self == PlayerFrame then
+		if PLAYER_CATEGORY_INDEX ~= vipInfo.vipCategory then
+			PLAYER_CATEGORY_INDEX = vipInfo.vipCategory
+			UIParent_UpdateTopFramePositions()
+		end
+
 		texture:SetTexture("Interface\\TargetingFrame\\"..vipInfo.unitFrameTexture)
 	else
 		TargetFrame_CheckClassification(self)
@@ -207,19 +212,15 @@ function UnitFramePortrait_Update (self)
 end
 
 function UnitFrame_OnEvent(self, event, ...)
-	local arg1 = ...
+	local eventUnit = ...
 
 	local unit = self.unit;
-	if ( event == "UNIT_NAME_UPDATE" ) then
-		if ( arg1 == unit ) then
+	if ( eventUnit == unit ) then
+		if ( event == "UNIT_NAME_UPDATE" ) then
 			self.name:SetText(GetUnitName(unit));
-		end
-	elseif ( event == "UNIT_PORTRAIT_UPDATE" ) then
-		if ( arg1 == unit ) then
+		elseif ( event == "UNIT_PORTRAIT_UPDATE" ) then
 			UnitFramePortrait_Update(self);
-		end
-	elseif ( event == "UNIT_DISPLAYPOWER" ) then
-		if ( arg1 == unit and self.manabar ) then
+		elseif ( event == "UNIT_DISPLAYPOWER" ) then
 			UnitFrameManaBar_UpdateType(self.manabar);
 		end
 	end
@@ -241,7 +242,8 @@ function UnitFrame_OnEnter (self)
 	UnitFrame_UpdateTooltip(self);
 end
 
-function UnitFrame_OnLeave ()
+function UnitFrame_OnLeave (self)
+	self.UpdateTooltip = nil;
 	if ( SHOW_NEWBIE_TIPS == "1" ) then
 		GameTooltip:Hide();
 	else
@@ -256,8 +258,8 @@ function UnitFrame_UpdateTooltip (self)
 	else
 		self.UpdateTooltip = nil;
 	end
+
 	local r, g, b = GameTooltip_UnitColor(self.unit);
-	--GameTooltip:SetBackdropColor(r, g, b);
 	GameTooltipTextLeft1:SetTextColor(r, g, b);
 end
 
@@ -270,8 +272,8 @@ function UnitFrameManaBar_UpdateType (manaBar)
 	local prefix = _G[powerToken];
 	local info = PowerBarColor[powerToken];
 
-	local _, UnitClasses = UnitClass(manaBar.unit)
-	if UnitClasses == "DEMONHUNTER" then
+	local _, class = UnitClass(manaBar.unit)
+	if class == "DEMONHUNTER" then
 		info = PowerBarColor["DEMON_RAGE"]
 	end
 
@@ -280,7 +282,7 @@ function UnitFrameManaBar_UpdateType (manaBar)
 			manaBar:SetStatusBarColor(info.r, info.g, info.b);
 		end
 	else
-		if ( not altR) then
+		if ( not altR ) then
 			-- couldn't find a power token entry...default to indexing by power type or just mana if we don't have that either
 			info = PowerBarColor[powerType] or PowerBarColor["MANA"];
 		else
@@ -323,11 +325,9 @@ function UnitFrameHealthBar_Initialize (unit, statusbar, statustext, frequentUpd
 	if ( frequentUpdates ) then
 		statusbar:RegisterEvent("VARIABLES_LOADED");
 	end
-	if ( GetCVarBool("predictedHealth") and frequentUpdates ) then
-		statusbar:SetScript("OnUpdate", UnitFrameHealthBar_OnUpdate);
-	else
-		statusbar:RegisterEvent("UNIT_HEALTH");
-	end
+
+	UnitFrameHealthBar_RefreshUpdateEvent(statusbar);
+
 	statusbar:RegisterEvent("UNIT_MAXHEALTH");
 	statusbar:SetScript("OnEvent", UnitFrameHealthBar_OnEvent);
 
@@ -341,19 +341,28 @@ function UnitFrameHealthBar_Initialize (unit, statusbar, statustext, frequentUpd
 	end
 end
 
+function UnitFrameHealthBar_RefreshUpdateEvent(self)
+	if ( GetCVarBool("predictedHealth") and self.frequentUpdates ) then
+		self:SetScript("OnUpdate", UnitFrameHealthBar_OnUpdate);
+		self:UnregisterEvent("UNIT_HEALTH");
+	else
+		self:SetScript("OnUpdate", nil);
+		self:RegisterEvent("UNIT_HEALTH");
+	end
+end
+
+function UnitFrameHealthBar_SetUnit(self, unit)
+	self.unit = unit;
+	UnitFrameHealthBar_RefreshUpdateEvent(self);
+end
+
 function UnitFrameHealthBar_OnEvent(self, event, ...)
 	if ( event == "CVAR_UPDATE" ) then
 		TextStatusBar_OnEvent(self, event, ...);
 	elseif ( event == "VARIABLES_LOADED" ) then
 		self:UnregisterEvent("VARIABLES_LOADED");
-		if ( GetCVarBool("predictedHealth") and self.frequentUpdates ) then
-			self:SetScript("OnUpdate", UnitFrameHealthBar_OnUpdate);
-			self:UnregisterEvent("UNIT_HEALTH");
-		else
-			self:RegisterEvent("UNIT_HEALTH");
-			self:SetScript("OnUpdate", nil);
-		end
-	else
+		UnitFrameHealthBar_RefreshUpdateEvent(self);
+	elseif self:IsShown() then
 		UnitFrameHealthBar_Update(self, ...);
 	end
 end
@@ -433,6 +442,7 @@ function UnitFrameManaBar_Initialize (unit, statusbar, statustext, frequentUpdat
 		return;
 	end
 	statusbar.unit = unit;
+	statusbar.texture = statusbar:GetStatusBarTexture();
 	SetTextStatusBarText(statusbar, statustext);
 
 	statusbar.frequentUpdates = frequentUpdates;
@@ -451,6 +461,11 @@ function UnitFrameManaBar_Initialize (unit, statusbar, statustext, frequentUpdat
 	statusbar:RegisterEvent("UNIT_MAXHAPPINESS");
 	statusbar:RegisterEvent("UNIT_MAXRUNIC_POWER");
 	statusbar:RegisterEvent("UNIT_DISPLAYPOWER");
+	if ( statusbar.unit == "player" ) then
+		statusbar:RegisterEvent("PLAYER_DEAD");
+		statusbar:RegisterEvent("PLAYER_ALIVE");
+		statusbar:RegisterEvent("PLAYER_UNGHOST");
+	end
 	statusbar:SetScript("OnEvent", UnitFrameManaBar_OnEvent);
 end
 
@@ -466,6 +481,8 @@ function UnitFrameManaBar_OnEvent(self, event, ...)
 			UnitFrameManaBar_RegisterDefaultEvents(self);
 			self:SetScript("OnUpdate", nil);
 		end
+	elseif ( event == "PLAYER_ALIVE"  or event == "PLAYER_DEAD" or event == "PLAYER_UNGHOST" ) then
+		UnitFrameManaBar_UpdateType(self);
 	else
 		UnitFrameManaBar_Update(self, ...);
 	end
@@ -561,7 +578,7 @@ function UnitFrame_UpdateThreatIndicator(indicator, numericIndicator, unit)
 				if ( ShowNumericThreat() ) then
 					local isTanking, status, percentage = UnitDetailedThreatSituation(indicator.feedbackUnit, indicator.unit);
 					if ( percentage and percentage ~= 0 ) then
-						numericIndicator.text:SetText(format("%d", percentage).."%");
+						numericIndicator.text:SetText(format("%1.0f", percentage).."%");
 						numericIndicator.bg:SetVertexColor(GetThreatStatusColor(status));
 						numericIndicator:Show();
 					else

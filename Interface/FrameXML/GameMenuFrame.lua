@@ -7,7 +7,6 @@
 function GameMenuFrame_OnShow(self)
 	UpdateMicroButtons();
 	Disable_BagButtons();
-	VoiceChat_Toggle();
 
 	if IsStoreEnable() then
 		GameMenuButtonStore:SetText(GAMEMENU_STORE)

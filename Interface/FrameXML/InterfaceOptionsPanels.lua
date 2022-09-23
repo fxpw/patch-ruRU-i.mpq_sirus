@@ -23,16 +23,17 @@ function InterfaceOptionsPanel_CheckButton_OnClick (checkButton)
 end
 
 function InterfaceOptionsPanel_CheckButton_Update (checkButton)
-	local setting = "0";
+	local setting = checkButton.uncheckedValue or "0";
 	if ( checkButton:GetChecked() ) then
 		if ( not checkButton.invert ) then
-			setting = "1"
+			setting = checkButton.checkedValue or "1"
 		end
 	elseif ( checkButton.invert ) then
-		setting = "1"
+		setting = checkButton.checkedValue or "1"
 	end
 
 	checkButton.value = setting;
+	checkButton:SetValue(setting);
 
 	if ( checkButton.cvar ) then
 		BlizzardOptionsPanel_SetCVarSafe(checkButton.cvar, setting, checkButton.event);
@@ -63,7 +64,12 @@ end
 local function InterfaceOptionsPanel_CancelControl (control)
 	if ( control.oldValue ) then
 		if ( control.value and control.value ~= control.oldValue ) then
-			control:SetValue(control.oldValue);
+			if control.type == CONTROLTYPE_CHECKBOX then
+				control:SetChecked(not control:GetChecked());
+				InterfaceOptionsPanel_CheckButton_Update(control);
+			else
+				control:SetValue(control.oldValue);
+			end
 		end
 	elseif ( control.value ) then
 		if ( control:GetValue() ~= control.value ) then
@@ -79,13 +85,11 @@ local function InterfaceOptionsPanel_DefaultControl (control)
 	end
 end
 
-local function InterfaceOptionsPanel_Okay (self)
-	for _, control in SecureNext, self.controls do
-		securecall(BlizzardOptionsPanel_OkayControl, control);
-	end
+local function InterfaceOptionsPanel_Okay (self, perControlCallback)
+	BlizzardOptionsPanel_Okay(self, perControlCallback);
 end
 
-local function InterfaceOptionsPanel_Cancel (self)
+function InterfaceOptionsPanel_Cancel (self)
 	for _, control in SecureNext, self.controls do
 		securecall(InterfaceOptionsPanel_CancelControl, control);
 		if ( control.setFunc ) then
@@ -94,29 +98,38 @@ local function InterfaceOptionsPanel_Cancel (self)
 	end
 end
 
-local function InterfaceOptionsPanel_Default (self)
+function InterfaceOptionsPanel_Default (self)
 	for _, control in SecureNext, self.controls do
 		securecall(InterfaceOptionsPanel_DefaultControl, control);
 		if ( control.setFunc ) then
 			control.setFunc(control:GetValue());
 		end
 	end
-end
-
-local function InterfaceOptionsPanel_Refresh (self)
-	for _, control in SecureNext, self.controls do
-		securecall(BlizzardOptionsPanel_RefreshControl, control);
-		-- record values so we can cancel back to this state
-		control.oldValue = control.value;
+	if ( self.defaultFuncs ) then
+		for _, defaultFunc in SecureNext, self.defaultFuncs do
+			defaultFunc();
+		end
 	end
 end
 
+local function RefreshCallback(panel, control)
+	-- record values so we can cancel back to this state
+	control.oldValue = control.value;
+end
+
+function InterfaceOptionsPanel_Refresh (self)
+	BlizzardOptionsPanel_Refresh(self, RefreshCallback);
+end
 
 function InterfaceOptionsPanel_OnLoad (self)
 	BlizzardOptionsPanel_OnLoad(self, nil, InterfaceOptionsPanel_Cancel, InterfaceOptionsPanel_Default, InterfaceOptionsPanel_Refresh);
 	InterfaceOptions_AddCategory(self);
 end
 
+function InterfaceOptionsPanel_RegisterSetToDefaultFunc(func, self)
+	self.defaultFuncs = self.defaultFuncs or {};
+	tinsert(self.defaultFuncs, func);
+end
 
 -- [[ Controls Options Panel ]] --
 
@@ -1189,7 +1202,7 @@ function InterfaceOptionsSocialPanelTimestamps_Initialize()
 	info.value = "none";
 	info.text = TIMESTAMP_FORMAT_NONE;
 	info.checked = info.value == selectedValue;
-	UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL);
+	UIDropDownMenu_AddButton(info);
 
 	InterfaceOptionsSocialPanelTimestamps_AddTimestampFormat(TIMESTAMP_FORMAT_HHMM, info, selectedValue);
 	InterfaceOptionsSocialPanelTimestamps_AddTimestampFormat(TIMESTAMP_FORMAT_HHMMSS, info, selectedValue);
@@ -1214,7 +1227,7 @@ function InterfaceOptionsSocialPanelTimestamps_AddTimestampFormat(timestampForma
 	infoTable.value = timestampFormat;
 	infoTable.text = BetterDate(timestampFormat, time(exampleTime));
 	infoTable.checked = (selectedValue == timestampFormat);
-	UIDropDownMenu_AddButton(infoTable, UIDROPDOWNMENU_MENU_LEVEL);
+	UIDropDownMenu_AddButton(infoTable);
 end
 
 function InterfaceOptionsSocialPanelTimestamps_OnClick(self)

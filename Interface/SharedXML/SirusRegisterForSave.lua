@@ -1,10 +1,4 @@
---	Filename:	SirusRegisterForSave.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
-local RegisterForSaveData = {
+local SavedValuesPerAccount = {
 	"SIRUS_SPELLBOOK_SPELL",
 	"SIRUS_SPELLBOOK_SKILLLINE",
 	"SIRUS_TUTORIAL_KEY",
@@ -27,8 +21,19 @@ local RegisterForSaveData = {
 	"SIRUS_COLLECTION_FAVORITE_TOY",
 }
 
-function SirusRegisterForSaveFrame_OnLoad( ... )
-	for _, data in pairs(RegisterForSaveData) do
-		RegisterForSave(data)
+local SavedValuesPerCharacter = {
+	"TARGET_FRAME_UNLOCKED",
+	"PLAYER_FRAME_UNLOCKED",
+	"TARGET_FRAME_BUFFS_ON_TOP",
+	"FOCUS_FRAME_BUFFS_ON_TOP",
+	"PLAYER_FRAME_CASTBARS_SHOWN",
+}
+
+function SirusRegisterForSaveFrame_OnLoad(self)
+	for _, key in ipairs(SavedValuesPerAccount) do
+		RegisterForSave(key)
+	end
+	for _, key in ipairs(SavedValuesPerCharacter) do
+		RegisterForSavePerCharacter(key)
 	end
 end

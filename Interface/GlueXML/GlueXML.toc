@@ -1,5 +1,6 @@
 ..\..\InterfaceDebug\GlueXMLPre.xml
 
+GlueXML.xml
 ..\SharedXML\AtlasStorage.lua
 ..\SharedXML\Extensions\math.lua
 ..\SharedXML\Extensions\string.lua
@@ -10,6 +11,7 @@
 ..\SharedXML\DataDumper.lua
 ..\SharedXML\UUID.lua
 ..\SharedXML\FunctionUtil.lua
+..\SharedXML\FunctionOverride.lua
 ..\SharedXML\EventHandler.lua
 ..\SharedXML\Hook.lua
 ..\SharedXML\MixIn.lua
@@ -31,7 +33,6 @@
 ..\SharedXML\L_Easing.lua
 
 ..\SharedXML\SharedFontStyles.xml
-..\SharedXML\FunctionOverride.lua
 
 ..\SharedXML\FrameUtil.lua
 ..\SharedXML\LayoutFrame.xml

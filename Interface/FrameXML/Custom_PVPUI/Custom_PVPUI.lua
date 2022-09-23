@@ -652,6 +652,10 @@ function GetRatedBattlegroundRankByTitle( title )
 end
 
 function TogglePVPUIFrame()
+	if C_Unit.IsNeutral("player") then
+		return
+	end
+
 	if ( PVPFrame_IsJustBG() ) then
 		PVPFrame_SetJustBG(false)
 	else
@@ -908,9 +912,8 @@ end
 function HonorFrame_UpdateQueueButtons()
 	local canQueue
 	local selectedButtonID = PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton and PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton:GetID()
-	local currentMapAreaID = GetCurrentMapAreaID()
 
-	if ( currentMapAreaID == 915 or currentMapAreaID == 898 ) then
+	if C_Unit.IsNeutral("player") then
 		canQueue = false
 	elseif ( PVPHonorFrame.type == "specific" ) then
 		if ( PVPHonorFrameSpecificFrame.selectionID ) then
@@ -1316,10 +1319,8 @@ end
 
 function ConquestFrame_UpdateJoinButton()
 	local button = ConquestJoinButton
-	local groupSize = GetNumPartyMembers() + 1
-	local currentMapAreaID = GetCurrentMapAreaID()
 
-	if currentMapAreaID == 915 or currentMapAreaID == 898 then
+	if C_Unit.IsNeutral("player") then
 		button:Disable()
 		return
 	end
@@ -1328,6 +1329,8 @@ function ConquestFrame_UpdateJoinButton()
 		button:Enable()
 		return
 	elseif ConquestFrame.state == 2 or GetCurrentArenaSeason() ~= NO_ARENA_SEASON then
+		local groupSize = GetNumPartyMembers() + 1
+
 		if ConquestFrame.selectedButton then
 			if ConquestFrame.selectedButton.id == 1 or ConquestFrame.selectedButton.id == 5 then
 				if groupSize > 1 then
@@ -2947,27 +2950,27 @@ end
 function EventHandler:ASMSG_BG_EVENT_START_TIMER( msg )
 	if msg then
 		local splitData = C_Split(msg, ":")
-		local times = ( tonumber( splitData[1] ) / 1000 )
-		local timerType = tonumber( splitData[2] )
-		local totalTime = StartTimer_GetTimerTypeInfo(timerType) or 60;
+		local timeRemaining = ( tonumber( splitData[1] ) / 1000 )
+		local timerSubType = tonumber( splitData[2] )
+		local timerType, totalTime = TimerTracker_GetTimerTypeInfo(timerSubType);
 
-		if timerType ~= 0 then
-			StartTimer_StopAllTimers();
+		if timerSubType ~= 0 then
+			FreeAllTimerTrackerTimer();
 		end
 
-		TimerTracker_OnEvent(TimerTracker, "START_TIMER", 1, times, totalTime);
+		FireCustomClientEvent("START_TIMER", timerType, timeRemaining, totalTime);
 
 		if not GetCVar("BattlegroundTimerType") then
-			RegisterCVar("BattlegroundTimerType", timerType)
+			RegisterCVar("BattlegroundTimerType", timerSubType)
 		end
 
 		if not GetCVar("BattlegroundStartTimer") then
-			RegisterCVar("BattlegroundStartTimer", time() + times)
+			RegisterCVar("BattlegroundStartTimer", time() + timeRemaining)
 			return
 		end
 
-		SetCVar("BattlegroundStartTimer", time() + times)
-		SetCVar("BattlegroundTimerType", timerType)
+		SetCVar("BattlegroundStartTimer", time() + timeRemaining)
+		SetCVar("BattlegroundTimerType", timerSubType)
 	end
 end
 

@@ -4496,6 +4496,20 @@
 *******************************************************************************
 -->
 
+	<Slider name="HorizontalSliderTemplate" orientation="HORIZONTAL" enableMouse="true" virtual="true">
+		<HitRectInsets>
+			<AbsInset left="0" right="0" top="-10" bottom="-10"/>
+		</HitRectInsets>
+		<Backdrop bgFile="Interface\Buttons\UI-SliderBar-Background" edgeFile="Interface\Buttons\UI-SliderBar-Border" tile="true">
+			<EdgeSize val="8"/>
+			<TileSize val="8"/>
+			<BackgroundInsets left="3" right="3" top="6" bottom="6"/>
+		</Backdrop>
+		<ThumbTexture parentKey="Thumb" name="$parentThumb" file="Interface\Buttons\UI-SliderBar-Button-Horizontal">
+			<Size x="32" y="32"/>
+		</ThumbTexture>
+	</Slider>
+
 	<Slider name="UIPanelStretchableArtScrollBarTemplate" inherits="UIPanelScrollBarTemplate" virtual="true">
 		<Size x="20" y="0" />
 		<Anchors>

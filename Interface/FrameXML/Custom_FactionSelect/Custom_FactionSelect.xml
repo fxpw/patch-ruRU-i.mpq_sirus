@@ -1,0 +1,162 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_FactionSelect.lua"/>
+
+	<Frame name="FactionSelectTemplate" enableMouse="true" virtual="true">
+		<Size x="580" y="560"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0" />
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="BackgroundTile" horizTile="true">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="Top" horizTile="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0"/>
+						<Anchor point="TOPRIGHT" x="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button parentKey="CloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
+						<Offset x="4" y="5"/>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PlaySound("igCharacterInfoClose")
+						self:GetParent():Close()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Frame parentKey="OverlayElements" setAllPoints="true">
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture parentKey="Topper">
+							<Anchors>
+								<Anchor point="BOTTOM" relativePoint="TOP"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture parentKey="CloseButtonBorder">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentTitle" parentKey="Title">
+				<Size x="500" y="85"/>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-32" />
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentLeft" parentKey="Left">
+							<Anchors>
+								<Anchor point="LEFT"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentRight" parentKey="Right">
+							<Anchors>
+								<Anchor point="RIGHT"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentMiddle" parentKey="Middle" horizTile="true">
+							<Size x="0" y="85"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT" x="-60" y="0"/>
+								<Anchor point="RIGHT" relativeTo="$parentRight" relativePoint="LEFT" x="60" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Text" inherits="SystemFont_Large" justifyH="CENTER">
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="$parentMiddle"/>
+							</Anchors>
+							<Color r="1.0" g="1.0" b="1.0"/>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentContentFrame" parentKey="ContentFrame">
+				<Size x="510" y="410"/>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentTitle" relativePoint="BOTTOM" x="0" y="-4" />
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background"/>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture name="$parentImageBackground" parentKey="ImageBackground">
+							<Size x="370" y="188"/>
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-40" />
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<Texture name="$parentImageBorder" parentKey="ImageBorder">
+							<Size x="10" y="10"/>
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="$parentImageBackground" x="0" y="0" />
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<FontString parentKey="Text" font="GameFontNormal13" justifyV="MIDDLE" justifyH="LEFT">
+							<Size x="400" y="120"/>
+							<Anchors>
+								<Anchor point="TOP" relativeTo="$parentImageBorder" relativePoint="BOTTOM" x="0" y="0" />
+							</Anchors>
+							<Color r="0" g="0" b="0"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Button name="$parentChooseFaction" parentKey="ChooseFaction" inherits="UIPanelButtonTemplate">
+						<Size x="180" y="26"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="0" y="20" />
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								PlaySound("igCharacterInfoOpen")
+								self:GetParent():GetParent():ChooseFaction()
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, FactionSelectTemplateMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="FactionSelectFrame" parent="UIParent" setAllPoints="true" frameStrata="HIGH" hidden="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, FactionSelectFrameMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>

@@ -157,9 +157,9 @@
 			</Layer>
 			<Layer level="OVERLAY">
 				<Texture parentKey="FactionEmblem" alpha="1" alphaMode="ADD">
-					<Size x="10" y="10"/>
+					<Size x="24" y="24"/>
 					<Anchors>
-						<Anchor point="CENTER" x="0" y="0" />
+						<Anchor point="RIGHT" x="-25" y="2" />
 					</Anchors>
 				</Texture>
 			</Layer>

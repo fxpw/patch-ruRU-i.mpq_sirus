@@ -77,18 +77,6 @@ function PetPaperDollFrame_OnEvent (self, event, ...)
 	elseif ( event == "UNIT_PET_EXPERIENCE" ) then
 		PetExpBar_Update();
 	elseif ( event == "COMPANION_LEARNED" ) then
-		if GetNumCompanions("MOUNT") == 1 then
-			if SpellbookMicroButton:IsVisible() and not NPE_TutorialPointerFrame:GetKey("SpellBook_Mount") then
-				if PetPaperDollFrame.TutorialFrame then
-					NPE_TutorialPointerFrame:Hide(PetPaperDollFrame.TutorialFrame)
-					PetPaperDollFrame.TutorialFrame = nil
-				end
-
-				PetPaperDollFrame.TutorialFrame = NPE_TutorialPointerFrame:Show(NEW_MOUNT_HELP_1, "DOWN", SpellbookMicroButton, 0, 0)
-				PetPaperDollFrame.TutorialFrameLock = true
-			end
-		end
-		SetButtonPulse(SpellbookMicroButton, 60, 1);
 		PetPaperDollFrame_UpdateTabs();
 		--PetPaperDollFrame_UpdateCompanions();	--This is called in SetCompanionPage
 		PetPaperDollFrame_SetCompanionPage((PetPaperDollFrameCompanionFrame.mode=="MOUNT") and PetPaperDollFrameCompanionFrame.pageMount or PetPaperDollFrameCompanionFrame.pageCritter);

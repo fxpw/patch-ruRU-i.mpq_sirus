@@ -5,9 +5,9 @@ PANEL_DEFAULT_WIDTH = 350
 CHARACTERFRAME_EXPANDED_WIDTH = 614
 
 
-function ToggleCharacter (tab)
-	UIPanelCheckAndHide(CollectionsJournal)
-	UIPanelCheckAndHide(EncounterJournal)
+function ToggleCharacter (tab, onlyShow)
+	HideUIPanel(CollectionsJournal)
+	HideUIPanel(EncounterJournal)
 
 	local subFrame = _G[tab];
 	if ( subFrame ) then
@@ -15,7 +15,9 @@ function ToggleCharacter (tab)
 			PanelTemplates_SetTab(CharacterFrame, subFrame:GetID());
 			if ( CharacterFrame:IsShown() ) then
 				if ( subFrame:IsShown() ) then
-					HideUIPanel(CharacterFrame);
+					if ( not onlyShow ) then
+						HideUIPanel(CharacterFrame);
+					end
 				else
 					PlaySound("igCharacterInfoTab");
 					CharacterFrame_ShowSubFrame(tab);

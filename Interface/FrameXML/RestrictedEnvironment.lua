@@ -9,94 +9,8 @@
 -- Daniel Stephens (iriel@vigilance-committee.org)
 ---------------------------------------------------------------------------
 
----------------------------------------------------------------------------
--- Somewhat extensible print infrastructure for debugging, modelled around
--- error handler code.
---
--- setprinthandler(func) -- Sets the active print handler
--- func = getprinthandler() -- Gets the current print handler
--- print(...) -- Passes its arguments to the current print handler
---
--- The default print handler simply strjoin's its arguments with a " "
--- delimiter and adds it to DEFAULT_CHAT_FRAME
-
-local select = select;
 local tostring = tostring;
-local type = type;
-
-local LOCAL_ToStringAllTemp = {};
-function tostringall(...)
-    local n = select('#', ...);
-    -- Simple versions for common argument counts
-    if (n == 1) then
-        return tostring(...);
-    elseif (n == 2) then
-        local a, b = ...;
-        return tostring(a), tostring(b);
-    elseif (n == 3) then
-        local a, b, c = ...;
-        return tostring(a), tostring(b), tostring(c);
-    elseif (n == 0) then
-        return;
-    end
-
-    local needfix;
-    for i = 1, n do
-        local v = select(i, ...);
-        if (type(v) ~= "string") then
-            needfix = i;
-            break;
-        end
-    end
-    if (not needfix) then return ...; end
-
-    wipe(LOCAL_ToStringAllTemp);
-    for i = 1, needfix - 1 do
-        LOCAL_ToStringAllTemp[i] = select(i, ...);
-    end
-    for i = needfix, n do
-        LOCAL_ToStringAllTemp[i] = tostring(select(i, ...));
-    end
-    return unpack(LOCAL_ToStringAllTemp);
-end
-
-local LOCAL_PrintHandler =
-    function(...)
-        if DEFAULT_CHAT_FRAME then
-            DEFAULT_CHAT_FRAME:AddMessage(strjoin(" ", tostringall(...)));
-        end
-        if printc then
-            printc(...)
-        end
-    end
-
-function setprinthandler(func)
-    if (type(func) ~= "function") then
-        error("Invalid print handler");
-    else
-        LOCAL_PrintHandler = func;
-    end
-end
-
-function getprinthandler() return LOCAL_PrintHandler; end
-
-local geterrorhandler = geterrorhandler;
-local forceinsecure = forceinsecure;
-local pcall = pcall;
-local securecall = securecall;
-
-local function print_inner(...)
-    forceinsecure();
-    local ok, err = pcall(LOCAL_PrintHandler, ...);
-    if (not ok) then
-        local func = geterrorhandler();
-        func(err);
-    end
-end
-
-function print(...)
-    securecall(pcall, print_inner, ...);
-end
+local GetFrameHandleFrame = GetFrameHandleFrame;
 
 -- The bare minimum functions that should exist in order to be
 -- useful without being ridiculously restrictive.
@@ -223,7 +137,31 @@ function ENV.UnitHasVehicleUI(unit)
 end
 
 function ENV.RegisterStateDriver(frameHandle, ...)
-	return RegisterStateDriver(GetFrameHandleFrame(frameHandle), ...)
+    return RegisterStateDriver(GetFrameHandleFrame(frameHandle), ...);
+end
+
+function ENV.UnregisterStateDriver(frameHandle, ...)
+    return UnregisterStateDriver(GetFrameHandleFrame(frameHandle), ...);
+end
+
+function ENV.RegisterAttributeDriver(frameHandle, ...)
+    return RegisterAttributeDriver(GetFrameHandleFrame(frameHandle), ...);
+end
+
+function ENV.UnregisterAttributeDriver(frameHandle, ...)
+    return UnregisterAttributeDriver(GetFrameHandleFrame(frameHandle), ...);
+end
+
+function ENV.RegisterUnitWatch(frameHandle, ...)
+    return RegisterUnitWatch(GetFrameHandleFrame(frameHandle), ...);
+end
+
+function ENV.UnregisterUnitWatch(frameHandle, ...)
+    return UnregisterUnitWatch(GetFrameHandleFrame(frameHandle), ...);
+end
+
+function ENV.UnitWatchRegistered(frameHandle, ...)
+    return UnitWatchRegistered(GetFrameHandleFrame(frameHandle), ...);
 end
 
 local safeActionTypes = {["spell"] = true, ["companion"] = true, ["item"] = true, ["macro"] = true}

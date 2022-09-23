@@ -22,11 +22,8 @@ function MicroButtonTooltipText(text, action)
 end
 
 function UpdateMicroButtons()
-	local unitRace 		= UnitRace("player")
-	local raceInfo 		= C_CreatureInfo.GetRaceInfo(unitRace)
-	local isNeutral 	= raceInfo.raceID == E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL
-
 	local playerLevel = UnitLevel("player");
+	local isNeutral = C_Unit.IsNeutral("player")
 
 	if ( CharacterFrame:IsShown() ) then
 		CharacterMicroButton:SetButtonState("PUSHED", 1);
@@ -230,16 +227,14 @@ function CharacterMicroButton_OnEvent(self, event, ...)
 	elseif event == "PLAYER_LEVEL_UP" then
 		local level = ...
 
-		if not LFDMicroButton:IsShown() or not LFDMicroButton:IsVisible() then
-			return
-		end
-
-		if level == 10 then
-			LFDMicroButtonAlert.Text:SetText(MICRO_MENU_LFD_ALERT1)
-			LFDMicroButtonAlert:Show()
-		elseif level == 15 then
-			LFDMicroButtonAlert.Text:SetText(MICRO_MENU_LFD_ALERT2)
-			LFDMicroButtonAlert:Show()
+		if LFDMicroButton:IsVisible() and not C_Unit.IsNeutral("player") then
+			if level == 10 then
+				LFDMicroButtonAlert.Text:SetText(MICRO_MENU_LFD_ALERT1)
+				LFDMicroButtonAlert:Show()
+			elseif level == 15 then
+				LFDMicroButtonAlert.Text:SetText(MICRO_MENU_LFD_ALERT2)
+				LFDMicroButtonAlert:Show()
+			end
 		end
 	end
 end
@@ -252,6 +247,21 @@ end
 function CharacterMicroButton_SetNormal()
 	MicroButtonPortrait:SetTexCoord(0.2, 0.8, 0.0666, 0.9);
 	MicroButtonPortrait:SetAlpha(1.0);
+end
+
+function MainMenuMicroButton_OnLoad(self)
+	LoadMicroButtonTextures(self, "MainMenu")
+	self.tooltipText = MicroButtonTooltipText(MAINMENU_BUTTON, "TOGGLEGAMEMENU")
+	self.newbieText = NEWBIE_TOOLTIP_MAINMENU
+
+	PERFORMANCEBAR_LOW_LATENCY = 300
+	PERFORMANCEBAR_MEDIUM_LATENCY = 600
+	PERFORMANCEBAR_UPDATE_INTERVAL = 10
+	self.hover = nil
+	self.updateInterval = 0
+	self:RegisterForClicks("LeftButtonDown", "RightButtonDown", "LeftButtonUp", "RightButtonUp")
+
+	C_FactionManager:RegisterFactionOverrideCallback(UpdateMicroButtons, false, true)
 end
 
 function MainMenuMicroButton_SetPushed()
@@ -274,6 +284,47 @@ function TalentMicroButton_OnEvent(self, event, ...)
 		UpdateMicroButtons();
 	elseif ( event == "UPDATE_BINDINGS" ) then
 		self.tooltipText =  MicroButtonTooltipText(TALENTS_BUTTON, "TOGGLETALENTS");
+	end
+end
+
+function CollectionsMicroButton_OnEvent(self, event, ...)
+	if not self:IsVisible() then
+		return;
+	end
+
+	if event == "COMPANION_LEARNED" then
+		if GetNumCompanions("MOUNT") == 1 then
+			if not NPE_TutorialPointerFrame:GetKey("CollectionsJournal_Mount") then
+				if self.TutorialFrame then
+					NPE_TutorialPointerFrame:Hide(self.TutorialFrame);
+					self.TutorialFrame = nil;
+				end
+
+				self.TutorialFrame = NPE_TutorialPointerFrame:Show(NEW_MOUNT_HELP_1, "DOWN", self, 0, 0);
+				self.TutorialFrameTab = 1;
+			end
+		end
+
+		if GetNumCompanions("CRITTER") == 1 then
+			if not self.TutorialFrame and not NPE_TutorialPointerFrame:GetKey("CollectionsJournal_Pet") then
+				self.TutorialFrame = NPE_TutorialPointerFrame:Show(NEW_PET_HELP_1, "DOWN", self, 0, 0);
+				self.TutorialFrameTab = 2;
+			end
+		end
+
+		SetButtonPulse(self, 60, 1);
+	elseif event == "TOYS_UPDATED" then
+		local _, new = ...;
+		if new then
+			if C_ToyBox.GetNumLearnedDisplayedToys() == 1 then
+				if not self.TutorialFrame and not NPE_TutorialPointerFrame:GetKey("CollectionsJournal_Toy") then
+					self.TutorialFrame = NPE_TutorialPointerFrame:Show(NEW_TOY_HELP_1, "DOWN", self, 0, 0);
+					self.TutorialFrameTab = 4;
+				end
+			end
+
+			SetButtonPulse(self, 60, 1);
+		end
 	end
 end
 

@@ -14,58 +14,17 @@
 		</Scripts>
 	</Button>
 
+	<!-- A template that can perform secure actions outside of combat -->
+	<Button name="InsecureActionButtonTemplate" virtual="true">
+		<Scripts>
+			<OnClick> if not InCombatLockdown() then SecureActionButton_OnClick(self, button, down); end</OnClick>
+		</Scripts>
+	</Button>
+
 	<!-- A variant of SecureActionButtonTemplate used for unit buttons -->
 	<Button name="SecureUnitButtonTemplate" inherits="SecureFrameTemplate" virtual="true">
 		<Scripts>
 			<OnClick function="SecureUnitButton_OnClick"/>
 		</Scripts>
 	</Button>
-
-	<!-- A frame used for managing group members -->
-	<Frame name="SecureGroupHeaderTemplate" inherits="SecureFrameTemplate" hidden="true" virtual="true">
-		<Scripts>
-			<OnLoad function="SecureGroupHeader_OnLoad"/>
-			<OnEvent function="SecureGroupHeader_OnEvent"/>
-			<OnShow function="SecureGroupHeader_Update"/>
-			<OnAttributeChanged function="SecureGroupHeader_OnAttributeChanged"/>
-		</Scripts>
-	</Frame>
-
-	<!-- A frame used for managing party members -->
-	<Frame name="SecurePartyHeaderTemplate" inherits="SecureGroupHeaderTemplate" hidden="true" virtual="true">
-		<Attributes>
-			<Attribute name="showParty" type="boolean" value="true"/>
-		</Attributes>
-	</Frame>
-
-	<!-- A frame used for managing raid members -->
-	<Frame name="SecureRaidGroupHeaderTemplate" inherits="SecureGroupHeaderTemplate" hidden="true" virtual="true">
-		<Attributes>
-			<Attribute name="showRaid" type="boolean" value="true"/>
-		</Attributes>
-	</Frame>
-
-	<!-- A frame used for managing group pets -->
-	<Frame name="SecureGroupPetHeaderTemplate" inherits="SecureFrameTemplate" hidden="true" virtual="true">
-		<Scripts>
-			<OnLoad function="SecureGroupPetHeader_OnLoad"/>
-			<OnEvent function="SecureGroupPetHeader_OnEvent"/>
-			<OnShow function="SecureGroupPetHeader_Update"/>
-			<OnAttributeChanged function="SecureGroupPetHeader_OnAttributeChanged"/>
-		</Scripts>
-	</Frame>
-
-	<!-- A frame used for managing party pets -->
-	<Frame name="SecurePartyPetHeaderTemplate" inherits="SecureGroupPetHeaderTemplate" hidden="true" virtual="true">
-		<Attributes>
-			<Attribute name="showParty" type="boolean" value="true"/>
-		</Attributes>
-	</Frame>
-
-	<!-- A frame used for managing raid pets -->
-	<Frame name="SecureRaidPetHeaderTemplate" inherits="SecureGroupPetHeaderTemplate" hidden="true" virtual="true">
-		<Attributes>
-			<Attribute name="showRaid" type="boolean" value="true"/>
-		</Attributes>
-	</Frame>
 </Ui>

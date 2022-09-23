@@ -4,8 +4,31 @@
 --	E-mail:		nyll@sirus.su
 --	Web:		https://sirus.su/
 
+local FACTION_OVERRIDE_BY_DEBUFFS = FACTION_OVERRIDE_BY_DEBUFFS
+local S_CATEGORY_SPELL_ID = S_CATEGORY_SPELL_ID
+local S_VIP_STATUS_DATA = S_VIP_STATUS_DATA
+
+local UnitFactionGroup = UnitFactionGroup
+
 ---@class C_UnitMixin : Mixin
 C_UnitMixin = {}
+
+local UnitHasAuraFromList = function(unit, spellList)
+	local index = 1
+	local name, _, _, _, _, _, _, _, _, _, spellID = UnitDebuff(unit, index)
+	while name do
+		if not name then
+			break
+		elseif spellList[spellID] then
+			return name, spellID
+		end
+
+		index = index + 1
+		name, _, _, _, _, _, _, _, _, _, spellID = UnitDebuff(unit, index)
+	end
+
+	return false
+end
 
 function C_UnitMixin:GetCategoryInfo( unit )
 	assert(unit, "C_UnitMixin:GetCategoryInfo: не указан unit.")
@@ -13,15 +36,12 @@ function C_UnitMixin:GetCategoryInfo( unit )
 	if UnitExists(unit) and UnitIsPlayer(unit) then
 		local categoryInfo = {}
 
-		for i = 1, 255 do
-			local name, _, _, _, _, _, _, _, _, _, spellID = UnitDebuff(unit, i)
+		local name, spellID = UnitHasAuraFromList(unit, S_CATEGORY_SPELL_ID)
+		if spellID then
+			categoryInfo.categoryName = name:gsub("%((.*)%)%s*", "")
+			categoryInfo.categorySpellID = spellID
 
-			if tContains(S_CATEGORY_SPELL_ID, spellID) then
-				categoryInfo.categoryName 		= name:gsub("%((.*)%)%s*", "")
-				categoryInfo.categorySpellID 	= spellID
-
-				return categoryInfo
-			end
+			return categoryInfo
 		end
 
 		categoryInfo.categoryName = PLAYER_NO_CATEGORY
@@ -34,12 +54,11 @@ function C_UnitMixin:GetClassification( unit )
 	assert(unit, "C_UnitMixin:GetClassification: не указан unit.")
 
 	local classificationInfo 	= {}
-	local classification 		= UnitClassification(unit)
 
 	if UnitExists(unit) and UnitIsPlayer(unit) then
-		for i = 1, 255 do
-			local name, _, _, _, _, _, _, _, _, _, spellID = UnitDebuff(unit, i)
-			local data 	= S_VIP_STATUS_DATA[spellID]
+		local name, spellID = UnitHasAuraFromList(unit, S_VIP_STATUS_DATA)
+		if spellID then
+			local data = S_VIP_STATUS_DATA[spellID]
 
 			if data then
 				classificationInfo.vipSpellID 		= spellID
@@ -68,6 +87,8 @@ function C_UnitMixin:GetClassification( unit )
 		end
 	end
 
+	local classification = UnitClassification(unit)
+
 	classificationInfo.color 			= HIGHLIGHT_FONT_COLOR
 	classificationInfo.classification 	= classification
 
@@ -90,20 +111,9 @@ end
 function C_UnitMixin:GetFactionByDebuff( unit )
 	assert(unit, "C_UnitMixin:GetFactionByDebuff: не указан unit.")
 
-	for i = 1, 255 do
-		local name, _, _, _, _, _, _, _, _, _, spellID = UnitDebuff(unit, i)
-
-		if not name then
-			break
-		end
-
-		if spellID then
-			local factionID = FACTION_OVERRIDE_BY_DEBUFFS[spellID]
-
-			if factionID then
-				return factionID
-			end
-		end
+	local _, spellID = UnitHasAuraFromList(unit, FACTION_OVERRIDE_BY_DEBUFFS)
+	if spellID then
+		return FACTION_OVERRIDE_BY_DEBUFFS[spellID]
 	end
 end
 
@@ -135,3 +145,8 @@ end
 
 ---@class C_Unit : C_UnitMixin
 C_Unit = CreateFromMixins(C_UnitMixin)
+
+function C_Unit.IsNeutral(unit)
+	local faction = UnitFactionGroup(unit)
+	return PLAYER_FACTION_GROUP[faction] == PLAYER_FACTION_GROUP.Neutral
+end

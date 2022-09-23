@@ -1,5 +1,3 @@
--- if you change something here you probably want to change the glue version too
-
 function VideoOptionsFrame_Toggle ()
 	if ( VideoOptionsFrame:IsShown() ) then
 		VideoOptionsFrame:Hide();
@@ -20,13 +18,16 @@ end
 
 function VideoOptionsFrame_OnLoad (self)
 	OptionsFrame_OnLoad(self);
-
 	_G[self:GetName().."HeaderText"]:SetText(VIDEOOPTIONS_MENU);
+end
+
+function VideoOptionsFrame_OnShow (self)
+	OptionsFrame_OnShow(self);
 end
 
 function VideoOptionsFrame_OnHide (self)
 	OptionsFrame_OnHide(self);
-
+	VideoOptionsFrameApply:Disable();
 	if ( VideoOptionsFrame.gameRestart ) then
 		StaticPopup_Show("CLIENT_RESTART_ALERT");
 		VideoOptionsFrame.gameRestart = nil;
@@ -34,33 +35,26 @@ function VideoOptionsFrame_OnHide (self)
 		StaticPopup_Show("CLIENT_LOGOUT_ALERT");
 		VideoOptionsFrame.logout = nil;
 	end
+
+	if (not self.ignoreCancelOnHide) then
+		OptionsFrameCancel_OnClick(VideoOptionsFrame);
+	end
 end
 
-function VideoOptionsFrameOkay_OnClick (self, button, apply)
+function VideoOptionsFrameOkay_OnClick (self, button, down, apply)
 	OptionsFrameOkay_OnClick(VideoOptionsFrame, apply);
-
-	-- if not GetCVarBool("useUIScale") then
-	-- 	UIParent:SetScale(0.75001337)
-	-- end
-
-	if ( VideoOptionsFrame.gxRestart ) then
-		VideoOptionsFrame.gxRestart = nil;
-		RestartGx();
-	end
-
 	if ( not apply ) then
+		VideoOptionsFrame.ignoreCancelOnHide = true;
 		VideoOptionsFrame_Toggle();
+		VideoOptionsFrame.ignoreCancelOnHide = nil;
 	end
 end
 
 function VideoOptionsFrameCancel_OnClick (self, button)
-	OptionsFrameCancel_OnClick(VideoOptionsFrame);
-
-	VideoOptionsFrame.gxRestart = nil;
-
+	if ( VideoOptionsFrameApply:IsEnabled() == 1 ) then
+		OptionsFrameCancel_OnClick(VideoOptionsFrame);
+	end
 	VideoOptionsFrame.logout = nil;
-	VideoOptionsFrame.gameRestart = nil;
-
 	VideoOptionsFrame_Toggle();
 end
 
@@ -69,4 +63,3 @@ function VideoOptionsFrameDefault_OnClick (self, button)
 
 	StaticPopup_Show("CONFIRM_RESET_VIDEO_SETTINGS");
 end
-

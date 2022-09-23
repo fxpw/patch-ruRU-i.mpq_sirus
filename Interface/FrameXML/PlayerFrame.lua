@@ -1,25 +1,20 @@
-local RatedBattlegroundIconsCoord = {
-	["Alliance"] = {0.000976562, 0.0498047, 0.763672, 0.865234},
-	["Horde"] = {0.000976562, 0.0498047, 0.869141, 0.970703},
-	["Neutral"] = {0.0517578, 0.100586, 0.763672, 0.865234}
-}
-
 REQUIRED_REST_HOURS = 5;
 
 function PlayerFrame_OnLoad(self)
 	self.showCategoryInfo = C_Service:IsStrengthenStatsRealm();
-
-	PlayerFrameHealthBar.LeftText = PlayerFrameHealthBarTextLeft
-	PlayerFrameHealthBar.RightText = PlayerFrameHealthBarTextRight
-	PlayerFrameManaBar.LeftText = PlayerFrameManaBarTextLeft
-	PlayerFrameManaBar.RightText = PlayerFrameManaBarTextRight
-
 	self.borderTexture = PlayerFrameTexture
-
-	UnitFrame_Initialize(self, "player", PlayerName, PlayerPortrait, PlayerFrameHealthBar, PlayerFrameHealthBarText, PlayerFrameManaBar, PlayerFrameManaBarText, PlayerFrameFlash);
-
 	self.PVPTooltipTitle = nil
 	self.PVPTooltipText = nil
+
+	PlayerFrameHealthBar.LeftText = PlayerFrameHealthBarTextLeft;
+	PlayerFrameHealthBar.RightText = PlayerFrameHealthBarTextRight;
+	PlayerFrameManaBar.LeftText = PlayerFrameManaBarTextLeft;
+	PlayerFrameManaBar.RightText = PlayerFrameManaBarTextRight;
+
+	UnitFrame_Initialize(self, "player", PlayerName, PlayerPortrait,
+						 PlayerFrameHealthBar, PlayerFrameHealthBarText,
+						 PlayerFrameManaBar, PlayerFrameManaBarText,
+						 PlayerFrameFlash);
 
 	self.statusCounter = 0;
 	self.statusSign = -1;
@@ -39,8 +34,6 @@ function PlayerFrame_OnLoad(self)
 	self:RegisterEvent("PARTY_MEMBERS_CHANGED");
 	self:RegisterEvent("PARTY_LEADER_CHANGED");
 	self:RegisterEvent("PARTY_LOOT_METHOD_CHANGED");
-	self:RegisterEvent("VOICE_START");
-	self:RegisterEvent("VOICE_STOP");
 	self:RegisterEvent("RAID_ROSTER_UPDATE");
 	self:RegisterEvent("READY_CHECK");
 	self:RegisterEvent("READY_CHECK_CONFIRM");
@@ -51,6 +44,7 @@ function PlayerFrame_OnLoad(self)
 	self:RegisterEvent("UNIT_EXITED_VEHICLE");
 	self:RegisterEvent("PLAYER_FLAGS_CHANGED");
 	self:RegisterEvent("PLAYER_ROLES_ASSIGNED");
+	self:RegisterEvent("VARIABLES_LOADED");
 
 	-- Chinese playtime stuff
 	self:RegisterEvent("PLAYTIME_CHANGED");
@@ -58,9 +52,12 @@ function PlayerFrame_OnLoad(self)
 	PlayerAttackBackground:SetVertexColor(0.8, 0.1, 0.1);
 	PlayerAttackBackground:SetAlpha(0.4);
 
+	self:SetClampRectInsets(20, 0, 0, 0);
+
 	local showmenu = function()
 		ToggleDropDownMenu(1, nil, PlayerFrameDropDown, "PlayerFrame", 106, 27);
 	end
+	UIParent_UpdateTopFramePositions();
 	SecureUnitButton_OnLoad(self, "player", showmenu);
 end
 
@@ -104,11 +101,14 @@ function PlayerFrame_UpdatePvPStatus()
 		return
 	end
 
-	local unitRace 		= UnitRace("player")
-	local raceInfo 		= C_CreatureInfo.GetRaceInfo(unitRace)
-	local hideAllIcons 	= raceInfo.raceID == E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL
+	if not UnitIsUnit("player", PlayerFrame.unit) then
+		PlayerPVPIcon:Hide()
+		return
+	end
 
-	if hideAllIcons then
+	local factionInfo = C_CreatureInfo.GetFactionInfo(UnitRace(PlayerFrame.unit))
+
+	if not factionInfo or factionInfo.factionID == PLAYER_FACTION_GROUP.Neutral then
 		PlayerPVPIcon:Hide()
 		RatedBattlegroundRankFrame:Hide()
 		PlayerRenegadeIcon:Hide()
@@ -186,6 +186,7 @@ function PlayerFrame_OnEvent(self, event, ...)
 			UnitFrameVip_Update(self)
 		end
 	elseif ( event == "PLAYER_ENTERING_WORLD" ) then
+		PlayerFrame_ResetPosition(self);
 		PlayerFrame_UpdatePvPStatus()
 		PlayerFrame_ToPlayerArt(self);
 --		if ( UnitHasVehicleUI("player") ) then
@@ -198,8 +199,6 @@ function PlayerFrame_OnEvent(self, event, ...)
 		PlayerFrame_Update();
 		PlayerFrame_UpdateStatus();
 		PlayerFrame_UpdateRolesAssigned();
-		PlayerSpeakerFrame:Show();
-		PlayerFrame_UpdateVoiceStatus(UnitIsTalking(UnitName("player")));
 
 		if ( IsPVPTimerRunning() ) then
 			PlayerPVPTimerText:Show();
@@ -243,14 +242,6 @@ function PlayerFrame_OnEvent(self, event, ...)
 			PlayerMasterIcon:Hide();
 		end
 		PlayerFrame_UpdatePvPStatus()
-	elseif ( event == "VOICE_START") then
-		if ( arg1 == "player" ) then
-			PlayerFrame_UpdateVoiceStatus(true);
-		end
-	elseif ( event == "VOICE_STOP" ) then
-		if ( arg1 == "player" ) then
-			PlayerFrame_UpdateVoiceStatus(false);
-		end
 	elseif ( event == "PLAYTIME_CHANGED" ) then
 		PlayerFrame_UpdatePlaytime();
 	elseif ( event == "READY_CHECK" or event == "READY_CHECK_CONFIRM" ) then
@@ -296,6 +287,11 @@ function PlayerFrame_OnEvent(self, event, ...)
 		PlayerFrame_UpdatePvPStatus()
 	elseif ( event == "PLAYER_ROLES_ASSIGNED" ) then
 		PlayerFrame_UpdateRolesAssigned();
+	elseif ( event == "VARIABLES_LOADED" ) then
+		PlayerFrame_SetLocked(not PLAYER_FRAME_UNLOCKED);
+		if ( PLAYER_FRAME_CASTBARS_SHOWN ) then
+			PlayerFrame_AttachCastBar();
+		end
 	end
 end
 
@@ -322,6 +318,14 @@ local function PlayerFrame_AnimPos(self, fraction)
 	return "TOPLEFT", UIParent, "TOPLEFT", -19, fraction*140-4;
 end
 
+function PlayerFrame_ResetPosition(self)
+	CancelAnimations(PlayerFrame);
+	self.isAnimatedOut = false;
+	UIParent_UpdateTopFramePositions();
+	self.inSequence = false;
+	PetFrame_Update(PetFrame);
+end
+
 local PlayerFrameAnimTable = {
 	totalTime = 0.3,
 	updateFunc = "SetPoint",
@@ -331,7 +335,12 @@ function PlayerFrame_AnimateOut(self)
 	self.inSeat = false;
 	self.animFinished = false;
 	self.inSequence = true;
-	SetUpAnimation(PlayerFrame, PlayerFrameAnimTable, PlayerFrame_AnimFinished, false)
+	self.isAnimatedOut = true;
+	if ( self:IsUserPlaced() ) then
+		PlayerFrame_AnimFinished(PlayerFrame);
+	else
+		SetUpAnimation(PlayerFrame, PlayerFrameAnimTable, PlayerFrame_AnimFinished, false)
+	end
 end
 
 function PlayerFrame_AnimFinished(self)
@@ -339,9 +348,17 @@ function PlayerFrame_AnimFinished(self)
 	PlayerFrame_UpdateArt(self);
 end
 
+function PlayerFrame_IsAnimatedOut(self)
+	return self.isAnimatedOut;
+end
+
 function PlayerFrame_UpdateArt(self)
-	if ( self.animFinished and self.inSeat and self.inSequence) then
-		SetUpAnimation(PlayerFrame, PlayerFrameAnimTable, PlayerFrame_SequenceFinished, true)
+	if ( self.inSeat ) then
+		if ( self:IsUserPlaced() ) then
+			PlayerFrame_SequenceFinished(PlayerFrame);
+		elseif ( self.animFinished and self.inSequence ) then
+			SetUpAnimation(PlayerFrame, PlayerFrameAnimTable, PlayerFrame_SequenceFinished, true)
+		end
 		if ( UnitHasVehicleUI("player") ) then
 			PlayerFrame_ToVehicleArt(self, UnitVehicleSkin("player"));
 			PlayerCategoryBox:Hide()
@@ -353,6 +370,7 @@ function PlayerFrame_UpdateArt(self)
 end
 
 function PlayerFrame_SequenceFinished(self)
+	self.isAnimatedOut = false;
 	self.inSequence = false;
 	PetFrame_Update(PetFrame);
 end
@@ -421,13 +439,7 @@ function PlayerFrame_ToPlayerArt(self)
 end
 
 function PlayerFrame_UpdateVoiceStatus (status)
-	if ( status ) then
-		UIFrameFadeIn(PlayerSpeakerFrame, 0.2, PlayerSpeakerFrame:GetAlpha(), 1);
-		VoiceChat_Animate(PlayerSpeakerFrame, 1);
-	else
-		UIFrameFadeOut(PlayerSpeakerFrame, 0.2, PlayerSpeakerFrame:GetAlpha(), 0);
-		VoiceChat_Animate(PlayerSpeakerFrame, nil);
-	end
+	PlayerSpeakerFrame:Hide();
 end
 
 function PlayerFrame_UpdateReadyCheck ()
@@ -444,12 +456,6 @@ function PlayerFrame_UpdateReadyCheck ()
 		PlayerFrameReadyCheck:Hide();
 	end
 end
-
-categorySpellID = {
-		90036, 302100, 302101, 302102, 302103, 302104, 302105, 302106, 302107, 90028, 90029, 90030,
-		90031, 90032, 90033, 90034, 90035, 90021, 90022, 90023, 90024, 90025, 90026, 90027, 90015, 90016, 90017, 90018,
-		90019, 90020, 90001, 90002, 90003, 90004, 90005, 90006, 90007, 90008, 90009, 90010, 90011, 90012, 90013, 90014
-	}
 
 function PlayerFrame_OnUpdate (self, elapsed)
 	if ( PlayerStatusTexture:IsShown() ) then
@@ -555,7 +561,8 @@ function PlayerFrame_UpdateGroupIndicator()
 end
 
 function PlayerFrameDropDown_OnLoad (self)
-	UIDropDownMenu_Initialize(self, PlayerFrameDropDown_Initialize, "MENU");
+	UIDropDownMenu_SetInitializeFunction(self, PlayerFrameDropDown_Initialize);
+	UIDropDownMenu_SetDisplayMode(self, "MENU");
 end
 
 function PlayerFrameDropDown_Initialize ()
@@ -580,7 +587,7 @@ function PlayerFrame_UpdatePlaytime()
 	end
 end
 
-function PlayerFrame_SetupDeathKnniggetLayout ()
+function PlayerFrame_SetupDeathKnightLayout ()
 	PlayerFrame:SetHitRectInsets(0,0,0,35);
 
 	--[[ PlayerFrame:SetPoint("TOPLEFT", -11, -8);
@@ -648,7 +655,7 @@ function PlayerFrame_SetupDeathKnniggetLayout ()
 end
 
 CustomClassLayouts = {
-	["DEATHKNIGHT"] = PlayerFrame_SetupDeathKnniggetLayout,
+	["DEATHKNIGHT"] = PlayerFrame_SetupDeathKnightLayout,
 }
 
 local layoutUpdated = false;
@@ -744,3 +751,91 @@ function DeathKnniggetThrobFunction (self, elapsed)
 	end
 end
 
+function PlayerFrame_OnDragStart(self)
+	self:StartMoving();
+	self:SetUserPlaced(true);
+	self:SetClampedToScreen(true);
+end
+
+function PlayerFrame_OnDragStop(self)
+	self:StopMovingOrSizing();
+end
+
+function PlayerFrame_SetLocked(locked)
+	PLAYER_FRAME_UNLOCKED = not locked;
+	if ( locked ) then
+		PlayerFrame:RegisterForDrag();	--Unregister all buttons.
+	else
+		PlayerFrame:RegisterForDrag("LeftButton");
+	end
+end
+
+function PlayerFrame_ResetUserPlacedPosition()
+	PlayerFrame:ClearAllPoints();
+	PlayerFrame:SetUserPlaced(false);
+	PlayerFrame:SetClampedToScreen(false);
+	PlayerFrame_SetLocked(true);
+	UIParent_UpdateTopFramePositions();
+end
+
+--
+-- Functions for having the cast bar underneath the player frame
+--
+
+function PlayerFrame_AttachCastBar()
+	local castBar = CastingBarFrame;
+	local petCastBar = PetCastingBarFrame;
+	-- player
+	castBar.ignoreFramePositionManager = true;
+	castBar:SetAttribute("ignoreFramePositionManager", true);
+	CastingBarFrame_SetLook(castBar, "UNITFRAME");
+	castBar:ClearAllPoints();
+	castBar:SetPoint("LEFT", PlayerFrame, 78, 0);
+	-- pet
+	CastingBarFrame_SetLook(petCastBar, "UNITFRAME");
+	petCastBar:SetWidth(150);
+	petCastBar:SetHeight(10);
+	petCastBar:ClearAllPoints();
+	petCastBar:SetPoint("TOP", castBar, "TOP", 0, 0);
+
+	PlayerFrame_AdjustAttachments();
+	UIParent_ManageFramePositions();
+end
+
+function PlayerFrame_DetachCastBar()
+	local castBar = CastingBarFrame;
+	local petCastBar = PetCastingBarFrame;
+	-- player
+	castBar.ignoreFramePositionManager = nil;
+	castBar:SetAttribute("ignoreFramePositionManager", false);
+	CastingBarFrame_SetLook(castBar, "CLASSIC");
+	castBar:ClearAllPoints();
+	-- pet
+	CastingBarFrame_SetLook(petCastBar, "CLASSIC");
+	petCastBar:SetWidth(195);
+	petCastBar:SetHeight(13);
+	petCastBar:ClearAllPoints();
+	petCastBar:SetPoint("BOTTOM", castBar, "TOP", 0, 12);
+
+	UIParent_ManageFramePositions();
+end
+
+function PlayerFrame_AdjustAttachments()
+	if ( not PLAYER_FRAME_CASTBARS_SHOWN ) then
+		return;
+	end
+	if ( PetFrame and PetFrame:IsShown() ) then
+		CastingBarFrame:SetPoint("TOP", PetFrame, "BOTTOM", 0, -4);
+	elseif ( TotemFrame and TotemFrame:IsShown() ) then
+		CastingBarFrame:SetPoint("TOP", TotemFrame, "BOTTOM", 0, 2);
+	else
+		local _, class = UnitClass("player");
+		if ( class == "DEATHKNIGHT" or class == "DRUID" ) then
+			CastingBarFrame:SetPoint("TOP", PlayerFrame, "BOTTOM", 0, 5);
+		elseif ( class == "SHAMAN" ) then
+			CastingBarFrame:SetPoint("TOP", PlayerFrame, "BOTTOM", 0, -40);
+		else
+			CastingBarFrame:SetPoint("TOP", PlayerFrame, "BOTTOM", 0, 7);
+		end
+	end
+end

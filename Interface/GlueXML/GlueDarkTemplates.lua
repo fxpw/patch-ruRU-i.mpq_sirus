@@ -676,13 +676,14 @@ function GlueDark_DropDownMenu_ClearAll(frame)
 end
 
 function GlueDark_DropDownMenu_JustifyText(frame, justification)
+	frame.Text:SetJustifyH(justification)
 	frame.Text:ClearAllPoints()
 	if ( justification == "LEFT" ) then
-		frame.Text:SetPoint("LEFT", frame.Left, "LEFT", 27, 2)
+		frame.Text:SetPoint("LEFT", frame.Left, "LEFT", 5, 0)
 	elseif ( justification == "RIGHT" ) then
-		frame.Text:SetPoint("RIGHT", frame.Right, "RIGHT", -43, 2)
+		frame.Text:SetPoint("RIGHT", frame.Right, "RIGHT", -43, 0)
 	elseif ( justification == "CENTER" ) then
-		frame.Text:SetPoint("CENTER", frame.Middle, "CENTER", -5, 2)
+		frame.Text:SetPoint("CENTER", frame.Middle, "CENTER", -1, 0)
 	end
 end
 

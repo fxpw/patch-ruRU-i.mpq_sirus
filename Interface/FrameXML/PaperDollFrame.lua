@@ -282,11 +282,7 @@ function EventHandler:ASMSG_CR_41(msg)
 	local onslaughtRating = tonumber(msg);
 	if onslaughtRating then
 		ONSLAUGHT_RATING = onslaughtRating;
-
-		local framesRegistered = {GetFramesRegisteredForEvent("UNIT_STATS")};
-		for i = 1, #framesRegistered do
-			ExecuteFrameScript(framesRegistered[i], "OnEvent", "UNIT_STATS", "player");
-		end
+		FireClientEvent("UNIT_STATS", "player")
 	end
 end
 

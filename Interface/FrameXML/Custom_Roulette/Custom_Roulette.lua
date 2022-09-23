@@ -342,7 +342,7 @@ function RouletteFrameMixin:OnUpdate(elapsed)
             end
         end
 
-		self.timer = self.timer + self.speed / (TARGET_FPS / elapsed)
+		self.timer = self.timer + self.speed
 
         self.lastOffset = self.offset
         self.offset = (self.timer % self.blockSize)

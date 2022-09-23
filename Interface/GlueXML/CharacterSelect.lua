@@ -845,8 +845,12 @@ function SetFactionEmblem(button, factionInfo, raceInfo, characterID)
 	local factionEmblem = button.FactionEmblem
 	local atlasTag 		= factionInfo.groupTag ~= "Neutral" and factionInfo.groupTag
 
-	if raceInfo and raceInfo.raceID == E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL then
-		atlasTag = "Vulpera"
+	if raceInfo then
+		if raceInfo.raceID == E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL then
+			atlasTag = "Vulpera"
+		elseif raceInfo.raceID == E_CHARACTER_RACES.RACE_PANDAREN_NEUTRAL then
+			atlasTag = "Pandaren"
+		end
 	end
 
 	local _ , race, _, _, _, sex = GetCharacterInfo(characterID)
@@ -872,9 +876,7 @@ function SetFactionEmblem(button, factionInfo, raceInfo, characterID)
 	end
 
 	if atlasTag then
-		factionEmblem:ClearAllPoints()
-		factionEmblem:SetPoint("TOPRIGHT", atlasTag ~= "Alliance" and -30 or -26, -18)
-		factionEmblem:SetAtlas(string.format("CharacterSelection_%s_Icon", atlasTag), true)
+		factionEmblem:SetAtlas(string.format("CharacterSelect-FactionIcon-%s", atlasTag))
 	end
 	factionEmblem:SetShown(atlasTag)
 end

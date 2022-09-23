@@ -1,8 +1,67 @@
---	Filename:	FunctionOverride.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
+local securecall = securecall
+
+do	-- CVars
+	local strsub = string.sub
+
+	local SetCVar = SetCVar
+	local _SetCVar = function(cvar, value, raiseEvent)
+		if C_CVar and strsub(cvar, 1, 7) == "C_CVAR_" then
+			return C_CVar:SetValue(cvar, value, raiseEvent)
+		end
+		return SetCVar(cvar, value, raiseEvent)
+	end
+	_G.SetCVar = function(cvar, value, raiseEvent)
+		return securecall(_SetCVar, cvar, value, raiseEvent)
+	end
+
+	local GetCVar = GetCVar
+	local _GetCVar = function(cvar)
+		if C_CVar and strsub(cvar, 1, 7) == "C_CVAR_" then
+			return C_CVar:GetValue(cvar)
+		end
+		return GetCVar(cvar)
+	end
+	_G.GetCVar = function(cvar)
+		return securecall(_GetCVar, cvar)
+	end
+
+	local GetCVarBool = GetCVarBool
+	local _GetCVarBool = function(cvar)
+		if C_CVar and strsub(cvar, 1, 7) == "C_CVAR_" then
+			return ValueToBoolean(C_CVar:GetValue(cvar))
+		end
+		return GetCVarBool(cvar);
+	end
+	_G.GetCVarBool = function(cvar)
+		return securecall(_GetCVarBool, cvar)
+	end
+	
+	local GetCVarDefault = GetCVarDefault
+	local _GetCVarDefault = function( cvar )
+		if C_CVar and strsub(cvar, 1, 7) == "C_CVAR_" then
+			return C_CVar:GetDefaultValue(cvar)
+		end
+		return GetCVarDefault(cvar)
+	end
+	_G.GetCVarDefault = function( cvar )
+		return securecall(_GetCVarDefault, cvar)
+	end
+
+	function GetSafeCVar(cvar, default)
+		local success, res = pcall(GetCVar, cvar)
+		if not success then
+			return default
+		elseif res then
+			return res
+		end
+	end
+	function SetSafeCVar(cvar, value, raiseEvent)
+		local val = GetSafeCVar(cvar)
+		if val then
+			SetCVar(cvar, value, raiseEvent)
+		end
+	end
+end
 
 local _GetMapLandmarkInfo = _GetMapLandmarkInfo or GetMapLandmarkInfo
 
@@ -54,46 +113,6 @@ local _RestartGx = _RestartGx or RestartGx
 function RestartGx()
 	C_CacheInstance:SaveData()
 	_RestartGx()
-end
-
-local _SetCVar = _SetCVar or SetCVar
-
-function SetCVar( CVar, value, raiseEvent )
-	if C_CVar and string.Left(CVar, 7) == "C_CVAR_" then
-		return C_CVar:SetValue(CVar, value, raiseEvent)
-	end
-
-	return _SetCVar(CVar, value, raiseEvent)
-end
-
-local _GetCVar = _GetCVar or GetCVar
-
-function GetCVar( CVar )
-	if C_CVar and string.Left(CVar, 7) == "C_CVAR_" then
-		return C_CVar:GetValue(CVar)
-	end
-
-	return _GetCVar(CVar)
-end
-
-local _GetCVarBool = _GetCVarBool or GetCVarBool
-
-function GetCVarBool(CVar)
-	if C_CVar and string.Left(CVar, 7) == "C_CVAR_" then
-		return ValueToBoolean(C_CVar:GetValue(CVar));
-	end
-
-	return _GetCVarBool(CVar);
-end
-
-local _GetCVarDefault = _GetCVarDefault or GetCVarDefault
-
-function GetCVarDefault( CVar )
-	if C_CVar and string.Left(CVar, 7) == "C_CVAR_" then
-		return C_CVar:GetDefaultValue(CVar)
-	end
-
-	return _GetCVarDefault(CVar)
 end
 
 local _SendChatMessage = _SendChatMessage or SendChatMessage
@@ -205,11 +224,11 @@ local _UnitFactionGroup = _UnitFactionGroup or UnitFactionGroup
 ---@return string englishFaction
 ---@return string localizedFaction
 function UnitFactionGroup( unit )
-	if C_Service:IsLockRenegadeFeatures() then
+	if not UnitExists(unit) or C_Service:IsLockRenegadeFeatures() then
 		return _UnitFactionGroup(unit)
 	end
 
-	if unit and string.upper(unit) == "PLAYER" then
+	if UnitIsUnit("player", unit) then
 		local factionID = C_FactionManager:GetFactionOverride()
 
 		if factionID then
@@ -384,20 +403,6 @@ function GetActionInfo( action )
 	return actionType, id, subType, spellID
 end
 
-AURA_CACHE = {}
-_UnitDebuff = _UnitDebuff or UnitDebuff
-function UnitDebuff( unit, index, ... )
-	if type(index) == "number" then
-		if AURA_CACHE[unit] and AURA_CACHE[unit][index] then
-			return _UnitDebuff(unit, AURA_CACHE[unit][index], ...)
-		else
-			return _UnitDebuff(unit, index, ...)
-		end
-	else
-		return _UnitDebuff(unit, index, ...)
-	end
-end
-
 local AUCTION_DEPOSIT_THRESHOLD = 500 * 10000
 local AUCTION_MIN_DEPOSIT = 100
 
@@ -464,32 +469,34 @@ function GetInstanceDifficulty()
 end
 
 local customAddons = {
-	Blizzard_BattlefieldMinimap = true,
-	Blizzard_Calendar = true,
-	Blizzard_GlyphUI = true,
-	Blizzard_InspectUI = true,
-	Blizzard_ItemSocketingUI = true,
-	Blizzard_MacroUI = true,
-	Blizzard_TalentUI = true,
-	Blizzard_TimeManager = true,
-	Blizzard_TokenUI = true,
-	Blizzard_TradeSkillUI = true,
-	Blizzard_TrainerUI = true,
+	blizzard_battlefieldminimap = true,
+	blizzard_calendar = true,
+	blizzard_glyphui = true,
+	blizzard_inspectui = true,
+	blizzard_itemsocketingui = true,
+	blizzard_macroui = true,
+	blizzard_raidui = true,
+	blizzard_talentui = true,
+	blizzard_timemanager = true,
+	blizzard_tokenui = true,
+	blizzard_tradeskillui = true,
+	blizzard_trainerui = true,
+	blizzard_vehicleui = true,
 }
 
 local isCustomAddon = function(addon)
 	if type(addon) == "number" then
 		local addonName = GetAddOnInfo(addon)
-		return customAddons[addonName]
+		return customAddons[string.lower(addonName)]
 	elseif type(addon) == "string" then
-		return customAddons[addon]
+		return customAddons[string.lower(addon)]
 	end
 end
 
 local LoadAddOn = LoadAddOn
 _G.LoadAddOn = function(addon)
 	if isCustomAddon(addon) then
-		return true, nil
+		return 1, nil
 	end
 
 	return LoadAddOn(addon)
@@ -498,7 +505,7 @@ end
 local IsAddOnLoaded = IsAddOnLoaded
 _G.IsAddOnLoaded = function(addon)
 	if isCustomAddon(addon) then
-		return true
+		return 1, 1
 	end
 
 	return IsAddOnLoaded(addon)

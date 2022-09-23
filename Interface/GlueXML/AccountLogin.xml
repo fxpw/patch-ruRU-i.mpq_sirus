@@ -290,7 +290,7 @@
 							</Button>
 							<Frame name="AccountLoginChooseRealmDropDown" parentKey="ChooseRealmDropDown" hidden="true" inherits="GlueDark_DropDownMenuTemplate">
 								<Anchors>
-									<Anchor point="TOP" relativeTo="AccountLoginEnter" relativePoint="BOTTOM" x="15" y="-10" />
+									<Anchor point="TOP" relativeTo="AccountLoginEnter" relativePoint="BOTTOM" x="0" y="-10" />
 								</Anchors>
 								<Scripts>
 									<OnLoad>
@@ -349,12 +349,12 @@
 						<Layers>
 							<Layer level="BACKGROUND">
 								<Texture setAllPoints="true">
-									<Color a="0.9" r="0" g="0" b="0"/>
+									<Color r="0" g="0" b="0" a="0.9"/>
 								</Texture>
 							</Layer>
 						</Layers>
 						<Frames>
-							<Frame name="$parentWindow" frameStrata="FULLSCREEN_DIALOG" toplevel="true">
+							<Frame name="$parentWindow">
 								<Size x="530" y="200"/>
 								<Anchors>
 									<Anchor point="CENTER" x="0" y="0" />
@@ -433,15 +433,15 @@
 					</Frame>
 					<Frame name="AccountLoginDevTools" setAllPoints="true" hidden="true">
 						<Frames>
-							<Frame parentKey="RealmListDropDown" name="$parentRealmListDropDown" inherits="GlueDark_DropDownMenuTemplate">
+							<Frame parentKey="RealmListDropDown" name="$parentRealmListDropDown" inherits="GlueDark_DropDownMenuTemplate" hidden="true">
 								<Anchors>
-									<Anchor point="TOP" relativeTo="AccountLoginUILoginBoxFrame" relativePoint="BOTTOM" x="15" y="-40" />
+									<Anchor point="TOP" relativeTo="AccountLoginUILoginBoxFrame" relativePoint="BOTTOM" x="0" y="-40" />
 								</Anchors>
 								<Scripts>
 									<OnLoad function="DevToolsRealmListDropDown_OnShow"/>
 								</Scripts>
 							</Frame>
-							<Button name="$parentAccountsDropDown_Button" parentKey="AccountsDropDown_Button" inherits="GlueDark_ButtonPreviousTemplate">
+							<Button name="$parentAccountsDropDown_Button" parentKey="AccountsDropDown_Button" inherits="GlueDark_ButtonPreviousTemplate" hidden="true">
 								<Size x="28" y="28"/>
 								<Anchors>
 									<Anchor point="LEFT" relativeTo="AccountLoginAccountEdit" relativePoint="RIGHT" x="-5" y="0" />
@@ -458,6 +458,9 @@
 								</Scripts>
 							</Frame>
 						</Frames>
+						<Scripts>
+							<OnShow function="AccountLoginDevTools_OnShow"/>
+						</Scripts>
 					</Frame>
 				</Frames>
 				<Scripts>

@@ -292,26 +292,7 @@ function ToggleSpellBook( bookType )
 		UpdateSpells()
 	else
 		SpellBookFrame.bookType = bookType
-		ShowUIPanel(SpellBookFrame)
-	end
-
-	if ( not NPE_TutorialPointerFrame:GetKey("SpellBook_Mount") and PetPaperDollFrame.TutorialFrameLock ) then
-		HelpPlate_Hide(PetPaperDollFrame.TutorialFrame)
-		HelpPlate_Hide(tutorialSpellBook.Mount)
-
-		local parentFrame
-		for i = 3, MAX_SPELLBOOK_TAB do
-			local tab = _G["SpellBookFrameTabButton"..i]
-			if ( tab.bookType == BOOKTYPE_MOUNT ) then
-				parentFrame = tab
-				break
-			end
-		end
-
-		if ( parentFrame and SpellBookFrame:IsShown() ) then
-			tutorialSpellBook.Mount = NPE_TutorialPointerFrame:Show(SPELLBOOK_TUTORIAL_MOUNT_1, "DOWN", parentFrame, 0, 0)
-			parentFrame.TutorialGlow:Show()
-		end
+		securecall(ShowUIPanel, SpellBookFrame)
 	end
 
 	if not NPE_TutorialPointerFrame:GetKey("SpellBook_Learn_307810_1") and (tutorialSpellBook.spellLearnData and tutorialSpellBook.spellLearnData[1]) then
@@ -1986,18 +1967,6 @@ function SpellBookFrameTabButton_OnClick(self)
 	if self.bookType ~= BOOKTYPE_SPELL then
 		if tutorialSpellBook.openPage then
 			HelpPlate_Hide(tutorialSpellBook.openPage)
-		end
-	end
-
-	if not NPE_TutorialPointerFrame:GetKey("SpellBook_Mount") and PetPaperDollFrame.TutorialFrameLock then
-		if self.bookType == BOOKTYPE_MOUNT then
-			if tutorialSpellBook.Mount then
-				NPE_TutorialPointerFrame:Hide(tutorialSpellBook.Mount)
-				tutorialSpellBook.Mount = nil
-				PetPaperDollFrame.TutorialFrameLock = nil
-				self.TutorialGlow:Hide()
-				NPE_TutorialPointerFrame:SetKey("SpellBook_Mount", true)
-			end
 		end
 	end
 end

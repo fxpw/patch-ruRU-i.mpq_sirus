@@ -155,12 +155,11 @@ function InterfaceAddOnsList_Update ()
 	local numButtons = #buttons;
 
 	-- Show the AddOns tab if it's not empty.
-	if ( ( InterfaceOptionsFrameTab2 and not InterfaceOptionsFrameTab2:IsShown() ) and numAddOnCategories > 0 ) then
-		InterfaceOptionsFrameCategoriesTop:Hide();
-		InterfaceOptionsFrameAddOnsTop:Hide();
-		InterfaceOptionsFrameTab1:Show();
-		InterfaceOptionsFrameTab2:Show();
-	end
+	local showTabs = numAddOnCategories > 0;
+	InterfaceOptionsFrameCategoriesTop:SetShown(not showTabs);
+	InterfaceOptionsFrameAddOnsTop:SetShown(not showTabs);
+	InterfaceOptionsFrameTab1:SetShown(showTabs);
+	InterfaceOptionsFrameTab2:SetShown(showTabs);
 
 	if ( numAddOnCategories > numButtons and ( not InterfaceOptionsFrameAddOnsList:IsShown() ) ) then
 		-- We need to show the scroll bar, we have more elements than buttons.
@@ -395,12 +394,12 @@ end
 function InterfaceOptionsFrame_OnShow (self)
 	--Refresh the two category lists and display the "Controls" group of options if nothing is selected.
 	InterfaceCategoryList_Update();
+	InterfaceOptionsOptionsFrame_RefreshCategories();
 	InterfaceAddOnsList_Update();
 	if ( not InterfaceOptionsFramePanelContainer.displayedPanel ) then
 		InterfaceOptionsFrame_OpenToCategory(CONTROLS_LABEL);
 	end
 	--Refresh the categories to pick up changes made while the options frame was hidden.
-	InterfaceOptionsOptionsFrame_RefreshCategories();
 	InterfaceOptionsOptionsFrame_RefreshAddOns();
 end
 
@@ -414,6 +413,8 @@ function InterfaceOptionsFrame_OnHide (self)
 		StaticPopup_Show("CLIENT_LOGOUT_ALERT");
 		InterfaceOptionsFrame.logout = nil;
 	end
+
+	InterfaceOptionsFrameCategories.selection = nil
 end
 
 function InterfaceOptionsFrame_TabOnClick ()
@@ -587,7 +588,14 @@ end
 --	-- [[ Add the panel to the Interface Options ]] --
 --	InterfaceOptions_AddCategory(panel);
 -------------------------------------------------------------------------------------------------
-
+local function AddAddOnCategory(categories, index, frame)
+	if index then
+		tinsert(categories, index, frame);
+	else
+		tinsert(categories, frame);
+	end
+	InterfaceCategoryList_Update();
+end
 
 function InterfaceOptions_AddCategory (frame, addOn, position)
 	if ( issecure() and ( not addOn ) ) then
@@ -636,8 +644,7 @@ function InterfaceOptions_AddCategory (frame, addOn, position)
 						frame.hidden = true;
 						categories[i].hasChildren = true;
 						categories[i].collapsed = true;
-						tinsert(categories, i + 1, frame);
-						InterfaceAddOnsList_Update();
+						AddAddOnCategory(categories, i + 1, frame);
 						return;
 					end
 
@@ -649,8 +656,7 @@ function InterfaceOptions_AddCategory (frame, addOn, position)
 						j = j + 1;
 					end
 
-					tinsert(categories, j, frame);
-					InterfaceAddOnsList_Update();
+					AddAddOnCategory(categories, j, frame);
 					return;
 				end
 			end
@@ -658,17 +664,11 @@ function InterfaceOptions_AddCategory (frame, addOn, position)
 
 		for i = 1, #categories do
 			if ( ( not categories[i].parent ) and ( name < strlower(categories[i].name) ) ) then
-				tinsert(categories, i, frame);
-				InterfaceAddOnsList_Update();
+				AddAddOnCategory(categories, i, frame);
 				return;
 			end
 		end
 
-		if ( position ) then
-			tinsert(categories, position, frame);
-		else
-			tinsert(categories, frame);
-		end
-		InterfaceAddOnsList_Update();
+		AddAddOnCategory(categories, position, frame);
 	end
 end

@@ -1253,9 +1253,7 @@ function LFDQueueFrameFindGroupButton_Update()
 		end
 	end
 
-	local currentMapAreaID = GetCurrentMapAreaID()
-
-	if ( currentMapAreaID == 915 or currentMapAreaID == 898 ) then
+	if C_Unit.IsNeutral("player") then
 		LFDQueueFrameFindGroupButton:Disable();
 	elseif ( LFD_IsEmpowered() and mode ~= "proposal" and mode ~= "listed"  ) then --During the proposal, they must use the proposal buttons to leave the queue.
 		if ( mode == "queued" or mode =="proposal" or mode == "rolecheck" or not LFDQueueFramePartyBackfill:IsVisible() ) then

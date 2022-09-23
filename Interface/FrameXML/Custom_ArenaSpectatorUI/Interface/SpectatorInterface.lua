@@ -90,7 +90,7 @@ end
 function ArenaSpectatorFrameMixin:SharedDropDownOnLoad()
 	UIDropDownMenu_Initialize(self.SharedReplay.DropDownMenu, function(_, level) self:SharedDropDownInit(level) end, "MENU")
 	UIDropDownMenu_SetText(self.SharedReplay.DropDownMenu, CHOOSE_CHANNEL)
-	UIDropDownMenu_JustifyText(self.SharedReplay.DropDownMenu, "LEFT+")
+	UIDropDownMenu_JustifyText(self.SharedReplay.DropDownMenu, "LEFT", 10, 0)
 	self.sharedChannel = nil
 end
 
