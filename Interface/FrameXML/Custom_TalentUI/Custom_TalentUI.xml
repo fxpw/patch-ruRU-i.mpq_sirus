@@ -1156,7 +1156,7 @@
 				if self:GetID() == 1 then
 					self.Icon:SetTexture("Interface\\Icons\\inv_misc_crystalspec1")
 				else
-					self.Icon:SetTexture("Interface\\Icons\\inv_jewelcrafting_argusgemcut_purple_miscicons")
+					self.Icon:SetTexture("Interface\\Icons\\oshugun_crystalfragments")
 				end
 
 				self.epicColor = BAG_ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_EPIC]

@@ -463,7 +463,7 @@ function TransmogSlotButtonMixin:Update()
 			self.Icon:SetTexture(texture or ENCHANT_EMPTY_SLOT_FILEDATAID);
 			self.NoItemTexture:Hide();
 		else
-			self.Icon:SetColorTexture(0, 0, 0);
+			self.Icon:SetTexture(0, 0, 0);
 			self.NoItemTexture:Show();
 		end
 	end

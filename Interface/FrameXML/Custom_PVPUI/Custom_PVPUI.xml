@@ -1399,7 +1399,7 @@
 									<OnLoad function="PVPQueueFrameCapTopFrameStatusBar_OnLoad" />
 									<OnShow function="PVPQueueFrameCapTopFrameStatusBar_OnShow" />
 									<OnEnter function="PVPQueueFrameCapTopFrameStatusBar_OnEnter" />
-									<OnLeave function="GameTooltip_Hide"/>
+									<OnLeave function="PVPQueueFrameCapTopFrameStatusBar_OnLeave" />
 								</Scripts>
 								<BarTexture parentKey="BarTexture" file="Interface\PVPFrame\PvPQueue">
 									<TexCoords left="0.25293" right="0.50293" top="0.000976562" bottom="0.0175781"/>

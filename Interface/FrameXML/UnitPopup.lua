@@ -155,6 +155,18 @@ UnitPopupButtons = {
 	["CHAT_KICK"] = { text = CHAT_KICK, },
 	["CHAT_BAN"] = { text = CHAT_BAN, },
 
+	-- Deprecated
+	["MUTE"] = { text = MUTE },
+	["UNMUTE"] = { text = UNMUTE },
+	["CHAT_SILENCE"] = { text = CHAT_SILENCE },
+	["CHAT_UNSILENCE"] = { text = CHAT_UNSILENCE },
+	["PARTY_SILENCE"] = { text = PARTY_SILENCE },
+	["PARTY_UNSILENCE"] = { text = PARTY_UNSILENCE },
+	["RAID_SILENCE"] = { text = RAID_SILENCE },
+	["RAID_UNSILENCE"] = { text = RAID_UNSILENCE },
+	["BATTLEGROUND_SILENCE"] = { text = BATTLEGROUND_SILENCE },
+	["BATTLEGROUND_UNSILENCE"] = { text = BATTLEGROUND_UNSILENCE },
+
 	-- Head Hunting
 	["HEADHUNTING_TITLE"] 		= makeUnitPopupSubsectionTitle(HEADHUNTING),
 	["HEADHUNTING_SET_REWARD"]	= { text = HEADHUNTING_SET_REWARD, },
@@ -184,6 +196,19 @@ UnitPopupButtons = {
 	["GM_INTERACT_APPEAR"] 		= { text = "Телепорт к персонажу", },
 	["GM_INTERACT_SUMMON"] 		= { text = "Телепорт персонажа к себе", },
 	["GM_INTERACT_DUMP"] 		= { text = "Копировать персонажа", },
+};
+
+local DEPRECATED_BUTTONS = {
+	["MUTE"] = true,
+	["UNMUTE"] = true,
+	["CHAT_SILENCE"] = true,
+	["CHAT_UNSILENCE"] = true,
+	["PARTY_SILENCE"] = true,
+	["PARTY_UNSILENCE"] = true,
+	["RAID_SILENCE"] = true,
+	["RAID_UNSILENCE"] = true,
+	["BATTLEGROUND_SILENCE"] = true,
+	["BATTLEGROUND_UNSILENCE"] = true,
 };
 
 -- First level menus
@@ -1330,6 +1355,8 @@ function UnitPopup_HideButtons ()
 			if C_Service:IsWarModRealm() then
 				shown = false
 			end
+		elseif DEPRECATED_BUTTONS[value] then
+			shown = false
 		end
 		UnitPopupShown[UIDROPDOWNMENU_MENU_LEVEL][index] = shown and 1 or 0;
 	end

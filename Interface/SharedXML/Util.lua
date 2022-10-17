@@ -193,17 +193,6 @@ function GetSpriteFromImage(x, y, w, h, iw, ih)
     return (x*w)/iw, ((x+1)*w)/iw, (y*h)/ih, ((y+1)*h)/ih
 end
 
-function PercentageBetween(value, startValue, endValue)
-	if startValue == endValue then
-		return 0.0;
-	end
-	return (value - startValue) / (endValue - startValue);
-end
-
-function ClampedPercentageBetween(value, startValue, endValue)
-	return Saturate(PercentageBetween(value, startValue, endValue));
-end
-
 function GetTexCoordsForRoleSmallCircle(role)
 	if ( role == "TANK" ) then
 		return 0, 19/64, 22/64, 41/64;
@@ -341,26 +330,6 @@ function CopyTable(settings)
 	end
 	return copy;
 end
-
-function reverse(t)
-    local nt = {}
-    local size = #t + 1
-    for k, v in ipairs(t) do
-        nt[size - k] = v
-    end
-    return nt
-end
-
-function toBits(num)
-    local t = {}
-    while num > 0 do
-        local rest = math.fmod(num, 2)
-        t[#t + 1] = rest
-        num = (num - rest) / 2
-    end
-    return reverse(t)
-end
-
 function rgb( r, g, b )
 	return r / 255, g / 255, b / 255
 end
@@ -551,41 +520,18 @@ function C_InRange( value, min, max )
 	return value and value >= min and value <= max or false
 end
 
-function Lerp(startValue, endValue, amount)
-	return (1 - amount) * startValue + amount * endValue;
-end
-
-function Clamp(value, min, max)
-	if value > max then
-		return max;
-	elseif value < min then
-		return min;
-	end
-	return value;
-end
-
-function Saturate(value)
-	return Clamp(value, 0.0, 1.0);
-end
-
-function GetClassFile( classFileLocale )
-	local classFileName
-
-	for classfileMale, classlocaleMale in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-		if classfileMale and classlocaleMale == classFileLocale then
-			classFileName = classfileMale
-			break
+function GetClassFile(localizedClassName)
+	for classfile, localizedClassNameM in pairs(LOCALIZED_CLASS_NAMES_MALE) do
+		if localizedClassNameM == localizedClassName then
+			return classfile
 		end
 	end
 
-	for classfileFemale, classlocaleFemale in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
-		if classfileFemale and classlocaleFemale == classFileLocale then
-			classFileName = classfileFemale
-			break
+	for classfile, localizedClassNameF in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
+		if localizedClassNameF == localizedClassName then
+			return classfile
 		end
 	end
-
-	return classFileName
 end
 
 function WrapTextInColorCode(text, colorHexString)
@@ -778,149 +724,17 @@ function TriStateCheckbox_SetState(checked, checkButton)
 	end
 end
 
--- Time --
-function SecondsToClock(seconds, displayZeroHours)
-	local hours = math.floor(seconds / 3600);
-	local minutes = math.floor(seconds / 60);
-	if hours > 0 or displayZeroHours then
-		return format(HOURS_MINUTES_SECONDS, hours, minutes, seconds % 60);
-	else
-		return format(MINUTES_SECONDS, minutes, seconds % 60);
-	end
-end
-
-function SecondsToTime(seconds, noSeconds, notAbbreviated, maxCount, roundUp)
-	local time = "";
-	local count = 0;
-	local tempTime;
-	seconds = roundUp and ceil(seconds) or floor(seconds);
-	maxCount = maxCount or 2;
-	if ( seconds >= 86400  ) then
-		count = count + 1;
-		if ( count == maxCount and roundUp ) then
-			tempTime = ceil(seconds / 86400);
-		else
-			tempTime = floor(seconds / 86400);
-		end
-		if ( notAbbreviated ) then
-			time = D_DAYS:format(tempTime);
-		else
-			time = DAYS_ABBR:format(tempTime);
-		end
-		seconds = mod(seconds, 86400);
-	end
-	if ( count < maxCount and seconds >= 3600  ) then
-		count = count + 1;
-		if ( time ~= "" ) then
-			time = time..TIME_UNIT_DELIMITER;
-		end
-		if ( count == maxCount and roundUp ) then
-			tempTime = ceil(seconds / 3600);
-		else
-			tempTime = floor(seconds / 3600);
-		end
-		if ( notAbbreviated ) then
-			time = time..D_HOURS:format(tempTime);
-		else
-			time = time..HOURS_ABBR:format(tempTime);
-		end
-		seconds = mod(seconds, 3600);
-	end
-	if ( count < maxCount and seconds >= 60  ) then
-		count = count + 1;
-		if ( time ~= "" ) then
-			time = time..TIME_UNIT_DELIMITER;
-		end
-		if ( count == maxCount and roundUp ) then
-			tempTime = ceil(seconds / 60);
-		else
-			tempTime = floor(seconds / 60);
-		end
-		if ( notAbbreviated ) then
-			time = time..D_MINUTES:format(tempTime);
-		else
-			time = time..MINUTES_ABBR:format(tempTime);
-		end
-		seconds = mod(seconds, 60);
-	end
-	if ( count < maxCount and seconds > 0 and not noSeconds ) then
-		if ( time ~= "" ) then
-			time = time..TIME_UNIT_DELIMITER;
-		end
-		if ( notAbbreviated ) then
-			time = time..D_SECONDS:format(seconds);
-		else
-			time = time..SECONDS_ABBR:format(seconds);
-		end
-	end
-	return time;
-end
-
-function SecondsToTimeAbbrev(seconds)
-	local tempTime;
-	if ( seconds >= 86400  ) then
-		tempTime = ceil(seconds / 86400);
-		return DAY_ONELETTER_ABBR, tempTime;
-	end
-	if ( seconds >= 3600  ) then
-		tempTime = ceil(seconds / 3600);
-		return HOUR_ONELETTER_ABBR, tempTime;
-	end
-	if ( seconds >= 60  ) then
-		tempTime = ceil(seconds / 60);
-		return MINUTE_ONELETTER_ABBR, tempTime;
-	end
-	return SECOND_ONELETTER_ABBR, seconds;
-end
-
-function FormatShortDate(day, month, year)
-	if (year) then
-		if (LOCALE_enGB) then
-			return SHORTDATE_EU:format(day, month, year);
-		else
-			return SHORTDATE:format(day, month, year);
-		end
-	else
-		if (LOCALE_enGB) then
-			return SHORTDATENOYEAR_EU:format(day, month);
-		else
-			return SHORTDATENOYEAR:format(day, month);
-		end
-	end
-end
-
-function GetRemainingTime( _time, daysformat )
-	local time = _time
-	local dayInSeconds = 86400
-	local days = ""
-
-	if daysformat then
-		if time > 86400 then
-			return math.floor(time / dayInSeconds)..string.format(" |4день:дня:дней;", time % 10)
-		else
-			return date("!%X", time)
-		end
-	else
-		if time > dayInSeconds then
-			days = math.floor(time / dayInSeconds) .. "д "
-			time = time % dayInSeconds
-		end
-
-		if time and time >= 0 then
-			return days .. date("!%X", time)
-		end
-	end
-end
-
 function SetParentArray(frame, parentArray, value)
 	assert(frame)
 
-	if not frame:GetParent()[parentArray] then
-		frame:GetParent()[parentArray] = {}
+	local parent = frame:GetParent()
+
+	if not parent[parentArray] then
+		parent[parentArray] = {}
 	end
 
-	table.insert(frame:GetParent()[parentArray], value)
-	return frame:GetParent()[parentArray]
+	table.insert(parent[parentArray], value)
+	return parent[parentArray]
 end
 
 function printc(...)
@@ -989,12 +803,6 @@ function UnpackNumber(n)
 	local n2 = bit.band(bit.rshift(n, 16), 0xFFFF)
 
 	return n1, n2
-end
-
----@param varName string
----@return string localeKey
-function GetLocalizedName(varName)
-	return varName.."_"..GetLocale():upper()
 end
 
 function IsWideScreen()

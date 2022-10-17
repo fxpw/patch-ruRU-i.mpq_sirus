@@ -9,15 +9,17 @@ enum:E_TOAST_CATEGORY {
 	BATTLE_PASS = 3,
 	QUEUE = 4,
 	AUCTION_HOUSE = 5,
+	CALL_OF_ADVENTURE = 6,
 }
 
 E_TOAST_DATA = {
-	[E_TOAST_CATEGORY.UNKNOWN]			= { sound = SOUNDKIT.UI_BNET_TOAST },
-	[E_TOAST_CATEGORY.FRIENDS]			= { sound = SOUNDKIT.UI_BNET_TOAST,				cvar = "C_CVAR_SOCIAL_TOAST_SOUND" },
-	[E_TOAST_CATEGORY.HEAD_HUNTING]		= { sound = "UI_PetBattles_InitiateBattle",		cvar = "C_CVAR_HEAD_HUNTING_TOAST_SOUND" },
-	[E_TOAST_CATEGORY.BATTLE_PASS]		= { sound = "UI_FightClub_Start",				cvar = "C_CVAR_BATTLE_PASS_TOAST_SOUND" },
-	[E_TOAST_CATEGORY.QUEUE]			= { sound = "UI_GroupFinderReceiveApplication",	cvar = "C_CVAR_QUEUE_TOAST_SOUND" },
-	[E_TOAST_CATEGORY.AUCTION_HOUSE]	= { sound = "UI_DigsiteCompletion_Toast",		cvar = "C_CVAR_AUCTION_HOUSE_TOAST_SOUND" },
+	[E_TOAST_CATEGORY.UNKNOWN]				= { sound = SOUNDKIT.UI_BNET_TOAST },
+	[E_TOAST_CATEGORY.FRIENDS]				= { sound = SOUNDKIT.UI_BNET_TOAST,				cvar = "C_CVAR_SOCIAL_TOAST_SOUND" },
+	[E_TOAST_CATEGORY.HEAD_HUNTING]			= { sound = "UI_PetBattles_InitiateBattle",		cvar = "C_CVAR_HEAD_HUNTING_TOAST_SOUND" },
+	[E_TOAST_CATEGORY.BATTLE_PASS]			= { sound = "UI_FightClub_Start",				cvar = "C_CVAR_BATTLE_PASS_TOAST_SOUND" },
+	[E_TOAST_CATEGORY.QUEUE]				= { sound = "UI_GroupFinderReceiveApplication",	cvar = "C_CVAR_QUEUE_TOAST_SOUND" },
+	[E_TOAST_CATEGORY.AUCTION_HOUSE]		= { sound = "UI_DigsiteCompletion_Toast",		cvar = "C_CVAR_AUCTION_HOUSE_TOAST_SOUND" },
+	[E_TOAST_CATEGORY.CALL_OF_ADVENTURE]	= { sound = "UI_CallOfAdventure_Toast",			cvar = "C_CVAR_CALL_OF_ADVENTURE_TOAST_SOUND" },
 }
 
 DefaultAnimOutMixin = {}
@@ -145,12 +147,6 @@ function SocialToastSystemMixin:ShowToast(toastFrame)
     toastFrame.TitleText:SetText(toast.toastData.titleText)
     toastFrame.BodyText:SetText(toast.toastData.bodyText)
 
-    toastFrame.BodyText:SetWidth(188)
-
-    local toastHeight = math.max(50, 40 + toastFrame.BodyText:GetHeight())
-
-    toastFrame:SetHeight(toastHeight)
-
     local iconSource = toast.toastData.iconSource
 
     if type(iconSource) == "number" then
@@ -178,6 +174,9 @@ function SocialToastSystemMixin:ShowToast(toastFrame)
 	else
 		PlaySound(E_TOAST_DATA[E_TOAST_CATEGORY.UNKNOWN].sound)
 	end
+
+	toastFrame:Show()	-- force recalculate text rect
+	toastFrame:SetHeight(math.max(50, 29 + toastFrame.TitleText:GetHeight() + toastFrame.BodyText:GetHeight()))
 
     AlertFrame_ShowNewAlert(toastFrame)
 end
@@ -263,10 +262,34 @@ local TOAST_MESSAGE_DATA = {
 	TITLE_PARAMS_COUNT	= 5,
 }
 
+local TOAST_ICON_SOUND_ID = {
+	[28] = 28, [29] = 28, [30] = 28,
+	[31] = 29, [32] = 29, [33] = 29,
+	[34] = 30, [35] = 30, [36] = 30,
+	[37] = 31, [38] = 31, [39] = 31,
+	[40] = 32, [41] = 32, [42] = 32,
+	[43] = 33, [44] = 33, [45] = 33,
+	[46] = 34, [47] = 34, [48] = 34,
+	[49] = 35, [50] = 35, [51] = 35,
+	[52] = 36, [53] = 36, [54] = 36,
+}
+
+local TOAST_TEXT_ID = {
+--	[28] = 28, [29] = 29, [30] = 30,
+	[31] = 28, [32] = 29, [33] = 30,
+	[34] = 28, [35] = 29, [36] = 30,
+	[37] = 28, [38] = 29, [39] = 30,
+	[40] = 28, [41] = 29, [42] = 30,
+	[43] = 28, [44] = 29, [45] = 30,
+	[46] = 28, [47] = 29, [48] = 30,
+	[49] = 28, [50] = 29, [51] = 30,
+	[52] = 28, [53] = 29, [54] = 30,
+}
+
 function SocialToastSystemMixin:ASMSG_TOAST( msg )
     local toastData = C_Split(msg, "|")
 
-    local textID            = tonumber(table.remove(toastData, 1))
+	local toastID			= tonumber(table.remove(toastData, 1))
     local categoryID        = tonumber(table.remove(toastData, 1))
     local flags             = tonumber(table.remove(toastData, 1))
     local iconSource        = table.remove(toastData, 1)
@@ -285,13 +308,20 @@ function SocialToastSystemMixin:ASMSG_TOAST( msg )
             if C_CVar:GetValue("C_CVAR_SHOW_AUCTION_HOUSE_TOAST") ~= "1" then
                 return
             end
+		elseif categoryID == E_TOAST_CATEGORY.CALL_OF_ADVENTURE then
+			if C_CVar:GetValue("C_CVAR_SHOW_CALL_OF_ADVENTURE_TOAST") ~= "1" then
+				return
+			end
         end
     end
 
     iconSource = tonumber(iconSource) or iconSource
 
+	local typeID = TOAST_ICON_SOUND_ID[toastID] or toastID
+	local textID = TOAST_TEXT_ID[toastID] or toastID
+
     if iconSource == 0 then
-        local icon = TOAST_TYPE_ICONS[textID]
+		local icon = TOAST_TYPE_ICONS[typeID]
 
         if icon then
             iconSource = icon
@@ -313,7 +343,7 @@ function SocialToastSystemMixin:ASMSG_TOAST( msg )
     end
 
     self:AddToast(categoryID, {
-        titleText   = #titleTextParams > 0 and string.format(_G["TOAST_TITLE_"..textID] or "%s", unpack(titleTextParams)) or _G["TOAST_TITLE_"..textID],
+        titleText   = #titleTextParams > 0 and string.format(_G["TOAST_TITLE_"..typeID] or "%s", unpack(titleTextParams)) or _G["TOAST_TITLE_"..typeID],
         bodyText    = #bodyTextParams > 0 and string.format(_G["TOAST_BODY_"..textID] or "%s", unpack(bodyTextParams)) or _G["TOAST_BODY_"..textID],
         iconSource  = iconSource,
         flags       = flags

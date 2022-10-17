@@ -350,7 +350,7 @@ function GMChatFrame_LoadUI(...)
 end
 
 function Arena_LoadUI()
---	UIParentLoadAddOn("Blizzard_ArenaUI");
+	UIParentLoadAddOn("Blizzard_ArenaUI");
 end
 
 function ShowMacroFrame()
@@ -1039,32 +1039,9 @@ function UIParent_OnEvent(self, event, ...)
 		if ( BarberShopFrame ) then
 			ShowUIPanel(BarberShopFrame);
 		end
-
-		local hairCustomization = GetHairCustomization()
-		local raceInfo 			= C_CreatureInfo.GetRaceInfo(UnitRace("player"))
-
-		if _G["HAIR_"..hairCustomization.."_COLOR"] == EMPTY_HAIR_COLOR
-		or (UnitSex("player") == E_SEX.MALE and (raceInfo.raceID == E_CHARACTER_RACES.RACE_PANDAREN_HORDE or raceInfo.raceID == E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE or raceInfo.raceID == E_CHARACTER_RACES.RACE_PANDAREN_NEUTRAL)) then
-			BarberShopFrameSelector2:Hide()
-
-			BarberShopFrameSelector3:ClearAllPoints()
-			BarberShopFrameSelector3:SetPoint("TOPLEFT", BarberShopFrameSelector1, "BOTTOMLEFT", 0, 3)
-
-			BarberShopFrameMoneyFrame:SetPoint("TOP", BarberShopFrameSelector4, "BOTTOM", 7, -28)
-			BarberShopFrameOkayButton:SetPoint("RIGHT", BarberShopFrameSelector4, "BOTTOM", -2, -64)
-		else
-			BarberShopFrameSelector2:Show()
-
-			BarberShopFrameSelector3:ClearAllPoints()
-			BarberShopFrameSelector3:SetPoint("TOPLEFT", BarberShopFrameSelector2, "BOTTOMLEFT", 0, 3)
-
-			BarberShopFrameMoneyFrame:SetPoint("TOP", BarberShopFrameSelector4, "BOTTOM", 7, -7)
-			BarberShopFrameOkayButton:SetPoint("RIGHT", BarberShopFrameSelector4, "BOTTOM", -2, -36)
-		end
 	elseif ( event == "BARBER_SHOP_CLOSE" ) then
 		if ( BarberShopFrame and BarberShopFrame:IsVisible() ) then
-			BarberShopFrame:Hide();
-		--	HideUIPanel(BarberShopFrame);
+			HideUIPanel(BarberShopFrame);
 		end
 
 	-- Event for guildbank handling
@@ -2378,79 +2355,6 @@ end
 
 
 -- Time --
-
-function SecondsToTime(seconds, noSeconds, notAbbreviated, maxCount)
-	local time = "";
-	local count = 0;
-	local tempTime;
-	seconds = floor(seconds);
-	maxCount = maxCount or 2;
-	if ( seconds >= 86400  ) then
-		tempTime = floor(seconds / 86400);
-		if ( notAbbreviated ) then
-			time = format(D_DAYS,tempTime);
-		else
-			time = format(DAYS_ABBR,tempTime);
-		end
-		seconds = mod(seconds, 86400);
-		count = count + 1;
-	end
-	if ( seconds >= 3600  ) then
-		if ( time ~= "" ) then
-			time = time..TIME_UNIT_DELIMITER;
-		end
-		tempTime = floor(seconds / 3600);
-		if ( notAbbreviated ) then
-			time = time..format(D_HOURS, tempTime);
-		else
-			time = time..format(HOURS_ABBR, tempTime);
-		end
-		seconds = mod(seconds, 3600);
-		count = count + 1;
-	end
-	if ( count < maxCount and seconds >= 60  ) then
-		if ( time ~= "" ) then
-			time = time..TIME_UNIT_DELIMITER;
-		end
-		tempTime = floor(seconds / 60);
-		if ( notAbbreviated ) then
-			time = time..format(D_MINUTES, tempTime);
-		else
-			time = time..format(MINUTES_ABBR, tempTime);
-		end
-		seconds = mod(seconds, 60);
-		count = count + 1;
-	end
-	if ( count < maxCount and seconds > 0 and not noSeconds ) then
-		if ( time ~= "" ) then
-			time = time..TIME_UNIT_DELIMITER;
-		end
-		seconds = format("%d", seconds);
-		if ( notAbbreviated ) then
-			time = time..format(D_SECONDS, seconds);
-		else
-			time = time..format(SECONDS_ABBR, seconds);
-		end
-	end
-	return time;
-end
-
-function SecondsToTimeAbbrev(seconds)
-	local tempTime;
-	if ( seconds >= 86400  ) then
-		tempTime = ceil(seconds / 86400);
-		return DAY_ONELETTER_ABBR, tempTime;
-	end
-	if ( seconds >= 3600  ) then
-		tempTime = ceil(seconds / 3600);
-		return HOUR_ONELETTER_ABBR, tempTime;
-	end
-	if ( seconds >= 60  ) then
-		tempTime = ceil(seconds / 60);
-		return MINUTE_ONELETTER_ABBR, tempTime;
-	end
-	return SECOND_ONELETTER_ABBR, seconds;
-end
 
 function RecentTimeDate(year, month, day, hour)
 	local lastOnline;
@@ -3791,9 +3695,22 @@ function GetDisplayedAllyFrames()
 		return "raid";
 	elseif ( GetNumPartyMembers() > 0 ) then
 		return "party";
+	elseif ( GetCVar("C_CVAR_USE_COMPACT_SOLO_FRAMES") == "1" ) then
+		return "raid";
 	else
 		return nil;
 	end
+end
+
+function AbbreviateLargeNumbers(value)
+	local strLen = strlen(value);
+	local retString = value;
+	if ( strLen > 8 ) then
+		retString = string.sub(value, 1, -7)..SECOND_NUMBER_CAP;
+	elseif ( strLen > 5 ) then
+		retString = string.sub(value, 1, -4)..FIRST_NUMBER_CAP;
+	end
+	return retString;
 end
 
 local VipData = {

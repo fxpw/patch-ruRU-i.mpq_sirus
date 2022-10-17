@@ -639,6 +639,11 @@ GlueDialogTypes["OKAY_REALM_DOWN"] = {
 	end,
 }
 
+GlueDialogTypes["OKAY_VOID"] = {
+	button1 = OKAY,
+	showAlert = 1,
+}
+
 local DELAYED_DIALOGUES = {
 	[CHAR_LIST_RETRIEVING] = true,
 }

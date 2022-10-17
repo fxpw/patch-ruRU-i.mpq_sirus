@@ -246,6 +246,8 @@ local function configureChildren(self, unitTable)
         end
 
         local unitButton = self:GetAttribute("child"..buttonNum);
+        unitButton:Hide();
+        unitButton:ClearAllPoints();
         if ( buttonNum == 1 ) then
             unitButton:SetPoint(point, currentAnchor, point, 0, 0);
             if ( columnAnchorPoint ) then

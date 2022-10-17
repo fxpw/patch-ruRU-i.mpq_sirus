@@ -440,7 +440,7 @@
 						end
 					</OnValueChanged>
 					<OnEnter>
-						if ( self:IsEnabled() ) then
+						if ( self:IsEnabled() == 1 ) then
 							if ( self.tooltipText ) then
 								GameTooltip:SetOwner(self, self.tooltipOwnerPoint or "ANCHOR_RIGHT");
 								GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, 1);
@@ -495,7 +495,7 @@
 						BlizzardOptionsPanel_SetCVarSafe(self.cvar, value);
 					</OnValueChanged>
 					<OnEnter>
-						if ( self:IsEnabled() ) then
+						if ( self:IsEnabled() == 1 ) then
 							if ( self.tooltipText ) then
 								GameTooltip:SetOwner(self, self.tooltipOwnerPoint or "ANCHOR_RIGHT");
 								GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, 1);
@@ -546,7 +546,7 @@
 						BlizzardOptionsPanel_SetCVarSafe(self.cvar, value);
 					</OnValueChanged>
 					<OnEnter>
-						if ( self:IsEnabled() ) then
+						if ( self:IsEnabled() == 1 ) then
 							if ( self.tooltipText ) then
 								GameTooltip:SetOwner(self, self.tooltipOwnerPoint or "ANCHOR_RIGHT");
 								GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, 1);
@@ -597,7 +597,7 @@
 						BlizzardOptionsPanel_SetCVarSafe(self.cvar, value);
 					</OnValueChanged>
 					<OnEnter>
-						if ( self:IsEnabled() ) then
+						if ( self:IsEnabled() == 1 ) then
 							if ( self.tooltipText ) then
 								GameTooltip:SetOwner(self, self.tooltipOwnerPoint or "ANCHOR_RIGHT");
 								GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, 1);

@@ -12,7 +12,7 @@ function UIDropDownMenuButtonScript_OnLeave(self, ...)
 	ExecuteFrameScript(self:GetParent(), "OnLeave", ...);
 end
 
-function UIDropDownMenuButtonScript_OnMouseDown(self, button)
+function UIDropDownMenuButtonScript_OnClick(self, button)
 --	if self:IsEnabled() == 1 then
 		ToggleDropDownMenu(nil, nil, self:GetParent());
 		PlaySound("igMainMenuOptionCheckBoxOn");

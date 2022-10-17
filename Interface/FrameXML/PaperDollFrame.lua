@@ -379,16 +379,15 @@ function PaperDollFrame_OnEvent (self, event, ...)
 end
 
 function PaperDollFrame_SetLevel()
-	local class, classfilename 			= UnitClass("player")
-	local race 							= UnitRace("player")
-	local factionTag, factionLoaclized 	= UnitFactionGroup("player")
-	local unitLevel 					= UnitLevel("player")
+	local classDisplayName, class = UnitClass("player");
+	local classColorString = GetClassColorObj(class).colorStr;
+	local level = UnitLevel("player");
+	local race = UnitRace("player")
+	local _, faction = UnitFactionGroup("player")
+	
+	race = string.gsub(race, " %("..faction.."%)", "")
 
-	class = GetClassColorObj(classfilename):WrapTextInColorCode(class)
-
-	race = string.gsub(race, " %("..factionLoaclized.."%)", "")
-
-	CharacterLevelText:SetFormattedText(PAPERDOLLFRAME_PLAYER_INFO, class, race, factionLoaclized, unitLevel)
+	CharacterLevelText:SetFormattedText(PAPERDOLLFRAME_PLAYER_INFO, level, classColorString, classDisplayName, race, faction)
 end
 
 function PaperDollFrame_SetGuild()

@@ -11,10 +11,12 @@ enum:E_WORLDMAP_MAP_NAME_BY_ID {
     "AREA_NAME_RURU"
 }
 
+local AREA_NAME_LOCALE = string.format("AREA_NAME_%s", GetLocale():upper())
+
 ---@param mapAreaID integer
 ---@return string areaName
 function C_MapMixin:GetAreaNameByID( mapAreaID )
-    return WORLDMAP_MAP_NAME_BY_ID[mapAreaID] and WORLDMAP_MAP_NAME_BY_ID[mapAreaID][E_WORLDMAP_MAP_NAME_BY_ID[GetLocalizedName("AREA_NAME")]]
+	return WORLDMAP_MAP_NAME_BY_ID[mapAreaID] and WORLDMAP_MAP_NAME_BY_ID[mapAreaID][E_WORLDMAP_MAP_NAME_BY_ID[AREA_NAME_LOCALE]]
 end
 
 ---@param mapAreaID integer

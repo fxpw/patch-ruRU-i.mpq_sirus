@@ -87,9 +87,7 @@ function TargetFrame_OnLoad(self, unit, menuFunc)
 	self:RegisterEvent("RAID_TARGET_UPDATE");
 	self:RegisterEvent("UNIT_AURA");
 
-	local frameLevel = _G[thisName.."TextureFrame"]:GetFrameLevel();
-	self.healthbar:SetFrameLevel(frameLevel-1);
-	self.manabar:SetFrameLevel(frameLevel-1);
+	SetParentFrameLevel(self.TextureFrame, 2)
 
 	local showmenu;
 	if ( menuFunc ) then
@@ -445,9 +443,9 @@ function TargetFrame_OnUpdate (self, elapsed)
 end
 
 local SORT_UNIT_AURAS = function(a, b)
-	if a[8] and not b[8] then
+	if a[9] == "player" and b[9] ~= "player" then
 		return true
-	elseif not a[8] and b[8] then
+	elseif a[9] ~= "player" and b[9] == "player" then
 		return false
 	end
 
@@ -1224,7 +1222,7 @@ function FocusFrame_SetSmallSize(smallSize, onChange)
 		FocusFrame.maxDebuffs = nil;
 		FocusFrame:SetScale(LARGE_FOCUS_SCALE);
 		FocusFrameToT:SetScale(LARGE_FOCUS_SCALE);
-		FocusFrameToT:SetPoint("BOTTOMRIGHT", -35, -10);
+		FocusFrameToT:SetPoint("BOTTOMRIGHT", -35, -30);
 		FocusFrame.TOT_AURA_ROW_WIDTH = TOT_AURA_ROW_WIDTH;
 		FocusFrame.spellbar:SetScale(LARGE_FOCUS_SCALE);
 		FocusFrameTextureFrameName:SetFontObject(GameFontNormalSmall);
@@ -1253,6 +1251,13 @@ function FocusFrame_UpdateBuffsOnTop()
 		FocusFrame.buffsOnTop = false;
 	end
 	TargetFrame_UpdateAuras(FocusFrame);
+end
+
+function FocusFrame_CheckFaction(self) -- Deprecated
+	TargetFrame_CheckFaction(self);
+end
+function FocusFrame_UpdateAuras(self) -- Deprecated
+	TargetFrame_UpdateAuras(self);
 end
 
 enum:E_HEADHUNTING_PLAYER_IS_WANTED {

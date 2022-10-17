@@ -821,6 +821,10 @@ function PlayerFrame_DetachCastBar()
 end
 
 function PlayerFrame_AdjustAttachments()
+	if PetFrame and PetFrame:IsShown() then
+		SetParentFrameLevel(PetFrame, 3)
+	end
+
 	if ( not PLAYER_FRAME_CASTBARS_SHOWN ) then
 		return;
 	end

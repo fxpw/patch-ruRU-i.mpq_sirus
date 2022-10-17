@@ -493,61 +493,6 @@ function SetLighting(model, race)
 	end
 end
 
-function SecondsToTime(seconds, noSeconds)
-	local time = "";
-	local count = 0;
-	local tempTime;
-	seconds = floor(seconds);
-	if ( seconds >= 86400  ) then
-		tempTime = floor(seconds / 86400);
-		time = tempTime.." "..DAYS_ABBR.." ";
-		seconds = mod(seconds, 86400);
-		count = count + 1;
-	end
-	if ( seconds >= 3600  ) then
-		tempTime = floor(seconds / 3600);
-		time = time..tempTime.." "..HOURS_ABBR.." ";
-		seconds = mod(seconds, 3600);
-		count = count + 1;
-	end
-	if ( count < 2 and seconds >= 60  ) then
-		tempTime = floor(seconds / 60);
-		time = time..tempTime.." "..MINUTES_ABBR.." ";
-		seconds = mod(seconds, 60);
-		count = count + 1;
-	end
-	if ( count < 2 and seconds > 0 and not noSeconds ) then
-		seconds = format("%d", seconds);
-		time = time..seconds.." "..SECONDS_ABBR.." ";
-	end
-	return time;
-end
-
-function MinutesToTime(mins, hideDays)
-	local time = "";
-	local count = 0;
-	local tempTime;
-	-- only show days if hideDays is false
-	if ( mins > 1440 and not hideDays ) then
-		tempTime = floor(mins / 1440);
-		time = tempTime.." "..DAYS_ABBR.." ";
-		mins = mod(mins, 1440);
-		count = count + 1;
-	end
-	if ( mins > 60  ) then
-		tempTime = floor(mins / 60);
-		time = time..tempTime.." "..HOURS_ABBR.." ";
-		mins = mod(mins, 60);
-		count = count + 1;
-	end
-	if ( count < 2 ) then
-		tempTime = mins;
-		time = time..tempTime.." "..MINUTES_ABBR.." ";
-		count = count + 1;
-	end
-	return time;
-end
-
 function TriStateCheckbox_SetState(checked, checkButton)
 	local checkedTexture = _G[checkButton:GetName().."CheckedTexture"] or checkButton:GetCheckedTexture();
 	if ( not checkedTexture ) then

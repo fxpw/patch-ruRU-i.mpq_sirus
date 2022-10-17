@@ -49,7 +49,7 @@ function LFDFrame_OnLoad(self)
 	LFDQueueParentFrame.Inset:SetPoint("BOTTOMRIGHT", LFDQueueParentFrame, "BOTTOMRIGHT", -2, 26)
 
 	SetPortraitToTexture(LFDParentFrame.Art.portrait, "Interface\\LFGFrame\\UI-LFG-PORTRAIT")
-	LFDParentFrame.Art.TitleText:SetText(LOOKING_FOR_DUNGEON)
+	LFDParentFrame.Art.TitleText:SetText(LOOK_FOR_GROUP)
 
 	RaiseFrameLevelByThree(self.Shadows)
 

@@ -43,10 +43,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Действие невозможно. Причина: %s.",
         enGB = "Can't do that while %s"
     },
-    ["OPTION_TOOLTIP_ANISOTROPIC"] = {
-        ruRU = "Увеличение четкости текстур, особенно отображаемых под углом. Уменьшение значения этого параметра может повысить производительность игры.",
-        enGB = "Increases texture sharpness, particularly for textures viewed at an angle.  Decrease to improve performance."
-    },
     ["TRADE_POTENTIAL_BIND_ENCHANT"] = {
         ruRU = "Если вы зачаруете этот предмет, он станет персональным.",
         enGB = "Having this item enchanted will bind it to you."
@@ -247,10 +243,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Стычка",
         enGB = "Skirmish"
     },
-    ["VIDEO_QUALITY_LABEL2"] = {
-        ruRU = "среднее",
-        enGB = "Fair"
-    },
     ["AUTO_JOIN"] = {
         ruRU = "Автоприсоединение",
         enGB = "Auto Join"
@@ -274,10 +266,6 @@ local SIRUS_LOCALIZATION = {
     ["SPIRIT_HEALER_RELEASE_RED"] = {
         ruRU = "|cffff2020Целитель душ|r",
         enGB = "|cffff2020Spirit Healer|r"
-    },
-    ["OPTION_TOOLTIP_FIX_LAG"] = {
-        ruRU = "Включите этот параметр, чтобы снизить время отклика интерфейса. Учтите, что это может привести к очень сильному понижению производительности игры.",
-        enGB = "Enabling this reduces user interface lag, but may drastically reduce frame rates."
     },
     ["SLASH_LEAVE6"] = {
         ruRU = "/chatleave",
@@ -379,10 +367,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "rt5",
         enGB = "rt5"
     },
-    ["VIDEOOPTIONS_MENU"] = {
-        ruRU = "Изображение",
-        enGB = "Video"
-    },
     ["VOICEMACRO_19_Ta_4_FEMALE"] = {
         ruRU = "Хотите посмотреть, как я здорово танцую?",
         enGB = "Wanna see some good clog dancing?"
@@ -418,10 +402,6 @@ local SIRUS_LOCALIZATION = {
     ["SPELL_DURATION_MIN"] = {
         ruRU = "%.2f мин",
         enGB = "%.2f min"
-    },
-    ["VIDEO_QUALITY_SUBTEXT4"] = {
-        ruRU = "Высокий уровень детализации текстур, максимальное расстояние видимости объектов, высокое качество эффектов заклинаний. Эти настройки позволяют добиться прекрасного качества изображения.",
-        enGB = "High texture detail, farthest draw distance, high spell effect detail. These settings provide very high quality."
     },
     ["TRANSMOGRIFY_FRAME_HELP_TOOLTIP_HEAD"] = {
         ruRU = "Особенности трансмогрификации",
@@ -478,10 +458,6 @@ local SIRUS_LOCALIZATION = {
     ["UIOPTIONS_MENU"] = {
         ruRU = "Интерфейс",
         enGB = "Interface"
-    },
-    ["DISABLE_ALL_ADDONS"] = {
-        ruRU = "Отключить все",
-        enGB = "Disable All"
     },
     ["VOICEMACRO_LABEL_OPENFIRE2"] = {
         ruRU = "стреляй",
@@ -727,10 +703,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Это название неоднозначно, введите название сервера игрока полностью.",
         enGB = "That name is ambiguous, type more of the player's server name."
     },
-    ["SPELL_DETAIL"] = {
-        ruRU = "Детализация заклинаний",
-        enGB = "Spell Detail"
-    },
     ["DAILY"] = {
         ruRU = "Ежедневно",
         enGB = "Daily"
@@ -802,10 +774,6 @@ local SIRUS_LOCALIZATION = {
     ["LOCK_EXPIRE"] = {
         ruRU = "Обновление состоится",
         enGB = "Lock Expire"
-    },
-    ["OPTION_TOOLTIP_ENABLE_HARDWARE"] = {
-        ruRU = "Использование аппаратного ускорения 3D-звука. Этот параметр влияет на скорость обработки звука.",
-        enGB = "Enables the use of hardware for 3D sound management. This may alter your sound performance."
     },
     ["ARENA_REPLAY_CONFIRMATION_WATCH"] = {
         ruRU = "Вы действительно хотите посмотреть запись игры с номером %d?",
@@ -1099,10 +1067,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Использовать клавишу Shift для перенаправления заклинания, предназначенного дружественной цели, на вашего персонажа, даже если цель не выбрана или эта цель – противник.",
         enGB = "Use the \"SHIFT\" key to cast friendly target spells on yourself even if an enemy is targeted, or there is no target."
     },
-    ["GROUND_RADIUS"] = {
-        ruRU = "Видимость травы",
-        enGB = "Ground Clutter Radius"
-    },
     ["BUYOUT_AUCTION_CONFIRMATION"] = {
         ruRU = "Выкупить товар за:",
         enGB = "Buyout auction for:"
@@ -1347,10 +1311,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы смотрите мимо цели!",
         enGB = "You are facing the wrong way!"
     },
-    ["OPTION_TOOLTIP_WORLD_LOD"] = {
-        ruRU = "Адаптация геометрической детализации ландшафта. Включение этого параметра может повысить производительность игры.",
-        enGB = "Check this to enable dynamic reduction of terrain polygon detail.  Check to increase performance."
-    },
     ["ERR_NEWTAXIPATH"] = {
         ruRU = "Открыт новый маршрут!",
         enGB = "New flight path discovered!"
@@ -1390,10 +1350,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_TEAM_INVITE2"] = {
         ruRU = "/tinvite",
         enGB = "/tinvite"
-    },
-    ["RUSSIAN_DECLENSION_1"] = {
-        ruRU = "Родительный падеж",
-        enGB = "Genitive Case"
     },
     ["PROMOCODE_ACTION_BUTTON_ERROR"] = {
         ruRU = "Вы уже использовали этот промокод!",
@@ -1471,10 +1427,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Некорректное функционирование модификаций или наложения чар",
         enGB = "Enchantment or add-ons not working appropriately"
     },
-    ["ENABLE_AMBIENCE"] = {
-        ruRU = "Фоновые звуки",
-        enGB = "Ambient Sounds"
-    },
     ["OPTION_TOOLTIP_OBJECTIVES_IGNORE_CURSOR"] = {
         ruRU = "Заблокировать панель задач и не позволять ей отображаться при наведении мыши.",
         enGB = "Locks the Objectives frame and keeps it from being displayed on mouseover."
@@ -1510,10 +1462,6 @@ local SIRUS_LOCALIZATION = {
     ["DUNGEON_FLOOR_AZJOLNERUB1"] = {
         ruRU = "Родовая яма",
         enGB = "The Brood Pit"
-    },
-    ["OPTION_TOOLTIP_STEREO_HARDWARE_CURSOR"] = {
-        ruRU = "Хотя включение параметра и улучшает производительность компьютера, 3D-курсор с этой настройкой не работает.",
-        enGB = "While enabling this option may improve performance, the 3D cursor functionality will not work with it enabled."
     },
     ["ERR_LFG_TOO_MANY_MEMBERS"] = {
         ruRU = "Вы не можете войти в подземелье, если в группе более 5 игроков.",
@@ -1787,10 +1735,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Действия дружественных игроков, питомцев и существ.",
         enGB = "Actions performed by friendly players, pets, and creatures."
     },
-    ["OPTION_UI_DEPTH"] = {
-        ruRU = "Меняет глубину интерфейса пользователя.",
-        enGB = "Changes the base depth of the UI."
-    },
     ["AMOUNT_PAID_COLON"] = {
         ruRU = "Уплаченная сумма:",
         enGB = "Amount Paid:"
@@ -1931,10 +1875,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Поврежденные предметы",
         enGB = "Damaged Items"
     },
-    ["EFFECTS_LABEL"] = {
-        ruRU = "Эффекты",
-        enGB = "Effects"
-    },
     ["VOICEMACRO_2_Ni_2_FEMALE"] = {
         ruRU = "Вперед!",
         enGB = "Charge forth!"
@@ -2067,10 +2007,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Использование клавиши \"SHIFT\" для применения заклинания на запомненной цели",
         enGB = "Use the \"SHIFT\" key to cast targeted spells on your Focus Target."
     },
-    ["FACIAL_HAIR_NORMAL"] = {
-        ruRU = "Борода и усы",
-        enGB = "Facial Hair"
-    },
     ["CALENDAR_EDIT_GUILD_EVENT"] = {
         ruRU = "Редактирование гильдейского события",
         enGB = "Edit Guild Event"
@@ -2119,17 +2055,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "|TInterface\\FriendsFrame\\UI-Toast-ToastIcons.tga:16:16:0:0:128:64:66:95:2:29|tВы присоединились к разговору с игроками: %s.",
         enGB = "|TInterface\\FriendsFrame\\UI-Toast-ToastIcons.tga:16:16:0:0:128:64:66:95:2:29|tYou are now in a conversation with %s."
     },
-    ["HERTZ"] = {
-        ruRU = " Гц",
-        enGB = "Hz"
-    },
     ["ERR_LOOT_MASTER_OTHER"] = {
         ruRU = "Невозможно присвоить предмет этому игроку",
         enGB = "Can't assign item to that player"
-    },
-    ["OPTION_TOOLTIP_WEATHER_DETAIL"] = {
-        ruRU = "Изменение интенсивности погодных эффектов. Уменьшение значения этого параметра может привести к повышению производительности игры.",
-        enGB = "Controls the intensity of weather effects.  Decrease to improve performance."
     },
     ["LOOTJOURNAL_ITEM_CLICK_TO_OPEN_LOOT"] = {
         ruRU = "Нажмите, чтобы перейти к списку добычи босса.",
@@ -2210,10 +2138,6 @@ local SIRUS_LOCALIZATION = {
     ["SPELL_FAILED_NOT_STANDING"] = {
         ruRU = "Это можно сделать только стоя.",
         enGB = "You must be standing to do that"
-    },
-    ["OPTION_TOOLTIP_SOUND_CHANNELS"] = {
-        ruRU = "Изменение количества звуковых каналов.",
-        enGB = "Changes the number of active software sound channels."
     },
     ["ADD_RAIDMEMBER_LABEL"] = {
         ruRU = "Добавить в рейдовую группу:",
@@ -2487,10 +2411,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Здесь можно настроить каналы чата, как текстовые, так и голосовые.",
         enGB = "Allows you to view or modify your text and voice chat channels."
     },
-    ["CINEMATIC_SUBTITLES"] = {
-        ruRU = "Субтитры в роликах",
-        enGB = "Cinematic Subtitles"
-    },
     ["DEATH_RELEASE_TIMER"] = {
         ruRU = "До выхода духа из тела осталось %d %s",
         enGB = "%d %s until release"
@@ -2534,10 +2454,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE1_CMD1"] = {
         ruRU = "/согласие",
         enGB = "/agree"
-    },
-    ["SPELLS"] = {
-        ruRU = "Заклинания",
-        enGB = "Spells"
     },
     ["SPELL_FAILED_REQUIRES_AREA"] = {
         ruRU = "Вы должны находиться в зоне \"%s\".",
@@ -2638,10 +2554,6 @@ local SIRUS_LOCALIZATION = {
     ["STOP_IGNORE"] = {
         ruRU = "Удалить",
         enGB = "Remove Player"
-    },
-    ["VIDEO_QUALITY_LABEL4"] = {
-        ruRU = "максимальное",
-        enGB = "High"
     },
     ["CHARACTER_BUTTON"] = {
         ruRU = "Информация о персонаже",
@@ -2967,10 +2879,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "После употребления спиртного (%s) вы не чувствуете опьянения.",
         enGB = "You feel sober after the %s."
     },
-    ["ANISOTROPIC"] = {
-        ruRU = "Фильтрация текстур",
-        enGB = "Texture Filtering"
-    },
     ["TRANSFER_ABORT_NOT_FOUND"] = {
         ruRU = "Перемещение отменено: подземелье не найдено",
         enGB = "Transfer Aborted: instance not found"
@@ -3090,14 +2998,6 @@ local SIRUS_LOCALIZATION = {
     ["COMBAT_RATING_NAME3"] = {
         ruRU = "Рейтинг уклонения",
         enGB = "Dodge Rating"
-    },
-    ["OPTION_TOOLTIP_TERRAIN_TEXTURE"] = {
-        ruRU = "Степень слияния текстур при наложении.",
-        enGB = "Sets the rate at which one type of terrain blends to another."
-    },
-    ["OPTION_TOOLTIP_PLAYER_DETAIL"] = {
-        ruRU = "Настройка разрешения текстур персонажа. Уменьшение значения этого параметра может слегка повысить производительность игры.",
-        enGB = "Controls the resolution of player textures. Decreasing this may slightly improve performance."
     },
     ["SPELL_DAMAGE_NUMBER_COMBATLOG_TOOLTIP"] = {
         ruRU = "Цветовое выделение величины урона (кроме ближнего боя).",
@@ -3363,10 +3263,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вам открыт доступ на Остров Форбс.",
         enGB = "You can now access the Forbes Island."
     },
-    ["ENVIRONMENT_DETAIL"] = {
-        ruRU = "Детализация ландшафта",
-        enGB = "Environment Detail"
-    },
     ["SPELL_FAILED_NOT_WHILE_TRADING"] = {
         ruRU = "Невозможно использовать заклинания в процессе обмена.",
         enGB = "Can't cast while trading"
@@ -3511,17 +3407,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Правая рука",
         enGB = "Main Hand"
     },
-    ["SOUND_LABEL"] = {
-        ruRU = "Звук",
-        enGB = "Sound"
-    },
     ["SLASH_EMOTE8"] = {
         ruRU = "/me",
         enGB = "/me"
-    },
-    ["ADDON_INCOMPATIBLE"] = {
-        ruRU = "Несовместимо",
-        enGB = "Incompatible"
     },
     ["VOICEMACRO_13_Ni_2_FEMALE"] = {
         ruRU = "До встречи.",
@@ -3598,10 +3486,6 @@ local SIRUS_LOCALIZATION = {
     ["ACHIEVEMENTFRAME_FILTER_INCOMPLETE"] = {
         ruRU = "Не завершено",
         enGB = "Incomplete"
-    },
-    ["LEVEL"] = {
-        ruRU = "Уровень",
-        enGB = "Level"
     },
     ["SLASH_GUILD_DISBAND3"] = {
         ruRU = "/gdisband",
@@ -3819,10 +3703,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/csay",
         enGB = "/csay"
     },
-    ["MASTER_VOLUME"] = {
-        ruRU = "Общая громкость",
-        enGB = "Master Volume"
-    },
     ["VOICEMACRO_15_Tr_1_FEMALE"] = {
         ruRU = "Нет уж.",
         enGB = "No way."
@@ -3850,10 +3730,6 @@ local SIRUS_LOCALIZATION = {
     ["LEVEL_UP_HEALTH"] = {
         ruRU = "Вы получили %d |4единицу:единицы:единиц; здоровья.",
         enGB = "You have gained %d hit points."
-    },
-    ["OPTION_STEREO_SEPARATION"] = {
-        ruRU = "Степень разделения объектов, создаваемая для эффекта стереозрения.",
-        enGB = "Changes the amount of separation created by 3D depth."
     },
     ["PVP_RANK_15_1_FEMALE"] = {
         ruRU = "Командор",
@@ -4231,10 +4107,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/listen",
         enGB = "/listen"
     },
-    ["FACIAL_HAIR_HORNS"] = {
-        ruRU = "Вид рогов",
-        enGB = "Horn Style"
-    },
     ["TABARDSLOT"] = {
         ruRU = "Гербовая накидка",
         enGB = "Tabard"
@@ -4359,10 +4231,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Увеличивает рейтинг скорости на %d.",
         enGB = "Improves spell haste rating by %d."
     },
-    ["OPTIONS_BRIGHTNESS"] = {
-        ruRU = "Яркость",
-        enGB = "Brightness"
-    },
     ["SLASH_CLEARMAINASSIST4"] = {
         ruRU = "/сброснаводчика",
         enGB = "/clearmainassist"
@@ -4386,10 +4254,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_5_Sc_0_FEMALE"] = {
         ruRU = "Нужна мана!",
         enGB = "I need mana!"
-    },
-    ["RACE"] = {
-        ruRU = "Раса",
-        enGB = "Race"
     },
     ["SPELL_STAT3_NAME"] = {
         ruRU = "Выносливость",
@@ -4427,10 +4291,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "До скорого.",
         enGB = "Until next time."
     },
-    ["YES"] = {
-        ruRU = "Да",
-        enGB = "Yes"
-    },
     ["NEWBIE_TOOLTIP_DISHONORABLE_KILLS"] = {
         ruRU = "Каждый раз, когда вы в режиме PvP убиваете противника, чей уровень слишком низок (цифра, показывающая уровень, окрашена в серый цвет), вы не получаете ни опыта, ни чести; напротив, вам засчитывается бесчестная победа. С каждой бесчестной победой, одержанной вами, общий рейтинг вашего персонажа снижается. Если же вы совершите несколько таких убийств в один день, то отрицательный эффект возрастет в геометрической прогрессии.",
         enGB = "Each time you assist in killing a civilian in PvP that is too low of a level to give you experience (a gray level number), you will get a dishonorable kill.   Each dishonorable kill you get immediately reduces your overall ranking slightly, and each additional dishonorable kill you get during a single day has a larger effect than the last one.   Dishonorable kills are directly applied to your ranking."
@@ -4442,10 +4302,6 @@ local SIRUS_LOCALIZATION = {
     ["CHAT_FILTERED"] = {
         ruRU = "Не удалось отправить сообщение |3-2(%s), так как оно содержит недопустимые слова.",
         enGB = "Unable to send chat to %s because your message contained reserved words."
-    },
-    ["OPTION_TOOLTIP_MULTISAMPLING"] = {
-        ruRU = "Выбор качества сглаживания краев объектов. Повышенное сглаживание может сильно снизить производительность игры.",
-        enGB = "Increase multisampling to smooth out model edges. Increasing multisampling can severely reduce performance."
     },
     ["ERR_TAXINOPATHS"] = {
         ruRU = "Вы не знаете станций, до которых можно добраться из этого места.",
@@ -4691,17 +4547,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Выход",
         enGB = "Exit"
     },
-    ["DISABLE_ADDONS"] = {
-        ruRU = "Отключить",
-        enGB = "Disable AddOns"
-    },
     ["ERR_NOT_ENOUGH_GOLD"] = {
         ruRU = "Недостаточно золота.",
         enGB = "Not enough gold"
-    },
-    ["ADDON_BANNED"] = {
-        ruRU = "Заблокировано",
-        enGB = "Banned"
     },
     ["QUICKBUTTON_NAME_EVERYTHING"] = {
         ruRU = "Все",
@@ -4910,10 +4758,6 @@ local SIRUS_LOCALIZATION = {
     ["SPELL_MECHANIC_TYPE_15"] = {
         ruRU = "Кровотечение",
         enGB = "Bleeding"
-    },
-    ["ENABLE_DSP_EFFECTS"] = {
-        ruRU = "Голоса рыцарей смерти",
-        enGB = "Death Knight Voices"
     },
     ["EMOTE385_CMD2"] = {
         ruRU = "/badfeeling",
@@ -5903,10 +5747,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/питомецавтозаклинание",
         enGB = "/petautocasttoggle"
     },
-    ["GENERAL_LABEL"] = {
-        ruRU = "Общие",
-        enGB = "General"
-    },
     ["SLASH_GUILD6"] = {
         ruRU = "/gc",
         enGB = "/gc"
@@ -6175,10 +6015,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Общение с ГМ",
         enGB = "Chatting with a GM"
     },
-    ["HARDWARE_CURSOR"] = {
-        ruRU = "Аппаратный курсор",
-        enGB = "Hardware Cursor"
-    },
     ["BINDING_NAME_RAIDTARGET5"] = {
         ruRU = "Метка цели: месяц",
         enGB = "Assign Moon to Target"
@@ -6218,10 +6054,6 @@ local SIRUS_LOCALIZATION = {
     ["HELPFRAME_TECHNICAL_BULLET3"] = {
         ruRU = "Видеоролики демонстрируются некорректно",
         enGB = "Cinematics or in-game movies not playing correctly"
-    },
-    ["VIDEO_QUALITY_SUBTEXT3"] = {
-        ruRU = "Высокий уровень детализации текстур, среднее расстояние видимости объектов, среднее качество эффектов заклинаний. Настройки, позволяющие добиться сбалансированной производительности.",
-        enGB = "High texture detail, medium draw distance, medium spell effect detail. These settings balance performance and quality."
     },
     ["RAID_DIFFICULTY2"] = {
         ruRU = "25 игроков",
@@ -6382,10 +6214,6 @@ local SIRUS_LOCALIZATION = {
     ["OTHER"] = {
         ruRU = "Другое",
         enGB = "Other"
-    },
-    ["RESOLUTION_SUBTEXT"] = {
-        ruRU = "С помощью этих настроек можно изменить размер игрового экрана и разрешение.",
-        enGB = "These options allow you to change the size and detail in which your video hardware renders the game."
     },
     ["QUEST_MONSTERS_KILLED"] = {
         ruRU = "%s – убито: %d/%d",
@@ -6835,10 +6663,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Как минимум один участник группы не принял приглашение или потерял соединение с сервером.",
         enGB = "One or more party members are pending invites or disconnected."
     },
-    ["EYE_SEPARATION"] = {
-        ruRU = "Степень разделения",
-        enGB = "Depth Amount"
-    },
     ["TEXT_MODE_A_STRING_RESULT_ABSORB"] = {
         ruRU = " (поглощено: %d |4единица:единицы:единиц; урона)",
         enGB = "(%d Absorbed)"
@@ -7034,10 +6858,6 @@ local SIRUS_LOCALIZATION = {
     ["INVTYPE_WEAPONMAINHAND_PET"] = {
         ruRU = "Основная атака",
         enGB = "Main Attack"
-    },
-    ["FACIAL_HAIR_EARRINGS"] = {
-        ruRU = "Серьги",
-        enGB = "Earrings"
     },
     ["CHAT_NOT_OWNER_NOTICE_BN"] = {
         ruRU = "|Hchannel:CHANNEL:%d|h[%s]|h Вы не являетесь владельцем канала.",
@@ -7278,10 +7098,6 @@ local SIRUS_LOCALIZATION = {
     ["ITEM_DISENCHANT_ANY_SKILL"] = {
         ruRU = "Можно распылить",
         enGB = "Disenchantable"
-    },
-    ["FACTION"] = {
-        ruRU = "Фракция",
-        enGB = "Faction"
     },
     ["CALENDAR_REPEAT_MONTHLY"] = {
         ruRU = "Ежемесячно",
@@ -7586,10 +7402,6 @@ local SIRUS_LOCALIZATION = {
     ["NEWBIE_TOOLTIP_UNIT_FOLLOW"] = {
         ruRU = "Следование за выбранным игроком. Персонаж будет автоматически следовать за выбранным игроком до тех пор, пока вы не отключите эту функцию.",
         enGB = "Causes you to begin following the selected player. You will automatically continue to follow the player until this auto follow mode is disrupted."
-    },
-    ["FIX_LAG"] = {
-        ruRU = "Плавность управления",
-        enGB = "Reduce Input Lag"
     },
     ["CALENDAR_STATUS_DECLINED"] = {
         ruRU = "Отклонено",
@@ -7951,10 +7763,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Азерот",
         enGB = "Azeroth"
     },
-    ["ADDONS"] = {
-        ruRU = "Модификации",
-        enGB = "AddOns"
-    },
     ["ERR_LEFT_GROUP_S"] = {
         ruRU = "%s покидает группу.",
         enGB = "%s leaves the party."
@@ -8010,10 +7818,6 @@ local SIRUS_LOCALIZATION = {
     ["PVP_SKIRMISH"] = {
         ruRU = "Стычка %s",
         enGB = "Skirmish %s"
-    },
-    ["RUSSIAN_DECLENSION_EXAMPLE_1"] = {
-        ruRU = "Сначала у %s не было имени.",
-        enGB = "I always travel with %s."
     },
     ["EXHAUSTION_LABEL"] = {
         ruRU = "Усталость",
@@ -8298,10 +8102,6 @@ local SIRUS_LOCALIZATION = {
     ["LFM_NAME_TEMPLATE"] = {
         ruRU = "%1$s, |3-6(%3$s) %2$s -го уровня",
         enGB = "%s - Level %s %s"
-    },
-    ["SYSTEM_DEFAULT"] = {
-        ruRU = "По умолчанию",
-        enGB = "System Default"
     },
     ["VOICEMACRO_19_Or_1"] = {
         ruRU = "Вот она, истинная любовь. Думаешь, такое каждый день приходит?",
@@ -8655,10 +8455,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Золото",
         enGB = "Gold"
     },
-    ["FACTION_ALLIANCE"] = {
-        ruRU = "Альянс",
-        enGB = "Alliance"
-    },
     ["RAID_DESCRIPTION"] = {
         ruRU = "Рейд – это группа, состоящая более чем из пяти человек, которая обычно создается для борьбы с уникальными противниками высоких уровней. \n\n|cffffffff– Члены рейдовых групп не получают наград за выполнение нерейдовых заданий. В частности, они не получают внерейдовых наград за убийство существ и сбор предметов, необходимых для заданий.\n\n– За убийство монстров члены рейдовых групп также получают значительно меньше опыта, чем члены обычных групп.\n\n– Зато рейды позволяют одолеть монстров, которые в других случаях кажутся непобедимыми.|r",
         enGB = "Raids are groups of more than 5 people and are typically used to defeat unique challenges at high levels.\n\n|cffffffff- Raid members cannot earn credit toward most non-raid quests. Specifically, they will not receive non-raid quest credit for killing creatures or collecting items.\n\n- Raids grant substantially less experience for defeating monsters than normal groups.\n\n- Raids allow you to overcome challenges that might otherwise be nearly impossible.|r"
@@ -8907,10 +8703,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "%4$s на мгновение парирует заклинание \"%2$s\"%6$s.",
         enGB = "%2$s was parried by %4$s for a moment.%6$s"
     },
-    ["OPTION_TOOLTIP_AMBIENCE_VOLUME"] = {
-        ruRU = "Регулировка громкости звуков окружающего мира.",
-        enGB = "Adjusts the ambient sound volume."
-    },
     ["BG_SYSTEM_ALLIANCE"] = {
         ruRU = "Поле боя: Альянс",
         enGB = "Battleground Alliance"
@@ -8955,10 +8747,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "]",
         enGB = "]"
     },
-    ["TRADESKILL_HERBALISM"] = {
-        ruRU = "Травничество",
-        enGB = "Herbalism"
-    },
     ["SKILL_INCREMENT_COST_SINGULAR"] = {
         ruRU = "Для повышения необходимо затратить %s%d|r очко навыков.",
         enGB = "Costs %s%d|r Skill point to increase."
@@ -8998,10 +8786,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_18_Ta_1_FEMALE"] = {
         ruRU = "Великолепно.",
         enGB = "Excellent."
-    },
-    ["NO"] = {
-        ruRU = "Нет",
-        enGB = "No"
     },
     ["INVTYPE_LEGS"] = {
         ruRU = "Ноги",
@@ -9187,10 +8971,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы действительно хотите получить компенсацию – %s – за предмет, указанный ниже?",
         enGB = "Are you sure you wish to get a refund of %s for the following item?"
     },
-    ["VIDEO_QUALITY_LABEL3"] = {
-        ruRU = "высокое",
-        enGB = "Good"
-    },
     ["EMOTE168_CMD1"] = {
         ruRU = "/подмигнуть",
         enGB = "/wink"
@@ -9238,10 +9018,6 @@ local SIRUS_LOCALIZATION = {
     ["PETTAME_UNITSCANTTAME"] = {
         ruRU = "Вы не можете приручать животных",
         enGB = "You cannot tame creatures"
-    },
-    ["ADDON_DEP_DISABLED"] = {
-        ruRU = "Зависимость отключена",
-        enGB = "Dependency disabled"
     },
     ["EMOTE111_CMD2"] = {
         ruRU = "/comfort",
@@ -9495,17 +9271,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Берегитесь! Опасность!",
         enGB = "Danger approaches!"
     },
-    ["CONFIRM_RESET_SETTINGS"] = {
-        ruRU = "Вы хотите вернуть стандартные настройки? Будут немедленно сброшены все параметры.",
-        enGB = "Do you want to reset all settings to their defaults? This will immediately apply all settings."
-    },
     ["ITEM_SUB_CLASS_4_2"] = {
         ruRU = "Кожаные",
         enGB = "Leather"
-    },
-    ["SOUND_QUALITY"] = {
-        ruRU = "Качество звука",
-        enGB = "Sound Quality"
     },
     ["VOICEMACRO_1_Tr_1_FEMALE"] = {
         ruRU = "Плохие новости!",
@@ -9607,10 +9375,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Перемещаемое действие 3",
         enGB = "Movable Action 3"
     },
-    ["DECLINE"] = {
-        ruRU = "Отказаться",
-        enGB = "Decline"
-    },
     ["CHANGE_MACRO_NAME_ICON"] = {
         ruRU = "Смена названия/значка",
         enGB = "Change Name/Icon"
@@ -9683,10 +9447,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Прослушивание",
         enGB = "Listening"
     },
-    ["OPTION_TOOLTIP_ENABLE_BGSOUND"] = {
-        ruRU = "Воспроизведение звуков в фоновом режиме (при свернутом окне игры).",
-        enGB = "Enable to allow sounds to play even when World of Warcraft is in the background."
-    },
     ["INVTYPE_RANGED"] = {
         ruRU = "Дальний бой",
         enGB = "Ranged"
@@ -9694,10 +9454,6 @@ local SIRUS_LOCALIZATION = {
     ["ITEM_MOD_CRIT_RANGED_RATING_SHORT"] = {
         ruRU = "к рейтингу критического удара в дальнем бою",
         enGB = "Critical Strike Rating (Ranged)"
-    },
-    ["ADDON_DEPENDENCIES"] = {
-        ruRU = "Зависимые ресурсы: ",
-        enGB = "Dependencies: "
     },
     ["ACTION_RANGE_MISSED_EVADE_FULL_TEXT"] = {
         ruRU = "Выстрел |3-1(%1$s) не достигает |3-1(%4$s).",
@@ -9927,10 +9683,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Настроение вашего питомца. Питомец может быть довольным, счастливым и несчастным. Исходя из этого, он может наносить обычный, увеличенный или уменьшенный урон. Смерть и голод сказываются на настроении питомца отрицательно, тогда как правильное питание обеспечивает положительный эффект.",
         enGB = "The amount of happiness your pet currently has. Content pets inflict normal damage on their enemies, whereas Happy pets inflict enhanced damage, and unhappy pets inflict reduced damage. Happiness goes down when your pet dies or as it grows hungry, while feeding your pet will increase its happiness."
     },
-    ["HAIR_NORMAL_STYLE"] = {
-        ruRU = "Прическа",
-        enGB = "Hair Style"
-    },
     ["STARTUP_TEXT_LINE4"] = {
         ruRU = "",
         enGB = ""
@@ -10015,10 +9767,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Неуязвимость",
         enGB = "Immuned"
     },
-    ["HAIR_NORMAL_COLOR"] = {
-        ruRU = "Цвет волос",
-        enGB = "Hair Color"
-    },
     ["ATTACK_POWER_TOOLTIP"] = {
         ruRU = "Сила атаки",
         enGB = "Attack Power"
@@ -10074,10 +9822,6 @@ local SIRUS_LOCALIZATION = {
     ["NEWBIE_TOOLTIP_UNIT_PET_PAPERDOLL"] = {
         ruRU = "Сведения о вашем питомце, включая статистику, сопротивление магии и рацион питания.",
         enGB = "Information about your pet, including its combat statistics, spell resistances, and diet."
-    },
-    ["VIDEO_QUALITY_SUBTEXT2"] = {
-        ruRU = "Средний уровень детализации текстур, маленькое расстояние видимости объектов, низкое качество эффектов заклинаний. Настройки, позволяющие добиться хорошей производительности.",
-        enGB = "Medium texture detail, short draw distance, low spell effect detail. These settings provide good performance."
     },
     ["CLEARED_AFK"] = {
         ruRU = "Вы вернулись.",
@@ -10318,10 +10062,6 @@ local SIRUS_LOCALIZATION = {
     ["TUTORIAL20"] = {
         ruRU = "Если щелкнуть |cffffd200правой кнопкой мыши|r по предмету в окне торговца, предмет будет куплен – при условии, что у вас достаточно денег.|n|nЕсли щелкнуть правой кнопкой по предмету из рюкзака, когда открыто окно торговца, предмет будет продан.",
         enGB = "|cffffd200Right Clicking|r an item in the vendor pane will buy that item if you have enough money.|n|nWhile the vendor pane is open, Right Clicking an item in your backpack will sell the item."
-    },
-    ["MINUTES"] = {
-        ruRU = "мин.",
-        enGB = "|4Minute:Minutes;"
     },
     ["DUNGEON_FLOOR_UTGARDEPINNACLE2"] = {
         ruRU = "Вершина",
@@ -11087,10 +10827,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Действие эффекта \"%2$s\" |3-1(%1$s) (%9$s) заканчивается.",
         enGB = "%1$s %2$s (%9$s) subsides."
     },
-    ["ALL_SETTINGS"] = {
-        ruRU = "Все параметры",
-        enGB = "All Settings"
-    },
     ["SLASH_UNIGNORE2"] = {
         ruRU = "/unignore",
         enGB = "/unignore"
@@ -11114,10 +10850,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE4_CMD2"] = {
         ruRU = "/прости",
         enGB = "/sorry"
-    },
-    ["ENABLE_SOUND"] = {
-        ruRU = "Включить звук",
-        enGB = "Enable Sound"
     },
     ["NEWBIE_TOOLTIP_DISPLAY_CHANNEL_PULLOUT"] = {
         ruRU = "Щелкните здесь и переместите мышь, чтобы показать список пользователей этого канала, пользующихся голосовым чатом.",
@@ -11174,10 +10906,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE72_CMD1"] = {
         ruRU = "/отчаяние",
         enGB = "/plead"
-    },
-    ["MINUTES_ABBR"] = {
-        ruRU = "%d мин.",
-        enGB = "%d |4Min:Min;"
     },
     ["VOICEMACRO_12_Tr_2_FEMALE"] = {
         ruRU = "Приветствую.",
@@ -11567,10 +11295,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Удалить прочтенные письма",
         enGB = "Delete read mails"
     },
-    ["MULTISAMPLE"] = {
-        ruRU = "Сглаживание",
-        enGB = "Multisampling"
-    },
     ["VOICEMACRO_15_Tr_0_FEMALE"] = {
         ruRU = "Без шансов.",
         enGB = "No chance."
@@ -11807,10 +11531,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "заклинатель",
         enGB = "caster"
     },
-    ["OPTION_TOOLTIP_TEXTURE_DETAIL"] = {
-        ruRU = "Изменение уровня детализации текстур. Уменьшение значения этого параметра может повысить производительность игры.",
-        enGB = "Controls the level of all texture detail. Decreasing this may slightly improve performance."
-    },
     ["VOICEMACRO_20_Hu_1_FEMALE"] = {
         ruRU = "У вас никогда не было такого чувства, будто вы не сами управляете своей судьбой, а ведомы некой невидимой рукой?",
         enGB = "Do you ever feel like you're not in charge of your own destiny, like you're being controlled by an invisible hand?"
@@ -11943,10 +11663,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/rude",
         enGB = "/rude"
     },
-    ["LOW"] = {
-        ruRU = "Мин.",
-        enGB = "Low"
-    },
     ["SLASH_SAY1"] = {
         ruRU = "/с",
         enGB = "/s"
@@ -12055,10 +11771,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Восстановить ракурс 5",
         enGB = "Set View 5"
     },
-    ["ADDON_DEP_BANNED"] = {
-        ruRU = "Зависимость заблокирована",
-        enGB = "Dependency banned"
-    },
     ["HELPFRAME_QUEST_TEXT"] = {
         ruRU = "Невозможность начать или завершить выполнение задания",
         enGB = "An issue that results in the inability to initiate or complete a quest"
@@ -12082,10 +11794,6 @@ local SIRUS_LOCALIZATION = {
     ["CALENDAR_INVITELIST_SETINVITESTATUS"] = {
         ruRU = "Выставить статус приглашения",
         enGB = "Set Invite Status"
-    },
-    ["MISCELLANEOUS"] = {
-        ruRU = "Разное",
-        enGB = "Miscellaneous"
     },
     ["NEWBIE_TOOLTIP_GUILDGROUPINVITE"] = {
         ruRU = "Приглашение выбранного представителя гильдии вступить в группу.",
@@ -12315,10 +12023,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Противник",
         enGB = "At War"
     },
-    ["OPTION_TOOLTIP_WINDOWED_MODE"] = {
-        ruRU = "Запуск игры в оконном режиме.\n\nПри этом используются параметры гаммы, установленные для монитора, и регулировка гаммы средствами игры становится недоступной.",
-        enGB = "Check to play in a non-fullscreen window.\n\nIf this is checked the game will use your desktop gamma and you will not be able to adjust it via the slider below."
-    },
     ["RGB_RANK_7_HORDE"] = {
         ruRU = "Кровавый страж",
         enGB = "Blood Guard"
@@ -12447,10 +12151,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Отображение сообщений о невозможности применения заклинаний.",
         enGB = "Show messages when a spell cannot be cast or fails to cast."
     },
-    ["HAIR_VULPERA_COLOR"] = {
-        ruRU = "Не используется",
-        enGB = ""
-    },
     ["AUTO_FOLLOW_SPEED"] = {
         ruRU = "Скорость авт. следования",
         enGB = "Auto Follow Speed"
@@ -12523,10 +12223,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Источники",
         enGB = "Sources"
     },
-    ["GROUND_DENSITY"] = {
-        ruRU = "Плотность травы",
-        enGB = "Ground Clutter Density"
-    },
     ["TUTORIAL_TITLE17"] = {
         ruRU = "Ответы на сообщения",
         enGB = "Replying to Tells"
@@ -12570,10 +12266,6 @@ local SIRUS_LOCALIZATION = {
     ["NUM_RAID_MEMBERS"] = {
         ruRU = "Участников рейда: %d",
         enGB = "%d Raid Members"
-    },
-    ["OPTION_TOOLTIP_VERTICAL_SYNC"] = {
-        ruRU = "Синхронизация смены кадров с вертикальной разверткой монитора. Включите этот параметр, если смена кадров в игре происходит недостаточно плавно.",
-        enGB = "Synchronizes your framerate to some fraction of your monitor's refresh rate. Enable this if you see excessive screen tearing in game."
     },
     ["VOICEMACRO_14_Gn_2"] = {
         ruRU = "Несомненно.",
@@ -13067,10 +12759,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Параметры членов гильдии",
         enGB = "Guild Member Options"
     },
-    ["ACCEPT"] = {
-        ruRU = "Принять",
-        enGB = "Accept"
-    },
     ["ERR_LOOT_LOCKED"] = {
         ruRU = "Кто-то другой уже обыскивает этот труп.",
         enGB = "Someone is already looting that corpse."
@@ -13082,10 +12770,6 @@ local SIRUS_LOCALIZATION = {
     ["PVP_POLICY_URL"] = {
         ruRU = "|cffffd200http://www.wow-europe.com/ru/policy/pvp.html|r",
         enGB = "|cffffd200http://www.worldofwarcraft.com/policy/pvp.shtml|r"
-    },
-    ["OPTION_TOOLTIP_CINEMATIC_SUBTITLES"] = {
-        ruRU = "Отображение субтитров во время вступительных видеороликов.",
-        enGB = "Enables subtitles during the intro cinematic."
     },
     ["EMOTE373_CMD2"] = {
         ruRU = "/doubt",
@@ -13126,10 +12810,6 @@ local SIRUS_LOCALIZATION = {
     ["SPELL_FAILED_TRANSFORM_UNUSABLE"] = {
         ruRU = "Новый предмет невозможно использовать.",
         enGB = "You can't use the new item"
-    },
-    ["ADDON_FORCE_LOAD"] = {
-        ruRU = "Устаревшие модификации",
-        enGB = "Load out of date AddOns"
     },
     ["EMOTE390_CMD1"] = {
         ruRU = "/прячулицо",
@@ -13375,10 +13055,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Использование мягкого освещения вокруг персонажа.",
         enGB = "Enable this option for smooth lighting across characters."
     },
-    ["FAR"] = {
-        ruRU = "Макс.",
-        enGB = "Far"
-    },
     ["SOCKET_ITEM_REQ_LEVEL"] = {
         ruRU = "Для использования гнезда персонаж должен быть не младше %d уровня",
         enGB = "Socket Requires Level %d"
@@ -13439,10 +13115,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Режим мыши-джойстика",
         enGB = "Joystick Mouse Mode"
     },
-    ["ENABLE_MUSIC"] = {
-        ruRU = "Музыка",
-        enGB = "Music"
-    },
     ["MISS"] = {
         ruRU = "Промах",
         enGB = "Miss"
@@ -13450,10 +13122,6 @@ local SIRUS_LOCALIZATION = {
     ["LEVEL_TOO_LOW"] = {
         ruRU = "Чтобы воспользоваться этим предметом экипировки, необходимо достичь уровня %d.",
         enGB = "You must reach level %d to equip this item."
-    },
-    ["RUSSIAN_DECLENSION_3"] = {
-        ruRU = "Винительный падеж",
-        enGB = "Accusative Case"
     },
     ["ADVANCED_OPTIONS"] = {
         ruRU = "Дополнительные параметры",
@@ -13643,10 +13311,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/ласка",
         enGB = "/spoon"
     },
-    ["ENABLE_SOUNDFX"] = {
-        ruRU = "Звуковые эффекты",
-        enGB = "Sound Effects"
-    },
     ["COMBAT_TEXT_SHOW_AURA_FADE_TEXT"] = {
         ruRU = "Исчезающие ауры",
         enGB = "Fading Auras"
@@ -13831,10 +13495,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tОбщение",
         enGB = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tSocial"
     },
-    ["VOLUME"] = {
-        ruRU = "Громкость",
-        enGB = "Volume"
-    },
     ["TUTORIAL_TITLE12"] = {
         ruRU = "Напиток",
         enGB = "Drink"
@@ -13999,10 +13659,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Скопировать",
         enGB = "Copy"
     },
-    ["TRADESKILL_ALCHEMY"] = {
-        ruRU = "Алхимия",
-        enGB = "Alchemy"
-    },
     ["MOVIE_RECORDING_ENABLE_ICON"] = {
         ruRU = "Показывать значок записи",
         enGB = "Show Recording Icon"
@@ -14038,10 +13694,6 @@ local SIRUS_LOCALIZATION = {
     ["CHAT_NOT_MODERATED_NOTICE"] = {
         ruRU = "%s не модерируется",
         enGB = "%s is not moderated"
-    },
-    ["WORLD_LOD"] = {
-        ruRU = "Уровень детализации",
-        enGB = "Level of Detail"
     },
     ["SPELL_HEAL_COMBATLOG_TOOLTIP"] = {
         ruRU = "Отображение сообщений об исцеляющих заклинаниях и способностях.",
@@ -14118,10 +13770,6 @@ local SIRUS_LOCALIZATION = {
     ["MACRO_HELP_TEXT_LINE4"] = {
         ruRU = "- Чтобы применить заклинание, внесенное в макросы, используйте следующую командную строку: /cast <название заклинания> (<дополнительный текст>)",
         enGB = "- To cast a spell from a macro use the following syntax:  /cast <name> (<subtext>)"
-    },
-    ["STEREO_VIDEO_SUBTEXT"] = {
-        ruRU = "Эти настройки позволяют менять детали, относящиеся к стереоскопическому (3D) зрению.",
-        enGB = "These options allow you to change details having to do with stereoscopic (3D) viewing."
     },
     ["ACTION_DAMAGE_SHIELD_MISSED_BLOCK_FULL_TEXT_NO_SOURCE"] = {
         ruRU = "%4$s блокирует заклинание \"%2$s\"%6$s.",
@@ -14219,10 +13867,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Сегодня этим заданием нельзя поделиться",
         enGB = "That quest cannot be shared today"
     },
-    ["GAME_SOUND_OUTPUT"] = {
-        ruRU = "Звуковое устройство",
-        enGB = "Game Sound Output"
-    },
     ["MINECART2"] = {
         ruRU = "Вагонетка 2",
         enGB = "Cart 2"
@@ -14258,10 +13902,6 @@ local SIRUS_LOCALIZATION = {
     ["DISPEL_AURA_COMBATLOG_TOOLTIP"] = {
         ruRU = "Отображение сообщений об исчезновении, прекращении действия или похищении аур.",
         enGB = "Show when an aura is removed, broken, or stolen."
-    },
-    ["EFFECTS_SUBTEXT"] = {
-        ruRU = "Эти параметры позволяют изменить уровни детализации различных элементов и графических эффектов.",
-        enGB = "These controls allow you to modify specific detail levels for many game elements and effects."
     },
     ["NEWBIE_TOOLTIP_UNIT_UNINVITE"] = {
         ruRU = "Исключение выбранного игрока из группы.",
@@ -14310,10 +13950,6 @@ local SIRUS_LOCALIZATION = {
     ["GUILDS_REPUTATION"] = {
         ruRU = "Гильдейская репутация",
         enGB = "Guild reputation"
-    },
-    ["UNAVAILABLE"] = {
-        ruRU = "Недоступно",
-        enGB = "Unavailable"
     },
     ["INVITE_TO_CONVERSATION"] = {
         ruRU = "Пригласить в разговор",
@@ -14431,10 +14067,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/оф",
         enGB = "/o"
     },
-    ["TRADESKILL_TAILORING"] = {
-        ruRU = "Портняжное дело",
-        enGB = "Tailoring"
-    },
     ["ERR_CORPSE_IS_NOT_IN_INSTANCE"] = {
         ruRU = "Вашего тела нет в этом подземелье.",
         enGB = "Your corpse is not in that instance"
@@ -14462,10 +14094,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_SPELL_MISSED_DEFLECT_POSSESSIVE"] = {
         ruRU = "1",
         enGB = "1"
-    },
-    ["OPTION_TOOLTIP_SOUND_VOLUME"] = {
-        ruRU = "Регулировка громкости звуковых эффектов.",
-        enGB = "Adjusts the sound effect volume."
     },
     ["TRANSFER_ABORT_DIFFICULTY3"] = {
         ruRU = "Для подземелья \"%s\" недоступен эпический уровень сложности.",
@@ -14546,10 +14174,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_GUILD_DISBAND2"] = {
         ruRU = "/guilddisband",
         enGB = "/guilddisband"
-    },
-    ["CLIENT_RESTART_ALERT"] = {
-        ruRU = "Некоторые изменения не вступят в силу, пока вы не перезагрузите игру.",
-        enGB = "Some of your settings will not take effect until you restart the game."
     },
     ["BINDING_NAME_TOGGLEBINDINGMODE1"] = {
         ruRU = "Включение режима назначения клавиш действий",
@@ -14639,10 +14263,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Обращение к сотруднику службы поддержки",
         enGB = ""
     },
-    ["SOUND_CHANNELS"] = {
-        ruRU = "Каналы",
-        enGB = "Sound Channels"
-    },
     ["ARENA_OFF_SEASON_TEXT"] = {
         ruRU = "Подходит к концу %d-й сезон арены!|n|nВ течение недели после завершения сезона будут присвоены награды и звания.|n|nНе забудьте узнать у руководителей арены, когда начнется %d-й сезон!",
         enGB = "Arena Season %d has come to an end!|n|nDuring the week after the close of the arena season all titles and rewards will be awarded.|n|nBe sure to check with arena organizers for information about the start of Season %d!"
@@ -14666,10 +14286,6 @@ local SIRUS_LOCALIZATION = {
     ["ARENA_RATED_BATTLE"] = {
         ruRU = "Рейтинговый бой:",
         enGB = "Rated Battle:"
-    },
-    ["ENABLE_STEREO_VIDEO"] = {
-        ruRU = "Стереоизображение",
-        enGB = "Enable Stereo Video"
     },
     ["ERR_QUEST_REWARD_EXP_I"] = {
         ruRU = "Получено опыта: %d.",
@@ -14803,10 +14419,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Невозможно изменить сложность подземелья.",
         enGB = "Unable to change Dungeon Difficulty"
     },
-    ["VERTICAL_SYNC"] = {
-        ruRU = "Верт. синхронизация",
-        enGB = "Vertical Sync"
-    },
     ["GUILD_CHALLENGE_REWARD_GUILD_EXP"] = {
         ruRU = "%d ед. опыта гильдии",
         enGB = "%d guild experience points"
@@ -14891,14 +14503,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Введите /помощь, чтобы получить список основных команд.",
         enGB = "Type '/help' for a listing of a few commands."
     },
-    ["OPTION_TOOLTIP_SOUND_OUTPUT"] = {
-        ruRU = "Выбор устройства воспроизведения звуков игры.",
-        enGB = "Selects where you would like to hear your game sounds."
-    },
-    ["OPTION_TOOLTIP_ENABLE_AMBIENCE"] = {
-        ruRU = "Воспроизведение фоновых звуков.",
-        enGB = "Enable ambient sounds."
-    },
     ["REMOVE_MUTE"] = {
         ruRU = "Удалить",
         enGB = "Remove"
@@ -14958,10 +14562,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE142_CMD1"] = {
         ruRU = "/щекотка",
         enGB = "/tickle"
-    },
-    ["DEFAULTS"] = {
-        ruRU = "По умолчанию",
-        enGB = "Defaults"
     },
     ["SLASH_SWAPACTIONBAR2"] = {
         ruRU = "/сменитьпанелькоманд",
@@ -15031,10 +14631,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Это не средство передвижения.",
         enGB = "That unit can't be mounted."
     },
-    ["OPTION_TOOLTIP_PARTICLE_DENSITY"] = {
-        ruRU = "Количество частиц, участвующих в отображении эффектов заклинаний, огня и прочего. Уменьшение значения этого параметра повысит производительность игры.",
-        enGB = "Controls the number of particles used in effects caused by spells, fires, etc. Decrease to improve performance."
-    },
     ["ARENA_REGISTRAR_PURCHASE_TEXT"] = {
         ruRU = "Чтобы собрать команду для арены, вам нужно купить эту хартию, собрать подписи нужного количества игроков и потом вернуть мне. Пожалуйста, введите название для вашей команды.",
         enGB = "To create an arena team you must purchase this charter, get the same number of unique player signatures as the size of your team, and return the charter to me.  Please enter the desired name for your arena team."
@@ -15058,10 +14654,6 @@ local SIRUS_LOCALIZATION = {
     ["PVP_RANK_19_1_FEMALE"] = {
         ruRU = "Лидер",
         enGB = "Leader"
-    },
-    ["DEPTH_CONVERGENCE"] = {
-        ruRU = "Глубина точки схода",
-        enGB = "Screen Depth"
     },
     ["ERR_DIFFICULTY_CHANGE_COMBAT"] = {
         ruRU = "Пока игрок находится в бою, сложность подземелья изменить нельзя.",
@@ -15223,10 +14815,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "%2$s, |3-6(%3$s) %1$s-го уровня",
         enGB = "Level %s %s %s"
     },
-    ["PARTICLE_DENSITY"] = {
-        ruRU = "Плотность частиц",
-        enGB = "Particle Density"
-    },
     ["EMOTE164_CMD1"] = {
         ruRU = "/ждать",
         enGB = "/wait"
@@ -15234,10 +14822,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE405_CMD2"] = {
         ruRU = "/map",
         enGB = "/map"
-    },
-    ["NEAR"] = {
-        ruRU = "Мин.",
-        enGB = "Near"
     },
     ["VOICEMACRO_15_Ni_0"] = {
         ruRU = "Нет.",
@@ -15511,17 +15095,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Инкрустировав предмет этим самоцветом, вы уничтожите один или несколько самоцветов. Вы действительно хотите это сделать?",
         enGB = "One or more gems will be destroyed by socketing. Do you really want to socket the new gem(s)?"
     },
-    ["OPTION_TOOLTIP_FARCLIP"] = {
-        ruRU = "Изменение дистанции отображения игровых объектов. Уменьшение значения этого параметра может сильно повысить производительность игры.",
-        enGB = "Changes how far you can see. Decreasing this may greatly improve performance."
-    },
     ["STORE_TRANSMOGRIFY_SORT_BY_NAME"] = {
         ruRU = "По названию",
         enGB = "By name"
-    },
-    ["FACIAL_HAIR_HAIR"] = {
-        ruRU = "Волосы",
-        enGB = "Hair"
     },
     ["CALENDAR_TOOLTIP_SIGNUPBUTTON"] = {
         ruRU = "Подписаться на участие в событии.",
@@ -15567,10 +15143,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Имена",
         enGB = "Names"
     },
-    ["HOURS_ABBR"] = {
-        ruRU = "%d ч.",
-        enGB = "%d |4Hr:Hr;"
-    },
     ["LAUGH_WORD2"] = {
         ruRU = "ржу",
         enGB = "rofl"
@@ -15578,10 +15150,6 @@ local SIRUS_LOCALIZATION = {
     ["CHAT_MODERATION_ON_NOTICE"] = {
         ruRU = "|Hchannel:%d|h[%s]|h %s включает  модерирование канала.",
         enGB = "|Hchannel:%d|h[%s]|h Channel moderation enabled by %s."
-    },
-    ["DISPLAY"] = {
-        ruRU = "Графика",
-        enGB = "Display"
     },
     ["VOICEMACRO_8_Dw_1"] = {
         ruRU = "Вылечите мои раны!",
@@ -15670,10 +15238,6 @@ local SIRUS_LOCALIZATION = {
     ["CHAT_EMOTE_SEND"] = {
         ruRU = "%s ",
         enGB = "%s "
-    },
-    ["BACK"] = {
-        ruRU = "Назад",
-        enGB = "Back"
     },
     ["YETI"] = {
         ruRU = "Йети",
@@ -15823,10 +15387,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Падение",
         enGB = "Falling"
     },
-    ["TRADESKILL_JEWELCRAFTING"] = {
-        ruRU = "Ювелирное дело",
-        enGB = "Jewelcrafting"
-    },
     ["TUTORIAL_TITLE32"] = {
         ruRU = "Бой в режиме \"игрок против игрока",
         enGB = "Player vs. Player Combat"
@@ -15955,10 +15515,6 @@ local SIRUS_LOCALIZATION = {
     ["CONFIRM_BINDER"] = {
         ruRU = "%s станет вашим новым домом. Согласны?",
         enGB = "Do you want to make %s your new home?"
-    },
-    ["PLAYBACK"] = {
-        ruRU = "Воспроизведение звука",
-        enGB = "Playback"
     },
     ["USE_WEATHER_SHADER"] = {
         ruRU = "Шейдеры погодных эффектов",
@@ -16091,10 +15647,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_SET_TITLE1"] = {
         ruRU = "/settitle",
         enGB = "/settitle"
-    },
-    ["OPTION_TOOLTIP_ENABLE_EMOTE_SOUNDS"] = {
-        ruRU = "Воспроизведение звуков, соответствующих эмоциям персонажей.",
-        enGB = "Toggles emote sounds on and off."
     },
     ["DAMAGE_BONUS_TOOLTIP"] = {
         ruRU = "Увеличивает урон от оружия",
@@ -16476,10 +16028,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Воскреснуть?",
         enGB = "Resurrect now?"
     },
-    ["RUSSIAN_DECLENSION_EXAMPLE_5"] = {
-        ruRU = "Я в %s души не чаю.",
-        enGB = "Although I know nothing about %s."
-    },
     ["ENABLE_GROUP_SPEECH"] = {
         ruRU = "Голосовое общение в группе",
         enGB = "Enable Group Speech"
@@ -16627,10 +16175,6 @@ local SIRUS_LOCALIZATION = {
     ["CHAT_MSG_WHISPER_INFORM"] = {
         ruRU = "Шепот",
         enGB = "Whisper"
-    },
-    ["OPTION_RESTART_REQUIREMENT"] = {
-        ruRU = "Чтобы изменения вступили в силу, перезапустите игру.",
-        enGB = "Requires game restart to take effect."
     },
     ["LFD_RANDOM_REWARD_EXPLANATION1"] = {
         ruRU = "За прохождение случайного подземелья вы получите:",
@@ -16871,10 +16415,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_TARGET_NEAREST_ENEMY1"] = {
         ruRU = "/targetenemy",
         enGB = "/targetenemy"
-    },
-    ["OPTION_TOOLTIP_ENABLE_REVERB"] = {
-        ruRU = "Использование эффекта искусственного эха. Этот параметр влияет на производительность игры.",
-        enGB = "Enables reverb sound effects.  This will affect performance."
     },
     ["EMOTE3_CMD2"] = {
         ruRU = "/злоба",
@@ -17132,10 +16672,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/df",
         enGB = "/df"
     },
-    ["DECLENSION_SET"] = {
-        ruRU = "%s из %s",
-        enGB = "%s of %s"
-    },
     ["EMOTE163_CMD2"] = {
         ruRU = "/followme",
         enGB = "/followme"
@@ -17219,10 +16755,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_TAXINOSUCHPATH"] = {
         ruRU = "В это место напрямую попасть нельзя!",
         enGB = "There is no direct path to that destination!"
-    },
-    ["HARDWARE"] = {
-        ruRU = "Аппаратное обеспечение",
-        enGB = "Hardware"
     },
     ["CHAT_SILENCE"] = {
         ruRU = "Запретить разговоры в канале",
@@ -17432,10 +16964,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Уничтожение",
         enGB = "destroyed"
     },
-    ["RUSSIAN_DECLENSION_EXAMPLE_4"] = {
-        ruRU = "Теперь мы с %s ладим.",
-        enGB = "Now I am friends with %s."
-    },
     ["YOU_LOOT_MONEY"] = {
         ruRU = "Ваша добыча: %s.",
         enGB = "You loot %s"
@@ -17467,10 +16995,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_QUEST_PUSH_NOT_IN_PARTY_S"] = {
         ruRU = "Вы не в группе.",
         enGB = "You are not in a party"
-    },
-    ["ADDON_DEP_CORRUPT"] = {
-        ruRU = "Зависимость повреждена",
-        enGB = "Dependency corrupt"
     },
     ["GM_TICKET_HIGH_VOLUME"] = {
         ruRU = "Сейчас у нас очень большой объем петиций.",
@@ -17852,10 +17376,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Кто",
         enGB = "Who"
     },
-    ["APPLY"] = {
-        ruRU = "Применить",
-        enGB = "Apply"
-    },
     ["TEXT_MODE_A_STRING_RESULT_CRITICAL"] = {
         ruRU = ": критический удар",
         enGB = "(Critical)"
@@ -17963,10 +17483,6 @@ local SIRUS_LOCALIZATION = {
     ["RAID_INFO_DESC"] = {
         ruRU = "Подземелья, которые сохранены для вас.",
         enGB = "Your saved raid instance status."
-    },
-    ["VIDEO_QUALITY_SUBTEXT1"] = {
-        ruRU = "Рекомендуемые минимальные настройки изображения, позволяющие добиться наивысшей производительности.",
-        enGB = "These are the lowest recommended graphics settings for the game. These settings provide excellent performance."
     },
     ["CLOSE_CHAT"] = {
         ruRU = "Прекратить общение",
@@ -18256,10 +17772,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Крошшеры",
         enGB = "Shredders"
     },
-    ["OPTION_TOOLTIP_ENABLE_STEREO_VIDEO"] = {
-        ruRU = "Включить стереоскопическое (3D) видео.",
-        enGB = "Enables stereoscopic (3D) video."
-    },
     ["PVP_RANK_0_0_FEMALE"] = {
         ruRU = "Разведчик",
         enGB = "Scout"
@@ -18283,10 +17795,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_4_Dw_1_FEMALE"] = {
         ruRU = "Нападаем на этого!",
         enGB = "Attack this one!"
-    },
-    ["OPTION_TOOLTIP_HARDWARE_CURSOR"] = {
-        ruRU = "Включение данного параметра может как ускорить отклик указателя мыши, так и вызвать некоторые проблемы с указателем.",
-        enGB = "Enable this option for a more responsive cursor unless you have cursor problems."
     },
     ["COMBAT_PARTY"] = {
         ruRU = "Боевая группа",
@@ -18323,10 +17831,6 @@ local SIRUS_LOCALIZATION = {
     ["PASSIVE_PARENS"] = {
         ruRU = "(Пассивная)",
         enGB = "(Passive)"
-    },
-    ["MULTISAMPLING_FORMAT_STRING"] = {
-        ruRU = "%1$d-разр. цвет, %2$d-разр. глубина цвета (%3$d-разр. сглаживание)",
-        enGB = "%d-bit color %d-bit depth %dx multisample"
     },
     ["MOVIE_RECORDING_ENABLE_SOUND"] = {
         ruRU = "Запись звука",
@@ -18552,14 +18056,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "НЕТ",
         enGB = "N/A"
     },
-    ["FACIAL_HAIR_TUSKS"] = {
-        ruRU = "Клыки",
-        enGB = "Tusks"
-    },
-    ["OPTION_TOOLTIP_ENABLE_SOUNDFX"] = {
-        ruRU = "Включение или отключение звуковых эффектов.",
-        enGB = "Enables or disables game sound effects."
-    },
     ["STRING_SCHOOL_DIVINE"] = {
         ruRU = "Божественность",
         enGB = "Divine"
@@ -18655,10 +18151,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE68_CMD4"] = {
         ruRU = "/да",
         enGB = "/yes"
-    },
-    ["ADDON_INTERFACE_VERSION"] = {
-        ruRU = "Устарело",
-        enGB = "Out of date"
     },
     ["VOICEMACRO_8_Tr_0"] = {
         ruRU = "Вылечите меня!",
@@ -18884,10 +18376,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Природа",
         enGB = "Nature"
     },
-    ["OPTION_TOOLTIP_ENABLE_MUSIC"] = {
-        ruRU = "Воспроизведение фоновой музыки.",
-        enGB = "Enable background music."
-    },
     ["CHAT_YELL_UNKNOWN"] = {
         ruRU = "кричит на членов своей группы.",
         enGB = "yells at his team members."
@@ -18955,10 +18443,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_NOT_IN_RAID"] = {
         ruRU = "Вы не входите в рейдовую группу",
         enGB = "You are not in a raid group"
-    },
-    ["FACIAL_HAIR_MARKINGS"] = {
-        ruRU = "Раскраска",
-        enGB = "Markings"
     },
     ["RAID_MESSAGE"] = {
         ruRU = "Рейд",
@@ -19207,10 +18691,6 @@ local SIRUS_LOCALIZATION = {
     ["FAILED"] = {
         ruRU = "Неудача",
         enGB = "Failed"
-    },
-    ["TRADESKILL_ENCHANTING"] = {
-        ruRU = "Наложение чар",
-        enGB = "Enchanting"
     },
     ["RESISTANCE_TOOLTIP_SUBTEXT"] = {
         ruRU = "Повышает устойчивость персонажа к заклинаниям, навыкам и атакам, в ходе которых используется %1$s.\n|cffffffff%3$s|r устойчивость против %2$d-го уровня.",
@@ -19464,10 +18944,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/чпомощь",
         enGB = "/chathelp"
     },
-    ["STEREO_VIDEO_LABEL"] = {
-        ruRU = "Стереоизображение",
-        enGB = "Stereo"
-    },
     ["HELPFRAME_CHARACTER_BULLET_TITLE1"] = {
         ruRU = "Вот примеры проблем с персонажами:",
         enGB = "The following are examples of character issues:"
@@ -19644,10 +19120,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Задействовать эти таланты",
         enGB = "Activate These Talents"
     },
-    ["TRADESKILL_SKINNING"] = {
-        ruRU = "Снятие шкур",
-        enGB = "Skinning"
-    },
     ["LFD_LEVEL_FORMAT_RANGE"] = {
         ruRU = "(%d - %d)",
         enGB = "(%d - %d)"
@@ -19792,10 +19264,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "За мной.",
         enGB = "Follow me."
     },
-    ["ADDON_DEP_INTERFACE_VERSION"] = {
-        ruRU = "Зависимость устарела",
-        enGB = "Dependency out of date"
-    },
     ["ERR_SLOT_EMPTY"] = {
         ruRU = "Эта ячейка пуста.",
         enGB = "That slot is empty."
@@ -19900,10 +19368,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Добавить в гильдию игрока:",
         enGB = "Add Guild Member:"
     },
-    ["RESOLUTION_LABEL"] = {
-        ruRU = "Разрешение",
-        enGB = "Resolution"
-    },
     ["INSTANCE_UNAVAILABLE_SELF_MISSING_ITEM"] = {
         ruRU = "У вас нет требуемого предмета.",
         enGB = "You do not have the required item."
@@ -19955,10 +19419,6 @@ local SIRUS_LOCALIZATION = {
     ["NOTE_SUBMITTED"] = {
         ruRU = "Записка передана",
         enGB = "Note submitted"
-    },
-    ["CUSTOM"] = {
-        ruRU = "Вручную",
-        enGB = "Custom"
     },
     ["ACTION_SPELL_AURA_REMOVED_DEBUFF_FULL_TEXT_NO_SOURCE"] = {
         ruRU = "%2$s рассеивается на |3-5(%4$s).",
@@ -20120,10 +19580,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Прыжок",
         enGB = "Jump"
     },
-    ["TRADESKILL_BLACKSMITHING"] = {
-        ruRU = "Кузнечное дело",
-        enGB = "Blacksmithing"
-    },
     ["SPELL_MECHANIC_TYPE_16"] = {
         ruRU = "Лечение",
         enGB = "Healing"
@@ -20139,10 +19595,6 @@ local SIRUS_LOCALIZATION = {
     ["BLIZZARD_COMBAT_LOG_MENU_REVERT"] = {
         ruRU = "Последний фильтр",
         enGB = "Revert to Last Filter"
-    },
-    ["ADDON_DEP_MISSING"] = {
-        ruRU = "Зависимость отсутствует",
-        enGB = "Dependency missing"
     },
     ["EMOTE421_CMD1"] = {
         ruRU = "/глазавверх",
@@ -20292,10 +19744,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Всегда рада помочь.",
         enGB = "Always glad to help."
     },
-    ["ENABLE_REVERB"] = {
-        ruRU = "Эффекты эха",
-        enGB = "Enable Reverb"
-    },
     ["LOCALE_SPELL_MECHANIC_HORROR"] = {
         ruRU = "Ужас",
         enGB = "Horrified"
@@ -20379,10 +19827,6 @@ local SIRUS_LOCALIZATION = {
     ["UNITNAME_SUMMON_TITLE3"] = {
         ruRU = "Прислужник |3-1(%s)",
         enGB = "%s's Minion"
-    },
-    ["PASSWORD"] = {
-        ruRU = "Пароль",
-        enGB = "Password"
     },
     ["CR_EXPERTISE_TOOLTIP"] = {
         ruRU = "Вероятность того, что противник уклонится от удара или парирует его, снижена на %s.\nРейтинг мастерства: %d (мастерство +%d).",
@@ -20519,10 +19963,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_LABEL_FOLLOWME1"] = {
         ruRU = "за мной",
         enGB = "followme"
-    },
-    ["ENABLE_SOUND_AT_CHARACTER"] = {
-        ruRU = "Звук персонажа",
-        enGB = "Sound at Character"
     },
     ["ACTION_ENVIRONMENTAL_DAMAGE_FATIGUE_POSSESSIVE"] = {
         ruRU = "0",
@@ -20663,10 +20103,6 @@ local SIRUS_LOCALIZATION = {
     ["RUNIC_POWER_COST_PER_TIME"] = {
         ruRU = "Cила рун: %d плюс %d/сек",
         enGB = "%d Runic Power, plus %d per sec"
-    },
-    ["OPTION_TOOLTIP_ENABLE_SOUND"] = {
-        ruRU = "Включение или отключение звука.",
-        enGB = "Enables or disables all sound."
     },
     ["VOICEMACRO_12_Sc_2"] = {
         ruRU = "Приветствую.",
@@ -20952,10 +20388,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "%d |4предмет отсутствует:предмета отсутствует:предметов отсутствуют;",
         enGB = "%d |4item:items; missing"
     },
-    ["UI_DEPTH"] = {
-        ruRU = "Глубина интерфейса",
-        enGB = "UI Depth"
-    },
     ["SLASH_ASSIST3"] = {
         ruRU = "/a",
         enGB = "/a"
@@ -21108,10 +20540,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Если этот параметр включен, сжатие видеоролика будет производиться сразу после окончания записи. В противном случае для обработки видеоролика вам потребуется нажать соответствующую кнопку.",
         enGB = "If this is checked, the movie will be compressed when you stop recording. Otherwise, you will need to use the compress button to finish processing the movies."
     },
-    ["REFRESH_RATE"] = {
-        ruRU = "Частота",
-        enGB = "Refresh"
-    },
     ["HELPFRAME_CHARACTER_BULLET2"] = {
         ruRU = "Невозможность войти в игру",
         enGB = "Unable to log in to World of Warcraft"
@@ -21223,10 +20651,6 @@ local SIRUS_LOCALIZATION = {
     ["DEFAULT_STATSPELLBONUS_TOOLTIP"] = {
         ruRU = "Дополнительный урон от атак заклинаниями.",
         enGB = "Bonus damage to spell attacks."
-    },
-    ["TERRAIN_HIGHLIGHTS"] = {
-        ruRU = "Отражения и блики",
-        enGB = "Specular Lighting"
     },
     ["BINDING_NAME_MULTIACTIONBAR3BUTTON11"] = {
         ruRU = "Кнопка действия 11 (справа)",
@@ -21432,10 +20856,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Каналы",
         enGB = "Chat"
     },
-    ["DAYS_ABBR"] = {
-        ruRU = "%d д.",
-        enGB = "%d |4Day:Days;"
-    },
     ["PAPERDOLLFRAME_UPS_TOOLTIP_3"] = {
         ruRU = "Максимум для вашей категории: %s",
         enGB = "Maximum for your category: %s"
@@ -21499,10 +20919,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_MACROHELP1"] = {
         ruRU = "/макропомощь",
         enGB = "/macrohelp"
-    },
-    ["HAIR_HORNS_STYLE"] = {
-        ruRU = "Вид рогов",
-        enGB = "Horn Style"
     },
     ["COD_PAYMENT"] = {
         ruRU = "Наложенный платеж: %s",
@@ -21607,10 +21023,6 @@ local SIRUS_LOCALIZATION = {
     ["BLACK_MARKET_ERROR_1"] = {
         ruRU = "Аукцион не найден",
         enGB = "Auction not found"
-    },
-    ["VIDEO_QUALITY_SUBTEXT6"] = {
-        ruRU = "Позволяет настраивать дальность прорисовки, уровень детализации и качество визуальных эффектов. Производительность игры и качество графики будут зависеть от значений параметров.",
-        enGB = "Allows you to customize individual draw distances, detail levels, and effects. Performance and quality will vary by setting."
     },
     ["REQUIRES_GUILD_FACTION_TOOLTIP"] = {
         ruRU = "Требуется репутация с гильдией: %s",
@@ -21740,10 +21152,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Увеличивает силу атаки и количество единиц урона в секунду. Вероятность\nнанесения критического удара противнику не зависит от\nсилы персонажа, как и вероятность блокировать удар.\nСила лишь уменьшает величину получаемого урона (некоторые персонажи могут использовать для этой цели еще и щит).",
         enGB = "Adds to your Attack Power, Damage-Per-Second. Strength\ndoes not affect Critical Hit chances at all. Strength does\nnot improve your chance to block, but rather the amount\nblocked when you succeed. This amount is determined in\npart by Strength (and the other part by your shield). "
     },
-    ["D_DAYS"] = {
-        ruRU = "%d д.",
-        enGB = "%d |4Day:Days;"
-    },
     ["ACTION_SPELL_BUILDING_HEAL"] = {
         ruRU = "отремонтировано",
         enGB = "repaired"
@@ -21808,10 +21216,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/списокгильдии",
         enGB = "/guildroster"
     },
-    ["FACIAL_HAIR_TENTS"] = {
-        ruRU = "Щупальца",
-        enGB = ""
-    },
     ["TALENT_SUMMARIES_TUTORIAL_1"] = {
         ruRU = "Нажатие на эту кнопку переключает показ информации о доступных для вашего класса специализациях.",
         enGB = ""
@@ -21834,10 +21238,6 @@ local SIRUS_LOCALIZATION = {
     },
     ["HAIR_WORGEN_COLOR"] = {
         ruRU = "Не используется",
-        enGB = ""
-    },
-    ["HAIR_WORGEN_STYLE"] = {
-        ruRU = "Прическа",
         enGB = ""
     },
     ["MONTH_SEPTEMBER"] = {
@@ -21887,14 +21287,6 @@ local SIRUS_LOCALIZATION = {
     ["ALLEGIANCE_FOR_THE_RENEGADE"] = {
         ruRU = "ТАКОВ ПУТЬ",
         enGB = ""
-    },
-    ["FACIAL_HAIR_PANDA_FEM"] = {
-        ruRU = "Серьги и хвост",
-        enGB = ""
-    },
-    ["FACIAL_HAIR_PANDA"] = {
-        ruRU = "Борода и усы",
-        enGB = "Facial Hair"
     },
     ["CHAT_CHANNEL_OWNER_NOTICE_BN"] = {
         ruRU = "|Hchannel:CHANNEL:%d|h[%s]|h Владелец канала – %s.",
@@ -22024,14 +21416,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Загрузка списка талантов",
         enGB = ""
     },
-    ["FACIAL_HAIR_EARS"] = {
-        ruRU = "Уши",
-        enGB = ""
-    },
-    ["HAIR_VULPERA_STYLE"] = {
-        ruRU = "Мордочка",
-        enGB = ""
-    },
     ["PVP_MEDAL5"] = {
         ruRU = "Владыка Смерти: Подгород",
         enGB = "Deathlord of the Undercity"
@@ -22107,10 +21491,6 @@ local SIRUS_LOCALIZATION = {
     ["FORBS_ISLAND_TUTORIAL_3"] = {
         ruRU = "Используйте это заклинание, чтобы переместиться на Остров Форбс.\n\n|cffFFFFFFТолько никому не рассказывайте об этом!|r",
         enGB = "Use this spell to teleport yourself to the Forbes Island.\n\n|cffFFFFFFJust don't tell anyone about it!|r"
-    },
-    ["ENABLE_PET_SOUNDS"] = {
-        ruRU = "Звуки питомцев",
-        enGB = "Enable Pet Sounds"
     },
     ["SLASH_GUILD_HELP1"] = {
         ruRU = "/гпомощь",
@@ -22191,10 +21571,6 @@ local SIRUS_LOCALIZATION = {
     ["ADD_FRIEND"] = {
         ruRU = "Добавить",
         enGB = "Add Friend"
-    },
-    ["ENABLE_MUSIC_LOOPING"] = {
-        ruRU = "Повтор музыки",
-        enGB = "Loop Music"
     },
     ["INVTYPE_ROBE"] = {
         ruRU = "Грудь",
@@ -22284,10 +21660,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Автор: %s",
         enGB = "Written by %s"
     },
-    ["OPTION_STEREO_CONVERGENCE"] = {
-        ruRU = "Устанавливает расстояние, на котором объекты не разделяются.",
-        enGB = "Changes the 3D depth of the screen."
-    },
     ["NOT_COLLECTED"] = {
         ruRU = "Не полученные",
         enGB = "Not Collected"
@@ -22352,17 +21724,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "- Захватите и удерживайте объекты\n- Накопите 1600 ед. ресурсов",
         enGB = "- Capture and hold objects\n- Accumulate 1500 resources"
     },
-    ["LESS_THAN_ONE_MINUTE"] = {
-        ruRU = "< 1 минуты",
-        enGB = "< 1 minute"
-    },
     ["BATTLEGROUND_WARSONG_DESC"] = {
         ruRU = "- Защитите свой флаг\n- Захватите вражеский флаг\n- При ничьей побеждает команда, захватившая флаг последней",
         enGB = "- Protect your flag\n- Capture the enemy flag\n- In case of a draw, the team that captures the flag last wins"
-    },
-    ["OPTION_TOOLTIP_MASTER_VOLUME"] = {
-        ruRU = "Регулировка общей громкости звука.",
-        enGB = "Adjusts the master sound volume."
     },
     ["CONFIRM_JOIN_SOLO"] = {
         ruRU = "Вы находитесь в составе группы. Вы уверены, что хотите встать в очередь одни?",
@@ -22540,10 +21904,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/гудалить",
         enGB = "/gremove"
     },
-    ["OPTION_TOOLTIP_USE_REFRESH"] = {
-        ruRU = "Изменение частоты обновления экрана. Чем выше частота, тем меньше эффект мерцания изображения.",
-        enGB = "Changes the monitor refresh rates. Higher rates flicker less."
-    },
     ["INFERNALS"] = {
         ruRU = "Инферналы",
         enGB = "Infernals"
@@ -22663,10 +22023,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE89_CMD2"] = {
         ruRU = "/snarl",
         enGB = "/snarl"
-    },
-    ["OPTION_TOOLTIP_ENABLE_PET_SOUNDS"] = {
-        ruRU = "Включить/отключить звуки, издаваемые питомцем в состоянии покоя и агрессии.",
-        enGB = "Toggles pet idle and aggro sounds on and off."
     },
     ["HELP_TEXT_LINE1"] = {
         ruRU = "WoW помощь:",
@@ -23577,8 +22933,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "This is the average level of your equipment. Each of your items has its own level.\n\n|cFF00FFFFMouse over|r to view details."
     },
     ["PAPERDOLLFRAME_PLAYER_INFO"] = {
-        ruRU = "%s, %s (%s), %s-го уровня.",
-        enGB = "" -- TODO: Добавить перевод на английский язык.
+		ruRU = "|c%2$s%3$s|r, %4$s (%5$s), %1$s-го уровня",
+		enGB = "Level %s |c%s%s|r %s (%s)"
     },
     ["PAPERDOLLFRAME_UPS_AVAILABLE"] = {
         ruRU = "Доступных усилений: %d",
@@ -23711,10 +23067,6 @@ local SIRUS_LOCALIZATION = {
     ["MAILFRAME_ITEM_NOT_PURCHASED"] = {
         ruRU = "Предмет не куплен: %s",
         enGB = "Item not purchased: %s"
-    },
-    ["ENABLE_SOFTWARE_HRTF"] = {
-        ruRU = "Режим наушников",
-        enGB = "Headphone mode"
     },
     ["PET_BONUS_TOOLTIP_WARLOCK_SPELLDMG_SHADOW"] = {
         ruRU = "Урон от темной магии, который вы наносите цели, увеличивает силу атаки и урон от заклинаний вашего питомца на %d и %d соответственно.",
@@ -23900,10 +23252,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "%s сек. до смерти при объеме здоровья %s%%.",
         enGB = "%s sec before death at %s%% health."
     },
-    ["MUSIC_VOLUME"] = {
-        ruRU = "Музыка",
-        enGB = "Music"
-    },
     ["DEATH_RECAP_CAST_BY_TT"] = {
         ruRU = "%s – |3-6(%s)",
         enGB = "%s – |3-6(%s)"
@@ -23983,10 +23331,6 @@ local SIRUS_LOCALIZATION = {
     ["POWER_TYPE_HEAT"] = {
         ruRU = "Жар",
         enGB = "Heat"
-    },
-    ["DEATH_EFFECT"] = {
-        ruRU = "Свечение призрака",
-        enGB = "Death Effect"
     },
     ["MAIL_FAST_DELETE_CONFIRMATION"] = {
         ruRU = "Вы точно хотите удалить это письмо?",
@@ -24115,10 +23459,6 @@ local SIRUS_LOCALIZATION = {
     ["LOCALE_SPELL_MECHANIC_POLYMORPH"] = {
         ruRU = "Превращение",
         enGB = "Polymorphed"
-    },
-    ["OPTION_TOOLTIP_GROUND_DENSITY"] = {
-        ruRU = "Изменение плотности травы, палой листвы и других подобных деталей ландшафта. Уменьшение значения этого параметра может повысить производительность игры.",
-        enGB = "Controls the number of ground clutter items, like grass and foliage.  Decrease to improve performance."
     },
     ["LOCALE_SPELL_MECHANIC_BANDAGE"] = {
         ruRU = "Лечение",
@@ -24856,10 +24196,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Необходимая цель: ястреб фьорда.",
         enGB = "You must target a Fjord Hawk."
     },
-    ["VIDEO_QUALITY_SUBTEXT5"] = {
-        ruRU = "Эти настройки повышают качество изображения до максимального уровня. Рекомендуется использовать их только на самых мощных компьютерах.",
-        enGB = "These settings provide the very best quality and should only be used on high-end systems."
-    },
     ["ITEM_MOD_CRIT_TAKEN_RANGED_RATING"] = {
         ruRU = "Рейтинг уклонения от крит. удара оруж. дистанц. боя +%d.",
         enGB = "Improves ranged critical avoidance rating by %d."
@@ -25092,10 +24428,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Валите этого!",
         enGB = "This the one to fight!"
     },
-    ["CLOSE"] = {
-        ruRU = "Закрыть",
-        enGB = "Close"
-    },
     ["BINDING_NAME_TARGETLASTHOSTILE"] = {
         ruRU = "Цель: последний враг",
         enGB = "Target Last Hostile"
@@ -25123,10 +24455,6 @@ local SIRUS_LOCALIZATION = {
     ["GUILD_HOUSE_PLOT_LARGE_TOOLTIP_LABEL"] = {
         ruRU = "-PH- Large plot label",
         enGB = "-PH- Large plot label"
-    },
-    ["EXIT_GAME"] = {
-        ruRU = "Выход из игры",
-        enGB = "Exit Game"
     },
     ["STPRE_TOAST_SPECIAL_OFFER_TITLE"] = {
         ruRU = "Специальное предложение",
@@ -25271,10 +24599,6 @@ local SIRUS_LOCALIZATION = {
     ["OPTION_TOOLTIP_SHOW_NEWBIE_TIPS"] = {
         ruRU = "Отображение подробных сведений о различных элементах интерфейса пользователя. Опытные пользователи, возможно, захотят отключить эту функцию.",
         enGB = "Show detailed information about various user interface elements.  Advanced players may want to turn this off."
-    },
-    ["ADDON_CORRUPT"] = {
-        ruRU = "Повреждено",
-        enGB = "Corrupt"
     },
     ["STORE_PVP_TOOLTIP"] = {
         ruRU = "Предмет подходящий для сражений игрок против игрока",
@@ -25808,14 +25132,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Перезагрузите интерф.",
         enGB = "Requires Reload"
     },
-    ["ENABLE_ALL_ADDONS"] = {
-        ruRU = "Включить все",
-        enGB = "Enable All"
-    },
-    ["ADDON_LIST"] = {
-        ruRU = "Модификации",
-        enGB = "AddOn List"
-    },
     ["SPELL_NOT_SHAPESHIFTED"] = {
         ruRU = "Невозможно делать это, находясь в другом облике.",
         enGB = "Can't do that while shapeshifted."
@@ -26044,10 +25360,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Осталось|cffffd200 %s |r|4неизрасходованное очко талантов:неизрасходованных очка талантов:неизрасходованных очков талантов;.",
         enGB = "|cffffd200 %s|r |4unspent talent point:unspent talent points; left."
     },
-    ["TRADESKILL_ENGINEERING"] = {
-        ruRU = "Инженерное дело",
-        enGB = "Engineering"
-    },
     ["TALENT_FRAME_PET_HELPBOX"] = {
         ruRU = "Здесь представлена информация о талантах, которыми владеет ваш питомец. Изученные таланты доступны в книге заклинаний, вкладка - \"Питомец\". Помните, первый талант для питомца вы получаете на 20 уровне вашего персонажа, затем каждые 4 уровня.",
         enGB = "This shows information on your pet's talents. The chosen talents are available in your spellbook, in the Pet tab. Remember, you'll get your pet's first talent when your character reaches level 20, and then once every 4 levels."
@@ -26135,10 +25447,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE65_CMD2"] = {
         ruRU = "/голыйзад",
         enGB = "/moon"
-    },
-    ["ENABLE_ERROR_SPEECH"] = {
-        ruRU = "Сообщения об ошибках",
-        enGB = "Error Speech"
     },
     ["TRADE_ENCHANT_ALERT_PLAYER"] = {
         ruRU = "\n\nВы потратите ингредиенты, необходимые для наложения |cff20FF20%s|r",
@@ -26311,18 +25619,6 @@ local SIRUS_LOCALIZATION = {
     ["RATED_BATTLEGROUND_GROUP_MEMBER_ERROR"] = {
         ruRU = "В группе недостаточно игроков. Необходимо %d игроков для регистрации на Рейтинговые Поля боя.",
         enGB = "Not enough players in the group. You need %d players to queue for Rated Battlegrounds."
-    },
-    ["TRADESKILL_MINING"] = {
-        ruRU = "Горное дело",
-        enGB = "Mining"
-    },
-    ["TRADESKILL_LEATHERWORKING"] = {
-        ruRU = "Кожевничество",
-        enGB = "Leatherworking"
-    },
-    ["TRADESKILL_INSCRIPTION"] = {
-        ruRU = "Начертание",
-        enGB = "Inscription"
     },
     ["CAN_BIND_PTT"] = {
         ruRU = "Кнопка для начала разговора",
@@ -26804,10 +26100,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Предметы",
         enGB = "Items"
     },
-    ["CLASS"] = {
-        ruRU = "Класс",
-        enGB = "Class"
-    },
     ["EMOTE5_CMD2"] = {
         ruRU = "/bravo",
         enGB = "/bravo"
@@ -26931,10 +26223,6 @@ local SIRUS_LOCALIZATION = {
     ["ITEM_SUB_CLASS_2_16"] = {
         ruRU = "Метательное",
         enGB = "Thrown"
-    },
-    ["FRIENDS"] = {
-        ruRU = "Друзья",
-        enGB = "Friends"
     },
     ["SPELL_NOT_SHAPESHIFTED_NOSPACE"] = {
         ruRU = "Невозможно делать это, находясь в другом облике.",
@@ -27288,10 +26576,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/шипение",
         enGB = "/hiss"
     },
-    ["SECONDS_ABBR"] = {
-        ruRU = "%d с.",
-        enGB = "%d |4Sec:Sec;"
-    },
     ["EMOTE446_CMD2"] = {
         ruRU = "/charm",
         enGB = "/charm"
@@ -27355,10 +26639,6 @@ local SIRUS_LOCALIZATION = {
     ["BY_TARGET_COMBATLOG_TOOLTIP"] = {
         ruRU = "Цвет строки зависит от цели.",
         enGB = "Line color based on target."
-    },
-    ["ADDON_DEP_INSECURE"] = {
-        ruRU = "Зависимость небезопасна",
-        enGB = "Dependency insecure"
     },
     ["BUTTON_LAG_MOVEMENT"] = {
         ruRU = "Движение",
@@ -27463,10 +26743,6 @@ local SIRUS_LOCALIZATION = {
     ["SPELL_FAILED_CUSTOM_ERROR_51"] = {
         ruRU = "Некого выбрасывать!",
         enGB = "There is nobody to eject!"
-    },
-    ["OPTIONS_SHADERS"] = {
-        ruRU = "Шейдеры",
-        enGB = "Shaders"
     },
     ["OPTION_TOOLTIP_MOUSE_SENSITIVITY"] = {
         ruRU = "Настройка скорости перемещения указателя мыши.",
@@ -27732,10 +27008,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Размер шрифта: %d",
         enGB = "%d pt"
     },
-    ["ENABLE_EMOTE_SOUNDS"] = {
-        ruRU = "Звуки эмоций",
-        enGB = "Emote Sounds"
-    },
     ["ITEM_MOD_RANGED_ATTACK_POWER_SHORT"] = {
         ruRU = "к силе атаки дальнего боя",
         enGB = "Ranged Attack Power"
@@ -27751,10 +27023,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_8_Gn_0_FEMALE"] = {
         ruRU = "Пожалуйста, исцелите меня!",
         enGB = "Please, heal me!"
-    },
-    ["ALL"] = {
-        ruRU = "Все",
-        enGB = "All"
     },
     ["DUEL_WINNER_KNOCKOUT"] = {
         ruRU = "%1$s побеждает в поединке с |3-4(%2$s).",
@@ -28355,10 +27623,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_3_Gn_0_FEMALE"] = {
         ruRU = "Бегите!",
         enGB = "Run!"
-    },
-    ["RUSSIAN_DECLENSION"] = {
-        ruRU = "Склонение имени",
-        enGB = "Declensions"
     },
     ["HONOR_THIS_SESSION"] = {
         ruRU = "Сегодня",
@@ -29720,10 +28984,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Выберите |cffffffff2|r друзей, чтобы начать разговор.",
         enGB = "Choose |cffffffff2|r friends to start a conversation."
     },
-    ["MAIN_PROFESSION"] = {
-        ruRU = "Основная",
-        enGB = "Main"
-    },
     ["EMOTE135_CMD2"] = {
         ruRU = "/soothe",
         enGB = "/soothe"
@@ -29912,17 +29172,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "%2$s\" |3-1(%1$s) похищает заклинание \"%5$s\" |3-1(%4$s).",
         enGB = "%1$s %2$s steals %4$s %5$s."
     },
-    ["OPTION_TOOLTIP_DEATH_EFFECT"] = {
-        ruRU = "Создание свечения вокруг персонажа в облике призрака. Отключение этого параметра может повысить производительность игры.",
-        enGB = "Uncheck to disable glowing effect while in ghost form. Disabling this can sometimes improve performance."
-    },
     ["VOICEMACRO_12_Ta_2"] = {
         ruRU = "Приветствую.",
         enGB = "Greetings."
-    },
-    ["OPTION_TOOLTIP_ENABLE_ERROR_SPEECH"] = {
-        ruRU = "Воспроизведение звуковых сообщений об ошибках (например, \"Вне зоны действия\").",
-        enGB = "Enables speech from errors (e.g. \"Target out of range\")."
     },
     ["EMOTE49_CMD4"] = {
         ruRU = "/greetings",
@@ -29935,10 +29187,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_SPELL_MISSED_POSSESSIVE"] = {
         ruRU = "1",
         enGB = "1"
-    },
-    ["OPTION_TOOLTIP_ENVIRONMENT_DETAIL"] = {
-        ruRU = "Изменение дистанции отображения игровых объектов. Уменьшение значения этого параметра может повысить производительность игры.",
-        enGB = "Controls how far you can see objects. Decrease to improve performance."
     },
     ["CHAT_SET_SPEAK_NOTICE_BN"] = {
         ruRU = "|Hchannel:CHANNEL:%d|h[%s]|h %s получает право на голосовое общение.",
@@ -29963,10 +29211,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_SPELL_DISPEL_DEBUFF_FULL_TEXT_NO_SOURCE"] = {
         ruRU = "%2$s\" очищает заклинание \"%5$s\" |3-1(%4$s).",
         enGB = "%4$s %5$s cleansed by %2$s."
-    },
-    ["OPTION_TOOLTIP_ENABLE_DSP_EFFECTS"] = {
-        ruRU = "Включение специальных звуковых эффектов для голоса рыцарей смерти. Понижает производительность игры.",
-        enGB = "Special voice modulation effects for Death Knights. Disable to improve performance."
     },
     ["VOICEMACRO_8_Hu_0_FEMALE"] = {
         ruRU = "Исцелите меня!",
@@ -30052,10 +29296,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы пока не можете призвать еще одну горгулью.",
         enGB = "You cannot summon another gargoyle yet."
     },
-    ["ADDON_DEP_INCOMPATIBLE"] = {
-        ruRU = "Несовместимость зависимости",
-        enGB = "Dependency incompatible"
-    },
     ["PALADIN_SPEC_RETRIBUTION_TITLE"] = {
         ruRU = "Воздаяние",
         enGB = "Retribution"
@@ -30063,14 +29303,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_PLAYERLIST_JOINED_BATTLE"] = {
         ruRU = "%d |4игрок вступил:игрока вступило:игроков вступило; в бой: %s",
         enGB = "%d players have joined the battle: %s"
-    },
-    ["GAMMA"] = {
-        ruRU = "Гамма",
-        enGB = "Gamma"
-    },
-    ["OPTION_TOOLTIP_ENABLE_SOUND_AT_CHARACTER"] = {
-        ruRU = "Коррекция громкости воспроизводимых звуков с учетом местонахождения персонажа, а не камеры.",
-        enGB = "Listen to sound from the character's point of view rather than the camera."
     },
     ["VOICEMACRO_14_Ni_1_FEMALE"] = {
         ruRU = "Разумеется.",
@@ -30124,17 +29356,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/sneeze",
         enGB = "/sneeze"
     },
-    ["OPTION_TOOLTIP_SOUND_QUALITY"] = {
-        ruRU = "Изменение качества звука в игре.\nУменьшение значения этого параметра может повысить производительность игры.",
-        enGB = "Adjusts the quality of game sounds.\nDecrease to improve performance."
-    },
     ["EMOTE99_CMD3"] = {
         ruRU = "/угроза",
         enGB = "/threat"
-    },
-    ["OPTION_TOOLTIP_SPELL_DETAIL"] = {
-        ruRU = "Изменение уровня детализации визуальных спецэффектов. Уменьшение значения этого параметра может повысить производительность игры.",
-        enGB = "Controls the detail level of spell effects.  Decrease to improve performance."
     },
     ["ERR_IGNORE_ADDED_S"] = {
         ruRU = "Вы игнорируете |3-3(%s).",
@@ -30284,10 +29508,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Эмоция существа",
         enGB = "Creature Emote"
     },
-    ["OPTION_TOOLTIP_WINDOWED_MAXIMIZED"] = {
-        ruRU = "Запуск игры в развернутом окне.",
-        enGB = "Check to maximize window and remove borders."
-    },
     ["ERR_DUEL_CANCELLED"] = {
         ruRU = "Дуэль отменена.",
         enGB = "Duel cancelled."
@@ -30351,10 +29571,6 @@ local SIRUS_LOCALIZATION = {
     ["KEY_BUTTON24"] = {
         ruRU = "Кнопка мыши 24",
         enGB = "Mouse Button 24"
-    },
-    ["WEATHER_DETAIL"] = {
-        ruRU = "Интенсивность осадков",
-        enGB = "Weather Intensity"
     },
     ["VOICEMACRO_3_Ta_1"] = {
         ruRU = "Отходим!",
@@ -30427,10 +29643,6 @@ local SIRUS_LOCALIZATION = {
     ["COMBAT_TEXT_SCROLL_DOWN_TEXT"] = {
         ruRU = "Прокрутка текста вниз",
         enGB = "Scroll Text Down"
-    },
-    ["RESOLUTION"] = {
-        ruRU = "Разрешение",
-        enGB = "Resolution"
     },
     ["LEVEL_GRANT"] = {
         ruRU = "%s хочет дать вам один уровень.",
@@ -30524,10 +29736,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Битва за Озеро Ледяных Оков вот-вот начнется! Хотите занять место в очереди участников?",
         enGB = "The battle for Wintergrasp is about to begin! Would you like to join the queue?"
     },
-    ["FACIAL_HAIR_FEATURES"] = {
-        ruRU = "Аксессуары",
-        enGB = "Features"
-    },
     ["PETITION_NUM_SIGNATURES"] = {
         ruRU = "%d |4подпись:подписи:подписей;",
         enGB = "%d |4signature:signatures;"
@@ -30547,10 +29755,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_MACRO3"] = {
         ruRU = "/m",
         enGB = "/m"
-    },
-    ["PIXEL_SHADERS"] = {
-        ruRU = "Спецэффекты",
-        enGB = "Special Effects"
     },
     ["PET_HAPPINESS2"] = {
         ruRU = "Доволен",
@@ -31056,10 +30260,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "помощь",
         enGB = "as"
     },
-    ["FACTION_HORDE"] = {
-        ruRU = "Орда",
-        enGB = "Horde"
-    },
     ["FACTION_NEUTRAL"] = {
         ruRU = "Нейтрал",
         enGB = "Neutral"
@@ -31384,10 +30584,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Ваш новый дом – %s.",
         enGB = "%s is now your home."
     },
-    ["D_HOURS"] = {
-        ruRU = "%d ч.",
-        enGB = "%d |4Hour:Hours;"
-    },
     ["English"] = {
         ruRU = "",
         enGB = ""
@@ -31708,10 +30904,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Все готовы.",
         enGB = "Everyone is Ready"
     },
-    ["FULL_SCREEN_GLOW"] = {
-        ruRU = "Эффект свечения",
-        enGB = "Full-Screen Glow Effect"
-    },
     ["ERR_QUEST_ALREADY_ON"] = {
         ruRU = "Вы уже выполняете это задание",
         enGB = "You are already on that quest"
@@ -31900,10 +31092,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Не удалось удалить танец.",
         enGB = "Failed to delete dance"
     },
-    ["AMBIENCE_VOLUME"] = {
-        ruRU = "Мир",
-        enGB = "Ambience"
-    },
     ["EMOTE113_CMD2"] = {
         ruRU = "/duck",
         enGB = "/duck"
@@ -31936,10 +31124,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "На Полях Боя вы можете передавать игрокам из других фракций только сотворенные предметы или пищу.",
         enGB = ""
     },
-    ["SHADOW_QUALITY"] = {
-        ruRU = "Качество теней",
-        enGB = "Shadow Quality"
-    },
     ["LFG_TYPE_DUNGEON"] = {
         ruRU = "Подземелье",
         enGB = "Dungeon"
@@ -31963,10 +31147,6 @@ local SIRUS_LOCALIZATION = {
     ["RESISTANCE1_NAME"] = {
         ruRU = "Сопротивление светлой магии",
         enGB = "Holy Resistance"
-    },
-    ["HAIR_HORNS_COLOR"] = {
-        ruRU = "Цвет рогов",
-        enGB = "Horn Color"
     },
     ["SPELL_FAILED_CUSTOM_ERROR_77"] = {
         ruRU = "Требуется инженерное дело (350)",
@@ -32188,10 +31368,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Набрано максимальное количество добровольцев.",
         enGB = "You already have the max number of volunteers."
     },
-    ["RUSSIAN_DECLENSION_4"] = {
-        ruRU = "Творительный падеж",
-        enGB = "Instrumental Case"
-    },
     ["DUNGEON_DIFFICULTY2"] = {
         ruRU = "5 игроков (героич.)",
         enGB = "5 Player (Heroic)"
@@ -32260,10 +31436,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Прощай.",
         enGB = "Farewell."
     },
-    ["SECONDS"] = {
-        ruRU = "с",
-        enGB = "|4Second:Seconds;"
-    },
     ["SECOND_ONELETTER_ABBR"] = {
         ruRU = "%d с.",
         enGB = "%d s"
@@ -32287,10 +31459,6 @@ local SIRUS_LOCALIZATION = {
     ["NO_EQUIPMENT_SLOTS_AVAILABLE"] = {
         ruRU = "Этот предмет некуда надеть.",
         enGB = "No equipment slot is available for that item."
-    },
-    ["OPTION_TOOLTIP_USE_RESOLUTION"] = {
-        ruRU = "Изменение разрешения экрана в игре. Уменьшение значения этого параметра может повысить производительность игры.",
-        enGB = "Changes the screen resolution of the game. Decrease to improve performance."
     },
     ["NEWBIE_TOOLTIP_UNIT_ROUND_ROBIN"] = {
         ruRU = "По правилам очередности все члены группы в порядке очереди получают доступ к добыче. Деньги автоматически распределяются между всеми членами группы.",
@@ -33436,10 +32604,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Требуется 50-й уровень",
         enGB = "Unlocked at level 50."
     },
-    ["OPTION_TOOLTIP_SHADOW_QUALITY"] = {
-        ruRU = "Управление качеством теней персонажа и объектов окружающей среды. Уменьшение параметра приведет к повышению производительности игры.",
-        enGB = "Controls the quality of rendered character and environment shadows. Decrease to improve performance."
-    },
     ["ERR_QUEST_FAILED_EXPANSION"] = {
         ruRU = "Для участия в этом задании нужна учетная запись с возможностью дополнений.",
         enGB = "This quest requires an expansion enabled account."
@@ -33511,10 +32675,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_FRAMESTACK2"] = {
         ruRU = "/framestack",
         enGB = "/framestack"
-    },
-    ["D_SECONDS"] = {
-        ruRU = "%d c",
-        enGB = "%d |4Second:Seconds;"
     },
     ["EMOTE57_CMD1"] = {
         ruRU = "/обнять",
@@ -33764,10 +32924,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Мы же друзья!",
         enGB = "Anything for a friend."
     },
-    ["OPTION_TOOLTIP_MUSIC_VOLUME"] = {
-        ruRU = "Регулировка громкости музыки.",
-        enGB = "Adjusts the background music volume."
-    },
     ["FOCUS_CAST_KEY_TEXT"] = {
         ruRU = "К запомненной цели",
         enGB = "Focus Cast Key"
@@ -33787,10 +32943,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_INSPECT2"] = {
         ruRU = "/осмотр",
         enGB = "/inspect"
-    },
-    ["OPTION_TOOLTIP_WINDOW_LOCK"] = {
-        ruRU = "Блокировка изменения размера окна игры.",
-        enGB = "Enable this to prevent resizing the game window."
     },
     ["ENABLE"] = {
         ruRU = "Включить",
@@ -34036,10 +33188,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Перенесите предмет сюда, чтобы отправить его письмом",
         enGB = "Drag an item here to include it with your mail"
     },
-    ["MANAGE_ACCOUNT"] = {
-        ruRU = "Управление учетной записью",
-        enGB = "Manage Account"
-    },
     ["EMOTE29_CMD1"] = {
         ruRU = "/съежиться",
         enGB = "/cower"
@@ -34175,10 +33323,6 @@ local SIRUS_LOCALIZATION = {
     ["TARGETICONS"] = {
         ruRU = "Метка цели",
         enGB = "Target Icons"
-    },
-    ["ARMOR"] = {
-        ruRU = "Броня",
-        enGB = "Armor"
     },
     ["EMOTE436_CMD1"] = {
         ruRU = "/sneeze",
@@ -34568,10 +33712,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Нельзя продать сумку, если она не пуста.",
         enGB = "You cannot sell a non-empty bag."
     },
-    ["SOUND_SUBTEXT"] = {
-        ruRU = "Данные параметры управляют настройками звукового оборудования и громкостью звука в игре.",
-        enGB = "These options control sound hardware and the types and volumes of sounds within the game."
-    },
     ["SLASH_QUIT4"] = {
         ruRU = "/exit",
         enGB = "/exit"
@@ -34912,10 +34052,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Награды",
         enGB = "Rewards"
     },
-    ["FACIAL_HAIR_PIERCINGS"] = {
-        ruRU = "Пирсинг",
-        enGB = "Piercings"
-    },
     ["SPELL_TARGET_TYPE_DEAD3_DESC"] = {
         ruRU = "мертвый враг",
         enGB = "dead enemy"
@@ -35180,10 +34316,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Требуется 80-й уровень",
         enGB = "Unlocked at level 80."
     },
-    ["NONE_CAPS"] = {
-        ruRU = "НЕТ",
-        enGB = "NONE"
-    },
     ["RAID_INSTANCE_WARNING_HOURS"] = {
         ruRU = "Подземелье \"%s\" будет обновлено через %d |4час:часа:часов;.",
         enGB = "Your instance lock for %s will expire in %d |4hour:hours;."
@@ -35356,10 +34488,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Проблема с NPC, не дающим задание",
         enGB = "Report Non-Quest NPC/Creep Issue"
     },
-    ["STEREO_HARDWARE_CURSOR"] = {
-        ruRU = "Аппаратный курсор",
-        enGB = "Hardware Cursor"
-    },
     ["PHYSICAL_HARASSMENT_TEXT2"] = {
         ruRU = "Нападение на монстра или NPC, с которым уже сражается другой игрок",
         enGB = "Attacking a creep or NPC that another player has already engaged"
@@ -35375,10 +34503,6 @@ local SIRUS_LOCALIZATION = {
     ["COMBAT_LOG_MENU_SAVE"] = {
         ruRU = "Сохранить как новый фильтр",
         enGB = "Save as a new filter"
-    },
-    ["D_MINUTES"] = {
-        ruRU = "%d мин.",
-        enGB = "%d |4Minute:Minutes;"
     },
     ["SLASH_UNINVITE10"] = {
         ruRU = "/votekick",
@@ -35664,10 +34788,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/curtsey",
         enGB = "/curtsey"
     },
-    ["SOUND_VOLUME"] = {
-        ruRU = "Звук",
-        enGB = "Sound"
-    },
     ["SPEAKERMODE_STEREO"] = {
         ruRU = "Стерео",
         enGB = "Stereo"
@@ -35679,10 +34799,6 @@ local SIRUS_LOCALIZATION = {
     ["RENEGADE_LADDER_TAB_NAME"] = {
         ruRU = "Таблица лидеров (Ренегаты)",
         enGB = ""
-    },
-    ["RUSSIAN_DECLENSION_EXAMPLE_2"] = {
-        ruRU = "Хочу я дать %s еды...",
-        enGB = "First thing yesterday I bonked %s on the head."
     },
     ["RETURN_TO_GRAVEYARD"] = {
         ruRU = "Вернуться на кладбище",
@@ -35811,10 +34927,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_PARTY_KILL_POSSESSIVE"] = {
         ruRU = "0",
         enGB = "0"
-    },
-    ["OPTION_TOOLTIP_GROUND_RADIUS"] = {
-        ruRU = "Изменение дистанции отображения травы, палой листвы и других подобных деталей ландшафта. Уменьшение значения этого параметра может повысить производительность игры.",
-        enGB = "Controls the draw distance of ground clutter items like grass and foliage.  Decrease to improve performance."
     },
     ["SPELL_FAILED_NOT_WHILE_GHOST"] = {
         ruRU = "Призраки не могут использовать заклинания.",
@@ -36032,14 +35144,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы не знаете подходящей локации для телепорта.",
         enGB = "You do not have a valid teleport location."
     },
-    ["DONE"] = {
-        ruRU = "Готово",
-        enGB = "Done"
-    },
-    ["SOUNDOPTIONS_MENU"] = {
-        ruRU = "Звук и речь",
-        enGB = "Sound & Voice"
-    },
     ["ARENAREPLAY_BACKWARD"] = {
         ruRU = "Замедлить",
         enGB = "Decrease Speed"
@@ -36144,10 +35248,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Честь: %s",
         enGB = "Honor %s"
     },
-    ["RUSSIAN_DECLENSION_EXAMPLE_3"] = {
-        ruRU = "…но как мне подозвать %s?",
-        enGB = "Today I met %s again."
-    },
     ["EMOTE103_CMD2"] = {
         ruRU = "/welcome",
         enGB = "/welcome"
@@ -36219,10 +35319,6 @@ local SIRUS_LOCALIZATION = {
     ["CHANNEL_CATEGORY_CUSTOM"] = {
         ruRU = "Пользовательский",
         enGB = "Custom"
-    },
-    ["FARCLIP"] = {
-        ruRU = "Видимость",
-        enGB = "View Distance"
     },
     ["FINGER0SLOT"] = {
         ruRU = "Палец",
@@ -36388,14 +35484,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Сержант",
         enGB = "Sergeant"
     },
-    ["PROJECTED_TEXTURES"] = {
-        ruRU = "Проецирование текстур",
-        enGB = "Projected Textures"
-    },
-    ["OPTION_TOOLTIP_GAMMA"] = {
-        ruRU = "Регулировка яркости изображения. Увеличивайте этот параметр до тех пор, пока каждый из 21 участка градуированной линейки, расположенной справа, не станет четко видимым.",
-        enGB = "Controls the brightness of the game. Increase brightness until you can clearly see all 21 levels of gray bars below."
-    },
     ["SPELL_FAILED_INVALID_GLYPH"] = {
         ruRU = "Невозможно начертать этот символ здесь.",
         enGB = "That Glyph cannot be inscribed there."
@@ -36511,10 +35599,6 @@ local SIRUS_LOCALIZATION = {
     ["ARENA_PRACTICE_BATTLE"] = {
         ruRU = "Учебный бой:",
         enGB = "Practice Battle:"
-    },
-    ["HIGH"] = {
-        ruRU = "Макс.",
-        enGB = "High"
     },
     ["SPELL_FAILED_NOT_READY"] = {
         ruRU = "Еще не готово.",
@@ -36848,10 +35932,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Выкупная цена за штуку:",
         enGB = "Buyout price per unit:"
     },
-    ["OKAY"] = {
-        ruRU = "ОК",
-        enGB = "Okay"
-    },
     ["ERR_NOT_IN_GROUP"] = {
         ruRU = "Вы не состоите в группе.",
         enGB = "You aren't in a party."
@@ -36975,10 +36055,6 @@ local SIRUS_LOCALIZATION = {
     ["KEY_SCROLLLOCK_MAC"] = {
         ruRU = "F14",
         enGB = "F14"
-    },
-    ["OPTION_TOOLTIP_DESKTOP_GAMMA"] = {
-        ruRU = "Использование системных настроек гаммы.",
-        enGB = "Use the same gamma settings as your desktop."
     },
     ["CONFIRM_COMPLETE_EXPENSIVE_QUEST"] = {
         ruRU = "Для выполнения этого задания требуется запас золота, указанный ниже. Выполнить задание?",
@@ -37296,10 +36372,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "%4$s уклоняется от атаки |3-1(%1$s).",
         enGB = "%1$s attack was dodged by %4$s."
     },
-    ["OPTION_TOOLTIP_FULL_SCREEN_GLOW"] = {
-        ruRU = "Использование эффектов, благодаря которым происходит сглаживание углов и смягчение освещения в игре в полноэкранном режиме. Отключение этого параметра может повысить производительность игры.",
-        enGB = "Enables a full screen effect that softens edges and lighting. Disabling this can sometimes improve performance."
-    },
     ["ERR_APPROACHING_NO_PLAY_TIME"] = {
         ruRU = "У вас осталось %s игры. По истечении этого срока вы не будете получать ни опыта, ни добычи, пока не выйдете из игры минимум на 5 часов.",
         enGB = "You have %s until you enter unhealthy time, at which point you will no longer receive experience or loot until you have logged out for 5 hours."
@@ -37307,10 +36379,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_20_Dw_0_FEMALE"] = {
         ruRU = "Они не настоящие, но все равно спасибо.",
         enGB = "No, they're not real, but thanks for noticing."
-    },
-    ["CURRENT_SETTINGS"] = {
-        ruRU = "Этот раздел",
-        enGB = "These Settings"
     },
     ["SLASH_DUEL_CANCEL6"] = {
         ruRU = "/forfeit",
@@ -37391,10 +36459,6 @@ local SIRUS_LOCALIZATION = {
     ["MOVIE_RECORDING_TIME_TOOLTIP"] = {
         ruRU = "Время записи видеоролика до заполнения диска. После этого запись прекратится.",
         enGB = "This is how long you can record a movie before you run out of disk space. The game will stop recording after that time."
-    },
-    ["VIDEO_QUALITY_LABEL5"] = {
-        ruRU = "Ультра",
-        enGB = "Ultra"
     },
     ["ERR_NEW_LEADER_YOU"] = {
         ruRU = "Теперь вы лидер группы.",
@@ -37496,10 +36560,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Мышь",
         enGB = "Mouse"
     },
-    ["ADDON_INSECURE"] = {
-        ruRU = "Небезопасно",
-        enGB = "Insecure"
-    },
     ["DUNGEON_FLOOR_NAXXRAMAS4"] = {
         ruRU = "Чумной квартал",
         enGB = "The Plague Quarter"
@@ -37508,10 +36568,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Пр",
         enGB = "Cu"
     },
-    ["ENABLE_BGSOUND"] = {
-        ruRU = "Фоновый режим",
-        enGB = "Sound in Background"
-    },
     ["ITEM_MOD_HIT_MELEE_RATING_SHORT"] = {
         ruRU = "к рейтингу меткости в ближнем бою",
         enGB = "Hit Rating (Melee)"
@@ -37519,10 +36575,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE24_CMD2"] = {
         ruRU = "/clap",
         enGB = "/clap"
-    },
-    ["ENABLE_HARDWARE"] = {
-        ruRU = "Аппаратное ускорение",
-        enGB = "Use Hardware"
     },
     ["EMOTE161_CMD1"] = {
         ruRU = "/атакацели",
@@ -37551,10 +36603,6 @@ local SIRUS_LOCALIZATION = {
     ["BANKSLOTPURCHASE_LABEL"] = {
         ruRU = "Хотите ли вы приобрести место для еще одной сумки?",
         enGB = "Do you wish to purchase space for an additional bag?"
-    },
-    ["TERRAIN_MIP"] = {
-        ruRU = "Детализация рельефа",
-        enGB = "Terrain Blending"
     },
     ["SKILL_LEARNING_COST_SINGULAR"] = {
         ruRU = "Изучение навыка (очков навыков: %s%d|r).",
@@ -37587,10 +36635,6 @@ local SIRUS_LOCALIZATION = {
     ["PROFESSION_CONFIRMATION1"] = {
         ruRU = "Вы можете иметь только #1# профессии одновременно. Хотите ли вы в качестве #2# профессии выбрать \"|cffffd200#3#|r\"?",
         enGB = "You can have only #1# professions at the same time. Do your want to choose \"|cffffd200#3#|r\" as your #2# profession?"
-    },
-    ["OPTION_TOOLTIP_TRIPLE_BUFFER"] = {
-        ruRU = "Тройная буферизация кадров при включенной вертикальной синхронизации. Эта настройка может сгладить резкие скачки сменяющихся кадров, но несколько снизит производительность игры.",
-        enGB = "Enables triple buffering of frames when vertical sync is enabled. Selecting triple buffering may even out frame rate spikes, but may also cause slight input lag."
     },
     ["VOICEMACRO_8_Ni_0"] = {
         ruRU = "Вылечите меня!",
@@ -38140,10 +37184,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Требуется %s",
         enGB = "Requires %s"
     },
-    ["PLAYER_DETAIL"] = {
-        ruRU = "Текстуры персонажей",
-        enGB = "Player Textures"
-    },
     ["TRAINER_REQ_LEVEL"] = {
         ruRU = "|cffffffff%d|r-й уровень",
         enGB = "Level |cffffffff%d|r"
@@ -38216,10 +37256,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "%s распускает гильдию.",
         enGB = "%s has disbanded the guild."
     },
-    ["TRIPLE_BUFFER"] = {
-        ruRU = "Тройная буферизация",
-        enGB = "Triple Buffering"
-    },
     ["TRIVIAL_QUEST_DISPLAY"] = {
         ruRU = "|cff000000%s (низкий уровень)|r",
         enGB = "|cff000000%s (low level)|r"
@@ -38251,10 +37287,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_ALREADY_IN_ARENA_TEAM"] = {
         ruRU = "Вы уже состоите в команде арены такой численности.",
         enGB = "You are already in an arena team of that size."
-    },
-    ["TEXTURE_DETAIL"] = {
-        ruRU = "Разрешение текстур",
-        enGB = "Texture Resolution"
     },
     ["NOSEASON_INFO_TEXT"] = {
         ruRU = "Битвы на аренах и рейтинговых полях боя доступны только во время PvP-сезонов. Новый сезон скоро начнется!",
@@ -38420,10 +37452,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вас исключили из группы.",
         enGB = "You have been removed from the group."
     },
-    ["HAIR_PANDA_STYLE"] = {
-        ruRU = "Серьги и хвост",
-        enGB = ""
-    },
     ["KNOWN_TALENTS_HEADER"] = {
         ruRU = "Способности",
         enGB = "My Talents"
@@ -38492,10 +37520,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Праздничные предметы",
         enGB = "Holiday"
     },
-    ["CANCEL"] = {
-        ruRU = "Отмена",
-        enGB = "Cancel"
-    },
     ["EMOTE370_CMD1"] = {
         ruRU = "/размах",
         enGB = "/brandish"
@@ -38516,17 +37540,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Голосовой чат",
         enGB = "Voice Chat"
     },
-    ["ADDON_DISABLED"] = {
-        ruRU = "Отключено",
-        enGB = "Disabled"
-    },
     ["MOVIE_RECORDING_CANCEL_CONFIRMATION"] = {
         ruRU = "Вы действительно хотите отменить запись этого видеоролика? Несжатая часть ролика будет стерта. Если вы ведете запись, то потеряете весь ролик.",
         enGB = "Do you really want to cancel this movie? This will delete the uncompressed part of the movie. If you are currently recording, you will lose the entire movie."
-    },
-    ["OPTION_TOOLTIP_PROJECTED_TEXTURES"] = {
-        ruRU = "Проецировать текстуры на окружающие объекты. Отключение этого параметра может сильно повысить производительность игры.",
-        enGB = "Enables the projecting of textures to the environment. Disabling this may greatly improve performance."
     },
     ["TUTORIAL_TITLE37"] = {
         ruRU = "Сломанные предметы",
@@ -38587,10 +37603,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE123_CMD3"] = {
         ruRU = "/praise",
         enGB = "/praise"
-    },
-    ["DESKTOP_GAMMA"] = {
-        ruRU = "Применить параметры системы",
-        enGB = "Use desktop gamma"
     },
     ["SKIN_COLOR"] = {
         ruRU = "Цвет кожи",
@@ -38880,10 +37892,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "1",
         enGB = "1"
     },
-    ["OPTION_TOOLTIP_ENABLE_SOFTWARE_HRTF"] = {
-        ruRU = "Включение программной имитации объемного звука для наушников.",
-        enGB = "Enables software emulation for headphone surround sound."
-    },
     ["UNIT_NAME_PLAYER_TITLE"] = {
         ruRU = "Звания",
         enGB = "Titles"
@@ -38975,10 +37983,6 @@ local SIRUS_LOCALIZATION = {
     ["GM_CHAT_STATUS_READY"] = {
         ruRU = "Запрос на общение от ГМ",
         enGB = "GM Chat Request"
-    },
-    ["OPTION_TOOLTIP_TERRAIN_HIGHLIGHTS"] = {
-        ruRU = "Отображение бликов на поверхности земли и воды. Отключение этого параметра может повысить производительности игры.",
-        enGB = "Enables specular highlights on terrain. Disabling this can sometimes improve performance."
     },
     ["USE"] = {
         ruRU = "Использовать",
@@ -39088,17 +38092,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Кнопка действия 5 (вторая колонка справа)",
         enGB = "Right ActionBar 2 Button 5"
     },
-    ["VIDEO_QUALITY_LABEL6"] = {
-        ruRU = "Вручную",
-        enGB = "Custom"
-    },
     ["PVPFRAME_CAPBAR_LOCK_TOOLTIP_HEAD"] = {
         ruRU = "~ PH PVPFRAME_CAPBAR_LOCK_TOOLTIP_HEAD ~",
         enGB = ""
-    },
-    ["VIDEO_QUALITY_S"] = {
-        ruRU = "Качество изображения: %s",
-        enGB = "Video Quality: %s"
     },
     ["SPELL_TARGET_TYPE7_DESC"] = {
         ruRU = "объект",
@@ -39556,10 +38552,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Эй, вы!",
         enGB = "Hey, man."
     },
-    ["WINDOWED_MODE"] = {
-        ruRU = "Оконный режим",
-        enGB = "Windowed Mode"
-    },
     ["VOICEMACRO_12_Tr_1_FEMALE"] = {
         ruRU = "Эй, сюда!",
         enGB = "Hey, there."
@@ -39659,10 +38651,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_13_Or_1"] = {
         ruRU = "Держитесь.",
         enGB = "Stay strong."
-    },
-    ["RUSSIAN_DECLENSION_5"] = {
-        ruRU = "Предложный падеж",
-        enGB = "Prepositional Case"
     },
     ["VOICEMACRO_13_Or_2"] = {
         ruRU = "Пусть клинок всегда будет острым.",
@@ -39783,10 +38771,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_NOT_IN_COMBAT"] = {
         ruRU = "Вы не можете этого делать, пока участвуете в бою",
         enGB = "You can't do that while in combat"
-    },
-    ["NEXT"] = {
-        ruRU = "Далее",
-        enGB = "Next"
     },
     ["OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_FRIENDLY_TOTEMS"] = {
         ruRU = "Включить отображение индикаторов прочности тотемов союзников.",
@@ -40044,10 +39028,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Доступно на %d-м уровне",
         enGB = "Available on level %d"
     },
-    ["RUSSIAN_DECLENSION_2"] = {
-        ruRU = "Дательный падеж",
-        enGB = "Dative Case"
-    },
     ["VOICEMACRO_15_Dw_1_FEMALE"] = {
         ruRU = "Отвали.",
         enGB = "Get bent."
@@ -40083,10 +39063,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_PETITION_CREATOR"] = {
         ruRU = "Вы не можете подписать свою собственную хартию.",
         enGB = "You can't sign your own charter."
-    },
-    ["VIDEO_QUALITY_LABEL1"] = {
-        ruRU = "минимальное",
-        enGB = "Low"
     },
     ["RAID_INSTANCE_EXPIRES_EXPIRED"] = {
         ruRU = "Истекло",
@@ -40796,10 +39772,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "(запрос отправлен)",
         enGB = "(request sent)"
     },
-    ["OPTION_TOOLTIP_ENABLE_MUSIC_LOOPING"] = {
-        ruRU = "Непрерывное воспроизведение фоновой музыки.",
-        enGB = "Enable to continuously play background music."
-    },
     ["ERR_REFER_A_FRIEND_INSUFFICIENT_GRANTABLE_LEVELS"] = {
         ruRU = "Вы не заработали достаточно уровней, чтобы повышать их другим.",
         enGB = "You have not earned enough levels to grant any more levels"
@@ -41400,18 +40372,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Нижеперечисленное НЕ относится к проблемам с предметами:",
         enGB = "The following are NOT considered item issues:"
     },
-    ["WIDESCREEN_TAG"] = {
-        ruRU = "(Широкий экран)",
-        enGB = "(Wide)"
-    },
-    ["WINDOWED_MAXIMIZED"] = {
-        ruRU = "Макс. размер",
-        enGB = "Maximized"
-    },
-    ["WINDOW_LOCK"] = {
-        ruRU = "Постоянный размер",
-        enGB = "Disable Resize"
-    },
     ["WINTERGRASP_IN_PROGRESS"] = {
         ruRU = "Идет бой",
         enGB = "In Progress"
@@ -41419,10 +40379,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_GUILD_LEADER4"] = {
         ruRU = "/guildleader",
         enGB = "/guildleader"
-    },
-    ["WORLD_APPEARANCE"] = {
-        ruRU = "Детализация мира",
-        enGB = "World Appearance"
     },
     ["EMOTE406_CMD2"] = {
         ruRU = "/mercy",
@@ -43756,6 +42712,10 @@ local SIRUS_LOCALIZATION = {
 	    ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tУведомления, связанные с вашими лотами или ставками",
 	    enGB = ""
     },
+	["SETTINGS_SHOW_CALL_OF_ADVENTURE_TOAST"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tПоказывать уведомления Зова приключений",
+		enGB = ""
+	},
     ["LOOKINGFORGUILDFRAME_TUTORIAL_1"] = {
 	    ruRU = "Для того чтобы начать поиск гильдии, вам нужно заполнить заявку.\nВ первую очередь нужно отметить те типы активности гильдии, в которых вы заинтересованы. Таким образом, вы сможете найти гильдию, в которой игрокам интересно то же, что и вам. Вам необходимо отменить как минимум один пункт из списка.",
 	    enGB = ""
@@ -43843,6 +42803,10 @@ local SIRUS_LOCALIZATION = {
     ["BINDING_NAME_TOGGLECOLLECTIONSWARDROBE"] = {
         ruRU = "Открыть \"Коллекции моделей\"",
         enGB = "Toggle Appearances Collection"
+    },
+    ["BINDING_NAME_TOGGLECOLLECTIONSTOYBOX"] = {
+        ruRU = "Открыть \"Коллекции игрушек\"",
+        enGB = "Toggle Toy Box"
     },
     ["DRESSING_ROOM_APPEARANCE_LIST"] = {
 	    ruRU = "Список обликов",
@@ -44074,55 +43038,59 @@ local SIRUS_LOCALIZATION = {
     },
     ["SHOW"] = {
         ruRU = "Показать",
-        enGB = ""
+		enGB = "Show"
     },
     ["LOCK"] = {
         ruRU = "Закрепить",
-        enGB = ""
+		enGB = "Lock"
     },
     ["UNLOCK"] = {
         ruRU = "Открепить",
-        enGB = ""
+		enGB = "Unlock"
     },
     ["USE_RAID_STYLE_PARTY_FRAMES"] = {
         ruRU = "Рейдовый интерфейс для группы",
-        enGB = ""
+		enGB = "Use Raid-Style Party Frames"
     },
+	["USE_RAID_STYLE_SOLO_FRAMES"] = {
+		ruRU = "Рейдовый интерфейс в соло",
+		enGB = ""
+	},
     ["AUTO_ACTIVATE_ON"] = {
         ruRU = "Автоматически задействовать",
-        enGB = ""
+		enGB = "Auto-Activate On:"
     },
     ["AUTO_ACTIVATE_PROFILE_NO_SIZE"] = {
         ruRU = "Профиль не будет активироваться автоматически, пока вы не выберете размер группы.",
-        enGB = ""
+		enGB = "Profile will never auto-activate. No group size is selected."
     },
     ["AUTO_ACTIVATE_PROFILE_NO_ENEMYTYPE"] = {
         ruRU = "Профиль не будет активироваться автоматически, пока вы не выберете PvP или PvE.",
-        enGB = ""
+		enGB = "Profile will never auto-activate. Either PvP or PvE must be selected."
     },
     ["WIDE"] = {
         ruRU = "Шире",
-        enGB = ""
+		enGB = "Wide"
     },
     ["NARROW"] = {
         ruRU = "Уже",
-        enGB = ""
+		enGB = "Narrow"
     },
     ["TALL"] = {
         ruRU = "Выше",
-        enGB = ""
+		enGB = "Tall"
     },
     ["SHORT"] = {
         ruRU = "Ниже",
-        enGB = ""
+		enGB = "Short"
     },
     ["GROUP_NUMBER"] = {
         ruRU = "%d-я группа",
-        enGB = ""
+		enGB = "Group %d"
     },
     ["RESET_POSITION"] = {
         ruRU = "Сброс позиции",
-        enGB = ""
+		enGB = "Reset Position"
     },
     ["DEFAULT_CUF_PROFILE_NAME"] = {
         ruRU = "Основной",
@@ -44138,11 +43106,11 @@ local SIRUS_LOCALIZATION = {
     },
     ["DONT_SAVE"] = {
         ruRU = "Не сохранять",
-        enGB = ""
+		enGB = "Don't Save"
     },
     ["USE_EXISTING_PROFILE"] = {
         ruRU = "Импортировать из:",
-        enGB = ""
+		enGB = "Use as a starting point:"
     },
     ["CREATE_COMPACT_UNIT_FRAME_PROFILE"] = {
         ruRU = "Создать",
@@ -44238,7 +43206,7 @@ local SIRUS_LOCALIZATION = {
     },
     ["COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_LOSTHEALTH"] = {
         ruRU = "Потерянное здоровье",
-        enGB = ""
+		enGB = "Health Lost"
     },
     ["COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_NONE"] = {
         ruRU = "Не отображать",
@@ -44312,9 +43280,17 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "40 метров",
 		enGB = "40 yards"
 	},
+	["COMPACT_UNIT_FRAME_PROFILE_RANGEALPHA"] = {
+		ruRU = "Прозрачность вне радиуса",
+		enGB = "Out of range alpha"
+	},
 	["COMPACT_UNIT_FRAME_PROFILE_RAIDTARGETICON"] = {
 		ruRU = "Метка цели",
 		enGB = "Raid Target Icon"
+	},
+	["COMPACT_UNIT_FRAME_PROFILE_PARTYINRAID"] = {
+		ruRU = "Только моя группа в рейде",
+		enGB = "Only my group in raid"
 	},
 	["LOST_HEALTH"] = {
 		ruRU = "-%d",
@@ -44549,7 +43525,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = ""
 	},
 	["BATTLEPASS_ITEM_ADD_LEVELS"] = {
-		ruRU = "Используйте этот предмет чтобы получить %i уровней Боевого пропуска.",
+		ruRU = "Используйте этот предмет чтобы получить %i |4уровень:уровня:уровней; Боевого пропуска.",
 		enGB = ""
 	},
 	["BATTLEPASS_ITEM_MAX_LEVEL"] = {
@@ -44622,6 +43598,10 @@ local SIRUS_LOCALIZATION = {
 	},
 	["SETTINGS_AUCTION_HOUSE_TOAST_SOUND"] = {
 		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tАукцион",
+		enGB = "",
+	},
+	["SETTINGS_CALL_OF_ADVENTURE_TOAST_SOUND"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tЗов приключений",
 		enGB = "",
 	},
 	["ERR_GUILD_LEADER_REPLACED"] = {
@@ -44788,22 +43768,63 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Больше не игнорировать",
 		enGB = "Stop Ignoring"
 	},
+	["TOAST_BODY_28"] = {
+		ruRU = "До начала события осталось 15 минут.",
+		enGB = ""
+	},
+	["TOAST_BODY_29"] = {
+		ruRU = "До начала события осталось 5 минут.",
+		enGB = ""
+	},
+	["TOAST_BODY_30"] = {
+		ruRU = "Событие началось!",
+		enGB = ""
+	},
+	["TOAST_TITLE_28"] = {
+		ruRU = "Зов приключений: Поле битвы",
+		enGB = ""
+	},
+	["TOAST_TITLE_29"] = {
+		ruRU = "Зов приключений: Пылающий крестовый поход",
+		enGB = ""
+	},
+	["TOAST_TITLE_30"] = {
+		ruRU = "Зов приключений: Покорение рейдовых подземелий",
+		enGB = ""
+	},
+	["TOAST_TITLE_31"] = {
+		ruRU = "Зов приключений: Втроем веселее",
+		enGB = ""
+	},
+	["TOAST_TITLE_32"] = {
+		ruRU = "Зов приключений: Вдвоем к вершине",
+		enGB = ""
+	},
+	["TOAST_TITLE_33"] = {
+		ruRU = "Зов приключений: Духи Аукиндона",
+		enGB = ""
+	},
+	["TOAST_TITLE_34"] = {
+		ruRU = "Зов приключений: Руины Двух башен",
+		enGB = ""
+	},
+	["TOAST_TITLE_35"] = {
+		ruRU = "Зов приключений: Штурмовые укрепления",
+		enGB = ""
+	},
+	["TOAST_TITLE_36"] = {
+		ruRU = "Зов приключений: Восточные Чумные земли",
+		enGB = ""
+	},
 }
 
-setmetatable(SIRUS_LOCALIZATION, {
-	__call = function(self, key)
-		if not self[key] then
-			return "~NOT LOCALE~"
-		end
-
-		if GetLocale() == "ruRU" then
-			return self[key].ruRU -- ~= "" and self[key].ruRU or key
-		else
-			return self[key].enGB ~= "" and self[key].enGB or key
-		end
+do
+	local _G = _G
+	local next = next
+	local locale = GetLocale()
+	for key, data in next, SIRUS_LOCALIZATION do
+		_G[key] = data[locale] or data.enGB
 	end
-})
-
-for key in next, SIRUS_LOCALIZATION do
-	setglobal(key, SIRUS_LOCALIZATION(key))
+	table.wipe(SIRUS_LOCALIZATION)
+	SIRUS_LOCALIZATION = nil
 end

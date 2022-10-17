@@ -855,7 +855,7 @@ function VehicleMenuBarStatusBars_ShowTooltip(self)
 		local value = self:GetValue();
 		local _, valueMax = self:GetMinMaxValues();
 		if ( valueMax > 0 ) then
-			local text = format("%s/%s (%s%%)", TextStatusBar_CapDisplayOfNumericValue(value), TextStatusBar_CapDisplayOfNumericValue(valueMax), tostring(math.ceil((value / valueMax) * 100)));
+			local text = format("%s/%s (%s%%)", AbbreviateLargeNumbers(value), AbbreviateLargeNumbers(valueMax), tostring(math.ceil((value / valueMax) * 100)));
 			GameTooltip:SetOwner(self, self.tooltipAnchorPoint);
 			if ( self.prefix ) then
 				GameTooltip:AddLine(self.prefix);

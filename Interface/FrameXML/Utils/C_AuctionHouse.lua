@@ -1273,6 +1273,8 @@ function C_AuctionHouse.CancelAuction(ownedAuctionID)
 	end
 
 	SendServerThrottledMessage(CancelAuction, ownedAuctionID);
+
+	CheckThrottledMessage(300);
 end
 
 function C_AuctionHouse.CancelCommoditiesPurchase()

@@ -228,7 +228,7 @@
 		<Scripts>
 			<OnEnter function="UIDropDownMenuButtonScript_OnEnter"/>
 			<OnLeave function="UIDropDownMenuButtonScript_OnLeave"/>
-			<OnMouseDown function="UIDropDownMenuButtonScript_OnMouseDown"/>
+			<OnClick function="UIDropDownMenuButtonScript_OnClick"/>
 		</Scripts>
 	</Button>
 

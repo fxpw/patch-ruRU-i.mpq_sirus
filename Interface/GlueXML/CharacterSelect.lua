@@ -43,6 +43,17 @@ CHAR_DATA_TYPE = {
 	ITEM_LEVEL = 3,
 }
 
+local RESTORE_ERRORS = {
+	ANOTHER_OPERATION		= 1,
+	INVALID_PARAMS			= 2,
+	MAX_CHARACTERS_REACHED	= 3,
+	CHARACTER_NOT_FOUND		= 4,
+	NOT_ENOUGH_BONUSES		= 5,
+	UNIQUE_CLASS_LIMIT		= 6,
+	IS_SUSPECT				= 7,
+	WRONG_INDEX				= 8,
+}
+
 local SERVICE_BUTTON_ACTIVATION_DELAY = 0.400
 local AWAIT_FIX_CHAR_INDEX
 
@@ -630,18 +641,16 @@ function CharacterSelect_OnEvent(self, event, ...)
 			if undeleteStatus == "OK" then
 				GetCharacterListUpdate()
 				CharacterSelect.UndeleteCharacterAlert = isRename and 1 or 2
-			elseif undeleteStatus == "ANOTHER_OPERATION" then
-				GlueDialog:ShowDialog("CLIENT_RESTART_ALERT", CHARACTER_UNDELETE_STATUS_1)
-			elseif undeleteStatus == "INVALID_PARAMS" then
-				GlueDialog:ShowDialog("CLIENT_RESTART_ALERT", CHARACTER_UNDELETE_STATUS_2)
-			elseif undeleteStatus == "MAX_CHARACTERS_REACHED" then
-				GlueDialog:ShowDialog("CLIENT_RESTART_ALERT", CHARACTER_UNDELETE_STATUS_3)
-			elseif undeleteStatus == "CHARACTER_NOT_FOUND" then
-				GlueDialog:ShowDialog("CLIENT_RESTART_ALERT", CHARACTER_UNDELETE_STATUS_4)
-			elseif undeleteStatus == "NOT_ENOUGH_BONUSES" then
-				GlueDialog:ShowDialog("OKAY_HTML", CHARACTER_UNDELETE_STATUS_5)
-			elseif undeleteStatus == "UNIQUE_CLASS_LIMIT" then
-				GlueDialog:ShowDialog("CLIENT_RESTART_ALERT", CHARACTER_UNDELETE_STATUS_6)
+			else
+				local errorIndex = RESTORE_ERRORS[undeleteStatus]
+				if errorIndex then
+					local errorText = _G[string.format("CHARACTER_UNDELETE_STATUS_%i", errorIndex)]
+					if errorIndex == 5 then
+						GlueDialog:ShowDialog("OKAY_HTML", errorText)
+					else
+						GlueDialog:ShowDialog("OKAY_VOID", errorText)
+					end
+				end
 			end
 		elseif prefix == "SMSG_CHARACTER_FIX" then
 			GlueDialog:HideDialog("SERVER_WAITING")

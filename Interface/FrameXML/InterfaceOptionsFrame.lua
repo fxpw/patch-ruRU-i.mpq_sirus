@@ -594,7 +594,7 @@ local function AddAddOnCategory(categories, index, frame)
 	else
 		tinsert(categories, frame);
 	end
-	InterfaceCategoryList_Update();
+	InterfaceAddOnsList_Update();
 end
 
 function InterfaceOptions_AddCategory (frame, addOn, position)

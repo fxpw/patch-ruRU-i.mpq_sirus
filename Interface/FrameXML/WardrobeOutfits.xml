@@ -26,13 +26,11 @@
 			</OnShow>
 		</Scripts>
 	</Button>
-	<Button name="WardrobeOutfitButtonTemplate" parentArray="Buttons" virtual="true">
+	<Button name="WardrobeOutfitButtonTemplate" virtual="true">
 		<Size x="0" y="20"/>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentSelection" parentKey="Selection" file="Interface\QuestFrame\UI-QuestTitleHighlight" alphaMode="ADD" setAllPoints="true" desaturated="true" hidden="true">
-					<Color r="0.5" g="0.5" b="0.5"/>
-				</Texture>
+				<Texture name="$parentSelection" parentKey="Selection" file="Interface\QuestFrame\UI-QuestTitleHighlight" alphaMode="ADD" setAllPoints="true" hidden="true"/>
 			</Layer>
 			<Layer level="BORDER">
 				<Texture name="$parentHighlight" parentKey="Highlight" file="Interface\QuestFrame\UI-QuestTitleHighlight" alphaMode="ADD" setAllPoints="true" hidden="true"/>
@@ -79,6 +77,7 @@
 				end
 				parent.Buttons[#parent.Buttons + 1] = self;
 
+				SetDesaturation(self.Selection, true);
 				self.Check:ClearAllPoints();
 				self.Check:SetPoint("LEFT", self.Text, "RIGHT", 4, 0);
 			</OnLoad>

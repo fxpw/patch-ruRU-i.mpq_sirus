@@ -2,7 +2,7 @@
 ..\FrameXML\UI.xsd">
 	<Script file="TargetFrame.lua"/>
 
-	<Frame name="HeadHuntingWantedFrameTemplate" toplevel="true" virtual="true">
+	<Frame name="HeadHuntingWantedFrameTemplate" virtual="true">
 		<Size x="50" y="26"/>
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -12,9 +12,11 @@
 		<Scripts>
 			<OnLoad>
 				Mixin(self, HeadHuntingWantedFrameMixin)
-
 				self:OnLoad()
 			</OnLoad>
+			<OnShow>
+				SetParentFrameLevel(self, 3)
+			</OnShow>
 		</Scripts>
 	</Frame>
 
@@ -404,6 +406,11 @@
 						</Texture>
 					</Layer>
 				</Layers>
+				<Scripts>
+					<OnShow>
+						SetParentFrameLevel(self, 3)
+					</OnShow>
+				</Scripts>
 			</Frame>
 			<Frame name="$parentHeadHuntingWantedFrame" parentKey="HeadHuntingWantedFrame" inherits="HeadHuntingWantedFrameTemplate">
 				<Anchors>
@@ -448,7 +455,7 @@
 	<Button name="TargetofTargetFrameTemplate" movable="true" inherits="SecureUnitButtonTemplate" virtual="true" hidden="true">
 		<Size x="93" y="45"/>
 		<Anchors>
-			<Anchor point="BOTTOMRIGHT" x="-35" y="-10"/>
+			<Anchor point="BOTTOMRIGHT" x="-35" y="-30"/>
 		</Anchors>
 		<Layers>
 			<Layer level="BACKGROUND">

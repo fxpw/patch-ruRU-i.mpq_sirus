@@ -122,7 +122,7 @@ function PartyMemberFrame_OnLoad (self)
 end
 
 function PartyMemberFrame_UpdateMember (self)
-	if ( GetDisplayedAllyFrames() ~= "party" ) then
+	if ( GetCVar("C_CVAR_HIDE_PARTY_INTERFACE_IN_RAID") == "1" and GetDisplayedAllyFrames() ~= "party" ) then
 		self:Hide();
 		UpdatePartyMemberBackground();
 		return;

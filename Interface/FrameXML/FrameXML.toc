@@ -19,12 +19,15 @@ FrameXML.xml
 ..\SharedXML\EventHandler.lua
 ..\SharedXML\Hook.lua
 ..\SharedXML\MixIn.lua
+..\SharedXML\MathUtil.lua
+..\SharedXML\TimeUtil.lua
 ..\SharedXML\Util.lua
 ..\SharedXML\Pools.lua
 ..\SharedXML\Utils\C_Texture.lua
 ..\SharedXML\Utils\C_CreatureInfo.lua
 ..\SharedXML\Utils\C_Talent.lua
-..\SharedXML\AnchorUtil.xml
+..\SharedXML\AnchorUtil.lua
+..\SharedXML\NineSlice.lua
 ..\SharedXML\CircularBuffer.lua
 ..\SharedXML\Opcodes.lua
 ..\SharedXML\TypeUtil.lua
@@ -41,7 +44,6 @@ Localization.xml
 WorldMapFrameData.lua
 # add new modules below here
 
-..\SharedXML\TimeUtil.lua
 ..\SharedXML\CallbackRegistry.lua
 ..\SharedXML\FrameUtil.lua
 ..\SharedXML\LayoutFrame.xml
@@ -103,7 +105,6 @@ SecureHandlerTemplates.xml
 SecureGroupHeaders.xml
 ItemButtonTemplate.xml
 SparkleFrame.xml
-..\SharedXML\HybridScrollFrame.lua
 ..\SharedXML\HybridScrollFrame.xml
 GameMenuFrame.xml
 Sirus_ItemLevel.lua

@@ -939,7 +939,7 @@ local function MountJournal_CheckFilter(data, hasHiddenType, hasHiddenSource, ha
 			sourceFlag = bit.bor(sourceFlag, bit.lshift(1, 6 - 1));
 		end
 
-		if bit.band(MOUNTJOURNAL_FILTER_SOURCES, sourceFlag) ~= sourceFlag then
+		if bit.band(MOUNTJOURNAL_FILTER_SOURCES, sourceFlag) == sourceFlag then
 			return false;
 		end
 	end

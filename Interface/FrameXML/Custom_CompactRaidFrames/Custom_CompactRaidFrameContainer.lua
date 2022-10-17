@@ -21,17 +21,19 @@ function CompactRaidFrameContainer_OnLoad(self)
 	for i=1, MAX_PARTY_MEMBERS do
 		tinsert(self.partyUnits, "party"..i);
 	end
+	self.solo = { "player" };
 	CompactRaidFrameContainer_UpdateDisplayedUnits(self);
 
 	self:RegisterEvent("PARTY_MEMBERS_CHANGED");
 	self:RegisterEvent("RAID_ROSTER_UPDATE");
 	self:RegisterEvent("UNIT_PET");
+	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 	local unitFrameReleaseFunc = function(frame)
 		CompactUnitFrame_SetUnit(frame, nil);
 	end;
 	self.frameReservations = {
-		raid		= CompactRaidFrameReservation_NewManager(unitFrameReleaseFunc);
+		raid	= CompactRaidFrameReservation_NewManager(unitFrameReleaseFunc);
 		pet		= CompactRaidFrameReservation_NewManager(unitFrameReleaseFunc);
 		flagged	= CompactRaidFrameReservation_NewManager(unitFrameReleaseFunc);	--For Main Tank/Assist units
 		target	= CompactRaidFrameReservation_NewManager(unitFrameReleaseFunc);	--Target of target for Main Tank/Main Assist
@@ -62,6 +64,10 @@ function CompactRaidFrameContainer_OnEvent(self, event, ...)
 				CompactRaidFrameContainer_TryUpdate(self);
 			end
 		end
+	elseif ( event == "PLAYER_ENTERING_WORLD" ) then
+		CompactRaidFrameContainer_UpdateDisplayedUnits(self);
+		CompactRaidFrameContainer_TryUpdate(self);
+		self:UnregisterEvent(event)
 	end
 end
 
@@ -109,6 +115,14 @@ function CompactRaidFrameContainer_SetDisplayMainTankAndAssist(self, displayFlag
 	end
 end
 
+function CompactRaidFrameContainer_SetPartyInRaid(self, partyInRaid)
+	if ( self.partyInRaid ~= partyInRaid ) then
+		self.partyInRaid = partyInRaid;
+		CompactRaidFrameContainer_UpdateDisplayedUnits(self);
+		CompactRaidFrameContainer_TryUpdate(self);
+	end
+end
+
 function CompactRaidFrameContainer_SetBorderShown(self, showBorder)
 	self.showBorder = showBorder;
 	CompactRaidFrameContainer_UpdateBorder(self);
@@ -146,10 +160,12 @@ function CompactRaidFrameContainer_ReadyToUpdate(self)
 end
 
 function CompactRaidFrameContainer_UpdateDisplayedUnits(self)
-	if ( GetNumRaidMembers() > 0 ) then
+	if ( GetNumRaidMembers() > 0 and not self.partyInRaid ) then
 		self.units = self.raidUnits;
-	else
+	elseif (GetNumPartyMembers() > 0) then
 		self.units = self.partyUnits;
+	else
+		self.units = self.solo
 	end
 end
 
@@ -203,7 +219,7 @@ do
 	local usedGroups = {}; --Enclosure to make sure usedGroups isn't used anywhere else.
 	function CompactRaidFrameContainer_AddGroups(self)
 
-		if ( GetNumRaidMembers() > 0 ) then
+		if ( GetNumRaidMembers() > 0 and not self.partyInRaid ) then
 			RaidUtil_GetUsedGroups(usedGroups);
 
 			for groupNum, isUsed in ipairs(usedGroups) do

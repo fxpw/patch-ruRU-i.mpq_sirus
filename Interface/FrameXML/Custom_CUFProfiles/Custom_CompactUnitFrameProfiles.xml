@@ -190,7 +190,7 @@
 			</Button>
 			<CheckButton name="$parentRaidStylePartyFrames" parentKey="raidStylePartyFrames" inherits="InterfaceOptionsCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPRIGHT" x="-260" y="-8"/>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPRIGHT" x="-300" y="-8"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -209,6 +209,44 @@
 								self:GetParent().optionsFrame.autoActivate3Players:Disable();
 								self:GetParent().optionsFrame.autoActivate5Players:Disable();
 							end
+						end;
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
+						self:RegisterEvent("VARIABLES_LOADED");
+					</OnLoad>
+					<OnEvent>
+						self.setFunc(GetCVar(self.cvar));
+					</OnEvent>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentRaidStyleSoloFrames" parentKey="raidStyleSoloFrames" inherits="InterfaceOptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRaidStylePartyFrames" relativePoint="BOTTOMLEFT" x="0" y="-5"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX;
+						self.cvar = "C_CVAR_USE_COMPACT_SOLO_FRAMES";
+						self.setFunc = function(value)
+							CompactRaidFrameManager_UpdateShown(CompactRaidFrameManager);
+						end;
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
+						self:RegisterEvent("VARIABLES_LOADED");
+					</OnLoad>
+					<OnEvent>
+						self.setFunc(GetCVar(self.cvar));
+					</OnEvent>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentHidePartyInterfaceInRaid" parentKey="hidePartyInterfaceInRaid" inherits="InterfaceOptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRaidStyleSoloFrames" relativePoint="BOTTOMLEFT" x="0" y="-5"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX;
+						self.cvar = "C_CVAR_HIDE_PARTY_INTERFACE_IN_RAID";
+						self.setFunc = function(value)
+							RaidOptionsFrame_UpdatePartyFrames()
 						end;
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
 						self:RegisterEvent("VARIABLES_LOADED");
@@ -457,6 +495,7 @@
 					</Button>
 				</Frames>
 			</Frame>
+
 			<Frame name="$parentGeneralOptionsFrame" setAllPoints="true" parentKey="optionsFrame">
 				<Layers>
 					<Layer level="BACKGROUND">
@@ -464,7 +503,7 @@
 							<!--The size is changed programatically -->
 							<Size x="190" y="278"/>	<!--Also change the with of AutoActivateDisabledLabel -->
 							<Anchors>
-								<Anchor point="TOPLEFT" x="415" y="-50"/>
+								<Anchor point="TOPLEFT" x="415" y="-110"/>
 							</Anchors>
 							<Color r="0.3" g="0.3" b="0.3" a="0.3"/>
 						</Texture>
@@ -646,9 +685,29 @@
 							</OnLoad>
 						</Scripts>
 					</Frame>
-					<CheckButton name="$parentRaidTargetIconDropdown" inherits="CompactUnitFrameProfilesCheckButtonTemplate">
+					<Slider name="$parentRangeAlphaSlider" inherits="CompactUnitFrameProfilesSliderTemplate" minValue="20" maxValue="100" valueStep="1">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentAutoActivateBG" relativePoint="BOTTOMLEFT" x="0" y="-13"/>
+							<Anchor point="LEFT" relativeTo="$parentRangeCheckDropdown" relativePoint="RIGHT" x="10" y="0"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								CompactUnitFrameProfilesSlider_InitializeWidget(self, "rangeAlpha", "20%", "100%");
+							</OnLoad>
+						</Scripts>
+					</Slider>
+					<CheckButton name="$parentPartyInRaid" inherits="CompactUnitFrameProfilesCheckButtonTemplate">
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parentKeepGroupsTogether" relativePoint="RIGHT" x="180" y="0"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								CompactUnitFrameProfilesCheckButton_InitializeWidget(self, "partyInRaid");
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+					<CheckButton name="$parentRaidTargetIcon" inherits="CompactUnitFrameProfilesCheckButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentPartyInRaid" relativePoint="BOTTOMLEFT" x="0" y="-5"/>
 						</Anchors>
 						<Scripts>
 							<OnLoad>
@@ -656,7 +715,8 @@
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
-					<Slider name="$parentHeightSlider" inherits="CompactUnitFrameProfilesSliderTemplate" minValue="36" maxValue="72" valueStep="2">
+
+					<Slider name="$parentHeightSlider" inherits="CompactUnitFrameProfilesSliderTemplate" minValue="24" maxValue="72" valueStep="2">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parentHealthTextDropdown" relativePoint="BOTTOMLEFT" x="10" y="-15"/>
 						</Anchors>
@@ -666,7 +726,7 @@
 							</OnLoad>
 						</Scripts>
 					</Slider>
-					<Slider name="$parentWidthSlider" inherits="CompactUnitFrameProfilesSliderTemplate" minValue="72" maxValue="144" valueStep="2">
+					<Slider name="$parentWidthSlider" inherits="CompactUnitFrameProfilesSliderTemplate" minValue="48" maxValue="144" valueStep="2">
 						<Anchors>
 							<Anchor point="LEFT" relativeTo="$parentHeightSlider" relativePoint="RIGHT" x="40" y="0"/>
 						</Anchors>

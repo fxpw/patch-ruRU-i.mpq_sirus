@@ -160,6 +160,9 @@ function AddonList_Update()
 end
 
 function AddonTooltip_BuildDeps(...)
+	if not ... then
+		return ""
+	end
 	local deps = "";
 	for i=1, select("#", ...) do
 		if ( i == 1 ) then

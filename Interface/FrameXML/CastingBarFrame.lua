@@ -3,6 +3,14 @@ CASTING_BAR_FLASH_STEP = 0.2;
 CASTING_BAR_HOLD_TIME = 1;
 
 function CastingBarFrame_OnLoad(self, unit, showTradeSkills, showShield)
+	local name = self:GetName()
+	if not self.Spark then self.Spark = _G[name.."Spark"]; end
+	if not self.Text then self.Text = _G[name.."Text"]; end
+	if not self.Flash then self.Flash = _G[name.."Flash"]; end
+	if not self.Icon then self.Icon = _G[name.."Icon"]; end
+	if not self.Border then self.Border = _G[name.."Border"]; end
+	if not self.BorderShield then self.BorderShield = _G[name.."BorderShield"]; end
+
 	CastingBarFrame_SetStartCastColor(self, 1.0, 0.7, 0.0);
 	CastingBarFrame_SetStartChannelColor(self, 0.0, 1.0, 0.0);
 	CastingBarFrame_SetFinishedCastColor(self, 0.0, 1.0, 0.0);

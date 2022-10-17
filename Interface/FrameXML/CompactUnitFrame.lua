@@ -488,7 +488,7 @@ function CompactUnitFrame_UpdateInRange(frame)
 	if ( inRange ) then
 		frame:SetAlpha(1);
 	else
-		frame:SetAlpha(0.55);
+		frame:SetAlpha(frame.optionTable.rangeAlpha / 100);
 	end
 end
 
@@ -525,6 +525,39 @@ function CompactUnitFrame_UpdateStatusText(frame)
 	else
 		frame.statusText:Hide();
 	end
+end
+
+--WARNING: This function is very similar to the function UnitFrameUtil_UpdateFillBar in UnitFrame.lua.
+--If you are making changes here, it is possible you may want to make changes there as well.
+function CompactUnitFrameUtil_UpdateFillBar(frame, previousTexture, bar, amount, barOffsetXPercent)
+	local totalWidth, totalHeight = frame.healthBar:GetSize();
+
+	if ( totalWidth == 0 or amount == 0 ) then
+		bar:Hide();
+		if ( bar.overlay ) then
+			bar.overlay:Hide();
+		end
+		return previousTexture;
+	end
+
+	local barOffsetX = 0;
+	if ( barOffsetXPercent ) then
+		barOffsetX = totalWidth * barOffsetXPercent;
+	end
+
+	bar:SetPoint("TOPLEFT", previousTexture, "TOPRIGHT", barOffsetX, 0);
+	bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMRIGHT", barOffsetX, 0);
+
+	local _, totalMax = frame.healthBar:GetMinMaxValues();
+
+	local barSize = (amount / totalMax) * totalWidth;
+	bar:SetWidth(barSize);
+	bar:Show();
+	if ( bar.overlay ) then
+		bar.overlay:SetTexCoord(0, barSize / bar.overlay.tileSize, 0, totalHeight / bar.overlay.tileSize);
+		bar.overlay:Show();
+	end
+	return bar;
 end
 
 function CompactUnitFrame_UpdateRoleIcon(frame)
@@ -1103,6 +1136,7 @@ DefaultCompactUnitFrameOptions = {
 	displayInOtherGroup = true,
 	displayInOtherPhase = true,
 	rangeCheck = 3,
+	rangeAlpha = 55,
 	raidTargetIcon = false,
 
 	--If class colors are enabled also show the class colors for npcs in your raid frames or
@@ -1153,7 +1187,7 @@ function DefaultCompactUnitFrameSetup(frame)
 		end
 	end
 
-	local NAME_LINE_HEIGHT = min(10 * componentScale, 14)
+	local NAME_LINE_HEIGHT = min(10 * max(1.15, componentScale), 14)
 
 	frame.raidTargetIcon:ClearAllPoints();
 	frame.raidTargetIcon:SetPoint("TOPLEFT", 2, -2);
@@ -1174,12 +1208,12 @@ function DefaultCompactUnitFrameSetup(frame)
 	frame.name:SetJustifyH("LEFT");
 	frame.statusText:SetHeight(NAME_LINE_HEIGHT);
 
-	local NATIVE_FONT_SIZE = 12;
+	local STATUS_LINE_HEIGHT = 12 * max(1.1, componentScale);
 	local fontName, _, fontFlags = frame.statusText:GetFont();
-	frame.statusText:SetFont(fontName, NATIVE_FONT_SIZE * componentScale, fontFlags);
+	frame.statusText:SetFont(fontName, STATUS_LINE_HEIGHT, fontFlags);
 	frame.statusText:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 3, options.height / 3 - 2);
 	frame.statusText:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -3, options.height / 3 - 2);
-	frame.statusText:SetHeight(12 * componentScale);
+	frame.statusText:SetHeight(STATUS_LINE_HEIGHT);
 
 	local readyCheckSize = 15 * componentScale;
 	frame.readyCheckIcon:ClearAllPoints();
@@ -1293,6 +1327,7 @@ DefaultCompactMiniFrameOptions = {
 	displayName = true,
 	fadeOutOfRange = true,
 	rangeCheck = 3,
+	rangeAlpha = 55,
 	raidTargetIcon = false,
 	--displayStatusText = true,
 	--displayDispelDebuffs = true,

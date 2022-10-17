@@ -25,6 +25,7 @@ WORLD_RAID_MARKER_ORDER[8] = {MARK_TYPE_STAR, 		306654};
 MINIMUM_RAID_CONTAINER_HEIGHT = 72;
 local RESIZE_HORIZONTAL_OUTSETS = 4;
 local RESIZE_VERTICAL_OUTSETS = 7;
+local MANAGER_COLLAPSED_HEIGHT = 72
 
 local RAID_MANAGER_CACHE = C_Cache("SIRUS_RAID_MANAGER_CACHE", true)
 
@@ -179,6 +180,7 @@ end
 
 function CompactRaidFrameManager_Expand(self)
 	self.collapsed = false;
+	self:SetHeight(self.usedBounds);
 	self:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -7, -140);
 	self.displayFrame:Show();
 	self.toggleButton:GetNormalTexture():SetTexCoord(0.5, 1, 0, 1);
@@ -186,6 +188,7 @@ end
 
 function CompactRaidFrameManager_Collapse(self)
 	self.collapsed = true;
+	self:SetHeight(MANAGER_COLLAPSED_HEIGHT);
 	self:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -182, -140);
 	self.displayFrame:Hide();
 	self.toggleButton:GetNormalTexture():SetTexCoord(0, 0.5, 0, 1);
@@ -211,7 +214,7 @@ function CompactRaidFrameManager_UpdateOptionsFlowContainer(self)
 		self.displayFrame.filterOptions:Hide();
 	end
 
-	if ((IsRaidLeader() or IsRaidOfficer()) and GetNumRaidMembers() > 0) or (GetNumPartyMembers() > 0 and GetNumRaidMembers() == 0) then
+	if ((IsRaidLeader() or IsRaidOfficer()) and GetNumRaidMembers() > 0) or (GetNumPartyMembers() > 0 and GetNumRaidMembers() == 0) or (GetNumPartyMembers() == 0 and GetCVar("C_CVAR_USE_COMPACT_SOLO_FRAMES") == "1") then
 		FlowContainer_AddObject(container, self.displayFrame.raidMarkers);
 		self.displayFrame.raidMarkers:Show();
 	else
@@ -234,17 +237,17 @@ function CompactRaidFrameManager_UpdateOptionsFlowContainer(self)
 		self.displayFrame.convertToRaid:Hide();
 	end
 
-	if ( GetDisplayedAllyFrames() == "raid" ) then
+--	if ( GetDisplayedAllyFrames() == "raid" ) then
 		FlowContainer_AddLineBreak(container);
 		FlowContainer_AddSpacer(container, 20);
 		FlowContainer_AddObject(container, self.displayFrame.lockedModeToggle);
 		FlowContainer_AddObject(container, self.displayFrame.hiddenModeToggle);
 		self.displayFrame.lockedModeToggle:Show();
 		self.displayFrame.hiddenModeToggle:Show();
-	else
-		self.displayFrame.lockedModeToggle:Hide();
-		self.displayFrame.hiddenModeToggle:Hide();
-	end
+--	else
+--		self.displayFrame.lockedModeToggle:Hide();
+--		self.displayFrame.hiddenModeToggle:Hide();
+--	end
 
 	if ( GetNumRaidMembers() > 0 and IsRaidLeader() ) then
 		FlowContainer_AddLineBreak(container);
@@ -258,7 +261,13 @@ function CompactRaidFrameManager_UpdateOptionsFlowContainer(self)
 	FlowContainer_ResumeUpdates(container);
 
 	local _, usedY = FlowContainer_GetUsedBounds(container);
-	self:SetHeight(usedY + 40);
+	self.usedBounds = usedY + 40
+
+	if self.collapsed then
+		self:SetHeight(MANAGER_COLLAPSED_HEIGHT);
+	else
+		self:SetHeight(self.usedBounds);
+	end
 
 	--Then, we update which specific buttons are enabled.
 
@@ -342,7 +351,7 @@ end
 
 function CompactRaidFrameManager_UpdateGroupFilterButton(button, tab)
 	local group = button:GetID();
-	if ( tab[group] ) then
+	if ( tab[group] and not CompactRaidFrameContainer.partyInRaid ) then
 		button:Enable();
 		button:SetAlpha(1);
 		local isFiltered = CRF_GetFilterGroup(group);
@@ -419,6 +428,8 @@ function CompactRaidFrameManager_GetSettingBeforeLoad(settingName)
 		return true;
 	elseif ( settingName == "HorizontalGroups" ) then
 		return false;
+	elseif ( settingName == "PartyInRaid" ) then
+		return false;
 	else
 		GMError("Unknown setting "..tostring(settingName));
 	end
@@ -483,6 +494,16 @@ do	--Enclosure to make sure people go through SetSetting
 		CompactRaidFrameContainer_SetDisplayMainTankAndAssist(container, displayFlaggedMembers);
 	end
 
+	local function CompactRaidFrameManager_SetPartyInRaid(value)
+		local container = CompactRaidFrameManager.container;
+		local partyInRaid;
+		if ( value and value ~= "0" ) then
+			partyInRaid = true;
+		end
+
+		CompactRaidFrameContainer_SetPartyInRaid(container, partyInRaid);
+	end
+
 	local function CompactRaidFrameManager_SetIsShown(value)
 		local manager = CompactRaidFrameManager;
 		if ( value and value ~= "0" ) then
@@ -536,6 +557,8 @@ do	--Enclosure to make sure people go through SetSetting
 			CompactRaidFrameManager_SetBorderShown(value);
 		elseif ( settingName == "HorizontalGroups" ) then
 			CompactRaidFrameManager_SetHorizontalGroups(value);
+		elseif ( settingName == "PartyInRaid" ) then
+			CompactRaidFrameManager_SetPartyInRaid(value);
 		else
 			GMError("Unknown setting "..tostring(settingName));
 		end

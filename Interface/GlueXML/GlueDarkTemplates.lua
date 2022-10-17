@@ -788,10 +788,10 @@ local buttonMixinScripts = {
 }
 
 function GlueDark_ButtonMixin:OnLoadStyle(hookScripts)
-	self._buttonColor = {0.47450980392157, 0.050980392156863, 0.07843137254902}
-	self._buttonTextColor = {0.92549019607843, 0.75686274509804, 0}
-	self._buttonDisableColor = {0.286, 0.306, 0.322}
-	self._buttonDisableTextColor = {0.45490196078431, 0.46274509803922, 0.47058823529412}
+	self._buttonColor = self._buttonColor or {0.47450980392157, 0.050980392156863, 0.07843137254902}
+	self._buttonTextColor = self._buttonTextColor or {0.92549019607843, 0.75686274509804, 0}
+	self._buttonDisableColor = self._buttonDisableColor or {0.286, 0.306, 0.322}
+	self._buttonDisableTextColor = self._buttonDisableTextColor or {0.45490196078431, 0.46274509803922, 0.47058823529412}
 	self._buttonHoverColor = {}
 
 	for i = 1, 3 do

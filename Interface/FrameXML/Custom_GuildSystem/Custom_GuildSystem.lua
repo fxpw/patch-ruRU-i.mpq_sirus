@@ -1238,8 +1238,8 @@ function GuildBar_SetProgress(bar, currentValue, maxValue, capValue)
 	end
 
 	GuildXPBarArtText:SetText(currentValue.." / "..maxValue)
-	currentValue = TextStatusBar_CapDisplayOfNumericValue(currentValue)
-	maxValue = TextStatusBar_CapDisplayOfNumericValue(maxValue)
+	currentValue = AbbreviateLargeNumbers(currentValue)
+	maxValue = AbbreviateLargeNumbers(maxValue)
 end
 
 function GuildPerksFrame_OnLoad( self, ... )

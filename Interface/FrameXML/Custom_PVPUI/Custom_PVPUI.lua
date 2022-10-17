@@ -2810,9 +2810,13 @@ end
 
 function PVPQueueFrameCapTopFrameStatusBar_OnEnter( self, ... )
 	local _, maxValue = self:GetMinMaxValues()
-	local timeData = C_CacheInstance:Get("ASMSG_PVP_LIMITS_TIMERS", {})
+	local value = self:GetValue()
+	
+	if value ~= maxValue then
+		local timeData = C_CacheInstance:Get("ASMSG_PVP_LIMITS_TIMERS", {})
 
-	if self:GetValue() ~= maxValue then
+		self.SubLayer.barText:SetFormattedText("%d / %d (%d)", value, maxValue, maxValue - value)
+
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		if PVPQueueFrame.selectedCategory == 2 then
 			GameTooltip:SetText(PVPFRAME_CONQUEST_CAPBAR_TOOLTIP_HEAD)
@@ -2825,6 +2829,17 @@ function PVPQueueFrameCapTopFrameStatusBar_OnEnter( self, ... )
 		GameTooltip:AddLine(" ")
 		GameTooltip:AddLine(string.format(PVPFRAME_CAPBAR_RESET_LABEL, GetRemainingTime(timeData.weeklySeconds and timeData.weeklySeconds - time() or 0)))
 		GameTooltip:Show()
+	end
+end
+
+function PVPQueueFrameCapTopFrameStatusBar_OnLeave(self)
+	GameTooltip_Hide(self)
+
+	local _, maxValue = self:GetMinMaxValues()
+	local value = self:GetValue()
+
+	if value ~= maxValue then
+		self.SubLayer.barText:SetFormattedText("%d / %d", value, maxValue)
 	end
 end
 

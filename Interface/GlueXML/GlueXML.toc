@@ -18,8 +18,11 @@ GlueXML.xml
 ..\SharedXML\Pools.lua
 ..\SharedXML\Utils\C_Texture.lua
 ..\SharedXML\Utils\C_CreatureInfo.lua
+..\SharedXML\MathUtil.lua
+..\SharedXML\TimeUtil.lua
 ..\SharedXML\Util.lua
-..\SharedXML\AnchorUtil.xml
+..\SharedXML\AnchorUtil.lua
+..\SharedXML\NineSlice.lua
 ..\SharedXML\CircularBuffer.lua
 ..\SharedXML\Opcodes.lua
 ..\SharedXML\TypeUtil.lua
@@ -50,7 +53,6 @@ DevTools\AccountLoginManagerData.lua
 GlueBasicControls.xml
 GlueParent.xml
 ..\SharedXML\SharedUIPanelTemplates.xml
-..\SharedXML\HybridScrollFrame.lua
 ..\SharedXML\HybridScrollFrame.xml
 GlueButtons.xml
 GlueTemplates.xml

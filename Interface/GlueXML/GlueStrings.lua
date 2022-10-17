@@ -1,19 +1,7 @@
 local SIRUS_LOCALIZATION = {
-	["DISPLAY"] = {
-		ruRU = "Графика",
-		enGB = "Display"
-	},
-	["EXIT_GAME"] = {
-		ruRU = "Выход",
-		enGB = "Exit Game"
-	},
 	["CHARACTER_BOOST_CONFIRM_TEXT"] = {
 		ruRU = "Вы уверены, что хотите использовать функцию Быстрого Старта на этого персонажа?",
 		enGB = "Are you sure you want to use Character Boost on this character?"
-	},
-	["TRADESKILL_INSCRIPTION"] = {
-		ruRU = "Начертание",
-		enGB = "Inscription"
 	},
 	["SCANDLL_MESSAGE_HACK"] = {
 		ruRU = "<html><body><p>В вашей системе обнаружена программа \"%1$s\". Ее запуск может привести к к нежелательным последствиям – вплоть до невозможности игры в World of Warcraft. Крайне рекомендуется устранить эту проблему до начала игры.</p><p>Подробнее см. <a href='%2$s'>здесь</a></p></body></html>",
@@ -34,10 +22,6 @@ local SIRUS_LOCALIZATION = {
 	["ABILITY_INFO_TAUREN3"] = {
 		ruRU = "- Имеет способности к травничеству.",
 		enGB = "- Herbalism skill increased."
-	},
-	["OPTION_TOOLTIP_ANISOTROPIC"] = {
-		ruRU = "Увеличение четкости текстур, особенно отображаемых под углом. Уменьшение значения этого параметра может повысить производительность игры.",
-		enGB = "Increases texture sharpness, particularly for textures viewed at an angle.  Decrease to improve performance."
 	},
 	["ABILITY_INFO_TROLL5"] = {
 		ruRU = "- Уменьшенная продолжительность действия замедляющих эффектов.",
@@ -74,10 +58,6 @@ local SIRUS_LOCALIZATION = {
 	["CONFIRM_TEMP"] = {
 		ruRU = "Вы уверены, что закончили?",
 		enGB = "Are you sure you are done?"
-	},
-	["BACK"] = {
-		ruRU = "Назад",
-		enGB = "Back"
 	},
 	["SERVER_SPLIT_CURRENT_CHOICE"] = {
 		ruRU = "Ваш выбор:\n%s",
@@ -119,10 +99,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Исправить",
 		enGB = "Fix"
 	},
-	["STEREO_VIDEO_LABEL"] = {
-		ruRU = "Стереоизображение",
-		enGB = "Stereo"
-	},
 	["CLASS_INFO_PRIEST2"] = {
 		ruRU = "- Исцеляет при помощи магии Света",
 		enGB = "- Heal damage with Holy magic."
@@ -139,10 +115,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Вы пытаетесь выбрать игровой мир с неподходящим языком.",
 		enGB = "You are trying to play on a realm with a different language."
 	},
-	["OPTION_TOOLTIP_TEXTURE_DETAIL"] = {
-		ruRU = "Изменение уровня детализации текстур. Уменьшение значения этого параметра может повысить производительность игры.",
-		enGB = "Controls the level of all texture detail. Decreasing this may slightly improve performance."
-	},
 	["DISCONNECTED"] = {
 		ruRU = "Соединение с сервером разорвано.",
 		enGB = "You have been disconnected from the server."
@@ -158,10 +130,6 @@ local SIRUS_LOCALIZATION = {
 	["BILLING_HAS_FALLBACK_PAYMENT"] = {
 		ruRU = "Для вашей учетной записи может быть доступно дополнительное время за счет других тарифных планов.",
 		enGB = "There may be additional time on your account from other payment plans."
-	},
-	["ADDONS"] = {
-		ruRU = "Модификации",
-		enGB = "AddOns"
 	},
 	["FORCE_CHANGE_FACTION_EVENT_COMMON"] = {
 		ruRU = "Изменяем конфигурацию Азерота",
@@ -191,21 +159,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Чернокнижники пользуются проклятиями и заклинаниями стихии огня и Тьмы и вытягивают из противника жизненные силы. Души, вытянутые из врагов, служат усилению магии чернокнижников. Чернокнижники могут обращать свое здоровье в ману и телепортировать к себе участников группы.|n|nНекоторые сообщества Альянса трепещут перед чернокнижниками, в то время как некоторые кланы Орды видят в них превосходных лидеров. Как любой заклинатель, чернокнижник превыше всего ценит силу заклинаний и интеллект.",
 		enGB = "Warlocks deal Fire or Shadow magic to damage, drain or curse their enemy. They can drain souls to power their spells. Warlocks can convert their health into mana or summon group members to their locations.|n|nWarlocks are feared in some Alliance societies while considered great leaders in some Horde societies. As casters, the warlock's primary stats are Spell Power and Intellect."
 	},
-	["OPTION_TOOLTIP_MUSIC_VOLUME"] = {
-		ruRU = "Регулировка громкости музыки.",
-		enGB = "Adjusts the background music volume."
-	},
 	["CHARACTER_UNDELETE_ALERT_2"] = {
 		ruRU = "Персонаж успешно восстановлен.",
 		enGB = "The character has been successfully restored."
-	},
-	["DONE"] = {
-		ruRU = "Готово",
-		enGB = "Done"
-	},
-	["VIDEO_QUALITY_LABEL2"] = {
-		ruRU = "среднее",
-		enGB = "Fair"
 	},
 	["LOGINBOX_REMEMBEME"] = {
 		ruRU = "Запомнить данные",
@@ -231,17 +187,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Место в очереди: %d",
 		enGB = "Position in Queue: %d"
 	},
-	["RUSSIAN_DECLENSION_EXAMPLE_1"] = {
-		ruRU = "Я всегда рад приходу %s.",
-		enGB = "I always travel with %s."
-	},
 	["CLIENT_ACCOUNT_MISMATCH_BC"] = {
 		ruRU = "<html><body><p>Тип вашей учетной записи позволяет вам играть в Burning Crusade, однако на вашем компьютере не установлен соответствующий программный пакет. Загрузить его можно здесь: <a href='http://eu.blizzard.com/support/article/burningcrusade-download'>http://eu.blizzard.com/support/article/burningcrusade-download</a></p></body></html>",
 		enGB = "<html><body><p>Your account is authorized for the Burning Crusade expansion, but the computer you are playing on does not contain Burning Crusade data. To play on this machine with this account, you must install the Burning Crusade. Additional data is available at:<a href='http://www.worldofwarcraft.com/burningcrusade/download/'>www.worldofwarcraft.com/burningcrusade/download/</a></p></body></html>"
-	},
-	["FACIAL_HAIR_HORNS"] = {
-		ruRU = "Вид рогов",
-		enGB = "Horn Style"
 	},
 	["SERVER_SPLIT_CHOOSE_BY"] = {
 		ruRU = "Выбрать:",
@@ -254,14 +202,6 @@ local SIRUS_LOCALIZATION = {
 	["GAMETYPE_RP_TEXT"] = {
 		ruRU = "В мирах данного типа действует жесткий свод правил, призванный обеспечить игрокам возможность отыграть выбранную роль.",
 		enGB = "These realms have strict naming conventions and behavior rules for players interested in immersing themselves as a character in a fantasy-based world."
-	},
-	["TRADESKILL_SKINNING"] = {
-		ruRU = "Снятие шкур",
-		enGB = "Skinning"
-	},
-	["LOW"] = {
-		ruRU = "Мин.",
-		enGB = "Low"
 	},
 	["CONTEST_NOTICE"] = {
 		ruRU = "Некоторые пункты Правил были изменены. Просмотрите весь текст Соглашения прежде, чем принимать его условия.",
@@ -315,17 +255,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Сеанс завершен. Повторите попытку позднее или проверьте статус игровых серверов на странице www.wow-europe.com/ru/serverstatus.",
 		enGB = "This session has timed out. Please try again at a later time or check the status of our WoW servers at www.worldofwarcraft.com/serverstatus"
 	},
-	["ADDON_BANNED_TOOLTIP"] = {
-		ruRU = "Модификация заблокирована",
-		enGB = "Addon blocked"
-	},
 	["LOGIN_PARENTALCONTROL"] = {
 		ruRU = "Доступ к данной учетной записи ограничен на правах родительского контроля. Изменить параметры доступа можно посредством меню управления учетными записями.",
 		enGB = "Access to this account is currently restricted by parental controls. You can change your control settings from your online account management."
-	},
-	["PLAYBACK"] = {
-		ruRU = "Воспроизведение звука",
-		enGB = "Playback"
 	},
 	["ENTER_EMAIL"] = {
 		ruRU = "Адрес электронной почты",
@@ -339,14 +271,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "- Пользуется маной как ресурсом.",
 		enGB = "- Uses mana as a resource."
 	},
-	["ADDON_DEP_BANNED"] = {
-		ruRU = "Зависимый ресурс заблокирован",
-		enGB = "Dependency banned"
-	},
-	["OPTIONS_BRIGHTNESS"] = {
-		ruRU = "Яркость",
-		enGB = "Brightness"
-	},
 	["CHAR_LIST_RETRIEVED"] = {
 		ruRU = "Список персонажей получен",
 		enGB = "Character list retrieved"
@@ -359,21 +283,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "- Держит в каждой руке по оружию.",
 		enGB = "- Wields a weapon in each hand."
 	},
-	["MISCELLANEOUS"] = {
-		ruRU = "Разное",
-		enGB = "Miscellaneous"
-	},
 	["CONFIRM_LOAD_ADDONS"] = {
 		ruRU = "Для корректной работы игры необходимо обновить все модификации. Вы действительно хотите загрузить их без обновления?\n\n|cffffffffПодключение можно осуществить, нажав кнопку «Модификации» в левой нижней части экрана.|r",
 		enGB = "The game may not work correctly unless you have updated all your modifications.  Are you sure you want to try to load them?\n\n|cffffffffChanges can be made by using the \"Addons\" button in the lower left.|r"
-	},
-	["RACE"] = {
-		ruRU = "Раса",
-		enGB = "Race"
-	},
-	["ARMOR"] = {
-		ruRU = "Броня",
-		enGB = "Armor"
 	},
 	["LATEST_TERMINATION_WITHOUT_NOTICE_URL"] = {
 		ruRU = "http://launcher.wow-europe.com/ru/legal/termination.htm",
@@ -391,17 +303,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Ошибка загрузки списка персонажей",
 		enGB = "Error retrieving character list"
 	},
-	["ADDON_DEP_INTERFACE_VERSION"] = {
-		ruRU = "Ресурс устарел",
-		enGB = "Dependency out of date"
-	},
 	["AMMO"] = {
 		ruRU = "ЗРД %d",
 		enGB = "AMMO %d"
-	},
-	["VIDEO_QUALITY_SUBTEXT4"] = {
-		ruRU = "Высокий уровень детализации текстур, максимальное расстояние видимости объектов, высокое качество эффектов заклинаний. Эти настройки позволяют добиться прекрасного качества изображения.",
-		enGB = "High texture detail, farthest draw distance, high spell effect detail. These settings provide very high quality."
 	},
 	["CHAR_NAME_NO_NAME"] = {
 		ruRU = "Введите имя персонажа",
@@ -411,10 +315,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Маги – канонические волшебники Азерота. Долгими годами прилежной учебы они приобретают свои знания. Класс носит легкую броню, компенсируя свою уязвимость целым арсеналом атакующих и защитных заклинаний. Основные характеристики мага – сила заклинаний и интеллект.",
 		enGB = "Mages are the iconic magic-users of Azeroth and learn their craft through intense research and study. They make up for their light armor with a potent array of offensive and defensive spells. Their primary stats are Spell Power and Intellect."
 	},
-	["YES"] = {
-		ruRU = "Да",
-		enGB = "Yes"
-	},
 	["LAUNCH_QUICKTIME_REQUIRED"] = {
 		ruRU = "Для запуска игры требуется наличие программы QuickTime версии %s.",
 		enGB = "World of Warcraft requires QuickTime version %s."
@@ -422,10 +322,6 @@ local SIRUS_LOCALIZATION = {
 	["CLASS_WARRIOR_FEMALE"] = {
 		ruRU = "Воины – бойцы в латных доспехах, стремящиеся достичь совершенства во владении оружием. Когда воин наносит урон или получает удар, он накапливает ярость, которую затем расходует на применение способностей.|n|nПерсонаж может посвятить себя освоению двуручного оружия, на бой с оружием в каждой руке или на классическое сочетание меча и щита. Воин также наделен способностями, которые позволяют ему быстро перемещаться по полю боя. Главная характеристика класса – сила, хотя воины, принимающие на себя урон, должны думать и о выносливости.",
 		enGB = "Warriors are plate-wearing fighters who strive for perfection in armed combat. As warriors deal or take damage, they generate rage, which is used to power their special attacks.|n|nWarriors can choose to focus on a two-handed weapon, dual-wielding or using a sword and shield. Warriors have several abilities that let them move quickly around the battlefield. Their primary stat is Strength, though tanking warriors desire Stamina as well."
-	},
-	["OPTION_TOOLTIP_MULTISAMPLING"] = {
-		ruRU = "Выбор качества сглаживания краев объектов. Повышенное сглаживание может сильно снизить производительность игры.",
-		enGB = "Increase multisampling to smooth out model edges. Increasing multisampling can severely reduce performance."
 	},
 	["BILLING_TIME_LEFT_DAYS"] = {
 		ruRU = "Осталось оплаченных дней: %d",
@@ -439,18 +335,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Персонаж:",
 		enGB = "Character:"
 	},
-	["ENABLE_ERROR_SPEECH"] = {
-		ruRU = "Сообщения об ошибках",
-		enGB = "Error Speech"
-	},
-	["DISABLE_ALL_ADDONS"] = {
-		ruRU = "Отключить все",
-		enGB = "Disable All"
-	},
-	["OPTION_TOOLTIP_ENABLE_EMOTE_SOUNDS"] = {
-		ruRU = "Воспроизведение звуков, соответствующих эмоциям персонажей.",
-		enGB = "Toggles emote sounds on and off."
-	},
 	["WEAPONS"] = {
 		ruRU = "Оружие",
 		enGB = "Weapons"
@@ -458,10 +342,6 @@ local SIRUS_LOCALIZATION = {
 	["DELETE_CONFIRM_STRING"] = {
 		ruRU = "УДАЛИТЬ",
 		enGB = "DELETE"
-	},
-	["OPTION_TOOLTIP_DEATH_EFFECT"] = {
-		ruRU = "Создание свечения вокруг персонажа в облике призрака. Отключение этого параметра может повысить производительность игры.",
-		enGB = "Uncheck to disable glowing effect while in ghost form. Disabling this can sometimes improve performance."
 	},
 	["CLEARMATRIX"] = {
 		ruRU = "Очистить",
@@ -499,10 +379,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "<html><body><p align=\"CENTER\">Произошла ошибка входа в систему. Пожалуйста, повторите попытку позже. Если проблема остается, свяжитесь с технической поддержкой.</p></body></html>",
 		enGB = "<html><body><p align=\"CENTER\">There was an error logging in. Please try again later. If the problem persists, please contact Technical Support at: <a href=\"http://us.blizzard.com/support/article.xml?locale=en_US&amp;articleId=21014\">http://us.blizzard.com/support/article.xml?locale=en_US&amp;articleId=21014</a></p></body></html>"
 	},
-	["SYSTEM_DEFAULT"] = {
-		ruRU = "По умолчанию",
-		enGB = "System Default"
-	},
 	["FACTION_INFO_HORDE"] = {
 		ruRU = "		   В состав Орды входят пять рас: воинственные орки, мрачная нежить, одухотворенные таурены, хитроумные тролли и целеустремленные эльфы крови. Эти изгнанники, против которых ополчился весь мир, решили объединить усилия, чтобы выжить – просто выжить.",
 		enGB = "		Five races comprise the Horde: the brutal orcs, the shadowy undead, the spiritual tauren, the quick-witted trolls, and the driven blood elves. Beset by enemies on all sides, these outcasts have forged a union they hope will ensure their mutual survival."
@@ -514,10 +390,6 @@ local SIRUS_LOCALIZATION = {
 	["ABILITY_INFO_ORC4"] = {
 		ruRU = "- Мастерски владеет топорами и кистевым оружием.",
 		enGB = "- Increased expertise with Axes and Fist weapons."
-	},
-	["OPTION_TOOLTIP_WINDOWED_MODE"] = {
-		ruRU = "Запуск игры в оконном режиме.\n\nПри этом используются параметры гаммы, установленные для монитора, и регулировка гаммы средствами игры становится недоступной.",
-		enGB = "Check to play in a non-fullscreen window.\n\nIf this is checked the game will use your desktop gamma and you will not be able to adjust it via the slider below."
 	},
 	["LOGIN_UNKNOWN_ACCOUNT_PIN"] = {
 		ruRU = "<html><body><p align=\"CENTER\">Вы ввели неверную информацию. Пожалуйста, проверьте правильность написания имени учетной записи, пароля и пин-кода. Для восстановления забытых или украденных пароля, учетной записи или пин-кода посетите страницу <a href=\"https://www.wow-europe.com/login-support/?locale=ru_RU\">https://www.wow-europe.com/login-support/?locale=ru_RU</a>.</p></body></html>",
@@ -563,10 +435,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Ошибка входа",
 		enGB = "Login failed"
 	},
-	["SECONDS"] = {
-		ruRU = "%d сек.",
-		enGB = "%d |4sec:secs;"
-	},
 	["CLASS_INFO_DEATHKNIGHT4"] = {
 		ruRU = "- Дополняет ведение ближнего боя призывом питомца, применением заклинаний и насыланием болезней.",
 		enGB = "- Combine melee combat with spells, diseases and undead minions."
@@ -578,10 +446,6 @@ local SIRUS_LOCALIZATION = {
 	["CHAR_CREATE_NAME_IN_USE"] = {
 		ruRU = "Имя недоступно",
 		enGB = "That name is unavailable"
-	},
-	["OPTION_TOOLTIP_FULL_SCREEN_GLOW"] = {
-		ruRU = "Использование эффектов сглаживания углов и смягчения освещения в игре в полноэкранном режиме. Отключение этого параметра может повысить производительность игры.",
-		enGB = "Enables a full screen effect that softens edges and lighting. Disabling this can sometimes improve performance."
 	},
 	["SCANDLL_MESSAGE_TROJAN"] = {
 		ruRU = "<html><body><p>В вашей системе обнаружена программа \"%1$s\". Ее запуск может привести к к нежелательным последствиям – вплоть до невозможности игры в World of Warcraft. Крайне рекомендуется устранить эту проблему до начала игры.</p><p>Подробнее см. <a href='%2$s'>здесь</a></p></body></html>",
@@ -607,10 +471,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Этот персонаж является главой гильдии. Прежде чем удалять его, необходимо передать звание главы другому персонажу.",
 		enGB = "This character is a Guild Master and cannot be deleted until the rank is transfered to another character."
 	},
-	["ADDON_BANNED"] = {
-		ruRU = "Отключено",
-		enGB = "Disabled"
-	},
 	["ROLE_DAMAGER"] = {
 		ruRU = "Боец",
 		enGB = "Damager"
@@ -623,10 +483,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Выберите PVP специализацию",
 		enGB = "Choose Your PVP Specialization"
 	},
-	["TRADESKILL_BLACKSMITHING"] = {
-		ruRU = "Кузнечное дело",
-		enGB = "Blacksmithing"
-	},
 	["SCANDLL_URL_LAUNCHER_TXT"] = {
 		ruRU = "",
 		enGB = ""
@@ -638,10 +494,6 @@ local SIRUS_LOCALIZATION = {
 	["CHARACTER_SERVICES_BOOST_COST_FREE"] = {
 		ruRU = "Бесплатно",
 		enGB = "Free"
-	},
-	["ADDON_DEP_MISSING"] = {
-		ruRU = "Нет ресурса",
-		enGB = "Dependency missing"
 	},
 	["CHAR_CUSTOMIZATION3_DESC"] = {
 		ruRU = "Прическа",
@@ -667,10 +519,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "- Боевой клич\n- Первая помощь\n- Командный голос",
 		enGB = "- Battle Cries\n- First Aid\n- War Shouts"
 	},
-	["SPELL_DETAIL"] = {
-		ruRU = "Детализация заклинаний",
-		enGB = "Spell Detail"
-	},
 	["CHOOSE_LOCATION_DESCRIPTION"] = {
 		ruRU = "(рекомендуется выбрать ближайший к вам регион)",
 		enGB = "(for best results choose the region closest to you)"
@@ -678,10 +526,6 @@ local SIRUS_LOCALIZATION = {
 	["CHARACTER_SERVICES_BOOST"] = {
 		ruRU = "Быстрый старт",
 		enGB = "Character Boost"
-	},
-	["WORLD_APPEARANCE"] = {
-		ruRU = "Детализация мира",
-		enGB = "World Appearance"
 	},
 	["REALM_INFO_TEMPLATE"] = {
 		ruRU = "%-32.32s %4d",
@@ -694,14 +538,6 @@ local SIRUS_LOCALIZATION = {
 	["CALCULATING"] = {
 		ruRU = "Расчет...",
 		enGB = "Calculating..."
-	},
-	["CLASS"] = {
-		ruRU = "Класс",
-		enGB = "Class"
-	},
-	["GROUND_DENSITY"] = {
-		ruRU = "Плотность травы",
-		enGB = "Ground Clutter Density"
 	},
 	["LOGINBUTTON_QUITGAME"] = {
 		ruRU = "Выход из игры",
@@ -719,10 +555,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "- Легкая броня (ткань)",
 		enGB = "- Light Armor (Cloth)"
 	},
-	["OPTION_TOOLTIP_ENABLE_HARDWARE"] = {
-		ruRU = "Использование аппаратного ускорения 3D-звука. Этот параметр влияет на скорость обработки звука.",
-		enGB = "Enables the use of hardware for 3D sound management. This may alter your sound performance."
-	},
 	["AUTHENTICATOR"] = {
 		ruRU = "Код брелка",
 		enGB = "Authenticator"
@@ -731,17 +563,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Ошибка создания учетной записи",
 		enGB = "Account creation failed"
 	},
-	["FRIENDS"] = {
-		ruRU = "Друзья",
-		enGB = "Friends"
-	},
 	["RACE_INFO_TAUREN"] = {
 		ruRU = "Таурены всегда стремились сохранять равновесие природы, следуя завету своей богини, Матери-Земли. Не так давно они подверглись набегу злобных кентавров, и если бы не счастливый случай – встреча с орками, которые помогли отразить нападение, – могли бы и вовсе погибнуть. Чтобы вернуть долг крови, таурены присоединились к Орде вслед за своими соратниками.",
 		enGB = "Always the tauren strive to preserve the balance of nature and heed the will of their goddess, the Earth Mother. Recently attacked by murderous centaur, the tauren would have been wiped out, save for a chance encounter with the orcs, who helped defeat the interlopers. To honor this blood-debt, the tauren joined the Horde, solidifying the two races' friendship."
-	},
-	["ENABLE_REVERB"] = {
-		ruRU = "Эффекты эха",
-		enGB = "Enable Reverb"
 	},
 	["RESET_SETTINGS"] = {
 		ruRU = "Сброс настроек",
@@ -763,17 +587,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Новый персонаж",
 		enGB = "Create New Character"
 	},
-	["ENABLE_DSP_EFFECTS"] = {
-		ruRU = "Голоса рыцарей смерти",
-		enGB = "Death Knight Voices"
-	},
 	["CHARACTER_BOOST_INFO_TEXT"] = {
 		ruRU = "Уважаемые игроки проекта Sirus! Мы решили сделать подарок всем лояльным игрокам нашего проекта:\n\n\nДля игроков с |cff00FF00VIP Silver|r и выше - 1 быстрый старт на х2 |cff00FF00БЕСПЛАТНО|r\n\nДля игроков с |cff00FF00VIP Bronze|r - 1 быстрый старт на х2 со скидкой |cff00FF0085%|r (29 бонусов)\n\nДля игроков зарегистрированных до открытия х2 (23.02.17) - 1 быстрый старт со скидкой |cff00FF0070%|r (59 бонусов)",
 		enGB = "Dear players of the Sirus project, We’ve decided to give a present to all our project’s loyal players:\n\n\nFor players with |cff00FF00VIP Silver|r status and above, 1 Character Boost for х2 |cff00FF00FOR FREE|r\n\nFor players with|cff00FF00VIP Bronze|r status, 1 Character Boost for х2 with an |cff00FF0085%|r discount (29 bonuses)\n\nFor players who registered before the opening of х2 (23.02.17), 1 Character Boost with a |cff00FF0070%|r discount (59 bonuses)"
-	},
-	["FACTION_ALLIANCE"] = {
-		ruRU = "Альянс",
-		enGB = "Alliance"
 	},
 	["STR"] = {
 		ruRU = "СИЛ",
@@ -795,18 +611,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "<html><body><p>Тип вашей учетной записи позволяет вам играть в Wrath of the Lich King, однако на вашем компьютере не установлен соответствующий программный пакет. Загрузить его можно здесь: <a href=\"http://eu.blizzard.com/support/article/lichking-download\">http://eu.blizzard.com/support/article/lichking-download</a></p></body></html>",
 		enGB = "<html><body><p>Your account is authorized for the Wrath of the Lich King expansion, but the computer you are playing on does not contain Wrath of the Lich King data. To play on this machine with this account, you must install the Wrath of the Lich King. Additional data is available at:<a href=\"http://www.worldofwarcraft.com/lichking/download/\">www.worldofwarcraft.com/lichking/download/</a></p></body></html>"
 	},
-	["RUSSIAN_DECLENSION_EXAMPLE_2"] = {
-		ruRU = "Вчера я подарил %s шлем.",
-		enGB = "First thing yesterday I bonked %s on the head."
-	},
-	["TERRAIN_MIP"] = {
-		ruRU = "Детализация рельефа",
-		enGB = "Terrain Blending"
-	},
-	["PASSWORD"] = {
-		ruRU = "Пароль",
-		enGB = "Password"
-	},
 	["BATTLEFIELD_ALERT"] = {
 		ruRU = "%s: доступ открыт. Вас исключат из очереди в мир %s",
 		enGB = "You are eligible to enter %s You will be removed from the queue in %s"
@@ -814,10 +618,6 @@ local SIRUS_LOCALIZATION = {
 	["WAIT_SERVER_RESPONCE"] = {
 		ruRU = "Ожидание ответа от сервера...",
 		enGB = "Waiting for a response from the server..."
-	},
-	["WINDOWED_MAXIMIZED"] = {
-		ruRU = "Макс. размер",
-		enGB = "Maximized"
 	},
 	["PENETRATION"] = {
 		ruRU = "ПРОНИК %d",
@@ -839,10 +639,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "(PvP)",
 		enGB = "(PVP)"
 	},
-	["STEREO_HARDWARE_CURSOR"] = {
-		ruRU = "Аппаратный курсор",
-		enGB = "Hardware Cursor"
-	},
 	["TIME_REMANING"] = {
 		ruRU = "Осталось: %s",
 		enGB = "%s left"
@@ -850,10 +646,6 @@ local SIRUS_LOCALIZATION = {
 	["GAMETYPE_NORMAL"] = {
 		ruRU = "PvE",
 		enGB = "Normal"
-	},
-	["ALL"] = {
-		ruRU = "Все",
-		enGB = "All"
 	},
 	["AUTH_BAD_SERVER_PROOF"] = {
 		ruRU = "Недопустимый сервер",
@@ -874,10 +666,6 @@ local SIRUS_LOCALIZATION = {
 	["ABILITY_INFO_HUMAN3"] = {
 		ruRU = "- Ускоренное получение репутации.",
 		enGB = "- Bonus to reputation gains."
-	},
-	["OKAY"] = {
-		ruRU = "ОК",
-		enGB = "Okay"
 	},
 	["CLASS_PALADIN"] = {
 		ruRU = "Паладин – облаченный в тяжелую броню боец, призывающий силу Света для лечения раненых и борьбы со злом. Паладин – самодостаточный персонаж, наделенный всеми необходимыми способностями для спасения союзника от гибели. Он может сосредоточиться на мастерстве владения двуручным оружием, щитом или на лечении. Основные характеристики зависят от игровой роли персонажа.",
@@ -903,17 +691,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Создание персонажа этой расы требует наличия соответствующего дополнения к игре.",
 		enGB = "Creation of that race requires an account that has been upgraded to the appropriate expansion."
 	},
-	["OPTION_RESTART_REQUIREMENT"] = {
-		ruRU = "Чтобы изменения вступили в силу, перезапустите игру.",
-		enGB = "Requires game restart to take effect."
-	},
 	["LOGIN_INVALID_PROOF_MESSAGE"] = {
 		ruRU = "Неверное подтверждающее сообщение",
 		enGB = "Invalid Proof Message"
-	},
-	["OPTION_TOOLTIP_ENVIRONMENT_DETAIL"] = {
-		ruRU = "Изменение дистанции отображения игровых объектов. Уменьшение значения этого параметра может повысить производительность игры.",
-		enGB = "Controls how far you can see objects. Decrease to improve performance."
 	},
 	["CREDITS_WOW_CLASSIC"] = {
 		ruRU = "Создатели World of Warcraft",
@@ -951,10 +731,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Ошибка подтверждения перекодировки",
 		enGB = "Recode Proof Bad"
 	},
-	["OPTIONS_SHADERS"] = {
-		ruRU = "Шейдеры",
-		enGB = "Shaders"
-	},
 	["CLASS_INFO_SHAMAN2"] = {
 		ruRU = "- Взывает к силам четырех стихий",
 		enGB = "- Invokes the power of the four elements."
@@ -967,10 +743,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Альфа-версия",
 		enGB = "Alpha version"
 	},
-	["GROUND_RADIUS"] = {
-		ruRU = "Видимость травы",
-		enGB = "Ground Clutter Radius"
-	},
 	["ENVIRONMENT_SUBTEXT"] = {
 		ruRU = "С помощью этих настроек вы можете изменить детализацию и расстояние видимости объектов и эффектов окружающей среды.",
 		enGB = "These options control the ranges and levels of detail used to draw effects and objects in the game environment."
@@ -978,10 +750,6 @@ local SIRUS_LOCALIZATION = {
 	["CONFIRM_RESTORE"] = {
 		ruRU = "Подтверждение восстановления",
 		enGB = "Confirm restoration"
-	},
-	["OPTION_TOOLTIP_AMBIENCE_VOLUME"] = {
-		ruRU = "Регулировка громкости звуков окружающего мира.",
-		enGB = "Adjusts the ambient sound volume."
 	},
 	["GAMETYPE_RPPVP_TEXT"] = {
 		ruRU = "В игровых мирах данного типа действует жесткий свод правил, призванный обеспечить игрокам возможность отыграть выбранную роль. Однако, в отличие от обычных ролевых миров, акцент здесь смещен на бои между игроками. Помните: покинув исходную позицию или город, вы всегда рискуете подвергнуться нападению со стороны другого игрока.",
@@ -998,10 +766,6 @@ local SIRUS_LOCALIZATION = {
 	["CSTATUS_NEGOTIATION_FAILED"] = {
 		ruRU = "Ошибка проверки безопасности",
 		enGB = "Security negotiation failed"
-	},
-	["OPTION_TOOLTIP_GROUND_RADIUS"] = {
-		ruRU = "Изменение дистанции отображения травы, палой листвы и других мелких деталей ландшафта. Уменьшение значения этого параметра может повысить производительность игры.",
-		enGB = "Controls the draw distance of ground clutter items like grass and foliage.  Decrease to improve performance."
 	},
 	["ROLE_TANK"] = {
 		ruRU = "Танк",
@@ -1027,10 +791,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "ДУХ",
 		enGB = "SPI"
 	},
-	["TRADESKILL_HERBALISM"] = {
-		ruRU = "Травничество",
-		enGB = "Herbalism"
-	},
 	["ABILITY_INFO_DRAENEI4"] = {
 		ruRU = "- Повышенное сопротивление темной магии.",
 		enGB = "- Resistant to Shadow damage."
@@ -1043,10 +803,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Создавать новых персонажей могут только те игроки, у которых уже имеются персонажи в данном мире.",
 		enGB = "Only players who already have characters on this realm are currently allowed to create characters."
 	},
-	["NO"] = {
-		ruRU = "Нет",
-		enGB = "No"
-	},
 	["WEB_SITE"] = {
 		ruRU = "Официальный сайт",
 		enGB = "WoW Website"
@@ -1058,14 +814,6 @@ local SIRUS_LOCALIZATION = {
 	["ABILITY_INFO_GNOME3"] = {
 		ruRU = "- Повышенное сопротивление тайной магии.",
 		enGB = "- Resistant to Arcane damage."
-	},
-	["OPTION_TOOLTIP_ENABLE_REVERB"] = {
-		ruRU = "Использование эффекта искусственного эха. Этот параметр влияет на производительность игры.",
-		enGB = "Enables reverb sound effects.  This will affect performance."
-	},
-	["SOUNDOPTIONS_MENU"] = {
-		ruRU = "Звук",
-		enGB = "Sound"
 	},
 	["CREDITS_WOW_BC"] = {
 		ruRU = "Создатели Burning Crusade",
@@ -1091,14 +839,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "- Роль: лечение, нанесение урона",
 		enGB = "- Role: Healer, Damage"
 	},
-	["RUSSIAN_DECLENSION_EXAMPLE_3"] = {
-		ruRU = "Мы пригласили %s в группу.",
-		enGB = "Today I met %s again."
-	},
-	["WIDESCREEN_TAG"] = {
-		ruRU = "(Широкий экран)",
-		enGB = "(Wide)"
-	},
 	["CHARACTER_DELETE_RESTORE_ERROR_2"] = {
 		ruRU = "Выполняется другая операция.",
 		enGB = "Another operation is in progress."
@@ -1106,10 +846,6 @@ local SIRUS_LOCALIZATION = {
 	["REALM_DESCRIPTION_TEXT"] = {
 		ruRU = "Игровой мир представляет собой отдельную игровую область, существующую только для тех, кто находится в его пределах. Вы не можете общаться с игроками, находящимися в других мирах. Вы не можете перемещать персонажа между мирами. Игровые миры различаются как по географии, так и по правилам поведения.",
 		enGB = "A realm is a discrete game world that exists only for the players within it. You can interact with all the players in your realm, but not with players in other realms. You cannot move your characters between realms. Realms are differentiated by location and play style."
-	},
-	["ACCEPT"] = {
-		ruRU = "Принять",
-		enGB = "Accept"
 	},
 	["REALMLIST_TYPE_TOOLTIP"] = {
 		ruRU = "PvE – обычный игровой мир.\nPvP – мир, в котором по умолчанию разрешены бои между игроками.\nRP – ролевой игровой мир.\nRPPvP – ролевой игровой мир, в котором по умолчанию разрешены бои между игроками.",
@@ -1135,10 +871,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "- Повышенное сопротивление магии льда.",
 		enGB = "- Resistant to Frost."
 	},
-	["OPTION_TOOLTIP_WORLD_LOD"] = {
-		ruRU = "Адаптация геометрической детализации ландшафта. Включение этого параметра может повысить производительность игры.",
-		enGB = "Check this to enable dynamic reduction of terrain polygon detail.  Check to increase performance."
-	},
 	["OR"] = {
 		ruRU = "или",
 		enGB = "or"
@@ -1163,25 +895,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Бета",
 		enGB = "Beta"
 	},
-	["OPTION_TOOLTIP_TERRAIN_HIGHLIGHTS"] = {
-		ruRU = "Отображение бликов на поверхности земли и воды. Отключение этого параметра может повысить быстродействие игры.",
-		enGB = "Enables specular highlights on terrain. Disabling this can sometimes improve performance."
-	},
-	["RUSSIAN_DECLENSION_1"] = {
-		ruRU = "Родительный падеж",
-		enGB = "Genitive Case"
-	},
-	["ADDON_FORCE_LOAD"] = {
-		ruRU = "Устаревшие модификации",
-		enGB = "Load out of date AddOns"
-	},
 	["DEBUG_BUILD"] = {
 		ruRU = "Отладка",
 		enGB = "Debug"
-	},
-	["VIDEO_QUALITY_LABEL3"] = {
-		ruRU = "высокое",
-		enGB = "Good"
 	},
 	["CHAR_CREATE_DISABLED"] = {
 		ruRU = "В данный момент вы не можете создать здесь персонажа. Повторите попытку позднее или создайте персонажа в другом игровом мире.",
@@ -1198,14 +914,6 @@ local SIRUS_LOCALIZATION = {
 	["FORCE_CHANGE_FACTION_EVENT_VULPERA"] = {
 		ruRU = "Смена фракции.. У вас мягкие лапки.",
 		enGB = ""
-	},
-	["PROJECTED_TEXTURES"] = {
-		ruRU = "Проецирование текстур",
-		enGB = "Projected Textures"
-	},
-	["OPTION_TOOLTIP_GAMMA"] = {
-		ruRU = "Регулировка яркости изображения. Увеличивайте этот параметр до тех пор, пока каждый из 21 участка градуированной линейки, расположенной справа, не станет четко видимым.",
-		enGB = "Controls the brightness of the game. Increase brightness until you can clearly see all 21 levels of gray bars below."
 	},
 	["RP_PARENTHESES"] = {
 		ruRU = "(RP)",
@@ -1227,10 +935,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Необходимо иметь персонажа как минимум 55-го уровня в этом игровом мире, чтобы создать рыцаря смерти.",
 		enGB = "You must have an existing character of at least level 55 on this realm to create a Death Knight."
 	},
-	["ADDON_DEP_DISABLED"] = {
-		ruRU = "Ресурс отключен",
-		enGB = "Dependency disabled"
-	},
 	["SCAN_FRAME_TITLE"] = {
 		ruRU = "Соглашение о сканировании",
 		enGB = "Scanning Agreement"
@@ -1238,10 +942,6 @@ local SIRUS_LOCALIZATION = {
 	["CHARACTER_NOT_FOUND"] = {
 		ruRU = "Персонаж не выбран",
 		enGB = "No character selected"
-	},
-	["TRADESKILL_LEATHERWORKING"] = {
-		ruRU = "Кожевничество",
-		enGB = "Leatherworking"
 	},
 	["CHARACTER_DELETE_RESTORE_ERROR_4"] = {
 		ruRU = "Персонаж не найден.",
@@ -1255,21 +955,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Разбойники часто служат наемными убийцами и лазутчиками, хотя есть среди них и убежденные одиночки. Отличительная черта класса – мастерское владение самыми разными видами оружия, хотя классическим разбойничьим оружием остается кинжал.|n|nРазбойник не гнушается подкрасться к жертве сзади, чтобы прикончить ее наверняка, а иногда пробирается незамеченным среди врагов. Основные характеристики класса – сила атаки и ловкость.",
 		enGB = "Rogues often serve as assassins or scouts, though many are lone wolves as well. Rogues specialize in dual-wielding a variety of weapons, though the iconic rogue weapon is the dagger.|n|nRogues can often sneak around enemies or attack an opponent from behind to try and finish them off quickly. Their primary stats are Attack Power and Agility."
 	},
-	["FARCLIP"] = {
-		ruRU = "Видимость",
-		enGB = "View Distance"
-	},
-	["ENABLE_AMBIENCE"] = {
-		ruRU = "Фоновые звуки",
-		enGB = "Ambient Sounds"
-	},
 	["REALM_TYPE_TOURNAMENT_WARNING"] = {
 		ruRU = "Ваша учетная запись пока не может участвовать в игре в турнирных мирах.\n\nЗа дополнительной информацией о Турнире арены World of Warcraft обращайтесь по адресу: www.wow-europe.com.",
 		enGB = "This account is currently not flagged to participate in the tournament realms.\n\nFor more information regarding the World of Warcraft Arena Tournament, please visit: www.worldofwarcraft.com."
-	},
-	["OPTION_TOOLTIP_ENABLE_ERROR_SPEECH"] = {
-		ruRU = "Воспроизведение звуковых сообщений об ошибках (например «Вне зоны действия»).",
-		enGB = "Enables speech from errors (e.g. \"Target out of range\")."
 	},
 	["TEMP_WEAPON"] = {
 		ruRU = "- Метательное оружие\n- Топоры\n- Двуручные топоры\n- Мечи\n- Двуручные мечи\n- Дробящее\n- Двуручное дробящее\n- Древковое\n- Луки",
@@ -1279,37 +967,17 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Загрузка программы Blizzard Scan",
 		enGB = "[TEMPORARY] Downloading Blizzard Scan"
 	},
-	["UI_DEPTH"] = {
-		ruRU = "Глубина интерфейса",
-		enGB = "UI Depth"
-	},
 	["DEFENSE"] = {
 		ruRU = "ЗАЩ %d",
 		enGB = "DEF %d"
-	},
-	["DECLENSION_SET"] = {
-		ruRU = "%s из %s",
-		enGB = "%s of %s"
 	},
 	["ABILITY_INFO_NIGHTELF4"] = {
 		ruRU = "- Повышенное сопротивление природной магии.",
 		enGB = "- Resistant to Nature damage."
 	},
-	["OPTION_TOOLTIP_STEREO_HARDWARE_CURSOR"] = {
-		ruRU = "Хотя включение параметра и улучшает производительность компьютера, 3D-курсор с этой настройкой не работает.",
-		enGB = "While enabling this option may improve performance, the 3D cursor functionality will not work with it enabled."
-	},
-	["ADDON_LIST"] = {
-		ruRU = "Модификации",
-		enGB = "AddOn List"
-	},
 	["LOGIN_ACCOUNT_LOCKED"] = {
 		ruRU = "<html><body><p align=\"CENTER\">Учетная запись была заблокирована в связи с подозрительными действиями.|nНа адрес электронной почты, указанный при регистрации учетной записи, отправлено сообщение о том, как решить эту проблему.|nДополнительную информацию вы можете получить на странице <a href=\"http://eu.battle.net/wow/account-locked/ru-ru\">http://eu.battle.net/wow/account-locked/ru-ru.</a></p></body></html>",
 		enGB = "<html><body><p align=\"CENTER\">Due to suspicious activity, this account is locked.|nA message has been sent to this account's email address containing details on how to resolve this issue.|nVisit <a href=\"http://us.battle.net/wow/account-locked/en-us\">us.battle.net/wow/account-locked/en-us</a> for more information.</p></body></html>"
-	},
-	["FACIAL_HAIR_TENTS"] = {
-		ruRU = "Щупальцы",
-		enGB = "Tentacles"
 	},
 	["AUTH_BANNED_URL"] = {
 		ruRU = "http://www.wow-europe.com/ru/legal/termsofuse.html",
@@ -1399,10 +1067,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Почетные победы",
 		enGB = "Honorable Kills"
 	},
-	["VIDEO_QUALITY_SUBTEXT5"] = {
-		ruRU = "Эти настройки повышают качество изображения до максимального уровня. Рекомендуется использовать их только на самых мощных компьютерах.",
-		enGB = "These settings provide the very best quality and should only be used on high-end systems."
-	},
 	["AUTH_BANNED"] = {
 		ruRU = "Данная учетная запись заблокирована вследствие нарушений условий Соглашения об условиях пользования – www.wow-europe.com/ru/legal/termsofuse.html. Для получения подробной информации свяжитесь с нами по адресу WoWaccountreviewEU@blizzard.com.",
 		enGB = "This account has been banned for violating the Terms of Use Agreement - www.worldofwarcraft.com/termsofuse.shtml. Please contact our GM department via Email at wowaccountadmin@blizzard.com for more information."
@@ -1410,10 +1074,6 @@ local SIRUS_LOCALIZATION = {
 	["CLASS_INFO_PALADIN1"] = {
 		ruRU = "- Тяжелая броня (кольчуга/латы и щит)",
 		enGB = "- Heavy Armor (Mail / Plate and Shield)"
-	},
-	["RUSSIAN_DECLENSION_3"] = {
-		ruRU = "Винительный падеж",
-		enGB = "Accusative Case"
 	},
 	["CONFIRM_COMPLETE_EXPENSIVE_QUEST"] = {
 		ruRU = "На выполнение этого задания вам придется потратить сумму, указанную ниже. Продолжить выполнение задания?",
@@ -1443,14 +1103,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "- Имеет способности к инженерному делу.",
 		enGB = "- Engineering skill increased."
 	},
-	["HAIR_HORNS_COLOR"] = {
-		ruRU = "Цвет рогов",
-		enGB = "Horn Color"
-	},
-	["CONFIRM_RESET_SETTINGS"] = {
-		ruRU = "Вы хотите вернуться к настройкам по умолчанию? Данное действие будет немедленно применено ко всем настройкам.",
-		enGB = "Do you want to reset all settings to their defaults? This will immediately apply all settings."
-	},
 	["CLASS_DRUID"] = {
 		ruRU = "Друиды искусно меняют свой облик, принимая вид животных и растений. Есть три школы друидов. Друиды, пошедшие по пути равновесия, предпочитают дальний бой и атакуют противника заклинаниями сил природы и тайной магии, друиды-оборотни ведут сражение в ближнем бою в облике кошки и медведя, а друиды-целители восстанавливают здоровье себе и союзникам с помощью заклинаний постепенного исцеления. Основные характеристики друида определяются его игровой ролью.",
 		enGB = "Druids are shape-shifters with an affinity for the plant and animal kingdoms. There are three types of druids: Balance druids who cast Nature or Arcane spells at range, Feral druids who can take on the form of a cat or bear to fight in melee, or Restoration druids who can heal their allies with an emphasis on heal-over-time spells. Druid primary stats depend on their role."
@@ -1458,10 +1110,6 @@ local SIRUS_LOCALIZATION = {
 	["ACCOUNT_CREATE_URL"] = {
 		ruRU = "http://signup.wow-europe.com/",
 		enGB = "http://signup.worldofwarcraft.com"
-	},
-	["SOUND_QUALITY"] = {
-		ruRU = "Качество звука",
-		enGB = "Sound Quality"
 	},
 	["ABILITY_INFO_DRAENEI1"] = {
 		ruRU = "- Имеет способности к ювелирному делу.",
@@ -1487,17 +1135,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "2FA - код безопасности",
 		enGB = "2FA - Security code"
 	},
-	["TERRAIN_HIGHLIGHTS"] = {
-		ruRU = "Отражения и блики",
-		enGB = "Specular Lighting"
-	},
 	["LOAD_ADDONS"] = {
 		ruRU = "Загрузить",
 		enGB = "Load Anyway"
-	},
-	["OPTION_UI_DEPTH"] = {
-		ruRU = "Меняет глубину интерфейса пользователя.",
-		enGB = "Changes the base depth of the UI."
 	},
 	["SERVER_WEB_SITE"] = {
 		ruRU = "Сайт сервера",
@@ -1575,18 +1215,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "<html><body><p align=\"CENTER\">Услуга недоступна для подозрительных учетных записей. Более подробно тут <a href=\"https://sirus.su/suspect\">https://sirus.su/suspect</a></p></body></html>",
 		enGB = "<html><body><p align=\"CENTER\">The service is not available for suspicious accounts. Please see <a href=\"https://sirus.su/suspect\">https://sirus.su/suspect</a> for more information.</p></body></html>"
 	},
-	["ADDON_DEP_CORRUPT"] = {
-		ruRU = "Ошибка зависимостей",
-		enGB = "Dependency corrupt"
-	},
-	["GENERAL_LABEL"] = {
-		ruRU = "Основные настройки",
-		enGB = "General"
-	},
-	["DECLINE"] = {
-		ruRU = "Отклонить",
-		enGB = "Decline"
-	},
 	["CHAR_CUSTOMIZE_IN_PROGRESS"] = {
 		ruRU = "Изменение внешности персонажа…",
 		enGB = "Customizing Character..."
@@ -1603,10 +1231,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "- Роль: нанесение урона",
 		enGB = "- Role: Damage"
 	},
-	["ENABLE_SOUNDFX"] = {
-		ruRU = "Звуковые эффекты",
-		enGB = "Sound Effects"
-	},
 	["CHOOSE_GENDER"] = {
 		ruRU = "Выберите пол:",
 		enGB = "Choose your gender:"
@@ -1619,14 +1243,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Вы должны выбрать одну из рас противоположной стороны (Альянса или Орды).",
 		enGB = "You must choose a race from the opposing faction."
 	},
-	["VIDEO_QUALITY_LABEL5"] = {
-		ruRU = "Ультра",
-		enGB = "Ultra"
-	},
-	["OPTION_TOOLTIP_ENABLE_BGSOUND"] = {
-		ruRU = "Воспроизведение звуков в фоновом режиме (при свернутом окне игры).",
-		enGB = "Enable to allow sounds to play even when World of Warcraft is in the background."
-	},
 	["RACIAL_ABILITIES"] = {
 		ruRU = "Расовые способности",
 		enGB = "Racial Abilities"
@@ -1634,10 +1250,6 @@ local SIRUS_LOCALIZATION = {
 	["CLASS_INFO_MAGE0"] = {
 		ruRU = "- Роль: нанесение урона",
 		enGB = "- Role: Damage"
-	},
-	["ADDON_DEPENDENCIES"] = {
-		ruRU = "Зависимые ресурсы:",
-		enGB = "Dependencies: "
 	},
 	["REALM_HELP_FRAME_URL"] = {
 		ruRU = "<a href=\"http://www.wow-europe.com/ru\">www.wow-europe.com</a>",
@@ -1655,18 +1267,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Вы уверены, что хотите вернуться к пользовательским настройкам по умолчанию при следующем входе в игру?",
 		enGB = "Are you sure you want to reset all user options to their defaults the next time you login?"
 	},
-	["EFFECTS_LABEL"] = {
-		ruRU = "Эффекты",
-		enGB = "Effects"
-	},
-	["ADDON_INSECURE"] = {
-		ruRU = "Небезопасен",
-		enGB = "Insecure"
-	},
-	["ADDON_DISABLED"] = {
-		ruRU = "Отключено",
-		enGB = "Disabled"
-	},
 	["SERVER_SELECTION"] = {
 		ruRU = "Выбор мира",
 		enGB = "Realm Selection"
@@ -1679,10 +1279,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Введите пароль.",
 		enGB = "Please enter your password."
 	},
-	["OPTION_TOOLTIP_ENABLE_SOUND_AT_CHARACTER"] = {
-		ruRU = "Коррекция громкости воспроизводимых звуков с учетом местонахождения персонажа, а не камеры.",
-		enGB = "Listen to sound from the character's point of view rather than the camera."
-	},
 	["CHOOSE"] = {
 		ruRU = "Выбрать",
 		enGB = "Select"
@@ -1690,10 +1286,6 @@ local SIRUS_LOCALIZATION = {
 	["INT"] = {
 		ruRU = "ИНТ",
 		enGB = "INT"
-	},
-	["OPTION_TOOLTIP_MASTER_VOLUME"] = {
-		ruRU = "Регулировка общей громкости звука.",
-		enGB = "Adjusts the master sound volume."
 	},
 	["CLASS_INFO_SHAMAN1"] = {
 		ruRU = "- Средняя броня (кожа/кольчуга и щит)",
@@ -1707,10 +1299,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Ошибка авторизации",
 		enGB = "Authentication failed"
 	},
-	["DAYS_ABBR"] = {
-		ruRU = "д.",
-		enGB = "|4Day:Days;"
-	},
 	["FORCE_CHANGE_FACTION_EVENT_PANDA"] = {
 		ruRU = "Смена фракции.. О! Вы - панда!",
 		enGB = ""
@@ -1722,10 +1310,6 @@ local SIRUS_LOCALIZATION = {
 	["RATINGS_TEXT"] = {
 		ruRU = "This is the placeholder for the Korean Ratings information",
 		enGB = "This is the placeholder for the Korean Ratings information"
-	},
-	["RUSSIAN_DECLENSION_4"] = {
-		ruRU = "Творительный падеж",
-		enGB = "Instrumental Case"
 	},
 	["CHARACTER_SERVICES_PERSONAL_OFFER"] = {
 		ruRU = "Перс. Предложение",
@@ -1759,14 +1343,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "В этом игровом мире вы можете создать только одного персонажа героического класса рыцарь смерти.",
 		enGB = "You may only have one Death Knight Hero Class character on this realm."
 	},
-	["VOLUME"] = {
-		ruRU = "Громкость",
-		enGB = "Volume"
-	},
-	["FACIAL_HAIR_NORMAL"] = {
-		ruRU = "Борода и усы",
-		enGB = "Facial Hair"
-	},
 	["CLASS_INFO_WARRIOR1"] = {
 		ruRU = "- Тяжелая броня (кольчуга/латы и щит)",
 		enGB = "- Heavy Armor (Mail / Plate and Shield)"
@@ -1799,22 +1375,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Автоматический вход",
 		enGB = "Automatic Login"
 	},
-	["HERTZ"] = {
-		ruRU = " Гц",
-		enGB = "Hz"
-	},
-	["OPTION_TOOLTIP_SHADOW_QUALITY"] = {
-		ruRU = "Управление качеством теней персонажа и объектов окружающей среды. Уменьшение параметра приведет к повышению производительности игры.",
-		enGB = "Controls the quality of rendered character and environment shadows. Decrease to improve performance."
-	},
-	["OPTION_TOOLTIP_WEATHER_DETAIL"] = {
-		ruRU = "Изменение интенсивности погодных эффектов. Уменьшение значения этого параметра может привести к повышению производительности игры.",
-		enGB = "Controls the intensity of weather effects.  Decrease to improve performance."
-	},
-	["HARDWARE_CURSOR"] = {
-		ruRU = "Аппаратный указатель",
-		enGB = "Hardware Cursor"
-	},
 	["CLASS_WARRIOR"] = {
 		ruRU = "Воины – бойцы в латных доспехах, стремящиеся достичь совершенства во владении оружием. Когда воин наносит урон или получает удар, он накапливает ярость, которую затем расходует на применение способностей.|n|nПерсонаж может посвятить себя освоению двуручного оружия, на бой с оружием в каждой руке или на классическое сочетание меча и щита. Воин также наделен способностями, которые позволяют ему быстро перемещаться по полю боя. Главная характеристика класса – сила, хотя воины, принимающие на себя урон, должны думать и о выносливости.",
 		enGB = "Warriors are plate-wearing fighters who strive for perfection in armed combat. As warriors deal or take damage, they generate rage, which is used to power their special attacks.|n|nWarriors can choose to focus on a two-handed weapon, dual-wielding or using a sword and shield. Warriors have several abilities that let them move quickly around the battlefield. Their primary stat is Strength, though tanking warriors desire Stamina as well."
@@ -1823,17 +1383,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "|cffffd100Внимание:|r поскольку вы впервые играете за представителя этой расы, будет выполнена загрузка стартовых данных. Это может занять несколько минут. Пожалуйста, подождите.",
 		enGB = "|cffffd100Note:|r Since this is your first time playing this race, please wait while starting data is downloaded to your system. This may take a few minutes."
 	},
-	["HAIR_NORMAL_STYLE"] = {
-		ruRU = "Прическа",
-		enGB = "Hair Style"
-	},
 	["ASSERTIONS_ENABLED_BUILD"] = {
 		ruRU = "Режим проверки готовности к выпуску",
 		enGB = "Release Assertions Enabled"
-	},
-	["VIDEO_QUALITY_SUBTEXT3"] = {
-		ruRU = "Высокий уровень детализации текстур, среднее расстояние видимости объектов, среднее качество эффектов заклинаний. Настройки, позволяющие добиться сбалансированной производительности.",
-		enGB = "High texture detail, medium draw distance, medium spell effect detail. These settings balance performance and quality."
 	},
 	["VIDEO_OPTIONS_RESET"] = {
 		ruRU = "Параметры изображения были изменены.",
@@ -1879,14 +1431,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Друид\nЭтот класс доступен другим расам.",
 		enGB = "Druid\nYou must choose a different race to be this class."
 	},
-	["OPTION_TOOLTIP_SOUND_CHANNELS"] = {
-		ruRU = "Изменение количества звуковых каналов.",
-		enGB = "Changes the number of active software sound channels."
-	},
-	["HAIR_NORMAL_COLOR"] = {
-		ruRU = "Цвет волос",
-		enGB = "Hair Color"
-	},
 	["CHARACTER_NAME"] = {
 		ruRU = "Имя персонажа",
 		enGB = "Character Name"
@@ -1923,10 +1467,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Не разрешаю",
 		enGB = "I don't consent"
 	},
-	["PLAYER_DETAIL"] = {
-		ruRU = "Текстуры персонажей",
-		enGB = "Player Textures"
-	},
 	["EULA_NOTICE"] = {
 		ruRU = "Некоторые пункты Лицензионного соглашения с конечным пользователем были изменены. Просмотрите весь текст Соглашения прежде, чем принимать его условия.",
 		enGB = "The End User License Agreement has changed. Please scroll down and review the changes before accepting the agreement."
@@ -1939,17 +1479,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Копировать",
 		enGB = "Copy"
 	},
-	["TRADESKILL_ALCHEMY"] = {
-		ruRU = "Алхимия",
-		enGB = "Alchemy"
-	},
 	["LOGIN_SUSPENDED"] = {
 		ruRU = "<html><body><p align=\"CENTER\">Данная учетная запись World of Warcraft временно заблокирована. Более подробную информацию вы найдете в Личном Кабинете на сайте: <a href=\"https://forum.sirus.su/threads/17670/\">https://forum.sirus.su/threads/17670/</a>.</p></body></html>",
 		enGB = "<html><body><p align=\"CENTER\">This World of Warcraft account has been temporarily suspended. Please go to <a href=\"https://forum.sirus.su/threads/17670/\">https://forum.sirus.su/threads/17670/</a> for further information.</p></body></html>"
-	},
-	["VIDEO_QUALITY_SUBTEXT2"] = {
-		ruRU = "Средний уровень детализации текстур, маленькое расстояние видимости объектов, низкое качество эффектов заклинаний. Настройки, позволяющие добиться хорошей производительности.",
-		enGB = "Medium texture detail, short draw distance, low spell effect detail. These settings provide good performance."
 	},
 	["LOADING_REALM_LIST"] = {
 		ruRU = "Загрузка списка игровых миров...",
@@ -1963,10 +1495,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Свободных мест нет\nМесто в очереди: %d\nВремя ожидания: %d мин.",
 		enGB = "Realm is Full\nPosition in queue: %d\nEstimated time: %d min"
 	},
-	["TRADESKILL_MINING"] = {
-		ruRU = "Горное дело",
-		enGB = "Mining"
-	},
 	["LOGIN_TRIAL_EXPIRED"] = {
 		ruRU = "<html><body><p align=\"CENTER\">Время действия вашей пробной учетной записи закончилось. Пожалуйста, посетите страницу <a href=\"https://www.wow-europe.com/account/\">https://www.wow-europe.com/account/</a>, чтобы изменить статус вашей учетной записи.</p></body></html>",
 		enGB = "<html><body><p align=\"CENTER\">Your trial subscription has expired. Please visit <a href=\"http://www.worldofwarcraft.com/account\">www.worldofwarcraft.com/account</a> to upgrade your account.</p></body></html>"
@@ -1974,10 +1502,6 @@ local SIRUS_LOCALIZATION = {
 	["ABILITY_INFO_SCOURGE3"] = {
 		ruRU = "- Умеет надолго задерживать дыхание под водой.",
 		enGB = "- Underwater breathing increased."
-	},
-	["APPLY"] = {
-		ruRU = "Применить",
-		enGB = "Apply"
 	},
 	["CHARACTER_SERVICES_DIALOG_BOOST_ENTERWORLD"] = {
 		ruRU = "В момент конфигурации персонажа с помощью функции \"Быстрый старт\", вход в игровой мир недоступен. Прервать конфигурацию?",
@@ -2015,10 +1539,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "- С повышенной вероятностью наносит критический удар огнестрельным оружием.",
 		enGB = "- Increased critical chance with Guns."
 	},
-	["RESOLUTION_SUBTEXT"] = {
-		ruRU = "С помощью этих настроек вы можете изменить значения детализации и размера для вашей видеокарты.",
-		enGB = "These options allow you to change the size and detail in which your video hardware renders the game."
-	},
 	["BILLING_GAMEROOM_EXPIRE"] = {
 		ruRU = "Срок действия вашей учетной записи с фиксированным тарифным планом скоро истечет. После этого соединение будет разорвано.\nОбратитесь к дежурному менеджеру вашей IGR.",
 		enGB = "IGR account in use is about to expire. Once expired, you may get disconnected.\nPlease contact the manager on duty in your IGR."
@@ -2038,10 +1558,6 @@ local SIRUS_LOCALIZATION = {
 	["NEW_REALM"] = {
 		ruRU = "Новый",
 		enGB = "New"
-	},
-	["ADDON_DEP_INCOMPATIBLE"] = {
-		ruRU = "Несовместимость с зависимым ресурсом",
-		enGB = "Dependency incompatible"
 	},
 	["TOS_FRAME_TITLE"] = {
 		ruRU = "Соглашения",
@@ -2083,10 +1599,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Новая запись",
 		enGB = "Create Account"
 	},
-	["VIDEO_QUALITY_SUBTEXT1"] = {
-		ruRU = "Рекомендуемые минимальные настройки изображения, позволяющие добиться наивысшей производительности.",
-		enGB = "These are the lowest recommended graphics settings for the game. These settings provide excellent performance."
-	},
 	["CLASS_INFO_DEATHKNIGHT3"] = {
 		ruRU = "- Начальный уровень - 55.",
 		enGB = "- Start at level 55."
@@ -2107,14 +1619,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "http://www.wow-europe.com/ru/legal/termsofuse.html",
 		enGB = "http://www.worldofwarcraft.com/termsofuse.shtml"
 	},
-	["OPTION_TOOLTIP_PROJECTED_TEXTURES"] = {
-		ruRU = "Проецировать текстуры на окружающие объекты. Отключение этого параметра может сильно повысить производительность игры.",
-		enGB = "Enables the projecting of textures to the environment. Disabling this may greatly improve performance."
-	},
-	["WEATHER_DETAIL"] = {
-		ruRU = "Интенсивность осадков",
-		enGB = "Weather Intensity"
-	},
 	["ADDONS_OUT_OF_DATE"] = {
 		ruRU = "Используемые вами модификации устарели. Для корректной работы новой версии игры рекомендуется отключить их.",
 		enGB = "You are running a new version of the game and have interface modifications which are out of date.  Disabling them is recommended."
@@ -2123,25 +1627,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Отменить сброс",
 		enGB = "Cancel Reset"
 	},
-	["GAME_SOUND_OUTPUT"] = {
-		ruRU = "Звуковое устройство",
-		enGB = "Game Sound Output"
-	},
-	["ENABLE_MUSIC_LOOPING"] = {
-		ruRU = "Повтор музыки",
-		enGB = "Loop Music"
-	},
 	["CLASS_INFO_DEATHKNIGHT1"] = {
 		ruRU = "- Тяжелая броня (латы)",
 		enGB = "- Heavy Armor (Plate)"
-	},
-	["CINEMATIC_SUBTITLES"] = {
-		ruRU = "Субтитры в роликах",
-		enGB = "Cinematic Subtitles"
-	},
-	["RESOLUTION"] = {
-		ruRU = "Разрешение",
-		enGB = "Resolution"
 	},
 	["CHARACTER_SERVICES_YOU_DONT_HAVE_BONUS"] = {
 		ruRU = "У вас нет бонусов",
@@ -2171,25 +1659,13 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "http://www.wow-europe.com/ru/support/",
 		enGB = "http://support.worldofwarcraft.com/accountmessaging/getMessageBody.xml"
 	},
-	["EFFECTS_SUBTEXT"] = {
-		ruRU = "С помощью этих настроек вы можете изменить уровень детализации многих элементов и эффектов игры.",
-		enGB = "These controls allow you to modify specific detail levels for many game elements and effects."
-	},
 	["CHAR_LOGIN_NO_INSTANCES"] = {
 		ruRU = "Серверы подземелий недоступны",
 		enGB = "No instance servers are available"
 	},
-	["OPTION_STEREO_CONVERGENCE"] = {
-		ruRU = "Устанавливает расстояние, на котором объекты не разделяются.",
-		enGB = "Changes the 3D depth of the screen."
-	},
 	["RACE_INFO_NIGHTELF"] = {
 		ruRU = "Десять тысяч лет назад ночные эльфы основали огромную империю, но неразумное использование первородной магии привело ее к падению. Полные скорби, они удалились в леса и пребывали в изоляции вплоть до возвращения их вековечного врага, Пылающего Легиона. Тогда ночным эльфам пришлось пожертвовать своим уединенным образом жизни и сплотиться, чтобы отвоевывать свое место в новом мире.",
 		enGB = "Ten thousand years ago, the night elves founded a vast empire, but their reckless use of primal magic brought them to ruin. In grief, they withdrew to the forests and remained isolated there until the return of their ancient enemy, the Burning Legion. With no other choice, the night elves emerged at last from their seclusion to fight for their place in the new world."
-	},
-	["FACIAL_HAIR_FEATURES"] = {
-		ruRU = "Аксессуары",
-		enGB = "Features"
 	},
 	["CHAR_CREATE_SERVER_LIMIT"] = {
 		ruRU = "Вы достигли максимального числа персонажей для данного игрового мира.",
@@ -2206,10 +1682,6 @@ local SIRUS_LOCALIZATION = {
 	["USE_ENGLISH_SPEECH_PACK"] = {
 		ruRU = "Английский набор звуков",
 		enGB = "Use English Speech Pack"
-	},
-	["PIXEL_SHADERS"] = {
-		ruRU = "Спецэффекты",
-		enGB = "Special Effects"
 	},
 	["CHAR_RENAME_INSTRUCTIONS"] = {
 		ruRU = "Введите новое имя",
@@ -2231,10 +1703,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "%s - %s",
 		enGB = "%s - %s"
 	},
-	["FACIAL_HAIR_PANDA"] = {
-		ruRU = "Борода и усы",
-		enGB = "Facial Hair"
-	},
 	["CLASS_INFO_WARRIOR2"] = {
 		ruRU = "- Ведет сражение в ближнем бою.",
 		enGB = "- Deals damage with melee weapons."
@@ -2243,17 +1711,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Запрос списка миров...",
 		enGB = "Retrieving realm list"
 	},
-	["HAIR_VULPERA_COLOR"] = {
-		ruRU = "Неиспользуется",
-		enGB = ""
-	},
 	["RACE_INFO_ORC_FEMALE"] = {
 		ruRU = "Орки происходят с планеты Дренор. Пока Пылающий Легион не подчинил этот народ своей власти, орки посвящали себя исключительно мирным занятиям и шаманизму. Но однажды демоны поработили орков и погнали на войну с людьми Азерота. Много лет потребовалось, чтобы избавиться от гнета Легиона и обрести долгожданную свободу. Теперь орки вынуждены сражаться за место в чужом для них мире.",
 		enGB = "The orc race originated on the planet Draenor. A peaceful people with shamanic beliefs, they were enslaved by the Burning Legion and forced into war with the humans of Azeroth. Although it took many years, the orcs finally escaped the demons' corruption and won their freedom. To this day they fight for honor in an alien world that hates and reviles them."
-	},
-	["HAIR_VULPERA_STYLE"] = {
-		ruRU = "Мордочка",
-		enGB = ""
 	},
 	["CLASS_WARLOCK"] = {
 		ruRU = "Чернокнижники пользуются проклятиями и заклинаниями стихии огня и Тьмы и вытягивают из противника жизненные силы. Души, вытянутые из врагов, служат усилению магии чернокнижников. Чернокнижники могут обращать свое здоровье в ману и телепортировать к себе участников группы.|n|nНекоторые сообщества Альянса трепещут перед чернокнижниками, в то время как некоторые кланы Орды видят в них превосходных лидеров. Как любой заклинатель, чернокнижник превыше всего ценит силу заклинаний и интеллект.",
@@ -2278,14 +1738,6 @@ local SIRUS_LOCALIZATION = {
 	["AUTH_SUSPENDED"] = {
 		ruRU = "Действие данной учетной записи временно приостановлено в связи с нарушением условий Соглашения об условиях пользования – www.wow-europe.com/ru/legal/termsofuse.html. Для получения подробной информации обращайтесь по адресу электронной почты WoWaccountreviewEU@blizzard.com.",
 		enGB = "This account has been temporarily suspended for violating the Terms of Use Agreement - www.worldofwarcraft.com/termsofuse.shtml. Please contact our GM department via Email at wowaccountadmin@blizzard.com for more information."
-	},
-	["OPTION_TOOLTIP_ENABLE_SOFTWARE_HRTF"] = {
-		ruRU = "Включение программной имитации объемного звука для наушников.",
-		enGB = "Enables software emulation for headphone surround sound."
-	},
-	["CHARACTER_UNDELETE_STATUS_4"] = {
-		ruRU = "Персонаж не найден.",
-		enGB = "Character not found."
 	},
 	["ADDON_SECURE"] = {
 		ruRU = "Безопасен",
@@ -2331,10 +1783,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "чст",
 		enGB = "hnr"
 	},
-	["TRIPLE_BUFFER"] = {
-		ruRU = "Тройная буферизация",
-		enGB = "Triple Buffering"
-	},
 	["CREATE_CHARACTER"] = {
 		ruRU = "Создание персонажа",
 		enGB = "Create Character"
@@ -2347,29 +1795,13 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Неверный пароль",
 		enGB = "Incorrect Password"
 	},
-	["TRADESKILL_TAILORING"] = {
-		ruRU = "Портняжное дело",
-		enGB = "Tailoring"
-	},
-	["ANISOTROPIC"] = {
-		ruRU = "Фильтрация текстур",
-		enGB = "Texture Filtering"
-	},
 	["CLASS_INFO_ROGUE1"] = {
 		ruRU = "- Средняя броня (кожа)",
 		enGB = "- Medium Armor (Leather)"
 	},
-	["OPTION_TOOLTIP_TRIPLE_BUFFER"] = {
-		ruRU = "Тройная буферизация кадров при включенной вертикальной синхронизации. Эта настройка может сгладить резкие скачки сменяющихся кадров, но несколько снизит производительность игры.",
-		enGB = "Enables triple buffering of frames when vertical sync is enabled. Selecting triple buffering may even out frame rate spikes, but may also cause slight input lag."
-	},
 	["CHAR_FACTION_CHANGE_FAILED"] = {
 		ruRU = "Не удалось сменить расу этого персонажа.",
 		enGB = "Could not change race for character."
-	},
-	["OPTION_TOOLTIP_ENABLE_PET_SOUNDS"] = {
-		ruRU = "Включить/отключить звуки, издаваемые питомцем в состоянии покоя и агрессии.",
-		enGB = "Toggles pet idle and aggro sounds on and off."
 	},
 	["AUTH_SESSION_EXPIRED"] = {
 		ruRU = "Сеанс завершен",
@@ -2383,10 +1815,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "- Может превращать противников в безобидных животных или примораживать их к земле.",
 		enGB = "- Can polymorph enemies or freeze them to the ground."
 	},
-	["OPTION_TOOLTIP_ENABLE_STEREO_VIDEO"] = {
-		ruRU = "Включить стереоскопическое (3D) видео.",
-		enGB = "Enables stereoscopic (3D) video."
-	},
 	["BILLING_IGR_USAGE"] = {
 		ruRU = "Вы используете тарифный план IGR. Ваше личное время не уменьшается.",
 		enGB = "You are currently using an IGR usage plan. Your personal time will not be deducted."
@@ -2394,10 +1822,6 @@ local SIRUS_LOCALIZATION = {
 	["CHAR_NAME_MIXED_LANGUAGES"] = {
 		ruRU = "Имя должно состоять из букв одного языка",
 		enGB = "Names must contain only one language"
-	},
-	["OPTION_TOOLTIP_HARDWARE_CURSOR"] = {
-		ruRU = "Включение данного параметра может как ускорить отклик указателя мыши, так и вызвать некоторые проблемы с указателем.",
-		enGB = "Enable this option for a more responsive cursor unless you have cursor problems."
 	},
 	["TECH_SUPPORT_URL"] = {
 		ruRU = "http://www.wow-europe.com/ru/support/",
@@ -2410,10 +1834,6 @@ local SIRUS_LOCALIZATION = {
 	["ADDON_UPDATE_AVAILABLE"] = {
 		ruRU = "Доступна новая версия",
 		enGB = "New version is available\n"
-	},
-	["MULTISAMPLING_FORMAT_STRING"] = {
-		ruRU = "%1$d-разр. цвет, %2$d-разр. глубина цвета (%3$d-разр. сглаживание)",
-		enGB = "%d-bit color %d-bit depth %dx multisample"
 	},
 	["CRIT"] = {
 		ruRU = "КРИТ",
@@ -2435,17 +1855,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Пожалуйста, вводите имя и пароль вашей учетной записи World of Warcraft, а не Battle.net.",
 		enGB = "Please use your World of Warcraft account name and password instead of your Battle.net account."
 	},
-	["FACTION_HORDE"] = {
-		ruRU = "Орда",
-		enGB = "Horde"
-	},
 	["TECH_SUPPORT"] = {
 		ruRU = "Техническая поддержка",
 		enGB = "Tech Support"
-	},
-	["EYE_SEPARATION"] = {
-		ruRU = "Степень разделения",
-		enGB = "Depth Amount"
 	},
 	["LOGIN_STATE_AUTHENTICATED"] = {
 		ruRU = "Готово!",
@@ -2454,10 +1866,6 @@ local SIRUS_LOCALIZATION = {
 	["AUTH_UNKNOWN_ACCOUNT"] = {
 		ruRU = "Неизвестная учетная запись",
 		enGB = "Unknown account"
-	},
-	["OPTION_TOOLTIP_SOUND_QUALITY"] = {
-		ruRU = "Изменение качества звука в игре.\nУменьшение значения этого параметра может повысить производительность игры.",
-		enGB = "Adjusts the quality of game sounds.\nDecrease to improve performance."
 	},
 	["DOWNLOAD_SUCCESSFUL"] = {
 		ruRU = "Требуется обновление",
@@ -2511,10 +1919,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Цена:",
 		enGB = "Price:"
 	},
-	["SOUND_CHANNELS"] = {
-		ruRU = "Каналы",
-		enGB = "Sound Channels"
-	},
 	["NEWS"] = {
 		ruRU = "Новости",
 		enGB = "News"
@@ -2523,25 +1927,13 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Доступ ограничен",
 		enGB = "Locked"
 	},
-	["CHARACTER_UNDELETE_STATUS_1"] = {
-		ruRU = "Выполняется другая операция.",
-		enGB = "Another operation is in progress."
-	},
 	["TERMINATION_WITHOUT_NOTICE_FRAME_TITLE"] = {
 		ruRU = "Прекращение услуги без уведомления",
 		enGB = "Termination of Service without Prior Notice"
 	},
-	["ENABLE_STEREO_VIDEO"] = {
-		ruRU = "Стереоизображение",
-		enGB = "Enable Stereo Video"
-	},
 	["RACE_INFO_DRAENEI_FEMALE"] = {
 		ruRU = "После бегства с родной планеты, Аргуса, дренеи тысячелетиями скитались по вселенной, спасаясь от Пылающего Легиона, пока, наконец, не нашли пристанище. Свою новую планету они разделили с орками-шаманами и назвали Дренором. Спустя некоторое время Легион поработил души орков и заставил их развязать войну на планете, уничтожив на ней почти всех миролюбивых дренеев. Немногие счастливчики спаслись бегством на Азерот и ищут теперь союзников для борьбы с Пылающим Легионом.",
 		enGB = "Driven from their home world of Argus, the honorable draenei fled the Burning Legion for eons before finding a remote planet to settle on. They shared this world with the shamanistic orcs and named it Draenor. In time the Legion corrupted the orcs, who waged war and nearly exterminated the peaceful draenei. A lucky few fled to Azeroth, where they now seek allies in their battle against the Burning Legion."
-	},
-	["ENABLE_PET_SOUNDS"] = {
-		ruRU = "Звуки питомцев",
-		enGB = "Enable Pet Sounds"
 	},
 	["ABILITY_INFO_TROLL4"] = {
 		ruRU = "- С повышенной вероятностью наносит критический удар метательным оружием и луками.",
@@ -2551,10 +1943,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Ошибка переименования",
 		enGB = "Character rename failed"
 	},
-	["WINDOWED_MODE"] = {
-		ruRU = "Оконный режим",
-		enGB = "Windowed Mode"
-	},
 	["FACTION_INFO_ALLIANCE"] = {
 		ruRU = "		   В состав Альянса входят пять рас: благородные люди, неустрашимые дворфы, таинственные ночные эльфы, изобретательные гномы и доблестные дренеи. Всех их объединяет одна цель: изгнание демонов и восстановление справедливости в истерзанном войной мире.",
 		enGB = "		The Alliance consists of five races: the noble humans, the adventurous dwarves, the enigmatic night elves, the ingenious gnomes, and the honorable draenei. Bound by a loathing for all things demonic, they fight to restore order in this war-torn world."
@@ -2563,29 +1951,13 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Целитель",
 		enGB = "Healer"
 	},
-	["CHARACTER_UNDELETE_STATUS_5"] = {
-		ruRU = "<html><body><p align=\"CENTER\">Недостаточно бонусов!</p><p align=\"CENTER\">Внести добровольное пожертвование в <a href=\"https://sirus.su/pay\">личном кабинете</a></p></body></html>",
-		enGB = "<html><body><p align=\"\"CENTER\"\">Not enough bonuses!</p><p align=\"\"CENTER\"\">Make a donation in <a href=\"\"https://sirus.su/pay\"\">your account</a></p></body></html>"
-	},
 	["SPEED"] = {
 		ruRU = "СКР",
 		enGB = "SPD"
 	},
-	["VIDEO_QUALITY_LABEL6"] = {
-		ruRU = "Вручную",
-		enGB = "Custom"
-	},
-	["OPTION_TOOLTIP_DESKTOP_GAMMA"] = {
-		ruRU = "Использование системных настроек гаммы.",
-		enGB = "Use the same gamma settings as your desktop."
-	},
 	["ABILITY_INFO_NIGHTELF1"] = {
 		ruRU = "- Умеет прятаться в тенях.",
 		enGB = "- May fade into the shadows."
-	},
-	["RUSSIAN_DECLENSION_5"] = {
-		ruRU = "Предложный падеж",
-		enGB = "Prepositional Case"
 	},
 	["WEAPON_SKILL"] = {
 		ruRU = "Ор. навык: %d",
@@ -2627,29 +1999,13 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Перенос персонажей",
 		enGB = "Character Migration"
 	},
-	["FACIAL_HAIR_TUSKS"] = {
-		ruRU = "Клыки",
-		enGB = "Tusks"
-	},
 	["LATEST_TOS_URL"] = {
 		ruRU = "http://launcher.wow-europe.com/ru/tos.htm",
 		enGB = "http://launcher.worldofwarcraft.com/legal/tos.htm"
 	},
-	["OPTION_TOOLTIP_ENABLE_SOUNDFX"] = {
-		ruRU = "Включение или отключение звуковых эффектов.",
-		enGB = "Enables or disables game sound effects."
-	},
-	["VERTICAL_SYNC"] = {
-		ruRU = "Верт. синхронизация",
-		enGB = "Vertical Sync"
-	},
 	["CHAR_LOGIN_NO_CHARACTER"] = {
 		ruRU = "Персонаж не найден",
 		enGB = "Character not found"
-	},
-	["FACIAL_HAIR_EARRINGS"] = {
-		ruRU = "Серьги",
-		enGB = "Earrings"
 	},
 	["CLASS_INFO_PALADIN0"] = {
 		ruRU = "- Роль: танкование, лечение, нанесение урона",
@@ -2658,14 +2014,6 @@ local SIRUS_LOCALIZATION = {
 	["CLASS_INFO_MAGE5"] = {
 		ruRU = "- Пользуется маной как ресурсом.",
 		enGB = "- Uses mana as a resource."
-	},
-	["OPTION_TOOLTIP_TERRAIN_TEXTURE"] = {
-		ruRU = "Степень слияния текстур при наложении.",
-		enGB = "Sets the rate at which one type of terrain blends to another."
-	},
-	["OPTION_TOOLTIP_PLAYER_DETAIL"] = {
-		ruRU = "Настройка разрешения текстур персонажа. Уменьшение значения этого параметра может слегка повысить производительность игры.",
-		enGB = "Controls the resolution of player textures. Decreasing this may slightly improve performance."
 	},
 	["ABILITY_INFO_BLOODELF1"] = {
 		ruRU = "- Имеет способности к наложению чар.",
@@ -2707,21 +2055,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "На экран входа",
 		enGB = "Return to Login"
 	},
-	["DISABLE_ADDONS"] = {
-		ruRU = "Отключить",
-		enGB = "Disable"
-	},
 	["CHAR_FACTION_CHANGE_RACE_ONLY"] = {
 		ruRU = "Вы должны выбрать одну из рас вашей стороны (Альянса или Орды).",
 		enGB = "You must choose a new race from your current faction."
-	},
-	["OPTION_TOOLTIP_SOUND_OUTPUT"] = {
-		ruRU = "Выберите источник звука.",
-		enGB = "Selects where you would like to hear your game sounds."
-	},
-	["OPTION_TOOLTIP_ENABLE_AMBIENCE"] = {
-		ruRU = "Воспроизведение фоновых звуков.",
-		enGB = "Enable ambient sounds."
 	},
 	["LOGIN_NO_GAME_ACCOUNT"] = {
 		ruRU = "Не удалось войти в игру с данной учетной записью.|nВозможно, к вашей учетной записи Battle.net не прикреплена ни одна учетная запись World of Warcraft или же вы пытаетесь авторизоваться в регионе, в котором у вас нет прикрепленных учетных записей. Если проблема не исчезнет, обратитесь, пожалуйста, в службу поддержки пользователей.",
@@ -2747,10 +2083,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Доступен",
 		enGB = "Available"
 	},
-	["UNAVAILABLE"] = {
-		ruRU = "Недоступен",
-		enGB = "Unavailable"
-	},
 	["AUTH_REJECT"] = {
 		ruRU = "Ошибка входа в игру. Обратитесь в службу технической поддержки по адресу WoWtechEU@blizzard.com.",
 		enGB = "Login unavailable - Please contact Technical Support at WoWTech@Blizzard.com"
@@ -2767,17 +2099,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "%s",
 		enGB = "%s"
 	},
-	["ADDON_INTERFACE_VERSION"] = {
-		ruRU = "Устарело",
-		enGB = "Out of date"
-	},
 	["CHAR_LOGIN_DISABLED"] = {
 		ruRU = "Доступ для данной расы, класса или персонажа в данный момент запрещен.",
 		enGB = "Login for that race, class, or character is currently disabled."
-	},
-	["RUSSIAN_DECLENSION_2"] = {
-		ruRU = "Дательный падеж",
-		enGB = "Dative Case"
 	},
 	["HARDWARE_SURVEY_AGREE"] = {
 		ruRU = "Разрешаю",
@@ -2791,14 +2115,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Нужно вводить логин, а не E-mail!",
 		enGB = "Enter your login, not your e-mail!"
 	},
-	["AMBIENCE_VOLUME"] = {
-		ruRU = "Мир",
-		enGB = "Ambience"
-	},
-	["VIDEO_QUALITY_LABEL1"] = {
-		ruRU = "минимальное",
-		enGB = "Low"
-	},
 	["CHAR_NAME_PROFANE"] = {
 		ruRU = "Имя содержит ненормативную лексику",
 		enGB = "That name contains mature language"
@@ -2811,21 +2127,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "- Пользуется маной как ресурсом.",
 		enGB = "- Uses mana as a resource."
 	},
-	["DEFAULTS"] = {
-		ruRU = "По умолчанию",
-		enGB = "Defaults"
-	},
-	["SHADOW_QUALITY"] = {
-		ruRU = "Качество теней",
-		enGB = "Shadow Quality"
-	},
 	["CHOOSE_VOTE_TOP"] = {
 		ruRU = "Выберите топ",
 		enGB = "Vote for the top player"
-	},
-	["NONE_CAPS"] = {
-		ruRU = "НЕТ",
-		enGB = "NONE"
 	},
 	["CHARACTER_FIX_HELP_HEAD"] = {
 		ruRU = "При использовании этой функции",
@@ -2851,17 +2155,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "- Может впадать в ярость, чтобы наносить повышенный урон.",
 		enGB = "- May enrage to increase damage."
 	},
-	["ENABLE_SOFTWARE_HRTF"] = {
-		ruRU = "Режим наушников",
-		enGB = "Headphone Mode"
-	},
 	["CHARACTER_CREATE"] = {
 		ruRU = "Создать",
 		enGB = "Create"
-	},
-	["OPTION_TOOLTIP_USE_REFRESH"] = {
-		ruRU = "Изменение частоты обновления экрана. Чем выше частота, тем меньше эффект мерцания изображения.",
-		enGB = "Changes the monitor refresh rates. Higher rates flicker less."
 	},
 	["RACE_INFO_BLOODELF"] = {
 		ruRU = "Много лет назад высшие эльфы-изгнанники основали поселение Кель'Талас, в котором создали магический источник, названный Солнечным Колодцем. Чем больше сил черпали из него эльфы, тем сильнее начинали от него зависеть.|n|nСпустя века Армия Плети разрушила Солнечный Колодец и убила большинство эльфов. Изгнанники назвали себя эльфами крови и стремятся восстановить Кель'Талас, а также найти новый источник волшебной силы, чтобы удовлетворить свое пагубное пристрастие.",
@@ -2874,10 +2170,6 @@ local SIRUS_LOCALIZATION = {
 	["ADDON_INVALID_VERSION_DIALOG"] = {
 		ruRU = "|cffFF0000Мы обнаружили одну или несколько модификаций, несовместимых с нашей версией игры, и отключили их.|r\n\n|cffFFFFFFОткройте окно \"Модификаций\" чтобы просмотреть информацию об обновлении.|r",
 		enGB = "|cffFF0000We have found one or several addons incompatible with our game version and have disabled them.|r\n\n|cffFFFFFFOpen the AddOns window to view information on available updates.|r"
-	},
-	["SOUND_SUBTEXT"] = {
-		ruRU = "С помощью этих настроек вы можете изменить настройки звука.",
-		enGB = "These options control sound hardware and the types and volumes of sounds within the game."
 	},
 	["CHOOSE_ALL_PROFESSION"] = {
 		ruRU = "Выберите обе профессии",
@@ -2911,22 +2203,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "%s %s (%s) (%s)\n%s",
 		enGB = "%s %s (%s) (%s)\n%s"
 	},
-	["MAIN_PROFESSION"] = {
-		ruRU = "Основная",
-		enGB = "Main"
-	},
-	["TRADESKILL_JEWELCRAFTING"] = {
-		ruRU = "Ювелирное дело",
-		enGB = "Jewelcrafting"
-	},
-	["TRADESKILL_ENGINEERING"] = {
-		ruRU = "Инженерное дело",
-		enGB = "Engineering"
-	},
-	["TRADESKILL_ENCHANTING"] = {
-		ruRU = "Наложение чар",
-		enGB = "Enchanting"
-	},
 	["LOGIN_STATE_INITIALIZED"] = {
 		ruRU = "Инициализация",
 		enGB = "Initialized"
@@ -2955,21 +2231,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Восстановить удаленного персонажа",
 		enGB = "Restore deleted character"
 	},
-	["OPTION_TOOLTIP_PARTICLE_DENSITY"] = {
-		ruRU = "Меняет количество частиц, участвующих в создании эффектов заклинаний, огня и прочего. Снижение плотности повышает производительность игры.",
-		enGB = "Controls the number of particles used in effects caused by spells, fires, etc. Decrease to improve performance."
-	},
 	["CHARACTER_FIX_STATUS_2"] = {
 		ruRU = "Персонаж не найден.",
 		enGB = "Character not found."
-	},
-	["ADDON_DEP_INSECURE"] = {
-		ruRU = "Зависимый ресурс небезопасен",
-		enGB = "Dependency insecure"
-	},
-	["CHARACTER_UNDELETE_STATUS_6"] = {
-		ruRU = "В этом игровом мире вы можете создать только одного персонажа героического класса рыцарь смерти.",
-		enGB = ""
 	},
 	["GAMETYPE_PVE"] = {
 		ruRU = "Обычный",
@@ -2979,25 +2243,13 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Воин\nЭтот класс доступен другим расам.",
 		enGB = "Warrior\nYou must choose a different race to be this class."
 	},
-	["CHARACTER_UNDELETE_STATUS_2"] = {
-		ruRU = "Неверные параметры.",
-		enGB = "Invalid parameters."
-	},
 	["RANDOM"] = {
 		ruRU = "Случайно",
 		enGB = "Random"
 	},
-	["NEXT"] = {
-		ruRU = "Вперёд",
-		enGB = "Next"
-	},
 	["ENTER_CHARACTER_NAME"] = {
 		ruRU = "Введите имя персонажа:",
 		enGB = "Enter a name for your character:"
-	},
-	["RUSSIAN_DECLENSION_EXAMPLE_4"] = {
-		ruRU = "Все очень довольны %s.",
-		enGB = "Now I am friends with %s."
 	},
 	["ARM"] = {
 		ruRU = "БРН",
@@ -3006,18 +2258,6 @@ local SIRUS_LOCALIZATION = {
 	["ABILITY_INFO_NIGHTELF2"] = {
 		ruRU = "- Лучше других уклоняется от вражеских ударов.",
 		enGB = "- More difficult to hit."
-	},
-	["DEPTH_CONVERGENCE"] = {
-		ruRU = "Глубина точки схода",
-		enGB = "Screen Depth"
-	},
-	["ALL_SETTINGS"] = {
-		ruRU = "Все настройки",
-		enGB = "All Settings"
-	},
-	["MINUTES_ABBR"] = {
-		ruRU = "мин.",
-		enGB = "|4Min:Mins;"
 	},
 	["SPELLS_ACTIVE"] = {
 		ruRU = "Активные:",
@@ -3030,14 +2270,6 @@ local SIRUS_LOCALIZATION = {
 	["PATCH_FAILED_DISK_FULL"] = {
 		ruRU = "Невозможно загрузить обновление – недостаточно свободного пространства на диске. Освободите как минимум %d Мб и повторите попытку. Внимание: для запуска обновления понадобится дополнительное свободное пространство.",
 		enGB = "There is not enough disk space available to download the patch.  Please make %d megabytes available and then try again.  Please note that additional space will be required to apply the patch."
-	},
-	["OPTION_TOOLTIP_ENABLE_DSP_EFFECTS"] = {
-		ruRU = "Включение специальных звуковых эффектов для голоса рыцарей смерти.",
-		enGB = "Enables special voice modulation effects for Death Knights."
-	},
-	["SPELLS"] = {
-		ruRU = "Заклинания",
-		enGB = "Spells"
 	},
 	["DECLENSION_NAME_RESERVED"] = {
 		ruRU = "Имя недоступно\n(возможно в результате склонения имени получилось запрещенное слово, попробуйте разные варианты)",
@@ -3071,10 +2303,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Этап",
 		enGB = "Stage"
 	},
-	["ENABLE_SOUND"] = {
-		ruRU = "Включить звук",
-		enGB = "Enable Sound"
-	},
 	["ADDON_INVALID_VERSION_OKAY_HIDE"] = {
 		ruRU = "Скрыть",
 		enGB = "Hide"
@@ -3099,10 +2327,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Данная операция не доступна для вашего аккаунта.",
 		enGB = "This operation is not available on your account."
 	},
-	["DEATH_EFFECT"] = {
-		ruRU = "Свечение призрака",
-		enGB = "Death Effect"
-	},
 	["DURABILITY"] = {
 		ruRU = "ПРОЧ %d",
 		enGB = "DURA %d"
@@ -3118,10 +2342,6 @@ local SIRUS_LOCALIZATION = {
 	["REGEN"] = {
 		ruRU = "ВОССТ %.0f",
 		enGB = "REGEN %.0f"
-	},
-	["ENABLE_ALL_ADDONS"] = {
-		ruRU = "Включить все",
-		enGB = "Enable All"
 	},
 	["CHARACTER_SERVICES_VIP_GIFT"] = {
 		ruRU = "VIP подарок",
@@ -3147,14 +2367,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Неверный пароль",
 		enGB = "Incorrect Password"
 	},
-	["HAIR_PANDA_STYLE"] = {
-		ruRU = "Серьги и хвост",
-		enGB = "Hair Style"
-	},
-	["ENABLE_BGSOUND"] = {
-		ruRU = "Фоновый режим",
-		enGB = "Sound in Background"
-	},
 	["LOGIN_BANNED"] = {
 		ruRU = "<html><body><p align=\"CENTER\">Данный аккаунт заблокирован. Более подробную информацию вы найдете в Личном Кабинете на сайте: <a href=\"http://sirus.su\">http://sirus.su</a>.</p></body></html>",
 		enGB = ""
@@ -3170,14 +2382,6 @@ local SIRUS_LOCALIZATION = {
 	["RACE_INFO_SCOURGE_FEMALE"] = {
 		ruRU = "Отрекшиеся, не попавшие под власть Короля-лича, ищут способ положить конец его правлению. Под предводительством банши Сильваны они сражаются против Армии Плети. Их врагами стали и люди, неустанно стремящиеся стереть с лица земли любую нежить. Отверженные не хранят верность союзам и даже Орду считают всего лишь инструментом воплощения своих темных замыслов.",
 		enGB = "Free of the Lich King's grasp, the Forsaken seek to overthrow his rule. Led by the banshee Sylvanas, they hunger for vengeance against the Scourge. Humans, too, have become the enemy, relentless in their drive to purge all undead from the land. The Forsaken care little even for their allies; to them the Horde is merely a tool that may further their dark schemes."
-	},
-	["DESKTOP_GAMMA"] = {
-		ruRU = "Параметры системы",
-		enGB = "Use desktop gamma"
-	},
-	["MANAGE_ACCOUNT"] = {
-		ruRU = "Учетная запись",
-		enGB = "Manage Account"
 	},
 	["REALM_IS_FULL_WARNING"] = {
 		ruRU = "Вы выбрали сервер, на котором не осталось свободных мест. Это может привести к задержке в подключении. Крайне рекомендуется указать менее заселенный сервер.\n\nВы действительно хотите выбрать данный сервер?",
@@ -3198,10 +2402,6 @@ local SIRUS_LOCALIZATION = {
 	["SERVER_SPLIT_NOT_NOW"] = {
 		ruRU = "Решить позже",
 		enGB = "Decide Later"
-	},
-	["SOUND_VOLUME"] = {
-		ruRU = "Звук",
-		enGB = "Sound"
 	},
 	["ROGUE_DISABLED"] = {
 		ruRU = "Разбойник\nЭтот класс доступен другим расам.",
@@ -3234,10 +2434,6 @@ local SIRUS_LOCALIZATION = {
 	["CLASS_MAGE"] = {
 		ruRU = "Маги – канонические волшебники Азерота. Долгими годами прилежной учебы они приобретают свои знания. Класс носит легкую броню, компенсируя свою уязвимость целым арсеналом атакующих и защитных заклинаний. Основные характеристики мага – сила заклинаний и интеллект.",
 		enGB = "Mages are the iconic magic-users of Azeroth and learn their craft through intense research and study. They make up for their light armor with a potent array of offensive and defensive spells. Their primary stats are Spell Power and Intellect."
-	},
-	["VIDEO_QUALITY_S"] = {
-		ruRU = "Качество изображения: %s",
-		enGB = "Video Quality: %s"
 	},
 	["LOGIN_ALREADYONLINE"] = {
 		ruRU = "Указанная учетная запись уже в игре. Проверьте правильность написания и повторите попытку.",
@@ -3279,14 +2475,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Логин",
 		enGB = "Login"
 	},
-	["CUSTOM"] = {
-		ruRU = "Вручную",
-		enGB = "Custom"
-	},
-	["CANCEL"] = {
-		ruRU = "Отмена",
-		enGB = "Cancel"
-	},
 	["LOGINBOX_PASSWORD"] = {
 		ruRU = "Пароль",
 		enGB = "Password"
@@ -3294,10 +2482,6 @@ local SIRUS_LOCALIZATION = {
 	["CHAR_CREATE_INVALID_NAME"] = {
 		ruRU = "Недопустимое имя персонажа",
 		enGB = "Invalid character name"
-	},
-	["CURRENT_SETTINGS"] = {
-		ruRU = "Эти настройки",
-		enGB = "These Settings"
 	},
 	["RANDOMIZE"] = {
 		ruRU = "Случайный выбор",
@@ -3319,10 +2503,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "- Умеет избегать снижающие скорость эффекты.",
 		enGB = "- May escape from speed altering effects."
 	},
-	["HAIR_WORGEN_STYLE"] = {
-		ruRU = "Прическа",
-		enGB = "Hair Style"
-	},
 	["QUEUE_TIME_LEFT_SECONDS"] = {
 		ruRU = "Свободных мест нет\nМесто в очереди: %d\nВремя ожидания – менее 1 мин.",
 		enGB = "Realm is Full\nPosition in queue: %d\nEstimated time: < 1 minute"
@@ -3343,10 +2523,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Ошибка авторизации",
 		enGB = "Authentication Error"
 	},
-	["ENABLE_MUSIC"] = {
-		ruRU = "Музыка",
-		enGB = "Music"
-	},
 	["CLASS_DRUID_FEMALE"] = {
 		ruRU = "Друиды искусно меняют свой облик, принимая вид животных и растений. Есть три школы друидов. Друиды, пошедшие по пути равновесия, предпочитают дальний бой и атакуют противника заклинаниями сил природы и тайной магии, друиды-оборотни ведут сражение в ближнем бою в облике кошки и медведя, а друиды-целители восстанавливают здоровье себе и союзникам с помощью заклинаний постепенного исцеления. Основные характеристики друида определяются его игровой ролью.",
 		enGB = "Druids are shape-shifters with an affinity for the plant and animal kingdoms. There are three types of druids: Balance druids who cast Nature or Arcane spells at range, Feral druids who can take on the form of a cat or bear to fight in melee, or Restoration druids who can heal their allies with an emphasis on heal-over-time spells. Druid primary stats depend on their role."
@@ -3359,73 +2535,33 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Введите код брелка безопасности",
 		enGB = "Enter the generated digital code."
 	},
-	["OPTION_TOOLTIP_VERTICAL_SYNC"] = {
-		ruRU = "Синхронизация смены кадров с вертикальной разверткой монитора. Включите этот параметр, если в игре наблюдается дрожание изображения при смене кадра.",
-		enGB = "Synchronizes your framerate to some fraction of your monitor's refresh rate. Enable this if you see excessive screen tearing in game."
-	},
 	["SOUL_SHARD"] = {
 		ruRU = "ОСКОЛ %d",
 		enGB = "SHRDS %d"
-	},
-	["WINDOW_LOCK"] = {
-		ruRU = "Постоянный размер",
-		enGB = "Disable Resize"
 	},
 	["CLASS_INFO_DEATHKNIGHT2"] = {
 		ruRU = "- Рыцари смерти – это бывшие слуги Короля-лича.",
 		enGB = "- Former servants of the Lich King."
 	},
-	["ENVIRONMENT_DETAIL"] = {
-		ruRU = "Детализация ландшафта",
-		enGB = "Environment Detail"
-	},
-	["OPTION_TOOLTIP_SOUND_VOLUME"] = {
-		ruRU = "Изменение громкости звуковых эффектов.",
-		enGB = "Adjusts the sound effect volume."
-	},
 	["CLIENT_CONVERTED_TEXT"] = {
 		ruRU = "Спасибо за покупку World of Warcraft. Пожалуйста, нажмите на кнопку перезапуска, чтобы начать загрузку полной версии World of Warcraft.",
 		enGB = "Thank you for buying World of Warcraft.  Please click the restart button to begin downloading the full version of World of Warcraft."
-	},
-	["NEAR"] = {
-		ruRU = "Мин.",
-		enGB = "Near"
 	},
 	["LOGIN_FAILED"] = {
 		ruRU = "<html><body><p align=\"CENTER\">Ошибка подключения. Пожалуйста, попробуйте подключиться позднее. Если вы постоянно получаете это сообщение, то свяжитесь со службой технической поддержки. Более подробно в <a href=\"https://forum.sirus.su/threads/2347/\">теме</a>.</p></body></html>",
 		enGB = ""
 	},
-	["FACIAL_HAIR_MARKINGS"] = {
-		ruRU = "Раскраска",
-		enGB = "Markings"
-	},
 	["GAME_SERVER_LOGIN"] = {
 		ruRU = "Вход на игровой сервер",
 		enGB = "Logging in to game server"
-	},
-	["FACIAL_HAIR_PIERCINGS"] = {
-		ruRU = "Пирсинг",
-		enGB = "Piercings"
 	},
 	["AUTH_DB_BUSY_URL"] = {
 		ruRU = "http://www.wow-europe.com/ru/serverstatus",
 		enGB = "http://www.worldofwarcraft.com/serverstatus"
 	},
-	["SOUND_LABEL"] = {
-		ruRU = "Звук",
-		enGB = "Sound"
-	},
 	["VIEW_ALL_REALMS"] = {
 		ruRU = "Список миров",
 		enGB = "View Realm List"
-	},
-	["ENABLE_HARDWARE"] = {
-		ruRU = "Аппаратное ускорение",
-		enGB = "Use Hardware"
-	},
-	["ADDON_INCOMPATIBLE"] = {
-		ruRU = "Несовместимо",
-		enGB = "Incompatible"
 	},
 	["CHAR_NAME_INVALID_CHARACTER"] = {
 		ruRU = "Имя может содержать только буквы русского алфавита",
@@ -3446,10 +2582,6 @@ local SIRUS_LOCALIZATION = {
 	["SECONDARY_PROFESSION"] = {
 		ruRU = "Вспомогательная",
 		enGB = "Secondary"
-	},
-	["CHARACTER_UNDELETE_STATUS_3"] = {
-		ruRU = "Достингуто максимальное количество персонажей.",
-		enGB = "The maximum number of characters has been reached."
 	},
 	["RACE_CLASS_ERROR"] = {
 		ruRU = "Недопустимое сочетание расы и класса. Пожалуйста, выберите подходящую расу для данного класса.",
@@ -3478,10 +2610,6 @@ local SIRUS_LOCALIZATION = {
 	["LOGIN_CHARGEBACK"] = {
 		ruRU = "<html><body><p align=\"CENTER\">Эта учетная запись World of Warcraft была временно приостановлена из-за возврата оплаты подписки. Более подробная информация находится по адресу<a href=\"http://eu.blizzard.com/support/article.xml?articleId=37442\">http://eu.blizzard.com/support/article.xml?articleId=37442</a>.</p></body></html>",
 		enGB = "<html><body><p align=\"CENTER\">This World of Warcraft account has been temporary closed due to a chargeback on its subscription.  Please refer to this <a href=\"http://us.blizzard.com/support/article/chargeback\">http://us.blizzard.com/support/article/chargeback</a> for further information.</p></body></html>"
-	},
-	["OPTION_TOOLTIP_ENABLE_MUSIC_LOOPING"] = {
-		ruRU = "Непрерывное воспроизведение фоновой музыки.",
-		enGB = "Enable to continuously play background music."
 	},
 	["LOGIN_TOO_FAST"] = {
 		ruRU = "Слишком много попыток подключиться к серверу. Попробуйте еще раз через несколько минут.",
@@ -3535,10 +2663,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Цена: %s",
 		enGB = "Price: %s"
 	},
-	["GAMMA"] = {
-		ruRU = "Гамма",
-		enGB = "Gamma"
-	},
 	["SERVER_ALERT_PTR_URL"] = {
 		ruRU = "",
 		enGB = ""
@@ -3567,33 +2691,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Обновите операционную систему с помощью средств обновления, доступных в меню настройки системы.",
 		enGB = "Please use Software Update in System Preferences to upgrade your system software."
 	},
-	["FAR"] = {
-		ruRU = "Макс.",
-		enGB = "Far"
-	},
-	["LEVEL"] = {
-		ruRU = "Уровень",
-		enGB = "Level"
-	},
-	["HAIR_HORNS_STYLE"] = {
-		ruRU = "Вид рогов",
-		enGB = "Horn Style"
-	},
 	["BILLING_TIME_LEFT_30_MINS"] = {
 		ruRU = "У вас осталось менее 30 минут оплаченного игрового времени. Рекомендуется перейти в соответствующий раздел и оплатить дополнительное время.",
 		enGB = "You currently have 30 minutes or less left on your account.  If you have not already done so, please go to the billing pages and purchase more time."
-	},
-	["FACTION"] = {
-		ruRU = "Фракция",
-		enGB = "Faction"
-	},
-	["ADDON_CORRUPT"] = {
-		ruRU = "Осквернение",
-		enGB = "Corrupt"
-	},
-	["HARDWARE"] = {
-		ruRU = "Аппаратное обеспечение",
-		enGB = "Hardware"
 	},
 	["CHARACTER_SERVICES_BUY"] = {
 		ruRU = "Купить",
@@ -3622,10 +2722,6 @@ local SIRUS_LOCALIZATION = {
 	["FEMALE"] = {
 		ruRU = "Женщина",
 		enGB = "Female"
-	},
-	["HIGH"] = {
-		ruRU = "Макс.",
-		enGB = "High"
 	},
 	["HIT"] = {
 		ruRU = "МЕТ",
@@ -3687,10 +2783,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Такое сочетание расы и класса невозможно.",
 		enGB = "This race and class combination is restricted from the race change service."
 	},
-	["CLOSE"] = {
-		ruRU = "Закрыть",
-		enGB = "Close"
-	},
 	["LOGIN_BAD_SERVER_PROOF"] = {
 		ruRU = "<html><body><p align=\"CENTER\">Вы пытаетесь подключиться к некорректному серверу. Если вам потребуется помощь, пожалуйста, свяжитесь со службой технической поддержки.</p></body></html>",
 		enGB = "<html><body><p align=\"CENTER\">You are connecting to an invalid game server. Please contact Technical Support for assistance.</p></body></html>"
@@ -3711,10 +2803,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "<html><body><p>Ваша учетная запись является полноценной платной учетной записью World of Warcraft и не подходит для использования пробной версии игры. Установите полную версию с DVD или CD либо загрузите ее отсюда: <a href='https://www.worldofwarcraft.com/account/download_wow.html'>https://www.worldofwarcraft.com/account/download_wow.html</a></p></body></html>",
 		enGB = "<html><body><p>Your account is a full retail account, and is not compatible with the World of Warcraft Trial version. Please install the retail version of World of Warcraft. If you need more help, see <a href='https://www.worldofwarcraft.com/account/download_wow.html'>https://www.worldofwarcraft.com/account/download_wow.html</a></p></body></html>"
 	},
-	["PARTICLE_DENSITY"] = {
-		ruRU = "Плотность частиц",
-		enGB = "Particle Density"
-	},
 	["CHAR_CREATE_ERROR"] = {
 		ruRU = "Ошибка создания персонажа",
 		enGB = "Error creating character"
@@ -3726,10 +2814,6 @@ local SIRUS_LOCALIZATION = {
 	["GAME_UPDATES"] = {
 		ruRU = "Обновление игры",
 		enGB = "Game Updates"
-	},
-	["RUSSIAN_DECLENSION"] = {
-		ruRU = "Склонение имени",
-		enGB = "Declensions"
 	},
 	["RACE_INFO_ORC"] = {
 		ruRU = "Орки происходят с планеты Дренор. Пока Пылающий Легион не подчинил этот народ своей власти, орки посвящали себя исключительно мирным занятиям и шаманизму. Но однажды демоны поработили орков и погнали на войну с людьми Азерота. Много лет потребовалось, чтобы избавиться от гнета Легиона и обрести долгожданную свободу. Теперь орки вынуждены сражаться за место в чужом для них мире.",
@@ -3763,33 +2847,13 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Сервер недоступен",
 		enGB = "World server is down"
 	},
-	["MUSIC_VOLUME"] = {
-		ruRU = "Музыка",
-		enGB = "Music"
-	},
-	["FACIAL_HAIR_PANDA_FEM"] = {
-		ruRU = "Серьги и хвост",
-		enGB = ""
-	},
-	["FACIAL_HAIR_EARS"] = {
-		ruRU = "Уши",
-		enGB = "Ears"
-	},
 	["CHARACTER_FIX_HELP_TEXT"] = {
 		ruRU = "- Будут сброшены все ауры.\n- Вы будете перемещены в локацию \"камня возвращения\".\n- При нахождении на поле боя, вы получите дезертира.\n- Ваш персонаж будет воскрешен, если это необходимо.\n- Вы получите дебаф \"Слабость после воскрешения\".",
 		enGB = "- All your auras will be reset.\n- You will be teleported to your Hearthstone location.\n- If you are in a battleground, you will receive the Deserter debuff.\n- Your character will be resurrected if necessary.\n- You will afflicted with the Resurrection Sickness debuff."
 	},
-	["FIX_LAG"] = {
-		ruRU = "Снизить задержку ввода",
-		enGB = "Reduce Input Lag"
-	},
 	["CHAR_CREATE_IN_PROGRESS"] = {
 		ruRU = "Создание персонажа",
 		enGB = "Creating character"
-	},
-	["OPTION_TOOLTIP_ENABLE_MUSIC"] = {
-		ruRU = "Воспроизведение фоновой музыки.",
-		enGB = "Enable background music."
 	},
 	["COMMUNITY_URL"] = {
 		ruRU = "http://www.wow-europe.com/ru",
@@ -3799,21 +2863,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Авторизация",
 		enGB = "Authenticating"
 	},
-	["OPTION_TOOLTIP_CINEMATIC_SUBTITLES"] = {
-		ruRU = "Отображение субтитров во время вступительных видеороликов.",
-		enGB = "Enables subtitles during the intro cinematic."
-	},
 	["OPTION_TOOLTIP_AMBIENT_VOLUME"] = {
 		ruRU = "Регулировка громкости звуков окружающего мира.",
 		enGB = "Adjusts the ambient sound volume."
-	},
-	["OPTION_TOOLTIP_USE_RESOLUTION"] = {
-		ruRU = "Изменение разрешения экрана в игре. Уменьшение значения этого параметра может повысить производительность игры.",
-		enGB = "Changes the screen resolution of the game. Decrease to improve performance."
-	},
-	["OPTION_TOOLTIP_ENABLE_SOUND"] = {
-		ruRU = "Включение или отключение звука.",
-		enGB = "Enables or disables all sound."
 	},
 	["SCANDLL_URL_HACK"] = {
 		ruRU = "http://eu.blizzard.com/support/article.xml?articleId=28360",
@@ -3823,17 +2875,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "http://www.wow-europe.com/ru/support/",
 		enGB = "http://support.worldofwarcraft.com/accountmessaging/getMessageBodyUnread.xml"
 	},
-	["OPTION_TOOLTIP_FIX_LAG"] = {
-		ruRU = "Включите этот параметр, чтобы снизить время отклика интерфейса. Учтите, что это может привести к очень сильному понижению производительности игры.",
-		enGB = "Enabling this reduces user interface lag, but may drastically reduce frame rates."
-	},
 	["SPELLS_HELP_1"] = {
 		ruRU = "Уникальные способности, которые относятся как к ведению боя, так и другим аспектам игры. Заклинания могут быть как Активные, так и Пассивные.",
 		enGB = "Unique abilities that relate to both combat and other aspects of the game. There are Active and Passive spells."
-	},
-	["OPTION_TOOLTIP_GROUND_DENSITY"] = {
-		ruRU = "Изменение плотности травы, палой листвы и других мелких деталей ландшафта. Уменьшение значения этого параметра может повысить производительность игры.",
-		enGB = "Controls the number of ground clutter items, like grass and foliage.  Decrease to improve performance."
 	},
 	["AUTH_NO_TIME"] = {
 		ruRU = "Срок действия вашей подписки истек. Необходима повторная активация учетной записи. Подробнее см. www.wow-europe.com/account/.",
@@ -3842,10 +2886,6 @@ local SIRUS_LOCALIZATION = {
 	["CHAR_CUSTOMIZATION0_DESC"] = {
 		ruRU = "Пол",
 		enGB = "Gender"
-	},
-	["OPTION_TOOLTIP_SPELL_DETAIL"] = {
-		ruRU = "Изменение уровня детализации визуальных спецэффектов. Уменьшение значения этого параметра может повысить производительность игры.",
-		enGB = "Controls the detail level of spell effects.  Decrease to improve performance."
 	},
 	["QUEUE_NAME_TIME_LEFT"] = {
 		ruRU = "Свободных мест нет: %s\nМесто в очереди: %d\nВремя ожидания: %d мин.",
@@ -3866,14 +2906,6 @@ local SIRUS_LOCALIZATION = {
 	["CHAR_CREATE_EXPANSION_CLASS"] = {
 		ruRU = "Создание персонажа этого класса требует наличия соответствующего дополнения к игре.",
 		enGB = "Creation of that class requires an account that has been upgraded to the appropriate expansion."
-	},
-	["ENABLE_EMOTE_SOUNDS"] = {
-		ruRU = "Звуки эмоций",
-		enGB = "Emote Sounds"
-	},
-	["OPTION_TOOLTIP_WINDOW_LOCK"] = {
-		ruRU = "Блокировка изменения размера окна игры.",
-		enGB = "Enable this to prevent resizing the game window."
 	},
 	["OUTBID_ON_SHORT"] = {
 		ruRU = "У вас перекупили %s",
@@ -3903,17 +2935,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "https://www.wow-europe.com/account/",
 		enGB = "http://www.worldofwarcraft.com/account"
 	},
-	["OPTION_TOOLTIP_WINDOWED_MAXIMIZED"] = {
-		ruRU = "Запуск игры в развернутом окне.",
-		enGB = "Check to maximize window and remove borders."
-	},
 	["CHAR_DELETE_FAILED_ARENA_CAPTAIN"] = {
 		ruRU = "Этот персонаж является капитаном команды арены. Прежде чем его удалить, передайте управление другому персонажу.",
 		enGB = "This character is an Arena Captain and cannot be deleted until the rank is transfered to another character."
-	},
-	["FULL_SCREEN_GLOW"] = {
-		ruRU = "Эффект свечения",
-		enGB = "Full-Screen Glow Effect"
 	},
 	["REALMLIST_POPULATION_TOOLTIP"] = {
 		ruRU = "Наиболее подходящие для комфортной игры миры\nимеют отметку «Новые игроки». Выбрав мир, помеченный как «Нет мест»,\nвы рискуете прождать некоторое время,\nпрежде чем сможете присоединиться к игре.",
@@ -3951,10 +2975,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Отрекшиеся, не попавшие под власть Короля-лича, ищут способ положить конец его правлению. Под предводительством банши Сильваны они сражаются против Армии Плети. Их врагами стали и люди, неустанно стремящиеся стереть с лица земли любую нежить. Отверженные не хранят верность союзам и даже Орду считают всего лишь инструментом воплощения своих темных замыслов.",
 		enGB = "Free of the Lich King's grasp, the Forsaken seek to overthrow his rule. Led by the banshee Sylvanas, they hunger for vengeance against the Scourge. Humans, too, have become the enemy, relentless in their drive to purge all undead from the land. The Forsaken care little even for their allies; to them the Horde is merely a tool that may further their dark schemes."
 	},
-	["MASTER_VOLUME"] = {
-		ruRU = "Общая громкость",
-		enGB = "Master Volume"
-	},
 	["LOGIN_NO_BATTLENET_MANAGER"] = {
 		ruRU = "<html><body><p align=\"CENTER\">Произошла ошибка входа в систему. Пожалуйста, повторите попытку позже. Если проблема остается, свяжитесь с технической поддержкой.</p></body></html>",
 		enGB = "<html><body><p align=\"CENTER\">There was an error logging in. Please try again later. If the problem persists, please contact Technical Support at: <a href=\"http://us.blizzard.com/support/article.xml?locale=en_US&amp;articleId=21014\">http://us.blizzard.com/support/article.xml?locale=en_US&amp;articleId=21014</a></p></body></html>"
@@ -3979,18 +2999,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Список миров получен",
 		enGB = "Realm list retrieved"
 	},
-	["MULTISAMPLE"] = {
-		ruRU = "Сглаживание",
-		enGB = "Multisampling"
-	},
-	["REFRESH_RATE"] = {
-		ruRU = "Частота",
-		enGB = "Refresh"
-	},
-	["RESOLUTION_LABEL"] = {
-		ruRU = "Разрешение",
-		enGB = "Resolution"
-	},
 	["RESPONSE_CONNECTED"] = {
 		ruRU = "Соединение установлено",
 		enGB = "Connected"
@@ -4003,17 +3011,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Персонажи",
 		enGB = "Characters"
 	},
-	["ENABLE_SOUND_AT_CHARACTER"] = {
-		ruRU = "Звук персонажа",
-		enGB = "Sound at Character"
-	},
 	["DEMON_HUNTER_DISABLE"] = {
 		ruRU = "Новый класс \"Охотник на демонов\", в данный момент недоступен! Следите за новостями сервера, чтобы первым узнать когда \"Охотник на демонов\", станет доступным.",
 		enGB = "The new Demon Hunter class is not available yet! Follow the server’s news to be the first to know when the Demon Hunter class becomes available."
-	},
-	["RUSSIAN_DECLENSION_EXAMPLE_5"] = {
-		ruRU = "Шлем прекрасно смотрится на %s.",
-		enGB = "Although I know nothing about %s."
 	},
 	["MENU_EDIT"] = {
 		ruRU = "Правка",
@@ -4026,26 +3026,6 @@ local SIRUS_LOCALIZATION = {
 	["ABILITY_INFO_TROLL3"] = {
 		ruRU = "- Наносит увеличенный урон животным.",
 		enGB = "- Damage increased versus beasts."
-	},
-	["OPTION_TOOLTIP_FARCLIP"] = {
-		ruRU = "Изменение дистанции отображения игровых объектов. Уменьшение значения этого параметра может сильно повысить производительность игры.",
-		enGB = "Changes how far you can see. Decreasing this may greatly improve performance."
-	},
-	["SECONDS_ABBR"] = {
-		ruRU = "сек.",
-		enGB = "|4Sec:Secs;"
-	},
-	["OPTION_STEREO_SEPARATION"] = {
-		ruRU = "Степень разделения объектов, создаваемая для эффекта стереозрения.",
-		enGB = "Changes the amount of separation created by 3D depth."
-	},
-	["MINUTES"] = {
-		ruRU = "%d мин.",
-		enGB = "%d |4min:mins;"
-	},
-	["FACIAL_HAIR_HAIR"] = {
-		ruRU = "Волосы",
-		enGB = "Hair"
 	},
 	["CHARACTER_DELETE_RESTORE_ERROR_5"] = {
 		ruRU = "<html><body><p align=\"CENTER\">Недостаточно бонусов!</p><p align=\"CENTER\">Внести добровольное пожертвование в <a href=\"https://sirus.su/pay\">личном кабинете</a></p></body></html>",
@@ -4087,37 +3067,13 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Отменить выбор",
 		enGB = "Clear Choice"
 	},
-	["STEREO_VIDEO_SUBTEXT"] = {
-		ruRU = "Эти настройки позволяют менять детали, относящиеся к стереоскопическому (3D) зрению.",
-		enGB = "These options allow you to change details having to do with stereoscopic (3D) viewing."
-	},
-	["CLIENT_RESTART_ALERT"] = {
-		ruRU = "Некоторые изменения вступят в силу только после повторного входа в игровой мир.",
-		enGB = "Some of your settings will not take effect until you restart the game."
-	},
-	["TEXTURE_DETAIL"] = {
-		ruRU = "Разрешение текстур",
-		enGB = "Texture Resolution"
-	},
 	["SCANNING_NOTICE"] = {
 		ruRU = "Некоторые пункты Соглашения о сканировании были изменены. Просмотрите весь текст Соглашения прежде, чем принимать его условия.",
 		enGB = "The scanning aggreement has changed. Please scroll down and review the changes before accepting the agreement."
 	},
-	["VIDEOOPTIONS_MENU"] = {
-		ruRU = "Изображение",
-		enGB = "Video"
-	},
-	["VIDEO_QUALITY_LABEL4"] = {
-		ruRU = "превосходное",
-		enGB = "High"
-	},
 	["CSTATUS_NEGOTIATION_COMPLETE"] = {
 		ruRU = "Проверка безопасности завершена",
 		enGB = "Security negotiation complete"
-	},
-	["VIDEO_QUALITY_SUBTEXT6"] = {
-		ruRU = "Позволяет настраивать дальность прорисовки, уровень детализации и качество визуальных эффектов. Производительность игры и качество графики будут зависеть от значений параметров.",
-		enGB = "Allows you to customize individual draw distances, detail levels, and effects. Performance and quality will vary by setting."
 	},
 	["CHARACTER_DELETE_RESTORE_ERROR_3"] = {
 		ruRU = "Достингуто максимальное количество персонажей.",
@@ -4131,17 +3087,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Низкая",
 		enGB = "Low"
 	},
-	["WORLD_LOD"] = {
-		ruRU = "Уровень детализации",
-		enGB = "Level of Detail"
-	},
 	["SERVER_DOWN"] = {
 		ruRU = "Сервер недоступен",
 		enGB = "Server down"
-	},
-	["HOURS_ABBR"] = {
-		ruRU = "ч.",
-		enGB = "|4Hr:Hrs;"
 	},
 	["CLASS_INFO_WARLOCK3"] = {
 		ruRU = "- Акцент на проклятиях, вытягивании сил и эффектах, наносящих периодический урон.",
@@ -4908,7 +3856,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL2_DESC"] = {
-		ruRU = "Упорство, труд и выучка способны преодолеть любые преграды. Меткость повышена на 1%, Мастерство - на 2 ед.",
+		ruRU = "Упорство, труд и выучка способны преодолеть любые преграды. Меткость повышена на 2%, Мастерство - на 2 ед.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL3_DESC"] = {
@@ -4952,7 +3900,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL2_DESC"] = {
-		ruRU = "Все Дворфы знают, как направить удар или заклинание с максимальной эффективностью. Модификатор критического урона и исцеления всех атак и заклинаний увеличен на 4%.",
+		ruRU = "Все Дворфы знают, как направить удар или заклинание с максимальной эффективностью. Модификатор критического урона и исцеления всех атак и заклинаний увеличен на 4%, а вероятность критического эффекта - на 1%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL3_DESC"] = {
@@ -4996,7 +3944,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL2_DESC"] = {
-		ruRU = "Ночные эльфы отмечены благосклонностью богини. Скорость атаки и произнесения заклинаний увеличена на 2%.",
+		ruRU = "Ночные эльфы отмечены благосклонностью богини. Скорость атаки и произнесения заклинаний увеличена на 2%, а вероятность критического эффекта - на 1%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL3_DESC"] = {
@@ -5368,7 +4316,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL2_DESC"] = {
-		ruRU = "Орки обучаются азам боя, лечения, охоты и военного ремесла с юного возраста. Множитель критического эффекта всех атак, способностей и заклинаний увеличен на 2%, а мастерство - на 2 ед.",
+		ruRU = "Орки обучаются азам боя, лечения, охоты и военного ремесла с юного возраста. Множитель критического эффекта всех атак, способностей и заклинаний увеличен на 4%, а мастерство - на 2 ед.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL3_DESC"] = {
@@ -6154,7 +5102,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL_ACTIVE1_DESC_SHORT"] = {
-		ruRU = "warrior_talent_icon_avatar|Развеивает эффекты болезней, яда и кровотечения, предоставляет невосприимчивость к ним и оглушению, ошеломлению, параличу сроком на 3 сек.\nПерезарядка: 120 секунд",
+		ruRU = "warrior_talent_icon_avatar|Развеивает эффекты болезней, яда и кровотечения, предоставляет невосприимчивость к ним и оглушению, ошеломлению, параличу сроком на 3 сек.\nПерезарядка: 90 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL_ACTIVE2_DESC_SHORT"] = {
@@ -6246,7 +5194,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL_PASSIVE2_DESC_SHORT"] = {
-		ruRU = "spell_arcane_arcanepotency|Меткость и вероятность критического эффекта повышены на 1%.",
+		ruRU = "spell_arcane_arcanepotency|Меткость повышена на 2%, а вероятность критического эффекта - на 1%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL_PASSIVE3_DESC_SHORT"] = {
@@ -6290,11 +5238,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL_PASSIVE2_DESC_SHORT"] = {
-		ruRU = "spell_fire_rune|Длительность замедления, сковывания, ошеломления, оглушения, сна, изгнания, немоты и контроля над разумом сокращена на 10%.",
+		ruRU = "spell_fire_rune|Применение способностей с некоторой вероятностью повышает наносимый урон и исходящее исцеление на 1% вплоть до 3%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL_PASSIVE3_DESC_SHORT"] = {
-		ruRU = "inv_shoulder_leather_firelandsdruid_d_01|Множитель критического эффекта увеличен на 2%, а вероятность критического удара - на 1%.",
+		ruRU = "inv_shoulder_leather_firelandsdruid_d_01|Множитель критического эффекта увеличен на 4%, а вероятность критического удара - на 1%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL_PASSIVE4_DESC_SHORT"] = {
@@ -6314,7 +5262,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL_PASSIVE2_DESC_SHORT"] = {
-		ruRU = "ability_paladin_longarmofthelaw|При смерти исцеляет союзников в радиусе 20 м. и увеличивает получаемое ими исцеление.",
+		ruRU = "racial_lightforged_giftoflight|Показатель силы атаки увеличен на 2%, а модификатор критического эффекта атакующих и целительных заклинаний - на 4%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL_PASSIVE3_DESC_SHORT"] = {
@@ -6330,7 +5278,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL_ACTIVE2_DESC_SHORT"] = {
-		ruRU = "ability_paladin_infusionoflight|Наносит испепеляющий урон цели, зависящий от вашей силы атаки или силы заклинаний, и повышает получаемый ею от вас урон.\nПерезарядка: 60 секунд",
+		ruRU = "spell_holy_healingfocus|Увеличивает наносимый вами урон и исходящее исцеление на 20%, а также снижает получаемый магический урон на 40% сроком на 10 сек.\nПерезарядка: 120 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL_PASSIVE1_DESC_SHORT"] = {
@@ -6346,7 +5294,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL_ACTIVE1_DESC_SHORT"] = {
-		ruRU = "ability_warrior_improveddisciplines|Предоставляет вам временную невосприимчивость к замедлению и сковыванию.\nПерезарядка: 120 секунд",
+		ruRU = "ability_warrior_improveddisciplines|Предоставляет вам временную невосприимчивость к замедлению и сковыванию.\nПерезарядка: 90 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL_ACTIVE2_DESC_SHORT"] = {
@@ -6406,7 +5354,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL_ACTIVE1_DESC_SHORT"] = {
-		ruRU = "racial_troll_berserk|Предоставляет невосприимчивость к эффектам ослепления, страха, ужаса и контроля над разумом, а также повышает скорость перемещения на 20%.\nПерезарядка: 120 секунд",
+		ruRU = "racial_troll_berserk|Предоставляет невосприимчивость к эффектам ослепления, страха, ужаса и контроля над разумом, а также повышает скорость перемещения на 20%.\nПерезарядка: 90 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL_ACTIVE2_DESC_SHORT"] = {
@@ -6426,7 +5374,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL_ACTIVE1_DESC_SHORT"] = {
-		ruRU = "ability_racial_rocketjump|Развеивает эффекты сковывания, замедления и позволяет вам совершить реактивный прыжок вперед.\nПерезарядка: 90 секунд",
+		ruRU = "ability_racial_rocketjump|Развеивает эффекты сковывания, замедления и позволяет вам совершить реактивный прыжок вперед. \nИмеет общее время восстановления со способностями \"Рывок\", \"Перехват\", и \"Вмешательство\", равное 15 сек.\nПерезарядка: 120 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL_ACTIVE2_DESC_SHORT"] = {
@@ -6458,7 +5406,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL_PASSIVE2_DESC_SHORT"] = {
-		ruRU = "sha_ability_rogue_bloodyeye_nightmare|Повышает меткость, скорость атак и произнесения заклинаний - на 1%.",
+		ruRU = "sha_ability_rogue_bloodyeye_nightmare|Повышает меткость на 1%, а скорость атак и произнесения заклинаний - на 2%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL_PASSIVE3_DESC_SHORT"] = {
@@ -6514,7 +5462,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL_ACTIVE1_DESC_SHORT"] = {
-		ruRU = "spell_warlock_demonicportal_green|Перемещает вас в указанную точку на расстоянии 20 м.\nПерезарядка: 60 секунд",
+		ruRU = "spell_warlock_demonicportal_green|Перемещает вас в указанную точку на расстоянии 20 м.\nИмеет общее время восстановления со способностями \"Рывок\", \"Перехват\", и \"Вмешательство\", равное 15 сек.\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL_ACTIVE2_DESC_SHORT"] = {
@@ -6558,7 +5506,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL_ACTIVE1_DESC_SHORT"] = {
-		ruRU = "ability_monk_paralysis|Парализует противника на 1 минуту (или на 5 сек., если целью является игрок). Эффект паралича будет развеян, если цель получит урон.\nПерезарядка: 60 секунд",
+		ruRU = "ability_monk_paralysis|Парализует противника на 1 минуту (или на 5 сек., если целью является игрок). Эффект паралича будет развеян, если цель получит урон.\nПерезарядка: 90 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL_ACTIVE2_DESC_SHORT"] = {
@@ -6593,6 +5541,38 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Без имени",
 		enGB = "",
 	},
+	["CHARACTER_UNDELETE_STATUS_1"] = {
+		ruRU = "Выполняется другая операция.",
+		enGB = "Another operation is in progress."
+	},
+	["CHARACTER_UNDELETE_STATUS_2"] = {
+		ruRU = "Неверные параметры.",
+		enGB = "Invalid parameters."
+	},
+	["CHARACTER_UNDELETE_STATUS_3"] = {
+		ruRU = "Достингуто максимальное количество персонажей.",
+		enGB = "The maximum number of characters has been reached."
+	},
+	["CHARACTER_UNDELETE_STATUS_4"] = {
+		ruRU = "Персонаж не найден.",
+		enGB = "Character not found."
+	},
+	["CHARACTER_UNDELETE_STATUS_5"] = {
+		ruRU = "<html><body><p align=\"CENTER\">Недостаточно бонусов!</p><p align=\"CENTER\">Внести добровольное пожертвование в <a href=\"https://sirus.su/pay\">личном кабинете</a></p></body></html>",
+		enGB = "<html><body><p align=\"\"CENTER\"\">Not enough bonuses!</p><p align=\"\"CENTER\"\">Make a donation in <a href=\"\"https://sirus.su/pay\"\">your account</a></p></body></html>"
+	},
+	["CHARACTER_UNDELETE_STATUS_6"] = {
+		ruRU = "В этом игровом мире вы можете создать только одного персонажа героического класса рыцарь смерти.",
+		enGB = ""
+	},
+	["CHARACTER_UNDELETE_STATUS_7"] = {
+		ruRU = "Это действие невозможно для неподтвержденных учетных записей",
+		enGB = ""
+	},
+	["CHARACTER_UNDELETE_STATUS_8"] = {
+		ruRU = "Неверный индекс персонажа",
+		enGB = ""
+	},
 	["REALM_CARD_RATE"] = {
 		ruRU = "РЕЙТ",
 		enGB = "",
@@ -6611,20 +5591,13 @@ local SIRUS_LOCALIZATION = {
 	},
 }
 
-setmetatable(SIRUS_LOCALIZATION, {
-	__call = function(self, key)
-		if not self[key] then
-			return "~"..key
-		end
-
-		if GetLocale() == "ruRU" then
-			return self[key].ruRU
-		else
-			return self[key].enGB ~= "" and self[key].enGB or key
-		end
+do
+	local _G = _G
+	local next = next
+	local locale = GetLocale()
+	for key, data in next, SIRUS_LOCALIZATION do
+		_G[key] = data[locale] or data.enGB
 	end
-})
-
-for key in next, SIRUS_LOCALIZATION do
-	setglobal(key, SIRUS_LOCALIZATION(key))
+	table.wipe(SIRUS_LOCALIZATION)
+	SIRUS_LOCALIZATION = nil
 end

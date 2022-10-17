@@ -4105,10 +4105,23 @@
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
+			<CheckButton name="$parentCallOfAdventureToast" inherits="InterfaceOptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentAuctionHouseToast" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX
+						self.cvar = "C_CVAR_SHOW_CALL_OF_ADVENTURE_TOAST"
+
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
 
 			<CheckButton name="$parentToastSound" inherits="InterfaceOptionsCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOP" relativeTo="$parentAuctionHouseToast" relativePoint="BOTTOM" x="0" y="0" />
+					<Anchor point="TOP" relativeTo="$parentCallOfAdventureToast" relativePoint="BOTTOM" x="0" y="0" />
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -4206,6 +4219,24 @@
 					</OnLoad>
 					<OnEvent>
 						self.soundName = E_TOAST_DATA[E_TOAST_CATEGORY.AUCTION_HOUSE].sound
+					</OnEvent>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentCallOfAdventureToastSound" inherits="InterfaceOptionsCheckAudioTestButtonTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentAuctionHouseToastSound" relativePoint="BOTTOM" x="0" y="0" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX
+						self.cvar = "C_CVAR_CALL_OF_ADVENTURE_TOAST_SOUND"
+
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelToastSound, self)
+						self:RegisterEvent("PLAYER_ENTERING_WORLD")
+					</OnLoad>
+					<OnEvent>
+						self.soundName = E_TOAST_DATA[E_TOAST_CATEGORY.CALL_OF_ADVENTURE].sound
 					</OnEvent>
 				</Scripts>
 			</CheckButton>

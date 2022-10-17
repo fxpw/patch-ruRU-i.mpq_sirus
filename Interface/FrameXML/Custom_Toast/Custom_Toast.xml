@@ -71,18 +71,18 @@
                 <Texture name="$parentIcon" parentKey="Icon" file="Interface\ICONS\INV_Misc_QuestionMark">
                     <Size x="34" y="34"/>
                 	<Anchors>
-                		<Anchor point="LEFT" relativePoint="LEFT" x="10" y="0" />
+						<Anchor point="LEFT" x="10" y="0" />
                 	</Anchors>
                 </Texture>
-                <FontString name="$parentTitleText" parentKey="TitleText" inherits="FriendsFont_Normal" justifyH="LEFT" justifyV="MIDDLE" text="Title text">
-                    <Size x="0" y="8"/>
+				<FontString name="$parentTitleText" parentKey="TitleText" inherits="FriendsFont_Normal" justifyH="LEFT" justifyV="TOP" maxLines="2">
+					<Size x="180" y="0"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" x="48" y="-10"/>
-                        <Anchor point="RIGHT" x="-20" y="0"/>
                     </Anchors>
                     <Color r="0.510" g="0.773" b="1"/>
                 </FontString>
-                <FontString name="$parentBodyText" parentKey="BodyText" inherits="FriendsFont_Small" justifyH="LEFT" justifyV="TOP" text="Body text">
+				<FontString name="$parentBodyText" parentKey="BodyText" inherits="FriendsFont_Small" justifyH="LEFT" justifyV="TOP">
+					<Size x="192" y="0"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" relativeTo="$parentTitleText" relativePoint="BOTTOMLEFT" x="0" y="-6"/>
                     </Anchors>
@@ -116,8 +116,6 @@
         <Scripts>
             <OnLoad>
                 Mixin(self, SocialToastMixin)
-
-            --    self:OnLoad()
             </OnLoad>
             <OnHide>
                 self:OnHide()

@@ -55,6 +55,25 @@ function C_GluePackets:SendPacketThrottled(opcode, ...)
 	end
 end
 
+local function reverse(t)
+	local nt = {}
+	local size = #t + 1
+	for k, v in ipairs(t) do
+		nt[size - k] = v
+	end
+	return nt
+end
+
+local function toBits(num)
+	local t = {}
+	while num > 0 do
+		local rest = math.fmod(num, 2)
+		t[#t + 1] = rest
+		num = (num - rest) / 2
+	end
+	return reverse(t)
+end
+
 function C_GluePackets:SendPacket(opcode, ...)
 	self.lastMessage = debugprofilestop()
 

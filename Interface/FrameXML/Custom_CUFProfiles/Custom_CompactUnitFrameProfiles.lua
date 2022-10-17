@@ -34,7 +34,9 @@ local FLATTENDED_OPTIONS = {
 	["autoActivatePvP"] = 1,
 	["autoActivatePvE"] = 1,
 	["rangeCheck"] = 1,
+	["rangeAlpha"] = 1,
 	["raidTargetIcon"] = 1,
+	["partyInRaid"] = 1,
 };
 
 local DEFAULT_PROFILE = {
@@ -68,7 +70,9 @@ local DEFAULT_PROFILE = {
 	autoActivatePvP = false,
 	autoActivatePvE = false,
 	rangeCheck = 3,
+	rangeAlpha = 55,
 	raidTargetIcon = false,
+	partyInRaid = false,
 };
 
 function GetNumRaidProfiles()
@@ -206,11 +210,21 @@ function GetRaidProfileOption(profile, optionName)
 		return;
 	end
 
+	if not FLATTENDED_OPTIONS[optionName] then
+		error(string.format("Unknown option: %s", optionName), 2)
+	end
+
 	for _, profileData in ipairs(PROFILES) do
 		if ( profileData.name == profile ) then
-			return profileData[optionName];
+			if profileData[optionName] ~= nil then
+				return profileData[optionName];
+			else
+				break;
+			end
 		end
 	end
+
+	return DEFAULT_PROFILE[optionName];
 end
 
 function GetRaidProfileFlattenedOptions(profile)
@@ -284,7 +298,9 @@ function CompactUnitFrameProfiles_OnLoad(self)
 	--Get this working with the InterfaceOptions panel.
 	self.name = COMPACT_UNIT_FRAME_PROFILES_LABEL;
 	self.options = {
+		C_CVAR_USE_COMPACT_SOLO_FRAMES = { text = "USE_RAID_STYLE_SOLO_FRAMES" },
 		C_CVAR_USE_COMPACT_PARTY_FRAMES = { text = "USE_RAID_STYLE_PARTY_FRAMES" },
+		C_CVAR_HIDE_PARTY_INTERFACE_IN_RAID = { text = "HIDE_PARTY_INTERFACE_TEXT" },
 	};
 
 	BlizzardOptionsPanel_OnLoad(self, CompactUnitFrameProfiles_SaveChanges, CompactUnitFrameProfiles_CancelCallback, CompactUnitFrameProfiles_DefaultCallback, CompactUnitFrameProfiles_UpdateCurrentPanel);
@@ -857,7 +873,9 @@ CUFProfileActionTable = {
 	horizontalGroups = CompactUnitFrameProfiles_GenerateRaidManagerSetting("HorizontalGroups");
 	healthText = CompactUnitFrameProfiles_GenerateOptionSetter("healthText", "normal"),
 	rangeCheck = CompactUnitFrameProfiles_GenerateOptionSetter("rangeCheck", "all"),
+	rangeAlpha = CompactUnitFrameProfiles_GenerateOptionSetter("rangeAlpha", "all"),
 	raidTargetIcon = CompactUnitFrameProfiles_GenerateOptionSetter("raidTargetIcon", "all"),
+	partyInRaid = CompactUnitFrameProfiles_GenerateRaidManagerSetting("PartyInRaid"),
 	frameWidth = CompactUnitFrameProfiles_GenerateSetUpOptionSetter("width", "all");
 	frameHeight = 	function(value)
 		DefaultCompactUnitFrameSetupOptions.height = value;

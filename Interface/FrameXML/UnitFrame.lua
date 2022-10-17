@@ -113,6 +113,7 @@ function UnitFrame_SetUnit (self, unit, healthbar, manabar)
 				RuneFrame:ClearAllPoints()
 				RuneFrame:SetPoint("TOP",self,"BOTTOM",25,20)
 			end
+			RuneFrame:Raise()
 		end
 	end
 	securecall("UnitFrame_Update", self);
@@ -224,6 +225,47 @@ function UnitFrame_OnEvent(self, event, ...)
 			UnitFrameManaBar_UpdateType(self.manabar);
 		end
 	end
+end
+
+--WARNING: This function is very similar to the function CompactUnitFrameUtil_UpdateFillBar in CompactUnitFrame.lua.
+--If you are making changes here, it is possible you may want to make changes there as well.
+function UnitFrameUtil_UpdateFillBarBase(frame, realbar, previousTexture, bar, amount, barOffsetXPercent)
+	if ( amount == 0 ) then
+		bar:Hide();
+		if ( bar.overlay ) then
+			bar.overlay:Hide();
+		end
+		return previousTexture;
+	end
+
+	local barOffsetX = 0;
+	if ( barOffsetXPercent ) then
+		local realbarSizeX = realbar:GetWidth();
+		barOffsetX = realbarSizeX * barOffsetXPercent;
+	end
+
+	bar:SetPoint("TOPLEFT", previousTexture, "TOPRIGHT", barOffsetX, 0);
+	bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMRIGHT", barOffsetX, 0);
+
+	local totalWidth, totalHeight = realbar:GetSize();
+	local _, totalMax = realbar:GetMinMaxValues();
+
+	local barSize = (amount / totalMax) * totalWidth;
+	bar:SetWidth(barSize);
+	bar:Show();
+	if ( bar.overlay ) then
+		bar.overlay:SetTexCoord(0, barSize / bar.overlay.tileSize, 0, totalHeight / bar.overlay.tileSize);
+		bar.overlay:Show();
+	end
+	return bar;
+end
+
+function UnitFrameUtil_UpdateFillBar(frame, previousTexture, bar, amount, barOffsetXPercent)
+	return UnitFrameUtil_UpdateFillBarBase(frame, frame.healthbar, previousTexture, bar, amount, barOffsetXPercent);
+end
+
+function UnitFrameUtil_UpdateManaFillBar(frame, previousTexture, bar, amount, barOffsetXPercent)
+	return UnitFrameUtil_UpdateFillBarBase(frame, frame.manabar, previousTexture, bar, amount, barOffsetXPercent);
 end
 
 function UnitFrame_OnEnter (self)
