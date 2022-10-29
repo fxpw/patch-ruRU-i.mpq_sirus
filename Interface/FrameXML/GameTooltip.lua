@@ -392,7 +392,7 @@ function C_Tooltip_CustomRender( self, ... )
 				end
 			end
 
-			if (startEquipmentSetLine and endEquipmentSetLine) and C_InRange(i, startEquipmentSetLine, endEquipmentSetLine) then
+			if (startEquipmentSetLine and endEquipmentSetLine) and WithinRange(i, startEquipmentSetLine, endEquipmentSetLine) then
 				local itemName = string.match(text, "%s+(.*)")
 
 				if itemName then

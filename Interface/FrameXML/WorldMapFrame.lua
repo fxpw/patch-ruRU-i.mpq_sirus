@@ -1233,25 +1233,22 @@ function WorldMapButton_OnUpdate(self, elapsed)
 
 	WorldMapFrame.areaName = name
 	if ( not WorldMapFrame.poiHighlight ) then
-		WorldMapFrameAreaLabel:SetText(name)
+		if name and name ~= "" and MapLevelData[fileName] then
+			local playerLevel = UnitLevel("player")
+			local minLevel, maxLevel = unpack(MapLevelData[fileName])
+			local color
 
-		if name and name ~= "" then
-			if MapLevelData[fileName] then
-				local playerLevel = UnitLevel("player")
-				local minLevel, maxLevel = unpack(MapLevelData[fileName])
-				local color
-
-				if (playerLevel < minLevel) then
-					color = GetQuestDifficultyColor(minLevel)
-				elseif (playerLevel > maxLevel) then
-					color = GetQuestDifficultyColor(maxLevel - 2)
-				else
-					color = QuestDifficultyColors["difficult"]
-				end
-
-				color = ConvertRGBtoColorString(color)
-				WorldMapFrameAreaLabel:SetText(WorldMapFrameAreaLabel:GetText()..color.." ("..minLevel.."-"..maxLevel..")")
+			if (playerLevel < minLevel) then
+				color = GetQuestDifficultyColor(minLevel)
+			elseif (playerLevel > maxLevel) then
+				color = GetQuestDifficultyColor(maxLevel - 2)
+			else
+				color = QuestDifficultyColors["difficult"]
 			end
+
+			WorldMapFrameAreaLabel:SetFormattedText("%s |cff%2x%2x%2x(%i-%i)|r", name, color.r * 255, color.g * 255, color.b * 255, minLevel, maxLevel)
+		else
+			WorldMapFrameAreaLabel:SetText(name)
 		end
 	end
 	if ( fileName ) then

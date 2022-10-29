@@ -141,10 +141,11 @@ function CharacterSelect_OnShow()
 	end
 
 	if #translationTable == 0 then
-        for i = 1, 10 do
-            table.insert(translationTable, i <= GetNumCharacters() and i or 0)
-        end
-    end
+		local numCharacters = GetNumCharacters()
+		for i = 1, MAX_CHARACTERS_DISPLAYED do
+			translationTable[i] = i <= numCharacters and i or 0
+		end
+	end
 
 	UpdateAddonButton();
 
@@ -154,81 +155,6 @@ function CharacterSelect_OnShow()
 		GetCharacterListUpdate();
 	else
 		UpdateCharacterList();
-	end
-
-	-- Gameroom billing stuff (For Korea and China only)
-	if ( SHOW_GAMEROOM_BILLING_FRAME ) then
-		local paymentPlan, hasFallBackBillingMethod, isGameRoom = GetBillingPlan();
-		if ( paymentPlan == 0 ) then
-			-- No payment plan
-			GameRoomBillingFrame:Hide();
-			CharacterSelectRealmSplitButton:ClearAllPoints();
-			CharacterSelectRealmSplitButton:SetPoint("TOP", CharacterSelectLogo, "BOTTOM", 0, -5);
-		else
-			local billingTimeLeft = GetBillingTimeRemaining();
-			-- Set default text for the payment plan
-			local billingText = _G["BILLING_TEXT"..paymentPlan];
-			if ( paymentPlan == 1 ) then
-				-- Recurring account
-				billingTimeLeft = ceil(billingTimeLeft/(60 * 24));
-				if ( billingTimeLeft == 1 ) then
-					billingText = BILLING_TIME_LEFT_LAST_DAY;
-				end
-			elseif ( paymentPlan == 2 ) then
-				-- Free account
-				if ( billingTimeLeft < (24 * 60) ) then
-					billingText = format(BILLING_FREE_TIME_EXPIRE, billingTimeLeft.." "..MINUTES_ABBR);
-				end
-			elseif ( paymentPlan == 3 ) then
-				-- Fixed but not recurring
-				if ( isGameRoom == 1 ) then
-					if ( billingTimeLeft <= 30 ) then
-						billingText = BILLING_GAMEROOM_EXPIRE;
-					else
-						billingText = format(BILLING_FIXED_IGR, MinutesToTime(billingTimeLeft, 1));
-					end
-				else
-					-- personal fixed plan
-					if ( billingTimeLeft < (24 * 60) ) then
-						billingText = BILLING_FIXED_LASTDAY;
-					else
-						billingText = format(billingText, MinutesToTime(billingTimeLeft));
-					end
-				end
-			elseif ( paymentPlan == 4 ) then
-				-- Usage plan
-				if ( isGameRoom == 1 ) then
-					-- game room usage plan
-					if ( billingTimeLeft <= 600 ) then
-						billingText = BILLING_GAMEROOM_EXPIRE;
-					else
-						billingText = BILLING_IGR_USAGE;
-					end
-				else
-					-- personal usage plan
-					if ( billingTimeLeft <= 30 ) then
-						billingText = BILLING_TIME_LEFT_30_MINS;
-					else
-						billingText = format(billingText, billingTimeLeft);
-					end
-				end
-			end
-			-- If fallback payment method add a note that says so
-			if ( hasFallBackBillingMethod == 1 ) then
-				billingText = billingText.."\n\n"..BILLING_HAS_FALLBACK_PAYMENT;
-			end
-			GameRoomBillingFrameText:SetText(billingText);
-			GameRoomBillingFrame:SetHeight(GameRoomBillingFrameText:GetHeight() + 26);
-			GameRoomBillingFrame:Show();
-			CharacterSelectRealmSplitButton:ClearAllPoints();
-			CharacterSelectRealmSplitButton:SetPoint("TOP", GameRoomBillingFrame, "BOTTOM", 0, -10);
-		end
-	end
-
-	if( IsTrialAccount() ) then
-		CharacterSelectUpgradeAccountButton:Show();
-	else
-		CharacterSelectUpgradeAccountButton:Hide();
 	end
 
 	-- fadein the character select ui
@@ -504,9 +430,9 @@ function CharacterSelect_OnEvent(self, event, ...)
 		if numCharacters then
 			table.wipe(translationTable)
 
-			for i = 1, 10 do
-                table.insert(translationTable, i <= numCharacters and i or 0)
-            end
+			for i = 1, MAX_CHARACTERS_DISPLAYED do
+				translationTable[i] = i <= numCharacters and i or 0
+			end
 
 			CharacterSelect.orderChanged = nil
 		end
@@ -675,8 +601,8 @@ function CharacterSelect_OnEvent(self, event, ...)
 				local numCharacters = GetNumCharacters()
 				table.wipe(translationServerCache)
 
-				for i = 1, 10 do
-					table.insert(translationServerCache, i <= numCharacters and i or 0)
+				for i = 1, MAX_CHARACTERS_DISPLAYED do
+					translationServerCache[i] = i <= numCharacters and i or 0
 				end
 
 				CharacterSelect.lockCharacterMove = false
@@ -970,6 +896,7 @@ function UpdateCharacterList( dontUpdateSelect )
 				CharSelectCreateCharacterButton:Enable();
 			end
 		end
+		button.charLevel = nil
 		button:Hide();
 		index = index + 1;
 	end
@@ -1228,11 +1155,6 @@ function CharacterSelectRotateLeft_OnUpdate(self)
 	end
 end
 
-function CharacterSelect_ManageAccount()
-	PlaySound("gsCharacterSelectionAcctOptions");
-	LaunchURL(AUTH_NO_TIME_URL);
-end
-
 function RealmSplit_GetFormatedChoice(formatText)
 	local realmChoice
 	if ( SERVER_SPLIT_CLIENT_STATE == 1 ) then
@@ -1273,7 +1195,7 @@ function CharacterSelectButton_ShowMoveButtons(self)
 	if IsCharacterSelectInUndeleteMode() or CharSelectServicesFlowFrame:IsShown() then return end
 	local numCharacters = GetNumCharacters()
 
-	if not CharacterSelect.draggedIndex then
+	if not CharacterSelect.draggedIndex and self.charLevel then
 		for index, serviceButton in ipairs(self.serviceButtons) do
 			if index ~= 3 or (self.charLevel < BOOST_MAX_LEVEL and not CharacterBoostButton.isBoostDisable) then
 				serviceButton:Show()
@@ -1946,17 +1868,17 @@ local itemLevelColors = {
 	[6] = CreateColor(1, 0, 0),
 }
 local function getItemLevelColor(itemLevel)
-	if C_InRange(itemLevel, 0, 100) then
+	if WithinRange(itemLevel, 0, 100) then
 		return itemLevelColors[1]
-	elseif C_InRange(itemLevel, 100, 150) then
+	elseif WithinRange(itemLevel, 100, 150) then
 		return itemLevelColors[1]
-	elseif C_InRange(itemLevel, 150, 185) then
+	elseif WithinRange(itemLevel, 150, 185) then
 		return itemLevelColors[2]
-	elseif C_InRange(itemLevel, 185, 200) then
+	elseif WithinRange(itemLevel, 185, 200) then
 		return itemLevelColors[3]
-	elseif C_InRange(itemLevel, 200, 277) then
+	elseif WithinRange(itemLevel, 200, 277) then
 		return itemLevelColors[4]
-	elseif C_InRange(itemLevel, 277, 296) then
+	elseif WithinRange(itemLevel, 277, 296) then
 		return itemLevelColors[5]
 	else
 		return itemLevelColors[6]
@@ -2065,7 +1987,7 @@ function CharacterSelectButtonDropDownMenuMixin:Toggle( owner, toggle )
 end
 
 function CharacterSelectButtonDropDownMenuMixin:OnShow()
-	local showBoostButton = self.owner.charLevel < BOOST_MAX_LEVEL and not CharacterBoostButton.isBoostDisable
+	local showBoostButton = self.owner.charLevel and self.owner.charLevel < BOOST_MAX_LEVEL and not CharacterBoostButton.isBoostDisable
 	local previous
 
 	for index, settings in pairs(self.buttonSettings) do

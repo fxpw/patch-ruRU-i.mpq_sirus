@@ -150,11 +150,11 @@ function SocialToastSystemMixin:ShowToast(toastFrame)
     local iconSource = toast.toastData.iconSource
 
     if type(iconSource) == "number" then
-        local function setIcon( _, _, _, _, _, _, _, _, _, itemTexture )
+		local function setIcon(_, _, _, _, _, _, _, _, _, _, itemTexture)
             toastFrame.Icon:SetTexture(itemTexture)
         end
 
-        local _, _, _, _, _, _, _, _, _, itemTexture = GetItemInfo(iconSource, false, setIcon)
+		local _, _, _, _, _, _, _, _, _, itemTexture = C_Item.GetItemInfo(iconSource, false, setIcon)
 
         if itemTexture then
 			toastFrame.Icon:SetTexture(itemTexture)

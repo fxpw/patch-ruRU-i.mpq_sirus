@@ -531,7 +531,7 @@ function AuctionHouseAuctionsFrameMixin:OnCommoditySearchResultSelected(commodit
 end
 
 function AuctionHouseAuctionsFrameMixin:CancelSelectedAuction()
-	StaticPopup_Show("ACTIONHOUSE_CANCEL_AUCTION", nil, nil, { auctionID = self.selectedAuctionID });
+	StaticPopup_Show("AUCTIONHOUSE_CANCEL_AUCTION", nil, nil, { auctionID = self.selectedAuctionID });
 end
 
 function AuctionHouseAuctionsFrameMixin:GetTab()

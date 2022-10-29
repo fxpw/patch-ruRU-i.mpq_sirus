@@ -155,7 +155,7 @@ local usedOverlayGlows = {}
 local unusedOverlayGlows = {}
 local numOverlays = 0
 function ActionButton_GetOverlayGlow()
-	local overlay = table.next(unusedOverlayGlows)
+	local overlay = tremove(unusedOverlayGlows);
 	if ( not overlay ) then
 		numOverlays = numOverlays + 1
 		overlay = CreateFrame("Frame", "ActionButtonOverlay"..numOverlays, UIParent, "ActionBarButtonSpellActivationAlert")
@@ -165,7 +165,7 @@ function ActionButton_GetOverlayGlow()
 		overlay:SetAlpha(SpellOverlay_SpellHighlightAlphaSlider.value)
 	end
 
-	usedOverlayGlows[overlay:GetName()] = overlay
+	usedOverlayGlows[overlay] = true
 
 	return overlay
 end
@@ -236,20 +236,23 @@ function ActionButton_OverlayGlowAnimOutFinished(animGroup)
 		return
 	end
 
-	overlay:Hide()
-	usedOverlayGlows[overlay:GetName()] = nil
-	unusedOverlayGlows[overlay:GetName()] = overlay
 	actionButton.overlay = nil
+	overlay:Hide()
+
+	if usedOverlayGlows[overlay] then
+		usedOverlayGlows[overlay] = nil
+		tinsert(unusedOverlayGlows, overlay)
+	end
 end
 
 function ActionButton_AllOverlayAlphaUpdate( alpha )
-	for _, overlay in pairs(usedOverlayGlows) do
+	for overlay in pairs(usedOverlayGlows) do
 		overlay:SetAlpha(alpha)
 	end
 end
 
 function ActionButton_OverlayGlowOnUpdate(self, elapsed)
-	AnimateTexCoordsBFA(self.ants, 256, 256, 48, 48, 22, elapsed, 0.01)
+	_AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, 0.01)
 	-- local cooldown = self:GetParent().cooldown
 	-- -- we need some threshold to avoid dimming the glow during the gdc
 	-- -- (using 1500 exactly seems risky, what if casting speed is slowed or something?)

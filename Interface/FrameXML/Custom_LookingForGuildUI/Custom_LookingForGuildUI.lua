@@ -271,20 +271,20 @@ function LookingForGuildCardMixin:UpdateCard()
 		SetLargeGuildTabardTextures(self.GuildBannerEmblemLogo, emblemStyle);
 
 		if emblemBackgroundColor and SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor] then
-			self.GuildBannerBackground:SetVertexColor(rgb(unpack(SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor])));
+			self.GuildBannerBackground:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor])));
 		end
 
 		if emblemColor and SHARED_TABARD_EMBLEM_COLOR[emblemColor] then
-			self.GuildBannerEmblemLogo:SetVertexColor(rgb(unpack(SHARED_TABARD_EMBLEM_COLOR[emblemColor])));
+			self.GuildBannerEmblemLogo:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_EMBLEM_COLOR[emblemColor])));
 		end
 
 		if emblemBorderStyle and SHARED_TABARD_BORDER_COLOR[emblemBorderStyle] then
 			if emblemBorderColor and SHARED_TABARD_BORDER_COLOR[emblemBorderStyle][emblemBorderColor] then
-				self.GuildBannerBorder:SetVertexColor(rgb(unpack(SHARED_TABARD_BORDER_COLOR[emblemBorderStyle][emblemBorderColor])));
+				self.GuildBannerBorder:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BORDER_COLOR[emblemBorderStyle][emblemBorderColor])));
 			end
 		else
 			if emblemBorderColor and SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor] then
-				self.GuildBannerBorder:SetVertexColor(rgb(unpack(SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor])));
+				self.GuildBannerBorder:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor])));
 			end
 		end
 	end

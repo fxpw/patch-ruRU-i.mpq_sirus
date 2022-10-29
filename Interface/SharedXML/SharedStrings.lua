@@ -123,9 +123,17 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Закрыть",
 		enGB = "Close"
 	},
+	["CONFIGURE_MODS_FOR"] = {
+		ruRU = "Настроить модификации для:",
+		enGB = "Configure AddOns For:"
+	},
 	["CONFIRM_RESET_SETTINGS"] = {
 		ruRU = "Вы хотите вернуть стандартные настройки? Будут немедленно сброшены все параметры.",
 		enGB = "Do you want to reset all settings to their defaults? This will immediately apply all settings."
+	},
+	["CONTINUE"] = {
+		ruRU = "Продолжить",
+		enGB = "Continue"
 	},
 	["CURRENT_SETTINGS"] = {
 		ruRU = "Этот раздел",
@@ -159,6 +167,14 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "%d д.",
 		enGB = "%d |4Day:Days;"
 	},
+	["DAY_ONELETTER_ABBR"] = {
+		ruRU = "%d д.",
+		enGB = "%d d"
+	},
+	["DEBUG_FRAMESTACK"] = {
+		ruRU = "Соединение рамок",
+		enGB = "Frame Stack"
+	},
 	["DECLENSION_SET"] = {
 		ruRU = "%s из %s",
 		enGB = "%s of %s"
@@ -166,6 +182,10 @@ local SIRUS_LOCALIZATION = {
 	["DECLINE"] = {
 		ruRU = "Отказаться",
 		enGB = "Decline"
+	},
+	["DEFAULT"] = {
+		ruRU = "По умолчанию",
+		enGB = "Default"
 	},
 	["DEFAULTS"] = {
 		ruRU = "По умолчанию",
@@ -351,6 +371,14 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Видимость",
 		enGB = "View Distance"
 	},
+	["FEATURES_LABEL"] = {
+		ruRU = "Особые возможности",
+		enGB = "Features"
+	},
+	["FEATURES_SUBTEXT"] = {
+		ruRU = "Здесь можно включить или отключить особые возможности, доступные в игре.",
+		enGB = "These options allow you to enable and disable full game features."
+	},
 	["FIX_LAG"] = {
 		ruRU = "Плавность управления",
 		enGB = "Reduce Input Lag"
@@ -431,17 +459,37 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Макс.",
 		enGB = "High"
 	},
+	["HOUR_ONELETTER_ABBR"] = {
+		ruRU = "%d ч.",
+		enGB = "%d h"
+	},
 	["HOURS_ABBR"] = {
 		ruRU = "%d ч.",
 		enGB = "%d |4Hr:Hr;"
+	},
+	["LANGUAGES_LABEL"] = {
+		ruRU = "Языки",
+		enGB = "Languages"
 	},
 	["LEVEL"] = {
 		ruRU = "Уровень",
 		enGB = "Level"
 	},
+	["LESS_THAN_ONE_MINUTE"] = {
+		ruRU = "< 1 минуты",
+		enGB = "< 1 minute"
+	},
+	["LESS_THAN_OPERAND"] = {
+		ruRU = "< %s",
+		enGB = ""
+	},
 	["LOW"] = {
 		ruRU = "Мин.",
 		enGB = "Low"
+	},
+	["LUA_ERROR"] = {
+		ruRU = "Ошибка LUA",
+		enGB = "Lua Error"
 	},
 	["MAIN_PROFESSION"] = {
 		ruRU = "Основная",
@@ -455,6 +503,14 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Общая громкость",
 		enGB = "Master Volume"
 	},
+	["MILLISECONDS_ABBR"] = {
+		ruRU = "мс",
+		enGB = "ms"
+	},
+	["MINS_ABBR"] = {
+		ruRU = "Мин.",
+		enGB = "Mins"
+	},
 	["MINUTES"] = {
 		ruRU = "мин.",
 		enGB = "|4Minute:Minutes;"
@@ -462,6 +518,10 @@ local SIRUS_LOCALIZATION = {
 	["MINUTES_ABBR"] = {
 		ruRU = "%d мин.",
 		enGB = "%d |4Min:Min;"
+	},
+	["MINUTE_ONELETTER_ABBR"] = {
+		ruRU = "%d м.",
+		enGB = "%d m"
 	},
 	["MISCELLANEOUS"] = {
 		ruRU = "Разное",
@@ -479,6 +539,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Музыка",
 		enGB = "Music"
 	},
+	["MUTED"] = {
+		ruRU = "Без звука",
+		enGB = "Muted"
+	},
 	["NEAR"] = {
 		ruRU = "Мин.",
 		enGB = "Near"
@@ -487,9 +551,17 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Далее",
 		enGB = "Next"
 	},
+	["NEW_CAPS"] = {
+		ruRU = "НОВИНКА",
+		enGB = "NEW"
+	},
 	["NO"] = {
 		ruRU = "Нет",
 		enGB = "No"
+	},
+	["NONE"] = {
+		ruRU = "Нет",
+		enGB = "None"
 	},
 	["NONE_CAPS"] = {
 		ruRU = "НЕТ",
@@ -498,6 +570,10 @@ local SIRUS_LOCALIZATION = {
 	["OKAY"] = {
 		ruRU = "ОК",
 		enGB = "Okay"
+	},
+	["OPTIONS"] = {
+		ruRU = "Параметры",
+		enGB = "Options"
 	},
 	["OPTIONS_BRIGHTNESS"] = {
 		ruRU = "Яркость",
@@ -631,6 +707,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Включение данного параметра может как ускорить отклик указателя мыши, так и вызвать некоторые проблемы с указателем.",
 		enGB = "Enable this option for a more responsive cursor unless you have cursor problems."
 	},
+	["OPTION_TOOLTIP_LOCALE"] = {
+		ruRU = "Выбор языка игры.",
+		enGB = "Select which language you would like to play in."
+	},
 	["OPTION_TOOLTIP_MASTER_VOLUME"] = {
 		ruRU = "Регулировка общей громкости звука.",
 		enGB = "Adjusts the master sound volume."
@@ -699,6 +779,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Тройная буферизация кадров при включенной вертикальной синхронизации. Эта настройка может сгладить резкие скачки сменяющихся кадров, но несколько снизит производительность игры.",
 		enGB = "Enables triple buffering of frames when vertical sync is enabled. Selecting triple buffering may even out frame rate spikes, but may also cause slight input lag."
 	},
+	["OPTION_TOOLTIP_USE_COLORBLIND_MODE"] = {
+		ruRU = "Показывает реакцию цели и качество предмета во всплывающих подсказках и добавляет дополнительную информацию для других элементов интерфейса.",
+		enGB = "Displays unit reactions and item qualities in tooltips and adds additional information to several other interfaces."
+	},
 	["OPTION_TOOLTIP_USE_REFRESH"] = {
 		ruRU = "Изменение частоты обновления экрана. Чем выше частота, тем меньше эффект мерцания изображения.",
 		enGB = "Changes the monitor refresh rates. Higher rates flicker less."
@@ -763,6 +847,14 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Раса",
 		enGB = "Race"
 	},
+	["RACIAL_TRAITS"] = {
+		ruRU = "Расовые способности:",
+		enGB = "Racial Traits:"
+	},
+	["RATINGS_TEXT"] = {
+		ruRU = "Текст корейских рейтингов.",
+		enGB = "The text for Korean Ratings."
+	},
 	["REFRESH_RATE"] = {
 		ruRU = "Частота",
 		enGB = "Refresh"
@@ -823,6 +915,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Шлем прекрасно смотрится на %s.",
 		enGB = "Although I know nothing about %s."
 	},
+	["SEARCH"] = {
+		ruRU = "Поиск",
+		enGB = "Search"
+	},
 	["SECONDS"] = {
 		ruRU = "с",
 		enGB = "|4Second:Seconds;"
@@ -831,9 +927,17 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "%d с.",
 		enGB = "%d |4Sec:Sec;"
 	},
+	["SECOND_ONELETTER_ABBR"] = {
+		ruRU = "%d с.",
+		enGB = "%d s"
+	},
 	["SHADOW_QUALITY"] = {
 		ruRU = "Качество теней",
 		enGB = "Shadow Quality"
+	},
+	["SHORTDATE"] = {
+		ruRU = "%2$d/%1$02d/%3$02d",
+		enGB = "%2$d/%1$02d/%3$02d"
 	},
 	["SOUNDOPTIONS_MENU"] = {
 		ruRU = "Звук",
@@ -895,6 +999,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Разрешение текстур",
 		enGB = "Texture Resolution"
 	},
+	["TIME_UNIT_DELIMITER"] = {
+		ruRU = " ",
+		enGB = " "
+	},
 	["TRADESKILL_ALCHEMY"] = {
 		ruRU = "Алхимия",
 		enGB = "Alchemy"
@@ -950,6 +1058,10 @@ local SIRUS_LOCALIZATION = {
 	["UNAVAILABLE"] = {
 		ruRU = "Недоступно",
 		enGB = "Unavailable"
+	},
+	["USE_COLORBLIND_MODE"] = {
+		ruRU = "Дублировать цвет текстом",
+		enGB = "Colorblind Mode"
 	},
 	["VERTICAL_SYNC"] = {
 		ruRU = "Верт. синхронизация",
@@ -1046,6 +1158,14 @@ local SIRUS_LOCALIZATION = {
 	["YES"] = {
 		ruRU = "Да",
 		enGB = "Yes"
+	},
+	["ZOOM_IN"] = {
+		ruRU = "Приблизить",
+		enGB = "Zoom In"
+	},
+	["ZOOM_OUT"] = {
+		ruRU = "Отдалить",
+		enGB = "Zoom Out"
 	},
 	["SHARED_DEATHKNIGHT_FEMALE"] = {
 		ruRU = "Рыцарь смерти",
@@ -1401,14 +1521,6 @@ local SIRUS_LOCALIZATION = {
 	},
 	["RACE_NIGHTBORNE_FEMALE"] = {
 		ruRU = "Ночнорожденная",
-		enGB = ""
-	},
-	["LESS_THAN_ONE_MINUTE"] = {
-		ruRU = "< 1 минуты",
-		enGB = "< 1 minute"
-	},
-	["LESS_THAN_OPERAND"] = {
-		ruRU = "< %s",
 		enGB = ""
 	},
 	["SERVER_WAITING_DATA"] = {

@@ -37,7 +37,7 @@ function ChooseItemFrame_OnShow( self, ... )
 				CREATED_FRAMES = CREATED_FRAMES + 1;
 			end
 
-			local function ItemInfoResponceCallback(itemName, _, itemRarity, _, _, _, _, _, _, itemTexture)
+			local function ItemInfoResponceCallback(_, itemName, _, itemRarity, _, _, _, _, _, _, itemTexture)
 				local r, g, b = GetItemQualityColor(itemRarity)
 
 				frame.Item.Name:SetText(itemName)
@@ -48,12 +48,12 @@ function ChooseItemFrame_OnShow( self, ... )
 				frame.Item.Name:SetTextColor(r, g, b)
 			end
 
-			local itemName, _, itemRarity, _, _, _, _, _, _, itemTexture = GetItemInfo(data.itemID, false, ItemInfoResponceCallback)
+			local itemName, _, itemRarity, _, _, _, _, _, _, itemTexture = C_Item.GetItemInfo(data.itemID, false, ItemInfoResponceCallback)
 
 			if itemName then
-				ItemInfoResponceCallback(itemName, _, itemRarity, _, _, _, _, _, _, itemTexture)
+				ItemInfoResponceCallback(nil, itemName, nil, itemRarity, nil, nil, nil, nil, nil, nil, itemTexture)
 			else
-				ItemInfoResponceCallback(TOOLTIP_UNIT_LEVEL_ILEVEL_LOADING_LABEL, _, 4, _, _, _, _, _, _, "Interface\\ICONS\\INV_Misc_QuestionMark")
+				ItemInfoResponceCallback(nil, TOOLTIP_UNIT_LEVEL_ILEVEL_LOADING_LABEL, nil, 4, nil, nil, nil, nil, nil, nil, "Interface\\ICONS\\INV_Misc_QuestionMark")
 			end
 
 			frame.data = data

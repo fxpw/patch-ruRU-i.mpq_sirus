@@ -3951,7 +3951,7 @@ function StaticPopup_Resize(dialog, which, hiddenButton)
 	end
 
 	if dialog.equipmentSetCount then
-		height = height + max(44, (44 * math.Round(dialog.equipmentSetCount / 2))) + 12
+		height = height + max(44, (44 * Round(dialog.equipmentSetCount / 2))) + 12
 	end
 
 	if ( height > maxHeightSoFar ) then

@@ -1,4 +1,4 @@
-local GetItemInfo = C_Item._GetItemInfo;
+local GetItemInfo = C_Item.GetItemInfoRaw;
 
 UIPanelWindows["WardrobeFrame"] = { area = "left", pushable = 0, xOffset = "15", yOffset = "-10", width = 965 };
 
@@ -692,7 +692,7 @@ function WardrobeCollectionFrameMixin:OnLoad()
 	for _, itemID in pairs(WARDROBE_MODEL_SETUP_GEAR) do
 		local itemName = GetItemInfo(itemID);
 		if not itemName then
-			C_Item.cacheTooltip:SetHyperlink(string.format("item:%d", itemID));
+			C_Item.RequestServerCache(itemID);
 		end
 	end
 
@@ -1772,7 +1772,7 @@ function WardrobeItemsModelMixin:SetItemAppearance(sourceID)
 			self:EquipTransmogGear(activeSlot);
 		end
 
-		C_Item.cacheTooltip:SetHyperlink(string.format("item:%d", sourceID));
+		C_Item.RequestServerCache(sourceID);
 		self.OverlayBackground:Show();
 		self.LoadingFrame:Show();
 		self.queuedSourceID = sourceID;

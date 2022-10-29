@@ -545,11 +545,6 @@ function SetStateRequestInfo( choice )
 	end
 end
 
-function UpgradeAccount()
-	PlaySound("gsLoginNewAccount");
-	LaunchURL(AUTH_NO_TIME_URL);
-end
-
 function InGlue()
 	return true
 end
@@ -592,11 +587,9 @@ end
 GlueEasingAnimMixin = {}
 
 function GlueEasingAnimMixin:Init()
-
 end
 
-function GlueEasingAnimMixin:SetPosition( easing )
-
+function GlueEasingAnimMixin:SetPosition(easing)
 end
 
 function GlueEasingAnimMixin:OnLoad()

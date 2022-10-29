@@ -91,7 +91,7 @@ function LootAlertFrame_OnEvent( self, event, arg1 )
 			return
 		end
 
-		if string.find(arg1, string.Left(LOOT_ITEM_SELF, 21)) or string.find(arg1, string.Left(LOOT_ITEM_CREATED_SELF, 21)) then
+		if string.find(arg1, string.sub(LOOT_ITEM_SELF, 1, 21)) or string.find(arg1, string.sub(LOOT_ITEM_CREATED_SELF, 1, 21)) then
 			local itemEntry, count = string.match(arg1, "|Hitem:(%d+).*x(%d+)")
 
 			if not itemEntry then

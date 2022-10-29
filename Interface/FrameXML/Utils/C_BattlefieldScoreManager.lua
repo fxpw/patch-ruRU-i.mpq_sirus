@@ -112,7 +112,10 @@ local _GetBattlefieldScore = _GetBattlefieldScore or GetBattlefieldScore
 
 function GetBattlefieldScore( index )
     if C_BattlefieldScoreManager:IsValidation() then
-        return unpack(C_BattlefieldScoreManager:GetScoreData( index ) or {})
+		local scoreData = C_BattlefieldScoreManager:GetScoreData(index)
+		if scoreData then
+			return unpack(scoreData)
+		end
     else
         return _GetBattlefieldScore( index )
     end

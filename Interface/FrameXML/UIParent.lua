@@ -112,8 +112,6 @@ for i = -1, 7 do
 end
 
 function UIParent_OnLoad(self)
-	DisableAddOn("Blizzard_TokenUI")
-
 	self:RegisterEvent("PLAYER_LOGIN");
 	self:RegisterEvent("PLAYER_DEAD");
 	self:RegisterEvent("PLAYER_ALIVE");
@@ -237,6 +235,8 @@ function UIParent_OnLoad(self)
 	self:RegisterEvent("ITEM_LOCKED")
 	self:RegisterEvent("ITEM_UNLOCKED")
 
+	DisableAddOn("Blizzard_TokenUI")
+
 	-- Event for Hook AchievementUI and AuctionUI
 	self:RegisterEvent("ADDON_LOADED")
 end
@@ -266,7 +266,7 @@ function BattlefieldMinimap_LoadUI()
 end
 
 function ClassTrainerFrame_LoadUI()
-	-- UIParentLoadAddOn("Blizzard_TrainerUI");
+--	UIParentLoadAddOn("Blizzard_TrainerUI");
 end
 
 function CombatLog_LoadUI()
@@ -278,8 +278,7 @@ function GuildBankFrame_LoadUI()
 end
 
 function InspectFrame_LoadUI()
-	-- print("Blizzard_InspectUI load disable")
-	-- UIParentLoadAddOn("Blizzard_InspectUI");
+--	UIParentLoadAddOn("Blizzard_InspectUI");
 end
 
 function KeyBindingFrame_LoadUI()
@@ -287,7 +286,7 @@ function KeyBindingFrame_LoadUI()
 end
 
 function MacroFrame_LoadUI()
-	-- UIParentLoadAddOn("Blizzard_MacroUI");
+--	UIParentLoadAddOn("Blizzard_MacroUI");
 end
 function MacroFrame_SaveMacro()
 	-- this will be overwritten with the real thing when the addon is loaded
@@ -298,11 +297,11 @@ function RaidFrame_LoadUI()
 end
 
 function TalentFrame_LoadUI()
-	-- UIParentLoadAddOn("Blizzard_TalentUI");
+--	UIParentLoadAddOn("Blizzard_TalentUI");
 end
 
 function TradeSkillFrame_LoadUI()
-	-- UIParentLoadAddOn("Blizzard_TradeSkillUI");
+--	UIParentLoadAddOn("Blizzard_TradeSkillUI");
 end
 
 function GMSurveyFrame_LoadUI()
@@ -310,7 +309,7 @@ function GMSurveyFrame_LoadUI()
 end
 
 function ItemSocketingFrame_LoadUI()
-	-- UIParentLoadAddOn("Blizzard_ItemSocketingUI");
+--	UIParentLoadAddOn("Blizzard_ItemSocketingUI");
 end
 
 function BarberShopFrame_LoadUI()
@@ -322,20 +321,19 @@ function AchievementFrame_LoadUI()
 end
 
 function TimeManager_LoadUI()
-	-- UIParentLoadAddOn("Blizzard_TimeManager");
+--	UIParentLoadAddOn("Blizzard_TimeManager");
 end
 
 function TokenFrame_LoadUI()
-	-- DisableAddOn("Blizzard_TokenUI")
-	-- UIParentLoadAddOn("Blizzard_TokenUI");
+--	UIParentLoadAddOn("Blizzard_TokenUI");
 end
 
 function GlyphFrame_LoadUI()
-	-- UIParentLoadAddOn("Blizzard_GlyphUI");
+--	UIParentLoadAddOn("Blizzard_GlyphUI");
 end
 
 function Calendar_LoadUI()
-	-- UIParentLoadAddOn("Blizzard_Calendar");
+--	UIParentLoadAddOn("Blizzard_Calendar");
 end
 
 function GMChatFrame_LoadUI(...)
@@ -431,6 +429,10 @@ function ToggleCalendar()
 end
 
 function ToggleGuildFrame()
+	if C_Unit.IsNeutral("player") then
+		return;
+	end
+
 	if ( IsInGuild() ) then
 		if ( GuildFrame_Toggle ) then
 			GuildFrame_Toggle();
@@ -441,6 +443,10 @@ function ToggleGuildFrame()
 end
 
 function ToggleGuildFinder()
+	if C_Unit.IsNeutral("player") then
+		return;
+	end
+
 	if ( LookingForGuildFrame_Toggle ) then
 		LookingForGuildFrame_Toggle();
 	end
@@ -528,8 +534,6 @@ function InspectUnit(unit)
 	end
 end
 
--- UIParent_OnEvent --
-
 local lockedContainer = nil
 local lockedItem = nil
 
@@ -537,6 +541,7 @@ function GetContainerLockedItem()
 	return lockedContainer, lockedItem
 end
 
+-- UIParent_OnEvent --
 function UIParent_OnEvent(self, event, ...)
 	local arg1, arg2, arg3, arg4, arg5, arg6 = ...;
 	if ( event == "CURRENT_SPELL_CAST_CHANGED" ) then
@@ -2511,7 +2516,7 @@ function UIFrameFade_OnUpdate(self, elapsed)
 end
 
 function UIFrameIsFading(frame)
-	for _ , value in pairs(FADEFRAMES) do
+	for index, value in pairs(FADEFRAMES) do
 		if ( value == frame ) then
 			return 1;
 		end
@@ -2615,7 +2620,7 @@ end
 
 -- Function to see if a frame is already flashing
 function UIFrameIsFlashing(frame)
-	for _ , value in pairs(FLASHFRAMES) do
+	for index, value in pairs(FLASHFRAMES) do
 		if ( value == frame ) then
 			return 1;
 		end
@@ -2625,7 +2630,7 @@ end
 
 -- Function to stop flashing
 function UIFrameFlashStop(frame)
-	UIFrameFlashRemoveFrame(frame);
+	tDeleteItem(FLASHFRAMES, frame);
 	frame:SetAlpha(1.0);
 	frame.flashTimer = nil;
 	if ( frame.showWhenDone ) then
@@ -2649,7 +2654,7 @@ end
 
 -- Update the button pulsing
 function ButtonPulse_OnUpdate(elapsed)
-	for _ , button in pairs(PULSEBUTTONS) do
+	for index, button in pairs(PULSEBUTTONS) do
 		if ( button.pulseTimeLeft > 0 ) then
 			if ( button.pulseDuration < 0 ) then
 				if ( button.pulseOn == 1 ) then
@@ -2673,7 +2678,7 @@ function ButtonPulse_OnUpdate(elapsed)
 end
 
 function ButtonPulse_StopPulse(button)
-	for _ , pulseButton in pairs(PULSEBUTTONS) do
+	for index, pulseButton in pairs(PULSEBUTTONS) do
 		if ( pulseButton == button ) then
 			tDeleteItem(PULSEBUTTONS, button);
 			button:UnlockHighlight()
@@ -2773,43 +2778,6 @@ function BuildMultilineTooltip(globalStringName, tooltip, r, g, b)
 		i = i + 1;
 		string = _G[globalStringName..i];
 	end
-end
-
-function tDeleteItem(table, item)
-	local index = 1;
-	while table[index] do
-		if ( item == table[index] ) then
-			tremove(table, index);
-		else
-			index = index + 1;
-		end
-	end
-end
-
-function tContains(table, item)
-	if not table then
-		return
-	end
-	local index = 1;
-	while table[index] do
-		if ( item == table[index] ) then
-			return 1;
-		end
-		index = index + 1;
-	end
-	return nil;
-end
-
-function CopyTable(settings)
-	local copy = {};
-	for k, v in pairs(settings) do
-		if ( type(v) == "table" ) then
-			copy[k] = CopyTable(v);
-		else
-			copy[k] = v;
-		end
-	end
-	return copy;
 end
 
 function MouseIsOver(region, topOffset, bottomOffset, leftOffset, rightOffset)
@@ -3502,7 +3470,7 @@ function AnimatedShine_OnUpdate(elapsed)
 	local shine1, shine2, shine3, shine4;
 	local speed = 2.5;
 	local parent, distance;
-	for _ , value in pairs(SHINES_TO_ANIMATE) do
+	for index, value in pairs(SHINES_TO_ANIMATE) do
 		shine1 = _G[value:GetName().."Shine1"];
 		shine2 = _G[value:GetName().."Shine2"];
 		shine3 = _G[value:GetName().."Shine3"];
@@ -3636,12 +3604,6 @@ function ConsolePrint(...)
 	ConsoleAddMessage(strjoin(" ", tostringall(...)));
 end
 
-function GetTexCoordsByGrid(xOffset, yOffset, textureWidth, textureHeight, gridWidth, gridHeight)
-	local widthPerGrid = gridWidth/textureWidth;
-	local heightPerGrid = gridHeight/textureHeight;
-	return (xOffset-1)*widthPerGrid, (xOffset)*widthPerGrid, (yOffset-1)*heightPerGrid, (yOffset)*heightPerGrid;
-end
-
 function LFD_IsEmpowered()
 	return not ( ((GetNumPartyMembers() > 0) or (GetNumRaidMembers() > 0)) and
 		not (IsPartyLeader() or IsRaidLeader()) ) or HasLFGRestrictions();
@@ -3686,9 +3648,28 @@ function BetterDate(formatString, timeVal)
 	return date(formatString, timeVal);
 end
 
+function SetLargeGuildTabardTextures(frame, id)
+	local emblemSize = 64 / 1024;
+	local columns = 16;
+	local offset = 0;
+
+	local xCoord = mod(id, columns) * emblemSize;
+	local yCoord = floor(id / columns) * emblemSize;
+	frame:SetTexCoord(xCoord + offset, xCoord + emblemSize - offset, yCoord + offset, yCoord + emblemSize - offset);
+end
+
+function SetSmallGuildTabardTextures(frame, id)
+	local emblemSize = 18 / 256;
+	local columns = 14;
+	local offset = 1 / 256;
+
+	local xCoord = mod(id, columns) * emblemSize;
+	local yCoord = floor(id / columns) * emblemSize;
+	frame:SetTexCoord(xCoord + offset, xCoord + emblemSize - offset, yCoord + offset, yCoord + emblemSize - offset);
+end
+
 function GetDisplayedAllyFrames()
 	local useCompact = GetCVar("C_CVAR_USE_COMPACT_PARTY_FRAMES") == "1"
-
 	if ( IsActiveBattlefieldArena() and not useCompact ) then
 		return "party";
 	elseif ( (GetNumRaidMembers() > 0 or (GetNumPartyMembers() > 0 and useCompact)) ) then
@@ -3711,6 +3692,21 @@ function AbbreviateLargeNumbers(value)
 		retString = string.sub(value, 1, -4)..FIRST_NUMBER_CAP;
 	end
 	return retString;
+end
+
+function InGlue()
+	return false;
+end
+
+function RGBToColorCode(r, g, b)
+	return format("|cff%02x%02x%02x", r*255, g*255, b*255);
+end
+
+function RGBTableToColorCode(rgbTable)
+	return RGBToColorCode(rgbTable.r, rgbTable.g, rgbTable.b);
+end
+
+function nop()
 end
 
 local VipData = {
@@ -3742,13 +3738,6 @@ function GetUnitVipStatus( unit )
 	end
 
 	return 0
-end
-
-function InGlue()
-	return false
-end
-
-function nop()
 end
 
 function GetSpecializationIndex()
@@ -4014,19 +4003,6 @@ function EventHandler:ASMSG_QUEST_ACCEPTED(msg)
 			StaticPopup_Show("QUEST_ACCEPTED", acceptedText);
 		end
 	end
-end
-
-function DoesAncestryInclude(ancestry, frame)
-	if ancestry then
-		local currentFrame = frame;
-		while currentFrame do
-			if currentFrame == ancestry then
-				return true;
-			end
-			currentFrame = currentFrame:GetParent();
-		end
-	end
-	return false;
 end
 
 local GLOBAL_MOUSE_BUTTONS_STATE = {};

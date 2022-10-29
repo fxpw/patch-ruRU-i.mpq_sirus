@@ -558,15 +558,17 @@ function GetRatedBattlegroundRankInfo()
 			end
 		end
 
-		if C_InRange(currRankID, 0, 5) then
-			laurelCoord = RatedBattlegroundLaurelTexCoord[1]
-			rankBackgroundTexCoord = RatedBattlegroundRankBackgroundTexCoord[1]
-		elseif C_InRange(currRankID, 6, 10) then
-			laurelCoord = RatedBattlegroundLaurelTexCoord[2]
-			rankBackgroundTexCoord = RatedBattlegroundRankBackgroundTexCoord[2]
-		elseif C_InRange(currRankID, 11, 14) then
-			laurelCoord = RatedBattlegroundLaurelTexCoord[3]
-			rankBackgroundTexCoord = RatedBattlegroundRankBackgroundTexCoord[3]
+		if currRankID then
+			if WithinRange(currRankID, 0, 5) then
+				laurelCoord = RatedBattlegroundLaurelTexCoord[1]
+				rankBackgroundTexCoord = RatedBattlegroundRankBackgroundTexCoord[1]
+			elseif WithinRange(currRankID, 6, 10) then
+				laurelCoord = RatedBattlegroundLaurelTexCoord[2]
+				rankBackgroundTexCoord = RatedBattlegroundRankBackgroundTexCoord[2]
+			elseif WithinRange(currRankID, 11, 14) then
+				laurelCoord = RatedBattlegroundLaurelTexCoord[3]
+				rankBackgroundTexCoord = RatedBattlegroundRankBackgroundTexCoord[3]
+			end
 		end
 	end
 
@@ -617,15 +619,17 @@ function GetUnitRatedBattlegroundRankInfo( unit )
 					currRankIconCoord = RatedBattleGroundRankCoords[currRankID]
 				end
 
-				if C_InRange(currRankID, 0, 5) then
-					laurelCoord = RatedBattlegroundLaurelTexCoord[1]
-					rankBackgroundTexCoord = RatedBattlegroundRankBackgroundTexCoord[1]
-				elseif C_InRange(currRankID, 6, 10) then
-					laurelCoord = RatedBattlegroundLaurelTexCoord[2]
-					rankBackgroundTexCoord = RatedBattlegroundRankBackgroundTexCoord[2]
-				elseif C_InRange(currRankID, 11, 14) then
-					laurelCoord = RatedBattlegroundLaurelTexCoord[3]
-					rankBackgroundTexCoord = RatedBattlegroundRankBackgroundTexCoord[3]
+				if currRankID then
+					if WithinRange(currRankID, 0, 5) then
+						laurelCoord = RatedBattlegroundLaurelTexCoord[1]
+						rankBackgroundTexCoord = RatedBattlegroundRankBackgroundTexCoord[1]
+					elseif WithinRange(currRankID, 6, 10) then
+						laurelCoord = RatedBattlegroundLaurelTexCoord[2]
+						rankBackgroundTexCoord = RatedBattlegroundRankBackgroundTexCoord[2]
+					elseif WithinRange(currRankID, 11, 14) then
+						laurelCoord = RatedBattlegroundLaurelTexCoord[3]
+						rankBackgroundTexCoord = RatedBattlegroundRankBackgroundTexCoord[3]
+					end
 				end
 			else
 				if UnitIsPlayer(unit) then
@@ -2774,7 +2778,7 @@ function ConquestFrameButton_OnShow( self, ... )
 end
 
 local function CalculateArenaLimit( rating )
-	return math.Round(math.max(261.0, 1511.26 / (1.0 + 1639.28 * math.exp(-0.00412 * rating)) * 0.76))
+	return Round(math.max(261.0, 1511.26 / (1.0 + 1639.28 * math.exp(-0.00412 * rating)) * 0.76))
 end
 
 local function CalculateHonorLimit()

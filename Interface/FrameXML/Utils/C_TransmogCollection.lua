@@ -11,7 +11,7 @@ Enum.TransmogSearchType = {
 
 TC_CACHE = C_Cache("TRANSMOG_COLLECTION_CACHE", true);
 
-local _GetItemInfo = C_Item._GetItemInfo;
+local GetItemInfoRaw = C_Item.GetItemInfoRaw;
 local _, UNIT_CLASS = UnitClass("player");
 local _, UNIT_RACE = UnitRace("player");
 local UNIT_SEX = UnitSex("player") == 3 and "Female" or "Male";
@@ -271,25 +271,22 @@ local function CollectItemTypes(categoryID, subCategoryID, invType, classID, sub
 end
 
 function GetItemModifiedAppearanceCategoryInfo(itemModifiedAppearanceID, knownOrUsabe, serverMsg)
-	local categoryID, subCategoryID, invType, isUsable, isKnown = 0, nil, 0, false, false;
+	local categoryID, subCategoryID, isUsable, isKnown = 0, nil, false, false;
 
-	local itemCache = ItemsCache[itemModifiedAppearanceID];
-	if itemCache then
-		local classID, subClassID = itemCache[6] or 0, itemCache[7] or 0;
-		invType = itemCache[9] or 0;
-
-		if ARMOR_CATEGORY_NAME_BY_INVENTORY_TYPE[invType] then
-			categoryID = Enum.TransmogCollectionType[ARMOR_CATEGORY_NAME_BY_INVENTORY_TYPE[invType]];
+	local classID, subClassID, equipLocID = select(13, C_Item.GetItemInfo(itemModifiedAppearanceID, nil, nil, nil, true));
+	if classID then
+		if ARMOR_CATEGORY_NAME_BY_INVENTORY_TYPE[equipLocID] then
+			categoryID = Enum.TransmogCollectionType[ARMOR_CATEGORY_NAME_BY_INVENTORY_TYPE[equipLocID]];
 			subCategoryID = subClassID;
-		elseif WEAPON_SUB_CATEGORY_BY_INVENTORY_TYPE[invType] then
-			categoryID = Enum.TransmogCollectionType[WEAPON_SUB_CATEGORY_BY_INVENTORY_TYPE[invType]];
+		elseif WEAPON_SUB_CATEGORY_BY_INVENTORY_TYPE[equipLocID] then
+			categoryID = Enum.TransmogCollectionType[WEAPON_SUB_CATEGORY_BY_INVENTORY_TYPE[equipLocID]];
 		elseif WEAPON_SUB_CATEGORY_BY_CLASS_ID[classID] and WEAPON_SUB_CATEGORY_BY_CLASS_ID[classID][subClassID] then
 			categoryID = Enum.TransmogCollectionType[WEAPON_SUB_CATEGORY_BY_CLASS_ID[classID][subClassID]];
 		end
 
 		if categoryID ~= 0 and knownOrUsabe then
 			if serverMsg then
-				CollectItemTypes(categoryID, subCategoryID, invType, classID, subClassID);
+				CollectItemTypes(categoryID, subCategoryID, equipLocID, classID, subClassID);
 			end
 
 			local sourceInfo = ITEM_MODIFIED_APPEARANCE_STORAGE[itemModifiedAppearanceID];
@@ -320,7 +317,7 @@ function GetItemModifiedAppearanceCategoryInfo(itemModifiedAppearanceID, knownOr
 		end
 	end
 
-	return categoryID, subCategoryID, invType, isKnown, isUsable;
+	return categoryID, subCategoryID, equipLocID or 0, isKnown, isUsable;
 end
 
 local SearchAndFilterCategory
@@ -481,9 +478,9 @@ local function GetItemInfoCallback()
 end
 
 local function GetItemModifiedAppearanceItemInfo(itemModifiedAppearanceID)
-	local name, itemLink, quality, _, _, _, _, _, _, icon = _GetItemInfo(itemModifiedAppearanceID);
+	local name, itemLink, quality, _, _, _, _, _, _, icon = GetItemInfoRaw(itemModifiedAppearanceID);
 	if not name then
-		_, itemLink, quality, _, _, _, _, _, _, icon = GetItemInfo(itemModifiedAppearanceID, nil, GetItemInfoCallback);
+		_, itemLink, quality, _, _, _, _, _, _, icon = C_Item.GetItemInfo(itemModifiedAppearanceID, nil, GetItemInfoCallback);
 	end
 
 	return name, itemLink, string.format(COLLECTION_ITEM_HYPERLINK_FORMAT, itemModifiedAppearanceID, name or ""), quality, icon;
@@ -558,7 +555,7 @@ function C_TransmogCollection.AccountCanCollectSource(sourceID)
 		error("Usage: local hasItemData, canCollect = C_TransmogCollection.AccountCanCollectSource(sourceID)", 2);
 	end
 
-	return not not _GetItemInfo(sourceID), not not ITEM_MODIFIED_APPEARANCE_STORAGE[sourceID];
+	return not not GetItemInfoRaw(sourceID), not not ITEM_MODIFIED_APPEARANCE_STORAGE[sourceID];
 end
 
 function C_TransmogCollection.ClearNewAppearance(visualID)
@@ -1192,7 +1189,7 @@ function C_TransmogCollection.PlayerCanCollectSource(sourceID)
 
 	local _, _, _, isUsable, isKnown = GetItemModifiedAppearanceCategoryInfo(sourceID, true);
 
-	return not not _GetItemInfo(sourceID), ITEM_MODIFIED_APPEARANCE_STORAGE[sourceID] and isUsable and isKnown;
+	return not not GetItemInfoRaw(sourceID), ITEM_MODIFIED_APPEARANCE_STORAGE[sourceID] and isUsable and isKnown;
 end
 
 function C_TransmogCollection.PlayerKnowsSource(sourceID)

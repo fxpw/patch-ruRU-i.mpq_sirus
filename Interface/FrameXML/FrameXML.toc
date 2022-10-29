@@ -5,37 +5,40 @@
 
 FrameXML.xml
 ..\SharedXML\AtlasStorage.lua
-..\SharedXML\Extensions\math.lua
-..\SharedXML\Extensions\string.lua
-..\SharedXML\Extensions\table.lua
-..\SharedXML\Extensions\middleclass.lua
-..\SharedXML\Extensions\enum.lua
 ..\SharedXML\SharedStrings.lua
+GlobalStrings.lua
+..\SharedXML\middleclass.lua
+..\SharedXML\StringUTF8Util.lua
 ..\SharedXML\DataDumper.lua
 ..\SharedXML\UUID.lua
 ..\SharedXML\CacheSystem.lua
+..\SharedXML\Util.lua
+..\SharedXML\Hook.lua
+..\SharedXML\MixIn.lua
+..\SharedXML\TableUtil.lua
+..\SharedXML\EnumUtil.lua
 ..\SharedXML\FunctionUtil.lua
 ..\SharedXML\FunctionOverride.lua
 ..\SharedXML\EventHandler.lua
-..\SharedXML\Hook.lua
-..\SharedXML\MixIn.lua
 ..\SharedXML\MathUtil.lua
+..\SharedXML\TextureUtil.lua
+..\SharedXML\Color.lua
+..\SharedXML\ColorUtil.lua
 ..\SharedXML\TimeUtil.lua
-..\SharedXML\Util.lua
+..\SharedXML\NineSlice.lua
+..\SharedXML\AnchorUtil.lua
+..\SharedXML\FrameUtil.lua
 ..\SharedXML\Pools.lua
+..\SharedXML\CircularBuffer.lua
 ..\SharedXML\Utils\C_Texture.lua
 ..\SharedXML\Utils\C_CreatureInfo.lua
 ..\SharedXML\Utils\C_Talent.lua
-..\SharedXML\AnchorUtil.lua
-..\SharedXML\NineSlice.lua
-..\SharedXML\CircularBuffer.lua
-..\SharedXML\Opcodes.lua
 ..\SharedXML\TypeUtil.lua
+..\SharedXML\Opcodes.lua
 
 ..\SharedXML\C_TimerAugment.lua
 ..\SharedXML\ItemsCache.lua
 ..\SharedXML\L_Easing.lua
-GlobalStrings.lua
 Constants.lua
 ..\SharedXML\SharedFontStyles.xml
 Localization.xml
@@ -45,12 +48,10 @@ WorldMapFrameData.lua
 # add new modules below here
 
 ..\SharedXML\CallbackRegistry.lua
-..\SharedXML\FrameUtil.lua
 ..\SharedXML\LayoutFrame.xml
 ..\SharedXML\ScrollList.xml
 ..\SharedXML\SharedTooltipTemplates.lua
 ..\SharedXML\TableBuilder.lua
-..\SharedXML\EnumUtil.lua
 
 ..\SharedXML\Utils\C_Cache.lua
 ..\SharedXML\Utils\C_Service.lua

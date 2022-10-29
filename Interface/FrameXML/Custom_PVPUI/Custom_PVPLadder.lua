@@ -533,7 +533,7 @@ function PVPLadderInfoFrameMixin:ShowFrame( playerIndex )
 	self.TopContainer.StatisticsFrame.Week:SetFormattedText("|cff00FF00%d|cffFFFFFF/|cffFF0000%d", weekWins, (weekGames - weekWins))
 	self.TopContainer.StatisticsFrame.Day:SetFormattedText("|cff00FF00%d|cffFFFFFF/|cffFF0000%d", dayWins, (dayGames - dayWins))
 
-	local winsProc = math.min(math.Round(seasonWins / seasonGames * 100), 100)
+	local winsProc = math.min(Round(seasonWins / seasonGames * 100), 100)
 	local color = winsProc < 50 and "|cffFF0000" or "|cff00FF00"
 
 	self.TopContainer.StatisticsFrame.AllWinsProc:SetFormattedText(color.."%d%%", winsProc)

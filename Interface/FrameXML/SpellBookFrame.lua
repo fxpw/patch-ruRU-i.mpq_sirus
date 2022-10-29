@@ -451,7 +451,7 @@ function SpellBookFrame_OnHide(self)
 	SpellBookFrame_PlayCloseSound()
 
 	-- Stop the flash frame from flashing if its still flashing.. flash flash flash
-	UIFrameFlashRemoveFrame(SpellBookTabFlashFrame)
+	UIFrameFlashStop(SpellBookTabFlashFrame)
 	-- Hide all the flashing textures
 	for i=1, MAX_SKILLLINE_TABS do
 		_G["SpellBookSkillLineTab"..i.."Flash"]:Hide()

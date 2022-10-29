@@ -395,22 +395,26 @@ function ContainerFrame_Update(frame)
 	local id = frame:GetID();
 	local name = frame:GetName();
 	local itemButton;
-	local texture, itemCount, locked, quality, readable, itemEntry, _
-	local isQuestItem, questId, isActive, questTexture, newItemTexture
+	local texture, itemCount, locked, quality, readable;
+	local isQuestItem, questId, isActive, questTexture;
+	local highlightFrame, itemID, itemName, _
 	local tooltipOwner = GameTooltip:GetOwner();
 	for i=1, frame.size, 1 do
 		itemButton = _G[name.."Item"..i];
-		HighlightFrame = _G[name.."Item"..i].HighlightFrame
+		highlightFrame = _G[name.."Item"..i].HighlightFrame
 
 		texture, itemCount, locked, _, readable = GetContainerItemInfo(id, itemButton:GetID());
 		isQuestItem, questId, isActive = GetContainerItemQuestInfo(id, itemButton:GetID());
-		itemEntry = GetContainerItemID(id, itemButton:GetID())
-		_, _, quality = GetItemInfo(itemEntry)
 
 		SetItemButtonTexture(itemButton, texture);
 		if texture then
+			itemID = GetContainerItemID(id, itemButton:GetID())
+			itemName, _, quality = GetItemInfo(itemID)
 			SetItemButtonQuality(itemButton, quality)
 		else
+			itemID = nil
+			itemName = nil
+			quality = nil
 			itemButton.IconBorder:Hide()
 		end
 		SetItemButtonCount(itemButton, itemCount);
@@ -427,25 +431,25 @@ function ContainerFrame_Update(frame)
 			questTexture:Hide();
 		end
 
-		HighlightFrame:Hide()
+		highlightFrame:Hide()
 		local newItem
 
 		if Container_NewItemBuffer and Container_NewItemBuffer[id] and Container_NewItemBuffer[id][itemButton:GetID()] then
 			newItem = Container_NewItemBuffer[id][itemButton:GetID()]
 
-			HighlightFrame.container = id
-			HighlightFrame.slot = itemButton:GetID()
-			HighlightFrame.buffer = Container_NewItemBuffer[id][itemButton:GetID()]
+			highlightFrame.container = id
+			highlightFrame.slot = itemButton:GetID()
+			highlightFrame.buffer = Container_NewItemBuffer[id][itemButton:GetID()]
 
 			if NEW_ITEM_ATLAS_BY_QUALITY[quality] then
-				HighlightFrame.NewItemTexture:SetTexCoord(unpack(NEW_ITEM_ATLAS_BY_QUALITY[quality]))
+				highlightFrame.NewItemTexture:SetTexCoord(unpack(NEW_ITEM_ATLAS_BY_QUALITY[quality]))
 			end
 		end
 
 		itemButton.containerID = id
 		itemButton.slotID = itemButton:GetID()
 
-		HighlightFrame:SetShown(newItem)
+		highlightFrame:SetShown(newItem)
 
 		if ( texture ) then
 			ContainerFrame_UpdateCooldown(id, itemButton);
@@ -464,14 +468,10 @@ function ContainerFrame_Update(frame)
 			itemButton.searchOverlay:Hide()
 		end
 
-		if searchText then
-			local itemName = GetItemInfo(itemEntry)
-
-			if itemName then
-				itemButton.searchOverlay:Show()
-				if string.find(string.upper(itemName), string.upper(searchText)) then
-					itemButton.searchOverlay:Hide()
-				end
+		if searchText and itemName then
+			itemButton.searchOverlay:Show()
+			if string.find(string.lower(itemName), string.lower(searchText), 1, true) then
+				itemButton.searchOverlay:Hide()
 			end
 		end
 	end

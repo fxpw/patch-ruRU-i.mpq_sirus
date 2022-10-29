@@ -260,7 +260,7 @@ function C_Transmog.GetSlotInfo(transmogLocation)
 
 	local texture = GetInventoryItemTexture("player", transmogLocation.slotID);
 	local itemID = GetInventoryItemID("player", transmogLocation.slotID);
-	if not texture then
+	if not texture or not itemID then
 		return false, false, false, false, 1, false, false, false;
 	end
 
@@ -276,10 +276,9 @@ function C_Transmog.GetSlotInfo(transmogLocation)
 		canTransmogrify = pendingInfo.canTransmogrify;
 		hasUndo = pendingInfo.hasUndo;
 	else
-		local itemCache = itemID and ItemsCache[itemID];
-		if itemCache then
-			local invType = itemCache[9];
-			if nonTransmogrifyInvType[invType] or ((itemCache[3] < 2 or itemCache[3] > 5) and invType ~= 4) then
+		local itemName, _, itemRarity, _, _, _, _, _, _, _, _, _, _, _, equipLocID = C_Item.GetItemInfo(itemID, nil, nil, nil, true);
+		if itemName then
+			if nonTransmogrifyInvType[equipLocID] or ((itemRarity < 2 or itemRarity > 5) and equipLocID ~= 4) then
 				canTransmogrify = false;
 			else
 				canTransmogrify = true;
@@ -316,9 +315,10 @@ function C_Transmog.GetSlotVisualInfo(transmogLocation)
 	local itemID = GetInventoryItemID("player", transmogLocation.slotID);
 
 	if itemID then
+		local subClassID = select(14, C_Item.GetItemInfo(itemID));
 		baseSourceID = itemID;
 		baseVisualID = ITEM_MODIFIED_APPEARANCE_STORAGE[itemID] and ITEM_MODIFIED_APPEARANCE_STORAGE[itemID][1] or 0;
-		itemSubclass = ItemsCache[itemID] and ItemsCache[itemID][7] or 0;
+		itemSubclass = subClassID or 0;
 	else
 		baseSourceID = 0;
 		baseVisualID = 0;

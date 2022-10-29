@@ -146,7 +146,9 @@ function BlizzardOptionsPanel_CheckButton_SetNewValue (checkButton)
 		checkButton.newValue = setting;
 	end
 
-	checkButton:SetValue(setting);
+	if checkButton.SetValue then
+		checkButton:SetValue(setting);
+	end
 
 	BlizzardOptionsPanel_SetDependentControlsEnabled(checkButton, isChecked);
 end

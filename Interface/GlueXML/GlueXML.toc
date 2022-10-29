@@ -2,30 +2,34 @@
 
 GlueXML.xml
 ..\SharedXML\AtlasStorage.lua
-..\SharedXML\Extensions\math.lua
-..\SharedXML\Extensions\string.lua
-..\SharedXML\Extensions\table.lua
-..\SharedXML\Extensions\middleclass.lua
-..\SharedXML\Extensions\enum.lua
 ..\SharedXML\SharedStrings.lua
+GlueStrings.lua
+..\SharedXML\middleclass.lua
+..\SharedXML\StringUTF8Util.lua
 ..\SharedXML\DataDumper.lua
 ..\SharedXML\UUID.lua
+..\SharedXML\Util.lua
+..\SharedXML\Hook.lua
+..\SharedXML\MixIn.lua
+..\SharedXML\TableUtil.lua
+..\SharedXML\EnumUtil.lua
 ..\SharedXML\FunctionUtil.lua
 ..\SharedXML\FunctionOverride.lua
 ..\SharedXML\EventHandler.lua
-..\SharedXML\Hook.lua
-..\SharedXML\MixIn.lua
+..\SharedXML\MathUtil.lua
+..\SharedXML\TextureUtil.lua
+..\SharedXML\Color.lua
+..\SharedXML\ColorUtil.lua
+..\SharedXML\TimeUtil.lua
+..\SharedXML\NineSlice.lua
+..\SharedXML\FrameUtil.lua
+..\SharedXML\AnchorUtil.lua
 ..\SharedXML\Pools.lua
+..\SharedXML\CircularBuffer.lua
 ..\SharedXML\Utils\C_Texture.lua
 ..\SharedXML\Utils\C_CreatureInfo.lua
-..\SharedXML\MathUtil.lua
-..\SharedXML\TimeUtil.lua
-..\SharedXML\Util.lua
-..\SharedXML\AnchorUtil.lua
-..\SharedXML\NineSlice.lua
-..\SharedXML\CircularBuffer.lua
-..\SharedXML\Opcodes.lua
 ..\SharedXML\TypeUtil.lua
+..\SharedXML\Opcodes.lua
 
 ..\SharedXML\S_Dump.lua
 ..\SharedXML\SoundKitConstants.lua
@@ -37,7 +41,6 @@ GlueXML.xml
 
 ..\SharedXML\SharedFontStyles.xml
 
-..\SharedXML\FrameUtil.lua
 ..\SharedXML\LayoutFrame.xml
 
 ..\SharedXML\Utils\C_Cache.lua
@@ -48,7 +51,6 @@ Utils\C_GluePackets.lua
 Utils\C_GlueCVars.lua
 Utils\C_CharacterCreation.lua
 
-GlueStrings.lua
 DevTools\AccountLoginManagerData.lua
 GlueBasicControls.xml
 GlueParent.xml

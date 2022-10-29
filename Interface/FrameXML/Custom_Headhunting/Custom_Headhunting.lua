@@ -1065,9 +1065,11 @@ end
 function HeadHuntingScrollFrameMixin:UpdateButtons()
     local template = self.updateContentData[self.mainFrame:GetSelectedTab()][self.mainFrame:GetSelectedCategory()].tmpl
 
-    for _, button in pairs(self.buttons or {}) do
-        button:Hide()
-    end
+	if self.buttons then
+		for _, button in pairs(self.buttons) do
+			button:Hide()
+		end
+	end
 
     self.buttons = self.buttonStorage[template]
 
@@ -2094,7 +2096,7 @@ function HeadHuntingSetRewardHelpBoxFrameMixin:UpdateTotalMoney()
     local numKillsValidation    = false
     local totalMoney            = (numKills and goldPerKill) and ceil(numKills * goldPerKill * 1.1, 8) or 0
     local playerGold            = floor(GetMoney() / (COPPER_PER_SILVER * SILVER_PER_GOLD))
-    local moneyValidation       = C_InRange(goldPerKill, HEADHUNTING_MIN_CONTRACT_GOLD_PER_KILL, HEADHUNTING_MAX_CONTRACT_GOLD_PER_KILL)
+	local moneyValidation       = goldPerKill and WithinRange(goldPerKill, HEADHUNTING_MIN_CONTRACT_GOLD_PER_KILL, HEADHUNTING_MAX_CONTRACT_GOLD_PER_KILL)
     self.moneyError             = nil
 
     if numKills then

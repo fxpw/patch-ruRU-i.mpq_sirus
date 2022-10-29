@@ -257,6 +257,13 @@ STORE_SUB_CATEGORY_DATA[STORE_SUBSCRIPTIONS_CATEGORY_ID] = {
 		CategoryId = 9,
 		Callback = function() selectedSubCategoryID = 5; StoreSubscribeSetup() end
 	},
+	{
+		Name = STORE_SUB_CATEGORY_9_6,
+		SubCategoryId = 6,
+		CategoryId = 9,
+		Locked = true,
+		Callback = function() selectedSubCategoryID = 6; StoreSubscribeSetup() end
+	},
 }
 
 STORE_SUB_CATEGORY_DATA[3] = {
@@ -614,6 +621,25 @@ STORE_SPECIAL_OFFERS_3D = {
 			},
 		},
 	},
+	[59] = { -- HW2022
+		Name = "HW2022",
+		BorderColor = {0.82, 0.34, 0.12},
+		PopupCreature = 131057,
+		PopupModelInfo = {131057, -0.645, "BOTTOM", "TOP", 0, -60, 400, 320, 0.5},
+
+		Banner = {
+			TimerColor			= {0.98, 0.63, 0.1},
+			TitleColor			= {0.82, 0.34, 0.12},
+			NameColor			= {0.98, 0.63, 0.1},
+			DescriptionColor	= {0.82, 0.34, 0.12},
+			PriceLabelColor		= {0.98, 0.63, 0.1},
+			PriceColor			= {1, 0.9, 0.9},
+
+			SceneInfo = {
+				{131057, 379, 290, {"TOPRIGHT", nil, "TOPRIGHT", -1, -1}, -37, 1, {0, 0, -0.300}, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
+			},
+		},
+	}
 }
 
 STORE_CACHE = C_Cache("SIRUS_STORE_CACHE", true)
@@ -891,23 +917,25 @@ function StoreTransmogrifyGenerateData( isFiltered )
 	storeTransmogrifySourceDataByStoreID = {}
 	storeTransmogrifyNewWeaponTypes = {}
 
-	for _, data in pairs(STORE_TRANSMOGRIFY_SETS_DATA[selectedSubCategoryID] or {}) do
-		local storeID = data[STORE_TRANSMOGRIFY_SETS_STOREID]
+	if STORE_TRANSMOGRIFY_SETS_DATA[selectedSubCategoryID] then
+		for _, data in pairs(STORE_TRANSMOGRIFY_SETS_DATA[selectedSubCategoryID]) do
+			local storeID = data[STORE_TRANSMOGRIFY_SETS_STOREID]
 
-		if selectedSubCategoryID == 2 then
-			local weaponType = data[STORE_TRANSMOGRIFY_SETS_WEAPONTYPE];
+			if selectedSubCategoryID == 2 then
+				local weaponType = data[STORE_TRANSMOGRIFY_SETS_WEAPONTYPE];
 
-			if weaponType and weaponType ~= -1 then
-				if STORE_TRANSMOGRIFY_SERVER_DATA[storeID] and bit.band(STORE_TRANSMOGRIFY_SERVER_DATA[storeID][STORE_TRANSMOGRIFY_SERVER_STOREFLAGS] or 0, STORE_ITEM_FLAG_NEW) ~= 0 then
-					storeTransmogrifyNewWeaponTypes[weaponType] = true;
+				if weaponType and weaponType ~= -1 then
+					if STORE_TRANSMOGRIFY_SERVER_DATA[storeID] and bit.band(STORE_TRANSMOGRIFY_SERVER_DATA[storeID][STORE_TRANSMOGRIFY_SERVER_STOREFLAGS] or 0, STORE_ITEM_FLAG_NEW) ~= 0 then
+						storeTransmogrifyNewWeaponTypes[weaponType] = true;
+					end
 				end
 			end
-		end
 
-		storeTransmogrifySourceDataByStoreID[storeID] = data
-		if StoreTransmogrifyValidation(data) and StoreTransmogrifySearchValidation(data) then
-			storeTransmogrifySetsData[index] = data
-			index = index + 1
+			storeTransmogrifySourceDataByStoreID[storeID] = data
+			if StoreTransmogrifyValidation(data) and StoreTransmogrifySearchValidation(data) then
+				storeTransmogrifySetsData[index] = data
+				index = index + 1
+			end
 		end
 	end
 
@@ -1190,6 +1218,11 @@ function StoreFrame_OnEvent( self, event, ... )
 		SendServerMessage("ACMSG_SHOP_SUBSCRIPTION_LIST_REQUEST")
 		STORE_SUBSCRIBE_DATA = {}
 	elseif event == "VARIABLES_LOADED" then
+		local playerName = UnitName("player")
+		if not STORE_HIGHLIGHT_CATEGORY_BUTTON[playerName] then
+			STORE_HIGHLIGHT_CATEGORY_BUTTON[playerName] = {}
+		end
+
 		StoreCacheDataGenerate()
 
 		if STORE_CACHE:Get("flashCategoryMountRenew") == true then
@@ -1237,10 +1270,6 @@ function StoreFrame_OnShow( self, ... )
 	if self.Popup then
 		NPE_TutorialPointerFrame:Hide(self.Popup)
 		self.Popup = nil
-	end
-
-	if not STORE_HIGHLIGHT_CATEGORY_BUTTON[UnitName("player")] then
-		STORE_HIGHLIGHT_CATEGORY_BUTTON[UnitName("player")] = {}
 	end
 
 	ButtonPulse_StopPulse(StoreMicroButton)
@@ -1452,21 +1481,8 @@ function StoreSelectCategory( categoryID, subCategoryID )
 		end
 
 		if self.data.SlideOther then
-			local prevFrame = nil
-			local height = 22 * #STORE_SUB_CATEGORY_DATA[categoryID]
-			for i, button in pairs(StoreFrame.CategoryFrames) do
-				local isHidden = button.data.Hidden;
-
-				if not isHidden and i ~= 1 then
-					if i == (categoryID + 1) then
-						button:SetPoint("TOPLEFT", StoreFrame.CategoryFrames[i-1], "BOTTOMLEFT", 0, -height)
-					else
-						button:SetPoint("TOPLEFT", StoreFrame.CategoryFrames[i-1], "BOTTOMLEFT", 0, 0)
-					end
-
-					prevFrame = button;
-				end
-			end
+			local buttonsShown = 0
+			local prevFrame
 
 			for i = 1, #STORE_SUB_CATEGORY_DATA[categoryID] do
 				local data = STORE_SUB_CATEGORY_DATA[categoryID][i]
@@ -1508,7 +1524,27 @@ function StoreSelectCategory( categoryID, subCategoryID )
 					subFrame.SelectedTexture:Hide()
 				end
 
-				subFrame:Show()
+				if data.Locked then
+					subFrame:Hide()
+				else
+					subFrame:Show()
+					buttonsShown = buttonsShown + 1
+				end
+			end
+
+			local height = 22 * buttonsShown
+			for i, button in pairs(StoreFrame.CategoryFrames) do
+				local isHidden = button.data.Hidden;
+
+				if not isHidden and i ~= 1 then
+					if i == (categoryID + 1) then
+						button:SetPoint("TOPLEFT", StoreFrame.CategoryFrames[i-1], "BOTTOMLEFT", 0, -height)
+					else
+						button:SetPoint("TOPLEFT", StoreFrame.CategoryFrames[i-1], "BOTTOMLEFT", 0, 0)
+					end
+
+					prevFrame = button;
+				end
 			end
 		else
 			local prevFrame;
@@ -2507,9 +2543,14 @@ function StoreSubscribeFrame_OnShow( self, ... )
 	STORE_SUBSCRIBE_DATA = {}
 end
 
-function StoreSubscribeItem_OnShow( self, ... )
+function StoreSubscribeItem_OnShow(self)
 	self.glow.AnimGlow:Play()
 	self.glow2.AnimGlow:Play()
+end
+
+function StoreSubscribeItem_OnHide(self)
+	self.glow.AnimGlow:Stop()
+	self.glow2.AnimGlow:Stop()
 end
 
 function StoreSubscribeItem_OnEnter( self, ... )
@@ -2521,7 +2562,7 @@ function StoreSubscribeItem_OnEnter( self, ... )
 end
 
 function StoreSubscribeBuyButton_OnClick( self, ... )
-	if STORE_SUBSCRIBE_DATA[selectedSubsID].ShowTrial then
+	if STORE_SUBSCRIBE_DATA[selectedSubsID] and STORE_SUBSCRIBE_DATA[selectedSubsID].ShowTrial then
 		SendServerMessage("ACMSG_SHOP_SUBSCRIBE", string.format("%d:%d", STORE_SUBSCRIBE_DATA[selectedSubsID].ID, 1))
 		STORE_SUBSCRIBE_DATA = {}
 	else
@@ -2962,6 +3003,12 @@ function StoreSpecialOfferDetailFrame_OnClick( self, ... )
 	StoreFrame_ProductBuy(StoreSpecialOfferDetailFrame.offerData, backData)
 end
 
+local SUBSCRIBE_BUY_BUTTONS = 3
+local SUBSCRIBE_ITEM_BUTTONS = 3
+local SUBSCRIBE_ITEM_BONUS_BUTTONS = 1
+local SUBSCRIBE_ITEM_SIZE = 50
+local SUBSCRIBE_ITEM_OFFSET = 135
+
 function StoreSubscribeSetup()
 	-- main subs always first
 	selectedSubsID = selectedSubCategoryID > 0 and selectedSubCategoryID or 1
@@ -2989,70 +3036,121 @@ function StoreSubscribeSetup()
 		end
 	end, data.Seconds)
 
-	for d = 1, 3 do
-		local button = _G["StoreSubscribeItemButton"..d]
-		button:Hide()
-	end
-
-	for k = 1, 1 do
-		local button = _G["StoreSubscribeSubItemButton"..k]
-		button:Hide()
-	end
-
-	for i = 1, 4 do
-		local button = _G["StoreSubscribeContainerBuyButton"..i]
-
-		if button then
+	do
+		for _, button in ipairs(StoreSubscribeContainer.ItemContainer.buttons) do
 			button:Hide()
 		end
-	end
 
-	if #data.EveryDayItem == 1 then
-		local button = _G["StoreSubscribeItemButton"..2]
-		if button then
-			local Entry = data.EveryDayItem[1].Entry
-			local Count = data.EveryDayItem[1].Count
-			local name, link, _, _, _, _, _, _, _, texture = GetItemInfo(tonumber(Entry))
-			button.Link = link
-
-			button.iconTexture:SetTexture(texture)
-			button.name:SetText(name)
-			button.count:SetText(Count)
-
-			button:Show()
-		end
-	else
-		for i = 1, #data.EveryDayItem do
-			local button = _G["StoreSubscribeItemButton"..i]
-			if button then
-				local Entry = data.EveryDayItem[i].Entry
-				local Count = data.EveryDayItem[i].Count
-				local name, link, _, _, _, _, _, _, _, texture = GetItemInfo(tonumber(Entry))
-				button.Link = link
-
-				button.iconTexture:SetTexture(texture)
-				button.name:SetText(name)
-				button.count:SetText(Count)
-
-				button:Show()
+		local numSubscribeButtons = math.min(#data.EveryDayItem, SUBSCRIBE_ITEM_BUTTONS)
+		for i = 1, numSubscribeButtons do
+			local button = StoreSubscribeContainer.ItemContainer.buttons[i]
+			if not button then
+				button = CreateFrame("Button", string.format("$parentItemButton%i", i), StoreSubscribeContainer.ItemContainer, "StoreSubscribeItemTemplate")
+				button:SetID(i)
+				StoreSubscribeContainer.ItemContainer.buttons[i] = button
 			end
-		end
-	end
 
-	for s = 1, #data.OnSubscribeItem do
-		local button = _G["StoreSubscribeSubItemButton"..s]
-		if button then
-			local Entry = data.OnSubscribeItem[s].Entry
-			local Count = data.OnSubscribeItem[s].Count
-			local name, link, _, _, _, _, _, _, _, texture = GetItemInfo(tonumber(Entry))
+			local itemID = data.EveryDayItem[i].Entry
+			local itemCount = data.EveryDayItem[i].Count
+			local name, link, _, _, _, _, _, _, _, texture = GetItemInfo(tonumber(itemID))
 			button.Link = link
 
 			button.iconTexture:SetTexture(texture)
 			button.name:SetText(name)
-			button.count:SetText(Count)
+			button.count:SetText(itemCount)
+
+			button:ClearAllPoints()
+			if i == 1 then
+				button:SetPoint("TOPLEFT", 0, -32)
+			else
+				button:SetPoint("LEFT", StoreSubscribeContainer.ItemContainer.buttons[i - 1], "RIGHT", SUBSCRIBE_ITEM_OFFSET, 0)
+			end
+
+			button:Show()
+		end
+
+		StoreSubscribeContainer.ItemContainer:SetSize(SUBSCRIBE_ITEM_SIZE * numSubscribeButtons + SUBSCRIBE_ITEM_OFFSET * (numSubscribeButtons), SUBSCRIBE_ITEM_SIZE)
+	end
+
+	do
+		for i = 1, SUBSCRIBE_ITEM_BONUS_BUTTONS do
+			_G["StoreSubscribeBonusItemButton"..i]:Hide()
+		end
+
+		for i = 1, math.min(#data.OnSubscribeItem, SUBSCRIBE_ITEM_BONUS_BUTTONS) do
+			local button = _G["StoreSubscribeBonusItemButton"..i]
+			local itemID = data.OnSubscribeItem[i].Entry
+			local itemCount = data.OnSubscribeItem[i].Count
+			local name, link, _, _, _, _, _, _, _, texture = GetItemInfo(tonumber(itemID))
+			button.Link = link
+
+			button.iconTexture:SetTexture(texture)
+			button.name:SetText(name)
+			button.count:SetText(itemCount)
 			button:Show()
 		end
 	end
+
+	do
+		for i = 1, SUBSCRIBE_BUY_BUTTONS do
+			_G["StoreSubscribeContainerBuyButton"..i]:Hide()
+		end
+
+		local subData = STORE_SUBSCRIBE_DATA[selectedSubsID];
+
+		if data.ShowTrial and not data.Dayz then
+			StoreSubscribeContainer.BuyButton1:SetText(STORE_BUY_FOR_FREE)
+
+			StoreSubscribeContainer.BuyButton1:Show()
+		elseif not data.ShowTrial and not data.Dayz then
+			StoreSubscribeContainer.BuyButton1:SetFormattedText(STORE_SUBSCRIBE_BUY_1, data.ShortPrice)
+			StoreSubscribeContainer.BuyButton2:SetFormattedText(STORE_SUBSCRIBE_BUY_2, data.LongPrice)
+
+			StoreSubscribeContainer.BuyButton1.SubscribeData = StoreConfigurateSubscribeData(2, string.format(STORE_SUBSCRIBE_BUY_TIME, subData.Name, 7), data.ShortPrice, string.format(STORE_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
+			StoreSubscribeContainer.BuyButton2.SubscribeData = StoreConfigurateSubscribeData(3, string.format(STORE_SUBSCRIBE_BUY_TIME, subData.Name, 30), data.LongPrice, string.format(STORE_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
+
+			StoreSubscribeContainer.BuyButton1:Show()
+			StoreSubscribeContainer.BuyButton2:Show()
+		elseif not data.ActiveTrial and data.Dayz and not data.ActiveExtra then
+			StoreSubscribeContainer.BuyButton1:SetFormattedText(STORE_SUBSCRIBE_PROLONG_1, data.ShortPrice)
+			StoreSubscribeContainer.BuyButton2:SetFormattedText(STORE_SUBSCRIBE_PROLONG_2, data.LongPrice)
+			StoreSubscribeContainer.BuyButton3:SetFormattedText(STORE_EXTRA_SUBSCRIBE_UPGRADE, data.ExtraPrice)
+
+			StoreSubscribeContainer.BuyButton1.SubscribeData = StoreConfigurateSubscribeData(2, string.format(STORE_SUBSCRIBE_BUY_TIME, subData.Name, 7 + 1), data.ShortPrice, string.format(STORE_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
+			StoreSubscribeContainer.BuyButton2.SubscribeData = StoreConfigurateSubscribeData(3, string.format(STORE_SUBSCRIBE_BUY_TIME, subData.Name, 30 + 3), data.LongPrice, string.format(STORE_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
+			StoreSubscribeContainer.BuyButton3.SubscribeData = StoreConfigurateSubscribeData(4, string.format(STORE_EXTRA_SUBSCRIBE_BUYUP_TIME, subData.Name, data.Dayz), data.ExtraPrice, string.format(STORE_EXTRA_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
+
+			StoreSubscribeContainer.BuyButton3:ShowGlow(true)
+
+			StoreSubscribeContainer.BuyButton1:Show()
+			StoreSubscribeContainer.BuyButton2:Show()
+			StoreSubscribeContainer.BuyButton3:Show()
+		elseif not data.ActiveTrial and data.Dayz and data.ActiveExtra then
+			StoreSubscribeContainer.BuyButton1:SetFormattedText(STORE_SUBSCRIBE_PROLONG_1, data.ShortPrice)
+			StoreSubscribeContainer.BuyButton2:SetFormattedText(STORE_SUBSCRIBE_PROLONG_2, data.LongPrice)
+
+			StoreSubscribeContainer.BuyButton1.SubscribeData = StoreConfigurateSubscribeData(2, string.format(STORE_EXTRA_SUBSCRIBE_BUY_TIME, subData.Name, 7 + 1), data.ShortPrice, STORE_EXTRA_SUBSCRIBE_BUY_DESCRIPTION)
+			StoreSubscribeContainer.BuyButton2.SubscribeData = StoreConfigurateSubscribeData(3, string.format(STORE_EXTRA_SUBSCRIBE_BUY_TIME, subData.Name, 30 + 3), data.LongPrice, STORE_EXTRA_SUBSCRIBE_BUY_DESCRIPTION)
+
+			StoreSubscribeContainer.BuyButton1:ShowGlow(nil, 0.5)
+			StoreSubscribeContainer.BuyButton2:ShowGlow(nil, 0.5)
+
+			StoreSubscribeContainer.BuyButton1:Show()
+			StoreSubscribeContainer.BuyButton2:Show()
+		end
+	end
+
+	if data.ActiveExtra then
+		StoreSubscribeContainer.HeaderText:SetFormattedText("%s %s", STORE_EXTRA_SUBSCRIBE, data.Name)
+	else
+		StoreSubscribeContainer.HeaderText:SetText(data.Name)
+	end
+
+	local headerWidth = math.max(256, StoreSubscribeContainer.HeaderText:GetStringWidth() + 70)
+	StoreSubscribeContainer.HeaderBackground:SetWidth(headerWidth)
+	StoreSubscribeContainer.HeaderBackgroundAlpha:SetWidth(headerWidth + 6)
+
+	StoreSubscribeContainer.InfoText:SetText(data.Description)
 
 	if data.Dayz then
 		StoreSubscribeFrame.BackgroundTile:SetVertexColor(0.6, 1, 0.6)
@@ -3062,61 +3160,6 @@ function StoreSubscribeSetup()
 		StoreSubscribeContainer.Inactive.ItemContainer:SetShown(#data.OnSubscribeItem > 0)
 		StoreSubscribeContainer.Inactive.BuyText:SetShown(#data.OnSubscribeItem <= 0)
 	end
-
-	local subData = STORE_SUBSCRIBE_DATA[selectedSubsID];
-
-	if data.ShowTrial and not data.Dayz then
-		StoreSubscribeContainer.BuyButton1:SetText(STORE_BUY_FOR_FREE)
-
-		StoreSubscribeContainer.BuyButton1:Show()
-	elseif not data.ShowTrial and not data.Dayz then
-		StoreSubscribeContainer.BuyButton1:SetFormattedText(STORE_SUBSCRIBE_BUY_1, data.ShortPrice)
-		StoreSubscribeContainer.BuyButton2:SetFormattedText(STORE_SUBSCRIBE_BUY_2, data.LongPrice)
-
-		StoreSubscribeContainer.BuyButton1.SubscribeData = StoreConfigurateSubscribeData(2, string.format(STORE_SUBSCRIBE_BUY_TIME, subData.Name, 7), data.ShortPrice, string.format(STORE_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
-		StoreSubscribeContainer.BuyButton2.SubscribeData = StoreConfigurateSubscribeData(3, string.format(STORE_SUBSCRIBE_BUY_TIME, subData.Name, 30), data.LongPrice, string.format(STORE_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
-
-		StoreSubscribeContainer.BuyButton1:Show()
-		StoreSubscribeContainer.BuyButton2:Show()
-	elseif not data.ActiveTrial and data.Dayz and not data.ActiveExtra then
-		StoreSubscribeContainer.BuyButton1:SetFormattedText(STORE_SUBSCRIBE_PROLONG_1, data.ShortPrice)
-		StoreSubscribeContainer.BuyButton2:SetFormattedText(STORE_SUBSCRIBE_PROLONG_2, data.LongPrice)
-		StoreSubscribeContainer.BuyButton3:SetFormattedText(STORE_EXTRA_SUBSCRIBE_UPGRADE, data.ExtraPrice)
-
-		StoreSubscribeContainer.BuyButton1.SubscribeData = StoreConfigurateSubscribeData(2, string.format(STORE_SUBSCRIBE_BUY_TIME, subData.Name, 7 + 1), data.ShortPrice, string.format(STORE_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
-		StoreSubscribeContainer.BuyButton2.SubscribeData = StoreConfigurateSubscribeData(3, string.format(STORE_SUBSCRIBE_BUY_TIME, subData.Name, 30 + 3), data.LongPrice, string.format(STORE_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
-		StoreSubscribeContainer.BuyButton3.SubscribeData = StoreConfigurateSubscribeData(4, string.format(STORE_EXTRA_SUBSCRIBE_BUYUP_TIME, subData.Name, data.Dayz), data.ExtraPrice, string.format(STORE_EXTRA_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
-
-		StoreSubscribeContainer.BuyButton3:ShowGlow(true)
-
-		StoreSubscribeContainer.BuyButton1:Show()
-		StoreSubscribeContainer.BuyButton2:Show()
-		StoreSubscribeContainer.BuyButton3:Show()
-	elseif not data.ActiveTrial and data.Dayz and data.ActiveExtra then
-		StoreSubscribeContainer.BuyButton1:SetFormattedText(STORE_SUBSCRIBE_PROLONG_1, data.ShortPrice)
-		StoreSubscribeContainer.BuyButton2:SetFormattedText(STORE_SUBSCRIBE_PROLONG_2, data.LongPrice)
-
-		StoreSubscribeContainer.BuyButton1.SubscribeData = StoreConfigurateSubscribeData(2, string.format(STORE_EXTRA_SUBSCRIBE_BUY_TIME, subData.Name, 7 + 1), data.ShortPrice, STORE_EXTRA_SUBSCRIBE_BUY_DESCRIPTION)
-		StoreSubscribeContainer.BuyButton2.SubscribeData = StoreConfigurateSubscribeData(3, string.format(STORE_EXTRA_SUBSCRIBE_BUY_TIME, subData.Name, 30 + 3), data.LongPrice, STORE_EXTRA_SUBSCRIBE_BUY_DESCRIPTION)
-
-		StoreSubscribeContainer.BuyButton1:ShowGlow(nil, 0.5)
-		StoreSubscribeContainer.BuyButton2:ShowGlow(nil, 0.5)
-
-		StoreSubscribeContainer.BuyButton1:Show()
-		StoreSubscribeContainer.BuyButton2:Show()
-	end
-
-	if data.ActiveExtra then
-		StoreSubscribeContainer.HeaderText:SetText(STORE_EXTRA_SUBSCRIBE .. " " .. data.Name)
-	else
-		StoreSubscribeContainer.HeaderText:SetText(data.Name)
-	end
-
-	local headerWidth = StoreSubscribeContainer.HeaderText:GetStringWidth() + 70
-	StoreSubscribeContainer.HeaderBackground:SetWidth(math.max(256, headerWidth))
-	StoreSubscribeContainer.HeaderBackgroundAlpha:SetWidth(math.max(262, headerWidth + 6))
-
-    StoreSubscribeContainer.infotext:SetText(data.Description)
 
 	StoreSubscribeContainer.VIPBackground:SetShown(data.Dayz and data.ActiveExtra)
 	StoreSubscribeContainer.BackgroundColor:SetShown(data.Dayz and data.ActiveExtra)
@@ -3129,10 +3172,14 @@ end
 function StoreSubscribeSetupModel(self)
 	self = self or StoreSubscribeContainer.ModelLeft;
 
-	if selectedSubsID ~= 1 then
+	if selectedSubsID == 6 then
+		self:Hide()
+	elseif selectedSubsID ~= 1 then
+		self:Show()
 		self:SetRotation(0.40);
 		self:SetCreature(9000295);
 	elseif C_Service:IsStrengthenStatsRealm() then
+		self:Show()
 		self:SetRotation(0.40);
 		self:SetCreature(50001);
 	end
@@ -6179,6 +6226,13 @@ function EventHandler:ASMSG_SHOP_SUBSCRIPTION_INFO( msg )
         Name                = Name,
 		Description			= Description
 	}
+
+	for _, subscriptionData in ipairs(STORE_SUB_CATEGORY_DATA[STORE_SUBSCRIPTIONS_CATEGORY_ID]) do
+		if subscriptionData.SubCategoryId == tempTable.ID then
+			subscriptionData.Locked = nil
+			break
+		end
+	end
 
 	table.insert(STORE_SUBSCRIBE_DATA, tempTable)
 

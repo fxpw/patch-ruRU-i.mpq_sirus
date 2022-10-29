@@ -314,11 +314,11 @@ function RouletteFrameMixin:OnUpdate(elapsed)
         elseif self.stage == E_ROULETTE_STAGE.FINISH then
             local rndState = math.random(0, 10)
 
-            if C_InRange(rndState, 0, 3) then
+            if WithinRange(rndState, 0, 3) then
                 self.targetOffset = math.random(-420, 0) / 1000
-            elseif C_InRange(rndState, 4, 6) then
+            elseif WithinRange(rndState, 4, 6) then
                 self.targetOffset = math.random(-420, 420) / 1000
-            elseif C_InRange(rndState, 7, 10) then
+            elseif WithinRange(rndState, 7, 10) then
                 self.targetOffset = math.random(0, 420) / 1000
             end
 
@@ -549,7 +549,7 @@ function RouletteFrameMixin:ASMSG_LOTTERY_INFO(msg)
         local rewardData = C_Split(data, ",")
         local itemEntry  = rewardData[E_LOTTERY_REWARDS_LIST.ENTRY]
 
-        C_Item:RequestServerCache(itemEntry)
+		C_Item.RequestServerCache(itemEntry)
 
         table.insert(buffer, {
             itemEntry      = tonumber(itemEntry),
@@ -634,7 +634,7 @@ end
 ---@param itemInfo table
 function RouletteItemButtonMixin:SetItem( itemInfo )
     if itemInfo then
-        local function ItemInfoResponceCallback( itemName, itemLink, _, _, _, _, _, _, _, itemTexture )
+		local function ItemInfoResponceCallback(_, itemName, itemLink, _, _, _, _, _, _, _, itemTexture)
             self.itemLink = itemLink
 
             self.OverlayFrame.ChildFrame.ItemName:SetText(itemName)
@@ -662,12 +662,12 @@ function RouletteItemButtonMixin:SetItem( itemInfo )
 
             self.OverlayFrame.ChildFrame.ItemName:SetText(itemInfo.itemEntry == -1 and HONOR_POINTS or ARENA_POINTS)
         else
-            local itemName, itemLink, _, _, _, _, _, _, _, itemTexture = GetItemInfo(itemInfo.itemEntry, false, ItemInfoResponceCallback)
+			local itemName, itemLink, _, _, _, _, _, _, _, itemTexture = C_Item.GetItemInfo(itemInfo.itemEntry, false, ItemInfoResponceCallback)
 
             if itemName then
-                ItemInfoResponceCallback(itemName, itemLink, _, _, _, _, _, _, _, itemTexture)
+				ItemInfoResponceCallback(nil, itemName, itemLink, nil, nil, nil, nil, nil, nil, nil, itemTexture)
             else
-                ItemInfoResponceCallback("loading..", "Hitem:1", _, _, _, _, _, _, _, "Interface\\ICONS\\INV_Misc_QuestionMark")
+				ItemInfoResponceCallback(nil, TOOLTIP_UNIT_LEVEL_ILEVEL_LOADING_LABEL, "Hitem:1", nil, nil, nil, nil, nil, nil, nil, "Interface\\ICONS\\INV_Misc_QuestionMark")
             end
         end
 

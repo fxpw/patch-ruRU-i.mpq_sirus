@@ -23,7 +23,7 @@ function CustomCooldownFrameMixin:OnUpdate( diff )
 			self.duration = 0
 		end
 
-		self.Overlay:SetAtlas("CooldownTexture_"..math.min(math.Round(proc), 99))
+		self.Overlay:SetAtlas("CooldownTexture_"..math.min(Round(proc), 99))
 
 		self.elapsed = 0
 	end

@@ -42,6 +42,7 @@ local closureGeneration = {
 	function(f, a, b) return function(...) return f(a, b, ...); end end,
 	function(f, a, b, c) return function(...) return f(a, b, c, ...); end end,
 	function(f, a, b, c, d) return function(...) return f(a, b, c, d, ...); end end,
+	function(f, a, b, c, d, e) return function(...) return f(a, b, c, d, e, ...); end end,
 };
 
 function GenerateClosure(f, ...)
@@ -51,8 +52,8 @@ function GenerateClosure(f, ...)
 		return generator(f, ...);
 	end
 	error("Closure generation does not support more than "..(#closureGeneration - 1).." parameters");
- end
+end
 
- function RunNextFrame(callback)
+function RunNextFrame(callback)
 	C_Timer:After(0, callback);
 end

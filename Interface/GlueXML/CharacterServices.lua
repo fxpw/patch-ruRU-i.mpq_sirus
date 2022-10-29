@@ -907,7 +907,7 @@ function CharacterServicesMaster_OnEvent( self, event, ts, ss, body )
 				GetCharacterListUpdate()
 				CharacterSelect.AutoEnterWorld = true
 			elseif status == 6 or status == 11 then
-				GlueDialog:ShowDialog("OKAY", CHARACTER_BOOST_DISABLE_SUSPECT_ACCOUNT)
+				GlueDialog:ShowDialog("OKAY_HTML", CHARACTER_BOOST_DISABLE_SUSPECT_ACCOUNT)
 				CharSelectServicesFlowFrame:Hide()
 			elseif status == 12 then
 				GlueDialog:ShowDialog("OKAY", CHARACTER_BOOST_DISABLE_REALM)

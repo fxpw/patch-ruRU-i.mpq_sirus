@@ -1,192 +1,315 @@
---	Filename:	C_Item.lua
---	Project:	Custom Game Interface
---	Author:		Nyll & Blizzard Entertainment
+local _G = _G
+local error = error
+local pcall = pcall
+local tonumber = tonumber
+local type = type
+local strformat, strmatch = string.format, string.match
+local tinsert = table.insert
 
----@class C_ItemMixin : Mixin
-C_ItemMixin = {}
+local GetItemInfo = GetItemInfo
 
-enum:E_ITEM_INFO {
-    "NAME_ENGB",
-    "NAME_RURU",
-    "RARITY",
-    "ILEVEL",
-    "MINLEVEL",
-    "TYPE",
-    "SUBTYPE",
-    "STACKCOUNT",
-    "EQUIPLOC",
-    "TEXTURE",
-    "VENDORPRICE"
+local itemCacheQueue = {}
+
+local itemClassMap = {}
+local itemSubClassMap = {}
+local itemInvTypeToID = {
+	INVTYPE_HEAD			= 1,
+	INVTYPE_NECK			= 2,
+	INVTYPE_SHOULDER		= 3,
+	INVTYPE_BODY			= 4,
+	INVTYPE_CHEST			= 5,
+	INVTYPE_WAIST			= 6,
+	INVTYPE_LEGS			= 7,
+	INVTYPE_FEET			= 8,
+	INVTYPE_WRIST			= 9,
+	INVTYPE_HAND			= 10,
+	INVTYPE_FINGER			= 11,
+	INVTYPE_TRINKET			= 12,
+	INVTYPE_WEAPON			= 13,
+	INVTYPE_SHIELD			= 14,
+	INVTYPE_RANGED			= 15,
+	INVTYPE_CLOAK			= 16,
+	INVTYPE_2HWEAPON		= 17,
+	INVTYPE_BAG				= 18,
+	INVTYPE_TABARD			= 19,
+	INVTYPE_ROBE			= 20,
+	INVTYPE_WEAPONMAINHAND	= 21,
+	INVTYPE_WEAPONOFFHAND	= 22,
+	INVTYPE_HOLDABLE		= 23,
+	INVTYPE_AMMO			= 24,
+	INVTYPE_THROWN			= 25,
+	INVTYPE_RANGEDRIGHT		= 26,
+	INVTYPE_QUIVER			= 27,
+	INVTYPE_RELIC			= 28,
 }
 
-function C_ItemMixin:Init()
-    self.cacheTooltip   = CreateFrame("GameTooltip")
-    self.updateFrame    = CreateFrame("Frame")
-    self._GetItemInfo   = GetItemInfo
+enum:E_ITEM_INFO {
+	"NAME_ENGB",
+	"NAME_RURU",
+	"RARITY",
+	"ILEVEL",
+	"MINLEVEL",
+	"TYPE",
+	"SUBTYPE",
+	"STACKCOUNT",
+	"EQUIPLOC",
+	"TEXTURE",
+	"VENDORPRICE"
+}
 
-    local function OnUpdate()
-        self:OnUpdate()
-    end
+C_Item = {}
+C_Item.GetItemInfoRaw = GetItemInfo
 
-    self.updateFrame:SetScript("OnUpdate", OnUpdate)
+local LOCALE = GetLocale()
 
-    self.itemCacheQueue = {}
+local EVENT_HANDLER = CreateFrame("Frame")
+local TOOLTIP = CreateFrame("GameTooltip")
 
-    if ItemsCache then
-        local addedCache = {}
-        for itemEntry, itemData in pairs(ItemsCache) do
-            xpcall(function()
-                if not itemData.itemEntry then
-                    itemData.itemEntry = itemEntry
-                    addedCache[ itemData[self:GetLocaleIndex()] ] = itemData
-                end
-            end, function(...)
-                printec(...)
-                return
-            end)
-        end
-
-        for k,v in pairs(addedCache) do
-            ItemsCache[k] = v
-        end
-    else
-        printec("--- No ItemCache")
-    end
+local function runItemCallback(callback, ...)
+	local ok, ret = pcall(callback, ...)
+	if not ok then
+		geterrorhandler()(ret)
+	end
 end
 
-function C_ItemMixin:OnUpdate()
-    if #self.itemCacheQueue == 0 then
-        return
-    end
-
-    for i = #self.itemCacheQueue, 1, -1 do
-        local callbackData = self.itemCacheQueue[i]
-
-        if callbackData then
-            local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice = self._GetItemInfo(callbackData.itemEntry)
-
-            if itemName then
-                callbackData.func(itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice, callbackData.itemEntry)
-                table.remove(self.itemCacheQueue, i)
-            end
-        end
-    end
+local function tryItemData(callbacks, itemID, itemName, ...)
+	if itemName then
+		if type(callbacks) == "table" then
+			for _, callback in ipairs(callbacks) do
+				runItemCallback(callback, itemID, itemName, ...)
+			end
+		else
+			runItemCallback(callbacks, itemID, itemName, ...)
+		end
+		return true
+	end
 end
 
-function C_ItemMixin:GetLocaleIndex()
-    return GetLocale() == "ruRU" and E_ITEM_INFO.NAME_RURU or E_ITEM_INFO.NAME_ENGB
+EVENT_HANDLER:SetScript("OnUpdate", function(this, elapsed)
+	for itemID, callbacks in pairs(itemCacheQueue) do
+		if tryItemData(callbacks, itemID, GetItemInfo(itemID)) then
+			itemCacheQueue[itemID] = nil
+		end
+	end
+end)
+
+local function getItemID(item)
+	if type(item) == "string" then
+		if ItemsCache[item] then
+			item = ItemsCache[item].itemID
+		else
+			item = tonumber(item) or tonumber(strmatch(item, "item:(%d+)"))
+		end
+	end
+	if item and type(item) ~= "number" then
+		error([[Usage: C_Item.RequestServerCache(itemID|"name"|"itemlink")]], 3)
+	end
+	return item
 end
 
----@param itemEntry number | string
----@param callbackFunc? function
-function C_ItemMixin:RequestServerCache( itemEntry, callbackFunc )
-    itemEntry = tonumber(itemEntry)
+---@param item integer | string
+---@param callback? function
+function C_Item.RequestServerCache(item, callback)
+	item = getItemID(item)
+	if not item then
+		return
+	end
 
-    if itemEntry then
-        if callbackFunc then
-            table.insert(self.itemCacheQueue, {itemEntry = itemEntry, func = callbackFunc})
-        end
+	TOOLTIP:SetHyperlink(strformat("item:%i", item))
 
-        self.cacheTooltip:SetHyperlink("Hitem:"..itemEntry)
-    end
+	if type(callback) == "function" then
+		local cacheType = type(itemCacheQueue[item])
+		if cacheType == "nil" then
+			itemCacheQueue[item] = callback
+		elseif cacheType == "function" then
+			itemCacheQueue[item] = {itemCacheQueue[item], callback}
+		else
+			tinsert(itemCacheQueue[item], callback)
+		end
+	end
 end
 
----@param itemIdentifier number | string
----@return table itemData
-function C_ItemMixin:GetItemInfoFromCache( itemIdentifier )
-    assert(itemIdentifier, "C_ItemMixin.GetItemInfoFromCache: Не найден itemIdentifier")
-
-    local identifier    = tonumber(itemIdentifier) or tonumber(string.match(itemIdentifier, "Hitem:(%d+)")) or itemIdentifier
-    local cacheData     = ItemsCache[identifier]
-    local itemData      = {}
-
-    if cacheData and cacheData.itemEntry then
-        itemData.name           = cacheData[self:GetLocaleIndex()]
-        itemData.rarity         = cacheData[E_ITEM_INFO.RARITY]
-        itemData.iLevel         = cacheData[E_ITEM_INFO.ILEVEL]
-        itemData.mLevel         = cacheData[E_ITEM_INFO.MINLEVEL]
-        itemData.type           = _G["ITEM_CLASS_"..cacheData[E_ITEM_INFO.TYPE]]
-        itemData.subType        = _G[string.format("ITEM_SUB_CLASS_%d_%d", cacheData[E_ITEM_INFO.TYPE], cacheData[E_ITEM_INFO.SUBTYPE])]
-        itemData.stackCount     = cacheData[E_ITEM_INFO.STACKCOUNT]
-        itemData.equipLoc       = SHARED_INVTYPE_BY_ID[cacheData[E_ITEM_INFO.EQUIPLOC]]
-        itemData.vendorPrice    = cacheData[E_ITEM_INFO.VENDORPRICE]
-        itemData.texture        = "Interface\\Icons\\"..cacheData[E_ITEM_INFO.TEXTURE]
-
-        local r, g, b = GetItemQualityColor(itemData.rarity)
-        itemData.link = CreateColor(r, g, b):WrapTextInColorCode(string.format("|Hitem:%d:0:0:0:0:0:0:0:%d|h[%s]|h", cacheData.itemEntry, itemData.mLevel, itemData.name))
-
-        return itemData
-    end
-end
-
----@param itemIdentifier  number | string
----@param skipClientCache boolean
----@param callbackFunc function
+---@param item integer | string
 ---@return string itemName
 ---@return string itemLink
----@return number itemRarity
----@return number itemLevel
----@return number itemMinLevel
+---@return integer itemRarity
+---@return integer itemLevel
+---@return integer itemMinLevel
 ---@return string itemType
 ---@return string itemSubType
----@return number itemStackCount
+---@return integer itemStackCount
 ---@return string itemEquipLoc
 ---@return string itemTexture
----@return number vendorPrice
-function C_ItemMixin:GetItemInfo( itemIdentifier, skipClientCache, callbackFunc )
-    if not itemIdentifier then
-        return
-    end
+---@return integer vendorPrice
+---@return integer itemID
+function C_Item.GetItemInfoCache(item)
+	item = getItemID(item)
+	if not item then
+		return
+	end
 
-    local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice = self._GetItemInfo(itemIdentifier)
+	local cacheData = ItemsCache[item]
+	if cacheData then
+		local itemName		= cacheData[C_Item.GetLocaleIndex()]
+		local itemRarity 	= cacheData[E_ITEM_INFO.RARITY]
+		local itemMinLevel	= cacheData[E_ITEM_INFO.MINLEVEL]
+		local classID		= cacheData[E_ITEM_INFO.TYPE]
+		local subclassID	= cacheData[E_ITEM_INFO.SUBTYPE]
+		local equipLocID	= cacheData[E_ITEM_INFO.EQUIPLOC]
 
-    if not itemName then
-        self:RequestServerCache(itemIdentifier, callbackFunc)
+		if not cacheData.link then
+			local r, g, b = GetItemQualityColor(itemRarity)
+			if r and g and b then
+				cacheData.link = strformat("|cff%.2x%.2x%.2x|Hitem:%d:0:0:0:0:0:0:0:%d|h[%s]|h|r", r * 255, g * 255, b * 255, cacheData.itemID, itemMinLevel, itemName)
+			else
+				cacheData.link = strformat("|Hitem:%d:0:0:0:0:0:0:0:%d|h[%s]|h", cacheData.itemID, itemMinLevel, itemName)
+			end
+		end
 
-        itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice = self._GetItemInfo(itemIdentifier)
-
-        if (not skipClientCache and GetServerID() ~= REALM_ID_SIRUS) and not itemName then
-            local cacheData = C_ItemMixin:GetItemInfoFromCache(itemIdentifier)
-
-            if cacheData then
-                itemName        = cacheData.name
-                itemLink        = cacheData.link
-                itemRarity      = cacheData.rarity
-                itemLevel       = cacheData.iLevel
-                itemMinLevel    = cacheData.mLevel
-                itemType        = cacheData.type
-                itemSubType     = cacheData.subType
-                itemStackCount  = cacheData.stackCount
-                itemEquipLoc    = cacheData.equipLoc
-                itemTexture     = cacheData.texture
-                vendorPrice     = cacheData.vendorPrice
-            end
-        end
-    end
-
-    local unitFaction = UnitFactionGroup("player")
-
-    if unitFaction and itemLink then
-        local itemEntry = string.match(itemLink, "|Hitem:(%d+)")
-
-        if itemEntry then
-            itemEntry = tonumber(itemEntry)
-
-            if itemEntry == 43308 then
-                itemTexture = "Interface\\ICONS\\PVPCurrency-Honor-"..unitFaction
-            elseif itemEntry == 43307 then
-                itemTexture = "Interface\\ICONS\\PVPCurrency-Conquest-"..unitFaction
-            end
-        end
-    end
-
-    return itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice
+		return itemName,
+			cacheData.link,
+			itemRarity,
+			cacheData[E_ITEM_INFO.ILEVEL],
+			itemMinLevel,
+			_G["ITEM_CLASS_"..classID],
+			_G["ITEM_SUB_CLASS_" .. classID .. "_"  .. subclassID],
+			cacheData[E_ITEM_INFO.STACKCOUNT],
+			SHARED_INVTYPE_BY_ID[equipLocID],
+			"Interface\\Icons\\"..cacheData[E_ITEM_INFO.TEXTURE],
+			cacheData[E_ITEM_INFO.VENDORPRICE],
+			cacheData.itemID,
+			classID,
+			subclassID,
+			equipLocID
+	end
 end
 
----@class C_Item : C_ItemMixin
-C_Item = CreateFromMixins(C_ItemMixin)
-C_Item:Init()
+---@param item integer | string
+---@param skipClientCache? boolean
+---@param callback? function
+---@param noAdditionalData? boolean
+---@param noRequest? boolean
+---@return string itemName
+---@return string itemLink
+---@return integer itemRarity
+---@return integer itemLevel
+---@return integer itemMinLevel
+---@return string itemType
+---@return string itemSubType
+---@return integer itemStackCount
+---@return string itemEquipLoc
+---@return string itemTexture
+---@return integer vendorPrice
+---@return integer? itemID
+---@return integer? classID
+---@return integer? subclassID
+---@return integer? equipLocID
+function C_Item.GetItemInfo(item, skipClientCache, callback, noAdditionalData, noRequest)
+	if not item then
+		return
+	end
 
-function GetItemInfo( itemIdentifier, skipClientCache, callbackFunc )
-    return C_Item:GetItemInfo( itemIdentifier, skipClientCache, callbackFunc )
+	local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice = GetItemInfo(item)
+	local itemID, classID, subClassID, equipLocID
+
+	if not itemName then
+		if not noRequest then
+			C_Item.RequestServerCache(item, callback)
+			itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice = GetItemInfo(item)
+		end
+
+		if not itemName and (not skipClientCache and GetServerID() ~= REALM_ID_SIRUS)then
+			itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice, itemID, classID, subClassID, equipLocID = C_Item.GetItemInfoCache(item)
+		end
+	end
+
+	if itemLink then
+		itemID = itemID or tonumber(strmatch(itemLink, "item:(%d+)"))
+
+		if itemID and (itemID == 43308 or itemID == 43307) then
+			local unitFaction = UnitFactionGroup("player")
+			if itemID == 43308 then
+				itemTexture = "Interface\\ICONS\\PVPCurrency-Honor-"..unitFaction
+			elseif itemID == 43307 then
+				itemTexture = "Interface\\ICONS\\PVPCurrency-Conquest-"..unitFaction
+			end
+		end
+	end
+
+	if noAdditionalData then
+		return itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice
+	else
+		if not classID then
+			classID = C_Item.GetItemClassID(itemType)
+			subClassID = C_Item.GetItemSubClassID(itemSubType)
+			equipLocID = C_Item.GetItemEquipLocID(itemEquipLoc)
+		end
+
+		return itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice, itemID, classID, subClassID, equipLocID
+	end
+end
+
+function C_Item.GetLocaleIndex()
+	return LOCALE == "ruRU" and E_ITEM_INFO.NAME_RURU or E_ITEM_INFO.NAME_ENGB
+end
+
+---@param itemType string
+---@return integer? itemClassID
+function C_Item.GetItemClassID(itemType)
+	return itemClassMap[itemType]
+end
+
+---@param itemSubType string
+---@return integer? itemSubClassID
+function C_Item.GetItemSubClassID(itemSubType)
+	return itemSubClassMap[itemSubType]
+end
+
+---@param itemEquipLoc string
+---@return integer? invEquipLocID
+function C_Item.GetItemEquipLocID(itemEquipLoc)
+	return itemInvTypeToID[itemEquipLoc]
+end
+
+do
+	local classID = 0
+	local className = _G["ITEM_CLASS_" .. classID]
+	while className do
+		itemClassMap[className] = classID
+
+		local subclassID = 0
+		local subclassName = _G["ITEM_SUB_CLASS_" .. classID .. "_"  .. subclassID]
+		while subclassName do
+			itemSubClassMap[subclassName] = subclassID
+
+			subclassID = subclassID + 1
+			subclassName = _G["ITEM_SUB_CLASS_" .. classID .. "_"  .. subclassID]
+		end
+
+		classID = classID + 1
+		className = _G["ITEM_CLASS_" .. classID]
+	end
+
+	if ItemsCache then
+		local namedItems = {}
+		local localeIndex = C_Item.GetLocaleIndex()
+		for itemID, itemData in pairs(ItemsCache) do
+			itemData.itemID = itemID
+
+			local itemName = itemData[localeIndex]
+			if itemName and itemName ~= "" then
+				namedItems[itemName] = itemData
+			end
+		end
+		for itemName, itemData in pairs(namedItems) do
+			ItemsCache[itemName] = itemData
+			namedItems[itemName] = nil
+		end
+	else
+		GMError("No ItemCache")
+	end
+end
+
+_G.GetItemInfo = function(item)
+	return C_Item.GetItemInfo(item, nil, nil, true)
 end

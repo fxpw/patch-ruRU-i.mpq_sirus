@@ -88,6 +88,7 @@ end
 
 function CharacterCreateMixin:OnLoad()
 	self:RegisterHookListener()
+	self:RegisterCustomEvent("GLUE_CHARACTER_CREATE_FORCE_RACE_CHANGE")
 
 	self.raceButtonPerLine = 5
 
@@ -123,17 +124,20 @@ function CharacterCreateMixin:OnShow()
 	if PAID_SERVICE_TYPE == PAID_FACTION_CHANGE and select(3, C_CharacterCreation.PaidChange_GetCurrentFaction()) == PLAYER_FACTION_GROUP.Neutral then
 		self.NavigationFrame.CreateNameEditBox:SetAutoFocus(false)
 		self.NavigationFrame.CreateNameEditBox:ClearFocus()
-		self.GenderFrame.CustomizationButton:Hide()
+		self.NavigationFrame:Hide()
 		self.AllianceRacesFrame:Hide()
 		self.HordeRacesFrame:Hide()
+		self.NeutralRacesFrame:Hide()
+		self.GenderFrame:Hide()
+		self.ClassesFrame:Hide()
 
 		PlaySound(SOUNDKIT.GS_TITLE_OPTIONS)
-		self:RegisterCustomEvent("GLUE_CHARACTER_CREATE_FORCE_RACE_CHANGE")
 		GlueDialog:ShowDialog("FORCE_CHOOSE_FACTION")
 
 		return
 	end
 
+	self.GenderFrame.CustomizationButton:SetText(CHARACTER_CREATE_CUSTOMIZATION_LABEL)
 	self:CreateUpdateButtons()
 	self.skipCustomizationConfirmation = false
 
@@ -150,12 +154,15 @@ end
 
 function CharacterCreateMixin:OnEvent(event, ...)
 	if event == "GLUE_CHARACTER_CREATE_FORCE_RACE_CHANGE" then
+		self.NavigationFrame:Show()
 		self.NavigationFrame.CreateNameEditBox:SetAutoFocus(true)
 		self.NavigationFrame.CreateNameEditBox:SetFocus()
 		self.NavigationFrame.CreateNameEditBox:HighlightText(0, 0)
-		self.GenderFrame.CustomizationButton:Show()
 		self.AllianceRacesFrame:Show()
 		self.HordeRacesFrame:Show()
+		self.NeutralRacesFrame:Show()
+		self.GenderFrame:Show()
+		self.ClassesFrame:Show()
 
 		self:CreateUpdateButtons()
 	end

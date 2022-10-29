@@ -1,4 +1,552 @@
 local SIRUS_LOCALIZATION = {
+	["ITEM_CLASS_0"] = {
+		ruRU = "Расходуемые",
+		enGB = "Consumable"
+	},
+	["ITEM_CLASS_1"] = {
+		ruRU = "Сумки",
+		enGB = "Container"
+	},
+	["ITEM_CLASS_2"] = {
+		ruRU = "Оружие",
+		enGB = "Weapon"
+	},
+	["ITEM_CLASS_3"] = {
+		ruRU = "Самоцветы",
+		enGB = "Gem"
+	},
+	["ITEM_CLASS_4"] = {
+		ruRU = "Доспехи",
+		enGB = "Armor"
+	},
+	["ITEM_CLASS_5"] = {
+		ruRU = "Реагенты",
+		enGB = "Reagent"
+	},
+	["ITEM_CLASS_6"] = {
+		ruRU = "Боеприпасы",
+		enGB = "Projectile"
+	},
+	["ITEM_CLASS_7"] = {
+		ruRU = "Хозяйственные товары",
+		enGB = "Trade Goods"
+	},
+	["ITEM_CLASS_8"] = {
+		ruRU = "Игрушка",
+		enGB = "Toy"
+	},
+	["ITEM_CLASS_9"] = {
+		ruRU = "Рецепты",
+		enGB = "Recipe"
+	},
+	["ITEM_CLASS_10"] = {
+		ruRU = "Деньги",
+		enGB = "Money"
+	},
+	["ITEM_CLASS_11"] = {
+		ruRU = "Амуниция",
+		enGB = "Quiver"
+	},
+	["ITEM_CLASS_12"] = {
+		ruRU = "Задания",
+		enGB = "Quest"
+	},
+	["ITEM_CLASS_13"] = {
+		ruRU = "Ключи",
+		enGB = "Key"
+	},
+	["ITEM_CLASS_14"] = {
+		ruRU = "Постоянные(НЕ ИСП.)",
+		enGB = "Permanent(OBSOLETE)"
+	},
+	["ITEM_CLASS_15"] = {
+		ruRU = "Разное",
+		enGB = "Miscellaneous"
+	},
+	["ITEM_CLASS_16"] = {
+		ruRU = "Символы",
+		enGB = "Glyph"
+	},
+	["ITEM_SUB_CLASS_0_0"] = {
+		ruRU = "Расходуемые",
+		enGB = "Consumable"
+	},
+	["ITEM_SUB_CLASS_0_1"] = {
+		ruRU = "Зелья",
+		enGB = "Potion"
+	},
+	["ITEM_SUB_CLASS_0_2"] = {
+		ruRU = "Эликсиры",
+		enGB = "Elixir"
+	},
+	["ITEM_SUB_CLASS_0_3"] = {
+		ruRU = "Настойки",
+		enGB = "Flask"
+	},
+	["ITEM_SUB_CLASS_0_4"] = {
+		ruRU = "Свитки",
+		enGB = "Scroll"
+	},
+	["ITEM_SUB_CLASS_0_5"] = {
+		ruRU = "Еда и напитки",
+		enGB = "Food & Drink"
+	},
+	["ITEM_SUB_CLASS_0_6"] = {
+		ruRU = "Улучшения",
+		enGB = "Item Enhancement"
+	},
+	["ITEM_SUB_CLASS_0_7"] = {
+		ruRU = "Бинты",
+		enGB = "Bandage"
+	},
+	["ITEM_SUB_CLASS_0_8"] = {
+		ruRU = "Другое",
+		enGB = "Other"
+	},
+	["ITEM_SUB_CLASS_1_0"] = {
+		ruRU = "Сумка",
+		enGB = "Bag"
+	},
+	["ITEM_SUB_CLASS_1_1"] = {
+		ruRU = "Сумка душ",
+		enGB = "Soul Bag"
+	},
+	["ITEM_SUB_CLASS_1_2"] = {
+		ruRU = "Сумка травника",
+		enGB = "Herb Bag"
+	},
+	["ITEM_SUB_CLASS_1_3"] = {
+		ruRU = "Сумка зачаровывателя",
+		enGB = "Enchanting Bag"
+	},
+	["ITEM_SUB_CLASS_1_4"] = {
+		ruRU = "Сумка инженера",
+		enGB = "Engineering Bag"
+	},
+	["ITEM_SUB_CLASS_1_5"] = {
+		ruRU = "Сумка ювелира",
+		enGB = "Gem Bag"
+	},
+	["ITEM_SUB_CLASS_1_6"] = {
+		ruRU = "Сумка шахтера",
+		enGB = "Mining Bag"
+	},
+	["ITEM_SUB_CLASS_1_7"] = {
+		ruRU = "Сумка кожевника",
+		enGB = "Leatherworking Bag"
+	},
+	["ITEM_SUB_CLASS_1_8"] = {
+		ruRU = "Сумка начертателя",
+		enGB = "Inscription Bag"
+	},
+	["ITEM_SUB_CLASS_1_9"] = {
+		ruRU = "Кулинарная сумка",
+		enGB = "Cooking Bag"
+	},
+	["ITEM_SUB_CLASS_2_0"] = {
+		ruRU = "Одноручные топоры",
+		enGB = "One-Handed Axes"
+	},
+	["ITEM_SUB_CLASS_2_1"] = {
+		ruRU = "Двуручные топоры",
+		enGB = "Two-Handed Axes"
+	},
+	["ITEM_SUB_CLASS_2_2"] = {
+		ruRU = "Луки",
+		enGB = "Bows"
+	},
+	["ITEM_SUB_CLASS_2_3"] = {
+		ruRU = "Огнестрельное",
+		enGB = "Guns"
+	},
+	["ITEM_SUB_CLASS_2_4"] = {
+		ruRU = "Одноручное дробящее",
+		enGB = "One-Handed Maces"
+	},
+	["ITEM_SUB_CLASS_2_5"] = {
+		ruRU = "Двуручное дробящее",
+		enGB = "Two-Handed Maces"
+	},
+	["ITEM_SUB_CLASS_2_6"] = {
+		ruRU = "Древковое",
+		enGB = "Polearms"
+	},
+	["ITEM_SUB_CLASS_2_7"] = {
+		ruRU = "Одноручные мечи",
+		enGB = "One-Handed Swords"
+	},
+	["ITEM_SUB_CLASS_2_8"] = {
+		ruRU = "Двуручные мечи",
+		enGB = "Two-Handed Swords"
+	},
+	["ITEM_SUB_CLASS_2_9"] = {
+		ruRU = "Устаревшие",
+		enGB = "Obsolete"
+	},
+	["ITEM_SUB_CLASS_2_10"] = {
+		ruRU = "Посохи",
+		enGB = "Staves"
+	},
+	["ITEM_SUB_CLASS_2_11"] = {
+		ruRU = "Одноручное экзотическое",
+		enGB = "One-Handed Exotics"
+	},
+	["ITEM_SUB_CLASS_2_12"] = {
+		ruRU = "Двуручное экзотическое",
+		enGB = "Two-Handed Exotics"
+	},
+	["ITEM_SUB_CLASS_2_13"] = {
+		ruRU = "Кистевое",
+		enGB = "Fist Weapons"
+	},
+	["ITEM_SUB_CLASS_2_14"] = {
+		ruRU = "Разное",
+		enGB = "Miscellaneous"
+	},
+	["ITEM_SUB_CLASS_2_15"] = {
+		ruRU = "Кинжалы",
+		enGB = "Daggers"
+	},
+	["ITEM_SUB_CLASS_2_16"] = {
+		ruRU = "Метательное",
+		enGB = "Thrown"
+	},
+	["ITEM_SUB_CLASS_2_17"] = {
+		ruRU = "Копья",
+		enGB = "Spears"
+	},
+	["ITEM_SUB_CLASS_2_18"] = {
+		ruRU = "Арбалеты",
+		enGB = "Crossbows"
+	},
+	["ITEM_SUB_CLASS_2_19"] = {
+		ruRU = "Жезлы",
+		enGB = "Wands"
+	},
+	["ITEM_SUB_CLASS_2_20"] = {
+		ruRU = "Удочки",
+		enGB = "Fishing Poles"
+	},
+	["ITEM_SUB_CLASS_3_0"] = {
+		ruRU = "Красные",
+		enGB = "Red"
+	},
+	["ITEM_SUB_CLASS_3_1"] = {
+		ruRU = "Синие",
+		enGB = "Blue"
+	},
+	["ITEM_SUB_CLASS_3_2"] = {
+		ruRU = "Желтые",
+		enGB = "Yellow"
+	},
+	["ITEM_SUB_CLASS_3_3"] = {
+		ruRU = "Фиолетовые",
+		enGB = "Purple"
+	},
+	["ITEM_SUB_CLASS_3_4"] = {
+		ruRU = "Зеленые",
+		enGB = "Green"
+	},
+	["ITEM_SUB_CLASS_3_5"] = {
+		ruRU = "Оранжевые",
+		enGB = "Orange"
+	},
+	["ITEM_SUB_CLASS_3_6"] = {
+		ruRU = "Особые",
+		enGB = "Meta"
+	},
+	["ITEM_SUB_CLASS_3_7"] = {
+		ruRU = "Простые",
+		enGB = "Simple"
+	},
+	["ITEM_SUB_CLASS_3_8"] = {
+		ruRU = "Радужные",
+		enGB = "Prismatic"
+	},
+	["ITEM_SUB_CLASS_4_0"] = {
+		ruRU = "Разное",
+		enGB = "Miscellaneous"
+	},
+	["ITEM_SUB_CLASS_4_1"] = {
+		ruRU = "Тканевые",
+		enGB = "Cloth"
+	},
+	["ITEM_SUB_CLASS_4_2"] = {
+		ruRU = "Кожаные",
+		enGB = "Leather"
+	},
+	["ITEM_SUB_CLASS_4_3"] = {
+		ruRU = "Кольчужные",
+		enGB = "Mail"
+	},
+	["ITEM_SUB_CLASS_4_4"] = {
+		ruRU = "Латные",
+		enGB = "Plate"
+	},
+	["ITEM_SUB_CLASS_4_5"] = {
+		ruRU = "Декоративный предмет",
+		enGB = "Tmog"
+	},
+	["ITEM_SUB_CLASS_4_6"] = {
+		ruRU = "Щиты",
+		enGB = "Shields"
+	},
+	["ITEM_SUB_CLASS_4_7"] = {
+		ruRU = "Манускрипты",
+		enGB = "Librams"
+	},
+	["ITEM_SUB_CLASS_4_8"] = {
+		ruRU = "Идолы",
+		enGB = "Idols"
+	},
+	["ITEM_SUB_CLASS_4_9"] = {
+		ruRU = "Тотемы",
+		enGB = "Totems"
+	},
+	["ITEM_SUB_CLASS_4_10"] = {
+		ruRU = "Печати",
+		enGB = "Sigils"
+	},
+	["ITEM_SUB_CLASS_5_0"] = {
+		ruRU = "Реагент",
+		enGB = "Reagent"
+	},
+	["ITEM_SUB_CLASS_6_0"] = {
+		ruRU = "Жезл(НЕ ИСП.)",
+		enGB = "Wand(OBSOLETE)"
+	},
+	["ITEM_SUB_CLASS_6_1"] = {
+		ruRU = "Болт(НЕ ИСП.)",
+		enGB = "Bolt(OBSOLETE)"
+	},
+	["ITEM_SUB_CLASS_6_2"] = {
+		ruRU = "Стрелы",
+		enGB = "Arrow"
+	},
+	["ITEM_SUB_CLASS_6_3"] = {
+		ruRU = "Пули",
+		enGB = "Bullet"
+	},
+	["ITEM_SUB_CLASS_6_4"] = {
+		ruRU = "Метательное(НЕ ИСП.)",
+		enGB = "Thrown(OBSOLETE)"
+	},
+	["ITEM_SUB_CLASS_7_0"] = {
+		ruRU = "Хозяйственные товары",
+		enGB = "Trade Goods"
+	},
+	["ITEM_SUB_CLASS_7_1"] = {
+		ruRU = "Детали",
+		enGB = "Parts"
+	},
+	["ITEM_SUB_CLASS_7_2"] = {
+		ruRU = "Взрывчатка",
+		enGB = "Explosives"
+	},
+	["ITEM_SUB_CLASS_7_3"] = {
+		ruRU = "Устройства",
+		enGB = "Devices"
+	},
+	["ITEM_SUB_CLASS_7_4"] = {
+		ruRU = "Ювелирное дело",
+		enGB = "Jewelcrafting"
+	},
+	["ITEM_SUB_CLASS_7_5"] = {
+		ruRU = "Ткань",
+		enGB = "Cloth"
+	},
+	["ITEM_SUB_CLASS_7_6"] = {
+		ruRU = "Кожа",
+		enGB = "Leather"
+	},
+	["ITEM_SUB_CLASS_7_7"] = {
+		ruRU = "Металл и камень",
+		enGB = "Metal & Stone"
+	},
+	["ITEM_SUB_CLASS_7_8"] = {
+		ruRU = "Мясо",
+		enGB = "Meat"
+	},
+	["ITEM_SUB_CLASS_7_9"] = {
+		ruRU = "Трава",
+		enGB = "Herb"
+	},
+	["ITEM_SUB_CLASS_7_10"] = {
+		ruRU = "Стихии",
+		enGB = "Elemental"
+	},
+	["ITEM_SUB_CLASS_7_11"] = {
+		ruRU = "Другое",
+		enGB = "Other"
+	},
+	["ITEM_SUB_CLASS_7_12"] = {
+		ruRU = "Наложение чар",
+		enGB = "Enchanting"
+	},
+	["ITEM_SUB_CLASS_7_13"] = {
+		ruRU = "Материалы",
+		enGB = "Materials"
+	},
+	["ITEM_SUB_CLASS_7_14"] = {
+		ruRU = "Чары для доспехов",
+		enGB = "Armor Enchantment"
+	},
+	["ITEM_SUB_CLASS_7_15"] = {
+		ruRU = "Чары для оружия",
+		enGB = "Weapon Enchantment"
+	},
+	["ITEM_SUB_CLASS_8_0"] = {
+		ruRU = "Игрушка",
+		enGB = "Toy"
+	},
+	["ITEM_SUB_CLASS_9_0"] = {
+		ruRU = "Книга",
+		enGB = "Book"
+	},
+	["ITEM_SUB_CLASS_9_1"] = {
+		ruRU = "Кожевничество",
+		enGB = "Leatherworking"
+	},
+	["ITEM_SUB_CLASS_9_2"] = {
+		ruRU = "Портняжное дело",
+		enGB = "Tailoring"
+	},
+	["ITEM_SUB_CLASS_9_3"] = {
+		ruRU = "Инженерное дело",
+		enGB = "Engineering"
+	},
+	["ITEM_SUB_CLASS_9_4"] = {
+		ruRU = "Кузнечное дело",
+		enGB = "Blacksmithing"
+	},
+	["ITEM_SUB_CLASS_9_5"] = {
+		ruRU = "Кулинария",
+		enGB = "Cooking"
+	},
+	["ITEM_SUB_CLASS_9_6"] = {
+		ruRU = "Алхимия",
+		enGB = "Alchemy"
+	},
+	["ITEM_SUB_CLASS_9_7"] = {
+		ruRU = "Первая помощь",
+		enGB = "First Aid"
+	},
+	["ITEM_SUB_CLASS_9_8"] = {
+		ruRU = "Наложение чар",
+		enGB = "Enchanting"
+	},
+	["ITEM_SUB_CLASS_9_9"] = {
+		ruRU = "Рыбная ловля",
+		enGB = "Fishing"
+	},
+	["ITEM_SUB_CLASS_9_10"] = {
+		ruRU = "Ювелирное дело",
+		enGB = "Jewelcrafting"
+	},
+	["ITEM_SUB_CLASS_9_11"] = {
+		ruRU = "Начертание",
+		enGB = "Inscription"
+	},
+	["ITEM_SUB_CLASS_10_0"] = {
+		ruRU = "Деньги (НЕ ИСП.)",
+		enGB = "Money(OBSOLETE)"
+	},
+	["ITEM_SUB_CLASS_11_0"] = {
+		ruRU = "Колчан(НЕ ИСП.)",
+		enGB = "Quiver(OBSOLETE)"
+	},
+	["ITEM_SUB_CLASS_11_1"] = {
+		ruRU = "Колчан(НЕ ИСП.)",
+		enGB = "Quiver(OBSOLETE)"
+	},
+	["ITEM_SUB_CLASS_11_2"] = {
+		ruRU = "Колчан",
+		enGB = "Quiver"
+	},
+	["ITEM_SUB_CLASS_11_3"] = {
+		ruRU = "Подсумок",
+		enGB = "Ammo Pouch"
+	},
+	["ITEM_SUB_CLASS_12_0"] = {
+		ruRU = "Задания",
+		enGB = "Quest"
+	},
+	["ITEM_SUB_CLASS_13_0"] = {
+		ruRU = "Ключ",
+		enGB = "Key"
+	},
+	["ITEM_SUB_CLASS_13_1"] = {
+		ruRU = "Отмычка",
+		enGB = "Lockpick"
+	},
+	["ITEM_SUB_CLASS_14_0"] = {
+		ruRU = "Постоянные",
+		enGB = "Permanent"
+	},
+	["ITEM_SUB_CLASS_15_0"] = {
+		ruRU = "Хлам",
+		enGB = "Junk"
+	},
+	["ITEM_SUB_CLASS_15_1"] = {
+		ruRU = "Реагенты",
+		enGB = "Reagent"
+	},
+	["ITEM_SUB_CLASS_15_2"] = {
+		ruRU = "Питомцы",
+		enGB = "Pet"
+	},
+	["ITEM_SUB_CLASS_15_3"] = {
+		ruRU = "Праздничные предметы",
+		enGB = "Holiday"
+	},
+	["ITEM_SUB_CLASS_15_4"] = {
+		ruRU = "Другое",
+		enGB = "Other"
+	},
+	["ITEM_SUB_CLASS_15_5"] = {
+		ruRU = "Верховые животные",
+		enGB = "Mount"
+	},
+	["ITEM_SUB_CLASS_16_1"] = {
+		ruRU = "Воин",
+		enGB = "Warrior"
+	},
+	["ITEM_SUB_CLASS_16_2"] = {
+		ruRU = "Паладин",
+		enGB = "Paladin"
+	},
+	["ITEM_SUB_CLASS_16_3"] = {
+		ruRU = "Охотник",
+		enGB = "Hunter"
+	},
+	["ITEM_SUB_CLASS_16_4"] = {
+		ruRU = "Разбойник",
+		enGB = "Rogue"
+	},
+	["ITEM_SUB_CLASS_16_5"] = {
+		ruRU = "Жрец",
+		enGB = "Priest"
+	},
+	["ITEM_SUB_CLASS_16_6"] = {
+		ruRU = "Рыцарь смерти",
+		enGB = "Death Knight"
+	},
+	["ITEM_SUB_CLASS_16_7"] = {
+		ruRU = "Шаман",
+		enGB = "Shaman"
+	},
+	["ITEM_SUB_CLASS_16_8"] = {
+		ruRU = "Маг",
+		enGB = "Mage"
+	},
+	["ITEM_SUB_CLASS_16_9"] = {
+		ruRU = "Чернокнижник",
+		enGB = "Warlock"
+	},
+	["ITEM_SUB_CLASS_16_11"] = {
+		ruRU = "Друид",
+		enGB = "Druid"
+	},
     ["VOICEMACRO_20_Sc_6_FEMALE"] = {
         ruRU = "Гробовые гвоздики...",
         enGB = "Ah, doornails."
@@ -619,10 +1167,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Порвем всех в клочья!",
         enGB = "Rend flesh with me!"
     },
-    ["HOUR_ONELETTER_ABBR"] = {
-        ruRU = "%d ч.",
-        enGB = "%d h"
-    },
     ["VOICEMACRO_15_Ta_2"] = {
         ruRU = "Ни за что.",
         enGB = "Never."
@@ -1078,10 +1622,6 @@ local SIRUS_LOCALIZATION = {
     ["MOVIE_RECORDING_COMPRESSING_CANCEL_NEWBIE_TOOLTIP"] = {
         ruRU = "Прекращение сжатия файла. Все несжатые данные будут утеряны, остальная информация будет сохранена на жестком диске.",
         enGB = "This will finish the compression early. You will lose the part that is still not compressed. The part that is currently compressed will be saved on your hard drive."
-    },
-    ["ITEM_CLASS_3"] = {
-        ruRU = "Самоцветы",
-        enGB = "Gem"
     },
     ["VOICEMACRO_19_Gn_0_FEMALE"] = {
         ruRU = "Как мило!",
@@ -1726,10 +2266,6 @@ local SIRUS_LOCALIZATION = {
     ["POWER_TYPE_DARKNESS"] = {
         ruRU = "Энергия Тьмы",
         enGB = "Darkness Energy"
-    },
-    ["ITEM_SUB_CLASS_15_0"] = {
-        ruRU = "Хлам",
-        enGB = "Junk"
     },
     ["FILTER_BY_FRIENDS_COMBATLOG_TOOLTIP"] = {
         ruRU = "Действия дружественных игроков, питомцев и существ.",
@@ -2967,10 +3503,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы следуете за |3-4(%s).",
         enGB = "Following %s."
     },
-    ["ITEM_SUB_CLASS_2_4"] = {
-        ruRU = "Одноручное дробящее",
-        enGB = "One-Handed Maces"
-    },
     ["FACTION_STANDING_DECREASED"] = {
         ruRU = "Отношение |3-7(%s) к вам ухудшилось на %d.",
         enGB = "Reputation with %s decreased by %d."
@@ -3230,10 +3762,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE411_CMD2"] = {
         ruRU = "/pinch",
         enGB = "/pinch"
-    },
-    ["MILLISECONDS_ABBR"] = {
-        ruRU = "мс",
-        enGB = "ms"
     },
     ["VOICEMACRO_5_Ta_1_FEMALE"] = {
         ruRU = "Маны не хватает!",
@@ -3579,10 +4107,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "хихи",
         enGB = "hehe"
     },
-    ["ITEM_SUB_CLASS_1_8"] = {
-        ruRU = "Сумка начертателя",
-        enGB = "Inscription Bag"
-    },
     ["EMOTE306_CMD4"] = {
         ruRU = "/flee",
         enGB = "/flee"
@@ -3611,17 +4135,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Отрицательные эффекты",
         enGB = "Show Debuffs"
     },
-    ["ITEM_SUB_CLASS_12_0"] = {
-        ruRU = "Задания",
-        enGB = "Quest"
-    },
     ["GUILD_CREST_DESIGN"] = {
         ruRU = "Создать герб гильдии",
         enGB = "Design a Guild Crest"
-    },
-    ["ITEM_SUB_CLASS_9_6"] = {
-        ruRU = "Алхимия",
-        enGB = "Alchemy"
     },
     ["EMOTE_STATE_KNEEL"] = {
         ruRU = "/kneel",
@@ -3958,10 +4474,6 @@ local SIRUS_LOCALIZATION = {
     ["HELPFRAME_HOME_TEXT"] = {
         ruRU = "Гейм-мастер может помочь в следующих ситуациях:",
         enGB = "The following are the types of issues that a GM can assist with:"
-    },
-    ["ITEM_SUB_CLASS_4_3"] = {
-        ruRU = "Кольчужные",
-        enGB = "Mail"
     },
     ["NEWBIE_TOOLTIP_ADDMEMBER"] = {
         ruRU = "Добавление нового игрока в гильдию.",
@@ -4423,10 +4935,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Отображать сообщение Battle.net, когда ваши друзья по Battle.net выходят из сети.",
         enGB = "Displays a Battle.net message when a Real ID friend goes offline."
     },
-    ["ITEM_CLASS_9"] = {
-        ruRU = "Рецепты",
-        enGB = "Recipe"
-    },
     ["SLASH_MAINTANKOFF3"] = {
         ruRU = "/тоткл",
         enGB = "/mtoff"
@@ -4434,10 +4942,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE97_CMD1"] = {
         ruRU = "/топ",
         enGB = "/tap"
-    },
-    ["ITEM_SUB_CLASS_1_3"] = {
-        ruRU = "Сумка зачаровывателя",
-        enGB = "Enchanting Bag"
     },
     ["ERR_COMSAT_DISCONNECT"] = {
         ruRU = "Подключение к службе голосового общения потеряно.",
@@ -5115,10 +5619,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Отображение сообщений о неудачном применении боевых заклинаний и способностей, в т.ч., связанном с уклонением, парированием, блоком, отражением, невосприимчивостью, поглощением и уверткой.",
         enGB = "Show messages when a spell or ability fails to deal damage. This includes dodges, parries, blocks, deflections, immunes, absorbs and evades."
     },
-    ["ITEM_SUB_CLASS_2_13"] = {
-        ruRU = "Кистевое",
-        enGB = "Fist Weapons"
-    },
     ["ITEM_COOLDOWN_TOTAL_SEC"] = {
         ruRU = "(Восстановление: %d сек.)",
         enGB = "(%d Sec Cooldown)"
@@ -5495,10 +5995,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Проценты",
         enGB = "Percentage"
     },
-    ["ITEM_SUB_CLASS_16_11"] = {
-        ruRU = "Друид",
-        enGB = "Druid"
-    },
     ["KEY_BUTTON16"] = {
         ruRU = "Кнопка мыши 16",
         enGB = "Mouse Button 16"
@@ -5647,10 +6143,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Застревание:",
         enGB = "Stuck:"
     },
-    ["ITEM_SUB_CLASS_7_15"] = {
-        ruRU = "Чары для оружия",
-        enGB = "Weapon Enchantment"
-    },
     ["SPELL_TARGET_TYPE13_DESC"] = {
         ruRU = "враги",
         enGB = "enemies"
@@ -5694,10 +6186,6 @@ local SIRUS_LOCALIZATION = {
     ["LEVEL_UP"] = {
         ruRU = "Поздравляем, вы достигли %d-го уровня!",
         enGB = "Congratulations, you have reached level %d!"
-    },
-    ["ITEM_SUB_CLASS_13_1"] = {
-        ruRU = "Отмычка",
-        enGB = "Lockpick"
     },
     ["LASTONLINE_MONTHS"] = {
         ruRU = "%d |4месяц:месяца:месяцев;",
@@ -6279,10 +6767,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Ваша характеристика \"%s\" повышена на %d.",
         enGB = "Your %s increases by %d."
     },
-    ["CONTINUE"] = {
-        ruRU = "Продолжить",
-        enGB = "Continue"
-    },
     ["ACTION_SPELL_PERIODIC_HEAL_FULL_TEXT_NO_SOURCE"] = {
         ruRU = "%4$s получает %9$s |4единицу:единицы:единиц; здоровья от заклинания \"%2$s\"%6$s.",
         enGB = "%4$s gains %9$s health from %2$s.%6$s"
@@ -6326,10 +6810,6 @@ local SIRUS_LOCALIZATION = {
     ["PET_BONUS_TOOLTIP_ARMOR"] = {
         ruRU = "Увеличивает броню питомца на %d.",
         enGB = "Increases your pet's Armor by %d"
-    },
-    ["ITEM_SUB_CLASS_16_2"] = {
-        ruRU = "Паладин",
-        enGB = "Paladin"
     },
     ["VOICE_CHAT"] = {
         ruRU = "Голос. чат:",
@@ -6382,10 +6862,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_LFG_NO_SLOTS_SELECTED"] = {
         ruRU = "Вы не выбрали ни одной подходящей ячейки.",
         enGB = "You did not select any valid slots."
-    },
-    ["ITEM_SUB_CLASS_4_10"] = {
-        ruRU = "Печати",
-        enGB = "Sigils"
     },
     ["EMOTE39_CMD1"] = {
         ruRU = "/глаз",
@@ -6654,10 +7130,6 @@ local SIRUS_LOCALIZATION = {
     ["SMART_PIVOT"] = {
         ruRU = "Динамический ракурс",
         enGB = "Smart Pivot"
-    },
-    ["ITEM_CLASS_12"] = {
-        ruRU = "Задания",
-        enGB = "Quest"
     },
     ["ERR_LFG_MEMBERS_NOT_PRESENT"] = {
         ruRU = "Как минимум один участник группы не принял приглашение или потерял соединение с сервером.",
@@ -7011,10 +7483,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/квыйти",
         enGB = "/tquit"
     },
-    ["ITEM_SUB_CLASS_9_2"] = {
-        ruRU = "Портняжное дело",
-        enGB = "Tailoring"
-    },
     ["DISPLAY_CHANNEL_PULLOUT"] = {
         ruRU = "Показ меню списка чата",
         enGB = "Display Chat Roster Pullout"
@@ -7258,10 +7726,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_4_Ta_0_FEMALE"] = {
         ruRU = "Атакуй моего противника!",
         enGB = "Fight at my side!"
-    },
-    ["ITEM_SUB_CLASS_2_8"] = {
-        ruRU = "Двуручные мечи",
-        enGB = "Two-Handed Swords"
     },
     ["ACTION_SPELL_MISSED_EVADE_POSSESSIVE"] = {
         ruRU = "1",
@@ -7751,10 +8215,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/дразнить",
         enGB = "/tease"
     },
-    ["ITEM_SUB_CLASS_2_18"] = {
-        ruRU = "Арбалеты",
-        enGB = "Crossbows"
-    },
     ["COD"] = {
         ruRU = "Наложенный платеж",
         enGB = "C.O.D."
@@ -7798,10 +8258,6 @@ local SIRUS_LOCALIZATION = {
     ["SPELL_FAILED_CUSTOM_ERROR_33"] = {
         ruRU = "Только рыцари смерти могут войти в Черный оплот.",
         enGB = "Only Death Knights may enter Ebon Hold."
-    },
-    ["ITEM_SUB_CLASS_4_4"] = {
-        ruRU = "Латные",
-        enGB = "Plate"
     },
     ["NEWBIE_TOOLTIP_DEMOTE"] = {
         ruRU = "Понижение выбранного игрока в звании на одну ступень.",
@@ -8427,10 +8883,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Давайте посмотрим что тут есть новенького!",
         enGB = ""
     },
-    ["ITEM_SUB_CLASS_4_9"] = {
-        ruRU = "Тотемы",
-        enGB = "Totems"
-    },
     ["MESSAGE_TYPES"] = {
         ruRU = "Типы сообщений",
         enGB = "Message Types"
@@ -8690,10 +9142,6 @@ local SIRUS_LOCALIZATION = {
     ["PVPFRAME_WINS_LABEL"] = {
         ruRU = "Побед",
         enGB = "Wins"
-    },
-    ["ITEM_SUB_CLASS_3_6"] = {
-        ruRU = "Особые",
-        enGB = "Meta"
     },
     ["ERR_CLICK_ON_ITEM_TO_FEED"] = {
         ruRU = "Щелкните по предмету, чтобы скормить его своему питомцу.",
@@ -8979,17 +9427,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Добавить нового игрока в команду.",
         enGB = "Adds a new player to the team."
     },
-    ["ITEM_SUB_CLASS_7_0"] = {
-        ruRU = "Хозяйственные товары",
-        enGB = "Trade Goods"
-    },
     ["EMOTE387_CMD1"] = {
         ruRU = "/додна",
         enGB = "/chug"
-    },
-    ["ITEM_SUB_CLASS_3_5"] = {
-        ruRU = "Оранжевые",
-        enGB = "Orange"
     },
     ["COMBAT_LOG_MENU_OUTGOING"] = {
         ruRU = "Действия |3-1(%s)",
@@ -9271,10 +9711,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Берегитесь! Опасность!",
         enGB = "Danger approaches!"
     },
-    ["ITEM_SUB_CLASS_4_2"] = {
-        ruRU = "Кожаные",
-        enGB = "Leather"
-    },
     ["VOICEMACRO_1_Tr_1_FEMALE"] = {
         ruRU = "Плохие новости!",
         enGB = "Bad things coming!"
@@ -9306,10 +9742,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE50_CMD5"] = {
         ruRU = "/злость",
         enGB = "/wicked"
-    },
-    ["ITEM_SUB_CLASS_6_2"] = {
-        ruRU = "Стрелы",
-        enGB = "Arrow"
     },
     ["ERR_IGNORE_SELF"] = {
         ruRU = "Вы не можете игнорировать себя.",
@@ -9358,10 +9790,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_18_Dw_1_FEMALE"] = {
         ruRU = "Так держать.",
         enGB = "Way to go."
-    },
-    ["ITEM_SUB_CLASS_0_3"] = {
-        ruRU = "Настойки",
-        enGB = "Flask"
     },
     ["BINDING_NAME_TOGGLEBAG3"] = {
         ruRU = "Сумка 3",
@@ -9734,10 +10162,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_BATTLEDGROUND_QUEUED_FOR_RATED"] = {
         ruRU = "Вы не можете встать в очередь на другой бой, пока ждете своей очереди на рейтинговое состязание",
         enGB = "You cannot queue for another battle while queued for a rated arena match"
-    },
-    ["ITEM_SUB_CLASS_2_10"] = {
-        ruRU = "Посохи",
-        enGB = "Staves"
     },
     ["ERR_SPELL_FAILED_EQUIPPED_ITEM_CLASS_S"] = {
         ruRU = "%s",
@@ -10299,10 +10723,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Введите описание события:",
         enGB = "Set the calendar event description:"
     },
-    ["FEATURES_LABEL"] = {
-        ruRU = "Особые возможности",
-        enGB = "Features"
-    },
     ["RGB_RANK_14_HORDE"] = {
         ruRU = "Верховный вождь",
         enGB = "High Chieftain"
@@ -10431,10 +10851,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Правильный формат – /кпригласить [2v2, 3v3, 5v5] [имя игрока]",
         enGB = "Appropriate format is /teaminvite [2v2, 3v3, 5v5] [player name]"
     },
-    ["ITEM_SUB_CLASS_7_4"] = {
-        ruRU = "Ювелирное дело",
-        enGB = "Jewelcrafting"
-    },
     ["EXOTICS"] = {
         ruRU = "Экзотическое оружие",
         enGB = "Exotic Weapons"
@@ -10546,10 +10962,6 @@ local SIRUS_LOCALIZATION = {
     ["FRIENDS_LIST_OFFLINE"] = {
         ruRU = "Не в сети",
         enGB = "Offline"
-    },
-    ["ITEM_SUB_CLASS_1_4"] = {
-        ruRU = "Сумка инженера",
-        enGB = "Engineering Bag"
     },
     ["COMBATLOG_XPGAIN_FIRSTPERSON_GROUP"] = {
         ruRU = "%s погибает, вы получаете опыт: %d. (Группа: +%d)",
@@ -10839,10 +11251,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "|Hchannel:CHANNEL:%d|h[%s]|h %s отключает объявления в чате.",
         enGB = "|Hchannel:CHANNEL:%d|h[%s]|h Channel announcements enabled by %s."
     },
-    ["ITEM_SUB_CLASS_6_0"] = {
-        ruRU = "Жезл(НЕ ИСП.)",
-        enGB = "Wand(OBSOLETE)"
-    },
     ["SLASH_TEAM_UNINVITE4"] = {
         ruRU = "/кудалить",
         enGB = "/tremove"
@@ -10894,10 +11302,6 @@ local SIRUS_LOCALIZATION = {
     ["CALENDAR_TOOLTIP_INVITEMEMBERS_BUTTON_RAID"] = {
         ruRU = "Щелкните, чтобы пригласить одобренных и подтвержденных игроков в ваш рейд.",
         enGB = "Invite Accepted and Confirmed players to your Raid."
-    },
-    ["ITEM_SUB_CLASS_11_0"] = {
-        ruRU = "Колчан(НЕ ИСП.)",
-        enGB = "Quiver(OBSOLETE)"
     },
     ["SPELL_FAILED_NO_FISH"] = {
         ruRU = "Здесь рыбы нет.",
@@ -11003,10 +11407,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Ожидаем других игроков",
         enGB = "Waiting for other players"
     },
-    ["ITEM_SUB_CLASS_1_5"] = {
-        ruRU = "Сумка ювелира",
-        enGB = "Gem Bag"
-    },
     ["SPELL_FAILED_REPUTATION"] = {
         ruRU = "Ваша репутация недостаточно весома.",
         enGB = "Your reputation isn't high enough"
@@ -11014,10 +11414,6 @@ local SIRUS_LOCALIZATION = {
     ["AGILITY_COLON"] = {
         ruRU = "Ловкость:",
         enGB = "Agility:"
-    },
-    ["DEBUG_FRAMESTACK"] = {
-        ruRU = "Соединение рамок",
-        enGB = "Frame Stack"
     },
     ["ERR_GUILD_REMOVE_SELF"] = {
         ruRU = "Вас исключили из гильдии.",
@@ -11347,10 +11743,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Показывать цели зоны PvP",
         enGB = "Show PvP Zone Objectives"
     },
-    ["ITEM_SUB_CLASS_1_0"] = {
-        ruRU = "Сумка",
-        enGB = "Bag"
-    },
     ["SPELL_CAST_TIME_MIN"] = {
         ruRU = "применение заклинания: %.3g мин.",
         enGB = "%.3g min cast"
@@ -11599,10 +11991,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/burp",
         enGB = "/burp"
     },
-    ["ITEM_SUB_CLASS_9_8"] = {
-        ruRU = "Наложение чар",
-        enGB = "Enchanting"
-    },
     ["ACTION_SPELL_PERIODIC_MISSED_PARRY_FULL_TEXT"] = {
         ruRU = "%4$s на мгновение парирует заклинание \"%2$s\" |3-1(%1$s)%6$s.",
         enGB = "%1$s %2$s was parried by %4$s for a moment.%6$s"
@@ -11626,10 +12014,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_SPELL_STOLEN_BUFF_POSSESSIVE"] = {
         ruRU = "1",
         enGB = "1"
-    },
-    ["ITEM_SUB_CLASS_2_0"] = {
-        ruRU = "Одноручные топоры",
-        enGB = "One-Handed Axes"
     },
     ["LATEST_UPDATED_STATS"] = {
         ruRU = "Последние обновления статистики",
@@ -11850,10 +12234,6 @@ local SIRUS_LOCALIZATION = {
     ["STATUS_TEXT_PET"] = {
         ruRU = "Питомец",
         enGB = "Pet"
-    },
-    ["ITEM_CLASS_1"] = {
-        ruRU = "Сумки",
-        enGB = "Container"
     },
     ["EMOTE157_CMD1"] = {
         ruRU = "/идут",
@@ -12119,10 +12499,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/insult",
         enGB = "/insult"
     },
-    ["ITEM_CLASS_2"] = {
-        ruRU = "Оружие",
-        enGB = "Weapon"
-    },
     ["VOICEMACRO_12_Ta_1"] = {
         ruRU = "Привет.",
         enGB = "Hello."
@@ -12286,10 +12662,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_SPELL_MISSED_MISS_FULL_TEXT"] = {
         ruRU = "%2$s\" |3-1(%1$s) не попадает по |3-2(%4$s).",
         enGB = "%1$s %2$s misses %4$s."
-    },
-    ["ITEM_SUB_CLASS_2_5"] = {
-        ruRU = "Двуручное дробящее",
-        enGB = "Two-Handed Maces"
     },
     ["AUTO_ADD_DISABLED_GROUPED_TOOLTIP"] = {
         ruRU = "Вы не сможете принимать в группу новых членов, если в ней нет больше места, или вы не являетесь лидером группы.",
@@ -12478,10 +12850,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_2_Hu_1"] = {
         ruRU = "К бою!",
         enGB = "To battle!"
-    },
-    ["SHORTDATE"] = {
-        ruRU = "%2$d/%1$02d/%3$02d",
-        enGB = "%2$d/%1$02d/%3$02d"
     },
     ["EMOTE371_CMD1"] = {
         ruRU = "/дышать",
@@ -13887,10 +14255,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы сможете выбрать одну из наград:",
         enGB = "You will be able to choose one of these rewards:"
     },
-    ["ITEM_SUB_CLASS_7_6"] = {
-        ruRU = "Кожа",
-        enGB = "Leather"
-    },
     ["CLICK_TO_START_CONVERSATION"] = {
         ruRU = "Щелкните здесь, чтобы начать разговор с этим игроком и еще с одним другом.",
         enGB = "Click here to start a Conversation with this player and one other friend."
@@ -14191,10 +14555,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Ближний/дальний бой",
         enGB = "Auto Attack/Auto Shot"
     },
-    ["FEATURES_SUBTEXT"] = {
-        ruRU = "Здесь можно включить или отключить особые возможности, доступные в игре.",
-        enGB = "These options allow you to enable and disable full game features."
-    },
     ["GUILDCONTROL_OPTION7"] = {
         ruRU = "Приглашать в гильдию",
         enGB = "Invite Member"
@@ -14362,10 +14722,6 @@ local SIRUS_LOCALIZATION = {
     ["UNITNAME_SUMMON_TITLE10"] = {
         ruRU = "Скакун |3-1(%s)",
         enGB = "%s's Mount"
-    },
-    ["ITEM_SUB_CLASS_0_2"] = {
-        ruRU = "Эликсиры",
-        enGB = "Elixir"
     },
     ["DEFAULT_STATDEFENSE_TOOLTIP"] = {
         ruRU = "Рейтинг защиты: %d (+%d защиты)\nВероятность уклониться, блокировать или парировать удар повышена на %.2f%%\nВероятность получить удар или критический удар снижена на %.2f%% |n|cff888888(До снижения действенности повторяющихся эффектов)|r",
@@ -14715,10 +15071,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Невероятно!",
         enGB = "Fantastic."
     },
-    ["DEFAULT"] = {
-        ruRU = "По умолчанию",
-        enGB = "Default"
-    },
     ["STORE_CONFIRM_NOTICE"] = {
         ruRU = "Приобретенные предметы попадут в ваши сумки. Если на момент доставки ваши сумки окажутся полными, предмет будет отправлен вам по почте.",
         enGB = "Purchased items will appear in your bags. If your bags are full when the item arrives, you'll receive it by mail."
@@ -14738,10 +15090,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_16_Tr_1"] = {
         ruRU = "Плохи дела.",
         enGB = "Big thanks."
-    },
-    ["ITEM_SUB_CLASS_3_2"] = {
-        ruRU = "Желтые",
-        enGB = "Yellow"
     },
     ["TALENT_SPEC_SECONDARY"] = {
         ruRU = "Второй набор талантов",
@@ -14986,10 +15334,6 @@ local SIRUS_LOCALIZATION = {
     ["BINDING_NAME_MULTIACTIONBAR4BUTTON11"] = {
         ruRU = "Кнопка действия 11 (вторая колонка справа)",
         enGB = "Right ActionBar 2 Button 11"
-    },
-    ["ITEM_SUB_CLASS_7_13"] = {
-        ruRU = "Материалы",
-        enGB = "Materials"
     },
     ["EMOTE121_CMD1"] = {
         ruRU = "/думать",
@@ -15259,10 +15603,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Введите адрес эл. почты или имя персонажа",
         enGB = "Enter email address or character's name"
     },
-    ["LANGUAGES_LABEL"] = {
-        ruRU = "Языки",
-        enGB = "Languages"
-    },
     ["CHAT_YOU_JOINED_NOTICE"] = {
         ruRU = "Вы присоединились к каналу |Hchannel:%d|h[%s]|h.",
         enGB = "Joined Channel: |Hchannel:%d|h[%s]|h"
@@ -15286,10 +15626,6 @@ local SIRUS_LOCALIZATION = {
     ["SPELL_TARGET_TYPE5_DESC"] = {
         ruRU = "Предмет",
         enGB = "item"
-    },
-    ["NEW_CAPS"] = {
-        ruRU = "НОВИНКА",
-        enGB = "NEW"
     },
     ["HELP_TICKET_QUEUE_DISABLED"] = {
         ruRU = "Запросы на помощь ГМ в данный момент недоступны.",
@@ -15415,7 +15751,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Владелец пробной учетной записи не может приглашать персонажей в группы.",
         enGB = "Trial accounts cannot invite characters into groups."
     },
-
     ["GUILD_XP_TOTAL"] = {
         ruRU = "Активность (общая)",
         enGB = "Guild Activity (total)"
@@ -15836,10 +16171,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Фиксированная",
         enGB = "Locked"
     },
-    ["ITEM_SUB_CLASS_16_5"] = {
-        ruRU = "Жрец",
-        enGB = "Priest"
-    },
     ["SPELL_TIME_REMAINING_DAYS"] = {
         ruRU = "Осталось: %d |4день:дня:дней;",
         enGB = "%d |4day:days; remaining"
@@ -16112,10 +16443,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Поставьте галочку для отслеживания этого достижения.",
         enGB = "Check to track this achievement."
     },
-    ["ITEM_SUB_CLASS_9_4"] = {
-        ruRU = "Кузнечное дело",
-        enGB = "Blacksmithing"
-    },
     ["OPTION_TOOLTIP_SHOW_TIPOFTHEDAY"] = {
         ruRU = "Отображение советов дня на экране загрузки.",
         enGB = "Uncheck this to hide the tip of the day in the load screens."
@@ -16131,10 +16458,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_LIST_CHANNEL4"] = {
         ruRU = "/списокчата",
         enGB = "/chatlist"
-    },
-    ["ITEM_CLASS_8"] = {
-        ruRU = "Стандартные(НЕ ИСП.)",
-        enGB = "Generic(OBSOLETE)"
     },
     ["ENCOUNTER_JOURNAL_SEARCH_RESULTS"] = {
         ruRU = "Результаты поиска для \"%s\" (%d)",
@@ -16748,10 +17071,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Действия окружающего мира: падение, кислота, лава и т.п.",
         enGB = "Actions performed by undefined sources such as falling, acid, or lava."
     },
-    ["ITEM_SUB_CLASS_9_3"] = {
-        ruRU = "Инженерное дело",
-        enGB = "Engineering"
-    },
     ["ERR_TAXINOSUCHPATH"] = {
         ruRU = "В это место напрямую попасть нельзя!",
         enGB = "There is no direct path to that destination!"
@@ -16887,10 +17206,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_GUILD_LEADER3"] = {
         ruRU = "/gleader",
         enGB = "/gleader"
-    },
-    ["MINUTE_ONELETTER_ABBR"] = {
-        ruRU = "%d м.",
-        enGB = "%d m"
     },
     ["BINDING_NAME_SAVEVIEW5"] = {
         ruRU = "Сохранить ракурс 5",
@@ -17624,6 +17939,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Всё включено",
         enGB = "All-in-one"
     },
+	["STORE_SUB_CATEGORY_9_6"] = {
+		ruRU = "Стратегический пакет",
+		enGB = "Strategic package"
+	},
     ["ITEM_ENCHANT_DISCLAIMER"] = {
         ruRU = "Предмет не будет передан при обмене!",
         enGB = "Item will not be traded!"
@@ -17864,10 +18183,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Броня: %d",
         enGB = "%d Armor"
     },
-    ["ITEM_SUB_CLASS_7_10"] = {
-        ruRU = "Стихии",
-        enGB = "Elemental"
-    },
     ["MOVIE_RECORDING_H264_TOOLTIP"] = {
         ruRU = "Этот кодек предназначен для устройств фирмы Apple, таких как: iPod, iPhone и AppleTV. Соотношение качества и размера здесь оптимально, однако скорость сжатия очень низкая.",
         enGB = "This codec is supported natively by Apple devices like the iPod, iPhone and AppleTV. This codec has the best ratio quality/size but it is also the slowest to compress."
@@ -18035,10 +18350,6 @@ local SIRUS_LOCALIZATION = {
     ["SPELL_FAILED_TARGET_NOT_LOOTED"] = {
         ruRU = "Сначала существо нужно обыскать.",
         enGB = "Creature must be looted first"
-    },
-    ["MINS_ABBR"] = {
-        ruRU = "Мин.",
-        enGB = "Mins"
     },
     ["VOICEMACRO_10_Gn_1"] = {
         ruRU = "Огонь!",
@@ -18732,10 +19043,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Требуется 15-й уровень",
         enGB = "Unlocked at level 15."
     },
-    ["ITEM_SUB_CLASS_3_7"] = {
-        ruRU = "Простые",
-        enGB = "Simple"
-    },
     ["EQUIPMENT_MANAGER_UNIGNORE_SLOT"] = {
         ruRU = "Учитывать ячейку",
         enGB = "Include This Slot"
@@ -19008,10 +19315,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы мертвы.",
         enGB = "You are dead"
     },
-    ["ITEM_SUB_CLASS_2_11"] = {
-        ruRU = "Одноручное экзотическое",
-        enGB = "One-Handed Exotics"
-    },
     ["ACTION_SPELL_BUILDING_DAMAGE_MASTER"] = {
         ruRU = "1",
         enGB = "1"
@@ -19208,10 +19511,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/спать",
         enGB = "/sleep"
     },
-    ["LUA_ERROR"] = {
-        ruRU = "Ошибка LUA",
-        enGB = "Lua Error"
-    },
     ["ERR_LOOT_STUNNED"] = {
         ruRU = "Вы оглушены и не можете обыскивать",
         enGB = "You can't loot anything while stunned!"
@@ -19236,10 +19535,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вступить группой",
         enGB = "Join as Party"
     },
-    ["ITEM_SUB_CLASS_4_0"] = {
-        ruRU = "Разное",
-        enGB = "Miscellaneous"
-    },
     ["VOICEMACRO_18_Hu_1_FEMALE"] = {
         ruRU = "Великолепно.",
         enGB = "Excellent."
@@ -19247,10 +19542,6 @@ local SIRUS_LOCALIZATION = {
     ["DPS_TEMPLATE"] = {
         ruRU = "(%.1f ед. урона в секунду)",
         enGB = "(%.1f damage per second)"
-    },
-    ["ITEM_SUB_CLASS_11_1"] = {
-        ruRU = "Колчан(НЕ ИСП.)",
-        enGB = "Quiver(OBSOLETE)"
     },
     ["GLYPHS"] = {
         ruRU = "Символы",
@@ -19283,10 +19574,6 @@ local SIRUS_LOCALIZATION = {
     ["COMBAT_TEXT_SHOW_COMBAT_STATE_TEXT"] = {
         ruRU = "Состояние боя",
         enGB = "Combat State"
-    },
-    ["ITEM_SUB_CLASS_16_1"] = {
-        ruRU = "Воин",
-        enGB = "Warrior"
     },
     ["EXPANSION_NAME2"] = {
         ruRU = "Wrath of the Lich King",
@@ -20047,10 +20334,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_EMOTE2"] = {
         ruRU = "/эм",
         enGB = "/em"
-    },
-    ["ITEM_SUB_CLASS_2_1"] = {
-        ruRU = "Двуручные топоры",
-        enGB = "Two-Handed Axes"
     },
     ["AGILITY_TOOLTIP"] = {
         ruRU = "Увеличивает вероятность нанести критический удар.|nТакже влияет на уклонение. У разбойников|n и то, и другое выражено в большей степени, чем у других классов.|nЛовкость напрямую влияет на характеристику \"Броня\".",
@@ -22084,10 +22367,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вылечите меня!",
         enGB = "Heal me!"
     },
-    ["ITEM_SUB_CLASS_4_7"] = {
-        ruRU = "Манускрипты",
-        enGB = "Librams"
-    },
     ["CHAT_RAID_WARNING_GET"] = {
         ruRU = "[Объявление рейду] %s: ",
         enGB = "[Raid Warning] %s: "
@@ -22984,10 +23263,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Коллекции",
         enGB = "Collections"
     },
-    ["ITEM_SUB_CLASS_2_2"] = {
-        ruRU = "Луки",
-        enGB = "Bows"
-    },
     ["SLASH_QUIT2"] = {
         ruRU = "/выход",
         enGB = "/exit"
@@ -23684,10 +23959,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/yawn",
         enGB = "/yawn"
     },
-    ["ITEM_SUB_CLASS_6_1"] = {
-        ruRU = "Болт(НЕ ИСП.)",
-        enGB = "Bolt(OBSOLETE)"
-    },
     ["ITEM_COOLDOWN_TOTAL_HOURS"] = {
         ruRU = "(Восстановление: %d |4час:часа:часов;)",
         enGB = "(%d |4Hour:Hours; Cooldown)"
@@ -24244,10 +24515,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Присоединитесь к очереди на это поле боя, и вы попадете туда, как только освободится место. Если вы не хотите ждать, выберите \"Любое доступное\".",
         enGB = "Join the queue to enter this battleground when space becomes available.  This will result in a longer wait than selecting \"First Available\"."
     },
-    ["ITEM_SUB_CLASS_3_8"] = {
-        ruRU = "Радужные",
-        enGB = "Prismatic"
-    },
     ["PRIEST_SPEC_HOLY_TITLE"] = {
         ruRU = "Свет",
         enGB = "Holy"
@@ -24788,10 +25055,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Дорога в Стратхольм",
         enGB = "The Road to Stratholme"
     },
-    ["ITEM_SUB_CLASS_6_3"] = {
-        ruRU = "Пули",
-        enGB = "Bullet"
-    },
     ["VOICEMACRO_20_Hu_4_FEMALE"] = {
         ruRU = "Мы с подружками всё время меняемся платьями. У нас у всех один размер!",
         enGB = "Me and my girlfriends exchange clothes all the time.  We're all the same size."
@@ -24811,10 +25074,6 @@ local SIRUS_LOCALIZATION = {
     ["STORE_ERROR_FILL_FIELDS"] = {
         ruRU = "Заполните все поля и попробуйте еще раз!",
         enGB = "Fill all the fields and try again."
-    },
-    ["ITEM_SUB_CLASS_1_2"] = {
-        ruRU = "Сумка травника",
-        enGB = "Herb Bag"
     },
     ["COMBAT_GUILD_XP_GAIN"] = {
         ruRU = "Опыт гильдии",
@@ -25088,10 +25347,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "%s (союзник)",
         enGB = "friendly %s"
     },
-    ["ITEM_SUB_CLASS_2_19"] = {
-        ruRU = "Жезлы",
-        enGB = "Wands"
-    },
     ["GUILD_CHALLENGE_TYPE2"] = {
         ruRU = "Рейды",
         enGB = "Dungeon"
@@ -25335,10 +25590,6 @@ local SIRUS_LOCALIZATION = {
     ["PLAYER_TALENT_LEARN_PREVIEW_TEXT"] = {
         ruRU = "В вашей текущей специализации уже есть изученные таланты. Выберите специализацию без изученных талантов или сбросьте ваши таланты.\n\n%s",
         enGB = "You have already chosen some talents in your current specialization. Choose a specialization without any chosen talents or reset your talents.\n\n%s"
-    },
-    ["ITEM_SUB_CLASS_3_4"] = {
-        ruRU = "Зеленые",
-        enGB = "Green"
     },
     ["MINOR_GLYPHS"] = {
         ruRU = "Малые символы",
@@ -25896,10 +26147,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Время:",
         enGB = "Time:"
     },
-    ["ITEM_CLASS_7"] = {
-        ruRU = "Хозяйственные товары",
-        enGB = "Trade Goods"
-    },
     ["ITEM_MOD_MANA_REGENERATION_SHORT"] = {
         ruRU = "к восполнению маны",
         enGB = "Mana Regeneration"
@@ -25907,10 +26154,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_QUEST_FAILED_MISSING_ITEMS"] = {
         ruRU = "У вас нет с собой нужных предметов. Проверьте хранилище.",
         enGB = "You don't have the required items with you.  Check storage."
-    },
-    ["ITEM_SUB_CLASS_16_9"] = {
-        ruRU = "Чернокнижник",
-        enGB = "Warlock"
     },
     ["DISPLAY_ON_CHAR_TOOLTIP"] = {
         ruRU = "Отметив этот пункт, вы сможете просматривать выбранные на аукционе вещи прямо на вашем персонаже.\n\nТо же самое будет происходить и за пределами аукциона, если вы, зажав CTRL, щелкнете левой кнопкой мыши по любому предмету, который может быть частью экипировки персонажа.",
@@ -25924,10 +26167,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "При соответствии цвета: %s",
         enGB = "Socket Bonus: %s"
     },
-    ["ITEM_SUB_CLASS_16_7"] = {
-        ruRU = "Шаман",
-        enGB = "Shaman"
-    },
     ["SPELL_FAILED_NOT_ON_TRANSPORT"] = {
         ruRU = "Вы находитесь в транспортном средстве.",
         enGB = "You are on a transport"
@@ -25936,37 +26175,17 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Обратиться за помощью к ГМ",
         enGB = "Contact a GM for personal assistance"
     },
-    ["ITEM_SUB_CLASS_16_4"] = {
-        ruRU = "Разбойник",
-        enGB = "Rogue"
-    },
-    ["ITEM_SUB_CLASS_16_3"] = {
-        ruRU = "Охотник",
-        enGB = "Hunter"
-    },
     ["SPELL_FAILED_WRONG_WEATHER"] = {
         ruRU = "В такую погоду это невозможно.",
         enGB = "The weather isn't right for that"
-    },
-    ["ITEM_SUB_CLASS_15_5"] = {
-        ruRU = "Верховые животные",
-        enGB = "Mount"
     },
     ["OPTION_TOOLTIP_CLICK_TO_MOVE"] = {
         ruRU = "Передвижение персонажа в указанную точку по щелчку мыши на поверхности земли.",
         enGB = "Use mouse clicks to move your character to destinations."
     },
-    ["ITEM_SUB_CLASS_15_4"] = {
-        ruRU = "Другое",
-        enGB = "Other"
-    },
     ["TUTORIAL_TITLE25"] = {
         ruRU = "Смерть",
         enGB = "Death"
-    },
-    ["ITEM_SUB_CLASS_15_2"] = {
-        ruRU = "Питомцы",
-        enGB = "Pet"
     },
     ["MAX_HP_TEMPLATE"] = {
         ruRU = "Максимальное здоровье: %d",
@@ -25976,10 +26195,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/игнорировать",
         enGB = "/ignore"
     },
-    ["ITEM_SUB_CLASS_15_1"] = {
-        ruRU = "Реагенты",
-        enGB = "Reagent"
-    },
     ["HELPFRAME_ITEM_BULLET5"] = {
         ruRU = "Ошибочная продажа предмета торговцу и невозможность выкупить его обратно",
         enGB = "Item accidentally sold to a vendor and was not able to repurchase"
@@ -25987,14 +26202,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE96_CMD1"] = {
         ruRU = "/вопрос",
         enGB = "/talkq"
-    },
-    ["ITEM_SUB_CLASS_14_0"] = {
-        ruRU = "Постоянные",
-        enGB = "Permanent"
-    },
-    ["ITEM_SUB_CLASS_13_0"] = {
-        ruRU = "Ключ",
-        enGB = "Key"
     },
     ["SPELL_FAILED_CUSTOM_ERROR_58"] = {
         ruRU = "Цель уже находится под воздействием свитка",
@@ -26008,10 +26215,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Конечно.",
         enGB = "Of course."
     },
-    ["ITEM_SUB_CLASS_11_2"] = {
-        ruRU = "Колчан",
-        enGB = "Quiver"
-    },
     ["WIN_LOSS"] = {
         ruRU = "В – П",
         enGB = "Win - Loss"
@@ -26024,14 +26227,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/kneel",
         enGB = "/kneel"
     },
-    ["ITEM_SUB_CLASS_9_11"] = {
-        ruRU = "Начертание",
-        enGB = "Inscription"
-    },
-    ["ITEM_SUB_CLASS_9_10"] = {
-        ruRU = "Ювелирное дело",
-        enGB = "Jewelcrafting"
-    },
     ["SHARE_QUEST_ABBREV"] = {
         ruRU = "Предложить",
         enGB = "Share"
@@ -26039,30 +26234,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_MOUNT_INVALIDMOUNTEE"] = {
         ruRU = "Вы не можете сесть верхом на это существо.",
         enGB = "You can't mount that unit."
-    },
-    ["ITEM_SUB_CLASS_9_7"] = {
-        ruRU = "Первая помощь",
-        enGB = "First Aid"
-    },
-    ["ITEM_SUB_CLASS_9_5"] = {
-        ruRU = "Кулинария",
-        enGB = "Cooking"
-    },
-    ["ITEM_SUB_CLASS_9_1"] = {
-        ruRU = "Кожевничество",
-        enGB = "Leatherworking"
-    },
-    ["ITEM_SUB_CLASS_9_0"] = {
-        ruRU = "Книга",
-        enGB = "Book"
-    },
-    ["ITEM_SUB_CLASS_8_0"] = {
-        ruRU = "Игрушки",
-        enGB = "Toy"
-    },
-    ["ITEM_SUB_CLASS_7_14"] = {
-        ruRU = "Чары для доспехов",
-        enGB = "Armor Enchantment"
     },
     ["SLASH_MAINASSISTOFF3"] = {
         ruRU = "/ноткл",
@@ -26072,10 +26243,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Здесь слишком мало предметов.",
         enGB = "Tried to split more than number in stack."
     },
-    ["ITEM_SUB_CLASS_7_12"] = {
-        ruRU = "Наложение чар",
-        enGB = "Enchanting"
-    },
     ["INSTANCE_UNAVAILABLE_OTHER_MISSING_ITEM"] = {
         ruRU = "У |3-1(%s) нет требуемого предмета.",
         enGB = "%s does not have the required item."
@@ -26083,18 +26250,6 @@ local SIRUS_LOCALIZATION = {
     ["TRINKET0SLOT"] = {
         ruRU = "Аксессуар",
         enGB = "Trinket"
-    },
-    ["ITEM_SUB_CLASS_7_9"] = {
-        ruRU = "Трава",
-        enGB = "Herb"
-    },
-    ["ITEM_SUB_CLASS_7_8"] = {
-        ruRU = "Мясо",
-        enGB = "Meat"
-    },
-    ["ITEM_SUB_CLASS_7_7"] = {
-        ruRU = "Металл и камень",
-        enGB = "Metal & Stone"
     },
     ["ITEMS"] = {
         ruRU = "Предметы",
@@ -26108,18 +26263,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы не состоите в команде арены такой численности.",
         enGB = "You are not in an arena team of that size."
     },
-    ["ITEM_SUB_CLASS_7_5"] = {
-        ruRU = "Ткань",
-        enGB = "Cloth"
-    },
-    ["ITEM_SUB_CLASS_7_3"] = {
-        ruRU = "Устройства",
-        enGB = "Devices"
-    },
-    ["ITEM_SUB_CLASS_7_2"] = {
-        ruRU = "Взрывчатка",
-        enGB = "Explosives"
-    },
     ["FIRST_NUMBER_CAP"] = {
         ruRU = "Т",
         enGB = " K"
@@ -26132,33 +26275,13 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Кнопка мыши 27",
         enGB = "Mouse Button 27"
     },
-    ["ITEM_SUB_CLASS_7_1"] = {
-        ruRU = "Детали",
-        enGB = "Parts"
-    },
     ["VOICEMACRO_17_Or_0"] = {
         ruRU = "Потом сочтемся.",
         enGB = "I would expect the same."
     },
-    ["ITEM_SUB_CLASS_6_4"] = {
-        ruRU = "Метательное(НЕ ИСП.)",
-        enGB = "Thrown(OBSOLETE)"
-    },
-    ["ITEM_SUB_CLASS_5_0"] = {
-        ruRU = "Реагент",
-        enGB = "Reagent"
-    },
-    ["USE_COLORBLIND_MODE"] = {
-        ruRU = "Дублировать цвет текстом",
-        enGB = "Colorblind Mode"
-    },
     ["ERR_AUCTION_HOUSE_DISABLED"] = {
         ruRU = "В данный момент аукционный дом закрыт.|nПожалуйста, зайдите позже.",
         enGB = "The auction house is closed at the moment.|nPlease try again later."
-    },
-    ["ITEM_SUB_CLASS_4_8"] = {
-        ruRU = "Идолы",
-        enGB = "Idols"
     },
     ["ERR_EAT_WHILE_MOVNG"] = {
         ruRU = "Нельзя есть на ходу.",
@@ -26176,53 +26299,17 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/cold",
         enGB = "/cold"
     },
-    ["ITEM_SUB_CLASS_4_6"] = {
-        ruRU = "Щиты",
-        enGB = "Shields"
-    },
-    ["ITEM_SUB_CLASS_4_5"] = {
-        ruRU = "Декоративные предметы",
-        enGB = "Tmogs"
-    },
     ["LANGUAGE"] = {
         ruRU = "Язык",
         enGB = "Language"
-    },
-    ["ITEM_SUB_CLASS_4_1"] = {
-        ruRU = "Тканевые",
-        enGB = "Cloth"
-    },
-    ["ITEM_SUB_CLASS_3_3"] = {
-        ruRU = "Фиолетовые",
-        enGB = "Purple"
-    },
-    ["ITEM_SUB_CLASS_3_1"] = {
-        ruRU = "Синие",
-        enGB = "Blue"
-    },
-    ["ITEM_SUB_CLASS_3_0"] = {
-        ruRU = "Красные",
-        enGB = "Red"
     },
     ["TUTORIAL49"] = {
         ruRU = "Теперь вы можете вступить в бой. Нажмите кнопку \"Начать бой\" в диалоговом окне либо щелкните правой кнопкой мыши по значку поля боя рядом с мини-картой.",
         enGB = "You are now eligible to join battle. Click \"Enter Battle\" in the dialog or right click the battleground icon on the minimap."
     },
-    ["ITEM_SUB_CLASS_2_20"] = {
-        ruRU = "Удочки",
-        enGB = "Fishing Poles"
-    },
     ["GUILD_CHALLENGE_TOOLTIP3"] = {
         ruRU = "Пройдите любое подземелье дополнения The Burning Crusade или Wrath of the Lich King в составе группы гильдии.",
         enGB = ""
-    },
-    ["ITEM_SUB_CLASS_2_17"] = {
-        ruRU = "Копья",
-        enGB = "Spears"
-    },
-    ["ITEM_SUB_CLASS_2_16"] = {
-        ruRU = "Метательное",
-        enGB = "Thrown"
     },
     ["SPELL_NOT_SHAPESHIFTED_NOSPACE"] = {
         ruRU = "Невозможно делать это, находясь в другом облике.",
@@ -26239,14 +26326,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_NO_BANK_SLOT"] = {
         ruRU = "Сначала нужно купить эту ячейку.",
         enGB = "You must purchase that bag slot first"
-    },
-    ["ITEM_SUB_CLASS_2_12"] = {
-        ruRU = "Двуручное экзотическое",
-        enGB = "Two-Handed Exotics"
-    },
-    ["ITEM_SUB_CLASS_2_9"] = {
-        ruRU = "Устаревшие",
-        enGB = "Obsolete"
     },
     ["SHOW_BATTLEFIELDMINIMAP_PLAYERS"] = {
         ruRU = "Показывать товарищей по команде",
@@ -26276,14 +26355,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Пассивная",
         enGB = "Passive"
     },
-    ["ITEM_SUB_CLASS_2_7"] = {
-        ruRU = "Одноручные мечи",
-        enGB = "One-Handed Swords"
-    },
-    ["ITEM_SUB_CLASS_2_6"] = {
-        ruRU = "Древковое",
-        enGB = "Polearms"
-    },
     ["COMBATTEXT_LABEL"] = {
         ruRU = "Текст боя",
         enGB = "Combat Text"
@@ -26291,10 +26362,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE50_CMD4"] = {
         ruRU = "/grin",
         enGB = "/grin"
-    },
-    ["ITEM_SUB_CLASS_2_3"] = {
-        ruRU = "Огнестрельное",
-        enGB = "Guns"
     },
     ["TRAINER_CAST_TIME_SEC"] = {
         ruRU = "Время применения: |cffffffff%d сек.|r",
@@ -26304,17 +26371,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Энциклопедия",
         enGB = "Knowledge Base"
     },
-    ["ITEM_SUB_CLASS_1_7"] = {
-        ruRU = "Сумка кожевника",
-        enGB = "Leatherworking Bag"
-    },
     ["PVP_RANK_13_0_FEMALE"] = {
         ruRU = "Центурион",
         enGB = "Centurion"
-    },
-    ["ITEM_SUB_CLASS_1_6"] = {
-        ruRU = "Сумка шахтера",
-        enGB = "Mining Bag"
     },
     ["OPTION_TOOLTIP_SHOW_QUEST_FADING"] = {
         ruRU = "Отображение текста заданий полностью без задержки.",
@@ -26324,53 +26383,21 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Стиль письма",
         enGB = "Mail style"
     },
-    ["ITEM_SUB_CLASS_1_1"] = {
-        ruRU = "Сумка душ",
-        enGB = "Soul Bag"
-    },
     ["STRING_SCHOOL_HOLY"] = {
         ruRU = "Свет",
         enGB = "Holy"
-    },
-    ["ITEM_SUB_CLASS_0_7"] = {
-        ruRU = "Бинты",
-        enGB = "Bandage"
-    },
-    ["ITEM_SUB_CLASS_0_6"] = {
-        ruRU = "Улучшения",
-        enGB = "Item Enhancement"
-    },
-    ["ITEM_SUB_CLASS_0_5"] = {
-        ruRU = "Еда и напитки",
-        enGB = "Food & Drink"
-    },
-    ["ITEM_SUB_CLASS_0_4"] = {
-        ruRU = "Свитки",
-        enGB = "Scroll"
     },
     ["COMMENTS_COLON"] = {
         ruRU = "Комментарии:",
         enGB = "Comments:"
     },
-    ["ITEM_SUB_CLASS_0_1"] = {
-        ruRU = "Зелья",
-        enGB = "Potion"
-    },
     ["UNITNAME_SUMMON_TITLE11"] = {
         ruRU = "Колодец Света |3-1(%s)",
         enGB = "%s's Lightwell"
     },
-    ["ITEM_CLASS_16"] = {
-        ruRU = "Символы",
-        enGB = "Glyph"
-    },
     ["TEXT_MODE_A_STRING_TOKEN_ICON"] = {
         ruRU = "$icon",
         enGB = "$icon"
-    },
-    ["ITEM_CLASS_14"] = {
-        ruRU = "Постоянные(НЕ ИСП.)",
-        enGB = "Permanent(OBSOLETE)"
     },
     ["ACTION_SPELL_MISSED_DEFLECT_FULL_TEXT"] = {
         ruRU = "%4$s отклоняет заклинание \"%2$s\" |3-1(%1$s).",
@@ -26380,10 +26407,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Цель должна быть перед вами.",
         enGB = "Target needs to be in front of you."
     },
-    ["ITEM_CLASS_13"] = {
-        ruRU = "Ключи",
-        enGB = "Key"
-    },
     ["EMOTE385_CMD3"] = {
         ruRU = "/плохо",
         enGB = "/bad"
@@ -26391,10 +26414,6 @@ local SIRUS_LOCALIZATION = {
     ["FACTION_STANDING_INCREASED_GENERIC"] = {
         ruRU = "Отношение фракции \"%s\" к вам улучшилось.",
         enGB = "Reputation with %s increased."
-    },
-    ["ITEM_CLASS_11"] = {
-        ruRU = "Амуниция",
-        enGB = "Quiver"
     },
     ["GUILDBANK_TAB_DEPOSIT_ONLY"] = {
         ruRU = "только вклад",
@@ -26412,10 +26431,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Зачаровать",
         enGB = "Enchant"
     },
-    ["ITEM_CLASS_6"] = {
-        ruRU = "Боеприпасы",
-        enGB = "Projectile"
-    },
     ["EMOTE5_CMD1"] = {
         ruRU = "/аплодировать",
         enGB = "/applaud"
@@ -26423,18 +26438,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICE_CHAT_BATTLEGROUND"] = {
         ruRU = "Поле боя",
         enGB = "Battleground"
-    },
-    ["ITEM_CLASS_5"] = {
-        ruRU = "Реагенты",
-        enGB = "Reagent"
-    },
-    ["ITEM_CLASS_4"] = {
-        ruRU = "Доспехи",
-        enGB = "Armor"
-    },
-    ["ITEM_CLASS_0"] = {
-        ruRU = "Расходуемые",
-        enGB = "Consumable"
     },
     ["DUNGEON_FLOOR_DALARANSEWERAGE1"] = {
         ruRU = "Клоака",
@@ -26539,10 +26542,6 @@ local SIRUS_LOCALIZATION = {
     ["BINDING_NAME_MULTIACTIONBAR1BUTTON3"] = {
         ruRU = "Кнопка действия 3 (слева внизу)",
         enGB = "BottomLeft Action Button 3"
-    },
-    ["ZOOM_OUT"] = {
-        ruRU = "Отдалить",
-        enGB = "Zoom Out"
     },
     ["BINDING_NAME_MULTIACTIONBAR1BUTTON1"] = {
         ruRU = "Кнопка действия 1 (слева внизу)",
@@ -27728,10 +27727,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Боеприпасы",
         enGB = "Ammo"
     },
-    ["ITEM_SUB_CLASS_2_14"] = {
-        ruRU = "Разное",
-        enGB = "Miscellaneous"
-    },
     ["REPLY_MESSAGE"] = {
         ruRU = "Ответить",
         enGB = "Reply"
@@ -28088,10 +28083,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Без проблем.",
         enGB = "No problem."
     },
-    ["OPTION_TOOLTIP_USE_COLORBLIND_MODE"] = {
-        ruRU = "Показывает реакцию цели и качество предмета во всплывающих подсказках и добавляет дополнительную информацию для других элементов интерфейса.",
-        enGB = "Displays unit reactions and item qualities in tooltips and adds additional information to several other interfaces."
-    },
     ["VOICEMACRO_1_Sc_1"] = {
         ruRU = "Берегись!",
         enGB = "Incoming!"
@@ -28359,10 +28350,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_19_Hu_2_FEMALE"] = {
         ruRU = "Я жду героя!",
         enGB = "I need a hero."
-    },
-    ["DAY_ONELETTER_ABBR"] = {
-        ruRU = "%d д.",
-        enGB = "%d d"
     },
     ["ACTION_SPELL_AURA_REMOVED_DOSE_BUFF"] = {
         ruRU = "Сокращение",
@@ -28708,10 +28695,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = ": выстрел парирован",
         enGB = "(Parried)"
     },
-    ["MUTED"] = {
-        ruRU = "Без звука",
-        enGB = "Muted"
-    },
     ["DRUNK_MESSAGE_OTHER1"] = {
         ruRU = "%s, кажется, понемногу трезвеет.",
         enGB = "%s seems to be sobering up."
@@ -28723,10 +28706,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE420_CMD2"] = {
         ruRU = "/revenge",
         enGB = "/revenge"
-    },
-    ["RATINGS_TEXT"] = {
-        ruRU = "Текст корейских рейтингов.",
-        enGB = "The text for Korean Ratings."
     },
     ["BINDING_NAME_MULTIACTIONBAR3BUTTON8"] = {
         ruRU = "Кнопка действия 8 (справа)",
@@ -29431,10 +29410,6 @@ local SIRUS_LOCALIZATION = {
     ["ADDON_DEP_DEMAND_LOADED"] = {
         ruRU = "Зависимая модификация загружается только по требованию",
         enGB = "Dependency only loadable on demand"
-    },
-    ["ITEM_SUB_CLASS_11_3"] = {
-        ruRU = "Подсумок",
-        enGB = "Ammo Pouch"
     },
     ["AURAS"] = {
         ruRU = "Ауры",
@@ -31428,17 +31403,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Отображение названий гильдий, к которым принадлежат игроки, на основном экране игры.",
         enGB = "Show players' guild names in the game world."
     },
-    ["SEARCH"] = {
-        ruRU = "Поиск",
-        enGB = "Search"
-    },
     ["VOICEMACRO_13_Gn_0"] = {
         ruRU = "Прощай.",
         enGB = "Farewell."
-    },
-    ["SECOND_ONELETTER_ABBR"] = {
-        ruRU = "%d с.",
-        enGB = "%d s"
     },
     ["EMOTE30_CMD3"] = {
         ruRU = "/crack",
@@ -31744,10 +31711,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Разблокировать окно",
         enGB = "Unlock Window"
     },
-    ["ITEM_SUB_CLASS_10_0"] = {
-        ruRU = "Деньги (НЕ ИСП.)",
-        enGB = "Money(OBSOLETE)"
-    },
     ["FILTER_NAME"] = {
         ruRU = "Название фильтра",
         enGB = "Filter Name"
@@ -31987,10 +31950,6 @@ local SIRUS_LOCALIZATION = {
     ["BNET_REPORT_PLAYER_TOOLTIP"] = {
         ruRU = "Пожаловаться на игрока за одно из нарушений: спам, оскорбление, неприемлемое имя.",
         enGB = "Report this player for spamming, abuse, or an inappropriate name."
-    },
-    ["ITEM_SUB_CLASS_7_11"] = {
-        ruRU = "Другое",
-        enGB = "Other"
     },
     ["ACTION_SPELL_RESURRECT_POSSESSIVE"] = {
         ruRU = "1",
@@ -32232,10 +32191,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы не можете отправлять предметы с ограниченным сроком существования.",
         enGB = "You cannot mail items with a limited duration"
     },
-    ["ITEM_SUB_CLASS_2_15"] = {
-        ruRU = "Кинжалы",
-        enGB = "Daggers"
-    },
     ["CALENDAR_STATUS_OUT"] = {
         ruRU = "Отказано",
         enGB = "Out"
@@ -32475,10 +32430,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_SWING_MISSED_RESIST_FULL_TEXT"] = {
         ruRU = "%4$s полностью сопротивляется атаке |3-1(%1$s)%6$s",
         enGB = "%1$s attack was fully resisted by %4$s.%6$s"
-    },
-    ["ITEM_SUB_CLASS_16_8"] = {
-        ruRU = "Маг",
-        enGB = "Mage"
     },
     ["SPELLBOOK_ABILITIES_BUTTON"] = {
         ruRU = "Заклинания и способности",
@@ -32847,10 +32798,6 @@ local SIRUS_LOCALIZATION = {
     ["TEXT_MODE_A_STRING_VALUE_TYPE"] = {
         ruRU = "%s (%s)",
         enGB = "%s (%s)"
-    },
-    ["NONE"] = {
-        ruRU = "Нет",
-        enGB = "None"
     },
     ["TEXT_MODE_A_STRING_VALUE_SCHOOL"] = {
         ruRU = "%s |4единицу:единицы:единиц; |3-6(%s)",
@@ -34568,10 +34515,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Отображение информации о заклинаниях постепенного действия.",
         enGB = "Show spells that perform an effect incrementally."
     },
-    ["ZOOM_IN"] = {
-        ruRU = "Приблизить",
-        enGB = "Zoom In"
-    },
     ["OPTION_TOOLTIP_AUTO_QUEST_WATCH"] = {
         ruRU = "Автоматически начинать следить за выполнением задач, как только вы их получаете.",
         enGB = "Automatically track quests with objectives as soon as you obtain them."
@@ -34955,10 +34898,6 @@ local SIRUS_LOCALIZATION = {
     ["NEWBIE_TOOLTIP_PVP"] = {
         ruRU = "Просмотр информации об очках чести и о команде арены.",
         enGB = "View information about your honor and your arena team."
-    },
-    ["ITEM_SUB_CLASS_16_6"] = {
-        ruRU = "Рыцарь смерти",
-        enGB = "Death Knight"
     },
     ["SPELL_FAILED_BM_OR_INVISGOD"] = {
         ruRU = "Это заклинание не действует на повелителей зверей и персонажей на уровне невидимости \"бог\".",
@@ -35571,10 +35510,6 @@ local SIRUS_LOCALIZATION = {
     ["COMBATLOG_HONORGAIN"] = {
         ruRU = "%s погибает, рейтинг почетной победы: %s (%d |4очко:очка:очков; чести)",
         enGB = "%s dies, honorable kill Rank: %s (%d Honor Points)"
-    },
-    ["ITEM_CLASS_10"] = {
-        ruRU = "Деньги",
-        enGB = "Money"
     },
     ["AUTOFOLLOWSTOPCOMBAT"] = {
         ruRU = "Вы остановились, чтобы атаковать цель (%s).",
@@ -36760,10 +36695,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Суббота",
         enGB = "Saturday"
     },
-    ["ITEM_CLASS_15"] = {
-        ruRU = "Разное",
-        enGB = "Miscellaneous"
-    },
     ["TEXT_MODE_A_STRING_VALUE"] = {
         ruRU = "$amount |4единицу:единицы:единиц; $amountType",
         enGB = "$amount$amountType"
@@ -37172,10 +37103,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вся строка",
         enGB = "Entire Line"
     },
-    ["TIME_UNIT_DELIMITER"] = {
-        ruRU = " ",
-        enGB = " "
-    },
     ["TRAINER_COST_TP_RED"] = {
         ruRU = "Очки талантов: |cffff2020%d|r",
         enGB = "|cffff2020%d|r Talent points"
@@ -37356,10 +37283,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = ": сопротивление",
         enGB = "(Resisted)"
     },
-    ["ITEM_SUB_CLASS_9_9"] = {
-        ruRU = "Рыбная ловля",
-        enGB = "Fishing"
-    },
     ["SPELL_SCHOOL0_NAME"] = {
         ruRU = "физический",
         enGB = "physical"
@@ -37515,10 +37438,6 @@ local SIRUS_LOCALIZATION = {
     ["TUTORIAL_TITLE24"] = {
         ruRU = "Предметы экипировки",
         enGB = "Equippable Items"
-    },
-    ["ITEM_SUB_CLASS_15_3"] = {
-        ruRU = "Праздничные предметы",
-        enGB = "Holiday"
     },
     ["EMOTE370_CMD1"] = {
         ruRU = "/размах",
@@ -37695,10 +37614,6 @@ local SIRUS_LOCALIZATION = {
     ["VERBAL_HARASSMENT_TEXT3"] = {
         ruRU = "Старайтесь не провоцировать новых оскорблений.",
         enGB = "Ensure that you do not instigate further harassment."
-    },
-    ["ITEM_SUB_CLASS_0_0"] = {
-        ruRU = "Расходуемые",
-        enGB = "Consumable"
     },
     ["CONFIRM_ACCEPT_PVP_QUEST"] = {
         ruRU = "Принятие этого задания пометит вас как участника PvP до тех пор, пока задание будет находиться в вашем журнале. Вы согласны принять его?",
@@ -39236,10 +39151,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Ваше имя",
         enGB = "Show Own Name"
     },
-    ["OPTION_TOOLTIP_LOCALE"] = {
-        ruRU = "Выбор языка игры.",
-        enGB = "Select which language you would like to play in."
-    },
     ["STAT_EXPERTISE"] = {
         ruRU = "Мастерство",
         enGB = "Expertise"
@@ -39539,10 +39450,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_1_Dw_1"] = {
         ruRU = "Внимание!",
         enGB = "Heads up!"
-    },
-    ["ITEM_SUB_CLASS_0_8"] = {
-        ruRU = "Другое",
-        enGB = "Other"
     },
     ["VOICEMACRO_1_Hu_0_FEMALE"] = {
         ruRU = "Защищайтесь!",
@@ -41200,10 +41107,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Будьте внимательны, администрация не сможет вам помочь в случае, если вы совершите это действие.",
         enGB = ""
     },
-	["RACIAL_TRAITS"] = {
-		ruRU = "Расовые способности:",
-		enGB = "Racial Traits:"
-	},
     ["RACE_INFO_NIGHTBORNE"] = {
         ruRU = "Выжившие в чудовищной Войне Древних, и пережившие катаклизм, последовавший после уничтожения Колодца Вечности, Ночнорожденные скрывались в Сурамаре, за магическим куполом, от любых угроз внешнего мира. Магия служила им инструментом, защитой, и пищей - и стала их сутью. Дом Селентрис - изгнанники-ночнорожденные, которые стремятся обрести новый дом в мире за пределами Сурамара, а также справиться с жаждой магии прежде, чем она их погубит.",
         enGB = ""
@@ -43476,7 +43379,7 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Получить поставки",
 		enGB = ""
 	},
-	["QUEST_ACCEPTED_21219_POPUP_TEXT"] = {
+	["QUEST_ACCEPTED_21220_POPUP_TEXT"] = {
         ruRU = "При принятии и завершении этого задания вы продолжите приключения в Поднявшихся глубинах. Вы не сможете выбрать задание [Очаровательная дипломатия Вайш\'ира] ведущее к выходу в открытый мир через короткое завершение сюжета в Поднявшихся глубинах.",
 		enGB = ""
 	},

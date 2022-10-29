@@ -809,8 +809,10 @@ function WhoList_Update()
 		local ilevelText
 		if ilevel then
 			ilevel = tonumber(ilevel)
-			local ilevelColor = ItemLevelMixIn:GetColor(ilevel)
-			ilevelText = ilevelColor:WrapTextInColorCode(ilevel)
+			if ilevel then
+				local ilevelColor = ItemLevelMixIn:GetColor(ilevel)
+				ilevelText = ilevelColor:WrapTextInColorCode(ilevel)
+			end
 		end
 
 		buttonText:SetText(ilevelText);

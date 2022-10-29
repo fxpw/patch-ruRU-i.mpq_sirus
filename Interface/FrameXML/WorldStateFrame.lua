@@ -1408,7 +1408,7 @@ function EfficiencyFrame_OnUpdate( self, elapsed )
 	local efficiency, honor, rating, bonusHonor = C_GetBattlefieldResoult()
 
 	if not self.Animations and efficiency and honor and rating then
-		WorldStateScoreFrame.EfficiencyFrame.HonorLabel:SetFormattedText(WORLDSTATE_SCORE_HONORLABEL, math.floor(outQuint(self.elapsed, 0, honor, 1)), math.Round(outQuint(self.elapsed, 0, bonusHonor, 1)))
+		WorldStateScoreFrame.EfficiencyFrame.HonorLabel:SetFormattedText(WORLDSTATE_SCORE_HONORLABEL, math.floor(outQuint(self.elapsed, 0, honor, 1)), Round(outQuint(self.elapsed, 0, bonusHonor, 1)))
 		WorldStateScoreFrame.EfficiencyFrame.RatingLabel:SetFormattedText(WORLDSTATE_SCORE_RATINGLABEL, math.floor(outQuint(self.elapsed, 0, rating, 1)))
 		WorldStateScoreFrame.EfficiencyFrame.EfficiencyBar.Text:SetFormattedText(WORLDSTATE_SCORE_EFFICIENCY, math.floor(outQuint(self.elapsed, 0, efficiency, 1)))
 		WorldStateScoreFrame.EfficiencyFrame.EfficiencyBar:SetValue(outQuint(self.elapsed, 0, efficiency / 200, 1))

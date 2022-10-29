@@ -33,7 +33,7 @@ function TradeFrameMixIn:OnUpdate( elapsed )
 		return
 	end
 
-	local timeLeft = math.Round( self:SetLockTime( self:GetLockTime() - elapsed ) )
+	local timeLeft = Round(self:SetLockTime(self:GetLockTime() - elapsed))
 
 
 	if timeLeft > 0 then

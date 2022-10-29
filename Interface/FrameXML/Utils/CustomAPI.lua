@@ -145,7 +145,7 @@ do	-- UnitInRangeIndex
 	eventHandler:RegisterEvent("PLAYER_ENTERING_WORLD")
 	eventHandler:SetScript("OnEvent", function(self, event)
 		for _, itemID in pairs(ITEM_FRIENDLY) do
-			C_Item:RequestServerCache(itemID)
+			C_Item.RequestServerCache(itemID)
 		end
 		self:UnregisterEvent(event)
 	end)

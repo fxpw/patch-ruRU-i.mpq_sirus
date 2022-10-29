@@ -1000,10 +1000,10 @@ function InspectLadderMixin:UpdatePlayerInfo()
 		self.TopContainer.StatisticsFrame.Statistics.Week:SetFormattedText("|cff00FF00%d|cffFFFFFF/|cffFF0000%d", data.weekWins, (data.weekGames - data.weekWins))
 		self.TopContainer.StatisticsFrame.Statistics.Day:SetFormattedText("|cff00FF00%d|cffFFFFFF/|cffFF0000%d", data.dayWins, (data.dayGames - data.dayWins))
 
-		local winsProc = math.min(math.Round(data.seasonWins / data.seasonGames * 100), 100)
+		local winsProc = math.min(Round(data.seasonWins / data.seasonGames * 100), 100)
 		local color = winsProc < 50 and "|cffFF0000" or "|cff00FF00"
 
-		self.TopContainer.StatisticsFrame.Statistics.AllWinsProc:SetFormattedText(color.."%d%%", math.min(math.Round(data.seasonWins / data.seasonGames * 100), 100))
+		self.TopContainer.StatisticsFrame.Statistics.AllWinsProc:SetFormattedText(color.."%d%%", math.min(Round(data.seasonWins / data.seasonGames * 100), 100))
 	end
 
 	self.TopContainer.StatisticsFrame.Statistics:SetShown(data)
@@ -1032,20 +1032,20 @@ function EventHandler:ASMSG_INSPECT_GUILD_INFO_RESPONSE( msg )
 	InspectGuildFrame.guildNumMembers:SetFormattedText(INSPECT_GUILD_ONLINE, memberCount)
 
 	if SHARED_TABARD_EMBLEM_COLOR[emblemColor] then
-		InspectGuildFrameEmblem:SetVertexColor(rgb(unpack(SHARED_TABARD_EMBLEM_COLOR[emblemColor])))
+		InspectGuildFrameEmblem:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_EMBLEM_COLOR[emblemColor])))
 	end
 
 	if SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor] then
-		InspectGuildFrameBanner:SetVertexColor(rgb(unpack(SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor])))
+		InspectGuildFrameBanner:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor])))
 	end
 
 	if SHARED_TABARD_BORDER_COLOR[emblemBorderStyle] then
 		if SHARED_TABARD_BORDER_COLOR[emblemBorderStyle][emblemBorderColor] then
-			InspectGuildFrameBannerBorder:SetVertexColor(rgb(unpack(SHARED_TABARD_BORDER_COLOR[emblemBorderStyle][emblemBorderColor])))
+			InspectGuildFrameBannerBorder:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BORDER_COLOR[emblemBorderStyle][emblemBorderColor])))
 		end
 	else
 		if SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor] then
-			InspectGuildFrameBannerBorder:SetVertexColor(rgb(unpack(SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor])))
+			InspectGuildFrameBannerBorder:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor])))
 		end
 	end
 

@@ -54,17 +54,17 @@ end
 function ItemLevelMixIn:GetColor( itemLevel )
 	local color
 
-	if C_InRange(itemLevel, 0, 100) then
+	if WithinRange(itemLevel, 0, 100) then
 		color = self.Colors[1]
-	elseif C_InRange(itemLevel, 100, 150) then
+	elseif WithinRange(itemLevel, 100, 150) then
 		color = self.Colors[1]
-	elseif C_InRange(itemLevel, 150, 185) then
+	elseif WithinRange(itemLevel, 150, 185) then
 		color = self.Colors[2]
-	elseif C_InRange(itemLevel, 185, 200) then
+	elseif WithinRange(itemLevel, 185, 200) then
 		color = self.Colors[3]
-	elseif C_InRange(itemLevel, 200, 277) then
+	elseif WithinRange(itemLevel, 200, 277) then
 		color = self.Colors[4]
-	elseif C_InRange(itemLevel, 277, 296) then
+	elseif WithinRange(itemLevel, 277, 296) then
 		color = self.Colors[5]
 	elseif itemLevel >= 297 then
 		color = self.Colors[6]

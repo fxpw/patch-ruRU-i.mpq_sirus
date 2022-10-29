@@ -23,8 +23,16 @@ function GetMaxLearnableProfessions()
 	return GetUnitVipStatus("player") > 0 and 4 or 3
 end
 
+local function localizedFormating(msg, formating)
+	for key, value in pairs(formating) do
+		msg = msg:gsub("#"..key.."#", value)
+	end
+
+	return msg
+end
+
 StaticPopupDialogs["CONFIRM_PROFESSION"] = {
-	text = PROFESSION_CONFIRMATION1:localizedFormating({
+	text = localizedFormating(PROFESSION_CONFIRMATION1, {
 		[1] = GetMaxLearnableProfessions(),
 		[2] = 0,
 		[3] = "PH_NAME",
@@ -44,7 +52,7 @@ StaticPopupDialogs["CONFIRM_PROFESSION"] = {
 		local maxProfession = GetMaxLearnableProfessions()
 		local numProfession = maxProfession - cp2
 
-		self.text:SetText(PROFESSION_CONFIRMATION1:localizedFormating({
+		self.text:SetText(localizedFormating(PROFESSION_CONFIRMATION1, {
 			[1] = maxProfession,
 			[2] = numProfession + 1,
 			[3] = GetTrainerServiceSkillLine(ClassTrainerFrame.selectedService),

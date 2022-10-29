@@ -26,19 +26,23 @@ function Custom_ChooseFactionParentMixin:OnLoad()
 end
 
 function Custom_ChooseFactionParentMixin:OnHide()
-    for _, frame in pairs(self.chooseFrame or {}) do
-        frame:Hide()
-    end
+	if self.chooseFrame then
+		for _, frame in pairs(self.chooseFrame) do
+			frame:Hide()
+		end
+	end
 
     self:SetWidth(0)
 end
 
 function Custom_ChooseFactionParentMixin:GetFreeChooseFrame()
-    for _, frame in pairs(self.chooseFrame or {}) do
-        if not frame:IsShown() then
-            return frame
-        end
-    end
+	if self.chooseFrame then
+		for _, frame in pairs(self.chooseFrame) do
+			if not frame:IsShown() then
+				return frame
+			end
+		end
+	end
 end
 
 function Custom_ChooseFactionParentMixin:ASMSG_SHOP_RENEGADE_CHARACTER_CHANGEFACTION()

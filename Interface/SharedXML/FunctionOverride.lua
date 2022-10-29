@@ -319,17 +319,16 @@ function UnitClass( unit )
 	return className, classToken, classID, classFlag
 end
 
-local _GetAddOnInfo = _GetAddOnInfo or GetAddOnInfo
+local _GetAddOnInfo = GetAddOnInfo
 function GetAddOnInfo( value )
 	if not value then
 		return
 	end
 
 	local name, title, notes, url, loadable, reason, security, newVersion = _GetAddOnInfo(value)
-	local build
-	local needUpdate = nil
+	local build, needUpdate
 
-	if ( name and notes ) then
+	if name and notes then
 		local pattern = "%|%@Version: (%d+)%@%|"
 		build = string.match(notes, pattern)
 		notes = string.gsub(notes, pattern, "")
@@ -337,24 +336,18 @@ function GetAddOnInfo( value )
 		if build then
 			build = tonumber(build)
 		end
+		
+		if S_ADDON_VERSION then
+			for _, addonData in ipairs(S_ADDON_VERSION) do
+				if tContains(addonData[3], name) then
+					url = strconcat("https://sirus.su/base/addons/", addonData[2])
 
-		local addonData
+					if not build or build < addonData[1] then
+						needUpdate = true
+					end
 
-		for _, v in pairs(S_ADDON_VERSION or {}) do
-			if tContains(v[3], name) then
-				addonData = v
-				break
-			end
-		end
-
-		if addonData then
-			local dataBuild = addonData[1]
-			url = "https://sirus.su/base/addons/"..addonData[2]
-
-			if ( build and build < dataBuild ) then
-				needUpdate = true
-			elseif ( not build ) then
-				needUpdate = true
+					break
+				end
 			end
 		end
 	end

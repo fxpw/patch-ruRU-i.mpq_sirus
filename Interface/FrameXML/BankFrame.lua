@@ -62,12 +62,14 @@ function BankFrameItemButton_Update (button)
 		local searchText = ContainerFrame_GetSearchText()
 		if searchText then
 			local itemID = GetContainerItemID(BANK_CONTAINER, button:GetID())
-			local itemName = GetItemInfo(itemID)
+			if itemID then
+				local itemName = GetItemInfo(itemID)
 
-			if itemName then
-				button.searchOverlay:Show()
-				if string.find(string.upper(itemName), string.upper(searchText)) then
-					button.searchOverlay:Hide()
+				if itemName then
+					button.searchOverlay:Show()
+					if string.find(string.lower(itemName), string.lower(searchText), 1, true) then
+						button.searchOverlay:Hide()
+					end
 				end
 			end
 		end

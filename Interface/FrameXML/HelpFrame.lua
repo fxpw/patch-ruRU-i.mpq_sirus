@@ -190,7 +190,7 @@ function HelpFrame_OnEvent(self, event, ...)
 		local msg = response..responseSuffix
 
 		for url in msg:gmatch("(%w+://.-/%S*)") do
-			local link = string.formatx("|cff06ff07|H$1|h$1|h|r", url)
+			local link = string.format("|cff06ff07|H%s|h%s|h|r", url, url)
 			msg = msg:replace(("%s"):format(url), link)
 		end
 

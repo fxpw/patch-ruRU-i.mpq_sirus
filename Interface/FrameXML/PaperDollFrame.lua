@@ -1606,12 +1606,15 @@ function PaperDollItemSlotButton_Update (self)
 	local textureName = GetInventoryItemTexture("player", self:GetID());
 	local cooldown = _G[self:GetName().."Cooldown"];
 
-	local link = GetInventoryItemLink("player", self:GetID())
-	local _, _, _, _, _, _, _, _, _, originalTexture = GetItemInfo(link)
-
 	if ( textureName ) then
-		if link and self:GetID() < 20 then
-			local _, _, quality = GetItemInfo(link)
+		local link = GetInventoryItemLink("player", self:GetID())
+		local quality, originalTexture, _
+
+		if link then
+			_, _, quality, _, _, _, _, _, _, originalTexture = GetItemInfo(link)
+		end
+
+		if quality and self:GetID() < 20 then
 			SetItemButtonQuality(self, quality)
 		end
 
@@ -1634,9 +1637,10 @@ function PaperDollItemSlotButton_Update (self)
 		if self.IconBorder and self.IconBorder:IsShown() then
 			self.IconBorder:Hide()
 		end
-		local textureName = self.backgroundTextureName;
 		if ( self.checkRelic and UnitHasRelicSlot("player") ) then
-			textureName = "Interface\\Paperdoll\\UI-PaperDoll-Slot-Relic.blp";
+			textureName = "Interface\\Paperdoll\\UI-PaperDoll-Slot-Relic";
+		else
+			textureName = self.backgroundTextureName;
 		end
 		SetItemButtonTexture(self, textureName);
 		SetItemButtonCount(self, 0);

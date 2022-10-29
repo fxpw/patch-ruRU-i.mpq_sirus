@@ -20,6 +20,29 @@ local UIDropDownMenu_CreateInfo = UIDropDownMenu_CreateInfo
 local UIDropDownMenu_GetSelectedValue = UIDropDownMenu_GetSelectedValue
 local UIDropDownMenu_SetSelectedValue = UIDropDownMenu_SetSelectedValue
 
+local function TriStateCheckbox_SetState(checked, checkButton)
+	local checkedTexture = _G[checkButton:GetName().."CheckedTexture"];
+	if ( not checkedTexture ) then
+		message("Can't find checked texture");
+	end
+	if ( not checked or checked == 0 ) then
+		-- nil or 0 means not checked
+		checkButton:SetChecked(false);
+		checkButton.state = 0;
+	elseif ( checked == 2 ) then
+		-- 2 is a normal
+		checkButton:SetChecked(true);
+		checkedTexture:SetVertexColor(1, 1, 1);
+		checkedTexture:SetDesaturated(false);
+		checkButton.state = 2;
+	else
+		-- 1 is a gray check
+		checkButton:SetChecked(true);
+		checkedTexture:SetDesaturated(true);
+		checkButton.state = 1;
+	end
+end
+
 if ( InGlue() ) then
 	AddonDialogTypes = { };
 	HasShownAddonOutOfDateDialog = false;

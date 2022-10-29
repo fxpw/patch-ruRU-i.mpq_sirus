@@ -885,16 +885,16 @@ function BattlePassItemTemplateMixin:OnEnter()
 end
 
 function BattlePassItemTemplateMixin:SetItem( itemEntry, count )
-    local function ItemInfoResponceCallback( _, _, _, _, _, _, _, _, _, itemTexture )
+	local function ItemInfoResponceCallback(itemID, _, _, _, _, _, _, _, _, _, itemTexture)
         self.Icon:SetTexture(itemTexture)
     end
 
-    local _, _, _, _, _, _, _, _, _, itemTexture = GetItemInfo(itemEntry, false, ItemInfoResponceCallback)
+	local _, _, _, _, _, _, _, _, _, itemTexture = C_Item.GetItemInfo(itemEntry, false, ItemInfoResponceCallback)
 
     if itemTexture then
-        ItemInfoResponceCallback(_, _, _, _, _, _, _, _, _, itemTexture)
+		self.Icon:SetTexture(itemTexture)
     else
-        ItemInfoResponceCallback(_, _, _, _, _, _, _, _, _, "Interface\\ICONS\\INV_Misc_QuestionMark")
+		self.Icon:SetTexture("Interface\\ICONS\\INV_Misc_QuestionMark")
     end
 
     self.Count:SetShown(count > 1)
@@ -1212,19 +1212,18 @@ function BattlePassSelectXPButtonTemplateMixin:OnClick()
 end
 
 function BattlePassSelectXPButtonTemplateMixin:SetupItem( storeID, itemEntry, price, discount, discountedPrice )
-    local function ItemInfoResponceCallback( itemName, itemLink, _, _, _, _, _, _, _, itemTexture )
+	local function ItemInfoResponceCallback(itemID, itemName, itemLink, _, _, _, _, _, _, _, itemTexture)
         self.itemName = itemName
         self.itemLink = itemLink
 
         SetPortraitToTexture(self.Icon, itemTexture)
     end
 
-    local itemName, itemLink, _, _, _, _, _, _, _, itemTexture = GetItemInfo(itemEntry, false, ItemInfoResponceCallback)
-
+	local itemName, itemLink, _, _, _, _, _, _, _, itemTexture = C_Item.GetItemInfo(itemEntry, false, ItemInfoResponceCallback)
     if itemName then
-        ItemInfoResponceCallback(itemName, itemLink, _, _, _, _, _, _, _, itemTexture)
+		ItemInfoResponceCallback(nil, itemName, itemLink, nil, nil, nil, nil, nil, nil, nil, itemTexture)
     else
-        ItemInfoResponceCallback("loading..", "Hitem:1", _, _, _, _, _, _, _, "Interface\\ICONS\\INV_Misc_QuestionMark")
+		ItemInfoResponceCallback(nil, TOOLTIP_UNIT_LEVEL_ILEVEL_LOADING_LABEL, "Hitem:1", nil, nil, nil, nil, nil, nil, nil, "Interface\\ICONS\\INV_Misc_QuestionMark")
     end
 
 	if discountedPrice and discount then

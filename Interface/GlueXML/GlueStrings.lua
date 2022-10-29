@@ -1307,10 +1307,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "http://www.wow-europe.com/ru/support/",
 		enGB = "http://support.worldofwarcraft.com/accountmessaging/getMessageHeaders.xml"
 	},
-	["RATINGS_TEXT"] = {
-		ruRU = "This is the placeholder for the Korean Ratings information",
-		enGB = "This is the placeholder for the Korean Ratings information"
-	},
 	["CHARACTER_SERVICES_PERSONAL_OFFER"] = {
 		ruRU = "Перс. Предложение",
 		enGB = "Personal offer"
@@ -2627,10 +2623,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Удаление персонажа",
 		enGB = "Deleting character"
 	},
-	["OPTIONS"] = {
-		ruRU = "Параметры",
-		enGB = "Options"
-	},
 	["LOGINBOX_ENTER"] = {
 		ruRU = "Войти",
 		enGB = "Sign In"
@@ -2926,10 +2918,6 @@ local SIRUS_LOCALIZATION = {
 	["PARRY"] = {
 		ruRU = "ПАРИР %.2f",
 		enGB = "PARRY %.2f"
-	},
-	["CONFIGURE_MODS_FOR"] = {
-		ruRU = "Настроить модификации для:",
-		enGB = "Configure AddOns For:"
 	},
 	["AUTH_PARENTAL_CONTROL_URL"] = {
 		ruRU = "https://www.wow-europe.com/account/",
@@ -5074,7 +5062,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL_PASSIVE2_DESC_SHORT"] = {
-		ruRU = "inv_sword_05|Меткость повышена на 1%, Мастерство - на 2 ед.",
+		ruRU = "inv_sword_05|Меткость повышена на 2%, Мастерство - на 2 ед.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL_PASSIVE3_DESC_SHORT"] = {
@@ -5094,7 +5082,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL_PASSIVE2_DESC_SHORT"] = {
-		ruRU = "spell_shaman_primalstrike|Модификатор критического урона и исцеления всех атак и заклинаний увеличен на 4%.",
+		ruRU = "spell_shaman_primalstrike|Модификатор критического урона и исцеления всех атак и заклинаний увеличен на 4%, а шанс крит. эффекта - на 1%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL_PASSIVE3_DESC_SHORT"] = {
@@ -5114,7 +5102,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL_PASSIVE2_DESC_SHORT"] = {
-		ruRU = "spell_holy_elunesgrace|Скорость атаки и произнесения заклинаний увеличена на 2%.",
+		ruRU = "spell_holy_elunesgrace|Скорость атаки и произнесения заклинаний увеличена на 2%, а вероятность крит. эффекта - на 1%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL_PASSIVE3_DESC_SHORT"] = {
@@ -5146,7 +5134,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL_ACTIVE2_DESC_SHORT"] = {
-		ruRU = "spell_arcane_mindmastery|Гарантирует критический эффект следующей способности или заклинания, наносящего урон.\nНе работает на эффекты периодического урона, длительность которых способна продлеваться вечно с помощью талантов или иных эффектов.\nПерезарядка: 20 секунд",
+		ruRU = "spell_arcane_mindmastery|Повышает урон или исцеление следующего примененного заклинания или способности на 33%.\nВо время действия эффекта, эффекты периодического урона также получают эффект от данной способности, не расходуя её заряд.\nПерезарядка: 30 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL_PASSIVE1_DESC_SHORT"] = {
@@ -5194,7 +5182,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL_PASSIVE2_DESC_SHORT"] = {
-		ruRU = "spell_arcane_arcanepotency|Меткость повышена на 2%, а вероятность критического эффекта - на 1%.",
+		ruRU = "spell_arcane_arcanepotency|Меткость повышена на 1%, а вероятность критического эффекта - на 2%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL_PASSIVE3_DESC_SHORT"] = {
@@ -5254,7 +5242,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL_ACTIVE2_DESC_SHORT"] = {
-		ruRU = "ability_rhyolith_lavapool|Покрывает указанную область шлаком, повышая урон, получаемый от вас противниками и исцеление, получаемое от вас союзниками на 6%.\nПерезарядка: 30 секунд",
+		ruRU = "ability_rhyolith_lavapool|Покрывает цель (будь то противник или союзник) и область вокруг него шлаком, повышая урон, получаемый от вас противниками и исцеление, получаемое от вас союзниками на 6%.\nПерезарядка: 30 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL_PASSIVE1_DESC_SHORT"] = {
@@ -5286,7 +5274,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL_PASSIVE2_DESC_SHORT"] = {
-		ruRU = "ability_warrior_strengthofarms|Множитель критического эффекта всех атак, способностей и заклинаний увеличен на 2%, а мастерство - на 2 ед.",
+		ruRU = "ability_warrior_strengthofarms|Множитель критического эффекта всех атак, способностей и заклинаний увеличен на 4%, а мастерство - на 2 ед.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL_PASSIVE3_DESC_SHORT"] = {
@@ -5338,7 +5326,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL_ACTIVE2_DESC_SHORT"] = {
-		ruRU = "ability_smash|Повышает модификатор критического урона способности или заклинания, примененного в течение 1 сек., на 100%.\nПерезарядка: 30 секунд",
+		ruRU = "ability_smash|Повышает модификатор критического урона способности или заклинания, примененного в течение 3 сек., на 100%.\nВо время действия эффекта, критический периодический урона также получает эффект от данной способности, не расходуя её.\nПерезарядка: 30 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL_PASSIVE1_DESC_SHORT"] = {
@@ -5394,7 +5382,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL_ACTIVE1_DESC_SHORT"] = {
-		ruRU = "spell_naga_weapon_racial|Предоставляет невосприимчивость к эффектам немоты, прерывания, а также обезоруживания.\nПерезарядка: 120 секунд",
+		ruRU = "spell_naga_weapon_racial|Предоставляет невосприимчивость к эффектам немоты, прерывания, а также обезоруживания.\nПерезарядка: 90 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL_ACTIVE2_DESC_SHORT"] = {
@@ -5414,11 +5402,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL_ACTIVE1_DESC_SHORT"] = {
-		ruRU = "spell_shadow_teleport|Вызывает немоту у всех противников в радиусе 8 м. на 3 сек. и восстаналивает небольшой процент основного ресурса.\nПерезарядка: 90 секунд",
+		ruRU = "spell_shadow_teleport|Вызывает немоту у всех противников в радиусе 8 м. на 3 сек. и восстаналивает 60 ед. ярости, энергии, силы рун или 45% от базовой маны.\nПерезарядка: 90 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL_ACTIVE2_DESC_SHORT"] = {
-		ruRU = "inv_misc_gem_bloodstone_01|Повышает вероятность критического удара на 20%.\nПерезарядка: 60 секунд",
+		ruRU = "inv_misc_gem_bloodstone_01|Снижает получаемый магический урон на 20%, при этом повышая наносимый урон и исцеление на 10%, сроком на 10 сек.\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_PASSIVE1_DESC_SHORT"] = {
@@ -5426,7 +5414,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_PASSIVE2_DESC_SHORT"] = {
-		ruRU = "sha_ability_rogue_sturdyrecuperate_nightborne|Вступая в бой, вы восстанавливаете 9 ед. энергии, ярости, силы рун или 3% от базовой маны раз в 2 сек. в течение 60 сек.\nСрабатывает не чаще, чем раз в 180 сек.",
+		ruRU = "sha_ability_rogue_sturdyrecuperate_nightborne|Вступая в бой, вы восстанавливаете 9 ед. энергии, ярости, силы рун или 6% от базовой маны раз в 2 сек. в течение 60 сек.\nСрабатывает не чаще, чем раз в 180 сек.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_PASSIVE3_DESC_SHORT"] = {
@@ -5510,11 +5498,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL_ACTIVE2_DESC_SHORT"] = {
-		ruRU = "ability_monk_sparring|Усиливает следующие 5 ваших атак, нанося дополнительный урон способностью \"Искусный удар\"\nПерезарядка: 60 секунд",
+		ruRU = "ability_monk_sparring|Усиливает следующие 5 ваших атак, нанося дополнительный урон способностью \"Искусный удар\", равный 40% от силы атаки.\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL_ACTIVE3_DESC_SHORT"] = {
-		ruRU = "ability_monk_effuse|Запускает 5 стрел энергии Ци в указанного противника за 2 сек. Можно применять во время передвижения.\nПерезарядка: 60 секунд",
+		ruRU = "ability_monk_effuse|Запускает заряд Ци в цель, нанося противнику урон, равный 80% от силы заклинаний, или поглощает получаемый союзником урон, равный 80% от силы заклинаний на 10 сек.\nПерезарядка: 12 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL_PASSIVE1_DESC_SHORT"] = {

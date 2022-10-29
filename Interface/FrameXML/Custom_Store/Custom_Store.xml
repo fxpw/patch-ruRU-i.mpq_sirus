@@ -215,9 +215,10 @@
 			</Layer>
 			<Layer level="ARTWORK">
 				<FontString parentKey="Text" inherits="GameFontNormal" wordwrap="true" justifyH="LEFT">
-					<Size x="120" y="38" />
+					<Size x="0" y="38" />
 					<Anchors>
 						<Anchor point="LEFT" x="14" y="1" />
+						<Anchor point="RIGHT" x="-14" y="1"/>
 					</Anchors>
 				</FontString>
 				<Texture parentKey="NewItems" inherits="store-icon-new" hidden="true">
@@ -1785,6 +1786,7 @@
 
 		<Scripts>
 			<OnShow function="StoreSubscribeItem_OnShow"/>
+			<OnHide function="StoreSubscribeItem_OnHide"/>
 			<OnEnter function="StoreSubscribeItem_OnEnter"/>
 			<OnLeave function="GameTooltip_Hide"/>
 		</Scripts>
@@ -2739,7 +2741,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="ARTWORK">
-								<FontString name="$parentDescription" parentKey="Description" numLines="2" text="STORE_RENEW_TIME_DESCRIPTION" inherits="GameFontNormal">
+								<FontString name="$parentDescription" parentKey="Description" maxLines="2" text="STORE_RENEW_TIME_DESCRIPTION" inherits="GameFontNormal">
 									<Size x="172" y="48"/>
 									<Anchors>
 										<Anchor point="TOP" x="0" y="-6"/>
@@ -3269,6 +3271,7 @@
 							<Frame name="$parentDeathBreathOffer" parentKey="DeathBreathOffer" inherits="StoreOfferTemplate" id="56"/>
 							<Frame name="$parentSirinOffer" parentKey="SirinOffer" inherits="StoreOfferTemplate" id="57"/>
 							<Frame name="$parentVenLoOffer" parentKey="VenLoOffer" inherits="StoreOfferTemplate" id="58"/>
+							<Frame name="$parentHW2022Offer" parentKey="HW2022Offer" inherits="StoreOfferTemplate" id="59"/>
 						</Frames>
 						<Scripts>
 							<OnLoad function="StoreSpecialOfferBanner_OnLoad"/>
@@ -4723,34 +4726,13 @@
 							</Anchors>
 							<Color r="0" g="0" b="0"/>
 						</FontString>
-						<FontString name="$parentInfoText" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE" parentKey="infotext">
+						<FontString name="$parentInfoText" parentKey="InfoText" inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE">
 							<Size x="424" y="76"/>
 							<Anchors>
 								<Anchor point="TOP" x="0" y="-42"/>
 							</Anchors>
 							<Color r="0.9" g="0.9" b="0.9"/>
 						</FontString>
-
-						<FontString name="$parentTitleItem" inherits="GameFontNormalLarge2" justifyH="CENTER" parentKey="titleitem" text="STORE_SUBSCRIBE_YOU_GET_LABEL">
-							<Anchors>
-								<Anchor point="TOP" x="0" y="-136"/>
-							</Anchors>
-							<Color r="0.9" g="0.9" b="0.9"/>
-						</FontString>
-						<Texture file="Interface\Archeology\ArchaeologyParts">
-							<Anchors>
-								<Anchor point="RIGHT" relativeTo="$parentTitleItem" relativePoint="LEFT" x="-8"/>
-							</Anchors>
-							<Size x="42" y="27"/>
-							<TexCoords left="0.11132813" right="0.19335938" top="0.78906250" bottom="0.89453125"/>
-						</Texture>
-						<Texture file="Interface\Archeology\ArchaeologyParts">
-							<Anchors>
-								<Anchor point="LEFT" relativeTo="$parentTitleItem" relativePoint="RIGHT" x="8"/>
-							</Anchors>
-							<Size x="42" y="27"/>
-							<TexCoords left="0.00195313" right="0.08398438" top="0.84375000" bottom="0.94921875"/>
-						</Texture>
 						<Texture parentKey="RightChest" file="Interface\Store\LegionMission">
 							<Size x="135" y="100"/>
 							<Anchors>
@@ -4768,6 +4750,40 @@
 					</Layer>
 				</Layers>
 				<Frames>
+					<Frame parentKey="ItemContainer">
+						<Anchors>
+							<Anchor point="TOP" x="0" y="-136"/>
+						</Anchors>
+						<Layers>
+							<Layer level="OVERLAY">
+								<FontString name="$parentTitleItem" inherits="GameFontNormalLarge2" justifyH="CENTER" parentKey="titleitem" text="STORE_SUBSCRIBE_YOU_GET_LABEL">
+									<Anchors>
+										<Anchor point="TOP" x="0" y="0"/>
+									</Anchors>
+									<Color r="0.9" g="0.9" b="0.9"/>
+								</FontString>
+								<Texture file="Interface\Archeology\ArchaeologyParts">
+									<Anchors>
+										<Anchor point="RIGHT" relativeTo="$parentTitleItem" relativePoint="LEFT" x="-8"/>
+									</Anchors>
+									<Size x="42" y="27"/>
+									<TexCoords left="0.11132813" right="0.19335938" top="0.78906250" bottom="0.89453125"/>
+								</Texture>
+								<Texture file="Interface\Archeology\ArchaeologyParts">
+									<Anchors>
+										<Anchor point="LEFT" relativeTo="$parentTitleItem" relativePoint="RIGHT" x="8"/>
+									</Anchors>
+									<Size x="42" y="27"/>
+									<TexCoords left="0.00195313" right="0.08398438" top="0.84375000" bottom="0.94921875"/>
+								</Texture>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnLoad>
+								self.buttons = {}
+							</OnLoad>
+						</Scripts>
+					</Frame>
 					<PlayerModel parentKey="ModelLeft">
 						<Size x="242" y="249" />
 						<Anchors>
@@ -4777,21 +4793,6 @@
 							<OnShow function="StoreSubscribeSetupModel"/>
 						</Scripts>
 					</PlayerModel>
-					<Button name="StoreSubscribeItemButton1" inherits="StoreSubscribeItemTemplate" id="1">
-						<Anchors>
-							<Anchor point="LEFT" x="28" y="42" />
-						</Anchors>
-					</Button>
-					<Button name="StoreSubscribeItemButton2" inherits="StoreSubscribeItemTemplate" id="2">
-						<Anchors>
-							<Anchor point="LEFT" relativeTo="StoreSubscribeItemButton1" relativePoint="RIGHT" x="135" y="0" />
-						</Anchors>
-					</Button>
-					<Button name="StoreSubscribeItemButton3" inherits="StoreSubscribeItemTemplate" id="3">
-						<Anchors>
-							<Anchor point="LEFT" relativeTo="StoreSubscribeItemButton2" relativePoint="RIGHT" x="135" y="0" />
-						</Anchors>
-					</Button>
 					<Button name="$parentBuyButton1" parentKey="BuyButton1" inherits="StoreSubscribeButtonTemplate" hidden="true" id="2">
 						<Anchors>
 							<Anchor point="BOTTOM" x="0" y="86"/>
@@ -4865,7 +4866,7 @@
 									</Layer>
 								</Layers>
 								<Frames>
-									<Button name="StoreSubscribeSubItemButton1" inherits="StoreSubscribeItemTemplate" hidden="false" id="4">
+									<Button name="StoreSubscribeBonusItemButton1" inherits="StoreSubscribeItemTemplate" id="4">
 										<Anchors>
 											<Anchor point="CENTER" x="-60" y="-62" />
 										</Anchors>

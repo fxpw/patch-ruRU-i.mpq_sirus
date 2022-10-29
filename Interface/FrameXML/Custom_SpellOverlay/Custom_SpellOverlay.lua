@@ -8,7 +8,6 @@ local sizeScale = 0.8
 local longSide = 256 * sizeScale
 local shortSide = 128 * sizeScale
 
-local actionButtonState = {}
 local complexLocationTable = {
 	["RIGHT (FLIPPED)"] = {
 		RIGHT = {	hFlip = true },
@@ -48,8 +47,9 @@ function AuraTrackerFrame_UpdateAura()
 
 		for auraIndex = 1, 40 do
 			local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, shouldConsolidate, spellID = UnitAura("player", auraIndex, auraFilter)
+			if not name then break end
 
-			if name and spellID then
+			if spellID then
 				local hasAura = auraTrackerStorage[spellID] and auraTrackerStorage[spellID][1]
 
 				if hasAura == nil then
@@ -83,7 +83,7 @@ function SpellOverlay_RegisterAuraTracker()
 	Hook:RegisterCallback("SPELL_OVERLAY", "UNIT_AURA", function(auraType, actionType, _, _, _, count, _, _, _, _, _, _, spellID)
 		if actionType == "ADD_AURA" or actionType == "UPDATE_COUNT" then
 			for _, data in pairs(SPELLOVERLAY_STORAGE) do
-				local showThisOverlay = {}
+				local showThisOverlay
 
 				local auraTriggerData = data[2]
 				local spellOverlayData = data[3]
@@ -109,7 +109,7 @@ function SpellOverlay_RegisterAuraTracker()
 					end
 				end
 
-				if showThisOverlay[1] then
+				if showThisOverlay and showThisOverlay[1] then
 					local overlayData = data[1]
 
 					if overlayData then
@@ -132,12 +132,14 @@ function SpellOverlay_RegisterAuraTracker()
 						end
 					end
 
-					for _, spell in pairs(spellOverlayData or {}) do
-						if not SPELLOVERLAY_HIGHLIGHT[spell] or type(SPELLOVERLAY_HIGHLIGHT[spell]) ~= "table" then
-							SPELLOVERLAY_HIGHLIGHT[spell] = {}
-						end
+					if spellOverlayData then
+						for _, spell in pairs(spellOverlayData) do
+							if not SPELLOVERLAY_HIGHLIGHT[spell] or type(SPELLOVERLAY_HIGHLIGHT[spell]) ~= "table" then
+								SPELLOVERLAY_HIGHLIGHT[spell] = {}
+							end
 
-						SPELLOVERLAY_HIGHLIGHT[spell][spellID] = true
+							SPELLOVERLAY_HIGHLIGHT[spell][spellID] = true
+						end
 					end
 
 					SpellActivationOverlayFrame.spellOverlayData[spellID] = spellOverlayData

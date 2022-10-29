@@ -2229,22 +2229,22 @@ function EventHandler:ASMSG_PLAYER_GUILD_EMBLEM_INFO( msg )
 		tabard:Show()
 
 		if SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor] then
-			tabard.background:SetVertexColor(rgb(unpack(SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor])))
-			GuildFrameTabardBackground:SetVertexColor(rgb(unpack(SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor])))
+			tabard.background:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor])))
+			GuildFrameTabardBackground:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor])))
 		end
 
 		if SHARED_TABARD_EMBLEM_COLOR[emblemColor] then
-			tabard.emblem:SetVertexColor(rgb(unpack(SHARED_TABARD_EMBLEM_COLOR[emblemColor])))
-			GuildFrameTabardEmblem:SetVertexColor(rgb(unpack(SHARED_TABARD_EMBLEM_COLOR[emblemColor])))
+			tabard.emblem:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_EMBLEM_COLOR[emblemColor])))
+			GuildFrameTabardEmblem:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_EMBLEM_COLOR[emblemColor])))
 		end
 
 		if SHARED_TABARD_BORDER_COLOR[emblemBorderStyle] then
 			if SHARED_TABARD_BORDER_COLOR[emblemBorderStyle][emblemBorderColor] then
-				GuildFrameTabardBorder:SetVertexColor(rgb(unpack(SHARED_TABARD_BORDER_COLOR[emblemBorderStyle][emblemBorderColor])))
+				GuildFrameTabardBorder:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BORDER_COLOR[emblemBorderStyle][emblemBorderColor])))
 			end
 		else
 			if SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor] then
-				GuildFrameTabardBorder:SetVertexColor(rgb(unpack(SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor])))
+				GuildFrameTabardBorder:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor])))
 			end
 		end
 
@@ -2269,20 +2269,20 @@ function EventHandler:ASMSG_GUILD_INVITE_REQUEST( msg )
 		emblemBackgroundColor = tonumber(emblemBackgroundColor)
 
 		if SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor] then
-			GuildInviteFrameTabardBackground:SetVertexColor(rgb(unpack(SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor])))
+			GuildInviteFrameTabardBackground:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor])))
 		end
 
 		if SHARED_TABARD_EMBLEM_COLOR[emblemColor] then
-			GuildInviteFrameTabardEmblem:SetVertexColor(rgb(unpack(SHARED_TABARD_EMBLEM_COLOR[emblemColor])))
+			GuildInviteFrameTabardEmblem:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_EMBLEM_COLOR[emblemColor])))
 		end
 
 		if SHARED_TABARD_BORDER_COLOR[emblemBorderStyle] then
 			if SHARED_TABARD_BORDER_COLOR[emblemBorderStyle][emblemBorderColor] then
-				GuildInviteFrameTabardArtTabardBorder:SetVertexColor(rgb(unpack(SHARED_TABARD_BORDER_COLOR[emblemBorderStyle][emblemBorderColor])))
+				GuildInviteFrameTabardArtTabardBorder:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BORDER_COLOR[emblemBorderStyle][emblemBorderColor])))
 			end
 		else
 			if SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor] then
-				GuildInviteFrameTabardArtTabardBorder:SetVertexColor(rgb(unpack(SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor])))
+				GuildInviteFrameTabardArtTabardBorder:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor])))
 			end
 		end
 
@@ -2350,7 +2350,7 @@ function GetSpellBySkillValue(skillId, value)
 		local oldValue = 0
 		local spellId = nil
 		for k,v in pairs(tradeskillSpell[skillId]) do
-			if C_InRange(value, oldValue, v[1]) then
+			if WithinRange(value, oldValue, v[1]) then
 				spellId = v[2]
 			end
 			oldValue = v[1]

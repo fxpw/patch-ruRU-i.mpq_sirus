@@ -25,7 +25,7 @@ local tconcat = table.concat;
 local tremove = table.remove;
 
 local ItemsCache = ItemsCache;
-local GetItemInfo = C_Item._GetItemInfo;
+local GetItemInfo = C_Item.GetItemInfoRaw;
 
 Enum.AuctionHouseFilterCategory = {
 	Uncategorized = 0,
@@ -1386,10 +1386,11 @@ local function IsSellItemValid(bagID, slotID)
 		if text == LOCKED or text == ITEM_OPENABLE or string.find(text, LOCKED_WITH_SPELL) then
 			if not foundLockbox then
 				local itemID = GetContainerItemID(bagID, slotID);
-				local itemCache = itemID and ItemsCache[itemID];
-
-				if itemCache and itemCache[ITEMS_CACHE_TYPE] == 15 and itemCache[ITEMS_CACHE_SUBTYPE] == 0 then
-					return true, true;
+				if itemID then
+					local classID, subClassID = select(13, C_Item.GetItemInfo(itemID, nil, nil, nil, true));
+					if classID == 15 and subClassID == 0 then
+						return true, true;
+					end
 				end
 			end
 

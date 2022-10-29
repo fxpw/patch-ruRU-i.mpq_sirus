@@ -3,7 +3,7 @@ local MaxNumActiveBidsTracked = 100;
 
 UIPanelWindows["AuctionHouseFrame"] = { area = "doublewide", pushable = 0, xoffset = "20", yoffset = "0" };
 
-StaticPopupDialogs["BUYOUT_AUCTION"] = {
+StaticPopupDialogs["AUCTIONHOUSE_BUYOUT_AUCTION"] = {
 	text = BUYOUT_AUCTION_CONFIRMATION,
 	button1 = ACCEPT,
 	button2 = CANCEL,
@@ -20,7 +20,7 @@ StaticPopupDialogs["BUYOUT_AUCTION"] = {
 	hideOnEscape = 1
 };
 
-StaticPopupDialogs["BID_AUCTION"] = {
+StaticPopupDialogs["AUCTIONHOUSE_BID_AUCTION"] = {
 	text = BID_AUCTION_CONFIRMATION,
 	button1 = ACCEPT,
 	button2 = CANCEL,
@@ -37,7 +37,7 @@ StaticPopupDialogs["BID_AUCTION"] = {
 	hideOnEscape = 1
 };
 
-StaticPopupDialogs["ACTIONHOUSE_CANCEL_AUCTION"] = {
+StaticPopupDialogs["AUCTIONHOUSE_CANCEL_AUCTION"] = {
 	text = CANCEL_AUCTION_CONFIRMATION,
 	button1 = ACCEPT,
 	button2 = CANCEL,
@@ -61,9 +61,9 @@ StaticPopupDialogs["ACTIONHOUSE_CANCEL_AUCTION"] = {
 };
 
 AUCTION_HOUSE_STATIC_POPUPS = {
-	"BUYOUT_AUCTION",
-	"BID_AUCTION",
-	"ACTIONHOUSE_CANCEL_AUCTION",
+	"AUCTIONHOUSE_BUYOUT_AUCTION",
+	"AUCTIONHOUSE_BID_AUCTION",
+	"AUCTIONHOUSE_CANCEL_AUCTION",
 };
 
 
@@ -428,9 +428,9 @@ AuctionHouseFrameDialogs = {
 };
 
 AuctionHouseFramePopups = {
-	"BID_AUCTION",
-	"BUYOUT_AUCTION",
-	"ACTIONHOUSE_CANCEL_AUCTION",
+	"AUCTIONHOUSE_BID_AUCTION",
+	"AUCTIONHOUSE_BUYOUT_AUCTION",
+	"AUCTIONHOUSE_CANCEL_AUCTION",
 };
 
 function AuctionHouseFrameMixin:SetDisplayMode(displayMode)
@@ -717,12 +717,12 @@ end
 
 function AuctionHouseFrameMixin:StartItemBid(auctionID, bid)
 	local data = { auctionID = auctionID, bid = bid };
-	StaticPopup_Show("BID_AUCTION", nil, nil, data);
+	StaticPopup_Show("AUCTIONHOUSE_BID_AUCTION", nil, nil, data);
 end
 
 function AuctionHouseFrameMixin:StartItemBuyout(auctionID, buyout)
 	local data = { auctionID = auctionID, buyout = buyout };
-	StaticPopup_Show("BUYOUT_AUCTION", nil, nil, data);
+	StaticPopup_Show("AUCTIONHOUSE_BUYOUT_AUCTION", nil, nil, data);
 end
 
 function AuctionHouseFrameMixin:SetSearchText(text)

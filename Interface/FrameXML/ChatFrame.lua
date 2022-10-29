@@ -686,6 +686,7 @@ end
 -- CastSequence support
 --
 
+local GetItemInfoRaw = C_Item.GetItemInfoRaw
 local CastSequenceManager;
 local CastSequenceTable = {};
 local CastSequenceFreeList = {};
@@ -696,7 +697,7 @@ local function CreateCanonicalActions(entry, ...)
 	entry.items = {};
 	for i=1, select("#", ...) do
 		local action = strlower(strtrim((select(i, ...))));
-		if ( C_Item._GetItemInfo(action) or select(3, SecureCmdItemParse(action)) ) then
+		if ( GetItemInfoRaw(action) or select(3, SecureCmdItemParse(action)) ) then
 			entry.items[i] = action;
 			entry.spells[i] = strlower(GetItemSpell(action) or "");
 			entry.spellNames[i] = entry.spells[i];
@@ -1047,7 +1048,7 @@ SecureCmdList["CAST"] = function(msg)
     local action, target = SecureCmdOptionParse(msg);
     if ( action ) then
 		local name, bag, slot = SecureCmdItemParse(action);
-		if ( slot or GetItemInfo(name, true) ) then
+		if ( slot or C_Item.GetItemInfo(name, true) ) then
 			SecureCmdUseItem(name, bag, slot, target);
 		else
 			CastSpellByName(action, target);
@@ -4852,7 +4853,7 @@ function ChatEdit_TryInsertChatLink(link)
 end
 
 function GetItemEntryByMsgLoot( msg )
-	if string.find(msg, string.Left(LOOT_ITEM_SELF, 21)) or string.find(msg, string.Left(LOOT_ITEM_CREATED_SELF, 21)) or string.find(msg, string.Left(LOOT_ITEM_PUSHED_SELF, 21)) then
+	if string.find(msg, string.sub(LOOT_ITEM_SELF, 1, 21)) or string.find(msg, string.sub(LOOT_ITEM_CREATED_SELF, 1, 21)) or string.find(msg, string.sub(LOOT_ITEM_PUSHED_SELF, 1, 21)) then
 		local itemEntry, count = string.match(msg, "|Hitem:(%d+).*x(%d+)")
 
 		if not itemEntry then
