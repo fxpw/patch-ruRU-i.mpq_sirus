@@ -651,7 +651,6 @@ local ALL_WEAPON_FILTER = 0
 local ALL_WEAPON_NEW_FILTER = -2
 
 local storeTransmogrifySetsData = {}
-local storeTransmogrifySourceDataByStoreID = {}
 local storeTransmogrifyNewWeaponTypes = {}
 
 storeTransmogrifyShowShoulders = true
@@ -763,6 +762,24 @@ function GetPlayerBalance()
 	return storeBalance.Bonus or -1, storeBalance.Vote or -1, storeBalance.Refer or -1, storeBalance.loyalLevel or -1;
 end
 
+function Store_GetTransmogCategoryByStoreID(storeID)
+	for transmogCategoryID, typeData in ipairs(STORE_TRANSMOGRIFY_STORAGE) do
+		for _, transmogData in ipairs(typeData) do
+			if transmogData[STORE_TRANSMOGRIFY_STORAGE_STOREID] == storeID then
+				return transmogCategoryID, transmogData[STORE_TRANSMOGRIFY_STORAGE_CLASSID]
+			end
+		end
+	end
+
+	for transmogCategoryID, typeData in ipairs(STORE_TRANSMOGRIFY_SETS_DATA) do
+		for _, transmogData in ipairs(typeData) do
+			if transmogData[STORE_TRANSMOGRIFY_SETS_STOREID] == storeID then
+				return transmogCategoryID, transmogData[STORE_TRANSMOGRIFY_SETS_CLASSID]
+			end
+		end
+	end
+end
+
 function GetStoreHyperlinkInfo( link )
 	local splitData = C_Split(link, ":")
 
@@ -772,12 +789,21 @@ function GetStoreHyperlinkInfo( link )
 	local storeID 		= tonumber(splitData[5])
 
 	ShowUIPanel(StoreFrame)
+	
+	local setClassID
+	if moneyID == 1 then
+		if categoryID == 6 and subCategoryID == 0 then
+			subCategoryID, setClassID = Store_GetTransmogCategoryByStoreID(storeID)
+		end
 
-	_G["StoreMoneyButton"..moneyID]:Click()
-	_G["StoreCategoryButton"..categoryID]:Click()
+		StoreSelectCategory(categoryID, subCategoryID)
+	else
+		_G["StoreMoneyButton"..moneyID]:Click()
+		_G["StoreCategoryButton"..categoryID]:Click()
+	end
 
 	if not StoreTransmogrifyFrame.selectedSets or StoreTransmogrifyFrame.selectedSets ~= storeID then
-		StoreTransmogrifyButton_SelectedSetByStoreID(storeID)
+		StoreTransmogrifyButton_SelectedSetByStoreID(storeID, setClassID)
 	end
 end
 
@@ -914,7 +940,6 @@ end
 function StoreTransmogrifyGenerateData( isFiltered )
 	local index = 1
 	storeTransmogrifySetsData = {}
-	storeTransmogrifySourceDataByStoreID = {}
 	storeTransmogrifyNewWeaponTypes = {}
 
 	if STORE_TRANSMOGRIFY_SETS_DATA[selectedSubCategoryID] then
@@ -931,7 +956,6 @@ function StoreTransmogrifyGenerateData( isFiltered )
 				end
 			end
 
-			storeTransmogrifySourceDataByStoreID[storeID] = data
 			if StoreTransmogrifyValidation(data) and StoreTransmogrifySearchValidation(data) then
 				storeTransmogrifySetsData[index] = data
 				index = index + 1
@@ -4750,11 +4774,13 @@ function StoreSortButtonSearchBox_ShowSearchPreviewResults(self)
 
 			searchPreview.IconBorder:SetAtlas("dressingroom-itemborder-"..(borderType or "gray"));
 
+			searchPreview.itemID = product.Entry
 			searchPreview.productIndex = productIndex;
 			searchPreview:Show();
 
 			lastButton = searchPreview;
 		else
+			searchPreview.itemID = nil
 			searchPreview.productIndex = nil;
 			searchPreview:Hide();
 		end
@@ -4842,6 +4868,11 @@ end
 function StoreSortButtonSearchPreviewButton_OnEnter(self)
 	local previewContainer = self:GetParent();
 	StoreSortButtonSearchBox_SetSearchPreviewSelection(previewContainer:GetParent(), self:GetID());
+
+	if self.itemID then
+		GameTooltip:SetOwner(self, "TOPLEFT")
+		GameTooltip:SetHyperlink(string.format("item:%d", self.itemID))
+	end
 end
 
 function StoreSortButtonSearchPreviewButton_OnClick(self)
@@ -4889,10 +4920,12 @@ function StoreSortButtonSearchBox_UpdateFullSearchResults()
 
 			button.IconBorder:SetAtlas("dressingroom-itemborder-"..(borderType or "gray"));
 
+			button.itemID = product.Entry
 			button.productIndex = productIndex;
 			button:Show();
 		else
 			button:Hide();
+			button.itemID = nil
 			button.productIndex = nil;
 		end
 	end
@@ -5170,16 +5203,13 @@ function StoreTransmogrifyFrameScrollButton_OnClick( self, ... )
 	StoreTransmogrifyButton_Selected(self.index)
 end
 
-function StoreTransmogrifyButton_SelectedSetByStoreID( storeID )
+function StoreTransmogrifyButton_SelectedSetByStoreID(storeID, setClassID)
 	if not storeID then
 		return
 	end
 
-	local setClassID = storeTransmogrifySourceDataByStoreID[storeID][STORE_TRANSMOGRIFY_SETS_CLASSID]
-
 	STORE_TRANSMOGRIFY_FILTER_CLASSID = setClassID
 	StoreTransmogrifyGenerateData()
-
 
 	for index, data in pairs(storeTransmogrifySetsData) do
 		if data[STORE_TRANSMOGRIFY_SETS_STOREID] == storeID then

@@ -8704,7 +8704,6 @@ CUF_SPELL_BOSS_AURA = {
     [25685] = true,
     [25725] = true,
     [25748] = true,
-    [25771] = true,
     [25812] = true,
     [25852] = true,
     [25991] = true,

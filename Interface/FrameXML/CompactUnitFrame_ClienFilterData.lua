@@ -24,14 +24,6 @@ CUF_SPELL_VISIBILITY_DATA = {
 			},
 		},
 	},
-	[465] = {
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_INCOMBAT] = {
-			flag = 0,
-		},
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_OUTOFCOMBAT] = {
-			flag = 1,
-		},
-	},
 	[702] = {
 		[CUF_SPELL_VISIBILITY_TYPES.ENEMY_TARGET] = {
 			flag = 1,
@@ -87,22 +79,6 @@ CUF_SPELL_VISIBILITY_DATA = {
 			},
 		},
 	},
-	[2895] = {
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_INCOMBAT] = {
-			flag = 0,
-		},
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_OUTOFCOMBAT] = {
-			flag = 1,
-		},
-	},
-	[5677] = {
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_INCOMBAT] = {
-			flag = 0,
-		},
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_OUTOFCOMBAT] = {
-			flag = 1,
-		},
-	},
 	[6343] = {
 		[CUF_SPELL_VISIBILITY_TYPES.ENEMY_TARGET] = {
 			flag = 1,
@@ -120,14 +96,6 @@ CUF_SPELL_VISIBILITY_DATA = {
 					[2] = true,
 				},
 			},
-		},
-	},
-	[7294] = {
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_INCOMBAT] = {
-			flag = 0,
-		},
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_OUTOFCOMBAT] = {
-			flag = 1,
 		},
 	},
 	[8042] = {
@@ -157,25 +125,9 @@ CUF_SPELL_VISIBILITY_DATA = {
 			flag = 1,
 		},
 	},
-	[8076] = {
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_INCOMBAT] = {
-			flag = 0,
-		},
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_OUTOFCOMBAT] = {
-			flag = 1,
-		},
-	},
 	[8185] = {
 		[CUF_SPELL_VISIBILITY_TYPES.RAID_INCOMBAT] = {
 			flag = 0,
-		},
-	},
-	[8515] = {
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_INCOMBAT] = {
-			flag = 0,
-		},
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_OUTOFCOMBAT] = {
-			flag = 1,
 		},
 	},
 	[8647] = {
@@ -214,22 +166,6 @@ CUF_SPELL_VISIBILITY_DATA = {
 					[2] = true,
 				},
 			},
-		},
-	},
-	[19746] = {
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_INCOMBAT] = {
-			flag = 0,
-		},
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_OUTOFCOMBAT] = {
-			flag = 1,
-		},
-	},
-	[19891] = {
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_INCOMBAT] = {
-			flag = 0,
-		},
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_OUTOFCOMBAT] = {
-			flag = 1,
 		},
 	},
 	[24423] = {
@@ -300,14 +236,6 @@ CUF_SPELL_VISIBILITY_DATA = {
 					[2] = true,
 				},
 			},
-		},
-	},
-	[32223] = {
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_INCOMBAT] = {
-			flag = 0,
-		},
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_OUTOFCOMBAT] = {
-			flag = 1,
 		},
 	},
 	[33876] = {
@@ -445,14 +373,6 @@ CUF_SPELL_VISIBILITY_DATA = {
 					[2] = true,
 				},
 			},
-		},
-	},
-	[52109] = {
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_INCOMBAT] = {
-			flag = 0,
-		},
-		[CUF_SPELL_VISIBILITY_TYPES.RAID_OUTOFCOMBAT] = {
-			flag = 1,
 		},
 	},
 	[54404] = {

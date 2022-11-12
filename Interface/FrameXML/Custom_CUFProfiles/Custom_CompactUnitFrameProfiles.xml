@@ -188,9 +188,28 @@
 					</OnClick>
 				</Scripts>
 			</Button>
+			<CheckButton name="$parentHidePartyInterfaceInRaid" parentKey="hidePartyInterfaceInRaid" inherits="InterfaceOptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPRIGHT" x="-300" y="-10"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX;
+						self.cvar = "C_CVAR_HIDE_PARTY_INTERFACE_IN_RAID";
+						self.setFunc = function(value)
+							RaidOptionsFrame_UpdatePartyFrames()
+						end;
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
+						self:RegisterEvent("VARIABLES_LOADED");
+					</OnLoad>
+					<OnEvent>
+						self.setFunc(GetCVar(self.cvar));
+					</OnEvent>
+				</Scripts>
+			</CheckButton>
 			<CheckButton name="$parentRaidStylePartyFrames" parentKey="raidStylePartyFrames" inherits="InterfaceOptionsCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPRIGHT" x="-300" y="-8"/>
+					<Anchor point="TOPLEFT" relativeTo="$parentHidePartyInterfaceInRaid" relativePoint="BOTTOMLEFT" x="0" y="-12"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -228,25 +247,6 @@
 						self.cvar = "C_CVAR_USE_COMPACT_SOLO_FRAMES";
 						self.setFunc = function(value)
 							CompactRaidFrameManager_UpdateShown(CompactRaidFrameManager);
-						end;
-						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
-						self:RegisterEvent("VARIABLES_LOADED");
-					</OnLoad>
-					<OnEvent>
-						self.setFunc(GetCVar(self.cvar));
-					</OnEvent>
-				</Scripts>
-			</CheckButton>
-			<CheckButton name="$parentHidePartyInterfaceInRaid" parentKey="hidePartyInterfaceInRaid" inherits="InterfaceOptionsCheckButtonTemplate">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentRaidStyleSoloFrames" relativePoint="BOTTOMLEFT" x="0" y="-5"/>
-				</Anchors>
-				<Scripts>
-					<OnLoad>
-						self.type = CONTROLTYPE_CHECKBOX;
-						self.cvar = "C_CVAR_HIDE_PARTY_INTERFACE_IN_RAID";
-						self.setFunc = function(value)
-							RaidOptionsFrame_UpdatePartyFrames()
 						end;
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
 						self:RegisterEvent("VARIABLES_LOADED");

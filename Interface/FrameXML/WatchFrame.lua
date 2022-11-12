@@ -34,7 +34,7 @@ WATCHFRAME_ACHIEVEMENTLINES = {};
 WATCHFRAME_QUESTLINES = {};
 WATCHFRAME_LINKBUTTONS = {};
 local WATCHFRAME_SETLINES = { };			-- buffer to hold lines for a quest/achievement that will be displayed only if there is room
-local WATCHFRAME_SETLINES_NUMLINES;		-- the number of visual lines to be rendered for the buffered data - used just for item wrapping right now
+local WATCHFRAME_SETLINES_NUMLINES = 0;		-- the number of visual lines to be rendered for the buffered data - used just for item wrapping right now
 
 CURRENT_MAP_QUESTS = { };
 LOCAL_MAP_QUESTS = { };
@@ -1283,11 +1283,13 @@ end
 function WatchFrameItem_UpdateCooldown (self)
 	local itemCooldown = _G[self:GetName().."Cooldown"];
 	local start, duration, enable = GetQuestLogSpecialItemCooldown(self:GetID());
-	CooldownFrame_SetTimer(itemCooldown, start, duration, enable);
-	if ( duration > 0 and enable == 0 ) then
-		SetItemButtonTextureVertexColor(self, 0.4, 0.4, 0.4);
-	else
-		SetItemButtonTextureVertexColor(self, 1, 1, 1);
+	if ( start ) then
+		CooldownFrame_SetTimer(itemCooldown, start, duration, enable);
+		if ( duration > 0 and enable == 0 ) then
+			SetItemButtonTextureVertexColor(self, 0.4, 0.4, 0.4);
+		else
+			SetItemButtonTextureVertexColor(self, 1, 1, 1);
+		end
 	end
 end
 

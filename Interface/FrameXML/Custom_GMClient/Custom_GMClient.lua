@@ -8,8 +8,19 @@ GMClientMixIn = {}
 
 GMClientMixIn.accountData = {}
 GMClientMixIn.accountDataByName = {}
-
 GMClientMixIn.muteHistoryData = {}
+
+local function createResultHandler(command)
+	return function(msgData)
+		if type(msgData) == "table" then
+			print(string.format("|cffffd000[GMTools]: (%s) %s|r", command, msgData[1] or "null"))
+
+			for i = 2, #msgData do
+				print(string.format("|cffffd000%s|r", msgData[i]))
+			end
+		end
+	end
+end
 
 function GMClientMixIn:ShowMuteWindow( playerName )
 	GMClientMixIn:RequestPlayerInfoByName(playerName, function()
@@ -19,7 +30,7 @@ function GMClientMixIn:ShowMuteWindow( playerName )
 end
 
 function GMClientMixIn:RequestMuteHistory( accountLogin, callback )
-	TrinityCoreMixIn:SendCommand("muteh "..accountLogin, function( data )
+	TrinityCoreMixIn:SendCommand(string.format("muteh %s", accountLogin), function(data)
 		GMClientMixIn:MuteHistoryHandler( data )
 
 		if callback then
@@ -62,7 +73,7 @@ function GMClientMixIn:PDumpCharacterCallback(playerName, unitAccountData)
 		local isUTF8Name = lenPlayerName ~= string.len(playerName);
 		local newPlayerName = lenPlayerName > 10 and utf8sub(playerName, 1, 10) or playerName;
 
-		SendChatMessage(string.format(".pdump copy %s %s %s", playerName, unitAccountData.accountLogin, (newPlayerName .. (isUTF8Name and "пд" or "pd"))), "WHISPER", nil, unitName);
+		TrinityCoreMixIn:SendCommand(string.format("pdump copy %s %s %s", playerName, unitAccountData.accountLogin, (newPlayerName .. (isUTF8Name and "пд" or "pd"))), createResultHandler("pdump"));
 	end
 end
 
@@ -262,13 +273,13 @@ function GMClient_MuteButton_OnClick( self, ... )
 	local time = GMClient_MuteFrame.TopInset.Container.TimeEditBox:GetText() ~= "" and GMClient_MuteFrame.TopInset.Container.TimeEditBox:GetText() or GMClient_MuteFrame.TopInset.Container.TimeEditBox.Instructions:GetText()
 	local playerName = GMClient_MuteFrame.playerName
 
-	TrinityCoreMixIn:SendCommand(string.format("mute %s %d %s", playerName, time, reason))
+	TrinityCoreMixIn:SendCommand(string.format("mute %s %d %s", playerName, time, reason), createResultHandler("mute"))
 end
 
 function GMClient_UnMuteButton_OnClick( self, ... )
 	local playerName = GMClient_MuteFrame.playerName
 
-	TrinityCoreMixIn:SendCommand("unmute "..playerName)
+	TrinityCoreMixIn:SendCommand(string.format("unmute %s", playerName), createResultHandler("unmute"))
 end
 
 function GMClient_UpdateMuteHistoryList()
@@ -334,5 +345,5 @@ function GMClient_BanFrame_BanButton_OnClick( self, ... )
 		banTime = "30d"
 	end
 
-	TrinityCoreMixIn:SendCommand(string.format("ban plaeraccount %s %s %d %s", self:GetParent():GetParent().playerName, banTime, unBannedPrice, reason))
+	TrinityCoreMixIn:SendCommand(string.format("ban playeraccount %s %s %d %s", self:GetParent():GetParent().playerName, banTime, unBannedPrice, reason), createResultHandler("ban playeraccount"))
 end

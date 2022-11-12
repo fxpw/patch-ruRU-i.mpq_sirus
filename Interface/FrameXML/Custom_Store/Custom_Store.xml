@@ -526,6 +526,7 @@
 		<Scripts>
 			<OnLoad function="StoreSortButtonSearchPreviewButton_OnLoad"/>
 			<OnEnter function="StoreSortButtonSearchPreviewButton_OnEnter"/>
+			<OnLeave function="GameTooltip_Hide"/>
 			<OnClick function="StoreSortButtonSearchPreviewButton_OnClick"/>
 		</Scripts>
 	</Button>
@@ -569,6 +570,13 @@
 				self.NormalTexture:SetDrawLayer("BACKGROUND");
 				self.PushedTexture:SetDrawLayer("BACKGROUND");
 			</OnLoad>
+			<OnEnter>
+				if self.itemID then
+					GameTooltip:SetOwner(self, "TOPLEFT")
+					GameTooltip:SetHyperlink(string.format("item:%d", self.itemID))
+				end
+			</OnEnter>
+			<OnLeave function="GameTooltip_Hide"/>
 			<OnClick>
 				if self.productIndex then
 					MountJournal_UpdateScrollPos(StoreItemListScrollFrame, self.productIndex);

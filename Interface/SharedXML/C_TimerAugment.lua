@@ -60,7 +60,11 @@ end
 function TickerPrototype:Cancel()
     self._cancelled = true
 end
- 
+
+function TickerPrototype:IsCancelled()
+	return self._cancelled;
+end
+
 function AddDelayedCall(delay, func)
     tinsert(waitTable,{delay,func})
 end

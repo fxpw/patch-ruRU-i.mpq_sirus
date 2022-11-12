@@ -1120,7 +1120,7 @@
 							</OnLoad>
 							<OnClick function="CharSelectChangeListState_OnClick" />
 							<OnEnter>
-								if self:IsEnabled() ~= 1 then
+								if self:IsEnabled() ~= 1 and not CharSelectServicesFlowFrame:IsShown() then
 									GlueTooltip_SetOwner(self, GlueTooltip, 0, -10, "TOP", "BOTTOM")
 									GlueTooltip_SetText(CHARACTER_UNDELETE_NOT_CHARACTER)
 								end

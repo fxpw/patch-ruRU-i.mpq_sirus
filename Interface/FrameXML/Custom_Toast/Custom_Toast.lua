@@ -262,7 +262,55 @@ local TOAST_MESSAGE_DATA = {
 	TITLE_PARAMS_COUNT	= 5,
 }
 
-local TOAST_ICON_SOUND_ID = {
+local TOAST_FACTION_ICON = {
+	[19] = true,
+}
+
+local TOAST_TYPE_ICONS = {
+	[1] = "wow_token01",
+	[2] = "wow_token02",
+	[3] = "warrior_skullbanner",
+	[4] = "battlepas_64x64",
+	[5] = "spell_deathknight_classicon",
+	[6] = "inv_misc_coin_01",
+	[7] = "inv_belt_mail_vrykuldragonrider_b_01",
+	[8] = "ability_rogue_disguise",
+	[9] = "spell_nature_web",
+	[10] = "achievement_bg_defendxtowers_av",
+	[11] = "ability_warlock_demonicpower",
+	[12] = "achievement_dungeon_icecrown_icecrownentrance",
+	[13] = "achievement_featsofstrength_gladiator_08",
+	[14] = "achievement_featsofstrength_gladiator_09",
+	[15] = "achievement_dungeon_auchindoun",
+	[16] = "achievement_zone_zangarmarsh",
+	[17] = "achievement_zone_hellfirepeninsula_01",
+	[18] = "achievement_zone_easternplaguelands",
+	[19] = "pvpcurrency-honor-"
+}
+
+local TOAST_ICON_ID = {
+	[1] = 1,
+	[2] = 2,
+	[3] = 3, [4] = 3, [5] = 3, [6] = 3, [7] = 3, [8] = 3, [9] = 3, [10] = 3, [11] = 3, [12] = 3, [13] = 3,
+	[14] = 4, [15] = 4, [16] = 4, [17] = 4,
+	[18] = 5,
+	[21] = 6, [22] = 6, [23] = 6,
+	[24] = 7, [25] = 7,
+	[26] = 8,
+	[27] = 9,
+	[28] = 10, [29] = 10, [30] = 10,
+	[31] = 11, [32] = 11, [33] = 11,
+	[34] = 12, [35] = 12, [36] = 12,
+	[37] = 13, [38] = 13, [39] = 13, [55] = 13,
+	[40] = 14, [41] = 14, [42] = 14, [56] = 14,
+	[43] = 15, [44] = 15, [45] = 15,
+	[46] = 16, [47] = 16, [48] = 16,
+	[49] = 17, [50] = 17, [51] = 17,
+	[52] = 18, [53] = 18, [54] = 18,
+	[57] = 19,
+}
+
+local TOAST_TITLE_ID = {
 	[28] = 28, [29] = 28, [30] = 28,
 	[31] = 29, [32] = 29, [33] = 29,
 	[34] = 30, [35] = 30, [36] = 30,
@@ -315,20 +363,21 @@ function SocialToastSystemMixin:ASMSG_TOAST( msg )
         end
     end
 
-    iconSource = tonumber(iconSource) or iconSource
-
-	local typeID = TOAST_ICON_SOUND_ID[toastID] or toastID
+	local iconID = TOAST_ICON_ID[toastID] or toastID
+	local typeID = TOAST_TITLE_ID[toastID] or toastID
 	local textID = TOAST_TEXT_ID[toastID] or toastID
 
-    if iconSource == 0 then
-		local icon = TOAST_TYPE_ICONS[typeID]
-
-        if icon then
-            iconSource = icon
-        else
-            iconSource = "INV_Misc_QuestionMark"
-        end
-    end
+	if iconSource == "0" then
+		if TOAST_TYPE_ICONS[iconID] then
+			if TOAST_FACTION_ICON[iconID] then
+				iconSource = strconcat(TOAST_TYPE_ICONS[iconID], (UnitFactionGroup("player")))
+			else
+				iconSource = TOAST_TYPE_ICONS[iconID]
+			end
+		else
+			iconSource = "INV_Misc_QuestionMark"
+		end
+	end
 
     local titleTextParams = {}
 

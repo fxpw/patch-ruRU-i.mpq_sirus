@@ -4624,7 +4624,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL4_DESC"] = {
-		ruRU = "Ночнорожденные используют магическую силу в том числе и для самозащиты, создавая защитный покров из чар, служащий \"второй кожей\". Показатель брони увеличен на 3%, а получаемый магический урон снижен на 1%.",
+		ruRU = "Ночнорожденные используют магическую силу в том числе и для самозащиты, создавая защитный покров из чар, служащий \"второй кожей\". Показатель брони увеличен на 5%, а получаемый магический урон снижен на 1%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL5_DESC"] = {
@@ -5422,7 +5422,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_PASSIVE4_DESC_SHORT"] = {
-		ruRU = "spell_arcane_prismaticcloak|Показатель брони увеличен на 3%, а получаемый магический урон снижен на 1%.",
+		ruRU = "spell_arcane_prismaticcloak|Показатель брони увеличен на 5%, а получаемый магический урон снижен на 1%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_ACTIVE1_DESC_SHORT"] = {
@@ -5438,7 +5438,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL_PASSIVE2_DESC_SHORT"] = {
-		ruRU = "passive_eredar_gift|При смерти вы наносите ближайшим противникам урон от огня и повышаете наносимый участниками группы урон на 5% сроком на 10 сек.",
+		ruRU = "passive_eredar_gift|Шанс нанести критический удар способностями ближнего и дальнего боя увеличен на 2%, а скорость произнесения заклинаний - на 2%.",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL_PASSIVE3_DESC_SHORT"] = {
@@ -5498,7 +5498,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL_ACTIVE2_DESC_SHORT"] = {
-		ruRU = "ability_monk_sparring|Усиливает следующие 5 ваших атак, нанося дополнительный урон способностью \"Искусный удар\", равный 40% от силы атаки.\nПерезарядка: 60 секунд",
+		ruRU = "ability_monk_sparring|Усиливает следующие 5 ваших атак или способностей ближнего/дальнего боя, нанося урон способностью \"Искусный удар\", равный 40% от силы атаки.\nПерезарядка: 60 секунд",
 		enGB = "",
 	},
 	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL_ACTIVE3_DESC_SHORT"] = {

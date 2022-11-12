@@ -1281,7 +1281,6 @@ function SpellBookFrame_Update(showing)
 	SpellBookSpellIconsFrame:Hide()
 	-- SpellBookSpellIconsFrame:SetShown(SpellBookFrame.bookType == BOOKTYPE_SPELL or SpellBookFrame.bookType == BOOKTYPE_PET)
 	SpellBookSideTabsFrame:SetShown(SpellBookFrame.bookType == BOOKTYPE_SPELL or SpellBookFrame.bookType == BOOKTYPE_PET)
-	ShowAllSpellRanksCheckBox:SetShown(SpellBookFrame.bookType == BOOKTYPE_SPELL or SpellBookFrame.bookType == BOOKTYPE_PET)
 
 	SpellBookCompanionsFrame:SetShown(SpellBookFrame.bookType == BOOKTYPE_MOUNT or SpellBookFrame.bookType == BOOKTYPE_COMPANION)
 
@@ -1403,6 +1402,16 @@ function SpellBookFrame_UpdatePages()
 		SpellBookNextPageButton:Enable();
 	end
 	SpellBookPageText:SetFormattedText(PAGE_NUMBER, currentPage);
+
+	-- Hide spell rank checkbox if the player is a rogue or warrior
+	local showSpellRanks
+	if SpellBookFrame.bookType == BOOKTYPE_SPELL then
+		local _, class = UnitClass("player")
+		if class ~= "ROGUE" and class ~= "WARRIOR" then
+			showSpellRanks = true
+		end
+	end
+	ShowAllSpellRanksCheckBox:SetShown(showSpellRanks)
 end
 
 function SpellBookFrame_SetTabType(tabButton, bookType, token)

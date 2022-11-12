@@ -10,6 +10,7 @@ local GetItemInfo = GetItemInfo
 
 local itemCacheQueue = {}
 
+local itemQualityHexes = {}
 local itemClassMap = {}
 local itemSubClassMap = {}
 local itemInvTypeToID = {
@@ -151,19 +152,14 @@ function C_Item.GetItemInfoCache(item)
 	local cacheData = ItemsCache[item]
 	if cacheData then
 		local itemName		= cacheData[C_Item.GetLocaleIndex()]
-		local itemRarity 	= cacheData[E_ITEM_INFO.RARITY]
+		local itemRarity	= cacheData[E_ITEM_INFO.RARITY]
 		local itemMinLevel	= cacheData[E_ITEM_INFO.MINLEVEL]
 		local classID		= cacheData[E_ITEM_INFO.TYPE]
 		local subclassID	= cacheData[E_ITEM_INFO.SUBTYPE]
 		local equipLocID	= cacheData[E_ITEM_INFO.EQUIPLOC]
 
 		if not cacheData.link then
-			local r, g, b = GetItemQualityColor(itemRarity)
-			if r and g and b then
-				cacheData.link = strformat("|cff%.2x%.2x%.2x|Hitem:%d:0:0:0:0:0:0:0:%d|h[%s]|h|r", r * 255, g * 255, b * 255, cacheData.itemID, itemMinLevel, itemName)
-			else
-				cacheData.link = strformat("|Hitem:%d:0:0:0:0:0:0:0:%d|h[%s]|h", cacheData.itemID, itemMinLevel, itemName)
-			end
+			cacheData.link = strformat("|c%s|Hitem:%d:0:0:0:0:0:0:0:%d|h[%s]|h|r", itemQualityHexes[itemRarity] or "ffffffff", cacheData.itemID, itemMinLevel, itemName)
 		end
 
 		return itemName,
@@ -172,7 +168,7 @@ function C_Item.GetItemInfoCache(item)
 			cacheData[E_ITEM_INFO.ILEVEL],
 			itemMinLevel,
 			_G["ITEM_CLASS_"..classID],
-			_G["ITEM_SUB_CLASS_" .. classID .. "_"  .. subclassID],
+			_G["ITEM_SUB_CLASS_" .. classID .. "_" .. subclassID],
 			cacheData[E_ITEM_INFO.STACKCOUNT],
 			SHARED_INVTYPE_BY_ID[equipLocID],
 			"Interface\\Icons\\"..cacheData[E_ITEM_INFO.TEXTURE],
@@ -218,7 +214,7 @@ function C_Item.GetItemInfo(item, skipClientCache, callback, noAdditionalData, n
 			itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice = GetItemInfo(item)
 		end
 
-		if not itemName and (not skipClientCache and GetServerID() ~= REALM_ID_SIRUS)then
+		if not itemName and not skipClientCache and GetServerID() ~= REALM_ID_SIRUS then
 			itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice, itemID, classID, subClassID, equipLocID = C_Item.GetItemInfoCache(item)
 		end
 	end
@@ -272,18 +268,23 @@ function C_Item.GetItemEquipLocID(itemEquipLoc)
 end
 
 do
+	for i = 0, 7 do
+		local _, _, _, hex = GetItemQualityColor(i)
+		itemQualityHexes[i] = hex:sub(3)
+	end
+
 	local classID = 0
 	local className = _G["ITEM_CLASS_" .. classID]
 	while className do
 		itemClassMap[className] = classID
 
 		local subclassID = 0
-		local subclassName = _G["ITEM_SUB_CLASS_" .. classID .. "_"  .. subclassID]
+		local subclassName = _G["ITEM_SUB_CLASS_" .. classID .. "_" .. subclassID]
 		while subclassName do
 			itemSubClassMap[subclassName] = subclassID
 
 			subclassID = subclassID + 1
-			subclassName = _G["ITEM_SUB_CLASS_" .. classID .. "_"  .. subclassID]
+			subclassName = _G["ITEM_SUB_CLASS_" .. classID .. "_" .. subclassID]
 		end
 
 		classID = classID + 1
