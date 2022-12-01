@@ -273,7 +273,7 @@
 							</Anchors>
 						</Texture>
 					</Layer>
-					<Layer level="OVERLAY" textureSubLevel="1">
+					<Layer level="OVERLAY">
 						<Texture name="$parentEmblem" parentKey="emblem" file="Interface\GuildFrame\GuildEmblems_01">
 							<Size x="16" y="16"/>
 							<Anchors>
@@ -381,7 +381,6 @@
 			<OnEvent>
 				self.tooltipText = MicroButtonTooltipText(LFG_TITLE, "TOGGLELFGPARENT")
 				self.newbieText = LFD_MICROBUTTON_TOOLTIP
-				self.minLevel = 10
 			</OnEvent>
 			<OnClick>
 				ToggleLFDParentFrame()

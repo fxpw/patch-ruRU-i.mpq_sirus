@@ -2,6 +2,7 @@ TOOLTIP_UPDATE_TIME = 0.2;
 ROTATIONS_PER_SECOND = .5;
 
 local ClearTarget = ClearTarget
+local TRACKED_CVARS = TRACKED_CVARS
 
 GUILD_INVITE_REQUEST_TEXT = nil
 
@@ -588,6 +589,15 @@ function UIParent_OnEvent(self, event, ...)
 		-- You can override this if you want a Combat Log replacement
 		CombatLog_LoadUI();
 		SendServerMessage("ACMSG_EVENT_PLAYER_LOGON")
+
+		do
+			local msg = {}
+			for index, cvar in ipairs(TRACKED_CVARS) do
+				msg[#msg + 1] = string.format("%i:%s", index, tostring(GetCVar(cvar) or 0))
+			end
+
+			SendServerMessage("ACMSG_I_S", table.concat(msg, "|"))
+		end
 	elseif ( event == "PLAYER_DEAD" ) then
 		if ( not StaticPopup_Visible("DEATH") ) then
 			CloseAllWindows(1);
@@ -1233,7 +1243,7 @@ function UIParent_UpdateTopFramePositions()
 
 	if PlayerFrame and not PlayerFrame:IsUserPlaced() and not PlayerFrame_IsAnimatedOut(PlayerFrame) then
 		if PlayerFrame.state ~= "vehicle" then
-			local classificationInfo = C_UnitMixin:GetClassification("player")
+			local classificationInfo = C_Unit.GetClassification("player")
 
 			if classificationInfo.vipCategory == 1 then
 				playerLeftOffset = playerLeftOffset + 4

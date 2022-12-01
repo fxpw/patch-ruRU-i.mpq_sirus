@@ -1230,7 +1230,7 @@ function WorldStateScoreFrame_Update( needSleep )
 end
 
 function WorldStateScoreFrame_UpdateFactionGroup()
-	local factionGroup = C_FactionManager:GetFactionOverride()
+	local factionGroup = C_FactionManager.GetFactionOverride()
 
 	if factionGroup and (factionGroup == 0 or factionGroup == 1) then
 		local factionName =  _G["BATTLEGROUND_CROSS_FACTION_"..factionGroup]

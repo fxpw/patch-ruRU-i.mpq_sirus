@@ -1,9 +1,3 @@
---	Filename:	Sirus_MountCollection.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 local mountTypeStrings = {
 	[1] = MOUNT_GROUND,
 	[2] = MOUNT_FLY,
@@ -31,451 +25,6 @@ local categoryData = {
 		collapsed = false,
 		isCategory = true,
 		icon = "Interface\\ICONS\\INV_Misc_SkullRed_02",
-	},
-	{
-		text = ANIMALS,
-		id = 1,
-		parent = nil,
-		collapsed = false,
-		isCategory = true,
-		icon = "Interface\\ICONS\\INV_Misc_SkullRed_03",
-	},
-	{
-		sortID = 1,
-		hidden = true,
-		parent = 1,
-		text = TURTLES,
-		count = 0
-	},
-	{
-		sortID = 4,
-		hidden = true,
-		parent = 1,
-		text = WOLVES,
-		count = 0
-	},
-	{
-		sortID = 5,
-		hidden = true,
-		parent = 1,
-		text = HORSES,
-		count = 0
-	},
-	{
-		sortID = 6,
-		hidden = true,
-		parent = 1,
-		text = RAMS,
-		count = 0
-	},
-	{
-		sortID = 8,
-		hidden = true,
-		parent = 1,
-		text = PANGOLINS,
-		count = 0
-	},
-	{
-		sortID = 9,
-		hidden = true,
-		parent = 1,
-		text = PANTHERS,
-		count = 0
-	},
-	{
-		sortID = 10,
-		hidden = true,
-		parent = 1,
-		text = KODO,
-		count = 0
-	},
-	{
-		sortID = 11,
-		hidden = true,
-		parent = 1,
-		text = GRIFFINS,
-		count = 0
-	},
-	{
-		sortID = 12,
-		hidden = true,
-		parent = 1,
-		text = WYVERNS,
-		count = 0
-	},
-	{
-		sortID = 13,
-		hidden = true,
-		parent = 1,
-		text = TIGERS,
-		count = 0
-	},
-	{
-		sortID = 15,
-		hidden = true,
-		parent = 1,
-		text = ELEKKI,
-		count = 0
-	},
-	{
-		sortID = 16,
-		hidden = true,
-		parent = 1,
-		text = TALBUKS,
-		count = 0
-	},
-	{
-		sortID = 17,
-		hidden = true,
-		parent = 1,
-		text = WINGBOOTS,
-		count = 0
-	},
-	{
-		sortID = 18,
-		hidden = true,
-		parent = 1,
-		text = BEARS,
-		count = 0
-	},
-	{
-		sortID = 19,
-		hidden = true,
-		parent = 1,
-		text = HIPPOGRIFFS,
-		count = 0
-	},
-	{
-		sortID = 20,
-		hidden = true,
-		parent = 1,
-		text = MAMMOTHS,
-		count = 0
-	},
-	{
-		sortID = 21,
-		hidden = true,
-		parent = 1,
-		text = DRACONDERS,
-		count = 0
-	},
-	{
-		sortID = 23,
-		hidden = true,
-		parent = 1,
-		text = YAKI,
-		count = 0
-	},
-	{
-		sortID = 24,
-		hidden = true,
-		parent = 1,
-		text = WATER_STRIDERS,
-		count = 0
-	},
-	{
-		sortID = 25,
-		hidden = true,
-		parent = 1,
-		text = SCORPIONS,
-		count = 0
-	},
-	{
-		sortID = 26,
-		hidden = true,
-		parent = 1,
-		text = CRANES,
-		count = 0
-	},
-	{
-		sortID = 27,
-		hidden = true,
-		parent = 1,
-		text = GOATS,
-		count = 0
-	},
-	{
-		sortID = 28,
-		hidden = true,
-		parent = 1,
-		text = THE_WILD,
-		count = 0
-	},
-	{
-		sortID = 31,
-		hidden = true,
-		parent = 1,
-		text = DEER,
-		count = 0
-	},
-	{
-		sortID = 33,
-		hidden = true,
-		parent = 1,
-		text = WINDHORNS,
-		count = 0
-	},
-	{
-		sortID = 34,
-		hidden = true,
-		parent = 1,
-		text = SCREAMERS,
-		count = 0
-	},
-	{
-		sortID = 35,
-		hidden = true,
-		parent = 1,
-		text = WILD_BOARS,
-		count = 0
-	},
-	{
-		sortID = 40,
-		hidden = true,
-		parent = 1,
-		text = TSIILINI,
-		count = 0
-	},
-	{
-		sortID = 43,
-		hidden = true,
-		parent = 1,
-		text = BONE_PREDATORS,
-		count = 0
-	},
-	{
-		sortID = 44,
-		hidden = true,
-		parent = 1,
-		text = GRONNS,
-		count = 0
-	},
-	{
-		sortID = 45,
-		hidden = true,
-		parent = 1,
-		text = YETI,
-		count = 0
-	},
-	{
-		sortID = 46,
-		hidden = true,
-		parent = 1,
-		text = FOXES,
-		count = 0
-	},
-	{
-		sortID = 47,
-		hidden = true,
-		parent = 1,
-		text = RATS,
-		count = 0
-	},
-	{
-		sortID = 48,
-		hidden = true,
-		parent = 1,
-		text = INHABITANTS_OF_THE_DEPTHS,
-		count = 0
-	},
-	{
-		sortID = 51,
-		hidden = true,
-		parent = 1,
-		text = LIONS,
-		count = 0
-	},
-	{
-		sortID = 52,
-		hidden = true,
-		parent = 1,
-		text = RIVER_MONSTERS,
-		count = 0
-	},
-	{
-		sortID = 55,
-		hidden = true,
-		parent = 1,
-		text = UNGULATES,
-		count = 0
-	},
-	{
-		sortID = 56,
-		hidden = true,
-		parent = 1,
-		text = MUSHANS,
-		count = 0
-	},
-	{
-		sortID = 57,
-		hidden = true,
-		parent = 1,
-		text = SPIDERS,
-		count = 0
-	},
-	{
-		text = CREATURES,
-		id = 2,
-		parent = nil,
-		collapsed = false,
-		isCategory = true,
-		icon = "Interface\\ICONS\\INV_Misc_SkullRed_04",
-	},
-	{
-		sortID = 14,
-		hidden = true,
-		parent = 2,
-		text = INSECTS,
-		count = 0
-	},
-	{
-		text = MECHANICAL,
-		id = 3,
-		parent = nil,
-		collapsed = false,
-		isCategory = true,
-		icon = "Interface\\ICONS\\INV_Misc_SkullRed_05",
-	},
-	{
-		sortID = 7,
-		hidden = true,
-		parent = 3,
-		text = MECHANOSTRIDERS,
-		count = 0
-	},
-	{
-		sortID = 36,
-		hidden = true,
-		parent = 3,
-		text = ANNIHILATORS,
-		count = 0
-	},
-	{
-		sortID = 37,
-		hidden = true,
-		parent = 3,
-		text = SHREDDERS,
-		count = 0
-	},
-	{
-		sortID = 38,
-		hidden = true,
-		parent = 3,
-		text = ROCKETS,
-		count = 0
-	},
-	{
-		sortID = 50,
-		hidden = true,
-		parent = 3,
-		text = TRICYCLES,
-		count = 0
-	},
-	{
-		sortID = 53,
-		hidden = true,
-		parent = 3,
-		text = MEGACYCLES,
-		count = 0
-	},
-	{
-		sortID = 58,
-		hidden = true,
-		parent = 3,
-		text = OTHER,
-		count = 0
-	},
-	{
-		text = MAGICAL,
-		id = 4,
-		parent = nil,
-		collapsed = false,
-		isCategory = true,
-		icon = "Interface\\ICONS\\INV_Misc_SkullRed_06",
-	},
-	{
-		sortID = 2,
-		hidden = true,
-		parent = 4,
-		text = DRAGONS,
-		count = 0
-	},
-	{
-		sortID = 3,
-		hidden = true,
-		parent = 4,
-		text = PROTO_DRAGONS,
-		count = 0
-	},
-	{
-		sortID = 22,
-		hidden = true,
-		parent = 4,
-		text = CLOUD_SNAKES,
-		count = 0
-	},
-	{
-		sortID = 29,
-		hidden = true,
-		parent = 4,
-		text = SLOPES_OF_THE_VOID,
-		count = 0
-	},
-	{
-		sortID = 30,
-		hidden = true,
-		parent = 4,
-		text = WINGS_OF_NIGHT,
-		count = 0
-	},
-	{
-		sortID = 32,
-		hidden = true,
-		parent = 4,
-		text = PHOENIXES,
-		count = 0
-	},
-	{
-		sortID = 39,
-		hidden = true,
-		parent = 4,
-		text = KITES,
-		count = 0
-	},
-	{
-		sortID = 41,
-		hidden = true,
-		parent = 4,
-		text = CROWS,
-		count = 0
-	},
-	{
-		sortID = 42,
-		hidden = true,
-		parent = 4,
-		text = CARPETS,
-		count = 0
-	},
-	{
-		sortID = 49,
-		hidden = true,
-		parent = 4,
-		text = INFERNALS,
-		count = 0
-	},
-	{
-		sortID = 54,
-		hidden = true,
-		parent = 4,
-		text = FEL_CATCHERS,
-		count = 0
-	},
-	{
-		sortID = 59,
-		hidden = true,
-		parent = 4,
-		text = OTHER,
-		count = 0
 	},
 	{
 		text = ALL_MOUNTS,
@@ -508,7 +57,6 @@ local MOUNTJOURNAL_FILTER_COLLECTED;
 local MOUNTJOURNAL_FILTER_NOT_COLLECTED;
 local MOUNTJOURNAL_FILTER_TYPES = {};
 local MOUNTJOURNAL_FILTER_SOURCES = 0;
-local MOUNTJOURNAL_FILTER_EXPANSIONS = {};
 local MOUNTJOURNAL_FILTER_FACTIONS = {};
 
 local function keyConcat( a, b )
@@ -558,7 +106,7 @@ end
 function MountJournal_OnEvent( self, event, arg1, ... )
 	if event == "PLAYER_LOGIN" then
 		MountJournal_CreateData()
-	elseif event == "COMPANION_UPDATE" and arg1 == "MOUNT" or event == "COMPANION_LEARNED" or event == "COMPANION_UNLEARNED" then
+	elseif (event == "COMPANION_UPDATE" and (not arg1 or arg1 == "MOUNT")) or event == "COMPANION_LEARNED" or event == "COMPANION_UNLEARNED" then
 		mountDataBuffer = {}
 
 		for i = 1, GetNumCompanions("MOUNT") do
@@ -584,43 +132,38 @@ function MountJournal_UpdateCollectionList()
 	local categories = categoryData
 	local element
 
-	for i in next, displayCategories do
-		displayCategories[i] = nil
-	end
+	table.wipe(displayCategories)
 
 	local selection = MountJournal.selectCategoryID
 	local parent
 
 	if selection then
-		for _, category in next, categories do
-			if category.id then
-				if category.id == selection then
-					if parent ~= category.id and MountJournal.CategoryScrollFrame:IsShown() then
-						NavBar_Reset(MountJournal.navBar)
-						-- print("NavBar_Reset category")
-						local buttonData = {
-							id = category.id,
-							name = category.text,
-							OnClick = function(self)
-								MountJournal.selectCategoryID = self.id
-								if MountJournal.ListScrollFrame:IsShown() then
-									MountJournal.ListScrollFrame:Hide()
-									MountJournal.CategoryScrollFrame:Show()
-								end
-								NavBar_Reset(MountJournal.navBar)
-								MountJournal_UpdateCollectionList()
+		for _, category in ipairs(categories) do
+			if category.id == selection then
+				if parent ~= category.id and MountJournal.CategoryScrollFrame:IsShown() then
+					NavBar_Reset(MountJournal.navBar)
+
+					local buttonData = {
+						id = category.id,
+						name = category.text,
+						OnClick = function(self)
+							MountJournal.selectCategoryID = self.id
+							if MountJournal.ListScrollFrame:IsShown() then
+								MountJournal.ListScrollFrame:Hide()
+								MountJournal.CategoryScrollFrame:Show()
 							end
-						}
-						NavBar_AddButton(MountJournal.navBar, buttonData)
-					end
-					parent = category.id
+							NavBar_Reset(MountJournal.navBar)
+							MountJournal_UpdateCollectionList()
+						end
+					}
+					NavBar_AddButton(MountJournal.navBar, buttonData)
 				end
+				parent = category.id
 			end
 		end
 	else
 		if MountJournal.CategoryScrollFrame:IsShown() then
 			NavBar_Reset(MountJournal.navBar)
-			-- print("NavBar_Reset")
 		end
 	end
 
@@ -790,7 +333,6 @@ function Categorylist_SelectButton( button )
 			name = data.text
 		}
 		NavBar_AddButton(MountJournal.navBar, buttonData)
-		-- print("NavBar_AddButton")
 
 		MountJournal.ListScrollFrame:Show()
 		MountJournal.CategoryScrollFrame:Hide()
@@ -856,7 +398,6 @@ function MountJournal_OnHide( self, ... )
 		end
 
 		CollectionsJournal.resetPositionTimer = C_Timer:After(5, function()
-			-- print("Reset OnHide timer")
 			MountJournal_SetDefaultCategory()
 
 			MountJournal.searchBox:SetText("")
@@ -873,7 +414,6 @@ function MountJournal_OnHide( self, ... )
 end
 
 function MountJournal_OnSearchTextChanged( self, ... )
-	-- print("MountJournal_OnSearchTextChanged")
 	SearchBoxTemplate_OnTextChanged( self )
 	MountJournal_UpdateFilter()
 
@@ -910,7 +450,7 @@ local SOURCE_TYPES = {
 	[17] = 10,
 };
 
-local function MountJournal_CheckFilter(data, hasHiddenType, hasHiddenSource, hasHiddenExpansion, hasHiddenFaction)
+local function MountJournal_CheckFilter(data, hasHiddenType, hasHiddenSource, hasHiddenFaction)
 	if MOUNTJOURNAL_FILTER_COLLECTED and data.mountIndex or MOUNTJOURNAL_FILTER_NOT_COLLECTED and not data.mountIndex then
 		return false;
 	end
@@ -941,48 +481,6 @@ local function MountJournal_CheckFilter(data, hasHiddenType, hasHiddenSource, ha
 
 		if bit.band(MOUNTJOURNAL_FILTER_SOURCES, sourceFlag) == sourceFlag then
 			return false;
-		end
-	end
-
-	if hasHiddenExpansion then
-		if data.expansion == 0 then
-			return false;
-		elseif bit.band(data.expansion, 1) ~= 0 then
-			if MOUNTJOURNAL_FILTER_EXPANSIONS[1] then
-				return false;
-			end
-		elseif bit.band(data.expansion, 2) ~= 0 then
-			if MOUNTJOURNAL_FILTER_EXPANSIONS[2] then
-				return false;
-			end
-		elseif bit.band(data.expansion, 4) ~= 0 then
-			if MOUNTJOURNAL_FILTER_EXPANSIONS[3] then
-				return false;
-			end
-		elseif bit.band(data.expansion, 8) ~= 0 then
-			if MOUNTJOURNAL_FILTER_EXPANSIONS[4] then
-				return false;
-			end
-		elseif bit.band(data.expansion, 16) ~= 0 then
-			if MOUNTJOURNAL_FILTER_EXPANSIONS[5] then
-				return false;
-			end
-		elseif bit.band(data.expansion, 32) ~= 0 then
-			if MOUNTJOURNAL_FILTER_EXPANSIONS[6] then
-				return false;
-			end
-		elseif bit.band(data.expansion, 64) ~= 0 then
-			if MOUNTJOURNAL_FILTER_EXPANSIONS[7] then
-				return false;
-			end
-		elseif bit.band(data.expansion, 128) ~= 0 then
-			if MOUNTJOURNAL_FILTER_EXPANSIONS[8] then
-				return false;
-			end
-		elseif bit.band(data.expansion, 256) ~= 0 then
-			if MOUNTJOURNAL_FILTER_EXPANSIONS[9] then
-				return false;
-			end
 		end
 	end
 
@@ -1026,8 +524,8 @@ local realmFilterData = {
 function MountJournal_CreateData()
 	local defaultMountData = {}
 
-	MOUNTJOURNAL_MOUNT_DATA_BY_HASH = {}
-	MOUNTJOURNAL_MOUNT_SEARCH_DATA = {}
+	table.wipe(MOUNTJOURNAL_MOUNT_DATA_BY_HASH)
+	table.wipe(MOUNTJOURNAL_MOUNT_SEARCH_DATA)
 
 	for i = 1, GetNumCompanions("MOUNT") do
 		local creatureID, creatureName, spellID, icon, active = GetCompanionInfo("MOUNT", i)
@@ -1089,11 +587,10 @@ function MountJournal_UpdateFilter(doNotUpdateScroll)
 	local sourceData = MOUNTJOURNAL_MOUNT_SEARCH_DATA
 	text = textCount > 1 and text or ""
 
-	MOUNTJOURNAL_MASTER_DATA = {}
+	table.wipe(MOUNTJOURNAL_MASTER_DATA)
 
 	local hasHiddenType = next(MOUNTJOURNAL_FILTER_TYPES);
 	local hasHiddenSource = MOUNTJOURNAL_FILTER_SOURCES ~= 0;
-	local hasHiddenExpansion = next(MOUNTJOURNAL_FILTER_EXPANSIONS);
 	local hasHiddenFaction = next(MOUNTJOURNAL_FILTER_FACTIONS);
 
 	for i = 1, #sourceData do
@@ -1111,7 +608,7 @@ function MountJournal_UpdateFilter(doNotUpdateScroll)
 			end
 		else
 			if string.find(data.name, text, 1, true) then
-				if MountJournal_CheckFilter(MOUNTJOURNAL_MOUNT_DATA_BY_HASH[data.hash], hasHiddenType, hasHiddenSource, hasHiddenExpansion, hasHiddenFaction) then
+				if MountJournal_CheckFilter(MOUNTJOURNAL_MOUNT_DATA_BY_HASH[data.hash], hasHiddenType, hasHiddenSource, hasHiddenFaction) then
 					if mountDataBuffer[keyConcat(data.creatureID, data.spellID)] then
 						local mountData = mountDataBuffer[keyConcat(data.creatureID, data.spellID)]
 						MOUNTJOURNAL_MOUNT_DATA_BY_HASH[data.hash].mountIndex = mountData.mountIndex
@@ -1124,7 +621,6 @@ function MountJournal_UpdateFilter(doNotUpdateScroll)
 		end
 	end
 
-	-- print("MountJournal_UpdateFilter")
 	if textCount > 1 and not doNotUpdateScroll then
 		MountJournal_UpdateScrollPos(MountJournalListScrollFrame, 1)
 	end
@@ -1518,7 +1014,6 @@ function MountJournalBuyButton_OnClick(_ , ... )
 	end
 
 	CollectionsJournal.resetPositionTimer = C_Timer:After(30, function()
-		-- print("Reset open store")
 		MountJournal_SetDefaultCategory()
 
 		MountJournal.searchBox:SetText("")
@@ -1618,7 +1113,6 @@ function MountJournal_SetDefaultFilters()
 	MOUNTJOURNAL_FILTER_NOT_COLLECTED = nil;
 	table.wipe(MOUNTJOURNAL_FILTER_TYPES);
 	MOUNTJOURNAL_FILTER_SOURCES = 0;
-	table.wipe(MOUNTJOURNAL_FILTER_EXPANSIONS);
 	table.wipe(MOUNTJOURNAL_FILTER_FACTIONS);
 end
 
@@ -1626,7 +1120,7 @@ function MountJournal_IsUsingDefaultFilters()
 	if MOUNTJOURNAL_FILTER_COLLECTED or MOUNTJOURNAL_FILTER_NOT_COLLECTED then
 		return false;
 	end
-	if next(MOUNTJOURNAL_FILTER_TYPES) or MOUNTJOURNAL_FILTER_SOURCES ~= 0 or next(MOUNTJOURNAL_FILTER_EXPANSIONS) or next(MOUNTJOURNAL_FILTER_FACTIONS) then
+	if next(MOUNTJOURNAL_FILTER_TYPES) or MOUNTJOURNAL_FILTER_SOURCES ~= 0 or next(MOUNTJOURNAL_FILTER_FACTIONS) then
 		return false;
 	end
 	return true;
@@ -1680,21 +1174,6 @@ function MountJournal_SetAllSourceFilters(value)
 	UIDropDownMenu_Refresh(MountJournalFilterDropDown, UIDROPDOWNMENU_MENU_VALUE, UIDROPDOWNMENU_MENU_LEVEL);
 end
 
-function MountJournal_SetExpansionTypeFilter(i, value)
-	MOUNTJOURNAL_FILTER_EXPANSIONS[i] = not value and true or nil;
-end
-
-function MountJournal_GetExpansionTypeFilter(i)
-	return not MOUNTJOURNAL_FILTER_EXPANSIONS[i];
-end
-
-function MountJournal_SetAllExpansionTypeFilters(value)
-	for i = 1, 9 do
-		MOUNTJOURNAL_FILTER_EXPANSIONS[i] = not value and true or nil;
-	end
-	UIDropDownMenu_Refresh(MountJournalFilterDropDown, UIDROPDOWNMENU_MENU_VALUE, UIDROPDOWNMENU_MENU_LEVEL);
-end
-
 function MountJournal_SetFactionFilter(i, value)
 	MOUNTJOURNAL_FILTER_FACTIONS[i] = not value and true or nil;
 end
@@ -1737,29 +1216,7 @@ function MountJournalFilterDropDown_Initialize(self, level)
 					},
 				},
 			},
-			{ type = FilterComponent.Submenu, text = EXPANSION_FILTER_TEXT, value = 2, childrenInfo = {
-					filters = {
-						{ type = FilterComponent.TextButton,
-						  text = CHECK_ALL,
-						  set = function() MountJournal_SetAllExpansionTypeFilters(true); end,
-						},
-						{ type = FilterComponent.TextButton,
-						  text = UNCHECK_ALL,
-						  set = function() MountJournal_SetAllExpansionTypeFilters(false); end,
-						},
-						{ type = FilterComponent.DynamicFilterSet,
-						  buttonType = FilterComponent.Checkbox,
-						  set = MountJournal_SetExpansionTypeFilter,
-						  isSet = MountJournal_GetExpansionTypeFilter,
-						  numFilters = function () return 9; end,
-						  globalPrepend = "EXPANSION_NAME",
-						  -- We want to list all expansions up to i-1 since the global strings for expansions are 0 - Max Expansion
-						  globalPrependOffset = -1,
-						},
-					},
-				},
-			},
-			{ type = FilterComponent.Submenu, text = FACTION, value = 3, childrenInfo = {
+			{ type = FilterComponent.Submenu, text = FACTION, value = 2, childrenInfo = {
 					filters = {
 						{ type = FilterComponent.TextButton,
 						  text = CHECK_ALL,
@@ -1830,7 +1287,7 @@ function MountColorButton_OnClick( self, ... )
 end
 
 function EventHandler:ASMSG_COLLECTION_MOUNT_IN_SHOP( msg )
-	SIRUS_MOUNTJOURNAL_PRODUCT_DATA = {}
+	table.wipe(SIRUS_MOUNTJOURNAL_PRODUCT_DATA)
 
 	if msg then
 		local blockData = {strsplit("|", msg)}

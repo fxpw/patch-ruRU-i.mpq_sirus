@@ -459,6 +459,9 @@ LIGHT_GHOST = 1;
 STATIC_CONSTANTS = {}
 RegisterStaticConstants(STATIC_CONSTANTS);
 
+-- TEXTURES
+QUESTION_MARK_ICON = "INTERFACE\\ICONS\\INV_MISC_QUESTIONMARK.BLP";
+
 -- textures for quest item overlays
 TEXTURE_ITEM_QUEST_BANG = "Interface\\ContainerFrame\\UI-Icon-QuestBang";
 TEXTURE_ITEM_QUEST_BORDER = "Interface\\ContainerFrame\\UI-Icon-QuestBorder";

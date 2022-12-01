@@ -10,6 +10,9 @@ PAID_FACTION_CHANGE = 3
 PAID_SERVICE_CHARACTER_ID = nil
 PAID_SERVICE_TYPE = nil
 
+CHARACTER_CREATE_DRESSED = true
+CHARACTER_CREATE_DRESS_STATE_QUEUED = false
+
 local PAID_RACE_SERVICE_OVERRIDE_FACTIONS = {
 	[FACTION_HORDE]		= PLAYER_FACTION_GROUP.Alliance,
 	[FACTION_ALLIANCE]	= PLAYER_FACTION_GROUP.Horde,
@@ -28,6 +31,10 @@ local PAID_RACE_SERVICE_OVERRIDE_RACES = {
 		[E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL]	= E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE,
 		[E_CHARACTER_RACES.RACE_VULPERA_HORDE]		= E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE,
 	}
+}
+
+local PAID_RACE_SERVICE_DYNAMIC = {
+	[E_CHARACTER_RACES.RACE_DRACTHYR]			= E_CHARACTER_RACES.RACE_DRACTHYR,
 }
 
 local PAID_FACTION_SERVICE_OVERRIDE_RACES = {
@@ -52,6 +59,7 @@ local PAID_FACTION_SERVICE_OVERRIDE_RACES = {
 local PAID_SERVICE_ORIGINAL_FACTION = {
 	[FACTION_HORDE]		= PLAYER_FACTION_GROUP.Horde,
 	[FACTION_ALLIANCE]	= PLAYER_FACTION_GROUP.Alliance,
+	[FACTION_NEUTRAL]	= PLAYER_FACTION_GROUP.Neutral,
 }
 
 local PAID_SERVICE_ORIGINAL_RACE = {
@@ -68,13 +76,7 @@ local TOOLTIP_MAX_RACE_ABLILITIES_PASSIVE = 4
 local TOOLTIP_MAX_RACE_ABLILITIES_ACTIVE = 3
 local TOOLTIPS_EXPANDED = false
 
-CharacterCreateMixin = CreateFromMixins(CharacterModelMixin)
-
-enum:E_PAID_SERVICE {
-	"CUSTOMIZATION",
-	"CHANGE_RACE",
-	"CHANGE_FACTION"
-}
+CharacterCreateMixin = {}
 
 enum:E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE {
 	"ACTIVE",
@@ -89,6 +91,7 @@ end
 function CharacterCreateMixin:OnLoad()
 	self:RegisterHookListener()
 	self:RegisterCustomEvent("GLUE_CHARACTER_CREATE_FORCE_RACE_CHANGE")
+	self:RegisterCustomEvent("GLUE_CHARACTER_CREATE_ZOOM_UPDATE")
 
 	self.raceButtonPerLine = 5
 
@@ -111,12 +114,15 @@ function CharacterCreateMixin:OnShow()
 
 	if PAID_SERVICE_TYPE then
 		C_CharacterCreation.CustomizeExistingCharacter(PAID_SERVICE_CHARACTER_ID)
-		self.NavigationFrame.CreateNameEditBox:SetText(PaidChange_GetName() or "")
+		self.NavigationFrame.CreateNameEditBox:SetText(C_CharacterCreation.PaidChange_GetName())
 		self.NavigationFrame.CreateButton:SetText(CHARACTER_CREATE_ACCEPT)
+		self.CustomizationFrame.DressCheckButton:SetChecked(CHARACTER_CREATE_DRESSED)
+		self.CustomizationFrame.DressCheckButton:Show()
 	else
 		C_CharacterCreation.ResetCharCustomize()
 		self.NavigationFrame.CreateNameEditBox:SetText("")
 		self.NavigationFrame.CreateButton:SetText(CHARACTER_CREATE)
+		self.CustomizationFrame.DressCheckButton:Hide()
 	end
 
 	self:UpdateBackground()
@@ -146,10 +152,15 @@ end
 
 function CharacterCreateMixin:OnHide()
 	C_CharacterCreation.SetInCharacterCreate(false)
-	PAID_SERVICE_TYPE = nil
 	self.CustomizationFrame:Hide()
 	self:ResetSelectRaceAndClassAnim()
 	C_CharacterCreation.EnableMouseWheel(false)
+
+	if not CHARACTER_CREATE_DRESSED then
+		CHARACTER_CREATE_DRESSED = true
+		CharacterSelect.WAIT_DRESS_CONFIRMATION = true	-- CharacterSelect should wait for answer
+		C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.ToggleItemsForCustomize)
+	end
 end
 
 function CharacterCreateMixin:OnEvent(event, ...)
@@ -165,6 +176,52 @@ function CharacterCreateMixin:OnEvent(event, ...)
 		self.ClassesFrame:Show()
 
 		self:CreateUpdateButtons()
+	elseif event == "CHARACTER_LIST_UPDATE" then
+		self:UnregisterEvent(event)
+
+		if CHARACTER_CREATE_DRESS_STATE_QUEUED then
+			CHARACTER_CREATE_DRESS_STATE_QUEUED = nil
+
+			CharacterModelManager.SetBackground("Alliance", true)
+			CharacterModelManager.SetBackground(C_CharacterCreation.GetSelectedModelName(), true)
+
+			-- force update model
+			local sex = C_CharacterCreation.GetSelectedSex()
+			C_CharacterCreation.SetSelectedSex(sex == 3 and 2 or 3)
+			C_CharacterCreation.SetSelectedSex(sex)
+
+			C_CharacterCreation.SetCameraPosition(self.cameraPreserve)
+			C_CharacterCreation.SetBlockCameraReset(false)
+			self.cameraPreserve = nil
+
+			GlueDialog:HideDialog("SERVER_WAITING")
+		end
+	elseif event == "SERVER_SPLIT_NOTICE" then
+		local msg = select(3, ...)
+		local prefix, status = string.split(":", msg)
+
+		if prefix == "SMSG_TOGGLE_ITEMS_FOR_CUSTOMIZE" then
+			self:UnregisterEvent(event)
+
+			if status == "OK" then
+				CHARACTER_CREATE_DRESSED = not CHARACTER_CREATE_DRESSED	-- state change confirmed
+
+				C_CharacterCreation.SetBlockCameraReset(true)
+				self.cameraPreserve = C_CharacterCreation.GetCameraPosition()
+				
+				CHARACTER_CREATE_DRESS_STATE_QUEUED = true
+				self:RegisterEvent("CHARACTER_LIST_UPDATE")
+				GetCharacterListUpdate()
+			else
+				self.CustomizationFrame.DressCheckButton:SetChecked(CHARACTER_CREATE_DRESSED) -- reset old state on fail
+				GlueDialog:HideDialog("SERVER_WAITING")
+				GlueDialog:ShowDialog("OKAY", WAIT_MODEL_LOADING_ERROR)
+			end
+		end
+	elseif event == "GLUE_CHARACTER_CREATE_ZOOM_UPDATE" then
+		if self.CustomizationFrame:IsVisible() then
+			self.CustomizationFrame:UpdateZoomButtonStates()
+		end
 	end
 end
 
@@ -298,13 +355,16 @@ function CharacterCreateMixin:CreateRaceButtons()
 	self.hordeRaceButtonPool:ReleaseAll()
 	self.neutralRaceButtonPool:ReleaseAll()
 
-	local buffer = {}
+	local factionButtons = {
+		[PLAYER_FACTION_GROUP.Horde] = {},
+		[PLAYER_FACTION_GROUP.Alliance] = {},
+		[PLAYER_FACTION_GROUP.Neutral] = {},
+	}
 
 	for index, data in ipairs(C_CharacterCreation.GetAvailableRacesForCreation()) do
 		local button
 
 		local isNeutralFaction = data.factionID == PLAYER_FACTION_GROUP.Neutral or not not PAID_SERVICE_ORIGINAL_RACE[data.raceID]
-
 		local factionID = isNeutralFaction and PLAYER_FACTION_GROUP.Neutral or data.factionID
 
 		if factionID == PLAYER_FACTION_GROUP.Alliance then
@@ -317,20 +377,28 @@ function CharacterCreateMixin:CreateRaceButtons()
 			if PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_RACE or PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION then
 				local faction = C_CharacterCreation.PaidChange_GetCurrentFaction()
 
-				local overrideRaceID
-				local overrideFactionID
-
-				if PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION then
-					overrideRaceID = PAID_RACE_SERVICE_OVERRIDE_RACES[faction] and PAID_RACE_SERVICE_OVERRIDE_RACES[faction][data.raceID]
-					overrideFactionID = PAID_RACE_SERVICE_OVERRIDE_FACTIONS[faction]
+				if PAID_RACE_SERVICE_DYNAMIC[data.raceID] then
+					if PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION and PAID_SERVICE_ORIGINAL_FACTION[faction] ~= PLAYER_FACTION_GROUP.Neutral then
+						data.factionID = PAID_RACE_SERVICE_OVERRIDE_FACTIONS[faction]
+					else
+						data.factionID = PAID_SERVICE_ORIGINAL_FACTION[faction]
+					end
 				else
-					overrideRaceID = PAID_FACTION_SERVICE_OVERRIDE_RACES[faction] and PAID_FACTION_SERVICE_OVERRIDE_RACES[faction][data.raceID]
-					overrideFactionID = PAID_SERVICE_ORIGINAL_FACTION[faction]
-				end
+					local overrideRaceID
+					local overrideFactionID
 
-				if overrideRaceID and overrideFactionID then
-					data.raceID = overrideRaceID
-					data.factionID = overrideFactionID
+					if PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION then
+						overrideRaceID = PAID_RACE_SERVICE_OVERRIDE_RACES[faction] and PAID_RACE_SERVICE_OVERRIDE_RACES[faction][data.raceID]
+						overrideFactionID = PAID_RACE_SERVICE_OVERRIDE_FACTIONS[faction]
+					else
+						overrideRaceID = PAID_FACTION_SERVICE_OVERRIDE_RACES[faction] and PAID_FACTION_SERVICE_OVERRIDE_RACES[faction][data.raceID]
+						overrideFactionID = PAID_SERVICE_ORIGINAL_FACTION[faction]
+					end
+
+					if overrideRaceID and overrideFactionID then
+						data.raceID = overrideRaceID
+						data.factionID = overrideFactionID
+					end
 				end
 			else
 				local raceID = PAID_SERVICE_ORIGINAL_RACE[data.raceID]
@@ -341,13 +409,9 @@ function CharacterCreateMixin:CreateRaceButtons()
 			end
 		end
 
-		if not buffer[factionID] then
-			buffer[factionID] = {}
-		end
+		table.insert(factionButtons[factionID], button)
 
-		table.insert(buffer[factionID], button)
-
-		local buttonCount = #buffer[factionID]
+		local buttonCount = #factionButtons[factionID]
 
 		if mod(buttonCount - 1, self.raceButtonPerLine) == 0 then
 			if buttonCount == 1 then
@@ -360,16 +424,16 @@ function CharacterCreateMixin:CreateRaceButtons()
 				end
 			else
 				if factionID == PLAYER_FACTION_GROUP.Alliance then
-					button:SetPoint("LEFT", buffer[factionID][buttonCount - self.raceButtonPerLine], "RIGHT", 26, -30)
+					button:SetPoint("LEFT", factionButtons[factionID][buttonCount - self.raceButtonPerLine], "RIGHT", 26, -30)
 				elseif factionID == PLAYER_FACTION_GROUP.Horde then
-					button:SetPoint("RIGHT", buffer[factionID][buttonCount - self.raceButtonPerLine], "LEFT", -26, -30)
+					button:SetPoint("RIGHT", factionButtons[factionID][buttonCount - self.raceButtonPerLine], "LEFT", -26, -30)
 				end
 			end
 		else
 			if factionID == PLAYER_FACTION_GROUP.Neutral then
-				button:SetPoint("LEFT", buffer[factionID][buttonCount - 1], "RIGHT", 40, 0)
+				button:SetPoint("LEFT", factionButtons[factionID][buttonCount - 1], "RIGHT", 40, 0)
 			else
-				button:SetPoint("TOP", buffer[factionID][buttonCount - 1], "BOTTOM", 0, -30)
+				button:SetPoint("TOP", factionButtons[factionID][buttonCount - 1], "BOTTOM", 0, -30)
 			end
 		end
 
@@ -396,6 +460,16 @@ function CharacterCreateMixin:CreateRaceButtons()
 
 		if IsInterfaceDevClient() then
 			button.ArtFrame.RaceID:SetText(data.raceID)
+		end
+	end
+
+	local buttonOffset = 40
+	local buttonsSize = 50
+	for factionID, buttons in pairs(factionButtons) do
+		local buttonCount = #buttons
+		if factionID == PLAYER_FACTION_GROUP.Neutral then
+			local width = buttonsSize * buttonCount + buttonOffset * (buttonCount - 1)
+			self.neutralRaceButtonPool.parent:SetSize(width, buttonsSize)
 		end
 	end
 end
@@ -462,7 +536,7 @@ function CharacterCreateMixin:BackToCharacterSelect()
 end
 
 function CharacterCreateMixin:UpdateBackground()
-	CharacterModelMixin.SetBackground(self, C_CharacterCreation.GetSelectedModelName())
+	CharacterModelManager.SetBackground(C_CharacterCreation.GetSelectedModelName())
 end
 
 CharacterCreateRaceButtonMixin = {}
@@ -630,22 +704,26 @@ function CharacterCreateRaceButtonMixin:UpdateButton()
 	if PAID_SERVICE_TYPE then
 		local faction = C_CharacterCreation.PaidChange_GetCurrentFaction()
 
-		if C_CharacterCreation.IsNeutralRace(self.index) then
-			allow = false
-		elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_RACE then
-			allow = (faction == C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
-		elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION then
-			allow = (faction ~= C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
+		if not PAID_RACE_SERVICE_DYNAMIC[self.index] and C_CharacterCreation.IsNeutralRace(self.index) then
+			allow = self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex()
 		elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CUSTOMIZATION then
 			allow = self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex()
+		elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_RACE then
+			allow = (PAID_RACE_SERVICE_DYNAMIC[self.index] or faction == C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
+		elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION then
+			allow = (PAID_RACE_SERVICE_DYNAMIC[self.index] or faction ~= C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
 		end
 	else
 		allow = true
 	end
 
-	if allow and C_CharacterCreation.IsAlliedRace(self.index) and not C_CharacterCreation.IsAlliedRacesUnlocked(self.index) then
-		allow = false
-		alliedRaceLocked = true
+	if allow then
+		if PAID_SERVICE_TYPE and not C_CharacterCreation.IsServicesAvailableForRace(PAID_SERVICE_TYPE, self.index) then
+			allow = false
+		elseif C_CharacterCreation.IsAlliedRace(self.index) and not C_CharacterCreation.IsAlliedRacesUnlocked(self.index) then
+			allow = false
+			alliedRaceLocked = true
+		end
 	end
 
 	self.alliedRaceGMAllowed = not C_CharacterCreation.IsAlliedRacesUnlockedRaw(self.index)
@@ -954,6 +1032,21 @@ function CharacterCreateInteractiveButtonAlphaAnimMixin:UpdateAlpha( elapsed )
 	end
 end
 
+CharacterCreateDressStateCheckButtonMixin = {}
+
+function CharacterCreateDressStateCheckButtonMixin:OnClick(button)
+	if button ~= "LeftButton" then return end
+
+	local checked = self:GetChecked() and true or false
+	if checked ~= CHARACTER_CREATE_DRESSED then
+		PlaySound(self:GetChecked() and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
+
+		GlueDialog:ShowDialog("SERVER_WAITING", WAIT_MODEL_LOADING)
+		CharacterCreate:RegisterEvent("SERVER_SPLIT_NOTICE")
+		C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.ToggleItemsForCustomize)
+	end
+end
+
 CharacterCreateCustomizationButtonMixin = {}
 
 function CharacterCreateCustomizationButtonMixin:OnLoad()
@@ -1092,6 +1185,7 @@ end
 
 function CharacterCreateCustomizationFrameMixin:OnShow()
 	self.parentFrame.skipCustomizationConfirmation = true
+	self:UpdateZoomButtonStates()
 end
 
 function CharacterCreateCustomizationFrameMixin:OnHide()
@@ -1111,10 +1205,222 @@ function CharacterCreateCustomizationFrameMixin:OnHide()
 	end
 end
 
+function CharacterCreateCustomizationFrameMixin:UpdateZoomButtonStates()
+	local currentZoom = C_CharacterCreation.GetCurrentCameraZoom();
+
+	local zoomOutEnabled = (currentZoom > 0);
+	self.SmallButtons.ZoomOutButton:SetEnabled(zoomOutEnabled);
+	self.SmallButtons.ZoomOutButton.Icon:SetAtlas(zoomOutEnabled and "common-icon-zoomout" or "common-icon-zoomout-disable");
+
+	local zoomInEnabled = (currentZoom < C_CharacterCreation.GetMaxCameraZoom());
+	self.SmallButtons.ZoomInButton:SetEnabled(zoomInEnabled);
+	self.SmallButtons.ZoomInButton.Icon:SetAtlas(zoomInEnabled and "common-icon-zoomin" or "common-icon-zoomin-disable");
+end
+
 CharacterCreateCustomizationButtonFrameTemplateMixin = {}
 
 function CharacterCreateCustomizationButtonFrameTemplateMixin:OnLoad()
 	self.Background:SetAtlas("Glue-Shadow-Button-Normal")
+end
+
+CharCustomizeBaseButtonMixin = {};
+
+function CharCustomizeBaseButtonMixin:OnBaseButtonClick()
+	CharCustomizeFrame:OnButtonClick();
+end
+
+CharCustomizeSmallButtonMixin = CreateFromMixins();
+
+function CharCustomizeSmallButtonMixin:OnLoad()
+	self.NormalTexture:SetAtlas("common-button-square-gray-up")
+	self.PushedTexture:SetAtlas("common-button-square-gray-down")
+
+	self.HighlightTexture:ClearAllPoints()
+	self.HighlightTexture:SetPoint("TOPLEFT", self.Icon)
+	self.HighlightTexture:SetPoint("BOTTOMRIGHT", self.Icon)
+	
+	self.tooltipMinWidth = nil
+
+	self.Icon:SetAtlas(self.iconAtlas);
+	self.HighlightTexture:SetAtlas(self.iconAtlas);
+end
+
+function CharCustomizeSmallButtonMixin:OnEnter()
+	if self.simpleTooltipLine then
+		GlueTooltip_SetOwner(self, GlueTooltip, self:GetAttribute("tooltipXOffset"), self:GetAttribute("tooltipYOffset"), "BOTTOMLEFT", "TOPRIGHT")
+		GlueTooltip_SetText(self.simpleTooltipLine, GlueTooltip, 1, 1, 1)
+	end
+end
+
+function CharCustomizeSmallButtonMixin:OnLeave()
+	if self.simpleTooltipLine then
+		GlueTooltip:Hide();
+	end
+end
+
+function CharCustomizeSmallButtonMixin:OnMouseDown()
+	if self:IsEnabled() then
+		self.Icon:SetPoint("CENTER", self.PushedTexture);
+	end
+end
+
+function CharCustomizeSmallButtonMixin:OnMouseUp()
+	self.Icon:SetPoint("CENTER");
+end
+
+function CharCustomizeSmallButtonMixin:OnClick()
+	PlaySound(SOUNDKIT.GS_CHARACTER_CREATION_LOOK);
+end
+
+CharCustomizeClickOrHoldButtonMixin = {};
+
+function CharCustomizeClickOrHoldButtonMixin:OnLoad()
+	self.holdWaitTimeSeconds = self:GetAttribute("holdWaitTimeSeconds")
+
+	CharCustomizeSmallButtonMixin.OnLoad(self)
+end
+
+function CharCustomizeClickOrHoldButtonMixin:OnHide()
+	self.waitTimerSeconds = nil;
+	self:SetScript("OnUpdate", nil);
+end
+
+function CharCustomizeClickOrHoldButtonMixin:DoClickAction()
+end
+
+function CharCustomizeClickOrHoldButtonMixin:DoHoldAction(elapsed)
+end
+
+function CharCustomizeClickOrHoldButtonMixin:OnClick()
+	CharCustomizeSmallButtonMixin.OnClick(self);
+
+	if not self.wasHeld then
+		self:DoClickAction();
+	end
+end
+
+function CharCustomizeClickOrHoldButtonMixin:OnUpdate(elapsed)
+	if self.waitTimerSeconds then
+		self.waitTimerSeconds = self.waitTimerSeconds - elapsed;
+		if self.waitTimerSeconds >= 0 then
+			return;
+		else
+			-- waitTimerSeconds is now negative, so add it to elapsed to remove any leftover wait time
+			elapsed = elapsed + self.waitTimerSeconds;
+			self.waitTimerSeconds = nil;
+		end
+	end
+
+	self.wasHeld = true;
+	self:DoHoldAction(elapsed);
+end
+
+function CharCustomizeClickOrHoldButtonMixin:OnMouseDown()
+	CharCustomizeSmallButtonMixin.OnMouseDown(self);
+	self.wasHeld = false;
+	self.waitTimerSeconds = self.holdWaitTimeSeconds;
+	self:SetScript("OnUpdate", self.OnUpdate);
+end
+
+function CharCustomizeClickOrHoldButtonMixin:OnMouseUp()
+	CharCustomizeSmallButtonMixin.OnMouseUp(self);
+	self.waitTimerSeconds = nil;
+	self:SetScript("OnUpdate", nil);
+end
+
+CharCustomizeResetCameraButtonMixin = {};
+
+function CharCustomizeResetCameraButtonMixin:OnLoad()
+	self.layoutIndex = self:GetAttribute("layoutIndex")
+	self.iconAtlas = self:GetAttribute("iconAtlas")
+
+	CharCustomizeSmallButtonMixin.OnLoad(self)
+end
+
+local RESET_ROTATION_TIME2 = 0.55
+function CharCustomizeResetCameraButtonMixin:OnUpdate(elapsed)
+	if self.rotationResetStep then
+		self.elapsed = self.elapsed + elapsed
+		if self.elapsed < self.rotationResetTime then
+			C_CharacterCreation.SetCharacterCreateFacing(self.rotationResetCur + self.rotationResetStep * self.elapsed)
+		else
+			self:StopRotation()
+		end
+	end
+end
+
+function CharCustomizeResetCameraButtonMixin:StopRotation()
+	self:SetScript("OnUpdate", nil)
+	self.elapsed = 0
+	self.rotationResetTime = nil
+	self.rotationResetCur = nil
+	self.rotationResetStep = nil
+	C_CharacterCreation.SetCharacterCreateFacing(C_CharacterCreation.GetDefaultCharacterCreateFacing())
+end
+
+function CharCustomizeResetCameraButtonMixin:OnHide()
+	self:StopRotation()
+end
+
+function CharCustomizeResetCameraButtonMixin:OnClick()
+	CharCustomizeSmallButtonMixin.OnClick(self);
+
+	C_CharacterCreation.ZoomCamera(CAMERA_ZOOM_LEVEL_AMOUNT - C_CharacterCreation.GetCurrentCameraZoom(), nil, true)
+--	C_CharacterCreation.SetCharacterCreateFacing(0)
+
+	local defaultDeg = C_CharacterCreation.GetDefaultCharacterCreateFacing()
+	local deg = C_CharacterCreation.GetCharacterCreateFacing()
+	if deg ~= defaultDeg then
+		local change = (defaultDeg - deg + 540) % 360 - 180
+		self.elapsed = 0
+		self.rotationResetTime = math.abs(change / 180 * RESET_ROTATION_TIME2)
+		self.rotationResetCur = deg
+		self.rotationResetStep = change / self.rotationResetTime
+		self:SetScript("OnUpdate", self.OnUpdate)
+	end
+end
+
+CharCustomizeZoomButtonMixin = CreateFromMixins(CharCustomizeClickOrHoldButtonMixin);
+
+function CharCustomizeZoomButtonMixin:OnLoad()
+	self.layoutIndex = self:GetAttribute("layoutIndex")
+	self.iconAtlas = self:GetAttribute("iconAtlas")
+	self.clickAmount = self:GetAttribute("clickAmount")
+	self.holdAmountPerSecond = self:GetAttribute("holdAmountPerSecond")
+
+	CharCustomizeClickOrHoldButtonMixin.OnLoad(self)
+end
+
+function CharCustomizeZoomButtonMixin:DoClickAction()
+	C_CharacterCreation.SetCameraZoomLevel(C_CharacterCreation.GetCurrentCameraZoom() + self.clickAmount, nil, true)
+	self:GetParent():GetParent():UpdateZoomButtonStates()
+end
+
+function CharCustomizeZoomButtonMixin:DoHoldAction(elapsed)
+	C_CharacterCreation.SetCameraZoomLevel(C_CharacterCreation.GetCurrentCameraZoom() + self.holdAmountPerSecond * elapsed)
+	self:GetParent():GetParent():UpdateZoomButtonStates()
+end
+
+CharCustomizeRotateButtonMixin = CreateFromMixins(CharCustomizeClickOrHoldButtonMixin);
+
+function CharCustomizeRotateButtonMixin:OnLoad()
+	self.layoutIndex = self:GetAttribute("layoutIndex")
+	self.iconAtlas = self:GetAttribute("iconAtlas")
+	self.leftPadding = self:GetAttribute("leftPadding")
+	self.clickAmount = self:GetAttribute("clickAmount")
+	self.holdAmountPerSecond = self:GetAttribute("holdAmountPerSecond")
+
+	CharCustomizeClickOrHoldButtonMixin.OnLoad(self)
+end
+
+local ROTATION_STEP = 5
+
+function CharCustomizeRotateButtonMixin:DoClickAction()
+	C_CharacterCreation.SetCharacterCreateFacing(C_CharacterCreation.GetCharacterCreateFacing() + self.clickAmount)
+end
+
+function CharCustomizeRotateButtonMixin:DoHoldAction(elapsed)
+	C_CharacterCreation.SetCharacterCreateFacing(C_CharacterCreation.GetCharacterCreateFacing() + self.holdAmountPerSecond * elapsed);
 end
 
 CharacterCreateNavigationFrameMixin = {}

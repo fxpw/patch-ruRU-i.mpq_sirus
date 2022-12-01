@@ -938,7 +938,7 @@ function UnitPopup_HideButtons ()
 				shown = false;
 			end
 		elseif ( value == "INVITE" ) then
-			if ( dropdownMenu.unit and not (C_Unit:IsRenegade("player") or C_Unit:IsRenegade(dropdownMenu.unit)) ) then
+			if ( dropdownMenu.unit and not (C_Unit.IsRenegade("player") or C_Unit.IsRenegade(dropdownMenu.unit)) ) then
 				local _, server = UnitName(dropdownMenu.unit);
 				if ( canCoop == 0  or UnitIsUnit("player", dropdownMenu.unit) or (server and server ~= "") ) then
 					shown = false;
@@ -1348,7 +1348,7 @@ function UnitPopup_HideButtons ()
 				shown = false
 			end
 		elseif value == "WAR_MODE" then
-			if C_Service:IsLockSwitchWarModeFeature() or  C_Service:IsLockWarModFeature() then
+			if C_Unit.IsNeutral("player") or C_Service:IsLockSwitchWarModeFeature() or C_Service:IsLockWarModFeature() then
 				shown = false
 			end
 		elseif value == "PVP_FLAG" then

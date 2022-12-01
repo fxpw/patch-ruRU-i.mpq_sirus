@@ -4,9 +4,7 @@ local PET_BUTTON_HEIGHT = 46;
 local SUMMON_RANDOM_FAVORITE_PET_SPELL = 317619;
 
 function PetJournal_OnLoad(self)
-	Hook:RegisterCallback("COLLECTION", "PET_JOURNAL_LIST_UPDATE", function()
-		PetJournal_FullUpdate(PetJournal);
-	end)
+	self:RegisterCustomEvent("PET_JOURNAL_LIST_UPDATE");
 
 	self.ListScrollFrame.update = PetJournal_UpdatePetList;
 	self.ListScrollFrame.scrollBar.doNotHide = true;
@@ -27,6 +25,12 @@ function PetJournal_OnShow(self)
 	PetJournal_FullUpdate(self);
 
 	PetJournalResetFiltersButton_UpdateVisibility();
+end
+
+function PetJournal_OnEvent(self, event)
+	if event == "PET_JOURNAL_LIST_UPDATE" then
+		PetJournal_FullUpdate(self);
+	end
 end
 
 function PetJournalSummonRandomFavoritePetButton_OnLoad(self)

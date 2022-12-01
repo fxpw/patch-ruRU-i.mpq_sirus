@@ -1,13 +1,24 @@
 local securecall = securecall
 
+TRACKED_CVARS = {
+	"autoDismountFlying",
+}
+
 do	-- CVars
 	local strsub = string.sub
+	local TRACKED_CVARS = TRACKED_CVARS
 
 	local SetCVar = SetCVar
 	local _SetCVar = function(cvar, value, raiseEvent)
+		local trackedIndex = tIndexOf(TRACKED_CVARS, cvar)
+		if trackedIndex then
+			SendServerMessage("ACMSG_I_S", string.format("%i:%i", trackedIndex, tonumber(value) or 0))
+		end
+
 		if C_CVar and strsub(cvar, 1, 7) == "C_CVAR_" then
 			return C_CVar:SetValue(cvar, value, raiseEvent)
 		end
+
 		return SetCVar(cvar, value, raiseEvent)
 	end
 	_G.SetCVar = function(cvar, value, raiseEvent)
@@ -174,7 +185,7 @@ function GetBackpackCurrencyInfo( index )
 	local name, count, extraCurrencyType, icon, itemID = _GetBackpackCurrencyInfo(index)
 
 	if itemID then
-		local factionID = C_Unit:GetFactionID("player")
+		local factionID = C_Unit.GetFactionID("player")
 
 		if factionID then
 			if itemID == 43307 then -- Arena
@@ -204,7 +215,7 @@ function GetCurrencyListInfo( index )
 	local name, isHeader, isExpanded, isUnused, isWatched, count, extraCurrencyType, icon, itemID = _GetCurrencyListInfo(index)
 
 	if itemID then
-		local factionID = C_Unit:GetFactionID("player")
+		local factionID = C_Unit.GetFactionID("player")
 
 		if factionID then
 			if itemID == 43307 then -- Arena
@@ -229,7 +240,7 @@ function UnitFactionGroup( unit )
 	end
 
 	if UnitIsUnit("player", unit) then
-		local factionID = C_FactionManager:GetFactionOverride()
+		local factionID = C_FactionManager.GetFactionOverride()
 
 		if factionID then
 			local factionTag = PLAYER_FACTION_GROUP[factionID]
@@ -239,7 +250,7 @@ function UnitFactionGroup( unit )
 		end
 	else
 		local factionTag, localizedFaction 	= _UnitFactionGroup(unit)
-		local ovverideFactionID 			= C_Unit:GetFactionByDebuff(unit)
+		local ovverideFactionID 			= C_Unit.GetFactionByDebuff(unit)
 
 		if ovverideFactionID and factionTag then
 			local ovverideFactionTag = PLAYER_FACTION_GROUP[ovverideFactionID]
@@ -257,7 +268,7 @@ local _GetDefaultLanguage = _GetDefaultLanguage or GetDefaultLanguage
 
 -----@return string defaultLanguage
 function GetDefaultLanguage()
-	local factionID = C_FactionManager:GetFactionOverride()
+	local factionID = C_FactionManager.GetFactionOverride()
 
 	if factionID and factionID ~= PLAYER_FACTION_GROUP.Neutral then
 		return PLAYER_FACTION_LANGUAGE[factionID]
@@ -511,4 +522,9 @@ _G.IsAddOnLoadOnDemand = function(addon)
 	end
 
 	return IsAddOnLoadOnDemand(addon)
+end
+
+local GetScreenHeight = GetScreenHeight
+function GetDefaultScale()
+	return 768 / GetScreenHeight()
 end

@@ -53,7 +53,7 @@ function LookingForGuildMixin:OnEvent(event, ...)
 end
 
 function LookingForGuildMixin:OnShow()
-	local factionID = C_Unit:GetFactionID("player");
+	local factionID = C_Unit.GetFactionID("player");
 	if factionID and PVPFRAME_PRESTIGE_FACTION_ICONS[factionID] then
 		self.TabardEmblem:SetTexCoord(unpack(PVPFRAME_PRESTIGE_FACTION_ICONS[factionID]));
 	else

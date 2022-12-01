@@ -2200,7 +2200,7 @@ function HeadHuntingContractOnPlayerFrameMixin:ToggleContractContent( isNoContra
         local _, _, classID = UnitClass("player")
         local genderID      = UnitSex("player")
         local raceInfo      = C_CreatureInfo.GetRaceInfo(raceName)
-        local factionID     = C_Unit:GetFactionID("player")
+        local factionID     = C_Unit.GetFactionID("player")
 
 
         self.PlayerFrame.PlayerFrame:SetPlayer(playerName, raceInfo.raceID, classID, S_GENDER_FILESTRING_INVERT[E_SEX[genderID]])

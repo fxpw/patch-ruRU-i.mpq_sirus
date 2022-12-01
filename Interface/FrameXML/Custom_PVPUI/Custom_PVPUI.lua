@@ -691,7 +691,7 @@ function PVPUIFrame_OnLoad( self, ... )
 	self.Shadows:SetFrameLevel(3)
 
 	local function UpdateFactionArt()
-		SetPortraitToTexture(self.Art.portrait, PVPUIFRAME_PORTRAIT_DATA[C_Unit:GetFactionID("player")])
+		SetPortraitToTexture(self.Art.portrait, PVPUIFRAME_PORTRAIT_DATA[C_Unit.GetFactionID("player")])
 	end
 
 	C_FactionManager:RegisterFactionOverrideCallback(UpdateFactionArt, true)
@@ -1079,7 +1079,7 @@ function PVPQueueFrame_OnLoad( self, ... )
 	self.CategoryButton1.Name:SetText(PVP_TAB_SERVICES)
 
 	local function SetCurrencyIcon()
-		local factionID = C_Unit:GetFactionID("player")
+		local factionID = C_Unit.GetFactionID("player")
 		self.CategoryButton3.CurrencyIcon:SetTexture("Interface\\PVPFrame\\PVPCurrency-Honor-"..PLAYER_FACTION_GROUP[factionID])
 		self.CategoryButton2.CurrencyIcon:SetTexture("Interface\\PVPFrame\\PVPCurrency-Conquest-"..PLAYER_FACTION_GROUP[factionID])
 	end
@@ -1132,7 +1132,7 @@ end
 function PVPQueueFrameButton_OnClick( self, ... )
 	local buttonID = self:GetID()
 	local frameName = pvpFrames[buttonID]
-	local factionID = C_Unit:GetFactionID("player")
+	local factionID = C_Unit.GetFactionID("player")
 
 	if PVPQueueFrame.selectedCategory and PVPQueueFrame.selectedCategory == buttonID then
 		return
@@ -1783,7 +1783,7 @@ PVPFRAME_PRESTIGE_FACTION_ICONS = {
 
 function RatedBattlegroundFrame_OnShow( self, ... )
 	local currTitle, currStRank, currRankID, currRankIconCoord, currRating, nextTitle, _, nextRankIconCoord, nextRating, weekWins, weekGames, totalWins, totalGames, laurelCoord = GetRatedBattlegroundRankInfo()
-	local factionID = C_Unit:GetFactionID("player")
+	local factionID = C_Unit.GetFactionID("player")
 
 	PVPHonorFrame.type = "bonus"
 
@@ -2100,7 +2100,7 @@ function BattlegroundInviteMixin:Reset( forceHide )
 end
 
 function BattlegroundInviteMixin:ResetReadyButtons()
-	local factionID = C_Unit:GetFactionID("player")
+	local factionID = C_Unit.GetFactionID("player")
 
 	for i = 1, 20 do
 		local button = self.readyButtons[i]
@@ -2716,7 +2716,7 @@ ASMSG_PVP_REWARDS_ARENA_1V1 	= 6
 
 function PVPQueueFrame_UpdateReward( categoryID )
 	local pvpRewards = C_CacheInstance:Get("ASMSG_PVP_REWARDS", {})
-	local factionID = C_Unit:GetFactionID("player")
+	local factionID = C_Unit.GetFactionID("player")
 	local xOffset
 
 	if categoryID == 2 then

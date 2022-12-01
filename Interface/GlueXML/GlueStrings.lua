@@ -135,10 +135,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Изменяем конфигурацию Азерота",
 		enGB = ""
 	},
-	["CHAR_CUSTOMIZATION4_DESC"] = {
-		ruRU = "Цвет волос",
-		enGB = "Hair Color"
-	},
 	["CHAR_NAME_FAILURE"] = {
 		ruRU = "Недопустимое имя персонажа",
 		enGB = "Invalid character name"
@@ -494,10 +490,6 @@ local SIRUS_LOCALIZATION = {
 	["CHARACTER_SERVICES_BOOST_COST_FREE"] = {
 		ruRU = "Бесплатно",
 		enGB = "Free"
-	},
-	["CHAR_CUSTOMIZATION3_DESC"] = {
-		ruRU = "Прическа",
-		enGB = "Hair Style"
 	},
 	["DELETED_CHARACTERS"] = {
 		ruRU = "Удаленные персонажи",
@@ -1235,10 +1227,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Выберите пол:",
 		enGB = "Choose your gender:"
 	},
-	["CHAR_CUSTOMIZATION6_DESC"] = {
-		ruRU = "Снаряжение",
-		enGB = "Outfit"
-	},
 	["CHAR_FACTION_CHANGE_SWAP_FACTION"] = {
 		ruRU = "Вы должны выбрать одну из рас противоположной стороны (Альянса или Орды).",
 		enGB = "You must choose a race from the opposing faction."
@@ -1399,10 +1387,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "- Универсальность: доступны роли лекаря, \"танка\", заклинателя и бойца ближнего боя.",
 		enGB = "- Versatile: can fill a healing, tanking, melee or caster role."
 	},
-	["CHAR_CUSTOMIZATION5_DESC"] = {
-		ruRU = "Борода и усы",
-		enGB = "Facial Hair"
-	},
 	["CLASS_INFO_PRIEST3"] = {
 		ruRU = "- Использует темную магию для нанесения урона.",
 		enGB = "- Cause damage with Shadow magic."
@@ -1434,10 +1418,6 @@ local SIRUS_LOCALIZATION = {
 	["RACE_INFO_DWARF_FEMALE"] = {
 		ruRU = "В древние времена дворфов интересовали лишь богатства, которые они добывали из недр земли. Однажды во время раскопок они обнаружили следы древней расы богоподобных существ, которая создала дворфов и наделила их некими могущественными правами. Дворфы возжелали узнать больше и посвятили себя поиску древних сокровищ и знаний. Сегодня дворфов-археологов можно встретить в любом уголке Азерота.",
 		enGB = "In ages past, the dwarves cared only for riches taken from the earth's depths. Then records surfaced of a god-like race said to have given the dwarves life... and an enchanted birthright. Driven to learn more, the dwarves devoted themselves to the pursuit of lost artifacts and ancient knowledge. Today dwarven archaeologists are scattered throughout the globe."
-	},
-	["CHAR_CUSTOMIZATION1_DESC"] = {
-		ruRU = "Цвет кожи",
-		enGB = "Skin Color"
 	},
 	["CHARACTER_SELECT_INFO_GHOST"] = {
 		ruRU = "%s (призрак)",
@@ -1542,10 +1522,6 @@ local SIRUS_LOCALIZATION = {
 	["CLASS_INFO_PALADIN4"] = {
 		ruRU = "- Владеет рядом защитных заклинаний.",
 		enGB = "- Has a variety of defensive spells."
-	},
-	["CHAR_CUSTOMIZATION2_DESC"] = {
-		ruRU = "Лицо",
-		enGB = "Face"
 	},
 	["QUEUE_FCM"] = {
 		ruRU = "В этом игровом мире открыт бесплатный перенос персонажей. Щелкните по кнопке, расположенной ниже, чтобы узнать подробности.",
@@ -2875,10 +2851,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Срок действия вашей подписки истек. Необходима повторная активация учетной записи. Подробнее см. www.wow-europe.com/account/.",
 		enGB = "Your World of Warcraft subscription has expired. You will need to reactivate your account. To do so, please visit www.worldofwarcraft.com/account for more information."
 	},
-	["CHAR_CUSTOMIZATION0_DESC"] = {
-		ruRU = "Пол",
-		enGB = "Gender"
-	},
 	["QUEUE_NAME_TIME_LEFT"] = {
 		ruRU = "Свободных мест нет: %s\nМесто в очереди: %d\nВремя ожидания: %d мин.",
 		enGB = "%s is Full\nPosition in queue: %d\nEstimated time: %d min"
@@ -3286,6 +3258,34 @@ local SIRUS_LOCALIZATION = {
 	["CHARACTER_SELECT_CHARACTER_LIST"] = {
 		ruRU = "Список персонажей",
 		enGB = "Character list"
+	},
+	["CHAR_CUSTOMIZATION0_DESC"] = {
+		ruRU = "Пол",
+		enGB = "Gender"
+	},
+	["CHAR_CUSTOMIZATION1_DESC"] = {
+		ruRU = "Цвет кожи",
+		enGB = "Skin Color"
+	},
+	["CHAR_CUSTOMIZATION2_DESC"] = {
+		ruRU = "Лицо",
+		enGB = "Face"
+	},
+	["CHAR_CUSTOMIZATION3_DESC"] = {
+		ruRU = "Прическа",
+		enGB = "Hair Style"
+	},
+	["CHAR_CUSTOMIZATION4_DESC"] = {
+		ruRU = "Цвет волос",
+		enGB = "Hair Color"
+	},
+	["CHAR_CUSTOMIZATION5_DESC"] = {
+		ruRU = "Борода и усы",
+		enGB = "Facial Hair"
+	},
+	["CHAR_CUSTOMIZATION6_DESC"] = {
+		ruRU = "Снаряжение",
+		enGB = "Outfit"
 	},
 	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_DESC"] = {
 		ruRU = "Воины тщательно готовятся к бою, а с противником сражаются лицом к лицу, принимая все удары на свои доспехи. Они пользуются различными боевыми тактиками и применяют разнообразное оружие, чтобы защитить своих более хрупких союзников. Для максимальной эффективности воины должны контролировать свою ярость — ту силу, что питает их наиболее опасные атаки.",
@@ -4835,6 +4835,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Вы создаете в указанной области особую руну, повышающую наносимый вами урон и эффективность ваших исцеляющих заклинаний на 6%, пока вы находитесь на расстоянии не более чем 10 м. от руны.\nПерезарядка: 30 сек.",
 		enGB = "",
 	},
+	["CHARACTER_CREATE_INFO_RACE_DRACTHYR_DESC"] = {
+		ruRU = "Созданные усилиями драконьих стай после освобождения королевы Алекстразы из Грим-Батола, драктиры объединяют в себе лучшие черты как своих прародителей, так и смертных. Теперь этим благородным существам предстоит найти союзников среди младших рас, чтобы вместе противостоять нависшему над Азеротом року, а заодно и тьме, что зреет среди самих драконов.",
+		enGB = "",
+	},
 
 	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_SPELL1_DESC_SHORT"] = {
 		ruRU = "Ability_Racial_BloodRage|Когда воин получает урон, гнев его растет, позволяя в разгар битвы наносить поистине сокрушительные удары.",
@@ -5525,6 +5529,26 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "spell_quicksand|Создает руну в позиции персонажа, повышающую наносимый вами урон и исцеление на 6%, пока вы находитесь на расстоянии не более чем 10 м. от неё.\nПерезарядка: 30 сек",
 		enGB = "",
 	},
+	["CHARACTER_CREATE_INFO_RACE_DRACTHYR_SPELL_PASSIVE1_DESC_SHORT"] = {
+		ruRU = "classicon_evoker_devastation|Показатель силы заклинаний увеличен на 5% от вашего интеллекта, а сила атаки увеличена на 2%.",
+		enGB = "",
+	},
+	["CHARACTER_CREATE_INFO_RACE_DRACTHYR_SPELL_PASSIVE2_DESC_SHORT"] = {
+		ruRU = "ability_evoker_fontofmagic_green|Модификатор критического исцеления увеличен на 8%.",
+		enGB = "",
+	},
+	["CHARACTER_CREATE_INFO_RACE_DRACTHYR_SPELL_PASSIVE3_DESC_SHORT"] = {
+		ruRU = "ability_evoker_quell|В крови представителей юной расы Драктиров хранится наследие каждого драконьего Рода когда-либо существовавшего. Это причудливое наследие позволяет Драктиру адаптироваться к любой ситуации, повышая выбранное сопротивление и сокращая длительность эффектов потери контроля.",
+		enGB = "",
+	},
+	["CHARACTER_CREATE_INFO_RACE_DRACTHYR_SPELL_ACTIVE1_DESC_SHORT"] = {
+		ruRU = "ability_racial_wingbuffet|Могучий взмах крыльями, который отбрасывает противников на 20 м. и снижает их скорость передвижения на 70% сроком на 4 сек.\nПерезарядка: 120 секунд",
+		enGB = "",
+	},
+	["CHARACTER_CREATE_INFO_RACE_DRACTHYR_SPELL_ACTIVE2_DESC_SHORT"] = {
+		ruRU = "ability_deathwing_cataclysm|Наносимый вами урон и эффективность исходящего исцеления повышаются и весь получаемый урон уменьшается на 10 сек.\nПерезарядка: 60 сек",
+		enGB = "",
+	},
 	["CHARACTER_NO_NAME"] = {
 		ruRU = "Без имени",
 		enGB = "",
@@ -5576,6 +5600,22 @@ local SIRUS_LOCALIZATION = {
 	["SUPPORT"] = {
 		ruRU = "Поддержка",
 		enGB = "",
+	},
+	["SHOW_EQUIPPED_ITEMS"] = {
+		ruRU = "Показывать экипировку",
+		enGB = "Show equipped items"
+	},
+	["WAIT_MODEL_LOADING"] = {
+		ruRU = "Загрузка модели",
+		enGB = "Loading model"
+	},
+	["WAIT_MODEL_LOADING_ERROR"] = {
+		ruRU = "Ошибка при загрузке модели",
+		enGB = "Error loading model"
+	},
+	["INSPECT_CHARACTER"] = {
+		ruRU = "Осмотреть",
+		enGB = "Inspect"
 	},
 }
 

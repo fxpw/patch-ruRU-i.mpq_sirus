@@ -1,8 +1,4 @@
---	Filename:	Custom_Toast.lua
---	Project:	Custom Game Interface
---	Author:		Nyll & Blizzard Entertainment
-
-enum:E_TOAST_CATEGORY {
+E_TOAST_CATEGORY = Enum.CreateMirror({
 	UNKNOWN = 0,
 	FRIENDS = 1,
 	HEAD_HUNTING = 2,
@@ -10,7 +6,8 @@ enum:E_TOAST_CATEGORY {
 	QUEUE = 4,
 	AUCTION_HOUSE = 5,
 	CALL_OF_ADVENTURE = 6,
-}
+	MISC = 7,
+})
 
 E_TOAST_DATA = {
 	[E_TOAST_CATEGORY.UNKNOWN]				= { sound = SOUNDKIT.UI_BNET_TOAST },
@@ -20,6 +17,7 @@ E_TOAST_DATA = {
 	[E_TOAST_CATEGORY.QUEUE]				= { sound = "UI_GroupFinderReceiveApplication",	cvar = "C_CVAR_QUEUE_TOAST_SOUND" },
 	[E_TOAST_CATEGORY.AUCTION_HOUSE]		= { sound = "UI_DigsiteCompletion_Toast",		cvar = "C_CVAR_AUCTION_HOUSE_TOAST_SOUND" },
 	[E_TOAST_CATEGORY.CALL_OF_ADVENTURE]	= { sound = "UI_CallOfAdventure_Toast",			cvar = "C_CVAR_CALL_OF_ADVENTURE_TOAST_SOUND" },
+	[E_TOAST_CATEGORY.MISC]					= { sound = "UI_Misc_Toast",					cvar = "C_CVAR_MISC_TOAST_SOUND" },
 }
 
 DefaultAnimOutMixin = {}
@@ -75,6 +73,26 @@ function SocialToastMixin:OnLeave()
     AlertFrame_ResumeOutAnimation(self)
 end
 
+function SocialToastMixin:OnClick(button)
+	if button ~= "LeftButton" then
+		return
+	end
+
+	if self.categoryID == E_TOAST_CATEGORY.FRIENDS then
+		if not FriendsFrame:IsShown() then
+			ToggleFriendsFrame(1);
+		end
+	elseif self.categoryID == E_TOAST_CATEGORY.HEAD_HUNTING then
+		if not HeadHuntingFrame:IsShown() then
+			ShowUIPanel(HeadHuntingFrame)
+		end
+	elseif self.categoryID == E_TOAST_CATEGORY.BATTLE_PASS then
+		if PVPQueueFrame.BattlePassToggleButton:IsEnabled() == 1 then
+			BattlePassFrame:Show()
+		end
+	end
+end
+
 function SocialToastMixin:AdjustAnchors(index)
     self:ClearAllPoints()
 
@@ -97,7 +115,7 @@ function SocialToastSystemMixin:OnLoad()
         frame.categoryID = nil
     end
 
-    self.toastPool = CreateFramePool("Frame", self, "SocialToastTemplate", ToastFrameReset)
+    self.toastPool = CreateFramePool("Button", self, "SocialToastTemplate", ToastFrameReset)
 
     hooksecurefunc("FCF_SetButtonSide", function() self:UpdatePosition() end)
 end
@@ -285,7 +303,8 @@ local TOAST_TYPE_ICONS = {
 	[16] = "achievement_zone_zangarmarsh",
 	[17] = "achievement_zone_hellfirepeninsula_01",
 	[18] = "achievement_zone_easternplaguelands",
-	[19] = "pvpcurrency-honor-"
+	[19] = "pvpcurrency-honor-",
+	[20] = "achievement_quests_completed_vashjir",
 }
 
 local TOAST_ICON_ID = {
@@ -308,6 +327,7 @@ local TOAST_ICON_ID = {
 	[49] = 17, [50] = 17, [51] = 17,
 	[52] = 18, [53] = 18, [54] = 18,
 	[57] = 19,
+	[58] = 20, [59] = 20,
 }
 
 local TOAST_TITLE_ID = {
@@ -320,6 +340,7 @@ local TOAST_TITLE_ID = {
 	[46] = 34, [47] = 34, [48] = 34,
 	[49] = 35, [50] = 35, [51] = 35,
 	[52] = 36, [53] = 36, [54] = 36,
+	[58] = 58, [59] = 58,
 }
 
 local TOAST_TEXT_ID = {
@@ -344,7 +365,9 @@ function SocialToastSystemMixin:ASMSG_TOAST( msg )
     local titleParamsCount  = tonumber(table.remove(toastData, 1))
 
     if flags ~= 1 then
-        if categoryID == E_TOAST_CATEGORY.FRIENDS then
+		if C_CVar:GetValue("C_CVAR_SHOW_TOASTS") ~= "1" then
+			return
+		elseif categoryID == E_TOAST_CATEGORY.FRIENDS then
             if C_CVar:GetValue("C_CVAR_SHOW_SOCIAL_TOAST") ~= "1" then
                 return
             end
@@ -358,6 +381,10 @@ function SocialToastSystemMixin:ASMSG_TOAST( msg )
             end
 		elseif categoryID == E_TOAST_CATEGORY.CALL_OF_ADVENTURE then
 			if C_CVar:GetValue("C_CVAR_SHOW_CALL_OF_ADVENTURE_TOAST") ~= "1" then
+				return
+			end
+		elseif categoryID == E_TOAST_CATEGORY.MISC then
+			if C_CVar:GetValue("C_CVAR_SHOW_MISC_TOAST") ~= "1" then
 				return
 			end
         end

@@ -1,13 +1,3 @@
-<!--
-
-	Filename:	SharedUIPanelTemplates.xml
-	Project:	Sirus Game Interface
-	Author:		Nyll
-	E-mail:		nyll@sirus.su
-	Web:		https://sirus.su/
-
--->
-
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 	<Script file="SharedUIPanelTemplates.lua"/>
@@ -4717,7 +4707,7 @@
 		</Scripts>
 	</Frame>
 
-	<Frame name="MaximizeMinimizeButtonFrameTemplate" parentKey="MaxMinButtonFrame" mixin="MaximizeMinimizeButtonFrameMixin" virtual="true">
+	<Frame name="MaximizeMinimizeButtonFrameTemplate" parentKey="MaxMinButtonFrame" virtual="true">
 		<Size x="32" y="32"/>
 		<Frames>
 			<Button parentKey="MaximizeButton" setAllPoints="true" hidden="true">
@@ -5192,6 +5182,135 @@
 		<DisabledTexture file="Interface\Buttons\UI-SquareButton-Disabled"/>
 		<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
 	</Button>
+
+	<Button name="ThreeSliceButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
+		<!--
+		atlasName: The art kit to use for the 3 sections of the button.
+						* The left textures will be "atlasName-Left", "atlasName-Left-Disabled" and "atlasName-Left-Pressed"
+						* The right textures will be "atlasName-Right", "atlasName-Right-Disabled" and "atlasName-Right-Pressed"
+						* The center textures will be "_atlasName-Center", "_atlasName-Disabled" and "_atlasName-Pressed"
+						* The highlight texture will be "atlasName-Highlight"
+		tooltip: This can be either a string or a function which returns a string
+
+		<KeyValues>
+			<KeyValue key="atlasName" value="128-RedButton" type="string"/>
+			<KeyValue key="tooltip" value="MyTooltipFunction" type="global"/>
+				or
+			<KeyValue key="tooltip" value="REFRESH_BUTTON_TOOLTIP" type="string"/>
+		</KeyValues>
+		-->
+		<Size x="20" y="20"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Left">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="Right">
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="Center" horizTile="true"/>
+			</Layer>
+		</Layers>
+
+		<Frames>
+			<Frame parentKey="Controller">
+				<Scripts>
+					<OnLoad>
+						Mixin(self, ButtonControllerMixin)
+						self:OnLoad()
+					</OnLoad>
+					<OnShow>
+						self:OnShow()
+					</OnShow>
+				</Scripts>
+			</Frame>
+		</Frames>
+
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ThreeSliceButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnMouseDown>
+				self:OnMouseDown(button)
+			</OnMouseDown>
+			<OnMouseUp>
+				self:OnMouseUp(button)
+			</OnMouseUp>
+			<OnShow>
+				self:UpdateButton()
+			</OnShow>
+			<OnDisable>
+				self:UpdateButton()
+			</OnDisable>
+			<OnEnable>
+				self:UpdateButton()
+			</OnEnable>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+			<OnSizeChanged>
+				self:UpdateScale()
+			</OnSizeChanged>
+		</Scripts>
+	</Button>
+
+	<Button name="BigRedThreeSliceButtonTemplate" inherits="ThreeSliceButtonTemplate" virtual="true">
+		<Size x="441" y="128"/>
+		<Attributes>
+			<Attribute name="atlasName" value="128-RedButton" type="string"/>
+		</Attributes>
+		<PushedTextOffset x="-2" y="-1"/>
+	</Button>
+
+	<Button name="SharedButtonTemplate" inherits="BigRedThreeSliceButtonTemplate" virtual="true">
+		<Size x="200" y="30"/>
+		<NormalFont style="GameFontNormal"/>
+		<HighlightFont style="GameFontHighlight"/>
+		<DisabledFont style="GameFontDisable"/>
+	</Button>
+
+	<Button name="SharedButtonLargeTemplate" inherits="BigRedThreeSliceButtonTemplate" virtual="true">
+		<Size x="200" y="30"/>
+		<NormalFont style="GameFontNormalMed3"/>
+		<HighlightFont style="GameFontHighlightMedium"/>
+		<DisabledFont style="GameFontDisableMed3"/>
+	</Button>
+
+	<Button name="SharedButtonSmallTemplate" inherits="BigRedThreeSliceButtonTemplate" virtual="true">
+		<Size x="138" y="28"/>
+		<NormalFont style="GameFontNormal"/>
+		<HighlightFont style="GameFontHighlight"/>
+		<DisabledFont style="GameFontDisable"/>
+	</Button>
+
+	<!--The DefaultScaleFrame template is used to allow a frame to appear to be "unscaled"
+		That means that all the textures/fonts used should appear as the same size they do in Photoshop when authored.
+		It is most useful in Glues, where we ALWAYS apply a UIScale, with no way to turn it off.
+		But it can also be used in game in order to attain a consistent look on a panel.
+		If you choose to use it in-game, remember that when you use it, the player will no longer be able to scale that panel up for accessibility reasons.-->
+
+	<!--IMPORTANT:
+		If you are inheriting from more than 1 frame, inherit this frame LAST (the right-most in the list).
+		If you have your own mixin, use inherit="prepend" for OnLoad & OnEvent if you define them-->
+	<Frame name="DefaultScaleFrame" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, DefaultScaleFrameMixin)
+				self:OnDefaultScaleFrameLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnDefaultScaleFrameEvent(event, ...)
+			</OnEvent>
+		</Scripts>
+	</Frame>
 
 	<Button name="StorePopupButtonTemplate" inherits="StoreGoldButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
 		<Scripts>

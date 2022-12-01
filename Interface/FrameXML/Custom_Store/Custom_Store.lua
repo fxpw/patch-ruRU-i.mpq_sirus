@@ -789,7 +789,7 @@ function GetStoreHyperlinkInfo( link )
 	local storeID 		= tonumber(splitData[5])
 
 	ShowUIPanel(StoreFrame)
-	
+
 	local setClassID
 	if moneyID == 1 then
 		if categoryID == 6 and subCategoryID == 0 then
@@ -1116,6 +1116,10 @@ end
 
 function GetStoreProductVersion()
 	return STORE_CACHE:Get("ASMSG_SHOP_VERSION")
+end
+
+function GetStoreRenewalDiscounts()
+	return STORE_CACHE:Get("ASMSG_SHOP_COLLECTION_RENEWAL_DISCOUNT") or 0, STORE_CACHE:Get("ASMSG_SHOP_TRANSMOG_RENEWAL_DISCOUNT") or 0;
 end
 
 function GetStoreRolledItemsVersion(categoryId)
@@ -3544,6 +3548,14 @@ function StoreConfirmationFrame_Update(self)
 				giftOverride = true
 			end
 		end
+	elseif self.data.ShowDiscountedPrice and self.data.DiscountedPrice then
+		self.NoticeFrame.OriginalPrice:SetText(self.data.Price);
+		self.NoticeFrame.OriginalPrice:Show();
+		self.NoticeFrame.Strikethrough:Show();
+		self.NoticeFrame.Price:SetText(self.data.DiscountedPrice);
+		self.NoticeFrame.Price:SetPoint("RIGHT", self.NoticeFrame.MoneyIcon, "LEFT", 0, -8);
+		self.NoticeFrame.Price:SetTextColor(0.1, 1, 0.1);
+		giftOverride = true;
 	end
 
 	if not giftOverride then
@@ -6490,6 +6502,12 @@ function EventHandler:ASMSG_SHOP_RENEW_ITEMS( msg )
 		local cacheDropsCount = STORE_CACHE:Get("CATEGORY_DROP_COUNT"..categoryId, 0)
 		STORE_CACHE:Set("CATEGORY_DROP_COUNT"..categoryId, cacheDropsCount + 1)
 
+		if categoryId == STORE_COLLECTIONS_CATEGORY_ID then
+			STORE_CACHE:Set("ASMSG_SHOP_COLLECTION_RENEWAL_DISCOUNT", 0);
+		elseif categoryId == STORE_TRANSMOGRIFY_CATEGORY_ID then
+			STORE_CACHE:Set("ASMSG_SHOP_TRANSMOG_RENEWAL_DISCOUNT", 0);
+		end
+
 		if selectedSubCategoryID ~= 0 then
 			if categoryId == STORE_TRANSMOGRIFY_CATEGORY_ID then
 				STORE_TRANSMOGRIFY_SERVER_DATA = {}
@@ -6560,9 +6578,12 @@ function StoreRequestShopItems( moneyID, categoryID, subCategoryID, ignireFilter
 	end
 end
 
-function EventHandler:ASMSG_SHOP_VERSION( msg )
-	local version = tonumber(msg)
-	STORE_CACHE:Set("ASMSG_SHOP_VERSION", version)
+function EventHandler:ASMSG_SHOP_VERSION(msg)
+	local version, collectionRenewalDiscount, transmogRenewalDiscount = strsplit(":", msg);
+
+	STORE_CACHE:Set("ASMSG_SHOP_VERSION", tonumber(version));
+	STORE_CACHE:Set("ASMSG_SHOP_COLLECTION_RENEWAL_DISCOUNT", tonumber(collectionRenewalDiscount) or 0);
+	STORE_CACHE:Set("ASMSG_SHOP_TRANSMOG_RENEWAL_DISCOUNT", tonumber(transmogRenewalDiscount) or 0);
 end
 
 StoreTransmogrifySubCategoryFrameMixin = {}

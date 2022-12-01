@@ -9,8 +9,33 @@ local CAMERA_ZOOM_MIN_LEVEL = 0
 local CAMERA_ZOOM_MAX_LEVEL = 100
 local CAMERA_ZOOM_LEVEL_AMOUNT = 20
 local CAMERA_ZOOM_IN_PROGRESS = false
+local CAMERA_ZOOM_RESET_BLOCKED = false
 
 local PAID_OVERRIDE_CURRENT_RACE_INDEX
+
+enum:E_PAID_SERVICE {
+	CUSTOMIZATION	= 1,
+	CHANGE_RACE		= 2,
+	CHANGE_FACTION	= 3,
+	BOOST_SERVICE	= 4,
+}
+
+local INACCESSIBILITY_FLAGS = {
+	CREATION		= 0x01,
+	CREATION_DK		= 0x02,
+	CUSTOMIZATION	= 0x04,
+	FACTION_CHANGE	= 0x08,
+	RACE_CHANGE		= 0x10,
+	BOOST_SERVICE	= 0x20,
+}
+
+local RACE_INACCESSIBILITY = {
+--	[E_CHARACTER_RACES.RACE_DRACTHYR] = INACCESSIBILITY_FLAGS.CREATION_DK + INACCESSIBILITY_FLAGS.FACTION_CHANGE + INACCESSIBILITY_FLAGS.RACE_CHANGE + INACCESSIBILITY_FLAGS.BOOST_SERVICE,
+}
+
+local CLASS_INACCESSIBILITY = {
+	[CLASS_ID_DEMONHUNTER] = true
+}
 
 local CHARACTER_CREATE_CAMERA_ZOOMED_SETTINGS = {
 	[E_SEX.MALE] = {
@@ -43,6 +68,8 @@ local CHARACTER_CREATE_CAMERA_ZOOMED_SETTINGS = {
 		[E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE]		= {8.300, 0.105, -0.050},
 		[E_CHARACTER_RACES.RACE_VULPERA_HORDE]			= {8.300, 0.105, -0.050},
 		[E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL]		= {8.300, 0.105, -0.050},
+
+		[E_CHARACTER_RACES.RACE_DRACTHYR]				= {-8.630, 6.270, -1.245},
 	},
 	[E_SEX.FEMALE] = {
 		[E_CHARACTER_RACES.RACE_HUMAN]					= {-6.700, 5.125, -0.700},
@@ -74,6 +101,8 @@ local CHARACTER_CREATE_CAMERA_ZOOMED_SETTINGS = {
 		[E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE]		= {8.300, 0.105, -0.050},
 		[E_CHARACTER_RACES.RACE_VULPERA_HORDE]			= {8.300, 0.105, -0.050},
 		[E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL]		= {8.300, 0.105, -0.050},
+
+		[E_CHARACTER_RACES.RACE_DRACTHYR]				= {-8.700, 6.500, -1.060},
 	},
 	["DEATHKNIGHT"] = {
 		[E_SEX.MALE] = {
@@ -106,6 +135,8 @@ local CHARACTER_CREATE_CAMERA_ZOOMED_SETTINGS = {
 			[E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE]	= {-3.590, 2.795, 0.090},
 			[E_CHARACTER_RACES.RACE_VULPERA_HORDE]		= {-3.590, 2.795, 0.090},
 			[E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL]	= {-3.590, 2.795, 0.090},
+
+			[E_CHARACTER_RACES.RACE_DRACTHYR]			= {-4.000, 3.040, -0.405},	-- RACE_BLOODELF
 		},
 		[E_SEX.FEMALE] = {
 			[E_CHARACTER_RACES.RACE_HUMAN]				= {-4.020, 3.127, -0.330},
@@ -137,9 +168,15 @@ local CHARACTER_CREATE_CAMERA_ZOOMED_SETTINGS = {
 			[E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE]	= {-3.590, 2.795, 0.090},
 			[E_CHARACTER_RACES.RACE_VULPERA_HORDE]		= {-3.590, 2.795, 0.090},
 			[E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL]	= {-3.590, 2.795, 0.090},
+
+			[E_CHARACTER_RACES.RACE_DRACTHYR]			= {-4.020, 3.127, -0.330},	-- RACE_HUMAN
 		}
 	}
 }
+
+if IsInterfaceDevClient() then
+	_G.CHARACTER_CREATE_CAMERA_ZOOMED_SETTINGS = CHARACTER_CREATE_CAMERA_ZOOMED_SETTINGS
+end
 
 local ALL_RACES = {
 	{factionID = PLAYER_FACTION_GROUP.Alliance, raceID = E_CHARACTER_RACES.RACE_HUMAN},
@@ -165,6 +202,7 @@ local ALL_RACES = {
 	{factionID = PLAYER_FACTION_GROUP.Horde, raceID = E_CHARACTER_RACES.RACE_ZANDALARITROLL},
 
 	{factionID = PLAYER_FACTION_GROUP.Neutral, raceID = E_CHARACTER_RACES.RACE_PANDAREN_NEUTRAL},
+	{factionID = PLAYER_FACTION_GROUP.Neutral, raceID = E_CHARACTER_RACES.RACE_DRACTHYR},
 	{factionID = PLAYER_FACTION_GROUP.Neutral, raceID = E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL},
 }
 local ALLIED_RACES = {
@@ -178,8 +216,8 @@ local ALLIED_RACES = {
 local NEUTRAL_RACES = {
 	[E_CHARACTER_RACES.RACE_PANDAREN_NEUTRAL] = true,
 	[E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL] = true,
-	[E_CHARACTER_RACES.RACE_BLOODELF_DH] = true,
-	[E_CHARACTER_RACES.RACE_NIGHTELF_DH] = true,
+	[E_CHARACTER_RACES.RACE_DRACTHYR] = true,
+--	[E_CHARACTER_RACES.RACE_BLOODELF_DH] = true,
 }
 local VULPERA_RACES = {
 	[E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL] = true,
@@ -220,20 +258,24 @@ eventHandler:Hide()
 eventHandler:RegisterCustomEvent("GLUE_CHARACTER_CREATE_BACKGROUND_UPDATE")
 eventHandler:RegisterCustomEvent("GLUE_CHARACTER_CREATE_VISIBILITY_CHANGED")
 eventHandler:SetScript("OnEvent", function(self)
+	if CAMERA_ZOOM_RESET_BLOCKED then return end
+
 	self:Hide()
 	CAMERA_ZOOM_LEVEL = 0
 	CAMERA_ZOOM_IN_PROGRESS = false
 end)
 
 local function stopZooming()
-	if CAMERA_ZOOM_IN_PROGRESS then
-		CAMERA_ZOOM_IN_PROGRESS = nil
-		eventHandler.elapsed = 0
-		FireCustomClientEvent("GLUE_CHARACTER_CREATE_ZOOM_DONE")
-	end
+	if not CAMERA_ZOOM_IN_PROGRESS or CAMERA_ZOOM_RESET_BLOCKED then return end
+
+	CAMERA_ZOOM_IN_PROGRESS = nil
+	eventHandler.elapsed = 0
+	FireCustomClientEvent("GLUE_CHARACTER_CREATE_ZOOM_DONE")
 end
 
 local function resetModelSettings()
+	if CAMERA_ZOOM_RESET_BLOCKED then return end
+
 	CAMERA_ZOOM_LEVEL = 0
 
 	if eventHandler:IsShown() then
@@ -288,6 +330,17 @@ end
 
 function C_CharacterCreation.SetInCharacterCreate(state)
 	IN_CHARACTER_CREATE = state and true or false
+
+	if not IN_CHARACTER_CREATE then
+		PAID_SERVICE_CHARACTER_ID = nil
+		PAID_SERVICE_TYPE = nil
+
+		local defaultFacing = C_CharacterCreation.GetDefaultCharacterCreateFacing()
+		if GetCharacterCreateFacing() ~= defaultFacing then
+			SetCharacterCreateFacing(defaultFacing)
+		end
+	end
+
 	PAID_OVERRIDE_CURRENT_RACE_INDEX = nil
 	FireCustomClientEvent("GLUE_CHARACTER_CREATE_VISIBILITY_CHANGED", IN_CHARACTER_CREATE)
 end
@@ -328,7 +381,7 @@ function C_CharacterCreation.ResetCharCustomize()
 	SELECTED_CLASS = select(3, GetSelectedClass())
 
 	local changed
-	while not C_CharacterCreation.IsRaceAvailable(SELECTED_RACE) do
+	while not C_CharacterCreation.IsRaceAvailable(SELECTED_RACE) or not C_CharacterCreation.IsRaceClassValid(SELECTED_RACE, SELECTED_CLASS) do
 		SELECTED_RACE = ALL_RACES[math.random(1, #ALL_RACES)].raceID
 		changed = true
 	end
@@ -356,6 +409,18 @@ function C_CharacterCreation.GenerateRandomName()
 end
 
 function C_CharacterCreation.CreateCharacter(name)
+	CHARACTER_CREATE_DRESSED = true
+
+	if type(PAID_SERVICE_CHARACTER_ID) == "number" and PAID_SERVICE_CHARACTER_ID > 0 and PAID_SERVICE_CHARACTER_ID < 10 then
+		local lastSelectedIndex = tonumber(GetCVar("lastCharacterIndex"))
+		if not lastSelectedIndex or PAID_SERVICE_CHARACTER_ID ~= GetCharIDFromIndex(lastSelectedIndex + 1) then
+			SetCVar("lastCharacterIndex", PAID_SERVICE_CHARACTER_ID - 1)
+		end
+	end
+
+	PAID_SERVICE_CHARACTER_ID = nil
+	PAID_SERVICE_TYPE = nil
+
 	return CreateCharacter(name)
 end
 
@@ -427,6 +492,15 @@ function C_CharacterCreation.GetFactionForRace(raceID)
 end
 
 function C_CharacterCreation.IsRaceClassValid(raceID, classID)
+	if RACE_INACCESSIBILITY[raceID] and not IsGMAccount() then
+		if CLASS_INACCESSIBILITY[classID]
+		or bit.band(RACE_INACCESSIBILITY[raceID], INACCESSIBILITY_FLAGS.CREATION) ~= 0
+		or (classID == CLASS_ID_DEATHKNIGHT and bit.band(RACE_INACCESSIBILITY[raceID], INACCESSIBILITY_FLAGS.CREATION_DK) ~= 0)
+		then
+			return false
+		end
+	end
+
 	return IsRaceClassValid(raceID, classID)
 end
 
@@ -435,6 +509,27 @@ function C_CharacterCreation.SetSelectedRace(raceID)
 
 	SetSelectedRace(raceID)
 	SELECTED_RACE = GetSelectedRace()
+
+	if not C_CharacterCreation.IsRaceClassValid(raceID, SELECTED_CLASS) then
+		while true do
+			local classID = math.random(1, S_MAX_CLASSES)
+
+			if classID ~= SELECTED_CLASS
+			and not CLASS_INACCESSIBILITY[classID]
+			and C_CharacterCreation.IsRaceClassValid(raceID, classID)
+			then
+				SetSelectedClass(classID)
+				SELECTED_CLASS = classID
+				break
+			end
+		end
+	end
+
+	if C_CharacterCreation.PaidChange_GetCurrentRaceIndex() == SELECTED_RACE then
+		if SELECTED_SEX ~= GetSelectedSex() then
+			SetSelectedSex(SELECTED_SEX)
+		end
+	end
 
 	resetModelSettings()
 
@@ -493,11 +588,23 @@ function C_CharacterCreation.GetAvailableCustomizations()
 		if facialHair ~= "NONE" and i == E_CHARACTER_CUSTOMIZATION.FACIAL_HAIR then
 			if SELECTED_RACE == E_CHARACTER_RACES.RACE_NIGHTELF and SELECTED_SEX == E_SEX.FEMALE then
 				name = FACIAL_HAIR_FEATURES_EARS
+			elseif SELECTED_RACE == E_CHARACTER_RACES.RACE_DRACTHYR then
+				if SELECTED_SEX == E_SEX.MALE then
+					name = FACIAL_HAIR_DRACTHYR
+				else
+					name = FACIAL_HAIR_FEATURES_HORNS
+				end
 			else
 				name = _G["FACIAL_HAIR_"..facialHair]
 			end
 		else
-			if i == E_CHARACTER_CUSTOMIZATION.HAIR then
+			if i == E_CHARACTER_CUSTOMIZATION.SKIN_COLOR and SELECTED_RACE == E_CHARACTER_RACES.RACE_DRACTHYR then
+				name = SKIN_COLOR_DRACTHYR
+			elseif i == E_CHARACTER_CUSTOMIZATION.SKIN_COLOR and SELECTED_RACE == E_CHARACTER_RACES.RACE_ZANDALARITROLL and SELECTED_SEX == E_SEX.MALE then
+				name = SKIN_COLOR_ZANDALARITROLL
+			elseif i == E_CHARACTER_CUSTOMIZATION.FACE and SELECTED_RACE == E_CHARACTER_RACES.RACE_DRACTHYR then
+				name = FACIAL_FACE_DRACTHYR
+			elseif i == E_CHARACTER_CUSTOMIZATION.HAIR then
 				name = _G["HAIR_"..hair.."_STYLE"]
 			elseif i == E_CHARACTER_CUSTOMIZATION.HAIR_COLOR then
 				if hair ~= "VULPERA" then
@@ -536,6 +643,8 @@ function C_CharacterCreation.GetSelectedModelName(ignoreOverirde)
 		else
 			return "DeathKnight"
 		end
+	elseif raceID == E_CHARACTER_RACES.RACE_DRACTHYR then
+		return "Dracthyr"
 	elseif C_CharacterCreation.IsVulperaRace(raceID) then
 		return "Vulpera"
 	elseif C_CharacterCreation.IsPandarenRace(raceID) then
@@ -563,7 +672,9 @@ function C_CharacterCreation.GetSelectedModelName(ignoreOverirde)
 	end
 
 	local factionInfo = S_CHARACTER_RACES_INFO[raceID]
-	assert(factionInfo, "C_CharacterCreation.GetSelectedModelName: No info for raceID " .. raceID)
+	if type(factionInfo) ~= "table" then
+		error(string.format("C_CharacterCreation.GetSelectedModelName: No faction info for raceID [%s]", raceID), 2)
+	end
 
 	return PLAYER_FACTION_GROUP[factionInfo.factionID]
 end
@@ -614,8 +725,9 @@ function C_CharacterCreation.GetCameraSettingsDefault()
 	end
 
 	local cameraSettings = CHARACTER_CAMERA_SETTINGS[modelName]
-
-	assert(cameraSettings, "C_CharacterCreation.GetCameraSettingsDefault: не найдены настройки камеры для модели " .. tostring(modelName))
+	if type(cameraSettings) ~= "table" then
+		error(string.format("C_CharacterCreation.GetCameraSettingsDefault(): No camera settings was found for model [%s]", tostring(modelName)), 2)
+	end
 
 	return cameraSettings
 end
@@ -743,10 +855,34 @@ function C_CharacterCreation.GetMaxCameraZoom()
 	return CAMERA_ZOOM_MAX_LEVEL
 end
 
+function C_CharacterCreation.SetCameraPosition(cameraPosition)
+	return MODEL_FRAME:SetPosition(unpack(cameraPosition, 1, 3))
+end
 
+function C_CharacterCreation.GetCameraPosition()
+	return {MODEL_FRAME:GetPosition()}
+end
+
+function C_CharacterCreation.SetBlockCameraReset(isBlocked)
+	CAMERA_ZOOM_RESET_BLOCKED = not not isBlocked
+end
+
+
+
+function C_CharacterCreation.PaidChange_GetName()
+	return PaidChange_GetName() or ""
+end
+
+function C_CharacterCreation.PaidChange_GetCurrentClassIndex()
+	return PaidChange_GetCurrentClassIndex()
+end
 
 function C_CharacterCreation.PaidChange_GetCurrentRaceIndex()
 	return PAID_OVERRIDE_CURRENT_RACE_INDEX or PaidChange_GetCurrentRaceIndex()
+end
+
+function C_CharacterCreation.PaidChange_GetPreviousRaceIndex()
+	return PaidChange_GetPreviousRaceIndex()
 end
 
 function C_CharacterCreation.PaidChange_GetCurrentFaction()
@@ -786,4 +922,23 @@ function C_CharacterCreation.PaidChange_ChooseFaction(factionID, reverse)
 	if PAID_OVERRIDE_CURRENT_RACE_INDEX then
 		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.GLUE_CHARACTER_CREATE_FORCE_RACE_CHANGE, PAID_OVERRIDE_CURRENT_RACE_INDEX)
 	end
+end
+
+function C_CharacterCreation.IsServicesAvailableForRace(serviceType, raceID)
+	assert(serviceType, "IsServicesAvailableForRace: no service type")
+	assert(raceID, "IsServicesAvailableForRace: no race id")
+
+	if RACE_INACCESSIBILITY[raceID] and not IsGMAccount() then
+		if serviceType == E_PAID_SERVICE.CUSTOMIZATION then
+			return bit.band(RACE_INACCESSIBILITY[raceID], INACCESSIBILITY_FLAGS.CUSTOMIZATION) == 0
+		elseif serviceType == E_PAID_SERVICE.CHANGE_RACE then
+			return bit.band(RACE_INACCESSIBILITY[raceID], INACCESSIBILITY_FLAGS.RACE_CHANGE) == 0
+		elseif serviceType == E_PAID_SERVICE.CHANGE_FACTION then
+			return bit.band(RACE_INACCESSIBILITY[raceID], INACCESSIBILITY_FLAGS.FACTION_CHANGE) == 0
+		elseif serviceType == E_PAID_SERVICE.BOOST_SERVICE then
+			return bit.band(RACE_INACCESSIBILITY[raceID], INACCESSIBILITY_FLAGS.BOOST_SERVICE) == 0
+		end
+	end
+
+	return true
 end

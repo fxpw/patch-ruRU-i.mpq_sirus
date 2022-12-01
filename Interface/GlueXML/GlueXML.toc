@@ -26,9 +26,10 @@ GlueStrings.lua
 ..\SharedXML\AnchorUtil.lua
 ..\SharedXML\Pools.lua
 ..\SharedXML\CircularBuffer.lua
+..\SharedXML\StringUtil.lua
+..\SharedXML\TypeUtil.lua
 ..\SharedXML\Utils\C_Texture.lua
 ..\SharedXML\Utils\C_CreatureInfo.lua
-..\SharedXML\TypeUtil.lua
 ..\SharedXML\Opcodes.lua
 
 ..\SharedXML\S_Dump.lua

@@ -357,21 +357,17 @@ end
 
 function GetRemainingTime(seconds, daysformat)
 	if daysformat then
-		if seconds > SECONDS_PER_DAY then
-			return floor(seconds / SECONDS_PER_DAY) .. string.format(" |4день:дня:дней;", seconds % 10)
+		if seconds >= SECONDS_PER_DAY then
+			return string.format(D_DAYS_FULL, math.floor(seconds / SECONDS_PER_DAY))
 		else
 			return date("!%X", seconds)
 		end
 	else
-		local days = ""
-
-		if seconds > SECONDS_PER_DAY then
-			days = floor(seconds / SECONDS_PER_DAY) .. "д "
-			seconds = seconds % SECONDS_PER_DAY
-		end
-
-		if seconds and seconds >= 0 then
-			return days .. date("!%X", seconds)
+		if seconds >= SECONDS_PER_DAY then
+			local days = string.format(DAY_ONELETTER_ABBR_SHORT, math.floor(seconds / SECONDS_PER_DAY))
+			return string.format("%s %s", days, date("!%X", seconds % SECONDS_PER_DAY))
+		else
+			return date("!%X", seconds)
 		end
 	end
 end

@@ -238,6 +238,7 @@ end
 
 take("SecureMixin");
 take("CreateFromSecureMixins");
+take("CreateSecureMixinCopy");
 
 retain("GetFinalNameFromTextureKit")
 retain("C_Texture");
@@ -248,6 +249,8 @@ retain("C_Texture");
 
 remove("SECURE_IsForbidden");
 remove("SECURE_SetForbidden");
+
+remove("TRACKED_CVARS");
 
 retain("FACTION_OVERRIDE_BY_DEBUFFS");
 retain("S_CATEGORY_SPELL_ID");

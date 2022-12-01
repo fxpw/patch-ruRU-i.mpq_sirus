@@ -61,3 +61,34 @@ do
 		end
 	end
 end
+
+local function readOnlyError()
+	error("This is a read only table and cannot be modified.", 2)
+end
+
+local issecure = issecure
+function Enum.CreateMirror(t)
+	local mirror = {}
+
+	for k, v in pairs(t) do
+		mirror[k] = v
+		mirror[v] = k
+	end
+
+	setmetatable(t, {
+		__index = function(self, key)
+			return mirror[key]
+		end,
+		__call = function(self, key, value)
+			if value and issecure() then
+				rawset(self, key, value)
+			else
+				return mirror[key]
+			end
+		end,
+		__newindex = readOnlyError,
+		__metatable = false,
+	})
+
+	return t
+end

@@ -32,7 +32,7 @@ function C_BattlefieldScoreManagerMixin:GenerateScoreData()
         local additionalStatData = {}
 
         if self:IsValidation() then
-            local factionID = C_FactionManager:GetFactionOverride()
+            local factionID = C_FactionManager.GetFactionOverride()
 
             for statID = 1, GetNumBattlefieldStats() do
                 table.insert(additionalStatData, GetBattlefieldStatData(i, statID))

@@ -47,9 +47,6 @@ GlueDialogTypes["BOOST_ERROR_NOT_ENOUGH_BONUES"] = {
 	OnAccept = function ()
 		LaunchURL("https://sirus.su/pay?bonuses="..CharacterBoost_CalculatePayBonuses())
 	end,
-	OnCancel = function()
-		-- printc("OnCancel")
-	end,
 }
 
 local factionLogoTextures = {
@@ -63,14 +60,13 @@ local factionLabels = {
 }
 
 function CharacterBoost_CharacterInit(isBoostMode)
-	local numChars = GetNumCharacters()
-	local characterLimit = min(numChars, MAX_CHARACTERS_DISPLAYED)
+	local characterLimit = min(GetNumCharacters(), MAX_CHARACTERS_DISPLAYED)
 
 	for i = 1, characterLimit do
-		local name, race, class, level = GetCharacterInfo(GetCharIDFromIndex(i))
 		local button = _G["CharSelectCharacterButton"..i]
 		if isBoostMode then
-			if level < BOOST_MAX_LEVEL then
+			local name, race, class, level = GetCharacterInfo(GetCharIDFromIndex(i))
+			if level < BOOST_MAX_LEVEL and C_CharacterCreation.IsServicesAvailableForRace(E_PAID_SERVICE.BOOST_SERVICE, C_CreatureInfo.GetRaceInfo(race).raceID) then
 				button:Enable()
 				button:SetBoostMode(true, true)
 
@@ -342,38 +338,51 @@ end
 function CharacterServicesMasterNextButton_OnClick( self, ... )
 	local frame = self:GetParent()
 	if CharacterBoostStep == 1 then
+		local charSelected
+
 		if ( frame.CharSelect ) then
-			local name, race, class, level = GetCharacterInfo(GetCharIDFromIndex(CharSelectServicesFlowFrame.CharSelect));
-			local classInfo = C_CreatureInfo.GetClassInfo(class)
-			local factionInfo = C_CreatureInfo.GetFactionInfo(race)
-	
-			self.classInfo = classInfo
-			self.factionInfo = factionInfo
+			local characterID = GetCharIDFromIndex(CharSelectServicesFlowFrame.CharSelect)
+			local name, race, class, level = GetCharacterInfo(characterID)
 
-			local _, _, _, color = GetClassColor(classInfo.classFile)
-			frame.CharacterServicesMaster.step1.finish.Character:SetFormattedText(CHARACTER_BOOST_CHARACTER_NAME, color, name)
-			frame.CharacterServicesMaster.step1.finish.CharacterInfo:SetFormattedText(CHARACTER_BOOST_CHARACTER_INFO, level, color, class)
+			if C_CharacterCreation.IsServicesAvailableForRace(E_PAID_SERVICE.BOOST_SERVICE, C_CreatureInfo.GetRaceInfo(race).raceID) then
+				charSelected = true
 
-			frame.CharacterServicesMaster.step1.choose:Hide()
-			frame.CharacterServicesMaster.step1.finish:Show()
-			frame.GlowBox:Hide()
-
-			for i = 1, math.min(GetNumCharacters(), MAX_CHARACTERS_DISPLAYED) do
-				local button = _G["CharSelectCharacterButton"..i]
-				button.Arrow:Hide()
-
-				if i ~= frame.CharSelect then
-					button:Disable()
+				if FACTION_OVERRIDE[characterID] then
+					self.factionID = PLAYER_FACTION_GROUP[SERVER_PLAYER_FACTION_GROUP[FACTION_OVERRIDE[characterID]]]
+				else
+					local factionInfo = C_CreatureInfo.GetFactionInfo(race)
+					self.factionID = factionInfo.factionID
 				end
+
+				self.classInfo = C_CreatureInfo.GetClassInfo(class)
+
+				local _, _, _, color = GetClassColor(self.classInfo.classFile)
+				frame.CharacterServicesMaster.step1.finish.Character:SetFormattedText(CHARACTER_BOOST_CHARACTER_NAME, color, name)
+				frame.CharacterServicesMaster.step1.finish.CharacterInfo:SetFormattedText(CHARACTER_BOOST_CHARACTER_INFO, level, color, class)
+	
+				frame.CharacterServicesMaster.step1.choose:Hide()
+				frame.CharacterServicesMaster.step1.finish:Show()
+				frame.GlowBox:Hide()
+	
+				for i = 1, math.min(GetNumCharacters(), MAX_CHARACTERS_DISPLAYED) do
+					local button = _G["CharSelectCharacterButton"..i]
+					button.Arrow:Hide()
+	
+					if i ~= frame.CharSelect then
+						button:Disable()
+					end
+				end
+	
+				CharacterBoostStep = CharacterBoostStep + 1
+	
+				PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
+				frame.CharacterServicesMaster.step2:Show()
 			end
+		end
 
-			CharacterBoostStep = CharacterBoostStep + 1
-
-			PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
-			frame.CharacterServicesMaster.step2:Show()
-		else
+		if not charSelected then
 			PlaySound(SOUNDKIT.GS_TITLE_OPTIONS)
-			GlueDialog:ShowDialog("OKAY", "Персонаж не выбран")
+			GlueDialog:ShowDialog("OKAY", CHARACTER_NOT_FOUND)
 		end
 	elseif CharacterBoostStep == 2 then
 		SelectMainProfession = GlueDark_DropDownMenu_GetSelectedValue(ChooseMainProffesionDropDown)
@@ -453,7 +462,7 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 				frame.CharacterServicesMaster.step4:Show()
 			else
 				SelectCharacterPvPSpec = 1
-				if self.factionInfo.factionID == PLAYER_FACTION_GROUP.Neutral then
+				if self.factionID == PLAYER_FACTION_GROUP.Neutral then
 					PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
 					CharacterBoostStep = CharacterBoostStep + 1;
 					frame.CharacterServicesMaster.step5:Show();
@@ -484,7 +493,7 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 			frame.CharacterServicesMaster.step4.choose:Hide();
 			frame.CharacterServicesMaster.step4.finish:Show();
 
-			if self.factionInfo.factionID == PLAYER_FACTION_GROUP.Neutral then
+			if self.factionID == PLAYER_FACTION_GROUP.Neutral then
 				PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
 				CharacterBoostStep = CharacterBoostStep + 1;
 				frame.CharacterServicesMaster.step5:Show();
@@ -495,26 +504,28 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 			end
 		end
 	elseif CharacterBoostStep == 5 then
-		local SelectFaction = (frame.CharacterServicesMaster.step5.choose.FactionButtons[1]:GetChecked()) and FACTION_HORDE or FACTION_ALLIANCE
-		local CheckFaction = false
+		local selectedFactionButton
 
-		for _, button in pairs(frame.CharacterServicesMaster.step5.choose.FactionButtons) do
+		for _, button in ipairs(frame.CharacterServicesMaster.step5.choose.FactionButtons) do
 			if button:GetChecked() then
-				SelectCharacterFaction = button:GetID()
-				CheckFaction = true
+				selectedFactionButton = button:GetID()
+				break
 			end
 		end
-		if not CheckFaction then
-			GlueDialog:ShowDialog("OKAY", CHOOSE_FACTION)
-		else
-			CheckFaction = false
+
+		if selectedFactionButton then
+			SelectCharacterFaction = selectedFactionButton
+
 			frame.CharacterServicesMaster.step5.choose:Hide()
 			frame.CharacterServicesMaster.step5.finish:Show()
-			frame.CharacterServicesMaster.step5.finish.Faction:SetText(SelectFaction)
+			frame.CharacterServicesMaster.step5.finish.Faction:SetText(selectedFactionButton == 1 and FACTION_HORDE or FACTION_ALLIANCE)
 
 			PlaySound(SOUNDKIT.GS_TITLE_OPTIONS)
 			self:Hide()
+
 			GlueDialog:ShowDialog("CHARACTER_SERVICES_BOOST_CONFIRM")
+		else
+			GlueDialog:ShowDialog("OKAY", CHOOSE_FACTION)
 		end
 	end
 end

@@ -81,7 +81,7 @@
 		<Size x="34" y="34"/>
 		<Layers>
 			<Layer level="ARTWORK">
-				<Texture name="$parentIcon" parentKey="Icon"/>
+				<Texture name="$parentIcon" file="Interface\LFGFrame\UI-LFG-ICON-ROLES" parentKey="Icon"/>
 			</Layer>
 		</Layers>
 		<Frames>
@@ -360,7 +360,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						self.Icon:SetAtlas("UI-Frame-TankIcon", true);
+						self.Icon:SetTexCoord(GetTexCoordsForRole("TANK"));
 						self.param = LFGUILD_PARAM_TANK;
 					</OnLoad>
 				</Scripts>
@@ -371,7 +371,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						self.Icon:SetAtlas("UI-Frame-HealerIcon", true);
+						self.Icon:SetTexCoord(GetTexCoordsForRole("HEALER"));
 						self.param = LFGUILD_PARAM_HEALER;
 					</OnLoad>
 				</Scripts>
@@ -382,7 +382,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						self.Icon:SetAtlas("UI-Frame-DpsIcon", true);
+						self.Icon:SetTexCoord(GetTexCoordsForRole("DAMAGER"));
 						self.param = LFGUILD_PARAM_DAMAGE;
 					</OnLoad>
 				</Scripts>

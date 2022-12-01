@@ -1,9 +1,3 @@
---	Filename:	SharedExtendedMethods.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 local Texture, FontString, DressUpModel, TabardModel
 local Frame = getmetatable(CreateFrame("Frame"))
 local Button = getmetatable(CreateFrame("Button"))
@@ -309,6 +303,58 @@ function Method_SetDisabled( self, ... )
 	end
 end
 
+local function Method_SetNormalAtlas(self, atlasName, useAtlasSize, filterMode)
+	local texture = self:GetNormalTexture()
+	if not texture then
+		self:SetNormalTexture("")
+		texture = self:GetNormalTexture()
+	end
+	Method_SetAtlas(texture, atlasName, useAtlasSize, filterMode)
+end
+
+local function Method_SetPushedAtlas(self, atlasName, useAtlasSize, filterMode)
+	local texture = self:GetPushedTexture()
+	if not texture then
+		self:SetPushedTexture("")
+		texture = self:GetPushedTexture()
+	end
+	Method_SetAtlas(texture, atlasName, useAtlasSize, filterMode)
+end
+
+local function Method_SetDisabledAtlas(self, atlasName, useAtlasSize, filterMode)
+	local texture = self:GetDisabledTexture()
+	if not texture then
+		self:SetDisabledTexture("")
+		texture = self:GetDisabledTexture()
+	end
+	Method_SetAtlas(texture, atlasName, useAtlasSize, filterMode)
+end
+
+local function Method_SetHighlightAtlas(self, atlasName, useAtlasSize, filterMode)
+	local texture = self:GetHighlightTexture()
+	if not texture then
+		self:SetHighlightTexture("")
+		texture = self:GetHighlightTexture()
+	end
+	Method_SetAtlas(texture, atlasName, useAtlasSize, filterMode)
+end
+
+local function Method_ClearNormalTexture(self)
+	self:SetNormalTexture("")
+end
+
+local function Method_ClearPushedTexture(self)
+	self:SetPushedTexture("")
+end
+
+local function Method_ClearDisabledTexture(self)
+	self:SetDisabledTexture("")
+end
+
+local function Method_ClearHighlightTexture(self)
+	self:SetHighlightTexture("")
+end
+
 -- Frame Method
 function Frame.__index:SetShown( ... ) Method_SetShown( self, ... ) end
 function Frame.__index:FixOpenPanel( ... ) Method_FixOpenPanel( self, ... ) end
@@ -323,10 +369,14 @@ function Button.__index:SetShown( ... ) Method_SetShown( self, ... ) end
 function Button.__index:SetEnabled( ... ) Method_SetEnabled( self, ... ) end
 function Button.__index:SetParentArray( arrayName, element, setInSelf ) Method_SetParentArray( self, arrayName, element, setInSelf ) end
 function Button.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
-function Button.__index:SetNormalAtlas( atlasName, useAtlasSize, filterMode ) Method_SetAtlas( self:GetNormalTexture(), atlasName, useAtlasSize, filterMode )  end
-function Button.__index:SetPushedAtlas( atlasName, useAtlasSize, filterMode ) Method_SetAtlas( self:GetPushedTexture(), atlasName, useAtlasSize, filterMode )  end
-function Button.__index:SetDisabledAtlas( atlasName, useAtlasSize, filterMode ) Method_SetAtlas( self:GetDisabledTexture(), atlasName, useAtlasSize, filterMode )  end
-function Button.__index:SetHighlightAtlas( atlasName, useAtlasSize, filterMode ) Method_SetAtlas( self:GetHighlightTexture(), atlasName, useAtlasSize, filterMode )  end
+function Button.__index:SetNormalAtlas(atlasName, useAtlasSize, filterMode) Method_SetNormalAtlas(self, atlasName, useAtlasSize, filterMode) end
+function Button.__index:SetPushedAtlas(atlasName, useAtlasSize, filterMode) Method_SetPushedAtlas(self, atlasName, useAtlasSize, filterMode) end
+function Button.__index:SetDisabledAtlas(atlasName, useAtlasSize, filterMode) Method_SetDisabledAtlas(self, atlasName, useAtlasSize, filterMode) end
+function Button.__index:SetHighlightAtlas(atlasName, useAtlasSize, filterMode) Method_SetHighlightAtlas(self, atlasName, useAtlasSize, filterMode) end
+function Button.__index:ClearClearNormalTexture() Method_ClearNormalTexture(self) end
+function Button.__index:ClearPushedTexture() Method_ClearPushedTexture(self) end
+function Button.__index:ClearDisabledTexture() Method_ClearDisabledTexture(self) end
+function Button.__index:ClearHighlightTexture() Method_ClearHighlightTexture(self) end
 function Button.__index:GetScaledRect() return Method_GetScaledRect(self) end
 function Button.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
 function Button.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
@@ -389,6 +439,14 @@ function CheckButton.__index:SetShown( ... ) Method_SetShown( self, ... ) end
 function CheckButton.__index:SetEnabled( ... ) Method_SetEnabled( self, ... ) end
 function CheckButton.__index:SetParentArray( arrayName, element, setInSelf ) Method_SetParentArray( self, arrayName, element, setInSelf ) end
 function CheckButton.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
+function CheckButton.__index:SetNormalAtlas(atlasName, useAtlasSize, filterMode) Method_SetNormalAtlas(self, atlasName, useAtlasSize, filterMode) end
+function CheckButton.__index:SetPushedAtlas(atlasName, useAtlasSize, filterMode) Method_SetPushedAtlas(self, atlasName, useAtlasSize, filterMode) end
+function CheckButton.__index:SetDisabledAtlas(atlasName, useAtlasSize, filterMode) Method_SetDisabledAtlas(self, atlasName, useAtlasSize, filterMode) end
+function CheckButton.__index:SetHighlightAtlas(atlasName, useAtlasSize, filterMode) Method_SetHighlightAtlas(self, atlasName, useAtlasSize, filterMode) end
+function CheckButton.__index:ClearClearNormalTexture() Method_ClearNormalTexture(self) end
+function CheckButton.__index:ClearPushedTexture() Method_ClearPushedTexture(self) end
+function CheckButton.__index:ClearDisabledTexture() Method_ClearDisabledTexture(self) end
+function CheckButton.__index:ClearHighlightTexture() Method_ClearHighlightTexture(self) end
 function CheckButton.__index:GetScaledRect() return Method_GetScaledRect(self) end
 function CheckButton.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
 function CheckButton.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end

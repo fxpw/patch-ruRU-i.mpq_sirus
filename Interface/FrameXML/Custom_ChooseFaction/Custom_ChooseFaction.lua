@@ -50,11 +50,17 @@ function Custom_ChooseFactionParentMixin:ASMSG_SHOP_RENEGADE_CHARACTER_CHANGEFAC
         return
     end
 
-    local factionID = C_Unit:GetFactionID("player")
+    local factionID = C_Unit.GetFactionID("player")
+	local frames = 0
 
     for i = 0, 2 do
         if factionID ~= i then
             self:GetFreeChooseFrame():Open(GAME_FACTION_TO_SERVER_FACTION[i])
+
+			frames = frames + 1
+			if frames == 2 then
+				break
+			end
         end
     end
 

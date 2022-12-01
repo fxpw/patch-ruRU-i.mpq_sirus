@@ -48,7 +48,7 @@ function PVPLadderFrameMixin:OnLoad()
 	RaiseFrameLevelByThree(self.Shadows)
 
 	local function UpdateFaction()
-		SetPortraitToTexture(self.Art.portrait, PVPUIFRAME_PORTRAIT_DATA[C_Unit:GetFactionID("player")])
+		SetPortraitToTexture(self.Art.portrait, PVPUIFRAME_PORTRAIT_DATA[C_Unit.GetFactionID("player")])
 	end
 
 	C_FactionManager:RegisterFactionOverrideCallback(UpdateFaction, true)
@@ -164,7 +164,6 @@ function PVPLadderFrameMixin:UpdateSelfPlayerInfo()
 
 	if data then
 		local raceInfo 		= C_CreatureInfo.GetRaceInfo(data.raceID)
-		local factionInfo 	= C_CreatureInfo.GetFactionInfo(data.raceID)
 		local classLocalizedName, classFileString = GetClassInfo(data.classID)
 
 		frame.Number:SetText(data.rank)

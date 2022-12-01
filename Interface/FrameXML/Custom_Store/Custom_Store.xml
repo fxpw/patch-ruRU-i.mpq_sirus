@@ -2688,13 +2688,23 @@
 						</Anchors>
 						<Scripts>
 						<OnClick>
+							local price = 10;
+							local discountedPrice;
+
+							local _, transmogRenewalDiscount = GetStoreRenewalDiscounts();
+							if transmogRenewalDiscount and transmogRenewalDiscount > 0 then
+								discountedPrice = math.floor(price * ((100 - transmogRenewalDiscount) / 100));
+							end
+
 							local data = {
 								ID = -1,
 								Texture = "Interface\\Store\\Wow-Store-Circle",
 								Name = STORE_TRANSMOGRIFY_REFRESH_TITLE,
 								DescriptionText = STORE_REFRESH_DESC,
 								Flags = 0,
-								Price = 10,
+								Price = price,
+								DiscountedPrice = discountedPrice,
+								ShowDiscountedPrice = true,
 								smallFormat = true,
 								selfSize = {403, 320},
 								noticeSize = {400, 132},
@@ -3422,13 +3432,23 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
+						local price = 3;
+						local discountedPrice;
+
+						local collectionRenewalDiscount = GetStoreRenewalDiscounts();
+						if collectionRenewalDiscount and collectionRenewalDiscount > 0 then
+							discountedPrice = math.floor(price * ((100 - collectionRenewalDiscount) / 100));
+						end
+
 						local data = {
 							ID = -1,
 							Texture = "Interface\\Store\\Wow-Store-Circle",
-							Name = selectedCategoryID == 4 and STORE_PET_REFRESH_TITLE or STORE_MOUNT_REFRESH_TITLE,
+							Name = selectedSubCategoryID == 2 and STORE_PET_REFRESH_TITLE or STORE_MOUNT_REFRESH_TITLE,
 							DescriptionText = STORE_REFRESH_DESC,
 							Flags = 0,
-							Price = 3,
+							Price = price,
+							DiscountedPrice = discountedPrice,
+							ShowDiscountedPrice = true,
 							smallFormat = true,
 							selfSize = {403, 320},
 							noticeSize = {400, 132},
@@ -3720,7 +3740,7 @@
 						</FontString>
 						<FontString name="$parentOriginalPrice" parentKey="OriginalPrice" inherits="GameFontNormalShadowHuge17" hidden="true">
 							<Anchors>
-								<Anchor point="BOTTOMLEFT" relativeTo="$parentPrice" relativePoint="TOPLEFT" x="0" y="3"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentPrice" relativePoint="TOPRIGHT" x="0" y="3"/>
 							</Anchors>
 							<Color r="1" g="1" b="1"/>
 						</FontString>

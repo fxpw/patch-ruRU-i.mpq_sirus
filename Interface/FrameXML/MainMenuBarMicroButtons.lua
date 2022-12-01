@@ -88,6 +88,7 @@ function UpdateMicroButtons()
 			LFDMicroButton.DisableReason = isNeutral and NEUTRAL_RACE_DISABLE_FEATURE
 			LFDMicroButton:Disable();
 		else
+			LFDMicroButton.DisableReason = nil
 			LFDMicroButton:Enable();
 			LFDMicroButton:SetButtonState("NORMAL");
 		end
@@ -104,25 +105,30 @@ function UpdateMicroButtons()
 		GuildMicroButtonTabard:SetPoint("TOPLEFT", -1, -2)
 		GuildMicroButtonTabard:SetAlpha(0.70)
 	else
-		if ( IsInGuild() ) then
-			if GetGuildXP() and GetGuildReputation() and GetGuildNumPerks() > 0 and GetGuildNumRewards() > 0 then
-				GuildMicroButton:Enable()
-				GuildMicroButton.Spinner:Hide()
-				GuildMicroButton:SetButtonState("NORMAL");
-				GuildMicroButtonTabard:SetPoint("TOPLEFT", 0, 0)
-				GuildMicroButtonTabard:SetAlpha(1)
-			else
-				GuildMicroButton.Spinner:Show()
-			end
-
-			GuildMicroButton.tooltipText = MicroButtonTooltipText(GUILD, "TOGGLEGUILDTAB")
-			GuildMicroButton.newbieText = NEWBIE_TOOLTIP_GUILDTAB
+		if isNeutral then
+			GuildMicroButton.DisableReason = isNeutral and NEUTRAL_RACE_DISABLE_FEATURE
+			GuildMicroButton:Disable();
 		else
-			GuildMicroButton:SetButtonState("NORMAL")
+			GuildMicroButton.DisableReason = nil
+			GuildMicroButton:Enable()
 			GuildMicroButtonTabard:SetPoint("TOPLEFT", 0, 0)
 			GuildMicroButtonTabard:SetAlpha(1)
-			GuildMicroButton.tooltipText = MicroButtonTooltipText(LOOKINGFORGUILD, "TOGGLEGUILDTAB")
-			GuildMicroButton.newbieText = NEWBIE_TOOLTIP_LOOKINGFORGUILDTAB
+
+			if ( IsInGuild() ) then
+				if GetGuildXP() and GetGuildReputation() and GetGuildNumPerks() > 0 and GetGuildNumRewards() > 0 then
+					GuildMicroButton.Spinner:Hide()
+					GuildMicroButton:SetButtonState("NORMAL");
+				else
+					GuildMicroButton.Spinner:Show()
+				end
+
+				GuildMicroButton.tooltipText = MicroButtonTooltipText(GUILD, "TOGGLEGUILDTAB")
+				GuildMicroButton.newbieText = NEWBIE_TOOLTIP_GUILDTAB
+			else
+				GuildMicroButton:SetButtonState("NORMAL")
+				GuildMicroButton.tooltipText = MicroButtonTooltipText(LOOKINGFORGUILD, "TOGGLEGUILDTAB")
+				GuildMicroButton.newbieText = NEWBIE_TOOLTIP_LOOKINGFORGUILDTAB
+			end
 		end
 	end
 
@@ -157,6 +163,7 @@ function UpdateMicroButtons()
 			EncounterJournalMicroButton.DisableReason = NEUTRAL_RACE_DISABLE_FEATURE
 			EncounterJournalMicroButton:Disable()
 		else
+			EncounterJournalMicroButton.DisableReason = nil
 			EncounterJournalMicroButton:Enable()
 			EncounterJournalMicroButton:SetButtonState("NORMAL")
 		end

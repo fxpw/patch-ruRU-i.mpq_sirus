@@ -325,7 +325,7 @@ function TargetFrame_CheckFaction (self)
 		end
 
 		local unitIsPlayer 			= UnitIsPlayer(self.unit)
-		local isRenegade   			= C_Unit:IsRenegade(self.unit)
+		local isRenegade   			= C_Unit.IsRenegade(self.unit)
 		local factionGroup 			= UnitFactionGroup(self.unit)
 		local isBattlegroundRanked 	= currRankID ~= 0 and unitIsPlayer
 
@@ -398,7 +398,7 @@ function TargetFrame_CheckFaction (self)
 end
 
 function TargetFrame_CheckClassification(self, forceNormalTexture)
-	local classificationInfo = C_Unit:GetClassification(self.unit)
+	local classificationInfo = C_Unit.GetClassification(self.unit)
 
 	if classificationInfo.classification ~= "normal" then
 		self.haveElite = true

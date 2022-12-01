@@ -1,9 +1,3 @@
---	Filename:	CharacterSelect.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 CHARACTER_SELECT_ROTATION_START_X = nil;
 CHARACTER_SELECT_INITIAL_FACING = nil;
 
@@ -12,20 +6,20 @@ CHARACTER_ROTATION_CONSTANT = 0.6;
 MAX_CHARACTERS_DISPLAYED = 10;
 MAX_CHARACTERS_PER_REALM = 10;
 
-DEFAULT_TEXT_OFFSET_X = 4
-DEFAULT_TEXT_OFFSET_Y = 0
-
-MOVING_TEXT_OFFSET_X = 12
-MOVING_TEXT_OFFSET_Y = 0
-
-CHARACTER_BUTTON_HEIGHT = 64
-CHARACTER_LIST_TOP = 680
-AUTO_DRAG_TIME = 0.5
-
 BOOST_MAX_LEVEL = 80
 
-translationTable = {}
-translationServerCache = {}
+local DEFAULT_TEXT_OFFSET_X = 4
+local DEFAULT_TEXT_OFFSET_Y = 0
+
+local MOVING_TEXT_OFFSET_X = 12
+local MOVING_TEXT_OFFSET_Y = 0
+
+local CHARACTER_BUTTON_HEIGHT = 64
+local CHARACTER_LIST_TOP = 680
+local AUTO_DRAG_TIME = 0.5
+
+local translationTable = {}
+local translationServerCache = {}
 
 CHARACTER_SELECT_LIST = {
 	queued		= {},
@@ -57,7 +51,7 @@ local RESTORE_ERRORS = {
 local SERVICE_BUTTON_ACTIVATION_DELAY = 0.400
 local AWAIT_FIX_CHAR_INDEX
 
-local SERVER_LOG = {
+local SERVER_LOGO = {
 	DEFAULT = "ServerGameLogo-11",
 	[SHARED_NELTHARION_REALM_NAME] = "ServerGameLogo-2",
 	[SHARED_FROSTMOURNE_REALM_NAME] = "ServerGameLogo-3",
@@ -66,8 +60,8 @@ local SERVER_LOG = {
 	[SHARED_ALGALON_REALM_NAME] = "ServerGameLogo-13",
 }
 
-for serverName, logo in pairs(SERVER_LOG) do
-	SERVER_LOG[string.format("Proxy %s", serverName)] = logo
+for serverName, logo in pairs(SERVER_LOGO) do
+	SERVER_LOGO[string.format("Proxy %s", serverName)] = logo
 end
 
 function IsCharacterSelectInUndeleteMode()
@@ -152,7 +146,9 @@ function CharacterSelect_OnShow()
 	CharacterSelect_UpdateRealmButton()
 
 	if IsConnectedToServer() then
-		GetCharacterListUpdate();
+		if not CharacterSelect.WAIT_DRESS_CONFIRMATION then
+			GetCharacterListUpdate();
+		end
 	else
 		UpdateCharacterList();
 	end
@@ -168,7 +164,7 @@ function CharacterSelect_OnShow()
 
 	CharacterBoostButton:Show()
 
-	CharacterSelectLogoFrameLogo:SetAtlas(SERVER_LOG[GetServerName()] or SERVER_LOG.DEFAULT)
+	CharacterSelectLogoFrameLogo:SetAtlas(SERVER_LOGO[GetServerName()] or SERVER_LOGO.DEFAULT)
 
 	CharacterSelectCharacterFrame:Hide()
 	CharacterSelectLeftPanel:Hide()
@@ -404,7 +400,7 @@ function UpdateCharacterSelectListView()
 
 		CharSelectCharacterName:SetShown(connected and numCharacters > 0)
 		CharSelectEnterWorldButton:SetShown(connected and numCharacters > 0)
-		CharacterSelectAddonsButton:SetShown(connected)
+		CharacterSelectAddonsButton:SetShown(connected and GetNumAddOns() > 0)
 
 		CharSelectChangeRealmButton:Show()
 		CharacterSelect_UIShowAnim()
@@ -425,6 +421,10 @@ function CharacterSelect_OnEvent(self, event, ...)
 		C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.RequestBoostStatus)
 		UpdateAddonButton();
 	elseif ( event == "CHARACTER_LIST_UPDATE" ) then
+		if CHARACTER_CREATE_DRESS_STATE_QUEUED then
+			return
+		end
+
 		local numCharacters = GetNumCharacters()
 
 		if numCharacters then
@@ -612,29 +612,40 @@ function CharacterSelect_OnEvent(self, event, ...)
 			end
 		elseif prefix == "ASMSG_CHARACTER_OVERRIDE_TEAM" then
 			local characterIndex, factionIndex = string.split(":", content)
-			FACTION_OVERRIDE[tonumber(characterIndex) + 1] = tonumber(factionIndex)
+			characterIndex = tonumber(characterIndex) + 1
+
+			FACTION_OVERRIDE[characterIndex] = tonumber(factionIndex)
+
+			if CharacterSelectCharacterFrame.characterSelectButtons[characterIndex] then
+				CharacterSelectCharacterFrame.characterSelectButtons[characterIndex]:UpdateFaction()
+			end
 		elseif prefix == "ASMSG_CHAR_SERVICES" then
-			local characterID, forceCustomization, mailCount, itemLevel = string.split(":", content)
-			characterID = tonumber(characterID) + 1
+			local characterIndex, forceCustomization, mailCount, itemLevel = string.split(":", content)
+			characterIndex = tonumber(characterIndex) + 1
 			forceCustomization = tonumber(forceCustomization)
 			mailCount = tonumber(mailCount)
 			itemLevel = tonumber(itemLevel)
 
-			if not CHAR_SERVICES_DATA[characterID] then
-				CHAR_SERVICES_DATA[characterID] = {}
+			if not CHAR_SERVICES_DATA[characterIndex] then
+				CHAR_SERVICES_DATA[characterIndex] = {}
 			end
 
-			CHAR_SERVICES_DATA[characterID][CHAR_DATA_TYPE.FORCE_CUSTOMIZATION] = forceCustomization or 0
-			CHAR_SERVICES_DATA[characterID][CHAR_DATA_TYPE.MAIL_COUNT] = mailCount or 0
-			CHAR_SERVICES_DATA[characterID][CHAR_DATA_TYPE.ITEM_LEVEL] = itemLevel or 0
+			CHAR_SERVICES_DATA[characterIndex][CHAR_DATA_TYPE.FORCE_CUSTOMIZATION] = forceCustomization or 0
+			CHAR_SERVICES_DATA[characterIndex][CHAR_DATA_TYPE.MAIL_COUNT] = mailCount or 0
+			CHAR_SERVICES_DATA[characterIndex][CHAR_DATA_TYPE.ITEM_LEVEL] = itemLevel or 0
 
-			if CharacterSelectCharacterFrame.characterSelectButtons[characterID] then
-				CharacterSelectCharacterFrame.characterSelectButtons[characterID]:UpdateCharData()
+			if CharacterSelectCharacterFrame.characterSelectButtons[characterIndex] then
+				CharacterSelectCharacterFrame.characterSelectButtons[characterIndex]:UpdateCharData()
 			end
 		elseif prefix == "ASMSG_ALLIED_RACES" then
 			C_CharacterCreation.SetAlliedRacesData(C_Split(content, ":"))
 		elseif prefix == "ASMSG_SERVICE_MSG" then
 			C_CharacterCreation.SetAlliedRacesData(nil)
+		elseif prefix == "SMSG_TOGGLE_ITEMS_FOR_CUSTOMIZE" then
+			if self.WAIT_DRESS_CONFIRMATION then
+				self.WAIT_DRESS_CONFIRMATION = nil
+				GetCharacterListUpdate()
+			end
 		end
 	end
 end
@@ -737,10 +748,9 @@ function UpdateCharacterSelection()
 	CharacterSelectCharacterFrame.DropDownMenu:Hide()
 
 	local button
-	for i=1, MAX_CHARACTERS_DISPLAYED, 1 do
+	for i = 1, MAX_CHARACTERS_DISPLAYED do
 		button = _G["CharSelectCharacterButton"..i]
 		button.selection:Hide()
-		--button.UndeleteButton:Hide()
 		button.upButton:Hide()
         button.downButton:Hide()
         button.FactionEmblem:Show()
@@ -755,7 +765,7 @@ function UpdateCharacterSelection()
 		if IsCharacterSelectInUndeleteMode() then
 			button.PAIDButton:SetPAID(4)
 		else
-			CharacterSelect_UpdatePAID(i)
+			button:UpdatePaidServicerID()
 		end
 	end
 
@@ -771,77 +781,16 @@ function UpdateCharacterSelection()
 	end
 end
 
-function SetFactionEmblem(button, factionInfo, raceInfo, characterID)
-	if FACTION_OVERRIDE[characterID] then
-		factionInfo = {}
-		factionInfo.groupTag = SERVER_PLAYER_FACTION_GROUP[FACTION_OVERRIDE[characterID]]
-	end
-
-	local factionEmblem = button.FactionEmblem
-	local atlasTag 		= factionInfo.groupTag ~= "Neutral" and factionInfo.groupTag
-
-	if raceInfo then
-		if raceInfo.raceID == E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL then
-			atlasTag = "Vulpera"
-		elseif raceInfo.raceID == E_CHARACTER_RACES.RACE_PANDAREN_NEUTRAL then
-			atlasTag = "Pandaren"
-		end
-	end
-
-	local _ , race, _, _, _, sex = GetCharacterInfo(characterID)
-	local factionColor           = PLAYER_FACTION_COLORS[PLAYER_FACTION_GROUP[factionInfo.groupTag]]
-
-	button.PortraitFrame.Border:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
-	button.PortraitFrame.FactionBorder:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
-	button.PortraitFrame.LevelFrame.Border:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
-	button.selection:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
-	button.PAIDButton:SetColor(factionColor.r, factionColor.g, factionColor.b)
-
-	local raceAtlas = string.format("RACE_ICON_%s_%s_%s", string.upper(raceInfo.clientFileString), E_SEX[sex or 0], string.upper(factionInfo.groupTag))
-	if not S_ATLAS_STORAGE[raceAtlas] then
-		raceAtlas = "RACE_ICON_HUMAN_MALE_HORDE"
-	end
-
-	button.PortraitFrame.Icon:SetAtlas(raceAtlas)
-
-	local _factionInfo = C_CreatureInfo.GetFactionInfo( race )
-
-	if _factionInfo.factionID == PLAYER_FACTION_GROUP.Horde then
-		button.PortraitFrame.Icon:SetSubTexCoord(1.0, 0.0, 0.0, 1.0)
-	end
-
-	if atlasTag then
-		factionEmblem:SetAtlas(string.format("CharacterSelect-FactionIcon-%s", atlasTag))
-	end
-	factionEmblem:SetShown(atlasTag)
-end
-
-function CharacterSelect_UpdatePAID(index)
-	local _, _, _, _, _, _, _, PCC, PRC, PFC = GetCharacterInfo(GetCharIDFromIndex(index))
-	local button = _G["CharSelectCharacterButton"..index]
-
-	if PFC then
-		button.PAIDButton:SetPAID(PAID_FACTION_CHANGE)
-	elseif PRC then
-		button.PAIDButton:SetPAID(PAID_RACE_CHANGE)
-	elseif PCC then
-		button.PAIDButton:SetPAID(PAID_CHARACTER_CUSTOMIZATION)
-	else
-		button.PAIDButton:Hide()
-	end
-end
-
 function UpdateCharacterList( dontUpdateSelect )
 	local inDeletedView = IsCharacterSelectInUndeleteMode()
 	local numChars = GetNumCharacters();
 	local index = 1;
 
-	for i=1, numChars, 1 do
-		local name, race, class, level, zone, _, ghost,_ ,_ ,_ = GetCharacterInfo(GetCharIDFromIndex(i));
-		local raceInfo                                         = C_CreatureInfo.GetRaceInfo( race )
-		local factionInfo                                      = C_CreatureInfo.GetFactionInfo( race )
+	for i = 1, numChars do
+		local characterID = GetCharIDFromIndex(i)
+		local name, race, class, level, zone, sex, ghost, PCC, PRC, PFC = GetCharacterInfo(characterID)
 
-		local button                                           = _G["CharSelectCharacterButton"..index];
+		local button = _G["CharSelectCharacterButton"..index];
 		if ( not name ) then
 			button:SetText("ERROR - Tell Jeremy");
 		else
@@ -857,26 +806,25 @@ function UpdateCharacterList( dontUpdateSelect )
 
 			button.PortraitFrame.LevelFrame.Level:SetText(level)
 
-			--if( ghost ) then
-			--	_G["CharSelectCharacterButton"..index.."ButtonTextInfo"]:SetFormattedText(CHARACTER_SELECT_INFO_GHOST, class);
-			--else
-			--	_G["CharSelectCharacterButton"..index.."ButtonTextInfo"]:SetFormattedText(CHARACTER_SELECT_INFO, class);
-			--end
+		--[[
+			if( ghost ) then
+				_G["CharSelectCharacterButton"..index.."ButtonTextInfo"]:SetFormattedText(CHARACTER_SELECT_INFO_GHOST, class);
+			else
+				_G["CharSelectCharacterButton"..index.."ButtonTextInfo"]:SetFormattedText(CHARACTER_SELECT_INFO, class);
+			end
+		--]]
 
 			button.buttonText.Location:SetText(zone == "" and UNKNOWN_ZONE or zone);
 		end
 
-		SetFactionEmblem(button, factionInfo, raceInfo, GetCharIDFromIndex(i))
-
-		button.charLevel = level
-		button.index = i
+		button:SetCharacterInfo(characterID, name, race, class, level, zone, sex, ghost, PCC, PRC, PFC)
+		button:UpdatePaidServicerID()
+		button:UpdateCharData()
+		button:UpdateFaction()
 		button:Show()
 
-		button:UpdateCharData()
-		CharacterSelect_UpdatePAID(i)
-
 		index = index + 1;
-		if ( index > MAX_CHARACTERS_DISPLAYED ) then
+		if index > MAX_CHARACTERS_DISPLAYED then
 			break;
 		end
 	end
@@ -885,7 +833,7 @@ function UpdateCharacterList( dontUpdateSelect )
 	CharSelectCreateCharacterButton:Disable();
 
 	local connected = IsConnectedToServer();
-	for _ =index, MAX_CHARACTERS_DISPLAYED, 1 do
+	while index <= MAX_CHARACTERS_DISPLAYED do
 		local button = _G["CharSelectCharacterButton"..index];
 		if ( (CharacterSelect.createIndex == 0) and (numChars < MAX_CHARACTERS_PER_REALM) ) then
 			CharacterSelect.createIndex = index;
@@ -896,7 +844,7 @@ function UpdateCharacterList( dontUpdateSelect )
 				CharSelectCreateCharacterButton:Enable();
 			end
 		end
-		button.charLevel = nil
+
 		button:Hide();
 		index = index + 1;
 	end
@@ -926,28 +874,6 @@ function UpdateCharacterList( dontUpdateSelect )
 	if not dontUpdateSelect then
 		CharacterSelect_SelectCharacter(CharacterSelect.selectedIndex, 1);
 	end
-end
-
-function CharacterSelectButton_OnClick(self)
-	UpdateCharacterSelection()
-	local id = self:GetID();
-	CharSelectServicesFlowFrame.CharSelect = id
-
-	if ( id ~= CharacterSelect.selectedIndex ) then
-		CharacterSelect_SelectCharacter(id);
-	end
-end
-
-function CharacterSelectButton_OnDoubleClick(self, button)
-	if button == "RightButton" then
-		return
-	end
-
-	local id = self:GetID();
-	if ( id ~= CharacterSelect.selectedIndex ) then
-		CharacterSelect_SelectCharacter(id);
-	end
-	CharacterSelect_EnterWorld();
 end
 
 function CharacterSelect_TabResize(self)
@@ -1001,8 +927,6 @@ function CharacterSelect_SelectCharacter(id, noCreate)
 			local factionTag 	= FactionInfo.groupTag
 			local modelName 	= factionTag
 
-			local facingDeg = 0
-
 			if RaceInfo.raceID == E_CHARACTER_RACES.RACE_ZANDALARITROLL then
 				if ClassInfo.classFile == "DEATHKNIGHT" then
 					modelName = "Zandalar_DeathKnight"
@@ -1017,6 +941,8 @@ function CharacterSelect_SelectCharacter(id, noCreate)
 				else
 					modelName = "DeathKnight"
 				end
+			elseif RaceInfo.raceID == E_CHARACTER_RACES.RACE_DRACTHYR then
+				modelName = "Dracthyr"
 			elseif C_CharacterCreation.IsPandarenRace(RaceInfo.raceID) then
 				modelName = "Pandaren"
 			elseif C_CharacterCreation.IsVulperaRace(RaceInfo.raceID) then
@@ -1032,7 +958,7 @@ function CharacterSelect_SelectCharacter(id, noCreate)
 			name = GetClassColorObj(ClassInfo.classFile):WrapTextInColorCode(name)
 			CharSelectCharacterName:SetText(name)
 
-			CharacterModelMixin.SetBackground(CharacterSelect, modelName)
+			CharacterModelManager.SetBackground(modelName)
 
 			CharacterSelect.currentModel = GetSelectBackgroundModel(id);
 
@@ -1057,7 +983,7 @@ function CharacterSelect_SelectCharacter(id, noCreate)
 				CharSelectEnterWorldButton:SetText(ENTER_WORLD)
 			end
 		else
-			CharacterModelMixin.SetBackground(CharacterSelect, "Alliance")
+			CharacterModelManager.SetBackground("Alliance")
 		end
 	end
 end
@@ -1136,9 +1062,9 @@ end
 
 function CharacterSelectFrame_OnUpdate()
 	if ( CHARACTER_SELECT_ROTATION_START_X ) then
-		local x = GetCursorPosition();
-		local diff = (x - CHARACTER_SELECT_ROTATION_START_X) * CHARACTER_ROTATION_CONSTANT;
-		CHARACTER_SELECT_ROTATION_START_X = GetCursorPosition();
+		local cursorPos = GetCursorPosition();
+		local diff = (cursorPos - CHARACTER_SELECT_ROTATION_START_X) * CHARACTER_ROTATION_CONSTANT;
+		CHARACTER_SELECT_ROTATION_START_X = cursorPos;
 		SetCharacterSelectFacing(GetCharacterSelectFacing() + diff);
 	end
 end
@@ -1195,9 +1121,9 @@ function CharacterSelectButton_ShowMoveButtons(self)
 	if IsCharacterSelectInUndeleteMode() or CharSelectServicesFlowFrame:IsShown() then return end
 	local numCharacters = GetNumCharacters()
 
-	if not CharacterSelect.draggedIndex and self.charLevel then
+	if not CharacterSelect.draggedIndex and self.level then
 		for index, serviceButton in ipairs(self.serviceButtons) do
-			if index ~= 3 or (self.charLevel < BOOST_MAX_LEVEL and not CharacterBoostButton.isBoostDisable) then
+			if index ~= 3 or (self.level < BOOST_MAX_LEVEL and not CharacterBoostButton.isBoostDisable) then
 				serviceButton:Show()
 			end
 		end
@@ -1212,7 +1138,7 @@ function CharacterSelectButton_ShowMoveButtons(self)
 
 		self.FactionEmblem:Hide()
 
-		if self.index == 1 then
+		if self:GetID() == 1 then
 			self.upButton:Disable()
 			self.upButton:SetAlpha(0.35)
 		else
@@ -1220,7 +1146,7 @@ function CharacterSelectButton_ShowMoveButtons(self)
 			self.upButton:SetAlpha(1)
 		end
 
-		if self.index == numCharacters then
+		if self:GetID() == numCharacters then
 			self.downButton:Disable()
 			self.downButton:SetAlpha(0.35)
 		else
@@ -1247,8 +1173,8 @@ function CharacterSelectButton_OnDragUpdate(self)
         local buttonIndex = floor((CHARACTER_LIST_TOP - cursorY) / CHARACTER_BUTTON_HEIGHT) + 1
         local button = _G["CharSelectCharacterButton"..buttonIndex]
 
-        if button and button.index ~= CharacterSelect.draggedIndex and button:IsShown() then
-            if ( button.index > CharacterSelect.draggedIndex ) then
+        if button and button:GetID() ~= CharacterSelect.draggedIndex and button:IsShown() then
+            if ( button:GetID() > CharacterSelect.draggedIndex ) then
                 MoveCharacter(CharacterSelect.draggedIndex, CharacterSelect.draggedIndex + 1, true)
             else
                 MoveCharacter(CharacterSelect.draggedIndex, CharacterSelect.draggedIndex - 1, true)
@@ -1524,7 +1450,7 @@ function CharacterSelect_OpenBoost(characterIndex)
 		CharSelectServicesFlowFrame:Show()
 
 		local name, race, class, level = GetCharacterInfo(GetCharIDFromIndex(characterIndex))
-		if level < BOOST_MAX_LEVEL then
+		if level < BOOST_MAX_LEVEL and C_CharacterCreation.IsServicesAvailableForRace(E_PAID_SERVICE.BOOST_SERVICE, C_CreatureInfo.GetRaceInfo(race).raceID) then
 			_G["CharSelectCharacterButton"..characterIndex]:Click()
 			CharSelectServicesFlowFrame.NextButton:Click()
 		end
@@ -1745,15 +1671,46 @@ end
 CharacterSelectButtonMixin = {}
 
 function CharacterSelectButtonMixin:OnLoad()
-	self.Background:SetAtlas("jailerstower-animapowerlist-dropdown-closedbg")
-	self.selection:SetAtlas("jailerstower-animapowerlist-dropdown-closedbg2")
-
-	self.HighlightTexture:SetAtlas("jailerstower-animapowerlist-dropdown-closedbg")
-
 	self:SetParentArray("characterSelectButtons")
 
 	self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 	self:RegisterForDrag("LeftButton")
+
+	self.Background:SetAtlas("jailerstower-animapowerlist-dropdown-closedbg")
+	self.selection:SetAtlas("jailerstower-animapowerlist-dropdown-closedbg2")
+
+	self.HighlightTexture:SetAtlas("jailerstower-animapowerlist-dropdown-closedbg")
+end
+
+function CharacterSelectButtonMixin:UpdateCharacterInfo()
+	local characterID = GetCharIDFromIndex(self:GetID())
+	self:SetCharacterInfo(characterID, GetCharacterInfo(characterID))
+end
+
+function CharacterSelectButtonMixin:SetCharacterInfo(characterID, name, race, class, level, zone, sex, ghost, PCC, PRC, PFC)
+	self.characterID = characterID
+	self.race = race
+	self.class = class
+	self.level = level
+	self.sex = sex
+	self.PCC = PCC
+	self.PRC = PRC
+	self.PFC = PFC
+end
+
+function CharacterSelectButtonMixin:ClearCharacterInfo()
+	self.characterID = nil
+	self.race = nil
+	self.class = nil
+	self.level = nil
+	self.sex = nil
+	self.PCC = nil
+	self.PRC = nil
+	self.PFC = nil
+end
+
+function CharacterSelectButtonMixin:OnHide()
+	self:ClearCharacterInfo()
 end
 
 function CharacterSelectButtonMixin:OnEnable()
@@ -1788,7 +1745,7 @@ function CharacterSelectButtonMixin:OnDragStop()
 	CharacterSelectButton_OnDragStop(self)
 end
 
-function CharacterSelectButtonMixin:OnMouseDown( button )
+function CharacterSelectButtonMixin:OnMouseDown(button)
 	if button == "RightButton" then
 		return
 	end
@@ -1801,19 +1758,36 @@ function CharacterSelectButtonMixin:OnMouseUp()
 	CharacterSelectButton_OnDragStop(self)
 end
 
-function CharacterSelectButtonMixin:OnClick( button )
+function CharacterSelectButtonMixin:OnClick(button)
 	if button == "RightButton" then
 		if not self:IsInBoostMode() and not IsCharacterSelectInUndeleteMode() then
 			self:GetParent().DropDownMenu:Toggle(self, not self:GetParent().DropDownMenu:IsShown())
 		end
 	else
 		self:GetParent().DropDownMenu:Hide()
-		CharacterSelectButton_OnClick(self)
+
+		UpdateCharacterSelection()
+
+		local id = self:GetID();
+		CharSelectServicesFlowFrame.CharSelect = id
+	
+		if id ~= CharacterSelect.selectedIndex then
+			CharacterSelect_SelectCharacter(id)
+		end
 	end
 end
 
-function CharacterSelectButtonMixin:OnDoubleClick( button )
-	CharacterSelectButton_OnDoubleClick( self, button )
+function CharacterSelectButtonMixin:OnDoubleClick(button)
+	if button == "RightButton" then
+		return
+	end
+
+	local id = self:GetID()
+	if id ~= CharacterSelect.selectedIndex then
+		CharacterSelect_SelectCharacter(id)
+	end
+
+	CharacterSelect_EnterWorld()
 end
 
 function CharacterSelectButtonMixin:OnEnter()
@@ -1886,7 +1860,7 @@ local function getItemLevelColor(itemLevel)
 end
 
 function CharacterSelectButtonMixin:UpdateCharData()
-	local charData = CHAR_SERVICES_DATA[GetCharIDFromIndex(self:GetID())]
+	local charData = CHAR_SERVICES_DATA[self.characterID]
 
 	self.PortraitFrame.MailIcon:SetShown(charData and charData[CHAR_DATA_TYPE.MAIL_COUNT] and charData[CHAR_DATA_TYPE.MAIL_COUNT] > 0)
 
@@ -1894,7 +1868,7 @@ function CharacterSelectButtonMixin:UpdateCharData()
 
 	if charData and charData[CHAR_DATA_TYPE.ITEM_LEVEL] then
 		local color = getItemLevelColor(charData[CHAR_DATA_TYPE.ITEM_LEVEL])
-		self.buttonText.ItemLevel:SetFormattedText("%s |cff%2x%2x%2x%i", CHARACTER_ITEM_LEVEL, color.r * 255, color.g * 255, color.b * 255, charData[CHAR_DATA_TYPE.ITEM_LEVEL])
+		self.buttonText.ItemLevel:SetFormattedText("%s |c%s%i|r", CHARACTER_ITEM_LEVEL, color:GenerateHexColor(), charData[CHAR_DATA_TYPE.ITEM_LEVEL])
 
 		if self:IsMouseOver() then
 			self.buttonText.Location:Hide()
@@ -1906,6 +1880,70 @@ function CharacterSelectButtonMixin:UpdateCharData()
 	if not itemLevelShown then
 		self.buttonText.Location:Show()
 		self.buttonText.ItemLevel:Hide()
+	end
+end
+
+function CharacterSelectButtonMixin:UpdateFaction()
+	if not self.race then
+		return
+	end
+
+	local raceInfo = C_CreatureInfo.GetRaceInfo(self.race)
+
+	local factionInfo = C_CreatureInfo.GetFactionInfo(self.race)
+	local factionID = factionInfo.factionID
+	local factionGroup
+
+	if FACTION_OVERRIDE[self.characterID] then
+		factionGroup = SERVER_PLAYER_FACTION_GROUP[FACTION_OVERRIDE[self.characterID]]
+	else
+		factionGroup = factionInfo.groupTag
+	end
+
+	local factionColor = PLAYER_FACTION_COLORS[PLAYER_FACTION_GROUP[factionGroup]]
+
+	self.PortraitFrame.Border:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
+	self.PortraitFrame.FactionBorder:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
+	self.PortraitFrame.LevelFrame.Border:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
+	self.selection:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
+	self.PAIDButton:SetColor(factionColor.r, factionColor.g, factionColor.b)
+
+	local raceAtlas = string.format("RACE_ICON_%s_%s_%s", string.upper(raceInfo.clientFileString), E_SEX[self.sex or 0], string.upper(factionGroup))
+	self.PortraitFrame.Icon:SetAtlas(S_ATLAS_STORAGE[raceAtlas] and raceAtlas or "RACE_ICON_HUMAN_MALE_HORDE")
+
+	if factionID == PLAYER_FACTION_GROUP.Horde then
+		self.PortraitFrame.Icon:SetSubTexCoord(1.0, 0.0, 0.0, 1.0)
+	end
+
+	local atlasTag
+
+	if factionGroup ~= "Neutral" then
+		atlasTag = factionGroup
+	elseif raceInfo.raceID == E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL then
+		atlasTag = "Vulpera"
+	elseif raceInfo.raceID == E_CHARACTER_RACES.RACE_PANDAREN_NEUTRAL then
+		atlasTag = "Pandaren"
+	elseif raceInfo.raceID == E_CHARACTER_RACES.RACE_DRACTHYR then
+		atlasTag = "Dracthyr"
+	end
+
+	if atlasTag then
+		self.FactionEmblem:SetAtlas(string.format("CharacterSelect-FactionIcon-%s", atlasTag))
+		self.FactionEmblem:Show()
+	else
+		self.FactionEmblem:Hide()
+	end
+end
+
+function CharacterSelectButtonMixin:UpdatePaidServicerID()
+	if self.PFC then
+		self.PAIDButton:SetPAID(PAID_FACTION_CHANGE)
+	elseif self.PRC then
+		self.PAIDButton:SetPAID(PAID_RACE_CHANGE)
+	elseif self.PCC then
+		self.PAIDButton:SetPAID(PAID_CHARACTER_CUSTOMIZATION)
+	else
+		self.PAIDButton:Hide()
 	end
 end
 
@@ -1987,7 +2025,7 @@ function CharacterSelectButtonDropDownMenuMixin:Toggle( owner, toggle )
 end
 
 function CharacterSelectButtonDropDownMenuMixin:OnShow()
-	local showBoostButton = self.owner.charLevel and self.owner.charLevel < BOOST_MAX_LEVEL and not CharacterBoostButton.isBoostDisable
+	local showBoostButton = self.owner.level and self.owner.level < BOOST_MAX_LEVEL and not CharacterBoostButton.isBoostDisable
 	local previous
 
 	for index, settings in pairs(self.buttonSettings) do

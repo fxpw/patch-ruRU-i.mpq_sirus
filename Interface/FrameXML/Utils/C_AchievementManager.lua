@@ -13,7 +13,8 @@ ACHIEVEMENTS_FACTION_CHANGE = {
 C_AchievementManagerMixin = {}
 
 function C_AchievementManagerMixin:OnLoad()
-    self:Reset()
+	self.storage = {}
+	self.counter = {}
 
     self._GetAchievementInfo            = GetAchievementInfo
     self._GetCategoryNumAchievements    = GetCategoryNumAchievements
@@ -30,8 +31,8 @@ function C_AchievementManagerMixin:ACHIEVEMENT_EARNED()
 end
 
 function C_AchievementManagerMixin:Reset()
-    self.storage    = {}
-    self.counter    = {}
+	table.wipe(self.storage)
+	table.wipe(self.counter)
 end
 
 ---@param entry number
@@ -53,21 +54,21 @@ function C_AchievementManagerMixin:ValidationFaction( entry )
 
 	if not achievementFactionID then
 		if ACHIEVEMENTS_FACTION_CHANGE[entry] then
-			local faction = C_CreatureInfo.GetFactionInfo(UnitRace("player"))
-			if faction.factionID == PLAYER_FACTION_GROUP.Neutral then
+			local factionID = C_FactionManager.GetFactionInfoOriginal()
+			if factionID == PLAYER_FACTION_GROUP.Neutral then
 				return false
 			else
-				return faction.factionID == ACHIEVEMENTS_FACTION_CHANGE[entry]
+				return factionID == ACHIEVEMENTS_FACTION_CHANGE[entry]
 			end
 		else
 			return true
 		end
-	elseif (achievementFactionID ~= 2 and C_Unit:GetServerFactionID("player") ~= achievementFactionID) then
+	elseif (achievementFactionID ~= 2 and C_Unit.GetServerFactionID("player") ~= achievementFactionID) then
 		return false
 	elseif achievementFactionID == 2 and C_Service:IsLockRenegadeFeatures() then
 		return false
 	else
-		local isRenegade = C_Unit:IsRenegade("player")
+		local isRenegade = C_Unit.IsRenegade("player")
 		local isHideForRenegade = self:IsHideForRenegade(entry)
 
 		if (isRenegade and isHideForRenegade) or (not isRenegade and not isHideForRenegade) then
@@ -78,22 +79,25 @@ function C_AchievementManagerMixin:ValidationFaction( entry )
 	return true
 end
 
-function C_AchievementManagerMixin:GetAchievementInfo( ... )
+---@overload fun(achievementID:integer):...
+---@overload fun(categoryID:table, index:integer):...
+function C_AchievementManagerMixin:GetAchievementInfo(categoryID, index)
+	if type(categoryID) ~= "number" then
+		error("Usage: GetAchievementInfo(achievementID)", 3)
+	end
+
     if AchievementFrame and not AchievementFrame:IsShown() then
-        return self._GetAchievementInfo(...)
+		return self._GetAchievementInfo(categoryID, index)
     end
 
-    local args = {...}
-
-    if #args == 1 then
-        return self._GetAchievementInfo(args[1])
-    else
-        local storage = self.storage[args[1]] and self.storage[args[1]][args[2]]
-
+	if type(index) ~= "number" then
+		return self._GetAchievementInfo(categoryID) -- achievementID
+	else
+		local storage = self.storage[categoryID] and self.storage[categoryID][index]
         if storage then
-            return unpack(storage)
+            return unpack(storage, 1, 11)
         else
-            return self._GetAchievementInfo(args[1], args[2])
+			return self._GetAchievementInfo(categoryID, index)
         end
     end
 end
@@ -113,13 +117,13 @@ function C_AchievementManagerMixin:GetCategoryNumAchievements( categoryID )
         for i = 1, self._GetCategoryNumAchievements(categoryID) do
             local entry, name, points, completed, month, day, year, description, flags, icon, rewardText = self._GetAchievementInfo(categoryID, i)
 
+			self.counter[categoryID].total = self.counter[categoryID].total + 1
+
+			if completed then
+				self.counter[categoryID].completed = self.counter[categoryID].completed + 1
+			end
+
             if self:ValidationFaction(entry) then
-                self.counter[categoryID].total = self.counter[categoryID].total + 1
-
-                if completed then
-                    self.counter[categoryID].completed = self.counter[categoryID].completed + 1
-                end
-
                 if C_Service:IsGM() or IsDevClient() then
                     name = entry .. " - " .. name
                 end
@@ -136,8 +140,8 @@ end
 C_AchievementManager = CreateFromMixins(C_AchievementManagerMixin)
 C_AchievementManager:OnLoad()
 
-function GetAchievementInfo(...)
-    return C_AchievementManager:GetAchievementInfo(...)
+function GetAchievementInfo(categoryID, index)
+	return C_AchievementManager:GetAchievementInfo(categoryID, index)
 end
 
 function GetCategoryNumAchievements( categoryID )

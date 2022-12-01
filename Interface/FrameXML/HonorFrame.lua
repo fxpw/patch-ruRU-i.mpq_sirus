@@ -71,7 +71,7 @@ function HonorFrame_Update(updateAll)
 	
 	-- Set rank progress and bar color
 	local function UpdateFaction()
-		local factionID = C_Unit:GetFactionID("player")
+		local factionID = C_Unit.GetFactionID("player")
 		local color = HonorBarColors[factionID]
 
 		if color then

@@ -1,133 +1,46 @@
---	Filename:	AccountLogin.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
+local BACKGROUND_MODEL = "Interface\\Glues\\Models\\UI_MainMenu\\UI_MainMenu.m2"
 
-local AccountLogin_Background = "Interface\\Glues\\Models\\UI_MainMenu\\UI_MainMenu.m2"
-local AccountLogin_Texture = "Interface\\Custom_LoginScreen\\do_not_fine"
+LOGIN_MODELS = {
+	{1, 1, 1, 1.000, 0.310, 5.712, 1, 125,	{-0.427, 0.602, 0.044},		[[Creature\Arthaslichking\arthaslichking.m2]]},
+	{1, 1, 1, 1.000, 0.118, 0.417, 1, 108,	{-1.102, -0.602, -0.133},	[[Creature\Illidan\illidan.m2]]},
 
-AccountLogin_Models = {
-	{1, 0.602, 0.044, -0.427, 5.712, 0.310, 1.000, {1, 0, 1, -0.707, -0.707, 0.4, 1.0, 1.0, 1.0, 1, 1, 0, 0}, 125, 1, 1, "Creature\\Arthaslichking\\arthaslichking.m2", _, _, nil},
-	{1, -0.602, -0.133, -1.102, 0.417, 0.118, 1.000, {1, 0, 1, -0.707, -0.707, 0.4, 1.0, 1.0, 1.0, 1, 1, 0, 0}, 108, 1, 1, "Creature\\Illidan\\illidan.m2", _, _, nil}
-
-	--{1, -0.486, 1.160, 0.000, 0.000, 0.601, 1.000, _, 2, 1, 1, "Spells\\Enchantments\\soulfrostglow_high.m2", _, _},
-	--{1, -0.877, 0.725, 0.000, 0.000, 0.486, 1.000, _, 2, 1, 1, "Spells\\Enchantments\\soulfrostglow_high.m2", _, _},
-	--{1, 1.534, 0.642, 0.000, 5.783, 0.134, 0.475, _, 2, 1, 1, "Spells\\Instanceportal_green_10man.m2", _, _},
-	--{1, -3.008, -1.137, -11.975, 0.900, 1.027, 1.000, _, 125, 1, 1, "Creature\\Kelthuzad\\kelthuzad.m2", _, _},
-	--{1, 2.046, 0.182, -4.002, 0.000, 0.504, 0.063, _, 2, 1, 1, "Spells\\Ritual_frost_precast_base.m2", _, _},
-	--{1, 0.053, 0.408, -7.890, 0.000, 0.405, 1.000, _, 2, 1, 1, "Creature\\Frostlord\\frostlordcore.m2", _, _},
-	--{1, -0.471, 1.167, 0.000, 0.000, 0.560, 1.000, _, 2, 1, 1, "Spells\\Enchantments\\soulfrostglow_high.m2", _, _},
-	--{1, -1.453, 0.592, 0.000, 0.500, 0.145, 0.482, _, 2, 1, 1, "Spells\\Instanceportal_green_10man.m2", _, _},
-	--{1, 0.267, -0.081, 0.000, 0.000, 0.681, 1.000, _, 2, 1, 1, "World\\Generic\\passivedoodads\\particleemitters\\dustwallowgroundfogplane.m2", _, _},
-	--{1, 0.021, 0.911, 0.000, 0.000, 3.387, 0.090, _, 2, 1, 1, "Spells\\Deathknight_frozenruneweapon_impact.m2", _, _},
-	--{1, 0.023, 3.459, -8.527, 0.000, 0.078, 1.000, _, 2, 1, 1, "World\\Expansion02\\doodads\\icecrown\\lights\\icecrown_green_fire.m2", _, _},
-	--{1, 0.017, 1.730, 0.000, 0.000, 0.132, 1.000, _, 2, 1, 1, "World\\Expansion02\\doodads\\icecrown\\lights\\icecrown_greenglow_01.m2", _, _},
-	--{1, 0.996, 0.619, 0.000, 5.683, 0.201, 1.000, _, 2, 1, 1, "Creature\\Snowman\\snowman.m2", _, _},
-	--{1, 0.626, 1.337, 0.000, 0.000, 0.049, 1.000, _, 2, 1, 1, "World\\Generic\\passivedoodads\\christmas\\g_xmaswreath.m2", _, _},
-	--{1, -0.594, 1.335, 0.000, 0.000, 0.049, 1.000, _, 2, 1, 1, "World\\Generic\\passivedoodads\\christmas\\g_xmaswreath.m2", _, _},
-	--{1, 7.680, -1.253, -18.667, 0.000, 0.449, 1.000, _, 2, 1, 1, "World\\Generic\\passivedoodads\\christmas\\xmastree_largealliance01white.m2", _, _},
-	--{1, 1.225, 0.562, 0.000, 0.000, 0.111, 1.000, _, 2, 1, 1, "World\\Generic\\activedoodads\\christmas\\snowballmound01.m2", _, _},
-	--{1, 1.358, 0.562, 0.000, 0.000, 0.150, 1.000, _, 2, 1, 1, "World\\Generic\\activedoodads\\christmas\\snowballmound01.m2", _, _},
-	--{1, 1.184, 0.519, 0.000, 0.000, 0.177, 1.000, _, 2, 1, 1, "World\\Generic\\passivedoodads\\christmas\\xmasgift01.m2", _, _},
-	--{1, 1.456, 0.498, 0.000, 0.600, 0.198, 1.000, _, 2, 1, 1, "World\\Generic\\passivedoodads\\christmas\\xmasgift04.m2", _, _},
-	--{1, 0.587, 1.555, 0.000, 5.783, 0.051, 1.000, _, 2, 1, 1, "World\\Generic\\passivedoodads\\christmas\\xmas_lightsx3.m2", _, _},
-	--{1, -0.542, 1.552, 0.000, 0.500, 0.053, 1.000, _, 2, 1, 1, "World\\Generic\\passivedoodads\\christmas\\xmas_lightsx3.m2", _, _},
-	--{1, 0.337, 0.684, 0.000, 0.000, 0.224, 1.000, _, 2, 1, 1, "World\\Generic\\passivedoodads\\christmas\\mistletoe.m2", _, _},
-	--{1, -0.286, 0.673, 0.000, 0.000, 0.219, 1.000, _, 2, 1, 1, "World\\Generic\\passivedoodads\\christmas\\mistletoe.m2", _, _},
-	--{1, 1.041, 0.195, -3.013, 5.799, 0.147, 1.000, _, 121, 1, 1, "Creature\\Babymoonkin\\babymoonkin_ne.m2", _, _}
+	{0, 1, 1, 1.000, 0.601, 0.000, 0, 2,	{0.000, -0.486, 1.160},		[[Spells\Enchantments\soulfrostglow_high.m2]]},
+	{0, 1, 1, 1.000, 0.486, 0.000, 0, 2,	{0.000, -0.877, 0.725},		[[Spells\Enchantments\soulfrostglow_high.m2]]},
+	{0, 1, 1, 0.475, 0.134, 5.783, 0, 2,	{0.000, 1.534, 0.642},		[[Spells\Instanceportal_green_10man.m2]]},
+	{0, 1, 1, 1.000, 1.027, 0.900, 0, 125,	{-11.975, -3.008, -1.137},	[[Creature\Kelthuzad\kelthuzad.m2]]},
+	{0, 1, 1, 0.063, 0.504, 0.000, 0, 2,	{-4.002, 2.046, 0.182},		[[Spells\Ritual_frost_precast_base.m2]]},
+	{0, 1, 1, 1.000, 0.405, 0.000, 0, 2,	{-7.890, 0.053, 0.408},		[[Creature\Frostlord\frostlordcore.m2]]},
+	{0, 1, 1, 1.000, 0.560, 0.000, 0, 2,	{0.000, -0.471, 1.167},		[[Spells\Enchantments\soulfrostglow_high.m2]]},
+	{0, 1, 1, 0.482, 0.145, 0.500, 0, 2,	{0.000, -1.453, 0.592},		[[Spells\Instanceportal_green_10man.m2]]},
+	{0, 1, 1, 1.000, 0.681, 0.000, 0, 2,	{0.000, 0.267, -0.081},		[[World\Generic\passivedoodads\particleemitters\dustwallowgroundfogplane.m2]]},
+	{0, 1, 1, 0.090, 3.387, 0.000, 0, 2,	{0.000, 0.021, 0.911},		[[Spells\Deathknight_frozenruneweapon_impact.m2]]},
+	{0, 1, 1, 1.000, 0.078, 0.000, 0, 2,	{-8.527, 0.023, 3.459},		[[World\Expansion02\doodads\icecrown\lights\icecrown_green_fire.m2]]},
+	{0, 1, 1, 1.000, 0.132, 0.000, 0, 2,	{0.000, 0.017, 1.730},		[[World\Expansion02\doodads\icecrown\lights\icecrown_greenglow_01.m2]]},
+	{0, 1, 1, 1.000, 0.201, 5.683, 0, 2,	{0.000, 0.996, 0.619},		[[Creature\Snowman\snowman.m2]]},
+	{0, 1, 1, 1.000, 0.049, 0.000, 0, 2,	{0.000, 0.626, 1.337},		[[World\Generic\passivedoodads\christmas\g_xmaswreath.m2]]},
+	{0, 1, 1, 1.000, 0.049, 0.000, 0, 2,	{0.000, -0.594, 1.335},		[[World\Generic\passivedoodads\christmas\g_xmaswreath.m2]]},
+	{0, 1, 1, 1.000, 0.449, 0.000, 0, 2,	{-18.667, 7.680, -1.253},	[[World\Generic\passivedoodads\christmas\xmastree_largealliance01white.m2]]},
+	{0, 1, 1, 1.000, 0.111, 0.000, 0, 2,	{0.000, 1.225, 0.562},		[[World\Generic\activedoodads\christmas\snowballmound01.m2]]},
+	{0, 1, 1, 1.000, 0.150, 0.000, 0, 2,	{0.000, 1.358, 0.562},		[[World\Generic\activedoodads\christmas\snowballmound01.m2]]},
+	{0, 1, 1, 1.000, 0.177, 0.000, 0, 2,	{0.000, 1.184, 0.519},		[[World\Generic\passivedoodads\christmas\xmasgift01.m2]]},
+	{0, 1, 1, 1.000, 0.198, 0.600, 0, 2,	{0.000, 1.456, 0.498},		[[World\Generic\passivedoodads\christmas\xmasgift04.m2]]},
+	{0, 1, 1, 1.000, 0.051, 5.783, 0, 2,	{0.000, 0.587, 1.555},		[[World\Generic\passivedoodads\christmas\xmas_lightsx3.m2]]},
+	{0, 1, 1, 1.000, 0.053, 0.500, 0, 2,	{0.000, -0.542, 1.552},		[[World\Generic\passivedoodads\christmas\xmas_lightsx3.m2]]},
+	{0, 1, 1, 1.000, 0.224, 0.000, 0, 2,	{0.000, 0.337, 0.684},		[[World\Generic\passivedoodads\christmas\mistletoe.m2]]},
+	{0, 1, 1, 1.000, 0.219, 0.000, 0, 2,	{0.000, -0.286, 0.673},		[[World\Generic\passivedoodads\christmas\mistletoe.m2]]},
+	{0, 1, 1, 1.000, 0.147, 5.799, 0, 121,	{-3.013, 1.041, 0.195},		[[Creature\Babymoonkin\babymoonkin_ne.m2]]},
 }
 
-AccountLogin_Models_Lights = {
-	{1, 0, 0, -0.707, -0.707, 0.7, 1.0, 1.0, 1.0, 0, 1.0, 1.0, 0.8}
+LOGIN_MODEL_LIGHTS = {
+	[0] = {1, 0, 0, -0.707, -0.707, 0.7, 1.0, 1.0, 1.0, 0, 1.0, 1.0, 0.8},
+	[1] = {1, 0, 1, -0.707, -0.707, 0.4, 1.0, 1.0, 1.0, 1, 1.0, 0.0, 0.0},
 }
 
-function AccountLoginBackground_OnLoad( self, ... )
+function AccountLogin_OnLoad(self)
+	self.LoginUI.Logo:SetAtlas("ServerGameLogo-11")
+	self.BGModel:SetModel(BACKGROUND_MODEL)
 	self.Models = {}
 
-	PlayGlueMusic(CurrentGlueMusic)
-
-	AccountLoginBackgroundModel:SetModel(AccountLogin_Background)
---	AccountLoginBackgroundTexture:SetTexture(AccountLogin_Texture)
-
-	for i = 1, #AccountLogin_Models do
-		local data = AccountLogin_Models[i]
-
-		local model = self.Models[i] or CreateFrame("Model", "AccountLoginModel"..i, self)
-		model:SetModel(data[14] or "Character\\Human\\Male\\HumanMale.mdx")
-		model:SetPoint("CENTER", 0, 0)
-		model:SetSize(self:GetWidth() / data[10], self:GetHeight() / data[11])
-		model:SetCamera(1)
-		model:SetLight(unpack(data[8] or AccountLogin_Models_Lights[1]))
-		model:SetAlpha(data[7])
-		model:Hide()
-
-		self.Models[i] = model
-	end
-
-	if self.renderUpdate then
-		self.renderUpdate:Cancel()
-		self.renderUpdate = nil
-	end
-
-	self.renderUpdate = C_Timer:NewTicker(0.01, function()
-		for i = 1, #self.Models do
-			local model = self.Models[i]
-			local data = AccountLogin_Models[i]
-
-			if data then
-				model:SetModel(data[12])
-				model:SetPosition(data[4], data[2], data[3])
-				model:SetFacing(data[5])
-				model:SetModelScale(data[6])
-				model:SetSequence(data[9])
-				model:Show()
-			end
-		end
-
-		local login, password, autologin = strsplit("|", GetSavedAccountName())
-		if login and password then
-			AccountLoginAccountEdit:SetText(login)
-			AccountLoginPasswordEdit:SetText(password)
-
-			if autologin == "true" then
-				AccountLoginAutoLogin:SetChecked(1)
-				if AccountLogin:IsShown() then
-					AccountLogin_AutoLogin(login, password)
-				end
-			end
-		end
-
-		AccountLoginDevTools:SetShown(IsDevClient())
-	end, 5)
-
---[[
-	if self.parallaxUpdate then
-		self.parallaxUpdate:Cancel()
-		self.parallaxUpdate = nil
-	end
-
-	self.parallaxUpdate = C_Timer:NewTicker(0.01, function()
-		local mposX, mposY = GetCursorPosition()
-		local fposX, fposY = self:GetCenter()
-
-		local x = mposX - fposX
-		local y = mposY - fposY
-
-		for i = 1, #self.Models do
-			local data = AccountLogin_Models[i]
-			local parallax = data[15]
-
-			if parallax then
-				local model = self.Models[i]
-				model:SetPosition(data[4], data[2] + (parallax[1] * ((x / fposX) / parallax[2])), data[3] + (parallax[3] * ((y / fposY) / parallax[4])))
-			end
-		end
-	end, nil)
---]]
-end
-
-function AccountLoginUI_OnLoad( self, ... )
 	AcceptTOS()
 	AcceptEULA()
 
@@ -136,41 +49,95 @@ function AccountLoginUI_OnLoad( self, ... )
 	self:RegisterEvent("SCANDLL_ERROR")
 	self:RegisterEvent("SCANDLL_FINISHED")
 	self:RegisterEvent("PLAYER_ENTER_TOKEN")
+	self:RegisterEvent("FRAMES_LOADED")
+end
 
-	local accountName = GetSavedAccountName()
-	if not accountName or accountName == "" then
-		SetSavedAccountName("")
-		AccountLoginSaveAccountName:SetChecked(0)
-	else
-		AccountLoginSaveAccountName:SetChecked(1)
-		AccountLoginAutoLogin.TitleText:SetTextColor(1, 1, 1)
-		AccountLoginAutoLogin:Enable()
+function AccountLogin_OnShow(self)
+	PlayGlueMusic(CurrentGlueMusic)
+
+	for _, model in ipairs(self.Models) do
+		local data = LOGIN_MODELS[model.id]
+
+		model:SetModel("Character\\Human\\Male\\HumanMale.mdx")
+		model:SetCamera(1)
+
+		model:SetModel(data[10])
+		model:SetSequence(data[8])
+
+		model:SetModelScale(data[5])
+		model:SetFacing(data[6])
+		model:SetPosition(unpack(data[9], 1, 3))
 	end
 end
 
-function AccountLoginUI_OnShow( self, ... )
-	self.Logo:SetAtlas("ServerGameLogo-11")--..math.random(11, 13))
-end
+function AccountLogin_OnEvent(self, event, ...)
+	if event == "FRAMES_LOADED" then
+		self:UnregisterEvent(event)
 
-function AccountLoginUI_OnHide( self, ... )
-	-- body
-end
+		for index, data in ipairs(LOGIN_MODELS) do
+			if data[1] == 1 then
+				local model = CreateFrame("Model", "$parentModel"..index, self.LoginUI)
+				model.id = index
 
-function AccountLoginUI_UpdateServerAlertText( text )
-	ServerAlertText:SetText(text)
-end
+				model:SetPoint("CENTER", 0, 0)
+				model:SetSize(self:GetWidth() * data[2], self:GetHeight() * data[3])
+				model:SetAlpha(data[4])
 
-function AccountLoginUI_OnEvent( self, event, ... )
-	if ( event == "SCANDLL_ERROR" or event == "SCANDLL_FINISHED" ) then
+				model:SetLight(unpack(data[7] and LOGIN_MODEL_LIGHTS[data[7]] or LOGIN_MODEL_LIGHTS[0], 1, 13))
+
+				table.insert(self.Models, model)
+			end
+		end
+
+		local accountName, oldPassword, oldAutologin = strsplit("|", GetSavedAccountName())
+		if accountName then
+			if oldPassword then
+				SetSavedAccountName(accountName);
+
+				SetCVar("readTerminationWithoutNotice", oldPassword);
+				C_GlueCVars.SetCVar("AUTO_LOGIN", oldAutologin == "true" and "1" or "0");
+			end
+
+			AccountLoginAccountEdit:SetText(accountName)
+
+			local password = GetCVar("readTerminationWithoutNotice");
+			if password and password ~= "" and password ~= "1" and password ~= "0" then
+				AccountLoginPasswordEdit:SetText(password)
+
+				if C_GlueCVars.GetCVar("AUTO_LOGIN") == "1" then
+					AccountLoginAutoLogin:SetChecked(1)
+
+					C_Timer:NewTicker(0.01, function()
+						if AccountLogin:IsVisible() then
+							DefaultServerLogin(GetSavedAccountName(), GetCVar("readTerminationWithoutNotice"))
+						end
+					end, 5)
+				end
+			end
+
+			AccountLoginSaveAccountName:SetChecked(true)
+			AccountLoginAutoLogin.TitleText:SetTextColor(1, 1, 1)
+			AccountLoginAutoLogin:Enable()
+		else
+			AccountLoginSaveAccountName:SetChecked(false)
+			AccountLoginAutoLogin.TitleText:SetTextColor(0.5, 0.5, 0.5)
+			AccountLoginAutoLogin:Disable()
+		end
+
+		AccountLoginDevTools:SetShown(IsDevClient())
+	elseif event == "SCANDLL_ERROR" or event == "SCANDLL_FINISHED" then
 		ScanDLLContinueAnyway()
-	end
-
-	if event == "PLAYER_ENTER_TOKEN" then
+	elseif event == "PLAYER_ENTER_TOKEN" then
 		TokenEnterDialog:Show()
 	end
 end
 
-function TokenEnterDialog_Okay( self, ... )
+function AccountLoginUI_UpdateServerAlertText(text)
+	ServerAlertText:SetText(text)
+	ServerAlertFrame:Show()
+end
+
+function TokenEnterDialog_Okay()
 	if string.len( TokenEnterEditBox:GetText() ) < 6 then
 		return
 	end
@@ -179,36 +146,35 @@ function TokenEnterDialog_Okay( self, ... )
 	TokenEnterDialog:Hide()
 end
 
-function TokenEnterDialog_Cancel( self, ... )
+function TokenEnterDialog_Cancel()
 	TokenEnterDialog:Hide()
 	CancelLogin()
 end
 
 function AccountLogin_Login()
-	local Login = AccountLoginAccountEdit:GetText()
-	local Password = AccountLoginPasswordEdit:GetText()
+	local login = AccountLoginAccountEdit:GetText()
+	local password = AccountLoginPasswordEdit:GetText()
 
-	if string.find(Login, "@") then
+	if string.find(login, "@", 1, true) then
 		GlueDialog:ShowDialog("OKAY", LOGIN_EMAIL_ERROR)
 		return
 	end
 
-	if Login and Password then
+	if login and password then
 		if AccountLoginSaveAccountName:GetChecked() then
-			if Login ~= "" or Password ~= "" then
-				SetSavedAccountName(string.format("%s|%s|%s", Login, Password, (AccountLoginAutoLogin:GetChecked()) and "true" or "false"))
+			if login ~= "" or password ~= "" then
+				SetSavedAccountName(login)
+
+				SetCVar("readTerminationWithoutNotice", password);
+				C_GlueCVars.SetCVar("AUTO_LOGIN", AccountLoginAutoLogin:GetChecked() and "1" or "0");
 			end
 		else
 			SetSavedAccountName("")
 		end
 
 		PlaySound(SOUNDKIT.GS_LOGIN)
-		DefaultServerLogin(Login, Password)
+		DefaultServerLogin(login, password)
 	end
-end
-
-function AccountLogin_AutoLogin(Login, Password)
-	DefaultServerLogin(Login, Password)
 end
 
 function AccountLoginDevTools_OnShow(self)
@@ -217,75 +183,63 @@ function AccountLoginDevTools_OnShow(self)
 	self.RealmListDropDown:SetShown(type(SIRUS_DEV_ACCOUNT_LOGIN_MANAGER.realmList) == "table" and next(SIRUS_DEV_ACCOUNT_LOGIN_MANAGER.realmList))
 end
 
-function DevToolsRealmListDropDown_OnShow( self, ... )
+function DevToolsRealmListDropDown_OnShow(self)
 	GlueDark_DropDownMenu_Initialize(self, DevToolsRealmListDropDown_Initialize)
 	GlueDark_DropDownMenu_SetSelectedValue(self, GetCVar("realmList"))
 	GlueDark_DropDownMenu_SetWidth(self, 185, true)
 	GlueDark_DropDownMenu_JustifyText(self, "CENTER")
 end
 
-function DevToolsRealmListDropDown_OnClick( button, ... )
-	SetCVar("realmList", button.value)
-	GlueDark_DropDownMenu_SetSelectedValue(AccountLoginDevTools.RealmListDropDown, button.value)
+function DevToolsRealmListDropDown_OnClick(self)
+	SetCVar("realmList", self.value)
+	GlueDark_DropDownMenu_SetSelectedValue(AccountLoginDevTools.RealmListDropDown, self.value)
 end
 
 function DevToolsRealmListDropDown_Initialize()
-	local info = GlueDark_DropDownMenu_CreateInfo()
+	if SIRUS_DEV_ACCOUNT_LOGIN_MANAGER and SIRUS_DEV_ACCOUNT_LOGIN_MANAGER.realmList then
+		local info = GlueDark_DropDownMenu_CreateInfo()
+		info.func = DevToolsRealmListDropDown_OnClick
 
-	info.func = DevToolsRealmListDropDown_OnClick
+		for _, realmData in ipairs(SIRUS_DEV_ACCOUNT_LOGIN_MANAGER.realmList) do
+			info.text = string.format("%s (%s)", realmData[1], realmData[2])
+			info.value = realmData[2]
+			info.checked = GetCVar("realmList") == info.value
 
-	if SIRUS_DEV_ACCOUNT_LOGIN_MANAGER then
-		for i = 1, tCount(SIRUS_DEV_ACCOUNT_LOGIN_MANAGER.realmList) do
-			local realmData = SIRUS_DEV_ACCOUNT_LOGIN_MANAGER.realmList[i]
-
-			if realmData then
-
-				info.text = string.format("%s (%s)", realmData[1], realmData[2])
-				info.value = realmData[2]
-				info.checked = GetCVar("realmList") == info.value
-
-				GlueDark_DropDownMenu_AddButton(info)
-			end
+			GlueDark_DropDownMenu_AddButton(info)
 		end
 	end
 end
 
-function DevToolsAccountsDropDown_OnShow( self, ... )
+function DevToolsAccountsDropDown_OnShow(self)
 	GlueDark_DropDownMenu_Initialize(self, DevToolsAccountsDropDown_Initialize, "MENU")
 end
 
-function DevToolsAccountsDropDown_OnClick( button, ... )
-	AccountLoginAccountEdit:SetText(string.sub(button.value[1], 2, -2))
-	AccountLoginPasswordEdit:SetText(string.sub(button.value[2], 2, -2))
+function DevToolsAccountsDropDown_OnClick(self)
+	AccountLoginAccountEdit:SetText(string.sub(self.value[1], 2, -2))
+	AccountLoginPasswordEdit:SetText(string.sub(self.value[2], 2, -2))
 end
 
 function DevToolsAccountsDropDown_Initialize()
-	local info = GlueDark_DropDownMenu_CreateInfo()
+	if SIRUS_DEV_ACCOUNT_LOGIN_MANAGER and SIRUS_DEV_ACCOUNT_LOGIN_MANAGER.accounts then
+		local info = GlueDark_DropDownMenu_CreateInfo()
+		info.func = DevToolsAccountsDropDown_OnClick
 
-	info.func = DevToolsAccountsDropDown_OnClick
+		for i, accountData in ipairs(SIRUS_DEV_ACCOUNT_LOGIN_MANAGER.accounts) do
+			info.text = string.format("%i - %s", i, string.sub(accountData[1], 2, -2))
+			info.value = {accountData[1], accountData[2]}
+			info.checked = nil
 
-	if SIRUS_DEV_ACCOUNT_LOGIN_MANAGER then
-		for i = 1, tCount(SIRUS_DEV_ACCOUNT_LOGIN_MANAGER.accounts) do
-			local accountData = SIRUS_DEV_ACCOUNT_LOGIN_MANAGER.accounts[i]
-
-			if accountData then
-
-				info.text = string.format("%i - %s", i, string.sub(accountData[1], 2, -2))
-				info.value = {accountData[1], accountData[2]}
-				info.checked = nil
-
-				GlueDark_DropDownMenu_AddButton(info)
-			end
+			GlueDark_DropDownMenu_AddButton(info)
 		end
 	end
 end
 
 AccountLoginChooseRealmDropDownMixin = {}
 
-local function ChooseRealmDropdown_OnClick( button, ... )
-	GlueDark_DropDownMenu_SetSelectedValue(AccountLoginChooseRealmDropDown, button.value)
-	SetCVar('realmList', button.value)
-	C_GlueCVars.SetCVar("ENTRY_POINT", button.value)
+local function ChooseRealmDropdown_OnClick(self)
+	GlueDark_DropDownMenu_SetSelectedValue(AccountLoginChooseRealmDropDown, self.value)
+	SetCVar("realmList", self.value)
+	C_GlueCVars.SetCVar("ENTRY_POINT", self.value)
 end
 
 local function ChooseRealmDropdownInit()
@@ -309,7 +263,7 @@ function AccountLoginChooseRealmDropDownMixin:Init()
 	local currentRealmList = GetCVar("realmList")
 	local selectedValue = self.realmStorage[1].ip
 
-	if string.find(currentRealmList, "127.0.0.1", 1, true) then
+	if StringStartsWith(currentRealmList, "192.168.") or StringStartsWith(currentRealmList, "127.0.") then
 		return
 	end
 
@@ -331,7 +285,7 @@ function AccountLoginChooseRealmDropDownMixin:Init()
 	end
 
 	GlueDark_DropDownMenu_SetSelectedValue(self, selectedValue)
-	SetCVar('realmList', selectedValue)
+	SetCVar("realmList", selectedValue)
 
 	GlueDark_DropDownMenu_SetWidth(self, 185, true)
 	GlueDark_DropDownMenu_JustifyText(self, "CENTER")

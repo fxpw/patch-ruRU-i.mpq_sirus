@@ -168,7 +168,7 @@ local function FilteredPetJornal()
 
 	table.sort(PET_INFO_BY_INDEX, SortedPetJornal);
 
-	Hook:FireEvent("PET_JOURNAL_LIST_UPDATE");
+	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.PET_JOURNAL_LIST_UPDATE);
 end
 
 local function InitPetInfo()
@@ -201,7 +201,7 @@ frame:RegisterEvent("PLAYER_LOGIN");
 frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 frame:RegisterEvent("PLAYER_TALENT_UPDATE");
 frame:SetScript("OnEvent", function(_, event, arg1)
-	if event == "COMPANION_UPDATE" and arg1 == "CRITTER" or event == "COMPANION_LEARNED" or event == "COMPANION_LEARNED" then
+	if (event == "COMPANION_UPDATE" and (not arg1 or arg1 == "CRITTER")) or event == "COMPANION_LEARNED" or event == "COMPANION_LEARNED" then
 		UpdateCompanionInfo();
 		FilteredPetJornal();
 	elseif event == "VARIABLES_LOADED" then
@@ -452,7 +452,7 @@ function C_PetJournal.GetPetInfoByIndex(index)
 	local petInfo = PET_INFO_BY_INDEX[index] or {};
 	local hash = petInfo.hash
 	local isFavorite = hash and SIRUS_COLLECTION_FAVORITE_PET[hash];
-	return hash, petInfo.petID, petInfo.petIndex, petInfo.isOwned, isFavorite, petInfo.name, petInfo.icon, petInfo.subCategoryID, petInfo.spellID;
+	return hash, petInfo.petID, COMPANION_INFO[petInfo.petID], petInfo.isOwned, isFavorite, petInfo.name, petInfo.icon, petInfo.subCategoryID, petInfo.spellID;
 end
 
 function C_PetJournal.GetPetInfoByItemID(itemID)
@@ -466,13 +466,13 @@ function C_PetJournal.GetPetInfoByPetID(petID)
 	local petInfo = PET_INFO_BY_PET_ID[petID] or {};
 	local hash = petInfo.hash;
 	local isFavorite = hash and SIRUS_COLLECTION_FAVORITE_PET[hash];
-	return petInfo.hash, petInfo.petIndex, isFavorite, petInfo.name, petInfo.icon, petInfo.subCategoryID, petInfo.lootType, petInfo.currency, petInfo.price, petInfo.creatureID, petInfo.spellID, petInfo.itemID, petInfo.priceText, petInfo.descriptionText, petInfo.holidayText;
+	return petInfo.hash, COMPANION_INFO[petInfo.petID], isFavorite, petInfo.name, petInfo.icon, petInfo.subCategoryID, petInfo.lootType, petInfo.currency, petInfo.price, petInfo.creatureID, petInfo.spellID, petInfo.itemID, petInfo.priceText, petInfo.descriptionText, petInfo.holidayText;
 end
 
 function C_PetJournal.GetPetInfoByPetHash(hash)
 	local petInfo = PET_INFO_BY_PET_HASH[hash] or {};
 	local isFavorite = hash and SIRUS_COLLECTION_FAVORITE_PET[hash];
-	return petInfo.petIndex, isFavorite, petInfo.name, petInfo.icon, petInfo.subCategoryID, petInfo.lootType, petInfo.currency, petInfo.price, petInfo.productID, petInfo.creatureID, petInfo.spellID, petInfo.itemID, petInfo.priceText, petInfo.descriptionText, petInfo.holidayText;
+	return COMPANION_INFO[petInfo.petID], isFavorite, petInfo.name, petInfo.icon, petInfo.subCategoryID, petInfo.lootType, petInfo.currency, petInfo.price, petInfo.productID, petInfo.creatureID, petInfo.spellID, petInfo.itemID, petInfo.priceText, petInfo.descriptionText, petInfo.holidayText;
 end
 
 function C_PetJournal.GetSummonedPetID()
@@ -482,7 +482,7 @@ end
 function C_PetJournal.PetIsSummonable(petID)
 	local petInfo = PET_INFO_BY_PET_ID[petID];
 	if petInfo then
-		local isSummonable = PET_INFO_BY_PET_ID[petID].petIndex and true or false;
+		local isSummonable = COMPANION_INFO[petInfo.petID] and true or false;
 		if petInfo.factionSide ~= 0 and petInfo.factionSide ~= 4 then
 			local factionGroup = UnitFactionGroup("player");
 			local factionFlag = factionGroup and FACTION_FLAGS[factionGroup];
@@ -497,7 +497,7 @@ end
 function C_PetJournal.GetPetSummonInfo(petID)
 	local petInfo = PET_INFO_BY_PET_ID[petID];
 	if petInfo then
-		local isSummonable, errorType, errorText = PET_INFO_BY_PET_ID[petID].petIndex and true or false, 0;
+		local isSummonable, errorType, errorText = COMPANION_INFO[petInfo.petID] and true or false, 0;
 		if petInfo.factionSide ~= 0 and petInfo.factionSide ~= 4 then
 			local factionGroup = UnitFactionGroup("player");
 			local factionFlag = factionGroup and FACTION_FLAGS[factionGroup];
@@ -510,7 +510,7 @@ function C_PetJournal.GetPetSummonInfo(petID)
 end
 
 function C_PetJournal.SummonPetByPetID(petID)
-	local petIndex = PET_INFO_BY_PET_ID[petID] and PET_INFO_BY_PET_ID[petID].petIndex;
+	local petIndex = PET_INFO_BY_PET_ID[petID] and COMPANION_INFO[PET_INFO_BY_PET_ID[petID].petID];
 	if petIndex then
 		local creatureID, _, spellID = GetCompanionInfo("CRITTER", petIndex);
 		if SUMMONED_PET_ID == GetPetID(creatureID, spellID) then

@@ -1,19 +1,15 @@
---	Filename:	C_Unit.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 local FACTION_OVERRIDE_BY_DEBUFFS = FACTION_OVERRIDE_BY_DEBUFFS
 local S_CATEGORY_SPELL_ID = S_CATEGORY_SPELL_ID
 local S_VIP_STATUS_DATA = S_VIP_STATUS_DATA
 
+local UnitClassification = UnitClassification
+local UnitDebuff = UnitDebuff
+local UnitIsPlayer = UnitIsPlayer
 local UnitFactionGroup = UnitFactionGroup
 
----@class C_UnitMixin : Mixin
-C_UnitMixin = {}
+C_Unit = {}
 
-local UnitHasAuraFromList = function(unit, spellList)
+local unitHasAuraFromList = function(unit, spellList)
 	local index = 1
 	local name, _, _, _, _, _, _, _, _, _, spellID = UnitDebuff(unit, index)
 	while name do
@@ -30,33 +26,35 @@ local UnitHasAuraFromList = function(unit, spellList)
 	return false
 end
 
-function C_UnitMixin:GetCategoryInfo( unit )
-	assert(unit, "C_UnitMixin:GetCategoryInfo: не указан unit.")
+function C_Unit.GetCategoryInfo(unit)
+	if type(unit) ~= "string" then
+		error("Usage: C_Unit.GetCategoryInfo(\"unit\")", 2)
+	end
 
-	if UnitExists(unit) and UnitIsPlayer(unit) then
-		local categoryInfo = {}
+	if UnitIsPlayer(unit) then
+		local name, spellID = unitHasAuraFromList(unit, S_CATEGORY_SPELL_ID)
+		local categoryName, categorySpellID
 
-		local name, spellID = UnitHasAuraFromList(unit, S_CATEGORY_SPELL_ID)
 		if spellID then
-			categoryInfo.categoryName = name:gsub("%((.*)%)%s*", "")
-			categoryInfo.categorySpellID = spellID
-
-			return categoryInfo
+			categoryName = name:gsub("%((.*)%)%s*", "")
+			categorySpellID = spellID
+		else
+			categoryName = PLAYER_NO_CATEGORY
 		end
 
-		categoryInfo.categoryName = PLAYER_NO_CATEGORY
-
-		return categoryInfo
+		return categoryName, categorySpellID
 	end
 end
 
-function C_UnitMixin:GetClassification( unit )
-	assert(unit, "C_UnitMixin:GetClassification: не указан unit.")
+function C_Unit.GetClassification(unit)
+	if type(unit) ~= "string" then
+		error("Usage: C_Unit.GetClassification(\"unit\")", 2)
+	end
 
 	local classificationInfo 	= {}
 
-	if UnitExists(unit) and UnitIsPlayer(unit) then
-		local name, spellID = UnitHasAuraFromList(unit, S_VIP_STATUS_DATA)
+	if UnitIsPlayer(unit) then
+		local name, spellID = unitHasAuraFromList(unit, S_VIP_STATUS_DATA)
 		if spellID then
 			local data = S_VIP_STATUS_DATA[spellID]
 
@@ -108,45 +106,68 @@ function C_UnitMixin:GetClassification( unit )
 	return classificationInfo
 end
 
-function C_UnitMixin:GetFactionByDebuff( unit )
-	assert(unit, "C_UnitMixin:GetFactionByDebuff: не указан unit.")
+function C_Unit.GetFactionByDebuff(unit)
+	if type(unit) ~= "string" then
+		error("Usage: C_Unit.GetFactionByDebuff(\"unit\")", 2)
+	end
 
-	local _, spellID = UnitHasAuraFromList(unit, FACTION_OVERRIDE_BY_DEBUFFS)
+	local _, spellID = unitHasAuraFromList(unit, FACTION_OVERRIDE_BY_DEBUFFS)
 	if spellID then
 		return FACTION_OVERRIDE_BY_DEBUFFS[spellID]
 	end
 end
 
-function C_UnitMixin:GetFactionID( unit )
-	assert(unit, "C_UnitMixin:GetFactionID: не указан unit.")
+function C_Unit.GetFactionInfo(unit)
+	if type(unit) ~= "string" then
+		error("Usage: C_Unit.GetFactionInfo(\"unit\")", 2)
+	end
 
-	local unitFaction = UnitFactionGroup(unit)
-
-	if unitFaction then
-		return PLAYER_FACTION_GROUP[unitFaction]
+	local faction, factionName = UnitFactionGroup(unit)
+	if faction then
+		return PLAYER_FACTION_GROUP[faction], SERVER_PLAYER_FACTION_GROUP[faction], faction, factionName
 	end
 end
 
-function C_UnitMixin:GetServerFactionID( unit )
-	assert(unit, "C_UnitMixin:GetFactionID: не указан unit.")
+function C_Unit.GetFactionID(unit)
+	if type(unit) ~= "string" then
+		error("Usage: C_Unit.GetFactionID(\"unit\")", 2)
+	end
 
-	local unitFaction = UnitFactionGroup(unit)
-
-	if unitFaction then
-		return SERVER_PLAYER_FACTION_GROUP[unitFaction]
+	local faction = UnitFactionGroup(unit)
+	if faction then
+		return PLAYER_FACTION_GROUP[faction]
 	end
 end
 
-function C_UnitMixin:IsRenegade( unit )
-	assert(unit, "C_UnitMixin:IsRenegade: не указан unit.")
+function C_Unit.GetServerFactionID(unit)
+	if type(unit) ~= "string" then
+		error("Usage: C_Unit.GetServerFactionID(\"unit\")", 2)
+	end
 
-	return self:GetFactionID(unit) == PLAYER_FACTION_GROUP.Renegade
+	local faction = UnitFactionGroup(unit)
+	if faction then
+		return SERVER_PLAYER_FACTION_GROUP[faction]
+	end
 end
 
----@class C_Unit : C_UnitMixin
-C_Unit = CreateFromMixins(C_UnitMixin)
+function C_Unit.IsRenegade(unit)
+	if type(unit) ~= "string" then
+		error("Usage: C_Unit.IsRenegade(\"unit\")", 2)
+	end
+
+	local faction = UnitFactionGroup(unit)
+	if faction then
+		return PLAYER_FACTION_GROUP[faction] == PLAYER_FACTION_GROUP.Renegade
+	end
+end
 
 function C_Unit.IsNeutral(unit)
+	if type(unit) ~= "string" then
+		error("Usage: C_Unit.IsNeutral(\"unit\")", 2)
+	end
+
 	local faction = UnitFactionGroup(unit)
-	return PLAYER_FACTION_GROUP[faction] == PLAYER_FACTION_GROUP.Neutral
+	if faction then
+		return PLAYER_FACTION_GROUP[faction] == PLAYER_FACTION_GROUP.Neutral
+	end
 end

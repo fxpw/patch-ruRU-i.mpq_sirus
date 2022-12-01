@@ -543,6 +543,7 @@
 		<Scripts>
 			<OnLoad function="PetJournal_OnLoad"/>
 			<OnShow function="PetJournal_OnShow"/>
+			<OnEvent function="PetJournal_OnEvent"/>
 		</Scripts>
 	</Frame>
 </Ui>

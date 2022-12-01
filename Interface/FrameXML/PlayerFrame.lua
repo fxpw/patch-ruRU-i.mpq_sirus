@@ -59,6 +59,8 @@ function PlayerFrame_OnLoad(self)
 	end
 	UIParent_UpdateTopFramePositions();
 	SecureUnitButton_OnLoad(self, "player", showmenu);
+
+	C_FactionManager:RegisterFactionOverrideCallback(PlayerFrame_UpdatePvPStatus, false, true)
 end
 
 function PlayerFrame_Update ()
@@ -97,34 +99,35 @@ function PlayerFrame_UpdatePartyLeader()
 end
 
 function PlayerFrame_UpdatePvPStatus()
-	if not GetRatedBattlegroundRankInfo then
-		return
-	end
-
 	if not UnitIsUnit("player", PlayerFrame.unit) then
 		PlayerPVPIcon:Hide()
-		return
-	end
-
-	local factionInfo = C_CreatureInfo.GetFactionInfo(UnitRace(PlayerFrame.unit))
-
-	if not factionInfo or factionInfo.factionID == PLAYER_FACTION_GROUP.Neutral then
-		PlayerPVPIcon:Hide()
-		RatedBattlegroundRankFrame:Hide()
 		PlayerRenegadeIcon:Hide()
+		RatedBattlegroundRankFrame:Hide()
 		return
 	end
 
-	local _ ,_ , currRankID, currRankIconCoord,_ ,_ ,_ ,_ ,_ ,_ ,_ ,_ ,_ ,_ , rankBackgroundTexCoord = GetRatedBattlegroundRankInfo()
-	local factionGroup, factionName = UnitFactionGroup("player")
-	local isRenegade 				= C_Unit:IsRenegade("player")
-	local unitIsPlayer 				= UnitIsPlayer("player")
-	local isBattlegroundRanked 		= currRankID ~= 0
+	local factionID, _, factionGroup, factionName = C_Unit.GetFactionInfo("player")
 
-	PlayerPVPIcon:SetShown(not isRenegade and unitIsPlayer)
-	PlayerRenegadeIcon:SetShown(isRenegade and unitIsPlayer)
+	if factionID == PLAYER_FACTION_GROUP.Neutral then
+		PlayerPVPIcon:Hide()
+		PlayerRenegadeIcon:Hide()
+		RatedBattlegroundRankFrame:Hide()
+		return
+	end
+
+	local _, curRankID, curRankIconCoord, rankBackgroundTexCoord, isBattlegroundRanked
+
+	if GetRatedBattlegroundRankInfo then
+		_, _, curRankID, curRankIconCoord, _, _, _, _, _, _, _, _, _, _, rankBackgroundTexCoord = GetRatedBattlegroundRankInfo()
+		isBattlegroundRanked = curRankID ~= 0
+	end
+
+	local unitIsPlayer = UnitIsPlayer("player")
+
+	PlayerPVPIcon:SetShown(factionID ~= PLAYER_FACTION_GROUP.Renegade and unitIsPlayer)
+	PlayerRenegadeIcon:SetShown(factionID == PLAYER_FACTION_GROUP.Renegade and unitIsPlayer)
 	RatedBattlegroundRankFrame:SetShown(isBattlegroundRanked and unitIsPlayer)
-	RatedBattlegroundRankFrame.Icons:SetShown(currRankIconCoord)
+	RatedBattlegroundRankFrame.Icons:SetShown(curRankIconCoord)
 
 	PVPIconFrame:ClearAllPoints()
 
@@ -134,12 +137,8 @@ function PlayerFrame_UpdatePvPStatus()
 		PVPIconFrame:SetPoint("CENTER", RatedBattlegroundRankFrame, "CENTER", 10, -10)
 	end
 
-	if rankBackgroundTexCoord and rankBackgroundTexCoord[factionGroup] then
-		RatedBattlegroundRankFrame.Background:SetTexCoord(unpack(rankBackgroundTexCoord[factionGroup]))
-	end
-
-	if currRankIconCoord then
-		RatedBattlegroundRankFrame.Icons:SetTexCoord(unpack(currRankIconCoord))
+	if curRankIconCoord then
+		RatedBattlegroundRankFrame.Icons:SetTexCoord(unpack(curRankIconCoord))
 	end
 
 	if UnitIsPVPFreeForAll("player") then
@@ -156,6 +155,10 @@ function PlayerFrame_UpdatePvPStatus()
 		PlayerPVPTimerText.timeLeft = nil
 	elseif factionGroup then
 		PlayerPVPIcon:SetTexture("Interface\\TargetingFrame\\UI-PVP-"..factionGroup)
+
+		if rankBackgroundTexCoord and rankBackgroundTexCoord[factionGroup] then
+			RatedBattlegroundRankFrame.Background:SetTexCoord(unpack(rankBackgroundTexCoord[factionGroup]))
+		end
 
 		PlayerFrame.PVPTooltipTitle = factionName
 		PlayerFrame.PVPTooltipText = _G["NEWBIE_TOOLTIP_"..strupper(factionGroup)]

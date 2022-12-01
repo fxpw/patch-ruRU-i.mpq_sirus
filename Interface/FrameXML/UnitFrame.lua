@@ -150,13 +150,13 @@ function UnitFrameCategory_Update( self )
 		return
 	end
 
-	local categoryInfo = self.showCategoryInfo and C_Unit:GetCategoryInfo(self.unit)
-
-	frame:SetShown(categoryInfo)
-
-	if categoryInfo then
-		frame.categoryText:SetText(categoryInfo.categoryName)
-		frame.Name = categoryInfo.categoryName
+	local categoryName = self.showCategoryInfo and C_Unit.GetCategoryInfo(self.unit)
+	if categoryName then
+		frame.categoryText:SetText(categoryName)
+		frame.Name = categoryName
+		frame:Show()
+	else
+		frame:Hide()
 	end
 end
 
@@ -180,7 +180,7 @@ function UnitFrameVip_Update( self )
 		return
 	end
 
-	local vipInfo = C_Unit:GetClassification(self.unit)
+	local vipInfo = C_Unit.GetClassification(self.unit)
 
 	if vipInfo.vipCategory == 3 then
 		texture:SetVertexColor(1, 1, 1)

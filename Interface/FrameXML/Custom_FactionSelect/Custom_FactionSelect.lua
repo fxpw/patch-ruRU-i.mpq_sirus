@@ -103,12 +103,12 @@ local raceTemplate = {
 		Horde = {
 			text = FACTION_SELECT_TEXT_VULPERA_HORDE,
 			textDK = FACTION_SELECT_TEXT_DK_HORDE,
-			banner = "vulpera_banner_horde",
+			banner = "FactionSelect-Banner-Vulpera-Horde",
 		},
 		Alliance = {
 			text = string.format(FACTION_SELECT_TEXT_VULPERA_ALLIANCE, UnitSex("player") == 2 and FACTION_SELECT_DECIDED_MALE or FACTION_SELECT_DECIDED_FEMALE),
 			textDK = FACTION_SELECT_TEXT_DK_ALLIANCE,
-			banner = "vulpera_banner_alliance",
+			banner = "FactionSelect-Banner-Vulpera-Alliance",
 		},
 	},
 	PANDAREN = {
@@ -121,6 +121,18 @@ local raceTemplate = {
 			text = FACTION_SELECT_TEXT_PANDAREN_ALLIANCE,
 			textDK = FACTION_SELECT_TEXT_DK_ALLIANCE,
 			banner = "FactionSelect-Banner-Pandaren-Alliance",
+		},
+	},
+	DRACTHYR = {
+		Horde = {
+			text = FACTION_SELECT_TEXT_DRACTHYR_HORDE,
+			textDK = FACTION_SELECT_TEXT_DK_HORDE,
+			banner = "FactionSelect-Banner-Dracthyr-Horde",
+		},
+		Alliance = {
+			text = FACTION_SELECT_TEXT_DRACTHYR_ALLIANCE,
+			textDK = FACTION_SELECT_TEXT_DK_ALLIANCE,
+			banner = "FactionSelect-Banner-Dracthyr-Alliance",
 		},
 	},
 }
@@ -196,18 +208,11 @@ function FactionSelectTemplateMixin:ChooseFaction()
 	self:GetParent():ChooseFaction(self.factitonName)
 end
 
-function EventHandler:ASMSG_FACTION_SELECT_UI_VULPERA(msg)
-	local state, factionID, isDK = string.split(":", msg)
-	FactionSelectFrame:ShowSelection(tonumber(state), tonumber(factionID), "VULPERA", tonumber(isDK) == 1)
-end
-
-function EventHandler:ASMSG_FACTION_SELECT_UI_PANDAREN(msg)
-	local state, factionID, raceID, isDK = string.split(":", msg)
-	FactionSelectFrame:ShowSelection(tonumber(state), tonumber(factionID), "PANDAREN", tonumber(isDK) == 1)
-end
-
 function EventHandler:ASMSG_FACTION_SELECT(msg)
-	local state, raceID, factionID, isDK = string.split(":", msg)
-	local race = raceID == "22" and "PANDAREN" or "VULPERA"
-	FactionSelectFrame:ShowSelection(tonumber(state), tonumber(factionID), race, tonumber(isDK) == 1)
+	if msg == "0" then
+		FactionSelectFrame:ShowSelection(0)
+	else
+		local state, factionID, raceName, isDK = string.split(":", msg)
+		FactionSelectFrame:ShowSelection(tonumber(state), tonumber(factionID), raceName, tonumber(isDK) == 1)
+	end
 end

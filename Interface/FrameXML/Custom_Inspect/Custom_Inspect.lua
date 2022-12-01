@@ -1,23 +1,26 @@
---	Filename:	Sirus_Inspect.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
-INSPECTFRAME_SUBFRAMES = { "InspectPaperDollFrame", "InspectPVPFrame", "InspectTalentFrame", "InspectGuildFrame" }
+INSPECTFRAME_SUBFRAMES = { "InspectPaperDollFrame", "InspectPVPFrame", "InspectTalentFrame", "InspectGlyphFrame", "InspectGuildFrame" }
 UIPanelWindows["InspectFrame"] = { area = "left", pushable = 0, xOffset = "15", yOffset = "-10", width = 378 }
 
 local PVPStatsInfo = {}
 
-function InspectFrame_OnLoad( self, ... )
+local INSPECT_TABS = {
+	CHARACTER = 1,
+	PVP = 2,
+	TALENTS = 3,
+	GLYPHS = 4,
+	GUILD = 5,
+	TOTAL = 5,
+}
+
+function InspectFrame_OnLoad(self)
 	self:RegisterEvent("PLAYER_TARGET_CHANGED")
 	self:RegisterEvent("PARTY_MEMBERS_CHANGED")
 	self:RegisterEvent("UNIT_NAME_UPDATE")
 	self:RegisterEvent("UNIT_PORTRAIT_UPDATE")
 	self.unit = nil
 
-	PanelTemplates_SetNumTabs(self, 4)
-	PanelTemplates_SetTab(self, 1)
+	PanelTemplates_SetNumTabs(self, INSPECT_TABS.TOTAL)
+	PanelTemplates_SetTab(self, INSPECT_TABS.CHARACTER)
 end
 
 function InspectFrame_OnUpdate(self)
@@ -57,6 +60,7 @@ end
 
 function InspectFrame_UnitChanged(self)
 	local unit = self.unit
+	table.wipe(InspectGlyphFrame.glyphData)
 	NotifyInspect(unit)
 	InspectPaperDollFrame_OnShow(self)
 	SetPortraitTexture(InspectFramePortrait, unit)
@@ -64,7 +68,8 @@ function InspectFrame_UnitChanged(self)
 	InspectFrame_UpdateTabs()
 	ButtonFrameTemplate_HideButtonBar(InspectFrame)
 
-	if PanelTemplates_GetSelectedTab(InspectFrame) == 3 or PanelTemplates_GetSelectedTab(InspectFrame) == 4 then
+	local selectedTabIndex = PanelTemplates_GetSelectedTab(InspectFrame)
+	if selectedTabIndex == INSPECT_TABS.TALENTS or selectedTabIndex == INSPECT_TABS.GUILD then
 		ButtonFrameTemplate_ShowButtonBar(InspectFrame)
 	end
 
@@ -75,7 +80,7 @@ function InspectFrame_UnitChanged(self)
 	ItemLevelMixIn:Request( unit )
 	InspectPVPFrame_Update()
 
-	InspectSwitchTabs(1)
+	InspectSwitchTabs(INSPECT_TABS.CHARACTER)
 	SendServerMessage("ACMSG_BG_STATS_REQUEST", UnitGUID(self.unit))
 end
 
@@ -159,11 +164,12 @@ function InspectPaperDollFrame_OnShow()
 end
 
 function InspectFrame_Show( unit )
+	table.wipe(InspectGlyphFrame.glyphData)
 	HideUIPanel(InspectFrame)
 	if ( CanInspect(unit, true) ) then
 		NotifyInspect(unit)
 		InspectFrame.unit = unit
-		InspectSwitchTabs(1)
+		InspectSwitchTabs(INSPECT_TABS.CHARACTER)
 		ShowUIPanel(InspectFrame)
 		InspectFrame_UpdateTabs()
 	end
@@ -196,25 +202,34 @@ function InspectFrame_UpdateTabs()
 
 	-- Talent tab
 	local level = UnitLevel(InspectFrame.unit)
-	if ( level > 0 and level < 10 ) then
-		PanelTemplates_DisableTab(InspectFrame, 3)
-		if ( PanelTemplates_GetSelectedTab(InspectFrame) == 3 ) then
-			InspectSwitchTabs(1)
+	if ( level < 10 ) then
+		PanelTemplates_DisableTab(InspectFrame, INSPECT_TABS.TALENTS)
+		if ( PanelTemplates_GetSelectedTab(InspectFrame) == INSPECT_TABS.TALENTS ) then
+			InspectSwitchTabs(INSPECT_TABS.CHARACTER)
 		end
 	else
-		PanelTemplates_EnableTab(InspectFrame, 3)
+		PanelTemplates_EnableTab(InspectFrame, INSPECT_TABS.TALENTS)
 		InspectTalentFrame_UpdateTabs()
+	end
+
+	if ( level < 15 ) then
+		PanelTemplates_DisableTab(InspectFrame, INSPECT_TABS.GLYPHS)
+		if ( PanelTemplates_GetSelectedTab(InspectFrame) == INSPECT_TABS.GLYPHS ) then
+			InspectSwitchTabs(INSPECT_TABS.CHARACTER)
+		end
+	else
+		PanelTemplates_EnableTab(InspectFrame, INSPECT_TABS.GLYPHS)
 	end
 
 	-- Guild tab
 	local guildName = GetGuildInfo(InspectFrame.unit)
 	if ( guildName and guildName ~= "" ) then
-		PanelTemplates_EnableTab(InspectFrame, 4)
+		PanelTemplates_EnableTab(InspectFrame, INSPECT_TABS.GUILD)
 		SendAddonMessage("ACMSG_INSPECT_GUILD_INFO_REQUEST", UnitGUID(InspectFrame.unit), "WHISPER", UnitName("player"))
 	else
-		PanelTemplates_DisableTab(InspectFrame, 4)
-		if ( PanelTemplates_GetSelectedTab(InspectFrame) == 4 ) then
-			InspectSwitchTabs(1)
+		PanelTemplates_DisableTab(InspectFrame, INSPECT_TABS.GUILD)
+		if ( PanelTemplates_GetSelectedTab(InspectFrame) == INSPECT_TABS.GUILD ) then
+			InspectSwitchTabs(INSPECT_TABS.CHARACTER)
 		end
 	end
 
@@ -791,7 +806,7 @@ function InspectRatedBattleGrounds_OnShow( self, ... )
 	end
 
 	local currTitle, currRankID, currRankIconCoord, currRating, weekWins, weekGames, totalWins, totalGames, laurelCoord = GetUnitRatedBattlegroundRankInfo(InspectFrame.unit)
-	local factionID = C_Unit:GetFactionID(InspectFrame.unit)
+	local factionID = C_Unit.GetFactionID(InspectFrame.unit)
 
 	if factionID then
 		self.Container.LaurelBackground:SetTexCoord(unpack(PVPFRAME_PRESTIGE_LARGE_BACKGROUNDS[factionID]))
@@ -1008,6 +1023,144 @@ function InspectLadderMixin:UpdatePlayerInfo()
 
 	self.TopContainer.StatisticsFrame.Statistics:SetShown(data)
 	self.TopContainer.StatisticsFrame.NoData:SetShown(not data)
+end
+
+InspectGlyphFrameMixin = {}
+
+function InspectGlyphFrameMixin:OnLoad()
+	self.glyphData = {}
+end
+
+function InspectGlyphFrameMixin:OnShow()
+	SetParentFrameLevel(self, 2)
+	self:Update()
+end
+
+function InspectGlyphFrameMixin:Update()
+	for _, glyph in ipairs(self.glyphs) do
+		glyph:UpdateSlot()
+	end
+end
+
+function InspectGlyphFrameMixin:GetGlyphSocketInfo(id)
+	if InspectFrame.unit and UnitIsUnit("player", InspectFrame.unit) then
+		local enabled, glyphType, glyphSpell = GetGlyphSocketInfo(id, C_Talent.GetActiveTalentGroup())
+		return glyphType, glyphSpell
+	end
+
+	local glyphType
+
+	if id == 2 or id == 3 or id == 5 then
+		glyphType = 2
+	else
+		glyphType = 1
+	end
+
+	return glyphType, self.glyphData[id]
+end
+
+InspectGlyphMixin = {}
+
+function InspectGlyphMixin:OnLoad()
+	self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+
+	if not self:GetParent().glyphs then
+		self:GetParent().glyphs = {}
+	end
+	self:GetParent().glyphs[self:GetID()] = self
+end
+
+function InspectGlyphMixin:UpdateSlot()
+	local id = self:GetID();
+	local glyphType, glyphSpell = self:GetParent():GetGlyphSocketInfo(id)
+
+	self:SetGlyphType(glyphType == 2 and GLYPHTYPE_MINOR or GLYPHTYPE_MAJOR)
+
+	if ( not glyphSpell ) then
+		self.spell = nil;
+		self.background:SetTexCoord(GLYPH_SLOTS[0].left, GLYPH_SLOTS[0].right, GLYPH_SLOTS[0].top, GLYPH_SLOTS[0].bottom);
+		self.glyph:Hide();
+	else
+		self.spell = glyphSpell;
+		self.background:SetAlpha(1);
+		self.background:SetTexCoord(GLYPH_SLOTS[id].left, GLYPH_SLOTS[id].right, GLYPH_SLOTS[id].top, GLYPH_SLOTS[id].bottom);
+		self.glyph:Show();
+
+		local spellIcon = (select(3, GetSpellInfo(glyphSpell))) or GetSpellTexture(glyphSpell)
+		if ( spellIcon ) then
+			SetPortraitToTexture(self.glyph, spellIcon);
+		else
+			self.glyph:SetTexture("Interface\\Spellbook\\UI-Glyph-Rune1");
+		end
+	end
+end
+
+local GLYPH_TYPE_INFO = {
+	[GLYPHTYPE_MAJOR] = {
+		ring = { size = 74, left = 0.00390625, right = 0.33203125, top = 0.27539063, bottom = 0.43945313 };
+		highlight = { size = 88, left = 0.54296875, right = 0.92578125, top = 0.00195313, bottom = 0.19335938 };
+	},
+	[GLYPHTYPE_MINOR] = {
+		ring = { size = 62, left = 0.33984375, right = 0.60546875, top = 0.27539063, bottom = 0.40820313 };
+		highlight = { size = 76, left = 0.61328125, right = 0.93359375, top = 0.27539063, bottom = 0.43554688 };
+	},
+}
+
+function InspectGlyphMixin:SetGlyphType(glyphType)
+	self.glyphType = glyphType;
+
+	local info = GLYPH_TYPE_INFO[glyphType]
+	if info then
+		self.glyphType = glyphType
+		
+		self.ring:SetSize(info.ring.size, info.ring.size)
+		self.ring:SetTexCoord(info.ring.left, info.ring.right, info.ring.top, info.ring.bottom)
+		
+		self.highlight:SetSize(info.highlight.size, info.highlight.size)
+		self.highlight:SetTexCoord(info.highlight.left, info.highlight.right, info.highlight.top, info.highlight.bottom)
+		
+		self.glyph:SetSize(info.ring.size - 16, info.ring.size - 16)
+		self.glyph:SetAlpha(0.75)
+	end
+end
+
+function InspectGlyphMixin:OnClick(button)
+	if not self.spell then return end
+
+	if ( IsModifiedClick("CHATLINK") and ChatEdit_GetActiveWindow() ) then
+		local link = GetSpellLink(self.spell)
+		if ( link ) then
+			ChatEdit_InsertLink(link);
+		end
+	end
+end
+
+function InspectGlyphMixin:OnEnter()
+	if ( self.background:IsShown() ) then
+		self.highlight:Show();
+	end
+	if self.spell then
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+		GameTooltip:SetHyperlink(string.format("spell:%d", self.spell));
+		GameTooltip:Show();
+	end
+end
+
+function InspectGlyphMixin:OnLeave()
+	self.highlight:Hide();
+	GameTooltip:Hide();
+end
+
+function EventHandler:ASMSG_INSPECT_GLYPHS(msg)
+	if not InspectFrame.unit then return end
+
+	table.wipe(InspectGlyphFrame.glyphData)
+
+	for glyphIndex, spellID in ipairs({string.split(":", msg)}) do
+		InspectGlyphFrame.glyphData[glyphIndex] = tonumber(spellID)
+	end
+
+	InspectGlyphFrame:Update()
 end
 
 function EventHandler:ASMSG_INSPECT_GUILD_INFO_RESPONSE( msg )

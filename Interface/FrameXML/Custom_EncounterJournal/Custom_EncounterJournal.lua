@@ -505,14 +505,11 @@ function EJ_GetEncounterInfoByIndex( index, instanceID )
 	end
 
 	local buffer = {}
-	local playerFaction = UnitFactionGroup("player")
-	if playerFaction == "Renegade" then
-		local raceData = C_CreatureInfo.GetFactionInfo(UnitRace("player"))
-		if raceData then
-			playerFaction = raceData.groupTag
-		end
+	local factionGroup = UnitFactionGroup("player")
+	if factionGroup == "Renegade" then
+		playerFaction = select(3, C_FactionManager.GetFactionInfoOriginal())
 	end
-	local playerFactionFlag = playerFaction == "Alliance" and 4 or 8
+	local factionFlag = factionGroup == "Alliance" and 4 or 8
 
 	local difficulty = SelectedDifficulty
 
@@ -530,7 +527,7 @@ function EJ_GetEncounterInfoByIndex( index, instanceID )
 
 	for bossID, data in pairs(JOURNALENCOUNTER[instanceID]) do
 		if data[EJ_CONST_ENCOUNTER_DIFFICULTYMASK] == -1 or bit.band(data[EJ_CONST_ENCOUNTER_DIFFICULTYMASK],  EJ_GetDifficultyMask(difficulty)) ==  EJ_GetDifficultyMask(difficulty) then
-			if data[EJ_CONST_ENCOUNTER_FLAGS] == 0 or bit.band(data[EJ_CONST_ENCOUNTER_FLAGS], playerFactionFlag) == playerFactionFlag then
+			if data[EJ_CONST_ENCOUNTER_FLAGS] == 0 or bit.band(data[EJ_CONST_ENCOUNTER_FLAGS], factionFlag) == factionFlag then
 				table.insert(buffer, data)
 			end
 		end
@@ -1300,14 +1297,11 @@ function EncounterJournal_OnLoad( self, ... )
 	self.encounterList = {}
 
 	local function UpdateFactionArt()
-		local playerFaction = UnitFactionGroup("player")
-		if playerFaction == "Renegade" then
-			local raceData = C_CreatureInfo.GetFactionInfo(UnitRace("player"))
-			if raceData then
-				playerFaction = raceData.groupTag
-			end
+		local factionGroup = UnitFactionGroup("player")
+		if factionGroup == "Renegade" then
+			playerFaction = select(3, C_FactionManager.GetFactionInfoOriginal())
 		end
-		self.playerFactionGroup = playerFaction == "Alliance" and -2 or -3
+		self.playerFactionGroup = factionGroup == "Alliance" and -2 or -3
 	end
 
 	C_FactionManager:RegisterFactionOverrideCallback(UpdateFactionArt, true)
@@ -3652,7 +3646,7 @@ function LootJournal_CanOpenItemByEntry( itemEntry, dontIgnoredFaction )
 	end
 
 	if dontIgnoredFaction then
-		local playerFactionID 		= C_Unit:GetFactionID("player")
+		local playerFactionID 		= C_Unit.GetFactionID("player")
 		local convertedFactionID 	= factionData[playerFactionID]
 
 		if factionID ~= convertedFactionID and factionID ~= -1 then
@@ -3687,10 +3681,7 @@ LOOTJOURNAL_FACTION_HORDE = 2
 function LootJournal_FactionValidation( factionID )
 	local factionGroup = UnitFactionGroup("player")
 	if factionGroup == "Renegade" then
-		local raceData = C_CreatureInfo.GetFactionInfo(UnitRace("player"))
-		if raceData then
-			factionGroup = raceData.groupTag
-		end
+		playerFaction = select(3, C_FactionManager.GetFactionInfoOriginal())
 	end
 
 	factionGroup = factionGroup or "NEUTRAL"

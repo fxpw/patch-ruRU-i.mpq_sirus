@@ -148,7 +148,7 @@ frame:SetScript("OnEvent", function(_, event)
 		UNCOLLECTED_SHOWN = not C_CVar:GetCVarBitfield("C_CVAR_TOY_BOX_COLLECTED_FILTERS", TOY_BOX_UNCOLLECTED);
 	elseif event == "PLAYER_LOGIN" then
 		local function UpdatePlayerFactionID()
-			local factionID = C_FactionManager:GetFactionOverrideCVar() or 3;
+			local factionID = C_FactionManager.GetFactionOverrideCVar() or 3;
 			if PLAYER_FACTION_ID ~= factionID then
 				PLAYER_FACTION_ID = factionID;
 				InitToys();

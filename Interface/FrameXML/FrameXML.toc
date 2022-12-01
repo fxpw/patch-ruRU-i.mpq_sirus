@@ -30,10 +30,11 @@ GlobalStrings.lua
 ..\SharedXML\FrameUtil.lua
 ..\SharedXML\Pools.lua
 ..\SharedXML\CircularBuffer.lua
+..\SharedXML\StringUtil.lua
+..\SharedXML\TypeUtil.lua
 ..\SharedXML\Utils\C_Texture.lua
 ..\SharedXML\Utils\C_CreatureInfo.lua
 ..\SharedXML\Utils\C_Talent.lua
-..\SharedXML\TypeUtil.lua
 ..\SharedXML\Opcodes.lua
 
 ..\SharedXML\C_TimerAugment.lua
@@ -62,10 +63,10 @@ Utils\CustomAPI.lua
 Utils\C_CVar.lua
 Utils\C_ObjectGUID.lua
 Utils\C_FactionManager.lua
+Utils\C_Unit.lua
 Utils\C_AchievementManager.lua
 Utils\C_Item.lua
 Utils\C_Map.lua
-Utils\C_Unit.lua
 Utils\C_BattlefieldScoreManager.lua
 Utils\C_Guild.lua
 Utils\C_Cursor.lua

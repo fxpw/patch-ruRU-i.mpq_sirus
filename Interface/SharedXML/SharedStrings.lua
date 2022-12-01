@@ -151,6 +151,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "%d д.",
 		enGB = "%d |4Day:Days;"
 	},
+	["D_DAYS_FULL"] = {
+		ruRU = "%d |4день:дня:дней;",
+		enGB = "%d |4Day:Days;"
+	},
 	["D_HOURS"] = {
 		ruRU = "%d ч.",
 		enGB = "%d |4Hour:Hours;"
@@ -170,6 +174,10 @@ local SIRUS_LOCALIZATION = {
 	["DAY_ONELETTER_ABBR"] = {
 		ruRU = "%d д.",
 		enGB = "%d d"
+	},
+	["DAY_ONELETTER_ABBR_SHORT"] = {
+		ruRU = "%dд",
+		enGB = "%dd"
 	},
 	["DEBUG_FRAMESTACK"] = {
 		ruRU = "Соединение рамок",
@@ -299,6 +307,22 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Степень разделения",
 		enGB = "Depth Amount"
 	},
+	["SKIN_COLOR_DRACTHYR"] = {
+		ruRU = "Цвет кожи и рогов",
+		enGB = "Skin and Horns Color"
+	},
+	["SKIN_COLOR_ZANDALARITROLL"] = {
+		ruRU = "Цвет кожи и клыков",
+		enGB = ""
+	},
+	["FACIAL_FACE_DRACTHYR"] = {
+		ruRU = "Лицо и узоры",
+		enGB = ""
+	},
+	["FACIAL_HAIR_DRACTHYR"] = {
+		ruRU = "Борода и Рога",
+		enGB = "Facial Hair and Horns"
+	},
 	["FACIAL_HAIR_EARRINGS"] = {
 		ruRU = "Серьги",
 		enGB = "Earrings"
@@ -314,6 +338,10 @@ local SIRUS_LOCALIZATION = {
 	["FACIAL_HAIR_FEATURES_EARS"] = {
 		ruRU = "Аксессуары и Уши",
 		enGB = "Features and Ears"
+	},
+	["FACIAL_HAIR_FEATURES_HORNS"] = {
+		ruRU = "Аксессуары и Рога",
+		enGB = "Features and Horns"
 	},
 	["FACIAL_HAIR_HAIR"] = {
 		ruRU = "Волосы",
@@ -362,6 +390,10 @@ local SIRUS_LOCALIZATION = {
 	["FACTION_HORDE"] = {
 		ruRU = "Орда",
 		enGB = "Horde"
+	},
+	["FACTION_NEUTRAL"] = {
+		ruRU = "Нейтрал",
+		enGB = "Neutral"
 	},
 	["FAR"] = {
 		ruRU = "Макс.",
@@ -859,6 +891,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Частота",
 		enGB = "Refresh"
 	},
+	["RESET_CAMERA"] = {
+		ruRU = "Сбросить настройки камеры",
+		enGB = "Reset Camera",
+	},
 	["RESOLUTION"] = {
 		ruRU = "Разрешение",
 		enGB = "Resolution"
@@ -1327,14 +1363,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Пандарен (Орда)",
 		enGB = "Pandaren (Horde)"
 	},
-	["RACE_NIGHTELF_DH"] = {
-		ruRU = "DH - Ночной эльф",
-		enGB = "DH - Night Elf"
-	},
-	["RACE_BLOODELF_DH"] = {
-		ruRU = "DH - Син'Дорей",
-		enGB = "DH - Blood Elf"
-	},
 	["RACE_TAUNKA"] = {
 		ruRU = "Таунка",
 		enGB = "Taunka"
@@ -1459,14 +1487,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Пандарен (Орда)",
 		enGB = ""
 	},
-	["RACE_NIGHTELF_DH_FEMALE"] = {
-		ruRU = "DH - Ночная эльфийка",
-		enGB = ""
-	},
-	["RACE_BLOODELF_DH_FEMALE"] = {
-		ruRU = "DH - Син'Дорейка",
-		enGB = ""
-	},
 	["RACE_TAUNKA_FEMALE"] = {
 		ruRU = "Таунка",
 		enGB = ""
@@ -1490,6 +1510,14 @@ local SIRUS_LOCALIZATION = {
 	["RACE_BLOODELF_CREATURE_FEMALE"] = {
 		ruRU = "Син'Дорейка",
 		enGB = ""
+	},
+	["RACE_DRACTHYR"] = {
+		ruRU = "Драктир",
+		enGB = "Dracthyr"
+	},
+	["RACE_DRACTHYR_FEMALE"] = {
+		ruRU = "Драктир (Альянс)",
+		enGB = "Dracthyr (Alliance)"
 	},
 	["RACE_VULPERA_ALLIANCE"] = {
 		ruRU = "Вульпера (Альянс)",

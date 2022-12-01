@@ -322,9 +322,9 @@
 							<Color r="1" g="0.968" b="0.898"/>
 						</FontString>
 						<FontString name="$parentRealmDescription" spacing="2" justifyV="TOP" justifyH="LEFT" parentKey="RealmDescription" font="Interface\CustomFonts\OpenSans-Semibold.ttf">
-							<Size x="194" y="160"/>
+							<Size x="208" y="160"/>
 							<Anchors>
-								<Anchor point="TOPLEFT" x="30" y="-26" />
+								<Anchor point="TOPLEFT" x="22" y="-26" />
 							</Anchors>
 							<FontHeight val="9"/>
 							<Color r="0.921" g="0.870" b="0.760"/>
@@ -332,7 +332,7 @@
 						<FontString name="$parentRealmRateLabel" justifyV="TOP" justifyH="LEFT" parentKey="RealmRateLabel" font="Interface\CustomFonts\futurademic.ttf" text="REALM_CARD_RATE">
 							<Size x="60" y="20"/>
 							<Anchors>
-								<Anchor point="TOPLEFT" relativeTo="$parentRealmDescription" relativePoint="BOTTOMLEFT" x="0" y="-6" />
+								<Anchor point="TOPLEFT" relativeTo="$parentRealmDescription" relativePoint="BOTTOMLEFT" x="8" y="-6" />
 							</Anchors>
 							<FontHeight val="8"/>
 							<Color r="0.984" g="0.819" b="0.576"/>
@@ -347,7 +347,7 @@
 						<FontString name="$parentRealmPVPStatusLabel" justifyV="TOP" justifyH="LEFT" parentKey="RealmPVPStatusLabel" font="Interface\CustomFonts\futurademic.ttf" text="REALM_CARD_PVP_MODE">
 							<Size x="60" y="20"/>
 							<Anchors>
-								<Anchor point="TOPLEFT" relativeTo="$parentRealmRateLabel" relativePoint="BOTTOMLEFT" x="0" y="-4" />
+								<Anchor point="TOPLEFT" relativeTo="$parentRealmRateLabel" relativePoint="BOTTOMLEFT" x="8" y="-4" />
 							</Anchors>
 							<FontHeight val="8"/>
 							<Color r="0.984" g="0.819" b="0.576"/>

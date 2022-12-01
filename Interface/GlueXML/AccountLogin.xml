@@ -1,13 +1,3 @@
-<!--
-
-	Filename:	AccountLogin.xml
-	Project:	Sirus Game Interface
-	Author:		Nyll
-	E-mail:		nyll@sirus.su
-	Web:		https://sirus.su/
-
--->
-
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 	<Script file="AccountLogin.lua"/>
@@ -34,20 +24,8 @@
 
 	<ModelFFX name="AccountLogin" toplevel="true" parent="GlueParent" setAllPoints="true" enableKeyboard="true" hidden="true" fogNear="0" fogFar="1200" glow="0.08">
 		<Frames>
-			<Frame name="AccountLoginBackground" setAllPoints="true">
-				<Layers>
-					<Layer level="OVERLAY">
-						<Texture name="AccountLoginBackgroundTexture"/>
-					</Layer>
-				</Layers>
-				<Frames>
-					<Model name="AccountLoginBackgroundModel" setAllPoints="true"/>
-				</Frames>
-				<Scripts>
-					<OnLoad function="AccountLoginBackground_OnLoad"/>
-				</Scripts>
-			</Frame>
-			<Frame name="AccountLoginUI" setAllPoints="true" toplevel="true" hidden="true">
+			<Model name="$parentBGModel" parentKey="BGModel" setAllPoints="true"/>
+			<Frame name="AccountLoginUI" parentKey="LoginUI" setAllPoints="true" toplevel="true" hidden="true">
 				<Layers>
 					<Layer level="BACKGROUND">
 						<Texture parentKey="Logo" file="Interface\Custom_LoginScreen\Logo">
@@ -300,7 +278,7 @@
 							</Frame>
 						</Frames>
 					</Frame>
-					<Frame name="ServerAlertFrame" inherits="LoginUIFrameTemplate">
+					<Frame name="ServerAlertFrame" inherits="LoginUIFrameTemplate" hidden="true">
 						<Size x="270" y="405"/>
 						<Anchors>
 							<Anchor point="LEFT" x="10" y="15"/>
@@ -397,10 +375,10 @@
 												self:SetFocus()
 											</OnShow>
 											<OnEscapePressed>
-												TokenEnterDialog_Cancel(self)
+												TokenEnterDialog_Cancel()
 											</OnEscapePressed>
 											<OnEnterPressed>
-												TokenEnterDialog_Okay(self)
+												TokenEnterDialog_Okay()
 											</OnEnterPressed>
 											<OnTextChanged>
 												TokenEnterOkayButton:SetEnabled(self:GetNumLetters() == 6)
@@ -413,7 +391,7 @@
 										</Anchors>
 										<Scripts>
 											<OnClick>
-												TokenEnterDialog_Okay(self)
+												TokenEnterDialog_Okay()
 											</OnClick>
 										</Scripts>
 									</Button>
@@ -423,7 +401,7 @@
 										</Anchors>
 										<Scripts>
 											<OnClick>
-												TokenEnterDialog_Cancel(self)
+												TokenEnterDialog_Cancel()
 											</OnClick>
 										</Scripts>
 									</Button>
@@ -463,14 +441,13 @@
 						</Scripts>
 					</Frame>
 				</Frames>
-				<Scripts>
-					<OnLoad function="AccountLoginUI_OnLoad"/>
-					<OnShow function="AccountLoginUI_OnShow"/>
-					<OnHide function="AccountLoginUI_OnHide"/>
-					<OnEvent function="AccountLoginUI_OnEvent"/>
-				</Scripts>
 			</Frame>
 		</Frames>
+		<Scripts>
+			<OnLoad function="AccountLogin_OnLoad"/>
+			<OnShow function="AccountLogin_OnShow"/>
+			<OnEvent function="AccountLogin_OnEvent"/>
+		</Scripts>
 	</ModelFFX>
 
 	<Frame name="AccountLoginConnectionErrorFrame" setAllPoints="true" toplevel="true" frameStrata="DIALOG" enableMouse="true" enableKeyboard="true" hidden="true">

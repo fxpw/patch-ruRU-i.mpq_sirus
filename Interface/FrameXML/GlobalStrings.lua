@@ -547,6 +547,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Друид",
 		enGB = "Druid"
 	},
+	["ERR_NO_TARGET_OR_NAME"] = {
+		ruRU = "Вы не указали цель или имя.",
+		enGB = "No target or name specified."
+	},
     ["VOICEMACRO_20_Sc_6_FEMALE"] = {
         ruRU = "Гробовые гвоздики...",
         enGB = "Ah, doornails."
@@ -1434,10 +1438,6 @@ local SIRUS_LOCALIZATION = {
     ["MALE"] = {
         ruRU = "Муж.",
         enGB = "Male"
-    },
-    ["TOAST_MOVE_TEXT"] = {
-        ruRU = "Нажмите для перемещения",
-        enGB = ""
     },
     ["BINDING_NAME_TOGGLEBINDINGMODE2"] = {
         ruRU = "Включение режима назначения клавиш цели",
@@ -3831,10 +3831,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "[Все]",
         enGB = "[View All]"
     },
-    ["HIPPOGRIFFS"] = {
-        ruRU = "Гиппогрифы",
-        enGB = "Hippogryphs"
-    },
     ["TUTORIAL_TITLE21"] = {
         ruRU = "Журнал заданий",
         enGB = "Quest Log"
@@ -4294,10 +4290,6 @@ local SIRUS_LOCALIZATION = {
     ["CHAT_YELL_UNKNOWN_FEMALE"] = {
         ruRU = "кричит своим партнерам по команде.",
         enGB = "yells at her team members."
-    },
-    ["EXPANSION_FILTER_TEXT"] = {
-        ruRU = "Дополнение",
-        enGB = "Expansion"
     },
     ["SLASH_WHISPER6"] = {
         ruRU = "/w",
@@ -5090,10 +5082,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_19_Sc_2_FEMALE"] = {
         ruRU = "Нежить умеет хорошо повеселиться. В конце концов, самое худшее с нами уже случилось.",
         enGB = "Us Undead girls really know how to have a good time because, after all, what's the worst thing that could happen?"
-    },
-    ["ELEKKI"] = {
-        ruRU = "Элекки",
-        enGB = "Elekks"
     },
     ["KEY_BUTTON10"] = {
         ruRU = "Кнопка мыши 10",
@@ -6171,10 +6159,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Кольцо 1",
         enGB = "Ring 1"
     },
-    ["TRICYCLES"] = {
-        ruRU = "Трициклы",
-        enGB = "Tricycles"
-    },
     ["EMOTE7_CMD2"] = {
         ruRU = "/подозвать",
         enGB = "/beckon"
@@ -6890,10 +6874,6 @@ local SIRUS_LOCALIZATION = {
     ["TICKET_TYPE1"] = {
         ruRU = "Процесс игры",
         enGB = "Game Play"
-    },
-    ["SLOPES_OF_THE_VOID"] = {
-        ruRU = "Скаты пустоты",
-        enGB = "Nether Rays"
     },
     ["SET_MAIN_ASSIST"] = {
         ruRU = "Назначить наводчиком",
@@ -8198,10 +8178,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_DANCE_SAVE_FAILED"] = {
         ruRU = "Не удалось сохранить танец.",
         enGB = "Failed to save dance"
-    },
-    ["TOAST_BODY_2"] = {
-        ruRU = "|cffff0000выходит из сети|r.",
-        enGB = "has gone |cffff0000offline|r."
     },
     ["TALENT_IMPORT_TOOLTIP_NAME"] = {
         ruRU = "Импорт талантов",
@@ -12275,10 +12251,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Эй, привет!",
         enGB = "Hi, there."
     },
-    ["PANGOLINS"] = {
-        ruRU = "Ящеры",
-        enGB = "Raptors"
-    },
     ["DUNGEON_FLOOR_UTGARDEPINNACLE1"] = {
         ruRU = "Подножие",
         enGB = "Lower Pinnacle"
@@ -12931,10 +12903,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Дуэль",
         enGB = "Duel"
     },
-    ["TIGERS"] = {
-        ruRU = "Тигры",
-        enGB = "Tigers"
-    },
     ["MOVIE_RECORDING_ENABLE_COMPRESSION"] = {
         ruRU = "Сжимать после записи",
         enGB = "Compress After Recording"
@@ -13526,10 +13494,6 @@ local SIRUS_LOCALIZATION = {
     ["EMPTY_SOCKET"] = {
         ruRU = "Ячейка (уровень: %d)",
         enGB = "Level %d Socket"
-    },
-    ["SCORPIONS"] = {
-        ruRU = "Скорпионы",
-        enGB = "Scorpions"
     },
     ["VOICEMACRO_8_Sc_1"] = {
         ruRU = "Вылечите меня!",
@@ -15115,10 +15079,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Добро пожаловать! Подземелье \"%s\" будет обновлено через %s",
         enGB = "Welcome to %s. Your instance lock is scheduled to expire in %s."
     },
-    ["MUSHANS"] = {
-        ruRU = "Мушаны",
-        enGB = "Mushans"
-    },
     ["SLASH_CONSOLE2"] = {
         ruRU = "/console",
         enGB = "/console"
@@ -15250,10 +15210,6 @@ local SIRUS_LOCALIZATION = {
     ["RAF_GRANT_LEVEL"] = {
         ruRU = "Повысить уровень",
         enGB = "Grant a Level"
-    },
-    ["YAKI"] = {
-        ruRU = "Яки",
-        enGB = "Yaks"
     },
     ["ERR_USE_CANT_OPEN"] = {
         ruRU = "Не открывается.",
@@ -15582,10 +15538,6 @@ local SIRUS_LOCALIZATION = {
     ["CHAT_EMOTE_SEND"] = {
         ruRU = "%s ",
         enGB = "%s "
-    },
-    ["YETI"] = {
-        ruRU = "Йети",
-        enGB = "Yeti"
     },
     ["RESET_TUTORIALS"] = {
         ruRU = "Сброс обучения",
@@ -16623,10 +16575,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Выбор источника входящего звука голосового чата.",
         enGB = "Selects where you would like to hear incoming voice chat."
     },
-    ["DRACONDERS"] = {
-        ruRU = "Дракондоры",
-        enGB = "Dragonhawks"
-    },
     ["ICON_TAG_RAID_TARGET_SQUARE1"] = {
         ruRU = "rt6",
         enGB = "rt6"
@@ -16890,10 +16838,6 @@ local SIRUS_LOCALIZATION = {
     ["PROFICIENCIES_COLON"] = {
         ruRU = "Уровни мастерства:",
         enGB = "Proficiencies:"
-    },
-    ["DEER"] = {
-        ruRU = "Олени",
-        enGB = "Deer"
     },
     ["BINDING_NAME_RESETVIEW1"] = {
         ruRU = "Сбросить ракурс 1",
@@ -17675,10 +17619,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "%s создает: %sx%d.",
         enGB = "%s creates: %sx%d."
     },
-    ["DRAGONS"] = {
-        ruRU = "Драконы",
-        enGB = "Dragons"
-    },
     ["SHOW_IGNORE_LIST"] = {
         ruRU = "Показывать черный список игроков",
         enGB = "Show Ignore List"
@@ -18086,10 +18026,6 @@ local SIRUS_LOCALIZATION = {
     ["OPTION_TOOLTIP_SHOW_RAID_RANGE"] = {
         ruRU = "Прозрачность индикаторов здоровья участников рейда будет изменяться в зависимости от расстояния до них.",
         enGB = "Show the range of raid members when they are far away by fading out their health bars."
-    },
-    ["SHREDDERS"] = {
-        ruRU = "Крошшеры",
-        enGB = "Shredders"
     },
     ["PVP_RANK_0_0_FEMALE"] = {
         ruRU = "Разведчик",
@@ -19563,10 +19499,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Клавиша 1",
         enGB = "Key 1"
     },
-    ["WILD_BOARS"] = {
-        ruRU = "Кабаны",
-        enGB = "Wild boars"
-    },
     ["ACTION_RANGED"] = {
         ruRU = "Дальний бой",
         enGB = "Shot"
@@ -20379,10 +20311,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/при",
         enGB = "/hi"
     },
-    ["WINGBOOTS"] = {
-        ruRU = "Крылобеги",
-        enGB = "Hawkstriders"
-    },
     ["RUNIC_POWER_COST_PER_TIME"] = {
         ruRU = "Cила рун: %d плюс %d/сек",
         enGB = "%d Runic Power, plus %d per sec"
@@ -20634,10 +20562,6 @@ local SIRUS_LOCALIZATION = {
     ["OPTION_TOOLTIP_SHOW_BATTLENET_TOASTS"] = {
         ruRU = "Отображать системные сообщения Battle.net во всплывающем окне.",
         enGB = "Enable this to have Battle.net system messages appear in a popup window."
-    },
-    ["WOLVES"] = {
-        ruRU = "Волки",
-        enGB = "Wolves"
     },
     ["ERR_RAID_DISALLOWED_BY_LEVEL"] = {
         ruRU = "Уровень персонажа слишком низок для участия в рейде.",
@@ -21343,10 +21267,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Список заданий |3-1(%s) переполнен.",
         enGB = "%s's quest log is full"
     },
-    ["PROTO_DRAGONS"] = {
-        ruRU = "Протодраконы",
-        enGB = "Protodragons"
-    },
     ["VOICEMACRO_20_Sc_1_FEMALE"] = {
         ruRU = "Да, они настоящие. Не мои, но настоящие.",
         enGB = "Yes, they're real.  They're not mine, but they're real."
@@ -21354,10 +21274,6 @@ local SIRUS_LOCALIZATION = {
     ["SPELL_FAILED_NO_COMBO_POINTS"] = {
         ruRU = "Этот прием может только завершать серию.",
         enGB = "That ability requires combo points"
-    },
-    ["TOAST_CLEAR_POSITION"] = {
-        ruRU = "Сбросить позицию",
-        enGB = ""
     },
     ["TOGGLE_MOVE_SOCIAL_TOAST"] = {
         ruRU = "Изменить позицию",
@@ -21371,37 +21287,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Отображение сообщений о заклинаниях и особых способностях.",
         enGB = "Shows messages about spells and special abilities."
     },
-    ["OPTION_TOOLTIP_SETTINGS_SHOW_SOCIAL_TOAST"] = {
-        ruRU = "Показывать всплывающие уведомления о социальной активности. Например уведомление о входе / выходе друга из игры.",
-        enGB = ""
-    },
-    ["SETTINGS_SHOW_SOCIAL_TOAST"] = {
-        ruRU = "Показывать социальные уведомления",
-        enGB = ""
-    },
-    ["SETTINGS_SHOW_BATTLE_PASS_TOAST"] = {
-        ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tПоказывать уведомления Боевого Пропуска",
-        enGB = ""
-    },
-    ["OPTION_TOOLTIP_SETTINGS_SHOW_BATTLE_PASS_TOAST"] = {
-        ruRU = "Показывать всплывающие уведомления о изменениях в статусе вашего Боевого Пропуска, таких как получение опыта, нового уровня, о \"не полученных\" наградах, и т.д.",
-        enGB = ""
-    },
-    ["OPTION_TOOLTIP_SETTINGS_SHOW_HEAD_HUNTING_TOAST"] = {
-        ruRU = "Показывать всплывающие уведомления о социальной активности. Например уведомление о входе / выходе друга из игры.",
-        enGB = ""
-    },
-    ["SETTINGS_SHOW_HEAD_HUNTING_TOAST"] = {
-        ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tПоказывать социальные уведомления",
-        enGB = ""
-    },
     ["ERR_GUILD_DECLINE_S"] = {
         ruRU = "%s отклоняет приглашение в гильдию.",
         enGB = "%s declines your guild invitation."
-    },
-    ["TOAST_BODY_1"] = {
-        ruRU = "|cff00ff00входит в сеть|r.",
-        enGB = "has come |cff00ff00online|r."
     },
     ["CHAT_OFFICER_SEND"] = {
         ruRU = "Офицер: ",
@@ -21414,10 +21302,6 @@ local SIRUS_LOCALIZATION = {
     ["OFFICER"] = {
         ruRU = "Офицер",
         enGB = "Officer"
-    },
-    ["TOAST_TITLE_1"] = {
-        ruRU = "%s",
-        enGB = ""
     },
     ["OPTION_TOOLTIP_SETTINGS_AUTOJOIN_TO_LFG"] = {
         ruRU = "Если эта настройка активна - при входе в игровой мир вы будете автоматически подключаться к каналу Поиск спутников",
@@ -21907,10 +21791,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Служба",
         enGB = "Service"
     },
-    ["CREATURES"] = {
-        ruRU = "Существа",
-        enGB = "Creatures"
-    },
     ["BONUS_BATTLEGROUNDS"] = {
         ruRU = "Поле боя с бонусом",
         enGB = "Bonus Battlegrounds"
@@ -22175,10 +22055,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Добавить в \"Избранное",
         enGB = "Set Favorite"
     },
-    ["FEL_CATCHERS"] = {
-        ruRU = "Ловцы скверны",
-        enGB = "Felstalkers"
-    },
     ["SLASH_GUILD_WHO2"] = {
         ruRU = "/гкто",
         enGB = "/gwho"
@@ -22187,21 +22063,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/гудалить",
         enGB = "/gremove"
     },
-    ["INFERNALS"] = {
-        ruRU = "Инферналы",
-        enGB = "Infernals"
-    },
     ["VOICEMACRO_8_Ni_1"] = {
         ruRU = "Исцелите меня!",
         enGB = "I need healing!"
-    },
-    ["FOXES"] = {
-        ruRU = "Лисы",
-        enGB = "Foxes"
-    },
-    ["CROWS"] = {
-        ruRU = "Вороны",
-        enGB = "Ravens"
     },
     ["GUILDBANK_WITHDRAW_MONEY_FORMAT"] = {
         ruRU = "%s |cffff2020Снимает деньги|r %s",
@@ -22210,14 +22074,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_8_Tr_0_FEMALE"] = {
         ruRU = "Мине плохо!",
         enGB = "I be in a bad way!"
-    },
-    ["PHOENIXES"] = {
-        ruRU = "Фениксы",
-        enGB = "Phoenixes"
-    },
-    ["WINGS_OF_NIGHT"] = {
-        ruRU = "Крылья ночи",
-        enGB = "Nightwings"
     },
     ["ARENA_INSPECT_BRECKET_2"] = {
         ruRU = "2 на 2",
@@ -22231,10 +22087,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Необходимо использовать около масляного пятна.",
         enGB = "Must be used near an oil slick."
     },
-    ["MAGICAL"] = {
-        ruRU = "Магические",
-        enGB = "Magical"
-    },
     ["VOICEMACRO_13_Or_0"] = {
         ruRU = "До новых встреч.",
         enGB = "Until our paths cross again."
@@ -22243,21 +22095,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "вперед",
         enGB = "charge"
     },
-    ["ANNIHILATORS"] = {
-        ruRU = "Аннигиляторы",
-        enGB = "Annihilators"
-    },
-    ["MECHANOSTRIDERS"] = {
-        ruRU = "Механодолгоноги",
-        enGB = "Mechanostriders"
-    },
     ["SLASH_FRIENDS3"] = {
         ruRU = "/friends",
         enGB = "/friends"
-    },
-    ["MECHANICAL"] = {
-        ruRU = "Механические",
-        enGB = "Mechanical"
     },
     ["POP_IN_CHAT"] = {
         ruRU = "Объединить чат",
@@ -22275,10 +22115,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/brow",
         enGB = "/brow"
     },
-    ["SPIDERS"] = {
-        ruRU = "Пауки",
-        enGB = "Spiders"
-    },
     ["LOCALE_SPELL_MECHANIC_ROOT"] = {
         ruRU = "Оплетение",
         enGB = "Rooted"
@@ -22291,17 +22127,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Кадров в секунду (максимум): %.3f",
         enGB = "Maximum FPS %.3f"
     },
-    ["UNGULATES"] = {
-        ruRU = "Копытни",
-        enGB = "Ungulates"
-    },
     ["QUEST_INTERMEDIATE_ITEMS_NEEDED"] = {
         ruRU = "%s: (%d)",
         enGB = "%s: (%d)"
-    },
-    ["RIVER_MONSTERS"] = {
-        ruRU = "Речные чудовища",
-        enGB = "River monsters"
     },
     ["EMOTE89_CMD2"] = {
         ruRU = "/snarl",
@@ -22315,10 +22143,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Мы постараемся сделать все возможное, чтобы решить проблему. Если для этого понадобится больше сведений, мы свяжемся с вами.",
         enGB = "We will only contact you if we require more information. However, we will still work hard to solve the problem."
     },
-    ["RATS"] = {
-        ruRU = "Крысы",
-        enGB = "Rats"
-    },
     ["ENCHANT_SLOT"] = {
         ruRU = "Ячейка для взлома/наложения чар",
         enGB = "Enchant/Unlock Slot"
@@ -22331,17 +22155,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/giggle",
         enGB = "/giggle"
     },
-    ["BONE_PREDATORS"] = {
-        ruRU = "Костяные хищники",
-        enGB = "Skeletal predators"
-    },
     ["ACTION_RANGE_MISSED_EVADE"] = {
         ruRU = ": атака не достигла цели",
         enGB = "(Evaded)"
-    },
-    ["ASMSG_PROMOCODE_REWARD_ERROR1"] = {
-        ruRU = "Вы ввели неверный промокод!",
-        enGB = "You've entered an invalid promo code!"
     },
     ["LASTONLINE_YEARS"] = {
         ruRU = "%d |4год:года:лет;",
@@ -22355,14 +22171,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "мертвые члены группы",
         enGB = "dead party members"
     },
-    ["SCREAMERS"] = {
-        ruRU = "Крикуны",
-        enGB = "Screamers"
-    },
-    ["WINDHORNS"] = {
-        ruRU = "Ветророги",
-        enGB = "Windhorns"
-    },
     ["VOICEMACRO_8_Ta_0_FEMALE"] = {
         ruRU = "Вылечите меня!",
         enGB = "Heal me!"
@@ -22371,10 +22179,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "[Объявление рейду] %s: ",
         enGB = "[Raid Warning] %s: "
     },
-    ["GOATS"] = {
-        ruRU = "Козлы",
-        enGB = "Goats"
-    },
     ["ERR_QUEST_ALREADY_DONE"] = {
         ruRU = "Вы выполнили это задание.",
         enGB = "You have completed that quest."
@@ -22382,22 +22186,6 @@ local SIRUS_LOCALIZATION = {
     ["MOVIE_RECORDING_FPS_HALF"] = {
         ruRU = "1/2 игровой частоты кадров",
         enGB = "1/2 Game Framerate"
-    },
-    ["CRANES"] = {
-        ruRU = "Журавли",
-        enGB = "Cranes"
-    },
-    ["WATER_STRIDERS"] = {
-        ruRU = "Водные долгоноги",
-        enGB = "Water Striders"
-    },
-    ["MAMMOTHS"] = {
-        ruRU = "Мамонты",
-        enGB = "Mammoths"
-    },
-    ["BEARS"] = {
-        ruRU = "Медведи",
-        enGB = "Bears"
     },
     ["PVPFRAME_CONQUEST_CAPBAR_TOOLTIP"] = {
         ruRU = "Отображает количество очков арены, которое вы можете получить на текущей неделе.",
@@ -22427,10 +22215,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/кан",
         enGB = "/chan"
     },
-    ["PANTHERS"] = {
-        ruRU = "Пантеры",
-        enGB = "Panthers"
-    },
     ["CALENDAR_EVENT_DESCRIPTION"] = {
         ruRU = "Описание",
         enGB = "Description"
@@ -22439,10 +22223,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/г <текст сообщения> – отправить сообщение всем членам вашей гильдии",
         enGB = "'/g <message>' sends a chat message to all members of your guild"
     },
-    ["RAMS"] = {
-        ruRU = "Бараны",
-        enGB = "Rams"
-    },
     ["STORE_SEND_AS_GIFT"] = {
         ruRU = "Отправить как подарок",
         enGB = "Send as a gift"
@@ -22450,10 +22230,6 @@ local SIRUS_LOCALIZATION = {
     ["BATTLEFIELD_CONFIRM_STATUS"] = {
         ruRU = "Поле боя готово",
         enGB = "Ready to Enter"
-    },
-    ["TURTLES"] = {
-        ruRU = "Черепахи",
-        enGB = "Turtles"
     },
     ["SETTINGS"] = {
         ruRU = "Параметры",
@@ -23587,10 +23363,18 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы временно отсутствуете.",
         enGB = "You are now Away."
     },
-    ["ASMSG_PROMOCODE_REWARD_ERROR2"] = {
-        ruRU = "Данный промокод уже использовался на другой учетной записи.",
-        enGB = "This promo code has already been used on another account."
-    },
+	["ASMSG_PROMOCODE_REWARD_ERROR1"] = {
+		ruRU = "Вы ввели неверный промокод!",
+		enGB = "You've entered an invalid promo code!"
+	},
+	["ASMSG_PROMOCODE_REWARD_ERROR2"] = {
+		ruRU = "Данный промокод уже использовался на другой учетной записи.",
+		enGB = "This promo code has already been used on another account."
+	},
+	["ASMSG_PROMOCODE_REWARD_ERROR3"] = {
+		ruRU = "Быстрый старт уже активен!",
+		enGB = "Boost service already activated"
+	},
     ["ACTION_SWING_MISSED_ABSORB"] = {
         ruRU = ": поглощение",
         enGB = "(Absorbed)"
@@ -24035,10 +23819,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Недельный лимит очков чести",
         enGB = "Weekly Honor Point limit"
     },
-    ["TALBUKS"] = {
-        ruRU = "Талбуки",
-        enGB = "Talbuks"
-    },
     ["PVPFRAME_WEEK_LIMIT_LABEL"] = {
         ruRU = "Недельный Лимит",
         enGB = "Weekly Limit"
@@ -24206,10 +23986,6 @@ local SIRUS_LOCALIZATION = {
     ["PROMOCODE_WINDOW_HEADER"] = {
         ruRU = "Окно ввода промокодов",
         enGB = "Promo code entry window"
-    },
-    ["TSIILINI"] = {
-        ruRU = "Цийлини",
-        enGB = "Quilen"
     },
     ["PROMOCODE_RECIVE_REWARD"] = {
         ruRU = "Получить награды",
@@ -24595,10 +24371,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = " (пришелся вскользь)",
         enGB = " (glancing)"
     },
-    ["TOAST_TITLE_2"] = {
-        ruRU = "%s",
-        enGB = ""
-    },
     ["FRIENDS_FRAME_LOADING_SPINNER_LABEL"] = {
         ruRU = "Идет загрузка данных...",
         enGB = "Data is loading..."
@@ -24802,10 +24574,6 @@ local SIRUS_LOCALIZATION = {
     ["QUICK_BUTTON_COMBATLOG_TOOLTIP"] = {
         ruRU = "Помещение ссылки на фильтр в окно чата.",
         enGB = "Places a shortcut to this filter on the chat window."
-    },
-    ["HORSES"] = {
-        ruRU = "Кони",
-        enGB = "Horses"
     },
     ["GUILD_HOUSE_TITLE_TEXT"] = {
         ruRU = "Карта строительства",
@@ -27523,10 +27291,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Ничего не найдено",
         enGB = "No items found"
     },
-    ["INHABITANTS_OF_THE_DEPTHS"] = {
-        ruRU = "Обитатели глубин",
-        enGB = "Inhabitants of the Depths"
-    },
     ["VOICEMACRO_14_Or_2_FEMALE"] = {
         ruRU = "(ворчание)",
         enGB = "(grunt)"
@@ -30007,10 +29771,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Создатель: %s",
         enGB = "Created by %s"
     },
-    ["INSECTS"] = {
-        ruRU = "Насекомые",
-        enGB = "Insects"
-    },
     ["CALENDAR_INVITE_MEMBERS"] = {
         ruRU = "Пригласить членов",
         enGB = "Invite Members"
@@ -30611,10 +30371,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "1",
         enGB = "1"
     },
-    ["GRONNS"] = {
-        ruRU = "Гронны",
-        enGB = "Gronns"
-    },
     ["KEY_TAB"] = {
         ruRU = "Tab",
         enGB = "Tab"
@@ -31034,10 +30790,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_ENVIRONMENTAL_DAMAGE_FIRE_POSSESSIVE"] = {
         ruRU = "0",
         enGB = "0"
-    },
-    ["KODO"] = {
-        ruRU = "Кодо",
-        enGB = "Kodo"
     },
     ["HELPFRAME_STUCK_BUTTON_DESCRIPTION"] = {
         ruRU = "Застревание на определенном участке карты",
@@ -35099,10 +34851,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Цель слишком высокого уровня.",
         enGB = "Target is too high level"
     },
-    ["CLOUD_SNAKES"] = {
-        ruRU = "Облачные змеи",
-        enGB = "Cloud Serpents"
-    },
     ["SPELL_FAILED_FIZZLE"] = {
         ruRU = "Не сработало.",
         enGB = "Fizzled"
@@ -35222,10 +34970,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_AUCTION_EXPIRED_S"] = {
         ruRU = "Ваш товар (%s) снят с аукциона.",
         enGB = "Your auction of %s has expired."
-    },
-    ["LIONS"] = {
-        ruRU = "Львы",
-        enGB = "Lions"
     },
     ["SPELL_FAILED_CUSTOM_ERROR_4"] = {
         ruRU = "Требуется облик орка из клана Песни Войны.",
@@ -36879,10 +36623,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Блок",
         enGB = "Block"
     },
-    ["TOAST_DURATION_TEXT"] = {
-        ruRU = "Длительность отображения",
-        enGB = "Toast Duration"
-    },
     ["TOGGLESTICKYCAMERA"] = {
         ruRU = "Включить блокировку камеры",
         enGB = "Toggle Camera Lock"
@@ -38027,10 +37767,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Цель достигнута.",
         enGB = "Objective Complete."
     },
-    ["GRIFFINS"] = {
-        ruRU = "Грифоны",
-        enGB = "Gryphons"
-    },
     ["SINGLE_DAMAGE_TEMPLATE"] = {
         ruRU = "Урон: %d",
         enGB = "%d Damage"
@@ -38403,10 +38139,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Прекратить произнесение заклинания",
         enGB = "Stop Casting"
     },
-    ["ANIMALS"] = {
-        ruRU = "Животные",
-        enGB = "Animals"
-    },
     ["SHOW_ENEMY_CAST"] = {
         ruRU = "Индикатор заклинания",
         enGB = "Cast Bars"
@@ -38550,10 +38282,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_13_Dw_2"] = {
         ruRU = "До встречи.",
         enGB = "See you."
-    },
-    ["MEGACYCLES"] = {
-        ruRU = "Мегациклы",
-        enGB = "Megacycles"
     },
     ["ACTION_SPELL_CREATE"] = {
         ruRU = "создает",
@@ -40091,10 +39819,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "%2$s |3-1(%1$s) наносит |3-2(%4$s) %5$s%6$s.",
         enGB = "%1$s %2$s strikes %4$s for %5$s.%6$s"
     },
-    ["CARPETS"] = {
-        ruRU = "Ковры",
-        enGB = "Carpets"
-    },
     ["VOICEMACRO_8_Or_0"] = {
         ruRU = "Вылечите меня!",
         enGB = "Heal me!"
@@ -40115,29 +39839,13 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Сила крови",
         enGB = "Blood Power"
     },
-    ["THE_WILD"] = {
-        ruRU = "Дикороги",
-        enGB = "Direhorns"
-    },
-    ["KITES"] = {
-        ruRU = "Воздушные змеи",
-        enGB = "Kites"
-    },
     ["VOICEMACRO_8_Tr_1"] = {
         ruRU = "Вылечите меня!",
         enGB = "Heal me!"
     },
-    ["WYVERNS"] = {
-        ruRU = "Виверны",
-        enGB = "Wyverns"
-    },
     ["INSTANCE_UNAVAILABLE_SELF_EXPANSION_TOO_LOW"] = {
         ruRU = "У вас отсутствует дополнение World of Warcraft.",
         enGB = "You do not have the World of Warcraft expansion."
-    },
-    ["ROCKETS"] = {
-        ruRU = "Ракеты",
-        enGB = "Rockets"
     },
     ["VOICEMACRO_LABEL_CHEER1"] = {
         ruRU = "радость",
@@ -40591,94 +40299,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы уверены, что хотите назначить %d|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:0|t\nза %d |4убийство персонажа:убийства персонажей:убийств персонажей; из гильдии |cffffd100%s|r ?",
         enGB = ""
     },
-    ["TOAST_TITLE_3"] = {
-        ruRU = "Охота за головами",
-        enGB = ""
-    },
-    ["TOAST_BODY_3"] = {
-        ruRU = "Вы получили %s|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:0|t за убийство %s.",
-        enGB = ""
-    },
-    ["TOAST_TITLE_4"] = {
-        ruRU = "Охота за головами",
-        enGB = ""
-    },
-    ["TOAST_BODY_4"] = {
-        ruRU = "За вашу голову назначена награда!",
-        enGB = ""
-    },
-    ["TOAST_TITLE_5"] = {
-        ruRU = "Охота за головами",
-        enGB = ""
-    },
-    ["TOAST_BODY_5"] = {
-        ruRU = "Награда за вашу голову увеличена!",
-        enGB = ""
-    },
-    ["TOAST_TITLE_6"] = {
-        ruRU = "Охота за головами",
-        enGB = ""
-    },
-    ["TOAST_BODY_6"] = {
-        ruRU = "На вашу гильдию появидся контракт!",
-        enGB = ""
-    },
-    ["TOAST_TITLE_7"] = {
-        ruRU = "Охота за головами",
-        enGB = ""
-    },
-    ["TOAST_BODY_7"] = {
-        ruRU = "На вашу гильдию открыт ещё один контракт!",
-        enGB = ""
-    },
-    ["TOAST_TITLE_8"] = {
-        ruRU = "Охота за головами",
-        enGB = ""
-    },
-    ["TOAST_BODY_8"] = {
-        ruRU = "Теперь вы получаете уведомления об игроках с наградой при перемещении в игровом мире.",
-        enGB = ""
-    },
-    ["TOAST_TITLE_9"] = {
-        ruRU = "Охота за головами",
-        enGB = ""
-    },
-    ["TOAST_BODY_9"] = {
-        ruRU = "Вы больше не получаете уведомлений об игроках, за головы которых назначена награда.",
-        enGB = ""
-    },
-    ["TOAST_TITLE_10"] = {
-        ruRU = "Охота за головами",
-        enGB = ""
-    },
-    ["TOAST_BODY_10"] = {
-        ruRU = "%s: цель замечена в области %s.",
-        enGB = ""
-    },
-    ["TOAST_TITLE_11"] = {
-        ruRU = "Охота за головами",
-        enGB = ""
-    },
-    ["TOAST_BODY_11"] = {
-        ruRU = "Одна из ваших целей была убита в зоне %s",
-        enGB = ""
-    },
-    ["TOAST_TITLE_12"] = {
-        ruRU = "Охота за головами",
-        enGB = ""
-    },
-    ["TOAST_BODY_12"] = {
-        ruRU = "Один из ваших контрактов закончил своё действие. Отчет на почте.",
-        enGB = ""
-    },
-    ["TOAST_TITLE_13"] = {
-        ruRU = "Охота за головами",
-        enGB = ""
-    },
-    ["TOAST_BODY_13"] = {
-        ruRU = "Один из ваших контрактов был выполнен. Отчет на почте.",
-        enGB = ""
-    },
     ["CHOOSE_FACTION_SELECT_FACTION"] = {
         ruRU = "Вы уверены, что хотите вступить в %s?",
         enGB = ""
@@ -41003,38 +40623,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "уровень",
 		enGB = ""
 	},
-    ["TOAST_TITLE_14"] = {
-        ruRU = "Боевой пропуск",
-        enGB = ""
-    },
-    ["TOAST_BODY_14"] = {
-        ruRU = "Вы получили %d |4очко:очка:очков; боевого пропуска!",
-        enGB = ""
-    },
-    ["TOAST_TITLE_15"] = {
-        ruRU = "Боевой пропуск",
-        enGB = ""
-    },
-    ["TOAST_BODY_15"] = {
-        ruRU = "Ваш уровень боевого пропуска повышен! Проверьте награды!",
-        enGB = ""
-    },
-    ["TOAST_TITLE_16"] = {
-        ruRU = "Боевой пропуск",
-        enGB = ""
-    },
-    ["TOAST_BODY_16"] = {
-        ruRU = "Вы не забрали награды боевого пропуска!",
-        enGB = ""
-    },
-    ["TOAST_TITLE_17"] = {
-        ruRU = "Боевой пропуск",
-        enGB = ""
-    },
-    ["TOAST_BODY_17"] = {
-        ruRU = "Ваш боевой пропуск был улучшен до премиум версии!",
-        enGB = ""
-    },
     ["BATTLEGROUND_TEMPLE_OF_ALAWASHTE"] = {
         ruRU = "- Защищайте свой флаг или захватывайте вражеский\n- Захватывайте и удерживайте объекты\n- Накопите 1500 очков",
         enGB = ""
@@ -41201,14 +40789,6 @@ local SIRUS_LOCALIZATION = {
     },
     ["STORY_END_REFUND"] = {
 	    ruRU = "|cffFF0000Внимание!|r Данное действие не позволит вернуть данный предмет в магазин. Вы уверены?",
-	    enGB = ""
-    },
-    ["TOAST_TITLE_18"] = {
-	    ruRU = "Внимание",
-	    enGB = ""
-    },
-    ["TOAST_BODY_18"] = {
-	    ruRU = "Выполните последнее задание в цепочке Рыцарей смерти.",
 	    enGB = ""
     },
     ["GUILD_RENAME_ERROR_TEXT"] = {
@@ -41955,22 +41535,6 @@ local SIRUS_LOCALIZATION = {
 	    ruRU = "Выйти из всех очередей",
 	    enGB = ""
     },
-    ["TOAST_TITLE_19"] = {
-	    ruRU = "%s",
-	    enGB = ""
-    },
-    ["TOAST_BODY_19"] = {
-	    ruRU = "Вы встали в очередь на \"%s\".",
-	    enGB = ""
-    },
-    ["TOAST_TITLE_20"] = {
-	    ruRU = "%s",
-	    enGB = ""
-    },
-    ["TOAST_BODY_20"] = {
-	    ruRU = "Вы вышли из очереди на \"%s\".",
-	    enGB = ""
-    },
     ["NUM_DISPLAY_TOASTS"] = {
 	    ruRU = "Количество уведомлений",
 	    enGB = ""
@@ -42339,30 +41903,6 @@ local SIRUS_LOCALIZATION = {
 	    ruRU = "Элементаль",
 	    enGB = "Elemental"
     },
-    ["TOAST_TITLE_21"] = {
-	    ruRU = "Аукционный дом",
-	    enGB = ""
-    },
-    ["TOAST_BODY_21"] = {
-	    ruRU = "На ваш товар \"%s\" нашелся покупатель. Ожидается оплата.",
-	    enGB = ""
-    },
-    ["TOAST_TITLE_22"] = {
-	    ruRU = "Аукционный дом",
-	    enGB = ""
-    },
-    ["TOAST_BODY_22"] = {
-	    ruRU = "Ваша ставка перебита (предмет: %s).",
-	    enGB = ""
-    },
-    ["TOAST_TITLE_23"] = {
-	    ruRU = "Аукционный дом",
-	    enGB = ""
-    },
-    ["TOAST_BODY_23"] = {
-	    ruRU = "Ваш товар (%s) снят с аукциона.",
-	    enGB = ""
-    },
     ["COLLECTION_PAGE_NUMBER"] = {
 	    ruRU = "Стр. %d/%d",
 	    enGB = "Page %d / %d"
@@ -42611,14 +42151,6 @@ local SIRUS_LOCALIZATION = {
 	    ruRU = "Поиск",
 	    enGB = "Searching"
     },
-    ["SETTINGS_SHOW_AUCTION_HOUSE_TOAST"] = {
-	    ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tУведомления, связанные с вашими лотами или ставками",
-	    enGB = ""
-    },
-	["SETTINGS_SHOW_CALL_OF_ADVENTURE_TOAST"] = {
-		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tПоказывать уведомления Зова приключений",
-		enGB = ""
-	},
     ["LOOKINGFORGUILDFRAME_TUTORIAL_1"] = {
 	    ruRU = "Для того чтобы начать поиск гильдии, вам нужно заполнить заявку.\nВ первую очередь нужно отметить те типы активности гильдии, в которых вы заинтересованы. Таким образом, вы сможете найти гильдию, в которой игрокам интересно то же, что и вам. Вам необходимо отменить как минимум один пункт из списка.",
 	    enGB = ""
@@ -42673,22 +42205,6 @@ local SIRUS_LOCALIZATION = {
     },
     ["DELETE_FAVORITE_PET"] = {
 	    ruRU = "Удалить питомца из списка избранных",
-	    enGB = ""
-    },
-    ["TOAST_TITLE_24"] = {
-	    ruRU = "Фельярд",
-	    enGB = ""
-    },
-    ["TOAST_BODY_24"] = {
-	    ruRU = "Вы получили Боевой жетон Фельярда за удержание форта",
-	    enGB = ""
-    },
-    ["TOAST_TITLE_25"] = {
-	    ruRU = "Фельярд",
-	    enGB = ""
-    },
-    ["TOAST_BODY_25"] = {
-	    ruRU = "Вы получили Боевой жетон Фельярда за захват форта",
 	    enGB = ""
     },
     ["BINDING_NAME_TOGGLECOLLECTIONS"] = {
@@ -42906,14 +42422,6 @@ local SIRUS_LOCALIZATION = {
     ["LFG_CALL_TO_ARMS_EXPLANATION"] = {
         ruRU = "Взяв на себя эту роль, вы получите дополнительные награды!",
         enGB = "If you perform this role, you will receive bonus rewards!"
-    },
-    ["TOAST_TITLE_26"] = {
-	    ruRU = "Набор для маскировки",
-	    enGB = ""
-    },
-    ["TOAST_BODY_26"] = {
-	    ruRU = "Чтобы находиться в Даларане ренегату необходимо применить маскировку. Купить её можно в Бухте торговцев или в Клоаке Даларана.",
-	    enGB = ""
     },
     ["STORE_AVAILABLE_TO_PAY_ALT_CURRENCY"] = {
 	    ruRU = "Возможна оплата другой валютой",
@@ -43287,14 +42795,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Внимание! Весь полученный рейтинг будет сброшен по достижении 80-го уровня!",
 		enGB = ""
 	},
-    ["TOAST_TITLE_27"] = {
-	    ruRU = "Паучий кокон",
-	    enGB = ""
-    },
-    ["TOAST_BODY_27"] = {
-	    ruRU = "Вы попытались выпутаться из кокона, но паутина всё ещё сковывает вас. Члены вашей гильдии могут вам помочь.",
-	    enGB = ""
-    },
     ["CONFIRM_RETURN_INBOX_ITEM_TEXT"] = {
 	    ruRU = "Вы уверены, что хотите вернуть письмо? Убедитесь, что персонаж, которому хотите вернуть письмо, не удалён.",
 	    enGB = ""
@@ -43479,32 +42979,76 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Вы слишком сильно разогнались.",
 		enGB = "You're doing that too fast"
 	},
+	["SETTINGS_SHOW_TOASTS"] = {
+		ruRU = "Показывать уведомления",
+		enGB = ""
+	},
+	["SETTINGS_SHOW_SOCIAL_TOAST"] = {
+		ruRU = "Социальные",
+		enGB = ""
+	},
+	["OPTION_TOOLTIP_SETTINGS_SHOW_SOCIAL_TOAST"] = {
+		ruRU = "Показывать всплывающие уведомления о социальной активности. Например уведомление о входе / выходе друга из игры.",
+		enGB = ""
+	},
+	["SETTINGS_SHOW_HEAD_HUNTING_TOAST"] = {
+		ruRU = "Охота за головами",
+		enGB = ""
+	},
+	["SETTINGS_SHOW_BATTLE_PASS_TOAST"] = {
+		ruRU = "Боевой Пропуск",
+		enGB = ""
+	},
+	["OPTION_TOOLTIP_SETTINGS_SHOW_BATTLE_PASS_TOAST"] = {
+		ruRU = "Показывать всплывающие уведомления о изменениях в статусе вашего Боевого Пропуска, таких как получение опыта, нового уровня, о \"не полученных\" наградах, и т.д.",
+		enGB = ""
+	},
+	["SETTINGS_SHOW_AUCTION_HOUSE_TOAST"] = {
+		ruRU = "Аукцион",
+		enGB = ""
+	},
+	["SETTINGS_SHOW_CALL_OF_ADVENTURE_TOAST"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tЗов приключений",
+		enGB = ""
+	},
+	["OPTION_TOOLTIP_SETTINGS_SHOW_HEAD_HUNTING_TOAST"] = {
+		ruRU = "Показывать всплывающие уведомления о социальной активности. Например уведомление о входе / выходе друга из игры.",
+		enGB = ""
+	},
+	["SETTINGS_SHOW_MISC_TOAST"] = {
+		ruRU = "Без категории",
+		enGB = ""
+	},
 	["SETTINGS_SOCIAL_SOUND"] = {
-		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tВоспроизводить звуки уведомлений",
+		ruRU = "Воспроизводить звуки уведомлений",
 		enGB = "",
 	},
 	["SETTINGS_SOCIAL_TOAST_SOUND"] = {
-		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tСоциальные",
+		ruRU = "Социальные",
 		enGB = "",
 	},
 	["SETTINGS_HEAD_HUNTING_TOAST_SOUND"] = {
-		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tОхота за головами",
+		ruRU = "Охота за головами",
 		enGB = "",
 	},
 	["SETTINGS_BATTLE_PASS_TOAST_SOUND"] = {
-		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tБоевой Пропуск",
+		ruRU = "Боевой Пропуск",
 		enGB = "",
 	},
 	["SETTINGS_QUEUE_TOAST_SOUND"] = {
-		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tСтатус очереди",
+		ruRU = "Статус очереди",
 		enGB = "",
 	},
 	["SETTINGS_AUCTION_HOUSE_TOAST_SOUND"] = {
-		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tАукцион",
+		ruRU = "Аукцион",
 		enGB = "",
 	},
 	["SETTINGS_CALL_OF_ADVENTURE_TOAST_SOUND"] = {
 		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tЗов приключений",
+		enGB = "",
+	},
+	["SETTINGS_MISC_TOAST_SOUND"] = {
+		ruRU = "Без категории",
 		enGB = "",
 	},
 	["ERR_GUILD_LEADER_REPLACED"] = {
@@ -43647,6 +43191,14 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Силы природы друидов Муна Снежной Лапы и Телнаса Тихой Осоки научили меня усмирять зверей и пользоваться их силой, только благодаря им удалось, превратившись в ворона, разведать Террасу Вечной Славы.\n\nОни поведали о благородных расах Альянса, которые связаны между собой высокими законами чести, верности, справедливости и самопожертвования.",
 		enGB = ""
 	},
+	["FACTION_SELECT_TEXT_DRACTHYR_HORDE"] = {
+		ruRU = "Орки Орды пришли в этот мир в качестве завоевателей, но нашли в себе силы оставить путь разрушения, чтобы строить новое будущее среди таких же народов-изгоев, как и они.\n\nНовая Орда хорошо понимает ценность единства и тех уз, что оно порождает, поэтому я верю, что среди народов этого причудливого, но достойного союза ты найдешь единомышленников, способных разделить наши идеалы.",
+		enGB = ""
+	},
+	["FACTION_SELECT_TEXT_DRACTHYR_ALLIANCE"] = {
+		ruRU = "В свое время Альянс пострадал от козней Смертокрыла и едва не пал под натиском Плети, но храбрость и упорство народов, которые объединились под его знаменем, позволили Альянсу возродиться из пепла былых войн.\n\nВ Альянсе отлично знают цену жертвенности и верности, а потому я верю, что среди народов этого союза ты найдешь немало достойных соратников, способных разделить наши идеалы.",
+		enGB = ""
+	},
 	["PLAYER_FRAME_SHOW_CASTBARS"] = {
 		ruRU = "Индикатор применения заклинаний под портретом",
 		enGB = "Cast Bar Underneath"
@@ -43670,6 +43222,234 @@ local SIRUS_LOCALIZATION = {
 	["IGNORE_REMOVE"] = {
 		ruRU = "Больше не игнорировать",
 		enGB = "Stop Ignoring"
+	},
+	["TOAST_CLEAR_POSITION"] = {
+		ruRU = "Сбросить позицию",
+		enGB = ""
+	},
+	["TOAST_DURATION_TEXT"] = {
+		ruRU = "Длительность отображения",
+		enGB = "Toast Duration"
+	},
+	["TOAST_MOVE_TEXT"] = {
+		ruRU = "Нажмите для перемещения",
+		enGB = ""
+	},
+	["TOAST_TITLE_1"] = {
+		ruRU = "%s",
+		enGB = ""
+	},
+	["TOAST_BODY_1"] = {
+		ruRU = "|cff00ff00входит в сеть|r.",
+		enGB = "has come |cff00ff00online|r."
+	},
+	["TOAST_TITLE_2"] = {
+		ruRU = "%s",
+		enGB = ""
+	},
+	["TOAST_BODY_2"] = {
+		ruRU = "|cffff0000выходит из сети|r.",
+		enGB = "has gone |cffff0000offline|r."
+	},
+	["TOAST_TITLE_3"] = {
+		ruRU = "Охота за головами",
+		enGB = ""
+	},
+	["TOAST_BODY_3"] = {
+		ruRU = "Вы получили %s|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:0|t за убийство %s.",
+		enGB = ""
+	},
+	["TOAST_TITLE_4"] = {
+		ruRU = "Охота за головами",
+		enGB = ""
+	},
+	["TOAST_BODY_4"] = {
+		ruRU = "За вашу голову назначена награда!",
+		enGB = ""
+	},
+	["TOAST_TITLE_5"] = {
+		ruRU = "Охота за головами",
+		enGB = ""
+	},
+	["TOAST_BODY_5"] = {
+		ruRU = "Награда за вашу голову увеличена!",
+		enGB = ""
+	},
+	["TOAST_TITLE_6"] = {
+		ruRU = "Охота за головами",
+		enGB = ""
+	},
+	["TOAST_BODY_6"] = {
+		ruRU = "На вашу гильдию появидся контракт!",
+		enGB = ""
+	},
+	["TOAST_TITLE_7"] = {
+		ruRU = "Охота за головами",
+		enGB = ""
+	},
+	["TOAST_BODY_7"] = {
+		ruRU = "На вашу гильдию открыт ещё один контракт!",
+		enGB = ""
+	},
+	["TOAST_TITLE_8"] = {
+		ruRU = "Охота за головами",
+		enGB = ""
+	},
+	["TOAST_BODY_8"] = {
+		ruRU = "Теперь вы получаете уведомления об игроках с наградой при перемещении в игровом мире.",
+		enGB = ""
+	},
+	["TOAST_TITLE_9"] = {
+		ruRU = "Охота за головами",
+		enGB = ""
+	},
+	["TOAST_BODY_9"] = {
+		ruRU = "Вы больше не получаете уведомлений об игроках, за головы которых назначена награда.",
+		enGB = ""
+	},
+	["TOAST_TITLE_10"] = {
+		ruRU = "Охота за головами",
+		enGB = ""
+	},
+	["TOAST_BODY_10"] = {
+		ruRU = "%s: цель замечена в области %s.",
+		enGB = ""
+	},
+	["TOAST_TITLE_11"] = {
+		ruRU = "Охота за головами",
+		enGB = ""
+	},
+	["TOAST_BODY_11"] = {
+		ruRU = "Одна из ваших целей была убита в зоне %s",
+		enGB = ""
+	},
+	["TOAST_TITLE_12"] = {
+		ruRU = "Охота за головами",
+		enGB = ""
+	},
+	["TOAST_BODY_12"] = {
+		ruRU = "Один из ваших контрактов закончил своё действие. Отчет на почте.",
+		enGB = ""
+	},
+	["TOAST_TITLE_13"] = {
+		ruRU = "Охота за головами",
+		enGB = ""
+	},
+	["TOAST_BODY_13"] = {
+		ruRU = "Один из ваших контрактов был выполнен. Отчет на почте.",
+		enGB = ""
+	},
+	["TOAST_TITLE_14"] = {
+		ruRU = "Боевой пропуск",
+		enGB = ""
+	},
+	["TOAST_BODY_14"] = {
+		ruRU = "Вы получили %d |4очко:очка:очков; боевого пропуска!",
+		enGB = ""
+	},
+	["TOAST_TITLE_15"] = {
+		ruRU = "Боевой пропуск",
+		enGB = ""
+	},
+	["TOAST_BODY_15"] = {
+		ruRU = "Ваш уровень боевого пропуска повышен! Проверьте награды!",
+		enGB = ""
+	},
+	["TOAST_TITLE_16"] = {
+		ruRU = "Боевой пропуск",
+		enGB = ""
+	},
+	["TOAST_BODY_16"] = {
+		ruRU = "Вы не забрали награды боевого пропуска!",
+		enGB = ""
+	},
+	["TOAST_TITLE_17"] = {
+		ruRU = "Боевой пропуск",
+		enGB = ""
+	},
+	["TOAST_BODY_17"] = {
+		ruRU = "Ваш боевой пропуск был улучшен до премиум версии!",
+		enGB = ""
+	},
+	["TOAST_TITLE_18"] = {
+		ruRU = "Внимание",
+		enGB = ""
+	},
+	["TOAST_BODY_18"] = {
+		ruRU = "Выполните последнее задание в цепочке Рыцарей смерти.",
+		enGB = ""
+	},
+	["TOAST_TITLE_19"] = {
+		ruRU = "%s",
+		enGB = ""
+	},
+	["TOAST_BODY_19"] = {
+		ruRU = "Вы встали в очередь на \"%s\".",
+		enGB = ""
+	},
+	["TOAST_TITLE_20"] = {
+		ruRU = "%s",
+		enGB = ""
+	},
+	["TOAST_BODY_20"] = {
+		ruRU = "Вы вышли из очереди на \"%s\".",
+		enGB = ""
+	},
+	["TOAST_TITLE_21"] = {
+		ruRU = "Аукционный дом",
+		enGB = ""
+	},
+	["TOAST_BODY_21"] = {
+		ruRU = "На ваш товар \"%s\" нашелся покупатель. Ожидается оплата.",
+		enGB = ""
+	},
+	["TOAST_TITLE_22"] = {
+		ruRU = "Аукционный дом",
+		enGB = ""
+	},
+	["TOAST_BODY_22"] = {
+		ruRU = "Ваша ставка перебита (предмет: %s).",
+		enGB = ""
+	},
+	["TOAST_TITLE_23"] = {
+		ruRU = "Аукционный дом",
+		enGB = ""
+	},
+	["TOAST_BODY_23"] = {
+		ruRU = "Ваш товар (%s) снят с аукциона.",
+		enGB = ""
+	},
+	["TOAST_TITLE_24"] = {
+		ruRU = "Фельярд",
+		enGB = ""
+	},
+	["TOAST_BODY_24"] = {
+		ruRU = "Вы получили Боевой жетон Фельярда за удержание форта",
+		enGB = ""
+	},
+	["TOAST_TITLE_25"] = {
+		ruRU = "Фельярд",
+		enGB = ""
+	},
+	["TOAST_BODY_25"] = {
+		ruRU = "Вы получили Боевой жетон Фельярда за захват форта",
+		enGB = ""
+	},
+	["TOAST_TITLE_26"] = {
+		ruRU = "Набор для маскировки",
+		enGB = ""
+	},
+	["TOAST_BODY_26"] = {
+		ruRU = "Чтобы находиться в Даларане ренегату необходимо применить маскировку. Купить её можно в Бухте торговцев или в Клоаке Даларана.",
+		enGB = ""
+	},
+	["TOAST_TITLE_27"] = {
+		ruRU = "Паучий кокон",
+		enGB = ""
+	},
+	["TOAST_BODY_27"] = {
+		ruRU = "Вы попытались выпутаться из кокона, но паутина всё ещё сковывает вас. Члены вашей гильдии могут вам помочь.",
+		enGB = ""
 	},
 	["TOAST_BODY_28"] = {
 		ruRU = "До начала события осталось 15 минут.",
@@ -43741,6 +43521,18 @@ local SIRUS_LOCALIZATION = {
 	},
 	["TOAST_BODY_57"] = {
 		ruRU = "Вы получили %d |4очко:очка:очков; чести",
+		enGB = ""
+	},
+	["TOAST_TITLE_58"] = {
+		ruRU = "Еженедельное рейдовое задание",
+		enGB = ""
+	},
+	["TOAST_BODY_58"] = {
+		ruRU = "Внимание! Убедитесь, что у вас взято задание \"Охота на Великих Чудовищ\"!",
+		enGB = ""
+	},
+	["TOAST_BODY_59"] = {
+		ruRU = "Внимание! Убедитесь, что у вас взято задание \"На страже Азерота\"!",
 		enGB = ""
 	},
 }

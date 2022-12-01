@@ -34,7 +34,7 @@
         <HighlightTexture file="Interface\FriendsFrame\UI-Toast-CloseButton-Highlight" alphaMode="ADD"/>
     </Button>
 
-    <Frame name="SocialToastTemplate" virtual="true" parent="UIParent" frameStrata="LOW" movable="true" toplevel="true" hidden="true">
+    <Button name="SocialToastTemplate" virtual="true" parent="UIParent" frameStrata="LOW" movable="true" toplevel="true" hidden="true">
         <Size x="250" y="50"/>
         <Anchors>
         	<Anchor point="CENTER" x="0" y="0" />
@@ -126,8 +126,11 @@
             <OnLeave>
                 self:OnLeave()
             </OnLeave>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
         </Scripts>
-    </Frame>
+    </Button>
 
     <Frame name="SocialToastAnchorFrame" parent="UIParent" frameStrata="LOW" movable="true" toplevel="true">
 		<Size x="250" y="50"/>

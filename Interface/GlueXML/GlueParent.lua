@@ -218,7 +218,7 @@ function SetGlueScreen(name)
 
 	if not INITIAL_BACKGROUND_SET then
 		INITIAL_BACKGROUND_SET = true
-		CharacterModelMixin:SetBackground("Alliance")
+		CharacterModelManager.SetBackground("Alliance")
 	end
 
 	if ( newFrame ) then
@@ -665,6 +665,7 @@ CHARACTER_CAMERA_SETTINGS = {
 	["DeathKnight"]	= {-0.635, 0.626, 0.262},
 	["Vulpera"]		= {1.560, 0.040, 0.040},
 	["Pandaren"]	= {-0.560, 0.590, 0.380},
+	["Dracthyr"]	= {-0.170, 0.200, 0.420},
 }
 CHARACTER_CAMERA_SETTINGS.Pandaren_DeathKnight = CHARACTER_CAMERA_SETTINGS.DeathKnight
 CHARACTER_CAMERA_SETTINGS.Zandalar_Horde = CHARACTER_CAMERA_SETTINGS.Horde
@@ -676,39 +677,42 @@ CHARACTER_MODEL_LIGHT = {
 	["Horde"]		= {10.000000, -9.240000, -10.000000, 0.749100, 1.000000, 0.579930, 0.568460, 0.505380, 1.000000, 0.278850, 0.273120},
 	["DeathKnight"]	= {2.287001, -4.996000, -2.301000, 0.333330, 0.565590, 0.855200, 1.000000, 1.000000, 0.419360, 0.769180, 1.000000},
 	["Vulpera"]		= {0.796001, 2.459001, -5.455000, 0.301790, 1.000000, 1.000000, 1.000000, 1.000000, 1.000000, 0.405020, 0.109680},
-	["Pandaren"]	= {3.152250, -2.238738, 1.287381, 1.000000, 0.780392, 0.780392, 0.780392, 1.000000, 1.000000, 1.000000, 1.000000}
+	["Pandaren"]	= {3.152250, -2.238738, 1.287381, 1.000000, 0.780392, 0.780392, 0.780392, 1.000000, 1.000000, 1.000000, 1.000000},
+	["Dracthyr"]	= {3.152250, -2.238738, 1.287381, 1.000000, 0.780392, 0.780392, 0.780392, 1.000000, 1.000000, 1.000000, 1.000000},
 }
 CHARACTER_MODEL_LIGHT.Pandaren_DeathKnight = CHARACTER_MODEL_LIGHT.DeathKnight
 CHARACTER_MODEL_LIGHT.Zandalar_Horde = CHARACTER_MODEL_LIGHT.Horde
 CHARACTER_MODEL_LIGHT.Zandalar_Alliance = CHARACTER_MODEL_LIGHT.Alliance
 CHARACTER_MODEL_LIGHT.Zandalar_DeathKnight = CHARACTER_MODEL_LIGHT.DeathKnight
 
-CharacterModelMixin = {}
+CharacterModelManager = {}
 
-function CharacterModelMixin:SetBackground(modelName)
+function CharacterModelManager.SetBackground(modelName, force)
 	local cameraSettings = CHARACTER_CAMERA_SETTINGS[modelName]
 
 	if not cameraSettings then
-		error(string.format("CharacterModelMixin:SetBackground: не найдены настройки камеры для модели %s", modelName), 2)
+		error(string.format("CharacterModelManager.SetBackground(): camera settings not found for model %s", modelName), 2)
 	end
 
 	local inCharCreate = C_CharacterCreation.IsInCharacterCreate()
 
-	if CharacterModelMixin.currentModelName ~= modelName or CharacterModelMixin.inCharCreate ~= inCharCreate then
+	if force or CharacterModelManager.currentModelName ~= modelName or CharacterModelManager.inCharCreate ~= inCharCreate then
 		local lightSettings = CHARACTER_MODEL_LIGHT[modelName]
 
 		if not lightSettings then
-			error(string.format("CharacterModelMixin:SetBackground: Не найдены настройки света для модели %s", modelName), 2)
+			error(string.format("CharacterModelManager.SetBackground(): light settings not found for model %s", modelName), 2)
 		end
 
 		local setCharBackgroundFunc = inCharCreate and C_CharacterCreation.SetCharCustomizeBackground or SetCharSelectBackground
 
-		CharacterModelMixin.currentModelName = modelName
-		CharacterModelMixin.inCharCreate = inCharCreate
+		CharacterModelManager.currentModelName = modelName
+		CharacterModelManager.inCharCreate = inCharCreate
 
-		setCharBackgroundFunc(string.format("Interface\\GLUES\\Models\\%s\\%s.m2", FOV_MODELS[modelName] or "UI_BLOODELF", FOV_MODELS[modelName] or "UI_BLOODELF"))
+		local fovModel = FOV_MODELS[modelName] or "UI_BLOODELF"
+
+		setCharBackgroundFunc(string.format([[Interface\GLUES\Models\%s\%s.m2]], fovModel, fovModel))
 		GlueFFXModel:SetCamera(0)
-		setCharBackgroundFunc(string.format("Interface\\GLUES\\Models\\UI_%s\\UI_%s.m2", modelName, modelName))
+		setCharBackgroundFunc(string.format([[Interface\GLUES\Models\UI_%s\UI_%s.m2]], modelName, modelName))
 
 		GlueFFXModel:ResetLights()
 

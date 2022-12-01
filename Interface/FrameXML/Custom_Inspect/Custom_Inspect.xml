@@ -458,15 +458,70 @@
 		</Scripts>
 	</Frame>
 
+	
+	<Button name="InspectGlyphTemplate" virtual="true">
+		<Size x="72" y="72"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="background" file="Interface\Spellbook\UI-GlyphFrame">
+					<Size x="64" y="64"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+					<TexCoords left="0.78125" right="0.91015625" top="0.69921875" bottom="0.828125"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentHighlight" parentKey="highlight" file="Interface\TalentFrame\glyph-main" hidden="true" alphaMode="ADD">
+					<Size x="86" y="86"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+					<Color r="1" g="1" b="1" a=".25"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentGlyph" parentKey="glyph" file="Interface\Spellbook\UI-Glyph-Rune1">
+					<Size x="57" y="57"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentRing" parentKey="ring" file="Interface\TalentFrame\glyph-main">
+					<Size x="62" y="62"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, InspectGlyphMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:UpdateSlot()
+			</OnShow>
+			<OnClick>
+				self:OnClick(button, down)
+			</OnClick>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+		</Scripts>
+	</Button>
+
 	<Frame name="InspectFrame" toplevel="true" movable="true" enableMouse="true" hidden="true" parent="UIParent" inherits="ButtonFrameTemplate">
 		<Frames>
 			<Button name="InspectFrameTab1" inherits="CharacterFrameTabButtonLevelTemplate" id="1" text="CHARACTER">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="11" y="2"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="BOTTOMLEFT" x="0" y="-30"/>
 				</Anchors>
 				<Scripts>
 					<OnClick function="InspectFrameTab_OnClick"/>
@@ -511,9 +566,22 @@
 					<OnLeave function="GameTooltip_Hide"/>
 				</Scripts>
 			</Button>
-			<Button name="InspectFrameTab4" inherits="CharacterFrameTabButtonLevelTemplate" id="4" text="GUILD">
+			<Button name="InspectFrameTab4" inherits="CharacterFrameTabButtonLevelTemplate" id="4" text="GLYPHS">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="InspectFrameTab3" relativePoint="RIGHT">
+					<Anchor point="LEFT" relativeTo="InspectFrameTab3" relativePoint="RIGHT" x="-16" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="InspectFrameTab_OnClick"/>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+						GameTooltip:SetText(GLYPHS, 1, 1, 1)
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Button>
+			<Button name="InspectFrameTab5" inherits="CharacterFrameTabButtonLevelTemplate" id="5" text="GUILD">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="InspectFrameTab4" relativePoint="RIGHT">
 						<Offset>
 							<AbsDimension x="-16" y="0"/>
 						</Offset>
@@ -1298,7 +1366,7 @@
 						}
 					</OnLoad>
 					<OnShow>
-						local factionID = C_Unit:GetFactionID("player")
+						local factionID = C_Unit.GetFactionID("player")
 
 						if factionID then
 							self.Container.Faction:SetTexCoord(unpack(self.factionEmblem[factionID]))
@@ -2002,7 +2070,61 @@
 			<OnEvent function="InspectTalentFrame_OnEvent"/>
 		</Scripts>
 	</Frame>
-	<Frame name="InspectGuildFrame" enableMouse="true" parent="InspectFrame" hidden="true" useParentLevel="true" frameStrata="HIGH" setAllPoints="true" id="4">
+	<Frame name="InspectGlyphFrame" parent="InspectFrame" setAllPoints="true" enableMouse="true" hidden="true" id="4">
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentBackground" file="Interface\TalentFrame\glyph-bg" parentKey="background">
+					<Size x="322" y="355"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="7" y="-63"/>
+					</Anchors>
+					<TexCoords left="0.060546875" right="0.796875" top="0.0009765625" bottom="0.404296875"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentGlyph1" inherits="InspectGlyphTemplate" id="1">
+				<Anchors>
+					<Anchor point="CENTER" x="-1" y="104"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentGlyph4" inherits="InspectGlyphTemplate" id="4">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="-5" y="54"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentGlyph6" inherits="InspectGlyphTemplate" id="6">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="5" y="54"/>
+				</Anchors>
+			</Button>	
+			<Button name="$parentGlyph2" inherits="InspectGlyphTemplate" id="2">
+				<Anchors>
+					<Anchor point="CENTER" x="-1" y="-158"/>
+				</Anchors>
+			</Button>			
+			<Button name="$parentGlyph5" inherits="InspectGlyphTemplate" id="5">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-41" y="-167"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentGlyph3" inherits="InspectGlyphTemplate" id="3">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="39" y="-167"/>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, InspectGlyphFrameMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</Frame>
+	<Frame name="InspectGuildFrame" enableMouse="true" parent="InspectFrame" hidden="true" useParentLevel="true" frameStrata="HIGH" setAllPoints="true" id="5">
 		<Layers>
 			<Layer level="BORDER">
 				<Texture name="$parentBG" file="Interface\GuildFrame\GuildInspect-Parts">

@@ -78,19 +78,24 @@ end
 
 FramePoolMixin = CreateFromMixins(ObjectPoolMixin)
 
+local pollFrameIndex = 0
 local function FramePoolFactory(framePool)
+	framePool.createFrames = framePool.createFrames + 1
+	pollFrameIndex = pollFrameIndex + 1
 	local parentName, frameName = framePool.parent and framePool.parent:GetName()
 	if parentName then
-		framePool.createFrames = framePool.createFrames + 1
-		frameName = string.format("%sPoolFrame%s%d", parentName, framePool.frameTemplate, framePool.createFrames)
+		frameName = string.format("%sPoolFrame%s%i_%i", parentName, framePool.frameTemplate, framePool.createFrames, pollFrameIndex)
+	elseif framePool.frameTemplate then
+		frameName = string.format("UnnamedPoolFrame%s%i_%i", framePool.frameTemplate, framePool.createFrames, pollFrameIndex)
 	else
-		frameName = string.format("FramePoolFrame_%s_%s", framePool:GetNumActive(), time())
+		frameName = string.format("UnnamedPoolFrameNoTemplate%i_%i", framePool.createFrames, pollFrameIndex)
 	end
 	return CreateFrame(framePool.frameType, frameName, framePool.parent, framePool.frameTemplate)
 end
 
 local function ForbiddenFramePoolFactory(framePool)
-	return print(framePool.frameType, string.format("FramePoolFrame_%s_%s", framePool:GetNumActive(), time()), framePool.parent, framePool.frameTemplate)
+	print(framePool.frameType, string.format("PoolFrame_%s", time()), framePool.parent, framePool.frameTemplate)
+	return
 end
 
 function FramePoolMixin:OnLoad(frameType, parent, frameTemplate, resetterFunc, forbidden)

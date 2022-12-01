@@ -1,9 +1,3 @@
---	Filename:	SharedUIPanelTemplates.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 PANEL_INSET_LEFT_OFFSET = 4
 PANEL_INSET_RIGHT_OFFSET = -6
 PANEL_INSET_BOTTOM_OFFSET = 4
@@ -1129,6 +1123,21 @@ function LoadingSpinnerRetrieving_OnUpdate( self, elapsed, ... )
 	end
 end
 
+function GetAppropriateTopLevelParent()
+	return UIParent or GlueParent;
+end
+
+function SetAppropriateTopLevelParent(frame)
+	local parent = GetAppropriateTopLevelParent();
+	if parent then
+		frame:SetParent(parent);
+	end
+end
+
+function GetAppropriateTooltip()
+	return UIParent and GameTooltip or GlueTooltip;
+end
+
 UIMenuButtonStretchMixin = {};
 
 function UIMenuButtonStretchMixin:SetTextures(texture)
@@ -1281,6 +1290,236 @@ function SquareIconButtonMixin:SetEnabledState(enabled)
 	self.Icon:SetDesaturated(not enabled);
 end
 
+UIButtonMixin = {}
+
+function UIButtonMixin:OnLoad()
+	self.atlasName = self:GetAttribute("atlasName")
+end
+
+function UIButtonMixin:InitButton()
+	if self.buttonArtKit then
+		self:SetButtonArtKit(self.buttonArtKit);
+	end
+
+	if self.disabledTooltip then
+		self:SetMotionScriptsWhileDisabled(true);
+	end
+end
+
+function UIButtonMixin:OnClick(...)
+	PlaySound(self.onClickSoundKit or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+
+	if self.onClickHandler then
+		self.onClickHandler(self, ...);
+	end
+end
+
+function UIButtonMixin:OnEnter()
+	if self.onEnterHandler and self.onEnterHandler(self) then
+		return;
+	end
+
+	local defaultTooltipAnchor = "ANCHOR_RIGHT";
+	if self:IsEnabled() == 1 then
+		if self.tooltipTitle or self.tooltipText then
+			local tooltip = GetAppropriateTooltip();
+			tooltip:SetOwner(self, self.tooltipAnchor or defaultTooltipAnchor, self.tooltipOffsetX, self.tooltipOffsetY);
+
+			if self.tooltipTitle then
+				GameTooltip_SetTitle(tooltip, self.tooltipTitle, self.tooltipTitleColor);
+			end
+
+			if self.tooltipText then
+				local wrap = true;
+				GameTooltip_AddColoredLine(tooltip, self.tooltipText, self.tooltipTextColor or NORMAL_FONT_COLOR, wrap);
+			end
+
+			tooltip:Show();
+		end
+	else
+		if self.disabledTooltip then
+			GameTooltip_ShowDisabledTooltip(GameTooltip, self, self.disabledTooltip, self.disabledTooltipAnchor or defaultTooltipAnchor, self.disabledTooltipOffsetX, self.disabledTooltipOffsetY);
+		end
+	end
+end
+
+function UIButtonMixin:OnLeave()
+	local tooltip = GetAppropriateTooltip();
+	tooltip:Hide();
+end
+
+function UIButtonMixin:SetButtonArtKit(buttonArtKit)
+	self.buttonArtKit = buttonArtKit;
+
+	self:SetNormalAtlas(buttonArtKit);
+	self:SetPushedAtlas(buttonArtKit.."-Pressed");
+	self:SetDisabledAtlas(buttonArtKit.."-Disabled");
+	self:SetHighlightAtlas(buttonArtKit.."-Highlight");
+end
+
+function UIButtonMixin:SetOnClickHandler(onClickHandler, onClickSoundKit)
+	self.onClickHandler = onClickHandler;
+	self.onClickSoundKit = onClickSoundKit;
+end
+
+function UIButtonMixin:SetOnEnterHandler(onEnterHandler)
+	self.onEnterHandler = onEnterHandler;
+end
+
+function UIButtonMixin:SetTooltipInfo(tooltipTitle, tooltipText)
+	self.tooltipTitle = tooltipTitle;
+	self.tooltipText = tooltipText;
+end
+
+function UIButtonMixin:SetTooltipAnchor(tooltipAnchor, tooltipOffsetX, tooltipOffsetY)
+	self.tooltipAnchor = tooltipAnchor;
+	self.tooltipOffsetX = tooltipOffsetX;
+	self.tooltipOffsetY = tooltipOffsetY;
+end
+
+function UIButtonMixin:SetDisabledTooltip(disabledTooltip, disabledTooltipAnchor, disabledTooltipOffsetX, disabledTooltipOffsetY)
+	self.disabledTooltip = disabledTooltip;
+	self.disabledTooltipAnchor = disabledTooltipAnchor;
+	self.disabledTooltipOffsetX = disabledTooltipOffsetX;
+	self.disabledTooltipOffsetY = disabledTooltipOffsetY;
+	self:SetMotionScriptsWhileDisabled(disabledTooltip ~= nil);
+end
+
+ThreeSliceButtonMixin = CreateFromMixins(UIButtonMixin);
+
+function ThreeSliceButtonMixin:OnLoad()
+	self.Center:ClearAllPoints()
+	self.Center:SetPoint("TOPLEFT", self.Left, "TOPRIGHT")
+	self.Center:SetPoint("BOTTOMRIGHT", self.Right, "BOTTOMLEFT")
+
+	UIButtonMixin.OnLoad(self)
+	self:InitButton()
+end
+
+function ThreeSliceButtonMixin:GetLeftAtlasName()
+	return self.atlasName.."-Left";
+end
+
+function ThreeSliceButtonMixin:GetRightAtlasName()
+	return self.atlasName.."-Right";
+end
+
+function ThreeSliceButtonMixin:GetCenterAtlasName()
+	return "_"..self.atlasName.."-Center";
+end
+
+function ThreeSliceButtonMixin:GetHighlightAtlasName()
+	return self.atlasName.."-Highlight";
+end
+
+function ThreeSliceButtonMixin:InitButton()
+	self.leftAtlasInfo = C_Texture.GetAtlasInfo(self:GetLeftAtlasName());
+	self.rightAtlasInfo = C_Texture.GetAtlasInfo(self:GetRightAtlasName());
+
+	self:SetHighlightAtlas(self:GetHighlightAtlasName());
+end
+
+function ThreeSliceButtonMixin:UpdateScale()
+	local buttonHeight = self:GetHeight();
+	local buttonWidth = self:GetWidth();
+	local scale = buttonHeight / self.leftAtlasInfo.height;
+	self.Left:SetHeight(self.leftAtlasInfo.height * scale);
+	self.Right:SetHeight(self.leftAtlasInfo.height * scale);
+
+	local leftWidth = self.leftAtlasInfo.width * scale;
+	local rightWidth = self.rightAtlasInfo.width * scale;
+	local leftAndRightWidth = leftWidth + rightWidth;
+
+	if leftAndRightWidth > buttonWidth then
+		-- At the current buttonHeight, the left and right textures are too big to fit within the button width
+		-- So slice some width off of the textures and adjust texture coords accordingly
+		local extraWidth = leftAndRightWidth - buttonWidth;
+		local newLeftWidth = leftWidth;
+		local newRightWidth = rightWidth;
+
+		-- If one of the textures is sufficiently larger than the other one, we can remove all of the width from there
+		if (leftWidth - extraWidth) > rightWidth then
+			-- left is big enough to take the whole thing...deduct it all from there
+			newLeftWidth = leftWidth - extraWidth;
+		elseif (rightWidth - extraWidth) > leftWidth then
+			-- right is big enough to take the whole thing...deduct it all from there
+			newRightWidth = rightWidth - extraWidth;
+		else
+			-- neither side is sufficiently larger than the other to take the whole extra width
+			if leftWidth ~= rightWidth then
+				-- so set both widths equal to the smaller size and subtract the difference from extraWidth
+				local unevenAmount = math.abs(leftWidth - rightWidth);
+				extraWidth = extraWidth - unevenAmount;
+				newLeftWidth = math.min(leftWidth, rightWidth);
+				newRightWidth = newLeftWidth;
+			end
+			-- newLeftWidth and newRightWidth are now equal and we just need to remove half of extraWidth from each
+			local equallyDividedExtraWidth = extraWidth / 2;
+			newLeftWidth = newLeftWidth - equallyDividedExtraWidth;
+			newRightWidth = newRightWidth - equallyDividedExtraWidth;
+		end
+
+		-- Now set the tex coords and widths of both textures
+		local leftPercentage = newLeftWidth / leftWidth;
+		self.Left:SetSubTexCoord(0, leftPercentage, 0, 1);
+		self.Left:SetWidth(newLeftWidth);
+
+		local rightPercentage = newRightWidth / rightWidth;
+		self.Right:SetSubTexCoord(1 - rightPercentage, 1, 0, 1);
+		self.Right:SetWidth(newRightWidth);
+	else
+		self.Left:SetSubTexCoord(0, 1, 0, 1);
+		self.Left:SetWidth(self.leftAtlasInfo.width * scale);
+		self.Right:SetSubTexCoord(0, 1, 0, 1);
+		self.Right:SetWidth(self.rightAtlasInfo.width * scale);
+	end
+end
+
+function ThreeSliceButtonMixin:UpdateButton(buttonState)
+	buttonState = buttonState or self:GetButtonState();
+
+	if self:IsEnabled() ~= 1 then
+		buttonState = "DISABLED";
+	end
+
+	local atlasNamePostfix = "";
+	if buttonState == "DISABLED" then
+		atlasNamePostfix = "-Disabled";
+	elseif buttonState == "PUSHED" then
+		atlasNamePostfix = "-Pressed";
+	end
+
+	local useAtlasSize = true;
+	self.Left:SetAtlas(self:GetLeftAtlasName()..atlasNamePostfix, useAtlasSize);
+	self.Center:SetAtlas(self:GetCenterAtlasName()..atlasNamePostfix);
+	self.Right:SetAtlas(self:GetRightAtlasName()..atlasNamePostfix, useAtlasSize);
+
+	self:UpdateScale();
+end
+
+function ThreeSliceButtonMixin:OnMouseDown()
+	self:UpdateButton("PUSHED");
+end
+
+function ThreeSliceButtonMixin:OnMouseUp()
+	self:UpdateButton("NORMAL");
+end
+
+-- Allows inheriting buttons to override OnLoad and OnShow
+ButtonControllerMixin = {};
+
+function ButtonControllerMixin:OnLoad()
+	if self:GetParent().InitButton then
+		self:GetParent():InitButton();
+	end
+end
+
+function ButtonControllerMixin:OnShow()
+	if self:GetParent().UpdateButton then
+		self:GetParent():UpdateButton();
+	end
+end
+
 StorePopupFrameTemplateMixin = {};
 
 function StorePopupFrameTemplateMixin:OnLoad()
@@ -1419,6 +1658,23 @@ function StorePopupButtonTemplateMixin:OnLeave()
 			GameTooltip:Hide()
 		end
 	end
+end
+
+DefaultScaleFrameMixin = {};
+
+function DefaultScaleFrameMixin:OnDefaultScaleFrameLoad()
+	self:RegisterEvent("DISPLAY_SIZE_CHANGED");
+	self:UpdateScale();
+end
+
+function DefaultScaleFrameMixin:OnDefaultScaleFrameEvent(event, ...)
+	if event == "DISPLAY_SIZE_CHANGED" then
+		self:UpdateScale();
+	end
+end
+
+function DefaultScaleFrameMixin:UpdateScale()
+	ApplyDefaultScale(self, self.minScale, self.maxScale);
 end
 
 StorePopupFrameTemplateEditBoxMixin = {}

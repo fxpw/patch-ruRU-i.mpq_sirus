@@ -13,6 +13,7 @@ C_GluePackets.OpCodes = {
 	SendCharactersOrderSave			= "001",
 	AnnounceCharacterDeletedLeave	= "010",
 	RequestCharacterList			= "100",
+	ToggleItemsForCustomize			= "111",
 }
 
 C_GluePackets.queue = {}

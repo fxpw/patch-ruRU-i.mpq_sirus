@@ -409,6 +409,79 @@
 		</Scripts>
 	</Frame>
 
+	<Button name="CharCustomizeBaseButtonTemplate" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharCustomizeBaseButtonMixin)
+			</OnLoad>
+			<OnClick>
+				self:OnBaseButtonClick(button)
+			</OnClick>
+		</Scripts>
+	</Button>
+	<Button name="CharCustomizeSmallButtonTemplate" inherits="CharCustomizeBaseButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
+		<Size x="32" y="32"/>
+		<Attributes>
+			<Attribute name="tooltipAnchor" value="ANCHOR_BOTTOMRIGHT" type="string"/>
+			<Attribute name="tooltipXOffset" value="-5" type="number"/>
+			<Attribute name="tooltipYOffset" value="-5" type="number"/>
+		</Attributes>
+		<HitRectInsets left="6" right="6" top="6" bottom="6"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Icon">
+					<Size x="16" y="15"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeSmallButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnMouseDown>
+				self:OnMouseDown(button)
+			</OnMouseDown>
+			<OnMouseUp>
+				self:OnMouseUp(button)
+			</OnMouseUp>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+		</Scripts>
+		<NormalTexture parentKey="NormalTexture"/>
+		<HighlightTexture parentKey="HighlightTexture" alphaMode="ADD" alpha="0.4"/>
+		<PushedTexture parentKey="PushedTexture">
+			<Anchors>
+				<Anchor point="TOPLEFT" x="1" y="-1"/>
+				<Anchor point="BOTTOMRIGHT" x="1" y="-1"/>
+			</Anchors>
+		</PushedTexture>
+	</Button>
+	<Button name="CharCustomizeClickOrHoldButtonTemplate" inherits="CharCustomizeSmallButtonTemplate" virtual="true">
+		<Attributes>
+			<Attribute name="holdWaitTimeSeconds" value="0.25" type="number"/>
+		</Attributes>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeSmallButtonMixin, CharCustomizeClickOrHoldButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Button>
+
 	<Frame name="CharacterCreate" toplevel="true" parent="GlueFFXModel" setAllPoints="true" enableKeyboard="true" hidden="true">
 		<Layers>
 			<Layer level="OVERLAY">
@@ -643,7 +716,7 @@
 							</OnEnterPressed>
 						</Scripts>
 					</EditBox>
-					<Button name="$parentRandomNameButton" parentKey="RandomNameButton" hidden="false" motionScriptsWhileDisabled="true">
+					<Button name="$parentRandomNameButton" parentKey="RandomNameButton" motionScriptsWhileDisabled="true">
 						<Size x="30" y="30"/>
 						<Anchors>
 							<Anchor point="RIGHT" relativeTo="$parentCreateNameEditBox" relativePoint="LEFT" x="5" y="0"/>
@@ -661,8 +734,8 @@
 						</Layers>
 						<Scripts>
 							<OnLoad>
-								self.Icon:SetAtlas("charactercreate-icon-dice")
-								self.HighlightTexture:SetAtlas("charactercreate-icon-dice")
+								self.Icon:SetAtlas("charactercreate-icon-dice-old")
+								self.HighlightTexture:SetAtlas("charactercreate-icon-dice-old")
 								self.NormalTexture:SetAtlas("common-button-square-gray-up")
 								self.PushedTexture:SetAtlas("common-button-square-gray-down")
 							</OnLoad>
@@ -724,6 +797,125 @@
 							<OnClick>
 								PlaySound("gsCharacterCreationLook")
 								C_CharacterCreation.RandomizeCharCustomization()
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Frame name="$parentSmallButtons" parentKey="SmallButtons" inherits="HorizontalLayoutFrame">
+						<Attributes>
+							<Attribute name="spacing" value="-5" type="number"/>
+						</Attributes>
+						<Anchors>
+							<Anchor point="TOP" x="0" y="-120"/>
+						</Anchors>
+						<Frames>
+							<Button name="$parentResetCameraButton" parentKey="ResetCameraButton" inherits="CharCustomizeSmallButtonTemplate">
+								<Attributes>
+									<Attribute name="layoutIndex" value="1" type="number"/>
+									<Attribute name="iconAtlas" value="common-icon-undo" type="string"/>
+								</Attributes>
+								<Scripts>
+									<OnLoad>
+										Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeSmallButtonMixin, CharCustomizeResetCameraButtonMixin)
+										self:OnLoad()
+										self.simpleTooltipLine = RESET_CAMERA
+									</OnLoad>
+								</Scripts>
+							</Button>
+							<Button name="$parentZoomOutButton" parentKey="ZoomOutButton" inherits="CharCustomizeClickOrHoldButtonTemplate">
+								<Attributes>
+									<Attribute name="layoutIndex" value="2" type="number"/>
+									<Attribute name="iconAtlas" value="common-icon-zoomout" type="string"/>
+									<Attribute name="clickAmount" value="-20" type="number"/>
+									<Attribute name="holdAmountPerSecond" value="-200" type="number"/>
+								</Attributes>
+								<Scripts>
+									<OnLoad>
+										Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeSmallButtonMixin, CharCustomizeClickOrHoldButtonMixin, CharCustomizeZoomButtonMixin)
+										self:OnLoad()
+										self.simpleTooltipLine = ZOOM_OUT
+									</OnLoad>
+								</Scripts>
+							</Button>
+							<Button name="$parentZoomInButton" parentKey="ZoomInButton" inherits="CharCustomizeClickOrHoldButtonTemplate">
+								<Attributes>
+									<Attribute name="layoutIndex" value="3" type="number"/>
+									<Attribute name="iconAtlas" value="common-icon-zoomin" type="string"/>
+									<Attribute name="clickAmount" value="20" type="number"/>
+									<Attribute name="holdAmountPerSecond" value="200" type="number"/>
+								</Attributes>
+								<Scripts>
+									<OnLoad>
+										Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeSmallButtonMixin, CharCustomizeClickOrHoldButtonMixin, CharCustomizeZoomButtonMixin)
+										self:OnLoad()
+										self.simpleTooltipLine = ZOOM_IN
+									</OnLoad>
+								</Scripts>
+							</Button>
+							<Button name="$parentRotateLeftButton" parentKey="RotateLeftButton" inherits="CharCustomizeClickOrHoldButtonTemplate">
+								<Attributes>
+									<Attribute name="layoutIndex" value="4" type="number"/>
+									<Attribute name="iconAtlas" value="common-icon-rotateleft" type="string"/>
+									<Attribute name="leftPadding" value="30" type="number"/>
+									<Attribute name="clickAmount" value="-10" type="number"/>
+									<Attribute name="holdAmountPerSecond" value="-100" type="number"/>
+								</Attributes>
+								<Scripts>
+									<OnLoad>
+										Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeSmallButtonMixin, CharCustomizeClickOrHoldButtonMixin, CharCustomizeRotateButtonMixin)
+										self:OnLoad()
+										self.simpleTooltipLine = ROTATE_LEFT
+									</OnLoad>
+								</Scripts>
+							</Button>
+							<Button name="$parentRotateRightButton" parentKey="RotateRightButton" inherits="CharCustomizeClickOrHoldButtonTemplate">
+								<Attributes>
+									<Attribute name="layoutIndex" value="5" type="number"/>
+									<Attribute name="iconAtlas" value="common-icon-rotateright" type="string"/>
+									<Attribute name="clickAmount" value="10" type="number"/>
+									<Attribute name="holdAmountPerSecond" value="100" type="number"/>
+								</Attributes>
+								<Scripts>
+									<OnLoad>
+										Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeSmallButtonMixin, CharCustomizeClickOrHoldButtonMixin, CharCustomizeRotateButtonMixin)
+										self:OnLoad()
+										self.simpleTooltipLine = ROTATE_RIGHT
+									</OnLoad>
+								</Scripts>
+							</Button>
+						</Frames>
+					</Frame>
+					<CheckButton name="$parentDressCheckButton" parentKey="DressCheckButton" inherits="GlueDark_CheckBoxTemplate" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentRandomizeCustomizationButton" relativePoint="BOTTOMLEFT" x="7" y="-25"/>
+						</Anchors>
+						<HitRectInsets left="0" right="-160" top="0" bottom="0"/>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString name="$parentLabel" parentKey="Label" inherits="GlueDark_Font_Outline_13" justifyH="CENTER" text="SHOW_EQUIPPED_ITEMS">
+									<Anchors>
+										<Anchor point="LEFT" relativeTo="$parent" relativePoint="RIGHT" x="0" y="0"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnLoad>
+								Mixin(self, CharacterCreateDressStateCheckButtonMixin)
+							</OnLoad>
+							<OnClick>
+								self:OnClick(button)
+							</OnClick>
+						</Scripts>
+					</CheckButton>
+					<Button name="$parentInspectCharacterButton" parentKey="InspectCharacterButton" inherits="GlueDark_ButtonTemplate" text="INSPECT_CHARACTER">
+						<Size x="200" y="32"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentRandomizeCustomizationButton" relativePoint="BOTTOMLEFT" x="0" y="-55"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								PlaySound("gsCharacterCreationLook")
+								C_CharacterCreation.ZoomCamera(C_CharacterCreation.GetCurrentCameraZoom() * -1, nil, true)
 							</OnClick>
 						</Scripts>
 					</Button>

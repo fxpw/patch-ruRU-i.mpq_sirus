@@ -1482,12 +1482,20 @@ SlashCmdList["INVITE"] = function(msg)
 		ChatFrame_DisplayUsageError(ERR_NAME_TOO_LONG2);
 		return;
 	end
+	if(msg == nil) then
+		ChatFrame_DisplayUsageError(ERR_NO_TARGET_OR_NAME);
+		return;
+	end
 	InviteUnit(msg);
 end
 
 SlashCmdList["UNINVITE"] = function(msg)
 	if(msg == "") then
 		msg = UnitName("target");
+	end
+	if(msg == nil) then
+		ChatFrame_DisplayUsageError(ERR_NO_TARGET_OR_NAME);
+		return;
 	end
 	UninviteUnit(msg);
 end
@@ -4575,7 +4583,7 @@ function LanguageMenu_OnEvent(self, event, ...)
 end
 
 function GetOriginalLanguage()
-	local factionID = C_FactionManager:GetOriginalFaction();
+	local factionID = C_FactionManager.GetOriginalFaction();
 
 	if factionID and factionID ~= PLAYER_FACTION_GROUP.Neutral then
 		return PLAYER_FACTION_LANGUAGE[factionID];

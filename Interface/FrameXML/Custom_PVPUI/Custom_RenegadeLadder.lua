@@ -37,7 +37,7 @@ function RenegadeLadderFrameMixin:OnLoad()
     RaiseFrameLevelByThree(self.Shadows)
 
     local function UpdateFaction()
-        SetPortraitToTexture(self.Art.portrait, PVPUIFRAME_PORTRAIT_DATA[C_Unit:GetFactionID("player")])
+        SetPortraitToTexture(self.Art.portrait, PVPUIFRAME_PORTRAIT_DATA[C_Unit.GetFactionID("player")])
     end
 
     C_FactionManager:RegisterFactionOverrideCallback(UpdateFaction, true)
