@@ -196,7 +196,6 @@ TabardFrame.xml
 GuildRegistrarFrame.xml
 PetitionFrame.xml
 HelpFrame.xml
-KnowledgeBaseFrame.xml
 ColorPickerFrame.xml
 GossipFrame.xml
 MailFrame.xml
@@ -249,6 +248,7 @@ API_Guild.lua
 # Custom modules
 Custom_CUFProfiles\Custom_CompactUnitFrameProfiles.xml
 Custom_CompactRaidFrames\Custom_CompactRaidFrameManager.xml
+Custom_KnowledgeBase\Custom_KnowledgeBase.xml
 Custom_DestinyUI\Custom_DestinyUI.xml
 Custom_GuildSystem\Custom_GuildSystem.xml
 Custom_AutoQuestPopUpTracker\Custom_AutoQuestPopUpTracker.xml

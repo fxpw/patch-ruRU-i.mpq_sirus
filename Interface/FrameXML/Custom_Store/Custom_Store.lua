@@ -1119,7 +1119,7 @@ function GetStoreProductVersion()
 end
 
 function GetStoreRenewalDiscounts()
-	return STORE_CACHE:Get("ASMSG_SHOP_COLLECTION_RENEWAL_DISCOUNT") or 0, STORE_CACHE:Get("ASMSG_SHOP_TRANSMOG_RENEWAL_DISCOUNT") or 0;
+	return STORE_CACHE:Get("ASMSG_SHOP_COLLECTION_RENEWAL_PRICE") or 3, STORE_CACHE:Get("ASMSG_SHOP_TRANSMOG_RENEWAL_PRICE") or 10;
 end
 
 function GetStoreRolledItemsVersion(categoryId)
@@ -6503,9 +6503,9 @@ function EventHandler:ASMSG_SHOP_RENEW_ITEMS( msg )
 		STORE_CACHE:Set("CATEGORY_DROP_COUNT"..categoryId, cacheDropsCount + 1)
 
 		if categoryId == STORE_COLLECTIONS_CATEGORY_ID then
-			STORE_CACHE:Set("ASMSG_SHOP_COLLECTION_RENEWAL_DISCOUNT", 0);
+			STORE_CACHE:Set("ASMSG_SHOP_COLLECTION_RENEWAL_PRICE", 3);
 		elseif categoryId == STORE_TRANSMOGRIFY_CATEGORY_ID then
-			STORE_CACHE:Set("ASMSG_SHOP_TRANSMOG_RENEWAL_DISCOUNT", 0);
+			STORE_CACHE:Set("ASMSG_SHOP_TRANSMOG_RENEWAL_PRICE", 10);
 		end
 
 		if selectedSubCategoryID ~= 0 then
@@ -6579,11 +6579,11 @@ function StoreRequestShopItems( moneyID, categoryID, subCategoryID, ignireFilter
 end
 
 function EventHandler:ASMSG_SHOP_VERSION(msg)
-	local version, collectionRenewalDiscount, transmogRenewalDiscount = strsplit(":", msg);
+	local version, collectionRenewalPrice, transmogRenewalPrice = strsplit(":", msg);
 
 	STORE_CACHE:Set("ASMSG_SHOP_VERSION", tonumber(version));
-	STORE_CACHE:Set("ASMSG_SHOP_COLLECTION_RENEWAL_DISCOUNT", tonumber(collectionRenewalDiscount) or 0);
-	STORE_CACHE:Set("ASMSG_SHOP_TRANSMOG_RENEWAL_DISCOUNT", tonumber(transmogRenewalDiscount) or 0);
+	STORE_CACHE:Set("ASMSG_SHOP_COLLECTION_RENEWAL_PRICE", tonumber(collectionRenewalPrice) or 3);
+	STORE_CACHE:Set("ASMSG_SHOP_TRANSMOG_RENEWAL_PRICE", tonumber(transmogRenewalPrice) or 10);
 end
 
 StoreTransmogrifySubCategoryFrameMixin = {}

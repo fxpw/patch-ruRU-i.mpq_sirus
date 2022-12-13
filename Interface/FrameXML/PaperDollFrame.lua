@@ -134,7 +134,9 @@ PLAYER_DISPLAYED_TITLES = 6;
 PLAYER_TITLE_HEIGHT = 16;
 
 VERTICAL_FLYOUTS = { [16] = true, [17] = true, [18] = true }
-local STRIPE_COLOR = {r=0.9, g=0.9, b=1}
+
+local BONUS_STAT_VALUES = {}
+local BONUS_STAT_MULTIPLIERS = {}
 
 local InspectSlotButton = {
 	"InspectHeadSlot",
@@ -212,8 +214,6 @@ function PaperDollFrame_OnLoad (self)
 
 	if self.isDisabledStrengthenFrame then
 		PaperDollFrame_DisableStrengthenFrame(self)
-	else
-		SendAddonMessage("GET_ALL_STRENGTHENING_STATS", nil, "WHISPER", UnitName("player"))
 	end
 end
 
@@ -264,15 +264,31 @@ function EventHandler:UPS_INFO( msg )
 	end
 end
 
-function EventHandler:BONUS_STATS( msg )
-	local splitstat = {strsplit(";", msg)}
-	for i = 1, #StrengthenStats do
-		StrengthenFrame[i].Value:SetText(string.format("%d (+|cff00FF00%d|r)", splitstat[i] / 2, splitstat[i]))
-		if i == 3 then
-			StrengthenFrame[i].Value:SetText(string.format("%d (+|cff00FF00%d|r)", splitstat[i] / 3, splitstat[i]))
-		elseif i == 7 then
-			StrengthenFrame[i].Value:SetText(string.format("%d (+|cff00FF00%d|r)", splitstat[i] / 4, splitstat[i]))
-		end
+function EventHandler:BONUS_STATS(msg)
+	local statValues = {strsplit(";", msg)}
+
+	table.wipe(BONUS_STAT_VALUES)
+
+	for index, value in ipairs(statValues) do
+		value = RoundToSignificantDigits(tonumber(value), 2)
+		BONUS_STAT_VALUES[index] = value
+
+		local multiplier = BONUS_STAT_MULTIPLIERS[index] or 1
+		StrengthenFrame[index].Value:SetFormattedText("%s (+|cff00FF00%s|r)", RoundToSignificantDigits(value / multiplier, 2), value)
+	end
+end
+
+function EventHandler:ASMSG_UPS_INFO(msg)
+	local statMultipliers = {strsplit(";", msg)}
+
+	table.wipe(BONUS_STAT_MULTIPLIERS)
+
+	for index, multiplier in ipairs(statMultipliers) do
+		multiplier = RoundToSignificantDigits(tonumber(multiplier), 2)
+		BONUS_STAT_MULTIPLIERS[index] = multiplier
+
+		local value = BONUS_STAT_VALUES[index] or 0
+		StrengthenFrame[index].Value:SetFormattedText("%s (+|cff00FF00%s|r)", RoundToSignificantDigits(value / multiplier, 2), value)
 	end
 end
 
@@ -311,10 +327,6 @@ function PaperDollFrame_OnEvent (self, event, ...)
 
 	if event == "PLAYER_EQUIPMENT_CHANGED" then
 		SendServerMessage("ACMSG_TRANSMOGRIFICATION_INFO_REQUEST", UnitGUID("player"))
-	end
-
-	if event == "ACTIVE_TALENT_GROUP_CHANGED" then
-		SendServerMessage("GET_ALL_STRENGTHENING_STATS")
 	end
 
 	if ( event == "ADDON_LOADED" ) then
@@ -384,7 +396,7 @@ function PaperDollFrame_SetLevel()
 	local level = UnitLevel("player");
 	local race = UnitRace("player")
 	local _, faction = UnitFactionGroup("player")
-	
+
 	race = string.gsub(race, " %("..faction.."%)", "")
 
 	CharacterLevelText:SetFormattedText(PAPERDOLLFRAME_PLAYER_INFO, level, classColorString, classDisplayName, race, faction)
@@ -1311,8 +1323,6 @@ function PaperDollFrame_OnShow(self)
 	end
 
 	if not self.isDisabledStrengthenFrame then
-		SendServerMessage("GET_ALL_STRENGTHENING_STATS")
-
 		if UnitLevel("player") < 80 then
 			DisableStrengthenFrame:Show()
 		else

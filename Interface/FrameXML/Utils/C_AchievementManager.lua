@@ -117,13 +117,13 @@ function C_AchievementManagerMixin:GetCategoryNumAchievements( categoryID )
         for i = 1, self._GetCategoryNumAchievements(categoryID) do
             local entry, name, points, completed, month, day, year, description, flags, icon, rewardText = self._GetAchievementInfo(categoryID, i)
 
-			self.counter[categoryID].total = self.counter[categoryID].total + 1
-
-			if completed then
-				self.counter[categoryID].completed = self.counter[categoryID].completed + 1
-			end
-
             if self:ValidationFaction(entry) then
+				self.counter[categoryID].total = self.counter[categoryID].total + 1
+
+				if completed then
+					self.counter[categoryID].completed = self.counter[categoryID].completed + 1
+				end
+
                 if C_Service:IsGM() or IsDevClient() then
                     name = entry .. " - " .. name
                 end

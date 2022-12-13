@@ -41,7 +41,7 @@ UIPanelWindows["PVPBannerFrame"] =		{ area = "left",	pushable = 0 };
 UIPanelWindows["GuildRegistrarFrame"] =		{ area = "left",	pushable = 0 };
 UIPanelWindows["ArenaRegistrarFrame"] =		{ area = "left",	pushable = 0 };
 UIPanelWindows["PetitionFrame"] =		{ area = "left",	pushable = 0 };
-UIPanelWindows["HelpFrame"] =			{ area = "center",	pushable = 0,	whileDead = 1 };
+UIPanelWindows["HelpFrame"] =			{ area = "center",	pushable = 0,	whileDead = 1, allowOtherPanels = 1 };
 UIPanelWindows["GossipFrame"] =			{ area = "left",	pushable = 0 };
 UIPanelWindows["MailFrame"] =			{ area = "left",	pushable = 0, xOffset = 15, yOffset = -10, };
 UIPanelWindows["BattlefieldFrame"] =		{ area = "left",	pushable = 0,	whileDead = 1 };
@@ -523,7 +523,7 @@ function ToggleHelpFrame()
 		StaticPopup_Hide("GM_RESPONSE_NEED_MORE_HELP");
 		StaticPopup_Hide("GM_RESPONSE_RESOLVE_CONFIRM");
 		StaticPopup_Hide("GM_RESPONSE_MUST_RESOLVE_RESPONSE");
-		HelpFrame_ShowFrame(HELPFRAME_START_PAGE);
+		HelpFrame_ShowFrame();
 	end
 end
 
@@ -1105,6 +1105,139 @@ function UIParent_OnEvent(self, event, ...)
 						end
 					end
 				end)
+			end
+
+			function AchievementFrame_SelectAchievement(id, forceSelect)
+				if ( not AchievementFrame:IsShown() and not forceSelect ) then
+					return;
+				end
+
+				local _, _, _, achCompleted = GetAchievementInfo(id);
+				if ( achCompleted and (ACHIEVEMENTUI_SELECTEDFILTER == AchievementFrameFilters[ACHIEVEMENT_FILTER_INCOMPLETE].func) ) then
+					AchievementFrame_SetFilter(ACHIEVEMENT_FILTER_ALL);
+				elseif ( (not achCompleted) and (ACHIEVEMENTUI_SELECTEDFILTER == AchievementFrameFilters[ACHIEVEMENT_FILTER_COMPLETE].func) ) then
+					AchievementFrame_SetFilter(ACHIEVEMENT_FILTER_ALL);
+				end
+
+				AchievementFrameTab_OnClick = AchievementFrameBaseTab_OnClick;
+				AchievementFrameTab_OnClick(1);
+				AchievementFrameSummary:Hide();
+				AchievementFrameAchievements:Show();
+
+				-- Figure out if this is part of a progressive achievement; if it is and it's incomplete, make sure the previous level was completed. If not, find the first incomplete achievement in the chain and display that instead.
+				local _, _, _, completed = GetAchievementInfo(id);
+				if ( not completed and GetPreviousAchievement(id) ) then
+					local prevID = GetPreviousAchievement(id);
+					_, _, _, completed = GetAchievementInfo(prevID);
+					while ( prevID and not completed ) do
+						id = prevID;
+						prevID = GetPreviousAchievement(id);
+						if ( prevID ) then
+							_, _, _, completed = GetAchievementInfo(prevID);
+						end
+					end
+				elseif ( completed ) then
+					local nextID, completed = GetNextAchievement(id);
+					if ( nextID and completed ) then
+						local newID
+						while ( nextID and completed ) do
+							newID, completed = GetNextAchievement(nextID);
+							if ( completed ) then
+								nextID = newID;
+							end
+						end
+						id = nextID;
+					end
+				end
+
+				AchievementFrameCategories_ClearSelection();
+				local category = GetAchievementCategory(id);
+
+				local categoryIndex, parent, hidden = 0;
+				for i, entry in next, ACHIEVEMENTUI_CATEGORIES do
+					if ( entry.id == category ) then
+						parent = entry.parent;
+					end
+				end
+
+				for i, entry in next, ACHIEVEMENTUI_CATEGORIES do
+					if ( entry.id == parent ) then
+						entry.collapsed = false;
+					elseif ( entry.parent == parent ) then
+						entry.hidden = false;
+					elseif ( entry.parent == true ) then
+						entry.collapsed = true;
+					elseif ( entry.parent ) then
+						entry.hidden = true;
+					end
+				end
+
+				achievementFunctions.selectedCategory = category;
+				AchievementFrameCategoriesContainerScrollBar:SetValue(0);
+				AchievementFrameCategories_Update();
+
+				local shown, i = false, 1;
+				while ( not shown ) do
+					for _, button in next, AchievementFrameCategoriesContainer.buttons do
+						if ( button.categoryID == category and math.ceil(button:GetBottom()) >= math.ceil(AchievementFrameAchievementsContainer:GetBottom())) then
+							shown = true;
+						end
+					end
+
+					if ( not shown ) then
+						local _, maxVal = AchievementFrameCategoriesContainerScrollBar:GetMinMaxValues();
+						if ( AchievementFrameCategoriesContainerScrollBar:GetValue() == maxVal ) then
+							--assert(false)
+							return;
+						else
+							HybridScrollFrame_OnMouseWheel(AchievementFrameCategoriesContainer, -1);
+						end
+					end
+
+					-- Remove me if everything's working fine
+					i = i + 1;
+					if ( i > 100 ) then
+						return;
+					end
+				end
+
+				AchievementFrameAchievements_ClearSelection();
+				AchievementFrameAchievementsContainerScrollBar:SetValue(0);
+				AchievementFrameAchievements_Update();
+
+				shown, i = false, 0;
+				while ( not shown ) do
+					for _, button in next, AchievementFrameAchievementsContainer.buttons do
+						if ( button.id == id and math.ceil(button:GetTop()) >= math.ceil(AchievementFrameAchievementsContainer:GetBottom())) then
+							-- The "True" here ignores modifiers, so you don't accidentally track or link this achievement. :P
+							AchievementButton_OnClick(button, true);
+
+							-- We found the button!
+							shown = button;
+							break;
+						end
+					end
+
+					local _, maxVal = AchievementFrameAchievementsContainerScrollBar:GetMinMaxValues();
+					if ( shown ) then
+						-- If we can, move the achievement we're scrolling to to the top of the screen.
+						local newHeight = AchievementFrameAchievementsContainerScrollBar:GetValue() + AchievementFrameAchievementsContainer:GetTop() - shown:GetTop();
+						newHeight = min(newHeight, maxVal);
+						AchievementFrameAchievementsContainerScrollBar:SetValue(newHeight);
+					else
+						if ( AchievementFrameAchievementsContainerScrollBar:GetValue() == maxVal ) then
+							return;
+						else
+							HybridScrollFrame_OnMouseWheel(AchievementFrameAchievementsContainer, -1);
+						end
+					end
+
+					-- Remove me if everything's working fine
+					i = i + 1;
+					if ( i > 100 ) then
+						return;
+					end
+				end
 			end
 
 			if AchievementObjectives_DisplayCriteria then
@@ -2905,10 +3038,7 @@ function ToggleGameMenu()
 		PlaySound("igMainMenuQuit");
 		HideUIPanel(GameMenuFrame);
 	elseif ( HelpFrame:IsShown() ) then
-		HideUIPanel(HelpFrame)
-		--if ( HelpFrame.back and HelpFrame.back.Click ) then
-		--	HelpFrame.back:Click();
-		--end
+		ToggleHelpFrame()
 	elseif ( VideoOptionsFrame:IsShown() ) then
 		VideoOptionsFrameCancel:Click();
 	elseif ( AudioOptionsFrame:IsShown() ) then

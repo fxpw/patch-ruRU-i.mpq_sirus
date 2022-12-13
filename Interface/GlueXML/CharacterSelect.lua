@@ -146,7 +146,9 @@ function CharacterSelect_OnShow()
 	CharacterSelect_UpdateRealmButton()
 
 	if IsConnectedToServer() then
-		if not CharacterSelect.WAIT_DRESS_CONFIRMATION then
+		if C_CharacterCreation.IsDressStateChangingBack() then
+			C_CharacterCreation.QueueListUpdate()
+		else
 			GetCharacterListUpdate();
 		end
 	else
@@ -641,11 +643,6 @@ function CharacterSelect_OnEvent(self, event, ...)
 			C_CharacterCreation.SetAlliedRacesData(C_Split(content, ":"))
 		elseif prefix == "ASMSG_SERVICE_MSG" then
 			C_CharacterCreation.SetAlliedRacesData(nil)
-		elseif prefix == "SMSG_TOGGLE_ITEMS_FOR_CUSTOMIZE" then
-			if self.WAIT_DRESS_CONFIRMATION then
-				self.WAIT_DRESS_CONFIRMATION = nil
-				GetCharacterListUpdate()
-			end
 		end
 	end
 end
@@ -657,9 +654,9 @@ local function playPanelAnim(f, revers, finishCallback, resetAnimation)
 end
 
 function CharacterSelect_UIShowAnim( revers, finishCallback )
-	local numCharacters = GetNumCharacters()
+	CharacterSelectBottomLeftPanel.startPoint = CharacterSelectAddonsButton:IsShown() and -175 or -150
 
-	if numCharacters > 0 then
+	if GetNumCharacters() > 0 then
 		playPanelAnim(CharacterSelectCharacterFrame, revers)
 		playPanelAnim(CharacterSelectLeftPanel, revers)
 		playPanelAnim(CharacterSelectPlayerNameFrame, revers)
@@ -886,24 +883,21 @@ function CharacterSelect_TabResize(self)
 	self:SetWidth(width + (2 * leftWidth));
 end
 
-function OpenCharacterCreate()
+function CharacterSelect_OpenCharacterCreate(paidServiceID, characterIndex, onShowAnim)
 	if CharacterSelectBottomLeftPanel and CharacterSelectBottomLeftPanel:IsAnimPlaying() then
 		return
 	end
 
 	CharacterSelectUI.Background.hideAnim:Play()
 	CharacterSelect_UIShowAnim(true, function(this)
-		local ghostSelected = CharacterSelect.selectedIndex and select(7, GetCharacterInfo(CharacterSelect.selectedIndex)) == true
-		if ghostSelected then
-			GlueFFXModel:Hide()
+		if type(onShowAnim) == "function" then
+			onShowAnim()
 		end
-
-		SetGlueScreen("charcreate")
-
-		if ghostSelected then
-			GlueFFXModel:Show()
-		end
+		PlaySound("gsCharacterSelectionCreateNew");
+		C_CharacterCreation.SetCreateScreen(paidServiceID, characterIndex)
 	end)
+
+	return true
 end
 
 function CharacterSelect_SelectCharacter(id, noCreate)
@@ -911,8 +905,7 @@ function CharacterSelect_SelectCharacter(id, noCreate)
 
 	if ( id == CharacterSelect.createIndex ) then
 		if ( not noCreate ) then
-			PlaySound("gsCharacterSelectionCreateNew");
-			OpenCharacterCreate()
+			CharacterSelect_OpenCharacterCreate()
 		end
 	else
 		id = GetCharIDFromIndex(id)
@@ -1096,13 +1089,6 @@ function RealmSplit_SetChoiceText()
 	RealmSplitCurrentChoice:Show();
 end
 
-function CharacterSelect_PaidServiceOnClick(self,_ ,_ ,service)
-	PAID_SERVICE_CHARACTER_ID = GetCharIDFromIndex(self:GetID());
-	PAID_SERVICE_TYPE = service;
-	PlaySound("gsCharacterSelectionCreateNew");
-	SetGlueScreen("charcreate");
-end
-
 function CharacterSelectButton_HideMoveButtons(self)
 	self.buttonText.Location:Show()
 	self.upButton:Hide()
@@ -1211,7 +1197,7 @@ function CharacterSelectButton_OnDragStop(self)
 	if CharacterSelect.draggedIndex then
 		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
 	end
-	
+
 	local stopIndex
 	CharacterSelect.draggedIndex = nil
 	CharacterSelect.pressDownButton = nil
@@ -1522,11 +1508,7 @@ function CharacterSelectPAIDButtonMixin:OnClick()
 		return
 	end
 
-	PAID_SERVICE_CHARACTER_ID = GetCharIDFromIndex(self:GetParent():GetID())
-	PAID_SERVICE_TYPE = self.paID
-
-	PlaySound("gsCharacterSelectionCreateNew")
-	SetGlueScreen("charcreate")
+	CharacterSelect_OpenCharacterCreate(self.paID, GetCharIDFromIndex(self:GetParent():GetID()))
 end
 
 function CharacterSelectPAIDButtonMixin:OnEnter()
@@ -1770,7 +1752,7 @@ function CharacterSelectButtonMixin:OnClick(button)
 
 		local id = self:GetID();
 		CharSelectServicesFlowFrame.CharSelect = id
-	
+
 		if id ~= CharacterSelect.selectedIndex then
 			CharacterSelect_SelectCharacter(id)
 		end

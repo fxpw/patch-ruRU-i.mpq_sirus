@@ -163,7 +163,7 @@ function TimerTracker_OnEvent(self, event, ...)
 			timer.endTime = GetTime() + timeSeconds;
 			timer.duration = timeSeconds
 			timer.startValue = timeSeconds / totalTime
-			timer.bar:SetMinMaxValues(0, 1);
+			timer.bar:SetMinMaxValues(0, totalTime);
 			timer.bar:Show()
 			timer.style = TIMER_NUMBERS_SETS["BigGold"];
 
@@ -179,7 +179,7 @@ function TimerTracker_OnEvent(self, event, ...)
 			timer.glow1:SetTexture(timer.style.texture.."Glow");
 			timer.glow2:SetTexture(timer.style.texture.."Glow");
 
---			timer.updateTime = TIMER_DATA[timer.type].updateInterval;
+			timer.updateTime = TIMER_DATA[timer.type].updateInterval;
 			timer:SetScript("OnUpdate", StartTimer_BigNumberOnUpdate);
 			timer:Show();
 		end
@@ -219,7 +219,7 @@ end
 function StartTimer_BigNumberOnUpdate(self, elapsed)
 	self.time = self.endTime - GetTime();
 
-	self.updateTime = self.updateTime + elapsed;
+	self.updateTime = self.updateTime - elapsed;
 	local minutes, seconds = floor(self.time/60), floor(mod(self.time, 60));
 
 	if self.type == TIMER_TYPE_ARENA then
@@ -248,11 +248,11 @@ function StartTimer_BigNumberOnUpdate(self, elapsed)
 		if (TIMER_DATA[self.type].barShowSoundKitID) then
 			PlaySound(TIMER_DATA[self.type].barShowSoundKitID);
 		end
---	elseif self.updateTime <= 0 then
---		self.updateTime = TIMER_DATA[self.type].updateInterval;
+	elseif self.updateTime <= 0 then
+		self.updateTime = TIMER_DATA[self.type].updateInterval;
 	end
 
-	self.bar:SetValue(linear(self.updateTime, self.startValue, -self.startValue, self.duration))
+	self.bar:SetValue(self.time > 0 and self.time or 0.001)
 	self.bar.timeText:SetText(string.format(TIMER_MINUTES_DISPLAY, minutes, seconds));
 end
 
@@ -260,7 +260,7 @@ function StartTimer_BarOnlyOnUpdate(self, elapsed)
 	self.time = self.endTime - GetTime();
 	local minutes, seconds = floor(self.time/60), mod(self.time, 60);
 
-	self.bar:SetValue(linear(self.updateTime, self.startValue, -self.startValue, self.duration))
+	self.bar:SetValue(self.time > 0 and self.time or 0.001)
 	self.bar.timeText:SetText(string.format(TIMER_MINUTES_DISPLAY, minutes, seconds));
 
 	if self.time < 0 then

@@ -648,6 +648,9 @@
 	<Font name="GameFontHighlightLarge" inherits="GameFontNormalLarge" virtual="true">
 		<Color r="1.0" g="1.0" b="1.0"/>
 	</Font>
+	<Font name="GameFontDisableMed3" inherits="SystemFont_Shadow_Med3" virtual="true">
+		<Color r="0.5" g="0.5" b="0.5"/>
+	</Font>
 	<Font name="GameFontDisableLarge" inherits="GameFontNormalLarge" virtual="true">
 		<Color r="0.5" g="0.5" b="0.5"/>
 	</Font>

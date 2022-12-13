@@ -1,17 +1,8 @@
---	Filename:	CharacterCreate.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 PAID_CHARACTER_CUSTOMIZATION = 1
 PAID_RACE_CHANGE = 2
 PAID_FACTION_CHANGE = 3
 PAID_SERVICE_CHARACTER_ID = nil
 PAID_SERVICE_TYPE = nil
-
-CHARACTER_CREATE_DRESSED = true
-CHARACTER_CREATE_DRESS_STATE_QUEUED = false
 
 local PAID_RACE_SERVICE_OVERRIDE_FACTIONS = {
 	[FACTION_HORDE]		= PLAYER_FACTION_GROUP.Alliance,
@@ -92,6 +83,7 @@ function CharacterCreateMixin:OnLoad()
 	self:RegisterHookListener()
 	self:RegisterCustomEvent("GLUE_CHARACTER_CREATE_FORCE_RACE_CHANGE")
 	self:RegisterCustomEvent("GLUE_CHARACTER_CREATE_ZOOM_UPDATE")
+	self:RegisterCustomEvent("GLUE_CHARACTER_CREATE_DRESS_STATE_UPDATE")
 
 	self.raceButtonPerLine = 5
 
@@ -116,7 +108,7 @@ function CharacterCreateMixin:OnShow()
 		C_CharacterCreation.CustomizeExistingCharacter(PAID_SERVICE_CHARACTER_ID)
 		self.NavigationFrame.CreateNameEditBox:SetText(C_CharacterCreation.PaidChange_GetName())
 		self.NavigationFrame.CreateButton:SetText(CHARACTER_CREATE_ACCEPT)
-		self.CustomizationFrame.DressCheckButton:SetChecked(CHARACTER_CREATE_DRESSED)
+		self.CustomizationFrame.DressCheckButton:SetChecked(C_CharacterCreation.IsDressed())
 		self.CustomizationFrame.DressCheckButton:Show()
 	else
 		C_CharacterCreation.ResetCharCustomize()
@@ -155,12 +147,6 @@ function CharacterCreateMixin:OnHide()
 	self.CustomizationFrame:Hide()
 	self:ResetSelectRaceAndClassAnim()
 	C_CharacterCreation.EnableMouseWheel(false)
-
-	if not CHARACTER_CREATE_DRESSED then
-		CHARACTER_CREATE_DRESSED = true
-		CharacterSelect.WAIT_DRESS_CONFIRMATION = true	-- CharacterSelect should wait for answer
-		C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.ToggleItemsForCustomize)
-	end
 end
 
 function CharacterCreateMixin:OnEvent(event, ...)
@@ -176,48 +162,9 @@ function CharacterCreateMixin:OnEvent(event, ...)
 		self.ClassesFrame:Show()
 
 		self:CreateUpdateButtons()
-	elseif event == "CHARACTER_LIST_UPDATE" then
-		self:UnregisterEvent(event)
-
-		if CHARACTER_CREATE_DRESS_STATE_QUEUED then
-			CHARACTER_CREATE_DRESS_STATE_QUEUED = nil
-
-			CharacterModelManager.SetBackground("Alliance", true)
-			CharacterModelManager.SetBackground(C_CharacterCreation.GetSelectedModelName(), true)
-
-			-- force update model
-			local sex = C_CharacterCreation.GetSelectedSex()
-			C_CharacterCreation.SetSelectedSex(sex == 3 and 2 or 3)
-			C_CharacterCreation.SetSelectedSex(sex)
-
-			C_CharacterCreation.SetCameraPosition(self.cameraPreserve)
-			C_CharacterCreation.SetBlockCameraReset(false)
-			self.cameraPreserve = nil
-
-			GlueDialog:HideDialog("SERVER_WAITING")
-		end
-	elseif event == "SERVER_SPLIT_NOTICE" then
-		local msg = select(3, ...)
-		local prefix, status = string.split(":", msg)
-
-		if prefix == "SMSG_TOGGLE_ITEMS_FOR_CUSTOMIZE" then
-			self:UnregisterEvent(event)
-
-			if status == "OK" then
-				CHARACTER_CREATE_DRESSED = not CHARACTER_CREATE_DRESSED	-- state change confirmed
-
-				C_CharacterCreation.SetBlockCameraReset(true)
-				self.cameraPreserve = C_CharacterCreation.GetCameraPosition()
-				
-				CHARACTER_CREATE_DRESS_STATE_QUEUED = true
-				self:RegisterEvent("CHARACTER_LIST_UPDATE")
-				GetCharacterListUpdate()
-			else
-				self.CustomizationFrame.DressCheckButton:SetChecked(CHARACTER_CREATE_DRESSED) -- reset old state on fail
-				GlueDialog:HideDialog("SERVER_WAITING")
-				GlueDialog:ShowDialog("OKAY", WAIT_MODEL_LOADING_ERROR)
-			end
-		end
+	elseif event == "GLUE_CHARACTER_DRESS_STATE_UPDATE" then
+		local isDressed = ...
+		self.CustomizationFrame.DressCheckButton:SetChecked(isDressed)
 	elseif event == "GLUE_CHARACTER_CREATE_ZOOM_UPDATE" then
 		if self.CustomizationFrame:IsVisible() then
 			self.CustomizationFrame:UpdateZoomButtonStates()
@@ -1036,15 +983,7 @@ CharacterCreateDressStateCheckButtonMixin = {}
 
 function CharacterCreateDressStateCheckButtonMixin:OnClick(button)
 	if button ~= "LeftButton" then return end
-
-	local checked = self:GetChecked() and true or false
-	if checked ~= CHARACTER_CREATE_DRESSED then
-		PlaySound(self:GetChecked() and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
-
-		GlueDialog:ShowDialog("SERVER_WAITING", WAIT_MODEL_LOADING)
-		CharacterCreate:RegisterEvent("SERVER_SPLIT_NOTICE")
-		C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.ToggleItemsForCustomize)
-	end
+	C_CharacterCreation.SetDressState(self:GetChecked())
 end
 
 CharacterCreateCustomizationButtonMixin = {}
@@ -1238,7 +1177,7 @@ function CharCustomizeSmallButtonMixin:OnLoad()
 	self.HighlightTexture:ClearAllPoints()
 	self.HighlightTexture:SetPoint("TOPLEFT", self.Icon)
 	self.HighlightTexture:SetPoint("BOTTOMRIGHT", self.Icon)
-	
+
 	self.tooltipMinWidth = nil
 
 	self.Icon:SetAtlas(self.iconAtlas);

@@ -224,7 +224,7 @@ function SetGlueScreen(name)
 	if ( newFrame ) then
 		newFrame:Show();
 		SetCurrentScreen(name);
-		-- SetCurrentGlueScreenName(name);
+		SetCurrentGlueScreenName(name);
 		if ( name == "credits" ) then
 			StopLoginMusic();
 			PlayCreditsMusic( GlueCreditsSoundKits[CreditsFrame.creditsType] );
@@ -342,12 +342,12 @@ end
 
 -- Glue screen animation handling
 function GlueScreenExit(currentFrame, pendingFrame)
-	if ( currentFrame == "login" and pendingFrame == "charselect" ) then
-		GlueFrameFadeOut(AccountLoginParent, LOGIN_FADE_OUT, GoToPendingGlueScreen);
-		SetPendingGlueScreenName(pendingFrame);
-	else
+--	if ( currentFrame == "login" and pendingFrame == "charselect" ) then
+--		GlueFrameFadeOut(AccountLoginParent, LOGIN_FADE_OUT, GoToPendingGlueScreen);
+--		SetPendingGlueScreenName(pendingFrame);
+--	else
 		SetGlueScreen(pendingFrame);
-	end
+--	end
 end
 
 function GoToPendingGlueScreen()

@@ -706,10 +706,7 @@
 											<Anchor point="TOP" relativeTo="$parentChooseOr" relativePoint="BOTTOM" x="0" y="-6"/>
 										</Anchors>
 										<Scripts>
-											<OnClick>
-												CharSelectServicesFlowFrame:Hide()
-												SetGlueScreen("charcreate")
-											</OnClick>
+											<OnClick function="CharacterServicesMaster_CreateCharacter"/>
 										</Scripts>
 									</Button>
 								</Frames>

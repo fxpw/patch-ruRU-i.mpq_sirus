@@ -1,9 +1,6 @@
---	Filename:	C_CVarMixin.lua
---	Project:	Custom Game Interface
---	Author:		Nyll & Blizzard Entertainment
 local SetCVar = SetCVar;
 
-local EVENT_TRIGGER_CVAR = "readTerminationWithoutNotice";
+local EVENT_TRIGGER_CVAR = "readContest";
 
 ---@class C_CVarMixin : Mixin
 C_CVarMixin = {}

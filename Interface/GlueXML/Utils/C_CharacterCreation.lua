@@ -11,14 +11,22 @@ local CAMERA_ZOOM_LEVEL_AMOUNT = 20
 local CAMERA_ZOOM_IN_PROGRESS = false
 local CAMERA_ZOOM_RESET_BLOCKED = false
 
+local CHARACTER_SELECT_INDEX = 0
+local CHARACTER_SELECT_GHOST = false
+
+local CHARACTER_CREATE_DRESSED = true
+local CHARACTER_CREATE_DRESS_STATE_QUEUED = false
+local CHARACTER_SELECT_DRESS_QUEUED = false
+local CHARACTER_SELECT_LIST_UPDATE_QUEUED = false
+
 local PAID_OVERRIDE_CURRENT_RACE_INDEX
 
-enum:E_PAID_SERVICE {
+E_PAID_SERVICE = Enum.CreateMirror({
 	CUSTOMIZATION	= 1,
 	CHANGE_RACE		= 2,
 	CHANGE_FACTION	= 3,
 	BOOST_SERVICE	= 4,
-}
+})
 
 local INACCESSIBILITY_FLAGS = {
 	CREATION		= 0x01,
@@ -244,31 +252,100 @@ for _, raceData in ipairs(ALL_RACES) do
 	AVAILABLE_RACES[raceID] = true
 end
 
-enum:E_CHARACTER_CUSTOMIZATION {
+E_CHARACTER_CUSTOMIZATION = Enum.CreateMirror({
 	"SKIN_COLOR",
 	"FACE",
 	"HAIR",
 	"HAIR_COLOR",
 	"FACIAL_HAIR",
 --	"ARMOR_STYLE"
-}
+})
 
 local eventHandler = CreateFrame("Frame")
 eventHandler:Hide()
+eventHandler:RegisterEvent("UPDATE_SELECTED_CHARACTER")
 eventHandler:RegisterCustomEvent("GLUE_CHARACTER_CREATE_BACKGROUND_UPDATE")
 eventHandler:RegisterCustomEvent("GLUE_CHARACTER_CREATE_VISIBILITY_CHANGED")
-eventHandler:SetScript("OnEvent", function(self)
-	if CAMERA_ZOOM_RESET_BLOCKED then return end
+eventHandler:SetScript("OnEvent", function(self, event, ...)
+	if event == "GLUE_CHARACTER_CREATE_BACKGROUND_UPDATE" or event == "GLUE_CHARACTER_CREATE_VISIBILITY_CHANGED" then
+		if CAMERA_ZOOM_RESET_BLOCKED then return end
 
-	self:Hide()
-	CAMERA_ZOOM_LEVEL = 0
-	CAMERA_ZOOM_IN_PROGRESS = false
+		self:Hide()
+		CAMERA_ZOOM_LEVEL = 0
+		CAMERA_ZOOM_IN_PROGRESS = false
+	elseif event == "UPDATE_SELECTED_CHARACTER" then
+		local index = ...
+		CHARACTER_SELECT_INDEX = index
+	elseif event == "SERVER_SPLIT_NOTICE" then
+		local msg = select(3, ...)
+		local prefix, status = string.split(":", msg)
+
+		if prefix == "SMSG_TOGGLE_ITEMS_FOR_CUSTOMIZE" then
+			self:UnregisterEvent(event)
+
+			if CHARACTER_CREATE_DRESS_STATE_QUEUED then
+				if status == "OK" then
+					CHARACTER_CREATE_DRESSED = not CHARACTER_CREATE_DRESSED	-- state change confirmed
+
+					C_CharacterCreation.SetBlockCameraReset(true)
+					self.cameraPreserve = C_CharacterCreation.GetCameraPosition()
+
+					self:RegisterEvent("CHARACTER_LIST_UPDATE")
+					GetCharacterListUpdate()
+				else
+					CHARACTER_CREATE_DRESS_STATE_QUEUED = false
+					GlueDialog:HideDialog("SERVER_WAITING")
+					GlueDialog:ShowDialog("OKAY", WAIT_MODEL_LOADING_ERROR)
+				end
+
+				FireCustomClientEvent("GLUE_CHARACTER_CREATE_DRESS_STATE_UPDATE", status == "OK")
+			elseif CHARACTER_SELECT_DRESS_QUEUED then
+				CHARACTER_SELECT_DRESS_QUEUED = false
+
+				if status == "OK" then
+					CHARACTER_CREATE_DRESSED = not CHARACTER_CREATE_DRESSED	-- state change confirmed
+				end
+
+				if CHARACTER_SELECT_LIST_UPDATE_QUEUED then
+					GetCharacterListUpdate()
+				end
+			end
+		end
+	elseif event == "CHARACTER_LIST_UPDATE" then
+		self:UnregisterEvent(event)
+
+		if CHARACTER_CREATE_DRESS_STATE_QUEUED then
+			CHARACTER_CREATE_DRESS_STATE_QUEUED = false
+
+			CharacterModelManager.SetBackground("Alliance", true)
+			CharacterModelManager.SetBackground(C_CharacterCreation.GetSelectedModelName(), true)
+
+			if CHARACTER_SELECT_GHOST then
+				GlueFFXModel:Hide()
+			end
+
+			-- force update model
+			SetSelectedSex(SELECTED_SEX == 3 and 2 or 3)
+			SetSelectedSex(SELECTED_SEX)
+			SELECTED_SEX = GetSelectedSex()
+
+			if CHARACTER_SELECT_GHOST then
+				GlueFFXModel:Show()
+			end
+
+			C_CharacterCreation.SetCameraPosition(self.cameraPreserve)
+			C_CharacterCreation.SetBlockCameraReset(false)
+			self.cameraPreserve = nil
+
+			GlueDialog:HideDialog("SERVER_WAITING")
+		end
+	end
 end)
 
 local function stopZooming()
 	if not CAMERA_ZOOM_IN_PROGRESS or CAMERA_ZOOM_RESET_BLOCKED then return end
 
-	CAMERA_ZOOM_IN_PROGRESS = nil
+	CAMERA_ZOOM_IN_PROGRESS = false
 	eventHandler.elapsed = 0
 	FireCustomClientEvent("GLUE_CHARACTER_CREATE_ZOOM_DONE")
 end
@@ -328,16 +405,44 @@ function C_CharacterCreation.GetCharCustomizeFrame()
 	return MODEL_FRAME
 end
 
+function C_CharacterCreation.SetCreateScreen(paidServiceID, characterIndex)
+	if GetCurrentGlueScreenName() == "charcreate" then return end
+
+	CHARACTER_SELECT_GHOST = CHARACTER_SELECT_INDEX ~= 0 and select(7, GetCharacterInfo(CHARACTER_SELECT_INDEX)) == true
+
+	if CHARACTER_SELECT_GHOST then
+		GlueFFXModel:Hide()
+	end
+
+	if paidServiceID then
+		PAID_SERVICE_TYPE = paidServiceID
+		PAID_SERVICE_CHARACTER_ID = characterIndex
+	end
+
+	SetGlueScreen("charcreate")
+
+	if CHARACTER_SELECT_GHOST then
+		GlueFFXModel:Show()
+	end
+end
+
 function C_CharacterCreation.SetInCharacterCreate(state)
 	IN_CHARACTER_CREATE = state and true or false
 
 	if not IN_CHARACTER_CREATE then
+		CAMERA_ZOOM_RESET_BLOCKED = false
 		PAID_SERVICE_CHARACTER_ID = nil
 		PAID_SERVICE_TYPE = nil
 
 		local defaultFacing = C_CharacterCreation.GetDefaultCharacterCreateFacing()
 		if GetCharacterCreateFacing() ~= defaultFacing then
 			SetCharacterCreateFacing(defaultFacing)
+		end
+
+		if not CHARACTER_CREATE_DRESSED then
+			CHARACTER_SELECT_DRESS_QUEUED = true
+			eventHandler:RegisterEvent("SERVER_SPLIT_NOTICE")
+			C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.ToggleItemsForCustomize)
 		end
 	end
 
@@ -422,6 +527,32 @@ function C_CharacterCreation.CreateCharacter(name)
 	PAID_SERVICE_TYPE = nil
 
 	return CreateCharacter(name)
+end
+
+function C_CharacterCreation.SetDressState(state)
+	state = not not state
+	if state == CHARACTER_CREATE_DRESSED then return end
+
+	CHARACTER_CREATE_DRESS_STATE_QUEUED = true
+	GlueDialog:ShowDialog("SERVER_WAITING", WAIT_MODEL_LOADING)
+	eventHandler:RegisterEvent("SERVER_SPLIT_NOTICE")
+	C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.ToggleItemsForCustomize)
+end
+
+function C_CharacterCreation.IsDressed()
+	return CHARACTER_CREATE_DRESSED
+end
+
+function C_CharacterCreation.IsDressStateChanging()
+	return CHARACTER_CREATE_DRESS_STATE_QUEUED
+end
+
+function C_CharacterCreation.IsDressStateChangingBack()
+	return CHARACTER_SELECT_DRESS_QUEUED
+end
+
+function C_CharacterCreation.QueueListUpdate()
+	CHARACTER_SELECT_LIST_UPDATE_QUEUED = true
 end
 
 function C_CharacterCreation.IsAlliedRacesUnlocked(raceID)
@@ -848,7 +979,7 @@ function C_CharacterCreation.GetCurrentCameraZoom()
 end
 
 function C_CharacterCreation.IsZoomInProgress()
-	return CAMERA_ZOOM_IN_PROGRESS ~= nil
+	return CAMERA_ZOOM_IN_PROGRESS
 end
 
 function C_CharacterCreation.GetMaxCameraZoom()

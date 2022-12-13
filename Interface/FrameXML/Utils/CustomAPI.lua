@@ -179,3 +179,32 @@ do	-- UnitInRangeIndex
 		end
 	end
 end
+
+do	-- PlayerHasHearthstone | UseHearthstone
+	local NUM_BAG_FRAMES = 4
+
+	---@return integer? hearthstoneID
+	---@return integer? bagID
+	---@return integer? slotID
+	function PlayerHasHearthstone()
+		for bagID = 0, NUM_BAG_FRAMES + 1 do
+			for slotID = 1, GetContainerNumSlots(bagID) do
+				local _, _, _, _, _, _, link = GetContainerItemInfo(bagID, slotID)
+				if link then
+					local itemID = tonumber(string.match(link, "item:(%d+)"))
+					if itemID == 6948 then
+						return itemID, bagID, slotID
+					end
+				end
+			end
+		end
+	end
+
+	local PlayerHasHearthstone = PlayerHasHearthstone
+	function UseHearthstone()
+		local hearthstoneID, bagID, slotID = PlayerHasHearthstone()
+		if bagID then
+			UseContainerItem(bagID, slotID)
+		end
+	end
+end

@@ -1963,10 +1963,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Торговец",
         enGB = "Merchant"
     },
-    ["HELPFRAME_ITEM_BULLET3"] = {
-        ruRU = "Некорректное функционирование модификаций или наложения чар",
-        enGB = "Enchantment or add-ons not working appropriately"
-    },
     ["OPTION_TOOLTIP_OBJECTIVES_IGNORE_CURSOR"] = {
         ruRU = "Заблокировать панель задач и не позволять ей отображаться при наведении мыши.",
         enGB = "Locks the Objectives frame and keeps it from being displayed on mouseover."
@@ -2072,7 +2068,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "Take off this piece of equipment and put it in your bags."
     },
     ["GM_RESPONSE_MORE_HELP"] = {
-        ruRU = "Требуется дополнительная помощь",
+        ruRU = "Помощь еще нужна",
         enGB = "Need More Help"
     },
     ["MINIMAP_TRACKING_VENDOR_POISON"] = {
@@ -2803,10 +2799,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Рейтинг критического удара",
         enGB = "Crit Rating"
     },
-    ["HELPFRAME_CHARACTER_BULLET5"] = {
-        ruRU = "Таланты работают с ошибками либо отсутствуют",
-        enGB = "Talents malfunctioning or missing"
-    },
     ["MINIMAP_TRACKING_TRIVIAL_QUESTS"] = {
         ruRU = "Задания низкого уровня",
         enGB = "Low Level Quests"
@@ -3035,10 +3027,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Открывание",
         enGB = "Opening"
     },
-    ["HELPFRAME_ACCOUNT_TITLE"] = {
-        ruRU = "Учетные записи и оплата",
-        enGB = "Billing & Account Services"
-    },
     ["RAID_TARGET_7"] = {
         ruRU = "Крест",
         enGB = "Cross"
@@ -3239,10 +3227,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/laydown",
         enGB = "/laydown"
     },
-    ["HELPFRAME_QUEST_BULLET2"] = {
-        ruRU = "Невозможность получить получить предметы, связанные с заданиями",
-        enGB = "Unable to acquire quest related items"
-    },
     ["VOICEMACRO_12_Gn_2"] = {
         ruRU = "Приветствую.",
         enGB = "Salutations."
@@ -3387,10 +3371,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы получили ответ на свой запрос. Щелкните здесь, чтобы прочитать его.",
         enGB = "You have received a ticket response. Click here to read it."
     },
-    ["HELPFRAME_QUEST_BULLET3"] = {
-        ruRU = "Невозможность найти предметы для заданий при обыске убитых боссов",
-        enGB = "Quest creep not dropping a required quest item"
-    },
     ["LOOT_ROLL_INELIGIBLE_REASON3"] = {
         ruRU = "Этот предмет нельзя распылить.",
         enGB = "This item may not be disenchanted."
@@ -3441,7 +3421,7 @@ local SIRUS_LOCALIZATION = {
     },
     ["HELP_BUTTON"] = {
         ruRU = "Помощь",
-        enGB = "Help Request"
+        enGB = "Customer Support"
     },
     ["INT_SPELL_POINTS_SPREAD_TEMPLATE"] = {
         ruRU = "%d - %d",
@@ -3494,10 +3474,6 @@ local SIRUS_LOCALIZATION = {
     ["LFG_TYPE_DAILY_HEROIC_DUNGEON"] = {
         ruRU = "Ежедневное героическое подземелье",
         enGB = "Daily Heroic Dungeon"
-    },
-    ["HELPFRAME_QUEST_BULLET5"] = {
-        ruRU = "Запрос информации, которая должна упростить задание",
-        enGB = "Request for information that would simplify a quest"
     },
     ["AUTOFOLLOWSTART"] = {
         ruRU = "Вы следуете за |3-4(%s).",
@@ -3578,10 +3554,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_DAMAGE_SHIELD_MISSED_IMMUNE"] = {
         ruRU = ": цель невосприимчива",
         enGB = "(Immune)"
-    },
-    ["HELPFRAME_REPORTLAG_TEXT1"] = {
-        ruRU = "Ваше сообщение о задержке отправлено.",
-        enGB = "Your lag report has been successfully submitted."
     },
     ["RAID_DIFFICULTY_20PLAYER"] = {
         ruRU = "20 игроков",
@@ -4196,7 +4168,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "/lay"
     },
     ["HOME"] = {
-        ruRU = "Дом",
+        ruRU = "Главная",
         enGB = "Home"
     },
     ["OUTBID_BY"] = {
@@ -4447,10 +4419,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "%d сек",
         enGB = "%d sec"
     },
-    ["HELPFRAME_GUILD_TEXT"] = {
-        ruRU = "Любые проблемы, связанные с созданием или функционированием гильдии",
-        enGB = "Any problems associated with the creation or functionality of a guild"
-    },
     ["FRIENDS_FRIENDS_CHOICE_MUTUAL"] = {
         ruRU = "Взаимные друзья",
         enGB = "Mutual Friends"
@@ -4462,10 +4430,6 @@ local SIRUS_LOCALIZATION = {
     ["LOCALE_SPELL_MECHANIC_ENRAGED"] = {
         ruRU = "Исступление",
         enGB = "Enraged"
-    },
-    ["HELPFRAME_HOME_TEXT"] = {
-        ruRU = "Гейм-мастер может помочь в следующих ситуациях:",
-        enGB = "The following are the types of issues that a GM can assist with:"
     },
     ["NEWBIE_TOOLTIP_ADDMEMBER"] = {
         ruRU = "Добавление нового игрока в гильдию.",
@@ -4534,10 +4498,6 @@ local SIRUS_LOCALIZATION = {
     ["RESISTANCE5_NAME"] = {
         ruRU = "Сопротивление темной магии",
         enGB = "Shadow Resistance"
-    },
-    ["HELPFRAME_OTHER_BUTTON_TEXT"] = {
-        ruRU = "Другие ситуации:",
-        enGB = "Other Issues:"
     },
     ["SPELL_FAILED_NOT_ON_TAXI"] = {
         ruRU = "Вы в полете.",
@@ -4738,10 +4698,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_CLEARMAINASSIST4"] = {
         ruRU = "/сброснаводчика",
         enGB = "/clearmainassist"
-    },
-    ["HELPFRAME_QUEST_BULLET1"] = {
-        ruRU = "Некорректные действия NPC или объекта, задействованного в задании",
-        enGB = "A quest related NPC or object is not functioning appropriately"
     },
     ["PHONG_SHADING"] = {
         ruRU = "Плавное затенение",
@@ -5308,8 +5264,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "What happened to me?"
     },
     ["KBASE_ERROR_LOAD_FAILURE"] = {
-        ruRU = "В данный момент энциклопедия недоступна. Пожалуйста, обратитесь на сайт http://eu.blizzard.com/support/index.xml?gameId=11, чтобы получить помощь в решении проблемы, или отправьте запрос с помощью кнопки в нижней части окна.",
-        enGB = "The Knowledge Base is currently unavailable.  Please refer to http://us.blizzard.com/support/index.xml?gameId=11 for help with support issues, or submit a petition using the button below."
+		ruRU = "В данный момент энциклопедия недоступна. Пожалуйста, обратитесь на сайт https://forum.sirus.su/, чтобы получить помощь в решении проблемы, или отправьте запрос с помощью кнопки в нижней части окна.",
+		enGB = "The Knowledge Base is currently unavailable. Please refer to https://forum.sirus.su/ for help with support issues, or submit a petition using the button below."
     },
     ["XP_BAR_TEXT"] = {
         ruRU = "Индикатор опыта",
@@ -5379,10 +5335,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Сравнить достижения",
         enGB = "Compare Achievements"
     },
-    ["HELPFRAME_GMTALK_TEXT2"] = {
-        ruRU = "<html><body><p>Конечно же, перед обращением к сотруднику службы поддержки мы рекомендуем сначала попробовать найти информацию по интересующим вопросам на форуме по адресу <a href=\"https://forum.sirus.su/\">https://forum.sirus.su/</a>.</p></body></html>",
-        enGB = ""
-    },
     ["VOICEMACRO_12_Dw_2"] = {
         ruRU = "Приветствую.",
         enGB = "Greetings."
@@ -5390,10 +5342,6 @@ local SIRUS_LOCALIZATION = {
     ["GUILDADDRANK_BUTTON_TOOLTIP"] = {
         ruRU = "Щелкните здесь, чтобы добавить звание.",
         enGB = "Click to add rank"
-    },
-    ["HELPFRAME_REPORTISSUE_BULLET1"] = {
-        ruRU = "Домогательство со стороны других игроков",
-        enGB = "Harassment by other players"
     },
     ["PETITION_TITLE"] = {
         ruRU = "Команда: %s",
@@ -5667,10 +5615,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Обновлять информацию банка",
         enGB = "Update Tab Text"
     },
-    ["HELPFRAME_TECHNICAL_BULLET_TITLE1"] = {
-        ruRU = "Вот примеры технических проблем:",
-        enGB = "The following are examples of Technical issues:"
-    },
     ["SLASH_CALENDAR2"] = {
         ruRU = "/calendar",
         enGB = "/calendar"
@@ -5734,10 +5678,6 @@ local SIRUS_LOCALIZATION = {
     ["LEARN_SKILL_TEMPLATE"] = {
         ruRU = "Изучить: %s",
         enGB = "Learn %s"
-    },
-    ["HELPFRAME_GUILD_BUTTON_TEXT"] = {
-        ruRU = "Проблема с гильдией",
-        enGB = "Report Guild Issue"
     },
     ["VOICEMACRO_19_Dw_4"] = {
         ruRU = "Откуда вы? Хотя это неважно.",
@@ -5926,10 +5866,6 @@ local SIRUS_LOCALIZATION = {
     ["FAVORITES"] = {
         ruRU = "Избранное",
         enGB = "Favorites"
-    },
-    ["HELPFRAME_TECHNICAL_TITLE"] = {
-        ruRU = "Техническая поддержка",
-        enGB = "Technical Support"
     },
     ["CALENDAR_ERROR_RESTRICTED_LEVEL"] = {
         ruRU = "У вас должен быть персонаж как минимум 20-го уровня.",
@@ -6126,10 +6062,6 @@ local SIRUS_LOCALIZATION = {
     ["POWER_TYPE_STEAM"] = {
         ruRU = "Давление пара",
         enGB = "Steam Pressure"
-    },
-    ["HELPFRAME_STUCK_BUTTON_TEXT"] = {
-        ruRU = "Застревание:",
-        enGB = "Stuck:"
     },
     ["SPELL_TARGET_TYPE13_DESC"] = {
         ruRU = "враги",
@@ -6471,10 +6403,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Полное разрешение",
         enGB = "Full resolution"
     },
-    ["HELPFRAME_TECHNICAL_BULLET_TITLE2"] = {
-        ruRU = "Возможно, решение вашей проблемы уже опубликовано на форуме технической поддержки, расположенном на сайте World of Warcraft по адресу:\n\nwww.wow-europe.com\n\nЕсли приведенные решения вам не помогают, свяжитесь, пожалуйста, с отделом технической поддержки:\n\nhttp://eu.blizzard.com/support/article.xml?articleId=22330",
-        enGB = "You may find that a solution for your issue has already been posted on the Technical Support Forum, located on the World of Warcraft site at:\n\nwww.worldofwarcraft.com\n\nIf your technical issue is not addressed by the solutions posted there, please contact our Technical Support Department:\n\nBy Phone at:  (949) 955-1382\nBy Web at: http://us.blizzard.com/support/index.xml?gameId=11\nBy Email at:  wowtech@blizzard.com"
-    },
     ["SPELL_FAILED_SPELL_UNAVAILABLE_PET"] = {
         ruRU = "Эта способность недоступна вашему питомцу.",
         enGB = "That ability is not available to your pet"
@@ -6522,10 +6450,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_PET_STAY2"] = {
         ruRU = "/питомецстоять",
         enGB = "/petstay"
-    },
-    ["HELPFRAME_TECHNICAL_BULLET3"] = {
-        ruRU = "Видеоролики демонстрируются некорректно",
-        enGB = "Cinematics or in-game movies not playing correctly"
     },
     ["RAID_DIFFICULTY2"] = {
         ruRU = "25 игроков",
@@ -6638,10 +6562,6 @@ local SIRUS_LOCALIZATION = {
     ["CALENDAR_ERROR_EVENTS_EXCEEDED"] = {
         ruRU = "Достигнуто максимальное количество (%d) создаваемых событий.",
         enGB = "You have reached your limit of %d |4created event:created events."
-    },
-    ["HELPFRAME_STUCK_TEXT1"] = {
-        ruRU = "Если вы застряли и не можете передвигаться, прежде чем обратиться к ГМ, попробуйте использовать автоматический выход из застревания. В большинстве случаев это помогает решить проблему. Эта функция для начала попытается перенести вас в таверну с помощью камня возвращения. Если это не получится, она попытается освободить вашего персонажа из безвыходного положения.\nОбратите внимание, что этой функцией можно пользоваться не чаще, чем раз в 5 мин. Использование автоматического выхода из застревания фиксируется в журнале, чтобы мы могли решить эту проблему в будущем.",
-        enGB = "If you find yourself stuck and unable to move, please try the auto-unstuck feature prior to petitioning a GM. In most cases, this should solve the problem. Activating the auto-unstuck command will first attempt to use your hearthstone to port you back to your inn. If this is not possible, it will attempt to nudge your character out of position.\n\nPlease note this option can only be used every 5 minutes. Using the auto-unstuck option will log your character and location so that we can verify and fix the location in the future."
     },
     ["READY_CHECK"] = {
         ruRU = "Готовность",
@@ -8171,10 +8091,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вам не хватает мастерства, чтобы использовать этот предмет.",
         enGB = "You do not have the required proficiency for that item."
     },
-    ["HELPFRAME_QUEST_BULLET_TITLE1"] = {
-        ruRU = "Вот примеры проблем с NPC или монстрами, задействованными в заданиях:",
-        enGB = "The following are examples of Quest/Quest NPC issues:"
-    },
     ["ERR_DANCE_SAVE_FAILED"] = {
         ruRU = "Не удалось сохранить танец.",
         enGB = "Failed to save dance"
@@ -8290,10 +8206,6 @@ local SIRUS_LOCALIZATION = {
     ["CHAT_HELP_TEXT_LINE3"] = {
         ruRU = "/chat (/чат), /chathelp (/чпомощь) – просмотр этого текста",
         enGB = "/chat, /chathelp - This help"
-    },
-    ["HELPFRAME_NONQUEST_TITLE"] = {
-        ruRU = "NPC/монстр, не связанный с заданиями",
-        enGB = "Non-Quest NPC/Creep"
     },
     ["ERR_DIFFICULTY_CHANGE_COOLDOWN_S"] = {
         ruRU = "Сложность рейда недавно была изменена. Ее нельзя изменить повторно в течение %s.",
@@ -8699,10 +8611,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Ошибка при создании запроса к ГМ.",
         enGB = "Error creating GM ticket."
     },
-    ["HELPFRAME_NONQUEST_BULLET_TITLE2"] = {
-        ruRU = "Нижеперечисленное НЕ относится к проблемам с NPC или монстрами, не задействованными в заданиях:",
-        enGB = "The following are NOT considered Non-quest NPC/Creep issues:"
-    },
     ["COMBAT_RATING_NAME7"] = {
         ruRU = "Рейт. меткости",
         enGB = "Hit Rating"
@@ -8835,10 +8743,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Пусть наши дороги еще сойдутся.",
         enGB = "May our paths cross again."
     },
-    ["HELPFRAME_GMTALK_TEXT1"] = {
-        ruRU = "Если Вы столкнулись с какой-либо проблемой и решить её самостоятельно не удается, то можете обратиться за помощью к сотруднику службы поддержки. Если при решении проблемы необходимы |cffffd200скриншоты или видео|r, то лучше сразу создайте тему в соответствующем разделе на форуме — это ускорит процесс. Постарайтесь не использовать нецензурную лексику, а также не создавать обращений, не связанных с игровым процессом.\n\nНекоторые проблемы невозможно решить в игре, пожалуйста, ознакомьтесь с некоторыми из них:",
-        enGB = ""
-    },
     ["MOVIE_RECORDING_H264"] = {
         ruRU = "H.264",
         enGB = "H.264"
@@ -8906,10 +8810,6 @@ local SIRUS_LOCALIZATION = {
     ["COMBATLOG_XPGAIN_FIRSTPERSON"] = {
         ruRU = "%s погибает, вы получаете %d |4очко:очка:очков; опыта.",
         enGB = "%s dies, you gain %d experience."
-    },
-    ["HELPFRAME_GENERAL_BUTTON_DESCRIPTION"] = {
-        ruRU = "Основные вопросы по игре/информация",
-        enGB = "Basic game play questions/information"
     },
     ["STATS_CAPTURE_FLAGS"] = {
         ruRU = "Захвачено флагов",
@@ -9014,10 +8914,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_RAID6"] = {
         ruRU = "/rsay",
         enGB = "/rsay"
-    },
-    ["HELPFRAME_CHARACTER_BULLET1"] = {
-        ruRU = "Утрата или искажение способности или характеристики",
-        enGB = "Ability/Attribute loss or distortion"
     },
     ["MP"] = {
         ruRU = "ОМ",
@@ -9174,10 +9070,6 @@ local SIRUS_LOCALIZATION = {
     ["SKILL_INCREMENT_COST_SINGULAR"] = {
         ruRU = "Для повышения необходимо затратить %s%d|r очко навыков.",
         enGB = "Costs %s%d|r Skill point to increase."
-    },
-    ["HELPFRAME_OPENTICKET_EDITTEXT"] = {
-        ruRU = "Ваш запрос:",
-        enGB = "Your Current Issue:"
     },
     ["CHAT_WHISPER_GET"] = {
         ruRU = "%s шепчет: ",
@@ -9611,10 +9503,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "|TInterface\\FriendsFrame\\UI-Toast-ToastIcons.tga:16:16:0:0:128:64:2:29:2:29|t%s: %s",
         enGB = "|TInterface\\FriendsFrame\\UI-Toast-ToastIcons.tga:16:16:0:0:128:64:2:29:2:29|t%s: %s"
     },
-    ["HELPFRAME_NONQUEST_BULLET_TITLE1"] = {
-        ruRU = "Вот примеры проблем с NPC или монстрами, не задействованными в задании:",
-        enGB = "The following are examples of Non-Quest NPC/Creep issues:"
-    },
     ["SERVER_FIRST_ACHIEVEMENT"] = {
         ruRU = "%s получает достижение \"$a\"!",
         enGB = "%s has earned the achievement $a!"
@@ -9910,10 +9798,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE80_CMD5"] = {
         ruRU = "/cat",
         enGB = "/cat"
-    },
-    ["HELPFRAME_ITEM_BULLET2"] = {
-        ruRU = "Проблемы со срабатыванием особых свойств оружия",
-        enGB = "Weapon proc not activating"
     },
     ["BINDING_NAME_TOGGLESOCIAL"] = {
         ruRU = "Панель общения",
@@ -10379,10 +10263,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Воскресенье",
         enGB = "Sunday"
     },
-    ["HELPFRAME_NONQUEST_BULLET4"] = {
-        ruRU = "У NPC-торговца нет предметов, или он не отвечает.",
-        enGB = "Vendor NPC not itemized or not responding"
-    },
     ["EMOTE126_CMD3"] = {
         ruRU = "/raise",
         enGB = "/raise"
@@ -10522,10 +10402,6 @@ local SIRUS_LOCALIZATION = {
     ["ITEM_MOD_POWER_REGEN4_SHORT"] = {
         ruRU = "настроения в 5 сек.",
         enGB = "Happiness Per 5 Sec."
-    },
-    ["HELPFRAME_GUILD_BULLET_TITLE1"] = {
-        ruRU = "Вот примеры проблем с гильдией:",
-        enGB = "The following are examples of guild issues:"
     },
     ["MELEE_ATTACK_POWER_TOOLTIP"] = {
         ruRU = "Увеличивает урон от оружия ближнего боя на %.1f ед. урона в секунду.",
@@ -11239,10 +11115,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Щелкните здесь и переместите мышь, чтобы показать список пользователей этого канала, пользующихся голосовым чатом.",
         enGB = "Click and drag to display a roster window that lists players with voice chat enabled in this channel."
     },
-    ["HELPFRAME_TECHNICAL_BULLET6"] = {
-        ruRU = "Во время игры имели место сбои или сообщения об ошибках",
-        enGB = "Crashes or error messages of any kind occurring during gameplay"
-    },
     ["BNET_REPORT_CONFIRM_SPAM"] = {
         ruRU = "Вы действительно хотите сообщить о навязчивой рекламе (спаме) от игрока %s?",
         enGB = "Are you sure you want to report %s for spamming?"
@@ -11366,10 +11238,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE80_CMD6"] = {
         ruRU = "/catty",
         enGB = "/catty"
-    },
-    ["HELPFRAME_CHARACTER_BULLET3"] = {
-        ruRU = "Отрицательный уровень навыка",
-        enGB = "Skill level is showing as negative"
     },
     ["ERR_ITEM_UNIQUE_EQUIPPABLE_SOCKETED"] = {
         ruRU = "Один предмет можно инкрустировать только одним из этих камней.",
@@ -11643,10 +11511,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/encourage",
         enGB = "/encourage"
     },
-    ["HELPFRAME_ENVIRONMENTAL_BULLET3"] = {
-        ruRU = "Персонаж отправлен не на то кладбище",
-        enGB = "Getting ported to the wrong graveyard"
-    },
     ["EMOTE42_CMD3"] = {
         ruRU = "/flex",
         enGB = "/flex"
@@ -11682,10 +11546,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_16_Gn_0_FEMALE"] = {
         ruRU = "Как благородно!",
         enGB = "How generous."
-    },
-    ["HELPFRAME_ITEM_BULLET7"] = {
-        ruRU = "Запросы предметов",
-        enGB = "Requests for items"
     },
     ["WINTERGRASP"] = {
         ruRU = "Озеро ледяных оков",
@@ -12091,10 +11951,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Аксессуар 1",
         enGB = "Trinket 1"
     },
-    ["HELPFRAME_ACCOUNT_TEXT"] = {
-        ruRU = "У вас проблемы с созданием учетной записи или вам нужно внести изменения в свои параметры оплаты?",
-        enGB = "Having problems setting up your account or need to make changes to your billing options?"
-    },
     ["OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_FRIENDS"] = {
         ruRU = "Включить отображение индикаторов здоровья союзников.",
         enGB = "Turn this on to display Unit Nameplates for friendly units"
@@ -12111,10 +11967,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Рейтинг крит. удара оруж. ближнего боя +%d.",
         enGB = "Improves melee critical strike rating by %d."
     },
-    ["HELPFRAME_ENVIRONMENTAL_TITLE"] = {
-        ruRU = "Окружающий мир",
-        enGB = "Environmental"
-    },
     ["EMOTE81_CMD2"] = {
         ruRU = "/sexy",
         enGB = "/sexy"
@@ -12130,10 +11982,6 @@ local SIRUS_LOCALIZATION = {
     ["BINDING_NAME_SETVIEW5"] = {
         ruRU = "Восстановить ракурс 5",
         enGB = "Set View 5"
-    },
-    ["HELPFRAME_QUEST_TEXT"] = {
-        ruRU = "Невозможность начать или завершить выполнение задания",
-        enGB = "An issue that results in the inability to initiate or complete a quest"
     },
     ["TITLE_REWARD"] = {
         ruRU = "Награда: %s",
@@ -12303,10 +12151,14 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Отлично!",
         enGB = "Brilliant."
     },
-    ["STUCK_BUTTON_TEXT"] = {
-        ruRU = "Автоматический выход из застревания",
-        enGB = "Auto-Unstuck"
+	["STUCK_BUTTON_TEXT_NEW"] = {
+        ruRU = "Телепортация на кладбище",
+        enGB = "Teleport to Graveyard"
     },
+	["STUCK_BUTTON_TEXT"] = {
+		ruRU = "Автоматический выход из застревания",
+		enGB = "Auto-Unstuck"
+	},
     ["EMOTE116_CMD1"] = {
         ruRU = "/jk",
         enGB = "/jk"
@@ -12759,10 +12611,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/join",
         enGB = "/join"
     },
-    ["HELPFRAME_ENVIRONMENTAL_BULLET5"] = {
-        ruRU = "Игрок умер и желает вернуться к месту гибели.",
-        enGB = "Player died and would like a port back to original location"
-    },
     ["SPELL_FAILED_ONLY_INDOORS"] = {
         ruRU = "Можно использовать только в помещении.",
         enGB = "Can only use indoors"
@@ -12778,10 +12626,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_SWING_MISSED_BLOCK_POSSESSIVE"] = {
         ruRU = "1",
         enGB = "1"
-    },
-    ["HELPFRAME_ENVIRONMENTAL_BULLET1"] = {
-        ruRU = "Невозможность воспользоваться кузней",
-        enGB = "Unable to interact with a forge"
     },
     ["BINDING_NAME_ITUNES_VOLUMEUP"] = {
         ruRU = "iTunes: повысить громкость",
@@ -12814,10 +12658,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE38_CMD6"] = {
         ruRU = "/feast",
         enGB = "/feast"
-    },
-    ["HELPFRAME_ENVIRONMENTAL_BUTTON_TEXT"] = {
-        ruRU = "Проблема с окружающим миром",
-        enGB = "Report Environmental Issue"
     },
     ["VOICEMACRO_2_Hu_1"] = {
         ruRU = "К бою!",
@@ -13274,10 +13114,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_USER_SQUELCHED"] = {
         ruRU = "Ваше право пользования каналами и почтой временно приостановлено до завершения рассмотрения запроса ГМ.",
         enGB = "Your chat and mail privileges have been temporarily suspended pending Game Master review."
-    },
-    ["HELPFRAME_GENERAL_BUTTON_TEXT"] = {
-        ruRU = "Общие вопросы по игровому процессу:",
-        enGB = "General Game Play Question:"
     },
     ["EDIT_TICKET"] = {
         ruRU = "Сохранить изменения",
@@ -13895,10 +13731,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Подземелье %1$s будет разблокировано %2$s.",
         enGB = "Your %1$s instance unlocks at %2$s."
     },
-    ["HELPFRAME_TECHNICAL_BULLET2"] = {
-        ruRU = "Ошибки изображения (черные квадраты, мигающие предметы, искажения и т.п.)",
-        enGB = "Display errors (black boxes, flickering objects, distortions, etc)"
-    },
     ["BINDING_NAME_SETVIEW2"] = {
         ruRU = "Восстановить ракурс 2",
         enGB = "Set View 2"
@@ -14435,10 +14267,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Увидимся.",
         enGB = "Goodbye."
     },
-    ["HELPFRAME_NONQUEST_BULLET5"] = {
-        ruRU = "Запрос о добавлении или удалении NPC или монстра, не задействованного в заданиях",
-        enGB = "Request for Non-Quest NPC/Creep spawn or despawn"
-    },
     ["SLASH_ACHIEVEMENTUI4"] = {
         ruRU = "/achieve",
         enGB = "/achieve"
@@ -14582,10 +14410,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_PARTY_LFG_BOOT_LOOT_ROLLS"] = {
         ruRU = "Игрока нельзя исключить во время разделения добычи.",
         enGB = "Players cannot be kicked during loot rolls."
-    },
-    ["HELPFRAME_GMTALK_TITLE"] = {
-        ruRU = "Обращение к сотруднику службы поддержки",
-        enGB = ""
     },
     ["ARENA_OFF_SEASON_TEXT"] = {
         ruRU = "Подходит к концу %d-й сезон арены!|n|nВ течение недели после завершения сезона будут присвоены награды и звания.|n|nНе забудьте узнать у руководителей арены, когда начнется %d-й сезон!",
@@ -14767,10 +14591,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Невозможно использовать на земле.",
         enGB = "Cannot use on the ground"
     },
-    ["HELPFRAME_CHARACTER_BUTTON_TEXT"] = {
-        ruRU = "Проблема с персонажем",
-        enGB = "Report Character Issue"
-    },
     ["EMOTE"] = {
         ruRU = "Эмоции",
         enGB = "Emote"
@@ -14886,10 +14706,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_SWAPACTIONBAR2"] = {
         ruRU = "/сменитьпанелькоманд",
         enGB = "/swapactionbar"
-    },
-    ["HELPFRAME_OTHER_BUTTON_DESCRIPTION"] = {
-        ruRU = "Любые ситуации, требующие помощи ГМ",
-        enGB = "Any issues that require GM assistance"
     },
     ["EMOTE_MESSAGE"] = {
         ruRU = "Эмоция",
@@ -15927,10 +15743,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Управление",
         enGB = "Controls"
     },
-    ["HELPFRAME_SUGGESTION_BUTTON_DESCRIPTION"] = {
-        ruRU = "Все общие предложения и отзывы об игре",
-        enGB = "All general suggestions and feedback about the game"
-    },
     ["SLASH_SET_TITLE1"] = {
         ruRU = "/settitle",
         enGB = "/settitle"
@@ -15970,10 +15782,6 @@ local SIRUS_LOCALIZATION = {
     ["TIME_DAYHOURMINUTESECOND"] = {
         ruRU = "%d д., %d ч., %d мин., %d сек.",
         enGB = "%d |4day:days;, %d |4hour:hours;, %d |4minute:minutes;, %d |4second:seconds;"
-    },
-    ["HELPFRAME_ACCOUNT_BULLET1"] = {
-        ruRU = "Помощь в создании новых учетных записей и изменении существующих",
-        enGB = "Help setting up new accounts or making changes to existing accounts"
     },
     ["SPELL_FAILED_CUSTOM_ERROR_26"] = {
         ruRU = "Вы можете призывать грифона Крепости Стражей Зимы только в самой крепости или на Полях Падальщиков.",
@@ -16427,10 +16235,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Отображение заклинания, которое применяет выбранная вами цель.",
         enGB = "Show the spell that your current target is casting."
     },
-    ["HELPFRAME_GMTALK_ISSUE3"] = {
-        ruRU = "Проблемы, возникшие из-за перезагрузки сервера, такие как: пропажа предметов, утраченный прогресс задания или достижения.",
-        enGB = ""
-    },
     ["VOICEMACRO_0_Sc_0"] = {
         ruRU = "Нужна помощь!",
         enGB = "I need help!"
@@ -16707,10 +16511,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Очки талантов расходуются на приобретение особых\nспособностей, повышающих вашу эффективность в бою.",
         enGB = "Talent Points are spent through the talent interface and are used\nto acquire special talents that improve your ability to fight."
     },
-    ["HELPFRAME_CHARACTER_BULLET4"] = {
-        ruRU = "Отсутствие освоенной профессии в списке",
-        enGB = "Profession no longer listed"
-    },
     ["UNIT_LETHAL_LEVEL_DEAD_TEMPLATE"] = {
         ruRU = "Труп, уровень ??",
         enGB = "Level ?? Corpse"
@@ -16778,10 +16578,6 @@ local SIRUS_LOCALIZATION = {
     ["CALENDAR_ERROR_EVENT_TIME_PASSED"] = {
         ruRU = "Время данного события истекло.",
         enGB = "The time for this event has already passed."
-    },
-    ["HELPFRAME_GUILD_BULLET2"] = {
-        ruRU = "Невозможность создать гильдию",
-        enGB = "Not able to form a guild"
     },
     ["CALENDAR_EVENT_REMOVED_MAIL_SUBJECT"] = {
         ruRU = "Событие \"%s\" отменено.",
@@ -17475,10 +17271,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Привет.",
         enGB = "Hello."
     },
-    ["HELPFRAME_NONQUEST_BULLET3"] = {
-        ruRU = "Недостаточная или избыточная численность монстров",
-        enGB = "Creeps over-spawning or under-spawning"
-    },
     ["LFG_LABEL"] = {
         ruRU = "Мне хотелось бы присоединиться к группе",
         enGB = "I would like to join a group"
@@ -17584,7 +17376,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "Shows all periodic gains of mana, rage, and energy."
     },
     ["KBASE_TOP_ISSUES"] = {
-        ruRU = "Осн. вопросы",
+		ruRU = "Основные вопросы",
         enGB = "Top Issues"
     },
     ["ACTION_DAMAGE_SHIELD_MISSED_RESIST_FULL_TEXT_NO_SOURCE"] = {
@@ -18583,10 +18375,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Необходимы противоракетные заряды.",
         enGB = "You need Evasive Charges"
     },
-    ["HELPFRAME_STUCK_TITLE"] = {
-        ruRU = "Возможные действия при застревании",
-        enGB = "Character Stuck"
-    },
     ["SPELL_FAILED_CUSTOM_ERROR_20"] = {
         ruRU = "Вы можете рассчитывать на помощь покорителя из Драконьего Покоя только в Храме Драконьего Покоя, Драконьих пустошах, Покое Галакронда и на Пагубном Серпантине.",
         enGB = "You may only call for the aid of a Wyrmrest Vanquisher in Wyrmrest Temple, The Dragon Wastes, Galakrond's Rest or The Wicked Coil."
@@ -18598,10 +18386,6 @@ local SIRUS_LOCALIZATION = {
     ["COMBATLOG_FILTER_STRING_HOSTILE_UNITS"] = {
         ruRU = "Противники",
         enGB = "Enemy Units"
-    },
-    ["HELPFRAME_GMTALK_ISSUE1_HEADER"] = {
-        ruRU = "Багрепорты",
-        enGB = ""
     },
     ["SPELL_TIME_REMAINING_HOURS"] = {
         ruRU = "Осталось: %d |4час:часа:часов;",
@@ -19059,10 +18843,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/blame",
         enGB = "/blame"
     },
-    ["HELPFRAME_GMTALK_ISSUE3_HEADER"] = {
-        ruRU = "Последствия перезагрузки",
-        enGB = ""
-    },
     ["GMSURVEYRATING4"] = {
         ruRU = "Хорошая",
         enGB = "Good"
@@ -19186,10 +18966,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_CHAT_HELP2"] = {
         ruRU = "/чпомощь",
         enGB = "/chathelp"
-    },
-    ["HELPFRAME_CHARACTER_BULLET_TITLE1"] = {
-        ruRU = "Вот примеры проблем с персонажами:",
-        enGB = "The following are examples of character issues:"
     },
     ["TRADE_SKILLS_LEARNED_TAB"] = {
         ruRU = "Изученные",
@@ -19482,10 +19258,6 @@ local SIRUS_LOCALIZATION = {
     ["GLYPHS"] = {
         ruRU = "Символы",
         enGB = "Glyphs"
-    },
-    ["HELPFRAME_ITEM_TEXT"] = {
-        ruRU = "Проблемы, связанные с функционированием предметов и владением ими",
-        enGB = "Issues regarding any problem dealing with item functionality or possession"
     },
     ["VOICEMACRO_6_Hu_0"] = {
         ruRU = "За мной.",
@@ -20243,10 +20015,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Защитник",
         enGB = "Champion"
     },
-    ["HELPFRAME_CHARACTER_TITLE"] = {
-        ruRU = "Персонаж",
-        enGB = "Character"
-    },
     ["SLASH_WORLD_MARKER1"] = {
         ruRU = "/м",
         enGB = "/м"
@@ -20434,10 +20202,6 @@ local SIRUS_LOCALIZATION = {
     ["LOOT_FREE_FOR_ALL"] = {
         ruRU = "Добыча: каждый за себя",
         enGB = "Loot: Free for All"
-    },
-    ["HELPFRAME_ACCOUNT_BUTTON_TEXT"] = {
-        ruRU = "Проблема с учетной записью",
-        enGB = "Report Account/Billing Issue"
     },
     ["CLICK_TO_MOVE"] = {
         ruRU = "Перемещение по щелчку",
@@ -20747,10 +20511,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Если этот параметр включен, сжатие видеоролика будет производиться сразу после окончания записи. В противном случае для обработки видеоролика вам потребуется нажать соответствующую кнопку.",
         enGB = "If this is checked, the movie will be compressed when you stop recording. Otherwise, you will need to use the compress button to finish processing the movies."
     },
-    ["HELPFRAME_CHARACTER_BULLET2"] = {
-        ruRU = "Невозможность войти в игру",
-        enGB = "Unable to log in to World of Warcraft"
-    },
     ["SPELL_FAILED_CUSTOM_ERROR_62"] = {
         ruRU = "Вы уже прочитали эту книгу от корки до корки.",
         enGB = "You have learned everything from that book"
@@ -20799,10 +20559,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы больше не можете пить.",
         enGB = "You cannot drink any more yet."
     },
-    ["HELPFRAME_REPORTISSUE_TITLE"] = {
-        ruRU = "Сообщить о проблеме",
-        enGB = "Report a Problem"
-    },
     ["EMOTE14_CMD2"] = {
         ruRU = "/bored",
         enGB = "/bored"
@@ -20842,10 +20598,6 @@ local SIRUS_LOCALIZATION = {
     ["BINDING_HEADER_CAMERA"] = {
         ruRU = "Обзор",
         enGB = "Camera Functions"
-    },
-    ["HELPFRAME_QUEST_BUTTON_TEXT"] = {
-        ruRU = "Сообщение о проблеме с заданием или NPC",
-        enGB = "Report Quest/NPC Issue"
     },
     ["STABLE_SLOT_TEXT"] = {
         ruRU = "Вы хотите приобрести еще одно стойло?",
@@ -21146,10 +20898,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE35_CMD2"] = {
         ruRU = "/dance",
         enGB = "/dance"
-    },
-    ["HELPFRAME_ACCOUNT_BULLET3"] = {
-        ruRU = "Проблемы с ключами авторизации",
-        enGB = "Problems with Authentication Keys"
     },
     ["OPTION_TOOLTIP_SHOW_NPC_NAMES"] = {
         ruRU = "Отображение имен неигровых персонажей (NPC).",
@@ -21566,10 +21314,6 @@ local SIRUS_LOCALIZATION = {
     ["TALENTS_CURRENCY_DESC_2"] = {
         ruRU = "TALENTS_CURRENCY_DESC_2",
         enGB = ""
-    },
-    ["HELPFRAME_ACCOUNT_ENDTEXT"] = {
-        ruRU = "В подобных ситуациях, пожалуйста, обращайтесь за помощью в службу по вопросам учетных записей и оплаты.|n|nСайт: http://eu.blizzard.com/support/article.xml?articleId=23210 |r|n|r|nРекомендуем также зайти на страницу управления учетной записью по адресу: |n|n|cffffd200www.wow-europe.com/account|r |n|nНа странице управления учетной записью вы можете получить информацию о вашей подписке, активировать карты оплаты игрового времени и получить доступ ко многим другим важным возможностям учетной записи.",
-        enGB = "For assistance with any issues like these, please contact Billing & Account Services:|n|nBy Phone at:  |cffffd200(800) 59-BLIZZARD|r|nBy Web at:  |cffffd200http://us.blizzard.com/support/index.xml?gameId=11|r|nBy Email at:  |cffffd200billing@blizzard.com|r |n|nWe also recommend you check the Account Management page at: |n|n|cffffd200www.worldofwarcraft.com/account|r |n|nOn the Account Management page, you can view your subscription information, add game cards, and access other important account functions and options."
     },
     ["ITEM_SPELL_EFFECT"] = {
         ruRU = "Эффект: %s",
@@ -22139,10 +21883,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "WoW помощь:",
         enGB = "WoW help:"
     },
-    ["HELPFRAME_REPORTISSUE_TEXT2"] = {
-        ruRU = "Мы постараемся сделать все возможное, чтобы решить проблему. Если для этого понадобится больше сведений, мы свяжемся с вами.",
-        enGB = "We will only contact you if we require more information. However, we will still work hard to solve the problem."
-    },
     ["ENCHANT_SLOT"] = {
         ruRU = "Ячейка для взлома/наложения чар",
         enGB = "Enchant/Unlock Slot"
@@ -22202,10 +21942,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_8_Tr_2"] = {
         ruRU = "Больно мне!",
         enGB = "I be in a bad way."
-    },
-    ["HELPFRAME_HARASSMENT_BUTTON_DESCRIPTION"] = {
-        ruRU = "Здесь могут быть рассмотрены действия или высказывания, способные причинить неудовольствие другим игрокам.",
-        enGB = "Physical or Verbal actions which cause other players distress can be considered in this option"
     },
     ["UNIT_NAMEPLATES_SHOW_ENEMY_GUARDIANS"] = {
         ruRU = "Стражи",
@@ -22426,10 +22162,6 @@ local SIRUS_LOCALIZATION = {
     ["ARENAREPLAY_PLAY"] = {
         ruRU = "Продолжить",
         enGB = "Continue"
-    },
-    ["HELPFRAME_NONQUEST_BULLET6"] = {
-        ruRU = "Запрос информации об NPC или монстре, не задействованном в заданиях",
-        enGB = "Request for Non-Quest NPC/Creep information"
     },
     ["ARENAREPLAY_PAUSE_DESC"] = {
         ruRU = "Приостановить воспроизведение.",
@@ -22751,10 +22483,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/emote",
         enGB = "/emote"
     },
-    ["HELPFRAME_ACCOUNT_BULLET2"] = {
-        ruRU = "Прекращение действия учетной записи",
-        enGB = "Canceling your World of Warcraft account"
-    },
     ["EMOTE90_CMD1"] = {
         ruRU = "/плевок",
         enGB = "/spit"
@@ -22866,10 +22594,6 @@ local SIRUS_LOCALIZATION = {
     ["ILEVEL_ABBR"] = {
         ruRU = "Илвл",
         enGB = "Ilvl"
-    },
-    ["HELPFRAME_ENVIRONMENTAL_BULLET_TITLE2"] = {
-        ruRU = "Нижеперечисленное не относится к проблемам с окружением:",
-        enGB = "The following are not considered environment issues:"
     },
     ["GUILD_XP_WEEKLY"] = {
         ruRU = "Активность (за неделю)",
@@ -23155,10 +22879,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы достигли",
         enGB = "You've reached"
     },
-    ["HELPFRAME_QUEST_BULLET4"] = {
-        ruRU = "Запрос информации об NPC или монстре, задействованном в заданиях",
-        enGB = "Request for Quest NPC/Creep information"
-    },
     ["ERR_QUEST_NEED_PREREQS"] = {
         ruRU = "Это задание для вас недоступно.",
         enGB = "You don't meet the requirements for that quest"
@@ -23442,10 +23162,6 @@ local SIRUS_LOCALIZATION = {
     ["MAIL_AUCTION_WIN"] = {
         ruRU = "Вы выиграли торги: %s",
         enGB = "Auction won: %s"
-    },
-    ["HELPFRAME_GUILD_TITLE"] = {
-        ruRU = "Гильдия",
-        enGB = "Guild"
     },
     ["PLAYER_TALENT_PREVIEW_TITLE"] = {
         ruRU = "Предварительный просмотр талантов",
@@ -23954,10 +23670,6 @@ local SIRUS_LOCALIZATION = {
     ["REMOVE_WORLD_MARKERS"] = {
         ruRU = "Убрать все метки",
         enGB = "Clear All"
-    },
-    ["HELPFRAME_GM_BUTTON_TEXT"] = {
-        ruRU = "Запрос к ГМ:",
-        enGB = "Page a GM:"
     },
     ["ERR_NAME_RESERVED"] = {
         ruRU = "Это название зарезервировано. Введите другое название.",
@@ -25363,10 +25075,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Малые символы",
         enGB = "Minor Glyphs"
     },
-    ["HELPFRAME_NONQUEST_BULLET1"] = {
-        ruRU = "Постоянное бегство монстров от персонажа",
-        enGB = "Creeps permanently evading"
-    },
     ["OPTION_TOOLTIP_WATCH_FRAME_WIDTH"] = {
         ruRU = "Увеличивает ширину списка отслеживаемых задач",
         enGB = "Increases the width of the Objectives tracker."
@@ -25398,10 +25106,6 @@ local SIRUS_LOCALIZATION = {
     ["TALENT_SPEC_HEALER_TOOLTIP"] = {
         ruRU = "Лечит раненых союзников.",
         enGB = "Capable of healing injured allies."
-    },
-    ["HELPFRAME_BUG_BUTTON_TEXT"] = {
-        ruRU = "Сообщить об ошибке:",
-        enGB = "Submit a Bug:"
     },
     ["ACTION_SWING_MISSED_RESIST"] = {
         ruRU = ": сопротивление",
@@ -25751,10 +25455,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы слишком далеко!",
         enGB = "You are too far away!"
     },
-    ["HELPFRAME_NONQUEST_BULLET2"] = {
-        ruRU = "NPC перемещается неправильно",
-        enGB = "NPC is not pathing correctly"
-    },
     ["TUTORIAL5"] = {
         ruRU = "Чтобы вступить в бой с противником, выберите его |cffffd200левой кнопкой мыши|r. Затем используйте одну из способностей с панели команд внизу экрана.|n|nЕсли вы хотите применить способность дальнего боя, необходимо сохранять некоторое расстояние. Для применения других способностей необходимо быть вблизи от противника, особенно, если ваш класс специализируется на оружии ближнего боя.",
         enGB = "To fight enemies, first use |cffffd200Left Click|r to target them. Then click on one of the abilities on the action bar across the bottom of your screen.|n|nYou should use ranged abilities while the target is still far away. Other abilities require you to be close to your target, particularly if your class specializes in melee weapons."
@@ -25939,10 +25639,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы находитесь в транспортном средстве.",
         enGB = "You are on a transport"
     },
-    ["HELPFRAME_GM_BUTTON_DESCRIPTION"] = {
-        ruRU = "Обратиться за помощью к ГМ",
-        enGB = "Contact a GM for personal assistance"
-    },
     ["SPELL_FAILED_WRONG_WEATHER"] = {
         ruRU = "В такую погоду это невозможно.",
         enGB = "The weather isn't right for that"
@@ -25962,10 +25658,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_IGNORE1"] = {
         ruRU = "/игнорировать",
         enGB = "/ignore"
-    },
-    ["HELPFRAME_ITEM_BULLET5"] = {
-        ruRU = "Ошибочная продажа предмета торговцу и невозможность выкупить его обратно",
-        enGB = "Item accidentally sold to a vendor and was not able to repurchase"
     },
     ["EMOTE96_CMD1"] = {
         ruRU = "/вопрос",
@@ -26859,10 +26551,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Показывать окно уведомлений",
         enGB = "Show Toast Window"
     },
-    ["HELPFRAME_GMTALK_ISSUE2"] = {
-        ruRU = "Сюда входят жалобы, требующие доказательств в виде скриншотов или видео. Это не касается тех случаев, когда Вы заподозрили другого игрока в использовании стороннего ПО типа «бот», а также, если в личные сообщения поступает реклама сторонней торговой площадки.",
-        enGB = ""
-    },
     ["VOICEMACRO_7_Ta_0"] = {
         ruRU = "Погодите минутку.",
         enGB = "Rest a moment."
@@ -27091,10 +26779,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Очищение",
         enGB = "cleansed"
     },
-    ["HELPFRAME_OPENTICKET_FOLLOWUPTEXT"] = {
-        ruRU = "Изложите повторный запрос:",
-        enGB = "Describe Your Follow-Up Issue:"
-    },
     ["OPTION_TOOLTIP_TARGETOFTARGET_SOLO"] = {
         ruRU = "Отображение цели вашей цели, когда вы играете в одиночку.",
         enGB = "Sets Target of Target to display when solo."
@@ -27127,10 +26811,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Нет, будь оно проклято!",
         enGB = "Hell, no."
     },
-    ["HELPFRAME_ACCOUNT_BULLET4"] = {
-        ruRU = "Параметры оплаты",
-        enGB = "Payment options"
-    },
     ["EMOTE407_CMD2"] = {
         ruRU = "/mutter",
         enGB = "/mutter"
@@ -27143,17 +26823,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "У меня нет маны!",
         enGB = "I'm out of mana!"
     },
-    ["HELPFRAME_ENVIRONMENTAL_BULLET4"] = {
-        ruRU = "Провал сквозь поверхность",
-        enGB = "Falling through the world"
-    },
     ["ERR_INSPECT_S"] = {
         ruRU = "%s осматривает вас.",
         enGB = "%s is inspecting you."
-    },
-    ["HELPFRAME_GUILD_BULLET3"] = {
-        ruRU = "Невозможность переназначить или переименовать звания в гильдии",
-        enGB = "Unable to reassign or rename ranks within the guild"
     },
     ["STABLES"] = {
         ruRU = "Стойла",
@@ -27195,10 +26867,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Защита конфигурации общего окна чата и журнала боя от изменений.",
         enGB = "Sets up a main chat window and a combat log that cannot be reconfigured."
     },
-    ["HELPFRAME_ITEM_BULLET6"] = {
-        ruRU = "Расспросы, как добыть предмет",
-        enGB = "Inquiries about how to obtain an item"
-    },
     ["BINDING_NAME_ALLNAMEPLATES"] = {
         ruRU = "Показать все индикаторы",
         enGB = "Show All Name Plates"
@@ -27230,10 +26898,6 @@ local SIRUS_LOCALIZATION = {
     ["BATTLEFIELD_MINIMAP_SHOW_NEVER"] = {
         ruRU = "Не отображать",
         enGB = "Never Show"
-    },
-    ["HELPFRAME_LAG_TITLE"] = {
-        ruRU = "Сообщить о задержке",
-        enGB = "Report Lag"
     },
     ["VOICEMACRO_4_Or_0"] = {
         ruRU = "Атакуем здесь!",
@@ -27303,10 +26967,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/highfive",
         enGB = "/highfive"
     },
-    ["HELPFRAME_TECHNICAL_BULLET5"] = {
-        ruRU = "Проблемы с установкой и разрывом соединения",
-        enGB = "Connection/disconnection problems"
-    },
     ["STARTUP_TEXT_LINE2"] = {
         ruRU = "",
         enGB = ""
@@ -27323,17 +26983,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "к рейтингу меткости в дальнем бою",
         enGB = "Hit Rating (Ranged)"
     },
-    ["HELPFRAME_TECHNICAL_BULLET7"] = {
-        ruRU = "Любые другие технические проблемы",
-        enGB = "Any other technical game issue"
-    },
     ["RENAME_ARENA_TEAM_LABEL"] = {
         ruRU = "Введите новое название команды арены:",
         enGB = "Enter a new Arena Team name:"
-    },
-    ["HELPFRAME_TECHNICAL_TEXT"] = {
-        ruRU = "Наша группа технической поддержки готова помочь вам разобраться с любыми проблемами, которые возникают при игре в World of Warcraft.",
-        enGB = "Our Technical Support team is available to help you with any technical issues that occur while you are using World of Warcraft."
     },
     ["BINDING_NAME_RAIDTARGET6"] = {
         ruRU = "Метка цели: квадрат",
@@ -27342,10 +26994,6 @@ local SIRUS_LOCALIZATION = {
     ["OPTION_TOOLTIP_UNIT_NAME_FRIENDLY_PETS"] = {
         ruRU = "Отображение имен питомцев и прислужников дружественных игроков на основном экране игры.",
         enGB = "Show friendly pet names in the game world."
-    },
-    ["HELPFRAME_TECHNICAL_BUTTON_TEXT"] = {
-        ruRU = "Техническая проблема",
-        enGB = "Report Technical Issue"
     },
     ["HELP_TEXT_LINE12"] = {
         ruRU = "- r или /о – ответить на последнее сообщение",
@@ -27590,10 +27238,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_SPELL_MISSED_DEFLECT_FULL_TEXT_NO_SOURCE"] = {
         ruRU = "%4$s отклоняет заклинание \"%2$s\".",
         enGB = "%2$s was deflected by %4$s."
-    },
-    ["HELPFRAME_ITEM_BULLET_TITLE1"] = {
-        ruRU = "Вот примеры проблем с предметами:",
-        enGB = "The following are examples of item issues:"
     },
     ["ACCEPT_ALT"] = {
         ruRU = "Принять",
@@ -28299,10 +27943,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Введите ключевые слова.",
         enGB = "Type your keywords here."
     },
-    ["HELPFRAME_CHARACTER_TEXT"] = {
-        ruRU = "Проблемы, связанные со способностями, профессиями, репутацией и талантами",
-        enGB = "Issues regarding abilities, professions, reputation, and talents"
-    },
     ["MOVE_TO_CONVERSATION_WINDOW"] = {
         ruRU = "Переместить в окно разговора",
         enGB = "Move to Conversation Window"
@@ -28695,10 +28335,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Нет.",
         enGB = "No."
     },
-    ["HELPFRAME_LAG_TEXT1"] = {
-        ruRU = "Задержки сигнала часто возникают из-за большого скопления персонажей в одном месте – в городе или на поле боя. Возможно также, время отклика между вашим компьютером и серверами игры слишком велико. Ваше сообщение о задержке поможет нам определить и, возможно, устранить ее причину. \n\nЧто именно затрудняет вашу игру? Выберите одну из кнопок, чтобы отправить сообщение.",
-        enGB = "Lag is often caused by having a large number of players in one location, such as a city or Battleground. It can also be caused by high latency between your computer and the WoW servers. Submitting this report will help us detect and hopefully address lag problems you might be experiencing. \n\nWhat type of lag are you experiencing? Click on a button below to submit a report."
-    },
     ["PVP_YOUR_RATING"] = {
         ruRU = "Ваш рейтинг",
         enGB = "Your Rating"
@@ -28738,10 +28374,6 @@ local SIRUS_LOCALIZATION = {
     ["TUTORIAL_TITLE52"] = {
         ruRU = "Спутники",
         enGB = "Companions"
-    },
-    ["HELPFRAME_GMTALK_ISSUE2_HEADER"] = {
-        ruRU = "Жалобы на игроков",
-        enGB = ""
     },
     ["NUM_FREE_SLOTS"] = {
         ruRU = "В сумках %d |4свободная ячейка:свободных ячейки:свободных ячеек;",
@@ -28906,10 +28538,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_PARTY_LFG_BOOT_VOTE_SUCCEEDED"] = {
         ruRU = "Предложение исключить |3-3(%s) принято.",
         enGB = "The vote to kick %s has passed."
-    },
-    ["HELPFRAME_WELCOME_TITLE"] = {
-        ruRU = "Поддержка пользователей",
-        enGB = "Customer Support"
     },
     ["ACTION_SPELL_STOLEN_FULL_TEXT"] = {
         ruRU = "%2$s\" |3-1(%1$s) похищает заклинание \"%5$s\" |3-1(%4$s).",
@@ -29162,10 +28790,6 @@ local SIRUS_LOCALIZATION = {
     ["OPTION_TOOLTIP_TOAST_DURATION"] = {
         ruRU = "Настроить длительность отображения окна уведомлений.",
         enGB = "Adjust the duration of the toast window."
-    },
-    ["HELPFRAME_ACCOUNT_BULLET_TITLE1"] = {
-        ruRU = "Служба учетной записи и оплаты может помочь в следующих ситуациях:",
-        enGB = "Billing & Account services can help with these kinds of issues:"
     },
     ["SPELL_TARGET_TYPE15_DESC"] = {
         ruRU = "мастер",
@@ -29987,10 +29611,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Кровавый страж",
         enGB = "Blood Guard"
     },
-    ["HELPFRAME_GMTALK_ISSUE1"] = {
-        ruRU = "Проблемы, связанные с некорректной работой заданий, неигровых персонажей (NPC), способностей или какие-либо другие неисправности.",
-        enGB = ""
-    },
     ["VOICEMACRO_LABEL_ATTACKMYTARGET2"] = {
         ruRU = "помощь",
         enGB = "as"
@@ -30190,10 +29810,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_14_Ni_2"] = {
         ruRU = "Естественно.",
         enGB = "Naturally."
-    },
-    ["HELPFRAME_ENVIRONMENTAL_TEXT"] = {
-        ruRU = "Проблемы, вызванные невозможностью взаимодействия персонажа с окружающей средой",
-        enGB = "Issues that deal with a character not being able to interact with the environment or operate in the environment"
     },
     ["NO_DAILY_QUESTS_REMAINING"] = {
         ruRU = "Сегодня вы больше не можете выполнять ежедневные задания.",
@@ -30563,10 +30179,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Монстры и игроки мгновенно перемещаются из точки в точку или бегут на месте. Вы замечаете, что пытаетесь атаковать монстров, которые находятся не там, где вы их видите.",
         enGB = "Creatures and players may pop or teleport from place to place. They may also run in place. You may notice that you try to attack creatures that aren't really where you think they are."
     },
-    ["HELPFRAME_NONQUEST_BULLET7"] = {
-        ruRU = "Проблемы с заданиями, затрагивающие NPC или монстров",
-        enGB = "Problem with Quest related NPCs or Creeps"
-    },
     ["RANK_COLON"] = {
         ruRU = "Звание:",
         enGB = "Rank:"
@@ -30790,10 +30402,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_ENVIRONMENTAL_DAMAGE_FIRE_POSSESSIVE"] = {
         ruRU = "0",
         enGB = "0"
-    },
-    ["HELPFRAME_STUCK_BUTTON_DESCRIPTION"] = {
-        ruRU = "Застревание на определенном участке карты",
-        enGB = "Physically stuck in an area of the map"
     },
     ["ERR_NOT_IN_BATTLEGROUND"] = {
         ruRU = "Вы не на поле боя.",
@@ -31051,10 +30659,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Увеличивает запас маны и вероятность нанесения критического удара заклинаниями.\nУвеличивает скорость развития навыков владения оружием.",
         enGB = "Increases mana points and chance to score a critical hit with spells.\nIncreases the rate at which weapon skills improve."
     },
-    ["HELPFRAME_TECHNICAL_BULLET1"] = {
-        ruRU = "Падение производительности игры (игра замедляется или идет рывками)",
-        enGB = "Decline in game performance (game becomes slow or choppy)"
-    },
     ["ITEMS_VARIABLE_QUANTITY"] = {
         ruRU = "%d |4предмет:предмета:предметов;",
         enGB = "%d |4Item:Items;"
@@ -31227,10 +30831,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Здоровье: %d",
         enGB = "%d Health"
     },
-    ["HELPFRAME_REPORTISSUE_BULLET2"] = {
-        ruRU = "Незначительные проблемы, такие как мелкие сбои изображения",
-        enGB = "Minor bugs such as display glitches"
-    },
     ["SHARDS"] = {
         ruRU = "Осколки",
         enGB = "Shards"
@@ -31395,10 +30995,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Тайная магия",
         enGB = "Arcane"
     },
-    ["HELPFRAME_NONQUEST_TEXT"] = {
-        ruRU = "Проблемы, связанные с некорректным функционированием или взаимодействием NPC и монстров",
-        enGB = "Issues that deal with NPCs and Creeps functioning or interacting incorrectly"
-    },
     ["ITEM_MOD_FERAL_ATTACK_POWER"] = {
         ruRU = "Увеличивает силу атаки на %d в облике кошки, медведя, лютого медведя и лунного совуха.",
         enGB = "Increases attack power by %d in Cat, Bear, Dire Bear, and Moonkin forms only."
@@ -31422,10 +31018,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE100_CMD1"] = {
         ruRU = "/усталость",
         enGB = "/tired"
-    },
-    ["HELPFRAME_QUEST_BULLET_TITLE2"] = {
-        ruRU = "Нижеперечисленное НЕ относится к проблемам с NPC или монстрами, задействованными в заданиях:",
-        enGB = "The following are NOT considered Quest/Quest NPC issues:"
     },
     ["RANGED_DAMAGE_TOOLTIP"] = {
         ruRU = "Урон от атаки дальнего боя",
@@ -31454,10 +31046,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE69_CMD3"] = {
         ruRU = "/nosepick",
         enGB = "/nosepick"
-    },
-    ["HELPFRAME_QUEST_TITLE"] = {
-        ruRU = "Задания/NPC, дающие задания",
-        enGB = "Quest/Quest NPC"
     },
     ["UNLOCK_WINDOW"] = {
         ruRU = "Разблокировать окно",
@@ -31758,10 +31346,6 @@ local SIRUS_LOCALIZATION = {
     ["PVPFRAME_STEPFRAME_RESET_LABEL_PATTERN"] = {
         ruRU = "Обновится через:",
         enGB = "Update in:"
-    },
-    ["HELPFRAME_ENVIRONMENTAL_BULLET6"] = {
-        ruRU = "Расспросы о месте, которое трудно найти",
-        enGB = "Inquiry of a location that is difficult to find"
     },
     ["EMOTE93_CMD2"] = {
         ruRU = "/surrender",
@@ -32803,10 +32387,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/лечименя",
         enGB = "/healme"
     },
-    ["HELPFRAME_BUG_BUTTON_DESCRIPTION"] = {
-        ruRU = "Сообщить об ошибке в игре",
-        enGB = "Report a bug or error in the game"
-    },
     ["TIME_TO_PORT_ARENA"] = {
         ruRU = "Арена закроется через",
         enGB = "Arena closing in"
@@ -32826,10 +32406,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_LEAVEVEHICLE2"] = {
         ruRU = "/покинутьтран",
         enGB = "/leavevehicle"
-    },
-    ["HELPFRAME_ITEM_BULLET1"] = {
-        ruRU = "Утрата предмета после сбоя",
-        enGB = "Item lost after crashing"
     },
     ["MOVIE_RECORDING_RECORDING_STARTED"] = {
         ruRU = "Запись ролика \"%s\" началась.",
@@ -33207,10 +32783,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Сыграйте хотя бы одну игру в текущем сезоне, чтобы занять место в рейтинговой таблице.",
         enGB = "Play at least one game in the current season to enter the leaderboard."
     },
-    ["HELPFRAME_SUGGESTION_BUTTON_TEXT"] = {
-        ruRU = "Отправка предложения:",
-        enGB = "Send a Suggestion:"
-    },
     ["EMOTE13_CMD3"] = {
         ruRU = "/bonk",
         enGB = "/bonk"
@@ -33322,10 +32894,6 @@ local SIRUS_LOCALIZATION = {
     ["GMSURVEY_REQUEST_TEXT"] = {
         ruRU = "Пожалуйста, ответьте на следующие вопросы:",
         enGB = "Please answer the following questions:"
-    },
-    ["HELPFRAME_WELCOME_TEXT1"] = {
-        ruRU = "Для получения внутриигровой поддержки, пожалуйста, воспользуйтесь одной из следующих функций, чтобы отправить запрос на помощь гейм-мастера или сообщить об ошибке.",
-        enGB = "For assistance with in-game support, please use the following options to submit a petition for GM assistance or report an issue."
     },
     ["RENAME_GUILD_LABEL"] = {
         ruRU = "Введите новое название гильдии:",
@@ -33631,10 +33199,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Подсветка всей строки при убийстве противника вами или другим членом вашей группы.",
         enGB = "Highlights the entire line when you or a party member makes a kill."
     },
-    ["HELPFRAME_REPORTISSUE_TEXT1"] = {
-        ruRU = "Здесь вы можете сообщить о различных обнаруженных проблемах, которые не требуют срочного вмешательства гейм-мастера.",
-        enGB = "Use this page to let us know about any problems you notice in the game that don't require an immediate Game Master response."
-    },
     ["ERR_QUEST_REWARD_MONEY_S"] = {
         ruRU = "Получено: %s.",
         enGB = "Received %s."
@@ -33650,10 +33214,6 @@ local SIRUS_LOCALIZATION = {
     ["DRESSUP_FRAME_INSTRUCTIONS"] = {
         ruRU = "Чтобы примерить предмет, щелкните по нему левой кнопкой мыши при нажатой клавише CTRL.",
         enGB = "CTRL-Left Click additional items to display them on your character"
-    },
-    ["HELPFRAME_GUILD_BULLET1"] = {
-        ruRU = "Невозможность приглашать игроков в гильдию или исключать из нее",
-        enGB = "Unable to add/remove guild members"
     },
     ["ARENA_SPECTATOR"] = {
         ruRU = "Вы находитесь в режиме наблюдения. Чтобы покинуть бой, щелкните правой кнопкой мыши по значку арены на мини-карте и выберите \"Покинуть бой\".",
@@ -33706,10 +33266,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_SPELL_PERIODIC_MISSED_BLOCK_POSSESSIVE"] = {
         ruRU = "1",
         enGB = "1"
-    },
-    ["HELPFRAME_OPENTICKET_TEXT"] = {
-        ruRU = "Изложите ваш запрос:",
-        enGB = "Describe Your Issue:"
     },
     ["BINDING_NAME_TOGGLECOMBATLOG"] = {
         ruRU = "Журнал боя",
@@ -34143,10 +33699,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/bashful",
         enGB = "/bashful"
     },
-    ["HELPFRAME_ENVIRONMENTAL_BULLET_TITLE1"] = {
-        ruRU = "Вот примеры проблем с окружающим миром:",
-        enGB = "The following are examples of environmental issues:"
-    },
     ["CHAT_MSG_SYSTEM"] = {
         ruRU = "Система",
         enGB = "System"
@@ -34178,14 +33730,6 @@ local SIRUS_LOCALIZATION = {
     ["INVTYPE_CHEST"] = {
         ruRU = "Грудь",
         enGB = "Chest"
-    },
-    ["HELPFRAME_REPORTISSUE_BULLET_TITLE1"] = {
-        ruRU = "Список примеров:",
-        enGB = "Examples include:"
-    },
-    ["HELPFRAME_NONQUEST_BUTTON_TEXT"] = {
-        ruRU = "Проблема с NPC, не дающим задание",
-        enGB = "Report Non-Quest NPC/Creep Issue"
     },
     ["PHYSICAL_HARASSMENT_TEXT2"] = {
         ruRU = "Нападение на монстра или NPC, с которым уже сражается другой игрок",
@@ -34502,10 +34046,6 @@ local SIRUS_LOCALIZATION = {
     ["COINPICKUP_CANCEL"] = {
         ruRU = "Отмена",
         enGB = "Cancel"
-    },
-    ["HELPFRAME_HARASSMENT_BUTTON_TEXT"] = {
-        ruRU = "Домогательство:",
-        enGB = "Harassment:"
     },
     ["SPEED"] = {
         ruRU = "Скорость",
@@ -35983,10 +35523,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы умерли. Освободите дух, чтобы перейти в режим наблюдения.",
         enGB = "You have died.  Release spirit to enter Spectator Mode."
     },
-    ["HELPFRAME_ENVIRONMENTAL_BULLET2"] = {
-        ruRU = "Способность проходить сквозь стены или перепрыгивать их",
-        enGB = "Able to walk/jump through a wall"
-    },
     ["MAINMENUBAR_STORE_BUTTON"] = {
         ruRU = "Магазин",
         enGB = "Shop"
@@ -36831,10 +36367,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "1",
         enGB = "1"
     },
-    ["HELPFRAME_ITEM_BULLET4"] = {
-        ruRU = "Нечестное получение предметов",
-        enGB = "Scammed items"
-    },
     ["BINDING_NAME_MULTIACTIONBAR1BUTTON12"] = {
         ruRU = "Кнопка действия 12 (слева внизу)",
         enGB = "BottomLeft Action Button 12"
@@ -37314,10 +36846,6 @@ local SIRUS_LOCALIZATION = {
     ["UKNOWNBEING"] = {
         ruRU = "Неизвестное существо",
         enGB = "Unknown Being"
-    },
-    ["HELPFRAME_ITEM_TITLE"] = {
-        ruRU = "Предмет",
-        enGB = "Item"
     },
     ["HOSTILE"] = {
         ruRU = "Губительные",
@@ -37967,10 +37495,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "магия огня",
         enGB = "fire"
     },
-    ["HELPFRAME_TECHNICAL_BULLET4"] = {
-        ruRU = "Проблемы со звуком (отсутствие звука или музыки, шумы, эффекты зацикливания и т.п.)",
-        enGB = "Sound issues (no sound or music, static, looping effects, etc)"
-    },
     ["VOICEMACRO_10_Or_1"] = {
         ruRU = "Зададим им!",
         enGB = "Let 'em have it!"
@@ -38130,10 +37654,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_12_Ni_3_FEMALE"] = {
         ruRU = "Привет!",
         enGB = "Hi."
-    },
-    ["HELPFRAME_ITEM_BUTTON_TEXT"] = {
-        ruRU = "Проблема с предметом",
-        enGB = "Report Item Issue"
     },
     ["BINDING_NAME_STOPCASTING"] = {
         ruRU = "Прекратить произнесение заклинания",
@@ -39982,10 +39502,6 @@ local SIRUS_LOCALIZATION = {
     ["WHO_TAG_CLASS"] = {
         ruRU = "к-",
         enGB = "c-"
-    },
-    ["HELPFRAME_ITEM_BULLET_TITLE2"] = {
-        ruRU = "Нижеперечисленное НЕ относится к проблемам с предметами:",
-        enGB = "The following are NOT considered item issues:"
     },
     ["WINTERGRASP_IN_PROGRESS"] = {
         ruRU = "Идет бой",
@@ -42906,6 +42422,642 @@ local SIRUS_LOCALIZATION = {
 	["QUEST_ACCEPTED_BUTTON_POPUP_TEXT"] = {
         ruRU = "Понятно",
         enGB = ""
+    },
+	["HELPFRAME_ACCOUNT_BULLET1"] = {
+		ruRU = "Помощь в создании новых учетных записей и изменении существующих",
+		enGB = "Help setting up new accounts or making changes to existing accounts"
+	},
+	["HELPFRAME_ACCOUNT_BULLET2"] = {
+		ruRU = "Прекращение действия учетной записи",
+		enGB = "Canceling your World of Warcraft account"
+	},
+	["HELPFRAME_ACCOUNT_BULLET3"] = {
+		ruRU = "Проблемы с ключами авторизации",
+		enGB = "Problems with Authentication Keys"
+	},
+	["HELPFRAME_ACCOUNT_BULLET4"] = {
+		ruRU = "Параметры оплаты",
+		enGB = "Payment options"
+	},
+	["HELPFRAME_ACCOUNT_BULLET_TITLE1"] = {
+		ruRU = "Служба учетной записи и оплаты может помочь в следующих ситуациях:",
+		enGB = "Billing & Account services can help with these kinds of issues:"
+	},
+	["HELPFRAME_ACCOUNT_BUTTON_TEXT"] = {
+		ruRU = "Проблема с учетной записью",
+		enGB = "Report Account/Billing Issue"
+	},
+	["HELPFRAME_ACCOUNT_ENDTEXT"] = {
+		ruRU = "В подобных ситуациях, пожалуйста, обращайтесь за помощью в службу по вопросам учетных записей и оплаты.|n|nСайт: http://eu.blizzard.com/support/article.xml?articleId=23210 |r|n|r|nРекомендуем также зайти на страницу управления учетной записью по адресу: |n|n|cffffd200www.wow-europe.com/account|r |n|nНа странице управления учетной записью вы можете получить информацию о вашей подписке, активировать карты оплаты игрового времени и получить доступ ко многим другим важным возможностям учетной записи.",
+		enGB = "For assistance with any issues like these, please contact Billing & Account Services:|n|nBy Phone at:  |cffffd200(800) 59-BLIZZARD|r|nBy Web at:  |cffffd200http://us.blizzard.com/support/index.xml?gameId=11|r|nBy Email at:  |cffffd200billing@blizzard.com|r |n|nWe also recommend you check the Account Management page at: |n|n|cffffd200www.worldofwarcraft.com/account|r |n|nOn the Account Management page, you can view your subscription information, add game cards, and access other important account functions and options."
+	},
+	["HELPFRAME_ACCOUNT_TEXT"] = {
+		ruRU = "У вас проблемы с созданием учетной записи или вам нужно внести изменения в свои параметры оплаты?",
+		enGB = "Having problems setting up your account or need to make changes to your billing options?"
+	},
+	["HELPFRAME_ACCOUNT_TITLE"] = {
+		ruRU = "Учетные записи и оплата",
+		enGB = "Billing & Account Services"
+	},
+	["HELPFRAME_ALL_ARTICLES"] = {
+		ruRU = "Все статьи",
+		enGB = "All articles",
+	},
+	["HELPFRAME_BUG_BUTTON_DESCRIPTION"] = {
+		ruRU = "Сообщить об ошибке в игре",
+		enGB = "Report a bug or error in the game"
+	},
+	["HELPFRAME_BUG_BUTTON_TEXT"] = {
+		ruRU = "Сообщить об ошибке:",
+		enGB = "Submit a Bug:"
+	},
+	["HELPFRAME_CHARACTER_BULLET1"] = {
+		ruRU = "Утрата или искажение способности или характеристики",
+		enGB = "Ability/Attribute loss or distortion"
+	},
+	["HELPFRAME_CHARACTER_BULLET2"] = {
+		ruRU = "Невозможность войти в игру",
+		enGB = "Unable to log in to World of Warcraft"
+	},
+	["HELPFRAME_CHARACTER_BULLET3"] = {
+		ruRU = "Отрицательный уровень навыка",
+		enGB = "Skill level is showing as negative"
+	},
+	["HELPFRAME_CHARACTER_BULLET4"] = {
+		ruRU = "Отсутствие освоенной профессии в списке",
+		enGB = "Profession no longer listed"
+	},
+	["HELPFRAME_CHARACTER_BULLET5"] = {
+		ruRU = "Таланты работают с ошибками либо отсутствуют",
+		enGB = "Talents malfunctioning or missing"
+	},
+	["HELPFRAME_CHARACTER_BULLET_TITLE1"] = {
+		ruRU = "Вот примеры проблем с персонажами:",
+		enGB = "The following are examples of character issues:"
+	},
+	["HELPFRAME_CHARACTER_BUTTON_TEXT"] = {
+		ruRU = "Проблема с персонажем",
+		enGB = "Report Character Issue"
+	},
+	["HELPFRAME_CHARACTER_TEXT"] = {
+		ruRU = "Проблемы, связанные со способностями, профессиями, репутацией и талантами",
+		enGB = "Issues regarding abilities, professions, reputation, and talents"
+	},
+	["HELPFRAME_CHARACTER_TITLE"] = {
+		ruRU = "Персонаж",
+		enGB = "Character"
+	},
+	["HELPFRAME_ENVIRONMENTAL_BULLET1"] = {
+		ruRU = "Невозможность воспользоваться кузней",
+		enGB = "Unable to interact with a forge"
+	},
+	["HELPFRAME_ENVIRONMENTAL_BULLET2"] = {
+		ruRU = "Способность проходить сквозь стены или перепрыгивать их",
+		enGB = "Able to walk/jump through a wall"
+	},
+	["HELPFRAME_ENVIRONMENTAL_BULLET3"] = {
+		ruRU = "Персонаж отправлен не на то кладбище",
+		enGB = "Getting ported to the wrong graveyard"
+	},
+	["HELPFRAME_ENVIRONMENTAL_BULLET4"] = {
+		ruRU = "Провал сквозь поверхность",
+		enGB = "Falling through the world"
+	},
+	["HELPFRAME_ENVIRONMENTAL_BULLET5"] = {
+		ruRU = "Игрок умер и желает вернуться к месту гибели.",
+		enGB = "Player died and would like a port back to original location"
+	},
+	["HELPFRAME_ENVIRONMENTAL_BULLET6"] = {
+		ruRU = "Расспросы о месте, которое трудно найти",
+		enGB = "Inquiry of a location that is difficult to find"
+	},
+	["HELPFRAME_ENVIRONMENTAL_BULLET_TITLE1"] = {
+		ruRU = "Вот примеры проблем с окружающим миром:",
+		enGB = "The following are examples of environmental issues:"
+	},
+	["HELPFRAME_ENVIRONMENTAL_BULLET_TITLE2"] = {
+		ruRU = "Нижеперечисленное не относится к проблемам с окружением:",
+		enGB = "The following are not considered environment issues:"
+	},
+	["HELPFRAME_ENVIRONMENTAL_BUTTON_TEXT"] = {
+		ruRU = "Проблема с окружающим миром",
+		enGB = "Report Environmental Issue"
+	},
+	["HELPFRAME_ENVIRONMENTAL_TEXT"] = {
+		ruRU = "Проблемы, вызванные невозможностью взаимодействия персонажа с окружающей средой",
+		enGB = "Issues that deal with a character not being able to interact with the environment or operate in the environment"
+	},
+	["HELPFRAME_ENVIRONMENTAL_TITLE"] = {
+		ruRU = "Окружающий мир",
+		enGB = "Environmental"
+	},
+	["HELPFRAME_GENERAL_BUTTON_DESCRIPTION"] = {
+		ruRU = "Основные вопросы по игре/информация",
+		enGB = "Basic game play questions/information"
+	},
+	["HELPFRAME_GENERAL_BUTTON_TEXT"] = {
+		ruRU = "Общие вопросы по игровому процессу:",
+		enGB = "General Game Play Question:"
+	},
+	["HELPFRAME_GMTALK_ISSUE1"] = {
+		ruRU = "Проблемы, связанные с некорректной работой заданий, неигровых персонажей (NPC), способностей или какие-либо другие неисправности.",
+		enGB = ""
+	},
+	["HELPFRAME_GMTALK_ISSUE1_HEADER"] = {
+		ruRU = "Багрепорты",
+		enGB = ""
+	},
+	["HELPFRAME_GMTALK_ISSUE2"] = {
+		ruRU = "Сюда входят жалобы, требующие доказательств в виде скриншотов или видео. Это не касается тех случаев, когда Вы заподозрили другого игрока в использовании стороннего ПО типа «бот», а также, если в личные сообщения поступает реклама сторонней торговой площадки.",
+		enGB = ""
+	},
+	["HELPFRAME_GMTALK_ISSUE2_HEADER"] = {
+		ruRU = "Жалобы на игроков",
+		enGB = ""
+	},
+	["HELPFRAME_GMTALK_ISSUE3"] = {
+		ruRU = "Проблемы, возникшие из-за перезагрузки сервера, такие как: пропажа предметов, утраченный прогресс задания или достижения.",
+		enGB = ""
+	},
+	["HELPFRAME_GMTALK_ISSUE3_HEADER"] = {
+		ruRU = "Последствия перезагрузки",
+		enGB = ""
+	},
+	["HELPFRAME_GMTALK_TEXT1"] = {
+		ruRU = "Если Вы столкнулись с какой-либо проблемой и решить её самостоятельно не удается, то можете обратиться за помощью к сотруднику службы поддержки. Если при решении проблемы необходимы |cffffd200скриншоты или видео|r, то лучше сразу создайте тему в соответствующем разделе на форуме — это ускорит процесс. Постарайтесь не использовать нецензурную лексику, а также не создавать обращений, не связанных с игровым процессом.\n\nНекоторые проблемы невозможно решить в игре, пожалуйста, ознакомьтесь с некоторыми из них:",
+		enGB = ""
+	},
+	["HELPFRAME_GMTALK_TEXT2"] = {
+		ruRU = "<html><body><p>Конечно же, перед обращением к сотруднику службы поддержки мы рекомендуем сначала попробовать найти информацию по интересующим вопросам на форуме по адресу <a href=\"https://forum.sirus.su/\">https://forum.sirus.su/</a>.</p></body></html>",
+		enGB = ""
+	},
+	["HELPFRAME_GMTALK_TITLE"] = {
+		ruRU = "Обращение к сотруднику службы поддержки",
+		enGB = ""
+	},
+	["HELPFRAME_GM_BUTTON_DESCRIPTION"] = {
+		ruRU = "Обратиться за помощью к ГМ",
+		enGB = "Contact a GM for personal assistance"
+	},
+	["HELPFRAME_GM_BUTTON_TEXT"] = {
+		ruRU = "Запрос к ГМ:",
+		enGB = "Page a GM:"
+	},
+	["HELPFRAME_GUILD_BULLET1"] = {
+		ruRU = "Невозможность приглашать игроков в гильдию или исключать из нее",
+		enGB = "Unable to add/remove guild members"
+	},
+	["HELPFRAME_GUILD_BULLET2"] = {
+		ruRU = "Невозможность создать гильдию",
+		enGB = "Not able to form a guild"
+	},
+	["HELPFRAME_GUILD_BULLET3"] = {
+		ruRU = "Невозможность переназначить или переименовать звания в гильдии",
+		enGB = "Unable to reassign or rename ranks within the guild"
+	},
+	["HELPFRAME_GUILD_BULLET_TITLE1"] = {
+		ruRU = "Вот примеры проблем с гильдией:",
+		enGB = "The following are examples of guild issues:"
+	},
+	["HELPFRAME_GUILD_BUTTON_TEXT"] = {
+		ruRU = "Проблема с гильдией",
+		enGB = "Report Guild Issue"
+	},
+	["HELPFRAME_GUILD_TEXT"] = {
+		ruRU = "Любые проблемы, связанные с созданием или функционированием гильдии",
+		enGB = "Any problems associated with the creation or functionality of a guild"
+	},
+	["HELPFRAME_GUILD_TITLE"] = {
+		ruRU = "Гильдия",
+		enGB = "Guild"
+	},
+	["HELPFRAME_HARASSMENT_BUTTON_DESCRIPTION"] = {
+		ruRU = "Здесь могут быть рассмотрены действия или высказывания, способные причинить неудовольствие другим игрокам.",
+		enGB = "Physical or Verbal actions which cause other players distress can be considered in this option"
+	},
+	["HELPFRAME_HARASSMENT_BUTTON_TEXT"] = {
+		ruRU = "Домогательство:",
+		enGB = "Harassment:"
+	},
+	["HELPFRAME_HOME_TEXT"] = {
+		ruRU = "Гейм-мастер может помочь в следующих ситуациях:",
+		enGB = "The following are the types of issues that a GM can assist with:"
+	},
+	["HELPFRAME_ITEM_BULLET1"] = {
+		ruRU = "Утрата предмета после сбоя",
+		enGB = "Item lost after crashing"
+	},
+	["HELPFRAME_ITEM_BULLET2"] = {
+		ruRU = "Проблемы со срабатыванием особых свойств оружия",
+		enGB = "Weapon proc not activating"
+	},
+	["HELPFRAME_ITEM_BULLET3"] = {
+		ruRU = "Некорректное функционирование модификаций или наложения чар",
+		enGB = "Enchantment or add-ons not working appropriately"
+	},
+	["HELPFRAME_ITEM_BULLET4"] = {
+		ruRU = "Нечестное получение предметов",
+		enGB = "Scammed items"
+	},
+	["HELPFRAME_ITEM_BULLET5"] = {
+		ruRU = "Ошибочная продажа предмета торговцу и невозможность выкупить его обратно",
+		enGB = "Item accidentally sold to a vendor and was not able to repurchase"
+	},
+	["HELPFRAME_ITEM_BULLET6"] = {
+		ruRU = "Расспросы, как добыть предмет",
+		enGB = "Inquiries about how to obtain an item"
+	},
+	["HELPFRAME_ITEM_BULLET7"] = {
+		ruRU = "Запросы предметов",
+		enGB = "Requests for items"
+	},
+	["HELPFRAME_ITEM_BULLET_TITLE1"] = {
+		ruRU = "Вот примеры проблем с предметами:",
+		enGB = "The following are examples of item issues:"
+	},
+	["HELPFRAME_ITEM_BULLET_TITLE2"] = {
+		ruRU = "Нижеперечисленное НЕ относится к проблемам с предметами:",
+		enGB = "The following are NOT considered item issues:"
+	},
+	["HELPFRAME_ITEM_BUTTON_TEXT"] = {
+		ruRU = "Проблема с предметом",
+		enGB = "Report Item Issue"
+	},
+	["HELPFRAME_ITEM_TEXT"] = {
+		ruRU = "Проблемы, связанные с функционированием предметов и владением ими",
+		enGB = "Issues regarding any problem dealing with item functionality or possession"
+	},
+	["HELPFRAME_ITEM_TITLE"] = {
+		ruRU = "Предмет",
+		enGB = "Item"
+	},
+	["HELPFRAME_LAG_TEXT1"] = {
+		ruRU = "Задержки сигнала часто возникают из-за большого скопления персонажей в одном месте – в городе или на поле боя. Возможно также, время отклика между вашим компьютером и серверами игры слишком велико. Ваше сообщение о задержке поможет нам определить и, возможно, устранить ее причину. \n\nЧто именно затрудняет вашу игру? Выберите одну из кнопок, чтобы отправить сообщение.",
+		enGB = "Lag is often caused by having a large number of players in one location, such as a city or Battleground. It can also be caused by high latency between your computer and the WoW servers. Submitting this report will help us detect and hopefully address lag problems you might be experiencing. \n\nWhat type of lag are you experiencing? Click on a button below to submit a report."
+	},
+	["HELPFRAME_LAG_TITLE"] = {
+		ruRU = "Сообщить о задержке",
+		enGB = "Report Lag"
+	},
+	["HELPFRAME_NONQUEST_BULLET1"] = {
+		ruRU = "Постоянное бегство монстров от персонажа",
+		enGB = "Creeps permanently evading"
+	},
+	["HELPFRAME_NONQUEST_BULLET2"] = {
+		ruRU = "NPC перемещается неправильно",
+		enGB = "NPC is not pathing correctly"
+	},
+	["HELPFRAME_NONQUEST_BULLET3"] = {
+		ruRU = "Недостаточная или избыточная численность монстров",
+		enGB = "Creeps over-spawning or under-spawning"
+	},
+	["HELPFRAME_NONQUEST_BULLET4"] = {
+		ruRU = "У NPC-торговца нет предметов, или он не отвечает.",
+		enGB = "Vendor NPC not itemized or not responding"
+	},
+	["HELPFRAME_NONQUEST_BULLET5"] = {
+		ruRU = "Запрос о добавлении или удалении NPC или монстра, не задействованного в заданиях",
+		enGB = "Request for Non-Quest NPC/Creep spawn or despawn"
+	},
+	["HELPFRAME_NONQUEST_BULLET6"] = {
+		ruRU = "Запрос информации об NPC или монстре, не задействованном в заданиях",
+		enGB = "Request for Non-Quest NPC/Creep information"
+	},
+	["HELPFRAME_NONQUEST_BULLET7"] = {
+		ruRU = "Проблемы с заданиями, затрагивающие NPC или монстров",
+		enGB = "Problem with Quest related NPCs or Creeps"
+	},
+	["HELPFRAME_NONQUEST_BULLET_TITLE1"] = {
+		ruRU = "Вот примеры проблем с NPC или монстрами, не задействованными в задании:",
+		enGB = "The following are examples of Non-Quest NPC/Creep issues:"
+	},
+	["HELPFRAME_NONQUEST_BULLET_TITLE2"] = {
+		ruRU = "Нижеперечисленное НЕ относится к проблемам с NPC или монстрами, не задействованными в заданиях:",
+		enGB = "The following are NOT considered Non-quest NPC/Creep issues:"
+	},
+	["HELPFRAME_NONQUEST_BUTTON_TEXT"] = {
+		ruRU = "Проблема с NPC, не дающим задание",
+		enGB = "Report Non-Quest NPC/Creep Issue"
+	},
+	["HELPFRAME_NONQUEST_TEXT"] = {
+		ruRU = "Проблемы, связанные с некорректным функционированием или взаимодействием NPC и монстров",
+		enGB = "Issues that deal with NPCs and Creeps functioning or interacting incorrectly"
+	},
+	["HELPFRAME_NONQUEST_TITLE"] = {
+		ruRU = "NPC/монстр, не связанный с заданиями",
+		enGB = "Non-Quest NPC/Creep"
+	},
+	["HELPFRAME_OPENTICKET_EDITTEXT"] = {
+		ruRU = "Ваш запрос:",
+		enGB = "Your Current Issue:"
+	},
+	["HELPFRAME_OPENTICKET_FOLLOWUPTEXT"] = {
+		ruRU = "Изложите повторный запрос:",
+		enGB = "Describe Your Follow-Up Issue:"
+	},
+	["HELPFRAME_OPENTICKET_TEXT"] = {
+		ruRU = "<html><body><p>Подробно изложите ваш запрос, укажите все связанные с ним |cffffd200имена персонажей|r, |cffffd200названия зон|r и |cffffd200предметов|r, |cffffd200временные промежутки|r. Если для решения проблемы необходимы |cffffd200скриншоты|r или |cffffd200видео|r: создайте тему в нужном разделе на <a href=\"http:https://forum.sirus.su/categories/4/\">форуме</a> - это ускорит процесс. Не используйте нецензурную лексику и создавайте один запрос по одной проблеме.</p></body></html>",
+		enGB = "Please describe your issue in as much detail as possible. If relevant, include |cffffd200character names|r, |cffffd200locations|r, |cffffd200item names|r, and |cffffd200time frames|r. The more information the better!"
+	},
+	["HELPFRAME_OTHER_BUTTON_DESCRIPTION"] = {
+		ruRU = "Любые ситуации, требующие помощи ГМ",
+		enGB = "Any issues that require GM assistance"
+	},
+	["HELPFRAME_OTHER_BUTTON_TEXT"] = {
+		ruRU = "Другие ситуации:",
+		enGB = "Other Issues:"
+	},
+	["HELPFRAME_QUEST_BULLET1"] = {
+		ruRU = "Некорректные действия NPC или объекта, задействованного в задании",
+		enGB = "A quest related NPC or object is not functioning appropriately"
+	},
+	["HELPFRAME_QUEST_BULLET2"] = {
+		ruRU = "Невозможность получить получить предметы, связанные с заданиями",
+		enGB = "Unable to acquire quest related items"
+	},
+	["HELPFRAME_QUEST_BULLET3"] = {
+		ruRU = "Невозможность найти предметы для заданий при обыске убитых боссов",
+		enGB = "Quest creep not dropping a required quest item"
+	},
+	["HELPFRAME_QUEST_BULLET4"] = {
+		ruRU = "Запрос информации об NPC или монстре, задействованном в заданиях",
+		enGB = "Request for Quest NPC/Creep information"
+	},
+	["HELPFRAME_QUEST_BULLET5"] = {
+		ruRU = "Запрос информации, которая должна упростить задание",
+		enGB = "Request for information that would simplify a quest"
+	},
+	["HELPFRAME_QUEST_BULLET_TITLE1"] = {
+		ruRU = "Вот примеры проблем с NPC или монстрами, задействованными в заданиях:",
+		enGB = "The following are examples of Quest/Quest NPC issues:"
+	},
+	["HELPFRAME_QUEST_BULLET_TITLE2"] = {
+		ruRU = "Нижеперечисленное НЕ относится к проблемам с NPC или монстрами, задействованными в заданиях:",
+		enGB = "The following are NOT considered Quest/Quest NPC issues:"
+	},
+	["HELPFRAME_QUEST_BUTTON_TEXT"] = {
+		ruRU = "Сообщение о проблеме с заданием или NPC",
+		enGB = "Report Quest/NPC Issue"
+	},
+	["HELPFRAME_QUEST_TEXT"] = {
+		ruRU = "Невозможность начать или завершить выполнение задания",
+		enGB = "An issue that results in the inability to initiate or complete a quest"
+	},
+	["HELPFRAME_QUEST_TITLE"] = {
+		ruRU = "Задания/NPC, дающие задания",
+		enGB = "Quest/Quest NPC"
+	},
+	["HELPFRAME_REPORTISSUE_BULLET1"] = {
+		ruRU = "Домогательство со стороны других игроков",
+		enGB = "Harassment by other players"
+	},
+	["HELPFRAME_REPORTISSUE_BULLET2"] = {
+		ruRU = "Незначительные проблемы, такие как мелкие сбои изображения",
+		enGB = "Minor bugs such as display glitches"
+	},
+	["HELPFRAME_REPORTISSUE_BULLET_TITLE1"] = {
+		ruRU = "Список примеров:",
+		enGB = "Examples include:"
+	},
+	["HELPFRAME_REPORTISSUE_TEXT1"] = {
+		ruRU = "Здесь вы можете сообщить о различных обнаруженных проблемах, которые не требуют срочного вмешательства гейм-мастера.",
+		enGB = "Use this page to let us know about any problems you notice in the game that don't require an immediate Game Master response."
+	},
+	["HELPFRAME_REPORTISSUE_TEXT2"] = {
+		ruRU = "Мы постараемся сделать все возможное, чтобы решить проблему. Если для этого понадобится больше сведений, мы свяжемся с вами.",
+		enGB = "We will only contact you if we require more information. However, we will still work hard to solve the problem."
+	},
+	["HELPFRAME_REPORTISSUE_TITLE"] = {
+		ruRU = "Сообщить о проблеме",
+		enGB = "Report a Problem"
+	},
+	["HELPFRAME_REPORTLAG_TEXT1"] = {
+		ruRU = "Ваше сообщение о задержке отправлено.",
+		enGB = "Your lag report has been successfully submitted."
+	},
+	["HELPFRAME_STUCK_BUTTON_DESCRIPTION"] = {
+		ruRU = "Застревание на определенном участке карты",
+		enGB = "Physically stuck in an area of the map"
+	},
+	["HELPFRAME_STUCK_BUTTON_TEXT"] = {
+		ruRU = "Застревание:",
+		enGB = "Stuck:"
+	},
+	["HELPFRAME_STUCK_TEXT1"] = {
+		ruRU = "Если ваш персонаж застрял и не может передвигаться, попробуйте воспользоваться одним из приведенных ниже способов.",
+		enGB = "If your character is stuck you may use one of the options below to free your character."
+	},
+	["HELPFRAME_STUCK_TITLE"] = {
+		ruRU = "Персонаж застрял!",
+		enGB = "Character Stuck!"
+	},
+	["HELPFRAME_SUGGESTION_BUTTON_DESCRIPTION"] = {
+		ruRU = "Все общие предложения и отзывы об игре",
+		enGB = "All general suggestions and feedback about the game"
+	},
+	["HELPFRAME_SUGGESTION_BUTTON_TEXT"] = {
+		ruRU = "Отправка предложения:",
+		enGB = "Send a Suggestion:"
+	},
+	["HELPFRAME_TECHNICAL_BULLET1"] = {
+		ruRU = "Падение производительности игры (игра замедляется или идет рывками)",
+		enGB = "Decline in game performance (game becomes slow or choppy)"
+	},
+	["HELPFRAME_TECHNICAL_BULLET2"] = {
+		ruRU = "Ошибки изображения (черные квадраты, мигающие предметы, искажения и т.п.)",
+		enGB = "Display errors (black boxes, flickering objects, distortions, etc)"
+	},
+	["HELPFRAME_TECHNICAL_BULLET3"] = {
+		ruRU = "Видеоролики демонстрируются некорректно",
+		enGB = "Cinematics or in-game movies not playing correctly"
+	},
+	["HELPFRAME_TECHNICAL_BULLET4"] = {
+		ruRU = "Проблемы со звуком (отсутствие звука или музыки, шумы, эффекты зацикливания и т.п.)",
+		enGB = "Sound issues (no sound or music, static, looping effects, etc)"
+	},
+	["HELPFRAME_TECHNICAL_BULLET5"] = {
+		ruRU = "Проблемы с установкой и разрывом соединения",
+		enGB = "Connection/disconnection problems"
+	},
+	["HELPFRAME_TECHNICAL_BULLET6"] = {
+		ruRU = "Во время игры имели место сбои или сообщения об ошибках",
+		enGB = "Crashes or error messages of any kind occurring during gameplay"
+	},
+	["HELPFRAME_TECHNICAL_BULLET7"] = {
+		ruRU = "Любые другие технические проблемы",
+		enGB = "Any other technical game issue"
+	},
+	["HELPFRAME_TECHNICAL_BULLET_TITLE1"] = {
+		ruRU = "Вот примеры технических проблем:",
+		enGB = "The following are examples of Technical issues:"
+	},
+	["HELPFRAME_TECHNICAL_BULLET_TITLE2"] = {
+		ruRU = "Возможно, решение вашей проблемы уже опубликовано на форуме технической поддержки, расположенном на сайте World of Warcraft по адресу:\n\nwww.wow-europe.com\n\nЕсли приведенные решения вам не помогают, свяжитесь, пожалуйста, с отделом технической поддержки:\n\nhttp://eu.blizzard.com/support/article.xml?articleId=22330",
+		enGB = "You may find that a solution for your issue has already been posted on the Technical Support Forum, located on the World of Warcraft site at:\n\nwww.worldofwarcraft.com\n\nIf your technical issue is not addressed by the solutions posted there, please contact our Technical Support Department:\n\nBy Phone at:  (949) 955-1382\nBy Web at: http://us.blizzard.com/support/index.xml?gameId=11\nBy Email at:  wowtech@blizzard.com"
+	},
+	["HELPFRAME_TECHNICAL_BUTTON_TEXT"] = {
+		ruRU = "Техническая проблема",
+		enGB = "Report Technical Issue"
+	},
+	["HELPFRAME_TECHNICAL_TEXT"] = {
+		ruRU = "Наша группа технической поддержки готова помочь вам разобраться с любыми проблемами, которые возникают при игре в World of Warcraft.",
+		enGB = "Our Technical Support team is available to help you with any technical issues that occur while you are using World of Warcraft."
+	},
+	["HELPFRAME_TECHNICAL_TITLE"] = {
+		ruRU = "Техническая поддержка",
+		enGB = "Technical Support"
+	},
+	["HELPFRAME_WELCOME_TEXT1"] = {
+		ruRU = "Для получения внутриигровой поддержки, пожалуйста, воспользуйтесь одной из следующих функций, чтобы отправить запрос на помощь гейм-мастера или сообщить об ошибке.",
+		enGB = "For assistance with in-game support, please use the following options to submit a petition for GM assistance or report an issue."
+	},
+	["HELPFRAME_WELCOME_TITLE"] = {
+		ruRU = "Поддержка пользователей",
+		enGB = "Customer Support"
+	},
+	["HELPFRAME_ACCOUNTSECURITY_BUTTON"] = {
+		ruRU = "Двухфакторная аутентификация",
+		enGB = "Two-Factor Authentication"
+	},
+	["HELPFRAME_ACCOUNTSECURITY_TEXT"] = {
+		ruRU = "<html><body><p>|cffffd100Мошенничество|r</p><p>Рядом с именем представителя администрации проекта Sirus всегда отображается логотип |TInterface\\ChatFrame\\UI-ChatIcon-Blizz:20:40:0:2|t. Помните об этом, если вам поступит сообщение от лица администрации проекта Sirus.</p><br/><p>Если логотип рядом с именем отсутствует, значит это попытка мошенничества. Рекомендуем прекратить общение с данным игроком и сообщить об инциденте на форуме в разделе <a href=\"http:https://forum.sirus.su/forums/8/\">Жалобы на игроков</a>.</p><br/><p>|cffffd100Регулярно делайте проверку вашего компьютера|r</p><p>Одна из наиболее распространенных причин взлома учетных записей - сторонние вредоносные программы и патчи. Мы не рекомендуем использовать сторонние программы или устанавливать непроверенные патчи. Вы можете делать это лишь на свой страх и риск!</p><br/><p>|cffffd100Не раскрывайте данные своей учетной записи|r</p><p>Делиться данными своей учетной записи с другими пользователями небезопасно! Это может привести к негативным последствиям. Чтобы не подвергать учетную запись риску, держите свой пароль в секрете. Рекомендуется использовать для учетной записи отдельный уникальный пароль.\n\nТакже для дополнительной защиты учетной записи, вы можете подключить двухфакторную аутентификацию. Ознакомиться с более подробной информацией вы можете в статье <a href=\"kbase:1:13\">Двухфакторная аутентификация</a></p></body></html>",
+		enGB = ""
+	},
+	["HELPFRAME_ACCOUNTSECURITY_TITLE"] = {
+		ruRU = "Безопасность учетной записи",
+		enGB = "Account Security"
+	},
+	["HELPFRAME_CONTACTS_BUTTON"] = {
+		ruRU = "Наши контакты",
+		enGB = "Contacts"
+	},
+	["HELPFRAME_CONTACTS_TEXT"] = {
+		ruRU = "<html><body><p>Мы очень дорожим вниманием всех игроков проекта Sirus.su, поэтому всегда стараемся предоставлять вовремя всю актуальную информацию по развитию проекта и отвечать на интересующие вас вопросы. В данном разделе представлен список всех ресурсов, на которых вы можете найти нас!\n</p><br/><p>Сайт: <a href=\"http:https://sirus.su/\">sirus.su</a></p><p>На нашем сайте вы сможете найти актуальную базу знаний, увидеть PVP и PVE ладдер, зайти в личный кабинет и многое другое!</p><br/><p>Форум: <a href=\"http:https://forum.sirus.su/\">forum.sirus.su</a></p><p>На форуме можно получить помощь, оставить свои предложения и пожелания, высказать свое мнение об обновлениях и изменениях, а также найти единомышленников для игры!</p><br/><p>Вконтакте: <a href=\"http:https://vk.com/sirussu\">vk.com/sirussu</a></p><p>Наша группа Вконтакте предназначена для отдыха и общения: игровые мемы, викторины, розыгрыши. Все это есть там! Вы также сможете найти актуальную информацию по обновлениям и внутриигровым изменениям в ленте нашей группы Вконтакте!</p><br/><p>Discord: <a href=\"http:https://discord.gg/sirus\">discord.gg/sirus</a></p><p>Для более тесного общения игроков друг с другом был создан сервер в Discord. Общайтесь с игроками и представителями администрации проекта, отслеживайте последние новости, участвуйте в еженедельных розыгрышах!</p></body></html>",
+		enGB = ""
+	},
+	["HELPFRAME_ITEM_RESTORATION"] = {
+		ruRU = "Восстановить предмет",
+		enGB = "Item Restoration"
+	},
+	["HELPFRAME_OPENTICKETINSTRUCTIONS_TEXT"] = {
+		ruRU = "<html><body><p>Служба внутриигровой поддержки доступна круглосуточно. Для более быстрого получения ответа, пожалуйста, отправляйте не более одного запроса по каждой проблеме.</p><br/><p>Прежде чем оформлять новый запрос обязательно ознакомьтесь с разделом <a href=\"kbase:2:-2\">Основные вопросы</a>. Вы также можете использовать поиск для получения нужной информации или поиска интересующей вас статьи.</p><br/><p>Остались вопросы? Создайте внутриигровой запрос или обратитесь на форум в раздел <a href=\"http:https://forum.sirus.su/categories/4/\">Поддержка пользователей</a> и ожидайте ответа от наших специалистов поддержки, мы обязательно постараемся вам помочь!</p></body></html>",
+		enGB = "Game Masters are available to assist you 24 hours a day. Game Masters will be able to contact you no matter which character you are currently playing. Only one petition per account is necessary. Please keep in mind that wait times may vary."
+	},
+	["HELPFRAME_OPENTICKETINSTRUCTIONS_TITLE"] = {
+		ruRU = "Открыть запрос",
+		enGB = "Open a Ticket"
+	},
+	["HELPFRAME_REPORT_BUG_TITLE"] = {
+		ruRU = "Сообщить об ошибке",
+		enGB = "Submit Bug"
+	},
+	["HELPFRAME_REPORT_PLAYER_EXAMPLE_CHAT"] = {
+		ruRU = "[Имя игрока]:",
+		enGB = "[Player Name]: Blah blah blah"
+	},
+	["HELPFRAME_REPORT_PLAYER_EXAMPLE_CHAT_CLICK_LOCATION"] = {
+		ruRU = "[Имя собеседника в чате]",
+		enGB = "[Name in Chat]"
+	},
+	["HELPFRAME_REPORT_PLAYER_EXAMPLE_TARGET_CLICK_LOCATION"] = {
+		ruRU = "Рамка цели",
+		enGB = "Target Frame"
+	},
+	["HELPFRAME_REPORT_PLAYER_EXAMPLE_TARGET_NAME"] = {
+		ruRU = "Имя игрока",
+		enGB = "Player Name"
+	},
+	["HELPFRAME_REPORT_PLAYER_RIGHT_CLICK"] = {
+		ruRU = "Щелкните ПКМ",
+		enGB = "Right-Click"
+	},
+	["HELPFRAME_REPORT_PLAYER_TEXT"] = {
+		ruRU = "<html><body><p>Мы хотим, чтобы игра на проекте Sirus была как можно более комфортной, а процесс был безопасным и приносил удовольствие.</p><br/><p>Если вам встретился персонаж, который использует различные оскорбительные выражения для разжигания межнациональной розни, ведет политические дискуссии или шлет в чат сообщения, содержащие рекламу (спам), существует быстрый и простой способ сообщить об этом нам!</p><br/><p>Чтобы пожаловаться на игрока, который ведет себя неподобающим образом или нарушает правила, щелкните по по его имени в чате правой кнопкой мыши и выберите из списка |cff71d5ff«Сообщить о спаме»|r.\n\nОбратите внимание, что при подаче жалобы подобным образом меры принимаются только в указанных выше ситуациях.</p><br/><p>Если же вы обнаружили игрока, который нарушает иные правила сервера, пожалуйста, оставьте жалобу на данного игрока на форуме в разделе <a href=\"http:https://forum.sirus.su/forums/8/\">Жалобы на игроков</a></p><br/><p>Ознакомиться с правилами сервера вы можете в статье <a href=\"kbase:1:1\">Правила проекта Sirus.su</a></p></body></html>",
+		enGB = ""
+	},
+	["HELPFRAME_REPORT_PLAYER_TITLE"] = {
+		ruRU = "Пожаловаться",
+		enGB = "Report Player"
+	},
+	["HELPFRAME_STUCK_GRAVEYARD"] = {
+		ruRU = "Если вы не хотите ждать, пока восстановится ваш камень возвращения, вы можете убить своего персонажа и переместить его дух на ближайшее кладбище. После этого он может воскреснуть, обратившись к целителю душ (что вызовет временную слабость и значительную потерю прочности всех предметов) или найдя свое тело.",
+		enGB = "If your Hearthstone is on cooldown and you don't want to wait for it, you have the option for your character to die and be teleported to the nearest graveyard.  You can then either resurrect at the Spirit Healer, suffering durability loss, or attempt to retrieve your corpse."
+	},
+	["HELPFRAME_STUCK_GRAVEYARD_HEADER"] = {
+		ruRU = "Телепортация на кладбище",
+		enGB = "Teleport to Graveyard"
+	},
+	["HELPFRAME_STUCK_HEARTHSTONE"] = {
+		ruRU = "Если камень возвращения в данный момент не восстанавливается, вы можете использовать его, чтобы перенестись в место, которое вы назначили своим домом. Чтобы использовать камень, щелкните по расположенной ниже кнопке или найдите его в рюкзаке.",
+		enGB = "If your Hearthstone is not on cooldown, you can use it to teleport you to your home location. Click the Hearthstone button below (or in your backpack) to teleport."
+	},
+	["HELPFRAME_STUCK_HEARTHSTONE_HEADER"] = {
+		ruRU = "Использовать камень возвращения",
+		enGB = "Use Your Hearthstone"
+	},
+	["HELPFRAME_STUCK_HEARTHSTONE_MISSING"] = {
+		ruRU = "Обратитесь к хозяину таверны, чтобы получить камень возвращения.",
+		enGB = "Visit an innkeeper to obtain a Hearthstone"
+	},
+	["HELPFRAME_STUCK_UNSTACK_OLD"] = {
+		ruRU = "Эта функция для начала попытается перенести вас в таверну с помощью камня возвращения. Если это не получится, она попытается освободить вашего персонажа из безвыходного положения.\nОбратите внимание, что этой функцией можно пользоваться не чаще, чем раз в 5 мин.",
+		enGB = "Activating the auto-unstuck command will first attempt to use your hearthstone to port you back to your inn. If this is not possible, it will attempt to nudge your character out of position.\n\nPlease note this option can only be used every 5 minutes."
+	},
+	["HELPFRAME_STUCK_UNSTACK_OLD_HEADER"] = {
+		ruRU = "Выход из застревания",
+		enGB = "Stuck"
+	},
+	["HELPFRAME_SUBMIT_SUGGESTION_LEGAL"] = {
+		ruRU = "Щелкнув по кнопке |cffffd200Отправить|r, вы подтверждаете, что описанная идея принадлежит вам, и разрешаете компании Blizzard Entertainment использовать ее любым способом без каких-либо обязательств по вознаграждению.",
+		enGB = "By clicking |cffffd200Submit|r, you promise that this is solely your idea and that Blizzard Entertainment can use it any way it chooses without any obligation to compensate you."
+	},
+	["HELPFRAME_SUBMIT_SUGGESTION_TEXT1"] = {
+		ruRU = "Отзывы игроков помогают команде разработчиков World of Warcraft делать игру лучше.\n\nЕсли у вас есть какое-то предложение, пожалуйста, |cffffd200изложите его|r как можно более |cffffd200конкретно|r и |cffffd200конструктивно|r:\n\n-К какой части игрового процесса относится ваше предложение?\n-Какие конкретные проблемы призвано устранить ваше предложение?\n-Каким образом, по-вашему, мы можем произвести улучшение, не нарушая принципы увлекательности и справедливости игры?",
+		enGB = "Player feedback helps the World of Warcraft team find opportunities to improve every aspect of the game.\n\nIf you choose to submit a suggestion, |cffffd200please be specific|r, and |cffffd200organize your thoughts|r in a |cffffd200constructive fashion|r:\n\n-Which part of the gameplay is your suggestion about?\n-What specific problem are you trying to fix?\n-How do you think this could be improved in a fun and fair way?"
+	},
+	["HELPFRAME_SUBMIT_SUGGESTION_TITLE"] = {
+		ruRU = "Оставить предложение",
+		enGB = "Submit Suggestion"
+	},
+	["HELPFRAME_SUBMIT_TICKET_TITLE"] = {
+		ruRU = "Отправить запрос",
+		enGB = "Submit a Ticket"
+	},
+	["HELPFRAME_SUPPORT_TITLE"] = {
+		ruRU = "Поддержка",
+		enGB = "Support"
+	},
+	["HELPFRAME_TICKET_CLICK_HELP"] = {
+		ruRU = "Щелкните, чтобы открыть ваш запрос.",
+		enGB = "Click here to open your ticket."
+	},
+	["HELPFRAME_TICKET_TUTORIAL_HELP"] = {
+		ruRU = "Вы отправили запрос гейм-мастеру. Запрос можно отредактировать или отменить.",
+		enGB = "You have submitted a GM ticket.  You may edit or abandon your ticket here."
+	},
+	["KBASE_ACCOUNTSECURITY"] = {
+		ruRU = "Безопасность уч. записи",
+		enGB = "Account Security"
+	},
+	["KBASE_OPENTICKET"] = {
+		ruRU = "Открыть запрос",
+		enGB = "Open a Ticket"
+	},
+	["KBASE_ARTICLE_HOT"] = {
+		ruRU = "Популярная статья",
+		enGB = "Popular",
+	},
+	["KBASE_ARTICLE_IMPORTANT"] = {
+		ruRU = "Важная статья",
+		enGB = "Important",
+	},
+	["KBASE_ARTICLE_HIDDEN"] = {
+		ruRU = "Скрыта",
+		enGB = "Hidden",
+	},
+	["HELPFRAME_KB_SUGGESTION_TITLE"] = {
+		ruRU = "Возможно вам поможет:",
+		enGB = "",
 	},
 	["ARENA_2V2_INFO_HEADER"] = {
 		ruRU = "Вы квалифицировались в %i |4неделе:неделях:неделях; из 13",
@@ -43016,7 +43168,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = ""
 	},
 	["SETTINGS_SHOW_MISC_TOAST"] = {
-		ruRU = "Без категории",
+		ruRU = "Прочие уведомления",
 		enGB = ""
 	},
 	["SETTINGS_SOCIAL_SOUND"] = {
@@ -43048,7 +43200,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["SETTINGS_MISC_TOAST_SOUND"] = {
-		ruRU = "Без категории",
+		ruRU = "Прочие уведомления",
 		enGB = "",
 	},
 	["ERR_GUILD_LEADER_REPLACED"] = {

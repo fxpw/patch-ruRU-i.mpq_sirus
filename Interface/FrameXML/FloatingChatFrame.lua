@@ -934,7 +934,7 @@ function FCF_SetWindowAlpha(frame, alpha, doNotSave)
 		SetChatWindowAlpha(frame:GetID(), alpha);
 	end
 	-- Remember the alpha
-	frame.oldAlpha = alpha;
+	frame.oldAlpha = alpha or DEFAULT_CHATFRAME_ALPHA;
 end
 
 function FCF_GetCurrentChatFrameID()

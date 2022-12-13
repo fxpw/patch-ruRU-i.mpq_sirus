@@ -197,8 +197,10 @@ function CharacterServicesMaster_OnShow( self, ... )
 	CharacterBoostButton:Hide()
 	CharSelectEnterWorldButton:Disable()
 	CharSelectCreateCharacterButton:Disable()
-	CharacterSelectAddonsButton:Hide()
 	CharSelectChangeRealmButton:Disable()
+	CharacterSelectAddonsButton:Disable()
+	CharacterSelectOptionsButton:Disable()
+	CharacterSelectSupportButton:Disable()
 	CharacterSelectBackButton:Disable()
 	CharSelectCharPageButtonPrev:Disable()
 	CharSelectCharPageButtonNext:Disable()
@@ -237,6 +239,21 @@ function CharacterServicesMaster_OnShow( self, ... )
 	for i = 1, #AdditionalProffesionList do
 		GlueDark_DropDownMenu_SetSelectedName(ChooseAdditionalProffesionDropDown, nil)
 		GlueDark_DropDownMenu_SetText(ChooseAdditionalProffesionDropDown, SECONDARY_PROFESSION)
+	end
+end
+
+function CharacterServicesMaster_CreateCharacter(self)
+	local success = CharacterSelect_OpenCharacterCreate(nil, nil, function()
+		CharSelectServicesFlowFrame:Hide()
+		CharSelectServicesFlowFrame:Reset()
+		CharacterSelectLeftPanel.CharacterBoostInfoFrame:Show()
+		CharSelectServicesFlowFrame:SetPoint(unpack(CharSelectServicesFlowFrame.basePoint))
+		CharSelectServicesFlowFrame:SetAlpha(1)
+	end)
+
+	if success then
+		CharacterSelectLeftPanel.CharacterBoostInfoFrame:Hide()
+		CharSelectServicesFlowFrame:PlayAnim(true)
 	end
 end
 
@@ -318,6 +335,9 @@ function CharacterServicesMaster_OnHide( self, ... )
 	CharSelectEnterWorldButton:Enable()
 	UpdateAddonButton()
 	CharSelectChangeRealmButton:Enable()
+	CharacterSelectAddonsButton:Enable()
+	CharacterSelectOptionsButton:Enable()
+	CharacterSelectSupportButton:Enable()
 	CharacterSelectBackButton:Enable()
 	CharacterSelect_UpdatePageButton()
 	UpdateCharacterSelection()
@@ -359,22 +379,22 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 				local _, _, _, color = GetClassColor(self.classInfo.classFile)
 				frame.CharacterServicesMaster.step1.finish.Character:SetFormattedText(CHARACTER_BOOST_CHARACTER_NAME, color, name)
 				frame.CharacterServicesMaster.step1.finish.CharacterInfo:SetFormattedText(CHARACTER_BOOST_CHARACTER_INFO, level, color, class)
-	
+
 				frame.CharacterServicesMaster.step1.choose:Hide()
 				frame.CharacterServicesMaster.step1.finish:Show()
 				frame.GlowBox:Hide()
-	
+
 				for i = 1, math.min(GetNumCharacters(), MAX_CHARACTERS_DISPLAYED) do
 					local button = _G["CharSelectCharacterButton"..i]
 					button.Arrow:Hide()
-	
+
 					if i ~= frame.CharSelect then
 						button:Disable()
 					end
 				end
-	
+
 				CharacterBoostStep = CharacterBoostStep + 1
-	
+
 				PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
 				frame.CharacterServicesMaster.step2:Show()
 			end
@@ -711,6 +731,26 @@ function CharacterServicesMaster_OnLoad(self)
 		f.finish.StepLine:ClearAllPoints()
 		f.finish.StepLine:SetPoint("TOP", self.CharacterServicesMaster["step" .. (i - 1)].finish.StepBackdrop, "BOTTOM", 0, 20)
 		f.finish.StepLine:SetPoint("BOTTOM", f.finish.StepBackdrop, "TOP", 1, -20)
+	end
+
+	do
+		Mixin(self, GlueEasingAnimMixin)
+		self.basePoint = {self:GetPoint()}
+		self.startPoint = -(self:GetWidth() + 35)
+		self.endPoint = self.basePoint[4]
+		self.duration = 0.500
+
+		self.SetPosition = function(this, easing, progress)
+			local alpha = progress and (this.isRevers and (1 - progress) or progress) or (this.isRevers and 0 or 1)
+
+			this:SetAlpha(alpha)
+
+			if easing then
+				this:ClearAndSetPoint(self.basePoint[1], easing, self.basePoint[5])
+			else
+				this:ClearAndSetPoint(self.basePoint[1], this.isRevers and this.startPoint or this.endPoint, self.basePoint[5])
+			end
+		end
 	end
 
 	CharacterServicesMaster_UpdateSteps()

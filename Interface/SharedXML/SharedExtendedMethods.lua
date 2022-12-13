@@ -44,6 +44,8 @@ end
 
 InitSubFrame()
 
+local function nop() end
+
 local function Method_SetShown( self, ... )
 	if ... then
 		self:Show()
@@ -266,6 +268,37 @@ function Method_GetScaledRect(self)
 	end
 end
 
+function Method_EditBox_IsEnabled(self)
+	return self.__ext_Disabled ~= true
+end
+
+function Method_EditBox_Enabled(self)
+	if self.__ext_mouseEnabled then
+		self:EnableMouse(true)
+	end
+	if self.__ext_autoFocus then
+		self:SetAutoFocus(true)
+		self:SetFocus()
+		self:HighlightText(0, 0)
+	end
+	self.SetFocus = nil
+	self.__ext_Disabled = nil
+	self.__ext_autoFocus = nil
+	self.__ext_mouseEnabled = nil
+end
+
+function Method_EditBox_Disable(self)
+	if not self.__ext_Disabled then
+		self.__ext_autoFocus = self:IsAutoFocus() == 1
+		self.__ext_mouseEnabled = self:IsMouseEnabled() == 1
+	end
+	self:SetAutoFocus(false)
+	self:ClearFocus()
+	self:EnableMouse(false)
+	self.SetFocus = nop
+	self.__ext_Disabled = true
+end
+
 REGISTERED_CUSTOM_EVENTS = {}
 
 function Method_RegisterCustomEvent(self, event)
@@ -483,6 +516,10 @@ function Model.__index:UnregisterCustomEvent(event) return Method_UnregisterCust
 
 -- EditBox
 function EditBox.__index:SetShown(...) Method_SetShown(self, ...) end
+function EditBox.__index:SetEnabled( ... ) Method_SetEnabled( self, ... ) end
+function EditBox.__index:IsEnabled( ... ) Method_EditBox_IsEnabled( self, ... ) end
+function EditBox.__index:Enable( ... ) Method_EditBox_Enabled( self, ... ) end
+function EditBox.__index:Disable( ... ) Method_EditBox_Disable( self, ... ) end
 function EditBox.__index:ClearAndSetPoint(...) Method_ClearAndSetPoint(self, ...) end
 function EditBox.__index:GetScaledRect() return Method_GetScaledRect(self) end
 function EditBox.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end

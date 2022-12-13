@@ -2691,9 +2691,9 @@
 							local price = 10;
 							local discountedPrice;
 
-							local _, transmogRenewalDiscount = GetStoreRenewalDiscounts();
-							if transmogRenewalDiscount and transmogRenewalDiscount > 0 then
-								discountedPrice = math.floor(price * ((100 - transmogRenewalDiscount) / 100));
+							local _, transmogRenewalPrice = GetStoreRenewalDiscounts();
+							if transmogRenewalPrice and transmogRenewalPrice ~= 10 then
+								discountedPrice = transmogRenewalPrice;
 							end
 
 							local data = {
@@ -3435,9 +3435,9 @@
 						local price = 3;
 						local discountedPrice;
 
-						local collectionRenewalDiscount = GetStoreRenewalDiscounts();
-						if collectionRenewalDiscount and collectionRenewalDiscount > 0 then
-							discountedPrice = math.floor(price * ((100 - collectionRenewalDiscount) / 100));
+						local collectionRenewalPrice = GetStoreRenewalDiscounts();
+						if collectionRenewalPrice and collectionRenewalPrice ~= 3 then
+							discountedPrice = collectionRenewalPrice;
 						end
 
 						local data = {

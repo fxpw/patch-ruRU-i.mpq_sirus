@@ -1271,7 +1271,7 @@ StaticPopupDialogs["HELP_TICKET"] = {
 	button2 = HELP_TICKET_ABANDON,
 	OnAccept = function(self)
 		if ( HelpFrame_IsGMTicketQueueActive() ) then
-			HelpFrame_ShowFrame("OpenTicket");
+			HelpFrame_ShowFrame(HELPFRAME_SUBMIT_TICKET);
 		else
 			HideUIPanel(HelpFrame);
 			StaticPopup_Show("HELP_TICKET_QUEUE_DISABLED");
@@ -1291,7 +1291,7 @@ StaticPopupDialogs["GM_RESPONSE_NEED_MORE_HELP"] = {
 	button1 = YES,
 	button2 = NO,
 	OnAccept = function(self)
-		HelpFrame_ShowFrame("NeedMoreHelp");
+		HelpFrame_GMResponse_Acknowledge();
 	end,
 	OnCancel = function(self)
 	end,
@@ -1305,6 +1305,8 @@ StaticPopupDialogs["GM_RESPONSE_RESOLVE_CONFIRM"] = {
 	button2 = NO,
 	OnAccept = function(self)
 		GMResponseResolve();
+		HelpFrame_SetFrameByKey(HELPFRAME_SUPPORT);
+		HelpFrame_SetSelectedButton(HelpFrameButton16);
 		HideUIPanel(HelpFrame);
 	end,
 	OnCancel = function(self)
@@ -3532,7 +3534,7 @@ StaticPopupDialogs["EXTERNAL_URL_POPUP"] = {
 	hasEditBox = 1,
 	hasWideEditBox = 1,
 	OnShow = function(self)
-		self.wideEditBox:SetText(HelpFrameViewResponseMessageBody.externalURL)
+		self.wideEditBox:SetText(self.data)
 		self.wideEditBox:HighlightText()
 	end,
 	timeout = 0,

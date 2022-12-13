@@ -4550,6 +4550,76 @@
 			</OnLoad>
 		</Scripts>
 	</Slider>
+	<Slider name="UIPanelScrollBarTrimTemplate" virtual="true">
+		<Size x="20" y="0"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBG" setAllPoints="true" hidden="true">
+					<Color r="0" g="0" b="0" a=".85"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentTop" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+					<Size x="24" y="48"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-4" y="17"/>
+					</Anchors>
+					<TexCoords left="0" right="0.45" top="0" bottom=".20"/>
+				</Texture>
+				<Texture name="$parentBottom" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+					<Size x="24" y="64"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="-4" y="-15"/>
+					</Anchors>
+					<TexCoords left="0.515625" right="0.97" top="0.1440625" bottom="0.4140625"/>
+				</Texture>
+				<Texture name="$parentMiddle" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentTop" relativePoint="BOTTOMLEFT"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBottom" relativePoint="TOPRIGHT"/>
+					</Anchors>
+					<TexCoords left="0" right="0.45" top="0.1640625" bottom="1"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentScrollUpButton" inherits="UIPanelScrollUpButtonTemplate">
+				<Anchors>
+					<Anchor point="BOTTOM" relativePoint="TOP" x="0" y="-2"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						local parent = self:GetParent();
+						local scrollStep = self:GetParent().scrollStep or (parent:GetHeight() / 2);
+						parent:SetValue(parent:GetValue() - scrollStep);
+						PlaySound("UChatScrollButton");
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentScrollDownButton" inherits="UIPanelScrollDownButtonTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativePoint="BOTTOM" x="0" y="2"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						local parent = self:GetParent();
+						local scrollStep = self:GetParent().scrollStep or (parent:GetHeight() / 2);
+						parent:SetValue(parent:GetValue() + scrollStep);
+						PlaySound("UChatScrollButton");
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnValueChanged>
+				self:GetParent():SetVerticalScroll(value);
+			</OnValueChanged>
+		</Scripts>
+		<ThumbTexture name="$parentThumbTexture" inherits="UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-Knob">
+			<Size x="18" y="24"/>
+			<TexCoords left="0.20" right="0.80" top="0.125" bottom="0.875"/>
+		</ThumbTexture>
+	</Slider>
 	<EditBox name="NumericInputSpinnerTemplateNoFont" letters="3" numeric="true" autoFocus="false" inherits="InputBoxTemplateNoFont" enableMouse="true" virtual="true">
 		<Size x="31" y="20"/>
 		<Layers>
@@ -4961,6 +5031,49 @@
 			</OnLoad>
 		</Scripts>
 	</ScrollFrame>
+	<ScrollFrame name="UIPanelScrollFrameTemplateTrim" virtual="true">
+		<Frames>
+			<Slider name="$parentScrollBar" inherits="UIPanelScrollBarTrimTemplate" parentKey="ScrollBar">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
+						<Offset x="0" y="-16"/>
+					</Anchor>
+					<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT">
+						<Offset x="0" y="16"/>
+					</Anchor>
+				</Anchors>
+			</Slider>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				ScrollFrame_OnLoad(self);
+			</OnLoad>
+			<OnScrollRangeChanged>
+				ScrollFrame_OnScrollRangeChanged(self, xrange, yrange);
+			</OnScrollRangeChanged>
+			<!--  The code to disable the ScrollDownButton is pretty hacked, but it works -->
+			<OnVerticalScroll>
+				local scrollbar = _G[self:GetName().."ScrollBar"];
+				scrollbar:SetValue(offset);
+				local min;
+				local max;
+				min, max = scrollbar:GetMinMaxValues();
+				if ( offset == 0 ) then
+					_G[scrollbar:GetName().."ScrollUpButton"]:Disable();
+				else
+					_G[scrollbar:GetName().."ScrollUpButton"]:Enable();
+				end
+				if ((scrollbar:GetValue() - max) == 0) then
+					_G[scrollbar:GetName().."ScrollDownButton"]:Disable();
+				else
+					_G[scrollbar:GetName().."ScrollDownButton"]:Enable();
+				end
+			</OnVerticalScroll>
+			<OnMouseWheel>
+				ScrollFrameTemplate_OnMouseWheel(self, delta);
+			</OnMouseWheel>
+		</Scripts>
+	</ScrollFrame>
 	<ScrollFrame name="FauxScrollFrameTemplate" inherits="UIPanelScrollFrameTemplate" virtual="true">
 		<Scripts>
 			<OnScrollRangeChanged function=""/>
@@ -5021,6 +5134,16 @@
 				<Size>
 					<AbsDimension x="300" y="334"/>
 				</Size>
+			</Frame>
+		</ScrollChild>
+	</ScrollFrame>
+	<ScrollFrame name="FauxScrollFrameTemplateTrim" inherits="UIPanelScrollFrameTemplateTrim" virtual="true">
+		<Scripts>
+			<OnScrollRangeChanged function=""/>
+		</Scripts>
+		<ScrollChild>
+			<Frame name="$parentScrollChildFrame">
+				<Size x="300" y="334"/>
 			</Frame>
 		</ScrollChild>
 	</ScrollFrame>

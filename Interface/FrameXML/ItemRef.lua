@@ -203,8 +203,7 @@ function SetItemRef(link, text, button, chatFrame)
 		end
 		return
 	elseif ( strsub(link, 1, 4) == "http" ) then
-		HelpFrameViewResponseMessageBody.externalURL = link
-		StaticPopup_Show("EXTERNAL_URL_POPUP")
+		StaticPopup_Show("EXTERNAL_URL_POPUP", nil, nil, link)
 		return
 	elseif ( strsub(link, 1, 10) == "collection" ) then
 		local _, collectionType, itemID = strsplit(":", link);
@@ -237,6 +236,79 @@ function SetItemRef(link, text, button, chatFrame)
 			end
 		end
 		return;
+	elseif ( strsub(link, 1, 5) == "kbase" ) then
+		local _, dataTypeIndex, entryID = string.split(":", link)
+		dataTypeIndex = tonumber(dataTypeIndex)
+		entryID = tonumber(entryID)
+
+		ShowUIPanel(HelpFrame, true)
+		HelpFrame_SetFrameByKey(HELPFRAME_KNOWLEDGE_BASE)
+		HelpFrame_SetSelectedButton(HelpFrameNavTbl[1].button)
+
+		if dataTypeIndex == SIRUS_KNOWLEDGE_BASE_IDS.ROOT.ARTICLE then
+			if entryID > 0 then
+				local entry = KNOWLEDGEBASE_ARTICLES[entryID]
+				if entry and (not entry.hidden or C_Service:IsGM()) then
+					KnowledgeBase_SetNavBarPath(entry.articleID)
+					KnowledgeBase_ArticleOnClick({
+						articleId = entry.articleID,
+						articleHeader = Custom_KnowledgeBase.GetArticleHeaderByID(entry.articleID),
+					}, "LeftButton", true)
+				end
+			end
+		elseif dataTypeIndex == SIRUS_KNOWLEDGE_BASE_IDS.ROOT.CATEGORY then
+			if entryID == -1 then
+				NavBar_Reset(HelpFrame.kbase.navBar)
+				KnowledgeBase_SelectCategory({index = entryID})
+			elseif entryID == -2 then
+				KnowledgeBase_SnapToTopIssues()
+			elseif entryID > 0 then
+				for categoryIndex = 1, Custom_KnowledgeBase.KBSetup_GetCategoryCount() do
+					local categoryID = Custom_KnowledgeBase.KBSetup_GetCategoryData(categoryIndex)
+					if categoryID == entryID then
+						NavBar_Reset(HelpFrame.kbase.navBar)
+						KnowledgeBase_SelectCategory({index = categoryIndex + 2})	-- Offset for first two virtual categories
+						break
+					end
+				end
+			end
+		elseif dataTypeIndex == SIRUS_KNOWLEDGE_BASE_IDS.ROOT.SUB_CATEGORY then
+			if entryID == -1 then
+				NavBar_Reset(HelpFrame.kbase.navBar)
+				KnowledgeBase_SelectSubCategory({index = entryID})
+			elseif entryID > 0 then
+				local entry = KNOWLEDGEBASE_SUB_CATEGORIES[entryID]
+				if entry and entry.parentID ~= -1 then
+					for categoryIndex = 1, Custom_KnowledgeBase.KBSetup_GetCategoryCount() do
+						local categoryID, categoryName = Custom_KnowledgeBase.KBSetup_GetCategoryData(categoryIndex)
+						if categoryID == entry.parentID then
+							for subCategoryIndex = 1, Custom_KnowledgeBase.KBSetup_GetSubCategoryCount(categoryIndex) do
+								local subCategoryID = Custom_KnowledgeBase.KBSetup_GetSubCategoryData(categoryIndex, subCategoryIndex)
+								if subCategoryID == entryID then
+									NavBar_Reset(HelpFrame.kbase.navBar)
+
+									NavBar_AddButton(HelpFrame.kbase.navBar, {
+										name = categoryName,
+										OnClick = KnowledgeBase_DisplaySubCategories,
+										listFunc = KnowledgeBase_ListSubCategory,
+										category = categoryIndex,
+									})
+									HelpFrame.kbase.category = categoryIndex
+
+									KnowledgeBase_SelectSubCategory({index = subCategoryIndex + 1})	-- Offset for first virtual categories
+
+									break
+								end
+							end
+
+							break
+						end
+					end
+				end
+			end
+		end
+
+		return
 	end
 
 	if ( IsModifiedClick() ) then

@@ -199,8 +199,8 @@ end
 function C_FactionManager.GetFactionInfoOriginal()
 	local race = UnitRace("player")
 	local raceData = S_CHARACTER_RACES_INFO_LOCALIZATION_ASSOC[race]
-	
-	if S_CHARACTER_RACES_INFO[raceData.raceID] == E_CHARACTER_RACES.RACE_DRACTHYR then
+
+	if raceData and raceData.raceID == E_CHARACTER_RACES.RACE_DRACTHYR then
 		local factionID = C_FactionManager:GetOriginalFaction()
 		if factionID then
 			return returnFactionInfo(factionID)
