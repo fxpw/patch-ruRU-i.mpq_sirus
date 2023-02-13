@@ -1204,7 +1204,7 @@ function DefaultCompactUnitFrameSetup(frame)
 	frame.name:SetPoint("TOPLEFT", frame.roleGroupIcon, "TOPRIGHT", 0, 1);
 	frame.name:SetPoint("TOPRIGHT", -3, -3);
 	frame.name:SetJustifyH("LEFT");
-	frame.statusText:SetHeight(NAME_LINE_HEIGHT);
+	frame.name:SetHeight(NAME_LINE_HEIGHT);
 
 	local STATUS_LINE_HEIGHT = 12 * max(1.1, componentScale);
 	local fontName, _, fontFlags = frame.statusText:GetFont();
@@ -1485,6 +1485,26 @@ function SpellIsPriorityAura(spellId)
 	end
 
 	return LOSS_OF_CONTROL_SPELL_DATA[spellId] ~= nil or CUF_SPELL_PRIORITY_AURA[spellId] ~= nil or false;
+end
+
+---@param spellId integer|string
+---@return boolean
+function CompactUnitFrame_Util_SpellIsBlacklisted(spellId)
+	if type(spellId) == "string" then
+		spellId = tonumber(spellId);
+	end
+	if type(spellId) ~= "number" then
+		error("Usage: SpellIsSelfBuff(spellID)", 2);
+	end
+
+	if CUF_SPELL_VISIBILITY_BLACKLIST[spellId]
+	or FACTION_OVERRIDE_BY_DEBUFFS[spellId]
+	or S_CATEGORY_SPELL_ID[spellId]
+	or S_VIP_STATUS_DATA[spellId]
+	then
+		return true;
+	end
+	return false;
 end
 
 do

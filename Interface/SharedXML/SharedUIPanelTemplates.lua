@@ -1608,7 +1608,7 @@ function StorePopupFrameTemplateMixin:OnHide()
 end
 
 function StorePopupFrameTemplateMixin:UpdateBalance()
-	self.Content.SectionBottom.Balance:SetFormattedText(SHOP_POPUP_BALANCE, GetPlayerBalance())
+	self.Content.SectionBottom.Balance:SetFormattedText(SHOP_POPUP_BALANCE, Store_GetBalance(Enum.Store.CurrenctType.Bonus))
 end
 
 function StorePopupFrameTemplateMixin:Block()

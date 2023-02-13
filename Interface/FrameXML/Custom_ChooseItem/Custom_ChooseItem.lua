@@ -122,7 +122,7 @@ end
 function QuestChoiceOpticonSelectButton_OnClick( self, ... )
 	self = self:GetParent()
 	if self.data.itemGUID then
-		SendAddonMessage("ACMSG_UPGRADE_TOKEN", string.format("%d:%d:%d", self.data.tokenID, self.data.itemID, self.data.itemGUID), "WHISPER", UnitName("player"))
+		SendAddonMessage("ACMSG_UPGRADE_TOKEN", string.format("%d:%d:%s", self.data.tokenID, self.data.itemID, self.data.itemGUID), "WHISPER", UnitName("player"))
 	else
 		SendAddonMessage("ACMSG_TRADE_TOKEN", string.format("%d:%d", self.data.tokenID, self.data.itemID), "WHISPER", UnitName("player"))
 	end
@@ -168,7 +168,7 @@ function EventHandler:ASMSG_SHOW_TOKEN_UPGRADE(msg)
 					iconID = tonumber(iconID),
 					itemID = tonumber(itemID),
 					tokenID = tonumber(tokenID),
-					itemGUID = tonumber(itemGUID),
+					itemGUID = itemGUID,
 				}
 			end
 		end

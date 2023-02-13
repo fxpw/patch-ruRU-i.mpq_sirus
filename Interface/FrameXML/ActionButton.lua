@@ -588,6 +588,10 @@ function ActionButton_Update (self)
 		else
 			buttonCooldown:Hide();
 		end
+
+		if ActionButton_IsFlashing(self) then
+			ActionButton_StopFlash(self);
+		end
 	end
 
 	-- Add a green border if button is an equipped item

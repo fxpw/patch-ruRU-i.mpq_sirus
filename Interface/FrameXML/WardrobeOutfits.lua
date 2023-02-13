@@ -9,15 +9,14 @@ function WardrobeOutfitDropDownMixin:OnLoad()
 	end);
 	UIDropDownMenu_JustifyText(self, "LEFT");
 	self:RegisterCustomEvent("TRANSMOGRIFY_OPEN");
+	self:RegisterCustomEvent("TRANSMOG_OUTFITS_CHANGED");
 end
 
 function WardrobeOutfitDropDownMixin:OnShow()
-	self:RegisterCustomEvent("TRANSMOG_OUTFITS_CHANGED");
 	self:RegisterCustomEvent("TRANSMOGRIFY_UPDATE");
 end
 
 function WardrobeOutfitDropDownMixin:OnHide()
-	self:UnregisterCustomEvent("TRANSMOG_OUTFITS_CHANGED");
 	self:UnregisterCustomEvent("TRANSMOGRIFY_UPDATE");
 	WardrobeOutfitFrame:ClosePopups(self);
 	if WardrobeOutfitFrame.dropDown == self then
@@ -30,12 +29,14 @@ function WardrobeOutfitDropDownMixin:OnEvent(event)
 		self:SelectOutfit(self:GetLastOutfitID(), true);
 	else
 		if event == "TRANSMOG_OUTFITS_CHANGED" then
+			local wardrobeIsShown = WardrobeOutfitFrame:IsShown();
 			-- try to reselect the same outfit to update the name
 			-- if it changed or clear the name if it got deleted
-			self:SelectOutfit(self.selectedOutfitID);
-			if WardrobeOutfitFrame:IsShown() then
+			self:SelectOutfit(self.selectedOutfitID, wardrobeIsShown and self.loadSelectedOutfit);
+			if wardrobeIsShown then
 				WardrobeOutfitFrame:Update();
 			end
+			self.loadSelectedOutfit = nil;
 		end
 		-- don't need to do anything for "TRANSMOGRIFY_UPDATE" beyond updating the save button
 		self:UpdateSaveButton();
@@ -260,8 +261,8 @@ function WardrobeOutfitFrameMixin:NewOutfit(name)
 		self:SaveLastOutfit(outfitID);
 	end
 	if self.popupDropDown then
-		self.popupDropDown:SelectOutfit(outfitID);
-		self.popupDropDown:OnOutfitSaved(outfitID);
+		self.popupDropDown.selectedOutfitID = outfitID;
+		self.popupDropDown.loadSelectedOutfit = true;
 	end
 end
 

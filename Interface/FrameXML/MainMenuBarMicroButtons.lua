@@ -332,6 +332,18 @@ function CollectionsMicroButton_OnEvent(self, event, ...)
 
 			SetButtonPulse(self, 60, 1);
 		end
+	elseif event == "HEIRLOOMS_UPDATED" then
+		local _, new = ...;
+		if new then
+			if C_Heirloom.GetNumLearnedHeirlooms() == 1 then
+				if not self.TutorialFrame and not NPE_TutorialPointerFrame:GetKey("CollectionsJournal_Heirloom") then
+					self.TutorialFrame = NPE_TutorialPointerFrame:Show(NEW_HEIRLOOM_HELP_1, "DOWN", self, 0, 0);
+					self.TutorialFrameTab = 5;
+				end
+			end
+
+			SetButtonPulse(self, 60, 1);
+		end
 	end
 end
 

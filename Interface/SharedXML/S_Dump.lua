@@ -129,7 +129,7 @@ local function S_DevTools_InitFunctionCache(context)
     local ret = {};
 
     for _,k in ipairs(DT.functionSymbols) do
-        local v = getglobal(k);
+        local v = _G[k];
         if (type(v) == 'function') then
             ret[v] = '[' .. k .. ']';
         end
@@ -150,7 +150,7 @@ local function S_DevTools_InitUserdataCache(context)
     local ret = {};
 
     for _,k in ipairs(DT.userdataSymbols) do
-        local v = getglobal(k);
+        local v = _G[k];
         if (type(v) == 'table') then
             local u = rawget(v,0);
             if (type(u) == 'userdata') then
@@ -382,7 +382,7 @@ end
 function S_DevTools_DumpCommand(msg, editBox)
     if (string_match(msg,"^[A-Za-z_][A-Za-z0-9_]*$")) then
         WriteMessage("Dump: " .. msg);
-        local val = getglobal(msg);
+        local val = _G[msg];
         local tmp = {};
         if (val == nil) then
             local key = string_format(FORMATS.tableKeyAssignPrefix,

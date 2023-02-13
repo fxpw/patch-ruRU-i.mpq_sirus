@@ -783,6 +783,24 @@ function MountJournal_UpdateMountList()
 	end
 end
 
+function MountListDragButton_OnEnter(self)
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+	local parent = self:GetParent()
+	local spellID = parent.spellID
+	if (spellID) then
+		MountJournalMountButton_UpdateTooltip(parent)
+		self.showingTooltip = true
+	end
+	if not parent.mountIndex then
+		self.Highlight:Hide()
+	end
+end
+
+function MountListDragButton_OnLeave(self)
+	GameTooltip:Hide()
+	self.showingTooltip = false
+end
+
 function MountListDragButton_OnClick( self, button, ... )
 	local parent = self:GetParent()
 	local spellID = parent.spellID;
@@ -803,6 +821,13 @@ function MountListDragButton_OnClick( self, button, ... )
 		if parent.mountIndex then
 			PickupCompanion( "MOUNT", parent.mountIndex )
 		end
+	end
+end
+
+function MountListDragButton_OnDragStart(self)
+	local companionIndex = self:GetParent().mountIndex
+	if type(companionIndex) == "number" then
+		PickupCompanion("MOUNT", companionIndex)
 	end
 end
 

@@ -1,0 +1,143 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_HeirloomCollection_Data.lua"/>
+	<Script file="Custom_HeirloomCollection.lua"/>
+
+	<Frame name="HeirloomHeaderTemplate" virtual="true">
+		<Size x="625" y="24" />
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Background">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Text" inherits="Fancy16Font" justifyH="CENTER" justifyV="MIDDLE">
+					<Color r="0.47" g="0.44" b="0.28"/>
+					<Shadow>
+						<Offset>
+							<AbsDimension x="1" y="-1"/>
+						</Offset>
+						<Color r="0.0" g="0.0" b="0.0"/>
+					</Shadow>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self.Background:SetAtlas("collections-slotheader", true);
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<CheckButton name="HeirloomSpellButtonTemplate" inherits="CollectionsSpellButtonTemplate" hidden="true" motionScriptsWhileDisabled="true" virtual="true">
+		<Scripts>
+			<OnLoad>
+				CollectionsSpellButton_OnLoad(self, HeirloomsJournal_UpdateButton);
+			</OnLoad>
+			<OnClick function="HeirloomsJournalSpellButton_OnClick"/>
+			<OnShow>
+				self:RegisterEvent("HEIRLOOMS_UPDATED");
+				CollectionsSpellButton_OnShow(self);
+			</OnShow>
+			<OnHide>
+				CollectionsSpellButton_OnHide(self);
+				self:UnregisterEvent("HEIRLOOMS_UPDATED");
+			</OnHide>
+			<OnEnter function="HeirloomsJournalSpellButton_OnEnter"/>
+		</Scripts>
+	</CheckButton>
+
+	<Frame name="HeirloomsJournal" parent="CollectionsJournal" setAllPoints="true" hidden="true">
+		<Frames>
+			<Button name="$parentTutorialButton" parentKey="TutorialButton" inherits="MainHelpPlateButton">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="36" y="24"/>
+				</Anchors>
+				<Scripts>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT");
+						GameTooltip:SetText(HEIRLOOM_FRAME_HELP_TOOLTIP_HEAD, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+						GameTooltip:AddLine(HEIRLOOM_FRAME_HELP_TOOLTIP, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1);
+						GameTooltip:Show();
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Button>
+
+			<StatusBar name="$parentProgressBar" parentKey="ProgressBar" inherits="CollectionsProgressBarTemplate"/>
+
+			<EditBox name="$parentSearchBox" parentKey="SearchBox" inherits="SearchBoxTemplate" letters="40">
+				<Size x="115" y="20"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-107" y="-35"/>
+				</Anchors>
+				<Scripts>
+					<OnTextChanged function="HeirloomsJournalSearchBox_OnTextChanged"/>
+				</Scripts>
+			</EditBox>
+
+			<Button name="$parentFilterButton" parentKey="FilterButton" inherits="UIResettableDropdownButtonTemplate" text="FILTER">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-12" y="-35"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PlaySound("igMainMenuOptionCheckBoxOn");
+						ToggleDropDownMenu(1, nil, HeirloomsJournalFilterDropDown, "HeirloomsJournalFilterButton", 74, 15);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Frame name="$parentFilterDropDown" parentKey="FilterDropDown" inherits="UIDropDownMenuTemplate">
+				<Scripts>
+					<OnLoad function="HeirloomsJournalCollectedFilterDropDown_OnLoad"/>
+				</Scripts>
+			</Frame>
+
+			<Frame name="$parentClassDropDown" inherits="UIDropDownMenuTemplate" enableMouse="true" parentKey="ClassDropDown">
+				<Size x="93" y="22"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="54" y="-30"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad function="HeirloomsJournalClassFilterDropDown_OnLoad"/>
+				</Scripts>
+			</Frame>
+
+			<Frame name="$parentIconsFrame" parentKey="IconsFrame" inherits="CollectionsBackgroundTemplate">
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture name="$parentWatermark" parentKey="Watermark">
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-33" y="17"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+
+			<Frame parentKey="PagingFrame" inherits="CollectionsPagingFrameTemplate">
+				<Anchors>
+					<Anchor point="BOTTOM" x="21" y="43"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HeirloomsMixin);
+				self:OnLoad();
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...);
+			</OnEvent>
+			<OnShow>
+				self:OnShow();
+			</OnShow>
+			<OnMouseWheel>
+				self:OnMouseWheel(delta);
+			</OnMouseWheel>
+		</Scripts>
+	</Frame>
+</Ui>

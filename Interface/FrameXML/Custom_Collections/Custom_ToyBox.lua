@@ -1,5 +1,3 @@
-local PickupSpell = PickupSpell;
-
 local TOYS_PER_PAGE = 18;
 
 function ToyBox_OnLoad(self)
@@ -155,7 +153,13 @@ function ToySpellButton_OnModifiedClick(self, button)
 end
 
 function ToySpellButton_OnDrag(self)
-	PickupSpell(self:GetAttribute("spell"));
+	local spellID = self:GetAttribute("spell");
+	if spellID then
+		local spellIndex = SpellBook_GetSpellIndex(spellID, BOOKTYPE_SPELL);
+		if spellIndex then
+			PickupSpell(spellIndex, BOOKTYPE_SPELL);
+		end
+	end
 end
 
 function ToySpellButton_UpdateButton(self)
@@ -184,7 +188,7 @@ function ToySpellButton_UpdateButton(self)
 		self:SetAttribute("spell", nil);
 	else
 		self:SetAttribute("type", "spell");
-		self:SetAttribute("spell", toyName);
+		self:SetAttribute("spell", spellID);
 	end
 
 	if not ToyBox.newToys[self.itemID] then

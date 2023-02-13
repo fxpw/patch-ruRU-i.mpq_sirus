@@ -453,11 +453,7 @@ end
 
 function PVPLadderInfoFrameMixin:OnShow()
 	for _, frame in pairs(self.closedUIPanels) do
-		frame = _G[frame]
-
-		if frame:IsShown() then
-			HideUIPanel(frame)
-		end
+		HideUIPanel(_G[frame])
 	end
 
 	self:InitializeScrollFrame()
@@ -761,7 +757,6 @@ function EventHandler:ASMSG_PVP_LADDER_TOP( msg )
 end
 
 function EventHandler:ASMSG_PVP_LADDER_CLASS_TOP( msg )
-	-- print("ASMSG_PVP_LADDER_CLASS_TOP", msg)
 	local playerData 		= C_Split(msg, "|")
 	local selectedCategory 	= tonumber(table.remove(playerData, 1))
 	local _classID 			= tonumber(table.remove(playerData, 1))
@@ -833,7 +828,6 @@ function EventHandler:ASMSG_PVP_LADDER_CLASS_TOP( msg )
 end
 
 function EventHandler:ASMSG_PVP_LADDER_PLAYER( msg )
-	-- print("ASMSG_PVP_LADDER_PLAYER", msg)
 	local storage 			= {}
 	local playerData 		= C_Split(msg, "|")
 	local selectedCategory 	= tonumber(table.remove(playerData, 1))
@@ -890,8 +884,6 @@ function EventHandler:ASMSG_PVP_LADDER_PLAYER( msg )
 end
 
 function EventHandler:ASMSG_PVP_LADDER_SEARCH_RESULT( msg )
-	-- print("ASMSG_PVP_LADDER_SEARCH_RESULT", msg)
-
 	local textLabel = PVPLadderFrame.Container.RightContainer.CentralContainer.ScrollFrame.TextLabelFrame.Text
 
 	local playerData 		= C_Split(msg, "|")

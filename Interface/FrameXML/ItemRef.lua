@@ -232,6 +232,12 @@ function SetItemRef(link, text, button, chatFrame)
 					TransmogUtil.OpenCollectionToItem(itemID);
 				elseif ( collectionType == CHAR_COLLECTION_TOY ) then
 					SetCollectionsJournalShown(true, COLLECTIONS_JOURNAL_TAB_INDEX_TOYS);
+				elseif ( collectionType == CHAR_COLLECTION_HEIRLOOM ) then
+					SetCollectionsJournalShown(true, COLLECTIONS_JOURNAL_TAB_INDEX_HEIRLOOMS);
+					if ( itemID and HeirloomsJournal ) then
+						HeirloomsJournal:SetFindPageForHeirloomePage(itemID);
+						HeirloomsJournal:RefreshViewIfVisible();
+					end
 				end
 			end
 		end

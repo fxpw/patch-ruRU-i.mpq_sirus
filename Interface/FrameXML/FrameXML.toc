@@ -80,6 +80,7 @@ Utils\C_Transmog.lua
 Utils\C_MiniGames.lua
 Utils\C_ToyBox.lua
 Utils\C_IncomingResSummon.lua
+Utils\C_Heirloom.lua
 
 Hardcodeids.lua
 TrinityCoreAPI.lua

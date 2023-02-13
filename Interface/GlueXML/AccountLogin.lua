@@ -4,22 +4,23 @@ LOGIN_MODELS = {
 	{1, 1, 1, 1.000, 0.310, 5.712, 1, 125,	{-0.427, 0.602, 0.044},		[[Creature\Arthaslichking\arthaslichking.m2]]},
 	{1, 1, 1, 1.000, 0.118, 0.417, 1, 108,	{-1.102, -0.602, -0.133},	[[Creature\Illidan\illidan.m2]]},
 
+	{0, 1, 1, 0.475, 0.134, 5.783, 0, 2,	{0.000, 1.534, 0.642},		[[Spells\Instanceportal_green_10man.m2]]},
+	{0, 1, 1, 1.000, 0.449, 0.000, 0, 2,	{-18.667, 7.680, -1.253},	[[World\Generic\passivedoodads\christmas\xmastree_largealliance01white.m2]]},
+	{0, 1, 1, 1.000, 0.681, 0.000, 0, 2,	{0.000, 0.267, -0.081},		[[World\Generic\passivedoodads\particleemitters\dustwallowgroundfogplane.m2]]},
+	{0, 1, 1, 1.000, 0.147, 5.799, 0, 121,	{-3.013, 1.041, 0.195},		[[Creature\Babymoonkin\babymoonkin_ne.m2]]},
 	{0, 1, 1, 1.000, 0.601, 0.000, 0, 2,	{0.000, -0.486, 1.160},		[[Spells\Enchantments\soulfrostglow_high.m2]]},
 	{0, 1, 1, 1.000, 0.486, 0.000, 0, 2,	{0.000, -0.877, 0.725},		[[Spells\Enchantments\soulfrostglow_high.m2]]},
-	{0, 1, 1, 0.475, 0.134, 5.783, 0, 2,	{0.000, 1.534, 0.642},		[[Spells\Instanceportal_green_10man.m2]]},
 	{0, 1, 1, 1.000, 1.027, 0.900, 0, 125,	{-11.975, -3.008, -1.137},	[[Creature\Kelthuzad\kelthuzad.m2]]},
 	{0, 1, 1, 0.063, 0.504, 0.000, 0, 2,	{-4.002, 2.046, 0.182},		[[Spells\Ritual_frost_precast_base.m2]]},
 	{0, 1, 1, 1.000, 0.405, 0.000, 0, 2,	{-7.890, 0.053, 0.408},		[[Creature\Frostlord\frostlordcore.m2]]},
 	{0, 1, 1, 1.000, 0.560, 0.000, 0, 2,	{0.000, -0.471, 1.167},		[[Spells\Enchantments\soulfrostglow_high.m2]]},
 	{0, 1, 1, 0.482, 0.145, 0.500, 0, 2,	{0.000, -1.453, 0.592},		[[Spells\Instanceportal_green_10man.m2]]},
-	{0, 1, 1, 1.000, 0.681, 0.000, 0, 2,	{0.000, 0.267, -0.081},		[[World\Generic\passivedoodads\particleemitters\dustwallowgroundfogplane.m2]]},
 	{0, 1, 1, 0.090, 3.387, 0.000, 0, 2,	{0.000, 0.021, 0.911},		[[Spells\Deathknight_frozenruneweapon_impact.m2]]},
 	{0, 1, 1, 1.000, 0.078, 0.000, 0, 2,	{-8.527, 0.023, 3.459},		[[World\Expansion02\doodads\icecrown\lights\icecrown_green_fire.m2]]},
 	{0, 1, 1, 1.000, 0.132, 0.000, 0, 2,	{0.000, 0.017, 1.730},		[[World\Expansion02\doodads\icecrown\lights\icecrown_greenglow_01.m2]]},
 	{0, 1, 1, 1.000, 0.201, 5.683, 0, 2,	{0.000, 0.996, 0.619},		[[Creature\Snowman\snowman.m2]]},
 	{0, 1, 1, 1.000, 0.049, 0.000, 0, 2,	{0.000, 0.626, 1.337},		[[World\Generic\passivedoodads\christmas\g_xmaswreath.m2]]},
 	{0, 1, 1, 1.000, 0.049, 0.000, 0, 2,	{0.000, -0.594, 1.335},		[[World\Generic\passivedoodads\christmas\g_xmaswreath.m2]]},
-	{0, 1, 1, 1.000, 0.449, 0.000, 0, 2,	{-18.667, 7.680, -1.253},	[[World\Generic\passivedoodads\christmas\xmastree_largealliance01white.m2]]},
 	{0, 1, 1, 1.000, 0.111, 0.000, 0, 2,	{0.000, 1.225, 0.562},		[[World\Generic\activedoodads\christmas\snowballmound01.m2]]},
 	{0, 1, 1, 1.000, 0.150, 0.000, 0, 2,	{0.000, 1.358, 0.562},		[[World\Generic\activedoodads\christmas\snowballmound01.m2]]},
 	{0, 1, 1, 1.000, 0.177, 0.000, 0, 2,	{0.000, 1.184, 0.519},		[[World\Generic\passivedoodads\christmas\xmasgift01.m2]]},
@@ -28,13 +29,14 @@ LOGIN_MODELS = {
 	{0, 1, 1, 1.000, 0.053, 0.500, 0, 2,	{0.000, -0.542, 1.552},		[[World\Generic\passivedoodads\christmas\xmas_lightsx3.m2]]},
 	{0, 1, 1, 1.000, 0.224, 0.000, 0, 2,	{0.000, 0.337, 0.684},		[[World\Generic\passivedoodads\christmas\mistletoe.m2]]},
 	{0, 1, 1, 1.000, 0.219, 0.000, 0, 2,	{0.000, -0.286, 0.673},		[[World\Generic\passivedoodads\christmas\mistletoe.m2]]},
-	{0, 1, 1, 1.000, 0.147, 5.799, 0, 121,	{-3.013, 1.041, 0.195},		[[Creature\Babymoonkin\babymoonkin_ne.m2]]},
 }
 
 LOGIN_MODEL_LIGHTS = {
 	[0] = {1, 0, 0, -0.707, -0.707, 0.7, 1.0, 1.0, 1.0, 0, 1.0, 1.0, 0.8},
 	[1] = {1, 0, 1, -0.707, -0.707, 0.4, 1.0, 1.0, 1.0, 1, 1.0, 0.0, 0.0},
 }
+
+NEW_YEAR = false
 
 function AccountLogin_OnLoad(self)
 	self.LoginUI.Logo:SetAtlas("ServerGameLogo-11")
@@ -50,6 +52,20 @@ function AccountLogin_OnLoad(self)
 	self:RegisterEvent("SCANDLL_FINISHED")
 	self:RegisterEvent("PLAYER_ENTER_TOKEN")
 	self:RegisterEvent("FRAMES_LOADED")
+
+	if NEW_YEAR then
+		self.LoginUI.BGTexture:SetTexture("Interface\\Custom_LoginScreen\\do_not_fine")
+		self.LoginUI.BGTexture:Show()
+		self.BGModel:Hide()
+
+		for i = 1, 2 do
+			LOGIN_MODELS[i][1] = 0
+		end
+
+		for i = 3, #LOGIN_MODELS do
+			LOGIN_MODELS[i][1] = 1
+		end
+	end
 end
 
 function AccountLogin_OnShow(self)

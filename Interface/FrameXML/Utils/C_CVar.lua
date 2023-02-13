@@ -1,4 +1,5 @@
 local SetCVar = SetCVar;
+local TRACKED_CVARS = TRACKED_CVARS
 
 local EVENT_TRIGGER_CVAR = "readContest";
 
@@ -13,6 +14,11 @@ end
 
 function C_CVarMixin:SetValue( key, value, raiseEvent )
     self._cache:Set(key, value, 0, self._globalValues[key])
+
+	local trackedIndex = tIndexOf(TRACKED_CVARS, key)
+	if trackedIndex then
+		SendServerMessage("ACMSG_I_S", string.format("%i:%i", trackedIndex, tonumber(value) or 0))
+	end
 
     if raiseEvent then
         SetCVar(EVENT_TRIGGER_CVAR, value, raiseEvent);
@@ -70,10 +76,19 @@ function C_CVarMixin:SetCVarBitfield(name, index, value, scriptCVar)
 			return false;
 		end
 
+		local currentValue = tonumber(self._cache:Get(name, nil, 0, self._globalValues[name]) or self._defaultValue[name]) or 0
+
 		if value then
-			self._cache:Set(name, bit.bor(tonumber(self._cache:Get(name, nil, 0, self._globalValues[name]) or self._defaultValue[name]) or 0, bit.lshift(1, index - 1)), 0, self._globalValues[name]);
+			value = bit.bor(currentValue, bit.lshift(1, index - 1))
 		else
-			self._cache:Set(name, bit.band(tonumber(self._cache:Get(name, nil, 0, self._globalValues[name]) or self._defaultValue[name]) or 0, bit.bnot(bit.lshift(1, index - 1))), 0, self._globalValues[name]);
+			value = bit.band(currentValue, bit.bnot(bit.lshift(1, index - 1)))
+		end
+
+		self._cache:Set(name, value, 0, self._globalValues[name])
+
+		local trackedIndex = tIndexOf(TRACKED_CVARS, name)
+		if trackedIndex then
+			SendServerMessage("ACMSG_I_S", string.format("%i:%i", trackedIndex, value))
 		end
 
 		if scriptCVar then
@@ -141,3 +156,7 @@ C_CVar:RegisterDefaultValue("C_CVAR_MISC_TOAST_SOUND", "1")
 
 C_CVar:RegisterDefaultValue("C_CVAR_TOY_BOX_COLLECTED_FILTERS", "0", true)
 C_CVar:RegisterDefaultValue("C_CVAR_TOY_BOX_SOURCE_FILTERS", "0", true)
+C_CVar:RegisterDefaultValue("C_CVAR_HEIRLOOM_COLLECTED_FILTERS", "0", true)
+C_CVar:RegisterDefaultValue("C_CVAR_HEIRLOOM_SOURCE_FILTERS", "0", true)
+
+C_CVar:RegisterDefaultValue("C_CVAR_DRACTHYR_RETURN_MORTAL_FORM", "1")

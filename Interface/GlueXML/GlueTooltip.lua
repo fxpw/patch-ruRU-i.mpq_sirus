@@ -1,132 +1,132 @@
-GLUETOOLTIP_NUM_LINES = 4
-GLUETOOLTIP_HPADDING = 20
+GLUETOOLTIP_NUM_LINES = 7;
+GLUETOOLTIP_HPADDING = 20;
 
 function GlueTooltip_OnLoad(self)
-	self.Clear = GlueTooltip_Clear
-	self.SetFont = GlueTooltip_SetFont
-	self.AddLine = GlueTooltip_AddLine
-	self.SetText = function(self, text, tooltip, r, g, b, a, wrap) GlueTooltip_SetText(text, tooltip, r, g, b, a, wrap) end
-	self.SetOwner = function(_self, self, tooltip, xOffset, yOffset, myPoint, ownerPoint) GlueTooltip_SetOwner(self, tooltip, xOffset, yOffset, myPoint, ownerPoint) end
-	self:SetBackdropBorderColor(1.0, 1.0, 1.0)
-	self:SetBackdropColor(0, 0, 0)
-	self.defaultColor = NORMAL_FONT_COLOR
+	self.Clear = GlueTooltip_Clear;
+	self.SetFont = GlueTooltip_SetFont;
+	self.AddLine = GlueTooltip_AddLine;
+	self.SetText = GlueTooltip_SetText;
+	self.SetOwner = GlueTooltip_SetOwner;
+	self.GetOwner = GlueTooltip_GetOwner;
+	self.IsOwned = GlueTooltip_IsOwned;
+	self:SetBackdropBorderColor(1.0, 1.0, 1.0);
+	self:SetBackdropColor(0, 0, 0);
+	self.defaultColor = NORMAL_FONT_COLOR;
 end
 
--- TODO: It would be nice if the syntax for this matched GameTooltip
-function GlueTooltip_SetOwner(self, tooltip, xOffset, yOffset, myPoint, ownerPoint)
-	if ( not self ) then
-		return
-	end
-	-- printc(self:GetName(), tooltip and tooltip:GetName() or "-")
-	if ( not tooltip ) then
-		tooltip = GlueTooltip
-	end
-	if ( not xOffset ) then
-		xOffset = 0
-	end
-	if ( not yOffset ) then
-		yOffset = 0
-	end
-	if ( not myPoint ) then
-		myPoint = "BOTTOMLEFT"
-	end
-	if ( not ownerPoint ) then
-		ownerPoint = "TOPRIGHT"
-	end
-	xOffset = xOffset or 0
-	yOffset = yOffset or 0
-	myPoint = myPoint or "BOTTOMLEFT"
-	ownerPoint = ownerPoint or "TOPRIGHT"
+-- mimic what tooltip does ingame
+local tooltipAnchorPointMapping = {
+	["ANCHOR_LEFT"] =			{ myPoint = "BOTTOMRIGHT",	ownerPoint = "TOPLEFT" },
+	["ANCHOR_RIGHT"] = 			{ myPoint = "BOTTOMLEFT", 	ownerPoint = "TOPRIGHT" },
+	["ANCHOR_BOTTOMLEFT"] = 	{ myPoint = "TOPRIGHT", 	ownerPoint = "BOTTOMLEFT" },
+	["ANCHOR_BOTTOM"] = 		{ myPoint = "TOP", 			ownerPoint = "BOTTOM" },
+	["ANCHOR_BOTTOMRIGHT"] =	{ myPoint = "TOPLEFT", 		ownerPoint = "BOTTOMRIGHT" },
+	["ANCHOR_TOPLEFT"] = 		{ myPoint = "BOTTOMLEFT", 	ownerPoint = "TOPLEFT" },
+	["ANCHOR_TOP"] = 			{ myPoint = "BOTTOM", 		ownerPoint = "TOP" },
+	["ANCHOR_TOPRIGHT"] = 		{ myPoint = "BOTTOMRIGHT", 	ownerPoint = "TOPRIGHT" },
+};
 
-	tooltip:Hide()
-	tooltip:ClearAllPoints()
-	tooltip:SetPoint(myPoint, self, ownerPoint, xOffset, yOffset)
+function GlueTooltip_SetOwner(self, owner, anchor, xOffset, yOffset )
+	if ( not self or not owner) then
+		return;
+	end
+	self.owner = owner;
+	anchor = anchor or "ANCHOR_LEFT";
+	xOffset = xOffset or 0;
+	yOffset = yOffset or 0;
+
+	self:ClearAllPoints();
+	local points = tooltipAnchorPointMapping[anchor];
+	self:SetPoint(points.myPoint, owner, points.ownerPoint, xOffset, yOffset);
+	self:Show();
 end
 
-function GlueTooltip_SetText(text, _, r, g, b, a, wrap)
-	GlueTooltip:Clear()
-	GlueTooltip:AddLine(text, r, g, b, a, wrap)
-	GlueTooltip:Show()
+function GlueTooltip_GetOwner(self)
+	return self.owner;
+end
+
+function GlueTooltip_IsOwned(self, frame)
+	return self:GetOwner() == frame;
+end
+
+function GlueTooltip_SetText(self, text, r, g, b, a, wrap)
+	self:Clear();
+	self:AddLine(text, r, g, b, a, wrap);
 end
 
 function GlueTooltip_SetFont(self, font)
 	for i = 1, GLUETOOLTIP_NUM_LINES do
-		local textString = _G[self:GetName().."TextLeft"..i]
-		textString:SetFontObject(font)
-		textString = _G[self:GetName().."TextRight"..i]
-		textString:SetFontObject(font)
+		local textString = _G[self:GetName().."TextLeft"..i];
+		textString:SetFontObject(font);
+		textString = _G[self:GetName().."TextRight"..i];
+		textString:SetFontObject(font);
 	end
 end
 
 function GlueTooltip_Clear(self)
-	if not self then
-		self = GlueTooltip
-	end
-
 	for i = 1, GLUETOOLTIP_NUM_LINES do
-		local textString = _G[self:GetName().."TextLeft"..i]
-		textString:SetText("")
-		textString:Hide()
-		textString:SetWidth(0)
-		textString = _G[self:GetName().."TextRight"..i]
-		textString:SetText("")
-		textString:Hide()
-		textString:SetWidth(0)
+		local textString = _G[self:GetName().."TextLeft"..i];
+		textString:SetText("");
+		textString:Hide();
+		textString:SetWidth(0);
+		textString = _G[self:GetName().."TextRight"..i];
+		textString:SetText("");
+		textString:Hide();
+		textString:SetWidth(0);
 	end
-	self:SetWidth(1)
-	self:SetHeight(1)
+	self:SetWidth(1);
+	self:SetHeight(1);
 end
 
 function GlueTooltip_AddLine(self, text, r, g, b, a, wrap, indentedWordWrap)
-	r = r or self.defaultColor.r
-	g = g or self.defaultColor.g
-	b = b or self.defaultColor.b
-	a = a or 1
-	indentedWordWrap = indentedWordWrap or false
-
+	r = r or self.defaultColor.r;
+	g = g or self.defaultColor.g;
+	b = b or self.defaultColor.b;
+	a = a or 1;
+	indentedWordWrap = indentedWordWrap or false;
 	-- find a free line
-	local freeLine
+	local freeLine;
 	for i = 1, GLUETOOLTIP_NUM_LINES do
-		local line = _G[self:GetName().."TextLeft"..i]
+		local line = _G[self:GetName().."TextLeft"..i];
 		if ( not line:IsShown() ) then
-			freeLine = line
-			break
+			freeLine = line;
+			break;
 		end
 	end
 
-	if (not freeLine) then return end
+	if (not freeLine) then return; end
 
-	freeLine:SetTextColor(r, g, b, a)
-	freeLine:SetText(text)
-	freeLine:Show()
-	freeLine:SetWidth(0)
-	freeLine:SetIndentedWordWrap(indentedWordWrap)
+	freeLine:SetTextColor(r, g, b, a);
+	freeLine:SetText(text);
+	freeLine:Show();
+	freeLine:SetWidth(0);
+	freeLine:SetIndentedWordWrap(indentedWordWrap);
 
-	local wrapWidth = 230
+	local wrapWidth = 230;
 	if (wrap and freeLine:GetWidth() > wrapWidth) then
 		-- Trim the right edge so that there isn't extra space after wrapping
-		freeLine:SetWidth(wrapWidth)
-		self:SetWidth(max(self:GetWidth(), wrapWidth+GLUETOOLTIP_HPADDING))
+		freeLine:SetWidth(wrapWidth);
+		self:SetWidth(max(self:GetWidth(), wrapWidth+GLUETOOLTIP_HPADDING));
 	else
-		self:SetWidth(max(self:GetWidth(), freeLine:GetWidth()+GLUETOOLTIP_HPADDING))
+		self:SetWidth(max(self:GetWidth(), freeLine:GetWidth()+GLUETOOLTIP_HPADDING));
 	end
 
 	-- Compute height and update width of text lines
-	local height = 18
+	local height = 18;
 	for i = 1, GLUETOOLTIP_NUM_LINES do
 		-- Update width of all lines
-		local line = _G[self:GetName().."TextLeft"..i]
-		local rightLine = _G[self:GetName().."TextRight"..i]
+		local line = _G[self:GetName().."TextLeft"..i];
+		local rightLine = _G[self:GetName().."TextRight"..i];
 		if (not rightLine:IsShown()) then
-			line:SetWidth(self:GetWidth()-GLUETOOLTIP_HPADDING)
+			line:SetWidth(self:GetWidth()-GLUETOOLTIP_HPADDING);
 		end
 
 		-- Update the height of the frame
 		if ( line:IsShown() ) then
-			height = height + line:GetHeight() + 2
+			height = height + line:GetHeight() + 2;
 		end
 	end
-	self:SetHeight(height)
+	self:SetHeight(height);
 end
 
 CharacterCreateAbilityListMixin = {}

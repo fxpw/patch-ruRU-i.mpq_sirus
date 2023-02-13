@@ -456,7 +456,9 @@ function EventHandler:ASMSG_C_ADD_TOY(msg)
 	if spellID then
 		local toy = TOY_BY_SPELL_ID[spellID];
 		if toy then
-			SendChatMessageType(string.format(COLLECTION_TOY_ADD_FORMAT, string.format(COLLECTION_TOY_HYPERLINK_FORMAT, toy.itemID, GetItemInfo(toy.itemID) or "")), "SYSTEM");
+			AddChatTyppedMessage("SYSTEM", string.format(COLLECTION_TOY_ADD_FORMAT, string.format(COLLECTION_TOY_HYPERLINK_FORMAT, toy.itemID, GetItemInfo(toy.itemID) or "")));
+
+			SetFilteredToys();
 
 			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TOYS_UPDATED, toy.itemID, true);
 		end

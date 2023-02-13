@@ -85,8 +85,8 @@
 				local tooltipText = self:GetAttribute("tooltipText")
 				local tooltip = tooltipText and _G[tooltipText]
 				if tooltip then
-					GlueTooltip_SetOwner(self)
-					GlueTooltip_SetText(tooltip)
+					GlueTooltip:SetOwner(self)
+					GlueTooltip:SetText(tooltip)
 				end
 			</OnEnter>
 			<OnLeave>
@@ -923,8 +923,8 @@
 									</OnEnable>
 									<OnEnter>
 										if self.tooltip then
-											GlueTooltip_SetOwner(self)
-											GlueTooltip_SetText(self.tooltip, GlueTooltip, 1.0, 1.0, 1.0)
+											GlueTooltip:SetOwner(self)
+											GlueTooltip:SetText(self.tooltip, 1.0, 1.0, 1.0)
 										end
 									</OnEnter>
 									<OnLeave>
@@ -1113,8 +1113,8 @@
 							<OnClick function="CharSelectChangeListState_OnClick" />
 							<OnEnter>
 								if self:IsEnabled() ~= 1 and not CharSelectServicesFlowFrame:IsShown() then
-									GlueTooltip_SetOwner(self, GlueTooltip, 0, -10, "TOP", "BOTTOM")
-									GlueTooltip_SetText(CHARACTER_UNDELETE_NOT_CHARACTER)
+									GlueTooltip:SetOwner(self, "ANCHOR_BOTTOM", 0, -10)
+									GlueTooltip:SetText(CHARACTER_UNDELETE_NOT_CHARACTER)
 								end
 							</OnEnter>
 							<OnLeave>
@@ -1379,7 +1379,7 @@
 						</Scripts>
 					</Button>
 				</Frames>
-			
+
 				<Scripts>
 					<OnLoad>
 						self.TopShadow:SetVertexColor(0, 0, 0, 0.4)

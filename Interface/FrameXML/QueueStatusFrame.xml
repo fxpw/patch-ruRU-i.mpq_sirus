@@ -121,6 +121,9 @@
 				</Scripts>
 			</Frame>
 		</Frames>
+		<Scripts>
+			<OnShow function="QueueStatusEntry_OnShow"/>
+		</Scripts>
 	</Frame>
 	<Button name="QueueStatusMinimapButton" parent="MinimapBackdrop" inherits="MiniMapButtonTemplate" hidden="true">
 		<Size x="33" y="33"/>
@@ -186,6 +189,7 @@
 		<Scripts>
 			<OnLoad function="QueueStatusFrame_OnLoad"/>
 			<OnEvent function="QueueStatusFrame_OnEvent"/>
+			<OnShow function="QueueStatusFrame_OnShow"/>
 		</Scripts>
 	</Frame>
 </Ui>

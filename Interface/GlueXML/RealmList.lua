@@ -886,8 +886,8 @@ end
 
 function RealmEntryPointMixin:OnEnter()
 	local text = string.format(WORLD_PROXY_LOCATION_TEXT, ENTRY_LIST[self.selectedEntryIndex][2])
-	GlueTooltip_SetOwner(self, nil, nil, nil, nil, "TOPRIGHT")
-	GlueTooltip_SetText(text, GlueTooltip, 1.0, 1.0, 1.0, 1.0, 1)
+	GlueTooltip:SetOwner(self, "ANCHOR_RIGHT")
+	GlueTooltip:SetText(text, 1.0, 1.0, 1.0, 1.0, 1)
 end
 
 function RealmEntryPointMixin:OnLeave()
@@ -903,11 +903,11 @@ function RealmEntrySelectButtonMixin:OnLoad()
 end
 
 function RealmEntrySelectButtonMixin:OnEnter()
-	GlueTooltip_SetOwner(self, nil, nil, nil, nil, "TOPRIGHT")
+	GlueTooltip:SetOwner(self, "ANCHOR_RIGHT")
 	if self:IsEnabled() == 1 then
-		GlueTooltip_SetText(ENTRY_LIST[self:GetID()][2], GlueTooltip, 1, 1, 1, 1, 1)
+		GlueTooltip:SetText(ENTRY_LIST[self:GetID()][2], 1, 1, 1, 1, 1)
 	else
-		GlueTooltip_SetText(ENTRY_LIST[self:GetID()][2], GlueTooltip, 0.5, 0.5, 0.5, 1, 1)
+		GlueTooltip:SetText(ENTRY_LIST[self:GetID()][2], 0.5, 0.5, 0.5, 1, 1)
 		GlueTooltip:AddLine(CHAR_LOGIN_NO_WORLD, 1, 1, 1, 1, 1)
 	end
 end

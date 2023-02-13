@@ -145,7 +145,9 @@ do	-- UnitInRangeIndex
 	eventHandler:RegisterEvent("PLAYER_ENTERING_WORLD")
 	eventHandler:SetScript("OnEvent", function(self, event)
 		for _, itemID in pairs(ITEM_FRIENDLY) do
-			C_Item.RequestServerCache(itemID)
+			if not C_Item.GetItemInfoRaw(itemID) then
+				C_Item.RequestServerCache(itemID)
+			end
 		end
 		self:UnregisterEvent(event)
 	end)
@@ -187,7 +189,7 @@ do	-- PlayerHasHearthstone | UseHearthstone
 	---@return integer? bagID
 	---@return integer? slotID
 	function PlayerHasHearthstone()
-		for bagID = 0, NUM_BAG_FRAMES + 1 do
+		for bagID = 0, NUM_BAG_FRAMES do
 			for slotID = 1, GetContainerNumSlots(bagID) do
 				local _, _, _, _, _, _, link = GetContainerItemInfo(bagID, slotID)
 				if link then
@@ -205,6 +207,40 @@ do	-- PlayerHasHearthstone | UseHearthstone
 		local hearthstoneID, bagID, slotID = PlayerHasHearthstone()
 		if bagID then
 			UseContainerItem(bagID, slotID)
+		end
+	end
+end
+
+do
+	local transmogrificationInfo = {};
+
+	function GetInventoryTransmogID(unit, slotID)
+		if type(unit) ~= "string" or type(slotID) ~= "number" then
+			error("Usage: local transmogID = GetInventoryTransmogID(unit, slotID)", 2);
+		end
+
+		if UnitIsUnit(unit, "player") then
+			return transmogrificationInfo[slotID];
+		end
+	end
+
+	function EventHandler:ASMSG_TRANSMOGRIFICATION_INFO_RESPONSE(msg)
+		table.wipe(transmogrificationInfo);
+
+		local msgData = {string.split(";", msg)};
+		local unitGUID = tonumber(table.remove(msgData, 1));
+
+		if unitGUID == tonumber(UnitGUID("player")) then
+			for _, slotInfo in pairs(msgData) do
+				local slotID, transmogrifyID = string.split(":", slotInfo, 2);
+				slotID, transmogrifyID = tonumber(slotID), tonumber(transmogrifyID);
+
+				if slotID and transmogrifyID then
+					transmogrificationInfo[slotID] = transmogrifyID;
+				end
+			end
+
+			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.PLAYER_TRANSMOGRIFICATION_CHANGED);
 		end
 	end
 end

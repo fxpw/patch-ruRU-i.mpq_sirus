@@ -51,7 +51,7 @@
 					self.firstTimeLoaded = nil;
 				end
 				if TimerTrackerTimer1 and not TimerTrackerTimer1:IsShown() then
-					ArenaPlayerReadyStatusButtonToggle(0)
+					TimerTracker_ReadyStatusButton:Toggle(false)
 				end
 			</OnShow>
 			<OnAttributeChanged function="UpdateUIPanelPositions"/>

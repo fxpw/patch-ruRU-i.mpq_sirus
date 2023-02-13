@@ -13,8 +13,8 @@
 							<Alpha change="-1" duration="0.0" order="1"/>
 							<Alpha change="1" duration="0.0" order="2"/>
 							<Scale scaleX="4" scaleY="4" duration="0.3" smoothing="OUT" order="3"/>
-							<Scale startDelay="0.6" scaleX="1.2" scaleY="1.2" duration="0.1" order="4"/>
-							<Alpha startDelay="0.6" change="-1.0" duration="0.1" order="4"/>
+							<Scale parentKey="ScaleOut" startDelay="0.6" scaleX="1.2" scaleY="1.2" duration="0.1" order="4"/>
+							<Alpha parentKey="AlphaOut" startDelay="0.6" change="-1.0" duration="0.1" order="4"/>
 							<Scripts>
 								<OnPlay>
 									local frame = self:GetParent():GetParent()
@@ -35,8 +35,8 @@
 							<Alpha change="-1" duration="0.0" order="1"/>
 							<Alpha change="1" duration="0.0" order="2"/>
 							<Scale scaleX="4" scaleY="4" duration="0.3" smoothing="OUT" order="3"/>
-							<Scale startDelay="0.6" scaleX="1.2" scaleY="1.2" duration="0.1" order="4"/>
-							<Alpha startDelay="0.6" change="-1.0" duration="0.1" order="4"/>
+							<Scale parentKey="ScaleOut" startDelay="0.6" scaleX="1.2" scaleY="1.2" duration="0.1" order="4"/>
+							<Alpha parentKey="AlphaOut" startDelay="0.6" change="-1.0" duration="0.1" order="4"/>
 						</AnimationGroup>
 					</Animations>
 				</Texture>
@@ -177,4 +177,129 @@
 			<OnEvent function="TimerTracker_OnEvent"/>
 		</Scripts>
 	</Frame>
+
+	<CheckButton name="TimerTracker_ReadyStatusButton" parent="UIParent" frameStrata="LOW" toplevel="true" hidden="true">
+		<Size x="210" y="56"/>
+		<Animations>
+			<AnimationGroup parentKey="AnimIn">
+				<Alpha change="-1" duration="0" order="1"/>
+				<Alpha change="1" duration="0.9" order="2"/>
+				<Scripts>
+					<OnPlay>
+						self:GetParent():SetAlpha(0)
+					</OnPlay>
+				</Scripts>
+			</AnimationGroup>
+			<AnimationGroup parentKey="AnimOut">
+				<Alpha change="-1" duration="0.9" order="1"/>
+				<Scripts>
+					<OnFinished>
+						self:GetParent():Hide()
+					</OnFinished>
+				</Scripts>
+			</AnimationGroup>
+		</Animations>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Background" file="Interface\Common\bluemenu-main">
+					<Size x="210" y="56"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+					<TexCoords left="0.00390625" right="0.87890625" top="0.75195313" bottom="0.83007813"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<FontString name="$parentReadyText" parentKey="ReadyText" inherits="GameFontNormalHuge" text="READY_LABEL">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="6"/>
+					</Anchors>
+					<Color r="0.8" g="0.96" b="1"/>
+					<Animations>
+						<AnimationGroup parentKey="AnimSwap">
+							<Alpha change="-1" duration="0" order="1"/>
+							<Alpha change="1" duration="0.4" order="2"/>
+						</AnimationGroup>
+					</Animations>
+				</FontString>
+				<FontString name="$parentReadyTextDescription" parentKey="ReadyTextDescription" inherits="GameFontNormalSmall" text="READY_ARENA_DESCRIPTION_LABEL">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentReadyText" relativePoint="BOTTOM" x="0" y="0" />
+					</Anchors>
+					<Color r="0.8" g="0.96" b="1"/>
+					<Animations>
+						<AnimationGroup parentKey="AnimSwap">
+							<Alpha change="-1" duration="0" order="1"/>
+							<Alpha change="1" duration="0.4" order="2"/>
+						</AnimationGroup>
+					</Animations>
+				</FontString>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentHighlightTexture" parentKey="HighlightTexture" file="Interface\Common\bluemenu-main" alphaMode="ADD" alpha="0.7" hidden="true">
+					<Size x="210" y="56"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+					<TexCoords left="0.00390625" right="0.87890625" top="0.59179688" bottom="0.66992188"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Selection" file="Interface\Common\bluemenu-main" alphaMode="ADD" alpha="0.2" hidden="true">
+					<Size x="208" y="54"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+					<TexCoords left="0.00390625" right="0.87890625" top="0.83203125" bottom="0.91015625"/>
+					<Color r="0" g="1" b="0"/>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Alpha change="-1" duration="0" order="1"/>
+							<Alpha change="0.3" duration="0.3" order="2"/>
+						</AnimationGroup>
+						<AnimationGroup parentKey="AnimOut">
+							<Alpha change="0.8" duration="0.2" order="1"/>
+							<Alpha change="-1" duration="0.5" order="2"/>
+							<Scripts>
+								<OnFinished>
+									self:GetParent():SetVertexColor(0, 1, 0)
+									self:GetParent():Hide()
+								</OnFinished>
+							</Scripts>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, TimerTrackerReadyButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+			<OnMouseDown>
+				self:OnMouseDown(button)
+			</OnMouseDown>
+			<OnMouseUp>
+				self:OnMouseUp(button)
+			</OnMouseUp>
+		</Scripts>
+	</CheckButton>
 </Ui>

@@ -3188,16 +3188,20 @@ function CharacterStrengthenButton_OnEnter( self, ... )
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 	GameTooltip:SetText(PAPERDOLLFRAME_UPS, 1.0, 1.0, 1.0)
 
-	local point = 2
 	local id = self:GetParent():GetID()
+	local multiplier = BONUS_STAT_MULTIPLIERS[id]
 
-	if id == 3 then
-		point = 3
-	elseif id == 7 then
-		point = 4
+	if not multiplier then
+		if id == 3 then
+			multiplier = 3
+		elseif id == 7 then
+			multiplier = 4
+		else
+			multiplier = 2
+		end
 	end
 
-	GameTooltip:AddLine(string.format(PAPERDOLLFRAME_UPS_TOOLTIP_HELP_1, point), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
+	GameTooltip:AddLine(string.format(PAPERDOLLFRAME_UPS_TOOLTIP_HELP_1, RoundToSignificantDigits(multiplier, 2)), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
 	GameTooltip:AddLine(PAPERDOLLFRAME_UPS_TOOLTIP_HELP_2, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
 	GameTooltip:AddLine(PAPERDOLLFRAME_UPS_TOOLTIP_HELP_3, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
 	GameTooltip:AddLine(PAPERDOLLFRAME_UPS_TOOLTIP_HELP_4, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)

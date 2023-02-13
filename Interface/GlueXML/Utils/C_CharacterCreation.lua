@@ -225,7 +225,6 @@ local NEUTRAL_RACES = {
 	[E_CHARACTER_RACES.RACE_PANDAREN_NEUTRAL] = true,
 	[E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL] = true,
 	[E_CHARACTER_RACES.RACE_DRACTHYR] = true,
---	[E_CHARACTER_RACES.RACE_BLOODELF_DH] = true,
 }
 local VULPERA_RACES = {
 	[E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL] = true,
@@ -376,6 +375,10 @@ end
 
 function C_CharacterCreation.IsAlliedRace(raceID)
 	return ALLIED_RACES[raceID]
+end
+
+function C_CharacterCreation.IsNeutralBaseRace(raceID)
+	return NEUTRAL_RACES[raceID] or VULPERA_RACES[raceID] or PANDAREN_RACES[raceID]
 end
 
 function C_CharacterCreation.IsNeutralRace(raceID)

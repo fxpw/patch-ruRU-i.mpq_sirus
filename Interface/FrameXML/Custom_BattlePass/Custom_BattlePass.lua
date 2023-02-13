@@ -146,28 +146,56 @@ function BattlePassFrameMixin:OnHide()
     self.currentPage = 0
 end
 
+local BattlePassDelegate = CreateFrame("Frame")
+BattlePassDelegate:SetScript("OnAttributeChanged", function(self, name, value)
+	if name == "state" then
+		if value == "useItem" then
+			local itemID = self:GetAttribute("itemID")
+			local useTimes = self:GetAttribute("count") or 1
+			if not itemID then
+				self:SetAttribute("state", "clear")
+				return
+			end
+
+			local NUM_BAG_FRAMES = 4
+
+			for containerID = 0, NUM_BAG_FRAMES do
+				local numSlots = GetContainerNumSlots(containerID)
+				local slotID = 1
+				while slotID < numSlots do
+					if itemID == GetContainerItemID(containerID, slotID) then
+						UseContainerItem(containerID, slotID)
+						useTimes = useTimes - 1
+
+						if useTimes == 0 then
+							self:SetAttribute("state", "clear")
+							return
+						end
+					else
+						slotID = slotID + 1
+					end
+				end
+			end
+		elseif value == "clear" then
+			self:SetAttribute("itemID", nil)
+			self:SetAttribute("count", nil)
+		end
+	end
+end)
+
 StaticPopupDialogs["BATTLEPASS_BUY_USE_CONFIRM"] = {
     text = BATTLEPASS_BUY_USE_CONFIRM,
     button1 = YES,
     button2 = NO,
-    OnAccept = function (self)
-        for i = 1, self.data.count do
-            for containerID = 0, NUM_BAG_FRAMES do
-                for slotID = 1, GetContainerNumSlots(containerID) do
-                    if self.data.foundItem == GetContainerItemID(containerID, slotID) then
-                        UseContainerItem(containerID, slotID)
-                    end
-                end
-            end
-        end
-
-        --UseContainerItem(self.data.containerID, self.data.slotID)
-    end,
-    OnCancel = function () end,
+	OnAccept = function(self)
+		BattlePassDelegate:SetAttribute("state", "useItem")
+	end,
+	OnCancel = function(self)
+		BattlePassDelegate:SetAttribute("state", "clear")
+	end,
     hideOnEscape = 1,
     timeout = 0,
     exclusive = 1,
-    whileDead = 1,
 }
 
 function BattlePassFrameMixin:CHAT_MSG_LOOT(_, text)
@@ -175,35 +203,34 @@ function BattlePassFrameMixin:CHAT_MSG_LOOT(_, text)
         return
     end
 
-    local itemEntry, count = string.match(text, "|Hitem:(%d+).*x(%d+)")
-    if not count then
-        itemEntry, count = string.match(text, "|Hitem:(%d+)"), 1
-    end
+	local lootedItemID, count = string.match(text, "|Hitem:(%d+).+|h|r.*x(%d+)%.?$")
+	if not count then
+		lootedItemID = string.match(text, "|Hitem:(%d+)")
+		count = 1
+	end
 
-    local foundItem
+	lootedItemID = tonumber(lootedItemID)
+	local foundItem
 
-    itemEntry = tonumber(itemEntry)
+	for category = 1, 2 do
+		for _, data in pairs(STORE_PRODUCT_CACHE[1][101][category][0].data) do
+			if lootedItemID == data[2] then
+				foundItem = true
+				break
+			end
+		end
+		if foundItem then
+			break
+		end
+	end
 
-    for category = 1, 2 do
-        for _, data in pairs(STORE_PRODUCT_CACHE[1][101][category][0].data) do
-            if itemEntry == data[2] then
-                foundItem = itemEntry
-                break
-            end
-        end
-    end
-
-
-    if foundItem then
-        C_Timer:After(0.1, function()
-            local dialog = StaticPopup_Show("BATTLEPASS_BUY_USE_CONFIRM", text)
-
-            dialog.data = {
-                foundItem = foundItem,
-                count = count
-            }
-        end)
-    end
+	if foundItem then
+		RunNextFrame(function()
+			BattlePassDelegate:SetAttribute("itemID", lootedItemID)
+			BattlePassDelegate:SetAttribute("count", count)
+			StaticPopup_Show("BATTLEPASS_BUY_USE_CONFIRM", text)
+		end)
+	end
 end
 
 function BattlePassFrameMixin:OnKeyDown( key )
@@ -1393,8 +1420,8 @@ function BattlePassTutorialButtonMixin:OnLoad()
         [1] = { ButtonPos = { }, HighLightBox = { width = 465, height = 130 }, ToolTipDir = "DOWN", ToolTipText = BATTLEPASS_TUTORIAL_TEXT_1 },
         [2] = { ButtonPos = { }, HighLightBox = { width = 996, height = 258 }, ToolTipDir = "RIGHT", ToolTipText = BATTLEPASS_TUTORIAL_TEXT_2 },
         [3] = { ButtonPos = { }, HighLightBox = { width = 996, height = 258 }, ToolTipDir = "RIGHT", ToolTipText = BATTLEPASS_TUTORIAL_TEXT_3 },
-        [4] = { ButtonPos = { }, HighLightBox = { width = 200, height = 258 }, ToolTipDir = "DOWN", ToolTipText = BATTLEPASS_TUTORIAL_TEXT_4 },
-        [5] = { ButtonPos = { }, HighLightBox = { width = 200, height = 258 }, ToolTipDir = "DOWN", ToolTipText = BATTLEPASS_TUTORIAL_TEXT_5 },
+        [4] = { ButtonPos = { }, HighLightBox = { width = 200, height = 258 }, ToolTipDir = "DOWN", ToolTipText = BATTLEPASS_TUTORIAL_TEXT_4:format(#BATTLEPASS_LEVELS - 1) },
+        [5] = { ButtonPos = { }, HighLightBox = { width = 200, height = 258 }, ToolTipDir = "DOWN", ToolTipText = BATTLEPASS_TUTORIAL_TEXT_5:format(#BATTLEPASS_LEVELS - 1) },
     }
 end
 
@@ -1446,9 +1473,9 @@ end
 function BattlePassTutorialButtonMixin:OnClick()
     if ( self.helpPlateData and not HelpPlate_IsShowing(self.helpPlateData) ) then
         self:UpdateHelpPlateData()
-		
+
 		local infoData  = C_CacheInstance:Get("ASMSG_BATTLEPASS_SETTINGS")
-		
+
 		self.helpPlateData[1].ToolTipText = string.format(BATTLEPASS_TUTORIAL_TEXT_1, infoData.pointsBG, infoData.pointsArena, infoData.pointsArenaSoloq, infoData.pointsArena1vs1, infoData.dayAmount, infoData.totalAmount, infoData.dayAmount)
 
         HelpPlate_Show( self.helpPlateData, self.mainFrame, self )

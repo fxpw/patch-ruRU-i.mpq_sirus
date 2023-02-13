@@ -343,6 +343,8 @@ function GMClient_BanFrame_BanButton_OnClick( self, ... )
 		banTime = "7d"
 	elseif buttonID == 3 then
 		banTime = "30d"
+	elseif buttonID == 4 then
+		banTime = "-1"
 	end
 
 	TrinityCoreMixIn:SendCommand(string.format("ban playeraccount %s %s %d %s", self:GetParent():GetParent().playerName, banTime, unBannedPrice, reason), createResultHandler("ban playeraccount"))

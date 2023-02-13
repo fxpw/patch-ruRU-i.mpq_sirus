@@ -278,7 +278,7 @@ function C_Transmog.GetSlotInfo(transmogLocation)
 	else
 		local itemName, _, itemRarity, _, _, _, _, _, _, _, _, _, _, _, equipLocID = C_Item.GetItemInfo(itemID, nil, nil, nil, true);
 		if itemName then
-			if nonTransmogrifyInvType[equipLocID] or ((itemRarity < 2 or itemRarity > 5) and equipLocID ~= 4 and equipLocID ~= 19) then
+			if nonTransmogrifyInvType[equipLocID] or ((itemRarity < 2 --[[or itemRarity > 5]]) and equipLocID ~= 4 and equipLocID ~= 19) then
 				canTransmogrify = false;
 			else
 				canTransmogrify = true;

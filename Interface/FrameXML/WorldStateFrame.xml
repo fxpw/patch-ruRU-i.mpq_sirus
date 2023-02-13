@@ -1057,7 +1057,7 @@
 							</Anchors>
 							<Color r="1" g="1" b="1"/>
 						</FontString>
-						<FontString name="$parentBattlegroundCloseLabel" parentKey="BattlegroundCloseLabel" inherits="GameFontDisableSmall" maxLine="1" justifyH="RIGHT" text="TIME_TO_PORT2">
+						<FontString name="$parentBattlegroundCloseLabel" parentKey="BattlegroundCloseLabel" inherits="GameFontDisableSmall" maxLines="1" justifyH="RIGHT" text="TIME_TO_PORT2">
 							<Size x="200" y="16"/>
 							<Anchors>
 								<Anchor point="BOTTOMRIGHT" x="-22" y="44" />
@@ -1611,13 +1611,13 @@
 			<Frame name="$parentEfficiency" parentKey="EfficiencyFrame" setAllPoints="true" hidden="true">
 				<Layers>
 					<Layer level="ARTWORK">
-						<FontString name="$parentHonorLabel" parentKey="HonorLabel" inherits="GameFontDisableSmall" maxLine="1" justifyH="LEFT" text="WORLDSTATE_SCORE_HONORLABEL">
+						<FontString name="$parentHonorLabel" parentKey="HonorLabel" inherits="GameFontDisableSmall" maxLines="1" justifyH="LEFT" text="WORLDSTATE_SCORE_HONORLABEL">
 							<Size x="200" y="16"/>
 							<Anchors>
 								<Anchor point="BOTTOMLEFT" x="26" y="36" />
 							</Anchors>
 						</FontString>
-						<FontString name="$parentRatingLabel" parentKey="RatingLabel" inherits="GameFontDisableSmall" maxLine="1" justifyH="LEFT" text="WORLDSTATE_SCORE_RATINGLABEL">
+						<FontString name="$parentRatingLabel" parentKey="RatingLabel" inherits="GameFontDisableSmall" maxLines="1" justifyH="LEFT" text="WORLDSTATE_SCORE_RATINGLABEL">
 							<Size x="200" y="16"/>
 							<Anchors>
 								<Anchor point="BOTTOMLEFT" x="26" y="50" />
@@ -1914,6 +1914,34 @@
 		</Scripts>
 	</Button>
 
+	<Button name="MiniGameRoleButtonTemplate" enableMouse="true" virtual="true">
+		<Size x="128" y="190"/>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="116" y="116"/>
+					<Anchors>
+						<Anchor point="TOP"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentName" parentKey="Name" inherits="SystemFont_Shadow_Med3">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentIcon" relativePoint="BOTTOM" x="0" y="-10"/>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+				<FontString name="$parentScore" parentKey="Score" inherits="SystemFont_Shadow_Large">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentName" relativePoint="BOTTOM" x="0" y="-20"/>
+					</Anchors>
+					<Color r="0.7" g="0.7" b="0.7"/>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Button>
+
 	<Frame name="MiniGameScoreFrame" inherits="ButtonFrameTemplate" toplevel="true" parent="UIParent" enableMouse="true" frameStrata="FULLSCREEN" hidden="true">
 		<Size x="760" y="426"/>
 		<Anchors>
@@ -1944,7 +1972,13 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Frame name="$parentContent" parentKey="Content">
+			<Frame name="$parentContent" parentKey="Content" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="8" y="-64"/>
+					<Anchor point="BOTTOMRIGHT" x="-10" y="43"/>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentContentTable" parentKey="ContentTable" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" x="8" y="-27"/>
 					<Anchor point="BOTTOMRIGHT" x="-30" y="44"/>
@@ -1972,6 +2006,32 @@
 						</Frames>
 					</ScrollFrame>
 				</Frames>
+			</Frame>
+			<Frame name="$parentFillupStatusButton" parentKey="FillupStatusButton" inherits="EyeTemplate" hidden="false">
+				<Size x="36" y="36"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-3" y="-23"/>
+				</Anchors>
+				<Layers>
+					<Layer level="HIGHLIGHT">
+						<Texture name="$parentHighlight" parentKey="Highlight" setAllPoints="true" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight" alphaMode="ADD"/>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, MiniGameFillupButtonMixin)
+						self:OnLoad()
+					</OnLoad>
+					<OnEnter>
+						self:OnEnter()
+					</OnEnter>
+					<OnLeave>
+						self:OnLeave()
+					</OnLeave>
+					<OnShow>
+						self:OnShow()
+					</OnShow>
+				</Scripts>
 			</Frame>
 			<Button name="$parentLeaveButton" inherits="UIPanelButtonTemplate" text="LEAVE_MINI_GAME">
 				<Size x="153" y="24"/>

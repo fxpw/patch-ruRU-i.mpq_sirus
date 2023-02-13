@@ -549,7 +549,10 @@ function RouletteFrameMixin:ASMSG_LOTTERY_INFO(msg)
         local rewardData = C_Split(data, ",")
         local itemEntry  = rewardData[E_LOTTERY_REWARDS_LIST.ENTRY]
 
-		C_Item.RequestServerCache(itemEntry)
+		local name = C_Item.GetItemInfoRaw(itemEntry)
+		if not name then
+			C_Item.RequestServerCache(itemEntry)
+		end
 
         table.insert(buffer, {
             itemEntry      = tonumber(itemEntry),

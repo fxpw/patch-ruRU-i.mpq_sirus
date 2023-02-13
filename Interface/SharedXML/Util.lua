@@ -46,21 +46,6 @@ function GetSpriteFromImage(x, y, w, h, iw, ih)
     return (x*w)/iw, ((x+1)*w)/iw, (y*h)/ih, ((y+1)*h)/ih
 end
 
-function BitMaskCalculate( ... )
-	local value = {...}
-	local mask = 0
-
-	for i = 1, #value do
-		local data = value[i]
-
-		if data then
-			mask = bit.bor(mask, data)
-		end
-	end
-
-	return mask
-end
-
 local strfind = string.find
 local strlen = string.len
 local strsub = string.sub
@@ -109,7 +94,6 @@ function GetClassFile(localizedClassName)
 end
 
 function SendServerMessage(prefix, ...)
---	printec("Send ->", prefix, ...)
 	if select("#", ...) > 1 then
 		SendAddonMessage(prefix, strjoin(" ", tostringall(...)), "WHISPER", UnitName("player"))
 	else
@@ -181,10 +165,6 @@ end
 
 function IsInterfaceDevClient()
 	return S_IsInterfaceDevClient and S_IsInterfaceDevClient()
-end
-
-function IsNyllClient()
-	return S_IsNyllClient and S_IsNyllClient()
 end
 
 function PackNumber(n1, n2)

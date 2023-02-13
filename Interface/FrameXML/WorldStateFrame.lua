@@ -779,11 +779,9 @@ function WorldStateScoreFrame_OnEvent( self, event, ... )
 			C_CacheInstance:Set("ASMSG_BG_STAT_RATING_BALANCE", {alliance = nil, horde = nil})
 		end
 	elseif event == "UPDATE_BATTLEFIELD_SCORE" then
-		-- print("UPDATE_BATTLEFIELD_SCORE")
 		WorldStateScoreFrame_Resize()
 		WorldStateScoreFrame_Update()
 	elseif event == "UPDATE_WORLD_STATES" then
-		-- print("UPDATE_WORLD_STATES")
 		if WorldStateScoreFrame:IsShown() or GetBattlefieldWinner() then
 			WorldStateScoreFrame_Resize()
 			WorldStateScoreFrame_Update(true)
@@ -1846,7 +1844,7 @@ end
 MiniGameScoreRowMixin = CreateFromMixins(TableBuilderRowMixin);
 
 function MiniGameScoreRowMixin:Populate(rowData, dataIndex)
-	if rowData.position == 1 then
+	if C_MiniGames.IsWinner(rowData.name) then
 		self.BackgroundLeft:SetVertexColor(0.19, 0.57, 0.11)
 		self.BackgroundRight:SetVertexColor(0.19, 0.57, 0.11)
 	elseif rowData.position then
@@ -1929,6 +1927,8 @@ MiniGameScoreMixin = {};
 
 UIPanelWindows["MiniGameScoreFrame"] = {area = "center", pushable = 0, whileDead = 1};
 
+MINI_GAME_DEFAULTINTERVAL = 2
+
 local MINI_GAME_SHUTDOWN_TIMER = 0;
 local MINI_GAME_TIMER_THRESHOLD_INDEX = 1;
 local PREVIOUS_MINI_GAME_MOD = 0;
@@ -1941,21 +1941,24 @@ function MiniGameScoreMixin:OnLoad()
 	_G[self:GetName().."BtnCornerRight"]:Hide();
 	_G[self:GetName().."ButtonBottomBorder"]:Hide();
 
-	HybridScrollFrame_OnLoad(self.Content.ScrollFrame);
-	HybridScrollFrame_CreateButtons(self.Content.ScrollFrame, "MiniGameScoreTemplate");
-	self.Content.ScrollFrame.update = function()
+	HybridScrollFrame_OnLoad(self.ContentTable.ScrollFrame);
+	HybridScrollFrame_CreateButtons(self.ContentTable.ScrollFrame, "MiniGameScoreTemplate");
+	self.ContentTable.ScrollFrame.update = function()
 		self:UpdateContent();
 	end
-	self.Content.ScrollFrame.ScrollBar.doNotHide = true;
+	self.ContentTable.ScrollFrame.ScrollBar.doNotHide = true;
 
-	self.Content:SetFrameLevel(3);
+	SetParentFrameLevel(self.Content, 2);
+	SetParentFrameLevel(self.ContentTable, 2);
 
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 	self:RegisterCustomEvent("UPDATE_MINI_GAME_SCORE");
 	self:RegisterCustomEvent("UPDATE_MINI_GAMES_STATUS");
 
-	self.tableBuilder = CreateTableBuilder(HybridScrollFrame_GetButtons(self.Content.ScrollFrame));
-	self.tableBuilder:SetHeaderContainer(self.Content.ScrollCategories);
+	self.roleButtonPool = CreateFramePool("Button", self.Content, "MiniGameRoleButtonTemplate")
+
+	self.tableBuilder = CreateTableBuilder(HybridScrollFrame_GetButtons(self.ContentTable.ScrollFrame));
+	self.tableBuilder:SetHeaderContainer(self.ContentTable.ScrollCategories);
 
 	self:ConstructTable(self.tableBuilder);
 
@@ -1969,14 +1972,29 @@ function MiniGameScoreMixin:OnShow()
 		PortraitFrameTemplate_SetTitle(self, name);
 	end
 
-	self:ConstructTable(self.tableBuilder);
+	if C_MiniGames.GetScoreboardType() == Enum.MiniGames.ScoreboardType.Default then
+		self:ConstructTable(self.tableBuilder);
+	end
 
+	self:SetScoreboardType()
 	self:UpdateContent();
+end
+
+function MiniGameScoreMixin:SetScoreboardType()
+	local typeID = C_MiniGames.GetScoreboardType()
+	if typeID == Enum.MiniGames.ScoreboardType.Default then
+		self.Content:Hide()
+		self.ContentTable:Show()
+	elseif typeID == Enum.MiniGames.ScoreboardType.Role then
+		self.Content:Show()
+		self.ContentTable:Hide()
+		MiniGameScoreFrame:SetSize(762, 340)
+	end
 end
 
 function MiniGameScoreMixin:OnEvent(event, ...)
 	if event == "UPDATE_MINI_GAME_SCORE" then
-		if C_MiniGames.GetWinner() then
+		if C_MiniGames.GetNumWinners() > 0 then
 			ShowUIPanel(self);
 		else
 			self:UpdateContent();
@@ -2005,8 +2023,8 @@ end
 
 function MiniGameScoreMixin:OnUpdate(elapsed)
 	self.requestTimer = self.requestTimer + elapsed;
-	if self.requestTimer > 2 then
-		if not C_MiniGames.GetWinner() then
+	if self.requestTimer > MINI_GAME_DEFAULTINTERVAL then
+		if C_MiniGames.GetNumWinners() == 0 then
 			C_MiniGames.RequestScoreData();
 		end
 
@@ -2049,31 +2067,103 @@ function MiniGameScoreMixin:ConstructTable(tableBuilder)
 	end
 
 	MiniGameScoreFrame:SetWidth(frameWidth + 38);
-	MiniGameScoreFrame.Content.ScrollFrame.ScrollChild:SetWidth(frameWidth);
+	MiniGameScoreFrame.ContentTable.ScrollFrame.ScrollChild:SetWidth(frameWidth);
 
 	tableBuilder:Arrange();
 end
 
+local ROLE_BUTTON_OFFSET_X = 14
 function MiniGameScoreMixin:UpdateContent()
-	local scrollFrame = self.Content.ScrollFrame;
-	local buttons = scrollFrame.buttons;
-	local numButtons = #scrollFrame.buttons;
+	local typeID = C_MiniGames.GetScoreboardType()
 
-	local numScores = C_MiniGames.GetNumScores();
+	if typeID == Enum.MiniGames.ScoreboardType.Default then
+		local scrollFrame = self.ContentTable.ScrollFrame;
+		local buttons = scrollFrame.buttons;
+		local numButtons = #scrollFrame.buttons;
 
-	local offset = HybridScrollFrame_GetOffset(scrollFrame);
-	local populateCount = math.min(numButtons, numScores);
-	self.tableBuilder:Populate(offset, populateCount);
+		local numScores = C_MiniGames.GetNumScores();
 
-	for i = 1, numButtons do
-		buttons[i]:SetShown(i <= numScores);
+		local offset = HybridScrollFrame_GetOffset(scrollFrame);
+		local populateCount = math.min(numButtons, numScores);
+		self.tableBuilder:Populate(offset, populateCount);
+
+		for i = 1, numButtons do
+			buttons[i]:SetShown(i <= numScores);
+		end
+
+		HybridScrollFrame_Update(scrollFrame, numScores * 16, scrollFrame:GetHeight());
+	elseif typeID == Enum.MiniGames.ScoreboardType.Role then
+		self.roleButtonPool:ReleaseAll()
+
+		local lastButton
+		local numScores = C_MiniGames.GetNumScores()
+		for scoreIndex = 1, numScores do
+			local scoreData = C_MiniGames.GetScore(scoreIndex)
+
+			local f = self.roleButtonPool:Acquire()
+			f:SetID(scoreIndex)
+			f.Name:SetText(scoreData.name)
+			f.Score:SetText(scoreData.stat1)
+			f.Icon:SetAtlas(string.format("lfg-icon-role-x2-%s", scoreData.role ~= "none" and scoreData.role or "questionmark"))
+
+			if scoreIndex == 1 then
+				local offsetX = (numScores - 1) * ((f:GetWidth() + ROLE_BUTTON_OFFSET_X) / 2)
+				f:SetPoint("CENTER", -offsetX, 0)
+			else
+				f:SetPoint("LEFT", lastButton, "RIGHT", ROLE_BUTTON_OFFSET_X, 0)
+			end
+
+			f:Show()
+
+			lastButton = f
+		end
 	end
 
-	HybridScrollFrame_Update(scrollFrame, numScores * 16, scrollFrame:GetHeight());
+	self.FillupStatusButton:SetActive(C_MiniGames.IsFillupActive())
 
-	local winner = C_MiniGames.GetWinner();
-	self.CloseTimeLabel:SetShown(winner);
-	self.CloseTime:SetShown(winner);
+	local winners = C_MiniGames.GetNumWinners() ~= 0
+	self.CloseTimeLabel:SetShown(winners);
+	self.CloseTime:SetShown(winners);
+end
+
+MiniGameFillupButtonMixin = {}
+
+function MiniGameFillupButtonMixin:OnLoad()
+	SetParentFrameLevel(self, 3)
+end
+
+function MiniGameFillupButtonMixin:OnShow()
+	SetParentFrameLevel(self, 3)
+end
+
+function MiniGameFillupButtonMixin:OnEnter()
+	GameTooltip:SetOwner(self)
+	if self.active then
+		GameTooltip:AddLine(MINI_GAME_FILLUP_ACTIVE)
+	else
+		GameTooltip:AddLine(MINI_GAME_FILLUP_INACTIVE)
+	end
+	GameTooltip:Show()
+end
+
+function MiniGameFillupButtonMixin:OnLeave()
+	GameTooltip:Hide()
+end
+
+function MiniGameFillupButtonMixin:SetActive(state)
+	self.active = not not state
+
+	self.texture:SetDesaturated(not self.active)
+
+	if self.active then
+		EyeTemplate_StartAnimating(self)
+	else
+		EyeTemplate_StopAnimating(self)
+	end
+
+	if self:IsMouseOver() then
+		self:OnEnter()
+	end
 end
 
 function ToggleMiniGameScoreFrame()

@@ -4388,7 +4388,7 @@ local createShoutPopup = function()
 		editBoxMultiLine = false,
 
 		EditBox_OnTextChanged = function(this)
-			local currentBonuses = GetPlayerBalance()
+			local currentBonuses = Store_GetBalance(Enum.Store.CurrenctType.Bonus)
 			local text = string.trim(this:GetText() or "")
 			local enabled = (currentBonuses >= 99 or C_Service:IsGM()) and text ~= ""
 			this.PopupFrame.Button1:SetEnabled(enabled)
@@ -4425,7 +4425,7 @@ function ChatMenu_Shout(self)
 end
 
 local function ChatMenu_ShoutIsShown()
-	if select(4, GetPlayerBalance()) >= 30 or C_Service:IsGM() then
+	if Store_GetBalance(Enum.Store.CurrenctType.Loyality) >= 30 or C_Service:IsGM() then
 		return true;
 	end
 	return false;
@@ -4977,24 +4977,17 @@ function ParseURLsInText(msg)
 	return msg
 end
 
-function SendChatMessageType(message, messageType)
+function AddChatTyppedMessage(messageType, message)
 	local info = ChatTypeInfo[messageType];
 	if not info then
+		error(string.format("AddChatTyppedMessage: unknown messageType (%s)", messageType), 2)
 		return;
 	end
 
-	for _, chatFrameName in pairs(CHAT_FRAMES) do
+	for _, chatFrameName in ipairs(CHAT_FRAMES) do
 		local frame = _G[chatFrameName];
-
-		local foundType;
-		for _, value in pairs(frame.messageTypeList) do
-			if value == messageType then
-				foundType = true;
-			end
-		end
-
-		if foundType then
-			frame:AddMessage(message, info.r, info.g, info.b, info.id or 1)
+		if tIndexOf(frame.messageTypeList, messageType) then
+			frame:AddMessage(message, info.r or 1, info.g or 1, info.b or 0, info.id or 1)
 		end
 	end
 end

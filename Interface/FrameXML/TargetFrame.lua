@@ -1059,7 +1059,7 @@ function Target_Spellbar_AdjustPosition(self)
 		if ( parentFrame.buffsOnTop or parentFrame.auraRows <= 1 ) then
 			self:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, -21 );
 		else
-			self:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15);
+			self:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -35);
 		end
 	elseif ( parentFrame.haveElite ) then
 		if ( parentFrame.buffsOnTop or parentFrame.auraRows <= 1 ) then

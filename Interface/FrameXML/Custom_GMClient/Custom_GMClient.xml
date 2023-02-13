@@ -178,7 +178,7 @@
 		</Scripts>
 	</Frame>
 	<Frame name="GMClient_BanFrame" parent="UIParent" inherits="ButtonFrameTemplate" hidden="true" movable="true">
-		<Size x="300" y="186"/>
+		<Size x="300" y="212"/>
 		<Anchors>
 			<Anchor point="CENTER" x="0" y="0" />
 		</Anchors>
@@ -226,7 +226,7 @@
 							<OnClick function="GMClient_BanFrame_BanButton_OnClick"/>
 						</Scripts>
 					</Button>
-					<Button name="$parentButton2" text="7 Деней" inherits="UIPanelButtonTemplate" id="2">
+					<Button name="$parentButton2" text="7 Дней" inherits="UIPanelButtonTemplate" id="2">
 						<Size x="240" y="22"/>
 						<Anchors>
 							<Anchor point="TOP" relativeTo="$parentButton1" relativePoint="BOTTOM" x="0" y="-4" />
@@ -235,10 +235,19 @@
 							<OnClick function="GMClient_BanFrame_BanButton_OnClick"/>
 						</Scripts>
 					</Button>
-					<Button name="$parentButton3" text="30 Деней" inherits="UIPanelButtonTemplate" id="3">
+					<Button name="$parentButton3" text="30 Дней" inherits="UIPanelButtonTemplate" id="3">
 						<Size x="240" y="22"/>
 						<Anchors>
 							<Anchor point="TOP" relativeTo="$parentButton2" relativePoint="BOTTOM" x="0" y="-4" />
+						</Anchors>
+						<Scripts>
+							<OnClick function="GMClient_BanFrame_BanButton_OnClick"/>
+						</Scripts>
+					</Button>
+					<Button name="$parentButton4" text="Перманентно" inherits="UIPanelButtonTemplate" id="4">
+						<Size x="240" y="22"/>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentButton3" relativePoint="BOTTOM" x="0" y="-4" />
 						</Anchors>
 						<Scripts>
 							<OnClick function="GMClient_BanFrame_BanButton_OnClick"/>

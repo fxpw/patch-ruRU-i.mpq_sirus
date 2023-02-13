@@ -2160,7 +2160,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "All Slots"
     },
     ["TRANSMOGRIFY_FRAME_HELP_TOOLTIP"] = {
-        ruRU = "Вы не сможете вернуть предмет в магазин если:\nЕсли вы произведете трансмогрификацию в этот предмет.\nЕсли вы произведете трансмогрификацию этого предмета в другой.\n\nПосле использования трансмогрификации оба предмета станут персональными.\n\nВы потеряете внешний вид предмета, если удалите или продадите предмет торговцу.",
+        ruRU = "Вы не сможете вернуть предмет в магазин если:\nЕсли вы произведете трансмогрификацию в этот предмет.\nЕсли вы произведете трансмогрификацию этого предмета в другой.\n\nПосле использовать трансмогрификации оба предмета станут персональными, в том числе фамильная броня и оружие.\n\nВы потеряете внешний вид предмета, если удалите или продадите предмет торговцу.",
         enGB = "You will not be able to return the item to the shop if:\nYou transmogrify an item into this item.\nYou transmogrify this item into another item.\n\nYou will lose the appearance of the item if you delete or sell this item to a merchant."
     },
     ["MINECART1"] = {
@@ -4563,10 +4563,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Прекращение действия",
         enGB = "dissipated"
     },
-    ["EQUIP_SPELLS_SKILLNAME"] = {
-        ruRU = "Способности экипировки",
-        enGB = ""
-    },
     ["EMOTE118_CMD2"] = {
         ruRU = "/listen",
         enGB = "/listen"
@@ -6072,8 +6068,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "Adds a player to your mute list. You will no longer hear voice chat from players on your mute list."
     },
     ["PAPERDOLLFRAME_UPS_TOOLTIP_HELP_1"] = {
-        ruRU = "За каждое очко усиления вы получаете %d |4очко:очка:очков; характеристики",
-        enGB = "For each enhancement point, you'll get %d stat |4point:points;"
+        ruRU = "За каждое очко усиления вы получаете %s |4очко:очка:очков; характеристики",
+        enGB = "For each enhancement point, you'll get %s stat |4point:points;"
     },
     ["OPTION_TOOLTIP_SHOW_PARTY_TEXT"] = {
         ruRU = "Отображение текста на индикаторах состояния членов группы, такими как здоровье, мана, ярость или энергия.",
@@ -20967,10 +20963,26 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Изменить прозрачность",
         enGB = "Change Opacity"
     },
-    ["GUILD_BONUS_SKILLNAME"] = {
-        ruRU = "Гильдейские бонусы",
-        enGB = ""
-    },
+	["SKILLNAME_EQUIP_SPELLS"] = {
+		ruRU = "Способности экипировки",
+		enGB = ""
+	},
+	["SKILLNAME_GUILD_BONUSES"] = {
+		ruRU = "Гильдейские бонусы",
+		enGB = ""
+	},
+	["SKILLNAME_COLLECTION_TOYS"] = {
+		ruRU = "Коллекция: Игрушки",
+		enGB = ""
+	},
+	["SKILLNAME_COLLECTION_HEIRLOOM"] = {
+		ruRU = "Коллекция: Наследие",
+		enGB = ""
+	},
+	["SKILLNAME_COLLECTION_ILLUSIONS"] = {
+		ruRU = "Коллекция: Иллюзии",
+		enGB = ""
+	},
     ["EXTERNAL_URL_POPUP"] = {
         ruRU = "Внешняя ссылка",
         enGB = ""
@@ -22671,6 +22683,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Вы получили новую игрушку.\n\n|cFF00FFFFНажмите на значок|r чтобы посмотреть подробности.",
 		enGB = "You have received a new mount.\n\n|cFF00FFFFClick on this icon|r to see more."
 	},
+	["NEW_HEIRLOOM_HELP_1"] = {
+		ruRU = "Вы изучили новый фамильный предмет.\n\n|cFF00FFFFНажмите на значок|r чтобы посмотреть подробности.",
+		enGB = ""
+	},
     ["ERR_AUCTION_LIMITED_DURATION_ITEM"] = {
         ruRU = "Нельзя выставить на аукцион предмет с ограниченным сроком действия.",
         enGB = "You cannot auction items with a limited duration."
@@ -23550,14 +23566,6 @@ local SIRUS_LOCALIZATION = {
     ["SHIFT_KEY_TEXT"] = {
         ruRU = "SHIFT",
         enGB = "SHIFT"
-    },
-    ["PVPFRAME_LABEL_NOSEASON"] = {
-        ruRU = "Игрок против Игрока - |cffFFFFFFСезон окончен",
-        enGB = "Player vs. Player - |cffFFFFFFNo Active Season"
-    },
-    ["PVPFRAME_LABEL"] = {
-        ruRU = "Игрок против Игрока - |cffFFFFFF%d сезон (До окончания %s)",
-        enGB = "Player vs. Player - Season |cffFFFFFF%d (%s Left)"
     },
     ["LOCALE_SPELL_MECHANIC_FEAR"] = {
         ruRU = "Страх",
@@ -27502,6 +27510,10 @@ local SIRUS_LOCALIZATION = {
     ["SPELL_FAILED_CUSTOM_ERROR_101"] = {
         ruRU = "Вы не можете получить эффект святилища, пока на вас действует эффект другого святилища.",
         enGB = "You cannot gain a shrine effect while you are affected by another shrine effect."
+    },
+    ["SPELL_FAILED_CUSTOM_ERROR_102"] = {
+        ruRU = "Необходимо владение навыком верховой езды.",
+        enGB = "Riding skill requirement."
     },
     ["KEY_ESCAPE"] = {
         ruRU = "Esc",
@@ -35195,6 +35207,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Покинуть подземелье",
         enGB = "Leave Instance"
     },
+	["MINIGAME_LEAVE"] = {
+		ruRU = "Покинуть мини-игру",
+		enGB = "Leave minigame"
+	},
     ["ARENA_COMPLETE_MESSAGE"] = {
         ruRU = "Бой завершен. Поле боя закроется через %s.",
         enGB = "The battle has ended. This arena will close in %s"
@@ -40180,11 +40196,11 @@ local SIRUS_LOCALIZATION = {
         enGB = ""
     },
     ["BATTLEPASS_TUTORIAL_TEXT_4"] = {
-        ruRU = "Достигнув 101-го уровня Боевого Пропуска, вы больше не будете зависимы от суточного ограничения на опыт Боевого Пропуска - и сможете продолжать получение дополнительных наград практически бесконечно - до тех пор, пока сезон не будет завершен. При наличии активного \"Премиум\" статуса Боевого Пропуска вы также будете получать отдельный дополнительный сундучок за каждый из \"бесконечных уровней\".",
+        ruRU = "Достигнув %i-го уровня Боевого Пропуска, вы больше не будете зависимы от суточного ограничения на опыт Боевого Пропуска - и сможете продолжать получение дополнительных наград практически бесконечно - до тех пор, пока сезон не будет завершен. При наличии активного \"Премиум\" статуса Боевого Пропуска вы также будете получать отдельный дополнительный сундучок за каждый из \"бесконечных уровней\".",
         enGB = ""
     },
     ["BATTLEPASS_TUTORIAL_TEXT_5"] = {
-        ruRU = "Достигнув 101-го уровня Боевого Пропуска, вы больше не будете зависимы от суточного ограничения на опыт Боевого Пропуска - и сможете продолжать получение дополнительных наград практически бесконечно - до тех пор, пока сезон не будет завершен.",
+        ruRU = "Достигнув %i-го уровня Боевого Пропуска, вы больше не будете зависимы от суточного ограничения на опыт Боевого Пропуска - и сможете продолжать получение дополнительных наград практически бесконечно - до тех пор, пока сезон не будет завершен.",
         enGB = ""
     },
     ["DANGEROUS_SCRIPTS_WARNING"] = {
@@ -41503,6 +41519,10 @@ local SIRUS_LOCALIZATION = {
 	    ruRU = "Стартовая экипировка",
 	    enGB = "Starting equipment"
     },
+	["TRANSMOG_SOURCE_13"] = {
+		ruRU = "Трансмогрификация (магазин)",
+		enGB = "Transmogrification (store)"
+	},
     ["WARDROBE_TOOLTIP_BOSS_DROP_FORMAT"] = {
 	    ruRU = "Добыча с босса: %1$s",
 	    enGB = "Boss Drop: %s"
@@ -41695,6 +41715,10 @@ local SIRUS_LOCALIZATION = {
 	    ruRU = "Игрушка %s добавлена в коллекцию.",
 	    enGB = "%s has been added to your Toy Box."
     },
+    ["COLLECTION_HEIRLOOM_ADD_FORMAT"] = {
+	    ruRU = "Предмет %s добавлен в вашу коллекцию наследуемых предметов.",
+	    enGB = "%s has been added to your heirloom collection."
+    },
     ["COLLECTION_MOUNTS_HYPERLINK_FORMAT"] = {
 	    ruRU = "|cffff80ff|Hcollection:0:%d|h[Транспорт: %s]|h|r",
 	    enGB = "|cffff80ff|Hcollection:0:%d|h[Mounts: %s]|h|r"
@@ -41710,6 +41734,10 @@ local SIRUS_LOCALIZATION = {
     ["COLLECTION_TOY_HYPERLINK_FORMAT"] = {
 	    ruRU = "|cffff80ff|Hcollection:3:%d|h[Игрушка: %s]|h|r",
 	    enGB = "|cffff80ff|Hcollection:3:%d|h[Toy: %s]|h|r"
+    },
+    ["COLLECTION_HEIRLOOM_HYPERLINK_FORMAT"] = {
+	    ruRU = "|cffff80ff|Hcollection:4:%d|h[Наследство: %s]|h|r",
+	    enGB = "|cffff80ff|Hcollection:4:%d|h[Heirlooms: %s]|h|r"
     },
     ["PET_JOURNAL_SUMMON_RANDOM_FAVORITE_PET"] = {
 	    ruRU = "Призвать случайного\nизбранного питомца",
@@ -41743,6 +41771,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Открыть \"Коллекции игрушек\"",
         enGB = "Toggle Toy Box"
     },
+	["BINDING_NAME_TOGGLECOLLECTIONSHEIRLOOM"] = {
+		ruRU = "Открыть \"Наследуемые предметы\"",
+		enGB = "Toggle Heirlooms Pane"
+	},
     ["DRESSING_ROOM_APPEARANCE_LIST"] = {
 	    ruRU = "Список обликов",
 	    enGB = "Appearance List"
@@ -41833,36 +41865,60 @@ local SIRUS_LOCALIZATION = {
     },
     ["YOUR_GOAL"] = {
 	    ruRU = "Ваша цель",
-	    enGB = ""
+	    enGB = "Your goal"
     },
     ["ENTER_MINI_GAME"] = {
 	    ruRU = "В игру",
-	    enGB = ""
+	    enGB = "Enter minigame"
     },
     ["MINI_GAME_QUEUE_NAME"] = {
 	    ruRU = "Мини-игра: %s",
-	    enGB = ""
+	    enGB = "Minigame: %s"
     },
+	["MINI_GAME_FILLUP_ACTIVE"] = {
+		ruRU = "Поиск игроков активен",
+		enGB = ""
+	},
+	["MINI_GAME_FILLUP_INACTIVE"] = {
+		ruRU = "Поиск игроков неактивен",
+		enGB = ""
+	},
     ["LEAVE_MINI_GAME"] = {
 	    ruRU = "Покинуть мини-игру",
-	    enGB = ""
+	    enGB = "Leave minigame"
     },
-    ["MINI_GAME_FRAGILEFLOOR_STAT_NAME"] = {
+	["MINI_GAME_STAT_NAME"] = {
 	    ruRU = "Имя",
-	    enGB = ""
+	    enGB = "Name"
     },
-    ["MINI_GAME_FRAGILEFLOOR_STAT_POSITION"] = {
+	["MINI_GAME_STAT_POSITION"] = {
 	    ruRU = "№",
-	    enGB = ""
+	    enGB = "#"
     },
-    ["MINI_GAME_FRAGILEFLOOR_STAT_PLATFORMS"] = {
-	    ruRU = "Платформы",
-	    enGB = ""
-    },
-    ["MINI_GAME_FRAGILEFLOOR_STAT_TIME"] = {
+	["MINI_GAME_STAT_ROLE"] = {
+		ruRU = "Роль",
+		enGB = "Role"
+	},
+	["MINI_GAME_STAT_TIME"] = {
 	    ruRU = "Время",
-	    enGB = ""
+	    enGB = "Time"
     },
+	["MINI_GAME_STAT_FRAGILEFLOOR_PLATFORMS"] = {
+	    ruRU = "Платформы",
+	    enGB = "Platforms"
+    },
+	["MINI_GAME_STAT_SNOWMAN_ARMOR"] = {
+		ruRU = "Доспех",
+		enGB = "Armor"
+	},
+	["MINI_GAME_STAT_VALUE_NONE"] = {
+		ruRU = "Не выбран",
+		enGB = "None"
+	},
+	["MINI_GAME_STAT_VALUE_SHREDDER"] = {
+		ruRU = "Крошшер",
+		enGB = "Shredder"
+	},
     ["MINI_GAME_TIME_CLOSED"] = {
         ruRU = "Мини-игра закроется через:",
         enGB = "Mini-game closing in:"
@@ -41915,6 +41971,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Хрупкий пол:\n\n- По окончанию подготовки вы будете перемещены на верхнюю платформу. \n- Как только вы наступите на платформу, спустя короткий промежуток времени, она пропадёт. \n- При прыжке или падении старайтесь попасть на следующий уровень платформ. \n- Падение в сторону платформ или ниже последнего уровня - проигрыш. \n- Планируйте путь через платформы так, чтобы продержаться на уровне как можно дольше и отделить соперников. \n- Чтобы открыть статистику, нажмите на |TInterface\\lfgframe\\battlenetworking0.blp:20:20:3:0:64:64:12:58:12:58|t",
         enGB = ""
     },
+	["MINI_GAME_FROZEN_SNOWMAN_LAIR_STORY_TUTORIAL"] = {
+		ruRU = "Логово замерзшего снеговика:\n\n- Разбейте ледяную глыбу и освободите снеговика Оскара.\n- Посоветуйтесь с союзниками и решите кто хочет занять роль принимающую на себя основной урон (танк), роль нанесения урона и роль лекаля группы.\n- Выберете снежный доспех и следуйте за Оскаром.\n- Характеристика вашего персонажа и ауры не влияют на прохождение этой локации.\n- Чтобы открыть статистику, нажмите на |TInterface\\lfgframe\\battlenetworking0.blp:20:20:3:0:64:64:12:58:12:58|t",
+		enGB = ""
+	},
     ["SLASH_CHAT_INVISIBLE1"] = {
         ruRU = "/невидимка",
         enGB = "/invisible"
@@ -43060,11 +43120,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["ARENA_2V2_INFO_HEADER"] = {
-		ruRU = "Вы квалифицировались в %i |4неделе:неделях:неделях; из 13",
+		ruRU = "Вы квалифицировались в %i |4неделе:неделях:неделях; из 12",
 		enGB = ""
 	},
 	["ARENA_2V2_INFO_TEXT"] = {
-		ruRU = "\nДля того, чтобы претендовать на денежный приз (в том числе в виде бонусов) вам необходимо квалифицироваться в 9 неделях из 13 недель сезона.\n\nКвалификацией в текущей неделе считается отыгрывание по меньшей мере 10 игр. Таким образом, чтобы претендовать на денежный приз вам необходимо сыграть как минимум 10 игр в 9 из 13 игровых недель в сезоне.",
+		ruRU = "\nДля того, чтобы претендовать на денежный приз (в том числе в виде бонусов) вам необходимо квалифицироваться в 9 неделях из 12 недель сезона.\n\nКвалификацией в текущей неделе считается отыгрывание по меньшей мере 20 игр. Таким образом, чтобы претендовать на денежный приз вам необходимо сыграть как минимум 20 игр в 9 из 12 игровых недель в сезоне.",
 		enGB = ""
 	},
 	["SHOW_SHOULDERS"] = {
@@ -43130,6 +43190,14 @@ local SIRUS_LOCALIZATION = {
 	["ERR_GENERIC_THROTTLE"] = {
 		ruRU = "Вы слишком сильно разогнались.",
 		enGB = "You're doing that too fast"
+	},
+	["DRACTHYR_RETURN_MORTAL_FORM"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tВозвращение смертной формы драктира",
+		enGB = ""
+	},
+	["OPTION_TOOLTIP_DRACTHYR_RETURN_MORTAL_FORM"] = {
+		ruRU = "Применение способностей \"Полет\" и \"Взмах крыльями\" превращает вас в дракона. Включение этой настройки позволит автоматически вернуться к изначальной форме после окончания их действия.",
+		enGB = ""
 	},
 	["SETTINGS_SHOW_TOASTS"] = {
 		ruRU = "Показывать уведомления",
@@ -43261,6 +43329,10 @@ local SIRUS_LOCALIZATION = {
 	},
 	["COLLECTIONS_JOURNAL_TUTORIAL_TOY_1"] = {
 		ruRU = "Перейдите во вкладку, чтобы посмотреть список доступных игрушек.",
+		enGB = ""
+	},
+	["COLLECTIONS_JOURNAL_TUTORIAL_HEIRLOOM_1"] = {
+		ruRU = "Перейдите во вкладку, чтобы посмотреть полный список доступных фамильных предметов.",
 		enGB = ""
 	},
 	["ALLIANCE_CHEER"] = {
@@ -43685,6 +43757,170 @@ local SIRUS_LOCALIZATION = {
 	},
 	["TOAST_BODY_59"] = {
 		ruRU = "Внимание! Убедитесь, что у вас взято задание \"На страже Азерота\"!",
+		enGB = ""
+	},
+	["TOAST_TITLE_60"] = {
+		ruRU = "Секретные подарки в Восточных Королевствах",
+		enGB = ""
+	},
+	["TOAST_BODY_60"] = {
+		ruRU = "Для путешественников и искателей приключений Дедушка Зима спрятал сотни подарков в Восточных Королевствах!",
+		enGB = ""
+	},
+	["TOAST_TITLE_61"] = {
+		ruRU = "Секретные подарки в Калимдоре",
+		enGB = ""
+	},
+	["TOAST_BODY_61"] = {
+		ruRU = "Дедушка Зима спрятал много подарков в Калимдоре, и только самые хорошие мальчики и девочки найдут их!",
+		enGB = ""
+	},
+	["TOAST_TITLE_62"] = {
+		ruRU = "Секретные подарки в Запределье",
+		enGB = ""
+	},
+	["TOAST_BODY_62"] = {
+		ruRU = "Дедушка Зима растерял часть своих подарков в Запределье, и сотни из них еще не найдены!",
+		enGB = ""
+	},
+	["TOAST_TITLE_63"] = {
+		ruRU = "Секретные подарки в Нордсколе",
+		enGB = ""
+	},
+	["TOAST_BODY_63"] = {
+		ruRU = "Маленькие помощники Дедушки Зимы уже запрятали для вас сотни подарков по всему Нордсколу!",
+		enGB = ""
+	},
+	["HEIRLOOMS"] = {
+		ruRU = "Наследство",
+		enGB = "Heirlooms"
+	},
+	["HEIRLOOMS_CATEGORY_BACK"] = {
+		ruRU = "Спина",
+		enGB = "Back"
+	},
+	["HEIRLOOMS_CATEGORY_CHEST"] = {
+		ruRU = "Грудь",
+		enGB = "Chest"
+	},
+	["HEIRLOOMS_CATEGORY_HEAD"] = {
+		ruRU = "Голова",
+		enGB = "Head"
+	},
+	["HEIRLOOMS_CATEGORY_LEGS"] = {
+		ruRU = "Ноги",
+		enGB = "Legs"
+	},
+	["HEIRLOOMS_CATEGORY_SHOULDER"] = {
+		ruRU = "Плечи",
+		enGB = "Shoulder"
+	},
+	["HEIRLOOMS_CATEGORY_TRINKETS_RINGS_AND_NECKLACES"] = {
+		ruRU = "Аксессуары, кольца и ожерелья",
+		enGB = "Trinkets, Rings & Necklaces"
+	},
+	["HEIRLOOMS_CATEGORY_WEAPON"] = {
+		ruRU = "Оружие",
+		enGB = "Weapons"
+	},
+	["HEIRLOOMS_CATEGORY_WAIST"] = {
+		ruRU = "Пояса",
+		enGB = "Waists"
+	},
+	["HEIRLOOMS_CATEGORY_WRIST"] = {
+		ruRU = "Наручи",
+		enGB = "Wrists"
+	},
+	["HEIRLOOMS_CATEGORY_FEET"] = {
+		ruRU = "Обувь",
+		enGB = "Feet"
+	},
+	["HEIRLOOMS_CATEGORY_HAND"] = {
+		ruRU = "Перчатки",
+		enGB = "Hands"
+	},
+	["HEIRLOOMS_CLASS_FILTER_FORMAT"] = {
+		ruRU = "|c%s%s|r",
+		enGB = "|c%s%s|r"
+	},
+	["HEIRLOOMS_CLASS_SPEC_FILTER_FORMAT"] = {
+		ruRU = "|c%s%s|r (%s)",
+		enGB = "|c%s%s|r (%s)"
+	},
+	["HEIRLOOMS_JOURNAL"] = {
+		ruRU = "Журнал наследуемых предметов",
+		enGB = "Heirlooms Journal"
+	},
+	["HEIRLOOMS_PROGRESS_FORMAT"] = {
+		ruRU = "%d/%d",
+		enGB = "%d/%d"
+	},
+	["PVPFRAME_LABEL_NOSEASON"] = {
+		ruRU = "Игрок против Игрока - |cffFFFFFFСезон окончен",
+		enGB = "Player vs. Player - |cffFFFFFFNo Active Season"
+	},
+	["PVPFRAME_ARENA_SEASON_NAME_S7"] = {
+		ruRU = "Сезон неумолимого гладиатора (A7, до окончания |cffffffff%s|r)",
+		enGB = ""
+	},
+	["PVPFRAME_ARENA_SEASON_NAME_S8"] = {
+		ruRU = "Сезон разгневанного гладиатора (A8, до окончания |cffffffff%s|r)",
+		enGB = ""
+	},
+	["PVPFRAME_ARENA_SEASON_NAME_S9"] = {
+		ruRU = "Сезон яростного гладиатора (A9, до окончания |cffffffff%s|r)",
+		enGB = ""
+	},
+	["PVPFRAME_ARENA_SEASON_NAME_S10"] = {
+		ruRU = "Сезон яростного гладиатора (A9, до окончания |cffffffff%s|r)",
+		enGB = ""
+	},
+	["PVPFRAME_ARENA_SEASON_NAME_S11"] = {
+		ruRU = "Сезон беспощадного гладиатора (A10, до окончания |cffffffff%s|r)",
+		enGB = ""
+	},
+	["PVPFRAME_ARENA_SEASON_NAME_S12"] = {
+		ruRU = "Сезон беспощадного гладиатора (A10, до окончания |cffffffff%s|r)",
+		enGB = ""
+	},
+	["PVPFRAME_ARENA_SEASON_NAME_S13"] = {
+		ruRU = "Сезон беспощадного гладиатора (A10, до окончания |cffffffff%s|r)",
+		enGB = ""
+	},
+	["PVPFRAME_ARENA_SEASON_NAME_S14"] = {
+		ruRU = "Сезон беспощадного гладиатора (A10, до окончания |cffffffff%s|r)",
+		enGB = ""
+	},
+	["PVPFRAME_ARENA_SEASON_NAME_S15"] = {
+		ruRU = "Сезон злонравного гладиатора (A11, до окончания |cffffffff%s|r)",
+		enGB = ""
+	},
+	["PVPFRAME_ARENA_SEASON_NAME_S16"] = {
+		ruRU = "Сезон злонравного гладиатора (A11, до окончания |cffffffff%s|r)",
+		enGB = ""
+	},
+	["PVPFRAME_ARENA_SEASON_NAME_S17"] = {
+		ruRU = "Сезон тиранического гладиатора (A12, до окончания |cffffffff%s|r)",
+		enGB = ""
+	},
+	["PVPFRAME_ARENA_SEASON_NAME_S18"] = {
+		ruRU = "Сезон тиранического гладиатора (A12, до окончания |cffffffff%s|r)",
+		enGB = ""
+	},
+	["PVPFRAME_ARENA_SEASON_NAME_S19"] = {
+		ruRU = "Сезон тиранического гладиатора (A12, до окончания |cffffffff%s|r)",
+		enGB = ""
+	},
+	["PVPFRAME_ARENA_SEASON_NAME_S20"] = {
+		ruRU = "Сезон бездушного гладиатора (A13, до окончания |cffffffff%s|r)",
+		enGB = ""
+	},
+	["HEIRLOOM_FRAME_HELP_TOOLTIP_HEAD"] = {
+		ruRU = "Особенности коллекции \"Наследство\"",
+		enGB = ""
+	},
+	["HEIRLOOM_FRAME_HELP_TOOLTIP"] = {
+		ruRU = "\nНа нашем проекте фамильные предметы добавляются в коллекцию с помощью специальных токенов.\nВы можете их приобрести в игре за внутриигровую валюту или в нашем магазине.\n\nПосле добавления предмета в коллекцию - он доступен вам на любом персонаже аккаунта внутри игрового мира.\n\nЧтобы получить фамильный предмет - щелкните левой кнопкой мыши по нему, и он попадет к вам в сумку.\nДелать это можно неограниченное количество раз.",
 		enGB = ""
 	},
 }

@@ -90,7 +90,7 @@
 		</Frames>
 		<Scripts>
 			<OnEnable>
-				self.PlaySoundButton.Texture:SetDesaturated(false)				
+				self.PlaySoundButton.Texture:SetDesaturated(false)
 				self.PlaySoundButton:Enable()
 			</OnEnable>
 			<OnDisable>
@@ -489,6 +489,29 @@
 					<OnLeave function="GameTooltip_Hide"/>
 				</Scripts>
 			</CheckButton>
+			<CheckButton name="$parentDracthyrReturnMortalForm" inherits="InterfaceOptionsCheckButtonTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentLossOfControll" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+						self.type = CONTROLTYPE_CHECKBOX
+						self.cvar = "C_CVAR_DRACTHYR_RETURN_MORTAL_FORM"
+
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+					</OnLoad>
+					<OnEvent>
+						self:UnregisterEvent(event)
+						local race = UnitRace("player")
+						if C_CreatureInfo.GetRaceInfo(race).raceID == E_CHARACTER_RACES.RACE_DRACTHYR then
+							self:Show()
+						end
+					</OnEvent>
+				</Scripts>
+			</CheckButton>
+
 			<Slider name="SpellOverlay_SpellHighlightAlphaSlider" valueStep="0.01" minValue="0" maxValue="1" inherits="OptionsSliderTemplate">
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeTo="$parentColorblindFiltersSeparator" x="24" y="-88"/>

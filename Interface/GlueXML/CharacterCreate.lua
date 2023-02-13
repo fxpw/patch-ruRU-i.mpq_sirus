@@ -650,15 +650,14 @@ function CharacterCreateRaceButtonMixin:UpdateButton()
 
 	if PAID_SERVICE_TYPE then
 		local faction = C_CharacterCreation.PaidChange_GetCurrentFaction()
+		local raceID = C_CharacterCreation.PaidChange_GetCurrentRaceIndex()
 
-		if not PAID_RACE_SERVICE_DYNAMIC[self.index] and C_CharacterCreation.IsNeutralRace(self.index) then
-			allow = self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex()
-		elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CUSTOMIZATION then
-			allow = self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex()
+		if PAID_SERVICE_TYPE == E_PAID_SERVICE.CUSTOMIZATION then
+			allow = self.index == raceID
 		elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_RACE then
-			allow = (PAID_RACE_SERVICE_DYNAMIC[self.index] or faction == C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
+			allow = C_CharacterCreation.IsNeutralBaseRace(raceID) or (PAID_RACE_SERVICE_DYNAMIC[self.index] or faction == C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
 		elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION then
-			allow = (PAID_RACE_SERVICE_DYNAMIC[self.index] or faction ~= C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
+			allow = C_CharacterCreation.IsNeutralBaseRace(raceID) or (PAID_RACE_SERVICE_DYNAMIC[self.index] or faction ~= C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
 		end
 	else
 		allow = true
@@ -835,8 +834,8 @@ end
 function CharacterCreateGenderButtonMixin:OnEnter()
 	self.HighlightTexture:Show()
 
-	GlueTooltip_SetOwner(self, GlueTooltip, 0, 0, "BOTTOM", "TOP")
-	GlueTooltip_SetText(_G[E_SEX[self.index]], GlueTooltip, 1, 1, 1)
+	GlueTooltip:SetOwner(self, "ANCHOR_TOP")
+	GlueTooltip:SetText(_G[E_SEX[self.index]], 1, 1, 1)
 end
 
 function CharacterCreateGenderButtonMixin:OnLeave()
@@ -1186,8 +1185,8 @@ end
 
 function CharCustomizeSmallButtonMixin:OnEnter()
 	if self.simpleTooltipLine then
-		GlueTooltip_SetOwner(self, GlueTooltip, self:GetAttribute("tooltipXOffset"), self:GetAttribute("tooltipYOffset"), "BOTTOMLEFT", "TOPRIGHT")
-		GlueTooltip_SetText(self.simpleTooltipLine, GlueTooltip, 1, 1, 1)
+		GlueTooltip:SetOwner(self, "ANCHOR_RIGHT", self:GetAttribute("tooltipXOffset"), self:GetAttribute("tooltipYOffset"))
+		GlueTooltip:SetText(self.simpleTooltipLine, 1, 1, 1)
 	end
 end
 

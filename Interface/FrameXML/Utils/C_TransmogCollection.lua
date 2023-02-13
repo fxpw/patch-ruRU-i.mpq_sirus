@@ -102,7 +102,7 @@ for categoryID = Enum.TransmogCollectionType.Head, Enum.TransmogCollectionType.F
 	end
 end
 
-local NUM_TRANSMOG_SOURCE_TYPES = 12;
+local NUM_TRANSMOG_SOURCE_TYPES = 13;
 local TRANSMOG_SOURCE_TYPES = {
 	[1] = 1,
 	[2] = 2,
@@ -116,6 +116,7 @@ local TRANSMOG_SOURCE_TYPES = {
 	[13] = 10,
 	[14] = 11,
 	[15] = 12,
+	[16] = 13,
 };
 local HIDDEN_APPEARANCE_SOURCE_TYPES = {
 	[5] = true,
@@ -478,11 +479,7 @@ local function GetItemInfoCallback()
 end
 
 local function GetItemModifiedAppearanceItemInfo(itemModifiedAppearanceID)
-	local name, itemLink, quality, _, _, _, _, _, _, icon = GetItemInfoRaw(itemModifiedAppearanceID);
-	if not name then
-		_, itemLink, quality, _, _, _, _, _, _, icon = C_Item.GetItemInfo(itemModifiedAppearanceID, nil, GetItemInfoCallback);
-	end
-
+	local name, itemLink, quality, _, _, _, _, _, _, icon = C_Item.GetItemInfo(itemModifiedAppearanceID, nil, GetItemInfoCallback, true);
 	return name, itemLink, string.format(COLLECTION_ITEM_HYPERLINK_FORMAT, itemModifiedAppearanceID, name or ""), quality, icon;
 end
 
@@ -517,7 +514,7 @@ function SearchAndFilterCategory()
 								matchesFilter = false;
 							else
 								if searchText then
-									local name = GetItemInfo(itemModifiedAppearanceID);
+									local name = C_Item.GetItemInfo(itemModifiedAppearanceID, nil, nil, true, true);
 									if not name or name == "" then
 										matchesFilter = false;
 									elseif string.find(string.lower(name), SEARCH_TYPES[1], 1, true) ~= nil then
@@ -793,7 +790,7 @@ function C_TransmogCollection.GetAppearanceSources(appearanceID, categoryID, sub
 			local itemModifiedAppearanceCategoryID, itemModifiedAppearanceSubCategoryID, invType, isUsable, isKnown = GetItemModifiedAppearanceCategoryInfo(itemModifiedAppearanceID, true);
 
 			if not categoryID or (isKnown and isUsable and (isCollected or itemModifiedAppearanceCategoryID == categoryID and itemModifiedAppearanceSubCategoryID == subCategoryID)) then
-				local name, _, quality = GetItemInfo(itemModifiedAppearanceID);
+				local name, _, quality = C_Item.GetItemInfo(itemModifiedAppearanceID, nil, nil, true);
 				sources[#sources + 1] = {
 					name = name,
 					quality = quality,
@@ -1433,7 +1430,7 @@ function EventHandler:ASMSG_C_I_ADD_MODEL(msg)
 			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOG_COLLECTION_UPDATED);
 		end
 
-		SendChatMessageType(string.format(COLLECTION_ADD_FORMAT, string.format(COLLECTION_ITEM_HYPERLINK_FORMAT, itemID, GetItemInfo(itemID) or "")), "SYSTEM");
+		AddChatTyppedMessage("SYSTEM", string.format(COLLECTION_ADD_FORMAT, string.format(COLLECTION_ITEM_HYPERLINK_FORMAT, itemID, GetItemInfo(itemID) or "")));
 	end
 
 	if not THROTTLED_TRANSMOG_SOURCE_COLLECTABILITY_UPDATE then
@@ -1482,7 +1479,7 @@ function EventHandler:ASMSG_C_I_REMOVE_MODEL(msg)
 			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOG_COLLECTION_UPDATED);
 		end
 
-		SendChatMessageType(string.format(COLLECTION_REMOVE_FORMAT, string.format(COLLECTION_ITEM_HYPERLINK_FORMAT, itemID, GetItemInfo(itemID) or "")), "SYSTEM");
+		AddChatTyppedMessage("SYSTEM", string.format(COLLECTION_REMOVE_FORMAT, string.format(COLLECTION_ITEM_HYPERLINK_FORMAT, itemID, GetItemInfo(itemID) or "")));
 	end
 
 	if not THROTTLED_TRANSMOG_SOURCE_COLLECTABILITY_UPDATE then

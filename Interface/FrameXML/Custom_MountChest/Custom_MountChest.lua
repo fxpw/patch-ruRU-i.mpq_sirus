@@ -46,14 +46,6 @@ function MountChestFrameMixin:OnLoad()
     self.cardsCountH    = 5
 
     self.initialization = false
-
-    ---- TEMP
-    --self:SetShown(IsNyllClient())
-    --
-    --for i = 1, 30 do
-    --    local mountData = COLLECTION_MOUNTDATA[math.random(#COLLECTION_MOUNTDATA)]
-    --    table.insert(LOTTERY_MOUNT_CHEST, {mountData.spellID, mountData.creatureID})
-    --end
 end
 
 ---@param pieceName string

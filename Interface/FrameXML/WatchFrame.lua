@@ -873,7 +873,7 @@ function WatchFrame_DisplayTrackedQuests (lineFrame, initialOffset, maxHeight, f
 		if ( questIndex ) then
 			title, level, questTag, suggestedGroup, isHeader, isCollapsed, isComplete, isDaily, questID = GetQuestLogTitle(questIndex);
 			table.insert(questIDList, questID)
-			-- print(questID, title)
+
 			local requiredMoney = GetQuestLogRequiredMoney(questIndex);
 			numObjectives = GetNumQuestLeaderBoards(questIndex);
 			if ( isComplete and isComplete < 0 ) then

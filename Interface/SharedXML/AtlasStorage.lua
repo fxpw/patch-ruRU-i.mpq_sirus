@@ -5158,4 +5158,20 @@ S_ATLAS_STORAGE = {
 	["guildfinder-card"] = {178, 264, 0.000976562, 0.174805, 0.00097656, 0.258789, false, false, "Interface/GuildFrame/CommunitiesFinder"},
 	["communitiesfinder-card"] = {570, 71, 0.418945, 0.975586, 0.246094, 0.3154295, false, false, "Interface/GuildFrame/CommunitiesFinder"},
 	["communitiesfinder_card_highlight"] = {578, 79, 0.176758, 0.741211, 0.00097656, 0.078125, false, false, "Interface/GuildFrame/CommunitiesFinder"},
+
+	["lfg-icon-role-guide"] = {67, 67, 0, 0.26171875, 0, 0.26171875, false, false, "Interface/LFGFrame/UI-LFG-Icon-Roles"},
+	["lfg-icon-role-healer"] = {67, 67, 0.26171875, 0.5234375, 0, 0.26171875, false, false, "Interface/LFGFrame/UI-LFG-Icon-Roles"},
+	["lfg-icon-role-checkmark"] = {67, 67, 0.5234375, 0.78515625, 0, 0.26171875, false, false, "Interface/LFGFrame/UI-LFG-Icon-Roles"},
+	["lfg-icon-role-tank"] = {67, 67, 0, 0.26171875, 0.26171875, 0.5234375, false, false, "Interface/LFGFrame/UI-LFG-Icon-Roles"},
+	["lfg-icon-role-damager"] = {67, 67, 0.26171875, 0.5234375, 0.26171875, 0.5234375, false, false, "Interface/LFGFrame/UI-LFG-Icon-Roles"},
+	["lfg-icon-role-questionmark"] = {67, 67, 0.5234375, 0.78515625, 0.26171875, 0.5234375, false, false, "Interface/LFGFrame/UI-LFG-Icon-Roles"},
+	["lfg-icon-role-cross"] = {67, 67, 0.26171875, 0.5234375, 0.5234375, 0.78515625, false, false, "Interface/LFGFrame/UI-LFG-Icon-Roles"},
+
+	["lfg-icon-role-x2-guide"] = {154, 154, 0, 0.26171875, 0, 0.26171875, false, false, "Interface/LFGFrame/UI-LFG-Icon-Roles-x2"},
+	["lfg-icon-role-x2-healer"] = {154, 154, 0.26171875, 0.5234375, 0, 0.26171875, false, false, "Interface/LFGFrame/UI-LFG-Icon-Roles-x2"},
+	["lfg-icon-role-x2-checkmark"] = {154, 154, 0.5234375, 0.78515625, 0, 0.26171875, false, false, "Interface/LFGFrame/UI-LFG-Icon-Roles-x2"},
+	["lfg-icon-role-x2-tank"] = {154, 154, 0, 0.26171875, 0.26171875, 0.5234375, false, false, "Interface/LFGFrame/UI-LFG-Icon-Roles-x2"},
+	["lfg-icon-role-x2-damager"] = {154, 154, 0.26171875, 0.5234375, 0.26171875, 0.5234375, false, false, "Interface/LFGFrame/UI-LFG-Icon-Roles-x2"},
+	["lfg-icon-role-x2-questionmark"] = {154, 154, 0.5234375, 0.78515625, 0.26171875, 0.5234375, false, false, "Interface/LFGFrame/UI-LFG-Icon-Roles-x2"},
+	["lfg-icon-role-x2-cross"] = {154, 154, 0.26171875, 0.5234375, 0.5234375, 0.78515625, false, false, "Interface/LFGFrame/UI-LFG-Icon-Roles-x2"},
 }

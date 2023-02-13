@@ -496,6 +496,7 @@ COLLECTIONS_JOURNAL_TAB_INDEX_MOUNTS = 1;
 COLLECTIONS_JOURNAL_TAB_INDEX_PETS = COLLECTIONS_JOURNAL_TAB_INDEX_MOUNTS + 1;
 COLLECTIONS_JOURNAL_TAB_INDEX_APPEARANCES = COLLECTIONS_JOURNAL_TAB_INDEX_PETS + 1;
 COLLECTIONS_JOURNAL_TAB_INDEX_TOYS = COLLECTIONS_JOURNAL_TAB_INDEX_APPEARANCES + 1;
+COLLECTIONS_JOURNAL_TAB_INDEX_HEIRLOOMS = COLLECTIONS_JOURNAL_TAB_INDEX_TOYS + 1;
 
 function ToggleCollectionsJournal(tabIndex)
 	local tabMatches = not tabIndex or tabIndex == PanelTemplates_GetSelectedTab(CollectionsJournal);
@@ -658,8 +659,6 @@ function UIParent_OnEvent(self, event, ...)
 	elseif ( event == "PARTY_INVITE_CANCEL" ) then
 		StaticPopup_Hide("PARTY_INVITE");
 	elseif ( event == "GUILD_INVITE_REQUEST" ) then
-		-- StaticPopup_Show("GUILD_INVITE", arg1, arg2);
-		-- print(arg1, arg2, arg3, arg4, arg5, arg6)
 		if C_CVar:GetValue("C_CVAR_BLOCK_GUILD_INVITES") == "1" then
 			DeclineGuild()
 			StaticPopupSpecial_Hide(GuildInviteFrame)
@@ -1541,7 +1540,7 @@ local function FramePositionDelegate_OnAttributeChanged(self, attribute)
 	end
 end
 
-FramePositionDelegate = CreateFrame("FRAME");
+local FramePositionDelegate = CreateFrame("FRAME");
 FramePositionDelegate:SetScript("OnAttributeChanged", FramePositionDelegate_OnAttributeChanged);
 
 function FramePositionDelegate:ShowUIPanel(frame, force)
@@ -3963,6 +3962,26 @@ function GetSpecializationInfoForClassID( classID, specNum )
 	end
 end
 
+function GetSpecializationNameForSpecID(specID)
+	if type(specID) == "string" then
+		specID = tonumber(specID);
+	end
+
+	if type(specID) ~= "number" then
+		return error("Usage: GetSpecializationNameForSpecID(specID)", 2);
+	end
+
+	for _, classData in pairs(S_CALSS_SPECIALIZATION_DATA) do
+		for i = 1, #classData do
+			if classData[i][1] == specID then
+				return classData[i][2];
+			end
+		end
+	end
+
+	return "";
+end
+
 function GetNumWoWExpansion()
 	return #S_EXPANSION_DATA
 end
@@ -4122,9 +4141,9 @@ function EventHandler:ASMSG_INVISIBLE_STATUS(msg)
 
 	if INVISIBLE_CHANGED then
 		if INVISIBLE_STATUS then
-			SendChatMessageType(MARKED_INVIS_MESSAGE, "SYSTEM")
+			AddChatTyppedMessage("SYSTEM", MARKED_INVIS_MESSAGE)
 		else
-			SendChatMessageType(CLEARED_INVIS, "SYSTEM")
+			AddChatTyppedMessage("SYSTEM", CLEARED_INVIS)
 		end
 	end
 

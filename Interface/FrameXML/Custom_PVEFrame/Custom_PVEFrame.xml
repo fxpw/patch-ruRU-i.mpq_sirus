@@ -240,7 +240,6 @@
 				<Scripts>
 					<OnLoad>
 						self:SetFrameLevel(self:GetParent():GetFrameLevel() + 1)
-						print(self:GetFrameLevel(), 1)
 					</OnLoad>
 				</Scripts>
 			</Frame> -->

@@ -230,22 +230,21 @@ end
 function GameTooltip_OnTooltipSetSpell( self, ... )
 	local _, _, spellID = self:GetSpell()
 
-	if spellID then
-		if spellID == 1804 then
-			local currentSkillRank, maxSkillRank
-			local currenBarValue
+	if spellID and spellID == 1804 then
+		local currentSkillRank, maxSkillRank
 
-			for i = 1, GetNumSkillLines() do
-				local skillName, _, _, skillRank, _, _, skillMaxRank = GetSkillLineInfo(i)
+		for i = 1, GetNumSkillLines() do
+			local skillName, _, _, skillRank, _, _, skillMaxRank = GetSkillLineInfo(i)
 
-				if skillName == SKILL_NAME_LOCKPICKING then
-					currentSkillRank = skillRank
-					maxSkillRank = skillMaxRank
-					break
-				end
+			if skillName == SKILL_NAME_LOCKPICKING then
+				currentSkillRank = skillRank
+				maxSkillRank = skillMaxRank
+				break
 			end
+		end
 
-			currenBarValue = (currentSkillRank / maxSkillRank) * 100
+		if currentSkillRank and maxSkillRank then
+			local currenBarValue = (currentSkillRank / maxSkillRank) * 100
 
 			GameTooltip_InsertFrame(GameTooltip, SpellTooltipStatusBar)
 
@@ -745,12 +744,49 @@ local function GameTooltip_OnToyByItemID(self)
 	self.isToyByItemID = nil;
 end
 
+local function GameTooltip_OnHeirloomByItemID(self)
+	if not self.isHeirloomItemID then
+		return;
+	end
+
+	local _, itemLink = self:GetItem();
+	if itemLink then
+		local itemID = tonumber(string.match(itemLink, ":(%d+)"));
+		if itemID then
+			local spellID = C_Heirloom.GetHeirloomSpellID(itemID);
+			local _, _, _, descriptionText, priceText = C_Heirloom.GetHeirloomInfo(itemID);
+
+			if spellID then
+				local name, rank = GetSpellInfo(spellID);
+				local start, duration = GetSpellCooldown(name, rank);
+
+				if start and start > 0 and duration and duration > 0 then
+					local time = duration - (GetTime() - start);
+					GameTooltip_AddHighlightLine(self, string.format(ITEM_COOLDOWN_TIME, SecondsToTime(time, time >= 60)), 1);
+				end
+
+				if descriptionText ~= "" then
+					GameTooltip_AddBlankLineToTooltip(self);
+					GameTooltip_AddNormalLine(self, descriptionText, 1);
+				end
+
+				if priceText ~= "" then
+					GameTooltip_AddBlankLineToTooltip(self);
+					GameTooltip_AddHighlightLine(self, priceText, 1);
+				end
+
+				self:Show();
+			end
+		end
+	end
+
+	self.isHeirloomItemID = nil;
+end
+
 GameTooltipMixin = {}
 
 function GameTooltipMixin:OnLoad()
 	self:SetScript("OnTooltipSetItem", GameTooltip_OnTooltipSetItem);
-
-	self:RegisterEventListener()
 
 	GameTooltip_OnLoad(self)
 	self.shoppingTooltips = { ShoppingTooltip1, ShoppingTooltip2, ShoppingTooltip3 }
@@ -758,8 +794,6 @@ function GameTooltipMixin:OnLoad()
 	hooksecurefunc(GameTooltip, "SetInventoryItem", function(self, unit, slotID)
 		self:InventoryItemOnShow(unit, slotID)
 	end)
-
-	self.transmogrifySlotData = {}
 end
 
 function GameTooltipMixin:SetScript(handler, func)
@@ -767,6 +801,7 @@ function GameTooltipMixin:SetScript(handler, func)
 		if type(func) == "function" then
 			local function hook()
 				GameTooltip_OnToyByItemID(self);
+				GameTooltip_OnHeirloomByItemID(self);
 
 				local ok, ret = pcall(func, self);
 				if not ok then
@@ -799,34 +834,28 @@ function GameTooltipMixin:SetToyByItemID(itemID)
 	return true;
 end
 
-enum:E_TRANSMOGRIFICATION_INFO {
-	"SLOTID",
-	"ITEMENTRY"
-}
-
-function GameTooltipMixin:ASMSG_TRANSMOGRIFICATION_INFO_RESPONSE( msg )
-	local msgData = C_Split(msg, ";")
-	local unitGUID = tonumber(table.remove(msgData, 1))
-
-	self.transmogrifySlotData = {}
-
-	if unitGUID == tonumber(UnitGUID("player")) then
-		for _, slotInfo in pairs(msgData) do
-			local slotData 				= C_Split(slotInfo, ":")
-			local slotID 				= tonumber(slotData[E_TRANSMOGRIFICATION_INFO.SLOTID])
-			local transmogrifyItemEntry = tonumber(slotData[E_TRANSMOGRIFICATION_INFO.ITEMENTRY])
-
-			self.transmogrifySlotData[slotID] = transmogrifyItemEntry
-		end
+function GameTooltipMixin:SetHeirloomByItemID(itemID)
+	if type(itemID) == "string" then
+		itemID = tonumber(itemID);
 	end
+
+	if type(itemID) ~= "number" then
+		return false;
+	end
+
+	self.isHeirloomItemID = true;
+	self:SetHyperlink(string.format("item:%d", itemID));
+	self.isHeirloomItemID = nil;
+
+	return true;
 end
 
-function GameTooltipMixin:InventoryItemOnShow( unit, slotID )
+function GameTooltipMixin:InventoryItemOnShow(unit, slotID)
 	if unit == "player" then
-		local transmogrifyItemEntry = self.transmogrifySlotData[slotID]
+		local transmogID = GetInventoryTransmogID(unit, slotID);
 
-		if transmogrifyItemEntry then
-			self:SetTransmogrifyItem(transmogrifyItemEntry)
+		if transmogID then
+			self:SetTransmogrifyItem(transmogID)
 		end
 	end
 end

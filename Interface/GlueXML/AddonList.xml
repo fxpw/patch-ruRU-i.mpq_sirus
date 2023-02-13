@@ -50,8 +50,8 @@
 					</OnClick>
 					<OnEnter>
 						if ( self.tooltip ) then
-							GlueTooltip_SetOwner(self)
-							GlueTooltip_SetText(self.tooltip)
+							GlueTooltip:SetOwner(self)
+							GlueTooltip:SetText(self.tooltip)
 						end
 					</OnEnter>
 					<OnLeave>
@@ -71,8 +71,8 @@
 						SetClampedTextureRotation(self:GetHighlightTexture(), 180)
 					</OnLoad>
 					<OnEnter>
-						GlueTooltip_SetOwner(self)
-						GlueTooltip_SetText(ADDON_CLICK_TO_OPEN_UPDATE_PAGE)
+						GlueTooltip:SetOwner(self)
+						GlueTooltip:SetText(ADDON_CLICK_TO_OPEN_UPDATE_PAGE)
 					</OnEnter>
 					<OnLeave>
 						GlueTooltip:Hide()

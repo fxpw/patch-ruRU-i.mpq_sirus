@@ -1,25 +1,20 @@
---	Filename:	AddonVersion.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 S_ADDON_VERSION = {
 	-- |@Version: 1@|
 	-- {build, "url", {"folder1", "folder2"}}
-	{4, "AdvancedWotLKCombatLog", {"AdvancedWotLKCombatLog"}},
+	{5, "AdvancedWotLKCombatLog", {"AdvancedWotLKCombatLog"}},
 	{3, "AdvancedWotLKCombatLog_Helper", {"AdvancedWotLKCombatLog_Helper"}},
 	{3, "ATT", {"ATT"}},
-	{3, "Auctionator", {"Auctionator"}},
+	{6, "Auctionator", {"Auctionator"}},
 	{1, "BadBoy", {"BadBoy"}},
 	{1, "BadBoy_CCleaner", {"BadBoy_CCleaner"}},
-	{3, "Bagnon", {"Bagnon", "Bagnon_Config", "Bagnon_Forever", "Bagnon_GuildBank", "Bagnon_Tooltips"}},
+	{4, "Bagnon", {"Bagnon", "Bagnon_Config", "Bagnon_Forever", "Bagnon_GuildBank", "Bagnon_Tooltips"}},
 	{1, "BankStack", {"BankStack"}},
 	{4, "Bartender4", {"Bartender4"}},
 	{4, "BigAuras", {"BigAuras"}},
 	{1, "Capping", {"Capping"}},
 	{2, "ChatBar", {"ChatBar"}},
 	{3, "Clique", {"Clique"}},
+	{3, "CustomEnhancedRaidFrames", {"CustomEnhancedRaidFrames"}},
 	{3, "DiminishingReturns-Sirus", {"DiminishingReturns", "DiminishingReturns_Config"}},
 	{3, "DrDamage", {"DrDamage"}},
 	{2, "FishingBuddy", {"FishingBuddy"}},

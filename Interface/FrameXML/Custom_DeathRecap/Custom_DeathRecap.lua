@@ -154,7 +154,6 @@ end
 
 function DeathRecapMixin:PrintHyperlink( deathRecapID )
 	DEFAULT_CHAT_FRAME:AddMessage(self.hyperLinkColor:WrapTextInColorCode(string.format(DEATH_RECAP_HYPERLINK_TEXT, deathRecapID)))
-	printec(self.hyperLinkColor:WrapTextInColorCode(string.format(DEATH_RECAP_HYPERLINK_TEXT, deathRecapID)))
 end
 
 function DeathRecapMixin:OnHyperlinkClick( link )

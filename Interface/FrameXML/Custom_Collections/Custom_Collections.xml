@@ -44,6 +44,11 @@
 					<Anchor point="LEFT" relativeTo="$parentTab3" relativePoint="RIGHT" x="-16" y="0"/>
 				</Anchors>
 			</Button>
+			<Button name="$parentTab5" inherits="CollectionsJournalTab" text="HEIRLOOMS" id="5">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab4" relativePoint="RIGHT" x="-16" y="0"/>
+				</Anchors>
+			</Button>
 		</Frames>
 		<Scripts>
 			<OnLoad function="CollectionsJournal_OnLoad"/>
@@ -59,4 +64,5 @@
 	<Include file="Custom_CollectionTemplates.xml"/>
 	<Include file="Custom_Wardrobe.xml"/>
 	<Include file="Custom_ToyBox.xml"/>
+	<Include file="Custom_HeirloomCollection.xml"/>
 </Ui>

@@ -265,6 +265,7 @@ CombatPanelOptions = {
 	showVKeyCastbar = { text = "SHOW_TARGET_CASTBAR_IN_V_KEY" },
 	ShowClassColorInNameplate = { text = "SHOW_CLASS_COLOR_IN_V_KEY" },
 	lossOfControl = { text = "LOSS_OF_CONTROL" },
+	C_CVAR_DRACTHYR_RETURN_MORTAL_FORM = { text = "DRACTHYR_RETURN_MORTAL_FORM" },
 	spellActivationOverlay = { text = "SPELL_ACTIVE_OVERLAY" }
 }
 

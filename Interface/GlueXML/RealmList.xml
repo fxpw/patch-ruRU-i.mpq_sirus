@@ -102,8 +102,8 @@
 				</Layers>
 				<Scripts>
 					<OnEnter>
-						GlueTooltip_SetOwner(self, nil, nil, nil, nil, "TOPLEFT")
-						GlueTooltip_SetText(REALM_LIST_XP_TOOLTIP, GlueTooltip, 1.0, 1.0, 1.0)
+						GlueTooltip:SetOwner(self)
+						GlueTooltip:SetText(REALM_LIST_XP_TOOLTIP, 1.0, 1.0, 1.0)
 					</OnEnter>
 					<OnLeave>
 						GlueTooltip:Hide()
@@ -138,8 +138,8 @@
 						if not self.typesTooltip then
 							return
 						end
-						GlueTooltip_SetOwner(self, nil, nil, nil, nil, "TOPLEFT")
-						GlueTooltip_SetText(self.typesTooltip, GlueTooltip, 1.0, 1.0, 1.0)
+						GlueTooltip:SetOwner(self)
+						GlueTooltip:SetText(self.typesTooltip, 1.0, 1.0, 1.0)
 					</OnEnter>
 					<OnLeave>
 						GlueTooltip:Hide()
@@ -256,8 +256,8 @@
 				<Scripts>
 					<OnClick function="RealmListRealmSelect_OnClick"/>
 					<OnEnter>
-						GlueTooltip_SetOwner(self, nil, nil, nil, nil, "TOPRIGHT")
-						GlueTooltip_SetText(PROXY_DESCRIPTION, GlueTooltip, 1.0, 1.0, 1.0, 1.0, 1)
+						GlueTooltip:SetOwner(self, "ANCHOR_RIGHT")
+						GlueTooltip:SetText(PROXY_DESCRIPTION, 1.0, 1.0, 1.0, 1.0, 1)
 					</OnEnter>
 					<OnLeave>
 						GlueTooltip:Hide()
@@ -552,7 +552,7 @@
 						</Scripts>
 					</Button>
 				</Frames>
-			
+
 				<Scripts>
 					<OnLoad>
 						self.TopShadow:SetVertexColor(0, 0, 0, 0.4)

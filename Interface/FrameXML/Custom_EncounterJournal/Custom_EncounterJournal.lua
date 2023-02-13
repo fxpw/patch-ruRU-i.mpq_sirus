@@ -1192,124 +1192,143 @@ function EJ_SetValidationDifficulty( index )
 	EncounterJournal_SelectDifficulty(nil, EJ_GetValidationDifficulty( index ))
 end
 
-function EncounterJournal_OnLoad( self, ... )
-	SetPortraitToTexture(self.encounter.info.instanceButton.icon, "Interface\\EncounterJournal\\UI-EJ-Home-Icon")
+local function LoadEJData(self)
+	if self.loaded then return end
+	self.loaded = true
 
 	table.wipe(EJ_SearchData)
 
-	for _, container in pairs(JOURNALENCOUNTERITEM) do
-		for _, v in ipairs(container) do
-			local name, link, quality, iLevel, reqLevel, armorType, subclass, maxStack, equipSlot, icon, vendorPrice = GetItemInfo(v[1])
-			if name then
-				v.name 			= name
-				v.link 			= link
-				v.quality 		= quality
-				v.iLevel 		= iLevel
-				v.reqLevel 		= reqLevel
-				v.armorType 	= armorType
-				v.subclass 		= subclass
-				v.maxStack 		= maxStack
-				v.equipSlot 	= equipSlot
-				v.icon 			= icon
-				v.vendorPrice 	= vendorPrice
-			end
-		end
-	end
-
 	for _, data in pairs(JOURNALINSTANCE) do
-		local name = data[EJ_CONST_INSTANCE_NAME]
 		local id = data[EJ_CONST_INSTANCE_ID]
-		local stype = EJ_STYPE_INSTANCE
-		local difficulty = 1
 		local instanceID = id
-		local encounterID = -1
-		local link = nil -- ДОДЕЛАТЬ
 
-		table.insert(EJ_SearchData, {name = name, id = id, stype = stype, difficulty = difficulty, instanceID = instanceID, encounterID = encounterID, link = link})
+		table.insert(EJ_SearchData, {
+			id			= id,
+			name		= data[EJ_CONST_INSTANCE_NAME],
+			stype		= EJ_STYPE_INSTANCE,
+			instanceID	= instanceID,
+			encounterID	= -1,
+			difficulty	= 1,
+		--	link		= nil, -- TODO
+		})
 	end
 
 	for _, container in pairs(JOURNALENCOUNTER) do
 		for _, data in ipairs(container) do
-			local name = data[EJ_CONST_ENCOUNTER_NAME]
 			local id = data[EJ_CONST_ENCOUNTER_ID]
-			local stype = EJ_STYPE_ENCOUNTER
-			local difficulty = data[EJ_CONST_ENCOUNTER_DIFFICULTYMASK]
-			local instanceID = data[EJ_CONST_ENCOUNTER_INSTANCEID]
 			local encounterID = id
-			local link = nil
 
 			JOURNALENCOUNTER_BY_ENCOUNTER[encounterID] = data
 
-			table.insert(EJ_SearchData, {name = name, id = id, stype = stype, difficulty = difficulty, instanceID = instanceID, encounterID = encounterID, link = link})
+			table.insert(EJ_SearchData, {
+				id			= id,
+				name		= data[EJ_CONST_ENCOUNTER_NAME],
+				stype		= EJ_STYPE_ENCOUNTER,
+				instanceID	= data[EJ_CONST_ENCOUNTER_INSTANCEID],
+				encounterID	= encounterID,
+				difficulty	= data[EJ_CONST_ENCOUNTER_DIFFICULTYMASK],
+			--	link		= nil, -- TODO
+			})
 		end
 	end
 
 	for _, container in pairs(JOURNALENCOUNTERCREATURE) do
 		for _, data in ipairs(container) do
-			local name = data[EJ_CONST_ENCOUNTERCREATURE_NAME]
-			local id = data[EJ_CONST_ENCOUNTERCREATURE_ID]
-			local stype = EJ_STYPE_CREATURE
 			local encounterID = data[EJ_CONST_ENCOUNTERCREATURE_ENCOUNTERID]
-			local difficulty = JOURNALENCOUNTER_BY_ENCOUNTER[encounterID][EJ_CONST_ENCOUNTER_DIFFICULTYMASK]
-			local instanceID = JOURNALENCOUNTER_BY_ENCOUNTER[encounterID][EJ_CONST_ENCOUNTER_INSTANCEID]
-			local link = nil -- ДОДЕЛАТЬ
 
-			table.insert(EJ_SearchData, {name = name, id = id, stype = stype, difficulty = difficulty, instanceID = instanceID, encounterID = encounterID, link = link})
-		end
-	end
-
-	for _, container in pairs(JOURNALENCOUNTERITEM) do
-		for _, data in ipairs(container) do
-			local name = data.name
-			local id = data[EJ_CONST_ENCOUNTERITEM_ITEMENTRY]
-			local stype = EJ_STYPE_ITEM
-			local encounterID = data[EJ_CONST_ENCOUNTERITEM_ENCOUNTERID]
-			local difficulty = data[EJ_CONST_ENCOUNTERITEM_DIFFIULTYMASK]
-			local instanceID = JOURNALENCOUNTER_BY_ENCOUNTER[encounterID][EJ_CONST_ENCOUNTER_INSTANCEID]
-			local link = data.link
-
-			if data.link then
-				JOURNALENCOUNTERITEM_BY_ENTRY[id] = data
-				table.insert(EJ_SearchData, {name = name, id = id, stype = stype, difficulty = difficulty, instanceID = instanceID, encounterID = encounterID, link = link})
-			end
+			table.insert(EJ_SearchData, {
+				id			= data[EJ_CONST_ENCOUNTERCREATURE_ID],
+				name		= data[EJ_CONST_ENCOUNTERCREATURE_NAME],
+				stype		= EJ_STYPE_CREATURE,
+				instanceID	= JOURNALENCOUNTER_BY_ENCOUNTER[encounterID][EJ_CONST_ENCOUNTER_INSTANCEID],
+				encounterID	= encounterID,
+				difficulty	= JOURNALENCOUNTER_BY_ENCOUNTER[encounterID][EJ_CONST_ENCOUNTER_DIFFICULTYMASK],
+			--	link		= nil, -- TODO
+			})
 		end
 	end
 
 	for _, data in pairs(JOURNALENCOUNTERSECTION) do
-		local name = data[EJ_CONST_ENCOUNTERSECTION_NAME]
-		local id = data[EJ_CONST_ENCOUNTERSECTION_ID]
-		local stype = EJ_STYPE_SECTION
-		local difficulty = data[EJ_CONST_ENCOUNTERSECTION_DIFFCULTYMASK]
 		local encounterID = data[EJ_CONST_ENCOUNTERSECTION_ENCOUNTERID]
-		local instanceID = JOURNALENCOUNTER_BY_ENCOUNTER[encounterID][EJ_CONST_ENCOUNTER_INSTANCEID]
-		local link = nil -- ДОДЕЛАТЬ
 
-		table.insert(EJ_SearchData, {name = name, id = id, stype = stype, difficulty = difficulty, instanceID = instanceID, encounterID = encounterID, link = link})
+		table.insert(EJ_SearchData, {
+			id			= data[EJ_CONST_ENCOUNTERSECTION_ID],
+			name		= data[EJ_CONST_ENCOUNTERSECTION_NAME],
+			stype		= EJ_STYPE_SECTION,
+			difficulty	= data[EJ_CONST_ENCOUNTERSECTION_DIFFCULTYMASK],
+			instanceID	= JOURNALENCOUNTER_BY_ENCOUNTER[encounterID][EJ_CONST_ENCOUNTER_INSTANCEID],
+			encounterID	= encounterID,
+		--	link		= nil, -- TODO
+		})
 	end
+
+	local queuedItems = {}
+	local addItemInfo = function(item, itemID, name, link, quality, iLevel, reqLevel, armorType, subclass, maxStack, equipSlot, icon, vendorPrice)
+		item.name			= name
+		item.link			= link
+		item.quality		= quality
+		item.iLevel			= iLevel
+		item.reqLevel		= reqLevel
+		item.armorType		= armorType
+		item.subclass		= subclass
+		item.maxStack		= maxStack
+		item.equipSlot		= equipSlot
+		item.icon			= icon
+		item.vendorPrice	= vendorPrice
+
+		local encounterID = item[EJ_CONST_ENCOUNTERITEM_ENCOUNTERID]
+
+		table.insert(EJ_SearchData, {
+			id			= itemID,
+			name		= item.name,
+			stype		= EJ_STYPE_ITEM,
+			difficulty	= item[EJ_CONST_ENCOUNTERITEM_DIFFIULTYMASK],
+			instanceID	= JOURNALENCOUNTER_BY_ENCOUNTER[encounterID][EJ_CONST_ENCOUNTER_INSTANCEID],
+			encounterID	= encounterID,
+			link		= item.link,
+		})
+
+		JOURNALENCOUNTERITEM_BY_ENTRY[itemID] = item
+	end
+
+	local itemCacheResponse = function(itemID, ...)
+		local item = queuedItems[itemID]
+		if item then
+			addItemInfo(item, itemID, ...)
+			queuedItems[itemID] = nil
+		end
+	end
+
+	for _, container in pairs(JOURNALENCOUNTERITEM) do
+		for _, item in ipairs(container) do
+			local itemID = item[EJ_CONST_ENCOUNTERITEM_ITEMENTRY]
+			local name, link, quality, iLevel, reqLevel, armorType, subclass, maxStack, equipSlot, icon, vendorPrice = C_Item.GetItemInfo(itemID, nil, nil, true, true)
+			if name then
+				addItemInfo(item, itemID, name, link, quality, iLevel, reqLevel, armorType, subclass, maxStack, equipSlot, icon, vendorPrice)
+			else
+				queuedItems[itemID] = item
+				C_Item.RequestServerCache(itemID, itemCacheResponse)
+			end
+		end
+	end
+end
+
+function EncounterJournal_OnLoad( self, a )
+	EncounterJournalTitleText:SetText(ADVENTURE_JOURNAL)
+	SetPortraitToTexture(EncounterJournalPortrait,"Interface\\EncounterJournal\\UI-EJ-PortraitIcon")
+
+	self.encounter.instance.mapButton.Text:SetText(ENCOUNTER_JOURNAL_SHOW_MAP)
 
 	self.inset:SetFrameLevel(self:GetFrameLevel())
 	self.instanceSelect:SetFrameLevel(self:GetFrameLevel())
 	self.encounter:SetFrameLevel(self:GetFrameLevel())
 	self.encounter.info:SetFrameLevel(self.encounter:GetFrameLevel())
 
+	SetPortraitToTexture(self.encounter.info.instanceButton.icon, "Interface\\EncounterJournal\\UI-EJ-Home-Icon")
+
 	self.encounter.freeHeaders = {}
 	self.encounter.usedHeaders = {}
 	self.encounterList = {}
-
-	local function UpdateFactionArt()
-		local factionGroup = UnitFactionGroup("player")
-		if factionGroup == "Renegade" then
-			playerFaction = select(3, C_FactionManager.GetFactionInfoOriginal())
-		end
-		self.playerFactionGroup = factionGroup == "Alliance" and -2 or -3
-	end
-
-	C_FactionManager:RegisterFactionOverrideCallback(UpdateFactionArt, true)
-
-	EncounterJournalTitleText:SetText(ADVENTURE_JOURNAL)
-	SetPortraitToTexture(EncounterJournalPortrait,"Interface\\EncounterJournal\\UI-EJ-PortraitIcon")
-
-	self.encounter.instance.mapButton.Text:SetText(ENCOUNTER_JOURNAL_SHOW_MAP)
 
 	local homeData = {
 		name = NAVIGATIONBAR_HOME,
@@ -1356,6 +1375,14 @@ function EncounterJournal_OnLoad( self, ... )
 		instanceSelect.raidsTab.grayBox:Show()
 	end
 
+	C_FactionManager:RegisterFactionOverrideCallback(function()
+		local factionGroup = UnitFactionGroup("player")
+		if factionGroup == "Renegade" then
+			playerFaction = select(3, C_FactionManager.GetFactionInfoOriginal())
+		end
+		self.playerFactionGroup = factionGroup == "Alliance" and -2 or -3
+	end, true)
+
 	if C_Service:GetRealmID() then
 		EncounterJournal_InitTab( self )
 	else
@@ -1381,6 +1408,7 @@ function EncounterJournal_InitTab( self )
 end
 
 function EncounterJournal_OnShow( self, ... )
+	LoadEJData(self)
 	PanelTemplates_SetTab(self, 1)
 
 	if not LOOTJOURNAL_CLASSFILTER or not LOOTJOURNAL_SPECFILTER then
@@ -2080,7 +2108,7 @@ function EncounterJournal_DisplayEncounter(encounterID, noButton, scrollToEncoun
 
 	if selectedEncounterIndex and scrollToEncounter then
 		bossIndex = bossIndex - 1;
-	
+
 		local value, maxScrollRange = ScrollFrame_GetScrollValueForIndex(EncounterJournal.encounter.info.bossesScroll, selectedEncounterIndex, bossIndex, BOSS_BUTTON_HEIGHT, BOSS_BUTTON_SECOND_OFFSET)
 		ScrollFrame_OnScrollRangeChanged(EncounterJournal.encounter.info.bossesScroll, 0, maxScrollRange);
 		EncounterJournal.encounter.info.bossesScroll.ScrollBar:SetValue(value);
@@ -3906,8 +3934,6 @@ function LootJournalSetClassAndSpecFilters( _, classFilter, specFilter )
 
 	LootJournal_GenerateLootData()
 	LootJournalItemSetsScrollFrame_UpdateList()
-
-	-- print("classFilter -", classFilter, "specFilter -", specFilter)
 end
 
 function LootJournalClassDropDown_Init(self, level)

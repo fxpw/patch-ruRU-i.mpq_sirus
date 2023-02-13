@@ -1,17 +1,71 @@
+Enum.MiniGames = {}
+Enum.MiniGames.ScoreboardType = {
+	Default = 0,
+	Role = 1,
+}
+
 local MINI_GAMES_INFO = {
-	[1] = {
+	{
 		gameName = "FRAGILEFLOOR",
 		icon = "Interface\\Icons\\Inv_radientazeritematrix",
 		background = "Interface\\LFGFrame\\UI-LFG-BACKGROUND-QUESTPAPER",
 		mapAreaID = 957,
+		scoreboardType = Enum.MiniGames.ScoreboardType.Default,
+		defaultSortField = "seconds",
 		stats = {
-			{name = "name", text = MINI_GAME_FRAGILEFLOOR_STAT_NAME, icon = "", tooltip = "", width = 200, alignment = "LEFT"},
-			{name = "position", text = MINI_GAME_FRAGILEFLOOR_STAT_POSITION, icon = "", tooltip = "", width = 48, default = true},
-			{name = "platforms", text = MINI_GAME_FRAGILEFLOOR_STAT_PLATFORMS, icon = "", tooltip = "", width = 92},
-			{name = "time", sortType = "seconds", text = MINI_GAME_FRAGILEFLOOR_STAT_TIME, icon = "", tooltip = "", width = 92},
+			{name = "name", text = MINI_GAME_STAT_NAME, icon = "", tooltip = "", width = 200, alignment = "LEFT"},
+			{name = "position", text = MINI_GAME_STAT_POSITION, icon = "", tooltip = "", width = 48, default = true},
+			{name = "stat1", text = MINI_GAME_STAT_FRAGILEFLOOR_PLATFORMS, icon = "", tooltip = "", width = 92},
+			{name = "time", text = MINI_GAME_STAT_TIME, icon = "", tooltip = "", width = 92, sortType = "seconds"},
+		},
+	},
+	{
+		gameName = "FROZEN_SNOWMAN_LAIR_STORY",
+		icon = "Interface\\Icons\\Achievement_challengemode_scholomance_gold",
+		background = "Interface\\LFGFrame\\UI-LFG-BACKGROUND-QUESTPAPER",
+		mapAreaID = 932,
+		scoreboardType = Enum.MiniGames.ScoreboardType.Role,
+		stats = {
+			{name = "name", text = MINI_GAME_STAT_NAME},
+			{name = "stat1", text = MINI_GAME_STAT_SNOWMAN_ARMOR, type = "SNOWMAN_ARMOR"},
+			{name = "role", text = MINI_GAME_STAT_ROLE, type = "ROLE"},
+		},
+	},
+	{
+		gameName = "FROZEN_SNOWMAN_LAIR_SURVIVAL",
+		icon = "Interface\\Icons\\inv_10_jewelcrafting_gem3primal_frost_cut_blue",
+		background = "Interface\\LFGFrame\\UI-LFG-BACKGROUND-QUESTPAPER",
+		mapAreaID = 932,
+		scoreboardType = Enum.MiniGames.ScoreboardType.Role,
+		stats = {
+			{name = "name", text = MINI_GAME_STAT_NAME},
+			{name = "stat1", text = MINI_GAME_STAT_SNOWMAN_ARMOR, type = "SNOWMAN_ARMOR"},
+			{name = "role", text = MINI_GAME_STAT_ROLE, type = "ROLE"},
 		},
 	},
 };
+
+local MINI_GAME_STAT_TYPES = {
+	ROLE = {
+		[0] = "none",
+		[1] = "tank",
+		[2] = "damager",
+		[3] = "healer",
+	},
+	SNOWMAN_ARMOR = {
+		[0] = MINI_GAME_STAT_VALUE_NONE,
+		[1] = SHARED_WARRIOR_MALE,
+		[2] = SHARED_PALADIN_MALE,
+		[3] = UNKNOWN,
+		[4] = SHARED_ROGUE_MALE,
+		[5] = SHARED_PRIEST_MALE,
+		[6] = SHARED_DEATHKNIGHT_MALE,
+		[7] = SHARED_SHAMAN_MALE,
+		[8] = SHARED_MAGE_MALE,
+		[9] = SHARED_WARLOCK_MALE,
+		[11] = MINI_GAME_STAT_VALUE_SHREDDER,
+	},
+}
 
 local AVAILABLE_MINI_GAMES = {};
 local RECEIVED_MINI_GAMES = {};
@@ -22,20 +76,13 @@ local MINI_GAME_SCORE_SORT_TYPE_DEFAULT = nil;
 local MINI_GAME_SCORE_SORT_REVERSE = false;
 
 local MINI_GAME_SCORE_DATA = {};
+local MINI_GAME_WINNERS = {};
+local MINI_GAME_FILLUP_STATUS
 
 local MINI_GAME_INVITE_ID;
 local MINI_GAME_INVITE_GAME_ID;
 local MINI_GAME_INVITE_MAX_PLAYERS;
 local MINI_GAME_INVITE_ACCEPTED_PLAYERS;
-
-local function BuildMiniGames()
-	for miniGameID in pairs(MINI_GAMES_INFO) do
-		if AVAILABLE_MINI_GAMES[miniGameID] then
-			MINI_GAMES_LIST[#MINI_GAMES_LIST + 1] = miniGameID;
-		end
-	end
-	table.sort(MINI_GAMES_LIST);
-end
 
 local MINI_GAMES_QUEUE_STATUS = {
 	[-1] = "error",
@@ -48,7 +95,6 @@ local MINI_GAMES_QUEUE_STATUS = {
 
 local MAX_MINI_GAMES_QUEUES = 8;
 local MINI_GAMES_QUEUES = {};
-local MINI_GAME_WINNER;
 local ACTIVE_MINI_GAME_ID;
 
 local frame = CreateFrame("Frame");
@@ -59,7 +105,7 @@ frame:SetScript("OnEvent", function(_, event)
 		SendServerMessage("ACMSG_MG_LIST_AVAILABLE_REQUEST");
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		table.wipe(MINI_GAME_SCORE_DATA);
-		MINI_GAME_WINNER = nil;
+		table.wipe(MINI_GAME_WINNERS);
 
 		frame:RegisterEvent("WORLD_MAP_UPDATE");
 	elseif event == "WORLD_MAP_UPDATE" then
@@ -67,7 +113,7 @@ frame:SetScript("OnEvent", function(_, event)
 
 		local currentMapAreaID = GetCurrentMapAreaID();
 
-		for _, miniGame in pairs(MINI_GAMES_INFO) do
+		for _, miniGame in ipairs(MINI_GAMES_INFO) do
 			if miniGame.stats and miniGame.mapAreaID and miniGame.mapAreaID == currentMapAreaID then
 				SendServerMessage("ACMSG_MG_LOG_DATA");
 				break;
@@ -89,7 +135,7 @@ local function secondsToTime(seconds)
 	return time;
 end
 
-local function SortScoreData(a, b)
+local function sortByScoreType(a, b)
 	local sortType = MINI_GAME_SCORE_SORT_TYPE or MINI_GAME_SCORE_SORT_TYPE_DEFAULT;
 
 	if a[sortType] and b[sortType] then
@@ -300,27 +346,20 @@ function C_MiniGames.RequestScoreData()
 	SendServerMessage("ACMSG_MG_LOG_DATA");
 end
 
+function C_MiniGames.GetScoreboardType()
+	if ACTIVE_MINI_GAME_ID and MINI_GAMES_INFO[ACTIVE_MINI_GAME_ID] then
+		return MINI_GAMES_INFO[ACTIVE_MINI_GAME_ID].scoreboardType or Enum.MiniGames.ScoreboardType.Default
+	end
+	return Enum.MiniGames.ScoreboardType.Default
+end
+
 function C_MiniGames.GetStatColumns()
 	local statColumns = {};
 
-	local miniGameID;
-
-	for i = 1, MAX_MINI_GAMES_QUEUES do
-		local queueInfo = MINI_GAMES_QUEUES[i];
-
-		if queueInfo and queueInfo.status == "active" then
-			miniGameID = queueInfo.id;
-			break;
-		end
-	end
-
-	local stats = miniGameID and MINI_GAMES_INFO[miniGameID] and MINI_GAMES_INFO[miniGameID].stats;
-
-	if stats then
-		for i = 1, #stats do
-			local stat = stats[i];
-
-			statColumns[#statColumns + 1] = {
+	local game = ACTIVE_MINI_GAME_ID and MINI_GAMES_INFO[ACTIVE_MINI_GAME_ID]
+	if game and game.scoreboardType == Enum.MiniGames.ScoreboardType.Default then
+		for index, stat in ipairs(game.stats) do
+			statColumns[index] = {
 				name = stat.name,
 				sortType = stat.sortType,
 				text = stat.text,
@@ -336,7 +375,7 @@ function C_MiniGames.GetStatColumns()
 end
 
 function C_MiniGames.GetNumScores()
-	return #MINI_GAME_SCORE_DATA;
+	return ACTIVE_MINI_GAME_ID and #MINI_GAME_SCORE_DATA or 0
 end
 
 function C_MiniGames.GetScore(index)
@@ -347,16 +386,19 @@ function C_MiniGames.GetScore(index)
 		error("Usage: local score = C_MiniGames.GetScore(index)", 2);
 	end
 
-	local scoreData = MINI_GAME_SCORE_DATA[index];
-	if scoreData then
-		local seconds = scoreData.seconds
-		return {
-			name = scoreData.name,
-			platforms = scoreData.platforms,
-			seconds = scoreData.seconds,
-			position = scoreData.position,
-			time = seconds and secondsToTime(seconds) or nil,
-		};
+	local game = ACTIVE_MINI_GAME_ID and MINI_GAMES_INFO[ACTIVE_MINI_GAME_ID]
+	if game then
+		local scoreData = MINI_GAME_SCORE_DATA[index];
+		if scoreData then
+			return {
+				name = scoreData.name,
+				position = scoreData.position,
+				seconds = scoreData.seconds,
+				time = scoreData.seconds and secondsToTime(scoreData.seconds) or nil,
+				stat1 = scoreData.stat1,
+				role = scoreData.role,
+			};
+		end
 	end
 end
 
@@ -365,25 +407,40 @@ function C_MiniGames.SortScoreData(sortType)
 		error("Usage: C_MiniGames.SortScoreData(sortType)", 2);
 	end
 
-	if MINI_GAME_SCORE_SORT_TYPE ~= sortType then
-		MINI_GAME_SCORE_SORT_REVERSE = false;
-	else
-		MINI_GAME_SCORE_SORT_REVERSE = not MINI_GAME_SCORE_SORT_REVERSE;
+	local game = ACTIVE_MINI_GAME_ID and MINI_GAMES_INFO[ACTIVE_MINI_GAME_ID]
+	if game and game.scoreboardType == Enum.MiniGames.ScoreboardType.Default then
+		if MINI_GAME_SCORE_SORT_TYPE ~= sortType then
+			MINI_GAME_SCORE_SORT_REVERSE = false;
+		else
+			MINI_GAME_SCORE_SORT_REVERSE = not MINI_GAME_SCORE_SORT_REVERSE;
+		end
+
+		MINI_GAME_SCORE_SORT_TYPE = sortType;
+
+		table.sort(MINI_GAME_SCORE_DATA, sortByScoreType);
+
+		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.UPDATE_MINI_GAME_SCORE);
 	end
-
-	MINI_GAME_SCORE_SORT_TYPE = sortType;
-
-	table.sort(MINI_GAME_SCORE_DATA, SortScoreData);
-
-	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.UPDATE_MINI_GAME_SCORE);
 end
 
-function C_MiniGames.GetWinner()
-	return MINI_GAME_WINNER;
+function C_MiniGames.GetNumWinners()
+	return #MINI_GAME_WINNERS;
+end
+
+function C_MiniGames.GetWinners()
+	return unpack(MINI_GAME_WINNERS);
+end
+
+function C_MiniGames.IsWinner(name)
+	return tIndexOf(MINI_GAME_WINNERS, name) ~= nil;
 end
 
 function C_MiniGames.GetActiveID()
 	return ACTIVE_MINI_GAME_ID;
+end
+
+function C_MiniGames.IsFillupActive()
+	return ACTIVE_MINI_GAME_ID and MINI_GAME_FILLUP_STATUS == 1 or false
 end
 
 function C_MiniGames.GetInviteID()
@@ -414,7 +471,7 @@ function EventHandler:ASMSG_MG_QUEUE_JOIN_ERR(msg)
 end
 
 function EventHandler:ASMSG_MG_STATUS(msg)
-	local statusData = C_Split(msg, ":");
+	local statusData = C_Split(msg, ";");
 
 	local index = tonumber(statusData[1]);
 	local statusID = tonumber(statusData[2]);
@@ -454,8 +511,8 @@ function EventHandler:ASMSG_MG_STATUS(msg)
 		MINI_GAMES_QUEUES[index] = queueInfo;
 	elseif MINI_GAMES_QUEUES[index] then
 		if MINI_GAMES_QUEUES[index].id == ACTIVE_MINI_GAME_ID then
-            ACTIVE_MINI_GAME_ID = nil;
-        end
+			ACTIVE_MINI_GAME_ID = nil;
+		end
 
 		MINI_GAMES_QUEUES[index] = nil;
 	end
@@ -517,15 +574,22 @@ end
 function EventHandler:ASMSG_MG_LIST_AVAILABLE(msg)
 	local availableMiniGames = C_Split(msg, ":");
 
+	table.wipe(AVAILABLE_MINI_GAMES)
+	table.wipe(MINI_GAMES_LIST)
+
 	for i = 1, #availableMiniGames do
 		local miniGameID = tonumber(availableMiniGames[i]);
 
 		if miniGameID then
 			AVAILABLE_MINI_GAMES[miniGameID] = true;
+
+			if MINI_GAMES_INFO[miniGameID] then
+				MINI_GAMES_LIST[#MINI_GAMES_LIST + 1] = miniGameID;
+			end
 		end
 	end
 
-	BuildMiniGames();
+	table.sort(MINI_GAMES_LIST);
 
 	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.UPDATE_AVAILABLE_MINI_GAMES);
 end
@@ -577,50 +641,61 @@ function EventHandler:ASMSG_MG_WON()
 end
 
 function EventHandler:ASMSG_MG_EVENT_START_TIMER(msg)
-	if msg and self.ASMSG_BG_EVENT_START_TIMER then
-		self:ASMSG_BG_EVENT_START_TIMER(string.format("%s:2", msg));
+	if self.ASMSG_BG_EVENT_START_TIMER then
+		local timeLeft, shortType = string.split(":", msg)
+		self:ASMSG_BG_EVENT_START_TIMER(string.format("%s:%i", timeLeft, shortType == "1" and 3 or 2));
 	end
 end
 
-local function SortScoreDataByTime(a, b)
-	if MINI_GAME_WINNER then
-		local aNameIsWinner = (MINI_GAME_SCORE_DATA[a].name == MINI_GAME_WINNER);
-		local bNameIsWinner = (MINI_GAME_SCORE_DATA[b].name == MINI_GAME_WINNER);
+local SORT_LOG_DATA = {};
+local SORT_WINNERS_DICT = {}
+local SORT_DEFAULT_FIELD
 
-		if aNameIsWinner ~= bNameIsWinner then
-			return not aNameIsWinner;
+local function sortByWinnerTime(a, b)
+	if #MINI_GAME_WINNERS > 0 then
+		local aNameIsWinner = SORT_WINNERS_DICT[MINI_GAME_SCORE_DATA[a].name];
+		local bNameIsWinner = SORT_WINNERS_DICT[MINI_GAME_SCORE_DATA[b].name];
+
+		if aNameIsWinner and not bNameIsWinner then
+			return true
+		elseif not aNameIsWinner and bNameIsWinner then
+			return false
 		end
 	end
 
-	return (MINI_GAME_SCORE_DATA[a].seconds or 0) < (MINI_GAME_SCORE_DATA[b].seconds or 0);
+	if MINI_GAME_SCORE_DATA[a][SORT_DEFAULT_FIELD] ~= MINI_GAME_SCORE_DATA[b][SORT_DEFAULT_FIELD] then
+		return (MINI_GAME_SCORE_DATA[a][SORT_DEFAULT_FIELD] or 0) > (MINI_GAME_SCORE_DATA[b][SORT_DEFAULT_FIELD] or 0);
+	end
+
+	return MINI_GAME_SCORE_DATA[a].name < MINI_GAME_SCORE_DATA[b].name;
 end
 
-local STAT_MESSAGES = {};
-local SORT_LOG_DATA = {};
+local SORTED_ROLES = {["tank"] = 1, ["damager"] = 2, ["healer"] = 3, ["none"] = 4}
+local function sortByRole(a, b)
+	local aRoleOrder = SORTED_ROLES[a.role]
+	local bRoleOrder = SORTED_ROLES[b.role]
 
-function EventHandler:ASMSG_MG_LOG_DATA(msg)
-	local isDelimiter = string.sub(msg, -1, -1) == ",";
-	if isDelimiter then
-		STAT_MESSAGES[#STAT_MESSAGES + 1] = string.sub(msg, 0, -2);
-	else
-		STAT_MESSAGES[#STAT_MESSAGES + 1] = msg;
+	if aRoleOrder ~= bRoleOrder then
+		return aRoleOrder < bRoleOrder
+	end
 
-		local scoreData = {strsplit(":", table.concat(STAT_MESSAGES))};
+	return a.name < b.name
+end
 
-		table.wipe(STAT_MESSAGES);
+local function processLogMessage(logMessage)
+	table.wipe(MINI_GAME_SCORE_DATA);
+	table.wipe(MINI_GAME_WINNERS);
 
-		table.wipe(MINI_GAME_SCORE_DATA);
-		table.wipe(SORT_LOG_DATA);
+	local gameID, fillupStatus
+	gameID, fillupStatus, logMessage = string.split(":", logMessage, 3);
+	gameID = tonumber(gameID)
 
-		local miniGameID = tonumber(table.remove(scoreData, 1));
-		local winnerName = table.remove(scoreData, 1);
-		MINI_GAME_WINNER = winnerName ~= "" and winnerName or nil;
-
-		local miniGameInfo = miniGameID and MINI_GAMES_INFO[miniGameID];
-		if miniGameInfo then
+	local game = gameID and MINI_GAMES_INFO[gameID];
+	if game then
+		if game.scoreboardType == Enum.MiniGames.ScoreboardType.Default then
 			local foundDefaultSortType;
-			for i = 1, #miniGameInfo.stats do
-				local statInfo = miniGameInfo.stats[i];
+			for i = 1, #game.stats do
+				local statInfo = game.stats[i];
 				if statInfo.default then
 					MINI_GAME_SCORE_SORT_TYPE_DEFAULT = statInfo.sortType or statInfo.name;
 					foundDefaultSortType = true;
@@ -629,49 +704,100 @@ function EventHandler:ASMSG_MG_LOG_DATA(msg)
 			end
 
 			if not foundDefaultSortType then
-				local firstStat = miniGameInfo.stats[1];
+				local firstStat = game.stats[1];
 				MINI_GAME_SCORE_SORT_TYPE_DEFAULT = firstStat and firstStat.sortType or firstStat.name;
 			end
 
 			MINI_GAME_SCORE_SORT_TYPE = nil;
 			MINI_GAME_SCORE_SORT_REVERSE = false;
+		else
+			MINI_GAME_SCORE_SORT_TYPE_DEFAULT = nil
+			MINI_GAME_SCORE_SORT_TYPE = nil
+			MINI_GAME_SCORE_SORT_REVERSE = nil
+		end
 
-			ACTIVE_MINI_GAME_ID = miniGameID;
+		for entryIndex, entry in ipairs({string.split("|", logMessage)}) do
+			local name, isWinner, statList = string.split(":", entry, 3)
 
-			for i = 1, #scoreData, 3 do
-				local name = scoreData[i];
-				local platforms = tonumber(scoreData[i + 1]) or 0;
-				local seconds = tonumber(scoreData[i + 2]) or 0;
-				seconds = seconds > 0 and seconds or nil;
+			if isWinner == "1" then
+				MINI_GAME_WINNERS[#MINI_GAME_WINNERS + 1] = name
+			end
 
-				MINI_GAME_SCORE_DATA[#MINI_GAME_SCORE_DATA + 1] = {
+			if game.scoreboardType == Enum.MiniGames.ScoreboardType.Default then
+				local stat1, seconds = string.split(":", statList)
+				seconds = tonumber(seconds) or 0
+				seconds = seconds > 0 and seconds or nil
+
+				MINI_GAME_SCORE_DATA[entryIndex] = {
 					name = name,
-					platforms = platforms,
+					stat1 = tonumber(stat1) or 0,
 					seconds = seconds,
 				};
+			else
+				local stat1, role = string.split(":", statList)
 
-				if seconds or MINI_GAME_WINNER then
-					SORT_LOG_DATA[#SORT_LOG_DATA + 1] = #MINI_GAME_SCORE_DATA;
+				stat1 = tonumber(stat1) or 0
+				role = tonumber(role) or 0
+
+				stat1 = MINI_GAME_STAT_TYPES.SNOWMAN_ARMOR[stat1]
+				role = MINI_GAME_STAT_TYPES.ROLE[role]
+
+				MINI_GAME_SCORE_DATA[entryIndex] = {
+					name = name,
+					stat1 = stat1,
+					role = role,
+				};
+			end
+		end
+
+		ACTIVE_MINI_GAME_ID = gameID;
+		MINI_GAME_FILLUP_STATUS = tonumber(fillupStatus)
+
+		if game.scoreboardType == Enum.MiniGames.ScoreboardType.Default then
+			table.wipe(SORT_LOG_DATA);
+			table.wipe(SORT_WINNERS_DICT);
+
+			local haveWinner = #MINI_GAME_WINNERS > 0
+			for entryIndex, entry in ipairs(MINI_GAME_SCORE_DATA) do
+				if haveWinner or entry.seconds then
+					SORT_LOG_DATA[#SORT_LOG_DATA + 1] = entryIndex
 				end
 			end
 
 			if #SORT_LOG_DATA > 0 then
-				local numPlayers = #MINI_GAME_SCORE_DATA + 1;
+				for index, name in ipairs(MINI_GAME_WINNERS) do
+					SORT_WINNERS_DICT[name] = true
+				end
 
-				table.sort(SORT_LOG_DATA, SortScoreDataByTime);
+				SORT_DEFAULT_FIELD = MINI_GAMES_INFO[ACTIVE_MINI_GAME_ID].defaultSortField or "name"
+				table.sort(SORT_LOG_DATA, sortByWinnerTime);
 
-				for i = 1, #SORT_LOG_DATA do
-					if MINI_GAME_SCORE_DATA[SORT_LOG_DATA[i]].seconds then
-						MINI_GAME_SCORE_DATA[SORT_LOG_DATA[i]].position = numPlayers - i;
+				for entryIndex = 1, #SORT_LOG_DATA do
+					if MINI_GAME_SCORE_DATA[SORT_LOG_DATA[entryIndex]][SORT_DEFAULT_FIELD] then
+						MINI_GAME_SCORE_DATA[SORT_LOG_DATA[entryIndex]].position = entryIndex;
 					end
 				end
 			end
 
 			if MINI_GAME_SCORE_SORT_TYPE_DEFAULT then
-				table.sort(MINI_GAME_SCORE_DATA, SortScoreData);
+				table.sort(MINI_GAME_SCORE_DATA, sortByScoreType);
 			end
+		elseif game.scoreboardType == Enum.MiniGames.ScoreboardType.Role then
+			table.sort(MINI_GAME_SCORE_DATA, sortByRole)
 		end
+	end
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.UPDATE_MINI_GAME_SCORE);
+	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.UPDATE_MINI_GAME_SCORE);
+end
+
+local LOG_MESSAGES = {};
+function EventHandler:ASMSG_MG_LOG_DATA(msg)
+	LOG_MESSAGES[#LOG_MESSAGES + 1] = msg;
+
+	local hasMessageDelimiter = string.sub(msg, -1) == "|";
+	if not hasMessageDelimiter then
+		local logMessage = table.concat(LOG_MESSAGES);
+		table.wipe(LOG_MESSAGES);
+		processLogMessage(logMessage)
 	end
 end

@@ -4,10 +4,12 @@ local pcall = pcall
 local tonumber = tonumber
 local type = type
 local strformat, strmatch = string.format, string.match
-local tinsert = table.insert
+local tinsert, tremove = table.insert, table.remove
 
 local GetItemInfo = GetItemInfo
 
+local itemCacheBlacklist = {}
+local itemCacheUnique = {}
 local itemCacheQueue = {}
 
 local itemQualityHexes = {}
@@ -73,28 +75,47 @@ local function runItemCallback(callback, ...)
 	end
 end
 
-local function tryItemData(callbacks, itemID, itemName, ...)
+local function tryItemData(queueData, itemID, itemName, ...)
 	if itemName then
-		if type(callbacks) == "table" then
-			for _, callback in ipairs(callbacks) do
-				runItemCallback(callback, itemID, itemName, ...)
-			end
-		else
-			runItemCallback(callbacks, itemID, itemName, ...)
+		for i = 3, #queueData do
+			runItemCallback(queueData[i], itemID, itemName, ...)
 		end
 		return true
 	end
 end
 
 EVENT_HANDLER:SetScript("OnUpdate", function(this, elapsed)
-	for itemID, callbacks in pairs(itemCacheQueue) do
-		if tryItemData(callbacks, itemID, GetItemInfo(itemID)) then
-			itemCacheQueue[itemID] = nil
+	local index = #itemCacheQueue
+	if index > 0 then
+		local lastIndex = math.max(index - 450, 0)
+		while index > lastIndex do
+			local queueData = itemCacheQueue[index]
+			local itemID = queueData[2]
+
+			if tryItemData(queueData, itemID, GetItemInfo(itemID)) then
+				itemCacheUnique[itemID] = nil
+				tremove(itemCacheQueue, index)
+			else
+				queueData[1] = queueData[1] + elapsed
+				if queueData[1] >= 1 then
+					if queueData[0] < 62 then
+						queueData[0] = queueData[0] + queueData[1]
+						queueData[1] = 0
+						TOOLTIP:SetHyperlink(strformat("item:%i", itemID))
+					else
+						itemCacheBlacklist[itemID] = true
+						itemCacheUnique[itemID] = nil
+						tremove(itemCacheQueue, index)
+					end
+				end
+			end
+
+			index = index - 1
 		end
 	end
 end)
 
-local function getItemID(item)
+local function getItemID(item, funcName)
 	if type(item) == "string" then
 		if ItemsCache[item] then
 			item = ItemsCache[item].itemID
@@ -102,30 +123,51 @@ local function getItemID(item)
 			item = tonumber(item) or tonumber(strmatch(item, "item:(%d+)"))
 		end
 	end
-	if item and type(item) ~= "number" then
-		error([[Usage: C_Item.RequestServerCache(itemID|"name"|"itemlink")]], 3)
+	if item then
+		if type(item) ~= "number" then
+			error(string.format([[Usage: C_Item.%s(itemID|"name"|"itemlink")]], funcName), 3)
+		end
+		if item > 0 then
+			return item
+		end
 	end
-	return item
 end
 
 ---@param item integer | string
 ---@param callback? function
 function C_Item.RequestServerCache(item, callback)
-	item = getItemID(item)
+	item = getItemID(item, "RequestServerCache")
 	if not item then
 		return
 	end
 
 	TOOLTIP:SetHyperlink(strformat("item:%i", item))
 
-	if type(callback) == "function" then
-		local cacheType = type(itemCacheQueue[item])
-		if cacheType == "nil" then
-			itemCacheQueue[item] = callback
-		elseif cacheType == "function" then
-			itemCacheQueue[item] = {itemCacheQueue[item], callback}
+	if itemCacheBlacklist[item] then
+		return
+	end
+
+	if not itemCacheUnique[item] then
+		local queueEntry
+
+		if type(callback) == "function" then
+			queueEntry = {[0] = 0, 0, item, callback}
 		else
-			tinsert(itemCacheQueue[item], callback)
+			queueEntry = {[0] = 0, 0, item}
+		end
+
+		itemCacheUnique[item] = queueEntry
+		tinsert(itemCacheQueue, queueEntry)
+	else
+		local itemEntry = itemCacheUnique[item]
+		local index = tIndexOf(itemCacheUnique, itemEntry)
+		tremove(itemCacheUnique, index)
+		tinsert(itemCacheUnique, itemEntry)
+
+		itemEntry[1] = 0
+
+		if type(callback) == "function" then
+			tinsert(itemCacheUnique[item], callback)
 		end
 	end
 end
@@ -144,7 +186,7 @@ end
 ---@return integer vendorPrice
 ---@return integer itemID
 function C_Item.GetItemInfoCache(item)
-	item = getItemID(item)
+	item = getItemID(item, "GetItemInfoCache")
 	if not item then
 		return
 	end

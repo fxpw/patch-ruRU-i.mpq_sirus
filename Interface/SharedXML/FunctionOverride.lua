@@ -2,6 +2,7 @@ local securecall = securecall
 
 TRACKED_CVARS = {
 	"autoDismountFlying",
+	"C_CVAR_DRACTHYR_RETURN_MORTAL_FORM",
 }
 
 do	-- CVars
@@ -10,13 +11,13 @@ do	-- CVars
 
 	local SetCVar = SetCVar
 	local _SetCVar = function(cvar, value, raiseEvent)
+		if C_CVar and strsub(cvar, 1, 7) == "C_CVAR_" then
+			return C_CVar:SetValue(cvar, value, raiseEvent)
+		end
+
 		local trackedIndex = tIndexOf(TRACKED_CVARS, cvar)
 		if trackedIndex then
 			SendServerMessage("ACMSG_I_S", string.format("%i:%i", trackedIndex, tonumber(value) or 0))
-		end
-
-		if C_CVar and strsub(cvar, 1, 7) == "C_CVAR_" then
-			return C_CVar:SetValue(cvar, value, raiseEvent)
 		end
 
 		return SetCVar(cvar, value, raiseEvent)
@@ -46,7 +47,7 @@ do	-- CVars
 	_G.GetCVarBool = function(cvar)
 		return securecall(_GetCVarBool, cvar)
 	end
-	
+
 	local GetCVarDefault = GetCVarDefault
 	local _GetCVarDefault = function( cvar )
 		if C_CVar and strsub(cvar, 1, 7) == "C_CVAR_" then
@@ -330,6 +331,7 @@ function UnitClass( unit )
 	return className, classToken, classID, classFlag
 end
 
+local S_ADDON_VERSION = S_ADDON_VERSION
 local _GetAddOnInfo = GetAddOnInfo
 function GetAddOnInfo( value )
 	if not value then
@@ -347,7 +349,7 @@ function GetAddOnInfo( value )
 		if build then
 			build = tonumber(build)
 		end
-		
+
 		if S_ADDON_VERSION then
 			for _, addonData in ipairs(S_ADDON_VERSION) do
 				if tContains(addonData[3], name) then

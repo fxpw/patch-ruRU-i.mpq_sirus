@@ -84,7 +84,7 @@ local function FramePoolFactory(framePool)
 	pollFrameIndex = pollFrameIndex + 1
 	local parentName, frameName = framePool.parent and framePool.parent:GetName()
 	if parentName then
-		frameName = string.format("%sPoolFrame%s%i_%i", parentName, framePool.frameTemplate, framePool.createFrames, pollFrameIndex)
+		frameName = string.format("%sPoolFrame%s%i_%i", parentName, framePool.frameTemplate or "NoTemplate", framePool.createFrames, pollFrameIndex)
 	elseif framePool.frameTemplate then
 		frameName = string.format("UnnamedPoolFrame%s%i_%i", framePool.frameTemplate, framePool.createFrames, pollFrameIndex)
 	else
@@ -326,7 +326,7 @@ function FixedSizeFramePoolCollectionMixin:CreatePool(frameType, parent, templat
 	return pool
 end
 
-function FixedSizeFramePoolCollectionMixin:Acquire(template)	
+function FixedSizeFramePoolCollectionMixin:Acquire(template)
 	local pool = self:GetPool(template)
 	assert(pool)
 

@@ -253,6 +253,7 @@
 				<Anchors>
 					<Anchor point="RIGHT" x="-9" y="0"/>
 				</Anchors>
+				<HitRectInsets left="0" right="0" top="12" bottom="0"/>
 				<Scripts>
 					<OnLoad>
 						self:GetNormalTexture():SetDrawLayer("OVERLAY");

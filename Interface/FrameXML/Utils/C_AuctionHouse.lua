@@ -3166,10 +3166,10 @@ function EventHandler:ASMSG_AUCTION_COMMAND_RESULT(msg)
 
 				FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_AUCTION_CREATED, auctionID);
 
-				SendChatMessageType(ERR_AUCTION_STARTED, "SYSTEM");
+				AddChatTyppedMessage("SYSTEM", ERR_AUCTION_STARTED);
 			end
 		elseif auctionCommand == AUCTION_HOUSE_COMMAND.CANCEL then
-			SendChatMessageType(ERR_AUCTION_REMOVED, "SYSTEM");
+			AddChatTyppedMessage("SYSTEM", ERR_AUCTION_REMOVED);
 
 			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_CANCELED, auctionID);
 		elseif auctionCommand == AUCTION_HOUSE_COMMAND.PLACE_BID then
@@ -3220,11 +3220,11 @@ function EventHandler:ASMSG_AUCTION_WON_NOTIFICATION(msg)
 		if itemKeyInfo.isCommodity then
 			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_CANCELED, auctionID);
 
-			SendChatMessageType(format(ERR_AUCTION_COMMODITY_WON_S, itemKeyInfo.itemName, itemCount), "SYSTEM");
+			AddChatTyppedMessage("SYSTEM", format(ERR_AUCTION_COMMODITY_WON_S, itemKeyInfo.itemName, itemCount));
 
 			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.COMMODITY_PURCHASE_SUCCEEDED, itemKey.itemID, itemCount);
 		else
-			SendChatMessageType(format(ERR_AUCTION_WON_S, itemKeyInfo.itemName), "SYSTEM");
+			AddChatTyppedMessage("SYSTEM", format(ERR_AUCTION_WON_S, itemKeyInfo.itemName));
 
 			local item = search:GetItem(itemID, itemSuffix);
 			local itemsResult = item.results;
@@ -3258,9 +3258,9 @@ function EventHandler:ASMSG_AUCTION_CLOSED_NOTIFICATION(msg)
 	local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(itemKey);
 	if itemKeyInfo then
 		if isSold == "1" then
-			SendChatMessageType(format(ERR_AUCTION_SOLD_S, itemKeyInfo.itemName), "SYSTEM");
+			AddChatTyppedMessage("SYSTEM", format(ERR_AUCTION_SOLD_S, itemKeyInfo.itemName));
 		else
-			SendChatMessageType(format(ERR_AUCTION_EXPIRED_S, itemKeyInfo.itemName), "SYSTEM");
+			AddChatTyppedMessage("SYSTEM", format(ERR_AUCTION_EXPIRED_S, itemKeyInfo.itemName));
 		end
 
 		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_CANCELED, tonumber(auctionID));
@@ -3275,7 +3275,7 @@ function EventHandler:ASMSG_AUCTION_OWNER_BID_NOTIFICATION(msg)
 		tinsert(g_activeBidAuctionIDs, auctionID);
 	end
 
-	SendChatMessageType(ERR_AUCTION_BID_PLACED, "SYSTEM");
+	AddChatTyppedMessage("SYSTEM", ERR_AUCTION_BID_PLACED);
 
 	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.BIDS_UPDATED);
 end
@@ -3285,7 +3285,7 @@ function EventHandler:ASMSG_AUCTION_OUTBID_NOTIFICATION(msg)
 
 	local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo({itemID = tonumber(itemID), itemSuffix = tonumber(itemSuffix)});
 	if itemKeyInfo then
-		SendChatMessageType(format(AUCTION_OUTBID_MAIL_SUBJECT, itemKeyInfo.itemName), "SYSTEM");
+		AddChatTyppedMessage("SYSTEM", format(AUCTION_OUTBID_MAIL_SUBJECT, itemKeyInfo.itemName));
 	end
 
 	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.BIDS_UPDATED);

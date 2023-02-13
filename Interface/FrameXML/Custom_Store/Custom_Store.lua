@@ -1,9 +1,3 @@
---	Filename:	Custom_Store.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 selectedCategoryID = nil
 selectedMoneyID = nil
 selectedSubCategoryID = 0
@@ -35,6 +29,19 @@ local STORE_PRODUCT_MONEY_ICON = {"coins", "mmotop", "refer", "loyal"}
 local STORE_COLLECTIONS_CATEGORY_ID = 3
 local STORE_TRANSMOGRIFY_CATEGORY_ID = 6
 local STORE_SUBSCRIPTIONS_CATEGORY_ID = 5
+
+Enum.Store = {}
+Enum.Store.CurrenctType = Enum.CreateMirror({
+	[1] = "Bonus",
+	[2] = "Vote",
+	[3] = "Referral",
+	[4] = "Loyality",
+})
+
+local STORE_CURRENCY_INFO = {
+	BALANCE = {},
+	LOYALITY = {},
+};
 
 local STORE_FRAME_DATA = {
 	"StoreItemListFrame",
@@ -528,8 +535,8 @@ STORE_SPECIAL_OFFERS_3D = {
 	[54] = { -- Mur mur
 		Name = "MurMur",
 		BorderColor = {0.82, 0.34, 0.12},
-		PopupCreature = 131209,
-		PopupModelInfo = {131209, -0.68, "BOTTOM", "TOP", -50, -50, 350, 320, 0.7},
+		PopupCreature = 131349,
+		PopupModelInfo = {131349, -0.68, "BOTTOM", "TOP", -20, -50, 350, 320, 0.7},
 
 		Banner = {
 			TimerColor			= {0.94, 0.6, 0.4},
@@ -540,7 +547,7 @@ STORE_SPECIAL_OFFERS_3D = {
 			PriceColor			= {1, 0.9, 0.9},
 
 			SceneInfo = {
-				{131209, 462, 219, {"CENTER", nil, "CENTER", 0, 14}, 39, nil, nil, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
+				{131349, 379, 300, {"RIGHT", nil, "RIGHT", 0, -20}, 39, nil, nil, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
 			},
 		},
 	},
@@ -639,7 +646,26 @@ STORE_SPECIAL_OFFERS_3D = {
 				{131057, 379, 290, {"TOPRIGHT", nil, "TOPRIGHT", -1, -1}, -37, 1, {0, 0, -0.300}, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
 			},
 		},
-	}
+	},
+	[60] = { -- WinterFurline
+		Name = "WinterFurline",
+		BorderColor = {0.11, 0.67, 0.84},
+		PopupCreature = 131348,
+		PopupModelInfo = {131348, -0.68, "BOTTOM", "TOP", -30, -50, 350, 320, 0.95},
+
+		Banner = {
+			TimerColor			= {0.11, 0.67, 0.84},
+			TitleColor			= {0.8, 0.86, 0.97},
+			NameColor			= {0.11, 0.67, 0.84},
+			DescriptionColor	= {0.8, 0.86, 0.97},
+			PriceLabelColor		= {0.11, 0.67, 0.84},
+			PriceColor			= {1, 0.9, 0.9},
+
+			SceneInfo = {
+				{131348, 379, 240, {"TOPRIGHT", nil, "TOPRIGHT", -1, -1}, -37, 1, {0, 0, -0.300}, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
+			},
+		},
+	},
 }
 
 STORE_CACHE = C_Cache("SIRUS_STORE_CACHE", true)
@@ -731,7 +757,7 @@ STORE_TRANSMOGRIFY_SETS_DATA = {}
 STORE_TRANSMOGRIFY_ITEM_DATA = {}
 STORE_TRANSMOGRIFY_SERVER_DATA = {}
 
-STORE_TRANSMOGRIFY_SORID = nil
+STORE_TRANSMOGRIFY_SORT_ID = nil
 STORE_TRANSMOGRIFY_FILTER_CLASSID = nil
 STORE_TRANSMOGRIFY_FILTER_EXPANSION = nil
 STORE_TRANSMOGRIFY_FILTER_SOURCE = nil
@@ -749,6 +775,25 @@ enum:E_STORE_CATEGORY_NEW_ITEMS_INDICATOR {
 	"SUBCATEGORYID"
 }
 
+local TransomgCategory = {
+	Headgear = 1,
+	Weapons = 2,
+	Invisible = 3,
+	Sets = 4,
+}
+
+local TransmogSortTypes = {
+	Name = 1,
+	Quality = 2,
+	Price = 3,
+	WeaponType = 4,
+}
+
+local TransmogFilterTypes = {
+	Weapons = 1,
+	Sets = 2,
+}
+
 local StoreRequestMoneyID
 local StoreRequestCategoryID
 local StoreRequestSubCategoryID
@@ -757,9 +802,21 @@ local StoreRequestIgnoreFilters
 local storeRequestQueue = {}
 local storeQueueTimer
 
-local storeBalance = {};
-function GetPlayerBalance()
-	return storeBalance.Bonus or -1, storeBalance.Vote or -1, storeBalance.Refer or -1, storeBalance.loyalLevel or -1;
+function Store_GetBalance(currencyIndex)
+	if type(currencyIndex) ~= "number" then
+		error(string.format("bad argument #1 to 'Store_GetBalance' (number expected, got %s)", type(currencyIndex)), 2)
+	elseif currencyIndex < 1 or currencyIndex > #Enum.Store.CurrenctType then
+		error("bad argument #1 to 'Store_GetBalance' (index out of range)", 2)
+	end
+
+	return STORE_CURRENCY_INFO.BALANCE[currencyIndex] or 0
+end
+
+function Store_GetLoyalityInfo()
+	return STORE_CURRENCY_INFO.LOYALITY.level or 0,
+		STORE_CURRENCY_INFO.LOYALITY.current or 0,
+		STORE_CURRENCY_INFO.LOYALITY.min or 0,
+		STORE_CURRENCY_INFO.LOYALITY.max or 0
 end
 
 function Store_GetTransmogCategoryByStoreID(storeID)
@@ -1343,6 +1400,8 @@ function StoreFrame_OnHide( self, ... )
 	end
 
 	PlaySound("igCharacterInfoClose")
+
+	self.transmogrificationInfoRequest = nil;
 end
 
 function StoreMoneyButton_OnLoad( self, ... )
@@ -1393,22 +1452,26 @@ function StoreMoneyButton_OnClick( self, ... )
 	StoreUpdateGenericButtons()
 end
 
-function StoreMoneyButton_OnEnter( self, ... )
-	local data = STORE_MONEY_BUTTON_DATA[self:GetID()]
+function StoreMoneyButton_OnEnter(self)
+	local id = self:GetID();
+	local data = STORE_MONEY_BUTTON_DATA[id]
 
 	self.Highlight:Show()
 
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -15)
 	GameTooltip:SetText(data.Name)
 	GameTooltip:AddLine(data.Description, 1, 1, 1, 1)
-	if self.data then
-		if tonumber(self.data[2]) ~= 0 then
+
+	if id == Enum.Store.CurrenctType.Loyality then
+		local _, loyalCurrent, loyalMin, loyalMax = Store_GetLoyalityInfo();
+
+		if loyalMax > 0 then
 			GameTooltip:AddLine(" ")
-			GameTooltip:AddLine(string.format(SOTRE_LOYAL_NEXT_LEVEL, self.data[1], self.data[2]), 1, 1, 1, 1)
+			GameTooltip:AddLine(string.format(SOTRE_LOYAL_NEXT_LEVEL, loyalCurrent, loyalMax), 1, 1, 1, 1)
 			GameTooltip:AddLine(" ")
 			GameTooltip:AddLine(" ")
 			-- loyalCurrent, loyalMax, loyalMin
-			StoreLoyalProgressBarSetValue(self.data[1] - self.data[3], self.data[2] - self.data[3])
+			StoreLoyalProgressBarSetValue(loyalCurrent - loyalMin, loyalMax - loyalMin)
 			StoreLoyalProgressBar:Show()
 		end
 	end
@@ -1465,6 +1528,14 @@ function StoreUpdateGenericButtons()
 	StoreFrameLeftInset.ReferDetailsButton:SetShown(selectedMoneyID == 3)
 
 	StoreRenewTimeFrame:SetShown(StoreRefreshMountListButton:IsShown() or StoreRefreshTransmogListButton:IsShown());
+end
+
+function StorePlayerTransmogRequest()
+	if not StoreFrame.transmogrificationInfoRequest then
+		SendServerMessage("ACMSG_TRANSMOGRIFICATION_INFO_REQUEST", UnitGUID("player"));
+
+		StoreFrame.transmogrificationInfoRequest = true;
+	end
 end
 
 function StoreSelectCategory( categoryID, subCategoryID )
@@ -3530,8 +3601,7 @@ function StoreConfirmationFrame_Update(self)
 
 	local giftOverride
 	if selectedMoneyID == 1 and selectedCategoryID ~= 5 and self.data.Entry then
-		local currentLoyal = StoreMoneyButton4.data[4]
-		if (currentLoyal >= 30) then
+		if Store_GetBalance(Enum.Store.CurrenctType.Loyality) >= 30 then
 			StoreConfirmationSendGiftCheckButton:SetShown(true)
 
 			if giftChecked and not (self.data.Flags and bit.band(self.data.Flags, STORE_ITEM_FLAG_ITEM_GIFT) == STORE_ITEM_FLAG_ITEM_GIFT) then
@@ -3720,7 +3790,7 @@ function StoreFrame_UpdateItemList()
 	local button, index
 	local numProduct = #STORE_PRODUCT_LIST
 	local displayedHeight = 0
-	local currentLoyal = StoreMoneyButton4.data[4]
+	local currentLoyal = Store_GetBalance(Enum.Store.CurrenctType.Loyality)
 
 	for i = 1, numButtons do
 		button = buttons[i]
@@ -3935,7 +4005,7 @@ function StoreDataTableCopy(useFilter)
 	StoreItemListScrollFrame.ScrollBar:SetValue(0)
 
 	if selectedMoneyID == 4 then
-		local currentLoyal 	= StoreMoneyButton4.data[4]
+		local currentLoyal = Store_GetBalance(Enum.Store.CurrenctType.Loyality)
 		local numProduct 	= #STORE_PRODUCT_LIST
 
 		if currentLoyal and numProduct > 0 then
@@ -5061,14 +5131,14 @@ end
 function StoreTransmogrifyFrame_OnLoad( self, ... )
 	local _, _, classID, classMask = UnitClass("player")
 
-	STORE_TRANSMOGRIFY_SORID = 4
+	STORE_TRANSMOGRIFY_SORT_ID = 0
 	STORE_TRANSMOGRIFY_FILTER_CLASSID = classMask
 	STORE_TRANSMOGRIFY_FILTER_EXPANSION = ALL_EXPANSION_FILTER
 	STORE_TRANSMOGRIFY_FILTER_SOURCE = ALL_SOURCE_FILTER
 	STORE_TRANSMOGRIFY_FILTER_WEAPON = ALL_WEAPON_FILTER
 
 	for i = 1, 4 do
-		StoreTransmogrifySetSorted(STORE_TRANSMOGRIFY_SORID, i)
+		StoreTransmogrifySetSorted(STORE_TRANSMOGRIFY_SORT_ID, i)
 	end
 
 	self.LeftContainer.ScrollFrame.update = StoreTransmogrifyFrame_UpdateScrollFrame
@@ -5146,31 +5216,16 @@ end
 
 function StoreTransmogrifyFrame_UpdateRightContainer()
 	local itemCount = GetNumStoreTransmogrifyItems()
-	local storeID, setName = GetStoreTransmogrifySetsInfo()
+	local _, setName = GetStoreTransmogrifySetsInfo()
 	local containerFrame = StoreTransmogrifyFrame.RightContainer.ContentFrame.OverlayElements
 	local buttonsList = StoreTransmogrifyFrame.RightContainer.ContentFrame.Buttons
-	local modelFrame = StoreTransmogrifyFrame.RightContainer.ContentFrame.Model
 	local size = (34 / 2) * itemCount
 
 	containerFrame:GetParent().previewItems = {}
 	containerFrame.selectedItem = nil
 
-	modelFrame:Undress()
-
 	if selectedSubCategoryID == 1 then
-		modelFrame:SetUnit("player", true, STORE_TRANSMOGRIFY_CAMERA_SETTINGS_HEAD)
-		modelFrame:Undress()
-
-		StoreTransmogrifyFrame.RightContainer.Background:SetTexCoord(0.14453125, 0.7578125, 0.107421875, 0.791015625)
-	else
-		modelFrame:SetUnit("player", true)
-		modelFrame:Undress()
-	end
-
-	if selectedSubCategoryID == 1 then
-		Store_TryOnModel(modelFrame, 1, not storeTransmogrifyShowShoulders and 3 or 0)
-	elseif selectedSubCategoryID == 3 then
-		Store_TryOnModel(modelFrame)
+		StoreTransmogrifyFrame.RightContainer.Background:SetTexCoord(0.14453125, 0.7578125, 0.107421875, 0.791015625);
 	end
 
 	containerFrame.Title:SetText(setName)
@@ -5190,8 +5245,6 @@ function StoreTransmogrifyFrame_UpdateRightContainer()
 		button.IconBorder:SetDesaturated(false)
 		button.IconBorder:SetAlpha(1)
 
-		modelFrame:TryOn(itemLink)
-
 		button:SetPoint("CENTER", containerFrame.IconRowBackground, -size + 34 * i - 17, 0)
 		button:Show()
 	end
@@ -5201,6 +5254,35 @@ function StoreTransmogrifyFrame_UpdateRightContainer()
 	for i = (itemCount + 1), 9 do
 		local button = buttonsList[i]
 		button:Hide()
+	end
+
+	StoreTransmogrifyFrame_UpdatePlayerModel();
+end
+
+function StoreTransmogrifyFrame_UpdatePlayerModel()
+	local modelFrame = StoreTransmogrifyFrame.RightContainer.ContentFrame.Model;
+	modelFrame:Undress();
+
+	if selectedSubCategoryID == 1 then
+		modelFrame:SetUnit("player", true, STORE_TRANSMOGRIFY_CAMERA_SETTINGS_HEAD);
+		modelFrame:Undress();
+
+		StoreTransmogrifyFrame.RightContainer.Background:SetTexCoord(0.14453125, 0.7578125, 0.107421875, 0.791015625);
+	else
+		modelFrame:SetUnit("player", true);
+		modelFrame:Undress();
+	end
+
+	if selectedSubCategoryID == 1 then
+		Store_TryOnModel(modelFrame, 1, not storeTransmogrifyShowShoulders and 3 or 0);
+	elseif selectedSubCategoryID == 3 then
+		Store_TryOnModel(modelFrame);
+	end
+
+	for i = 1, GetNumStoreTransmogrifyItems() do
+		local _, _, _, itemLink = GetStoreTransmogrifyItemsInfo(i)
+
+		modelFrame:TryOn(itemLink);
 	end
 end
 
@@ -5383,50 +5465,64 @@ function StoreTransmogrifySetSorted( sortID, subcategoryID )
 		return
 	end
 
-	if sortID == 1 then
+	if sortID == TransmogSortTypes.Name then
 		table.sort(STORE_TRANSMOGRIFY_SETS_DATA[subcategoryID], function(a, b)
-			return a[STORE_TRANSMOGRIFY_SETS_QUALITY] > b[STORE_TRANSMOGRIFY_SETS_QUALITY]
+			return a[STORE_TRANSMOGRIFY_SETS_NAME] < b[STORE_TRANSMOGRIFY_SETS_NAME]
 		end)
-	elseif sortID == 2 then
+	elseif sortID == TransmogSortTypes.Quality then
 		table.sort(STORE_TRANSMOGRIFY_SETS_DATA[subcategoryID], function(a, b)
-			return a[STORE_TRANSMOGRIFY_SETS_NAME] > b[STORE_TRANSMOGRIFY_SETS_NAME]
+			if a[STORE_TRANSMOGRIFY_SETS_QUALITY] ~= b[STORE_TRANSMOGRIFY_SETS_QUALITY] then
+				return a[STORE_TRANSMOGRIFY_SETS_QUALITY] > b[STORE_TRANSMOGRIFY_SETS_QUALITY]
+			end
+			return a[STORE_TRANSMOGRIFY_SETS_NAME] < b[STORE_TRANSMOGRIFY_SETS_NAME]
 		end)
-	elseif sortID == 3 then
+	elseif sortID == TransmogSortTypes.Price then
 		table.sort(STORE_TRANSMOGRIFY_SETS_DATA[subcategoryID], function(a, b)
 			local a_StoreID = a[STORE_TRANSMOGRIFY_SETS_STOREID]
 			local b_StoreID = b[STORE_TRANSMOGRIFY_SETS_STOREID]
 
-			if STORE_TRANSMOGRIFY_SERVER_DATA[a_StoreID][STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNT] and STORE_TRANSMOGRIFY_SERVER_DATA[b_StoreID][STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNT] then
-				return STORE_TRANSMOGRIFY_SERVER_DATA[a_StoreID][STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNTPRICE] > STORE_TRANSMOGRIFY_SERVER_DATA[b_StoreID][STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNTPRICE]
-			else
-				return STORE_TRANSMOGRIFY_SERVER_DATA[a_StoreID][STORE_TRANSMOGRIFY_SERVER_STOREPRICE] > STORE_TRANSMOGRIFY_SERVER_DATA[b_StoreID][STORE_TRANSMOGRIFY_SERVER_STOREPRICE]
+			if not STORE_TRANSMOGRIFY_SERVER_DATA[a_StoreID] then
+				return false
+			elseif not STORE_TRANSMOGRIFY_SERVER_DATA[b_StoreID] then
+				return true
 			end
+
+			local aPrice, bPrice
+
+			if STORE_TRANSMOGRIFY_SERVER_DATA[a_StoreID][STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNT] then
+				aPrice = STORE_TRANSMOGRIFY_SERVER_DATA[a_StoreID][STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNTPRICE]
+			else
+				aPrice = STORE_TRANSMOGRIFY_SERVER_DATA[a_StoreID][STORE_TRANSMOGRIFY_SERVER_STOREPRICE]
+			end
+
+			if STORE_TRANSMOGRIFY_SERVER_DATA[b_StoreID][STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNT] then
+				bPrice = STORE_TRANSMOGRIFY_SERVER_DATA[b_StoreID][STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNTPRICE]
+			else
+				bPrice = STORE_TRANSMOGRIFY_SERVER_DATA[b_StoreID][STORE_TRANSMOGRIFY_SERVER_STOREPRICE]
+			end
+
+			if aPrice ~= bPrice then
+				return aPrice > bPrice
+			end
+
+			return a[STORE_TRANSMOGRIFY_SETS_NAME] < b[STORE_TRANSMOGRIFY_SETS_NAME]
 		end)
-	elseif sortID == 4 then
+	elseif sortID == TransmogSortTypes.WeaponType then
 		table.sort(STORE_TRANSMOGRIFY_SETS_DATA[subcategoryID], function(a, b)
-			return a[STORE_TRANSMOGRIFY_SETS_EXPANSION] > b[STORE_TRANSMOGRIFY_SETS_EXPANSION]
-		end)
-	elseif sortID == 5 then
-		table.sort(STORE_TRANSMOGRIFY_SETS_DATA[subcategoryID], function(a, b)
-			return a[STORE_TRANSMOGRIFY_SETS_WEAPONTYPE] > b[STORE_TRANSMOGRIFY_SETS_WEAPONTYPE]
+			if a[STORE_TRANSMOGRIFY_SETS_WEAPONTYPE] ~= b[STORE_TRANSMOGRIFY_SETS_WEAPONTYPE] then
+				return a[STORE_TRANSMOGRIFY_SETS_WEAPONTYPE] < b[STORE_TRANSMOGRIFY_SETS_WEAPONTYPE]
+			elseif a[STORE_TRANSMOGRIFY_SETS_QUALITY] ~= b[STORE_TRANSMOGRIFY_SETS_QUALITY] then
+				return a[STORE_TRANSMOGRIFY_SETS_QUALITY] > b[STORE_TRANSMOGRIFY_SETS_QUALITY]
+			end
+			return a[STORE_TRANSMOGRIFY_SETS_NAME] < b[STORE_TRANSMOGRIFY_SETS_NAME]
 		end)
 	end
 
-	STORE_TRANSMOGRIFY_SORID = sortID
+	STORE_TRANSMOGRIFY_SORT_ID = sortID
 end
 
 function StoreTransmogrifySetClassFilter( _, classMask )
 	STORE_TRANSMOGRIFY_FILTER_CLASSID = classMask
-	StoreTransmogrifyGenerateData(true)
-end
-
-function StoreTransmogrifySetExpansionFilter( _, expansionID )
-	STORE_TRANSMOGRIFY_FILTER_EXPANSION = expansionID
-	StoreTransmogrifyGenerateData(true)
-end
-
-function StoreTransmogrifySetSourceFilter( _, sourceID )
-	STORE_TRANSMOGRIFY_FILTER_SOURCE = sourceID
 	StoreTransmogrifyGenerateData(true)
 end
 
@@ -5438,12 +5534,12 @@ end
 function StoreTransmogrifyResetAllFilter()
 	local _, _, classID, classMask = UnitClass("player")
 
-	STORE_TRANSMOGRIFY_SORID = 4
+	STORE_TRANSMOGRIFY_SORT_ID = 1
 	STORE_TRANSMOGRIFY_FILTER_CLASSID = classMask
 	STORE_TRANSMOGRIFY_FILTER_EXPANSION = ALL_EXPANSION_FILTER
 	STORE_TRANSMOGRIFY_FILTER_SOURCE = ALL_SOURCE_FILTER
 	STORE_TRANSMOGRIFY_FILTER_WEAPON = ALL_WEAPON_FILTER
-	StoreTransmogrifySetSorted( STORE_TRANSMOGRIFY_SORID )
+	StoreTransmogrifySetSorted(STORE_TRANSMOGRIFY_SORT_ID)
 
 	StoreTransmogrifyFrame_ClearSearch(StoreTransmogrifyFrame.LeftContainer.searchBox)
 end
@@ -5477,63 +5573,7 @@ end
 function StoreTransmogrifyFilterDropDown_Initialize( self, level )
 	local info = UIDropDownMenu_CreateInfo()
 
-	if selectedSubCategoryID ~= 2 then
-		if UIDROPDOWNMENU_MENU_VALUE == 1 then
-			info.text = ALL_CLASSES
-			info.checked = STORE_TRANSMOGRIFY_FILTER_CLASSID == NO_CLASS_FILTER
-			info.arg1 = NO_CLASS_FILTER
-			info.func = StoreTransmogrifySetClassFilter
-			UIDropDownMenu_AddButton(info, level)
-
-			local numClasses = GetNumClasses()
-			for i = 1, numClasses do
-				local classDisplayName, classTag, classID, classMask = GetClassInfo(i)
-				if StoreTransmogrify_IsValidClassFilter(classID) then
-					info.text = classDisplayName
-					info.checked = STORE_TRANSMOGRIFY_FILTER_CLASSID == classMask
-					info.arg1 = classMask
-					info.func = StoreTransmogrifySetClassFilter
-					UIDropDownMenu_AddButton(info, level)
-				end
-			end
-		elseif UIDROPDOWNMENU_MENU_VALUE == 2 then
-			info.text = STORE_TRANSMOGRIFY_FILTER_ALL_EXPANSION
-			info.checked = STORE_TRANSMOGRIFY_FILTER_EXPANSION == ALL_EXPANSION_FILTER
-			info.arg1 = ALL_EXPANSION_FILTER
-			info.func = StoreTransmogrifySetExpansionFilter
-			UIDropDownMenu_AddButton(info, level)
-
-			local numExpansion = GetNumWoWExpansion()
-			for i = 0, numExpansion do
-				local expansionName, expansionID = GetWoWExpansionInfo(i)
-
-				info.text = "World of Warcraft: "..expansionName
-				info.checked = STORE_TRANSMOGRIFY_FILTER_EXPANSION == expansionID
-				info.arg1 = expansionID
-				info.func = StoreTransmogrifySetExpansionFilter
-				info.disabled = not storeTransmogirfyUseExpansion[bit.lshift(1, expansionID)]
-				UIDropDownMenu_AddButton(info, level)
-			end
-		elseif UIDROPDOWNMENU_MENU_VALUE == 3 then
-			info.text = STORE_TRANSMOGRIFY_FILTER_ALL_SOURCE
-			info.checked = STORE_TRANSMOGRIFY_FILTER_SOURCE == ALL_SOURCE_FILTER
-			info.arg1 = ALL_SOURCE_FILTER
-			info.func = StoreTransmogrifySetSourceFilter
-			UIDropDownMenu_AddButton(info, level)
-
-			info.text = STORE_TRANSMOGRIFY_FILTER_PVP_REWARD
-			info.checked = STORE_TRANSMOGRIFY_FILTER_SOURCE == 1
-			info.arg1 = 1
-			info.func = StoreTransmogrifySetSourceFilter
-			UIDropDownMenu_AddButton(info, level)
-
-			info.text = STORE_TRANSMOGRIFY_FILTER_PVE_REWARD
-			info.checked = STORE_TRANSMOGRIFY_FILTER_SOURCE == 2
-			info.arg1 = 2
-			info.func = StoreTransmogrifySetSourceFilter
-			UIDropDownMenu_AddButton(info, level)
-		end
-	elseif selectedSubCategoryID == 2 and UIDROPDOWNMENU_MENU_VALUE == 4 then
+	if selectedSubCategoryID == TransomgCategory.Weapons and UIDROPDOWNMENU_MENU_VALUE == TransmogFilterTypes.Weapons then
 		info.text = STORE_TRANSMOGRIFY_FILTER_NEW
 		info.checked = STORE_TRANSMOGRIFY_FILTER_WEAPON == ALL_WEAPON_NEW_FILTER
 		info.arg1 = ALL_WEAPON_NEW_FILTER
@@ -5560,10 +5600,29 @@ function StoreTransmogrifyFilterDropDown_Initialize( self, level )
 				UIDropDownMenu_AddButton(info, level)
 			end
 		end
+	elseif TransomgCategory.Sets == 4 and UIDROPDOWNMENU_MENU_VALUE == TransmogFilterTypes.Sets then
+		info.text = ALL_CLASSES
+		info.checked = STORE_TRANSMOGRIFY_FILTER_CLASSID == NO_CLASS_FILTER
+		info.arg1 = NO_CLASS_FILTER
+		info.func = StoreTransmogrifySetClassFilter
+		UIDropDownMenu_AddButton(info, level)
+
+		local numClasses = GetNumClasses()
+		for i = 1, numClasses do
+			local classDisplayName, classTag, classID, classMask = GetClassInfo(i)
+			if StoreTransmogrify_IsValidClassFilter(classID) then
+				info.text = classDisplayName
+				info.checked = STORE_TRANSMOGRIFY_FILTER_CLASSID == classMask
+				info.arg1 = classMask
+				info.func = StoreTransmogrifySetClassFilter
+				UIDropDownMenu_AddButton(info, level)
+			end
+		end
 	end
 
 	if level == 1 then
 		info.text = STORE_TRANSMOGRIFY_FILTER_SORT_TITLE
+		info.func = nil
 		info.isTitle = true
 		info.notCheckable = true
 		UIDropDownMenu_AddButton(info, level)
@@ -5572,74 +5631,56 @@ function StoreTransmogrifyFilterDropDown_Initialize( self, level )
 		info.notCheckable = false
 		info.disabled = false
 
-		info.text = STORE_TRANSMOGRIFY_SORT_BY_QUALITY
-		info.func = StoreTransmogrifySorted
-		info.arg1 = 1
-		info.checked = STORE_TRANSMOGRIFY_SORID == 1
-		UIDropDownMenu_AddButton(info, level)
-
 		info.text = STORE_TRANSMOGRIFY_SORT_BY_NAME
 		info.func = StoreTransmogrifySorted
-		info.arg1 = 2
-		info.checked = STORE_TRANSMOGRIFY_SORID == 2
+		info.arg1 = TransmogSortTypes.Name
+		info.checked = STORE_TRANSMOGRIFY_SORT_ID == TransmogSortTypes.Name
+		UIDropDownMenu_AddButton(info, level)
+
+		info.text = STORE_TRANSMOGRIFY_SORT_BY_QUALITY
+		info.func = StoreTransmogrifySorted
+		info.arg1 = TransmogSortTypes.Quality
+		info.checked = STORE_TRANSMOGRIFY_SORT_ID == TransmogSortTypes.Quality
 		UIDropDownMenu_AddButton(info, level)
 
 		info.text = STORE_TRANSMOGRIFY_SORT_BY_PRICE
 		info.func = StoreTransmogrifySorted
-		info.arg1 = 3
-		info.checked = STORE_TRANSMOGRIFY_SORID == 3
+		info.arg1 = TransmogSortTypes.Price
+		info.checked = STORE_TRANSMOGRIFY_SORT_ID == TransmogSortTypes.Price
 		UIDropDownMenu_AddButton(info, level)
 
-		info.text = STORE_TRANSMOGRIFY_SORT_BY_EXPANSION
-		info.func = StoreTransmogrifySorted
-		info.arg1 = 4
-		info.checked = STORE_TRANSMOGRIFY_SORID == 4
-		UIDropDownMenu_AddButton(info, level)
-
-		info.text = STORE_TRANSMOGRIFY_SORT_BY_WEAPON
-		info.func = StoreTransmogrifySorted
-		info.arg1 = 5
-		info.checked = STORE_TRANSMOGRIFY_SORID == 5
-		UIDropDownMenu_AddButton(info, level)
+		if selectedSubCategoryID == TransomgCategory.Weapons then
+			info.text = STORE_TRANSMOGRIFY_SORT_BY_WEAPON
+			info.func = StoreTransmogrifySorted
+			info.arg1 = TransmogSortTypes.WeaponType
+			info.checked = STORE_TRANSMOGRIFY_SORT_ID == TransmogSortTypes.WeaponType
+			UIDropDownMenu_AddButton(info, level)
+		end
 
 		info.func = nil
 
-		info.text = STORE_TRANSMOGRIFY_FILTER_LABEL
-		info.isTitle = true
-		info.notCheckable = true
-		UIDropDownMenu_AddButton(info, level)
-
-		info.isTitle = false
-		info.notCheckable = false
-		info.disabled = false
-
-		if selectedSubCategoryID ~= 2 then
-			info.text = STORE_TRANSMOGRIFY_CLASS_LABEL
-			info.func =  nil
+		if selectedSubCategoryID == TransomgCategory.Weapons or selectedSubCategoryID == TransomgCategory.Sets then
+			info.text = STORE_TRANSMOGRIFY_FILTER_LABEL
+			info.isTitle = true
 			info.notCheckable = true
-			info.hasArrow = true
-			info.value = 1
 			UIDropDownMenu_AddButton(info, level)
 
-			info.text = STORE_TRANSMOGRIFY_EXPANSION_LABEL
-			info.func =  nil
-			info.notCheckable = true
-			info.hasArrow = true
-			info.value = 2
-			UIDropDownMenu_AddButton(info, level)
+			info.isTitle = false
+			info.notCheckable = false
+			info.disabled = false
+		end
 
-			info.text = STORE_TRANSMOGRIFY_SOURCE_LABEL
-			info.func =  nil
-			info.notCheckable = true
-			info.hasArrow = true
-			info.value = 3
-			UIDropDownMenu_AddButton(info, level)
-		elseif selectedSubCategoryID == 2 then
+		if selectedSubCategoryID == TransomgCategory.Weapons then
 			info.text = STORE_TRANSMOGRIFY_WEAPON_LABEL
-			info.func =  nil
 			info.notCheckable = true
 			info.hasArrow = true
-			info.value = 4
+			info.value = TransmogFilterTypes.Weapons
+			UIDropDownMenu_AddButton(info, level)
+		elseif selectedSubCategoryID == TransomgCategory.Sets then
+			info.text = STORE_TRANSMOGRIFY_CLASS_LABEL
+			info.notCheckable = true
+			info.hasArrow = true
+			info.value = TransmogFilterTypes.Sets
 			UIDropDownMenu_AddButton(info, level)
 		end
 
@@ -5910,29 +5951,32 @@ function StoreFrame_MultipleBuyUpdateCount(self)
 end
 
 function EventHandler:ASMSG_SHOP_BALANCE_RESPONSE( msg )
-	local Bonus, Vote, Refer, loyalLevel, loyalMin, loyalMax, loyalCurrent = strsplit(":", msg)
+	local bonus, vote, refer, loyalLevel, loyalMin, loyalMax, loyalCurrent = strsplit(":", msg)
 
-	Bonus 			= tonumber(Bonus)
-	Vote 			= tonumber(Vote)
-	Refer 			= tonumber(Refer)
+	bonus			= tonumber(bonus)
+	vote			= tonumber(vote)
+	refer			= tonumber(refer)
 	loyalLevel 		= tonumber(loyalLevel)
 	loyalMin 		= tonumber(loyalMin)
 	loyalMax 		= tonumber(loyalMax)
 	loyalCurrent 	= tonumber(loyalCurrent)
 
-	_G["StoreMoneyButton1"].Text:SetText(Bonus)
-	_G["StoreMoneyButton2"].Text:SetText(Vote)
-	_G["StoreMoneyButton3"].Text:SetText(Refer)
+	STORE_CURRENCY_INFO.BALANCE[Enum.Store.CurrenctType.Bonus] = bonus
+	STORE_CURRENCY_INFO.BALANCE[Enum.Store.CurrenctType.Vote] = vote
+	STORE_CURRENCY_INFO.BALANCE[Enum.Store.CurrenctType.Referral] = refer
+	STORE_CURRENCY_INFO.BALANCE[Enum.Store.CurrenctType.Loyality] = loyalLevel
+
+	STORE_CURRENCY_INFO.LOYALITY.min = loyalMin
+	STORE_CURRENCY_INFO.LOYALITY.max = loyalMax
+	STORE_CURRENCY_INFO.LOYALITY.current = loyalCurrent
+	STORE_CURRENCY_INFO.LOYALITY.level = loyalLevel
+
+	_G["StoreMoneyButton1"].Text:SetText(bonus)
+	_G["StoreMoneyButton2"].Text:SetText(vote)
+	_G["StoreMoneyButton3"].Text:SetText(refer)
 	_G["StoreMoneyButton4"].Text:SetText(loyalLevel)
-	_G["StoreMoneyButton4"].data = {loyalCurrent, loyalMax, loyalMin, loyalLevel}
 
-	Hook:FireEvent("PLAYER_BALANCE_UPDATE", Bonus, Vote, Refer, loyalLevel, loyalMin, loyalMax, loyalCurrent)
-
-	table.wipe(storeBalance);
-	storeBalance.Bonus = Bonus;
-	storeBalance.Vote = Vote;
-	storeBalance.Refer = Refer;
-	storeBalance.loyalLevel = loyalLevel;
+	Hook:FireEvent("PLAYER_BALANCE_UPDATE", bonus, vote, refer, loyalLevel, loyalMin, loyalMax, loyalCurrent)
 end
 
 function EventHandler:ASMSG_SHOP_CATEGORY_NEW_ITEMS_RESPONSE( msg )
@@ -6299,8 +6343,8 @@ StaticPopupDialogs["STORE_SERVICE_DIALOG"] = {
 function Store_TryOnModel( frame, ... )
 	frame:Undress()
 
-	for i = 2, 19 do
-		local link = GetInventoryItemLink("player", i)
+	for i = 1, 19 do
+		local link = GetInventoryTransmogID("player", i) or GetInventoryItemLink("player", i);
 
 		if link and not isOneOf(i, ...) then
 			frame:TryOn(link)
@@ -6590,6 +6634,10 @@ StoreTransmogrifySubCategoryFrameMixin = {}
 
 function StoreTransmogrifySubCategoryFrameMixin:OnLoad()
 	self.Background:SetAtlas("Store-Transmogrify-Page-Background")
+end
+
+function StoreTransmogrifySubCategoryFrameMixin:OnShow()
+	StorePlayerTransmogRequest();
 end
 
 StoreTransmogrifySubCategoryCardMixin = {}

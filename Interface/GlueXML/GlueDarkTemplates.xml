@@ -714,7 +714,6 @@
 					GlueTooltip:SetOwner(self)
 					GlueTooltip:SetText(self.InfoHeader)
 					GlueTooltip:AddLine(self.InfoText, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, 1, true)
-					GlueTooltip:Show()
 				end
 			</OnEnter>
 			<OnLeave>

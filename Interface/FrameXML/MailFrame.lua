@@ -1613,23 +1613,20 @@ function MailManagmentMixin:PrintTakeItemList()
 	local takeAttachments = self:CreateFinalData()
 
 	if takeAttachments then
-		local color = LOOT_FONT_COLOR
-
 		for link, count in pairs(takeAttachments) do
 			if link ~= -1 then
-				if count > 1 then
-					DEFAULT_CHAT_FRAME:AddMessage(string.format(LOOT_ITEM_SELF_MULTIPLE, link, count), color.r, color.g, color.b)
+				if count and count > 1 then
+					AddChatTyppedMessage("LOOT", string.format(LOOT_ITEM_SELF_MULTIPLE, link, count))
 				else
-					DEFAULT_CHAT_FRAME:AddMessage(string.format(LOOT_ITEM_SELF, link), color.r, color.g, color.b)
+					AddChatTyppedMessage("LOOT", string.format(LOOT_ITEM_SELF, link))
 				end
 			end
 		end
 
 		if self.takeMoney then
 			local money = takeAttachments[-1] or (GetMoney() - self.takeMoney)
-
 			if money and money > 0 then
-				DEFAULT_CHAT_FRAME:AddMessage(string.format(LOOT_ITEM_SELF, GetMoneyString(money)), SYSTEM_FONT_COLOR.r, SYSTEM_FONT_COLOR.g, SYSTEM_FONT_COLOR.b)
+				AddChatTyppedMessage("MONEY", string.format(LOOT_ITEM_SELF, GetMoneyString(money)))
 			end
 		end
 	end

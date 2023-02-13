@@ -1,21 +1,18 @@
---	Filename:	SpellBookFrame.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
-MAX_SPELLBOOK_TAB = 5
 MAX_SPELLS = 1024
 MAX_SKILLLINE_TABS = 8
 SPELLS_PER_PAGE = 12
 MAX_SPELL_PAGES = ceil(MAX_SPELLS / SPELLS_PER_PAGE)
+
 BOOKTYPE_SPELL = "spell"
 BOOKTYPE_PET = "pet"
 BOOKTYPE_MOUNT = "mount";
 BOOKTYPE_COMPANION = "companions";
 BOOKTYPE_PROFESSION = "professions"
+
+local MaxSpellBookTypes = 5
 SPELLBOOK_PAGENUMBERS = {}
 
+local CastSpell = CastSpell;
 local CastSpellByID = CastSpellByID
 
 local tutorialSpellBook = {}
@@ -23,15 +20,26 @@ local tutorialSpellBook = {}
 SIRUS_SPELLBOOK_SPELL = {}
 SIRUS_SPELLBOOK_SKILLLINE = {}
 
-local secondaryProfessionName = {}
-
-spellbookCustomRender = {}
+local spellbookCustomRender = {}
 spellbookCustomHiddenChatSpell = {
 	[305310] = "",
 	[305355] = ""
 }
+
+local TECHNICAL_SKILL_LINES = {
+	[SKILLNAME_COLLECTION_TOYS] = true,
+	[SKILLNAME_COLLECTION_HEIRLOOM] = true,
+	[SKILLNAME_COLLECTION_ILLUSIONS] = true,
+}
+
+local SPECIAL_SKILL_LINES = {
+	[SKILLNAME_GUILD_BONUSES] = 0,
+	[SKILLNAME_EQUIP_SPELLS] = 1,
+}
+
 local shapeshiftIgnoreSpell = {9634, 1066, 768, 783, 40120, 2457, 71, 2458, 465, 643, 1032, 7294, 10290, 10291, 10292, 10293, 10298, 10299, 10300, 10301, 19746, 19876, 19888, 19891, 19895, 19896, 19897, 19898, 19899, 19900, 27149, 27150, 27151, 27152, 27153, 27733, 30515, 30519, 32223, 35126, 40803, 41106, 42184, 48263, 48265, 48266, 48941, 48942, 48943, 48945, 48947, 54043, 55357, 55366, 63510, 63514, 63531, 63611, 260024, 260025, 302768}
 local spellbookCustomHiddenSpell = {305495, 305036, 305037, 305038, 305039, 305040, 305041, 305042, 305043, 305044, 305045, 305046, 305047, 305048, 305049, 305050, 305051, 305052, 305053, 305054, 305055, 305056, 305057, 305058, 305059, 305060, 305061, 305062, 305063, 305064, 305065, 305066, 305067, 305068, 305069, 305070, 305071,
+	317619,
 	 -- proffesion
 	2259,
 	3101,
@@ -483,10 +491,6 @@ function IsSpellIgnore( spellID )
 		return false
 	end
 
-	if IsToy(spellID) then
-		return true;
-	end
-
 	for _, floyutData in pairs(FLYOUT_STORAGE) do
 		for _, flyoutSpellID in pairs(floyutData) do
 			if flyoutSpellID == spellID then
@@ -507,6 +511,40 @@ function SpellBook_GetSpellPage( spellID, skillline )
 		if spellData.spellID == spellID then
 			return math.ceil(spellIndex / 12)
 		end
+	end
+end
+
+function SpellBook_GetSpellIndex(spellID, bookType)
+	if not spellID or not bookType then
+		return;
+	end
+
+	local showAllSpellRanks = GetCVarBool("ShowAllSpellRanks");
+
+	for tabIndex = 1, GetNumSpellTabs() do
+		local _, _, offset, numSpells, highestRankOffset, highestRankNumSpells = GetSpellTabInfo(tabIndex);
+		if not showAllSpellRanks then
+			offset = highestRankOffset;
+			numSpells = highestRankNumSpells;
+		end
+
+		for s = offset + 1, numSpells + offset do
+			local spellIndex = (showAllSpellRanks or bookType == BOOKTYPE_PET) and s or GetKnownSlotFromHighestRankSlot(s);
+			local spellLink = GetSpellLink(spellIndex, bookType);
+
+			if spellLink and SpellLinkToSpellID(spellLink) == spellID then
+				return spellIndex;
+			end
+		end
+	end
+end
+
+local function SpellBook_SortSpells(a, b)
+	if a.spellLevel ~= b.spellLevel then
+		return a.spellLevel < b.spellLevel;
+	else
+		local aSpellName, bSpellName = GetSpellInfo(a.spellID) or "", GetSpellInfo(b.spellID) or "";
+		return aSpellName < bSpellName;
 	end
 end
 
@@ -592,9 +630,7 @@ function SpellBookFrame_UpdateSpellRender()
 		end
 
 		if SIRUS_SPELLBOOK_SPELL and SIRUS_SPELLBOOK_SPELL[lineID] and #SIRUS_SPELLBOOK_SPELL[lineID] > 0 then
-			table.sort(SIRUS_SPELLBOOK_SPELL[lineID], function(a, b)
-				return a.spellLevel < b.spellLevel
-			end)
+			table.sort(SIRUS_SPELLBOOK_SPELL[lineID], SpellBook_SortSpells);
 
 			for q = 1, #SIRUS_SPELLBOOK_SPELL[lineID] do
 				local data = SIRUS_SPELLBOOK_SPELL[lineID][q]
@@ -983,7 +1019,6 @@ function SpellBook_UpdateCompanionsFrame(type)
 	SpellBookFrame_UpdatePages();
 
 	local currentPage, maxPages = SpellBook_GetCurrentPage();
-
 	if (currentPage) then
 		currentPage = currentPage - 1;
 	end
@@ -1141,18 +1176,6 @@ function SpellBookCompanionButton_OnDrag(self)
 	PickupCompanion( SpellBookCompanionsFrame.mode, dragged );
 end
 
-function SpellBookFrame_AdjustAnchor( tabIndex )
-	local index = 1
-	local parentTabs = SpellBookSideTabsFrame.tabs[tabIndex - index]
-
-	while (parentTabs and parentTabs.originalPosition) do
-		index = index + 1
-		parentTabs = SpellBookSideTabsFrame.tabs[tabIndex - index]
-	end
-
-	SpellBookSideTabsFrame.tabs[tabIndex + 1]:ClearAndSetPoint("TOPLEFT", parentTabs, "BOTTOMLEFT", 0, -17)
-end
-
 function SpellBookFrame_Update(showing)
 	-- Hide all tabs
 	SpellBookFrameTabButton1:Hide()
@@ -1168,7 +1191,21 @@ function SpellBookFrame_Update(showing)
 
 	local numSkillLineTabs = GetNumSpellTabs()
 
-	for tabIndex, skillLineTab in pairs(SpellBookSideTabsFrame.tabs) do
+	for tabIndex = #SpellBookSideTabsFrame.tabs + 1, numSkillLineTabs do
+		local button = CreateFrame("CheckButton", string.format("SpellBookSkillLineTab%i", tabIndex), SpellBookSideTabsFrame, "SpellBookSkillLineTabTemplate")
+		button:SetID(tabIndex)
+		button:Hide()
+		SpellBookSideTabsFrame.tabs[tabIndex] = button
+
+		local flash = SpellBookTabFlashFrame:CreateTexture(string.format("SpellBookSkillLineTab%iFlash", tabIndex), "OVERLAY")
+		flash:SetSize(64, 64)
+		flash:SetPoint("CENTER", button, "CENTER", 0, 0)
+		flash:SetTexture([[Interface\Buttons\CheckButtonGlow]])
+		flash:SetBlendMode("ADD")
+	end
+
+	local lastButton
+	for tabIndex, skillLineTab in ipairs(SpellBookSideTabsFrame.tabs) do
 		if ( tabIndex <= numSkillLineTabs and SpellBookFrame.bookType == BOOKTYPE_SPELL) then
 			local name, texture = GetSpellTabInfo(tabIndex)
 
@@ -1177,30 +1214,28 @@ function SpellBookFrame_Update(showing)
 
 			skillLineTab.tooltip = name
 
-			if name == EQUIP_SPELLS_SKILLNAME then
-				if not skillLineTab.originalPosition then
-					skillLineTab.originalPosition = {skillLineTab:GetPoint()}
-				end
-				skillLineTab:ClearAndSetPoint("BOTTOMLEFT", SpellBookSideTabsFrame, "BOTTOMRIGHT", 0, 150)
+			if SPECIAL_SKILL_LINES[name] then
+				skillLineTab:ClearAllPoints()
+				skillLineTab:SetPoint("BOTTOMLEFT", SpellBookSideTabsFrame, "BOTTOMRIGHT", 0, 100 + SPECIAL_SKILL_LINES[name] * 50)
+				skillLineTab:Show()
+			else
+				if TECHNICAL_SKILL_LINES[name] then
+					_G["SpellBookSkillLineTab"..tabIndex.."Flash"]:Hide()
+					skillLineTab:Hide()
+					skillLineTab:ClearAllPoints()
+					skillLineTab:SetPoint("TOPLEFT", lastButton, "BOTTOMLEFT", 0, -17)
+				else
+					if lastButton then
+						skillLineTab:ClearAllPoints()
+						skillLineTab:SetPoint("TOPLEFT", lastButton, "BOTTOMLEFT", 0, -17)
+					end
 
-				SpellBookFrame_AdjustAnchor(tabIndex)
-			elseif name == GUILD_BONUS_SKILLNAME then
-				if not skillLineTab.originalPosition then
-					skillLineTab.originalPosition = {skillLineTab:GetPoint()}
-				end
-				skillLineTab:ClearAndSetPoint("BOTTOMLEFT", SpellBookSideTabsFrame, "BOTTOMRIGHT", 0, 100)
+					_G["SpellBookSkillLineTab"..tabIndex.."Flash"]:Show()
+					skillLineTab:Show()
 
-				SpellBookFrame_AdjustAnchor(tabIndex)
-			elseif skillLineTab.originalPosition and (name ~= EQUIP_SPELLS_SKILLNAME and name ~= GUILD_BONUS_SKILLNAME) then
-				skillLineTab:ClearAndSetPoint(unpack(skillLineTab.originalPosition))
-				skillLineTab.originalPosition = nil
-
-				if SpellBookFrame.selectedSkillLine ~= 1 then
-					SpellBookSkillLineTab_OnClick(nil, 1)
+					lastButton = skillLineTab
 				end
 			end
-
-			skillLineTab:Show()
 		else
 			_G["SpellBookSkillLineTab"..tabIndex.."Flash"]:Hide()
 			skillLineTab:Hide()
@@ -1268,7 +1303,7 @@ function SpellBookFrame_Update(showing)
 		SpellBookFrame.bookType = _G["SpellBookFrameTabButton"..tabIndex-1].bookType;
 	end
 
-	for i=1, 5 do
+	for i=1,MaxSpellBookTypes do
 		local tab = _G["SpellBookFrameTabButton"..i];
 		if ( tab.bookType == SpellBookFrame.bookType ) then
 			SpellBookFrame.currentTab = tab;
@@ -1600,9 +1635,8 @@ function SpellButton_OnClick(self, button)
 			if GetFlyoutInfo(self.data) then
 				SpellFlyout:Toggle(self.data, self, "RIGHT", 1, false, 0, true)
 				SpellFlyout:SetBorderColor(0.70703125, 0.6328125, 0.3515625)
-			else
-				local spell = self:GetAttribute("spell")
-				CastSpellByID(spell)
+			elseif self.index then
+				CastSpell(self.index, SpellBookFrame.bookType);
 			end
 			SpellButton_UpdateSelection(self)
 		end
@@ -1634,14 +1668,12 @@ function SpellButton_OnModifiedClick(self, button)
 			return
 		end
 	end
-	if ( IsModifiedClick("PICKUPACTION") and not self.Disabled ) then
-		local spell = self:GetAttribute("name")
-		PickupSpell(spell)
+	if ( IsModifiedClick("PICKUPACTION") and not self.Disabled and self.index ) then
+		PickupSpell(self.index, SpellBookFrame.bookType);
 		return
 	end
-	if ( IsModifiedClick("SELFCAST") and not self.Disabled ) then
-		local spell = self:GetAttribute("spell")
-		CastSpellByID(spell)
+	if ( IsModifiedClick("SELFCAST") and not self.Disabled and self.index ) then
+		CastSpell(self.index, SpellBookFrame.bookType, true);
 		return
 	end
 end
@@ -1662,8 +1694,9 @@ function SpellButton_OnDrag(self)
 	if not self.Disabled then
 		self:SetChecked(0)
 
-		local index = self:GetAttribute("index")
-		PickupSpell(index, SpellBookFrame.bookType)
+		if self.index then
+			PickupSpell(self.index, SpellBookFrame.bookType)
+		end
 	end
 end
 
@@ -1674,9 +1707,9 @@ function SpellButton_UpdateSelection(self)
 
 	local spellname = GetSpellInfo(self.data)
 	if ( IsSelectedSpell(spellname) ) then
-		self:SetChecked("true")
+		self:SetChecked(true);
 	else
-		self:SetChecked("false")
+		self:SetChecked(false);
 	end
 end
 -- ebala
@@ -1720,10 +1753,6 @@ function SpellButton_UpdateButton()
 					SpellFlyout:Hide()
 				end
 
-				self:SetAttribute("type", "spell")
-				self:SetAttribute("spell", spellID)
-				self:SetAttribute("index", data.spellIndex)
-
 				local spellLevel = data.spellLevel
 				self.data = spellID
 				self.index = data.spellIndex
@@ -1734,8 +1763,6 @@ function SpellButton_UpdateButton()
 
 				local spellName, subSpellName, texture, cost, isFunnel, powerType, castTime, minRage, maxRange = GetSpellInfo(spellID)
 				local start, duration, enable = GetSpellCooldown(spellID)
-
-				self:SetAttribute("name", spellName)
 
 				CooldownFrame_SetTimer(cooldown, start, duration, enable)
 				if ( enable == 1 ) then

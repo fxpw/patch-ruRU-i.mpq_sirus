@@ -2,6 +2,7 @@
 
 GlueXML.xml
 ..\SharedXML\AtlasStorage.lua
+..\SharedXML\AddonVersion.lua
 ..\SharedXML\SharedStrings.lua
 GlueStrings.lua
 ..\SharedXML\middleclass.lua
@@ -35,7 +36,6 @@ GlueStrings.lua
 ..\SharedXML\S_Dump.lua
 ..\SharedXML\SoundKitConstants.lua
 ..\SharedXML\SharedConstants.lua
-..\SharedXML\AddonVersion.lua
 ..\SharedXML\C_TimerAugment.lua
 ..\SharedXML\SharedExtendedMethods.lua
 ..\SharedXML\L_Easing.lua

@@ -305,6 +305,7 @@ local TOAST_TYPE_ICONS = {
 	[18] = "achievement_zone_easternplaguelands",
 	[19] = "pvpcurrency-honor-",
 	[20] = "achievement_quests_completed_vashjir",
+	[21] = "item_shop_giftbox01",
 }
 
 local TOAST_ICON_ID = {
@@ -328,6 +329,7 @@ local TOAST_ICON_ID = {
 	[52] = 18, [53] = 18, [54] = 18,
 	[57] = 19,
 	[58] = 20, [59] = 20,
+	[60] = 21, [61] = 21, [62] = 21, [63] = 21,
 }
 
 local TOAST_TITLE_ID = {

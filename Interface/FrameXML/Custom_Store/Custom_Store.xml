@@ -3290,6 +3290,7 @@
 							<Frame name="$parentSirinOffer" parentKey="SirinOffer" inherits="StoreOfferTemplate" id="57"/>
 							<Frame name="$parentVenLoOffer" parentKey="VenLoOffer" inherits="StoreOfferTemplate" id="58"/>
 							<Frame name="$parentHW2022Offer" parentKey="HW2022Offer" inherits="StoreOfferTemplate" id="59"/>
+							<Frame name="$parentWinterFurlineOffer" parentKey="WinterFurlineOffer" inherits="StoreOfferTemplate" id="60"/>
 						</Frames>
 						<Scripts>
 							<OnLoad function="StoreSpecialOfferBanner_OnLoad"/>
@@ -5898,7 +5899,18 @@
 								<Scripts>
 									<OnLoad>
 										SharedXML_Model_OnLoad(self, nil, nil, -0.1)
+
+										self:RegisterCustomEvent("PLAYER_TRANSMOGRIFICATION_CHANGED");
 									</OnLoad>
+									<OnEvent>
+										if event == "PLAYER_TRANSMOGRIFICATION_CHANGED" then
+											if self:IsShown() then
+												StoreTransmogrifyFrame_UpdatePlayerModel();
+											end
+										else
+											SharedXML_Model_OnEvent(self, event, ...);
+										end
+									</OnEvent>
 									<OnShow>
 										StoreTransmogrifyFrame_UpdateRightContainer()
 									</OnShow>
@@ -6102,6 +6114,9 @@
 		</Frames>
 		<Scripts>
 			<OnLoad function="StoreTransmogrifyFrame_OnLoad"/>
+			<OnShow>
+				StorePlayerTransmogRequest();
+			</OnShow>
 			<OnHide>
 				HelpPlate_Hide(false)
 			</OnHide>
@@ -6163,6 +6178,9 @@
 
 				self:OnLoad()
 			</OnLoad>
+			<OnShow>
+				self:OnShow();
+			</OnShow>
 		</Scripts>
 	</Frame>
 

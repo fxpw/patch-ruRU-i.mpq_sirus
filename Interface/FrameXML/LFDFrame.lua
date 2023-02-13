@@ -1337,12 +1337,12 @@ function MiniGamesFrameMixin:OnLoad()
 end
 
 function MiniGamesFrameMixin:OnShow()
+	self:UpdateGames();
+
 	local numGames = C_MiniGames.GetNumGames();
 	if numGames > 0 then
 		self:SetSelectedGame(self.selectedGameID or 1);
 	end
-
-	self:UpdateGames();
 end
 
 function MiniGamesFrameMixin:OnEvent(event, ...)
@@ -1351,8 +1351,12 @@ function MiniGamesFrameMixin:OnEvent(event, ...)
 	elseif event == "UPDATE_MINI_GAME" then
 		local miniGameID = ...;
 
-		if self.selectedGameID == miniGameID then
-			self:SetSelectedGame(miniGameID);
+		if self:IsShown() then
+			self:UpdateGames();
+
+			if self.selectedGameID == miniGameID then
+				self:SetSelectedGame(miniGameID);
+			end
 		end
 
 		if MiniGameReadyDialog:IsShown() and MiniGameReadyDialog.miniGameID == miniGameID then
@@ -1436,6 +1440,10 @@ function MiniGamesFrameMixin:GetValue()
 end
 
 function MiniGamesFrameMixin:SetSelectedGame(miniGameID)
+	for button in self.gameButtonPool:EnumerateActive() do
+		button.Selected:SetShown(button:GetID() == miniGameID)
+	end
+
 	local name, description, icon, background, _, maxPlayers = C_MiniGames.GetGameInfo(miniGameID);
 	if not icon then
 		return;

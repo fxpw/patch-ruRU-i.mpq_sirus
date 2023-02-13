@@ -18,6 +18,18 @@ function CollectionsJournal_GetTab(self)
 	return PanelTemplates_GetSelectedTab(self);
 end
 
+local titles = {
+	[1] = MOUNTS,
+	[2] = PETS,
+	[3] = WARDROBE,
+	[4] = TOY_BOX,
+	[5] = HEIRLOOMS,
+};
+
+local function GetTitleText(titleIndex)
+	return titles[titleIndex] or "";
+end
+
 function CollectionsJournal_UpdateSelectedTab(self)
 	local selected = CollectionsJournal_GetTab(self);
 
@@ -25,6 +37,7 @@ function CollectionsJournal_UpdateSelectedTab(self)
 	PetJournal:SetShown(selected == 2);
 	WardrobeCollectionFrame:SetShown(selected == 3);
 	ToyBox:SetShown(selected == 4);
+	HeirloomsJournal:SetShown(selected == 5);
 	-- don't touch the wardrobe frame if it's used by the transmogrifier
 	if WardrobeCollectionFrame:GetParent() == self or not WardrobeCollectionFrame:GetParent():IsShown() then
 		if selected == 3 then
@@ -35,15 +48,7 @@ function CollectionsJournal_UpdateSelectedTab(self)
 		end
 	end
 
-	if selected == 1 then
-		CollectionsJournalTitleText:SetText(MOUNTS);
-	elseif selected == 2 then
-		CollectionsJournalTitleText:SetText(PETS);
-	elseif selected == 3 then
-		CollectionsJournalTitleText:SetText(WARDROBE);
-	elseif selected == 4 then
-		CollectionsJournalTitleText:SetText(TOY_BOX);
-	end
+	CollectionsJournalTitleText:SetText(GetTitleText(selected));
 
 	local tutorialTab = CollectionsMicroButton.TutorialFrameTab;
 	if tutorialTab and self:IsShown() then
@@ -74,6 +79,12 @@ function CollectionsJournal_UpdateSelectedTab(self)
 			else
 				tutorialPointer = NPE_TutorialPointerFrame:Show(COLLECTIONS_JOURNAL_TUTORIAL_TOY_1, "RIGHT", CollectionsJournalTab4, 0, 0);
 			end
+		elseif tutorialTab == 5 and not NPE_TutorialPointerFrame:GetKey("CollectionsJournal_Heirloom") then
+			if selected == 5 then
+				NPE_TutorialPointerFrame:SetKey("CollectionsJournal_Heirloom", true);
+			else
+				tutorialPointer = NPE_TutorialPointerFrame:Show(COLLECTIONS_JOURNAL_TUTORIAL_HEIRLOOM_1, "RIGHT", CollectionsJournalTab4, 0, 0);
+			end
 		end
 	end
 end
@@ -83,7 +94,7 @@ function CollectionsJournal_OnLoad(self)
 
 	SetPortraitToTexture(CollectionsJournalPortrait, "Interface\\Icons\\MountJournalPortrait");
 
-	PanelTemplates_SetNumTabs(self, 4);
+	PanelTemplates_SetNumTabs(self, 5);
 end
 
 function CollectionsJournal_OnEvent(self, event)

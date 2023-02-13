@@ -122,6 +122,13 @@ function QueueStatusFrame_OnEvent(self)
 	QueueStatusFrame_Update(self);
 end
 
+function QueueStatusFrame_OnShow(self)
+	for entry in self.statusEntriesPool:EnumerateActive() do
+		QueueStatusEntry_RecaluculateHeight(entry)
+	end
+	QueueStatusFrame_Update(self);
+end
+
 function QueueStatusFrame_GetEntry(self, entryIndex)
 	local entry = self.statusEntriesPool:Acquire();
 	entry.orderIndex = entryIndex;
@@ -214,10 +221,8 @@ function QueueStatusFrame_Update(self)
 			local _, _, _, _, _, _, gameName, mapAreaID = C_MiniGames.GetGameInfo(miniGameID);
 
 			if not helpTipInfo and gameName then
-				if gameName == "FRAGILEFLOOR" then
-					local currentMapAreaID = GetCurrentMapAreaID();
-
-					if status == "active" and mapAreaID and mapAreaID == currentMapAreaID and C_MiniGames.GetInstanceRunTime() == 0 then
+				if status == "active" and mapAreaID and mapAreaID == GetCurrentMapAreaID() then
+					if gameName == "FRAGILEFLOOR" and C_MiniGames.GetInstanceRunTime() == 0 then
 						helpTipInfo = {
 							text = MINI_GAME_FRAGILEFLOOR_TUTORIAL,
 							textJustifyH = "LEFT",
@@ -229,6 +234,18 @@ function QueueStatusFrame_Update(self)
 							alignment = HelpTip.Alignment.Top,
 							acknowledgeOnHide = true,
 						};
+					elseif (gameName == "FROZEN_SNOWMAN_LAIR_STORY" or gameName == "FROZEN_SNOWMAN_LAIR_SURVIVAL") then
+						helpTipInfo = {
+							text = MINI_GAME_FROZEN_SNOWMAN_LAIR_STORY_TUTORIAL,
+							textJustifyH = "LEFT",
+							checkCVars = true,
+							cvarBitfield = "C_CVAR_CLOSED_INFO_FRAMES",
+							bitfieldFlag = LE_FRAME_TUTORIAL_MINI_GAME_FROZEN_SNOWMAN_LAIR,
+							buttonStyle = HelpTip.ButtonStyle.None,
+							targetPoint = HelpTip.Point.LeftEdgeCenter,
+							alignment = HelpTip.Alignment.Top,
+							acknowledgeOnHide = true,
+						}
 					end
 				end
 			end
@@ -399,9 +416,67 @@ function QueueStatusEntry_SetUpActiveWorldPVP(entry)
 	QueueStatusEntry_SetMinimalDisplay(entry, GetRealZoneText(), QUEUED_STATUS_IN_PROGRESS);
 end
 
-function QueueStatusEntry_SetMinimalDisplay(entry, title, status, subTitle, extraText)
-	local height = 10;
+function QueueStatusEntry_OnShow(self)
+	QueueStatusEntry_RecaluculateHeight(self)
+end
 
+function QueueStatusEntry_RecaluculateHeight(entry, force)
+	if not entry.changed and not force then
+		return
+	end
+
+	local height
+
+	if entry.fullMode then
+		height = 14
+
+		height = height + entry.Title:GetHeight()
+
+		if entry.SubTitle:IsShown() then
+			height = height + entry.SubTitle:GetHeight() + 5
+		end
+		if entry.HealersFound:IsShown() then
+			entry.HealersFound:SetPoint("TOP", entry, "TOP", 0, -(height + 5))
+			height = height + 68
+		end
+		if entry.AverageWait:IsShown() then
+			entry.AverageWait:SetPoint("TOPLEFT", entry, "TOPLEFT", 10, -(height + 5))
+			height = height + entry.AverageWait:GetHeight()
+		end
+
+		entry.TimeInQueue:SetPoint("TOPLEFT", entry, "TOPLEFT", 10, -(height + 5))
+		height = height + entry.TimeInQueue:GetHeight()
+
+		if entry.ExtraText:IsShown() then
+			entry.ExtraText:SetPoint("TOPLEFT", entry, "TOPLEFT", 10, -(height + 10))
+			height = height + entry.ExtraText:GetHeight() + 10
+		end
+
+		height = height + 14
+	else
+		height = 10
+		height = height + entry.Status:GetHeight() + entry.Title:GetHeight()
+
+		if entry.SubTitle:IsShown() then
+			height = height + entry.SubTitle:GetHeight() + 5
+		end
+
+		if entry.ExtraText:IsShown() then
+			height = height + entry.ExtraText:GetHeight() + 5
+			entry.ExtraText:SetPoint("TOPLEFT", entry, "TOPLEFT", 10, -(height + 5))
+		end
+
+		height = height + 6
+	end
+
+	entry:SetHeight(height)
+	entry.changed = nil
+end
+
+function QueueStatusEntry_SetMinimalDisplay(entry, title, status, subTitle, extraText)
+--	local height = 10;
+
+	entry.fullMode = nil
 	entry.Title:SetText(title);
 	entry.Status:SetText(status);
 	entry.Status:Show();
@@ -409,12 +484,12 @@ function QueueStatusEntry_SetMinimalDisplay(entry, title, status, subTitle, extr
 	entry.SubTitle:SetPoint("TOPLEFT", entry.Status, "BOTTOMLEFT", 0, -5);
 	entry.active = (status == QUEUED_STATUS_IN_PROGRESS);
 
-	height = height + entry.Status:GetHeight() + entry.Title:GetHeight();
+--	height = height + entry.Status:GetHeight() + entry.Title:GetHeight();
 
 	if ( subTitle ) then
 		entry.SubTitle:SetText(subTitle);
 		entry.SubTitle:Show();
-		height = height + entry.SubTitle:GetHeight() + 5;
+--		height = height + entry.SubTitle:GetHeight() + 5;
 	else
 		entry.SubTitle:Hide();
 	end
@@ -422,8 +497,8 @@ function QueueStatusEntry_SetMinimalDisplay(entry, title, status, subTitle, extr
 	if ( extraText ) then
 		entry.ExtraText:SetText(extraText);
 		entry.ExtraText:Show();
-		entry.ExtraText:SetPoint("TOPLEFT", entry, "TOPLEFT", 10, -(height + 5));
-		height = height + entry.ExtraText:GetHeight() + 5;
+--		entry.ExtraText:SetPoint("TOPLEFT", entry, "TOPLEFT", 10, -(height + 5));
+--		height = height + entry.ExtraText:GetHeight() + 5;
 	else
 		entry.ExtraText:Hide();
 	end
@@ -441,14 +516,21 @@ function QueueStatusEntry_SetMinimalDisplay(entry, title, status, subTitle, extr
 
 	entry:SetScript("OnUpdate", nil);
 
-	entry:SetHeight(height + 6);
+--	entry:SetHeight(height + 6);
+
+	if entry:IsVisible() then
+		QueueStatusEntry_RecaluculateHeight(entry)
+	else
+		entry.changed = true
+	end
 end
 
 function QueueStatusEntry_SetFullDisplay(entry, title, queuedTime, myWait, isTank, isHealer, isDPS, totalTanks, totalHealers, totalDPS, tankNeeds, healerNeeds, dpsNeeds, subTitle, extraText)
-	local height = 14;
+--	local height = 14;
 
+	entry.fullMode = true
 	entry.Title:SetText(title);
-	height = height + entry.Title:GetHeight();
+--	height = height + entry.Title:GetHeight();
 
 	entry.Status:Hide();
 	entry.SubTitle:ClearAllPoints();
@@ -457,7 +539,7 @@ function QueueStatusEntry_SetFullDisplay(entry, title, queuedTime, myWait, isTan
 	if ( subTitle ) then
 		entry.SubTitle:SetText(subTitle);
 		entry.SubTitle:Show();
-		height = height + entry.SubTitle:GetHeight() + 5;
+--		height = height + entry.SubTitle:GetHeight() + 5;
 	else
 		entry.SubTitle:Hide();
 	end
@@ -489,7 +571,7 @@ function QueueStatusEntry_SetFullDisplay(entry, title, queuedTime, myWait, isTan
 
 	--Update the role needs
 	if ( totalTanks and totalHealers and totalDPS ) then
-		entry.HealersFound:SetPoint("TOP", entry, "TOP", 0, -(height + 5));
+--		entry.HealersFound:SetPoint("TOP", entry, "TOP", 0, -(height + 5));
 		entry.TanksFound.Count:SetFormattedText("%d/%d", totalTanks - tankNeeds, totalTanks);
 		entry.HealersFound.Count:SetFormattedText("%d/%d", totalHealers - healerNeeds, totalHealers);
 		entry.DamagersFound.Count:SetFormattedText("%d/%d", totalDPS - dpsNeeds, totalDPS);
@@ -504,7 +586,7 @@ function QueueStatusEntry_SetFullDisplay(entry, title, queuedTime, myWait, isTan
 		entry.TanksFound:Show();
 		entry.HealersFound:Show();
 		entry.DamagersFound:Show();
-		height = height + 68;
+--		height = height + 68;
 	else
 		entry.TanksFound:Hide();
 		entry.HealersFound:Hide();
@@ -514,10 +596,10 @@ function QueueStatusEntry_SetFullDisplay(entry, title, queuedTime, myWait, isTan
 	if ( not myWait or myWait <= 0 ) then
 		entry.AverageWait:Hide();
 	else
-		entry.AverageWait:SetPoint("TOPLEFT", entry, "TOPLEFT", 10, -(height + 5));
+--		entry.AverageWait:SetPoint("TOPLEFT", entry, "TOPLEFT", 10, -(height + 5));
 		entry.AverageWait:SetFormattedText(LFG_STATISTIC_AVERAGE_WAIT, SecondsToTime(myWait, false, false, 1));
 		entry.AverageWait:Show();
-		height = height + entry.AverageWait:GetHeight();
+--		height = height + entry.AverageWait:GetHeight();
 	end
 
 	if ( queuedTime ) then
@@ -529,20 +611,26 @@ function QueueStatusEntry_SetFullDisplay(entry, title, queuedTime, myWait, isTan
 		entry.TimeInQueue:SetFormattedText(TIME_IN_QUEUE, LESS_THAN_ONE_MINUTE);
 		entry:SetScript("OnUpdate", nil);
 	end
-	entry.TimeInQueue:SetPoint("TOPLEFT", entry, "TOPLEFT", 10, -(height + 5));
+--	entry.TimeInQueue:SetPoint("TOPLEFT", entry, "TOPLEFT", 10, -(height + 5));
 	entry.TimeInQueue:Show();
-	height = height + entry.TimeInQueue:GetHeight();
+--	height = height + entry.TimeInQueue:GetHeight();
 
 	if ( extraText ) then
 		entry.ExtraText:SetText(extraText);
 		entry.ExtraText:Show();
-		entry.ExtraText:SetPoint("TOPLEFT", entry, "TOPLEFT", 10, -(height + 10));
-		height = height + entry.ExtraText:GetHeight() + 10;
+--		entry.ExtraText:SetPoint("TOPLEFT", entry, "TOPLEFT", 10, -(height + 10));
+--		height = height + entry.ExtraText:GetHeight() + 10;
 	else
 		entry.ExtraText:Hide();
 	end
 
-	entry:SetHeight(height + 14);
+--	entry:SetHeight(height + 14);
+
+	if entry:IsVisible() then
+		QueueStatusEntry_RecaluculateHeight(entry)
+	else
+		entry.changed = true
+	end
 end
 
 function QueueStatusEntry_OnUpdate(self, elapsed)
@@ -851,7 +939,7 @@ function QueueStatusDropDown_AddMiniGamesButtons(idx)
 
 		end
 	elseif ( status == "locked" ) then
-		info.text = INSTANCE_LEAVE;
+		info.text = MINIGAME_LEAVE;
 		info.disabled = true;
 		UIDropDownMenu_AddButton(info);
 	elseif ( status == "active" ) then
@@ -861,7 +949,7 @@ function QueueStatusDropDown_AddMiniGamesButtons(idx)
 		info.arg2 = nil;
 		UIDropDownMenu_AddButton(info);
 
-		info.text = INSTANCE_LEAVE;
+		info.text = MINIGAME_LEAVE;
 		info.func = wrapFunc(C_MiniGames.Leave);
 		info.arg1 = nil;
 		info.arg2 = nil;

@@ -957,16 +957,14 @@ function CharacterSelect_SelectCharacter(id, noCreate)
 
 			SelectCharacter(id);
 
-			local forceCharCustomization = tonumber(GetSafeCVar("FORCE_CHAR_CUSTOMIZATION") or "-1")
-
-			if forceCharCustomization and forceCharCustomization ~= -1 then
-				PAID_SERVICE_CHARACTER_ID = id
-
+			local forceCharCustomization = tonumber(GetSafeCVar("FORCE_CHAR_CUSTOMIZATION")) or -1
+			if forceCharCustomization ~= -1 then
 				if PAID_SERVICE_CHARACTER_ID ~= 0 then
-					PAID_SERVICE_TYPE = PAID_CHARACTER_CUSTOMIZATION
-
-					C_Timer:After(0.01, function() SetGlueScreen("charcreate") end)
+					RunNextFrame(function()
+						CharacterSelect_OpenCharacterCreate(PAID_CHARACTER_CUSTOMIZATION, id)
+					end)
 					SetSafeCVar("FORCE_CHAR_CUSTOMIZATION", -1)
+					return
 				end
 			end
 
@@ -987,10 +985,7 @@ function CharacterSelect_EnterWorld()
 	if CharacterSelect.selectedIndex then
 		local charID = GetCharIDFromIndex(CharacterSelect.selectedIndex)
 		if CHAR_SERVICES_DATA[charID] and CHAR_SERVICES_DATA[charID][CHAR_DATA_TYPE.FORCE_CUSTOMIZATION] == 1 then
-			PAID_SERVICE_CHARACTER_ID = charID
-			PAID_SERVICE_TYPE = PAID_CHARACTER_CUSTOMIZATION
-
-			SetGlueScreen("charcreate")
+			CharacterSelect_OpenCharacterCreate(PAID_CHARACTER_CUSTOMIZATION, charID)
 			SetSafeCVar("FORCE_CHAR_CUSTOMIZATION", -1)
 			return
 		end
@@ -1521,8 +1516,8 @@ function CharacterSelectPAIDButtonMixin:OnEnter()
 	end
 
 	if PAID_OPTIONS_INFO[self.paID] then
-		GlueTooltip_SetOwner(self, GlueTooltip, 7, -7, "BOTTOMRIGHT", "TOPLEFT")
-		GlueTooltip_SetText(PAID_OPTIONS_INFO[self.paID].text, GlueTooltip)
+		GlueTooltip:SetOwner(self, "ANCHOR_LEFT", 7, -7)
+		GlueTooltip:SetText(PAID_OPTIONS_INFO[self.paID].text)
 	end
 end
 
@@ -1939,8 +1934,8 @@ function CharacterSelectButtonMailMixin:OnEnter()
 	self.charButton:OnEnter()
 
 	local charData = CHAR_SERVICES_DATA[GetCharIDFromIndex(self.charButton:GetID())]
-	GlueTooltip_SetOwner(self, GlueTooltip, 0, 0, "BOTTOMRIGHT", "TOPLEFT")
-	GlueTooltip_SetText(string.format(UNREAD_MAILS, charData[CHAR_DATA_TYPE.MAIL_COUNT]), GlueTooltip)
+	GlueTooltip:SetOwner(self)
+	GlueTooltip:SetText(string.format(UNREAD_MAILS, charData[CHAR_DATA_TYPE.MAIL_COUNT]))
 end
 
 function CharacterSelectButtonMailMixin:OnLeave()

@@ -6,7 +6,6 @@ Hook = {
 
 Hook.global:RegisterAllEvents()
 Hook.global:SetScript("OnEvent", function(_ ,event, ...)
-    -- printec("Hook.global:OnEvent", self, event, ...)
     Hook:FireEvent(event, event, ...)
 end)
 
@@ -49,7 +48,6 @@ function Hook:UnregisterCallback(group, events)
 end
 
 function Hook:FireEvent(events, ...)
-	-- printec(">> Hook:FireEvent", events, ...)
 	if type(events) == "string" then
 		events = {events}
 	end

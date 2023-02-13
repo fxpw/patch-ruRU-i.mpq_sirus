@@ -1,22 +1,27 @@
 TIMER_MINUTES_DISPLAY = "%d:%02d"
+TIMER_TYPE_SERVER_HANDLED = 0;
 TIMER_TYPE_PVP = 1;
 TIMER_TYPE_CHALLENGE_MODE = 2;
 TIMER_TYPE_PLAYER_COUNTDOWN = 3;
 TIMER_TYPE_ARENA = 4
 TIMER_TYPE_MINIGAMES = 5;
+TIMER_TYPE_MINIGAMES_SHORT = 6;
 
 TIMER_DATA = {
+	[0] = { updateInterval = 10 },
 	[1] = { mediumMarker = 11, largeMarker = 6, updateInterval = 10 },
 	[2] = { mediumMarker = 100, largeMarker = 100, updateInterval = 100 },
 	[3] = { mediumMarker = 31, largeMarker = 11, updateInterval = 10, finishedSoundKitID = SOUNDKIT.UI_COUNTDOWN_FINISHED, bigNumberSoundKitID = SOUNDKIT.UI_COUNTDOWN_TIMER, mediumNumberFinishedSoundKitID = SOUNDKIT.UI_COUNTDOWN_MEDIUM_NUMBER_FINISHED, barShowSoundKitID = SOUNDKIT.UI_COUNTDOWN_BAR_STATE_STARTS, barHideSoundKitID = SOUNDKIT.UI_COUNTDOWN_BAR_STATE_FINISHED},
 	[4] = { mediumMarker = 11, largeMarker = 6, updateInterval = 10 },
 	[5] = { mediumMarker = 11, largeMarker = 6, updateInterval = 10 },
+	[6] = { mediumMarker = 7, largeMarker = 7, updateInterval = 10 },
 };
 
 TIMER_SUBTYPE_DATA = {
-	[0] = { timerType = TIMER_TYPE_PVP, totalTime = 120 },		-- Battleground
-	[1] = { timerType = TIMER_TYPE_ARENA, totalTime = 60 },		-- Arena
-	[2] = { timerType = TIMER_TYPE_MINIGAMES, totalTime = 30 },	-- Mini-games
+	[0] = { timerType = TIMER_TYPE_PVP, totalTime = 120 },				-- Battleground
+	[1] = { timerType = TIMER_TYPE_ARENA, totalTime = 60 },				-- Arena
+	[2] = { timerType = TIMER_TYPE_MINIGAMES, totalTime = 30 },			-- Mini-games
+	[3] = { timerType = TIMER_TYPE_MINIGAMES_SHORT, totalTime = 30 },	-- Mini-games
 }
 
 TIMER_NUMBERS_SETS = {};
@@ -56,6 +61,7 @@ end
 function TimerTracker_OnLoad(self)
 	self.timerList = {};
 	self:RegisterCustomEvent("START_TIMER")
+	self:RegisterCustomEvent("STOP_TIMER_OF_TYPE")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 	self:RegisterEvent("PLAYER_ENTERING_BATTLEGROUND")
 end
@@ -184,6 +190,19 @@ function TimerTracker_OnEvent(self, event, ...)
 			timer:Show();
 		end
 		StartTimer_SetGoTexture(timer);
+	elseif event == "STOP_TIMER_OF_TYPE" then
+		local timerType = ...;
+		for a,timer in pairs(self.timerList) do
+			if(timer.type == timerType) then
+				FreeTimerTrackerTimer(timer);
+				timer:Hide();
+
+				if TIMER_DATA[timerType].readyButton then
+					TimerTracker_ReadyStatusButton:Toggle(false)
+					C_CacheInstance:Set("TimerTrackerReadyButtonState", {value = false})
+				end
+			end
+		end
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		local hasPVPTimer
 		for a,timer in pairs(self.timerList) do
@@ -222,8 +241,8 @@ function StartTimer_BigNumberOnUpdate(self, elapsed)
 	self.updateTime = self.updateTime - elapsed;
 	local minutes, seconds = floor(self.time/60), floor(mod(self.time, 60));
 
-	if self.type == TIMER_TYPE_ARENA then
-		ArenaPlayerReadyStatusButtonToggle(self.time, TIMER_DATA[self.type].mediumMarker);
+	if TIMER_DATA[self.type].readyButton or self.type == TIMER_TYPE_ARENA or self.type == TIMER_TYPE_PVP or self.type == TIMER_TYPE_MINIGAMES then
+		TimerTracker_ReadyStatusButton:Update(self.time, TIMER_DATA[self.type].mediumMarker);
 	end
 
 	if ( self.time < TIMER_DATA[self.type].mediumMarker ) then
@@ -240,6 +259,7 @@ function StartTimer_BigNumberOnUpdate(self, elapsed)
 			end
 		else
 			self.bar:Hide()
+			self.animationAdjust = true
 			self.startNumbers:Play();
 		end
 	elseif not self.barShowing then
@@ -290,6 +310,31 @@ function StartTimer_SetTexNumbers(self, ...)
 	local numberOffset = 0;
 	local numShown = 0;
 
+	if self.animationAdjust then
+		local roundedTime = ceil(self.time)
+		local diff = roundedTime - self.time
+
+		if diff ~= 0 then
+			timeDigits = roundedTime
+			self.time = roundedTime
+			self.animationReset = true
+
+			for _, digitObj in ipairs(digits) do
+				digitObj.startNumbers.ScaleOut:SetStartDelay(0.6 + diff)
+				digitObj.startNumbers.AlphaOut:SetStartDelay(0.6 + diff)
+			end
+		end
+
+		self.animationAdjust = nil
+	elseif self.animationReset then
+		for _, digitObj in ipairs(digits) do
+			digitObj.startNumbers.ScaleOut:SetStartDelay(0.6)
+			digitObj.startNumbers.AlphaOut:SetStartDelay(0.6)
+		end
+
+		self.animationReset = nil
+	end
+
 	while digits[i] do -- THIS WILL DISPLAY SECOND AS A NUMBER 2:34 would be 154
 		if timeDigits > 0 then
 			digit = mod(timeDigits, 10);
@@ -336,6 +381,13 @@ function StartTimer_SetTexNumbers(self, ...)
 	end
 end
 
+local GoTextureTypes = {
+	None		= 0,
+	FactionIcon	= 1,
+	Arena		= 2,
+	Challenges	= 3,
+}
+
 function StartTimer_SetGoTexture(timer)
 	if ( timer.type == TIMER_TYPE_PVP or timer.type == TIMER_TYPE_ARENA ) then
 		if timer.type ~= TIMER_TYPE_PVP then
@@ -347,15 +399,41 @@ function StartTimer_SetGoTexture(timer)
 			local factionGroup = GetPlayerFactionGroup();
 			if ( factionGroup and factionGroup ~= "Neutral" ) then
 				timer.GoTexture:SetTexture("Interface\\Timer\\"..factionGroup.."-Logo");
+				timer.GoTexture:SetTexCoord(0, 1, 0, 1);
 				timer.GoTextureGlow:SetTexture("Interface\\Timer\\"..factionGroup.."Glow-Logo");
+				timer.GoTextureGlow:SetTexCoord(0, 1, 0, 1);
 			end
 		end
 	elseif ( timer.type == TIMER_TYPE_CHALLENGE_MODE ) then
 		timer.GoTexture:SetTexture("Interface\\Timer\\Challenges-Logo");
+		timer.GoTexture:SetTexCoord(0, 1, 0, 1);
 		timer.GoTextureGlow:SetTexture("Interface\\Timer\\ChallengesGlow-Logo");
+		timer.GoTextureGlow:SetTexCoord(0, 1, 0, 1);
 	elseif (timer.type == TIMER_TYPE_PLAYER_COUNTDOWN) then
 		timer.GoTexture:SetTexture("")
 		timer.GoTextureGlow:SetTexture("")
+	elseif (timer.type == TIMER_TYPE_SERVER_HANDLED) then
+		local goTextureType = TIMER_DATA[timer.type].goTexture
+		if goTextureType == GoTextureTypes.None then
+			timer.GoTexture:SetTexture("")
+			timer.GoTextureGlow:SetTexture("")
+		elseif goTextureType == GoTextureTypes.FactionIcon then
+			local factionGroup = GetPlayerFactionGroup();
+			if ( factionGroup and factionGroup ~= "Neutral" ) then
+				timer.GoTexture:SetTexture("Interface\\Timer\\"..factionGroup.."-Logo");
+				timer.GoTexture:SetTexCoord(0, 1, 0, 1);
+				timer.GoTextureGlow:SetTexture("Interface\\Timer\\"..factionGroup.."Glow-Logo");
+				timer.GoTextureGlow:SetTexCoord(0, 1, 0, 1);
+			end
+		elseif goTextureType == GoTextureTypes.Arena then
+			timer.GoTexture:SetAtlas("countdown-swords");
+			timer.GoTextureGlow:SetAtlas("countdown-swords-glow");
+		elseif goTextureType == GoTextureTypes.Challenges then
+			timer.GoTexture:SetTexture("Interface\\Timer\\Challenges-Logo");
+			timer.GoTexture:SetTexCoord(0, 1, 0, 1);
+			timer.GoTextureGlow:SetTexture("Interface\\Timer\\ChallengesGlow-Logo");
+			timer.GoTextureGlow:SetTexCoord(0, 1, 0, 1);
+		end
 	end
 end
 
@@ -382,6 +460,8 @@ function StartTimer_NumberAnimOnFinished(self)
 		self.isFree = true
 		self.barShowing = false
 		self.GoTextureAnim:Play();
+
+		C_CacheInstance:Set("TimerTrackerReadyButtonState", {value = false})
 	end
 end
 
@@ -399,34 +479,266 @@ function StartTimer_SwitchToLargeDisplay(self)
 	end
 end
 
+TimerTrackerReadyButtonMixin = {}
+
+function TimerTrackerReadyButtonMixin:OnLoad()
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
+end
+
+function TimerTrackerReadyButtonMixin:OnEvent(event, ... )
+	local _, instanceTyp = IsInInstance()
+	if instanceTyp == "none" then
+		self:Hide()
+		C_CacheInstance:Set("TimerTrackerReadyButtonState", {value = false})
+	end
+end
+
+function TimerTrackerReadyButtonMixin:OnShow()
+	self.HighlightTexture:Hide()
+	self:UpdateText(false)
+end
+
+function TimerTrackerReadyButtonMixin:OnHide()
+	self.Selection:Hide()
+	self.ReadyText:SetText("0 / 0")
+end
+
+function TimerTrackerReadyButtonMixin:OnClick(button)
+	if not self.Selection.AnimOut:IsPlaying() and not self.AnimIn:IsPlaying() and not self.AnimOut:IsPlaying() then
+		self.Selection.AnimOut:Stop()
+		self.Selection.AnimIn:Stop()
+		self.Selection:SetVertexColor(0, 1, 0)
+
+		if self:GetChecked() then
+			self.Selection:Show()
+			self.Selection.AnimIn:Play()
+
+			self.HighlightTexture:Hide()
+		else
+			self.Selection:Show()
+			self.Selection:SetVertexColor(1, 0, 0)
+			self.Selection.AnimOut:Play()
+			self.Selection:SetAlpha(0.2)
+
+			self.HighlightTexture:Show()
+		end
+
+		self.checked = self:GetChecked() == 1
+
+		C_CacheInstance:Set("TimerTrackerReadyButtonState", {value = self.checked})
+		SendServerMessage("ACMSG_ARENA_READY_STATUS", self.checked and 1 or 0)
+
+		self:UpdateText(true)
+	else
+		self:SetChecked(self.checked)
+	end
+end
+
+function TimerTrackerReadyButtonMixin:OnMouseDown(button)
+	if self.Selection.AnimOut:IsPlaying() or self.AnimIn:IsPlaying() or self.AnimOut:IsPlaying() then
+		return
+	end
+
+	self.ReadyText:SetPoint("CENTER", 1, 5)
+end
+
+function TimerTrackerReadyButtonMixin:OnMouseUp(button)
+	self.ReadyText:SetPoint("CENTER", 0, 6)
+end
+
+function TimerTrackerReadyButtonMixin:UpdateText(forceUpdate)
+	local state = C_CacheInstance:Get("TimerTrackerReadyButtonState")
+
+	if state then
+		local needAnimationText = self.checked ~= state.value
+
+		if needAnimationText and not forceUpdate then
+			self.ReadyText.AnimSwap:Play()
+			self.ReadyTextDescription.AnimSwap:Play()
+		end
+
+		self.checked = state.value
+		self:SetChecked(state.value)
+
+		if not forceUpdate then
+			if self:GetChecked() then
+				self.Selection:Show()
+				self.Selection:SetAlpha(0.2)
+			else
+				self.Selection:Hide()
+			end
+		end
+
+		if state.value == true then
+			local data = C_CacheInstance:Get("ASMSG_ARENA_READY_STATUS")
+
+			if data and data.bracket and data.readyCount then
+				self.ReadyText:SetFormattedText("%d / %d", data.readyCount, data.bracket)
+				self.ReadyTextDescription:SetText(READY_ARENA_WAIT_PLAYER_LABEL)
+			end
+		else
+			self.ReadyText:SetText(READY_LABEL)
+			self.ReadyTextDescription:SetText(READY_ARENA_DESCRIPTION_LABEL)
+		end
+	end
+end
+
+function TimerTrackerReadyButtonMixin:OnEnter()
+	if self.Selection.AnimOut:IsPlaying() or self.AnimIn:IsPlaying() or self.AnimOut:IsPlaying() then
+		return
+	end
+
+	if not self:GetChecked() then
+		self.HighlightTexture:Show()
+	else
+		self.Selection:SetAlpha(0.3)
+	end
+end
+
+function TimerTrackerReadyButtonMixin:OnLeave()
+	self.HighlightTexture:Hide()
+	self.Selection:SetAlpha(0.2)
+end
+
+function TimerTrackerReadyButtonMixin:Toggle(state)
+	if not state then
+		if self:IsShown() then
+			self.AnimOut:Play()
+		end
+
+		return
+	end
+
+	local timerBar
+	for _, timer in ipairs(TimerTracker.timerList) do
+		if not timer.isFree then
+			timerBar = timer
+			break
+		end
+	end
+
+	if timerBar then
+		self:ClearAllPoints()
+		self:SetPoint("TOP", timerBar, "BOTTOM", 1, 4)
+		self:Show()
+	end
+end
+
+function TimerTrackerReadyButtonMixin:Update(currentTime, fadeTime)
+	fadeTime = fadeTime or 12;
+
+	if currentTime > fadeTime and not self:IsShown() then
+		self:Toggle(true)
+		self.AnimIn:Play()
+	elseif currentTime < fadeTime and self:IsShown() then
+		self.AnimOut:Play()
+	end
+end
+
+function EventHandler:ASMSG_ARENA_READY_STATUS(msg)
+	local bracket, readyCount = string.split("|", msg)
+
+	if readyCount then
+		C_CacheInstance:Set("ASMSG_ARENA_READY_STATUS", {
+			bracket = tonumber(bracket),
+			readyCount = tonumber(readyCount)
+		})
+	end
+
+	TimerTracker_ReadyStatusButton:UpdateText(true)
+end
+
+function EventHandler:ASMSG_EVENT_START_TIMER(msg)
+	local timeRemainingMS, totalTimeMS, mediumMarker, largeMarker, goTexture, readyButton = string.split(":", msg)
+
+	totalTimeMS = tonumber(totalTimeMS)
+
+	if totalTimeMS <= 0 then
+		FireCustomClientEvent("STOP_TIMER_OF_TYPE", TIMER_TYPE_SERVER_HANDLED)
+		return
+	end
+
+	timeRemainingMS = tonumber(timeRemainingMS)
+	mediumMarker = tonumber(mediumMarker)
+	largeMarker = tonumber(largeMarker)
+
+	local markeyTimeOffset = timeRemainingMS * 0.001 <= mediumMarker and 1 or 2
+
+	TIMER_DATA[TIMER_TYPE_SERVER_HANDLED].mediumMarker = mediumMarker > 0 and (mediumMarker + markeyTimeOffset) or 0
+	TIMER_DATA[TIMER_TYPE_SERVER_HANDLED].largeMarker = largeMarker > 0 and (largeMarker + markeyTimeOffset) or 0
+	TIMER_DATA[TIMER_TYPE_SERVER_HANDLED].goTexture = tonumber(goTexture)
+	TIMER_DATA[TIMER_TYPE_SERVER_HANDLED].readyButton = readyButton == "1"
+
+	if readyButton ~= "1" then
+		TimerTracker_ReadyStatusButton:Toggle(false)
+	end
+
+	FreeAllTimerTrackerTimer()
+--	FireCustomClientEvent("STOP_TIMER_OF_TYPE", TIMER_TYPE_SERVER_HANDLED)
+	FireCustomClientEvent("START_TIMER", TIMER_TYPE_SERVER_HANDLED, timeRemainingMS * 0.001, totalTimeMS * 0.001)
+end
+
 local TIMEOUT_LIST = {}
 local COUNTDOUWN_TIMEOUT_SECONDS = 10
 local COUNTDOUWN_TIMEOUT_MAX_COUNT = 5
 
 do
+	local isLeaderOrRaidOfficer = function(name)
+		if UnitIsGroupLeader(name) then
+			return true
+		else
+			local raidID = UnitInRaid(name)
+			if raidID and select(2, GetRaidRosterInfo(raidID + 1)) > 0 then
+				return true
+			end
+		end
+		return false
+	end
+
 	local eventHandler = CreateFrame("Frame")
 	eventHandler:Hide()
 	eventHandler:RegisterEvent("CHAT_MSG_ADDON")
 	eventHandler:SetScript("OnEvent", function(self, event, prefix, msg, distribution, sender)
-		if event == "CHAT_MSG_ADDON" and prefix == "SIRUS_START_TIMER" then
-			if UnitIsGroupLeader(sender) or (UnitInRaid(sender) and select(2, GetRaidRosterInfo(UnitInRaid(sender) + 1)) > 0) then
-				if not TIMEOUT_LIST[sender] or TIMEOUT_LIST[sender][2] < COUNTDOUWN_TIMEOUT_MAX_COUNT then
-					local seconds = tonumber(msg)
-					if seconds and seconds > 3 then
-						local _, instanceType = GetInstanceInfo()
-						if instanceType == "pvp" or instanceType == "arena" then
-							return
-						end
+		if event == "CHAT_MSG_ADDON" then
+			if prefix == "START_TIMER_PLAYER_COUNTDOWN" then
+				if (distribution == "RAID" or distribution == "PARTY") and isLeaderOrRaidOfficer(sender) then
+					if not TIMEOUT_LIST[sender] or TIMEOUT_LIST[sender][2] < COUNTDOUWN_TIMEOUT_MAX_COUNT then
+						local seconds = tonumber(msg)
+						if seconds and seconds >= 3 then
+							local _, instanceType = GetInstanceInfo()
+							if instanceType == "pvp" or instanceType == "arena" then
+								return
+							end
 
-						if not TIMEOUT_LIST[sender] then
-							TIMEOUT_LIST[sender] = {0, 1}
-							self:Show()
-						else
-							TIMEOUT_LIST[sender][2] = TIMEOUT_LIST[sender][2] + 1
-						end
+							if not TIMEOUT_LIST[sender] then
+								TIMEOUT_LIST[sender] = {0, 1}
+								self:Show()
+							else
+								TIMEOUT_LIST[sender][2] = TIMEOUT_LIST[sender][2] + 1
+							end
 
-						seconds = seconds + 0.9
-						FireCustomClientEvent("START_TIMER", TIMER_TYPE_PLAYER_COUNTDOWN, seconds, seconds)
+							FireCustomClientEvent("START_TIMER", TIMER_TYPE_PLAYER_COUNTDOWN, seconds, seconds)
+						end
+					end
+				end
+			elseif prefix == "STOP_TIMER_OF_TYPE" then
+				if (distribution == "RAID" or distribution == "PARTY") and isLeaderOrRaidOfficer(sender) then
+					if not TIMEOUT_LIST[sender] or TIMEOUT_LIST[sender][2] <= COUNTDOUWN_TIMEOUT_MAX_COUNT then
+						if msg == "0" then
+							local _, instanceType = GetInstanceInfo()
+							if instanceType == "pvp" or instanceType == "arena" then
+								return
+							end
+
+							if not TIMEOUT_LIST[sender] then
+								TIMEOUT_LIST[sender] = {0, 1}
+								self:Show()
+							else
+								TIMEOUT_LIST[sender][2] = TIMEOUT_LIST[sender][2] + 1
+							end
+
+							FireCustomClientEvent("STOP_TIMER_OF_TYPE", TIMER_TYPE_PLAYER_COUNTDOWN)
+						end
 					end
 				end
 			end
@@ -445,6 +757,14 @@ do
 	end)
 end
 
+local getDistibutionChannel = function()
+	if GetNumRaidMembers() > 0 then
+		return "RAID"
+	elseif GetNumPartyMembers() > 0 then
+		return "PARTY"
+	end
+end
+
 function TimerTracker_DoCountdown(seconds)
 	if type(seconds) == "string" then
 		seconds = tonumber(seconds)
@@ -453,20 +773,19 @@ function TimerTracker_DoCountdown(seconds)
 		error("Usage: C_PartyInfo_DoCountdown(seconds)", 2)
 	end
 
-	if seconds < 3 then
+	local playerName = UnitName("player")
+	if seconds <= 0 and (not TIMEOUT_LIST[playerName] or TIMEOUT_LIST[playerName][2] < COUNTDOUWN_TIMEOUT_MAX_COUNT) then
+		local distribution = getDistibutionChannel()
+		if distribution then
+			SendAddonMessage("STOP_TIMER_OF_TYPE", 0, distribution)
+		else
+			FireCustomClientEvent("STOP_TIMER_OF_TYPE", TIMER_TYPE_PLAYER_COUNTDOWN)
+		end
+	elseif seconds < 3 then
 		return
 	end
 
-	if not IsPartyLeader() and not IsRaidLeader() and not IsRaidOfficer() then
-		return
-	end
-
-	local distribution
-	if GetNumRaidMembers() > 0 then
-		distribution = "RAID"
-	elseif GetNumPartyMembers() > 0 then
-		distribution = "PARTY"
-	else
+	if not IsPartyLeader() and not IsRaidLeader() and not IsRaidOfficer() and (GetNumRaidMembers() ~= 0 or GetNumPartyMembers() ~= 0) then
 		return
 	end
 
@@ -475,9 +794,13 @@ function TimerTracker_DoCountdown(seconds)
 		return
 	end
 
-	local playerName = UnitName("player")
 	if not TIMEOUT_LIST[playerName] or TIMEOUT_LIST[playerName][2] < COUNTDOUWN_TIMEOUT_MAX_COUNT then
-		SendAddonMessage("SIRUS_START_TIMER", seconds, distribution)
+		local distribution = getDistibutionChannel()
+		if distribution then
+			SendAddonMessage("START_TIMER_PLAYER_COUNTDOWN", seconds, distribution)
+		else
+			FireCustomClientEvent("START_TIMER", TIMER_TYPE_PLAYER_COUNTDOWN, seconds, seconds)
+		end
 	else
 		UIErrorsFrame:AddMessage(ERR_GENERIC_THROTTLE, 1.0, 0.1, 0.1, 1.0)
 	end

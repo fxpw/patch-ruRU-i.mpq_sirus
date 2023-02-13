@@ -379,7 +379,7 @@
 	<Button name="EncounterCreatureButtonTemplate" motionScriptsWhileDisabled="true" virtual="true" hidden="true">
 		<Size x="64" y="61"/>
 		<Layers>
-			<Layer level="OVERLAY">
+			<Layer level="BACKGROUND">
 				<Texture name="$parentCreature" parentKey="creature">
 					<Size x="40" y="40"/>
 					<Anchors>
@@ -2482,7 +2482,7 @@
 											<TexCoords left="0.76953125" right="0" top="0" bottom="0.830078125"/>
 										</Texture>
 									</Layer>
-									<Layer level="BORDER">
+									<Layer level="OVERLAY">
 										<Texture name="$parentShadow" file="Interface\EncounterJournal\UI-EJ-BossModelPaperFrame">
 											<Size x="393" y="424"/>
 											<Anchors>
@@ -2491,26 +2491,35 @@
 											<TexCoords left="0.767578125" right="0" top="0" bottom="0.828125"/>
 										</Texture>
 									</Layer>
-									<Layer level="ARTWORK">
-										<Texture name="$parentTitleBG" inherits="UI-EJ-BossNameShadow">
-											<Anchors>
-												<Anchor point="BOTTOM" x="0" y="-2"/>
-											</Anchors>
-										</Texture>
-									</Layer>
-									<Layer level="OVERLAY">
-										<FontString name="$parentImageTile" inherits="QuestTitleFontBlackShadow" justifyH="CENTER" parentKey="imageTitle">
-											<Size x="380" y="10"/>
-											<Anchors>
-												<Anchor point="BOTTOM" x="0" y="6"/>
-											</Anchors>
-										</FontString>
-									</Layer>
 								</Layers>
+								<Frames>
+									<Frame parentKey="overlayFrame" setAllPoints="true">
+										<Layers>
+											<Layer level="ARTWORK">
+												<Texture name="$parentTitleBG" inherits="UI-EJ-BossNameShadow">
+													<Anchors>
+														<Anchor point="BOTTOM" x="0" y="-2"/>
+													</Anchors>
+												</Texture>
+											</Layer>
+											<Layer level="OVERLAY">
+												<FontString name="$parentImageTile" inherits="QuestTitleFontBlackShadow" justifyH="CENTER" parentKey="imageTitle">
+													<Size x="380" y="10"/>
+													<Anchors>
+														<Anchor point="BOTTOM" x="0" y="6"/>
+													</Anchors>
+												</FontString>
+											</Layer>
+										</Layers>
+									</Frame>
+								</Frames>
 								<Scripts>
-									<OnShow>
-										self:GetParent().imageTitle = self.imageTitle
+									<OnLoad>
+										SharedXML_Model_OnLoad(self);
 
+										self.imageTitle = self.overlayFrame.imageTitle;
+									</OnLoad>
+									<OnShow>
 										EncounterJournal.encounter.info.TitleFrame.encounterTitle:Hide()
 										EncounterJournal.encounter.info.rightShadow:Hide()
 										EncounterJournal.encounter.info.difficulty:Hide()

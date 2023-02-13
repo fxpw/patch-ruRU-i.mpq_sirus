@@ -573,15 +573,20 @@ function CompactUnitFrameProfiles_GetAutoActivationState()
 		profileType = instanceType;
 		enemyType = "PvE";
 	elseif ( instanceType == "arena" ) then
-		numPlayers = countMap[GetNumPartyMembers()];
+		numPlayers = countMap[math.max(GetNumRaidMembers(), GetNumPartyMembers() + 1)];
 		profileType = instanceType;
 		enemyType = "PvP";
 	elseif ( instanceType == "pvp" ) then
+		if not maxPlayers or maxPlayers <= 0 then
+			local raidMembers = GetNumRaidMembers()
+			maxPlayers = math.max(10, raidMembers > 0 and raidMembers or GetNumPartyMembers() + 1)
+		end
+
 		numPlayers = countMap[maxPlayers];
 		profileType = instanceType;
 		enemyType = "PvP";
 	else
-		numPlayers = countMap[math.max(GetNumRaidMembers(), GetNumPartyMembers())];
+		numPlayers = countMap[math.max(GetNumRaidMembers(), GetNumPartyMembers() + 1)];
 		profileType = "world";
 		enemyType = "PvE";
 	end
@@ -597,7 +602,7 @@ local checkAutoActivationTimer;
 function CompactUnitFrameProfiles_CheckAutoActivation()
 	--We only want to adjust the profile when you 1) Zone or 2) change specs. We don't want to automatically
 	--change the profile when you are in the uninstanced world.
-	if ( GetNumPartyMembers() == 0 ) then
+	if ( GetNumRaidMembers() == 0 and GetNumPartyMembers() == 0 ) then
 		CompactUnitFrameProfiles_SetLastActivationType(nil, nil, nil);
 		return;
 	end

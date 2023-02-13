@@ -690,6 +690,9 @@ PVPUIFRAME_PORTRAIT_DATA = {
 function PVPUIFrame_OnLoad( self, ... )
 	self.Shadows:SetFrameLevel(3)
 
+	self.Art.TitleText:SetPoint("LEFT", 90, 0)
+	self.Art.TitleText:SetPoint("RIGHT", -30, 0)
+
 	local function UpdateFactionArt()
 		SetPortraitToTexture(self.Art.portrait, PVPUIFRAME_PORTRAIT_DATA[C_Unit.GetFactionID("player")])
 	end
@@ -717,21 +720,28 @@ function PVPFrame_SetupTitle()
 			local remainingTime = seasonInfo.seasonEnd - time()
 
 			if remainingTime > 0 then
-				PVPUIFrame.Art.TitleText:SetFormattedText(PVPFRAME_LABEL, seasonInfo.currentSeason, GetRemainingTime(remainingTime))
-			end
+				local seasonName = _G[string.format("PVPFRAME_ARENA_SEASON_NAME_S%i", seasonInfo.currentSeason)]
+				PVPUIFrame.Art.TitleText:SetFormattedText(seasonName, GetRemainingTime(remainingTime))
 
-			if PVPUIFrame.TitleTimer then
-				PVPUIFrame.TitleTimer:Cancel()
-				PVPUIFrame.TitleTimer = nil
-			end
-
-			PVPUIFrame.TitleTimer = C_Timer:NewTicker(1, function()
-				local remainingTime = seasonInfo.seasonEnd - time()
-
-				if remainingTime > 0 then
-					PVPUIFrame.Art.TitleText:SetFormattedText(PVPFRAME_LABEL, seasonInfo.currentSeason, GetRemainingTime(remainingTime))
+				if PVPUIFrame.TitleTimer then
+					PVPUIFrame.TitleTimer:Cancel()
+					PVPUIFrame.TitleTimer = nil
 				end
-			end)
+
+				PVPUIFrame.TitleTimer = C_Timer:NewTicker(1, function()
+					remainingTime = seasonInfo.seasonEnd - time()
+
+					if remainingTime > 0 then
+						PVPUIFrame.Art.TitleText:SetFormattedText(seasonName, GetRemainingTime(remainingTime))
+					else
+						PVPUIFrame.Art.TitleText:SetText(PVPFRAME_LABEL_NOSEASON)
+						PVPUIFrame.TitleTimer:Cancel()
+						PVPUIFrame.TitleTimer = nil
+					end
+				end)
+			else
+				PVPUIFrame.Art.TitleText:SetText(PVPFRAME_LABEL_NOSEASON)
+			end
 		end
 	else
 		PVPUIFrame.Art.TitleText:SetText(PVPFRAME_LABEL_NOSEASON)
@@ -2340,120 +2350,6 @@ function BattlegroundInviteQueueMixin:OnLeave()
 	self.Shadow:Hide()
 end
 
-local checkedStatus
-function ArenaPlayerReadyStatusButton_OnClick( self, ... )
-	if not self.Selection.AnimOut:IsPlaying() and not self.AnimIn:IsPlaying() and not self.AnimOut:IsPlaying() then
-		self.Selection.AnimOut:Stop()
-		self.Selection.AnimIn:Stop()
-		self.Selection:SetVertexColor(0, 1, 0)
-
-		if self:GetChecked() then
-			self.Selection:Show()
-			self.Selection.AnimIn:Play()
-
-			self.HighlightTexture:Hide()
-		else
-			self.Selection:Show()
-			self.Selection:SetVertexColor(1, 0, 0)
-			self.Selection.AnimOut:Play()
-			self.Selection:SetAlpha(0.2)
-
-			self.HighlightTexture:Show()
-		end
-
-		checkedStatus = self:GetChecked()
-
-		C_CacheInstance:Set("ArenaPlayerReadyStatusButtonState", {value = checkedStatus == 1})
-		SendServerMessage("ACMSG_ARENA_READY_STATUS", checkedStatus and 1 or 0)
-
-		ArenaPlayerReadyStatusButton_UpdateText(true)
-	end
-	self:SetChecked(checkedStatus)
-end
-
-local oldState
-function ArenaPlayerReadyStatusButton_UpdateText( forceUpdate )
-	local button = ArenaPlayerReadyStatusButton
-	local state = C_CacheInstance:Get("ArenaPlayerReadyStatusButtonState")
-
-	if state then
-		local needAnimationText = oldState ~= state.value
-
-		if needAnimationText and not forceUpdate then
-			button.ReadyText.AnimSwap:Play()
-			button.ReadyTextDescription.AnimSwap:Play()
-		end
-
-		button:SetChecked(state.value)
-
-		if not forceUpdate then
-			if button:GetChecked() then
-				button.Selection:Show()
-				button.Selection:SetAlpha(0.2)
-			else
-				button.Selection:Hide()
-			end
-		end
-
-		if state.value == true then
-			local data = C_CacheInstance:Get("ASMSG_ARENA_READY_STATUS")
-
-			if data and data.bracket and data.readyCount then
-				button.ReadyText:SetFormattedText("%d / %d", data.readyCount, data.bracket)
-				button.ReadyTextDescription:SetText(READY_ARENA_WAIT_PLAYER_LABEL)
-			end
-		else
-			button.ReadyText:SetText(READY_LABEL)
-			button.ReadyTextDescription:SetText(READY_ARENA_DESCRIPTION_LABEL)
-		end
-	end
-end
-
-function ArenaPlayerReadyStatusButton_OnEnter( self, ... )
-	if self.Selection.AnimOut:IsPlaying() or self.AnimIn:IsPlaying() or self.AnimOut:IsPlaying() then
-		return
-	end
-
-	if not self:GetChecked() then
-		self.HighlightTexture:Show()
-	else
-		self.Selection:SetAlpha(0.3)
-	end
-end
-
-function ArenaPlayerReadyStatusButton_OnLeave( self, ... )
-	self.HighlightTexture:Hide()
-	self.Selection:SetAlpha(0.2)
-end
-
-function ArenaPlayerReadyStatusButtonToggle( times, fadeTime )
-	if ArenaPlayerReadyStatusButton and TimerTrackerTimer1 then
-		fadeTime = fadeTime or 12;
-
-		if times > fadeTime and not ArenaPlayerReadyStatusButton:IsShown() then
-			ArenaPlayerReadyStatusButton:Show()
-			ArenaPlayerReadyStatusButton.AnimIn:Play()
-		elseif times < fadeTime and ArenaPlayerReadyStatusButton:IsShown() then
-			ArenaPlayerReadyStatusButton.AnimOut:Play()
-		end
-		ArenaPlayerReadyStatusButton:ClearAllPoints()
-		ArenaPlayerReadyStatusButton:SetPoint("TOP", TimerTrackerTimer1, "BOTTOM", 1, 4)
-	end
-end
-
-function ArenaPlayerReadyStatusButton_OnEvent( self, event, ... )
-	local _, instanceTyp = IsInInstance()
-	if instanceTyp == "none" then
-		self:Hide()
-		C_CacheInstance:Set("ArenaPlayerReadyStatusButtonState", {value = false})
-	end
-end
-
-function ArenaPlayerReadyStatusButton_OnHide( self, ... )
-	self.Selection:Hide()
-	self.ReadyText:SetText("0 / 0")
-end
-
 local function PVPQueueFrameCapTopFrameStatusBar_SetDesaturated( self, toggle )
 	local textColor = toggle and GRAY_FONT_COLOR or HIGHLIGHT_FONT_COLOR
 
@@ -2815,7 +2711,7 @@ end
 function PVPQueueFrameCapTopFrameStatusBar_OnEnter( self, ... )
 	local _, maxValue = self:GetMinMaxValues()
 	local value = self:GetValue()
-	
+
 	if value ~= maxValue then
 		local timeData = C_CacheInstance:Get("ASMSG_PVP_LIMITS_TIMERS", {})
 
@@ -3039,19 +2935,6 @@ function EventHandler:ASMSG_NEXT_ARENA_DISTRIBUTION_TIME( msg )
 	C_CacheInstance:Set("ASMSG_NEXT_ARENA_DISTRIBUTION_TIME", arenaDistributionTime)
 end
 
-function EventHandler:ASMSG_ARENA_READY_STATUS( msg )
-	local splitData = C_Split(msg, "|")
-
-	if splitData and #splitData > 0 then
-		C_CacheInstance:Set("ASMSG_ARENA_READY_STATUS", {
-			bracket = tonumber(splitData[1]),
-			readyCount = tonumber(splitData[2])
-		})
-	end
-
-	ArenaPlayerReadyStatusButton_UpdateText(true)
-end
-
 function EventHandler:ASMSG_PVP_WEEKLY_LIMIT( msg )
 	local splitData = C_Split(msg, ":")
 
@@ -3185,7 +3068,6 @@ function EventHandler:ASMSG_PVP_LIMITS_TIMERS( msg )
 end
 
 function EventHandler:ASMSG_SEND_BG_INVITE( msg )
-	-- print("ASMSG_SEND_BG_INVITE", msg)
 	BattlegroundInviteFrame:Reset(true)
 
 	local splitData 	= C_Split(msg, ":")
@@ -3217,13 +3099,11 @@ function EventHandler:ASMSG_SEND_BG_INVITE_STATUS( msg )
 end
 
 function EventHandler:ASMSG_SEND_BG_INVITE_ABADDON()
-	-- print("ASMSG_SEND_BG_INVITE_ABADDON")
 	C_CacheInstance:Set("ASMSG_SEND_BG_INVITE", nil)
 	BattlegroundInviteFrame:AbandonInvite()
 end
 
 function EventHandler:ASMSG_SEND_BG_INVITE_ACCEPT()
-	-- print("ASMSG_SEND_BG_INVITE_ACCEPT")
 	BattlegroundInviteFrame:AcceptInvite()
 end
 

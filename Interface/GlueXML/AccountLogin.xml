@@ -28,6 +28,9 @@
 			<Frame name="AccountLoginUI" parentKey="LoginUI" setAllPoints="true" toplevel="true" hidden="true">
 				<Layers>
 					<Layer level="BACKGROUND">
+						<Texture name="$parentBGTexture" parentKey="BGTexture" setAllPoints="true" hidden="true"/>
+					</Layer>
+					<Layer level="BORDER">
 						<Texture parentKey="Logo" file="Interface\Custom_LoginScreen\Logo">
 							<Size x="226" y="130"/>
 							<Anchors>

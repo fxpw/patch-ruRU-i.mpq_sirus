@@ -2403,6 +2403,5 @@ end
 
 function EventHandler:ASMSG_GUILD_REPLACE_GUILD_MASTER(msg)
 	local oldGM, newGM = string.split(",", msg)
-	local info = ChatTypeInfo["SYSTEM"]
-	DEFAULT_CHAT_FRAME:AddMessage(string.format(ERR_GUILD_LEADER_REPLACED, oldGM, newGM), info.r, info.g, info.b, info.id)
+	AddChatTyppedMessage("SYSTEM", string.format(ERR_GUILD_LEADER_REPLACED, oldGM, newGM))
 end
