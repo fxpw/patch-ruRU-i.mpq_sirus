@@ -1,24 +1,15 @@
---	Filename:	CharacterServices.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 CharacterBoostStep = 1
 local SelectMainProfession
 local SelectAdditionalProffesion
 local SelectCharacterSpec
 local SelectCharacterPvPSpec
 local SelectCharacterFaction = 0
-local accountBonusCount = nil
-local characterBoostPrice = nil
 
 GlueDialogTypes["LOCK_BOOST_ENTER_WORLD"] = {
-	text = CHARACTER_SERVICES_DIALOG_BOOST_ENTERWORLD,
+	text = CHARACTER_SERVICES_DIALOG_BOOST_ENTER_WORLD,
 	button1 = YES,
 	button2 = NO,
-	escapeHides = false,
-	OnAccept = function ()
+	OnAccept = function()
 		CharSelectServicesFlowFrame:Hide()
 	end,
 	OnCancel = function()
@@ -29,23 +20,19 @@ GlueDialogTypes["CHARACTER_SERVICES_BOOST_CONFIRM"] = {
 	text = CHARACTER_BOOST_CONFIRM_TEXT,
 	button1 = YES,
 	button2 = NO,
-	escapeHides = false,
-	OnAccept = function ()
-		C_GluePackets:SendPacket(C_GluePackets.OpCodes.RequestBoostCharacter, CharSelectServicesFlowFrame.CharSelect, SelectAdditionalProffesion, SelectMainProfession, SelectCharacterSpec, SelectCharacterPvPSpec, SelectCharacterFaction)
-		GlueDialog:ShowDialog("SERVER_WAITING")
+	OnAccept = function()
+		C_CharacterServices.BoostCharacter(CharSelectServicesFlowFrame.selectedCharacterIndex, SelectMainProfession, SelectAdditionalProffesion, SelectCharacterSpec, SelectCharacterPvPSpec, SelectCharacterFaction)
 	end,
 	OnCancel = function()
 		CharSelectServicesFlowFrame:Hide()
 	end,
 }
 
-GlueDialogTypes["BOOST_ERROR_NOT_ENOUGH_BONUES"] = {
-	text = NOT_ENOUGH_BONUSES_TO_BUY_A_CHARACTER_BOOST,
+GlueDialogTypes["CHARACTER_SERVICES_NOT_ENOUGH_MONEY"] = {
 	button1 = DONATE,
 	button2 = CLOSE,
-	escapeHides = false,
-	OnAccept = function ()
-		LaunchURL("https://sirus.su/pay?bonuses="..CharacterBoost_CalculatePayBonuses())
+	OnAccept = function()
+		C_CharacterServices.OpenBonusPurchaseWebPage(Enum.CharacterServices.Mode.Boost)
 	end,
 }
 
@@ -59,34 +46,62 @@ local factionLabels = {
 	[2] = FACTION_ALLIANCE,
 }
 
-function CharacterBoost_CharacterInit(isBoostMode)
-	local characterLimit = min(GetNumCharacters(), MAX_CHARACTERS_DISPLAYED)
-
-	for i = 1, characterLimit do
-		local button = _G["CharSelectCharacterButton"..i]
-		if isBoostMode then
-			local name, race, class, level = GetCharacterInfo(GetCharIDFromIndex(i))
-			if level < BOOST_MAX_LEVEL and C_CharacterCreation.IsServicesAvailableForRace(E_PAID_SERVICE.BOOST_SERVICE, C_CreatureInfo.GetRaceInfo(race).raceID) then
-				button:Enable()
-				button:SetBoostMode(true, true)
-
-				if CharacterSelect.selectedIndex == i then
-					button:Click()
-				end
-			else
-				button:Disable()
-				button:SetBoostMode(true)
-			end
-		else
+function CharacterServicesMaster_CharacterInit(isBoostMode)
+	if not isBoostMode then
+		for i = 1, C_CharacterList.GetNumCharactersOnPage() do
+			local button = _G["CharSelectCharacterButton"..i]
 			button:Enable()
 			button:SetBoostMode(false)
 		end
+
+		return
 	end
 
-	if isBoostMode then
-	--	CharSelectServicesFlowFrame.GlowBox:SetSize(310, (66 * characterLimit))
-		CharSelectServicesFlowFrame.GlowBox:SetPoint("TOP", CharacterSelectCharacterFrame, -10, 0)
+	local pendingBoostCharacterListID, pendingBoostCharacterID, pendiongBoostCharacterPageIndex = C_CharacterList.GetPendingBoostDK()
+	if pendingBoostCharacterListID ~= 0 and pendingBoostCharacterID == 0 then
+		CharSelectServicesFlowFrame:Hide()
+		GlueDialog:ShowDialog("OKAY_VOID", CHARACTER_SERVICES_DIALOG_BOOST_NO_CHARACTERS_AVAILABLE_DEATH_KNIGHT)
+		return false
 	end
+
+	local selectedCharacterIndex
+
+	for characterIndex = 1, C_CharacterList.GetNumCharactersOnPage() do
+		local button = _G["CharSelectCharacterButton"..characterIndex]
+
+		local characterID = GetCharIDFromIndex(characterIndex)
+		local name, race, class, level = GetCharacterInfo(characterID)
+
+		if characterID == pendingBoostCharacterID
+		or (pendingBoostCharacterListID == 0 and C_CharacterServices.IsBoostAvailableForLevel(level) and C_CharacterCreation.IsServicesAvailableForRace(E_PAID_SERVICE.BOOST_SERVICE, C_CreatureInfo.GetRaceInfo(race).raceID))
+		then
+			button:Enable()
+			button:SetBoostMode(true, true)
+
+			if CharacterSelect.selectedIndex == characterIndex or characterID == pendingBoostCharacterID then
+				button:Click()
+				CharSelectServicesFlowFrame.NextButton:Click()
+				selectedCharacterIndex = characterIndex
+			end
+		else
+			button:Disable()
+			button:SetBoostMode(true)
+		end
+	end
+
+	if selectedCharacterIndex then
+		for characterIndex = 1, C_CharacterList.GetNumCharactersOnPage() do
+			if characterIndex ~= selectedCharacterIndex then
+				local button = _G["CharSelectCharacterButton"..characterIndex]
+				button:Disable()
+				button:SetBoostMode(true)
+			end
+		end
+	end
+
+	CharSelectServicesFlowFrame.GlowBox:SetPoint("TOP", CharacterSelectCharacterFrame, -10, 0)
+
+	return true
 end
 
 local MainProffesionList = {}
@@ -189,7 +204,7 @@ end
 function CharacterServicesMaster_OnShow( self, ... )
 	CharacterBoostStep = 1
 	SelectCharacterFaction = 0
-	CharSelectServicesFlowFrame.CharSelect = nil
+	CharSelectServicesFlowFrame.selectedCharacterIndex = nil
 
 	CharacterServicesMaster_UpdateSteps()
 
@@ -204,10 +219,11 @@ function CharacterServicesMaster_OnShow( self, ... )
 	CharacterSelectBackButton:Disable()
 	CharSelectCharPageButtonPrev:Disable()
 	CharSelectCharPageButtonNext:Disable()
+	CharSelectCharPagePurchaseButton:Disable()
 
 	self.NextButton:Show()
 
-	self.CharacterServicesMaster.step1.choose.CreateNewCharacter:SetEnabled(not IsCharacterSelectInUndeleteMode())
+	self.CharacterServicesMaster.step1.choose.CreateNewCharacter:SetEnabled(C_CharacterList.IsInPlayableMode() and C_CharacterList.CanCreateCharacter() and (not C_CharacterList.HasPendingBoostDK() or IsGMAccount()))
 
 	self.CharacterServicesMaster.step1.choose:Show()
 	self.CharacterServicesMaster.step1.finish:Hide()
@@ -229,7 +245,9 @@ function CharacterServicesMaster_OnShow( self, ... )
 	self.CharacterServicesMaster.step5.finish:Hide()
 	self.GlowBox:Show()
 
-	CharacterBoost_CharacterInit(true)
+	if not CharacterServicesMaster_CharacterInit(true) then
+		return
+	end
 
 	for i = 1, #MainProffesionList do
 		GlueDark_DropDownMenu_SetSelectedName(ChooseMainProffesionDropDown, nil)
@@ -243,7 +261,7 @@ function CharacterServicesMaster_OnShow( self, ... )
 end
 
 function CharacterServicesMaster_CreateCharacter(self)
-	local success = CharacterSelect_OpenCharacterCreate(nil, nil, function()
+	local success = CharacterSelect_OpenCharacterCreate(E_PAID_SERVICE.BOOST_SERVICE_NEW, nil, function()
 		CharSelectServicesFlowFrame:Hide()
 		CharSelectServicesFlowFrame:Reset()
 		CharacterSelectLeftPanel.CharacterBoostInfoFrame:Show()
@@ -324,25 +342,25 @@ function CharacterServicesMaster_OnHide( self, ... )
 		end
 	end
 
-	if CHARACTER_SELECT_LIST.deleted.numPages > 0 then
+	if C_CharacterList.IsRestoreModeAvailable() then
 		CharSelectChangeListStateButton:Enable()
-	end
-	if GetNumCharacters() > 0 then
-		CharSelectCreateCharacterButton:Enable()
 	end
 
 	CharacterBoostButton:Show()
-	CharSelectEnterWorldButton:Enable()
-	UpdateAddonButton()
+	CharSelectEnterWorldButton:SetEnabled(not C_CharacterList.IsCharacterPendingBoostDK(GetCharIDFromIndex(CharacterSelect.selectedIndex)))
 	CharSelectChangeRealmButton:Enable()
 	CharacterSelectAddonsButton:Enable()
 	CharacterSelectOptionsButton:Enable()
 	CharacterSelectSupportButton:Enable()
 	CharacterSelectBackButton:Enable()
+	CharSelectCharPagePurchaseButton:Enable()
+
+	CharacterSelect_UpdateCharecterCreateButton()
 	CharacterSelect_UpdatePageButton()
+	UpdateAddonButton()
 	UpdateCharacterSelection()
 
-	CharacterBoost_CharacterInit(false)
+	CharacterServicesMaster_CharacterInit(false)
 end
 
 function CharacterServicesMaster_OnKeyDown(self, key)
@@ -360,8 +378,8 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 	if CharacterBoostStep == 1 then
 		local charSelected
 
-		if ( frame.CharSelect ) then
-			local characterID = GetCharIDFromIndex(CharSelectServicesFlowFrame.CharSelect)
+		if ( CharSelectServicesFlowFrame.selectedCharacterIndex ) then
+			local characterID = GetCharIDFromIndex(CharSelectServicesFlowFrame.selectedCharacterIndex)
 			local name, race, class, level = GetCharacterInfo(characterID)
 
 			if C_CharacterCreation.IsServicesAvailableForRace(E_PAID_SERVICE.BOOST_SERVICE, C_CreatureInfo.GetRaceInfo(race).raceID) then
@@ -384,11 +402,11 @@ function CharacterServicesMasterNextButton_OnClick( self, ... )
 				frame.CharacterServicesMaster.step1.finish:Show()
 				frame.GlowBox:Hide()
 
-				for i = 1, math.min(GetNumCharacters(), MAX_CHARACTERS_DISPLAYED) do
-					local button = _G["CharSelectCharacterButton"..i]
+				for characterIndex = 1, C_CharacterList.GetNumCharactersOnPage() do
+					local button = _G["CharSelectCharacterButton"..characterIndex]
 					button.Arrow:Hide()
 
-					if i ~= frame.CharSelect then
+					if characterIndex ~= CharSelectServicesFlowFrame.selectedCharacterIndex then
 						button:Disable()
 					end
 				end
@@ -568,131 +586,6 @@ function CharacterServices_StepFaction_OnLoad(self)
 	end
 end
 
-function CharacterBoost_CalculatePayBonuses()
-	if accountBonusCount and characterBoostPrice then
-		local requiredBonuses = characterBoostPrice - accountBonusCount
-
-		requiredBonuses = requiredBonuses < 10 and 10 or requiredBonuses
-
-		if requiredBonuses > 50 and requiredBonuses < 60 then
-			requiredBonuses = 60
-		elseif requiredBonuses > 100 and requiredBonuses < 120 then
-			requiredBonuses = 120
-		end
-
-		return requiredBonuses or 0
-	end
-end
-
-function CharacterBoostBuyFrameBuyButton_OnClick( self, ... )
-	if self.NoBonus then
-		CharacterBoostBuyFrame:Hide()
-		PlaySound(SOUNDKIT.GS_LOGIN_NEW_ACCOUNT)
-		LaunchURL("https://sirus.su/pay?bonuses="..CharacterBoost_CalculatePayBonuses())
-	else
-		PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
-		CharacterBoostBuyFrame:Hide()
-		C_GluePackets:SendPacket(C_GluePackets.OpCodes.RequestBoostBuy)
-		GlueDialog:ShowDialog("SERVER_WAITING")
-	end
-end
-
-function CharacterBoostBuyFrame_OnLoad(self)
-	local resetFunc = function(this, obj)
-		obj:Hide()
-		obj:ClearAllPoints()
-		obj:SetAlpha(1)
-	end
-
-	self.texturePool = CreateTexturePool(self.Container, "ARTWORK", nil, "GlueDark_fqtcAngled0", resetFunc)
-
-	local PRICE_WIDTH, PRICE_HEIGHT								= 21, 32
-	local PRICE_WS_WIDTH, PRICE_WS_HEIGHT						= 17, 26
-	local PRICE_SALE_WIDTH, PRICE_SALE_HEIGHT					= 11, 16
-	local PRICE_PADDING_X, PRICE_PADDING_Y						= -1, 1
-	local PRICE_WS_BASE_OFFSET_X, PRICE_WS_BASE_OFFSET_Y		= -21, 0
-	local PRICE_SALE_BASE_OFFSET_X, PRICE_SALE_BASE_OFFSET_Y	= 38, 5
-
-	self.SetPrice = function(this, price, oldPrice)
-		if oldPrice == price then
-			oldPrice = nil
-		end
-
-		price = tostring(price)
-		this.texturePool:ReleaseAll()
-
-		if price == "" or price == "0" or price == "nil" then
-			this.Container.NoPrice:Show()
-			this.Container.CurrencyIconPrice:Hide()
-			this.Container.StrikeThrough:Hide()
-			this.Container.BuyButton:SetText(CHARACTER_SERVICES_USE)
-			return
-		else
-			this.Container.NoPrice:Hide()
-			this.Container.CurrencyIconPrice:Show()
-			this.Container.BuyButton:SetText(CHARACTER_SERVICES_BUY)
-		end
-
-		local haveOldPrice, firstTexture, prevTexture
-		local length
-
-		while price do
-			length = string.len(price)
-			for i = 1, length do
-				local number = string.sub(price, i, i)
-				local texture = this.texturePool:Acquire()
-				texture:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-fqtcAngled"..number], 3, 6))
-
-				if haveOldPrice then
-					texture:SetSize(PRICE_SALE_WIDTH, PRICE_SALE_HEIGHT)
-					texture:SetAlpha(0.8)
-				elseif oldPrice then
-					texture:SetSize(PRICE_WS_WIDTH, PRICE_WS_HEIGHT)
-				else
-					texture:SetSize(PRICE_WIDTH, PRICE_HEIGHT)
-				end
-
-				if i == 1 then
-					firstTexture = texture
-
-					if haveOldPrice then	-- preSale price position
-						texture:SetPoint("CENTER", this.Container.SaleBackdrop, "CENTER", PRICE_SALE_BASE_OFFSET_X + -(math.ceil((length * (PRICE_SALE_WIDTH + PRICE_PADDING_X) - PRICE_PADDING_X) / 2)), PRICE_SALE_BASE_OFFSET_Y + length * -PRICE_PADDING_Y)
-					elseif oldPrice then	-- sale price position
-						texture:SetPoint("CENTER", this.Container.SaleBackdrop, "CENTER", PRICE_WS_BASE_OFFSET_X + (math.ceil((length * (-PRICE_WS_WIDTH + PRICE_PADDING_X) - PRICE_PADDING_X) / 2)), PRICE_WS_BASE_OFFSET_Y + length * -PRICE_PADDING_Y)
-					else					-- price position
-						texture:SetPoint("CENTER", this.Container.SaleBackdrop, "CENTER", math.ceil(length * (-PRICE_WIDTH + PRICE_PADDING_X) / 2), length * -PRICE_PADDING_Y)
-					end
-				else
-					texture:SetPoint("BOTTOMLEFT", prevTexture, "BOTTOMRIGHT", PRICE_PADDING_X, PRICE_PADDING_Y)
-				end
-
-				texture:Show()
-				prevTexture = texture
-			end
-
-			if not haveOldPrice then
-				price = oldPrice and tostring(oldPrice) or nil
-				haveOldPrice = price and true or false
-			else
-				break
-			end
-		end
-
-		if haveOldPrice then
-			this.Container.CurrencyIconPrice:SetPoint("CENTER", "$parentSaleBackdrop", 4, 0)
-
-			this.Container.StrikeThrough:SetRotation(math.rad(4 + length * 2))
-			this.Container.StrikeThrough:ClearAllPoints()
-			this.Container.StrikeThrough:SetPoint("BOTTOMLEFT", firstTexture, "BOTTOMLEFT", 0, PRICE_SALE_HEIGHT / 2 - 15)
-			this.Container.StrikeThrough:SetPoint("BOTTOMRIGHT", prevTexture, "BOTTOMRIGHT", 2, PRICE_SALE_HEIGHT / 2 - 3)
-			this.Container.StrikeThrough:Show()
-		else
-			this.Container.CurrencyIconPrice:SetPoint("CENTER", "$parentSaleBackdrop", 30, 2)
-			this.Container.StrikeThrough:Hide()
-		end
-	end
-end
-
 function CharacterServicesMaster_UpdateSteps()
 	if CharacterBoostButton.isBoostPVPEnabled then
 		CharacterServicesMaster.step5:SetPoint("TOP", 0, -340)
@@ -755,39 +648,48 @@ function CharacterServicesMaster_OnLoad(self)
 
 	CharacterServicesMaster_UpdateSteps()
 
-	self:RegisterEvent("SERVER_SPLIT_NOTICE")
+	self:RegisterCustomEvent("CHARACTER_SERVICES_BOOST_STATUS_UPDATE")
+	self:RegisterCustomEvent("CHARACTER_SERVICES_BOOST_PURCHASE_STATUS")
+	self:RegisterCustomEvent("CHARACTER_SERVICES_BOOST_UTILIZATION_STATUS")
+	self:RegisterCustomEvent("CHARACTER_SERVICES_BOOST_OPEN")
 end
 
-function CharacterServicesMaster_OnEvent( self, event, ts, ss, body )
-	local opcode, status, content = string.split(":", body, 3)
-	status = tonumber(status)
+function CharacterServicesMaster_OnEvent(self, event, ...)
+	if event == "CHARACTER_SERVICES_BOOST_OPEN" then
+		local characterIndex = ...
+		CharacterSelect_OpenBoost(characterIndex, true)
+	elseif event == "CHARACTER_SERVICES_BOOST_STATUS_UPDATE" then
+		local status = ...
 
-	if opcode and status then
-		if opcode == "SMSG_BOOST_STATUS" then
-			local boostPrice, balance, haveDiscount, newPrice, isPersonalSale, seconds, expireAt, isPVP = string.split(":", content)
+		local isDisabled = status == Enum.CharacterServices.BoostServiceStatus.Disabled
 
-			boostPrice = tonumber(boostPrice)
-			balance = tonumber(balance)
-			haveDiscount = tonumber(haveDiscount) == 1
-			newPrice = tonumber(newPrice)
-			isPersonalSale = tonumber(isPersonalSale) == 1
-			seconds = tonumber(seconds)
-			expireAt = tonumber(expireAt)
-			isPVP = tonumber(isPVP) == 1
+		local statusFrame = CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1
 
-			local statusFrame = CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1
+		CharacterBoostButton_UpdateState(isDisabled)
 
-			CharacterBoostButton.isBoostDisable = status == -1
-			CharacterBoostButton_UpdateState(CharacterBoostButton.isBoostDisable)
-			CharacterBoostButton.isBoostPVPEnabled = isPVP
+		if isDisabled then
+			if CharacterBoostButton.ticker then
+				CharacterBoostButton.ticker:Cancel()
+				CharacterBoostButton.ticker = nil
+			end
 
-			CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1:SetShown(status ~= 0)
-			CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2:SetShown(status == 0 and boostPrice and balance)
+			CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1.Status:SetText(UNAVAILABLE)
+			CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1.Status:SetTextColor(1, 0, 0)
+
+			CharacterSelect.AllowService = false
+		else
+			CharacterBoostButton.isBoostPVPEnabled = C_CharacterServices.IsBoostHasPVPEquipment()
+			CharacterBoostButton:SetText(status == Enum.CharacterServices.BoostServiceStatus.Purchased and CHARACTER_SERVICES_USE or CHARACTER_SERVICES_BUY)
+
+			CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1:SetShown(status == Enum.CharacterServices.BoostServiceStatus.Purchased)
+			CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2:SetShown(status == Enum.CharacterServices.BoostServiceStatus.Available)
+
+			local seconds, expireAt = C_CharacterServices.GetBoostTimeleft()
 
 			statusFrame.CharacterBoost:ClearAllPoints()
 			statusFrame.Status:ClearAllPoints()
 
-			if expireAt and expireAt > 0 then
+			if expireAt > 0 then
 				statusFrame.CharacterBoost:SetPoint("TOP", 0, 0)
 				statusFrame.Status:SetPoint("BOTTOM", 0, 15)
 			else
@@ -795,49 +697,59 @@ function CharacterServicesMaster_OnEvent( self, event, ts, ss, body )
 				statusFrame.Status:SetPoint("BOTTOM", 0, 5)
 			end
 
-			if status == 0 and boostPrice and balance then
-				local cost = newPrice ~= 0 and newPrice or boostPrice
-				local discountAmount = math.floor(( 1 - (newPrice / boostPrice)) * 100)
 
-				accountBonusCount = balance
-				characterBoostPrice = cost
+			if status == Enum.CharacterServices.BoostServiceStatus.Purchased then
+				statusFrame.TimeRemaning:SetShown(expireAt and expireAt > 0)
 
-				if haveDiscount and newPrice == 0 then
-					CharacterBoostBuyFrame:SetPrice(0) -- CHARACTER_SERVICES_BOOST_COST_FREE
+				if expireAt and expireAt > 0 then
+					statusFrame.TimeRemaning.Timestamp = time() + expireAt
+
+					local remaningTime = statusFrame.TimeRemaning.Timestamp - time()
+
+					statusFrame.TimeRemaning:SetFormattedText(TIME_REMANING, GetRemainingTime(remaningTime, true))
+
+					if statusFrame.TimeRemaning.Timer then
+						statusFrame.TimeRemaning.Timer:Cancel()
+						statusFrame.TimeRemaning.Timer = nil
+					end
+
+					if remaningTime <= 86400 then
+						statusFrame.TimeRemaning.Timer = C_Timer:NewTicker(1, function()
+							local remaningTime2 = statusFrame.TimeRemaning.Timestamp - time()
+							statusFrame.TimeRemaning:SetFormattedText(TIME_REMANING, GetRemainingTime(remaningTime2, true))
+						end)
+					end
+				end
+
+				CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1.Status:SetText(AVAILABLE)
+				CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1.Status:SetTextColor(0, 1, 0)
+
+				CharacterSelect.AllowService = true
+			else
+				local balance = C_CharacterServices.GetBalance()
+				local price, priceOriginal, discount = C_CharacterServices.GetBoostPrice()
+
+				if price == 0 then
+					CharacterBoostBuyFrame:SetPrice(0)
 				else
-					CharacterBoostBuyFrame:SetPrice(cost, boostPrice)
+					CharacterBoostBuyFrame:SetPrice(price, priceOriginal)
 				end
 
-				local actualPrice = newPrice > 0 and newPrice or boostPrice
+				CharacterBoostBuyFrame:UpdateBalance()
 
-				if actualPrice ~= 0 and balance < actualPrice and not C_Service:IsGM() then
-					CharacterBoostBuyFrame.Container.BuyButton:SetText(REPLENISH)
-					CharacterBoostBuyFrame.Container.BuyButton.NoBonus = true
-				else
-					CharacterBoostBuyFrame.Container.BuyButton:SetText(CHARACTER_SERVICES_BUY)
-					CharacterBoostBuyFrame.Container.BuyButton.NoBonus = false
-				end
-
-				CharacterBoostBuyFrame.Container.MyBonus:SetFormattedText(CHARACTER_SERVICES_YOU_HAVE_BONUS, balance)
-
---[[
-				if boostPrice == 0 then
-					CharacterBoostButton:Hide()
-					return
-				end
-]]
 				if CharacterBoostButton.ticker then
 					CharacterBoostButton.ticker:Cancel()
 					CharacterBoostButton.ticker = nil
 				end
 
-				if seconds < 86400 then
+				if seconds < SECONDS_PER_DAY then
 					CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status1:SetTextColor(1, 0, 0)
 				else
 					CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status1:SetTextColor(1, 1, 1)
 				end
 
-				if newPrice > 0 then
+				if price ~= priceOriginal then
+					local isPersonalSale = C_CharacterServices.IsBoostPersonal()
 					CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status1:SetText(isPersonalSale and CHARACTER_SERVICES_PERSONAL_OFFER or CHARACTER_SERVICES_SPECIAL_OFFER)
 
 					local tick = 0
@@ -868,106 +780,63 @@ function CharacterServicesMaster_OnEvent( self, event, ts, ss, body )
 						end
 					end, seconds)
 
-					CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status2:SetFormattedText(CHARACTER_SERVICES_DISCOUNT, discountAmount)
+					CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status2:SetFormattedText(CHARACTER_SERVICES_DISCOUNT, discount)
 				end
 
-				if newPrice == 0 and haveDiscount then
+				if price == 0 then
 					CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status1:SetText(CHARACTER_SERVICES_VIP_GIFT)
 					CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status2:SetText(CHARACTER_SERVICES_BOOST_FREE)
-				elseif status ~= 1 and newPrice == 0 and not haveDiscount then
+				else
 					CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status1:SetText(CHARACTER_SERVICES_BUYBOOST)
-					CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status2:SetFormattedText(CHARACTER_SERVICES_COST, cost)
+					CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2.Status2:SetFormattedText(CHARACTER_SERVICES_COST, price)
 				end
 
 				CharacterSelect.AllowService = false
-			elseif status == 1 then
-				statusFrame.TimeRemaning:SetShown(expireAt and expireAt > 0)
-
-				if expireAt and expireAt > 0 then
-					statusFrame.TimeRemaning.Timestamp = time() + expireAt
-
-					local remaningTime = statusFrame.TimeRemaning.Timestamp - time()
-
-					statusFrame.TimeRemaning:SetFormattedText(TIME_REMANING, GetRemainingTime(remaningTime, true))
-
-					if statusFrame.TimeRemaning.Timer then
-						statusFrame.TimeRemaning.Timer:Cancel()
-						statusFrame.TimeRemaning.Timer = nil
-					end
-
-					if remaningTime <= 86400 then
-						statusFrame.TimeRemaning.Timer = C_Timer:NewTicker(1, function()
-							local remaningTime2 = statusFrame.TimeRemaning.Timestamp - time()
-							statusFrame.TimeRemaning:SetFormattedText(TIME_REMANING, GetRemainingTime(remaningTime2, true))
-						end)
-					end
-				end
-
-				CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1.Status:SetText(AVAILABLE)
-				CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1.Status:SetTextColor(0, 1, 0)
-
-				CharacterSelect.AllowService = true
-			else -- status == -1
-				if CharacterBoostButton.ticker then
-					CharacterBoostButton.ticker:Cancel()
-					CharacterBoostButton.ticker = nil
-				end
-
-				CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1.Status:SetText(UNAVAILABLE)
-				CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1.Status:SetTextColor(1, 0, 0)
-
-				CharacterSelect.AllowService = false
-			end
-
-			CharacterBoostButton:SetText(CharacterSelect.AllowService and CHARACTER_SERVICES_USE or CHARACTER_SERVICES_BUY)
-		elseif opcode == "SMSG_BUY_BOOST_RESULT" then
-			GlueDialog:HideDialog("SERVER_WAITING")
-
-			if status == 0 then
-				C_GluePackets:SendPacket(C_GluePackets.OpCodes.RequestBoostStatus)
-
-				if CharacterBoostButton.ticker then
-					CharacterBoostButton.ticker:Cancel()
-					CharacterBoostButton.ticker = nil
-				end
-
-				CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1:Show()
-				CharacterBoostBuyFrame:Hide()
-
-				if not CharSelectServicesFlowFrame:IsShown() then
-					CharSelectServicesFlowFrame:Show()
-				end
-
-				GlueDialog:ShowDialog("OKAY", CHARACTER_SERVICES_BUY_BOOST_RESULT)
-			elseif status == 1 then
-				CharacterBoostBuyFrame:Hide()
-				GlueDialog:ShowDialog("BOOST_ERROR_NOT_ENOUGH_BONUES")
-			elseif status == 11 then
-				GlueDialog:ShowDialog("OKAY_HTML", CHARACTER_BOOST_DISABLE_SUSPECT_ACCOUNT)
-			elseif status then
-				local errorText = _G[string.format("CHARACTER_SERVICES_BOOST_ERROR_%d", status)]
-				if errorText then
-					GlueDialog:ShowDialog("OKAY", errorText)
-				end
-			end
-		elseif opcode == "SMG_FINISH_BOOST_RESULT" then
-			GlueDialog:HideDialog("SERVER_WAITING")
-
-			if status == 0 then
-				CharSelectServicesFlowFrame:Hide()
-				GetCharacterListUpdate()
-				CharacterSelect.AutoEnterWorld = true
-			elseif status == 6 or status == 11 then
-				GlueDialog:ShowDialog("OKAY_HTML", CHARACTER_BOOST_DISABLE_SUSPECT_ACCOUNT)
-				CharSelectServicesFlowFrame:Hide()
-			elseif status == 12 then
-				GlueDialog:ShowDialog("OKAY", CHARACTER_BOOST_DISABLE_REALM)
-				CharSelectServicesFlowFrame:Hide()
-			else
-				GlueDialog:ShowDialog("OKAY", CHARACTER_SERVICES_BOOST_ERROR .. status)
-				CharSelectServicesFlowFrame:Hide()
 			end
 		end
+	elseif event == "CHARACTER_SERVICES_BOOST_PURCHASE_STATUS" then
+		local success = ...
+
+		if success then
+			if CharacterBoostButton.ticker then
+				CharacterBoostButton.ticker:Cancel()
+				CharacterBoostButton.ticker = nil
+			end
+
+			CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1:Show()
+			CharSelectServicesFlowFrame:Show()
+		end
+
+		CharacterBoostBuyFrame:Hide()
+	elseif event == "CHARACTER_SERVICES_BOOST_UTILIZATION_STATUS" then
+		local success = ...
+
+		if success then
+			CharacterSelect.AutoEnterWorld = true
+		end
+
+		self:Hide()
+	end
+end
+
+function CharacterServicesMaster_HidePanel(self)
+	local pendingBoostCharacterListID, pendingBoostCharacterID, pendiongBoostCharacterPageIndex = C_CharacterList.GetPendingBoostDK()
+	if pendingBoostCharacterListID ~= 0 and pendiongBoostCharacterPageIndex == C_CharacterList.GetCurrentPageIndex() and not IsGMAccount() then
+		GlueDialog:ShowDialog("LOCK_BOOST_ENTER_WORLD", CHARACTER_SERVICES_DIALOG_BOOST_CANCEL_DEATH_KNIGHT)
+	else
+		self:Hide()
+	end
+end
+
+function CharacterServicesMaster_OnWorldEnterAttempt()
+	local characterID = GetCharIDFromIndex(CharacterSelect.selectedIndex)
+	local _, _, class = GetCharacterInfo(characterID)
+	local classInfo = C_CreatureInfo.GetClassInfo(class)
+
+	if classInfo.classFile == "DEATHKNIGHT" and C_CharacterList.HasPendingBoostDK() then
+		GlueDialog:ShowDialog("LOCK_BOOST_ENTER_WORLD", CHARACTER_SERVICES_DIALOG_BOOST_ENTER_WORLD_DEATH_KNIGHT)
+	else
+		GlueDialog:ShowDialog("LOCK_BOOST_ENTER_WORLD", CHARACTER_SERVICES_DIALOG_BOOST_ENTER_WORLD)
 	end
 end
 
@@ -980,4 +849,247 @@ function CharacterBoostButton_UpdateState( state )
 	end
 	CharacterBoostButton:SetEnabled(not state)
 	CharacterSelectLeftPanel.CharacterBoostInfoFrame:SetShown(not state)
+end
+
+CharacterServiceDialogPriceMixin = {}
+function CharacterServiceDialogPriceMixin:OnLoad()
+	self.texturePool = CreateTexturePool(self.Container, "ARTWORK", nil, "GlueDark_fqtcAngled0", function(this, obj)
+		obj:Hide()
+		obj:ClearAllPoints()
+		obj:SetAlpha(1)
+	end)
+
+	self.Container.TopShadow:SetVertexColor(0, 0, 0, 0.7)
+	self.Container.Balance:SetPoint("TOP", self.Container.BuyButton, "BOTTOM", -11, -8)
+
+	self.Container.Title:SetText(self:GetAttributeGlobalString("Title"))
+	self.Container.PreDescription:SetText(self:GetAttributeGlobalString("PreDescription"))
+	self.Container.Description:SetText(self:GetAttributeGlobalString("Description"))
+	self.Container.Warning:SetText(self:GetAttributeGlobalString("WarningHTML"))
+
+	local artworkAtlas = self:GetAttribute("ArtworkAtlas")
+	if artworkAtlas then
+		self.Container.Artwork:SetAtlas(artworkAtlas)
+	else
+		self.Container.Artwork:Hide()
+	end
+
+	self:RegisterCustomEvent("ACCOUNT_BALANCE_UPDATE")
+end
+
+function CharacterServiceDialogPriceMixin:OnEvent(event, ...)
+	if event == "ACCOUNT_BALANCE_UPDATE" then
+		self:UpdateBalance()
+	end
+end
+
+function CharacterServiceDialogPriceMixin:OnShow()
+	self:UpdateBalance()
+end
+
+function CharacterServiceDialogPriceMixin:GetAttributeGlobalString(attribute, fallback)
+	local str = self:GetAttribute(attribute)
+	if not str or str == "" then
+		return fallback or ""
+	end
+	return _G[str] or fallback or ""
+end
+
+function CharacterServiceDialogPriceMixin:UpdateBalance()
+	local balance = C_CharacterServices.GetBalance()
+
+	self.Container.Balance:SetFormattedText(CHARACTER_SERVICES_YOU_HAVE_BONUS, balance)
+
+	if self.price then
+		if self.price == 0 then
+			self.Container.BuyButton:SetText(self:GetAttributeGlobalString("FreeUseText", CHARACTER_SERVICES_FREE_USE))
+		elseif balance >= self.price or IsGMAccount(true) then
+			self.Container.BuyButton:SetText(self:GetAttributeGlobalString("PurchaseText", CHARACTER_SERVICES_BUY))
+		else
+			self.Container.BuyButton:SetText(REPLENISH)
+		end
+	end
+end
+
+function CharacterServiceDialogPriceMixin:SetPrice(price, priceBase)
+	local PRICE_WIDTH, PRICE_HEIGHT								= 21, 32
+	local PRICE_WS_WIDTH, PRICE_WS_HEIGHT						= 17, 26
+	local PRICE_SALE_WIDTH, PRICE_SALE_HEIGHT					= 11, 16
+	local PRICE_PADDING_X, PRICE_PADDING_Y						= -1, 1
+	local PRICE_WS_BASE_OFFSET_X, PRICE_WS_BASE_OFFSET_Y		= -21, 0
+	local PRICE_SALE_BASE_OFFSET_X, PRICE_SALE_BASE_OFFSET_Y	= 38, 5
+
+	if priceBase == price then
+		priceBase = nil
+	end
+
+	price = tostring(price)
+	self.price = tonumber(price)
+
+	if self.OnPriceChanged then
+		self:OnPriceChanged(self.price)
+	end
+
+	self.texturePool:ReleaseAll()
+
+	if not self.price or self.price <= 0 then
+		self.Container.Balance:Hide()
+		self.Container.BalanceCurrencyIcon:Hide()
+		self.Container.NoPrice:Show()
+		self.Container.PriceCurrencyIcon:Hide()
+		self.Container.StrikeThrough:Hide()
+		return
+	else
+		self.Container.Balance:Show()
+		self.Container.BalanceCurrencyIcon:Show()
+		self.Container.NoPrice:Hide()
+		self.Container.PriceCurrencyIcon:Show()
+	end
+
+	local haveBasePrice, firstTexture, prevTexture
+	local length
+
+	while price do
+		length = string.len(price)
+		for i = 1, length do
+			local number = string.sub(price, i, i)
+			local texture = self.texturePool:Acquire()
+			texture:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-fqtcAngled"..number], 3, 6))
+
+			if haveBasePrice then
+				texture:SetSize(PRICE_SALE_WIDTH, PRICE_SALE_HEIGHT)
+				texture:SetAlpha(0.8)
+			elseif priceBase then
+				texture:SetSize(PRICE_WS_WIDTH, PRICE_WS_HEIGHT)
+			else
+				texture:SetSize(PRICE_WIDTH, PRICE_HEIGHT)
+			end
+
+			if i == 1 then
+				firstTexture = texture
+
+				if haveBasePrice then	-- preSale price position
+					texture:SetPoint("CENTER", self.Container.SaleBackdrop, "CENTER", PRICE_SALE_BASE_OFFSET_X + -(math.ceil((length * (PRICE_SALE_WIDTH + PRICE_PADDING_X) - PRICE_PADDING_X) / 2)), PRICE_SALE_BASE_OFFSET_Y + length * -PRICE_PADDING_Y)
+				elseif priceBase then	-- sale price position
+					texture:SetPoint("CENTER", self.Container.SaleBackdrop, "CENTER", PRICE_WS_BASE_OFFSET_X + (math.ceil((length * (-PRICE_WS_WIDTH + PRICE_PADDING_X) - PRICE_PADDING_X) / 2)), PRICE_WS_BASE_OFFSET_Y + length * -PRICE_PADDING_Y)
+				else					-- price position
+					texture:SetPoint("CENTER", self.Container.SaleBackdrop, "CENTER", math.ceil(length * (-PRICE_WIDTH + PRICE_PADDING_X) / 2), length * -PRICE_PADDING_Y)
+				end
+			else
+				texture:SetPoint("BOTTOMLEFT", prevTexture, "BOTTOMRIGHT", PRICE_PADDING_X, PRICE_PADDING_Y)
+			end
+
+			texture:Show()
+			prevTexture = texture
+		end
+
+		if not haveBasePrice then
+			price = priceBase and tostring(priceBase) or nil
+			haveBasePrice = price and true or false
+		else
+			break
+		end
+	end
+
+	if haveBasePrice then
+		self.Container.PriceCurrencyIcon:SetPoint("CENTER", "$parentSaleBackdrop", 4, 0)
+
+		self.Container.StrikeThrough:SetRotation(math.rad(4 + length * 2))
+		self.Container.StrikeThrough:ClearAllPoints()
+		self.Container.StrikeThrough:SetPoint("BOTTOMLEFT", firstTexture, "BOTTOMLEFT", 0, PRICE_SALE_HEIGHT / 2 - 15)
+		self.Container.StrikeThrough:SetPoint("BOTTOMRIGHT", prevTexture, "BOTTOMRIGHT", 2, PRICE_SALE_HEIGHT / 2 - 3)
+		self.Container.StrikeThrough:Show()
+	else
+		self.Container.PriceCurrencyIcon:SetPoint("CENTER", "$parentSaleBackdrop", 30, 2)
+		self.Container.StrikeThrough:Hide()
+	end
+end
+
+function CharacterServiceDialogPriceMixin:SetPurchaseArgs(...)
+	self.purchaseArgs = {...}
+end
+
+CharacterServiceBoostPurchaseMixin = CreateFromMixins(CharacterServiceDialogPriceMixin)
+
+function CharacterServiceBoostPurchaseMixin:OnLoad()
+	CharacterServiceDialogPriceMixin.OnLoad(self)
+end
+
+function CharacterServiceBoostPurchaseMixin:Purchase()
+	if C_CharacterServices.GetBalance() >= C_CharacterServices.GetBoostPrice() or IsGMAccount(true) then
+		PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
+		self:Hide()
+		C_CharacterServices.PurchaseBoost()
+	else
+		PlaySound(SOUNDKIT.GS_LOGIN_NEW_ACCOUNT)
+		self:Hide()
+		C_CharacterServices.OpenBonusPurchaseWebPage(Enum.CharacterServices.Mode.Boost)
+	end
+end
+
+CharacterServiceRestoreCharacterMixin = CreateFromMixins(CharacterServiceDialogPriceMixin)
+
+function CharacterServiceRestoreCharacterMixin:OnLoad()
+	CharacterServiceDialogPriceMixin.OnLoad(self)
+
+	self.Container.Artwork:SetSize(273, 244)
+	self.Container.Artwork:SetPoint("TOPRIGHT", -15, -80)
+
+	self.Container.Description:SetPoint("TOPLEFT", 18, -103)
+	self.Container.Warning:SetPoint("TOP", self.Container.Description, "BOTTOM", 0, -30)
+end
+
+function CharacterServiceRestoreCharacterMixin:OnPriceChanged(price)
+	if price == 0 then
+		self.Container.Description:SetWidth(300)
+		self.Container.Warning:Show()
+	else
+		self.Container.Description:SetWidth(280)
+		self.Container.Warning:Hide()
+	end
+end
+
+function CharacterServiceRestoreCharacterMixin:Purchase()
+	if C_CharacterServices.GetBalance() >= C_CharacterServices.GetCharacterRestorePrice() or IsGMAccount(true) then
+		PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_DEL_CHARACTER)
+		self:Hide()
+		C_CharacterServices.PurchaseRestoreCharacter(unpack(self.purchaseArgs))
+	else
+		PlaySound(SOUNDKIT.GS_LOGIN_NEW_ACCOUNT)
+		self:Hide()
+		C_CharacterServices.OpenBonusPurchaseWebPage(Enum.CharacterServices.Mode.CharRestore)
+	end
+end
+
+CharacterServicePagePurchaseMixin = CreateFromMixins(CharacterServiceDialogPriceMixin)
+
+function CharacterServicePagePurchaseMixin:OnLoad()
+	CharacterServiceDialogPriceMixin.OnLoad(self)
+
+	self.Container.Artwork:SetSize(291, 254)
+	self.Container.Artwork:SetPoint("TOPRIGHT", -10, -80)
+end
+
+function CharacterServicePagePurchaseMixin:Purchase()
+	if C_CharacterServices.GetBalance() >= C_CharacterServices.GetListPagePrice() or IsGMAccount(true) then
+		PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
+		self:Hide()
+		C_CharacterServices.PurchaseCharacterListPage()
+	else
+		PlaySound(SOUNDKIT.GS_LOGIN_NEW_ACCOUNT)
+		self:Hide()
+		C_CharacterServices.OpenBonusPurchaseWebPage(Enum.CharacterServices.Mode.CharListPage)
+	end
+end
+
+function CharacterServicePagePurchaseMixin:SetAltDescription(isAlt)
+	if isAlt then
+		self.Container.Description:SetPoint("TOPLEFT", 18, -108)
+		self.Container.Description:SetText(CHARACTER_SERVICES_LISTPAGE_DESCRIPTION_ALT)
+		self.Container.Warning:Show()
+	else
+		self.Container.Description:SetPoint("TOPLEFT", 18, -83)
+		self.Container.Description:SetText(CHARACTER_SERVICES_LISTPAGE_DESCRIPTION)
+		self.Container.Warning:Hide()
+	end
 end

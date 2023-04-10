@@ -455,6 +455,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Цвет волос",
 		enGB = "Hair Color"
 	},
+	["HAIR_NORMAL_EYES_COLOR"] = {
+		ruRU = "Цвет глаз",
+		enGB = "Hair Color"
+	},
 	["HAIR_NORMAL_STYLE"] = {
 		ruRU = "Прическа",
 		enGB = "Hair Style"
@@ -464,7 +468,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Hair Style"
 	},
 	["HAIR_VULPERA_COLOR"] = {
-		ruRU = "Не используется",
+		ruRU = "Цвет глаз",
 		enGB = ""
 	},
 	["HAIR_VULPERA_STYLE"] = {

@@ -676,22 +676,7 @@
 						</Attributes>
 						<Scripts>
 							<OnClick>
-								local name = self:GetParent().CreateNameEditBox:GetText()
-								if name == "" then
-									GlueDialog:ShowDialog("OKAY", CHAR_NAME_NO_NAME)
-								else
-									local class = select(2, C_CharacterCreation.GetSelectedClass())
-									local _, _, _, hexColor = GetClassColor(class)
-									local skipCustomization = self:GetParent():GetParent().skipCustomizationConfirmation
-
-									local buttonText = PAID_SERVICE_TYPE ~= nil and ACCEPT or nil
-									local text = PAID_SERVICE_TYPE ~= nil and CONFIRM_PAID_SERVICE or CONFIRM_CHARACTER_CREATE
-									local confirmation = skipCustomization and "" or CONFIRM_CHARACTER_CREATE_CUSTOMIZATION
-									text = string.format(text, hexColor or "ffffff", name or CHARACTER_NO_NAME)
-									text = string.format("%s%s", text, confirmation)
-
-									GlueDialog:ShowDialog(skipCustomization and "CONFIRM_CHARACTER_CREATE" or "CONFIRM_CHARACTER_CREATE_CUSTOMIZATION", text, {name, buttonText})
-								end
+								self:GetParent():CreateCharacter()
 							</OnClick>
 						</Scripts>
 					</Button>

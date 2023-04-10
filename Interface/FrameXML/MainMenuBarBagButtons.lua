@@ -1,3 +1,25 @@
+BagSlotMixin = {};
+
+function BagSlotMixin:GetItemContextMatchResult()
+	return ItemButtonUtil.GetItemContextMatchResultForContainer(self:GetBagID());
+end
+
+function BagSlotMixin:GetBagID()
+	if self:GetID() == 0 then
+		return 0;
+	end
+
+	return (self:GetID() - CharacterBag0Slot:GetID()) + 1;
+end
+
+function BagSlotButton_UpdateAll()
+	MainMenuBarBackpackButton:UpdateItemContextMatching();
+
+	for i=1, NUM_BAG_FRAMES, 1 do
+		local frame = _G["CharacterBag"..(i-1).."Slot"];
+		frame:UpdateItemContextMatching();
+	end
+end
 
 function BagSlotButton_UpdateChecked(self)
 	local translatedID = self:GetID() - CharacterBag0Slot:GetID() + 1;

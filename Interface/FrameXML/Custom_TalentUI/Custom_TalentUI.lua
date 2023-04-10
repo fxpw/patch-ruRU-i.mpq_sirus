@@ -1871,7 +1871,7 @@ function PlayerTalentFrame_UpdateTabs(playerLevel)
     talentTabWidthCache[PET_TALENTS_TAB] = 0;
     tab                                  = _G["PlayerTalentFrameTab" .. PET_TALENTS_TAB];
     local petTalentGroups                = GetNumTalentGroups(false, true);
-    if (tab and petTalentGroups > 0 and HasPetUI()) then
+    if (tab and petTalentGroups > 0 and select(2, HasPetUI())) then
         tab:Show();
         firstShownTab = firstShownTab or tab;
         PanelTemplates_TabResize(tab, 0);

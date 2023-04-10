@@ -5,6 +5,7 @@ C_GluePackets = {}
 C_GluePackets.OpCodes = {
 	RequestBoostStatus				= "0",
 	RequestBoostBuy					= "101",
+	RequestNewPagePurchase			= "0001",
 	RequestBoostCharacter			= "00",
 	RequestCharacterListInfo		= "01",
 	RequestCharacterDeletedList		= "11",
@@ -78,8 +79,6 @@ end
 function C_GluePackets:SendPacket(opcode, ...)
 	self.lastMessage = debugprofilestop()
 
---	printc("SendPacket", opcode, ..., self.lastMessage)
-
 	SetRealmSplitState(2)
 	SetRealmSplitState(2)
 	for o = 1, string.len(opcode) do
@@ -104,8 +103,8 @@ function C_GluePackets:SendPacket(opcode, ...)
 				SetRealmSplitState(0)
 			end
 
-			for s = 1, #bits do
-				SetRealmSplitState(bits[s])
+			for i = 1, #bits do
+				SetRealmSplitState(bits[i])
 			end
 		end
 	end

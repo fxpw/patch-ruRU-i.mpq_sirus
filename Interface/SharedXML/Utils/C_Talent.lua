@@ -1,7 +1,8 @@
---	Filename:	C_Talent.lua
---	Project:	Custom Game Interface
---	Author:		Nyll & Blizzard Entertainment
+local GetNumTalentGroups = GetNumTalentGroups
+local GetActiveTalentGroup = GetActiveTalentGroup
 
+local SELECTED_TALENT_GROUP
+local SELECTED_CURRENCY_ID
 local LAST_SECOND_TALENT_GROUP
 
 C_Talent = {}
@@ -18,42 +19,48 @@ function C_Talent.GetSpecInfoCache()
 end
 
 ---@return number activeTalentGroup
-function C_Talent.GetActiveTalentGroup()
-    return C_Talent.GetSpecInfoCache() and C_Talent.GetSpecInfoCache().activeTalentGroup or 1
+function C_Talent.GetActiveTalentGroup(isInspect, isPet)
+	if isInspect or isPet then
+		return GetActiveTalentGroup(isInspect, isPet)
+	end
+
+	local specInfo = C_Talent.GetSpecInfoCache()
+	return specInfo and specInfo.activeTalentGroup or 1
+end
+
+---@return number numTalentGroups
+function C_Talent.GetNumTalentGroups(isInspect, isPet)
+	if isInspect or isPet then
+		return GetNumTalentGroups(isInspect, isPet)
+	end
+
+	local specInfo = C_Talent.GetSpecInfoCache()
+	return specInfo and #specInfo.talentGroupData or 0
 end
 
 ---@return number selectedTalentGroup
 function C_Talent.GetSelectedTalentGroup()
-    return PlayerTalentFrame.selectedTalentGroup or C_Talent.GetActiveTalentGroup()
-end
-
----@return number numTalentGroups
-function C_Talent.GetNumTalentGroups()
-    return C_Talent.GetSpecInfoCache() and #C_Talent.GetSpecInfoCache().talentGroupData or 0
+	return SELECTED_TALENT_GROUP or C_Talent.GetActiveTalentGroup()
 end
 
 ---@return number lastSecondTalentGroupID
 function C_Talent.GetLastSecondTalentGroup()
-    return LAST_SECOND_TALENT_GROUP
-
-    --return TALENT_CACHE:Get("secondTalentGroupID")
+	return LAST_SECOND_TALENT_GROUP
 end
 
 ---@param secondTalentGroupID number
-function C_Talent.SetLastSecondTalentGroup( secondTalentGroupID )
-    LAST_SECOND_TALENT_GROUP = secondTalentGroupID
-
-    --TALENT_CACHE:Set("secondTalentGroupID", secondTalentGroupID)
+function C_Talent.SetLastSecondTalentGroup(secondTalentGroupID)
+	LAST_SECOND_TALENT_GROUP = secondTalentGroupID
 end
 
 ---@return number selectedCurrencyID
 function C_Talent.GetSelectedCurrency()
-    return PlayerTalentFrame.selectedCurrencyID
+	return SELECTED_CURRENCY_ID
 end
 
 ---@param currencyID number
-function C_Talent.SelectedCurrency( currencyID )
-    PlayerTalentFrame.selectedCurrencyID = currencyID
+function C_Talent.SelectedCurrency(currencyID)
+	SELECTED_CURRENCY_ID = currencyID
 end
 
 ---@return table talentPoints
@@ -105,23 +112,22 @@ end
 ---@param talentGroupID number
 function C_Talent.SendRequestSecondSpec( talentGroupID )
     PlayerTalentFrame.LoadingFrame:Show()
-
-    C_Talent.SetLastSecondTalentGroup(talentGroupID)
-
+	LAST_SECOND_TALENT_GROUP = talentGroupID
     SendServerMessage("ACMSG_SET_SECOND_SPEC", talentGroupID)
 end
 
 ---@param talentGroupID? number
-function C_Talent.SelectTalentGroup( talentGroupID )
-    local lastSecondTalentGroupID = C_Talent.GetLastSecondTalentGroup()
-    talentGroupID = talentGroupID or lastSecondTalentGroupID
+function C_Talent.SelectTalentGroup(talentGroupID)
+	if not talentGroupID then
+		talentGroupID = LAST_SECOND_TALENT_GROUP
+	end
 
     for _, button in pairs(PlayerTalentFrame.specTabs) do
         button:SetChecked(button.specIndex == talentGroupID)
         button.EtherealBorder:SetAlpha(button.specIndex == talentGroupID and 0 or 0.7)
     end
 
-    PlayerTalentFrame.selectedTalentGroup = talentGroupID
+	SELECTED_TALENT_GROUP = talentGroupID
 
     if C_Talent.GetActiveTalentGroup() == talentGroupID then
         selectedSpec                    = "spec1"
@@ -133,7 +139,7 @@ function C_Talent.SelectTalentGroup( talentGroupID )
         selectedSpec                    = "spec2"
         PlayerTalentFrame.talentGroup   = 2
 
-        if not lastSecondTalentGroupID or lastSecondTalentGroupID ~= talentGroupID then
+		if not LAST_SECOND_TALENT_GROUP or LAST_SECOND_TALENT_GROUP ~= talentGroupID then
             C_Talent.SendRequestSecondSpec(talentGroupID)
         else
             PlayerTalentFrame_Refresh()
@@ -142,18 +148,17 @@ function C_Talent.SelectTalentGroup( talentGroupID )
 end
 
 ---@param talentGroupID? number
-function C_Talent.SetActiveTalentGroup( talentGroupID )
-    talentGroupID = talentGroupID or C_Talent.GetLastSecondTalentGroup()
+function C_Talent.SetActiveTalentGroup(talentGroupID)
+	if not talentGroupID then
+		talentGroupID = LAST_SECOND_TALENT_GROUP
+	end
 
-    if talentGroupID > 2 then
-        local selectedCurrencyID = C_Talent.GetSelectedCurrency()
-
-        assert(selectedCurrencyID, "C_Talent.SetActiveTalentGroup: не указана валюта для смены группы талантов.")
-
-        SendServerMessage("ACMSG_ACTIVATE_SPEC", talentGroupID..":"..selectedCurrencyID - 1)
-    else
-        SendServerMessage("ACMSG_ACTIVATE_SPEC", talentGroupID..":-1")
-    end
+	if talentGroupID > 2 then
+		assert(SELECTED_CURRENCY_ID, "C_Talent.SetActiveTalentGroup: не указана валюта для смены группы талантов.")
+		SendServerMessage("ACMSG_ACTIVATE_SPEC", string.format("%i:%i", talentGroupID, SELECTED_CURRENCY_ID - 1))
+	else
+		SendServerMessage("ACMSG_ACTIVATE_SPEC", string.format("%i:%i", talentGroupID, -1))
+	end
 end
 
 enum:E_TALENT_CURRENCY {
@@ -162,25 +167,51 @@ enum:E_TALENT_CURRENCY {
 }
 
 ---@param currencyID number
----@return table currencyInfo
+---@return table? currencyInfo
 function C_Talent.GetCurrencyInfo( currencyID )
     local currencyItemID = E_TALENT_CURRENCY[currencyID]
 
     assert(currencyItemID, "C_Talent.GetCurrencyInfo: не найден ItemID для валюты по currencyID "..currencyID)
 
-    local currencyInfo = {}
+	local currencyName, currencyCount, headerIndex, headerExpandEndIndex
+	local numCurrencies = GetCurrencyListSize()
+	local index = 1
 
-    for i = 1, GetCurrencyListSize() do
-        local name, _, _, _, _, count, _, _, itemID = GetCurrencyListInfo(i)
+	while index <= numCurrencies do
+		local name, isHeader, isExpanded, _, _, count, _, _, itemID = GetCurrencyListInfo(index)
 
-        if currencyItemID == itemID then
-            currencyInfo.name   = name
-            currencyInfo.count  = count
-            currencyInfo.itemID = itemID
+		if isHeader and not isExpanded then
+			ExpandCurrencyList(index, 1)
+			local newNum = GetCurrencyListSize()
+			headerIndex = index
+			headerExpandEndIndex = index + (newNum - numCurrencies)
+			numCurrencies = newNum
+		elseif currencyItemID == itemID then
+			currencyName = name
+			currencyCount = count
+			break
+		elseif index == headerExpandEndIndex then
+			ExpandCurrencyList(headerIndex, 0)
+			numCurrencies = numCurrencies - (headerExpandEndIndex - headerIndex)
+			index = headerIndex
+			headerIndex = nil
+			headerExpandEndIndex = nil
+		end
 
-            return currencyInfo
-        end
-    end
+		index = index + 1
+	end
+
+	if headerIndex then
+		ExpandCurrencyList(headerIndex, 0)
+	end
+
+	if currencyName then
+		return {
+			name	= currencyName,
+			count	= currencyCount,
+			itemID	= currencyItemID,
+		}
+	end
 end
 
 enum:E_TALENT_SETTINGS {
@@ -240,15 +271,15 @@ function C_Talent.SetTalentGroupSettings(name, texture)
     end
 end
 
--- Переопределение дефолтных методов для работы с талантами.
--- Необходимо для корректной работы аддонов и интерфейса в целом.
-
 ---@return number
-function GetNumTalentGroups()
-    return C_Talent.GetNumTalentGroups()
+_G.GetNumTalentGroups = function(isInspect, isPet)
+	return C_Talent.GetNumTalentGroups(isInspect, isPet)
 end
 
 ---@return number
-function GetActiveTalentGroup()
-    return 1
+_G.GetActiveTalentGroup = function(isInspect, isPet)
+	if isInspect or isPet then
+		return GetActiveTalentGroup(isInspect, isPet)
+	end
+	return 1
 end

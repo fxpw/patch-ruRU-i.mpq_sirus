@@ -152,7 +152,7 @@ function RenegadeLadderFrameMixin:GetKingInfo( index )
 
     local kingInfo = kingCache[index]
 
-    kingInfo.areaLocalizedName = C_Map:GetAreaNameByID(kingInfo.areaID) or RENEGADE_LADDER_UNKNOWN_MAP
+	kingInfo.areaLocalizedName = C_Map.GetAreaNameByID(kingInfo.areaID) or RENEGADE_LADDER_UNKNOWN_MAP
 
     return kingInfo
 end

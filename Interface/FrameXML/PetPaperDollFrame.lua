@@ -50,7 +50,7 @@ local tabPoints={
 }
 
 function PetPaperDollFrame_UpdateIsAvailable()
-	if (not C_Service:IsGM() and (not HasPetUI()) ) then
+	if (not IsGMAccount() and (not HasPetUI()) ) then
 		PetPaperDollFrame.hidden = true;
 		CharacterFrameTab2:Hide();
 		CharacterFrameTab3:SetPoint("LEFT", "CharacterFrameTab2", "LEFT", 0, 0);

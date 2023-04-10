@@ -9,17 +9,15 @@ local TIMER_DURATION = 1
 local TIMER_TICKER = 2
 
 local function updateTimers(elapsed, timers, secure)
-	local num = #timers
-	local index = 1
-	while index <= num do
-		local timer = tremove(timers, index)
+	for i = 1, #timers do
+		local timer = tremove(timers, 1)
 		if timer[TIMER_TICKER]._cancelled then
-			num = num - 1
+			-- skip
 		elseif timer[TIMER_DURATION] > elapsed then
 			timer[TIMER_DURATION] = timer[TIMER_DURATION] - elapsed
 			tinsert(timers, timer)
-			index = index + 1
 		else
+			local success, err
 			if secure then
 				success, err = securecall(pcall, timer[TIMER_TICKER]._callback)
 			else
@@ -29,8 +27,6 @@ local function updateTimers(elapsed, timers, secure)
 			if not success then
 				geterrorhandler()(err)
 			end
-
-			num = num - 1
 		end
 	end
 end
@@ -56,7 +52,6 @@ local function addDelayedCall(delay, func)
 	end
 end
 
-
 C_Timer = {}
 
 local TickerPrototype = {}
@@ -70,7 +65,7 @@ function C_Timer:NewTicker(duration, callback, iterations)
 	ticker._remainingIterations = iterations
 	ticker._duration = duration
 	ticker._callback = function()
-		callback(ticker)
+		securecall(callback, ticker)
 
 		if ticker._remainingIterations then
 			ticker._remainingIterations = ticker._remainingIterations - 1

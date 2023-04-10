@@ -1,9 +1,3 @@
---	Filename:	Sirus_PVPUI.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 CONQUEST_SIZE_STRINGS = { ARENA_INSPECT_BRECKET_1, ARENA_INSPECT_BRECKET_2, ARENA_INSPECT_BRECKET_3, ARENA_INSPECT_BRECKET_4, ARENA_INSPECT_BRECKET_5 }
 CONQUEST_SIZES = { 1, 2, 3 }
 CONQUEST_BUTTONS = {}
@@ -882,7 +876,7 @@ function HonorFrameSpecificList_Update()
 					button.longDescription = BGData.longDescription
 				end
 
-				if C_Service:IsGM() or IsDevClient() then
+				if IsGMAccount() or IsDevClient() then
 					localizedName = localizedName .. " - " .. BattleGroundID
 				end
 

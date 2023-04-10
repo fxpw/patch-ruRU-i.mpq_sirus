@@ -309,6 +309,82 @@ function C_Item.GetItemEquipLocID(itemEquipLoc)
 	return itemInvTypeToID[itemEquipLoc]
 end
 
+function C_Item.DoesItemExist(itemLocation)
+	if type(itemLocation) ~= "table" or type(itemLocation.HasAnyLocation) ~= "function" then
+		error("Usage: local itemExist = C_Item.DoesItemExist(itemLocation)", 2);
+	end
+
+	if itemLocation:IsValid() then
+		return true;
+	else
+		return false;
+	end
+end
+
+function C_Item.GetItemID(itemLocation)
+	if type(itemLocation) ~= "table" or type(itemLocation.HasAnyLocation) ~= "function" or not itemLocation:HasAnyLocation() then
+		error("Usage: local itemID = C_Item.GetItemID(itemLocation)", 2);
+	end
+
+	if itemLocation:IsEquipmentSlot() then
+		return GetInventoryItemID("player", itemLocation:GetEquipmentSlot());
+	elseif itemLocation:IsBagAndSlot() then
+		return GetContainerItemID(itemLocation:GetBagAndSlot());
+	end
+end
+
+function C_Item.GetItemLink(itemLocation)
+	if type(itemLocation) ~= "table" or type(itemLocation.HasAnyLocation) ~= "function" or not itemLocation:HasAnyLocation() then
+		error("Usage: local itemLink = C_Item.GetItemLink(itemLocation)", 2);
+	end
+
+	if itemLocation:IsEquipmentSlot() then
+		return GetInventoryItemLink("player", itemLocation:GetEquipmentSlot());
+	elseif itemLocation:IsBagAndSlot() then
+		return GetContainerItemLink(itemLocation:GetBagAndSlot());
+	end
+end
+
+function C_Item.GetItemQuality(itemLocation)
+	if type(itemLocation) ~= "table" or type(itemLocation.HasAnyLocation) ~= "function" or not itemLocation:HasAnyLocation() then
+		error("Usage: local itemQuality = C_Item.GetItemQuality(itemLocation)", 2);
+	end
+
+	if itemLocation:IsEquipmentSlot() then
+		local itemLink = GetInventoryItemLink("player", itemLocation:GetEquipmentSlot());
+		if itemLink then
+			local _, _, itemQuality = GetItemInfo(itemLink);
+			return itemQuality;
+		end
+	elseif itemLocation:IsBagAndSlot() then
+		local itemLink = GetContainerItemLink(itemLocation:GetBagAndSlot());
+		if itemLink then
+			local _, _, itemQuality = GetItemInfo(itemLink);
+			return itemQuality;
+		end
+	end
+end
+
+function C_Item.GetItemIcon(itemLocation)
+	if type(itemLocation) ~= "table" or type(itemLocation.HasAnyLocation) ~= "function" or not itemLocation:HasAnyLocation() then
+		error("Usage: local itemIcon = C_Item.GetItemIcon(itemLocation)", 2);
+	end
+
+	if itemLocation:IsEquipmentSlot() then
+		local itemID = GetInventoryItemID("player", itemLocation:GetEquipmentSlot());
+		if itemID then
+			local _, _, _, _, _, _, _, _, _, itemIcon = GetItemInfo(itemID);
+			return itemIcon;
+		end
+	elseif itemLocation:IsBagAndSlot() then
+		local itemID = GetContainerItemID(itemLocation:GetBagAndSlot());
+		if itemID then
+			local _, _, _, _, _, _, _, _, _, itemIcon = GetItemInfo(itemID);
+			return itemIcon;
+		end
+	end
+end
+
 do
 	for i = 0, 7 do
 		local _, _, _, hex = GetItemQualityColor(i)

@@ -29,6 +29,8 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
+				Mixin(self, BagSlotMixin);
+
 				PaperDollItemSlotButton_OnLoad(self);
 				self:RegisterEvent("BAG_UPDATE");
 				self.isBag = 1;
@@ -98,6 +100,8 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
+				Mixin(self, BagSlotMixin);
+
 				self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
 				MainMenuBarBackpackButtonIconTexture:SetTexture("Interface\\Buttons\\Button-Backpack-Up");
 				self:RegisterEvent("PLAYER_ENTERING_WORLD");

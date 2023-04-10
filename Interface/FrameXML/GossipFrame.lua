@@ -80,7 +80,7 @@ function GossipFrameAvailableQuestsUpdate(...)
 		end
 		local titleButton = _G["GossipTitleButton" .. GossipFrame.buttonIndex];
 		local titleButtonIcon = _G[titleButton:GetName() .. "GossipIcon"];
-		local titleText, isTrivial, isDaily, isRepeatable = select(i, ...);
+		local titleText, _, isTrivial, isDaily, isRepeatable = select(i, ...);
 		if ( isDaily ) then
 			titleButtonIcon:SetTexture("Interface\\GossipFrame\\DailyQuestIcon");
 		elseif ( isRepeatable ) then

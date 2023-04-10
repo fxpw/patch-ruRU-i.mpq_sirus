@@ -23,11 +23,19 @@ local WORLDMAP_POI_MAX_X			-- changes based on current scale, see WorldMapFrame_
 local WORLDMAP_POI_MAX_Y			-- changes based on current scale, see WorldMapFrame_SetPOIMaxBounds
 
 local WORLDMAP_CONTINENTS = {
-	[EASTERN_KINGDOMS] = 1,
 	[KALIMDOR] = 1,
-	[OUTLAND] = 1,
-	[NORTHREND] = 1,
-	[FELYARD] = 1,
+	[EASTERN_KINGDOMS] = 2,
+	[OUTLAND] = 3,
+	[NORTHREND] = 4,
+--	[FORBES_ISLAND] = 5,
+	[FELYARD] = 6,
+	[GILNEAS] = 7,
+	[LOST_ISLAND] = 8,
+	[RISING_DEPTHS] = 9,
+	[MANGROVE_ISLAND] = 10,
+	[TELABIM] = 11,
+	[TOLGAROD] = 12,
+	[ANDRAKKIS] = 13,
 };
 
 BAD_BOY_UNITS = {}
@@ -736,7 +744,7 @@ function WorldMapFrame_Update()
 			end
 
 			if textureIndex == 41 or (textureIndex == 174 and C_Service:GetRealmID() == E_REALM_ID.ALGALON) then
-				worldMapPOI:SetShown(C_Service:IsGM())
+				worldMapPOI:SetShown(IsGMAccount())
 			else
 				worldMapPOI:Show()
 			end
@@ -970,7 +978,7 @@ function WorldMapFrame_LoadContinents(...)
 	for i=1, select("#", ...), 1 do
 		local text = select(i, ...)
 
-		if WORLDMAP_CONTINENTS[text] then
+		if WORLDMAP_CONTINENTS[text] or (text == FORBES_ISLAND and IsGMAccount()) then
 			info.text = text
 			info.func = WorldMapContinentButton_OnClick
 			info.checked = GetCurrentMapContinent() == i
@@ -1073,13 +1081,24 @@ function WorldMapZoneButton_OnClick(self)
 	SetMapZoom(GetCurrentMapContinent(), self:GetID())
 end
 
-function WorldMapZoomOutButton_OnClick()
-	local currenMapID = GetCurrentMapAreaID()
-	local parentMapID = C_Map:GetParentMapID(currenMapID and currenMapID > 0 and (currenMapID - 1) or 0)
+local function shouldSkipContinent()
+	if IsMapContinentOverrided() then
+		return true
+	end
 
+	local currenMapID = GetCurrentMapAreaID()
+	local parentMapID = C_Map.GetParentMapID()
+	if (not parentMapID or parentMapID == 906 or parentMapID == 918) and (currenMapID == 907 or currenMapID == 919) then
+		return true
+	end
+
+	return false
+end
+
+function WorldMapZoomOutButton_OnClick()
 	WorldMapTooltip:Hide()
 	if ( GetCurrentMapZone() ~= WORLDMAP_WORLD_ID ) then
-		if (not parentMapID or parentMapID == 906 or parentMapID == 918) and (currenMapID == 907 or currenMapID == 919) then
+		if shouldSkipContinent() then
 			SetMapZoom(0)
 		else
 			SetMapZoom(GetCurrentMapContinent())
@@ -1089,7 +1108,7 @@ function WorldMapZoomOutButton_OnClick()
 	elseif ( GetCurrentMapDungeonLevel() > 0 ) then
 		ZoomOut()
 	elseif ( GetCurrentMapContinent() == WORLDMAP_COSMIC_ID ) then
-		if parentMapID == 0 then
+		if C_Map.GetParentMapID() == 0 then
 			SetMapZoom(WORLDMAP_COSMIC_ID)
 		else
 			ZoomOut()
@@ -1174,7 +1193,7 @@ function WorldMapZoneMinimapDropDown_Update()
 	UIDropDownMenu_SetText(WorldMapZoneMinimapDropDown, WorldMapZoneMinimapDropDown_GetText(GetCVar("showBattlefieldMinimap")))
 end
 
-function GetCurosMapPosition()
+local function GetCursorMapPosition()
 	local x, y = GetCursorPosition()
 	local left, top = WorldMapDetailFrame:GetLeft(), WorldMapDetailFrame:GetTop()
 	local width = WorldMapDetailFrame:GetWidth()
@@ -1184,7 +1203,7 @@ function GetCurosMapPosition()
 		local cx = (x/scale - left) / width
 		local cy = (top - y/scale) / height
 		if cx < 0 or cx > 1 or cy < 0 or cy > 1 then
-		   return nil, nil
+			return
 		end
 
 		return cx * 100, cy * 100
@@ -1194,9 +1213,10 @@ end
 function WorldMapButton_OnClick(button, mouseButton)
 	CloseDropDownMenus()
 	if ( IsModifierKeyDown("CTRL") and mouseButton == "LeftButton" ) then
-		local x, y = GetCurosMapPosition()
-
-		SendAddonMessage("ACMSG_GM_MAP_TELEPORT_REQUEST", string.format("%d|%0.2f|%0.2f", GetCurrentMapAreaID(), x, y), "WHISPER", UnitName("player"))
+		local x, y = GetCursorMapPosition()
+		if x and y then
+			SendServerMessage("ACMSG_GM_MAP_TELEPORT_REQUEST", string.format("%d|%0.2f|%0.2f", GetCurrentMapAreaID(), x, y))
+		end
 	elseif ( mouseButton == "LeftButton" ) then
 		local x, y = GetCursorPosition()
 		x = x / button:GetEffectiveScale()

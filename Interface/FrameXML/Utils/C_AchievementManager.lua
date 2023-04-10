@@ -1,7 +1,3 @@
---	Filename:	C_AchievementManager.lua
---	Project:	Custom Game Interface
---	Author:		Nyll & Blizzard Entertainment
-
 ACHIEVEMENTS_FACTION_CHANGE = {
 	[6411] = PLAYER_FACTION_GROUP.Horde,
 	[6413] = PLAYER_FACTION_GROUP.Horde,
@@ -124,7 +120,7 @@ function C_AchievementManagerMixin:GetCategoryNumAchievements( categoryID )
 					self.counter[categoryID].completed = self.counter[categoryID].completed + 1
 				end
 
-                if C_Service:IsGM() or IsDevClient() then
+				if IsGMAccount() or IsDevClient() then
                     name = entry .. " - " .. name
                 end
 

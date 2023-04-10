@@ -320,9 +320,10 @@ function AddonListCharacterDropDown_Initialize()
 	end
 	GlueDark_DropDownMenu_AddButton(info);
 
-	for i=1, GetNumCharacters() do
-		info.text = GetCharacterInfo(i);
-		info.value = GetCharacterInfo(i);
+	for i=1, C_CharacterList.GetNumCharactersOnPage() do
+		local characterName = GetCharacterInfo(i)
+		info.text = characterName
+		info.value = characterName
 		info.func = AddonListCharacterDropDown_OnClick;
 		if ( selectedValue == info.value ) then
 			info.checked = 1;

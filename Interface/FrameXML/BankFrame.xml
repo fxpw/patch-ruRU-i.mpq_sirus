@@ -17,18 +17,9 @@
 					</Anchors>
 				</Texture>
 			</Layer>
-		</Layers>	
+		</Layers>
 		<Frames>
 			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate"/>
-			<Frame name="$parentSearchOverlay" parentKey="searchOverlay" setAllPoints="true" toplevel="true" hidden="true">
-				<Layers>
-					<Layer level="OVERLAY">
-						<Texture>
-							<Color r="0" g="0" b="0" a="0.8"/>
-						</Texture>
-					</Layer>
-				</Layers>
-			</Frame>
 		</Frames>
 		<Scripts>
 			<OnLoad>
@@ -70,7 +61,7 @@
 		<Scripts>
 			<OnLoad>
 				BankFrameBagButton_OnLoad(self);
-			</OnLoad>				
+			</OnLoad>
 			<OnEnter>
 				BankFrameItemButton_OnEnter(self, motion);
 			</OnEnter>

@@ -382,7 +382,7 @@ end
 frame:SetScript("OnEvent", function(self, event)
 	if event == "VARIABLES_LOADED" then
 		local function UpdatePlayerFactionID()
-			local factionID = C_FactionManager.GetOriginalFaction() or 3;
+			local factionID = C_FactionManager.GetFactionOverride() or 3;
 			if PLAYER_FACTION_ID ~= factionID then
 				PLAYER_FACTION_ID = factionID;
 				BuildTransmogCollection();

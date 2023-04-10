@@ -56,7 +56,7 @@ function GetClassColor(classFilename)
 end
 
 function GetClassColorObj(classFilename)
-	return RAID_CLASS_COLORS[classFilename];
+	return RAID_CLASS_COLORS[classFilename] or RAID_CLASS_COLORS.PRIEST;
 end
 
 function GetClassColoredTextForUnit(unit, text)

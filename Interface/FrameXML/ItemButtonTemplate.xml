@@ -1,7 +1,26 @@
  <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 	<Script file="ItemButtonTemplate.lua"/>
- 	<Button name="ItemButtonTemplate" virtual="true">
+
+	<Button name="ItemButtonWidget" virtual="true">
+		<Frames>
+			<Frame parentKey="Controller">
+				<Scripts>
+					<OnLoad>
+						Mixin(self:GetParent(), ItemButtonMixin);
+					</OnLoad>
+					<OnShow>
+						self:GetParent():PostOnShow()
+					</OnShow>
+					<OnHide>
+						self:GetParent():PostOnHide()
+					</OnHide>
+				</Scripts>
+			</Frame>
+		</Frames>
+	</Button>
+
+ 	<Button name="ItemButtonTemplate" inherits="ItemButtonWidget" virtual="true">
 		<Size>
 			<AbsDimension x="37" y="37"/>
 		</Size>
@@ -10,7 +29,7 @@
 				<Texture name="$parentIconTexture" parentKey="icon"/>
 			</Layer>
 			<Layer level="ARTWORK">
-				<FontString name="$parentCount" inherits="NumberFontNormal" justifyH="RIGHT" hidden="true">
+				<FontString name="$parentCount" parentKey="Count" inherits="NumberFontNormal" justifyH="RIGHT" hidden="true">
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT">
 							<Offset>
@@ -19,7 +38,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentStock" inherits="NumberFontNormalYellow" justifyH="LEFT" hidden="true">
+				<FontString name="$parentStock" parentKey="Stock" inherits="NumberFontNormalYellow" justifyH="LEFT" hidden="true">
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset>
@@ -52,6 +71,22 @@
 		</NormalTexture>
 		<PushedTexture file="Interface\Buttons\UI-Quickslot-Depress"/>
 		<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
+		<Frames>
+			<Frame name="$parentItemContextOverlay" parentKey="ItemContextOverlay" setAllPoints="true" hidden="true">
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture parentKey="Texture">
+							<Color r="0" g="0" b="0" a="0.8"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnShow>
+						self:SetFrameLevel(self:GetParent():GetFrameLevel() + 5);
+					</OnShow>
+				</Scripts>
+			</Frame>
+		</Frames>
 	</Button>
 	<CheckButton name="SimplePopupButtonTemplate" virtual="true">
 		<Size>

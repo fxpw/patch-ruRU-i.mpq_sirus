@@ -2495,7 +2495,7 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								StoreFrame_ProductBuy(self:GetParent():GetParent():GetParent().data)
+								self:GetParent():GetParent():Purchase()
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -3291,6 +3291,8 @@
 							<Frame name="$parentVenLoOffer" parentKey="VenLoOffer" inherits="StoreOfferTemplate" id="58"/>
 							<Frame name="$parentHW2022Offer" parentKey="HW2022Offer" inherits="StoreOfferTemplate" id="59"/>
 							<Frame name="$parentWinterFurlineOffer" parentKey="WinterFurlineOffer" inherits="StoreOfferTemplate" id="60"/>
+							<Frame name="$parentVD2023Offer" parentKey="VD2023Offer" inherits="StoreOfferTemplate" id="61"/>
+							<Frame name="$parentAF2023Offer" parentKey="AF2023Offer" inherits="StoreOfferTemplate" id="62"/>
 						</Frames>
 						<Scripts>
 							<OnLoad function="StoreSpecialOfferBanner_OnLoad"/>

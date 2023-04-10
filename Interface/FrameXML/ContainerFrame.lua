@@ -213,6 +213,20 @@ function ToggleBackpack()
 	end
 end
 
+function ContainerFrame_GetBagButton(self)
+	if self:GetID() == 0 then
+		return MainMenuBarBackpackButton;
+	else
+		local bagButton = _G["CharacterBag"..(self:GetID() - 1).."Slot"];
+		if bagButton then
+			return bagButton;
+		else
+			local bankID = self:GetID() - NUM_BAG_SLOTS;
+			return _G["BankFrameBag"..bankID];
+		end
+	end
+end
+
 function ContainerFrame_OnHide(self)
 	self:UnregisterEvent("BAG_UPDATE");
 	self:UnregisterEvent("ITEM_LOCK_CHANGED");
@@ -451,6 +465,8 @@ function ContainerFrame_Update(frame)
 
 		highlightFrame:SetShown(newItem)
 
+		itemButton:UpdateItemContextMatching();
+
 		if ( texture ) then
 			ContainerFrame_UpdateCooldown(id, itemButton);
 			itemButton.hasItem = 1;
@@ -464,17 +480,17 @@ function ContainerFrame_Update(frame)
 			itemButton.UpdateTooltip(itemButton);
 		end
 
-		if itemButton.searchOverlay then
-			itemButton.searchOverlay:Hide()
-		end
-
+		local isFiltered = false;
 		if searchText and itemName then
-			itemButton.searchOverlay:Show()
-			if string.find(string.lower(itemName), string.lower(searchText), 1, true) then
-				itemButton.searchOverlay:Hide()
+			if not string.find(string.lower(itemName), string.lower(searchText), 1, true) then
+				isFiltered = true;
 			end
 		end
+		itemButton:SetMatchesSearch(not isFiltered);
 	end
+
+	local bagButton = ContainerFrame_GetBagButton(frame);
+	bagButton:UpdateItemContextMatching();
 end
 
 function ContainerFrame_UpdateLocked(frame)
@@ -810,7 +826,15 @@ function updateContainerFrameAnchors()
 	end
 end
 
+ContainerFrameItemButtonMixin = {};
+
+function ContainerFrameItemButtonMixin:GetItemContextMatchResult()
+	return ItemButtonUtil.GetItemContextMatchResultForItem(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()));
+end
+
 function ContainerFrameItemButton_OnLoad(self)
+	Mixin(self, ItemButtonMixin, ContainerFrameItemButtonMixin);
+
 	self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
 	self:RegisterForDrag("LeftButton");
 
@@ -1157,6 +1181,20 @@ function IsAnyBagOpen()
 	end
 
 	return false;
+end
+
+function OpenAllBagsMatchingContext()
+	local count = 0;
+	for i = 0, NUM_BAG_FRAMES do
+		if ItemButtonUtil.GetItemContextMatchResultForContainer(i) == ItemButtonUtil.ItemContextMatchResult.Match then
+			if not IsBagOpen(i) then
+				OpenBag(i);
+				count = count + 1;
+			end
+		end
+	end
+
+	return count;
 end
 
 function OpenAllBags(forceOpen)

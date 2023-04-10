@@ -78,7 +78,7 @@
 		<NormalFont style="GameFontNormal13"/>
 		<HighlightFont style="GameFontNormal13"/>
 		<DisabledFont style="GameFontNormal13"/>
-		<HighlightTexture inherits="SharedUIPanelButtonHighlightTexture"/>
+		<HighlightTexture inherits="UIPanelButtonHighlightTexture"/>
 	</Button>
 
 	<Frame name="ArenaSpectatorFrame" hidden="true" setAllPoints="true">

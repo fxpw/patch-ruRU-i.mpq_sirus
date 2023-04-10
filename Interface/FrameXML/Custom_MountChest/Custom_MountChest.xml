@@ -236,7 +236,7 @@
         </Scripts>
     </Button>
 
-    <Frame name="Custom_MountChestFrame" inherits="StandartBaseBasicFrameTemplate" enableMouse="true" toplevel="true" frameStrata="HIGH" hidden="true">
+    <Frame name="Custom_MountChestFrame" inherits="BaseBasicFrameTemplate" enableMouse="true" toplevel="true" frameStrata="HIGH" hidden="true">
         <Size x="640" y="620"/>
         <Anchors>
             <Anchor point="CENTER" x="0" y="0" />

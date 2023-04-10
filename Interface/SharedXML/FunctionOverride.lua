@@ -75,6 +75,78 @@ do	-- CVars
 	end
 end
 
+if not IsOnGlueScreen() then -- Map API
+	local GetMapContinents = GetMapContinents
+	local GetCurrentMapContinent = GetCurrentMapContinent
+	local ProcessMapClick = ProcessMapClick
+	local SetMapZoom = SetMapZoom
+	local UpdateMapHighlight = UpdateMapHighlight
+
+	local ignore = {}
+	local continents = setmetatable({}, {
+		__index = function(self, key)
+			if key and not ignore[key] then
+				for index, name in ipairs({GetMapContinents()}) do
+					rawset(self, name, index)
+					rawset(self, index, name)
+				end
+				ignore[key] = true
+				return rawget(self, key)
+			end
+		end,
+	})
+
+	local continentZoneOverride = {
+	--	[KALIMDOR]			= 0, -- 1,
+	--	[EASTERN_KINGDOMS]	= 0, -- 2,
+	--	[OUTLAND]			= 0, -- 3,
+	--	[NORTHREND]			= 0, -- 4,
+		[FORBES_ISLAND]		= 2, -- 5,
+	--	[FELYARD]			= 0, -- 6,
+	--	[GILNEAS]			= 1, -- 7
+		[LOST_ISLAND]		= 1, -- 8,
+		[RISING_DEPTHS]		= 1, -- 9,
+		[MANGROVE_ISLAND]	= 1, -- 10
+		[TELABIM]			= 1, -- 11
+		[TOLGAROD]			= 1, -- 12
+		[ANDRAKKIS]			= 1, -- 13
+	}
+
+	_G.ProcessMapClick = function(x, y)
+		local name = UpdateMapHighlight(x, y)
+		if continentZoneOverride[name] then
+			SetMapZoom(continents[name], continentZoneOverride[name])
+			return
+		end
+
+		ProcessMapClick(x, y)
+	end
+
+	_G.IsMapContinentOverrided = function(continentIndex)
+		if not continentIndex then
+			continentIndex = GetCurrentMapContinent()
+		end
+
+		local continentName = continents[continentIndex]
+		if continentName and continentZoneOverride[continentName] then
+			return true
+		end
+		return false
+	end
+
+	_G.SetMapZoom = function(continentIndex, zoneIndex)
+		if not zoneIndex then
+			local continentName = continents[continentIndex]
+			if continentName and continentZoneOverride[continentName] then
+				SetMapZoom(continentIndex, continentZoneOverride[continentName])
+				return
+			end
+		end
+
+		SetMapZoom(continentIndex, zoneIndex)
+	end
+end
+
 local _GetMapLandmarkInfo = _GetMapLandmarkInfo or GetMapLandmarkInfo
 
 function GetMapLandmarkInfo( index )

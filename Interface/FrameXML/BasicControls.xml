@@ -11,7 +11,10 @@
 		_ERROR_LIMIT = 1000;
 		
 		function _ERRORMESSAGE(message)
-			printc(message)
+			if printc then
+				printc(message)
+			end
+
 			debuginfo() -- Debugging information for internal use.
 			
 			LoadAddOn("Blizzard_DebugTools");

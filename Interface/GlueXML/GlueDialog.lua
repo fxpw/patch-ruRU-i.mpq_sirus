@@ -739,7 +739,16 @@ function GlueDialogMixin:CheckQueuedDialogs()
 	end
 end
 
+local okayTypeRedirection = {
+	[AUTH_BANNED] = "OKAY_HTML",
+	[CHAR_CREATE_UNIQUE_CLASS_LIMIT] = "OKAY_HTML",
+}
+
 function GlueDialogMixin:ShowDialog(which, text, data)
+	if which == "OKAY" then
+		which = okayTypeRedirection[text] or which
+	end
+
 	local dialogInfo = GlueDialogTypes[which]
 	-- Pick a free dialog to use
 	if self:IsShown() then

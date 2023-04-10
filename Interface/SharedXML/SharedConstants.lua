@@ -201,6 +201,7 @@ DISABLED_FONT_COLOR			= CreateColor(0.498, 0.498, 0.498)
 LIGHTBLUE_FONT_COLOR		= CreateColor(0.53, 0.67, 1.0)
 BLUEHELP_FONT_COLOR			= CreateColor(0, 0.8, 1)
 WHITE_FONT_COLOR			= CreateColor(1, 1, 1)
+PANEL_BACKGROUND_COLOR		= CreateColor(0.784, 0.651, 0.992)
 
 LOOT_FONT_COLOR 	= CreateColor(0, 0.666, 0)
 SYSTEM_FONT_COLOR 	= CreateColor(1, 1, 0)

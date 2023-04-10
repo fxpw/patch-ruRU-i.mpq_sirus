@@ -39,7 +39,7 @@ end
 
 ---@return boolean isGM
 function C_ServiceMixin:IsGM()
-    return C_CacheInstance:Get("C_SERVICE_IS_GM")
+    return C_CacheInstance:Get("C_SERVICE_IS_GM") or false
 end
 
 ---@return boolean isStoreEnabled
@@ -110,8 +110,25 @@ end
 C_Service = CreateFromMixins(C_ServiceMixin)
 C_Service:OnLoad()
 
-function IsGMAccount()
-    return C_Service:IsGM() or false
+function IsGMAccount(skipDevOverride)
+	if not skipDevOverride then
+		if IsOnGlueScreen() then
+			if DEV_GLUE_DISABLE_GM then
+				return false
+			end
+		else
+			if DEV_GAME_DISABLE_GM then
+				return false
+			end
+		end
+	end
+	return C_Service:IsGM()
+end
+
+function GMError(err)
+	if IsGMAccount(true) or IsInterfaceDevClient() then
+		geterrorhandler()(err)
+	end
 end
 
 function GetServerID()

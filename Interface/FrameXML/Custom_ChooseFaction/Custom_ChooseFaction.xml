@@ -28,7 +28,7 @@
             </Anchors>
         </ButtonText>
     </Button>
-    <Frame name="ChooseFactionFrameTemplate" inherits="StandartBaseBasicFrameTemplate" enableMouse="true" hidden="true" virtual="true">
+    <Frame name="ChooseFactionFrameTemplate" inherits="BaseBasicFrameTemplate" enableMouse="true" hidden="true" virtual="true">
         <Size x="453" y="520"/>
         <Layers>
             <Layer level="BACKGROUND">

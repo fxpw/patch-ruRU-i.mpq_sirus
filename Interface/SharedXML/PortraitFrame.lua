@@ -1,4 +1,45 @@
-PortraitFrameMixin = {};
+local SetPortraitTexture = SetPortraitTexture
+local SetBagPortraitTexture = SetBagPortraitTexture
+
+TitledPanelMixin = {};
+
+function TitledPanelMixin:GetTitleText()
+	return self.TitleContainer.TitleText;
+end
+
+function TitledPanelMixin:SetTitleColor(color)
+	self:GetTitleText():SetTextColor(color:GetRGBA());
+end
+
+function TitledPanelMixin:SetTitle(title)
+	self:GetTitleText():SetText(title);
+end
+
+function TitledPanelMixin:SetTitleFormatted(fmt, ...)
+	self:GetTitleText():SetFormattedText(fmt, ...);
+end
+
+function TitledPanelMixin:SetTitleMaxLinesAndHeight(maxLines, height)
+--	self:GetTitleText():SetMaxLines(maxLines);
+	self:GetTitleText():SetHeight(height);
+end
+
+function TitledPanelMixin:SetTitleOffsets(leftOffset, rightOffset)
+	self.TitleContainer:SetPoint("TOPLEFT", self, "TOPLEFT", leftOffset or 58, -1);
+	self.TitleContainer:SetPoint("TOPRIGHT", self, "TOPRIGHT", rightOffset or -24, -1);
+end
+
+DefaultPanelMixin = CreateFromMixins(TitledPanelMixin);
+
+PortraitFrameMixin = CreateFromMixins(TitledPanelMixin);
+
+function PortraitFrameMixin:GetPortrait()
+	return self.portrait;
+end
+
+function PortraitFrameMixin:GetTitleText()
+	return self.TitleText;
+end
 
 function PortraitFrameMixin:SetBorder(layoutName)
 	local layout = NineSliceUtil.GetLayout(layoutName);
@@ -6,42 +47,71 @@ function PortraitFrameMixin:SetBorder(layoutName)
 end
 
 function PortraitFrameMixin:SetPortraitToAsset(texture)
-	SetPortraitToTexture(self.portrait, texture);
+	SetPortraitToTexture(self:GetPortrait(), texture);
 end
 
 function PortraitFrameMixin:SetPortraitToUnit(unit)
-	SetPortraitTexture(self.portrait, unit);
+	SetPortraitTexture(self:GetPortrait(), unit);
+end
+
+function PortraitFrameMixin:SetPortraitToBag(bagID)
+	SetBagPortraitTexture(self:GetPortrait(), bagID);
 end
 
 function PortraitFrameMixin:SetPortraitTextureRaw(texture)
-	self.portrait:SetTexture(texture);
+	self:GetPortrait():SetTexture(texture);
 end
 
 function PortraitFrameMixin:SetPortraitAtlasRaw(atlas, ...)
-	self.portrait:SetAtlas(atlas, ...);
+	self:GetPortrait():SetAtlas(atlas, ...);
+end
+
+function PortraitFrameMixin:SetPortraitToClassIcon(classFilename)
+	self:SetPortraitToAsset("Interface/TargetingFrame/UI-Classes-Circles");
+	local left, right, bottom, top = unpack(CLASS_ICON_TCOORDS[string.upper(classFilename)]);
+	self:SetPortraitTexCoord(left, right, bottom, top);
 end
 
 function PortraitFrameMixin:SetPortraitTexCoord(...)
-	self.portrait:SetTexCoord(...);
+	self:GetPortrait():SetTexCoord(...);
 end
 
 function PortraitFrameMixin:SetPortraitShown(shown)
-	self.portrait:SetShown(shown);
+	self:GetPortrait():SetShown(shown);
 end
 
-function PortraitFrameMixin:SetTitleColor(color)
-	self.TitleText:SetTextColor(color:GetRGBA());
+function PortraitFrameMixin:SetPortraitTextureSizeAndOffset(size, offsetX, offsetY)
+	local portrait = self:GetPortrait();
+	portrait:SetSize(size, size);
+	portrait:SetPoint("TOPLEFT", self, "TOPLEFT", offsetX, offsetY);
 end
 
-function PortraitFrameMixin:SetTitle(title)
-	self.TitleText:SetText(title);
+do
+	local function SetFrameLevelInternal(frame, level)
+		if frame then
+		--	assertsafe(level < 10000, "Base level needs to be low enough to accomodate the existing layering"); -- TODO: Should become a constant
+			frame:SetFrameLevel(level);
+		end
+	end
+
+	function PortraitFrameMixin:SetFrameLevelsFromBaseLevel(baseLevel)
+		SetFrameLevelInternal(self.NineSlice, baseLevel + 2);
+		SetFrameLevelInternal(self.PortraitContainer, baseLevel + 1);
+		SetFrameLevelInternal(self.TitleContainer, baseLevel + 3);
+		SetFrameLevelInternal(self.CloseButton, baseLevel + 3);
+	end
 end
 
-function PortraitFrameMixin:SetTitleFormatted(fmt, ...)
-	self.TitleText:SetFormattedText(fmt, ...);
-end
+PortraitFrameFlatBaseMixin = {};
 
-function PortraitFrameMixin:SetTitleMaxLinesAndHeight(maxLines, height)
-	self.TitleText:SetMaxLines(maxLines);
-	self.TitleText:SetHeight(height);
+function PortraitFrameFlatBaseMixin:SetBackgroundColor(color)
+	if self.Bg then
+		local bg = self.Bg;
+		color = color or PANEL_BACKGROUND_COLOR;
+		local r, g, b, a = color:GetRGBA();
+		bg.BottomLeft:SetVertexColor(r, g, b, a);
+		bg.BottomRight:SetVertexColor(r, g, b, a);
+		bg.BottomEdge:SetColorTexture(r, g, b, a);
+		bg.TopSection:SetColorTexture(r, g, b, a);
+	end
 end

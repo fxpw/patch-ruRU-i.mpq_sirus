@@ -9,14 +9,30 @@ function BankFrameBaseButton_OnLoad (self)
 	self.UpdateTooltip = BankFrameItemButton_OnEnter;
 end
 
-function BankFrameItemButton_OnLoad (self) 
+BankItemButtonMixin = {};
+
+function BankItemButtonMixin:GetItemContextMatchResult()
+	return ItemButtonUtil.GetItemContextMatchResultForItem(ItemLocation:CreateFromBagAndSlot(BANK_CONTAINER, self:GetID()));
+end
+
+function BankFrameItemButton_OnLoad (self)
+	Mixin(self, BankItemButtonMixin);
+
 	BankFrameBaseButton_OnLoad (self);
 	self.SplitStack = function(button, split)
 		SplitContainerItem(BANK_CONTAINER, button:GetID(), split);
 	end
 end
 
+BankItemButtonBagMixin = {};
+
+function BankItemButtonBagMixin:GetItemContextMatchResult()
+	return ItemButtonUtil.GetItemContextMatchResultForContainer(self:GetID() + NUM_BAG_SLOTS);
+end
+
 function BankFrameBagButton_OnLoad (self)
+	Mixin(self, BankItemButtonBagMixin);
+
 	self.isBag = 1;
 	BankFrameBaseButton_OnLoad(self);
 end
@@ -38,11 +54,8 @@ function BankFrameItemButton_Update (button)
 	local slotName = button:GetName();
 	local id;
 	local slotTextureName;
+	local isFiltered = false;
 	button.hasItem = nil;
-
-	if button.searchOverlay then
-		button.searchOverlay:Hide()
-	end
 
 	if( button.isBag ) then
 		id, slotTextureName = GetInventorySlotInfo(strsub(slotName,10));
@@ -54,7 +67,7 @@ function BankFrameItemButton_Update (button)
 			questTexture:Show();
 		elseif ( questId or isQuestItem ) then
 			questTexture:SetTexture(TEXTURE_ITEM_QUEST_BORDER);
-			questTexture:Show();		
+			questTexture:Show();
 		else
 			questTexture:Hide();
 		end
@@ -66,9 +79,8 @@ function BankFrameItemButton_Update (button)
 				local itemName = GetItemInfo(itemID)
 
 				if itemName then
-					button.searchOverlay:Show()
-					if string.find(string.lower(itemName), string.lower(searchText), 1, true) then
-						button.searchOverlay:Hide()
+					if not string.find(string.lower(itemName), string.lower(searchText), 1, true) then
+						isFiltered = true;
 					end
 				end
 			end
@@ -84,10 +96,13 @@ function BankFrameItemButton_Update (button)
 		texture:SetTexture(slotTextureName);
 		SetItemButtonCount(button,0);
 		texture:Show();
-	else 
+	else
 		texture:Hide();
 		SetItemButtonCount(button,0);
 	end
+
+	button:UpdateItemContextMatching();
+	button:SetMatchesSearch(not isFiltered);
 
 	BankFrameItemButton_UpdateLocked(button);
 	BankFrame_UpdateCooldown(BANK_CONTAINER, button);
@@ -102,11 +117,11 @@ function BankFrame_UpdateCooldown(container, button)
 	end
 end
 
-function BankFrameItemButton_UpdateLocked (button) 
+function BankFrameItemButton_UpdateLocked (button)
 	local inventoryID = button:GetInventorySlot();
 	if ( IsInventoryItemLocked(inventoryID) ) then
 		SetItemButtonDesaturated(button, 1, 0.5, 0.5, 0.5);
-	else 
+	else
 		if ( button.isBag and ((button:GetID() - 4) > GetNumBankSlots()) ) then
 			return;
 		end
@@ -119,12 +134,12 @@ function BankFrame_OnLoad (self)
 	self:RegisterEvent("BANKFRAME_CLOSED");
 end
 
-function UpdateBagSlotStatus () 
+function UpdateBagSlotStatus ()
 	local purchaseFrame = BankFramePurchaseInfo;
 	if( purchaseFrame == nil ) then
 		return;
 	end
-	
+
 	local numSlots,full = GetNumBankSlots();
 	local button;
 	for i=1, NUM_BANKBAGSLOTS, 1 do
@@ -157,7 +172,7 @@ function UpdateBagSlotStatus ()
 	end
 end
 
-function CloseBankBagFrames () 
+function CloseBankBagFrames ()
 	for i=NUM_BAG_SLOTS+1, (NUM_BAG_SLOTS + NUM_BANKBAGSLOTS), 1 do
 		CloseBag(i);
 	end
@@ -208,7 +223,7 @@ function BankFrame_OnShow (self)
 		button = _G["BankFrameItem"..i];
 		BankFrameItemButton_Update(button);
 	end
-	
+
 	for i=1, NUM_BANKBAGSLOTS, 1 do
 		button = _G["BankFrameBag"..i];
 		BankFrameItemButton_Update(button);
@@ -254,7 +269,7 @@ function BankFrameItemButtonGeneric_OnModifiedClick (self, button)
 	end
 end
 
-function UpdateBagButtonHighlight (id) 
+function UpdateBagButtonHighlight (id)
 	local texture = _G["BankFrameBag"..(id - NUM_BAG_SLOTS).."HighlightFrameTexture"];
 	if ( not texture ) then
 		return;
@@ -271,7 +286,7 @@ function UpdateBagButtonHighlight (id)
 	texture:Hide();
 end
 
-function BankFrameItemButtonBag_OnClick (self, button) 
+function BankFrameItemButtonBag_OnClick (self, button)
 	local inventoryID = self:GetInventorySlot();
 	local hadItem = PutItemInBag(inventoryID);
 	local id = self:GetID();

@@ -2,8 +2,10 @@
 ## Interface: 30300
 
 ..\..\InterfaceDebug\FrameXMLPre.xml
-
 FrameXML.xml
+
+..\SharedXML\C_TimerAugment.lua
+
 ..\SharedXML\AtlasStorage.lua
 ..\SharedXML\SharedStrings.lua
 GlobalStrings.lua
@@ -14,7 +16,7 @@ GlobalStrings.lua
 ..\SharedXML\CacheSystem.lua
 ..\SharedXML\Util.lua
 ..\SharedXML\Hook.lua
-..\SharedXML\MixIn.lua
+..\SharedXML\Mixin.lua
 ..\SharedXML\TableUtil.lua
 ..\SharedXML\EnumUtil.lua
 ..\SharedXML\FunctionUtil.lua
@@ -25,19 +27,20 @@ GlobalStrings.lua
 ..\SharedXML\Color.lua
 ..\SharedXML\ColorUtil.lua
 ..\SharedXML\TimeUtil.lua
+..\SharedXML\NineSliceLayouts.lua
 ..\SharedXML\NineSlice.lua
-..\SharedXML\AnchorUtil.lua
 ..\SharedXML\FrameUtil.lua
+..\SharedXML\AnchorUtil.lua
 ..\SharedXML\Pools.lua
 ..\SharedXML\CircularBuffer.lua
 ..\SharedXML\StringUtil.lua
 ..\SharedXML\TypeUtil.lua
+..\SharedXML\MixinUtil.lua
 ..\SharedXML\Utils\C_Texture.lua
 ..\SharedXML\Utils\C_CreatureInfo.lua
 ..\SharedXML\Utils\C_Talent.lua
 ..\SharedXML\Opcodes.lua
 
-..\SharedXML\C_TimerAugment.lua
 ..\SharedXML\ItemsCache.lua
 ..\SharedXML\L_Easing.lua
 Constants.lua
@@ -60,6 +63,9 @@ WorldMapFrameData.lua
 ObjectAPI\ItemLocation.lua
 
 Utils\CustomAPI.lua
+Utils\CombatLogFix.lua
+Utils\Deprecated.lua
+
 Utils\C_CVar.lua
 Utils\C_ObjectGUID.lua
 Utils\C_FactionManager.lua
@@ -81,8 +87,8 @@ Utils\C_MiniGames.lua
 Utils\C_ToyBox.lua
 Utils\C_IncomingResSummon.lua
 Utils\C_Heirloom.lua
+Utils\C_ItemUpgrade.lua
 
-Hardcodeids.lua
 TrinityCoreAPI.lua
 ..\SharedXML\S_Dump.lua
 BasicControls.xml
@@ -90,17 +96,22 @@ WorldFrame.xml
 ..\SharedXML\SharedExtendedMethods.lua
 UIParent.xml
 AuraUtil.lua
+ItemUtil.lua
 AnimTimerFrame.xml
+..\SharedXML\HelpTip.xml
 MoneyFrame.lua
 MoneyFrame.xml
 MoneyInputFrame.lua
 MoneyInputFrame.xml
+..\SharedXML\SecureUIPanelTemplates.xml
+..\SharedXML\SharedUIPanelTemplates.xml
+..\SharedXML\SharedBasicControls.xml
 GameTooltip.xml
 UIMenu.xml
 UIDropDownMenu.xml
+UIPanelCustomTemplates.xml
 UIPanelTemplates.lua
 UIPanelTemplates.xml
-..\SharedXML\SharedUIPanelTemplates.xml
 ..\SharedXML\ModelFrames.xml
 Custom_TutorialPointer\Custom_TutorialPointer.xml
 SecureTemplates.xml
@@ -144,6 +155,7 @@ Custom_SpellOverlay\Custom_SpellOverlayData.lua
 ActionButtonTemplate.xml
 ActionBarFrame.xml
 MultiActionBars.xml
+EquipmentFlyout.xml
 BuffFrame.xml
 CombatFeedback.xml
 CastingBarFrame.xml
@@ -237,7 +249,6 @@ CompactUnitFrame.xml
 CompactRaidGroup.xml
 CompactPartyFrame.xml
 QueueStatusFrame.xml
-HelpTip.xml
 FilterDropdown.lua
 
 TransmogUtil.lua
@@ -294,6 +305,7 @@ Custom_AchievementUI\Custom_AchievementUI.xml
 Custom_LookingForGuildUI\Custom_LookingForGuildUI.xml
 Custom_BattlefieldMinimap\Custom_BattlefieldMinimap.xml
 Custom_RaidUI\Custom_RaidUI.xml
+Custom_ItemUpgradeUI\Custom_ItemUpgradeUI.xml
 
 # DEVELOPMENT
 #Custom_GuildHouseUI\Custom_GuildHouseUI.xml

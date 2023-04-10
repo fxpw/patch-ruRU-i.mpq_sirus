@@ -1,7 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 	<Script file="WatchFrame.lua"/>
-		
+
 	<FontString name="WatchFontTemplate" inherits="GameFontHighlight" virtual="true" justifyH="LEFT" justifyV="MIDDLE">
 		<Size>
 			<AbsDimension x="0" y="16"/>
@@ -52,7 +52,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-			</Layer>			
+			</Layer>
 		</Layers>
 		<Frames>
 			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate"/>
@@ -90,7 +90,7 @@
 			</Anchors>
 		</NormalTexture>
 		<PushedTexture file="Interface\Buttons\UI-Quickslot-Depress"/>
-		<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>		
+		<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
 	</Button>
 	<Frame name="WatchFrameLineTemplate" virtual="true">
 		<Size x="232" y="16"/>
@@ -112,7 +112,7 @@
 					<Anchors>
 						<Anchor point="TOPLEFT" x="-10" y="2"/>
 					</Anchors>
-				</Texture>				
+				</Texture>
 				<Texture parentKey="Icon" file="Interface/QuestFrame/ObjectiveTracker" name="$parentIcon" hidden="true">
 					<Size x="16" y="16"/>
 					<Anchors>
@@ -159,7 +159,7 @@
 								<Origin point="LEFT"/>
 							</Scale>
 							<Alpha change="1" duration="0.1" startDelay="0.067" order="1"/>
-							<Alpha change="0" duration="0.267" startDelay="0.467" order="1"/>
+							<Alpha change="-1" duration="0.267" startDelay="0.467" order="1"/>
 							<Scripts>
 								<OnFinished>
 									if self.changeTextTimer then
@@ -176,7 +176,7 @@
 							</Scripts>
 						</AnimationGroup>
 					</Animations>
-				</Texture>	
+				</Texture>
 			</Layer>
 			<Layer level="OVERLAY">
 				<Texture parentKey="Sheen" file="Interface\Scenarios\Objective-Sheen" alpha="0">
@@ -190,10 +190,10 @@
 						<AnimationGroup parentKey="Anim">
 							<Translation startDelay="0.067" offsetX="155" offsetY="0" duration="0.467" order="1"/>
 							<Alpha change="1" duration="0.133" startDelay="0.067" order="1"/>
-							<Alpha change="0" duration="0.133" startDelay="0.2" smoothing="IN" order="1"/>
+							<Alpha change="-1" duration="0.133" startDelay="0.2" smoothing="IN" order="1"/>
 						</AnimationGroup>
 					</Animations>
-				</Texture>	
+				</Texture>
 			</Layer>
 		</Layers>
 		<Scripts>
@@ -271,14 +271,14 @@
 				<Alpha childKey="LineSheen" startDelay="0.15" duration="0.5" order="1" fromAlpha="0" toAlpha="0.75"/>
 				<Alpha childKey="LineSheen" startDelay="0.75" duration="0.5" order="1" fromAlpha="0.75" toAlpha="0"/>
 				<Translation childKey="LineSheen" startDelay="0.15" duration="1.5" order="1" offsetX="250" offsetY="0"/>
-				
+
 				<Scripts>
 					<OnFinished function="ObjectiveTrackerHeader_OnAnimFinished"/>
 				</Scripts>
 			</AnimationGroup>
 		</Animations> -->
 	</Frame>
-	
+
 	<Frame name="WatchFrame" parent="UIParent" clampedToScreen="true" hidden="false" frameStrata="LOW">
 		<Size x="204" y="140"/>
 		<Anchors>
@@ -342,7 +342,7 @@
 					</OnLoad>
 				</Scripts>
 			</Frame>
-		</Frames>		
+		</Frames>
 		<Scripts>
 			<OnLoad function="WatchFrame_OnLoad"/>
 			<OnEvent function="WatchFrame_OnEvent"/>
@@ -357,7 +357,7 @@
 		<Scripts>
 			<OnLoad function="WatchFrameHeaderDropDown_OnLoad"/>
 		</Scripts>
-	</Frame>	
+	</Frame>
 	<Frame name="WatchFrameDropDown" inherits="UIDropDownMenuTemplate" id="1" hidden="true">
 		<Size>
 			<AbsDimension x="10" y="10"/>

@@ -1,287 +1,5 @@
 -- functions to manage tab interfaces where only one tab of a group may be selected
 
-function PortraitFrameCloseButton_OnClick(self)
-	if UIPanelWindows[self:GetParent():GetName()] then
-		ToggleFrame(self:GetParent())
-	else
-		self:GetParent():Hide();
-	end
-end
-
--- functions to manage tab interfaces where only one tab of a group may be selected
-function PanelTemplates_Tab_OnClick(self, frame)
-	PanelTemplates_SetTab(frame, self:GetID())
-end
-
-function PanelTemplates_SetTab(frame, id)
-	frame.selectedTab = id;
-	PanelTemplates_UpdateTabs(frame);
-end
-
-function PanelTemplates_GetSelectedTab(frame)
-	return frame.selectedTab;
-end
-
-local function GetTabByIndex(frame, index)
-	return frame.Tabs and frame.Tabs[index] or _G[frame:GetName().."Tab"..index];
-end
-
-function PanelTemplates_UpdateTabs(frame)
-	if ( frame.selectedTab ) then
-		local tab;
-		for i=1, frame.numTabs, 1 do
-			tab = GetTabByIndex(frame, i);
-			if ( tab.isDisabled ) then
-				PanelTemplates_SetDisabledTabState(tab);
-			elseif ( i == frame.selectedTab ) then
-				PanelTemplates_SelectTab(tab);
-			else
-				PanelTemplates_DeselectTab(tab);
-			end
-		end
-	end
-end
-
-function PanelTemplates_GetTabWidth(tab)
-	local tabName = tab:GetName();
-
-	local sideWidths = 2 * _G[tabName.."Left"]:GetWidth();
-	return tab:GetTextWidth() + sideWidths;
-end
-
-function PanelTemplates_TabResize(tab, padding, absoluteSize, maxWidth, absoluteTextSize)
-	local tabName = tab:GetName();
-
-	local buttonMiddle = tab.Middle or tab.middleTexture or _G[tabName.."Middle"];
-	local buttonMiddleDisabled = tab.MiddleDisabled or (tabName and _G[tabName.."MiddleDisabled"]);
-	local left = tab.Left or tab.leftTexture or _G[tabName.."Left"];
-	local sideWidths = 2 * left:GetWidth();
-	local tabText = tab.Text or _G[tab:GetName().."Text"];
-	local highlightTexture = tab.HighlightTexture or (tabName and _G[tabName.."HighlightTexture"]);
-
-	local width, tabWidth;
-	local textWidth;
-	if ( absoluteTextSize ) then
-		textWidth = absoluteTextSize;
-	else
-		tabText:SetWidth(0);
-		textWidth = tabText:GetWidth();
-	end
-	-- If there's an absolute size specified then use it
-	if ( absoluteSize ) then
-		if ( absoluteSize < sideWidths) then
-			width = 1;
-			tabWidth = sideWidths
-		else
-			width = absoluteSize - sideWidths;
-			tabWidth = absoluteSize
-		end
-		tabText:SetWidth(width);
-	else
-		-- Otherwise try to use padding
-		if ( padding ) then
-			width = textWidth + padding;
-		else
-			width = textWidth + 24;
-		end
-		-- If greater than the maxWidth then cap it
-		if ( maxWidth and width > maxWidth ) then
-			if ( padding ) then
-				width = maxWidth + padding;
-			else
-				width = maxWidth + 24;
-			end
-			tabText:SetWidth(width);
-		else
-			tabText:SetWidth(0);
-		end
-		tabWidth = width + sideWidths;
-	end
-
-	if ( buttonMiddle ) then
-		buttonMiddle:SetWidth(width);
-	end
-	if ( buttonMiddleDisabled ) then
-		buttonMiddleDisabled:SetWidth(width);
-	end
-
-	tab:SetWidth(tabWidth);
-
-	if ( highlightTexture ) then
-		highlightTexture:SetWidth(tabWidth);
-	end
-end
-
-function PanelTemplates_ResizeTabsToFit(frame, maxWidthForAllTabs)
-	local selectedIndex = PanelTemplates_GetSelectedTab(frame);
-	if ( not selectedIndex ) then
-		return;
-	end
-
-	local currentWidth = 0;
-	local truncatedText = false;
-	for i = 1, frame.numTabs do
-		local tab = GetTabByIndex(frame, i);
-		currentWidth = currentWidth + tab:GetWidth();
-	end
-	if ( not truncatedText and currentWidth <= maxWidthForAllTabs ) then
-		return;
-	end
-
-	local currentTab = GetTabByIndex(frame, selectedIndex);
-	PanelTemplates_TabResize(currentTab, 0);
-	local availableWidth = maxWidthForAllTabs - currentTab:GetWidth();
-	local widthPerTab = availableWidth / (frame.numTabs - 1);
-	for i = 1, frame.numTabs do
-		if ( i ~= selectedIndex ) then
-			local tab = GetTabByIndex(frame, i);
-			PanelTemplates_TabResize(tab, 0, widthPerTab);
-		end
-	end
-end
-
-function PanelTemplates_SetNumTabs(frame, numTabs)
-	frame.numTabs = numTabs;
-end
-
-function PanelTemplates_DisableTab(frame, index)
-	GetTabByIndex(frame, index).isDisabled = 1;
-	PanelTemplates_UpdateTabs(frame);
-end
-
-function PanelTemplates_EnableTab(frame, index)
-	local tab = GetTabByIndex(frame, index);
-	tab.isDisabled = nil;
-	-- Reset text color
-	tab:SetDisabledFontObject(GameFontHighlightSmall);
-	PanelTemplates_UpdateTabs(frame);
-end
-
-function PanelTemplates_HideTab(frame, index)
-	local tab = GetTabByIndex(frame, index);
-	tab:Hide();
-end
-
-function PanelTemplates_ShowTab(frame, index)
-	local tab = GetTabByIndex(frame, index);
-	tab:Show();
-end
-
-function PanelTemplates_DeselectTab(tab)
-	local name = tab:GetName();
-
-	local left = tab.Left or _G[name.."Left"];
-	local middle = tab.Middle or _G[name.."Middle"];
-	local right = tab.Right or _G[name.."Right"];
-	left:Show();
-	middle:Show();
-	right:Show();
-	--tab:UnlockHighlight();
-	tab:Enable();
-	local text = tab.Text or _G[name.."Text"];
-	text:SetPoint("CENTER", tab, "CENTER", (tab.deselectedTextX or 0), (tab.deselectedTextY or 2));
-
-	local leftDisabled = tab.LeftDisabled or _G[name.."LeftDisabled"];
-	local middleDisabled = tab.MiddleDisabled or _G[name.."MiddleDisabled"];
-	local rightDisabled = tab.RightDisabled or _G[name.."RightDisabled"];
-	leftDisabled:Hide();
-	middleDisabled:Hide();
-	rightDisabled:Hide();
-end
-
-function PanelTemplates_SelectTab(tab)
-	local name = tab:GetName();
-
-	local left = tab.Left or _G[name.."Left"];
-	local middle = tab.Middle or _G[name.."Middle"];
-	local right = tab.Right or _G[name.."Right"];
-	left:Hide();
-	middle:Hide();
-	right:Hide();
-	--tab:LockHighlight();
-	tab:Disable();
-	tab:SetDisabledFontObject(GameFontHighlightSmall);
-	local text = tab.Text or _G[name.."Text"];
-	text:SetPoint("CENTER", tab, "CENTER", (tab.selectedTextX or 0), (tab.selectedTextY or -3));
-
-	local leftDisabled = tab.LeftDisabled or _G[name.."LeftDisabled"];
-	local middleDisabled = tab.MiddleDisabled or _G[name.."MiddleDisabled"];
-	local rightDisabled = tab.RightDisabled or _G[name.."RightDisabled"];
-	leftDisabled:Show();
-	middleDisabled:Show();
-	rightDisabled:Show();
-end
-
-function PanelTemplates_SetDisabledTabState(tab)
-	local name = tab:GetName();
-	local left = tab.Left or _G[name.."Left"];
-	local middle = tab.Middle or _G[name.."Middle"];
-	local right = tab.Right or _G[name.."Right"];
-	left:Show();
-	middle:Show();
-	right:Show();
-	--tab:UnlockHighlight();
-	tab:Disable();
-	tab.text = tab:GetText();
-	-- Gray out text
-	tab:SetDisabledFontObject(GameFontDisableSmall);
-	local leftDisabled = tab.LeftDisabled or _G[name.."LeftDisabled"];
-	local middleDisabled = tab.MiddleDisabled or _G[name.."MiddleDisabled"];
-	local rightDisabled = tab.RightDisabled or _G[name.."RightDisabled"];
-	leftDisabled:Hide();
-	middleDisabled:Hide();
-	rightDisabled:Hide();
-end
-
-function EditBox_HandleTabbing(self, tabList)
-	local editboxName = self:GetName();
-	local index;
-	for i=1, #tabList do
-		if ( editboxName == tabList[i] ) then
-			index = i;
-			break;
-		end
-	end
-	if ( IsShiftKeyDown() ) then
-		index = index - 1;
-	else
-		index = index + 1;
-	end
-
-	if ( index == 0 ) then
-		index = #tabList;
-	elseif ( index > #tabList ) then
-		index = 1;
-	end
-
-	local target = tabList[index];
-	_G[target]:SetFocus();
-end
-
-function EditBox_OnTabPressed(self)
-	if ( self.previousEditBox and IsShiftKeyDown() ) then
-		self.previousEditBox:SetFocus();
-	elseif ( self.nextEditBox ) then
-		self.nextEditBox:SetFocus();
-	end
-end
-
-function EditBox_ClearFocus (self)
-	self:ClearFocus();
-end
-
-function EditBox_SetFocus (self)
-	self:SetFocus();
-end
-
-function EditBox_HighlightText (self)
-	self:HighlightText();
-end
-
-function EditBox_ClearHighlight (self)
-	self:HighlightText(0, 0);
-end
-
 UIFrameCache = CreateFrame("FRAME");
 local caches = {};
 function UIFrameCache:New (frameType, baseName, parent, template)
@@ -335,6 +53,22 @@ function UIFrameCache:ReleaseFrame (frame)
 			tremove(self.usedFrames, k);
 			break;
 		end
+	end
+end
+
+-- SquareButton template code
+SQUARE_BUTTON_TEXCOORDS = {
+	["UP"] = {     0.45312500,    0.64062500,     0.01562500,     0.20312500};
+	["DOWN"] = {   0.45312500,    0.64062500,     0.20312500,     0.01562500};
+	["LEFT"] = {   0.23437500,    0.42187500,     0.01562500,     0.20312500};
+	["RIGHT"] = {  0.42187500,    0.23437500,     0.01562500,     0.20312500};
+	["DELETE"] = { 0.01562500,    0.20312500,     0.01562500,     0.20312500};
+};
+
+function SquareButton_SetIcon(self, name)
+	local coords = SQUARE_BUTTON_TEXCOORDS[strupper(name)];
+	if coords then
+		self.icon:SetTexCoord(coords[1], coords[2], coords[3], coords[4]);
 	end
 end
 
@@ -457,15 +191,30 @@ function DynamicScrollFrame_UnlockAllHighlights(self)
 	end
 end
 
-function UIPanelCloseButton_OnClick(self)
-	local parent = self:GetParent();
-	if parent then
-		if parent.onCloseCallback then
-			parent.onCloseCallback(self);
-		else
-			HideUIPanel(parent);
+--Inline hyperlinks
+function InlineHyperlinkFrame_OnEnter(self, _, link)
+	GameTooltip:SetOwner(self, "ANCHOR_CURSOR_RIGHT");
+	GameTooltip:SetHyperlink(link);
+end
+
+function InlineHyperlinkFrame_OnLeave(self)
+	GameTooltip:Hide();
+end
+
+function InlineHyperlinkFrame_OnClick(self, link, text, button)
+	if ( self.hasIconHyperlinks ) then
+		local fixedLink;
+		local _, _, linkType, linkID = string.find(link, "([%a]+):([%d]+)");
+		if ( linkType == "currency" ) then
+			fixedLink = GetCurrencyLink(linkID);
+		end
+
+		if ( fixedLink ) then
+			HandleModifiedItemClick(fixedLink);
+			return;
 		end
 	end
+	SetItemRef(link, text, button);
 end
 
 ButtonWithDisableMixin = {};
@@ -488,5 +237,117 @@ function ButtonWithDisableMixin:OnEnter()
 		end
 
 		GameTooltip:Show();
+	end
+end
+
+CurrencyHorizontalLayoutFrameMixin = {};
+
+function CurrencyHorizontalLayoutFrameMixin:OnLoad()
+	self.currencySpacing = self:GetAttribute("currencySpacing");
+	self.quantitySpacing = self:GetAttribute("quantitySpacing");
+	self.fixedHeight = self:GetAttribute("fixedHeight");
+	self.spacing = self:GetAttribute("spacing");
+	self.expand = self:GetAttribute("expand");
+end
+
+function CurrencyHorizontalLayoutFrameMixin:Clear()
+	if self.quantityPool then
+		self.quantityPool:ReleaseAll();
+	end
+	if self.iconPool then
+		self.iconPool:ReleaseAll();
+	end
+	self.nextLayoutIndex = nil;
+end
+
+function CurrencyHorizontalLayoutFrameMixin:AddToLayout(region)
+	if not self.nextLayoutIndex then
+		self.nextLayoutIndex = 1;
+	end
+	region.layoutIndex = self.nextLayoutIndex;
+	self.nextLayoutIndex = self.nextLayoutIndex + 1;
+	region:Show();
+	self:MarkDirty();
+end
+
+function CurrencyHorizontalLayoutFrameMixin:GetQuantityFontString()
+	if not self.quantityPool then
+		self.quantityPool = CreateFontStringPool(self, "ARTWORK", 0, (self.quantityFontObject or "GameFontHighlight"));
+	end
+	local fontString = self.quantityPool:Acquire();
+	self:AddToLayout(fontString);
+	return fontString;
+end
+
+function CurrencyHorizontalLayoutFrameMixin:GetIconFrame()
+	if not self.iconPool then
+		self.iconPool = CreateFramePool("Frame", self, "CurrencyLayoutFrameIconTemplate");
+	end
+	local frame = self.iconPool:Acquire();
+	self:AddToLayout(frame);
+	return frame;
+end
+
+function CurrencyHorizontalLayoutFrameMixin:CreateLabel(text, color, fontObject, spacing)
+	if self.Label then
+		return;
+	end
+
+	local label = self:CreateFontString(nil, "ARTWORK", fontObject or "GameFontHighlight");
+	self.Label = label;
+	label.layoutIndex = 0;
+	label.rightPadding = spacing;
+	label:SetHeight(self.fixedHeight);
+	label:SetText(text);
+	color = color or HIGHLIGHT_FONT_COLOR;
+	label:SetTextColor(color:GetRGB());
+	self:MarkDirty();
+end
+
+function CurrencyHorizontalLayoutFrameMixin:AddCurrency(currencyType, currencyID, overrideAmount, color)
+	local _, itemIcon;
+	if currencyType == "money" then
+		itemIcon = [[Interface\MoneyFrame\UI-MoneyIcons]];
+	else
+		_, _, _, _, _, _, _, _, _, itemIcon = GetItemInfo(currencyID);
+	end
+
+	local amountString;
+	if overrideAmount then
+		amountString = overrideAmount;
+	else
+		if currencyType == "money" then
+			amountString = floor(GetMoney() / (COPPER_PER_SILVER * SILVER_PER_GOLD));
+		elseif currencyType == "currency" then
+			amountString = GetCurrencyCount(currencyID);
+		elseif currencyType == "item" then
+			amountString = GetItemCount(currencyID)
+		end
+	end
+
+	if itemIcon then
+		local height = self.fixedHeight;
+		-- quantity
+		local fontString = self:GetQuantityFontString();
+		fontString:SetHeight(height);
+		fontString:SetText(amountString);
+		color = color or HIGHLIGHT_FONT_COLOR;
+		fontString:SetTextColor(color:GetRGB());
+		-- icon
+		local frame = self:GetIconFrame();
+		frame:SetSize(height, height);
+		frame.Icon:SetTexture(itemIcon);
+		if currencyType == "money" then
+			frame.Icon:SetTexCoord(0, 0.25, 0, 1);
+		else
+			frame.Icon:SetTexCoord(0, 1, 0, 1);
+		end
+		frame.id = currencyID;
+		frame.type = currencyType;
+		-- spacing
+		fontString.rightPadding = self.quantitySpacing;
+		if fontString.layoutIndex > 1  then
+			fontString.leftPadding = self.currencySpacing;
+		end
 	end
 end

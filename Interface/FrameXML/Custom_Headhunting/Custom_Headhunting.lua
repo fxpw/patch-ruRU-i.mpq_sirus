@@ -1,7 +1,3 @@
---	Filename:	Custom_Headhunting.lua
---	Project:	Custom Game Interface
---	Author:		Nyll & Blizzard Entertainment
-
 UIPanelWindows["HeadHuntingFrame"] = { area = "left", pushable = 0, whileDead = 1, width = 830, xOffset = "15", yOffset = "-10"}
 UIPanelWindows["HeadHuntingSetRewardExternalFrame"] = { area = "center",	pushable = 0,	whileDead = 1}
 
@@ -175,6 +171,7 @@ StaticPopupDialogs["HEADHUNTING_OKAY"] = {
     end,
     OnCancel = function()
     end,
+	whileDead = 1,
     timeout = 0,
 }
 
@@ -200,6 +197,7 @@ StaticPopupDialogs["HEADHUNTING_SETREWARD_CONFIRMATION"] = {
     end,
     OnCancel = function()
     end,
+	whileDead = 1,
     timeout = 0,
 }
 
@@ -311,7 +309,7 @@ function HeadHuntingMixin:SelectedCategory( categoryID, onlyUpdate )
     self:UpdateContent(onlyUpdate)
     self:UpdateNavBar()
 
-    self:ShowError(nil)
+    self:HideError()
 end
 
 function HeadHuntingMixin:SetSelectedCategory( categoryID )
@@ -400,7 +398,7 @@ function HeadHuntingMixin:UpdateContent( onlyUpdate, dontUpdateColumns )
 end
 
 function HeadHuntingMixin:ShowLoading()
-    self:ShowError(nil)
+    self:HideError()
 
     if self.isLoading then return end
     self.isLoading = true
@@ -419,6 +417,13 @@ function HeadHuntingMixin:ShowLoading()
         panel.SetRewardFrame.SearchFrame.SearchBox.clearButton:Disable()
         panel.SetRewardFrame.SetRewardButton:SetButtonState(true)
     end
+
+	do
+		HeadHuntingSetRewardExternalFrame.CentralContainer.ScrollFrame.Spinner:Show()
+		HeadHuntingSetRewardExternalFrame.SearchFrame.SearchButton:SetButtonState(true)
+		HeadHuntingSetRewardExternalFrame.SearchFrame.SearchBox.clearButton:Disable()
+		HeadHuntingSetRewardExternalFrame.SetRewardButton:SetButtonState(true)
+	end
 
     if panel.DetailsFrame then
         panel.DetailsFrame.Container.NotifyWhenKilling:Disable()
@@ -456,6 +461,13 @@ function HeadHuntingMixin:HideLoading()
         panel.SetRewardFrame.SearchFrame.SearchBox.clearButton:Enable()
         panel.SetRewardFrame.SetRewardButton:SetButtonState(false)
     end
+
+	do
+		HeadHuntingSetRewardExternalFrame.CentralContainer.ScrollFrame.Spinner:Hide()
+		HeadHuntingSetRewardExternalFrame.SearchFrame.SearchButton:SetButtonState(false)
+		HeadHuntingSetRewardExternalFrame.SearchFrame.SearchBox.clearButton:Enable()
+		HeadHuntingSetRewardExternalFrame.SetRewardButton:SetButtonState(false)
+	end
 
     if panel.DetailsFrame then
         panel.DetailsFrame.Container.NotifyWhenKilling:Enable()
@@ -749,6 +761,10 @@ function HeadHuntingMixin:ShowError( errorID )
     end
 end
 
+function HeadHuntingMixin:HideError()
+	self:ShowError(nil)
+end
+
 function HeadHuntingMixin:SendServerRequest( prefix, msg )
     self:ShowLoading()
 
@@ -787,6 +803,7 @@ function HeadHuntingMixin:ASMSG_HEADHUNTING_PLAYER_CONTRACTS_LIST( msg )
         end
 
         self:HideLoading()
+		FireCustomClientEvent("HEADHUNTING_PLAYER_CONTRACTS_LIST_UPDATE", resultID)
         return
     end
 
@@ -812,13 +829,13 @@ function HeadHuntingMixin:ASMSG_HEADHUNTING_CONTRACTS_LIST( msg )
         return
     end
 
-    local searchData    = C_Split(msg, ":")
-    local responseType  = tonumber(table.remove(searchData, 1)) + 1
+	local responseType, searchData = string.split(":", msg)
+	responseType = tonumber(responseType) + 1
 
     if responseType == E_HEADHUNTING_CATEGORY.REWARD_FOR_HEAD then
-        self:BuildPlayerInfo("ASMSG_HEADHUNTING_CONTRACTS_LIST", E_HEADHUNTING_ALL_CONTRACTS_PLAYER, searchData[1])
+		self:BuildPlayerInfo("ASMSG_HEADHUNTING_CONTRACTS_LIST", E_HEADHUNTING_ALL_CONTRACTS_PLAYER, searchData)
     elseif responseType == E_HEADHUNTING_CATEGORY.REWARD_FOR_GUILD then
-        self:BuildGuildInfo("ASMSG_HEADHUNTING_CONTRACTS_LIST", E_HEADHUNTING_ALL_CONTRACTS_GUILD, searchData[1])
+		self:BuildGuildInfo("ASMSG_HEADHUNTING_CONTRACTS_LIST", E_HEADHUNTING_ALL_CONTRACTS_GUILD, searchData)
     end
 end
 
@@ -1534,7 +1551,7 @@ function HeadHuntingSetRewardFrameMixin:ClearData( dontResetUI )
         local selectedCategory = self.mainFrame:GetSelectedCategory()
 
         self:SelectedGUID(nil)
-        self.mainFrame:ShowError(nil)
+        self.mainFrame:HideError()
         self.GoldPerKillsEditBox:SetText(100)
         self.NumKills:SetText(selectedCategory == E_HEADHUNTING_CATEGORY.REWARD_FOR_GUILD and 10 or 1)
         self.SearchFrame.SearchBox:SetText("")
@@ -1630,14 +1647,21 @@ function HeadHuntingSearchFrameMixin:OnLoad()
     self.mainFrame = HeadHuntingFrame
 end
 
-function HeadHuntingSearchFrameMixin:Search()
-    self:GetParent():SelectedGUID(nil)
-    self:GetParent():ClearData(true)
-    self.mainFrame:ShowError(nil)
+function HeadHuntingSearchFrameMixin:Search(guid)
+	local parent = self:GetParent()
+	parent:SelectedGUID(nil)
+	parent:ClearData(true)
+	self.mainFrame:HideError()
 
-    self.mainFrame:SendServerRequest("ACMSG_HEADHUNTING_SEARCH_REQUEST", string.format("%s,%s", self.mainFrame:GetSelectedCategory() - 1, self.SearchBox:GetText()))
+	local category
+	if parent.searchCategoryOverride then
+		category = parent.searchCategoryOverride
+	else
+		category = self.mainFrame:GetSelectedCategory() - 1
+	end
 
-    self.SearchButton:UpdateButtonState()
+	self.mainFrame:SendServerRequest("ACMSG_HEADHUNTING_SEARCH_REQUEST", string.format("%s,%s", category, guid and tonumber(guid) or self.SearchBox:GetText()))
+	self.SearchButton:UpdateButtonState()
 end
 
 function HeadHuntingSearchFrameMixin:UpdateContent()
@@ -1879,35 +1903,66 @@ end
 
 HeadHuntingSetRewardExternalFrameMixin = {}
 
-function HeadHuntingSetRewardExternalFrameMixin:Init()
-    self.SearchFrame.Search = function( self, GUID )
-        local name = self.SearchBox:GetText()
+function HeadHuntingSetRewardExternalFrameMixin:OnLoad()
+	HeadHuntingSetRewardFrameMixin.OnLoad(self)
 
-        self:GetParent():ClearData(true)
-
-        self.mainFrame:SendServerRequest("ACMSG_HEADHUNTING_SEARCH_REQUEST", string.format("%s,%s", 0, GUID and tonumber(GUID) or name))
-        self.SearchButton:UpdateButtonState()
-    end
-
-    self:OnLoad()
+	self.searchCategoryOverride = 0
+	self:RegisterCustomEvent("HEADHUNTING_PLAYER_CONTRACTS_LIST_UPDATE")
 end
 
-function HeadHuntingSetRewardExternalFrameMixin:OpenAndSearch( name, GUID )
-    HeadHuntingFrame:SelectedTab(E_HEADHUNTING_TAB.YOU_TARGETS)
-    HeadHuntingFrame:SetSelectedCategory(E_HEADHUNTING_CATEGORY.REWARD_FOR_HEAD)
+function HeadHuntingSetRewardExternalFrameMixin:OnEvent(event, ...)
+	if self:IsShown() and self.queuedName then
+		self.SearchFrame:Search(self.queuedGUID, self.queuedName)
+		self.queuedName = nil
+		self.queuedGUID = nil
+	end
+end
 
-    self:ClearData()
+function HeadHuntingSetRewardExternalFrameMixin:OnHide()
+	HeadHuntingSetRewardFrameMixin.OnHide(self)
 
-    if not self:IsShown() then
-        ShowUIPanel(self)
-    end
+	self.mainFrame:CloaseAllPopup()
 
-    self.HelpBoxFrame:UpdateContent()
+	for _, popupFrame in ipairs(self.mainFrame.popupFrames) do
+		popupFrame:SetParent(self.mainFrame)
+	end
+	self.mainFrame.popupFrames[1]:SetPoint("TOP", 0, 0)
+end
 
-    C_Timer:After(0.2, function()
-        self.SearchFrame.SearchBox:SetText(name)
-        self.SearchFrame:Search(GUID, name)
-    end)
+function HeadHuntingSetRewardExternalFrameMixin:OpenAndSearch(name, guid)
+	local tabChanged = self.mainFrame.selectedTopTab ~= E_HEADHUNTING_TAB.YOU_TARGETS
+
+	if tabChanged then
+		self.queuedName = name
+		self.queuedGUID = guid
+
+		self.mainFrame:SelectedTab(E_HEADHUNTING_TAB.YOU_TARGETS)
+		self.mainFrame:SetSelectedCategory(E_HEADHUNTING_CATEGORY.REWARD_FOR_HEAD)
+	end
+
+	if self:IsShown() then
+		self:ClearData()
+	else
+		ShowUIPanel(self)
+	end
+
+	for _, popupFrame in ipairs(self.mainFrame.popupFrames) do
+		popupFrame:SetParent(self)
+	end
+	self.mainFrame.popupFrames[1]:SetPoint("TOP", 0, 90)
+
+	self.SearchFrame.SearchBox:SetText(name)
+	self.HelpBoxFrame:UpdateContent()
+
+	if not tabChanged then
+		self.queuedName = nil
+		self.queuedGUID = nil
+		self.SearchFrame:Search(guid, name)
+	end
+end
+
+function HeadHuntingSetRewardExternalFrameMixin:DelayedSearch(name, guid)
+
 end
 
 HeadHuntingAllTargetsBaseScrollButtonTemplateMixin = {}

@@ -236,53 +236,53 @@ function SecondsToTime(seconds, noSeconds, notAbbreviated, maxCount, roundUp)
 	local tempTime;
 	seconds = roundUp and ceil(seconds) or floor(seconds);
 	maxCount = maxCount or 2;
-	if ( seconds >= 86400  ) then
+	if ( seconds >= SECONDS_PER_DAY  ) then
 		count = count + 1;
 		if ( count == maxCount and roundUp ) then
-			tempTime = ceil(seconds / 86400);
+			tempTime = ceil(seconds / SECONDS_PER_DAY);
 		else
-			tempTime = floor(seconds / 86400);
+			tempTime = floor(seconds / SECONDS_PER_DAY);
 		end
 		if ( notAbbreviated ) then
 			time = D_DAYS:format(tempTime);
 		else
 			time = DAYS_ABBR:format(tempTime);
 		end
-		seconds = mod(seconds, 86400);
+		seconds = mod(seconds, SECONDS_PER_DAY);
 	end
-	if ( count < maxCount and seconds >= 3600  ) then
+	if ( count < maxCount and seconds >= SECONDS_PER_HOUR  ) then
 		count = count + 1;
 		if ( time ~= "" ) then
 			time = time..TIME_UNIT_DELIMITER;
 		end
 		if ( count == maxCount and roundUp ) then
-			tempTime = ceil(seconds / 3600);
+			tempTime = ceil(seconds / SECONDS_PER_HOUR);
 		else
-			tempTime = floor(seconds / 3600);
+			tempTime = floor(seconds / SECONDS_PER_HOUR);
 		end
 		if ( notAbbreviated ) then
 			time = time..D_HOURS:format(tempTime);
 		else
 			time = time..HOURS_ABBR:format(tempTime);
 		end
-		seconds = mod(seconds, 3600);
+		seconds = mod(seconds, SECONDS_PER_HOUR);
 	end
-	if ( count < maxCount and seconds >= 60  ) then
+	if ( count < maxCount and seconds >= SECONDS_PER_MIN  ) then
 		count = count + 1;
 		if ( time ~= "" ) then
 			time = time..TIME_UNIT_DELIMITER;
 		end
 		if ( count == maxCount and roundUp ) then
-			tempTime = ceil(seconds / 60);
+			tempTime = ceil(seconds / SECONDS_PER_MIN);
 		else
-			tempTime = floor(seconds / 60);
+			tempTime = floor(seconds / SECONDS_PER_MIN);
 		end
 		if ( notAbbreviated ) then
 			time = time..D_MINUTES:format(tempTime);
 		else
 			time = time..MINUTES_ABBR:format(tempTime);
 		end
-		seconds = mod(seconds, 60);
+		seconds = mod(seconds, SECONDS_PER_MIN);
 	end
 	if ( count < maxCount and seconds > 0 and not noSeconds ) then
 		if ( time ~= "" ) then
@@ -324,16 +324,16 @@ end
 
 function SecondsToTimeAbbrev(seconds)
 	local tempTime;
-	if ( seconds >= 86400  ) then
-		tempTime = ceil(seconds / 86400);
+	if ( seconds >= SECONDS_PER_DAY ) then
+		tempTime = ceil(seconds / SECONDS_PER_DAY);
 		return DAY_ONELETTER_ABBR, tempTime;
 	end
-	if ( seconds >= 3600  ) then
-		tempTime = ceil(seconds / 3600);
+	if ( seconds >= SECONDS_PER_HOUR ) then
+		tempTime = ceil(seconds / SECONDS_PER_HOUR);
 		return HOUR_ONELETTER_ABBR, tempTime;
 	end
-	if ( seconds >= 60  ) then
-		tempTime = ceil(seconds / 60);
+	if ( seconds >= SECONDS_PER_MIN ) then
+		tempTime = ceil(seconds / SECONDS_PER_MIN);
 		return MINUTE_ONELETTER_ABBR, tempTime;
 	end
 	return SECOND_ONELETTER_ABBR, seconds;

@@ -94,46 +94,8 @@ PLAYERSTAT_DROPDOWN_OPTIONS = {
 	"PLAYERSTAT_DEFENSES",
 };
 
-PDFITEMFLYOUT_MAXITEMS = 23;
-
-PDFITEMFLYOUT_ONESLOT_LEFT_COORDS = { 0, 0.09765625, 0.5546875, 0.77734375 }
-PDFITEMFLYOUT_ONESLOT_RIGHT_COORDS = { 0.41796875, 0.51171875, 0.5546875, 0.77734375 }
-
-PDFITEMFLYOUT_ONESLOT_LEFTWIDTH = 25;
-PDFITEMFLYOUT_ONESLOT_RIGHTWIDTH = 24;
-
-PDFITEMFLYOUT_ONESLOT_WIDTH = 49;
-PDFITEMFLYOUT_ONESLOT_HEIGHT = 54;
-
-PDFITEMFLYOUT_ONEROW_LEFT_COORDS = { 0, 0.16796875, 0.5546875, 0.77734375 }
-PDFITEMFLYOUT_ONEROW_CENTER_COORDS = { 0.16796875, 0.328125, 0.5546875, 0.77734375 }
-PDFITEMFLYOUT_ONEROW_RIGHT_COORDS = { 0.328125, 0.51171875, 0.5546875, 0.77734375 }
-
-PDFITEMFLYOUT_MULTIROW_TOP_COORDS = { 0, 0.8359375, 0, 0.19140625 }
-PDFITEMFLYOUT_MULTIROW_MIDDLE_COORDS = { 0, 0.8359375, 0.19140625, 0.35546875 }
-PDFITEMFLYOUT_MULTIROW_BOTTOM_COORDS = { 0, 0.8359375, 0.35546875, 0.546875 }
-
-PDFITEMFLYOUT_ONEROW_HEIGHT = 54;
-
-PDFITEMFLYOUT_ONEROW_LEFT_WIDTH = 43;
-PDFITEMFLYOUT_ONEROW_CENTER_WIDTH = 41;
-PDFITEMFLYOUT_ONEROW_RIGHT_WIDTH = 47;
-
-PDFITEMFLYOUT_MULTIROW_WIDTH = 214;
-
-PDFITEMFLYOUT_MULTIROW_TOP_HEIGHT = 49;
-PDFITEMFLYOUT_MULTIROW_MIDDLE_HEIGHT = 42;
-PDFITEMFLYOUT_MULTIROW_BOTTOM_HEIGHT = 49;
-
-PDFITEMFLYOUT_PLACEINBAGS_LOCATION = 0xFFFFFFFF;
-PDFITEMFLYOUT_IGNORESLOT_LOCATION = 0xFFFFFFFE;
-PDFITEMFLYOUT_UNIGNORESLOT_LOCATION = 0xFFFFFFFD;
-PDFITEMFLYOUT_FIRST_SPECIAL_LOCATION = PDFITEMFLYOUT_UNIGNORESLOT_LOCATION
-
 PLAYER_DISPLAYED_TITLES = 6;
 PLAYER_TITLE_HEIGHT = 16;
-
-VERTICAL_FLYOUTS = { [16] = true, [17] = true, [18] = true }
 
 local BONUS_STAT_VALUES = {}
 local BONUS_STAT_MULTIPLIERS = {}
@@ -209,6 +171,19 @@ function PaperDollFrame_OnLoad (self)
 	self:RegisterEvent("UNIT_INVENTORY_CHANGED");
 	self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 	self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+
+	-- flyout settings
+	PaperDollFrameEquipInset.flyoutSettings = {
+		onClickFunc = PaperDollFrameItemFlyoutButton_OnClick,
+		getItemsFunc = PaperDollFrameItemFlyout_GetItems,
+		postGetItemsFunc = PaperDollFrameItemFlyout_PostGetItems,
+		hasPopouts = true,
+		parent = PaperDollFrame,
+		anchorX = 0,
+		anchorY = -3,
+		verticalAnchorX = 0,
+		verticalAnchorY = 0,
+	};
 
 	self.isDisabledStrengthenFrame = C_Service:IsLockStrengthenStatsFeature()
 
@@ -1694,26 +1669,13 @@ function PaperDollItemSlotButton_UpdateLock (self)
 	end
 end
 
-function PaperDollItemSlotButton_UpdateFlyout (self)
-	if ( self:GetID() ~= INVSLOT_AMMO ) then
-		if ( (IsModifiedClick("SHOWITEMFLYOUT") and not (PaperDollFrameItemFlyout:IsVisible() and PaperDollFrameItemFlyout.button == self)) or
-			self.popoutButton.flyoutLocked) then
-			PaperDollFrameItemFlyout_Show(self);
-		elseif ( (PaperDollFrameItemFlyout:IsVisible() and PaperDollFrameItemFlyout.button == self) and
-			not self.popoutButton.flyoutLocked and not IsModifiedClick("SHOWITEMFLYOUT") ) then
-			PaperDollFrameItemFlyout_Hide();
-		end
-	end
-end
-
 function PaperDollItemSlotButton_OnEnter (self)
 	self:RegisterEvent("MODIFIER_STATE_CHANGED");
-	PaperDollItemSlotButton_UpdateFlyout(self);
-	if ( PaperDollFrameItemFlyout:IsShown() ) then
-		GameTooltip:SetOwner(PaperDollFrameItemFlyoutButtons, "ANCHOR_RIGHT", 6, -PaperDollFrameItemFlyoutButtons:GetHeight() - 6);
-	else
+	EquipmentFlyout_UpdateFlyout(self);
+	if ( not EquipmentFlyout_SetTooltipAnchor(self) ) then
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 	end
+
 	local hasItem, hasCooldown, repairCost = GameTooltip:SetInventoryItem("player", self:GetID());
 	if ( not hasItem ) then
 		local text = _G[strupper(strsub(self:GetName(), 10))];
@@ -2058,474 +2020,61 @@ function ComputePetBonus(stat, value)
 	return 0;
 end
 
-PDFITEMFLYOUT_ITEMS_PER_ROW = 5;
-
-PDFITEMFLYOUT_BORDERWIDTH = 3;
-
-PDFITEMFLYOUT_WIDTH = 43;
-PDFITEMFLYOUT_HEIGHT = 43;
-PDFITEM_WIDTH = 37;
-PDFITEM_HEIGHT = 37;
-PDFITEM_XOFFSET = 4;
-PDFITEM_YOFFSET = -5;
-
-local itemTable = {}; -- Used for items and locations
-local itemDisplayTable = {} -- Used for ordering items by location
-
-function PaperDollFrameItemFlyout_CreateButton ()
-	local buttons = PaperDollFrameItemFlyout.buttons;
-	local buttonAnchor = PaperDollFrameItemFlyoutButtons;
-	local numButtons = #buttons;
-
-	local button = CreateFrame("BUTTON", "PaperDollFrameItemFlyoutButtons" .. numButtons + 1, buttonAnchor, "PaperDollFrameItemFlyoutButtonTemplate");
-
-	local pos = numButtons/PDFITEMFLYOUT_ITEMS_PER_ROW;
-	if ( math.floor(pos) == pos ) then
-		-- This is the first button in a row.
-		button:SetPoint("TOPLEFT", buttonAnchor, "TOPLEFT", PDFITEMFLYOUT_BORDERWIDTH, -PDFITEMFLYOUT_BORDERWIDTH - (PDFITEM_HEIGHT - PDFITEM_YOFFSET)* pos);
-	else
-		button:SetPoint("TOPLEFT", buttons[numButtons], "TOPRIGHT", PDFITEM_XOFFSET, 0);
-	end
-
-	tinsert(buttons, button);
-	return button
-end
-
-function PaperDollFrameItemFlyout_Hide ()
-	PaperDollFrameItemFlyout:Hide();
-end
-
-function PaperDollFrameItemFlyout_OnUpdate (self, elapsed)
-	if ( not IsModifiedClick("SHOWITEMFLYOUT") ) then
-		local button = self.button;
-
-		if ( button and button.popoutButton.flyoutLocked ) then
-			PaperDollItemSlotButton_UpdateFlyout(button);
-		elseif ( button and button:IsMouseOver() ) then
-			PaperDollItemSlotButton_OnEnter(button);
-		else
-			PaperDollFrameItemFlyout_Hide();
-		end
-	end
-end
-
-function PaperDollFrameItemFlyout_OnShow (self)
-	self:RegisterEvent("BAG_UPDATE");
-	self:RegisterEvent("UNIT_INVENTORY_CHANGED");
-end
-
-function PaperDollFrameItemFlyout_OnHide (self)
-	if ( self.button ) then
-		local popoutButton = self.button.popoutButton;
-		popoutButton.flyoutLocked = false;
-		PaperDollFrameItemPopoutButton_SetReversed(popoutButton, false);
-	end
-	self.button = nil;
-	self:UnregisterEvent("BAG_UPDATE");
-	self:UnregisterEvent("UNIT_INVENTORY_CHANGED");
-end
-
-function PaperDollFrameItemFlyout_OnEvent (self, event, ...)
-	if ( event == "BAG_UPDATE" ) then
-		-- This spams a lot, four times when we equip an item, but we need to use it. PaperDollFrameItemFlyout_Show needs to stay fast for this reason.
-		PaperDollFrameItemFlyout_Show(self.button);
-	elseif ( event == "UNIT_INVENTORY_CHANGED" ) then
-		local arg1 = ...;
-		if ( arg1 == "player" ) then
-			PaperDollFrameItemFlyout_Show(self.button);
-		end
-	end
-end
-
-local function _createFlyoutBG (buttonAnchor)
-	local numBGs = buttonAnchor["numBGs"];
-	numBGs = numBGs + 1;
-	local texture = buttonAnchor:CreateTexture(nil, nil, "PaperDollFrameFlyoutTexture");
-	buttonAnchor["bg" .. numBGs] = texture;
-	buttonAnchor["numBGs"] = numBGs;
-	return texture;
-end
-
-function PaperDollFrameItemFlyout_Show (paperDollItemSlot)
-	local id = paperDollItemSlot:GetID();
-
-	local flyout = PaperDollFrameItemFlyout;
-	local buttons = flyout.buttons;
-	local buttonAnchor = flyout.buttonFrame;
-
-	if ( flyout.button and flyout.button ~= paperDollItemSlot ) then
-		local popoutButton = flyout.button.popoutButton;
-		if ( popoutButton.flyoutLocked ) then
-			popoutButton.flyoutLocked = false;
-			PaperDollFrameItemPopoutButton_SetReversed(popoutButton, false);
-		end
-	end
-
-	for k in next, itemDisplayTable do
-		itemDisplayTable[k] = nil;
-	end
-
-	for k in next, itemTable do
-		itemTable[k] = nil;
-	end
-
-	GetInventoryItemsForSlot(id, itemTable);
-
-	for location, itemID in next, itemTable do
-		if ( location - id == ITEM_INVENTORY_LOCATION_PLAYER ) then -- Remove the currently equipped item from the list
-			itemTable[location] = nil;
-		else
-			tinsert(itemDisplayTable, location);
-		end
-	end
-
-	table.sort(itemDisplayTable); -- Sort by location. This ends up as: inventory, backpack, bags, bank, and bank bags.
-
-	local numItems = #itemDisplayTable;
-
-	for i = PDFITEMFLYOUT_MAXITEMS + 1, numItems do
-		itemDisplayTable[i] = nil;
-	end
-
-	numItems = min(numItems, PDFITEMFLYOUT_MAXITEMS);
-
-	if ( GearManagerDialog:IsShown() ) then
-		if ( not paperDollItemSlot.ignored ) then
-			tinsert(itemDisplayTable, 1, PDFITEMFLYOUT_IGNORESLOT_LOCATION);
-		else
-			tinsert(itemDisplayTable, 1, PDFITEMFLYOUT_UNIGNORESLOT_LOCATION);
-		end
-		numItems = numItems + 1;
-	end
-
-	if ( paperDollItemSlot.hasItem ) then
-		tinsert(itemDisplayTable, 1, PDFITEMFLYOUT_PLACEINBAGS_LOCATION);
-		numItems = numItems + 1;
-	end
-
-	while #buttons < numItems do -- Create any buttons we need.
-		PaperDollFrameItemFlyout_CreateButton();
-	end
-
-	if ( numItems == 0 ) then
-		flyout:Hide();
-		return;
-	end
-
-	for i, button in ipairs(buttons) do
-		if ( i <= numItems ) then
-			button.id = id;
-			button.location = itemDisplayTable[i];
-			button:Show();
-
-			PaperDollFrameItemFlyout_DisplayButton(button, paperDollItemSlot);
-		else
-			button:Hide();
-		end
-	end
-
-	flyout:ClearAllPoints();
-	flyout:SetFrameLevel(paperDollItemSlot:GetFrameLevel() - 1);
-	flyout.button = paperDollItemSlot;
-	flyout:SetPoint("TOPLEFT", paperDollItemSlot, "TOPLEFT", -PDFITEMFLYOUT_BORDERWIDTH, PDFITEMFLYOUT_BORDERWIDTH);
-	local horizontalItems = min(numItems, PDFITEMFLYOUT_ITEMS_PER_ROW);
-	if ( paperDollItemSlot.verticalFlyout ) then
-		buttonAnchor:SetPoint("TOPLEFT", paperDollItemSlot.popoutButton, "BOTTOMLEFT", 0, -PDFITEMFLYOUT_BORDERWIDTH);
-	else
-		buttonAnchor:SetPoint("TOPLEFT", paperDollItemSlot.popoutButton, "TOPRIGHT", 0, 0);
-	end
-	buttonAnchor:SetWidth((horizontalItems * PDFITEM_WIDTH) + ((horizontalItems - 1) * PDFITEM_XOFFSET) + PDFITEMFLYOUT_BORDERWIDTH);
-	buttonAnchor:SetHeight(PDFITEMFLYOUT_HEIGHT + (math.floor((numItems - 1)/PDFITEMFLYOUT_ITEMS_PER_ROW) * (PDFITEM_HEIGHT - PDFITEM_YOFFSET)));
-
-
-	if ( flyout.numItems ~= numItems ) then
-		local texturesUsed = 0;
-		if ( numItems == 1 ) then
-			local bgTex, lastBGTex;
-			bgTex = buttonAnchor.bg1;
-			bgTex:ClearAllPoints();
-			bgTex:SetTexCoord(unpack(PDFITEMFLYOUT_ONESLOT_LEFT_COORDS));
-			bgTex:SetWidth(PDFITEMFLYOUT_ONESLOT_LEFTWIDTH);
-			bgTex:SetHeight(PDFITEMFLYOUT_ONEROW_HEIGHT);
-			bgTex:SetPoint("TOPLEFT", -5, 4);
-			bgTex:Show();
-			texturesUsed = texturesUsed + 1;
-			lastBGTex = bgTex;
-
-			bgTex = buttonAnchor.bg2 or _createFlyoutBG(buttonAnchor);
-			bgTex:ClearAllPoints();
-			bgTex:SetTexCoord(unpack(PDFITEMFLYOUT_ONESLOT_RIGHT_COORDS));
-			bgTex:SetWidth(PDFITEMFLYOUT_ONESLOT_RIGHTWIDTH);
-			bgTex:SetHeight(PDFITEMFLYOUT_ONEROW_HEIGHT);
-			bgTex:SetPoint("TOPLEFT", lastBGTex, "TOPRIGHT");
-			bgTex:Show();
-			texturesUsed = texturesUsed + 1;
-			lastBGTex = bgTex;
-		elseif ( numItems <= PDFITEMFLYOUT_ITEMS_PER_ROW ) then
-			local bgTex, lastBGTex;
-			bgTex = buttonAnchor.bg1;
-			bgTex:ClearAllPoints();
-			bgTex:SetTexCoord(unpack(PDFITEMFLYOUT_ONEROW_LEFT_COORDS));
-			bgTex:SetWidth(PDFITEMFLYOUT_ONEROW_LEFT_WIDTH);
-			bgTex:SetHeight(PDFITEMFLYOUT_ONEROW_HEIGHT);
-			bgTex:SetPoint("TOPLEFT", -5, 4);
-			bgTex:Show();
-			texturesUsed = texturesUsed + 1;
-			lastBGTex = bgTex;
-			for i = texturesUsed + 1, numItems - 1 do
-				bgTex = buttonAnchor["bg"..i] or _createFlyoutBG(buttonAnchor);
-				bgTex:ClearAllPoints();
-				bgTex:SetTexCoord(unpack(PDFITEMFLYOUT_ONEROW_CENTER_COORDS));
-				bgTex:SetWidth(PDFITEMFLYOUT_ONEROW_CENTER_WIDTH);
-				bgTex:SetHeight(PDFITEMFLYOUT_ONEROW_HEIGHT);
-				bgTex:SetPoint("TOPLEFT", lastBGTex, "TOPRIGHT");
-				bgTex:Show();
-				texturesUsed = texturesUsed + 1;
-				lastBGTex = bgTex;
-			end
-
-			bgTex = buttonAnchor["bg"..numItems] or _createFlyoutBG(buttonAnchor);
-			bgTex:ClearAllPoints();
-			bgTex:SetTexCoord(unpack(PDFITEMFLYOUT_ONEROW_RIGHT_COORDS));
-			bgTex:SetWidth(PDFITEMFLYOUT_ONEROW_RIGHT_WIDTH);
-			bgTex:SetHeight(PDFITEMFLYOUT_ONEROW_HEIGHT);
-			bgTex:SetPoint("TOPLEFT", lastBGTex, "TOPRIGHT");
-			bgTex:Show();
-			texturesUsed = texturesUsed + 1;
-		elseif ( numItems > PDFITEMFLYOUT_ITEMS_PER_ROW ) then
-			local numRows = math.ceil(numItems/PDFITEMFLYOUT_ITEMS_PER_ROW);
-			local bgTex, lastBGTex;
-			bgTex = buttonAnchor.bg1;
-			bgTex:ClearAllPoints();
-			bgTex:SetTexCoord(unpack(PDFITEMFLYOUT_MULTIROW_TOP_COORDS));
-			bgTex:SetWidth(PDFITEMFLYOUT_MULTIROW_WIDTH);
-			bgTex:SetHeight(PDFITEMFLYOUT_MULTIROW_TOP_HEIGHT);
-			bgTex:SetPoint("TOPLEFT", -5, 4);
-			bgTex:Show();
-			texturesUsed = texturesUsed + 1;
-			lastBGTex = bgTex;
-			for i = 2, numRows - 1 do -- Middle rows
-				bgTex = buttonAnchor["bg"..i] or _createFlyoutBG(buttonAnchor);
-				bgTex:ClearAllPoints();
-				bgTex:SetTexCoord(unpack(PDFITEMFLYOUT_MULTIROW_MIDDLE_COORDS));
-				bgTex:SetWidth(PDFITEMFLYOUT_MULTIROW_WIDTH);
-				bgTex:SetHeight(PDFITEMFLYOUT_MULTIROW_MIDDLE_HEIGHT);
-				bgTex:SetPoint("TOPLEFT", lastBGTex, "BOTTOMLEFT");
-				bgTex:Show();
-				texturesUsed = texturesUsed + 1;
-				lastBGTex = bgTex;
-			end
-
-			bgTex = buttonAnchor["bg"..numRows] or _createFlyoutBG(buttonAnchor);
-			bgTex:ClearAllPoints();
-			bgTex:SetTexCoord(unpack(PDFITEMFLYOUT_MULTIROW_BOTTOM_COORDS));
-			bgTex:SetWidth(PDFITEMFLYOUT_MULTIROW_WIDTH);
-			bgTex:SetHeight(PDFITEMFLYOUT_MULTIROW_BOTTOM_HEIGHT);
-			bgTex:SetPoint("TOPLEFT", lastBGTex, "BOTTOMLEFT");
-			bgTex:Show();
-			texturesUsed = texturesUsed + 1;
-			lastBGTex = bgTex;
-		end
-
-		for i = texturesUsed + 1, buttonAnchor["numBGs"] do
-			buttonAnchor["bg" .. i]:Hide();
-		end
-		flyout.numItems = numItems;
-	end
-
-	flyout:Show();
-end
-
-function PaperDollFrameItemFlyout_DisplayButton (button, paperDollItemSlot)
-	local location = button.location;
-	if ( not location ) then
-		return;
-	end
-	if ( location >= PDFITEMFLYOUT_FIRST_SPECIAL_LOCATION ) then
-		PaperDollFrameItemFlyout_DisplaySpecialButton(button, paperDollItemSlot);
-		return;
-	end
-
-	local id, name, textureName, count, durability, maxDurability, invType, locked, start, duration, enable, setTooltip = EquipmentManager_GetItemInfoByLocation(location);
-	local broken = ( maxDurability and durability == 0 );
-	if ( textureName ) then
-		SetItemButtonTexture(button, textureName);
-		SetItemButtonCount(button, count);
-		if ( broken ) then
-			SetItemButtonTextureVertexColor(button, 0.9, 0, 0);
-			SetItemButtonNormalTextureVertexColor(button, 0.9, 0, 0);
-		else
-			SetItemButtonTextureVertexColor(button, 1.0, 1.0, 1.0);
-			SetItemButtonNormalTextureVertexColor(button, 1.0, 1.0, 1.0);
-		end
-
-		CooldownFrame_SetTimer(button.cooldown, start, duration, enable);
-
-		button.UpdateTooltip = function () GameTooltip:SetOwner(PaperDollFrameItemFlyoutButtons, "ANCHOR_RIGHT", 6, -PaperDollFrameItemFlyoutButtons:GetHeight() - 6); setTooltip(); end;
-		if ( button:IsMouseOver() ) then
-			button.UpdateTooltip();
-		end
-	else
-		textureName = paperDollItemSlot.backgroundTextureName;
-		if ( paperDollItemSlot.checkRelic and UnitHasRelicSlot("player") ) then
-			textureName = "Interface\\Paperdoll\\UI-PaperDoll-Slot-Relic.blp";
-		end
-		SetItemButtonTexture(button, textureName);
-		SetItemButtonCount(button, 0);
-		SetItemButtonTextureVertexColor(button, 1.0, 1.0, 1.0);
-		SetItemButtonNormalTextureVertexColor(button, 1.0, 1.0, 1.0);
-		button.cooldown:Hide();
-		button.UpdateTooltip = nil;
-	end
-end
-
-function PaperDollFrameItemFlyout_DisplaySpecialButton (button, paperDollItemSlot)
-	local location = button.location;
-	if ( location == PDFITEMFLYOUT_IGNORESLOT_LOCATION ) then
-		SetItemButtonTexture(button, "Interface\\PaperDollInfoFrame\\UI-GearManager-LeaveItem-Opaque");
-		SetItemButtonCount(button, nil);
-		button.UpdateTooltip =
-			function ()
-				GameTooltip:SetOwner(PaperDollFrameItemFlyoutButtons, "ANCHOR_RIGHT", 6, -PaperDollFrameItemFlyoutButtons:GetHeight() - 6);
-				GameTooltip:SetText(EQUIPMENT_MANAGER_IGNORE_SLOT, 1.0, 1.0, 1.0);
-				if ( SHOW_NEWBIE_TIPS == "1" ) then
-					GameTooltip:AddLine(NEWBIE_TOOLTIP_EQUIPMENT_MANAGER_IGNORE_SLOT, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1);
-				end
-				GameTooltip:Show();
-			end;
-		SetItemButtonTextureVertexColor(button, 1.0, 1.0, 1.0);
-		SetItemButtonNormalTextureVertexColor(button, 1.0, 1.0, 1.0);
-	elseif ( location == PDFITEMFLYOUT_UNIGNORESLOT_LOCATION ) then
-		SetItemButtonTexture(button, "Interface\\PaperDollInfoFrame\\UI-GearManager-Undo");
-		SetItemButtonCount(button, nil);
-		button.UpdateTooltip =
-			function ()
-				GameTooltip:SetOwner(PaperDollFrameItemFlyoutButtons, "ANCHOR_RIGHT", 6, -PaperDollFrameItemFlyoutButtons:GetHeight() - 6);
-				GameTooltip:SetText(EQUIPMENT_MANAGER_UNIGNORE_SLOT, 1.0, 1.0, 1.0);
-				if ( SHOW_NEWBIE_TIPS == "1" ) then
-					GameTooltip:AddLine(NEWBIE_TOOLTIP_EQUIPMENT_MANAGER_UNIGNORE_SLOT, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1);
-				end
-				GameTooltip:Show();
-			end;
-		SetItemButtonTextureVertexColor(button, 1.0, 1.0, 1.0);
-		SetItemButtonNormalTextureVertexColor(button, 1.0, 1.0, 1.0);
-	elseif ( location == PDFITEMFLYOUT_PLACEINBAGS_LOCATION ) then
-		SetItemButtonTexture(button, "Interface\\PaperDollInfoFrame\\UI-GearManager-ItemIntoBag");
-		SetItemButtonCount(button, nil);
-		button.UpdateTooltip =
-			function ()
-				GameTooltip:SetOwner(PaperDollFrameItemFlyoutButtons, "ANCHOR_RIGHT", 6, -PaperDollFrameItemFlyoutButtons:GetHeight() - 6);
-				GameTooltip:SetText(EQUIPMENT_MANAGER_PLACE_IN_BAGS, 1.0, 1.0, 1.0);
-				if ( SHOW_NEWBIE_TIPS == "1" ) then
-					GameTooltip:AddLine(NEWBIE_TOOLTIP_EQUIPMENT_MANAGER_PLACE_IN_BAGS, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1);
-				end
-				GameTooltip:Show();
-			end;
-		SetItemButtonTextureVertexColor(button, 1.0, 1.0, 1.0);
-		SetItemButtonNormalTextureVertexColor(button, 1.0, 1.0, 1.0);
-	end
-	if ( button:IsMouseOver() and button.UpdateTooltip ) then
-		button.UpdateTooltip();
-	end
-end
-
-function PaperDollFrameItemFlyoutButton_OnEnter (self)
-	if ( self.UpdateTooltip ) then
-		self.UpdateTooltip(); -- This shows the tooltip, and gets called repeatedly thereafter by GameTooltip.
-	end
-end
-
-function PaperDollFrameItemFlyoutButton_OnClick (self)
-	if ( self.location == PDFITEMFLYOUT_IGNORESLOT_LOCATION ) then
-		local slot = PaperDollFrameItemFlyout.button;
+function PaperDollFrameItemFlyoutButton_OnClick(self)
+	if ( self.location == EQUIPMENTFLYOUT_IGNORESLOT_LOCATION ) then
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+		local slot = EquipmentFlyoutFrame.button;
 		EquipmentManagerIgnoreSlotForSave(slot:GetID());
 		slot.ignored = true;
 		PaperDollItemSlotButton_Update(slot);
-		PaperDollFrameItemFlyout_Show(slot);
-	elseif ( self.location == PDFITEMFLYOUT_UNIGNORESLOT_LOCATION ) then
-		local slot = PaperDollFrameItemFlyout.button;
+		EquipmentFlyout_Show(slot);
+		PaperDollFrame.EquipmentManagerPane.SaveSet:Enable();
+	elseif ( self.location == EQUIPMENTFLYOUT_UNIGNORESLOT_LOCATION ) then
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+		local slot = EquipmentFlyoutFrame.button;
 		EquipmentManagerUnignoreSlotForSave(slot:GetID());
 		slot.ignored = nil;
 		PaperDollItemSlotButton_Update(slot);
-		PaperDollFrameItemFlyout_Show(slot);
-	elseif ( self.location == PDFITEMFLYOUT_PLACEINBAGS_LOCATION ) then
-		if ( UnitAffectingCombat("player") and not INVSLOTS_EQUIPABLE_IN_COMBAT[PaperDollFrameItemFlyout.button:GetID()] ) then
+		EquipmentFlyout_Show(slot);
+		PaperDollFrame.EquipmentManagerPane.SaveSet:Enable();
+	elseif ( self.location == EQUIPMENTFLYOUT_PLACEINBAGS_LOCATION ) then
+		if ( UnitAffectingCombat("player") and not INVSLOTS_EQUIPABLE_IN_COMBAT[EquipmentFlyoutFrame.button:GetID()] ) then
 			UIErrorsFrame:AddMessage(ERR_CLIENT_LOCKED_OUT, 1.0, 0.1, 0.1, 1.0);
 			return;
 		end
-		local action = EquipmentManager_UnequipItemInSlot(PaperDollFrameItemFlyout.button:GetID());
+		local action = EquipmentManager_UnequipItemInSlot(EquipmentFlyoutFrame.button:GetID());
 		EquipmentManager_RunAction(action);
 	elseif ( self.location ) then
-		if ( UnitAffectingCombat("player") and not INVSLOTS_EQUIPABLE_IN_COMBAT[PaperDollFrameItemFlyout.button:GetID()] ) then
+		if ( UnitAffectingCombat("player") and not INVSLOTS_EQUIPABLE_IN_COMBAT[EquipmentFlyoutFrame.button:GetID()] ) then
 			UIErrorsFrame:AddMessage(ERR_CLIENT_LOCKED_OUT, 1.0, 0.1, 0.1, 1.0);
 			return;
 		end
 		local action = EquipmentManager_EquipItemByLocation(self.location, self.id);
 		EquipmentManager_RunAction(action);
 	end
-	if ( PaperDollFrameItemFlyout.button.popoutButton.flyoutLocked ) then
-		PaperDollFrameItemFlyout_Hide();
-	end
 end
 
-local popoutButtons = {}
-
-function PaperDollFrameItemPopoutButton_OnLoad(self)
-	tinsert(popoutButtons, self);
+function PaperDollFrameItemFlyout_GetItems(paperDollItemSlot, itemTable)
+	GetInventoryItemsForSlot(paperDollItemSlot, itemTable);
 end
 
-function PaperDollFrameItemPopoutButton_HideAll()
-	if ( PaperDollFrameItemFlyout.button and PaperDollFrameItemFlyout.button.popoutButton.flyoutLocked ) then
-		PaperDollFrameItemFlyout_Hide();
-	end
-	for _, button in pairs(popoutButtons) do
-		if ( button.flyoutLocked ) then
-			button.flyoutLocked = false;
-			PaperDollFrameItemFlyout_Hide();
-			PaperDollFrameItemPopoutButton_SetReversed(button, false);
-		end
-
-		button:Hide();
-	end
-end
-
-function PaperDollFrameItemPopoutButton_ShowAll()
-	for _, button in pairs(popoutButtons) do
-		button:Show();
-	end
-end
-
-function PaperDollFrameItemPopoutButton_OnClick(self)
-	if ( self.flyoutLocked ) then
-		self.flyoutLocked = false;
-		PaperDollFrameItemFlyout_Hide();
-		PaperDollFrameItemPopoutButton_SetReversed(self, false);
-	else
-		self.flyoutLocked = true;
-		PaperDollFrameItemFlyout_Show(self:GetParent());
-		PaperDollFrameItemPopoutButton_SetReversed(self, true);
-	end
-end
-
-function PaperDollFrameItemPopoutButton_SetReversed(self, isReversed)
-	if ( self:GetParent().verticalFlyout ) then
-		if ( isReversed ) then
-			self:GetNormalTexture():SetTexCoord(0.15625, 0.84375, 0, 0.5);
-			self:GetHighlightTexture():SetTexCoord(0.15625, 0.84375, 0.5, 1);
+function PaperDollFrameItemFlyout_PostGetItems(itemSlotButton, itemDisplayTable, numItems)
+	if GearManagerDialog:IsShown() then
+		if not itemSlotButton.ignored then
+			tinsert(itemDisplayTable, 1, EQUIPMENTFLYOUT_IGNORESLOT_LOCATION);
 		else
-			self:GetNormalTexture():SetTexCoord(0.15625, 0.84375, 0.5, 0);
-			self:GetHighlightTexture():SetTexCoord(0.15625, 0.84375, 1, 0.5);
+			tinsert(itemDisplayTable, 1, EQUIPMENTFLYOUT_UNIGNORESLOT_LOCATION);
 		end
-	else
-		if ( isReversed ) then
-			self:GetNormalTexture():SetTexCoord(0.15625, 0, 0.84375, 0, 0.15625, 0.5, 0.84375, 0.5);
-			self:GetHighlightTexture():SetTexCoord(0.15625, 0.5, 0.84375, 0.5, 0.15625, 1, 0.84375, 1);
-		else
-			self:GetNormalTexture():SetTexCoord(0.15625, 0.5, 0.84375, 0.5, 0.15625, 0, 0.84375, 0);
-			self:GetHighlightTexture():SetTexCoord(0.15625, 1, 0.84375, 1, 0.15625, 0.5, 0.84375, 0.5);
-		end
+		numItems = numItems + 1;
 	end
+
+	if GetInventoryItemTexture("player", itemSlotButton:GetID()) ~= nil then
+		tinsert(itemDisplayTable, 1, EQUIPMENTFLYOUT_PLACEINBAGS_LOCATION);
+		numItems = numItems + 1;
+	end
+	return numItems;
 end
+
 NUM_GEARSETS_PER_ROW = 5;
 
 function GearManagerDialog_OnLoad (self)
@@ -2558,7 +2107,7 @@ function GearManagerDialog_OnShow (self)
 	EquipmentManagerClearIgnoredSlotsForSave();
 	PlaySound("igBackPackOpen");
 
-	PaperDollFrameItemPopoutButton_ShowAll();
+	EquipmentFlyoutPopoutButton_ShowAll();
 
 	UpdateUIPanelPositions(CharacterFrame);
 	GearManagerDialog:Raise();
@@ -2573,7 +2122,7 @@ function GearManagerDialog_OnHide (self)
 	PlaySound("igBackPackClose");
 	PaperDollFrame_ClearIgnoredSlots();
 
-	PaperDollFrameItemPopoutButton_HideAll();
+	EquipmentFlyoutPopoutButton_HideAll();
 
 	UpdateUIPanelPositions();
 end
@@ -3206,4 +2755,10 @@ function CharacterStrengthenButton_OnEnter( self, ... )
 	GameTooltip:AddLine(PAPERDOLLFRAME_UPS_TOOLTIP_HELP_3, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
 	GameTooltip:AddLine(PAPERDOLLFRAME_UPS_TOOLTIP_HELP_4, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
 	GameTooltip:Show()
+end
+
+PaperDollItemSlotButtonMixin = {};
+
+function PaperDollItemSlotButtonMixin:GetItemContextMatchResult()
+	return ItemButtonUtil.GetItemContextMatchResultForItem(ItemLocation:CreateFromEquipmentSlot(self:GetID()));
 end

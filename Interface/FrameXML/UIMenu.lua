@@ -7,9 +7,21 @@ UIMENU_BORDER_WIDTH = 12;
 UIMENU_NUMBUTTONS = 32;
 UIMENU_TIMEOUT = 2.0;
 
+local function UIMenu_ResetSubMenu(self)
+	if not self.subMenu then
+		return;
+	end
+
+	self.subMenu:Hide();
+	self.subMenuButton:SetNormalFontObject(self.subMenuButton.initialNormalFont);
+	self.subMenu = nil;
+end
+
 function UIMenu_Initialize(self)
 	self.numButtons = 0;
-	self.subMenu = "";
+
+	UIMenu_ResetSubMenu(self);
+
 	local name = self:GetName();
 	for i = 1, UIMENU_NUMBUTTONS, 1 do
 		local button = _G[name.."Button"..i];
@@ -67,19 +79,32 @@ function UIMenu_AddButton(self, text, shortcut, func, nested, value, shownFunc)
 	if ( text ) then
 		button:SetText(text);
 	end
+
+	button.nested = nested;
+	button.NestedArrow:SetShown(nested);
+
 	button.func = func;
 	button.shownFunc = shownFunc;
-	button.nested = nested;
 	button.value = value;
 	button:Show();
 
 	if ( shortcut ) then
 		local shortcutString = _G[button:GetName().."ShortcutText"];
 		shortcutString:SetText(shortcut);
+
+		shortcutString:ClearAllPoints();
+		if (button.NestedArrow:IsShown() ) then
+			shortcutString:SetPoint("RIGHT", button.NestedArrow, "LEFT");
+		else
+			shortcutString:SetPoint("RIGHT", button, "RIGHT");
+		end
+
 		shortcutString:Show();
 	end
 
 	self:SetHeight((id * UIMENU_BUTTON_HEIGHT) + (UIMENU_BORDER_HEIGHT * 2));
+
+	return button;
 end
 
 function UIMenu_OnUpdate(self, elapsed)
@@ -95,6 +120,9 @@ end
 
 function UIMenuButton_OnLoad(self)
 	self:SetPoint("TOP", self:GetParent(), "TOP", 0, -((self:GetID() - 1) * UIMENU_BUTTON_HEIGHT) - UIMENU_BORDER_HEIGHT);
+
+	self.initialNormalFont = self:GetNormalFontObject();
+	self.initialHighlightFont = self:GetHighlightFontObject();
 end
 
 function UIMenuButton_OnClick(self)
@@ -103,7 +131,10 @@ function UIMenuButton_OnClick(self)
 		func(self);
 	end
 
-	self:GetParent():Hide();
+	if ( not self.dontHideParentOnClick ) then
+		self:GetParent():Hide();
+	end
+
 	PlaySound("UChatScrollButton");
 end
 
@@ -130,16 +161,17 @@ function UIMenu_StopCounting(menu)
 end
 
 function UIMenuButton_OnEnter(self)
+	UIMenu_ResetSubMenu(self:GetParent());
+
 	local nested = self.nested;
 	if ( nested ) then
 		local menu = _G[nested];
 		if ( not menu:IsShown() ) then
-			local oldMenu = _G[self:GetParent().subMenu];
-			if ( oldMenu ) then
-				oldMenu:Hide();
-			end
+			self:GetParent().subMenu = menu;
+			self:GetParent().subMenuButton = self;
 
-			self:GetParent().subMenu = nested;
+			self:SetNormalFontObject(self.initialHighlightFont);
+
 			menu:ClearAllPoints();
 			menu:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 10, -12);
 			menu:Show();
@@ -165,6 +197,16 @@ function UIMenuButton_OnLeave(self)
 	end
 end
 
+function UIMenuButton_OnHide(self)
+	local nested = self.nested;
+	if ( nested ) then
+		local menu = _G[nested];
+		if ( menu == self:GetParent().subMenu ) then
+			UIMenu_ResetSubMenu(self:GetParent());
+		end
+	end
+end
+
 function UIMenu_AutoSize(frame)
 	if ( UIMenu_GetNumButtons(frame) == 0 ) then
 		return;
@@ -178,10 +220,16 @@ function UIMenu_AutoSize(frame)
 		button = _G[buttonName];
 		if ( button:IsShown() ) then
 			width = button:GetTextWidth();
+
 			shortcutText = _G[buttonName.."ShortcutText"];
 			if ( shortcutText:GetText() ~= "" ) then
 				width = width + shortcutText:GetWidth();
 			end
+
+			if ( button.NestedArrow:IsShown() ) then
+				width = width + button.NestedArrow:GetWidth();
+			end
+
 			-- Add padding
 			width = width + 20;
 			if ( width > maxWidth ) then

@@ -1196,7 +1196,7 @@ function C_AuctionHouse.CalculateCommodityDeposit(itemID, duration, quantity)
 		return COPPER_PER_SILVER;
 	end
 
-	return (ceil(floor(max(0.15 * quantity * sellPrice, 100)) / COPPER_PER_SILVER) * COPPER_PER_SILVER) * (AUCTION_HOUSE_DURATION[duration or 1] / AUCTION_HOUSE_DURATION[1]);
+	return (ceil(floor(max(0.16 * quantity * sellPrice, 100)) / COPPER_PER_SILVER) * COPPER_PER_SILVER) * (AUCTION_HOUSE_DURATION[duration or 1] / AUCTION_HOUSE_DURATION[1]);
 end
 
 function C_AuctionHouse.CalculateItemDeposit(item, duration, quantity)
@@ -1944,7 +1944,7 @@ function C_AuctionHouse.IsFavoriteItem(itemKey)
 		error(format("attempt to index a %s value", itemKeyType), 2);
 	end
 
-	return AUCTION_FAVORITE_ITEMS[itemKey.itemID] and AUCTION_FAVORITE_ITEMS[itemKey.itemID][itemKey.itemSuffix or 0] and true or false;
+	return AUCTION_FAVORITE_ITEMS[itemKey.itemID] and AUCTION_FAVORITE_ITEMS[itemKey.itemID][abs(itemKey.itemSuffix or 0)] and true or false;
 end
 
 function C_AuctionHouse.IsSellItemValid(item)
@@ -2470,6 +2470,8 @@ function C_AuctionHouse.SetFavoriteItem(itemKey, setFavorite)
 	if ACTION_HOUSE_NPC_GUID then
 		local favoriteIndex;
 
+		local itemSuffix = abs(itemKey.itemSuffix or 0);
+
 		if setFavorite then
 			local foundEmptyFavorite;
 			for index = 1, MAX_COUNT_FAVORITES_ITEMS do
@@ -2485,7 +2487,7 @@ function C_AuctionHouse.SetFavoriteItem(itemKey, setFavorite)
 			end
 		else
 			for index, favoriteKey in pairs(SIRUS_AUCTION_HOUSE_FAVORITE_ITEMS) do
-				if favoriteKey.itemID == itemKey.itemID and favoriteKey.itemSuffix == itemKey.itemSuffix then
+				if favoriteKey.itemID == itemKey.itemID and favoriteKey.itemSuffix == itemSuffix then
 					SIRUS_AUCTION_HOUSE_FAVORITE_ITEMS[index] = nil;
 					favoriteIndex = index;
 					break;
@@ -2495,9 +2497,9 @@ function C_AuctionHouse.SetFavoriteItem(itemKey, setFavorite)
 
 		if favoriteIndex then
 			if not AUCTION_FAVORITE_ITEMS[itemKey.itemID] then AUCTION_FAVORITE_ITEMS[itemKey.itemID] = {}; end
-			AUCTION_FAVORITE_ITEMS[itemKey.itemID][itemKey.itemSuffix] = setFavorite;
+			AUCTION_FAVORITE_ITEMS[itemKey.itemID][itemSuffix] = setFavorite;
 
-			SendServerThrottledMessage("ACMSG_AUCTION_SET_FAVORITE_ITEM", format("%s:%d:%d:%d:%d", setFavorite and 0 or 1, favoriteIndex, itemKey.itemID, itemKey.itemLevel or 0, abs(itemKey.itemSuffix or 0)));
+			SendServerThrottledMessage("ACMSG_AUCTION_SET_FAVORITE_ITEM", format("%s:%d:%d:%d:%d", setFavorite and 0 or 1, favoriteIndex, itemKey.itemID, itemKey.itemLevel or 0, itemSuffix));
 
 			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_FAVORITES_UPDATED);
 		end
@@ -2637,17 +2639,22 @@ function EventHandler:ASMSG_AUCTION_FAVORITE_LIST(msg)
 		favorites[#favorites] = nil;
 
 		for _, favoriteString in pairs(favorites) do
-			local id, itemID, itemLevel, itemSuffix = split(":", favoriteString);
-			id, itemID, itemLevel, itemSuffix = tonumber(id), tonumber(itemID), tonumber(itemLevel), tonumber(itemSuffix) or 0;
-			if id and itemID then
-				SIRUS_AUCTION_HOUSE_FAVORITE_ITEMS[id] = {
-					itemID = itemID,
-					itemLevel = itemLevel or 0,
-					itemSuffix = itemSuffix,
-				};
+			local index, itemID, itemLevel, itemSuffix = split(":", favoriteString);
+			index, itemID, itemLevel, itemSuffix = tonumber(index), tonumber(itemID), tonumber(itemLevel), tonumber(itemSuffix) or 0;
+			if index and itemID then
+				if not AUCTION_FAVORITE_ITEMS[itemID] then
+					AUCTION_FAVORITE_ITEMS[itemID] = {};
+				end
 
-				if not AUCTION_FAVORITE_ITEMS[itemID] then AUCTION_FAVORITE_ITEMS[itemID] = {}; end
-				AUCTION_FAVORITE_ITEMS[itemID][itemSuffix] = true;
+				if not AUCTION_FAVORITE_ITEMS[itemID][itemSuffix] then
+					SIRUS_AUCTION_HOUSE_FAVORITE_ITEMS[index] = {
+						itemID = itemID,
+						itemLevel = itemLevel or 0,
+						itemSuffix = itemSuffix,
+					};
+
+					AUCTION_FAVORITE_ITEMS[itemID][itemSuffix] = true;
+				end
 			end
 		end
 	else

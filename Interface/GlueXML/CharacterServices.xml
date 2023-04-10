@@ -1,13 +1,3 @@
-<!--
-
-	Filename:	CharacterServices.xml
-	Project:	Sirus Game Interface
-	Author:		Nyll
-	E-mail:		nyll@sirus.su
-	Web:		https://sirus.su/
-
--->
-
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 	<Script file="CharacterServices.lua"/>
@@ -133,30 +123,6 @@
 		<TexCoords left="0.70507813" right="0.95214844" top="0.08300781" bottom="0.33300781"/>
 	</Texture>
 
-	<Button name="CharacterBoostButtonsTemplate" toplevel="true" virtual="true">
-		<NormalTexture file="Interface\GLUES\CharacterBoost\upgrade-texture">
-			<TexCoords left="0.00097656" right="0.22363281" top="0.09179688" bottom="0.18066406"/>
-		</NormalTexture>
-
-		<PushedTexture file="Interface\GLUES\CharacterBoost\upgrade-texture">
-			<TexCoords left="0.22558594" right="0.44824219" top="0.09179688" bottom="0.18066406"/>
-		</PushedTexture>
-
-		<HighlightTexture file="Interface\GLUES\CharacterBoost\upgrade-texture" alphaMode="ADD">
-			<TexCoords left="0.00097656" right="0.22363281" top="0.00097656" bottom="0.08984375"/>
-			<Color r="1" g="1" b="1" a="0.3"/>
-		</HighlightTexture>
-
-		<ButtonText>
-			<Anchors>
-				<Anchor point="CENTER" x="1.3" y="1"/>
-			</Anchors>
-		</ButtonText>
-
-		<NormalFont style="AccountLoginTextFont"/>
-		<HighlightFont style="AccountLoginTextFont"/>
-		<DisabledFont style="AccountLoginTextFont"/>
-	</Button>
 	<CheckButton name="CharacterUpgradeSelectFactionRadioButtonTemplate" inherits="GlueDark_RadioButtonTemplate" virtual="true">
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -243,136 +209,6 @@
 			<OnClick function="CharacterUpgradeSelectSpecRadioButton_OnClick"/>
 		</Scripts>
 	</CheckButton>
-
-	<Frame name="UpgradeFrameBorderedTemplate" virtual="true">
-		<Layers>
-			<Layer level="ARTWORK">
-				<Texture name="$parentBorderTopLeft" parentKey="BorderTopLeft" file="Interface\Glues\AccountUpgrade\golden-main">
-					<Size x="35" y="41"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" x="-15" y="15"/>
-					</Anchors>
-					<TexCoords left="0.00390625" right="0.14062500" top="0.33984375" bottom="0.50000000"/>
-				</Texture>
-				<Texture name="$parentBorderTopRight" parentKey="BorderTopRight" file="Interface\Glues\AccountUpgrade\golden-main">
-					<Size x="35" y="41"/>
-					<Anchors>
-						<Anchor point="TOPRIGHT" x="15" y="15"/>
-					</Anchors>
-					<TexCoords left="0.00390625" right="0.14062500" top="0.00390625" bottom="0.16406250"/>
-				</Texture>
-				<Texture name="$parentBorderBottomLeft" parentKey="BorderBottomLeft" file="Interface\Glues\AccountUpgrade\golden-main">
-					<Size x="35" y="41"/>
-					<Anchors>
-						<Anchor point="BOTTOMLEFT" x="-15" y="-15"/>
-					</Anchors>
-					<TexCoords left="0.00390625" right="0.14062500" top="0.50781250" bottom="0.66796875"/>
-				</Texture>
-				<Texture name="$parentBorderBottomRight" parentKey="BorderBottomRight" file="Interface\Glues\AccountUpgrade\golden-main">
-					<Size x="35" y="41"/>
-					<Anchors>
-						<Anchor point="BOTTOMRIGHT" x="15" y="-15"/>
-					</Anchors>
-					<TexCoords left="0.00390625" right="0.14062500" top="0.17187500" bottom="0.33203125"/>
-				</Texture>
-				<Texture name="$parentBorderBottom" parentKey="BorderBottom" file="Interface\Glues\AccountUpgrade\golden-h" horizTile="true">
-					<Size x="128" y="32"/>
-					<Anchors>
-						<Anchor point="BOTTOMLEFT" relativeTo="$parentBorderBottomLeft" relativePoint="BOTTOMRIGHT" x="0" y="-4"/>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
-					</Anchors>
-				</Texture>
-				<Texture name="$parentBorderTop" parentKey="BorderTop" file="Interface\Glues\AccountUpgrade\golden-h" horizTile="true">
-					<Size x="128" y="32"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="TOPRIGHT" x="0" y="4"/>
-						<Anchor point="TOPRIGHT" relativeTo="$parentBorderTopRight" relativePoint="TOPLEFT" x="0" y="4"/>
-					</Anchors>
-					<TexCoords top="1.0" bottom="0.0"/>
-				</Texture>
-				<Texture name="$parentBorderLeft" parentKey="BorderLeft" file="Interface\Glues\AccountUpgrade\golden-v" vertTile="true">
-					<Size x="32" y="128"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="BOTTOMLEFT" x="-1" y="0"/>
-						<Anchor point="BOTTOMLEFT" relativeTo="$parentBorderBottomLeft" relativePoint="TOPLEFT" x="-1" y="0"/>
-					</Anchors>
-				</Texture>
-				<Texture name="$parentBorderRight" parentKey="BorderRight" file="Interface\Glues\AccountUpgrade\golden-v" vertTile="true">
-					<Size x="32" y="128"/>
-					<Anchors>
-						<Anchor point="TOPRIGHT" relativeTo="$parentBorderTopRight" relativePoint="BOTTOMRIGHT" x="1" y="0"/>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="TOPRIGHT" x="1" y="0"/>
-					</Anchors>
-					<TexCoords left="1.0" right="0.0"/>
-				</Texture>
-			</Layer>
-		</Layers>
-		<Scripts>
-			<OnLoad>
-				self.BorderTopLeft:SetDesaturated(1)
-				self.BorderTopRight:SetDesaturated(1)
-				self.BorderBottomLeft:SetDesaturated(1)
-				self.BorderBottomRight:SetDesaturated(1)
-				self.BorderBottom:SetDesaturated(1)
-				self.BorderTop:SetDesaturated(1)
-				self.BorderLeft:SetDesaturated(1)
-				self.BorderRight:SetDesaturated(1)
-			</OnLoad>
-		</Scripts>
-	</Frame>
-	<Frame name="CharacterBoostInfoFrame" parent="CharacterSelectUI" inherits="UpgradeFrameBorderedTemplate" hidden="true">
-		<Size x="224" y="246"/>
-		<Anchors>
-			<Anchor point="CENTER" x="0" y="0" />
-		</Anchors>
-		<Layers>
-			<Layer level="BACKGROUND">
-				<Texture parentKey="TestBG">
-					<Color r="0" g="0" b="0" a="0.85"/>
-				</Texture>
-			</Layer>
-			<Layer level="BORDER">
-				<Texture name="$parentChains1" parentKey="Chains1" file="Interface\Glues\AccountUpgrade\golden-main">
-					<Size x="20" y="72"/>
-					<Anchors>
-						<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="TOPLEFT" x="38" y="-8"/>
-					</Anchors>
-					<TexCoords left="0.148" right="0.227" top="0.508" bottom="0.777"/>
-				</Texture>
-				<Texture name="$parentChains2" parentKey="Chains2" file="Interface\Glues\AccountUpgrade\golden-main">
-					<Size x="20" y="72"/>
-					<Anchors>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT" x="-38" y="-8"/>
-					</Anchors>
-					<TexCoords left="0.148" right="0.227" top="0.508" bottom="0.777"/>
-				</Texture>
-			</Layer>
-			<Layer level="ARTWORK">
-				<FontString name="$parentTitletext" text="PROMOTION" inherits="SystemFont_Shadow_Large2" justifyH="CENTER" parentKey="Titletext">
-					<Anchors>
-						<Anchor point="TOP" x="0" y="-10" />
-					</Anchors>
-					<Color r="1" g="1" b="1"/>
-				</FontString>
-
-				<FontString name="$parentText2" text="PROMOTION" inherits="GameFontHighlightSmall2" justifyH="LEFT" justifyV="TOP" parentKey="Text2">
-					<Size x="194" y="220"/>
-					<Anchors>
-						<Anchor point="TOP" relativeTo="$parentTitletext" relativePoint="BOTTOM" x="0" y="-10" />
-					</Anchors>
-					<Color r="1" g="1" b="1"/>
-				</FontString>
-			</Layer>
-		</Layers>
-		<Scripts>
-			<OnShow>
-				self:SetFrameLevel(2)
-				self.Chains1:SetDesaturated(1)
-				self.Chains2:SetDesaturated(1)
-				self.Text2:SetText(CHARACTER_BOOST_INFO_TEXT)
-			</OnShow>
-		</Scripts>
-	</Frame>
 
 	<Frame name="CharacterFixDialog" parent="CharacterSelect" inherits="GlueDark_DialogFrameTemplate" toplevel="true" frameStrata="DIALOG" setAllPoints="true" enableMouse="true" hidden="true">
 		<Frames>
@@ -474,7 +310,7 @@
 		</Scripts>
 	</Frame>
 
-	<Frame name="CharacterBoostBuyFrame" parent="CharacterSelect" inherits="GlueDark_DialogFrameTemplate" toplevel="true" frameStrata="DIALOG" setAllPoints="true" enableMouse="true" hidden="true">
+	<Frame name="CharacterServicePurchaseDialogTemplate" inherits="GlueDark_DialogFrameTemplate" toplevel="true" frameStrata="DIALOG" setAllPoints="true" enableMouse="true" hidden="true" virtual="true">
 		<Frames>
 			<Frame name="$parentContainer" parentKey="Container">
 				<Size x="563" y="385"/>
@@ -505,12 +341,12 @@
 						</Texture>
 					</Layer>
 					<Layer level="ARTWORK">
-						<Texture name="$parentArtwork" parentKey="Artwork" inherits="GlueDark_wolf">
+						<Texture name="$parentArtwork" parentKey="Artwork" inherits="GlueDark_art_wolf">
 							<Anchors>
 								<Anchor point="TOPRIGHT" x="-7" y="-72"/>
 							</Anchors>
 						</Texture>
-						<FontString name="$parentTitle" parentKey="Title" inherits="GlueDark_Font_Shadow_26" justifyH="CENTER" justifyV="TOP" text="CHARACTER_SERVICES_BUYBOOST">
+						<FontString name="$parentTitle" parentKey="Title" inherits="GlueDark_Font_Shadow_26" justifyH="CENTER" justifyV="TOP">
 							<Anchors>
 								<Anchor point="TOP" x="0" y="-27"/>
 							</Anchors>
@@ -521,34 +357,34 @@
 								<Anchor point="BOTTOMRIGHT" relativeTo="$parentTitle" x="100" y="-13"/>
 							</Anchors>
 						</Texture>
-						<FontString name="$parentPreDescription" parentKey="PreDescription" inherits="GlueDark_Font_Shadow_13" hidden="true" spacing="2.5" justifyH="LEFT" text="CHARACTER_SERVICES_BUYTITTLE">
+						<FontString name="$parentPreDescription" parentKey="PreDescription" inherits="GlueDark_Font_Shadow_13" spacing="2.5" justifyH="LEFT">
 							<Size x="250" y="0"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" x="18" y="-83"/>
 							</Anchors>
 						</FontString>
-						<FontString name="$parentDescription" parentKey="Description" inherits="GlueDark_Font_Shadow_13" spacing="2.5" justifyH="LEFT" text="CHARACTER_SERVICES_BUYDESCRIPTION">
+						<FontString name="$parentDescription" parentKey="Description" inherits="GlueDark_Font_Shadow_13" spacing="2.5" justifyH="LEFT">
 							<Size x="300" y="0"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" x="18" y="-83"/>
 							</Anchors>
 						</FontString>
-						<Texture name="$parentCurrencyIconPrice" parentKey="CurrencyIconPrice" file="Interface\Store\coins">
+						<Texture name="$parentPriceCurrencyIcon" parentKey="PriceCurrencyIcon" file="Interface\Store\coins">
 							<Size x="22" y="22"/>
 							<Anchors>
 								<Anchor point="CENTER" relativeTo="$parentSaleBackdrop" x="30" y="2"/>
 							</Anchors>
 						</Texture>
-						<FontString name="$parentNoPrice" parentKey="NoPrice" inherits="GlueDark_FontBold_19" justifyH="CENTER" hidden="true" text="CHARACTER_SERVICES_BOOST_COST_FREE">
+						<FontString name="$parentNoPrice" parentKey="NoPrice" inherits="GlueDark_FontBold_19" justifyH="CENTER" text="CHARACTER_SERVICES_BOOST_COST_FREE" hidden="true">
 							<Anchors>
 								<Anchor point="CENTER" relativeTo="$parentSaleBackdrop" x="0" y="2"/>
 							</Anchors>
 						</FontString>
-						<FontString name="$parentMyBonus" parentKey="MyBonus" inherits="GlueDark_Font_16" justifyH="CENTER"/>
-						<Texture name="$parentCurrencyIcon" parentKey="CurrencyIcon" file="Interface\Store\coins">
+						<FontString name="$parentBalance" parentKey="Balance" inherits="GlueDark_Font_16" justifyH="CENTER"/>
+						<Texture name="$parentBalanceCurrencyIcon" parentKey="BalanceCurrencyIcon" file="Interface\Store\coins">
 							<Size x="22" y="22"/>
 							<Anchors>
-								<Anchor point="LEFT" relativeTo="$parentMyBonus" relativePoint="RIGHT" x="6" y="0"/>
+								<Anchor point="LEFT" relativeTo="$parentBalance" relativePoint="RIGHT" x="3" y="0"/>
 							</Anchors>
 						</Texture>
 					</Layer>
@@ -575,21 +411,20 @@
 						</Anchors>
 						<Scripts>
 							<OnHyperlinkClick>
-								LaunchURL(link);
+								LaunchURL(link)
 							</OnHyperlinkClick>
-							<OnLoad>
-								self:SetText(CHARACTER_SERVICES_BUYWARNING);
-							</OnLoad>
 						</Scripts>
 						<FontString inherits="GlueDark_Font_16" spacing="2.5"/>
 					</SimpleHTML>
 					<Button name="$parentBuyButton" parentKey="BuyButton" inherits="GlueDark_ButtonBoldTemplate" text="CHARACTER_SERVICES_BUY">
 						<Size x="148" y="37" />
 						<Anchors>
-							<Anchor point="BOTTOMRIGHT" x="-86" y="37"/>
+							<Anchor point="BOTTOMRIGHT" x="-76" y="37"/>
 						</Anchors>
 						<Scripts>
-							<OnClick function="CharacterBoostBuyFrameBuyButton_OnClick"/>
+							<OnClick>
+								self:GetParent():GetParent():Purchase()
+							</OnClick>
 						</Scripts>
 					</Button>
 				</Frames>
@@ -597,14 +432,70 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				self.Container.TopShadow:SetVertexColor(0, 0, 0, 0.7)
-				self.Container.MyBonus:SetPoint("TOP", self.Container.BuyButton, "BOTTOM", -11, -9)
-				CharacterBoostBuyFrame_OnLoad(self)
+				Mixin(self, CharacterServiceDialogPriceMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<Frame name="CharacterBoostBuyFrame" parent="CharacterSelect" inherits="CharacterServicePurchaseDialogTemplate">
+		<Attributes>
+			<Attribute name="ArtworkAtlas" type="string" value="GlueDark-art-wolf"/>
+			<Attribute name="Title" type="string" value="CHARACTER_SERVICES_BUYBOOST"/>
+			<!--<Attribute name="PreDescription" type="string" value="CHARACTER_SERVICES_BOOST_DESCRIPTION_PRE"/> -->
+			<Attribute name="Description" type="string" value="CHARACTER_SERVICES_BOOST_DESCRIPTION"/>
+			<Attribute name="WarningHTML" type="string" value="CHARACTER_SERVICES_BOOST_WARNING"/>
+		</Attributes>
+
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharacterServiceBoostPurchaseMixin)
+				self:OnLoad()
 			</OnLoad>
 		</Scripts>
 	</Frame>
 
-	<Frame name="CharSelectServicesFlowFrame" parent="CharacterSelect" inherits="GlueDark_DialogFrameTemplate" frameStrata="DIALOG" toplevel="true" enableMouse="true" hidden="true">
+	<Frame name="CharacterServicePagePurchaseFrame" parent="CharacterSelect" inherits="CharacterServicePurchaseDialogTemplate">
+		<Attributes>
+			<Attribute name="ArtworkAtlas" type="string" value="GlueDark-art-ListPage"/>
+			<Attribute name="Title" type="string" value="CHARACTER_SERVICES_LISTPAGE_TITLE"/>
+			<Attribute name="Description" type="string" value="CHARACTER_SERVICES_LISTPAGE_DESCRIPTION"/>
+			<Attribute name="WarningHTML" type="string" value="CHARACTER_SERVICES_LISTPAGE_WARNING"/>
+		</Attributes>
+
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharacterServicePagePurchaseMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="CharacterServiceRestoreCharacterFrame" parent="CharacterSelect" inherits="CharacterServicePurchaseDialogTemplate">
+		<Attributes>
+			<Attribute name="ArtworkAtlas" type="string" value="GlueDark-art-RestoreCharacter"/>
+			<Attribute name="Title" type="string" value="CHARACTER_SERVICES_RESTORE_CHARACTER_TITLE"/>
+			<Attribute name="Description" type="string" value="CHARACTER_SERVICES_RESTORE_CHARACTER_DESCRIPTION"/>
+			<Attribute name="WarningHTML" type="string" value="CHARACTER_SERVICES_CHARACTER_RESTORE_FREE"/>
+			<Attribute name="PurchaseText" type="string" value="CHARACTER_RESTORE"/>
+			<Attribute name="FreeUseText" type="string" value="CHARACTER_RESTORE"/>
+		</Attributes>
+
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharacterServiceRestoreCharacterMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="CharSelectServicesFlowFrame" parent="CharacterSelect" inherits="GlueDark_DialogFrameTemplate" frameStrata="HIGH" toplevel="true" enableMouse="true" hidden="true">
 		<Size x="387" y="652"/>
 		<Anchors>
 			<Anchor point="LEFT" x="26" y="13"/>
@@ -656,6 +547,12 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT" x="-12" y="-12"/>
 				</Anchors>
+				<Scripts>
+					<OnClick>
+						PlaySound(SOUNDKIT.GS_TITLE_OPTION_EXIT)
+						CharacterServicesMaster_HidePanel(self:GetParent())
+					</OnClick>
+				</Scripts>
 			</Button>
 
 			<Frame name="CharacterServicesMaster" parentKey="CharacterServicesMaster" frameStrata="DIALOG">

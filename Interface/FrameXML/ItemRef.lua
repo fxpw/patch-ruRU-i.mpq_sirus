@@ -197,7 +197,7 @@ function SetItemRef(link, text, button, chatFrame)
 		ArenaSpectatorFrame:WatchReplayAtHyperlink(link)
 		return
 	elseif ( strsub(link, 1, 8) == "creature" ) then
-		if C_Service:IsGM() then
+		if IsGMAccount() then
 			local creatureData = C_Split(link, ":")
 			TrinityCoreMixIn:SendCommand("go creature "..creatureData[2])
 		end
@@ -254,7 +254,7 @@ function SetItemRef(link, text, button, chatFrame)
 		if dataTypeIndex == SIRUS_KNOWLEDGE_BASE_IDS.ROOT.ARTICLE then
 			if entryID > 0 then
 				local entry = KNOWLEDGEBASE_ARTICLES[entryID]
-				if entry and (not entry.hidden or C_Service:IsGM()) then
+				if entry and (not entry.hidden or IsGMAccount()) then
 					KnowledgeBase_SetNavBarPath(entry.articleID)
 					KnowledgeBase_ArticleOnClick({
 						articleId = entry.articleID,

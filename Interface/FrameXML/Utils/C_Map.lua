@@ -1,29 +1,38 @@
---	Filename:	C_Map.lua
---	Project:	Custom Game Interface
---	Author:		Nyll & Blizzard Entertainment
+local WORLDMAP_MAP_NAME_BY_ID = WORLDMAP_MAP_NAME_BY_ID
 
----@class C_MapMixin : Mixin
-C_MapMixin = {}
-
-enum:E_WORLDMAP_MAP_NAME_BY_ID {
-    "PARENT_WORLD_MAP_ID",
-    "AREA_NAME_ENGB",
-    "AREA_NAME_RURU"
+local MAP_DATA_INDEX = {
+	PARENT_WORLD_MAP_ID = 1,
+	AREA_NAME_ENGB = 1,
+	AREA_NAME_RURU = 1,
 }
 
 local AREA_NAME_LOCALE = string.format("AREA_NAME_%s", GetLocale():upper())
 
----@param mapAreaID integer
+local function getCurrentMapAreaID()
+	local currenctMapAreaID = GetCurrentMapAreaID()
+	if currenctMapAreaID and currenctMapAreaID > 0 then
+		return currenctMapAreaID - 1
+	else
+		return 0
+	end
+end
+
+C_Map = {}
+
+---@param mapAreaID? integer
 ---@return string areaName
-function C_MapMixin:GetAreaNameByID( mapAreaID )
-	return WORLDMAP_MAP_NAME_BY_ID[mapAreaID] and WORLDMAP_MAP_NAME_BY_ID[mapAreaID][E_WORLDMAP_MAP_NAME_BY_ID[AREA_NAME_LOCALE]]
+function C_Map.GetAreaNameByID(mapAreaID)
+	if not mapAreaID then
+		mapAreaID = getCurrentMapAreaID()
+	end
+	return WORLDMAP_MAP_NAME_BY_ID[mapAreaID] and WORLDMAP_MAP_NAME_BY_ID[mapAreaID][MAP_DATA_INDEX[AREA_NAME_LOCALE]]
 end
 
----@param mapAreaID integer
+---@param mapAreaID? integer
 ---@return number parentMapID
-function C_MapMixin:GetParentMapID( mapAreaID )
-    return WORLDMAP_MAP_NAME_BY_ID[mapAreaID] and WORLDMAP_MAP_NAME_BY_ID[mapAreaID][E_WORLDMAP_MAP_NAME_BY_ID.PARENT_WORLD_MAP_ID]
+function C_Map.GetParentMapID(mapAreaID)
+	if not mapAreaID then
+		mapAreaID = getCurrentMapAreaID()
+	end
+	return WORLDMAP_MAP_NAME_BY_ID[mapAreaID] and WORLDMAP_MAP_NAME_BY_ID[mapAreaID][MAP_DATA_INDEX.PARENT_WORLD_MAP_ID]
 end
-
----@class C_Map : C_MapMixin
-C_Map = CreateFromMixins(C_MapMixin)

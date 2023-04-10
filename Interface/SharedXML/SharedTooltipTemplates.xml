@@ -101,6 +101,72 @@
 		</Attributes>
 	</GameTooltip>
 
+	<Frame name="TooltipBorderedFrameTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="BorderTopLeft" name="$parentBorderTopLeft" file="Interface\Tooltips\UI-Tooltip-TL">
+					<Size x="8" y="8"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="BorderTopRight" name="$parentBorderTopRight" file="Interface\Tooltips\UI-Tooltip-TR">
+					<Size x="8" y="8"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="BorderBottomRight" name="$parentBorderBottomRight" file="Interface\Tooltips\UI-Tooltip-BR">
+					<Size x="8" y="8"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="BorderBottomLeft" name="$parentBorderBottomLeft" file="Interface\Tooltips\UI-Tooltip-BL">
+					<Size x="8" y="8"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="BorderTop" file="Interface\Tooltips\UI-Tooltip-T">
+					<Size x="8" y="8"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="TOPRIGHT"/>
+						<Anchor point="TOPRIGHT" relativeTo="$parentBorderTopRight" relativePoint="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="BorderRight" file="Interface\Tooltips\UI-Tooltip-R">
+					<Size x="8" y="8"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parentBorderTopRight" relativePoint="BOTTOMRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="TOPRIGHT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="BorderBottom" file="Interface\Tooltips\UI-Tooltip-B">
+					<Size x="8" y="8"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentBorderBottomLeft" relativePoint="BOTTOMRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="BOTTOMLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="BorderLeft" file="Interface\Tooltips\UI-Tooltip-L">
+					<Size x="8" y="8"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="BOTTOMLEFT"/>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentBorderBottomLeft" relativePoint="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="Background">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="BOTTOMRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderBottomRight" relativePoint="TOPLEFT"/>
+					</Anchors>
+					<Color r="0" g="0" b="0" a="0.8"/>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Frame>
+
 	<Button name="DisabledTooltipButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
 		<Scripts>
 			<OnLoad>

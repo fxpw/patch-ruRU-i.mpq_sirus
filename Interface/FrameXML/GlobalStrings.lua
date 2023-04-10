@@ -5804,8 +5804,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "Sets Target of Target to display when you are in a raid."
     },
     ["ITEM_MOD_SPELL_HEALING_DONE_SHORT"] = {
-        ruRU = "к дополнительному исцелению",
-        enGB = "Bonus Healing"
+        ruRU = "к рейтингу натиска",
+        enGB = "Onslaught Rating"
     },
     ["MOVIE_RECORDING_RECORDING_STOPPED"] = {
         ruRU = "Запись ролика \"%s\" завершена.",
@@ -11216,7 +11216,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "%d |4item:items; in inventory"
     },
     ["REPORT_SPAM_CONFIRMATION"] = {
-        ruRU = "Вы действительно хотите сообщить о навязчивой рекламе (спаме) от |3-1(%s)?",
+        ruRU = "Вы действительно хотите пожаловаться на сообщение от |3-1(%s)?",
         enGB = "Are you sure you want to report %s for spamming?"
     },
     ["EMPTY_SOCKET_META"] = {
@@ -11936,8 +11936,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "%s rolls %d (%d-%d)"
     },
     ["REPORT_SPAM"] = {
-        ruRU = "Сообщить о спаме",
-        enGB = "Report Spam"
+        ruRU = "Пожаловаться",
+        enGB = "Report Player"
     },
     ["ERR_ARENA_TEAM_CREATE_S"] = {
         ruRU = "Команда \"%s\" создана. Чтобы ее распустить, используйте /краспустить [2v2, 3v3, 5v5].",
@@ -13588,7 +13588,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "|Hchannel:%d|h[%s]|h Voice permission given to %s."
     },
     ["UPGRADE"] = {
-        ruRU = "Улучшение",
+        ruRU = "Улучшить",
         enGB = "Upgrade"
     },
     ["SHOW_TIPOFTHEDAY_TEXT"] = {
@@ -16010,6 +16010,10 @@ local SIRUS_LOCALIZATION = {
     ["ITEM_LEVEL"] = {
         ruRU = "Уровень предмета: %d",
         enGB = "Item Level %d"
+    },
+    ["ITEM_LEVEL_PATTERN"] = {
+        ruRU = "Уровень предмета: (%d+)",
+        enGB = "Item Level (%d+)"
     },
     ["GUILD_CHALLENGE_TYPE3"] = {
         ruRU = "Подземелья",
@@ -42331,10 +42335,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "/cd",
 		enGB = "/cd",
 	},
-    ["ENCOUNTER_JOURNAL_SECTION_LOOP_ERROR"] = {
-	    ruRU = "Возникла ошибка при попытке открыть путеводитель по приключениям.\nСообщите нам на форуме следующую информацию:\nСекция: № %s",
-	    enGB = ""
-    },
+	["ENCOUNTER_JOURNAL_SECTION_LOOP_ERROR"] = {
+		ruRU = "Возникла ошибка при попытке открыть путеводитель по приключениям.\nСообщите нам на форуме следующую информацию:\nСекция: № %s",
+		enGB = ""
+	},
 	["TOKEN_UPGRAGE_ERROR_1"] = {
 		ruRU = "Недостаточно реагентов",
 		enGB = "Not enough reagents"
@@ -42371,30 +42375,62 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Внимание! Весь полученный рейтинг будет сброшен по достижении 80-го уровня!",
 		enGB = ""
 	},
-    ["CONFIRM_RETURN_INBOX_ITEM_TEXT"] = {
-	    ruRU = "Вы уверены, что хотите вернуть письмо? Убедитесь, что персонаж, которому хотите вернуть письмо, не удалён.",
-	    enGB = ""
-    },
-    ["EASTERN_KINGDOMS"] = {
-    	ruRU = "Восточные королевства",
-    	enGB = "Eastern Kingdoms"
-    },
-    ["KALIMDOR"] = {
-    	ruRU = "Калимдор",
-    	enGB = "Kalimdor"
-    },
-    ["OUTLAND"] = {
-    	ruRU = "Запределье",
-    	enGB = "Outland"
-    },
-    ["NORTHREND"] = {
-    	ruRU = "Нордскол",
-    	enGB = "Northrend"
-    },
-    ["FELYARD"] = {
-    	ruRU = "Фельярд",
-    	enGB = "Felyard"
-    },
+	["CONFIRM_RETURN_INBOX_ITEM_TEXT"] = {
+		ruRU = "Вы уверены, что хотите вернуть письмо? Убедитесь, что персонаж, которому хотите вернуть письмо, не удалён.",
+		enGB = ""
+	},
+	["KALIMDOR"] = {
+		ruRU = "Калимдор",
+		enGB = "Kalimdor"
+	},
+	["EASTERN_KINGDOMS"] = {
+		ruRU = "Восточные королевства",
+		enGB = "Eastern Kingdoms"
+	},
+	["OUTLAND"] = {
+		ruRU = "Запределье",
+		enGB = "Outland"
+	},
+	["NORTHREND"] = {
+		ruRU = "Нордскол",
+		enGB = "Northrend"
+	},
+	["FORBES_ISLAND"] = {
+		ruRU = "Остров Форбс",
+		enGB = "Forbes Island"
+	},
+	["FELYARD"] = {
+		ruRU = "Фельярд",
+		enGB = "Felyard"
+	},
+	["GILNEAS"] = {
+		ruRU = "Гилнеас",
+		enGB = "Gilneas",
+	},
+	["LOST_ISLAND"] = {
+		ruRU = "Затерянный остров",
+		enGB = "Lost Island",
+	},
+	["RISING_DEPTHS"] = {
+		ruRU = "Поднявшиеся глубины",
+		enGB = "Rising Depths",
+	},
+	["MANGROVE_ISLAND"] = {
+		ruRU = "Мангровый остров",
+		enGB = "Mangrove Island",
+	},
+	["TELABIM"] = {
+		ruRU = "Тель'Абим",
+		enGB = "Tel'Abim",
+	},
+	["TOLGAROD"] = {
+		ruRU = "Тол'Гарод",
+		enGB = "Tol'Garod",
+	},
+	["ANDRAKKIS"] = {
+		ruRU = "Андраккис",
+		enGB = "Andrakkis",
+	},
 	["COLLECTION_MOUNT_FACTION_1"] = {
 		ruRU = "Альянс",
 		enGB = "Alliance"
@@ -42424,20 +42460,20 @@ local SIRUS_LOCALIZATION = {
 		enGB = ""
 	},
 	["STORE_RENEW_TIME_LEFT_SECONDS"] = {
-        ruRU = "%d |4секунда:секунды:секунд;.",
-        enGB = "%d |4second:seconds;."
+		ruRU = "%d |4секунда:секунды:секунд;.",
+		enGB = "%d |4second:seconds;."
 	},
 	["STORE_RENEW_TIME_LEFT_MINUTES"] = {
 		ruRU = "%d |4минутa:минуты:минут;.",
 		enGB = "%d |4minute:minutes;."
 	},
 	["STORE_RENEW_TIME_LEFT_HOURS"] = {
-        ruRU = "%d |4час:часа:часов;.",
-        enGB = "%d |4hour:hours;."
+		ruRU = "%d |4час:часа:часов;.",
+		enGB = "%d |4hour:hours;."
 	},
 	["STORE_RENEW_TIME_LEFT_DAYS"] = {
-        ruRU = "%d |4день:дня:дней;.",
-        enGB = "%d |4day:days;."
+		ruRU = "%d |4день:дня:дней;.",
+		enGB = "%d |4day:days;."
 	},
 	["STORE_BUY_TRANSMOG_WARNING"] = {
 		ruRU = "Ваш персонаж не знает как с этим обращаться, пожалуйста убедитесь что соответствуете требованиям для ношения этого предмета.",
@@ -42456,7 +42492,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = ""
 	},
 	["QUEST_ACCEPTED_21220_POPUP_TEXT"] = {
-        ruRU = "При принятии и завершении этого задания вы продолжите приключения в Поднявшихся глубинах. Вы не сможете выбрать задание [Очаровательная дипломатия Вайш\'ира] ведущее к выходу в открытый мир через короткое завершение сюжета в Поднявшихся глубинах.",
+		ruRU = "При принятии и завершении этого задания вы продолжите приключения в Поднявшихся глубинах. Вы не сможете выбрать задание [Очаровательная дипломатия Вайш\'ира] ведущее к выходу в открытый мир через короткое завершение сюжета в Поднявшихся глубинах.",
 		enGB = ""
 	},
 	["QUEST_ACCEPTED_21260_POPUP_TEXT"] = {
@@ -42479,10 +42515,18 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "При принятии и завершении этого задания вы завершите приключения на Мангровом острове. Вы попадете в открытый мир и не сможете продолжить полную цепочку сюжетных заданий.",
 		enGB = ""
 	},
+	["QUEST_ACCEPTED_21433_POPUP_TEXT"] = {
+		ruRU = "При принятии и завершении этого задания вы продолжите приключения в Гилнеасе. Вы не сможете выбрать задание [Зов ночи] ведущее к выходу в открытый мир через короткое завершение сюжета Гилнеаса.",
+		enGB = ""
+	},
+	["QUEST_ACCEPTED_21484_POPUP_TEXT"] = {
+		ruRU = "При принятии и завершении этого задания вы завершите приключения в Гилнеасе. Вы попадете в открытый мир и не сможете продолжить полную цепочку сюжетных заданий",
+		enGB = ""
+	},
 	["QUEST_ACCEPTED_BUTTON_POPUP_TEXT"] = {
-        ruRU = "Понятно",
-        enGB = ""
-    },
+		ruRU = "Понятно",
+		enGB = ""
+	},
 	["HELPFRAME_ACCOUNT_BULLET1"] = {
 		ruRU = "Помощь в создании новых учетных записей и изменении существующих",
 		enGB = "Help setting up new accounts or making changes to existing accounts"
@@ -43032,7 +43076,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Right-Click"
 	},
 	["HELPFRAME_REPORT_PLAYER_TEXT"] = {
-		ruRU = "<html><body><p>Мы хотим, чтобы игра на проекте Sirus была как можно более комфортной, а процесс был безопасным и приносил удовольствие.</p><br/><p>Если вам встретился персонаж, который использует различные оскорбительные выражения для разжигания межнациональной розни, ведет политические дискуссии или шлет в чат сообщения, содержащие рекламу (спам), существует быстрый и простой способ сообщить об этом нам!</p><br/><p>Чтобы пожаловаться на игрока, который ведет себя неподобающим образом или нарушает правила, щелкните по по его имени в чате правой кнопкой мыши и выберите из списка |cff71d5ff«Сообщить о спаме»|r.\n\nОбратите внимание, что при подаче жалобы подобным образом меры принимаются только в указанных выше ситуациях.</p><br/><p>Если же вы обнаружили игрока, который нарушает иные правила сервера, пожалуйста, оставьте жалобу на данного игрока на форуме в разделе <a href=\"http:https://forum.sirus.su/forums/8/\">Жалобы на игроков</a></p><br/><p>Ознакомиться с правилами сервера вы можете в статье <a href=\"kbase:1:1\">Правила проекта Sirus.su</a></p></body></html>",
+		ruRU = "<html><body><p>Мы хотим, чтобы игра на проекте Sirus была как можно более комфортной, а процесс был безопасным и приносил удовольствие.</p><br/><p>Если вам встретился персонаж, который использует различные оскорбительные выражения для разжигания межнациональной розни, ведет политические дискуссии или шлет в чат сообщения, содержащие рекламу (спам), существует быстрый и простой способ сообщить об этом нам!</p><br/><p>Чтобы пожаловаться на игрока, который ведет себя неподобающим образом или нарушает правила, щелкните по по его имени в чате правой кнопкой мыши и выберите из списка |cff71d5ff«Пожаловаться»|r.\n\nОбратите внимание, что при подаче жалобы подобным образом меры принимаются только в указанных выше ситуациях.</p><br/><p>Если же вы обнаружили игрока, который нарушает иные правила сервера, пожалуйста, оставьте жалобу на данного игрока на форуме в разделе <a href=\"http:https://forum.sirus.su/forums/8/\">Жалобы на игроков</a></p><br/><p>Ознакомиться с правилами сервера вы можете в статье <a href=\"kbase:1:1\">Правила проекта Sirus.su</a></p></body></html>",
 		enGB = ""
 	},
 	["HELPFRAME_REPORT_PLAYER_TITLE"] = {
@@ -43446,6 +43490,110 @@ local SIRUS_LOCALIZATION = {
 	["IGNORE_REMOVE"] = {
 		ruRU = "Больше не игнорировать",
 		enGB = "Stop Ignoring"
+ 	},
+	["CONFIRM_UPGRADE_ITEM"] = {
+		ruRU = "Вы уверены, что хотите улучшить указанный предмет? Стоимость улучшения: %s. После улучшения предмет станет персональным.",
+		enGB = "Are you sure you wish to spend %s to upgrade the following item? Upgrading will cause this item to become soulbound."
+	},
+	["ITEM_UPGRADE"] = {
+		ruRU = "Улучшение предмета",
+		enGB = "Item Upgrade"
+	},
+	["ITEM_UPGRADE_ERROR_1"] = {
+		ruRU = "Предмет не найден.",
+		enGB = ""
+	},
+	["ITEM_UPGRADE_ERROR_2"] = {
+		ruRU = "Такой вариант улучшения не найден.",
+		enGB = ""
+	},
+	["ITEM_UPGRADE_ERROR_3"] = {
+		ruRU = "Недостаточно ресурсов для улучшения.",
+		enGB = ""
+	},
+	["ITEM_UPGRADE_ERROR_4"] = {
+		ruRU = "Вы не подходите по требованиям для этого улучшения.",
+		enGB = ""
+	},
+	["ITEM_UPGRADE_COST_LABEL"] = {
+		ruRU = "Общая цена:",
+		enGB = "Total Cost:"
+	},
+	["ITEM_UPGRADE_STAT_FORMAT"] = {
+		ruRU = "%1$d %2$s",
+		enGB = "%1$d %2$s"
+	},
+	["ITEM_UPGRADE_BONUS_STAT_FORMAT"] = {
+		ruRU = "|cff20ff20%1$d (+%2$d)|r %3$s",
+		enGB = "|cff20ff20%1$d (+%2$d)|r %3$s"
+	},
+	["ITEM_UPGRADE_CURRENT"] = {
+		ruRU = "Текущий уровень:",
+		enGB = "Current:"
+	},
+	["ITEM_UPGRADE_NEXT_UPGRADE"] = {
+		ruRU = "Улучшение:",
+		enGB = "Upgrade:"
+	},
+	["ITEM_UPGRADE_ITEM_LEVEL_STAT_FORMAT"] = {
+		ruRU = "Уровень предмета: %1$d",
+		enGB = "Item Level %d"
+	},
+	["ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT"] = {
+		ruRU = "Уровень улучшения: %1$s/%2$s",
+		enGB = "Upgrade Level: %s/%s"
+	},
+	["ITEM_UPGRADE_ITEM_LEVEL_BONUS_STAT_FORMAT"] = {
+		ruRU = "Уровень предмета: |cff20ff20%1$d (+%2$d)|r",
+		enGB = "Item Level |cff20ff20%1$d (+%2$d)|r"
+	},
+	["ITEM_UPGRADE_DESCRIPTION"] = {
+		ruRU = "Многие экипируемые предметы можно улучшать, повышая их уровень. Тип валюты, требуемой для улучшения, зависит от источника происхождения предмета.",
+		enGB = "You can upgrade many equippable items to increase their item level. The currency required to upgrade an item varies depending on the item's source."
+	},
+    ["ITEM_UPGRADE_RIGHT_CLICK_RETURN_TO_ITEM_LIST"] = {
+		ruRU = "ПКМ: вернуться к списку предметов",
+		enGB = "Right click return to item list",
+	},
+    ["UPGRADE_MISSING_ITEM"] = {
+		ruRU = "Перетащите сюда предмет.\n\nУ вас есть %d |4предмет:претмета:предметов;, для которых доступно улучшение.",
+		enGB = "",
+	},
+    ["UPGRADE_RANDOM_ITEM"] = {
+		ruRU = "Случайный предмет",
+		enGB = "",
+	},
+	["UPGRADE_RANDOM_ITEM_NUM_ITEMS"] = {
+		ruRU = "Случайный предмет (%d |4вариант:варианта:вариантов;)",
+		enGB = "",
+	},
+	["UPGRADE_RANDOM_ITEM_TO_GO_ITEM"] = {
+        ruRU = "<Нажмите, чтобы увидеть список итемов>",
+        enGB = ""
+	},
+	["ITEM_UPGRADE_ENCHANTMENTS_REMOVED"] = {
+        ruRU = "Зачарования и ювелирные камни будут удалены.",
+        enGB = ""
+	},
+	["ITEM_UPGRADE_ENCHANTMENTS_SAVED"] = {
+        ruRU = "Зачарования и ювелирные камни будут сохранены.",
+        enGB = ""
+	},
+	["ITEM_UPGRADE_TUTORIAL_TEXT_1"] = {
+		ruRU = "Чтобы начать преобразование предмета - перенесите его в это окно. Либо вы можете нажать на ЛКМ на \"плюс\" вверху окна, посмотреть все предметы, которые у вас имеют возможность преобразования, и выбрать тот, который хотите изменить.",
+		enGB = ""
+	},
+    ["ITEM_UPGRADE_TUTORIAL_TEXT_2"] = {
+		ruRU = "Здесь появится предмет, который вы хотите преобразовать.",
+		enGB = ""
+	},
+    ["ITEM_UPGRADE_TUTORIAL_TEXT_3"] = {
+		ruRU = "Здесь будут отображаться всевозможные варианты для преобразования выбранного предмета.\n\nЕсли предмет можно улучшить в несколько разных вариантов, то вы сможете посмотреть каждый их них, нажав ЛКМ по нему.\n\nКаждая характеристика на предмете будет содержать свое основное значение, которое будет на новом предмете, а в скобках после него - разницу по количеству этой характеристики между изначальным и новым предметом.",
+		enGB = ""
+	},
+    ["ITEM_UPGRADE_TUTORIAL_TEXT_4"] = {
+		ruRU = "Здесь будет отображаться стоимость преобразования, а также необходимые требования для него, если таковые имеются на предмете.\n\nНаведя курсором мыши на значок преобразования рядом с кнопкой \"Улучшить\" - вы сможете узнать, останутся ли на предмете после преобразования зачарования и самоцветы.\n\nОбратите внимание, что любые выполненные преобразования нельзя обратить. Если ваш предмет еще не является персональным, у него есть срок передачи или возврата продавцу, то после преобразования предмет станет полностью персональным.",
+		enGB = ""
 	},
 	["TOAST_CLEAR_POSITION"] = {
 		ruRU = "Сбросить позицию",

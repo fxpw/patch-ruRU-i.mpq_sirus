@@ -3,27 +3,26 @@ local S_CATEGORY_SPELL_ID = S_CATEGORY_SPELL_ID
 local S_VIP_STATUS_DATA = S_VIP_STATUS_DATA
 
 local UnitClassification = UnitClassification
-local UnitDebuff = UnitDebuff
+local UnitAura = UnitAura
 local UnitIsPlayer = UnitIsPlayer
 local UnitFactionGroup = UnitFactionGroup
 
 C_Unit = {}
 
-local unitHasAuraFromList = function(unit, spellList)
+local unitHasAura = function(unit, spellList, filter)
+	local list = type(spellList) == "table"
 	local index = 1
-	local name, _, _, _, _, _, _, _, _, _, spellID = UnitDebuff(unit, index)
+	local name, _, _, _, _, _, _, _, _, _, spellID = UnitAura(unit, index, filter or "HARMFUL")
 	while name do
 		if not name then
 			break
-		elseif spellList[spellID] then
-			return name, spellID
+		elseif list and spellList[spellID] or spellList == spellID then
+			return index, name, spellID
 		end
 
 		index = index + 1
-		name, _, _, _, _, _, _, _, _, _, spellID = UnitDebuff(unit, index)
+		name, _, _, _, _, _, _, _, _, _, spellID = UnitAura(unit, index, filter or "HARMFUL")
 	end
-
-	return false
 end
 
 function C_Unit.GetCategoryInfo(unit)
@@ -32,7 +31,7 @@ function C_Unit.GetCategoryInfo(unit)
 	end
 
 	if UnitIsPlayer(unit) then
-		local name, spellID = unitHasAuraFromList(unit, S_CATEGORY_SPELL_ID)
+		local _, name, spellID = unitHasAura(unit, S_CATEGORY_SPELL_ID)
 		local categoryName, categorySpellID
 
 		if spellID then
@@ -54,7 +53,7 @@ function C_Unit.GetClassification(unit)
 	local classificationInfo 	= {}
 
 	if UnitIsPlayer(unit) then
-		local name, spellID = unitHasAuraFromList(unit, S_VIP_STATUS_DATA)
+		local _, name, spellID = unitHasAura(unit, S_VIP_STATUS_DATA)
 		if spellID then
 			local data = S_VIP_STATUS_DATA[spellID]
 
@@ -108,13 +107,26 @@ end
 
 function C_Unit.GetFactionByDebuff(unit)
 	if type(unit) ~= "string" then
-		error("Usage: C_Unit.GetFactionByDebuff(\"unit\")", 2)
+		error([[Usage: C_Unit.GetFactionByDebuff("unit")]], 2)
 	end
 
-	local _, spellID = unitHasAuraFromList(unit, FACTION_OVERRIDE_BY_DEBUFFS)
+	local _, _, spellID = unitHasAura(unit, FACTION_OVERRIDE_BY_DEBUFFS, "HARMFUL|NOT_CANCELABLE")
 	if spellID then
 		return FACTION_OVERRIDE_BY_DEBUFFS[spellID]
 	end
+end
+
+function C_Unit.GetAuraIndexForSpellID(unit, spellID, filter)
+	if type(unit) ~= "string" then
+		error([[Usage: C_Unit.GetAuraIndexForSpellID("unit", spellID[, filter])]], 2)
+	elseif type(spellID) ~= "number" then
+		error([[Usage: C_Unit.GetAuraIndexForSpellID("unit", spellID[, filter])]], 2)
+	elseif filter ~= nil and type(filter) ~= "string" then
+		error([[Usage: C_Unit.GetAuraIndexForSpellID("unit", spellID[, filter])]], 2)
+	end
+
+	local index = unitHasAura(unit, spellID, filter or "HELPFUL")
+	return index
 end
 
 function C_Unit.GetFactionInfo(unit)

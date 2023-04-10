@@ -1,9 +1,3 @@
---	Filename:	Sirus_TutorialPointer.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 NPE_TutorialPointerFrame = {};
 SIRUS_TUTORIAL_KEY = {}
 
@@ -51,27 +45,27 @@ function NPE_TutorialPointerFrame:Initialize()
 end
 
 function NPE_TutorialPointerFrame:SetKey(key, value)
-	if SIRUS_TUTORIAL_KEY and not SIRUS_TUTORIAL_KEY[UnitName("player")] then
-		SIRUS_TUTORIAL_KEY[UnitName("player")] = {}
+	local name = UnitName("player")
+	if SIRUS_TUTORIAL_KEY and not SIRUS_TUTORIAL_KEY[name] then
+		SIRUS_TUTORIAL_KEY[name] = {}
 	end
 
-	SIRUS_TUTORIAL_KEY[UnitName("player")][key] = value
+	SIRUS_TUTORIAL_KEY[name][key] = value
 end
 
 function NPE_TutorialPointerFrame:GetKey(key)
+	local name = UnitName("player")
 	if SIRUS_TUTORIAL_KEY[UnitName("player")] then
-		return SIRUS_TUTORIAL_KEY[UnitName("player")][key]
-	else
-		return nil
+		return SIRUS_TUTORIAL_KEY[name][key]
 	end
 end
 
-function NPE_TutorialPointerFrame:Disable( content )
+function NPE_TutorialPointerFrame:Disable(content)
 	forceinsecure()
 	self.disableContent[content] = true
 end
 
-function NPE_TutorialPointerFrame:Enable( content )
+function NPE_TutorialPointerFrame:Enable(content)
 	forceinsecure()
 	self.disableContent[content] = false
 end

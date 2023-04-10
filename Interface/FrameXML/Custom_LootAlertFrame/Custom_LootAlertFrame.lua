@@ -87,7 +87,7 @@ end
 
 function LootAlertFrame_OnEvent( self, event, arg1 )
 	if event == "CHAT_MSG_LOOT" then
-		if S_IsDevClient and S_IsDevClient() then
+		if IsDevClient() then
 			return
 		end
 

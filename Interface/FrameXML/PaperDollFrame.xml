@@ -118,7 +118,6 @@
 		</Scripts>
 	</Button>
 
-	<Texture name="PaperDollFrameFlyoutTexture" file="Interface\PaperDollInfoFrame\UI-GearManager-Flyout" hidden="true" virtual="true"/>
     <Button name="PaperDollItemSlotButtonTemplate" inherits="ItemButtonTemplate" toplevel="true" frameStrata="HIGH" virtual="true">
 		<Layers>
 			<Layer level="OVERLAY">
@@ -132,27 +131,12 @@
 		</Layers>
 		<Frames>
 			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate"/>
-			<Button name="$parentPopoutButton" parentKey="popoutButton" hidden="true">
-				<Size>
-					<AbsDimension x="16" y="32"/>
-				</Size>
-				<Anchors>
-					<Anchor point="LEFT" relativePoint="RIGHT"/>
-				</Anchors>
-				<Scripts>
-					<OnLoad>
-						PaperDollFrameItemPopoutButton_OnLoad(self);
-					</OnLoad>
-					<OnClick>
-						PaperDollFrameItemPopoutButton_OnClick(self);
-					</OnClick>
-				</Scripts>
-				<NormalTexture file="Interface\PaperDollInfoFrame\UI-GearManager-FlyoutButton"/>
-				<HighlightTexture file="Interface\PaperDollInfoFrame\UI-GearManager-FlyoutButton"/>
-			</Button>
+			<Button name="$parentPopoutButton" parentKey="popoutButton" inherits="EquipmentFlyoutPopoutButtonTemplate" hidden="true"/>
 		</Frames>
         <Scripts>
             <OnLoad>
+				Mixin(self, PaperDollItemSlotButtonMixin);
+
 				PaperDollItemSlotButton_OnLoad(self);
 			</OnLoad>
             <OnEvent>
@@ -185,23 +169,6 @@
 			</OnLeave>
         </Scripts>
     </Button>
-	<Button name="PaperDollFrameItemFlyoutButtonTemplate" inherits="ItemButtonTemplate" virtual="true">
-		<Frames>
-			<Cooldown name="$parentCooldown" parentKey="cooldown" inherits="CooldownFrameTemplate"/>
-		</Frames>
-		<Scripts>
-			<OnEnter>
-				PaperDollFrameItemFlyoutButton_OnEnter(self, motion);
-			</OnEnter>
-			<OnLeave>
-				GameTooltip:Hide();
-				ResetCursor();
-			</OnLeave>
-			<OnClick>
-				PaperDollFrameItemFlyoutButton_OnClick(self, button, down);
-			</OnClick>
-		</Scripts>
-	</Button>
 	<Texture name="Char-Stat-Top" file="Interface\CharacterFrame\Char-Paperdoll-Parts" virtual="true" >
 		<Size x="169" y="9"/>
 		<TexCoords left="0.00390625" right="0.66406250" top="0.50781250" bottom="0.57812500"/>
@@ -1630,56 +1597,6 @@
 			<OnHide function="PaperDollFrame_OnHide"/>
 			<OnMouseUp function="CharacterModelFrame_OnMouseUp"/>
 			<OnReceiveDrag function="CharacterModelFrame_OnMouseUp"/>
-		</Scripts>
-	</Frame>
-	<Frame name="PaperDollFrameItemFlyout" parent="PaperDollFrame" hidden="true" enableMouse="false" frameStrata="HIGH">
-		<Size x="43" y="43"/>
-		<Layers>
-			<Layer level="OVERLAY">
-				<Texture name="$parentHighlight" file="Interface\PaperDollInfoFrame\UI-GearManager-ItemButton-Highlight">
-					<Size x="50" y="50"/>
-					<Anchors>
-						<Anchor point="LEFT">
-							<Offset x="-4" y="0"/>
-						</Anchor>
-					</Anchors>
-					<TexCoords left="0" right="0.78125" top="0" bottom="0.78125"/>
-				</Texture>
-			</Layer>
-		</Layers>
-		<Frames>
-			<Frame name="$parentButtons" frameStrata="HIGH" enableMouse="true" parentKey="buttonFrame" clampedToScreen="true">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
-						<Offset x="0" y="0"/>
-					</Anchor>
-				</Anchors>
-				<Layers>
-					<Layer level="BACKGROUND">
-						<Texture parentKey="bg1" inherits="PaperDollFrameFlyoutTexture">
-							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset x="-5" y="4"/>
-								</Anchor>
-							</Anchors>
-						</Texture>
-					</Layer>
-				</Layers>
-				<Scripts>
-					<OnLoad>
-						self.numBGs = 1;
-					</OnLoad>
-				</Scripts>
-			</Frame>
-		</Frames>
-		<Scripts>
-			<OnLoad>
-				self.buttons = {};
-			</OnLoad>
-			<OnUpdate function="PaperDollFrameItemFlyout_OnUpdate"/>
-			<OnShow function="PaperDollFrameItemFlyout_OnShow"/>
-			<OnHide function="PaperDollFrameItemFlyout_OnHide"/>
-			<OnEvent function="PaperDollFrameItemFlyout_OnEvent"/>
 		</Scripts>
 	</Frame>
 

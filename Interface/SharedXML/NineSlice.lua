@@ -38,69 +38,89 @@
 
 local function GetNineSlicePiece(container, pieceName)
 	if container.GetNineSlicePiece then
-		local piece = container:GetNineSlicePiece(pieceName)
+		local piece = container:GetNineSlicePiece(pieceName);
 		if piece then
-			return piece, true
+			return piece, true;
 		end
 	end
 
-	return container[pieceName] or container:CreateTexture(), false
+	local piece = container[pieceName];
+	if piece then
+		return piece, true;
+	else
+		piece = container:CreateTexture()
+		container[pieceName] = piece;
+		return piece, false;
+	end
 end
 
-local function PropagateLayoutSettingsToPieceLayout(userLayout, pieceLayout)
-	-- Only apply mirrorLayout if it wasn't explicitly defined
-	if pieceLayout.mirrorLayout == nil then
-		pieceLayout.mirrorLayout = userLayout.mirrorLayout
+local function SetupTextureCoordinates(piece, setupInfo, pieceLayout, userLayout)
+	local left, right, top, bottom = 0, 1, 0, 1;
+
+	local pieceMirrored = pieceLayout.mirrorLayout;
+	if pieceMirrored == nil then
+		pieceMirrored = userLayout and userLayout.mirrorLayout;
 	end
 
-	-- ... and other settings that apply to the whole nine-slice
-end
-
-local function SetupTextureCoordinates(piece, setupInfo, pieceLayout)
-	local left, right, top, bottom = 0, 1, 0, 1
-
-	if pieceLayout.mirrorLayout then
+	if pieceMirrored then
 		if setupInfo.mirrorVertical then
-			top, bottom = bottom, top
+			top, bottom = bottom, top;
 		end
 
 		if setupInfo.mirrorHorizontal then
-			left, right = right, left
+			left, right = right, left;
 		end
 	end
 
---	piece:SetHorizTile(setupInfo.tileHorizontal)
---	piece:SetVertTile(setupInfo.tileVertical)
-	piece:SetSubTexCoord(left, right, top, bottom)
+--	piece:SetHorizTile(setupInfo.tileHorizontal);
+--	piece:SetVertTile(setupInfo.tileVertical);
+	piece:SetSubTexCoord(left, right, top, bottom);
 end
 
-local function SetupPieceVisuals(piece, setupInfo, pieceLayout, textureKit)
-	-- textureKit is optional, that's fine but if it's nil the caller should ensure that there are no format specifiers in .atlas
-	local atlasName = GetFinalNameFromTextureKit(pieceLayout.atlas, textureKit)
-	local info = C_Texture.GetAtlasInfo(atlasName)
-	piece:SetHorizTile(info and info.tilesHorizontally or false)
-	piece:SetVertTile(info and info.tilesVertically or false)
-	piece:SetAtlas(atlasName, true)
+local function SetupPieceVisuals(piece, setupInfo, pieceLayout, textureKit, userLayout)
+	-- textureKit is optional, that's fine; but if it's nil the caller should ensure that there are no format specifiers in .atlas
+	local atlasName = GetFinalNameFromTextureKit(pieceLayout.atlas, textureKit);
+	local info = C_Texture.GetAtlasInfo(atlasName);
+	piece:SetHorizTile(info and info.tilesHorizontally or false);
+	piece:SetVertTile(info and info.tilesVertically or false);
+	piece:SetAtlas(atlasName, true);
 
 	--- Change texture coordinates after applying atlas.
-	SetupTextureCoordinates(piece, setupInfo, pieceLayout)
+	SetupTextureCoordinates(piece, setupInfo, pieceLayout);
 end
 
 local function SetupCorner(container, piece, setupInfo, pieceLayout)
-	piece:ClearAllPoints()
-	piece:SetPoint(pieceLayout.point or setupInfo.point, container, pieceLayout.relativePoint or setupInfo.point, pieceLayout.x, pieceLayout.y)
+	piece:ClearAllPoints();
+	piece:SetPoint(pieceLayout.point or setupInfo.point, container, pieceLayout.relativePoint or setupInfo.point, pieceLayout.x, pieceLayout.y);
 end
 
 local function SetupEdge(container, piece, setupInfo, pieceLayout)
-	piece:ClearAllPoints()
-	piece:SetPoint(setupInfo.point, GetNineSlicePiece(container, setupInfo.relativePieces[1]), setupInfo.relativePoint, pieceLayout.x, pieceLayout.y)
-	piece:SetPoint(setupInfo.relativePoint, GetNineSlicePiece(container, setupInfo.relativePieces[2]), setupInfo.point, pieceLayout.x1, pieceLayout.y1)
+	piece:ClearAllPoints();
+
+	local userLayout = NineSliceUtil.GetLayout(container.layoutType);
+	if userLayout and (userLayout.threeSliceVertical or userLayout.threeSliceHorizontal) then
+		piece:SetPoint(setupInfo.point, container, setupInfo.relativePoint, pieceLayout.x, pieceLayout.y);
+		piece:SetPoint(setupInfo.relativePoint, container, setupInfo.point, pieceLayout.x1, pieceLayout.y1);
+	else
+		piece:SetPoint(setupInfo.point, GetNineSlicePiece(container, setupInfo.relativePieces[1]), setupInfo.relativePoint, pieceLayout.x, pieceLayout.y);
+		piece:SetPoint(setupInfo.relativePoint, GetNineSlicePiece(container, setupInfo.relativePieces[2]), setupInfo.point, pieceLayout.x1, pieceLayout.y1);
+	end
 end
 
 local function SetupCenter(container, piece, setupInfo, pieceLayout)
-	piece:ClearAllPoints()
-	piece:SetPoint("TOPLEFT", GetNineSlicePiece(container, "TopLeftCorner"), "BOTTOMRIGHT", pieceLayout.x, pieceLayout.y)
-	piece:SetPoint("BOTTOMRIGHT", GetNineSlicePiece(container, "BottomRightCorner"), "TOPLEFT", pieceLayout.x1, pieceLayout.y1)
+	piece:ClearAllPoints();
+
+	local userLayout = NineSliceUtil.GetLayout(container.layoutType);
+	if userLayout and userLayout.threeSliceVertical then
+		piece:SetPoint("TOPLEFT", GetNineSlicePiece(container, "TopEdge"), "BOTTOMLEFT", pieceLayout.x, pieceLayout.y);
+		piece:SetPoint("BOTTOMRIGHT", GetNineSlicePiece(container, "BottomEdge"), "TOPRIGHT", pieceLayout.x1, pieceLayout.y1);
+	elseif userLayout and userLayout.threeSliceHorizontal then
+		piece:SetPoint("TOPLEFT", GetNineSlicePiece(container, "LeftEdge"), "TOPRIGHT", pieceLayout.x, pieceLayout.y);
+		piece:SetPoint("BOTTOMRIGHT", GetNineSlicePiece(container, "RightEdge"), "BOTTOMLEFT", pieceLayout.x1, pieceLayout.y1);
+	else
+		piece:SetPoint("TOPLEFT", GetNineSlicePiece(container, "TopLeftCorner"), "BOTTOMRIGHT", pieceLayout.x, pieceLayout.y);
+		piece:SetPoint("BOTTOMRIGHT", GetNineSlicePiece(container, "BottomRightCorner"), "TOPLEFT", pieceLayout.x1, pieceLayout.y1);
+	end
 end
 
 -- Defines the order in which each piece should be set up, and how to do the setup.
@@ -119,222 +139,128 @@ local nineSliceSetup =
 	{ pieceName = "LeftEdge", point = "TOPLEFT", relativePoint = "BOTTOMLEFT", relativePieces = { "TopLeftCorner", "BottomLeftCorner" }, tileVertical = true, fn = SetupEdge, },
 	{ pieceName = "RightEdge", point = "TOPRIGHT", relativePoint = "BOTTOMRIGHT", relativePieces = { "TopRightCorner", "BottomRightCorner" }, mirrorHorizontal = true, tileVertical = true, fn = SetupEdge, },
 	{ pieceName = "Center", fn = SetupCenter, },
-}
-
-local layouts =
-{
-	SimplePanelTemplate =
-	{
-		mirrorLayout = true,
-		TopLeftCorner =	{ atlas = "UI-Frame-SimpleMetal-CornerTopLeft", x = -5, y = 0, },
-		TopRightCorner = { atlas = "UI-Frame-SimpleMetal-CornerTopLeft", x = 2, y = 0, },
-		BottomLeftCorner = { atlas = "UI-Frame-SimpleMetal-CornerTopLeft", x = -5, y = -3, },
-		BottomRightCorner =	{ atlas = "UI-Frame-SimpleMetal-CornerTopLeft", x = 2, y = -3, },
-		TopEdge = { atlas = "_UI-Frame-SimpleMetal-EdgeTop", },
-		BottomEdge = { atlas = "_UI-Frame-SimpleMetal-EdgeTop", },
-		LeftEdge = { atlas = "!UI-Frame-SimpleMetal-EdgeLeft", },
-		RightEdge = { atlas = "!UI-Frame-SimpleMetal-EdgeLeft", },
-	},
-
-	PortraitFrameTemplate =
-	{
-		TopLeftCorner =	{ layer = "OVERLAY", atlas = "UI-Frame-PortraitMetal-CornerTopLeft", x = -13, y = 16, },
-		TopRightCorner =	{ layer = "OVERLAY", atlas = "UI-Frame-Metal-CornerTopRight", x = 4, y = 16, },
-		BottomLeftCorner =	{ layer = "OVERLAY", atlas = "UI-Frame-Metal-CornerBottomLeft", x = -13, y = -3, },
-		BottomRightCorner =	{ layer = "OVERLAY", atlas = "UI-Frame-Metal-CornerBottomRight", x = 4, y = -3, },
-		TopEdge = { layer="OVERLAY", atlas = "_UI-Frame-Metal-EdgeTop", x = 0, y = 0, x1 = 0, y1 = 0, },
-		BottomEdge = { layer = "OVERLAY", atlas = "_UI-Frame-Metal-EdgeBottom", x = 0, y = 0, x1 = 0, y1 = 0, },
-		LeftEdge = { layer = "OVERLAY", atlas = "!UI-Frame-Metal-EdgeLeft", x = 0, y = 0, x1 = 0, y1 = 0 },
-		RightEdge = { layer = "OVERLAY", atlas = "!UI-Frame-Metal-EdgeRight", x = 0, y = 0, x1 = 0, y1 = 0, },
-	},
-
-	PortraitFrameTemplateMinimizable =
-	{
-		TopLeftCorner =	{ layer = "OVERLAY", atlas = "UI-Frame-PortraitMetal-CornerTopLeft", x = -13, y = 16, },
-		TopRightCorner =	{ layer = "OVERLAY", atlas = "UI-Frame-Metal-CornerTopRightDouble", x = 4, y = 16, },
-		BottomLeftCorner =	{ layer = "OVERLAY", atlas = "UI-Frame-Metal-CornerBottomLeft", x = -13, y = -3, },
-		BottomRightCorner =	{ layer = "OVERLAY", atlas = "UI-Frame-Metal-CornerBottomRight", x = 4, y = -3, },
-		TopEdge = { layer="OVERLAY", atlas = "_UI-Frame-Metal-EdgeTop", x = 0, y = 0, x1 = 0, y1 = 0, },
-		BottomEdge = { layer = "OVERLAY", atlas = "_UI-Frame-Metal-EdgeBottom", x = 0, y = 0, x1 = 0, y1 = 0, },
-		LeftEdge = { layer = "OVERLAY", atlas = "!UI-Frame-Metal-EdgeLeft", x = 0, y = 0, x1 = 0, y1 = 0 },
-		RightEdge = { layer = "OVERLAY", atlas = "!UI-Frame-Metal-EdgeRight", x = 0, y = 0, x1 = 0, y1 = 0, },
-	},
-
-	ButtonFrameTemplateNoPortrait =
-	{
-		TopLeftCorner =	{ layer = "OVERLAY", atlas = "UI-Frame-Metal-CornerTopLeft", x = -12, y = 16, },
-		TopRightCorner =	{ layer = "OVERLAY", atlas = "UI-Frame-Metal-CornerTopRight", x = 4, y = 16, },
-		BottomLeftCorner =	{ layer = "OVERLAY", atlas = "UI-Frame-Metal-CornerBottomLeft", x = -12, y = -3, },
-		BottomRightCorner =	{ layer = "OVERLAY", atlas = "UI-Frame-Metal-CornerBottomRight", x = 4, y = -3, },
-		TopEdge = { layer = "OVERLAY", atlas = "_UI-Frame-Metal-EdgeTop", },
-		BottomEdge = { layer = "OVERLAY", atlas = "_UI-Frame-Metal-EdgeBottom", },
-		LeftEdge = { layer = "OVERLAY", atlas = "!UI-Frame-Metal-EdgeLeft", },
-		RightEdge = { layer = "OVERLAY", atlas = "!UI-Frame-Metal-EdgeRight", },
-	},
-
-	ButtonFrameTemplateNoPortraitMinimizable =
-	{
-		TopLeftCorner =	{ layer = "OVERLAY", atlas = "UI-Frame-Metal-CornerTopLeft", x = -12, y = 16, },
-		TopRightCorner =	{ layer = "OVERLAY", atlas = "UI-Frame-Metal-CornerTopRightDouble", x = 4, y = 16, },
-		BottomLeftCorner =	{ layer = "OVERLAY", atlas = "UI-Frame-Metal-CornerBottomLeft", x = -12, y = -3, },
-		BottomRightCorner =	{ layer = "OVERLAY", atlas = "UI-Frame-Metal-CornerBottomRight", x = 4, y = -3, },
-		TopEdge = { layer = "OVERLAY", atlas = "_UI-Frame-Metal-EdgeTop", },
-		BottomEdge = { layer = "OVERLAY", atlas = "_UI-Frame-Metal-EdgeBottom", },
-		LeftEdge = { layer = "OVERLAY", atlas = "!UI-Frame-Metal-EdgeLeft", },
-		RightEdge = { layer = "OVERLAY", atlas = "!UI-Frame-Metal-EdgeRight", },
-	},
-
-	InsetFrameTemplate =
-	{
-		TopLeftCorner = { layer = "BORDER", subLevel = -5, atlas = "UI-Frame-InnerTopLeft", },
-		TopRightCorner = { layer = "BORDER", subLevel = -5, atlas = "UI-Frame-InnerTopRight", },
-		BottomLeftCorner = { layer = "BORDER", subLevel = -5, atlas = "UI-Frame-InnerBotLeftCorner", x = 0, y = -1, },
-		BottomRightCorner = { layer = "BORDER", subLevel = -5, atlas = "UI-Frame-InnerBotRight", x = 0, y = -1, },
-		TopEdge = { layer = "BORDER", subLevel = -5, atlas = "_UI-Frame-InnerTopTile", },
-		BottomEdge = { layer = "BORDER", subLevel = -5, atlas = "_UI-Frame-InnerBotTile", },
-		LeftEdge = { layer = "BORDER", subLevel = -5, atlas = "!UI-Frame-InnerLeftTile", },
-		RightEdge = { layer = "BORDER", subLevel = -5, atlas = "!UI-Frame-InnerRightTile", },
-	},
-
-	BFAMissionHorde =
-	{
-		mirrorLayout = true,
-		TopLeftCorner =	{ atlas = "HordeFrame-Corner-TopLeft", x = -6, y = 6, },
-		TopRightCorner =	{ atlas = "HordeFrame-Corner-TopLeft", x = 6, y = 6, },
-		BottomLeftCorner =	{ atlas = "HordeFrame-Corner-TopLeft", x = -6, y = -6, },
-		BottomRightCorner =	{ atlas = "HordeFrame-Corner-TopLeft", x = 6, y = -6, },
-		TopEdge = { atlas = "_HordeFrameTile-Top", },
-		BottomEdge = { atlas = "_HordeFrameTile-Top", },
-		LeftEdge = { atlas = "!HordeFrameTile-Left", },
-		RightEdge = { atlas = "!HordeFrameTile-Left", },
-	},
-
-	BFAMissionAlliance =
-	{
-		mirrorLayout = true,
-		TopLeftCorner =	{ atlas = "AllianceFrameCorner-TopLeft", x = -6, y = 6, },
-		TopRightCorner =	{ atlas = "AllianceFrameCorner-TopLeft", x = 6, y = 6, },
-		BottomLeftCorner =	{ atlas = "AllianceFrameCorner-TopLeft", x = -6, y = -6, },
-		BottomRightCorner =	{ atlas = "AllianceFrameCorner-TopLeft", x = 6, y = -6, },
-		TopEdge = { atlas = "_AllianceFrameTile-Top", },
-		BottomEdge = { atlas = "_AllianceFrameTile-Top", },
-		LeftEdge = { atlas = "!AllianceFrameTile-Left", },
-		RightEdge = { atlas = "!AllianceFrameTile-Left", },
-	},
-
-	BFAMissionNeutral =
-	{
-		TopLeftCorner =	{ atlas = "UI-Frame-GenericMetal-Corner", x = -6, y = 6, mirrorLayout = true, },
-		TopRightCorner =	{ atlas = "UI-Frame-GenericMetal-Corner", x = 6, y = 6, mirrorLayout = true, },
-		BottomLeftCorner =	{ atlas = "UI-Frame-GenericMetal-Corner", x = -6, y = -6, mirrorLayout = true, },
-		BottomRightCorner =	{ atlas = "UI-Frame-GenericMetal-Corner", x = 6, y = -6, mirrorLayout = true, },
-		TopEdge = { atlas = "_UI-Frame-GenericMetal-TileTop", },
-		BottomEdge = { atlas = "_UI-Frame-GenericMetal-TileBottom", },
-		LeftEdge = { atlas = "!UI-Frame-GenericMetal-TileLeft", },
-		RightEdge = { atlas = "!UI-Frame-GenericMetal-TileRight", },
-	},
-
-	Dialog =
-	{
-		TopLeftCorner =	{ atlas = "UI-Frame-DiamondMetal-CornerTopLeft", },
-		TopRightCorner =	{ atlas = "UI-Frame-DiamondMetal-CornerTopRight", },
-		BottomLeftCorner =	{ atlas = "UI-Frame-DiamondMetal-CornerBottomLeft", },
-		BottomRightCorner =	{ atlas = "UI-Frame-DiamondMetal-CornerBottomRight", },
-		TopEdge = { atlas = "_UI-Frame-DiamondMetal-EdgeTop", },
-		BottomEdge = { atlas = "_UI-Frame-DiamondMetal-EdgeBottom", },
-		LeftEdge = { atlas = "!UI-Frame-DiamondMetal-EdgeLeft", },
-		RightEdge = { atlas = "!UI-Frame-DiamondMetal-EdgeRight", },
-	},
-
-	Roulette =
-	{
-		TopLeftCorner =	    { atlas = "Roulette-left-top-corner", x = -6, y = 6, },
-		TopRightCorner =	{ atlas = "Roulette-right-top-corner", x = 6, y = 6, },
-		BottomLeftCorner =	{ atlas = "Roulette-left-bottom-corner", x = 3, y = -6, },
-		BottomRightCorner =	{ atlas = "Roulette-right-bottom-corner", x = 5.6, y = -5.8, },
-	},
-
-	GlueDarkTemplate =
-	{
-		TopLeftCorner =		{ layer = "OVERLAY", atlas = "GlueDark-border-CornerTopLeft", x = -8, y = 8, },
-		TopRightCorner =	{ layer = "OVERLAY", atlas = "GlueDark-border-CornerTopRight", x = 8, y = 8, },
-		BottomLeftCorner =	{ layer = "OVERLAY", atlas = "GlueDark-border-CornerBottomLeft", x = -8, y = -8, },
-		BottomRightCorner =	{ layer = "OVERLAY", atlas = "GlueDark-border-CornerBottomRight", x = 8, y = -8, },
-		TopEdge =			{ layer = "OVERLAY", atlas = "GlueDark-border-Top", },
-		BottomEdge =		{ layer = "OVERLAY", atlas = "GlueDark-border-Bottom", },
-		LeftEdge =			{ layer = "OVERLAY", atlas = "GlueDark-border-Left", },
-		RightEdge =			{ layer = "OVERLAY", atlas = "GlueDark-border-Right", },
-	},
-
-	GlueDarkDropDownTemplate =
-	{
-		TopLeftCorner =		{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-CornerTopLeft", x = -2, y = 2, },
-		TopRightCorner =	{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-CornerTopRight", x = 2, y = 2, },
-		BottomLeftCorner =	{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-CornerBottomLeft", x = -2, y = -2, },
-		BottomRightCorner =	{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-CornerBottomRight", x = 2, y = -2, },
-		TopEdge =			{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-Top", },
-		BottomEdge =		{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-Bottom", },
-		LeftEdge =			{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-Left", },
-		RightEdge =			{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-Right", },
-	},
-}
+};
 
 --------------------------------------------------
 -- NINE SLICE UTILS
-NineSliceUtil = {}
+NineSliceUtil = {};
 
 function NineSliceUtil.ApplyLayout(container, userLayout, textureKit)
 	for pieceIndex, setup in ipairs(nineSliceSetup) do
-		local pieceName = setup.pieceName
-		local pieceLayout = userLayout[pieceName]
+		local pieceName = setup.pieceName;
+		local pieceLayout = userLayout[pieceName];
 		if pieceLayout then
-			PropagateLayoutSettingsToPieceLayout(userLayout, pieceLayout)
+			if pieceLayout.mirrorLayout == nil then
+				pieceLayout.mirrorLayout = userLayout.mirrorLayout
+			end
 
-			local piece, pieceAlreadyExisted = GetNineSlicePiece(container, pieceName)
+			local piece, pieceAlreadyExisted = GetNineSlicePiece(container, pieceName);
 			if not pieceAlreadyExisted then
-				container[pieceName] = piece
-				piece:SetDrawLayer(pieceLayout.layer or "BORDER", pieceLayout.subLevel)
+				container[pieceName] = piece;
+				local layer = container.layoutTextureLayer or pieceLayout.layer or "BORDER";
+				local subLevel = container.layoutTextureSubLevel or pieceLayout.subLevel;
+				piece:SetDrawLayer(layer, subLevel);
 			end
 
 			-- Piece setup can change arbitrary properties, do it before changing the texture.
-			setup.fn(container, piece, setup, pieceLayout)
-			SetupPieceVisuals(piece, setup, pieceLayout, textureKit)
+			setup.fn(container, piece, setup, pieceLayout);
+			if userLayout.setupPieceVisualsFunction then
+				userLayout.setupPieceVisualsFunction(container, piece, setup, pieceLayout, textureKit, userLayout);
+			else
+				SetupPieceVisuals(piece, setup, pieceLayout, textureKit, userLayout);
+			end
 		end
 	end
 end
 
 function NineSliceUtil.ApplyLayoutByName(container, userLayoutName, textureKit)
-	return NineSliceUtil.ApplyLayout(container, NineSliceUtil.GetLayout(userLayoutName), textureKit)
+	return NineSliceUtil.ApplyLayout(container, NineSliceUtil.GetLayout(userLayoutName), textureKit);
 end
 
 function NineSliceUtil.GetLayout(layoutName)
-	return layouts[layoutName]
+	return NineSliceLayouts[layoutName];
 end
 
 function NineSliceUtil.AddLayout(layoutName, layout)
-	layouts[layoutName] = layout
+	NineSliceLayouts[layoutName] = layout;
 end
 
 --------------------------------------------------
 -- NINE SLICE PANEL MIXIN
- NineSlicePanelMixin = {}
+ NineSlicePanelMixin = {};
 
 function NineSlicePanelMixin:GetFrameLayoutType()
-	return self:GetAttribute("layoutType") or self:GetParent():GetAttribute("layoutType")
+	return self:GetAttribute("layoutType") or self:GetParent():GetAttribute("layoutType");
+end
+
+function NineSlicePanelMixin:GetFrameLayoutTextureKit()
+	local parentAtlasKey = (self.atlasKey or self:GetAttribute("atlasKey")) or "layoutTextureKit";
+	return (self.layoutTextureKit or self:GetParent()[parentAtlasKey]) or (self:GetAttribute(parentAtlasKey) or self:GetParent():GetAttribute(parentAtlasKey));
 end
 
 function NineSlicePanelMixin:SetParentFrameLevel()
-	if self:GetAttribute("layoutParentFrameLevel") == true then
-		self:SetFrameLevel(self:GetFrameLevel())
-	elseif self:GetParent():GetAttribute("layoutParentFrameLevel") == true then
+	if self:GetAttribute("layoutParentFrameLevel") == true or self:GetParent():GetAttribute("layoutParentFrameLevel") == true then
 		self:SetFrameLevel(self:GetParent():GetFrameLevel())
 	end
 end
 
 function NineSlicePanelMixin:OnLoad()
-	local layout = NineSliceUtil.GetLayout(self:GetFrameLayoutType())
+	local layout = NineSliceUtil.GetLayout(self:GetFrameLayoutType());
 	if layout then
-		NineSliceUtil.ApplyLayout(self, layout)
+		NineSliceUtil.ApplyLayout(self, layout, self:GetFrameLayoutTextureKit());
 		self:SetParentFrameLevel()
+	end
+end
+
+function NineSlicePanelMixin:SetCenterColor(r, g, b, a)
+	local center = self["Center"];
+	if center then
+		center:SetVertexColor(r, g, b, a or 1);
+	end
+end
+
+function NineSlicePanelMixin:GetCenterColor()
+	local center = self["Center"];
+	if center then
+		return center:GetVertexColor();
+	end
+end
+
+function NineSlicePanelMixin:SetBorderColor(r, g, b, a)
+	for _, section in ipairs(nineSliceSetup) do
+		if section.pieceName ~= "Center" then
+			local piece = self[section.pieceName];
+			if piece then
+				piece:SetVertexColor(r, g, b, a or 1);
+			end
+		end
+	end
+end
+
+function NineSlicePanelMixin:GetBorderColor()
+	-- return the vertex color of any valid piece
+	for _, section in ipairs(nineSliceSetup) do
+		if section.pieceName ~= "Center" then
+			local piece = self[section.pieceName];
+			if piece then
+				return piece:GetVertexColor();
+			end
+		end
+	end
+end
+
+function NineSlicePanelMixin:SetVertexColor(r, g, b, a)
+	self:SetCenterColor(r, g, b, a);
+	self:SetBorderColor(r, g, b, a);
+end
+
+function NineSlicePanelMixin:SetBorderBlendMode(blendMode)
+	for _, section in ipairs(nineSliceSetup) do
+		if section.pieceName ~= "Center" then
+			local piece = self[section.pieceName];
+			if piece then
+				piece:SetBlendMode(blendMode);
+			end
+		end
 	end
 end

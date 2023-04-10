@@ -539,10 +539,8 @@ StaticPopupDialogs["CONFIRM_BATTLEFIELD_ENTRY"] = {
 	button1 = ENTER_BATTLE,
 	button2 = LEAVE_QUEUE,
 	OnShow = function(self, data)
-		if S_IsDevClient and S_IsDevClient() then
-			if GetCVarBool("devSkipBattlegroundInvite") then
-				C_Timer:After(0.5, function() AcceptBattlefieldPort(data, 1) end)
-			end
+		if IsDevClient() and GetCVarBool("devSkipBattlegroundInvite") then
+			C_Timer:After(0.5, function() AcceptBattlefieldPort(data, 1) end)
 		end
 
 		local status, mapName, instanceID, levelRangeMin, levelRangeMax, teamSize, registeredMatch = GetBattlefieldStatus(data);
@@ -3850,6 +3848,28 @@ StaticPopupDialogs["PLAYER_TALENT_PURCHASE_SPEC"] = {
 	whileDead = 1,
 	hideOnEscape = 1,
 	hasMoneyFrame = 1,
+};
+
+StaticPopupDialogs["CONFIRM_UPGRADE_ITEM"] = {
+	text = CONFIRM_UPGRADE_ITEM,
+	button1 = YES,
+	button2 = NO,
+	OnAccept = function()
+		ItemUpgradeFrame:OnConfirm();
+	end,
+	OnCancel = function()
+		ItemUpgradeFrame:Update();
+	end,
+	OnShow = function()
+
+	end,
+	OnHide = function()
+
+	end,
+	timeout = 0,
+	hideOnEscape = 1,
+	hasItemFrame = 1,
+	compactItemFrame = true,
 };
 
 function EventHandler:ASMSG_ALLIED_RACE_STANDART( raceID )

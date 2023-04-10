@@ -144,8 +144,8 @@ local SIRUS_LOCALIZATION = {
 		enGB = "SPD %d"
 	},
 	["SERVER_ALERT_URL"] = {
-		ruRU = "http://91.215.139.94/",
-		enGB = "http://91.215.139.94/"
+		ruRU = "http://80.211.250.155/",
+		enGB = "http://80.211.250.155/"
 	},
 	["CHARACTER_SERVICES_COST"] = {
 		ruRU = "%d |4бонус:бонуса:бонусов;",
@@ -843,16 +843,48 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "PvE – обычный игровой мир.\nPvP – мир, в котором по умолчанию разрешены бои между игроками.\nRP – ролевой игровой мир.\nRPPvP – ролевой игровой мир, в котором по умолчанию разрешены бои между игроками.",
 		enGB = "Normal = No special rules on this realm.\nPvP = Player versus Player.\nRP = Roleplaying realm.\nRPPvP = Roleplaying, Player versus Player realm."
 	},
-	["CHARACTER_SERVICES_BUYTITTLE"] = {
+	["CHARACTER_SERVICES_BOOST_DESCRIPTION_PRE"] = {
 		ruRU = "Иногда не хочется ждать, а сразу приступить к приключениям...",
 		enGB = "Sometimes you just don’t want to wait and want to start adventuring right away..."
 	},
-	["CHARACTER_SERVICES_BUYDESCRIPTION"] = {
+	["CHARACTER_SERVICES_BOOST_DESCRIPTION"] = {
 		ruRU = "Отличные новости! Наши гномские инженеры смогли изобрести машину времени и достать вас из будущего! Более того, мы можем это будущее отредактировать и научить вас всему чему вы хотите, прямо как в гоблиноматрице!\n\nВаш герой получит прекрасную экипировку, обучится паре профессий и мигом достигнет 80-го уровня!",
 		enGB = "Great news! Our Gnomish engineers were able to invent a time machine and bring your future self back in time! We can now even edit this future and teach you anything you want, just like in the Goblin Matrix!\n\nYour hero will receive excellent equipment, learn a couple of professions, and instantly reach level 80!"
 	},
-	["CHARACTER_SERVICES_BUYWARNING"] = {
+	["CHARACTER_SERVICES_BOOST_WARNING"] = {
 		ruRU = "<html><body><p align=\"CENTER\">|cffd53838«Внимание! Есть ограничения!»|r\n<a href=\"https://forum.sirus.su/threads/60978/\">Подробности</a></p></body></html>",
+		enGB = ""
+	},
+	["CHARACTER_SERVICES_LISTPAGE_TITLE"] = {
+		ruRU = "Еще больше персонажей",
+		enGB = ""
+	},
+	["CHARACTER_SERVICES_LISTPAGE_DESCRIPTION"] = {
+		ruRU = "Внимание! Чтобы разблокировать 2-ю страницу персонажей для создания новых героев вне лимита - необходимо иметь не менее 7 персонажей 80-го уровня.\n\nНо благодаря гномскому проворству и технологиям озаренных можно расширить не только пространство, время и сумки, но и место на вашем аккаунте, раз и навсегда. Вам станет доступно создание еще 10 новых персонажей, что позволит собрать свой небольшой отряд бойцов!",
+		enGB = ""
+	},
+	["CHARACTER_SERVICES_LISTPAGE_DESCRIPTION_ALT"] = {
+		ruRU = "Уже поговаривают, что вы собираете свою небольшую армию...\nА у нас хорошие новости! Умельцы Кезана неплохо потрудились, и у вас теперь есть возможность воспользоваться технологиями гоблинов для расширения места на своем аккаунте, чтобы создать еще больше персонажей!",
+		enGB = ""
+	},
+	["CHARACTER_SERVICES_LISTPAGE_WARNING"] = {
+		ruRU = "<html><body><p align=\"CENTER\">|cffd53838ВНИМАНИЕ! Обмену и возврату данная услуга не подлежит|r</p></body></html>",
+		enGB = ""
+	},
+	["CHARACTER_SERVICES_RESTORE_CHARACTER_TITLE"] = {
+		ruRU = "Восстановление персонажа",
+		enGB = "Restore character"
+	},
+	["CHARACTER_SERVICES_RESTORE_CHARACTER_DESCRIPTION"] = {
+		ruRU = "Все предметы и улучшения вашего персонажа сохранятся в том виде, в котором они были до удаления.\n\nПредметы, удаленные до удаления персонажа, не будут восстановлены с помощью данной опции.",
+		enGB = "All of your character's items and enhancements be restored as they were before the deletion.\n\nItems deleted before the character was deleted will not be restored using this option."
+	},
+	["CHARACTER_SERVICES_CHARACTER_RESTORE_FREE"] = {
+		ruRU = "<html><body><p align=\"CENTER\">|cffb9ff8bДоступно бесплатное восстановление!|r</p></body></html>",
+		enGB = "<html><body><p align=\"CENTER\">|cffb9ff8bFree restoration available!|r</p></body></html>"
+	},
+	["CHARACTER_SERVICES_FREE_USE"] = {
+		ruRU = "Получить",
 		enGB = ""
 	},
 	["EMAIL_ADDRESS"] = {
@@ -1016,8 +1048,8 @@ local SIRUS_LOCALIZATION = {
 		enGB = "<html><body><p align=\"CENTER\">This system will not be supported in future versions of World of Warcraft. Please see <a href=\"http://www.blizzard.com/support/article/SSE\">http://www.blizzard.com/support/article/SSE</a> for more information.</p></body></html>"
 	},
 	["CHARACTER_BOOST_DISABLE_REALM"] = {
-		ruRU = "Быстрый старт временно недоступен для %s.",
-		enGB = "This service is disabled on this realm"
+		ruRU = "Быстрый старт временно недоступен для текущего мира.",
+		enGB = "This service is temporarily unavailable on this realm"
 	},
 	["CHARACTER_RESTORE"] = {
 		ruRU = "Восстановить",
@@ -1060,8 +1092,8 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Honorable Kills"
 	},
 	["AUTH_BANNED"] = {
-		ruRU = "Данная учетная запись заблокирована вследствие нарушений условий Соглашения об условиях пользования – www.wow-europe.com/ru/legal/termsofuse.html. Для получения подробной информации свяжитесь с нами по адресу WoWaccountreviewEU@blizzard.com.",
-		enGB = "This account has been banned for violating the Terms of Use Agreement - www.worldofwarcraft.com/termsofuse.shtml. Please contact our GM department via Email at wowaccountadmin@blizzard.com for more information."
+		ruRU = "<html><body><p align=\"CENTER\">Учетная запись заблокирована.</p><p align=\"CENTER\">Более подробную информацию вы найдете в Личном кабинете на сайте:</p><p align=\"CENTER\"><a href=\"http://sirus.su/user\">http://sirus.su/user</a></p><p align=\"CENTER\">По вопросам блокировки обратитесь на</p><p align=\"CENTER\"><a href=\"mailto:info@sirus.su\">info@sirus.su</a></p></body></html>",
+		enGB = ""
 	},
 	["CLASS_INFO_PALADIN1"] = {
 		ruRU = "- Тяжелая броня (кольчуга/латы и щит)",
@@ -1203,9 +1235,17 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Для этого тарифного плана IGR осталось не более 30 минут игрового времени.",
 		enGB = "This IGR usage plan has 30 minutes or less of play time left on it."
 	},
-	["CHARACTER_BOOST_DISABLE_SUSPECT_ACCOUNT"] = {
+	["CHARACTER_SERVICES_DISABLE_SUSPECT_ACCOUNT"] = {
 		ruRU = "<html><body><p align=\"CENTER\">Услуга недоступна для подозрительных учетных записей. Более подробно тут <a href=\"https://sirus.su/suspect\">https://sirus.su/suspect</a></p></body></html>",
 		enGB = "<html><body><p align=\"CENTER\">The service is not available for suspicious accounts. Please see <a href=\"https://sirus.su/suspect\">https://sirus.su/suspect</a> for more information.</p></body></html>"
+	},
+	["CHARACTER_SERVICES_DISABLED"] = {
+		ruRU = "Услуга временно недоступна в этом мире",
+		enGB = "Service is temporarily unavailable on this realm"
+	},
+	["CHARACTER_SERVICES_NOT_ENOUGH_MONEY"] = {
+		ruRU = "У вас недостаточно бонусов для приобретения услуги.",
+		enGB = "You don't have enough bonuses to purchase the service."
 	},
 	["CHAR_CUSTOMIZE_IN_PROGRESS"] = {
 		ruRU = "Изменение внешности персонажа…",
@@ -1324,8 +1364,8 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Retrieving character list"
 	},
 	["CHAR_CREATE_UNIQUE_CLASS_LIMIT"] = {
-		ruRU = "В этом игровом мире вы можете создать только одного персонажа героического класса рыцарь смерти.",
-		enGB = "You may only have one Death Knight Hero Class character on this realm."
+		ruRU = "<html><body><p align=\"CENTER\">В этом игровом мире вы достигли максимального количества персонажей героического класса рыцарь смерти для вашей учетной записи.</p><p></p><p></p><p></p><p align=\"CENTER\">Вы можете создать рыцаря смерти вне лимита с помощью услуги \"Быстрый старт\" или открыв новую страницу персонажей.</p><p align=\"CENTER\"><a href=\"https://forum.sirus.su/threads/289482/\">Подробности</a></p></body></html>",
+		enGB = "<html><body><p align=\"CENTER\">You may only have one Death Knight Hero Class character on this realm.</p></body></html>"
 	},
 	["CLASS_INFO_WARRIOR1"] = {
 		ruRU = "- Тяжелая броня (кольчуга/латы и щит)",
@@ -1456,7 +1496,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Copy"
 	},
 	["LOGIN_SUSPENDED"] = {
-		ruRU = "<html><body><p align=\"CENTER\">Данная учетная запись World of Warcraft временно заблокирована. Более подробную информацию вы найдете в Личном Кабинете на сайте: <a href=\"https://forum.sirus.su/threads/17670/\">https://forum.sirus.su/threads/17670/</a>.</p></body></html>",
+		ruRU = "<html><body><p align=\"CENTER\">Данная учетная запись World of Warcraft временно заблокирована. Более подробную информацию вы найдете в Личном Кабинете на сайте:</p><p align=\"CENTER\"><a href=\"https://forum.sirus.su/threads/17670/\">https://forum.sirus.su/threads/17670/</a></p></body></html>",
 		enGB = "<html><body><p align=\"CENTER\">This World of Warcraft account has been temporarily suspended. Please go to <a href=\"https://forum.sirus.su/threads/17670/\">https://forum.sirus.su/threads/17670/</a> for further information.</p></body></html>"
 	},
 	["LOADING_REALM_LIST"] = {
@@ -1479,9 +1519,25 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "- Умеет надолго задерживать дыхание под водой.",
 		enGB = "- Underwater breathing increased."
 	},
-	["CHARACTER_SERVICES_DIALOG_BOOST_ENTERWORLD"] = {
-		ruRU = "В момент конфигурации персонажа с помощью функции \"Быстрый старт\", вход в игровой мир недоступен. Прервать конфигурацию?",
-		enGB = "You cannot log in while the Character Boost function is configuring your character. Do you want to suspend the configuration?"
+	["CHARACTER_SERVICES_DIALOG_BOOST_ENTER_WORLD"] = {
+		ruRU = "В момент конфигурации персонажа с помощью функции \"Быстрый старт\", вход в игровой мир недоступен.\nПрервать конфигурацию?",
+		enGB = "You cannot log in while the Character Boost function is configuring your character.\nDo you want to suspend the configuration?"
+	},
+	["CHARACTER_SERVICES_DIALOG_BOOST_ENTER_WORLD_DEATH_KNIGHT"] = {
+		ruRU = "Во время создания персонажа с помощью функции \"Быстрый старт\" вход в игровой мир недоступен.\nПрерывание настройки Быстрого старта не позволит вам создать еще одного персонажа с помощью данной услуги или войти в игровой мир, пока вы не удалите созданного Рыцаря смерти или не закончите его настройку.\nПрервать конфигурацию?",
+		enGB = ""
+	},
+	["CHARACTER_SERVICES_DIALOG_BOOST_CANCEL_DEATH_KNIGHT"] = {
+		ruRU = "Прерывание настройки Быстрого старта не позволит вам создать еще одного персонажа с помощью данной услуги или войти в игровой мир, пока вы не удалите созданного Рыцаря смерти или не закончите его настройку.\nПрервать конфигурацию?",
+		enGB = ""
+	},
+	["CHARACTER_SERVICES_DIALOG_BOOST_NO_CHARACTERS_AVAILABLE_DEATH_KNIGHT"] = {
+		ruRU = "Пожалуйста, завершите начатую настройку \"Быстрого старта\" для Рыцаря смерти или удалите этого персонажа.",
+		enGB = ""
+	},
+	["CHARACTER_DELETE_BLOCKED_BOOST_DEATH_KNIGHT"] = {
+		ruRU = "Перед удалением текущего персонажа необходимо завершить применение \"Быстрого старта\" для Рыцаря смерти либо удалить его.",
+		enGB = "",
 	},
 	["MENU_EDIT_UNDO"] = {
 		ruRU = "Отменить",
@@ -1883,14 +1939,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Сайт сервера",
 		enGB = "Server website"
 	},
-	["CHARACTER_UNDELETE_FREE"] = {
-		ruRU = "Доступно бесплатное восстановление!",
-		enGB = "Free restoration available!"
-	},
-	["CHARACTER_UNDELETE_PRICEPRE"] = {
-		ruRU = "Цена:",
-		enGB = "Price:"
-	},
 	["NEWS"] = {
 		ruRU = "Новости",
 		enGB = "News"
@@ -2182,14 +2230,6 @@ local SIRUS_LOCALIZATION = {
 	["NOT_ENOUGH_BONUSES_TO_BUY_A_CHARACTER_BOOST"] = {
 		ruRU = "Недостаточно бонусов для покупки быстрого старта.",
 		enGB = "Insufficient bonuses to purchase Character Boost."
-	},
-	["CHARACTER_UNDELETE_HELP_1"] = {
-		ruRU = "Все предметы и улучшения вашего персонажа сохранятся в том виде, в котором они были до удаления.\n\nПредметы, удаленные до удаления персонажа, не будут восстановлены с помощью данной опции.",
-		enGB = "All of your character’s items and enhancements be restored as they were before the deletion.\n\nItems deleted before the character was deleted will not be restored using this option."
-	},
-	["RESTORING_DELETE_CHARACTER"] = {
-		ruRU = "Восстановление удаленного персонажа",
-		enGB = "Restoring deleted character"
 	},
 	["CHARACTER_FIX_STATUS_3"] = {
 		ruRU = "Неверные параметры.",
@@ -2536,7 +2576,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "View Realm List"
 	},
 	["CHAR_NAME_INVALID_CHARACTER"] = {
-		ruRU = "Имя может содержать только буквы русского алфавита",
+		ruRU = "Имя может содержать буквы только одного алфавита: русского или английского",
 		enGB = "Names can only contain letters"
 	},
 	["LOGIN_ANTI_INDULGENCE"] = {
@@ -2971,7 +3011,11 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Персонажи",
 		enGB = "Characters"
 	},
-	["DEMON_HUNTER_DISABLE"] = {
+	["CLASS_DISABLE_REASON_DEATH_KNIGHT"] = {
+		ruRU = "Вы достигли максимального количества персонажей героического класса рыцарь смерти в этом игровом мире, и создание новых недоступно.",
+		enGB = ""
+	},
+	["CLASS_DISABLE_REASON_DEMON_HUNTER"] = {
 		ruRU = "Новый класс \"Охотник на демонов\", в данный момент недоступен! Следите за новостями сервера, чтобы первым узнать когда \"Охотник на демонов\", станет доступным.",
 		enGB = "The new Demon Hunter class is not available yet! Follow the server’s news to be the first to know when the Demon Hunter class becomes available."
 	},
@@ -5574,7 +5618,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "<html><body><p align=\"\"CENTER\"\">Not enough bonuses!</p><p align=\"\"CENTER\"\">Make a donation in <a href=\"\"https://sirus.su/pay\"\">your account</a></p></body></html>"
 	},
 	["CHARACTER_UNDELETE_STATUS_6"] = {
-		ruRU = "В этом игровом мире вы можете создать только одного персонажа героического класса рыцарь смерти.",
+		ruRU = "Вы не можете восстановить рыцаря смерти, так как достигли лимита персонажей этого класса.",
 		enGB = ""
 	},
 	["CHARACTER_UNDELETE_STATUS_7"] = {
@@ -5583,6 +5627,10 @@ local SIRUS_LOCALIZATION = {
 	},
 	["CHARACTER_UNDELETE_STATUS_8"] = {
 		ruRU = "Неверный индекс персонажа",
+		enGB = ""
+	},
+	["CHARACTER_UNDELETE_STATUS_9"] = {
+		ruRU = "Вы не можете восстановить персонажа, так как достигли лимита персонажей.",
 		enGB = ""
 	},
 	["REALM_CARD_RATE"] = {

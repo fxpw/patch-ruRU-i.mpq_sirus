@@ -25,7 +25,7 @@ local PAID_RACE_SERVICE_OVERRIDE_RACES = {
 }
 
 local PAID_RACE_SERVICE_DYNAMIC = {
-	[E_CHARACTER_RACES.RACE_DRACTHYR]			= E_CHARACTER_RACES.RACE_DRACTHYR,
+	[E_CHARACTER_RACES.RACE_DRACTHYR]				= E_CHARACTER_RACES.RACE_DRACTHYR,
 }
 
 local PAID_FACTION_SERVICE_OVERRIDE_RACES = {
@@ -104,7 +104,7 @@ end
 function CharacterCreateMixin:OnShow()
 	C_CharacterCreation.SetInCharacterCreate(true)
 
-	if PAID_SERVICE_TYPE then
+	if PAID_SERVICE_TYPE and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW then
 		C_CharacterCreation.CustomizeExistingCharacter(PAID_SERVICE_CHARACTER_ID)
 		self.NavigationFrame.CreateNameEditBox:SetText(C_CharacterCreation.PaidChange_GetName())
 		self.NavigationFrame.CreateButton:SetText(CHARACTER_CREATE_ACCEPT)
@@ -273,15 +273,17 @@ function CharacterCreateMixin:CreateClassButtons()
 	local prevButton
 
 	for _, data in ipairs(self.clientClassData) do
-		if not data.disabled then
+		if not data.hidden then
 			local button = self.classButtonPool:Acquire()
 			button.index = data.index
+			button.disabledReason = data.disabled
 			button.Icon:SetAtlas("CIRCLE_CLASS_ICON_"..data.clientFileString)
 			if not prevButton then
 				button:SetPoint("LEFT", 47, 0)
 			else
 				button:SetPoint("LEFT", prevButton, "RIGHT", 15, 0)
 			end
+			button:SetEnabled(not data.disabled)
 			button:Show()
 
 			prevButton = button
@@ -648,7 +650,7 @@ function CharacterCreateRaceButtonMixin:UpdateButton()
 	local allow = false
 	local alliedRaceLocked
 
-	if PAID_SERVICE_TYPE then
+	if PAID_SERVICE_TYPE and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW then
 		local faction = C_CharacterCreation.PaidChange_GetCurrentFaction()
 		local raceID = C_CharacterCreation.PaidChange_GetCurrentRaceIndex()
 
@@ -693,7 +695,7 @@ end
 function CharacterCreateClassButtonMixin:OnEnter()
 	self.HighlightTexture:Show()
 
-	self.tooltip = self:IsEnabled() == 1
+	self.tooltip = self:IsEnabled() == 1 or self.disabledReason
 	if self.tooltip then
 		CharCreateClassButtonTemplate_OnEnter(self)
 	end
@@ -772,12 +774,11 @@ function CharacterCreateClassButtonMixin:UpdateButton()
 		self.clientFileString = clientClassData.clientFileString
 	end
 
-	if PAID_SERVICE_TYPE then
+	if PAID_SERVICE_TYPE and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW then
 		self:SetEnabled(self.index == classID)
 	else
-		self:SetEnabled(C_CharacterCreation.IsRaceClassValid(C_CharacterCreation.GetSelectedRace(), self.index))
+		self:SetEnabled(not self.disabledReason and C_CharacterCreation.IsRaceClassValid(C_CharacterCreation.GetSelectedRace(), self.index))
 	end
-
 
 	self:SetChecked(classID == self.index)
 	self:UpdateChecked()
@@ -1377,6 +1378,27 @@ function CharacterCreateNavigationFrameMixin:FRAMES_LOADED()
 	self:SetPoint("BOTTOMRIGHT", 0, 0)
 end
 
+function CharacterCreateNavigationFrameMixin:CreateCharacter()
+	local name = self.CreateNameEditBox:GetText()
+	if name == "" then
+		GlueDialog:ShowDialog("OKAY", CHAR_NAME_NO_NAME)
+	else
+		local class = select(2, C_CharacterCreation.GetSelectedClass())
+		local _, _, _, hexColor = GetClassColor(class)
+		local skipCustomization = self:GetParent().skipCustomizationConfirmation
+
+		local customization = PAID_SERVICE_TYPE and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW or false
+		local buttonText = customization and ACCEPT or nil
+		local text = customization and CONFIRM_PAID_SERVICE or CONFIRM_CHARACTER_CREATE
+		local confirmation = skipCustomization and "" or CONFIRM_CHARACTER_CREATE_CUSTOMIZATION
+
+		text = string.format(text, hexColor or "ffffff", name or CHARACTER_NO_NAME)
+		text = string.format("%s%s", text, confirmation)
+
+		GlueDialog:ShowDialog(skipCustomization and "CONFIRM_CHARACTER_CREATE" or "CONFIRM_CHARACTER_CREATE_CUSTOMIZATION", text, {name, buttonText})
+	end
+end
+
 CharacterCreateCircleShadowButtonTemplateMixin = {}
 
 function CharacterCreateCircleShadowButtonTemplateMixin:OnLoad()
@@ -1555,7 +1577,7 @@ function CharCreateClassButtonTemplate_OnEnter(self)
 	end
 
 	if self:IsEnabled() ~= 1 then
-		tooltip.Warning:SetText(self.name == DEMON_HUNTER and DEMON_HUNTER_DISABLE or RACE_CLASS_ERROR)
+		tooltip.Warning:SetText(self.disabledReason)
 		tooltip.Warning:SetWidth(tooltip:GetWidth() - 20)
 		tooltip:SetWidth(math.max(tooltip:GetWidth(), tooltip.Warning:GetWidth() + 20))
 		tooltip.Warning:SetPoint("TOPLEFT", tooltip.AbilityList:IsShown() and tooltip.AbilityList or tooltip.Role, "BOTTOMLEFT", 0, -15)

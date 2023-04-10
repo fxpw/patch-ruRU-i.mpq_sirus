@@ -1,3 +1,7 @@
+-- The following function is used with permission from Daniel Stephens <iriel@vigilance-committee.org>
+TAXIROUTE_LINEFACTOR = 32/30; -- Multiplying factor for texture coordinates
+TAXIROUTE_LINEFACTOR_2 = TAXIROUTE_LINEFACTOR / 2; -- Half o that
+
 TAXI_MAP_WIDTH = 580;
 TAXI_MAP_HEIGHT = 580;
 NUM_TAXI_BUTTONS = 0;
@@ -43,7 +47,7 @@ function TaxiFrame_OnEvent(self, event, ...)
 				button:SetID(i);
 			end
 		end
-		
+
 		-- Draw nodes
 		local taxiNodePositions = {};
 		local numValidFlightNodes = 0;
@@ -84,12 +88,12 @@ function TaxiFrame_OnEvent(self, event, ...)
 				button:Hide();
 			end
 		end
-	
+
 		-- Hide remaining nodes
 		for index = num_nodes+1, NUM_TAXI_BUTTONS, 1 do
 			local button = _G["TaxiButton"..index];
 			button:Hide();
-		end 
+		end
 
 		if ( num_nodes > NUM_TAXI_BUTTONS ) then
 			NUM_TAXI_BUTTONS = num_nodes
@@ -112,18 +116,18 @@ function TaxiFrame_OnEvent(self, event, ...)
 	end
 end
 
-function TaxiNodeOnButtonEnter(button) 
+function TaxiNodeOnButtonEnter(button)
 	local index = button:GetID();
 	GameTooltip:SetOwner(button, "ANCHOR_RIGHT");
 	GameTooltip:AddLine(TaxiNodeName(index), "", 1.0, 1.0, 1.0);
-	
+
 	-- Setup variables
 	local numRoutes = GetNumRoutes(index);
 	local line;
 	local sX, sY, dX, dY;
 	local w = TaxiRouteMap:GetWidth();
 	local h = TaxiRouteMap:GetHeight();
-	
+
 	local type = TaxiNodeGetType(index);
 	if ( type == "REACHABLE" ) then
 		SetTooltipMoney(GameTooltip, TaxiNodeCost(button:GetID()));
@@ -144,7 +148,7 @@ function TaxiNodeOnButtonEnter(button)
 				sY = TaxiGetSrcY(index, i)*h;
 				dX = TaxiGetDestX(index, i)*w;
 				dY = TaxiGetDestY(index, i)*h;
-				DrawRouteLine(line, "TaxiRouteMap", sX, sY, dX, dY, 32);
+				DrawLine(line, "TaxiRouteMap", sX, sY, dX, dY, 32, TAXIROUTE_LINEFACTOR_2);
 				line:Show();
 			else
 				line:Hide();
@@ -183,7 +187,7 @@ function DrawOneHopLines()
 				sY = TaxiGetSrcY(i, 1)*h;
 				dX = TaxiGetDestX(i, 1)*w;
 				dY = TaxiGetDestY(i, 1)*h;
-				DrawRouteLine(line, "TaxiRouteMap", sX, sY, dX, dY, 32);
+				DrawLine(line, "TaxiRouteMap", sX, sY, dX, dY, 32, TAXIROUTE_LINEFACTOR_2);
 				line:Show();
 			end
 		end
@@ -195,65 +199,4 @@ function DrawOneHopLines()
 		UIErrorsFrame:AddMessage(ERR_TAXINOPATHS, 1.0, 0.1, 0.1, 1.0);
 		HideUIPanel(TaxiFrame);
 	end
-end
-
-
--- The following function is used with permission from Daniel Stephens <iriel@vigilance-committee.org>
-TAXIROUTE_LINEFACTOR = 32/30; -- Multiplying factor for texture coordinates
-TAXIROUTE_LINEFACTOR_2 = TAXIROUTE_LINEFACTOR / 2; -- Half o that
-
--- T        - Texture
--- C        - Canvas Frame (for anchoring)
--- sx,sy    - Coordinate of start of line
--- ex,ey    - Coordinate of end of line
--- w        - Width of line
--- relPoint - Relative point on canvas to interpret coords (Default BOTTOMLEFT)
-function DrawRouteLine(T, C, sx, sy, ex, ey, w, relPoint)
-   if (not relPoint) then relPoint = "BOTTOMLEFT"; end
-
-   -- Determine dimensions and center point of line
-   local dx,dy = ex - sx, ey - sy;
-   local cx,cy = (sx + ex) / 2, (sy + ey) / 2;
-
-   -- Normalize direction if necessary
-   if (dx < 0) then
-      dx,dy = -dx,-dy;
-   end
-
-   -- Calculate actual length of line
-   local l = sqrt((dx * dx) + (dy * dy));
-
-   -- Quick escape if it's zero length
-   if (l == 0) then
-      T:SetTexCoord(0,0,0,0,0,0,0,0);
-      T:SetPoint("BOTTOMLEFT", C, relPoint, cx,cy);
-      T:SetPoint("TOPRIGHT",   C, relPoint, cx,cy);
-      return;
-   end
-
-   -- Sin and Cosine of rotation, and combination (for later)
-   local s,c = -dy / l, dx / l;
-   local sc = s * c;
-
-   -- Calculate bounding box size and texture coordinates
-   local Bwid, Bhgt, BLx, BLy, TLx, TLy, TRx, TRy, BRx, BRy;
-   if (dy >= 0) then
-      Bwid = ((l * c) - (w * s)) * TAXIROUTE_LINEFACTOR_2;
-      Bhgt = ((w * c) - (l * s)) * TAXIROUTE_LINEFACTOR_2;
-      BLx, BLy, BRy = (w / l) * sc, s * s, (l / w) * sc;
-      BRx, TLx, TLy, TRx = 1 - BLy, BLy, 1 - BRy, 1 - BLx; 
-      TRy = BRx;
-   else
-      Bwid = ((l * c) + (w * s)) * TAXIROUTE_LINEFACTOR_2;
-      Bhgt = ((w * c) + (l * s)) * TAXIROUTE_LINEFACTOR_2;
-      BLx, BLy, BRx = s * s, -(l / w) * sc, 1 + (w / l) * sc;
-      BRy, TLx, TLy, TRy = BLx, 1 - BRx, 1 - BLx, 1 - BLy;
-      TRx = TLy;
-   end
-
-   -- Set texture coordinates and anchors
-   T:ClearAllPoints();
-   T:SetTexCoord(TLx, TLy, BLx, BLy, TRx, TRy, BRx, BRy);
-   T:SetPoint("BOTTOMLEFT", C, relPoint, cx - Bwid, cy - Bhgt);
-   T:SetPoint("TOPRIGHT",   C, relPoint, cx + Bwid, cy + Bhgt);
 end

@@ -302,7 +302,7 @@ local function loadArticles()
 
 	do	-- TOP_ISSUES
 		table.wipe(KB_TOP_ISSUES)
-		local isGM = C_Service:IsGM()
+		local isGM = IsGMAccount()
 		local realmID = C_Service:GetRealmID()
 
 		for articleID, article in pairs(KNOWLEDGEBASE_ARTICLES) do
@@ -327,7 +327,7 @@ local categoriesLoaded, categoryDefaultLoaded
 local function loadCategories()
 	if categoriesLoaded and not Custom_KnowledgeBase.categoriesChanged then return end
 
-	local isGM = C_Service:IsGM()
+	local isGM = IsGMAccount()
 	local realmID = C_Service:GetRealmID()
 
 	if not categoryDefaultLoaded then
@@ -822,7 +822,7 @@ function Custom_KnowledgeBase.KBQuery_BeginLoading(searchText, categoryIndex, su
 
 	local allCategories = categoryIndex == 0
 	local allSubCategories = subcategoryIndex == 0
-	local isGM = C_Service:IsGM()
+	local isGM = IsGMAccount()
 	local realmID = C_Service:GetRealmID()
 
 	for _, article in pairs(KNOWLEDGEBASE_ARTICLES) do

@@ -1277,7 +1277,7 @@ function KnowledgeBase_BackButton_OnClick(self, button)
 	if entryData then
 		if entryData[1] == SIRUS_KNOWLEDGE_BASE_IDS.ROOT.ARTICLE then
 			local entry = KNOWLEDGEBASE_ARTICLES[entryData[2]]
-			if entry and (not entry.hidden or C_Service:IsGM()) then
+			if entry and (not entry.hidden or IsGMAccount()) then
 				KnowledgeBase_SetNavBarPath(entry.articleID)
 				KnowledgeBase_ArticleOnClick({
 					articleId = entry.articleID,

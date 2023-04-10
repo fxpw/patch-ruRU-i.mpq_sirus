@@ -121,7 +121,7 @@
 							InboxFrame_OnModifiedClick(self, self.index);
 						else
 							if IsControlKeyDown() then
-								if S_IsDevClient and S_IsDevClient() then
+								if IsDevClient() then
 									if InboxFrame.openMailID and InboxFrame.openMailID == self.index then
 										InboxFrame.openMailID = nil
 										HideUIPanel(OpenMailFrame)
@@ -178,7 +178,7 @@
 					InboxFrame_OnModifiedClick(self.Button, self.Button.index);
 				else
 					if IsControlKeyDown() then
-						if S_IsDevClient and S_IsDevClient() then
+						if IsDevClient() then
 							DeleteInboxItem(self.Button.index)
 						else
 							if InboxItemCanDelete(self.Button.index) then

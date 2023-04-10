@@ -1,8 +1,13 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
+
 	<Texture name="ActionBarFlyoutButton-ArrowUp" file="Interface\Buttons\ActionBarFlyoutButton" virtual="true" >
 		<Size x="23" y="11"/>
 		<TexCoords left="0.62500000" right="0.98437500" top="0.74218750" bottom="0.82812500"/>
+	</Texture>
+	<Texture name="ActionBarFlyoutButton-IconFrame" file="Interface\Buttons\ActionBarFlyoutButton" virtual="true" >
+		<Size x="42" y="42"/>
+		<TexCoords left="0.01562500" right="0.67187500" top="0.39843750" bottom="0.72656250"/>
 	</Texture>
 	<Texture name="ActionBarFlyoutButton-IconShadow" file="Interface\Buttons\ActionBarFlyoutButton" virtual="true" >
 		<Size x="48" y="48"/>
@@ -54,27 +59,15 @@
 			<Layer level="OVERLAY">
 				<Texture name="$parentFlyoutArrow" inherits="ActionBarFlyoutButton-ArrowUp" parentKey="FlyoutArrow" hidden="true"/>
 				<FontString name="$parentName" inherits="GameFontHighlightSmallOutline">
-					<Size>
-						<AbsDimension x="36" y="10"/>
-					</Size>
+					<Size x="36" y="10"/>
 					<Anchors>
-						<Anchor point="BOTTOM">
-							<Offset>
-								<AbsDimension x="0" y="2"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="BOTTOM" x="0" y="2"/>
 					</Anchors>
 				</FontString>
 				<Texture name="$parentBorder" file="Interface\Buttons\UI-ActionButton-Border" hidden="true" alphaMode="ADD">
-					<Size>
-						<AbsDimension x="62" y="62"/>
-					</Size>
+					<Size x="62" y="62"/>
 					<Anchors>
-						<Anchor point="CENTER">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="CENTER" x="0" y="0"/>
 					</Anchors>
 				</Texture>
 				<Texture parentKey="SpellHighlightTexture" file="Interface\ContainerFrame\Bags" alphaMode="ADD" alpha="0" hidden="true">
@@ -101,15 +94,9 @@
 			</Cooldown>
 		</Frames>
 		<NormalTexture name="$parentNormalTexture" file="Interface\Buttons\UI-Quickslot2">
-			<Size>
-				<AbsDimension x="66" y="66"/>
-			</Size>
+			<Size x="66" y="66"/>
 			<Anchors>
-				<Anchor point="CENTER">
-					<Offset>
-						<AbsDimension x="0" y="-1"/>
-					</Offset>
-				</Anchor>
+				<Anchor point="CENTER" x="0" y="-1"/>
 			</Anchors>
 		</NormalTexture>
 		<PushedTexture file="Interface\Buttons\UI-Quickslot-Depress"/>

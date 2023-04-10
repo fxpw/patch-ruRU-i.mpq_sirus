@@ -884,7 +884,7 @@ function WorldStateScoreFrame_Update( needSleep )
 	end
 
 	if battlefieldWinner then
-		if S_IsDevClient and S_IsDevClient() then
+		if IsDevClient() then
 			if GetCVarBool("devSkipScoreboard") then
 				LeaveBattlefield()
 			end

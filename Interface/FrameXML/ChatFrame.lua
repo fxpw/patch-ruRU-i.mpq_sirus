@@ -4390,7 +4390,7 @@ local createShoutPopup = function()
 		EditBox_OnTextChanged = function(this)
 			local currentBonuses = Store_GetBalance(Enum.Store.CurrenctType.Bonus)
 			local text = string.trim(this:GetText() or "")
-			local enabled = (currentBonuses >= 99 or C_Service:IsGM()) and text ~= ""
+			local enabled = (currentBonuses >= 99 or IsGMAccount()) and text ~= ""
 			this.PopupFrame.Button1:SetEnabled(enabled)
 			this.PopupFrame.Button2:SetEnabled(enabled)
 		end,
@@ -4425,7 +4425,7 @@ function ChatMenu_Shout(self)
 end
 
 local function ChatMenu_ShoutIsShown()
-	if Store_GetBalance(Enum.Store.CurrenctType.Loyality) >= 30 or C_Service:IsGM() then
+	if Store_GetBalance(Enum.Store.CurrenctType.Loyality) >= 30 or IsGMAccount() then
 		return true;
 	end
 	return false;

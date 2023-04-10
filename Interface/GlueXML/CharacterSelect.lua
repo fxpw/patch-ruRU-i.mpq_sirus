@@ -3,11 +3,6 @@ CHARACTER_SELECT_INITIAL_FACING = nil;
 
 CHARACTER_ROTATION_CONSTANT = 0.6;
 
-MAX_CHARACTERS_DISPLAYED = 10;
-MAX_CHARACTERS_PER_REALM = 10;
-
-BOOST_MAX_LEVEL = 80
-
 local DEFAULT_TEXT_OFFSET_X = 4
 local DEFAULT_TEXT_OFFSET_Y = 0
 
@@ -21,35 +16,9 @@ local AUTO_DRAG_TIME = 0.5
 local translationTable = {}
 local translationServerCache = {}
 
-CHARACTER_SELECT_LIST = {
-	queued		= {},
-	characters	= {page = 1, numPages = 1},
-	deleted		= {page = 1, numPages = 0},
-}
-CHARACTER_SELECT_LIST.current = CHARACTER_SELECT_LIST.characters
-
 FACTION_OVERRIDE = {}
-CHAR_SERVICES_DATA = {}
-
-CHAR_DATA_TYPE = {
-	FORCE_CUSTOMIZATION = 1,
-	MAIL_COUNT = 2,
-	ITEM_LEVEL = 3,
-}
-
-local RESTORE_ERRORS = {
-	ANOTHER_OPERATION		= 1,
-	INVALID_PARAMS			= 2,
-	MAX_CHARACTERS_REACHED	= 3,
-	CHARACTER_NOT_FOUND		= 4,
-	NOT_ENOUGH_BONUSES		= 5,
-	UNIQUE_CLASS_LIMIT		= 6,
-	IS_SUSPECT				= 7,
-	WRONG_INDEX				= 8,
-}
 
 local SERVICE_BUTTON_ACTIVATION_DELAY = 0.400
-local AWAIT_FIX_CHAR_INDEX
 
 local SERVER_LOGO = {
 	DEFAULT = "ServerGameLogo-11",
@@ -62,10 +31,6 @@ local SERVER_LOGO = {
 
 for serverName, logo in pairs(SERVER_LOGO) do
 	SERVER_LOGO[string.format("Proxy %s", serverName)] = logo
-end
-
-function IsCharacterSelectInUndeleteMode()
-	return CHARACTER_SELECT_LIST.current == CHARACTER_SELECT_LIST.deleted
 end
 
 function CharacterSelect_SaveCharacterOrder()
@@ -85,9 +50,7 @@ end
 function CharacterSelect_OnLoad(self)
 	CharSelectChangeListStateButton:SetFrameLevel(self:GetFrameLevel() + 4)
 
-	C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.RequestBoostStatus)
-
-	self.ServiceLoad = true
+	C_CharacterServices.RequestServiceInfo()
 
 	self.createIndex = 0;
 	self.selectedIndex = 0;
@@ -101,6 +64,9 @@ function CharacterSelect_OnLoad(self)
 	self:RegisterEvent("SUGGEST_REALM");
 	self:RegisterEvent("FORCE_RENAME_CHARACTER");
 	self:RegisterEvent("SERVER_SPLIT_NOTICE")
+	self:RegisterCustomEvent("CUSTOM_CHARACTER_LIST_UPDATE")
+	self:RegisterCustomEvent("CUSTOM_CHARACTER_INFO_UPDATE")
+	self:RegisterCustomEvent("CUSTOM_CHARACTER_FIXED")
 
 	Hook:RegisterCallback("CharacterSelect", "SERVICE_DATA_RECEIVED", function()
 		local forceChangeFactionEvent = tonumber(GetSafeCVar("ForceChangeFactionEvent") or "-1")
@@ -114,15 +80,14 @@ end
 function CharacterSelect_OnShow()
 	AccountLoginConnectionErrorFrame:Hide()
 
+	FireCustomClientEvent("CUSTOM_CHARACTER_SELECT_SHOWN")
 	table.wipe(FACTION_OVERRIDE)
-	table.wipe(CHAR_SERVICES_DATA)
 
 	-- request account data times from the server (so we know if we should refresh keybindings, etc...)
 	ReadyForAccountDataTimes()
 	GlueDialog:HideDialog("SERVER_WAITING")
 	CharSelectServicesFlowFrame:Hide()
 	CharacterBoostBuyFrame:Hide()
-	-- CharacterSelect.ServiceLoad = true
 	CharacterSelect.AutoEnterWorld = false
 
 	local forceChangeFactionEvent = tonumber(GetSafeCVar("ForceChangeFactionEvent") or "-1")
@@ -135,8 +100,8 @@ function CharacterSelect_OnShow()
 	end
 
 	if #translationTable == 0 then
-		local numCharacters = GetNumCharacters()
-		for i = 1, MAX_CHARACTERS_DISPLAYED do
+		local numCharacters = C_CharacterList.GetNumCharactersOnPage()
+		for i = 1, C_CharacterList.GetNumCharactersPerPage() do
 			translationTable[i] = i <= numCharacters and i or 0
 		end
 	end
@@ -180,12 +145,15 @@ function CharacterSelect_OnHide()
 	GlueDialog:HideDialog("ADDON_INVALID_VERSION_DIALOG")
 	CharacterSelectCharacterFrame.DropDownMenu:Hide()
 
-	CHARACTER_SELECT_LIST.current = CHARACTER_SELECT_LIST.characters
+	C_CharacterList.ForceSetPlayableMode()
 
-	CharacterUndeleteDialog:Hide()
-	CharacterDeleteDialog:Hide();
-	CharacterRenameDialog:Hide();
+	CharacterDeleteDialog:Hide()
+	CharacterRenameDialog:Hide()
 	CharacterFixDialog:Hide()
+	CharacterBoostBuyFrame:Hide()
+	CharacterServicePagePurchaseFrame:Hide()
+	CharacterServiceRestoreCharacterFrame:Hide()
+
 	if ( DeclensionFrame ) then
 		DeclensionFrame:Hide();
 	end
@@ -244,7 +212,7 @@ function CharacterSelect_OnUpdate(self, elapsed)
 		if self.serviceButtonDelay <= 0 then
 			self.serviceButtonDelay = nil
 
-			local button = CharacterSelectCharacterFrame.characterSelectButtons[self.selectedIndex]
+			local button = CharacterSelectCharacterFrame.characterSelectButtons[CharacterSelect.selectedIndex]
 			for _, serviceButton in ipairs(button.serviceButtons) do
 				serviceButton:EnableMouse(true)
 			end
@@ -303,7 +271,7 @@ function CharacterSelect_OnUpdate(self, elapsed)
 	if not GlueDialog:IsShown() and not GlueParent.dontShowInvalidVersionAddonDialog and (not factionEvent or factionEvent ~= 1) then
 		if AddonList_HasNewVersion() then
 			if C_GlueCVars.GetCVar("IGNORE_ADDON_VERSION") ~= "1" then
-				if IsGMAccount() then
+				if IsGMAccount(true) then
 					GlueDialog:ShowDialog("ADDON_INVALID_VERSION_DIALOG_NSA")
 				else
 					GlueDialog:ShowDialog("ADDON_INVALID_VERSION_DIALOG")
@@ -321,8 +289,7 @@ function CharacterSelect_OnUpdate(self, elapsed)
 end
 
 function CharacterSelect_OnKeyDown(self,key)
-	if CharacterUndeleteDialog:IsShown()
-	or CharSelectServicesFlowFrame:IsShown()
+	if CharSelectServicesFlowFrame:IsShown()
 	or GlueDialog:IsDialogShown("SERVER_WAITING")
 	then
 		return
@@ -341,19 +308,19 @@ function CharacterSelect_OnKeyDown(self,key)
 		Screenshot();
 		CharacterSelectCharacterFrame.DropDownMenu:Hide()
 	elseif ( key == "UP" or key == "LEFT" ) then
-		local numChars = GetNumCharacters();
+		local numChars = C_CharacterList.GetNumCharactersOnPage();
 		if ( numChars > 1 ) then
-			if ( self.selectedIndex > 1 ) then
-				CharacterSelect_SelectCharacter(self.selectedIndex - 1);
+			if ( CharacterSelect.selectedIndex > 1 ) then
+				CharacterSelect_SelectCharacter(CharacterSelect.selectedIndex - 1);
 			else
 				CharacterSelect_SelectCharacter(numChars);
 			end
 		end
 	elseif ( key == "DOWN" or key == "RIGHT" ) then
-		local numChars = GetNumCharacters();
+		local numChars = C_CharacterList.GetNumCharactersOnPage();
 		if ( numChars > 1 ) then
-			if ( self.selectedIndex < GetNumCharacters() ) then
-				CharacterSelect_SelectCharacter(self.selectedIndex + 1);
+			if ( CharacterSelect.selectedIndex < numChars ) then
+				CharacterSelect_SelectCharacter(CharacterSelect.selectedIndex + 1);
 			else
 				CharacterSelect_SelectCharacter(1);
 			end
@@ -369,22 +336,22 @@ enum:E_FORCE_CHANGE_FACTION_TEXT {
 
 function UpdateCharacterSelectListView()
 	local connected = IsConnectedToServer() == 1
-	local numCharacters = GetNumCharacters()
-	local inCharactersView = not IsCharacterSelectInUndeleteMode()
+	local numCharacters = C_CharacterList.GetNumCharactersOnPage()
+	local inPlayableMode = C_CharacterList.IsInPlayableMode()
 
 	if not connected then
-		CHARACTER_SELECT_LIST.current = CHARACTER_SELECT_LIST.characters
-		inCharactersView = true
+		C_CharacterList.ForceSetPlayableMode()
+		inPlayableMode = true
 	end
 
-	CharacterSelectLeftPanel.Background:SetShown(inCharactersView and numCharacters > 0)
-	CharacterSelectLeftPanel.Background2:SetShown(inCharactersView and numCharacters > 0)
-	CharacterSelectLeftPanel.CharacterBoostInfoFrame:SetShown(inCharactersView and numCharacters > 0)
-	CharacterBoostButton:SetShown(inCharactersView and numCharacters > 0)
-	CharacterSelectOptionsButton:SetShown(inCharactersView)
-	CharSelectRestoreButton:SetShown(not inCharactersView)
+	CharacterSelectLeftPanel.Background:SetShown(inPlayableMode and numCharacters > 0)
+	CharacterSelectLeftPanel.Background2:SetShown(inPlayableMode and numCharacters > 0)
+	CharacterSelectLeftPanel.CharacterBoostInfoFrame:SetShown(inPlayableMode and numCharacters > 0)
+	CharacterBoostButton:SetShown(inPlayableMode and numCharacters > 0)
+	CharacterSelectOptionsButton:SetShown(inPlayableMode)
+	CharSelectRestoreButton:SetShown(not inPlayableMode)
 
-	if not inCharactersView then
+	if not inPlayableMode then
 		CharSelectCreateCharacterMiddleButton:Hide()
 		CharSelectCreateCharacterButton:Hide()
 		CharSelectChangeListStateButton:Hide()
@@ -420,31 +387,31 @@ end
 
 function CharacterSelect_OnEvent(self, event, ...)
 	if ( event == "ADDON_LIST_UPDATE" ) then
-		C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.RequestBoostStatus)
+		C_CharacterServices.RequestServiceInfo(true)
 		UpdateAddonButton();
 	elseif ( event == "CHARACTER_LIST_UPDATE" ) then
 		if CHARACTER_CREATE_DRESS_STATE_QUEUED then
 			return
 		end
 
-		local numCharacters = GetNumCharacters()
-
-		if numCharacters then
+		do
+			local numCharacters = C_CharacterList.GetNumCharactersOnPage()
 			table.wipe(translationTable)
 
-			for i = 1, MAX_CHARACTERS_DISPLAYED do
+			for i = 1, C_CharacterList.GetNumCharactersPerPage() do
 				translationTable[i] = i <= numCharacters and i or 0
 			end
 
 			CharacterSelect.orderChanged = nil
+			table.wipe(translationServerCache)
 		end
 
-		table.wipe(translationServerCache)
-
 		UpdateCharacterList();
+
 		if CharacterSelect.AutoEnterWorld then
-			CharacterSelect_SelectCharacter(CharSelectServicesFlowFrame.CharSelect, CharSelectServicesFlowFrame.CharSelect)
-			if self.selectedIndex == CharSelectServicesFlowFrame.CharSelect then
+			CharacterSelect_SelectCharacter(CharSelectServicesFlowFrame.selectedCharacterIndex, CharSelectServicesFlowFrame.selectedCharacterIndex)
+
+			if GetCharIDFromIndex(CharacterSelect.selectedIndex) == CharSelectServicesFlowFrame.selectedCharacterIndex then
 				EnterWorld()
 				CharacterSelect.AutoEnterWorld = false
 			end
@@ -473,12 +440,14 @@ function CharacterSelect_OnEvent(self, event, ...)
 		else
 			CharacterSelectUI:Show()
 		end
+
+		FireCustomClientEvent("CHARACTER_LIST_UPDATE_DONE")
 	elseif ( event == "UPDATE_SELECTED_CHARACTER" ) then
 		local index = ...;
 		if ( index == 0 ) then
 			CharSelectCharacterName:SetText("");
 		else
-			self.selectedIndex = GetIndexFromCharID(index);
+			CharacterSelect.selectedIndex = GetIndexFromCharID(index);
 		end
 		UpdateCharacterSelection(self);
 	elseif ( event == "SELECT_LAST_CHARACTER" ) then
@@ -502,108 +471,44 @@ function CharacterSelect_OnEvent(self, event, ...)
 		local message = ...;
 		CharacterRenameDialog:Show();
 		CharacterRenameDialog.Container.Title:SetText(_G[message]);
+	elseif event == "CUSTOM_CHARACTER_LIST_UPDATE" then
+		local listModeChanged = ...
+
+		if CharacterSelectCharacterFrame:IsShown() ~= 1 and C_CharacterList.GetNumCharactersOnPage() == 0 then
+			CharacterSelectCharacterFrame:PlayAnim()
+		end
+
+		CharacterSelect_UpdatePageButton()
+		CharacterSelect_UpdateCharecterCreateButton()
+
+		if listModeChanged then
+			UpdateCharacterSelection()
+			UpdateCharacterSelectListView()
+		end
+
+		CharSelectEnterWorldButton:SetEnabled(C_CharacterList.CanEnterWorld(GetCharIDFromIndex(CharacterSelect.selectedIndex)))
+	elseif event == "CUSTOM_CHARACTER_INFO_UPDATE" then
+		local characterIndex = ...
+		if CharacterSelectCharacterFrame.characterSelectButtons[characterIndex] then
+			CharacterSelectCharacterFrame.characterSelectButtons[characterIndex]:UpdateCharData()
+		end
+	elseif event == "CUSTOM_CHARACTER_FIXED" then
+		local characterID = ...
+		if characterID ~= GetCharIDFromIndex(CharacterSelect.selectedIndex) then
+			SelectCharacter(characterID)
+		end
+
+		CharacterSelect_EnterWorld()
 	elseif ( event == "SERVER_SPLIT_NOTICE" ) then
 		local msg = select(3, ...)
 		local prefix, content = string.match(msg, "([^:]+):(.*)")
 
-		if prefix == "SMSG_DELETED_CHARACTERS_LIST" then
+		if prefix == "SMSG_CHARACTERS_ORDER_SAVE" then
 			if content == "OK" then
-				if next(CHARACTER_SELECT_LIST.queued) then
-					CHARACTER_SELECT_LIST.current = CHARACTER_SELECT_LIST.queued.list
-					CHARACTER_SELECT_LIST.current.page = CHARACTER_SELECT_LIST.queued.page
-				else
-					CHARACTER_SELECT_LIST.current = CHARACTER_SELECT_LIST.deleted
-					CHARACTER_SELECT_LIST.current.page = 1
-				end
-				GetCharacterListUpdate()
-			end
-
-			CHARACTER_SELECT_LIST.queued.list = nil
-			CHARACTER_SELECT_LIST.queued.page = nil
-		elseif prefix == "SMSG_CHARACTERS_LIST" then
-			CHARACTER_SELECT_LIST.current = CHARACTER_SELECT_LIST.characters
-			GetCharacterListUpdate()
-		elseif prefix == "SMSG_CHARACTERS_LIST_INFO" then
-			local deletedPages, characterPages, price, listState, currentPage = string.split(":", content)
-
-			CHARACTER_SELECT_LIST.characters.numPages = math.min(tonumber(characterPages), 255)
-			CHARACTER_SELECT_LIST.deleted.numPages = math.min(tonumber(deletedPages), 255)
-
-			self.undeletePrice = tonumber(price)
-
-			if next(CHARACTER_SELECT_LIST.queued) then
-				CHARACTER_SELECT_LIST.queued.list = nil
-				CHARACTER_SELECT_LIST.queued.page = nil
-			end
-
-			local stateChanged
-
-			if listState == "1" then
-				stateChanged = CHARACTER_SELECT_LIST.current ~= CHARACTER_SELECT_LIST.deleted
-				CHARACTER_SELECT_LIST.current = CHARACTER_SELECT_LIST.deleted
-				CHARACTER_SELECT_LIST.current.page = tonumber(currentPage) or 1
-			else
-				stateChanged = CHARACTER_SELECT_LIST.current ~= CHARACTER_SELECT_LIST.characters
-				CHARACTER_SELECT_LIST.current = CHARACTER_SELECT_LIST.characters
-				CHARACTER_SELECT_LIST.current.page = tonumber(currentPage) or 1
-			end
-
-			if CharacterSelectCharacterFrame:IsShown() ~= 1 and GetNumCharacters() == 0 then
-				CharacterSelectCharacterFrame:PlayAnim()
-			end
-
-			CharacterSelect_UpdatePageButton()
-
-			if stateChanged then
-				UpdateCharacterSelection()
-				UpdateCharacterSelectListView()
-			end
-
-			GlueDialog:HideDialog("SERVER_WAITING")
-		elseif prefix == "SMSG_DELETED_CHARACTER_RESTORE" then
-			local undeleteStatus, isRename = strsplit(":", content)
-			isRename = isRename ~= nil
-
-			CharacterUndeleteDialog:Hide()
-
-			if undeleteStatus == "OK" then
-				GetCharacterListUpdate()
-				CharacterSelect.UndeleteCharacterAlert = isRename and 1 or 2
-			else
-				local errorIndex = RESTORE_ERRORS[undeleteStatus]
-				if errorIndex then
-					local errorText = _G[string.format("CHARACTER_UNDELETE_STATUS_%i", errorIndex)]
-					if errorIndex == 5 then
-						GlueDialog:ShowDialog("OKAY_HTML", errorText)
-					else
-						GlueDialog:ShowDialog("OKAY_VOID", errorText)
-					end
-				end
-			end
-		elseif prefix == "SMSG_CHARACTER_FIX" then
-			GlueDialog:HideDialog("SERVER_WAITING")
-
-			if content == "OK" then
-				if AWAIT_FIX_CHAR_INDEX then
-					if AWAIT_FIX_CHAR_INDEX ~= CharacterSelect.selectedIndex then
-						SelectCharacter(AWAIT_FIX_CHAR_INDEX)
-					end
-					CharacterSelect_EnterWorld()
-					return
-				end
-			elseif content == "NOT_FOUND" then
-				GlueDialog:ShowDialog("OKAY", CHARACTER_FIX_STATUS_2)
-			elseif content == "INVALID_PARAMS" then
-				GlueDialog:ShowDialog("OKAY", CHARACTER_FIX_STATUS_3)
-			end
-
-			AWAIT_FIX_CHAR_INDEX = nil
-		elseif prefix == "SMSG_CHARACTERS_ORDER_SAVE" then
-			if content == "OK" then
-				local numCharacters = GetNumCharacters()
+				local numCharacters = C_CharacterList.GetNumCharactersOnPage()
 				table.wipe(translationServerCache)
 
-				for i = 1, MAX_CHARACTERS_DISPLAYED do
+				for i = 1, C_CharacterList.GetNumCharactersPerPage() do
 					translationServerCache[i] = i <= numCharacters and i or 0
 				end
 
@@ -621,28 +526,6 @@ function CharacterSelect_OnEvent(self, event, ...)
 			if CharacterSelectCharacterFrame.characterSelectButtons[characterIndex] then
 				CharacterSelectCharacterFrame.characterSelectButtons[characterIndex]:UpdateFaction()
 			end
-		elseif prefix == "ASMSG_CHAR_SERVICES" then
-			local characterIndex, forceCustomization, mailCount, itemLevel = string.split(":", content)
-			characterIndex = tonumber(characterIndex) + 1
-			forceCustomization = tonumber(forceCustomization)
-			mailCount = tonumber(mailCount)
-			itemLevel = tonumber(itemLevel)
-
-			if not CHAR_SERVICES_DATA[characterIndex] then
-				CHAR_SERVICES_DATA[characterIndex] = {}
-			end
-
-			CHAR_SERVICES_DATA[characterIndex][CHAR_DATA_TYPE.FORCE_CUSTOMIZATION] = forceCustomization or 0
-			CHAR_SERVICES_DATA[characterIndex][CHAR_DATA_TYPE.MAIL_COUNT] = mailCount or 0
-			CHAR_SERVICES_DATA[characterIndex][CHAR_DATA_TYPE.ITEM_LEVEL] = itemLevel or 0
-
-			if CharacterSelectCharacterFrame.characterSelectButtons[characterIndex] then
-				CharacterSelectCharacterFrame.characterSelectButtons[characterIndex]:UpdateCharData()
-			end
-		elseif prefix == "ASMSG_ALLIED_RACES" then
-			C_CharacterCreation.SetAlliedRacesData(C_Split(content, ":"))
-		elseif prefix == "ASMSG_SERVICE_MSG" then
-			C_CharacterCreation.SetAlliedRacesData(nil)
 		end
 	end
 end
@@ -656,7 +539,7 @@ end
 function CharacterSelect_UIShowAnim( revers, finishCallback )
 	CharacterSelectBottomLeftPanel.startPoint = CharacterSelectAddonsButton:IsShown() and -175 or -150
 
-	if GetNumCharacters() > 0 then
+	if C_CharacterList.GetNumCharactersOnPage() > 0 then
 		playPanelAnim(CharacterSelectCharacterFrame, revers)
 		playPanelAnim(CharacterSelectLeftPanel, revers)
 		playPanelAnim(CharacterSelectPlayerNameFrame, revers)
@@ -681,7 +564,7 @@ function CharacterSelect_UIResetAnim()
 end
 
 function CharacterSelect_UpdateRealmButton()
-	if not IsCharacterSelectInUndeleteMode() and GetServerName() then
+	if C_CharacterList.IsInPlayableMode() and GetServerName() then
 		playPanelAnim(CharSelectChangeRealmButton)
 	else
 		playPanelAnim(CharSelectChangeRealmButton, true, function()
@@ -690,49 +573,16 @@ function CharacterSelect_UpdateRealmButton()
 	end
 end
 
-function CharacterUndeleteConfirmationButton_OnClick( self, ... )
-	if CharacterUndeleteDialog.characterSelect then
-		self:Disable()
-		C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.SendCharacterDeletedRestore, CharacterUndeleteDialog.characterSelect)
-	else
-		error("Unknown CharacterUndeleteDialog.characterSelect for CharacterUndeleteConfirmationButton, contact with Nyll")
-	end
-end
-
-function CharacterUndeleteDialog_OnShow( self, ... )
-	self.BuyButton:Enable()
-
-	if CharacterSelect.undeletePrice == 0 then
-		self.MoneyIcon:Hide()
-		self.PricePreText:Hide()
-		self.Price:SetFontObject("GlueDark_Font_Shadow_15")
-		self.Price:SetTextColor(0.72549019607843, 1, 0.54509803921569)
-		self.Price:SetText(CHARACTER_UNDELETE_FREE)
-	else
-		self.MoneyIcon:Show()
-		self.PricePreText:Show()
-		self.Price:SetFontObject("GlueDark_Font_Shadow_19")
-		self.Price:SetTextColor(1, 1, 1)
-		self.Price:SetText(CharacterSelect.undeletePrice)
-	end
-
-	PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_DEL_CHARACTER)
-end
-
 function CharSelectChangeListState_OnClick(self, button)
 	self:Disable()
 
-	if IsCharacterSelectInUndeleteMode() then
-		CharacterSelect_Exit()
-	else
-		CHARACTER_SELECT_LIST.queued.list = CHARACTER_SELECT_LIST.deleted
-		CHARACTER_SELECT_LIST.queued.page = 1
-
+	if C_CharacterList.IsInPlayableMode() then
 		CharSelectCharPageButtonPrev:Disable()
 		CharSelectCharPageButtonNext:Disable()
 
-		C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.RequestCharacterDeletedList, 0)
-		GlueDialog:ShowDialog("SERVER_WAITING")
+		C_CharacterList.EnterRestoreMode()
+	else
+		CharacterSelect_Exit()
 	end
 end
 
@@ -742,48 +592,63 @@ function CharacterSelect_UpdateModel(self)
 end
 
 function UpdateCharacterSelection()
+	local inPlayableMode = C_CharacterList.IsInPlayableMode()
 	CharacterSelectCharacterFrame.DropDownMenu:Hide()
 
-	local button
-	for i = 1, MAX_CHARACTERS_DISPLAYED do
-		button = _G["CharSelectCharacterButton"..i]
+	for i = 1, C_CharacterList.GetNumCharactersPerPage() do
+		local button = _G["CharSelectCharacterButton"..i]
 		button.selection:Hide()
 		button.upButton:Hide()
-        button.downButton:Hide()
-        button.FactionEmblem:Show()
-		if IsCharacterSelectInUndeleteMode() or CharSelectServicesFlowFrame:IsShown() then
-            CharacterSelectButton_DisableDrag(button)
-        else
-            CharacterSelectButton_EnableDrag(button)
-        end
+		button.downButton:Hide()
+		button.FactionEmblem:Show()
+
+		if inPlayableMode and not CharSelectServicesFlowFrame:IsShown() then
+			CharacterSelectButton_EnableDrag(button)
+		else
+			CharacterSelectButton_DisableDrag(button)
+		end
 
 		CharacterSelectButton_HideMoveButtons(button)
 
-		if IsCharacterSelectInUndeleteMode() then
-			button.PAIDButton:SetPAID(4)
-		else
+		if inPlayableMode then
 			button:UpdatePaidServicerID()
+		else
+			button.PAIDButton:SetPAID(4)
 		end
 	end
 
 	local index = CharacterSelect.selectedIndex;
-	if ( (index > 0) and (index <= MAX_CHARACTERS_DISPLAYED) ) then
+	if ( (index > 0) and (index <= C_CharacterList.GetNumCharactersPerPage()) ) then
 		button = _G["CharSelectCharacterButton"..index]
 		if ( button ) then
 			button.selection:Show()
 			if ( button:IsMouseOver() ) then
 				button:OnEnter()
-            end
+			end
 		end
 	end
 end
 
+function CharacterSelect_UpdateCharecterCreateButton()
+	if C_CharacterList.CanCreateCharacter() and not CharSelectServicesFlowFrame:IsShown() then
+		if C_CharacterList.GetNumCharactersOnPage() == C_CharacterList.GetNumCharactersPerPage() then
+			CharacterSelect.createIndex = 0
+			CharSelectCreateCharacterButton:SetID(0)
+		end
+
+		CharSelectCreateCharacterButton:Enable()
+	else
+		CharSelectCreateCharacterButton:Disable()
+	end
+end
+
 function UpdateCharacterList( dontUpdateSelect )
-	local inDeletedView = IsCharacterSelectInUndeleteMode()
-	local numChars = GetNumCharacters();
+	local inPlayableMode = C_CharacterList.IsInPlayableMode()
+	local maxCharacters = C_CharacterList.GetNumCharactersPerPage()
+	local numCharacters = C_CharacterList.GetNumCharactersOnPage()
 	local index = 1;
 
-	for i = 1, numChars do
+	for i = 1, numCharacters do
 		local characterID = GetCharIDFromIndex(i)
 		local name, race, class, level, zone, sex, ghost, PCC, PRC, PFC = GetCharacterInfo(characterID)
 
@@ -795,11 +660,8 @@ function UpdateCharacterList( dontUpdateSelect )
 				zone = "";
 			end
 
-			local classInfo = C_CreatureInfo.GetClassInfo(class)
-
-			name = GetClassColorObj(classInfo.classFile):WrapTextInColorCode(name)
-			name = inDeletedView and (name .. DELETED) or name
-			button.buttonText.name:SetText(name);
+			name = inPlayableMode and name or (name .. DELETED)
+			button.buttonText.name:SetText(name)
 
 			button.PortraitFrame.LevelFrame.Level:SetText(level)
 
@@ -821,24 +683,21 @@ function UpdateCharacterList( dontUpdateSelect )
 		button:Show()
 
 		index = index + 1;
-		if index > MAX_CHARACTERS_DISPLAYED then
+		if index > maxCharacters then
 			break;
 		end
 	end
 
 	CharacterSelect.createIndex = 0;
-	CharSelectCreateCharacterButton:Disable();
 
 	local connected = IsConnectedToServer();
-	while index <= MAX_CHARACTERS_DISPLAYED do
+	while index <= maxCharacters do
 		local button = _G["CharSelectCharacterButton"..index];
-		if ( (CharacterSelect.createIndex == 0) and (numChars < MAX_CHARACTERS_PER_REALM) ) then
+		if ( (CharacterSelect.createIndex == 0) and (numCharacters < C_CharacterList.GetNumCharactersPerPage()) ) then
 			CharacterSelect.createIndex = index;
 			if ( connected ) then
 				--If can create characters position and show the create button
 				CharSelectCreateCharacterButton:SetID(index);
-				--CharSelectCreateCharacterButton:SetPoint("TOP", button, "TOP", 0, -5);
-				CharSelectCreateCharacterButton:Enable();
 			end
 		end
 
@@ -846,13 +705,9 @@ function UpdateCharacterList( dontUpdateSelect )
 		index = index + 1;
 	end
 
-	if (IsGMAccount() and numChars == MAX_CHARACTERS_PER_REALM) then
-		CharacterSelect.createIndex = 0
-		CharSelectCreateCharacterButton:SetID(0);
-		CharSelectCreateCharacterButton:Enable();
-	end
+	CharacterSelect_UpdateCharecterCreateButton()
 
-	if ( numChars == 0 ) then
+	if ( numCharacters == 0 ) then
 		CharacterSelect.selectedIndex = 0;
 		CharacterSelect_SelectCharacter(CharacterSelect.selectedIndex, 1);
 		return;
@@ -860,11 +715,11 @@ function UpdateCharacterList( dontUpdateSelect )
 
 	if ( CharacterSelect.selectLast == 1 ) then
 		CharacterSelect.selectLast = 0;
-		CharacterSelect_SelectCharacter(numChars, 1);
+		CharacterSelect_SelectCharacter(numCharacters, 1);
 		return;
 	end
 
-	if ( (CharacterSelect.selectedIndex == 0) or (CharacterSelect.selectedIndex > numChars) ) then
+	if ( (CharacterSelect.selectedIndex == 0) or (CharacterSelect.selectedIndex > numCharacters) ) then
 		CharacterSelect.selectedIndex = 1;
 	end
 
@@ -900,17 +755,16 @@ function CharacterSelect_OpenCharacterCreate(paidServiceID, characterIndex, onSh
 	return true
 end
 
-function CharacterSelect_SelectCharacter(id, noCreate)
+function CharacterSelect_SelectCharacter(characterIndex, noCreate)
 	CharacterSelectCharacterFrame.DropDownMenu:Hide()
 
-	if ( id == CharacterSelect.createIndex ) then
+	if ( characterIndex == CharacterSelect.createIndex ) then
 		if ( not noCreate ) then
 			CharacterSelect_OpenCharacterCreate()
 		end
 	else
-		id = GetCharIDFromIndex(id)
-
-		local name, race, class = GetCharacterInfo(id)
+		local characterID = GetCharIDFromIndex(characterIndex)
+		local name, race, class = GetCharacterInfo(characterID)
 
 		if race then
 			local RaceInfo 		= C_CreatureInfo.GetRaceInfo(race)
@@ -923,7 +777,7 @@ function CharacterSelect_SelectCharacter(id, noCreate)
 			if RaceInfo.raceID == E_CHARACTER_RACES.RACE_ZANDALARITROLL then
 				if ClassInfo.classFile == "DEATHKNIGHT" then
 					modelName = "Zandalar_DeathKnight"
-				elseif FACTION_OVERRIDE[id] == SERVER_PLAYER_FACTION_GROUP.Alliance then
+				elseif FACTION_OVERRIDE[characterID] == SERVER_PLAYER_FACTION_GROUP.Alliance then
 					modelName = "Zandalar_Alliance"
 				else
 					modelName = "Zandalar_Horde"
@@ -940,10 +794,10 @@ function CharacterSelect_SelectCharacter(id, noCreate)
 				modelName = "Pandaren"
 			elseif C_CharacterCreation.IsVulperaRace(RaceInfo.raceID) then
 				modelName = "Vulpera"
-			elseif FACTION_OVERRIDE[id] then
-				if FACTION_OVERRIDE[id] == SERVER_PLAYER_FACTION_GROUP.Horde then
+			elseif FACTION_OVERRIDE[characterID] then
+				if FACTION_OVERRIDE[characterID] == SERVER_PLAYER_FACTION_GROUP.Horde then
 					modelName = "Horde"
-				elseif FACTION_OVERRIDE[id] == SERVER_PLAYER_FACTION_GROUP.Alliance then
+				elseif FACTION_OVERRIDE[characterID] == SERVER_PLAYER_FACTION_GROUP.Alliance then
 					modelName = "Alliance"
 				end
 			end
@@ -953,26 +807,28 @@ function CharacterSelect_SelectCharacter(id, noCreate)
 
 			CharacterModelManager.SetBackground(modelName)
 
-			CharacterSelect.currentModel = GetSelectBackgroundModel(id);
+			CharacterSelect.currentModel = GetSelectBackgroundModel(characterID);
 
-			SelectCharacter(id);
+			SelectCharacter(characterID);
 
 			local forceCharCustomization = tonumber(GetSafeCVar("FORCE_CHAR_CUSTOMIZATION")) or -1
 			if forceCharCustomization ~= -1 then
 				if PAID_SERVICE_CHARACTER_ID ~= 0 then
 					RunNextFrame(function()
-						CharacterSelect_OpenCharacterCreate(PAID_CHARACTER_CUSTOMIZATION, id)
+						CharacterSelect_OpenCharacterCreate(PAID_CHARACTER_CUSTOMIZATION, characterID)
 					end)
 					SetSafeCVar("FORCE_CHAR_CUSTOMIZATION", -1)
 					return
 				end
 			end
 
-			if CHAR_SERVICES_DATA[id] and CHAR_SERVICES_DATA[id][CHAR_DATA_TYPE.FORCE_CUSTOMIZATION] == 1 then
+			if C_CharacterList.HasCharacterForcedCustomization(characterID) then
 				CharSelectEnterWorldButton:SetText("Завершить настройку")
 			else
 				CharSelectEnterWorldButton:SetText(ENTER_WORLD)
 			end
+
+			CharSelectEnterWorldButton:SetEnabled(C_CharacterList.CanEnterWorld(characterID))
 		else
 			CharacterModelManager.SetBackground("Alliance")
 		end
@@ -980,22 +836,22 @@ function CharacterSelect_SelectCharacter(id, noCreate)
 end
 
 function CharacterSelect_EnterWorld()
-	if IsCharacterSelectInUndeleteMode() or GlueDialog:IsDialogShown("SERVER_WAITING") then return end
+	if not C_CharacterList.IsInPlayableMode() or GlueDialog:IsDialogShown("SERVER_WAITING") then return end
 
-	if CharacterSelect.selectedIndex then
-		local charID = GetCharIDFromIndex(CharacterSelect.selectedIndex)
-		if CHAR_SERVICES_DATA[charID] and CHAR_SERVICES_DATA[charID][CHAR_DATA_TYPE.FORCE_CUSTOMIZATION] == 1 then
-			CharacterSelect_OpenCharacterCreate(PAID_CHARACTER_CUSTOMIZATION, charID)
-			SetSafeCVar("FORCE_CHAR_CUSTOMIZATION", -1)
-			return
-		end
+	local characterID = GetCharIDFromIndex(CharacterSelect.selectedIndex)
+
+	if C_CharacterList.HasCharacterForcedCustomization(characterID) then
+		CharacterSelect_OpenCharacterCreate(PAID_CHARACTER_CUSTOMIZATION, characterID)
+		SetSafeCVar("FORCE_CHAR_CUSTOMIZATION", -1)
+		return
 	end
 
 	PlaySound("gsCharacterSelectionEnterWorld");
 	StopGlueAmbience();
+
 	if CharSelectServicesFlowFrame:IsShown() then
-		GlueDialog:ShowDialog("LOCK_BOOST_ENTER_WORLD")
-	else
+		CharacterServicesMaster_OnWorldEnterAttempt()
+	elseif C_CharacterList.CanEnterWorld(characterID) then
 		EnterWorld();
 	end
 end
@@ -1003,20 +859,17 @@ end
 function CharacterSelect_Exit()
 	if GlueDialog:IsDialogShown("SERVER_WAITING") then return end
 
-	if IsCharacterSelectInUndeleteMode() then
-		CHARACTER_SELECT_LIST.current = CHARACTER_SELECT_LIST.characters
-		CharSelectCharPageButtonPrev:Disable()
-		CharSelectCharPageButtonNext:Disable()
-		C_GluePackets:SendPacket(C_GluePackets.OpCodes.AnnounceCharacterDeletedLeave)
-		GlueDialog:ShowDialog("SERVER_WAITING")
-		GetCharacterListUpdate()
-	else
+	if C_CharacterList.IsInPlayableMode() then
 		CharacterSelect.lockCharacterMove = false
 		PlaySound("gsCharacterSelectionExit");
 		if not CharSelectServicesFlowFrame.LockEnterWorld then
 			DisconnectFromServer();
 			SetGlueScreen("login");
 		end
+	else
+		CharSelectCharPageButtonPrev:Disable()
+		CharSelectCharPageButtonNext:Disable()
+		C_CharacterList.ExitRestoreMode()
 	end
 end
 
@@ -1099,15 +952,17 @@ function CharacterSelectButton_HideMoveButtons(self)
 end
 
 function CharacterSelectButton_ShowMoveButtons(self)
-	if IsCharacterSelectInUndeleteMode() or CharSelectServicesFlowFrame:IsShown() then return end
-	local numCharacters = GetNumCharacters()
+	if not C_CharacterList.IsInPlayableMode() or CharSelectServicesFlowFrame:IsShown() then return end
 
 	if not CharacterSelect.draggedIndex and self.level then
-		for index, serviceButton in ipairs(self.serviceButtons) do
-			if index ~= 3 or (self.level < BOOST_MAX_LEVEL and not CharacterBoostButton.isBoostDisable) then
-				serviceButton:Show()
-			end
-		end
+		local characterIndex = self:GetID()
+		local characterID = GetCharIDFromIndex(characterIndex)
+		local isPendingDK = C_CharacterList.IsCharacterPendingBoostDK(characterID)
+
+		self.serviceButtons[1]:Show()
+		self.serviceButtons[2]:SetShown(not isPendingDK)
+		self.serviceButtons[3]:SetShown(C_CharacterServices.IsBoostAvailableForLevel(self.level))
+		self.serviceButtons[3]:SetPoint("RIGHT", isPendingDK and self.serviceButtons[1] or self.serviceButtons[2], "LEFT", -4, 0)
 
 		self.buttonText.Location:Hide()
 		self.upButton:Show()
@@ -1119,7 +974,7 @@ function CharacterSelectButton_ShowMoveButtons(self)
 
 		self.FactionEmblem:Hide()
 
-		if self:GetID() == 1 then
+		if characterIndex == 1 then
 			self.upButton:Disable()
 			self.upButton:SetAlpha(0.35)
 		else
@@ -1127,7 +982,7 @@ function CharacterSelectButton_ShowMoveButtons(self)
 			self.upButton:SetAlpha(1)
 		end
 
-		if self:GetID() == numCharacters then
+		if characterIndex == C_CharacterList.GetNumCharactersOnPage() then
 			self.downButton:Disable()
 			self.downButton:SetAlpha(0.35)
 		else
@@ -1135,11 +990,8 @@ function CharacterSelectButton_ShowMoveButtons(self)
 			self.downButton:SetAlpha(1)
 		end
 
-		local charData = CHAR_SERVICES_DATA[GetCharIDFromIndex(self:GetID())]
-		if charData and charData[CHAR_DATA_TYPE.ITEM_LEVEL] then
-			self.buttonText.ItemLevel:Show()
-			self.buttonText.Location:Hide()
-		end
+		self.buttonText.ItemLevel:Show()
+		self.buttonText.Location:Hide()
 	end
 end
 
@@ -1165,9 +1017,9 @@ function CharacterSelectButton_OnDragUpdate(self)
 end
 
 function CharacterSelectButton_OnDragStart(self)
-	if IsCharacterSelectInUndeleteMode() or CharSelectServicesFlowFrame:IsShown() or CharacterSelect.lockCharacterMove then return end
+	if not C_CharacterList.IsInPlayableMode() or CharSelectServicesFlowFrame:IsShown() or CharacterSelect.lockCharacterMove then return end
 
-    if GetNumCharacters() > 1 then
+    if C_CharacterList.GetNumCharactersOnPage() > 1 then
 		if not CharacterSelect.draggedIndex then
 			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 		end
@@ -1175,7 +1027,7 @@ function CharacterSelectButton_OnDragStart(self)
         CharacterSelect.pressDownButton = nil
         CharacterSelect.draggedIndex = self:GetID()
         self:SetScript("OnUpdate", CharacterSelectButton_OnDragUpdate)
-        for index = 1, MAX_CHARACTERS_DISPLAYED do
+        for index = 1, C_CharacterList.GetNumCharactersPerPage() do
             local button = _G["CharSelectCharacterButton"..index]
             if button ~= self then
                 button:SetAlpha(0.6)
@@ -1198,7 +1050,7 @@ function CharacterSelectButton_OnDragStop(self)
 	CharacterSelect.pressDownButton = nil
 
     self:SetScript("OnUpdate", nil)
-    for index = 1, MAX_CHARACTERS_DISPLAYED do
+    for index = 1, C_CharacterList.GetNumCharactersPerPage() do
         local button = _G["CharSelectCharacterButton"..index]
         button:SetAlpha(1)
         button:UnlockHighlight()
@@ -1290,78 +1142,91 @@ function GetIndexFromCharID(charID)
     return 0;
 end
 
-function CharacterSelect_PrevPage(self, ...)
-	local targetPage = CHARACTER_SELECT_LIST.current.page - 1
-	if targetPage < 1 then return end
-
-	CHARACTER_SELECT_LIST.queued.list = CHARACTER_SELECT_LIST.current
-	CHARACTER_SELECT_LIST.queued.page = targetPage
-
-	GlueDialog:ShowDialog("SERVER_WAITING")
+function CharacterSelect_PrevPage(self, button)
+	if C_CharacterList.GetCurrentPageIndex() <= 1 then return end
 
 	CharSelectChangeListStateButton:Disable()
 	CharSelectCharPageButtonPrev:Disable()
 	CharSelectCharPageButtonNext:Disable()
 
-	if IsCharacterSelectInUndeleteMode() then
-		C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.RequestCharacterDeletedList, 1)
-	else
-		C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.RequestCharacterList, 1)
-	end
+	C_CharacterList.ScrollListPage(-1)
 end
 
-function CharacterSelect_NextPage(self, ...)
-	local targetPage = CHARACTER_SELECT_LIST.current.page + 1
-	if targetPage > CHARACTER_SELECT_LIST.current.numPages then return end
-
-	CHARACTER_SELECT_LIST.queued.list = CHARACTER_SELECT_LIST.current
-	CHARACTER_SELECT_LIST.queued.page = targetPage
-
-	GlueDialog:ShowDialog("SERVER_WAITING")
+function CharacterSelect_NextPage(self, button)
+	if C_CharacterList.GetCurrentPageIndex() >= C_CharacterList.GetNumPages() then return end
 
 	CharSelectChangeListStateButton:Disable()
 	CharSelectCharPageButtonPrev:Disable()
 	CharSelectCharPageButtonNext:Disable()
 
-	if IsCharacterSelectInUndeleteMode() then
-		C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.RequestCharacterDeletedList, 2)
-	else
-		C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.RequestCharacterList, 2)
-	end
+	C_CharacterList.ScrollListPage(1)
+end
+
+CharacterSelectPagePurchaseButtonMixin = CreateFromMixins(GlueDark_ButtonMixin)
+
+function CharacterSelectPagePurchaseButtonMixin:OnLoad()
+	GlueDark_ButtonMixin.OnLoadStyle(self, true)
+end
+
+function CharacterSelectPagePurchaseButtonMixin:OnEnter()
+	GlueTooltip:SetOwner(self)
+	GlueTooltip:AddLine(CHARACTER_SERVICES_LISTPAGE_TITLE)
+	GlueTooltip:Show()
+end
+
+function CharacterSelectPagePurchaseButtonMixin:OnLeave()
+	GlueTooltip:Hide()
+end
+
+function CharacterSelectPagePurchaseButtonMixin:OnClick(button)
+	CharacterServicePagePurchaseFrame:SetPrice(C_CharacterServices.GetListPagePrice())
+	CharacterServicePagePurchaseFrame:SetAltDescription(C_CharacterList.GetNumAvailablePages() > 1)
+	CharacterServicePagePurchaseFrame:Show()
 end
 
 function CharacterSelect_UpdatePageButton()
-	CharSelectChangeListStateButton:SetEnabled(IsCharacterSelectInUndeleteMode() and true or CHARACTER_SELECT_LIST.deleted.numPages > 0)
-	CharSelectCharPageButtonPrev:SetShown(CHARACTER_SELECT_LIST.current.numPages > 1)
-	CharSelectCharPageButtonNext:SetShown(CHARACTER_SELECT_LIST.current.numPages > 1)
-	if CHARACTER_SELECT_LIST.current.numPages > 1 then
-		CharSelectCharPageButtonPrev:SetEnabled(CHARACTER_SELECT_LIST.current.page > 1)
-		CharSelectCharPageButtonNext:SetEnabled(CHARACTER_SELECT_LIST.current.page < CHARACTER_SELECT_LIST.current.numPages)
+	CharSelectChangeListStateButton:SetEnabled(not C_CharacterList.IsInPlayableMode() or C_CharacterList.IsRestoreModeAvailable())
+
+	local numPages = C_CharacterList.GetNumPages()
+	local isNewPageSuggested = C_CharacterServices.IsNewPageServiceAvailable()
+
+	CharSelectCharPagePurchaseButton:SetShown(isNewPageSuggested)
+
+	CharSelectCharPageButtonPrev:SetShown(numPages > 1)
+	CharSelectCharPageButtonNext:SetShown(numPages > 1 and not isNewPageSuggested)
+
+	if numPages > 1 then
+		local currentPage = C_CharacterList.GetCurrentPageIndex()
+		CharSelectCharPageButtonPrev:SetEnabled(currentPage > 1)
+		CharSelectCharPageButtonNext:SetEnabled(currentPage < numPages)
 	end
 end
 
 function CharacterSelect_RestoreButton_OnClick()
-	if not CharacterUndeleteDialog:IsShown() then
-		CharacterUndeleteDialog.characterSelect = CharacterSelect.selectedIndex
-		CharacterUndeleteDialog:Show()
-	end
+	CharacterServiceRestoreCharacterFrame:SetPurchaseArgs(CharacterSelect.selectedIndex)
+	CharacterServiceRestoreCharacterFrame:SetPrice(C_CharacterServices.GetCharacterRestorePrice())
+	CharacterServiceRestoreCharacterFrame:Show()
 end
 
 function CharacterSelect_FixCharacter(characterIndex)
-	characterIndex = GetCharIDFromIndex(characterIndex or CharacterSelect.selectedIndex)
+	local characterID = GetCharIDFromIndex(characterIndex or CharacterSelect.selectedIndex)
 
-	if characterIndex == 0 then
-		error("Incorrect characterIndex [%s]", tostring(characterIndex), 2)
+	if characterID == 0 then
+		error("Incorrect characterIndex [%s]", tostring(characterID), 2)
 	end
 
-	local name, _, class, level = GetCharacterInfo(characterIndex);
+	if C_CharacterList.IsCharacterPendingBoostDK(characterID) then
+		return
+	end
+
+	local name, _, class, level = GetCharacterInfo(characterID)
 	local classInfo = C_CreatureInfo.GetClassInfo(class)
 	class = GetClassColorObj(classInfo.classFile):WrapTextInColorCode(class).."|cffFFFFFF"
 
 	CharacterFixDialog.Container.Character:SetFormattedText(CONFIRM_CHAR_DELETE2, name, level, class);
 
 	PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_DEL_CHARACTER)
-	CharacterFixDialog.characterIndex = characterIndex or CharacterSelect.selectedIndex
+	CharacterFixDialog.characterID = characterID
 	CharacterFixDialog:Show()
 end
 
@@ -1371,27 +1236,32 @@ function CharacterSelect_FixCharacter_OnLoad(self)
 end
 
 function CharacterSelect_FixCharacter_OnHide(self)
-	self.characterIndex = nil
+	self.characterID = nil
 end
 
 function CharacterSelect_FixCharacter_OKButton_OnClick(self)
 	local dialog = self:GetParent():GetParent()
-	local characterIndex = dialog.characterIndex
+	local characterID = dialog.characterID
 	dialog:Hide()
-	GlueDialog:ShowDialog("SERVER_WAITING")
-	AWAIT_FIX_CHAR_INDEX = characterIndex
-	C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.SendCharacterFix, characterIndex)
+	C_CharacterList.FixCharacter(characterID)
 end
 
 function CharacterSelect_Delete(characterIndex)
-	characterIndex = GetCharIDFromIndex(characterIndex or CharacterSelect.selectedIndex)
+	local characterID = GetCharIDFromIndex(characterIndex or CharacterSelect.selectedIndex)
 
-	if characterIndex == 0 then
-		error("Incorrect characterIndex [%s]", tostring(characterIndex), 2)
+	if characterID == 0 then
+		error("Incorrect characterID [%s]", tostring(characterID), 2)
 	end
 
-	local name, _, class, level = GetCharacterInfo(characterIndex);
+	local name, _, class, level = GetCharacterInfo(characterID)
 	local classInfo = C_CreatureInfo.GetClassInfo(class)
+	if classInfo.classFile == "DEATHKNIGHT" then
+		if C_CharacterList.HasPendingBoostDK() and not C_CharacterList.IsCharacterPendingBoostDK(characterID) then
+			GlueDialog:ShowDialog("OKAY_VOID", CHARACTER_DELETE_BLOCKED_BOOST_DEATH_KNIGHT)
+			return
+		end
+	end
+
 	class = GetClassColorObj(classInfo.classFile):WrapTextInColorCode(class).."|cffFFFFFF"
 
 	CharacterDeleteDialog.Container.Character:SetFormattedText(CONFIRM_CHAR_DELETE2, name, level, class);
@@ -1399,43 +1269,39 @@ function CharacterSelect_Delete(characterIndex)
 	CharacterDeleteDialog.Container.EditBox:SetText("");
 
 	PlaySound("gsCharacterSelectionDelCharacter");
-	CharacterDeleteDialog.characterIndex = characterIndex
+	CharacterDeleteDialog.characterID = characterID
 	CharacterDeleteDialog:Show();
 end
 
 function CharacterDeleteDialog_OnHide(self)
-	self.characterIndex = nil
+	self.characterID = nil
 end
 
 function CharacterDeleteDialog_OKButton_OnClick(self)
 	local dialog = self:GetParent():GetParent()
-	local characterIndex = dialog.characterIndex
+	local characterID = dialog.characterID
 	dialog:Hide()
 	PlaySound("gsTitleOptionOK");
-	DeleteCharacter(characterIndex);
+	DeleteCharacter(characterID)
 end
 
-function CharacterSelect_OpenBoost(characterIndex)
-	characterIndex = GetCharIDFromIndex(characterIndex or CharacterSelect.selectedIndex)
+function CharacterSelect_OpenBoost(characterIndex, animated)
+	local characterID = GetCharIDFromIndex(characterIndex or CharacterSelect.selectedIndex)
 
-	if characterIndex == 0 then
-		error("Incorrect characterIndex [%s]", tostring(characterIndex), 2)
+	if characterID == 0 then
+		error("Incorrect characterIndex [%s]", tostring(characterID), 2)
 	end
 
-	CharacterSelect.ServiceLoad = false
-
-	C_GluePackets:SendPacket(C_GluePackets.OpCodes.RequestBoostStatus)
 	PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
+	C_CharacterServices.RequestServiceInfo()
 
-	if not CharSelectServicesFlowFrame:IsShown() and not CharacterSelect.ServiceLoad and CharacterSelect.AllowService then
-		CharSelectServicesFlowFrame:Show()
-
-		local name, race, class, level = GetCharacterInfo(GetCharIDFromIndex(characterIndex))
-		if level < BOOST_MAX_LEVEL and C_CharacterCreation.IsServicesAvailableForRace(E_PAID_SERVICE.BOOST_SERVICE, C_CreatureInfo.GetRaceInfo(race).raceID) then
-			_G["CharSelectCharacterButton"..characterIndex]:Click()
-			CharSelectServicesFlowFrame.NextButton:Click()
+	if not CharSelectServicesFlowFrame:IsShown() and C_CharacterServices.GetBoostStatus() == Enum.CharacterServices.BoostServiceStatus.Purchased then
+		if animated then
+			CharSelectServicesFlowFrame:PlayAnim()
+		else
+			CharSelectServicesFlowFrame:Show()
 		end
-	elseif not CharacterBoostBuyFrame:IsShown() and not CharacterSelect.ServiceLoad and not CharacterSelect.AllowService then
+	elseif not CharacterBoostBuyFrame:IsShown() and C_CharacterServices.GetBoostStatus() == Enum.CharacterServices.BoostServiceStatus.Available then
 		CharacterBoostBuyFrame:Show()
 	end
 end
@@ -1496,10 +1362,9 @@ end
 
 function CharacterSelectPAIDButtonMixin:OnClick()
 	if self.paID == 4 then
-		if not CharacterUndeleteDialog:IsShown() then
-			CharacterUndeleteDialog.characterSelect = self:GetParent():GetID()
-			CharacterUndeleteDialog:Show()
-		end
+		CharacterServiceRestoreCharacterFrame:SetPurchaseArgs(self:GetParent():GetID())
+		CharacterServiceRestoreCharacterFrame:SetPrice(C_CharacterServices.GetCharacterRestorePrice())
+		CharacterServiceRestoreCharacterFrame:Show()
 		return
 	end
 
@@ -1665,6 +1530,11 @@ function CharacterSelectButtonMixin:UpdateCharacterInfo()
 end
 
 function CharacterSelectButtonMixin:SetCharacterInfo(characterID, name, race, class, level, zone, sex, ghost, PCC, PRC, PFC)
+	if self.class ~= class then
+		self.classColor = GetClassColorObj(C_CreatureInfo.GetClassInfo(class).classFile)
+		self:UpdateNameColor()
+	end
+
 	self.characterID = characterID
 	self.race = race
 	self.class = class
@@ -1673,6 +1543,10 @@ function CharacterSelectButtonMixin:SetCharacterInfo(characterID, name, race, cl
 	self.PCC = PCC
 	self.PRC = PRC
 	self.PFC = PFC
+end
+
+function CharacterSelectButtonMixin:UpdateNameColor()
+	self.buttonText.name:SetTextColor(self.classColor.r or 1, self.classColor.g or 1, self.classColor.b or 1)
 end
 
 function CharacterSelectButtonMixin:ClearCharacterInfo()
@@ -1695,7 +1569,7 @@ function CharacterSelectButtonMixin:OnEnable()
 	self.PortraitFrame.LevelFrame.Level:SetTextColor(1, 1, 1)
 	self.PortraitFrame.MailIcon:Enable()
 
-	self.buttonText.name:SetTextColor(1, 0.78, 0)
+	self:UpdateNameColor()
 --	self.buttonText.Info:SetTextColor(1, 1, 1)
 	self.buttonText.Location:SetTextColor(0.5, 0.5, 0.5)
 
@@ -1704,12 +1578,12 @@ end
 
 function CharacterSelectButtonMixin:OnDisable()
 	self.PortraitFrame.Icon:SetVertexColor(0.3, 0.3, 0.3)
-	self.PortraitFrame.LevelFrame.Level:SetTextColor(0.3, 0.3, 0.31)
+	self.PortraitFrame.LevelFrame.Level:SetTextColor(0.3, 0.3, 0.3)
 	self.PortraitFrame.MailIcon:Disable()
 
-	self.buttonText.name:SetTextColor(0.3, 0.3, 0.31)
---	self.buttonText.Info:SetTextColor(0.3, 0.3, 0.31)
-	self.buttonText.Location:SetTextColor(0.3, 0.3, 0.31)
+	self.buttonText.name:SetTextColor(0.3, 0.3, 0.3)
+--	self.buttonText.Info:SetTextColor(0.3, 0.3, 0.3)
+	self.buttonText.Location:SetTextColor(0.3, 0.3, 0.3)
 
 	self.PAIDButton:Disable()
 end
@@ -1737,7 +1611,7 @@ end
 
 function CharacterSelectButtonMixin:OnClick(button)
 	if button == "RightButton" then
-		if not self:IsInBoostMode() and not IsCharacterSelectInUndeleteMode() then
+		if C_CharacterList.IsInPlayableMode() and not self:IsInBoostMode() then
 			self:GetParent().DropDownMenu:Toggle(self, not self:GetParent().DropDownMenu:IsShown())
 		end
 	else
@@ -1745,11 +1619,11 @@ function CharacterSelectButtonMixin:OnClick(button)
 
 		UpdateCharacterSelection()
 
-		local id = self:GetID();
-		CharSelectServicesFlowFrame.CharSelect = id
+		local characterIndex = self:GetID()
+		CharSelectServicesFlowFrame.selectedCharacterIndex = characterIndex
 
-		if id ~= CharacterSelect.selectedIndex then
-			CharacterSelect_SelectCharacter(id)
+		if characterIndex ~= CharacterSelect.selectedIndex then
+			CharacterSelect_SelectCharacter(characterIndex)
 		end
 	end
 end
@@ -1759,9 +1633,9 @@ function CharacterSelectButtonMixin:OnDoubleClick(button)
 		return
 	end
 
-	local id = self:GetID()
-	if id ~= CharacterSelect.selectedIndex then
-		CharacterSelect_SelectCharacter(id)
+	local characterIndex = self:GetID()
+	if characterIndex ~= CharacterSelect.selectedIndex then
+		CharacterSelect_SelectCharacter(characterIndex)
 	end
 
 	CharacterSelect_EnterWorld()
@@ -1837,21 +1711,18 @@ local function getItemLevelColor(itemLevel)
 end
 
 function CharacterSelectButtonMixin:UpdateCharData()
-	local charData = CHAR_SERVICES_DATA[self.characterID]
+	self.PortraitFrame.MailIcon:SetShown(C_CharacterList.GetCharacterMailCount(self.characterID) > 0)
 
-	self.PortraitFrame.MailIcon:SetShown(charData and charData[CHAR_DATA_TYPE.MAIL_COUNT] and charData[CHAR_DATA_TYPE.MAIL_COUNT] > 0)
-
+	local itemLevel = C_CharacterList.GetCharacterItemLevel(self.characterID)
 	local itemLevelShown
 
-	if charData and charData[CHAR_DATA_TYPE.ITEM_LEVEL] then
-		local color = getItemLevelColor(charData[CHAR_DATA_TYPE.ITEM_LEVEL])
-		self.buttonText.ItemLevel:SetFormattedText("%s |c%s%i|r", CHARACTER_ITEM_LEVEL, color:GenerateHexColor(), charData[CHAR_DATA_TYPE.ITEM_LEVEL])
+	local color = getItemLevelColor(itemLevel)
+	self.buttonText.ItemLevel:SetFormattedText("%s |c%s%i|r", CHARACTER_ITEM_LEVEL, color:GenerateHexColor(), itemLevel)
 
-		if self:IsMouseOver() then
-			self.buttonText.Location:Hide()
-			self.buttonText.ItemLevel:Show()
-			itemLevelShown = true
-		end
+	if self:IsMouseOver() then
+		self.buttonText.Location:Hide()
+		self.buttonText.ItemLevel:Show()
+		itemLevelShown = true
 	end
 
 	if not itemLevelShown then
@@ -1933,9 +1804,8 @@ end
 function CharacterSelectButtonMailMixin:OnEnter()
 	self.charButton:OnEnter()
 
-	local charData = CHAR_SERVICES_DATA[GetCharIDFromIndex(self.charButton:GetID())]
 	GlueTooltip:SetOwner(self)
-	GlueTooltip:SetText(string.format(UNREAD_MAILS, charData[CHAR_DATA_TYPE.MAIL_COUNT]))
+	GlueTooltip:SetText(string.format(UNREAD_MAILS, C_CharacterList.GetCharacterMailCount(GetCharIDFromIndex(self.charButton:GetID()))))
 end
 
 function CharacterSelectButtonMailMixin:OnLeave()
@@ -1957,21 +1827,21 @@ function CharacterSelectButtonDropDownMenuMixin:OnLoad()
 	self.buttonSettings = {
 		{
 			icon = "CharacterSelect-Service-Fix-Normal",
-			text = "Исправление персонажа",
+			text = CHARACTER_SELECT_FIX_CHARACTER_BUTTON,
 			func = function(this, owner)
 				CharacterSelect_FixCharacter(owner:GetID())
 			end
 		},
 		{
 			icon = "CharacterSelect-Service-Delete-Normal",
-			text = "Удаление персонажа",
+			text = DELETE_CHARACTER,
 			func = function(this, owner)
 				CharacterSelect_Delete(owner:GetID())
 			end
 		},
 		{
 			icon = "CharacterSelect-Service-Boost-Normal",
-			text = "Быстрый старт",
+			text = CHARACTER_SERVICES_BUYBOOST,
 			func = function(this, owner)
 				CharacterSelect_OpenBoost(owner:GetID())
 			end
@@ -1981,53 +1851,62 @@ function CharacterSelectButtonDropDownMenuMixin:OnLoad()
 	self.buttonsPool = CreateFramePool("Button", self, "CharacterSelectButtonDropDownMenuButtonTemplate")
 end
 
-function CharacterSelectButtonDropDownMenuMixin:Toggle( owner, toggle )
-	if owner ~= self.owner then
-		self:Hide()
-		toggle = true
+function CharacterSelectButtonDropDownMenuMixin:Toggle( owner, show )
+	if self.owner ~= owner then
+		self.owner = owner
+		show = true
 	end
 
-	self.owner = owner
-
-	if toggle then
+	if show then
+		self:UpdateButtons()
 		self:ClearAllPoints()
-		if owner.index == MAX_CHARACTERS_DISPLAYED then
+
+		if owner.index == C_CharacterList.GetNumCharactersPerPage() then
 			self:SetPoint("BOTTOMRIGHT", owner, "BOTTOMLEFT", -10, 0)
 		else
 			self:SetPoint("RIGHT", owner, "LEFT", -10, 0)
 		end
 	end
 
-	self:SetShown(toggle)
+	self:SetShown(show)
 end
 
-function CharacterSelectButtonDropDownMenuMixin:OnShow()
-	local showBoostButton = self.owner.level and self.owner.level < BOOST_MAX_LEVEL and not CharacterBoostButton.isBoostDisable
+function CharacterSelectButtonDropDownMenuMixin:UpdateButtons()
+	local BUTTON_HEIGHT = 30
+	local BUTTON_OFFSET_Y = -6
+
 	local previous
 
-	for index, settings in pairs(self.buttonSettings) do
-		local button = self.buttonsPool:Acquire()
+	self.buttonsPool:ReleaseAll()
 
-		if index == 1 then
-			button:SetPoint("TOP", 0, 0)
-		else
-			button:SetPoint("TOP", previous, "BOTTOM", 0, -6)
+	for index, settings in ipairs(self.buttonSettings) do
+		local skipOption
+		if (index == 1 and C_CharacterList.IsCharacterPendingBoostDK(GetCharIDFromIndex(self.owner:GetID())))
+		or (index == 3 and not (self.owner.level and C_CharacterServices.IsBoostAvailableForLevel(self.owner.level)))
+		then
+			skipOption = true
 		end
 
-		button.Text:SetText(settings.text)
-		button.Icon:SetAtlas(settings.icon)
-		button.clickFunc = settings.func
+		if not skipOption then
+			local button = self.buttonsPool:Acquire()
 
-		previous = button
+			if not previous then
+				button:SetPoint("TOP", 0, 0)
+			else
+				button:SetPoint("TOP", previous, "BOTTOM", 0, BUTTON_OFFSET_Y)
+			end
 
-		button:SetShown(index ~= 3 or showBoostButton)
+			button.Text:SetText(settings.text)
+			button.Icon:SetAtlas(settings.icon)
+			button.clickFunc = settings.func
+			button:Show()
+
+			previous = button
+		end
 	end
 
-	self:SetHeight(showBoostButton and 102 or 66)
-end
-
-function CharacterSelectButtonDropDownMenuMixin:OnHide()
-	self.buttonsPool:ReleaseAll()
+	local numButtons = self.buttonsPool:GetNumActive()
+	self:SetHeight(numButtons * BUTTON_HEIGHT + (numButtons - 1) * -BUTTON_OFFSET_Y)
 end
 
 CharacterSelectButtonDropDownMenuButtonMixin = {}

@@ -2231,10 +2231,6 @@ function HideUIPanel(frame, skipSetPoint)
 	FramePositionDelegate:SetAttribute("panel-hide", true);
 end
 
-function HideParentPanel(self)
-	HideUIPanel(self:GetParent());
-end
-
 function GetUIPanel(key)
 	return FramePositionDelegate:GetUIPanel(key);
 end
@@ -4197,6 +4193,8 @@ function GlobalMouse_OnUpdate()
 		local buttonState = IsMouseButtonDown(index);
 
 		if GLOBAL_MOUSE_BUTTONS_STATE[index] ~= buttonState then
+			FireCustomClientEvent(buttonState == 1 and "GLOBAL_MOUSE_DOWN" or "GLOBAL_MOUSE_UP", buttonID);
+
 			GLOBAL_MOUSE_BUTTONS_STATE[index] = buttonState;
 
 			if buttonState then
@@ -4226,4 +4224,46 @@ function GlobalMouse_OnUpdate()
 			end
 		end
 	end
+end
+
+function GetCurrencyCount(currencyID)
+	for i = 1, GetCurrencyListSize() do
+		local _, _, _, _, _, count, _, _, itemID = GetCurrencyListInfo(i);
+		if currencyID == itemID then
+			return count or 0;
+		end
+	end
+
+	return 0;
+end
+
+function GetCurrencyString(currencyType, currencyID, overrideAmount, colorCode)
+	local _, currencyTexture;
+	if currencyType == "money" then
+		currencyTexture = [[Interface\MoneyFrame\UI-MoneyIcons]];
+	else
+		_, _, _, _, _, _, _, _, _, currencyTexture = GetItemInfo(currencyID);
+	end
+
+	colorCode = colorCode or HIGHLIGHT_FONT_COLOR_CODE;
+
+	if currencyTexture then
+		local amountString;
+		if overrideAmount then
+			amountString = overrideAmount;
+		else
+			if currencyType == "money" then
+				amountString = floor(GetMoney() / (COPPER_PER_SILVER * SILVER_PER_GOLD));
+			elseif currencyType == "currency" then
+				amountString = GetCurrencyCount(currencyID);
+			elseif currencyType == "item" then
+				amountString = GetItemCount(currencyID);
+			end
+		end
+
+		local markup = currencyType == "money" and CreateTextureMarkup(currencyTexture, 64, 64, 16, 16, 0, 0.25, 0, 1) or CreateTextureMarkup(currencyTexture, 64, 64, 16, 16, 0, 1, 0, 1);
+		return ("%s%s %s|r"):format(colorCode, amountString or 0, markup);
+	end
+
+	return "";
 end

@@ -297,7 +297,7 @@
         </Scripts>
     </Frame>
 
-    <Frame name="Custom_RouletteFrame" inherits="StandartBaseBasicFrameTemplate" enableMouse="true" frameStrata="HIGH" hidden="true">
+    <Frame name="Custom_RouletteFrame" inherits="BaseBasicFrameTemplate" enableMouse="true" frameStrata="HIGH" hidden="true">
         <Size x="804" y="672"/>
         <Anchors>
             <Anchor point="CENTER" x="0" y="0" />

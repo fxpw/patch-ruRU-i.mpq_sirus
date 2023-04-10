@@ -22,13 +22,15 @@ GlueStrings.lua
 ..\SharedXML\Color.lua
 ..\SharedXML\ColorUtil.lua
 ..\SharedXML\TimeUtil.lua
+..\SharedXML\NineSliceLayouts.lua
 ..\SharedXML\NineSlice.lua
 ..\SharedXML\FrameUtil.lua
-..\SharedXML\AnchorUtil.lua
 ..\SharedXML\Pools.lua
 ..\SharedXML\CircularBuffer.lua
+..\SharedXML\AnchorUtil.lua
 ..\SharedXML\StringUtil.lua
 ..\SharedXML\TypeUtil.lua
+..\SharedXML\MixinUtil.lua
 ..\SharedXML\Utils\C_Texture.lua
 ..\SharedXML\Utils\C_CreatureInfo.lua
 ..\SharedXML\Opcodes.lua
@@ -43,6 +45,10 @@ GlueStrings.lua
 ..\SharedXML\SharedFontStyles.xml
 
 ..\SharedXML\LayoutFrame.xml
+..\SharedXML\SecureUIPanelTemplates.xml
+..\SharedXML\SharedUIPanelTemplates.xml
+..\SharedXML\SharedBasicControls.xml
+..\SharedXML\HybridScrollFrame.xml
 
 ..\SharedXML\Utils\C_Cache.lua
 ..\SharedXML\Utils\C_Service.lua
@@ -50,13 +56,14 @@ GlueStrings.lua
 Utils\C_ConnectManager.lua
 Utils\C_GluePackets.lua
 Utils\C_GlueCVars.lua
+Utils\C_CharacterList.lua
+Utils\C_CharacterServices.lua
 Utils\C_CharacterCreation.lua
 
 DevTools\AccountLoginManagerData.lua
 GlueBasicControls.xml
 GlueParent.xml
-..\SharedXML\SharedUIPanelTemplates.xml
-..\SharedXML\HybridScrollFrame.xml
+..\SharedXML\HelpTip.xml
 GlueButtons.xml
 GlueTemplates.xml
 GlueDarkTemplates.xml

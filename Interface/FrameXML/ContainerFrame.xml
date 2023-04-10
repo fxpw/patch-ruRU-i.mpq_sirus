@@ -68,15 +68,6 @@
 					</OnShow>
 				</Scripts>
 			</Frame>
-			<Frame name="$parentSearchOverlay" parentKey="searchOverlay" setAllPoints="true" toplevel="true" hidden="true">
-				<Layers>
-					<Layer level="OVERLAY">
-						<Texture>
-							<Color r="0" g="0" b="0" a="0.8"/>
-						</Texture>
-					</Layer>
-				</Layers>
-			</Frame>
 		</Frames>
 		<Scripts>
 			<OnClick>

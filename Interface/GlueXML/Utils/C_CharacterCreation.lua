@@ -19,22 +19,25 @@ local CHARACTER_CREATE_DRESS_STATE_QUEUED = false
 local CHARACTER_SELECT_DRESS_QUEUED = false
 local CHARACTER_SELECT_LIST_UPDATE_QUEUED = false
 
+local CHARACTER_CREATING_NAME
+
 local PAID_OVERRIDE_CURRENT_RACE_INDEX
 
 E_PAID_SERVICE = Enum.CreateMirror({
-	CUSTOMIZATION	= 1,
-	CHANGE_RACE		= 2,
-	CHANGE_FACTION	= 3,
-	BOOST_SERVICE	= 4,
+	CUSTOMIZATION		= 1,
+	CHANGE_RACE			= 2,
+	CHANGE_FACTION		= 3,
+	BOOST_SERVICE		= 4,
+	BOOST_SERVICE_NEW	= 5,
 })
 
 local INACCESSIBILITY_FLAGS = {
-	CREATION		= 0x01,
-	CREATION_DK		= 0x02,
-	CUSTOMIZATION	= 0x04,
-	FACTION_CHANGE	= 0x08,
-	RACE_CHANGE		= 0x10,
-	BOOST_SERVICE	= 0x20,
+	CREATION			= 0x01,
+	CREATION_DK			= 0x02,
+	CUSTOMIZATION		= 0x04,
+	FACTION_CHANGE		= 0x08,
+	RACE_CHANGE			= 0x10,
+	BOOST_SERVICE		= 0x20,
 }
 
 local RACE_INACCESSIBILITY = {
@@ -263,6 +266,7 @@ E_CHARACTER_CUSTOMIZATION = Enum.CreateMirror({
 local eventHandler = CreateFrame("Frame")
 eventHandler:Hide()
 eventHandler:RegisterEvent("UPDATE_SELECTED_CHARACTER")
+eventHandler:RegisterEvent("UPDATE_STATUS_DIALOG")
 eventHandler:RegisterCustomEvent("GLUE_CHARACTER_CREATE_BACKGROUND_UPDATE")
 eventHandler:RegisterCustomEvent("GLUE_CHARACTER_CREATE_VISIBILITY_CHANGED")
 eventHandler:SetScript("OnEvent", function(self, event, ...)
@@ -275,6 +279,19 @@ eventHandler:SetScript("OnEvent", function(self, event, ...)
 	elseif event == "UPDATE_SELECTED_CHARACTER" then
 		local index = ...
 		CHARACTER_SELECT_INDEX = index
+	elseif event == "UPDATE_STATUS_DIALOG" then
+		local text = ...
+		if text == CHAR_CREATE_SUCCESS then
+			local characterListIndex = C_CharacterList.GetNumPlayableCharacters() + 1
+			local characterIndex = characterListIndex % C_CharacterList.GetNumCharactersPerPage()
+			local isBoostedCreation = PAID_SERVICE_TYPE == E_PAID_SERVICE.BOOST_SERVICE_NEW
+
+			if characterIndex == 0 then
+				characterIndex = 10
+			end
+
+			FireCustomClientEvent("CHARACTER_CREATED", characterIndex, characterListIndex, isBoostedCreation, CHARACTER_CREATING_NAME)
+		end
 	elseif event == "SERVER_SPLIT_NOTICE" then
 		local msg = select(3, ...)
 		local prefix, status = string.split(":", msg)
@@ -436,6 +453,7 @@ function C_CharacterCreation.SetInCharacterCreate(state)
 		CAMERA_ZOOM_RESET_BLOCKED = false
 		PAID_SERVICE_CHARACTER_ID = nil
 		PAID_SERVICE_TYPE = nil
+		CHARACTER_CREATING_NAME = nil
 
 		local defaultFacing = C_CharacterCreation.GetDefaultCharacterCreateFacing()
 		if GetCharacterCreateFacing() ~= defaultFacing then
@@ -488,15 +506,26 @@ function C_CharacterCreation.ResetCharCustomize()
 	SELECTED_RACE = GetSelectedRace()
 	SELECTED_CLASS = select(3, GetSelectedClass())
 
-	local changed
+	local changedRace, changedClass
+
 	while not C_CharacterCreation.IsRaceAvailable(SELECTED_RACE) or not C_CharacterCreation.IsRaceClassValid(SELECTED_RACE, SELECTED_CLASS) do
 		SELECTED_RACE = ALL_RACES[math.random(1, #ALL_RACES)].raceID
-		changed = true
+		changedRace = true
 	end
 
-	if changed then
+	while not C_CharacterCreation.IsClassValid(SELECTED_CLASS) do
+		SELECTED_CLASS = math.random(1, #S_CLASS_SORT_ORDER)
+		changedClass = true
+	end
+
+	if changedRace then
 		SetSelectedRace(SELECTED_RACE)
 		SELECTED_RACE = GetSelectedRace()
+	end
+
+	if changedClass then
+		SetSelectedClass(SELECTED_CLASS)
+		SELECTED_CLASS = select(3, GetSelectedClass())
 	end
 
 	resetModelSettings()
@@ -526,8 +555,9 @@ function C_CharacterCreation.CreateCharacter(name)
 		end
 	end
 
-	PAID_SERVICE_CHARACTER_ID = nil
-	PAID_SERVICE_TYPE = nil
+	name = string.trim(name):gsub("%d+", "")
+
+	CHARACTER_CREATING_NAME = name
 
 	return CreateCharacter(name)
 end
@@ -605,11 +635,24 @@ function C_CharacterCreation.GetAvailableClasses()
 
 	for i = 1, #t, 3 do
 		index = index + 1
+
+		local disabled, hidden
+
+		if index == CLASS_ID_DEMONHUNTER then
+			hidden = true
+			disabled = CLASS_DISABLE_REASON_DEMON_HUNTER
+		elseif index == CLASS_ID_DEATHKNIGHT and not C_CharacterList.CanCreateDeathKnight() and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW then
+			disabled = CLASS_DISABLE_REASON_DEATH_KNIGHT
+		else
+			--RACE_CLASS_ERROR
+		end
+
 		classes[#classes + 1] = {
 			index = index,
-			name = t[i] or "~name~",
-			clientFileString = t[i+1],
-			disabled = index == 10
+			name = t[i] or t[i + 1] or string.format("[%i] NO CLASS NAME", index),
+			clientFileString = t[i + 1],
+			hidden = hidden or false,
+			disabled = disabled or false,
 		}
 	end
 
@@ -635,7 +678,17 @@ function C_CharacterCreation.IsRaceClassValid(raceID, classID)
 		end
 	end
 
-	return IsRaceClassValid(raceID, classID)
+	return IsRaceClassValid(raceID, classID) == 1
+end
+
+function C_CharacterCreation.IsClassValid(classID)
+	if not IsGMAccount() then
+		if (classID == CLASS_ID_DEATHKNIGHT and not C_CharacterList.CanCreateDeathKnight() and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW) then
+			return false
+		end
+	end
+
+	return true
 end
 
 function C_CharacterCreation.SetSelectedRace(raceID)
@@ -741,7 +794,11 @@ function C_CharacterCreation.GetAvailableCustomizations()
 			elseif i == E_CHARACTER_CUSTOMIZATION.HAIR then
 				name = _G["HAIR_"..hair.."_STYLE"]
 			elseif i == E_CHARACTER_CUSTOMIZATION.HAIR_COLOR then
-				if hair ~= "VULPERA" then
+				if hair == "VULPERA"
+				or (C_CharacterCreation.IsPandarenRace(SELECTED_RACE) and SELECTED_SEX == E_SEX.MALE)
+				then
+					name = HAIR_NORMAL_EYES_COLOR
+				else
 					name = _G["HAIR_"..hair.."_COLOR"]
 				end
 			else
@@ -785,7 +842,7 @@ function C_CharacterCreation.GetSelectedModelName(ignoreOverirde)
 		return "Pandaren"
 	end
 
-	if not ignoreOverirde and PAID_SERVICE_TYPE and C_CharacterCreation.GetSelectedRace() == C_CharacterCreation.PaidChange_GetCurrentRaceIndex() then
+	if not ignoreOverirde and PAID_SERVICE_TYPE and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW and C_CharacterCreation.GetSelectedRace() == C_CharacterCreation.PaidChange_GetCurrentRaceIndex() then
 		local _, _, factionID = C_CharacterCreation.PaidChange_GetCurrentFaction()
 		if factionID == SERVER_PLAYER_FACTION_GROUP.Horde then
 			if raceID == E_CHARACTER_RACES.RACE_ZANDALARITROLL then
@@ -799,7 +856,7 @@ function C_CharacterCreation.GetSelectedModelName(ignoreOverirde)
 			return "Alliance"
 		end
 	elseif raceID == E_CHARACTER_RACES.RACE_ZANDALARITROLL then
-		if PAID_SERVICE_TYPE and select(3, C_CharacterCreation.PaidChange_GetCurrentFaction()) == SERVER_PLAYER_FACTION_GROUP.Alliance then
+		if PAID_SERVICE_TYPE and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW and select(3, C_CharacterCreation.PaidChange_GetCurrentFaction()) == SERVER_PLAYER_FACTION_GROUP.Alliance then
 			return "Zandalar_Alliance"
 		end
 		return "Zandalar_Horde"
@@ -851,7 +908,7 @@ function C_CharacterCreation.GetCameraSettingsDefault()
 	if C_CharacterCreation.GetSelectedRace() == E_CHARACTER_RACES.RACE_ZANDALARITROLL then
 		if select(2, C_CharacterCreation.GetSelectedClass()) == "DEATHKNIGHT" then
 			modelName = "Zandalar_DeathKnight"
-		elseif PAID_SERVICE_TYPE and select(3, C_CharacterCreation.PaidChange_GetCurrentFaction()) == SERVER_PLAYER_FACTION_GROUP.Alliance then
+		elseif PAID_SERVICE_TYPE and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW and select(3, C_CharacterCreation.PaidChange_GetCurrentFaction()) == SERVER_PLAYER_FACTION_GROUP.Alliance then
 			modelName = "Zandalar_Alliance"
 		else
 			modelName = "Zandalar_Horde"
@@ -886,7 +943,7 @@ function C_CharacterCreation.GetCameraSettingsZoomed(sexID, raceID, className)
 		error(string.format("C_CharacterCreation.GetCameraSettingsZoomed: No camera info (Race=%s) (Sex=%s) (Class=%s) ", tostring(E_CHARACTER_RACES[raceID]), tostring(E_SEX[sexID]), className), 2)
 	end
 
-	if PAID_SERVICE_TYPE and C_CharacterCreation.GetSelectedRace() == C_CharacterCreation.PaidChange_GetCurrentRaceIndex() then
+	if PAID_SERVICE_TYPE and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW and C_CharacterCreation.GetSelectedRace() == C_CharacterCreation.PaidChange_GetCurrentRaceIndex() then
 		local modelName = C_CharacterCreation.GetSelectedModelName()
 		local defaultModelName = C_CharacterCreation.GetSelectedModelName(true)
 		if modelName ~= defaultModelName then
@@ -1061,6 +1118,10 @@ end
 function C_CharacterCreation.IsServicesAvailableForRace(serviceType, raceID)
 	assert(serviceType, "IsServicesAvailableForRace: no service type")
 	assert(raceID, "IsServicesAvailableForRace: no race id")
+
+	if serviceType == E_PAID_SERVICE.BOOST_SERVICE_NEW then
+		return true
+	end
 
 	if RACE_INACCESSIBILITY[raceID] and not IsGMAccount() then
 		if serviceType == E_PAID_SERVICE.CUSTOMIZATION then

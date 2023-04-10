@@ -36,9 +36,17 @@
 		<TexCoords left="0.0009765625" right="0.9990234375" top="0.3671875" bottom="0.623046875"/>
 	</Texture>
 
-	<Texture name="GlueDark_wolf" file="Interface/Custom_Glues/GlueDark/wolf" virtual="true">
+	<Texture name="GlueDark_art_wolf" file="Interface/Custom_Glues/GlueDark/artWolf" virtual="true">
 		<Size x="334" y="290"/>
 		<TexCoords left="0.001953125" right="0.919921875" top="0.001953125" bottom="0.798828125"/>
+	</Texture>
+	<Texture name="GlueDark-art-GlueDark_art_ListPage" file="Interface/Custom_Glues/GlueDark/artRestoreCharacter" virtual="true">
+		<Size x="364" y="317"/>
+		<TexCoords left="0" right="1" top="0" bottom="0.87109375"/>
+	</Texture>
+	<Texture name="GlueDark-art-RestoreCharacter" file="Interface/Custom_Glues/GlueDark/artRestoreCharacter" virtual="true">
+		<Size x="364" y="325"/>
+		<TexCoords left="0" right="1" top="0" bottom="0.892578125"/>
 	</Texture>
 
 	<Texture name="GlueDark_strikeThrough" file="Interface/Custom_Glues/GlueDark/strikeThrough" virtual="true">

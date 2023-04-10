@@ -783,7 +783,7 @@
 						self:SetOnMaximizedCallback(function() TradeSkillFrame_ToggleMode( false ) end)
 						self:SetOnMinimizedCallback(function() TradeSkillFrame_ToggleMode( true ) end)
 
-						MaximizeMinimizeButtonFrame_OnShow( self )
+						MaximizeMinimizeButtonFrameMixin.OnShow(self)
 					</OnShow>
 				</Scripts>
 			</Frame>

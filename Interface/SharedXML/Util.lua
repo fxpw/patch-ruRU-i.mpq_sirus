@@ -2,6 +2,9 @@ local select = select
 local UnitName = UnitName
 local SendAddonMessage = SendAddonMessage
 
+local S_IsDevClient = S_IsDevClient
+local S_IsInterfaceDevClient = S_IsInterfaceDevClient
+
 local LOCAL_ToStringAllTemp = {};
 function tostringall(...)
     local n = select('#', ...)
@@ -160,11 +163,17 @@ function isOneOf(val, ...)
 end
 
 function IsDevClient()
-	return S_IsDevClient and S_IsDevClient()
+	if type(S_IsDevClient) == "function" then
+		return S_IsDevClient()
+	end
+	return false
 end
 
 function IsInterfaceDevClient()
-	return S_IsInterfaceDevClient and S_IsInterfaceDevClient()
+	if type(S_IsInterfaceDevClient) == "function" then
+		return S_IsInterfaceDevClient()
+	end
+	return false
 end
 
 function PackNumber(n1, n2)
@@ -180,10 +189,4 @@ end
 
 function IsWideScreen()
 	return GetScreenWidth() > 1024
-end
-
-function GMError(err)
-	if C_Service:IsGM() then
-		geterrorhandler()(err)
-	end
 end

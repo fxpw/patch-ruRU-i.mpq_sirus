@@ -13,7 +13,7 @@ function DeclensionFrame_OnEvent(self, event, ...)
 		self.name = name;
 		if ( declensions ) then
 			self.names = { select(2, ...) };
-		end	
+		end
 
 		local errors = ...;
 		if ( errors ) then
@@ -33,8 +33,8 @@ function DeclensionFrame_Update()
 	local declensionButton, exampleButton, declensionBox;
 	local declension, example, declension;
 	local backdropColor = DEFAULT_TOOLTIP_COLOR;
-	
-	local name, race, class, level, zone, fileString, gender, ghost = GetCharacterInfo(CharacterSelect.selectedIndex);
+
+	local name, race, class, level, zone, fileString, gender, ghost = GetCharacterInfo(GetCharIDFromIndex(CharacterSelect.selectedIndex));
 	DeclensionFrameNominative:SetText(name);
 
 	local count = GetNumDeclensionSets(name, gender);
@@ -43,7 +43,7 @@ function DeclensionFrame_Update()
 	if ( not set ) then
 		set = 1;
 	end
-	
+
 	-- Save the count value so we know our max pages.
 	DeclensionFrame.count = count;
 
@@ -100,7 +100,7 @@ function DeclensionFrame_OnOkay()
 	end
 	if ( valid ) then
 		DeclensionFrame:Hide();
-		DeclineCharacter(CharacterSelect.selectedIndex, names[1], names[2], names[3], names[4], names[5]);
+		DeclineCharacter(GetCharIDFromIndex(CharacterSelect.selectedIndex), names[1], names[2], names[3], names[4], names[5]);
 	end
 end
 
@@ -127,7 +127,7 @@ function DeclensionFrame_Prev()
 	if ( not set ) then
 		set = 1;
 	end
-	
+
 	set = set - 1;
 	DeclensionFrame.set = set;
 	DeclensionFrame_Update();

@@ -1082,7 +1082,7 @@ function UnitPopup_HideButtons ()
 				shown = false;
 			end
 		elseif ( value == "LEAVE" ) then
-			if ( (inParty == 0) ) then
+			if ( (inParty == 0) or instanceType == "pvp" or instanceType == "arena" ) then
 				shown = false;
 			end
 		elseif ( value == "MOVE_PLAYER_FRAME" ) then
@@ -1232,6 +1232,8 @@ function UnitPopup_HideButtons ()
 			elseif ( isLeader == 0 and isAssistant == 1 and UnitIsRaidOfficer(dropdownMenu.unit) ) then
 				shown = false;
 			elseif ( isLeader == 1 and UnitIsUnit(dropdownMenu.unit, "player") ) then
+				shown = false;
+			elseif instanceType == "pvp" or instanceType == "arena" then
 				shown = false;
 			end
 		elseif ( value == "PVP_REPORT_AFK" ) then

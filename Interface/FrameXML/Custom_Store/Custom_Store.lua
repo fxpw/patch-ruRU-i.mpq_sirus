@@ -666,6 +666,46 @@ STORE_SPECIAL_OFFERS_3D = {
 			},
 		},
 	},
+	[61] = {
+		Name = "VD2023",
+		BorderColor = {0.733, 0.262, 0.494},
+		PopupCreature = 131352,
+		PopupModelInfo = {131352, -0.68, "BOTTOM", "TOP", 60, -15, 450, 180, 1},
+
+		Banner = {
+			TimerColor			= {0.733, 0.262, 0.494},
+			TitleColor			= {1, 0.8588, 0.9137},
+			NameColor			= {0.733, 0.262, 0.494},
+			DescriptionColor	= {1, 0.8588, 0.9137},
+			PriceLabelColor		= {0.733, 0.262, 0.494},
+			PriceColor			= {1, 0.9, 0.9},
+
+			SceneInfo = {
+				{131352, 429, 190, {"BOTTOMRIGHT", nil, "BOTTOMRIGHT", 70, 1}, -37, 1, {0, 0, -0.300}, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
+				{131232, 279, 180, {"BOTTOMRIGHT", nil, "BOTTOMRIGHT", 80, 0}, -37, 1, {0, 0, -0.300}, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
+			},
+		},
+	},
+	[62] = {
+		Name = "AF2023",
+		BorderColor = {0.071, 0.565, 1},
+		PopupCreature = 50027,
+		PopupModelInfo = {50027, -0.68, "BOTTOM", "TOP", 0, -15, 300, 220, 1},
+
+		Banner = {
+			TimerColor			= {0.733, 0.262, 0.494},
+			TitleColor			= {1, 0.8588, 0.9137},
+			NameColor			= {0.733, 0.262, 0.494},
+			DescriptionColor	= {1, 0.8588, 0.9137},
+			PriceLabelColor		= {0.733, 0.262, 0.494},
+			PriceColor			= {1, 0.9, 0.9},
+
+			SceneInfo = {
+				{50027, 285, 209, {"BOTTOMRIGHT", nil, "BOTTOMRIGHT", -85, 26}, -37, 1, {0, 0, 0}, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
+				{131198, 229, 90, {"BOTTOMRIGHT", nil, "BOTTOMRIGHT", 0, 7}, -37, 1, {0, 0, -0.300}, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
+			},
+		},
+	},
 }
 
 STORE_CACHE = C_Cache("SIRUS_STORE_CACHE", true)
@@ -1635,11 +1675,13 @@ function StoreSelectCategory( categoryID, subCategoryID )
 			for i, button in pairs(StoreFrame.CategoryFrames) do
 				local isHidden = button.data.Hidden;
 
-				if not isHidden and i ~= 1 then
-					if i == (categoryID + 1) then
-						button:SetPoint("TOPLEFT", StoreFrame.CategoryFrames[i-1], "BOTTOMLEFT", 0, -height)
-					else
-						button:SetPoint("TOPLEFT", StoreFrame.CategoryFrames[i-1], "BOTTOMLEFT", 0, 0)
+				if not isHidden or true then
+					if i ~= 1 then
+						if i == (categoryID + 1) then
+							button:SetPoint("TOPLEFT", StoreFrame.CategoryFrames[i-1], "BOTTOMLEFT", 0, -height)
+						else
+							button:SetPoint("TOPLEFT", StoreFrame.CategoryFrames[i-1], "BOTTOMLEFT", 0, 0)
+						end
 					end
 
 					prevFrame = button;
@@ -1650,7 +1692,7 @@ function StoreSelectCategory( categoryID, subCategoryID )
 			for i, button in pairs(StoreFrame.CategoryFrames) do
 				local isHidden = button.data.Hidden;
 
-				if not isHidden then
+				if not isHidden or true then
 					if i ~= 1 then
 						button:SetPoint("TOPLEFT", prevFrame, "BOTTOMLEFT", 0, 0)
 					end
@@ -6821,6 +6863,15 @@ function StoreOfferMixin:Show()
 		self:OnShow()
 	else
 		getmetatable(self).__index.Show(self)
+	end
+end
+
+function StoreOfferMixin:Purchase()
+	local data = self:GetParent().data
+	if STPRE_SPECIAL_OFFER_DETAILS_DATA[data.offerID] then
+		StoreSpecialOfferBannerDetails_OnClick()
+	else
+		StoreFrame_ProductBuy(data)
 	end
 end
 
