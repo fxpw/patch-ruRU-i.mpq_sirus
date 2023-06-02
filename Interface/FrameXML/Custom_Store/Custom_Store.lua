@@ -24,14 +24,13 @@ local STORE_SPECIAL_OFFER_INFO_DATA = {}
 local STORE_SPECIAL_OFFER_POPUP = {}
 local STPRE_SPECIAL_OFFER_DETAILS_DATA = {}
 local STORE_SMALL_SPECIAL_OFFER_BUFFER = {}
-local STORE_PRODUCT_MONEY_ICON = {"coins", "mmotop", "refer", "loyal"}
 
 local STORE_COLLECTIONS_CATEGORY_ID = 3
 local STORE_TRANSMOGRIFY_CATEGORY_ID = 6
 local STORE_SUBSCRIPTIONS_CATEGORY_ID = 5
 
 Enum.Store = {}
-Enum.Store.CurrenctType = Enum.CreateMirror({
+Enum.Store.CurrencyType = Enum.CreateMirror({
 	[1] = "Bonus",
 	[2] = "Vote",
 	[3] = "Referral",
@@ -291,7 +290,6 @@ STORE_SUB_CATEGORY_DATA[3] = {
 		Name = STORE_SUB_CATEGORY_3_3,
 		SubCategoryId = 3,
 		CategoryId = 3,
-		Disabled = true,
 		Callback = function() selectedSubCategoryID = 3; StoreSubCategorySelectClick() end
 	}
 }
@@ -845,11 +843,15 @@ local storeQueueTimer
 function Store_GetBalance(currencyIndex)
 	if type(currencyIndex) ~= "number" then
 		error(string.format("bad argument #1 to 'Store_GetBalance' (number expected, got %s)", type(currencyIndex)), 2)
-	elseif currencyIndex < 1 or currencyIndex > #Enum.Store.CurrenctType then
+	elseif currencyIndex < 1 or currencyIndex > #Enum.Store.CurrencyType then
 		error("bad argument #1 to 'Store_GetBalance' (index out of range)", 2)
 	end
 
-	return STORE_CURRENCY_INFO.BALANCE[currencyIndex] or 0
+	if IsInterfaceDevClient(true) then
+		return 10000
+	else
+		return STORE_CURRENCY_INFO.BALANCE[currencyIndex] or 0
+	end
 end
 
 function Store_GetLoyalityInfo()
@@ -1216,11 +1218,12 @@ function GetStoreProductVersion()
 end
 
 function GetStoreRenewalDiscounts()
-	return STORE_CACHE:Get("ASMSG_SHOP_COLLECTION_RENEWAL_PRICE") or 3, STORE_CACHE:Get("ASMSG_SHOP_TRANSMOG_RENEWAL_PRICE") or 10;
+	return STORE_CACHE:Get("ASMSG_SHOP_MOUNT_RENEWAL_PRICE") or 3, STORE_CACHE:Get("ASMSG_SHOP_PET_RENEWAL_PRICE") or 3, STORE_CACHE:Get("ASMSG_SHOP_ILLUSION_RENEWAL_PRICE") or 5, STORE_CACHE:Get("ASMSG_SHOP_TRANSMOG_RENEWAL_PRICE") or 10;
 end
 
-function GetStoreRolledItemsVersion(categoryId)
-	return PackNumber(STORE_CACHE:Get("MOUNT_RENEW_WEEK", 0), STORE_CACHE:Get("CATEGORY_DROP_COUNT"..categoryId, 0))
+function GetStoreRolledItemsVersion(categoryId, subCategoryId)
+	local cacheName = categoryId == 3 and subCategoryId == 3 and "CATEGORY_DROP_COUNT3_3" or "CATEGORY_DROP_COUNT"..categoryId;
+	return PackNumber(STORE_CACHE:Get("MOUNT_RENEW_WEEK", 0), STORE_CACHE:Get(cacheName, 0))
 end
 
 function StoreFrame_OnLoad( self, ... )
@@ -1230,6 +1233,7 @@ function StoreFrame_OnLoad( self, ... )
 	self:RegisterEvent("VARIABLES_LOADED")
 	self:RegisterEvent("PLAYER_LEVEL_UP")
 	self:RegisterEvent("PLAYER_LOGIN")
+	self:RegisterCustomEvent("SESSION_VARIABLES_LOADED")
 
 	self:SetScale(0.8)
 	SetPortraitToTexture(self.portrait, "Interface\\ICONS\\WoW_Store")
@@ -1368,6 +1372,8 @@ function StoreFrame_OnEvent( self, event, ... )
 		if unitLevel == 80 then
 			StoreCacheDataGenerate(true)
 		end
+	elseif event == "SESSION_VARIABLES_LOADED" then
+		table.wipe(CUSTOM_ROLLED_ITEMS_IN_SHOP);
 	end
 end
 
@@ -1502,7 +1508,7 @@ function StoreMoneyButton_OnEnter(self)
 	GameTooltip:SetText(data.Name)
 	GameTooltip:AddLine(data.Description, 1, 1, 1, 1)
 
-	if id == Enum.Store.CurrenctType.Loyality then
+	if id == Enum.Store.CurrencyType.Loyality then
 		local _, loyalCurrent, loyalMin, loyalMax = Store_GetLoyalityInfo();
 
 		if loyalMax > 0 then
@@ -1560,14 +1566,18 @@ end
 function StoreUpdateGenericButtons()
 	StoreFrame.TutorialButton:SetShown(selectedMoneyID == 1 and selectedCategoryID == 1)
 	StoreRefundButton:SetShown(selectedMoneyID == 1 and selectedCategoryID == 2 and #STORE_REFUND_DATA > 0);
-	StoreRefreshMountListButton:SetShown(selectedMoneyID == 1 and selectedCategoryID == 3 and (selectedSubCategoryID == 1 or selectedSubCategoryID == 2))
+	StoreRefreshMountListButton:SetShown(selectedMoneyID == 1 and selectedCategoryID == 3 and (selectedSubCategoryID == 1 or selectedSubCategoryID == 2 or selectedSubCategoryID == 3))
 	StoreShowAllItemCheckButton:SetShown(selectedMoneyID == 1 and (selectedCategoryID == 2 or selectedCategoryID == 6) and selectedSubCategoryID ~= 0)
 	StoreRefreshTransmogListButton:SetShown(selectedMoneyID == 1 and selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID)
 	StoreFrameLeftInset.ReferAFriendFrame:SetShown(selectedMoneyID == 3)
 	StoreFrameLeftInset.InviteFriendButton:SetShown(selectedMoneyID == 3)
 	StoreFrameLeftInset.ReferDetailsButton:SetShown(selectedMoneyID == 3)
 
-	StoreRenewTimeFrame:SetShown(StoreRefreshMountListButton:IsShown() or StoreRefreshTransmogListButton:IsShown());
+	local renewTimeshow = StoreRefreshMountListButton:IsShown() or StoreRefreshTransmogListButton:IsShown();
+	StoreRenewTimeFrame:SetShown(renewTimeshow);
+	if renewTimeshow then
+		StoreRenewTimeFrame_UpdateTime();
+	end
 end
 
 function StorePlayerTransmogRequest()
@@ -1999,9 +2009,11 @@ function StoreItemCardButton_OnEnter( self, ... )
 	self.Icon:SetSize(68 + 5, 68 + 5)
 	self.IconBorder:SetSize(78 + 5, 78 + 5)
 
-	self.Model:SetModelScale(1.1)
+	if not self.Model.isIllusions then
+		self.Model:SetModelScale(1.1)
+	end
 
-	self.Magnifier:SetShown(self.data.CreatureEntry)
+	self.Magnifier:SetShown(self.data.CreatureEntry or self.Model.isIllusions)
 end
 
 function StoreItemCardButton_OnLeave( self, ... )
@@ -2010,7 +2022,9 @@ function StoreItemCardButton_OnLeave( self, ... )
 	self.Icon:SetSize(68, 68)
 	self.IconBorder:SetSize(78, 78)
 
-	self.Model:SetModelScale(1)
+	if not self.Model.isIllusions then
+		self.Model:SetModelScale(1)
+	end
 
 	self.Magnifier:Hide()
 end
@@ -2058,9 +2072,17 @@ function StoreItemCardFrame_OnHide( self, ... )
 	STORE_PRODUCT_LIST = {}
 end
 
-function StoreItemCardButtonMagnifyingGlass_OnClick( self, ... )
-	StoreModelPreviewFrame.data = self:GetParent().data
-	StoreModelPreviewFrame:Show()
+function StoreItemCardButtonMagnifyingGlass_OnClick(self)
+	local parent = self:GetParent();
+	local data = parent.data;
+	if parent.Model.isIllusions then
+		if data and data.Entry then
+			DressUpItemLink(select(2, GetItemInfo(data.Entry)));
+		end
+	else
+		StoreModelPreviewFrame.data = data
+		StoreModelPreviewFrame:Show()
+	end
 end
 
 function StoreItemCardButtonMagnifyingGlass_OnEnter( self, ... )
@@ -2138,7 +2160,10 @@ function StoreConfirmationFrame_OnShow( self, ... )
 	if self.data.DescriptionText then
 		self.NoticeFrame.Notice:SetText(self.data.DescriptionText)
 	else
-		if selectedCategoryID == 7 or (selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID and selectedMoneyID == 1) then
+		if (selectedCategoryID == 7)
+		or (selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID and selectedMoneyID == 1)
+		or (selectedCategoryID == STORE_COLLECTIONS_CATEGORY_ID and selectedSubCategoryID == 3 and selectedMoneyID == 1)
+		then
 			self.NoticeFrame.Notice:SetFormattedText("%s\n\n%s", STORE_CONFIRM_NOTICE_WARNING, STORE_CONFIRM_NOTICE)
 		else
 			self.NoticeFrame.Notice:SetText(STORE_CONFIRM_NOTICE)
@@ -3564,7 +3589,11 @@ function StoreCloseAllFrame()
 	end
 end
 
-function StoreShowPurchaseAlert( name, texture )
+function StoreShowPurchaseAlert(name, texture, itemID)
+	if itemID and BattlePassFrame:IsShown() and (C_BattlePass.IsPremiumItem(itemID) or C_BattlePass.IsExperienceItem(itemID)) then
+		return
+	end
+
 	StorePurchaseAlertFrame:Show()
 
 	StorePurchaseAlertFrame.Icon:SetTexture(texture)
@@ -3572,6 +3601,11 @@ function StoreShowPurchaseAlert( name, texture )
 end
 
 function StoreShowErrorFrame( title, text, parent, dontHide )
+	if BattlePassFrame:IsShown() then
+		FireCustomClientEvent("BATTLEPASS_OPERATION_ERROR", text)
+		return
+	end
+
 	if not parent then
 		StoreErrorFrame:SetParent("StoreFrame")
 	else
@@ -3643,7 +3677,7 @@ function StoreConfirmationFrame_Update(self)
 
 	local giftOverride
 	if selectedMoneyID == 1 and selectedCategoryID ~= 5 and self.data.Entry then
-		if Store_GetBalance(Enum.Store.CurrenctType.Loyality) >= 30 then
+		if Store_GetBalance(Enum.Store.CurrencyType.Loyality) >= 30 then
 			StoreConfirmationSendGiftCheckButton:SetShown(true)
 
 			if giftChecked and not (self.data.Flags and bit.band(self.data.Flags, STORE_ITEM_FLAG_ITEM_GIFT) == STORE_ITEM_FLAG_ITEM_GIFT) then
@@ -3756,6 +3790,8 @@ function StoreFrame_UpdateItemCard()
 
 	StoreItemCardFrameNavigationBarPrevPageButton:SetEnabled(selectedItemCardPage ~= 1)
 
+	local isIllusions = selectedCategoryID == 3 and selectedSubCategoryID == 3;
+
 	for i = 1, numButtons do
 		local button = _G[string.format("%s%d", buttonName, i)]
 		local data = STORE_PRODUCT_LIST[i + numButtons * (selectedItemCardPage - 1)]
@@ -3801,14 +3837,16 @@ function StoreFrame_UpdateItemCard()
 				button.DiscountText:Hide()
 			end
 
-			if data.CreatureEntry then
+			if data.CreatureEntry or isIllusions then
 				button.IconBorder:Hide()
 				button.Icon:Hide()
-				button.Model:Show()
 
-				button.Model:SetCreature(data.CreatureEntry)
+				button.Model.isIllusions = isIllusions;
+				StoreFrame_UpdateItemCardModel(button.Model);
+				button.Model:Show();
 			else
 				button.Model:Hide()
+				button.Model.creature = nil;
 				button.IconBorder:Show()
 				button.Icon:Show()
 
@@ -3823,6 +3861,48 @@ function StoreFrame_UpdateItemCard()
 	end
 end
 
+function StoreFrame_GetIllusionInfoByEntry(entry)
+	local _, enchantID = C_TransmogCollection.GetIllusionInfoByItemID(entry);
+	if enchantID then
+		local itemID = (GetInventoryTransmogID("player", 16) or GetInventoryItemID("player", 16)) or C_TransmogCollection.GetFallbackWeaponAppearance();
+		if itemID then
+			return itemID, enchantID, string.format("item:%d:%d", itemID, enchantID);
+		end
+	end
+end
+
+function StoreFrame_UpdateItemCardModel(self)
+	local button = self:GetParent();
+	local data = button.data;
+	if not data then
+		return;
+	end
+
+	self:SetPosition(0, 0, 0);
+	self:ClearModel();
+
+	if self.isIllusions then
+		self.useOnUpdateModel = true;
+
+		local itemID, enchantID, dressUpLink = StoreFrame_GetIllusionInfoByEntry(data.Entry);
+		if itemID and enchantID and dressUpLink then
+			DummyWardrobeUnitModel:Dress();
+			self:Undress();
+
+			local cameraID = C_TransmogCollection.GetAppearanceCameraIDBySource(itemID);
+			self:SetCreature(413);
+			Model_ApplyUICamera(self, cameraID);
+			self:TryOn(dressUpLink);
+			self:SetModelScale(1);
+		end
+	elseif data.CreatureEntry then
+		self.useOnUpdateModel = false;
+
+		self:SetRotation(0.40, false);
+		self:SetCreature(data.CreatureEntry);
+	end
+end
+
 function StoreFrame_UpdateItemList()
 	local scrollFrame = StoreItemListScrollFrame
 	scrollFrame.ScrollBar.doNotHide = true
@@ -3832,7 +3912,7 @@ function StoreFrame_UpdateItemList()
 	local button, index
 	local numProduct = #STORE_PRODUCT_LIST
 	local displayedHeight = 0
-	local currentLoyal = Store_GetBalance(Enum.Store.CurrenctType.Loyality)
+	local currentLoyal = Store_GetBalance(Enum.Store.CurrencyType.Loyality)
 
 	for i = 1, numButtons do
 		button = buttons[i]
@@ -4047,7 +4127,7 @@ function StoreDataTableCopy(useFilter)
 	StoreItemListScrollFrame.ScrollBar:SetValue(0)
 
 	if selectedMoneyID == 4 then
-		local currentLoyal = Store_GetBalance(Enum.Store.CurrenctType.Loyality)
+		local currentLoyal = Store_GetBalance(Enum.Store.CurrencyType.Loyality)
 		local numProduct 	= #STORE_PRODUCT_LIST
 
 		if currentLoyal and numProduct > 0 then
@@ -4101,13 +4181,13 @@ function StoreItemListUpdate()
 			if not storage.unitFaction or storage.unitFaction ~= unitFaction then
 				clearStorage()
 				STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][selectedShowAllItemCheckBox].unitFaction = unitFaction
-				STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][selectedShowAllItemCheckBox].rolledItemsVersion = GetStoreRolledItemsVersion(selectedCategoryID)
+				STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][selectedShowAllItemCheckBox].rolledItemsVersion = GetStoreRolledItemsVersion(selectedCategoryID, selectedSubCategoryID)
 
 				StoreRequestShopItems( selectedMoneyID, selectedCategoryID, selectedSubCategoryID, selectedShowAllItemCheckBox )
 			else
-				if ((selectedCategoryID == 3 and (selectedSubCategoryID == 1 or selectedSubCategoryID == 2)) or selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID) and (not storage.rolledItemsVersion or storage.rolledItemsVersion ~= GetStoreRolledItemsVersion(selectedCategoryID)) then
+				if ((selectedCategoryID == 3 and (selectedSubCategoryID == 1 or selectedSubCategoryID == 2 or selectedSubCategoryID == 3)) or selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID) and (not storage.rolledItemsVersion or storage.rolledItemsVersion ~= GetStoreRolledItemsVersion(selectedCategoryID, selectedSubCategoryID)) then
 					clearStorage()
-					STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][selectedShowAllItemCheckBox].rolledItemsVersion = GetStoreRolledItemsVersion(selectedCategoryID)
+					STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][selectedShowAllItemCheckBox].rolledItemsVersion = GetStoreRolledItemsVersion(selectedCategoryID, selectedSubCategoryID)
 
 					StoreRequestShopItems( selectedMoneyID, selectedCategoryID, selectedSubCategoryID, selectedShowAllItemCheckBox )
 				else
@@ -4626,7 +4706,8 @@ local s_qualityToAtlasColorName = {
 	[Enum.ItemQuality.Rare] = "blue",
 	[Enum.ItemQuality.Epic] = "purple",
 	[Enum.ItemQuality.Legendary] = "orange",
-	[Enum.ItemQuality.Artifact] = "artifact"
+	[Enum.ItemQuality.Artifact] = "artifact",
+	[Enum.ItemQuality.Heirloom] = "artifact",
 };
 
 function StoreSortButtonSearchBox_ShowSearchOptions(self, hideOptionName)
@@ -5904,7 +5985,11 @@ function StoreRenewTimeFrame_UpdateTime()
 
 	local renewTime;
 	if selectedCategoryID == 3 then
-		renewTime = STORE_CACHE:Get("MOUNT_RENEW_TIME_LEFT", -1);
+		if selectedSubCategoryID == 3 then
+			renewTime = STORE_CACHE:Get("T_MOG_RENEW_TIME_LEFT", -1);
+		else
+			renewTime = STORE_CACHE:Get("MOUNT_RENEW_TIME_LEFT", -1);
+		end
 	elseif selectedCategoryID == 6 then
 		renewTime = STORE_CACHE:Get("T_MOG_RENEW_TIME_LEFT", -1);
 	end
@@ -5922,8 +6007,9 @@ function StoreRenewTimeFrame_UpdateTime()
 
 		if renewWeeks ~= 0 then
 			STORE_CACHE:Set("MOUNT_RENEW_WEEK", 0);
-			STORE_CACHE:Set("CATEGORY_DROP_COUNT"..3, 1);
-			STORE_CACHE:Set("CATEGORY_DROP_COUNT"..6, 1);
+			STORE_CACHE:Set("CATEGORY_DROP_COUNT3", 1);
+			STORE_CACHE:Set("CATEGORY_DROP_COUNT3_3", 1);
+			STORE_CACHE:Set("CATEGORY_DROP_COUNT6", 1);
 		end
 
 		frame:Hide();
@@ -6003,10 +6089,10 @@ function EventHandler:ASMSG_SHOP_BALANCE_RESPONSE( msg )
 	loyalMax 		= tonumber(loyalMax)
 	loyalCurrent 	= tonumber(loyalCurrent)
 
-	STORE_CURRENCY_INFO.BALANCE[Enum.Store.CurrenctType.Bonus] = bonus
-	STORE_CURRENCY_INFO.BALANCE[Enum.Store.CurrenctType.Vote] = vote
-	STORE_CURRENCY_INFO.BALANCE[Enum.Store.CurrenctType.Referral] = refer
-	STORE_CURRENCY_INFO.BALANCE[Enum.Store.CurrenctType.Loyality] = loyalLevel
+	STORE_CURRENCY_INFO.BALANCE[Enum.Store.CurrencyType.Bonus] = bonus
+	STORE_CURRENCY_INFO.BALANCE[Enum.Store.CurrencyType.Vote] = vote
+	STORE_CURRENCY_INFO.BALANCE[Enum.Store.CurrencyType.Referral] = refer
+	STORE_CURRENCY_INFO.BALANCE[Enum.Store.CurrencyType.Loyality] = loyalLevel
 
 	STORE_CURRENCY_INFO.LOYALITY.min = loyalMin
 	STORE_CURRENCY_INFO.LOYALITY.max = loyalMax
@@ -6113,32 +6199,28 @@ end
 
 function EventHandler:ASMSG_SHOP_BUY_ITEM_RESPONSE( msg )
 	local Response, value = strsplit(":", msg)
-	local parent
-
-	if BattlePassFrame and BattlePassFrame:IsShown() then
-		parent = BattlePassFrame
-	end
 
 	if Response == "ERROR_RECEIVER_NOT_FOUND" then
-		StoreShowErrorFrame(STORE_ERROR, STORE_BUY_ITEM_ERROR_1, parent)
+		StoreShowErrorFrame(STORE_ERROR, STORE_BUY_ITEM_ERROR_1)
 	elseif Response == "ERROR_CANNOT_GIFT_TO_SELF" then
-		StoreShowErrorFrame(STORE_ERROR, STORE_BUY_ITEM_ERROR_2, parent)
+		StoreShowErrorFrame(STORE_ERROR, STORE_BUY_ITEM_ERROR_2)
 	elseif Response == "ERROR_NOT_AVAILABLE_FOR" then
-		StoreShowErrorFrame(STORE_ERROR, string.format(STORE_BUY_ITEM_ERROR_3, value), parent, not parent and true or nil)
+		StoreShowErrorFrame(STORE_ERROR, string.format(STORE_BUY_ITEM_ERROR_3, value))
 
 		StoreRequestShopItems()
 	elseif Response == "ERROR_LOYALTY_ALREADY_TAKEN" then
-		StoreShowErrorFrame(STORE_ERROR, ERROR_LOYALTY_ALREADY_TAKEN, parent)
+		StoreShowErrorFrame(STORE_ERROR, ERROR_LOYALTY_ALREADY_TAKEN)
 	elseif Response == "ERROR_BALANCE" then
 		if selectedMoneyID == 4 then
-			StoreShowErrorFrame(STORE_ERROR, STORE_BUY_ITEM_ERROR_4, parent)
+			StoreShowErrorFrame(STORE_ERROR, STORE_BUY_ITEM_ERROR_4)
 		else
-			StoreShowErrorFrame(STORE_ERROR, STORE_BUY_ITEM_ERROR_5, parent)
+			StoreShowErrorFrame(STORE_ERROR, STORE_BUY_ITEM_ERROR_5)
 		end
 	elseif Response == "OK" then
-		local name, _, _, _, _, _, _, _, _, texture = GetItemInfo(tonumber(value))
-		StoreShowPurchaseAlert(name, texture)
+		local itemID = tonumber(value)
+		local name, _, _, _, _, _, _, _, _, texture = GetItemInfo(itemID)
 
+		StoreShowPurchaseAlert(name, texture, itemID)
 		SendServerMessage("ACMSG_SHOP_REFUNDABLE_PURCHASE_LIST_REQUEST")
 
 		if selectedRemoveOffer then
@@ -6500,8 +6582,9 @@ function EventHandler:ASMSG_SHOP_ROLLED_TEMS_INFO( msg )
 
 	if cacheRenewWeeks ~= renewWeeks then
 		STORE_CACHE:Set("MOUNT_RENEW_WEEK", renewWeeks)
-		STORE_CACHE:Set("CATEGORY_DROP_COUNT"..3, 1)
-		STORE_CACHE:Set("CATEGORY_DROP_COUNT"..6, 1)
+		STORE_CACHE:Set("CATEGORY_DROP_COUNT3", 1)
+		STORE_CACHE:Set("CATEGORY_DROP_COUNT3_3", 1)
+		STORE_CACHE:Set("CATEGORY_DROP_COUNT6", 1)
 
 		local moneyID = 1
 		if STORE_PRODUCT_CACHE[moneyID] and STORE_PRODUCT_CACHE[moneyID][STORE_COLLECTIONS_CATEGORY_ID] then
@@ -6583,13 +6666,21 @@ function EventHandler:ASMSG_SHOP_RENEW_ITEMS( msg )
 	local answer = C_Split(msg, ":")
 	local responseID = tonumber(answer[1])
 	local categoryId = tonumber(answer[2])
+	local subCategoryId = tonumber(answer[3])
 
 	if responseID == 0 then
-		local cacheDropsCount = STORE_CACHE:Get("CATEGORY_DROP_COUNT"..categoryId, 0)
-		STORE_CACHE:Set("CATEGORY_DROP_COUNT"..categoryId, cacheDropsCount + 1)
+		local cacheName = categoryId == 3 and subCategoryId == 3 and "CATEGORY_DROP_COUNT3_3" or "CATEGORY_DROP_COUNT"..categoryId;
+		local cacheDropsCount = STORE_CACHE:Get(cacheName, 0)
+		STORE_CACHE:Set(cacheName, cacheDropsCount + 1)
 
 		if categoryId == STORE_COLLECTIONS_CATEGORY_ID then
-			STORE_CACHE:Set("ASMSG_SHOP_COLLECTION_RENEWAL_PRICE", 3);
+			if subCategoryId == 3 then
+				STORE_CACHE:Set("ASMSG_SHOP_ILLUSION_RENEWAL_PRICE", 5);
+			elseif subCategoryId == 2 then
+				STORE_CACHE:Set("ASMSG_SHOP_PET_RENEWAL_PRICE", 3);
+			elseif subCategoryId == 1 then
+				STORE_CACHE:Set("ASMSG_SHOP_MOUNT_RENEWAL_PRICE", 3);
+			end
 		elseif categoryId == STORE_TRANSMOGRIFY_CATEGORY_ID then
 			STORE_CACHE:Set("ASMSG_SHOP_TRANSMOG_RENEWAL_PRICE", 10);
 		end
@@ -6665,11 +6756,38 @@ function StoreRequestShopItems( moneyID, categoryID, subCategoryID, ignireFilter
 end
 
 function EventHandler:ASMSG_SHOP_VERSION(msg)
-	local version, collectionRenewalPrice, transmogRenewalPrice = strsplit(":", msg);
-
+	local version, mountRenewalPrice, petRenewalPrice, illusionRenewalPrice, transmogRenewalPrice = strsplit(":", msg);
 	STORE_CACHE:Set("ASMSG_SHOP_VERSION", tonumber(version));
-	STORE_CACHE:Set("ASMSG_SHOP_COLLECTION_RENEWAL_PRICE", tonumber(collectionRenewalPrice) or 3);
+	STORE_CACHE:Set("ASMSG_SHOP_MOUNT_RENEWAL_PRICE", tonumber(mountRenewalPrice) or 3);
+	STORE_CACHE:Set("ASMSG_SHOP_PET_RENEWAL_PRICE", tonumber(petRenewalPrice) or 3);
+	STORE_CACHE:Set("ASMSG_SHOP_ILLUSION_RENEWAL_PRICE", tonumber(illusionRenewalPrice) or 5);
 	STORE_CACHE:Set("ASMSG_SHOP_TRANSMOG_RENEWAL_PRICE", tonumber(transmogRenewalPrice) or 10);
+end
+
+CUSTOM_ROLLED_ITEMS_IN_SHOP = {};
+
+function EventHandler:ASMSG_ROLLED_ITEMS_IN_SHOP(msg)
+	for _, subCategoryMsg in ipairs({string.split(";", (msg:gsub(";$", "")))}) do
+		local subCategoryID, subCategoryData = string.split(":", subCategoryMsg, 2);
+		subCategoryID = tonumber(subCategoryID);
+
+		if subCategoryID and subCategoryData and subCategoryData ~= "" then
+			for _, data in ipairs({string.split("|", (subCategoryData:gsub("|$", "")))}) do
+				local hash, currency, price, productID = strsplit(",", (data:gsub(",$", "")));
+				currency, price, productID = tonumber(currency), tonumber(price), tonumber(productID);
+
+				if hash and currency and price and productID then
+					CUSTOM_ROLLED_ITEMS_IN_SHOP[hash] = {
+						currency = currency,
+						price = price,
+						productID = productID
+					};
+				end
+			end
+		end
+	end
+
+	FireCustomClientEvent("STORE_ROLLED_ITEMS_IN_SHOP");
 end
 
 StoreTransmogrifySubCategoryFrameMixin = {}

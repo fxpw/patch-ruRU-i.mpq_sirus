@@ -182,10 +182,6 @@ function GetGuildCharacterCategory( name )
 	end
 end
 
--- ##################################################
--- Response: ASMSG_GUILD_SET_CAN_RENAME
--- ##################################################
-
 function EventHandler:ASMSG_GUILD_SET_CAN_RENAME( msg )
 	local can, use = strsplit(":", msg)
 
@@ -199,4 +195,10 @@ function EventHandler:ASMSG_GUILD_SET_CAN_RENAME( msg )
 	if can and use then
 		StaticPopup_Show("SIRUS_RENAME_GUILD")
 	end
+end
+
+function EventHandler:ASMSG_GUILD_REPLACE_GUILD_MASTER(msg)
+	local oldGM, newGM = string.split(",", msg)
+	AddChatTyppedMessage("SYSTEM", string.format(ERR_GUILD_LEADER_REPLACED, oldGM, newGM))
+	FireCustomClientEvent("GUILD_REPLACE_GUILD_MASTER")
 end

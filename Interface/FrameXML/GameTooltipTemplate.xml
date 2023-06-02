@@ -450,7 +450,7 @@
 		</Scripts>
 		<BarTexture name="$parentTexture" file="Interface\TargetingFrame\UI-TargetingFrame-BarFill"/>
 	</StatusBar>
-	
+
 	<!-- Large status bar with 2 dividers -->
 	<Frame name="TooltipProgressBarTemplate" virtual="true">
 		<Size x="219" y="25"/>

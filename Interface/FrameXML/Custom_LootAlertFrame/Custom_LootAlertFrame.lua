@@ -1,9 +1,3 @@
---	Filename:	Custom_LootAlertFrame.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 LOOTALERT_NUM_BUTTONS = 4
 
 LootAlertFrameMixIn = {}
@@ -31,6 +25,7 @@ function LootAlertFrameMixIn:AddAlert( name, link, quality, texture, count, igno
 	end
 
 	table.insert(self.alertQueue, {name = name, link = link, quality = quality, texture = texture, count = count, tooltipText = tooltipText})
+	self:Show()
 end
 
 function LootAlertFrameMixIn:CreateAlert()
@@ -39,16 +34,11 @@ function LootAlertFrameMixIn:CreateAlert()
 			local button = self.alertButton[i]
 
 			if button and not button:IsShown() then
-				local data = table.remove(self.alertQueue, 1)
-
-				button.data = data
-
+				button.data = table.remove(self.alertQueue, 1)
 				return button
 			end
 		end
 	end
-
-	return nil
 end
 
 function LootAlertFrameMixIn:AdjustAnchors()
@@ -92,15 +82,19 @@ function LootAlertFrame_OnEvent( self, event, arg1 )
 		end
 
 		if string.find(arg1, string.sub(LOOT_ITEM_SELF, 1, 21)) or string.find(arg1, string.sub(LOOT_ITEM_CREATED_SELF, 1, 21)) then
-			local itemEntry, count = string.match(arg1, "|Hitem:(%d+).*x(%d+)")
+			local itemID, count = string.match(arg1, "|Hitem:(%d+).*x(%d+)")
 
-			if not itemEntry then
-				itemEntry = string.match(arg1, "|Hitem:(%d+)")
+			if not itemID then
+				itemID = string.match(arg1, "|Hitem:(%d+)")
 			end
 
-			if itemEntry then
-				local name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, texture, vendorPrice = GetItemInfo(itemEntry)
+			itemID = tonumber(itemID)
+			if itemID then
+				if itemID and BattlePassFrame:IsShown() and C_BattlePass.IsBattlePassItem(itemID) then
+					return
+				end
 
+				local name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, texture, vendorPrice = GetItemInfo(itemID)
 				if link then
 					self:AddAlert(name, link, quality, texture, count)
 				end
@@ -116,19 +110,23 @@ function LootAlertFrame_OnUpdate( self, elapsed )
 		local alert = self:CreateAlert()
 
 		if alert then
-			alert:ClearAllPoints()
 			alert:Show()
 			alert.animIn:Play()
-
 			self:AdjustAnchors()
 		end
 
 		self.updateTime = 0.30
+
+		if #self.alertQueue == 0 then
+			self:Hide()
+		end
 	end
 end
 
 function LootAlertButtonTemplate_OnLoad( self )
 	self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+	self.IconBorder:SetAtlas("loottoast-itemborder-green")
+	self.glow:SetAtlas("loottoast-glow", true)
 	table.insert(LootAlertFrameMixIn.alertButton, self)
 end
 
@@ -156,7 +154,7 @@ function LootAlertButtonTemplate_OnShow( self )
 		end
 
 		if LOOT_BORDER_BY_QUALITY[data.quality] then
-			self.IconBorder:SetTexCoord(unpack(LOOT_BORDER_BY_QUALITY[data.quality]))
+			self.IconBorder:SetAtlas(LOOT_BORDER_BY_QUALITY[data.quality])
 		end
 
 		self.hyperLink 		= data.link
@@ -176,7 +174,9 @@ function LootAlertButtonTemplate_OnHide( self )
 	self.glow.animIn:Stop()
 	self.shine.animIn:Stop()
 
-	wipe(self.data)
+	if self.data then
+		wipe(self.data)
+	end
 
 	LootAlertFrameMixIn:AdjustAnchors()
 end
@@ -202,37 +202,39 @@ function LootAlertButtonTemplate_OnEnter( self )
 	GameTooltip:Show()
 end
 
---lua EventHandler:ASMSG_SHOW_LOOT_POPUP("-3:100|")
-
 function EventHandler:ASMSG_SHOW_LOOT_POPUP( msg )
 	local splitStorage = C_Split(msg, "|")
 
 	for _, itemData in pairs(splitStorage) do
 		local itemSplitData = C_Split(itemData, ":")
 
-		local itemEntry = tonumber(itemSplitData[1])
+		local itemID = tonumber(itemSplitData[1])
 		local itemCount = tonumber(itemSplitData[2])
 
-		local name, link, quality, _, _, _, _, _, _, texture = GetItemInfo(itemEntry)
+		if itemID and BattlePassFrame:IsShown() and C_BattlePass.IsBattlePassItem(itemID) then
+			return
+		end
+
+		local name, link, quality, _, _, _, _, _, _, texture = GetItemInfo(itemID)
 		local unitFaction = UnitFactionGroup("player") or "Alliance"
 		local tooltipText
 
-		if itemEntry == -1 then
+		if itemID == -1 then
 			name 		= HONOR_POINTS
 			texture 	= "Interface\\ICONS\\PVPCurrency-Honor-"..unitFaction
 			quality 	= LE_ITEM_QUALITY_EPIC
 			tooltipText = TOOLTIP_HONOR_POINTS
-		elseif itemEntry == -2 then
+		elseif itemID == -2 then
 			name 		= ARENA_POINTS
 			texture 	= "Interface\\ICONS\\PVPCurrency-Conquest-"..unitFaction
 			quality 	= LE_ITEM_QUALITY_EPIC
 			tooltipText = TOOLTIP_ARENA_POINTS
-		elseif itemEntry == -3 then
+		elseif itemID == -3 then
 			name 		= STORE_COINS_BUTTON_TOOLTIP_LABEL
 			texture 	= "Interface\\Store\\coins"
 			quality 	= LE_ITEM_QUALITY_LEGENDARY
 			tooltipText = STORE_COINS_BUTTON_TOOLTIP
-		elseif itemEntry == -4 then
+		elseif itemID == -4 then
 			name 		= STORE_VOTE_COIN_LABEL
 			texture 	= "Interface\\Store\\mmotop"
 			quality 	= LE_ITEM_QUALITY_LEGENDARY
@@ -240,7 +242,7 @@ function EventHandler:ASMSG_SHOW_LOOT_POPUP( msg )
 		end
 
 		if name then
-			LootAlertFrameMixIn:AddAlert(name, link, quality, texture, itemCount, true, tooltipText)
+			LootAlertFrame:AddAlert(name, link, quality, texture, itemCount, true, tooltipText)
 		end
 	end
 end

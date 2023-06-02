@@ -1181,7 +1181,7 @@
 										</Texture>
 									</Layer>
 									<Layer level="ARTWORK">
-										<FontString name="$parentLevel" parentKey="Level" inherits="GameFontNormal13" text="-1">
+										<FontString name="$parentLevel" parentKey="Level" inherits="GameFontNormal13" text="0">
 											<Anchors>
 												<Anchor point="CENTER" relativeTo="$parentShadow" x="0" y="0" />
 											</Anchors>
@@ -1197,35 +1197,19 @@
 										self.Wreath:SetAtlas("honorsystem-prestige-smallwreath")
 										self.Shadow:SetAtlas("GarMission_ChestPercentageShadow")
 									</OnLoad>
-									<OnShow>
-										local isDisabled = BattlePassFrame:GetEndTime() == 0 and not BattlePassFrame:HasNotReceivedRewards();
-										if isDisabled then
-											self:GetParent():Disable()
-										end
-
-										local textColor = isDisabled and GRAY_FONT_COLOR or NORMAL_FONT_COLOR
-
-										self:GetParent().Name:SetTextColor(textColor.r, textColor.g, textColor.b)
-
-										self:GetParent().Icon:SetDesaturated(isDisabled)
-										self.Wreath:SetDesaturated(isDisabled)
-										self:GetParent().Ring:SetDesaturated(isDisabled)
-										self:GetParent().Background:SetDesaturated(isDisabled)
-
-										self.Wreath:SetAlpha(BattlePassFrame:IsBuyPremium() and 1 or 0.3)
-
-										local level = BattlePassFrame:GetLevelInfo()
-										self.Level:SetText(level)
-									</OnShow>
 								</Scripts>
 							</Frame>
 						</Frames>
 						<Scripts>
 							<OnLoad>
-								SetPortraitToTexture(self.Icon, "Interface\\Icons\\Battlepas_64x64")
+								Mixin(self, PVPFrameBattlePassButtonMixin)
+								self:OnLoad()
 							</OnLoad>
+							<OnEvent>
+								self:OnEvent(event, ...)
+							</OnEvent>
 							<OnClick>
-								BattlePassFrame:Show()
+								self:OnClick(button)
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -1692,7 +1676,7 @@
 							<Anchor point="TOPLEFT" x="220" y="-22"/>
 						</Anchors>
 						<Frames>
-							<Frame parentKey="BottomInset" name="$parentBottomInset" inherits="InsetFrameTemplate4">
+							<Frame name="$parentBottomInset" parentKey="BottomInset" inherits="InsetFrameTemplate4">
 								<Size x="333" y="238"/>
 								<Anchors>
 									<Anchor point="TOP" relativeTo="PVPQueueFrameCapTopFrame" relativePoint="BOTTOM" x="0" y="-32" />
@@ -1926,7 +1910,7 @@
 									</Frame>
 								</Frames>
 							</Frame>
-							<Frame parentKey="NoSeason" inherits="GlowBoxTemplate" hidden="true" toplevel="true" enableMouse="true">
+							<Frame name="$parentNoSeason" parentKey="NoSeason" inherits="GlowBoxTemplate" hidden="true" toplevel="true" enableMouse="true">
 								<Anchors>
 									<Anchor point="TOPLEFT" relativeTo="$parentBottomInset" x="6" y="-3" />
 									<Anchor point="BOTTOMRIGHT" x="-5" y="10"/>
@@ -1947,8 +1931,22 @@
 										</FontString>
 									</Layer>
 								</Layers>
+								<Frames>
+									<Button name="$parentCloseButton" parentKey="CloseButton" inherits="UIPanelCloseButtonNoScripts">
+										<Anchors>
+											<Anchor point="TOPRIGHT" x="0" y="0"/>
+										</Anchors>
+										<Scripts>
+											<OnClick>
+												local parent = self:GetParent()
+												C_CVar:SetSessionCVar("NO_SEASON_ALERT", 1)
+												parent:Hide()
+											</OnClick>
+										</Scripts>
+									</Button>
+								</Frames>
 							</Frame>
-							<Button parentKey="JoinButton" name="ConquestJoinButton" inherits="MagicButtonTemplate" text="BATTLEFIELD_JOIN" motionScriptsWhileDisabled="true">
+							<Button name="ConquestJoinButton" parentKey="JoinButton" inherits="MagicButtonTemplate" text="BATTLEFIELD_JOIN" motionScriptsWhileDisabled="true">
 								<Size x="116" y="22"/>
 								<Anchors>
 									<Anchor point="BOTTOM" y="5"/>
@@ -3225,13 +3223,13 @@
 		</Scripts>
 	</Frame>
 
-	<Frame name="BattlegroundInviteFrame" toplevel="true" frameStrata="TOOLTIP" parent="UIParent" setAllPoints="true" hidden="true">
+	<Frame name="BattlegroundInviteFrame" toplevel="true" frameStrata="TOOLTIP" parent="UIParent" hidden="true">
+		<Size x="560" y="210"/>
+		<Anchors>
+			<Anchor point="TOP" x="0" y="-100" />
+		</Anchors>
 		<Frames>
-			<Frame name="$parentPopupFrame" parentKey="PopupFrame" enableMouse="true">
-				<Size x="560" y="210"/>
-				<Anchors>
-					<Anchor point="TOP" x="0" y="-100" />
-				</Anchors>
+			<Frame name="$parentPopupFrame" parentKey="PopupFrame" setAllPoints="true" enableMouse="true">
 				<Layers>
 					<Layer level="BORDER">
 						<Texture name="$parentBody" parentKey="Body">
@@ -3311,7 +3309,7 @@
 						<HitRectInsets left="7" right="6" top="7" bottom="6"/>
 						<Scripts>
 							<OnClick>
-								self:GetParent():GetParent():Abandon()
+								self:GetParent():GetParent():ShowAbandonDialog()
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -3368,7 +3366,7 @@
 				<Alpha change="-1" duration="1" order="1" smoothing="IN">
 					<Scripts>
 						<OnFinished>
-							self:GetParent():GetParent():Hide()
+							StaticPopupSpecial_Hide(self:GetParent():GetParent())
 						</OnFinished>
 					</Scripts>
 				</Alpha>
@@ -3377,7 +3375,7 @@
 				<Alpha change="-1" duration="0.5" order="1" smoothing="IN">
 					<Scripts>
 						<OnFinished>
-							self:GetParent():GetParent():Hide()
+							StaticPopupSpecial_Hide(self:GetParent():GetParent())
 						</OnFinished>
 					</Scripts>
 				</Alpha>

@@ -62,33 +62,28 @@ local function Method_SetEnabled( self, ... )
 	end
 end
 
-local function Method_SetRemainingTime( self, _time, daysformat )
-	local time = _time
-	local dayInSeconds = 86400
-	local days = ""
-
-	self:SetText("")
-
-	if type(time) ~= "number" then
-		-- printc("EROR: Method_SetRemainingTime time is not number. Frame "..self:GetName())
+local SECONDS_PER_DAY = 86400
+local function Method_SetRemainingTime(self, seconds, daysformat)
+	if type(seconds) ~= "number" then
+		self:SetText("")
 		return
 	end
 
 	if daysformat then
-		if time > 86400 then
-			self:SetText(math.floor(time / dayInSeconds)..string.format(" |4день:дня:дней;", time % 10))
+		if seconds >= SECONDS_PER_DAY then
+			self:SetFormattedText(D_DAYS_FULL, math.floor(seconds / SECONDS_PER_DAY))
 		else
-			self:SetText(date("!%X", time))
+			self:SetText(date("!%X", seconds))
+		end
+	elseif seconds and seconds >= 0 then
+		if seconds >= SECONDS_PER_DAY then
+			local days = string.format(DAY_ONELETTER_ABBR_SHORT, math.floor(seconds / SECONDS_PER_DAY))
+			self:SetFormattedText("%s %s", days, date("!%X", seconds % SECONDS_PER_DAY))
+		else
+			self:SetText(date("!%X", seconds))
 		end
 	else
-		if time > dayInSeconds then
-			days = math.floor(time / dayInSeconds) .. "д "
-			time = time % dayInSeconds
-		end
-
-		if time and time >= 0 then
-			self:SetText(days .. date("!%X", time))
-		end
+		self:SetText("")
 	end
 end
 
@@ -120,25 +115,41 @@ local function Method_SetSubTexCoord( self, left, right, top, bottom )
     self:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy)
 end
 
-local function Method_SetTransmogrifyItem( self, Entry )
+local function Method_SetTransmogrifyItem(self, transmogID, hasPending, hasUndo)
+	local lastTransmogText, transmogTextHeight;
+
 	if not self.TransmogText1:IsShown() and not self.TransmogText2:IsShown() then
-		local name = GetItemInfo(Entry)
+		if hasUndo then
+			self.TransmogText1:Show();
+			self.TransmogText1:SetText(TRANSMOGRIFY_TOOLTIP_REVERT);
 
-		if not name then
-			return
+			lastTransmogText = self.TransmogText1;
+			transmogTextHeight = self.TransmogText1:GetHeight() + 2;
+		elseif transmogID then
+			local name = GetItemInfo(transmogID);
+			if name then
+				self.TransmogText1:Show();
+				self.TransmogText2:Show();
+				if hasPending then
+					self.TransmogText1:SetText(WILL_BE_TRANSMOGRIFIED_HEADER);
+				else
+					self.TransmogText1:SetText(TRANSMOGRIFIED_HEADER);
+				end
+				self.TransmogText2:SetText(name);
+
+				lastTransmogText = self.TransmogText2;
+				transmogTextHeight = (self.TransmogText1:GetHeight() + self.TransmogText2:GetHeight()) + 4;
+			end
 		end
+	end
 
-		self.TransmogText1:Show()
-		self.TransmogText2:Show()
+	if lastTransmogText and transmogTextHeight then
+		self.TextLeft2:ClearAllPoints();
+		self.TextLeft2:SetPoint("TOPLEFT", lastTransmogText, "BOTTOMLEFT", 0, -2);
 
-		self.TransmogText1:SetText(TRANSMOGRIFIED2)
-		self.TransmogText2:SetText(name)
+		self:SetHeight(self:GetHeight() + transmogTextHeight);
 
-		self.TextLeft2:ClearAllPoints()
-		self.TextLeft2:SetPoint("TOPLEFT", self.TransmogText2, "BOTTOMLEFT", 0, -2)
-		self:SetHeight(self:GetHeight() + (self.TransmogText1:GetHeight() + self.TransmogText2:GetHeight()) + 6)
-
-		Hook:FireEvent("TRANSMOGRIFY_ITEM_UPDATE", self, Entry)
+		Hook:FireEvent("TRANSMOGRIFY_ITEM_UPDATE", self, transmogID);
 	end
 end
 
@@ -530,7 +541,7 @@ if WorldFrame then
 	local GameTooltip = getmetatable(CreateFrame("GameTooltip"))
 	local PlayerModel = getmetatable(CreateFrame("PlayerModel"))
 
-	function GameTooltip.__index:SetTransmogrifyItem( Entry ) Method_SetTransmogrifyItem( self, Entry ) end
+	function GameTooltip.__index:SetTransmogrifyItem(transmogID, hasPending, hasUndo) Method_SetTransmogrifyItem(self, transmogID, hasPending, hasUndo) end
 	function GameTooltip.__index:GetScaledRect() return Method_GetScaledRect(self) end
 	function GameTooltip.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
 	function GameTooltip.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end

@@ -219,15 +219,9 @@ function PlayerFrame_OnEvent(self, event, ...)
 	elseif ( event == "PLAYER_REGEN_DISABLED" ) then
 		self.onHateList = 1;
 		PlayerFrame_UpdateStatus();
-
-		if ( GetCVarBool("screenEdgeFlash") ) then
-			CombatFeedback_StartFullscreenStatus();
-		end
 	elseif ( event == "PLAYER_REGEN_ENABLED" ) then
 		self.onHateList = nil;
 		PlayerFrame_UpdateStatus();
-
-		CombatFeedback_StopFullscreenStatus();
 	elseif ( event == "PLAYER_UPDATE_RESTING" ) then
 		PlayerFrame_UpdateStatus();
 	elseif ( event == "PARTY_MEMBERS_CHANGED" or event == "PARTY_LEADER_CHANGED" or event == "RAID_ROSTER_UPDATE" ) then

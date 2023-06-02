@@ -640,11 +640,7 @@ function UIDropDownMenu_AddButton(info, level)
 		_G[listFrameName.."Button"..index.."Check"]:Hide();
 		_G[listFrameName.."Button"..index.."UnCheck"]:Hide();
 	end
-	if info.checked then
-		button.checked = true;
-	else
-		button.checked = nil;
-	end
+	button.checked = info.checked;
 
 	-- If has a colorswatch, show it and vertex color it
 	local colorSwatch = _G[listFrameName.."Button"..index.."ColorSwatch"];

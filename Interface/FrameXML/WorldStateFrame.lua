@@ -884,10 +884,8 @@ function WorldStateScoreFrame_Update( needSleep )
 	end
 
 	if battlefieldWinner then
-		if IsDevClient() then
-			if GetCVarBool("devSkipScoreboard") then
-				LeaveBattlefield()
-			end
+		if IsDevClient(true) and GetCVarBool("devSkipScoreboard") then
+			LeaveBattlefield()
 		end
 
 		local teamName = GetBattlefieldTeamInfo(battlefieldWinner)

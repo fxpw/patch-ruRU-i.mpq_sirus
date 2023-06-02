@@ -108,7 +108,7 @@ function StorePopupFrameTemplateMixin:OnHide()
 end
 
 function StorePopupFrameTemplateMixin:UpdateBalance()
-	self.Content.SectionBottom.Balance:SetFormattedText(SHOP_POPUP_BALANCE, Store_GetBalance(Enum.Store.CurrenctType.Bonus))
+	self.Content.SectionBottom.Balance:SetFormattedText(SHOP_POPUP_BALANCE, Store_GetBalance(Enum.Store.CurrencyType.Bonus))
 end
 
 function StorePopupFrameTemplateMixin:Block()

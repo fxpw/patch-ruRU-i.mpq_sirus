@@ -7,6 +7,8 @@ SIRUS_RATEDBATTLEGROUND_READY = {}
 
 SIRUS_RATEDBATTLEGROUND_RANK = {}
 
+local ALLOW_NON_SEASON_ARENA_GAMES = true
+
 local HORDE_TEX_COORDS = { left = 0.00195313, right = 0.63867188, top = 0.31738281, bottom = 0.44238281 }
 local ALLIANCE_TEX_COORDS = { left = 0.00195313, right = 0.63867188, top = 0.19042969, bottom = 0.31542969 }
 
@@ -703,6 +705,7 @@ function PVPUIFrame_OnLoad( self, ... )
 	self:RegisterEvent("UPDATE_BATTLEFIELD_STATUS")
 	self:RegisterEvent("VARIABLES_LOADED")
 
+	PanelTemplates_SetNumTabs(self, 3)
 	PVPFrame_SetupTitle()
 end
 
@@ -1293,7 +1296,7 @@ function PVPQueueFrame_SelectArena( state )
 		PVPFrame_StepButtonAndCapBarDisable()
 	end
 
-	ConquestFrame.NoSeason:SetShown(GetCurrentArenaSeason() == NO_ARENA_SEASON and state ~= 2)
+	ConquestFrame.NoSeason:SetShown(not C_CVar:GetSessionCVar("NO_SEASON_ALERT") and GetCurrentArenaSeason() == NO_ARENA_SEASON and state ~= 2)
 	ConquestFrame_UpdateJoinButton()
 end
 
@@ -1336,7 +1339,7 @@ function ConquestFrame_UpdateJoinButton()
 	if ConquestFrame.state == 2 and ConquestFrame.selectedButtonSkirmish then
 		button:Enable()
 		return
-	elseif ConquestFrame.state == 2 or GetCurrentArenaSeason() ~= NO_ARENA_SEASON then
+	elseif ConquestFrame.state == 2 or ALLOW_NON_SEASON_ARENA_GAMES or GetCurrentArenaSeason() ~= NO_ARENA_SEASON then
 		local groupSize = GetNumPartyMembers() + 1
 
 		if ConquestFrame.selectedButton then
@@ -1931,6 +1934,52 @@ function RatedBattlegroundFrame_ToggleTutorial( self, ... )
 	end
 end
 
+PVPFrameBattlePassButtonMixin = {}
+
+function PVPFrameBattlePassButtonMixin:OnLoad()
+	SetPortraitToTexture(self.Icon, "Interface\\Icons\\Battlepas_64x64")
+	self:RegisterCustomEvent("BATTLEPASS_ACCOUNT_UPDATE")
+	self:RegisterCustomEvent("BATTLEPASS_EXPERIENCE_UPDATE")
+	self:UpdateState()
+end
+
+function PVPFrameBattlePassButtonMixin:OnEvent(event, ...)
+	if event == "BATTLEPASS_ACCOUNT_UPDATE" then
+		local isPremiumActive, seasonTimeLeft = ...
+		self:UpdateState(isPremiumActive, seasonTimeLeft)
+	elseif event == "BATTLEPASS_EXPERIENCE_UPDATE" then
+		local level = ...
+		self.LevelFrame.Level:SetText(level)
+	end
+end
+
+function PVPFrameBattlePassButtonMixin:UpdateState(isPremiumActive, seasonTimeLeft)
+	if isPremiumActive == nil then
+		isPremiumActive = C_BattlePass.IsPremiumActive()
+	end
+	if seasonTimeLeft == nil then
+		seasonTimeLeft = C_BattlePass.GetSeasonTimeLeft()
+	end
+
+	local isDisabled = seasonTimeLeft == 0 and not C_BattlePass.HasUnclaimedReward()
+	self:SetEnabled(not isDisabled)
+
+	local textColor = isDisabled and GRAY_FONT_COLOR or NORMAL_FONT_COLOR
+
+	self.Name:SetTextColor(textColor.r, textColor.g, textColor.b)
+
+	self.Icon:SetDesaturated(isDisabled)
+	self.Ring:SetDesaturated(isDisabled)
+	self.Background:SetDesaturated(isDisabled)
+
+	self.LevelFrame.Wreath:SetDesaturated(isDisabled)
+	self.LevelFrame.Wreath:SetAlpha(isPremiumActive and 1 or 0.3)
+end
+
+function PVPFrameBattlePassButtonMixin:OnClick(button)
+	ShowUIPanel(BattlePassFrame)
+end
+
 BattlegroundInviteMixin = {}
 
 function BattlegroundInviteMixin:OnLoad()
@@ -1984,10 +2033,12 @@ function BattlegroundInviteMixin:OnShow()
 	end
 
 	PlaySound("PVPTHROUGHQUEUE")
+	FlashClientIcon();
 end
 
 function BattlegroundInviteMixin:OnHide()
 	self.readyPlayers = 0
+	StaticPopup_Hide("PVP_REJECT_PROPOSAL")
 end
 
 function BattlegroundInviteMixin:OnEvent( event, ... )
@@ -2147,6 +2198,10 @@ function BattlegroundInviteMixin:Accept()
 	SendServerMessage("ACMSG_BG_ACCEPT_INVITE", self.inviteID)
 end
 
+function BattlegroundInviteMixin:ShowAbandonDialog()
+	StaticPopup_Show("PVP_REJECT_PROPOSAL")
+end
+
 function BattlegroundInviteMixin:Abandon()
 	SendServerMessage("ACMSG_BG_DECLINE_INVITE", self.inviteID)
 
@@ -2183,7 +2238,7 @@ function BattlegroundInviteMixin:ShowInviteFrame()
 	end
 
 	if not self:IsShown() then
-		self:Show()
+		StaticPopupSpecial_Show(self)
 	end
 
 	self.showUI:Play()

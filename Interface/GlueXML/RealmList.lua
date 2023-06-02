@@ -64,7 +64,7 @@ end
 
 _G._RealmListUpdateRate = RealmListUpdateRate
 function RealmListUpdateRate()
-	if IsDevClient() then
+	if IsDevClient(true) then
 		return 1
 	end
 	return _RealmListUpdateRate()

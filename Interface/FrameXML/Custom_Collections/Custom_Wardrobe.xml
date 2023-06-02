@@ -1,6 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\..\FrameXML\UI.xsd">
 	<Script file="Custom_ItemAppearancesData.lua"/>
+	<Script file="Custom_EnchantCollection_Data.lua"/>
 	<Script file="Custom_Wardrobe.lua"/>
 
 	<DressUpModel name="WardrobeItemsModelTemplate" hidden="true" virtual="true">
@@ -174,7 +175,7 @@
 			<OnLeave function="GameTooltip_Hide"/>
 		</Scripts>
 	</Button>
-	<Button name="WardrobeSmallSlotButtonTemplate" frameLevel="10" virtual="true">
+	<Button name="WardrobeSmallSlotButtonTemplate" virtual="true">
 		<Size x="25" y="25"/>
 		<Layers>
 			<Layer level="OVERLAY">
@@ -197,12 +198,15 @@
 			</Anchors>
 		</HighlightTexture>
 		<Scripts>
+			<OnShow>
+				SetParentFrameLevel(self, 10);
+			</OnShow>
 			<OnClick>
 				WardrobeCollectionFrame.ItemsCollectionFrame:SetActiveSlot(self.transmogLocation);
 			</OnClick>
 			<OnEnter>
---				GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
---				GameTooltip:SetText(WEAPON_ENCHANTMENT);
+				GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+				GameTooltip:SetText(WEAPON_ENCHANTMENT);
 			</OnEnter>
 			<OnLeave function="GameTooltip_Hide"/>
 		</Scripts>
@@ -935,6 +939,9 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
+				self.transmogType = Enum.TransmogType.Appearance;
+				self.modification = Enum.TransmogModification.Main;
+
 				Mixin(self, TransmogSlotButtonMixin)
 				self:OnLoad()
 			</OnLoad>
@@ -957,6 +964,170 @@
 				<Anchor point="CENTER"/>
 			</Anchors>
 			<TexCoords left="0.646484" right="0.732422" top="0.001953" bottom="0.082031"/>
+		</HighlightTexture>
+	</Button>
+
+	<Button name="WardrobeTransmogEnchantButtonTemplate" motionScriptsWhileDisabled="true" frameLevel="20" virtual="true">
+		<Size x="27" y="27"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Icon">
+					<Size x="18" y="18"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="Border" file="Interface\Transmogrify\Transmogrify">
+					<Size x="40" y="40"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+					<TexCoords left="0.736328" right="0.814453" top="0.001953" bottom="0.080078"/>
+				</Texture>
+				<Texture parentKey="NoItemTexture" file="Interface\Transmogrify\Textures.png" alpha="0.75" hidden="true">
+					<Size x="18" y="18"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+					<TexCoords left="0.28906250" right="0.55468750" top="0.51171875" bottom="0.57812500"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK" >
+				<Texture parentKey="StatusBorder" file="Interface\Transmogrify\Transmogrify" hidden="true">
+					<Size x="38" y="38"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+					<TexCoords left="0.900391" right="0.974609" top="0.001953" bottom="0.076172"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="SelectedTexture" file="Interface\Transmogrify\Transmogrify" hidden="true">
+					<Size x="40" y="40"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+					<TexCoords left="0.818359" right="0.896484" top="0.001953" bottom="0.080078"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame parentKey="PendingFrame" setAllPoints="true" hidden="true">
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture parentKey="Glow" file="Interface\Transmogrify\Textures">
+							<Size x="29" y="28"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+							<TexCoords left="0.52343750" right="0.97656250" top="0.38476563" bottom="0.49609375"/>
+						</Texture>
+						<Texture parentKey="Undo" file="Interface\Transmogrify\Textures" hidden="true">
+							<Size x="25" y="24"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+							<TexCoords left="0.533203" right="0.582031" top="0.248047" bottom="0.294922"/>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture parentKey="Ants" file="Interface\Transmogrify\PurpleIconAlertAnts">
+							<Size x="22" y="22"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnUpdate>
+						_AnimateTexCoords(self.Ants, 256, 256, 48, 48, 22, elapsed, 0.01);
+					</OnUpdate>
+				</Scripts>
+			</Frame>
+			<Frame parentKey="AnimFrame" setAllPoints="true" hidden="true">
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture parentKey="Glow" file="Interface\Transmogrify\Textures">
+							<Size x="30" y="29"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+							<TexCoords left="0.52343750" right="0.97656250" top="0.38476563" bottom="0.49609375"/>
+							<Animations>
+								<AnimationGroup parentKey="Anim">
+									<Alpha startDelay="0.15" change="-1.0" duration="0.2" order="1"/>
+									<Scripts>
+										<OnFinished>
+											self:GetParent():GetParent():GetParent():OnAnimFinished();
+										</OnFinished>
+									</Scripts>
+								</AnimationGroup>
+							</Animations>
+						</Texture>
+						<Texture parentKey="Transition" file="Interface\Transmogrify\Textures" hidden="true">
+							<Size x="22" y="21"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+							<TexCoords left="0.52343750" right="0.97656250" top="0.25781250" bottom="0.36914063"/>
+							<Animations>
+								<AnimationGroup parentKey="Anim">
+									<Scale startDelay="0.15" duration="0.2" scaleX="1.381" scaleY="1.381" order="1"/>
+								</AnimationGroup>
+							</Animations>
+						</Texture>
+						<Texture parentKey="OuterGlow" file="Interface\SpellActivationOverlay\IconAlert">
+							<Size x="30" y="29"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+							<TexCoords left="0.00781250" right="0.50781250" top="0.53515625" bottom="0.78515625"/>
+							<Animations>
+								<AnimationGroup parentKey="Anim">
+									<Alpha duration="0" change="-1" order="1"/>
+									<Alpha duration="0.15" change="1" order="1"/>
+									<Alpha duration="0.2" change="-1" order="2"/>
+								</AnimationGroup>
+							</Animations>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnShow>
+						self.Glow.Anim:Play()
+						self.Transition.Anim:Play()
+						self.OuterGlow.Anim:Play()
+					</OnShow>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				self.transmogType = Enum.TransmogType.Illusion;
+				self.modification = Enum.TransmogModification.Main;
+
+				Mixin(self, TransmogSlotButtonMixin);
+				self:OnLoad();
+			</OnLoad>
+			<OnClick>
+				self:OnClick(button);
+			</OnClick>
+			<OnEnter>
+				self:OnEnter();
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave();
+			</OnLeave>
+		</Scripts>
+		<HighlightTexture file="Interface\Transmogrify\Transmogrify" alphaMode="ADD">
+			<Size x="24" y="24"/>
+			<Anchors>
+				<Anchor point="CENTER"/>
+			</Anchors>
+			<TexCoords left="0.322266" right="0.369141" top="0.783203" bottom="0.830078"/>
 		</HighlightTexture>
 	</Button>
 
@@ -1033,7 +1204,7 @@
 							<Anchor point="TOP" x="3" y="-4"/>
 						</Anchors>
 						<Frames>
-							<Button name="$parentClearAllPendingButton" parentKey="ClearAllPendingButton" inherits="UIMenuButtonStretchTemplate" hidden="true" mixin="WardrobeTransmogClearAllPendingButtonMixin">
+							<Button name="$parentClearAllPendingButton" parentKey="ClearAllPendingButton" inherits="UIMenuButtonStretchTemplate" hidden="true">
 								<Size x="26" y="26"/>
 								<Anchors>
 									<Anchor point="TOPRIGHT" x="-5" y="-10"/>
@@ -1131,17 +1302,33 @@
 					</Button>
 					<Button name="$parentMainHandButton" parentKey="MainHandButton" inherits="WardrobeTransmogButtonTemplate">
 						<Anchors>
-							<Anchor point="BOTTOM" x="-57" y="24"/>
+							<Anchor point="BOTTOM" x="-57" y="32"/>
 						</Anchors>
 					</Button>
 					<Button name="$parentSecondaryHandButton" parentKey="SecondaryHandButton" inherits="WardrobeTransmogButtonTemplate">
 						<Anchors>
-							<Anchor point="BOTTOM" x="0" y="24"/>
+							<Anchor point="BOTTOM" x="0" y="32"/>
 						</Anchors>
 					</Button>
 					<Button name="$parentRangedButton" parentKey="RangedButton" inherits="WardrobeTransmogButtonTemplate">
 						<Anchors>
-							<Anchor point="BOTTOM" x="57" y="24"/>
+							<Anchor point="BOTTOM" x="57" y="32"/>
+						</Anchors>
+					</Button>
+					<Button name="$parentMainHandEnchantButton" parentKey="MainHandEnchantButton" inherits="WardrobeTransmogEnchantButtonTemplate">
+						<Attributes>
+							<Attribute name="slot" value="MAINHANDSLOT" type="string"/>
+						</Attributes>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentMainHandButton" relativePoint="BOTTOM" x="0" y="12"/>
+						</Anchors>
+					</Button>
+					<Button name="$parentSecondaryHandEnchantButton" parentKey="SecondaryHandEnchantButton" inherits="WardrobeTransmogEnchantButtonTemplate">
+						<Attributes>
+							<Attribute name="slot" value="SECONDARYHANDSLOT" type="string"/>
+						</Attributes>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentSecondaryHandButton" relativePoint="BOTTOM" x="0" y="12"/>
 						</Anchors>
 					</Button>
 					<Frame name="$parentMoneyFrame" parentKey="MoneyFrame" inherits="SmallMoneyFrameTemplate">

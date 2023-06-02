@@ -45,7 +45,7 @@ function PVPLadderFrameMixin:OnLoad()
 		[PLAYER_FACTION_GROUP.Renegade] = "Renegade",
 	}
 
-	RaiseFrameLevelByThree(self.Shadows)
+	RaiseFrameLevelByTwo(self.Shadows)
 
 	local function UpdateFaction()
 		SetPortraitToTexture(self.Art.portrait, PVPUIFRAME_PORTRAIT_DATA[C_Unit.GetFactionID("player")])

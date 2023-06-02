@@ -128,6 +128,9 @@ EVENT_HANDLER:SetScript("OnEvent", function(self, event, ...)
 			end
 		end
 	elseif event == "PLAYER_LOGOUT" then
+		if not SIRUS_KNOWLEDGE_BASE then
+			return
+		end
 		local t, r = 0, 0
 		for index in pairs(KNOWLEDGE_BASE_SAVE_TEMPLATE) do
 			t = t + 1
@@ -1017,7 +1020,7 @@ local KB_SUGGESTIONS = {
 --	NEXT = nil,
 }
 
-if IsInterfaceDevClient() then
+if IsInterfaceDevClient(true) then
 	_G.KB_SUGGESTIONS = KB_SUGGESTIONS
 end
 

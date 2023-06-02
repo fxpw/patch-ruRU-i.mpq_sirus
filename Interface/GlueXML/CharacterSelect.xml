@@ -61,9 +61,11 @@
 				self.highlightTexture:SetPoint("CENTER", 0, 0);
 			</OnMouseUp>
 			<OnEnter>
+				self:GetParent():OnEnter();
 				self:GetParent():LockHighlight();
 			</OnEnter>
 			<OnLeave>
+				self:GetParent():OnLeave();
 				self:GetParent():UnlockHighlight();
 			</OnLeave>
 		</Scripts>
@@ -716,7 +718,7 @@
 								self:OnLoadStyle()
 							</OnLoad>
 							<OnClick>
-								CharacterSelect_ChangeRealm();
+								self:OnClick(button)
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -954,7 +956,7 @@
 							</Layer>
 						</Layers>
 						<Frames>
-							<Frame name="$parentDropDownMenu" parentKey="DropDownMenu" frameStrata="DIALOG" clampedToScreen="true" enableMouse="true" hidden="true">
+							<Frame name="$parentDropDownMenu" parentKey="DropDownMenu" frameStrata="HIGH" clampedToScreen="true" enableMouse="true" hidden="true">
 								<Size x="200" y="0"/>
 								<Scripts>
 									<OnLoad>
@@ -1152,6 +1154,7 @@
 								</Anchors>
 								<Scripts>
 									<OnClick>
+										CharacterSelect_CloseDropdowns()
 										PlaySound(SOUNDKIT.GS_LOGIN_NEW_ACCOUNT)
 										LaunchURL("https://forum.sirus.su/categories/4/")
 									</OnClick>
@@ -1165,6 +1168,7 @@
 								</Anchors>
 								<Scripts>
 									<OnClick>
+									CharacterSelect_CloseDropdowns()
 										OptionsSelectFrame:Show()
 									</OnClick>
 								</Scripts>
@@ -1207,6 +1211,7 @@
 								<Scripts>
 									<OnClick>
 										PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+										CharacterSelect_CloseDropdowns()
 										AddonList:Show();
 									</OnClick>
 								</Scripts>

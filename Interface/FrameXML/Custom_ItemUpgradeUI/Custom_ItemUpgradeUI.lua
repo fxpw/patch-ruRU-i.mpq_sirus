@@ -11,13 +11,32 @@ function ItemUpgradeFrame_Hide()
 	HideUIPanel(ItemUpgradeFrame);
 end
 
+local SHOW_LEFT_ITEMS;
+
+local function GetNumUpgradeItems()
+	local totalItems, upgradeItems = 0, 0;
+
+	local function ItemLocationCallback(itemLocation)
+		local canUpgrade, upgradeType = C_ItemUpgrade.CanUpgradeItem(itemLocation);
+		if canUpgrade then
+			if (upgradeType == Enum.ItemUpgradeType.Upgrade or upgradeType == Enum.ItemUpgradeType.Both) then
+				upgradeItems = upgradeItems + 1;
+			end
+			totalItems = totalItems + 1;
+		end
+	end
+
+	ItemUtil.IteratePlayerInventoryAndEquipment(ItemLocationCallback);
+
+	return totalItems, upgradeItems;
+end
+
 ItemUpgradeMixin = {};
 
 function ItemUpgradeMixin:OnLoad()
-	SetPortraitToTexture(self.NineSlice.Portrait, "Interface\\Icons\\UI_ItemUpgrade");
+	SetPortraitToTexture(self.portrait, "Interface\\Icons\\UI_ItemUpgrade");
 
-	self.TitleBg:SetAtlas("_UI-Frame-TitleTileBg", true);
-	self.TopTileStreaks:SetAtlas("_UI-Frame-TopTileStreaks", true);
+	self.Bg:Hide();
 	self.TitleText:SetText(ITEM_UPGRADE);
 
 	self.BottomBG:SetAtlas("itemupgrade_bottompanel", true);
@@ -29,11 +48,11 @@ function ItemUpgradeMixin:OnLoad()
 
 	self:RegisterCustomEvent("ITEM_UPGRADE_OPEN");
 	self:RegisterCustomEvent("ITEM_UPGRADE_CLOSE");
+	self:RegisterEvent("VARIABLES_LOADED");
+	self:RegisterEvent("CVAR_UPDATE");
 end
 
 function ItemUpgradeMixin:OnShow()
-	SetParentFrameLevel(self.NineSlice, 3);
-
 	PlaySound(SOUNDKIT.UI_ETHEREAL_WINDOW_OPEN);
 	self:Update();
 
@@ -74,7 +93,7 @@ function ItemUpgradeMixin:UpdateIfTargetReached()
 	end
 end
 
-function ItemUpgradeMixin:OnEvent(event, ...)
+function ItemUpgradeMixin:OnEvent(event, arg1)
 	if event == "ITEM_UPGRADE_MASTER_SET_ITEM" then
 		if not self.upgradeAnimationsInProgress then
 			self:Update();
@@ -86,7 +105,7 @@ function ItemUpgradeMixin:OnEvent(event, ...)
 		self:Update();
 
 		if event == "ITEM_UPGRADE_FAILED" then
-			local errorID = ...;
+			local errorID = arg1;
 			if errorID then
 				local errorText = _G[string.format("ITEM_UPGRADE_ERROR_%d", errorID)];
 				if errorText then
@@ -95,7 +114,7 @@ function ItemUpgradeMixin:OnEvent(event, ...)
 			end
 		end
 	elseif event == "GLOBAL_MOUSE_DOWN" then
-		local buttonName = ...;
+		local buttonName = arg1;
 		local isRightButton = buttonName == "RightButton";
 
 		local mouseFocus = GetMouseFocus();
@@ -107,6 +126,8 @@ function ItemUpgradeMixin:OnEvent(event, ...)
 		ItemUpgradeFrame_Show();
 	elseif event == "ITEM_UPGRADE_CLOSE" then
 		ItemUpgradeFrame_Hide();
+	elseif event == "VARIABLES_LOADED" or event == "CVAR_UPDATE" then
+		SHOW_LEFT_ITEMS = tonumber(C_CVar:GetValue("C_CVAR_ITEM_UPGRADE_LEFT_ITEM_LIST")) == 1;
 	end
 end
 
@@ -148,17 +169,42 @@ function ItemUpgradeMixin:Update()
 	if not self.upgradeInfo then
 		self:UpdateButtonAndArrowStates(true, false);
 		self.ItemInfo:Setup(self.upgradeInfo);
+
+		local numUpgradeItems = GetNumUpgradeItems();
+		if SHOW_LEFT_ITEMS and numUpgradeItems > 1 then
+			self.UpgradeItemButton:SetNormalTexture("");
+			self.UpgradeItemButton:SetPushedTexture("");
+
+			local itemsToUpgrade = {};
+			local function ItemLocationCallback(itemLocation)
+				local canUpgrade, upgradeType = C_ItemUpgrade.CanUpgradeItem(itemLocation);
+				if canUpgrade then
+					itemsToUpgrade[#itemsToUpgrade + 1] = itemLocation;
+				end
+			end
+			ItemUtil.IteratePlayerInventoryAndEquipment(ItemLocationCallback);
+
+			self.LeftPagingFrame:Clear();
+			self.LeftItemsListPreviewFrame:Clear();
+			self.LeftItemsListPreviewFrame:Setup(itemsToUpgrade);
+			self.MissingDescription:Hide();
+		else
+			self.UpgradeItemButton:SetNormalAtlas("itemupgrade_greenplusicon");
+			self.UpgradeItemButton:SetPushedAtlas("itemupgrade_greenplusicon_pressed");
+
+			self.LeftPagingFrame:Hide();
+			self.LeftItemsListPreviewFrame:Hide();
+			self.MissingDescription:Show();
+		end
+
 		SetItemButtonTexture(self.UpgradeItemButton, nil);
 		SetItemButtonQuality(self.UpgradeItemButton, nil);
 		SetItemButtonTextureVertexColor(self.UpgradeItemButton, 1.0, 1.0, 1.0);
-		self.UpgradeItemButton:SetNormalAtlas("itemupgrade_greenplusicon");
-		self.UpgradeItemButton:SetPushedAtlas("itemupgrade_greenplusicon_pressed");
-		self.MissingDescription:Show();
 		self.LeftItemPreviewFrame:Hide();
 		self.RightItemPreviewFrame.ReappearAnim:Stop();
 		self.RightItemPreviewFrame:Hide();
-		self.PagingFrame:Hide();
-		self.ItemsListPreviewFrame:Hide();
+		self.RightPagingFrame:Hide();
+		self.RightItemsListPreviewFrame:Hide();
 		self.UpgradeCostFrame:Hide();
 		self.FrameErrorText:Hide();
 		self.Arrow:Hide();
@@ -166,6 +212,9 @@ function ItemUpgradeMixin:Update()
 		self.targetUpgradeItem = nil;
 		return;
 	end
+
+	self.LeftPagingFrame:Hide();
+	self.LeftItemsListPreviewFrame:Hide();
 
 	self.UpgradeItemButton:SetNormalTexture("");
 	self.UpgradeItemButton:SetPushedTexture("Interface\\Buttons\\UI-Quickslot-Depress");
@@ -281,8 +330,8 @@ function ItemUpgradeMixin:PopulatePreviewFrames()
 	self.LeftItemPreviewFrame:GeneratePreviewTooltip(false, nil);
 
 	if showRightPreview then
-		self.PagingFrame:Hide();
-		self.ItemsListPreviewFrame:Hide();
+		self.RightPagingFrame:Hide();
+		self.RightItemsListPreviewFrame:Hide();
 
 		self.RightItemPreviewFrame:GeneratePreviewTooltip(true, nil);
 
@@ -290,9 +339,9 @@ function ItemUpgradeMixin:PopulatePreviewFrames()
 			self.LeftItemPreviewFrame:SetHeight(self.RightItemPreviewFrame:GetHeight());
 		end
 	else
-		self.PagingFrame:Clear();
-		self.ItemsListPreviewFrame:Clear();
-		self.ItemsListPreviewFrame:Setup(self.upgradeInfo.upgradeInfos);
+		self.RightPagingFrame:Clear();
+		self.RightItemsListPreviewFrame:Clear();
+		self.RightItemsListPreviewFrame:Setup(self.upgradeInfo.upgradeInfos);
 
 		self:UpdateButtonAndArrowStates(buttonDisabledState, not canItemsSelection);
 
@@ -391,6 +440,7 @@ function ItemUpgradeMixin:GetUpgradeCostTable()
 	elseif self.targetUpgradeInfo and self.targetUpgradeInfo.costsToUpgrade then
 		return self.targetUpgradeInfo.costsToUpgrade;
 	end
+	return {};
 end
 
 function ItemUpgradeMixin:GetUpgradeCostString()
@@ -487,46 +537,151 @@ function ItemUpgradeButtonMixin:OnClick()
 	StaticPopup_Show("CONFIRM_UPGRADE_ITEM", ItemUpgradeFrame:GetUpgradeCostString(), "", data);
 end
 
+ItemUpgradeItemButtonMixin = {};
+
+function ItemUpgradeItemButtonMixin:OnLoad()
+	local parent = self:GetParent();
+	if not parent.Buttons then
+		parent.Buttons = {};
+	end
+	parent.Buttons[#parent.Buttons + 1] = self;
+
+	self.HighlightTexture:SetAtlas("PetList-ButtonHighlight")
+end
+
+function ItemUpgradeItemButtonMixin:OnClick(button)
+	if self.id then
+		C_ItemUpgrade.SetItemUpgradeItemSelection(self.id);
+	elseif self.itemLocation then
+		C_ItemUpgrade.SetItemUpgradeFromLocation(self.itemLocation);
+	end
+end
+
+function ItemUpgradeItemButtonMixin:OnEnter()
+	if self.itemID then
+		GameTooltip:SetOwner(self.IconFrame, "ANCHOR_RIGHT");
+		C_ItemUpgrade.SetUpgradeItemListTooltip(self.index);
+	elseif self.numItems then
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+		GameTooltip:AddLine(string.format(UPGRADE_RANDOM_ITEM_NUM_ITEMS, self.numItems), 1, 1, 1);
+		GameTooltip:AddLine(" ");
+		GameTooltip:AddLine(UPGRADE_RANDOM_ITEM_TO_GO_ITEM, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, 1);
+		GameTooltip:Show();
+	elseif self.itemLocation then
+		local itemLink = C_Item.GetItemLink(self.itemLocation);
+		if itemLink then
+			GameTooltip:SetOwner(self.IconFrame, "ANCHOR_RIGHT");
+			GameTooltip:SetHyperlink(itemLink);
+			GameTooltip:Show();
+		end
+	end
+end
+
+function ItemUpgradeItemButtonMixin:OnLeave()
+	GameTooltip:Hide();
+end
+
 local ITEMS_LIST_PER_PAGE = 4;
 
 ItemUpgradeItemsListPreviewFrameMixin = {};
 
 function ItemUpgradeItemsListPreviewFrameMixin:OnLoad()
-
+	local parent = self:GetParent();
+	local pagingFrame = parent[self:GetAttribute("PagingFrameKey")]
+	self.PagingFrame = pagingFrame;
+	pagingFrame.ListFrame = self;
 end
 
 function ItemUpgradeItemsListPreviewFrameMixin:Clear()
-	self.upgradeInfos = nil;
+	self.itemsListInfos = nil;
 
 	for i = 1, #self.Buttons do
 		self.Buttons[i]:Hide();
 	end
 end
 
-function ItemUpgradeItemsListPreviewFrameMixin:Setup(upgradeInfos)
-	if not upgradeInfos or #upgradeInfos == 0 then
+function ItemUpgradeItemsListPreviewFrameMixin:Setup(itemsListInfos)
+	if not itemsListInfos or #itemsListInfos == 0 then
 		self:Clear();
 		self:Hide();
 		return;
 	end
 
-	self.upgradeInfos = upgradeInfos;
+	self.itemsListInfos = itemsListInfos;
 
-	ItemUpgradeFrame.PagingFrame:SetMaxPages(ceil(#upgradeInfos / ITEMS_LIST_PER_PAGE));
+	if self.PagingFrame then
+		self.PagingFrame:SetMaxPages(ceil(#itemsListInfos / ITEMS_LIST_PER_PAGE));
+	end
 
-	self:Update();
+	if self.Update then
+		self:Update();
+	end
+
 	self:Show();
 end
+
+ItemUpgradeLeftItemsListPreviewFrameMixin = CreateFromMixins(ItemUpgradeItemsListPreviewFrameMixin);
+
+function ItemUpgradeLeftItemsListPreviewFrameMixin:Update()
+	if not self.itemsListInfos then
+		return;
+	end
+
+	local itemIndex = (self.PagingFrame:GetCurrentPage() - 1) * ITEMS_LIST_PER_PAGE;
+
+	for i = 1, ITEMS_LIST_PER_PAGE do
+		local index = itemIndex + i;
+		local itemLocation = self.itemsListInfos[index];
+
+		local button = self.Buttons[i];
+
+		if itemLocation and C_Item.DoesItemExist(itemLocation) then
+			local itemName = C_Item.GetItemName(itemLocation);
+			local itemIcon = C_Item.GetItemIcon(itemLocation);
+			local itemQuality = C_Item.GetItemQuality(itemLocation) or 1;
+
+			local itemQualityColor = ITEM_QUALITY_COLORS[itemQuality].color;
+
+			button.Name:SetText(itemQualityColor:WrapTextInColorCode(itemName));
+
+			button.IconFrame.Icon:SetTexture(itemIcon);
+			SetItemButtonQuality(button.IconFrame, itemQuality);
+
+			button.IconFrame.RoleIcon:Hide();
+			button.IconFrame.SpecIcon:Hide();
+			button.CostText:Hide();
+
+			local _, upgradeType = C_ItemUpgrade.CanUpgradeItem(itemLocation);
+			button.IconFrame.UpgradeIcon:SetShown(upgradeType == Enum.ItemUpgradeType.Upgrade or upgradeType == Enum.ItemUpgradeType.Both);
+
+			if GameTooltip:GetOwner() == button.IconFrame then
+				button:GetScript("OnEnter")(button);
+			end
+
+			button.itemLocation = itemLocation;
+
+			button:Show();
+		else
+			button.itemLocation = nil;
+
+			button:Hide();
+		end
+	end
+
+	self.PagingFrame:Update();
+end
+
+ItemUpgradeRightItemsListPreviewFrameMixin = CreateFromMixins(ItemUpgradeItemsListPreviewFrameMixin);
 
 local roleNameToIconID = {
 	"DAMAGER",
 	"RANGEDAMAGER",
 	"TANK",
 	"HEALER"
-}
+};
 
-function ItemUpgradeItemsListPreviewFrameMixin:Update()
-	if not self.upgradeInfos then
+function ItemUpgradeRightItemsListPreviewFrameMixin:Update()
+	if not self.itemsListInfos then
 		return;
 	end
 
@@ -534,11 +689,11 @@ function ItemUpgradeItemsListPreviewFrameMixin:Update()
 	local selectedItem = C_ItemUpgrade.GetItemUpgradeItemSelection();
 	local canShowCostText = canItemsSelection and not selectedItem;
 
-	local itemIndex = (ItemUpgradeFrame.PagingFrame:GetCurrentPage() - 1) * ITEMS_LIST_PER_PAGE;
+	local itemIndex = (self.PagingFrame:GetCurrentPage() - 1) * ITEMS_LIST_PER_PAGE;
 
 	for i = 1, ITEMS_LIST_PER_PAGE do
 		local index = itemIndex + i;
-		local targetItemInfo = self.upgradeInfos[index];
+		local targetItemInfo = self.itemsListInfos[index];
 
 		local button = self.Buttons[i];
 
@@ -596,7 +751,7 @@ function ItemUpgradeItemsListPreviewFrameMixin:Update()
 			button.numItems = targetItemInfo.numItems;
 
 			if GameTooltip:GetOwner() == button.IconFrame then
-				button.IconFrame:GetScript("OnEnter")(button.IconFrame);
+				button:GetScript("OnEnter")(button);
 			end
 
 			button:Show();
@@ -605,24 +760,24 @@ function ItemUpgradeItemsListPreviewFrameMixin:Update()
 		end
 	end
 
-	ItemUpgradeFrame.PagingFrame:Update();
+	self.PagingFrame:Update();
 end
 
-ItemUpgradeItemsListPreviewPagingFrameMixin = {};
+ItemUpgradePagingFrameMixin = {};
 
-function ItemUpgradeItemsListPreviewPagingFrameMixin:OnLoad()
+function ItemUpgradePagingFrameMixin:OnLoad()
 	self.maxPages = 1;
 	self.currentPage = 1;
 end
 
-function ItemUpgradeItemsListPreviewPagingFrameMixin:Clear()
+function ItemUpgradePagingFrameMixin:Clear()
 	self.maxPages = 1;
 	self.currentPage = 1;
 
 	self:Hide();
 end
 
-function ItemUpgradeItemsListPreviewPagingFrameMixin:SetMaxPages(maxPages)
+function ItemUpgradePagingFrameMixin:SetMaxPages(maxPages)
 	maxPages = math.max(maxPages, 1);
 	if self.maxPages == maxPages then
 		return;
@@ -634,48 +789,52 @@ function ItemUpgradeItemsListPreviewPagingFrameMixin:SetMaxPages(maxPages)
 	end
 end
 
-function ItemUpgradeItemsListPreviewPagingFrameMixin:GetMaxPages()
+function ItemUpgradePagingFrameMixin:GetMaxPages()
 	return self.maxPages;
 end
 
-function ItemUpgradeItemsListPreviewPagingFrameMixin:SetCurrentPage(page)
+function ItemUpgradePagingFrameMixin:SetCurrentPage(page)
 	page = Clamp(page, 1, self.maxPages);
 	if self.currentPage ~= page then
 		self.currentPage = page;
 
-		self:GetParent().ItemsListPreviewFrame:Update();
+		if self.ListFrame and self.ListFrame.Update then
+			self.ListFrame:Update();
+		end
 
-		self:Update();
+		if self.Update then
+			self:Update();
+		end
 	end
 end
 
-function ItemUpgradeItemsListPreviewPagingFrameMixin:GetCurrentPage()
+function ItemUpgradePagingFrameMixin:GetCurrentPage()
 	return self.currentPage;
 end
 
-function ItemUpgradeItemsListPreviewPagingFrameMixin:NextPage()
+function ItemUpgradePagingFrameMixin:NextPage()
 	self:SetCurrentPage(self.currentPage + 1, true);
 end
 
-function ItemUpgradeItemsListPreviewPagingFrameMixin:PreviousPage()
+function ItemUpgradePagingFrameMixin:PreviousPage()
 	self:SetCurrentPage(self.currentPage - 1, true);
 end
 
-function ItemUpgradeItemsListPreviewPagingFrameMixin:Update()
-	local selectedItem = C_ItemUpgrade.GetItemUpgradeItemSelection();
-
-	if selectedItem and selectedItem < 0 then
+function ItemUpgradePagingFrameMixin:SetShownBackButton(shown)
+	if shown then
 		self.NextPageButton:ClearAllPoints();
 		self.NextPageButton:SetPoint("RIGHT", self.BackButton, "LEFT", -3, 0);
-		self.BackButton:Show();
 		self:SetWidth(84);
 	else
 		self.NextPageButton:ClearAllPoints();
 		self.NextPageButton:SetPoint("RIGHT", self, 0, 0);
-		self.BackButton:Hide();
 		self:SetWidth(55);
 	end
 
+	self.BackButton:SetShown(shown);
+end
+
+function ItemUpgradePagingFrameMixin:Update()
 	self.PrevPageButton:SetShown(self.maxPages > 1);
 	self.NextPageButton:SetShown(self.maxPages > 1);
 
@@ -693,12 +852,27 @@ function ItemUpgradeItemsListPreviewPagingFrameMixin:Update()
 	self:Show();
 end
 
-function ItemUpgradeItemsListPreviewPagingFrameMixin:OnMouseWheel(delta)
+function ItemUpgradePagingFrameMixin:OnMouseWheel(delta)
 	if delta > 0 then
 		self:PreviousPage();
 	else
 		self:NextPage();
 	end
+end
+
+ItemUpgradeLeftPagingFrameMixin = CreateFromMixins(ItemUpgradePagingFrameMixin);
+
+function ItemUpgradeLeftPagingFrameMixin:OnLoad()
+	self:SetShownBackButton(false);
+end
+
+ItemUpgradeRightPagingFrameMixin = CreateFromMixins(ItemUpgradePagingFrameMixin);
+
+function ItemUpgradeRightPagingFrameMixin:Update()
+	local selectedItem = C_ItemUpgrade.GetItemUpgradeItemSelection();
+	self:SetShownBackButton(selectedItem and selectedItem < 0);
+
+	ItemUpgradePagingFrameMixin.Update(self);
 end
 
 ItemUpgradePreviewMixin = {};
@@ -830,7 +1004,7 @@ function ItemUpgradePreviewMixin:GeneratePreviewTooltip(isUpgrade, parentFrame)
 		end
 	end
 
-	if isShownHelpTip then
+	if (not isUpgrade and SHOW_LEFT_ITEMS) or isShownHelpTip then
 		GameTooltip_AddBlankLineToTooltip(self);
 		GameTooltip_AddDisabledLine(self, ITEM_UPGRADE_RIGHT_CLICK_RETURN_TO_ITEM_LIST);
 	end
@@ -852,6 +1026,12 @@ function LeftItemUpgradePreviewMixin:OnLoad()
 	ItemUpgradePreviewMixin.OnLoad(self);
 
 	self.isUpgrade = false;
+end
+
+function LeftItemUpgradePreviewMixin:OnMouseUp(button)
+	if button == "RightButton" and SHOW_LEFT_ITEMS then
+		C_ItemUpgrade.ClearItemUpgrade();
+	end
 end
 
 RightItemUpgradePreviewMixin = CreateFromMixins(ItemUpgradePreviewMixin);
@@ -938,7 +1118,9 @@ function ItemUpgradeSlotMixin:OnClick(buttonName)
 				ClearCursor();
 			end
 		else
-			EquipmentFlyout_Show(self);
+			if not SHOW_LEFT_ITEMS then
+				EquipmentFlyout_Show(self);
+			end
 		end
 	end
 
@@ -957,25 +1139,10 @@ end
 
 ItemUpgradeItemInfoMixin = CreateFromMixins(ResizeLayoutMixin);
 
-local function GetNumUpgradeItems()
-	local numItems = 0;
-
-	local function ItemLocationCallback(itemLocation)
-		local canUpgrade, upgradeType = C_ItemUpgrade.CanUpgradeItem(itemLocation);
-		if canUpgrade and (upgradeType == Enum.ItemUpgradeType.Upgrade or upgradeType == Enum.ItemUpgradeType.Both) then
-			numItems = numItems + 1;
-		end
-	end
-
-	ItemUtil.IteratePlayerInventoryAndEquipment(ItemLocationCallback);
-
-	return numItems;
-end
-
 function ItemUpgradeItemInfoMixin:Setup(upgradeInfo)
 	if not upgradeInfo then
 		self.MissingItemText:Show();
-		self.MissingItemText:SetFormattedText(UPGRADE_MISSING_ITEM, GetNumUpgradeItems());
+		self.MissingItemText:SetFormattedText(UPGRADE_MISSING_ITEM, select(2, GetNumUpgradeItems()));
 
 		self.ItemName:Hide();
 	else

@@ -7,9 +7,8 @@
 		<Size x="208" y="46"/>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentBackground" parentKey="Background" file="Interface\BUTTONS\ListButtons">
+				<Texture name="$parentBackground" parentKey="Background">
 					<Size x="209" y="46"/>
-					<TexCoords left="0.00390625" right="0.8203125" top="0.00390625" bottom="0.18359375"/>
 				</Texture>
 				<Texture name="$parentIcon" parentKey="Icon">
 					<Size x="38" y="38"/>
@@ -40,9 +39,8 @@
 				</FontString>
 			</Layer>
 			<Layer level="ARTWORK">
-				<Texture parentKey="SelectedTexture" file="Interface\BUTTONS\ListButtons" hidden="true">
+				<Texture parentKey="SelectedTexture" hidden="true">
 					<Size x="209" y="46"/>
-					<TexCoords left="0.00390625" right="0.8203125" top="0.37890625" bottom="0.55859375"/>
 				</Texture>
 			</Layer>
 			<Layer level="OVERLAY">
@@ -105,14 +103,16 @@
 				</Scripts>
 			</Button>
 		</Frames>
-		<HighlightTexture file="Interface\BUTTONS\ListButtons">
+		<HighlightTexture parentKey="HighlightTexture">
 			<Size x="209" y="46"/>
-			<TexCoords left="0.00390625" right="0.8203125" top="0.19140625" bottom="0.37109375"/>
 		</HighlightTexture>
 		<Scripts>
 			<OnLoad>
 				self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
 				self:RegisterForDrag("LeftButton");
+				self.Background:SetAtlas("PetList-ButtonBackground")
+				self.SelectedTexture:SetAtlas("PetList-ButtonSelect")
+				self.HighlightTexture:SetAtlas("PetList-ButtonHighlight")
 			</OnLoad>
 			<OnClick function="PetJournalListItem_OnClick"/>
 			<OnDragStart>

@@ -72,6 +72,12 @@ function TransmogFrameMixin:OnLoad()
 
 	self:RegisterCustomEvent("TRANSMOGRIFY_UPDATE");
 	self:RegisterCustomEvent("TRANSMOGRIFY_SUCCESS");
+
+	-- set up dependency links
+	self.MainHandButton.dependentSlot = self.MainHandEnchantButton;
+	self.MainHandEnchantButton.dependencySlot = self.MainHandButton;
+	self.SecondaryHandButton.dependentSlot = self.SecondaryHandEnchantButton;
+	self.SecondaryHandEnchantButton.dependencySlot = self.SecondaryHandButton;
 end
 
 function TransmogFrameMixin:OnEvent(event, ...)
@@ -83,6 +89,8 @@ function TransmogFrameMixin:OnEvent(event, ...)
 		if slotButton then
 			slotButton:OnTransmogrifySuccess();
 		end
+
+		SendServerMessage("ACMSG_TRANSMOGRIFICATION_INFO_REQUEST", UnitGUID("player"));
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
 		if C_Transmog.IsAtTransmogNPC() then
 			HideUIPanel(WardrobeFrame);
@@ -133,9 +141,10 @@ function TransmogFrameMixin:SelectSlotButton(slotButton, fromOnClick)
 		end
 		if WardrobeCollectionFrame.activeFrame == WardrobeCollectionFrame.ItemsCollectionFrame then
 			local _, _, selectedSourceID = TransmogUtil.GetInfoForEquippedSlot(slotButton.transmogLocation);
+			local forceGo = slotButton.transmogLocation:IsIllusion();
 			local forTransmog = true;
 			local effectiveCategory, effectiveSubCategory = C_Transmog.GetSlotEffectiveCategory(slotButton.transmogLocation);
-			WardrobeCollectionFrame.ItemsCollectionFrame:GoToSourceID(selectedSourceID, slotButton.transmogLocation, true, forTransmog, effectiveCategory, effectiveSubCategory);
+			WardrobeCollectionFrame.ItemsCollectionFrame:GoToSourceID(selectedSourceID, slotButton.transmogLocation, forceGo, forTransmog, effectiveCategory, effectiveSubCategory);
 			WardrobeCollectionFrame.ItemsCollectionFrame:SetTransmogrifierAppearancesShown(true);
 		end
 	else
@@ -281,7 +290,15 @@ function WardrobeOutfitMixin:GetItemTransmogInfoList()
 	local itemTransmogInfoList = {};
 	for i = 1, #TransmogSlotOrder do
 		local slotID = TransmogSlotOrder[i];
-		itemTransmogInfoList[slotID] = CreateAndInitFromMixin(ItemTransmogInfoMixin, parent.SlotIDToButton[slotID] and parent.SlotIDToButton[slotID]:GetEffectiveTransmogID() or 0);
+		local transmogID, illusionID;
+		local slotButton = parent.SlotIDToButton[slotID];
+		if slotButton then
+			transmogID = slotButton:GetEffectiveTransmogID();
+			if slotButton.dependentSlot then
+				illusionID = slotButton.dependentSlot:GetEffectiveTransmogID();
+			end
+		end
+		itemTransmogInfoList[slotID] = CreateAndInitFromMixin(ItemTransmogInfoMixin, transmogID or 0, illusionID or 0);
 	end
 	return itemTransmogInfoList;
 end
@@ -293,17 +310,17 @@ end
 TransmogSlotButtonMixin = {};
 
 function TransmogSlotButtonMixin:OnLoad()
-	local slot = string.format("%sSLOT", string.upper(string.sub(self:GetName() or "", 22, -7)));
+	local slot = self:GetAttribute("slot") or string.format("%sSLOT", string.upper(string.sub(self:GetName() or "", 22, -7)));
 	local slotID, textureName = GetInventorySlotInfo(slot);
 	self.slot = slot;
 	self.slotID = slotID;
-	self.transmogLocation = TransmogUtil.GetTransmogLocation(slotID, Enum.TransmogType.Appearance, Enum.TransmogModification.Main);
+	self.transmogLocation = TransmogUtil.GetTransmogLocation(slotID, self.transmogType, self.modification);
 	if self.transmogLocation:IsAppearance() then
 		self.Icon:SetTexture(textureName);
 	else
 		self.Icon:SetTexture(ENCHANT_EMPTY_SLOT_FILEDATAID);
 	end
---	self.itemLocation = ItemLocation:CreateFromEquipmentSlot(slotID);
+	self.itemLocation = ItemLocation:CreateFromEquipmentSlot(slotID);
 
 	self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
 
@@ -315,7 +332,9 @@ function TransmogSlotButtonMixin:OnLoad()
 		parent.SlotIDToButton = {};
 	end
 	parent.SlotButtons[#parent.SlotButtons + 1] = self;
-	parent.SlotIDToButton[slotID] = self;
+	if self.transmogLocation:IsAppearance() then
+		parent.SlotIDToButton[slotID] = self;
+	end
 end
 
 function TransmogSlotButtonMixin:OnClick(mouseButton)
@@ -346,17 +365,45 @@ function TransmogSlotButtonMixin:OnUserSelect()
 end
 
 function TransmogSlotButtonMixin:OnEnter()
-	local isTransmogrified, hasPending, _, _, _, hasUndo = C_Transmog.GetSlotInfo(self.transmogLocation);
+	local isTransmogrified, hasPending, _, canTransmogrify, _, hasUndo = C_Transmog.GetSlotInfo(self.transmogLocation);
 
 	if self.transmogLocation:IsIllusion() then
-
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0);
+		GameTooltip:SetText(WEAPON_ENCHANTMENT);
+		local baseSourceID, _, appliedSourceID, _, pendingSourceID = C_Transmog.GetSlotVisualInfo(self.transmogLocation);
+		if self.invalidWeapon then
+			GameTooltip:AddLine(TRANSMOGRIFY_ILLUSION_INVALID_ITEM, TRANSMOGRIFY_FONT_COLOR.r, TRANSMOGRIFY_FONT_COLOR.g, TRANSMOGRIFY_FONT_COLOR.b, true);
+		elseif hasPending or hasUndo or canTransmogrify then
+			if baseSourceID > 0 then
+				local name = C_TransmogCollection.GetIllusionStrings(baseSourceID);
+				GameTooltip:AddLine(name, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b);
+			end
+			if hasUndo then
+				GameTooltip:AddLine(TRANSMOGRIFY_TOOLTIP_REVERT, TRANSMOGRIFY_FONT_COLOR.r, TRANSMOGRIFY_FONT_COLOR.g, TRANSMOGRIFY_FONT_COLOR.b);
+			elseif pendingSourceID > 0 then
+				GameTooltip:AddLine(WILL_BE_TRANSMOGRIFIED_HEADER, TRANSMOGRIFY_FONT_COLOR.r, TRANSMOGRIFY_FONT_COLOR.g, TRANSMOGRIFY_FONT_COLOR.b);
+				local name = C_TransmogCollection.GetIllusionStrings(pendingSourceID);
+				GameTooltip:AddLine(name, TRANSMOGRIFY_FONT_COLOR.r, TRANSMOGRIFY_FONT_COLOR.g, TRANSMOGRIFY_FONT_COLOR.b);
+			elseif appliedSourceID > 0 then
+				GameTooltip:AddLine(TRANSMOGRIFIED_HEADER, TRANSMOGRIFY_FONT_COLOR.r, TRANSMOGRIFY_FONT_COLOR.g, TRANSMOGRIFY_FONT_COLOR.b);
+				local name = C_TransmogCollection.GetIllusionStrings(appliedSourceID);
+				GameTooltip:AddLine(name, TRANSMOGRIFY_FONT_COLOR.r, TRANSMOGRIFY_FONT_COLOR.g, TRANSMOGRIFY_FONT_COLOR.b);
+			end
+		else
+			if not self.itemLocation:IsValid() then
+				GameTooltip:AddLine(TRANSMOGRIFY_INVALID_NO_ITEM, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, true);
+			else
+				GameTooltip:AddLine(TRANSMOGRIFY_ILLUSION_INVALID_ITEM, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, true);
+			end
+		end
+		GameTooltip:Show();
 	else
 		if self.UndoButton and isTransmogrified and not (hasPending or hasUndo) then
 			self.UndoButton:Show();
 		end
 
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 14, 0);
-		if --[[not canTransmogrify and]] not hasUndo then
+		if not canTransmogrify and not hasUndo then
 			GameTooltip:SetText(_G[self.slot]);
 			--[[
 			local tag = TRANSMOG_INVALID_CODES[cannotTransmogrifyReason];
@@ -373,7 +420,21 @@ function TransmogSlotButtonMixin:OnEnter()
 			]]
 			GameTooltip:Show();
 		else
-		--	GameTooltip:SetTransmogrifyItem(self.transmogLocation);
+			GameTooltip:SetInventoryItem("player", self.transmogLocation:GetSlotID());
+
+			local transmogID;
+			local _, appliedTransmogID, pendingTransmogID, appliedEnchantID, hasPendingUndo;
+
+			_, _, appliedTransmogID, _, pendingTransmogID, _, hasPendingUndo = C_Transmog.GetSlotVisualInfo(self.transmogLocation);
+			if pendingTransmogID ~= REMOVE_TRANSMOG_ID then
+				transmogID = pendingTransmogID;
+			elseif not hasPendingUndo and appliedTransmogID ~= NO_TRANSMOG_SOURCE_ID then
+				transmogID = appliedTransmogID;
+			end
+
+			if transmogID or hasUndo then
+				GameTooltip:SetTransmogrifyItem(transmogID, hasPending, hasUndo);
+			end
 		end
 	end
 --	self.UpdateTooltip = GenerateClosure(self.OnEnter, self);
@@ -449,7 +510,14 @@ function TransmogSlotButtonMixin:Update()
 	else
 		-- check for weapons lacking visual attachments
 		local sourceID = self.dependencySlot:GetEffectiveTransmogID();
-		if sourceID ~= NO_TRANSMOG_VISUAL_ID and not WardrobeCollectionFrame.ItemsCollectionFrame:CanEnchantSource(sourceID) then
+
+		local _, canEnchant;
+		local effectiveCategory = C_Transmog.GetSlotEffectiveCategory(self.dependencySlot.transmogLocation);
+		if effectiveCategory and effectiveCategory ~= 0 then
+			_, _, canEnchant = C_TransmogCollection.GetCategoryInfo(effectiveCategory);
+		end
+
+		if sourceID ~= NO_TRANSMOG_VISUAL_ID and (canEnchant ~= nil and not canEnchant or not WardrobeCollectionFrame.ItemsCollectionFrame:CanEnchantSource(sourceID)) then
 			-- clear anything in the enchant slot, otherwise cost and Apply button state will still reflect anything pending
 			C_Transmog.ClearPending(self.transmogLocation);
 			isTransmogrified = false;	-- handle legacy, this weapon could have had an illusion applied previously
@@ -506,18 +574,32 @@ function TransmogSlotButtonMixin:Update()
 end
 
 function TransmogSlotButtonMixin:GetEffectiveTransmogID()
-	local appliedSourceID, _, selectedSourceID = TransmogUtil.GetInfoForEquippedSlot(self.transmogLocation);
-	local pendingInfo = C_Transmog.GetPending(self.transmogLocation);
+	if not self.itemLocation:IsValid() then
+		return NO_TRANSMOG_VISUAL_ID;
+	end
 
+	local function GetTransmogIDFrom(fn)
+		local itemTransmogInfo = fn(self.itemLocation);
+		return TransmogUtil.GetRelevantTransmogID(itemTransmogInfo, self.transmogLocation);
+	end
+
+	local pendingInfo = C_Transmog.GetPending(self.transmogLocation);
 	if pendingInfo then
-		if pendingInfo.type == Enum.TransmogPendingType.Revert or pendingInfo.type == Enum.TransmogPendingType.Apply then
-			return selectedSourceID;
+		if pendingInfo.type == Enum.TransmogPendingType.Apply then
+			return pendingInfo.transmogID;
+		elseif pendingInfo.type == Enum.TransmogPendingType.Revert then
+			return GetTransmogIDFrom(C_Item.GetBaseItemTransmogInfo);
 		elseif pendingInfo.type == Enum.TransmogPendingType.ToggleOff then
 			return NO_TRANSMOG_VISUAL_ID;
 		end
 	end
-
-	return appliedSourceID;
+	local appliedTransmogID = GetTransmogIDFrom(C_Item.GetAppliedItemTransmogInfo);
+	-- if nothing is applied, get base
+	if appliedTransmogID == NO_TRANSMOG_VISUAL_ID then
+		return GetTransmogIDFrom(C_Item.GetBaseItemTransmogInfo);
+	else
+		return appliedTransmogID;
+	end
 end
 
 function TransmogSlotButtonMixin:RefreshItemModel()
@@ -565,6 +647,7 @@ function TransmogSlotButtonMixin:RefreshItemModel()
 ]]
 
 		if canTryOn then
+--[[
 			if isEitherHand then
 				local itemLink = GetInventoryItemLink("player", slotID);
 				if itemLink then
@@ -575,8 +658,18 @@ function TransmogSlotButtonMixin:RefreshItemModel()
 					end
 				end
 			end
+]]
 
-			WardrobeTransmogFrame.ModelFrame:TryOn(appearanceID);
+			if self.dependencySlot then
+				if isEitherHand then
+					local transmogID = self.dependencySlot:GetEffectiveTransmogID();
+					if transmogID ~= NO_TRANSMOG_VISUAL_ID then
+						WardrobeTransmogFrame.ModelFrame:TryOn(string.format("item:%d:%d", transmogID, appearanceID));
+					end
+				end
+			else
+				WardrobeTransmogFrame.ModelFrame:TryOn(appearanceID);
+			end
 		end
 	end
 end
@@ -662,10 +755,6 @@ function WardrobeCollectionFrameMixin:SetTab(tabID)
 		self.SearchBox:ClearAllPoints();
 		self.SearchBox:SetPoint("TOPRIGHT", -107, -35);
 		self.SearchBox:SetWidth(115);
-		local enableSearchAndFilter = self.ItemsCollectionFrame.transmogLocation and self.ItemsCollectionFrame.transmogLocation:IsAppearance();
-		self.SearchBox:EnableMouse(enableSearchAndFilter);
-		self.FilterButton:Show();
-		self.FilterButton:SetEnabled(enableSearchAndFilter);
 	end
 end
 
@@ -694,6 +783,9 @@ function WardrobeCollectionFrameMixin:OnLoad()
 		if not itemName then
 			C_Item.RequestServerCache(itemID);
 		end
+	end
+	if not GetItemInfo(2018) then
+		C_Item.RequestServerCache(2018);
 	end
 
 	self.FilterButton:SetResetFunction(WardrobeFilterDropDown_ResetFilters);
@@ -783,6 +875,16 @@ function WardrobeCollectionFrameMixin:GoToItem(sourceID)
 	end
 end
 
+function WardrobeCollectionFrameMixin:GoToIllusion(sourceID)
+	self:SetTab(TAB_ITEMS);
+
+	if self.ItemsCollectionFrame.transmogLocation:IsIllusion() then
+		self.ItemsCollectionFrame:GoToSourceID(sourceID, self.ItemsCollectionFrame.transmogLocation);
+	else
+		self.ItemsCollectionFrame:GoToSourceID(sourceID, TransmogUtil.GetTransmogLocation("MAINHANDSLOT", Enum.TransmogType.Illusion, Enum.TransmogModification.Main));
+	end
+end
+
 function WardrobeCollectionFrameMixin:UpdateTabButtons()
 	-- sets tab
 --	self.SetsTab.FlashFrame:SetShown(C_TransmogSets.GetLatestSource() ~= NO_TRANSMOG_SOURCE_ID and not C_Transmog.IsAtTransmogNPC());
@@ -792,10 +894,23 @@ function WardrobeCollectionFrameMixin:SetAppearanceTooltip(contentFrame, sources
 	self.tooltipContentFrame = contentFrame;
 	local selectedIndex = self.tooltipSourceIndex;
 	local showUseError = true;
-	self.tooltipSourceIndex, self.tooltipCycle = CollectionWardrobeUtil.SetAppearanceTooltip(GameTooltip, sources, primarySourceID, selectedIndex, showUseError)
+	self.tooltipSourceIndex, self.tooltipCycle = CollectionWardrobeUtil.SetAppearanceTooltip(GameTooltip, sources, primarySourceID, selectedIndex, showUseError, contentFrame.transmogLocation)
+end
+
+function WardrobeCollectionFrameMixin:SetIllusionTooltip(contentFrame, sources, primarySourceID)
+	self.tooltipContentFrame = contentFrame;
+	local selectedIndex = self.tooltipSourceIndex;
+	self.tooltipSourceIndex, self.tooltipCycle = CollectionWardrobeUtil.SetIllusionTooltip(GameTooltip, sources, primarySourceID, selectedIndex)
 end
 
 function WardrobeCollectionFrameMixin:HideAppearanceTooltip()
+	self.tooltipContentFrame = nil;
+	self.tooltipCycle = nil;
+	self.tooltipSourceIndex = nil;
+	GameTooltip:Hide();
+end
+
+function WardrobeCollectionFrameMixin:HideIllusionTooltip()
 	self.tooltipContentFrame = nil;
 	self.tooltipCycle = nil;
 	self.tooltipSourceIndex = nil;
@@ -833,15 +948,11 @@ end
 
 function WardrobeCollectionFrameMixin:SwitchSearchCategory()
 	if self.ItemsCollectionFrame.transmogLocation:IsIllusion() then
-		self:ClearSearch();
-		self.SearchBox:EnableMouse(false);
-		self.FilterButton:Disable();
-		return;
-	end
-	self.SearchBox:EnableMouse(true);
-	self.FilterButton:Enable();
-	if self.SearchBox:GetText() ~= "" then
-		C_TransmogCollection.SetSearch(self:GetSearchType(), self.SearchBox:GetText());
+		self:SetSearchType(Enum.TransmogSearchType.Illusions);
+
+		WardrobeResetFiltersButton_UpdateVisibility();
+	else
+		self:SetSearchType(Enum.TransmogSearchType.Items);
 	end
 end
 
@@ -858,6 +969,22 @@ function WardrobeCollectionFrameMixin:ClearSearch(searchType)
 	C_TransmogCollection.ClearSearch(searchType or self:GetSearchType());
 end
 
+function WardrobeCollectionFrameMixin:SetSearchType(searchType)
+	if self.activeFrame.searchType ~= searchType then
+		local text = C_TransmogCollection.GetSearchText(searchType)
+
+		if text and text ~= "" then
+			self.SearchBox:SetText(text);
+			C_TransmogCollection.SetSearch(searchType, text);
+		else
+			self.SearchBox:SetText("");
+			C_TransmogCollection.SetSearchType(searchType);
+		end
+
+		self.activeFrame.searchType = searchType;
+	end
+end
+
 function WardrobeCollectionFrameMixin:GetSearchType()
 	return self.activeFrame.searchType;
 end
@@ -865,10 +992,12 @@ end
 WardrobeItemsCollectionMixin = {};
 
 local spacingNoSmallButton = 2;
-local defaultSectionSpacing = 12;
+local spacingWithSmallButton = 4;
+local defaultSectionSpacing = 24;
+local shorterSectionSpacing = 12;
 
 function WardrobeItemsCollectionMixin:CreateSlotButtons()
-	local itemsSlots = {"HEAD", "SHOULDER", "BACK", "CHEST", "SHIRT", "TABARD", "WRIST", defaultSectionSpacing, "HANDS", "WAIST", "LEGS", "FEET", defaultSectionSpacing, "MAINHAND", "SECONDARYHAND", "RANGED"};
+	local itemsSlots = {"HEAD", "SHOULDER", "BACK", "CHEST", "SHIRT", "TABARD", "WRIST", "HANDS", shorterSectionSpacing, "WAIST", "LEGS", "FEET", shorterSectionSpacing, "MAINHAND", spacingWithSmallButton, "SECONDARYHAND", shorterSectionSpacing, "RANGED"};
 	local parentFrame = self.SlotsFrame;
 	local lastButton;
 	local xOffset = spacingNoSmallButton;
@@ -892,6 +1021,25 @@ function WardrobeItemsCollectionMixin:CreateSlotButtons()
 			button.slot = slotString.."SLOT";
 			xOffset = spacingNoSmallButton;
 			lastButton = button;
+			-- small buttons
+			local smallButton;
+			if slotString == "MAINHAND" or slotString == "SECONDARYHAND" then
+				smallButton = CreateFrame("BUTTON", nil, parentFrame, "WardrobeSmallSlotButtonTemplate");
+				parentFrame.Buttons[#parentFrame.Buttons + 1] = smallButton;
+				smallButton.isSmallButton = true;
+				smallButton.NormalTexture:SetAtlas("transmog-nav-slot-enchant", true);
+				smallButton.Highlight:SetAtlas("bags-roundhighlight");
+				smallButton.SelectedTexture:SetAtlas("transmog-nav-slot-selected-small", true);
+				smallButton:SetPoint("BOTTOMRIGHT", button, "TOPRIGHT", 8, -16);
+				smallButton.slot = button.slot;
+				smallButton.transmogLocation = TransmogUtil.GetTransmogLocation(smallButton.slot, Enum.TransmogType.Illusion, Enum.TransmogModification.Main);
+			end
+
+			if smallButton then
+				button.dependentSlot = smallButton;
+				smallButton.dependencySlot = button;
+			end
+
 			button.transmogLocation = TransmogUtil.GetTransmogLocation(button.slot, Enum.TransmogType.Appearance, Enum.TransmogModification.Main);
 		end
 	end
@@ -918,6 +1066,11 @@ function WardrobeItemsCollectionMixin:OnLoad()
 end
 
 function WardrobeItemsCollectionMixin:OnShow()
+	self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
+	self:RegisterCustomEvent("TRANSMOGRIFY_UPDATE");
+	self:RegisterCustomEvent("TRANSMOGRIFY_SUCCESS");
+	self:RegisterCustomEvent("PLAYER_TRANSMOGRIFICATION_CHANGED");
+
 	self:CheckLatestAppearance();
 
 	local needsUpdate = false;	-- we don't need to update if we call :SetActiveSlot as that will do an update
@@ -948,9 +1101,16 @@ function WardrobeItemsCollectionMixin:OnShow()
 		self:UpdateItems();
 		self:UpdateWeaponDropDown();
 	end
+
+	self:UpdateSlotsFrame();
 end
 
 function WardrobeItemsCollectionMixin:OnHide()
+	self:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED");
+	self:UnregisterCustomEvent("TRANSMOGRIFY_UPDATE");
+	self:UnregisterCustomEvent("TRANSMOGRIFY_SUCCESS");
+	self:UnregisterCustomEvent("PLAYER_TRANSMOGRIFICATION_CHANGED");
+
 	self.visualsList = nil;
 	self.filteredVisualsList = nil;
 end
@@ -960,7 +1120,17 @@ function WardrobeItemsCollectionMixin:OnMouseWheel(delta)
 end
 
 function WardrobeItemsCollectionMixin:OnEvent(event, ...)
-	if event == "TRANSMOG_COLLECTION_UPDATED" then
+	if event == "TRANSMOGRIFY_UPDATE" or event == "TRANSMOGRIFY_SUCCESS" or event == "PLAYER_EQUIPMENT_CHANGED" or event == "PLAYER_TRANSMOGRIFICATION_CHANGED" then
+		local slotID = ...;
+		if slotID and self.transmogLocation:IsAppearance() then
+			if slotID == self.transmogLocation:GetSlotID() then
+				self:UpdateItems();
+			end
+		else
+			-- generic update
+			self:UpdateItems();
+		end
+	elseif event == "TRANSMOG_COLLECTION_UPDATED" then
 		self:CheckLatestAppearance(true);
 		self:ValidateChosenVisualSources();
 		if self:IsVisible() then
@@ -1037,6 +1207,10 @@ function WardrobeItemsCollectionMixin:GetActiveSlot()
 	return self.transmogLocation and self.transmogLocation:GetSlotName();
 end
 
+function WardrobeItemsCollectionMixin:GetActiveSlotID()
+	return self.transmogLocation and self.transmogLocation:GetSlotID();
+end
+
 function WardrobeItemsCollectionMixin:GetActiveCategory()
 	return self.activeCategory, self.activeSubCategory;
 end
@@ -1059,7 +1233,8 @@ function WardrobeItemsCollectionMixin:IsValidWeaponCategoryForSlot(categoryID)
 	if name and isWeapon then
 		if (self.transmogLocation:IsMainHand() and canMainHand) or (self.transmogLocation:IsOffHand() and canOffHand) or (self.transmogLocation:IsRanged() and canRanged) then
 			if C_Transmog.IsAtTransmogNPC() then
-				local equippedItemID = GetInventoryItemID("player", self.transmogLocation:GetSlotID());
+				local slotID = self.transmogLocation:GetSlotID();
+				local equippedItemID = GetInventoryTransmogID("player", slotID) or GetInventoryItemID("player", slotID);
 				return C_TransmogCollection.IsCategoryValidForItem(categoryID, nil, equippedItemID);
 			else
 				return true;
@@ -1080,7 +1255,9 @@ function WardrobeItemsCollectionMixin:SetActiveSlot(transmogLocation, category, 
 
 	-- figure out a category
 	if not category then
-		if self.transmogLocation:IsAppearance() then
+		if self.transmogLocation:IsIllusion() then
+			category = nil;
+		elseif self.transmogLocation:IsAppearance() then
 			local useLastWeaponCategory = self.transmogLocation:IsEitherHand() and self.lastWeaponCategory and self:IsValidWeaponCategoryForSlot(self.lastWeaponCategory);
 			if useLastWeaponCategory then
 				category = self.lastWeaponCategory;
@@ -1112,11 +1289,11 @@ function WardrobeItemsCollectionMixin:SetActiveSlot(transmogLocation, category, 
 					end
 				end
 			end
-		end
-	end
 
-	if not category then
-		category, subCategory = 0, nil;
+			if not category then
+				category, subCategory = 0, nil;
+			end
+		end
 	end
 
 	if slotChanged then
@@ -1142,14 +1319,19 @@ function WardrobeItemsCollectionMixin:UpdateWeaponDropDown()
 	end
 	if not isWeapon then
 		dropdown:Show();
-		name = C_TransmogCollection.GetSubCategoryInfo(self.activeCategory, self.activeSubCategory)
-		UIDropDownMenu_SetSelectedValue(dropdown, self.activeSubCategory);
-		UIDropDownMenu_SetText(dropdown, name);
-		local validCategories = WardrobeCollectionFrameWeaponDropDown_Init(dropdown);
-		if validCategories > 1 then
-			UIDropDownMenu_EnableDropDown(dropdown);
-		else
+		if self.transmogLocation:IsIllusion() then
 			UIDropDownMenu_DisableDropDown(dropdown);
+			UIDropDownMenu_SetText(dropdown, "");
+		else
+			name = C_TransmogCollection.GetSubCategoryInfo(self.activeCategory, self.activeSubCategory)
+			UIDropDownMenu_SetSelectedValue(dropdown, self.activeSubCategory);
+			UIDropDownMenu_SetText(dropdown, name);
+			local validCategories = WardrobeCollectionFrameWeaponDropDown_Init(dropdown);
+			if validCategories > 1 then
+				UIDropDownMenu_EnableDropDown(dropdown);
+			else
+				UIDropDownMenu_DisableDropDown(dropdown);
+			end
 		end
 	else
 		dropdown:Show();
@@ -1169,9 +1351,27 @@ function WardrobeItemsCollectionMixin:SetActiveCategory(category, subCategory)
 	local previousSubCategory = self.activeSubCategory;
 	self.activeCategory = category;
 	self.activeSubCategory = subCategory;
-	if (previousCategory ~= category or previousSubCategory ~= subCategory) and self.transmogLocation:IsAppearance() then
+
+	local resetPage = false;
+	local switchSearchCategory = false;
+
+	local previousCategoryChanged = previousCategory ~= category or previousSubCategory ~= subCategory;
+	if previousCategoryChanged then
+		resetPage = true;
+		switchSearchCategory = true;
+	end
+
+	if switchSearchCategory then
+		self:GetParent():SwitchSearchCategory();
+	end
+
+	local _, isWeapon, canEnchant;
+	if category then
+		_, isWeapon, canEnchant = C_TransmogCollection.GetCategoryInfo(category);
+	end
+
+	if previousCategoryChanged and self.transmogLocation:IsAppearance() then
 		C_TransmogCollection.SetSearchAndFilterCategory(category, subCategory);
-		local _, isWeapon = C_TransmogCollection.GetCategoryInfo(category);
 		if isWeapon then
 			self.lastWeaponCategory = category;
 		end
@@ -1185,27 +1385,45 @@ function WardrobeItemsCollectionMixin:SetActiveCategory(category, subCategory)
 	local slotButtons = self.SlotsFrame.Buttons;
 	for i = 1, #slotButtons do
 		local button = slotButtons[i];
-		button.SelectedTexture:SetShown(button.transmogLocation:IsEqual(self.transmogLocation));
-	end
 
-	local resetPage = false;
-	local switchSearchCategory = false;
+		local isEqual = button.transmogLocation:IsEqual(self.transmogLocation);
+		button.SelectedTexture:SetShown(isEqual);
+
+		if button.dependentSlot then
+			if isEqual and canEnchant ~= nil then
+				button.dependentSlot:SetShown(canEnchant);
+			else
+				button.dependentSlot:SetShown(true);
+			end
+		end
+	end
 
 	if C_Transmog.IsAtTransmogNPC() then
 		self.jumpToVisualID = select(4, self:GetActiveSlotInfo());
 		resetPage = true;
 	end
 
-	if previousCategory ~= category or previousSubCategory ~= subCategory then
-		resetPage = true;
-		switchSearchCategory = true;
-	end
-
 	if resetPage then
 		self:ResetPage();
 	end
-	if switchSearchCategory then
-		self:GetParent():SwitchSearchCategory();
+end
+
+function WardrobeItemsCollectionMixin:UpdateSlotsFrame()
+	local slotButtons = self.SlotsFrame.Buttons;
+	for i = 1, #slotButtons do
+		local button = slotButtons[i];
+		if not button.isSmallButton and button.slot then
+			local transmogLocation = TransmogUtil.GetTransmogLocation(button.slot, Enum.TransmogType.Appearance, Enum.TransmogModification.Main);
+			if transmogLocation and (transmogLocation:IsMainHand() or transmogLocation:IsOffHand()) then
+				local effectiveCategory = C_Transmog.GetSlotEffectiveCategory(transmogLocation);
+				if effectiveCategory and effectiveCategory ~= 0 then
+					if button.dependentSlot then
+						local _, _, canEnchant = C_TransmogCollection.GetCategoryInfo(effectiveCategory);
+						button.dependentSlot:SetShown(canEnchant);
+					end
+				end
+			end
+		end
 	end
 end
 
@@ -1236,14 +1454,14 @@ function WardrobeItemsCollectionMixin:FilterVisuals()
 	local isAtTransmogrifier = C_Transmog.IsAtTransmogNPC();
 	local visualsList = self.visualsList;
 	local filteredVisualsList = {};
-	for i = 1, #visualsList do
+	for i, visualInfo in ipairs(visualsList) do
 		if isAtTransmogrifier then
-			if (visualsList[i].isUsable and visualsList[i].isCollected) or visualsList[i].alwaysShowItem then
-				tinsert(filteredVisualsList, visualsList[i]);
+			if (visualInfo.isUsable and visualInfo.isCollected) or visualInfo.alwaysShowItem then
+				tinsert(filteredVisualsList, visualInfo);
 			end
 		else
-			if not visualsList[i].isHideVisual then
-				tinsert(filteredVisualsList, visualsList[i]);
+			if not visualInfo.isHideVisual then
+				tinsert(filteredVisualsList, visualInfo);
 			end
 		end
 	end
@@ -1280,17 +1498,58 @@ function WardrobeItemsCollectionMixin:GetActiveSlotInfo()
 	return TransmogUtil.GetInfoForEquippedSlot(self.transmogLocation);
 end
 
+function WardrobeItemsCollectionMixin:GetWeaponInfoForEnchant()
+	local correspondingTransmogLocation = TransmogUtil.GetCorrespondingHandTransmogLocation(self.transmogLocation);
+	local effectiveCategory = C_Transmog.GetSlotEffectiveCategory(correspondingTransmogLocation);
+	if effectiveCategory and effectiveCategory ~= 0 then
+		local _, _, canEnchant = C_TransmogCollection.GetCategoryInfo(effectiveCategory);
+		if not canEnchant then
+			return C_TransmogCollection.GetFallbackWeaponAppearance();
+		end
+	end
+	local _, _, selectedSourceID = TransmogUtil.GetInfoForEquippedSlot(correspondingTransmogLocation);
+	if selectedSourceID ~= 0 and self:CanEnchantSource(selectedSourceID) then
+		local _, _, _, canTransmogrify = C_Transmog.GetSlotInfo(self.transmogLocation);
+		if not canTransmogrify then
+			return C_TransmogCollection.GetFallbackWeaponAppearance();
+		else
+			return selectedSourceID;
+		end
+	else
+		return C_TransmogCollection.GetFallbackWeaponAppearance();
+	end
+end
+
+function WardrobeItemsCollectionMixin:CanEnchantSource(sourceID)
+	local _, _, _, canEnchant = C_TransmogCollection.GetAppearanceSourceInfo(sourceID);
+	if canEnchant then
+		return true;
+	end
+	return false;
+end
+
 function WardrobeItemsCollectionMixin:UpdateItems()
 	local changeModel = false;
+	local appearanceSourceID;
 	local isAtTransmogrifier = C_Transmog.IsAtTransmogNPC();
 
+	if self.transmogLocation:IsIllusion() then
+		appearanceSourceID = self:GetWeaponInfoForEnchant();
+
+		if appearanceSourceID ~= self.illusionWeaponAppearanceID then
+			self.illusionWeaponAppearanceID = appearanceSourceID;
+			changeModel = true;
+		end
+	end
+
 	local _, baseVisualID, appliedVisualID, pendingVisualID, hasPendingUndo;
-	local effectiveCategory, effectiveSubCategory;
+	local effectiveCategory, effectiveSubCategory, hasWeaponEnchant;
 	local showUndoIcon;
 	if isAtTransmogrifier then
 		if self.transmogLocation:IsMainHand() then
 			effectiveCategory, effectiveSubCategory = C_Transmog.GetSlotEffectiveCategory(self.transmogLocation);
 		end
+		hasWeaponEnchant = CollectionWardrobeUtil.HasWeaponEnchant(self.transmogLocation);
 		_, baseVisualID, _, appliedVisualID, _, pendingVisualID, hasPendingUndo = C_Transmog.GetSlotVisualInfo(self.transmogLocation);
 		if appliedVisualID ~= NO_TRANSMOG_VISUAL_ID then
 			if hasPendingUndo then
@@ -1307,7 +1566,7 @@ function WardrobeItemsCollectionMixin:UpdateItems()
 		end
 	end
 
-	local matchesCategory = not effectiveCategory or (effectiveCategory == self.activeCategory and effectiveSubCategory == self.activeSubCategory);
+	local matchesCategory = not effectiveCategory or (effectiveCategory == self.activeCategory and effectiveSubCategory == self.activeSubCategory) or self.transmogLocation:IsIllusion();
 
 	local pendingTransmogModelFrame;
 	local indexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE;
@@ -1319,8 +1578,12 @@ function WardrobeItemsCollectionMixin:UpdateItems()
 			model:Show();
 
 			if visualInfo ~= model.visualInfo or changeModel then
-				local sourceID = self:GetAnAppearanceSourceFromVisual(visualInfo.visualID, nil);
-				model:SetItemAppearance(sourceID);
+				if appearanceSourceID then
+					model:SetItemAppearance(appearanceSourceID, visualInfo.sourceID);
+				else
+					local sourceID = self:GetAnAppearanceSourceFromVisual(visualInfo.visualID, nil);
+					model:SetItemAppearance(sourceID);
+				end
 			end
 			model.visualInfo = visualInfo;
 
@@ -1344,7 +1607,7 @@ function WardrobeItemsCollectionMixin:UpdateItems()
 			-- border
 			if not visualInfo.isCollected then
 				model.Overlay.Border:SetAtlas("transmog-wardrobe-border-uncollected");
-			elseif not visualInfo.isUsable then
+			elseif not visualInfo.isUsable or (hasWeaponEnchant and not C_TransmogCollection.CanEnchantAppearance(visualInfo.visualID)) then
 				model.Overlay.Border:SetAtlas("transmog-wardrobe-border-unusable");
 			else
 				model.Overlay.Border:SetAtlas("transmog-wardrobe-border-collected");
@@ -1421,21 +1684,36 @@ function WardrobeItemsCollectionMixin:UpdateItems()
 end
 
 function WardrobeItemsCollectionMixin:UpdateProgressBar()
-	local collected = C_TransmogCollection.GetCategoryCollectedCount(self.activeCategory, self.activeSubCategory);
-	local total = C_TransmogCollection.GetCategoryTotal(self.activeCategory, self.activeSubCategory);
+	local collected, total;
+	if self.transmogLocation:IsIllusion() then
+		total = #self.visualsList;
+		collected = 0;
+		for i, illusion in ipairs(self.visualsList) do
+			if illusion.isCollected then
+				collected = collected + 1;
+			end
+		end
+	else
+		collected = C_TransmogCollection.GetCategoryCollectedCount(self.activeCategory, self.activeSubCategory);
+		total = C_TransmogCollection.GetCategoryTotal(self.activeCategory, self.activeSubCategory);
+	end
 
 	self:GetParent():UpdateProgressBar(collected, total);
 end
 
 function WardrobeItemsCollectionMixin:RefreshVisualsList()
-	local exclusion;
-	local activeSlot = self:GetActiveSlot();
-	if activeSlot == "MAINHANDSLOT" then
-		exclusion = LE_ITEM_FILTER_TYPE_OFF_HAND;
-	elseif activeSlot == "SECONDARYHANDSLOT" then
-		exclusion = LE_ITEM_FILTER_TYPE_MAIN_HAND;
+	if self.transmogLocation:IsIllusion() then
+		self.visualsList = C_TransmogCollection.GetIllusions();
+	else
+		local exclusion;
+		local activeSlot = self:GetActiveSlot();
+		if activeSlot == "MAINHANDSLOT" then
+			exclusion = LE_ITEM_FILTER_TYPE_OFF_HAND;
+		elseif activeSlot == "SECONDARYHANDSLOT" then
+			exclusion = LE_ITEM_FILTER_TYPE_MAIN_HAND;
+		end
+		self.visualsList = C_TransmogCollection.GetCategoryAppearances(self.activeCategory, self.activeSubCategory, exclusion);
 	end
-	self.visualsList = C_TransmogCollection.GetCategoryAppearances(self.activeCategory, self.activeSubCategory, exclusion);
 
 	self:FilterVisuals();
 	self:SortVisuals();
@@ -1501,11 +1779,13 @@ function WardrobeCollectionFrame_OpenTransmogLink(link)
 	end
 end
 
--- TODO
 function WardrobeItemsCollectionMixin:GoToSourceID(sourceID, transmogLocation, forceGo, forTransmog, overrideCategoryID, overrideSubCategoryID)
 	local categoryID, subCategoryID, visualID;
 	if transmogLocation:IsAppearance() then
 		categoryID, subCategoryID, visualID = C_TransmogCollection.GetAppearanceSourceInfo(sourceID);
+	elseif transmogLocation:IsIllusion() then
+		local illusionInfo = C_TransmogCollection.GetIllusionInfo(sourceID);
+		visualID = illusionInfo and illusionInfo.visualID;
 	end
 	if overrideCategoryID then
 		categoryID = overrideCategoryID;
@@ -1537,6 +1817,18 @@ function WardrobeItemsCollectionMixin:SetAppearanceTooltip(frame)
 	end
 end
 
+function WardrobeItemsCollectionMixin:SetIllusionTooltip(frame)
+	GameTooltip:SetOwner(frame, "ANCHOR_RIGHT");
+	self.tooltipSourceID = frame.visualInfo.sourceID;
+	self.tooltipItemVisual = frame.visualInfo.itemVisual;
+	self:RefreshIllusionTooltip();
+
+	if WardrobeCollectionFrame.tooltipCycle then
+		SetOverrideBindingClick(frame, true, "TAB", frame:GetName(), "TAB");
+		SetOverrideBindingClick(frame, true, "SHIFT-TAB", frame:GetName(), "SHIFT-TAB");
+	end
+end
+
 function WardrobeItemsCollectionMixin:RefreshAppearanceTooltip(sources)
 	if not self.tooltipVisualID then
 		return;
@@ -1546,9 +1838,21 @@ function WardrobeItemsCollectionMixin:RefreshAppearanceTooltip(sources)
 	self:GetParent():SetAppearanceTooltip(self, sources, chosenSourceID);
 end
 
+function WardrobeItemsCollectionMixin:RefreshIllusionTooltip()
+	local sources = C_TransmogCollection.GetIllusionsByItemVisual(self.tooltipSourceID, self.tooltipItemVisual);
+	local chosenSourceID = self:GetChosenVisualSource(self.tooltipSourceID);
+	self:GetParent():SetIllusionTooltip(self, sources, chosenSourceID);
+end
+
 function WardrobeItemsCollectionMixin:ClearAppearanceTooltip(frame)
 	self.tooltipVisualID = nil;
 	self:GetParent():HideAppearanceTooltip();
+	ClearOverrideBindings(frame);
+end
+
+function WardrobeItemsCollectionMixin:ClearIllusionTooltip(frame)
+	self.tooltipSourceID = nil;
+	self:GetParent():HideIllusionTooltip();
 	ClearOverrideBindings(frame);
 end
 
@@ -1612,6 +1916,13 @@ function WardrobeItemsCollectionMixin:ValidateChosenVisualSources()
 	end
 end
 
+function WardrobeItemsCollectionMixin:IsForbiddenVisualID(visualID)
+	if C_Transmog.IsAtTransmogNPC() and CollectionWardrobeUtil.HasWeaponEnchant(self.transmogLocation) and not C_TransmogCollection.CanEnchantAppearance(visualID) then
+		return true;
+	end
+	return false;
+end
+
 -- Models
 local SetSequence; -- Cache widget api
 local lightValues = {enabled = 1, omni = 0, dirX = -1, dirY = 1, dirZ = -1, ambIntensity = 1.05, ambR = 1, ambG = 1, ambB = 1, dirIntensity = 0, dirR = 1, dirG = 1, dirB = 1};
@@ -1646,36 +1957,46 @@ end
 function WardrobeItemsModelMixin:OnMouseDown(button)
 	local itemsCollectionFrame = self:GetParent();
 	if IsModifiedClick("CHATLINK") then
-		local link;
-		local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(self.visualInfo.visualID, itemsCollectionFrame:GetActiveCategory());
-		if WardrobeCollectionFrame.tooltipSourceIndex then
-			local index = CollectionWardrobeUtil.GetValidIndexForNumSources(WardrobeCollectionFrame.tooltipSourceIndex, #sources);
-			link = select(6, C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID));
+		local _, link;
+		if itemsCollectionFrame.transmogLocation:IsIllusion() then
+			_, link = C_TransmogCollection.GetIllusionStrings(self.visualInfo.sourceID);
+		else
+			local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(self.visualInfo.visualID, itemsCollectionFrame:GetActiveCategory());
+			if WardrobeCollectionFrame.tooltipSourceIndex then
+				local index = CollectionWardrobeUtil.GetValidIndexForNumSources(WardrobeCollectionFrame.tooltipSourceIndex, #sources);
+				link = select(6, C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID));
+			end
 		end
 		if link then
 			HandleModifiedItemClick(link);
 		end
 		return;
 	elseif IsModifiedClick("DRESSUP") then
-		local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(self.visualInfo.visualID, itemsCollectionFrame:GetActiveCategory());
-		local index = CollectionWardrobeUtil.GetValidIndexForNumSources(WardrobeCollectionFrame.tooltipSourceIndex or 1, #sources);
-		local sourceUD = sources[index].sourceID;
+		if itemsCollectionFrame.transmogLocation:IsIllusion() then
+			local appearanceSourceID = itemsCollectionFrame:GetWeaponInfoForEnchant();
+			DressUpItemLink(string.format("item:%d:%d", appearanceSourceID, self.visualInfo.sourceID));
+		else
+			local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(self.visualInfo.visualID, itemsCollectionFrame:GetActiveCategory());
+			local index = CollectionWardrobeUtil.GetValidIndexForNumSources(WardrobeCollectionFrame.tooltipSourceIndex or 1, #sources);
+			local sourceUD = sources[index].sourceID;
 
-		if sourceUD then
-			DressUpItemLink(sourceUD);
+			if sourceUD then
+				DressUpItemLink(sourceUD);
+			end
 		end
 		return;
 	end
 
 	if button == "LeftButton" then
 		CloseDropDownMenus();
+
 		self:GetParent():SelectVisual(self.visualInfo.visualID);
 	elseif button == "RightButton" then
 		local dropDown = self:GetParent().RightClickDropDown;
 		if dropDown.activeFrame ~= self then
 			CloseDropDownMenus();
 		end
-		if not self.visualInfo.isCollected or self.visualInfo.isHideVisual or itemsCollectionFrame.transmogLocation:IsIllusion() then
+		if not self.visualInfo.isCollected or self.visualInfo.isHideVisual then
 			return;
 		end
 		dropDown.activeFrame = self;
@@ -1687,14 +2008,20 @@ function WardrobeItemsModelMixin:OnMouseDown(button)
 			else
 				WardrobeCollectionFrame.tooltipSourceIndex = WardrobeCollectionFrame.tooltipSourceIndex + 1;
 			end
-			local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(self.visualInfo.visualID, itemsCollectionFrame:GetActiveCategory());
-			self:GetParent():RefreshAppearanceTooltip(sources);
 
-			local index = CollectionWardrobeUtil.GetValidIndexForNumSources(WardrobeCollectionFrame.tooltipSourceIndex or 1, #sources);
-			local sourceUD = sources[index].sourceID;
+			if itemsCollectionFrame.transmogLocation:IsIllusion() then
+				local sources = C_TransmogCollection.GetIllusionsByItemVisual(self.visualInfo.sourceID, self.visualInfo.itemVisual);
+				self:GetParent():RefreshIllusionTooltip(sources);
+			else
+				local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(self.visualInfo.visualID, itemsCollectionFrame:GetActiveCategory());
+				self:GetParent():RefreshAppearanceTooltip(sources);
 
-			if sourceUD then
-				self:SetItemAppearance(sourceUD);
+				local index = CollectionWardrobeUtil.GetValidIndexForNumSources(WardrobeCollectionFrame.tooltipSourceIndex or 1, #sources);
+				local sourceUD = sources[index].sourceID;
+
+				if sourceUD then
+					self:SetItemAppearance(sourceUD);
+				end
 			end
 		end
 	end
@@ -1717,7 +2044,11 @@ function WardrobeItemsModelMixin:OnEnter()
 		self.Overlay.NewString:Hide();
 		self.Overlay.NewGlow:Hide();
 	end
-	itemsCollectionFrame:SetAppearanceTooltip(self);
+	if itemsCollectionFrame.transmogLocation:IsIllusion() then
+		itemsCollectionFrame:SetIllusionTooltip(self);
+	else
+		itemsCollectionFrame:SetAppearanceTooltip(self);
+	end
 end
 
 function WardrobeItemsModelMixin:OnLeave()
@@ -1748,7 +2079,7 @@ function WardrobeItemsModelMixin:OnUpdate()
 	end
 end
 
-function WardrobeItemsModelMixin:SetItemAppearance(sourceID)
+function WardrobeItemsModelMixin:SetItemAppearance(sourceID, illusionID)
 	if type(sourceID) ~= "number" then
 		return;
 	end
@@ -1782,7 +2113,7 @@ function WardrobeItemsModelMixin:SetItemAppearance(sourceID)
 	self.OverlayBackground:Hide();
 	self.LoadingFrame:Hide();
 	self.queuedSourceID = nil;
-	self:TryOn(sourceID);
+	self:TryOn(string.format("item:%s:%s", sourceID, illusionID or 0));
 end
 
 function WardrobeItemsModelMixin:EquipTransmogGear(activeSlot)
@@ -1846,7 +2177,8 @@ function WardrobeCollectionFrameSubCategoryDropDown_Init(self)
 	local selectedValue = UIDropDownMenu_GetSelectedValue(self);
 	local info = UIDropDownMenu_CreateInfo();
 	info.func = WardrobeCollectionFrameWeaponDropDown_OnClick;
-	local equippedItemID = GetInventoryItemID("player", transmogLocation:GetSlotID());
+	local slotID = transmogLocation:GetSlotID();
+	local equippedItemID = GetInventoryTransmogID("player", slotID) or GetInventoryItemID("player", slotID);
 	local checkCategory = equippedItemID and C_Transmog.IsAtTransmogNPC();
 	if checkCategory then
 		-- if the equipped item cannot be transmogrified, relax restrictions
@@ -1914,61 +2246,112 @@ function WardrobeCollectionFrameSubCategoryDropDown_OnClick(self, category, subC
 end
 
 function WardrobeCollectionFrameRightClickDropDown_Init(self)
-	local appearanceID = self.activeFrame.visualInfo.visualID;
-	local info = UIDropDownMenu_CreateInfo();
-	-- Set Favorite
-	if C_TransmogCollection.GetIsAppearanceFavorite(appearanceID) then
-		info.text = BATTLE_PET_UNFAVORITE;
-		info.arg1 = appearanceID;
-		info.arg2 = 0;
-	else
-		info.text = BATTLE_PET_FAVORITE;
-		info.arg1 = appearanceID;
-		info.arg2 = 1;
+	local transmogLocation = WardrobeCollectionFrame.ItemsCollectionFrame.transmogLocation;
+	if not transmogLocation then
+		return;
 	end
-	info.notCheckable = true;
-	info.func = function(_, visualID, value) WardrobeCollectionFrameModelDropDown_SetFavorite(visualID, value); end;
-	UIDropDownMenu_AddButton(info);
-	-- Cancel
-	info = UIDropDownMenu_CreateInfo();
-	info.notCheckable = true;
-	info.text = CANCEL;
-	UIDropDownMenu_AddButton(info);
 
-	local headerInserted = false;
-	local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(appearanceID, WardrobeCollectionFrame.ItemsCollectionFrame:GetActiveCategory());
-	local chosenSourceID = WardrobeCollectionFrame.ItemsCollectionFrame:GetChosenVisualSource(appearanceID);
-	info.func = WardrobeCollectionFrameModelDropDown_SetSource;
-	for i = 1, #sources do
-		if sources[i].isCollected and WardrobeCollectionFrame.ItemsCollectionFrame:IsAppearanceUsableForActiveCategory(sources[i]) then
-			if not headerInserted then
-				headerInserted = true;
-				-- space
-				info.text = " ";
-				info.disabled = true;
-				UIDropDownMenu_AddButton(info);
+	if transmogLocation:IsIllusion() then
+		local sourceID = self.activeFrame.visualInfo.sourceID;
+
+		info = UIDropDownMenu_CreateInfo();
+		info.notCheckable = true;
+		info.text = CANCEL;
+		UIDropDownMenu_AddButton(info);
+
+		local headerInserted = false;
+		local sources = C_TransmogCollection.GetIllusionsByItemVisual(sourceID, self.activeFrame.visualInfo.itemVisual);
+		local chosenSourceID = WardrobeCollectionFrame.ItemsCollectionFrame:GetChosenVisualSource(sourceID);
+		info.func = WardrobeCollectionFrameModelDropDown_SetSource;
+		for i = 1, #sources do
+			if sources[i].isCollected and WardrobeCollectionFrame.ItemsCollectionFrame:IsAppearanceUsableForActiveCategory(sources[i]) then
+				if not headerInserted then
+					headerInserted = true;
+					-- space
+					info.text = " ";
+					info.disabled = true;
+					UIDropDownMenu_AddButton(info);
+					info.disabled = nil;
+					-- header
+					info.text = WARDROBE_TRANSMOGRIFY_AS;
+					info.isTitle = true;
+					info.colorCode = NORMAL_FONT_COLOR_CODE;
+					UIDropDownMenu_AddButton(info);
+					info.isTitle = nil;
+					-- turn off notCheckable
+					info.notCheckable = nil;
+				end
+				local name, nameColor = CollectionWardrobeUtil.GetIllusionNameTextAndColor(sources[i].sourceID);
+				info.text = name;
+				info.colorCode = nameColor:GenerateHexColorMarkup();
 				info.disabled = nil;
-				-- header
-				info.text = WARDROBE_TRANSMOGRIFY_AS;
-				info.isTitle = true;
-				info.colorCode = NORMAL_FONT_COLOR_CODE;
+				info.arg1 = sourceID;
+				info.arg2 = sources[i].sourceID;
+				-- choose the 1st valid source if one isn't explicitly chosen
+				if chosenSourceID == NO_TRANSMOG_VISUAL_ID then
+					chosenSourceID = sources[i].sourceID;
+				end
+				info.checked = (chosenSourceID == sources[i].sourceID);
 				UIDropDownMenu_AddButton(info);
-				info.isTitle = nil;
-				-- turn off notCheckable
-				info.notCheckable = nil;
 			end
-			local name, nameColor = WardrobeCollectionFrame:GetAppearanceNameTextAndColor(sources[i]);
-			info.text = name;
-			info.colorCode = nameColor:GenerateHexColorMarkup();
-			info.disabled = nil;
+		end
+	else
+		local appearanceID = self.activeFrame.visualInfo.visualID;
+		local info = UIDropDownMenu_CreateInfo();
+		-- Set Favorite
+		if C_TransmogCollection.GetIsAppearanceFavorite(appearanceID) then
+			info.text = BATTLE_PET_UNFAVORITE;
 			info.arg1 = appearanceID;
-			info.arg2 = sources[i].sourceID;
-			-- choose the 1st valid source if one isn't explicitly chosen
-			if chosenSourceID == NO_TRANSMOG_VISUAL_ID then
-				chosenSourceID = sources[i].sourceID;
+			info.arg2 = 0;
+		else
+			info.text = BATTLE_PET_FAVORITE;
+			info.arg1 = appearanceID;
+			info.arg2 = 1;
+		end
+		info.notCheckable = true;
+		info.func = function(_, visualID, value) WardrobeCollectionFrameModelDropDown_SetFavorite(visualID, value); end;
+		UIDropDownMenu_AddButton(info);
+		-- Cancel
+		info = UIDropDownMenu_CreateInfo();
+		info.notCheckable = true;
+		info.text = CANCEL;
+		UIDropDownMenu_AddButton(info);
+
+		local headerInserted = false;
+		local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(appearanceID, WardrobeCollectionFrame.ItemsCollectionFrame:GetActiveCategory());
+		local chosenSourceID = WardrobeCollectionFrame.ItemsCollectionFrame:GetChosenVisualSource(appearanceID);
+		info.func = WardrobeCollectionFrameModelDropDown_SetSource;
+		for i = 1, #sources do
+			if sources[i].isCollected then
+				if not headerInserted then
+					headerInserted = true;
+					-- space
+					info.text = " ";
+					info.disabled = true;
+					UIDropDownMenu_AddButton(info);
+					info.disabled = nil;
+					-- header
+					info.text = WARDROBE_TRANSMOGRIFY_AS;
+					info.isTitle = true;
+					info.colorCode = NORMAL_FONT_COLOR_CODE;
+					UIDropDownMenu_AddButton(info);
+					info.isTitle = nil;
+					-- turn off notCheckable
+					info.notCheckable = nil;
+				end
+				local name, nameColor = WardrobeCollectionFrame:GetAppearanceNameTextAndColor(sources[i]);
+				info.text = name;
+				info.colorCode = nameColor:GenerateHexColorMarkup();
+				info.disabled = nil;
+				info.arg1 = appearanceID;
+				info.arg2 = sources[i].sourceID;
+				-- choose the 1st valid source if one isn't explicitly chosen
+				if chosenSourceID == NO_TRANSMOG_VISUAL_ID then
+					chosenSourceID = sources[i].sourceID;
+				end
+				info.checked = (chosenSourceID == sources[i].sourceID);
+				UIDropDownMenu_AddButton(info);
 			end
-			info.checked = (chosenSourceID == sources[i].sourceID);
-			UIDropDownMenu_AddButton(info);
 		end
 	end
 end
@@ -2014,7 +2397,8 @@ function WardrobeCollectionFrameWeaponDropDown_Init(self)
 	local selectedValue = UIDropDownMenu_GetSelectedValue(self);
 	local info = UIDropDownMenu_CreateInfo();
 	info.func = WardrobeCollectionFrameWeaponDropDown_OnClick;
-	local equippedItemID = GetInventoryItemID("player", transmogLocation:GetSlotID());
+	local slotID = transmogLocation:GetSlotID();
+	local equippedItemID = GetInventoryTransmogID("player", slotID) or GetInventoryItemID("player", slotID);
 	local checkCategory = equippedItemID and C_Transmog.IsAtTransmogNPC();
 	if checkCategory then
 		-- if the equipped item cannot be transmogrified, relax restrictions
@@ -2110,8 +2494,11 @@ function WardrobeFilterDropDown_Initialize(self, level)
 		return;
 	end
 
-	if WardrobeCollectionFrame:GetSearchType() == Enum.TransmogSearchType.Items then
+	local searchType = WardrobeCollectionFrame:GetSearchType();
+	if searchType == Enum.TransmogSearchType.Items then
 		WardrobeFilterDropDown_InitializeItems(self, level);
+	elseif searchType == Enum.TransmogSearchType.Illusions then
+		WardrobeFilterDropDown_InitializeIllusions(self, level);
 	end
 end
 
@@ -2159,15 +2546,67 @@ function WardrobeFilterDropDown_InitializeItems(self, level)
 	FilterDropDownSystem.Initialize(self, filterSystem, level);
 end
 
+function WardrobeFilterDropDown_InitializeIllusions(self, level)
+	-- Transmog NPC only uses source filters
+	local sourceFilters = {
+		{ type = FilterComponent.TextButton,
+		  text = CHECK_ALL,
+		  set = function()
+			C_IllusionInfo.SetAllSourceFilters(true);
+			UIDropDownMenu_Refresh(WardrobeFilterDropDown, UIDROPDOWNMENU_MENU_VALUE, UIDROPDOWNMENU_MENU_LEVEL);
+		  end,
+		},
+		{ type = FilterComponent.TextButton,
+		  text = UNCHECK_ALL,
+		  set = function()
+			C_IllusionInfo.SetAllSourceFilters(false);
+			UIDropDownMenu_Refresh(WardrobeFilterDropDown, UIDROPDOWNMENU_MENU_VALUE, UIDROPDOWNMENU_MENU_LEVEL);
+		  end,
+		},
+		{ type = FilterComponent.DynamicFilterSet,
+		  buttonType = FilterComponent.Checkbox,
+		  set = C_TransmogCollection.SetIllusionSourceTypeFilter,
+		  isSet = C_TransmogCollection.IsIllusionSourceTypeFilterChecked,
+--		  filterValidation = C_IllusionInfo.IsIllusionSourceValid,
+		  numFilters = C_PetJournal.GetNumPetSources,
+		  globalPrepend = "COLLECTION_PET_SOURCE_",
+		},
+	};
+
+	local illusionCollectionFilters = {
+		{ type = FilterComponent.Checkbox, text = COLLECTED, set = C_TransmogCollection.SetIllusionCollectedShown, isSet = C_TransmogCollection.GetIllusionCollectedShown },
+		{ type = FilterComponent.Checkbox, text = NOT_COLLECTED, set = C_TransmogCollection.SetIllusionUncollectedShown, isSet = C_TransmogCollection.GetIllusionUncollectedShown },
+		{ type = FilterComponent.Submenu, text = SOURCES, value = 1, childrenInfo = {
+				-- "Appearances" Collection tab has collection filters + source filters
+				filters = sourceFilters,
+			},
+		},
+	};
+
+	local atTransmogrifier = C_Transmog.IsAtTransmogNPC();
+	local filterSystem = {
+		onUpdate = WardrobeResetFiltersButton_UpdateVisibility,
+		filters = (atTransmogrifier and sourceFilters or illusionCollectionFilters),
+	};
+
+	FilterDropDownSystem.Initialize(self, filterSystem, level);
+end
+
 function WardrobeFilterDropDown_ResetFilters()
-	if WardrobeCollectionFrame:GetSearchType() == Enum.TransmogSearchType.Items then
+	local searchType = WardrobeCollectionFrame:GetSearchType();
+	if searchType == Enum.TransmogSearchType.Items then
 		C_TransmogCollection.SetDefaultFilters();
+	elseif searchType == Enum.TransmogSearchType.Illusions then
+		C_IllusionInfo.SetDefaultFilters();
 	end
 	WardrobeCollectionFrame.FilterButton.ResetButton:Hide();
 end
 
 function WardrobeResetFiltersButton_UpdateVisibility()
-	if WardrobeCollectionFrame:GetSearchType() == Enum.TransmogSearchType.Items then
+	local searchType = WardrobeCollectionFrame:GetSearchType();
+	if searchType == Enum.TransmogSearchType.Items then
 		WardrobeCollectionFrame.FilterButton.ResetButton:SetShown(not C_TransmogCollection.IsUsingDefaultFilters());
+	elseif searchType == Enum.TransmogSearchType.Illusions then
+		WardrobeCollectionFrame.FilterButton.ResetButton:SetShown(not C_IllusionInfo.IsUsingDefaultFilters());
 	end
 end

@@ -456,7 +456,7 @@ function ContainerFrame_Update(frame)
 			highlightFrame.buffer = Container_NewItemBuffer[id][itemButton:GetID()]
 
 			if NEW_ITEM_ATLAS_BY_QUALITY[quality] then
-				highlightFrame.NewItemTexture:SetTexCoord(unpack(NEW_ITEM_ATLAS_BY_QUALITY[quality]))
+				highlightFrame.NewItemTexture:SetAtlas(NEW_ITEM_ATLAS_BY_QUALITY[quality])
 			end
 		end
 
@@ -490,7 +490,9 @@ function ContainerFrame_Update(frame)
 	end
 
 	local bagButton = ContainerFrame_GetBagButton(frame);
-	bagButton:UpdateItemContextMatching();
+	if bagButton then
+		bagButton:UpdateItemContextMatching();
+	end
 end
 
 function ContainerFrame_UpdateLocked(frame)
@@ -1069,6 +1071,12 @@ function ContainerFrameItemButton_OnClick(self, button)
 				end
 			end
 
+			return;
+		elseif ( ItemUpgradeFrame and ItemUpgradeFrame:IsShown() ) then
+			local itemLocation = ItemLocation:CreateFromBagAndSlot(bagID, slotID);
+			if C_ItemUpgrade.CanUpgradeItem(itemLocation) then
+				C_ItemUpgrade.SetItemUpgradeFromLocation(itemLocation);
+			end
 			return;
 		elseif ContainerFrame_CanItemUse() and ( itemID and ITEMS_ATTENTION_ON_USE and ITEMS_ATTENTION_ON_USE[itemID] ) then
 			if ( not IsHelpfulItem(itemID) ) then

@@ -1290,7 +1290,6 @@
 		<Scripts>
 			<OnLoad function="GuildRosterFrame_OnLoad"/>
 			<OnShow function="GuildRosterFrame_OnShow"/>
-			<OnEvent function="GuildRosterFrame_OnEvent"/>
 		</Scripts>
 	</Frame>
 	<Frame name="GuildMemberDetailFrame" toplevel="true" enableMouse="true" hidden="true" parent="GuildFrame">
@@ -3418,8 +3417,7 @@
 		</Scripts>
 	</Frame>
 
-
-	<Frame name="GuildInviteFrame" toplevel="true" frameStrata="DIALOG" hidden="true" parent="UIParent">
+	<Frame name="GuildInviteFrame" parent="UIParent" toplevel="true" frameStrata="DIALOG" enableMouse="true" hidden="true">
 		<Size x="310" y="188"/>
 		<Anchors>
 			<Anchor point="CENTER" x="0" y="0" />
@@ -3516,7 +3514,7 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Frame name="$parentTabardArt" setAllPoints="true">
+			<Frame name="$parentTabardArt" parentKey="TabardArt" setAllPoints="true">
 				<Layers>
 					<Layer level="BACKGROUND">
 						<Texture name="$parentTabardBorder" file="Interface\GuildFrame\GuildFrame">
@@ -3539,7 +3537,7 @@
 					</Layer>
 				</Layers>
 			</Frame>
-			<Frame name="$parentLevel">
+			<Frame name="$parentLevel" parentKey="Level">
 				<Size x="10" y="10"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" x="54" y="-76"/>
@@ -3576,7 +3574,7 @@
 					</Layer>
 				</Layers>
 			</Frame>
-			<Button name="$parentJoinButton" inherits="UIPanelButtonTemplate2" text="ENTER">
+			<Button name="$parentJoinButton" parentKey="JoinButton" inherits="UIPanelButtonTemplate2" text="ENTER">
 				<Size x="120" y="22"/>
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" x="24" y="24"/>
@@ -3584,12 +3582,11 @@
 				<Scripts>
 					<OnClick>
 						AcceptGuild()
-						GuildInviteFrame.accepted = true
-						StaticPopupSpecial_Hide(GuildInviteFrame)
+						StaticPopupSpecial_Hide(self:GetParent())
 					</OnClick>
 				</Scripts>
 			</Button>
-			<Button name="$parentDeclineButton" inherits="UIPanelButtonTemplate2" text="PASS">
+			<Button name="$parentDeclineButton" parentKey="DeclineButton" inherits="UIPanelButtonTemplate2" text="PASS">
 				<Size x="120" y="22"/>
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" x="-24" y="24"/>

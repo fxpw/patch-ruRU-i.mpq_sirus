@@ -16,6 +16,10 @@
 				UIParent_OnLoad(self);
 				self.firstTimeLoaded = 1;
 
+				SetCVar("showItemLevel", 1)
+				SetCVar("projectedTextures", 1)
+				SetCVar("previewTalents", 1)
+
 				<!-- Register session CVar -->
 				RegisterCVar("ShowSpellUnassignedBorder", "1")
 				RegisterCVar("miniTradeSkillFrame", 0)
@@ -35,25 +39,10 @@
 				LFRBrowseFrame_OnUpdateAlways(elapsed);
 				BNToastFrame_OnUpdate();
 				GlobalMouse_OnUpdate();
-
-				if GetCVar("showItemLevel") ~= "1" then
-					SetCVar("showItemLevel", 1)
-				elseif GetCVar("projectedTextures") ~= "1" then
-					SetCVar("projectedTextures", 1)
-				elseif GetCVar("previewTalents") ~= "1" then
-					SetCVar("previewTalents", 1)
-				end
 			</OnUpdate>
 			<!-- used to properly hide and show certain frames when the UI is toggled on and off -->
-			<OnShow>
-				if ( self.firstTimeLoaded ~= 1 ) then
-					CloseAllWindows();
-					self.firstTimeLoaded = nil;
-				end
-				if TimerTrackerTimer1 and not TimerTrackerTimer1:IsShown() then
-					TimerTracker_ReadyStatusButton:Toggle(false)
-				end
-			</OnShow>
+			<OnShow function="UIParent_OnShow"/>
+			<OnHide function="UIParent_OnHide"/>
 			<OnAttributeChanged function="UpdateUIPanelPositions"/>
 		</Scripts>
 	</Frame>

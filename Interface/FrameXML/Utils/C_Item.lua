@@ -385,6 +385,24 @@ function C_Item.GetItemIcon(itemLocation)
 	end
 end
 
+function C_Item.GetItemName(itemLocation)
+	if type(itemLocation) ~= "table" or type(itemLocation.HasAnyLocation) ~= "function" or not itemLocation:HasAnyLocation() then
+		error("Usage: local itemIcon = C_Item.GetItemName(itemLocation)", 2);
+	end
+
+	if itemLocation:IsEquipmentSlot() then
+		local itemID = GetInventoryItemID("player", itemLocation:GetEquipmentSlot());
+		if itemID then
+			return (GetItemInfo(itemID));
+		end
+	elseif itemLocation:IsBagAndSlot() then
+		local itemID = GetContainerItemID(itemLocation:GetBagAndSlot());
+		if itemID then
+			return (GetItemInfo(itemID));
+		end
+	end
+end
+
 do
 	for i = 0, 7 do
 		local _, _, _, hex = GetItemQualityColor(i)

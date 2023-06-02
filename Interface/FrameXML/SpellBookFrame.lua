@@ -323,14 +323,9 @@ function SpellBookFrame_OnLoad(self)
 
 	SpellBookFrame.bookType = BOOKTYPE_SPELL
 	-- Init page nums
-	SPELLBOOK_PAGENUMBERS[1] = 1
-	SPELLBOOK_PAGENUMBERS[2] = 1
-	SPELLBOOK_PAGENUMBERS[3] = 1
-	SPELLBOOK_PAGENUMBERS[4] = 1
-	SPELLBOOK_PAGENUMBERS[5] = 1
-	SPELLBOOK_PAGENUMBERS[6] = 1
-	SPELLBOOK_PAGENUMBERS[7] = 1
-	SPELLBOOK_PAGENUMBERS[8] = 1
+	for i = 1, 14 do
+		SPELLBOOK_PAGENUMBERS[i] = 1
+	end
 	SPELLBOOK_PAGENUMBERS[BOOKTYPE_PET] = 1
 
 	-- Set to the first tab by default
@@ -1176,6 +1171,15 @@ function SpellBookCompanionButton_OnDrag(self)
 	PickupCompanion( SpellBookCompanionsFrame.mode, dragged );
 end
 
+function SpellBookFrame_GetLastNonSpecialTabIndex()
+	for tabIndex = GetNumSpellTabs(), 1, -1 do
+		local name = GetSpellTabInfo(tabIndex)
+		if not SPECIAL_SKILL_LINES[name] and not TECHNICAL_SKILL_LINES[name] then
+			return tabIndex
+		end
+	end
+end
+
 function SpellBookFrame_Update(showing)
 	-- Hide all tabs
 	SpellBookFrameTabButton1:Hide()
@@ -1712,7 +1716,7 @@ function SpellButton_UpdateSelection(self)
 		self:SetChecked(false);
 	end
 end
--- ebala
+
 function SpellButton_UpdateButton()
 	if ( not SpellBookFrame.selectedSkillLine ) or ( SpellBookFrame.bookType == BOOKTYPE_PET ) then
 		SpellBookFrame.selectedSkillLine = 1

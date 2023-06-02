@@ -16,6 +16,7 @@ GlobalStrings.lua
 ..\SharedXML\CacheSystem.lua
 ..\SharedXML\Util.lua
 ..\SharedXML\Hook.lua
+..\SharedXML\Utils\CustomSharedAPI.lua
 ..\SharedXML\Mixin.lua
 ..\SharedXML\TableUtil.lua
 ..\SharedXML\EnumUtil.lua
@@ -73,10 +74,11 @@ Utils\C_Unit.lua
 Utils\C_AchievementManager.lua
 Utils\C_Item.lua
 Utils\C_Map.lua
-Utils\C_BattlefieldScoreManager.lua
+Utils\C_BattlefieldScore.lua
 Utils\C_Guild.lua
 Utils\C_Cursor.lua
 Utils\C_AuctionHouse.lua
+Utils\C_BattlePass.lua
 Utils\C_BattlefieldStatusManager.lua
 Utils\C_WhoManager.lua
 Utils\C_LookingForGuild.lua
@@ -88,6 +90,7 @@ Utils\C_ToyBox.lua
 Utils\C_IncomingResSummon.lua
 Utils\C_Heirloom.lua
 Utils\C_ItemUpgrade.lua
+Utils\C_MountJournal.lua
 
 TrinityCoreAPI.lua
 ..\SharedXML\S_Dump.lua
@@ -98,6 +101,8 @@ UIParent.xml
 AuraUtil.lua
 ItemUtil.lua
 AnimTimerFrame.xml
+TransmogUtil.lua
+CollectionsUtil.lua
 ..\SharedXML\HelpTip.xml
 MoneyFrame.lua
 MoneyFrame.xml
@@ -105,6 +110,8 @@ MoneyInputFrame.lua
 MoneyInputFrame.xml
 ..\SharedXML\SecureUIPanelTemplates.xml
 ..\SharedXML\SharedUIPanelTemplates.xml
+..\SharedXML\SharedUIPanelDFTemplates.xml
+..\SharedXML\SharedUIPanelPKBTTemplates.xml
 ..\SharedXML\SharedBasicControls.xml
 GameTooltip.xml
 UIMenu.xml
@@ -157,6 +164,7 @@ ActionBarFrame.xml
 MultiActionBars.xml
 EquipmentFlyout.xml
 BuffFrame.xml
+LowHealthFrame.xml
 CombatFeedback.xml
 CastingBarFrame.xml
 UnitPopup.xml
@@ -250,9 +258,6 @@ CompactRaidGroup.xml
 CompactPartyFrame.xml
 QueueStatusFrame.xml
 FilterDropdown.lua
-
-TransmogUtil.lua
-CollectionsUtil.lua
 
 # Custom API
 API_Guild.lua

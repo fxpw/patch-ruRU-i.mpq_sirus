@@ -25,11 +25,11 @@ function C_ObjectGUIDMixin:SetGUID( GUID )
 end
 
 function C_ObjectGUIDMixin:GetType()
-    return bit.band(tonumber(self._GUID:sub(5, 5)), 0x7)
+    return bit.band(tonumber(self._GUID:sub(5, 5), 16), 0x7)
 end
 
 function C_ObjectGUIDMixin:GetGUIDLow()
-    return tonumber(self._GUID:sub(13, 18))
+    return tonumber(self._GUID:sub(13, 18), 16)
 end
 
 function C_ObjectGUIDMixin:IsPlayer()

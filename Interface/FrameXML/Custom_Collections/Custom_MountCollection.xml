@@ -1,15 +1,14 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\..\FrameXML\UI.xsd">
-	<Script file="Custom_MountCollection.lua"/>
 	<Script file="Custom_MountCollection_Data.lua"/>
+	<Script file="Custom_MountCollection.lua"/>
 
 	<Button name="MountListButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
 		<Size x="208" y="46"/>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentbackground" parentKey="background" file="Interface\BUTTONS\ListButtons">
+				<Texture name="$parentbackground" parentKey="background">
 					<Size x="209" y="46"/>
-					<TexCoords left="0.00390625" right="0.8203125" top="0.00390625" bottom="0.18359375"/>
 				</Texture>
 				<Texture parentKey="icon" name="$parenticon">
                     <Size x="38" y="38"/>
@@ -19,19 +18,11 @@
                 </Texture>
 			</Layer>
 			<Layer level="BORDER">
-				<Texture parentKey="MountJournalIcons_Horde" file="Interface\PetBattles\MountJournalicons" hidden="true">
+				<Texture parentKey="factionIcon" hidden="true">
                     <Anchors>
                         <Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
                     </Anchors>
                     <Size x="46" y="44"/>
-                    <TexCoords left="0.3828125" right="0.7421875" top="0.015625" bottom="0.703125"/>
-                </Texture>
-                <Texture parentKey="MountJournalIcons_Alliance" file="Interface\PetBattles\MountJournalicons" hidden="true">
-                    <Anchors>
-                        <Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
-                    </Anchors>
-                    <Size x="46" y="44"/>
-                    <TexCoords left="0.0078125" right="0.3671875" top="0.015625" bottom="0.703125"/>
                 </Texture>
                 <Texture parentKey="iconBorder" file="Interface\Common\WhiteIconFrame" hidden="true">
                     <Anchors>
@@ -54,9 +45,8 @@
                     </Anchors>
                     <Color r="1" g="0" b="0" a="0.2"/>
                 </Texture>
-                <Texture parentKey="selectedTexture" file="Interface\BUTTONS\ListButtons" hidden="true">
+                <Texture parentKey="selectedTexture" hidden="true">
                 	<Size x="209" y="46"/>
-                	<TexCoords left="0.00390625" right="0.8203125" top="0.37890625" bottom="0.55859375"/>
                 </Texture>
 			</Layer>
 			<Layer level="OVERLAY">
@@ -109,14 +99,16 @@
 				</Scripts>
 			</Button>
 		</Frames>
-		<HighlightTexture file="Interface\BUTTONS\ListButtons">
+		<HighlightTexture parentKey="HighlightTexture">
 			<Size x="209" y="46"/>
-			<TexCoords left="0.00390625" right="0.8203125" top="0.19140625" bottom="0.37109375"/>
 		</HighlightTexture>
 		<Scripts>
             <OnLoad>
                 self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
 				self:RegisterForDrag("LeftButton");
+				self.background:SetAtlas("PetList-ButtonBackground")
+				self.selectedTexture:SetAtlas("PetList-ButtonSelect")
+				self.HighlightTexture:SetAtlas("PetList-ButtonHighlight")
             </OnLoad>
             <OnClick function="MountListItem_OnClick"/>
 			<OnDragStart>
@@ -257,8 +249,43 @@
 		</HighlightTexture>
 		<Scripts>
 			<OnClick function="CategoryListButton_OnClick"/>
-			<OnEnter function="CategoryListButton_OnEnter"/>
-			<OnLeave function="CategoryListButton_OnLeave"/>
+		</Scripts>
+	</Button>
+	<Button name="MountAbilityButtonTemplate" motionScriptsWhileDisabled="true" virtual="true" hidden="true">
+		<Size x="64" y="61"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentCreature" parentKey="creature">
+					<Size x="52" y="51"/>
+					<Anchors>
+						<Anchor point="CENTER" x="-3" y="1"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<NormalTexture inherits="UI-EJ-BossModelButton">
+			<TexCoords left="0.63085938" right="0.50585938" top="0.02246094" bottom="0.08203125"/>
+		</NormalTexture>
+		<HighlightTexture inherits="UI-EJ-BossModelButton" alphaMode="ADD">
+			<TexCoords left="0.63085938" right="0.50585938" top="0.02246094" bottom="0.08203125"/>
+		</HighlightTexture>
+		<Scripts>
+			<OnEnter>
+				if self.abilityID then
+					local name, _, text, description = C_MountJournal.GetAbilityInfo(self.abilityID);
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+					GameTooltip:SetText(name, 1, 1, 1);
+					GameTooltip:AddLine(text, nil, nil, nil, 1);
+					if description and description ~= "" then
+						GameTooltip:AddLine(" ");
+						GameTooltip:AddLine(description, nil, nil, nil, 1);
+					end
+					GameTooltip:Show();
+				end
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide();
+			</OnLeave>
 		</Scripts>
 	</Button>
 
@@ -280,7 +307,7 @@
 							<Color r="0" g="0" b="0" a="0.6"/>
 						</Texture>
 					</Layer>
-					<Layer level="OVERLAY" textureSubLevel="1">
+					<Layer level="OVERLAY">
 						<Texture name="$parentBorder" inherits="ActionBarFlyoutButton-IconFrame">
 							<Size x="35" y="35"/>
 							<Anchors>
@@ -322,7 +349,7 @@
 					<Anchor point="BOTTOMLEFT" relativeTo="$parentLeftInset" relativePoint="BOTTOMRIGHT" x="20" y="0"/> <!-- 80 -->
 				</Anchors>
 			</Frame>
-			<Frame parentKey="RightBottomInset" name="$parentRightBottomInset" inherits="InsetFrameTemplate">
+			<Frame parentKey="RightBottomInset" name="$parentRightBottomInset" inherits="InsetFrameTemplate" hidden="true">
 				<Anchors>
 					<Anchor point="TOPRIGHT" relativeTo="$parentRightTopInset" relativePoint="BOTTOMRIGHT" x="0" y="-6" />
 					<Anchor point="BOTTOMLEFT" relativeTo="$parentLeftInset" relativePoint="BOTTOMRIGHT" x="20" y="0"/>
@@ -440,7 +467,7 @@
 							<Button name="MountDisplayModelSceneRotateLeftButton" parentKey="RotateLeftButton">
 								<Size x="35" y="35"/>
 								<Anchors>
-									<Anchor point="TOPRIGHT" relativeKey="$parentModelScene" relativePoint="BOTTOM" x="-5" y="56"/>
+									<Anchor point="TOPRIGHT" relativePoint="BOTTOM" x="-5" y="56"/>
 								</Anchors>
 								<NormalTexture file="Interface\Buttons\UI-RotationLeft-Button-Up"/>
 								<PushedTexture file="Interface\Buttons\UI-RotationLeft-Button-Down"/>
@@ -449,16 +476,13 @@
 							<Button name="MountDisplayModelSceneRotateRightButton" parentKey="RotateRightButton">
 								<Size x="35" y="35"/>
 								<Anchors>
-									<Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="BOTTOM" x="5" y="56"/>
+									<Anchor point="TOPLEFT" relativePoint="BOTTOM" x="5" y="56"/>
 								</Anchors>
 								<NormalTexture file="Interface\Buttons\UI-RotationRight-Button-Up"/>
 								<PushedTexture file="Interface\Buttons\UI-RotationRight-Button-Down"/>
 								<HighlightTexture file="Interface\Buttons\ButtonHilight-Round" alphaMode="ADD"/>
 							</Button>
 							<Button parentKey="InfoButton" motionScriptsWhileDisabled="true">
-								<KeyValues>
-									<KeyValue key="hasIconHyperlinks" value="true" type="boolean"/>
-								</KeyValues>
 								<Size x="208" y="46"/>
 								<Anchors>
 									<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT" x="6" y="-6"/>
@@ -502,7 +526,7 @@
 											</Shadow>
 										</FontString>
 
-										<Texture parentKey="NewGlow" atlas="collections-newglow" hidden="true">
+										<Texture parentKey="NewGlow" hidden="true">
 											<Anchors>
 												<Anchor point="TOPLEFT" relativeTo="$parentNew" x="-20" y="10"/>
 												<Anchor point="BOTTOMRIGHT" relativeTo="$parentNew" x="20" y="-10"/>
@@ -661,7 +685,7 @@
 					<OnClick function="MountJournalMountButton_OnClick"/>
 				</Scripts>
 			</Button>
-			<Frame name="$parentButtomFrame" parentKey="bottomFrame">
+			<Frame name="$parentButtomFrame" parentKey="bottomFrame" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentRightBottomInset" x="5" y="-5"/>
 					<Anchor point="BOTTOMRIGHT" relativeTo="$parentRightBottomInset" x="-5" y="5"/>

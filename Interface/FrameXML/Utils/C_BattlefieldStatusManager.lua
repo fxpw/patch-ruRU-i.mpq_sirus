@@ -1,5 +1,3 @@
-local securecall = securecall
-
 local BattlegroundStatus = {
 	[-1] = "error",
 	[0] = "none",

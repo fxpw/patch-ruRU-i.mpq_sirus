@@ -55,6 +55,12 @@ function CreateAndInitFromMixin(mixin, ...)
 	return object;
 end
 
+function CreateAndSetFromMixin(mixin, ...)
+	local object = PrivateCreateFromMixins(mixin);
+	object:Set(...);
+	return object;
+end
+
 -- Note: This should only be used for security purposes during the initial load process in-game.
 function CreateSecureMixinCopy(mixin)
 	local mixinCopy = PrivateMixin({}, mixin);

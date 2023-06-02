@@ -654,6 +654,9 @@
 				Mixin(self, NineSlicePanelMixin)
 				self:OnLoad()
 			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
 		</Scripts>
 	</Frame>
 
@@ -789,15 +792,8 @@
 	<Frame name="DialogBorderNoCenterTemplate" inherits="NineSlicePanelTemplate" virtual="true">
 		<Attributes>
 			<Attribute name="layoutType" value="Dialog" type="string"/>
+			<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
 		</Attributes>
-		<Scripts>
-			<OnLoad>
-				self:SetFrameLevel(self:GetParent():GetFrameLevel())
-
-				Mixin(self, NineSlicePanelMixin)
-				self:OnLoad()
-			</OnLoad>
-		</Scripts>
 	</Frame>
 
 	<Frame name="DialogBorderTemplate" inherits="DialogBorderNoCenterTemplate" virtual="true">
@@ -930,10 +926,38 @@
 						<Anchor point="TOPLEFT" x="-6" y="1"/>
 					</Anchors>
 				</Texture>
+				<Texture name="$parentBotLeftCorner" inherits="UI-Frame-BotCornerLeft">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="-6" y="-5"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBotRightCorner" inherits="UI-Frame-BotCornerRight">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="0" y="-5"/>
+					</Anchors>
+				</Texture>
 				<Texture name="$parentTopBorder" inherits="_UI-Frame-TitleTile" parentKey="topBorderBar">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentPortraitFrame" relativePoint="TOPRIGHT" x="0" y="-10" />
 						<Anchor point="TOPRIGHT" relativeTo="$parentTopRightCorner" relativePoint="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBottomBorder" inherits="_UI-Frame-Bot">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentBotLeftCorner" relativePoint="BOTTOMRIGHT" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBotRightCorner" relativePoint="BOTTOMLEFT" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentLeftBorder" inherits="!UI-Frame-LeftTile" parentKey="leftBorderBar">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentPortraitFrame" relativePoint="BOTTOMLEFT" x="8" y="0" />
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentBotLeftCorner" relativePoint="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentRightBorder" inherits="!UI-Frame-RightTile">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parentTopRightCorner" relativePoint="BOTTOMRIGHT" x="1"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBotRightCorner" relativePoint="TOPRIGHT"/>
 					</Anchors>
 				</Texture>
 				<FontString name="$parentTitleText" inherits="GameFontNormal" parentKey="TitleText" wordwrap="false">
@@ -955,34 +979,6 @@
 					<Anchors>
 						<Anchor point="TOPLEFT" x="50" y="-21"/>
 						<Anchor point="TOPRIGHT" x="-2" y="-21"/>
-					</Anchors>
-				</Texture>
-				<Texture name="$parentBotLeftCorner" inherits="UI-Frame-BotCornerLeft">
-					<Anchors>
-						<Anchor point="BOTTOMLEFT" x="-6" y="-5"/>
-					</Anchors>
-				</Texture>
-				<Texture name="$parentBotRightCorner" inherits="UI-Frame-BotCornerRight">
-					<Anchors>
-						<Anchor point="BOTTOMRIGHT" x="0" y="-5"/>
-					</Anchors>
-				</Texture>
-				<Texture name="$parentBottomBorder" inherits="_UI-Frame-Bot">
-					<Anchors>
-						<Anchor point="BOTTOMLEFT" relativeTo="$parentBotLeftCorner" relativePoint="BOTTOMRIGHT" y="0"/>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBotRightCorner" relativePoint="BOTTOMLEFT" y="0"/>
-					</Anchors>
-				</Texture>
-				<Texture name="$parentLeftBorder" inherits="!UI-Frame-LeftTile" parentKey="leftBorderBar">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentPortraitFrame" relativePoint="BOTTOMLEFT" x="8" y="0" />
-						<Anchor point="BOTTOMLEFT" relativeTo="$parentBotLeftCorner" relativePoint="TOPLEFT"/>
-					</Anchors>
-				</Texture>
-				<Texture name="$parentRightBorder" inherits="!UI-Frame-RightTile">
-					<Anchors>
-						<Anchor point="TOPRIGHT" relativeTo="$parentTopRightCorner" relativePoint="BOTTOMRIGHT" x="1"/>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBotRightCorner" relativePoint="TOPRIGHT"/>
 					</Anchors>
 				</Texture>
 				<Texture name="$parentTabardBackground" parentKey="TabardBackground" file="Interface\GuildFrame\GuildFrame" hidden="true">

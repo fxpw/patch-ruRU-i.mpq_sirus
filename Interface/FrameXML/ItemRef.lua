@@ -196,12 +196,6 @@ function SetItemRef(link, text, button, chatFrame)
 	elseif ( strsub(link, 1, 6) == "replay" ) then
 		ArenaSpectatorFrame:WatchReplayAtHyperlink(link)
 		return
-	elseif ( strsub(link, 1, 8) == "creature" ) then
-		if IsGMAccount() then
-			local creatureData = C_Split(link, ":")
-			TrinityCoreMixIn:SendCommand("go creature "..creatureData[2])
-		end
-		return
 	elseif ( strsub(link, 1, 4) == "http" ) then
 		StaticPopup_Show("EXTERNAL_URL_POPUP", nil, nil, link)
 		return
@@ -238,6 +232,8 @@ function SetItemRef(link, text, button, chatFrame)
 						HeirloomsJournal:SetFindPageForHeirloomePage(itemID);
 						HeirloomsJournal:RefreshViewIfVisible();
 					end
+				elseif ( collectionType == CHAR_COLLECTION_ILLUSION ) then
+					TransmogUtil.OpenCollectionToIllusion(itemID);
 				end
 			end
 		end

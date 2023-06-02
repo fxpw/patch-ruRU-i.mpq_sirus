@@ -17,6 +17,8 @@ function SetItemButtonQuality(button, quality)
 			button.IconBorder:SetAtlas("auctionhouse-itemicon-border-orange");
 		elseif quality == Enum.ItemQuality.Artifact then
 			button.IconBorder:SetAtlas("auctionhouse-itemicon-border-artifact");
+		elseif quality == Enum.ItemQuality.Heirloom then
+			button.IconBorder:SetAtlas("auctionhouse-itemicon-border-artifact");
 		else
 			button.IconBorder:Hide();
 		end

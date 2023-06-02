@@ -162,14 +162,36 @@ function isOneOf(val, ...)
 	return false
 end
 
-function IsDevClient()
+function IsDevClient(skipDevOverride)
+	if not skipDevOverride then
+		if IsOnGlueScreen() then
+			if DEV_GLUE_DISABLE_GM then
+				return false
+			end
+		else
+			if DEV_GAME_DISABLE_GM then
+				return false
+			end
+		end
+	end
 	if type(S_IsDevClient) == "function" then
 		return S_IsDevClient()
 	end
 	return false
 end
 
-function IsInterfaceDevClient()
+function IsInterfaceDevClient(skipDevOverride)
+	if not skipDevOverride then
+		if IsOnGlueScreen() then
+			if DEV_GLUE_DISABLE_GM then
+				return false
+			end
+		else
+			if DEV_GAME_DISABLE_GM then
+				return false
+			end
+		end
+	end
 	if type(S_IsInterfaceDevClient) == "function" then
 		return S_IsInterfaceDevClient()
 	end

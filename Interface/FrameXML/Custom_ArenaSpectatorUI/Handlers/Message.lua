@@ -102,7 +102,15 @@ function ezSpectator_MessageHandler:ProcessCommand(Target, Prefix, ...)
     elseif Prefix == 'CLA' then
         self.Parent.Interface.Players[Target]:SetClass(tonumber(Value))
     elseif Prefix == 'SPE' then
-        self.Parent.Interface.Players[Target]:SetCast(tonumber(strsub(Value, 1, strfind(Value, ',') - 1)), tonumber(strsub(Value, strfind(Value, ',') + 1)))
+		local start = strfind(Value, ',')
+		if start then
+			self.Parent.Interface.Players[Target]:SetCast(tonumber(strsub(Value, 1, start - 1)), tonumber(strsub(Value, start + 1)))
+		else
+			local spellID = tonumber(Value)
+			if spellID then
+				self.Parent.Interface.Players[Target]:SetCast(spellID, 0)
+			end
+		end
     elseif Prefix == 'AUR' then
         self.Parent.Interface.Players[Target]:SetAura(...)
     elseif Prefix == 'TRG' then
@@ -120,7 +128,15 @@ function ezSpectator_MessageHandler:ProcessCommand(Target, Prefix, ...)
     elseif Prefix == 'SRC' then -- Общий процент ХП, нужно подумать нужно ли оно нам
         self.Parent.Interface:SetTeamScore(TeamID, Value)
     elseif Prefix == 'CDN' then -- Кд на спелл, айди + запятая + время (секунды)
-        self.Parent.Interface.Players[Target]:SetCooldown(tonumber(strsub(Value, 1, strfind(Value, ',') - 1)), tonumber(strsub(Value, strfind(Value, ',') + 1)))
+		local start = strfind(Value, ',')
+		if start then
+			self.Parent.Interface.Players[Target]:SetCooldown(tonumber(strsub(Value, 1, start - 1)), tonumber(strsub(Value, start + 1)))
+		else
+			local spellID = tonumber(Value)
+			if spellID then
+				self.Parent.Interface.Players[Target]:SetCooldown(spellID, 0)
+			end
+		end
     elseif Prefix == 'STAGE' then -- Стейдж турнира (TournamentStages)
         self.Parent.Interface:SetStage(Value)
     elseif Prefix == 'BOX' then -- Для турнирки, выводит надпись про количество игр, судя по всему

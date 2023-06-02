@@ -121,7 +121,7 @@
 							InboxFrame_OnModifiedClick(self, self.index);
 						else
 							if IsControlKeyDown() then
-								if IsDevClient() then
+								if IsDevClient(true) then
 									if InboxFrame.openMailID and InboxFrame.openMailID == self.index then
 										InboxFrame.openMailID = nil
 										HideUIPanel(OpenMailFrame)
@@ -147,7 +147,7 @@
 						end
 					</OnUpdate>
 					<OnLeave>
-						GameTooltip:Hide();
+						GameTooltip_Hide();
 						SetMoneyFrameColor("GameTooltipMoneyFrame1", "white");
 					</OnLeave>
 				</Scripts>
@@ -178,7 +178,7 @@
 					InboxFrame_OnModifiedClick(self.Button, self.Button.index);
 				else
 					if IsControlKeyDown() then
-						if IsDevClient() then
+						if IsDevClient(true) then
 							DeleteInboxItem(self.Button.index)
 						else
 							if InboxItemCanDelete(self.Button.index) then
@@ -195,45 +195,25 @@
 		</Scripts>
 	</Button>
 	<CheckButton name="StationeryPopupButtonTemplate" virtual="true">
-		<Size>
-			<AbsDimension x="36" y="36"/>
-		</Size>
+		<Size x="36" y="36"/>
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture file="Interface\Buttons\UI-EmptySlot-Disabled">
-					<Size>
-						<AbsDimension x="64" y="64"/>
-					</Size>
+					<Size x="64" y="64"/>
 					<Anchors>
-						<Anchor point="CENTER">
-							<Offset>
-								<AbsDimension x="0" y="-1"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="CENTER" x="0" y="-1"/>
 					</Anchors>
 				</Texture>
 				<Texture name="$parentNameFrame" file="Interface\QuestFrame\UI-QuestItemNameFrame">
-					<Size>
-						<AbsDimension x="128" y="64"/>
-					</Size>
+					<Size x="128" y="64"/>
 					<Anchors>
-						<Anchor point="LEFT" relativePoint="RIGHT">
-							<Offset>
-								<AbsDimension x="-10" y="0"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="LEFT" relativePoint="RIGHT" x="-10" y="0"/>
 					</Anchors>
 				</Texture>
 				<FontString name="$parentName" inherits="GameFontNormalSmall" justifyH="LEFT">
-					<Size>
-						<AbsDimension x="90" y="36"/>
-					</Size>
+					<Size x="90" y="36"/>
 					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentNameFrame">
-							<Offset>
-								<AbsDimension x="15" y="5"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="LEFT" relativeTo="$parentNameFrame" x="15" y="5"/>
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -241,11 +221,7 @@
 		<Frames>
 			<Frame name="$parentMoneyFrame" inherits="SmallMoneyFrameTemplate">
 				<Anchors>
-					<Anchor point="BOTTOMLEFT" relativeTo="$parentNameFrame" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="12" y="14"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentNameFrame" relativePoint="BOTTOMLEFT" x="12" y="14"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -261,36 +237,22 @@
 			</OnClick>
 		</Scripts>
 		<NormalTexture name="$parentIcon">
-			<Size>
-				<AbsDimension x="36" y="36"/>
-			</Size>
+			<Size x="36" y="36"/>
 			<Anchors>
-				<Anchor point="CENTER">
-					<Offset>
-						<AbsDimension x="0" y="-1"/>
-					</Offset>
-				</Anchor>
+				<Anchor point="CENTER" x="0" y="-1"/>
 			</Anchors>
 		</NormalTexture>
 		<HighlightTexture alphaMode="ADD" file="Interface\Buttons\ButtonHilight-Square"/>
 		<CheckedTexture alphaMode="ADD" file="Interface\Buttons\CheckButtonHilight"/>
 	</CheckButton>
 	<Button name="SendMailAttachment" virtual="true">
-		<Size>
-			<AbsDimension x="37" y="37"/>
-		</Size>
+		<Size x="37" y="37"/>
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture file="Interface\Buttons\UI-Slot-Background">
-					<Size>
-						<AbsDimension x="39" y="39"/>
-					</Size>
+					<Size x="39" y="39"/>
 					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="-2" y="2"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" x="-2" y="2"/>
 					</Anchors>
 					<TexCoords left="0" right="0.640625" top="0" bottom="0.640625"/>
 				</Texture>
@@ -298,11 +260,7 @@
 			<Layer level="ARTWORK">
 				<FontString name="$parentCount" inherits="NumberFontNormal" justifyH="RIGHT">
 					<Anchors>
-						<Anchor point="BOTTOMRIGHT">
-							<Offset>
-								<AbsDimension x="-5" y="2"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="BOTTOMRIGHT" x="-5" y="2"/>
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -330,7 +288,7 @@
 				end
 			</OnUpdate>
 			<OnLeave>
-				GameTooltip:Hide();
+				GameTooltip_Hide();
 			</OnLeave>
 		</Scripts>
 		<HighlightTexture alphaMode="ADD" file="Interface\Buttons\ButtonHilight-Square"/>
@@ -364,7 +322,7 @@
 				end
 			</OnUpdate>
 			<OnLeave>
-				GameTooltip:Hide();
+				GameTooltip_Hide();
 				SetMoneyFrameColor("GameTooltipMoneyFrame1", "white");
 			</OnLeave>
 		</Scripts>
@@ -1160,86 +1118,50 @@
 	</Frame>
 	<!-- Stationery Popup -->
 	<Frame name="StationeryPopupFrame" toplevel="true" parent="UIParent" movable="true" enableMouse="true" hidden="true">
-		<Size>
-			<AbsDimension x="220" y="298"/>
-		</Size>
+		<Size x="220" y="298"/>
 		<Anchors>
-			<Anchor point="TOPLEFT" relativeTo="MailFrame" relativePoint="TOPRIGHT">
-				<Offset>
-					<AbsDimension x="-30" y="-40"/>
-				</Offset>
-			</Anchor>
+			<Anchor point="TOPLEFT" relativeTo="MailFrame" relativePoint="TOPRIGHT" x="-30" y="-40"/>
 		</Anchors>
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture file="Interface\MailFrame\MailPopup-Top">
-					<Size>
-						<AbsDimension x="256" y="256"/>
-					</Size>
+					<Size x="256" y="256"/>
 					<Anchors>
 						<Anchor point="TOPLEFT"/>
 					</Anchors>
 				</Texture>
 				<Texture file="Interface\MailFrame\MailPopup-Bottom">
-					<Size>
-						<AbsDimension x="256" y="64"/>
-					</Size>
+					<Size x="256" y="64"/>
 					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-256"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" x="0" y="-256"/>
 					</Anchors>
 				</Texture>
 				<FontString inherits="GameFontHighlightSmall" text="CHOOSE_STATIONERY">
 					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="24" y="-21"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" x="24" y="-21"/>
 					</Anchors>
 				</FontString>
 			</Layer>
 		</Layers>
 		<Frames>
 			<ScrollFrame name="StationeryPopupScrollFrame" inherits="FauxScrollFrameTemplate">
-				<Size>
-					<AbsDimension x="200" y="250"/>
-				</Size>
+				<Size x="200" y="250"/>
 				<Anchors>
-					<Anchor point="TOPRIGHT">
-						<Offset>
-							<AbsDimension x="-38" y="-13"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPRIGHT" x="-38" y="-13"/>
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
 						<Texture file="Interface\ClassTrainerFrame\UI-ClassTrainer-ScrollBar">
-							<Size>
-								<AbsDimension x="30" y="120"/>
-							</Size>
+							<Size x="30" y="120"/>
 							<Anchors>
-								<Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
-									<Offset>
-										<AbsDimension x="-3" y="2"/>
-									</Offset>
-								</Anchor>
+								<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="-3" y="2"/>
 							</Anchors>
 							<TexCoords left="0" right="0.46875" top="0.0234375" bottom="0.9609375"/>
 						</Texture>
 						<Texture file="Interface\ClassTrainerFrame\UI-ClassTrainer-ScrollBar">
-							<Size>
-								<AbsDimension x="30" y="123"/>
-							</Size>
+							<Size x="30" y="123"/>
 							<Anchors>
-								<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT">
-									<Offset>
-										<AbsDimension x="-3" y="-2"/>
-									</Offset>
-								</Anchor>
+								<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="-3" y="-2"/>
 							</Anchors>
 							<TexCoords left="0.53125" right="1.0" top="0.03125" bottom="1.0"/>
 						</Texture>
@@ -1253,74 +1175,42 @@
 			</ScrollFrame>
 			<CheckButton name="StationeryPopupButton1" inherits="StationeryPopupButtonTemplate" id="1">
 				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset>
-							<AbsDimension x="24" y="-37"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" x="24" y="-37"/>
 				</Anchors>
 			</CheckButton>
 			<CheckButton name="StationeryPopupButton2" inherits="StationeryPopupButtonTemplate" id="2">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="StationeryPopupButton1" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="-9"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="StationeryPopupButton1" relativePoint="BOTTOMLEFT" x="0" y="-9"/>
 				</Anchors>
 			</CheckButton>
 			<CheckButton name="StationeryPopupButton3" inherits="StationeryPopupButtonTemplate" id="3">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="StationeryPopupButton2" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="-9"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="StationeryPopupButton2" relativePoint="BOTTOMLEFT" x="0" y="-9"/>
 				</Anchors>
 			</CheckButton>
 			<CheckButton name="StationeryPopupButton4" inherits="StationeryPopupButtonTemplate" id="4">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="StationeryPopupButton3" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="-9"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="StationeryPopupButton3" relativePoint="BOTTOMLEFT" x="0" y="-9"/>
 				</Anchors>
 			</CheckButton>
 			<CheckButton name="StationeryPopupButton5" inherits="StationeryPopupButtonTemplate" id="5">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="StationeryPopupButton4" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="-9"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="StationeryPopupButton4" relativePoint="BOTTOMLEFT" x="0" y="-9"/>
 				</Anchors>
 			</CheckButton>
 			<Button name="StationeryPopupCancelButton" inherits="UIPanelButtonTemplate" text="CANCEL">
-				<Size>
-					<AbsDimension x="78" y="22"/>
-				</Size>
+				<Size x="78" y="22"/>
 				<Anchors>
-					<Anchor point="BOTTOMRIGHT" relativeTo="StationeryPopupFrame">
-						<Offset>
-							<AbsDimension x="-11" y="13"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="BOTTOMRIGHT" relativeTo="StationeryPopupFrame" x="-11" y="13"/>
 				</Anchors>
 				<Scripts>
 					<OnClick function="HideParentPanel"/>
 				</Scripts>
 			</Button>
 			<Button name="StationeryPopupOkayButton" inherits="UIPanelButtonTemplate" text="OKAY">
-				<Size>
-					<AbsDimension x="78" y="22"/>
-				</Size>
+				<Size x="78" y="22"/>
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="StationeryPopupCancelButton" relativePoint="LEFT">
-						<Offset>
-							<AbsDimension x="-11" y="0"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="RIGHT" relativeTo="StationeryPopupCancelButton" relativePoint="LEFT" x="-11" y="0"/>
 				</Anchors>
 				<Scripts>
 					<OnClick function="HideParentPanel"/>
@@ -1404,45 +1294,29 @@
 						<Layers>
 							<Layer level="OVERLAY">
 								<Texture name="OpenScrollBarBackgroundTop" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
-									<Size>
-										<AbsDimension x="31" y="256"/>
-									</Size>
+									<Size x="31" y="256"/>
 									<Anchors>
-										<Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
-											<Offset>
-												<AbsDimension x="-2" y="5"/>
-											</Offset>
-										</Anchor>
+										<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="-2" y="5"/>
 									</Anchors>
 									<TexCoords left="0" right="0.484375" top="0" bottom="1.0"/>
 								</Texture>
 								<Texture file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
-									<Size>
-										<AbsDimension x="31" y="106"/>
-									</Size>
+									<Size x="31" y="106"/>
 									<Anchors>
-										<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT">
-											<Offset>
-												<AbsDimension x="-2" y="-2"/>
-											</Offset>
-										</Anchor>
+										<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="-2" y="-2"/>
 									</Anchors>
 									<TexCoords left="0.515625" right="1.0" top="0" bottom="0.4140625"/>
 								</Texture>
 							</Layer>
 							<Layer level="BACKGROUND">
 								<Texture name="OpenStationeryBackgroundLeft">
-									<Size>
-										<AbsDimension x="252" y="256"/>
-									</Size>
+									<Size x="252" y="256"/>
 									<Anchors>
 										<Anchor point="TOPLEFT"/>
 									</Anchors>
 								</Texture>
 								<Texture name="OpenStationeryBackgroundRight">
-									<Size>
-										<AbsDimension x="64" y="256"/>
-									</Size>
+									<Size x="64" y="256"/>
 									<Anchors>
 										<Anchor point="TOPLEFT" relativeTo="OpenStationeryBackgroundLeft" relativePoint="TOPRIGHT"/>
 									</Anchors>
@@ -1451,28 +1325,16 @@
 						</Layers>
 						<ScrollChild>
 							<Frame name="OpenMailScrollChildFrame">
-								<Size>
-									<AbsDimension x="296" y="255"/>
-								</Size>
+								<Size x="296" y="255"/>
 								<Anchors>
-									<Anchor point="TOPLEFT">
-										<Offset>
-											<AbsDimension x="0" y="0"/>
-										</Offset>
-									</Anchor>
+									<Anchor point="TOPLEFT" x="0" y="0"/>
 								</Anchors>
 								<Layers>
 									<Layer level="BACKGROUND">
 										<FontString name="OpenMailBodyText" inherits="MailTextFontNormal" nonspacewrap="true">
-											<Size>
-												<AbsDimension x="276" y="0"/>
-											</Size>
+											<Size x="276" y="0"/>
 											<Anchors>
-												<Anchor point="TOPLEFT">
-													<Offset>
-														<AbsDimension x="10" y="-10"/>
-													</Offset>
-												</Anchor>
+												<Anchor point="TOPLEFT" x="10" y="-10"/>
 											</Anchors>
 										</FontString>
 									</Layer>
@@ -1482,99 +1344,55 @@
 										<Layers>
 											<Layer level="BACKGROUND">
 												<FontString name="OpenMailInvoiceItemLabel" inherits="InvoiceTextFontNormal" text="ITEM_SOLD_COLON">
-													<Size>
-														<AbsDimension x="240" y="0"/>
-													</Size>
+													<Size x="240" y="0"/>
 													<Anchors>
-														<Anchor point="TOPLEFT">
-															<Offset>
-																<AbsDimension x="30" y="-35"/>
-															</Offset>
-														</Anchor>
+														<Anchor point="TOPLEFT" x="30" y="-35"/>
 													</Anchors>
 												</FontString>
 												<FontString name="OpenMailInvoicePurchaser" inherits="InvoiceTextFontNormal" text="PURCHASED_BY_COLON">
 													<Anchors>
-														<Anchor point="TOPLEFT" relativeTo="OpenMailInvoiceItemLabel" relativePoint="BOTTOMLEFT">
-															<Offset>
-																<AbsDimension x="0" y="-5"/>
-															</Offset>
-														</Anchor>
+														<Anchor point="TOPLEFT" relativeTo="OpenMailInvoiceItemLabel" relativePoint="BOTTOMLEFT" x="0" y="-5"/>
 													</Anchors>
 												</FontString>
 												<FontString name="OpenMailInvoiceBuyMode" inherits="InvoiceTextFontSmall">
 													<Anchors>
-														<Anchor point="LEFT" relativeTo="OpenMailInvoicePurchaser" relativePoint="RIGHT">
-															<Offset>
-																<AbsDimension x="5" y="0"/>
-															</Offset>
-														</Anchor>
+														<Anchor point="LEFT" relativeTo="OpenMailInvoicePurchaser" relativePoint="RIGHT" x="5" y="0"/>
 													</Anchors>
 												</FontString>
 												<FontString name="OpenMailInvoiceSalePrice" inherits="InvoiceTextFontNormal" text="SALE_PRICE_COLON">
 													<Anchors>
-														<Anchor point="TOPRIGHT" relativeTo="OpenMailInvoicePurchaser" relativePoint="BOTTOMLEFT">
-															<Offset>
-																<AbsDimension x="125" y="-26"/>
-															</Offset>
-														</Anchor>
+														<Anchor point="TOPRIGHT" relativeTo="OpenMailInvoicePurchaser" relativePoint="BOTTOMLEFT" x="125" y="-26"/>
 													</Anchors>
 												</FontString>
 												<FontString name="OpenMailInvoiceDeposit" inherits="InvoiceTextFontNormal" text="DEPOSIT_COLON">
 													<Anchors>
-														<Anchor point="TOPRIGHT" relativeTo="OpenMailInvoiceSalePrice" relativePoint="BOTTOMRIGHT">
-															<Offset>
-																<AbsDimension x="0" y="-13"/>
-															</Offset>
-														</Anchor>
+														<Anchor point="TOPRIGHT" relativeTo="OpenMailInvoiceSalePrice" relativePoint="BOTTOMRIGHT" x="0" y="-13"/>
 													</Anchors>
 												</FontString>
 												<FontString name="OpenMailInvoiceHouseCut" inherits="InvoiceTextFontNormal" text="AUCTION_HOUSE_CUT_COLON">
 													<Anchors>
-														<Anchor point="TOPRIGHT" relativeTo="OpenMailInvoiceDeposit" relativePoint="BOTTOMRIGHT">
-															<Offset>
-																<AbsDimension x="0" y="-13"/>
-															</Offset>
-														</Anchor>
+														<Anchor point="TOPRIGHT" relativeTo="OpenMailInvoiceDeposit" relativePoint="BOTTOMRIGHT" x="0" y="-13"/>
 													</Anchors>
 												</FontString>
 												<FontString name="OpenMailInvoiceAmountReceived" inherits="InvoiceTextFontNormal" text="AMOUNT_RECEIVED_COLON">
 													<Anchors>
-														<Anchor point="TOPRIGHT" relativeTo="OpenMailInvoiceHouseCut" relativePoint="BOTTOMRIGHT">
-															<Offset>
-																<AbsDimension x="0" y="-13"/>
-															</Offset>
-														</Anchor>
+														<Anchor point="TOPRIGHT" relativeTo="OpenMailInvoiceHouseCut" relativePoint="BOTTOMRIGHT" x="0" y="-13"/>
 													</Anchors>
 												</FontString>
 												<Texture name="OpenMailArithmeticLine" file="Interface\MailFrame\UI-MailFrame-InvoiceLine">
-													<Size>
-														<AbsDimension x="256" y="32"/>
-													</Size>
+													<Size x="256" y="32"/>
 													<Anchors>
-														<Anchor point="TOP" relativeTo="OpenMailInvoiceHouseCut" relativePoint="BOTTOMRIGHT">
-															<Offset>
-																<AbsDimension x="0" y="9"/>
-															</Offset>
-														</Anchor>
+														<Anchor point="TOP" relativeTo="OpenMailInvoiceHouseCut" relativePoint="BOTTOMRIGHT" x="0" y="9"/>
 													</Anchors>
 												</Texture>
 												<FontString name="OpenMailInvoiceNotYetSent" inherits="InvoiceTextFontNormal" text="AUCTION_INVOICE_FUNDS_NOT_YET_SENT">
 													<Anchors>
-														<Anchor point="CENTER" relativeTo="OpenMailInvoicePurchaser" relativePoint="BOTTOMLEFT">
-															<Offset>
-																<AbsDimension x="128" y="-90"/>
-															</Offset>
-														</Anchor>
+														<Anchor point="CENTER" relativeTo="OpenMailInvoicePurchaser" relativePoint="BOTTOMLEFT" x="128" y="-90"/>
 													</Anchors>
 												</FontString>
 												<FontString name="OpenMailInvoiceMoneyDelay" inherits="InvoiceTextFontNormal">
 													<Anchors>
-														<Anchor point="CENTER" relativeTo="OpenMailInvoicePurchaser" relativePoint="BOTTOMLEFT">
-															<Offset>
-																<AbsDimension x="128" y="-103"/>
-															</Offset>
-														</Anchor>
+														<Anchor point="CENTER" relativeTo="OpenMailInvoicePurchaser" relativePoint="BOTTOMLEFT" x="128" y="-103"/>
 													</Anchors>
 												</FontString>
 											</Layer>
@@ -1582,11 +1400,7 @@
 										<Frames>
 											<Frame name="OpenMailTransactionAmountMoneyFrame" inherits="SmallMoneyFrameTemplate">
 												<Anchors>
-													<Anchor point="RIGHT" relativeTo="OpenMailInvoiceAmountReceived" relativePoint="RIGHT">
-														<Offset>
-															<AbsDimension x="130" y="0"/>
-														</Offset>
-													</Anchor>
+													<Anchor point="RIGHT" relativeTo="OpenMailInvoiceAmountReceived" relativePoint="RIGHT" x="130" y="0"/>
 												</Anchors>
 												<Scripts>
 													<OnLoad>
@@ -1597,21 +1411,13 @@
 											</Frame>
 											<Frame name="OpenMailDepositMoneyFrame" inherits="SmallMoneyFrameTemplate">
 												<Anchors>
-													<Anchor point="RIGHT" relativeTo="OpenMailInvoiceDeposit" relativePoint="RIGHT">
-														<Offset>
-															<AbsDimension x="130" y="0"/>
-														</Offset>
-													</Anchor>
+													<Anchor point="RIGHT" relativeTo="OpenMailInvoiceDeposit" relativePoint="RIGHT" x="130" y="0"/>
 												</Anchors>
 												<Layers>
 													<Layer level="BACKGROUND">
 														<FontString inherits="InvoiceTextFontNormal" text="+">
 															<Anchors>
-																<Anchor point="RIGHT" relativePoint="LEFT">
-																	<Offset>
-																		<AbsDimension x="-5" y="0"/>
-																	</Offset>
-																</Anchor>
+																<Anchor point="RIGHT" relativePoint="LEFT" x="-5" y="0"/>
 															</Anchors>
 														</FontString>
 													</Layer>
@@ -1625,21 +1431,13 @@
 											</Frame>
 											<Frame name="OpenMailHouseCutMoneyFrame" inherits="SmallMoneyFrameTemplate">
 												<Anchors>
-													<Anchor point="RIGHT" relativeTo="OpenMailInvoiceHouseCut" relativePoint="RIGHT">
-														<Offset>
-															<AbsDimension x="130" y="0"/>
-														</Offset>
-													</Anchor>
+													<Anchor point="RIGHT" relativeTo="OpenMailInvoiceHouseCut" relativePoint="RIGHT" x="130" y="0"/>
 												</Anchors>
 												<Layers>
 													<Layer level="BACKGROUND">
 														<FontString inherits="InvoiceTextFontNormal" text="-">
 															<Anchors>
-																<Anchor point="RIGHT" relativePoint="LEFT">
-																	<Offset>
-																		<AbsDimension x="-5" y="0"/>
-																	</Offset>
-																</Anchor>
+																<Anchor point="RIGHT" relativePoint="LEFT" x="-5" y="0"/>
 															</Anchors>
 														</FontString>
 													</Layer>
@@ -1653,11 +1451,7 @@
 											</Frame>
 											<Frame name="OpenMailSalePriceMoneyFrame" inherits="SmallMoneyFrameTemplate">
 												<Anchors>
-													<Anchor point="RIGHT" relativeTo="OpenMailInvoiceSalePrice" relativePoint="RIGHT">
-														<Offset>
-															<AbsDimension x="130" y="0"/>
-														</Offset>
-													</Anchor>
+													<Anchor point="RIGHT" relativeTo="OpenMailInvoiceSalePrice" relativePoint="RIGHT" x="130" y="0"/>
 												</Anchors>
 												<Scripts>
 													<OnLoad>
@@ -1749,30 +1543,18 @@
 						</Scripts>
 					</Button>
 					<Button name="OpenMailDeleteButton" parentKey="DeleteButton" inherits="MagicButtonTemplate" text="DELETE">
-						<Size>
-							<AbsDimension x="82" y="22"/>
-						</Size>
+						<Size x="82" y="22"/>
 						<Anchors>
-							<Anchor point="RIGHT" relativeTo="OpenMailCancelButton" relativePoint="LEFT">
-								<Offset>
-									<AbsDimension x="0" y="0"/>
-								</Offset>
-							</Anchor>
+							<Anchor point="RIGHT" relativeTo="OpenMailCancelButton" relativePoint="LEFT" x="0" y="0"/>
 						</Anchors>
 						<Scripts>
 							<OnClick function="OpenMail_Delete"/>
 						</Scripts>
 					</Button>
 					<Button name="OpenMailReplyButton" parentKey="ReplyButton" inherits="MagicButtonTemplate" text="REPLY_MESSAGE">
-						<Size>
-							<AbsDimension x="82" y="22"/>
-						</Size>
+						<Size x="82" y="22"/>
 						<Anchors>
-							<Anchor point="RIGHT" relativeTo="OpenMailDeleteButton" relativePoint="LEFT">
-								<Offset>
-									<AbsDimension x="0" y="0"/>
-								</Offset>
-							</Anchor>
+							<Anchor point="RIGHT" relativeTo="OpenMailDeleteButton" relativePoint="LEFT" x="0" y="0"/>
 						</Anchors>
 						<Scripts>
 							<OnClick function="OpenMail_Reply"/>

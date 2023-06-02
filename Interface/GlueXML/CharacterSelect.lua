@@ -143,7 +143,7 @@ end
 
 function CharacterSelect_OnHide()
 	GlueDialog:HideDialog("ADDON_INVALID_VERSION_DIALOG")
-	CharacterSelectCharacterFrame.DropDownMenu:Hide()
+	CharacterSelect_CloseDropdowns()
 
 	C_CharacterList.ForceSetPlayableMode()
 
@@ -302,11 +302,11 @@ function CharacterSelect_OnKeyDown(self,key)
 			CharacterSelect_Exit();
 		end
 	elseif ( key == "ENTER" ) then
+		CharacterSelect_CloseDropdowns()
 		CharacterSelect_EnterWorld();
-		CharacterSelectCharacterFrame.DropDownMenu:Hide()
 	elseif ( key == "PRINTSCREEN" ) then
+		CharacterSelect_CloseDropdowns()
 		Screenshot();
-		CharacterSelectCharacterFrame.DropDownMenu:Hide()
 	elseif ( key == "UP" or key == "LEFT" ) then
 		local numChars = C_CharacterList.GetNumCharactersOnPage();
 		if ( numChars > 1 ) then
@@ -574,6 +574,7 @@ function CharacterSelect_UpdateRealmButton()
 end
 
 function CharSelectChangeListState_OnClick(self, button)
+	CharacterSelect_CloseDropdowns()
 	self:Disable()
 
 	if C_CharacterList.IsInPlayableMode() then
@@ -592,8 +593,9 @@ function CharacterSelect_UpdateModel(self)
 end
 
 function UpdateCharacterSelection()
+	CharacterSelect_CloseDropdowns()
+
 	local inPlayableMode = C_CharacterList.IsInPlayableMode()
-	CharacterSelectCharacterFrame.DropDownMenu:Hide()
 
 	for i = 1, C_CharacterList.GetNumCharactersPerPage() do
 		local button = _G["CharSelectCharacterButton"..i]
@@ -756,7 +758,7 @@ function CharacterSelect_OpenCharacterCreate(paidServiceID, characterIndex, onSh
 end
 
 function CharacterSelect_SelectCharacter(characterIndex, noCreate)
-	CharacterSelectCharacterFrame.DropDownMenu:Hide()
+	CharacterSelect_CloseDropdowns()
 
 	if ( characterIndex == CharacterSelect.createIndex ) then
 		if ( not noCreate ) then
@@ -888,11 +890,12 @@ function CharacterSelect_ChangeRealm()
 end
 
 function CharacterSelectFrame_OnMouseDown(button)
-	CharacterSelectCharacterFrame.DropDownMenu:Hide()
 	if ( button == "LeftButton" ) then
 		CHARACTER_SELECT_ROTATION_START_X = GetCursorPosition();
 		CHARACTER_SELECT_INITIAL_FACING = GetCharacterSelectFacing();
 	end
+
+	CharacterSelect_CloseDropdowns()
 end
 
 function CharacterSelectFrame_OnMouseUp(button)
@@ -1035,7 +1038,7 @@ function CharacterSelectButton_OnDragStart(self)
         end
 
         self:LockHighlight()
-		CharacterSelectCharacterFrame.DropDownMenu:Hide()
+		CharacterSelect_CloseDropdowns()
 		CharacterSelectButton_HideMoveButtons(self)
     end
 end
@@ -1145,6 +1148,8 @@ end
 function CharacterSelect_PrevPage(self, button)
 	if C_CharacterList.GetCurrentPageIndex() <= 1 then return end
 
+	CharacterSelect_CloseDropdowns()
+
 	CharSelectChangeListStateButton:Disable()
 	CharSelectCharPageButtonPrev:Disable()
 	CharSelectCharPageButtonNext:Disable()
@@ -1154,6 +1159,8 @@ end
 
 function CharacterSelect_NextPage(self, button)
 	if C_CharacterList.GetCurrentPageIndex() >= C_CharacterList.GetNumPages() then return end
+
+	CharacterSelect_CloseDropdowns()
 
 	CharSelectChangeListStateButton:Disable()
 	CharSelectCharPageButtonPrev:Disable()
@@ -1212,7 +1219,7 @@ function CharacterSelect_FixCharacter(characterIndex)
 	local characterID = GetCharIDFromIndex(characterIndex or CharacterSelect.selectedIndex)
 
 	if characterID == 0 then
-		error("Incorrect characterIndex [%s]", tostring(characterID), 2)
+		error(string.format("Incorrect characterIndex [%s]", characterID), 2)
 	end
 
 	if C_CharacterList.IsCharacterPendingBoostDK(characterID) then
@@ -1250,7 +1257,7 @@ function CharacterSelect_Delete(characterIndex)
 	local characterID = GetCharIDFromIndex(characterIndex or CharacterSelect.selectedIndex)
 
 	if characterID == 0 then
-		error("Incorrect characterID [%s]", tostring(characterID), 2)
+		error(string.format("Incorrect characterID [%s]", characterID), 2)
 	end
 
 	local name, _, class, level = GetCharacterInfo(characterID)
@@ -1286,10 +1293,12 @@ function CharacterDeleteDialog_OKButton_OnClick(self)
 end
 
 function CharacterSelect_OpenBoost(characterIndex, animated)
+	CharacterSelect_CloseDropdowns()
+
 	local characterID = GetCharIDFromIndex(characterIndex or CharacterSelect.selectedIndex)
 
 	if characterID == 0 then
-		error("Incorrect characterIndex [%s]", tostring(characterID), 2)
+		error(string.format("Incorrect characterIndex [%s]", characterID), 2)
 	end
 
 	PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
@@ -1304,6 +1313,10 @@ function CharacterSelect_OpenBoost(characterIndex, animated)
 	elseif not CharacterBoostBuyFrame:IsShown() and C_CharacterServices.GetBoostStatus() == Enum.CharacterServices.BoostServiceStatus.Available then
 		CharacterBoostBuyFrame:Show()
 	end
+end
+
+function CharacterSelect_CloseDropdowns()
+	CharacterSelectCharacterFrame.DropDownMenu:Hide()
 end
 
 CharacterSelectPAIDButtonMixin = {}
@@ -1361,6 +1374,8 @@ function CharacterSelectPAIDButtonMixin:OnMouseUp()
 end
 
 function CharacterSelectPAIDButtonMixin:OnClick()
+	CharacterSelect_CloseDropdowns()
+
 	if self.paID == 4 then
 		CharacterServiceRestoreCharacterFrame:SetPurchaseArgs(self:GetParent():GetID())
 		CharacterServiceRestoreCharacterFrame:SetPrice(C_CharacterServices.GetCharacterRestorePrice())
@@ -1465,12 +1480,17 @@ function CharSelectChangeRealmButtonMixin:Init()
 	self.duration = 0.500
 end
 
-function CharSelectChangeRealmButtonMixin:SetPosition( easing )
+function CharSelectChangeRealmButtonMixin:SetPosition(easing)
 	if easing then
 		self:ClearAndSetPoint("TOP", 0, easing)
 	else
 		self:ClearAndSetPoint("TOP", 0, self.isRevers and self.startPoint or self.endPoint)
 	end
+end
+
+function CharSelectChangeRealmButtonMixin:OnClick(button)
+	CharacterSelect_CloseDropdowns()
+	CharacterSelect_ChangeRealm()
 end
 
 CharacterSelectBottomLeftPanelMixin = {}
@@ -1949,6 +1969,7 @@ function CharacterSelectServiceButtonMixin:OnClick()
 		CharacterSelect_OpenBoost(parent:GetID())
 	end
 
+	CharacterSelect_CloseDropdowns()
 	CharacterSelectButton_HideMoveButtons(parent)
 	parent.buttonText.Location:Show()
 	parent.buttonText.ItemLevel:Hide()

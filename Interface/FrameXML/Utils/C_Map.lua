@@ -2,16 +2,16 @@ local WORLDMAP_MAP_NAME_BY_ID = WORLDMAP_MAP_NAME_BY_ID
 
 local MAP_DATA_INDEX = {
 	PARENT_WORLD_MAP_ID = 1,
-	AREA_NAME_ENGB = 1,
-	AREA_NAME_RURU = 1,
+	AREA_NAME_ENGB = 2,
+	AREA_NAME_RURU = 3,
 }
 
 local AREA_NAME_LOCALE = string.format("AREA_NAME_%s", GetLocale():upper())
 
 local function getCurrentMapAreaID()
-	local currenctMapAreaID = GetCurrentMapAreaID()
-	if currenctMapAreaID and currenctMapAreaID > 0 then
-		return currenctMapAreaID - 1
+	local currentMapAreaID = GetCurrentMapAreaID()
+	if currentMapAreaID and currentMapAreaID > 0 then
+		return currentMapAreaID - 1
 	else
 		return 0
 	end

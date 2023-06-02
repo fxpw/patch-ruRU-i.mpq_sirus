@@ -668,6 +668,14 @@ local function BattlegroundInviteFrame_Accept()
 	end
 end
 
+function QueueStatusDropDown_RejectPVPProposal(index)
+	StaticPopup_Show("PVP_REJECT_PROPOSAL", nil, nil, index)
+end
+
+function QueueStatusDropDown_RejectLFGProposal()
+	StaticPopup_Show("LFG_REJECT_PROPOSAL")
+end
+
 function QueueStatusDropDown_Update()
 	local numQueuesInQueued = 0;
 
@@ -849,7 +857,7 @@ function QueueStatusDropDown_AddBattlefieldButtons(idx, shownHearthAndRes)
 			if ( teamSize == 0 ) then
 				info.disabled = false;
 				info.text = LEAVE_QUEUE;
-				info.func = wrapFunc(AcceptBattlefieldPort);
+				info.func = wrapFunc(QueueStatusDropDown_RejectPVPProposal);
 				info.arg1 = idx;
 				info.arg2 = nil;
 				UIDropDownMenu_AddButton(info);
@@ -999,7 +1007,7 @@ function QueueStatusDropDown_AddLFGButtons()
 		UIDropDownMenu_AddButton(info);
 
 		info.text = LEAVE_QUEUE;
-		info.func = wrapFunc(RejectProposal);
+		info.func = wrapFunc(QueueStatusDropDown_RejectLFGProposal);
 		UIDropDownMenu_AddButton(info);
 	elseif ( mode == "queued" ) then
 		info.text = LEAVE_QUEUE;

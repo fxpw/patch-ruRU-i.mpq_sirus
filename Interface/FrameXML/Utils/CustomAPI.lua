@@ -211,7 +211,7 @@ do	-- PlayerHasHearthstone | UseHearthstone
 	end
 end
 
-do
+do	-- GetInventoryTransmogID
 	local transmogrificationInfo = {};
 
 	function GetInventoryTransmogID(unit, slotID)
@@ -220,7 +220,18 @@ do
 		end
 
 		if UnitIsUnit(unit, "player") then
-			return transmogrificationInfo[slotID];
+			if transmogrificationInfo[slotID] then
+				local transmogID, enchantID;
+
+				if transmogrificationInfo[slotID].appearanceID ~= 0 then
+					transmogID = transmogrificationInfo[slotID].appearanceID;
+				end
+				if transmogrificationInfo[slotID].illusionID ~= 0 then
+					enchantID = transmogrificationInfo[slotID].illusionID;
+				end
+
+				return transmogID, enchantID;
+			end
 		end
 	end
 
@@ -232,15 +243,288 @@ do
 
 		if unitGUID == tonumber(UnitGUID("player")) then
 			for _, slotInfo in pairs(msgData) do
-				local slotID, transmogrifyID = string.split(":", slotInfo, 2);
-				slotID, transmogrifyID = tonumber(slotID), tonumber(transmogrifyID);
+				local slotID, transmogrifyID, enchantID = string.split(":", slotInfo, 3);
+				slotID, transmogrifyID, enchantID = tonumber(slotID), tonumber(transmogrifyID), tonumber(enchantID);
 
-				if slotID and transmogrifyID then
-					transmogrificationInfo[slotID] = transmogrifyID;
+				if slotID and (transmogrifyID or enchantID) then
+					transmogrificationInfo[slotID] = CreateAndInitFromMixin(ItemTransmogInfoMixin, transmogrifyID or 0, enchantID or 0);
 				end
 			end
 
 			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.PLAYER_TRANSMOGRIFICATION_CHANGED);
+		end
+	end
+end
+
+do	-- Replace Enchant
+	local pcall = pcall;
+	local GetActionInfo = GetActionInfo;
+	local IsEquippedItem = IsEquippedItem;
+	local UnitIsUnit = UnitIsUnit;
+
+	local UseAction = UseAction;
+	local UseInventoryItem = UseInventoryItem;
+	local PickupInventoryItem = PickupInventoryItem;
+	local UseContainerItem = UseContainerItem;
+	local ClickTargetTradeButton = ClickTargetTradeButton;
+
+	local ReplaceEnchant = ReplaceEnchant;
+	local ReplaceTradeEnchant = ReplaceTradeEnchant;
+
+	local replaceEnchantText1, replaceEnchantText2 = nil, nil;
+	local tradeReplaceEnchantText1, tradeReplaceEnchantText2 = nil, nil;
+
+	local tooltip = CreateFrame("GameTooltip", "ScanReplaceEnchantTooltip");
+	tooltip:AddFontStrings(
+		tooltip:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"),
+		tooltip:CreateFontString("$parentTextRight1", nil, "GameTooltipText")
+	);
+
+	local eventHandler = CreateFrame("Frame");
+	eventHandler:RegisterEvent("REPLACE_ENCHANT");
+	eventHandler:RegisterEvent("TRADE_REPLACE_ENCHANT");
+	eventHandler:SetScript("OnEvent", function(_, event, arg1, arg2)
+		if event == "REPLACE_ENCHANT" then
+			replaceEnchantText1, replaceEnchantText2 = arg1, arg2;
+		elseif event == "TRADE_REPLACE_ENCHANT" then
+			tradeReplaceEnchantText1, tradeReplaceEnchantText2 = arg1, arg2;
+		end
+	end);
+
+	local function GetEnchantText(func, replacedText, ...)
+		tooltip:SetOwner(WorldFrame, "ANCHOR_NONE");
+		tooltip[func](tooltip, ...);
+		tooltip:Show();
+
+		local foundEnchant, enchantText = false;
+		for i = tooltip:NumLines(), 2, -1 do
+			local obj = _G["ScanReplaceEnchantTooltipTextLeft"..i];
+			if not obj then
+				tooltip:Hide();
+				return nil, true;
+			end
+
+			local text = obj:GetText();
+			if text and text ~= "" then
+				if string.find(text, TOOLTIP_ENCHANT_SPELL) then
+					enchantText = text;
+					foundEnchant = true;
+				elseif string.find(text, TOOLTIP_ILLUSION_SPELL) then
+					foundEnchant = true;
+				elseif replacedText and string.find(text, replacedText, 1, true) then
+					foundEnchant = false;
+					enchantText = nil;
+					break;
+				end
+			end
+		end
+		tooltip:Hide();
+		return enchantText, not foundEnchant;
+	end
+
+	_G.UseAction = function(action, unit, button)
+		replaceEnchantText1, replaceEnchantText2 = nil, nil;
+		local success, result = pcall(UseAction, action, unit, button);
+		if not success then
+			geterrorhandler()(result);
+			return;
+		end
+		local actionType, id = GetActionInfo(action);
+		if actionType == "item" and id and IsEquippedItem(id) then
+			for slotID = 1, 19 do
+				if id == GetInventoryItemID("player", slotID) then
+					if replaceEnchantText1 and replaceEnchantText2 then
+						local enchantText, enchantNotFound = GetEnchantText("SetInventoryItem", replaceEnchantText1, "player", slotID);
+						if enchantText or enchantNotFound then
+							if enchantText then
+								replaceEnchantText1 = enchantText;
+							end
+							FireCustomClientEvent("CUSTOM_REPLACE_ENCHANT", replaceEnchantText1, replaceEnchantText2);
+						else
+							ReplaceEnchant();
+						end
+					end
+					break;
+				end
+			end
+		end
+		return result;
+	end
+
+	_G.UseInventoryItem = function(slotID, target)
+		if type(target) == "string" and not UnitIsUnit(target, "player") then
+			return UseInventoryItem(slotID, target);
+		end
+		replaceEnchantText1, replaceEnchantText2 = nil, nil;
+		local result = UseInventoryItem(slotID);
+		if replaceEnchantText1 and replaceEnchantText2 then
+			local enchantText, enchantNotFound = GetEnchantText("SetInventoryItem", replaceEnchantText1, "player", slotID);
+			if enchantText or enchantNotFound then
+				if enchantText then
+					replaceEnchantText1 = enchantText;
+				end
+				FireCustomClientEvent("CUSTOM_REPLACE_ENCHANT", replaceEnchantText1, replaceEnchantText2);
+			else
+				ReplaceEnchant();
+			end
+		end
+		return result;
+	end
+
+	_G.PickupInventoryItem = function(slotID)
+		replaceEnchantText1, replaceEnchantText2 = nil, nil;
+		local result = PickupInventoryItem(slotID);
+		if replaceEnchantText1 and replaceEnchantText2 then
+			local enchantText, enchantNotFound = GetEnchantText("SetInventoryItem", replaceEnchantText1, "player", slotID);
+			if enchantText or enchantNotFound then
+				if enchantText then
+					replaceEnchantText1 = enchantText;
+				end
+				FireCustomClientEvent("CUSTOM_REPLACE_ENCHANT", replaceEnchantText1, replaceEnchantText2);
+			else
+				ReplaceEnchant();
+			end
+		end
+		return result;
+	end
+
+	_G.UseContainerItem = function(...)
+		replaceEnchantText1, replaceEnchantText2 = nil, nil;
+		local success, result = pcall(UseContainerItem, ...);
+		if not success then
+			geterrorhandler()(result);
+			return;
+		end
+		if replaceEnchantText1 and replaceEnchantText2 then
+			local enchantText, enchantNotFound = GetEnchantText("SetBagItem", replaceEnchantText1, ...);
+			if enchantText or enchantNotFound then
+				if enchantText then
+					replaceEnchantText1 = enchantText;
+				end
+				FireCustomClientEvent("CUSTOM_REPLACE_ENCHANT", replaceEnchantText1, replaceEnchantText2);
+			else
+				ReplaceEnchant();
+			end
+		end
+		return result;
+	end
+
+	_G.ClickTargetTradeButton = function(index)
+		tradeReplaceEnchantText1, tradeReplaceEnchantText2 = nil, nil;
+		local result = ClickTargetTradeButton(index);
+		if tradeReplaceEnchantText1 and tradeReplaceEnchantText2 then
+			local enchantText, enchantNotFound = GetEnchantText("SetTradeTargetItem", replaceEnchantText1, index);
+			if enchantText or enchantNotFound then
+				if enchantText then
+					replaceEnchantText1 = enchantText;
+				end
+				FireCustomClientEvent("CUSTOM_TRADE_REPLACE_ENCHANT", tradeReplaceEnchantText1, tradeReplaceEnchantText2);
+			else
+				ReplaceTradeEnchant();
+			end
+		end
+		return result;
+	end
+end
+
+do	-- IsComplained | IsIgnoredRawByName
+	local CanComplainChat = CanComplainChat
+	local GetIgnoreName = GetIgnoreName
+	local GetNumIgnores = GetNumIgnores
+	local IsIgnored = IsIgnored
+	local IsMuted = IsMuted
+	local UnitName = UnitName
+
+	AddMute = function() end
+	DelMute = function() end
+	AddOrDelMute = function() end
+
+	IsComplained = function(token)
+		return IsMuted(token)
+	end
+
+	IsIgnoredRawByName = function(token)
+		if type(token) ~= "string" then
+			error("Usage: IsIgnoredRawByName(name) or IsIgnoredRawByName(unit)", 2)
+		end
+		local name = UnitName(token) or token
+		if CanComplainChat(name) and IsMuted(name) then
+			for i = 1, GetNumIgnores() do
+				if name == GetIgnoreName(i) then
+					return true
+				end
+			end
+			return false
+		end
+		return IsIgnored(name)
+	end
+end
+
+do	-- GetServerTime
+	local date = date
+	local time = time
+	local GetGameTime = GetGameTime
+
+	local function getTimeDiffSeconds(srvHours, srvMinutes, seconds)
+		local timeUTC = date("!*t")
+		local timeLocal = date("*t")
+
+		local tzDiffHours = (timeLocal.hour - timeUTC.hour)
+		local tzDiffMinutes = (timeLocal.min - timeUTC.min)
+		local tzDiffTotalSeconds = tzDiffHours * 3600 + tzDiffMinutes * 60
+
+		local srvOffsetHours = srvHours - timeUTC.hour
+		local srvOffsetMinutes = srvMinutes - timeUTC.min
+		local srvOffsetSeconds = seconds and (timeUTC.sec - seconds) or 0
+
+		local srvDiffSecondsUTC = (srvOffsetHours * 3600) + (srvOffsetMinutes * 60) - srvOffsetSeconds
+
+		return srvDiffSecondsUTC - tzDiffTotalSeconds
+	end
+
+	local srvHours, srvMinutes = GetGameTime()
+	srvDiffSeconds = getTimeDiffSeconds(srvHours, srvMinutes)
+
+	local frame = CreateFrame("Frame")
+	frame:SetScript("OnUpdate", function(self)
+		local h, m = GetGameTime()
+		if m ~= srvMinutes then
+			self:Hide()
+			srvDiffSeconds = getTimeDiffSeconds(h, m, 0)
+		end
+	end)
+
+	GetServerTime = function()
+		return time() + srvDiffSeconds
+	end
+end
+
+do	-- GetCategoryList
+	local categoryList = {}
+
+	local GetCategoryList = GetCategoryList
+	_G.GetCategoryList = function()
+		local isLockRenegade = C_Service:IsLockRenegadeFeatures()
+		local isLockStrengthenStats = C_Service:IsLockStrengthenStatsFeature()
+
+		if isLockRenegade or isLockStrengthenStats then
+			if categoryList and #categoryList == 0 then
+				local lockedCategories = {
+					[15050] = isLockRenegade,
+					[15061] = isLockRenegade,
+					[15043] = isLockStrengthenStats,
+				}
+
+				for _, categoryID in pairs(GetCategoryList()) do
+					if not lockedCategories[categoryID] then
+						table.insert(categoryList, categoryID)
+					end
+				end
+			end
+
+			return categoryList
+		else
+			return GetCategoryList()
 		end
 	end
 end

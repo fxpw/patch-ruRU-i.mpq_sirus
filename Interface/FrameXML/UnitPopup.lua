@@ -25,7 +25,7 @@ UnitPopupButtons = {
 	["TARGET"] = { text = TARGET, },
 	["IGNORE"] = {
 		text = function(dropdownMenu)
-			return IsIgnored(dropdownMenu.name) and IGNORE_REMOVE or IGNORE;
+			return IsIgnoredRawByName(dropdownMenu.name) and IGNORE_REMOVE or IGNORE;
 		end,
 	},
 	["REPORT_SPAM"]	= { text = REPORT_SPAM, },
@@ -270,7 +270,7 @@ UnitPopupMenus = {
 		"OTHER_SUBSECTION_TITLE",
 		"MOVE_PLAYER_FRAME",
 		"MOVE_TARGET_FRAME",
-		"PVP_REPORT_AFK",
+	--	"PVP_REPORT_AFK",
 		"VOTE_TO_KICK",
 		"UNINVITE",
 		"CANCEL"
@@ -321,7 +321,7 @@ UnitPopupMenus = {
 		"OTHER_SUBSECTION_TITLE",
 		"MOVE_PLAYER_FRAME",
 		"MOVE_TARGET_FRAME",
-		"PVP_REPORT_AFK",
+	--	"PVP_REPORT_AFK",
 		"VOTE_TO_KICK",
 		"RAID_REMOVE",
 		"CANCEL"
@@ -341,7 +341,7 @@ UnitPopupMenus = {
 		"OTHER_SUBSECTION_TITLE",
 		"MOVE_PLAYER_FRAME",
 		"MOVE_TARGET_FRAME",
-		"PVP_REPORT_AFK",
+	--	"PVP_REPORT_AFK",
 		"RAID_REMOVE",
 		"CANCEL"
 	},
@@ -363,7 +363,7 @@ UnitPopupMenus = {
 		"IGNORE",
 		"REMOVE_FRIEND",
 		"REPORT_SPAM",
-		"PVP_REPORT_AFK",
+	--	"PVP_REPORT_AFK",
 		"CANCEL"
 	},
 	["FRIEND_OFFLINE"] = {
@@ -1026,7 +1026,7 @@ function UnitPopup_HideButtons ()
 				shown = false;
 			end
 		elseif ( value == "REPORT_SPAM" ) then
-			if ( not dropdownMenu.lineID or not CanComplainChat(dropdownMenu.lineID) ) then
+			if ( not dropdownMenu.lineID or not CanComplainChat(dropdownMenu.lineID) or IsComplained(dropdownMenu.name) ) then
 				shown = false;
 			end
 		elseif ( value == "POP_OUT_CHAT" ) then
@@ -1079,7 +1079,9 @@ function UnitPopup_HideButtons ()
 			end
 		elseif ( value == "VOTE_TO_KICK" ) then
 			if ( (inParty == 0) or (instanceType == "pvp") or (instanceType == "arena") or (not HasLFGRestrictions()) ) then
-				shown = false;
+				if (instanceType ~= "pvp" or not C_Service.IsBattlegroundKickEnabled()) then
+					shown = false;
+				end
 			end
 		elseif ( value == "LEAVE" ) then
 			if ( (inParty == 0) or instanceType == "pvp" or instanceType == "arena" ) then
@@ -1447,7 +1449,9 @@ function UnitPopup_OnUpdate (elapsed)
 						end
 					elseif ( value == "VOTE_TO_KICK" ) then
 						if ( inParty == 0 or not HasLFGRestrictions() ) then
-							enable = 0;
+							if (instanceType ~= "pvp" or not C_Service.IsBattlegroundKickEnabled()) then
+								enable = 0;
+							end
 						end
 					elseif ( value == "PROMOTE" or value == "PROMOTE_GUIDE" ) then
 						if ( inParty == 0 or isLeader == 0 or ( dropdownFrame.unit and not UnitIsConnected(dropdownFrame.unit) ) ) then

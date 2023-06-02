@@ -1,0 +1,287 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Texture name="DF-_UI-Frame-TopTileStreaks" file="Interface\FrameGeneral\_UI-Frame" virtual="true" horizTile="true" >
+		<Size x="256" y="37"/>
+		<TexCoords top="0.007813" bottom="0.343750"/>
+	</Texture>
+
+	<Button name="DF_UIPanelCloseButtonNoScripts" virtual="true">
+		<Size x="24" y="24"/>
+		<DisabledTexture/>
+		<NormalTexture/>
+		<PushedTexture/>
+		<HighlightTexture alphaMode="ADD"/>
+		<Scripts>
+			<OnLoad>
+				self:SetDisabledAtlas("RedButton-Exit-Disabled")
+				self:SetNormalAtlas("RedButton-Exit")
+				self:SetPushedAtlas("RedButton-exit-pressed")
+				self:SetHighlightAtlas("RedButton-Highlight")
+			</OnLoad>
+			<OnShow>
+				self:SetFrameLevel(self:GetParent():GetFrameLevel() + 10)
+			</OnShow>
+		</Scripts>
+	</Button>
+	<Button name="DF_UIPanelHideButtonNoScripts" virtual="true">
+		<Size x="24" y="24"/>
+		<DisabledTexture/>
+		<NormalTexture/>
+		<PushedTexture/>
+		<HighlightTexture alphaMode="ADD"/>
+		<Scripts>
+			<OnLoad>
+				self:SetDisabledAtlas("RedButton-MiniCondense-disabled")
+				self:SetNormalAtlas("RedButton-MiniCondense")
+				self:SetPushedAtlas("RedButton-MiniCondense-pressed")
+				self:SetHighlightAtlas("RedButton-Highlight")
+			</OnLoad>
+			<OnShow>
+				self:SetFrameLevel(self:GetParent():GetFrameLevel() + 10)
+			</OnShow>
+		</Scripts>
+	</Button>
+	<Button name="DF_UIPanelCloseButton" inherits="DF_UIPanelCloseButtonNoScripts" virtual="true">
+		<Scripts>
+			<OnClick function="UIPanelCloseButton_OnClick"/>
+		</Scripts>
+	</Button>
+	<Button name="DF_UIPanelCloseButtonDefaultAnchors" inherits="DF_UIPanelCloseButton" virtual="true">
+		<Anchors>
+			<Anchor point="TOPRIGHT" x="1" y="0"/>
+		</Anchors>
+	</Button>
+
+	<Frame name="DF_FlatPanelBackgroundTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="BottomLeft" name="$parentBottomLeft">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="BottomRight" name="$parentBottomRight">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="BottomEdge">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBottomLeft" relativePoint="TOPRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBottomRight" relativePoint="BOTTOMLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="TopSection">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBottomRight" relativePoint="TOPRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self.BottomLeft:SetAtlas("UIFrameBackground-NineSlice-CornerBottomLeft", true)
+				self.BottomLeft:SetVertexColor(PANEL_BACKGROUND_COLOR:GetRGBA())
+				self.BottomRight:SetAtlas("UIFrameBackground-NineSlice-CornerBottomRight", true)
+				self.BottomRight:SetVertexColor(PANEL_BACKGROUND_COLOR:GetRGBA())
+				self.BottomEdge:SetAtlas("UIFrameBackground-NineSlice-CornerBottomRight", true)
+				self.BottomEdge:SetVertexColor(PANEL_BACKGROUND_COLOR:GetRGBA())
+				self.TopSection:SetAtlas("UIFrameBackground-NineSlice-CornerBottomRight", true)
+				self.TopSection:SetVertexColor(PANEL_BACKGROUND_COLOR:GetRGBA())
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+<!--
+*******************************************************************************
+    Default Panel templates
+	This is a standard empty frame with a title.
+	It makes its own nine-slice border.
+*******************************************************************************
+-->
+	<Frame name="DefaultPanelBaseTemplate" virtual="true">
+		<Attributes>
+			<Attribute name="layoutType" value="DF_ButtonFrameTemplateNoPortrait" type="string"/>
+		</Attributes>
+		<Size x="338" y="424"/>
+		<Frames>
+			<Frame parentKey="TitleContainer">
+				<Size x="0" y="20"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="30" y="-1"/>
+					<Anchor point="TOPRIGHT" x="-24" y="-1"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentTitleText" inherits="GameFontNormal" parentKey="TitleText" wordwrap="false">
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-5"/>
+								<Anchor point="LEFT"/>
+								<Anchor point="RIGHT"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, DefaultPanelMixin)
+			</OnLoad>
+			<OnShow>
+				self.TitleContainer:SetFrameLevel(self:GetParent():GetFrameLevel() + 10)
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<Frame name="DefaultPanelTemplate" inherits="DefaultPanelBaseTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBg" file="Interface\FrameGeneral\UI-Background-Rock" horizTile="true" vertTile="true" parentKey="Bg">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="6" y="-21"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentTopTileStreaks" parentKey="TopTileStreaks" inherits="_UI-Frame-TopTileStreaks">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="6" y="-21"/>
+						<Anchor point="TOPRIGHT" x="-2" y="-21"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<Frame name="DefaultPanelFlatTemplate" inherits="DefaultPanelBaseTemplate" virtual="true">
+		<Frames>
+			<Frame name="$parentBg" parentKey="Bg" inherits="DF_FlatPanelBackgroundTemplate" frameLevel="0">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="6" y="-20"/>
+					<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+	</Frame>
+
+<!--
+*******************************************************************************
+    PortraitFrameTemplate
+	This is an empty frame with space for a portrait/icon in the top left corner.
+*******************************************************************************
+-->
+	<Frame name="DF_PortraitFrameBaseTemplate" virtual="true">
+		<Attributes>
+			<Attribute name="layoutType" value="DF_PortraitFrameTemplate" type="string"/>
+		</Attributes>
+		<Size x="338" y="424"/>
+		<Frames>
+			<Frame parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
+			<Frame parentKey="PortraitContainer">
+				<Size x="1" y="1"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture name="$parentPortrait" parentKey="portrait">
+							<Size x="62" y="62"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="-5" y="7" />
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame parentKey="TitleContainer">
+				<Size x="0" y="20"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="58" y="-1"/>
+					<Anchor point="TOPRIGHT" x="-24" y="-1"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentTitleText" inherits="GameFontNormal" text="" parentKey="TitleText" wordwrap="false">
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-5"/>
+								<Anchor point="LEFT"/>
+								<Anchor point="RIGHT"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, PortraitFrameMixin)
+			</OnLoad>
+			<OnShow>
+				local parentFrameLevel = self:GetParent():GetFrameLevel()
+				self.PortraitContainer:SetFrameLevel(parentFrameLevel + 5)
+				self.TitleContainer:SetFrameLevel(parentFrameLevel + 10)
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<Frame name="DF_PortraitFrameTexturedBaseTemplate" inherits="DF_PortraitFrameBaseTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBg" file="Interface\FrameGeneral\UI-Background-Rock" horizTile="true" vertTile="true" parentKey="Bg">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-21"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="TopTileStreaks" inherits="DF-_UI-Frame-TopTileStreaks">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="6" y="-21"/>
+						<Anchor point="TOPRIGHT" x="-2" y="-21"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<Frame name="DF_PortraitFrameFlatBaseTemplate" inherits="DF_PortraitFrameBaseTemplate" virtual="true">
+		<Frames>
+			<Frame parentKey="Bg" inherits="DF_FlatPanelBackgroundTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="2" y="-20"/>
+					<Anchor point="BOTTOMRIGHT" x="-2" y="3"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, PortraitFrameFlatBaseMixin)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="DF_PortraitFrameTemplateNoCloseButton" inherits="DF_PortraitFrameTexturedBaseTemplate" virtual="true"/>
+
+	<Frame name="DF_PortraitFrameTemplate" inherits="DF_PortraitFrameTemplateNoCloseButton" virtual="true">
+		<Frames>
+			<Button name="$parentCloseButton" parentKey="CloseButton" inherits="DF_UIPanelCloseButtonDefaultAnchors"/>
+		</Frames>
+	</Frame>
+
+	<Frame name="DF_PortraitFrameTemplateMinimizable" inherits="DF_PortraitFrameTemplate" virtual="true">
+		<Attributes>
+			<Attribute name="layoutType" value="DF_PortraitFrameTemplateMinimizable" type="string"/>
+		</Attributes>
+	</Frame>
+
+	<Frame name="DF_PortraitFrameFlatTemplate" inherits="DF_PortraitFrameFlatBaseTemplate" virtual="true">
+		<Frames>
+			<Button parentKey="CloseButton" inherits="DF_UIPanelCloseButtonDefaultAnchors"/>
+		</Frames>
+	</Frame>
+</Ui>

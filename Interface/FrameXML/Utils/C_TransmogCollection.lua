@@ -1,3 +1,5 @@
+local IsSpellKnown = IsSpellKnown;
+
 Enum = Enum or {}
 Enum.TransmogCollectionType = {
 	None = 0, Head = 1, Shoulder = 2, Back = 3, Chest = 4, Shirt = 5, Tabard = 6, Wrist = 7, Hands = 8, Waist = 9, Legs = 10, Feet = 11,
@@ -6,7 +8,7 @@ Enum.TransmogCollectionType = {
 };
 
 Enum.TransmogSearchType = {
-	Items = 1, BaseSets = 2, UsableSets = 3,
+	Items = 1, BaseSets = 2, UsableSets = 3, Illusions = 4,
 };
 
 TC_CACHE = C_Cache("TRANSMOG_COLLECTION_CACHE", true);
@@ -73,25 +75,25 @@ local TRANSMOG_CATEGORIES = {
 	[Enum.TransmogCollectionType.Waist] = {name = INVTYPE_WAIST, isWeapon = false, canEnchant = false, canMainHand = false, canOffHand = false, canRanged = false, subCategories = {}},
 	[Enum.TransmogCollectionType.Legs] = {name = INVTYPE_LEGS, isWeapon = false, canEnchant = false, canMainHand = false, canOffHand = false, canRanged = false, subCategories = {}},
 	[Enum.TransmogCollectionType.Feet] = {name = INVTYPE_FEET, isWeapon = false, canEnchant = false, canMainHand = false, canOffHand = false, canRanged = false, subCategories = {}},
-	[Enum.TransmogCollectionType.Wand] = {name = ITEM_SUB_CLASS_2_19, isWeapon = true, canEnchant = true, canMainHand = false, canOffHand = false, canRanged = true},
+	[Enum.TransmogCollectionType.Wand] = {name = ITEM_SUB_CLASS_2_19, isWeapon = true, canEnchant = false, canMainHand = false, canOffHand = false, canRanged = true},
 	[Enum.TransmogCollectionType.OneHAxe] = {name = ITEM_SUB_CLASS_2_0, isWeapon = true, canEnchant = true, canMainHand = true, canOffHand = true, canRanged = false},
 	[Enum.TransmogCollectionType.OneHSword] = {name = ITEM_SUB_CLASS_2_7, isWeapon = true, canEnchant = true, canMainHand = true, canOffHand = true, canRanged = false},
 	[Enum.TransmogCollectionType.OneHMace] = {name = ITEM_SUB_CLASS_2_4, isWeapon = true, canEnchant = true, canMainHand = true, canOffHand = true, canRanged = false},
 	[Enum.TransmogCollectionType.Dagger] = {name = ITEM_SUB_CLASS_2_15, isWeapon = true, canEnchant = true, canMainHand = true, canOffHand = true, canRanged = false},
 	[Enum.TransmogCollectionType.Fist] = {name = ITEM_SUB_CLASS_2_13, isWeapon = true, canEnchant = true, canMainHand = true, canOffHand = true, canRanged = false},
-	[Enum.TransmogCollectionType.Shield] = {name = ITEM_SUB_CLASS_4_6, isWeapon = true, canEnchant = true, canMainHand = false, canOffHand = true, canRanged = false},
+	[Enum.TransmogCollectionType.Shield] = {name = ITEM_SUB_CLASS_4_6, isWeapon = true, canEnchant = false, canMainHand = false, canOffHand = true, canRanged = false},
 	[Enum.TransmogCollectionType.Holdable] = {name = INVTYPE_HOLDABLE, isWeapon = true, canEnchant = false, canMainHand = false, canOffHand = true, canRanged = false},
 	[Enum.TransmogCollectionType.TwoHAxe] = {name = ITEM_SUB_CLASS_2_1, isWeapon = true, canEnchant = true, canMainHand = true, canOffHand = false, canRanged = false},
 	[Enum.TransmogCollectionType.TwoHSword] = {name = ITEM_SUB_CLASS_2_8, isWeapon = true, canEnchant = true, canMainHand = true, canOffHand = false, canRanged = false},
 	[Enum.TransmogCollectionType.TwoHMace] = {name = ITEM_SUB_CLASS_2_5, isWeapon = true, canEnchant = true, canMainHand = true, canOffHand = false, canRanged = false},
 	[Enum.TransmogCollectionType.Staff] = {name = ITEM_SUB_CLASS_2_10, isWeapon = true, canEnchant = true, canMainHand = true, canOffHand = false, canRanged = false},
 	[Enum.TransmogCollectionType.Polearm] = {name = ITEM_SUB_CLASS_2_6, isWeapon = true, canEnchant = true, canMainHand = true, canOffHand = false, canRanged = false},
-	[Enum.TransmogCollectionType.Bow] = {name = ITEM_SUB_CLASS_2_2, isWeapon = true, canEnchant = true, canMainHand = false, canOffHand = false, canRanged = true},
-	[Enum.TransmogCollectionType.Gun] = {name = ITEM_SUB_CLASS_2_3, isWeapon = true, canEnchant = true, canMainHand = false, canOffHand = false, canRanged = true},
-	[Enum.TransmogCollectionType.Crossbow] =  {name = ITEM_SUB_CLASS_2_18, isWeapon = true, canEnchant = true, canMainHand = false, canOffHand = false, canRanged = true},
-	[Enum.TransmogCollectionType.Thrown] = {name = ITEM_SUB_CLASS_2_16, isWeapon = true, canEnchant = true, canMainHand = false, canOffHand = false, canRanged = true},
-	[Enum.TransmogCollectionType.FishingPole] = {name = ITEM_SUB_CLASS_2_20, isWeapon = true, canEnchant = true, canMainHand = true, canOffHand = false, canRanged = false},
-	[Enum.TransmogCollectionType.OtherWeapon] = {name = ITEM_SUB_CLASS_2_14, isWeapon = true, canEnchant = true, canMainHand = true, canOffHand = true, canRanged = false},
+	[Enum.TransmogCollectionType.Bow] = {name = ITEM_SUB_CLASS_2_2, isWeapon = true, canEnchant = false, canMainHand = false, canOffHand = false, canRanged = true},
+	[Enum.TransmogCollectionType.Gun] = {name = ITEM_SUB_CLASS_2_3, isWeapon = true, canEnchant = false, canMainHand = false, canOffHand = false, canRanged = true},
+	[Enum.TransmogCollectionType.Crossbow] =  {name = ITEM_SUB_CLASS_2_18, isWeapon = true, canEnchant = false, canMainHand = false, canOffHand = false, canRanged = true},
+	[Enum.TransmogCollectionType.Thrown] = {name = ITEM_SUB_CLASS_2_16, isWeapon = true, canEnchant = false, canMainHand = false, canOffHand = false, canRanged = true},
+	[Enum.TransmogCollectionType.FishingPole] = {name = ITEM_SUB_CLASS_2_20, isWeapon = true, canEnchant = false, canMainHand = true, canOffHand = false, canRanged = false},
+	[Enum.TransmogCollectionType.OtherWeapon] = {name = ITEM_SUB_CLASS_2_14, isWeapon = true, canEnchant = false, canMainHand = true, canOffHand = true, canRanged = false},
 };
 
 for categoryID = Enum.TransmogCollectionType.Head, Enum.TransmogCollectionType.Feet do
@@ -102,7 +104,7 @@ for categoryID = Enum.TransmogCollectionType.Head, Enum.TransmogCollectionType.F
 	end
 end
 
-local NUM_TRANSMOG_SOURCE_TYPES = 13;
+local NUM_TRANSMOG_SOURCE_TYPES = 14;
 local TRANSMOG_SOURCE_TYPES = {
 	[1] = 1,
 	[2] = 2,
@@ -117,6 +119,7 @@ local TRANSMOG_SOURCE_TYPES = {
 	[14] = 11,
 	[15] = 12,
 	[16] = 13,
+	[17] = 14,
 };
 local HIDDEN_APPEARANCE_SOURCE_TYPES = {
 	[5] = true,
@@ -368,8 +371,158 @@ local function BuildTransmogCollection()
 	end
 end
 
+local ILLUSIONS = {};
+local ILLUSION_BY_ENCHANTID = {};
+local ILLUSION_BY_SPELLID = {};
+local ILLUSION_BY_ITEMID = {};
+local ILLUSIONS_BY_ITEM_VISUAL = {};
+local COLLECTED_ILLUSIONS = {};
+local FILTERED_ILLUSIONS = {};
+local ILLUSION_COLLECTED_SHOWN = true;
+local ILLUSION_UNCOLLECTED_SHOWN = true;
+
+local NUM_ILLUSION_SOURCE_TYPES = 10;
+
+local ILLUSION_SOURCE_TYPES = {
+	[1] = 1, [2] = 1, [3] = 1,
+	[8] = 2, [12] = 2,
+	[6] = 3, [13] = 3,
+	[9] = 4,
+	[7] = 5,
+	[10] = 7, [11] = 7, [14] = 7,
+	[15] = 8,
+	[16] = 9,
+	[17] = 10,
+};
+
+local function SortCollectedIllusions(a, b)
+	if IsSpellKnown(COLLECTION_ENCHANTDATA[a].spellID) ~= IsSpellKnown(COLLECTION_ENCHANTDATA[b].spellID) then
+		return IsSpellKnown(COLLECTION_ENCHANTDATA[a].spellID);
+	end
+end
+
+local function CollectCollectedIllusions()
+	table.wipe(COLLECTED_ILLUSIONS);
+
+	for illusionIndex, illusions in ipairs(ILLUSIONS) do
+		local isCollected = false;
+
+		local hasItemVisual = #illusions > 1;
+		if hasItemVisual then
+			table.sort(illusions, SortCollectedIllusions);
+
+			for _, enchantIndex in ipairs(illusions) do
+				if not isCollected then
+					isCollected = IsSpellKnown(COLLECTION_ENCHANTDATA[enchantIndex].spellID);
+
+					if isCollected then
+						break;
+					end
+				end
+			end
+		else
+			isCollected = IsSpellKnown(COLLECTION_ENCHANTDATA[illusions[1]].spellID);
+		end
+
+		COLLECTED_ILLUSIONS[illusionIndex] = isCollected;
+	end
+end
+
+local function SearchAndFilterIllusions()
+	if SEARCH_TYPE ~= Enum.TransmogSearchType.Illusions then
+		return;
+	end
+
+	table.wipe(FILTERED_ILLUSIONS);
+
+	local searchText = SEARCH_TYPE and SEARCH_TYPES[SEARCH_TYPE] and SEARCH_TYPES[SEARCH_TYPE] ~= "";
+
+	local sourceFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_ILLUSION_SOURCE_FILTERS")) or 0;
+
+	for illusionIndex, illusions in ipairs(ILLUSIONS) do
+		local isCollected = COLLECTED_ILLUSIONS[illusionIndex];
+
+		local matchesFilter = false;
+
+		for _, enchantIndex in ipairs(illusions) do
+			local enchantData = COLLECTION_ENCHANTDATA[enchantIndex];
+			if enchantData then
+				local product = CUSTOM_ROLLED_ITEMS_IN_SHOP[enchantData.hash];
+				local currency = product and product.currency or enchantData.currency;
+				local sourceType = currency and currency ~= 0 and enchantData.lootType ~= 15 and 7 or (ILLUSION_SOURCE_TYPES[enchantData.lootType] or 1);
+				local sourceFlag = (product or enchantData.lootType ~= 0) and bit.lshift(1, sourceType - 1) or 0;
+
+				if not ILLUSION_COLLECTED_SHOWN and isCollected or not ILLUSION_UNCOLLECTED_SHOWN and not isCollected or not (sourceFiltersFlag == 0 or bit.band(sourceFiltersFlag, sourceFlag) ~= sourceFlag) then
+					matchesFilter = false;
+				else
+					if searchText then
+						if not enchantData.name or enchantData.name == "" then
+							matchesFilter = false;
+						elseif string.find(string.lower(enchantData.name), SEARCH_TYPES[SEARCH_TYPE], 1, true) then
+							matchesFilter = true;
+						else
+							matchesFilter = false;
+						end
+					else
+						matchesFilter = true;
+					end
+				end
+
+				if matchesFilter then
+					FILTERED_ILLUSIONS[#FILTERED_ILLUSIONS + 1] = illusionIndex;
+					break
+				end
+			end
+		end
+	end
+
+	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOG_SEARCH_UPDATED, SEARCH_TYPE);
+end
+
+local function BuildIllusions()
+	local indexByItemVisual = {};
+
+	for index, enchantData in ipairs(COLLECTION_ENCHANTDATA) do
+		local name, _, icon = GetSpellInfo(enchantData.spellID);
+		enchantData.name = name;
+		enchantData.icon = select(10, GetSpellInfo(enchantData.itemID));
+
+		if enchantData.enchId and enchantData.spellID then
+			ILLUSION_BY_ENCHANTID[enchantData.enchId] = enchantData;
+			ILLUSION_BY_SPELLID[enchantData.spellID] = enchantData;
+			ILLUSION_BY_ITEMID[enchantData.itemID] = enchantData;
+
+			local illusionIndex = #ILLUSIONS + 1;
+
+			local itemVisual = enchantData.itemVisual;
+			if itemVisual and itemVisual ~= 0 then
+				if not ILLUSIONS_BY_ITEM_VISUAL[itemVisual] then
+					ILLUSIONS_BY_ITEM_VISUAL[itemVisual] = {};
+				end
+				table.insert(ILLUSIONS_BY_ITEM_VISUAL[itemVisual], index);
+
+				if not indexByItemVisual[itemVisual] then
+					indexByItemVisual[itemVisual] = illusionIndex;
+					ILLUSIONS[illusionIndex] = {index};
+				else
+					table.insert(ILLUSIONS[indexByItemVisual[itemVisual]], index);
+				end
+			else
+				ILLUSIONS[illusionIndex] = {index};
+			end
+
+			if not spellbookCustomHiddenChatSpell[enchantData.spellID] then
+				spellbookCustomHiddenChatSpell[enchantData.spellID] = name;
+			end
+		end
+	end
+
+	CollectCollectedIllusions();
+end
+
 local frame = CreateFrame("Frame");
 frame:RegisterEvent("VARIABLES_LOADED");
+frame:RegisterEvent("PLAYER_LOGIN");
 frame:RegisterEvent("SKILL_LINES_CHANGED");
 frame:RegisterEvent("SPELL_UPDATE_USABLE");
 frame:RegisterEvent("PLAYER_ENTERING_WORLD");
@@ -381,11 +534,14 @@ end
 
 frame:SetScript("OnEvent", function(self, event)
 	if event == "VARIABLES_LOADED" then
+		self:RegisterCustomEvent("STORE_ROLLED_ITEMS_IN_SHOP");
+
 		local function UpdatePlayerFactionID()
 			local factionID = C_FactionManager.GetFactionOverride() or 3;
 			if PLAYER_FACTION_ID ~= factionID then
 				PLAYER_FACTION_ID = factionID;
 				BuildTransmogCollection();
+				BuildIllusions();
 			end
 		end
 
@@ -397,6 +553,9 @@ frame:SetScript("OnEvent", function(self, event)
 		for index = 1, NUM_TRANSMOG_SOURCE_TYPES do
 			SOURCE_TYPE_FILTER[index] = C_CVar:GetCVarBitfield("C_CVAR_WARDROBE_SOURCE_FILTERS", index);
 		end
+
+		ILLUSION_COLLECTED_SHOWN = C_CVar:GetValue("C_CVAR_ILLUSION_SHOW_COLLECTED") == "0";
+		ILLUSION_UNCOLLECTED_SHOWN = C_CVar:GetValue("C_CVAR_ILLUSION_SHOW_UNCOLLECTED") == "0";
 	elseif event == "SKILL_LINES_CHANGED" then
 		local numSkillLines = GetNumSkillLines();
 		if CURRENT_NUM_SKILL_LINES ~= numSkillLines then
@@ -450,6 +609,8 @@ frame:SetScript("OnEvent", function(self, event)
 		elseif event == "SPELL_UPDATE_USABLE" then
 			self:UnregisterEvent(event);
 		end
+	elseif event == "STORE_ROLLED_ITEMS_IN_SHOP" then
+		SearchAndFilterIllusions();
 	end
 end);
 
@@ -484,62 +645,66 @@ local function GetItemModifiedAppearanceItemInfo(itemModifiedAppearanceID)
 end
 
 function SearchAndFilterCategory()
-	table.wipe(SEARCH_AND_FILTER_APPEARANCES);
+	if SEARCH_TYPE == Enum.TransmogSearchType.Items then
+		table.wipe(SEARCH_AND_FILTER_APPEARANCES);
 
-	local appearances = APPEARANCES[SEARCH_AND_FILTER_CATEGORY];
-	if appearances then
-		if SEARCH_AND_FILTER_SUB_CATEGORY then
-			appearances = appearances[SEARCH_AND_FILTER_SUB_CATEGORY];
+		local appearances = APPEARANCES[SEARCH_AND_FILTER_CATEGORY];
+		if appearances then
+			if SEARCH_AND_FILTER_SUB_CATEGORY then
+				appearances = appearances[SEARCH_AND_FILTER_SUB_CATEGORY];
+			end
 		end
-	end
 
-	if appearances then
-		local searchText = SEARCH_TYPE and SEARCH_TYPES[SEARCH_TYPE] and SEARCH_TYPES[SEARCH_TYPE] ~= "";
+		if appearances then
+			local searchText = SEARCH_TYPE and SEARCH_TYPES[SEARCH_TYPE] and SEARCH_TYPES[SEARCH_TYPE] ~= "";
 
-		for i = 1, #appearances do
-			local itemAppearanceID = appearances[i];
-			local itemAppearanceInfo = ITEM_APPEARANCE_STORAGE[itemAppearanceID];
-			local isCollected = SIRUS_COLLECTION_COLLECTED_APPEARANCES[itemAppearanceID];
-			if itemAppearanceInfo and itemAppearanceInfo[ITEM_APPEARANCE_STORAGE_SOURCES] and #itemAppearanceInfo[ITEM_APPEARANCE_STORAGE_SOURCES] > 0 then
-				local matchesFilter = true;
+			for i = 1, #appearances do
+				local itemAppearanceID = appearances[i];
+				local itemAppearanceInfo = ITEM_APPEARANCE_STORAGE[itemAppearanceID];
+				local isCollected = SIRUS_COLLECTION_COLLECTED_APPEARANCES[itemAppearanceID];
+				if itemAppearanceInfo and itemAppearanceInfo[ITEM_APPEARANCE_STORAGE_SOURCES] and #itemAppearanceInfo[ITEM_APPEARANCE_STORAGE_SOURCES] > 0 then
+					local matchesFilter = true;
 
-				for j = 1, #itemAppearanceInfo[ITEM_APPEARANCE_STORAGE_SOURCES] do
-					local itemModifiedAppearanceID = itemAppearanceInfo[ITEM_APPEARANCE_STORAGE_SOURCES][j];
+					for j = 1, #itemAppearanceInfo[ITEM_APPEARANCE_STORAGE_SOURCES] do
+						local itemModifiedAppearanceID = itemAppearanceInfo[ITEM_APPEARANCE_STORAGE_SOURCES][j];
 
-					local sourceInfo = ITEM_MODIFIED_APPEARANCE_STORAGE[itemModifiedAppearanceID];
-					local categoryID, subCategoryID, _, isUsable, isKnown = GetItemModifiedAppearanceCategoryInfo(itemModifiedAppearanceID, true);
-					if sourceInfo and isKnown and isUsable then
-						if categoryID == SEARCH_AND_FILTER_CATEGORY and subCategoryID == SEARCH_AND_FILTER_SUB_CATEGORY then
-							if not COLLECTED_SHOWN and isCollected or not UNCOLLECTED_SHOWN and not isCollected or SOURCE_TYPE_FILTER[TRANSMOG_SOURCE_TYPES[sourceInfo[ITEM_MODIFIED_APPEARANCE_STORAGE_SOURCETYPE]]] then
-								matchesFilter = false;
-							else
-								if searchText then
-									local name = C_Item.GetItemInfo(itemModifiedAppearanceID, nil, nil, true, true);
-									if not name or name == "" then
-										matchesFilter = false;
-									elseif string.find(string.lower(name), SEARCH_TYPES[1], 1, true) ~= nil then
-										matchesFilter = true;
-									else
-										matchesFilter = false;
+						local sourceInfo = ITEM_MODIFIED_APPEARANCE_STORAGE[itemModifiedAppearanceID];
+						local categoryID, subCategoryID, _, isUsable, isKnown = GetItemModifiedAppearanceCategoryInfo(itemModifiedAppearanceID, true);
+						if sourceInfo and isKnown and isUsable then
+							if categoryID == SEARCH_AND_FILTER_CATEGORY and subCategoryID == SEARCH_AND_FILTER_SUB_CATEGORY then
+								if not COLLECTED_SHOWN and isCollected or not UNCOLLECTED_SHOWN and not isCollected or SOURCE_TYPE_FILTER[TRANSMOG_SOURCE_TYPES[sourceInfo[ITEM_MODIFIED_APPEARANCE_STORAGE_SOURCETYPE]]] then
+									matchesFilter = false;
+								else
+									if searchText then
+										local name = C_Item.GetItemInfo(itemModifiedAppearanceID, nil, nil, true, true);
+										if not name or name == "" then
+											matchesFilter = false;
+										elseif string.find(string.lower(name), SEARCH_TYPES[SEARCH_TYPE], 1, true) ~= nil then
+											matchesFilter = true;
+										else
+											matchesFilter = false;
+										end
 									end
 								end
-							end
 
-							if matchesFilter then
-								break
+								if matchesFilter then
+									break
+								end
 							end
 						end
 					end
-				end
 
-				if matchesFilter then
-					SEARCH_AND_FILTER_APPEARANCES[#SEARCH_AND_FILTER_APPEARANCES + 1] = itemAppearanceID;
+					if matchesFilter then
+						SEARCH_AND_FILTER_APPEARANCES[#SEARCH_AND_FILTER_APPEARANCES + 1] = itemAppearanceID;
+					end
 				end
 			end
 		end
-	end
 
-	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOG_SEARCH_UPDATED, Enum.TransmogSearchType.Items, SEARCH_AND_FILTER_CATEGORY, SEARCH_AND_FILTER_SUB_CATEGORY);
+		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOG_SEARCH_UPDATED, SEARCH_TYPE, SEARCH_AND_FILTER_CATEGORY, SEARCH_AND_FILTER_SUB_CATEGORY);
+	elseif SEARCH_TYPE == Enum.TransmogSearchType.Illusions then
+		SearchAndFilterIllusions();
+	end
 end
 
 C_TransmogCollection = {};
@@ -609,6 +774,10 @@ function C_TransmogCollection.GetAllAppearanceSources(itemAppearanceID)
 	end
 end
 
+local CUSTOM_CAMERAS = {
+	[30606] = 2500,
+};
+
 local CATEGORY_BY_INV_TYPE = {[1] = 1, [3] = 2, [4] = 5, [5] = 12, [6] = 9, [7] = 10, [8] = 11, [9] = 7, [10] = 8, [16] = 3, [19] = 6, [20] = 4};
 local WEAPON_ALT_CAMERA_BY_INV_TYPE = {
 	[13] = {
@@ -642,6 +811,10 @@ function C_TransmogCollection.GetAppearanceCameraID(itemAppearanceID, categoryID
 		return 0;
 	end
 
+	if CUSTOM_CAMERAS[itemAppearanceID] then
+		return CUSTOM_CAMERAS[itemAppearanceID];
+	end
+
 	local itemAppearanceInfo = ITEM_APPEARANCE_STORAGE[itemAppearanceID];
 	if itemAppearanceInfo then
 		for index = 1, #itemAppearanceInfo[ITEM_APPEARANCE_STORAGE_SOURCES] do
@@ -668,6 +841,11 @@ function C_TransmogCollection.GetAppearanceCameraIDBySource(itemModifiedAppearan
 	end
 	if type(itemModifiedAppearanceID) ~= "number" then
 		return 0;
+	end
+
+	local sourceID = ITEM_MODIFIED_APPEARANCE_STORAGE[itemModifiedAppearanceID] and ITEM_MODIFIED_APPEARANCE_STORAGE[itemModifiedAppearanceID][ITEM_MODIFIED_APPEARANCE_STORAGE_APPERANCEID];
+	if sourceID and CUSTOM_CAMERAS[sourceID] then
+		return CUSTOM_CAMERAS[sourceID];
 	end
 
 	local categoryID, _, invType = GetItemModifiedAppearanceCategoryInfo(itemModifiedAppearanceID);
@@ -760,9 +938,11 @@ function C_TransmogCollection.GetAppearanceSourceInfo(itemModifiedAppearanceID)
 	local _, itemLink, transmogLink = GetItemModifiedAppearanceItemInfo(itemModifiedAppearanceID);
 	local sourceInfo = ITEM_MODIFIED_APPEARANCE_STORAGE[itemModifiedAppearanceID];
 	if sourceInfo then
-		return categoryID, subCategoryID, sourceInfo[ITEM_MODIFIED_APPEARANCE_STORAGE_APPERANCEID], true, SIRUS_COLLECTION_COLLECTED_ITEM_APPEARANCES[itemModifiedAppearanceID], itemLink, transmogLink, TRANSMOG_SOURCE_TYPES[sourceInfo[ITEM_MODIFIED_APPEARANCE_STORAGE_SOURCETYPE]], invType;
+		local visualID = sourceInfo[ITEM_MODIFIED_APPEARANCE_STORAGE_APPERANCEID];
+		local canEnchat = not ITEM_IGNORED_APPEARANCE_STORAGE[visualID];
+		return categoryID, subCategoryID, visualID, canEnchat, SIRUS_COLLECTION_COLLECTED_ITEM_APPEARANCES[itemModifiedAppearanceID], itemLink, transmogLink, TRANSMOG_SOURCE_TYPES[sourceInfo[ITEM_MODIFIED_APPEARANCE_STORAGE_SOURCETYPE]], invType;
 	end
-	return categoryID or 0, subCategoryID, 0, true, SIRUS_COLLECTION_COLLECTED_ITEM_APPEARANCES[itemModifiedAppearanceID], itemLink, transmogLink, 0, invType;
+	return categoryID or 0, subCategoryID, 0, false, SIRUS_COLLECTION_COLLECTED_ITEM_APPEARANCES[itemModifiedAppearanceID], itemLink, transmogLink, 0, invType;
 end
 
 function C_TransmogCollection.GetAppearanceSources(appearanceID, categoryID, subCategoryID)
@@ -808,6 +988,20 @@ function C_TransmogCollection.GetAppearanceSources(appearanceID, categoryID, sub
 	end
 
 	return sources;
+end
+
+function C_TransmogCollection.CanEnchantAppearance(appearanceID)
+	if type(appearanceID) == "string" then
+		appearanceID = tonumber(appearanceID);
+	end
+	if type(appearanceID) ~= "number" then
+		error("Usage: local cantEnchant = C_TransmogCollection.CanEnchantAppearance(appearanceID)", 2);
+	end
+
+	if ITEM_APPEARANCE_STORAGE[appearanceID] and not ITEM_IGNORED_APPEARANCE_STORAGE[appearanceID] then
+		return true;
+	end
+	return false;
 end
 
 local exclusionCategories = {
@@ -1070,9 +1264,11 @@ function C_TransmogCollection.GetOutfitItemTransmogInfoList(outfitID)
 	local list = {};
 
 	local itemList = SIRUS_COLLECTION_PLAYER_OUTFITS[outfitID] and SIRUS_COLLECTION_PLAYER_OUTFITS[outfitID].itemList;
+	local enchantList = SIRUS_COLLECTION_PLAYER_OUTFITS[outfitID] and SIRUS_COLLECTION_PLAYER_OUTFITS[outfitID].enchantList;
+
 	if itemList then
-		for slotID, itemID in pairs(itemList) do
-			list[slotID] = CreateAndInitFromMixin(ItemTransmogInfoMixin, itemID);
+		for _, slotID in ipairs(TransmogSlotOrder) do
+			list[slotID] = CreateAndInitFromMixin(ItemTransmogInfoMixin, itemList[slotID] or 0, enchantList and enchantList[slotID] or 0);
 		end
 	end
 
@@ -1107,7 +1303,11 @@ function C_TransmogCollection.IsNewAppearance(visualID)
 		error("Usage: local isNew = C_TransmogCollection.IsNewAppearance(visualID)", 2);
 	end
 
-	return not not NEW_APPEARANCES[visualID];
+	if NEW_APPEARANCES[visualID] then
+		return true;
+	end
+
+	return false;
 end
 
 function C_TransmogCollection.IsSourceTypeFilterChecked(index)
@@ -1138,7 +1338,13 @@ function C_TransmogCollection.ModifyOutfit(outfitID, itemTransmogInfoList)
 		local appearances = "";
 		for _, slotID in ipairs(TransmogSlotOrder) do
 			local itemTransmogInfo = itemTransmogInfoList[slotID];
-			appearances = strconcat(appearances, ";", slotID, ":", itemTransmogInfo and itemTransmogInfo.appearanceID or 0);
+			if itemTransmogInfo and itemTransmogInfo.appearanceID ~= NO_TRANSMOG_VISUAL_ID then
+				if slotID == 16 or slotID == 17 then
+					appearances = strconcat(appearances, ";", slotID, ":", itemTransmogInfo.appearanceID, ":", itemTransmogInfo.illusionID or 0);
+				else
+					appearances = strconcat(appearances, ";", slotID, ":", itemTransmogInfo.appearanceID);
+				end
+			end
 		end
 
 		SendServerMessage("ACMG_C_I_TRANSMOGRIFY_SET_SAVE", strconcat(outfitID, ";", outfitInfo.icon, ";", outfitInfo.name, appearances));
@@ -1166,7 +1372,13 @@ function C_TransmogCollection.NewOutfit(name, icon, itemTransmogInfoList)
 	local appearances = "";
 	for _, slotID in ipairs(TransmogSlotOrder) do
 		local itemTransmogInfo = itemTransmogInfoList[slotID];
-		appearances = strconcat(appearances, ";", slotID, ":", itemTransmogInfo and itemTransmogInfo.appearanceID or 0);
+		if itemTransmogInfo and itemTransmogInfo.appearanceID ~= NO_TRANSMOG_VISUAL_ID then
+			if slotID == 16 or slotID == 17 then
+				appearances = strconcat(appearances, ";", slotID, ":", itemTransmogInfo.appearanceID, ":", itemTransmogInfo.illusionID or 0);
+			else
+				appearances = strconcat(appearances, ";", slotID, ":", itemTransmogInfo.appearanceID);
+			end
+		end
 	end
 
 	icon = string.match(icon, "([^\\]+)$") or "INV_Misc_QuestionMark";
@@ -1216,7 +1428,14 @@ function C_TransmogCollection.RenameOutfit(outfitID, name)
 	if outfitInfo and outfitInfo.icon and outfitInfo.name and outfitInfo.itemList then
 		local appearances = "";
 		for _, slotID in ipairs(TransmogSlotOrder) do
-			appearances = strconcat(appearances, ";", slotID, ":", outfitInfo.itemList[slotID] or 0);
+			local appearanceID = outfitInfo.itemList[slotID];
+			if appearanceID and appearanceID ~= NO_TRANSMOG_VISUAL_ID then
+				if slotID == 16 or slotID == 17 then
+					appearances = strconcat(appearances, ";", slotID, ":", appearanceID, ":", outfitInfo.enchantList[slotID] or 0);
+				else
+					appearances = strconcat(appearances, ";", slotID, ":", appearanceID);
+				end
+			end
 		end
 
 		SendServerMessage("ACMG_C_I_TRANSMOGRIFY_SET_SAVE", strconcat(outfitID, ";", outfitInfo.icon, ";", name, appearances));
@@ -1279,6 +1498,29 @@ function C_TransmogCollection.SetSearch(searchType, searchText)
 	SEARCH_TYPE = searchType;
 	SEARCH_TYPES[searchType] = string.lower(searchText);
 	SearchAndFilterCategory();
+end
+
+function C_TransmogCollection.SetSearchType(searchType)
+	if type(searchType) == "string" then
+		searchType = tonumber(searchType);
+	end
+	if type(searchType) ~= "number" then
+		error("Usage: C_TransmogCollection.SetSearchType(searchType)", 2);
+	end
+
+	SEARCH_TYPE = searchType;
+	SearchAndFilterCategory();
+end
+
+function C_TransmogCollection.GetSearchText(searchType)
+	if type(searchType) == "string" then
+		searchType = tonumber(searchType);
+	end
+	if type(searchType) ~= "number" then
+		error("Usage: C_TransmogCollection.GetSearchText(searchType)", 2);
+	end
+
+	return SEARCH_TYPES[searchType];
 end
 
 function C_TransmogCollection.SetSearchAndFilterCategory(category, subCategory)
@@ -1376,6 +1618,243 @@ function C_TransmogCollection.IsUsingDefaultFilters()
 	end
 
  	return true;
+end
+
+function C_TransmogCollection.GetFallbackWeaponAppearance()
+	return 2018;
+end
+
+function C_TransmogCollection.GetIllusions()
+	local illusions = {};
+
+	for _, enchantIndex in ipairs(FILTERED_ILLUSIONS) do
+		local enchantData = COLLECTION_ENCHANTDATA[ILLUSIONS[enchantIndex][1]];
+		if enchantData then
+			illusions[#illusions + 1] = {
+				visualID = enchantData.enchId,
+				sourceID = enchantData.enchId,
+				itemID = enchantData.itemID,
+				spellID = enchantData.spellID,
+				descriptionText = enchantData.descriptionText,
+				priceText = enchantData.priceText,
+				holidayText = enchantData.holidayText,
+				factionSide = enchantData.factionSide,
+				itemVisual = enchantData.itemVisual,
+				isCollected = IsSpellKnown(enchantData.spellID),
+				isUsable = true,
+				isHideVisual = false,
+			};
+		end
+	end
+
+	return illusions;
+end
+
+function C_TransmogCollection.GetIllusionsByItemVisual(sourceID, itemVisual)
+	if type(sourceID) == "string" then
+		sourceID = tonumber(sourceID);
+	end
+	if type(itemVisual) == "string" then
+		itemVisual = tonumber(itemVisual);
+	end
+	if type(sourceID) ~= "number" or type(itemVisual) ~= "number" then
+		error("Usage: C_TransmogCollection.GetIllusionsByItemVisual(sourceID, itemVisual)", 2);
+	end
+
+	local illusions = {};
+
+	if ILLUSIONS_BY_ITEM_VISUAL[itemVisual] then
+		for _, enchantIndex in ipairs(ILLUSIONS_BY_ITEM_VISUAL[itemVisual]) do
+			local enchantData = COLLECTION_ENCHANTDATA[enchantIndex];
+
+			if enchantData then
+				illusions[#illusions + 1] = {
+					visualID = enchantData.enchId,
+					sourceID = enchantData.enchId,
+					itemID = enchantData.itemID,
+					spellID = enchantData.spellID,
+					descriptionText = enchantData.descriptionText,
+					priceText = enchantData.priceText,
+					holidayText = enchantData.holidayText,
+					factionSide = enchantData.factionSide,
+					itemVisual = enchantData.itemVisual,
+					isCollected = IsSpellKnown(enchantData.spellID),
+					isUsable = true,
+					isHideVisual = false,
+				};
+			end
+		end
+	else
+		local enchantData = ILLUSION_BY_ENCHANTID[sourceID];
+		if enchantData then
+			illusions[#illusions + 1] = {
+				visualID = enchantData.enchId,
+				sourceID = enchantData.enchId,
+				itemID = enchantData.itemID,
+				spellID = enchantData.spellID,
+				descriptionText = enchantData.descriptionText,
+				priceText = enchantData.priceText,
+				holidayText = enchantData.holidayText,
+				factionSide = enchantData.factionSide,
+				itemVisual = enchantData.itemVisual,
+				isCollected = IsSpellKnown(enchantData.spellID),
+				isUsable = true,
+				isHideVisual = false,
+			};
+		end
+	end
+
+	return illusions;
+end
+
+function C_TransmogCollection.GetIllusionInfo(sourceID)
+	local illusionInfo = ILLUSION_BY_ENCHANTID[sourceID];
+	if illusionInfo then
+		return {
+			visualID = illusionInfo.enchId,
+			sourceID = illusionInfo.enchId,
+			icon = illusionInfo.icon,
+			isCollected = IsSpellKnown(illusionInfo.spellID),
+			isUsable = true,
+			isHideVisual = false,
+		};
+	end
+end
+
+function C_TransmogCollection.GetIllusionStrings(sourceID)
+	if type(sourceID) == "string" then
+		sourceID = tonumber(sourceID);
+	end
+	if type(sourceID) ~= "number" then
+		error("Usage: local name = C_TransmogCollection.GetIllusionStrings(sourceID)", 2);
+	end
+
+	local illusionInfo = ILLUSION_BY_ENCHANTID[sourceID];
+	if illusionInfo then
+		local _, _, quality = C_Item.GetItemInfo(illusionInfo.itemID, nil, nil, true);
+
+		return illusionInfo.name, string.format(COLLECTION_ILLUSION_HYPERLINK_FORMAT, sourceID, illusionInfo.name or ""), quality;
+	end
+end
+
+function C_TransmogCollection.GetIllusionInfoByItemID(itemID)
+	if type(itemID) == "string" then
+		itemID = tonumber(itemID);
+	end
+	if type(itemID) ~= "number" then
+		error("Usage: local name, sourceID = C_TransmogCollection.GetIllusionInfoByItemID(sourceID)", 2);
+	end
+
+	local illusionInfo = ILLUSION_BY_ITEMID[itemID];
+	if illusionInfo then
+		return illusionInfo.name, illusionInfo.enchId;
+	end
+end
+
+function C_TransmogCollection.SetIllusionCollectedShown(checked)
+	if type(checked) ~= "boolean" then
+		checked = checked and true or false;
+	end
+
+	if checked ~= ILLUSION_COLLECTED_SHOWN then
+		C_CVar:SetValue("C_CVAR_ILLUSION_SHOW_COLLECTED", checked and "0" or "1");
+
+		ILLUSION_COLLECTED_SHOWN = not ILLUSION_COLLECTED_SHOWN;
+
+		SearchAndFilterIllusions();
+	end
+end
+
+function C_TransmogCollection.GetIllusionCollectedShown()
+	return ILLUSION_COLLECTED_SHOWN;
+end
+
+function C_TransmogCollection.SetIllusionUncollectedShown(checked)
+	if type(checked) ~= "boolean" then
+		checked = checked and true or false;
+	end
+
+	if checked ~= ILLUSION_UNCOLLECTED_SHOWN then
+		C_CVar:SetValue("C_CVAR_ILLUSION_SHOW_UNCOLLECTED", checked and "0" or "1");
+
+		ILLUSION_UNCOLLECTED_SHOWN = not ILLUSION_UNCOLLECTED_SHOWN;
+
+		SearchAndFilterIllusions();
+	end
+end
+
+function C_TransmogCollection.GetIllusionUncollectedShown()
+	return ILLUSION_UNCOLLECTED_SHOWN;
+end
+
+function C_TransmogCollection.SetIllusionSourceTypeFilter(index, checked)
+	if type(index) == "string" then
+		index = tonumber(index);
+	end
+	if type(index) ~= "number" or checked == nil then
+		error("Usage: C_TransmogCollection.SetIllusionSourceTypeFilter(index, checked)", 2);
+	end
+	if type(checked) ~= "boolean" then
+		checked = not not checked;
+	end
+
+	if index > 0 and index <= NUM_TRANSMOG_SOURCE_TYPES then
+		C_CVar:SetCVarBitfield("C_CVAR_ILLUSION_SOURCE_FILTERS", index, not checked);
+
+		SearchAndFilterIllusions();
+	end
+end
+
+function C_TransmogCollection.IsIllusionSourceTypeFilterChecked(index)
+	if type(index) == "string" then
+		index = tonumber(index);
+	end
+	if type(index) ~= "number" then
+		error("Usage: local checked = C_TransmogCollection.IsIllusionSourceTypeFilterChecked(index)", 2);
+	end
+
+	if C_CVar:GetCVarBitfield("C_CVAR_ILLUSION_SOURCE_FILTERS", index) then
+		return false;
+	end
+
+	return true;
+end
+
+C_IllusionInfo = {};
+
+function C_IllusionInfo.SetDefaultFilters()
+	C_CVar:SetValue("C_CVAR_ILLUSION_SHOW_COLLECTED", "0");
+	C_CVar:SetValue("C_CVAR_ILLUSION_SHOW_UNCOLLECTED", "0");
+	C_CVar:SetValue("C_CVAR_ILLUSION_SOURCE_FILTERS", "0");
+
+	ILLUSION_COLLECTED_SHOWN = true;
+	ILLUSION_UNCOLLECTED_SHOWN = true;
+
+	SearchAndFilterIllusions();
+end
+
+function C_IllusionInfo.IsUsingDefaultFilters()
+	if tonumber(C_CVar:GetValue("C_CVAR_ILLUSION_SHOW_COLLECTED")) ~= 0 or tonumber(C_CVar:GetValue("C_CVAR_ILLUSION_SHOW_UNCOLLECTED")) ~= 0 or tonumber(C_CVar:GetValue("C_CVAR_ILLUSION_SOURCE_FILTERS")) ~= 0 then
+		return false;
+	end
+
+ 	return true;
+end
+
+function C_IllusionInfo.SetAllSourceFilters(checked)
+	if checked == nil then
+		error("Usage: C_IllusionInfo.SetAllSourceFilters(checked)", 2);
+	end
+
+	if type(checked) ~= "boolean" then
+		checked = not not checked;
+	end
+
+	for index = 1, NUM_ILLUSION_SOURCE_TYPES do
+		C_CVar:SetCVarBitfield("C_CVAR_ILLUSION_SOURCE_FILTERS", index, not checked);
+	end
+
+	SearchAndFilterIllusions();
 end
 
 function EventHandler:ASMSG_C_I_GET_MODELS(msg)
@@ -1499,22 +1978,26 @@ function EventHandler:ASMS_C_I_TRANSMOGRIFY_SETS(msg)
 
 	table.wipe(SIRUS_COLLECTION_PLAYER_OUTFITS);
 
-	for _, setMesssage in pairs({strsplit("|", msg)}) do
-		local outfitData = {strsplit(";", setMesssage)};
+	for _, setMesssage in ipairs({strsplit("|", msg)}) do
+		local outfitID, icon, name, items = strsplit(";", setMesssage, 4);
+		outfitID = tonumber(outfitID);
 
-		local outfitID = tonumber(outfitData[1]);
 		if outfitID then
 			SIRUS_COLLECTION_PLAYER_OUTFITS[outfitID] = {
-				name = outfitData[3],
-				icon = outfitData[2],
+				name = name,
+				icon = icon,
 				itemList = {},
+				enchantList = {},
 			};
 
-			for i = 4, #outfitData do
-				local slotID, itemID = string.match(outfitData[i], "(%d+):(%d+)");
-				slotID, itemID = tonumber(slotID), tonumber(itemID);
+			for _, itemData in ipairs({strsplit(";", items)}) do
+				local slotID, itemID, enchantID = strsplit(":", itemData);
+				slotID, itemID, enchantID = tonumber(slotID), tonumber(itemID), tonumber(enchantID);
 				if slotID and itemID then
 					SIRUS_COLLECTION_PLAYER_OUTFITS[outfitID].itemList[slotID] = itemID;
+				end
+				if enchantID then
+					SIRUS_COLLECTION_PLAYER_OUTFITS[outfitID].enchantList[slotID] = enchantID;
 				end
 			end
 		end
@@ -1538,5 +2021,22 @@ function EventHandler:ASMSG_C_I_TRANSMOGRIFY_SET_DELETE(msg)
 	local errorIndex = tonumber(msg);
 	if errorIndex == 1 then
 		UIErrorsFrame:AddMessage(TRANSMOG_OUTFIT_DELETE_ERROR_1, 1.0, 0.1, 0.1, 1.0);
+	end
+end
+
+function EventHandler:ASMSG_C_E_ADD(msg)
+	local spellID = tonumber(msg);
+	if spellID then
+		local enchantData = ILLUSION_BY_SPELLID[spellID];
+		if enchantData then
+			AddChatTyppedMessage("SYSTEM", string.format(COLLECTION_ILLUSION_ADD_FORMAT, string.format(COLLECTION_ILLUSION_HYPERLINK_FORMAT, enchantData.enchId, enchantData.name or "")));
+
+			NEW_APPEARANCES[enchantData.enchId] = true;
+
+			CollectCollectedIllusions();
+			SearchAndFilterIllusions();
+
+			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOG_COLLECTION_UPDATED);
+		end
 	end
 end

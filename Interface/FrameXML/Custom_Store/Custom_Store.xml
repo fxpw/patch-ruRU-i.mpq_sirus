@@ -1176,21 +1176,29 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<PlayerModel name="$parentModel" parentKey="Model" hidden="true">
+			<DressUpModel name="$parentModel" parentKey="Model" hidden="true">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentTopBackground" relativePoint="BOTTOMLEFT" y="-5"/>
-					<Anchor point="BOTTOMRIGHT" relativeTo="$parentBottomBackground" relativePoint="TOPRIGHT" y="-5"/>
+					<Anchor point="TOPLEFT" relativeTo="$parentTopBackground" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentBottomBackground" relativePoint="TOPRIGHT"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
 						self:SetRotation(0.40, false)
 					</OnLoad>
+					<OnUpdateModel>
+						if self.useOnUpdateModel then
+							self:SetSequence(self.animId or 3);
+						end
+					</OnUpdateModel>
+					<OnShow>
+						StoreFrame_UpdateItemCardModel(self);
+					</OnShow>
 				</Scripts>
-			</PlayerModel>
+			</DressUpModel>
 			<Button parentKey="Magnifier" enableMouse="true" hidden="true">
 				<Size x="31" y="35" />
 				<Anchors>
-					<Anchor point="TOPRIGHT" relativeTo="$parentModel" relativePoint="TOPRIGHT" x="-5" y="3" />
+					<Anchor point="TOPRIGHT" relativeTo="$parentModel" relativePoint="TOPRIGHT" x="-5" y="-2" />
 				</Anchors>
 				<NormalTexture inherits="store-icon-magnifyingglass" />
 				<HighlightTexture inherits="store-icon-magnifyingglass" alphaMode="ADD" />
@@ -2220,12 +2228,11 @@
 		<Size x="208" y="46"/>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentBackground" parentKey="Background" file="Interface\BUTTONS\ListButtons">
+				<Texture name="$parentBackground" parentKey="Background">
 					<Size x="164" y="46"/>
 					<Anchors>
 						<Anchor point="RIGHT" relativePoint="RIGHT" x="-1" y="0" />
 					</Anchors>
-					<TexCoords left="0.00390625" right="0.8203125" top="0.00390625" bottom="0.18359375"/>
 				</Texture>
 				<Texture name="$parentIcon" parentKey="Icon" file="Interface\ICONS\INV_Axe_1H_PVP400_C_01">
 					<Size x="38" y="38"/>
@@ -2249,12 +2256,11 @@
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
-				<Texture parentKey="selectedTexture" file="Interface\BUTTONS\ListButtons" hidden="true">
+				<Texture parentKey="selectedTexture" hidden="true">
                 	<Size x="164" y="46"/>
 					<Anchors>
 						<Anchor point="RIGHT" relativePoint="RIGHT" x="-1" y="0" />
 					</Anchors>
-                	<TexCoords left="0.00390625" right="0.8203125" top="0.37890625" bottom="0.55859375"/>
                 </Texture>
 			</Layer>
 			<Layer level="OVERLAY">
@@ -2265,7 +2271,7 @@
 				</Texture>
 			</Layer>
 		</Layers>
-		<HighlightTexture file="Interface\BUTTONS\ListButtons">
+		<HighlightTexture parentKey="HighlightTexture">
 			<Size x="164" y="46"/>
 			<Anchors>
 				<Anchor point="RIGHT" relativePoint="RIGHT" x="-1" y="0" />
@@ -2273,6 +2279,11 @@
 			<TexCoords left="0.00390625" right="0.8203125" top="0.19140625" bottom="0.37109375"/>
 		</HighlightTexture>
 		<Scripts>
+			<OnLoad>
+				self.Background:SetAtlas("PetList-ButtonBackground")
+				self.selectedTexture:SetAtlas("PetList-ButtonSelect")
+				self.HighlightTexture:SetAtlas("PetList-ButtonHighlight")
+			</OnLoad>
 			<OnClick function="StoreTransmogrifyFrameScrollButton_OnClick"/>
 		</Scripts>
 	</Button>
@@ -2691,7 +2702,7 @@
 							local price = 10;
 							local discountedPrice;
 
-							local _, transmogRenewalPrice = GetStoreRenewalDiscounts();
+							local _, _, _, transmogRenewalPrice = GetStoreRenewalDiscounts();
 							if transmogRenewalPrice and transmogRenewalPrice ~= 10 then
 								discountedPrice = transmogRenewalPrice;
 							end
@@ -3435,18 +3446,28 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						local price = 3;
+						local price = selectedSubCategoryID == 3 and 5 or 3;
 						local discountedPrice;
 
-						local collectionRenewalPrice = GetStoreRenewalDiscounts();
-						if collectionRenewalPrice and collectionRenewalPrice ~= 3 then
-							discountedPrice = collectionRenewalPrice;
+						local mountRenewalPrice, petRenewalPrice, illusionRenewalPrice = GetStoreRenewalDiscounts();
+						if selectedSubCategoryID == 3 then
+							if illusionRenewalPrice and illusionRenewalPrice ~= 5 then
+								discountedPrice = illusionRenewalPrice;
+							end
+						elseif selectedSubCategoryID == 2 then
+							if petRenewalPrice and petRenewalPrice ~= 3 then
+								discountedPrice = petRenewalPrice;
+							end
+						elseif selectedSubCategoryID == 1 then
+							if mountRenewalPrice and mountRenewalPrice ~= 3 then
+								discountedPrice = mountRenewalPrice;
+							end
 						end
 
 						local data = {
 							ID = -1,
 							Texture = "Interface\\Store\\Wow-Store-Circle",
-							Name = selectedSubCategoryID == 2 and STORE_PET_REFRESH_TITLE or STORE_MOUNT_REFRESH_TITLE,
+							Name = (selectedSubCategoryID == 1 and STORE_MOUNT_REFRESH_TITLE) or (selectedSubCategoryID == 2 and STORE_PET_REFRESH_TITLE) or (selectedSubCategoryID == 3 and STORE_ILLUSION_REFRESH_TITLE),
 							DescriptionText = STORE_REFRESH_DESC,
 							Flags = 0,
 							Price = price,

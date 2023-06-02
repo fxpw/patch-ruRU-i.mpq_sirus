@@ -1503,10 +1503,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "все",
         enGB = "all"
     },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION12"] = {
-        ruRU = "",
-        enGB = ""
-    },
     ["VOICEMACRO_12_Hu_0"] = {
         ruRU = "Привет!",
         enGB = "Hi."
@@ -1667,6 +1663,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Покупатель:",
         enGB = "Purchased By:"
     },
+	["PURCHASED_BY_MULTIPLE"] = {
+		ruRU = "несколько покупателей",
+		enGB = "multiple buyers"
+	},
     ["NOT_BOUND"] = {
         ruRU = "Не назначено",
         enGB = "Not Bound"
@@ -1790,10 +1790,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_ENCHANT_REMOVED_FULL_TEXT"] = {
         ruRU = "Эффект \"%2$s\" перестает действовать на предмете |3-1(%4$s) \"%5$s\".",
         enGB = "%2$s fades from %4$s %5$s."
-    },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG2"] = {
-        ruRU = "Вниманию лекаря",
-        enGB = "Healer Alert"
     },
     ["GENERAL_SPELLS"] = {
         ruRU = "Общие",
@@ -1942,10 +1938,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_NOT_LEADER"] = {
         ruRU = "Вы не лидер группы.",
         enGB = "You are not the party leader."
-    },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG1"] = {
-        ruRU = "Вниманию бойца",
-        enGB = "Damage Dealer Alert"
     },
     ["PLAYER_TALENT_PREVIEW_PLAYER_TITLE"] = {
         ruRU = "Предварительный просмотр талантов игрока %s",
@@ -2160,8 +2152,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "All Slots"
     },
     ["TRANSMOGRIFY_FRAME_HELP_TOOLTIP"] = {
-        ruRU = "Вы не сможете вернуть предмет в магазин если:\nЕсли вы произведете трансмогрификацию в этот предмет.\nЕсли вы произведете трансмогрификацию этого предмета в другой.\n\nПосле использовать трансмогрификации оба предмета станут персональными, в том числе фамильная броня и оружие.\n\nВы потеряете внешний вид предмета, если удалите или продадите предмет торговцу.",
-        enGB = "You will not be able to return the item to the shop if:\nYou transmogrify an item into this item.\nYou transmogrify this item into another item.\n\nYou will lose the appearance of the item if you delete or sell this item to a merchant."
+        ruRU = "Вы не сможете вернуть предмет в магазин если:\nЕсли вы произведете трансмогрификацию в этот предмет.\nЕсли вы произведете трансмогрификацию этого предмета в другой.\n\nПосле использовать трансмогрификации оба предмета станут персональными, в том числе фамильная броня и оружие.\n\nВы потеряете облик трансмогрификации, если удалите или продадите торговцу предмет, имеющий таймер возврата или передачи.\n\nНаложение визуальных зачарований на оружие - делает его персональным.",
+        enGB = ""
     },
     ["MINECART1"] = {
         ruRU = "Вагонетка 1",
@@ -5163,10 +5155,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Сейчас вы этот предмет обыскивать не можете.",
         enGB = "You can't loot that item now."
     },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG5"] = {
-        ruRU = "Важно",
-        enGB = "Important"
-    },
     ["TIMEMANAGER_AM"] = {
         ruRU = "AM",
         enGB = "AM"
@@ -6994,10 +6982,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_RANGE_MISSED_DODGE_FULL_TEXT"] = {
         ruRU = "%4$s уклоняется от выстрела |3-1(%1$s).",
         enGB = "%1$s shot was dodged by %4$s."
-    },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION9"] = {
-        ruRU = "",
-        enGB = ""
     },
     ["DRUNK_MESSAGE_SELF2"] = {
         ruRU = "Вы немного пьяны. Йо-хо!",
@@ -9779,10 +9763,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Входящие сообщения",
         enGB = "Inbox"
     },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION5"] = {
-        ruRU = "",
-        enGB = ""
-    },
     ["GOLD_AMOUNT"] = {
         ruRU = "%d |4золотая:золотые:золотых;",
         enGB = "%d Gold"
@@ -10283,10 +10263,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "%2$s %1$d-го уровня",
         enGB = "Level %d %s"
     },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION2"] = {
-        ruRU = "",
-        enGB = ""
-    },
     ["ACTION_SPELL_MISSED_EVADE"] = {
         ruRU = "Атака не достигла цели",
         enGB = "Evaded"
@@ -10618,6 +10594,10 @@ local SIRUS_LOCALIZATION = {
     ["STORE_PET_REFRESH_TITLE"] = {
         ruRU = "Обновление списка питомцев",
         enGB = ""
+    },
+	["STORE_ILLUSION_REFRESH_TITLE"] = {
+		ruRU = "Обновление списка иллюзий",
+		enGB = ""
     },
     ["STORE_TRANSMOGRIFY_REFRESH_TITLE"] = {
         ruRU = "Обновление списка трансмогрификации",
@@ -11018,10 +10998,6 @@ local SIRUS_LOCALIZATION = {
     ["IGNORE_DIALOG"] = {
         ruRU = "Пропустить",
         enGB = "Ignore"
-    },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION3"] = {
-        ruRU = "",
-        enGB = ""
     },
     ["UNIT_NAME_ENEMY_TOTEMS"] = {
         ruRU = "Тотемы",
@@ -12010,10 +11986,6 @@ local SIRUS_LOCALIZATION = {
     ["SCREENSHOT_FAILURE"] = {
         ruRU = "Ошибка снятия скриншота",
         enGB = "Screen Capture Failed"
-    },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG10"] = {
-        ruRU = "Болезнь",
-        enGB = "Disease"
     },
     ["ERR_PROFICIENCY_GAINED_S"] = {
         ruRU = "Вы приобрели мастерство \"%s\".",
@@ -16027,6 +15999,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Началось голосование за то, чтобы исключить |3-3(%1$s) из группы. Причина:\n|cffffd200%2$s|r\n\nВы за?",
         enGB = "A vote has been initiated to remove %1$s from the group.\n\nThe reason given was:\n|cffffd200%2$s|r\n\nDo you want to kick %1$s?"
     },
+	["VOTE_BOOT_PLAYER_DELAY"] = {
+		ruRU = "Началось голосование за то, чтобы исключить |3-3(%1$s) из группы. Причина:\n|cffffd200%2$s|r\n\nВы сможете проголосовать через:",
+		enGB = "A vote has been initiated to remove %1$s from the group.\n\nThe reason given was:\n|cffffd200%2$s|r\n\nDo you want to kick %1$s?"
+	},
     ["STRING_SCHOOL_FIRESTORM"] = {
         ruRU = "Скверна",
         enGB = "Fel"
@@ -16602,10 +16578,6 @@ local SIRUS_LOCALIZATION = {
     ["COMBAT_XP_GAIN"] = {
         ruRU = "Опыт",
         enGB = "Experience"
-    },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG9"] = {
-        ruRU = "Яд",
-        enGB = "Poison"
     },
     ["FRIENDS_LEVEL_TEMPLATE_2"] = {
         ruRU = "|3-6(%2$s) %1$d-го уровня",
@@ -22591,10 +22563,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Щелкните правой кнопкой мыши по игроку, состоящем в гильдии, чтобы получить доступ к дополнительным параметрам.",
         enGB = "Right-click on a guild member for more options."
     },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG11"] = {
-        ruRU = "Исступление",
-        enGB = "Enrage"
-    },
     ["GUILD_REPUTATION"] = {
         ruRU = "Репутация в гильдии",
         enGB = "Guild Reputation"
@@ -24407,10 +24375,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы уже забирали это вознаграждение за лояльность",
         enGB = "You have already collected this loyalty reward"
     },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION4"] = {
-        ruRU = "",
-        enGB = ""
-    },
     ["EMOTE451_CMD2"] = {
         ruRU = "/sweat",
         enGB = "/sweat"
@@ -24699,10 +24663,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/sorry",
         enGB = "/sorry"
     },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION11"] = {
-        ruRU = "",
-        enGB = ""
-    },
     ["STORE_PREMIUM_BUY_1"] = {
         ruRU = "Купить на 48 часов.",
         enGB = "Buy for 48 hours."
@@ -24752,8 +24712,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "Pets"
     },
     ["STORE_SUB_CATEGORY_3_3"] = {
-        ruRU = "Игрушки",
-        enGB = "Toys"
+        ruRU = "Иллюзии",
+        enGB = "Illusions"
     },
     ["STORE_CATEGORY_1"] = {
         ruRU = "Спец. предложения",
@@ -25443,10 +25403,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Невозможно делать это на ходу.",
         enGB = "Can't do that while moving"
     },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG8"] = {
-        ruRU = "Проклятие",
-        enGB = "Curse Effect"
-    },
     ["SLASH_CHAT_PASSWORD3"] = {
         ruRU = "/пароль",
         enGB = "/password"
@@ -25591,10 +25547,14 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Предмет трансмогрифицирован в:\n%s",
         enGB = "Transmogrified to:\n%s"
     },
-    ["TRANSMOGRIFIED2"] = {
-        ruRU = "Предмет трансмогрифицирован в:",
-        enGB = "Transmogrified to:"
-    },
+	["TRANSMOGRIFIED_ENCHANT"] = {
+		ruRU = "Иллюзия \"%s\"",
+		enGB = "Illusion: %s"
+	},
+	["TRANSMOGRIFIED_HEADER"] = {
+		ruRU = "Предмет трансмогрифицирован в:",
+		enGB = "Transmogrified to:"
+	},
     ["CHARACTER_LINK_ITEM_LEVEL_TOOLTIP"] = {
         ruRU = "Уровень предмета: %d",
         enGB = "Item Level: %d"
@@ -25915,14 +25875,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Клоака",
         enGB = "The Underbelly"
     },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION8"] = {
-        ruRU = "",
-        enGB = ""
-    },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION7"] = {
-        ruRU = "",
-        enGB = ""
-    },
     ["SPELL_FAILED_CANT_DUEL_WHILE_INVISIBLE"] = {
         ruRU = "Вы невидимы и не можете начать дуэль.",
         enGB = "You can't start a duel while invisible"
@@ -25951,29 +25903,13 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Получатель не найден.",
         enGB = "User not found"
     },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION10"] = {
-        ruRU = "",
-        enGB = ""
-    },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION1"] = {
-        ruRU = "",
-        enGB = ""
-    },
     ["VOICEMACRO_0_Sc_1"] = {
         ruRU = "Нужна помощь!",
         enGB = "Help me!"
     },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION0"] = {
-        ruRU = "",
-        enGB = ""
-    },
     ["RGB_RANK_9_ALLIANCE"] = {
         ruRU = "Рыцарь-защитник",
         enGB = "Knight-Champion"
-    },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG7"] = {
-        ruRU = "Магия",
-        enGB = "Spell"
     },
     ["OPTION_TOOLTIP_AUTO_DISMOUNT_FLYING"] = {
         ruRU = "Автоматическое спешивание при применении заклинания.",
@@ -25995,21 +25931,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/bite",
         enGB = "/bite"
     },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG3"] = {
-        ruRU = "Героический режим",
-        enGB = "Heroic Difficulty"
-    },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG12"] = {
-        ruRU = "Эпохальный режим",
-        enGB = "Mythic Difficulty"
-    },
     ["SHOW_ARENA_ENEMY_CASTBAR_TEXT"] = {
         ruRU = "Отображать полоску заклинаний",
         enGB = "Show Cast Bars"
-    },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG0"] = {
-        ruRU = "Вниманию танка",
-        enGB = "Tank Alert"
     },
     ["BINDING_NAME_MULTIACTIONBAR1BUTTON3"] = {
         ruRU = "Кнопка действия 3 (слева внизу)",
@@ -26194,6 +26118,10 @@ local SIRUS_LOCALIZATION = {
     ["COMBATLOG_XPGAIN_EXHAUSTION5_RAID"] = {
         ruRU = "%1$s погибает, вы получаете опыт: %2$d (штраф %4$s: %3$s, рейдовый штраф: %5$d).",
         enGB = "%s dies, you gain %d experience. (%s exp %s penalty, -%d raid penalty)"
+    },
+	["WEAPON_ENCHANTMENT"] = {
+        ruRU = "Чары для оружия",
+        enGB = "Weapon Enchantment"
     },
     ["WEAPON_SKILL_RATING"] = {
         ruRU = "Рейтинг владения оружием: %d",
@@ -28438,10 +28366,6 @@ local SIRUS_LOCALIZATION = {
     ["SINGLE_DAMAGE_TEMPLATE_WITH_SCHOOL"] = {
         ruRU = "%d ед. |3-6(%s)",
         enGB = "%d %s Damage"
-    },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG6"] = {
-        ruRU = "Прерываемое",
-        enGB = "Interruptible"
     },
     ["UNIT_NAMEPLATES_SHOW_FRIENDLY_PETS"] = {
         ruRU = "Питомцы",
@@ -30818,10 +30742,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_GUILD_QUIT_S"] = {
         ruRU = "Вы более не состоите в гильдии \"%s\".",
         enGB = "You are no longer a member of %s."
-    },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION6"] = {
-        ruRU = "",
-        enGB = ""
     },
     ["BINDING_NAME_MULTICASTACTIONBUTTON2"] = {
         ruRU = "Тотем огня",
@@ -36508,7 +36428,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "You are already in an arena team of that size."
     },
     ["NOSEASON_INFO_TEXT"] = {
-        ruRU = "Битвы на аренах и рейтинговых полях боя доступны только во время PvP-сезонов. Новый сезон скоро начнется!",
+        ruRU = "Битвы на аренах и рейтинговых полях боя доступны только во время PvP-сезонов. Новый сезон скоро начнется!\n\nВы можете закрыть это окно и продолжить играть арену как и раньше, но у вас не будет меняться статистика и рейтинг",
         enGB = "Arena battles and Rated Battlegrounds are only available during an active PvP season. The next season will start soon!"
     },
     ["ACTION_ENCHANT_APPLIED_FULL_TEXT"] = {
@@ -37962,10 +37882,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_14_Gn_0_FEMALE"] = {
         ruRU = "Разумеется.",
         enGB = "Certainly."
-    },
-    ["ENCOUNTER_JOURNAL_SECTION_FLAG4"] = {
-        ruRU = "Смертельно",
-        enGB = "Deadly"
     },
     ["VOICEMACRO_14_Gn_1_FEMALE"] = {
         ruRU = "Конечно.",
@@ -40091,120 +40007,8 @@ local SIRUS_LOCALIZATION = {
     	ruRU = "Количество",
     	enGB = ""
     },
-    ["BATTLEPASS"] = {
-    	ruRU = "Боевой пропуск",
-    	enGB = ""
-    },
-    ["BATTLEPASS_EXP"] = {
-    	ruRU = "XP %d/%d",
-    	enGB = ""
-    },
-    ["BATTLEPASS_PAGES"] = {
-    	ruRU = "%d|cFFcccccc/%d|r",
-    	enGB = ""
-    },
-	["BATTLEPASS_LEVEL_FORMAT"] = {
-		ruRU = "%d",
-		enGB = "%d"
-	},
-    ["BATTLEPASS_HIGHLEVEL_LABEL"] = {
-    	ruRU = "%d уровень",
-    	enGB = ""
-    },
-    ["BATTLEPASS_XP"] = {
-        ruRU = "XP %d/%d",
-        enGB = ""
-    },
-    ["BATTLEPASS_XP_ITEM_DESCRIPTION_EXP_PATTERN"] = {
-        ruRU = "Подтверждает ваше мастерство в военном ремесле, повышая опыт Боевого Пропуска на (%d+) ед. при использовани.",
-        enGB = ""
-    },
-    ["BATTLEPASS_XP_ITEM_DESCRIPTION_149194"] = {
-    	ruRU = "Подтверждает ваше мастерство в военном ремесле, повышая опыт Боевого Пропуска на 1000 ед. при использовани.",
-    	enGB = ""
-    },
-    ["BATTLEPASS_XP_ITEM_DESCRIPTION_149193"] = {
-        ruRU = "Подтверждает ваше мастерство в военном ремесле, повышая опыт Боевого Пропуска на 500 ед. при использовани.",
-        enGB = ""
-    },
-    ["BATTLEPASS_XP_ITEM_DESCRIPTION_149192"] = {
-        ruRU = "Подтверждает ваше мастерство в военном ремесле, повышая опыт Боевого Пропуска на 100 ед. при использовани.",
-        enGB = ""
-    },
-    ["BATTLEPASS_XP_ITEM_DESCRIPTION_149195"] = {
-        ruRU = "Подтверждает ваше право на Премиум награды Боевого Пропуска.\n\n|cffFF0000ВНИМАНИЕ! Предмет должен быть активирован в течение семи дней. После истечения этого срока - предмет исчезнет.|r",
-        enGB = ""
-    },
-    ["BATTLEPASS_TRIM_XP_ITEM_NAME"] = {
-    	ruRU = " Боевого Пропуска",
-    	enGB = ""
-    },
-    ["BATTLEPASS_BUY_XP"] = {
-    	ruRU = "Купить опыт",
-    	enGB = ""
-    },
-    ["BATTLEPASS_END_TIME"] = {
-    	ruRU = "До окончания %s",
-    	enGB = ""
-    },
-    ["BATTLEPASS_PREMIUM"] = {
-    	ruRU = "Премиум",
-    	enGB = ""
-    },
-	["BATTLEPASS_TAKE"] = {
-		ruRU = "Забрать",
-		enGB = ""
-	},
-	["BATTLEPASS_LEVEL"] = {
-		ruRU = "уровень",
-		enGB = ""
-	},
     ["BATTLEGROUND_TEMPLE_OF_ALAWASHTE"] = {
         ruRU = "- Защищайте свой флаг или захватывайте вражеский\n- Захватывайте и удерживайте объекты\n- Накопите 1500 очков",
-        enGB = ""
-    },
-    ["BATTLEPASS_BUY_USE_CONFIRM"] = {
-    	ruRU = "Покупка успешно завершена!\n%s\nВы желаете активировать его прямо сейчас?",
-    	enGB = ""
-    },
-    ["BATTLEPASS_DAY_LIMIT_TITLE"] = {
-    	ruRU = "Дневной лимит",
-    	enGB = ""
-    },
-    ["BATTLEPASS_DAY_LIMIT"] = {
-        ruRU = "Сегодня вы можете получить ещё %s ед. опыта боевого пропуска.",
-        enGB = ""
-    },
-    ["BATTLEPASS_MAX_LEVEL_TITLE"] = {
-        ruRU = "Бесконечные уровни",
-        enGB = ""
-    },
-    ["BATTLEPASS_MAX_LEVEL"] = {
-        ruRU = "Вы достигли финального уровня Боевого Пропуска! Отныне за каждые 300 опыта вы будете получать дополнительный уровень и призы - вплоть до окончания сезона. Дневного лимита на опыт Боевого Пропуска для вас больше нет.",
-        enGB = ""
-    },
-    ["BATTLEPASS_TUTORIAL_1"] = {
-        ruRU = "Ознакомьтесь с особенностями Боевого Пропуска перед тем как использовать его.",
-        enGB = ""
-    },
-    ["BATTLEPASS_TUTORIAL_TEXT_1"] = {
-    	ruRU = "Одерживая победу на Поле Боя, вы получаете %s ед. опыта Боевого пропуска, а при победе на Арене - %s ед. (%s в SoloQ, %s в 1на1). Со временем, требуемое количество опыта для последующих уровней растет - как и растет качество и количество наград.\n\nКаждый день вы можете заработать %s ед. опыта, то, что вы не успели заработать будет перенесено на следующий день, но не более %s ед. суммарно.\nОбратите внимание, что бонусы к опыту боевого пропуска действуют только на первые %s ед..",
-    	enGB = ""
-    },
-    ["BATTLEPASS_TUTORIAL_TEXT_2"] = {
-        ruRU = "Вы можете улучшить Боевой Пропуск до \"Премиум\" уровня, что откроет вам доступ к дополнительным наградам.",
-        enGB = ""
-    },
-    ["BATTLEPASS_TUTORIAL_TEXT_3"] = {
-        ruRU = "Продвигаясь по уровням Боевого Пропуска, вы будете открывать награды, распределенные между этими уровнями. Для того, чтобы получить награду, щелкните кнопку \"Забрать\" на карточке с уже открытой вам наградой.",
-        enGB = ""
-    },
-    ["BATTLEPASS_TUTORIAL_TEXT_4"] = {
-        ruRU = "Достигнув %i-го уровня Боевого Пропуска, вы больше не будете зависимы от суточного ограничения на опыт Боевого Пропуска - и сможете продолжать получение дополнительных наград практически бесконечно - до тех пор, пока сезон не будет завершен. При наличии активного \"Премиум\" статуса Боевого Пропуска вы также будете получать отдельный дополнительный сундучок за каждый из \"бесконечных уровней\".",
-        enGB = ""
-    },
-    ["BATTLEPASS_TUTORIAL_TEXT_5"] = {
-        ruRU = "Достигнув %i-го уровня Боевого Пропуска, вы больше не будете зависимы от суточного ограничения на опыт Боевого Пропуска - и сможете продолжать получение дополнительных наград практически бесконечно - до тех пор, пока сезон не будет завершен.",
         enGB = ""
     },
     ["DANGEROUS_SCRIPTS_WARNING"] = {
@@ -41467,6 +41271,10 @@ local SIRUS_LOCALIZATION = {
 	    ruRU = "Модели",
 	    enGB = "Appearances"
     },
+	["WARDROBE_ALTERNATE_ITEMS"] = {
+		ruRU = "Другие предметы, открывающие эту ячейку:",
+		enGB = "Other items that unlock this slot:"
+	},
     ["WARDROBE_ITEMS"] = {
 	    ruRU = "Предметы",
 	    enGB = "Items"
@@ -41527,6 +41335,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Трансмогрификация (магазин)",
 		enGB = "Transmogrification (store)"
 	},
+	["TRANSMOG_SOURCE_14"] = {
+		ruRU = "Более недоступно для получения",
+		enGB = "Not available for players"
+	},
     ["WARDROBE_TOOLTIP_BOSS_DROP_FORMAT"] = {
 	    ruRU = "Добыча с босса: %1$s",
 	    enGB = "Boss Drop: %s"
@@ -41555,6 +41367,22 @@ local SIRUS_LOCALIZATION = {
 	    ruRU = "Отменить все незаконченные изменения.",
 	    enGB = "Undo all pending changes"
     },
+	["TRANSMOGRIFY_ILLUSION_INVALID_ITEM"] = {
+		ruRU = "К этому облику предмета нельзя применить трансмогрификацию иллюзиями.",
+		enGB = "This weapon appearance cannot be transmogrified with enchants."
+	},
+	["TRANSMOGRIFY_INVALID_NO_ITEM"] = {
+		ruRU = "В этой ячейке нет предмета экипировки.",
+		enGB = "There is no equipped item in this slot."
+	},
+	["TRANSMOGRIFY_TOOLTIP_REVERT"] = {
+		ruRU = "Отменить изменения",
+		enGB = "To be reverted"
+	},
+	["WILL_BE_TRANSMOGRIFIED_HEADER"] = {
+		ruRU = "Трансмогрифицировать в:",
+		enGB = "To be transmogrified to:"
+	},
     ["TRANSMOG_EMPTY_SLOT_FORMAT"] = {
 	    ruRU = "(%1$s)",
 	    enGB = "(%s)"
@@ -41723,6 +41551,10 @@ local SIRUS_LOCALIZATION = {
 	    ruRU = "Предмет %s добавлен в вашу коллекцию наследуемых предметов.",
 	    enGB = "%s has been added to your heirloom collection."
     },
+	["COLLECTION_ILLUSION_ADD_FORMAT"] = {
+		ruRU = "Иллюзия %s добавлена в вашу коллекцию.",
+		enGB = "%s has been added to your illusion collection."
+	},
     ["COLLECTION_MOUNTS_HYPERLINK_FORMAT"] = {
 	    ruRU = "|cffff80ff|Hcollection:0:%d|h[Транспорт: %s]|h|r",
 	    enGB = "|cffff80ff|Hcollection:0:%d|h[Mounts: %s]|h|r"
@@ -41743,6 +41575,10 @@ local SIRUS_LOCALIZATION = {
 	    ruRU = "|cffff80ff|Hcollection:4:%d|h[Наследство: %s]|h|r",
 	    enGB = "|cffff80ff|Hcollection:4:%d|h[Heirlooms: %s]|h|r"
     },
+	["COLLECTION_ILLUSION_HYPERLINK_FORMAT"] = {
+		ruRU = "|cffff80ff|Hcollection:5:%d|h[Иллюзия: %s]|h|r",
+		enGB = "|cffff80ff|Hcollection:5:%d|h[Illusion: %s]|h|r"
+	},
     ["PET_JOURNAL_SUMMON_RANDOM_FAVORITE_PET"] = {
 	    ruRU = "Призвать случайного\nизбранного питомца",
 	    enGB = "Summon Random\nFavorite Pet"
@@ -41811,6 +41647,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Нажмите правую кнопку мыши чтобы выбрать предмет.",
         enGB = ""
     },
+	["WARDROBE_TOOLTIP_TRANSMOGRIFIER_UNUSABLE"] = {
+		ruRU = "На выбранном облике оружия не отображаются эффекты зачарований и иллюзии.",
+		enGB = ""
+	},
     ["STORE_SEARCH_OPTIONS"] = {
         ruRU = "Параметры поиска",
         enGB = "Search Options"
@@ -43175,22 +43015,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Отображать плечи",
 		enGB = ""
 	},
-	["BATTLEPASS_ITEM_EXP_PATTERN"] = {
-		ruRU = "при использовании повышает опыт боевого пропуска на (%d+)",
-		enGB = ""
-	},
-	["BATTLEPASS_ITEM_EXP_TO_LEVEL"] = {
-		ruRU = "Вам необходимо %i ед. опыта чтобы получить хотя бы 1 уровень Боевого пропуска",
-		enGB = ""
-	},
-	["BATTLEPASS_ITEM_ADD_LEVELS"] = {
-		ruRU = "Используйте этот предмет чтобы получить %i |4уровень:уровня:уровней; Боевого пропуска.",
-		enGB = ""
-	},
-	["BATTLEPASS_ITEM_MAX_LEVEL"] = {
-		ruRU = "У вас максимальный уровень",
-		enGB = ""
-	},
 	["LOOT_NOUN"] = {
 		ruRU = "Добыча",
 		enGB = "Loot"
@@ -43556,7 +43380,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Right click return to item list",
 	},
     ["UPGRADE_MISSING_ITEM"] = {
-		ruRU = "Перетащите сюда предмет.\n\nУ вас есть %d |4предмет:претмета:предметов;, для которых доступно улучшение.",
+		ruRU = "Перетащите сюда предмет.\n\nУ вас есть %d |4предмет:предмета:предметов;, для которых доступно улучшение.",
 		enGB = "",
 	},
     ["UPGRADE_RANDOM_ITEM"] = {
@@ -43939,6 +43763,14 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Маленькие помощники Дедушки Зимы уже запрятали для вас сотни подарков по всему Нордсколу!",
 		enGB = ""
 	},
+	["TOAST_CS_VOTE_KICK_BG_TITLE"] = {
+		ruRU = "Голосование",
+		enGB = ""
+	},
+	["TOAST_CS_VOTE_KICK_BG_BODY"] = {
+		ruRU = "Началось голосование за исключение игрока, нажмите на сообщение, чтобы принять участие.",
+		enGB = ""
+	},
 	["HEIRLOOMS"] = {
 		ruRU = "Наследство",
 		enGB = "Heirlooms"
@@ -44070,6 +43902,498 @@ local SIRUS_LOCALIZATION = {
 	["HEIRLOOM_FRAME_HELP_TOOLTIP"] = {
 		ruRU = "\nНа нашем проекте фамильные предметы добавляются в коллекцию с помощью специальных токенов.\nВы можете их приобрести в игре за внутриигровую валюту или в нашем магазине.\n\nПосле добавления предмета в коллекцию - он доступен вам на любом персонаже аккаунта внутри игрового мира.\n\nЧтобы получить фамильный предмет - щелкните левой кнопкой мыши по нему, и он попадет к вам в сумку.\nДелать это можно неограниченное количество раз.",
 		enGB = ""
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG0"] = {
+		ruRU = "Вниманию танка",
+		enGB = "Tank Alert"
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG1"] = {
+		ruRU = "Вниманию бойца",
+		enGB = "Damage Dealer Alert"
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG2"] = {
+		ruRU = "Вниманию лекаря",
+		enGB = "Healer Alert"
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG3"] = {
+		ruRU = "Героический режим",
+		enGB = "Heroic Difficulty"
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG4"] = {
+		ruRU = "Смертельно",
+		enGB = "Deadly"
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG5"] = {
+		ruRU = "Важно",
+		enGB = "Important"
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG6"] = {
+		ruRU = "Прерываемое",
+		enGB = "Interruptible"
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG7"] = {
+		ruRU = "Магия",
+		enGB = "Spell"
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG8"] = {
+		ruRU = "Проклятие",
+		enGB = "Curse Effect"
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG9"] = {
+		ruRU = "Яд",
+		enGB = "Poison"
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG10"] = {
+		ruRU = "Болезнь",
+		enGB = "Disease"
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG11"] = {
+		ruRU = "Исступление",
+		enGB = "Enrage"
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG12"] = {
+		ruRU = "Эпохальный режим",
+		enGB = "Mythic Difficulty"
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG13"] = {
+		ruRU = "Кровотечение",
+		enGB = "Bleed"
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION0"] = {
+		ruRU = "",
+		enGB = ""
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION1"] = {
+		ruRU = "",
+		enGB = ""
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION2"] = {
+		ruRU = "",
+		enGB = ""
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION3"] = {
+		ruRU = "",
+		enGB = ""
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION4"] = {
+		ruRU = "",
+		enGB = ""
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION5"] = {
+		ruRU = "",
+		enGB = ""
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION6"] = {
+		ruRU = "",
+		enGB = ""
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION7"] = {
+		ruRU = "",
+		enGB = ""
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION8"] = {
+		ruRU = "",
+		enGB = ""
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION9"] = {
+		ruRU = "",
+		enGB = ""
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION10"] = {
+		ruRU = "",
+		enGB = ""
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION11"] = {
+		ruRU = "",
+		enGB = ""
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION12"] = {
+		ruRU = "",
+		enGB = ""
+	},
+	["ENCOUNTER_JOURNAL_SECTION_FLAG_DESCRIPTION13"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["TOOLTIP_ENCHANT_SPELL"] = {
+		ruRU = "|c001EFF00Зачарование: (.+)|r$",
+		enGB = ""
+	},
+	["TOOLTIP_ILLUSION_SPELL"] = {
+		ruRU = "|c00FF7FFFИллюзия: (.+)|r$",
+		enGB = ""
+	},
+	["ITEM_UPGRADE_LEFT_ITEM_LIST"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tСразу отображать улучшаемые предметы",
+		enGB = ""
+	},
+	["OPTION_ITEM_UPGRADE_LEFT_ITEM_LIST_DESCRIPTION"] = {
+		ruRU = "Включение этой настройки позволяет сразу выводить список всех доступных для улучшения или преобразования предметов",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_TEXT_1"] = {
+		ruRU = "Наземное средство передвижения с максимальной скоростью 60%.\nДля того, чтобы оседлать это средство передвижения, необходимо владеть навыком \"Верховая езда - ученик\".",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_TEXT_2"] = {
+		ruRU = "Наземное средство передвижения с максимальной скоростью 100%.\nДля того, чтобы достичь максимальной скорости, необходимо владеть навыком \"Верховая езда - подмастерье\".",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_TEXT_3"] = {
+		ruRU = "Летающее средство передвижения с максимальной скоростью 280%.\nДля того, чтобы средство передвижения стало летающим - необходимо владеть навыком \"Верховая езда - умелец\".\nДля того, чтобы достичь максимальной скорости, необходимо владеть навыком \"Верховая езда - искусник\".\nДля полетов в Нордсколе необходимо владение навыком \"Полеты в непогоду\".",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_TEXT_4"] = {
+		ruRU = "Летающее средство передвижения с максимальной скоростью 310%.\nДля того, чтобы средство передвижения стало летающим - необходимо владеть навыком \"Верховая езда - умелец\".\nДля того, чтобы достичь максимальной скорости, необходимо владеть навыком \"Верховая езда - искусник\".\nДля полетов в Нордсколе необходимо владение навыком \"Полеты в непогоду\".",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_TEXT_5"] = {
+		ruRU = "Это средство передвижения обладает способностью хождения по воде.",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_TEXT_6"] = {
+		ruRU = "Это средство передвижения обладает способностью ускоренного плавания в воде.",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_TEXT_7"] = {
+		ruRU = "Это средство передвижения является двухместным.",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_TEXT_8"] = {
+		ruRU = "Это средство передвижения является трехместным.",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_TEXT_9"] = {
+		ruRU = "Это средство передвижения может перевозить торговцев различными товарами или ремонтников.",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_TEXT_10"] = {
+		ruRU = "Получение в коллекцию этого средства передвижения совершенствует весь ваш летающий транспорт, делая его способным летать со скоростью 310%.",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_TEXT_11"] = {
+		ruRU = "Данное средство передвижения распространяется на весь аккаунт в рамках одного игрового мира, в котором он был получен.",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_DESCRIPTION_3"] = {
+		ruRU = "Обладает возможностью летать со скоростью 310% при изучении книги \"Руководство по ускоренным полетам\" либо изучении любого средства передвижения, которое предоставляет активацию ускоренных полетов.",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITIES"] = {
+		ruRU = "Способности",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_1"] = {
+		ruRU = "Наземная скорость 60",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_2"] = {
+		ruRU = "Наземная скорость 100",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_3"] = {
+		ruRU = "Воздушная скорость 280",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_4"] = {
+		ruRU = "Воздушная скорость 310",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_5"] = {
+		ruRU = "Хождение по воде",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_6"] = {
+		ruRU = "Ускоренное плавание",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_7"] = {
+		ruRU = "Двухместный",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_8"] = {
+		ruRU = "Трехместный",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_9"] = {
+		ruRU = "Торговцы или ремонт",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_10"] = {
+		ruRU = "Активация ускоренных полетов",
+		enGB = ""
+	},
+	["COLLECTION_MOUNT_ABILITY_11"] = {
+		ruRU = "Распространение на аккаунт",
+		enGB = ""
+	},
+	["STORE_BUY_FREE"] = {
+		ruRU = "Получить",
+		enGB = ""
+	},
+	["STORE_NOT_ENOUGHT_CURRENCY"] = {
+		ruRU = "|cffff0000У вас недостаточно средств.|r\n(В наличии %d |4бонус:бонуса:бонусов;.)",
+		enGB = "",
+	},
+	["BATTLEPASS"] = {
+		ruRU = "Боевой пропуск",
+		enGB = "",
+	},
+	["BATTLEPASS_EXPERIENCE_LABEL"] = {
+		ruRU = "Опыт Боевого Пропуска",
+		enGB = "",
+	},
+	["BATTLEPASS_EXPERIENCE_INFO"] = {
+		ruRU = "Основным источником опыта являются задания Боевого Пропуска.\nТакже опыт начисляется за ПВП активности:\nПобеда на Поле Боя принесет %s ед. опыта.\nПобеда на Арене - %s ед. (%s в SoloQ, %s в 1на1).",
+		enGB = "",
+	},
+	["BATTLEPASS_ITEM_EXP_TO_LEVEL"] = {
+		ruRU = "Вам необходимо %i ед. опыта чтобы получить хотя бы 1 уровень Боевого пропуска",
+		enGB = "",
+	},
+	["BATTLEPASS_ITEM_ADD_LEVELS"] = {
+		ruRU = "Используйте этот предмет чтобы получить %i |4уровень:уровня:уровней; Боевого пропуска.",
+		enGB = "",
+	},
+	["BATTLEPASS_LEVEL_REWARD_TAKE"] = {
+		ruRU = "Забрать",
+		enGB = "",
+	},
+	["BATTLEPASS_PREMIUM_ACTIVE"] = {
+		ruRU = "«Premium» Боевой Пропуск активен!",
+		enGB = "",
+	},
+	["BATTLEPASS_PURCHASE_AMOUNT"] = {
+		ruRU = "Количество",
+		enGB = "",
+	},
+	["BATTLEPASS_PURCHASE_EXPERIENCE"] = {
+		ruRU = "Купить опыт",
+		enGB = "",
+	},
+	["BATTLEPASS_PURCHASE_EXPERIENCE_FORMAT"] = {
+		ruRU = "%u xp",
+		enGB = "",
+	},
+	["BATTLEPASS_PURCHASE_EXPERIENCE_HEADER"] = {
+		ruRU = "Подтверждение мастерства",
+		enGB = "",
+	},
+	["BATTLEPASS_PURCHASE_EXPERIENCE_RIBBON_LABEL"] = {
+		ruRU = "Получить опыт",
+		enGB = "",
+	},
+	["BATTLEPASS_PURCHASE_EXPERIENCE_TEXT_BODY"] = {
+		ruRU = "Подтверждает ваше мастерство в военном ремесле, повышая опыт Боевого Пропуска на %s|cffFFD100%u xp|r при использовании",
+		enGB = "",
+	},
+	["BATTLEPASS_PURCHASE_EXPERIENCE_TEXT_BODY_LEVEL"] = {
+		ruRU = "При использовании вы получите |cffFFD100%u|r |4уровень:уровня:уровней; Боевого пропуска",
+		enGB = "",
+	},
+	["BATTLEPASS_PURCHASE_PREMIUM"] = {
+		ruRU = "Получить «Premium»",
+		enGB = "",
+	},
+	["BATTLEPASS_PURCHASE_PREMIUM_BODY"] = {
+		ruRU = "Premium - это дополнительная возможность получить больше удовольствия от игры, улучшить ощущения от игрового процесса, а самое главное - заработать больше наград с Боевого Пропуска, начиная с валюты, заканчивая ездовыми животными и спутниками, которое доступны только с Premium.",
+		enGB = "",
+	},
+	["BATTLEPASS_PURCHASE_PREMIUM_HEADER"] = {
+		ruRU = "«Premium» Боевой Пропуск",
+		enGB = "",
+	},
+	["BATTLEPASS_PURCHASE_RECEIVED"] = {
+		ruRU = "Ваша награда доставлена",
+		enGB = "",
+	},
+	["BATTLEPASS_PURCHASE_SUCCESSFUL"] = {
+		ruRU = "Покупка прошла успешно!",
+		enGB = "",
+	},
+	["BATTLEPASS_PURCHASE_SUCCESSFUL_DIALOG"] = {
+		ruRU = "Вы получаете предмет:\n%s\nВы желаете активировать его прямо сейчас?",
+		enGB = "",
+	},
+	["BATTLEPASS_PURCHASE_TITLE"] = {
+		ruRU = "Подтверждение покупки",
+		enGB = "",
+	},
+	["BATTLEPASS_PURCHASE_TOTAL"] = {
+		ruRU = "Всего:",
+		enGB = "",
+	},
+	["BATTLEPASS_QUESTS_DAILY"] = {
+		ruRU = "Ежедневные задания",
+		enGB = "",
+	},
+	["BATTLEPASS_QUESTS_LABEL"] = {
+		ruRU = "Задания",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_CHANGE"] = {
+		ruRU = "Заменить",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_COMPLETED"] = {
+		ruRU = "Завершено",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_COMPLETED_TOAST_DAILY"] = {
+		ruRU = "Выполнено ежедневное задание.\nДоступна награда.",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_COMPLETED_TOAST_WEEKLY"] = {
+		ruRU = "Выполнено еженедельное задание.\nДоступна награда.",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_MSG_STATUS_DATA_ERROR"] = {
+		ruRU = "Ошибка данных при замене задания",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_MSG_STATUS_INVALIDE_QUEST"] = {
+		ruRU = "Это задание не является частью Боевого Пропуска",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_MSG_STATUS_DONT_HAVE_QUEST"] = {
+		ruRU = "Нельзя заменить недоступное задание",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_MSG_STATUS_QUEST_NOT_COMPLETE"] = {
+		ruRU = "Задание не выполнено",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_NO_AVAILABLE"] = {
+		ruRU = "%s закончились\nНовые задания через: |cffd2c9c1%s|r",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_REPLACE"] = {
+		ruRU = "Замена задания",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_REPLACE_BODY"] = {
+		ruRU = "Вы действительно хотите заменить задание?\n|cffFFD100%s|r\nСтоимость замены: %s",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_REPLACE_BODY_FREE"] = {
+		ruRU = "Вы действительно хотите заменить задание?\n|cffFFD100%s|r\nПервая замена бесплатно.",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_REPLACE_NOT_ENOUGHT_MONEY"] = {
+		ruRU = "|cffff0000У вас недостаточно средств.|r",
+		enGB = "",
+	},
+	["STORE_QUEST_REPLACE_PRICE"] = {
+		ruRU = "Стоимость замены этого квеста %s",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_REWARD_TAKE"] = {
+		ruRU = "Собрать",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_TIMELEFT_LABEL"] = {
+		ruRU = "Новые задания через: ",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_TIMELEFT_UNAVAILABLE"] = {
+		ruRU = "Недоступно",
+		enGB = "",
+	},
+	["BATTLEPASS_QUESTS_WEEKLY"] = {
+		ruRU = "Дополнительные задания",
+		enGB = "",
+	},
+	["BATTLEPASS_REWARDS_LABEL"] = {
+		ruRU = "Награды",
+		enGB = "",
+	},
+	["BATTLEPASS_REWARD_RECEIVED"] = {
+		ruRU = "Получено",
+		enGB = "",
+	},
+	["BATTLEPASS_REWARD_TITLE"] = {
+		ruRU = "Награда",
+		enGB = "",
+	},
+	["BATTLEPASS_SEASON_TIMELEFT_INACTIVE"] = {
+		ruRU = "Сезон закончился",
+		enGB = "",
+	},
+	["BATTLEPASS_SEASON_TIMELEFT_LABEL"] = {
+		ruRU = "Закончится через:",
+		enGB = "",
+	},
+	["BATTLEPASS_STATUS_ERROR"] = {
+		ruRU = "Ошибка",
+		enGB = "",
+	},
+	["BATTLEPASS_TITLE"] = {
+		ruRU = "Боевой пропуск",
+		enGB = "",
+	},
+	["BATTLEPASS_TUTORIAL_0"] = {
+		ruRU = "Ознакомьтесь с особенностями Боевого Пропуска перед тем как использовать его.",
+		enGB = ""
+	},
+	["BATTLEPASS_TUTORIAL_1"] = {
+		ruRU = "Выполняйте задания, чтобы получать опыт боевого пропуска и повышать его уровень, также вы будете получать небольшое количество опыта сражаясь на полях боя и арене.\n",
+		enGB = "",
+	},
+	["BATTLEPASS_TUTORIAL_2"] = {
+		ruRU = "Каждую неделю вы будете получать два новых общих задания, а каждый день два ежедневных задания.\n",
+		enGB = "",
+	},
+	["BATTLEPASS_TUTORIAL_3"] = {
+		ruRU = "Обратите внимание, ежедневные задания не пропадают и переносятся на следующий день, однако, у вас может быть не более пяти заданий.\n",
+		enGB = "",
+	},
+	["BATTLEPASS_TUTORIAL_4"] = {
+		ruRU = "Общие задания копятся и остаются у вас до конца сезона, или пока вы их не выполните.\n",
+		enGB = "",
+	},
+	["BATTLEPASS_TUTORIAL_5"] = {
+		ruRU = "Ежедневные задания можно заменять на другие за золото, стоимость замены увеличивается с каждым разом.\n",
+		enGB = "",
+	},
+	["BATTLEPASS_TUTORIAL_6"] = {
+		ruRU = "По достижению последнего уровня боевого пропуска, когда основные награды уже будут получены, вы сможете получать дополнительные награды практически бесконечно, пока не будет окончен текущий сезон.\n",
+		enGB = "",
+	},
+	["BATTLEPASS_TUTORIAL_7"] = {
+		ruRU = "Выполняя задания в выходные дни и некоторые праздники, вы получите дополнительный опыт за первое выполненное задание в день.\n",
+		enGB = "",
+	},
+	["BATTLEPASS_TUTORIAL_TEXT_1"] = {
+		ruRU = "Одерживая победу на Поле Боя, вы получаете %s ед. опыта Боевого пропуска, а при победе на Арене - %s ед. (%s в SoloQ, %s в 1на1). Со временем, требуемое количество опыта для последующих уровней растет - как и растет качество и количество наград.\n\nКаждый день вы можете заработать %s ед. опыта, то, что вы не успели заработать будет перенесено на следующий день, но не более %s ед. суммарно.\nОбратите внимание, что бонусы к опыту боевого пропуска действуют только на первые %s ед..",
+		enGB = "",
+	},
+	["BATTLEPASS_TUTORIAL_TEXT_2"] = {
+		ruRU = "Вы можете улучшить Боевой Пропуск до \"Премиум\" уровня, что откроет вам доступ к дополнительным наградам.",
+		enGB = "",
+	},
+	["BATTLEPASS_TUTORIAL_TEXT_3"] = {
+		ruRU = "Продвигаясь по уровням Боевого Пропуска, вы будете открывать награды, распределенные между этими уровнями. Для того, чтобы получить награду, щелкните кнопку \"Забрать\" на карточке с уже открытой вам наградой.",
+		enGB = "",
+	},
+	["BATTLEPASS_TUTORIAL_TEXT_4"] = {
+		ruRU = "Достигнув %i-го уровня Боевого Пропуска, вы больше не будете зависимы от суточного ограничения на опыт Боевого Пропуска - и сможете продолжать получение дополнительных наград практически бесконечно - до тех пор, пока сезон не будет завершен. При наличии активного \"Премиум\" статуса Боевого Пропуска вы также будете получать отдельный дополнительный сундучок за каждый из \"бесконечных уровней\".",
+		enGB = "",
+	},
+	["BATTLEPASS_TUTORIAL_TEXT_5"] = {
+		ruRU = "Достигнув %i-го уровня Боевого Пропуска, вы больше не будете зависимы от суточного ограничения на опыт Боевого Пропуска - и сможете продолжать получение дополнительных наград практически бесконечно - до тех пор, пока сезон не будет завершен.",
+		enGB = "",
+	},
+	["BATTLEPASS_XP_LABEL"] = {
+		ruRU = "xp",
+		enGB = "",
+	},
+	["LFG_REJECT_PROPOSAL"] = {
+		ruRU = "Подземелье было найдено. Вы не сможете встать в очередь вновь в течение 5 минут, если откажетесь от прохождения подземелья.\nВы уверены, что хотите покинуть очередь?",
+		enGB = "",
+	},
+	["PVP_REJECT_PROPOSAL"] = {
+		ruRU = "Поле боя было найдено. Выход из очереди спровоцирует эффект \"Дезертир (Приглашение)\".\nВы уверены что хотите покинуть очередь?",
+		enGB = "",
 	},
 }
 

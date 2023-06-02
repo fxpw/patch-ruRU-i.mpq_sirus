@@ -404,8 +404,8 @@ local SIRUS_LOCALIZATION = {
 		enGB = "View Distance"
 	},
 	["FEATURES_LABEL"] = {
-		ruRU = "Особые возможности",
-		enGB = "Features"
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tОсобые возможности",
+		enGB = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tFeatures"
 	},
 	["FEATURES_SUBTEXT"] = {
 		ruRU = "Здесь можно включить или отключить особые возможности, доступные в игре.",

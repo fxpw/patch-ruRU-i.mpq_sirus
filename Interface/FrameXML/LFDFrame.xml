@@ -366,7 +366,7 @@
 						<Scripts>
 							<OnClick>
 								PlaySound("igCharacterInfoTab");
-								RejectProposal();
+								StaticPopup_Show("LFG_REJECT_PROPOSAL")
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -538,6 +538,7 @@
 			<OnHide>
 				self.closeIn = nil;
 				self:SetScript("OnUpdate", nil);
+				StaticPopup_Hide("LFG_REJECT_PROPOSAL")
 			</OnHide>
 		</Scripts>
 	</Frame>
@@ -1308,9 +1309,11 @@
 			<OnLoad>
 				Mixin(self, MiniGameReadyPopupMixin);
 			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
 			<OnHide>
-				self.inviteID = nil;
-				self.miniGameID = nil;
+				self:OnHide()
 			</OnHide>
 		</Scripts>
 	</Frame>
@@ -2395,7 +2398,7 @@
 						</Frames>
 						<Scripts>
 							<OnLoad>
-								RaiseFrameLevelByThree(self)
+								RaiseFrameLevelByTwo(self)
 							</OnLoad>
 							<OnShow>
 								UpdateMicroButtons();
@@ -2610,7 +2613,7 @@
 					<Frame name="MiniGamesFrame" toplevel="true" setAllPoints="true">
 						<Scripts>
 							<OnLoad>
-								RaiseFrameLevelByThree(self)
+								RaiseFrameLevelByTwo(self)
 							</OnLoad>
 							<OnShow>
 								UpdateMicroButtons();

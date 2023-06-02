@@ -7,6 +7,8 @@ E_TOAST_CATEGORY = Enum.CreateMirror({
 	AUCTION_HOUSE = 5,
 	CALL_OF_ADVENTURE = 6,
 	MISC = 7,
+	VOTE_KICK = 8,
+	BATTLE_PASS_QUEST = 9,
 })
 
 E_TOAST_DATA = {
@@ -14,10 +16,21 @@ E_TOAST_DATA = {
 	[E_TOAST_CATEGORY.FRIENDS]				= { sound = SOUNDKIT.UI_BNET_TOAST,				cvar = "C_CVAR_SOCIAL_TOAST_SOUND" },
 	[E_TOAST_CATEGORY.HEAD_HUNTING]			= { sound = "UI_PetBattles_InitiateBattle",		cvar = "C_CVAR_HEAD_HUNTING_TOAST_SOUND" },
 	[E_TOAST_CATEGORY.BATTLE_PASS]			= { sound = "UI_FightClub_Start",				cvar = "C_CVAR_BATTLE_PASS_TOAST_SOUND" },
+	[E_TOAST_CATEGORY.BATTLE_PASS_QUEST]	= { sound = "UI_FightClub_Start",				cvar = "C_CVAR_BATTLE_PASS_TOAST_SOUND" },
 	[E_TOAST_CATEGORY.QUEUE]				= { sound = "UI_GroupFinderReceiveApplication",	cvar = "C_CVAR_QUEUE_TOAST_SOUND" },
 	[E_TOAST_CATEGORY.AUCTION_HOUSE]		= { sound = "UI_DigsiteCompletion_Toast",		cvar = "C_CVAR_AUCTION_HOUSE_TOAST_SOUND" },
 	[E_TOAST_CATEGORY.CALL_OF_ADVENTURE]	= { sound = "UI_CallOfAdventure_Toast",			cvar = "C_CVAR_CALL_OF_ADVENTURE_TOAST_SOUND" },
 	[E_TOAST_CATEGORY.MISC]					= { sound = "UI_Misc_Toast",					cvar = "C_CVAR_MISC_TOAST_SOUND" },
+	[E_TOAST_CATEGORY.VOTE_KICK]			= { sound = "ReadyCheck",						forced = true, },
+}
+
+local CATEGORY_BLOCKING_CVARS = {
+	[E_TOAST_CATEGORY.FRIENDS]				= "C_CVAR_SHOW_SOCIAL_TOAST",
+	[E_TOAST_CATEGORY.BATTLE_PASS]			= "C_CVAR_SHOW_BATTLE_PASS_TOAST",
+	[E_TOAST_CATEGORY.BATTLE_PASS_QUEST]	= "C_CVAR_SHOW_BATTLE_PASS_TOAST",
+	[E_TOAST_CATEGORY.AUCTION_HOUSE]		= "C_CVAR_SHOW_AUCTION_HOUSE_TOAST",
+	[E_TOAST_CATEGORY.CALL_OF_ADVENTURE]	= "C_CVAR_SHOW_CALL_OF_ADVENTURE_TOAST",
+	[E_TOAST_CATEGORY.MISC]					= "C_CVAR_SHOW_MISC_TOAST",
 }
 
 DefaultAnimOutMixin = {}
@@ -87,8 +100,23 @@ function SocialToastMixin:OnClick(button)
 			ShowUIPanel(HeadHuntingFrame)
 		end
 	elseif self.categoryID == E_TOAST_CATEGORY.BATTLE_PASS then
-		if PVPQueueFrame.BattlePassToggleButton:IsEnabled() == 1 then
-			BattlePassFrame:Show()
+		if C_BattlePass.IsEnabled() then
+			BattlePassFrame:ShowPage(1)
+		end
+	elseif self.categoryID == E_TOAST_CATEGORY.BATTLE_PASS_QUEST then
+		if C_BattlePass.IsEnabled() then
+			BattlePassFrame:ShowPage(2)
+		end
+	elseif self.categoryID == E_TOAST_CATEGORY.VOTE_KICK then
+		local voteInProgress, didVote, myVote, targetName, totalVotes, bootVotes, timeLeft, reason = GetLFGBootProposal()
+		if voteInProgress and not didVote and targetName then
+			local inInstance, instanceType = IsInInstance()
+			local targetNameColored = GetClassColoredTextForUnit(targetName, targetName)
+			if instanceType == "pvp" then
+				if C_Service.IsBattlegroundKickEnabled() then
+					StaticPopup_Show("VOTE_BOOT_PLAYER_PVP", targetNameColored, reason, targetName)
+				end
+			end
 		end
 	end
 end
@@ -107,6 +135,7 @@ SocialToastSystemMixin = {}
 
 function SocialToastSystemMixin:OnLoad()
     self:RegisterEventListener()
+	self:RegisterCustomEvent("SHOW_TOAST")
 
     self.toastFrames = {}
     self.toastStorage = {}
@@ -118,6 +147,22 @@ function SocialToastSystemMixin:OnLoad()
     self.toastPool = CreateFramePool("Button", self, "SocialToastTemplate", ToastFrameReset)
 
     hooksecurefunc("FCF_SetButtonSide", function() self:UpdatePosition() end)
+end
+
+function SocialToastSystemMixin:OnEvent(event, ...)
+	if event == "SHOW_TOAST" then
+		local categoryID, toastID, iconSource, title, text = ...
+
+		if self:IsCategoryBlocked(categoryID) then
+			return
+		end
+
+		self:AddToast(categoryID, {
+			titleText	= title,
+			bodyText	= text,
+			iconSource	= self:GetIconSource(toastID, iconSource),
+		})
+	end
 end
 
 function SocialToastSystemMixin:OnShow()
@@ -185,8 +230,10 @@ function SocialToastSystemMixin:ShowToast(toastFrame)
 
     toastFrame.categoryID = categoryID
 
-	if C_CVar:GetValue("C_CVAR_PLAY_TOAST_SOUND") ~= "0" and E_TOAST_DATA[categoryID] then
-		if C_CVar:GetValue(E_TOAST_DATA[categoryID].cvar) ~= "0" then
+	if E_TOAST_DATA[categoryID] then
+		if E_TOAST_DATA[categoryID].forced
+		or (C_CVar:GetValue("C_CVAR_PLAY_TOAST_SOUND") ~= "0" and C_CVar:GetValue(E_TOAST_DATA[categoryID].cvar) ~= "0")
+		then
 			PlaySound(E_TOAST_DATA[categoryID].sound or E_TOAST_DATA[E_TOAST_CATEGORY.UNKNOWN].sound)
 		end
 	else
@@ -272,14 +319,6 @@ function SocialToastSystemMixin:ClearPosition()
     C_CVar:SetValue("C_CVAR_TOAST_POSITION", nil)
 end
 
-local TOAST_MESSAGE_DATA = {
-	TEXT_ID				= 1,
-	CATEGORY_ID			= 2,
-	FLAGS				= 3,
-	ICONSOURCE			= 4,
-	TITLE_PARAMS_COUNT	= 5,
-}
-
 local TOAST_FACTION_ICON = {
 	[19] = true,
 }
@@ -357,75 +396,81 @@ local TOAST_TEXT_ID = {
 	[52] = 28, [53] = 29, [54] = 30,
 }
 
-function SocialToastSystemMixin:ASMSG_TOAST( msg )
-    local toastData = C_Split(msg, "|")
+function SocialToastSystemMixin:IsCategoryBlocked(categoryID)
+	if C_CVar:GetValue("C_CVAR_SHOW_TOASTS") ~= "1"
+	or (CATEGORY_BLOCKING_CVARS[categoryID] and C_CVar:GetValue(CATEGORY_BLOCKING_CVARS[categoryID]) ~= "1")
+	then
+		return true
+	end
+	return false
+end
 
-	local toastID			= tonumber(table.remove(toastData, 1))
-    local categoryID        = tonumber(table.remove(toastData, 1))
-    local flags             = tonumber(table.remove(toastData, 1))
-    local iconSource        = table.remove(toastData, 1)
-    local titleParamsCount  = tonumber(table.remove(toastData, 1))
-
-    if flags ~= 1 then
-		if C_CVar:GetValue("C_CVAR_SHOW_TOASTS") ~= "1" then
-			return
-		elseif categoryID == E_TOAST_CATEGORY.FRIENDS then
-            if C_CVar:GetValue("C_CVAR_SHOW_SOCIAL_TOAST") ~= "1" then
-                return
-            end
-        elseif categoryID == E_TOAST_CATEGORY.BATTLE_PASS then
-            if C_CVar:GetValue("C_CVAR_SHOW_BATTLE_PASS_TOAST") ~= "1" then
-                return
-            end
-        elseif categoryID == E_TOAST_CATEGORY.AUCTION_HOUSE then
-            if C_CVar:GetValue("C_CVAR_SHOW_AUCTION_HOUSE_TOAST") ~= "1" then
-                return
-            end
-		elseif categoryID == E_TOAST_CATEGORY.CALL_OF_ADVENTURE then
-			if C_CVar:GetValue("C_CVAR_SHOW_CALL_OF_ADVENTURE_TOAST") ~= "1" then
-				return
-			end
-		elseif categoryID == E_TOAST_CATEGORY.MISC then
-			if C_CVar:GetValue("C_CVAR_SHOW_MISC_TOAST") ~= "1" then
-				return
-			end
-        end
-    end
-
+function SocialToastSystemMixin:GetIconSource(toastID, iconSource)
 	local iconID = TOAST_ICON_ID[toastID] or toastID
-	local typeID = TOAST_TITLE_ID[toastID] or toastID
-	local textID = TOAST_TEXT_ID[toastID] or toastID
-
 	if iconSource == "0" then
 		if TOAST_TYPE_ICONS[iconID] then
 			if TOAST_FACTION_ICON[iconID] then
-				iconSource = strconcat(TOAST_TYPE_ICONS[iconID], (UnitFactionGroup("player")))
+				return strconcat(TOAST_TYPE_ICONS[iconID], (UnitFactionGroup("player")))
 			else
-				iconSource = TOAST_TYPE_ICONS[iconID]
+				return TOAST_TYPE_ICONS[iconID]
 			end
 		else
-			iconSource = "INV_Misc_QuestionMark"
+			return "INV_Misc_QuestionMark"
+		end
+	end
+	return iconSource
+end
+
+function SocialToastSystemMixin:GetTitleText(toastID, ...)
+	local titleID = TOAST_TITLE_ID[toastID] or toastID
+	if select("#", ...) > 0 then
+		return string.format(_G["TOAST_TITLE_"..titleID] or "%s", ...)
+	end
+	return _G["TOAST_TITLE_"..titleID]
+end
+
+function SocialToastSystemMixin:GetBodyText(toastID, ...)
+	local textID = TOAST_TEXT_ID[toastID] or toastID
+	if select("#", ...) > 0 then
+		return string.format(_G["TOAST_BODY_"..textID] or "%s", ...)
+	end
+	return _G["TOAST_BODY_"..textID]
+end
+
+function SocialToastSystemMixin:ASMSG_TOAST(msg)
+	local toastID, categoryID, flags, iconSource, numTitleParams, textParams = string.split("|", (msg:gsub("|$", "")), 6)
+
+	categoryID = tonumber(categoryID)
+	flags = tonumber(flags)
+
+	if flags ~= 1 and self:IsCategoryBlocked(categoryID) then
+		return
+	end
+
+	toastID = tonumber(toastID)
+	numTitleParams = tonumber(numTitleParams) or 0
+
+	local titleID = TOAST_TITLE_ID[toastID] or toastID
+	local textID = TOAST_TEXT_ID[toastID] or toastID
+
+	local titleText, bodyText
+	if textParams and #textParams > 0 then
+		local textParamList = {string.split("|", textParams)}
+		local numTextParams = #textParamList - numTitleParams
+
+		if numTitleParams > 0 then
+			titleText = string.format(_G["TOAST_TITLE_"..titleID] or "%s", unpack(textParamList, 1, numTitleParams))
+		end
+		if numTextParams > 0 then
+			bodyText = string.format(_G["TOAST_BODY_"..textID] or "%s", unpack(textParamList, numTitleParams + 1, #textParamList))
 		end
 	end
 
-    local titleTextParams = {}
-
-    for i = 1, titleParamsCount do
-        table.insert(titleTextParams, toastData[i])
-    end
-
-    local bodyTextParams = {}
-
-    for i = titleParamsCount + 1, #toastData do
-        table.insert(bodyTextParams, toastData[i])
-    end
-
-    self:AddToast(categoryID, {
-        titleText   = #titleTextParams > 0 and string.format(_G["TOAST_TITLE_"..typeID] or "%s", unpack(titleTextParams)) or _G["TOAST_TITLE_"..typeID],
-        bodyText    = #bodyTextParams > 0 and string.format(_G["TOAST_BODY_"..textID] or "%s", unpack(bodyTextParams)) or _G["TOAST_BODY_"..textID],
-        iconSource  = iconSource,
-        flags       = flags
-    })
+	self:AddToast(categoryID, {
+		titleText	= titleText or _G["TOAST_TITLE_"..titleID] or "",
+		bodyText	= bodyText or _G["TOAST_BODY_"..textID] or "",
+		iconSource	= self:GetIconSource(toastID, iconSource),
+	})
 end
 
 SocialToastMoveFrameMixin = {}

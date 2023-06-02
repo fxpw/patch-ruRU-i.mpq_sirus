@@ -16,6 +16,12 @@ PULSEBUTTONS = {};
 -- Shine animation
 SHINES_TO_ANIMATE = {};
 
+-- UIPanel Management constants
+UIPANEL_SKIP_SET_POINT = true;
+
+local CHECK_FIT_DEFAULT_EXTRA_WIDTH = 20;
+local CHECK_FIT_DEFAULT_EXTRA_HEIGHT = 20;
+
 -- Per panel settings
 UIPanelWindows = {};
 UIPanelWindows["GameMenuFrame"] =		{ area = "center",	pushable = 0,	whileDead = 1 };
@@ -57,8 +63,9 @@ UIPanelWindows["ChatConfigFrame"] =		{ area = "center",	pushable = 0,	whileDead 
 UIPanelWindows["PVPParentFrame"] =			{ area = "left",	pushable = 0,	whileDead = 1 };
 UIPanelWindows["StoreFrame"] = 			{ area = "center", pushable = 0, whileDead = 1, allowOtherPanels = 1}
 UIPanelWindows["PromoCodeFrame"] =		{ area = "center",	pushable = 0,	whileDead = 1 }
+UIPanelWindows["BattlePassFrame"] =	{ area = "center",	pushable = 0,	whileDead = 1, checkFit = 1, checkFitExtraWidth = 360, checkFitExtraHeight = 170 }
 
-local function GetUIPanelWindowInfo(frame, name)
+local function GetUIPanelAttribute(frame, name)
 	if ( not frame:GetAttribute("UIPanelLayout-defined") ) then
 		local info = UIPanelWindows[frame:GetName()];
 		if ( not info ) then
@@ -154,8 +161,8 @@ function UIParent_OnLoad(self)
 	self:RegisterEvent("AREA_SPIRIT_HEALER_IN_RANGE");
 	self:RegisterEvent("AREA_SPIRIT_HEALER_OUT_OF_RANGE");
 	self:RegisterEvent("BIND_ENCHANT");
-	self:RegisterEvent("REPLACE_ENCHANT");
-	self:RegisterEvent("TRADE_REPLACE_ENCHANT");
+	self:RegisterCustomEvent("CUSTOM_REPLACE_ENCHANT");
+	self:RegisterCustomEvent("CUSTOM_TRADE_REPLACE_ENCHANT");
 	self:RegisterEvent("END_REFUND");
 	self:RegisterEvent("END_BOUND_TRADEABLE");
 	self:RegisterEvent("CURRENT_SPELL_CAST_CHANGED");
@@ -242,6 +249,26 @@ function UIParent_OnLoad(self)
 	self:RegisterEvent("ADDON_LOADED")
 end
 
+function UIParent_OnShow(self)
+	if ( self.firstTimeLoaded ~= 1 ) then
+		CloseAllWindows();
+		self.firstTimeLoaded = nil;
+	end
+
+	if ( LowHealthFrame ) then
+		LowHealthFrame:EvaluateVisibleState();
+	end
+
+	if TimerTrackerTimer1 and not TimerTrackerTimer1:IsShown() then
+		TimerTracker_ReadyStatusButton:Toggle(false)
+	end
+end
+
+function UIParent_OnHide(self)
+	if ( LowHealthFrame ) then
+		LowHealthFrame:EvaluateVisibleState();
+	end
+end
 
 -- Addons --
 
@@ -529,7 +556,7 @@ function ToggleHelpFrame()
 end
 
 function InspectUnit(unit)
-	InspectFrame_LoadUI()
+	InspectFrame_LoadUI();
 	if ( InspectFrame_Show ) then
 		SendAddonMessage("ACMSG_INSPECT_TRANSMOGRIFICATION_REQUEST", UnitGUID(unit), "WHISPER", UnitName("player"))
 		InspectFrame_Show(unit);
@@ -655,6 +682,7 @@ function UIParent_OnEvent(self, event, ...)
 			dialog.data = arg1;
 		end
 	elseif ( event == "PARTY_INVITE_REQUEST" ) then
+		FlashClientIcon();
 		StaticPopup_Show("PARTY_INVITE", arg1);
 	elseif ( event == "PARTY_INVITE_CANCEL" ) then
 		StaticPopup_Hide("PARTY_INVITE");
@@ -792,6 +820,8 @@ function UIParent_OnEvent(self, event, ...)
 		if resurrectOfferer then
 			ShowResurrectRequest(resurrectOfferer);
 		end
+
+		FlashClientIcon();
 	elseif ( event == "RAID_ROSTER_UPDATE" ) then
 		-- Hide/Show party member frames
 		RaidOptionsFrame_UpdatePartyFrames();
@@ -847,9 +877,9 @@ function UIParent_OnEvent(self, event, ...)
 		StaticPopup_Hide("AREA_SPIRIT_HEAL");
 	elseif ( event == "BIND_ENCHANT" ) then
 		StaticPopup_Show("BIND_ENCHANT");
-	elseif ( event == "REPLACE_ENCHANT" ) then
+	elseif ( event == "CUSTOM_REPLACE_ENCHANT" ) then
 		StaticPopup_Show("REPLACE_ENCHANT", arg1, arg2);
-	elseif ( event == "TRADE_REPLACE_ENCHANT" ) then
+	elseif ( event == "CUSTOM_TRADE_REPLACE_ENCHANT" ) then
 		StaticPopup_Show("TRADE_REPLACE_ENCHANT", arg1, arg2);
 	elseif ( event == "END_REFUND" ) then
 		local dialog = StaticPopup_Show("END_REFUND");
@@ -1545,14 +1575,14 @@ FramePositionDelegate:SetScript("OnAttributeChanged", FramePositionDelegate_OnAt
 
 function FramePositionDelegate:ShowUIPanel(frame, force)
 	local frameArea, framePushable;
-	frameArea = GetUIPanelWindowInfo(frame, "area");
+	frameArea = GetUIPanelAttribute(frame, "area");
 	if ( not CanOpenPanels() and frameArea ~= "center" and frameArea ~= "full" ) then
 		self:ShowUIPanelFailed(frame);
 		return;
 	end
-	framePushable = GetUIPanelWindowInfo(frame, "pushable") or 0;
+	framePushable = GetUIPanelAttribute(frame, "pushable") or 0;
 
-	if ( UnitIsDead("player") and not GetUIPanelWindowInfo(frame, "whileDead") ) then
+	if ( UnitIsDead("player") and not GetUIPanelAttribute(frame, "whileDead") ) then
 		NotWhileDeadError();
 		return;
 	end
@@ -1567,15 +1597,19 @@ function FramePositionDelegate:ShowUIPanel(frame, force)
 		end
 	end
 
+	if ( GetUIPanelAttribute(frame, "checkFit") == 1 ) then
+		self:UpdateScaleForFit(frame);
+	end
+
 	-- If we have a "center" frame open, only listen to other "center" open requests
 	local centerFrame = self:GetUIPanel("center");
 	local centerArea, centerPushable;
 	if ( centerFrame ) then
-		if ( GetUIPanelWindowInfo(centerFrame, "allowOtherPanels") ) then
+		if ( GetUIPanelAttribute(centerFrame, "allowOtherPanels") ) then
 			HideUIPanel(centerFrame);
 			centerFrame = nil;
 		else
-			centerArea = GetUIPanelWindowInfo(centerFrame, "area");
+			centerArea = GetUIPanelAttribute(centerFrame, "area");
 			if ( centerArea and (centerArea == "center") and (frameArea ~= "center") and (frameArea ~= "full") ) then
 				if ( force ) then
 					self:SetUIPanel("center", nil, 1);
@@ -1584,7 +1618,7 @@ function FramePositionDelegate:ShowUIPanel(frame, force)
 					return;
 				end
 			end
-			centerPushable = GetUIPanelWindowInfo(centerFrame, "pushable") or 0;
+			centerPushable = GetUIPanelAttribute(centerFrame, "pushable") or 0;
 		end
 	end
 
@@ -1598,7 +1632,7 @@ function FramePositionDelegate:ShowUIPanel(frame, force)
 	-- Native "center" frames just replace each other, and they take priority over pushed frames
 	if ( frameArea == "center" ) then
 		securecall("CloseWindows");
-		if ( not GetUIPanelWindowInfo(frame, "allowOtherPanels") ) then
+		if ( not GetUIPanelAttribute(frame, "allowOtherPanels") ) then
 			securecall("CloseAllBags");
 		end
 		self:SetUIPanel("center", frame, 1);
@@ -1609,12 +1643,12 @@ function FramePositionDelegate:ShowUIPanel(frame, force)
 	if ( frameArea == "doublewide" ) then
 		local leftFrame = self:GetUIPanel("left");
 		if ( leftFrame ) then
-			local leftPushable = GetUIPanelWindowInfo(leftFrame, "pushable") or 0;
+			local leftPushable = GetUIPanelAttribute(leftFrame, "pushable") or 0;
 			if ( leftPushable > 0 and CanShowRightUIPanel(leftFrame) ) then
 				-- Push left to right
-				self:MoveUIPanel("left", "right", 1);
+				self:MoveUIPanel("left", "right", UIPANEL_SKIP_SET_POINT);
 			elseif ( centerFrame and CanShowRightUIPanel(centerFrame) ) then
-				self:MoveUIPanel("center", "right", 1);
+				self:MoveUIPanel("center", "right", UIPANEL_SKIP_SET_POINT);
 			end
 		end
 		self:SetUIPanel("doublewide", frame);
@@ -1643,7 +1677,7 @@ function FramePositionDelegate:ShowUIPanel(frame, force)
 		self:SetUIPanel("left", frame);
 		return;
 	end
-	local leftPushable = GetUIPanelWindowInfo(leftFrame, "pushable") or 0;
+	local leftPushable = GetUIPanelAttribute(leftFrame, "pushable") or 0;
 
 	-- Two open already
 	local rightFrame = self:GetUIPanel("right");
@@ -1659,7 +1693,7 @@ function FramePositionDelegate:ShowUIPanel(frame, force)
 			if ( centerArea == "center" ) then
 				if ( CanShowRightUIPanel(leftFrame) ) then
 					-- Skip center
-					self:MoveUIPanel("left", "right", 1);
+					self:MoveUIPanel("left", "right", UIPANEL_SKIP_SET_POINT);
 					self:SetUIPanel("left", frame);
 				else
 					-- Replace left
@@ -1668,8 +1702,8 @@ function FramePositionDelegate:ShowUIPanel(frame, force)
 			else
 				if ( CanShowUIPanels(frame, leftFrame, centerFrame) ) then
 					-- Shift both
-					self:MoveUIPanel("center", "right", 1);
-					self:MoveUIPanel("left", "center", 1);
+					self:MoveUIPanel("center", "right", UIPANEL_SKIP_SET_POINT);
+					self:MoveUIPanel("left", "center", UIPANEL_SKIP_SET_POINT);
 					self:SetUIPanel("left", frame);
 				else
 					-- Replace left
@@ -1678,7 +1712,7 @@ function FramePositionDelegate:ShowUIPanel(frame, force)
 			end
 		elseif ( framePushable <= centerPushable and centerArea ~= "center" and CanShowUIPanels(leftFrame, frame, centerFrame) ) then
 			-- Push center
-			self:MoveUIPanel("center", "right", 1);
+			self:MoveUIPanel("center", "right", UIPANEL_SKIP_SET_POINT);
 			self:SetUIPanel("center", frame);
 		elseif ( framePushable <= centerPushable and centerArea ~= "center" ) then
 			-- Replace left
@@ -1701,7 +1735,7 @@ function FramePositionDelegate:ShowUIPanel(frame, force)
 
 		-- Highest priority goes to center
 		if ( leftPushable > framePushable ) then
-			self:MoveUIPanel("left", "center", 1);
+			self:MoveUIPanel("left", "center", UIPANEL_SKIP_SET_POINT);
 			self:SetUIPanel("left", frame);
 		else
 			self:SetUIPanel("center", frame);
@@ -1711,20 +1745,20 @@ function FramePositionDelegate:ShowUIPanel(frame, force)
 	end
 
 	-- Three are shown
-	local rightPushable = GetUIPanelWindowInfo(rightFrame, "pushable") or 0;
+	local rightPushable = GetUIPanelAttribute(rightFrame, "pushable") or 0;
 	if ( framePushable > rightPushable ) then
 		-- This one is highest priority, slide the other two over
 		if ( CanShowUIPanels(centerFrame, rightFrame, frame) ) then
-			self:MoveUIPanel("center", "left", 1);
-			self:MoveUIPanel("right", "center", 1);
+			self:MoveUIPanel("center", "left", UIPANEL_SKIP_SET_POINT);
+			self:MoveUIPanel("right", "center", UIPANEL_SKIP_SET_POINT);
 			self:SetUIPanel("right", frame);
 		else
-			self:MoveUIPanel("right", "left", 1);
+			self:MoveUIPanel("right", "left", UIPANEL_SKIP_SET_POINT);
 			self:SetUIPanel("center", frame);
 		end
 	elseif ( framePushable > centerPushable ) then
 		-- This one is middle priority, so move the center frame to the left
-		self:MoveUIPanel("center", "left", 1);
+		self:MoveUIPanel("center", "left", UIPANEL_SKIP_SET_POINT);
 		self:SetUIPanel("center", frame);
 	else
 		self:SetUIPanel("left", frame);
@@ -1732,7 +1766,7 @@ function FramePositionDelegate:ShowUIPanel(frame, force)
 end
 
 function FramePositionDelegate:ShowUIPanelFailed(frame)
-	local showFailedFunc = _G[GetUIPanelWindowInfo(frame, "showFailedFunc")];
+	local showFailedFunc = _G[GetUIPanelAttribute(frame, "showFailedFunc")];
 	if ( showFailedFunc ) then
 		showFailedFunc(frame);
 	end
@@ -1842,7 +1876,7 @@ function FramePositionDelegate:HideUIPanel(frame, skipSetPoint)
 	elseif ( frame == self:GetUIPanel("left") ) then
 		-- If we're hiding the left frame, move the other frames left, unless the center is a native center frame
 		if ( centerFrame ) then
-			local area = GetUIPanelWindowInfo(centerFrame, "area");
+			local area = GetUIPanelAttribute(centerFrame, "area");
 			if ( area ) then
 				if ( area == "center" ) then
 					-- Slide left, skip the center
@@ -1850,7 +1884,7 @@ function FramePositionDelegate:HideUIPanel(frame, skipSetPoint)
 					return;
 				else
 					-- Slide everything left
-					self:MoveUIPanel("center", "left", 1);
+					self:MoveUIPanel("center", "left", UIPANEL_SKIP_SET_POINT);
 					self:MoveUIPanel("right", "center", skipSetPoint);
 					return;
 				end
@@ -1883,8 +1917,8 @@ function FramePositionDelegate:UpdateUIPanelPositions(currentFrame)
 
 	local frame = self:GetUIPanel("left");
 	if ( frame ) then
-		local xOff = GetUIPanelWindowInfo(frame,"xoffset") or 0;
-		local yOff = GetUIPanelWindowInfo(frame,"yoffset") or 0;
+		local xOff = GetUIPanelAttribute(frame,"xoffset") or 0;
+		local yOff = GetUIPanelAttribute(frame,"yoffset") or 0;
 		frame:ClearAllPoints();
 		frame:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", leftOffset + xOff, topOffset + yOff);
 		centerOffset = leftOffset + GetUIPanelWidth(frame) + xOff;
@@ -1901,8 +1935,8 @@ function FramePositionDelegate:UpdateUIPanelPositions(currentFrame)
 
 		frame = self:GetUIPanel("doublewide");
 		if ( frame ) then
-			local xOff = GetUIPanelWindowInfo(frame,"xoffset") or 0;
-			local yOff = GetUIPanelWindowInfo(frame,"yoffset") or 0;
+			local xOff = GetUIPanelAttribute(frame,"xoffset") or 0;
+			local yOff = GetUIPanelAttribute(frame,"yoffset") or 0;
 			frame:ClearAllPoints();
 			frame:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", leftOffset + xOff, topOffset + yOff);
 			rightOffset = leftOffset + GetUIPanelWidth(frame) + xOff;
@@ -1914,9 +1948,9 @@ function FramePositionDelegate:UpdateUIPanelPositions(currentFrame)
 	frame = self:GetUIPanel("center");
 	if ( frame ) then
 		if ( CanShowCenterUIPanel(frame) ) then
-			local area = GetUIPanelWindowInfo(frame, "area");
-			local xOff = GetUIPanelWindowInfo(frame,"xoffset") or 0;
-			local yOff = GetUIPanelWindowInfo(frame,"yoffset") or 0;
+			local area = GetUIPanelAttribute(frame, "area");
+			local xOff = GetUIPanelAttribute(frame,"xoffset") or 0;
+			local yOff = GetUIPanelAttribute(frame,"yoffset") or 0;
 			if ( area ~= "center" ) then
 				frame:ClearAllPoints();
 				frame:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", centerOffset + xOff, topOffset + yOff);
@@ -1935,7 +1969,9 @@ function FramePositionDelegate:UpdateUIPanelPositions(currentFrame)
 			self:SetUIPanel("center", nil, 1);
 			rightOffset = centerOffset + UIParent:GetAttribute("DEFAULT_FRAME_WIDTH");
 		end
-		frame:Raise();
+		if ( frame ) then
+			frame:Raise();
+		end
 	elseif ( not self:GetUIPanel("doublewide") ) then
 		if ( self:GetUIPanel("left") ) then
 			rightOffset = centerOffset + UIParent:GetAttribute("DEFAULT_FRAME_WIDTH");
@@ -1948,8 +1984,8 @@ function FramePositionDelegate:UpdateUIPanelPositions(currentFrame)
 	frame = self:GetUIPanel("right");
 	if ( frame ) then
 		if ( CanShowRightUIPanel(frame) ) then
-			local xOff = GetUIPanelWindowInfo(frame,"xoffset") or 0;
-			local yOff = GetUIPanelWindowInfo(frame,"yoffset") or 0;
+			local xOff = GetUIPanelAttribute(frame,"xoffset") or 0;
+			local yOff = GetUIPanelAttribute(frame,"yoffset") or 0;
 			frame:ClearAllPoints();
 			frame:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", rightOffset  + xOff, topOffset + yOff);
 		else
@@ -1964,10 +2000,20 @@ function FramePositionDelegate:UpdateUIPanelPositions(currentFrame)
 			end
 			self:SetUIPanel("right", nil, 1);
 		end
-		frame:Raise();
+		if ( frame ) then
+			frame:Raise();
+		end
+	end
+
+	if ( currentFrame and GetUIPanelAttribute(currentFrame, "checkFit") == 1 ) then
+		self:UpdateScaleForFit(currentFrame);
 	end
 
 	self.updatingPanels = nil;
+end
+
+function FramePositionDelegate:UpdateScaleForFit(frame)
+	UpdateScaleForFit(frame, GetUIPanelAttribute(frame, "checkFitExtraWidth") or CHECK_FIT_DEFAULT_EXTRA_WIDTH, GetUIPanelAttribute(frame, "checkFitExtraHeight") or CHECK_FIT_DEFAULT_EXTRA_HEIGHT);
 end
 
 function FramePositionDelegate:UIParentManageFramePositions()
@@ -2204,7 +2250,7 @@ function ShowUIPanel(frame, force)
 		return;
 	end
 
-	if ( not GetUIPanelWindowInfo(frame, "area") ) then
+	if ( not GetUIPanelAttribute(frame, "area") ) then
 		frame:Show();
 		return;
 	end
@@ -2220,7 +2266,7 @@ function HideUIPanel(frame, skipSetPoint)
 		return;
 	end
 
-	if ( not GetUIPanelWindowInfo(frame, "area") ) then
+	if ( not GetUIPanelAttribute(frame, "area") ) then
 		frame:Hide();
 		return;
 	end
@@ -2231,30 +2277,47 @@ function HideUIPanel(frame, skipSetPoint)
 	FramePositionDelegate:SetAttribute("panel-hide", true);
 end
 
+function SetUIPanelShown(frame, shown, force)
+	if ( shown ) then
+		ShowUIPanel(frame, force);
+	else
+		HideUIPanel(frame, force);
+	end
+end
+
 function GetUIPanel(key)
 	return FramePositionDelegate:GetUIPanel(key);
 end
 
-function GetUIPanelWidth(frame)
-	return GetUIPanelWindowInfo(frame, "width") or frame:GetWidth();
+function GetUIPanelWidth(frame, extraWidth)
+	extraWidth = extraWidth or 0;
+
+	return (GetUIPanelAttribute(frame, "width") or frame:GetWidth()) * frame:GetScale() + (((GetUIPanelAttribute(frame, "extraWidth") or 0) + extraWidth) * frame:GetEffectiveScale());
+end
+
+function GetUIPanelHeight(frame, extraHeight)
+	extraHeight = extraHeight or 0;
+
+	return (GetUIPanelAttribute(frame, "height") or frame:GetHeight()) * frame:GetScale() + (((GetUIPanelAttribute(frame, "extraHeight") or 0) + extraHeight) * frame:GetEffectiveScale());
 end
 
 function GetMaxUIPanelsWidth()
-	-- local bufferBoundry = UIParent:GetRight() - UIParent:GetAttribute("RIGHT_OFFSET_BUFFER");
-	-- if ( Minimap:IsShown() and not MinimapCluster:IsUserPlaced() ) then
-	-- 	-- If the Minimap is in the default place, make sure you wont overlap it either
-	-- 	return min(MinimapCluster:GetLeft(), bufferBoundry);
-	-- else
-	-- 	-- If the minimap has been moved, make sure not to overlap the right side bars
-	-- 	return bufferBoundry;
-	-- end
-	return UIParent:GetRight() - UIParent:GetAttribute("RIGHT_OFFSET_BUFFER")
+--[[	local bufferBoundry = UIParent:GetRight() - UIParent:GetAttribute("RIGHT_OFFSET_BUFFER");
+	if ( Minimap:IsShown() and not MinimapCluster:IsUserPlaced() ) then
+		-- If the Minimap is in the default place, make sure you wont overlap it either
+		return min(MinimapCluster:GetLeft(), bufferBoundry);
+	else
+		-- If the minimap has been moved, make sure not to overlap the right side bars
+		return bufferBoundry;
+	end
+]]
+	return UIParent:GetRight() - UIParent:GetAttribute("RIGHT_OFFSET_BUFFER");
 end
 
 function CanShowRightUIPanel(frame)
-	local width = frame and GetUIPanelWidth(frame) or UIParent:GetAttribute("DEFAULT_FRAME_WIDTH")
-	local rightSide = UIParent:GetAttribute("RIGHT_OFFSET") + width
-	return rightSide < GetMaxUIPanelsWidth()
+	local width = frame and GetUIPanelWidth(frame) or UIParent:GetAttribute("DEFAULT_FRAME_WIDTH");
+	local rightSide = UIParent:GetAttribute("RIGHT_OFFSET") + width;
+	return rightSide <= GetMaxUIPanelsWidth();
 end
 
 function CanShowCenterUIPanel(frame)
@@ -2269,9 +2332,9 @@ function CanShowUIPanels(leftFrame, centerFrame, rightFrame)
 	if ( leftFrame ) then
 		offset = offset + GetUIPanelWidth(leftFrame);
 		if ( centerFrame ) then
-			local area = GetUIPanelWindowInfo(centerFrame, "area");
+			local area = GetUIPanelAttribute(centerFrame, "area");
 			if ( area ~= "center" ) then
-				offset = offset + ( GetUIPanelWindowInfo(centerFrame, "width") or UIParent:GetAttribute("DEFAULT_FRAME_WIDTH") );
+				offset = offset + ( GetUIPanelAttribute(centerFrame, "width") or UIParent:GetAttribute("DEFAULT_FRAME_WIDTH") );
 			else
 				offset = offset + GetUIPanelWidth(centerFrame);
 			end
@@ -2305,9 +2368,9 @@ function CanOpenPanels()
 		return 1;
 	end
 
-	local area = GetUIPanelWindowInfo(centerFrame, "area");
-	local allowOtherPanels = GetUIPanelWindowInfo(centerFrame, "allowOtherPanels");
-	local allowOtherPanelsNoHide = GetUIPanelWindowInfo(centerFrame, "allowOtherPanelsNoHide")
+	local area = GetUIPanelAttribute(centerFrame, "area");
+	local allowOtherPanels = GetUIPanelAttribute(centerFrame, "allowOtherPanels");
+	local allowOtherPanelsNoHide = GetUIPanelAttribute(centerFrame, "allowOtherPanelsNoHide")
 	if ( area and (area == "center") and not allowOtherPanels and not allowOtherPanelsNoHide ) then
 		return nil;
 	end
@@ -2319,7 +2382,7 @@ end
 -- should always be called from secure code using securecall()
 function CloseChildWindows()
 	local childWindow;
-	for _ , value in pairs(UIChildWindows) do
+	for index, value in pairs(UIChildWindows) do
 		childWindow = _G[value];
 		if ( childWindow ) then
 			childWindow:Hide();
@@ -2331,7 +2394,7 @@ end
 -- should always be called from secure code using securecall()
 function CloseSpecialWindows()
 	local found;
-	for _ , value in pairs(UISpecialFrames) do
+	for index, value in pairs(UISpecialFrames) do
 		local frame = _G[value];
 		if ( frame and frame:IsShown() ) then
 			frame:Hide();
@@ -2351,24 +2414,24 @@ function CloseWindows(ignoreCenter, frameToIgnore)
 	local found = leftFrame or centerFrame or rightFrame or doublewideFrame or fullScreenFrame;
 
 	if ( not frameToIgnore or frameToIgnore ~= leftFrame ) then
-		HideUIPanel(leftFrame, 1);
+		HideUIPanel(leftFrame, UIPANEL_SKIP_SET_POINT);
 	end
 
-	HideUIPanel(fullScreenFrame, 1);
-	HideUIPanel(doublewideFrame, 1);
+	HideUIPanel(fullScreenFrame, UIPANEL_SKIP_SET_POINT);
+	HideUIPanel(doublewideFrame, UIPANEL_SKIP_SET_POINT);
 
 	if ( not frameToIgnore or frameToIgnore ~= centerFrame ) then
 		if ( centerFrame ) then
-			local area = GetUIPanelWindowInfo(centerFrame, "area");
+			local area = GetUIPanelAttribute(centerFrame, "area");
 			if ( area ~= "center" or not ignoreCenter ) then
-				HideUIPanel(centerFrame, 1);
+				HideUIPanel(centerFrame, UIPANEL_SKIP_SET_POINT);
 			end
 		end
 	end
 
 	if ( not frameToIgnore or frameToIgnore ~= rightFrame ) then
 		if ( rightFrame ) then
-			HideUIPanel(rightFrame, 1);
+			HideUIPanel(rightFrame, UIPANEL_SKIP_SET_POINT);
 		end
 	end
 
@@ -2409,7 +2472,7 @@ end
 function CloseMenus()
 	local menusVisible;
 	local menu
-	for _ , value in pairs(UIMenus) do
+	for index, value in pairs(UIMenus) do
 		menu = _G[value];
 		if ( menu and menu:IsShown() ) then
 			menu:Hide();
@@ -2918,6 +2981,12 @@ function BuildMultilineTooltip(globalStringName, tooltip, r, g, b)
 	end
 end
 
+function GetScaledCursorPosition()
+	local uiScale = UIParent:GetEffectiveScale();
+	local x, y = GetCursorPosition();
+	return x / uiScale, y / uiScale;
+end
+
 function MouseIsOver(region, topOffset, bottomOffset, leftOffset, rightOffset)
 	return region:IsMouseOver(topOffset, bottomOffset, leftOffset, rightOffset);
 end
@@ -3033,7 +3102,7 @@ function ToggleGameMenu()
 		PlaySound("igMainMenuQuit");
 		HideUIPanel(GameMenuFrame);
 	elseif ( HelpFrame:IsShown() ) then
-		ToggleHelpFrame()
+		ToggleHelpFrame();
 	elseif ( VideoOptionsFrame:IsShown() ) then
 		VideoOptionsFrameCancel:Click();
 	elseif ( AudioOptionsFrame:IsShown() ) then
@@ -3417,10 +3486,6 @@ end
 function RaiseFrameLevelByTwo(frame)
 	-- We do this enough that it saves closures.
 	frame:SetFrameLevel(frame:GetFrameLevel() + 2);
-end
-
-function RaiseFrameLevelByThree(frame)
-	frame:SetFrameLevel(frame:GetFrameLevel() + 2)
 end
 
 function ShowResurrectRequest(offerer)

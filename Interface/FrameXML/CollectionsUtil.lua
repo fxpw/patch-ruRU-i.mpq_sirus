@@ -116,6 +116,24 @@ function CollectionWardrobeUtil.GetSlotFromCategoryID(categoryID, subCategoryID)
 	return slot;
 end
 
+function CollectionWardrobeUtil.HasWeaponEnchant(transmogLocation)
+	if transmogLocation:IsAppearance() and (transmogLocation:IsMainHand() or transmogLocation:IsOffHand()) then
+		local illusionTransmogLocation;
+		if transmogLocation:IsMainHand() then
+			illusionTransmogLocation = TransmogUtil.GetTransmogLocation("MAINHANDSLOT", Enum.TransmogType.Illusion, Enum.TransmogModification.Main);
+		elseif transmogLocation:IsOffHand() then
+			illusionTransmogLocation = TransmogUtil.GetTransmogLocation("SECONDARYHANDSLOT", Enum.TransmogType.Illusion, Enum.TransmogModification.Main);
+		end
+		if illusionTransmogLocation then
+			local _, _, selectedIllusionID = TransmogUtil.GetInfoForEquippedSlot(illusionTransmogLocation);
+			if selectedIllusionID ~= NO_TRANSMOG_VISUAL_ID then
+				return true;
+			end
+		end
+	end
+	return false;
+end
+
 function CollectionWardrobeUtil.GetValidIndexForNumSources(index, numSources)
 	index = index - 1;
 	if index < 0 then
@@ -154,6 +172,64 @@ function CollectionWardrobeUtil.GetAppearanceSourceTextAndColor(appearanceInfo)
 	return text, color;
 end
 
+function CollectionWardrobeUtil.GetIllusionNameTextAndColor(sourceID)
+	local name, _, quality = C_TransmogCollection.GetIllusionStrings(sourceID);
+
+	local text, color;
+	if name and name ~= "" then
+		text = name;
+		color = ITEM_QUALITY_COLORS[quality or 1].color;
+	else
+		text = RETRIEVING_ITEM_INFO;
+		color = RED_FONT_COLOR;
+	end
+
+	return text, color;
+end
+
+function CollectionWardrobeUtil.GetIllusionSourceTextAndColor(illsionInfo)
+	local text, color;
+	if illsionInfo.isCollected then
+		text = TRANSMOG_COLLECTED;
+		color = GREEN_FONT_COLOR;
+	else
+		text = "";
+
+		if illsionInfo.descriptionText ~= "" then
+			text = strconcat(text, illsionInfo.descriptionText);
+		end
+
+		local addNewLine = true;
+		if illsionInfo.holidayText ~= "" then
+			addNewLine = false;
+			text = strconcat(text or "", "\n");
+			text = strconcat(text, illsionInfo.holidayText);
+		end
+
+		if illsionInfo.priceText ~= "" then
+			if addNewLine then
+				text = strconcat(text or "", "\n");
+			end
+
+			local priceText;
+			if illsionInfo.factionSide == 1 then
+				priceText = illsionInfo.priceText:gsub("-Team.", "-Alliance.");
+			elseif illsionInfo.factionSide == 2 then
+				priceText = illsionInfo.priceText:gsub("-Team.", "-Horde.");
+			else
+				local faction = UnitFactionGroup("player") or "Alliance";
+				priceText = illsionInfo.priceText:gsub("-Team.", "-"..faction..".");
+			end
+
+			text = strconcat(text or "", priceText);
+		end
+
+		color = HIGHLIGHT_FONT_COLOR;
+	end
+
+	return text, color;
+end
+
 function CollectionWardrobeUtil.IsAppearanceUsable(appearanceInfo)
 	if not appearanceInfo.useErrorType then
 		return true;
@@ -161,7 +237,7 @@ function CollectionWardrobeUtil.IsAppearanceUsable(appearanceInfo)
 	return false;
 end
 
-function CollectionWardrobeUtil.SetAppearanceTooltip(tooltip, sources, primarySourceID, selectedIndex, showUseError)
+function CollectionWardrobeUtil.SetAppearanceTooltip(tooltip, sources, primarySourceID, selectedIndex, showUseError, transmogLocation)
 	local canCycle = false;
 
 	local numSources, numCollected = #sources, 0;
@@ -325,6 +401,9 @@ function CollectionWardrobeUtil.SetAppearanceTooltip(tooltip, sources, primarySo
 			tooltip:AddLine(useError, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, true);
 		elseif not C_Transmog.IsAtTransmogNPC() then
 			tooltip:AddLine(WARDROBE_TOOLTIP_TRANSMOGRIFIER, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b, 1, 1);
+		elseif C_Transmog.IsAtTransmogNPC() and firstVisualID and not C_TransmogCollection.CanEnchantAppearance(firstVisualID) and transmogLocation and CollectionWardrobeUtil.HasWeaponEnchant(transmogLocation) then
+			tooltip:AddLine(" ");
+			tooltip:AddLine(WARDROBE_TOOLTIP_TRANSMOGRIFIER_UNUSABLE, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b, 1, 1);
 		elseif numCollected > 1 and C_Transmog.IsAtTransmogNPC() then
 			tooltip:AddLine(" ");
 			tooltip:AddLine(WARDROBE_TOOLTIP_TRANSMOGRIFIER_CLICKABLE, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b, 1, 1);
@@ -340,8 +419,92 @@ function CollectionWardrobeUtil.SetAppearanceTooltip(tooltip, sources, primarySo
 
 	if IsGMAccount() then
 		tooltip:AddLine(" ");
-		tooltip:AddLine(string.format("|cFFCA3C3CItem ID:|r %d", sources[headerIndex].sourceID or 0));
-		tooltip:AddLine(string.format("|cFFCA3C3CDisplay ID:|r %d", sources[headerIndex].visualID or 0));
+		tooltip:AddDoubleLine("Item ID:", sources[headerIndex].sourceID or 0, 0.44, 0.54, 0.68, 1, 1, 1);
+		tooltip:AddDoubleLine("Display ID:", sources[headerIndex].visualID or 0, 0.44, 0.54, 0.68, 1, 1, 1);
+	end
+
+	tooltip:Show();
+	return headerIndex, canCycle;
+end
+
+function CollectionWardrobeUtil.SetIllusionTooltip(tooltip, sources, primarySourceID, selectedIndex)
+	local canCycle = false;
+
+	local numSources, numCollected = #sources, 0;
+	if numSources == 0 then
+		return;
+	end
+
+	for i = 1, numSources do
+		if sources[i].isCollected then
+			numCollected = numCollected + 1;
+		elseif sources[i].isHideVisual then
+			tooltip:SetText(sources[i].name);
+			tooltip:Show();
+			return;
+		end
+	end
+
+	local firstItemVisual = sources[1].itemVisual;
+	local passedFirstItemVisual = false;
+
+	local headerIndex;
+	if not selectedIndex then
+		headerIndex = CollectionWardrobeUtil.GetDefaultSourceIndex(sources, primarySourceID);
+	else
+		headerIndex = CollectionWardrobeUtil.GetValidIndexForNumSources(selectedIndex, numSources);
+	end
+
+	local name, nameColor = CollectionWardrobeUtil.GetIllusionNameTextAndColor(sources[headerIndex].sourceID);
+	local sourceText, sourceColor = CollectionWardrobeUtil.GetIllusionSourceTextAndColor(sources[headerIndex]);
+	tooltip:SetText(name, nameColor:GetRGB());
+
+	local illusionCollected = sources[headerIndex].isCollected
+	if not illusionCollected then
+		tooltip:AddLine(sourceText, sourceColor.r, sourceColor.g, sourceColor.b, 1, 1);
+	end
+
+	if numSources > 1 and not illusionCollected then
+		-- only add "Other items using this appearance" if we're continuing to the same itemVisual
+		if firstItemVisual == sources[2].itemVisual then
+			tooltip:AddLine(" ");
+			tooltip:AddLine(WARDROBE_OTHER_ITEMS, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+		end
+		for i = 1, numSources do
+			-- first time we transition to a different itemVisual, add "Other items that unlock this slot"
+			if not passedFirstItemVisual and firstItemVisual ~= sources[i].itemVisual then
+				passedFirstItemVisual = true;
+				tooltip:AddLine(" ");
+				tooltip:AddLine(WARDROBE_ALTERNATE_ITEMS);
+			end
+
+			name, nameColor = CollectionWardrobeUtil.GetIllusionNameTextAndColor(sources[i].sourceID);
+			if i == headerIndex then
+				name = WARDROBE_TOOLTIP_CYCLE_ARROW_ICON..name;
+			else
+				name = WARDROBE_TOOLTIP_CYCLE_SPACER_ICON..name;
+			end
+			tooltip:AddLine(name, nameColor.r, nameColor.g, nameColor.b);
+		end
+		tooltip:AddLine(" ");
+		tooltip:AddLine(WARDROBE_TOOLTIP_CYCLE, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b, 1);
+		canCycle = true;
+	end
+
+	if illusionCollected then
+		if not C_Transmog.IsAtTransmogNPC() then
+			tooltip:AddLine(WARDROBE_TOOLTIP_TRANSMOGRIFIER, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b, 1, 1);
+		elseif numCollected > 1 and C_Transmog.IsAtTransmogNPC() then
+			tooltip:AddLine(" ");
+			tooltip:AddLine(WARDROBE_TOOLTIP_TRANSMOGRIFIER_CLICKABLE, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b, 1, 1);
+		end
+	end
+
+	if IsGMAccount() then
+		tooltip:AddLine(" ");
+		tooltip:AddDoubleLine("Enchant ID:", sources[headerIndex].sourceID or 0, 0.44, 0.54, 0.68, 1, 1, 1);
+		tooltip:AddDoubleLine("ItemID ID:", sources[headerIndex].itemID or 0, 0.44, 0.54, 0.68, 1, 1, 1);
+		tooltip:AddDoubleLine("SpellID ID:", sources[headerIndex].spellID or 0, 0.44, 0.54, 0.68, 1, 1, 1);
 	end
 
 	tooltip:Show();

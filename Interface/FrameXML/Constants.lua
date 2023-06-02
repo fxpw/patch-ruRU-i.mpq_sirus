@@ -507,6 +507,13 @@ CUSTOM_GOSSIP_TEXTS[CUSTOM_GOSSIP_TEXT_6] = "portraitroledamager";
 CUSTOM_GOSSIP_TEXTS[CUSTOM_GOSSIP_TEXT_7] = "portraitrolehealer";
 CUSTOM_GOSSIP_TEXTS[CUSTOM_GOSSIP_TEXT_8] = "portraitrolehealer";
 
+STORE_PRODUCT_MONEY_ICON = {
+	"coins",
+	"mmotop",
+	"refer",
+	"loyal"
+};
+
 -- HelpTip bitfield flags
 LE_FRAME_TUTORIAL_MINI_GAME_FRAGILEFLOOR = 1;
 LE_FRAME_TUTORIAL_MINI_GAME_FROZEN_SNOWMAN_LAIR = 2;
@@ -524,6 +531,9 @@ PET_TYPE_SUFFIX = {
 	[10] = "Elemental",
 };
 
+LE_MOUNT_JOURNAL_FILTER_COLLECTED = 1;
+LE_MOUNT_JOURNAL_FILTER_NOT_COLLECTED = 2;
+LE_MOUNT_JOURNAL_FILTER_FAVORITES = 3;
 LE_PET_JOURNAL_FILTER_COLLECTED = 1;
 LE_PET_JOURNAL_FILTER_NOT_COLLECTED = 2;
 
@@ -540,6 +550,7 @@ Enum.ItemQuality = {
 	Epic = 4,
 	Legendary = 5,
 	Artifact = 6,
+	Heirloom = 7,
 }
 
 Enum.InventoryType = {
@@ -627,6 +638,27 @@ LE_ITEM_MISCELLANEOUS_HOLIDAY = 3
 LE_ITEM_MISCELLANEOUS_OTHER = 4
 LE_ITEM_MISCELLANEOUS_MOUNT = 5
 
+NEW_ITEM_ATLAS_BY_QUALITY = {
+	[Enum.ItemQuality.Poor] = "bags-glow-white",
+	[Enum.ItemQuality.Common] = "bags-glow-white",
+	[Enum.ItemQuality.Uncommon] = "bags-glow-green",
+	[Enum.ItemQuality.Rare] = "bags-glow-blue",
+	[Enum.ItemQuality.Epic] = "bags-glow-purple",
+	[Enum.ItemQuality.Legendary] = "bags-glow-orange",
+	[Enum.ItemQuality.Artifact] = "bags-glow-artifact",
+	[Enum.ItemQuality.Heirloom] = "bags-glow-artifact",
+};
+
+-- Loot
+LOOT_BORDER_BY_QUALITY = {
+	[Enum.ItemQuality.Uncommon] = "loottoast-itemborder-green",
+	[Enum.ItemQuality.Rare] = "loottoast-itemborder-blue",
+	[Enum.ItemQuality.Epic] = "loottoast-itemborder-purple",
+	[Enum.ItemQuality.Legendary] = "loottoast-itemborder-orange",
+	[Enum.ItemQuality.Artifact] = "loottoast-itemborder-artifact",
+	[Enum.ItemQuality.Heirloom] = "loottoast-itemborder-artifact",
+};
+
 function GetItemClassInfo(classID)
 	if tonumber(classID) then
 		return _G[string.format("ITEM_CLASS_%d", classID)]
@@ -684,6 +716,7 @@ LAST_TRANSMOG_COLLECTION_WEAPON_TYPE = 30;
 TRANSMOG_SOURCE_BOSS_DROP = 1;
 NO_TRANSMOG_VISUAL_ID = 0;
 
+ENCHANT_EMPTY_SLOT_FILEDATAID = "Interface\\Icons\\INV_Scroll_05";
 WARDROBE_TOOLTIP_CYCLE_ARROW_ICON = "|TInterface\\Transmogrify\\transmog-tooltip-arrow:12:11:-1:-1|t";
 WARDROBE_TOOLTIP_CYCLE_SPACER_ICON = "|TInterface\\Common\\spacer:12:11:-1:-1|t";
 
@@ -692,6 +725,7 @@ CHAR_COLLECTION_PET = 1;
 CHAR_COLLECTION_APPEARANCE = 2;
 CHAR_COLLECTION_TOY = 3;
 CHAR_COLLECTION_HEIRLOOM = 4;
+CHAR_COLLECTION_ILLUSION = 5;
 
 ITEM_TRANSMOG_SLOT_BY_INVTYPE = {
 	INVTYPE_HEAD = INVSLOT_HEAD,

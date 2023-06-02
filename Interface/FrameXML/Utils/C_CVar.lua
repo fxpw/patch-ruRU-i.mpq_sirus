@@ -3,16 +3,32 @@ local TRACKED_CVARS = TRACKED_CVARS
 
 local EVENT_TRIGGER_CVAR = "readContest";
 
----@class C_CVarMixin : Mixin
-C_CVarMixin = {}
+CUSTOM_SESSION_KEYS = {}
 
-function C_CVarMixin:OnLoad()
-    self._cache = C_Cache("C_CVAR_STORAGE")
-    self._defaultValue = {}
-    self._globalValues = {}
-end
+local eventHandler = CreateFrame("Frame")
+eventHandler:RegisterEvent("PLAYER_ENTERING_WORLD")
+eventHandler:RegisterEvent("PLAYER_TALENT_UPDATE")
+eventHandler:SetScript("OnEvent", function(self, event, ...)
+	if event == "PLAYER_ENTERING_WORLD" then
+		self:UnregisterEvent(event)
+		self:RegisterEvent("COMMENTATOR_ENTER_WORLD")
+	elseif event == "COMMENTATOR_ENTER_WORLD" then
+		self:UnregisterEvent(event)
+		table.wipe(CUSTOM_SESSION_KEYS)
+		FireCustomClientEvent("SESSION_VARIABLES_LOADED")
+	elseif event == "PLAYER_TALENT_UPDATE" then
+		self:UnregisterEvent(event)
+		self:UnregisterEvent("COMMENTATOR_ENTER_WORLD")
+	end
+end)
 
-function C_CVarMixin:SetValue( key, value, raiseEvent )
+C_CVar = {}
+
+C_CVar._cache = C_Cache("C_CVAR_STORAGE")
+C_CVar._defaultValue = {}
+C_CVar._globalValues = {}
+
+function C_CVar:SetValue( key, value, raiseEvent )
     self._cache:Set(key, value, 0, self._globalValues[key])
 
 	local trackedIndex = tIndexOf(TRACKED_CVARS, key)
@@ -28,11 +44,11 @@ function C_CVarMixin:SetValue( key, value, raiseEvent )
     Hook:FireEvent("C_SETTINGS_UPDATE_STORAGE")
 end
 
-function C_CVarMixin:GetValue( key, defaultValue )
+function C_CVar:GetValue( key, defaultValue )
     return self._cache:Get(key, nil, 0, self._globalValues[key]) or ( defaultValue or self:GetDefaultValue(key) )
 end
 
-function C_CVarMixin:RegisterDefaultValue( key, value, global )
+function C_CVar:RegisterDefaultValue( key, value, global )
     self._defaultValue[key] = value
 
     if global then
@@ -40,11 +56,11 @@ function C_CVarMixin:RegisterDefaultValue( key, value, global )
     end
 end
 
-function C_CVarMixin:GetDefaultValue( key )
+function C_CVar:GetDefaultValue( key )
     return self._defaultValue[key]
 end
 
-function C_CVarMixin:GetCVarBitfield(name, index)
+function C_CVar:GetCVarBitfield(name, index)
 	if type(name) == "number" then
 		name = tostring(name);
 	end
@@ -60,7 +76,7 @@ function C_CVarMixin:GetCVarBitfield(name, index)
 	end
 end
 
-function C_CVarMixin:SetCVarBitfield(name, index, value, scriptCVar)
+function C_CVar:SetCVarBitfield(name, index, value, scriptCVar)
 	if type(name) == "number" then
 		name = tostring(name);
 	end
@@ -100,11 +116,14 @@ function C_CVarMixin:SetCVarBitfield(name, index, value, scriptCVar)
 	end
 end
 
----@class C_CVar : C_CVarMixin
-C_CVar = CreateFromMixins(C_CVarMixin)
-C_CVar:OnLoad()
+function C_CVar:SetSessionCVar(name, value)
+	CUSTOM_SESSION_KEYS[name] = value
+end
 
--- Регистрация дефолтных значений.
+function C_CVar:GetSessionCVar(name)
+	return CUSTOM_SESSION_KEYS[name]
+end
+
 C_CVar:RegisterDefaultValue("C_CVAR_AUTOJOIN_TO_LFG", "1")
 C_CVar:RegisterDefaultValue("C_CVAR_LOSS_OF_CONTROL_SCALE", "1")
 C_CVar:RegisterDefaultValue("C_CVAR_WHISPER_MODE", "inline")
@@ -126,6 +145,10 @@ C_CVar:RegisterDefaultValue("C_CVAR_PET_JOURNAL_TYPE_FILTERS", "0", true)
 C_CVar:RegisterDefaultValue("C_CVAR_PET_JOURNAL_SOURCE_FILTERS", "0", true)
 C_CVar:RegisterDefaultValue("C_CVAR_PET_JOURNAL_EXPANSION_FILTERS", "0", true)
 C_CVar:RegisterDefaultValue("C_CVAR_PET_JOURNAL_SORT", "1", true)
+C_CVar:RegisterDefaultValue("C_CVAR_MOUNT_JOURNAL_GENERAL_FILTERS", "0", true)
+C_CVar:RegisterDefaultValue("C_CVAR_MOUNT_JOURNAL_ABILITY_FILTER", "0", true)
+C_CVar:RegisterDefaultValue("C_CVAR_MOUNT_JOURNAL_SOURCE_FILTER", "0", true)
+C_CVar:RegisterDefaultValue("C_CVAR_MOUNT_JOURNAL_FACTION_FILTER", "0", true)
 
 C_CVar:RegisterDefaultValue("C_CVAR_WARDROBE_SHOW_COLLECTED", "1", true)
 C_CVar:RegisterDefaultValue("C_CVAR_WARDROBE_SHOW_UNCOLLECTED", "1", true)
@@ -158,5 +181,9 @@ C_CVar:RegisterDefaultValue("C_CVAR_TOY_BOX_COLLECTED_FILTERS", "0", true)
 C_CVar:RegisterDefaultValue("C_CVAR_TOY_BOX_SOURCE_FILTERS", "0", true)
 C_CVar:RegisterDefaultValue("C_CVAR_HEIRLOOM_COLLECTED_FILTERS", "0", true)
 C_CVar:RegisterDefaultValue("C_CVAR_HEIRLOOM_SOURCE_FILTERS", "0", true)
+C_CVar:RegisterDefaultValue("C_CVAR_ILLUSION_SHOW_COLLECTED", "0", true)
+C_CVar:RegisterDefaultValue("C_CVAR_ILLUSION_SHOW_UNCOLLECTED", "0", true)
+C_CVar:RegisterDefaultValue("C_CVAR_ILLUSION_SOURCE_FILTERS", "0", true)
 
 C_CVar:RegisterDefaultValue("C_CVAR_DRACTHYR_RETURN_MORTAL_FORM", "1")
+C_CVar:RegisterDefaultValue("C_CVAR_ITEM_UPGRADE_LEFT_ITEM_LIST", "0")

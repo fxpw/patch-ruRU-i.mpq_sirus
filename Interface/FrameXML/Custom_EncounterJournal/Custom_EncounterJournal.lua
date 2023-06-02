@@ -314,7 +314,7 @@ ExpansionEnumToEJTierDataTableId = {
 
 UIPanelWindows["EncounterJournal"] = { area = "left", pushable = 0, whileDead = 1, width = 830, xOffset = "15", yOffset = "-10"}
 
-if IsInterfaceDevClient() then
+if IsInterfaceDevClient(true) then
 	_G.EJ_SearchData = EJ_SearchData
 end
 

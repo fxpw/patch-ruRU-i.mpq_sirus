@@ -1,12 +1,18 @@
---	Filename:	C_Service.lua
---	Project:	Custom Game Interface
---	Author:		Nyll & Blizzard Entertainment
+local SERVICE_DATA_INDEXES = {
+	IS_GM		= 1,
+	REALM_ID	= 2,
+	ACCOUNT_ID	= 3,
+	REALM_FLAG	= 4,
+}
 
-enum:E_SERVICE_DATA {
-    "IS_GM",
-    "REALM_ID",
-    "ACCOUNT_ID",
-    "REALM_FLAG"
+local REALM_FLAGS = {
+	RENEGATE			= 0x01,
+	XP					= 0x02,
+	STORE				= 0x04,
+	WAR_MOD				= 0x08,
+	STRENGTHEN_STATS	= 0x10,
+	SWITCH_WAR_MODE		= 0x20,
+	ENABLE_BG_KICK		= 0x40,
 }
 
 ---@class C_ServiceMixin : Mixin
@@ -23,10 +29,10 @@ function C_ServiceMixin:SERVER_SPLIT_NOTICE(_, _, _, msg)
     if messageData and messageData[1] == "ASMSG_SERVICE_MSG" then
         local serviceData = C_Split(messageData[2], "|")
 
-        local isGM              = tonumber(serviceData[E_SERVICE_DATA.IS_GM])
-        local realmID           = tonumber(serviceData[E_SERVICE_DATA.REALM_ID])
-        local accountID         = tonumber(serviceData[E_SERVICE_DATA.ACCOUNT_ID])
-        local realmFlag         = tonumber(serviceData[E_SERVICE_DATA.REALM_FLAG])
+        local isGM              = tonumber(serviceData[SERVICE_DATA_INDEXES.IS_GM])
+        local realmID           = tonumber(serviceData[SERVICE_DATA_INDEXES.REALM_ID])
+        local accountID         = tonumber(serviceData[SERVICE_DATA_INDEXES.ACCOUNT_ID])
+        local realmFlag         = tonumber(serviceData[SERVICE_DATA_INDEXES.REALM_FLAG])
 
         C_CacheInstance:Set("C_SERVICE_IS_GM", isGM ~= 0)
         C_CacheInstance:Set("C_SERVICE_REALM_ID", realmID)
@@ -44,7 +50,7 @@ end
 
 ---@return boolean isStoreEnabled
 function C_ServiceMixin:IsStoreEnabled()
-    return C_CacheInstance:Get("C_SERVICE_REALM_FLAG") and bit.band(C_CacheInstance:Get("C_SERVICE_REALM_FLAG"), C_SERVICE_FLAG_STORE) ~= 0
+    return C_CacheInstance:Get("C_SERVICE_REALM_FLAG") and bit.band(C_CacheInstance:Get("C_SERVICE_REALM_FLAG"), REALM_FLAGS.STORE) ~= 0
 end
 
 ---@return number realmID
@@ -63,7 +69,7 @@ function C_ServiceMixin:GetRealmFlag()
 end
 
 function C_ServiceMixin:IsRenegadeRealm()
-    return C_CacheInstance:Get("C_SERVICE_REALM_FLAG") and bit.band(C_CacheInstance:Get("C_SERVICE_REALM_FLAG"), C_SERVICE_FLAG_RENEGATE) ~= 0
+    return C_CacheInstance:Get("C_SERVICE_REALM_FLAG") and bit.band(C_CacheInstance:Get("C_SERVICE_REALM_FLAG"), REALM_FLAGS.RENEGATE) ~= 0
 end
 
 function C_ServiceMixin:IsLockRenegadeFeatures()
@@ -71,7 +77,7 @@ function C_ServiceMixin:IsLockRenegadeFeatures()
 end
 
 function C_ServiceMixin:IsRefuseXPRateRealm()
-    return C_CacheInstance:Get("C_SERVICE_REALM_FLAG") and bit.band(C_CacheInstance:Get("C_SERVICE_REALM_FLAG"), C_SERVICE_FLAG_XP) ~= 0
+    return C_CacheInstance:Get("C_SERVICE_REALM_FLAG") and bit.band(C_CacheInstance:Get("C_SERVICE_REALM_FLAG"), REALM_FLAGS.XP) ~= 0
 end
 
 function C_ServiceMixin:IsLockRefuseXPRateFeature()
@@ -79,7 +85,7 @@ function C_ServiceMixin:IsLockRefuseXPRateFeature()
 end
 
 function C_ServiceMixin:IsWarModRealm()
-	return C_CacheInstance:Get("C_SERVICE_REALM_FLAG") and bit.band(C_CacheInstance:Get("C_SERVICE_REALM_FLAG"), C_SERVICE_FLAG_WAR_MOD) ~= 0
+	return C_CacheInstance:Get("C_SERVICE_REALM_FLAG") and bit.band(C_CacheInstance:Get("C_SERVICE_REALM_FLAG"), REALM_FLAGS.WAR_MOD) ~= 0
 end
 
 function C_ServiceMixin:IsLockWarModFeature()
@@ -87,7 +93,7 @@ function C_ServiceMixin:IsLockWarModFeature()
 end
 
 function C_ServiceMixin:IsStrengthenStatsRealm()
-	return C_CacheInstance:Get("C_SERVICE_REALM_FLAG") and bit.band(C_CacheInstance:Get("C_SERVICE_REALM_FLAG"), C_SERVICE_FLAG_STRENGTHEN_STATS) ~= 0
+	return C_CacheInstance:Get("C_SERVICE_REALM_FLAG") and bit.band(C_CacheInstance:Get("C_SERVICE_REALM_FLAG"), REALM_FLAGS.STRENGTHEN_STATS) ~= 0
 end
 
 function C_ServiceMixin:IsLockStrengthenStatsFeature()
@@ -95,7 +101,14 @@ function C_ServiceMixin:IsLockStrengthenStatsFeature()
 end
 
 function C_ServiceMixin:IsSwitchWarModeRealm()
-	return C_CacheInstance:Get("C_SERVICE_REALM_FLAG") and bit.band(C_CacheInstance:Get("C_SERVICE_REALM_FLAG"), C_SERVICE_FLAG_IS_SWITCH_WAR_MODE) ~= 0
+	return C_CacheInstance:Get("C_SERVICE_REALM_FLAG") and bit.band(C_CacheInstance:Get("C_SERVICE_REALM_FLAG"), REALM_FLAGS.SWITCH_WAR_MODE) ~= 0
+end
+
+function C_ServiceMixin.IsBattlegroundKickEnabled()
+	if IsGMAccount() then
+		return true
+	end
+	return C_CacheInstance:Get("C_SERVICE_REALM_FLAG") and bit.band(C_CacheInstance:Get("C_SERVICE_REALM_FLAG"), REALM_FLAGS.ENABLE_BG_KICK) ~= 0
 end
 
 function C_ServiceMixin:IsLockSwitchWarModeFeature()
@@ -126,8 +139,8 @@ function IsGMAccount(skipDevOverride)
 end
 
 function GMError(err)
-	if IsGMAccount(true) or IsInterfaceDevClient() then
-		geterrorhandler()(err)
+	if IsGMAccount(true) or IsInterfaceDevClient(true) then
+		geterrorhandler()(strconcat("[GMError] ", err))
 	end
 end
 

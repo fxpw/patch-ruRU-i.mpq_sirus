@@ -151,6 +151,17 @@ end
 
 C_MiniGames = {};
 
+function C_MiniGames.GetGameIDFromIndex(miniGameIndex)
+	if type(miniGameIndex) == "string" then
+		miniGameIndex = tonumber(miniGameIndex);
+	end
+	if type(miniGameIndex) ~= "number" then
+		error("Usage: local miniGameID = C_MiniGames.GetGameInfo(miniGameIndex)", 2);
+	end
+
+	return MINI_GAMES_LIST[miniGameIndex];
+end
+
 function C_MiniGames.GetGameInfo(miniGameID)
 	if type(miniGameID) == "string" then
 		miniGameID = tonumber(miniGameID);

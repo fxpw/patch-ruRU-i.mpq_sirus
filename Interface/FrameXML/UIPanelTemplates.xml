@@ -328,16 +328,6 @@
 				</Texture>
 			</Layer>
 		</Layers>
-	</Button>
-
-	<ScrollFrame name="DynamicScrollFrameTemplate" virtual="true">
-		<ScrollChild>
-			<Frame name="$parentScrollChild" parentKey="scrollChild">
-				<Size>
-					<AbsDimension x="10" y="10"/>
-				</Size>
-			</Frame>
-		</ScrollChild>
 		<Scripts>
 			<OnMouseDown>
 				if ( self:IsEnabled() == 1 ) then
@@ -364,7 +354,7 @@
 				end
 			</OnMouseUp>
 		</Scripts>
-	</ScrollFrame>
+	</Button>
 
 	<!-- Talent Frame -->
 

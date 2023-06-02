@@ -17,84 +17,209 @@ TRANSMOG_INVALID_CODES = {
 	"SLOT_FOR_RACE",
 }
 
-local TRANSMOG_SLOTS = {
-	[1] = "HEADSLOT",
-	[3] = "SHOULDERSLOT",
-	[4] = "SHIRTSLOT",
-	[5] = "CHESTSLOT",
-	[6] = "WAISTSLOT",
-	[7] = "LEGSSLOT",
-	[8] = "FEETSLOT",
-	[9] = "WRISTSLOT",
-	[10] = "HANDSSLOT",
-	[15] = "BACKSLOT",
-	[16] = "MAINHANDSLOT",
-	[17] = "SECONDARYHANDSLOT",
-	[18] = "RANGEDSLOT",
-	[19] = "TABARDSLOT",
-}
+local function IsAtTransmogNPC()
+	return WardrobeFrame and WardrobeFrame:IsShown();
+end
 
-local TRANSMOGRIFY_INFO = {};
-local PENDING_INFO = {};
+local TRANSMOG_INFO = {
+	Applied = {},
+	Pending = {},
+
+	Clear = function(self, name, slotID, transmogType)
+		if slotID then
+			if self[name][slotID] then
+				if transmogType then
+					if self[name][slotID][transmogType] then
+						self[name][slotID][transmogType] = nil;
+					end
+				else
+					self[name][slotID] = nil;
+				end
+			end
+		else
+			table.wipe(self[name]);
+		end
+	end,
+
+	Get = function(self, name, slotID, transmogType, createOrWipeTable)
+		if slotID then
+			if createOrWipeTable then
+				if not self[name][slotID] then
+					self[name][slotID] = {};
+				elseif not transmogType then
+					table.wipe(self[name][slotID]);
+				end
+			end
+			if transmogType then
+				if createOrWipeTable then
+					if not self[name][slotID][transmogType] then
+						self[name][slotID][transmogType] = {};
+					else
+						table.wipe(self[name][slotID][transmogType]);
+					end
+				end
+
+				return self[name] and self[name][slotID] and self[name][slotID][transmogType];
+			else
+				return self[name] and self[name][slotID];
+			end
+		else
+			return self[name];
+		end
+	end,
+};
+
+local function GetTransmogSlotInfo(slotID, transmogType, ignoreItem)
+	local baseSourceID, pendingSourceID, appliedSourceID, hasPendingUndo = 0, 0, 0;
+
+	if transmogType == Enum.TransmogType.Appearance then
+		if not ignoreItem then
+			local itemID = GetInventoryItemID("player", slotID);
+			if itemID then
+				baseSourceID = itemID;
+			end
+		end
+
+		local pendingData = TRANSMOG_INFO:Get("Pending", slotID, transmogType);
+		if pendingData then
+			pendingSourceID = pendingData.transmogID;
+			hasPendingUndo = pendingData.hasUndo;
+		end
+
+		local appliedData = TRANSMOG_INFO:Get("Applied", slotID, transmogType);
+		if appliedData then
+			appliedSourceID = appliedData.transmogID;
+		end
+	else
+		if not ignoreItem then
+			local itemLink = GetInventoryItemLink("player", slotID);
+			if itemLink then
+				local enchantID = string.match(itemLink, "item:%d+:(%d+)");
+				enchantID = tonumber(enchantID);
+				if enchantID then
+					baseSourceID = enchantID;
+				end
+			end
+		end
+
+		local pendingData = TRANSMOG_INFO:Get("Pending", slotID, transmogType);
+		if pendingData then
+			pendingSourceID = pendingData.transmogID;
+			hasPendingUndo = pendingData.hasUndo;
+		end
+
+		local appliedData = TRANSMOG_INFO:Get("Applied", slotID, transmogType);
+		if appliedData then
+			appliedSourceID = appliedData.transmogID;
+		end
+	end
+
+	if appliedSourceID == NO_TRANSMOG_SOURCE_ID then
+		appliedSourceID = baseSourceID;
+	end
+
+	local selectedSourceID;
+	if hasPendingUndo then
+		selectedSourceID = REMOVE_TRANSMOG_ID;
+	elseif pendingSourceID ~= REMOVE_TRANSMOG_ID then
+		selectedSourceID = pendingSourceID;
+	else
+		selectedSourceID = appliedSourceID;
+	end
+
+	return selectedSourceID;
+end
 
 local function SetPending(transmogLocation, pendingInfo)
 	local slotID = transmogLocation.slotID;
-	local baseSourceID = GetInventoryItemID("player", slotID);
-	local baseVisualID = baseSourceID and ITEM_MODIFIED_APPEARANCE_STORAGE[baseSourceID] and ITEM_MODIFIED_APPEARANCE_STORAGE[baseSourceID][1] or 0;
+	local transmogType = transmogLocation.type;
+	local transmogID = pendingInfo.transmogID;
+
+	local isAppearance = transmogLocation:IsAppearance();
 
 	if pendingInfo.type == Enum.TransmogPendingType.Revert then
-		PENDING_INFO[slotID] = PENDING_INFO[slotID] and table.wipe(PENDING_INFO[slotID]) or {};
+		local pendingData = TRANSMOG_INFO:Get("Pending", slotID, transmogType, true);
+		pendingData.transmogID = 0;
+		pendingData.visualID = 0;
+		pendingData.isPendingCollected = false;
+		pendingData.canTransmogrify = true;
+		pendingData.hasUndo = true;
+		pendingData.cost = 0;
+		pendingData.hasPending = true;
+		pendingData.pendingType = pendingInfo.type;
+		pendingData.category = pendingInfo.category;
+		pendingData.subCategory = pendingInfo.subCategory;
 
-		PENDING_INFO[slotID].transmogID = 0;
-		PENDING_INFO[slotID].visualID = 0;
-		PENDING_INFO[slotID].isPendingCollected = false;
-		PENDING_INFO[slotID].canTransmogrify = false;
-		PENDING_INFO[slotID].hasUndo = true;
-		PENDING_INFO[slotID].cost = 0;
-		PENDING_INFO[slotID].hasPending = true;
-		PENDING_INFO[slotID].type = pendingInfo.type;
-		PENDING_INFO[slotID].category = pendingInfo.category;
-		PENDING_INFO[slotID].subCategory = pendingInfo.subCategory;
-
-		local eventTransmogLocation = CreateFromMixins(TransmogLocationMixin);
-		eventTransmogLocation:Set(slotID, transmogLocation.type, transmogLocation.modification);
-		return eventTransmogLocation, "clear";
+		return CreateAndSetFromMixin(TransmogLocationMixin, slotID, transmogType, transmogLocation.modification), "clear";
 	elseif pendingInfo.type == Enum.TransmogPendingType.Apply then
-		local pendingSourceID = pendingInfo.transmogID;
-		local pendingVisualID = pendingSourceID and ITEM_MODIFIED_APPEARANCE_STORAGE[pendingSourceID] and ITEM_MODIFIED_APPEARANCE_STORAGE[pendingSourceID][1] or 0;
+		local baseSourceID, baseVisualID, pendingSourceID, pendingVisualID, appliedSourceID, appliedVisualID = 0, 0, 0, 0, 0, 0;
 
-		local appliedSourceID = TRANSMOGRIFY_INFO[slotID] and TRANSMOGRIFY_INFO[slotID].transmogID;
-		local appliedVisualID = appliedSourceID and ITEM_MODIFIED_APPEARANCE_STORAGE[appliedSourceID] and ITEM_MODIFIED_APPEARANCE_STORAGE[appliedSourceID][1] or 0;
+		if isAppearance then
+			local itemID = GetInventoryItemID("player", slotID);
+			if itemID then
+				baseSourceID = itemID;
+				baseVisualID = ITEM_MODIFIED_APPEARANCE_STORAGE[itemID] and ITEM_MODIFIED_APPEARANCE_STORAGE[itemID][1] or 0;
+			end
 
-		PENDING_INFO[slotID] = PENDING_INFO[slotID] and table.wipe(PENDING_INFO[slotID]) or {};
+			if transmogID then
+				pendingSourceID = transmogID;
+				pendingVisualID = ITEM_MODIFIED_APPEARANCE_STORAGE[pendingSourceID] and ITEM_MODIFIED_APPEARANCE_STORAGE[pendingSourceID][1] or 0;
+			end
+
+			local appliedData = TRANSMOG_INFO:Get("Applied", slotID, transmogType);
+			if appliedData then
+				appliedSourceID = appliedData.transmogID;
+				appliedVisualID = ITEM_MODIFIED_APPEARANCE_STORAGE[appliedSourceID] and ITEM_MODIFIED_APPEARANCE_STORAGE[appliedSourceID][1] or 0;
+			end
+		else
+			local itemLink = GetInventoryItemLink("player", slotID);
+			if itemLink then
+				local enchantID = string.match(itemLink, "item:%d+:(%d+)");
+				enchantID = tonumber(enchantID);
+				if enchantID then
+					baseSourceID = enchantID;
+					baseVisualID = enchantID;
+				end
+			end
+
+			if transmogID then
+				pendingSourceID = transmogID;
+				pendingVisualID = transmogID;
+			end
+
+			local appliedData = TRANSMOG_INFO:Get("Applied", slotID, transmogType);
+			if appliedData then
+				appliedSourceID = appliedData.transmogID;
+				appliedVisualID = appliedData.transmogID;
+			end
+		end
 
 		if pendingVisualID == baseVisualID then
-			if appliedSourceID and appliedVisualID then
-				PENDING_INFO[slotID].transmogID = 0;
-				PENDING_INFO[slotID].visualID = 0;
-				PENDING_INFO[slotID].isPendingCollected = false;
-				PENDING_INFO[slotID].canTransmogrify = false;
-				PENDING_INFO[slotID].hasUndo = true;
-				PENDING_INFO[slotID].cost = 0;
-				PENDING_INFO[slotID].hasPending = true;
-				PENDING_INFO[slotID].type = Enum.TransmogPendingType.Revert;
-				PENDING_INFO[slotID].category = pendingInfo.category;
-				PENDING_INFO[slotID].subCategory = pendingInfo.subCategory;
+			if appliedSourceID and appliedSourceID ~= 0 and appliedVisualID then
+				local pendingData = TRANSMOG_INFO:Get("Pending", slotID, transmogType, true);
+				pendingData.transmogID = 0;
+				pendingData.visualID = 0;
+				pendingData.isPendingCollected = false;
+				pendingData.canTransmogrify = true;
+				pendingData.hasUndo = true;
+				pendingData.cost = 0;
+				pendingData.hasPending = true;
+				pendingData.pendingType = Enum.TransmogPendingType.Revert;
+				pendingData.category = pendingInfo.category;
+				pendingData.subCategory = pendingInfo.subCategory;
 
-				local eventTransmogLocation = CreateFromMixins(TransmogLocationMixin);
-				eventTransmogLocation:Set(slotID, transmogLocation.type, transmogLocation.modification);
-				return eventTransmogLocation, "clear";
+				return CreateAndSetFromMixin(TransmogLocationMixin, slotID, transmogType, transmogLocation.modification), "clear";
 			else
-				PENDING_INFO[slotID] = nil;
+				TRANSMOG_INFO:Clear("Pending", slotID, transmogType);
 
-				local eventTransmogLocation = CreateFromMixins(TransmogLocationMixin);
-				eventTransmogLocation:Set(slotID, transmogLocation.type, transmogLocation.modification);
-				return eventTransmogLocation, "clear";
+				return CreateAndSetFromMixin(TransmogLocationMixin, slotID, transmogType, transmogLocation.modification), "clear";
 			end
 		elseif pendingVisualID ~= appliedVisualID then
-			if IsStoreRefundableItem(pendingInfo.transmogID) then
-				local itemName, itemLink, itemQuality, _, _, _, _, _, _, itemIcon = GetItemInfo(pendingInfo.transmogID);
-				PENDING_INFO[slotID].warning = {
+			local pendingData = TRANSMOG_INFO:Get("Pending", slotID, transmogType, true);
+
+			if isAppearance and IsStoreRefundableItem(pendingSourceID) then
+				local itemName, itemLink, itemQuality, _, _, _, _, _, _, itemIcon = GetItemInfo(pendingSourceID);
+				pendingData.warning = {
 					itemName = itemName,
 					itemLink = itemLink,
 					itemQuality = itemQuality,
@@ -103,21 +228,24 @@ local function SetPending(transmogLocation, pendingInfo)
 				};
 			end
 
-			PENDING_INFO[slotID].transmogID = pendingSourceID;
-			PENDING_INFO[slotID].visualID = pendingVisualID;
-			PENDING_INFO[slotID].type = pendingInfo.type;
-			PENDING_INFO[slotID].category = pendingInfo.category;
-			PENDING_INFO[slotID].subCategory = pendingInfo.subCategory;
-			PENDING_INFO[slotID].transmogType = transmogLocation.type;
-			PENDING_INFO[slotID].transmogModification = transmogLocation.modification;
+			pendingData.hasPending = false;
+			pendingData.transmogID = pendingSourceID;
+			pendingData.visualID = pendingVisualID;
+			pendingData.pendingType = pendingInfo.type;
+			pendingData.category = pendingInfo.category;
+			pendingData.subCategory = pendingInfo.subCategory;
+			pendingData.transmogType = transmogType;
+			pendingData.transmogModification = transmogLocation.modification;
 
-			SendServerMessage("ACMSG_TRANSMOGRIFICATION_PREPARE_REQUEST", string.format("%d:%d", slotID, pendingInfo.transmogID));
+			if not isAppearance then
+				SendServerMessage("ACMSG_TRANSMOGRIFICATION_PREPARE_REQUEST", string.format("%d:%d:%d", slotID, GetTransmogSlotInfo(slotID, Enum.TransmogType.Appearance), pendingSourceID));
+			else
+				SendServerMessage("ACMSG_TRANSMOGRIFICATION_PREPARE_REQUEST", string.format("%d:%d:%d", slotID, pendingSourceID, GetTransmogSlotInfo(slotID, Enum.TransmogType.Illusion, true)));
+			end
 		else
-			PENDING_INFO[slotID] = nil;
+			TRANSMOG_INFO:Clear("Pending", slotID, transmogType);
 
-			local eventTransmogLocation = CreateFromMixins(TransmogLocationMixin);
-			eventTransmogLocation:Set(slotID, transmogLocation.type, transmogLocation.modification);
-			return eventTransmogLocation, "clear";
+			return CreateAndSetFromMixin(TransmogLocationMixin, slotID, transmogType, transmogLocation.modification), "clear";
 		end
 	end
 end
@@ -126,14 +254,31 @@ C_Transmog = {}
 
 function C_Transmog.ApplyAllPending()
 	local text = "";
-	for slotID, pendingInfo in pairs(PENDING_INFO) do
-		if pendingInfo.transmogID and pendingInfo.type == Enum.TransmogPendingType.Apply then
-			text = text..slotID..":"..pendingInfo.transmogID..";";
-		elseif pendingInfo.type == Enum.TransmogPendingType.Revert then
-			text = text..slotID..":0;";
+
+	for slotID, transmogData in pairs(TRANSMOG_INFO:Get("Pending")) do
+		local itemID, enchantID;
+		for transmogType, pendingInfo in pairs(transmogData) do
+			if pendingInfo.hasPending then
+				if transmogType == Enum.TransmogType.Appearance then
+					itemID = pendingInfo.transmogID;
+				elseif transmogType == Enum.TransmogType.Illusion then
+					enchantID = pendingInfo.transmogID;
+				end
+			end
+		end
+
+		if enchantID and (slotID == 16 or slotID == 17) then
+			if not itemID then
+				itemID = GetTransmogSlotInfo(slotID, Enum.TransmogType.Appearance);
+			end
+
+			text = text..slotID..":"..(itemID or 0)..":"..(enchantID or 0)..";";
+		elseif itemID then
+			text = text..slotID..":"..(itemID or 0)..";";
 		end
 	end
-	SendAddonMessage("ACMSG_TRANSMOGRIFICATION_APPLY", text, "WHISPER", UnitName("player"));
+
+	SendServerMessage("ACMSG_TRANSMOGRIFICATION_APPLY", text);
 end
 
 function C_Transmog.CanTransmogItem()
@@ -145,50 +290,56 @@ function C_Transmog.CanTransmogItemWithItem()
 end
 
 function C_Transmog.ClearAllPending()
-	table.wipe(PENDING_INFO);
+	TRANSMOG_INFO:Clear("Pending");
 end
 
 function C_Transmog.ClearPending(transmogLocation)
-	if not transmogLocation or type(transmogLocation.slotID) ~= "number" then
+	if type(transmogLocation) ~= "table" or type(transmogLocation.slotID) ~= "number" then
 		error("Usage: C_Transmog.ClearPending(transmogLocation)", 2);
 	end
 
-	local pendingInfo = PENDING_INFO[transmogLocation.slotID]
-	if pendingInfo then
-		PENDING_INFO[transmogLocation.slotID] = nil;
+	local pendingData = TRANSMOG_INFO:Get("Pending", transmogLocation.slotID, transmogLocation.type);
+	if pendingData then
+		TRANSMOG_INFO:Clear("Pending", transmogLocation.slotID, transmogLocation.type);
 
-		local eventTransmogLocation = CreateFromMixins(TransmogLocationMixin);
-		eventTransmogLocation:Set(transmogLocation.slotID, transmogLocation.type, transmogLocation.modification);
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_UPDATE, eventTransmogLocation, "clear");
+		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_UPDATE, CreateAndSetFromMixin(TransmogLocationMixin, transmogLocation.slotID, transmogLocation.type, transmogLocation.modification), "clear");
 	end
 end
 
 function C_Transmog.Close()
-	table.wipe(TRANSMOGRIFY_INFO);
-	table.wipe(PENDING_INFO);
+	TRANSMOG_INFO:Clear("Applied");
+	TRANSMOG_INFO:Clear("Pending");
 end
 
 function C_Transmog.GetApplyCost()
 	local cost;
-	for _, pendingInfo in pairs(PENDING_INFO) do
-		cost = (cost or 0) + (pendingInfo.cost or 0);
+
+	for _, transmogData in pairs(TRANSMOG_INFO:Get("Pending")) do
+		for _, pendingInfo in pairs(transmogData) do
+			if pendingInfo.transmogID then
+				cost = (cost or 0) + (pendingInfo.cost or 0);
+			end
+		end
 	end
+
 	return cost;
 end
 
 function C_Transmog.GetApplyWarnings()
 	local warnings = {};
 
-	for _, transmogInfo in pairs(PENDING_INFO) do
-		local warning = transmogInfo.warning;
-		if warning then
-			warnings[#warnings + 1] = {
-				itemName = warning.itemName,
-				itemLink = warning.itemLink,
-				itemQuality = warning.itemQuality,
-				itemIcon = warning.itemIcon,
-				text = warning.text,
-			};
+	for _, transmogData in pairs(TRANSMOG_INFO:Get("Pending")) do
+		for _, pendingInfo in pairs(transmogData) do
+			local warning = pendingInfo.warning;
+			if warning then
+				warnings[#warnings + 1] = {
+					itemName = warning.itemName,
+					itemLink = warning.itemLink,
+					itemQuality = warning.itemQuality,
+					itemIcon = warning.itemIcon,
+					text = warning.text,
+				};
+			end
 		end
 	end
 
@@ -196,35 +347,43 @@ function C_Transmog.GetApplyWarnings()
 end
 
 function C_Transmog.GetPending(transmogLocation)
-	if not transmogLocation or type(transmogLocation.slotID) ~= "number" then
+	if type(transmogLocation) ~= "table" or type(transmogLocation.slotID) ~= "number" then
 		error("Usage: local pendingInfo = C_Transmog.GetPending(transmogLocation)", 2);
 	end
 
-	local pendingInfo = PENDING_INFO[transmogLocation.slotID];
-	return pendingInfo and {
-		type = pendingInfo.type,
-		transmogID = pendingInfo.transmogID,
-		category = pendingInfo.category,
-		subCategory = pendingInfo.subCategory,
-	};
+	local pendingData = TRANSMOG_INFO:Get("Pending", transmogLocation.slotID, transmogLocation.type);
+	if pendingData then
+		return {
+			type = pendingData.pendingType,
+			transmogID = pendingData.transmogID,
+			category = pendingData.category,
+			subCategory = pendingData.subCategory,
+		}
+	end
 end
 
 function C_Transmog.GetSlotEffectiveCategory(transmogLocation)
-	if not transmogLocation or type(transmogLocation.slotID) ~= "number" then
+	if type(transmogLocation) ~= "table" or type(transmogLocation.slotID) ~= "number" then
 		error("Usage: local categoryID, subCategoryID = C_Transmog.GetSlotEffectiveCategory(transmogLocation)", 2);
 	end
 
-	local pendingInfo = PENDING_INFO[transmogLocation.slotID];
-	if pendingInfo and pendingInfo.category then
-		return pendingInfo.category, pendingInfo.subCategory;
+	if transmogLocation:IsIllusion() then
+		return nil, nil;
 	end
 
-	local transmogInfo = TRANSMOGRIFY_INFO[transmogLocation.slotID];
-	if transmogInfo and transmogInfo.category then
-		return transmogInfo.category, transmogInfo.subCategory;
+	local slotID = transmogLocation.slotID;
+
+	local pendingData = TRANSMOG_INFO:Get("Pending", slotID, transmogLocation.type);
+	if pendingData and pendingData.category then
+		return pendingData.category, pendingData.subCategory;
 	end
 
-	local itemID = GetInventoryItemID("player", transmogLocation.slotID);
+	local appliedData = TRANSMOG_INFO:Get("Applied", slotID, transmogLocation.type);
+	if appliedData and appliedData.category then
+		return appliedData.category, appliedData.subCategory;
+	end
+
+	local itemID = GetInventoryItemID("player", slotID);
 	local categoryID, subCategoryID = GetItemModifiedAppearanceCategoryInfo(itemID);
 	if categoryID ~= 0 then
 		return categoryID, subCategoryID;
@@ -254,27 +413,36 @@ local nonTransmogrifyInvType = {
 }
 
 function C_Transmog.GetSlotInfo(transmogLocation)
-	if not transmogLocation or type(transmogLocation.slotID) ~= "number" then
+	if type(transmogLocation) ~= "table" or type(transmogLocation.slotID) ~= "number" then
 		error("Usage: local isTransmogrified, hasPending, isPendingCollected, canTransmogrify, cannotTransmogrifyReason, hasUndo, isHideVisual, texture = C_Transmog.GetSlotInfo(transmogLocation)", 2);
 	end
 
-	local texture = GetInventoryItemTexture("player", transmogLocation.slotID);
+	local slotID = transmogLocation.slotID;
+	local isAppearance = transmogLocation:IsAppearance();
+
 	local itemID = GetInventoryItemID("player", transmogLocation.slotID);
-	if not texture or not itemID then
+	if not itemID then
 		return false, false, false, false, 1, false, false, false;
 	end
 
-	local transmogInfo = TRANSMOGRIFY_INFO[transmogLocation.slotID];
-	local isTransmogrified = transmogInfo and transmogInfo.isTransmogrified or false;
+	if not isAppearance then
+		-- TODO: canTransmogrify for illusion
+	end
 
-	local hasPending, isPendingCollected, canTransmogrify, cannotTransmogrifyReason, hasUndo, isHideVisual = false, false, true, 0, false, false;
+	local pendingData = TRANSMOG_INFO:Get("Pending", slotID, transmogLocation.type);
+	local appliedData = TRANSMOG_INFO:Get("Applied", slotID, transmogLocation.type);
 
-	local pendingInfo = PENDING_INFO[transmogLocation.slotID];
-	if pendingInfo then
-		hasPending = pendingInfo.hasPending;
-		isPendingCollected = pendingInfo.isPendingCollected;
-		canTransmogrify = pendingInfo.canTransmogrify;
-		hasUndo = pendingInfo.hasUndo;
+	local isTransmogrified, hasPending, isPendingCollected, canTransmogrify, cannotTransmogrifyReason, hasUndo, isHideVisual, texture = false, false, false, true, 0, false, false;
+
+	if appliedData then
+		isTransmogrified = true;
+	end
+
+	if pendingData then
+		hasPending = pendingData.hasPending;
+		isPendingCollected = pendingData.isPendingCollected;
+		canTransmogrify = pendingData.canTransmogrify;
+		hasUndo = pendingData.hasUndo;
 	else
 		local itemName, _, itemRarity, _, _, _, _, _, _, _, _, _, _, _, equipLocID = C_Item.GetItemInfo(itemID, nil, nil, nil, true);
 		if itemName then
@@ -288,67 +456,96 @@ function C_Transmog.GetSlotInfo(transmogLocation)
 		end
 	end
 
-	if hasPending then
-		if canTransmogrify then
-			texture = select(10, GetItemInfo(pendingInfo.transmogID));
+	if isAppearance then
+		texture = GetInventoryItemTexture("player", slotID);
+
+		if hasPending then
+			if hasUndo then
+				texture = GetInventoryItemTexture("player", slotID);
+			elseif canTransmogrify then
+				texture = select(10, GetItemInfo(pendingData.transmogID));
+			end
+		elseif isTransmogrified then
+			texture = select(10, GetItemInfo(appliedData.transmogID));
 		end
-	elseif isTransmogrified then
-		texture = select(10, GetItemInfo(transmogInfo.transmogID));
+	else
+		-- TODO: texture for illusion
 	end
 
 	return isTransmogrified, hasPending, isPendingCollected, canTransmogrify, cannotTransmogrifyReason, hasUndo, isHideVisual, texture;
 end
 
 function C_Transmog.GetSlotUseError(transmogLocation)
-	if not transmogLocation or type(transmogLocation.slotID) ~= "number" then
+	if type(transmogLocation) ~= "table" or type(transmogLocation.slotID) ~= "number" then
 		error("Usage: local errorCode, errorString = C_Transmog.GetSlotUseError(transmogLocation)", 2);
 	end
 end
 
 function C_Transmog.GetSlotVisualInfo(transmogLocation)
-	if not transmogLocation or type(transmogLocation.slotID) ~= "number" then
+	if type(transmogLocation) ~= "table" or type(transmogLocation.slotID) ~= "number" then
 		error("Usage: local baseSourceID, baseVisualID, appliedSourceID, appliedVisualID, pendingSourceID, pendingVisualID, hasPendingUndo, isHideVisual, itemSubclass = C_Transmog.GetSlotVisualInfo(transmogLocation)", 2);
 	end
 
-	local baseSourceID, baseVisualID, appliedSourceID, appliedVisualID, pendingSourceID, pendingVisualID, itemSubclass;
+	local slotID = transmogLocation.slotID;
+	local isAppearance = transmogLocation:IsAppearance();
+
+	local baseSourceID, baseVisualID, pendingSourceID, pendingVisualID, appliedSourceID, appliedVisualID, itemSubclass;
 	local hasPendingUndo, isHideVisual = false, false;
-	local itemID = GetInventoryItemID("player", transmogLocation.slotID);
 
-	if itemID then
-		local subClassID = select(14, C_Item.GetItemInfo(itemID));
-		baseSourceID = itemID;
-		baseVisualID = ITEM_MODIFIED_APPEARANCE_STORAGE[itemID] and ITEM_MODIFIED_APPEARANCE_STORAGE[itemID][1] or 0;
-		itemSubclass = subClassID or 0;
+	if isAppearance then
+		local itemID = GetInventoryItemID("player", slotID);
+		if itemID then
+			baseSourceID = itemID;
+			baseVisualID = ITEM_MODIFIED_APPEARANCE_STORAGE[itemID] and ITEM_MODIFIED_APPEARANCE_STORAGE[itemID][1] or 0;
+			itemSubclass = select(14, C_Item.GetItemInfo(itemID));
+		end
+
+		if IsAtTransmogNPC() then
+			local appliedData = TRANSMOG_INFO:Get("Applied", slotID, transmogLocation.type);
+			if appliedData then
+				appliedSourceID = appliedData.transmogID;
+				appliedVisualID = appliedData.visualID;
+			end
+		else
+			local transmogID = GetInventoryTransmogID("player", slotID) or 0;
+			appliedSourceID = transmogID;
+			appliedVisualID = ITEM_MODIFIED_APPEARANCE_STORAGE[transmogID] and ITEM_MODIFIED_APPEARANCE_STORAGE[transmogID][1] or 0;
+		end
 	else
-		baseSourceID = 0;
-		baseVisualID = 0;
-		itemSubclass = 0;
+		local itemLink = GetInventoryItemLink("player", slotID);
+		if itemLink then
+			local enchantID = string.match(itemLink, "item:%d+:(%d+)");
+			enchantID = tonumber(enchantID);
+			if enchantID then
+				baseSourceID = enchantID;
+				baseVisualID = enchantID;
+			end
+		end
+
+		local appliedData = TRANSMOG_INFO:Get("Applied", slotID, transmogLocation.type);
+		if appliedData then
+			appliedSourceID = appliedData.transmogID;
+			appliedVisualID = appliedData.transmogID;
+		end
 	end
 
-	local appliedInfo = TRANSMOGRIFY_INFO[transmogLocation.slotID];
-	if appliedInfo then
-		appliedSourceID = appliedInfo.transmogID;
-		appliedVisualID = appliedInfo.visualID;
-	else
-		appliedSourceID = 0;
-		appliedVisualID = 0;
+	local pendingData = TRANSMOG_INFO:Get("Pending", slotID, transmogLocation.type);
+	if pendingData then
+		hasPendingUndo = pendingData.hasUndo;
+		pendingSourceID = pendingData.transmogID;
+		if isAppearance then
+			pendingVisualID = pendingData.visualID;
+			itemSubclass = select(14, C_Item.GetItemInfo(pendingData.transmogID));
+		else
+			pendingVisualID = pendingData.transmogID;
+		end
 	end
 
-	local pendingInfo = PENDING_INFO[transmogLocation.slotID];
-	if pendingInfo then
-		pendingSourceID = pendingInfo.transmogID;
-		pendingVisualID = pendingInfo.visualID;
-		hasPendingUndo = pendingInfo.hasUndo;
-	else
-		pendingSourceID = 0;
-		pendingVisualID = 0;
-	end
-
-	return baseSourceID, baseVisualID, appliedSourceID, appliedVisualID, pendingSourceID, pendingVisualID, hasPendingUndo, isHideVisual, itemSubclass;
+	return baseSourceID or 0, baseVisualID or 0, appliedSourceID or 0, appliedVisualID or 0, pendingSourceID or 0, pendingVisualID or 0, hasPendingUndo, isHideVisual, itemSubclass or 0;
 end
 
 function C_Transmog.IsAtTransmogNPC()
-	return WardrobeFrame and WardrobeFrame:IsShown();
+	return IsAtTransmogNPC();
 end
 
 function C_Transmog.LoadOutfit(outfitID)
@@ -356,8 +553,16 @@ function C_Transmog.LoadOutfit(outfitID)
 	if itemTransmogInfoList then
 		for slotID, transmogID in pairs(itemTransmogInfoList) do
 			if transmogID ~= NO_TRANSMOG_SOURCE_ID then
-				local pendingInfo = TransmogUtil.CreateTransmogPendingInfo(Enum.TransmogPendingType.Apply, transmogID);
-				SetPending(TransmogUtil.GetTransmogLocation(slotID, Enum.TransmogType.Appearance, Enum.TransmogModification.Main), pendingInfo);
+				SetPending(TransmogUtil.GetTransmogLocation(slotID, Enum.TransmogType.Appearance, Enum.TransmogModification.Main), TransmogUtil.CreateTransmogPendingInfo(Enum.TransmogPendingType.Apply, transmogID));
+			end
+		end
+	end
+
+	local enchantTransmogInfoList = SIRUS_COLLECTION_PLAYER_OUTFITS[outfitID] and SIRUS_COLLECTION_PLAYER_OUTFITS[outfitID].enchantList;
+	if enchantTransmogInfoList then
+		for slotID, transmogID in pairs(enchantTransmogInfoList) do
+			if transmogID ~= NO_TRANSMOG_SOURCE_ID then
+				SetPending(TransmogUtil.GetTransmogLocation(slotID, Enum.TransmogType.Illusion, Enum.TransmogModification.Main), TransmogUtil.CreateTransmogPendingInfo(Enum.TransmogPendingType.Apply, transmogID));
 			end
 		end
 	end
@@ -366,7 +571,7 @@ function C_Transmog.LoadOutfit(outfitID)
 end
 
 function C_Transmog.SetPending(transmogLocation, pendingInfo)
-	if not transmogLocation or type(transmogLocation.slotID) ~= "number" or not pendingInfo or type(pendingInfo.transmogID) ~= "number" then
+	if type(transmogLocation) ~= "table" or type(transmogLocation.slotID) ~= "number" or type(pendingInfo) ~= "table" or type(pendingInfo.transmogID) ~= "number" then
 		error("Usage: C_Transmog.SetPending(transmogLocation, pendingInfo)", 2);
 	end
 
@@ -376,27 +581,74 @@ function C_Transmog.SetPending(transmogLocation, pendingInfo)
 	end
 end
 
+function C_Item.GetAppliedItemTransmogInfo(itemLocation)
+	local appliedSourceID, appliedIllusionID;
+
+	local slotID = itemLocation:GetEquipmentSlot();
+	if slotID then
+		local appliedAppearanceData = TRANSMOG_INFO:Get("Applied", slotID, Enum.TransmogType.Appearance);
+		local appliedIllusionData = TRANSMOG_INFO:Get("Applied", slotID, Enum.TransmogType.Illusion);
+
+		if appliedAppearanceData then
+			appliedSourceID = appliedAppearanceData.transmogID;
+		end
+
+		if appliedIllusionData then
+			appliedIllusionID = appliedIllusionData.transmogID;
+		end
+	end
+
+	return CreateAndInitFromMixin(ItemTransmogInfoMixin, appliedSourceID or 0, appliedIllusionID or 0);
+end
+
+function C_Item.GetBaseItemTransmogInfo(itemLocation)
+	local slotID = itemLocation:GetEquipmentSlot();
+
+	local baseSourceID = GetInventoryItemID("player", slotID);
+
+	local itemLink = GetInventoryItemLink("player", slotID);
+	if itemLink then
+		local enchantID = string.match(itemLink, "item:%d+:(%d+)");
+		enchantID = tonumber(enchantID);
+		if enchantID then
+			baseIllusionID = enchantID;
+		end
+	end
+
+	return CreateAndInitFromMixin(ItemTransmogInfoMixin, baseSourceID or 0, baseIllusionID or 0);
+end
+
 function EventHandler:ASMSG_TRANSMOGRIFICATION_MENU_OPEN(msg)
 	SendServerMessage("ACMSG_SHOP_REFUNDABLE_PURCHASE_LIST_REQUEST");
 
-	for _, block in pairs({strsplit(";", msg)}) do
-		local slotID, transmogID = strsplit(":", block);
+	for _, block in ipairs({strsplit(";", msg)}) do
+		local slotID, transmogID, enchantID = strsplit(":", block);
 		slotID = tonumber(slotID);
 		transmogID = tonumber(transmogID);
+		enchantID = tonumber(enchantID);
 
-		if slotID and TRANSMOG_SLOTS[slotID] and transmogID then
-			local sourceInfo = ITEM_MODIFIED_APPEARANCE_STORAGE[transmogID];
-			local category, subCategory = GetItemModifiedAppearanceCategoryInfo(transmogID, true);
+		if slotID then
+			if transmogID and transmogID ~= 0 then
+				local sourceInfo = ITEM_MODIFIED_APPEARANCE_STORAGE[transmogID];
+				local category, subCategory = GetItemModifiedAppearanceCategoryInfo(transmogID, true);
 
-			if sourceInfo then
-				TRANSMOGRIFY_INFO[slotID] = {
-					isTransmogrified = true,
-					slotID = slotID,
-					transmogID = transmogID,
-					visualID = sourceInfo[1];
-					category = category;
-					subCategoryID = subCategory;
-				};
+				if sourceInfo then
+					local appliedAppearanceData = TRANSMOG_INFO:Get("Applied", slotID, Enum.TransmogType.Appearance, true);
+					appliedAppearanceData.isTransmogrified = true;
+					appliedAppearanceData.slotID = slotID;
+					appliedAppearanceData.transmogID = transmogID;
+					appliedAppearanceData.visualID = sourceInfo[1];
+					appliedAppearanceData.category = category;
+					appliedAppearanceData.subCategoryID = subCategory;
+				end
+			end
+
+			if enchantID and enchantID ~= 0 then
+				local appliedIllusionData = TRANSMOG_INFO:Get("Applied", slotID, Enum.TransmogType.Illusion, true);
+				appliedIllusionData.isTransmogrified = true;
+				appliedIllusionData.slotID = slotID;
+				appliedIllusionData.transmogID = enchantID;
+				appliedIllusionData.visualID = enchantID;
 			end
 		end
 	end
@@ -409,40 +661,53 @@ function EventHandler:ASMSG_TRANSMOGRIFICATION_MENU_CLOSE(msg)
 end
 
 function EventHandler:ASMSG_TRANSMOGRIFICATION_PREPARE_RESPONSE(msg)
-	local slotID, transmogID, errorType, cost = strsplit(":", msg);
+	local slotID, transmogID, enchantID, errorType, transmogCost, enchantCost = strsplit(":", msg);
 	slotID = tonumber(slotID);
 	transmogID = tonumber(transmogID);
+	enchantID = tonumber(enchantID);
 	errorType = tonumber(errorType);
+	transmogCost = tonumber(transmogCost) or 0;
+	enchantCost = tonumber(enchantCost) or 0;
 
-	if slotID and transmogID and PENDING_INFO[slotID] then
-		if errorType == 0 then
-			PENDING_INFO[slotID].transmogID = transmogID;
-			PENDING_INFO[slotID].visualID = ITEM_MODIFIED_APPEARANCE_STORAGE[transmogID] and ITEM_MODIFIED_APPEARANCE_STORAGE[transmogID][1] or 0;
+	if errorType == 0 then
+		local pendingData = TRANSMOG_INFO:Get("Pending", slotID, Enum.TransmogType.Appearance);
+		if pendingData and not pendingData.hasPending then
+			pendingData.transmogID = transmogID;
+			pendingData.visualID = ITEM_MODIFIED_APPEARANCE_STORAGE[transmogID] and ITEM_MODIFIED_APPEARANCE_STORAGE[transmogID][1] or 0;
+			pendingData.isPendingCollected = true;
+			pendingData.canTransmogrify = true;
+			pendingData.hasPending = true;
+			pendingData.hasUndo = false;
+			pendingData.errorType = errorType;
+			pendingData.cost = transmogCost;
 
-			PENDING_INFO[slotID].isPendingCollected = true;
-			PENDING_INFO[slotID].canTransmogrify = true;
-			PENDING_INFO[slotID].hasPending = true;
-			PENDING_INFO[slotID].hasUndo = false;
-			PENDING_INFO[slotID].errorType = errorType;
-			PENDING_INFO[slotID].cost = tonumber(cost) or 0;
+			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_UPDATE, CreateAndSetFromMixin(TransmogLocationMixin, slotID, Enum.TransmogType.Appearance, 0), "set");
+		end
 
-			local eventTransmogLocation = CreateFromMixins(TransmogLocationMixin);
-			eventTransmogLocation:Set(slotID, PENDING_INFO[slotID].transmogType, PENDING_INFO[slotID].transmogModification);
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_UPDATE, eventTransmogLocation, "set");
-		else
-			local error = _G["TRANSMOGRIFY_ERROR_"..errorType];
-			if error then
-				UIErrorsFrame:AddMessage(error, 1.0, 0.1, 0.1, 1.0);
-			end
+		pendingData = TRANSMOG_INFO:Get("Pending", slotID, Enum.TransmogType.Illusion);
+		if pendingData and not pendingData.hasPending then
+			pendingData.transmogID = enchantID;
+			pendingData.visualID = enchantID;
+			pendingData.isPendingCollected = true;
+			pendingData.canTransmogrify = true;
+			pendingData.hasPending = true;
+			pendingData.hasUndo = false;
+			pendingData.errorType = errorType;
+			pendingData.cost = enchantCost;
 
-			local transmogType = PENDING_INFO[slotID].transmogType or 0;
-			local transmogModification = PENDING_INFO[slotID].transmogModification or 0;
+			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_UPDATE, CreateAndSetFromMixin(TransmogLocationMixin, slotID, Enum.TransmogType.Illusion, 0), "set");
+		end
+	else
+		local error = _G["TRANSMOGRIFY_ERROR_"..errorType];
+		if error then
+			UIErrorsFrame:AddMessage(error, 1.0, 0.1, 0.1, 1.0);
+		end
 
-			PENDING_INFO[slotID] = nil;
-
-			local eventTransmogLocation = CreateFromMixins(TransmogLocationMixin);
-			eventTransmogLocation:Set(slotID, transmogType, transmogModification);
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_UPDATE, eventTransmogLocation, "clear");
+		if slotID then
+			TRANSMOG_INFO:Clear("Pending", slotID, Enum.TransmogType.Appearance);
+			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_UPDATE, CreateAndSetFromMixin(TransmogLocationMixin, slotID, Enum.TransmogType.Appearance, 0), "clear");
+			TRANSMOG_INFO:Clear("Pending", slotID, Enum.TransmogType.Illusion);
+			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_UPDATE, CreateAndSetFromMixin(TransmogLocationMixin, slotID, Enum.TransmogType.Illusion, 0), "clear");
 		end
 	end
 end
@@ -451,26 +716,31 @@ function EventHandler:ASMSG_TRANSMOGRIFICATION_APPLY_RESPONSE(msg)
 	msg = tonumber(msg);
 
 	if msg == 0 then
-		for slotID, transmogInfo in pairs(PENDING_INFO) do
-			if transmogInfo.type == Enum.TransmogPendingType.Apply then
-				TRANSMOGRIFY_INFO[slotID] = TRANSMOGRIFY_INFO[slotID] or {};
-				TRANSMOGRIFY_INFO[slotID].isTransmogrified = true;
-				TRANSMOGRIFY_INFO[slotID].slotID = slotID;
-				TRANSMOGRIFY_INFO[slotID].transmogID = transmogInfo.transmogID;
-				TRANSMOGRIFY_INFO[slotID].visualID = ITEM_MODIFIED_APPEARANCE_STORAGE[transmogInfo.transmogID] and ITEM_MODIFIED_APPEARANCE_STORAGE[transmogInfo.transmogID][1] or 0;
-			elseif transmogInfo.type == Enum.TransmogPendingType.Revert then
-				TRANSMOGRIFY_INFO[slotID] = nil;
-			end
+		for slotID, transmogData in pairs(TRANSMOG_INFO:Get("Pending")) do
+			for transmogType, pendingData in pairs(transmogData) do
+				if pendingData.pendingType == Enum.TransmogPendingType.Apply then
+					if pendingData.transmogID and pendingData.transmogID ~= NO_TRANSMOG_SOURCE_ID then
+						local appliedData = TRANSMOG_INFO:Get("Applied", slotID, transmogType, true);
+						appliedData.isTransmogrified = true;
+						appliedData.slotID = slotID;
+						appliedData.transmogID = pendingData.transmogID;
+						if transmogType == Enum.TransmogType.Appearance then
+							appliedData.visualID = ITEM_MODIFIED_APPEARANCE_STORAGE[pendingData.transmogID] and ITEM_MODIFIED_APPEARANCE_STORAGE[pendingData.transmogID][1] or 0;
+						else
+							appliedData.visualID = pendingData.transmogID;
+						end
+					end
+				elseif pendingData.pendingType == Enum.TransmogPendingType.Revert then
+					TRANSMOG_INFO:Clear("Applied", slotID, transmogType);
+				end
 
-			local slotDescriptor = TRANSMOG_SLOTS[slotID];
-			if slotDescriptor then
-				local transmogLocation = TransmogUtil.CreateTransmogLocation(slotDescriptor, Enum.TransmogType.Appearance, Enum.TransmogModification.Main);
-
-				FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_SUCCESS, transmogLocation);
+				FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_SUCCESS, CreateAndSetFromMixin(TransmogLocationMixin, slotID, transmogType, Enum.TransmogModification.Main));
 			end
 		end
 
-		table.wipe(PENDING_INFO);
+		TRANSMOG_INFO:Clear("Pending");
+
+
 	else
 		local error = _G["TRANSMOGRIFY_ERROR_"..msg];
 		if error then

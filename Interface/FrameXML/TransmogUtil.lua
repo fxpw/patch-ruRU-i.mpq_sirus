@@ -20,19 +20,21 @@ TransmogSlotOrder = {
 
 ItemTransmogInfoMixin = {};
 
-function ItemTransmogInfoMixin:Init(appearanceID)
+function ItemTransmogInfoMixin:Init(appearanceID, illusionID)
 	self.appearanceID = appearanceID;
+	self.illusionID = illusionID or NO_TRANSMOG_SOURCE_ID;
 end
 
 function ItemTransmogInfoMixin:IsEqual(itemTransmogInfo)
 	if not itemTransmogInfo then
 		return false;
 	end
-	return self.appearanceID == itemTransmogInfo.appearanceID;
+	return self.appearanceID == itemTransmogInfo.appearanceID and self.illusionID == itemTransmogInfo.illusionID;
 end
 
 function ItemTransmogInfoMixin:Clear()
 	self.appearanceID = NO_TRANSMOG_SOURCE_ID;
+	self.illusionID = NO_TRANSMOG_SOURCE_ID;
 end
 
 TransmogUtil = {};
@@ -94,11 +96,11 @@ end
 
 function TransmogUtil.GetCorrespondingHandTransmogLocation(transmogLocation)
 	if transmogLocation:IsMainHand() then
-		return TransmogUtil.GetTransmogLocation("MAINHANDSLOT", Enum.TransmogType.Appearance, Enum.TransmogModification.None);
+		return TransmogUtil.GetTransmogLocation("MAINHANDSLOT", Enum.TransmogType.Appearance, Enum.TransmogModification.Main);
 	elseif transmogLocation:IsOffHand() then
-		return TransmogUtil.GetTransmogLocation("SECONDARYHANDSLOT", Enum.TransmogType.Appearance, Enum.TransmogModification.None);
+		return TransmogUtil.GetTransmogLocation("SECONDARYHANDSLOT", Enum.TransmogType.Appearance, Enum.TransmogModification.Main);
 	elseif transmogLocation:IsRanged() then
-		return TransmogUtil.GetTransmogLocation("RANGEDSLOT", Enum.TransmogType.Appearance, Enum.TransmogModification.None);
+		return TransmogUtil.GetTransmogLocation("RANGEDSLOT", Enum.TransmogType.Appearance, Enum.TransmogModification.Main);
 	end
 end
 
@@ -142,9 +144,6 @@ function TransmogUtil.GetRelevantTransmogID(itemTransmogInfo, transmogLocation)
 	if transmogLocation.type == Enum.TransmogType.Illusion then
 		return itemTransmogInfo.illusionID;
 	end
-	if transmogLocation.modification == Enum.TransmogModification.Secondary then
-		return itemTransmogInfo.secondaryAppearanceID;
-	end
 	return itemTransmogInfo.appearanceID;
 end
 
@@ -160,6 +159,12 @@ end
 function TransmogUtil.OpenCollectionToItem(sourceID)
 	if TransmogUtil.OpenCollectionUI() then
 		WardrobeCollectionFrame:GoToItem(sourceID);
+	end
+end
+
+function TransmogUtil.OpenCollectionToIllusion(sourceID)
+	if TransmogUtil.OpenCollectionUI() then
+		WardrobeCollectionFrame:GoToIllusion(sourceID);
 	end
 end
 

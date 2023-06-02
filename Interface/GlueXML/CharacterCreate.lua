@@ -117,6 +117,9 @@ function CharacterCreateMixin:OnShow()
 		self.CustomizationFrame.DressCheckButton:Hide()
 	end
 
+	self.NavigationFrame.CreateNameEditBox:Show()
+	self.NavigationFrame.RandomNameButton:Show()
+
 	self:UpdateBackground()
 
 	if PAID_SERVICE_TYPE == PAID_FACTION_CHANGE and select(3, C_CharacterCreation.PaidChange_GetCurrentFaction()) == PLAYER_FACTION_GROUP.Neutral then
@@ -173,7 +176,7 @@ function CharacterCreateMixin:OnEvent(event, ...)
 end
 
 local RESET_ROTATION_TIME = 0.5
-function CharacterCreateMixin:OnUpdate( elapsed )
+function CharacterCreateMixin:OnUpdate(elapsed)
 	if self.rotationStartX then
 		local x = GetCursorPosition()
 		local diff = (x - self.rotationStartX) * 0.6
@@ -208,7 +211,7 @@ function CharacterCreateMixin:OnKeyDown(key)
 	end
 end
 
-function CharacterCreateMixin:OnMouseUp( button )
+function CharacterCreateMixin:OnMouseUp(button)
 	if button == "LeftButton" then
 		self.rotationStartX = nil
 		self.rotationResetTime = nil
@@ -227,7 +230,7 @@ function CharacterCreateMixin:OnMouseUp( button )
 	end
 end
 
-function CharacterCreateMixin:OnMouseDown( button )
+function CharacterCreateMixin:OnMouseDown(button)
 	if button == "LeftButton" then
 		self.rotationResetX = nil
 		self.rotationResetCur = nil
@@ -291,7 +294,7 @@ function CharacterCreateMixin:CreateClassButtons()
 	end
 end
 
-function CharacterCreateMixin:GetClientRaceInfo( raceIndex )
+function CharacterCreateMixin:GetClientRaceInfo(raceIndex)
 	return self.clientRaceData[raceIndex]
 end
 
@@ -423,7 +426,7 @@ function CharacterCreateMixin:CreateRaceButtons()
 	end
 end
 
-local function updateButtonMacro( frame, onlyDeselected, ignoredButton )
+local function updateButtonMacro(frame, onlyDeselected, ignoredButton)
 	if onlyDeselected then
 		if frame ~= ignoredButton then
 			frame:SetChecked(false)
@@ -434,7 +437,7 @@ local function updateButtonMacro( frame, onlyDeselected, ignoredButton )
 	end
 end
 
-function CharacterCreateMixin:UpdateRaceButtons( onlyDeselected, ignoredButton )
+function CharacterCreateMixin:UpdateRaceButtons(onlyDeselected, ignoredButton)
 	for frame in self.allianceRaceButtonPool:EnumerateActive() do
 		updateButtonMacro(frame, onlyDeselected, ignoredButton)
 	end
@@ -446,19 +449,19 @@ function CharacterCreateMixin:UpdateRaceButtons( onlyDeselected, ignoredButton )
 	end
 end
 
-function CharacterCreateMixin:UpdateClassButtons( onlyDeselected, ignoredButton )
+function CharacterCreateMixin:UpdateClassButtons(onlyDeselected, ignoredButton)
 	for frame in self.classButtonPool:EnumerateActive() do
 		updateButtonMacro(frame, onlyDeselected, ignoredButton)
 	end
 end
 
-function CharacterCreateMixin:UpdateGenderButtons( onlyDeselected, ignoredButton )
+function CharacterCreateMixin:UpdateGenderButtons(onlyDeselected, ignoredButton)
 	for frame in self.genderButtonPool:EnumerateActive() do
 		updateButtonMacro(frame, onlyDeselected, ignoredButton)
 	end
 end
 
-function CharacterCreateMixin:PlaySelectRaceAndClassAnim( isReverce, callback )
+function CharacterCreateMixin:PlaySelectRaceAndClassAnim(isReverce, callback)
 	self.AllianceRacesFrame:PlayAnim(isReverce, callback)
 	self.HordeRacesFrame:PlayAnim(isReverce)
 	self.NeutralRacesFrame:PlayAnim(isReverce)
@@ -534,7 +537,7 @@ function CharacterCreateRaceButtonMixin:OnMouseUp(button)
 
 			self:SetChecked(true)
 
-			self.mainFrame:UpdateRaceButtons( true, self )
+			self.mainFrame:UpdateRaceButtons(true, self)
 			self:UpdateChecked()
 
 			self.mainFrame:UpdateClassButtons()
@@ -752,7 +755,7 @@ function CharacterCreateClassButtonMixin:OnMouseUp(button)
 
 			self:SetChecked(true)
 
-			self.mainFrame:UpdateClassButtons( true, self )
+			self.mainFrame:UpdateClassButtons(true, self)
 			self:UpdateChecked()
 
 			self.mainFrame:UpdateBackground()
@@ -817,7 +820,7 @@ function CharacterCreateGenderButtonMixin:OnMouseUp(button)
 
 		self:SetChecked(true)
 
-		self.mainFrame:UpdateGenderButtons( true, self )
+		self.mainFrame:UpdateGenderButtons(true, self)
 		self:UpdateChecked()
 
 		self.mainFrame:BuildRaceData()
@@ -862,7 +865,7 @@ function CharacterCreateAllianceRacesFrameMixin:Init()
 	self.duration = 0.500
 end
 
-function CharacterCreateAllianceRacesFrameMixin:SetPosition( easing )
+function CharacterCreateAllianceRacesFrameMixin:SetPosition(easing)
 	if easing then
 		self:ClearAndSetPoint("TOPLEFT", easing, -70)
 	else
@@ -878,7 +881,7 @@ function CharacterCreateHordeRacesFrameMixin:Init()
 	self.duration = 0.500
 end
 
-function CharacterCreateHordeRacesFrameMixin:SetPosition( easing )
+function CharacterCreateHordeRacesFrameMixin:SetPosition(easing)
 	if easing then
 		self:ClearAndSetPoint("TOPRIGHT", easing, -70)
 	else
@@ -894,7 +897,7 @@ function CharacterCreateNeutralRacesFrameMixin:Init()
 	self.duration = 0.500
 end
 
-function CharacterCreateNeutralRacesFrameMixin:SetPosition( easing )
+function CharacterCreateNeutralRacesFrameMixin:SetPosition(easing)
 	if easing then
 		self:ClearAndSetPoint("TOP", 0, easing)
 	else
@@ -910,7 +913,7 @@ function CharacterCreateClassesFrameMixin:Init()
 	self.duration = 0.500
 end
 
-function CharacterCreateClassesFrameMixin:SetPosition( easing )
+function CharacterCreateClassesFrameMixin:SetPosition(easing)
 	if easing then
 		self:ClearAndSetPoint("BOTTOM", 0, easing)
 	else
@@ -926,7 +929,7 @@ function CharacterCreateGenderFrameMixin:Init()
 	self.duration = 0.500
 end
 
-function CharacterCreateGenderFrameMixin:SetPosition( easing )
+function CharacterCreateGenderFrameMixin:SetPosition(easing)
 	if easing then
 		self:ClearAndSetPoint("BOTTOM", 0, easing)
 	else
@@ -957,7 +960,7 @@ function CharacterCreateInteractiveButtonAlphaAnimMixin:OutFade()
 	self.endAlpha 		= self.initMinAlpha
 end
 
-function CharacterCreateInteractiveButtonAlphaAnimMixin:UpdateAlpha( elapsed )
+function CharacterCreateInteractiveButtonAlphaAnimMixin:UpdateAlpha(elapsed)
 	if not self.startAlpha or not self.endAlpha then
 		return
 	end

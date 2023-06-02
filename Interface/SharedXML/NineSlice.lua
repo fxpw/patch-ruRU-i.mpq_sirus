@@ -212,6 +212,10 @@ function NineSlicePanelMixin:OnLoad()
 	end
 end
 
+function NineSlicePanelMixin:OnShow()
+	self:SetParentFrameLevel()
+end
+
 function NineSlicePanelMixin:SetCenterColor(r, g, b, a)
 	local center = self["Center"];
 	if center then
@@ -262,5 +266,23 @@ function NineSlicePanelMixin:SetBorderBlendMode(blendMode)
 				piece:SetBlendMode(blendMode);
 			end
 		end
+	end
+end
+
+function NineSlicePanelMixin:SetBorderAlpha(alpha)
+	for _, section in ipairs(nineSliceSetup) do
+		if section.pieceName ~= "Center" then
+			local piece = self[section.pieceName];
+			if piece then
+				piece:SetAlpha(alpha);
+			end
+		end
+	end
+end
+
+function NineSlicePanelMixin:SetCenterAlpha(alpha)
+	local center = self["Center"];
+	if center then
+		center:SetAlpha(alpha);
 	end
 end

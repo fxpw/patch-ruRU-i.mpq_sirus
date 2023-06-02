@@ -347,7 +347,7 @@ function PetJournal_UpdatePetDisplay()
 		PetJournal.PetDisplay.ModelScene:SetCreature(creatureID);
 
 		if lootType == 16 then
-			PetJournal.PetDisplay.ModelScene.BuyFrame:SetShown(BattlePassFrame:GetEndTime() ~= 0 and not petIndex);
+			PetJournal.PetDisplay.ModelScene.BuyFrame:SetShown(C_BattlePass.GetSeasonTimeLeft() > 0 and not petIndex);
 			PetJournal.PetDisplay.ModelScene.BuyFrame.BuyButton:SetText(GO_TO_BATTLE_BASS);
 			PetJournal.PetDisplay.ModelScene.BuyFrame.BuyButton:SetEnabled(true);
 			PetJournal.PetDisplay.ModelScene.BuyFrame.PriceText:SetText("");
@@ -408,11 +408,11 @@ function PetJournalBuyButton_OnClick()
 
 	if PetJournal.selectedPetID then
 		local hash = C_PetJournal.GetPetInfoByPetID(PetJournal.selectedPetID);
-		local _, _, name, icon, _, lootType, currency, price, productID = C_PetJournal.GetPetInfoByPetHash(hash);
+		local _, _, name, icon, _, lootType, currency, price, productID, _, _, itemID = C_PetJournal.GetPetInfoByPetHash(hash);
 
 		if name then
 			if lootType == 16 then
-				BattlePassFrame:Show();
+				BattlePassFrame:ShowCardWithItem(itemID);
 			else
 				local productData = {
 					Texture = icon,
@@ -525,7 +525,7 @@ function PetJournalFilterDropDown_Initialize(self, level)
 	FilterDropDownSystem.Initialize(self, filterSystem, level);
 end
 
-function PetJournalFilterDropDown_AddInSortParameters(level)
+function PetJournalFilterDropDown_AddInSortParameters(filterSystem, level)
 	local sortParameters = {
 		{ text = NAME, parameter = LE_SORT_BY_NAME, },
 		{ text = TYPE, parameter = LE_SORT_BY_PETTYPE, },
@@ -536,7 +536,7 @@ function PetJournalFilterDropDown_AddInSortParameters(level)
 			C_PetJournal.SetPetSortParameter(sortParameter.parameter);
 		end
 		local isSelected = function() return C_PetJournal.GetPetSortParameter() == sortParameter.parameter end;
-		FilterDropDownSystem.AddRadioButton(sortParameter.text, setSelected, isSelected, level);
+		FilterDropDownSystem.AddRadioButtonToFilterSystem(filterSystem, sortParameter.text, setSelected, isSelected, level);
 	end
 end
 

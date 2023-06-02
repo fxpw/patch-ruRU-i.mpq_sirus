@@ -284,6 +284,12 @@ end
 function PaperDollFrame_OnEvent (self, event, ...)
 	local unit = ...;
 
+	if event == "PLAYER_ENTERING_WORLD" and not self.transmogInfoReqest then
+		SendServerMessage("ACMSG_TRANSMOGRIFICATION_INFO_REQUEST", UnitGUID("player"));
+
+		self.transmogInfoReqest = true;
+	end
+
 	if event == "PLAYER_ENTERING_WORLD"
 	or (event == "UNIT_INVENTORY_CHANGED" and unit == "player")
 	then
@@ -1271,8 +1277,6 @@ function CharacterSpellCritChance_OnEnter (self)
 end
 
 function PaperDollFrame_OnShow(self)
-	SendServerMessage("ACMSG_TRANSMOGRIFICATION_INFO_REQUEST", UnitGUID("player"))
-
 	PaperDollSidebarTab1.Hider:Show()
 	PaperDollSidebarTab1.Highlights:Show()
 	PaperDollSidebarTab1.TabBg:SetTexCoord(0.01562500, 0.79687500, 0.61328125, 0.78125000)
@@ -1574,7 +1578,17 @@ function PaperDollItemSlotButton_OnClick (self, button)
 			end
 		end
 	else
-		UseInventoryItem(self:GetID());
+		local id = self:GetID();
+
+		if ( ItemUpgradeFrame and ItemUpgradeFrame:IsShown() ) then
+			local itemLocation = ItemLocation:CreateFromEquipmentSlot(id);
+			if C_ItemUpgrade.CanUpgradeItem(itemLocation) then
+				C_ItemUpgrade.SetItemUpgradeFromLocation(itemLocation);
+			end
+			return;
+		end
+
+		UseInventoryItem(id);
 	end
 end
 

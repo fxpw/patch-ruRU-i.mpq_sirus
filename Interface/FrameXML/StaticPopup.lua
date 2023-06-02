@@ -1,12 +1,27 @@
 StaticPopup_DisplayedFrames = { };
 
 STATICPOPUP_NUMDIALOGS = 4;
+STATICPOPUP_TIMEOUT = 60;
 STATICPOPUP_TEXTURE_ALERT = "Interface\\DialogFrame\\UI-Dialog-Icon-AlertNew";
 STATICPOPUP_TEXTURE_ALERTGEAR = "Interface\\DialogFrame\\UI-Dialog-Icon-AlertOther";
 StaticPopupDialogs = { };
 
 local AcceptBattlefieldPort = AcceptBattlefieldPort
 local GuildInvite = GuildInvite
+
+function StaticPopup_StandardConfirmationTextHandler(self, expectedText)
+	local parent = self:GetParent();
+	parent.button1:SetEnabled(ConfirmationEditBoxMatches(parent.editBox, expectedText));
+end
+
+function StaticPopup_StandardNonEmptyTextHandler(self)
+	local parent = self:GetParent();
+	parent.button1:SetEnabled(UserEditBoxNonEmpty(parent.editBox));
+end
+
+function StaticPopup_StandardEditBoxOnEscapePressed(self)
+	self:GetParent():Hide();
+end
 
 StaticPopupDialogs["CONFIRM_OVERWRITE_EQUIPMENT_SET"] = {
 	text = CONFIRM_OVERWRITE_EQUIPMENT_SET,
@@ -167,15 +182,10 @@ StaticPopupDialogs["CONFIRM_EXCHANGE_LEGENDARY_ITEM"] = {
 		end
 	end,
 	EditBoxOnTextChanged = function (self)
-		local parent = self:GetParent()
-		if string.upper(parent.editBox:GetText()) == CONFIRM_TEXT_AGREE then
-			parent.button1:Enable()
-		else
-			parent.button1:Disable()
-		end
+		StaticPopup_StandardConfirmationTextHandler(self, CONFIRM_TEXT_AGREE);
 	end,
 	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide()
+		StaticPopup_StandardEditBoxOnEscapePressed(self)
 		ClearCursor()
 	end,
 	timeout = 0,
@@ -539,7 +549,7 @@ StaticPopupDialogs["CONFIRM_BATTLEFIELD_ENTRY"] = {
 	button1 = ENTER_BATTLE,
 	button2 = LEAVE_QUEUE,
 	OnShow = function(self, data)
-		if IsDevClient() and GetCVarBool("devSkipBattlegroundInvite") then
+		if IsDevClient(true) and GetCVarBool("devSkipBattlegroundInvite") then
 			C_Timer:After(0.5, function() AcceptBattlefieldPort(data, 1) end)
 		end
 
@@ -555,6 +565,8 @@ StaticPopupDialogs["CONFIRM_BATTLEFIELD_ENTRY"] = {
        	self.elapsedTime = 0
         self.animTime = GetBattlefieldPortExpiration(self.data) + 1
         self.fromValue = (GetBattlefieldPortExpiration(self.data) + 1) / 60
+
+		FlashClientIcon()
 	end,
 	OnHide = function(self, data)
 		self.bar:Hide()
@@ -662,6 +674,7 @@ StaticPopupDialogs["BFMGR_INVITED_TO_ENTER"] = {
 	button2 = CANCEL,
 	OnShow = function(self)
 		self.timeleft = select(4, GetWorldPVPQueueStatus(1));
+		FlashClientIcon()
 	end,
 	OnAccept = function(self, data)
 		BattlefieldMgrEntryInviteResponse(1,1);
@@ -725,9 +738,7 @@ StaticPopupDialogs["CONFIRM_GUILD_PROMOTE"] = {
 	button1 = ACCEPT,
 	button2 = CANCEL,
 	OnAccept = function(self, name)
-		GuildSetLeader(name)
-	end,
-	OnCancel = function (self)
+		GuildSetLeader(name);
 	end,
 	timeout = 0,
 	whileDead = 1,
@@ -752,16 +763,9 @@ StaticPopupDialogs["CONFIRM_GUILD_PROMOTE"] = {
 		end
 	end,
 	EditBoxOnTextChanged = function (self)
-		local parent = self:GetParent();
-		if ( strupper(parent.editBox:GetText()) == CONFIRM_GUILD_PROMOTE_WORD ) then
-			parent.button1:Enable();
-		else
-			parent.button1:Disable();
-		end
+		StaticPopup_StandardConfirmationTextHandler(self, CONFIRM_GUILD_PROMOTE_WORD);
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 };
 
 StaticPopupDialogs["RENAME_GUILD"] = {
@@ -1122,9 +1126,7 @@ StaticPopupDialogs["JOIN_CHANNEL"] = {
 		editBox:SetText("");
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	hideOnEscape = 1
 };
 
@@ -1153,9 +1155,7 @@ StaticPopupDialogs["CHANNEL_INVITE"] = {
 		editBox:SetText("");
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	hideOnEscape = 1
 };
 
@@ -1184,9 +1184,7 @@ StaticPopupDialogs["CHANNEL_PASSWORD"] = {
 		editBox:SetText("");
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	hideOnEscape = 1
 };
 
@@ -1223,9 +1221,7 @@ StaticPopupDialogs["NAME_CHAT"] = {
 		FCF_DockUpdate();
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function (self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	hideOnEscape = 1
 };
 
@@ -1241,10 +1237,9 @@ StaticPopupDialogs["RESET_CHAT"] = {
 		end
 	end,
 	timeout = 0,
-	EditBoxOnEscapePressed = function (self)
-		self:GetParent():Hide();
-	end,
-	hideOnEscape = 1
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
+	hideOnEscape = 1,
+	exclusive = 1,
 };
 
 StaticPopupDialogs["HELP_TICKET_ABANDON_CONFIRM"] = {
@@ -1452,13 +1447,13 @@ StaticPopupDialogs["RESURRECT"] = {
 			StaticPopup_Show("DEATH");
 		end
 	end,
-	timeout = 60,
+	timeout = STATICPOPUP_TIMEOUT,
 	whileDead = 1,
 	cancels = "DEATH",
 	interruptCinematic = 1,
 	notClosableByLogout = 1,
 	hideOnEscape = 1,
-	noCancelOnReuse = 1
+	noCancelOnReuse = 1,
 };
 StaticPopupDialogs["RESURRECT_NO_SICKNESS"] = {
 	StartDelay = GetCorpseRecoveryDelay,
@@ -1478,7 +1473,7 @@ StaticPopupDialogs["RESURRECT_NO_SICKNESS"] = {
 			StaticPopup_Show("DEATH");
 		end
 	end,
-	timeout = 60,
+	timeout = STATICPOPUP_TIMEOUT,
 	whileDead = 1,
 	cancels = "DEATH",
 	interruptCinematic = 1,
@@ -1502,7 +1497,7 @@ StaticPopupDialogs["RESURRECT_NO_TIMER"] = {
 			StaticPopup_Show("DEATH");
 		end
 	end,
-	timeout = 60,
+	timeout = STATICPOPUP_TIMEOUT,
 	whileDead = 1,
 	cancels = "DEATH",
 	interruptCinematic = 1,
@@ -1544,7 +1539,7 @@ StaticPopupDialogs["TRADE"] = {
 	OnCancel = function(self)
 		CancelTrade();
 	end,
-	timeout = 60,
+	timeout = STATICPOPUP_TIMEOUT,
 	hideOnEscape = 1
 };
 StaticPopupDialogs["PARTY_INVITE"] = {
@@ -1574,7 +1569,7 @@ StaticPopupDialogs["PARTY_INVITE"] = {
 			self:Hide();
 		end
 	end,
-	timeout = 60,
+	timeout = STATICPOPUP_TIMEOUT,
 	whileDead = 1,
 	hideOnEscape = 1
 };
@@ -1588,7 +1583,7 @@ StaticPopupDialogs["GUILD_INVITE"] = {
 	OnCancel = function(self)
 		DeclineGuild();
 	end,
-	timeout = 60,
+	timeout = STATICPOPUP_TIMEOUT,
 	whileDead = 1,
 	hideOnEscape = 1
 };
@@ -1636,16 +1631,14 @@ StaticPopupDialogs["CHAT_CHANNEL_INVITE"] = {
 		StaticPopupDialogs["CHAT_CHANNEL_INVITE"].inviteAccepted = 1;
 		self:GetParent():Hide();
 	end,
-	EditBoxOnEscapePressed = function(self, data)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	OnHide = function(self, data)
 		local name = data;
 		DeclineInvite(name);
 	end,
-	timeout = 60,
+	timeout = STATICPOPUP_TIMEOUT,
 	whileDead = 1,
-	hideOnEscape = 1
+	hideOnEscape = 1,
 };
 
 StaticPopupDialogs["LEVEL_GRANT_PROPOSED"] = {
@@ -1662,7 +1655,7 @@ StaticPopupDialogs["LEVEL_GRANT_PROPOSED"] = {
 	OnHide = function()
 		DeclineLevelGrant();
 	end,
-	timeout = 60,
+	timeout = STATICPOPUP_TIMEOUT,
 	whileDead = 1,
 	hideOnEscape = 1
 };
@@ -1701,10 +1694,8 @@ StaticPopupDialogs["CHAT_CHANNEL_PASSWORD"] = {
 		ChatChannelPasswordHandler(self:GetParent(), data);
 		self:GetParent():Hide();
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end,
-	timeout = 60,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
+	timeout = STATICPOPUP_TIMEOUT,
 	whileDead = 1,
 	hideOnEscape = 1
 };
@@ -1719,7 +1710,7 @@ StaticPopupDialogs["ARENA_TEAM_INVITE"] = {
 	OnCancel = function(self)
 		DeclineArenaTeam();
 	end,
-	timeout = 60,
+	timeout = STATICPOPUP_TIMEOUT,
 	whileDead = 1,
 	hideOnEscape = 1
 };
@@ -1728,12 +1719,8 @@ StaticPopupDialogs["ARENA_TEAM_INVITE"] = {
 StaticPopupDialogs["CAMP"] = {
 	text = CAMP_TIMER,
 	button1 = CANCEL,
-	--button2 = CAMP_NOW,
 	OnAccept = function(self)
 		CancelLogout();
-		--ForceLogout();
-		-- uncomment the next line once forced logouts are completely implemented (they currently have a failure case)
-		-- this.timeleft = 0;
 	end,
 	OnHide = function(self)
 		if ( self.timeleft > 0 ) then
@@ -1745,6 +1732,7 @@ StaticPopupDialogs["CAMP"] = {
 	whileDead = 1,
 	hideOnEscape = 1
 };
+
 StaticPopupDialogs["QUIT"] = {
 	text = QUIT_TIMER,
 	button1 = QUIT_NOW,
@@ -1884,15 +1872,10 @@ StaticPopupDialogs["DELETE_GOOD_ITEM"] = {
 		end
 	end,
 	EditBoxOnTextChanged = function (self)
-		local parent = self:GetParent();
-		if ( strupper(parent.editBox:GetText()) ==  DELETE_ITEM_CONFIRM_STRING ) then
-			parent.button1:Enable();
-		else
-			parent.button1:Disable();
-		end
+		StaticPopup_StandardConfirmationTextHandler(self, DELETE_ITEM_CONFIRM_STRING);
 	end,
 	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
+		StaticPopup_StandardEditBoxOnEscapePressed(self);
 		ClearCursor();
 	end
 };
@@ -1990,9 +1973,7 @@ StaticPopupDialogs["ADD_FRIEND"] = {
 		AddFriend(parent.editBox:GetText());
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	exclusive = 1,
 	whileDead = 1,
@@ -2024,9 +2005,7 @@ StaticPopupDialogs["SET_FRIENDNOTE"] = {
 		SetFriendNotes(FriendsFrame.NotesID, parent.wideEditBox:GetText());
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	exclusive = 1,
 	whileDead = 1,
@@ -2058,9 +2037,7 @@ StaticPopupDialogs["SET_BNFRIENDNOTE"] = {
 		BNSetFriendNote(FriendsFrame.NotesID, parent.wideEditBox:GetText());
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	exclusive = 1,
 	whileDead = 1,
@@ -2087,9 +2064,7 @@ StaticPopupDialogs["ADD_IGNORE"] = {
 		AddIgnore(parent.editBox:GetText());
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	exclusive = 1,
 	whileDead = 1,
@@ -2116,9 +2091,7 @@ StaticPopupDialogs["ADD_MUTE"] = {
 		AddMute(parent.editBox:GetText());
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	exclusive = 1,
 	whileDead = 1,
@@ -2146,9 +2119,7 @@ StaticPopupDialogs["ADD_TEAMMEMBER"] = {
 		ArenaTeamInviteByName(PVPUI_ArenaTeamDetails.team, parent.editBox:GetText());
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	exclusive = 1,
 	whileDead = 1,
@@ -2176,9 +2147,7 @@ StaticPopupDialogs["ADD_GUILDMEMBER"] = {
 		GuildInvite(parent.editBox:GetText());
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	exclusive = 1,
 	whileDead = 1,
@@ -2206,9 +2175,7 @@ StaticPopupDialogs["ADD_RAIDMEMBER"] = {
 		InviteUnit(parent.editBox:GetText());
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	exclusive = 1,
 	hideOnEscape = 1
@@ -2262,9 +2229,7 @@ StaticPopupDialogs["ADD_GUILDRANK"] = {
 		CloseDropDownMenus();
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	exclusive = 1,
 	whileDead = 1,
@@ -2293,9 +2258,7 @@ StaticPopupDialogs["SET_GUILDMOTD"] = {
 		GuildSetMOTD(parent.wideEditBox:GetText());
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	exclusive = 1,
 	whileDead = 1,
@@ -2325,9 +2288,7 @@ StaticPopupDialogs["SET_GUILDPLAYERNOTE"] = {
 		GuildRosterSetPublicNote(GuildFrame.selectedGuildMemberIndex, parent.wideEditBox:GetText());
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	exclusive = 1,
 	whileDead = 1,
@@ -2359,9 +2320,7 @@ StaticPopupDialogs["SET_GUILDOFFICERNOTE"] = {
 		GuildRosterSetOfficerNote(GuildFrame.selectedGuildMemberIndex, parent.wideEditBox:GetText());
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	exclusive = 1,
 	whileDead = 1,
@@ -2416,7 +2375,7 @@ StaticPopupDialogs["DUEL_REQUESTED"] = {
 	OnCancel = function(self)
 		CancelDuel();
 	end,
-	timeout = 60,
+	timeout = STATICPOPUP_TIMEOUT,
 	hideOnEscape = 1
 };
 StaticPopupDialogs["DUEL_OUTOFBOUNDS"] = {
@@ -2430,7 +2389,7 @@ StaticPopupDialogs["UNLEARN_SKILL"] = {
 	OnAccept = function(self, index)
 		AbandonSkill(index);
 	end,
-	timeout = 60,
+	timeout = STATICPOPUP_TIMEOUT,
 	exclusive = 1,
 	whileDead = 1,
 	showAlert = 1,
@@ -2453,30 +2412,26 @@ StaticPopupDialogs["UNLEARN_PROFESSION"] = {
 		self.editBox:SetText("");
 	end,
 	EditBoxOnEnterPressed = function(self, index)
-		if ( self:GetParent().button1:IsEnabled() == 1 ) then
+		local parent = self:GetParent();
+		if ( parent.button1:IsEnabled() == 1 ) then
 			AbandonSkill(index);
-			self:GetParent():Hide();
+			parent:Hide();
 		end
 	end,
 	EditBoxOnTextChanged = function(self)
-		local parent = self:GetParent()
-		if string.upper(parent.editBox:GetText()) == CONFIRM_TEXT_AGREE then
-			parent.button1:Enable()
-		else
-			parent.button1:Disable()
-		end
+		StaticPopup_StandardConfirmationTextHandler(self, CONFIRM_TEXT_AGREE);
 	end,
 	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide()
-		ClearCursor()
+		StaticPopup_StandardEditBoxOnEscapePressed(self);
+		ClearCursor();
 	end,
-	timeout = 60,
+	timeout = STATICPOPUP_TIMEOUT,
 	exclusive = 1,
 	whileDead = 1,
 	showAlert = 1,
+	hideOnEscape = 1,
 	hasEditBox = 1,
 	maxLetters = 32,
-	hideOnEscape = 1
 };
 StaticPopupDialogs["XP_LOSS"] = {
 	text = CONFIRM_XP_LOSS,
@@ -2807,6 +2762,7 @@ StaticPopupDialogs["CONFIRM_TALENT_WIPE"] = {
 		end
 	end,
 	hasMoneyFrame = 1,
+	exclusive = 1,
 	timeout = 0,
 	hideOnEscape = 1
 };
@@ -2906,9 +2862,7 @@ StaticPopupDialogs["GOSSIP_ENTER_CODE"] = {
 		SelectGossipOption(data, parent.editBox:GetText(), true);
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	exclusive = 1,
 	hideOnEscape = 1
@@ -2934,9 +2888,7 @@ StaticPopupDialogs["GOSSIP_EDIT_BOX"] = {
 		SelectGossipOption(data, parent.editBox:GetText(), true);
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	exclusive = 1,
 	hideOnEscape = 1
@@ -2958,9 +2910,7 @@ StaticPopupDialogs["CREATE_COMBAT_FILTER"] = {
 		CombatConfig_CreateCombatFilter(parent.editBox:GetText());
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function (self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	OnHide = function (self)
 		self.editBox:SetText("");
 	end,
@@ -2982,9 +2932,7 @@ StaticPopupDialogs["COPY_COMBAT_FILTER"] = {
 		CombatConfig_CreateCombatFilter(parent.editBox:GetText(), parent.data);
 		parent:Hide();
 	end,
-	EditBoxOnEscapePressed = function (self)
-		self:GetParent():Hide();
-	end,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	OnHide = function (self)
 		self.editBox:SetText("");
 	end,
@@ -3100,11 +3048,7 @@ StaticPopupDialogs["VOTE_BOOT_REASON_REQUIRED"] = {
 		parent:Hide();
 	end,
 	EditBoxOnTextChanged = function(self)
-		if ( strtrim(self:GetText()) == "" ) then
-			self:GetParent().button1:Disable();
-		else
-			self:GetParent().button1:Enable();
-		end
+		StaticPopup_StandardNonEmptyTextHandler(self);
 	end,
 	OnShow = function(self)
 		self.button1:Disable();
@@ -3115,6 +3059,44 @@ StaticPopupDialogs["VOTE_BOOT_REASON_REQUIRED"] = {
 	timeout = 0,
 	whileDead = 1,
 	interruptCinematic = 1,
+};
+
+StaticPopupDialogs["VOTE_BOOT_PLAYER_PVP"] = {
+	text = VOTE_BOOT_PLAYER_DELAY,
+	button1 = YES,
+	button2 = NO,
+	OnAccept = function(self)
+		SetLFGBootVote(true);
+	end,
+	OnCancel = function(self)
+		SetLFGBootVote(false);
+	end,
+	OnShow = function(self, data)
+		self.BootPlayerPVPStatsFrame:SetUnitName(self.data)
+
+		self.DelayCountdownFrame:SetDelay(3, function(timeLeft)
+			if timeLeft > 0 then
+				timeLeft = math.ceil(timeLeft)
+				self.button1:SetText(timeLeft)
+				self.button2:SetText(timeLeft)
+				self.button1:Disable()
+				self.button2:Disable()
+			else
+				local dialog = StaticPopupDialogs[self.which]
+				self.button1:SetText(dialog.button1)
+				self.button2:SetText(dialog.button2)
+				self.button1:Enable()
+				self.button2:Enable()
+				self.text:SetFormattedText(VOTE_BOOT_PLAYER, self.text.text_arg1, self.text.text_arg2)
+			end
+		end)
+	end,
+	showAlert = true,
+	noCancelOnReuse = 1,
+	whileDead = 1,
+	interruptCinematic = 1,
+	timeout = 0,
+	bootPlayerPVPStats = 1,
 };
 
 StaticPopupDialogs["LAG_SUCCESS"] = {
@@ -3218,12 +3200,12 @@ StaticPopupDialogs["CONFIRM_LEAVE_BATTLEFIELDS"] = {
 	button1 = YES,
 	button2 = CANCEL,
 	OnAccept = function(self)
-		LeaveBattlefield()
+		LeaveBattlefield();
 	end,
 	timeout = 0,
 	whileDead = 1,
-	showAlert = 1,
 	hideOnEscape = 1,
+	showAlert = 1,
 }
 
 StaticPopupDialogs["VIDEO_OPTIONS_RESET_UISCALE_POPUP"] = {
@@ -3571,17 +3553,6 @@ StaticPopupDialogs["CONFIRM_DESTROY_EQUIPMENTSET_ITEM"] = {
 	hideOnEscape = 1
 }
 
-StaticPopupDialogs["DANGEROUS_SCRIPTS_WARNING"] = {
-	text = DANGEROUS_SCRIPTS_WARNING,
-	button1 = OKAY,
-	button2 = CANCEL,
-	OnShow = function(self) self.HelpBox.Text:SetText(DANGEROUS_SCRIPTS_WARNING_HELP) end,
-	OnAccept = function(self) RunScript(self.data) end,
-	timeout = 0,
-	whileDead = 1,
-	HelpBox = 1
-};
-
 StaticPopupDialogs["CONFIRM_FORCE_CUSTOMIZATION"] = {
 	text = CONFIRM_FORCE_CUSTOMIZATION,
 	button1 = YES,
@@ -3673,12 +3644,9 @@ StaticPopupDialogs["NAME_TRANSMOG_OUTFIT"] = {
 		end
 	end,
 	EditBoxOnTextChanged = function (self)
-		local parent = self:GetParent();
-		parent.button1:SetEnabled(strtrim(parent.editBox:GetText() or "") ~= "");
+		StaticPopup_StandardNonEmptyTextHandler(self);
 	end,
-	EditBoxOnEscapePressed = function(self)
-		self:GetParent():Hide();
-	end
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 };
 
 StaticPopupDialogs["CONFIRM_OVERWRITE_TRANSMOG_OUTFIT"] = {
@@ -3690,7 +3658,7 @@ StaticPopupDialogs["CONFIRM_OVERWRITE_TRANSMOG_OUTFIT"] = {
 		local name = self.data.name;
 		self:Hide();
 		local dialog = StaticPopup_Show("NAME_TRANSMOG_OUTFIT");
-		if dialog then
+		if ( dialog ) then
 			self.editBox:SetText(name);
 		end
 	end,
@@ -3760,6 +3728,21 @@ StaticPopupDialogs["TRANSMOG_APPLY_WARNING"] = {
 	hideOnEscape = 1,
 	hasItemFrame = 1,
 }
+
+StaticPopupDialogs["DANGEROUS_SCRIPTS_WARNING"] = {
+	text = DANGEROUS_SCRIPTS_WARNING,
+	button1 = OKAY,
+	button2 = CANCEL,
+	OnShow = function(self)
+		self.HelpBox.Text:SetText(DANGEROUS_SCRIPTS_WARNING_HELP)
+	end,
+	OnAccept = function(self)
+		RunScript(self.data)
+	end,
+	timeout = 0,
+	whileDead = 1,
+	HelpBox = 1
+};
 
 StaticPopupDialogs["ENCOUNTER_JOURNAL_SECTION_LOOP_ERROR_DIALOG"] = {
 	text = ENCOUNTER_JOURNAL_SECTION_LOOP_ERROR,
@@ -3872,6 +3855,30 @@ StaticPopupDialogs["CONFIRM_UPGRADE_ITEM"] = {
 	compactItemFrame = true,
 };
 
+StaticPopupDialogs["LFG_REJECT_PROPOSAL"] = {
+	text = LFG_REJECT_PROPOSAL,
+	button1 = YES,
+	button2 = NO,
+	OnAccept = function(self)
+		RejectProposal()
+	end,
+	timeout = 0,
+	hideOnEscape = 1,
+}
+
+StaticPopupDialogs["PVP_REJECT_PROPOSAL"] = {
+	text = PVP_REJECT_PROPOSAL,
+	button1 = YES,
+	button2 = NO,
+	OnAccept = function(self)
+		if BattlegroundInviteFrame:IsShown() then
+			BattlegroundInviteFrame:Abandon()
+		end
+	end,
+	timeout = 0,
+	hideOnEscape = 1,
+}
+
 function EventHandler:ASMSG_ALLIED_RACE_STANDART( raceID )
 	raceID = tonumber(raceID)
 
@@ -3888,6 +3895,16 @@ function StaticPopup_FindVisible(which, data)
 		local frame = _G["StaticPopup"..index];
 		if ( frame:IsShown() and (frame.which == which) and (not info.multiple or (frame.data == data)) ) then
 			return frame;
+		end
+	end
+	return nil;
+end
+
+function StaticPopup_Visible(which)
+	for index = 1, STATICPOPUP_NUMDIALOGS, 1 do
+		local frame = _G["StaticPopup"..index];
+		if( frame:IsShown() and (frame.which == which) ) then
+			return frame:GetName(), frame;
 		end
 	end
 	return nil;
@@ -4101,6 +4118,7 @@ function StaticPopup_Show(which, text_arg1, text_arg2, data)
 	dialog.HelpBox:SetShown(info.HelpBox)
 	dialog.ReplayInfoFrame:SetShown(info.replayInfo)
 	dialog.WarModeFrame:SetShown(info.warModeToggle)
+	dialog.BootPlayerPVPStatsFrame:SetShown(info.bootPlayerPVPStats)
 
 	dialog.maxHeightSoFar, dialog.maxWidthSoFar = 0, 0;
 	-- Set the text of the dialog
@@ -4124,6 +4142,8 @@ function StaticPopup_Show(which, text_arg1, text_arg2, data)
 		text:SetFormattedText(info.text, text_arg1, MINUTES);
 	else
 		text:SetFormattedText(info.text, text_arg1 or "~not text_arg1~", text_arg2 or "~not text_arg2~");
+		text.text_arg1 = text_arg1;
+		text.text_arg2 = text_arg2;
 	end
 
 	-- Show or hide the alert icon
@@ -4228,9 +4248,9 @@ function StaticPopup_Show(which, text_arg1, text_arg2, data)
 
 	-- Show or hide item button
 	if ( info.hasItemFrame ) then
-		_G[dialog:GetName().."ItemFrame"]:Show();
+		dialog.ItemFrame:Show();
 		if ( data and type(data) == "table" ) then
-			_G[dialog:GetName().."ItemFrame"].link = data.link
+			dialog.ItemFrame.link = data.link
 			_G[dialog:GetName().."ItemFrameIconTexture"]:SetTexture(data.texture);
 			local nameText = _G[dialog:GetName().."ItemFrameText"];
 			nameText:SetTextColor(unpack(data.color or {1, 1, 1, 1}));
@@ -4243,7 +4263,7 @@ function StaticPopup_Show(which, text_arg1, text_arg2, data)
 			end
 		end
 	else
-		_G[dialog:GetName().."ItemFrame"]:Hide();
+		dialog.ItemFrame:Hide();
 	end
 
 	-- Set the buttons of the dialog
@@ -4412,7 +4432,7 @@ end
 function StaticPopup_Hide(which, data)
 	for index = 1, STATICPOPUP_NUMDIALOGS, 1 do
 		local dialog = _G["StaticPopup"..index];
-		if ( (dialog.which == which) and (not data or (data == dialog.data)) ) then
+		if ( dialog:IsShown() and (dialog.which == which) and (not data or (data == dialog.data)) ) then
 			dialog:Hide();
 		end
 	end
@@ -4546,18 +4566,29 @@ function StaticPopup_EditBoxOnEscapePressed(self)
 end
 
 function StaticPopup_EditBoxOnTextChanged(self, userInput)
-	local parent = self:GetParent();
-
 	if self.hasMultiLine then
-		StaticPopup_OnEvent(parent);
+		StaticPopup_OnEvent(self:GetParent());
 	end
 
 	if ( not self.autoCompleteParams or not AutoCompleteEditBox_OnTextChanged(self, userInput) ) then
-		local EditBoxOnTextChanged = StaticPopupDialogs[parent.which].EditBoxOnTextChanged;
+		local EditBoxOnTextChanged = StaticPopupDialogs[self:GetParent().which].EditBoxOnTextChanged;
 		if ( EditBoxOnTextChanged ) then
-			EditBoxOnTextChanged(self, parent.data);
+			EditBoxOnTextChanged(self, self:GetParent().data);
 		end
 	end
+end
+
+function StaticPopup_OnLoad(self)
+	local name = self:GetName();
+	self.button1 = _G[name .. "Button1"];
+	self.button2 = _G[name .. "Button2"];
+	self.button3 = _G[name .. "Button3"];
+	self.text = _G[name .. "Text"];
+	self.icon = _G[name .. "AlertIcon"];
+	self.moneyInputFrame = _G[name .. "MoneyInputFrame"];
+	self:RegisterEvent("DISPLAY_SIZE_CHANGED");
+
+	self.itemPool = CreateFramePool("Button", self, "EquipmentSetButtonTemplate")
 end
 
 function StaticPopup_OnShow(self)
@@ -4580,6 +4611,7 @@ end
 function StaticPopup_OnHide(self)
 	PlaySound("igMainMenuClose");
 
+	self.itemPool:ReleaseAll()
 	StaticPopup_CollapseTable();
 
 	local dialog = StaticPopupDialogs[self.which];
@@ -4646,7 +4678,9 @@ function StaticPopup_OnKeyDown(self, key)
 				button = _G[frameName.."Button"..i];
 				if ( button ) then
 					if ( button:IsShown() ) then
-						StaticPopup_OnClick(self, i);
+						if ( button:IsEnabled() == 1 ) then
+							StaticPopup_OnClick(self, i);
+						end
 						return;
 					end
 					i = i + 1;
@@ -4656,16 +4690,6 @@ function StaticPopup_OnKeyDown(self, key)
 			end
 		end
 	end
-end
-
-function StaticPopup_Visible(which)
-	for index = 1, STATICPOPUP_NUMDIALOGS, 1 do
-		local frame = _G["StaticPopup"..index];
-		if( frame:IsShown() and (frame.which == which) ) then
-			return frame:GetName();
-		end
-	end
-	return nil;
 end
 
 function StaticPopup_EscapePressed()
@@ -4691,13 +4715,17 @@ end
 
 function StaticPopup_SetUpPosition(dialog)
 	if ( not tContains(StaticPopup_DisplayedFrames, dialog) ) then
-		local lastFrame = StaticPopup_DisplayedFrames[#StaticPopup_DisplayedFrames];
-		if ( lastFrame ) then
-			dialog:SetPoint("TOP", lastFrame, "BOTTOM", 0, 0);
-		else
-			dialog:SetPoint("TOP", UIParent, "TOP", 0, -135);
-		end
+		StaticPopup_SetUpAnchor(dialog, #StaticPopup_DisplayedFrames + 1);
 		tinsert(StaticPopup_DisplayedFrames, dialog);
+	end
+end
+
+function StaticPopup_SetUpAnchor(dialog, idx)
+	local lastFrame = StaticPopup_DisplayedFrames[idx - 1];
+	if ( lastFrame ) then
+		dialog:SetPoint("TOP", lastFrame, "BOTTOM", 0, 0);
+	else
+		dialog:SetPoint("TOP", UIParent, "TOP", 0, dialog.topOffset or -135);
 	end
 end
 
@@ -4948,4 +4976,209 @@ end
 
 function StaticPopupWarModeFrameActivateButtonLockFrameMixin:OnUpdate()
 	self.Timer:SetRemainingTime(self:GetParent():GetTimeLeft(), false)
+end
+
+StaticPopupBootPlayerPVPStatsMixin = {}
+
+function StaticPopupBootPlayerPVPStatsMixin:OnLoad()
+	self.cellFrames = {}
+	self.defaultStats = {STATS_KILLS, STATS_DEATH, SCORE_DAMAGE_DONE, SCORE_HEALING_DONE}
+	self.includeMapStats = true
+end
+
+function StaticPopupBootPlayerPVPStatsMixin:OnUpdate()
+	RequestBattlefieldScoreData()
+end
+
+function StaticPopupBootPlayerPVPStatsMixin:OnEvent(event, ...)
+	if event == "UPDATE_BATTLEFIELD_SCORE" then
+		self:UpdateScore()
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		local _, instanceType = GetInstanceInfo()
+		if instanceType ~= "pvp" then
+			self:GetParent():Hide()
+		end
+	end
+end
+
+function StaticPopupBootPlayerPVPStatsMixin:OnHide()
+	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	self:UnregisterEvent("UPDATE_BATTLEFIELD_SCORE")
+	self.unitName = nil
+
+	for _, cell in ipairs(self.cellFrames) do
+		cell:Reset()
+	end
+end
+
+function StaticPopupBootPlayerPVPStatsMixin:SetUnitName(name)
+	if not UnitInBattleground(name) then
+		GMError("[ERROR] PVP vote to kick stats: not in battleground!")
+		self:Hide()
+		return
+	end
+
+	self.unitName = name
+
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
+	self:RegisterEvent("UPDATE_BATTLEFIELD_SCORE")
+
+	RequestBattlefieldScoreData()
+
+	self:UpdateScore(true)
+end
+
+function StaticPopupBootPlayerPVPStatsMixin:UpdateScore(init)
+	local scoreIndex, name, killingBlows, honorableKills, deaths, honorGained, faction, rank, race, class, classToken, damageDone, healingDone, additionalStatData = C_BattlefieldScore.GetEntryByName(self.unitName)
+	if scoreIndex then
+		if self.includeMapStats and additionalStatData then
+			self:SetStats(init, faction, killingBlows, deaths, damageDone, healingDone, unpack(additionalStatData))
+		else
+			self:SetStats(init, faction, killingBlows, deaths, damageDone, healingDone)
+		end
+	end
+
+	self.Border:SetShown(scoreIndex ~= nil)
+	self.Container:SetShown(scoreIndex ~= nil)
+end
+
+function StaticPopupBootPlayerPVPStatsMixin:SetStats(init, faction, ...)
+	local CELL_OFFSET_X = 2
+	local CELL_OFSET_X_BASE = 0
+
+	local numDefaultStats = #self.defaultStats
+	local numStats = select("#", ...)
+
+	local cellWidth
+	if numStats > 6 then
+		cellWidth = 70
+		local dialogWidth = numStats * cellWidth + 40
+		self:GetParent():SetWidth(dialogWidth)
+		CELL_OFSET_X_BASE = math.ceil((dialogWidth - CELL_OFFSET_X * (numStats - 1)) / numStats - cellWidth)
+	else
+		self:GetParent():SetWidth(420)
+		cellWidth = (self.Container:GetWidth() - CELL_OFFSET_X * (numStats - 1)) / numStats
+	end
+
+	for statIndex = 1, numStats do
+		local cell = self.cellFrames[statIndex]
+		if not cell then
+			cell = CreateFrame("Frame", string.format("$parentStat%i", statIndex), self.Container, "BootPlayerPVPStatCellTemplate")
+			cell:SetID(statIndex)
+			cell:SetLabel(self.defaultStats[statIndex] or "")
+
+			if statIndex == 1 then
+				cell:SetPoint("TOPLEFT", CELL_OFSET_X_BASE, 0)
+			else
+				cell:SetPoint("TOPLEFT", self.cellFrames[statIndex - 1], "TOPRIGHT", CELL_OFFSET_X, 0)
+			end
+
+			self.cellFrames[statIndex] = cell
+		end
+
+		local statValue = select(statIndex, ...)
+
+		if statIndex <= numDefaultStats then
+			cell:SetValue(statValue, statIndex ~= 2, init)
+		else -- additional stats
+			local additionalStatIndex = statIndex - numDefaultStats
+			local text, icon, tooltip = GetBattlefieldStatInfo(additionalStatIndex)
+			cell:SetLabel(text:gsub(" ", "\n"), faction, icon)
+			cell.tooltip = tooltip
+
+			cell:SetValue(statValue)
+		end
+
+		cell:SetWidth(cellWidth)
+		cell:Show()
+	end
+
+	for statIndex = numStats + 1, #self.cellFrames do
+		self.cellFrames[statIndex]:Hide()
+	end
+end
+
+BootPlayerPVPStatCellMixin = {}
+
+function BootPlayerPVPStatCellMixin:OnEnter()
+	if self.tooltip then
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:AddLine(self.tooltip, 1, 1, 1, 1)
+		GameTooltip:Show()
+	end
+end
+
+function BootPlayerPVPStatCellMixin:OnLeave()
+	if self.tooltip then
+		GameTooltip_Hide()
+	end
+end
+
+function BootPlayerPVPStatCellMixin:SetLabel(text, faction, icon)
+	self.Label:SetText(text)
+	self.faction = faction
+
+	if icon and icon ~= "" then
+		self.Icon:SetTexture(strconcat(icon, faction or 0))
+		self.Value:SetPoint("BOTTOM", 7, 0)
+	else
+		self.Icon:SetTexture(icon)
+		self.Value:SetPoint("BOTTOM", 0, 0)
+	end
+end
+
+function BootPlayerPVPStatCellMixin:SetValue(value, colorizeDiff, isBaseValue)
+	local int = tonumber(value) or 0
+	if isBaseValue or not self.baseValue then
+		self.baseValue = tonumber(value)
+		self.Value:SetText(int)
+	else
+		if self.baseValue ~= int then
+			if colorizeDiff then
+				self.Value:SetFormattedText("%s\n(|cff00ff00+%s|r)", int, int - self.baseValue)
+			else
+				self.Value:SetFormattedText("%s\n(+%s)", int, int - self.baseValue)
+			end
+		end
+	end
+end
+
+function BootPlayerPVPStatCellMixin:Reset()
+	self.baseValue = nil
+	self.Value:SetText("")
+end
+
+StatusPopupDelayCountdownMixin = {}
+
+function StatusPopupDelayCountdownMixin:SetDelay(delay, onUpdate)
+	if type(delay) ~= "number" or delay <= 0 or type(onUpdate) ~= "function" then
+		self:Hide()
+	else
+		self.timeLeft = delay
+		self.OnCountdownUpdate = onUpdate
+		self:SetScript("OnUpdate", self.OnUpdate)
+		self:Show()
+		onUpdate(self.timeLeft)
+	end
+end
+
+function StatusPopupDelayCountdownMixin:OnHide()
+	self.OnCountdownUpdate = nil
+	self.timeLeft = nil
+	self:SetScript("OnUpdate", nil)
+end
+
+function StatusPopupDelayCountdownMixin:OnUpdate(elapsed)
+	self.timeLeft = self.timeLeft - elapsed
+
+	local success, err = pcall(self.OnCountdownUpdate, self.timeLeft)
+	if not success then
+		geterrorhandler()(err)
+		self:Hide()
+		return
+	end
+
+	if self.timeLeft <= 0 then
+		self:Hide()
+	end
 end

@@ -257,7 +257,7 @@ local function GetEffectTexts(itemID, exclusions)
 				if not BIND_TYPES[text] then
 					return text;
 				end
-			elseif invType == "INVTYPE_TRINKET" then
+			elseif invType == "INVTYPE_TRINKET" or invType == "INVTYPE_RELIC" then
 				local newText
 				if string.find(text, ITEM_SPELL_TRIGGER_ONEQUIP) and not exclusions[text] then
 					newText = string.match(text, string.format("^%s ([^\n$]+)", ITEM_SPELL_TRIGGER_ONEQUIP));
@@ -279,6 +279,16 @@ local function SummaryItemStats(itemStats1, itemID1, itemStats2, itemID2)
 	local statsExclusions = {};
 
 	local hasItemStats2 = next(itemStats2);
+
+	if itemStats1["ITEM_MOD_SPELL_POWER_SHORT"] then
+		itemStats1["ITEM_MOD_SPELL_DAMAGE_DONE_SHORT"] = itemStats1["ITEM_MOD_SPELL_POWER_SHORT"];
+		itemStats1["ITEM_MOD_SPELL_POWER_SHORT"] = nil;
+	end
+
+	if itemStats2["ITEM_MOD_SPELL_POWER_SHORT"] then
+		itemStats2["ITEM_MOD_SPELL_DAMAGE_DONE_SHORT"] = itemStats2["ITEM_MOD_SPELL_POWER_SHORT"];
+		itemStats2["ITEM_MOD_SPELL_POWER_SHORT"] = nil;
+	end
 
 	for statName1, statValue1 in pairs(itemStats1) do
 		local statValue2 = itemStats2[statName1];

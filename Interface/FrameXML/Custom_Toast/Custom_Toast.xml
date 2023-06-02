@@ -180,9 +180,11 @@
 		<Scripts>
 			<OnLoad>
 				Mixin(self, SocialToastSystemMixin)
-
 				self:OnLoad()
 			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
 			<OnShow>
 				self:OnShow()
 			</OnShow>

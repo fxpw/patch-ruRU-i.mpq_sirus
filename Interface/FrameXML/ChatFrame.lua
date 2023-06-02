@@ -3061,6 +3061,7 @@ function ChatFrame_MessageEventHandler(self, event, ...)
 			end
 			self.tellTimer = GetTime() + CHAT_TELL_ALERT_TIME;
 			--FCF_FlashTab(self);
+			FlashClientIcon();
 		end
 
 		if ( not self:IsShown() ) then
@@ -4388,7 +4389,7 @@ local createShoutPopup = function()
 		editBoxMultiLine = false,
 
 		EditBox_OnTextChanged = function(this)
-			local currentBonuses = Store_GetBalance(Enum.Store.CurrenctType.Bonus)
+			local currentBonuses = Store_GetBalance(Enum.Store.CurrencyType.Bonus)
 			local text = string.trim(this:GetText() or "")
 			local enabled = (currentBonuses >= 99 or IsGMAccount()) and text ~= ""
 			this.PopupFrame.Button1:SetEnabled(enabled)
@@ -4425,7 +4426,7 @@ function ChatMenu_Shout(self)
 end
 
 local function ChatMenu_ShoutIsShown()
-	if Store_GetBalance(Enum.Store.CurrenctType.Loyality) >= 30 or IsGMAccount() then
+	if Store_GetBalance(Enum.Store.CurrencyType.Loyality) >= 30 or IsGMAccount() then
 		return true;
 	end
 	return false;

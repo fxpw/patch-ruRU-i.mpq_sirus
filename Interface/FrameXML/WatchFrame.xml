@@ -331,7 +331,12 @@
 					</Anchor>
 				</Anchors>
 				<Frames>
-					<Frame parentKey="QuestHeader" inherits="ObjectiveTrackerHeaderTemplate"/>
+					<Button parentKey="QuestHeader" inherits="ObjectiveTrackerHeaderTemplate" enableMouse="true">
+						<Scripts>
+							<OnLoad> self:RegisterForClicks("RightButtonUp"); </OnLoad>
+							<OnClick function="WatchFrameHeader_OnClick" />
+						</Scripts>
+					</Button>
 					<Frame parentKey="AchievementHeader" inherits="ObjectiveTrackerHeaderTemplate"/>
 				</Frames>
 				<Scripts>

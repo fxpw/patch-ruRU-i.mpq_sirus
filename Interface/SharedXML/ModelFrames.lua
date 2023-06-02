@@ -6,39 +6,30 @@
 
 UI_CAMERA_ID = {
 	[12] = {2.050, -1.080, -0.370, -2.350, 133}, -- Transmog-Creature-Wand
-	[13] = {1.390, -1.090, -0.440, -2.720, 133}, -- Transmog-Creature-OneHAxe
-	[14] = {1.390, -1.090, -0.440, -2.720, 133}, -- Transmog-Creature-OneHSword
-	[15] = {1.390, -1.090, -0.440, -2.720, 133}, -- Transmog-Creature-OneHMace
-	[16] = {1.370, -1.060, -0.500, -2.820, 133}, -- Transmog-Creature-Dagger
-	[17] = {1.380, -0.870, -0.150, -2.820, 133}, -- Transmog-Creature-Fist
+	[13] = {1.260, -0.480, -0.300, 1.600, 131}, -- Transmog-Creature-OneHAxe
+	[14] = {0.880, -0.500, -0.550, 1.600, 131}, -- Transmog-Creature-OneHSword
+	[15] = {1.300, -0.470, -0.340, 1.600, 131}, -- Transmog-Creature-OneHMace
+	[16] = {1.270, -0.450, -0.350, 1.600, 131}, -- Transmog-Creature-Dagger
+	[17] = {1.340, -0.340, 0.070, 1.600, 4}, -- Transmog-Creature-Fist
 	[18] = {1.500, 0.720, -0.540, -1.600, 46}, -- Transmog-Creature-Shield
-	[19] = {2.160, -0.450, 0.060, 2.480, 107}, -- Transmog-Creature-Holdable
-	[20] = {1.130, -1.200, -0.580, -2.820, 133}, -- Transmog-Creature-TwoHAxe
-	[21] = {1.020, -1.250, -0.700, -2.820, 133}, -- Transmog-Creature-TwoHSword
-	[22] = {1.230, -1.170, -0.560, -2.820, 133}, -- Transmog-Creature-TwoHMace
-	[23] = {0.810, -1.130, -0.450, -2.720, 133}, -- Transmog-Creature-Staff
-	[24] = {1.140, -1.260, -0.650, -2.780, 133}, -- Transmog-Creature-Polearm
-	[25] = {0.890, 0.750, -0.500, -1.120, 46}, -- Transmog-Creature-Bow
-	[26] = {0.470, -1.150, -0.460, -2.820, 133}, -- Transmog-Creature-Gun
-	[27] = {1.200, -0.750, -0.600, 2.800, 28}, -- Transmog-Creature-Crossbow
-	[28] = {1.100, -0.890, -0.270, -2.950, 133}, -- Transmog-Creature-Thrown
+	[19] = {1.540, 0.510, -0.250, -1.600, 41}, -- Transmog-Creature-Holdable
+	[20] = {0.850, -0.520, -0.440, 1.600, 131}, -- Transmog-Creature-TwoHAxe
+	[21] = {0.720, -0.520, -0.520, 1.600, 131}, -- Transmog-Creature-TwoHSword
+	[22] = {1.230, -0.540, -0.490, 1.600, 131}, -- Transmog-Creature-TwoHMace
+	[23] = {-0.150, 0.000, 0.000, 2.400, 52}, -- Transmog-Creature-Staff
+	[24] = {0.210, -0.100, -0.350, 2.400, 52}, -- Transmog-Creature-Polearm
+	[25] = {0.240, 0.340, -0.210, -1.600, 131}, -- Transmog-Creature-Bow
+	[26] = {0.810, -0.070, -0.490, 2.400, 52}, -- Transmog-Creature-Gun
+	[27] = {1.770, -0.200, -0.390, 3.200, 131}, -- Transmog-Creature-Crossbow
+	[28] = {1.380, 0.020, -0.180, 2.400, 52}, -- Transmog-Creature-Thrown
 	[29] = {1.020, -1.250, -0.700, -2.820, 133}, -- Transmog-Creature-FishingPole
 	[30] = {1.370, -1.060, -0.500, -2.820, 133}, -- Transmog-Creature-OtherWeapon
 
-	[43] = {2.300, -0.660, -0.390, 1.600, 131}, -- Transmog-Creature-OneHAxe-Alt
-	[44] = {2.220, -0.600, -0.470, 1.600, 131}, -- Transmog-Creature-OneHSword-Alt
-	[45] = {2.280, -0.610, -0.480, 1.600, 131}, -- Transmog-Creature-OneHMace-Alt
-	[46] = {2.270, -0.600, -0.450, 1.600, 131}, -- Transmog-Creature-Dagger-Alt
-	[47] = {1.760, 0.510, -0.620, -1.400, 52}, -- Transmog-Creature-Fist-Alt
-
-	[50] = {0, 0, 0, 0, 133},
-	[63] = {1.390, -1.090, -0.440, -2.720, 133}, -- Transmog-Creature-Weapon
-	[64] = {1.500, 0.720, -0.540, -1.600, 46}, -- Transmog-Creature-Shield
-	[67] = {0.810, -1.130, -0.450, -2.720, 133}, -- Transmog-Creature-TwoHWeapon
-	[71] = {0.810, -1.130, -0.450, -2.720, 133}, -- Transmog-Creature-WeaponMainHand
-	[72] = {1.420, -0.540, -0.470, 1.670, 41}, -- Transmog-Creature-WeaponOffHand
-	[73] = {2.220, -0.370, -0.080, 2.710, 107}, -- Transmog-Creature-Holdable
-	[76] = {2.050, -1.080, -0.370, -2.350, 133}, -- Transmog-Creature-RangedRight
+	[43] = {1.250, -0.900, -0.720, 1.600, 46}, -- Transmog-Creature-OneHAxe-Alt
+	[44] = {1.160, -0.850, -0.940, 1.600, 46}, -- Transmog-Creature-OneHSword-Alt
+	[45] = {1.520, -0.850, -0.800, 1.600, 46}, -- Transmog-Creature-OneHMace-Alt
+	[46] = {1.960, -0.500, -0.330, 1.600, 41}, -- Transmog-Creature-Dagger-Alt
+	[47] = {1.050, -0.050, 0.040, -1.600, 4}, -- Transmog-Creature-Fist-Alt
 
 	[101] = {2.190, 0.060, -0.840, -0.598}, -- Transmog-Human-Male-Head
 	[102] = {2.130, -0.280, -0.640, 0.030}, -- Transmog-Human-Male-Shoulder
@@ -250,18 +241,18 @@ UI_CAMERA_ID = {
 	[322] = {3.140, 0.030, -0.030, -0.546, 131}, -- Transmog-Troll-Male-Chest
 	[324] = {0.000, 0.000, 0.000, 0.000}, -- Transmog-Set-Details-Troll-Male
 	[325] = {0.000, 0.000, 0.000, 0.000}, -- Transmog-Set-Vendor-Troll-Male
-	[326] = {2.910, -0.010, -0.690, -0.394}, -- Transmog-Troll-Female-Head
-	[327] = {2.960, -0.290, -0.490, -0.249}, -- Transmog-Troll-Female-Shoulder
-	[328] = {2.390, -0.170, -0.070, -2.664}, -- Transmog-Troll-Female-Back
-	[329] = {2.740, -0.040, -0.120, -0.310}, -- Transmog-Troll-Female-Robe
-	[330] = {2.980, -0.040, -0.310, -0.368}, -- Transmog-Troll-Female-Shirt
-	[331] = {2.850, -0.040, -0.190, -0.032}, -- Transmog-Troll-Female-Tabard
-	[332] = {3.000, -0.290, 0.000, -0.598}, -- Transmog-Troll-Female-Wrist
-	[333] = {2.840, -0.270, 0.060, -0.705}, -- Transmog-Troll-Female-Hands
-	[334] = {3.050, -0.050, -0.060, -0.016}, -- Transmog-Troll-Female-Waist
-	[335] = {2.570, -0.050, 0.420, 0.000, 41}, -- Transmog-Troll-Female-Legs
-	[336] = {2.700, -0.050, 0.850, -0.407}, -- Transmog-Troll-Female-Feet
-	[337] = {2.940, -0.040, -0.330, -0.368}, -- Transmog-Troll-Female-Chest
+	[326] = {2.550, -0.030, -0.670, -0.394}, -- Transmog-Troll-Female-Head
+	[327] = {2.550, -0.320, -0.470, -0.249}, -- Transmog-Troll-Female-Shoulder
+	[328] = {2.080, -0.140, -0.040, -2.664}, -- Transmog-Troll-Female-Back
+	[329] = {1.600, -0.060, 0.120, -0.310}, -- Transmog-Troll-Female-Robe
+	[330] = {2.590, -0.050, -0.240, -0.368}, -- Transmog-Troll-Female-Shirt
+	[331] = {2.530, -0.040, -0.150, -0.032}, -- Transmog-Troll-Female-Tabard
+	[332] = {2.630, -0.280, 0.080, -0.598}, -- Transmog-Troll-Female-Wrist
+	[333] = {2.440, -0.260, 0.110, -0.705}, -- Transmog-Troll-Female-Hands
+	[334] = {2.590, -0.040, -0.000, -0.016}, -- Transmog-Troll-Female-Waist
+	[335] = {2.090, -0.050, 0.530, 0.000, 41}, -- Transmog-Troll-Female-Legs
+	[336] = {2.280, -0.050, 0.890, -0.407}, -- Transmog-Troll-Female-Feet
+	[337] = {2.590, -0.050, -0.240, -0.368}, -- Transmog-Troll-Female-Chest
 	[339] = {0.000, 0.000, 0.000, 0.000}, -- Transmog-Set-Details-Troll-Female
 	[340] = {0.000, 0.000, 0.000, 0.000}, -- Transmog-Set-Vendor-Troll-Female
 	[341] = {1.840, 0.050, -0.180, -0.331}, -- Transmog-Goblin-Male-Head
@@ -684,6 +675,9 @@ UI_CAMERA_ID = {
 	[967] = {1.840, 0.030, -0.370, -0.310}, -- Transmog-Dracthyr-Female-Chest
 	[969] = {0.000, 0.000, 0.000, 0.000}, -- Transmog-Set-Details-Dracthyr-Female
 	[970] = {0.000, 0.000, 0.000, 0.000}, -- Transmog-Set-Vendor-Dracthyr-Female
+
+	-- Custom cameras(displayID)
+	[2500] = {0.420, -0.610, -1.020, 1.600, 131}, -- Transmog-Creature-TwoHSword(30606)
 };
 
 UI_CAMERA = {
@@ -1056,7 +1050,7 @@ local cameraSquare = math.sqrt(cameraWidth * cameraWidth + cameraHeight * camera
 function Model_ApplyUICamera(self, uiCameraID)
 	local posX, posY, posZ, yaw, animId = GetUICameraInfo(uiCameraID);
 	if posX and posY and posZ and yaw then
-		local scale = self:GetEffectiveScale();
+		local scale = self:GetEffectiveScale() - (self:GetEffectiveScale() - UIParent:GetScale());
 		local width = GetScreenWidth() * scale;
 		local height = GetScreenHeight() * scale;
 

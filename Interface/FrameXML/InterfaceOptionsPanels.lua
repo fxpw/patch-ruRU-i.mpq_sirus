@@ -1911,7 +1911,8 @@ end
 
 FeaturesPanelOptions = {
 	equipmentManager = { text = "USE_EQUIPMENT_MANAGER" },
-	previewTalents = { text = "PREVIEW_TALENT_CHANGES" },
+	C_CVAR_ITEM_UPGRADE_LEFT_ITEM_LIST = { text = "ITEM_UPGRADE_LEFT_ITEM_LIST" },
+--	previewTalents = { text = "PREVIEW_TALENT_CHANGES" },
 }
 
 -- [[ Help Options Panel ]] --

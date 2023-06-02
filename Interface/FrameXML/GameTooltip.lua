@@ -216,9 +216,13 @@ function GameTooltip_OnUpdate(self, elapsed)
 end
 
 function GameTooltip_FixLinePosition( self )
-	if self.TransmogText1:IsShown() and self.TransmogText2:IsShown() then
+	if self.TransmogText1:IsShown() then
 		self.TextLeft2:ClearAllPoints()
-		self.TextLeft2:SetPoint("TOPLEFT", self.TransmogText2, "BOTTOMLEFT", 0, -2)
+		if self.TransmogText2:IsShown() then
+			self.TextLeft2:SetPoint("TOPLEFT", self.TransmogText2, "BOTTOMLEFT", 0, -2)
+		else
+			self.TextLeft2:SetPoint("TOPLEFT", self.TransmogText1, "BOTTOMLEFT", 0, -2)
+		end
 	else
 		if self.TextLeft2:GetText() ~= DAMAGE_SCHOOL2 then
 			self.TextLeft2:ClearAllPoints()
@@ -331,37 +335,19 @@ function C_Tooltip_CustomRender( self, ... )
 	if itemLink then
 		local itemID = tonumber(string.match(itemLink, ":(%d+)"));
 		if itemID then
-			if IsBattlePassExpItem(itemID) then
-				local bpInfo = C_CacheInstance:Get("ASMSG_BATTLEPASS_INFO")
+			if C_BattlePass.IsExperienceItem(itemID) then
+				local itemExperience = C_BattlePass.GetExperienceItemExpAmount(itemID)
+				if itemExperience > 0 then
+					local level, levelExp, levelUpExp = C_BattlePass.GetLevelInfo()
 
-				if bpInfo then
-					local addExp
-
-					for i = 1, self:NumLines() do
-						local line = _G[self:GetName().."TextLeft"..i]
-						if line then
-							local text = line:GetText()
-							if text ~= "" then
-								local exp = string.match(text:lower(), BATTLEPASS_ITEM_EXP_PATTERN)
-								if exp then
-									addExp = tonumber(exp)
-									break
-								end
-							end
-						end
+					if levelExp + itemExperience >= levelUpExp then
+						local newLevel = C_BattlePass.CalculateAddedExperience(itemExperience)
+						self:AddLine(string.format(BATTLEPASS_ITEM_ADD_LEVELS, newLevel - level), 0.53, 0.67, 1)
+					else
+						self:AddLine(string.format(BATTLEPASS_ITEM_EXP_TO_LEVEL, levelUpExp - levelExp), 0.53, 0.67, 1)
 					end
 
-					if addExp then
-						local addLevels, expToNextLevel = BattlePassFrameMixin.GetLevelsByExp(BattlePassFrameMixin, addExp)
-
-						if addLevels == 0 then
-							self:AddLine(string.format(BATTLEPASS_ITEM_EXP_TO_LEVEL, expToNextLevel), 0.53, 0.67, 1)
-						else
-							self:AddLine(string.format(BATTLEPASS_ITEM_ADD_LEVELS, addLevels), 0.53, 0.67, 1)
-						end
-
-						newLines = true
-					end
+					newLines = true
 				end
 			elseif ITEM_MODIFIED_APPEARANCE_STORAGE[itemID] and not SIRUS_COLLECTION_COLLECTED_APPEARANCES[ITEM_MODIFIED_APPEARANCE_STORAGE[itemID][1]] then
 				local _, _, _, isKnown, isUsable = GetItemModifiedAppearanceCategoryInfo(itemID, true);

@@ -51,7 +51,7 @@ function LFDFrame_OnLoad(self)
 	SetPortraitToTexture(LFDParentFrame.Art.portrait, "Interface\\LFGFrame\\UI-LFG-PORTRAIT")
 	LFDParentFrame.Art.TitleText:SetText(LOOK_FOR_GROUP)
 
-	RaiseFrameLevelByThree(self.Shadows)
+	RaiseFrameLevelByTwo(self.Shadows)
 
 	SetPortraitToTexture(self.groupButton1.icon, "Interface\\Icons\\INV_Helmet_08")
 	self.groupButton1.name:SetText(LOOKING_FOR_DUNGEON)
@@ -82,6 +82,7 @@ function LFDFrame_OnEvent(self, event, ...)
 		StaticPopupSpecial_Show(LFDDungeonReadyPopup);
 		LFDSearchStatus:Hide();
 		PlaySound("ReadyCheck");
+		FlashClientIcon();
 	elseif ( event == "LFG_PROPOSAL_FAILED" ) then
 		LFDDungeonReadyPopup_OnFail();
 	elseif ( event == "LFG_PROPOSAL_SUCCEEDED" ) then
@@ -96,9 +97,22 @@ function LFDFrame_OnEvent(self, event, ...)
 	elseif ( event == "LFG_BOOT_PROPOSAL_UPDATE" ) then
 		local voteInProgress, didVote, myVote, targetName, totalVotes, bootVotes, timeLeft, reason = GetLFGBootProposal();
 		if ( voteInProgress and not didVote and targetName ) then
-			StaticPopup_Show("VOTE_BOOT_PLAYER", targetName, reason);
+			local inInstance, instanceType = IsInInstance()
+			local targetNameColored = GetClassColoredTextForUnit(targetName, targetName)
+			if instanceType == "pvp" then
+				if C_Service.IsBattlegroundKickEnabled() then
+					if InCombatLockdown() then
+						FireCustomClientEvent("SHOW_TOAST", 8, 0, "achievement_general_classicbattles", TOAST_CS_VOTE_KICK_BG_TITLE, TOAST_CS_VOTE_KICK_BG_BODY)
+					else
+						StaticPopup_Show("VOTE_BOOT_PLAYER_PVP", targetNameColored, reason, targetName)
+					end
+				end
+			else
+				StaticPopup_Show("VOTE_BOOT_PLAYER", targetNameColored, reason);
+			end
 		else
 			StaticPopup_Hide("VOTE_BOOT_PLAYER");
+			StaticPopup_Hide("VOTE_BOOT_PLAYER_PVP")
 		end
 	elseif ( event == "VOTE_KICK_REASON_NEEDED" ) then
 		local targetName = ...;
@@ -1368,7 +1382,6 @@ function MiniGamesFrameMixin:OnEvent(event, ...)
 
 		if miniGameID and inviteID then
 			MiniGameReadyPopup:ShowReadyDialog(inviteID, miniGameID);
-			PlaySound("ReadyCheck");
 		end
 	elseif event == "MINI_GAME_INVITE_STATUS" then
 		local isPlayerReady, acceptedPlayers, maxPlayers = ...;
@@ -1561,11 +1574,12 @@ function MiniGamesFrameMixin:UpdateGames()
 			gameButton:SetPoint("LEFT", lastGameButton, "RIGHT", 8, 0);
 		end
 
-		local name, _, icon = C_MiniGames.GetGameInfo(i);
+		local miniGameID = C_MiniGames.GetGameIDFromIndex(i);
+		local name, _, icon = C_MiniGames.GetGameInfo(miniGameID);
 		SetPortraitToTexture(gameButton.Icon, icon);
 
 		gameButton.name = name;
-		gameButton:SetID(i);
+		gameButton:SetID(miniGameID);
 		gameButton:Show();
 
 		lastGameButton = gameButton;
@@ -1583,6 +1597,16 @@ function MiniGamesFrameMixin:UpdateGames()
 end
 
 MiniGameReadyPopupMixin = {}
+
+function MiniGameReadyPopupMixin:OnShow()
+	PlaySound("ReadyCheck");
+	FlashClientIcon();
+end
+
+function MiniGameReadyPopupMixin:OnHide()
+	self.inviteID = nil;
+	self.miniGameID = nil;
+end
 
 function MiniGameReadyPopupMixin:UpdateInstance(miniGameID)
 	local name, _, icon, _, objective = C_MiniGames.GetGameInfo(miniGameID);
@@ -1644,7 +1668,6 @@ function MiniGameReadyPopupMixin:ShowReadyDialog(inviteID, miniGameID)
 	MiniGameReadyDialog:Show();
 	MiniGameReadyDialog.inviteID = inviteID;
 	MiniGameReadyDialog.miniGameID = miniGameID;
-
 	self:UpdateInstance(miniGameID);
 	self:UpdateRewards(miniGameID);
 end

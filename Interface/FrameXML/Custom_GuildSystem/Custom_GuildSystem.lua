@@ -1,9 +1,3 @@
---	Filename:	Sirus_GuildSystem.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 UIPanelWindows["GuildFrame"] = { area = "left", pushable = 1, whileDead = 1, xOffset = "15", yOffset = "-10", width = 370, height = 424 }
 GUILDS_SUBFRAMES = { "GuildRosterFrame", "GuildPerksFrame", "GuildRewardsFrame", "GuildInfoFrame" }
 
@@ -19,19 +13,20 @@ local GUILD_MEMBER_INFO_DATA = {}
 local GUILD_MEMBER_INFO_BY_NAME_DATA = {}
 local currentGuildView
 local columnSortData = {}
+local rosterDataDirty = true
 
 local GuildRosterViewDropDown_OldValue
 
 local GUILD_ROSTER_COLUMN_DATA = {
 	level = { width = 32, text = REQ_LEVEL_ABBR, stringJustify="CENTER" },
-	ilevel = { width = 38, text = ILEVEL_ABBR, sortType = "ilevel", stringJustify="CENTER" },
+	ilevel = { width = 42, text = ILEVEL_ABBR, sortType = "ilevel", stringJustify="CENTER" },
 	class = { width = 32, text = CLASS_ABBR, hasIcon = true },
 	name = { width = 81, text = NAME_ABBR, stringJustify="LEFT" },
 	wideName = { width = 100, text = NAME_ABBR, sortType = "name", stringJustify="LEFT" },
 	rank = { width = 76, text = RANK, stringJustify="LEFT" },
 	note = { width = 76, text = LABEL_NOTE, stringJustify="LEFT" },
 	online = { width = 76, text = LASTONLINE, stringJustify="LEFT" },
-	zone = { width = 114, text = ZONE, stringJustify="LEFT" },
+	zone = { width = 110, text = ZONE, stringJustify="LEFT" },
 	bgrating = { width = 83, text = BG_RATING_ABBR, stringJustify="RIGHT" },
 	arenarating = { width = 83, text = ARENA_RATING, stringJustify="RIGHT" },
 	weeklyxp = { width = 144, text = GUILD_XP_WEEKLY, stringJustify="RIGHT", hasBar = true },
@@ -121,6 +116,32 @@ local PH_GuildChallengeData = {
 		buildPoint = 25
 	},
 }
+
+local function UpdateRosterData(force)
+	if not rosterDataDirty or force then
+		return
+	end
+
+	table.wipe(GUILD_MEMBER_INFO_DATA)
+	table.wipe(GUILD_MEMBER_INFO_BY_NAME_DATA)
+
+	local numcharacter = GetNumGuildMembers()
+
+	for i = 1, numcharacter do
+		local name, rank, rankIndex, level, class, zone, note, officernote, online = GetGuildRosterInfo(i)
+		local category = GetGuildCharacterCategory(name)
+		local lastonline = GuildFrame_GetLastOnline(i)
+
+		if not name then
+			break
+		end
+
+		table.insert(GUILD_MEMBER_INFO_DATA, { name, rank, rankIndex, level, class, zone, note, officernote, online, category, i, lastonline })
+		GUILD_MEMBER_INFO_BY_NAME_DATA[name] = GUILD_MEMBER_INFO_DATA[i]
+	end
+
+	rosterDataDirty = false
+end
 
 function GetGuildChallengeInfo( index )
 	if PH_GuildChallengeData[index] then
@@ -218,6 +239,7 @@ function GuildFrame_OnLoad( self, ... )
 	local guildName = GetGuildInfo("player")
 	GuildFrameTitleText:SetText(guildName)
 
+	self:RegisterEvent("GUILD_ROSTER_UPDATE")
 	self:RegisterEvent("PLAYER_GUILD_UPDATE")
 	self:RegisterEvent("GUILD_MOTD")
 	self:RegisterEvent("PLAYER_LOGIN")
@@ -229,6 +251,7 @@ function GuildFrame_OnShow( self, ... )
 	local level, experience, nextLevelxperience, remaining = GetGuildXP()
 	local onlinePlayer, totalPlayer = GetGuildOnline()
 
+	UpdateRosterData()
 	GuildFrame_TabClicked(1)
 	UpdateMicroButtons()
 	MicroButtonPulseStop(GuildMicroButton)
@@ -269,7 +292,31 @@ function GuildTextEditFrame_OnLoad(self)
 end
 
 function GuildFrame_OnEvent( self, event, ... )
-	if event == "PLAYER_GUILD_UPDATE" then
+	if event == "GUILD_ROSTER_UPDATE" then
+		rosterDataDirty = true
+
+		if self:IsShown() then
+			local arg1 = ...
+			if ( arg1 ) then
+				GuildRoster()
+			end
+
+			UpdateRosterData()
+
+			if GuildRosterFrame:IsShown() then
+				if columnSortData and columnSortData[1] and columnSortData[2] then
+					GuildRoster_SortByColumn( columnSortData[1], columnSortData[2] )
+				end
+				GuildRoster_Update()
+				GuildInfoFrame_UpdatePermissions()
+				GuildInfoFrame_UpdateText()
+			end
+
+			if GuildMemberDetailFrame:IsShown() then
+				GuildMemberDetailSetInfo()
+			end
+		end
+	elseif event == "PLAYER_GUILD_UPDATE" then
 		if ( IsInGuild() ) then
 			local guildName = GetGuildInfo("player")
 			GuildFrameTitleText:SetText(guildName)
@@ -429,51 +476,12 @@ function GuildRosterFrame_OnLoad( self, ... )
 	GuildRosterContainerScrollBar.doNotHide = true
 	GuildRosterShowOfflineButton:SetChecked(GetGuildRosterShowOffline())
 
-	self:RegisterEvent("GUILD_ROSTER_UPDATE")
-
 	GuildRoster_SetView()
 	UIDropDownMenu_SetSelectedValue(GuildRosterViewDropdown, currentGuildView)
 end
 
 function GuildRosterFrame_OnEvent( self, event, ... )
-	if ( not self:IsShown() ) then
-		return
-	end
 
-	if event == "GUILD_ROSTER_UPDATE" then
-		local arg1 = ...
-		if ( arg1 ) then
-			GuildRoster()
-		end
-		GUILD_MEMBER_INFO_DATA = {}
-		GUILD_MEMBER_INFO_BY_NAME_DATA = {}
-
-		local numcharacter = GetNumGuildMembers()
-
-		for i = 1, numcharacter do
-			local name, rank, rankIndex, level, class, zone, note, officernote, online = GetGuildRosterInfo(i)
-			local category = GetGuildCharacterCategory(name)
-			local lastonline = GuildFrame_GetLastOnline(i)
-
-			if not name then
-				break
-			end
-
-			table.insert(GUILD_MEMBER_INFO_DATA, { name, rank, rankIndex, level, class, zone, note, officernote, online, category, i, lastonline })
-			GUILD_MEMBER_INFO_BY_NAME_DATA[name] = GUILD_MEMBER_INFO_DATA[i]
-		end
-
-		if GuildMemberDetailFrame:IsVisible() then
-			GuildMemberDetailSetInfo()
-		end
-
-		if columnSortData and columnSortData[1] and columnSortData[2] then
-			GuildRoster_SortByColumn( columnSortData[1], columnSortData[2] )
-		end
-		GuildRoster_Update()
-		GuildInfoFrame_UpdatePermissions()
-		GuildInfoFrame_UpdateText()
-	end
 end
 
 function GuildRosterFrame_OnShow( self, ... )
@@ -829,7 +837,7 @@ function GuildRoster_SetView(view)
 			local columnData = GUILD_ROSTER_COLUMN_DATA[columnType]
 			columnButton:SetText(columnData.text)
 			if columnType == "zone" then
-				columnData.width = view == "tradeskill" and 129 or 114
+				columnData.width = view == "tradeskill" and 129 or 120
 			elseif columnType == "wideName" then
 				columnData.width = view == "tradeskill" and 110 or 81
 			end
@@ -1446,6 +1454,7 @@ function GuildInfoFrame_OnLoad(self)
 	self:RegisterCustomEvent("LF_GUILD_POST_UPDATED");
 	self:RegisterCustomEvent("LF_GUILD_RECRUITS_UPDATED");
 	self:RegisterCustomEvent("LF_GUILD_RECRUIT_LIST_CHANGED");
+	self:RegisterCustomEvent("GUILD_REPLACE_GUILD_MASTER")
 end
 
 function GuildInfoFrame_OnEvent(self, event, arg1)
@@ -1475,6 +1484,10 @@ function GuildInfoFrame_OnEvent(self, event, arg1)
 		GuildInfoFrameApplicants_Update();
 	elseif ( event == "LF_GUILD_RECRUIT_LIST_CHANGED" ) then
 		RequestGuildApplicantsList();
+	elseif event == "GUILD_REPLACE_GUILD_MASTER" then
+		if GuildInfoFrame:IsShown() then
+			GuildInfoFrame_UpdatePermissions()
+		end
 	end
 end
 
@@ -1533,22 +1546,24 @@ end
 
 function GuildInfoFrame_UpdatePermissions()
 	do
-		local canReplace
-		for i = 1, GetNumGuildMembers() do
-			local name, rank, rankIndex = GetGuildRosterInfo(i)
-			if rankIndex == 0 then
-				local year, month, day, hour = GetGuildRosterLastOnline(i)
-				day = (day or 0) + (month and month * 30 or 0)
-				if day >= REPLACE_GUILD_MASTER_DAYS then
-					if CanGuildInvite() then
-						canReplace = true
+		if IsInGuild() and not IsGuildLeader() then
+			local playerName = UnitName("player")
+			local gmCanBeReplaced, playerCanBeGM
+			for i = 1, GetNumGuildMembers() do
+				local name, rank, rankIndex = GetGuildRosterInfo(i)
+				if rankIndex == 0 then
+					local year, month, day, hour = GetGuildRosterLastOnline(i)
+					day = (day or 0) + (month and month * 30 or 0)
+					if day >= REPLACE_GUILD_MASTER_DAYS then
+						gmCanBeReplaced = true
 					end
+				elseif name == playerName and rankIndex == 1 then
+					playerCanBeGM = true
 				end
-				break
 			end
-		end
 
-		CAN_REPLACE_GUILD_MASTER = canReplace or false
+			CAN_REPLACE_GUILD_MASTER = (gmCanBeReplaced and playerCanBeGM) or false
+		end
 	end
 
 	if ( CanReplaceGuildMaster() ) then
@@ -2399,9 +2414,4 @@ function ReplaceGuildMaster()
 	if CAN_REPLACE_GUILD_MASTER then
 		SendServerMessage("ACMSG_GUILD_REPLACE_GUILD_MASTER")
 	end
-end
-
-function EventHandler:ASMSG_GUILD_REPLACE_GUILD_MASTER(msg)
-	local oldGM, newGM = string.split(",", msg)
-	AddChatTyppedMessage("SYSTEM", string.format(ERR_GUILD_LEADER_REPLACED, oldGM, newGM))
 end

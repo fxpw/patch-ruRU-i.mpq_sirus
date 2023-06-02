@@ -11,6 +11,7 @@ GlueStrings.lua
 ..\SharedXML\UUID.lua
 ..\SharedXML\Util.lua
 ..\SharedXML\Hook.lua
+..\SharedXML\Utils\CustomSharedAPI.lua
 ..\SharedXML\MixIn.lua
 ..\SharedXML\TableUtil.lua
 ..\SharedXML\EnumUtil.lua
@@ -47,6 +48,7 @@ GlueStrings.lua
 ..\SharedXML\LayoutFrame.xml
 ..\SharedXML\SecureUIPanelTemplates.xml
 ..\SharedXML\SharedUIPanelTemplates.xml
+..\SharedXML\SharedUIPanelDFTemplates.xml
 ..\SharedXML\SharedBasicControls.xml
 ..\SharedXML\HybridScrollFrame.xml
 

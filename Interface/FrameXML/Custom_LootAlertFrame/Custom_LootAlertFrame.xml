@@ -1,16 +1,8 @@
-<!--
-
-	Filename:	Custom_LootAlertFrame.xml
-	Project:	Custom Game Interface
-	Author:		Nyll & Blizzard Entertainment
-
--->
-
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\..\FrameXML\UI.xsd">
 	<Script file="Custom_LootAlertFrame.lua"/>
 
-	<Button name="LootAlertButtonTemplate" parent="UIParent" toplevel="true" frameLevel="120" frameStrata="FULLSCREEN_DIALOG" hidden="true" virtual="true">
+	<Button name="LootAlertButtonTemplate" parent="UIParent" toplevel="true" frameLevel="120" hidden="true" frameStrata="FULLSCREEN_DIALOG" virtual="true">
 		<Size x="276" y="96"/>
 		<Animations>
 			<AnimationGroup parentKey="animIn">
@@ -56,12 +48,11 @@
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="-2" y="3"/>
 					</Anchors>
 				</FontString>
-				<Texture parentKey="IconBorder" atlas="loottoast-itemborder-green" file="Interface/LootFrame/LootToastAtlas">
+				<Texture parentKey="IconBorder" file="Interface/LootFrame/LootToastAtlas">
 					<Size x="60" y="60"/>
 					<Anchors>
 						<Anchor point="CENTER" relativeTo="$parentIcon" relativePoint="CENTER" x="0" y="0"/>
 					</Anchors>
-					<TexCoords left="0.614258" right="0.670898" top="0.707031" bottom="0.933594"/>
 				</Texture>
 				<FontString parentKey="Label" inherits="GameFontNormal" justifyH="LEFT" text="YOU_LOOT">
 					<Size x="167" y="16"/>
@@ -69,7 +60,7 @@
 						<Anchor point="TOPLEFT" relativeTo="$parentIcon" relativePoint="TOPRIGHT" x="7" y="5"/>
 					</Anchors>
 				</FontString>
-				<FontString parentKey="ItemName" inherits="GameFontNormalMed3" justifyH="LEFT" justifyV="MIDDLE" text="ItemName">
+				<FontString parentKey="ItemName" inherits="GameFontNormalMed3" justifyH="LEFT" justifyV="MIDDLE">
 					<Size x="167" y="33"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentIcon" relativePoint="TOPRIGHT" x="10" y="-16"/>
@@ -77,12 +68,12 @@
 				</FontString>
 			</Layer>
 			<Layer level="OVERLAY">
-				<Texture atlas="loottoast-glow" file="Interface/LootFrame/LootToastAtlas" alphaMode="ADD" hidden="true" parentKey="glow">
+				<!--LootWin-Glow-->
+				<Texture alphaMode="ADD" hidden="true" parentKey="glow">
 					<Size x="286" y="109"/>
 					<Anchors>
 						<Anchor point="CENTER" x="0" y="0"/>
 					</Anchors>
-					<TexCoords left="0.000976562" right="0.280273" top="0.00390625" bottom="0.429688"/>
 					<Animations>
 						<AnimationGroup parentKey="animIn">
 							<Alpha change="-1" duration="0" order="1"/>
@@ -93,18 +84,18 @@
 									self:GetParent():Show()
 								</OnPlay>
 								<OnFinished>
-									self:GetParent():Hide()
+									self:GetParent():Hide();
 								</OnFinished>
 							</Scripts>
 						</AnimationGroup>
 					</Animations>
 				</Texture>
+				<!--LootWin-Sheen-->
 				<Texture file="Interface\LootFrame\LootToast" alphaMode="ADD" hidden="true" parentKey="shine">
 					<Size x="171" y="75"/>
 					<Anchors>
 						<Anchor point="BOTTOMLEFT" x="-10" y="12"/>
 					</Anchors>
-					<TexCoords left="0.56347656" right="0.73046875" top="0.57421875" bottom="0.86718750"/>
 					<Animations>
 						<AnimationGroup parentKey="animIn">
 							<Alpha change="-1" duration="0" order="1"/>
@@ -116,11 +107,12 @@
 									self:GetParent():Show()
 								</OnPlay>
 								<OnFinished>
-									self:GetParent():Hide()
+									self:GetParent():Hide();
 								</OnFinished>
 							</Scripts>
 						</AnimationGroup>
 					</Animations>
+					<TexCoords left="0.56347656" right="0.73046875" top="0.57421875" bottom="0.86718750"/>
 				</Texture>
 			</Layer>
 		</Layers>
@@ -134,7 +126,7 @@
 		</Scripts>
 	</Button>
 
-	<Frame name="LootAlertFrame" parent="UIParent" mixin="LootAlertFrame" hidden="false">
+	<Frame name="LootAlertFrame" parent="UIParent" hidden="true">
 		<Size x="10" y="10"/>
 		<Anchors>
 			<Anchor point="BOTTOM" x="0" y="128"/>

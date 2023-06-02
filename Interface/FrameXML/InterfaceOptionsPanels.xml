@@ -3752,6 +3752,29 @@
 					</OnHide>
 				</Scripts>
 			</CheckButton>
+			<CheckButton name="$parentItemUpgradeLeftItemList" inherits="InterfaceOptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentEquipmentManagerDescription" relativePoint="BOTTOMLEFT" x="-35" y="-25"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="$parentDescription" inherits="GameFontHighlight" text="OPTION_ITEM_UPGRADE_LEFT_ITEM_LIST_DESCRIPTION" justifyH="LEFT" justifyV="TOP">
+							<Size x="350" y="0"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="35" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetFontObject(GameFontNormal);
+						self.type = CONTROLTYPE_CHECKBOX;
+						self.cvar = "C_CVAR_ITEM_UPGRADE_LEFT_ITEM_LIST";
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
 			<!--<CheckButton name="$parentPreviewTalentChanges" inherits="InterfaceOptionsCheckButtonTemplate">-->
 				<!--<Anchors>-->
 					<!--<Anchor point="TOPLEFT" relativeTo="$parentEquipmentManagerDescription" relativePoint="BOTTOMLEFT">-->
