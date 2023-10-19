@@ -10,6 +10,7 @@ function ezSpectator_InterfaceWorker:Create(Parent)
     self.Parent = Parent
 
     self.IsRunning = false
+	self.IsPaused = false
     self.IsSpectating = false
     self.Viewpoint = nil
 
@@ -83,6 +84,7 @@ function ezSpectator_InterfaceWorker:SetMode(Value)
 
     if Value == 0 then
         self.IsRunning = false
+		self.IsPaused = false
         self.IsSpectating = false
         self.IsTournament = false
 
@@ -101,6 +103,7 @@ function ezSpectator_InterfaceWorker:SetMode(Value)
         self:Reset()
     else
         self.IsRunning = true
+		self.IsPaused = false
         self.IsSpectating = true
         self.IsTournament = Value > 1
 

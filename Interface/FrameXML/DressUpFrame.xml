@@ -72,16 +72,13 @@
 				<OnClick>
 					if ( DressUpModel.isCreature ) then
 						HideUIPanel(DressUpFrame);
-						if ( not CollectionsJournal:IsShown() ) then
-							ShowUIPanel(CollectionsJournal);
-						end
-						if ( DressUpModel.index ) then
-							MountJournal_Select(DressUpModel.index);
-							CollectionsJournal_SetTab(CollectionsJournal, 1);
-							DressUpModel.index = nil;
+						if ( DressUpModel.mountID ) then
+							MountJournal_SelectByMountID(DressUpModel.mountID)
+							SetCollectionsJournalShown(true, COLLECTIONS_JOURNAL_TAB_INDEX_MOUNTS);
+							DressUpModel.mountID = nil;
 						elseif ( DressUpModel.petID ) then
+							SetCollectionsJournalShown(true, COLLECTIONS_JOURNAL_TAB_INDEX_PETS);
 							PetJournal_SelectByPetID(DressUpModel.petID);
-							CollectionsJournal_SetTab(CollectionsJournal, 2);
 							DressUpModel.petID = nil;
 						end
 					else

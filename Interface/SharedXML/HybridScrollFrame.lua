@@ -55,7 +55,7 @@ function HybridScrollFrame_UpdateButtonStates (self, currValue)
 end
 
 function HybridScrollFrame_OnMouseWheel (self, delta, stepSize)
-	if ( not self.scrollBar:IsVisible() ) then
+	if ( not self.scrollBar:IsVisible() or self.scrollBar:IsEnabled() ~= 1 ) then
 		return;
 	end
 
@@ -94,12 +94,35 @@ function HybridScrollFrameScrollButton_OnClick (self, button, down)
 	end
 end
 
+function HybridScrollFrame_SetPercentageHeight(self, percentageHeight)
+	local offset = percentageHeight * (self.totalHeight or 0);
+	HybridScrollFrame_SetOffset(self, offset);
+end
+
+function HybridScrollFrame_GetVisiblePercentage(self)
+	local totalHeight = (self.totalHeight or 0);
+	if totalHeight == 0 then
+		return 0;
+	end
+
+	return self.scrollChild:GetHeight() / totalHeight;
+end
+
+function HybridScrollFrame_GetScrollPercentage(self)
+	local scrollableHeight = (self.totalHeight or 0) - self.scrollChild:GetHeight();
+	if scrollableHeight == 0 then
+		return 0;
+	end
+
+	return (self.offset or 0) / scrollableHeight;
+end
+
 function HybridScrollFrame_Update (self, totalHeight, displayedHeight)
 	local range = floor(totalHeight - self:GetHeight() + 0.5);
 	if ( range > 0 and self.scrollBar ) then
 		local minVal, maxVal = self.scrollBar:GetMinMaxValues();
 		if ( math.floor(self.scrollBar:GetValue()) >= math.floor(maxVal) ) then
-			self.scrollBar:SetMinMaxValues(0, range)
+			self.scrollBar:SetMinMaxValues(0, range);
 			if ( math.floor(self.scrollBar:GetValue()) ~= math.floor(range) ) then
 				self.scrollBar:SetValue(range);
 			else
@@ -239,10 +262,14 @@ function HybridScrollFrame_CreateButtons (self, buttonTemplate, initialOffsetX, 
 	self.buttons = buttons;
 	local scrollBar = self.scrollBar;
 	scrollBar:SetMinMaxValues(0, numButtons * buttonHeight)
-	scrollBar:SetValueStep(.005);
 	scrollBar.buttonHeight = buttonHeight;
+	scrollBar:SetValueStep(.005);
 	scrollBar:SetValue(0);
 
+end
+
+function HybridScrollFrame_GetButtonIndex(self, button)
+	return tIndexOf(self.buttons, button);
 end
 
 function HybridScrollFrame_GetButtons (self)
@@ -288,5 +315,17 @@ function HybridScrollFrame_ScrollToIndex(self, index, getHeightFunc)
 			break;
 		end
 		totalHeight = totalHeight + entryHeight;
+	end
+end
+
+function HybridScrollBar_Disable(scrollBar)
+	scrollBar:Disable();
+	local scrollDownButton = scrollBar.ScrollDownButton or _G[scrollBar:GetName().."ScrollDownButton"];
+	if scrollDownButton then
+		scrollDownButton:Disable();
+	end
+	local scrollUpButton = scrollBar.ScrollUpButton or _G[scrollBar:GetName().."ScrollUpButton"];
+	if scrollUpButton then
+		scrollUpButton:Disable();
 	end
 end

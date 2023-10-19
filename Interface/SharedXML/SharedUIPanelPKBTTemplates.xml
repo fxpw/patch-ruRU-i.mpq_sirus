@@ -259,7 +259,49 @@
 	<Button name="PKBT_BlueButtonMultiWidgetTemplate" inherits="PKBT_BlueButtonTemplate,PKBT_ButtonMultiWidgetTemplate" virtual="true"/>
 	<Button name="PKBT_GoldButtonMultiWidgetTemplate" inherits="PKBT_GoldButtonTemplate,PKBT_ButtonMultiWidgetTemplate" virtual="true"/>
 
-	<Button name="PKBT_ButtonMultiWidgetPriceTemplate" inherits="PKBT_ButtonTemplate" virtual="true">
+	<Frame name="PKBT_PriceTemplate" virtual="true">
+		<Size x="26" y="26"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="26" y="26"/>
+					<Anchors>
+						<Anchor point="LEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentValue" parentKey="Value" inherits="PKBT_Font_16">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="3" y="0"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentValueOriginal" parentKey="ValueOriginal" inherits="PKBT_Font_12" hidden="true">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="4" y="-1"/>
+					</Anchors>
+					<Color r="0.765" g="0.553" b="0.549"/>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentStrikeThrough" parentKey="StrikeThrough" alpha="0.5" hidden="true">
+					<Size x="0" y="1"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentValueOriginal" x="0" y="-1"/>
+					</Anchors>
+					<Color r="0.765" g="0.553" b="0.549"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, PKBT_PriceMixin)
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<Button name="PKBT_ButtonMultiWidgetPriceTemplate" inherits="PKBT_ButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
 		<Size x="126" y="52"/>
 		<Frames>
 			<Frame parentKey="WidgetHolder" hidden="true">
@@ -268,43 +310,34 @@
 					<Anchor point="CENTER" x="0" y="0"/>
 				</Anchors>
 			</Frame>
-			<Frame name="$parentPrice" parentKey="Price" hidden="true">
-				<Size x="26" y="3"/>
+			<Frame name="$parentPrice" parentKey="Price" inherits="PKBT_PriceTemplate" hidden="true">
 				<Anchors>
 					<Anchor point="TOPRIGHT" x="-27" y="0"/>
 					<Anchor point="BOTTOMRIGHT" x="-27" y="0"/>
 				</Anchors>
+			</Frame>
+			<Frame name="$parentPurchaseNote" parentKey="PurchaseNote" enableMouse="true" hidden="true">
+				<Size x="29" y="29"/>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="RIGHT" x="5" y="0"/>
+				</Anchors>
 				<Layers>
 					<Layer level="ARTWORK">
 						<Texture name="$parentIcon" parentKey="Icon">
-							<Size x="26" y="26"/>
 							<Anchors>
-								<Anchor point="LEFT" x="0" y="0"/>
+								<Anchor point="CENTER" x="0" y="0"/>
 							</Anchors>
-						</Texture>
-						<FontString name="$parentValue" parentKey="Value" inherits="PKBT_Font_16">
-							<Anchors>
-								<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="3" y="0"/>
-							</Anchors>
-						</FontString>
-
-						<FontString name="$parentValueOriginal" parentKey="ValueOriginal" inherits="PKBT_Font_12" hidden="true">
-							<Anchors>
-								<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="3" y="-1"/>
-							</Anchors>
-							<Color r="0.765" g="0.553" b="0.549"/>
-						</FontString>
-					</Layer>
-					<Layer level="OVERLAY">
-						<Texture name="$parentStrikeThrough" parentKey="StrikeThrough" alpha="0.5" hidden="true">
-							<Size x="0" y="1"/>
-							<Anchors>
-								<Anchor point="CENTER" relativeTo="$parentValueOriginal" x="0" y="-1"/>
-							</Anchors>
-							<Color r="0.765" g="0.553" b="0.549"/>
 						</Texture>
 					</Layer>
 				</Layers>
+				<Scripts>
+					<OnEnter>
+						self:GetParent():OnNoteEnter()
+					</OnEnter>
+					<OnLeave>
+						self:GetParent():OnNoteLeave()
+					</OnLeave>
+				</Scripts>
 			</Frame>
 		</Frames>
 		<Scripts>
@@ -317,6 +350,41 @@
 	<Button name="PKBT_RedButtonMultiWidgetPriceTemplate" inherits="PKBT_RedButtonTemplate,PKBT_ButtonMultiWidgetPriceTemplate" virtual="true"/>
 	<Button name="PKBT_BlueButtonMultiWidgetPriceTemplate" inherits="PKBT_BlueButtonTemplate,PKBT_ButtonMultiWidgetPriceTemplate" virtual="true"/>
 	<Button name="PKBT_GoldButtonMultiWidgetPriceTemplate" inherits="PKBT_GoldButtonTemplate,PKBT_ButtonMultiWidgetPriceTemplate" virtual="true"/>
+
+	<CheckButton name="PKBT_CheckButtonBaseTemplate" virtual="true">
+		<Size x="17" y="17"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<FontString name="$parentButtonText" parentKey="ButtonText" inherits="PKBT_Font_16">
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="RIGHT" x="5" y="1"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, PKBT_CheckButtonBaseMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnClick>
+				PlaySound("igMainMenuOptionCheckBoxOn")
+				self:OnClick(button, true)
+			</OnClick>
+		</Scripts>
+	</CheckButton>
+	<CheckButton name="PKBT_CheckButtonTemplate" inherits="PKBT_CheckButtonBaseTemplate" virtual="true">
+		<Size x="17" y="17"/>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, PKBT_CheckButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</CheckButton>
 
 	<Frame name="PKBT_RibbonTemplate" virtual="true">
 		<Size x="226" y="50"/>
@@ -359,6 +427,9 @@
 
 	<Slider name="PKBT_UIPanelScrollBarTemplate" virtual="true">
 		<Size x="22" y="0"/>
+		<ThumbTexture name="$parentThumbTexture" parentKey="ThumbTexture">
+			<Size x="27" y="14"/>
+		</ThumbTexture>
 		<Layers>
 			<Layer level="BORDER">
 				<Texture name="$parentTop" parentKey="Top">
@@ -375,6 +446,24 @@
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentTop" relativePoint="BOTTOMLEFT" x="0" y="0"/>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBottom" relativePoint="TOPRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentThumbTextureTop" parentKey="ThumbTextureTop">
+					<Anchors>
+						<Anchor point="TOP" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentThumbTextureBottom" parentKey="ThumbTextureBottom">
+					<Anchors>
+						<Anchor point="BOTTOM" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentThumbTextureMiddle" parentKey="ThumbTextureMiddle">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentThumbTextureTop" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentThumbTextureBottom" relativePoint="TOPRIGHT" x="0" y="0"/>
 					</Anchors>
 				</Texture>
 			</Layer>
@@ -409,18 +498,25 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				self.Top:SetAtlas("PKBT-ScrollBar-Vertical-Background-Top", true)
-				self.Bottom:SetAtlas("PKBT-ScrollBar-Vertical-Background-Bottom", true)
-				self.Middle:SetAtlas("PKBT-ScrollBar-Vertical-Background-Middle")
-
-				self.ThumbTexture:SetAtlas("PKBT-ScrollBar-Vertical-Background-Thumb", true)
+				Mixin(self, PKBT_UIPanelScrollBarMixin)
+				self:OnLoad()
 			</OnLoad>
 			<OnValueChanged function="UIPanelScrollBar_OnValueChanged"/>
+			<OnSizeChanged>
+				if self.OnSizeChanged then
+					self:OnSizeChanged(w, h)
+				end
+			</OnSizeChanged>
+			<OnMinMaxChanged>
+				self:OnMinMaxChanged(min, max)
+			</OnMinMaxChanged>
 		</Scripts>
-		<ThumbTexture name="$parentThumbTexture" parentKey="ThumbTexture"/>
 	</Slider>
 	<Slider name="PKBT_HybridScrollBarTemplate" virtual="true">
 		<Size x="22" y="0"/>
+		<ThumbTexture name="$parentThumbTexture" parentKey="ThumbTexture">
+			<Size x="27" y="14"/>
+		</ThumbTexture>
 		<Layers>
 			<Layer level="BORDER">
 				<Texture name="$parentTop" parentKey="Top">
@@ -437,6 +533,24 @@
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentTop" relativePoint="BOTTOMLEFT" x="0" y="0"/>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBottom" relativePoint="TOPRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentThumbTextureTop" parentKey="ThumbTextureTop">
+					<Anchors>
+						<Anchor point="TOP" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentThumbTextureBottom" parentKey="ThumbTextureBottom">
+					<Anchors>
+						<Anchor point="BOTTOM" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentThumbTextureMiddle" parentKey="ThumbTextureMiddle">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentThumbTextureTop" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentThumbTextureBottom" relativePoint="TOPRIGHT" x="0" y="0"/>
 					</Anchors>
 				</Texture>
 			</Layer>
@@ -473,16 +587,20 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				self.Top:SetAtlas("PKBT-ScrollBar-Vertical-Background-Top", true)
-				self.Bottom:SetAtlas("PKBT-ScrollBar-Vertical-Background-Bottom", true)
-				self.Middle:SetAtlas("PKBT-ScrollBar-Vertical-Background-Middle")
-
+				Mixin(self, PKBT_UIPanelScrollBarMixin)
 				self.thumbTexture = self.ThumbTexture
-				self.ThumbTexture:SetAtlas("PKBT-ScrollBar-Vertical-Background-Thumb", true)
+				self:OnLoad()
 			</OnLoad>
 			<OnValueChanged function="HybridScrollFrame_OnValueChanged"/>
+			<OnSizeChanged>
+				if self.OnSizeChanged then
+					self:OnSizeChanged(w, h)
+				end
+			</OnSizeChanged>
+			<OnMinMaxChanged>
+				self:OnMinMaxChanged(min, max)
+			</OnMinMaxChanged>
 		</Scripts>
-		<ThumbTexture name="$parentThumbTexture" parentKey="ThumbTexture"/>
 	</Slider>
 
 	<Button name="PKBT_MinimalScrollBarHorizontalButtonTemplate" virtual="true">
@@ -598,6 +716,34 @@
 			</Slider>
 		</Frames>
 	</ScrollFrame>
+
+	<Frame name="PKBT_ScrollShadowTemplate" virtual="true">
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parentTop" parentKey="Top" alpha="0">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBottom" parentKey="Bottom" alpha="0">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, PKBT_ScrollShadowMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</Frame>
 
 	<StatusBar name="PKBT_StatusBarTemplate" drawLayer="BACKGROUND" orientation="HORIZONTAL" minValue="0" maxValue="100" defaultValue="0" virtual="true">
 		<Size x="116" y="19"/>
@@ -726,12 +872,45 @@
 		</Scripts>
 	</Button>
 
-	<EditBox name="PKBT_NumericEditBoxTemplate" numeric="true" letters="10" autoFocus="false" virtual="true">
+	<EditBox name="PKBT_EditBoxCodeTemplate" autoFocus="false" virtual="true">
+		<Layers>
+			<Layer level="BORDER">
+				<FontString parentKey="Instructions" inherits="PKBT_Font_16" justifyH="LEFT" justifyV="TOP" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+					</Anchors>
+					<Color r="0.35" g="0.35" b="0.35"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, PKBT_EditBoxCodeMixin)
+			</OnLoad>
+			<OnTabPressed>
+				self:OnTabPressed()
+			</OnTabPressed>
+			<OnTextChanged>
+				self:OnTextChanged(userInput)
+			</OnTextChanged>
+			<OnEscapePressed>
+				self:OnEscapePressed()
+			</OnEscapePressed>
+			<OnChar>
+				self:OnChar(text)
+			</OnChar>
+			<OnTextSet>
+				self:OnTextSet()
+			</OnTextSet>
+		</Scripts>
+	</EditBox>
+	<EditBox name="PKBT_EditBoxTemplate" inherits="PKBT_EditBoxCodeTemplate" virtual="true">
 		<Size x="130" y="43"/>
-		<FontString inherits="PKBT_Font_18" justifyH="CENTER" justifyV="MIDDLE">
-			<Color r="1.0" g="0.82" b="0"/>
+		<HitRectInsets left="4" right="4" top="5" bottom="2"/>
+		<TextInsets left="9" right="9" top="4" bottom="0"/>
+		<FontString inherits="PKBT_Font_16" justifyH="LEFT" justifyV="MIDDLE">
+			<Color r="1" g="1" b="1"/>
 		</FontString>
-		<TextInsets left="2" right="2" top="4" bottom="0"/>
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture name="$parentBackgroundLeft" parentKey="BackgroundLeft">
@@ -754,13 +933,60 @@
 				</Texture>
 			</Layer>
 		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, PKBT_EditBoxMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</EditBox>
+	<EditBox name="PKBT_EditBoxAltTemplate" inherits="PKBT_EditBoxCodeTemplate" virtual="true">
+		<Size x="130" y="60"/>
+		<HitRectInsets left="10" right="10" top="9" bottom="5"/>
+		<TextInsets left="20" right="20" top="2" bottom="0"/>
+		<FontString inherits="PKBT_Font_16" justifyH="LEFT" justifyV="MIDDLE">
+			<Color r="1.0" g="0.82" b="0"/>
+		</FontString>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackgroundLeft" parentKey="BackgroundLeft">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBackgroundRight" parentKey="BackgroundRight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBackgroundCenter" parentKey="BackgroundCenter">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBackgroundLeft" relativePoint="TOPRIGHT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackgroundRight" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, PKBT_EditBoxAltMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</EditBox>
+	<EditBox name="PKBT_NumericEditBoxTemplate" inherits="PKBT_EditBoxTemplate" numeric="true" letters="10" virtual="true">
+		<FontString inherits="PKBT_Font_18" justifyH="CENTER" justifyV="MIDDLE">
+			<Color r="1.0" g="0.82" b="0"/>
+		</FontString>
 		<Frames>
 			<Button name="$parentDecrementButton" parentKey="DecrementButton">
 				<Size x="14" y="14"/>
 				<Anchors>
 					<Anchor point="LEFT" x="14" y="-2"/>
 				</Anchors>
-				<HitRectInsets left="-11" right="-10" top="-12" bottom="-10"/>
+				<HitRectInsets left="-11" right="-10" top="-12" bottom="-11"/>
 				<Scripts>
 					<OnMouseDown>
 						if self:IsEnabled() == 1 then
@@ -778,7 +1004,7 @@
 				<Anchors>
 					<Anchor point="RIGHT" x="-14" y="-2"/>
 				</Anchors>
-				<HitRectInsets left="-10" right="-11" top="-12" bottom="-10"/>
+				<HitRectInsets left="-10" right="-11" top="-12" bottom="-11"/>
 				<Scripts>
 					<OnMouseDown>
 						if self:IsEnabled() == 1 then
@@ -830,12 +1056,12 @@
 			<Layer level="BACKGROUND">
 				<Texture name="$parentShadowLeft" parentKey="ShadowLeft">
 					<Anchors>
-						<Anchor point="RIGHT" relativePoint="LEFT" x="0" y="0"/>
+						<Anchor point="RIGHT" relativePoint="LEFT" x="2" y="0"/>
 					</Anchors>
 				</Texture>
 				<Texture name="$parentShadowRight" parentKey="ShadowRight">
 					<Anchors>
-						<Anchor point="LEFT" relativePoint="RIGHT" x="0" y="0"/>
+						<Anchor point="LEFT" relativePoint="RIGHT" x="-2" y="0"/>
 					</Anchors>
 				</Texture>
 			</Layer>
@@ -847,7 +1073,7 @@
 				</Texture>
 				<Texture name="$parentDecorBottom" parentKey="DecorBottom">
 					<Anchors>
-						<Anchor point="TOP" relativePoint="BOTTOM" x="0" y="5"/>
+						<Anchor point="TOP" relativePoint="BOTTOM" x="0" y="6"/>
 					</Anchors>
 				</Texture>
 			</Layer>
@@ -950,13 +1176,6 @@
 						<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
 					</Anchors>
 				</Texture>
-				<!-- <Texture name="$parentBg" horizTile="true" vertTile="true" parentKey="Bg">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="3" y="-21"/>
-						<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
-					</Anchors>
-					<Color r="0.196" g="0.196" b="0.196"/>
-				</Texture> -->
 			</Layer>
 			<Layer level="BORDER">
 				<Texture name="$parentTopTileStreaks" parentKey="TopTileStreaks" inherits="_UI-Frame-TopTileStreaks">

@@ -167,10 +167,8 @@
 					<AbsDimension x="40" y="40"/>
 				</Size>
 				<Scripts>
-					<OnClick function="VehicleExit"/>
-					<OnEnter>
-						GameTooltip_AddNewbieTip(self, LEAVE_VEHICLE, 1.0, 1.0, 1.0, nil);
-					</OnEnter>
+					<OnClick function="VehicleMenuBarLeaveButton_OnClick"/>
+					<OnEnter function="VehicleMenuBarLeaveButton_OnEnter"/>
 					<OnLeave function="GameTooltip_Hide"/>
 				</Scripts>
 				<NormalTexture/>

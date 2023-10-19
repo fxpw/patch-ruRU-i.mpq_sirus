@@ -1,9 +1,3 @@
---	Filename:	Sirus_ChooseItem.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 local CREATED_FRAMES = 4;
 local MAX_UNSCALED_FRAMES = 4;
 local CHOOSEITEM_DATA = {}
@@ -122,9 +116,9 @@ end
 function QuestChoiceOpticonSelectButton_OnClick( self, ... )
 	self = self:GetParent()
 	if self.data.itemGUID then
-		SendAddonMessage("ACMSG_UPGRADE_TOKEN", string.format("%d:%d:%s", self.data.tokenID, self.data.itemID, self.data.itemGUID), "WHISPER", UnitName("player"))
+		SendServerMessage("ACMSG_UPGRADE_TOKEN", string.format("%d:%d:%s", self.data.tokenID, self.data.itemID, self.data.itemGUID))
 	else
-		SendAddonMessage("ACMSG_TRADE_TOKEN", string.format("%d:%d", self.data.tokenID, self.data.itemID), "WHISPER", UnitName("player"))
+		SendServerMessage("ACMSG_TRADE_TOKEN", string.format("%d:%d", self.data.tokenID, self.data.itemID))
 	end
 	HideUIPanel(ChooseItemFrame)
 end

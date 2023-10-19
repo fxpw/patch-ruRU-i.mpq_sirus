@@ -209,15 +209,13 @@ function SetItemRef(link, text, button, chatFrame)
 		else
 			if ( CollectionsJournal ) then
 				if ( collectionType == CHAR_COLLECTION_MOUNT ) then
-					for index, data in ipairs(COLLECTION_MOUNTDATA) do
-						if ( data.itemID == itemID and data.creatureID ) then
-							SetCollectionsJournalShown(true, COLLECTIONS_JOURNAL_TAB_INDEX_MOUNTS);
-							MountJournal_Select(index);
-							break;
-						end
+					local mountID = select(10, C_MountJournal.GetMountFromItem(itemID));
+					if mountID then
+						SetCollectionsJournalShown(true, COLLECTIONS_JOURNAL_TAB_INDEX_MOUNTS);
+						MountJournal_SetSelected(mountID, itemID);
 					end
 				elseif ( collectionType == CHAR_COLLECTION_PET ) then
-					local _, petID = C_PetJournal.GetPetInfoByItemID(itemID);
+					local petID = select(9, C_PetJournal.GetPetInfoByItemID(itemID));
 					if ( petID ) then
 						SetCollectionsJournalShown(true, COLLECTIONS_JOURNAL_TAB_INDEX_PETS);
 						PetJournal_SelectByPetID(petID);

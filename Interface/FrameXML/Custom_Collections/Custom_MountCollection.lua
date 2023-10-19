@@ -551,17 +551,19 @@ end
 
 function MountJournal_SetAllAbilityFilters(value)
 	C_MountJournal.SetAllAbilityFilters(value);
-	UIDropDownMenu_Refresh(MountJournalFilterDropDown, UIDROPDOWNMENU_MENU_VALUE, UIDROPDOWNMENU_MENU_LEVEL);
+	UIDropDownMenu_Refresh(MountJournalFilterDropDown, UIDROPDOWNMENU_MENU_VALUE, 2);
 end
 
 function MountJournal_SetAllSourceFilters(value)
 	C_MountJournal.SetAllSourceFilters(value);
-	UIDropDownMenu_Refresh(MountJournalFilterDropDown, UIDROPDOWNMENU_MENU_VALUE, UIDROPDOWNMENU_MENU_LEVEL);
+	C_MountJournal.SetAllTravelingMerchantFilters(value);
+	UIDropDownMenu_Refresh(MountJournalFilterDropDown, UIDROPDOWNMENU_MENU_VALUE, 2);
 end
+
 
 function MountJournal_SetAllFactionFilters(value)
 	C_MountJournal.SetAllFactionFilters(value);
-	UIDropDownMenu_Refresh(MountJournalFilterDropDown, UIDROPDOWNMENU_MENU_VALUE, UIDROPDOWNMENU_MENU_LEVEL);
+	UIDropDownMenu_Refresh(MountJournalFilterDropDown, UIDROPDOWNMENU_MENU_VALUE, 2);
 end
 
 function MountJournalFilterDropDown_Initialize(self, level)
@@ -608,6 +610,19 @@ function MountJournalFilterDropDown_Initialize(self, level)
 						  numFilters = C_PetJournal.GetNumPetSources,
 						  filterValidation = C_MountJournal.IsValidSourceFilter,
 						  globalPrepend = "COLLECTION_PET_SOURCE_",
+						},
+						{ type = FilterComponent.Submenu, text = COLLECTION_TRAVELING_MERCHANTS, value = 9, childrenInfo = {
+								filters = {
+									{ type = FilterComponent.DynamicFilterSet,
+									  buttonType = FilterComponent.Checkbox,
+									  set = C_MountJournal.SetTravelingMerchantFilter,
+									  isSet = C_MountJournal.IsTravelingMerchantChecked,
+									  numFilters = C_MountJournal.GetNumTravelingMerchantFilters,
+									  filterValidation = C_MountJournal.IsValidTravelingMerchantFilter,
+									  globalPrepend = "COLLECTION_TRAVELING_MERCHANT_",
+									},
+								},
+							},
 						},
 					},
 				},

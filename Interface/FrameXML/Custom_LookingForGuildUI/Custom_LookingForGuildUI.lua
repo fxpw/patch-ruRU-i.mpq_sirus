@@ -200,7 +200,7 @@ function CardRightClickOptionsMenuInitialize(self, level)
 		info.isTitle = false;
 		info.notCheckable = true;
 		info.disabled = nil;
-		info.func = function() StaticPopup_Show("LOOKING_FOR_GUILD_URL", GUILD_RECRUITING_URL_TEXT, nil, string.format("https://sirus.su/base/guilds/%d/%d", C_Service:GetRealmID(), GetRecruitingGuildID(cardIndex) or 0)); end
+		info.func = function() StaticPopup_Show("LOOKING_FOR_GUILD_URL", GUILD_RECRUITING_URL_TEXT, nil, string.format("https://sirus.su/base/guilds/%d/%d", C_Service.GetRealmID(), GetRecruitingGuildID(cardIndex) or 0)); end
 		UIDropDownMenu_AddButton(info, level);
 	end
 end

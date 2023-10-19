@@ -58,11 +58,9 @@ function ArenaSpectatorFrameMixin:WatchReplay( replayID )
 	self.replayWatchID = replayID
 end
 
-function ArenaSpectatorFrameMixin:WatchReplayAtHyperlink( link )
-	local replayData = C_Split(link, ":")
-	local replayID = tonumber(replayData[2])
-
-	self:ShowReplayConfirmationWatch(replayID)
+function ArenaSpectatorFrameMixin:WatchReplayAtHyperlink(link)
+	local linkType, replayID = string.split(":", link)
+	self:ShowReplayConfirmationWatch(tonumber(replayID))
 end
 
 function ArenaSpectatorFrameMixin:ShowReplayConfirmationWatch( replayID, isServerResponce )
@@ -214,50 +212,47 @@ function ArenaSpectatorFrameMixin:SendSharedReplay()
 	ChatFrame_OpenChat(string.format("%s %s %s", channel, hyperlink, message or " "), DEFAULT_CHAT_FRAME)
 end
 
-function EventHandler:ASMSG_AR_SEND_META_INFO( msg )
-	local messageData   = C_Split(msg, "|")
-	local bracketID 	= tonumber(table.remove(messageData, 1))
-	local replayData 	= C_Split(messageData[1], ":")
-	local replayID 		= tonumber(table.remove(replayData, 1))
-	local winnerTeam 	= tonumber(table.remove(replayData, 3))
+function EventHandler:ASMSG_AR_SEND_META_INFO(msg)
+	if msg == "" then
+		StaticPopup_Show("OKAY", ARENA_REPLAY_NOT_FOUND)
+		return
+	end
 
-	local team1Data 	= C_Split(replayData[1], ",")
-	local team2Data 	= C_Split(replayData[2], ",")
-	local rating 		= C_Split(replayData[3], ",")
+	local bracketID, _, matchData = string.split("|", msg)
+	local replayID, team1Data, team2Data, winnerTeam, ratingData = string.split(":", matchData, 5)
+	local team1Rating, team2Rating = string.split(",", ratingData)
 
-	ArenaSpectatorFrame.replayData[replayID] = {
-		replayID 	= replayID,
-		winnerTeam 	= winnerTeam,
-		bracketID 	= bracketID,
-		team1Rating = tonumber(rating[1]),
-		team2Rating = tonumber(rating[2]),
-		players 	= {
+	replayID = tonumber(replayID)
+
+	local replayData = {
+		replayID = replayID,
+		bracketID = tonumber(bracketID),
+		winnerTeam = tonumber(winnerTeam),
+
+		team1Rating = tonumber(team1Rating),
+		team2Rating = tonumber(team2Rating),
+
+		players = {
 			[1] = {},
-			[2] = {}
+			[2] = {},
 		}
 	}
 
-	for i = 1, #team1Data, 2 do
-		local team1PlayerName 						= team1Data[i]
-		local team1ClassID 							= max(1, team1Data[i + 1])
-		local team1ClassName, team1ClassFileString 	= GetClassInfo(tonumber(team1ClassID))
+	for teamIndex, teamData in ipairs({team1Data, team2Data}) do
+		local players = {string.split(",", teamData)}
+		for i = 1, #players, 2 do
+			local name = players[i]
+			local classID = tonumber(players[i + 1])
+			local className, classFileString = GetClassInfo(classID ~= 0 and classID or 1)
 
-		local team2PlayerName 						= team2Data[i]
-		local team2ClassID 							= max(1, team2Data[i + 1])
-		local team2ClassName, team2ClassFileString 	= GetClassInfo(tonumber(team2ClassID))
-
-		table.insert(ArenaSpectatorFrame.replayData[replayID].players[1], {
-			name 			= team1PlayerName,
-			className 		= team1ClassName,
-			classFileString = team1ClassFileString
-		})
-
-		table.insert(ArenaSpectatorFrame.replayData[replayID].players[2], {
-			name 			= team2PlayerName,
-			className 		= team2ClassName,
-			classFileString = team2ClassFileString
-		})
+			table.insert(replayData.players[teamIndex], {
+				name 			= name,
+				className 		= className,
+				classFileString = classFileString,
+			})
+		end
 	end
 
-	ArenaSpectatorFrame:ShowReplayConfirmationWatch( replayID, true )
+	ArenaSpectatorFrame.replayData[replayID] = replayData
+	ArenaSpectatorFrame:ShowReplayConfirmationWatch(replayID, true)
 end

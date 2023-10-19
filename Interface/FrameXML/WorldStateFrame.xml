@@ -352,7 +352,7 @@
 			</Frame>
 		</Frames>
 	</Frame>
-	<Frame name="WorldStateCaptureBarTemplate" virtual="true" toplevel="true" parent="UIParent" hidden="false">
+	<Frame name="WorldStateCaptureBarTemplate" virtual="true" toplevel="true" parent="UIParent" hidden="true">
 		<Size>
 			<AbsDimension x="173" y="26"/>
 		</Size>

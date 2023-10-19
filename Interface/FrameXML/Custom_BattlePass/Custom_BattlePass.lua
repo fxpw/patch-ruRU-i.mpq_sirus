@@ -9,12 +9,18 @@ local PAGE_TYPE = {
 
 local DIALOG_TYPE = {
 	Info = 1,
-	QuestReplace = 2,
+	QuestActionDialog = 2,
 	PurchaseExperience = 3,
-	PurchaseExperiencePost = 4,
-	PurchasePremium = 5,
-	ItemReward = 6,
-	ItemAlert = 7,
+	PurchaseLevelExperience = 4,
+	PurchaseExperiencePost = 5,
+	PurchasePremium = 6,
+	ItemReward = 7,
+	ItemAlert = 8,
+}
+
+local QUEST_DIALOG_TYPE = {
+	Replace = 1,
+	Cancel = 2,
 }
 
 local QUEST_TYPE = {
@@ -23,12 +29,14 @@ local QUEST_TYPE = {
 		template = "BattlePassQuestDailyTemplate",
 		iconAtlas = "PKBT-BattlePass-Icon-QuestsType-Daily",
 		label = BATTLEPASS_QUESTS_DAILY,
+		timeLeftText = BATTLEPASS_QUEST_TIMELEFT_DAILY_LABEL,
 	},
 	[Enum.BattlePass.QuestType.Weekly] = {
 		questType = Enum.BattlePass.QuestType.Weekly,
 		template = "BattlePassQuestWeeklyTemplate",
 		iconAtlas = "PKBT-BattlePass-Icon-QuestsType-Weekly",
 		label = BATTLEPASS_QUESTS_WEEKLY,
+		timeLeftText = BATTLEPASS_QUEST_TIMELEFT_WEEKLY_LABEL,
 	},
 }
 
@@ -57,6 +65,8 @@ local ITEM_GROW_DIRECTION = {
 	},
 }
 
+local pageButtonDisabledColor = {1, 1, 1}
+
 BattlePassMixin = CreateFromMixins(TitledPanelMixin)
 
 function BattlePassMixin:OnLoad()
@@ -79,7 +89,6 @@ function BattlePassMixin:OnLoad()
 	self.Inset.ShadowLeft:SetAtlas("PKBT-Background-Shadow-Large-Left", true)
 	self.Inset.ShadowRight:SetAtlas("PKBT-Background-Shadow-Large-Right", true)
 
-	local pageButtonDisabledColor = {1, 1, 1}
 	self.TopPanel.RewardPageButton.noDisabledBackground = true
 	self.TopPanel.RewardPageButton.noDesaturation = true
 	self.TopPanel.RewardPageButton.disabledColor = pageButtonDisabledColor
@@ -92,8 +101,6 @@ function BattlePassMixin:OnLoad()
 	self.TopPanel.QuestPageButton:AddTextureAtlas("PKBT-BattlePass-Icon-Page-Quests", true)
 	self.TopPanel.QuestPageButton:AddText(BATTLEPASS_QUESTS_LABEL, nil, nil, "PKBT_Font_20")
 	self.TopPanel.QuestPageButton.Notification:SetAtlas("PKBT-Icon-Notification", true)
-
-	self.spinnerPool = CreateFramePool("Frame", self, "LoadingSpinnerTemplate")
 
 	self:SetTitle(BATTLEPASS_TITLE)
 
@@ -111,16 +118,21 @@ function BattlePassMixin:OnLoad()
 	self:RegisterPageButton(self.TopPanel.QuestPageButton)
 	self:SetPage(PAGE_TYPE.CARDS)
 
+	self:RegisterCustomEvent("BATTLEPASS_SEASON_UPDATE")
 	self:RegisterCustomEvent("BATTLEPASS_OPERATION_ERROR")
 	self:RegisterCustomEvent("BATTLEPASS_EXPERIENCE_UPDATE")
 	self:RegisterCustomEvent("BATTLEPASS_ITEM_PURCHASED")
 	self:RegisterCustomEvent("BATTLEPASS_REWARD_ITEMS")
 	self:RegisterCustomEvent("BATTLEPASS_QUEST_LIST_UPDATE")
 	self:RegisterCustomEvent("BATTLEPASS_POINTS_UPDATE")
+
+	C_BattlePass.SetUIFrame(self)
 end
 
 function BattlePassMixin:OnEvent(event, ...)
-	if event == "BATTLEPASS_OPERATION_ERROR" then
+	if event == "BATTLEPASS_SEASON_UPDATE" then
+		self:UpdateSeasonState()
+	elseif event == "BATTLEPASS_OPERATION_ERROR" then
 		local errorText = ...
 		self:GetDialog(DIALOG_TYPE.Info):ShowDialog(BATTLEPASS_STATUS_ERROR, errorText)
 	elseif event == "BATTLEPASS_EXPERIENCE_UPDATE" then
@@ -150,9 +162,12 @@ end
 function BattlePassMixin:OnShow()
 	C_BattlePass.RequestProductData()
 	C_BattlePass.RequestQuests()
+	self:UpdateSeasonState()
 	self:LevelUpdate()
 	self:QuestStatusUpdate()
 	self:SetTutorialReminderShown(true)
+
+	PlaySound(SOUNDKIT.UI_IG_STORE_WINDOW_OPEN_BUTTON)
 end
 
 function BattlePassMixin:OnHide()
@@ -169,6 +184,8 @@ function BattlePassMixin:OnHide()
 
 	self:SetTutorialReminderShown(false)
 	HelpPlate_Hide()
+
+	PlaySound(SOUNDKIT.UI_IG_STORE_WINDOW_CLOSE_BUTTON)
 end
 
 function BattlePassMixin:GetTopPanel()
@@ -254,6 +271,46 @@ function BattlePassMixin:ToggleBlockFrame(toggle)
 	end
 end
 
+function BattlePassMixin:UpdateSeasonState()
+	local isActive = C_BattlePass.IsActive()
+	local questPageButton = self:GetPageButton(PAGE_TYPE.QUESTS)
+
+	if isActive then
+		questPageButton.noDisabledBackground = true
+		questPageButton.noDesaturation = true
+		questPageButton.disabledColor = pageButtonDisabledColor
+		questPageButton.showSeasonEndedTooltip = nil
+		questPageButton:SetEnabled(self:GetSelectedPage() ~= PAGE_TYPE.QUESTS)
+	else
+		local hasCompleteQuests = C_BattlePass.HasCompleteQuests()
+		if not hasCompleteQuests and self:GetSelectedPage() == PAGE_TYPE.QUESTS then
+			self:SetPage(PAGE_TYPE.CARDS)
+		end
+
+		questPageButton.noDisabledBackground = hasCompleteQuests
+		questPageButton.noDesaturation = hasCompleteQuests
+		questPageButton.disabledColor = hasCompleteQuests and pageButtonDisabledColor or nil
+		questPageButton.showSeasonEndedTooltip = not hasCompleteQuests
+		questPageButton:SetEnabled(hasCompleteQuests)
+
+		self:GetDialog(DIALOG_TYPE.QuestActionDialog):Hide()
+		self:GetDialog(DIALOG_TYPE.PurchaseExperience):Hide()
+		self:GetDialog(DIALOG_TYPE.PurchaseLevelExperience):Hide()
+		self:GetDialog(DIALOG_TYPE.PurchaseExperiencePost):Hide()
+		self:GetDialog(DIALOG_TYPE.PurchasePremium):Hide()
+	end
+
+	self.TopPanel.ExperiencePanel.PurchaseButton:SetEnabled(isActive)
+	self:GetPage(PAGE_TYPE.CARDS).PurchasePremiumButton:SetEnabled(isActive)
+
+	self:UpdateSeasonTimer()
+end
+
+function BattlePassMixin:UpdateSeasonTimer()
+	self.TopPanel.SeasonTimer:SetTimeLeft(C_BattlePass.GetSeasonTimeLeft())
+	self.TopPanel.SeasonTimer:SetShown(self:GetSelectedPage() == PAGE_TYPE.CARDS)
+end
+
 function BattlePassMixin:LevelUpdate()
 	local level, currentExp, expToLevel = C_BattlePass.GetLevelInfo()
 	local experiencePanel = self:GetTopPanel().ExperiencePanel
@@ -262,6 +319,11 @@ function BattlePassMixin:LevelUpdate()
 
 	local mainPage = self:GetPage(PAGE_TYPE.CARDS)
 	mainPage.ExperienceStatusBar:SetLevel(level, currentExp, expToLevel)
+
+	if self.currentLevel and self.currentLevel < level then
+		PlaySound(SOUNDKIT.UI_GARRISON_COMMAND_TABLE_FOLLOWER_LEVEL_UP)
+	end
+	self.currentLevel = level
 end
 
 function BattlePassMixin:QuestStatusUpdate()
@@ -392,6 +454,7 @@ end
 
 function BattlePassDialogMixin:CancelClick(button)
 	self:Hide()
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 end
 
 BattlePassSeasonTimerMixin = CreateFromMixins(PKBT_CountdownThrottledBaseMixin)
@@ -409,10 +472,6 @@ function BattlePassSeasonTimerMixin:OnCountdownUpdate(timeLeft, isFinished)
 		self.TimeLeft:SetText(BATTLEPASS_SEASON_TIMELEFT_INACTIVE)
 		self.TimeLeftLabel:Hide()
 		self.TimerIcon:Hide()
-
-		if isFinished then
-		--	TODO request new season info from server?
-		end
 	end
 end
 
@@ -467,6 +526,9 @@ end
 BattlePassLevelGlyphsMixin = {}
 
 function BattlePassLevelGlyphsMixin:OnLoad()
+	if self:IsObjectType("Button") then
+		self:EnableMouse(false)
+	end
 	self.Level:SetFontObject(_G[self:GetAttribute("fontTemplate")])
 	self.Level:SetPoint("CENTER", -1, self:GetAttribute("offsetY") or 1)
 end
@@ -565,9 +627,17 @@ function BattlePassMainPageMixin:OnLoad()
 	self.elapsed = 0
 	self.animGlowTime = 2
 
+	self.TakeAllRewardsCheckButton.OnChecked = function(this, checked, userInput)
+		if userInput then
+			C_BattlePass.SetTakeAllRewards(checked)
+		end
+	end
+
 	self:RegisterCustomEvent("BATTLEPASS_ACCOUNT_UPDATE")
+	self:RegisterCustomEvent("BATTLEPASS_SETTINGS_LOADED")
 	self:RegisterCustomEvent("BATTLEPASS_CARD_UPDATE_BUCKET")
 	self:RegisterCustomEvent("BATTLEPASS_CARD_UPDATE")
+	self:RegisterCustomEvent("BATTLEPASS_CARD_REWARD_AWAIT")
 end
 
 function BattlePassMainPageMixin:OnShow()
@@ -577,11 +647,16 @@ function BattlePassMainPageMixin:OnShow()
 	SetParentFrameLevel(self.ExperienceScrollFrame, 2)
 	SetParentFrameLevel(self.ShieldScrollFrame, 3)
 
+	self.mainFrame:UpdateSeasonTimer()
+
 	self:UpdatePremium()
-	self:UpdateSeasonTimer()
 	self:UpdateCards()
 
 	self:ScrollToCurrentLevel()
+end
+
+function BattlePassMainPageMixin:OnHide()
+	self.mainFrame.TopPanel.SeasonTimer:Hide()
 end
 
 function BattlePassMainPageMixin:OnEvent(event, ...)
@@ -591,10 +666,13 @@ function BattlePassMainPageMixin:OnEvent(event, ...)
 
 	if event == "BATTLEPASS_ACCOUNT_UPDATE" then
 		self:UpdatePremium()
-		self:UpdateSeasonTimer()
+	elseif event == "BATTLEPASS_SETTINGS_LOADED" then
+		self.TakeAllRewardsCheckButton:SetChecked(C_BattlePass.IsTakeAllRewardsEnabled())
 	elseif event == "BATTLEPASS_CARD_UPDATE_BUCKET" then
 		self:UpdateCards()
-	elseif event == "BATTLEPASS_CARD_UPDATE" then
+	elseif event == "BATTLEPASS_CARD_UPDATE"
+	or event == "BATTLEPASS_CARD_REWARD_AWAIT"
+	then
 		local level, rewardType = ...
 		self:UpdateCards()
 	end
@@ -616,7 +694,7 @@ function BattlePassMainPageMixin:OnUpdate(elapsed)
 	end
 
 	for _, card in ipairs(self.cards) do
-		if card.sholdGlow then
+		if card.shouldGlow then
 			card.FreeFrame.BackgroundGlow:SetAlpha(alpha)
 			card.PremiumFrame.BackgroundGlow:SetAlpha(alpha)
 		end
@@ -634,11 +712,6 @@ function BattlePassMainPageMixin:UpdatePremium()
 	self.PurchasePremiumButton:SetShown(not isActive)
 	self.PremiumActiveText:SetShown(isActive)
 	self.PremiumActiveIcon:SetShown(isActive)
-end
-
-function BattlePassMainPageMixin:UpdateSeasonTimer()
-	self.mainFrame.TopPanel.SeasonTimer:SetTimeLeft(C_BattlePass.GetSeasonTimeLeft())
-	self.mainFrame.TopPanel.SeasonTimer:Show()
 end
 
 function BattlePassMainPageMixin:UpdateCards()
@@ -775,13 +848,18 @@ end
 
 function BattlePassExperienceStatusBarMixin:SetLevel(level, currentExp, expToLevel)
 	local numLevelCards = C_BattlePass.GetNumLevelCards()
+
+	local cardsWidth = (CARD_WIDTH + CARD_OFFSET_X) * numLevelCards - CARD_OFFSET_X
+	self:SetWidth(cardsWidth - EXPERIENCE_SCROLL_PADDING * 2)
+
 	local maxValue = numLevelCards * self.valueMult - math.ceil(numLevelCards / 10)
 	self:SetMinMaxValues(0, maxValue)
 
 	if level == 0 then
 		self:SetValue(0)
 	elseif level == numLevelCards then
-		local _, maxValue = self:GetMinMaxValues()
+		local _
+		_, maxValue = self:GetMinMaxValues()
 		self:SetValue(maxValue)
 	else
 		local offset = math.ceil(level / 10)
@@ -791,6 +869,92 @@ function BattlePassExperienceStatusBarMixin:SetLevel(level, currentExp, expToLev
 			self:SetValue(level * self.valueMult - 50 - offset)
 		end
 	end
+end
+
+local showSeasonEndedTooltip = function(self)
+	if self:IsEnabled() ~= 1 then
+		GameTooltip:SetOwner(self, "ANCHOR_TOP")
+		GameTooltip:AddLine(BATTLEPASS_SEASON_TIMELEFT_INACTIVE, 1, 0, 0)
+		GameTooltip:Show()
+	end
+end
+
+BattlePassPageButtonMixin = CreateFromMixins(PKBT_ButtonMultiWidgetMixin)
+
+function BattlePassPageButtonMixin:OnClick(button)
+	self:GetParent():GetParent():SetPage(self:GetID())
+	PlaySound(SOUNDKIT.IG_ABILITY_PAGE_TURN)
+end
+
+function BattlePassPageButtonMixin:OnEnter()
+	PKBT_ButtonMultiWidgetMixin.OnEnter(self)
+
+	if self.showSeasonEndedTooltip then
+		showSeasonEndedTooltip(self)
+	end
+end
+
+function BattlePassPageButtonMixin:OnLeave()
+	PKBT_ButtonMultiWidgetMixin.OnLeave(self)
+	GameTooltip:Hide()
+end
+
+BattlePassPurchasePremiumMixin = CreateFromMixins(PKBT_ButtonMultiWidgetMixin)
+
+function BattlePassPurchasePremiumMixin:OnClick(button)
+	self:GetParent():PurchasePremiumClick(button)
+	PlaySound(SOUNDKIT.UI_IG_STORE_BUY_BUTTON)
+end
+
+function BattlePassPurchasePremiumMixin:OnShow()
+	PKBT_ButtonMultiWidgetMixin.OnShow(self)
+
+	SetParentFrameLevel(self.Glow, -1)
+
+	if self:IsEnabled() == 1 then
+		self.Glow.AlphaAnim:Play()
+	end
+end
+
+function BattlePassPurchasePremiumMixin:OnHide()
+	self.Glow.AlphaAnim:Stop()
+end
+
+function BattlePassPurchasePremiumMixin:OnEnable()
+	PKBT_ButtonMultiWidgetMixin.OnEnable(self)
+	self.Glow.AlphaAnim:Play()
+end
+
+function BattlePassPurchasePremiumMixin:OnDisable()
+	PKBT_ButtonMultiWidgetMixin.OnDisable(self)
+	self.Glow.AlphaAnim:Stop()
+end
+
+function BattlePassPurchasePremiumMixin:OnEnter()
+	PKBT_ButtonMultiWidgetMixin.OnEnter(self)
+	showSeasonEndedTooltip(self)
+end
+
+function BattlePassPurchasePremiumMixin:OnLeave()
+	PKBT_ButtonMultiWidgetMixin.OnLeave(self)
+	GameTooltip:Hide()
+end
+
+BattlePassPurchaseExperienceMixin = CreateFromMixins(PKBT_ButtonMixin)
+
+function BattlePassPurchaseExperienceMixin:OnClick(button)
+	self:GetParent():PurchaseClick(button)
+	PlaySound(SOUNDKIT.UI_IG_STORE_BUY_BUTTON)
+end
+
+function BattlePassPurchaseExperienceMixin:OnEnter()
+	PKBT_ButtonMixin.OnEnter(self)
+	showSeasonEndedTooltip(self)
+end
+
+function BattlePassPurchaseExperienceMixin:OnLeave()
+	PKBT_ButtonMixin.OnLeave(self)
+	GameTooltip:Hide()
 end
 
 BattlePassLevelCardMixin = {}
@@ -805,64 +969,154 @@ function BattlePassLevelCardMixin:OnLoad()
 end
 
 function BattlePassLevelCardMixin:OnHide()
-	self.sholdGlow = nil
+	self.shouldGlow = nil
 end
 
-function BattlePassLevelCardMixin:ActionClick(rewardType, button)
+function BattlePassLevelCardMixin:IsMouseOverEx()
+	local l, r, t, b = self:GetHitRectInsets()
+	return self:IsMouseOver(-t, b, l, -r)
+end
+
+function BattlePassLevelCardMixin:OnUpdate()
+	if self.FreeFrame.state == Enum.BattlePass.CardState.Default then
+		if self:IsMouseOverEx() then
+			self.FreeFrame.ActionButton:Show()
+			self.PremiumFrame.ActionButton:Show()
+		else
+			self.FreeFrame.ActionButton:Hide()
+			self.PremiumFrame.ActionButton:Hide()
+		end
+	end
+end
+
+function BattlePassLevelCardMixin:OnEnter()
+	if self.FreeFrame.state == Enum.BattlePass.CardState.Default then
+		if self:IsMouseOverEx() then
+			self.FreeFrame.ActionButton:Show()
+			self.PremiumFrame.ActionButton:Show()
+		end
+	end
+end
+
+function BattlePassLevelCardMixin:OnLeave()
+	if self.FreeFrame.state == Enum.BattlePass.CardState.Default then
+		if not self:IsMouseOverEx() then
+			self.FreeFrame.ActionButton:Hide()
+			self.PremiumFrame.ActionButton:Hide()
+		end
+	end
+end
+
+function BattlePassLevelCardMixin:ActionClick(rewardType, state, button)
 	if rewardType == Enum.BattlePass.RewardType.Free then
-		C_BattlePass.TakeLevelReward(self:GetID(), rewardType)
+		if state == Enum.BattlePass.CardState.LootAvailable then
+			if C_BattlePass.IsTakeAllRewardsEnabled() then
+				C_BattlePass.TakeAllLevelRewards()
+			else
+				C_BattlePass.TakeLevelReward(self:GetID(), rewardType)
+			end
+			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+		else
+			self.mainPageFrame.mainFrame:HideDialogs()
+			self.mainPageFrame.mainFrame:GetDialog(DIALOG_TYPE.PurchaseLevelExperience):ShowLevelDialog(self:GetID())
+			PlaySound(SOUNDKIT.UI_IG_STORE_BUY_BUTTON)
+		end
 	elseif rewardType == Enum.BattlePass.RewardType.Premium then
 		if C_BattlePass.IsPremiumActive() then
-			C_BattlePass.TakeLevelReward(self:GetID(), rewardType)
+			if state == Enum.BattlePass.CardState.LootAvailable then
+				if C_BattlePass.IsTakeAllRewardsEnabled() then
+					C_BattlePass.TakeAllLevelRewards()
+				else
+					C_BattlePass.TakeLevelReward(self:GetID(), rewardType)
+				end
+				PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+			else
+				self.mainPageFrame.mainFrame:HideDialogs()
+				self.mainPageFrame.mainFrame:GetDialog(DIALOG_TYPE.PurchaseLevelExperience):ShowLevelDialog(self:GetID())
+				PlaySound(SOUNDKIT.UI_IG_STORE_BUY_BUTTON)
+			end
 		else
 			self.mainPageFrame.mainFrame:HideDialogs()
 			self.mainPageFrame.mainFrame:GetDialog(DIALOG_TYPE.PurchasePremium):Show()
+			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
 		end
 	end
 end
 
 function BattlePassLevelCardMixin:SetState(freeState, premiumState)
-	self.sholdGlow = freeState == Enum.BattlePass.CardState.LootAvailable or premiumState == Enum.BattlePass.CardState.LootAvailable
+	self.shouldGlow = freeState == Enum.BattlePass.CardState.LootAvailable or premiumState == Enum.BattlePass.CardState.LootAvailable
 
-	if freeState == Enum.BattlePass.CardState.Looted then
-		self.FreeFrame.Background:SetAtlas("PKBT-BattlePass-Card-Bottom-Disabled", true)
-		self.FreeFrame.BackgroundGlow:Hide()
-		self.FreeFrame.ActionButton:SetText(BATTLEPASS_REWARD_RECEIVED)
-		self.FreeFrame.ActionButton:Disable()
-		self.FreeFrame.ActionButton:Show()
+	local isSeasonActive = C_BattlePass.IsActive()
+
+	self:SetTypeState(self.FreeFrame, freeState, isSeasonActive)
+	self:SetTypeState(self.PremiumFrame, premiumState, isSeasonActive)
+
+	if freeState == Enum.BattlePass.CardState.Default then
+		self:SetScript("OnUpdate", self.OnUpdate)
 	else
-		self.FreeFrame.Background:SetAtlas("PKBT-BattlePass-Card-Bottom", true)
+		self:SetScript("OnUpdate", nil)
+	end
+end
 
-		if freeState == Enum.BattlePass.CardState.LootAvailable then
-			self.FreeFrame.BackgroundGlow:Show()
-			self.FreeFrame.ActionButton:SetText(BATTLEPASS_LEVEL_REWARD_TAKE)
-			self.FreeFrame.ActionButton:Enable()
-			self.FreeFrame.ActionButton:Show()
+function BattlePassLevelCardMixin:SetTypeState(typeFrame, stateType, isSeasonActive)
+	local isPremium = typeFrame:GetID() == Enum.BattlePass.RewardType.Premium
+	typeFrame.state = stateType
+
+	local buttonAtlas = "PKBT-128-RedButton"
+	local spriteState
+
+	if stateType == Enum.BattlePass.CardState.Looted
+	or stateType == Enum.BattlePass.CardState.Unavailable
+	then
+		spriteState = "Disabled"
+		typeFrame.BackgroundGlow:Hide()
+
+		if stateType == Enum.BattlePass.CardState.Looted then
+			typeFrame.ActionButton:SetText(BATTLEPASS_REWARD_RECEIVED)
 		else
-			self.FreeFrame.BackgroundGlow:Hide()
-			self.FreeFrame.ActionButton:Hide()
+			typeFrame.ActionButton:SetText(BATTLEPASS_REWARD_UNAVAILABLE)
+		end
+
+		typeFrame.ActionButton:HideSpinner()
+		typeFrame.ActionButton:Disable()
+		typeFrame.ActionButton:Show()
+	else
+		spriteState = "Default"
+
+		if stateType == Enum.BattlePass.CardState.LootAvailable then
+			typeFrame.BackgroundGlow:Show()
+			typeFrame.ActionButton:SetText(BATTLEPASS_LEVEL_REWARD_TAKE)
+			if C_BattlePass.IsAwaitingLevelReward(self:GetID(), typeFrame:GetID()) then
+				typeFrame.ActionButton:ShowSpinner()
+				typeFrame.ActionButton:Disable()
+			else
+				typeFrame.ActionButton:HideSpinner()
+				typeFrame.ActionButton:Enable()
+			end
+			typeFrame.ActionButton:Show()
+		else
+			typeFrame.BackgroundGlow:Hide()
+			typeFrame.ActionButton:HideSpinner()
+			typeFrame.ActionButton:SetEnabled(isSeasonActive)
+
+			if isPremium then
+				if C_BattlePass.IsPremiumActive() then
+					typeFrame.ActionButton:SetText(BATTLEPASS_PURCHASE_EXPERIENCE)
+					buttonAtlas = "PKBT-128-BlueButton"
+				else
+					typeFrame.ActionButton:SetText(BATTLEPASS_PREMIUM)
+				end
+			else
+				typeFrame.ActionButton:SetText(BATTLEPASS_PURCHASE_EXPERIENCE)
+				buttonAtlas = "PKBT-128-BlueButton"
+			end
+
+			typeFrame.ActionButton:SetShown(self:IsMouseOverEx())
 		end
 	end
 
-	if premiumState == Enum.BattlePass.CardState.Looted then
-		self.PremiumFrame.Background:SetAtlas("PKBT-BattlePass-Card-Top-Disabled", true)
-		self.PremiumFrame.BackgroundGlow:Hide()
-		self.PremiumFrame.ActionButton:SetText(BATTLEPASS_REWARD_RECEIVED)
-		self.PremiumFrame.ActionButton:Disable()
-		self.PremiumFrame.ActionButton:Show()
-	else
-		self.PremiumFrame.Background:SetAtlas("PKBT-BattlePass-Card-Top", true)
-
-		if premiumState == Enum.BattlePass.CardState.LootAvailable then
-			self.PremiumFrame.BackgroundGlow:Show()
-			self.PremiumFrame.ActionButton:SetText(BATTLEPASS_LEVEL_REWARD_TAKE)
-			self.PremiumFrame.ActionButton:Enable()
-			self.PremiumFrame.ActionButton:Show()
-		else
-			self.PremiumFrame.BackgroundGlow:Hide()
-			self.PremiumFrame.ActionButton:Hide()
-		end
-	end
+	typeFrame.Background:SetAtlas(string.format("PKBT-BattlePass-Card-%s-%s", isPremium and "Top" or "Bottom", spriteState), true)
+	typeFrame.ActionButton:SetThreeSliceAtlas(buttonAtlas)
 end
 
 function BattlePassLevelCardMixin:SetRewardItems(items, holder, state, isPremium)
@@ -876,6 +1130,7 @@ function BattlePassLevelCardMixin:SetRewardItems(items, holder, state, isPremium
 
 		itemButton:SetItem(itemData.itemID, itemData.amount, state, isPremium)
 		itemButton:SetParent(holder)
+		itemButton.card = self
 
 		if numItems == 1 then
 			itemButton:SetPoint("CENTER", 0, 0)
@@ -918,12 +1173,15 @@ end
 BattlePassLevelCardItemMixin = {}
 
 function BattlePassLevelCardItemMixin:OnLoad()
+	self.Border:SetAtlas("PKBT-ItemBorder-Normal")
+	self.Glow:SetAtlas("PKBT-ItemBorder-Glow")
 	self.Highlight:SetAtlas("PKBT-ItemBorder-Highlight", true)
 
 	self.UpdateTooltip = self.OnEnter
 end
 
 function BattlePassLevelCardItemMixin:OnEnter()
+	self.card:OnEnter()
 	if self.itemLink then
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		GameTooltip:SetHyperlink(self.itemLink)
@@ -933,6 +1191,7 @@ function BattlePassLevelCardItemMixin:OnEnter()
 end
 
 function BattlePassLevelCardItemMixin:OnLeave()
+	self.card:OnLeave()
 	if self.itemLink then
 		GameTooltip_Hide()
 	end
@@ -946,7 +1205,9 @@ function BattlePassLevelCardItemMixin:OnClick(button)
 end
 
 function BattlePassLevelCardItemMixin:SetItem(itemLink, amount, state, isPremium)
-	local _, link, _, _, _, _, _, _, _, texture = GetItemInfo(itemLink)
+	local _, link, rarity, _, _, _, _, _, _, texture = GetItemInfo(itemLink)
+	local r, g, b = GetItemQualityColor(rarity or 2)
+
 	self.itemLink = link
 	self.hasItem = link ~= nil
 	self.Icon:SetTexture(texture)
@@ -964,20 +1225,18 @@ function BattlePassLevelCardItemMixin:SetItem(itemLink, amount, state, isPremium
 		self.Amount:Hide()
 	end
 
+	self.Border:SetVertexColor(r, g, b)
+	self.Glow:SetShown(state == Enum.BattlePass.CardState.LootAvailable)
+
 	if state == Enum.BattlePass.CardState.Looted then
 		self.Icon:SetVertexColor(0.5, 0.5, 0.5)
-		self.Border:SetAtlas("PKBT-ItemBorder", true)
+		self.Highlight:SetVertexColor(0.5, 0.5, 0.5)
 	else
 		self.Icon:SetVertexColor(1, 1, 1)
+		self.Highlight:SetVertexColor(1, 1, 1)
 
 		if state == Enum.BattlePass.CardState.LootAvailable then
-			if isPremium then
-				self.Border:SetAtlas("PKBT-ItemBorder-Gold", true)
-			else
-				self.Border:SetAtlas("PKBT-ItemBorder-Silver", true)
-			end
-		else
-			self.Border:SetAtlas("PKBT-ItemBorder", true)
+			self.Glow:SetVertexColor(r, g, b)
 		end
 	end
 end
@@ -997,6 +1256,8 @@ function BattlePassQuestPageMixin:OnLoad()
 	self:RegisterCustomEvent("BATTLEPASS_QUEST_ACTION_AWAIT")
 	self:RegisterCustomEvent("BATTLEPASS_QUEST_REPLACED")
 	self:RegisterCustomEvent("BATTLEPASS_QUEST_REPLACE_FAILED")
+	self:RegisterCustomEvent("BATTLEPASS_QUEST_CANCEL_FAILED")
+	self:RegisterCustomEvent("BATTLEPASS_QUEST_CANCELED")
 	self:RegisterCustomEvent("BATTLEPASS_QUEST_DONE")
 	self:RegisterCustomEvent("BATTLEPASS_QUEST_REWARD_FAILED")
 end
@@ -1009,8 +1270,8 @@ function BattlePassQuestPageMixin:OnEvent(event, ...)
 	if event == "PLAYER_MONEY" then
 		self:UpdateQuestHolders()
 
-		local dialog = self:GetParent():GetParent():GetDialog(DIALOG_TYPE.QuestReplace)
-		if dialog:IsShown() then
+		local dialog = self:GetParent():GetParent():GetDialog(DIALOG_TYPE.QuestActionDialog)
+		if dialog:IsShown() and dialog.dialogType == QUEST_DIALOG_TYPE.Replace then
 			dialog.OkButton:SetEnabled(C_BattlePass.CanReplaceQuest(dialog.questType, dialog.questIndex))
 		end
 	elseif event == "BATTLEPASS_QUEST_LIST_UPDATE" then
@@ -1035,6 +1296,7 @@ function BattlePassQuestPageMixin:OnEvent(event, ...)
 		self:UpdateQuestHolders()
 	elseif event == "BATTLEPASS_QUEST_REPLACED"
 	or event == "BATTLEPASS_QUEST_REPLACE_FAILED"
+	or event == "BATTLEPASS_QUEST_CANCEL_FAILED"
 	or event == "BATTLEPASS_QUEST_ACTION_AWAIT"
 	then
 		local questType, questIndex = ...
@@ -1043,7 +1305,9 @@ function BattlePassQuestPageMixin:OnEvent(event, ...)
 		if questHolder then
 			questHolder:UpdateQuest(questIndex, nil, event == "BATTLEPASS_QUEST_REPLACED")
 		end
-	elseif event == "BATTLEPASS_QUEST_DONE" then
+	elseif event == "BATTLEPASS_QUEST_DONE"
+	or event == "BATTLEPASS_QUEST_CANCELED"
+	then
 		local questType, questIndex = ...
 		self.questHolders[questType]:UpdateQuests()
 	elseif event == "BATTLEPASS_QUEST_REWARD_FAILED" then
@@ -1063,8 +1327,6 @@ function BattlePassQuestPageMixin:OnShow()
 	self.mainFrame.Inset.ArtworkBottomLeft:Hide()
 	self.mainFrame.Inset.VignetteBottomLeft:Hide()
 
-	self.mainFrame.TopPanel.SeasonTimer:Hide()
-
 	self:UpdateQuestHolders()
 end
 
@@ -1080,6 +1342,7 @@ function BattlePassQuestPageMixin:UpdateQuestHolders()
 			questHolder:SetOwner(self)
 			questHolder:SetType(questType)
 			questHolder.label = questHolderInfo.label
+			questHolder.Header.TimeLeftLabel:SetText(questHolderInfo.timeLeftText)
 			questHolder.Header:SetLabel(questHolderInfo.label)
 			questHolder.Header:SetIcon(questHolderInfo.iconAtlas)
 			self.questHolders[questType] = questHolder
@@ -1182,7 +1445,7 @@ function BattlePassQuestHolderMixin:UpdateQuests()
 	for questIndex = 1, numQuests do
 		local questFrame = self.questFrames[questIndex]
 		if not questFrame then
-			questFrame = CreateFrame("Frame", string.format("$parentQuestFrame%u", questIndex), self, self.api.template)
+			questFrame = CreateFrame("Button", string.format("$parentQuestFrame%u", questIndex), self, self.api.template)
 			questFrame.mainFrame = self.mainFrame
 			self.questFrames[questIndex] = questFrame
 		end
@@ -1216,7 +1479,7 @@ end
 function BattlePassQuestHolderMixin:UpdateQuest(questIndex, isTextUpdate, wasReplaced)
 	local name, description, rewardAmount, progressValue, progressMaxValue, isPercents = C_BattlePass.GetQuestInfo(self.api.questType, questIndex)
 	local questFrame = self.questFrames[questIndex]
-	questFrame.Progress.Name:SetText(name)
+--	questFrame.Progress.Name:SetText(name)
 	questFrame.Progress.Description:SetText(description)
 	questFrame.Reward.Value:SetText(rewardAmount)
 
@@ -1246,6 +1509,12 @@ function BattlePassQuestMixin:OnLoad()
 	self.elapsed = 0
 	self.animGlowTime = 1
 	self.animHoldTime = 1
+end
+
+function BattlePassQuestMixin:OnShow()
+	SetParentFrameLevel(self.NineSliceBorder, 3)
+	SetParentFrameLevel(self.NineSliceGlow, 4)
+	SetParentFrameLevel(self.CancelButton, 2)
 end
 
 function BattlePassQuestMixin:OnUpdate(elapsed)
@@ -1302,15 +1571,17 @@ function BattlePassQuestMixin:SetProgress(value, maxValue, isPercents, wasReplac
 
 	if isComplete then
 		self.Progress.StatusBar.Value:SetText(BATTLEPASS_QUEST_COMPLETED)
-		self.Progress.Status:SetAtlas("PKBT-BattlePass-Quest-Status-Complete", true)
+--		self.Progress.Status:SetAtlas("PKBT-BattlePass-Quest-Status-Complete", true)
 	else
-		self.Progress.Status:SetAtlas("PKBT-BattlePass-Quest-Status-InProgress", true)
+--		self.Progress.Status:SetAtlas("PKBT-BattlePass-Quest-Status-InProgress", true)
 	end
 
 	self.Progress.StatusBar:ToggleStatusBarAnimation(isComplete)
 	self.Progress.StatusBar.Overlay:SetShown(isComplete)
 	self.Progress.StatusBar.Glow:SetShown(isComplete)
 	self:ToggleGlowAnim(isComplete)
+
+	self.CancelButton:SetShown(C_BattlePass.CanCancelQuest(self.questType, self:GetID()))
 
 	if not isComplete and wasReplaced then
 		self:PulseOnce()
@@ -1320,6 +1591,8 @@ function BattlePassQuestMixin:SetProgress(value, maxValue, isPercents, wasReplac
 end
 
 function BattlePassQuestMixin:UpdateActionButton(isComplete, isAwaiting)
+	self.CancelButton:SetEnabled(not isAwaiting)
+
 	if isAwaiting then
 		self.ActionButton:ShowSpinner()
 		self.ActionButton:Disable()
@@ -1333,11 +1606,7 @@ function BattlePassQuestMixin:UpdateActionButton(isComplete, isAwaiting)
 			self.ActionButton:UpdateHolderRect()
 		end
 
-		if self.ActionButton.atlasName ~= self.buttonDefaultAtlas then
-			self.ActionButton.atlasName = self.buttonDefaultAtlas
-			self.ActionButton:SetHighlightAtlas(self.ActionButton.atlasName.."-Highlight")
-			self.ActionButton:UpdateButton()
-		end
+		self.ActionButton:SetThreeSliceAtlas(self.buttonDefaultAtlas)
 
 		self.ActionButton:Enable()
 		self.ActionButton:Show()
@@ -1345,18 +1614,18 @@ function BattlePassQuestMixin:UpdateActionButton(isComplete, isAwaiting)
 	elseif C_BattlePass.IsQuestReplaceAllowed(self.questType, self:GetID()) then
 		self.ActionButton:HideSpinner()
 		self.ActionButton:ClearObjects()
-		self.ActionButton:AddTextureAtlas("PKBT-Icon-Refresh", true)
+		if C_BattlePass.GetQuestReplacePrice(self.questType, self:GetID()) == 0 then
+			self.ActionButton:AddTextureAtlas("PKBT-Icon-Refresh", true)
+		else
+			self.ActionButton:AddTextureAtlas("PKBT-Icon-Currency-Gold", false, 20, 20)
+		end
 		self.ActionButton:AddText(BATTLEPASS_QUEST_CHANGE)
 
 		if self.ActionButton:IsShown() then
 			self.ActionButton:UpdateHolderRect()
 		end
 
-		if self.ActionButton.atlasName ~= self.buttonReplaceAtlas then
-			self.ActionButton.atlasName = self.buttonReplaceAtlas
-			self.ActionButton:SetHighlightAtlas(self.ActionButton.atlasName.."-Highlight")
-			self.ActionButton:UpdateButton()
-		end
+		self.ActionButton:SetThreeSliceAtlas(self.buttonReplaceAtlas)
 
 		self.ActionButton:SetEnabled(C_BattlePass.CanReplaceQuest(self.questType, self:GetID()))
 		self.ActionButton:Show()
@@ -1370,8 +1639,10 @@ end
 function BattlePassQuestMixin:ActionClick(button)
 	if C_BattlePass.IsQuestComplete(self.questType, self:GetID()) then
 		C_BattlePass.CollectQuestReward(self.questType, self:GetID())
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 	elseif C_BattlePass.CanReplaceQuest(self.questType, self:GetID()) then
-		self.mainFrame:GetDialog(DIALOG_TYPE.QuestReplace):ShowReplaceDialog(self.questType, self:GetID())
+		self.mainFrame:GetDialog(DIALOG_TYPE.QuestActionDialog):ShowQuestDialog(QUEST_DIALOG_TYPE.Replace, self.questType, self:GetID())
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 	end
 end
 
@@ -1389,6 +1660,20 @@ function BattlePassQuestMixin:ActionOnLeave()
 	GameTooltip:Hide()
 end
 
+function BattlePassQuestMixin:CancelClick(button)
+	self.mainFrame:GetDialog(DIALOG_TYPE.QuestActionDialog):ShowQuestDialog(QUEST_DIALOG_TYPE.Cancel, self.questType, self:GetID())
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+end
+
+function BattlePassQuestMixin:OnClick(button)
+	if IsModifiedClick("CHATLINK") then
+		local link = C_BattlePass.GetQuestLink(self.questType, self:GetID())
+		if link then
+			ChatEdit_InsertLink(link)
+		end
+	end
+end
+
 BattlePassQuestDailyMixin = CreateFromMixins(BattlePassQuestMixin)
 
 function BattlePassQuestDailyMixin:OnLoad()
@@ -1398,9 +1683,12 @@ function BattlePassQuestDailyMixin:OnLoad()
 	self.VignetteLeft:SetAtlas("PKBT-BattlePass-Quest-Vignette-Rhodium-Left", true)
 	self.VignetteRight:SetAtlas("PKBT-BattlePass-Quest-Vignette-Rhodium-Right", true)
 
-	self.NineSliceGlow.DecoreTop:SetAtlas("PKBT-Panel-Rhodium-Deacor-Footer", true)
-	self.NineSliceGlow.DecoreTop:SetSubTexCoord(0, 1, 1, 0)
-	self.NineSliceGlow.DecoreBottom:SetAtlas("PKBT-Panel-Rhodium-Deacor-Footer", true)
+	self.NineSliceGlow.DecorTop:SetAtlas("PKBT-Panel-Rhodium-Deacor-Footer", true)
+	self.NineSliceGlow.DecorTop:SetSubTexCoord(0, 1, 1, 0)
+	self.NineSliceGlow.DecorBottom:SetAtlas("PKBT-Panel-Rhodium-Deacor-Footer", true)
+
+	self.CancelButton:SetParent(self.NineSliceBorder)
+	self.CancelButton.Corner:SetAtlas("PKBT-Panel-Rhodium-Corner", true)
 
 	self.Reward:SetIconAtlas("PKBT-BattlePass-Icon-Gem-Sapphire-Animated")
 
@@ -1416,47 +1704,71 @@ function BattlePassQuestWeeklyMixin:OnLoad()
 	self.VignetteLeft:SetAtlas("PKBT-BattlePass-Quest-Vignette-Bronze-Left", true)
 	self.VignetteRight:SetAtlas("PKBT-BattlePass-Quest-Vignette-Bronze-Right", true)
 
-	self.NineSliceGlow.DecoreTop:SetAtlas("PKBT-BattlePass-Quest-Decor-Bronze-Header", true)
-	self.NineSliceGlow.DecoreBottom:SetAtlas("PKBT-BattlePass-Quest-Decor-Bronze-Footer", true)
+	self.NineSliceGlow.DecorTop:SetAtlas("PKBT-BattlePass-Quest-Decor-Bronze-Header", true)
+	self.NineSliceGlow.DecorBottom:SetAtlas("PKBT-BattlePass-Quest-Decor-Bronze-Footer", true)
+
+	self.CancelButton:SetParent(self.NineSliceBorder)
+	self.CancelButton.Corner:SetAtlas("PKBT-Panel-Bronze-Corner", true)
 
 	self.Reward:SetIconAtlas("PKBT-BattlePass-Icon-Gem-Emerald-Animated")
 
 	self.questType = Enum.BattlePass.QuestType.Weekly
 end
 
-BattlePassQuestReplacetDialogMixin = CreateFromMixins(BattlePassDialogMixin)
+BattlePassQuestActionDialogMixin = CreateFromMixins(BattlePassDialogMixin)
 
-function BattlePassQuestReplacetDialogMixin:OnLoad()
+function BattlePassQuestActionDialogMixin:OnLoad()
 	BattlePassDialogMixin.OnLoad(self)
-
-	self:SetTitle(BATTLEPASS_QUEST_REPLACE)
-	self:GetParent():RegisterDialogWidget(DIALOG_TYPE.QuestReplace, self)
+	self:GetParent():RegisterDialogWidget(DIALOG_TYPE.QuestActionDialog, self)
 end
 
-function BattlePassQuestReplacetDialogMixin:OnHide()
-	BattlePassDialogMixin.OnHide(self)
-	self.questType = nil
-	self.questIndex = nil
-end
-
-function BattlePassQuestReplacetDialogMixin:ShowReplaceDialog(questType, questIndex)
+function BattlePassQuestActionDialogMixin:ShowQuestDialog(dialogType, questType, questIndex)
 	local name, description = C_BattlePass.GetQuestInfo(questType, questIndex)
-	local price = C_BattlePass.GetQuestReplacePrice(questType, questIndex)
-	self.OkButton:SetEnabled(C_BattlePass.CanReplaceQuest(questType, questIndex))
-	self.Text:SetWidth(self:GetWidth() - 40)
-	if price > 0 then
-		self.Text:SetFormattedText(BATTLEPASS_QUEST_REPLACE_BODY, description, GetMoneyString(price))
-	else
-		self.Text:SetFormattedText(BATTLEPASS_QUEST_REPLACE_BODY_FREE, description)
+
+	if dialogType == QUEST_DIALOG_TYPE.Replace then
+		self:SetTitle(BATTLEPASS_QUEST_REPLACE)
+
+		local price = C_BattlePass.GetQuestReplacePrice(questType, questIndex)
+
+		if price > 0 then
+			self.Text:SetFormattedText(BATTLEPASS_QUEST_REPLACE_BODY, description, GetMoneyString(price))
+		else
+			self.Text:SetFormattedText(BATTLEPASS_QUEST_REPLACE_BODY_FREE, description)
+		end
+
+		self.OkButton:SetEnabled(C_BattlePass.CanReplaceQuest(questType, questIndex))
+	elseif dialogType == QUEST_DIALOG_TYPE.Cancel then
+		self:SetTitle(BATTLEPASS_QUEST_CANCEL)
+		self.Text:SetFormattedText("%s\n%s", BATTLEPASS_QUEST_CANCEL_DIALOG, description)
+
+		self.OkButton:SetEnabled(C_BattlePass.CanCancelQuest(questType, questIndex))
 	end
+
+	self.dialogType = dialogType
 	self.questType = questType
 	self.questIndex = questIndex
+
+	self.Text:SetWidth(self:GetWidth() - 40)
 	self:Show()
 	self:SetHeight(145 + self.Text:GetHeight())
 end
 
-function BattlePassQuestReplacetDialogMixin:OkClick(button)
-	C_BattlePass.ReplaceQuest(self.questType, self.questIndex)
+function BattlePassQuestActionDialogMixin:OnHide()
+	BattlePassDialogMixin.OnHide(self)
+	self.dialogType = nil
+	self.questType = nil
+	self.questIndex = nil
+end
+
+function BattlePassQuestActionDialogMixin:OkClick(button)
+	if self.dialogType == QUEST_DIALOG_TYPE.Replace then
+		C_BattlePass.ReplaceQuest(self.questType, self.questIndex)
+		PlaySound(SOUNDKIT.LOOT_WINDOW_COIN_SOUND)
+	elseif self.dialogType == QUEST_DIALOG_TYPE.Cancel then
+		C_BattlePass.CancelQuest(self.questType, self.questIndex)
+		PlaySound(SOUNDKIT.IG_QUEST_LOG_ABANDON_QUEST)
+	end
+
 	self:Hide()
 end
 
@@ -1467,27 +1779,37 @@ function BattlePassPurchasePremiumDialogMixin:OnLoad()
 	self.Background:SetAtlas("PKBT-BattlePass-Background-Premium", true)
 	self.BodyText:SetWidth(self:GetWidth() - 230)
 
+	self.PurchaseButton:SetAllowReplenishment(true, true)
 	self.PurchaseButton:AddText(BATTLEPASS_PURCHASE_PREMIUM)
 
 	self:GetParent():RegisterDialogWidget(DIALOG_TYPE.PurchasePremium, self)
 end
 
 function BattlePassPurchasePremiumDialogMixin:OnShow()
-	local price, originalPrice, currenyIndex = C_BattlePass.GetPremiumPrice()
-	self.PurchaseButton:SetPrice(price, originalPrice, currenyIndex)
-	self.price = price
-	self.currenyIndex = currenyIndex
-
+	local price, originalPrice, currencyType = C_BattlePass.GetPremiumPrice()
+	self.PurchaseButton:SetPrice(price, originalPrice, currencyType)
 	self:GetParent():ToggleBlockFrame(true)
 end
 
 function BattlePassPurchasePremiumDialogMixin:OnHide()
 	self:GetParent():ToggleBlockFrame(false)
+	StaticPopup_Hide("DONATE_URL_POPUP")
 end
 
 function BattlePassPurchasePremiumDialogMixin:PurchaseOnClick(button)
+	local price, originalPrice, currencyType = C_BattlePass.GetPremiumPrice()
+	if currencyType == Enum.Store.CurrencyType.Bonus then
+		local balance = Store_GetBalance(currencyType)
+		if price > balance and not C_Service.IsInGMMode() then
+			StaticPopup_Show("DONATE_URL_POPUP", nil, nil, price - balance)
+			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+			return
+		end
+	end
+
 	self:Hide()
 	C_BattlePass.PurchasePremium()
+	PlaySound(SOUNDKIT.UI_IG_STORE_CONFIRM_PURCHASE_BUTTON)
 end
 
 BattlePassPurchaseExperienceDialogMixin = CreateFromMixins(PKBT_DialogMixin)
@@ -1509,9 +1831,18 @@ function BattlePassPurchaseExperienceDialogMixin:OnLoad()
 	self.experienceIconMarkup = CreateAtlasMarkup("PKBT-BattlePass-Icon-Gem-Sapphire", 21, 21, 0, 0, 2048, 2048)
 	self.optionButtons = {}
 
+	self.allowCurrencyReplenishment = true
+
+	self.PurchaseButton:SetAllowReplenishment(self.allowCurrencyReplenishment, true)
+
+	self.OptionAmount.limit = 1000
 	self.OptionAmount.minValue = 1
 	self.OptionAmount.maxValue = function()
-		return self:GetMaxSelectedAmount()
+		if self.allowCurrencyReplenishment then
+			return self.OptionAmount.limit
+		else
+			return self:GetMaxSelectedAmount()
+		end
 	end
 
 	self.OptionAmount.OnValueChanged = function(value, userInput)
@@ -1536,11 +1867,25 @@ end
 
 function BattlePassPurchaseExperienceDialogMixin:OnHide()
 	self:GetParent():ToggleBlockFrame(false)
+	StaticPopup_Hide("DONATE_URL_POPUP")
 end
 
 function BattlePassPurchaseExperienceDialogMixin:PurchaseOnClick()
+	local option = C_BattlePass.GetExperiencePurchaseOptionInfo(self.selectedOptionIndex)
+
+	if option and option.currencyType == Enum.Store.CurrencyType.Bonus then
+		local balance = Store_GetBalance(option.currencyType)
+		local price = option.price * self.OptionAmount:GetNumber()
+		if price > balance and not C_Service.IsInGMMode() then
+			StaticPopup_Show("DONATE_URL_POPUP", nil, nil, price - balance)
+			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+			return
+		end
+	end
+
 	C_BattlePass.PurchaseExperience(self.selectedOptionIndex, self.OptionAmount:GetNumber())
 	self:Hide()
+	PlaySound(SOUNDKIT.UI_IG_STORE_CONFIRM_PURCHASE_BUTTON)
 end
 
 function BattlePassPurchaseExperienceDialogMixin:UpdateOptions()
@@ -1622,11 +1967,17 @@ function BattlePassPurchaseExperienceDialogMixin:Summery()
 	do	-- Balance
 		local balance = Store_GetBalance(option.currencyType)
 		local price = option.price * amount
+		local originalPrice = option.originalPrice * amount
 
-		self.PurchaseButton:SetPrice(price, option.originalPrice, option.currencyType)
+		self.PurchaseButton:SetPrice(price, originalPrice, option.currencyType)
 		self.PurchaseButton:Show()
 
-		self.OptionAmount.IncrementButton:SetEnabled(option.price * (amount + 1) <= balance)
+		if self.allowCurrencyReplenishment then
+			self.OptionAmount.IncrementButton:SetEnabled(amount < self.OptionAmount.limit)
+		else
+			self.OptionAmount.IncrementButton:SetEnabled(amount < self.OptionAmount.limit and option.price * (amount + 1) <= balance)
+		end
+
 		self.OptionAmount:Show()
 	end
 end
@@ -1668,6 +2019,8 @@ function BattlePassExperienceOptionMixin:OnClick(button)
 		if self:IsMouseOver() then
 			self:OnEnter()
 		end
+
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 	end
 end
 
@@ -1689,6 +2042,88 @@ function BattlePassExperienceOptionMixin:UpdateInfo()
 	self.Price:SetWidth(self.Price.Amount:GetStringWidth() + iconWidth)
 end
 
+BattlePassPurchaseLevelExperienceDialogMixin = CreateFromMixins(PKBT_DialogMixin)
+
+function BattlePassPurchaseLevelExperienceDialogMixin:OnLoad()
+	self:SetTitle(BATTLEPASS_PURCHASE_TITLE)
+
+	self.Background:SetAtlas("PKBT-BattlePass-Background-Experience-Short", true)
+
+	self.VignetteTopLeft:SetAtlas("PKBT-Vignette-Bronze-TopLeft", true)
+	self.VignetteTopRight:SetAtlas("PKBT-Vignette-Bronze-TopRight", true)
+
+	self.BodyExperienceText:SetWidth(self:GetWidth() - 100)
+
+	self.optionButtons = {}
+
+	self.PurchaseButton:SetAllowReplenishment(true, true)
+
+	self:GetParent():RegisterDialogWidget(DIALOG_TYPE.PurchaseLevelExperience, self)
+end
+
+function BattlePassPurchaseLevelExperienceDialogMixin:OnShow()
+	self:GetParent():ToggleBlockFrame(true)
+end
+
+function BattlePassPurchaseLevelExperienceDialogMixin:OnHide()
+	self.level = nil
+	self:GetParent():ToggleBlockFrame(false)
+end
+
+function BattlePassPurchaseLevelExperienceDialogMixin:ShowLevelDialog(level)
+	self.level = level
+	self.BodyExperienceText:SetFormattedText(BATTLEPASS_PURCHASE_LEVEL_EXPERIENCE_TEXT_BODY_LEVEL, level)
+
+	local options, price, originalPrice, currencyType = C_BattlePass.GetRequiredExperienceOptionsForLevel(level)
+
+	for index, option in ipairs(options) do
+		local optionInfo = C_BattlePass.GetExperiencePurchaseOptionInfo(option.optionIndex)
+
+		local button = self.optionButtons[index]
+		if not button then
+			button = CreateFrame("Frame", string.format("$parentOption%u", index), self.OptionContainer, "BattlePassExperienceLevelOptionTemplate")
+
+			if index ~= 1 then
+				button:SetPoint("LEFT", self.optionButtons[index - 1], "RIGHT", 10, 0)
+			end
+
+			self.optionButtons[index] = button
+		end
+
+		if index == 1 then
+			button:SetPoint("CENTER", self.OptionContainer, "CENTER", -((#options - 1) * ((button:GetWidth() + 10) / 2)), 0)
+		end
+
+		button:SetIconAtlas(optionInfo.iconAnimAtlas)
+		button.Text:SetFormattedText(BATTLEPASS_PURCHASE_LEVEL_EXPERIENCE_OPTION_FORMAT, optionInfo.experience, option.amount)
+		button:Show()
+	end
+
+	for index = #options + 1, #self.optionButtons do
+		self.optionButtons[index]:Hide()
+	end
+
+	self.PurchaseButton:SetPrice(price, originalPrice, currencyType)
+	self:Show()
+end
+
+function BattlePassPurchaseLevelExperienceDialogMixin:PurchaseOnClick()
+	local option, price, originalPrice, currencyType = C_BattlePass.GetRequiredExperienceOptionsForLevel(self.level)
+
+	if currencyType == Enum.Store.CurrencyType.Bonus then
+		local balance = Store_GetBalance(currencyType)
+		if price > balance and not C_Service.IsInGMMode() then
+			StaticPopup_Show("DONATE_URL_POPUP", nil, nil, price - balance)
+			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+			return
+		end
+	end
+
+	C_BattlePass.PurchaseExperienceOptionsForLevel(self.level)
+	self:Hide()
+	PlaySound(SOUNDKIT.UI_IG_STORE_CONFIRM_PURCHASE_BUTTON)
+end
+
 BattlePassInfoDialogMixin = CreateFromMixins(BattlePassDialogMixin)
 
 function BattlePassInfoDialogMixin:OnLoad()
@@ -1703,6 +2138,7 @@ function BattlePassInfoDialogMixin:ShowDialog(title, text)
 	self.Text:SetText(text)
 	self:Show()
 	self:SetHeight(145 + self.Text:GetHeight())
+	PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB)
 end
 
 BattlePassPurchasePostDialogMixin = CreateFromMixins(BattlePassDialogMixin)
@@ -1717,11 +2153,13 @@ end
 function BattlePassPurchasePostDialogMixin:ShowItemDialog(itemName, amount)
 	self.Text:SetFormattedText(BATTLEPASS_PURCHASE_SUCCESSFUL_DIALOG, itemName)
 	self:Show()
+	PlaySound(SOUNDKIT.UI_IG_STORE_PURCHASE_DELIVERED_TOAST_01)
 end
 
 function BattlePassPurchasePostDialogMixin:OkClick(button)
 	C_BattlePass.UsePurchasedItem()
 	self:Hide()
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 end
 
 BattlePassItemRewardFrameMixin = CreateFromMixins(PKBT_DialogMixin)
@@ -1768,7 +2206,7 @@ function BattlePassItemRewardFrameMixin:OnUpdate(elapsed)
 end
 
 function BattlePassItemRewardFrameMixin:ShowItems(items)
-	local BUTTON_FIRST_OFFSET_X = 14
+	local BUTTON_FIRST_OFFSET_X = 15
 	local BUTTON_FIRST_OFFSET_Y = 49
 	local BUTTON_OFFSET_Y = 8
 
@@ -1877,6 +2315,7 @@ function BattlePassAlertFrameMixin:OnShow()
 	self.animIn:Play()
 	self.Glow.animIn:Play()
 	self.Shine.animIn:Play()
+	PlaySound(SOUNDKIT.UI_IG_STORE_PURCHASE_DELIVERED_TOAST_01)
 end
 
 function BattlePassAlertFrameMixin:OnHide()
@@ -1896,6 +2335,7 @@ end
 function BattlePassAlertFrameMixin:OnClick(button)
 	if button == "RightButton" then
 		self:Hide()
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 	end
 end
 

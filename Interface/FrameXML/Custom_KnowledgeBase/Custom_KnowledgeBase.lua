@@ -93,6 +93,7 @@ KNOWLEDGE_BASE_VISIBILITY_FLAGS = {
 	[E_REALM_ID.SCOURGE]		= 0x80,
 	[E_REALM_ID.ALGALON]		= 0x100,
 	[E_REALM_ID.SIRUS]			= 0x200,
+	[E_REALM_ID.SOULSEEKER]		= 0x400,
 }
 
 local KB_NO_PAGES = true
@@ -196,7 +197,7 @@ local function isEntryVisible(entry, realmID)
 		elseif entry.visibility == KNOWLEDGE_BASE_VISIBILITY_FLAGS.NONE then
 			return false
 		else
-			realmID = realmID or C_Service:GetRealmID()
+			realmID = realmID or C_Service.GetRealmID()
 
 			if KNOWLEDGE_BASE_VISIBILITY_FLAGS[realmID] then
 				return bit.band(entry.visibility, KNOWLEDGE_BASE_VISIBILITY_FLAGS[realmID]) ~= 0
@@ -306,7 +307,7 @@ local function loadArticles()
 	do	-- TOP_ISSUES
 		table.wipe(KB_TOP_ISSUES)
 		local isGM = IsGMAccount()
-		local realmID = C_Service:GetRealmID()
+		local realmID = C_Service.GetRealmID()
 
 		for articleID, article in pairs(KNOWLEDGEBASE_ARTICLES) do
 			if article.isTopIssue and (isEntryVisible(article, realmID) or isGM) then
@@ -331,7 +332,7 @@ local function loadCategories()
 	if categoriesLoaded and not Custom_KnowledgeBase.categoriesChanged then return end
 
 	local isGM = IsGMAccount()
-	local realmID = C_Service:GetRealmID()
+	local realmID = C_Service.GetRealmID()
 
 	if not categoryDefaultLoaded then
 		for id, entry in pairs(KNOWLEDGEBASE_CATEGORIES) do
@@ -826,7 +827,7 @@ function Custom_KnowledgeBase.KBQuery_BeginLoading(searchText, categoryIndex, su
 	local allCategories = categoryIndex == 0
 	local allSubCategories = subcategoryIndex == 0
 	local isGM = IsGMAccount()
-	local realmID = C_Service:GetRealmID()
+	local realmID = C_Service.GetRealmID()
 
 	for _, article in pairs(KNOWLEDGEBASE_ARTICLES) do
 		if (isEntryVisible(article, realmID) or isGM)
@@ -1739,7 +1740,7 @@ do
 
 	local tabWidth = 5
 	local indent = string.rep("|cff000000 |r", tabWidth)
-	local li = [[<img src="Interface/Scenarios/ScenarioIcon-Combat"/>]] .. indent
+	local li = [[<img src="Interface/Scenarios/ScenarioIcon-Combat" align="left"/>]] .. indent
 	local hr = [[<img src="Interface/HelpFrame/CS_HelpTextures_Separator" align="center" width="600" height="8"/>]]
 	local colorStart = string.format("<color=[\"'](%s)[\"']>", string.rep("[0-9A-Fa-f]", 6))
 	local colorEnd = "</color>"

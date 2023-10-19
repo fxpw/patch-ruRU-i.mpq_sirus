@@ -25,6 +25,7 @@ local STORE_SPECIAL_OFFER_POPUP = {}
 local STPRE_SPECIAL_OFFER_DETAILS_DATA = {}
 local STORE_SMALL_SPECIAL_OFFER_BUFFER = {}
 
+local STORE_EQUIPMENT_CATEGORY_ID = 2
 local STORE_COLLECTIONS_CATEGORY_ID = 3
 local STORE_TRANSMOGRIFY_CATEGORY_ID = 6
 local STORE_SUBSCRIPTIONS_CATEGORY_ID = 5
@@ -76,6 +77,7 @@ STORE_ITEM_FLAG_MULTIPLE_BUY 		 = 0x00000400
 local STORE_FLAG_SERVICE_CUSTOMIZATION 	= 0x008
 local STORE_FLAG_SERVICE_CHANGEFACTION 	= 0x040
 local STORE_FLAG_SERVICE_CHANGERACE 	= 0x080
+local STORE_FLAG_SERVICE_CHANGEZODIAC	= 0x80000
 
 local STORE_SERVICE_FLAG_DATA = {
 	{
@@ -89,6 +91,10 @@ local STORE_SERVICE_FLAG_DATA = {
 	{
 		flag = STORE_FLAG_SERVICE_CHANGERACE,
 		text = STORE_SERVICE_LABEL_3,
+	},
+	{
+		flag = STORE_FLAG_SERVICE_CHANGEZODIAC,
+		text = STORE_SERVICE_LABEL_4,
 	},
 }
 
@@ -243,32 +249,36 @@ STORE_SUB_CATEGORY_DATA[STORE_SUBSCRIPTIONS_CATEGORY_ID] = {
 		Name = STORE_SUB_CATEGORY_9_1,
 		SubCategoryId = 2,
 		CategoryId = 9,
-		Callback = function() selectedSubCategoryID = 2; StoreSubscribeSetup() end
+		Locked = true,
+		Callback = function() selectedCategoryID = STORE_SUBSCRIPTIONS_CATEGORY_ID; selectedSubCategoryID = 2; StoreSubscribeSetup() end
 	},
 	{
 		Name = STORE_SUB_CATEGORY_9_2,
 		SubCategoryId = 3,
 		CategoryId = 9,
-		Callback = function() selectedSubCategoryID = 3; StoreSubscribeSetup() end
+		Locked = true,
+		Callback = function() selectedCategoryID = STORE_SUBSCRIPTIONS_CATEGORY_ID; selectedSubCategoryID = 3; StoreSubscribeSetup() end
 	},
 	{
 		Name = STORE_SUB_CATEGORY_9_3,
 		SubCategoryId = 4,
 		CategoryId = 9,
-		Callback = function() selectedSubCategoryID = 4; StoreSubscribeSetup() end
+		Locked = true,
+		Callback = function() selectedCategoryID = STORE_SUBSCRIPTIONS_CATEGORY_ID; selectedSubCategoryID = 4; StoreSubscribeSetup() end
 	},
 	{
 		Name = STORE_SUB_CATEGORY_9_4,
 		SubCategoryId = 5,
 		CategoryId = 9,
-		Callback = function() selectedSubCategoryID = 5; StoreSubscribeSetup() end
+		Locked = true,
+		Callback = function() selectedCategoryID = STORE_SUBSCRIPTIONS_CATEGORY_ID; selectedSubCategoryID = 5; StoreSubscribeSetup() end
 	},
 	{
 		Name = STORE_SUB_CATEGORY_9_6,
 		SubCategoryId = 6,
 		CategoryId = 9,
 		Locked = true,
-		Callback = function() selectedSubCategoryID = 6; StoreSubscribeSetup() end
+		Callback = function() selectedCategoryID = STORE_SUBSCRIPTIONS_CATEGORY_ID; selectedSubCategoryID = 6; StoreSubscribeSetup() end
 	},
 }
 
@@ -277,20 +287,20 @@ STORE_SUB_CATEGORY_DATA[3] = {
 		Name = STORE_SUB_CATEGORY_3_1,
 		SubCategoryId = 1,
 		CategoryId = 3,
-		Callback = function() selectedSubCategoryID = 1; StoreSubCategorySelectClick() end,
+		Callback = function() selectedCategoryID = 3; selectedSubCategoryID = 1; StoreSubCategorySelectClick() end,
 		Check = function(self) return (20 <= UnitLevel("player")) end
 	},
 	{
 		Name = STORE_SUB_CATEGORY_3_2,
 		SubCategoryId = 2,
 		CategoryId = 3,
-		Callback = function() selectedSubCategoryID = 2; StoreSubCategorySelectClick() end
+		Callback = function() selectedCategoryID = 3; selectedSubCategoryID = 2; StoreSubCategorySelectClick() end
 	},
 	{
 		Name = STORE_SUB_CATEGORY_3_3,
 		SubCategoryId = 3,
 		CategoryId = 3,
-		Callback = function() selectedSubCategoryID = 3; StoreSubCategorySelectClick() end
+		Callback = function() selectedCategoryID = 3; selectedSubCategoryID = 3; StoreSubCategorySelectClick() end
 	}
 }
 
@@ -299,53 +309,53 @@ STORE_SUB_CATEGORY_DATA[4] = {
 		Name = STORE_SUB_CATEGORY_4_1,
 		SubCategoryId = 1,
 		CategoryId = 4,
-		Callback = function() selectedSubCategoryID = 1; StoreSubCategorySelectClick() end,
+		Callback = function() selectedCategoryID = 4; selectedSubCategoryID = 1; StoreSubCategorySelectClick() end,
 		Check = function(self) return (20 <= UnitLevel("player")) end
 	},
 	{
 		Name = STORE_SUB_CATEGORY_4_2,
 		SubCategoryId = 2,
 		CategoryId = 4,
-		Callback = function() selectedSubCategoryID = 2; StoreSubCategorySelectClick() end
+		Callback = function() selectedCategoryID = 4; selectedSubCategoryID = 2; StoreSubCategorySelectClick() end
 	},
 	{
 		Name = STORE_SUB_CATEGORY_4_3,
 		SubCategoryId = 3,
 		CategoryId = 4,
-		Callback = function() selectedSubCategoryID = 3; StoreSubCategorySelectClick() end
+		Callback = function() selectedCategoryID = 4; selectedSubCategoryID = 3; StoreSubCategorySelectClick() end
 	},
 	{
 		Name = STORE_SUB_CATEGORY_4_4,
 		SubCategoryId = 4,
 		CategoryId = 4,
-		Callback = function() selectedSubCategoryID = 4; StoreSubCategorySelectClick() end
+		Callback = function() selectedCategoryID = 4; selectedSubCategoryID = 4; StoreSubCategorySelectClick() end
 	},
 	{
 		Name = STORE_SUB_CATEGORY_4_5,
 		SubCategoryId = 5,
 		CategoryId = 4,
-		Callback = function() selectedSubCategoryID = 5; StoreSubCategorySelectClick() end,
+		Callback = function() selectedCategoryID = 4; selectedSubCategoryID = 5; StoreSubCategorySelectClick() end,
 		Check = function(self) return (10 <= UnitLevel("player")) end
 	},
 	{
 		Name = STORE_SUB_CATEGORY_4_6,
 		SubCategoryId = 6,
 		CategoryId = 4,
-		Callback = function() selectedSubCategoryID = 6; StoreSubCategorySelectClick() end,
+		Callback = function() selectedCategoryID = 4; selectedSubCategoryID = 6; StoreSubCategorySelectClick() end,
 		Check = function(self) return (80 <= UnitLevel("player")) end
 	},
 	{
 		Name = STORE_SUB_CATEGORY_4_7,
 		SubCategoryId = 7,
 		CategoryId = 4,
-		Callback = function() selectedSubCategoryID = 7; StoreSubCategorySelectClick() end
+		Callback = function() selectedCategoryID = 4; selectedSubCategoryID = 7; StoreSubCategorySelectClick() end
 	},
 	{
 		Name = STORE_SUB_CATEGORY_4_8,
 		SubCategoryId = 8,
 		CategoryId = 4,
-		Callback = function() selectedSubCategoryID = 8; StoreSubCategorySelectClick() end,
-		Check = function(self) return (not C_Service:IsLockStrengthenStatsFeature() and 80 <= UnitLevel("player")) end
+		Callback = function() selectedCategoryID = 4; selectedSubCategoryID = 8; StoreSubCategorySelectClick() end,
+		Check = function(self) return (C_Service.IsStrengthenStatsRealm and 80 <= UnitLevel("player")) end
 	}
 }
 
@@ -840,6 +850,29 @@ local StoreRequestIgnoreFilters
 local storeRequestQueue = {}
 local storeQueueTimer
 
+local LOADING_DATA_TIME = IsGMAccount() and 0 or 60
+local POPUP_QUEUED
+
+function IsStoreEnable()
+	if not C_Service.IsStoreEnabled() then
+		return false, false, MAINMENUBAR_STORE_DISABLE_REASON_1
+	elseif C_Hardcore.IsFeatureAvailable(Enum.Hardcore.Features.GAME_SHOP) and C_Hardcore.GetActiveChallengeID() then
+		local name = C_Hardcore.GetChallengeInfoByID(C_Hardcore.GetActiveChallengeID())
+		return false, false, string.format(HARDCORE_FEATURE_12_DISABLE, name or UNKNOWN)
+	else
+		local loadingTimestamp = C_CVar:GetSessionCVar("STORE_LOADING_DATA_TIMESTAMP")
+		if loadingTimestamp then
+			local timeLeft = (loadingTimestamp + LOADING_DATA_TIME) - time()
+			if timeLeft > 0 then
+				return false, true, string.format(MAINMENUBAR_STORE_DISABLE_REASON_2, SecondsToTime(timeLeft))
+			else
+				C_CVar:SetSessionCVar("STORE_LOADING_DATA_TIMESTAMP", nil)
+			end
+		end
+	end
+	return true
+end
+
 function Store_GetBalance(currencyIndex)
 	if type(currencyIndex) ~= "number" then
 		error(string.format("bad argument #1 to 'Store_GetBalance' (number expected, got %s)", type(currencyIndex)), 2)
@@ -848,7 +881,7 @@ function Store_GetBalance(currencyIndex)
 	end
 
 	if IsInterfaceDevClient(true) then
-		return 10000
+		return 0
 	else
 		return STORE_CURRENCY_INFO.BALANCE[currencyIndex] or 0
 	end
@@ -1147,7 +1180,7 @@ function GetStoreTransmogrifyItemsInfo( index )
 		return
 	end
 
-	local data = STORE_TRANSMOGRIFY_ITEM_DATA[selectedSubCategoryID][storeID]
+	local data = STORE_TRANSMOGRIFY_ITEM_DATA[selectedSubCategoryID] and STORE_TRANSMOGRIFY_ITEM_DATA[selectedSubCategoryID][storeID]
 
 	if not data then
 		return
@@ -1233,7 +1266,9 @@ function StoreFrame_OnLoad( self, ... )
 	self:RegisterEvent("VARIABLES_LOADED")
 	self:RegisterEvent("PLAYER_LEVEL_UP")
 	self:RegisterEvent("PLAYER_LOGIN")
+	self:RegisterCustomEvent("SERVICE_DATA_UPDATE")
 	self:RegisterCustomEvent("SESSION_VARIABLES_LOADED")
+	self:RegisterCustomEvent("CUSTOM_STORE_AVAILABILITY_CHANGED")
 
 	self:SetScale(0.8)
 	SetPortraitToTexture(self.portrait, "Interface\\ICONS\\WoW_Store")
@@ -1340,12 +1375,47 @@ function StoreCacheDataGenerate( reset )
 	end
 end
 
+function StoreShowPopup(...)
+	if IsStoreEnable() then
+		StoreFrame.Popup = NPE_TutorialPointerFrame:Show(...)
+	else
+		POPUP_QUEUED = {...}
+	end
+end
+
+function StoreHidePopup()
+	POPUP_QUEUED = nil
+	if StoreFrame.Popup then
+		NPE_TutorialPointerFrame:Hide(StoreFrame.Popup)
+		StoreFrame.Popup = nil
+	end
+end
+
+local function updateLoadingTimer()
+	local loadingTimestamp = C_CVar:GetSessionCVar("STORE_LOADING_DATA_TIMESTAMP", nil)
+	if loadingTimestamp then
+		local timeLeft = (loadingTimestamp + LOADING_DATA_TIME) - time()
+		if timeLeft > 0 then
+			C_Timer:After(timeLeft, function()
+				if C_CVar:GetSessionCVar("STORE_LOADING_DATA_TIMESTAMP", nil) then
+					C_CVar:SetSessionCVar("STORE_LOADING_DATA_TIMESTAMP", nil)
+					FireCustomClientEvent("CUSTOM_STORE_AVAILABILITY_CHANGED")
+				end
+			end)
+		end
+	end
+end
+
 function StoreFrame_OnEvent( self, event, ... )
 	if event == "PLAYER_LOGIN" then
 		SendServerMessage("ACMSG_SHOP_CATEGORY_NEW_ITEMS_REQUEST")
 		SendServerMessage("ACMSG_SHOP_BALANCE_REQUEST")
 		SendServerMessage("ACMSG_SHOP_SUBSCRIPTION_LIST_REQUEST")
 		STORE_SUBSCRIBE_DATA = {}
+
+		if LOADING_DATA_TIME > 0 then
+			updateLoadingTimer()
+		end
 	elseif event == "VARIABLES_LOADED" then
 		local playerName = UnitName("player")
 		if not STORE_HIGHLIGHT_CATEGORY_BUTTON[playerName] then
@@ -1353,19 +1423,52 @@ function StoreFrame_OnEvent( self, event, ... )
 		end
 
 		StoreCacheDataGenerate()
+	elseif event == "CUSTOM_STORE_AVAILABILITY_CHANGED" then
+		if IsStoreEnable() then
+			if STORE_CACHE:Get("flashCategoryMountRenew") == true then
+				ButtonPulse_StopPulse(StoreMicroButton)
+				ButtonPulse_StopPulse(GameMenuButtonStore)
 
-		if STORE_CACHE:Get("flashCategoryMountRenew") == true then
+				if StoreMicroButton:IsEnabled() == 1 then
+					SetButtonPulse(StoreMicroButton, 60, 0.50)
+				end
+
+				if GameMenuButtonStore:IsEnabled() == 1 then
+					SetButtonPulse(GameMenuButtonStore, 60, 0.50)
+				end
+			end
+
+			if POPUP_QUEUED then
+				StoreShowPopup(unpack(POPUP_QUEUED))
+				POPUP_QUEUED = nil
+			end
+		else
 			ButtonPulse_StopPulse(StoreMicroButton)
 			ButtonPulse_StopPulse(GameMenuButtonStore)
-
-			if StoreMicroButton:IsEnabled() == 1 then
-				SetButtonPulse(StoreMicroButton, 60, 0.50)
-			end
-
-			if GameMenuButtonStore:IsEnabled() == 1 then
-				SetButtonPulse(GameMenuButtonStore, 60, 0.50)
-			end
 		end
+	elseif event == "SERVICE_DATA_UPDATE" then
+		local realmStage = C_Service.GetRealmStage()
+		if realmStage ~= 0 and realmStage ~= STORE_CACHE:Get("REALM_STAGE") then
+		--	STORE_CACHE:Clear("ASMSG_SHOP_ILLUSION_RENEWAL_PRICE")
+		--	STORE_CACHE:Clear("ASMSG_SHOP_MOUNT_RENEWAL_PRICE")
+		--	STORE_CACHE:Clear("ASMSG_SHOP_PET_RENEWAL_PRICE")
+		--	STORE_CACHE:Clear("ASMSG_SHOP_TRANSMOG_RENEWAL_PRICE")
+		--	STORE_CACHE:Clear("ASMSG_SHOP_VERSION")
+			STORE_CACHE:Clear("CATEGORY_DROP_COUNT1")
+			STORE_CACHE:Clear("CATEGORY_DROP_COUNT3")
+			STORE_CACHE:Clear("CATEGORY_DROP_COUNT3_3")
+			STORE_CACHE:Clear("CATEGORY_DROP_COUNT6")
+			STORE_CACHE:Clear("MOUNT_RENEW_TIME_LEFT")
+			STORE_CACHE:Clear("MOUNT_RENEW_WEEK")
+			STORE_CACHE:Clear("PRODUCT_CACHE")
+			STORE_CACHE:Clear("RENEW_TIME")
+			STORE_CACHE:Clear("STORE_OFFER_HOUR_SHOWN")
+			STORE_CACHE:Clear("T_MOG_RENEW_TIME_LEFT")
+
+			STORE_CACHE:Set("REALM_STAGE", realmStage)
+		end
+
+		FireCustomClientEvent("CUSTOM_STORE_AVAILABILITY_CHANGED")
 	elseif event == "PLAYER_LEVEL_UP" then
 		local unitLevel = select(1, ...)
 
@@ -1374,6 +1477,13 @@ function StoreFrame_OnEvent( self, event, ... )
 		end
 	elseif event == "SESSION_VARIABLES_LOADED" then
 		table.wipe(CUSTOM_ROLLED_ITEMS_IN_SHOP);
+
+		if LOADING_DATA_TIME > 0 then
+			local now = time()
+			C_CVar:SetSessionCVar("STORE_LOADING_DATA_TIMESTAMP", now)
+			FireCustomClientEvent("CUSTOM_STORE_AVAILABILITY_CHANGED")
+			updateLoadingTimer()
+		end
 	end
 end
 
@@ -1903,17 +2013,14 @@ function StoreSpecialOfferInfoUpdate()
 				shownOfferData[self.offerID] = true
 				StoreSpecialOfferSetPage(self.pageID)
 
-				if StoreFrame.Popup then
-					NPE_TutorialPointerFrame:Hide(StoreFrame.Popup)
-					StoreFrame.Popup = nil
-				end
+				StoreHidePopup()
 
 				if not StoreMicroButton:IsVisible() or not StoreMicroButton:IsShown() then
 					StoreToastButton.TopLine:SetText(STPRE_TOAST_SPECIAL_OFFER_END_TITLE)
 					StoreToastButton.MiddleLine:SetText(self.title)
 					StoreToastButton:Show()
 				else
-					StoreFrame.Popup = NPE_TutorialPointerFrame:Show(string.format(STORE_SPECIAL_OFFER_POPUP_LESS_THAN_HOUR, self.title), "DOWN", StoreMicroButton, 0, -5)
+					StoreShowPopup(string.format(STORE_SPECIAL_OFFER_POPUP_LESS_THAN_HOUR, self.title), "DOWN", StoreMicroButton, 0, -5)
 				end
 
 				STORE_CACHE:Set("STORE_OFFER_HOUR_SHOWN", shownOfferData)
@@ -2160,7 +2267,9 @@ function StoreConfirmationFrame_OnShow( self, ... )
 	if self.data.DescriptionText then
 		self.NoticeFrame.Notice:SetText(self.data.DescriptionText)
 	else
-		if (selectedCategoryID == 7)
+		if (selectedCategoryID == STORE_EQUIPMENT_CATEGORY_ID) then
+			self.NoticeFrame.Notice:SetFormattedText("%s\n\n%s", STORE_CONFIRM_NOTICE_WARNING2, STORE_CONFIRM_NOTICE)
+		elseif (selectedCategoryID == 7)
 		or (selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID and selectedMoneyID == 1)
 		or (selectedCategoryID == STORE_COLLECTIONS_CATEGORY_ID and selectedSubCategoryID == 3 and selectedMoneyID == 1)
 		then
@@ -2615,6 +2724,7 @@ function StoreSubCategorySelectButton_OnLeave( self, ... )
 end
 
 function StoreSubCategorySelectButton_OnClick( self, ... )
+	selectedCategoryID = 2
 	selectedSubCategoryID = self:GetID()
 
 	StoreSubCategorySelectClick()
@@ -2694,9 +2804,16 @@ function StorePremiumSelectCheckButton_OnClick( self, ... )
 	StoreBuyPremiumFrame.Price:SetText(STORE_PREMIUM_DATA[self:GetID()].Price)
 end
 
+local CURRENCY_PERCENT = 5
+local XP_PERCENT = 50
+if C_Service.GetRealmID() == E_REALM_ID.SOULSEEKER then
+	XP_PERCENT = 20
+end
+local GOLD_PERCENT = 50
+
 function StoreBuyPremiumFrame_OnShow( self, ... )
 	selectedPremiumID = 1
-	self.infotext:SetText(STORE_PREMIUM_INFO)
+	self.infotext:SetFormattedText(STORE_PREMIUM_INFO, CURRENCY_PERCENT, XP_PERCENT, GOLD_PERCENT)
 end
 
 function StorePremiumBuyButton_OnClick( self, ... )
@@ -3134,7 +3251,7 @@ function StoreSpecialOfferDetailRoleButton_OnClick( self, ... )
 		StoreSpecialOfferDetailFrame.Shown = false
 		StoreSpecialOfferDetailFrame.ListScrollFrame.AnimIn:Play()
 
-		StoreSpecialOfferDetailFrame.ScaleTimer = RunNextFrame(function()
+		StoreSpecialOfferDetailFrame.ScaleTimer = C_Timer:NewTicker(0.0001, function()
 			sizeY = sizeY + 6
 			StoreSpecialOfferDetailFrame:SetSize(400, sizeY)
 			if sizeY >= 600 and StoreSpecialOfferDetailFrame.ScaleTimer then
@@ -3344,7 +3461,7 @@ function StoreSubscribeSetupModel(self)
 		self:Show()
 		self:SetRotation(0.40);
 		self:SetCreature(9000295);
-	elseif C_Service:IsStrengthenStatsRealm() then
+	elseif C_Service.IsStrengthenStatsRealm() then
 		self:Show()
 		self:SetRotation(0.40);
 		self:SetCreature(50001);
@@ -3722,8 +3839,8 @@ end
 function StoreConfirmationFrame_UpdateSize(self)
 	local giftChecked = StoreConfirmationSendGiftCheckButton:IsShown() and StoreConfirmationSendGiftCheckButton:GetChecked();
 
-	local width, height = 403, 396;
-	local noticeWidth, noticeHeight = 396, 208;
+	local width, height = 403, 416;
+	local noticeWidth, noticeHeight = 396, 228;
 
 	if not self.data.SelectedSpec and self.data.selfSize then
 		width, height = self.data.selfSize[1], self.data.selfSize[2];
@@ -3838,6 +3955,9 @@ function StoreFrame_UpdateItemCard()
 			end
 
 			if data.CreatureEntry or isIllusions then
+				button.Model.New:SetShown(bit.band(data.Flags, STORE_ITEM_FLAG_NEW) == STORE_ITEM_FLAG_NEW)
+				button.Model.New:SetPoint("TOPLEFT", 0, button.Discount:IsShown() and -26 or 0);
+
 				button.IconBorder:Hide()
 				button.Icon:Hide()
 
@@ -4122,7 +4242,9 @@ function StoreDataTableCopy(useFilter)
 	table.sort(STORE_PRODUCT_LIST, sortItemList);
 
 	StoreFrame_UpdateItemList()
-	StoreFrame_UpdateItemCard()
+	if selectedMoneyID == 1 then
+		StoreFrame_UpdateItemCard()
+	end
 
 	StoreItemListScrollFrame.ScrollBar:SetValue(0)
 
@@ -5241,14 +5363,15 @@ function StoreDressUPFrame_OnLoad( self, ... )
 	self.Inset:Hide()
 
 	self:RegisterForDrag("LeftButton")
+
+	self.Display.DressUPModel.SetCreature = function(this, ...)
+		getmetatable(this).__index.SetCreature(this, ...)
+		SharedXML_Model_Reset(self.Display.DressUPModel)
+	end
 end
 
-function StoreDressUPFrame_OnShow( self, ... )
-	-- body
-end
-
-function StoreDressUPFrame_OnHide( self, ... )
-	-- body
+function StoreDressUPFrame_OnShow(self)
+	SharedXML_Model_Reset(self.Display.DressUPModel)
 end
 
 function StoreTransmogrifyFrame_OnLoad( self, ... )
@@ -5404,8 +5527,9 @@ function StoreTransmogrifyFrame_UpdatePlayerModel()
 
 	for i = 1, GetNumStoreTransmogrifyItems() do
 		local _, _, _, itemLink = GetStoreTransmogrifyItemsInfo(i)
-
-		modelFrame:TryOn(itemLink);
+		if itemLink then
+			modelFrame:TryOn(itemLink);
+		end
 	end
 end
 
@@ -6104,7 +6228,7 @@ function EventHandler:ASMSG_SHOP_BALANCE_RESPONSE( msg )
 	_G["StoreMoneyButton3"].Text:SetText(refer)
 	_G["StoreMoneyButton4"].Text:SetText(loyalLevel)
 
-	Hook:FireEvent("PLAYER_BALANCE_UPDATE", bonus, vote, refer, loyalLevel, loyalMin, loyalMax, loyalCurrent)
+	FireCustomClientEvent("STORE_BALANCE_UPDATE")
 end
 
 function EventHandler:ASMSG_SHOP_CATEGORY_NEW_ITEMS_RESPONSE( msg )
@@ -6305,10 +6429,7 @@ function EventHandler:ASMSG_SHOP_SPECIAL_OFFER_POPUP_SMALL( msg )
 	local splitData = C_Split(msg, "|")
 	local offerID 	= tonumber(splitData[1])
 
-	if StoreFrame.Popup then
-		NPE_TutorialPointerFrame:Hide(StoreFrame.Popup)
-		StoreFrame.Popup = nil
-	end
+	StoreHidePopup()
 
 	STORE_SMALL_SPECIAL_OFFER_BUFFER[offerID] = true
 
@@ -6327,9 +6448,9 @@ function EventHandler:ASMSG_SHOP_SPECIAL_OFFER_POPUP_SMALL( msg )
 	else
 		local offerBanner3DModel = STORE_SPECIAL_OFFERS_3D[offerID] and STORE_SPECIAL_OFFERS_3D[offerID].PopupModelInfo or nil
 		if offerBanner3DModel ~= nil then
-			StoreFrame.Popup = NPE_TutorialPointerFrame:Show(splitData[2], "DOWN", StoreMicroButton, 0, -5, nil, nil, offerBanner3DModel)
+			StoreShowPopup(splitData[2], "DOWN", StoreMicroButton, 0, -5, nil, nil, offerBanner3DModel)
 		else
-			StoreFrame.Popup = NPE_TutorialPointerFrame:Show(splitData[2], "DOWN", StoreMicroButton, 0, -5)
+			StoreShowPopup(splitData[2], "DOWN", StoreMicroButton, 0, -5)
 		end
 	end
 
@@ -6551,7 +6672,7 @@ function EventHandler:ASMSG_SHOP_REFUNDABLE_PURCHASE_LIST( msg )
 end
 
 function EventHandler:ASMSG_SHOP_PURCHASE_REFUND_RESPONSE( msg )
-	msg = tonumber(msg)
+	msg = tonumber(string.sub(msg, 1, 1))
 
 	if msg == 0 then
 		StoreShowPurchaseAlert(STORE_BONUS_COIN_LABEL, "Interface\\ICONS\\WoW_Store")
@@ -6587,25 +6708,27 @@ function EventHandler:ASMSG_SHOP_ROLLED_TEMS_INFO( msg )
 		STORE_CACHE:Set("CATEGORY_DROP_COUNT6", 1)
 
 		local moneyID = 1
-		if STORE_PRODUCT_CACHE[moneyID] and STORE_PRODUCT_CACHE[moneyID][STORE_COLLECTIONS_CATEGORY_ID] then
-			local category = STORE_PRODUCT_CACHE[moneyID][STORE_COLLECTIONS_CATEGORY_ID]
-			for subCategoryID = 1, #STORE_SUB_CATEGORY_DATA[STORE_COLLECTIONS_CATEGORY_ID] do
-				if category[subCategoryID] then
-					for filter = 0, 1 do
-						if category[subCategoryID][filter] and category[subCategoryID][filter].data then
-							table.wipe(category[subCategoryID][filter].data)
+		if STORE_PRODUCT_CACHE and STORE_PRODUCT_CACHE[moneyID] then
+			if STORE_PRODUCT_CACHE[moneyID][STORE_COLLECTIONS_CATEGORY_ID] then
+				local category = STORE_PRODUCT_CACHE[moneyID][STORE_COLLECTIONS_CATEGORY_ID]
+				for subCategoryID = 1, #STORE_SUB_CATEGORY_DATA[STORE_COLLECTIONS_CATEGORY_ID] do
+					if category[subCategoryID] then
+						for filter = 0, 1 do
+							if category[subCategoryID][filter] and category[subCategoryID][filter].data then
+								table.wipe(category[subCategoryID][filter].data)
+							end
 						end
 					end
 				end
 			end
-		end
-		if STORE_PRODUCT_CACHE[moneyID] and STORE_PRODUCT_CACHE[moneyID][STORE_TRANSMOGRIFY_CATEGORY_ID] then
-			local category = STORE_PRODUCT_CACHE[moneyID][STORE_TRANSMOGRIFY_CATEGORY_ID]
-			for subCategoryID = 1, 4 do
-				if category[subCategoryID] then
-					for filter = 0, 1 do
-						if category[subCategoryID][filter] and category[subCategoryID][filter].data then
-							table.wipe(category[subCategoryID][filter].data)
+			if STORE_PRODUCT_CACHE[moneyID][STORE_TRANSMOGRIFY_CATEGORY_ID] then
+				local category = STORE_PRODUCT_CACHE[moneyID][STORE_TRANSMOGRIFY_CATEGORY_ID]
+				for subCategoryID = 1, 4 do
+					if category[subCategoryID] then
+						for filter = 0, 1 do
+							if category[subCategoryID][filter] and category[subCategoryID][filter].data then
+								table.wipe(category[subCategoryID][filter].data)
+							end
 						end
 					end
 				end
@@ -6615,13 +6738,6 @@ function EventHandler:ASMSG_SHOP_ROLLED_TEMS_INFO( msg )
 		ButtonPulse_StopPulse(StoreMicroButton)
 		ButtonPulse_StopPulse(GameMenuButtonStore)
 
-		Hook:RegisterCallback("SERVICE", "SERVICE_DATA_RECEIVED", function( isGM, realmID, isStoreEnabled, accountID )
-			if not isStoreEnabled then
-				ButtonPulse_StopPulse(StoreMicroButton)
-				ButtonPulse_StopPulse(GameMenuButtonStore)
-			end
-		end)
-
 		if StoreMicroButton:IsEnabled() == 1 then
 			SetButtonPulse(StoreMicroButton, 60, 0.50)
 		end
@@ -6629,36 +6745,6 @@ function EventHandler:ASMSG_SHOP_ROLLED_TEMS_INFO( msg )
 		if GameMenuButtonStore:IsEnabled() == 1 then
 			SetButtonPulse(GameMenuButtonStore, 60, 0.50)
 		end
-	end
-end
-
-function EventHandler:ASMSG_SHOP_RENEW_MOUNTS( msg )
-	local responseID = tonumber(msg)
-
-	if responseID == 0 then
-		local cacheDropsCount = STORE_CACHE:Get("MOUNT_DROP_COUNT", 0)
-		STORE_CACHE:Set("MOUNT_DROP_COUNT", cacheDropsCount + 1)
-		StoreToggleLoadingScreen(true, true)
-
-		StoreItemListUpdate()
-		StoreFrame_UpdateItemCard()
-	else
-		StoreShowErrorFrame(STORE_ERROR, STORE_BUY_ITEM_ERROR_5)
-	end
-end
-
-function EventHandler:ASMSG_SHOP_RENEW_PETS( msg )
-	local responseID = tonumber(msg)
-
-	if responseID == 0 then
-		local cacheDropsCount = STORE_CACHE:Get("MOUNT_DROP_COUNT", 0)
-		STORE_CACHE:Set("MOUNT_DROP_COUNT", cacheDropsCount + 1)
-		StoreToggleLoadingScreen(true, true)
-
-		StoreItemListUpdate()
-		StoreFrame_UpdateItemCard()
-	else
-		StoreShowErrorFrame(STORE_ERROR, STORE_BUY_ITEM_ERROR_5)
 	end
 end
 
@@ -6873,6 +6959,7 @@ STORE_TRANSMOGRIFY_CAMERA_SETTINGS_HEAD = {
 }
 
 function StoreTransmogrifySubCategoryFrameButtonMixin:OnClick()
+	selectedCategoryID = STORE_TRANSMOGRIFY_CATEGORY_ID
 	selectedSubCategoryID = self:GetParent():GetID()
 
 	StoreSubCategorySelectClick()

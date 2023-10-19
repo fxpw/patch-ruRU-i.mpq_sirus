@@ -8,11 +8,13 @@ function GameMenuFrame_OnShow(self)
 	UpdateMicroButtons();
 	Disable_BagButtons();
 
-	if IsStoreEnable() then
-		GameMenuButtonStore:SetText(GAMEMENU_STORE)
-	end
-
 	GameMenuButtonStore:SetEnabled(IsStoreEnable())
+
+	if GameMenuButtonStore:IsEnabled() == 1 then
+		GameMenuButtonStore:SetText(GAMEMENU_STORE)
+	else
+		GameMenuButtonStore:SetText(GAMEMENU_BUTTON_STORE)
+	end
 
 	GameMenuFrame_UpdateVisibleButtons(self);
 end

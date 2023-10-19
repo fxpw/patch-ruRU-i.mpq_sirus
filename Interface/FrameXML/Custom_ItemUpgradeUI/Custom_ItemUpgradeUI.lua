@@ -700,7 +700,7 @@ function ItemUpgradeRightItemsListPreviewFrameMixin:Update()
 		if targetItemInfo then
 			local itemQualityColor = ITEM_QUALITY_COLORS[targetItemInfo.displayQuality].color;
 
-			if C_Service:IsGM() then
+			if IsGMAccount() then
 				button.Name:SetFormattedText("%s (%s)", itemQualityColor:WrapTextInColorCode(targetItemInfo.name), targetItemInfo.realmFlag);
 			else
 				button.Name:SetText(itemQualityColor:WrapTextInColorCode(targetItemInfo.name));

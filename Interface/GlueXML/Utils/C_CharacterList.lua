@@ -1,5 +1,6 @@
 local PRIVATE = {
 	CHARACTERS_PER_PAGE = 10,
+	SELECTED_CHARACTER_INDEX = 0,
 
 	LIST_PLAYEBLE	= {page = 1, numPages = 1, numCharacters = 0, availablePages = 1, numDeathKnights = 0, numBoostedDeathKnights = 0},
 	LIST_DELETED	= {page = 1, numPages = 0},
@@ -12,14 +13,24 @@ local PRIVATE = {
 
 	PENDING_BOOST_DK_CHARACTER_ID = 0,
 	PENDING_CHARACTER_FIX_ID = nil,
+	PENDING_CHARACTER_HARDCORE_PROPOSAL = nil,
+	PENDING_CHARACTER_HARDCORE_PROPOSAL_ENABLE = nil,
 }
 PRIVATE.LIST_CURRENT = PRIVATE.LIST_PLAYEBLE
 
-local CHAR_DATA_TYPE = {
-	FORCE_CUSTOMIZATION = 1,
-	MAIL_COUNT = 2,
-	ITEM_LEVEL = 3,
-	BLOCK_ENTERING = 4,
+local CHARACTER_DATA_TYPE = {
+	FLAGS = 0,
+	MAIL_COUNT = 1,
+	ITEM_LEVEL = 2,
+	ZODIAC_SIGN_RACE_ID = 3,
+	CHALLENGE_ID = 4,
+}
+
+local CHARACTER_FLAGS = {
+	FORCE_CUSTOMIZATION	= 0x01,
+	ALLOW_ZODIAC_CHANGE	= 0x02,
+	HARDCORE_ENABLED	= 0x04,
+	HARDCORE_PROPOSE	= 0x08,
 }
 
 PRIVATE.eventHandler = CreateFrame("Frame")
@@ -27,11 +38,15 @@ PRIVATE.eventHandler:Hide()
 PRIVATE.eventHandler:RegisterEvent("SET_GLUE_SCREEN")
 PRIVATE.eventHandler:RegisterEvent("UPDATE_STATUS_DIALOG")
 PRIVATE.eventHandler:RegisterEvent("SERVER_SPLIT_NOTICE")
+PRIVATE.eventHandler:RegisterEvent("UPDATE_SELECTED_CHARACTER")
 PRIVATE.eventHandler:RegisterCustomEvent("CHARACTER_CREATED")
 PRIVATE.eventHandler:RegisterCustomEvent("CUSTOM_CHARACTER_SELECT_SHOWN")
 
 PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
-	if event == "CUSTOM_CHARACTER_SELECT_SHOWN" then
+	if event == "UPDATE_SELECTED_CHARACTER" then
+		local index = ...
+		PRIVATE.SELECTED_CHARACTER_INDEX = index
+	elseif event == "CUSTOM_CHARACTER_SELECT_SHOWN" then
 		table.wipe(PRIVATE.CHARACTER_SERVICE_DATA)
 	elseif event == "CHARACTER_CREATED" then
 		PRIVATE.LIST_PLAYEBLE.numCharacters = PRIVATE.LIST_PLAYEBLE.numCharacters + 1
@@ -109,21 +124,57 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 			PRIVATE.LIST_QUEUED.list = nil
 			PRIVATE.LIST_QUEUED.page = nil
 		elseif prefix == "ASMSG_CHAR_SERVICES" then
-			local characterID, forceCustomization, mailCount, itemLevel = string.split(":", content)
+			local characterID, flags, mailCount, itemLevel, zodiacSignRaceID, challengeID = string.split(":", content)
 			characterID = tonumber(characterID) + 1
-			forceCustomization = tonumber(forceCustomization)
-			mailCount = tonumber(mailCount)
-			itemLevel = tonumber(itemLevel)
+			flags = tonumber(flags) or 0
+			mailCount = tonumber(mailCount) or 0
+			itemLevel = tonumber(itemLevel) or 0
+			zodiacSignRaceID = tonumber(zodiacSignRaceID) or 0
+			challengeID = tonumber(challengeID) or 0
 
 			if not PRIVATE.CHARACTER_SERVICE_DATA[characterID] then
 				PRIVATE.CHARACTER_SERVICE_DATA[characterID] = {}
 			end
 
-			PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHAR_DATA_TYPE.FORCE_CUSTOMIZATION] = forceCustomization or 0
-			PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHAR_DATA_TYPE.MAIL_COUNT] = mailCount or 0
-			PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHAR_DATA_TYPE.ITEM_LEVEL] = itemLevel or 0
+			PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHARACTER_DATA_TYPE.FLAGS] = flags
+			PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHARACTER_DATA_TYPE.MAIL_COUNT] = mailCount
+			PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHARACTER_DATA_TYPE.ITEM_LEVEL] = itemLevel
+			PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHARACTER_DATA_TYPE.ZODIAC_SIGN_RACE_ID] = zodiacSignRaceID
+			PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHARACTER_DATA_TYPE.CHALLENGE_ID] = challengeID
 
 			FireCustomClientEvent("CUSTOM_CHARACTER_INFO_UPDATE", characterID)
+		elseif prefix == "SMSG_PROPOSE_HARDCORE" then
+			local status = tonumber(content)
+			if status == 0 then
+				GlueDialog:HideDialog("SERVER_WAITING")
+
+				local characterID = PRIVATE.PENDING_CHARACTER_HARDCORE_PROPOSAL
+				local serviceData = PRIVATE.CHARACTER_SERVICE_DATA[characterID]
+
+				if serviceData and serviceData[CHARACTER_DATA_TYPE.FLAGS] then
+					serviceData[CHARACTER_DATA_TYPE.FLAGS] = bit.band(serviceData[CHARACTER_DATA_TYPE.FLAGS], bit.bnot(CHARACTER_FLAGS.HARDCORE_PROPOSE))
+
+					if PRIVATE.PENDING_CHARACTER_HARDCORE_PROPOSAL_ENABLED then
+						serviceData[CHARACTER_DATA_TYPE.FLAGS] = bit.bor(serviceData[CHARACTER_DATA_TYPE.FLAGS], CHARACTER_FLAGS.HARDCORE_ENABLED)
+					else
+						serviceData[CHARACTER_DATA_TYPE.FLAGS] = bit.band(serviceData[CHARACTER_DATA_TYPE.FLAGS], bit.bnot(CHARACTER_FLAGS.HARDCORE_ENABLED))
+					end
+				end
+
+				PRIVATE.PENDING_CHARACTER_HARDCORE_PROPOSAL = nil
+				PRIVATE.PENDING_CHARACTER_HARDCORE_PROPOSAL_ENABLED = nil
+				FireCustomClientEvent("CUSTOM_CHARACTER_INFO_UPDATE", characterID)
+			else
+				GlueDialog:HideDialog("SERVER_WAITING")
+
+				local characterID = PRIVATE.PENDING_CHARACTER_HARDCORE_PROPOSAL
+				PRIVATE.PENDING_CHARACTER_HARDCORE_PROPOSAL = nil
+				PRIVATE.PENDING_CHARACTER_HARDCORE_PROPOSAL_ENABLED = nil
+
+				local characterIndex = C_CharacterList.GetCharacterListIndex(characterID)
+				local errorText = string.format("SMSG_PROPOSE_HARDCORE: error #%s for character #%d", status or "NONE", characterIndex)
+				GlueDialog:ShowDialog("OKAY_VOID", errorText)
+			end
 		elseif prefix == "SMSG_CHARACTER_FIX" then
 			GlueDialog:HideDialog("SERVER_WAITING")
 
@@ -132,9 +183,9 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 					FireCustomClientEvent("CUSTOM_CHARACTER_FIXED", PRIVATE.PENDING_CHARACTER_FIX_ID)
 				end
 			elseif content == "NOT_FOUND" then
-				GlueDialog:ShowDialog("OKAY", CHARACTER_FIX_STATUS_2)
+				GlueDialog:ShowDialog("OKAY_VOID", CHARACTER_FIX_STATUS_2)
 			elseif content == "INVALID_PARAMS" then
-				GlueDialog:ShowDialog("OKAY", CHARACTER_FIX_STATUS_3)
+				GlueDialog:ShowDialog("OKAY_VOID", CHARACTER_FIX_STATUS_3)
 			end
 
 			PRIVATE.PENDING_CHARACTER_FIX_ID = nil
@@ -183,6 +234,20 @@ end
 
 function C_CharacterList.GetNewPagePrice()
 	return PRIVATE.newPagePrice
+end
+
+function C_CharacterList.GetCharacterIndexByID(index)
+	return GetIndexFromCharID(index)
+end
+
+function C_CharacterList.GetCharacterIDByIndex(index)
+	return GetCharIDFromIndex(index)
+end
+
+function C_CharacterList.GetSelectedCharacter()
+	local characterID = PRIVATE.SELECTED_CHARACTER_INDEX
+	local characterIndex = C_CharacterList.GetCharacterIDByIndex(characterID)
+	return characterID, characterIndex
 end
 
 function C_CharacterList.CanCreateCharacter()
@@ -256,6 +321,32 @@ function C_CharacterList.CanEnterWorld(characterID)
 	return true
 end
 
+function C_CharacterList.EnterWorld(characterID)
+	if not characterID then
+		characterID = C_CharacterList.GetSelectedCharacter()
+	end
+
+	if C_CharacterList.HasCharacterForcedCustomization(characterID)
+	or C_CharacterList.HasCharacterForcedCustomization(characterID)
+	then
+		return
+	end
+
+	if C_CharacterList.CanEnterWorld(characterID) then
+		local flag = 0
+		local challengeID = 0
+
+		if C_CharacterList.IsHardcoreCharacter(characterID) then
+			flag = bit.bor(flag, CLIENT_PLAYER_FLAGS.HARDCORE)
+			challengeID = C_CharacterList.GetActiveChallengeID(characterID)
+		end
+
+		C_CacheInstance:Set("C_SERVICE_PLAYER_FLAG", flag)
+		C_CacheInstance:Set("C_SERVICE_CHALLENGE_ID", challengeID)
+		EnterWorld()
+	end
+end
+
 function C_CharacterList.IsRestoreModeAvailable()
 	return PRIVATE.LIST_DELETED.numPages > 0
 end
@@ -266,21 +357,79 @@ end
 
 function C_CharacterList.GetCharacterMailCount(characterID)
 	if PRIVATE.CHARACTER_SERVICE_DATA[characterID] then
-		return PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHAR_DATA_TYPE.MAIL_COUNT] or 0
+		return PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHARACTER_DATA_TYPE.MAIL_COUNT] or 0
 	end
 	return 0
 end
 
 function C_CharacterList.GetCharacterItemLevel(characterID)
 	if PRIVATE.CHARACTER_SERVICE_DATA[characterID] then
-		return PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHAR_DATA_TYPE.ITEM_LEVEL] or 0
+		return PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHARACTER_DATA_TYPE.ITEM_LEVEL] or 0
+	end
+	return 0
+end
+
+function C_CharacterList.CanCharacterChangeZodiac(characterID)
+	if PRIVATE.CHARACTER_SERVICE_DATA[characterID] then
+		return bit.band(PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHARACTER_DATA_TYPE.FLAGS], CHARACTER_FLAGS.ALLOW_ZODIAC_CHANGE) ~= 0
+	end
+	return false
+end
+
+function C_CharacterList.GetCharacterZodiacRaceID(characterID)
+	if PRIVATE.CHARACTER_SERVICE_DATA[characterID] then
+		local dbcRaceID = PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHARACTER_DATA_TYPE.ZODIAC_SIGN_RACE_ID]
+		if dbcRaceID then
+			return E_CHARACTER_RACES[E_CHARACTER_RACES_DBC[dbcRaceID]]
+		end
 	end
 	return 0
 end
 
 function C_CharacterList.HasCharacterForcedCustomization(characterID)
 	if PRIVATE.CHARACTER_SERVICE_DATA[characterID] then
-		return PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHAR_DATA_TYPE.FORCE_CUSTOMIZATION] == 1
+		return bit.band(PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHARACTER_DATA_TYPE.FLAGS], CHARACTER_FLAGS.FORCE_CUSTOMIZATION) ~= 0
+	end
+	return false
+end
+
+function C_CharacterList.HasCharacterHardcoreProposal(characterID)
+	if PRIVATE.CHARACTER_SERVICE_DATA[characterID] then
+		return bit.band(PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHARACTER_DATA_TYPE.FLAGS], CHARACTER_FLAGS.HARDCORE_PROPOSE) ~= 0
+	end
+	return false
+end
+
+function C_CharacterList.IsHardcoreCharacter(characterID)
+	if not characterID then
+		characterID = C_CharacterList.GetSelectedCharacter()
+	end
+	if PRIVATE.CHARACTER_SERVICE_DATA[characterID] then
+		return bit.band(PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHARACTER_DATA_TYPE.FLAGS], CHARACTER_FLAGS.HARDCORE_ENABLED) ~= 0
+	end
+	return false
+end
+
+function C_CharacterList.GetActiveChallengeID(characterID)
+	if not characterID then
+		characterID = C_CharacterList.GetSelectedCharacter()
+	end
+	if PRIVATE.CHARACTER_SERVICE_DATA[characterID] then
+		return PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHARACTER_DATA_TYPE.CHALLENGE_ID]
+	end
+	return 0
+end
+
+function C_CharacterList.IsChallengeActive(characterID, challengeID)
+	if type(challengeID) ~= "number" then
+		error(string.format("bad argument #1 to 'C_Service.IsChallengeActive' (table expected, got %s)", challengeID ~= nil and type(challengeID) or "no value"), 2)
+	end
+
+	if not characterID then
+		characterID = C_CharacterList.GetSelectedCharacter()
+	end
+	if PRIVATE.CHARACTER_SERVICE_DATA[characterID] then
+		return PRIVATE.CHARACTER_SERVICE_DATA[characterID][CHARACTER_DATA_TYPE.CHALLENGE_ID] ~= challengeID
 	end
 	return false
 end
@@ -325,7 +474,7 @@ function C_CharacterList.ExitRestoreMode()
 	if not C_CharacterList.IsInPlayableMode() then
 		PRIVATE.LIST_CURRENT = PRIVATE.LIST_PLAYEBLE
 
-		C_GluePackets:SendPacket(C_GluePackets.OpCodes.AnnounceCharacterDeletedLeave)
+		C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.AnnounceCharacterDeletedLeave)
 		GlueDialog:ShowDialog("SERVER_WAITING")
 
 		GetCharacterListUpdate()
@@ -346,8 +495,19 @@ function C_CharacterList.IsNewPageServiceAvailable()
 	return false
 end
 
+function C_CharacterList.SendHardcoreProposalAnswer(characterID, enable)
+	if PRIVATE.PENDING_CHARACTER_HARDCORE_PROPOSAL or characterID <= 0 or not C_CharacterList.HasCharacterHardcoreProposal(characterID) then
+		return
+	end
+
+	GlueDialog:ShowDialog("SERVER_WAITING")
+	PRIVATE.PENDING_CHARACTER_HARDCORE_PROPOSAL = characterID
+	PRIVATE.PENDING_CHARACTER_HARDCORE_PROPOSAL_ENABLED = enable
+	C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.CharacterHardcoreProposalAnswer, characterID, enable and 1 or 0)
+end
+
 function C_CharacterList.FixCharacter(characterID)
-	if characterID <= 0 or characterID == select(2, C_CharacterList.GetPendingBoostDK()) then
+	if PRIVATE.PENDING_CHARACTER_FIX_ID or characterID <= 0 or characterID == select(2, C_CharacterList.GetPendingBoostDK()) then
 		return
 	end
 

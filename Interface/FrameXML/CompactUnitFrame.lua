@@ -12,6 +12,16 @@ local FACTION_OVERRIDE_BY_DEBUFFS = FACTION_OVERRIDE_BY_DEBUFFS
 local S_CATEGORY_SPELL_ID = S_CATEGORY_SPELL_ID
 local S_VIP_STATUS_DATA = S_VIP_STATUS_DATA
 
+local unitPetOwnerMap = {
+	pet = "player",
+};
+for i = 1, MAX_RAID_MEMBERS do
+	unitPetOwnerMap["raidpet"..i] = "raid"..i;
+end
+for i = 1, MAX_PARTY_MEMBERS do
+	unitPetOwnerMap["party"..i] = "party"..i;
+end
+
 --Widget Handlers
 local OPTION_TABLE_NONE = {};
 BOSS_DEBUFF_SIZE_INCREASE = 9;
@@ -365,12 +375,13 @@ function CompactUnitFrame_UpdateHealthColor(frame)
 		r, g, b = 0.5, 0.5, 0.5;
 	else
 		--Try to color it by class.
-		local _, englishClass = UnitClass(frame.unit);
+		local _, englishClass = UnitClass(unitPetOwnerMap[frame.unit] or frame.unit);
 		local classColor = RAID_CLASS_COLORS[englishClass];
 		if ( not classColor ) then
 			classColor = RAID_CLASS_COLORS["PRIEST"];
 		end
-		if ( (frame.optionTable.allowClassColorsForNPCs or UnitIsPlayer(frame.unit)) and classColor and frame.optionTable.useClassColors ) then
+		if ( (frame.optionTable.allowClassColorsForNPCs or UnitIsPlayer(frame.unit)) and classColor and frame.optionTable.useClassColors ) or
+		( frame.optionTable.allowClassColorsForPets and classColor and frame.optionTable.useOwnerClassColors ) then
 			-- Use class colors for players if class color option is turned on
 			r, g, b = classColor.r, classColor.g, classColor.b;
 		elseif ( CompactUnitFrame_IsTapDenied(frame) ) then
@@ -1327,6 +1338,8 @@ DefaultCompactMiniFrameOptions = {
 	rangeCheck = 3,
 	rangeAlpha = 55,
 	raidTargetIcon = false,
+	useOwnerClassColors = false,
+	allowClassColorsForPets = true,
 	--displayStatusText = true,
 	--displayDispelDebuffs = true,
 }

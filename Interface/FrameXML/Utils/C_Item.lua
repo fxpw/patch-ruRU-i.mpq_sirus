@@ -46,19 +46,20 @@ local itemInvTypeToID = {
 	INVTYPE_RELIC			= 28,
 }
 
-enum:E_ITEM_INFO {
-	"NAME_ENGB",
-	"NAME_RURU",
-	"RARITY",
-	"ILEVEL",
-	"MINLEVEL",
-	"TYPE",
-	"SUBTYPE",
-	"STACKCOUNT",
-	"EQUIPLOC",
-	"TEXTURE",
-	"VENDORPRICE"
+local E_ITEM_INFO = {
+	NAME_ENGB	= 1,
+	NAME_RURU	= 2,
+	RARITY		= 3,
+	ILEVEL		= 4,
+	MINLEVEL	= 5,
+	TYPE		= 6,
+	SUBTYPE		= 7,
+	STACKCOUNT	= 8,
+	EQUIPLOC	= 9,
+	TEXTURE		= 10,
+	VENDORPRIC	= 11,
 }
+local ITEM_ID_FIELD = 0
 
 C_Item = {}
 C_Item.GetItemInfoRaw = GetItemInfo
@@ -118,7 +119,7 @@ end)
 local function getItemID(item, funcName)
 	if type(item) == "string" then
 		if ItemsCache[item] then
-			item = ItemsCache[item].itemID
+			item = ItemsCache[item][ITEM_ID_FIELD]
 		else
 			item = tonumber(item) or tonumber(strmatch(item, "item:(%d+)"))
 		end
@@ -201,7 +202,7 @@ function C_Item.GetItemInfoCache(item)
 		local equipLocID	= cacheData[E_ITEM_INFO.EQUIPLOC]
 
 		if not cacheData.link then
-			cacheData.link = strformat("|c%s|Hitem:%d:0:0:0:0:0:0:0:%d|h[%s]|h|r", itemQualityHexes[itemRarity] or "ffffffff", cacheData.itemID, itemMinLevel, itemName)
+			cacheData.link = strformat("|c%s|Hitem:%d:0:0:0:0:0:0:0:%d|h[%s]|h|r", itemQualityHexes[itemRarity] or "ffffffff", cacheData[ITEM_ID_FIELD], itemMinLevel, itemName)
 		end
 
 		return itemName,
@@ -215,7 +216,7 @@ function C_Item.GetItemInfoCache(item)
 			SHARED_INVTYPE_BY_ID[equipLocID],
 			"Interface\\Icons\\"..cacheData[E_ITEM_INFO.TEXTURE],
 			cacheData[E_ITEM_INFO.VENDORPRICE],
-			cacheData.itemID,
+			cacheData[ITEM_ID_FIELD],
 			classID,
 			subclassID,
 			equipLocID
@@ -256,7 +257,7 @@ function C_Item.GetItemInfo(item, skipClientCache, callback, noAdditionalData, n
 			itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice = GetItemInfo(item)
 		end
 
-		if not itemName and not skipClientCache and GetServerID() ~= REALM_ID_SIRUS then
+		if not itemName and not skipClientCache and GetServerID() ~= E_REALM_ID.LEGACY_X10 then
 			itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice, itemID, classID, subClassID, equipLocID = C_Item.GetItemInfoCache(item)
 		end
 	end
@@ -427,11 +428,24 @@ do
 		className = _G["ITEM_CLASS_" .. classID]
 	end
 
-	if ItemsCache then
+	if ItemsCache1 and not ItemsCache then
+		ItemsCache = ItemsCache1
+		ItemsCache1 = nil
+	end
+
+	if type(ItemsCache) == "table" then
+		if type(ItemsCache2) == "table" then
+			for itemID, itemData in pairs(ItemsCache2) do
+				ItemsCache[itemID] = itemData
+			end
+			table.wipe(ItemsCache2)
+			ItemsCache2 = nil
+		end
+
 		local namedItems = {}
 		local localeIndex = C_Item.GetLocaleIndex()
 		for itemID, itemData in pairs(ItemsCache) do
-			itemData.itemID = itemID
+			itemData[ITEM_ID_FIELD] = itemID
 
 			local itemName = itemData[localeIndex]
 			if itemName and itemName ~= "" then
@@ -440,8 +454,8 @@ do
 		end
 		for itemName, itemData in pairs(namedItems) do
 			ItemsCache[itemName] = itemData
-			namedItems[itemName] = nil
 		end
+		table.wipe(namedItems)
 	else
 		GMError("No ItemCache")
 	end

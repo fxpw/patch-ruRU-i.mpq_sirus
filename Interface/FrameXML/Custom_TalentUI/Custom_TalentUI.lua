@@ -1,9 +1,3 @@
---	Filename:	Sirus_TalentUI.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 TALENT_CACHE = C_Cache("SIRUS_TALENT_CACHE_V2", true)
 
 StaticPopupDialogs["CONFIRM_LEARN_PREVIEW_TALENTS"] = {
@@ -750,6 +744,9 @@ function PlayerTalentFrame_HideGlyphFrame()
 end
 
 function PlayerTalentFrame_OnLoad(self)
+	self.unit = "player";
+	self.inspect = false;
+	self.pet = false;
     self.specTabs = {}
 
     self:RegisterEvent("VARIABLES_LOADED")

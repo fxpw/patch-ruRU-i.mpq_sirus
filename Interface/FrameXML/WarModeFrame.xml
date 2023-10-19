@@ -1,0 +1,359 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="WarModeFrame.lua"/>
+
+	<Frame name="WarModeStateInfoTemplate" virtual="true">
+		<Size x="240" y="220"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackgroundArtwork" parentKey="BackgroundArtwork" alpha="0.7">
+					<Size x="290" y="215"/>
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-35"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentTitleBackground" parentKey="TitleBackground">
+					<Size x="211" y="68"/>
+					<Anchors>
+						<Anchor point="TOP" x="0" y="10"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="$parentTitle" parentKey="Title" inherits="GameFontNormal13">
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentTitleBackground" x="0" y="0"/>
+					</Anchors>
+					<Color r="0.84" g="0.76" b="0.51"/>
+				</FontString>
+				<FontString name="$parentText" parentKey="Text" justifyV="TOP" justifyH="LEFT" spacing="1" inherits="GameFontNormal12" text="WAR_MODE_ACTIVE_TEXT">
+					<Size x="240" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentTitleBackground" relativePoint="BOTTOM" x="0" y="-16"/>
+					</Anchors>
+					<Color r="1" g="0.96" b="0.71"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self.Title:SetText(_G[self:GetAttribute("title")] or self:GetAttribute("title"))
+				self.Text:SetText(_G[self:GetAttribute("text")] or self:GetAttribute("text"))
+				self.TitleBackground:SetAtlas("covenantsanctum-level-border-necrolord")
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="WarModeFrame" parent="UIParent" enableMouse="true" frameStrata="DIALOG" hidden="true">
+		<Size x="580" y="340"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" alpha="0.5" setAllPoints="true">
+					<Color r="0" g="0" b="0"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentTLCorner" parentKey="TLCorner">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="1" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentTRCorner" parentKey="TRCorner">
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-1" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBLCorner" parentKey="BLCorner">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="1" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBRCorner" parentKey="BRCorner">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="-1" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentTopTile" parentKey="TopTile" horizTile="true">
+					<Size x="0" y="11"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentTLCorner" relativePoint="TOPRIGHT" x="0" y="1"/>
+						<Anchor point="TOPRIGHT" relativeTo="$parentTRCorner" relativePoint="TOPLEFT" x="0" y="1"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBottomTile" parentKey="BottomTile" horizTile="true">
+					<Size x="0" y="3"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentBLCorner" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBRCorner" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentBottomGlowTexture" parentKey="BottomGlowTexture" alphaMode="ADD" hidden="true" alpha="0.8">
+					<Size x="460" y="100"/>
+					<Anchors>
+						<Anchor point="BOTTOM" x="0" y="-37"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="animOut">
+							<Alpha duration="0" change="-1" order="1"/>
+							<Alpha duration="0" change="0.8" order="2"/>
+							<Alpha duration="0.2" change="-0.8" order="3"/>
+							<Scripts>
+								<OnFinished>
+									self:GetParent():Hide()
+								</OnFinished>
+							</Scripts>
+						</AnimationGroup>
+						<AnimationGroup parentKey="animIn">
+							<Alpha duration="0" change="-1" order="1"/>
+							<Alpha duration="0.3" change="1" order="2"/>
+							<Alpha duration="0.1" change="-0.2" order="3"/>
+							<Scale duration="0.2" scaleX="1.2" scaleY="1.2" order="2"/>
+							<Scale duration="0.2" scaleX="0.9" scaleY="0.9" order="3"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<Texture name="$parentTitleBackground" parentKey="TitleBackground">
+					<Size x="220" y="60"/>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" x="0" y="30"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="$parentTitleFont" parentKey="TitleFont" inherits="GameFontNormal16" text="WAR_MODE">
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentTitleBackground" x="0" y="6"/>
+					</Anchors>
+					<Color r="0.15" g="0.09" b="0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Attributes>
+			<Attribute name="layoutType" value="PKBT_DialogBorder" type="string"/>
+			<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
+		</Attributes>
+		<Frames>
+			<Frame parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
+
+			<Button name="$parentCloseButton" parentKey="UIPanelCloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="5" y="6"/>
+				</Anchors>
+			</Button>
+
+			<Frame name="$parentSeparator" parentKey="Separator">
+				<Size x="3" y="0"/>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-4"/>
+					<Anchor point="BOTTOM" x="0" y="4"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture name="$parentLine" parentKey="Line">
+							<Anchors>
+								<Anchor point="TOP" x="0" y="0"/>
+								<Anchor point="BOTTOM" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentActiveInfo" parentKey="ActiveInfo" inherits="WarModeStateInfoTemplate">
+				<Anchors>
+					<Anchor point="TOP" x="-150" y="-30"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="title" type="string" value="WAR_MODE_ACTIVE_TITLE"/>
+					<Attribute name="text" type="string" value="WAR_MODE_ACTIVE_TEXT"/>
+				</Attributes>
+				<Layers>
+					<Layer level="BORDER">
+						<Texture name="$parentTextBackground" parentKey="TextBackground" alpha="0.8">
+							<Size x="340" y="230"/>
+							<Anchors>
+								<Anchor point="LEFT" x="-42" y="28"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentInactiveInfo" parentKey="InactiveInfo" inherits="WarModeStateInfoTemplate">
+				<Anchors>
+					<Anchor point="TOP" x="150" y="-30"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="title" type="string" value="WAR_MODE_INACTIVE_TITLE"/>
+					<Attribute name="text" type="string" value="WAR_MODE_INACTIVE_TEXT"/>
+				</Attributes>
+				<Layers>
+					<Layer level="BORDER">
+						<Texture name="$parentTextBackground" parentKey="TextBackground" alpha="0.8">
+							<Size x="360" y="230"/>
+							<Anchors>
+								<Anchor point="RIGHT" x="10" y="28"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentStateInfo" parentKey="StateInfo">
+				<Size x="400" y="109"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background" setAllPoints="true"/>
+					</Layer>
+					<Layer level="ARTWORK">
+						<FontString name="$parentText" parentKey="Text" justifyH="CENTER" justifyV="TOP" inherits="GameFontNormal13">
+							<Size x="370" y="50"/>
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="$parentBackground" x="0" y="4"/>
+							</Anchors>
+							<Color r="0.27" g="0.06" b="0"/>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+
+			<Button name="$parentActivateButton" parentKey="ActivateButton" motionScriptsWhileDisabled="true">
+				<Size x="84" y="84"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="-30"/>
+				</Anchors>
+
+				<Animations>
+					<AnimationGroup parentKey="animIn">
+						<Scale duration="0.2" scaleX="1.2" scaleY="1.2" order="1"/>
+						<Scale duration="0.2" scaleX="0.9" scaleY="0.9" order="2"/>
+						<Scripts>
+							<OnPlay>
+								self:GetParent():StarInAnimation()
+							</OnPlay>
+						</Scripts>
+					</AnimationGroup>
+				</Animations>
+
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentGlow" parentKey="Glow" alphaMode="ADD" hidden="true">
+							<Size x="142" y="142"/>
+							<Anchors>
+								<Anchor point="CENTER" x="1" y="1"/>
+							</Anchors>
+							<Animations>
+								<AnimationGroup parentKey="animIn">
+									<Scale duration="0.2" scaleX="1.2" scaleY="1.2" order="1"/>
+									<Scale duration="0.2" scaleX="0.9" scaleY="0.9" order="2"/>
+									<Alpha duration="0.2" change="1" order="1"/>
+									<Alpha duration="0.2" change="-1" order="2"/>
+									<Scripts>
+										<OnFinished>
+											self:GetParent():Hide()
+										</OnFinished>
+									</Scripts>
+								</AnimationGroup>
+							</Animations>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Frame name="$parentLockFrame" parentKey="LockFrame" setAllPoints="true" hidden="true">
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture name="$parentLockIcon" parentKey="LockIcon">
+									<Size x="40" y="48"/>
+									<Anchors>
+										<Anchor point="TOP" x="0" y="-4"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+							<Layer level="BORDER">
+								<Texture name="$parentTextBackground" parentKey="TextBackground">
+									<Size x="1" y="1"/>
+									<Anchors>
+										<Anchor point="TOP" relativeTo="$parentLockIcon" relativePoint="BOTTOM" x="0" y="20"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+							<Layer level="ARTWORK">
+								<FontString name="$parentTimer" parentKey="Timer" justifyH="LEFT" inherits="GameFontNormal14">
+									<Size x="100" y="20"/>
+									<Anchors>
+										<Anchor point="CENTER" relativeTo="$parentTextBackground" x="21" y="0"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+							<Layer level="OVERLAY">
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnLoad>
+								Mixin(self, WarModeActivateLockMixin)
+								self:OnLoad()
+							</OnLoad>
+							<OnShow>
+								self:OnShow()
+							</OnShow>
+							<OnHide>
+								self:OnHide()
+							</OnHide>
+						</Scripts>
+					</Frame>
+				</Frames>
+
+				<NormalTexture parentKey="NormalTexture">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+				</NormalTexture>
+				<DisabledTexture parentKey="DisabledTexture">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+				</DisabledTexture>
+				<HighlightTexture parentKey="HighlightTexture">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+				</HighlightTexture>
+
+				<Scripts>
+					<OnLoad>
+						Mixin(self, WarModeActivateMixin)
+						self:SetFrameLevel(100)
+					</OnLoad>
+					<OnClick>
+						self:OnClick(button)
+					</OnClick>
+					<OnEnter>
+						self:OnEnter()
+					</OnEnter>
+					<OnLeave>
+						self:OnLeave()
+					</OnLeave>
+					<OnEnable>
+						self:OnEnable()
+					</OnEnable>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, WarModeMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</Frame>
+</Ui>

@@ -1,9 +1,3 @@
---	Filename:	Sirus_Transmogrify.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 local transmogrifyCancelSlotID = nil
 
 local BUTTONS = {}
@@ -74,7 +68,7 @@ function TransmogrifyFrame_OnShow( self, ... )
 		transmogrifyTutorial.Tutorial = NPE_TutorialPointerFrame:Show(TRANSMOGRIFY_FRAME_TUTORIAL_1, "LEFT", self.TutorialButton, 0, 0)
 	end
 
-	SendAddonMessage("ACMSG_SHOP_REFUNDABLE_PURCHASE_LIST_REQUEST", nil, "WHISPER", UnitName("player"))
+	SendServerMessage("ACMSG_SHOP_REFUNDABLE_PURCHASE_LIST_REQUEST")
 end
 
 function TransmogrifyFrame_OnHide( self, ... )
@@ -152,12 +146,12 @@ function TransmogrifySlotButton_OnClick( self, button, _itemID )
 				return
 			end
 
-			SendAddonMessage("ACMSG_TRANSMOGRIFICATION_PREPARE_REQUEST", self.id..":"..itemID, "WHISPER", UnitName("player"))
+			SendServerMessage("ACMSG_TRANSMOGRIFICATION_PREPARE_REQUEST", self.id..":"..itemID)
 		end
 		ClearCursor()
 	elseif ( button == "RightButton" ) then
 		if self.isUndo then
-			SendAddonMessage("ACMSG_TRANSMOGRIFICATION_REMOVE", self.id, "WHISPER", UnitName("player"))
+			SendServerMessage("ACMSG_TRANSMOGRIFICATION_REMOVE", self.id)
 			transmogrifyCancelSlotID = self.id
 		elseif self.isPending then
 			ClearTransmogrifySlot(self)
@@ -299,7 +293,7 @@ function ApplyTransmogrifications( self, ... )
 		end
 	end
 
-	SendAddonMessage("ACMSG_TRANSMOGRIFICATION_APPLY", msg, "WHISPER", UnitName("player"))
+	SendServerMessage("ACMSG_TRANSMOGRIFICATION_APPLY", msg)
 end
 
 function EventHandler:ASMSG_TRANSMOGRIFICATION_MENU_OPEN( msg )

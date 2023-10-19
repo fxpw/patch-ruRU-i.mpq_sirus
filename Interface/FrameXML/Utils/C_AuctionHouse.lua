@@ -1000,12 +1000,12 @@ local CheckThrottledMessage
 local function SendServerThrottledMessage(func, ...)
 	if not THROTTLED_MESSAGE_RESPONSE_RECEIVED then
 		if THROTTLED_MESSAGE_QUEUE then
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_THROTTLED_MESSAGE_DROPPED);
+			FireCustomClientEvent("AUCTION_HOUSE_THROTTLED_MESSAGE_DROPPED");
 		end
 
 		THROTTLED_MESSAGE_QUEUE = {func, ...};
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_THROTTLED_MESSAGE_QUEUED);
+		FireCustomClientEvent("AUCTION_HOUSE_THROTTLED_MESSAGE_QUEUED");
 
 		return;
 	end
@@ -1017,7 +1017,7 @@ local function SendServerThrottledMessage(func, ...)
 
 		THROTTLED_MESSAGE_RESPONSE_RECEIVED = false;
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_THROTTLED_MESSAGE_SENT);
+		FireCustomClientEvent("AUCTION_HOUSE_THROTTLED_MESSAGE_SENT");
 
 		if func == "ACMSG_AUCTION_SET_FAVORITE_ITEM" or func == "ACMSG_AUCTION_CANCEL_COMMODITIES_PURCHASE" then
 			CheckThrottledMessage(300);
@@ -1027,18 +1027,18 @@ local function SendServerThrottledMessage(func, ...)
 	elseif type(func) == "function" and func(...) then
 		THROTTLED_MESSAGE_RESPONSE_RECEIVED = false;
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_THROTTLED_MESSAGE_SENT);
+		FireCustomClientEvent("AUCTION_HOUSE_THROTTLED_MESSAGE_SENT");
 
 		return;
 	end
 
 	if not THROTTLED_MESSAGE_SYSTEM_READY then
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_THROTTLED_MESSAGE_SENT);
+		FireCustomClientEvent("AUCTION_HOUSE_THROTTLED_MESSAGE_SENT");
 
 		THROTTLED_MESSAGE_RESPONSE_RECEIVED = true;
 		THROTTLED_MESSAGE_SYSTEM_READY = true;
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_THROTTLED_SYSTEM_READY);
+		FireCustomClientEvent("AUCTION_HOUSE_THROTTLED_SYSTEM_READY");
 	end
 end
 
@@ -1055,7 +1055,7 @@ timer:SetScript("OnUpdate", function(_, elapsed)
 			if not THROTTLED_MESSAGE_QUEUE then
 				THROTTLED_MESSAGE_SYSTEM_READY = true;
 
-				FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_THROTTLED_SYSTEM_READY);
+				FireCustomClientEvent("AUCTION_HOUSE_THROTTLED_SYSTEM_READY");
 			else
 				local currentQueuedMessage = THROTTLED_MESSAGE_QUEUE;
 				THROTTLED_MESSAGE_QUEUE = nil;
@@ -1287,7 +1287,7 @@ function C_AuctionHouse.CancelSell()
 	if post:IsMultiSelling() then
 		post:Clear();
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_MULTISELL_FAILURE);
+		FireCustomClientEvent("AUCTION_MULTISELL_FAILURE");
 	end
 end
 
@@ -1349,6 +1349,14 @@ function C_AuctionHouse.GetAuctionItemSubClasses(classID)
 	return subClasses;
 end
 
+local chargesPatterns = {};
+local startStr, plural, endStr = string.match(ITEM_SPELL_CHARGES, "^([^|]*)|4([^;]+);(.*)$");
+if startStr then
+	for _, variant in ipairs({string.split(":", plural)}) do
+		chargesPatterns[#chargesPatterns + 1] = string.gsub(strconcat(startStr, variant, endStr), "(%%[A-z])", "(%1+)");
+	end
+end
+
 local LOCKED_WITH_SPELL = string.gsub(LOCKED_WITH_SPELL, "%%s", "");
 
 local function IsSellItemValid(bagID, slotID)
@@ -1397,8 +1405,18 @@ local function IsSellItemValid(bagID, slotID)
 			foundLockbox = true;
 		end
 
-		if i <= bindLines and AUCTION_HOUSE_BIND_TYPES[text] == 0 then
-			return false;
+		if i <= bindLines then
+			if AUCTION_HOUSE_BIND_TYPES[text] == 0 then
+				return false;
+			end
+		else
+			if #chargesPatterns > 0 then
+				for _, chargesText in ipairs(chargesPatterns) do
+					if string.find(text, chargesText) then
+						return true, true;
+					end
+				end
+			end
 		end
 	end
 
@@ -2089,7 +2107,7 @@ local function PostItem(item, duration, quantity, bid, buyout)
 			SendServerMessage("ACMSG_AUCTION_SELL_ITEM", format("%s:%s:%s:%s:%s:%s:%d", ACTION_HOUSE_NPC_GUID, bid, buyout, duration, bagID, slotID, 1));
 
 			if isMultiSale then
-				FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_MULTISELL_START, quantity);
+				FireCustomClientEvent("AUCTION_MULTISELL_START", quantity);
 			end
 		end
 
@@ -2157,7 +2175,7 @@ local function RefreshCommoditySearchResults(itemID, item)
 
 		SendServerMessage("ACMSG_AUCTION_LIST_ITEMS_BY_BUCKET_KEY", format("%s:%d:%d:%d:%d:%d:%d", ACTION_HOUSE_NPC_GUID, item:GetOffset(), item:GetSortOrder(), item:GetReverseSort(), itemID, 0, 0));
 
-		FireDelayedCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.COMMODITY_SEARCH_RESULTS_UPDATED, itemID);
+		FireDelayedCustomClientEvent("COMMODITY_SEARCH_RESULTS_UPDATED", itemID);
 
 		return true;
 	end
@@ -2190,7 +2208,7 @@ local function RefreshItemSearchResults(itemKey, item)
 			SendServerMessage("ACMSG_AUCTION_LIST_ITEMS_BY_BUCKET_KEY", format("%s:%d:%d:%d:%d:%d:%d", ACTION_HOUSE_NPC_GUID, item:GetOffset(), item:GetSortOrder(), item:GetReverseSort(), itemKey.itemID, itemKey.itemLevel, abs(itemKey.itemSuffix or 0)));
 		end
 
-		FireDelayedCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.ITEM_SEARCH_RESULTS_UPDATED, {itemID = itemKey.itemID, itemLevel = itemKey.itemLevel, itemSuffix = itemKey.itemSuffix});
+		FireDelayedCustomClientEvent("ITEM_SEARCH_RESULTS_UPDATED", {itemID = itemKey.itemID, itemLevel = itemKey.itemLevel, itemSuffix = itemKey.itemSuffix});
 
 		return true;
 	end
@@ -2501,7 +2519,7 @@ function C_AuctionHouse.SetFavoriteItem(itemKey, setFavorite)
 
 			SendServerThrottledMessage("ACMSG_AUCTION_SET_FAVORITE_ITEM", format("%s:%d:%d:%d:%d", setFavorite and 0 or 1, favoriteIndex, itemKey.itemID, itemKey.itemLevel or 0, itemSuffix));
 
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_FAVORITES_UPDATED);
+			FireCustomClientEvent("AUCTION_HOUSE_FAVORITES_UPDATED");
 		end
 	end
 end
@@ -2666,7 +2684,7 @@ function EventHandler:ASMSG_AUCTION_LIST_BUCKETS_RESULT(msg)
 	local _, _, hasMoreResults, browseMode, desiredDelay = find(msg, ",?(%d+):(%d+):(%d+)$");
 
 	if hasMoreResults and browseMode and desiredDelay then
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_THROTTLED_MESSAGE_RESPONSE_RECEIVED);
+		FireCustomClientEvent("AUCTION_HOUSE_THROTTLED_MESSAGE_RESPONSE_RECEIVED");
 
 		THROTTLED_MESSAGE_RESULT[#THROTTLED_MESSAGE_RESULT + 1] = msg;
 
@@ -2741,9 +2759,9 @@ function EventHandler:ASMSG_AUCTION_LIST_BUCKETS_RESULT(msg)
 		browse:SetFullResult(hasMoreResults == "0");
 
 		if moreResults then
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_BROWSE_RESULTS_ADDED, moreResults);
+			FireCustomClientEvent("AUCTION_HOUSE_BROWSE_RESULTS_ADDED", moreResults);
 		else
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_BROWSE_RESULTS_UPDATED);
+			FireCustomClientEvent("AUCTION_HOUSE_BROWSE_RESULTS_UPDATED");
 		end
 
 		CheckThrottledMessage(tonumber(desiredDelay));
@@ -2769,7 +2787,7 @@ function EventHandler:ASMSG_AUCTION_LIST_ITEMS_RESULT(msg)
 		itemID, itemLevel, itemSuffix = tonumber(itemID), tonumber(itemLevel) or 0, tonumber(itemSuffix) or 0;
 
 		if endSringResult and itemID then
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_THROTTLED_MESSAGE_RESPONSE_RECEIVED);
+			FireCustomClientEvent("AUCTION_HOUSE_THROTTLED_MESSAGE_RESPONSE_RECEIVED");
 
 			stringResult = sub(stringResult, endSringResult + 1);
 
@@ -2839,9 +2857,9 @@ function EventHandler:ASMSG_AUCTION_LIST_ITEMS_RESULT(msg)
 				item:RefreshResults(numResults);
 
 				if moreResults then
-					FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.COMMODITY_SEARCH_RESULTS_ADDED, itemID);
+					FireCustomClientEvent("COMMODITY_SEARCH_RESULTS_ADDED", itemID);
 				else
-					FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.COMMODITY_SEARCH_RESULTS_UPDATED, itemID);
+					FireCustomClientEvent("COMMODITY_SEARCH_RESULTS_UPDATED", itemID);
 				end
 			elseif listType == "2" then
 				for i = 1, #listItemsResult do
@@ -2923,15 +2941,15 @@ function EventHandler:ASMSG_AUCTION_LIST_ITEMS_RESULT(msg)
 				item:RefreshResults(numResults);
 
 				if moreResults then
-					FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.ITEM_SEARCH_RESULTS_ADDED, {itemID = itemID, itemLevel = itemLevel, itemSuffix = itemSuffix});
+					FireCustomClientEvent("ITEM_SEARCH_RESULTS_ADDED", {itemID = itemID, itemLevel = itemLevel, itemSuffix = itemSuffix});
 				else
-					FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.ITEM_SEARCH_RESULTS_UPDATED, {itemID = itemID, itemLevel = itemLevel, itemSuffix = itemSuffix});
+					FireCustomClientEvent("ITEM_SEARCH_RESULTS_UPDATED", {itemID = itemID, itemLevel = itemLevel, itemSuffix = itemSuffix});
 				end
 			else
 				if keyInfo and keyInfo.isCommodity then
-					FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.COMMODITY_SEARCH_RESULTS_UPDATED, itemID);
+					FireCustomClientEvent("COMMODITY_SEARCH_RESULTS_UPDATED", itemID);
 				else
-					FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.ITEM_SEARCH_RESULTS_UPDATED, {itemID = itemID, itemLevel = itemLevel, itemSuffix = itemSuffix});
+					FireCustomClientEvent("ITEM_SEARCH_RESULTS_UPDATED", {itemID = itemID, itemLevel = itemLevel, itemSuffix = itemSuffix});
 				end
 			end
 		else
@@ -2949,13 +2967,13 @@ function EventHandler:ASMSG_AUCTION_GET_COMMODITY_QUOTE_RESULT(msg)
 	price, numPrice, time = tonumber(price), tonumber(numPrice), tonumber(time);
 
 	if price and numPrice and time then
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_THROTTLED_MESSAGE_RESPONSE_RECEIVED);
+		FireCustomClientEvent("AUCTION_HOUSE_THROTTLED_MESSAGE_RESPONSE_RECEIVED");
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.COMMODITY_PRICE_UPDATED, price / numPrice, price);
+		FireCustomClientEvent("COMMODITY_PRICE_UPDATED", price / numPrice, price);
 
 		COMMODITY_QUOTE_TIME = GetTime() + (time / 1000);
 	else
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.COMMODITY_PRICE_UNAVAILABLE);
+		FireCustomClientEvent("COMMODITY_PRICE_UNAVAILABLE");
 	end
 
 	if not delayNextAction and not price and not time and numPrice then
@@ -3033,9 +3051,9 @@ function EventHandler:ASMSG_AUCTION_LIST_OWNED_ITEMS_RESULT(msg)
 			});
 		end
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_THROTTLED_MESSAGE_RESPONSE_RECEIVED);
+		FireCustomClientEvent("AUCTION_HOUSE_THROTTLED_MESSAGE_RESPONSE_RECEIVED");
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.OWNED_AUCTIONS_UPDATED);
+		FireCustomClientEvent("OWNED_AUCTIONS_UPDATED");
 
 		CheckThrottledMessage(tonumber(desiredDelay));
 	else
@@ -3112,9 +3130,9 @@ function EventHandler:ASMSG_AUCTION_LIST_BIDDED_ITEMS_RESULT(msg)
 			});
 		end
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_THROTTLED_MESSAGE_RESPONSE_RECEIVED);
+		FireCustomClientEvent("AUCTION_HOUSE_THROTTLED_MESSAGE_RESPONSE_RECEIVED");
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.BIDS_UPDATED);
+		FireCustomClientEvent("BIDS_UPDATED");
 
 		CheckThrottledMessage(tonumber(desiredDelay));
 	else
@@ -3132,7 +3150,7 @@ function EventHandler:ASMSG_AUCTION_COMMAND_RESULT(msg)
 	local auctionID, auctionCommand, errorCode, delayNextAction, inventoryEquipError = split(":", msg);
 	auctionID, auctionCommand, errorCode = tonumber(auctionID), tonumber(auctionCommand), tonumber(errorCode);
 
-	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_THROTTLED_MESSAGE_RESPONSE_RECEIVED);
+	FireCustomClientEvent("AUCTION_HOUSE_THROTTLED_MESSAGE_RESPONSE_RECEIVED");
 
 	if errorCode == AUCTION_HOUSE_ERROR.OK then
 		if auctionCommand == AUCTION_HOUSE_COMMAND.SELL_ITEM then
@@ -3144,7 +3162,7 @@ function EventHandler:ASMSG_AUCTION_COMMAND_RESULT(msg)
 
 						local progress = post:GetProgress();
 
-						FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_MULTISELL_UPDATE, progress, quantity);
+						FireCustomClientEvent("AUCTION_MULTISELL_UPDATE", progress, quantity);
 
 						local postBagID, postSlodID;
 
@@ -3165,20 +3183,20 @@ function EventHandler:ASMSG_AUCTION_COMMAND_RESULT(msg)
 							post:Clear();
 
 							if progress ~= quantity then
-								FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_MULTISELL_FAILURE);
+								FireCustomClientEvent("AUCTION_MULTISELL_FAILURE");
 							end
 						end
 					end
 				end
 
-				FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_AUCTION_CREATED, auctionID);
+				FireCustomClientEvent("AUCTION_HOUSE_AUCTION_CREATED", auctionID);
 
 				AddChatTyppedMessage("SYSTEM", ERR_AUCTION_STARTED);
 			end
 		elseif auctionCommand == AUCTION_HOUSE_COMMAND.CANCEL then
 			AddChatTyppedMessage("SYSTEM", ERR_AUCTION_REMOVED);
 
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_CANCELED, auctionID);
+			FireCustomClientEvent("AUCTION_CANCELED", auctionID);
 		elseif auctionCommand == AUCTION_HOUSE_COMMAND.PLACE_BID then
 
 		end
@@ -3202,7 +3220,7 @@ function EventHandler:ASMSG_AUCTION_COMMAND_RESULT(msg)
 		elseif errorCode == AUCTION_HOUSE_ERROR.AH_UNAVAILABLE then
 			UIErrorsFrame:AddMessage(ERR_AUCTION_HOUSE_UNAVAILABLE, 1.0, 0.1, 0.1, 1.0);
 		elseif errorCode == AUCTION_HOUSE_ERROR.COMMODITY_PURCHASE_FAILED then
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.COMMODITY_PURCHASE_FAILED);
+			FireCustomClientEvent("COMMODITY_PURCHASE_FAILED");
 		elseif errorCode == AUCTION_HOUSE_ERROR.ITEM_HAS_QUOTE then
 			UIErrorsFrame:AddMessage(ERR_AUCTION_ITEM_HAS_QUOTE, 1.0, 0.1, 0.1, 1.0);
 		end
@@ -3210,7 +3228,7 @@ function EventHandler:ASMSG_AUCTION_COMMAND_RESULT(msg)
 		if post:IsMultiSelling() then
 			post:Clear();
 
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_MULTISELL_FAILURE);
+			FireCustomClientEvent("AUCTION_MULTISELL_FAILURE");
 		end
 	end
 
@@ -3225,11 +3243,11 @@ function EventHandler:ASMSG_AUCTION_WON_NOTIFICATION(msg)
 	local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(itemKey);
 	if itemKeyInfo then
 		if itemKeyInfo.isCommodity then
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_CANCELED, auctionID);
+			FireCustomClientEvent("AUCTION_CANCELED", auctionID);
 
 			AddChatTyppedMessage("SYSTEM", format(ERR_AUCTION_COMMODITY_WON_S, itemKeyInfo.itemName, itemCount));
 
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.COMMODITY_PURCHASE_SUCCEEDED, itemKey.itemID, itemCount);
+			FireCustomClientEvent("COMMODITY_PURCHASE_SUCCEEDED", itemKey.itemID, itemCount);
 		else
 			AddChatTyppedMessage("SYSTEM", format(ERR_AUCTION_WON_S, itemKeyInfo.itemName));
 
@@ -3245,7 +3263,7 @@ function EventHandler:ASMSG_AUCTION_WON_NOTIFICATION(msg)
 					if result.auctionID == auctionID then
 						tremove(itemsResult, index);
 						item:RefreshResults(0);
-						FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.ITEM_SEARCH_RESULTS_UPDATED, itemKey, numItemsResult > 1 and (itemsResult[numItemsResult == index and (index - 1) or index].auctionID) or nil);
+						FireCustomClientEvent("ITEM_SEARCH_RESULTS_UPDATED", itemKey, numItemsResult > 1 and (itemsResult[numItemsResult == index and (index - 1) or index].auctionID) or nil);
 						break;
 					else
 						index = index + 1;
@@ -3253,7 +3271,7 @@ function EventHandler:ASMSG_AUCTION_WON_NOTIFICATION(msg)
 				end
 			end
 
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_CANCELED, auctionID);
+			FireCustomClientEvent("AUCTION_CANCELED", auctionID);
 		end
 	end
 end
@@ -3270,7 +3288,7 @@ function EventHandler:ASMSG_AUCTION_CLOSED_NOTIFICATION(msg)
 			AddChatTyppedMessage("SYSTEM", format(ERR_AUCTION_EXPIRED_S, itemKeyInfo.itemName));
 		end
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_CANCELED, tonumber(auctionID));
+		FireCustomClientEvent("AUCTION_CANCELED", tonumber(auctionID));
 	end
 end
 
@@ -3284,7 +3302,7 @@ function EventHandler:ASMSG_AUCTION_OWNER_BID_NOTIFICATION(msg)
 
 	AddChatTyppedMessage("SYSTEM", ERR_AUCTION_BID_PLACED);
 
-	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.BIDS_UPDATED);
+	FireCustomClientEvent("BIDS_UPDATED");
 end
 
 function EventHandler:ASMSG_AUCTION_OUTBID_NOTIFICATION(msg)
@@ -3295,16 +3313,16 @@ function EventHandler:ASMSG_AUCTION_OUTBID_NOTIFICATION(msg)
 		AddChatTyppedMessage("SYSTEM", format(AUCTION_OUTBID_MAIL_SUBJECT, itemKeyInfo.itemName));
 	end
 
-	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.BIDS_UPDATED);
+	FireCustomClientEvent("BIDS_UPDATED");
 end
 
 function EventHandler:ASMSG_AUCTION_REPLICATE_RESPONSE(msg)
 	local _, _, unk1, desiredDelay = find(msg, "(%d*):?(%d+)$");
 
 	if unk1 ~= "" then
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_THROTTLED_MESSAGE_RESPONSE_RECEIVED);
+		FireCustomClientEvent("AUCTION_HOUSE_THROTTLED_MESSAGE_RESPONSE_RECEIVED");
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.REPLICATE_ITEM_LIST_UPDATE);
+		FireCustomClientEvent("REPLICATE_ITEM_LIST_UPDATE");
 	end
 
 	CheckThrottledMessage(tonumber(desiredDelay));
@@ -3316,7 +3334,7 @@ function EventHandler:ASMSG_AUCTION_HOUSE_STATUS(msg)
 	if status == "2" then
 		StaticPopup_Show("AUCTION_HOUSE_DISABLED");
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_DISABLED);
+		FireCustomClientEvent("AUCTION_HOUSE_DISABLED");
 	elseif status == "3" then
 		ACTION_HOUSE_NPC_GUID = npcGUID;
 
@@ -3330,7 +3348,7 @@ function EventHandler:ASMSG_AUCTION_HOUSE_STATUS(msg)
 
 		ShowUIPanel(AuctionHouseFrame);
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_SHOW);
+		FireCustomClientEvent("AUCTION_HOUSE_SHOW");
 	else
 		ACTION_HOUSE_NPC_GUID = nil;
 		HideUIPanel(AuctionHouseFrame);
@@ -3344,6 +3362,6 @@ function EventHandler:ASMSG_AUCTION_HOUSE_STATUS(msg)
 			end
 		end
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.AUCTION_HOUSE_CLOSED);
+		FireCustomClientEvent("AUCTION_HOUSE_CLOSED");
 	end
 end

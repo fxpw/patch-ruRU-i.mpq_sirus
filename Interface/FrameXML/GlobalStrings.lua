@@ -2739,14 +2739,18 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Всего получено чести",
         enGB = "Total honor gained."
     },
-    ["CONFIRM_GUILD_PROMOTE"] = {
-        ruRU = "Вы действительно хотите назначить |3-3(%s) главой гильдии?\n\nВведите \"ПЕРЕДАТЬ\" для подтверждения действия.",
-        enGB = ""
-    },
-    ["CONFIRM_GUILD_PROMOTE_WORD"] = {
-    	ruRU = "ПЕРЕДАТЬ",
-    	enGB = ""
-    },
+	["CONFIRM_GUILD_PROMOTE"] = {
+		ruRU = "Вы действительно хотите назначить |3-3(%s) главой гильдии?\n\nВведите \"ПЕРЕДАТЬ\" для подтверждения действия.",
+		enGB = "Are you sure you want to make %s the Guild Master?\n\nEnter \"AGREE\" to confirm action."
+	},
+	["CONFIRM_GUILD_PROMOTE_WORD"] = {
+		ruRU = "ПЕРЕДАТЬ",
+		enGB = "AGREE"
+	},
+	["GUILD_PROMOTE_SLASH_CMD_ERR"] = {
+		ruRU = "Для смены лидера гильдии используйте функционал окна гильдии.",
+		enGB = ""
+	},
     ["ARENA_TEAM_RATING"] = {
         ruRU = "Рейтинг",
         enGB = "Team Rating"
@@ -3027,6 +3031,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Магазин в данный момент недоступен!\nСледите за новостями сервера.",
         enGB = "The shop is currently unavailable!\nFollow the server news."
     },
+	["MAINMENUBAR_STORE_DISABLE_REASON_2"] = {
+		ruRU = "Магазин в данный момент недоступен!\nДанные загружаются (%s).",
+	},
     ["EMOTE68_CMD1"] = {
         ruRU = "/кивок",
         enGB = "/nod"
@@ -14827,6 +14834,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "|cffFF0000Внимание! Данный товар будет невозможно вернуть после покупки!|r",
         enGB = ""
     },
+    ["STORE_CONFIRM_NOTICE_WARNING2"] = {
+        ruRU = "|cffFF0000Внимание! Вы не сможете вернуть предмет в магазин, если используете его в трансмогрификации!|r",
+        enGB = ""
+    },
     ["EMOTE165_CMD1"] = {
         ruRU = "/флирт",
         enGB = "/flirt"
@@ -20979,10 +20990,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Везде",
         enGB = "Both"
     },
-    ["DIALOG_SLASH_GUILD_LEADER"] = {
-        ruRU = "Вы уверены, что хотите передать звание Мастера Гильдии игроку %s?",
-        enGB = "Are you sure you want to make %s the Guild Master?"
-    },
     ["SLASH_STOPWATCH_PARAM_PLAY2"] = {
         ruRU = "старт",
         enGB = "play"
@@ -21280,7 +21287,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "Not enough bonuses"
     },
     ["ROULETTE_ERROR_SUSPECT"] = {
-        ruRU = "Недоступно для подозрительных учетных записей",
+        ruRU = "Недоступно для неподтвержденных учетных записей",
         enGB = "Unavailable for suspect accounts"
     },
     ["VOICEMACRO_2_Ta_1"] = {
@@ -22070,10 +22077,6 @@ local SIRUS_LOCALIZATION = {
     ["BLACK_MARKET_AUCTION_CONFIRMATION"] = {
         ruRU = "Вы уверены, что хотите сделать ставку в размере %s на следующий предмет?",
         enGB = "Are you sure you wish to bid %s on the following item?"
-    },
-    ["ARENA_REPLAY_LOSE"] = {
-        ruRU = "ПОРАЖЕНИЕ",
-        enGB = "DEFEAT"
     },
     ["VOICEMACRO_7_Dw_0_FEMALE"] = {
         ruRU = "Ждите здесь.",
@@ -23592,8 +23595,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "/random"
     },
     ["STORE_PREMIUM_INFO"] = {
-        ruRU = "Премиум аккаунт предоставляет следующие бонусы:\n- Увеличивает на 5% получаемые вами очки чести, арены и доблести;\n- Увеличивает на 50% кол-во получаемого опыта;\n- Увеличивает на 30% кол-во получаемого золота.\nПремиум можно приобрести тут или проголосовав за сервер.",
-        enGB = "Premium account gives you the following advantages:\n - Increases your stamina by 7%;\n Increases the amount of XP received by 50$;\n Increases the amount of gold received by 30%.\nYou can purchase premium or get it for free::\nJust vote for our server in the tops everyday!"
+        ruRU = "Премиум аккаунт предоставляет следующие бонусы:\n- Увеличивает на %d%% получаемые вами очки чести, арены и доблести;\n- Увеличивает на %d%% кол-во получаемого опыта;\n- Увеличивает на %d%% кол-во получаемого золота.\nПремиум можно приобрести тут или проголосовав за сервер.",
+        enGB = "Premium account gives you the following advantages:\n Increases the amount of Honor Points, Arena Points and Valor Points by %d%%;\n Increases the amount of XP received by %d%%;\n Increases the amount of gold received by %d%%.\nYou can purchase premium or get it for free::\nJust vote for our server in the tops everyday!"
     },
     ["RANGED_ATTACK_TOOLTIP"] = {
         ruRU = "Рейтинг дальнего боя",
@@ -24099,6 +24102,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Нажмите для начала боя",
         enGB = "Click here to start the match"
     },
+	["READY_MINIGAME_DESCRIPTION_LABEL"] = {
+		ruRU = "Нажмите для начала игры",
+		enGB = "Click here to start the game"
+	},
     ["WORLDSTATE_SLAVERYVALLEY_TOOLTIP_HORDE"] = {
         ruRU = "Орда контролирует все три базы. Альянс теряет очки подкреплений.",
         enGB = "The Horde controls all three bases. The Alliance is losing reinforcement points."
@@ -24595,10 +24602,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Повысить свой уровень лояльности Вы сможете двумя способами: голосованием за сервер в рейтинге онлайн-игр ММОТОР, а также посредством игрового пожертвования (доната).\n\nОтслеживать количество необходимых бонусных очков до следующего уровня Вы сможете по шкале лояльности, которая находится в «Панели управления» Вашей учетной записи и во внутриигровом «Магазине».\n\nПо всем интересующим вопросам обращайтесь к нам на форум, техническая поддержка оперативно решит любую Вашу проблему.\n\nПриятной игры! Побеждайте!",
         enGB = "There are two ways to increase your loyalty level: vote for our us on MMOTOP or donate to the server.\n\nYou can check the required amount of bonuses needed to reach the next loyalty level in the «Control Panel» of your account and in the in-game shop.\n\nIf you have any questions, our support team will always help you.\n\nHave a good game! Be a winner!"
     },
-    ["ARENA_REPLAY_HYPERLINK"] = {
-        ruRU = "|cffc79c6e|Hreplay:%d|h[Запись арены: %d (%s)]|h|r",
-        enGB = "|cffc79c6e|Hreplay:%d|h[Arena replay: %d (%s)]|h|r"
-    },
     ["STORE_ITEM_FLAG_2"] = {
         ruRU = "Рекомендуем",
         enGB = "Recommended"
@@ -24607,6 +24610,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Смена расы",
         enGB = "Change race"
     },
+	["STORE_SERVICE_LABEL_4"] = {
+		ruRU = "Смена знака Зодиака",
+		enGB = "Change zodiac sign"
+	},
     ["HUNTER_AGILITY_TOOLTIP"] = {
         ruRU = "Увеличивает силу атаки в ближнем и дальнем бою, а также повышает вероятность критического удара при использовании оружия.|nПовышает броню и вероятность уклонения.",
         enGB = "Increases attack power with both melee and ranged weapons, and improves chance to score a critical hit with all weapons.|nIncreases armor and chance to dodge attacks."
@@ -27447,6 +27454,14 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Необходимо владение навыком верховой езды.",
         enGB = "Riding skill requirement."
     },
+	["SPELL_FAILED_CUSTOM_ERROR_103"] = {
+		ruRU = "Для использования необходимо принять задание \"Возвращение в Акерус\".",
+		enGB = "You must accept \"Taking Back Acherus\" quest."
+	},
+	["SPELL_FAILED_CUSTOM_ERROR_104"] = {
+		ruRU = "Недоступно на этом этапе PvE-прогрессии мира.",
+		enGB = "Not available at this stage of PvE world progression."
+	},
     ["KEY_ESCAPE"] = {
         ruRU = "Esc",
         enGB = "Escape"
@@ -29998,10 +30013,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_20_Tr_3_FEMALE"] = {
         ruRU = "Путь к сердцу мужчины лежит через желудок? Неправда! Через ребра ближе!",
         enGB = "The way to a man's heart be through his stomach, but I go through the rib cage."
-    },
-    ["ARENA_REPLAY_DISABLE"] = {
-        ruRU = "Просмотр записей арены в данный момент недоступен.",
-        enGB = "Arena replays are currently unavailable."
     },
     ["BUY_GUILDBANK_TAB"] = {
         ruRU = "Приобрести новый сейф для банка гильдии",
@@ -37519,6 +37530,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Хаос",
         enGB = "Chaos"
     },
+	["STRING_SCHOOL_SPIRITFIRE"] = {
+		ruRU = "Призрачный огонь",
+		enGB = "Spiritfire"
+	},
     ["ERR_PET_SPELL_TARGETS_DEAD"] = {
         ruRU = "Цель вашего питомца мертва.",
         enGB = "Your pet's target is dead."
@@ -38623,10 +38638,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Страстная троллиха может сделать это более 80 раз за ночь. Ты к этому готов?",
         enGB = "When enraged, and in heat, a female Troll can mate over eighty times in one night.  Be you prepared?"
     },
-    ["ARENA_REPLAY_ESCAPE_HYPERLINK"] = {
-        ruRU = "\\124cffc79c6e\\124Hreplay:%d\\124h[Запись арены: %d (%s)]\\124h\\124r",
-        enGB = "\\124cffc79c6e\\124Hreplay:%d\\124h[Arena replay: %d (%s)]\\124h\\124r"
-    },
     ["OPTION_TOOLTIP_USE_UISCALE"] = {
         ruRU = "Разрешение масштабирования элементов интерфейса. Для восстановления стандартного масштаба отключите параметр.",
         enGB = "Check to use the UI Scale Slider, uncheck to use the system default scale."
@@ -39162,10 +39173,6 @@ local SIRUS_LOCALIZATION = {
     ["SPELL_TIMER"] = {
         ruRU = "Выполнение заклинания %s невозможно. Восстановление еще не завершено.",
         enGB = "%s Failed: You haven't recovered yet."
-    },
-    ["ARENA_REPLAY_WIN"] = {
-        ruRU = "ПОБЕДА",
-        enGB = "VICTORY"
     },
     ["SLASH_WHISPER2"] = {
         ruRU = "/шепнуть",
@@ -39975,6 +39982,18 @@ local SIRUS_LOCALIZATION = {
         ruRU = "- %s",
         enGB = ""
     },
+	["BATTLEGROUND_RANDOM_HEADER_TOOLTIP"] = {
+		ruRU = "Эффективность на поле боя",
+		enGB = ""
+	},
+	["BATTLEGROUND_RANDOM_BODY_TOOLTIP"] = {
+		ruRU = "На полях боя работает система эффективности, которая помогает не терять рейтинг службы в случае, если вы проигрываете. Участвуйте битве с противниками, помогайте вашим союзникам, захватывайте и защищайте базы, носите и отбирайте флаги - делайте все возможное, чтобы победить. И если по окончанию проигрышного поля боя у вас будет высокая эффективность, очки рейтинга службы сняты не будут и вы сможете получить небольшую прибавку к вашему рейтингу службы.",
+		enGB = ""
+	},
+	["BATTLEGROUND_RANDOM_HELP_TOOLTIP"] = {
+		ruRU = "Более подробная информация в нашей игровой энциклопедии: ESC > Помощь.",
+		enGB = ""
+	},
     ["ORB_NAME_PATTERN"] = {
     	ruRU = "Сфера могущества %- (%d+)",
     	enGB = ""
@@ -40087,6 +40106,10 @@ local SIRUS_LOCALIZATION = {
     	ruRU = "Данное действие необратимо. Вы уверены, что хотите сменить свою расу, став %s?",
     	enGB = ""
     },
+	["CONFIRM_FORCE_CUSTOMIZATION_ZODIAC"] = {
+		ruRU = "Принять %s",
+		enGB = ""
+	},
     ["ROULETTE_CURRENCY_PRICE_TITLE_1"] = {
         ruRU = "1 ВРАЩЕНИЕ = 1 МОНЕТА ДЖУЛИИ",
         enGB = ""
@@ -40171,10 +40194,22 @@ local SIRUS_LOCALIZATION = {
     	ruRU = "Режим войны включен.\nВы сражаетесь с другими игроками.",
     	enGB = ""
     },
-    ["WAR_MODE_INACTIVE_STATUS_TEXT"] = {
-    	ruRU = "Режим войны выключен.",
-    	enGB = ""
-    },
+	["WAR_MODE_INACTIVE_STATUS_TEXT"] = {
+		ruRU = "Режим войны выключен",
+		enGB = ""
+	},
+	["WAR_MODE_ACTIVE_FORCED_STATUS_TEXT"] = {
+		ruRU = "Режим войны форсированно выключен\n|cffFF0000Переключение недоступно|r",
+		enGB = ""
+	},
+	["WAR_MODE_INACTIVE_FORCED_STATUS_TEXT"] = {
+		ruRU = "Режим войны форсированно включен\n|cffFF0000Переключение недоступно|r",
+		enGB = ""
+	},
+	["WAR_MODE_INACTIVE_REASON_HARDCORE"] = {
+		ruRU = "Вы не можете менять режим войны пока участвуете в испытании",
+		enGB = ""
+	},
     ["CUSTOM_GOSSIP_TEXT_1"] = {
 	    ruRU = "Снежный святой латный доспех",
 	    enGB = "Paladin snow armor"
@@ -40211,38 +40246,50 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Отказаться от ускоренной прокачки",
         enGB = ""
     },
+	["REFUSE_XP_RATE_HELPTIP_TEXT"] = {
+		ruRU = "Вы можете отказаться от ускоренной прокачки, нажав ПКМ по портрету персонажа и выбрав пункт \"Отказаться от ускоренной прокачки\".",
+		enGB = ""
+	},
     ["ENABLE_X1_RATE_TEXT"] = {
         ruRU = "Вы уверены, что хотите развивать этого персонажа без ускоренного получения опыта?",
         enGB = ""
     },
     ["ENABLE_X1_RATE_HELPBOX"] = {
-        ruRU = "На персонажа не будет действовать общий бонус к получаемому опыту, зависящий от игрового мира, но будут работать все прочие положительные ауры на опыт (от зелий, Бонуса выходного дня и тд).\nОбращаем ваше внимание, что это решение нельзя будет изменить.",
+        ruRU = "На персонажа не будет действовать общий бонус к получаемому опыту, зависящий от игрового мира, в том числе ауры и зелья, предоставляющие бонусы к опыту.\nОбращаем ваше внимание, что это решение нельзя будет изменить.",
         enGB = ""
     },
-    ["WARMODE_ERROR_-1"] = {
-    	ruRU = "Режим войны отключен",
-    	enGB = ""
-    },
-    ["WARMODE_ERROR_-2"] = {
-        ruRU = "Ренегаты не могут отключить режим войны",
-        enGB = ""
-    },
-    ["WARMODE_ERROR_-3"] = {
-        ruRU = "Необходимо подождать перед сменой статуса режима войны",
-        enGB = ""
-    },
-    ["WARMODE_ERROR_-4"] = {
-        ruRU = "Внутренняя ошибка",
-        enGB = ""
-    },
-    ["WARMODE_ERROR_-5"] = {
-        ruRU = "Невозможно переключить режим войны за пределами столиц",
-        enGB = ""
-    },
-    ["WARMODE_ERROR_-6"] = {
-        ruRU = "Вы не можете отключить режим войны пока на вас открыт контракт Охоты за головами",
-        enGB = ""
-    },
+	["WARMODE_ERROR_1"] = {
+		ruRU = "Режим войны отключен",
+		enGB = ""
+	},
+	["WARMODE_ERROR_2"] = {
+		ruRU = "Ренегаты не могут отключить режим войны",
+		enGB = ""
+	},
+	["WARMODE_ERROR_3"] = {
+		ruRU = "Необходимо подождать перед сменой статуса режима войны",
+		enGB = ""
+	},
+	["WARMODE_ERROR_4"] = {
+		ruRU = "Внутренняя ошибка",
+		enGB = ""
+	},
+	["WARMODE_ERROR_5"] = {
+		ruRU = "Невозможно переключить режим войны за пределами столиц",
+		enGB = ""
+	},
+	["WARMODE_ERROR_6"] = {
+		ruRU = "Вы не можете отключить режим войны пока на вас открыт контракт Охоты за головами",
+		enGB = ""
+	},
+	["WARMODE_ERROR_7"] = {
+		ruRU = "Вы пока не можете этого сделать, покиньте вражескую территорию и дождитесь окончания таймера выхода из режима войны",
+		enGB = ""
+	},
+	["WARMODE_ERROR_8"] = {
+		ruRU = "Вы не можете включить режим войны пока находитесь под эффектов Метки миротворца",
+		enGB = ""
+	},
     ["STAT_AVERAGE_ITEM_LEVEL"] = {
         ruRU = "Уровень предметов",
         enGB = "Item Level"
@@ -40252,7 +40299,7 @@ local SIRUS_LOCALIZATION = {
 	    enGB = "Arena 1v1"
     },
     ["CHOOSE_FACTION_SELECT_FACTION_HELP"] = {
-	    ruRU = "Согласившись сейчас, вы станете представителем выбранной вами фракции и не сможете выбрать другую. Это также приведет к сбросу всех принятых вами заданий, при этом их прогресс будет полностью утерян.",
+		ruRU = "Согласившись сейчас, вы станете представителем выбранной вами фракции. Это также приведет к сбросу всех принятых вами заданий, при этом их прогресс будет полностью утерян.",
 	    enGB = ""
     },
     ["ERR_AUCTION_ALREADY_BID"] = {
@@ -41747,6 +41794,14 @@ local SIRUS_LOCALIZATION = {
 	    ruRU = "Время",
 	    enGB = "Time"
     },
+	["MINI_GAME_STAT_DOORDASH_DOORS"] ={
+		ruRU = "Выломано дверей",
+		enGB = "",
+	},
+	["MINI_GAME_STAT_DOORDASH_KNOCKDOWNS"] ={
+		ruRU = "Сбит с ног",
+		enGB = "",
+	},
 	["MINI_GAME_STAT_FRAGILEFLOOR_PLATFORMS"] = {
 	    ruRU = "Платформы",
 	    enGB = "Platforms"
@@ -41817,6 +41872,10 @@ local SIRUS_LOCALIZATION = {
     },
 	["MINI_GAME_FROZEN_SNOWMAN_LAIR_STORY_TUTORIAL"] = {
 		ruRU = "Логово замерзшего снеговика:\n\n- Разбейте ледяную глыбу и освободите снеговика Оскара.\n- Посоветуйтесь с союзниками и решите кто хочет занять роль принимающую на себя основной урон (танк), роль нанесения урона и роль лекаля группы.\n- Выберете снежный доспех и следуйте за Оскаром.\n- Характеристика вашего персонажа и ауры не влияют на прохождение этой локации.\n- Чтобы открыть статистику, нажмите на |TInterface\\lfgframe\\battlenetworking0.blp:20:20:3:0:64:64:12:58:12:58|t",
+		enGB = ""
+	},
+	["MINI_GAME_DOOR_DASH_TUTORIAL"] = {
+		ruRU = "Ломая двери:\n\n- По окончанию подготовки вы сможете начать бежать к дверям.\n- Чтобы пройти через дверь - её нужно открыть нажав на дверь правой кнопкой мышки.\n- Часть дверей открывается, а часть заперта и попытка открыть такие двери остановит вашего персонажа на пару мгновений.\n- Пробежав все двери и затем спрыгнув/упав на финишную платформу первым - засчитывается победа (1 победитель на каждые 5 игроков)\n- Чтобы открыть статистику, нажмите на |TInterface\\lfgframe\\battlenetworking0.blp:20:20:3:0:64:64:12:58:12:58|t",
 		enGB = ""
 	},
     ["SLASH_CHAT_INVISIBLE1"] = {
@@ -42123,6 +42182,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Только моя группа в рейде",
 		enGB = "Only my group in raid"
 	},
+	["COMPACT_UNIT_FRAME_PROFILE_USEOWNERCLASSCOLORS"] = {
+		ruRU = "Окрашивать питомца в класс хозяина",
+		enGB = ""
+	},
 	["LOST_HEALTH"] = {
 		ruRU = "-%d",
 		enGB = "-%d"
@@ -42251,6 +42314,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Затерянный остров",
 		enGB = "Lost Island",
 	},
+	["NORDERON"] = {
+		ruRU = "Нордерон",
+		enGB = "Norderon",
+	},
 	["RISING_DEPTHS"] = {
 		ruRU = "Поднявшиеся глубины",
 		enGB = "Rising Depths",
@@ -42361,6 +42428,14 @@ local SIRUS_LOCALIZATION = {
 	},
 	["QUEST_ACCEPTED_21484_POPUP_TEXT"] = {
 		ruRU = "При принятии и завершении этого задания вы завершите приключения в Гилнеасе. Вы попадете в открытый мир и не сможете продолжить полную цепочку сюжетных заданий",
+		enGB = ""
+	},
+	["QUEST_ACCEPTED_26135_POPUP_TEXT"] = {
+		ruRU = "При принятии и завершении этого задания вы завершите приключения в Нордероне. Вы попадете в открытый мир и не сможете продолжить полную цепочку сюжетных заданий",
+		enGB = ""
+	},
+	["QUEST_ACCEPTED_26137_POPUP_TEXT"] = {
+		ruRU = "При принятии и завершении этого задания вы продолжите приключения в Нордероне. Вы не сможете выбрать задание [Почетная миссия] ведущее к выходу в открытый мир через короткое завершение сюжета Нордерона.",
 		enGB = ""
 	},
 	["QUEST_ACCEPTED_BUTTON_POPUP_TEXT"] = {
@@ -43103,6 +43178,22 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Показывать всплывающие уведомления о социальной активности. Например уведомление о входе / выходе друга из игры.",
 		enGB = ""
 	},
+	["SETTINGS_FLASH_CLIENT_ICON"] = {
+		ruRU = "Мигание иконки на панели задач",
+		enGB = ""
+	},
+	["OPTION_TOOLTIP_SETTINGS_FLASH_CLIENT_ICON"] = {
+		ruRU = "Уведомления в виде мигания иконки игры на панели задач в случае активности в игре (получение личных сообщений, приглашений в группу, призыва в подземелье и другое)",
+		enGB = ""
+	},
+	["SETTINGS_SHOW_HARDCORE_BANNER"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tОповещения о смертях участников испытания",
+		enGB = ""
+	},
+	["OPTION_TOOLTIP_SETTINGS_SHOW_HARDCORE_BANNER"] = {
+		ruRU = "Отключает и включает оповещения о смертях испытуемых игроков на экране",
+		enGB = ""
+	},
 	["SETTINGS_SHOW_MISC_TOAST"] = {
 		ruRU = "Прочие уведомления",
 		enGB = ""
@@ -43228,7 +43319,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "The proud nations of the Horde are loosely joined in an alliance of convenience against a hostile world that would see them destroyed.\n\nFocused, ferocious, and sometimes monstrous, the Horde values strength and honor, but struggles to keep aggression in check.\n\nJoin the Horde and fight to build a world where their people can live free."
 	},
 	["FACTION_SELECT_CONFIRMATION_TEXT"] = {
-		ruRU = "Вы уверены что хотите вступить в %s?",
+		ruRU = "Вы уверены, что хотите вступить в %s?",
 		enGB = ""
 	},
 	["FACTION_SELECT_CONFIRMATION_HELP"] = {
@@ -43417,6 +43508,14 @@ local SIRUS_LOCALIZATION = {
 	},
     ["ITEM_UPGRADE_TUTORIAL_TEXT_4"] = {
 		ruRU = "Здесь будет отображаться стоимость преобразования, а также необходимые требования для него, если таковые имеются на предмете.\n\nНаведя курсором мыши на значок преобразования рядом с кнопкой \"Улучшить\" - вы сможете узнать, останутся ли на предмете после преобразования зачарования и самоцветы.\n\nОбратите внимание, что любые выполненные преобразования нельзя обратить. Если ваш предмет еще не является персональным, у него есть срок передачи или возврата продавцу, то после преобразования предмет станет полностью персональным.",
+		enGB = ""
+	},
+	["ERROR_MESSAGE_GM_OFF"] = {
+		ruRU = "Режим ГМ выключен",
+		enGB = ""
+	},
+	["ERROR_MESSAGE_GM_ON"] = {
+		ruRU = "Режим ГМ включен",
 		enGB = ""
 	},
 	["TOAST_CLEAR_POSITION"] = {
@@ -43763,6 +43862,14 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Маленькие помощники Дедушки Зимы уже запрятали для вас сотни подарков по всему Нордсколу!",
 		enGB = ""
 	},
+	["TOAST_TITLE_65"] = {
+		ruRU = "PvP экипировка",
+		enGB = ""
+	},
+	["TOAST_BODY_65"] = {
+		ruRU = "Внимание! Некоторые предметы вашей экипировки были сняты.",
+		enGB = ""
+	},
 	["TOAST_CS_VOTE_KICK_BG_TITLE"] = {
 		ruRU = "Голосование",
 		enGB = ""
@@ -43795,9 +43902,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Плечи",
 		enGB = "Shoulder"
 	},
-	["HEIRLOOMS_CATEGORY_TRINKETS_RINGS_AND_NECKLACES"] = {
-		ruRU = "Аксессуары, кольца и ожерелья",
-		enGB = "Trinkets, Rings & Necklaces"
+	["HEIRLOOMS_CATEGORY_TRINKETS_RINGS_NECKLACES_AND_RELIC"] = {
+		ruRU = "Аксессуары, кольца, ожерелья и реликвии",
+		enGB = "Trinkets, Rings, Necklaces & Relics"
 	},
 	["HEIRLOOMS_CATEGORY_WEAPON"] = {
 		ruRU = "Оружие",
@@ -44135,6 +44242,30 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "|cffff0000У вас недостаточно средств.|r\n(В наличии %d |4бонус:бонуса:бонусов;.)",
 		enGB = "",
 	},
+	["ARENA_REPLAY_DISABLE"] = {
+		ruRU = "Просмотр записей арены в данный момент недоступен.",
+		enGB = "Arena replays are currently unavailable."
+	},
+	["ARENA_REPLAY_ESCAPE_HYPERLINK"] = {
+		ruRU = "\\124cffc79c6e\\124Hreplay:%d\\124h[Запись арены: %d (%s)]\\124h\\124r",
+		enGB = "\\124cffc79c6e\\124Hreplay:%d\\124h[Arena replay: %d (%s)]\\124h\\124r"
+	},
+	["ARENA_REPLAY_HYPERLINK"] = {
+		ruRU = "|cffc79c6e|Hreplay:%d|h[Запись арены: %d (%s)]|h|r",
+		enGB = "|cffc79c6e|Hreplay:%d|h[Arena replay: %d (%s)]|h|r"
+	},
+	["ARENA_REPLAY_LOSE"] = {
+		ruRU = "ПОРАЖЕНИЕ",
+		enGB = "DEFEAT"
+	},
+	["ARENA_REPLAY_NOT_FOUND"] = {
+		ruRU = "Повтор боя не найден",
+		enGB = "",
+	},
+	["ARENA_REPLAY_WIN"] = {
+		ruRU = "ПОБЕДА",
+		enGB = "VICTORY"
+	},
 	["BATTLEPASS"] = {
 		ruRU = "Боевой пропуск",
 		enGB = "",
@@ -44157,6 +44288,10 @@ local SIRUS_LOCALIZATION = {
 	},
 	["BATTLEPASS_LEVEL_REWARD_TAKE"] = {
 		ruRU = "Забрать",
+		enGB = "",
+	},
+	["BATTLEPASS_PREMIUM"] = {
+		ruRU = "Premium",
 		enGB = "",
 	},
 	["BATTLEPASS_PREMIUM_ACTIVE"] = {
@@ -44189,6 +44324,14 @@ local SIRUS_LOCALIZATION = {
 	},
 	["BATTLEPASS_PURCHASE_EXPERIENCE_TEXT_BODY_LEVEL"] = {
 		ruRU = "При использовании вы получите |cffFFD100%u|r |4уровень:уровня:уровней; Боевого пропуска",
+		enGB = "",
+	},
+	["BATTLEPASS_PURCHASE_LEVEL_EXPERIENCE_TEXT_BODY_LEVEL"] = {
+		ruRU = "Предоставляет опыт, необходимый для достижения |cffFFD100%u|r уровня Боевого Пропуска.",
+		enGB = "",
+	},
+	["BATTLEPASS_PURCHASE_LEVEL_EXPERIENCE_OPTION_FORMAT"] = {
+		ruRU = "|cffFFD100%u xp|r x%u",
 		enGB = "",
 	},
 	["BATTLEPASS_PURCHASE_PREMIUM"] = {
@@ -44231,6 +44374,14 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Задания",
 		enGB = "",
 	},
+	["BATTLEPASS_QUEST_CANCEL"] = {
+		ruRU = "Отказ от задания",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_CANCEL_DIALOG"] = {
+		ruRU = "Вы уверены, что хотите отказаться от задания?",
+		enGB = "",
+	},
 	["BATTLEPASS_QUEST_CHANGE"] = {
 		ruRU = "Заменить",
 		enGB = "",
@@ -44247,7 +44398,27 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Выполнено еженедельное задание.\nДоступна награда.",
 		enGB = "",
 	},
-	["BATTLEPASS_QUEST_MSG_STATUS_DATA_ERROR"] = {
+	["BATTLEPASS_QUEST_LINK_FALLBACK_DAILY"] = {
+		ruRU = "Боевой пропуск: ежедневное задание",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_LINK_FALLBACK_WEEKLY"] = {
+		ruRU = "Боевой пропуск: дополнительное задание",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_MSG_STATUS_LEVEL_REWARD_INV_FULL"] = {
+		ruRU = "В вашем инвентаре недостаточно свободного места",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_MSG_STATUS_LEVEL_REWARD_NOT_FOUND"] = {
+		ruRU = "Награды за уровни не найдены",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_MSG_STATUS_QUEST_ALREADY_COMPLETE"] = {
+		ruRU = "Задание уже выполнено",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_MSG_STATUS_QUEST_DATA_ERROR"] = {
 		ruRU = "Ошибка данных при замене задания",
 		enGB = "",
 	},
@@ -44283,16 +44454,24 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "|cffff0000У вас недостаточно средств.|r",
 		enGB = "",
 	},
-	["STORE_QUEST_REPLACE_PRICE"] = {
-		ruRU = "Стоимость замены этого квеста %s",
+	["BATTLEPASS_QUEST_REPLACE_PRICE"] = {
+		ruRU = "Стоимость замены этого задания %s",
 		enGB = "",
 	},
 	["BATTLEPASS_QUEST_REWARD_TAKE"] = {
 		ruRU = "Собрать",
 		enGB = "",
 	},
-	["BATTLEPASS_QUEST_TIMELEFT_LABEL"] = {
+	["BATTLEPASS_QUEST_REWARD_TAKE_ALL"] = {
+		ruRU = "Собирать все награды",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_TIMELEFT_DAILY_LABEL"] = {
 		ruRU = "Новые задания через: ",
+		enGB = "",
+	},
+	["BATTLEPASS_QUEST_TIMELEFT_WEEKLY_LABEL"] = {
+		ruRU = "Дополнительные задания через: ",
 		enGB = "",
 	},
 	["BATTLEPASS_QUEST_TIMELEFT_UNAVAILABLE"] = {
@@ -44300,7 +44479,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["BATTLEPASS_QUESTS_WEEKLY"] = {
-		ruRU = "Дополнительные задания",
+		ruRU = "Сезонные задания",
 		enGB = "",
 	},
 	["BATTLEPASS_REWARDS_LABEL"] = {
@@ -44315,8 +44494,12 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Награда",
 		enGB = "",
 	},
+	["BATTLEPASS_REWARD_UNAVAILABLE"] = {
+		ruRU = "Недоступно",
+		enGB = "",
+	},
 	["BATTLEPASS_SEASON_TIMELEFT_INACTIVE"] = {
-		ruRU = "Сезон закончился",
+		ruRU = "Сезон окончен",
 		enGB = "",
 	},
 	["BATTLEPASS_SEASON_TIMELEFT_LABEL"] = {
@@ -44387,13 +44570,834 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "xp",
 		enGB = "",
 	},
+	["STORE_NOT_ENOUGH_CURRENCY_REPLENISH"] = {
+		ruRU = "|cffFF0000Внимание. У вас недостаточно средств!|r\nПри нажатии на кнопку покупки, вам будет предложено\nсовершить пожертвование на недостающую сумму бонусов.",
+		enGB = "",
+	},
+	["STORE_DONATE_DIALOG_TEXT"] = {
+		ruRU = "Ссылка для совершения пожертвования",
+		enGB = "",
+	},
+	["BINDING_NAME_TOGGLEBATTLEPASS"] = {
+		ruRU = "Боевой пропуск",
+		enGB = "",
+	},
 	["LFG_REJECT_PROPOSAL"] = {
 		ruRU = "Подземелье было найдено. Вы не сможете встать в очередь вновь в течение 5 минут, если откажетесь от прохождения подземелья.\nВы уверены, что хотите покинуть очередь?",
 		enGB = "",
 	},
 	["PVP_REJECT_PROPOSAL"] = {
-		ruRU = "Поле боя было найдено. Выход из очереди спровоцирует эффект \"Дезертир (Приглашение)\".\nВы уверены что хотите покинуть очередь?",
+		ruRU = "Поле боя было найдено. Выход из очереди спровоцирует эффект \"Дезертир (Приглашение)\".\nВы уверены, что хотите покинуть очередь?",
 		enGB = "",
+	},
+	["CONFIRM_ROULETTE_PLAY"] = {
+		ruRU = "Обратите внимание, что вы будете использовать бонусы.\nЦена: %d |4бонус:бонуса:бонусов;, у Вас %d |4бонус:бонуса:бонусов;.\n\nНажимая \"ОК\" вы подтверждаете, что согласны на списание бонусов, и понимаете, что служба поддержки не сможет их вам вернуть.",
+		enGB = "",
+	},
+	["TAXI_CANCEL"] = {
+		ruRU = "Потребовать остановку",
+		enGB = "Request Stop",
+	},
+	["TAXI_CANCEL_DESCRIPTION"] = {
+		ruRU = "Приземлиться у следующего доступного распорядителя полетов.",
+		enGB = "Land at the next available Flight Master.",
+	},
+	["COLLECTION_TRAVELING_MERCHANTS"] = {
+		ruRU = "Странствующие торговцы",
+		enGB = "",
+	},
+	["COLLECTION_TRAVELING_MERCHANT_1"] = {
+		ruRU = "Лурген",
+		enGB = "",
+	},
+	["COLLECTION_TRAVELING_MERCHANT_2"] = {
+		ruRU = "Aйшали",
+		enGB = "",
+	},
+	["COLLECTION_TRAVELING_MERCHANT_3"] = {
+		ruRU = "Саралет",
+		enGB = "",
+	},
+	["ABANDON_STABLE_PET"] = {
+		ruRU = "Вы уверены, что хотите навсегда отказаться от своего питомца?\n|cffFFFD00%s|r",
+		enGB = "Are you sure you want to permanently abandon your pet?\n|cffFFFD00%s|r"
+	},
+	["ABANDON_STABLE_PET_INFO"] = {
+		ruRU = "%1$s (Уровень %2$d %3$s %4$s)",
+		enGB = "%1$s (Level %2$d %3$s %4$s)"
+	},
+	["ALLIED_RACE_TRAITS"] = {
+		ruRU = "Способности:",
+	},
+	["ALLIED_RACE_ZODIAC_HINT"] = {
+		ruRU = "Открытие этой союзной расы дает вам доступ к соответствующему знаку зодиака - %s.\n\nВы можете сменить знак в момент перерождения, или воспользовавшись специальной услугой во внутриигровом магазине",
+	},
+	["ZODIAC_SPELLS_LABEL"] = {
+		ruRU = "Способности созвездия",
+	},
+	["HARDCORE_REMOVE_ERROR_TEXT_1"] = {
+		ruRU = "Неверные параметры.",
+	},
+	["HARDCORE_REMOVE_ERROR_TEXT_2"] = {
+		ruRU = "Недоступно для неподтвержденных учетных записей. Перейдите на sirus.su/unconfirmed, чтобы узнать больше.",
+	},
+	["HARDCORE_REMOVE_ERROR_TEXT_3"] = {
+		ruRU = "Персонаж не участвует в испытании.",
+	},
+	["HARDCORE_REMOVE_ERROR_TEXT_4"] = {
+		ruRU = "Не выбрано испытание.",
+	},
+	["HARDCORE_REMOVE_ERROR_TEXT_5"] = {
+		ruRU = "Неверно выбрано испытание.",
+	},
+	["HARDCORE_REMOVE_ERROR_TEXT_6"] = {
+		ruRU = "Недостаточно бонусов.",
+	},
+	["HARDCORE_REMOVE_ERROR_TEXT_7"] = {
+		ruRU = "Чтобы отказаться от участия в испытании - необходимо находиться в столице.",
+	},
+	["HARDCORE_CHALLENGE_1_DESCRIPTION"] = {
+		ruRU = "Испытайте себя на стойкость и выносливость, столкнувшись лицом к лицу с этим жестоким миром. Но помните, что вы не бессмертны, у вас есть всего лишь одна жизнь. Но вам не обязательно проходить это приключение в одиночку: объединяйтесь с другими истинными искателями приключений, чтобы пройти испытание вместе. Сможете ли вы преодолеть это непростое испытание, чтобы достичь небывалых высот? Покажите на что вы способны и станьте настоящей легендой!",
+		enGB = "",
+	},
+	["HARDCORE_CHALLENGE_1_FINISH_INFO"] = {
+		ruRU = "Помните, что во время данного испытания у вас есть всего лишь одна жизнь. Испытание будет провалено, если вы умрете во время его прохождения. Поэтому будьте осторожны!\n\nВ случае, если вы умрете, перед вами встанет выбор: переродиться или умереть. При выборе перерождения, вы сможете начать жизнь с того момента, на котором остановились, но вы не сможете продолжить прохождение испытания. А выбрав смерть, ваш персонаж будет безвозвозвратно удален навсегда.\n\nЕсли же вы передумали проходить испытание, то вы можете в любой момент прервать его прохождение, чтобы продолжить игру в обычном режиме без каких-либо ограничений. Но после отказа от прохождения испытания это действие невозможно будет отменить.\n\nВ случае, если вы пройдете через все трудности и достигните 80 уровня персонажа - с вас будут сняты все ограничения, вы получите награды и свое место в почетном списке тех, кто смог преодолеть все испытания на пути к поставленной цели.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_1_NAME"] = {
+		ruRU = "Отсутствие эффекта \"VIP\" и 4-ой профессии",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_1_DESCRIPTION"] = {
+		ruRU = "На вас не будет действовать бонус от любых аур категории \"VIP\" и станет недоступна 4-ая профессия.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_1_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_2_NAME"] = {
+		ruRU = "Отсутствие эффекта \"Премиум\"",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_2_DESCRIPTION"] = {
+		ruRU = "На вас не будет действовать бонус от ауры \"Премиум\".",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_2_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_3_NAME"] = {
+		ruRU = "Отсутствие эффекта \"Бонус выходного дня\"",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_3_DESCRIPTION"] = {
+		ruRU = "На вас не будет действовать бонус от ауры \"Бонус выходного дня\".",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_3_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_4_NAME"] = {
+		ruRU = "Отсутствие эффекта \"Непредвиденная перезагрузка\"",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_4_DESCRIPTION"] = {
+		ruRU = "На вас не будет действовать бонус от ауры \"Непредвиденная перезагрузка\".",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_4_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_5_NAME"] = {
+		ruRU = "Отсутствие эффекта \"Недавняя перезагрузка\"",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_5_DESCRIPTION"] = {
+		ruRU = "На вас не будет действовать бонус от ауры \"Недавняя перезагрузка\".",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_5_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_6_NAME"] = {
+		ruRU = "Запрет телепортации на остров \"Форбс\"",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_6_DESCRIPTION"] = {
+		ruRU = "Вы не сможете использовать \"Возвращение домой (VIP)\".",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_6_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_7_NAME"] = {
+		ruRU = "Запрет телепортации на остров \"Погоды\"",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_7_DESCRIPTION"] = {
+		ruRU = "Вы не сможете использовать \"Возвращение домой (PRIME)\".",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_7_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_8_NAME"] = {
+		ruRU = "Волшебный сундук Лили недоступен",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_8_DESCRIPTION"] = {
+		ruRU = "Ваш персонаж не получит Волшебный сундук Лили.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_8_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_9_NAME"] = {
+		ruRU = "Коллекции персонажа недоступны",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_9_DESCRIPTION"] = {
+		ruRU = "Вы не сможете использовать коллекции персонажа.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_9_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_10_NAME"] = {
+		ruRU = "Наследуемая экипировка недоступна",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_10_DESCRIPTION"] = {
+		ruRU = "Вы не сможете экипировать наследуемые предметы на своего персонажа.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_10_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_11_NAME"] = {
+		ruRU = "Недоступен торговец Ортега",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_11_DESCRIPTION"] = {
+		ruRU = "Вы не сможете приобрести экипировку у торговца Ортега.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_11_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_12_NAME"] = {
+		ruRU = "Игровой магазин недоступен",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_12_DESCRIPTION"] = {
+		ruRU = "Вы не сможете приобретать товары за бонусы во внутриигровом магазине и в разделе Боевого пропуска.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_12_DISABLE"] = {
+		ruRU = "Вы не можете приобретать предметы за бонусы, пока участвуете в испытании \"%s\".",
+		enGB = "You cannot purchase items with bonuses while you are participating in the \"%s\" challenge.",
+	},
+	["HARDCORE_FEATURE_13_NAME"] = {
+		ruRU = "Недоступны классовые способности предотвращения смерти",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_13_DESCRIPTION"] = {
+		ruRU = "Вы не сможете использовать классовые способности , которые гарантированно спасут от смерти вас или других игроков. К ним относятся \"Камень души\" чернокнижников и \"Перерождение\" шаманов.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_13_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_14_NAME"] = {
+		ruRU = "Игровой аукцион недоступен",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_14_DESCRIPTION"] = {
+		ruRU = "Вы не сможете использовать игровой аукцион.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_14_DISABLE"] = {
+		ruRU = "Аукцион недоступен в режиме испытания \"%s\".",
+		enGB = "The auction is not available in challenge mode \"%s\".",
+	},
+	["HARDCORE_FEATURE_15_NAME"] = {
+		ruRU = "Игровая почта недоступна",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_15_DESCRIPTION"] = {
+		ruRU = "Вы не сможете забирать содержимое писем или отправлять письма другим игрокам.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_15_DISABLE"] = {
+		ruRU = "Вы не можете отправлять письма, пока участвуете в испытании \"%s\".",
+		enGB = "You cannot send emails while participating in the \"%s\" challenge.",
+	},
+	["HARDCORE_FEATURE_15_DISABLE1"] = {
+		ruRU = "Вы не можете забирать содержимое писем, пока участвуете в испытании \"%s\".",
+		enGB = "You cannot collect the contents of letters while participating in the \"%s\" challenge.",
+	},
+	["HARDCORE_FEATURE_16_NAME"] = {
+		ruRU = "Запрет дуэлей",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_16_DESCRIPTION"] = {
+		ruRU = "Вы не сможете вступить с игроком в дуэль.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_16_DISABLE"] = {
+		ruRU = "Вы не можете вступать в дуэли в режиме испытания \"%s\".",
+		enGB = "You cannot duel in Challenge Mode \"%s\".",
+	},
+	["HARDCORE_FEATURE_17_NAME"] = {
+		ruRU = "Отсутствие персонального ассистента",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_17_DESCRIPTION"] = {
+		ruRU = "Вы не сможете пользоваться услугами и привилегиями персонального ассистента.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_17_DISABLE"] = {
+		ruRU = "Персональный ассистент недоступен в режиме испытания \"%s\".",
+		enGB = "The personal assistant is not available in challenge mode \"%s\".",
+	},
+	["HARDCORE_FEATURE_18_NAME"] = {
+		ruRU = "Отсутствие гильдейских бонусов",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_18_DESCRIPTION"] = {
+		ruRU = "На вашего персонажа не будут распространяться бонусы гильдии.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_18_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_19_NAME"] = {
+		ruRU = "Отсутствие эффекта \"Превозмогание\"",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_19_DESCRIPTION"] = {
+		ruRU = "На вас не будет действовать бонус от ауры \"Превозмогание\".",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_19_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_1_NAME"] = {
+		ruRU = "Отсутствие ремонта за счет гильдии",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_1_DESCRIPTION"] = {
+		ruRU = "Вы не сможете использовать резервы гильдии для того, чтобы починить свою экипировку.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_1_DISABLE"] = {
+		ruRU = "Ремонт за счет гильдии недоступен в режиме испытания \"%s\".",
+		enGB = "Guild-funded repairs are not available in challenge mode \"%s\".",
+	},
+	["HARDCORE_FEATURE1_2_NAME"] = {
+		ruRU = "Создание групп имеет ограничение",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_2_DESCRIPTION"] = {
+		ruRU = "Вы сможете состоять в группе с игроками, которые участвуют в том же испытании, что и вы, и которые имеют разницу уровня с вашим не более 5.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_2_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_3_NAME"] = {
+		ruRU = "Создание группы недоступно",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_3_DESCRIPTION"] = {
+		ruRU = "Вы не сможете состоять в группе с другими игроками.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_3_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_4_NAME"] = {
+		ruRU = "Обмен между игроками имеет ограничение",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_4_DESCRIPTION"] = {
+		ruRU = "Вы сможете обмениваться с игроками, участвующими в том же испытании, что и вы.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_4_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_5_NAME"] = {
+		ruRU = "Обмен между игроками недоступен",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_5_DESCRIPTION"] = {
+		ruRU = "Вы не сможете обмениваться с другими игроками.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_5_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_6_NAME"] = {
+		ruRU = "Поля боя недоступны",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_6_DESCRIPTION"] = {
+		ruRU = "Вы не сможете участвовать в сражениях на полях боя.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_6_DISABLE"] = {
+		ruRU = "Регистрация на поле боя недоступна в режиме испытания \"%s\".",
+		enGB = "Registration for the battlefield is not available in challenge mode \"%s\".",
+	},
+	["HARDCORE_FEATURE1_7_NAME"] = {
+		ruRU = "Арена недоступна",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_7_DESCRIPTION"] = {
+		ruRU = "Вы не сможете участвовать в сражениях на арене.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_7_DISABLE"] = {
+		ruRU = "Регистрация на арену недоступна в режиме испытания \"%s\".",
+		enGB = "Arena registration is not available in challenge mode \"%s\".",
+	},
+	["HARDCORE_FEATURE1_8_NAME"] = {
+		ruRU = "Мини-игры недоступны",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_8_DESCRIPTION"] = {
+		ruRU = "Вы не сможете принять участие в мини-играх.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_8_DISABLE"] = {
+		ruRU = "Мини-игры недоступны в режиме испытания \"%s\".",
+		enGB = "Mini-games are not available in Challenge Mode \"%s\".",
+	},
+	["HARDCORE_FEATURE1_9_NAME"] = {
+		ruRU = "Рейды и подземелья недоступны",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_9_DESCRIPTION"] = {
+		ruRU = "Вы не сможете посещать подземелья и рейды ни через поиск группы, ни обычным способом.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_9_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_10_NAME"] = {
+		ruRU = "Охота за головами недоступна",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_10_DESCRIPTION"] = {
+		ruRU = "Вы не сможете создавать, выполнять или быть целью контракта в \"Охоте за головами\".",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_10_DISABLE"] = {
+		ruRU = "Вы не можете создавать контракты на убийство игроков, пока участвуете в испытании \"%s\".",
+		enGB = "You cannot create contracts to kill players while you are participating in the \"%s\" challenge.",
+	},
+	["HARDCORE_FEATURE1_11_NAME"] = {
+		ruRU = "Взаимодействие с другими игроками имеет ограничение",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_11_DESCRIPTION"] = {
+		ruRU = "Вы сможете использовать свои положительные заклинания на игроков, участвующих в том же испытании, что и вы.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_11_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_12_NAME"] = {
+		ruRU = "Взаимодействие с другими игроками недоступно",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_12_DESCRIPTION"] = {
+		ruRU = "Вы не сможете использовать свои положительные заклинания на других игроков.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_12_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_13_NAME"] = {
+		ruRU = "Поиск подземелий недоступен",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_13_DESCRIPTION"] = {
+		ruRU = "Вы не сможете использовать систему поиска группы для прохождения подземелий.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_13_DISABLE"] = {
+		ruRU = "Поиск подземелий недоступен в режиме испытания \"%s\".",
+		enGB = "Dungeon Finder is not available in Challenge Mode \"%s\".",
+	},
+	["HARDCORE_FEATURE1_14_NAME"] = {
+		ruRU = "Рейтинг получаемого опыта снижен",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_14_DESCRIPTION"] = {
+		ruRU = "Рейтинг опыта снижен до стандартных значений, всевозможные источники получения дополнительного опыта в виде аур, эликсиров - недоступны.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_14_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_15_NAME"] = {
+		ruRU = "PVP в открытом мире отключено",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_15_DESCRIPTION"] = {
+		ruRU = "Вы не сможете участвовать в PVP сражениях с другими игроками.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_15_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_16_NAME"] = {
+		ruRU = "PVP в открытом мире частично отключено",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_16_DESCRIPTION"] = {
+		ruRU = "Вы сможете участвовать в PVP сражениях в открытом мире только с игроками, участвующими в том же испытании, что и вы, при условии разницы уровней персонажей не более 5.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_16_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_17_NAME"] = {
+		ruRU = "Награды Боевого Пропуска недоступны",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_17_DESCRIPTION"] = {
+		ruRU = "Во время участия в испытании вы не сможете забирать награды из Боевого Пропуска. После окончания испытания такая возможность у вас появится.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_17_DISABLE"] = {
+		ruRU = "Получение наград Боевого Пропуска недоступно в режиме испытания \"%s\".",
+		enGB = "Receiving Battle Pass rewards is not available in the \"%s\" challenge mode.",
+	},
+	["HARDCORE_FEATURE1_18_NAME"] = {
+		ruRU = "Недоступна часть коллекции",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_18_DESCRIPTION"] = {
+		ruRU = "Транспорт, игрушки, спутники, все, что ваш персонаж получает из распространяемой на аккаунт коллекции - недоступно. Если вы сами что-либо изучите - то оно останется вам доступным.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_18_DISABLE"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_19_NAME"] = {
+		ruRU = "Банк гильдии недоступен",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_19_DESCRIPTION"] = {
+		ruRU = "Вы не сможете забирать или вкладывать предметы в банк гильдии.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_19_DISABLE"] = {
+		ruRU = "Гильдейский банк недоступен в режиме испытания \"%s\".",
+		enGB = "The Guild Bank is not available in Challenge Mode \"%s\".",
+	},
+	["HARDCORE_SELECT_CHALLENGE_HELPTIP_TEXT"] = {
+		ruRU = "Выберите испытание!\nТщательно ознакомьтесь с описанием, изменить свое решение вы уже не сможете.\nУ вас только 1 шанс и только 1 попытка проявить себя.",
+		enGB = "",
+	},
+	["HARDCORE_CHALLENGE_DISABLE_FEATURE"] = {
+		ruRU = "Не доступно в испытании \"%s\"",
+		enGB = "",
+	},
+	["HARDCORE_CHALLENGES_TITLE"] = {
+		ruRU = "Испытания",
+		enGB = "",
+	},
+	["HARDCORE_START_CHALLENGE"] = {
+		ruRU = "Начать испытание",
+		enGB = "",
+	},
+	["HARDCORE_FINISH_CHALLENGE"] = {
+		ruRU = "Завершить испытание",
+		enGB = "",
+	},
+	["HARDCORE_CANCEL_CHALLENGE"] = {
+		ruRU = "Отменить испытание",
+		enGB = "",
+	},
+	["HARDCORE_START_CHALLENGE_TEXT"] = {
+		ruRU = "Вы уверены, что хотите начать испытание %s?\n\nВо время данного испытания у вас будет лишь одна жизнь. Испытание будет провалено, если вы умрете во время его прохождения.\n\nВосстановление персонажа через обращение к администрации проекта невозможно. Независимо от причин гибели, будь то игровой момент или технические неполадки, смерть вашего персонажа будет окончательной. Соглашаясь на прохождение испытания, вы принимаете данные условия.",
+		enGB = "",
+	},
+	["HARDCORE_CANCEL_CHALLENGE_TEXT"] = {
+		ruRU = "Вы уверены, что хотите прервать прохождение испытания %s?\n\nВ случае отказа вы не сможете возобновить прохождение испытания. Все ограничения испытания будут сняты с персонажа. Это действие невозможно будет отменить.\n\nЕсли уверены, то напишите \"СОГЛАСЕН\".",
+		enGB = "",
+	},
+	["HARDCORE_CHALLENGE_ACTION_WITH_CHARACTER_TEXT"] = {
+		ruRU = "Испытание провалено!\n\nВы умерли и провалили испытание, ваша душа постепенно покидает земли Азерота.\n\nВы можете приобрести услугу \"Отказ от испытания\" и продолжить жизнь с того момента, на котором остановились, но вы не сможете более участвовать в испытании этим персонажем.",
+		enGB = "",
+	},
+	["HARDCORE_CHARACTER_DELETE"] = {
+		ruRU = "Попробовать снова",
+		enGB = "",
+	},
+	["HARDCORE_CHARACTER_SAVE"] = {
+		ruRU = "Отказ от испытания",
+		enGB = "",
+	},
+	["HARDCORE_CHARACTER_SAVE_TEXT"] = {
+		ruRU = "Вы уверены, что хотите переродиться?\n\nПосле перерождения вы не сможете продолжить прохождение испытания. Вы продолжите игру с того момента, на котором остановились, а все ограничения испытания с персонажа будут сняты.",
+		enGB = "",
+	},
+	["HARDCORE_CHALLENGES_DISABLE_REASON_UNAVAILABLE"] = {
+		ruRU = "Испытание недоступно.",
+		enGB = "",
+	},
+	["HARDCORE_CHALLENGES_DISABLE_REASON_4_DESCRIPTION"] = {
+		ruRU = "Увы, но прохождение испытаний вам уже недоступно. Для того, чтобы принять в них участие - при создании персонажа нужно активировать режим \"Испытания\". Вы можете создать нового персонажа и проверить себя на прочность!",
+		enGB = "",
+	},
+	["HARDCORE_REWARD_TEXT"] = {
+		ruRU = "Награды",
+		enGB = "",
+	},
+	["ACHIEVEMENT_REWARD_TITLE_PATTERN"] = {
+		ruRU = "Наградное звание: (.+)",
+		enGB = "",
+	},
+	["HARDCORE_ACHIEVEMENT_TEXT"] = {
+		ruRU = "Достижение \"%s\"",
+		enGB = "",
+	},
+	["HARDCORE_ACHIEVEMENT_TITLE_TEXT"] = {
+		ruRU = "Достижение \"%s\" и звание \"%s\"",
+		enGB = "",
+	},
+	["HARDCORE_CHALLENGE_TAB_DESCRIPTION"] = {
+		ruRU = "Описание",
+		enGB = "",
+	},
+	["HARDCORE_CHALLENGE_TAB_RESTRICTIONS"] = {
+		ruRU = "Ограничения",
+		enGB = "",
+	},
+	["HARDCORE_CHALLENGE_TAB_VICTORY_CONDITIONS"] = {
+		ruRU = "Конец испытания",
+		enGB = "",
+	},
+	["HARDCORE_HEADER_COLUMN_PLAYER"] = {
+		ruRU = "Игрок",
+		enGB = "",
+	},
+	["HARDCORE_HEADER_COLUMN_CLASS"] = {
+		ruRU = "Класс",
+		enGB = "",
+	},
+	["HARDCORE_HEADER_COLUMN_LEVEL"] = {
+		ruRU = "Уровень",
+		enGB = "",
+	},
+	["HARDCORE_HEADER_COLUMN_TIME"] = {
+		ruRU = "Время",
+		enGB = "",
+	},
+	["HARDCORE_HEADER_COLUMN_STATUS"] = {
+		ruRU = "Статус",
+		enGB = "",
+	},
+	["HARDCORE_CHALLENGE_FILTER_SEARCH"] = {
+		ruRU = "Поиск",
+		enGB = "",
+	},
+	["HARDCORE_CHALLENGE_FILTER_LEVEL"] = {
+		ruRU = "Уровень",
+		enGB = "",
+	},
+	["HARDCORE_CHALLENGE_FILTER_STATUS"] = {
+		ruRU = "Статус",
+		enGB = "",
+	},
+	["HARDCORE_CHALLENGE_FILTER_CLASS"] = {
+		ruRU = "Класс",
+		enGB = "",
+	},
+	["HARDCORE_CHALLENGE_STATUS_1"] = {
+		ruRU = "Провален",
+		enGB = "",
+	},
+	["HARDCORE_CHALLENGE_STATUS_2"] = {
+		ruRU = "В процессе",
+		enGB = "",
+	},
+	["HARDCORE_CHALLENGE_STATUS_3"] = {
+		ruRU = "Пройден",
+		enGB = "",
+	},
+	["HARDCORE_CHALLENGES_LIST"] = {
+		ruRU = "Список испытаний",
+		enGB = "",
+	},
+	["HARDCORE_CHALLENGES_PARTICIPANTS_LIST"] = {
+		ruRU = "Список участников",
+		enGB = "",
+	},
+	["NUM_ACTIVE_CHALLENGES_FORMAT"] = {
+		ruRU = "%d |4активное испытание:активных испытания:активных испытаний;",
+		enGB = "",
+	},
+	["HARDCORE_LOSS_BANNER_TEXT"] = {
+		ruRU = "|c%s%s|r, |cffffffff%s %d-го уровня|r, умер от |3-1(%s) в зоне \"%s\"",
+		enGB = "",
+	},
+	["HARDCORE_LOSS_BANNER_TEXT_NPC"] = {
+		ruRU = "|c%s%s|r, |cffffffff%s %d-го уровня|r, был убит существом %s %d-го уровня в зоне \"%s\"",
+		enGB = "",
+	},
+	["HARDCORE_LOSS_BANNER_TEXT_PVP"] = {
+		ruRU = "|c%s%s|r, |cffffffff%s %d-го уровня|r, умер в PvP схватке в зоне \"%s\"",
+		enGB = "",
+	},
+	["HARDCORE_LOSS_TOAST_TEXT"] = {
+		ruRU = "|c%s%s|r, %s %d-го уровня, умер от |3-1(%s) в зоне \"%s\"",
+		enGB = "",
+	},
+	["HARDCORE_LOSS_TOAST_TEXT_NPC"] = {
+		ruRU = "|c%s%s|r, %s %d-го уровня, был убит существом в зоне \"%s\"",
+		enGB = "",
+	},
+	["HARDCORE_LOSS_TOAST_TEXT_PVP"] = {
+		ruRU = "|c%s%s|r, %s %d-го уровня, умер в PvP схватке в зоне \"%s\"",
+		enGB = "",
+	},
+	["HARDCORE_SUGGESTION_TITLE_1"] = {
+		ruRU = "Испытания",
+		enGB = "",
+	},
+	["HARDCORE_SUGGESTION_TITLE_2"] = {
+		ruRU = "Список испытания",
+		enGB = "",
+	},
+	["HARDCORE_SUGGESTION_TITLE_3"] = {
+		ruRU = "Лидеры испытаний",
+		enGB = "",
+	},
+	["HARDCORE_SUGGESTION_DESCRIPTION_1"] = {
+		ruRU = "Возможность показать всем вокруг свою стойкость и выдержку, а также доказать себе, что вы способны выжить даже в самых экстремальных условиях. Испытайте себя, чтобы достичь небывалых высот и получить ценные награды за свои подвиги!",
+		enGB = "",
+	},
+	["HARDCORE_SUGGESTION_DESCRIPTION_2"] = {
+		ruRU = "Ознакомьтесь со списком всех доступных испытаний, чтобы выбрать наиболее подходящее и начать его прохождение!",
+		enGB = "",
+	},
+	["HARDCORE_SUGGESTION_DESCRIPTION_3"] = {
+		ruRU = "Покажите себя и посмотрите на других игроков, которые проходят испытания. Станьте одним из лучших, показав хорошие результаты!",
+		enGB = "",
+	},
+	["HARDCORE_SUGGESTION_BUTTON_TEXT_1"] = {
+		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_SUGGESTION_BUTTON_TEXT_2"] = {
+		ruRU = "Выбрать испытание",
+		enGB = "",
+	},
+	["HARDCORE_SUGGESTION_BUTTON_TEXT_3"] = {
+		ruRU = "Рейтинг лучших игроков",
+		enGB = "",
+	},
+	["HARDCORE_SUGGESTION_ICON_PATCH_1"] = {
+		ruRU = "Interface\\Icons\\Inv_weapon_hand_06",
+		enGB = "",
+	},
+	["HARDCORE_SUGGESTION_ICON_PATCH_2"] = {
+		ruRU = "Interface\\Icons\\Inv_inscription_runescrolloffortitude_red",
+		enGB = "",
+	},
+	["HARDCORE_SUGGESTION_ICON_PATCH_3"] = {
+		ruRU = "Interface\\Icons\\Spell_nature_shamanrage",
+		enGB = "",
+	},
+	["HARDCORE_TOAST_LABEL"] = {
+		ruRU = "Один шанс",
+		enGB = "Hardcore"
+	},
+	["HARDCORE_LABEL"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tОдин шанс",
+		enGB = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tHardcore"
+	},
+	["HARDCORE_SUBTEXT"] = {
+		ruRU = "Управление уведомлениями о смертях участников испытаний",
+	},
+	["HARDCORE_NOTIFICATION_TYPE_OPTION_LABEL"] = {
+		ruRU = "Вид уведомлений",
+	},
+	["HARDCORE_NOTIFICATION_TYPE_OPTION_0"] = {
+		ruRU = "Отключены",
+	},
+	["HARDCORE_NOTIFICATION_TYPE_OPTION_1"] = {
+		ruRU = "Минималистичные",
+	},
+	["HARDCORE_NOTIFICATION_TYPE_OPTION_2"] = {
+		ruRU = "Стандартные",
+	},
+	["HARDCORE_NOTIFICATION_LEVEL_OPTION_LABEL"] = {
+		ruRU = "Фильтр по уровню игроков",
+	},
+	["HARDCORE_NOTIFICATION_LEVEL_OPTION_1"] = {
+		ruRU = "От 10 уровня",
+	},
+	["HARDCORE_NOTIFICATION_LEVEL_OPTION_2"] = {
+		ruRU = "От 20 уровня",
+	},
+	["HARDCORE_NOTIFICATION_LEVEL_OPTION_3"] = {
+		ruRU = "От 60 уровня",
+	},
+	["HARDCORE_NOTIFICATION_POPUP_SCALE"] = {
+		ruRU = "Размер уведомления на экране",
+	},
+	["SETTINGS_HARDCORE_NOTIFICATION_SOUND"] = {
+		ruRU = "Звук уведомлений",
+	},
+	["OPTION_SHOW_HARDCORE_NOTIFICATION_0"] = {
+		ruRU = "Отключение любых уведомление о смертях игроков в режиме испытания.",
+	},
+	["OPTION_SHOW_HARDCORE_NOTIFICATION_1"] = {
+		ruRU = "Сокращенное уведомление появляется в небольшом окне над чатом.",
+	},
+	["OPTION_SHOW_HARDCORE_NOTIFICATION_2"] = {
+		ruRU = "Уведомление появляется по центру экрана.",
+	},
+	["OPTION_SHOW_HARDCORE_NOTIFICATION_LEVEL_1"] = {
+		ruRU = "Вы будете получать уведомления о смертях игроков, уровень которых равен или превышает 10.",
+	},
+	["OPTION_SHOW_HARDCORE_NOTIFICATION_LEVEL_2"] = {
+		ruRU = "Вы будете получать уведомления о смертях игроков, уровень которых равен или превышает 20.",
+	},
+	["OPTION_SHOW_HARDCORE_NOTIFICATION_LEVEL_3"] = {
+		ruRU = "Вы будете получать уведомления о смертях игроков, уровень которых равен или превышает 60.",
 	},
 }
 
@@ -44402,7 +45406,7 @@ do
 	local next = next
 	local locale = GetLocale()
 	for key, data in next, SIRUS_LOCALIZATION do
-		_G[key] = data[locale] or data.enGB
+		_G[key] = data[locale] or data.enGB or key
 	end
 	table.wipe(SIRUS_LOCALIZATION)
 	SIRUS_LOCALIZATION = nil

@@ -72,9 +72,16 @@ function CharacterServicesMaster_CharacterInit(isBoostMode)
 		local characterID = GetCharIDFromIndex(characterIndex)
 		local name, race, class, level = GetCharacterInfo(characterID)
 
-		if characterID == pendingBoostCharacterID
-		or (pendingBoostCharacterListID == 0 and C_CharacterServices.IsBoostAvailableForLevel(level) and C_CharacterCreation.IsServicesAvailableForRace(E_PAID_SERVICE.BOOST_SERVICE, C_CreatureInfo.GetRaceInfo(race).raceID))
-		then
+		local canBoost
+		if not C_CharacterList.IsHardcoreCharacter(characterID) then
+			if characterID == pendingBoostCharacterID
+			or (pendingBoostCharacterListID == 0 and C_CharacterServices.IsBoostAvailableForLevel(level) and C_CharacterCreation.IsServicesAvailableForRace(E_PAID_SERVICE.BOOST_SERVICE, C_CreatureInfo.GetRaceInfo(race).raceID))
+			then
+				canBoost = true
+			end
+		end
+
+		if canBoost then
 			button:Enable()
 			button:SetBoostMode(true, true)
 
@@ -673,8 +680,12 @@ function CharacterServicesMaster_OnEvent(self, event, ...)
 				CharacterBoostButton.ticker = nil
 			end
 
+			CharacterBoostButton:SetText(CHARACTER_SERVICES_BUY)
+
 			CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1.Status:SetText(UNAVAILABLE)
 			CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1.Status:SetTextColor(1, 0, 0)
+			CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status1:Show()
+			CharacterSelectLeftPanel.CharacterBoostInfoFrame.Status2:Hide()
 
 			CharacterSelect.AllowService = false
 		else
@@ -696,7 +707,6 @@ function CharacterServicesMaster_OnEvent(self, event, ...)
 				statusFrame.CharacterBoost:SetPoint("TOP", 0, -5)
 				statusFrame.Status:SetPoint("BOTTOM", 0, 5)
 			end
-
 
 			if status == Enum.CharacterServices.BoostServiceStatus.Purchased then
 				statusFrame.TimeRemaning:SetShown(expireAt and expireAt > 0)
@@ -848,7 +858,6 @@ function CharacterBoostButton_UpdateState( state )
 		CharacterBoostButton.tooltip = nil
 	end
 	CharacterBoostButton:SetEnabled(not state)
-	CharacterSelectLeftPanel.CharacterBoostInfoFrame:SetShown(not state)
 end
 
 CharacterServiceDialogPriceMixin = {}

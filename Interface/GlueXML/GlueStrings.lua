@@ -75,10 +75,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Выбрать все",
 		enGB = "Select All"
 	},
-	["CLASS_PRIEST"] = {
-		ruRU = "Жрецы – прекрасные лекари с полным набором целительных заклинаний. В то же время жрец может пожертвовать своей ролью целителя и посвятить себя изучению темной магии. Жрецы – духовные лидеры своих народов. Для всех персонажей этого класса важен показатель силы заклинаний и интеллекта, а для лекарей – и духа.",
-		enGB = "Priests are well-rounded healers with a variety of tools. However, they can also sacrifice their healing to deal damage with Shadow magic. Within society, priests act as the spiritual leaders of their respective races. The priest's primary stats are Spell Power, Intellect, and Spirit if healing."
-	},
 	["RESPONSE_DISCONNECTED"] = {
 		ruRU = "Соединение с сервером разорвано",
 		enGB = "Disconnected from server"
@@ -98,10 +94,6 @@ local SIRUS_LOCALIZATION = {
 	["CHARACTER_SELECT_FIX_CHARACTER_LABEL"] = {
 		ruRU = "Исправить",
 		enGB = "Fix"
-	},
-	["CLASS_INFO_PRIEST2"] = {
-		ruRU = "- Исцеляет при помощи магии Света",
-		enGB = "- Heal damage with Holy magic."
 	},
 	["SCANDLL_URL_TROJAN"] = {
 		ruRU = "http://eu.blizzard.com/support/article.xml?articleId=28365",
@@ -150,10 +142,6 @@ local SIRUS_LOCALIZATION = {
 	["CHARACTER_SERVICES_COST"] = {
 		ruRU = "%d |4бонус:бонуса:бонусов;",
 		enGB = "%d |4bonus:bonuses;"
-	},
-	["CLASS_WARLOCK_FEMALE"] = {
-		ruRU = "Чернокнижники пользуются проклятиями и заклинаниями стихии огня и Тьмы и вытягивают из противника жизненные силы. Души, вытянутые из врагов, служат усилению магии чернокнижников. Чернокнижники могут обращать свое здоровье в ману и телепортировать к себе участников группы.|n|nНекоторые сообщества Альянса трепещут перед чернокнижниками, в то время как некоторые кланы Орды видят в них превосходных лидеров. Как любой заклинатель, чернокнижник превыше всего ценит силу заклинаний и интеллект.",
-		enGB = "Warlocks deal Fire or Shadow magic to damage, drain or curse their enemy. They can drain souls to power their spells. Warlocks can convert their health into mana or summon group members to their locations.|n|nWarlocks are feared in some Alliance societies while considered great leaders in some Horde societies. As casters, the warlock's primary stats are Spell Power and Intellect."
 	},
 	["CHARACTER_UNDELETE_ALERT_2"] = {
 		ruRU = "Персонаж успешно восстановлен.",
@@ -207,10 +195,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "OK",
 		enGB = "Okay"
 	},
-	["CLASS_INFO_ROGUE0"] = {
-		ruRU = "- Роль: нанесение урона",
-		enGB = "- Role: Damage"
-	},
 	["FORUM"] = {
 		ruRU = "Форум",
 		enGB = "Forum"
@@ -263,21 +247,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Невозможно изменить персонажа.",
 		enGB = "Could not customize character."
 	},
-	["CLASS_INFO_PALADIN5"] = {
-		ruRU = "- Пользуется маной как ресурсом.",
-		enGB = "- Uses mana as a resource."
-	},
 	["CHAR_LIST_RETRIEVED"] = {
 		ruRU = "Список персонажей получен",
 		enGB = "Character list retrieved"
-	},
-	["CLASS_INFO_HUNTER1"] = {
-		ruRU = "- Средняя броня (кожа/кольчуга)",
-		enGB = "- Medium Armor (Leather / Mail)"
-	},
-	["CLASS_INFO_ROGUE2"] = {
-		ruRU = "- Держит в каждой руке по оружию.",
-		enGB = "- Wields a weapon in each hand."
 	},
 	["CONFIRM_LOAD_ADDONS"] = {
 		ruRU = "Для корректной работы игры необходимо обновить все модификации. Вы действительно хотите загрузить их без обновления?\n\n|cffffffffПодключение можно осуществить, нажав кнопку «Модификации» в левой нижней части экрана.|r",
@@ -307,17 +279,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Введите имя персонажа",
 		enGB = "Enter a name for your character"
 	},
-	["CLASS_MAGE_FEMALE"] = {
-		ruRU = "Маги – канонические волшебники Азерота. Долгими годами прилежной учебы они приобретают свои знания. Класс носит легкую броню, компенсируя свою уязвимость целым арсеналом атакующих и защитных заклинаний. Основные характеристики мага – сила заклинаний и интеллект.",
-		enGB = "Mages are the iconic magic-users of Azeroth and learn their craft through intense research and study. They make up for their light armor with a potent array of offensive and defensive spells. Their primary stats are Spell Power and Intellect."
-	},
 	["LAUNCH_QUICKTIME_REQUIRED"] = {
 		ruRU = "Для запуска игры требуется наличие программы QuickTime версии %s.",
 		enGB = "World of Warcraft requires QuickTime version %s."
-	},
-	["CLASS_WARRIOR_FEMALE"] = {
-		ruRU = "Воины – бойцы в латных доспехах, стремящиеся достичь совершенства во владении оружием. Когда воин наносит урон или получает удар, он накапливает ярость, которую затем расходует на применение способностей.|n|nПерсонаж может посвятить себя освоению двуручного оружия, на бой с оружием в каждой руке или на классическое сочетание меча и щита. Воин также наделен способностями, которые позволяют ему быстро перемещаться по полю боя. Главная характеристика класса – сила, хотя воины, принимающие на себя урон, должны думать и о выносливости.",
-		enGB = "Warriors are plate-wearing fighters who strive for perfection in armed combat. As warriors deal or take damage, they generate rage, which is used to power their special attacks.|n|nWarriors can choose to focus on a two-handed weapon, dual-wielding or using a sword and shield. Warriors have several abilities that let them move quickly around the battlefield. Their primary stat is Strength, though tanking warriors desire Stamina as well."
 	},
 	["BILLING_TIME_LEFT_DAYS"] = {
 		ruRU = "Осталось оплаченных дней: %d",
@@ -395,10 +359,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Быстрый старт",
 		enGB = "Character Boost"
 	},
-	["CLASS_INFO_ROGUE5"] = {
-		ruRU = "- Пользуется энергией как ресурсом.",
-		enGB = "- Uses energy as a resource."
-	},
 	["LOGIN_AUTH_OUTAGE"] = {
 		ruRU = "<html><body><p align=\"CENTER\">Сервер авторизации в настоящее время занят. Пожалуйста, попробуйте подключиться позднее. Если вы постоянно получаете это сообщение, то свяжитесь со службой технической поддержки.</p></body></html>",
 		enGB = "<html><body><p align=\"CENTER\">The login server is currently busy. Please try again later. If the problem persists, please contact Technical Support at.</p></body></html>"
@@ -410,10 +370,6 @@ local SIRUS_LOCALIZATION = {
 	["CHAR_DELETE_SUCCESS"] = {
 		ruRU = "Персонаж удален",
 		enGB = "Character deleted"
-	},
-	["CLASS_INFO_DRUID0"] = {
-		ruRU = "- Роль: танкование, лечение, нанесение урона",
-		enGB = "- Role: Tank, Healer, Damage"
 	},
 	["ENTER_PIN_NUMBER"] = {
 		ruRU = "Введите пин-код",
@@ -430,10 +386,6 @@ local SIRUS_LOCALIZATION = {
 	["CHAR_LOGIN_FAILED"] = {
 		ruRU = "Ошибка входа",
 		enGB = "Login failed"
-	},
-	["CLASS_INFO_DEATHKNIGHT4"] = {
-		ruRU = "- Дополняет ведение ближнего боя призывом питомца, применением заклинаний и насыланием болезней.",
-		enGB = "- Combine melee combat with spells, diseases and undead minions."
 	},
 	["LOGIN_ENTER_NAME"] = {
 		ruRU = "Введите логин.",
@@ -543,10 +495,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "У/С",
 		enGB = "DPS"
 	},
-	["CLASS_INFO_MAGE1"] = {
-		ruRU = "- Легкая броня (ткань)",
-		enGB = "- Light Armor (Cloth)"
-	},
 	["AUTHENTICATOR"] = {
 		ruRU = "Код брелка",
 		enGB = "Authenticator"
@@ -651,29 +599,13 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Wrath of the Lich King",
 		enGB = "Wrath of the Lich King"
 	},
-	["CLASS_INFO_DRUID4"] = {
-		ruRU = "- В разных обликах пользуется маной, яростью или энергией как ресурсом.",
-		enGB = "- Uses mana, rage or energy as a resource depending on form."
-	},
 	["ABILITY_INFO_HUMAN3"] = {
 		ruRU = "- Ускоренное получение репутации.",
 		enGB = "- Bonus to reputation gains."
 	},
-	["CLASS_PALADIN"] = {
-		ruRU = "Паладин – облаченный в тяжелую броню боец, призывающий силу Света для лечения раненых и борьбы со злом. Паладин – самодостаточный персонаж, наделенный всеми необходимыми способностями для спасения союзника от гибели. Он может сосредоточиться на мастерстве владения двуручным оружием, щитом или на лечении. Основные характеристики зависят от игровой роли персонажа.",
-		enGB = "Paladins are heavily-armored fighters and defenders who use Holy magic to heal wounds and combat evil. Paladins are relatively self-sufficient and have many abilities targeted at death prevention. They can focus on two-handed weapons, shields or healing. Their primary stats depend on their role."
-	},
 	["DRAENEI_DISABLED"] = {
 		ruRU = "Дреней\nТребуется дополнение The Burning Crusade",
 		enGB = "Draenei\nRequires The Burning Crusade"
-	},
-	["CLASS_INFO_DRUID1"] = {
-		ruRU = "- Средняя броня (кожа)",
-		enGB = "- Medium Armor (Leather)"
-	},
-	["CLASS_ROGUE_FEMALE"] = {
-		ruRU = "Разбойники часто служат наемными убийцами и лазутчиками, хотя есть среди них и убежденные одиночки. Отличительная черта класса – мастерское владение самыми разными видами оружия, хотя классическим разбойничьим оружием остается кинжал.|n|nРазбойник не гнушается подкрасться к жертве сзади, чтобы прикончить ее наверняка, а иногда пробирается незамеченным среди врагов. Основные характеристики класса – сила атаки и ловкость.",
-		enGB = "Rogues often serve as assassins or scouts, though many are lone wolves as well. Rogues specialize in dual-wielding a variety of weapons, though the iconic rogue weapon is the dagger.|n|nRogues can often sneak around enemies or attack an opponent from behind to try and finish them off quickly. Their primary stats are Attack Power and Agility."
 	},
 	["CHAR_FACTION_CHANGE_ARENA_LEADER"] = {
 		ruRU = "Вы не можете сменить расу или фракцию, оставаясь капитаном команды арены.",
@@ -723,10 +655,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Ошибка подтверждения перекодировки",
 		enGB = "Recode Proof Bad"
 	},
-	["CLASS_INFO_SHAMAN2"] = {
-		ruRU = "- Взывает к силам четырех стихий",
-		enGB = "- Invokes the power of the four elements."
-	},
 	["PRIEST_DISABLED"] = {
 		ruRU = "Жрец\nЭтот класс доступен другим расам.",
 		enGB = "Priest\nYou must choose a different race to be this class."
@@ -766,10 +694,6 @@ local SIRUS_LOCALIZATION = {
 	["WHISPER_FROM"] = {
 		ruRU = "%s шепчет",
 		enGB = "Whisper from %s"
-	},
-	["CLASS_INFO_ROGUE4"] = {
-		ruRU = "- После использования 5 приемов серии разбойник может нанести особенно сильный завершающий удар.",
-		enGB = "- Build up 5 combo points to unleash finishing moves."
 	},
 	["POWER"] = {
 		ruRU = "СА",
@@ -823,14 +747,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "У вас %d",
 		enGB = "You have %d"
 	},
-	["CLASS_INFO_WARRIOR4"] = {
-		ruRU = "- Пользуется яростью как ресурсом.",
-		enGB = "- Uses rage as a resource."
-	},
-	["CLASS_INFO_PRIEST0"] = {
-		ruRU = "- Роль: лечение, нанесение урона",
-		enGB = "- Role: Healer, Damage"
-	},
 	["CHARACTER_DELETE_RESTORE_ERROR_2"] = {
 		ruRU = "Выполняется другая операция.",
 		enGB = "Another operation is in progress."
@@ -852,7 +768,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Great news! Our Gnomish engineers were able to invent a time machine and bring your future self back in time! We can now even edit this future and teach you anything you want, just like in the Goblin Matrix!\n\nYour hero will receive excellent equipment, learn a couple of professions, and instantly reach level 80!"
 	},
 	["CHARACTER_SERVICES_BOOST_WARNING"] = {
-		ruRU = "<html><body><p align=\"CENTER\">|cffd53838«Внимание! Есть ограничения!»|r\n<a href=\"https://forum.sirus.su/threads/60978/\">Подробности</a></p></body></html>",
+		ruRU = "<html><body><p align=\"CENTER\">|cffd53838«Внимание! Есть ограничения!»|r\n<a href=\"https://forum.sirus.su/threads/60986/\">Подробности</a></p></body></html>",
 		enGB = ""
 	},
 	["CHARACTER_SERVICES_LISTPAGE_TITLE"] = {
@@ -903,17 +819,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Ошибка входа в игру. Повторите попытку позже.",
 		enGB = "Could not log in to World of Warcraft at this time.  Please try again later."
 	},
-	["CLASS_DEATHKNIGHT_FEMALE"] = {
-		ruRU = "Рыцари смерти, бывшие некогда частью Плети, перешли теперь на сторону Орды или Альянса. Эти персонажи принадлежат к героическому классу, и игру они начинают на высоком уровне. Основной ресурс рыцарей смерти – руны трех видов, применяемые для различных способностей.|n|nУ рыцарей смерти, по сравнению с другими классами ближнего боя, больше способностей для воздействия на расстоянии: они могут насылать болезни и призывать прислужника-вурдалака. Сила является их основной характеристикой, а для рыцарей смерти, выступающих в роли танка, также важна выносливость.",
-		enGB = "These former agents of the Scourge have now allied themselves with the Alliance or Horde. Death knights are a hero class, which means they start at high level. Death knights use runes as their primary resource. Each of the three types of rune is used for different abilities.|n|nDeath knights have more ranged capabilities than most melee classes with an emphasis on causing diseases and doing damage with their undead pets. Their primary stat is Strength and also Stamina if tanking."
-	},
 	["CHAR_NAME_TOO_LONG"] = {
 		ruRU = "Имя не может содержать больше 12 букв",
 		enGB = "Names must be no more than 12 characters"
-	},
-	["CLASS_INFO_HUNTER2"] = {
-		ruRU = "- Акцент на дальнем бое и ловушках.",
-		enGB = "- Emphasis on ranged damage and traps."
 	},
 	["BETA_BUILD"] = {
 		ruRU = "Бета",
@@ -926,10 +834,6 @@ local SIRUS_LOCALIZATION = {
 	["CHAR_CREATE_DISABLED"] = {
 		ruRU = "В данный момент вы не можете создать здесь персонажа. Повторите попытку позднее или создайте персонажа в другом игровом мире.",
 		enGB = "Character creation on this realm is currently disabled. Please try again at a later date or create a character on a different realm."
-	},
-	["CLASS_PRIEST_FEMALE"] = {
-		ruRU = "Жрецы – прекрасные лекари с полным набором целительных заклинаний. В то же время жрец может пожертвовать своей ролью целителя и посвятить себя изучению темной магии. Жрецы – духовные лидеры своих народов. Для всех персонажей этого класса важен показатель силы заклинаний и интеллекта, а для лекарей – и духа.",
-		enGB = "Priests are well-rounded healers with a variety of tools. However, they can also sacrifice their healing to deal damage with Shadow magic. Within society, priests act as the spiritual leaders of their respective races. The priest's primary stats are Spell Power, Intellect, and Spirit if healing."
 	},
 	["CHARACTER_SERVICES_SPECIAL_OFFER"] = {
 		ruRU = "Спец. Предложение",
@@ -975,10 +879,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Выберите учетную запись",
 		enGB = "Select an account"
 	},
-	["CLASS_ROGUE"] = {
-		ruRU = "Разбойники часто служат наемными убийцами и лазутчиками, хотя есть среди них и убежденные одиночки. Отличительная черта класса – мастерское владение самыми разными видами оружия, хотя классическим разбойничьим оружием остается кинжал.|n|nРазбойник не гнушается подкрасться к жертве сзади, чтобы прикончить ее наверняка, а иногда пробирается незамеченным среди врагов. Основные характеристики класса – сила атаки и ловкость.",
-		enGB = "Rogues often serve as assassins or scouts, though many are lone wolves as well. Rogues specialize in dual-wielding a variety of weapons, though the iconic rogue weapon is the dagger.|n|nRogues can often sneak around enemies or attack an opponent from behind to try and finish them off quickly. Their primary stats are Attack Power and Agility."
-	},
 	["REALM_TYPE_TOURNAMENT_WARNING"] = {
 		ruRU = "Ваша учетная запись пока не может участвовать в игре в турнирных мирах.\n\nЗа дополнительной информацией о Турнире арены World of Warcraft обращайтесь по адресу: www.wow-europe.com.",
 		enGB = "This account is currently not flagged to participate in the tournament realms.\n\nFor more information regarding the World of Warcraft Arena Tournament, please visit: www.worldofwarcraft.com."
@@ -1015,10 +915,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Миры недоступны",
 		enGB = "Realms Unavailable"
 	},
-	["SPELLS_PASSIVE"] = {
-		ruRU = "Пассивные:",
-		enGB = "Passive:"
-	},
 	["SUGGESTED_REALM_TEXT"] = {
 		ruRU = "|cffffffffВыбранный мир:|r %s.",
 		enGB = "|cffffffffYou have been assigned to the|r %s |cffffffffRealm.|r"
@@ -1048,7 +944,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "<html><body><p align=\"CENTER\">This system will not be supported in future versions of World of Warcraft. Please see <a href=\"http://www.blizzard.com/support/article/SSE\">http://www.blizzard.com/support/article/SSE</a> for more information.</p></body></html>"
 	},
 	["CHARACTER_BOOST_DISABLE_REALM"] = {
-		ruRU = "Быстрый старт временно недоступен для текущего мира.",
+		ruRU = "Быстрый старт временно недоступен для этого игрового мира.",
 		enGB = "This service is temporarily unavailable on this realm"
 	},
 	["CHARACTER_RESTORE"] = {
@@ -1095,10 +991,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "<html><body><p align=\"CENTER\">Учетная запись заблокирована.</p><p align=\"CENTER\">Более подробную информацию вы найдете в Личном кабинете на сайте:</p><p align=\"CENTER\"><a href=\"http://sirus.su/user\">http://sirus.su/user</a></p><p align=\"CENTER\">По вопросам блокировки обратитесь на</p><p align=\"CENTER\"><a href=\"mailto:info@sirus.su\">info@sirus.su</a></p></body></html>",
 		enGB = ""
 	},
-	["CLASS_INFO_PALADIN1"] = {
-		ruRU = "- Тяжелая броня (кольчуга/латы и щит)",
-		enGB = "- Heavy Armor (Mail / Plate and Shield)"
-	},
 	["CONFIRM_COMPLETE_EXPENSIVE_QUEST"] = {
 		ruRU = "На выполнение этого задания вам придется потратить сумму, указанную ниже. Продолжить выполнение задания?",
 		enGB = "Completing this quest requires spending the following amount of money. Do you still want to complete the quest?"
@@ -1115,10 +1007,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Вы не можете войти в игру, пока пользуетесь мобильным аукционом или веб-аукционом.",
 		enGB = "You cannot log in while using World of Warcraft Remote."
 	},
-	["CLASS_HUNTER"] = {
-		ruRU = "Дикая природа – родная стихия охотника, а животные для него – почти как братья. Охотник умеет стрелять из ружей, арбалетов и луков. В бою ему помогают и прирученные звери. Ловушки могут наносить противнику повреждения или удерживать его на расстоянии. Основные характеристики этого класса – сила атаки и ловкость.",
-		enGB = "Hunters are at home in the wilderness and have a special affinity for beasts. They use ranged weapons, such as bows or guns, and their pet to deal damage. They can use traps to cause damage or keep an enemy at bay. The hunter's primary stats are Attack Power and Agility."
-	},
 	["RACE_CHANGE_IN_PROGRESS"] = {
 		ruRU = "Обновление расы…",
 		enGB = "Updating Race..."
@@ -1126,10 +1014,6 @@ local SIRUS_LOCALIZATION = {
 	["ABILITY_INFO_GNOME4"] = {
 		ruRU = "- Имеет способности к инженерному делу.",
 		enGB = "- Engineering skill increased."
-	},
-	["CLASS_DRUID"] = {
-		ruRU = "Друиды искусно меняют свой облик, принимая вид животных и растений. Есть три школы друидов. Друиды, пошедшие по пути равновесия, предпочитают дальний бой и атакуют противника заклинаниями сил природы и тайной магии, друиды-оборотни ведут сражение в ближнем бою в облике кошки и медведя, а друиды-целители восстанавливают здоровье себе и союзникам с помощью заклинаний постепенного исцеления. Основные характеристики друида определяются его игровой ролью.",
-		enGB = "Druids are shape-shifters with an affinity for the plant and animal kingdoms. There are three types of druids: Balance druids who cast Nature or Arcane spells at range, Feral druids who can take on the form of a cat or bear to fight in melee, or Restoration druids who can heal their allies with an emphasis on heal-over-time spells. Druid primary stats depend on their role."
 	},
 	["ACCOUNT_CREATE_URL"] = {
 		ruRU = "http://signup.wow-europe.com/",
@@ -1236,7 +1120,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "This IGR usage plan has 30 minutes or less of play time left on it."
 	},
 	["CHARACTER_SERVICES_DISABLE_SUSPECT_ACCOUNT"] = {
-		ruRU = "<html><body><p align=\"CENTER\">Услуга недоступна для подозрительных учетных записей. Более подробно тут <a href=\"https://sirus.su/suspect\">https://sirus.su/suspect</a></p></body></html>",
+		ruRU = "<html><body><p align=\"CENTER\">Услуга недоступна для неподтвержденных учетных записей. Более подробно тут <a href=\"https://sirus.su/suspect\">https://sirus.su/suspect</a></p></body></html>",
 		enGB = "<html><body><p align=\"CENTER\">The service is not available for suspicious accounts. Please see <a href=\"https://sirus.su/suspect\">https://sirus.su/suspect</a> for more information.</p></body></html>"
 	},
 	["CHARACTER_SERVICES_DISABLED"] = {
@@ -1255,14 +1139,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Шаман\nЭтот класс доступен другим расам.",
 		enGB = "Shaman\nYou must choose a different race to be this class."
 	},
-	["CLASS_INFO_WARLOCK4"] = {
-		ruRU = "- Для некоторых способностей использует осколки души.",
-		enGB = "- Can consume a Soul Shard for special abilities."
-	},
-	["CLASS_INFO_WARLOCK0"] = {
-		ruRU = "- Роль: нанесение урона",
-		enGB = "- Role: Damage"
-	},
 	["CHOOSE_GENDER"] = {
 		ruRU = "Выберите пол:",
 		enGB = "Choose your gender:"
@@ -1275,10 +1151,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Расовые способности",
 		enGB = "Racial Abilities"
 	},
-	["CLASS_INFO_MAGE0"] = {
-		ruRU = "- Роль: нанесение урона",
-		enGB = "- Role: Damage"
-	},
 	["REALM_HELP_FRAME_URL"] = {
 		ruRU = "<a href=\"http://www.wow-europe.com/ru\">www.wow-europe.com</a>",
 		enGB = "<a href=\"http://www.worldofwarcraft.com/\">www.worldofwarcraft.com</a>"
@@ -1286,10 +1158,6 @@ local SIRUS_LOCALIZATION = {
 	["CHAR_FACTION_CHANGE_FORCE_LOGIN"] = {
 		ruRU = "Перед тем как провести новую смену расы или фракции, вам нужно войти в игру, чтобы завершить предыдущий процесс смены расы или фракции.",
 		enGB = "You must login to complete your previous race or faction change before doing another race or faction change."
-	},
-	["CLASS_INFO_PALADIN3"] = {
-		ruRU = "- Сражается в ближнем бою и пользуется магией Света.",
-		enGB = "- Deals Holy and melee damage."
 	},
 	["RESET_SERVER_SETTINGS"] = {
 		ruRU = "Вы уверены, что хотите вернуться к пользовательским настройкам по умолчанию при следующем входе в игру?",
@@ -1315,10 +1183,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "ИНТ",
 		enGB = "INT"
 	},
-	["CLASS_INFO_SHAMAN1"] = {
-		ruRU = "- Средняя броня (кожа/кольчуга и щит)",
-		enGB = "- Medium Armor (Leather / Mail and Shield)"
-	},
 	["DONATE"] = {
 		ruRU = "Пожертвование",
 		enGB = "Donate"
@@ -1339,10 +1203,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Перс. Предложение",
 		enGB = "Personal offer"
 	},
-	["CLASS_PALADIN_FEMALE"] = {
-		ruRU = "Паладин – облаченный в тяжелую броню боец, призывающий силу Света для лечения раненых и борьбы со злом. Паладин – самодостаточный персонаж, наделенный всеми необходимыми способностями для спасения союзника от гибели. Он может сосредоточиться на мастерстве владения двуручным оружием, щитом или на лечении. Основные характеристики зависят от игровой роли персонажа.",
-		enGB = "Paladins are heavily-armored fighters and defenders who use Holy magic to heal wounds and combat evil. Paladins are relatively self-sufficient and have many abilities targeted at death prevention. They can focus on two-handed weapons, shields or healing. Their primary stats depend on their role."
-	},
 	["AUTH_OK"] = {
 		ruRU = "Авторизация выполнена",
 		enGB = "Authentication Successful"
@@ -1355,10 +1215,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Персонаж успешно восстановлен.\nЕго старое имя было занято, так что при входе в\nигру вам надо будет выбрать новое",
 		enGB = "The character has been successfully restored.\nYour old name was taken, and you will need to pick a\nnew one when you log in."
 	},
-	["CLASS_INFO_MAGE4"] = {
-		ruRU = "- Умеет телепортироваться в города и создавать еду и воду.",
-		enGB = "- Can teleport to cities and conjure food and water."
-	},
 	["CHAR_LIST_RETRIEVING"] = {
 		ruRU = "Загрузка списка персонажей",
 		enGB = "Retrieving character list"
@@ -1367,10 +1223,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "<html><body><p align=\"CENTER\">В этом игровом мире вы достигли максимального количества персонажей героического класса рыцарь смерти для вашей учетной записи.</p><p></p><p></p><p></p><p align=\"CENTER\">Вы можете создать рыцаря смерти вне лимита с помощью услуги \"Быстрый старт\" или открыв новую страницу персонажей.</p><p align=\"CENTER\"><a href=\"https://forum.sirus.su/threads/289482/\">Подробности</a></p></body></html>",
 		enGB = "<html><body><p align=\"CENTER\">You may only have one Death Knight Hero Class character on this realm.</p></body></html>"
 	},
-	["CLASS_INFO_WARRIOR1"] = {
-		ruRU = "- Тяжелая броня (кольчуга/латы и щит)",
-		enGB = "- Heavy Armor (Mail / Plate and Shield)"
-	},
 	["CHAR_DECLINE_IN_PROGRESS"] = {
 		ruRU = "Обновление персонажа...",
 		enGB = "Updating Character..."
@@ -1378,10 +1230,6 @@ local SIRUS_LOCALIZATION = {
 	["LOGIN_ERROR"] = {
 		ruRU = "Ошибка",
 		enGB = "Error"
-	},
-	["CLASS_INFO_HUNTER0"] = {
-		ruRU = "- Роль: нанесение урона",
-		enGB = "- Role: Damage"
 	},
 	["LOGIN_BADVERSION"] = {
 		ruRU = "<html><body><p align=\"CENTER\">Некорректная версия игры. Возможно, поврежден один из файлов или имеет место вмешательство посторонней программы. Подробнее о проблеме и о ее решении можно прочитать здесь: <a href=\"http://eu.blizzard.com/support/article.xml?articleId=28274\">http://eu.blizzard.com/support/article.xml?articleId=28274</a>.</p></body></html>",
@@ -1398,10 +1246,6 @@ local SIRUS_LOCALIZATION = {
 	["LOGINBOX_AUTOLOGIN"] = {
 		ruRU = "Автоматический вход",
 		enGB = "Automatic Login"
-	},
-	["CLASS_WARRIOR"] = {
-		ruRU = "Воины – бойцы в латных доспехах, стремящиеся достичь совершенства во владении оружием. Когда воин наносит урон или получает удар, он накапливает ярость, которую затем расходует на применение способностей.|n|nПерсонаж может посвятить себя освоению двуручного оружия, на бой с оружием в каждой руке или на классическое сочетание меча и щита. Воин также наделен способностями, которые позволяют ему быстро перемещаться по полю боя. Главная характеристика класса – сила, хотя воины, принимающие на себя урон, должны думать и о выносливости.",
-		enGB = "Warriors are plate-wearing fighters who strive for perfection in armed combat. As warriors deal or take damage, they generate rage, which is used to power their special attacks.|n|nWarriors can choose to focus on a two-handed weapon, dual-wielding or using a sword and shield. Warriors have several abilities that let them move quickly around the battlefield. Their primary stat is Strength, though tanking warriors desire Stamina as well."
 	},
 	["TRIAL_LOADING_MESSAGE"] = {
 		ruRU = "|cffffd100Внимание:|r поскольку вы впервые играете за представителя этой расы, будет выполнена загрузка стартовых данных. Это может занять несколько минут. Пожалуйста, подождите.",
@@ -1423,14 +1267,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "- После смерти принимает облик огонька и передвигается быстрее.",
 		enGB = "- Wisp form while dead for faster movement."
 	},
-	["CLASS_INFO_DRUID3"] = {
-		ruRU = "- Универсальность: доступны роли лекаря, \"танка\", заклинателя и бойца ближнего боя.",
-		enGB = "- Versatile: can fill a healing, tanking, melee or caster role."
-	},
-	["CLASS_INFO_PRIEST3"] = {
-		ruRU = "- Использует темную магию для нанесения урона.",
-		enGB = "- Cause damage with Shadow magic."
-	},
 	["SPECIALIZATION_LABEL"] = {
 		ruRU = "Специализация:",
 		enGB = "Specialization:"
@@ -1438,10 +1274,6 @@ local SIRUS_LOCALIZATION = {
 	["PVP_SPECIALIZATION_LABEL"] = {
 		ruRU = "PVP Специализация:",
 		enGB = "PVP Specialization:"
-	},
-	["CLASS_INFO_SHAMAN4"] = {
-		ruRU = "- На время зачаровывает оружие своими заклинаниями.",
-		enGB = "- Temporarily enchants weapons with spells."
 	},
 	["CHAR_FACTION_CHANGE_GOLD_LIMIT"] = {
 		ruRU = "Вы превысили лимит на количество золота, предусмотренный для смены фракции.",
@@ -1547,14 +1379,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Неверный сервер входа",
 		enGB = "Invalid Login Server"
 	},
-	["CLASS_DEATHKNIGHT"] = {
-		ruRU = "Рыцари смерти, бывшие некогда частью Плети, перешли теперь на сторону Орды или Альянса. Эти персонажи принадлежат к героическому классу, и игру они начинают на высоком уровне. Основной ресурс рыцарей смерти – руны трех видов, применяемые для различных способностей.|n|nУ рыцарей смерти, по сравнению с другими классами ближнего боя, больше способностей для воздействия на расстоянии: они могут насылать болезни и призывать прислужника-вурдалака. Сила является их основной характеристикой, а для рыцарей смерти, выступающих в роли танка, также важна выносливость.",
-		enGB = "These former agents of the Scourge have now allied themselves with the Alliance or Horde. Death knights are a hero class, which means they start at high level. Death knights use runes as their primary resource. Each of the three types of rune is used for different abilities.|n|nDeath knights have more ranged capabilities than most melee classes with an emphasis on causing diseases and doing damage with their undead pets. Their primary stat is Strength and also Stamina if tanking."
-	},
-	["CLASS_INFO_SHAMAN5"] = {
-		ruRU = "- Пользуется маной как ресурсом.",
-		enGB = "- Uses mana as a resource."
-	},
 	["DODGE"] = {
 		ruRU = "УКЛОН %.2f",
 		enGB = "DODGE %.2f"
@@ -1574,10 +1398,6 @@ local SIRUS_LOCALIZATION = {
 	["BILLING_GAMEROOM_EXPIRE"] = {
 		ruRU = "Срок действия вашей учетной записи с фиксированным тарифным планом скоро истечет. После этого соединение будет разорвано.\nОбратитесь к дежурному менеджеру вашей IGR.",
 		enGB = "IGR account in use is about to expire. Once expired, you may get disconnected.\nPlease contact the manager on duty in your IGR."
-	},
-	["CLASS_INFO_PALADIN4"] = {
-		ruRU = "- Владеет рядом защитных заклинаний.",
-		enGB = "- Has a variety of defensive spells."
 	},
 	["QUEUE_FCM"] = {
 		ruRU = "В этом игровом мире открыт бесплатный перенос персонажей. Щелкните по кнопке, расположенной ниже, чтобы узнать подробности.",
@@ -1627,17 +1447,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Новая запись",
 		enGB = "Create Account"
 	},
-	["CLASS_INFO_DEATHKNIGHT3"] = {
-		ruRU = "- Начальный уровень - 55.",
-		enGB = "- Start at level 55."
-	},
 	["SHOW_LAUNCHER"] = {
 		ruRU = "Меню запуска",
 		enGB = "Show Launcher"
-	},
-	["CLASS_SHAMAN"] = {
-		ruRU = "Шаманы обращаются к духам стихий, чтобы усиливать свое оружие и заклинания. В бою для усиления и лечения союзников или нанесения урона врагам шаман использует тотемы. Шаман нередко становится духовным лидером своего племени. Основные характеристики зависят от игровой роли персонажа.",
-		enGB = "Shaman use the power of the elements to enhance their weapon damage or spells. Shaman summon totems in combat, small objects that buff, heal or cause damage to enemies. Shaman often act as spiritual leaders in tribal communities. Their primary stats depend on their role."
 	},
 	["ACCOUNT_MESSAGE_BUTTON_READ"] = {
 		ruRU = "Отметить как прочтенные",
@@ -1655,10 +1467,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Отменить сброс",
 		enGB = "Cancel Reset"
 	},
-	["CLASS_INFO_DEATHKNIGHT1"] = {
-		ruRU = "- Тяжелая броня (латы)",
-		enGB = "- Heavy Armor (Plate)"
-	},
 	["CHARACTER_SERVICES_YOU_DONT_HAVE_BONUS"] = {
 		ruRU = "У вас нет бонусов",
 		enGB = "You do not have any bonuses"
@@ -1674,10 +1482,6 @@ local SIRUS_LOCALIZATION = {
 	["ACCOUNT_TWO_FACTOR_AUTHENTICATION"] = {
 		ruRU = "Для этого аккаунта включена двухфакторная авторизация.\nВведите код, отображаемый в вашем приложении для генерации кодов.",
 		enGB = "Two-factor authentication is enabled for this account.\nEnter the code displayed in your code generation app."
-	},
-	["CLASS_HUNTER_FEMALE"] = {
-		ruRU = "Дикая природа – родная стихия охотника, а животные для него – почти как братья. Охотник умеет стрелять из ружей, арбалетов и луков. В бою ему помогают и прирученные звери. Ловушки могут наносить противнику повреждения или удерживать его на расстоянии. Основные характеристики этого класса – сила атаки и ловкость.",
-		enGB = "Hunters are at home in the wilderness and have a special affinity for beasts. They use ranged weapons, such as bows or guns, and their pet to deal damage. They can use traps to cause damage or keep an enemy at bay. The hunter's primary stats are Attack Power and Agility."
 	},
 	["RACE_INFO_GNOME"] = {
 		ruRU = "Гномы Каз Модана не могут похвастаться статью, зато их интеллект позволил занять им достойное место в истории. Гномреган, подземное королевство, в свое время был чудом паровых технологий. Увы, вторжение троггов привело к разрушению города. Теперь славные строители Гномрегана скитаются по землям дворфов, по мере сил помогая своим союзникам.",
@@ -1703,10 +1507,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Версия",
 		enGB = "Version"
 	},
-	["CLASS_INFO_PRIEST1"] = {
-		ruRU = "- Легкая броня (ткань)",
-		enGB = "- Light Armor (Cloth)"
-	},
 	["USE_ENGLISH_SPEECH_PACK"] = {
 		ruRU = "Английский набор звуков",
 		enGB = "Use English Speech Pack"
@@ -1714,10 +1514,6 @@ local SIRUS_LOCALIZATION = {
 	["CHAR_RENAME_INSTRUCTIONS"] = {
 		ruRU = "Введите новое имя",
 		enGB = "Please enter a new name"
-	},
-	["CLASS_INFO_DEATHKNIGHT0"] = {
-		ruRU = "- Роль: танкование, нанесение урона",
-		enGB = "- Role: Tank, Damage"
 	},
 	["CHARACTER_BOOST_HELP_CHOOSE_SPEC_DESC"] = {
 		ruRU = "Выберите для какой специализации вы хотели бы получить экипировку. Иконки меча, щита, и крестика отображают соответствующие роли - нанесение урона, защита союзников, или их исцеление.\n\nОчки талантов вам необходимо распределить самостоятельно.",
@@ -1731,10 +1527,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "%s - %s",
 		enGB = "%s - %s"
 	},
-	["CLASS_INFO_WARRIOR2"] = {
-		ruRU = "- Ведет сражение в ближнем бою.",
-		enGB = "- Deals damage with melee weapons."
-	},
 	["REALM_LIST_IN_PROGRESS"] = {
 		ruRU = "Запрос списка миров...",
 		enGB = "Retrieving realm list"
@@ -1743,10 +1535,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Орки происходят с планеты Дренор. Пока Пылающий Легион не подчинил этот народ своей власти, орки посвящали себя исключительно мирным занятиям и шаманизму. Но однажды демоны поработили орков и погнали на войну с людьми Азерота. Много лет потребовалось, чтобы избавиться от гнета Легиона и обрести долгожданную свободу. Теперь орки вынуждены сражаться за место в чужом для них мире.",
 		enGB = "The orc race originated on the planet Draenor. A peaceful people with shamanic beliefs, they were enslaved by the Burning Legion and forced into war with the humans of Azeroth. Although it took many years, the orcs finally escaped the demons' corruption and won their freedom. To this day they fight for honor in an alien world that hates and reviles them."
 	},
-	["CLASS_WARLOCK"] = {
-		ruRU = "Чернокнижники пользуются проклятиями и заклинаниями стихии огня и Тьмы и вытягивают из противника жизненные силы. Души, вытянутые из врагов, служат усилению магии чернокнижников. Чернокнижники могут обращать свое здоровье в ману и телепортировать к себе участников группы.|n|nНекоторые сообщества Альянса трепещут перед чернокнижниками, в то время как некоторые кланы Орды видят в них превосходных лидеров. Как любой заклинатель, чернокнижник превыше всего ценит силу заклинаний и интеллект.",
-		enGB = "Warlocks deal Fire or Shadow magic to damage, drain or curse their enemy. They can drain souls to power their spells. Warlocks can convert their health into mana or summon group members to their locations.|n|nWarlocks are feared in some Alliance societies while considered great leaders in some Horde societies. As casters, the warlock's primary stats are Spell Power and Intellect."
-	},
 	["QUEUE_FCM_URL"] = {
 		ruRU = "https://www.wow-europe.com/account/",
 		enGB = "http://www.worldofwarcraft.com/account"
@@ -1754,10 +1542,6 @@ local SIRUS_LOCALIZATION = {
 	["CUSTOMIZE_CHARACTER"] = {
 		ruRU = "Параметры персонажа:",
 		enGB = "Customize character:"
-	},
-	["CLASS_INFO_MAGE2"] = {
-		ruRU = "- Взывает к силам огня, льда и тайной магии.",
-		enGB = "- Deals Frost, Fire or Arcane magic damage."
 	},
 	["CHAR_DELETE_FAILED"] = {
 		ruRU = "Ошибка удаления персонажа",
@@ -1795,14 +1579,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Имя",
 		enGB = "Name"
 	},
-	["CLASS_SHAMAN_FEMALE"] = {
-		ruRU = "Шаманы обращаются к духам стихий, чтобы усиливать свое оружие и заклинания. В бою для усиления и лечения союзников или нанесения урона врагам шаман использует тотемы. Шаман нередко становится духовным лидером своего племени. Основные характеристики зависят от игровой роли персонажа.",
-		enGB = "Shaman use the power of the elements to enhance their weapon damage or spells. Shaman summon totems in combat, small objects that buff, heal or cause damage to enemies. Shaman often act as spiritual leaders in tribal communities. Their primary stats depend on their role."
-	},
-	["CLASS_INFO_ROGUE3"] = {
-		ruRU = "- Полагается на незаметность, отравленное оружие и удержание противника под контролем.",
-		enGB = "- Emphasizes stealth, poisons and control."
-	},
 	["SECURITYMATRIX_ENTER_CELL"] = {
 		ruRU = "Введите значение ячейки (|cFF00FF00%s%s|r) и нажмите «ОК». Чтобы исправить допущенную ошибку, нажмите кнопку «Очистить».",
 		enGB = "Enter the cell value |cFF00FF00%s%s|r then select OK. If you make a mistake, select Clear."
@@ -1815,17 +1591,9 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Создание персонажа",
 		enGB = "Create Character"
 	},
-	["CLASS_INFO_WARLOCK1"] = {
-		ruRU = "- Легкая броня (ткань)",
-		enGB = "- Light Armor (Cloth)"
-	},
 	["LOGIN_INCORRECT_PASSWORD"] = {
 		ruRU = "Неверный пароль",
 		enGB = "Incorrect Password"
-	},
-	["CLASS_INFO_ROGUE1"] = {
-		ruRU = "- Средняя броня (кожа)",
-		enGB = "- Medium Armor (Leather)"
 	},
 	["CHAR_FACTION_CHANGE_FAILED"] = {
 		ruRU = "Не удалось сменить расу этого персонажа.",
@@ -1838,10 +1606,6 @@ local SIRUS_LOCALIZATION = {
 	["EULA_FRAME_TITLE"] = {
 		ruRU = "Лицензионное соглашение с конечным пользователем",
 		enGB = "End User License Agreement"
-	},
-	["CLASS_INFO_MAGE3"] = {
-		ruRU = "- Может превращать противников в безобидных животных или примораживать их к земле.",
-		enGB = "- Can polymorph enemies or freeze them to the ground."
 	},
 	["BILLING_IGR_USAGE"] = {
 		ruRU = "Вы используете тарифный план IGR. Ваше личное время не уменьшается.",
@@ -1871,10 +1635,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Вы используете фиксированный тарифный план IGR. Ваше личное время не учитывается. Срок действия плана истечет через %s.",
 		enGB = "You are currently using a fixed IGR plan. Your personal time will not be deducted. The IGR plan will expire in %s."
 	},
-	["CLASS_INFO_SHAMAN3"] = {
-		ruRU = "- Использует тотемы для усилений, лечения и нанесения урона.",
-		enGB = "- Uses totems to buff, heal or deal damage."
-	},
 	["QUEUE_NAME_TIME_LEFT_SECONDS"] = {
 		ruRU = "Свободных мест нет: %s\nМесто в очереди: %d\nВремя ожидания – менее минуты.",
 		enGB = "%s is Full\nPosition in queue: %d\nEstimated time: < 1 minute"
@@ -1899,10 +1659,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Требуется обновление",
 		enGB = "Patch Required"
 	},
-	["CLASS_INFO_HUNTER3"] = {
-		ruRU = "- Приручает животных и делает их своими помощниками.",
-		enGB = "- Gains a beast of your choice as a lifelong companion."
-	},
 	["RESPONSE_FAILED_TO_CONNECT"] = {
 		ruRU = "Ошибка соединения. Убедитесь, что ваша система подключена к Интернету, а также проверьте параметры настройки безопасности. Подробнее см. на сайте www.wow-europe.com/ru/support/.",
 		enGB = "Failed to connect.  Please be sure that your computer is currently connected to the internet, and that no security features on your system might be blocking traffic.  See www.blizzard.com/support/wow/ for more information."
@@ -1914,10 +1670,6 @@ local SIRUS_LOCALIZATION = {
 	["CINEMATICS"] = {
 		ruRU = "Видеоролики",
 		enGB = "Cinematics"
-	},
-	["CLASS_INFO_WARLOCK2"] = {
-		ruRU = "- Призывает прислужников-демонов.",
-		enGB = "- Summons demons as servants."
 	},
 	["HARDWARE_SURVEY_TITLE"] = {
 		ruRU = "Уведомление о сборе данных",
@@ -2027,14 +1779,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Персонаж не найден",
 		enGB = "Character not found"
 	},
-	["CLASS_INFO_PALADIN0"] = {
-		ruRU = "- Роль: танкование, лечение, нанесение урона",
-		enGB = "- Role: Tank, Healer, Damage"
-	},
-	["CLASS_INFO_MAGE5"] = {
-		ruRU = "- Пользуется маной как ресурсом.",
-		enGB = "- Uses mana as a resource."
-	},
 	["ABILITY_INFO_BLOODELF1"] = {
 		ruRU = "- Имеет способности к наложению чар.",
 		enGB = "- Enchanting skill increased."
@@ -2087,14 +1831,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Всего",
 		enGB = "Total"
 	},
-	["CLASS_INFO_WARRIOR3"] = {
-		ruRU = "- Может принимать одну из трех боевых стоек, у каждой из которых есть свои преимущества.",
-		enGB = "- Has 3 fighting stances with different benefits."
-	},
-	["CLASS_INFO_DEATHKNIGHT5"] = {
-		ruRU = "- Пользуется рунами как ресурсом.",
-		enGB = "- Uses runes as a resource."
-	},
 	["CHAR_LOGIN_SUCCESS"] = {
 		ruRU = "Вход выполнен",
 		enGB = "Login successful"
@@ -2142,10 +1878,6 @@ local SIRUS_LOCALIZATION = {
 	["CHAR_NAME_DECLENSION_DOESNT_MATCH_BASE_NAME"] = {
 		ruRU = "В падежах может меняться только окончание слова. Пожалуйста, исправьте падежи.",
 		enGB = "Your declensions must match your original name."
-	},
-	["CLASS_INFO_PRIEST4"] = {
-		ruRU = "- Пользуется маной как ресурсом.",
-		enGB = "- Uses mana as a resource."
 	},
 	["CHOOSE_VOTE_TOP"] = {
 		ruRU = "Выберите топ",
@@ -2207,10 +1939,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Обновление фракции…",
 		enGB = "Updating Faction..."
 	},
-	["CLASS_INFO_SHAMAN0"] = {
-		ruRU = "- Роль: лечение, нанесение урона",
-		enGB = "- Role: Healer, Damage"
-	},
 	["LOGIN_LOCKED_ENFORCED"] = {
 		ruRU = "Вы подали заявку на блокировку своей учетной записи. Для изменения статуса блокировки позвоните по соответствующему телефонному номеру.",
 		enGB = "You have applied a lock to your account. You can change your locked status by calling your account lock phone number."
@@ -2270,10 +1998,6 @@ local SIRUS_LOCALIZATION = {
 	["ABILITY_INFO_NIGHTELF2"] = {
 		ruRU = "- Лучше других уклоняется от вражеских ударов.",
 		enGB = "- More difficult to hit."
-	},
-	["SPELLS_ACTIVE"] = {
-		ruRU = "Активные:",
-		enGB = "Active:"
 	},
 	["AUTH_ALREADY_LOGGING_IN"] = {
 		ruRU = "Вход в систему...",
@@ -2383,10 +2107,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "<html><body><p align=\"CENTER\">Данный аккаунт заблокирован. Более подробную информацию вы найдете в Личном Кабинете на сайте: <a href=\"http://sirus.su\">http://sirus.su</a>.</p></body></html>",
 		enGB = ""
 	},
-	["CLASS_INFO_PALADIN2"] = {
-		ruRU = "- Неутомимый борец со злом.",
-		enGB = "- Righteous vanquishers of evil."
-	},
 	["TOS_ACCEPT"] = {
 		ruRU = "Принять",
 		enGB = "Accept"
@@ -2442,10 +2162,6 @@ local SIRUS_LOCALIZATION = {
 	["LOGIN_UNLOCKABLE_LOCK"] = {
 		ruRU = "Данная учетная запись была заблокирована, но может быть разблокирована.",
 		enGB = "This account has been locked but can be unlocked."
-	},
-	["CLASS_MAGE"] = {
-		ruRU = "Маги – канонические волшебники Азерота. Долгими годами прилежной учебы они приобретают свои знания. Класс носит легкую броню, компенсируя свою уязвимость целым арсеналом атакующих и защитных заклинаний. Основные характеристики мага – сила заклинаний и интеллект.",
-		enGB = "Mages are the iconic magic-users of Azeroth and learn their craft through intense research and study. They make up for their light armor with a potent array of offensive and defensive spells. Their primary stats are Spell Power and Intellect."
 	},
 	["LOGIN_ALREADYONLINE"] = {
 		ruRU = "Указанная учетная запись уже в игре. Проверьте правильность написания и повторите попытку.",
@@ -2535,10 +2251,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Ошибка авторизации",
 		enGB = "Authentication Error"
 	},
-	["CLASS_DRUID_FEMALE"] = {
-		ruRU = "Друиды искусно меняют свой облик, принимая вид животных и растений. Есть три школы друидов. Друиды, пошедшие по пути равновесия, предпочитают дальний бой и атакуют противника заклинаниями сил природы и тайной магии, друиды-оборотни ведут сражение в ближнем бою в облике кошки и медведя, а друиды-целители восстанавливают здоровье себе и союзникам с помощью заклинаний постепенного исцеления. Основные характеристики друида определяются его игровой ролью.",
-		enGB = "Druids are shape-shifters with an affinity for the plant and animal kingdoms. There are three types of druids: Balance druids who cast Nature or Arcane spells at range, Feral druids who can take on the form of a cat or bear to fight in melee, or Restoration druids who can heal their allies with an emphasis on heal-over-time spells. Druid primary stats depend on their role."
-	},
 	["ABILITY_INFO_HUMAN2"] = {
 		ruRU = "- Повышенная характеристика «дух».",
 		enGB = "- Increased Spirit."
@@ -2550,10 +2262,6 @@ local SIRUS_LOCALIZATION = {
 	["SOUL_SHARD"] = {
 		ruRU = "ОСКОЛ %d",
 		enGB = "SHRDS %d"
-	},
-	["CLASS_INFO_DEATHKNIGHT2"] = {
-		ruRU = "- Рыцари смерти – это бывшие слуги Короля-лича.",
-		enGB = "- Former servants of the Lich King."
 	},
 	["CLIENT_CONVERTED_TEXT"] = {
 		ruRU = "Спасибо за покупку World of Warcraft. Пожалуйста, нажмите на кнопку перезапуска, чтобы начать загрузку полной версии World of Warcraft.",
@@ -2655,10 +2363,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Имя не должно начинаться с апострофа или заканчиваться им",
 		enGB = "You cannot use an apostrophe as the first or last character of your name"
 	},
-	["CLASS_INFO_WARLOCK5"] = {
-		ruRU = "- Пользуется маной как ресурсом.",
-		enGB = "- Uses mana as a resource."
-	},
 	["LOGIN_GAME_ACCOUNT_LOCKED"] = {
 		ruRU = "<html><body><p align=\"CENTER\">Доступ к вашей учетной записи временно заблокирован. Пожалуйста, свяжитесь со службой поддержки по адресу: <a href=\"https://www.wow-europe.com/account/account-error.html\">https://www.wow-europe.com/account/account-error.html</a></p></body></html>",
 		enGB = "<html><body><p align=\"CENTER\">Access to your account has been temporarily disabled. Please contact support for more information at: <a href=\"https://www.worldofwarcraft.com/account/account-error.html\">https://www.worldofwarcraft.com/account/account-error.html</a></p></body></html>"
@@ -2742,10 +2446,6 @@ local SIRUS_LOCALIZATION = {
 	["HUNTER_DISABLED"] = {
 		ruRU = "Охотник\nЭтот класс доступен другим расам.",
 		enGB = "Hunter\nYou must choose a different race to be this class."
-	},
-	["CLASS_INFO_DRUID2"] = {
-		ruRU = "- Превращается в животных.",
-		enGB = "- Shape-shifts into animal forms."
 	},
 	["AUTH_VERSION_MISMATCH"] = {
 		ruRU = "Неверная версия клиента",
@@ -2951,10 +2651,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Свободных мест нет\nМесто в очереди: %d\nВремя ожидания: идет расчет...",
 		enGB = "Realm is Full\nPosition in queue: %d\nEstimated time: Calculating..."
 	},
-	["CLASS_INFO_HUNTER4"] = {
-		ruRU = "- Приятный процесс развития, интересная одиночная игра.",
-		enGB = "- Good at leveling and soloing."
-	},
 	["LOAD_MEDIUM"] = {
 		ruRU = "Средняя",
 		enGB = "Medium"
@@ -2987,10 +2683,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Эльф крови\nТребуется дополнение The Burning Crusade",
 		enGB = "Blood Elf\nRequires The Burning Crusade"
 	},
-	["CLASS_INFO_WARRIOR0"] = {
-		ruRU = "- Роль: танкование, нанесение урона",
-		enGB = "- Role: Tank, Damage"
-	},
 	["REALM_LIST_REALM_NOT_FOUND"] = {
 		ruRU = "Данный сервер в настоящий момент недоступен. Воспользуйтесь кнопкой «Выбор мира» для указания другого сервера. Для проверки статуса сервера перейдите на сайт www.sirus.su",
 		enGB = "The game server you have chosen is currently down.  Use the Change Realm button to choose another Realm.  Check www.worldofwarcraft.com/serverstatus for current server status."
@@ -3010,14 +2702,6 @@ local SIRUS_LOCALIZATION = {
 	["REALM_CHARACTERS"] = {
 		ruRU = "Персонажи",
 		enGB = "Characters"
-	},
-	["CLASS_DISABLE_REASON_DEATH_KNIGHT"] = {
-		ruRU = "Вы достигли максимального количества персонажей героического класса рыцарь смерти в этом игровом мире, и создание новых недоступно.",
-		enGB = ""
-	},
-	["CLASS_DISABLE_REASON_DEMON_HUNTER"] = {
-		ruRU = "Новый класс \"Охотник на демонов\", в данный момент недоступен! Следите за новостями сервера, чтобы первым узнать когда \"Охотник на демонов\", станет доступным.",
-		enGB = "The new Demon Hunter class is not available yet! Follow the server’s news to be the first to know when the Demon Hunter class becomes available."
 	},
 	["MENU_EDIT"] = {
 		ruRU = "Правка",
@@ -3095,10 +2779,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Сервер недоступен",
 		enGB = "Server down"
 	},
-	["CLASS_INFO_WARLOCK3"] = {
-		ruRU = "- Акцент на проклятиях, вытягивании сил и эффектах, наносящих периодический урон.",
-		enGB = "- Emphasis on curses, drains and damage-over-time spells."
-	},
 	["CONFIRM_PAID_FACTION_CHANGE"] = {
 		ruRU = "Смена фракции приведет к сбросу всех принятых вами заданий, при этом их прогресс будет полностью утерян.\nВы уверены, что хотите сменить фракцию прямо сейчас?",
 		enGB = ""
@@ -3131,28 +2811,36 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "|cff00ff00Вы получили поддержку Озаренных дренеев и имеете доступ к этой расе.|r",
 		enGB = ""
 	},
+	["ALLIED_RACE_DISABLE"] = {
+		ruRU = "Чтобы получить возможность создания персонажа данной расы",
+		enGB = ""
+	},
+	["ALLIED_RACE_SIGN_DISABLE"] = {
+		ruRU = "Чтобы получить возможность создания персонажа со знаком зодиака %s",
+		enGB = ""
+	},
 	["ALLIED_RACE_DISABLE_REASON_NIGHTBORNE"] = {
-		ruRU = "Чтобы получить возможность создания персонажа данной расы - добейтесь превознесения Дома Селентрис и выполните задание \"Цвет Ночи\".",
+		ruRU = "добейтесь превознесения Дома Селентрис и выполните задание \"Цвет Ночи\".",
 		enGB = ""
 	},
 	["ALLIED_RACE_DISABLE_REASON_EREDAR"] = {
-		ruRU = "Чтобы получить возможность создания персонажа данной расы - добейтесь превознесения Саргерайских раскольников и выполните задание \"Пылающая месть\".",
+		ruRU = "добейтесь превознесения Саргерайских раскольников и выполните задание \"Пылающая месть\".",
 		enGB = ""
 	},
 	["ALLIED_RACE_DISABLE_REASON_ZANDALARITROLL"] = {
-		ruRU = "Чтобы получить возможность создания персонажа данной расы - добейтесь превознесения Атал\'зула и выполните задание \"Герой Атал\'зул\".",
+		ruRU = "добейтесь превознесения Атал\'зула и выполните задание \"Герой Атал\'зул\".",
 		enGB = ""
 	},
 	["ALLIED_RACE_DISABLE_REASON_VOIDELF"] = {
-		ruRU = "Чтобы получить возможность создания персонажа данной расы - добейтесь превознесения Скитальцев Тенебры и выполните задание \"Высшая награда\".",
+		ruRU = "добейтесь превознесения Скитальцев Тенебры и выполните задание \"Высшая награда\".",
 		enGB = ""
 	},
 	["ALLIED_RACE_DISABLE_REASON_DARKIRONDWARF"] = {
-		ruRU = "Чтобы получить возможность создания персонажа данной расы - добейтесь превознесения Стражей Кузни и выполните задание \"Пламя перерождения\".",
+		ruRU = "добейтесь превознесения Стражей Кузни и выполните задание \"Пламя перерождения\".",
 		enGB = ""
 	},
 	["ALLIED_RACE_DISABLE_REASON_LIGHTFORGED"] = {
-		ruRU = "Чтобы получить возможность создания персонажа данной расы - добейтесь превознесения Связанных Светом и выполните задание \"Свет Тёмной Звезды\".",
+		ruRU = "добейтесь превознесения Связанных Светом и выполните задание \"Свет Тёмной Звезды\".",
 		enGB = ""
 	},
 	["CHOOSE_SPECIALIZATION_WARNING_TEXT_DEATHKNIGHT"] = {
@@ -3175,16 +2863,29 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Используйте эти игровые миры чтобы подсоединиться через проксирующий сервер. Обратите внимание, что это может увеличить пинг.",
 		enGB = ""
 	},
+	["REALM_NELTHARION_DESCRIPTION"] = {
+		ruRU = "Самый «горячий» из наших миров, заточенный под WPVP сражения. Включает в себя как постепенную прогрессию PVE-контента, так и нонстоп PVP активности по всему миру. Если в свободное от походов в рейды время Вас привлекает охота за головами, противостояние фракций, нападение на столицы и города противника, то Neltharion однозначно Ваш выбор, времяпрепровождение на котором подарит Вам море адреналина.",
+	},
+	["REALM_FROSTMOURNE_DESCRIPTION"] = {
+		ruRU = "Новый мир, ожидающий своих героев, полный достижений и открытий, еще никем не виданных.\n\nСтаньте первым, кто завоюет себе звание настоящего героя и получит предметы невиданной ценности из рейдовых подземелий!",
+	},
+	["REALM_LEGACY_X10_DESCRIPTION"] = {
+		ruRU = "Мир тех, кто уже достиг настоящих высот, тех, кто стал покорителями Нордскола и Запределья.\n\nЕсли Вы хотите настоящего соревнования, хотите встать на одну вершину с легендами - Вам сюда!",
+	},
 	["REALM_SCOURGE_DESCRIPTION"] = {
 		ruRU = "Прогрессивный игровой мир с преуспевающим освоением как PvP, так и PvE-аспектов. Сочетает в себе множество внутриигровых изменений и лучших кастомных внедрений в стандартный клиент. Scourge готов подарить вам максимум приятных впечатлений от игры. Однако, если вы хотите стать легендой, то придётся приложить немало усилий. Что бы вы ни любили: рейды, подземелья, поля боя или арены - этому миру будет что вам предложить.",
 		enGB = ""
 	},
 	["REALM_SIRUS_DESCRIPTION"] = {
-		ruRU = "Одноименный новый игровой мир, включающий в себя все наши лучшие идеи и новшества, собранные воедино. Наш многолетний опыт позволил превратить эту игру в нечто особенное, в мир, где каждый найдёт себе место. Поэтапное развитие PvE-прогресса, где вы сможете побороться за первые на сервере достижения, и полный набор PvP-активностей с регулярными сезонными обновлениями. Всё это точно не даст вам заскучать и позволит погрузиться с головой в мир Warcraft'а.",
+		ruRU = "Одноименный игровой мир, включающий в себя все наши лучшие идеи и новшества, собранные воедино. Наш многолетний опыт позволил превратить эту игру в нечто особенное, в мир, где каждый найдёт себе место. Поэтапное развитие PvE-прогресса, где вы сможете побороться за первые на сервере достижения, и полный набор PvP-активностей с регулярными сезонными обновлениями. Всё это точно не даст вам заскучать и позволит погрузиться с головой в мир Warcraft'а.",
 		enGB = ""
 	},
 	["REALM_ALGALON_DESCRIPTION"] = {
-		ruRU = "Активно развивающийся игровой мир без системы категорий, очков усилений и других кастомных изменений. Перед нами стояла задача сохранить для вас привычный баланс в PvP времён 3.3.5а с применением только лучших наработок, которые были оценены игроками по достоинству. Поэтапное PvE-освоение и полный набор PvP-атрибутов позволят вам открыть для себя WoTLK по-новому.",
+		ruRU = "Активно развивающийся игровой мир без системы Категорий, но со всеми новшествами нашего проекта, на котором будет интересно как новичкам, так и опытным игрокам, желающим достигнуть небывалых высот. Перед нами стояла задача сохранить для вас баланс и при этом погрузить в захватывающий мир, полный наших лучших нововведений: поэтапное освоение PvE, полный набор PvP-атрибутов и многое другое, что позволит вам получить незабываемые впечатления об игре.",
+		enGB = ""
+	},
+	["REALM_SOULSEEKER_DESCRIPTION"] = {
+		ruRU = "Новый игровой мир для самых стойких и выносливых героев. Мир включает в себя все особенности нашего проекта, а также уникальную систему испытаний для тех, кто готов проверить себя и свои силы на прочность. Усиленный игровой мир, поэтапное развитие PvE-прогресса и большой выбор PVP активностей позволит вам прочувствовать всю атмосферу вселенной Warcraft'а и настоящего приключения!",
 		enGB = ""
 	},
 	["CONFIRM_PAID_SERVICE"] = {
@@ -3223,6 +2924,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Выбор расы",
 		enGB = "Customization"
 	},
+	["CHARACTER_CREATE_ZODIAC_SIGN_LABEL"] = {
+		ruRU = "Знак зодиака",
+		enGB = "Zodiac sign"
+	},
 	["CHARACTER_SERVICES_FIX_CHARACTER"] = {
 		ruRU = "Исправить персонажа",
 		enGB = ""
@@ -3247,6 +2952,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Нажмите здесь, чтобы восстановить персонажа",
 		enGB = "Click to change your character's faction"
 	},
+	["PAID_ZODIAC_CHANGE_TOOLTIP"] = {
+		ruRU = "Нажмите здесь, чтобы сменить знак зодиака персонажа",
+		enGB = "Click to change your character's zodiac sign"
+	},
 	["RIGHT_CLICK_FOR_LESS"] = {
 		ruRU = "ПКМ: убрать подсказку",
 		enGB = "Right click for less",
@@ -3254,10 +2963,6 @@ local SIRUS_LOCALIZATION = {
 	["RIGHT_CLICK_FOR_MORE"] = {
 		ruRU = "ПКМ: подробное описание",
 		enGB = "Right click for more",
-	},
-	["CLASS_TRAITS_TOOLTIP"] = {
-		ruRU = "Классовые способности",
-		enGB = "Class Traits",
 	},
 	["RACIAL_TRAITS_ACTIVE_TOOLTIP"] = {
 		ruRU = "Активные способности",
@@ -3331,2267 +3036,1083 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Снаряжение",
 		enGB = "Outfit"
 	},
-	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_DESC"] = {
+	["CLASS_DISABLE_REASON_DEATH_KNIGHT"] = {
+		ruRU = "Вы достигли максимального количества персонажей героического класса рыцарь смерти в этом игровом мире, и создание новых недоступно.",
+		enGB = ""
+	},
+	["CLASS_DISABLE_REASON_DEMON_HUNTER"] = {
+		ruRU = "Новый класс \"Охотник на демонов\", в данный момент недоступен! Следите за новостями сервера, чтобы первым узнать когда \"Охотник на демонов\", станет доступным.",
+		enGB = "The new Demon Hunter class is not available yet! Follow the server’s news to be the first to know when the Demon Hunter class becomes available."
+	},
+	["CLASS_TRAITS_TOOLTIP"] = {
+		ruRU = "Классовые способности",
+		enGB = "Class Traits",
+	},
+
+	["CLASS_WARRIOR"] = {
+		ruRU = "Воины – бойцы в латных доспехах, стремящиеся достичь совершенства во владении оружием. Когда воин наносит урон или получает удар, он накапливает ярость, которую затем расходует на применение способностей.|n|nПерсонаж может посвятить себя освоению двуручного оружия, на бой с оружием в каждой руке или на классическое сочетание меча и щита. Воин также наделен способностями, которые позволяют ему быстро перемещаться по полю боя. Главная характеристика класса – сила, хотя воины, принимающие на себя урон, должны думать и о выносливости.",
+		enGB = "Warriors are plate-wearing fighters who strive for perfection in armed combat. As warriors deal or take damage, they generate rage, which is used to power their special attacks.|n|nWarriors can choose to focus on a two-handed weapon, dual-wielding or using a sword and shield. Warriors have several abilities that let them move quickly around the battlefield. Their primary stat is Strength, though tanking warriors desire Stamina as well."
+	},
+	["CLASS_WARRIOR_FEMALE"] = {
+		ruRU = "Воины – бойцы в латных доспехах, стремящиеся достичь совершенства во владении оружием. Когда воин наносит урон или получает удар, он накапливает ярость, которую затем расходует на применение способностей.|n|nПерсонаж может посвятить себя освоению двуручного оружия, на бой с оружием в каждой руке или на классическое сочетание меча и щита. Воин также наделен способностями, которые позволяют ему быстро перемещаться по полю боя. Главная характеристика класса – сила, хотя воины, принимающие на себя урон, должны думать и о выносливости.",
+		enGB = "Warriors are plate-wearing fighters who strive for perfection in armed combat. As warriors deal or take damage, they generate rage, which is used to power their special attacks.|n|nWarriors can choose to focus on a two-handed weapon, dual-wielding or using a sword and shield. Warriors have several abilities that let them move quickly around the battlefield. Their primary stat is Strength, though tanking warriors desire Stamina as well."
+	},
+	["CLASS_INFO_WARRIOR0"] = {
+		ruRU = "- Роль: танкование, нанесение урона",
+		enGB = "- Role: Tank, Damage"
+	},
+	["CLASS_INFO_WARRIOR1"] = {
+		ruRU = "- Тяжелая броня (кольчуга/латы и щит)",
+		enGB = "- Heavy Armor (Mail / Plate and Shield)"
+	},
+	["CLASS_INFO_WARRIOR2"] = {
+		ruRU = "- Ведет сражение в ближнем бою.",
+		enGB = "- Deals damage with melee weapons."
+	},
+	["CLASS_INFO_WARRIOR3"] = {
+		ruRU = "- Может принимать одну из трех боевых стоек, у каждой из которых есть свои преимущества.",
+		enGB = "- Has 3 fighting stances with different benefits."
+	},
+	["CLASS_INFO_WARRIOR4"] = {
+		ruRU = "- Пользуется яростью как ресурсом.",
+		enGB = "- Uses rage as a resource."
+	},
+	["CLASS_PALADIN"] = {
+		ruRU = "Паладин – облаченный в тяжелую броню боец, призывающий силу Света для лечения раненых и борьбы со злом. Паладин – самодостаточный персонаж, наделенный всеми необходимыми способностями для спасения союзника от гибели. Он может сосредоточиться на мастерстве владения двуручным оружием, щитом или на лечении. Основные характеристики зависят от игровой роли персонажа.",
+		enGB = "Paladins are heavily-armored fighters and defenders who use Holy magic to heal wounds and combat evil. Paladins are relatively self-sufficient and have many abilities targeted at death prevention. They can focus on two-handed weapons, shields or healing. Their primary stats depend on their role."
+	},
+	["CLASS_PALADIN_FEMALE"] = {
+		ruRU = "Паладин – облаченный в тяжелую броню боец, призывающий силу Света для лечения раненых и борьбы со злом. Паладин – самодостаточный персонаж, наделенный всеми необходимыми способностями для спасения союзника от гибели. Он может сосредоточиться на мастерстве владения двуручным оружием, щитом или на лечении. Основные характеристики зависят от игровой роли персонажа.",
+		enGB = "Paladins are heavily-armored fighters and defenders who use Holy magic to heal wounds and combat evil. Paladins are relatively self-sufficient and have many abilities targeted at death prevention. They can focus on two-handed weapons, shields or healing. Their primary stats depend on their role."
+	},
+	["CLASS_INFO_PALADIN0"] = {
+		ruRU = "- Роль: танкование, лечение, нанесение урона",
+		enGB = "- Role: Tank, Healer, Damage"
+	},
+	["CLASS_INFO_PALADIN1"] = {
+		ruRU = "- Тяжелая броня (кольчуга/латы и щит)",
+		enGB = "- Heavy Armor (Mail / Plate and Shield)"
+	},
+	["CLASS_INFO_PALADIN2"] = {
+		ruRU = "- Неутомимый борец со злом.",
+		enGB = "- Righteous vanquishers of evil."
+	},
+	["CLASS_INFO_PALADIN3"] = {
+		ruRU = "- Сражается в ближнем бою и пользуется магией Света.",
+		enGB = "- Deals Holy and melee damage."
+	},
+	["CLASS_INFO_PALADIN4"] = {
+		ruRU = "- Владеет рядом защитных заклинаний.",
+		enGB = "- Has a variety of defensive spells."
+	},
+	["CLASS_INFO_PALADIN5"] = {
+		ruRU = "- Пользуется маной как ресурсом.",
+		enGB = "- Uses mana as a resource."
+	},
+	["CLASS_HUNTER"] = {
+		ruRU = "Дикая природа – родная стихия охотника, а животные для него – почти как братья. Охотник умеет стрелять из ружей, арбалетов и луков. В бою ему помогают и прирученные звери. Ловушки могут наносить противнику повреждения или удерживать его на расстоянии. Основные характеристики этого класса – сила атаки и ловкость.",
+		enGB = "Hunters are at home in the wilderness and have a special affinity for beasts. They use ranged weapons, such as bows or guns, and their pet to deal damage. They can use traps to cause damage or keep an enemy at bay. The hunter's primary stats are Attack Power and Agility."
+	},
+	["CLASS_HUNTER_FEMALE"] = {
+		ruRU = "Дикая природа – родная стихия охотника, а животные для него – почти как братья. Охотник умеет стрелять из ружей, арбалетов и луков. В бою ему помогают и прирученные звери. Ловушки могут наносить противнику повреждения или удерживать его на расстоянии. Основные характеристики этого класса – сила атаки и ловкость.",
+		enGB = "Hunters are at home in the wilderness and have a special affinity for beasts. They use ranged weapons, such as bows or guns, and their pet to deal damage. They can use traps to cause damage or keep an enemy at bay. The hunter's primary stats are Attack Power and Agility."
+	},
+	["CLASS_INFO_HUNTER0"] = {
+		ruRU = "- Роль: нанесение урона",
+		enGB = "- Role: Damage"
+	},
+	["CLASS_INFO_HUNTER1"] = {
+		ruRU = "- Средняя броня (кожа/кольчуга)",
+		enGB = "- Medium Armor (Leather / Mail)"
+	},
+	["CLASS_INFO_HUNTER2"] = {
+		ruRU = "- Акцент на дальнем бое и ловушках.",
+		enGB = "- Emphasis on ranged damage and traps."
+	},
+	["CLASS_INFO_HUNTER3"] = {
+		ruRU = "- Приручает животных и делает их своими помощниками.",
+		enGB = "- Gains a beast of your choice as a lifelong companion."
+	},
+	["CLASS_INFO_HUNTER4"] = {
+		ruRU = "- Приятный процесс развития, интересная одиночная игра.",
+		enGB = "- Good at leveling and soloing."
+	},
+	["CLASS_ROGUE"] = {
+		ruRU = "Разбойники часто служат наемными убийцами и лазутчиками, хотя есть среди них и убежденные одиночки. Отличительная черта класса – мастерское владение самыми разными видами оружия, хотя классическим разбойничьим оружием остается кинжал.|n|nРазбойник не гнушается подкрасться к жертве сзади, чтобы прикончить ее наверняка, а иногда пробирается незамеченным среди врагов. Основные характеристики класса – сила атаки и ловкость.",
+		enGB = "Rogues often serve as assassins or scouts, though many are lone wolves as well. Rogues specialize in dual-wielding a variety of weapons, though the iconic rogue weapon is the dagger.|n|nRogues can often sneak around enemies or attack an opponent from behind to try and finish them off quickly. Their primary stats are Attack Power and Agility."
+	},
+	["CLASS_ROGUE_FEMALE"] = {
+		ruRU = "Разбойники часто служат наемными убийцами и лазутчиками, хотя есть среди них и убежденные одиночки. Отличительная черта класса – мастерское владение самыми разными видами оружия, хотя классическим разбойничьим оружием остается кинжал.|n|nРазбойник не гнушается подкрасться к жертве сзади, чтобы прикончить ее наверняка, а иногда пробирается незамеченным среди врагов. Основные характеристики класса – сила атаки и ловкость.",
+		enGB = "Rogues often serve as assassins or scouts, though many are lone wolves as well. Rogues specialize in dual-wielding a variety of weapons, though the iconic rogue weapon is the dagger.|n|nRogues can often sneak around enemies or attack an opponent from behind to try and finish them off quickly. Their primary stats are Attack Power and Agility."
+	},
+	["CLASS_INFO_ROGUE0"] = {
+		ruRU = "- Роль: нанесение урона",
+		enGB = "- Role: Damage"
+	},
+	["CLASS_INFO_ROGUE1"] = {
+		ruRU = "- Средняя броня (кожа)",
+		enGB = "- Medium Armor (Leather)"
+	},
+	["CLASS_INFO_ROGUE2"] = {
+		ruRU = "- Держит в каждой руке по оружию.",
+		enGB = "- Wields a weapon in each hand."
+	},
+	["CLASS_INFO_ROGUE3"] = {
+		ruRU = "- Полагается на незаметность, отравленное оружие и удержание противника под контролем.",
+		enGB = "- Emphasizes stealth, poisons and control."
+	},
+	["CLASS_INFO_ROGUE4"] = {
+		ruRU = "- После использования 5 приемов серии разбойник может нанести особенно сильный завершающий удар.",
+		enGB = "- Build up 5 combo points to unleash finishing moves."
+	},
+	["CLASS_INFO_ROGUE5"] = {
+		ruRU = "- Пользуется энергией как ресурсом.",
+		enGB = "- Uses energy as a resource."
+	},
+	["CLASS_PRIEST"] = {
+		ruRU = "Жрецы – прекрасные лекари с полным набором целительных заклинаний. В то же время жрец может пожертвовать своей ролью целителя и посвятить себя изучению темной магии. Жрецы – духовные лидеры своих народов. Для всех персонажей этого класса важен показатель силы заклинаний и интеллекта, а для лекарей – и духа.",
+		enGB = "Priests are well-rounded healers with a variety of tools. However, they can also sacrifice their healing to deal damage with Shadow magic. Within society, priests act as the spiritual leaders of their respective races. The priest's primary stats are Spell Power, Intellect, and Spirit if healing."
+	},
+	["CLASS_PRIEST_FEMALE"] = {
+		ruRU = "Жрецы – прекрасные лекари с полным набором целительных заклинаний. В то же время жрец может пожертвовать своей ролью целителя и посвятить себя изучению темной магии. Жрецы – духовные лидеры своих народов. Для всех персонажей этого класса важен показатель силы заклинаний и интеллекта, а для лекарей – и духа.",
+		enGB = "Priests are well-rounded healers with a variety of tools. However, they can also sacrifice their healing to deal damage with Shadow magic. Within society, priests act as the spiritual leaders of their respective races. The priest's primary stats are Spell Power, Intellect, and Spirit if healing."
+	},
+	["CLASS_INFO_PRIEST0"] = {
+		ruRU = "- Роль: лечение, нанесение урона",
+		enGB = "- Role: Healer, Damage"
+	},
+	["CLASS_INFO_PRIEST1"] = {
+		ruRU = "- Легкая броня (ткань)",
+		enGB = "- Light Armor (Cloth)"
+	},
+	["CLASS_INFO_PRIEST2"] = {
+		ruRU = "- Исцеляет при помощи магии Света",
+		enGB = "- Heal damage with Holy magic."
+	},
+	["CLASS_INFO_PRIEST3"] = {
+		ruRU = "- Использует темную магию для нанесения урона.",
+		enGB = "- Cause damage with Shadow magic."
+	},
+	["CLASS_INFO_PRIEST4"] = {
+		ruRU = "- Пользуется маной как ресурсом.",
+		enGB = "- Uses mana as a resource."
+	},
+	["CLASS_DEATHKNIGHT"] = {
+		ruRU = "Рыцари смерти, бывшие некогда частью Плети, перешли теперь на сторону Орды или Альянса. Эти персонажи принадлежат к героическому классу, и игру они начинают на высоком уровне. Основной ресурс рыцарей смерти – руны трех видов, применяемые для различных способностей.|n|nУ рыцарей смерти, по сравнению с другими классами ближнего боя, больше способностей для воздействия на расстоянии: они могут насылать болезни и призывать прислужника-вурдалака. Сила является их основной характеристикой, а для рыцарей смерти, выступающих в роли танка, также важна выносливость.",
+		enGB = "These former agents of the Scourge have now allied themselves with the Alliance or Horde. Death knights are a hero class, which means they start at high level. Death knights use runes as their primary resource. Each of the three types of rune is used for different abilities.|n|nDeath knights have more ranged capabilities than most melee classes with an emphasis on causing diseases and doing damage with their undead pets. Their primary stat is Strength and also Stamina if tanking."
+	},
+	["CLASS_DEATHKNIGHT_FEMALE"] = {
+		ruRU = "Рыцари смерти, бывшие некогда частью Плети, перешли теперь на сторону Орды или Альянса. Эти персонажи принадлежат к героическому классу, и игру они начинают на высоком уровне. Основной ресурс рыцарей смерти – руны трех видов, применяемые для различных способностей.|n|nУ рыцарей смерти, по сравнению с другими классами ближнего боя, больше способностей для воздействия на расстоянии: они могут насылать болезни и призывать прислужника-вурдалака. Сила является их основной характеристикой, а для рыцарей смерти, выступающих в роли танка, также важна выносливость.",
+		enGB = "These former agents of the Scourge have now allied themselves with the Alliance or Horde. Death knights are a hero class, which means they start at high level. Death knights use runes as their primary resource. Each of the three types of rune is used for different abilities.|n|nDeath knights have more ranged capabilities than most melee classes with an emphasis on causing diseases and doing damage with their undead pets. Their primary stat is Strength and also Stamina if tanking."
+	},
+	["CLASS_INFO_DEATHKNIGHT0"] = {
+		ruRU = "- Роль: танкование, нанесение урона",
+		enGB = "- Role: Tank, Damage"
+	},
+	["CLASS_INFO_DEATHKNIGHT1"] = {
+		ruRU = "- Тяжелая броня (латы)",
+		enGB = "- Heavy Armor (Plate)"
+	},
+	["CLASS_INFO_DEATHKNIGHT2"] = {
+		ruRU = "- Рыцари смерти – это бывшие слуги Короля-лича.",
+		enGB = "- Former servants of the Lich King."
+	},
+	["CLASS_INFO_DEATHKNIGHT3"] = {
+		ruRU = "- Начальный уровень - 55.",
+		enGB = "- Start at level 55."
+	},
+	["CLASS_INFO_DEATHKNIGHT4"] = {
+		ruRU = "- Дополняет ведение ближнего боя призывом питомца, применением заклинаний и насыланием болезней.",
+		enGB = "- Combine melee combat with spells, diseases and undead minions."
+	},
+	["CLASS_INFO_DEATHKNIGHT5"] = {
+		ruRU = "- Пользуется рунами как ресурсом.",
+		enGB = "- Uses runes as a resource."
+	},
+	["CLASS_SHAMAN"] = {
+		ruRU = "Шаманы обращаются к духам стихий, чтобы усиливать свое оружие и заклинания. В бою для усиления и лечения союзников или нанесения урона врагам шаман использует тотемы. Шаман нередко становится духовным лидером своего племени. Основные характеристики зависят от игровой роли персонажа.",
+		enGB = "Shaman use the power of the elements to enhance their weapon damage or spells. Shaman summon totems in combat, small objects that buff, heal or cause damage to enemies. Shaman often act as spiritual leaders in tribal communities. Their primary stats depend on their role."
+	},
+	["CLASS_SHAMAN_FEMALE"] = {
+		ruRU = "Шаманы обращаются к духам стихий, чтобы усиливать свое оружие и заклинания. В бою для усиления и лечения союзников или нанесения урона врагам шаман использует тотемы. Шаман нередко становится духовным лидером своего племени. Основные характеристики зависят от игровой роли персонажа.",
+		enGB = "Shaman use the power of the elements to enhance their weapon damage or spells. Shaman summon totems in combat, small objects that buff, heal or cause damage to enemies. Shaman often act as spiritual leaders in tribal communities. Their primary stats depend on their role."
+	},
+	["CLASS_INFO_SHAMAN0"] = {
+		ruRU = "- Роль: лечение, нанесение урона",
+		enGB = "- Role: Healer, Damage"
+	},
+	["CLASS_INFO_SHAMAN1"] = {
+		ruRU = "- Средняя броня (кожа/кольчуга и щит)",
+		enGB = "- Medium Armor (Leather / Mail and Shield)"
+	},
+	["CLASS_INFO_SHAMAN2"] = {
+		ruRU = "- Взывает к силам четырех стихий",
+		enGB = "- Invokes the power of the four elements."
+	},
+	["CLASS_INFO_SHAMAN3"] = {
+		ruRU = "- Использует тотемы для усилений, лечения и нанесения урона.",
+		enGB = "- Uses totems to buff, heal or deal damage."
+	},
+	["CLASS_INFO_SHAMAN4"] = {
+		ruRU = "- На время зачаровывает оружие своими заклинаниями.",
+		enGB = "- Temporarily enchants weapons with spells."
+	},
+	["CLASS_INFO_SHAMAN5"] = {
+		ruRU = "- Пользуется маной как ресурсом.",
+		enGB = "- Uses mana as a resource."
+	},
+	["CLASS_MAGE"] = {
+		ruRU = "Маги – канонические волшебники Азерота. Долгими годами прилежной учебы они приобретают свои знания. Класс носит легкую броню, компенсируя свою уязвимость целым арсеналом атакующих и защитных заклинаний. Основные характеристики мага – сила заклинаний и интеллект.",
+		enGB = "Mages are the iconic magic-users of Azeroth and learn their craft through intense research and study. They make up for their light armor with a potent array of offensive and defensive spells. Their primary stats are Spell Power and Intellect."
+	},
+	["CLASS_MAGE_FEMALE"] = {
+		ruRU = "Маги – канонические волшебники Азерота. Долгими годами прилежной учебы они приобретают свои знания. Класс носит легкую броню, компенсируя свою уязвимость целым арсеналом атакующих и защитных заклинаний. Основные характеристики мага – сила заклинаний и интеллект.",
+		enGB = "Mages are the iconic magic-users of Azeroth and learn their craft through intense research and study. They make up for their light armor with a potent array of offensive and defensive spells. Their primary stats are Spell Power and Intellect."
+	},
+	["CLASS_INFO_MAGE0"] = {
+		ruRU = "- Роль: нанесение урона",
+		enGB = "- Role: Damage"
+	},
+	["CLASS_INFO_MAGE1"] = {
+		ruRU = "- Легкая броня (ткань)",
+		enGB = "- Light Armor (Cloth)"
+	},
+	["CLASS_INFO_MAGE2"] = {
+		ruRU = "- Взывает к силам огня, льда и тайной магии.",
+		enGB = "- Deals Frost, Fire or Arcane magic damage."
+	},
+	["CLASS_INFO_MAGE3"] = {
+		ruRU = "- Может превращать противников в безобидных животных или примораживать их к земле.",
+		enGB = "- Can polymorph enemies or freeze them to the ground."
+	},
+	["CLASS_INFO_MAGE4"] = {
+		ruRU = "- Умеет телепортироваться в города и создавать еду и воду.",
+		enGB = "- Can teleport to cities and conjure food and water."
+	},
+	["CLASS_INFO_MAGE5"] = {
+		ruRU = "- Пользуется маной как ресурсом.",
+		enGB = "- Uses mana as a resource."
+	},
+	["CLASS_WARLOCK"] = {
+		ruRU = "Чернокнижники пользуются проклятиями и заклинаниями стихии огня и Тьмы и вытягивают из противника жизненные силы. Души, вытянутые из врагов, служат усилению магии чернокнижников. Чернокнижники могут обращать свое здоровье в ману и телепортировать к себе участников группы.|n|nНекоторые сообщества Альянса трепещут перед чернокнижниками, в то время как некоторые кланы Орды видят в них превосходных лидеров. Как любой заклинатель, чернокнижник превыше всего ценит силу заклинаний и интеллект.",
+		enGB = "Warlocks deal Fire or Shadow magic to damage, drain or curse their enemy. They can drain souls to power their spells. Warlocks can convert their health into mana or summon group members to their locations.|n|nWarlocks are feared in some Alliance societies while considered great leaders in some Horde societies. As casters, the warlock's primary stats are Spell Power and Intellect."
+	},
+	["CLASS_WARLOCK_FEMALE"] = {
+		ruRU = "Чернокнижники пользуются проклятиями и заклинаниями стихии огня и Тьмы и вытягивают из противника жизненные силы. Души, вытянутые из врагов, служат усилению магии чернокнижников. Чернокнижники могут обращать свое здоровье в ману и телепортировать к себе участников группы.|n|nНекоторые сообщества Альянса трепещут перед чернокнижниками, в то время как некоторые кланы Орды видят в них превосходных лидеров. Как любой заклинатель, чернокнижник превыше всего ценит силу заклинаний и интеллект.",
+		enGB = "Warlocks deal Fire or Shadow magic to damage, drain or curse their enemy. They can drain souls to power their spells. Warlocks can convert their health into mana or summon group members to their locations.|n|nWarlocks are feared in some Alliance societies while considered great leaders in some Horde societies. As casters, the warlock's primary stats are Spell Power and Intellect."
+	},
+	["CLASS_INFO_WARLOCK0"] = {
+		ruRU = "- Роль: нанесение урона",
+		enGB = "- Role: Damage"
+	},
+	["CLASS_INFO_WARLOCK1"] = {
+		ruRU = "- Легкая броня (ткань)",
+		enGB = "- Light Armor (Cloth)"
+	},
+	["CLASS_INFO_WARLOCK2"] = {
+		ruRU = "- Призывает прислужников-демонов.",
+		enGB = "- Summons demons as servants."
+	},
+	["CLASS_INFO_WARLOCK3"] = {
+		ruRU = "- Акцент на проклятиях, вытягивании сил и эффектах, наносящих периодический урон.",
+		enGB = "- Emphasis on curses, drains and damage-over-time spells."
+	},
+	["CLASS_INFO_WARLOCK4"] = {
+		ruRU = "- Для некоторых способностей использует осколки души.",
+		enGB = "- Can consume a Soul Shard for special abilities."
+	},
+	["CLASS_INFO_WARLOCK5"] = {
+		ruRU = "- Пользуется маной как ресурсом.",
+		enGB = "- Uses mana as a resource."
+	},
+	["CLASS_DRUID"] = {
+		ruRU = "Друиды искусно меняют свой облик, принимая вид животных и растений. Есть три школы друидов. Друиды, пошедшие по пути равновесия, предпочитают дальний бой и атакуют противника заклинаниями сил природы и тайной магии, друиды-оборотни ведут сражение в ближнем бою в облике кошки и медведя, а друиды-целители восстанавливают здоровье себе и союзникам с помощью заклинаний постепенного исцеления. Основные характеристики друида определяются его игровой ролью.",
+		enGB = "Druids are shape-shifters with an affinity for the plant and animal kingdoms. There are three types of druids: Balance druids who cast Nature or Arcane spells at range, Feral druids who can take on the form of a cat or bear to fight in melee, or Restoration druids who can heal their allies with an emphasis on heal-over-time spells. Druid primary stats depend on their role."
+	},
+	["CLASS_DRUID_FEMALE"] = {
+		ruRU = "Друиды искусно меняют свой облик, принимая вид животных и растений. Есть три школы друидов. Друиды, пошедшие по пути равновесия, предпочитают дальний бой и атакуют противника заклинаниями сил природы и тайной магии, друиды-оборотни ведут сражение в ближнем бою в облике кошки и медведя, а друиды-целители восстанавливают здоровье себе и союзникам с помощью заклинаний постепенного исцеления. Основные характеристики друида определяются его игровой ролью.",
+		enGB = "Druids are shape-shifters with an affinity for the plant and animal kingdoms. There are three types of druids: Balance druids who cast Nature or Arcane spells at range, Feral druids who can take on the form of a cat or bear to fight in melee, or Restoration druids who can heal their allies with an emphasis on heal-over-time spells. Druid primary stats depend on their role."
+	},
+	["CLASS_INFO_DRUID0"] = {
+		ruRU = "- Роль: танкование, лечение, нанесение урона",
+		enGB = "- Role: Tank, Healer, Damage"
+	},
+	["CLASS_INFO_DRUID1"] = {
+		ruRU = "- Средняя броня (кожа)",
+		enGB = "- Medium Armor (Leather)"
+	},
+	["CLASS_INFO_DRUID2"] = {
+		ruRU = "- Превращается в животных.",
+		enGB = "- Shape-shifts into animal forms."
+	},
+	["CLASS_INFO_DRUID3"] = {
+		ruRU = "- Универсальность: доступны роли лекаря, \"танка\", заклинателя и бойца ближнего боя.",
+		enGB = "- Versatile: can fill a healing, tanking, melee or caster role."
+	},
+	["CLASS_INFO_DRUID4"] = {
+		ruRU = "- В разных обликах пользуется маной, яростью или энергией как ресурсом.",
+		enGB = "- Uses mana, rage or energy as a resource depending on form."
+	},
+
+	["CHAR_INFO_CLASS_WARRIOR_DESC"] = {
 		ruRU = "Воины тщательно готовятся к бою, а с противником сражаются лицом к лицу, принимая все удары на свои доспехи. Они пользуются различными боевыми тактиками и применяют разнообразное оружие, чтобы защитить своих более хрупких союзников. Для максимальной эффективности воины должны контролировать свою ярость — ту силу, что питает их наиболее опасные атаки.",
 		enGB = "Warriors equip themselves carefully for combat and engage their enemies head-on, letting attacks glance off their heavy armor. They use diverse combat tactics and a wide variety of weapon types to protect their more vulnerable allies. Warriors must carefully master their rage – the power behind their strongest attacks – in order to maximize their effectiveness in combat.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_ROLE"] = {
+	["CHAR_INFO_CLASS_WARRIOR_ROLE"] = {
 		ruRU = "Роли: |cffffffffтанк или боец ближнего боя|r",
 		enGB = "Roles: |cffffffffTank or Melee Damage|r",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_SPELL1"] = {
-		ruRU = "Ярость",
-		enGB = "Rage",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_SPELL2"] = {
-		ruRU = "Исступление",
-		enGB = "Enrage",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_SPELL3"] = {
-		ruRU = "Критический блок",
-		enGB = "Critical Block",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_SPELL4"] = {
-		ruRU = "Жажда смерти",
-		enGB = "Death Wish",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_SPELL5"] = {
-		ruRU = "Ударная волна",
-		enGB = "Shockwave",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_SPELL1_DESC"] = {
-		ruRU = "Когда воин получает урон, гнев его растет, позволяя в разгар битвы наносить поистине сокрушительные удары.",
-		enGB = "As warriors deal or take damage, their rage grows, allowing them to deliver truly crushing attacks in the heat of battle.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_SPELL2_DESC"] = {
-		ruRU = "После получения урона в бою наносимый воином урон с вероятностью 30% увеличится на 10% на 12 sec.",
-		enGB = "Gives you a 30% chance to receive a 10% damage bonus for 12 sec after being the victim of a damaging attack.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_SPELL3_DESC"] = {
-		ruRU = "При успешном блокировании атаки воин с вероятностью 60% заблокирует в два раза больше урона. Вероятность нанести критический удар при применении способности Мощный удар щитом повышается на 15%.",
-		enGB = "Your successful blocks have a 60% chance to block double the normal amount and increases your chance to critically hit with your Shield Slam ability by an additional 15%.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_SPELL4_DESC"] = {
-		ruRU = "Вводит воина в состояние ярости, в котором наносимый физический урон увеличивается на 20%, а весь получаемый урон – на 5%.",
-		enGB = "When activated you become enraged, increasing your physical damage by 20% but increasing all damage taken by 5%.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_SPELL5_DESC"] = {
-		ruRU = "Посылает перед воином силовую волну, наносящую урон (величина зависит от силы атаки) и оглушающую всех противников на расстоянии 10 м. перед ним на 4 сек.",
-		enGB = "Sends a wave of force in front of the warrior, causing a certain amount of damage (based on attack power) and stunning all enemy targets within 10 yards in a frontal cone for 4 sec.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PALADIN_DESC"] = {
-		ruRU = "Паладины бьются с врагом лицом к лицу, полагаясь на тяжелые доспехи и навыки целительства. Прочный щит или двуручное оружие — не столь важно, чем владеет паладин. Он сумеет не только защитить соратников от вражеских когтей и клинков, но и удержит группу на ногах при помощи исцеляющих заклинаний.",
-		enGB = "Paladins stand directly in front of their enemies, relying on heavy armor and healing in order to survive incoming attacks. Whether with massive shields or crushing two-handed weapons, Paladins are able to keep claws and swords from their weaker fellows – or they use healing magic to ensure that they remain on their feet.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PALADIN_ROLE"] = {
-		ruRU = "Роли: |cffffffffтанк, лекарь или боец ближнего боя|r",
-		enGB = "Roles: |cffffffffTank, Healer, or Melee Damage|r",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL1"] = {
-		ruRU = "Благословение и ауры",
-		enGB = "Blessings and Auras",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL2"] = {
-		ruRU = "Священный гнев",
-		enGB = "Sanctified Wrath",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL3"] = {
-		ruRU = "Ревностный защитник",
-		enGB = "Zealous Defender",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL4"] = {
-		ruRU = "Щит небес",
-		enGB = "Holy Shield",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL5"] = {
-		ruRU = "Частица света",
-		enGB = "Beacon of Light",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL1_DESC"] = {
-		ruRU = "Паладины, защитники порядка, очень эффективны в группе: их благословения и ауры могут повысить наносимый урон и повысить выживаемость и для них самих, и для их союзников.",
-		enGB = "As champions of order, paladins are extremely potent in a group – their blessings and auras can improve damage and survivability for both themselves and their party.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL2_DESC"] = {
-		ruRU = "Увеличивает вероятность критического удара заклинания Молот гнева на 50%, сокращает время восстановления заклинания Гнев карателя на 60 с. Когда паладин находится под действием заклинания Гнев карателя, 50% наносимого паладином урона игнорируют все снижающие урон эффекты.",
-		enGB = "Increases the critical strike chance of Hammer of Wrath by 50%, reduces the cooldown of Avenging Wrath by 60 secs and while affected by Avenging Wrath 50% of all damage caused bypasses damage reduction effects.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL3_DESC"] = {
-		ruRU = "Если при получении удара уровень здоровья паладина падает ниже 35%, весь получаемый вами урон снижается на 20%. Удары, которые могли бы оказаться смертельными, вместо этого восстанавливают паладину до 30% от максимального запаса здоровья (количество восполненного здоровья зависит от защиты).",
-		enGB = "Damage that takes you below 35% health is reduced by 20%. In addition, attacks which would otherwise kill you cause you to be healed by up to 30% of your maximum health (amount healed based on defense).",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL4_DESC"] = {
-		ruRU = "Повышает вероятность блокировать удар на 30% на 10 sec. Если атака блокирована, атакующему наносится урон от светлой магии. При каждом блоке расходуется 1 заряд. 8 зарядов.",
-		enGB = "Increases chance to block by 30% for 10 sec and deals Holy damage for each attack blocked while active. Each block expends a charge. 8 charges.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL5_DESC"] = {
-		ruRU = "Наделяет выбранного участника группы или рейда частицей Света. Любое исцеляющее заклинание, которое вы накладываете на союзников в радиусе 60 метров от цели, также восстанавливает наделенному Светом персонажу 100% от объема восстановленного с помощью этого заклинания здоровья. Частицей Света можно наделить только одного персонажа.",
-		enGB = "The target becomes a Beacon of Light to all members of your party or raid within a 60 yard radius. Any heals you cast on party or raid members will also heal the Beacon for 100% of the amount healed. Only one target can be the Beacon of Light at a time.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_HUNTER_DESC"] = {
-		ruRU = "Охотники бьют врага на расстоянии, приказывая питомцам атаковать, пока сами натягивают тетиву или заряжают ружье. Ружья и луки очень действенны и вблизи, и издалека. Кроме того, охотники очень подвижны. Они могут уклониться от атаки или задержать противника, чтобы выиграть время.",
-		enGB = "Hunters battle their foes at a distance, commanding their pets to attack while they nock their arrows and fire their guns. Though their missile weapons are effective at short and long ranges, hunters are also highly mobile. They can evade or restrain their foes to control the arena of battle.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_HUNTER_ROLE"] = {
-		ruRU = "Роль: |cffffffffбоец дальнего боя|r",
-		enGB = "Role: |cffffffffRanged Damage|r",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL1"] = {
-		ruRU = "Питомцы",
-		enGB = "Pets",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL2"] = {
-		ruRU = "Навыки снайпера",
-		enGB = "Sniper Training",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL3"] = {
-		ruRU = "Мятежная стрела",
-		enGB = "Wild Quiver",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL4"] = {
-		ruRU = "Черная стрела",
-		enGB = "Black Arrow",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL5"] = {
-		ruRU = "Звериный гнев",
-		enGB = "Bestial Wrath",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL1_DESC"] = {
-		ruRU = "Охотники приручают диких зверей, которые служат им, нападая на врагов и прикрывая хозяина.",
-		enGB = "Hunters tame the beasts of the wild, and those beasts serve in return by assaulting their enemies and shielding them from harm.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL2_DESC"] = {
-		ruRU = "Повышает вероятность критического удара способности Убийственный выстрел на 15%. Если охотник не двигается в течение 6 сек., на него накладывается эффект Навыки снайпера, увеличивающий урон от способностей Верный выстрел, Прицельный выстрел, Черная стрела и Разрывной выстрел на 6%.",
-		enGB = "Increases the critical strike chance of your Kill Shot ability by 15%, and while standing still for 6 sec, you gain Sniper Training increasing the damage done by your Steady Shot, Aimed Shot, Black Arrow and Explosive Shot by 6%.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL3_DESC"] = {
-		ruRU = "Если при автоматической стрельбе выстрел охотника наносит урон, он с вероятностью 12% делает дополнительный выстрел, наносящий 80% урона от оружия. Этот урон считается уроном от сил природы. Боеприпасы при этом не расходуются.",
-		enGB = "You have a 12% chance to shoot an additional shot when doing damage with your auto shot, dealing 80% weapon nature damage. Wild Quiver consumes no ammo.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL4_DESC"] = {
-		ruRU = "Поражает цель, повышая весь наносимый охотником урон по цели на 6% и нанося урон от темной магии.",
-		enGB = "Fires a Black Arrow at the target, increasing all damage done by you to the target by 6% and dealing Shadow damage.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL5_DESC"] = {
-		ruRU = "Питомца обуревает ярость, увеличивающая наносимый им урон на 50% на 10 sec. В ярости питомец не знает ни страха, ни жалости, и его может остановить только смерть.",
-		enGB = "Send your pet into a rage causing 50% additional damage for 10 sec. While enraged, the beast does not feel pity or remorse or fear and it cannot be stopped unless killed.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_ROGUE_DESC"] = {
-		ruRU = "Разбойники часто нападают из теней, начиная бой комбинацией свирепых ударов. В затяжном бою они изматывают врага тщательно продуманной серией атак, прежде чем нанести решающий удар. Разбойнику следует внимательно отнестись к выбору противника, чтобы оптимально использовать тактику, и не упустить момент, когда надо спрятаться или бежать, если ситуация складывается не в их пользу.",
-		enGB = "Rogues often initiate combat with a surprise attack from the shadows, leading with vicious melee strikes. When in protracted battles, they utilize a successive combination of carefully chosen attacks to soften the enemy up for a killing blow. Rogues must take special care when selecting targets so that their combo attacks are not wasted, and they must be conscious of when to hide or flee if a battle turns against them.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_ROGUE_ROLE"] = {
-		ruRU = "Роль: |cffffffffбоец ближнего боя|r",
-		enGB = "Role: |cffffffffMelee Damage|r",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_ROGUE_SPELL1"] = {
-		ruRU = "Серии приемов",
-		enGB = "Combo Points",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_ROGUE_SPELL2"] = {
-		ruRU = "Руби, кромсай!",
-		enGB = "Hack and Slash",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_ROGUE_SPELL3"] = {
-		ruRU = "Сразу к делу",
-		enGB = "Cut to the Chase",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_ROGUE_SPELL4"] = {
-		ruRU = "Танец теней",
-		enGB = "Shadow Dance",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_ROGUE_SPELL5"] = {
-		ruRU = "Череда убийств",
-		enGB = "Killing Spree",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_ROGUE_SPELL1_DESC"] = {
-		ruRU = "Разбойники могут применять серии приемов, что позволяет сделать завершающий удар поистине сокрушительным.",
-		enGB = "By planning and combining successive melee attacks, rogues can build up combo points that allow them to deliver devastating finishing blows in combat.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_ROGUE_SPELL2_DESC"] = {
-		ruRU = "С вероятностью 5% позволяет атаковать противника повторно после того, как разбойник ударит его мечом или топором.",
-		enGB = "Gives you a 5% chance to get an extra attack on the same target after hitting your target with your Sword or Axe.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_ROGUE_SPELL3_DESC"] = {
-		ruRU = "С вероятностью 100% применение способностей Потрошение и Отравление возобновит продолжительность действия вашей способности Мясорубка до максимально возможного времени.",
-		enGB = "Your Eviscerate and Envenom abilities have a 100% chance to refresh your Slice and Dice duration.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_ROGUE_SPELL4_DESC"] = {
-		ruRU = "Начав танец теней, разбойник может использовать способности, которые обычно требуют состояния незаметности.",
-		enGB = "Enter the Shadow Dance, allowing the use of abilities regardless of being stealthed.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_ROGUE_SPELL5_DESC"] = {
-		ruRU = "Разбойник проходит сквозь тень, от противника к противнику, в радиусе 10 м, атакуя каждые 0,5 секунды обоими оружиями, пока не будет совершено 5 атак. Во время действия эффекта наносимый урон возрастает на 20%. Разбойник может атаковать одну цель несколько раз. Не затрагивает невидимые или незаметные цели.",
-		enGB = "Step through the shadows from enemy to enemy within 10 yards, attacking an enemy every .5 secs with both weapons until 5 assaults are made, and increasing all damage done by 20% for the duration. Can hit the same target multiple times. Cannot hit invisible or stealthed targets.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PRIEST_DESC"] = {
-		ruRU = "Жрецы могут задействовать мощную целительную магию, чтобы спасти себя и своих спутников. Им подвластны и сильные атакующие заклинания, но физическая слабость и отсутствие прочных доспехов заставляют жрецов бояться сближения с противником. Опытные жрецы используют боевые и контролирующие способности, не допуская гибели членов отряда.",
-		enGB = "Priests use powerful healing magic to fortify themselves and their allies. They also wield powerful offensive spells from a distance, but can be overwhelmed by enemies due to their physical frailty and minimal armor. Experienced priests carefully balance the use of their offensive powers when tasked with keeping their party alive.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PRIEST_ROLE"] = {
-		ruRU = "Роли: |cffffffffлекарь или боец дальнего боя|r",
-		enGB = "Roles: |cffffffffHealer or Ranged Damage|r",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PRIEST_SPELL1"] = {
-		ruRU = "Новая надежда",
-		enGB = "Renewed Hope",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PRIEST_SPELL2"] = {
-		ruRU = "Духовное направление",
-		enGB = "Spiritual Guidance",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PRIEST_SPELL3"] = {
-		ruRU = "Энергия Тьмы",
-		enGB = "Shadow Power",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PRIEST_SPELL4"] = {
-		ruRU = "Облик Тьмы",
-		enGB = "Shadowform",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PRIEST_SPELL5"] = {
-		ruRU = "Оберегающий дух",
-		enGB = "Guardian Spirit",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PRIEST_SPELL1_DESC"] = {
-		ruRU = "Повышает вероятность критического целебного эффекта заклинаний Быстрое исцеление, Великое исцеление и Исповедь на целях, находящихся под воздействием эффекта Ослабленная душа, на 4%. С вероятностью 100% после применения заклинания Слово силы: Щит урон, получаемый всеми участниками группы или рейда, на 60 sec. уменьшится на 3%.",
-		enGB = "Increases the critical effect chance of your Flash Heal, Greater Heal and Penance (Heal) spells by 4% on targets afflicted by the Weakened Soul effect, and you have a 100% chance to reduce all damage taken by 3% for 1 min to all friendly party and raid targets when you cast Power Word: Shield.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PRIEST_SPELL2_DESC"] = {
-		ruRU = "Увеличивает силу заклинаний на 25% от вашего показателя духа.",
-		enGB = "Increases spell power by 25% of your total Spirit.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PRIEST_SPELL3_DESC"] = {
-		ruRU = "Увеличивает дополнительный урон от критических эффектов заклинаний Взрыв разума, Пытка разума и Слово Тьмы: Смерть на 100%.",
-		enGB = "Increases the critical strike damage bonus of your Mind Blast, Mind Flay, and Shadow Word: Death spells by 100%.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PRIEST_SPELL4_DESC"] = {
-		ruRU = "Жрец принимает облик Тьмы, в котором наносимый им урон от темной магии увеличивается на 15%, получаемый урон уменьшается на 15%, а уровень создаваемой угрозы понижается на 30%. В этом облике нельзя использовать светлую магию, за исключением некоторых заклинаний. Заклинания магии тьмы усиливаются.",
-		enGB = "Assume a Shadowform, increasing your Shadow damage by 15%, reducing all damage done to you by 15% and threat generated by 30%. However, you may not cast Holy spells while in this form, with a few exceptions. Increases Shadow damage.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_PRIEST_SPELL5_DESC"] = {
-		ruRU = "Призывает оберегающего духа для охраны дружественной цели. Дух улучшает действие всех эффектов исцеления на выбранного союзника на 40% и спасает его от смерти, жертвуя собой. Смерть духа прекращает действие эффекта улучшенного исцеления, но восстанавливает цели 50% ее максимального запаса здоровья.",
-		enGB = "Calls upon a guardian spirit to watch over the friendly target. The spirit increases the healing received by the target by 40%, and also prevents the target from dying by sacrificing itself. This sacrifice terminates the effect but heals the target of 50% of their maximum health.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_DESC"] = {
-		ruRU = "Рыцари смерти сходятся с противником в ближнем бою, дополняя удары клинка темной магией, которая делает врага уязвимым или ранит его нечестивой энергией. Они провоцируют противников, вынуждая их сражаться один на один и не подпуская их к более слабым союзникам. Чтобы не дать противнику ускользнуть, рыцари смерти должны постоянно помнить о силе, извлекаемой из рун, и соответствующим образом направлять свои атаки.",
-		enGB = "Death Knights engage their foes up-close, supplementing swings of their weapons with dark magic that renders enemies vulnerable or damages them with unholy power. They drag foes into one-on-one conflicts, compelling them to focus their attacks away from weaker companions. To prevent their enemies from fleeing their grasp, death knights must remain mindful of the power they call forth from runes, and pace their attacks appropriately.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_ROLE"] = {
-		ruRU = "Роли: |cffffffffтанк или боец ближнего боя|r",
-		enGB = "Roles: |cffffffffTank or Melee Damage|r",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_SPELL1"] = {
-		ruRU = "Гравирование",
-		enGB = "Runeforging",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_SPELL2"] = {
-		ruRU = "Бродячая чума",
-		enGB = "Wandering Plague",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_SPELL3"] = {
-		ruRU = "Ветеран третьей войны",
-		enGB = "Veteran of the Third War",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_SPELL4"] = {
-		ruRU = "Костяной щит",
-		enGB = "Bone Shield",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_SPELL5"] = {
-		ruRU = "Истерия",
-		enGB = "Hysteria",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_SPELL1_DESC"] = {
-		ruRU = "Рыцари смерти связаны со своими клинками и могут высекать на них руны, увеличивая силу оружия.",
-		enGB = "Death knights have a personal connection with their blades, and can forge runes into them in order to increase their power.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_SPELL2_DESC"] = {
-		ruRU = "Когда болезнь, которой рыцарь смерти заразил противника, причиняет ему урон, то с вероятностью, равной вероятности нанесения критического удара в ближнем бою, она нанесет еще 100% урона цели и всем врагам в радиусе 8 м. Заклинание игнорирует цели, находящиеся под воздействием эффектов, которые прерываются при получении урона.",
-		enGB = "When your diseases damage an enemy, there is a chance equal to your melee critical strike chance that they will cause 100% additional damage to the target and all enemies within 8 yards. Ignores any target under the effect of a spell that is cancelled by taking damage.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_SPELL3_DESC"] = {
-		ruRU = "Повышает силу рыцаря смерти на 6%, выносливость на 3%, а мастерство – на 6.",
-		enGB = "Increases your total Strength by 6%, your Stamina by 3%, and your expertise by 6.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_SPELL4_DESC"] = {
-		ruRU = "Вокруг рыцаря смерти начинают вращаться 3 кости. Каждая атака, нанесшая урон рыцарю смерти, уничтожает 1 кость. До тех пор, пока остается хотя бы одна кость, рыцарь смерти получает на 20% меньше урона и наносит на 2% больше урона всеми атаками, заклинаниями и способностями.",
-		enGB = "The Death Knight is surrounded by 3 whirling bones. Each damaging attack that lands consumes 1 bone. While at least 1 bone remains, the Death Knight takes 20% less damage from all sources and deals 2% more damage with all attacks, spells and abilities.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_SPELL5_DESC"] = {
-		ruRU = "Погружает дружественную цель в кровожадное безумие на 30 sec. Цель впадает в исступление: наносимый ею физический урон увеличивается на 20%, но каждую секунду она теряет 1% от максимального запаса здоровья.",
-		enGB = "Induces a friendly unit into a killing frenzy for 30 sec. The target is Enraged, which increases their physical damage by 20%, but causes them to lose health equal to 1% of their maximum health every second.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_SHAMAN_DESC"] = {
-		ruRU = "В бою шаман ставит на землю контролирующие и наносящие урон тотемы, чтобы помочь союзникам и ослабить противника. Шаманы могут как вступать в ближний бой, так и атаковать с расстояния. Мудрый шаман всегда старается учитывать сильные и слабые стороны врага.",
-		enGB = "During combat, shaman place damaging and controlling totems on the ground to maximize their effectiveness while hindering their enemies. Shaman are versatile enough to battle foes up close or at range, but wise shaman choose their avenue of attack based on their enemies’ strengths and weaknesses.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_SHAMAN_ROLE"] = {
-		ruRU = "Роли: |cffffffffлекарь, боец дальнего или ближнего боя|r",
-		enGB = "Roles: |cffffffffHealer, Ranged Damage, or Melee Damage|r",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_SHAMAN_SPELL1"] = {
-		ruRU = "Тотемы",
-		enGB = "Totems",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_SHAMAN_SPELL2"] = {
-		ruRU = "Гибкость разума",
-		enGB = "Flexible Mind",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_SHAMAN_SPELL3"] = {
-		ruRU = "Перегрузка молнии",
-		enGB = "Lightning Overload",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_SHAMAN_SPELL4"] = {
-		ruRU = "Щит земли",
-		enGB = "Earth Shield",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_SHAMAN_SPELL5"] = {
-		ruRU = "Покорение стихий",
-		enGB = "Elemental Mastery",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_SHAMAN_SPELL1_DESC"] = {
-		ruRU = "Тотемы шамана обладают массой положительных свойств: они увеличивают скорость атаки, эффективность восстановления и наносимый противнику урон.",
-		enGB = "Shaman totems have many positive effects: they can increase attack speed, healing efficiency, or damage done.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_SHAMAN_SPELL2_DESC"] = {
-		ruRU = "Увеличивает силу атаки на 100% от величины интеллекта шамана.",
-		enGB = "Increases your Attack Power by 100% of your Intellect.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_SHAMAN_SPELL3_DESC"] = {
-		ruRU = "При произнесении заклинаний Молния и Цепная молния шаман с вероятностью 33% может поразить противника еще одним таким же заклинанием. Второе заклинание не требует затрат маны, наносит в два раза меньше урона и не создает угрозы.",
-		enGB = "Gives your Lightning Bolt and Chain Lightning spells a 33% chance to cast a second, similar spell on the same target at no additional cost that causes half damage and no threat.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_SHAMAN_SPELL4_DESC"] = {
-		ruRU = "Защищает цель земляным щитом, который уменьшает время, теряемое из-за получения урона при произнесении и поддержании заклинаний, на 30%. Кроме того, атаки восстанавливают защищенной цели здоровье, но этот эффект срабатывает не чаще, чем раз в несколько секунд. 6 зарядов.",
-		enGB = "Protects the target with an earthen shield, reducing casting or channeling time lost when damaged by 30% and causing attacks to heal the shielded target. This effect can only occur once every few seconds. 6 charges.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_SHAMAN_SPELL5_DESC"] = {
-		ruRU = "Делает следующее заклинание Молния, Цепная молния или Выброс лавы мгновенным. Повышает скорость произнесения заклинаний на 15% на 15 sec. Имеет общее время восстановления с заклинанием Природная стремительность.",
-		enGB = "When activated, your next Lightning Bolt, Chain Lightning or Lava Burst spell becomes an instant cast spell. In addition, you gain 15% spell haste for 15 sec. Elemental Mastery shares a cooldown with Nature's Swiftness.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_MAGE_DESC"] = {
-		ruRU = "Маги уничтожают врагов тайными заклинаниями. Несмотря на магическую силу, маги хрупки, не носят тяжелых доспехов, поэтому уязвимы в ближнем бою. Умные маги при помощи заклинаний удерживают врага на расстоянии или вовсе обездвиживают его.",
-		enGB = "Mages demolish their foes with arcane incantations. Although they wield powerful offensive spells, mages are fragile and lightly armored, making them particularly vulnerable to close-range attacks. Wise mages make careful use of their spells to keep their foes at a distance or hold them in place.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_MAGE_ROLE"] = {
-		ruRU = "Роль: |cffffffffбоец дальнего боя|r",
-		enGB = "Role: |cffffffffRanged Damage|r",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_MAGE_SPELL1"] = {
-		ruRU = "Телепортация",
-		enGB = "Teleportation",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_MAGE_SPELL2"] = {
-		ruRU = "Ледяные пальцы",
-		enGB = "Fingers of Frost",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_MAGE_SPELL3"] = {
-		ruRU = "Чародейское могущество",
-		enGB = "Arcane Potency",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_MAGE_SPELL4"] = {
-		ruRU = "Мощь тайной магии",
-		enGB = "Arcane Power",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_MAGE_SPELL5"] = {
-		ruRU = "Возгорание",
-		enGB = "Combustion",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_MAGE_SPELL1_DESC"] = {
-		ruRU = "Маги обладают способностью перемещаться между городами и создавать пищу и воду, где бы они ни находились.",
-		enGB = "Mages possess the ability to transport themselves and their allies between cities and can summon replenishing food and water.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_MAGE_SPELL2_DESC"] = {
-		ruRU = "При наложении эффектов окоченения вы с 15%-й вероятностью можете попасть под действие эффекта Ледяные пальцы. Во время его действия для 2 ваших последующих заклинаний цель считается замороженной.",
-		enGB = "Gives your Chill effects a 15% chance to grant you the Fingers of Frost effect, which treats your next 2 spells cast as if the target were Frozen.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_MAGE_SPELL3_DESC"] = {
-		ruRU = "Повышает вероятность нанести критический урон заклинанием, накладываемым в состоянии Ясность мысли или Величие разума на 30%.",
-		enGB = "Increases the critical strike chance of your next damaging spell by 30% after gaining Clearcasting or Presence of Mind.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_MAGE_SPELL4_DESC"] = {
-		ruRU = "При использовании увеличивает урон, наносимый вашими заклинаниями, на 20% и затраты маны на 20%.",
-		enGB = "When activated, your spells deal 20% more damage while costing 20% more mana to cast.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_MAGE_SPELL5_DESC"] = {
-		ruRU = "При использовании повышает критический урон заклинаний магии огня на 50%. Каждое заклинание магии огня, достигшее цели, увеличивает вероятность нанесения критического урона от огня на 10%. Этот эффект длится, пока 3 заклинания огня не нанесут критический урон прямым действием.",
-		enGB = "When activated, this spell increases your critical strike damage bonus with Fire damage spells by 50%, and causes each of your Fire damage spell hits to increase your critical strike chance with Fire damage spells by 10%. This effect lasts until you have caused 3 non-periodic critical strikes with Fire spells.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_DESC"] = {
-		ruRU = "Чернокнижники уничтожают ослабленного противника, сочетая увечащие проклятия и темную магию. Находясь под защитой своих питомцев, чернокнижники разят врага на расстоянии. Физически слабые колдуны не могут носить тяжелую броню, поэтому подставляют под вражеские удары своих слуг.",
-		enGB = "Warlocks burn and destroy weakened foes with a combination of crippling illnesses and dark magic. While their demon pets protect and enhance them, warlocks strike at their enemies from a distance. As physically weak spellcasters bereft of heavy armor, cunning warlocks allow their minions to take the brunt of enemy attacks in order to save their own skin.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_ROLE"] = {
-		ruRU = "Роль: |cffffffffбоец дальнего боя|r",
-		enGB = "Role: |cffffffffRanged Damage|r",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL1"] = {
-		ruRU = "Демоны-питомцы",
-		enGB = "Demon Pets",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL2"] = {
-		ruRU = "Обратный поток",
-		enGB = "Backflow",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL3"] = {
-		ruRU = "Изничтожение",
-		enGB = "Eradication",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL4"] = {
-		ruRU = "Метаморфоза",
-		enGB = "Metamorphosis",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL5"] = {
-		ruRU = "Блуждающий дух",
-		enGB = "Haunt",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL1_DESC"] = {
-		ruRU = "Чернокнижники подчиняют своей воле демонов: обитатели Круговерти Пустоты защищают своих хозяев и сражаются с их врагами.",
-		enGB = "Warlocks bind demons to their will; these infernal denizens defend their masters with their lives or rain death upon their enemies.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL2_DESC"] = {
-		ruRU = "После произнесения заклинания Поджигание скорость произнесения и общее время восстановления следующих трех заклинаний категории Разрушение уменьшается на 30%.",
-		enGB = "When you cast Conflagrate, the cast time and global cooldown of your next three Destruction spells is reduced by 30%.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL3_DESC"] = {
-		ruRU = "При нанесении урона Порчей чернокнижник с 6%-й вероятностью может увеличить скорость применения заклинаний на 20%.",
-		enGB = "When you deal damage with Corruption, you have 6% chance to increase your spell casting speed by 20%.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL4_DESC"] = {
-		ruRU = "Чернокнижник превращается в демона на 30 sec. Его броня усиливается на 600%, наносимый урон увеличивается на 20%, вероятность, что атаки ближнего боя нанесут ему критическое повреждение, уменьшается на 6%, а длительность действия эффектов оглушения и сковывания снижается на 50%. Чернокнижник приобретает уникальные демонические способности вдобавок к своим обычным.",
-		enGB = "You transform into a Demon for 30 sec. This form increases your armor contribution from items by 600%, damage by 20%, reduces the chance you'll be critically hit by melee attacks by 6% and reduces the duration of stun and snare effects by 50%. You gain some unique demon abilities in addition to your normal abilities.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL5_DESC"] = {
-		ruRU = "В противника вселяется блуждающий дух, который наносит урон от темной магии и увеличивает периодический урон от ваших заклинаний темной магии на 20% на 12 sec. Если заклинание было рассеяно или его действие завершилось, блуждающий дух возвращается к чернокнижнику, исцеляя его на 100% от урона, нанесенного противнику.",
-		enGB = "You send a ghostly soul into the target, dealing Shadow damage and increasing all damage done by your Shadow damage-over-time effects on the target by 20% for 12 sec. When the Haunt spell ends or is dispelled, the soul returns to you, healing you for 100% of the damage it did to the target.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEMONHUNTER_DESC"] = {
-		ruRU = "Охотники на демонов не пользуются тяжелой броней, вместо этого полагаясь на скорость, которая дает им возможность стремительно приближаться к противнику и наносить ему урон одноручным оружием. Однако иллидари не стоит забывать о том, чтобы использовать свою ловкость и в защитных целях, обеспечивая себе благоприятный исход битвы.",
-		enGB = "Forgoing heavy armor, Demon Hunters capitalize on speed, closing the distance quickly to strike enemies with one-handed weapons. However, Illidari must also use their agility defensively to ensure that battles end favorably.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEMONHUNTER_ROLE"] = {
-		ruRU = "Роли: |cffffffffтанк или боец ближнего боя|r",
-		enGB = "Roles: |cffffffffTank or Melee Damage|r",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEMONHUNTER_SPELL1"] = {
-		ruRU = "Призрачное зрение",
-		enGB = "Spectral Sight",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEMONHUNTER_SPELL2"] = {
-		ruRU = "Непревзойденная маневренность",
-		enGB = "Unparalleled Mobility",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEMONHUNTER_SPELL3"] = {
-		ruRU = "Расколотые души",
-		enGB = "Shattered Souls",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEMONHUNTER_SPELL4"] = {
-		ruRU = "Метаморфоза",
-		enGB = "Metamorphosis",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEMONHUNTER_SPELL5"] = {
-		ruRU = "Тень охотника",
-		enGB = "Hunter's Shadow",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEMONHUNTER_SPELL1_DESC"] = {
-		ruRU = "За кажущейся слепотой охотников на демонов скрывается истинная сила их обостренного восприятия. Они способны обнаруживать даже хорошо замаскировавшихся противников.",
-		enGB = "The Demon Hunters’ apparent blindness belies their true powers of perception. They rely on magically augmented sight to detect enemies, even those that hide behind obstacles.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEMONHUNTER_SPELL2_DESC"] = {
-		ruRU = "Охотники на демонов могут выполнять двойные прыжки, длинные кувырки и даже распахивать свои гигантские крылья, которые позволяют им планировать в воздухе и внезапно нападать на врагов сверху.",
-		enGB = "Demon Hunters can double jump, vault in and out of combat, and unfold their monstrous wings, surprising enemies from above with devastating attacks.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEMONHUNTER_SPELL3_DESC"] = {
-		ruRU = "На месте убитого противника иногда остается фрагмент души. Подойдя к фрагменту души, охотник на демонов поглощает его, восстанавливая 25% от максимального запаса здоровья.",
-		enGB = "Killing an enemy sometimes creates a Soul Fragment that is consumed when you approach it, healing you for 25% of maximum health.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEMONHUNTER_SPELL4_DESC"] = {
-		ruRU = "Охотник на демонов освобождает демоническую энергию, обращаясь в демона. В облике демона его способности заменяются на более мощные, и в зависимости от специализации или увеличивая рейтинг скорости, или рейтинг брони.",
-		enGB = "You release demonic energy, turning into a demon. In demon form, your abilities become more powerful and your haste/armor rating increases (depending on the specialization).",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DEMONHUNTER_SPELL5_DESC"] = {
-		ruRU = "Освобождает свою демоническую энергию, материализуя её в виде тени охотника на демонов, которая атакует те же цели, что и сам охотник, при этом усиливая его атаки.",
-		enGB = "Releases demonic energy, manifesting it in the form of your shadow, which will attack your targets and improve your attacks.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DRUID_DESC"] = {
-		ruRU = "Друиды могут подходить к сражению совершенно по-разному. Они вольны играть почти любую роль в команде: быть целителями, танками или бойцами, но должны помнить об особенностях каждой роли. Друид вынужден внимательно подбирать облик к ситуации, так как каждый из них служит определенной цели.",
-		enGB = "Druids are versatile combatants, in that they can fulfill nearly every role – healing, tanking, and damage dealing. It’s critical that druids tailor the form they choose to the situation, as each form bears a specific purpose.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DRUID_ROLE"] = {
-		ruRU = "Роли: |cffffffffтанк, лекарь, боец дальнего или ближнего боя|r",
-		enGB = "Roles: |cffffffffTank, Healer, Ranged Damage, or Melee Damage|r",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DRUID_SPELL1"] = {
-		ruRU = "Изменение облика",
-		enGB = "Shapeshifting",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DRUID_SPELL2"] = {
-		ruRU = "Сердце дикой природы",
-		enGB = "Heart of the Wild",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DRUID_SPELL3"] = {
-		ruRU = "Затмение",
-		enGB = "Eclipse",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DRUID_SPELL4"] = {
-		ruRU = "Древо жизни",
-		enGB = "Tree of Life",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DRUID_SPELL5"] = {
-		ruRU = "Облик лунного совуха",
-		enGB = "Moonkin Form",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DRUID_SPELL1_DESC"] = {
-		ruRU = "Cпособность друидов менять облик позволяет им играть разные роли в команде: танка, целителя или бойца. Также смена облика дает возможность быстро передвигаться по суше, морю и воздуху.",
-		enGB = "Druids are versatile combatants, in that they can fulfill nearly every role – healing, tanking, and damage dealing. It’s critical that druids tailor the form they choose to the situation, as each form bears a specific purpose.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DRUID_SPELL2_DESC"] = {
-		ruRU = "Повышает интеллект на 20%. Также повышает выносливость в облике медведя и лютого медведя на 10%, а в облике кошки – силу атаки на 10%.",
-		enGB = "Increases your Intellect by 20%. In addition, while in Bear or Dire Bear Form your Stamina is increased by 10% and while in Cat Form your attack power is increased by 10%.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DRUID_SPELL3_DESC"] = {
-		ruRU = "После нанесения критического удара заклинанием Звездный огонь с вероятностью 100% урон от заклинания Гнев увеличится на 40%. После нанесения критического удара заклинанием Гнев с вероятностью 60% рейтинг критического удара заклинания Звездный огонь повысится на 40%.",
-		enGB = "When you critically hit with Starfire, you have a 100% chance of increasing damage done by Wrath by 40%. When you critically hit with Wrath, you have a 60% chance of increasing your critical strike chance with Starfire by 40%.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DRUID_SPELL4_DESC"] = {
-		ruRU = "Принять облик Древа Жизни. В этом облике вы увеличиваете эффективность исцеления всех участников группы или рейда в радиусе 100 м на 6% и можете произносить только заклинания школы Исцеления",
-		enGB = "Shapeshift into the Tree of Life. While in this form you increase healing received by 6% for all party and raid members within 100 yards, and you can only cast Restoration spells.",
-	},
-	["CHARACTER_CREATE_INFO_CLASS_DRUID_SPELL5_DESC"] = {
-		ruRU = "Друид превращается в лунного совуха. Бонус к броне за счет экипировки увеличивается на 370%, урон, получаемый во время оглушения, уменьшается на 15%, а вероятность критического эффекта заклинаний участников группы или рейда в радиусе 100 м повышается на 5%. При критическом ударе заклинанием по одиночной цели друид может мгновенно восстановить 2% от общего запаса маны. В облике лунного совуха нельзя произносить исцеляющие и воскрешающие заклинания.",
-		enGB = "Shapeshift into Moonkin Form. While in this form the armor contribution from items is increased by 370%, damage taken while stunned is reduced by 15%, and all party and raid members within 100 yards have their spell critical chance increased by 5%. Single target spell critical strikes in this form have a chance to instantly regenerate 2% of your total mana. The Moonkin can not cast healing or resurrection spells while shapeshifted.",
-	},
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_DESC"] = {
-		ruRU = "Люди – молодая раса, а потому их способности разносторонни. Искусство боя, ремесло и магия доступны им в равной степени. Жизнелюбие и уверенность в своих силах позволили людям создать могучие королевства. В эпоху, когда войны длятся веками, люди стремятся возродить былую славу и заложить основу для будущих блистательных побед.",
-		enGB = "Humans are a young race, and thus highly versatile, mastering the arts of combat, craftsmanship, and magic with stunning efficiency. The humans’ valor and optimism have led them to build some of the world’s greatest kingdoms. In this troubled era, after generations of conflict, humanity seeks to rekindle its former glory and forge a shining new future.",
-	},
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL1"] = {
-		ruRU = "Одарённость",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL2"] = {
-		ruRU = "Усердные тренировки",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL3"] = {
-		ruRU = "Выживание",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL5"] = {
-		ruRU = "Каждый за себя (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL6"] = {
-		ruRU = "Всплеск адреналина (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL1_DESC"] = {
-		ruRU = "Люди - мастера на все руки. Сила, ловкость и интеллект повышены на 2%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL2_DESC"] = {
-		ruRU = "Упорство, труд и выучка способны преодолеть любые преграды. Меткость повышена на 2%, Мастерство - на 2 ед.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL3_DESC"] = {
-		ruRU = "Борьба с миром за каждый лишний вздох, умение выживать и продолжать движение к цели - все это знакомо каждому Человеку. Получаемый урон снижен на 2%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL5_DESC"] = {
-		ruRU = "Оказавшись в трудной ситуации, вы сделаете все необходимое для выживания. Применение способности рассеивает большинство эффектов потери контроля над персонажем (кроме эффектов Ужаса и Превращения). Имеет общее 90-секундное время восстановления с другими подобными заклинаниями.\nПерезарядка: 120 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL6_DESC"] = {
-		ruRU = "Опасность и угроза жизни подстегивают ваше тело, на короткое время выводя вас за рамки возможного, повышая наносимый урон и исцеление на 5%, а также снижая получаемый урон на 5% на 10 сек.\nПерезарядка: 30 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_DESC"] = {
-		ruRU = "В древние времена дворфов интересовали лишь богатства, которые они добывали из недр земли. Однажды во время раскопок они обнаружили следы древней расы богоподобных существ, которая создала дворфов и наделила их некими могущественными правами. Дворфы возжелали узнать больше и посвятили себя поиску древних сокровищ и знаний. Сегодня дворфов-археологов можно встретить в любом уголке Азерота.",
-		enGB = "In ages past, the dwarves cared only for riches taken from the earth's depths. Then records surfaced of a god-like race said to have given the dwarves life... and an enchanted birthright. Driven to learn more, the dwarves devoted themselves to the pursuit of lost artifacts and ancient knowledge. Today dwarven archaeologists are scattered throughout the globe.",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL1"] = {
-		ruRU = "Вдохновение",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL2"] = {
-		ruRU = "Точный расчет",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL3"] = {
-		ruRU = "Стойкость Камня",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL5"] = {
-		ruRU = "Аватара (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL6"] = {
-		ruRU = "Воодушевляющий клич (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL1_DESC"] = {
-		ruRU = "Вечно веселые и неунывающие, Дворфы одним своим присутствием поднимают мораль союзников, повышая скорость атаки и произнесения заклинаний всех членов группы на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL2_DESC"] = {
-		ruRU = "Все Дворфы знают, как направить удар или заклинание с максимальной эффективностью. Модификатор критического урона и исцеления всех атак и заклинаний увеличен на 4%, а вероятность критического эффекта - на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL3_DESC"] = {
-		ruRU = "Устойчивость и сила Дворфов воспета в легендах. Показатель блокирования увеличен на 15%, а вероятность блокирования - на 3%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL5_DESC"] = {
-		ruRU = "Вы пробуждаете силу наследия Титанов, обращая свою плоть в камень, мгновенно рассеивая все эффекты болезней, яда и кровотечения, а также приобретая полную невосприимчивость к ним и оглушению, ошеломлению, параличу сроком на 3 сек.\nПерезарядка: 120 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL6_DESC"] = {
-		ruRU = "Вы издаете боевой клич, поднимая мораль членов вашей группы. Основные характеристики целей повышаются на 2% сроком на 10 сек.\nПерезарядка: 30 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_DESC"] = {
-		ruRU = "Десять тысяч лет назад ночные эльфы основали огромную империю, но неразумное использование первородной магии привело ее к падению. Полные скорби, они удалились в леса и пребывали в изоляции вплоть до возвращения их вековечного врага, Пылающего Легиона. Тогда ночным эльфам пришлось пожертвовать своим уединенным образом жизни и сплотиться, чтобы отвоевывать свое место в новом мире.",
-		enGB = "Ten thousand years ago, the night elves founded a vast empire, but their reckless use of primal magic brought them to ruin. In grief, they withdrew to the forests and remained isolated there until the return of their ancient enemy, the Burning Legion. With no other choice, the night elves emerged at last from their seclusion to fight for their place in the new world.",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL1"] = {
-		ruRU = "Дыхание природы",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL2"] = {
-		ruRU = "Благословение Элуны",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL3"] = {
-		ruRU = "Путь Кенария",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL5"] = {
-		ruRU = "Слиться с тенью (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL6"] = {
-		ruRU = "Милость Элуны (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL1_DESC"] = {
-		ruRU = "Несмотря на потерю бессмертия, Ночные эльфы сохранили близость к природе, которая поддерживает их в час нужды. Применение способностей и заклинаний с шансом 25% восстановит вам 9 ед. силы рун, ярости, энергии или 6% от базового запаса маны (в зависимости от того, какой ресурс используется).",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL2_DESC"] = {
-		ruRU = "Ночные эльфы отмечены благосклонностью богини. Скорость атаки и произнесения заклинаний увеличена на 2%, а вероятность критического эффекта - на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL3_DESC"] = {
-		ruRU = "Благодаря учению Кенария, природные ловкость и проворство Ночных Эльфов развились и стали общеизвестны. Вероятность уклонения увеличена на 3%, получаемый магический урон снижен на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL5_DESC"] = {
-		ruRU = "Вы сливаетесь с тенями, понижая вероятность того, что противник вас заметит. Действует до отмены или любого движения. По окончании действия эффекта восстанавливается прежний уровень угрозы по отношению к еще сражающимся противникам, при этом получаемый вами урон от атак и заклинаний снижается на 50% сроком на 3 сек.\nПерезарядка: 120 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL6_DESC"] = {
-		ruRU = "Вы возносите молитву богине и она отмечает указанного вами члена группы или рейда (или вас) своей милостью. Вероятность критических эффектов у атак, способностей и заклинаний отмеченной цели увеличивается на 10%, а показатель сопротивления - на 1.25 ед. за каждый уровень персонажа (вплоть до 100 ед.) сроком на 10 сек.\nПерезарядка: 30 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_DESC"] = {
-		ruRU = "Гномы Каз Модана не могут похвастаться статью, зато их интеллект позволил занять им достойное место в истории. Гномреган, подземное королевство, в свое время был чудом паровых технологий. Увы, вторжение троггов привело к разрушению города. Теперь славные строители Гномрегана скитаются по землям дворфов, по мере сил помогая своим союзникам.",
-		enGB = "Though small in stature, the gnomes of Khaz Modan have used their great intellect to secure a place in history. Indeed, their subterranean kingdom, Gnomeregan, was once a marvel of steam-driven technology. Even so, due to a massive trogg invasion, the city was lost. Now its builders are vagabonds in the dwarven lands, aiding their allies as best they can.",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL1"] = {
-		ruRU = "Наводчик",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL2"] = {
-		ruRU = "Пытливый ум",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL3"] = {
-		ruRU = "Живой механизм",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL5"] = {
-		ruRU = "Мастер побега (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL6"] = {
-		ruRU = "Мгновение ясности (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL1_DESC"] = {
-		ruRU = "Сочетание быстрой реакции и способностей к точным расчетам позволяют Гномам легко координировать действия своих союзников, повышая меткость всех участников группы на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL2_DESC"] = {
-		ruRU = "Живой ум и тяга к знаниям присущи всем Гномам. Максимальные показатели ярости, энергии и силы рун увеличены на 10 ед., а запас маны - на 5%. Соответствующие показатели ресурсов увеличиваются только в том случае, если Гном способен управлять ими.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL3_DESC"] = {
-		ruRU = "Гномы научились обращать свой низкий рост в преимущество, пользуясь своей проворностью и умением быстро принимать сложные решения. Вероятность уклонения увеличена на 3%, а вероятность получения критического удара снижена на 2%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL5_DESC"] = {
-		ruRU = "Вы обладаете поразительной способностью избегать любых ловушек. Снимает все эффекты обездвиживания и ограничения скорости передвижения, а также наделяет вас невосприимчивостью к ним на 3 сек. Пока действует эта способность, вы не активируете ловушки, которых касаетесь.\nПерезарядка: 120 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL6_DESC"] = {
-		ruRU = "Ваш разум приходит в состояние абсолютной ясности, на короткое время освобождаясь от каких-либо ограничений, в результате чего следующая способность или заклинание прямого урона, примененное в течении 3 сек., будет иметь гарантированный критический эффект.\nПерезарядка: 20 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_DESC"] = {
-		ruRU = "После бегства с родной планеты, Аргуса, дренеи тысячелетиями скитались по вселенной, спасаясь от Пылающего Легиона, пока, наконец, не нашли пристанище. Свою новую планету они разделили с орками-шаманами и назвали Дренором. Спустя некоторое время Легион поработил души орков и заставил их развязать войну на планете, уничтожив на ней почти всех миролюбивых дренеев. Немногие счастливчики спаслись бегством на Азерот и ищут теперь союзников для борьбы с Пылающим Легионом.",
-		enGB = "Driven from their home world of Argus, the honorable draenei fled the Burning Legion for eons before finding a remote planet to settle on. They shared this world with the shamanistic orcs and named it Draenor. In time the Legion corrupted the orcs, who waged war and nearly exterminated the peaceful draenei. A lucky few fled to Azeroth, where they now seek allies in their battle against the Burning Legion.",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL1"] = {
-		ruRU = "Вера Вдохновителя",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL2"] = {
-		ruRU = "Наследие",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL3"] = {
-		ruRU = "Духовная крепость",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL5"] = {
-		ruRU = "Дар Наару (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL6"] = {
-		ruRU = "Частица Наару (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL1_DESC"] = {
-		ruRU = "Дренейская непоколебимость, доброта и вера в своих друзей и свои силы окрыляет союзников. Показатель выносливости членов группы увеличивается на 2%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL2_DESC"] = {
-		ruRU = "Дренейская цивилизация была на вершине своего развития до пришествия Саргераса - и это наследие не будет забыто. Показатель интеллекта увеличен на 4%, а меткость в ближнем и дальнем бою - на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL3_DESC"] = {
-		ruRU = "Чистота души и вера, которой обладает каждый Дреней, позволяет ему пережить любые удары судьбы с поразительной стойкостью. Получаемый магический урон снижен на 2%, физический урон - на 1%, а длительность эффектов страха и оглушения сокращена на 10%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL5_DESC"] = {
-		ruRU = "Вы направляете крупицы силы Наару, доступные вам, исцеляя цель способности на 25% от максимального запаса здоровья за 10 сек.\nПерезарядка: 120 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL6_DESC"] = {
-		ruRU = "Вы наделяете цель, будь то союзник или противник, частицей силы Наару. Отмеченная цель будет испускать волну света, наносящую урон в размере 10% от показателя силы атаки или 20% от показателя силы заклинаний (в зависимости от того, что больше) всем противникам в радиусе 6 м. каждый раз, когда получает урон (но не чаще, чем раз в 0.5 сек)., или восстанавливать здоровье всем союзникам в том же объеме, если целью является ваш друг.\nСоюзник может быть отмечен только одной \"Частицей Наару\" единовременно.\nПерезарядка: 60 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_DESC"] = {
-		ruRU = "Первые упоминания о воргенах в Восточных королевствах относятся ко временам Третьей войны, куда они попали благодаря стараниям верховного мага Аругала. Сначала зверей использовали как живое оружие против Плети, но вскоре они стали бременем куда более тяжким, чем народ Лордерона мог вынести. Тех, кто сражался бок о бок с воргенами, поразило проклятье, заставлявшее их обращаться в таких же зверей. Занесенная в Гилнеас болезнь мгновенно распространилась, превратив добровольное затворничество граждан в вынужденную изоляцию. Все, кто выжил после страшного проклятья, ищут новый путь, которому последует их народ, и пытаются предугадать судьбу, которая его ожидает.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL1"] = {
-		ruRU = "Вожак стаи",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL2"] = {
-		ruRU = "Упоение охотой",
-		enGB = "Soul of the Beast",
-	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL3"] = {
-		ruRU = "Инстинкт зверя",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL5"] = {
-		ruRU = "Легкость тьмы (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL6"] = {
-		ruRU = "Призывный вой (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL1_DESC"] = {
-		ruRU = "Присутствие Воргена наполняет его союзников частичкой первозданной звериной ловкости, повышая показатель ловкости членов группы на 2%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL2_DESC"] = {
-		ruRU = "Дикая природа зверя сильна в любом Воргене. Применяя способности ближнего боя, дальнего боя, а также произнося заклинания, вы с некоторой вероятностью повышаете свою скорость атаки и произнесения заклинаний на 1% вплоть до 3% сроком на 10 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL3_DESC"] = {
-		ruRU = "Чутье Воргенов обостряется при возникновении опасности, а тело, измененное звериной сущностью - более устойчиво к атакам противника. Вероятность уклонения увеличена на 3%, а показатель брони - на 2%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL5_DESC"] = {
-		ruRU = "Вы используете внутренние ресурсы, предоставляемые вам проклятием Воргенов, повышая свою скорость перемещения на 50% сроком на 10 сек. Ваша скорость перемещения не может быть снижена ниже 100%.\nПерезарядка: 90 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL6_DESC"] = {
-		ruRU = "Вы издаете вой, разделяя ваш боевой дух с участниками вашей группы. Наносимый членами группы урон или эффективность их исцеления увеличивается на 1% сроком на 10 сек.\nПерезарядка: 30 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_DESC"] = {
-		ruRU = "Высшие эльфы - гордый народ с многовековой историей, потерявший всё. Преданные братьями, изгнанные со своей родины, терзаемые магическим голодом, они, тем не менее, не потеряли надежды. Многие из них мечтают о возрождении былого величия своего народа. Многие горят желанием отомстить Плети, что разрушила Кель-Талас, лишив эльфов дома, источника их силы - Солнечного Колодца и всего, что было им дорого. А многие хотят просто мирно жить.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL1"] = {
-		ruRU = "Тайные знания",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL2"] = {
-		ruRU = "Опыт долгожителя",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL3"] = {
-		ruRU = "Контрзаклинание",
-		enGB = "Solar Power",
-	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL5"] = {
-		ruRU = "Эгида магии (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL6"] = {
-		ruRU = "Тайная руна (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL1_DESC"] = {
-		ruRU = "Высшие Эльфы предпочли изгнание и одиночество пути Мщения своих собратьев - и поэтому им трудно доверять другим и заводить друзей. Но с теми, кто заслужили подобную честь, они готовы разделить знание и память своего великого народа. Повышает показатель интеллекта всех членов группы на 2%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL2_DESC"] = {
-		ruRU = "Высшие эльфы отличаются долгой жизнью и богатой историей, что позволяет им повысить свою боевую эффективность. Меткость повышена на 1%, а вероятность критического эффекта атак, способностей и заклинаний - на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL3_DESC"] = {
-		ruRU = "Наследие Высокорожденных позволяет вам противостоять направленным на вас чарам, даже в случае неразвитого магического дара. Получаемый магический урон снижен на 2%. С вероятностью 2% вы отразите заклинание обратно в противника (если это возможно).",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL5_DESC"] = {
-		ruRU = "Магический барьер окружает вас, наделяя невосприимчивостью к 1 следующему магическому эффекту потери контроля над персонажем, полученному в течение 2 сек.\nПерезарядка: 90 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL6_DESC"] = {
-		ruRU = "Вы создаете тайную руну, отмечая ею противника или союзника. Отмеченный противник получает на 7% больше урона от вас, а союзник - на 7% больше получаемого от вас исцеления, сроком на 10 сек.\nПерезарядка: 30 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_DESC"] = {
-		ruRU = "В результате самонадеянного плана Кель'таса, связанного с манагорнами, и рокового стечения обстоятельств, группа Син'дорай чудом пережила столкновение с чудовищным Повелителем Бездны - там, у Предела Тенебры - но дорогой ценой. Скитальцев Тенебры преобразили силы тени, навсегда изменив их тела и души, но железная воля эльфов оказалась не по зубам даже первозданной тьме. Воодушевленные своим возвращением на Азерот, они ищут способы обуздать новообретенные способности и уберечься от губительного влияния Бездны.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL1"] = {
-		ruRU = "Могущество Бездны",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL2"] = {
-		ruRU = "Вливание тьмы",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL3"] = {
-		ruRU = "Время Cумерек",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL4"] = {
-		ruRU = "Мрачное присутствие",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL5"] = {
-		ruRU = "Область Бездны (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL6"] = {
-		ruRU = "Дар Бездны (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL1_DESC"] = {
-		ruRU = "Вы излучаете энергию бездны, подпитывая способности своих союзников, повышая максимальный показатель их ярости, энергии и силы рун на 5 ед., а максимальный запас маны - на 5%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL2_DESC"] = {
-		ruRU = "Бездна подпитывает вас в час нужды. Пока ваш показатель основного ресурса ниже 50%, раз в 2 сек. вы восстанавливаете 3 ед. силы рун, ярости, энергии, или 2% от базовой маны.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL3_DESC"] = {
-		ruRU = "При произнесении заклинания или использовании способностей ближнего и дальнего боя, вы с некоторой вероятностью пробудите силы тьмы, которые увеличаат ваш показатель силы атаки на 4%, или силы заклинаний на 4%. (в зависимости от того, который из них больше) сроком на 10 сек. Срабатывает не чаще, чем раз в 20 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL4_DESC"] = {
-		ruRU = "Носители темных сил Пустоты, Эльфы Бездны внушают в сердца своих противников тревогу и неуверенность. Скорость передвижения противников в радиусе 8 м. снижена на 5%, их вероятность попадания - на 1%, а наносимый ими физический урон - на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL5_DESC"] = {
-		ruRU = "По вашей воле в указанной области радиусом 10 м. происходит прорыв Бездны, окутывающий область темными энергиями на 10 сек. Любой противник, находящийся в этой зоне, будет замедлен на 15%. Пока вы или ваши союзники находитесь в этой области, вы перемещаетесь на 15% быстрее, при этом скорость передвижения не может быть снижена ниже нормальной.\nПерезарядка: 90 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL6_DESC"] = {
-		ruRU = "Бездна отвечает на ваш призыв, наделяя вас удивительной силой. Следующее произнесенное заклинание или способность поглотят эффект \"Дар Бездны\", сократив время восстановления этой способности или заклинания на 7 сек.\nПерезарядка: 35 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_DESC"] = {
-		ruRU = "Дворфы Черного Железа известны крутым нравом и неколебимым упорством. Три столетия назад они положили начало Войне Трех Кланов, в результате которой многие дворфы Черного Железа перешли на службу к Повелителю Огня Рагнаросу. Теперь, когда их повелитель был изгнан из Азерота, многие из них поддержали королеву-регента Мойру Тауриссан и надеются вернуть доверие других кланов.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL1"] = {
-		ruRU = "Аура пламенеющей мощи",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL2"] = {
-		ruRU = "Песнь пламени",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL3"] = {
-		ruRU = "Пылкое неистовство",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL4"] = {
-		ruRU = "Огненная кровь",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL5"] = {
-		ruRU = "Молот глубин (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL6"] = {
-		ruRU = "Шлаковое извержение (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL1_DESC"] = {
-		ruRU = "Внутренняя энергия Дворфа Черного Железа, даруемая ему глубинным огнем, излучает ауру, которая наделяет его союзников частичкой первозданной мощи. Множитель критического эффекта всех атак, способностей и заклинаний у членов группы - повышен на 2%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL2_DESC"] = {
-		ruRU = "Песнь глубинного пламени отдается в сердцебиении каждого Дворфа Черного Железа, препятствуя попыткам остановить неумолимый натиск. Длительность эффектов замедления, сковывания, ошеломления, оглушения, сна, изгнания, немоты и контроля над разумом сокращена на 10%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL3_DESC"] = {
-		ruRU = "Огонь глубин укрепил тела Дворфов Черного Железа, но также изменил и характеры, наделив склонностью к вспышкам гнева и буйной ярости. К счастью, большинство Дворфов Черного Железа обратили это себе на пользу. Множитель критического эффекта всех атак, способностей и заклинаний увеличен на 2%, а вероятность критического удара - на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL4_DESC"] = {
-		ruRU = "Кровь, текущая в жилах любого Дворфа Черного Железа - подобна жидкой магме. Мгновенно охлаждаясь при контакте с воздухом, она закрывает раны своего владельца, повышая его защищенность. Показатель брони увеличен на 4%. Пока вы находитесь вне арены, при получении урона вы с некоторой вероятностью восстановите себе 2% от максимального запаса здоровья. Срабатывает не чаще, чем раз в 2.5 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL5_DESC"] = {
-		ruRU = "Вы воплощаете молот из подвластной вам энергии первозданного пламени, после чего метаете его в указанного противника, оглушая его на 3 секунды.\nПерезарядка: 90 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL6_DESC"] = {
-		ruRU = "Вы взываете к силам глубин, вызывая извержение в указанной области, оставляющее лужу шлака, покрывающую всех существ в указанной области. Находящиеся в области противники получают на 6% больше урона от ваших атак, способностей и заклинаний, а союзники - получают на 6% больше вашего исцеления.\nПерезарядка: 30 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_DESC"] = {
-		ruRU = "На протяжении многих тысячелетий армия Света сражалась с полчищами Пылающего Легиона в Круговерти Пустоты. Самые преданные делу дренеи проходили особый ритуал, чтобы стать одним целым с энергией Света и войти в число озаренных. Некоторые из них были призваны на Азерот и объединились со своими собратьями из Экзодара, чтобы помочь в грядущей войне с демонами и защитить наару от тех, кто смеет посягать на Свет.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL1"] = {
-		ruRU = "Высшее предназначение",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL2"] = {
-		ruRU = "Последний вздох",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL4"] = {
-		ruRU = "Милость света",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL5"] = {
-		ruRU = "Неизбежная кара (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL6"] = {
-		ruRU = "Свет Карающий (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL1_DESC"] = {
-		ruRU = "Само присутствие Озаренного, живого проводника воли Света, наполняет сердца его союзников чувством праведности и решимостью добиться цели любой ценой. Показатель силы атаки и силы заклинаний у каждого участника группы повышен на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL2_DESC"] = {
-		ruRU = "Умирая, последним актом самопожертвования вы отправляете остаточную энергию Света вашей души к союзникам в радиусе 20 м., восполняя им здоровье в размере 50% от вашего базового запаса здоровья и увеличивая получаемой ими исцеление из любых источников на 5% сроком на 10 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL3_DESC"] = {
-		ruRU = "Свет избрал вас и даровал вам знание о вашей судьбе. Никто и ничто не остановит вас на пути к предназначению, уготованному вам Светом. Наносимый урон и эффективность исцеления увеличены на 2%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL4_DESC"] = {
-		ruRU = "Свет милостив к своим живым орудиям, снижая получаемый Озаренным магический урон на 1%. После падения уровня здоровья до отметки в 35% или ниже, вы получите щит, снижающий получаемый вами урон на 8% сроком на 10 сек. Срабатывает не чаще, чем раз в 60 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL5_DESC"] = {
-		ruRU = "Путы Света вяжут указанного вами противника, пытающего скрыться от неизбежного и праведного отмщения. Мгновенно снижает скорость передвижения противника на 95%. С каждой секундой к противнику возвращается 5% от обычной скорости передвижения. Время действия - 10 сек.\nПерезарядка: 90 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL6_DESC"] = {
-		ruRU = "Свет беспощаден к своим врагам. Вы становитесь проводником его воли, поражая противника зарядом лучезарной энергии, нанося испепеляющий урон в размере 115% от силы атаки или 230% от силы заклинаний (в зависимости от того, какой показатель больше) и клеймите его, увеличивая получаемый им от вас урон на 6% сроком на 10 сек.\nПерезарядка: 60 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_DESC"] = {
-		ruRU = "Орки происходят с планеты Дренор. Пока Пылающий Легион не подчинил этот народ своей власти, орки посвящали себя исключительно мирным занятиям и шаманизму. Но однажды демоны поработили орков и погнали на войну с людьми Азерота. Много лет потребовалось, чтобы избавиться от гнета Легиона и обрести долгожданную свободу. Теперь орки вынуждены сражаться за место в чужом для них мире.",
-		enGB = "The orc race originated on the planet Draenor. A peaceful people with shamanic beliefs, they were enslaved by the Burning Legion and forced into war with the humans of Azeroth. Although it took many years, the orcs finally escaped the demons' corruption and won their freedom. To this day they fight for honor in an alien world that hates and reviles them.",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL1"] = {
-		ruRU = "Воля Орды",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL2"] = {
-		ruRU = "Боевые традиции",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL3"] = {
-		ruRU = "Непреклонность",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL5"] = {
-		ruRU = "Гневный натиск (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL6"] = {
-		ruRU = "Кровавое неистовство (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL1_DESC"] = {
-		ruRU = "Орки, могучие и опытные воители, воплощают в себе идеалы и дух Орды. Одно их присутствие вдохновляет союзников. Показатель силы участников группы увеличен на 2%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL2_DESC"] = {
-		ruRU = "Орки обучаются азам боя, лечения, охоты и военного ремесла с юного возраста. Множитель критического эффекта всех атак, способностей и заклинаний увеличен на 4%, а мастерство - на 2 ед.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL3_DESC"] = {
-		ruRU = "Физическая сила и непоколебимость Орков общеизвестны. Показатель блокирования увеличен на 20%, а вероятность парирования - на 2%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL5_DESC"] = {
-		ruRU = "Вы пробуждаете кровавую ярость, позволяющую вам преодолеть преграды на пути между вами и целью в течение 5 сек. Пока действует этот эффект, на вас не влияют эффекты сковывания и замедления. Не развеивает эффекты подобного рода, уже действующие на вас.\nПерезарядка: 120 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL6_DESC"] = {
-		ruRU = "Вы пробуждаете кровавую ярость, позволяющую вам перешагнуть границу возможного. Модификатор критического урона или исцеления ваших атак, заклинаний и способностей увеличивается на 25% на 10 сек.\nПерезарядка: 60 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_DESC"] = {
-		ruRU = "Отрекшиеся, не попавшие под власть Короля-лича, ищут способ положить конец его правлению. Под предводительством банши Сильваны они сражаются против Армии Плети. Их врагами стали и люди, неустанно стремящиеся стереть с лица земли любую нежить. Отверженные не хранят верность союзам и даже Орду считают всего лишь инструментом воплощения своих темных замыслов.",
-		enGB = "The Forsaken, who have managed to break free from the will of the Lich King, are seeking to put an end to his rule. Led by the banshee Sylvanas, they are fighting against both the Scourge and the humans, who tirelessly seek to wipe out any undead from the face of the earth. The Forsaken do not hold loyalty to any alliances and consider even the Horde to be just a tool for furthering their sinister designs.",
-	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL1"] = {
-		ruRU = "Путь Проклятых",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL2"] = {
-		ruRU = "Восставший",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL3"] = {
-		ruRU = "Омертвевшая плоть",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL5"] = {
-		ruRU = "Воля Отрекшихся (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL6"] = {
-		ruRU = "Некротическое касание (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL1_DESC"] = {
-		ruRU = "Вернувшиеся из могилы утратили многое, но приобрели удивительную силу. Даже нарекшись Отрекшимися, живые мертвецы все еще идут Путем Проклятых. Применяя способности ближнего боя, дальнего боя, а также произнося заклинания, вы повышаете свой показатель силы атаки или силы заклинаний (в зависимости от того, какой показатель больше) на 1% вплоть до 3%, сроком на 10 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL2_DESC"] = {
-		ruRU = "Смерть лишила Отрекшихся некоторых умений и возможностей из их \"прошлых жизней\", но при этом укрепила их связь с миром духов. Показатель духа увеличен на 4%, а меткость в ближнем и дальнем бою - на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL3_DESC"] = {
-		ruRU = "Несмотря на отсутствие естественной регенерации их мертвых тел, Отрекшиеся научились сражаться и существовать с увечьями, минимизируя их влияние на свои действия. После падения уровня здоровья до отметки в 50% или ниже, весь получаемый урон будет снижен на 4%. Данный эффект сохраняется в течение 2 сек. после восстановления уровня здоровья.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL5_DESC"] = {
-		ruRU = "Вы обращаетесь к стальной воле, которая некогда помогла вам вырваться из-под власти Короля-лича. Волевым усилием вы мгновенно развеиваете любые эффекты контроля над разумом, страха, ужаса, ошеломления и паралича.Имеет общее время перезарядки с другими подобными эффектами, равное 45 сек.\nПерезарядка: 120 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL6_DESC"] = {
-		ruRU = "Вы поражаете противника зарядом некротической энергии, естественной для вашего тела, нанося цели урон от темной магии в размере 200% от силы атаки или 400% от силы заклинаний (в зависимости от того, какой показатель больше) за 10 сек. Вы восстанавливаете себе здоровье в объеме 100% от этого урона.\nПерезарядка: 60 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_DESC"] = {
-		ruRU = "Таурены всегда стремились сохранять равновесие природы, следуя завету своей богини, Матери-Земли. Не так давно они подверглись набегу злобных кентавров, и если бы не счастливый случай – встреча с орками, которые помогли отразить нападение, – могли бы и вовсе погибнуть. Чтобы вернуть долг крови, таурены присоединились к Орде вслед за своими соратниками.",
-		enGB = "Always the tauren strive to preserve the balance of nature and heed the will of their goddess, the Earth Mother. Not so long ago, they were attacked by the marauding centaur, and had it not been for good fortune – their meeting with orcs who helped them to repel the attack – their whole race may have been wiped out. To repay the blood debt, the tauren joined the Horde along with their other comrades-in-arms.",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL1"] = {
-		ruRU = "Дар Матери-Земли",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL2"] = {
-		ruRU = "Твердость и мощь",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL3"] = {
-		ruRU = "Выносливость кочевника",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL5"] = {
-		ruRU = "Громовая поступь (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL6"] = {
-		ruRU = "Громовой рев (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL1_DESC"] = {
-		ruRU = "Близость Тауренов к природе наделяет их и их соратников непоколебимостью Матери-Земли. Физический урон, получаемый членами группы, снижен на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL2_DESC"] = {
-		ruRU = "Таурены обладают природной силой и твердостью рук и ума, которым могут позавидовать иные расы. Показатель силы атаки увеличен на 2%, а вероятность критического эффекта заклинаний - на 2%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL3_DESC"] = {
-		ruRU = "Таурены поколениями кочевали по степям, приобретая устойчивость и выдержку, необходимые для выживания. Показатель выносливости увеличен на 4%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL5_DESC"] = {
-		ruRU = "Вы сотрясаете землю могучим ударом копыта, оглушая всех противников в радиусе 8 м. на 2 сек.\nПерезарядка: 90 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL6_DESC"] = {
-		ruRU = "Вы издаете громой рев в сторону противника. Рев прерывает произносимые противником заклинания (если это возможно), и повышает получаемый им урон от всех источников на 1% сроком на 5 сек.\nПерезарядка: 60 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_DESC"] = {
-		ruRU = "Тролли Черного Копья некогда считали своим домом Тернистую долину, но были вытеснены оттуда враждующими племенами. Тралл, молодой вождь орков, убедил троллей примкнуть к его походу на Калимдор. Это окончательно сплотило между собой орочью Орду и троллей. Хотя тролли и не смогли окончательно отказаться от своего мрачного наследия, в Орде их уважают и почитают.",
-		enGB = "Once at home in the jungles of Stranglethorn Vale, the trolls of the Darkspear tribe were besieged on all sides by warring factions. This finally brought the Orcish Horde and the trolls together. Thrall, the young Orcish Warchief, managed to convince the trolls to join the Horde in its journey to Kalimdor. Though they cling to their shadowy heritage, they are respected and honored in the Horde.",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL1"] = {
-		ruRU = "Связь с Лоа",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL2"] = {
-		ruRU = "Потусторонняя ярость",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL3"] = {
-		ruRU = "Регенерация",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL5"] = {
-		ruRU = "Берсерк (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL6"] = {
-		ruRU = "Неистовство духов (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL1_DESC"] = {
-		ruRU = "С древних времен, культура цивилизации Троллей была связана с мистическими духами - Лоа, что помогали им и их союзникам в различных ситуациях. Само присутствие отмеченного такой связью Тролля повышает показатель духа всех участников группы на 2%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL2_DESC"] = {
-		ruRU = "Мир духов откликается на эмоции Тролля, усиливая его. Применяя способности ближнего боя, дальнего боя, а также произнося заклинания, вы повышаете вероятность критического эффекта своих атак, способностей и заклинаний на 1% вплоть до 3%, сроком на 10 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL3_DESC"] = {
-		ruRU = "Природное свойство Троллей переживать даже тяжелые ранения и восстанавливаться - лишь усиливается из поколения в поколение. Эффективность получаемого исцеления увеличена на 6%. Пока вы находитесь вне арены, вы восстанавливаете 3% от своего максимального запаса здоровья раз в 5 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL5_DESC"] = {
-		ruRU = "Вы впадаете в ярость, приобретая невосприимчивость к эффектам ослепления, страха, ужаса и контроля над разумом, при этом ваша скорость передвижения повышается на 20% сроком на 3 сек.\nПерезарядка: 120 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL6_DESC"] = {
-		ruRU = "Вы впадаете в ярость, усугубленную влиянием духов, повышая скорость ваших атак и произнесения заклинаний на 20% сроком на 10 сек.\nПерезарядка: 60 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_DESC"] = {
-		ruRU = "Гоблины, начавшие свой исторический путь в кандалах рабов на острове Кезан, вынуждены были добывать для троллей каджа'митовую руду в Подкопье, глубоко под вулканом Каджаро. Никто не знал, что эта руда обладает магическими свойствами, но именно эти свойства позволили гоблинам быстро развить ум и смекалку. Втайне от угнетателей гоблины изобретали приборы и создавали алхимические препараты, которые в конце концов помогли им освободиться от троллей и захватить власть над островом. С тех пор они стали звать Кезан своим домом, возведя на нем настоящий технологический рай, откуда многочисленные конгломераты гоблинов контролировали все коммерческие процессы, протекающие в Азероте. Но недавнее извержение Каджаро уничтожило остров, вынудив гоблинов спасаться бегством и заключить союз с Ордой.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL1"] = {
-		ruRU = "Изобретательность",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL2"] = {
-		ruRU = "Боевой азарт",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL3"] = {
-		ruRU = "Удача и изворотливость",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL5"] = {
-		ruRU = "Реактивный прыжок (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL6"] = {
-		ruRU = "Реактивный снаряд (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL1_DESC"] = {
-		ruRU = "Умение нестандартно мыслить, находя удачное и неожиданное решение любой задачи - ключевая черта характера любого Гоблина (помимо любви к деньгам). Скорость атаки и произнесения заклинаний увеличена на 1%, вероятность критического эффекта атак, способностей и заклинаний увеличена на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL2_DESC"] = {
-		ruRU = "Гоблины - черезвычайно активный, деловой, а также азартный народ - причем эта черта их характера полезна в бою больше, чем вне его. Применяя способности ближнего боя, дальнего боя, а также произнося заклинания, вы повышаете модификатор критического эффекта своих атак, способностей и заклинаний на 2% вплоть до 6%, сроком на 10 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL3_DESC"] = {
-		ruRU = "Гоблины в основном - достаточно скользкие типы, возможно даже в буквальном смысле - ведь их способность удачно уходить от ударов невозможно объяснить научным методом. Вероятность уклонения увеличена на 3%, а вероятность попадания по вам снижена на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL5_DESC"] = {
-		ruRU = "Вы совершаете прыжок вперед на большое расстояние с помощью реактивного пояса, развеивая при этом все эффекты сковывания и замедления. В течение 10 сек. после активации пояса нельзя использовать другие способности, снижающие скорость падения.\nПерезарядка: 90 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL6_DESC"] = {
-		ruRU = "Вы выпускаете ракету с особым снарядом в вашу цель. Если выбранной целью является противник - вы выпустите боевую ракету, наносящую урон от огня, а если целью является союзник - вы выпустите ракету с исцеляющим зельем. Урон или исцеление будет равно 200% от вашей силы атаки или 400% от вашей силы заклинаний (в зависимости от того, какой показатель больше).\nПерезарядка: 60 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_DESC"] = {
-		ruRU = "Воинственные наги Мерцающих Глубин некогда считали своим домом Вайш'ир, однако недавнее нападение слуг Нептулона, Владыки Морей, вынудило их покинуть родные воды и примкнуть к Орде. И, хотя они не расстались с мрачным наследием своего народа, а новые союзники не всегда верят в благие намерения обитателей глубин, наги позволяют другим пользоваться своей грубой силой и могущественной стихийной магией, рассматривая союз с Ордой как необходимое средство выживания в чужом для них наземном мире.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL1"] = {
-		ruRU = "Гвардейская выучка",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL2"] = {
-		ruRU = "Мощь Глубин",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL3"] = {
-		ruRU = "Чешуйчатый панцирь",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL5"] = {
-		ruRU = "Боевой транс (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL6"] = {
-		ruRU = "Благословение Волн (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL1_DESC"] = {
-		ruRU = "Все наги некогда были частью высшего света старой империи Ночных Эльфов, и сохраненный ими опыт позволяет улучшить тактическое поведение союзников. Магический урон, получаемый членами группы, снижен на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL2_DESC"] = {
-		ruRU = "Переродившись в наг, бывшие последователи Азшары не только утратили свои прекрасные обличья, но и приобрели могущество. Показатель силы атаки или силы заклинаний повышен на 2%. Этот эффект воздействует на ту характеристику, значение которой наибольшее.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL3_DESC"] = {
-		ruRU = "Плоть Наг покрытая прочной чешуей, защищающей от любых физических повреждений. Показатель брони увеличен на 5%, получаемый физический урон снижен на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL5_DESC"] = {
-		ruRU = "Вы входите в состояние боевой медитации, приобретая невосприимчивость к эффектам немоты, прерывания, а также обезоруживания сроком на 3 сек.\nПерезарядка: 120 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL6_DESC"] = {
-		ruRU = "Вы взываете к силе волн, наделяя себя или члена вашей группы или рейда благословением Волн, которое повышает показатель основных характеристик отмеченной цели на 10% сроком на 10 сек.\nПерезарядка: 30 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_DESC"] = {
-		ruRU = "Много лет назад высшие эльфы-изгнанники основали поселение Кель'Талас, в котором создали магический источник, названный Солнечным Колодцем. Чем больше сил черпали из него эльфы, тем сильнее начинали от него зависеть.|n|nСпустя века Армия Плети разрушила Солнечный Колодец и убила большинство эльфов. Изгнанники назвали себя эльфами крови и стремятся восстановить Кель'Талас, а также найти новый источник волшебной силы, чтобы удовлетворить свое пагубное пристрастие.",
-		enGB = "Many years ago, the exiled high elves founded the settlement of Quel’Thalas, where they created a source of magic called the Sunwell. The more power the elves drew from it, the more dependent on it they became.|n|nCenturies later, the Scourge destroyed the Sunwell and killed most of the elves. The exiles dubbed themselves Blood Elves and now seek to restore Quel’Thalas and to find a new source of magical power to satisfy their addiction.",
-	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL1"] = {
-		ruRU = "Мстительность",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL2"] = {
-		ruRU = "Чародейский взор",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL3"] = {
-		ruRU = "Родство с магией",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL5"] = {
-		ruRU = "Волшебный поток (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL6"] = {
-		ruRU = "Магия крови (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL1_DESC"] = {
-		ruRU = "Гибель прежнего королевства и серии невзгод изменили народ Син'дорай, дополнив свойственные им черты мстительностью и беспощадностью, которая пылает столь ярко, что вдохновляет союзников, повышая вероятность критического удара членов группы на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL2_DESC"] = {
-		ruRU = "Жажда магии подстегивает возможности организма Син'дорай, даруя особое зрение. Меткость увеличена на 1%, а скорость атак и произнесения заклинаний - на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL3_DESC"] = {
-		ruRU = "Син'дорай сроднились с магией, на этом основана большая часть их культуры - и благодаря этому они куда более устойчивы к заклинаниям и магическим атакам, чем кто-либо другой. Получаемый магический урон снижен на 4%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL5_DESC"] = {
-		ruRU = "Вы вызываете немоту у всех противников в радиусе 8 м. на 3 сек. и восстанавливаете небольшой процент основного ресурса. Прерывает применение заклинаний противника, если тот не является другим игроком.\nПерезарядка: 90 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL6_DESC"] = {
-		ruRU = "Вы обращаетесь к умению обращать жизненную силу в магию, которому Син'дорай обучились после потери Солнечного колодца. Вероятность критического эффекта атак, способностей и заклинаний увеличена на 20% сроком на 10 сек.\nПерезарядка: 60 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_DESC"] = {
-		ruRU = "Выжившие в чудовищной Войне Древних и пережившие катаклизм, последовавший после уничтожения Колодца Вечности, Ночнорожденные скрывались в Сурамаре за магическим куполом от любых угроз внешнего мира. Магия служила им инструментом, защитой, и пищей - и стала их сутью. Дом Селентрис - изгнанники-ночнорожденные, которые стремятся обрести новый дом в мире за пределами Сурамара, а также справиться с жаждой магии прежде, чем она их погубит.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL1"] = {
-		ruRU = "Аура чародейской мощи",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL2"] = {
-		ruRU = "Второе дыхание",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL3"] = {
-		ruRU = "Пронзающая сила",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL4"] = {
-		ruRU = "Тайный доспех",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL5"] = {
-		ruRU = "Темпоральное искажение (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL6"] = {
-		ruRU = "Чародейское сосредоточение (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL1_DESC"] = {
-		ruRU = "Вы излучаете чародейскую ауру, подпитывая способности своих союзников, повышая максимальный показатель их ярости, энергии и силы рун на 5 ед., а максимальный запас маны - на 5%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL2_DESC"] = {
-		ruRU = "Многолетняя выучка и природная одаренность Ночнорожденных позволяют достичь вершин в магическом или воинском искусстве, восстанавливая 9 ед. энергии, ярости, силы рун или 3% от базовой маны раз в 2 сек. в течение 60 сек. Срабатывает не чаще, чем раз в 180 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL3_DESC"] = {
-		ruRU = "Дар ночнорожденных улучшает ваши физические способности, позволяя атакам и способностям ближнего боя игнорировать $s2% брони противника (сочетается с 100% рейтингом пробивания брони), а также позволяет вашим способностям и заклинаниям с некоторой вероятностью поразить противника, снижая его показатель сопротивления на 0.4 ед. за каждый уровень персонажа (вплоть до -32 ед.) сроком на 10 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL4_DESC"] = {
-		ruRU = "Ночнорожденные используют магическую силу в том числе и для самозащиты, создавая защитный покров из чар, служащий \"второй кожей\". Показатель брони увеличен на 5%, а получаемый магический урон снижен на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL5_DESC"] = {
-		ruRU = "Вы отмечаете противника знаком, который активируется после применения им заклинания или способности, вызвав темпоральное искажение, которое увеличит время перезарядки способности или заклинания, вызвавшего этот эффект, на 10 сек.\nПерезарядка: 60 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL6_DESC"] = {
-		ruRU = "Вы полностью сосредотачиваетесь на своем Даре, обретая невосприимчивость к эффектам прерывания и немоты, при этом расход вашего ресурса на способности и заклинания снижается на 50%.\nПерезарядка: 60 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_DESC"] = {
-		ruRU = "Тысячи лет назад родину эредаров, Аргус, посетил темный титан Саргерас. Увидев потенциал в народе волшебников и мыслителей, он предложил им силу и знания в обмен на служение. Эта сделка навсегда изменила облик эредаров и поставила их выдающиеся таланты на службу Пылающему Легиону.\nОднако не все из искаженных Скверной ман'ари хранят верность Саргерасу. Секта новообращенных демонов из числа бывших дренеев, разочаровавшись в идеях Пылающего Легиона, открыто бросила вызов своим бывшим властителям. Теперь они ищут союза со смертными народами Азерота, чтобы вместе противостоять грозному врагу.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL1"] = {
-		ruRU = "Аура стигийской мощи",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL2"] = {
-		ruRU = "Пылающее воздаяние",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL3"] = {
-		ruRU = "Ловец душ",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL4"] = {
-		ruRU = "Кожа Демона",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL5"] = {
-		ruRU = "Движение Хаоса (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL6"] = {
-		ruRU = "Путь Возвышения (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL1_DESC"] = {
-		ruRU = "Дьявольская сила и стремление к разрушению излучается Эредаром, создавая ауру, которая дарует его союзникам частичку демонической силы. Множитель критического эффекта всех атак, способностей и заклинаний у членов группы - повышен на 2%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL2_DESC"] = {
-		ruRU = "При смерти ваш пылающий дух вырвется на свободу, нанося всем противникам в радиусе 5 м. урон от огня, равный 50% от базового показателя здоровья, и увеличивая урон, наносимый участниками группы, на 5% на 10 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL3_DESC"] = {
-		ruRU = "Со времен становления Ман'ари, Эредары подобно другим демонам черпали силу из осколков душ поверженных ими врагов - вне зависимости от принадлежности к Легиону. Одерживая победу над противником, за которого был начислен опыт или честь, вы также получаете 1 \"Фрагмент души\". До тех пор, пока у вас есть хотя бы один \"Фрагмент души\", наносимый вами урон и эффективность исцеления повышаются на 2%.\nВы можете иметь не более чем 10 \"Фрагментов души\". Эффект усиления не увеличивается с ростом количества накопленных фрагментов.\nНаходясь вне боя, вы накапливаете 1 \"Фрагмент души\" раз в 5 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL4_DESC"] = {
-		ruRU = "Сила скверны и хаотических стихий круговерти пустоты навечно укрепили ваше тело. Сопротивление всем школам магии увеличено на 1 ед. за каждые 2 уровня персонажа, а показатель брони увеличен на 2%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL5_DESC"] = {
-		ruRU = "Вы используете остаточную связь с Круговертью Пустоты, чтобы переместиться в указанную точку (на расстояние, не превышающее 20 м.), если на пути нет препятствий.\nПерезарядка: 60 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL6_DESC"] = {
-		ruRU = "Вы раскалываете \"Фрагмент души\", освобождая всю содержащуюся в нем мощь, усиливая себя на краткое время. Наносимый вами урон и эффективность исцеления повышаются на 4%, а получаемый урон снижается на 4%.\nПерезарядка: \"Не имеет времени перезарядки.\"",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_DESC"] = {
-		ruRU = "Зандалары — гордый народ, история которого началась на заре Азерота. Их свирепые воины сражаются верхом на динозаврах и пользуются покровительством могучих божеств, именуемых лоа. Сейчас, когда в Азероте зреют угрозы, ставящие на кон существование не только зандаларов, но и всего мира, эти тролли вынуждены покинуть свои священные земли в поисках достойных союзников.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL1"] = {
-		ruRU = "Слава завоевателей",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL2"] = {
-		ruRU = "Опека Лоа",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL3"] = {
-		ruRU = "Дары Империи",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL4"] = {
-		ruRU = "Королевская кровь",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL5"] = {
-		ruRU = "Сторожевая змея (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL6"] = {
-		ruRU = "Боевая регенерация (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL1_DESC"] = {
-		ruRU = "Слава Зандалара, представителя древней империи завоевателей, воодушевляет его союзников на воинские подвиги. Показатели силы атаки и силы заклинаний у каждого участника группы повышены на 1%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL2_DESC"] = {
-		ruRU = "Зандалары верны традициям, и лоа - неотъемлемая часть их жизни. Обращаясь к тому лоа, с которым вы заключили контракт, вы получаете его опеку и поддержку.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL3_DESC"] = {
-		ruRU = "Развитая и богатая культура Зандаларов предоставляет своим подданным возможность полноценной реализации их врожденных талантов и приобретенных амбиций. Модификатор критического урона и исцеления увеличен на 4%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL4_DESC"] = {
-		ruRU = "Кровь Зандаларов чиста и позволяет превосходить лимитацию их тел. Эффективность получаемого исцеления увеличена на 5%, а вероятность уклонения увеличена на 2%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL5_DESC"] = {
-		ruRU = "Вы помещаете неуязвимый тотем в указанную точку в радиусе 20 м. Тотем оживает, превращаясь в сторожевого змея, который рассеивает эффекты скрытности и незаметности всех противников в радиусе 20 м. (в пределах поля зрения), а также обстреливает случайного из них сгустками пламени раз в 1 сек. (если тот не находится под действием некоторых эффектов контроля), нанося урон в размере 2% от вашего базового запаса здоровья. Время жизни тотема - 10 сек.\nПерезарядка: 120 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL6_DESC"] = {
-		ruRU = "Вы пробуждаете скрытую силу чистой крови, унаследованную от множества поколений ваших предков. Вы восполняете 40% от максимального запаса здоровья за 10 сек., при этом ваша скорость атаки и произнесения заклинаний повышается на 10%, а модификатор критического урона и исцеления - на 12%.\nПерезарядка: 60 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_DESC"] = {
-		ruRU = "Таинственные пандарены родом с окутанных туманами земель Пандарии. Тысячи лет назад их народ страдал под безжалостным игом древней империи Могу, но, благодаря исключительной стойкости, мастерству дипломатии и особому боевому искусству пандаренам удалось сплотить вокруг себя народы Пандарии, положить конец тирании Могу и принести мир в свои земли. Немногие пандарены-путешественники отважились покинуть родные края в поисках мудрости или приключений. Они далеки от конфликтов Альянса и Орды, но готовы протянуть руку помощи тем, кто в ней действительно нуждается.",
-		enGB = "The mysterious Pandaren hail from the mist-shrouded lands of Pandaria. Thousands of years ago, their people suffered under the ruthless yoke of the ancient Mogu Empire, but, thanks to their exceptional resilience, diplomatic skills and special martial arts, the Pandaren managed to unite the peoples of Pandaria around them, put an end to the tyranny of Mogu, and bring peace to their lands. Few Pandaren travelers dared to leave their homeland in search of wisdom or adventure. While far from the conflicts of the Alliance and the Horde, they are ready to lend a helping hand to those who really need it.",
-	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL1"] = {
-		ruRU = "Внутренняя сила",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL2"] = {
-		ruRU = "Пьяный мастер",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL3"] = {
-		ruRU = "Высокая стойкость",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL5"] = {
-		ruRU = "Дрожащая ладонь (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL6"] = {
-		ruRU = "Боевой транс (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL7"] = {
-		ruRU = "Нефритовые стрелы (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL1_DESC"] = {
-		ruRU = "Учения Пандаренов развивают тело и укрепляют дух, используя внутреннюю энергию, Ци. Скорость атаки и произнесения заклинаний увеличена на 2%, а мастерство - на 2 ед.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL2_DESC"] = {
-		ruRU = "Среди Пандаренов есть носители странного боевого искусства, заключающегося в повышении мощи с помощью потребления алкоголя. Наносимый урон и эффективность исцеление повышается на 1% за каждую из стадий опьянения вплоть до 3%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL3_DESC"] = {
-		ruRU = "Многократные тренировки, через которые проходит каждый Пандарен, закаляют тела и позволяют идти навстречу любому испытанию. Получаемый физический урон снижен на 4%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL5_DESC"] = {
-		ruRU = "Вы используете особую технику ближнего боя, поражая болевые точки противника и парализуя его на 1 минуту (или на 5 сек., если целью является игрок). Эффект паралича будет развеян, если цель получит урон.\nПерезарядка: 60 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL6_DESC"] = {
-		ruRU = "Вы впадаете в боевой транс, сосредотачиваясь на вашем оружии. Следующие 5 ваших атак или способностей ближнего боя вызовут \"Искусный удар\". \"Искусный удар\" наносит физический урон, игнорирующий броню, в размере 40% от вашей силы атаки или 80% от вашей силы заклинаний (в зависимости от того, какой показатель больше). Наносимый урон не может быть критическим. Каждый удар является способностью ближнего боя. Имеет общее время перезарядки со способностью \"Нефритовые стрелы\".\nПерезарядка: 60 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL7_DESC"] = {
-		ruRU = "Вы запускаете 5 стрел энергии Ци в указанного противника за 2 сек. Каждая стрела наносит магический урон в размере 40% от вашей силы атаки или 80% от вашей силы заклинаний (в зависимости от того, какой показатель больше). Наносимый урон не может быть критическим. Каждая стрела является отдельным заклинанием. Имеет общее время перезарядки со способностью \"Боевой транс\".\nПерезарядка: 60 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_DESC"] = {
-		ruRU = "Обитающие в неприветливых пустынных землях Тель'Абима, вульперы были вынуждены вести кочевой образ жизни, следуя за песками и скрываясь от противников. Они мастерски научились выживать там, где другие встретили бы свой конец, и находить применение тому, что другие посчитали бы барахлом. Теперь же, когда их остров стал желанной добычей для чужестранцев, вульперы ищут союзников, готовых помочь им отстоять свою родину.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL1"] = {
-		ruRU = "Медицина скитальцев",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL2"] = {
-		ruRU = "Пустынный странник",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL3"] = {
-		ruRU = "Маленький плутишка",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL5"] = {
-		ruRU = "Зыбучие пески (PvP)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL6"] = {
-		ruRU = "Руна песков (PvE)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL1_DESC"] = {
-		ruRU = "Вульперы, скитавшиеся по пустыне многие поколения собрали множество способов лечения ран и заболеваний. Модификатор критического исцеления увеличен на 6%, а также восстанавливает 2% от маны, израсходованной на исцеляющие заклинания.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL2_DESC"] = {
-		ruRU = "Понижает весь получаемый урон от атак по области на 7% и повышает наносимый вами урон на 2%.\n(магический или физический - на выбор)",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL3_DESC"] = {
-		ruRU = "Снижает вероятность быть обнаруженным противником, будучи в незаметности и снижает получаемый урон от эффектов периодического урона на 5%.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL5_DESC"] = {
-		ruRU = "Вы опутываете цель на 1 сек. По окончанию действия эффекта цель будет оглушена на 3 сек.\nПерезарядка: 90 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL6_DESC"] = {
-		ruRU = "Вы создаете в указанной области особую руну, повышающую наносимый вами урон и эффективность ваших исцеляющих заклинаний на 6%, пока вы находитесь на расстоянии не более чем 10 м. от руны.\nПерезарядка: 30 сек.",
-		enGB = "",
-	},
-	["CHARACTER_CREATE_INFO_RACE_DRACTHYR_DESC"] = {
-		ruRU = "Созданные усилиями драконьих стай после освобождения королевы Алекстразы из Грим-Батола, драктиры объединяют в себе лучшие черты как своих прародителей, так и смертных. Теперь этим благородным существам предстоит найти союзников среди младших рас, чтобы вместе противостоять нависшему над Азеротом року, а заодно и тьме, что зреет среди самих драконов.",
-		enGB = "",
-	},
-
-	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_SPELL1_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_WARRIOR_SPELL1"] = {
 		ruRU = "Ability_Racial_BloodRage|Когда воин получает урон, гнев его растет, позволяя в разгар битвы наносить поистине сокрушительные удары.",
 		enGB = "Ability_Racial_BloodRage|As warriors deal or take damage, their rage grows, allowing them to deliver truly crushing attacks in the heat of battle.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_SPELL2_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_WARRIOR_SPELL2"] = {
 		ruRU = "spell_shadow_unholyfrenzy|После получения урона в бою наносимый воином урон с вероятностью 30% увеличится на 10% на 12 сек.",
 		enGB = "spell_shadow_unholyfrenzy|Gives you a 30% chance to receive a 10% damage bonus for 12 sec after being the victim of a damaging attack.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_SPELL3_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_WARRIOR_SPELL3"] = {
 		ruRU = "Ability_Defend|При успешном блокировании атаки воин с вероятностью 60% заблокирует в два раза больше урона. Вероятность нанести критический удар при применении способности Мощный удар щитом повышается на 15%.",
 		enGB = "Ability_Defend|Your successful blocks have a 60% chance to block double the normal amount and increases your chance to critically hit with your Shield Slam ability by an additional 15%.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_SPELL4_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_WARRIOR_SPELL4"] = {
 		ruRU = "Spell_Shadow_DeathPact|Вводит воина в состояние ярости, в котором наносимый физический урон увеличивается на 20%, а весь получаемый урон – на 5%.",
 		enGB = "Spell_Shadow_DeathPact|When activated you become enraged, increasing your physical damage by 20% but increasing all damage taken by 5%.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_WARRIOR_SPELL5_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_WARRIOR_SPELL5"] = {
 		ruRU = "Ability_Warrior_Shockwave|Посылает перед воином силовую волну, наносящую урона (величина зависит от силы атаки) и оглушающую всех противников на расстоянии 10 м. перед ним на 4 сек.",
 		enGB = "Ability_Warrior_Shockwave|Sends a wave of force in front of the warrior, causing a certain amount of damage (based on attack power) and stunning all enemy targets within 10 yards in a frontal cone for 4 sec.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL1_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_PALADIN_DESC"] = {
+		ruRU = "Паладины бьются с врагом лицом к лицу, полагаясь на тяжелые доспехи и навыки целительства. Прочный щит или двуручное оружие — не столь важно, чем владеет паладин. Он сумеет не только защитить соратников от вражеских когтей и клинков, но и удержит группу на ногах при помощи исцеляющих заклинаний.",
+		enGB = "Paladins stand directly in front of their enemies, relying on heavy armor and healing in order to survive incoming attacks. Whether with massive shields or crushing two-handed weapons, Paladins are able to keep claws and swords from their weaker fellows – or they use healing magic to ensure that they remain on their feet.",
+	},
+	["CHAR_INFO_CLASS_PALADIN_ROLE"] = {
+		ruRU = "Роли: |cffffffffтанк, лекарь или боец ближнего боя|r",
+		enGB = "Roles: |cffffffffTank, Healer, or Melee Damage|r",
+	},
+	["CHAR_INFO_CLASS_PALADIN_SPELL1"] = {
 		ruRU = "Spell_Holy_DevotionAura|Паладины, защитники порядка, очень эффективны в группе: их благословения и ауры могут повысить наносимый урон и повысить выживаемость и для них самих, и для их союзников.",
 		enGB = "Spell_Holy_DevotionAura|As champions of order, paladins are extremely potent in a group – their blessings and auras can improve damage and survivability for both themselves and their party.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL2_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_PALADIN_SPELL2"] = {
 		ruRU = "Ability_Paladin_SanctifiedWrath|Увеличивает вероятность критического удара заклинания Молот гнева на 50%, сокращает время восстановления заклинания Гнев карателя на 60 сек. Когда паладин находится под действием заклинания Гнев карателя, 50% наносимого паладином урона игнорируют все снижающие урон эффекты.",
 		enGB = "Ability_Paladin_SanctifiedWrath|Increases the critical strike chance of Hammer of Wrath by 50%, reduces the cooldown of Avenging Wrath by 60 secs and while affected by Avenging Wrath 50% of all damage caused bypasses damage reduction effects.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL3_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_PALADIN_SPELL3"] = {
 		ruRU = "Spell_Holy_ArdentDefender|Если при получении удара уровень здоровья паладина падает ниже 35%, весь получаемый вами урон снижается на 20%. Удары, которые могли бы оказаться смертельными, вместо этого восстанавливают паладину до 30% от максимального запаса здоровья (количество восполненного здоровья зависит от защиты).",
 		enGB = "Spell_Holy_ArdentDefender|Damage that takes you below 35% health is reduced by 20%. In addition, attacks which would otherwise kill you cause you to be healed by up to 30% of your maximum health (amount healed based on defense).",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL4_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_PALADIN_SPELL4"] = {
 		ruRU = "Spell_Holy_BlessingOfProtection|Повышает вероятность блокировать удар на 30% на 10 сек. Если атака блокирована, атакующему наносится урон от светлой магии. При каждом блоке расходуется 1 заряд. 8 зарядов.",
 		enGB = "Spell_Holy_BlessingOfProtection|Increases chance to block by 30% for 10 sec and deals Holy damage for each attack blocked while active. Each block expends a charge. 8 charges.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_PALADIN_SPELL5_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_PALADIN_SPELL5"] = {
 		ruRU = "Ability_Paladin_BeaconofLight|Наделяет выбранного участника группы или рейда частицей Света. Любое исцеляющее заклинание, которое вы накладываете на союзников в радиусе 60 метров от цели, также восстанавливает наделенному Светом персонажу 100% от объема восстановленного с помощью этого заклинания здоровья. Частицей Света можно наделить только одного персонажа.",
 		enGB = "Ability_Paladin_BeaconofLight|The target becomes a Beacon of Light to all members of your party or raid within a 60 yard radius. Any heals you cast on party or raid members will also heal the Beacon for 100% of the amount healed. Only one target can be the Beacon of Light at a time.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL1_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_HUNTER_DESC"] = {
+		ruRU = "Охотники бьют врага на расстоянии, приказывая питомцам атаковать, пока сами натягивают тетиву или заряжают ружье. Ружья и луки очень действенны и вблизи, и издалека. Кроме того, охотники очень подвижны. Они могут уклониться от атаки или задержать противника, чтобы выиграть время.",
+		enGB = "Hunters battle their foes at a distance, commanding their pets to attack while they nock their arrows and fire their guns. Though their missile weapons are effective at short and long ranges, hunters are also highly mobile. They can evade or restrain their foes to control the arena of battle.",
+	},
+	["CHAR_INFO_CLASS_HUNTER_ROLE"] = {
+		ruRU = "Роль: |cffffffffбоец дальнего боя|r",
+		enGB = "Role: |cffffffffRanged Damage|r",
+	},
+	["CHAR_INFO_CLASS_HUNTER_SPELL1"] = {
 		ruRU = "Ability_Hunter_BeastTaming|Охотники приручают диких зверей, которые служат им, нападая на врагов и прикрывая хозяина.",
 		enGB = "Ability_Hunter_BeastTaming|Hunters tame the beasts of the wild, and those beasts serve in return by assaulting their enemies and shielding them from harm.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL2_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_HUNTER_SPELL2"] = {
 		ruRU = "Ability_Hunter_LongShots|Повышает вероятность критического удара способности Убийственный выстрел на 15%. Если охотник не двигается в течение 6 сек., на него накладывается эффект Навыки снайпера, увеличивающий урон от способностей Верный выстрел, Прицельный выстрел, Черная стрела и Разрывной выстрел на 6%.",
 		enGB = "Ability_Hunter_LongShots|Increases the critical strike chance of your Kill Shot ability by 15%, and while standing still for 6 sec, you gain Sniper Training increasing the damage done by your Steady Shot, Aimed Shot, Black Arrow and Explosive Shot by 6%.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL3_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_HUNTER_SPELL3"] = {
 		ruRU = "Ability_Hunter_WildQuiver|Если при автоматической стрельбе выстрел охотника наносит урон, он с вероятностью 12% делает дополнительный выстрел, наносящий 80% урона от оружия. Этот урон считается уроном от сил природы. Боеприпасы при этом не расходуются.",
 		enGB = "Ability_Hunter_WildQuiver|You have a 12% chance to shoot an additional shot when doing damage with your auto shot, dealing 80% weapon nature damage. Wild Quiver consumes no ammo.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL4_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_HUNTER_SPELL4"] = {
 		ruRU = "Spell_Shadow_PainSpike|Поражает цель, повышая весь наносимый охотником урон по цели на 6% и нанося урон от темной магии.",
 		enGB = "Spell_Shadow_PainSpike|Fires a Black Arrow at the target, increasing all damage done by you to the target by 6% and dealing Shadow damage.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_HUNTER_SPELL5_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_HUNTER_SPELL5"] = {
 		ruRU = "Ability_Druid_FerociousBite|Питомца обуревает ярость, увеличивающая наносимый им урон на 50% на 10 сек. В ярости питомец не знает ни страха, ни жалости, и его может остановить только смерть.",
 		enGB = "Ability_Druid_FerociousBite|Send your pet into a rage causing 50% additional damage for 10 sec. While enraged, the beast does not feel pity or remorse or fear and it cannot be stopped unless killed.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_ROGUE_SPELL1_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_ROGUE_DESC"] = {
+		ruRU = "Разбойники часто нападают из теней, начиная бой комбинацией свирепых ударов. В затяжном бою они изматывают врага тщательно продуманной серией атак, прежде чем нанести решающий удар. Разбойнику следует внимательно отнестись к выбору противника, чтобы оптимально использовать тактику, и не упустить момент, когда надо спрятаться или бежать, если ситуация складывается не в их пользу.",
+		enGB = "Rogues often initiate combat with a surprise attack from the shadows, leading with vicious melee strikes. When in protracted battles, they utilize a successive combination of carefully chosen attacks to soften the enemy up for a killing blow. Rogues must take special care when selecting targets so that their combo attacks are not wasted, and they must be conscious of when to hide or flee if a battle turns against them.",
+	},
+	["CHAR_INFO_CLASS_ROGUE_ROLE"] = {
+		ruRU = "Роль: |cffffffffбоец ближнего боя|r",
+		enGB = "Role: |cffffffffMelee Damage|r",
+	},
+	["CHAR_INFO_CLASS_ROGUE_SPELL1"] = {
 		ruRU = "Ability_Rogue_CombatExpertise|Разбойники могут наносить приемы сериями, что позволяет сделать завершающий удар поистине сокрушительным.",
 		enGB = "Ability_Rogue_CombatExpertise|By planning and combining successive melee attacks, rogues can build up combo points that allow them to deliver devastating finishing blows in combat.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_ROGUE_SPELL2_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_ROGUE_SPELL2"] = {
 		ruRU = "INV_Sword_27|С вероятностью 5% позволяет атаковать противника повторно после того, как разбойник ударит его мечом или топором.",
 		enGB = "INV_Sword_27|Gives you a 5% chance to get an extra attack on the same target after hitting your target with your Sword or Axe.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_ROGUE_SPELL3_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_ROGUE_SPELL3"] = {
 		ruRU = "Ability_Rogue_CutToTheChase|С вероятностью 100% применение способностей Потрошение и Отравление возобновит продолжительность действия вашей способности Мясорубка до максимально возможного времени.",
 		enGB = "Ability_Rogue_CutToTheChase|Your Eviscerate and Envenom abilities have a 100% chance to refresh your Slice and Dice duration.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_ROGUE_SPELL4_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_ROGUE_SPELL4"] = {
 		ruRU = "Ability_Rogue_ShadowDance|Начав танец теней, разбойник может использовать способности, которые обычно требуют состояния незаметности.",
 		enGB = "Ability_Rogue_ShadowDance|Enter the Shadow Dance, allowing the use of abilities regardless of being stealthed.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_ROGUE_SPELL5_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_ROGUE_SPELL5"] = {
 		ruRU = "Ability_Rogue_MurderSpree|Разбойник проходит сквозь тень, от противника к противнику, в радиусе 10 м, атакуя каждые 0,5 секунды обоими оружиями, пока не будет совершено 5 атак. Во время действия эффекта наносимый урон возрастает на 20%. Разбойник может атаковать одну цель несколько раз. Не затрагивает невидимые или незаметные цели.",
 		enGB = "Ability_Rogue_MurderSpree|Step through the shadows from enemy to enemy within 10 yards, attacking an enemy every .5 secs with both weapons until 5 assaults are made, and increasing all damage done by 20% for the duration. Can hit the same target multiple times. Cannot hit invisible or stealthed targets.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_PRIEST_SPELL1_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_PRIEST_DESC"] = {
+		ruRU = "Жрецы могут задействовать мощную целительную магию, чтобы спасти себя и своих спутников. Им подвластны и сильные атакующие заклинания, но физическая слабость и отсутствие прочных доспехов заставляют жрецов бояться сближения с противником. Опытные жрецы используют боевые и контролирующие способности, не допуская гибели членов отряда.",
+		enGB = "Priests use powerful healing magic to fortify themselves and their allies. They also wield powerful offensive spells from a distance, but can be overwhelmed by enemies due to their physical frailty and minimal armor. Experienced priests carefully balance the use of their offensive powers when tasked with keeping their party alive.",
+	},
+	["CHAR_INFO_CLASS_PRIEST_ROLE"] = {
+		ruRU = "Роли: |cffffffffлекарь или боец дальнего боя|r",
+		enGB = "Roles: |cffffffffHealer or Ranged Damage|r",
+	},
+	["CHAR_INFO_CLASS_PRIEST_SPELL1"] = {
 		ruRU = "Spell_Holy_HolyProtection|Повышает вероятность критического целебного эффекта заклинаний Быстрое исцеление, Великое исцеление и Исповедь на целях, находящихся под воздействием эффекта Ослабленная душа, на 4%. С вероятностью 100% после применения заклинания Слово силы: Щит урон, получаемый всеми участниками группы или рейда, на 60 сек. уменьшится на 3%.",
 		enGB = "Spell_Holy_HolyProtection|Increases the critical effect chance of your Flash Heal, Greater Heal and Penance (Heal) spells by 4% on targets afflicted by the Weakened Soul effect, and you have a 100% chance to reduce all damage taken by 3% for 1 min to all friendly party and raid targets when you cast Power Word: Shield.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_PRIEST_SPELL2_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_PRIEST_SPELL2"] = {
 		ruRU = "Spell_Holy_SpiritualGuidence|Увеличивает силу заклинаний на 25% от вашего показателя духа.",
 		enGB = "Spell_Holy_SpiritualGuidence|Increases spell power by 25% of your total Spirit.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_PRIEST_SPELL3_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_PRIEST_SPELL3"] = {
 		ruRU = "Spell_Shadow_Metamorphosis|Увеличивает дополнительный урон от критических эффектов заклинаний Взрыв разума, Пытка разума и Слово Тьмы: Смерть на 100%.",
 		enGB = "Spell_Shadow_Metamorphosis|Increases the critical strike damage bonus of your Mind Blast, Mind Flay, and Shadow Word: Death spells by 100%.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_PRIEST_SPELL4_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_PRIEST_SPELL4"] = {
 		ruRU = "Spell_Shadow_SummonVoidWalker|Жрец принимает облик Тьмы, в котором наносимый им урон от темной магии увеличивается на 15%, получаемый урон уменьшается на 15%, а уровень создаваемой угрозы понижается на 30%. В этом облике нельзя использовать светлую магию, за исключением некоторых заклинаний. Заклинания магии тьмы усиливаются.",
 		enGB = "Spell_Shadow_SummonVoidWalker|Assume a Shadowform, increasing your Shadow damage by 15%, reducing all damage done to you by 15% and threat generated by 30%. However, you may not cast Holy spells while in this form, with a few exceptions. Increases Shadow damage.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_PRIEST_SPELL5_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_PRIEST_SPELL5"] = {
 		ruRU = "Spell_Holy_GuardianSpirit|Призывает оберегающего духа для охраны дружественной цели. Дух улучшает действие всех эффектов исцеления на выбранного союзника на 40% и спасает его от смерти, жертвуя собой. Смерть духа прекращает действие эффекта улучшенного исцеления, но восстанавливает цели 50% ее максимального запаса здоровья.",
 		enGB = "Spell_Holy_GuardianSpirit|Calls upon a guardian spirit to watch over the friendly target. The spirit increases the healing received by the target by 40%, and also prevents the target from dying by sacrificing itself. This sacrifice terminates the effect but heals the target of 50% of their maximum health.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_SPELL1_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_DEATHKNIGHT_DESC"] = {
+		ruRU = "Рыцари смерти сходятся с противником в ближнем бою, дополняя удары клинка темной магией, которая делает врага уязвимым или ранит его нечестивой энергией. Они провоцируют противников, вынуждая их сражаться один на один и не подпуская их к более слабым союзникам. Чтобы не дать противнику ускользнуть, рыцари смерти должны постоянно помнить о силе, извлекаемой из рун, и соответствующим образом направлять свои атаки.",
+		enGB = "Death Knights engage their foes up-close, supplementing swings of their weapons with dark magic that renders enemies vulnerable or damages them with unholy power. They drag foes into one-on-one conflicts, compelling them to focus their attacks away from weaker companions. To prevent their enemies from fleeing their grasp, death knights must remain mindful of the power they call forth from runes, and pace their attacks appropriately.",
+	},
+	["CHAR_INFO_CLASS_DEATHKNIGHT_ROLE"] = {
+		ruRU = "Роли: |cffffffffтанк или боец ближнего боя|r",
+		enGB = "Roles: |cffffffffTank or Melee Damage|r",
+	},
+	["CHAR_INFO_CLASS_DEATHKNIGHT_SPELL1"] = {
 		ruRU = "Spell_DeathKnight_FrozenRuneWeapon|Рыцари смерти связаны со своими клинками и могут высекать на них руны, увеличивая силу оружия.",
 		enGB = "Spell_DeathKnight_FrozenRuneWeapon|Death knights have a personal connection with their blades, and can forge runes into them in order to increase their power.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_SPELL2_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_DEATHKNIGHT_SPELL2"] = {
 		ruRU = "Spell_Shadow_CallofBone|Когда болезнь, которой рыцарь смерти заразил противника, причиняет ему урон, то с вероятностью, равной вероятности нанесения критического удара в ближнем бою, она нанесет еще 100% урона цели и всем врагам в радиусе 8 м. Заклинание игнорирует цели, находящиеся под воздействием эффектов, которые прерываются при получении урона.",
 		enGB = "Spell_Shadow_CallofBone|When your diseases damage an enemy, there is a chance equal to your melee critical strike chance that they will cause 100% additional damage to the target and all enemies within 8 yards. Ignores any target under the effect of a spell that is cancelled by taking damage.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_SPELL3_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_DEATHKNIGHT_SPELL3"] = {
 		ruRU = "Spell_Misc_WarsongFocus|Повышает силу рыцаря смерти на 6%, выносливость на 3%, а мастерство – на 6.",
 		enGB = "Spell_Misc_WarsongFocus|Increases your total Strength by 6%, your Stamina by 3%, and your expertise by 6.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_SPELL4_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_DEATHKNIGHT_SPELL4"] = {
 		ruRU = "Ability_DeathKnight_BoneShield|Вокруг рыцаря смерти начинают вращаться 3 кости. Каждая атака, нанесшая урон рыцарю смерти, уничтожает 1 кость. До тех пор, пока остается хотя бы одна кость, рыцарь смерти получает на 20% меньше урона и наносит на 2% больше урона всеми атаками, заклинаниями и способностями.",
 		enGB = "Ability_DeathKnight_BoneShield|The Death Knight is surrounded by 3 whirling bones. Each damaging attack that lands consumes 1 bone. While at least 1 bone remains, the Death Knight takes 20% less damage from all sources and deals 2% more damage with all attacks, spells and abilities.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_DEATHKNIGHT_SPELL5_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_DEATHKNIGHT_SPELL5"] = {
 		ruRU = "Spell_DeathKnight_BladedArmor|Погружает дружественную цель в кровожадное безумие на 30 сек. Цель впадает в исступление: наносимый ею физический урон увеличивается на 20%, но каждую секунду она теряет 1% от максимального запаса здоровья.",
 		enGB = "Spell_DeathKnight_BladedArmor|Induces a friendly unit into a killing frenzy for 30 sec. The target is Enraged, which increases their physical damage by 20%, but causes them to lose health equal to 1% of their maximum health every second.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_SHAMAN_SPELL1_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_SHAMAN_DESC"] = {
+		ruRU = "В бою шаман ставит на землю контролирующие и наносящие урон тотемы, чтобы помочь союзникам и ослабить противника. Шаманы могут как вступать в ближний бой, так и атаковать с расстояния. Мудрый шаман всегда старается учитывать сильные и слабые стороны врага.",
+		enGB = "During combat, shaman place damaging and controlling totems on the ground to maximize their effectiveness while hindering their enemies. Shaman are versatile enough to battle foes up close or at range, but wise shaman choose their avenue of attack based on their enemies’ strengths and weaknesses.",
+	},
+	["CHAR_INFO_CLASS_SHAMAN_ROLE"] = {
+		ruRU = "Роли: |cffffffffлекарь, боец дальнего или ближнего боя|r",
+		enGB = "Roles: |cffffffffHealer, Ranged Damage, or Melee Damage|r",
+	},
+	["CHAR_INFO_CLASS_SHAMAN_SPELL1"] = {
 		ruRU = "Ability_Shaman_TranquilMindTotem|Тотемы шамана обладают массой положительных свойств: они увеличивают скорость атаки, эффективность восстановления и наносимый противнику урон.",
 		enGB = "Ability_Shaman_TranquilMindTotem|Shaman totems have many positive effects: they can increase attack speed, healing efficiency, or damage done.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_SHAMAN_SPELL2_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_SHAMAN_SPELL2"] = {
 		ruRU = "Spell_Nature_BloodLust|Увеличивает силу атаки на 100% от величины интеллекта шамана.",
 		enGB = "Spell_Nature_BloodLust|Increases your Attack Power by 100% of your Intellect.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_SHAMAN_SPELL3_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_SHAMAN_SPELL3"] = {
 		ruRU = "Spell_Nature_LightningOverload|При произнесении заклинаний Молния и Цепная молния шаман с вероятностью 33% может поразить противника еще одним таким же заклинанием. Второе заклинание не требует затрат маны, наносит в два раза меньше урона и не создает угрозы.",
 		enGB = "Spell_Nature_LightningOverload|Gives your Lightning Bolt and Chain Lightning spells a 33% chance to cast a second, similar spell on the same target at no additional cost that causes half damage and no threat.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_SHAMAN_SPELL4_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_SHAMAN_SPELL4"] = {
 		ruRU = "Spell_Nature_SkinofEarth|Защищает цель земляным щитом, который уменьшает время, теряемое из-за получения урона при произнесении и поддержании заклинаний, на 30%. Кроме того, атаки восстанавливают защищенной цели здоровье, но этот эффект срабатывает не чаще, чем раз в несколько секунд. 6 зарядов.",
 		enGB = "Spell_Nature_SkinofEarth|Protects the target with an earthen shield, reducing casting or channeling time lost when damaged by 30% and causing attacks to heal the shielded target. This effect can only occur once every few seconds. 6 charges.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_SHAMAN_SPELL5_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_SHAMAN_SPELL5"] = {
 		ruRU = "Spell_Nature_WispHeal|Делает следующее заклинание Молния, Цепная молния или Выброс лавы мгновенным. Повышает скорость произнесения заклинаний на 15% на 15 сек. Имеет общее время восстановления с заклинанием Природная стремительность.",
 		enGB = "Spell_Nature_WispHeal|When activated, your next Lightning Bolt, Chain Lightning or Lava Burst spell becomes an instant cast spell. In addition, you gain 15% spell haste for 15 sec. Elemental Mastery shares a cooldown with Nature's Swiftness.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_MAGE_SPELL1_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_MAGE_DESC"] = {
+		ruRU = "Маги уничтожают врагов тайными заклинаниями. Несмотря на магическую силу, маги хрупки, не носят тяжелых доспехов, поэтому уязвимы в ближнем бою. Умные маги при помощи заклинаний удерживают врага на расстоянии или вовсе обездвиживают его.",
+		enGB = "Mages demolish their foes with arcane incantations. Although they wield powerful offensive spells, mages are fragile and lightly armored, making them particularly vulnerable to close-range attacks. Wise mages make careful use of their spells to keep their foes at a distance or hold them in place.",
+	},
+	["CHAR_INFO_CLASS_MAGE_ROLE"] = {
+		ruRU = "Роль: |cffffffffбоец дальнего боя|r",
+		enGB = "Role: |cffffffffRanged Damage|r",
+	},
+	["CHAR_INFO_CLASS_MAGE_SPELL1"] = {
 		ruRU = "Spell_Arcane_PortalDalaran|Маги обладают способностью перемещаться между городами и создавать пищу и воду, где бы они ни находились.",
 		enGB = "Spell_Arcane_PortalDalaran|Mages possess the ability to transport themselves and their allies between cities and can summon replenishing food and water.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_MAGE_SPELL2_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_MAGE_SPELL2"] = {
 		ruRU = "Ability_Mage_WintersGrasp|При наложении эффектов окоченения вы с 15%-й вероятностью можете попасть под действие эффекта Ледяные пальцы. Во время его действия для 2 ваших последующих заклинаний цель считается замороженной.",
 		enGB = "Ability_Mage_WintersGrasp|Gives your Chill effects a 15% chance to grant you the Fingers of Frost effect, which treats your next 2 spells cast as if the target were Frozen.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_MAGE_SPELL3_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_MAGE_SPELL3"] = {
 		ruRU = "Spell_Arcane_StarFire|Повышает вероятность нанести критический урон заклинанием, накладываемым в состоянии Ясность мысли или Величие разума на 30%.",
 		enGB = "Spell_Arcane_StarFire|Increases the critical strike chance of your next damaging spell by 30% after gaining Clearcasting or Presence of Mind.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_MAGE_SPELL4_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_MAGE_SPELL4"] = {
 		ruRU = "Spell_Nature_Lightning|При использовании увеличивает урон, наносимый вашими заклинаниями, на 20% и затраты маны на 20%.",
 		enGB = "Spell_Nature_Lightning|When activated, your spells deal 20% more damage while costing 20% more mana to cast.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_MAGE_SPELL5_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_MAGE_SPELL5"] = {
 		ruRU = "Spell_Fire_SelfDestruct|При использовании повышает критический урон заклинаний магии огня на 50%. Каждое заклинание магии огня, достигшее цели, увеличивает вероятность нанесения критического урона от огня на 10%. Этот эффект длится, пока 3 заклинания огня не нанесут критический урон прямым действием.",
 		enGB = "Spell_Fire_SelfDestruct|When activated, this spell increases your critical strike damage bonus with Fire damage spells by 50%, and causes each of your Fire damage spell hits to increase your critical strike chance with Fire damage spells by 10%. This effect lasts until you have caused 3 non-periodic critical strikes with Fire spells.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL1_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_WARLOCK_DESC"] = {
+		ruRU = "Чернокнижники уничтожают ослабленного противника, сочетая увечащие проклятия и темную магию. Находясь под защитой своих питомцев, чернокнижники разят врага на расстоянии. Физически слабые колдуны не могут носить тяжелую броню, поэтому подставляют под вражеские удары своих слуг.",
+		enGB = "Warlocks burn and destroy weakened foes with a combination of crippling illnesses and dark magic. While their demon pets protect and enhance them, warlocks strike at their enemies from a distance. As physically weak spellcasters bereft of heavy armor, cunning warlocks allow their minions to take the brunt of enemy attacks in order to save their own skin.",
+	},
+	["CHAR_INFO_CLASS_WARLOCK_ROLE"] = {
+		ruRU = "Роль: |cffffffffбоец дальнего боя|r",
+		enGB = "Role: |cffffffffRanged Damage|r",
+	},
+	["CHAR_INFO_CLASS_WARLOCK_SPELL1"] = {
 		ruRU = "Spell_Shadow_SummonImp|Чернокнижники подчиняют своей воле демонов: обитатели Круговерти Пустоты защищают своих хозяев и сражаются с их врагами.",
 		enGB = "Spell_Shadow_SummonImp|Warlocks bind demons to their will; these infernal denizens defend their masters with their lives or rain death upon their enemies.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL2_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_WARLOCK_SPELL2"] = {
 		ruRU = "Ability_Warlock_Backdraft|После произнесения заклинания Поджигание скорость произнесения и общее время восстановления следующих трех заклинаний категории Разрушение уменьшается на 30%.",
 		enGB = "Ability_Warlock_Backdraft|When you cast Conflagrate, the cast time and global cooldown of your next three Destruction spells is reduced by 30%.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL3_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_WARLOCK_SPELL3"] = {
 		ruRU = "Ability_Warlock_Eradication|При нанесении урона Порчей чернокнижник с 6%-й вероятностью может увеличить скорость применения заклинаний на 20%.",
 		enGB = "Ability_Warlock_Eradication|When you deal damage with Corruption, you have 6% chance to increase your spell casting speed by 20%.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL4_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_WARLOCK_SPELL4"] = {
 		ruRU = "Spell_Shadow_DemonForm|Чернокнижник превращается в демона на 30 сек. Его броня усиливается на 600%, наносимый урон увеличивается на 20%, вероятность, что атаки ближнего боя нанесут ему критическое повреждение, уменьшается на 6%, а длительность действия эффектов оглушения и сковывания снижается на 50%. Чернокнижник приобретает уникальные демонические способности вдобавок к своим обычным.",
 		enGB = "Spell_Shadow_DemonForm|You transform into a Demon for 30 sec. This form increases your armor contribution from items by 600%, damage by 20%, reduces the chance you'll be critically hit by melee attacks by 6% and reduces the duration of stun and snare effects by 50%. You gain some unique demon abilities in addition to your normal abilities.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_WARLOCK_SPELL5_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_WARLOCK_SPELL5"] = {
 		ruRU = "Ability_Warlock_Haunt|В противника вселяется блуждающий дух, который наносит урон от темной магии и увеличивает периодический урон от ваших заклинаний темной магии на 20% на 12 сек. Если заклинание было рассеяно или его действие завершилось, блуждающий дух возвращается к чернокнижнику, исцеляя его на 100% от урона, нанесенного противнику.",
 		enGB = "Ability_Warlock_Haunt|You send a ghostly soul into the target, dealing Shadow damage and increasing all damage done by your Shadow damage-over-time effects on the target by 20% for 12 sec. When the Haunt spell ends or is dispelled, the soul returns to you, healing you for 100% of the damage it did to the target.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_DEMONHUNTER_SPELL1_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_DEMONHUNTER_DESC"] = {
+		ruRU = "Охотники на демонов не пользуются тяжелой броней, вместо этого полагаясь на скорость, которая дает им возможность стремительно приближаться к противнику и наносить ему урон одноручным оружием. Однако иллидари не стоит забывать о том, чтобы использовать свою ловкость и в защитных целях, обеспечивая себе благоприятный исход битвы.",
+		enGB = "Forgoing heavy armor, Demon Hunters capitalize on speed, closing the distance quickly to strike enemies with one-handed weapons. However, Illidari must also use their agility defensively to ensure that battles end favorably.",
+	},
+	["CHAR_INFO_CLASS_DEMONHUNTER_ROLE"] = {
+		ruRU = "Роли: |cffffffffтанк или боец ближнего боя|r",
+		enGB = "Roles: |cffffffffTank or Melee Damage|r",
+	},
+	["CHAR_INFO_CLASS_DEMONHUNTER_SPELL1"] = {
 		ruRU = "|За кажущейся слепотой охотников на демонов скрывается истинная сила их обостренного восприятия. Они способны обнаруживать даже хорошо замаскировавшихся противников.",
 		enGB = "|The Demon Hunters’ apparent blindness belies their true powers of perception. They rely on magically augmented sight to detect enemies, even those that hide behind obstacles.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_DEMONHUNTER_SPELL2_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_DEMONHUNTER_SPELL2"] = {
 		ruRU = "|Охотники на демонов могут выполнять двойные прыжки, длинные кувырки и даже распахивать свои гигантские крылья, которые позволяют им планировать в воздухе и внезапно нападать на врагов сверху.",
 		enGB = "|Demon Hunters can double jump, vault in and out of combat, and unfold their monstrous wings, surprising enemies from above with devastating attacks.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_DEMONHUNTER_SPELL3_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_DEMONHUNTER_SPELL3"] = {
 		ruRU = "|На месте убитого противника иногда остается фрагмент души. Подойдя к фрагменту души, охотник на демонов поглощает его, восстанавливая 25% от максимального запаса здоровья.",
 		enGB = "|Killing an enemy sometimes creates a Soul Fragment that is consumed when you approach it, healing you for 25% of maximum health.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_DEMONHUNTER_SPELL4_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_DEMONHUNTER_SPELL4"] = {
 		ruRU = "|Охотник на демонов освобождает демоническую энергию, обращаясь в демона. В облике демона его способности заменяются на более мощные, и в зависимости от специализации или увеличивая рейтинг скорости, или рейтинг брони.",
 		enGB = "|You release demonic energy, turning into a demon. In demon form, your abilities become more powerful and your haste/armor rating increases (depending on the specialization).",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_DEMONHUNTER_SPELL5_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_DEMONHUNTER_SPELL5"] = {
 		ruRU = "|Освобождает свою демоническую энергию, материализуя её в виде тени охотника на демонов, которая атакует те же цели, что и сам охотник, при этом усиливая его атаки.",
 		enGB = "|Releases demonic energy, manifesting it in the form of your shadow, which will attack your targets and improve your attacks.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_DRUID_SPELL1_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_DRUID_DESC"] = {
+		ruRU = "Друиды могут подходить к сражению совершенно по-разному. Они вольны играть почти любую роль в команде: быть целителями, танками или бойцами, но должны помнить об особенностях каждой роли. Друид вынужден внимательно подбирать облик к ситуации, так как каждый из них служит определенной цели.",
+		enGB = "Druids are versatile combatants, in that they can fulfill nearly every role – healing, tanking, and damage dealing. It’s critical that druids tailor the form they choose to the situation, as each form bears a specific purpose.",
+	},
+	["CHAR_INFO_CLASS_DRUID_ROLE"] = {
+		ruRU = "Роли: |cffffffffтанк, лекарь, боец дальнего или ближнего боя|r",
+		enGB = "Roles: |cffffffffTank, Healer, Ranged Damage, or Melee Damage|r",
+	},
+	["CHAR_INFO_CLASS_DRUID_SPELL1"] = {
 		ruRU = "Ability_Druid_TravelForm|Cпособность друидов менять облик позволяет им играть разные роли в команде: танка, целителя или бойца. Также смена облика дает возможность быстро передвигаться по суше, морю и воздуху.",
 		enGB = "Ability_Druid_TravelForm|Druids are versatile combatants, in that they can fulfill nearly every role – healing, tanking, and damage dealing. It’s critical that druids tailor the form they choose to the situation, as each form bears a specific purpose.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_DRUID_SPELL2_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_DRUID_SPELL2"] = {
 		ruRU = "Spell_Holy_BlessingOfAgility|Повышает интеллект на 20%. Также повышает выносливость в облике медведя и лютого медведя на 10%, а в облике кошки – силу атаки на 10%.",
 		enGB = "Spell_Holy_BlessingOfAgility|Increases your Intellect by 20%. In addition, while in Bear or Dire Bear Form your Stamina is increased by 10% and while in Cat Form your attack power is increased by 10%.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_DRUID_SPELL3_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_DRUID_SPELL3"] = {
 		ruRU = "Ability_Druid_Eclipse|После нанесения критического удара заклинанием Звездный огонь с вероятностью 100% урон от заклинания Гнев увеличится на 40%. После нанесения критического удара заклинанием Гнев с вероятностью 60% рейтинг критического удара заклинания Звездный огонь повысится на 40%.",
 		enGB = "Ability_Druid_Eclipse|When you critically hit with Starfire, you have a 100% chance of increasing damage done by Wrath by 40%. When you critically hit with Wrath, you have a 60% chance of increasing your critical strike chance with Starfire by 40%.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_DRUID_SPELL4_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_DRUID_SPELL4"] = {
 		ruRU = "Ability_Druid_TreeofLife|Принять облик Древа Жизни. В этом облике вы увеличиваете эффективность исцеления всех участников группы или рейда в радиусе 100 м на 6% и можете произносить только заклинания школы Исцеления",
 		enGB = "Ability_Druid_TreeofLife|Shapeshift into the Tree of Life. While in this form you increase healing received by 6% for all party and raid members within 100 yards, and you can only cast Restoration spells.",
 	},
-	["CHARACTER_CREATE_INFO_CLASS_DRUID_SPELL5_DESC_SHORT"] = {
+	["CHAR_INFO_CLASS_DRUID_SPELL5"] = {
 		ruRU = "Ability_Druid_ImprovedMoonkinForm|Друид превращается в лунного совуха. Бонус к броне за счет экипировки увеличивается на 370%, урон, получаемый во время оглушения, уменьшается на 15%, а вероятность критического эффекта заклинаний участников группы или рейда в радиусе 100 м повышается на 5%. При критическом ударе заклинанием по одиночной цели друид может мгновенно восстановить 2% от общего запаса маны. В облике лунного совуха нельзя произносить исцеляющие и воскрешающие заклинания.",
 		enGB = "Ability_Druid_ImprovedMoonkinForm|Shapeshift into Moonkin Form. While in this form the armor contribution from items is increased by 370%, damage taken while stunned is reduced by 15%, and all party and raid members within 100 yards have their spell critical chance increased by 5%. Single target spell critical strikes in this form have a chance to instantly regenerate 2% of your total mana. The Moonkin can not cast healing or resurrection spells while shapeshifted.",
 	},
 
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_HUMAN_DESC"] = {
+		ruRU = "Люди – молодая раса, а потому их способности разносторонни. Искусство боя, ремесло и магия доступны им в равной степени. Жизнелюбие и уверенность в своих силах позволили людям создать могучие королевства. В эпоху, когда войны длятся веками, люди стремятся возродить былую славу и заложить основу для будущих блистательных побед.",
+		enGB = "Humans are a young race, and thus highly versatile, mastering the arts of combat, craftsmanship, and magic with stunning efficiency. The humans’ valor and optimism have led them to build some of the world’s greatest kingdoms. In this troubled era, after generations of conflict, humanity seeks to rekindle its former glory and forge a shining new future.",
+	},
+	["CHAR_INFO_RACE_DWARF_DESC"] = {
+		ruRU = "В древние времена дворфов интересовали лишь богатства, которые они добывали из недр земли. Однажды во время раскопок они обнаружили следы древней расы богоподобных существ, которая создала дворфов и наделила их некими могущественными правами. Дворфы возжелали узнать больше и посвятили себя поиску древних сокровищ и знаний. Сегодня дворфов-археологов можно встретить в любом уголке Азерота.",
+		enGB = "In ages past, the dwarves cared only for riches taken from the earth's depths. Then records surfaced of a god-like race said to have given the dwarves life... and an enchanted birthright. Driven to learn more, the dwarves devoted themselves to the pursuit of lost artifacts and ancient knowledge. Today dwarven archaeologists are scattered throughout the globe.",
+	},
+	["CHAR_INFO_RACE_NIGHTELF_DESC"] = {
+		ruRU = "Десять тысяч лет назад ночные эльфы основали огромную империю, но неразумное использование первородной магии привело ее к падению. Полные скорби, они удалились в леса и пребывали в изоляции вплоть до возвращения их вековечного врага, Пылающего Легиона. Тогда ночным эльфам пришлось пожертвовать своим уединенным образом жизни и сплотиться, чтобы отвоевывать свое место в новом мире.",
+		enGB = "Ten thousand years ago, the night elves founded a vast empire, but their reckless use of primal magic brought them to ruin. In grief, they withdrew to the forests and remained isolated there until the return of their ancient enemy, the Burning Legion. With no other choice, the night elves emerged at last from their seclusion to fight for their place in the new world.",
+	},
+	["CHAR_INFO_RACE_GNOME_DESC"] = {
+		ruRU = "Гномы Каз Модана не могут похвастаться статью, зато их интеллект позволил занять им достойное место в истории. Гномреган, подземное королевство, в свое время был чудом паровых технологий. Увы, вторжение троггов привело к разрушению города. Теперь славные строители Гномрегана скитаются по землям дворфов, по мере сил помогая своим союзникам.",
+		enGB = "Though small in stature, the gnomes of Khaz Modan have used their great intellect to secure a place in history. Indeed, their subterranean kingdom, Gnomeregan, was once a marvel of steam-driven technology. Even so, due to a massive trogg invasion, the city was lost. Now its builders are vagabonds in the dwarven lands, aiding their allies as best they can.",
+	},
+	["CHAR_INFO_RACE_DRAENEI_DESC"] = {
+		ruRU = "После бегства с родной планеты, Аргуса, дренеи тысячелетиями скитались по вселенной, спасаясь от Пылающего Легиона, пока, наконец, не нашли пристанище. Свою новую планету они разделили с орками-шаманами и назвали Дренором. Спустя некоторое время Легион поработил души орков и заставил их развязать войну на планете, уничтожив на ней почти всех миролюбивых дренеев. Немногие счастливчики спаслись бегством на Азерот и ищут теперь союзников для борьбы с Пылающим Легионом.",
+		enGB = "Driven from their home world of Argus, the honorable draenei fled the Burning Legion for eons before finding a remote planet to settle on. They shared this world with the shamanistic orcs and named it Draenor. In time the Legion corrupted the orcs, who waged war and nearly exterminated the peaceful draenei. A lucky few fled to Azeroth, where they now seek allies in their battle against the Burning Legion.",
+	},
+	["CHAR_INFO_RACE_WORGEN_DESC"] = {
+		ruRU = "Первые упоминания о воргенах в Восточных королевствах относятся ко временам Третьей войны, куда они попали благодаря стараниям верховного мага Аругала. Сначала зверей использовали как живое оружие против Плети, но вскоре они стали бременем куда более тяжким, чем народ Лордерона мог вынести. Тех, кто сражался бок о бок с воргенами, поразило проклятье, заставлявшее их обращаться в таких же зверей. Занесенная в Гилнеас болезнь мгновенно распространилась, превратив добровольное затворничество граждан в вынужденную изоляцию. Все, кто выжил после страшного проклятья, ищут новый путь, которому последует их народ, и пытаются предугадать судьбу, которая его ожидает.",
+	},
+	["CHAR_INFO_RACE_QUELDO_DESC"] = {
+		ruRU = "Высшие эльфы - гордый народ с многовековой историей, потерявший всё. Преданные братьями, изгнанные со своей родины, терзаемые магическим голодом, они, тем не менее, не потеряли надежды. Многие из них мечтают о возрождении былого величия своего народа. Многие горят желанием отомстить Плети, что разрушила Кель-Талас, лишив эльфов дома, источника их силы - Солнечного Колодца и всего, что было им дорого. А многие хотят просто мирно жить.",
+	},
+	["CHAR_INFO_RACE_VOIDELF_DESC"] = {
+		ruRU = "В результате самонадеянного плана Кель'таса, связанного с манагорнами, и рокового стечения обстоятельств, группа Син'дорай чудом пережила столкновение с чудовищным Повелителем Бездны - там, у Предела Тенебры - но дорогой ценой. Скитальцев Тенебры преобразили силы тени, навсегда изменив их тела и души, но железная воля эльфов оказалась не по зубам даже первозданной тьме. Воодушевленные своим возвращением на Азерот, они ищут способы обуздать новообретенные способности и уберечься от губительного влияния Бездны.",
+	},
+	["CHAR_INFO_RACE_DARKIRONDWARF_DESC"] = {
+		ruRU = "Дворфы Черного Железа известны крутым нравом и неколебимым упорством. Три столетия назад они положили начало Войне Трех Кланов, в результате которой многие дворфы Черного Железа перешли на службу к Повелителю Огня Рагнаросу. Теперь, когда их повелитель был изгнан из Азерота, многие из них поддержали королеву-регента Мойру Тауриссан и надеются вернуть доверие других кланов.",
+	},
+	["CHAR_INFO_RACE_LIGHTFORGED_DESC"] = {
+		ruRU = "На протяжении многих тысячелетий армия Света сражалась с полчищами Пылающего Легиона в Круговерти Пустоты. Самые преданные делу дренеи проходили особый ритуал, чтобы стать одним целым с энергией Света и войти в число озаренных. Некоторые из них были призваны на Азерот и объединились со своими собратьями из Экзодара, чтобы помочь в грядущей войне с демонами и защитить наару от тех, кто смеет посягать на Свет.",
+	},
+	["CHAR_INFO_RACE_ORC_DESC"] = {
+		ruRU = "Орки происходят с планеты Дренор. Пока Пылающий Легион не подчинил этот народ своей власти, орки посвящали себя исключительно мирным занятиям и шаманизму. Но однажды демоны поработили орков и погнали на войну с людьми Азерота. Много лет потребовалось, чтобы избавиться от гнета Легиона и обрести долгожданную свободу. Теперь орки вынуждены сражаться за место в чужом для них мире.",
+		enGB = "The orc race originated on the planet Draenor. A peaceful people with shamanic beliefs, they were enslaved by the Burning Legion and forced into war with the humans of Azeroth. Although it took many years, the orcs finally escaped the demons' corruption and won their freedom. To this day they fight for honor in an alien world that hates and reviles them.",
+	},
+	["CHAR_INFO_RACE_SCOURGE_DESC"] = {
+		ruRU = "Отрекшиеся, не попавшие под власть Короля-лича, ищут способ положить конец его правлению. Под предводительством банши Сильваны они сражаются против Армии Плети. Их врагами стали и люди, неустанно стремящиеся стереть с лица земли любую нежить. Отверженные не хранят верность союзам и даже Орду считают всего лишь инструментом воплощения своих темных замыслов.",
+		enGB = "The Forsaken, who have managed to break free from the will of the Lich King, are seeking to put an end to his rule. Led by the banshee Sylvanas, they are fighting against both the Scourge and the humans, who tirelessly seek to wipe out any undead from the face of the earth. The Forsaken do not hold loyalty to any alliances and consider even the Horde to be just a tool for furthering their sinister designs.",
+	},
+	["CHAR_INFO_RACE_TAUREN_DESC"] = {
+		ruRU = "Таурены всегда стремились сохранять равновесие природы, следуя завету своей богини, Матери-Земли. Не так давно они подверглись набегу злобных кентавров, и если бы не счастливый случай – встреча с орками, которые помогли отразить нападение, – могли бы и вовсе погибнуть. Чтобы вернуть долг крови, таурены присоединились к Орде вслед за своими соратниками.",
+		enGB = "Always the tauren strive to preserve the balance of nature and heed the will of their goddess, the Earth Mother. Not so long ago, they were attacked by the marauding centaur, and had it not been for good fortune – their meeting with orcs who helped them to repel the attack – their whole race may have been wiped out. To repay the blood debt, the tauren joined the Horde along with their other comrades-in-arms.",
+	},
+	["CHAR_INFO_RACE_TROLL_DESC"] = {
+		ruRU = "Тролли Черного Копья некогда считали своим домом Тернистую долину, но были вытеснены оттуда враждующими племенами. Тралл, молодой вождь орков, убедил троллей примкнуть к его походу на Калимдор. Это окончательно сплотило между собой орочью Орду и троллей. Хотя тролли и не смогли окончательно отказаться от своего мрачного наследия, в Орде их уважают и почитают.",
+		enGB = "Once at home in the jungles of Stranglethorn Vale, the trolls of the Darkspear tribe were besieged on all sides by warring factions. This finally brought the Orcish Horde and the trolls together. Thrall, the young Orcish Warchief, managed to convince the trolls to join the Horde in its journey to Kalimdor. Though they cling to their shadowy heritage, they are respected and honored in the Horde.",
+	},
+	["CHAR_INFO_RACE_GOBLIN_DESC"] = {
+		ruRU = "Гоблины, начавшие свой исторический путь в кандалах рабов на острове Кезан, вынуждены были добывать для троллей каджа'митовую руду в Подкопье, глубоко под вулканом Каджаро. Никто не знал, что эта руда обладает магическими свойствами, но именно эти свойства позволили гоблинам быстро развить ум и смекалку. Втайне от угнетателей гоблины изобретали приборы и создавали алхимические препараты, которые в конце концов помогли им освободиться от троллей и захватить власть над островом. С тех пор они стали звать Кезан своим домом, возведя на нем настоящий технологический рай, откуда многочисленные конгломераты гоблинов контролировали все коммерческие процессы, протекающие в Азероте. Но недавнее извержение Каджаро уничтожило остров, вынудив гоблинов спасаться бегством и заключить союз с Ордой.",
+	},
+	["CHAR_INFO_RACE_NAGA_DESC"] = {
+		ruRU = "Воинственные наги Мерцающих Глубин некогда считали своим домом Вайш'ир, однако недавнее нападение слуг Нептулона, Владыки Морей, вынудило их покинуть родные воды и примкнуть к Орде. И, хотя они не расстались с мрачным наследием своего народа, а новые союзники не всегда верят в благие намерения обитателей глубин, наги позволяют другим пользоваться своей грубой силой и могущественной стихийной магией, рассматривая союз с Ордой как необходимое средство выживания в чужом для них наземном мире.",
+	},
+	["CHAR_INFO_RACE_BLOODELF_DESC"] = {
+		ruRU = "Много лет назад высшие эльфы-изгнанники основали поселение Кель'Талас, в котором создали магический источник, названный Солнечным Колодцем. Чем больше сил черпали из него эльфы, тем сильнее начинали от него зависеть.|n|nСпустя века Армия Плети разрушила Солнечный Колодец и убила большинство эльфов. Изгнанники назвали себя эльфами крови и стремятся восстановить Кель'Талас, а также найти новый источник волшебной силы, чтобы удовлетворить свое пагубное пристрастие.",
+		enGB = "Many years ago, the exiled high elves founded the settlement of Quel’Thalas, where they created a source of magic called the Sunwell. The more power the elves drew from it, the more dependent on it they became.|n|nCenturies later, the Scourge destroyed the Sunwell and killed most of the elves. The exiles dubbed themselves Blood Elves and now seek to restore Quel’Thalas and to find a new source of magical power to satisfy their addiction.",
+	},
+	["CHAR_INFO_RACE_NIGHTBORNE_DESC"] = {
+		ruRU = "Выжившие в чудовищной Войне Древних и пережившие катаклизм, последовавший после уничтожения Колодца Вечности, Ночнорожденные скрывались в Сурамаре за магическим куполом от любых угроз внешнего мира. Магия служила им инструментом, защитой, и пищей - и стала их сутью. Дом Селентрис - изгнанники-ночнорожденные, которые стремятся обрести новый дом в мире за пределами Сурамара, а также справиться с жаждой магии прежде, чем она их погубит.",
+	},
+	["CHAR_INFO_RACE_EREDAR_DESC"] = {
+		ruRU = "Тысячи лет назад родину эредаров, Аргус, посетил темный титан Саргерас. Увидев потенциал в народе волшебников и мыслителей, он предложил им силу и знания в обмен на служение. Эта сделка навсегда изменила облик эредаров и поставила их выдающиеся таланты на службу Пылающему Легиону.\nОднако не все из искаженных Скверной ман'ари хранят верность Саргерасу. Секта новообращенных демонов из числа бывших дренеев, разочаровавшись в идеях Пылающего Легиона, открыто бросила вызов своим бывшим властителям. Теперь они ищут союза со смертными народами Азерота, чтобы вместе противостоять грозному врагу.",
+	},
+	["CHAR_INFO_RACE_ZANDALARITROLL_DESC"] = {
+		ruRU = "Зандалары — гордый народ, история которого началась на заре Азерота. Их свирепые воины сражаются верхом на динозаврах и пользуются покровительством могучих божеств, именуемых лоа. Сейчас, когда в Азероте зреют угрозы, ставящие на кон существование не только зандаларов, но и всего мира, эти тролли вынуждены покинуть свои священные земли в поисках достойных союзников.",
+	},
+	["CHAR_INFO_RACE_PANDAREN_DESC"] = {
+		ruRU = "Таинственные пандарены родом с окутанных туманами земель Пандарии. Тысячи лет назад их народ страдал под безжалостным игом древней империи Могу, но, благодаря исключительной стойкости, мастерству дипломатии и особому боевому искусству пандаренам удалось сплотить вокруг себя народы Пандарии, положить конец тирании Могу и принести мир в свои земли. Немногие пандарены-путешественники отважились покинуть родные края в поисках мудрости или приключений. Они далеки от конфликтов Альянса и Орды, но готовы протянуть руку помощи тем, кто в ней действительно нуждается.",
+		enGB = "The mysterious Pandaren hail from the mist-shrouded lands of Pandaria. Thousands of years ago, their people suffered under the ruthless yoke of the ancient Mogu Empire, but, thanks to their exceptional resilience, diplomatic skills and special martial arts, the Pandaren managed to unite the peoples of Pandaria around them, put an end to the tyranny of Mogu, and bring peace to their lands. Few Pandaren travelers dared to leave their homeland in search of wisdom or adventure. While far from the conflicts of the Alliance and the Horde, they are ready to lend a helping hand to those who really need it.",
+	},
+	["CHAR_INFO_RACE_VULPERA_DESC"] = {
+		ruRU = "Обитающие в неприветливых пустынных землях Тель'Абима, вульперы были вынуждены вести кочевой образ жизни, следуя за песками и скрываясь от противников. Они мастерски научились выживать там, где другие встретили бы свой конец, и находить применение тому, что другие посчитали бы барахлом. Теперь же, когда их остров стал желанной добычей для чужестранцев, вульперы ищут союзников, готовых помочь им отстоять свою родину.",
+	},
+	["CHAR_INFO_RACE_DRACTHYR_DESC"] = {
+		ruRU = "Созданные усилиями драконьих стай после освобождения королевы Алекстразы из Грим-Батола, драктиры объединяют в себе лучшие черты как своих прародителей, так и смертных. Теперь этим благородным существам предстоит найти союзников среди младших рас, чтобы вместе противостоять нависшему над Азеротом року, а заодно и тьме, что зреет среди самих драконов.",
+	},
+
+	["CHAR_INFO_RACE_HUMAN_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "inv_cape_battlepvps1_d_01_alliance|Сила, ловкость и интеллект повышены на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_HUMAN_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "inv_sword_05|Меткость повышена на 2%, Мастерство - на 2 ед.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_HUMAN_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "ability_warrior_rallyingcry|Весь получаемый урон снижен на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_HUMAN_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "Spell_Shadow_Charm|Развеивает эффекты потери контроля над персонажем (кроме Ужаса и Превращения)\nПерезарядка: 120 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_HUMAN_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_HUMAN_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "ability_rogue_quickrecovery|Повышает наносимый урон и исцеление на 5%, а также снижает получаемый урон на 5% на 10 сек.\nПерезарядка: 30 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DWARF_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "achievement_dungeon_ulduarraid_irondwarf_01|Повышает скорость атаки и произнесения заклинаний участников группы на 1%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DWARF_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "spell_shaman_primalstrike|Модификатор критического урона и исцеления всех атак и заклинаний увеличен на 4%, а шанс крит. эффекта - на 1%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DWARF_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "ability_golemthunderclap|Показатель блокирования увеличен на 15%, а вероятность блокирования - на 3%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DWARF_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "warrior_talent_icon_avatar|Развеивает эффекты болезней, яда и кровотечения, предоставляет невосприимчивость к ним и оглушению, ошеломлению, параличу сроком на 3 сек.\nПерезарядка: 120 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DWARF_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DWARF_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "ability_racial_avatar|Повышает наносимый вами урон и творимое исцеление на 10%, а также снижает получаемый физический урон на 20% сроком на 10 сек.\nПерезарядка: 60 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_NIGHTELF_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "ability_hunter_onewithnature|Применение способностей и заклинаний с шансом 25% восполнит 9 ед. вашей ярости, энергии, силы рун или 6% от базовой маны.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_NIGHTELF_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "spell_holy_elunesgrace|Скорость атаки и произнесения заклинаний увеличена на 2%, а вероятность крит. эффекта - на 1%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_NIGHTELF_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "spell_nature_spiritarmor|Вероятность уклонения увеличена на 3%, получаемый магический урон снижен на 1%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_NIGHTELF_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "ability_vanish|Наделяет вас невидимостью. Действует до отмены или любого движения. По окончанию действия снижает получаемый вами урон от игроков на 50% на 3 сек.\nПерезарядка: 120 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTELF_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_NIGHTELF_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "spell_nature_moonglow|Благословляет цель (или вас), повышая наносимый урон и исцеление на 4% и показатель сопротивления на 1.25 за каждый уровень персонажа.\nПерезарядка: 30 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_GNOME_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "inv_engineering_90_scope_blue|Повышает меткость участников группы на 1%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_GNOME_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "inv_engineering_90_math|Увеличивает максимальный показатель используемого ресурса (мана, энергия, и т. д.)",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_GNOME_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "inv_engineering_90_gizmo|Вероятность уклонения увеличена на 3%, а вероятность получения критического удара снижена на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_GNOME_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "ability_rogue_sprint_blue|Развеивает обездвиживание и замедление, а также наделяет вас невосприимчивостью к ним и активации ловушек.\nПерезарядка: 120 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GNOME_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_GNOME_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "spell_arcane_mindmastery|Повышает урон или исцеление следующего примененного заклинания или способности на 33%.\nВо время действия эффекта, эффекты периодического урона также получают эффект от данной способности, не расходуя её заряд.\nПерезарядка: 30 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DRAENEI_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "spell_holy_healingfocus|Повышает показатель выносливости участников группы на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DRAENEI_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "inv_misc_book_17|Показатель интеллекта увеличен на 4%, а меткость в ближнем и дальнем бою - на 1%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DRAENEI_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "spell_holy_divinespirit|Получаемый магический урон снижен на 2%, физический - на 1%, а длительность страха и оглушения сокращена на 10%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DRAENEI_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "spell_holy_holyprotection|Восполняет цели 25% от максимального запаса здоровья за 10 сек.\nПерезарядка: 120 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DRAENEI_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DRAENEI_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "ability_paladin_savedbythelight|Отмечает цель. При получении урона цель будет испускать волны света, поглощающие получаемый союзниками урон или наносящие урон врагам (в зависимости от того, друг цель или нет).\nПерезарядка: 60 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_WORGEN_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "spell_hunter_lonewolf|Повышает показатель ловкости участников группы на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_WORGEN_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "ability_druid_rake|Применяя способности, вы повышаете свою скорость атаки и произнесения заклинаний на 1% вплоть до 3% сроком на 10 сек.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_WORGEN_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "ability_hunter_longevity|Вероятность уклонения увеличена на 3%, а показатель брони - на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_WORGEN_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "ability_racial_darkflight|Ускоряет ваше перемещение на 50% сроком на 10 сек. Скорость перемещения не может быть снижена ниже 100%.\nПерезарядка: 90 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_WORGEN_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_WORGEN_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "ability_racial_viciousness|Освобождает звериную ярость, повышая наносимый урон и творимое исцеление на 1% (вплоть до 10%) раз в 1 сек. в течение 10 сек.\nПерезарядка: 30 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_QUELDO_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "spell_holy_arcaneintellect|Повышает показатель интеллекта участников группы на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_QUELDO_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "spell_arcane_arcanepotency|Меткость повышена на 1%, а вероятность критического эффекта - на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_QUELDO_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "spell_arcane_invocation|Получаемый магический урон снижен на 2%. С вероятностью 2% вы отразите заклинание обратно в противника (если это возможно).",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_QUELDO_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "spell_arcane_arcaneresilience|Наделяет вас невосприимчивостью к 1 следующему магическому эффекту потери контроля над персонажем, полученному в течение 2 сек.\nПерезарядка: 90 сек",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_QUELDO_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_QUELDO_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "spell_arcane_blast|Отмечает цель. Отмеченный противник получает на 7% больше урона от вас, а союзник - на 7% больше получаемого от вас исцеления.\nПерезарядка: 30 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_VOIDELF_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "inv_enchant_voidcrystal|Повышает максимальный показатель основного ресурса участников группы.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_VOIDELF_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "spell_priest_voidshift|Восполняет ваш основной ресурс, пока его показатель находится на 50% или ниже.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_VOIDELF_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "spell_shadow_twilight|Применяя способности, вы с некоторой вероятностью повысите свою силу атаки или силу заклинаний.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL_PASSIVE4_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_VOIDELF_SPELL_PASSIVE4_SHORT"] = {
 		ruRU = "spell_shadow_possession|Снижает скорость передвижения противников в радиусе 8 м. на 5%, их вероятность попадания - на 1%, а урон, наносимый их атаками ближнего боя - на 1%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_VOIDELF_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "ability_priest_voidentropy|Окутывает указанную область зоной Бездны. Любой противник, находящийся в этой зоне, будет замедлен, а союзник - ускорен.\nПерезарядка: 90 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VOIDELF_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_VOIDELF_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "spell_priest_voidtendrils|Умение, снижающее время восстановления следующей произнесенной способности или заклинания на 7 сек.\nПерезарядка: 35 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DARKIRONDWARF_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "spell_fire_sealoffire|Повышает множитель критического эффекта участников группы на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL_PASSIVE2_DESC_SHORT"] = {
-		ruRU = "spell_fire_rune|Применение способностей с некоторой вероятностью повышает наносимый урон и исходящее исцеление на 1% вплоть до 3%.",
-		enGB = "",
+	["CHAR_INFO_RACE_DARKIRONDWARF_SPELL_PASSIVE2_SHORT"] = {
+		ruRU = "spell_fire_rune|Повышает наносимый урон и эффективность исцеления на 2%.",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DARKIRONDWARF_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "inv_shoulder_leather_firelandsdruid_d_01|Множитель критического эффекта увеличен на 4%, а вероятность критического удара - на 1%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL_PASSIVE4_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DARKIRONDWARF_SPELL_PASSIVE4_SHORT"] = {
 		ruRU = "ability_racial_fireblood|Показатель брони увеличен на 4%. Получение урона с некоторой вероятностью восстановит вам 2% от максимального запаса здоровья.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DARKIRONDWARF_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "inv_hammer_unique_sulfuras|Бросок молота, оглушающий указанного противника на 3 сек.\nПерезарядка: 90 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DARKIRONDWARF_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DARKIRONDWARF_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "ability_rhyolith_lavapool|Покрывает цель (будь то противник или союзник) и область вокруг него шлаком, повышая урон, получаемый от вас противниками и исцеление, получаемое от вас союзниками на 6%.\nПерезарядка: 30 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_LIGHTFORGED_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "racial_highpurpose|Повышает показатель силы атаки и силы заклинаний участников группы на 1%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_LIGHTFORGED_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "racial_lightforged_giftoflight|Показатель силы атаки увеличен на 2%, а модификатор критического эффекта атакующих и целительных заклинаний - на 4%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_LIGHTFORGED_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "spell_holy_surgeoflight|Повышает наносимый урон и эффективность исцеления на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL_PASSIVE4_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_LIGHTFORGED_SPELL_PASSIVE4_SHORT"] = {
 		ruRU = "spell_holy_greaterblessingoflight|Получаемый магический урон снижен на 1%. Падение уровня здоровья вызывает щит, снижающий получаемый урон.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_LIGHTFORGED_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "ability_paladin_blindinglight|Снижает скорость передвижения указанного противника на 95%, после чего тот медленно восстанавливает скорость за 10 сек.\nПерезарядка: 90 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_LIGHTFORGED_SPELL_ACTIVE2_DESC_SHORT"] = {
-		ruRU = "spell_holy_healingfocus|Увеличивает наносимый вами урон и исходящее исцеление на 20%, а также снижает получаемый магический урон на 40% сроком на 10 сек.\nПерезарядка: 120 секунд",
-		enGB = "",
+	["CHAR_INFO_RACE_LIGHTFORGED_SPELL_ACTIVE2_SHORT"] = {
+		ruRU = "spell_holy_healingfocus|Увеличивает наносимый вами урон и исходящее исцеление на 20%, а также снижает получаемый магический урон на 40% сроком на 5.5 секунд. Перезарядка 60 секунд.",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_ORC_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "ui_horde_honorboundmedal|Повышает показатель силы участников группы на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_ORC_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "ability_warrior_strengthofarms|Множитель критического эффекта всех атак, способностей и заклинаний увеличен на 4%, а мастерство - на 2 ед.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_ORC_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "warrior_talent_icon_innerrage|Показатель блокирования увеличен на 20%, а вероятность парирования - на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_ORC_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "ability_warrior_improveddisciplines|Предоставляет вам временную невосприимчивость к замедлению и сковыванию.\nПерезарядка: 90 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ORC_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_ORC_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "ability_warrior_endlessrage|Временно повышает модификатор критического урона и исцеления на 25%.\nПерезарядка: 60 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_SCOURGE_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "spell_necro_deathall|Применяя способности, вы с некоторой вероятностью увеличите силу атаки или силу заклинаний на 1% вплоть до 3%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_SCOURGE_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "spell_shadow_skull|Показатель духа увеличен на 4%, а меткость в ближнем и дальнем бою - на 1%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_SCOURGE_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "inv_gauntlets_09|Пока ваш уровень здоровья находится на отметке 50% или ниже, вы получаете на 4% меньше урона.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_SCOURGE_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "spell_shadow_animatedead|Развеивает любые эффекты контроля над разумом, страха, ужаса, ошеломления и паралича.\nПерезарядка: 120 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_SCOURGE_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_SCOURGE_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "spell_shadow_fingerofdeath|Наносит периодический урон цели, восстанавливая вам здоровье в том же объеме.\nПерезарядка: 60 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_TAUREN_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "ability_druid_giftoftheearthmother|Снижает физический урон, получаемый участниками группы, на 1%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_TAUREN_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "spell_shaman_unleashweapon_wind|Показатель силы атаки увеличен на 2%, а вероятность критического эффекта только заклинаний - на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_TAUREN_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "inv_misc_tournaments_symbol_tauren|Показатель выносливости увеличен на 4%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_TAUREN_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "ability_warstomp|Вы оглушаете всех противников в радиусе 8 м. на 2 сек.\nПерезарядка: 90 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TAUREN_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_TAUREN_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "ability_smash|Повышает модификатор критического урона способности или заклинания, примененного в течение 3 сек., на 100%.\nВо время действия эффекта, критический периодический урон также получает эффект от данной способности, не расходуя её.\nПерезарядка: 30 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_TROLL_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "shaman_talent_unleashedfury|Повышает показатель духа участников группы на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_TROLL_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "spell_nature_bloodlust|Применение способностей с некоторой вероятностью повысит шанс нанести критический удар на 1% вплоть до 3% сроком на 10 сек.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_TROLL_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "spell_nature_regenerate|Повышает эффективность получаемого вами исцеления и периодически восстанавливает ваше здоровье.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_TROLL_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "racial_troll_berserk|Предоставляет невосприимчивость к эффектам ослепления, страха, ужаса и контроля над разумом, а также повышает скорость перемещения на 20%.\nПерезарядка: 90 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_TROLL_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_TROLL_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "inv_hand_1h_trollshaman_c_01|Повышает скорость ваших атак и заклинаний на 20% сроком на 10 сек.\nПерезарядка: 60 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_GOBLIN_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "ability_siege_engineer_pattern_recognition|Скорость атаки и произнесения заклинаний, а также вероятность критического удара увеличены на 1%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_GOBLIN_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "ability_siege_engineer_protective_frenzy|Применение способностей с некоторой вероятностью повышает модификатор критического эффекта на 2% вплоть до 6%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_GOBLIN_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "achievement_guildperk_ladyluck_rank2|Вероятность уклонения увеличена на 3%, а вероятность попадания по вам снижена на 1%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_GOBLIN_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "ability_racial_rocketjump|Развеивает эффекты сковывания, замедления и позволяет вам совершить реактивный прыжок вперед. \nИмеет общее время восстановления со способностями \"Рывок\", \"Перехват\", и \"Вмешательство\", равное 15 сек.\nПерезарядка: 120 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_GOBLIN_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_GOBLIN_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "ability_racial_rocketbarrage|Запускает в цель ракету, наносящую урон противнику или исцеляющую союзника.\nПерезарядка: 60 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_NAGA_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "inv_misc_nagamale|Снижает магический урон, получаемый участниками группы, на 1%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_NAGA_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "spell_frost_summonwaterelemental|Показатель силы атаки или силы заклинаний повышен на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_NAGA_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "spell_naga_armor_racial|Показатель брони увеличен на 5%, получаемый физический урон снижен на 1%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_NAGA_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "spell_naga_weapon_racial|Предоставляет невосприимчивость к эффектам немоты, прерывания, а также обезоруживания.\nПерезарядка: 90 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NAGA_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_NAGA_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "inv_elemental_crystal_water|Повышает показатель одной из выбранных характеристик (сила, ловкость, выносливость, интеллект, дух) отмеченной цели на 20% сроком на 10 сек.\nПерезарядка: 30 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_BLOODELF_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "inv_misc_tournaments_banner_bloodelf|Повышает вероятность критического удара участников группы на 1%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_BLOODELF_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "sha_ability_rogue_bloodyeye_nightmare|Повышает меткость на 1%, а скорость атак и произнесения заклинаний - на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_BLOODELF_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "spell_shadow_antimagicshell|Получаемый магический урон снижен на 4%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_BLOODELF_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "spell_shadow_teleport|Вызывает немоту у всех противников в радиусе 8 м. на 3 сек. и восстаналивает 60 ед. ярости, энергии, силы рун или 45% от базовой маны.\nПерезарядка: 90 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_BLOODELF_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_BLOODELF_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "inv_misc_gem_bloodstone_01|Снижает получаемый магический урон на 20%, при этом повышая наносимый урон и исцеление на 10%, сроком на 10 сек.\nПерезарядка: 60 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_NIGHTBORNE_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "sha_spell_warlock_demonsoul_nightborne|Повышает максимальный показатель основного ресурса участников группы.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_NIGHTBORNE_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "sha_ability_rogue_sturdyrecuperate_nightborne|Вступая в бой, вы восстанавливаете 9 ед. энергии, ярости, силы рун или 6% от базовой маны раз в 2 сек. в течение 60 сек.\nСрабатывает не чаще, чем раз в 180 сек.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_NIGHTBORNE_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "spell_mage_supernova_nightborne|С некоторой вероятностью вы можете повысить магический урон, получаемый от вас противником, на 4%, при этом ваши атаки и способности будут игнорировать 4% от его брони.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_PASSIVE4_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_NIGHTBORNE_SPELL_PASSIVE4_SHORT"] = {
 		ruRU = "spell_arcane_prismaticcloak|Показатель брони увеличен на 5%, а получаемый магический урон снижен на 1%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_NIGHTBORNE_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "spell_arcane_arcane01_nightborne|Отмечает противника. Метка увеличивает время перезарядки следующей способности, которую применит противником, на 10 сек.\nПерезарядка: 30 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_NIGHTBORNE_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_NIGHTBORNE_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "sha_ability_rogue_bloodyeye_nightborne|Предоставляет невосприимчивость к эффектам прерывания и немоты, а также снижает расход ресурсов на все способности на 50% на 10 сек.\nПерезарядка: 30 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_EREDAR_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "ability_bloodmage_drain|Повышает множитель критического эффекта участников группы на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_EREDAR_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "passive_eredar_gift|Шанс нанести критический удар способностями ближнего и дальнего боя увеличен на 2%, а скорость произнесения заклинаний - на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_EREDAR_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "ability_bloodmage_hotstreak_red|Одержание победы над противником предоставляет вам \"Фрагмент души\", повышающий урон и исцеление на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL_PASSIVE4_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_EREDAR_SPELL_PASSIVE4_SHORT"] = {
 		ruRU = "passive_demonskin_racial|Повышает сопротивление магии. Также увеличивает показатель брони на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_EREDAR_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "spell_warlock_demonicportal_green|Перемещает вас в указанную точку на расстоянии 20 м.\nИмеет общее время восстановления со способностями \"Рывок\", \"Перехват\", и \"Вмешательство\", равное 15 сек.\nПерезарядка: 60 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_EREDAR_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_EREDAR_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "spell_bloodmage_soulgem|Расходует \"Фрагмент души\", повышая наносимый урон и исцеление на 4% и понижая получаемый урон на 4% сроком на 20 сек.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_ZANDALARITROLL_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "ability_racial_wardoftheloa|Повышает показатели силы атаки и силы заклинаний участников группы на 1%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_ZANDALARITROLL_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "ability_racial_embracetheloa|Зандалары верны традициям, и лоа - неотъемлемая часть их жизни. Обращаясь к тому лоа, с которым вы заключили контракт, вы получаете его опеку и поддержку.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_ZANDALARITROLL_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "ability_racial_zandalariempire|Повышает модификатор критического урона и исцеления на 4%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL_PASSIVE4_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_ZANDALARITROLL_SPELL_PASSIVE4_SHORT"] = {
 		ruRU = "spell_nature_bloodlust|Увеличивает получаемое исцеление на 5%, а вероятность уклонения - на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL_ACTIVE1_DESC_SHORT"] = {
-		ruRU = "ability_zandalari_serpentguard|Помещает в указанную область тотем-змею, которая обнаруживает невидимость и периодически наносит урон противникам в радиусе 20 м.\nПерезарядка: 120 секунд",
-		enGB = "",
+	["CHAR_INFO_RACE_ZANDALARITROLL_SPELL_ACTIVE1_SHORT"] = {
+		ruRU = "ability_racial_zandalar_shout|Оглушительный боевой клич Зандаларов, ошеломляющий разум противников в радиусе 10 м., слышащих его, и снижающий их скорость передвижения на 75% в течение 5 сек.\nПерезарядка: 120 секунд",
 	},
-	["CHARACTER_CREATE_INFO_RACE_ZANDALARITROLL_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_ZANDALARITROLL_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "Ability_racial_regeneratin|Восполняет 40% запаса здоровья за 10 сек., увеличивает скорость атаки и произнесения заклинаний на 10%, а модификатор критического эффекта - на 12%.\nПерезарядка: 60 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_PANDAREN_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "ability_monk_domeofmist|Скорость атаки и произнесения заклинаний увеличена на 2%, а мастерство - на 2 ед.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_PANDAREN_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "ability_monk_drunkenhaze|Наносимый вами урон и исцеление усиливаются в зависимости от степени вашего опьянения.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_PANDAREN_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "monk_ability_avertharm|Получаемый физический урон снижен на 4%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_PANDAREN_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "ability_monk_paralysis|Парализует противника на 1 минуту (или на 5 сек., если целью является игрок). Эффект паралича будет развеян, если цель получит урон.\nПерезарядка: 90 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_PANDAREN_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "ability_monk_sparring|Усиливает следующие 5 ваших атак или способностей ближнего/дальнего боя, нанося урон способностью \"Искусный удар\", равный 40% от силы атаки.\nПерезарядка: 60 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_PANDAREN_SPELL_ACTIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_PANDAREN_SPELL_ACTIVE3_SHORT"] = {
 		ruRU = "ability_monk_effuse|Запускает заряд Ци в цель, нанося противнику урон, равный 80% от силы заклинаний, или поглощает получаемый союзником урон, равный 80% от силы заклинаний на 10 сек.\nПерезарядка: 12 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_VULPERA_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "inv_inscription_80_contract_vulpera|Модификатор критического исцеления увеличен на 6%, а расходы маны на исцеляющие заклинания - снижены на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_VULPERA_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "spell_sandelemental|Снижает получаемый вами физический или магический урон, при этом повышая наносимый урон того же типа.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_VULPERA_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "ability_priest_phantasm|Снижает вероятность обнаружения во время незаметности и снижает получаемый периодический урон на 5%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_VULPERA_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "spell_sandbolt|Опутывает цель на короткое время. Если эффект не будет развеян - то дополнительно оглушает цель.\nПерезарядка: 90 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_VULPERA_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_VULPERA_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "spell_quicksand|Создает руну в позиции персонажа, повышающую наносимый вами урон и исцеление на 6%, пока вы находитесь на расстоянии не более чем 10 м. от неё.\nПерезарядка: 30 сек",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DRACTHYR_SPELL_PASSIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DRACTHYR_SPELL_PASSIVE1_SHORT"] = {
 		ruRU = "classicon_evoker_devastation|Показатель силы заклинаний увеличен на 5% от вашего интеллекта, а сила атаки увеличена на 2%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DRACTHYR_SPELL_PASSIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DRACTHYR_SPELL_PASSIVE2_SHORT"] = {
 		ruRU = "ability_evoker_fontofmagic_green|Модификатор критического исцеления увеличен на 8%.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DRACTHYR_SPELL_PASSIVE3_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DRACTHYR_SPELL_PASSIVE3_SHORT"] = {
 		ruRU = "ability_evoker_quell|В крови представителей юной расы Драктиров хранится наследие каждого драконьего Рода когда-либо существовавшего. Это причудливое наследие позволяет Драктиру адаптироваться к любой ситуации, повышая выбранное сопротивление и сокращая длительность эффектов потери контроля.",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DRACTHYR_SPELL_ACTIVE1_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DRACTHYR_SPELL_ACTIVE1_SHORT"] = {
 		ruRU = "ability_racial_wingbuffet|Могучий взмах крыльями, который отбрасывает противников на 20 м. и снижает их скорость передвижения на 70% сроком на 4 сек.\nПерезарядка: 120 секунд",
-		enGB = "",
 	},
-	["CHARACTER_CREATE_INFO_RACE_DRACTHYR_SPELL_ACTIVE2_DESC_SHORT"] = {
+	["CHAR_INFO_RACE_DRACTHYR_SPELL_ACTIVE2_SHORT"] = {
 		ruRU = "ability_deathwing_cataclysm|Наносимый вами урон и эффективность исходящего исцеления повышаются и весь получаемый урон уменьшается на 10 сек.\nПерезарядка: 60 сек",
-		enGB = "",
+	},
+
+	["COMPLETE_FORCED_CUSTOMIZATION"] = {
+		ruRU = "Завершить настройку"
 	},
 	["CHARACTER_NO_NAME"] = {
 		ruRU = "Без имени",
@@ -5665,6 +4186,111 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Осмотреть",
 		enGB = "Inspect"
 	},
+	["RACE_UNAVAILABLE"] = {
+		ruRU = "Выбранная раса недоступна",
+		enGB = "",
+	},
+	["CHARACTER_INFO_HARDCORE_LABEL"] = {
+		ruRU = "Персонаж участвует в испытании",
+		enGB = ""
+	},
+	["CHARACTER_CREATE_HARDCORE_LABEL"] = {
+		ruRU = "Один шанс",
+		enGB = ""
+	},
+	["CHARACTER_CREATE_HARDCORE_TIP"] = {
+		ruRU = "Один шанс - это испытание для самых смелых! У вас будет всего одна жизнь и один шанс, чтобы достигнуть 80 уровня, преодолевая опасности, цепляясь за удачу и сражаясь без шанса на ошибку!\nЗа успешное прохождение испытания вы получите уникальные и ценные награды!\n\n|cffFF0000ВНИМАНИЕ!|r Во время прохождения испытания также будет действовать ряд ограничений, включая запрет на использование аукциона, почты, поиска подземелий, взаимодействия с игроками без испытания и т.п.\n\nРежим \"Один Шанс\" недоступен персонажам класса Рыцарь Смерти ввиду ограничений по уровню.",
+		enGB = ""
+	},
+	["CHARACTER_HARDCORE_PROPOSAL"] = {
+		ruRU = "При создании этого персонажа вы не смогли выбрать, хотите ли вы участвовать в испытании \"Один шанс\", пожалуйста ознакомьтесь с описанием режима и выберите, хотите ли вы участвовать в испытании.",
+	},
+	["CHARACTER_HARDCORE_PROPOSAL_WARNING"] = {
+		ruRU = "ВНИМАНИЕ! Этот выбор нельзя будет изменить. Только если вы создадите персонажа заново.",
+	},
+	["CLASS_DISABLE_REASON_DEATH_KNIGHT_HARDCORE"] = {
+		ruRU = "Создание Рыцаря смерти при активированном режиме испытаний невозможно",
+		enGB = ""
+	},
+	["RACE_DISABLE_REASON_REALM"] = {
+		ruRU = "Создание |3-1(%s) в данный момент недоступно в этом мире",
+		enGB = ""
+	},
+	["RACE_DISABLE_REASON_REALM_DEATH_KNIGHT"] = {
+		ruRU = "Создание Рыцаря смерти в данный момент недоступно в этом мире",
+		enGB = ""
+	},
+	["RACE_DISABLE_CLASS_COMBINATION"] = {
+		ruRU = "Этот класс доступен другим расам",
+		enGB = "You must choose a different race to be this class",
+	},
+	["CHARACTER_CREATION_INFO_ZODIAC_SIGN_ERROR_1"] = {
+		ruRU = "Выбранное созвездие недоступно",
+	},
+	["CHARACTER_CREATION_INFO_CUSTOM_FLAG_ERROR_1"] = {
+		ruRU = "Этот класс не может быть создан с активированным режимом испытаний",
+	},
+	["CUSTOMIZATION_ZODIAC_ALREADY_SELECTED"] = {
+		ruRU = "Вы должны выбрать знак зодиака отличный от текущего",
+	},
+	["CUSTOMIZATION_ZODIAC_NOT_FOUND"] = {
+		ruRU = "Информация о выбранном знаке зодиака не найдена",
+	},
+	["CUSTOMIZATION_ZODIAC_STATUS_1"] = {
+		ruRU = "Неверные параметры",
+	},
+	["CUSTOMIZATION_ZODIAC_STATUS_2"] = {
+		ruRU = "Персонаж не найден",
+	},
+	["CUSTOMIZATION_ZODIAC_STATUS_3"] = {
+		ruRU = "Выбранная раса недоступна",
+	},
+	["CUSTOMIZATION_ZODIAC_STATUS_4"] = {
+		ruRU = "Неверный индекс расы",
+	},
+	["CUSTOMIZATION_ZODIAC_STATUS_5"] = {
+		ruRU = "Внутренняя ошибка",
+	},
+	["CHAR_ZODIAC_IN_PROGRESS"] = {
+		ruRU = "Обновление знака зодика…",
+		enGB = "Updating Zodiac sign..."
+	},
+	["ZODIAC_SIGN_DESCRIPTION_LABEL"] = {
+		ruRU = "Описание",
+		enGB = "",
+	},
+	["ZODIAC_SIGN_SPELLS_LABEL"] = {
+		ruRU = "Способности",
+		enGB = "",
+	},
+	["ZODIAC_SIGN_DISABLE"] = {
+		ruRU = "Выбранное созвездие недоступно",
+		enGB = ""
+	},
+	["REALM_TYPE_0"] = {
+		ruRU = "PvE",
+	},
+	["REALM_TYPE_1"] = {
+		ruRU = "Всегда включен",
+	},
+	["REALM_TYPE_1_DESC"] = {
+		ruRU = "Неотключаемый PvP режим",
+	},
+	["REALM_TYPE_2"] = {
+		ruRU = "FFA",
+	},
+	["REALM_TYPE_2_DESC"] = {
+		ruRU = "Каждый сам за себя",
+	},
+	["REALM_TYPE_3"] = {
+		ruRU = "Режим войны",
+	},
+	["REALM_TYPE_3_DESC"] = {
+		ruRU = "Переключаемый в столицах режим пвп",
+	},
+	["REALM_LABEL_NEW"] = {
+		ruRU = "НОВЫЙ ИГРОВОЙ МИР",
+	},
 }
 
 do
@@ -5672,7 +4298,7 @@ do
 	local next = next
 	local locale = GetLocale()
 	for key, data in next, SIRUS_LOCALIZATION do
-		_G[key] = data[locale] or data.enGB
+		_G[key] = data[locale] or data.enGB or key
 	end
 	table.wipe(SIRUS_LOCALIZATION)
 	SIRUS_LOCALIZATION = nil

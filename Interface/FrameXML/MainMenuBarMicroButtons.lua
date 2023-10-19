@@ -1,3 +1,20 @@
+function MainMenuBarMicroButton_OnEnter(self)
+	if self.Tittle then
+		GameTooltip_AddNewbieTip(self, self.Tittle, 1.0, 1.0, 1.0, self.Description)
+	end
+
+	if self.tooltipText then
+		GameTooltip_AddNewbieTip(self, self.tooltipText, 1.0, 1.0, 1.0, self.newbieText)
+	end
+
+	if self:IsEnabled() == 0 and (self.DisableReason or self.minLevel) then
+		GameTooltip:AddLine(" ")
+		GameTooltip:AddLine(self.DisableReason or format(FEATURE_BECOMES_AVAILABLE_AT_LEVEL, self.minLevel), RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, true)
+	end
+
+	GameTooltip:Show()
+end
+
 function LoadMicroButtonTextures(self, name)
 	self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
 	self:RegisterEvent("UPDATE_BINDINGS");
@@ -57,7 +74,7 @@ function UpdateMicroButtons()
 	end
 
 	StoreMicroButton:SetEnabled(IsStoreEnable())
-	if IsStoreEnable() then
+	if StoreMicroButton:IsEnabled() == 1 then
 		StoreMicroButton:SetAlpha(1)
 	else
 		StoreMicroButton:SetAlpha(0.5)
@@ -159,7 +176,7 @@ function UpdateMicroButtons()
 	if ( EncounterJournal:IsShown() ) then
 		EncounterJournalMicroButton:SetButtonState("PUSHED", 1);
 	else
-		if ( isNeutral ) then
+		if ( isNeutral and false ) then
 			EncounterJournalMicroButton.DisableReason = NEUTRAL_RACE_DISABLE_FEATURE
 			EncounterJournalMicroButton:Disable()
 		else
@@ -235,10 +252,10 @@ function CharacterMicroButton_OnEvent(self, event, ...)
 		local level = ...
 
 		if LFDMicroButton:IsVisible() and not C_Unit.IsNeutral("player") then
-			if level == 10 then
+			if level == 10 and not C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.BATTLEGROUND) then
 				LFDMicroButtonAlert.Text:SetText(MICRO_MENU_LFD_ALERT1)
 				LFDMicroButtonAlert:Show()
-			elseif level == 15 then
+			elseif level == 15 and not C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.DUNGEON_AVAILABLE) then
 				LFDMicroButtonAlert.Text:SetText(MICRO_MENU_LFD_ALERT2)
 				LFDMicroButtonAlert:Show()
 			end
@@ -378,5 +395,3 @@ function MicroButtonAlert_CreateAlert(parent, tutorialIndex, text, anchorPoint, 
 	MicroButtonAlert_SetText(alert, text)
 	return alert
 end
-
-Hook:RegisterCallback("MICRO_BUTTONS", "SERVICE_DATA_RECEIVED", UpdateMicroButtons)

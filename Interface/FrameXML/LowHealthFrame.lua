@@ -65,7 +65,7 @@ end
 function LowHealthFrameMixin:EvaluateVisibleState()
 	local healthState = self:DetermineFlashState();
 	if healthState == LOW_HEALTH_FRAME_STATE_DISABLED then
-
+		CombatFeedback_StopFullscreenStatus();
 	elseif healthState == LOW_HEALTH_FRAME_STATE_FULLSCREEN then
 		CombatFeedback_StartFullscreenStatus();
 	else

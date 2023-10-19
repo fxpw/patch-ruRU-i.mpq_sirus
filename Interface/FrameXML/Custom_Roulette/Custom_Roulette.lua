@@ -1,7 +1,3 @@
---	Filename:	Custom_Roulette.lua
---	Project:	Custom Game Interface
---	Author:		Nyll & Blizzard Entertainment
-
 UIPanelWindows["Custom_RouletteFrame"] = { area = "center",	pushable = 0,	whileDead = 1 }
 
 RouletteFrameMixin = {}
@@ -26,6 +22,7 @@ function RouletteFrameMixin:OnLoad()
 
     self:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
     self:RegisterEvent("VARIABLES_LOADED")
+	self:RegisterCustomEvent("STORE_BALANCE_UPDATE")
 
     self:SetScale(0.9)
     self.CloseButton:Hide()
@@ -74,6 +71,16 @@ function RouletteFrameMixin:OnLoad()
     self.ToggleCurrencyFrame.currencyButtons[2].Text:SetFormattedText(STORE_PREMIUM_PRICE_FORMAT, 0)
 end
 
+function RouletteFrameMixin:OnShow()
+    Custom_RouletteFrame:SelectCurrency(E_ROULETTE_CURRENCY.LUCKY_COIN, true);
+end
+
+function RouletteFrameMixin:OnHide()
+    self.confirmPlayWithBonuses = nil;
+    StaticPopup_Hide("CONFIRM_ROULETTE_PLAY");
+    self:Reset()
+end
+
 ---@param event string
 function RouletteFrameMixin:OnEvent( event )
     if event == "CURRENCY_DISPLAY_UPDATE" then
@@ -90,8 +97,11 @@ function RouletteFrameMixin:OnEvent( event )
                 break
             end
         end
+	elseif event == "STORE_BALANCE_UPDATE" then
+		self:UpdateBalance()
     elseif event == "VARIABLES_LOADED" then
-		if C_CacheInstance:Get("ASMSG_LOTTERY_INFO") then
+		local info = C_CacheInstance:Get("ASMSG_LOTTERY_INFO")
+		if info and #info > 0 then
             self:Initialize()
         end
 
@@ -201,15 +211,29 @@ function RouletteFrameMixin:CurrencyFrameUpdate( elapsed )
 end
 
 ---@param currencyID number
-function RouletteFrameMixin:SelectCurrency( currencyID )
+function RouletteFrameMixin:SelectCurrency(currencyID, skipAnimation)
     if self.selectedCurrency == currencyID or self.toggleAnimation then
         return
     end
 
-    self.selectedCurrency   = currencyID
-    self.toggleAnimation    = true
+    if currencyID == E_ROULETTE_CURRENCY.LUCKY_COIN then
+        StaticPopup_Hide("CONFIRM_ROULETTE_PLAY");
 
-    self:UpdateSpinButton()
+    elseif currencyID == E_ROULETTE_CURRENCY.BONUS then
+        if not self.confirmPlayWithBonuses then
+            StaticPopup_Show("CONFIRM_ROULETTE_PLAY", self.bonusPrice or 999, self.currentBonuses or 0, currencyID);
+            return;
+        end
+    end
+
+    self.selectedCurrency = currencyID;
+
+    if skipAnimation then
+        self.ToggleCurrencyFrame.CurrencySelector:SetPoint("CENTER", currencyID == E_ROULETTE_CURRENCY.LUCKY_COIN and -76 or 76, 0);
+    else
+        self.toggleAnimation = true;
+    end
+    self:UpdateSpinButton();
 end
 
 ---@return number currencyID
@@ -475,8 +499,8 @@ function RouletteFrameMixin:ChangeStage(newStage, skipFinishingEffect)
     end
 end
 
----@param bonus number
-function RouletteFrameMixin:PLAYER_BALANCE_UPDATE( bonus )
+function RouletteFrameMixin:UpdateBalance()
+	local bonus = Store_GetBalance(Enum.Store.CurrencyType.Bonus)
     self.ToggleCurrencyFrame.currencyButtons[2].Text:SetFormattedText(STORE_PREMIUM_PRICE_FORMAT, bonus)
     self.currentBonuses = bonus
 
@@ -572,7 +596,9 @@ function RouletteFrameMixin:ASMSG_LOTTERY_INFO(msg)
 
 	C_CacheInstance:Set("ASMSG_LOTTERY_INFO", buffer)
 
-    self:Initialize()
+	if #buffer > 0 then
+		self:Initialize()
+	end
 end
 
 RouletteItemButtonMixin = {}

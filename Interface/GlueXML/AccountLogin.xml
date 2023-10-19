@@ -31,7 +31,7 @@
 						<Texture name="$parentBGTexture" parentKey="BGTexture" setAllPoints="true" hidden="true"/>
 					</Layer>
 					<Layer level="BORDER">
-						<Texture parentKey="Logo" file="Interface\Custom_LoginScreen\Logo">
+						<Texture parentKey="Logo">
 							<Size x="226" y="130"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" x="40" y="-15"/>
@@ -445,6 +445,8 @@
 					</Frame>
 				</Frames>
 			</Frame>
+
+			<Model file="Character\Human\Male\HumanMale.mdx" hidden="true"/>
 		</Frames>
 		<Scripts>
 			<OnLoad function="AccountLogin_OnLoad"/>
@@ -501,7 +503,7 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				self.Logo:SetAtlas("ServerGameLogo-3")
+				self.Logo:SetAtlas(C_RealmInfo.GetServerLogo(0))
 			</OnLoad>
 			<OnShow>
 				C_Timer:After(0.5, function()

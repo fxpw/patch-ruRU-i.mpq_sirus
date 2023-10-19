@@ -85,7 +85,7 @@
 				self:RegisterForDrag("LeftButton")
 				self.elapsed = 0
 
-				SetParentArray(self, "ExtraButtons", self)
+				self:SetParentArray("ExtraButtons", self)
 			</OnLoad>
 			<OnEnter function="ExtraActionButton_OnEnter"/>
 			<OnUpdate function="ExtraActionButton_OnUpdate"/>

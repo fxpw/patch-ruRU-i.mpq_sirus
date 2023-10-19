@@ -174,7 +174,7 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 
 			if status == SERVICE_RESULT_STATUS.SUCCESS then
 				GlueDialog:ShowDialog("SERVER_WAITING")
-				C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.RequestCharacterListInfo)
+				C_GluePackets:SendPacket(C_GluePackets.OpCodes.RequestCharacterListInfo)
 			elseif status == SERVICE_RESULT_STATUS.NOT_ENOUGH_MONEY then
 				GlueDialog:ShowDialog("CHARACTER_SERVICES_NOT_ENOUGH_MONEY", CHARACTER_SERVICES_NOT_ENOUGH_MONEY)
 			elseif status == SERVICE_RESULT_STATUS.UNCONFIRMED_ACCOUNT then
@@ -220,9 +220,7 @@ end
 PRIVATE.GetSuggestedBonusAmount = function(price)
 	local value = price - PRIVATE.BALANCE
 
-	if value < 10 then
-		value = 10
-	elseif value > 50 and value < 60 then
+	if value > 50 and value < 60 then
 		value = 60
 	elseif value > 100 and value < 120 then
 		value = 120
@@ -245,7 +243,7 @@ PRIVATE.OpenBonusPurchaseWebPage = function(mode)
 	assert(price and price > 0)
 
 	local value = PRIVATE.GetSuggestedBonusAmount(price)
-	LaunchURL(string.format("https://sirus.su/pay?bonuses=%u", value))
+	LaunchURL(string.format(DONATE_URL, math.max(10, value)))
 end
 
 C_CharacterServices = {}

@@ -242,11 +242,11 @@ local function GetHeirloomCategoryFromInvType(invType)
 		return HEIRLOOMS_CATEGORY_FEET;
 	elseif invType == "INVTYPE_CLOAK" then
 		return HEIRLOOMS_CATEGORY_BACK;
-	elseif invType == "INVTYPE_WEAPON" or invType == "INVTYPE_SHIELD" or invType == "INVTYPE_RANGED" or invType == "INVTYPE_RANGED" or invType == "INVTYPE_2HWEAPON" or invType == "INVTYPE_RELIC"
+	elseif invType == "INVTYPE_WEAPON" or invType == "INVTYPE_SHIELD" or invType == "INVTYPE_RANGED" or invType == "INVTYPE_RANGED" or invType == "INVTYPE_2HWEAPON"
 		or invType == "INVTYPE_WEAPONMAINHAND" or invType == "INVTYPE_WEAPONOFFHAND" or invType == "INVTYPE_HOLDABLE" or invType == "INVTYPE_THROWN" or invType == "INVTYPE_RANGEDRIGHT" then
 		return HEIRLOOMS_CATEGORY_WEAPON;
-	elseif invType == "INVTYPE_FINGER" or invType == "INVTYPE_TRINKET" or invType == "INVTYPE_NECK" then
-		return HEIRLOOMS_CATEGORY_TRINKETS_RINGS_AND_NECKLACES;
+	elseif invType == "INVTYPE_FINGER" or invType == "INVTYPE_TRINKET" or invType == "INVTYPE_NECK" or invType == "INVTYPE_RELIC" then
+		return HEIRLOOMS_CATEGORY_TRINKETS_RINGS_NECKLACES_AND_RELIC;
 	end
 
 	return nil;
@@ -334,7 +334,7 @@ local ITEM_EQUIP_SLOT_SORT_ORDER = {
 	HEIRLOOMS_CATEGORY_WAIST,
 	HEIRLOOMS_CATEGORY_FEET,
 	HEIRLOOMS_CATEGORY_WEAPON,
-	HEIRLOOMS_CATEGORY_TRINKETS_RINGS_AND_NECKLACES,
+	HEIRLOOMS_CATEGORY_TRINKETS_RINGS_NECKLACES_AND_RELIC,
 }
 
 local NEW_ROW_OPCODE = -1; -- Used to indicate that the layout should move to the next row

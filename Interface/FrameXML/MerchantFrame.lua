@@ -89,22 +89,18 @@ function MerchantFrame_Update()
 
 end
 
-function GetMerchantItemEntry( index )
+local function GetMerchantItemID(index)
 	if not index then
-		return nil
+		return
 	end
 
 	local itemLink = GetMerchantItemLink(index)
-
 	if itemLink then
 		local itemEntry = string.match(itemLink, "item:(%d+)")
-
 		if itemEntry then
 			return tonumber(itemEntry)
 		end
 	end
-
-	return nil
 end
 
 function MerchantFrame_UpdateMerchantInfo()
@@ -129,28 +125,25 @@ function MerchantFrame_UpdateMerchantInfo()
 			SetItemButtonStock(itemButton, numAvailable);
 			SetItemButtonTexture(itemButton, texture);
 
-			if REQUIREMENT_ITEM_LIST[GetServerID()] then
-				local itemEntry = GetMerchantItemEntry(index)
-				local merchantItemRequirement = REQUIREMENT_ITEM_LIST[GetServerID()][itemEntry]
+			local requirementItemList = REQUIREMENT_ITEM_LIST[GetServerID()]
+			if requirementItemList then
+				local itemID = GetMerchantItemID(index)
+				local merchantItemRequirement = requirementItemList[itemID]
 
 				if merchantItemRequirement then
 					local honorPoints, arenaPoints = GetMerchantItemCostInfo(index)
 
+					if arenaPoints ~= 0 then
+						local rating = math.max(GetArenaRating(1), GetArenaRating(2))
+						if rating ~= 0 and merchantItemRequirement[1] ~= 0 and rating >= merchantItemRequirement[1] then
+							isUsable = true
+						end
+					end
+
 					if honorPoints ~= 0 then
 						local _, _, _, _, rating = GetRatedBattlegroundRankInfo()
-
-						if rating and rating ~= 0 then
-							if merchantItemRequirement[1] ~= 0 and rating >= merchantItemRequirement[1] then
-								isUsable = true
-							end
-						end
-					elseif arenaPoints ~= 0 then
-						local rating = math.max(GetArenaRating(1) or 0, GetArenaRating(2) or 0)
-
-						if rating and rating ~= 0 then
-							if merchantItemRequirement[2] ~= 0 and rating >= merchantItemRequirement[2] then
-								isUsable = true
-							end
+						if rating ~= 0 and merchantItemRequirement[2] ~= 0 and rating >= merchantItemRequirement[2] then
+							isUsable = true
 						end
 					end
 				end

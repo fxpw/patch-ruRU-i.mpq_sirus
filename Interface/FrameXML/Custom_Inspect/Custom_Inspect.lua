@@ -225,7 +225,7 @@ function InspectFrame_UpdateTabs()
 	local guildName = GetGuildInfo(InspectFrame.unit)
 	if ( guildName and guildName ~= "" ) then
 		PanelTemplates_EnableTab(InspectFrame, INSPECT_TABS.GUILD)
-		SendAddonMessage("ACMSG_INSPECT_GUILD_INFO_REQUEST", UnitGUID(InspectFrame.unit), "WHISPER", UnitName("player"))
+		SendServerMessage("ACMSG_INSPECT_GUILD_INFO_REQUEST", UnitGUID(InspectFrame.unit))
 	else
 		PanelTemplates_DisableTab(InspectFrame, INSPECT_TABS.GUILD)
 		if ( PanelTemplates_GetSelectedTab(InspectFrame) == INSPECT_TABS.GUILD ) then
@@ -1112,13 +1112,13 @@ function InspectGlyphMixin:SetGlyphType(glyphType)
 	local info = GLYPH_TYPE_INFO[glyphType]
 	if info then
 		self.glyphType = glyphType
-		
+
 		self.ring:SetSize(info.ring.size, info.ring.size)
 		self.ring:SetTexCoord(info.ring.left, info.ring.right, info.ring.top, info.ring.bottom)
-		
+
 		self.highlight:SetSize(info.highlight.size, info.highlight.size)
 		self.highlight:SetTexCoord(info.highlight.left, info.highlight.right, info.highlight.top, info.highlight.bottom)
-		
+
 		self.glyph:SetSize(info.ring.size - 16, info.ring.size - 16)
 		self.glyph:SetAlpha(0.75)
 	end

@@ -133,6 +133,80 @@ function InterfaceOptionsPanel_RegisterSetToDefaultFunc(func, self)
 	tinsert(self.defaultFuncs, func);
 end
 
+InterfaceOptionsDropDownMixin = {}
+
+function InterfaceOptionsDropDownMixin:OnLoad()
+	self.type = CONTROLTYPE_DROPDOWN
+	BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+
+	self.label = _G[self:GetAttribute("label")]
+	self.cvar = self:GetAttribute("cvar")
+	self.initFunction = _G[self:GetAttribute("initFunction")]
+
+	self.Label:SetText(self.label or "")
+
+	UIDropDownMenu_SetWidth(self, self:GetAttribute("width") or 90)
+
+	assert(self.cvar)
+	self.tooltipKey = string.gsub(self.cvar, "C_CVAR_", "")
+	UIDropDownMenu_Initialize(self, self.initFunction)
+	UIDropDownMenu_SetSelectedValue(self, value)
+	self:RegisterEvent("VARIABLES_LOADED")
+end
+
+function InterfaceOptionsDropDownMixin:OnEvent(event)
+	if event == "VARIABLES_LOADED" then
+		self:UnregisterEvent(event)
+
+		local value = GetCVar(self.cvar)
+		self.defaultValue = GetCVarDefault(self.cvar)
+		self.value = value
+		self.oldValue = value
+		self.tooltip = _G[("OPTION_%s_%s"):format(self.tooltipKey, strupper(value))]
+
+		if self:IsShown() then
+			self:RefreshValue()
+		end
+	end
+end
+
+function InterfaceOptionsDropDownMixin:OnShow()
+	self:RefreshValue()
+end
+
+function InterfaceOptionsDropDownMixin:OnEnter()
+	if self.tooltip then
+		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
+		GameTooltip:SetText(self.tooltip, nil, nil, nil, nil, true)
+	end
+end
+
+function InterfaceOptionsDropDownMixin:OnLeave()
+	GameTooltip_Hide()
+end
+
+function InterfaceOptionsDropDownMixin:SetValue(value)
+	self.value = tostring(value)
+	SetCVar(self.cvar, self.value)
+	UIDropDownMenu_SetSelectedValue(self, self.value)
+	self.tooltip = _G[("OPTION_%s_%s"):format((string.gsub(self.cvar, "C_CVAR_", "")), strupper(value))]
+end
+
+function InterfaceOptionsDropDownMixin:GetValue()
+	return UIDropDownMenu_GetSelectedValue(self)
+end
+
+function InterfaceOptionsDropDownMixin:RefreshValue()
+	UIDropDownMenu_Initialize(self, self.initFunction)
+	UIDropDownMenu_SetSelectedValue(self, self.value)
+end
+
+function InterfaceOptionsDropDownMixin:OnButtonClick(buttonFrame, arg1, arg2, checked)
+	if not checked then
+		self:GetParent().dropdown:SetValue(self.value, arg1, arg2)
+	end
+end
+
 -- [[ Controls Options Panel ]] --
 
 ControlsPanelOptions = {
@@ -1932,26 +2006,6 @@ LanguagesPanelOptions = {
 	useEnglishAudio = { text = "USE_ENGLISH_AUDIO" },
 }
 
--- [[ Notification Panel ]] --
-
-NotificationPanelOptions = {
-	C_CVAR_SHOW_TOASTS						= { text = "SETTINGS_SHOW_TOASTS" },
-	C_CVAR_SHOW_SOCIAL_TOAST				= { text = "SETTINGS_SHOW_SOCIAL_TOAST" },
-	C_CVAR_SHOW_BATTLE_PASS_TOAST			= { text = "SETTINGS_SHOW_BATTLE_PASS_TOAST" },
-	C_CVAR_SHOW_AUCTION_HOUSE_TOAST			= { text = "SETTINGS_SHOW_AUCTION_HOUSE_TOAST" },
-	C_CVAR_SHOW_CALL_OF_ADVENTURE_TOAST		= { text = "SETTINGS_SHOW_CALL_OF_ADVENTURE_TOAST" },
-	C_CVAR_SHOW_MISC_TOAST					= { text = "SETTINGS_SHOW_MISC_TOAST" },
-
-	C_CVAR_PLAY_TOAST_SOUND					= { text = "SETTINGS_SOCIAL_SOUND" },
-	C_CVAR_SOCIAL_TOAST_SOUND				= { text = "SETTINGS_SOCIAL_TOAST_SOUND" },
-	C_CVAR_HEAD_HUNTING_TOAST_SOUND			= { text = "SETTINGS_HEAD_HUNTING_TOAST_SOUND" },
-	C_CVAR_BATTLE_PASS_TOAST_SOUND			= { text = "SETTINGS_BATTLE_PASS_TOAST_SOUND" },
-	C_CVAR_QUEUE_TOAST_SOUND				= { text = "SETTINGS_QUEUE_TOAST_SOUND" },
-	C_CVAR_AUCTION_HOUSE_TOAST_SOUND		= { text = "SETTINGS_AUCTION_HOUSE_TOAST_SOUND" },
-	C_CVAR_CALL_OF_ADVENTURE_TOAST_SOUND	= { text = "SETTINGS_CALL_OF_ADVENTURE_TOAST_SOUND" },
-	C_CVAR_MISC_TOAST_SOUND					= { text = "SETTINGS_MISC_TOAST_SOUND" },
-}
-
 function InterfaceOptionsLanguagesPanel_OnLoad (panel)
 	-- Check and see if we have more than one locale. If we don't, then don't register this panel.
 	if ( #({GetExistingLocales()}) <= 1 ) then
@@ -2023,5 +2077,73 @@ function InterfaceOptionsLanguagesPanelLocaleDropDown_InitializeHelper (createIn
 			end
 			UIDropDownMenu_AddButton(createInfo);
 		end
+	end
+end
+
+-- [[ Notification Panel ]] --
+
+NotificationPanelOptions = {
+	C_CVAR_FLASH_CLIENT_ICON				= { text = "SETTINGS_FLASH_CLIENT_ICON" },
+	C_CVAR_SHOW_HARDCORE_BANNER				= { text = "SETTINGS_SHOW_HARDCORE_BANNER" },
+
+	C_CVAR_SHOW_TOASTS						= { text = "SETTINGS_SHOW_TOASTS" },
+	C_CVAR_SHOW_SOCIAL_TOAST				= { text = "SETTINGS_SHOW_SOCIAL_TOAST" },
+	C_CVAR_SHOW_BATTLE_PASS_TOAST			= { text = "SETTINGS_SHOW_BATTLE_PASS_TOAST" },
+	C_CVAR_SHOW_AUCTION_HOUSE_TOAST			= { text = "SETTINGS_SHOW_AUCTION_HOUSE_TOAST" },
+	C_CVAR_SHOW_CALL_OF_ADVENTURE_TOAST		= { text = "SETTINGS_SHOW_CALL_OF_ADVENTURE_TOAST" },
+	C_CVAR_SHOW_MISC_TOAST					= { text = "SETTINGS_SHOW_MISC_TOAST" },
+
+	C_CVAR_PLAY_TOAST_SOUND					= { text = "SETTINGS_SOCIAL_SOUND" },
+	C_CVAR_SOCIAL_TOAST_SOUND				= { text = "SETTINGS_SOCIAL_TOAST_SOUND" },
+	C_CVAR_HEAD_HUNTING_TOAST_SOUND			= { text = "SETTINGS_HEAD_HUNTING_TOAST_SOUND" },
+	C_CVAR_BATTLE_PASS_TOAST_SOUND			= { text = "SETTINGS_BATTLE_PASS_TOAST_SOUND" },
+	C_CVAR_QUEUE_TOAST_SOUND				= { text = "SETTINGS_QUEUE_TOAST_SOUND" },
+	C_CVAR_AUCTION_HOUSE_TOAST_SOUND		= { text = "SETTINGS_AUCTION_HOUSE_TOAST_SOUND" },
+	C_CVAR_CALL_OF_ADVENTURE_TOAST_SOUND	= { text = "SETTINGS_CALL_OF_ADVENTURE_TOAST_SOUND" },
+	C_CVAR_MISC_TOAST_SOUND					= { text = "SETTINGS_MISC_TOAST_SOUND" },
+}
+
+-- [[ Hardcore Panel ]] --
+HardcorePanelOptions = {
+	C_CVAR_SHOW_HARDCORE_NOTIFICATION_SOUND	= { text = "SETTINGS_HARDCORE_NOTIFICATION_SOUND" },
+}
+
+function InterfaceOptionsHardcorePanel_OnLoad(panel)
+	if not C_Service.IsHardcoreEnabledOnRealm() then
+		return
+	end
+
+	InterfaceOptionsPanel_OnLoad(panel)
+end
+
+function InterfaceOptionsHardcorePanelNotificationTypeDropDown_Initialize(self)
+	local value = tostring(self.value)
+	local info = UIDropDownMenu_CreateInfo()
+	info.tooltipOnButton = true
+
+	for i = 2, 0, -1 do
+		info.text = _G["HARDCORE_NOTIFICATION_TYPE_OPTION_"..i]
+		info.func = self.OnButtonClick
+		info.value = tostring(i)
+		info.checked = value == info.value
+		info.tooltipText = _G[("OPTION_%s_%s"):format(self.tooltipKey, strupper(info.value))]
+		info.tooltipTitle = info.tooltipText and info.text or nil
+		UIDropDownMenu_AddButton(info)
+	end
+end
+
+function InterfaceOptionsHardcorePanelNotificationLevelDropDown_Initialize(self)
+	local value = tostring(self.value)
+	local info = UIDropDownMenu_CreateInfo()
+	info.tooltipOnButton = true
+
+	for i = 1, 3 do
+		info.text = _G["HARDCORE_NOTIFICATION_LEVEL_OPTION_"..i]
+		info.func = self.OnButtonClick
+		info.value = tostring(i)
+		info.checked = value == info.value
+		info.tooltipText = _G[("OPTION_%s_%s"):format(self.tooltipKey, strupper(info.value))]
+		info.tooltipTitle = info.tooltipText and info.text or nil
+		UIDropDownMenu_AddButton(info)
 	end
 end

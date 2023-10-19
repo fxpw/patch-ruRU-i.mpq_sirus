@@ -1,3 +1,5 @@
+local COLLECTION_HEIRLOOMDATA = COLLECTION_HEIRLOOMDATA;
+
 local HEIRLOOM_COLLECTED = 1;
 local HEIRLOOM_UNCOLLECTED = 2;
 
@@ -105,25 +107,14 @@ local function SetFilteredHeirlooms()
 	for i = 1, #COLLECTION_HEIRLOOMDATA do
 		local data = COLLECTION_HEIRLOOMDATA[i];
 
-		local spellName, spellRank = GetSpellInfo(data.spellID);
-		local _, _, _, _, _, _, _, _, _, itemIcon = C_Item.GetItemInfo(data.itemID, nil, nil, nil, true);
-
-		data.spellName = spellName;
-		data.spellRank = spellRank;
-		data.itemIcon = itemIcon;
-
-		HEIRLOOM_BY_ITEM_ID[data.itemID] = data;
-
-		if not spellbookCustomHiddenChatSpell[data.spellID] then
-			spellbookCustomHiddenChatSpell[data.spellID] = spellName;
-		end
+		local spellName = GetSpellInfo(data.spellID);
 
 		local sourceFlag = data.lootType ~= 0 and bit.lshift(1, ((data.currency ~= 0 and data.lootType ~= 15 and 7 or SOURCE_TYPES[data.lootType]) or 1) - 1) or 0;
 		if data.holidayText ~= "" then
 			sourceFlag = bit.bor(sourceFlag, bit.lshift(1, 6 - 1));
 		end
 
-		if CheckFilter(PlayerHasHeirloom(data.itemID), data.classFlags, classFlag, data.roleFlag, specFlag, sourceFiltersFlag == 0 or bit.band(sourceFiltersFlag, sourceFlag) ~= sourceFlag, spellName) then
+		if CheckFilter(PlayerHasHeirloom(data.itemID), data.classFlags, classFlag, data.roleFlag, specFlag, sourceFiltersFlag == 0 or bit.band(sourceFiltersFlag, sourceFlag) ~= sourceFlag, spellName or "") then
 			HEIRLOOMS[#HEIRLOOMS + 1] = data;
 		end
 	end
@@ -138,9 +129,21 @@ frame:SetScript("OnEvent", function(_, event)
 		COLLECTED_SHOWN = not C_CVar:GetCVarBitfield("C_CVAR_HEIRLOOM_COLLECTED_FILTERS", HEIRLOOM_COLLECTED);
 		UNCOLLECTED_SHOWN = not C_CVar:GetCVarBitfield("C_CVAR_HEIRLOOM_COLLECTED_FILTERS", HEIRLOOM_UNCOLLECTED);
 	elseif event == "PLAYER_LOGIN" then
+		for i = 1, #COLLECTION_HEIRLOOMDATA do
+			local data = COLLECTION_HEIRLOOMDATA[i];
+
+			local spellName = GetSpellInfo(data.spellID);
+
+			HEIRLOOM_BY_ITEM_ID[data.itemID] = data;
+
+			if not spellbookCustomHiddenChatSpell[data.spellID] then
+				spellbookCustomHiddenChatSpell[data.spellID] = spellName;
+			end
+		end
+
 		SetFilteredHeirlooms();
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.HEIRLOOMS_UPDATED);
+		FireCustomClientEvent("HEIRLOOMS_UPDATED");
 	end
 end);
 
@@ -205,9 +208,10 @@ function C_Heirloom.GetHeirloomInfo(itemID)
 
 	local data = HEIRLOOM_BY_ITEM_ID[itemID];
 	if data then
-		local _, _, _, _, _, _, _, _, itemEquipLoc = C_Item.GetItemInfo(data.itemID, nil, nil, nil, true);
+		local spellName = GetSpellInfo(data.spellID);
+		local _, _, _, _, _, _, _, _, itemEquipLoc, itemIcon = C_Item.GetItemInfo(data.itemID, nil, nil, nil, true);
 
-		return data.spellName, itemEquipLoc, data.itemIcon, data.descriptionText, data.priceText;
+		return spellName, itemEquipLoc, itemIcon, data.descriptionText, data.priceText;
 	end
 end
 
@@ -338,7 +342,8 @@ function C_Heirloom.GetHeirloomLink(itemID)
 
 	local heirloom = HEIRLOOM_BY_ITEM_ID[itemID];
 	if heirloom and heirloom.itemID then
-		return string.format(COLLECTION_HEIRLOOM_HYPERLINK_FORMAT, heirloom.itemID, heirloom.spellName or "");
+		local spellName = GetSpellInfo(heirloom.spellID);
+		return string.format(COLLECTION_HEIRLOOM_HYPERLINK_FORMAT, heirloom.itemID, spellName or "");
 	end
 
 	return "";
@@ -445,6 +450,6 @@ function EventHandler:ASMSG_C_H_ADD(msg)
 
 		SetFilteredHeirlooms();
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.HEIRLOOMS_UPDATED, itemID, true);
+		FireCustomClientEvent("HEIRLOOMS_UPDATED", itemID, true);
 	end
 end

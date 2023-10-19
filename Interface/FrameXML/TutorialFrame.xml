@@ -141,7 +141,7 @@
 				</Anchors>
 				<Layers>
 					<Layer level="OVERLAY">
-						<Texture name="tomtest" setAllPoints="true">
+						<Texture parentKey="Background" setAllPoints="true">
 							<Color r="1.0" g="0" b="0"/>
 						</Texture>
 					</Layer>

@@ -1,15 +1,26 @@
-PAID_CHARACTER_CUSTOMIZATION = 1
-PAID_RACE_CHANGE = 2
-PAID_FACTION_CHANGE = 3
-PAID_SERVICE_CHARACTER_ID = nil
-PAID_SERVICE_TYPE = nil
-
 local PAID_RACE_SERVICE_OVERRIDE_FACTIONS = {
 	[FACTION_HORDE]		= PLAYER_FACTION_GROUP.Alliance,
 	[FACTION_ALLIANCE]	= PLAYER_FACTION_GROUP.Horde,
 }
 
-local PAID_RACE_SERVICE_OVERRIDE_RACES = {
+local PAID_SERVICE_ORIGINAL_FACTION = {
+	[FACTION_HORDE]		= PLAYER_FACTION_GROUP.Horde,
+	[FACTION_ALLIANCE]	= PLAYER_FACTION_GROUP.Alliance,
+	[FACTION_NEUTRAL]	= PLAYER_FACTION_GROUP.Neutral,
+}
+
+local PAID_RACE_SERVICE_DYNAMIC = {
+	[E_CHARACTER_RACES.RACE_DRACTHYR]				= E_CHARACTER_RACES.RACE_DRACTHYR,
+}
+
+local PAID_SERVICE_ORIGINAL_RACE = {
+	[E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE]		= E_CHARACTER_RACES.RACE_PANDAREN_NEUTRAL,
+	[E_CHARACTER_RACES.RACE_PANDAREN_HORDE]			= E_CHARACTER_RACES.RACE_PANDAREN_NEUTRAL,
+	[E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE]		= E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL,
+	[E_CHARACTER_RACES.RACE_VULPERA_HORDE]			= E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL,
+}
+
+local PAID_FACTION_SERVICE_OVERRIDE_RACES = {
 	[FACTION_ALLIANCE] = {
 		[E_CHARACTER_RACES.RACE_PANDAREN_NEUTRAL]	= E_CHARACTER_RACES.RACE_PANDAREN_HORDE,
 		[E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE]	= E_CHARACTER_RACES.RACE_PANDAREN_HORDE,
@@ -24,11 +35,7 @@ local PAID_RACE_SERVICE_OVERRIDE_RACES = {
 	}
 }
 
-local PAID_RACE_SERVICE_DYNAMIC = {
-	[E_CHARACTER_RACES.RACE_DRACTHYR]				= E_CHARACTER_RACES.RACE_DRACTHYR,
-}
-
-local PAID_FACTION_SERVICE_OVERRIDE_RACES = {
+local PAID_RACE_SERVICE_OVERRIDE_RACES = {
 	[FACTION_ALLIANCE] = {
 		[E_CHARACTER_RACES.RACE_PANDAREN_HORDE]		= E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE,
 		[E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE]	= E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE,
@@ -47,18 +54,18 @@ local PAID_FACTION_SERVICE_OVERRIDE_RACES = {
 	}
 }
 
-local PAID_SERVICE_ORIGINAL_FACTION = {
-	[FACTION_HORDE]		= PLAYER_FACTION_GROUP.Horde,
-	[FACTION_ALLIANCE]	= PLAYER_FACTION_GROUP.Alliance,
-	[FACTION_NEUTRAL]	= PLAYER_FACTION_GROUP.Neutral,
+local CREATION_STATES = {
+	DEFAULT = 0,
+	SIGN_SELECTION = 1,
 }
+local CREATION_STATE = 0
 
-local PAID_SERVICE_ORIGINAL_RACE = {
-	[E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE]		= E_CHARACTER_RACES.RACE_PANDAREN_NEUTRAL,
-	[E_CHARACTER_RACES.RACE_PANDAREN_HORDE]			= E_CHARACTER_RACES.RACE_PANDAREN_NEUTRAL,
-	[E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE]		= E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL,
-	[E_CHARACTER_RACES.RACE_VULPERA_HORDE]			= E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL,
+local VIEW_STATES = {
+	RACE_CLASS = 0,
+	CUSTOMIZATIONS = 1,
+	ZODIAC_SIGNS = 2,
 }
+local VIEW_STATE = 0
 
 local CAMERA_ZOOM_LEVEL_AMOUNT = 80
 
@@ -69,51 +76,65 @@ local TOOLTIPS_EXPANDED = false
 
 CharacterCreateMixin = {}
 
-enum:E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE {
-	"ACTIVE",
-	"INACTIVE"
-}
-
 local pullButtonReset = function(framePool, frame)
 	FramePool_HideAndClearAnchors(framePool, frame)
 	frame:Enable()
+	frame:SetAlpha(1)
 end
 
 function CharacterCreateMixin:OnLoad()
-	self:RegisterHookListener()
+	self.VignetteTop:SetAtlas("charactercreate-vignette-top", true)
+	self.VignetteBottom:SetAtlas("charactercreate-vignette-bottom", true)
+	self.VignetteLeft:SetAtlas("charactercreate-vignette-sides", true)
+	self.VignetteRight:SetAtlas("charactercreate-vignette-sides", true)
+	self.VignetteRight:SetSubTexCoord(1, 0, 0, 1)
+
+	self:RegisterCustomEvent("GLUE_CHARACTER_CREATE_UPDATE_CLASSES")
 	self:RegisterCustomEvent("GLUE_CHARACTER_CREATE_FORCE_RACE_CHANGE")
 	self:RegisterCustomEvent("GLUE_CHARACTER_CREATE_ZOOM_UPDATE")
 	self:RegisterCustomEvent("GLUE_CHARACTER_CREATE_DRESS_STATE_UPDATE")
+	self:RegisterCustomEvent("GLUE_CHARACTER_CREATE_ZODIAC_SELECTED")
 
 	self.raceButtonPerLine = 5
 
 	self.clientRaceData = {}
 	self.clientClassData = {}
 
-	self.allianceRaceButtonPool = CreateFramePool("CheckButton", self.AllianceRacesFrame, "CharacterCreateRaceButtonTemplate", pullButtonReset)
-	self.hordeRaceButtonPool 	= CreateFramePool("CheckButton", self.HordeRacesFrame, "CharacterCreateRaceButtonTemplate", pullButtonReset)
-	self.neutralRaceButtonPool 	= CreateFramePool("CheckButton", self.NeutralRacesFrame, "CharacterCreateRaceButtonTemplate", pullButtonReset)
-
-	self.classButtonPool 		= CreateFramePool("CheckButton", self.ClassesFrame, "CharacterCreateClassButtonTemplate", pullButtonReset)
-
-	self.genderButtonPool 		= CreateFramePool("CheckButton", self.GenderFrame, "CharacterCreateGenderButtonTemplate", pullButtonReset)
+	self.raceButtonPool = CreateFramePool("CheckButton", self, "CharacterCreateRaceButtonTemplate", pullButtonReset)
+	self.classButtonPool = CreateFramePool("CheckButton", self.ClassesFrame, "CharacterCreateClassButtonTemplate", pullButtonReset)
+	self.genderButtonPool = CreateFramePool("CheckButton", self.GenderFrame, "CharacterCreateGenderButtonTemplate", pullButtonReset)
 
 	self.NavigationFrame.CreateNameEditBox:SetPoint("BOTTOM", self.GenderFrame.CustomizationButton, "TOP", 0, 5)
+	self.NavigationFrame.HardcoreButton:SetPoint("RIGHT", self.GenderFrame, "RIGHT", -67, 0)
 end
 
 function CharacterCreateMixin:OnShow()
 	C_CharacterCreation.SetInCharacterCreate(true)
 
-	if PAID_SERVICE_TYPE and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW then
-		C_CharacterCreation.CustomizeExistingCharacter(PAID_SERVICE_CHARACTER_ID)
+	if C_CharacterCreation.PaidChange_IsActive(true) and self:CanSetZodiacSignState() then
+		CREATION_STATE = CREATION_STATES.SIGN_SELECTION
+		VIEW_STATE = VIEW_STATES.ZODIAC_SIGNS
+	else
+		CREATION_STATE = CREATION_STATES.DEFAULT
+		VIEW_STATE = VIEW_STATES.RACE_CLASS
+	end
+
+	if C_CharacterCreation.PaidChange_IsActive(true) then
+		self:UpdateCreationState()
 		self.NavigationFrame.CreateNameEditBox:SetText(C_CharacterCreation.PaidChange_GetName())
-		self.NavigationFrame.CreateButton:SetText(CHARACTER_CREATE_ACCEPT)
+		self.NavigationFrame.HardcoreButton:Hide()
 		self.CustomizationFrame.DressCheckButton:SetChecked(C_CharacterCreation.IsDressed())
 		self.CustomizationFrame.DressCheckButton:Show()
 	else
 		C_CharacterCreation.ResetCharCustomize()
+		self:UpdateCreationState()
 		self.NavigationFrame.CreateNameEditBox:SetText("")
-		self.NavigationFrame.CreateButton:SetText(CHARACTER_CREATE)
+		if C_CharacterCreation.CanCreateHardcoreCharacter() then
+			self.NavigationFrame.HardcoreButton:SetChecked(C_CharacterCreation.GetHardcoreFlag())
+			self.NavigationFrame.HardcoreButton:Show()
+		else
+			self.NavigationFrame.HardcoreButton:Hide()
+		end
 		self.CustomizationFrame.DressCheckButton:Hide()
 	end
 
@@ -122,7 +143,7 @@ function CharacterCreateMixin:OnShow()
 
 	self:UpdateBackground()
 
-	if PAID_SERVICE_TYPE == PAID_FACTION_CHANGE and select(3, C_CharacterCreation.PaidChange_GetCurrentFaction()) == PLAYER_FACTION_GROUP.Neutral then
+	if PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION and select(3, C_CharacterCreation.PaidChange_GetCurrentFaction()) == PLAYER_FACTION_GROUP.Neutral then
 		self.NavigationFrame.CreateNameEditBox:SetAutoFocus(false)
 		self.NavigationFrame.CreateNameEditBox:ClearFocus()
 		self.NavigationFrame:Hide()
@@ -140,6 +161,7 @@ function CharacterCreateMixin:OnShow()
 
 	self.GenderFrame.CustomizationButton:SetText(CHARACTER_CREATE_CUSTOMIZATION_LABEL)
 	self:CreateUpdateButtons()
+	self:UpdateCharacterCreateButton()
 	self.skipCustomizationConfirmation = false
 
 	C_CharacterCreation.EnableMouseWheel(true)
@@ -148,6 +170,9 @@ end
 function CharacterCreateMixin:OnHide()
 	C_CharacterCreation.SetInCharacterCreate(false)
 	self.CustomizationFrame:Hide()
+	self.CustomizationFrame:Reset()
+	self.ZodiacSignFrame:Hide()
+	self.ZodiacSignFrame:Reset()
 	self:ResetSelectRaceAndClassAnim()
 	C_CharacterCreation.EnableMouseWheel(false)
 end
@@ -172,13 +197,18 @@ function CharacterCreateMixin:OnEvent(event, ...)
 		if self.CustomizationFrame:IsVisible() then
 			self.CustomizationFrame:UpdateZoomButtonStates()
 		end
+	elseif event == "GLUE_CHARACTER_CREATE_ZODIAC_SELECTED" then
+		self:UpdateCharacterCreateButton()
+	elseif event == "GLUE_CHARACTER_CREATE_UPDATE_CLASSES" then
+		self:UpdateClassButtons()
+		self:UpdateCharacterCreateButton()
 	end
 end
 
 local RESET_ROTATION_TIME = 0.5
 function CharacterCreateMixin:OnUpdate(elapsed)
 	if self.rotationStartX then
-		local x = GetCursorPosition()
+		local x = GetScaledCursorPosition()
 		local diff = (x - self.rotationStartX) * 0.6
 		self.rotationStartX = x
 		C_CharacterCreation.SetCharacterCreateFacing(C_CharacterCreation.GetCharacterCreateFacing() + diff)
@@ -198,12 +228,8 @@ end
 
 function CharacterCreateMixin:OnKeyDown(key)
 	if key == "ESCAPE" then
-		if self.CustomizationFrame:IsShown() and not (self.CustomizationFrame:IsAnimPlaying() and self.CustomizationFrame.isRevers) then
-			self.CustomizationFrame:PlayToggleAnim()
-			PlaySound(SOUNDKIT.GS_CHARACTER_CREATION_LOOK)
-		else
-			self:BackToCharacterSelect()
-		end
+		self:SetPreviousCreationState()
+		PlaySound(SOUNDKIT.GS_CHARACTER_CREATION_LOOK)
 	elseif key == "ENTER" then
 		self.NavigationFrame.CreateButton:Click()
 	elseif key == "PRINTSCREEN" then
@@ -234,35 +260,336 @@ function CharacterCreateMixin:OnMouseDown(button)
 	if button == "LeftButton" then
 		self.rotationResetX = nil
 		self.rotationResetCur = nil
-		self.rotationStartX = GetCursorPosition()
+		self.rotationStartX = GetScaledCursorPosition()
 	end
 end
 
+function CharacterCreateMixin:CanSetZodiacSignState()
+	return C_CharacterCreation.IsZodiacSignsEnabled() and C_CharacterCreation.CanChangeZodiacSign()
+end
+
+function CharacterCreateMixin:GetFirstCreationState()
+	local canOpenZodiacSignView = self:CanSetZodiacSignState()
+	if C_CharacterCreation.PaidChange_IsActive(true) and C_CharacterCreation.PaidChange_CanChangeZodiac() then
+		return CREATION_STATES.SIGN_SELECTION
+	elseif canOpenZodiacSignView then
+		return CREATION_STATES.DEFAULT
+	else
+		return CREATION_STATES.DEFAULT
+	end
+end
+
+function CharacterCreateMixin:GetFinalCreationState()
+	if self:CanSetZodiacSignState() then
+		return CREATION_STATES.SIGN_SELECTION
+	else
+		return CREATION_STATES.DEFAULT
+	end
+end
+
+function CharacterCreateMixin:IsInFirstCreationState()
+	return CREATION_STATE == self:GetFirstCreationState()
+end
+
+function CharacterCreateMixin:IsInFinalCreationState()
+	return CREATION_STATE == self:GetFinalCreationState()
+end
+
+function CharacterCreateMixin:UpdateCreationState()
+	if self:IsInFinalCreationState() then
+		if C_CharacterCreation.PaidChange_IsActive(true) then
+			self.NavigationFrame.CreateButton:SetText(CHARACTER_CREATE_ACCEPT)
+		else
+			self.NavigationFrame.CreateButton:SetText(CHARACTER_CREATE)
+		end
+	else
+		self.NavigationFrame.CreateButton:SetText(NEXT)
+	end
+
+	if VIEW_STATE == VIEW_STATES.CUSTOMIZATIONS then
+		if CREATION_STATE == CREATION_STATES.DEFAULT then
+			self.GenderFrame.CustomizationButton:SetText(CHARACTER_CREATE_RACE_LABEL)
+		elseif CREATION_STATE == CREATION_STATES.SIGN_SELECTION then
+			self.GenderFrame.CustomizationButton:SetText(CHARACTER_CREATE_ZODIAC_SIGN_LABEL)
+		end
+		self.CustomizationFrame:UpdateCustomizationButtonFrame()
+	else
+		self.GenderFrame.CustomizationButton:SetText(CHARACTER_CREATE_CUSTOMIZATION_LABEL)
+	end
+
+	self:UpdateCharacterCreateButton()
+end
+
+function CharacterCreateMixin:SetPreviousCreationState()
+	if self:IsInFirstCreationState() and VIEW_STATE ~= VIEW_STATES.CUSTOMIZATIONS then
+		self:BackToCharacterSelect()
+	else
+		if VIEW_STATE == VIEW_STATES.CUSTOMIZATIONS then
+			if self.CustomizationFrame:IsShown() and not self.CustomizationFrame:IsAnimPlayingReverse() then
+				self.CustomizationFrame:PlayToggleAnim(CREATION_STATE == CREATION_STATES.DEFAULT)
+			end
+
+			if CREATION_STATE == CREATION_STATES.DEFAULT then
+				VIEW_STATE = VIEW_STATES.RACE_CLASS
+				self:PlayDefaultViewAnim()
+			elseif CREATION_STATE == CREATION_STATES.SIGN_SELECTION then
+				VIEW_STATE = VIEW_STATES.ZODIAC_SIGNS
+				self.ZodiacSignFrame:PlayToggleAnim()
+			end
+
+			self:UpdateCreationState()
+		else
+			if CREATION_STATE == CREATION_STATES.SIGN_SELECTION then
+				CREATION_STATE = CREATION_STATES.DEFAULT
+				VIEW_STATE = VIEW_STATES.RACE_CLASS
+
+				if self.ZodiacSignFrame:IsShown() and not self.ZodiacSignFrame:IsAnimPlayingReverse() then
+					self.ZodiacSignFrame:PlayToggleAnim(true)
+				end
+			end
+
+			self:PlayDefaultViewAnim()
+			self:UpdateCreationState()
+		end
+	end
+end
+
+function CharacterCreateMixin:SetNextCreationState()
+	if self:IsInFinalCreationState() then
+		self:CreateCharacter()
+	else
+		local wasInCustomizationView = VIEW_STATE == VIEW_STATES.CUSTOMIZATIONS
+		CREATION_STATE = CREATION_STATES.SIGN_SELECTION
+		VIEW_STATE = VIEW_STATES.ZODIAC_SIGNS
+
+		if self.CustomizationFrame:IsShown() and not self.CustomizationFrame:IsAnimPlayingReverse() then
+			self.CustomizationFrame:PlayToggleAnim()
+		end
+
+		self:PlayDefaultViewAnim(true)
+		self.ZodiacSignFrame:PlayToggleAnim(not wasInCustomizationView)
+		self:UpdateCreationState()
+	end
+end
+
+function CharacterCreateMixin:ToggleCustomications()
+	if VIEW_STATE == VIEW_STATES.CUSTOMIZATIONS then
+		if CREATION_STATE == CREATION_STATES.DEFAULT then
+			VIEW_STATE = VIEW_STATES.RACE_CLASS
+			self:PlayDefaultViewAnim()
+		elseif CREATION_STATE == CREATION_STATES.SIGN_SELECTION then
+			VIEW_STATE = VIEW_STATES.ZODIAC_SIGNS
+			self.ZodiacSignFrame:PlayToggleAnim()
+		end
+
+		if self.CustomizationFrame:IsShown() and not self.CustomizationFrame:IsAnimPlayingReverse() then
+			self.CustomizationFrame:PlayToggleAnim(CREATION_STATE == CREATION_STATES.DEFAULT)
+		end
+	else
+		VIEW_STATE = VIEW_STATES.CUSTOMIZATIONS
+
+		if CREATION_STATE == CREATION_STATES.DEFAULT then
+			self:PlayDefaultViewAnim(true)
+		elseif CREATION_STATE == CREATION_STATES.SIGN_SELECTION then
+			if self.ZodiacSignFrame:IsShown() and not self.ZodiacSignFrame:IsAnimPlayingReverse() then
+				self.ZodiacSignFrame:PlayToggleAnim()
+			end
+		end
+
+		self.CustomizationFrame:PlayToggleAnim(CREATION_STATE == CREATION_STATES.DEFAULT)
+	end
+
+	self:UpdateCreationState()
+end
+
+function CharacterCreateMixin:BackToCharacterSelect()
+	self.BlockingFrame:Show()
+	self.Overlay.hideAnim:Play()
+	PlaySound("gsCharacterCreationCancel")
+	if self:GetFirstCreationState() == CREATION_STATES.DEFAULT then
+		self:PlaySelectRaceAndClassAnim(true, function()
+			self.BlockingFrame:Hide()
+			SetGlueScreen("charselect")
+		end)
+	else
+		self.ZodiacSignFrame:PlayToggleAnim(true, function()
+			self.BlockingFrame:Hide()
+			SetGlueScreen("charselect")
+		end)
+	end
+end
+
+function CharacterCreateMixin:CreateCharacter()
+	local name = self.NavigationFrame.CreateNameEditBox:GetText()
+	if name == "" then
+		GlueDialog:ShowDialog("OKAY", CHAR_NAME_NO_NAME)
+	else
+		local class = select(2, C_CharacterCreation.GetSelectedClass())
+		local _, _, _, hexColor = GetClassColor(class)
+		local skipCustomization = self.skipCustomizationConfirmation or (C_CharacterCreation.PaidChange_IsActive(true) and self:CanSetZodiacSignState())
+
+		local customization = C_CharacterCreation.PaidChange_IsActive(true)
+		local buttonText = customization and ACCEPT or nil
+		local text = customization and CONFIRM_PAID_SERVICE or CONFIRM_CHARACTER_CREATE
+		local confirmation = skipCustomization and "" or CONFIRM_CHARACTER_CREATE_CUSTOMIZATION
+
+		text = string.format(text, hexColor or "ffffff", name or CHARACTER_NO_NAME)
+		text = string.format("%s%s", text, confirmation)
+
+		GlueDialog:ShowDialog(skipCustomization and "CONFIRM_CHARACTER_CREATE" or "CONFIRM_CHARACTER_CREATE_CUSTOMIZATION", text, {name, buttonText})
+	end
+end
+
+local setActiveRaceClassButtonState = function(framePool, state)
+	for frame in framePool:EnumerateActive() do
+		if state then
+			frame:SetEnabled(frame.animDisable)
+			frame.animDisable = false
+			frame:InFade()
+		else
+			if frame:IsEnabled() == 1 then
+				frame.animDisable = true
+			end
+			frame:Disable()
+			frame:OutFade()
+		end
+	end
+end
+
+function CharacterCreateMixin:PlayDefaultViewAnim(reverse)
+	if not reverse then
+		if self.AllianceRacesFrame:IsShown() or self.AllianceRacesFrame:IsAnimPlayingNonReverse() then
+			return
+		end
+
+		self:PlaySelectRaceAndClassAnim(false, function()
+			self.AllianceRacesFrame:Show()
+			self.HordeRacesFrame:Show()
+			self.NeutralRacesFrame:Show()
+			self.ClassesFrame:Show()
+		end)
+
+		setActiveRaceClassButtonState(self.classButtonPool, true)
+		setActiveRaceClassButtonState(self.raceButtonPool, true)
+
+		C_CharacterCreation.ZoomCamera(C_CharacterCreation.GetMaxCameraZoom() * -1, nil, true)
+	else
+		if not self.AllianceRacesFrame:IsShown() or self.AllianceRacesFrame:IsAnimPlayingReverse() then
+			return
+		end
+
+		setActiveRaceClassButtonState(self.classButtonPool, false)
+		setActiveRaceClassButtonState(self.raceButtonPool, false)
+
+		self:PlaySelectRaceAndClassAnim(true, function()
+			self.AllianceRacesFrame:Hide()
+			self.HordeRacesFrame:Hide()
+			self.NeutralRacesFrame:Hide()
+			self.ClassesFrame:Hide()
+		end)
+
+		C_CharacterCreation.ZoomCamera(CAMERA_ZOOM_LEVEL_AMOUNT - C_CharacterCreation.GetCurrentCameraZoom(), nil, true)
+	end
+end
+
+function CharacterCreateMixin:PlaySelectRaceAndClassAnim(isReverce, callback)
+	self.AllianceRacesFrame:PlayAnim(isReverce, callback)
+	self.HordeRacesFrame:PlayAnim(isReverce)
+	self.NeutralRacesFrame:PlayAnim(isReverce)
+	self.ClassesFrame:PlayAnim(isReverce)
+	self.GenderFrame:PlayAnim(isReverce)
+	self.NavigationFrame:PlayAnim(isReverce)
+end
+
+function CharacterCreateMixin:ResetSelectRaceAndClassAnim()
+	self.AllianceRacesFrame:Reset()
+	self.HordeRacesFrame:Reset()
+	self.NeutralRacesFrame:Reset()
+	self.ClassesFrame:Reset()
+	self.GenderFrame:Reset()
+	self.NavigationFrame:Reset()
+end
+
+function CharacterCreateMixin:UpdateCharacterCreateButton()
+	if C_CharacterCreation.PaidChange_IsActive(true) and self:CanSetZodiacSignState() then
+		local isValid, disabledReason, disableReasonInfo = C_CharacterCreation.IsSignAvailable(C_CharacterCreation.GetSelectedZodiacSign())
+		self.NavigationFrame.CreateButton.disabledReason = disabledReason
+		self.NavigationFrame.CreateButton.disableReasonInfo = disableReasonInfo
+		self.NavigationFrame.CreateButton:SetEnabled(isValid)
+	else
+		local _, _, classID = C_CharacterCreation.GetSelectedClass()
+		local raceID = C_CharacterCreation.GetSelectedRace()
+		local isValid, disabledReason, disableReasonInfo = C_CharacterCreation.IsRaceClassValid(raceID, classID)
+		if isValid then
+			isValid, disabledReason, disableReasonInfo = C_CharacterCreation.IsRaceAvailable(raceID)
+		end
+		if isValid and CREATION_STATE == CREATION_STATES.SIGN_SELECTION then
+			isValid, disabledReason, disableReasonInfo = C_CharacterCreation.IsSignAvailable(C_CharacterCreation.GetSelectedZodiacSign())
+		end
+
+		self.NavigationFrame.CreateButton.disabledReason = disabledReason
+		self.NavigationFrame.CreateButton.disableReasonInfo = disableReasonInfo
+		self.NavigationFrame.CreateButton:SetEnabled(isValid)
+		self.NavigationFrame.CreateNameEditBox:SetShown(isValid)
+		self.NavigationFrame.RandomNameButton:SetShown(isValid)
+	end
+end
+
+function CharacterCreateMixin:UpdateBackground()
+	CharacterModelManager.SetBackground(C_CharacterCreation.GetSelectedModelName())
+end
+
 function CharacterCreateMixin:CreateUpdateButtons()
-	self:BuildRaceData()
-	self:CreateRaceButtons()
-	self:UpdateRaceButtons()
+	local firstCreationState = self:GetFirstCreationState()
+	if firstCreationState == CREATION_STATES.DEFAULT then
+		self:BuildRaceData()
+		self:CreateRaceButtons()
+		self:UpdateRaceButtons()
 
-	self:BuildClassData()
-	self:CreateClassButtons()
-	self:UpdateClassButtons()
+		self:BuildClassData()
+		self:CreateClassButtons()
+		self:UpdateClassButtons()
 
-	self:CreateGenderButtons()
-	self:UpdateGenderButtons()
+		self:CreateGenderButtons()
+		self:UpdateGenderButtons()
+
+		self.GenderFrame:Show()
+
+		self:PlaySelectRaceAndClassAnim()
+	elseif firstCreationState == CREATION_STATES.SIGN_SELECTION then
+		self.NavigationFrame.CreateNameEditBox:Hide()
+		self.NavigationFrame.RandomNameButton:Hide()
+		self.AllianceRacesFrame:Hide()
+		self.HordeRacesFrame:Hide()
+		self.NeutralRacesFrame:Hide()
+		self.GenderFrame:Hide()
+		self.ClassesFrame:Hide()
+
+		self.ZodiacSignFrame:PlayToggleAnim(true)
+	end
 
 	self.Overlay.showAnim:Play()
-	self:PlaySelectRaceAndClassAnim()
 end
 
 function CharacterCreateMixin:CreateGenderButtons()
 	self.genderButtonPool:ReleaseAll()
 
+	local lastButton
 	for _, genderID in ipairs(C_CharacterCreation.GetAvailableGenders()) do
 		local button = self.genderButtonPool:Acquire()
 		button.index = genderID
 		button.Icon:SetAtlas("GLUE-GENDER-"..E_SEX[genderID])
-		button:SetPoint(genderID == E_SEX.MALE and "LEFT" or "RIGHT", 0, 0)
+		if genderID == E_SEX.MALE then
+			button:SetPoint("LEFT", 0, 0)
+		else
+			if C_CharacterCreation.CanCreateHardcoreCharacter() then
+				button:SetPoint("LEFT", lastButton, "RIGHT", 15, 0)
+			else
+				button:SetPoint("RIGHT", 0, 0)
+			end
+		end
 		button:Show()
+		lastButton = button
 	end
 end
 
@@ -275,22 +602,19 @@ function CharacterCreateMixin:CreateClassButtons()
 
 	local prevButton
 
-	for _, data in ipairs(self.clientClassData) do
-		if not data.hidden then
-			local button = self.classButtonPool:Acquire()
-			button.index = data.index
-			button.disabledReason = data.disabled
-			button.Icon:SetAtlas("CIRCLE_CLASS_ICON_"..data.clientFileString)
-			if not prevButton then
-				button:SetPoint("LEFT", 47, 0)
-			else
-				button:SetPoint("LEFT", prevButton, "RIGHT", 15, 0)
-			end
-			button:SetEnabled(not data.disabled)
-			button:Show()
-
-			prevButton = button
+	for index, data in ipairs(self.clientClassData) do
+		local button = self.classButtonPool:Acquire()
+		button:SetID(data.classID)
+		button.index = index
+		button.Icon:SetAtlas("CIRCLE_CLASS_ICON_"..data.clientFileString)
+		if not prevButton then
+			button:SetPoint("LEFT", 47, 0)
+		else
+			button:SetPoint("LEFT", prevButton, "RIGHT", 15, 0)
 		end
+		button:Show()
+
+		prevButton = button
 	end
 end
 
@@ -303,28 +627,27 @@ function CharacterCreateMixin:BuildRaceData()
 end
 
 function CharacterCreateMixin:CreateRaceButtons()
-	self.allianceRaceButtonPool:ReleaseAll()
-	self.hordeRaceButtonPool:ReleaseAll()
-	self.neutralRaceButtonPool:ReleaseAll()
-
 	local factionButtons = {
 		[PLAYER_FACTION_GROUP.Horde] = {},
 		[PLAYER_FACTION_GROUP.Alliance] = {},
 		[PLAYER_FACTION_GROUP.Neutral] = {},
 	}
 
+	self.raceButtonPool:ReleaseAll()
+
 	for index, data in ipairs(C_CharacterCreation.GetAvailableRacesForCreation()) do
-		local button
+		local button = self.raceButtonPool:Acquire()
+		button.data = data
 
 		local isNeutralFaction = data.factionID == PLAYER_FACTION_GROUP.Neutral or not not PAID_SERVICE_ORIGINAL_RACE[data.raceID]
 		local factionID = isNeutralFaction and PLAYER_FACTION_GROUP.Neutral or data.factionID
 
 		if factionID == PLAYER_FACTION_GROUP.Alliance then
-			button = self.allianceRaceButtonPool:Acquire()
+			button:SetParent(self.AllianceRacesFrame)
 		elseif factionID == PLAYER_FACTION_GROUP.Horde then
-			button = self.hordeRaceButtonPool:Acquire()
+			button:SetParent(self.HordeRacesFrame)
 		elseif factionID == PLAYER_FACTION_GROUP.Neutral then
-			button = self.neutralRaceButtonPool:Acquire()
+			button:SetParent(self.NeutralRacesFrame)
 
 			if PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_RACE or PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION then
 				local faction = C_CharacterCreation.PaidChange_GetCurrentFaction()
@@ -340,10 +663,10 @@ function CharacterCreateMixin:CreateRaceButtons()
 					local overrideFactionID
 
 					if PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION then
-						overrideRaceID = PAID_RACE_SERVICE_OVERRIDE_RACES[faction] and PAID_RACE_SERVICE_OVERRIDE_RACES[faction][data.raceID]
+						overrideRaceID = PAID_FACTION_SERVICE_OVERRIDE_RACES[faction] and PAID_FACTION_SERVICE_OVERRIDE_RACES[faction][data.raceID]
 						overrideFactionID = PAID_RACE_SERVICE_OVERRIDE_FACTIONS[faction]
 					else
-						overrideRaceID = PAID_FACTION_SERVICE_OVERRIDE_RACES[faction] and PAID_FACTION_SERVICE_OVERRIDE_RACES[faction][data.raceID]
+						overrideRaceID = PAID_RACE_SERVICE_OVERRIDE_RACES[faction] and PAID_RACE_SERVICE_OVERRIDE_RACES[faction][data.raceID]
 						overrideFactionID = PAID_SERVICE_ORIGINAL_FACTION[faction]
 					end
 
@@ -389,8 +712,6 @@ function CharacterCreateMixin:CreateRaceButtons()
 			end
 		end
 
-		button.data = data
-
 		if C_CharacterCreation.IsAlliedRace(data.raceID) then
 			button.alliedRace = true
 			button.AlliedBorder1:Show()
@@ -408,11 +729,8 @@ function CharacterCreateMixin:CreateRaceButtons()
 			button.AlliedBorder2:Hide()
 		end
 
+		button.ArtFrame.RaceID:SetText(data.raceID)
 		button:Show()
-
-		if IsInterfaceDevClient() then
-			button.ArtFrame.RaceID:SetText(data.raceID)
-		end
 	end
 
 	local buttonOffset = 40
@@ -421,7 +739,7 @@ function CharacterCreateMixin:CreateRaceButtons()
 		local buttonCount = #buttons
 		if factionID == PLAYER_FACTION_GROUP.Neutral then
 			local width = buttonsSize * buttonCount + buttonOffset * (buttonCount - 1)
-			self.neutralRaceButtonPool.parent:SetSize(width, buttonsSize)
+			self.NeutralRacesFrame:SetSize(width, buttonsSize)
 		end
 	end
 end
@@ -438,13 +756,7 @@ local function updateButtonMacro(frame, onlyDeselected, ignoredButton)
 end
 
 function CharacterCreateMixin:UpdateRaceButtons(onlyDeselected, ignoredButton)
-	for frame in self.allianceRaceButtonPool:EnumerateActive() do
-		updateButtonMacro(frame, onlyDeselected, ignoredButton)
-	end
-	for frame in self.hordeRaceButtonPool:EnumerateActive() do
-		updateButtonMacro(frame, onlyDeselected, ignoredButton)
-	end
-	for frame in self.neutralRaceButtonPool:EnumerateActive() do
+	for frame in self.raceButtonPool:EnumerateActive() do
 		updateButtonMacro(frame, onlyDeselected, ignoredButton)
 	end
 end
@@ -459,36 +771,6 @@ function CharacterCreateMixin:UpdateGenderButtons(onlyDeselected, ignoredButton)
 	for frame in self.genderButtonPool:EnumerateActive() do
 		updateButtonMacro(frame, onlyDeselected, ignoredButton)
 	end
-end
-
-function CharacterCreateMixin:PlaySelectRaceAndClassAnim(isReverce, callback)
-	self.AllianceRacesFrame:PlayAnim(isReverce, callback)
-	self.HordeRacesFrame:PlayAnim(isReverce)
-	self.NeutralRacesFrame:PlayAnim(isReverce)
-	self.ClassesFrame:PlayAnim(isReverce)
-	self.GenderFrame:PlayAnim(isReverce)
-end
-
-function CharacterCreateMixin:ResetSelectRaceAndClassAnim()
-	self.AllianceRacesFrame:Reset()
-	self.HordeRacesFrame:Reset()
-	self.NeutralRacesFrame:Reset()
-	self.ClassesFrame:Reset()
-	self.GenderFrame:Reset()
-end
-
-function CharacterCreateMixin:BackToCharacterSelect()
-	self.BlockingFrame:Show()
-	self.Overlay.hideAnim:Play()
-	PlaySound("gsCharacterCreationCancel")
-	self:PlaySelectRaceAndClassAnim(true, function ()
-		self.BlockingFrame:Hide()
-		SetGlueScreen("charselect")
-	end)
-end
-
-function CharacterCreateMixin:UpdateBackground()
-	CharacterModelManager.SetBackground(C_CharacterCreation.GetSelectedModelName())
 end
 
 CharacterCreateRaceButtonMixin = {}
@@ -545,18 +827,19 @@ function CharacterCreateRaceButtonMixin:OnMouseUp(button)
 			self.mainFrame.CustomizationFrame:UpdateCustomizationButtonFrame(true)
 			self.mainFrame.skipCustomizationConfirmation = self.mainFrame.CustomizationFrame:IsShown()
 
-			local enabled = self:IsEnabled() == 1
-			self.mainFrame.NavigationFrame.CreateButton:SetEnabled(enabled)
-			self.mainFrame.NavigationFrame.CreateNameEditBox:SetShown(enabled)
-			self.mainFrame.NavigationFrame.RandomNameButton:SetShown(enabled)
+			self.mainFrame:UpdateCharacterCreateButton()
 		end
-	elseif button == "RightButton" and self:IsMouseOver() and self.tooltip then
+	elseif button == "RightButton" and self:IsMouseOver() and self.tooltip and not C_CharacterCreation.IsZodiacSignsEnabled() then
 		TOOLTIPS_EXPANDED = not TOOLTIPS_EXPANDED
 		CharCreateRaceButtonTemplate_OnEnter(self)
 	end
 end
 
 function CharacterCreateRaceButtonMixin:OnEnter()
+	if IsInterfaceDevClient() then
+		self.ArtFrame.RaceID:Show()
+	end
+
 	for i = 2, 3 do
 		self.ArtFrame["Border"..i].HideAnim:Stop()
 		self.ArtFrame["Border"..i]:Show()
@@ -592,6 +875,8 @@ function CharacterCreateRaceButtonMixin:OnEnter()
 end
 
 function CharacterCreateRaceButtonMixin:OnLeave()
+	self.ArtFrame.RaceID:Hide()
+
 	for i = 2, 3 do
 		self.ArtFrame["Border"..i].HideAnim:Play()
 		self.ArtFrame["Border"..i].ShowAnim:Stop()
@@ -653,16 +938,16 @@ function CharacterCreateRaceButtonMixin:UpdateButton()
 	local allow = false
 	local alliedRaceLocked
 
-	if PAID_SERVICE_TYPE and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW then
+	if C_CharacterCreation.PaidChange_IsActive(true) then
 		local faction = C_CharacterCreation.PaidChange_GetCurrentFaction()
 		local raceID = C_CharacterCreation.PaidChange_GetCurrentRaceIndex()
 
 		if PAID_SERVICE_TYPE == E_PAID_SERVICE.CUSTOMIZATION then
 			allow = self.index == raceID
 		elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_RACE then
-			allow = C_CharacterCreation.IsNeutralBaseRace(raceID) or (PAID_RACE_SERVICE_DYNAMIC[self.index] or faction == C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
+			allow = C_CharacterCreation.IsNeutralBaseRace(self.index) or (PAID_RACE_SERVICE_DYNAMIC[self.index] or faction == C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
 		elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION then
-			allow = C_CharacterCreation.IsNeutralBaseRace(raceID) or (PAID_RACE_SERVICE_DYNAMIC[self.index] or faction ~= C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
+			allow = C_CharacterCreation.IsNeutralBaseRace(self.index) or (PAID_RACE_SERVICE_DYNAMIC[self.index] or faction ~= C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
 		end
 	else
 		allow = true
@@ -677,7 +962,7 @@ function CharacterCreateRaceButtonMixin:UpdateButton()
 		end
 	end
 
-	self.alliedRaceGMAllowed = not C_CharacterCreation.IsAlliedRacesUnlockedRaw(self.index)
+	self.alliedRaceGMAllowed = not C_CharacterCreation.IsAlliedRacesUnlocked(self.index, true)
 	self.alliedRaceLocked = alliedRaceLocked
 	self:SetEnabled(allow)
 
@@ -747,10 +1032,10 @@ function CharacterCreateClassButtonMixin:OnMouseUp(button)
 	self.CheckedTexture:SetPoint("CENTER", 0, 0)
 
 	if button == "LeftButton" then
-		if self:IsEnabled() == 1 then
+		if self:IsEnabled() == 1 or self.disabledReason then
 			PlaySound("gsCharacterCreationClass")
 
-			local isSet = C_CharacterCreation.SetSelectedClass(self.index)
+			local isSet = C_CharacterCreation.SetSelectedClass(self:GetID())
 			if not isSet then return end
 
 			self:SetChecked(true)
@@ -761,6 +1046,8 @@ function CharacterCreateClassButtonMixin:OnMouseUp(button)
 			self.mainFrame:UpdateBackground()
 			self.mainFrame.CustomizationFrame:UpdateCustomizationButtonFrame(true)
 			self.mainFrame.skipCustomizationConfirmation = self.mainFrame.CustomizationFrame:IsShown()
+
+			self.mainFrame:UpdateCharacterCreateButton()
 		end
 	elseif button == "RightButton" and self:IsMouseOver() and self.tooltip then
 		TOOLTIPS_EXPANDED = not TOOLTIPS_EXPANDED
@@ -777,13 +1064,18 @@ function CharacterCreateClassButtonMixin:UpdateButton()
 		self.clientFileString = clientClassData.clientFileString
 	end
 
-	if PAID_SERVICE_TYPE and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW then
-		self:SetEnabled(self.index == classID)
+	if C_CharacterCreation.PaidChange_IsActive(true) then
+		self:SetEnabled(self:GetID() == classID)
+		self.disabledReason = nil
+		self.disableReasonInfo = nil
 	else
-		self:SetEnabled(not self.disabledReason and C_CharacterCreation.IsRaceClassValid(C_CharacterCreation.GetSelectedRace(), self.index))
+		local isValid, disabledReason, disableReasonInfo = C_CharacterCreation.IsRaceClassValid(C_CharacterCreation.GetSelectedRace(), self:GetID())
+		self:SetEnabled(isValid)
+		self.disabledReason = disabledReason
+		self.disableReasonInfo = disableReasonInfo
 	end
 
-	self:SetChecked(classID == self.index)
+	self:SetChecked(self:GetID() == classID)
 	self:UpdateChecked()
 end
 
@@ -840,6 +1132,7 @@ function CharacterCreateGenderButtonMixin:OnEnter()
 
 	GlueTooltip:SetOwner(self, "ANCHOR_TOP")
 	GlueTooltip:SetText(_G[E_SEX[self.index]], 1, 1, 1)
+	GlueTooltip:Show()
 end
 
 function CharacterCreateGenderButtonMixin:OnLeave()
@@ -857,9 +1150,11 @@ function CharacterCreateGenderButtonMixin:UpdateButton()
 	self:UpdateChecked()
 end
 
-CharacterCreateAllianceRacesFrameMixin = {}
+CharacterCreateAllianceRacesFrameMixin = CreateFromMixins(GlueEasingAnimMixin)
 
 function CharacterCreateAllianceRacesFrameMixin:Init()
+	self.Logo:SetAtlas("charactercreate-icon-alliance")
+
 	self.startPoint = -400
 	self.endPoint = 10
 	self.duration = 0.500
@@ -873,9 +1168,10 @@ function CharacterCreateAllianceRacesFrameMixin:SetPosition(easing)
 	end
 end
 
-CharacterCreateHordeRacesFrameMixin = {}
+CharacterCreateHordeRacesFrameMixin = CreateFromMixins(GlueEasingAnimMixin)
 
 function CharacterCreateHordeRacesFrameMixin:Init()
+	self.Logo:SetAtlas("charactercreate-icon-horde")
 	self.startPoint = 400
 	self.endPoint = -10
 	self.duration = 0.500
@@ -889,7 +1185,7 @@ function CharacterCreateHordeRacesFrameMixin:SetPosition(easing)
 	end
 end
 
-CharacterCreateNeutralRacesFrameMixin = {}
+CharacterCreateNeutralRacesFrameMixin = CreateFromMixins(GlueEasingAnimMixin)
 
 function CharacterCreateNeutralRacesFrameMixin:Init()
 	self.startPoint = 100
@@ -905,7 +1201,7 @@ function CharacterCreateNeutralRacesFrameMixin:SetPosition(easing)
 	end
 end
 
-CharacterCreateClassesFrameMixin = {}
+CharacterCreateClassesFrameMixin = CreateFromMixins(GlueEasingAnimMixin)
 
 function CharacterCreateClassesFrameMixin:Init()
 	self.startPoint = -80
@@ -921,7 +1217,7 @@ function CharacterCreateClassesFrameMixin:SetPosition(easing)
 	end
 end
 
-CharacterCreateGenderFrameMixin = {}
+CharacterCreateGenderFrameMixin = CreateFromMixins(GlueEasingAnimMixin)
 
 function CharacterCreateGenderFrameMixin:Init()
 	self.startPoint = 20
@@ -982,11 +1278,89 @@ function CharacterCreateInteractiveButtonAlphaAnimMixin:UpdateAlpha(elapsed)
 	end
 end
 
+CharacterCreateCreateButtonMixin = {}
+
+function CharacterCreateCreateButtonMixin:OnEnter()
+	GlueDark_ButtonMixin.OnEnter(self)
+
+	if self:IsEnabled() ~= 1 and self.disabledReason then
+		GlueTooltip:SetOwner(self, "ANCHOR_TOP", 0, 10)
+		GlueTooltip:SetMaxWidth(350)
+		GlueTooltip:AddLine(self.disabledReason, 1, 0, 0)
+		if self.disableReasonInfo then
+			GlueTooltip:AddLine(self.disableReasonInfo, 1, 0.82, 0)
+		end
+		GlueTooltip:Show()
+	end
+end
+
+function CharacterCreateCreateButtonMixin:OnLeave()
+	GlueDark_ButtonMixin.OnLeave(self)
+	GlueTooltip:Hide()
+end
+
+function CharacterCreateCreateButtonMixin:OnClick(button)
+	self:GetParent():GetParent():SetNextCreationState()
+	PlaySound("igMainMenuOptionCheckBoxOn")
+end
+
 CharacterCreateDressStateCheckButtonMixin = {}
 
 function CharacterCreateDressStateCheckButtonMixin:OnClick(button)
 	if button ~= "LeftButton" then return end
 	C_CharacterCreation.SetDressState(self:GetChecked())
+	PlaySound("igMainMenuOptionCheckBoxOn")
+end
+
+CharacterCreateHardcoreCheckButtonMixin = {}
+
+function CharacterCreateHardcoreCheckButtonMixin:OnLoad()
+	self:SetNormalAtlas("Custom-Challenges-Button-Round-Hardcore-Up", true)
+	self:SetDisabledAtlas("Custom-Challenges-Button-Round-Hardcore-Up", true)
+	self:GetDisabledTexture():SetDesaturated(true)
+	self:SetPushedAtlas("Custom-Challenges-Button-Round-Hardcore-Down", true)
+	self:SetHighlightAtlas("Custom-Challenges-Button-Round-Border", true)
+	self:SetCheckedAtlas("Custom-Challenges-Button-Round-Border", true)
+
+	self.AnimFrame.Spinner1:SetAtlas("Custom-Challenges-LoadingSpinner", true)
+	self.AnimFrame.Spinner1:SetSubTexCoord(1, 0, 0, 1)
+	self.AnimFrame.Spinner2:SetAtlas("Custom-Challenges-LoadingSpinner", true)
+	self.AnimFrame.Spinner1.AnimRotation:Play()
+	self.AnimFrame.Spinner2.AnimRotation:Play()
+end
+
+function CharacterCreateHardcoreCheckButtonMixin:OnShow()
+	self.AnimFrame:SetShown(C_CharacterCreation.GetHardcoreFlag())
+end
+
+function CharacterCreateHardcoreCheckButtonMixin:OnEnter()
+	GlueTooltip:SetOwner(self, "ANCHOR_LEFT")
+	GlueTooltip:SetMaxWidth(350)
+	GlueTooltip:AddLine(CHARACTER_CREATE_HARDCORE_LABEL, 1, 1, 1)
+	GlueTooltip:AddLine(CHARACTER_CREATE_HARDCORE_TIP, 1, 0.82, 0)
+	GlueTooltip:Show()
+end
+
+function CharacterCreateHardcoreCheckButtonMixin:OnLeave()
+	GlueTooltip:Hide()
+end
+
+function CharacterCreateHardcoreCheckButtonMixin:OnClick(button)
+	if button ~= "LeftButton" then return end
+
+	local enabled = not C_CharacterCreation.GetHardcoreFlag()
+	C_CharacterCreation.SetHardcoreFlag(enabled)
+
+	if enabled then
+		self.AnimFrame:Show()
+		self.AnimFrame.AnimFadeOut:Stop()
+		self.AnimFrame.AnimFadeIn:Play()
+	else
+		self.AnimFrame.AnimFadeIn:Stop()
+		self.AnimFrame.AnimFadeOut:Play()
+	end
+
+	PlaySound("igMainMenuOptionCheckBoxOn")
 end
 
 CharacterCreateCustomizationButtonMixin = {}
@@ -996,11 +1370,11 @@ function CharacterCreateCustomizationButtonMixin:OnLoad()
 end
 
 function CharacterCreateCustomizationButtonMixin:OnClick()
-	self.parentFrame.CustomizationFrame:PlayToggleAnim()
+	self.parentFrame:ToggleCustomications()
 	PlaySound(SOUNDKIT.GS_CHARACTER_CREATION_LOOK)
 end
 
-CharacterCreateCustomizationFrameMixin = {}
+CharacterCreateCustomizationFrameMixin = CreateFromMixins(GlueEasingAnimMixin)
 
 function CharacterCreateCustomizationFrameMixin:OnLoad()
 	self.parentFrame = self:GetParent()
@@ -1014,11 +1388,15 @@ end
 
 function CharacterCreateCustomizationFrameMixin:SetPosition(easing, progress)
 	if easing then
-		self.parentFrame.CustomizationVignette:SetAlpha(self.isRevers and ((1 - progress) * 0.75) or (progress * 0.75))
+		if self.animVignetteAlpha then
+			self.parentFrame.CustomizationVignette:SetAlpha(self.isRevers and ((1 - progress) * 0.75) or (progress * 0.75))
+		end
 		self:SetAlpha(self.isRevers and (1 - progress) or progress)
 		self:SetPoint("LEFT", easing, 200)
 	else
-		self.parentFrame.CustomizationVignette:SetAlpha(self.isRevers and 0 or 0.75)
+		if self.animVignetteAlpha then
+			self.parentFrame.CustomizationVignette:SetAlpha(self.isRevers and 0 or 0.75)
+		end
 		self:SetAlpha(self.isRevers and 0 or 1)
 		self:SetPoint("LEFT", self.isRevers and self.startPoint or self.sourceXOffset, 200)
 	end
@@ -1050,25 +1428,7 @@ function CharacterCreateCustomizationFrameMixin:UpdateCustomizationButtonFrame(s
 	self.RandomizeCustomizationButton:ClearAndSetPoint("TOP", prevFrame, "BOTTOM", 0, -40)
 end
 
-local function CustomizationButtonChangeState(framePool, state)
-	for frame in framePool:EnumerateActive() do
-		if state == E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.INACTIVE then
-			if frame:IsEnabled() == 1 then
-				frame.animDisable = true
-			end
-
-			frame:Disable()
-			frame:OutFade()
-		elseif state == E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.ACTIVE then
-			frame:SetEnabled(frame.animDisable)
-			frame.animDisable = false
-
-			frame:InFade()
-		end
-	end
-end
-
-function CharacterCreateCustomizationFrameMixin:PlayToggleAnim()
+function CharacterCreateCustomizationFrameMixin:PlayToggleAnim(animVignetteAlpha, callback)
 	self.show = not self.show
 
 	if self.show then
@@ -1076,53 +1436,18 @@ function CharacterCreateCustomizationFrameMixin:PlayToggleAnim()
 		self.sourceXOffset = not IsWideScreen() and 100 or 200
 		self.endPoint = self.sourceXOffset
 
-		self:UpdateCustomizationButtonFrame()
-		self:AnimOnShow()
+		self.animVignetteAlpha = animVignetteAlpha
+		self:PlayAnim(false, callback)
 	else
-		self:AnimOnHide()
+		self.animVignetteAlpha = animVignetteAlpha
+		self:PlayAnim(true, function()
+			if type(callback) == "function" then
+				callback()
+			else
+				self:Hide()
+			end
+		end)
 	end
-end
-
-function CharacterCreateCustomizationFrameMixin:AnimOnShow()
-	self:PlayAnim(false)
-
-	CustomizationButtonChangeState(self.parentFrame.classButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.INACTIVE)
-	CustomizationButtonChangeState(self.parentFrame.allianceRaceButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.INACTIVE)
-	CustomizationButtonChangeState(self.parentFrame.hordeRaceButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.INACTIVE)
-	CustomizationButtonChangeState(self.parentFrame.neutralRaceButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.INACTIVE)
-
-	self.parentFrame:PlaySelectRaceAndClassAnim(true, function()
-		self.parentFrame.AllianceRacesFrame:Hide()
-		self.parentFrame.HordeRacesFrame:Hide()
-		self.parentFrame.NeutralRacesFrame:Hide()
-		self.parentFrame.ClassesFrame:Hide()
-	end)
-
-	self.parentFrame.GenderFrame.CustomizationButton:SetText(CHARACTER_CREATE_RACE_LABEL)
-
-	C_CharacterCreation.ZoomCamera(CAMERA_ZOOM_LEVEL_AMOUNT - C_CharacterCreation.GetCurrentCameraZoom(), nil, true)
-end
-
-function CharacterCreateCustomizationFrameMixin:AnimOnHide()
-	self:PlayAnim(true, function()
-		self:Hide()
-	end)
-
-	self.parentFrame:PlaySelectRaceAndClassAnim(false, function()
-		self.parentFrame.AllianceRacesFrame:Show()
-		self.parentFrame.HordeRacesFrame:Show()
-		self.parentFrame.NeutralRacesFrame:Show()
-		self.parentFrame.ClassesFrame:Show()
-	end)
-
-	CustomizationButtonChangeState(self.parentFrame.classButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.ACTIVE)
-	CustomizationButtonChangeState(self.parentFrame.allianceRaceButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.ACTIVE)
-	CustomizationButtonChangeState(self.parentFrame.hordeRaceButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.ACTIVE)
-	CustomizationButtonChangeState(self.parentFrame.neutralRaceButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.ACTIVE)
-
-	self.parentFrame.GenderFrame.CustomizationButton:SetText(CHARACTER_CREATE_CUSTOMIZATION_LABEL)
-
-	C_CharacterCreation.ZoomCamera(C_CharacterCreation.GetMaxCameraZoom() * -1, nil, true)
 end
 
 function CharacterCreateCustomizationFrameMixin:OnShow()
@@ -1135,15 +1460,9 @@ function CharacterCreateCustomizationFrameMixin:OnHide()
 
 	if self.show then
 		self.show = false
-
 		self:SetPoint("LEFT", self.startPoint, 200)
 		self:SetAlpha(0)
 		self.parentFrame.CustomizationVignette:SetAlpha(0)
-
-		CustomizationButtonChangeState(self.parentFrame.classButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.ACTIVE)
-		CustomizationButtonChangeState(self.parentFrame.allianceRaceButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.ACTIVE)
-		CustomizationButtonChangeState(self.parentFrame.hordeRaceButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.ACTIVE)
-		CustomizationButtonChangeState(self.parentFrame.neutralRaceButtonPool, E_CHARACTER_CREATE_CUSTOMIZATION_BUTTON_STATE.ACTIVE)
 	end
 end
 
@@ -1157,6 +1476,488 @@ function CharacterCreateCustomizationFrameMixin:UpdateZoomButtonStates()
 	local zoomInEnabled = (currentZoom < C_CharacterCreation.GetMaxCameraZoom());
 	self.SmallButtons.ZoomInButton:SetEnabled(zoomInEnabled);
 	self.SmallButtons.ZoomInButton.Icon:SetAtlas(zoomInEnabled and "common-icon-zoomin" or "common-icon-zoomin-disable");
+end
+
+CharacterCreateZodiacSignFrameMixin = CreateFromMixins(GlueEasingAnimMixin)
+
+function CharacterCreateZodiacSignFrameMixin:OnLoad()
+	self.parentFrame = self:GetParent()
+
+	self.sourceXOffset = 0
+	self.startPoint = 450
+	self.endPoint = self.sourceXOffset
+	self.duration = 0.500
+
+	self.Description.Text:SetWidth(self:GetWidth() - 60)
+	self.SignLock.Lock:SetAtlas("BonusChest-Lock", true)
+
+	self.signButtonPool = CreateFramePool("Button", self.Sign, "CharacterCreateZodiacSignButtonTemplate")
+	self.spellButtonPool = CreateFramePool("Frame", self.SpellHolder, "CharacterCreateZodiacSignSpellTemplate")
+
+	self:RegisterCustomEvent("GLUE_CHARACTER_CREATE_ZODIAC_SELECTED")
+end
+
+function CharacterCreateZodiacSignFrameMixin:OnEvent(event, ...)
+	if event == "GLUE_CHARACTER_CREATE_ZODIAC_SELECTED" then
+		if self:IsVisible() then
+			if self.Sign.ArtworkGlow.Pulse:IsPlaying() then
+				self.Sign.ArtworkGlow.Pulse:Stop()
+			end
+			self.Sign.ArtworkGlow.Pulse:Play()
+		end
+		self:UpdateSignView()
+	end
+end
+
+function CharacterCreateZodiacSignFrameMixin:OnShow()
+	SetParentFrameLevel(self.Sign, 1)
+	SetParentFrameLevel(self.SignLock, 2)
+	self:UpdateSignView()
+end
+
+function CharacterCreateZodiacSignFrameMixin:OnHide()
+	self:Reset()
+
+	if self.show then
+		self.show = false
+		self:SetPoint("RIGHT", self.startPoint, 0)
+		self:SetAlpha(0)
+		self.parentFrame.CustomizationVignette:SetAlpha(0)
+	end
+end
+
+local PI180 = math.pi / 180
+
+function CharacterCreateZodiacSignFrameMixin:UpdateCircle()
+	local rotation = 90
+	local arcLength = 360
+	local radius = 190
+
+	local theta = (rotation or 0) * PI180
+	local arc = (arcLength or 0) * PI180
+	local dAngle
+
+	local numSigns = C_CharacterCreation.GetNumZodiacSigns()
+
+	if numSigns <= 1 then
+		dAngle = 0
+	else
+		dAngle = arc / -numSigns
+	end
+
+	self.signButtonPool:ReleaseAll()
+
+	for index = 1, numSigns do
+		local sign = self.signButtonPool:Acquire()
+		sign:SetID(index)
+		sign.dAngle = dAngle * (index - 1)
+		sign:SetPoint("CENTER", radius * math.cos(theta), radius * math.sin(theta))
+		sign:Show()
+		theta = theta + dAngle
+	end
+end
+
+local sqrt2 = math.sqrt(2)
+local calculateCorner = function(angle)
+	local r = math.rad(angle)
+	return 0.5 + math.cos(r) / sqrt2, 0.5 + math.sin(r) / sqrt2
+end
+local getRotatedTexCoord = function(angle)
+	local ULx, ULy = calculateCorner(angle + 225)
+	local LLx, LLy = calculateCorner(angle + 135)
+	local URx, URy = calculateCorner(angle - 45)
+	local LRx, LRy = calculateCorner(angle + 45)
+	return ULx, ULy, LLx, LLy, URx, URy, LRx, LRy
+end
+
+local ALLIED_SIGN_COLOR = {0.929, 0.766, 0.512}
+local ALLIED_SIGN_GLOW_COLOR = {0.929, 0.586, 0.812}
+
+function CharacterCreateZodiacSignFrameMixin:UpdateSignView()
+	local selectedSignIndex = C_CharacterCreation.GetSelectedZodiacSign()
+	local numSigns = C_CharacterCreation.GetNumZodiacSigns()
+	if self.signButtonPool:GetNumActive() ~= numSigns then
+		self:UpdateCircle()
+	end
+
+	for sign in self.signButtonPool:EnumerateActive() do
+		local signIndex = sign:GetID()
+		local zodiacRaceID, name, description, icon, atlas, available = C_CharacterCreation.GetZodiacSignInfo(signIndex)
+
+		sign.Artwork:SetAtlas(atlas.."-Medium", true)
+		sign.ArtworkGlow:SetAtlas(atlas.."-Medium-Glow", true)
+
+		if signIndex == selectedSignIndex then
+			self.Sign.CircleSelection:SetTexCoord(getRotatedTexCoord(math.deg(sign.dAngle)))
+		end
+
+		if C_CharacterCreation.IsAlliedRace(zodiacRaceID) then
+			sign.Artwork:SetVertexColor(unpack(ALLIED_SIGN_COLOR, 1, 3))
+			sign.ArtworkGlow:SetVertexColor(unpack(ALLIED_SIGN_GLOW_COLOR, 1, 3))
+		else
+			sign.Artwork:SetVertexColor(1, 1, 1)
+			sign.ArtworkGlow:SetVertexColor(1, 1, 1)
+		end
+
+		sign.Lock:SetShown(not available)
+	end
+
+	local zodiacRaceID, name, description, icon, atlas, available = C_CharacterCreation.GetZodiacSignInfo(selectedSignIndex)
+	local activeSpellList, passiveSpellList = C_ZodiacSign.GetZodiacSignSpells(zodiacRaceID)
+
+	self.SignLock:SetShown(not available)
+	self.Sign.Artwork:SetAtlas(atlas, true)
+	self.Sign.ArtworkGlow:SetAtlas(atlas.."-Glow", true)
+
+	if C_CharacterCreation.IsAlliedRace(zodiacRaceID) then
+		self.Sign.Artwork:SetVertexColor(unpack(ALLIED_SIGN_COLOR, 1, 3))
+		self.Sign.ArtworkGlow:SetVertexColor(unpack(ALLIED_SIGN_GLOW_COLOR, 1, 3))
+	else
+		self.Sign.Artwork:SetVertexColor(1, 1, 1)
+		self.Sign.ArtworkGlow:SetVertexColor(1, 1, 1)
+	end
+
+	self.SelectorFrame.Text:SetText(name)
+	self.Description.Text:SetText(description)
+
+	self.spellButtonPool:ReleaseAll()
+
+	local firstButtonOffsetX = 10 + math.max(self.SpellHolder.ActiveSpells.Label:GetStringWidth(), self.SpellHolder.PassiveSpells.Label:GetStringWidth())
+	self:CreateSpellButtons(self.SpellHolder.ActiveSpells, activeSpellList, firstButtonOffsetX)
+	self:CreateSpellButtons(self.SpellHolder.PassiveSpells, passiveSpellList, firstButtonOffsetX)
+
+	if self.SpellHolder.ActiveSpells:GetWidth() < self.SpellHolder.PassiveSpells:GetWidth() then
+		self.SpellHolder.ActiveSpells:SetWidth(self.SpellHolder.PassiveSpells:GetWidth())
+	end
+end
+
+function CharacterCreateZodiacSignFrameMixin:CreateSpellButtons(parent, spellList, firstButtonOffsetX, offsetX)
+	if not offsetX then
+		offsetX = 10
+	end
+	local buttonSize = 0
+
+	local lastSpell
+	for index, spellInfo in ipairs(spellList) do
+		local spell = self.spellButtonPool:Acquire()
+		spell:SetID(index)
+		spell:SetParent(parent)
+
+		if not lastSpell then
+			spell:SetPoint("LEFT", firstButtonOffsetX or 0, 0)
+		else
+			spell:SetPoint("LEFT", lastSpell, "RIGHT", offsetX, 0)
+		end
+
+		spell.Icon:SetTexture(spellInfo.icon)
+		spell.id = spellInfo.id
+		spell.iconName = spellInfo.iconName
+		spell.name = spellInfo.name
+		spell.description = spellInfo.description
+		spell:Show()
+
+		lastSpell = spell
+		if buttonSize == 0 then
+			buttonSize = spell:GetWidth()
+		end
+	end
+
+	parent:SetSize(firstButtonOffsetX + buttonSize * #spellList + offsetX * (#spellList - 1), buttonSize)
+end
+
+function CharacterCreateZodiacSignFrameMixin:SelectSignIndex(index)
+	C_CharacterCreation.SetSelectedZodiacSign(index)
+end
+
+function CharacterCreateZodiacSignFrameMixin:NextSign()
+	local signIndex = C_CharacterCreation.GetSelectedZodiacSign()
+	if signIndex >= C_CharacterCreation.GetNumZodiacSigns() then
+		self:SelectSignIndex(1)
+	else
+		self:SelectSignIndex(signIndex + 1)
+	end
+
+end
+
+function CharacterCreateZodiacSignFrameMixin:PreviousSign()
+	local signIndex = C_CharacterCreation.GetSelectedZodiacSign()
+	if signIndex <= 1 then
+		self:SelectSignIndex(C_CharacterCreation.GetNumZodiacSigns())
+	else
+		self:SelectSignIndex(signIndex - 1)
+	end
+end
+
+function CharacterCreateZodiacSignFrameMixin:SetPosition(easing, progress)
+	if easing then
+		if self.animVignetteAlpha then
+			self.parentFrame.CustomizationVignette:SetAlpha(self.isRevers and ((1 - progress) * 0.75) or (progress * 0.75))
+		end
+		self.parentFrame.VignetteRight:SetAlpha(self.isRevers and ((1 - progress) * 0.75) or (progress * 0.75))
+		self:SetAlpha(self.isRevers and (1 - progress) or progress)
+		self:SetPoint("RIGHT", easing, 200)
+	else
+		if self.animVignetteAlpha then
+			self.parentFrame.CustomizationVignette:SetAlpha(self.isRevers and 0 or 0.75)
+		end
+		self.parentFrame.VignetteRight:SetAlpha(self.isRevers and 0 or 0.75)
+		self:SetAlpha(self.isRevers and 0 or 1)
+		self:SetPoint("RIGHT", self.isRevers and self.startPoint or self.sourceXOffset, 200)
+	end
+end
+
+function CharacterCreateZodiacSignFrameMixin:PlayToggleAnim(animVignetteAlpha, callback)
+	self.show = not self.show
+
+	if self.show then
+		self:Show()
+		self.sourceXOffset = 0
+		self.endPoint = self.sourceXOffset
+
+		self.animVignetteAlpha = animVignetteAlpha
+		self:PlayAnim(false, callback)
+	else
+		self.animVignetteAlpha = animVignetteAlpha
+		self:PlayAnim(true, function()
+			if type(callback) == "function" then
+				callback()
+			else
+				self:Hide()
+			end
+		end)
+	end
+end
+
+CharacterCreateZodiacSignEffectMixin = {}
+
+function CharacterCreateZodiacSignEffectMixin:OnLoad()
+	self:SetScale(1)
+	self.StarsB:SetAlpha(0.8)
+	self.StarsB:SetVertexColor(0.7, 0.7, 0.1)
+	self.Galaxy:SetAlpha(0.0)
+
+--	self.Shadow:SetAtlas("CovenantSanctum-Reservoir-Shadow", true)
+--	self.Shadow:SetSize(516, 504)
+
+	self.drag = 90
+	self.rDrag = 120
+	self.angle = 25
+
+	self.stars = {}
+
+	local panel = self:GetParent()
+	for i = 1, 20 do
+		local star = self:CreateTexture(("$parentStart%u"):format(i), "ARTWORK", "CharacterCreateZodiacStarsATemplate")
+		star.baseAlpha = 1 - 0.08 * (i - 1)
+		star.angle = math.rad(math.random(150, 170))
+		star.dragE = 0
+		star.drag = self.drag * (i + 1) / 2
+		star.rDragE = 0
+		star.rDrag = self.rDrag
+		star.flashNext = math.random(500, 2500) / 1000
+		star.flashT = 0
+		star.flashTleft = 0
+
+		star:SetAlpha(star.baseAlpha)
+		star:SetPoint("TOPRIGHT", panel, 0, 0)
+		star:SetPoint("BOTTOMRIGHT", panel, 0, 0)
+
+		local starMode = self:CreateTexture(("$parentStartMode%u"):format(i), "ARTWORK", "CharacterCreateZodiacStarsATemplate")
+		starMode:SetBlendMode("ADD")
+		star.starMode = starMode
+
+		self.stars[i] = star
+	end
+end
+
+function CharacterCreateZodiacSignEffectMixin:SetSignTexCoord(star, radians, l, r, t, b)
+	local cX, cY = (l + r) / 2, (t + b) / 2
+	local z = math.sqrt((r - cX) ^ 2 + (b - cY) ^ 2)
+	local zCos, zSin = z * math.cos(radians), z * math.sin(radians)
+	star:SetTexCoord(cX - zSin, cY - zCos, cX - zCos, cY + zSin, cX + zCos, cY - zSin, cX + zSin, cY + zCos)
+	star.starMode:SetTexCoord(star:GetTexCoord())
+end
+
+function CharacterCreateZodiacSignEffectMixin:OnShow()
+	SetParentFrameLevel(self)
+end
+
+function CharacterCreateZodiacSignEffectMixin:OnUpdate(elapsed)
+	for index, star in ipairs(self.stars) do
+		star.dragE = (star.dragE + elapsed) % star.drag
+		local m = star.dragE / star.drag
+		local x = index * 0.35
+		local y = index * 0.25
+		local angle
+		if index > 1 and index % 3 == 0 then
+			star.rDragE = (star.rDragE + elapsed) % star.rDrag
+			if index % 6 == 0 then
+				angle = (star.angle * star.rDragE / star.rDrag) % (math.pi * 2)
+			else
+				angle = -(star.angle * star.rDragE / star.rDrag) % (math.pi * 2)
+			end
+		else
+			angle = star.angle
+		end
+		if star.baseAlpha < 1 then
+			star.flashNext = star.flashNext - elapsed
+			if star.flashNext <= 0 and star.flashTleft <= 0 then
+				star.flashNext = math.random(1500, 5000) / 1000
+				star.flashT = math.random(600, 1000) / 1000
+				star.flashTleft = star.flashT
+			end
+			star.flashTleft = star.flashTleft - elapsed
+			if star.flashTleft > 0 then
+				local flashElapsed = star.flashT - star.flashTleft
+				local halfTime = star.flashT / 2
+				local progress
+				if flashElapsed < halfTime then
+					progress = inOutQuad(flashElapsed, 0, 1, halfTime)
+				else
+					progress = outQuad(flashElapsed - halfTime, 1, -1, halfTime)
+				end
+				if progress <= 1 then
+					star:SetAlpha(star.baseAlpha + ((1 - star.baseAlpha) * progress))
+					star.starMode:SetAlpha(progress)
+				end
+			else
+				star.flashTleft = 0
+				star:SetAlpha(star.baseAlpha)
+				star.starMode:SetAlpha(0)
+			end
+		end
+		self:SetSignTexCoord(star, angle, 0 + x + m, 1 + x + m, 0 + y + m, 1 + y + m)
+	end
+end
+
+CharacterCreateZodiacSignSelectorMixin = {}
+
+function CharacterCreateZodiacSignSelectorMixin:OnLoad()
+	self.parent = self:GetParent()
+
+	self.Background:SetAtlas("charactercreate-customize-dropdownbox")
+	self.Highlight:SetAtlas("charactercreate-customize-dropdownbox-open")
+
+	self.IncrementButton:SetNormalAtlas("charactercreate-customize-nextbutton")
+	self.IncrementButton:SetPushedAtlas("charactercreate-customize-nextbutton-down")
+	self.IncrementButton:SetDisabledAtlas("charactercreate-customize-nextbutton-disabled")
+
+	self.DecrementButton:SetNormalAtlas("charactercreate-customize-backbutton")
+	self.DecrementButton:SetPushedAtlas("charactercreate-customize-backbutton-down")
+	self.DecrementButton:SetDisabledAtlas("charactercreate-customize-backbutton-disabled")
+
+	local xOffset = self.incrementOffsetX or 4
+	self.IncrementButton:SetPoint("LEFT", self, "RIGHT", xOffset, 0)
+	self.IncrementButton:SetScript("OnClick", GenerateClosure(self.OnIncrementClicked, self))
+
+	xOffset = self.decrementOffsetX or -5
+	self.DecrementButton:SetPoint("RIGHT", self, "LEFT", xOffset, 0)
+	self.DecrementButton:SetScript("OnClick", GenerateClosure(self.OnDecrementClicked, self))
+end
+
+function CharacterCreateZodiacSignSelectorMixin:OnIncrementClicked(button)
+	self.parent:NextSign()
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+end
+
+function CharacterCreateZodiacSignSelectorMixin:OnDecrementClicked(button)
+	self.parent:PreviousSign()
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+end
+
+function CharacterCreateZodiacSignSelectorMixin:OnMouseWheel(delta)
+	if delta > 0 then
+		self.parent:PreviousSign()
+	else
+		self.parent:NextSign()
+	end
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+end
+
+function CharacterCreateZodiacSignSelectorMixin:OnEnter()
+	if self.parent.OnEnter then
+		self.parent:OnEnter()
+	end
+end
+
+function CharacterCreateZodiacSignSelectorMixin:OnLeave()
+	if self.parent.OnLeave then
+		self.parent:OnLeave()
+	end
+end
+
+function CharacterCreateZodiacSignSelectorMixin:SetEnabled(enabled)
+	self.DecrementButton:SetEnabled(enabled)
+	self.IncrementButton:SetEnabled(enabled)
+end
+
+CharacterCreateZodiacSignIconButtonMixin = {}
+
+function CharacterCreateZodiacSignIconButtonMixin:OnLoad()
+	self.Lock:SetSize(33, 42)
+	self.Lock:SetAtlas("BonusChest-Lock")
+end
+
+function CharacterCreateZodiacSignIconButtonMixin:OnClick(button)
+	self:GetParent():GetParent():SelectSignIndex(self:GetID())
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+end
+
+function CharacterCreateZodiacSignIconButtonMixin:OnEnter()
+	self.ArtworkGlow:Show()
+
+	local isValid, disabledReason, disableReasonInfo = C_CharacterCreation.IsSignAvailable(self:GetID())
+	if not isValid and disabledReason then
+		GlueTooltip:SetOwner(self)
+		GlueTooltip:SetMaxWidth(325)
+		GlueTooltip:AddLine(disabledReason, 1, 0, 0)
+		if disableReasonInfo then
+			GlueTooltip:AddLine(disableReasonInfo, 1, 0.82, 0)
+		end
+		GlueTooltip:Show()
+	end
+	if IsInterfaceDevClient() then
+		local zodiacRaceID = C_CharacterCreation.GetZodiacSignInfo(self:GetID())
+		if not GlueTooltip:IsShown() or GlueTooltip:GetOwner() ~= self then
+			GlueTooltip:SetOwner(self)
+		end
+		GlueTooltip:AddLine(string.format("RaceID: |cffFFFFFF%u|r", zodiacRaceID), 0.5, 0.5, 0.5)
+		GlueTooltip:AddLine(string.format("RaceID DBC: |cffFFFFFF%u|r", E_CHARACTER_RACES_DBC[E_CHARACTER_RACES[zodiacRaceID]]), 0.5, 0.5, 0.5)
+		GlueTooltip:Show()
+	end
+end
+
+function CharacterCreateZodiacSignIconButtonMixin:OnLeave()
+	self.ArtworkGlow:Hide()
+	GlueTooltip:Hide()
+end
+
+function CharacterCreateZodiacSignIconButtonMixin:OnHide()
+	self.ArtworkGlow:Hide()
+end
+
+CharacterCreateZodiacSignSpellMixin = {}
+
+function CharacterCreateZodiacSignSpellMixin:OnLoad()
+	self.Border:SetAtlas("PKBT-ItemBorder2")
+end
+
+function CharacterCreateZodiacSignSpellMixin:OnEnter()
+	if self.description then
+		GlueTooltip:SetOwner(self, "ANCHOR_TOP")
+		GlueTooltip:SetMaxWidth(330)
+		GlueTooltip:AddLine(self.name, 1, 1, 1)
+		GlueTooltip:AddLine(self.description, 1, 0.82, 0)
+		if IsGMAccount() then
+			GlueTooltip:AddLine(string.format("SpellID: |cffFFFFFF%u|r", self.id), 0.5, 0.5, 0.5)
+			GlueTooltip:AddLine(string.format("Icon: |cffFFFFFF%s|r", self.iconName), 0.5, 0.5, 0.5)
+		end
+		GlueTooltip:Show()
+	end
+end
+
+function CharacterCreateZodiacSignSpellMixin:OnLeave()
+	GlueTooltip:Hide()
 end
 
 CharacterCreateCustomizationButtonFrameTemplateMixin = {}
@@ -1191,6 +1992,7 @@ function CharCustomizeSmallButtonMixin:OnEnter()
 	if self.simpleTooltipLine then
 		GlueTooltip:SetOwner(self, "ANCHOR_RIGHT", self:GetAttribute("tooltipXOffset"), self:GetAttribute("tooltipYOffset"))
 		GlueTooltip:SetText(self.simpleTooltipLine, 1, 1, 1)
+		GlueTooltip:Show()
 	end
 end
 
@@ -1355,8 +2157,6 @@ function CharCustomizeRotateButtonMixin:OnLoad()
 	CharCustomizeClickOrHoldButtonMixin.OnLoad(self)
 end
 
-local ROTATION_STEP = 5
-
 function CharCustomizeRotateButtonMixin:DoClickAction()
 	C_CharacterCreation.SetCharacterCreateFacing(C_CharacterCreation.GetCharacterCreateFacing() + self.clickAmount)
 end
@@ -1365,40 +2165,40 @@ function CharCustomizeRotateButtonMixin:DoHoldAction(elapsed)
 	C_CharacterCreation.SetCharacterCreateFacing(C_CharacterCreation.GetCharacterCreateFacing() + self.holdAmountPerSecond * elapsed);
 end
 
-CharacterCreateNavigationFrameMixin = {}
+CharacterCreateNavigationFrameMixin = CreateFromMixins(GlueEasingAnimMixin)
 
 function CharacterCreateNavigationFrameMixin:OnLoad()
-	self:RegisterHookListener()
-
 	self.sourceYOffset = 0
+	self.startPoint = 0
+	self.endPoint = self.sourceXOffset
+	self.duration = 0.500
 end
 
-function CharacterCreateNavigationFrameMixin:FRAMES_LOADED()
-	self.sourceYOffset = not IsWideScreen() and 58 or 0
+function CharacterCreateNavigationFrameMixin:OnShow()
+	if not IsWideScreen() and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.CHANGE_ZODIAC then
+		self.sourceYOffset = 58
+	else
+		self.sourceYOffset = 0
+	end
 	self.endPoint = self.sourceYOffset
 
 	self:SetPoint("BOTTOMLEFT", 0, self.sourceYOffset)
-	self:SetPoint("BOTTOMRIGHT", 0, 0)
+	self:SetPoint("BOTTOMRIGHT", 0, self.sourceYOffset)
 end
 
-function CharacterCreateNavigationFrameMixin:CreateCharacter()
-	local name = self.CreateNameEditBox:GetText()
-	if name == "" then
-		GlueDialog:ShowDialog("OKAY", CHAR_NAME_NO_NAME)
+function CharacterCreateNavigationFrameMixin:PlayAnim(...)
+	if not IsWideScreen() then
+		GlueEasingAnimMixin.PlayAnim(self, ...)
+	end
+end
+
+function CharacterCreateNavigationFrameMixin:SetPosition(easing, progress)
+	if easing then
+		self:SetPoint("BOTTOMLEFT", 0, easing)
+		self:SetPoint("BOTTOMRIGHT", 0, easing)
 	else
-		local class = select(2, C_CharacterCreation.GetSelectedClass())
-		local _, _, _, hexColor = GetClassColor(class)
-		local skipCustomization = self:GetParent().skipCustomizationConfirmation
-
-		local customization = PAID_SERVICE_TYPE and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW or false
-		local buttonText = customization and ACCEPT or nil
-		local text = customization and CONFIRM_PAID_SERVICE or CONFIRM_CHARACTER_CREATE
-		local confirmation = skipCustomization and "" or CONFIRM_CHARACTER_CREATE_CUSTOMIZATION
-
-		text = string.format(text, hexColor or "ffffff", name or CHARACTER_NO_NAME)
-		text = string.format("%s%s", text, confirmation)
-
-		GlueDialog:ShowDialog(skipCustomization and "CONFIRM_CHARACTER_CREATE" or "CONFIRM_CHARACTER_CREATE_CUSTOMIZATION", text, {name, buttonText})
+		self:SetPoint("BOTTOMLEFT", 0, self.isRevers and self.startPoint or self.sourceYOffset)
+		self:SetPoint("BOTTOMRIGHT", 0, self.isRevers and self.startPoint or self.sourceYOffset)
 	end
 end
 
@@ -1427,7 +2227,7 @@ function CharCreateRaceButtonTemplate_OnEnter(self)
 
 	if self.alliedRace then
 		if self.alliedRaceDisabled or self.alliedRaceGMAllowed then
-			alliedRaceText = _G[string.format("ALLIED_RACE_DISABLE_REASON_%s", raceFileString)]
+			alliedRaceText = string.format("%s - %s", ALLIED_RACE_DISABLE, _G[string.format("ALLIED_RACE_DISABLE_REASON_%s", raceFileString:upper())])
 		else
 			alliedRaceText = _G[string.format("ALLIED_RACE_UNLOCKED_%s", raceFileString)] or string.format(_G["ALLIED_RACE_UNLOCKED"], self.data.name)
 		end
@@ -1439,7 +2239,7 @@ function CharCreateRaceButtonTemplate_OnEnter(self)
 	local tooltipHeight = 10
 
 	tooltip.Header:SetText(self.data.name)
-	tooltip.Description:SetText(_G[string.format("CHARACTER_CREATE_INFO_RACE_%s_DESC", raceFileString)])
+	tooltip.Description:SetText(_G[string.format("CHAR_INFO_RACE_%s_DESC", raceFileString)])
 
 	tooltip.Header:SetWidth(tooltip:GetWidth() - 20)
 	tooltip:SetWidth(math.max(tooltip:GetWidth(), tooltip.Header:GetWidth() + 20))
@@ -1449,48 +2249,53 @@ function CharCreateRaceButtonTemplate_OnEnter(self)
 
 	tooltipHeight = tooltipHeight + tooltip.Description:GetHeight() + tooltip.Header:GetHeight() + 30
 
-	if TOOLTIPS_EXPANDED then
-		local abilities = {}
-		local abilitiesPassive = {}
-
-		for abilityIndex = 1, TOOLTIP_MAX_RACE_ABLILITIES_PASSIVE do
-			local ability = _G[string.format("CHARACTER_CREATE_INFO_RACE_%s_SPELL_PASSIVE%i_DESC_SHORT", raceFileString, abilityIndex)]
-			if ability then
-				local icon, desc = string.match(ability, "([^|]*)|(.+)")
-				abilitiesPassive[#abilitiesPassive + 1] = {
-					icon = string.format("Interface/Icons/%s", icon or "INV_Misc_QuestionMark"),
-					description = desc,
-				}
-			end
-		end
-
-		for abilityIndex = 1, TOOLTIP_MAX_RACE_ABLILITIES_ACTIVE do
-			local ability = _G[string.format("CHARACTER_CREATE_INFO_RACE_%s_SPELL_ACTIVE%i_DESC_SHORT", raceFileString, abilityIndex)]
-			if ability then
-				local icon, desc = string.match(ability, "([^|]*)|(.+)")
-				abilities[#abilities + 1] = {
-					icon = string.format("Interface/Icons/%s", icon or "INV_Misc_QuestionMark"),
-					description = desc,
-				}
-			end
-		end
-
-		tooltip.PassiveList:SetupAbilties(abilitiesPassive)
-		tooltip.PassiveList:Show()
-		tooltip.AbilityList:SetupAbilties(abilities)
-		tooltip.AbilityList:Show()
-
-		tooltip.ClickInfo:SetText(RIGHT_CLICK_FOR_LESS)
-		tooltip.ClickInfo:SetPoint("TOPLEFT", alliedRaceText and tooltip.Warning or tooltip.AbilityList, "BOTTOMLEFT", 0, -15)
-
-		tooltipHeight = tooltipHeight + tooltip.PassiveList:GetHeight() + 15 + tooltip.AbilityList:GetHeight() + tooltip.ClickInfo:GetHeight() + 20
-	else
-		tooltip.PassiveList:Hide()
+	if C_CharacterCreation.IsZodiacSignsEnabled() then
 		tooltip.AbilityList:Hide()
-		tooltip.ClickInfo:SetText(RIGHT_CLICK_FOR_MORE)
-		tooltip.ClickInfo:SetPoint("TOPLEFT", alliedRaceText and tooltip.Warning or tooltip.Description, "BOTTOMLEFT", 0, -15)
+		tooltipHeight = tooltipHeight - 10
+	else
+		if TOOLTIPS_EXPANDED then
+			local abilities = {}
+			local abilitiesPassive = {}
 
-		tooltipHeight = tooltipHeight + tooltip.ClickInfo:GetHeight() + 5
+			for abilityIndex = 1, TOOLTIP_MAX_RACE_ABLILITIES_PASSIVE do
+				local ability = _G[string.format("CHAR_INFO_RACE_%s_SPELL_PASSIVE%i_SHORT", raceFileString, abilityIndex)]
+				if ability then
+					local icon, desc = string.match(ability, "([^|]*)|(.+)")
+					abilitiesPassive[#abilitiesPassive + 1] = {
+						icon = string.format("Interface/Icons/%s", icon or "INV_Misc_QuestionMark"),
+						description = desc,
+					}
+				end
+			end
+
+			for abilityIndex = 1, TOOLTIP_MAX_RACE_ABLILITIES_ACTIVE do
+				local ability = _G[string.format("CHAR_INFO_RACE_%s_SPELL_ACTIVE%i_DESC_SHORT", raceFileString, abilityIndex)]
+				if ability then
+					local icon, desc = string.match(ability, "([^|]*)|(.+)")
+					abilities[#abilities + 1] = {
+						icon = string.format("Interface/Icons/%s", icon or "INV_Misc_QuestionMark"),
+						description = desc,
+					}
+				end
+			end
+
+			tooltip.PassiveList:SetupAbilties(abilitiesPassive)
+			tooltip.PassiveList:Show()
+			tooltip.AbilityList:SetupAbilties(abilities)
+			tooltip.AbilityList:Show()
+
+			tooltip.ClickInfo:SetText(RIGHT_CLICK_FOR_LESS)
+			tooltip.ClickInfo:SetPoint("TOPLEFT", alliedRaceText and tooltip.Warning or tooltip.AbilityList, "BOTTOMLEFT", 0, -15)
+
+			tooltipHeight = tooltipHeight + tooltip.PassiveList:GetHeight() + 15 + tooltip.AbilityList:GetHeight() + tooltip.ClickInfo:GetHeight() + 20
+		else
+			tooltip.PassiveList:Hide()
+			tooltip.AbilityList:Hide()
+			tooltip.ClickInfo:SetText(RIGHT_CLICK_FOR_MORE)
+			tooltip.ClickInfo:SetPoint("TOPLEFT", alliedRaceText and tooltip.Warning or tooltip.Description, "BOTTOMLEFT", 0, -15)
+
+			tooltipHeight = tooltipHeight + tooltip.ClickInfo:GetHeight() + 5
+		end
 	end
 
 	if alliedRaceText then
@@ -1536,8 +2341,8 @@ function CharCreateClassButtonTemplate_OnEnter(self)
 	local tooltipHeight = 10
 
 	tooltip.Header:SetText(self.name)
-	tooltip.Description:SetText(_G[string.format("CHARACTER_CREATE_INFO_CLASS_%s_DESC", classTag)])
-	tooltip.Role:SetText(_G[string.format("CHARACTER_CREATE_INFO_CLASS_%s_ROLE", classTag)])
+	tooltip.Description:SetText(_G[string.format("CHAR_INFO_CLASS_%s_DESC", classTag)])
+	tooltip.Role:SetText(_G[string.format("CHAR_INFO_CLASS_%s_ROLE", classTag)])
 
 	tooltip.Header:SetWidth(tooltip:GetWidth() - 20)
 	tooltip:SetWidth(math.max(tooltip:GetWidth(), tooltip.Header:GetWidth() + 20))
@@ -1554,7 +2359,7 @@ function CharCreateClassButtonTemplate_OnEnter(self)
 		local abilities = {}
 
 		for abilityIndex = 1, TOOLTIP_MAX_CLASS_ABLILITIES do
-			local ability = _G[string.format("CHARACTER_CREATE_INFO_CLASS_%s_SPELL%i_DESC_SHORT", classTag, abilityIndex)]
+			local ability = _G[string.format("CHAR_INFO_CLASS_%s_SPELL%i", classTag, abilityIndex)]
 			if ability then
 				local icon, desc = string.match(ability, "([^|]*)|(.+)")
 				abilities[#abilities + 1] = {

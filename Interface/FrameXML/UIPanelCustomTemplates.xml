@@ -290,6 +290,11 @@
 		<TexCoords left="0.55957031" right="0.83300781" top="0.75878906" bottom="0.89550781"/>
 	</Texture>
 
+	<Texture name="custom-store-corner-new" file="Interface\Store\Custom-Store-Main" virtual="true">
+		<Size x="28" y="28"/>
+		<TexCoords left="0.03125" right="0.640625" top="0.03125" bottom="0.640625"/>
+	</Texture>
+
 	<ScrollFrame name="UIPanelScrollFrameTemplateTrim" virtual="true" inherits="UIPanelScrollFrameCodeTemplate">
 		<Frames>
 			<Slider name="$parentScrollBar" inherits="UIPanelScrollBarTrimTemplate" parentKey="ScrollBar">
@@ -1576,4 +1581,26 @@
 			</OnHide>
 		</Scripts>
 	</Frame>
+
+	<Button name="UIPanelButtonChallengeStateHandlerTemplate" virtual="true">
+		<Frames>
+			<Frame parentKey="Controller">
+				<Scripts>
+					<OnLoad>
+						Mixin(self, UIPanelButtonChallengeStateHandlerMixin)
+						self:OnLoad()
+					</OnLoad>
+					<OnEvent>
+						self:OnEvent(event, ...)
+					</OnEvent>
+					<OnShow>
+						self:OnShow()
+					</OnShow>
+					<OnHide>
+						self:OnHide()
+					</OnHide>
+				</Scripts>
+			</Frame>
+		</Frames>
+	</Button>
 </Ui>

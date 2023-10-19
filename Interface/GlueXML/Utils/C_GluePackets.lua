@@ -15,6 +15,9 @@ C_GluePackets.OpCodes = {
 	AnnounceCharacterDeletedLeave	= "010",
 	RequestCharacterList			= "100",
 	ToggleItemsForCustomize			= "111",
+	SendCharacterCreationInfo		= "0010",
+	SendCharacterCustomizationInfo	= "0011",
+	CharacterHardcoreProposalAnswer	= "0100",
 }
 
 C_GluePackets.queue = {}
@@ -95,7 +98,7 @@ function C_GluePackets:SendPacket(opcode, ...)
 
 	if select("#", ...) ~= 0 then
 		local val = {...}
-		local size = 4
+		local size = 6
 
 		for v = 1, #val do
 			local bits = toBits(val[v])

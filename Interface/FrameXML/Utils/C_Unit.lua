@@ -1,4 +1,5 @@
 local FACTION_OVERRIDE_BY_DEBUFFS = FACTION_OVERRIDE_BY_DEBUFFS
+local ZODIAC_DEBUFFS = ZODIAC_DEBUFFS
 local S_CATEGORY_SPELL_ID = S_CATEGORY_SPELL_ID
 local S_VIP_STATUS_DATA = S_VIP_STATUS_DATA
 
@@ -113,6 +114,18 @@ function C_Unit.GetFactionByDebuff(unit)
 	local _, _, spellID = unitHasAura(unit, FACTION_OVERRIDE_BY_DEBUFFS, "HARMFUL|NOT_CANCELABLE")
 	if spellID then
 		return FACTION_OVERRIDE_BY_DEBUFFS[spellID]
+	end
+end
+
+function C_Unit.GetZodiacByDebuff(unit)
+	if type(unit) ~= "string" then
+		error([[Usage: C_Unit.GetZodiacByDebuff("unit")]], 2)
+	end
+
+	local _, _, spellID = unitHasAura(unit, ZODIAC_DEBUFFS, "HARMFUL|NOT_CANCELABLE")
+	if spellID then
+		local raceID = ZODIAC_DEBUFFS[spellID]
+		return C_ZodiacSign.GetZodiacSignInfo(raceID)
 	end
 end
 

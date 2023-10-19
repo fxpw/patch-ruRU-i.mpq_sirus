@@ -69,10 +69,22 @@ end
 local issecure = issecure
 function Enum.CreateMirror(t)
 	local mirror = {}
+	local inverted
 
 	for k, v in pairs(t) do
 		mirror[k] = v
 		mirror[v] = k
+
+		if type(v) == "number" then
+			if not inverted then
+				inverted = {}
+			end
+			inverted[v] = k
+		end
+	end
+
+	if inverted then
+		t = inverted
 	end
 
 	setmetatable(t, {

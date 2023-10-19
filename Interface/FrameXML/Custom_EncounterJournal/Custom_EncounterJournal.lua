@@ -332,6 +332,18 @@ function EJ_GetDifficultyMask( difficulty )
     return 1
 end
 
+function EJ_GetDifficultyByMask(difficultyMask, instanceID)
+	instanceID = instanceID or EncounterJournal.instanceID
+
+	local isRaid = EJ_IsRaid(instanceID)
+
+	for i = 1, #EJ_DIFFICULTIES do
+		if isRaid == EJ_DIFFICULTIES[i].size ~= "5" and bit.band(EJ_DIFFICULTIES[i].difficultyMask, difficultyMask) == difficultyMask then
+			return EJ_DIFFICULTIES[i].difficultyID
+		end
+	end
+end
+
 function EJ_GetDifficultyInfo( difficultyID, isRaid )
 	for i = 1, #EJ_DIFFICULTIES do
         local _isRaid = (EJ_DIFFICULTIES[i].size ~= "5")
@@ -387,9 +399,10 @@ function EJ_SelectTier( index )
 end
 
 local INSTANCE_REALM_FLAG = {
-	[E_REALM_ID.SCOURGE] = 128,
-	[E_REALM_ID.ALGALON] = 256,
-	[E_REALM_ID.SIRUS] = 512,
+	[E_REALM_ID.SCOURGE] = 0x80,
+	[E_REALM_ID.ALGALON] = 0x100,
+	[E_REALM_ID.SIRUS] = 0x200,
+	[E_REALM_ID.SOULSEEKER] = 0x400,
 };
 
 local function SortInstances(aData, bData)
@@ -399,7 +412,7 @@ end
 function EJ_GetInstanceByIndex( index, isRaid )
 	local tierID = select(3, EJ_GetTierInfo(EJ_GetCurrentTier())) or 1
 
-	local realmFlag = INSTANCE_REALM_FLAG[C_Service:GetRealmID() or 0] or 0;
+	local realmFlag = INSTANCE_REALM_FLAG[C_Service.GetRealmID() or 0] or 0;
 
 	local buffer = {}
 
@@ -693,9 +706,10 @@ function EJ_GetLootInfoByIndex( index )
 end
 
 local ITEM_REALM_FLAG = {
-	[E_REALM_ID.SCOURGE] = 4,
-	[E_REALM_ID.ALGALON] = 8,
-	[E_REALM_ID.SIRUS] = 16,
+	[E_REALM_ID.SCOURGE] = 0x4,
+	[E_REALM_ID.ALGALON] = 0x8,
+	[E_REALM_ID.SIRUS] = 0x10,
+	[E_REALM_ID.SOULSEEKER] = 0x20,
 };
 
 function EJ_BuildLootData()
@@ -705,7 +719,7 @@ function EJ_BuildLootData()
 	local slotFilter = EJ_GetSlotFilter()
 	local classFilter = EJ_GetLootFilter()
 
-	local realmFlag = ITEM_REALM_FLAG[C_Service:GetRealmID() or 0] or 0;
+	local realmFlag = ITEM_REALM_FLAG[C_Service.GetRealmID() or 0] or 0;
 
 	if lastClassFilter ~= classFilter or slotFilter ~= lastSlotFilter or bossData ~= lastBossData or SelectedDifficulty ~= lastDiffficulty then
 		lootBuffer = {}
@@ -1311,19 +1325,14 @@ local function LoadEJData(self)
 	end
 end
 
-function EncounterJournal_InitTab( self )
-	self.tab1:SetFrameLevel(1)
-	self.tab2:SetFrameLevel(1)
-
-	self.maxTabWidth = (self:GetWidth() - 19) / 2
-
-	if C_Service:IsLockRenegadeFeatures() then
-		self.tab2:Hide()
-		PanelTemplates_SetNumTabs(self, 1)
-		return
+function EncounterJournal_InitTab(self)
+	if not C_Service.IsRenegadeRealm() then
+		PanelTemplates_HideTab(self, 2)
+		EncounterJournalTab3:SetPoint("LEFT", EncounterJournalTab1, "RIGHT", -16, 0);
 	end
-
-	PanelTemplates_SetNumTabs(self, 2)
+	if not C_Service.IsHardcoreEnabledOnRealm() then
+		PanelTemplates_HideTab(self, 3)
+	end
 end
 
 function EncounterJournal_OnLoad(self, a)
@@ -1389,6 +1398,17 @@ function EncounterJournal_OnLoad(self, a)
 		instanceSelect.raidsTab.grayBox:Show();
 	end
 
+	self.tab1:SetFrameLevel(1)
+	self.tab2:SetFrameLevel(1)
+	self.tab3:SetFrameLevel(1)
+
+	self.maxTabWidth = (self:GetWidth() - 19) / 3
+
+	PanelTemplates_SetNumTabs(self, 3)
+
+	self:RegisterCustomEvent("SERVICE_DATA_UPDATE")
+	self:RegisterCustomEvent("CUSTOM_CHALLENGE_DEACTIVATED")
+
 	C_FactionManager:RegisterFactionOverrideCallback(function()
 		local factionGroup = UnitFactionGroup("player")
 		if factionGroup == "Renegade" then
@@ -1396,14 +1416,6 @@ function EncounterJournal_OnLoad(self, a)
 		end
 		self.playerFactionGroup = factionGroup == "Alliance" and -2 or -3
 	end, true)
-
-	if C_Service:GetRealmID() then
-		EncounterJournal_InitTab( self )
-	else
-		Hook:RegisterCallback("UIParent", "SERVICE_DATA_RECEIVED", function()
-			EncounterJournal_InitTab( self )
-		end)
-	end
 end
 
 function EncounterJournal_EnableTierDropDown()
@@ -1573,6 +1585,11 @@ function EncounterJournal_SearchForOverview(instanceID)
 end
 
 function EncounterJournal_OnEvent(self, event, ...)
+	if event == "SERVICE_DATA_UPDATE"
+	or (event == "CUSTOM_CHALLENGE_DEACTIVATED" and select(2, ...) == Enum.HardcoreDeathReason.RESTORE)
+	then
+		EncounterJournal_InitTab(self)
+	end
 end
 
 function EncounterJournal_UpdateDifficulty(newDifficultyID)
@@ -2956,7 +2973,7 @@ end
 
 function EncounterJournal_SelectSearch(index)
 	local _;
-	local id, stype, difficultyID, instanceID, encounterID = EJ_GetSearchResult(index);
+	local id, stype, difficultyMask, instanceID, encounterID = EJ_GetSearchResult(index);
 	local sectionID, creatureID, itemID;
 	if stype == EJ_STYPE_INSTANCE then
 		instanceID = id;
@@ -2967,6 +2984,8 @@ function EncounterJournal_SelectSearch(index)
 	elseif stype == EJ_STYPE_CREATURE then
 		creatureID = id;
 	end
+
+	local difficultyID = EJ_GetDifficultyByMask(difficultyMask, instanceID) or 1
 
 	if not EJ_IsValidInstanceDifficulty(difficultyID, instanceID) then
 		difficultyID = EJ_GetValidationDifficulty(1)
@@ -4035,14 +4054,17 @@ local LootJournal_LootBuffer = {}
 function LootJournal_GenerateLootData()
 	LootJournal_LootBuffer = {}
 
-	for i = 1, #EJ_LOOTJOURNAL_DATA do
-		local data = EJ_LOOTJOURNAL_DATA[i]
+	local serverID = GetServerID();
+	local itemSetSourceRealm = EJ_ITEMSET_SOURCE_REALM[serverID];
+
+	for i = 1, #EJ_ITEMSET_DATA do
+		local data = EJ_ITEMSET_DATA[i]
 
 		if data then
 			local name 			= data[1]
 			local itemlevel 	= data[2]
 			local tierName 		= data[3]
-			local source 		= data[4]
+			local sourceID 		= itemSetSourceRealm and itemSetSourceRealm[i] or data[4]
 			local classID 		= data[5]
 			local specID 		= data[6]
 			local isPVP 		= data[7] == 1
@@ -4064,7 +4086,7 @@ function LootJournal_GenerateLootData()
 					end
 				end
 
-				LootJournal_LootBuffer[#LootJournal_LootBuffer + 1] = {name, tierName, itemlevel, source, isPVP, items, numItems}
+				LootJournal_LootBuffer[#LootJournal_LootBuffer + 1] = {name, tierName, itemlevel, EJ_ITEMSET_SOURCE[sourceID] or "", isPVP, items, numItems}
 			end
 		end
 	end

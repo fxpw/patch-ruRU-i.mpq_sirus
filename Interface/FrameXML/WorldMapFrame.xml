@@ -64,298 +64,156 @@
 			</Layer>
 			<Layer level="ARTWORK">
 				<Texture name="$parentMiniBorderLeft" file="Interface\WorldMap\UI-WorldMapSmall-Left.tga" hidden="true">
-					<Size>
-						<AbsDimension x="512" y="512"/>
-					</Size>
+					<Size x="512" y="512"/>
 					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="12" y="-28"/>
-							</Offset>
-						</Anchor>
-					</Anchors>					
+						<Anchor point="TOPLEFT" x="12" y="-28"/>
+					</Anchors>
 				</Texture>
 				<Texture name="$parentMiniBorderRight" file="Interface\WorldMap\UI-WorldMapSmall-Right.tga" hidden="true">
-					<Size>
-						<AbsDimension x="128" y="512"/>
-					</Size>
+					<Size x="128" y="512"/>
 					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentMiniBorderLeft" relativePoint="RIGHT"> 
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
-						</Anchor>
-					</Anchors>					
-				</Texture>				
+						<Anchor point="LEFT" relativeTo="$parentMiniBorderLeft" relativePoint="RIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
 				<Texture name="$parentTexture1">
-					<Size>
-						<AbsDimension x="256" y="256"/>
-					</Size>
+					<Size x="256" y="256"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="CENTER">
-							<Offset>
-								<AbsDimension x="-512" y="384"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" relativePoint="CENTER" x="-512" y="384"/>
 					</Anchors>
 				</Texture>
 				<Texture name="$parentTexture2">
-					<Size>
-						<AbsDimension x="256" y="256"/>
-					</Size>
+					<Size x="256" y="256"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="CENTER">
-							<Offset>
-								<AbsDimension x="-256" y="384"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" relativePoint="CENTER" x="-256" y="384"/>
 					</Anchors>
 				</Texture>
 				<Texture name="$parentTexture3">
-					<Size>
-						<AbsDimension x="256" y="256"/>
-					</Size>
+					<Size x="256" y="256"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="CENTER">
-							<Offset>
-								<AbsDimension x="0" y="384"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" relativePoint="CENTER" x="0" y="384"/>
 					</Anchors>
 				</Texture>
 				<Texture name="$parentTexture4">
-					<Size>
-						<AbsDimension x="256" y="256"/>
-					</Size>
+					<Size x="256" y="256"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="CENTER">
-							<Offset>
-								<AbsDimension x="256" y="384"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" relativePoint="CENTER" x="256" y="384"/>
 					</Anchors>
 				</Texture>
 				<Texture name="$parentTexture5">
-					<Size>
-						<AbsDimension x="256" y="256"/>
-					</Size>
+					<Size x="256" y="256"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="CENTER">
-							<Offset>
-								<AbsDimension x="-512" y="128"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" relativePoint="CENTER" x="-512" y="128"/>
 					</Anchors>
 				</Texture>
 				<Texture name="$parentTexture6">
-					<Size>
-						<AbsDimension x="256" y="256"/>
-					</Size>
+					<Size x="256" y="256"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="CENTER">
-							<Offset>
-								<AbsDimension x="-256" y="128"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" relativePoint="CENTER" x="-256" y="128"/>
 					</Anchors>
 				</Texture>
 				<Texture name="$parentTexture7">
-					<Size>
-						<AbsDimension x="256" y="256"/>
-					</Size>
+					<Size x="256" y="256"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="CENTER">
-							<Offset>
-								<AbsDimension x="0" y="128"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" relativePoint="CENTER" x="0" y="128"/>
 					</Anchors>
 				</Texture>
 				<Texture name="$parentTexture8">
-					<Size>
-						<AbsDimension x="256" y="256"/>
-					</Size>
+					<Size x="256" y="256"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="CENTER">
-							<Offset>
-								<AbsDimension x="256" y="128"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" relativePoint="CENTER" x="256" y="128"/>
 					</Anchors>
 				</Texture>
 				<Texture name="$parentTexture9">
-					<Size>
-						<AbsDimension x="256" y="256"/>
-					</Size>
+					<Size x="256" y="256"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="CENTER">
-							<Offset>
-								<AbsDimension x="-512" y="-128"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" relativePoint="CENTER" x="-512" y="-128"/>
 					</Anchors>
 				</Texture>
 				<Texture name="$parentTexture10">
-					<Size>
-						<AbsDimension x="256" y="256"/>
-					</Size>
+					<Size x="256" y="256"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="CENTER">
-							<Offset>
-								<AbsDimension x="-256" y="-128"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" relativePoint="CENTER" x="-256" y="-128"/>
 					</Anchors>
 				</Texture>
 				<Texture name="$parentTexture11">
-					<Size>
-						<AbsDimension x="256" y="256"/>
-					</Size>
+					<Size x="256" y="256"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="CENTER">
-							<Offset>
-								<AbsDimension x="0" y="-128"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" relativePoint="CENTER" x="0" y="-128"/>
 					</Anchors>
 				</Texture>
 				<Texture name="$parentTexture12">
-					<Size>
-						<AbsDimension x="256" y="256"/>
-					</Size>
+					<Size x="256" y="256"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="CENTER">
-							<Offset>
-								<AbsDimension x="256" y="-128"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" relativePoint="CENTER" x="256" y="-128"/>
 					</Anchors>
 				</Texture>
 				<FontString name="$parentTitle" inherits="GameFontNormal" text="WORLD_MAP">
 					<Anchors>
-						<Anchor point="CENTER">
-							<Offset>
-								<AbsDimension x="0" y="372"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="CENTER" x="0" y="372"/>
 					</Anchors>
 				</FontString>
 			</Layer>
 			<Layer level="OVERLAY">
 				<Texture name="$parentTexture13" hidden="true">
-					<Size>
-						<AbsDimension x="16" y="16"/>
-					</Size>
+					<Size x="16" y="16"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTexture9">
-							<Offset>
-								<AbsDimension x="4" y="-13"/>
-							</Offset>
-						</Anchor>
-					</Anchors>					
+						<Anchor point="TOPLEFT" relativeTo="$parentTexture9" x="4" y="-13"/>
+					</Anchors>
 				</Texture>
 				<Texture name="$parentTexture14" hidden="true">
-					<Size>
-						<AbsDimension x="16" y="16"/>
-					</Size>
+					<Size x="16" y="16"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTexture11">
-							<Offset>
-								<AbsDimension x="188" y="-220"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" relativeTo="$parentTexture11" x="188" y="-220"/>
 					</Anchors>
 				</Texture>
 				<Texture name="$parentTexture15" hidden="true">
-					<Size>
-						<AbsDimension x="32" y="32"/>
-					</Size>
+					<Size x="32" y="32"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTexture12">
-							<Offset>
-								<AbsDimension x="220" y="-201"/>
-							</Offset>
-						</Anchor>
-					</Anchors>						
+						<Anchor point="TOPLEFT" relativeTo="$parentTexture12" x="220" y="-201"/>
+					</Anchors>
 				</Texture>
 				<Texture name="$parentTexture16" hidden="true">
-					<Size>
-						<AbsDimension x="16" y="16"/>
-					</Size>
+					<Size x="16" y="16"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTexture3">
-							<Offset>
-								<AbsDimension x="187" y="-59"/>
-							</Offset>
-						</Anchor>
-					</Anchors>					
+						<Anchor point="TOPLEFT" relativeTo="$parentTexture3" x="187" y="-59"/>
+					</Anchors>
 				</Texture>
 				<Texture name="$parentTexture17" hidden="true">
-					<Size>
-						<AbsDimension x="32" y="32"/>
-					</Size>
+					<Size x="32" y="32"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTexture4">
-							<Offset>
-								<AbsDimension x="220" y="-62"/>
-							</Offset>
-						</Anchor>
-					</Anchors>					
+						<Anchor point="TOPLEFT" relativeTo="$parentTexture4" x="220" y="-62"/>
+					</Anchors>
 				</Texture>
 				<Texture name="$parentTexture18" hidden="true">
-					<Size>
-						<AbsDimension x="690" y="4"/>
-					</Size>
+					<Size x="690" y="4"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTexture9">
-							<Offset>
-								<AbsDimension x="12" y="-223"/>
-							</Offset>
-						</Anchor>
-					</Anchors>					
+						<Anchor point="TOPLEFT" relativeTo="$parentTexture9" x="12" y="-223"/>
+					</Anchors>
 					<Color r="0" g="0" b="0"/>
-				</Texture>				
+				</Texture>
 			</Layer>
 		</Layers>
 		<Frames>
 			<Frame name="WorldMapTitleDropDown" inherits="UIDropDownMenuTemplate" hidden="true">
 				<Anchors>
-					<Anchor point="TOP">
-						<Offset>
-							<AbsDimension x="-80" y="-35"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOP" x="-80" y="-35"/>
 				</Anchors>
 			</Frame>
 			<Frame name="WorldMapPositioningGuide">
-				<Size>
-					<AbsDimension x="1024" y="768" />
-				</Size>			
+				<Size x="1024" y="768"/>
 				<Anchors>
-					<Anchor point="CENTER">
-						<Offset>
-							<AbsDimension x="0" y="0" />
-						</Offset>
-					</Anchor>
-				</Anchors>				
+					<Anchor point="CENTER" x="0" y="0"/>
+				</Anchors>
 			</Frame>
 			<Frame name="WorldMapZoneMinimapDropDown" inherits="UIDropDownMenuTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="WorldMapPositioningGuide" relativePoint="TOPLEFT">
-						<Offset>
-							<AbsDimension x="20" y="-35"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="WorldMapPositioningGuide" relativePoint="TOPLEFT" x="20" y="-35"/>
 				</Anchors>
 				<Layers>
 					<Layer level="OVERLAY">
 						<FontString inherits="GameFontNormalSmall" text="BATTLEFIELD_MINIMAP">
 							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset>
-										<AbsDimension x="20" y="10"/>
-									</Offset>
-								</Anchor>
+								<Anchor point="TOPLEFT" x="20" y="10"/>
 							</Anchors>
 						</FontString>
 					</Layer>
@@ -373,21 +231,13 @@
 			</Frame>
 			<Frame name="WorldMapContinentDropDown" inherits="UIDropDownMenuTemplate" id="1">
 				<Anchors>
-					<Anchor point="TOPRIGHT" relativePoint="TOP" relativeTo="WorldMapPositioningGuide">
-						<Offset>
-							<AbsDimension x="-50" y="-35"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPRIGHT" relativePoint="TOP" relativeTo="WorldMapPositioningGuide" x="-50" y="-35"/>
 				</Anchors>
 				<Layers>
 					<Layer level="OVERLAY">
 						<FontString inherits="GameFontNormalSmall" text="CONTINENT">
 							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset>
-										<AbsDimension x="20" y="10"/>
-									</Offset>
-								</Anchor>
+								<Anchor point="TOPLEFT" x="20" y="10"/>
 							</Anchors>
 						</FontString>
 					</Layer>
@@ -395,36 +245,22 @@
 			</Frame>
 			<Frame name="WorldMapZoneDropDown" inherits="UIDropDownMenuTemplate" id="2">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="WorldMapPositioningGuide" relativePoint="TOP">
-						<Offset>
-							<AbsDimension x="-70" y="-35"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="WorldMapPositioningGuide" relativePoint="TOP" x="-70" y="-35"/>
 				</Anchors>
 				<Layers>
 					<Layer level="OVERLAY">
 						<FontString inherits="GameFontNormalSmall" text="ZONE">
 							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset>
-										<AbsDimension x="20" y="10"/>
-									</Offset>
-								</Anchor>
+								<Anchor point="TOPLEFT" x="20" y="10"/>
 							</Anchors>
 						</FontString>
 					</Layer>
 				</Layers>
 			</Frame>
 			<Button name="WorldMapZoomOutButton" inherits="UIPanelButtonTemplate" text="ZOOM_OUT">
-				<Size>
-					<AbsDimension x="110" y="22"/>
-				</Size>
+				<Size x="110" y="22"/>
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="WorldMapZoneDropDown" relativePoint="RIGHT">
-						<Offset>
-							<AbsDimension x="-10" y="3"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="WorldMapZoneDropDown" relativePoint="RIGHT" x="-10" y="3"/>
 				</Anchors>
 				<Scripts>
 					<OnClick function="WorldMapZoomOutButton_OnClick"/>
@@ -432,36 +268,22 @@
 			</Button>
 			<Frame name="WorldMapLevelDropDown" inherits="UIDropDownMenuTemplate" id="2">
 				<Anchors>
-					<Anchor point="TOPRIGHT" relativeTo="WorldMapPositioningGuide" relativePoint="TOPRIGHT">
-						<Offset>
-							<AbsDimension x="-50" y="-35"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPRIGHT" relativeTo="WorldMapPositioningGuide" relativePoint="TOPRIGHT" x="-50" y="-35"/>
 				</Anchors>
 				<Layers>
 					<Layer level="OVERLAY">
 						<FontString inherits="GameFontNormalSmall" text="FLOOR" parentKey="header">
 							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset>
-										<AbsDimension x="20" y="10"/>
-									</Offset>
-								</Anchor>
+								<Anchor point="TOPLEFT" x="20" y="10"/>
 							</Anchors>
 						</FontString>
 					</Layer>
 				</Layers>
 			</Frame>
 			<Button name="WorldMapLevelUpButton">
-				<Size>
-					<AbsDimension x="16" y="16"/>
-				</Size>
+				<Size x="16" y="16"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="WorldMapLevelDropDown" relativePoint="TOPRIGHT">
-						<Offset>
-							<AbsDimension x="-10" y="8"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="WorldMapLevelDropDown" relativePoint="TOPRIGHT" x="-10" y="8"/>
 				</Anchors>
 				<Scripts>
 					<OnClick function="WorldMapLevelUp_OnClick"/>
@@ -471,15 +293,9 @@
 				<DisabledTexture file="Interface\Buttons\Arrow-Up-Disabled"/>
 			</Button>
 			<Button name="WorldMapLevelDownButton">
-				<Size>
-					<AbsDimension x="16" y="16"/>
-				</Size>
+				<Size x="16" y="16"/>
 				<Anchors>
-					<Anchor point="BOTTOMLEFT" relativeTo="WorldMapLevelDropDown" relativePoint="BOTTOMRIGHT">
-						<Offset>
-							<AbsDimension x="-10" y="2"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="BOTTOMLEFT" relativeTo="WorldMapLevelDropDown" relativePoint="BOTTOMRIGHT" x="-10" y="2"/>
 				</Anchors>
 				<Scripts>
 					<OnClick function="WorldMapLevelDown_OnClick"/>
@@ -489,22 +305,14 @@
 				<DisabledTexture file="Interface\Buttons\Arrow-Down-Disabled"/>
 			</Button>
 			<Button name="WorldMapMagnifyingGlassButton" hidden="true">
-				<Size>
-					<AbsDimension x="179" y="40"/>
-				</Size>
+				<Size x="179" y="40"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="TOP" relativeTo="WorldMapPositioningGuide">
-						<Offset>
-							<AbsDimension x="-468" y="-86"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativePoint="TOP" relativeTo="WorldMapPositioningGuide" x="-468" y="-86"/>
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
 						<Texture file="Interface\WorldMap\WorldMap-MagnifyingGlass">
-							<Size>
-								<AbsDimension x="32" y="32"/>
-							</Size>
+							<Size x="32" y="32"/>
 							<Anchors>
 								<Anchor point="TOPLEFT"/>
 							</Anchors>
@@ -520,35 +328,21 @@
 				</Scripts>
 				<ButtonText text="ZOOM_OUT_BUTTON_TEXT">
 					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="32" y="-5"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" x="32" y="-5"/>
 					</Anchors>
 				</ButtonText>
 				<NormalFont style="GameFontHighlightSmall"/>
 			</Button>
 			<Button name="WorldMapFrameCloseButton" inherits="UIPanelCloseButton">
 				<Anchors>
-					<Anchor point="TOPRIGHT" relativeTo="WorldMapPositioningGuide">
-						<Offset>
-							<AbsDimension x="4" y="4"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPRIGHT" relativeTo="WorldMapPositioningGuide" x="4" y="4"/>
 				</Anchors>
 			</Button>
 			<Button name="WorldMapFrameSizeDownButton">
-				<Size>
-					<AbsDimension x="32" y="32"/>
-				</Size>
+				<Size x="32" y="32"/>
 				<Anchors>
-					<Anchor point="TOPRIGHT" relativeTo="WorldMapPositioningGuide">
-						<Offset>
-							<AbsDimension x="-16" y="4"/>
-						</Offset>
-					</Anchor>
-				</Anchors>				
+					<Anchor point="TOPRIGHT" relativeTo="WorldMapPositioningGuide" x="-16" y="4"/>
+				</Anchors>
 				<Scripts>
 					<OnClick function="WorldMapFrame_ToggleWindowSize" />
 				</Scripts>
@@ -557,16 +351,10 @@
 				<HighlightTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Highlight" alphaMode="ADD"/>
 			</Button>
 			<Button name="WorldMapFrameSizeUpButton" hidden="true">
-				<Size>
-					<AbsDimension x="32" y="32"/>
-				</Size>
+				<Size x="32" y="32"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="WorldMapFrameSizeDownButton">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>				
+					<Anchor point="TOPLEFT" relativeTo="WorldMapFrameSizeDownButton" x="0" y="0"/>
+				</Anchors>
 				<Scripts>
 					<OnClick function="WorldMapFrame_ToggleWindowSize" />
 				</Scripts>
@@ -575,120 +363,88 @@
 				<HighlightTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Highlight" alphaMode="ADD"/>
 			</Button>
 			<Frame name="WorldMapDetailFrame" hidden="false">
-				<Size>
-					<AbsDimension x="1002" y="668"/>
-				</Size>
+				<Size x="1002" y="668"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="TOP" relativeTo="WorldMapPositioningGuide">
-						<Offset>
-							<AbsDimension x="-726" y="-99"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativePoint="TOP" relativeTo="WorldMapPositioningGuide" x="-726" y="-99"/>
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
 							<Texture name="WorldMapDetailTile1">
-							<Size>
-								<AbsDimension x="256" y="256"/>
-							</Size>
+							<Size x="256" y="256"/>
 							<Anchors>
 								<Anchor point="TOPLEFT"/>
 							</Anchors>
 						</Texture>
 						<Texture name="WorldMapDetailTile2">
-							<Size>
-								<AbsDimension x="256" y="256"/>
-							</Size>
+							<Size x="256" y="256"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" relativeTo="WorldMapDetailTile1" relativePoint="TOPRIGHT"/>
 							</Anchors>
 						</Texture>
 						<Texture name="WorldMapDetailTile3">
-							<Size>
-								<AbsDimension x="256" y="256"/>
-							</Size>
+							<Size x="256" y="256"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" relativeTo="WorldMapDetailTile2" relativePoint="TOPRIGHT"/>
 							</Anchors>
 						</Texture>
 						<Texture name="WorldMapDetailTile4">
-							<Size>
-								<AbsDimension x="256" y="256"/>
-							</Size>
+							<Size x="256" y="256"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" relativeTo="WorldMapDetailTile3" relativePoint="TOPRIGHT"/>
 							</Anchors>
-						</Texture>	
+						</Texture>
 						<Texture name="WorldMapDetailTile5">
-							<Size>
-								<AbsDimension x="256" y="256"/>
-							</Size>
+							<Size x="256" y="256"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" relativeTo="WorldMapDetailTile1" relativePoint="BOTTOMLEFT"/>
 							</Anchors>
 						</Texture>
 						<Texture name="WorldMapDetailTile6">
-							<Size>
-								<AbsDimension x="256" y="256"/>
-							</Size>
+							<Size x="256" y="256"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" relativeTo="WorldMapDetailTile5" relativePoint="TOPRIGHT"/>
 							</Anchors>
 						</Texture>
 						<Texture name="WorldMapDetailTile7">
-							<Size>
-								<AbsDimension x="256" y="256"/>
-							</Size>
+							<Size x="256" y="256"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" relativeTo="WorldMapDetailTile6" relativePoint="TOPRIGHT"/>
 							</Anchors>
 						</Texture>
 						<Texture name="WorldMapDetailTile8">
-							<Size>
-								<AbsDimension x="256" y="256"/>
-							</Size>
+							<Size x="256" y="256"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" relativeTo="WorldMapDetailTile7" relativePoint="TOPRIGHT"/>
 							</Anchors>
 						</Texture>
 						<Texture name="WorldMapDetailTile9">
-							<Size>
-								<AbsDimension x="256" y="256"/>
-							</Size>
+							<Size x="256" y="256"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" relativeTo="WorldMapDetailTile5" relativePoint="BOTTOMLEFT"/>
 							</Anchors>
 						</Texture>
 						<Texture name="WorldMapDetailTile10">
-							<Size>
-								<AbsDimension x="256" y="256"/>
-							</Size>
+							<Size x="256" y="256"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" relativeTo="WorldMapDetailTile9" relativePoint="TOPRIGHT"/>
 							</Anchors>
 						</Texture>
 						<Texture name="WorldMapDetailTile11">
-							<Size>
-								<AbsDimension x="256" y="256"/>
-							</Size>
+							<Size x="256" y="256"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" relativeTo="WorldMapDetailTile10" relativePoint="TOPRIGHT"/>
 							</Anchors>
 						</Texture>
 						<Texture name="WorldMapDetailTile12">
-							<Size>
-								<AbsDimension x="256" y="256"/>
-							</Size>
+							<Size x="256" y="256"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" relativeTo="WorldMapDetailTile11" relativePoint="TOPRIGHT"/>
 							</Anchors>
-						</Texture>	
+						</Texture>
 					</Layer>
 					<Layer level="ARTWORK">
 						<Texture name="WorldMapHighlight" alphaMode="ADD" hidden="true">
-							<Size>
-								<AbsDimension x="128" y="128"/>
-							</Size>
+							<Size x="128" y="128"/>
 							<Anchors>
 								<Anchor point="TOPLEFT"/>
 							</Anchors>
@@ -697,20 +453,12 @@
 					<Layer level="OVERLAY">
 						<FontString name="WorldMapZoneInfo" inherits="SubZoneTextFont" justifyH="CENTER" hidden="true">
 							<Anchors>
-								<Anchor point="BOTTOM" relativePoint="BOTTOM">
-									<Offset>
-										<AbsDimension x="0" y="20"/>
-									</Offset>
-								</Anchor>
+								<Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="20"/>
 							</Anchors>
 						</FontString>
 						<FontString name="MapFramerateLabel" hidden="true" inherits="SystemFont_Shadow_Med1" text="FRAMERATE_LABEL">
 							<Anchors>
-								<Anchor point="BOTTOM" relativePoint="BOTTOM">
-									<Offset>
-										<AbsDimension x="0" y="64"/>
-									</Offset>
-								</Anchor>
+								<Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="64"/>
 							</Anchors>
 						</FontString>
 						<FontString name="MapFramerateText" hidden="true" inherits="SystemFont_Shadow_Med1">
@@ -819,16 +567,10 @@
 				</Frames>
 			</Frame>
 			<QuestPOIFrame name="WorldMapBlobFrame">
-				<Size>
-					<AbsDimension x="1002" y="668"/>
-				</Size>
+				<Size x="1002" y="668"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="WorldMapDetailFrame">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>				
+					<Anchor point="TOPLEFT" relativeTo="WorldMapDetailFrame" x="0" y="0"/>
+				</Anchors>
 				<Layers>
 					<Layer level="ARTWORK">
 						<Texture name="WorldMapBlobFrameTexture" setAllPoints="true" />
@@ -840,56 +582,13 @@
 				</Scripts>
 			</QuestPOIFrame>
 			<Button name="WorldMapButton">
-				<Size>
-					<AbsDimension x="1002" y="668"/>
-				</Size>
+				<Size x="1002" y="668"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="WorldMapDetailFrame">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="WorldMapDetailFrame" x="0" y="0"/>
 				</Anchors>
 				<Frames>
-					<!-- <Frame nme="WorldMapSilvershardMinesLine2" alpha="0.7" alphaMode="ADD" movable="true" enableMouse="true" toplevel="true">
-						<Size x="385" y="146"/>
-						<Anchors>
-							<Anchor point="CENTER" x="0" y="0" />
-						</Anchors>
-						<Layers>
-							<Layer level="OVERLAY">
-								<Texture name="$parentTexture1" parentKey="Texture1" file="Interface\WorldMap\STVDiamondMineBG\174671">
-									<Size x="256" y="256"/>
-									<Anchors>
-										<Anchor point="CENTER" x="0" y="0" />
-									</Anchors>
-								</Texture>
-								<Texture name="$parentTexture2" parentKey="Texture2" file="Interface\WorldMap\STVDiamondMineBG\174672">
-									<Size x="256" y="256"/>
-									<Anchors>
-										<Anchor point="LEFT" relativeTo="$parentTexture1" relativePoint="RIGHT" x="0" y="0" />
-									</Anchors>
-								</Texture>
-							</Layer>
-						</Layers>
-						<Scripts>
-							<OnLoad>
-								self:RegisterForDrag("LeftButton")
-							</OnLoad>
-							<OnDragStart>
-								self:StartMoving()
-							</OnDragStart>
-							<OnDragStop>
-								self:StopMovingOrSizing()
-								print(self:GetPoint())
-							</OnDragStop>
-						</Scripts>
-					</Frame> -->
-
 					<Frame name="WorldMapPlayer" id="0">
-						<Size>
-							<AbsDimension x="16" y="16"/>
-						</Size>
+						<Size x="16" y="16"/>
 						<Anchors>
 							<Anchor point="CENTER"/>
 						</Anchors>
@@ -975,9 +674,7 @@
 						</Scripts>
 					</Frame>
 					<Model name="WorldMapPing" file="Interface\MiniMap\Ping\MinimapPing.mdx" scale="0.4" hidden="true">
-						<Size>
-							<AbsDimension x="50" y="50"/>
-						</Size>
+						<Size x="50" y="50"/>
 						<Anchors>
 							<Anchor point="CENTER" relativeTo="WorldMapFrame"/>
 						</Anchors>
@@ -991,45 +688,27 @@
 					<Frame name="WorldMapFrameAreaFrame">
 						<Size x="400" y="128"/>
 						<Anchors>
-							<Anchor point="TOP">
-								<Offset>
-									<AbsDimension x="0" y="-10"/>
-								</Offset>
-							</Anchor>
+							<Anchor point="TOP" x="0" y="-10"/>
 						</Anchors>
 						<Layers>
 							<Layer level="OVERLAY">
 								<FontString name="WorldMapFrameAreaLabel" inherits="WorldMapTextFont" text="BLAH!">
 									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="20" y="-20"/>
-											</Offset>
-										</Anchor>
+										<Anchor point="TOP" x="20" y="-20"/>
 									</Anchors>
 								</FontString>
 								<FontString name="WorldMapFrameAreaDescription" inherits="SubZoneTextFont">
 									<Anchors>
-										<Anchor point="TOP" relativeTo="WorldMapFrameAreaLabel" relativePoint="BOTTOM">
-											<Offset>
-												<AbsDimension x="0" y="0"/>
-											</Offset>
-										</Anchor>
+										<Anchor point="TOP" relativeTo="WorldMapFrameAreaLabel" relativePoint="BOTTOM" x="0" y="0"/>
 									</Anchors>
 								</FontString>
 							</Layer>
 						</Layers>
 					</Frame>
 					<Button name="OutlandButton" hidden="true">
-						<Size>
-							<AbsDimension x="320" y="320"/>
-						</Size>
+						<Size x="320" y="320"/>
 						<Anchors>
-							<Anchor point="TOPLEFT">
-								<Offset>
-									<AbsDimension x="115" y="-90"/>
-								</Offset>
-							</Anchor>
+							<Anchor point="TOPLEFT" x="115" y="-90"/>
 						</Anchors>
 						<Scripts>
 							<OnClick>
@@ -1039,24 +718,14 @@
 						<HighlightTexture name="$parentHighlight" file="Interface\WorldMap\Cosmic\Cosmic-Outland-Highlight">
 							<Size x="856" y="605"/>
 							<Anchors>
-								<Anchor point="CENTER">
-									<Offset>
-										<AbsDimension x="176" y="-87"/>
-									</Offset>
-								</Anchor>
+								<Anchor point="CENTER" x="176" y="-87"/>
 							</Anchors>
 						</HighlightTexture>
 					</Button>
 					<Button name="AzerothButton" hidden="true">
-						<Size>
-							<AbsDimension x="366" y="366"/>
-						</Size>
+						<Size x="366" y="366"/>
 						<Anchors>
-							<Anchor point="TOPLEFT">
-								<Offset>
-									<AbsDimension x="593" y="-255"/>
-								</Offset>
-							</Anchor>
+							<Anchor point="TOPLEFT" x="593" y="-255"/>
 						</Anchors>
 						<Scripts>
 							<OnClick>
@@ -1066,11 +735,7 @@
 						<HighlightTexture name="$parentHighlight" file="Interface\WorldMap\Cosmic\Cosmic-Azeroth-Highlight">
 							<Size x="898" y="647"/>
 							<Anchors>
-								<Anchor point="CENTER">
-									<Offset>
-										<AbsDimension x="-224" y="104"/>
-									</Offset>
-								</Anchor>
+								<Anchor point="CENTER" x="-224" y="104"/>
 							</Anchors>
 						</HighlightTexture>
 					</Button>
@@ -1084,41 +749,25 @@
 				</Scripts>
 			</Button>
 			<Frame name="WorldMapPOIFrame">
-				<Size>
-					<AbsDimension x="1002" y="668"/>
-				</Size>
+				<Size x="1002" y="668"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="WorldMapDetailFrame">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="WorldMapDetailFrame" x="0" y="0"/>
 				</Anchors>
 			</Frame>
 			<ScrollFrame name="WorldMapQuestScrollFrame" inherits="UIPanelScrollFrameTemplate">
-				<Size>
-					<AbsDimension x="283" y="670"/>
-				</Size>
+				<Size x="283" y="670"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="WorldMapDetailFrame" relativePoint="TOPRIGHT">
-						<Offset>
-							<AbsDimension x="6" y="0"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="WorldMapDetailFrame" relativePoint="TOPRIGHT" x="6" y="0"/>
 				</Anchors>
 				<ScrollChild>
 					<Frame name="WorldMapQuestScrollChildFrame">
-						<Size>
-							<AbsDimension x="283" y="50"/>
-						</Size>
+						<Size x="283" y="50"/>
 						<Anchors>
 							<Anchor point="TOPLEFT"/>
 						</Anchors>
 						<Frames>
 							<Frame name="WorldMapQuestSelectedFrame" hidden="false">
-								<Size>
-									<AbsDimension x="301" y="50"/>
-								</Size>
+								<Size x="301" y="50"/>
 								<Layers>
 									<Layer level="ARTWORK">
 										<Texture name="WorldMapQuestSelectBar" file="Interface\QuestFrame\UI-QuestLogTitleHighlight" alphaMode="ADD"/>
@@ -1129,11 +778,9 @@
 										WorldMapQuestSelectBar:SetVertexColor(1, 0.824, 0);
 									</OnLoad>
 								</Scripts>
-							</Frame>							
+							</Frame>
 							<Frame name="WorldMapQuestHighlightedFrame" hidden="false">
-								<Size>
-									<AbsDimension x="301" y="50"/>
-								</Size>									
+								<Size x="301" y="50"/>
 								<Layers>
 									<Layer level="ARTWORK">
 										<Texture name="WorldMapQuestHighlightBar" file="Interface\QuestFrame\UI-QuestLogTitleHighlight" alphaMode="ADD"/>
@@ -1144,44 +791,30 @@
 										WorldMapQuestHighlightBar:SetVertexColor(0.243, 0.570, 1);
 									</OnLoad>
 								</Scripts>
-							</Frame>					
-						</Frames>						
+							</Frame>
+						</Frames>
 					</Frame>
 				</ScrollChild>
 			</ScrollFrame>
 			<ScrollFrame name="WorldMapQuestDetailScrollFrame" inherits="UIPanelScrollFrameTemplate">
-				<Size>
-					<AbsDimension x="300" y="199"/>
-				</Size>
+				<Size x="300" y="199"/>
 				<Anchors>
-					<Anchor point="BOTTOMLEFT" relativeTo="WorldMapDetailFrame" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="20" y="-208"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="BOTTOMLEFT" relativeTo="WorldMapDetailFrame" relativePoint="BOTTOMLEFT" x="20" y="-208"/>
 				</Anchors>
 				<Layers>
 					<Layer level="ARTWORK">
 						<Texture name="WorldMapQuestDetailScrollFrameTrack" hidden="true">
-							<Size>
-								<AbsDimension x="22" y="201"/>
-							</Size>				
+							<Size x="22" y="201"/>
 							<Anchors>
-								<Anchor point="TOPRIGHT">
-									<Offset>
-										<AbsDimension x="25" y="1" />
-									</Offset>
-								</Anchor>
+								<Anchor point="TOPRIGHT" x="25" y="1"/>
 							</Anchors>
 							<Color r="0" g="0" b="0" a="0.4" />
 						</Texture>
 					</Layer>
-				</Layers>		
+				</Layers>
 				<ScrollChild>
 					<Frame name="WorldMapQuestDetailScrollChildFrame">
-						<Size>
-							<AbsDimension x="300" y="199"/>
-						</Size>
+						<Size x="300" y="199"/>
 						<Anchors>
 							<Anchor point="TOPLEFT"/>
 						</Anchors>
@@ -1189,38 +822,24 @@
 				</ScrollChild>
 			</ScrollFrame>
 			<ScrollFrame name="WorldMapQuestRewardScrollFrame" inherits="UIPanelScrollFrameTemplate">
-				<Size>
-					<AbsDimension x="323" y="199"/>
-				</Size>
+				<Size x="323" y="199"/>
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="WorldMapQuestDetailScrollFrame" relativePoint="RIGHT"> 
-						<Offset>
-							<AbsDimension x="30" y="0"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="WorldMapQuestDetailScrollFrame" relativePoint="RIGHT" x="30" y="0"/>
 				</Anchors>
 				<Layers>
 					<Layer level="ARTWORK">
 						<Texture name="WorldMapQuestRewardScrollFrameTrack" hidden="true">
-							<Size>
-								<AbsDimension x="22" y="201"/>
-							</Size>				
+							<Size x="22" y="201"/>
 							<Anchors>
-								<Anchor point="TOPRIGHT">
-									<Offset>
-										<AbsDimension x="23" y="1" />
-									</Offset>
-								</Anchor>
+								<Anchor point="TOPRIGHT" x="23" y="1"/>
 							</Anchors>
 							<Color r="0" g="0" b="0" a="0.4" />
 						</Texture>
 					</Layer>
-				</Layers>				
+				</Layers>
 				<ScrollChild>
 					<Frame name="WorldMapQuestRewardScrollChildFrame">
-						<Size>
-							<AbsDimension x="323" y="199"/>
-						</Size>
+						<Size x="323" y="199"/>
 						<Anchors>
 							<Anchor point="TOPLEFT"/>
 						</Anchors>
@@ -1241,7 +860,7 @@
 						PlaySound("igMainMenuOptionCheckBoxOn");
 						else
 						PlaySound("igMainMenuOptionCheckBoxOff");
-						end					
+						end
 						WorldMapTrackQuest_Toggle(isChecked);
 					</OnClick>
 					<OnEnter>
@@ -1252,7 +871,7 @@
 						WorldMapTooltip:Hide();
 					</OnLeave>
 				</Scripts>
-			</CheckButton>			
+			</CheckButton>
 			<CheckButton name="WorldMapQuestShowObjectives" inherits="OptionsCheckButtonTemplate">
 				<Size x="24" y="24"/>
 				<Scripts>
@@ -1296,7 +915,7 @@
 	</Frame>
 	<GameTooltip name="WorldMapCompareTooltip1" clampedToScreen="true" frameStrata="TOOLTIP" hidden="true" parent="WorldMapFrame" inherits="ShoppingTooltipTemplate"/>
 	<GameTooltip name="WorldMapCompareTooltip2" clampedToScreen="true" frameStrata="TOOLTIP" hidden="true" parent="WorldMapFrame" inherits="ShoppingTooltipTemplate"/>
-	<GameTooltip name="WorldMapCompareTooltip3" clampedToScreen="true" frameStrata="TOOLTIP" hidden="true" parent="WorldMapFrame" inherits="ShoppingTooltipTemplate"/>		
+	<GameTooltip name="WorldMapCompareTooltip3" clampedToScreen="true" frameStrata="TOOLTIP" hidden="true" parent="WorldMapFrame" inherits="ShoppingTooltipTemplate"/>
 	<GameTooltip name="WorldMapTooltip" frameStrata="TOOLTIP" hidden="true" parent="WorldMapFrame" inherits="GameTooltipTemplate">
 		<Scripts>
 			<OnLoad>
@@ -1311,18 +930,12 @@
 		<Size x="1" y="1"/>
 		<Anchors>
 			<Anchor point="TOPLEFT"/>
-		</Anchors>		
+		</Anchors>
 	</Frame>
 	<Button name="WorldMapTitleButton" parent="WorldMapFrame">
-		<Size>
-			<AbsDimension x="544" y="22" />
-		</Size>				
+		<Size x="544" y="22"/>
 		<Anchors>
-			<Anchor point="TOPLEFT" relativeTo="$parentMiniBorderLeft">
-				<Offset>
-					<AbsDimension x="0" y="0" />
-				</Offset>
-			</Anchor>
+			<Anchor point="TOPLEFT" relativeTo="$parentMiniBorderLeft" x="0" y="0"/>
 		</Anchors>
 		<Scripts>
 			<OnLoad function="WorldMapTitleButton_OnLoad" />

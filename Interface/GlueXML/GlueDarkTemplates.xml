@@ -429,6 +429,14 @@
 		<Color r="1" g="1" b="1"/>
 		<FontHeight val="26"/>
 	</Font>
+	<Font name="GlueDark_Font_Shadow_12" font="Fonts/FRIZQT__.TTF" virtual="true">
+		<Color r="1" g="1" b="1"/>
+		<FontHeight val="12"/>
+		<Shadow>
+			<Offset x="1" y="-1"/>
+			<Color r="0" g="0" b="0"/>
+		</Shadow>
+	</Font>
 	<Font name="GlueDark_Font_Shadow_13" font="Fonts/FRIZQT__.TTF" virtual="true">
 		<Color r="1" g="1" b="1"/>
 		<FontHeight val="13"/>
@@ -503,6 +511,20 @@
 	</Font>
 	<Font name="GlueDark_Font_Outline_13" font="Fonts/FRIZQT__.TTF" outline="NORMAL" virtual="true">
 		<FontHeight val="13"/>
+		<Shadow>
+			<Offset x="1" y="-1"/>
+			<Color r="0" g="0" b="0"/>
+		</Shadow>
+	</Font>
+	<Font name="GlueDark_Font_Outline_12" font="Fonts/FRIZQT__.TTF" outline="NORMAL" virtual="true">
+		<FontHeight val="12"/>
+		<Shadow>
+			<Offset x="1" y="-1"/>
+			<Color r="0" g="0" b="0"/>
+		</Shadow>
+	</Font>
+	<Font name="GlueDark_Font_Outline_14" font="Fonts/FRIZQT__.TTF" outline="NORMAL" virtual="true">
+		<FontHeight val="14"/>
 		<Shadow>
 			<Offset x="1" y="-1"/>
 			<Color r="0" g="0" b="0"/>
@@ -722,6 +744,7 @@
 					GlueTooltip:SetOwner(self)
 					GlueTooltip:SetText(self.InfoHeader)
 					GlueTooltip:AddLine(self.InfoText, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, 1, true)
+					GlueTooltip:Show()
 				end
 			</OnEnter>
 			<OnLeave>

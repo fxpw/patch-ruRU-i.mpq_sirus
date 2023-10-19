@@ -9,6 +9,7 @@ function GlueTooltip_OnLoad(self)
 	self.SetOwner = GlueTooltip_SetOwner;
 	self.GetOwner = GlueTooltip_GetOwner;
 	self.IsOwned = GlueTooltip_IsOwned;
+	self.SetMaxWidth = GlueTooltip_SetMaxWidth;
 	self:SetBackdropBorderColor(1.0, 1.0, 1.0);
 	self:SetBackdropColor(0, 0, 0);
 	self.defaultColor = NORMAL_FONT_COLOR;
@@ -35,10 +36,10 @@ function GlueTooltip_SetOwner(self, owner, anchor, xOffset, yOffset )
 	xOffset = xOffset or 0;
 	yOffset = yOffset or 0;
 
+	self:Clear()
 	self:ClearAllPoints();
 	local points = tooltipAnchorPointMapping[anchor];
 	self:SetPoint(points.myPoint, owner, points.ownerPoint, xOffset, yOffset);
-	self:Show();
 end
 
 function GlueTooltip_GetOwner(self)
@@ -76,6 +77,13 @@ function GlueTooltip_Clear(self)
 	end
 	self:SetWidth(1);
 	self:SetHeight(1);
+	self.__maxWidth = nil
+end
+
+function GlueTooltip_SetMaxWidth(self, width)
+	if type(width) == "number" then
+		self.__maxWidth = width
+	end
 end
 
 function GlueTooltip_AddLine(self, text, r, g, b, a, wrap, indentedWordWrap)
@@ -105,10 +113,17 @@ function GlueTooltip_AddLine(self, text, r, g, b, a, wrap, indentedWordWrap)
 	local wrapWidth = 230;
 	if (wrap and freeLine:GetWidth() > wrapWidth) then
 		-- Trim the right edge so that there isn't extra space after wrapping
+		if self.__maxWidth then
+			wrapWidth = math.min(wrapWidth, self.__maxWidth)
+		end
 		freeLine:SetWidth(wrapWidth);
 		self:SetWidth(max(self:GetWidth(), wrapWidth+GLUETOOLTIP_HPADDING));
 	else
-		self:SetWidth(max(self:GetWidth(), freeLine:GetWidth()+GLUETOOLTIP_HPADDING));
+		if self.__maxWidth then
+			self:SetWidth(max(self:GetWidth(), math.min(freeLine:GetWidth(), self.__maxWidth)+GLUETOOLTIP_HPADDING));
+		else
+			self:SetWidth(max(self:GetWidth(), freeLine:GetWidth()+GLUETOOLTIP_HPADDING));
+		end
 	end
 
 	-- Compute height and update width of text lines

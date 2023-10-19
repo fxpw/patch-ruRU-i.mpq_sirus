@@ -449,7 +449,7 @@
 	</Button>
 
 
-	<Frame name="HelpFrame" toplevel="true" parent="UIParent" inherits="TranslucentFrameTemplate" hidden="true" enableMouse="true" >
+	<Frame name="HelpFrame" toplevel="true" parent="UIParent" frameStrata="HIGH" inherits="TranslucentFrameTemplate" hidden="true" enableMouse="true" >
 		<Size x="974" y="524"/>
 		<Anchors>
 			<Anchor point="CENTER" x="0" y="0"/>

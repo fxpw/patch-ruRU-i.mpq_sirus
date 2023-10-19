@@ -3,6 +3,11 @@ Enum.MiniGames.ScoreboardType = {
 	Default = 0,
 	Role = 1,
 }
+Enum.MiniGames.GameType = {
+	FragileFloor = 0,
+	FrozenSnowman = 1,
+	DoorDash = 3,
+}
 
 local MINI_GAMES_INFO = {
 	{
@@ -10,6 +15,7 @@ local MINI_GAMES_INFO = {
 		icon = "Interface\\Icons\\Inv_radientazeritematrix",
 		background = "Interface\\LFGFrame\\UI-LFG-BACKGROUND-QUESTPAPER",
 		mapAreaID = 957,
+		gameType = Enum.MiniGames.GameType.FragileFloor,
 		scoreboardType = Enum.MiniGames.ScoreboardType.Default,
 		defaultSortField = "seconds",
 		stats = {
@@ -24,6 +30,7 @@ local MINI_GAMES_INFO = {
 		icon = "Interface\\Icons\\Achievement_challengemode_scholomance_gold",
 		background = "Interface\\LFGFrame\\UI-LFG-BACKGROUND-QUESTPAPER",
 		mapAreaID = 932,
+		gameType = Enum.MiniGames.GameType.FrozenSnowman,
 		scoreboardType = Enum.MiniGames.ScoreboardType.Role,
 		stats = {
 			{name = "name", text = MINI_GAME_STAT_NAME},
@@ -36,11 +43,27 @@ local MINI_GAMES_INFO = {
 		icon = "Interface\\Icons\\inv_10_jewelcrafting_gem3primal_frost_cut_blue",
 		background = "Interface\\LFGFrame\\UI-LFG-BACKGROUND-QUESTPAPER",
 		mapAreaID = 932,
+		gameType = Enum.MiniGames.GameType.FrozenSnowman,
 		scoreboardType = Enum.MiniGames.ScoreboardType.Role,
 		stats = {
 			{name = "name", text = MINI_GAME_STAT_NAME},
 			{name = "stat1", text = MINI_GAME_STAT_SNOWMAN_ARMOR, type = "SNOWMAN_ARMOR"},
 			{name = "role", text = MINI_GAME_STAT_ROLE, type = "ROLE"},
+		},
+	},
+	[5] = {
+		gameName = "DOOR_DASH",
+		icon = "Interface\\Icons\\Ability_warrior_victoryrush",
+		background = "Interface\\LFGFrame\\UI-LFG-BACKGROUND-QUESTPAPER",
+		mapAreaID = 976,
+		gameType = Enum.MiniGames.GameType.DoorDash,
+		scoreboardType = Enum.MiniGames.ScoreboardType.Default,
+		defaultSortField = "stat1",
+		stats = {
+			{name = "name", text = MINI_GAME_STAT_NAME, icon = "", tooltip = "", width = 200, alignment = "LEFT"},
+			{name = "position", text = MINI_GAME_STAT_POSITION, icon = "", tooltip = "", width = 48, default = true},
+			{name = "stat1", text = MINI_GAME_STAT_DOORDASH_DOORS, icon = "", tooltip = "", width = 92},
+			{name = "stat2", text = MINI_GAME_STAT_DOORDASH_KNOCKDOWNS, icon = "", tooltip = "", width = 92},
 		},
 	},
 };
@@ -407,6 +430,7 @@ function C_MiniGames.GetScore(index)
 				seconds = scoreData.seconds,
 				time = scoreData.seconds and secondsToTime(scoreData.seconds) or nil,
 				stat1 = scoreData.stat1,
+				stat2 = scoreData.stat2,
 				role = scoreData.role,
 			};
 		end
@@ -430,7 +454,7 @@ function C_MiniGames.SortScoreData(sortType)
 
 		table.sort(MINI_GAME_SCORE_DATA, sortByScoreType);
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.UPDATE_MINI_GAME_SCORE);
+		FireCustomClientEvent("UPDATE_MINI_GAME_SCORE");
 	end
 end
 
@@ -528,7 +552,7 @@ function EventHandler:ASMSG_MG_STATUS(msg)
 		MINI_GAMES_QUEUES[index] = nil;
 	end
 
-	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.UPDATE_MINI_GAMES_STATUS, index);
+	FireCustomClientEvent("UPDATE_MINI_GAMES_STATUS", index);
 end
 
 function EventHandler:ASMSG_SEND_MG_INVITE(msg)
@@ -541,7 +565,7 @@ function EventHandler:ASMSG_SEND_MG_INVITE(msg)
 		MINI_GAME_INVITE_ACCEPTED_PLAYERS = nil;
 		MINI_GAME_INVITE_MAX_PLAYERS = nil;
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.MINI_GAME_INVITE, miniGameID, inviteID, remainingTime);
+		FireCustomClientEvent("MINI_GAME_INVITE", miniGameID, inviteID, remainingTime);
 	end
 end
 
@@ -561,7 +585,7 @@ function EventHandler:ASMSG_SEND_MG_INVITE_STATUS(msg)
 		MINI_GAME_INVITE_PLAYER_READY = isPlayerReady;
 	end
 
-	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.MINI_GAME_INVITE_STATUS, isPlayerReady, acceptedPlayers, maxPlayers);
+	FireCustomClientEvent("MINI_GAME_INVITE_STATUS", isPlayerReady, acceptedPlayers, maxPlayers);
 end
 
 function EventHandler:ASMSG_SEND_MG_INVITE_ACCEPT()
@@ -570,7 +594,7 @@ function EventHandler:ASMSG_SEND_MG_INVITE_ACCEPT()
 	MINI_GAME_INVITE_ACCEPTED_PLAYERS = nil;
 	MINI_GAME_INVITE_MAX_PLAYERS = nil;
 
-	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.MINI_GAME_INVITE_ACCEPT);
+	FireCustomClientEvent("MINI_GAME_INVITE_ACCEPT");
 end
 
 function EventHandler:ASMSG_SEND_MG_INVITE_ABADDON()
@@ -579,7 +603,7 @@ function EventHandler:ASMSG_SEND_MG_INVITE_ABADDON()
 	MINI_GAME_INVITE_ACCEPTED_PLAYERS = nil;
 	MINI_GAME_INVITE_MAX_PLAYERS = nil;
 
-	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.MINI_GAME_INVITE_ABADDON);
+	FireCustomClientEvent("MINI_GAME_INVITE_ABADDON");
 end
 
 function EventHandler:ASMSG_MG_LIST_AVAILABLE(msg)
@@ -602,7 +626,7 @@ function EventHandler:ASMSG_MG_LIST_AVAILABLE(msg)
 
 	table.sort(MINI_GAMES_LIST);
 
-	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.UPDATE_AVAILABLE_MINI_GAMES);
+	FireCustomClientEvent("UPDATE_AVAILABLE_MINI_GAMES");
 end
 
 function EventHandler:ASMSG_MG_INFO(msg)
@@ -638,17 +662,17 @@ function EventHandler:ASMSG_MG_INFO(msg)
 			miniGameInfo.money = tonumber(miniGameData[12]);
 			miniGameInfo.maxPlayers = tonumber(miniGameData[13]);
 
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.UPDATE_MINI_GAME, miniGameID);
+			FireCustomClientEvent("UPDATE_MINI_GAME", miniGameID);
 		end
 	end
 end
 
 function EventHandler:ASMSG_MG_LOST()
-	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.MINI_GAME_LOST);
+	FireCustomClientEvent("MINI_GAME_LOST");
 end
 
 function EventHandler:ASMSG_MG_WON()
-	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.MINI_GAME_WON);
+	FireCustomClientEvent("MINI_GAME_WON");
 end
 
 function EventHandler:ASMSG_MG_EVENT_START_TIMER(msg)
@@ -662,7 +686,7 @@ local SORT_LOG_DATA = {};
 local SORT_WINNERS_DICT = {}
 local SORT_DEFAULT_FIELD
 
-local function sortByWinnerTime(a, b)
+local function sortByField(a, b)
 	if #MINI_GAME_WINNERS > 0 then
 		local aNameIsWinner = SORT_WINNERS_DICT[MINI_GAME_SCORE_DATA[a].name];
 		local bNameIsWinner = SORT_WINNERS_DICT[MINI_GAME_SCORE_DATA[b].name];
@@ -735,15 +759,25 @@ local function processLogMessage(logMessage)
 			end
 
 			if game.scoreboardType == Enum.MiniGames.ScoreboardType.Default then
-				local stat1, seconds = string.split(":", statList)
-				seconds = tonumber(seconds) or 0
-				seconds = seconds > 0 and seconds or nil
+				if game.gameType == Enum.MiniGames.GameType.FragileFloor then
+					local stat1, seconds = string.split(":", statList)
+					seconds = tonumber(seconds) or 0
+					seconds = seconds > 0 and seconds or nil
 
-				MINI_GAME_SCORE_DATA[entryIndex] = {
-					name = name,
-					stat1 = tonumber(stat1) or 0,
-					seconds = seconds,
-				};
+					MINI_GAME_SCORE_DATA[entryIndex] = {
+						name = name,
+						stat1 = tonumber(stat1) or 0,
+						seconds = seconds,
+					};
+				elseif game.gameType == Enum.MiniGames.GameType.DoorDash then
+					local stat1, stat2 = string.split(":", statList)
+
+					MINI_GAME_SCORE_DATA[entryIndex] = {
+						name = name,
+						stat1 = tonumber(stat1) or 0,
+						stat2 = tonumber(stat2) or 0,
+					};
+				end
 			else
 				local stat1, role = string.split(":", statList)
 
@@ -781,7 +815,7 @@ local function processLogMessage(logMessage)
 				end
 
 				SORT_DEFAULT_FIELD = MINI_GAMES_INFO[ACTIVE_MINI_GAME_ID].defaultSortField or "name"
-				table.sort(SORT_LOG_DATA, sortByWinnerTime);
+				table.sort(SORT_LOG_DATA, sortByField);
 
 				for entryIndex = 1, #SORT_LOG_DATA do
 					if MINI_GAME_SCORE_DATA[SORT_LOG_DATA[entryIndex]][SORT_DEFAULT_FIELD] then
@@ -798,7 +832,7 @@ local function processLogMessage(logMessage)
 		end
 	end
 
-	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.UPDATE_MINI_GAME_SCORE);
+	FireCustomClientEvent("UPDATE_MINI_GAME_SCORE");
 end
 
 local LOG_MESSAGES = {};

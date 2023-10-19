@@ -11,7 +11,7 @@
 			<Frame name="$parentMixin" parentKey="Mixin" hidden="true">
 				<Scripts>
 					<OnLoad>
-						Mixin(self:GetParent(), AuctionHouseFrameMixin);
+						Mixin(self:GetParent(), PortraitFrameMixin, AuctionHouseFrameMixin);
 					</OnLoad>
 				</Scripts>
 			</Frame>

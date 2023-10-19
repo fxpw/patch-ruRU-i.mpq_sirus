@@ -4,128 +4,9 @@ enum:E_DEFAULT_CLIENT_EVENTS {
 	[240] = "LANGUAGE_LIST_CHANGED"
 }
 
-enum:E_CLIEN_CUSTOM_EVENTS {
-	"AUCTION_CANCELED",
-	"AUCTION_HOUSE_AUCTION_CREATED",
-	"AUCTION_HOUSE_BROWSE_FAILURE",
-	"AUCTION_HOUSE_BROWSE_RESULTS_ADDED",
-	"AUCTION_HOUSE_BROWSE_RESULTS_UPDATED",
-	"AUCTION_HOUSE_FAVORITES_UPDATED",
-	"AUCTION_HOUSE_NEW_BID_RECEIVED",
-	"AUCTION_HOUSE_NEW_RESULTS_RECEIVED",
-	"AUCTION_HOUSE_THROTTLED_MESSAGE_DROPPED",
-	"AUCTION_HOUSE_THROTTLED_MESSAGE_QUEUED",
-	"AUCTION_HOUSE_THROTTLED_MESSAGE_RESPONSE_RECEIVED",
-	"AUCTION_HOUSE_THROTTLED_MESSAGE_SENT",
-	"AUCTION_HOUSE_THROTTLED_SYSTEM_READY",
-	"AUCTION_MULTISELL_FAILURE",
-	"AUCTION_MULTISELL_START",
-	"AUCTION_MULTISELL_UPDATE",
-	"BID_ADDED",
-	"BIDS_UPDATED",
-	"COMMODITY_PRICE_UNAVAILABLE",
-	"COMMODITY_PRICE_UPDATED",
-	"COMMODITY_PURCHASE_FAILED",
-	"COMMODITY_PURCHASE_SUCCEEDED",
-	"COMMODITY_PURCHASED",
-	"COMMODITY_SEARCH_RESULTS_ADDED",
-	"COMMODITY_SEARCH_RESULTS_UPDATED",
-	"EXTRA_BROWSE_INFO_RECEIVED",
-	"ITEM_KEY_ITEM_INFO_RECEIVED",
-	"ITEM_PURCHASED",
-	"ITEM_SEARCH_RESULTS_ADDED",
-	"ITEM_SEARCH_RESULTS_UPDATED",
-	"OWNED_AUCTION_BIDDER_INFO_RECEIVED",
-	"OWNED_AUCTIONS_UPDATED",
-	"REPLICATE_ITEM_LIST_UPDATE",
-
-	"AUCTION_HOUSE_CLOSED",
-	"AUCTION_HOUSE_DISABLED",
-	"AUCTION_HOUSE_SHOW",
-
-	"TRANSMOG_COLLECTION_UPDATED",
-	"TRANSMOG_COLLECTION_ITEM_UPDATE",
-	"TRANSMOG_SOURCE_COLLECTABILITY_UPDATE",
-	"TRANSMOG_SEARCH_UPDATED",
-	"TRANSMOG_OUTFITS_CHANGED",
-	"TRANSMOGRIFY_CLOSE",
-	"TRANSMOGRIFY_OPEN",
-	"TRANSMOGRIFY_SUCCESS",
-	"TRANSMOGRIFY_UPDATE",
-
-	"UPDATE_MINI_GAMES_STATUS",
-	"UPDATE_MINI_GAME",
-	"UPDATE_MINI_GAME_SCORE",
-	"UPDATE_AVAILABLE_MINI_GAMES",
-	"MINI_GAME_LOST",
-	"MINI_GAME_WON",
-	"MINI_GAME_INVITE",
-	"MINI_GAME_INVITE_STATUS",
-	"MINI_GAME_INVITE_ACCEPT",
-	"MINI_GAME_INVITE_ABADDON",
-
-	"KNOWLEDGE_BASE_SETUP_LOAD_SUCCESS",
-	"KNOWLEDGE_BASE_SETUP_LOAD_FAILURE",
-	"KNOWLEDGE_BASE_QUERY_LOAD_SUCCESS",
-	"KNOWLEDGE_BASE_QUERY_LOAD_FAILURE",
-	"KNOWLEDGE_BASE_ARTICLE_LOAD_SUCCESS",
-	"KNOWLEDGE_BASE_ARTICLE_LOAD_FAILURE",
-	"KNOWLEDGE_BASE_SYSTEM_MOTD_UPDATED",
-	"KNOWLEDGE_BASE_SERVER_MESSAGE",
-	"KNOWLEDGE_BASE_SUGGESTIONS_PROGRESS",
-	"KNOWLEDGE_BASE_SUGGESTIONS_AVAILABLE",
-
-	"GLUE_CHARACTER_SELECT_BACKGROUND_UPDATE",
-	"GLUE_CHARACTER_CREATE_BACKGROUND_UPDATE",
-	"GLUE_CHARACTER_CREATE_VISIBILITY_CHANGED",
-	"GLUE_CHARACTER_CREATE_ZOOM_DONE",
-	"GLUE_CHARACTER_CREATE_ZOOM_UPDATE",
-	"GLUE_CHARACTER_CREATE_FORCE_RACE_CHANGE",
-
-	"LF_GUILD_BROWSE_UPDATED",
-	"LF_GUILD_RECRUITS_UPDATED",
-	"LF_GUILD_POST_UPDATED",
-	"LF_GUILD_RECRUIT_LIST_CHANGED",
-	"LF_GUILD_MEMBERSHIP_LIST_CHANGED",
-	"LF_GUILD_MEMBERSHIP_LIST_UPDATED",
-
-	"PET_JOURNAL_LIST_UPDATE",
-
-	"TOYS_UPDATED",
-
-	"INCOMING_RESURRECT_CHANGED",
-	"INCOMING_SUMMON_CHANGED",
-	"START_TIMER",
-
-	"HEIRLOOMS_UPDATED",
-
-	"PLAYER_TRANSMOGRIFICATION_CHANGED",
-}
-
-enum:E_REALM_ID {
-	[5] = "LEGACY_X10",
-	[9] = "SCOURGE",
-	[16] = "FROSTMOURNE",
-	[21] = "NELTHARION",
-	[33] = "ALGALON",
-	[57] = "SIRUS",
-}
-
-SHARED_SIRUS_REALM_NAME = "Sirus x5 - 3.3.5a+"
-SHARED_SCOURGE_REALM_NAME = "Scourge x2 - 3.3.5a+"
-SHARED_FROSTMOURNE_REALM_NAME = "Frostmourne x1 - 3.3.5a+"
-SHARED_NELTHARION_REALM_NAME = "Legacy x3 - 3.3.5a+"
-SHARED_ALGALON_REALM_NAME = "Algalon x4 - 3.3.5a"
-SHARED_LEGACY_X10_REALM_NAME = "Legacy x10 - 3.3.5а+"
-
-SHARED_SCOURGE_PROXY_REALM_NAME = "Proxy Scourge x2 - 3.3.5a+"
-SHARED_ALGALON_PROXY_REALM_NAME = "Proxy Algalon x4 - 3.3.5a"
-
 SIRUS_ROLE_FLAG_DAMAGER = 1
 SIRUS_ROLE_FLAG_HEAL = 2
 SIRUS_ROLE_FLAG_TANK = 4
-
-REALM_ID_SIRUS = 5
 
 MIN_CHARACTER_SEARCH = 3
 
@@ -610,13 +491,6 @@ SHARED_BARTENDER4_MICROMENU_BUTTONS = {
 }
 
 SHARED_MICROMENU_BUTTONS = SHARED_BARTENDER4_MICROMENU_BUTTONS
-
-SHARED_SIRUS_LOGO_COORD = {
-	{0, 0.759765625, 0, 0.205078125}, -- Sirus
-	{0, 0.759765625, 0.2158203125, 0.4208984375}, -- Scourge
-	{0, 0.759765625, 0.431640625, 0.63671875}, -- Frostmourne
-	{0, 0.759765625, 0.6474609375, 0.8525390625} -- Neltharion
-}
 
 GUILD_TABARD_EMBLEM_COLOR = {
 	[0] = CreateColor(0.40392156862745, 0, 0.12941176470588),
@@ -1420,69 +1294,73 @@ E_CHARACTER_RACES_DBC = Enum.CreateMirror({
 })
 
 S_CHARACTER_RACES_INFO = {
-	[E_CHARACTER_RACES.RACE_HUMAN]				= {raceID = E_CHARACTER_RACES.RACE_HUMAN,				clientFileString = "Human",				raceName = "RACE_HUMAN",				raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Alliance},
-	[E_CHARACTER_RACES.RACE_DWARF]				= {raceID = E_CHARACTER_RACES.RACE_DWARF,				clientFileString = "Dwarf",				raceName = "RACE_DWARF",				raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Alliance},
-	[E_CHARACTER_RACES.RACE_NIGHTELF]			= {raceID = E_CHARACTER_RACES.RACE_NIGHTELF,			clientFileString = "NightElf",			raceName = "RACE_NIGHTELF",				raceNameFemale = "RACE_NIGHTELF_FEMALE",				overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Alliance},
-	[E_CHARACTER_RACES.RACE_GNOME]				= {raceID = E_CHARACTER_RACES.RACE_GNOME,				clientFileString = "Gnome",				raceName = "RACE_GNOME",				raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Alliance},
-	[E_CHARACTER_RACES.RACE_DRAENEI]			= {raceID = E_CHARACTER_RACES.RACE_DRAENEI,				clientFileString = "Draenei",			raceName = "RACE_DRAENEI",				raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Alliance},
-	[E_CHARACTER_RACES.RACE_WORGEN]				= {raceID = E_CHARACTER_RACES.RACE_WORGEN,				clientFileString = "Worgen",			raceName = "RACE_WORGEN",				raceNameFemale = "RACE_WORGEN_FEMALE",					overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Alliance},
-	[E_CHARACTER_RACES.RACE_QUELDO]				= {raceID = E_CHARACTER_RACES.RACE_QUELDO,				clientFileString = "Queldo",			raceName = "RACE_QUELDO",				raceNameFemale = "RACE_QUELDO_FEMALE",					overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Alliance},
-	[E_CHARACTER_RACES.RACE_VOIDELF]			= {raceID = E_CHARACTER_RACES.RACE_VOIDELF,				clientFileString = "VoidElf",			raceName = "RACE_VOIDELF",				raceNameFemale = "RACE_VOIDELF_FEMALE",					overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Alliance},
-	[E_CHARACTER_RACES.RACE_DARKIRONDWARF]		= {raceID = E_CHARACTER_RACES.RACE_DARKIRONDWARF,		clientFileString = "DarkIronDwarf",		raceName = "RACE_DARKIRONDWARF",		raceNameFemale = "RACE_DARKIRONDWARF_FEMALE",			overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Alliance},
-	[E_CHARACTER_RACES.RACE_LIGHTFORGED]		= {raceID = E_CHARACTER_RACES.RACE_LIGHTFORGED,			clientFileString = "Lightforged",		raceName = "RACE_LIGHTFORGED",			raceNameFemale = "RACE_LIGHTFORGED_FEMALE",				overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Alliance},
+	[E_CHARACTER_RACES.RACE_HUMAN]				= {raceID = E_CHARACTER_RACES.RACE_HUMAN,				clientFileString = "Human",				raceName = "RACE_HUMAN",				raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Alliance},
+	[E_CHARACTER_RACES.RACE_DWARF]				= {raceID = E_CHARACTER_RACES.RACE_DWARF,				clientFileString = "Dwarf",				raceName = "RACE_DWARF",				raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Alliance},
+	[E_CHARACTER_RACES.RACE_NIGHTELF]			= {raceID = E_CHARACTER_RACES.RACE_NIGHTELF,			clientFileString = "NightElf",			raceName = "RACE_NIGHTELF",				raceNameFemale = "RACE_NIGHTELF_FEMALE",			factionID = PLAYER_FACTION_GROUP.Alliance},
+	[E_CHARACTER_RACES.RACE_GNOME]				= {raceID = E_CHARACTER_RACES.RACE_GNOME,				clientFileString = "Gnome",				raceName = "RACE_GNOME",				raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Alliance},
+	[E_CHARACTER_RACES.RACE_DRAENEI]			= {raceID = E_CHARACTER_RACES.RACE_DRAENEI,				clientFileString = "Draenei",			raceName = "RACE_DRAENEI",				raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Alliance},
+	[E_CHARACTER_RACES.RACE_WORGEN]				= {raceID = E_CHARACTER_RACES.RACE_WORGEN,				clientFileString = "Worgen",			raceName = "RACE_WORGEN",				raceNameFemale = "RACE_WORGEN_FEMALE",				factionID = PLAYER_FACTION_GROUP.Alliance},
+	[E_CHARACTER_RACES.RACE_QUELDO]				= {raceID = E_CHARACTER_RACES.RACE_QUELDO,				clientFileString = "Queldo",			raceName = "RACE_QUELDO",				raceNameFemale = "RACE_QUELDO_FEMALE",				factionID = PLAYER_FACTION_GROUP.Alliance},
+	[E_CHARACTER_RACES.RACE_VOIDELF]			= {raceID = E_CHARACTER_RACES.RACE_VOIDELF,				clientFileString = "VoidElf",			raceName = "RACE_VOIDELF",				raceNameFemale = "RACE_VOIDELF_FEMALE",				factionID = PLAYER_FACTION_GROUP.Alliance},
+	[E_CHARACTER_RACES.RACE_DARKIRONDWARF]		= {raceID = E_CHARACTER_RACES.RACE_DARKIRONDWARF,		clientFileString = "DarkIronDwarf",		raceName = "RACE_DARKIRONDWARF",		raceNameFemale = "RACE_DARKIRONDWARF_FEMALE",		factionID = PLAYER_FACTION_GROUP.Alliance},
+	[E_CHARACTER_RACES.RACE_LIGHTFORGED]		= {raceID = E_CHARACTER_RACES.RACE_LIGHTFORGED,			clientFileString = "Lightforged",		raceName = "RACE_LIGHTFORGED",			raceNameFemale = "RACE_LIGHTFORGED_FEMALE",			factionID = PLAYER_FACTION_GROUP.Alliance},
 
-	[E_CHARACTER_RACES.RACE_ORC]				= {raceID = E_CHARACTER_RACES.RACE_ORC,					clientFileString = "Orc",				raceName = "RACE_ORC",					raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Horde},
-	[E_CHARACTER_RACES.RACE_SCOURGE]			= {raceID = E_CHARACTER_RACES.RACE_SCOURGE,				clientFileString = "Scourge",			raceName = "RACE_SCOURGE",				raceNameFemale = "RACE_SCOURGE_FEMALE",					overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Horde},
-	[E_CHARACTER_RACES.RACE_TAUREN]				= {raceID = E_CHARACTER_RACES.RACE_TAUREN,				clientFileString = "Tauren",			raceName = "RACE_TAUREN",				raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Horde},
-	[E_CHARACTER_RACES.RACE_TROLL]				= {raceID = E_CHARACTER_RACES.RACE_TROLL,				clientFileString = "Troll",				raceName = "RACE_TROLL",				raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Horde},
-	[E_CHARACTER_RACES.RACE_GOBLIN]				= {raceID = E_CHARACTER_RACES.RACE_GOBLIN,				clientFileString = "Goblin",			raceName = "RACE_GOBLIN",				raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Horde},
-	[E_CHARACTER_RACES.RACE_NAGA]				= {raceID = E_CHARACTER_RACES.RACE_NAGA,				clientFileString = "Naga",				raceName = "RACE_NAGA",					raceNameFemale = "RACE_NAGA_FEMALE",					overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Horde},
-	[E_CHARACTER_RACES.RACE_BLOODELF]			= {raceID = E_CHARACTER_RACES.RACE_BLOODELF,			clientFileString = "BloodElf",			raceName = "RACE_BLOODELF",				raceNameFemale = "RACE_BLOODELF_FEMALE",				overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Horde},
-	[E_CHARACTER_RACES.RACE_NIGHTBORNE]			= {raceID = E_CHARACTER_RACES.RACE_NIGHTBORNE,			clientFileString = "Nightborne",		raceName = "RACE_NIGHTBORNE",			raceNameFemale = "RACE_NIGHTBORNE_FEMALE",				overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Horde},
-	[E_CHARACTER_RACES.RACE_EREDAR]				= {raceID = E_CHARACTER_RACES.RACE_EREDAR,				clientFileString = "Eredar",			raceName = "RACE_EREDAR",				raceNameFemale = "RACE_EREDAR_FEMALE",					overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Horde},
-	[E_CHARACTER_RACES.RACE_ZANDALARITROLL]		= {raceID = E_CHARACTER_RACES.RACE_ZANDALARITROLL,		clientFileString = "ZandalariTroll",	raceName = "RACE_ZANDALARITROLL",		raceNameFemale = "RACE_ZANDALARITROLL_FEMALE",			overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Horde},
+	[E_CHARACTER_RACES.RACE_ORC]				= {raceID = E_CHARACTER_RACES.RACE_ORC,					clientFileString = "Orc",				raceName = "RACE_ORC",					raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Horde},
+	[E_CHARACTER_RACES.RACE_SCOURGE]			= {raceID = E_CHARACTER_RACES.RACE_SCOURGE,				clientFileString = "Scourge",			raceName = "RACE_SCOURGE",				raceNameFemale = "RACE_SCOURGE_FEMALE",				factionID = PLAYER_FACTION_GROUP.Horde},
+	[E_CHARACTER_RACES.RACE_TAUREN]				= {raceID = E_CHARACTER_RACES.RACE_TAUREN,				clientFileString = "Tauren",			raceName = "RACE_TAUREN",				raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Horde},
+	[E_CHARACTER_RACES.RACE_TROLL]				= {raceID = E_CHARACTER_RACES.RACE_TROLL,				clientFileString = "Troll",				raceName = "RACE_TROLL",				raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Horde},
+	[E_CHARACTER_RACES.RACE_GOBLIN]				= {raceID = E_CHARACTER_RACES.RACE_GOBLIN,				clientFileString = "Goblin",			raceName = "RACE_GOBLIN",				raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Horde},
+	[E_CHARACTER_RACES.RACE_NAGA]				= {raceID = E_CHARACTER_RACES.RACE_NAGA,				clientFileString = "Naga",				raceName = "RACE_NAGA",					raceNameFemale = "RACE_NAGA_FEMALE",				factionID = PLAYER_FACTION_GROUP.Horde},
+	[E_CHARACTER_RACES.RACE_BLOODELF]			= {raceID = E_CHARACTER_RACES.RACE_BLOODELF,			clientFileString = "BloodElf",			raceName = "RACE_BLOODELF",				raceNameFemale = "RACE_BLOODELF_FEMALE",			factionID = PLAYER_FACTION_GROUP.Horde},
+	[E_CHARACTER_RACES.RACE_NIGHTBORNE]			= {raceID = E_CHARACTER_RACES.RACE_NIGHTBORNE,			clientFileString = "Nightborne",		raceName = "RACE_NIGHTBORNE",			raceNameFemale = "RACE_NIGHTBORNE_FEMALE",			factionID = PLAYER_FACTION_GROUP.Horde},
+	[E_CHARACTER_RACES.RACE_EREDAR]				= {raceID = E_CHARACTER_RACES.RACE_EREDAR,				clientFileString = "Eredar",			raceName = "RACE_EREDAR",				raceNameFemale = "RACE_EREDAR_FEMALE",				factionID = PLAYER_FACTION_GROUP.Horde},
+	[E_CHARACTER_RACES.RACE_ZANDALARITROLL]		= {raceID = E_CHARACTER_RACES.RACE_ZANDALARITROLL,		clientFileString = "ZandalariTroll",	raceName = "RACE_ZANDALARITROLL",		raceNameFemale = "RACE_ZANDALARITROLL_FEMALE",		factionID = PLAYER_FACTION_GROUP.Horde},
 
-	[E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE]	= {raceID = E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE,	clientFileString = "Pandaren",			raceName = "RACE_PANDAREN_ALLIANCE",	raceNameFemale = "RACE_PANDAREN_ALLIANCE_FEMALE",		overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Alliance},
-	[E_CHARACTER_RACES.RACE_PANDAREN_HORDE]		= {raceID = E_CHARACTER_RACES.RACE_PANDAREN_HORDE,		clientFileString = "Pandaren",			raceName = "RACE_PANDAREN_HORDE",		raceNameFemale = "RACE_PANDAREN_HORDE_FEMALE",			overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Horde},
-	[E_CHARACTER_RACES.RACE_PANDAREN_NEUTRAL]	= {raceID = E_CHARACTER_RACES.RACE_PANDAREN_NEUTRAL,	clientFileString = "Pandaren",			raceName = "RACE_PANDAREN_NEUTRAL",		raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Neutral},
+	[E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE]	= {raceID = E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE,	clientFileString = "Pandaren",			raceName = "RACE_PANDAREN_ALLIANCE",	raceNameFemale = "RACE_PANDAREN_ALLIANCE_FEMALE",	factionID = PLAYER_FACTION_GROUP.Alliance},
+	[E_CHARACTER_RACES.RACE_PANDAREN_HORDE]		= {raceID = E_CHARACTER_RACES.RACE_PANDAREN_HORDE,		clientFileString = "Pandaren",			raceName = "RACE_PANDAREN_HORDE",		raceNameFemale = "RACE_PANDAREN_HORDE_FEMALE",		factionID = PLAYER_FACTION_GROUP.Horde},
+	[E_CHARACTER_RACES.RACE_PANDAREN_NEUTRAL]	= {raceID = E_CHARACTER_RACES.RACE_PANDAREN_NEUTRAL,	clientFileString = "Pandaren",			raceName = "RACE_PANDAREN_NEUTRAL",		raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Neutral},
 
-	[E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE]	= {raceID = E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE,	clientFileString = "Vulpera",			raceName = "RACE_VULPERA_ALLIANCE",		raceNameFemale = "RACE_VULPERA_ALLIANCE_FEMALE",		overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Alliance},
-	[E_CHARACTER_RACES.RACE_VULPERA_HORDE]		= {raceID = E_CHARACTER_RACES.RACE_VULPERA_HORDE,		clientFileString = "Vulpera",			raceName = "RACE_VULPERA_HORDE",		raceNameFemale = "RACE_VULPERA_HORDE_FEMALE",			overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Horde},
-	[E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL]	= {raceID = E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL,		clientFileString = "Vulpera",			raceName = "RACE_VULPERA_NEUTRAL",		raceNameFemale = "RACE_VULPERA_NEUTRAL_FEMALE",			overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Neutral},
+	[E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE]	= {raceID = E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE,	clientFileString = "Vulpera",			raceName = "RACE_VULPERA_ALLIANCE",		raceNameFemale = "RACE_VULPERA_ALLIANCE_FEMALE",	factionID = PLAYER_FACTION_GROUP.Alliance},
+	[E_CHARACTER_RACES.RACE_VULPERA_HORDE]		= {raceID = E_CHARACTER_RACES.RACE_VULPERA_HORDE,		clientFileString = "Vulpera",			raceName = "RACE_VULPERA_HORDE",		raceNameFemale = "RACE_VULPERA_HORDE_FEMALE",		factionID = PLAYER_FACTION_GROUP.Horde},
+	[E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL]	= {raceID = E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL,		clientFileString = "Vulpera",			raceName = "RACE_VULPERA_NEUTRAL",		raceNameFemale = "RACE_VULPERA_NEUTRAL_FEMALE",		factionID = PLAYER_FACTION_GROUP.Neutral},
 
-	[E_CHARACTER_RACES.RACE_DRACTHYR]			= {raceID = E_CHARACTER_RACES.RACE_DRACTHYR,			clientFileString = "Dracthyr",			raceName = "RACE_DRACTHYR",				raceNameFemale = "RACE_DRACTHYR_FEMALE",				overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Neutral},
+	[E_CHARACTER_RACES.RACE_DRACTHYR]			= {raceID = E_CHARACTER_RACES.RACE_DRACTHYR,			clientFileString = "Dracthyr",			raceName = "RACE_DRACTHYR",				raceNameFemale = "RACE_DRACTHYR_FEMALE",			factionID = PLAYER_FACTION_GROUP.Neutral},
 
-	[E_CHARACTER_RACES.RACE_HUMAN_CREATURE]		= {raceID = E_CHARACTER_RACES.RACE_HUMAN_CREATURE,		clientFileString = "Human",				raceName = "RACE_HUMAN_CREATURE",		raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Alliance},
-	[E_CHARACTER_RACES.RACE_DWARF_CREATURE]		= {raceID = E_CHARACTER_RACES.RACE_DWARF_CREATURE,		clientFileString = "Dwarf",				raceName = "RACE_DWARF_CREATURE",		raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Alliance},
-	[E_CHARACTER_RACES.RACE_NIGHTELF_CREATURE]	= {raceID = E_CHARACTER_RACES.RACE_NIGHTELF_CREATURE,	clientFileString = "NightElf",			raceName = "RACE_NIGHTELF_CREATURE",	raceNameFemale = "RACE_NIGHTELF_CREATURE_FEMALE",		overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Alliance},
-	[E_CHARACTER_RACES.RACE_GNOME_CREATURE]		= {raceID = E_CHARACTER_RACES.RACE_GNOME_CREATURE,		clientFileString = "Gnome",				raceName = "RACE_GNOME_CREATURE",		raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Alliance},
-	[E_CHARACTER_RACES.RACE_DRAENEI_CREATURE]	= {raceID = E_CHARACTER_RACES.RACE_DRAENEI_CREATURE,	clientFileString = "Draenei",			raceName = "RACE_DRAENEI_CREATURE",		raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Alliance},
+	[E_CHARACTER_RACES.RACE_HUMAN_CREATURE]		= {raceID = E_CHARACTER_RACES.RACE_HUMAN_CREATURE,		clientFileString = "Human",				raceName = "RACE_HUMAN_CREATURE",		raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Alliance},
+	[E_CHARACTER_RACES.RACE_DWARF_CREATURE]		= {raceID = E_CHARACTER_RACES.RACE_DWARF_CREATURE,		clientFileString = "Dwarf",				raceName = "RACE_DWARF_CREATURE",		raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Alliance},
+	[E_CHARACTER_RACES.RACE_NIGHTELF_CREATURE]	= {raceID = E_CHARACTER_RACES.RACE_NIGHTELF_CREATURE,	clientFileString = "NightElf",			raceName = "RACE_NIGHTELF_CREATURE",	raceNameFemale = "RACE_NIGHTELF_CREATURE_FEMALE",	factionID = PLAYER_FACTION_GROUP.Alliance},
+	[E_CHARACTER_RACES.RACE_GNOME_CREATURE]		= {raceID = E_CHARACTER_RACES.RACE_GNOME_CREATURE,		clientFileString = "Gnome",				raceName = "RACE_GNOME_CREATURE",		raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Alliance},
+	[E_CHARACTER_RACES.RACE_DRAENEI_CREATURE]	= {raceID = E_CHARACTER_RACES.RACE_DRAENEI_CREATURE,	clientFileString = "Draenei",			raceName = "RACE_DRAENEI_CREATURE",		raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Alliance},
 
-	[E_CHARACTER_RACES.RACE_ORC_CREATURE]		= {raceID = E_CHARACTER_RACES.RACE_ORC_CREATURE,		clientFileString = "Orc",				raceName = "RACE_ORC_CREATURE",			raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Horde},
-	[E_CHARACTER_RACES.RACE_SCOURGE_CREATURE]	= {raceID = E_CHARACTER_RACES.RACE_SCOURGE_CREATURE,	clientFileString = "Scourge",			raceName = "RACE_SCOURGE_CREATURE",		raceNameFemale = "RACE_SCOURGE_CREATURE_FEMALE",		overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Horde},
-	[E_CHARACTER_RACES.RACE_TAUREN_CREATURE]	= {raceID = E_CHARACTER_RACES.RACE_TAUREN_CREATURE,		clientFileString = "Tauren",			raceName = "RACE_TAUREN_CREATURE",		raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Horde},
-	[E_CHARACTER_RACES.RACE_TROLL_CREATURE]		= {raceID = E_CHARACTER_RACES.RACE_TROLL_CREATURE,		clientFileString = "Troll",				raceName = "RACE_TROLL_CREATURE",		raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Horde},
-	[E_CHARACTER_RACES.RACE_BLOODELF_CREATURE]	= {raceID = E_CHARACTER_RACES.RACE_BLOODELF_CREATURE,	clientFileString = "BloodElf",			raceName = "RACE_BLOODELF_CREATURE",	raceNameFemale = "RACE_BLOODELF_CREATURE_FEMALE",		overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Horde},
+	[E_CHARACTER_RACES.RACE_ORC_CREATURE]		= {raceID = E_CHARACTER_RACES.RACE_ORC_CREATURE,		clientFileString = "Orc",				raceName = "RACE_ORC_CREATURE",			raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Horde},
+	[E_CHARACTER_RACES.RACE_SCOURGE_CREATURE]	= {raceID = E_CHARACTER_RACES.RACE_SCOURGE_CREATURE,	clientFileString = "Scourge",			raceName = "RACE_SCOURGE_CREATURE",		raceNameFemale = "RACE_SCOURGE_CREATURE_FEMALE",	factionID = PLAYER_FACTION_GROUP.Horde},
+	[E_CHARACTER_RACES.RACE_TAUREN_CREATURE]	= {raceID = E_CHARACTER_RACES.RACE_TAUREN_CREATURE,		clientFileString = "Tauren",			raceName = "RACE_TAUREN_CREATURE",		raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Horde},
+	[E_CHARACTER_RACES.RACE_TROLL_CREATURE]		= {raceID = E_CHARACTER_RACES.RACE_TROLL_CREATURE,		clientFileString = "Troll",				raceName = "RACE_TROLL_CREATURE",		raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Horde},
+	[E_CHARACTER_RACES.RACE_BLOODELF_CREATURE]	= {raceID = E_CHARACTER_RACES.RACE_BLOODELF_CREATURE,	clientFileString = "BloodElf",			raceName = "RACE_BLOODELF_CREATURE",	raceNameFemale = "RACE_BLOODELF_CREATURE_FEMALE",	factionID = PLAYER_FACTION_GROUP.Horde},
 
-	[E_CHARACTER_RACES.RACE_FELORC]				= {raceID = E_CHARACTER_RACES.RACE_FELORC,				clientFileString = "FelOrc",			raceName = "RACE_FELORC",				raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Neutral},
-	[E_CHARACTER_RACES.RACE_NAGA_]				= {raceID = E_CHARACTER_RACES.RACE_NAGA_,				clientFileString = "Naga_",				raceName = "RACE_NAGA_",				raceNameFemale = "RACE_NAGA_FEMALE_",					overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Neutral},
-	[E_CHARACTER_RACES.RACE_BROKEN]				= {raceID = E_CHARACTER_RACES.RACE_BROKEN,				clientFileString = "Broken",			raceName = "RACE_BROKEN",				raceNameFemale = "RACE_BROKEN_FEMALE",					overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Neutral},
-	[E_CHARACTER_RACES.RACE_SKELETON]			= {raceID = E_CHARACTER_RACES.RACE_SKELETON,			clientFileString = "Skeleton",			raceName = "RACE_SKELETON",				raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Neutral},
-	[E_CHARACTER_RACES.RACE_VRYKUL]				= {raceID = E_CHARACTER_RACES.RACE_VRYKUL,				clientFileString = "Vrykul",			raceName = "RACE_VRYKUL",				raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Neutral},
-	[E_CHARACTER_RACES.RACE_TUSKARR]			= {raceID = E_CHARACTER_RACES.RACE_TUSKARR,				clientFileString = "Tuskarr",			raceName = "RACE_TUSKARR",				raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Neutral},
-	[E_CHARACTER_RACES.RACE_FORESTTROLL]		= {raceID = E_CHARACTER_RACES.RACE_FORESTTROLL,			clientFileString = "ForestTroll",		raceName = "RACE_FORESTTROLL",			raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Neutral},
-	[E_CHARACTER_RACES.RACE_TAUNKA]				= {raceID = E_CHARACTER_RACES.RACE_TAUNKA,				clientFileString = "Taunka",			raceName = "RACE_TAUNKA",				raceNameFemale = "RACE_TAUNKA_FEMALE",					overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Neutral},
-	[E_CHARACTER_RACES.RACE_NORTHRENDSKELETON]	= {raceID = E_CHARACTER_RACES.RACE_NORTHRENDSKELETON,	clientFileString = "NorthrendSkeleton", raceName = "RACE_NORTHRENDSKELETON",	raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Neutral},
-	[E_CHARACTER_RACES.RACE_ICETROLL]			= {raceID = E_CHARACTER_RACES.RACE_ICETROLL,			clientFileString = "IceTroll",			raceName = "RACE_ICETROLL",				raceNameFemale = nil,									overrideRaceName = nil, overrideRaceNameFemale = nil, factionID = PLAYER_FACTION_GROUP.Neutral},
+	[E_CHARACTER_RACES.RACE_FELORC]				= {raceID = E_CHARACTER_RACES.RACE_FELORC,				clientFileString = "FelOrc",			raceName = "RACE_FELORC",				raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Neutral},
+	[E_CHARACTER_RACES.RACE_NAGA_]				= {raceID = E_CHARACTER_RACES.RACE_NAGA_,				clientFileString = "Naga_",				raceName = "RACE_NAGA_",				raceNameFemale = "RACE_NAGA_FEMALE_",				factionID = PLAYER_FACTION_GROUP.Neutral},
+	[E_CHARACTER_RACES.RACE_BROKEN]				= {raceID = E_CHARACTER_RACES.RACE_BROKEN,				clientFileString = "Broken",			raceName = "RACE_BROKEN",				raceNameFemale = "RACE_BROKEN_FEMALE",				factionID = PLAYER_FACTION_GROUP.Neutral},
+	[E_CHARACTER_RACES.RACE_SKELETON]			= {raceID = E_CHARACTER_RACES.RACE_SKELETON,			clientFileString = "Skeleton",			raceName = "RACE_SKELETON",				raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Neutral},
+	[E_CHARACTER_RACES.RACE_VRYKUL]				= {raceID = E_CHARACTER_RACES.RACE_VRYKUL,				clientFileString = "Vrykul",			raceName = "RACE_VRYKUL",				raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Neutral},
+	[E_CHARACTER_RACES.RACE_TUSKARR]			= {raceID = E_CHARACTER_RACES.RACE_TUSKARR,				clientFileString = "Tuskarr",			raceName = "RACE_TUSKARR",				raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Neutral},
+	[E_CHARACTER_RACES.RACE_FORESTTROLL]		= {raceID = E_CHARACTER_RACES.RACE_FORESTTROLL,			clientFileString = "ForestTroll",		raceName = "RACE_FORESTTROLL",			raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Neutral},
+	[E_CHARACTER_RACES.RACE_TAUNKA]				= {raceID = E_CHARACTER_RACES.RACE_TAUNKA,				clientFileString = "Taunka",			raceName = "RACE_TAUNKA",				raceNameFemale = "RACE_TAUNKA_FEMALE",				factionID = PLAYER_FACTION_GROUP.Neutral},
+	[E_CHARACTER_RACES.RACE_NORTHRENDSKELETON]	= {raceID = E_CHARACTER_RACES.RACE_NORTHRENDSKELETON,	clientFileString = "NorthrendSkeleton", raceName = "RACE_NORTHRENDSKELETON",	raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Neutral},
+	[E_CHARACTER_RACES.RACE_ICETROLL]			= {raceID = E_CHARACTER_RACES.RACE_ICETROLL,			clientFileString = "IceTroll",			raceName = "RACE_ICETROLL",				raceNameFemale = nil,								factionID = PLAYER_FACTION_GROUP.Neutral},
 }
 
 S_CHARACTER_RACES_INFO_LOCALIZATION_ASSOC = {}
 for _, data in pairs(S_CHARACTER_RACES_INFO) do
-	if data.raceName and not string.find(data.raceName, "_CREATURE", 1, true) then
-		S_CHARACTER_RACES_INFO_LOCALIZATION_ASSOC[_G[data.raceName]] = data
+	local raceName = _G[data.raceName]
+	if raceName then
+		S_CHARACTER_RACES_INFO_LOCALIZATION_ASSOC[raceName] = data
+	end
 
-		if data.raceNameFemale then
-			S_CHARACTER_RACES_INFO_LOCALIZATION_ASSOC[_G[data.raceNameFemale]] = data
+	if data.raceNameFemale then
+		raceName = _G[data.raceNameFemale]
+		if raceName then
+			S_CHARACTER_RACES_INFO_LOCALIZATION_ASSOC[raceName] = data
 		end
 	end
 end

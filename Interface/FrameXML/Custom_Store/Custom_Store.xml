@@ -1181,6 +1181,15 @@
 					<Anchor point="TOPLEFT" relativeTo="$parentTopBackground" relativePoint="BOTTOMLEFT"/>
 					<Anchor point="BOTTOMRIGHT" relativeTo="$parentBottomBackground" relativePoint="TOPRIGHT"/>
 				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture name="$parentNew" parentKey="New" inherits="custom-store-corner-new" hidden="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
 				<Scripts>
 					<OnLoad>
 						self:SetRotation(0.40, false)
@@ -5189,8 +5198,13 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						StoreDressUPFrame.Display.DressUPModel:Dress();
-						StoreDressUPFrame.Display.DressUPModel:SetUnit("player")
+						SharedXML_Model_Reset(StoreDressUPFrame.Display.DressUPModel)
+						if StoreDressUPFrame.creatureID then
+							StoreDressUPFrame.Display.DressUPModel:SetCreature(StoreDressUPFrame.creatureID);
+						else
+							StoreDressUPFrame.Display.DressUPModel:Dress();
+							StoreDressUPFrame.Display.DressUPModel:SetUnit("player")
+						end
 						PlaySound("gsTitleOptionOK");
 					</OnClick>
 				</Scripts>
@@ -5199,7 +5213,7 @@
 		<Scripts>
 			<OnLoad function="StoreDressUPFrame_OnLoad"/>
 			<OnShow function="StoreDressUPFrame_OnShow"/>
-			<OnHide function="StoreDressUPFrame_OnHide"/>
+			<OnHide function="nop"/>
 			<OnDragStart>
 				self:StartMoving()
 			</OnDragStart>
@@ -5922,18 +5936,7 @@
 								<Scripts>
 									<OnLoad>
 										SharedXML_Model_OnLoad(self, nil, nil, -0.1)
-
-										self:RegisterCustomEvent("PLAYER_TRANSMOGRIFICATION_CHANGED");
 									</OnLoad>
-									<OnEvent>
-										if event == "PLAYER_TRANSMOGRIFICATION_CHANGED" then
-											if self:IsShown() then
-												StoreTransmogrifyFrame_UpdatePlayerModel();
-											end
-										else
-											SharedXML_Model_OnEvent(self, event, ...);
-										end
-									</OnEvent>
 									<OnShow>
 										StoreTransmogrifyFrame_UpdateRightContainer()
 									</OnShow>
@@ -6093,7 +6096,16 @@
 								self.OverlayElements.IconRowBackground:SetAtlas("transmog-set-iconrow-background")
 								self:GetParent().BGCornerBottomLeft:SetSubTexCoord(0.0, 1.0, 1.0, 0.0)
 								self:GetParent().BGCornerBottomRight:SetSubTexCoord(1.0, 0.0, 1.0, 0.0)
+
+								self:RegisterCustomEvent("PLAYER_TRANSMOGRIFICATION_CHANGED");
 							</OnLoad>
+							<OnEvent>
+								if event == "PLAYER_TRANSMOGRIFICATION_CHANGED" then
+									if self:IsVisible() then
+										StoreTransmogrifyFrame_UpdatePlayerModel();
+									end
+								end
+							</OnEvent>
 						</Scripts>
 					</Frame>
 					<Frame name="$parentEmptyFrame" parentKey="EmptyFrame" setAllPoints="true">

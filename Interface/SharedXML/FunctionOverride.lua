@@ -91,90 +91,6 @@ do	-- CVars
 	end
 end
 
-if not IN_GLUE_STATE then -- Map API
-	local GetMapContinents = GetMapContinents
-	local GetCurrentMapContinent = GetCurrentMapContinent
-	local ProcessMapClick = ProcessMapClick
-	local SetMapZoom = SetMapZoom
-	local UpdateMapHighlight = UpdateMapHighlight
-
-	local ignore = {}
-	local continents = setmetatable({}, {
-		__index = function(self, key)
-			if key and not ignore[key] then
-				for index, name in ipairs({GetMapContinents()}) do
-					rawset(self, name, index)
-					rawset(self, index, name)
-				end
-				ignore[key] = true
-				return rawget(self, key)
-			end
-		end,
-	})
-
-	local continentZoneOverride = {
-	--	[KALIMDOR]			= 0, -- 1,
-	--	[EASTERN_KINGDOMS]	= 0, -- 2,
-	--	[OUTLAND]			= 0, -- 3,
-	--	[NORTHREND]			= 0, -- 4,
-		[FORBES_ISLAND]		= 2, -- 5,
-	--	[FELYARD]			= 0, -- 6,
-	--	[GILNEAS]			= 1, -- 7
-		[LOST_ISLAND]		= 1, -- 8,
-		[RISING_DEPTHS]		= 1, -- 9,
-		[MANGROVE_ISLAND]	= 1, -- 10
-		[TELABIM]			= 1, -- 11
-		[TOLGAROD]			= 1, -- 12
-		[ANDRAKKIS]			= 1, -- 13
-	}
-
-	_G.ProcessMapClick = function(x, y)
-		local name = UpdateMapHighlight(x, y)
-		if continentZoneOverride[name] then
-			SetMapZoom(continents[name], continentZoneOverride[name])
-			return
-		end
-
-		ProcessMapClick(x, y)
-	end
-
-	_G.IsMapContinentOverrided = function(continentIndex)
-		if not continentIndex then
-			continentIndex = GetCurrentMapContinent()
-		end
-
-		local continentName = continents[continentIndex]
-		if continentName and continentZoneOverride[continentName] then
-			return true
-		end
-		return false
-	end
-
-	_G.SetMapZoom = function(continentIndex, zoneIndex)
-		if not zoneIndex then
-			local continentName = continents[continentIndex]
-			if continentName and continentZoneOverride[continentName] then
-				SetMapZoom(continentIndex, continentZoneOverride[continentName])
-				return
-			end
-		end
-
-		SetMapZoom(continentIndex, zoneIndex)
-	end
-
-	local GetCurrentMapAreaID = GetCurrentMapAreaID
-	local GetMapLandmarkInfo = GetMapLandmarkInfo
-	_G.GetMapLandmarkInfo = function(index)
-		local name, description, textureIndex, x, y, maplinkID, showInBattleMap = GetMapLandmarkInfo(index)
-
-		if GetCurrentMapAreaID() == 917 and textureIndex == 45 then
-			textureIndex = 192
-		end
-
-		return name, description, textureIndex, x, y, maplinkID, showInBattleMap
-	end
-end
-
 do -- C_CacheInstance
 	if IN_GLUE_STATE then
 		local EnterWorld = EnterWorld
@@ -262,7 +178,7 @@ do -- AddonManager
 			end
 			local name, title, notes, url, loadable, reason, security, newVersion = GetAddOnInfo(addonIndex)
 			local build
-			notes, url, build, newVersion = checkAddonVersion(name, notes)
+			notes, build, url, newVersion = checkAddonVersion(name, notes)
 			return name, title, notes, url, loadable, reason, security, newVersion, build
 		end
 	else
@@ -271,8 +187,8 @@ do -- AddonManager
 				return
 			end
 			local name, title, notes, enabled, loadable, reason, security = GetAddOnInfo(addon)
-			local url, build, newVersion
-			notes, url, build, newVersion = checkAddonVersion(name, notes)
+			local build, url, newVersion
+			notes, build, url, newVersion = checkAddonVersion(name, notes)
 
 			if CUSTOM_INFO_BEHAVIOUR then
 				return name, title, notes, url, loadable, reason, security, newVersion, build
@@ -456,7 +372,7 @@ if not IN_GLUE_STATE then
 	---@return string englishFaction
 	---@return string localizedFaction
 	_G.UnitFactionGroup = function(unit)
-		if not UnitExists(unit) or C_Service:IsLockRenegadeFeatures() then
+		if not UnitExists(unit) or not C_Service.IsRenegadeRealm() then
 			return UnitFactionGroup(unit)
 		end
 
@@ -540,6 +456,25 @@ if not IN_GLUE_STATE then
 		return className, classToken, classID, classFlag
 	end
 
+	local UnitRace = UnitRace
+	_G.UnitRace = function(unit)
+		local localizedRace, race = UnitRace(unit)
+		local raceData = S_CHARACTER_RACES_INFO_LOCALIZATION_ASSOC[localizedRace]
+		local raceID = raceData and raceData.raceID or -1
+
+		if raceID == E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE
+		or raceID == E_CHARACTER_RACES.RACE_PANDAREN_HORDE
+		or raceID == E_CHARACTER_RACES.RACE_PANDAREN_NEUTRAL
+		or raceID == E_CHARACTER_RACES.RACE_VULPERA_ALLIANCE
+		or raceID == E_CHARACTER_RACES.RACE_VULPERA_HORDE
+		or raceID == E_CHARACTER_RACES.RACE_VULPERA_NEUTRAL
+		then
+			localizedRace = string.gsub(localizedRace, "%s*%([^%)]+%)", "")
+		end
+
+		return localizedRace, race, raceID
+	end
+
 	local GetActionInfo = GetActionInfo
 	_G.GetActionInfo = function(action)
 		local actionType, id, subType, spellID = GetActionInfo(action)
@@ -614,5 +549,38 @@ if not IN_GLUE_STATE then
 			end
 		end
 		return difficulty
+	end
+
+	do
+		local ShowHelm = ShowHelm
+		local ShowingHelm = ShowingHelm
+
+		local helmToggleStep
+
+		local eventHandler = CreateFrame("Frame")
+		eventHandler:RegisterEvent("BARBER_SHOP_CLOSE")
+		eventHandler:SetScript("OnEvent", function(this, event, ...)
+			if event == "BARBER_SHOP_CLOSE" then
+				if ValueToBoolean(ShowingHelm()) then
+					helmToggleStep = 1
+					eventHandler:RegisterEvent("UNIT_MODEL_CHANGED")
+					eventHandler:RegisterEvent("BARBER_SHOP_APPEARANCE_APPLIED")
+				end
+			elseif event == "UNIT_MODEL_CHANGED" or event == "BARBER_SHOP_APPEARANCE_APPLIED" then
+				local unit = ...
+				if unit == "player" then
+					eventHandler:UnregisterEvent("BARBER_SHOP_APPEARANCE_APPLIED")
+
+					if helmToggleStep == 1 then
+						ShowHelm(false)
+						helmToggleStep = 2
+					elseif helmToggleStep == 2 then
+						eventHandler:UnregisterEvent("UNIT_MODEL_CHANGED")
+						helmToggleStep = nil
+						ShowHelm(true)
+					end
+				end
+			end
+		end)
 	end
 end

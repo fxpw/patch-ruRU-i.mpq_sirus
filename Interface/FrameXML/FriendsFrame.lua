@@ -138,7 +138,7 @@ end
 
 function FriendsFrame_ShowDropdown(name, connected, lineID, chatType, chatFrame, friendsList)
 	HideDropDownMenu(1);
-	if ( connected or friendsList ) then
+	if ( name or connected or friendsList ) then
 		if ( connected ) then
 			FriendsDropDown.initialize = FriendsFrameDropDown_Initialize;
 		else

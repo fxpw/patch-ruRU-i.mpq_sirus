@@ -2,11 +2,82 @@
 ..\FrameXML\UI.xsd">
 	<Script file="WatchFrame.lua"/>
 
+	<Frame name="ObjectiveTrackerHeaderTemplate" virtual="true" hidden="true">
+		<Size x="235" y="25"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Background" name="$parentBackground" hidden="false" alpha="1">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-29" y="14"/>
+					</Anchors>
+				</Texture>
+				<FontString parentKey="Text" inherits="GameFontNormalMed2" justifyH="LEFT">
+					<Size x="170" y="16"/>
+					<Anchors>
+						<Anchor point="LEFT" x="4" y="-1"/>
+					</Anchors>
+				</FontString>
+				<Texture parentKey="LineGlow" hidden="false" alpha="0" alphaMode="ADD">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentBackground" x="-50" y="18"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="SoftGlow" name="$parentSoftGlow" hidden="false" alpha="0" alphaMode="ADD">
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentBackground" relativePoint="LEFT" x="20" y="20"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="StarBurst" hidden="false" alpha="0" alphaMode="ADD">
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentSoftGlow"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="LineSheen" hidden="false" alpha="0" alphaMode="ADD">
+					<Size x="60" y="15"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentSoftGlow" x="0" y="-13"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad function="ObjectiveTrackerHeader_OnLoad"/>
+		</Scripts>
+		<!-- <Animations>
+			<AnimationGroup parentKey="HeaderOpenAnim" setToFinalAlpha="true">
+				<Alpha childKey="Background" startDelay="0" duration="0" order="1" fromAlpha="0" toAlpha="0"/>
+				<Alpha childKey="Background" startDelay="0.25" duration="0.5" order="1" fromAlpha="0" toAlpha="1"/>
+				<Alpha childKey="LineGlow" duration="0.15" order="1" fromAlpha="0" toAlpha="1"/>
+				<Alpha childKey="LineGlow" startDelay="0.25" duration="0.65" order="1" fromAlpha="1" toAlpha="0"/>
+				<Scale childKey="LineGlow" duration="0.15" order="1" fromScaleX="0.1" fromScaleY="1.5" toScaleX="2" toScaleY="1.5">
+					<Origin point="CENTER">
+						<Offset x="-50" y="0"/>
+					</Origin>
+				</Scale>
+				<Translation childKey="LineGlow" duration="0.75" order="1" offsetX="50" offsetY="0"/>
+				<Alpha childKey="SoftGlow" duration="0.25" order="1" fromAlpha="0" toAlpha="1"/>
+				<Alpha childKey="SoftGlow" startDelay="0.25" duration="0.5" order="1" fromAlpha="1" toAlpha="0"/>
+				<Scale childKey="SoftGlow" duration="0.25" order="1" fromScaleX="0.5" fromScaleY="0.5" toScaleX="0.8" toScaleY="0.8"/>
+				<Alpha childKey="StarBurst" duration="0.25" order="1" fromAlpha="0" toAlpha="1"/>
+				<Alpha childKey="StarBurst" startDelay="0.25" duration="0.5" order="1" fromAlpha="1" toAlpha="0"/>
+				<Scale childKey="StarBurst" duration="0.25" order="1" fromScaleX="0.5" fromScaleY="0.5" toScaleX="1" toScaleY="1"/>
+				<Alpha childKey="LineSheen" startDelay="0.15" duration="0.5" order="1" fromAlpha="0" toAlpha="0.75"/>
+				<Alpha childKey="LineSheen" startDelay="0.75" duration="0.5" order="1" fromAlpha="0.75" toAlpha="0"/>
+				<Translation childKey="LineSheen" startDelay="0.15" duration="1.5" order="1" offsetX="250" offsetY="0"/>
+
+				<Scripts>
+					<OnFinished function="ObjectiveTrackerHeader_OnAnimFinished"/>
+				</Scripts>
+			</AnimationGroup>
+		</Animations> -->
+	</Frame>
+
 	<FontString name="WatchFontTemplate" inherits="GameFontHighlight" virtual="true" justifyH="LEFT" justifyV="MIDDLE">
 		<Size>
 			<AbsDimension x="0" y="16"/>
 		</Size>
 	</FontString>
+
 	<Button name="WatchFrameLinkButtonTemplate" virtual="true">
 		<Scripts>
 			<OnLoad> self:RegisterForClicks("LeftButtonUp", "RightButtonUp"); </OnLoad>
@@ -15,6 +86,7 @@
 			<OnLeave> WatchFrameLinkButtonTemplate_Highlight(self, false); </OnLeave>
 		</Scripts>
 	</Button>
+
 	<Button name="WatchFrameItemButtonTemplate" virtual="true">
 		<Size x="26" y="26"/>
 		<Layers>
@@ -92,6 +164,7 @@
 		<PushedTexture file="Interface\Buttons\UI-Quickslot-Depress"/>
 		<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
 	</Button>
+
 	<Frame name="WatchFrameLineTemplate" virtual="true">
 		<Size x="232" y="16"/>
 		<Layers>
@@ -203,82 +276,6 @@
 		</Scripts>
 	</Frame>
 
-	<Frame name="ObjectiveTrackerHeaderTemplate" virtual="true" hidden="true">
-		<Size x="235" y="25"/>
-		<Layers>
-			<Layer level="ARTWORK">
-				<Texture parentKey="Background" name="$parentBackground" hidden="false" alpha="1" atlas="Objective-Header" file="Interface/QuestFrame/ObjectiveTracker" useAtlasSize="true">
-					<Size x="297" y="86"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" x="-29" y="14"/>
-					</Anchors>
-					<TexCoords left="0.00195312" right="0.582031" top="0.00390625" bottom="0.339844"/>
-				</Texture>
-				<FontString parentKey="Text" inherits="GameFontNormalMed2" justifyH="LEFT">
-					<Size x="170" y="16"/>
-					<Anchors>
-						<Anchor point="LEFT" x="4" y="-1"/>
-					</Anchors>
-				</FontString>
-				<Texture parentKey="LineGlow" hidden="false" alpha="0" alphaMode="ADD" atlas="OBJFX_LineGlow" file="Interface/QuestFrame/ObjectiveTracker" useAtlasSize="true">
-					<Size x="230" y="22"/>
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentBackground" x="-50" y="18"/>
-					</Anchors>
-					<TexCoords left="0.455078" right="0.904297" top="0.5" bottom="0.585938"/>
-				</Texture>
-				<Texture parentKey="SoftGlow" name="$parentSoftGlow" hidden="false" alpha="0" alphaMode="ADD" atlas="OBJFX_Glow" file="Interface/QuestFrame/ObjectiveTracker" useAtlasSize="true">
-					<Size x="64" y="64"/>
-					<Anchors>
-						<Anchor point="CENTER" relativeTo="$parentBackground" relativePoint="LEFT" x="20" y="20"/>
-					</Anchors>
-					<TexCoords left="0.585938" right="0.710938" top="0.00390625" bottom="0.253906"/>
-				</Texture>
-				<Texture parentKey="StarBurst" hidden="false" alpha="0" alphaMode="ADD" atlas="OBJFX_StarBurst" file="Interface/QuestFrame/ObjectiveTracker" useAtlasSize="true">
-					<Size x="64" y="64"/>
-					<Anchors>
-						<Anchor point="CENTER" relativeTo="$parentSoftGlow"/>
-					</Anchors>
-					<TexCoords left="0.714844" right="0.839844" top="0.00390625" bottom="0.253906"/>
-				</Texture>
-				<Texture parentKey="LineSheen" hidden="false" alpha="0" alphaMode="ADD" atlas="OBJFX_LineBurst" file="Interface/QuestFrame/ObjectiveTracker">
-					<Size x="60" y="15"/>
-					<Anchors>
-						<Anchor point="CENTER" relativeTo="$parentSoftGlow" x="0" y="-13"/>
-					</Anchors>
-					<TexCoords left="0.164062" right="0.332031" top="0.667969" bottom="0.746094"/>
-				</Texture>
-			</Layer>
-		</Layers>
-		<!-- <Animations>
-			<AnimationGroup parentKey="HeaderOpenAnim" setToFinalAlpha="true">
-				<Alpha childKey="Background" startDelay="0" duration="0" order="1" fromAlpha="0" toAlpha="0"/>
-				<Alpha childKey="Background" startDelay="0.25" duration="0.5" order="1" fromAlpha="0" toAlpha="1"/>
-				<Alpha childKey="LineGlow" duration="0.15" order="1" fromAlpha="0" toAlpha="1"/>
-				<Alpha childKey="LineGlow" startDelay="0.25" duration="0.65" order="1" fromAlpha="1" toAlpha="0"/>
-				<Scale childKey="LineGlow" duration="0.15" order="1" fromScaleX="0.1" fromScaleY="1.5" toScaleX="2" toScaleY="1.5">
-					<Origin point="CENTER">
-						<Offset x="-50" y="0"/>
-					</Origin>
-				</Scale>
-				<Translation childKey="LineGlow" duration="0.75" order="1" offsetX="50" offsetY="0"/>
-				<Alpha childKey="SoftGlow" duration="0.25" order="1" fromAlpha="0" toAlpha="1"/>
-				<Alpha childKey="SoftGlow" startDelay="0.25" duration="0.5" order="1" fromAlpha="1" toAlpha="0"/>
-				<Scale childKey="SoftGlow" duration="0.25" order="1" fromScaleX="0.5" fromScaleY="0.5" toScaleX="0.8" toScaleY="0.8"/>
-				<Alpha childKey="StarBurst" duration="0.25" order="1" fromAlpha="0" toAlpha="1"/>
-				<Alpha childKey="StarBurst" startDelay="0.25" duration="0.5" order="1" fromAlpha="1" toAlpha="0"/>
-				<Scale childKey="StarBurst" duration="0.25" order="1" fromScaleX="0.5" fromScaleY="0.5" toScaleX="1" toScaleY="1"/>
-				<Alpha childKey="LineSheen" startDelay="0.15" duration="0.5" order="1" fromAlpha="0" toAlpha="0.75"/>
-				<Alpha childKey="LineSheen" startDelay="0.75" duration="0.5" order="1" fromAlpha="0.75" toAlpha="0"/>
-				<Translation childKey="LineSheen" startDelay="0.15" duration="1.5" order="1" offsetX="250" offsetY="0"/>
-
-				<Scripts>
-					<OnFinished function="ObjectiveTrackerHeader_OnAnimFinished"/>
-				</Scripts>
-			</AnimationGroup>
-		</Animations> -->
-	</Frame>
-
 	<Frame name="WatchFrame" parent="UIParent" clampedToScreen="true" hidden="false" frameStrata="LOW">
 		<Size x="204" y="140"/>
 		<Anchors>
@@ -309,6 +306,11 @@
 						</Anchors>
 						<Scripts>
 							<OnClick function="ObjectiveTracker_MinimizeButton_OnClick"/>
+							<OnMouseUp>
+								if button == "RightButton" and self:IsEnabled() ~= 1 then
+									WatchFrameHeader_OnClick(self, button)
+								end
+							</OnMouseUp>
 						</Scripts>
 						<NormalTexture file="Interface\Buttons\UI-Panel-QuestHideButton">
 							<TexCoords left="0" right="0.5" top="0.5" bottom="1"/>
@@ -333,7 +335,10 @@
 				<Frames>
 					<Button parentKey="QuestHeader" inherits="ObjectiveTrackerHeaderTemplate" enableMouse="true">
 						<Scripts>
-							<OnLoad> self:RegisterForClicks("RightButtonUp"); </OnLoad>
+							<OnLoad>
+								self:RegisterForClicks("RightButtonUp");
+								ObjectiveTrackerHeader_OnLoad(self)
+							</OnLoad>
 							<OnClick function="WatchFrameHeader_OnClick" />
 						</Scripts>
 					</Button>

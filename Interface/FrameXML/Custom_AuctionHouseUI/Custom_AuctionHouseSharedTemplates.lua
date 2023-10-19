@@ -458,20 +458,20 @@ end
 
 function AuctionHouseInteractableItemDisplayMixin:SetItemLocation(itemLocation, skipCallback, isBag)
 	if not skipCallback and not isBag then
-		local _, isLockbox;
+		local _, isLockboxOrHasCharges;
 
 		if itemLocation then
-			_, isLockbox = C_AuctionHouse.IsSellItemValid(itemLocation);
+			_, isLockboxOrHasCharges = C_AuctionHouse.IsSellItemValid(itemLocation);
 		end
 
 		if GetAuctionSellItemInfo() then
-			if not isLockbox then
+			if not isLockboxOrHasCharges then
 				ClickAuctionSellItemButton();
 			end
 
 			ClearCursor();
 
-			if isLockbox then
+			if isLockboxOrHasCharges then
 				ClickAuctionSellItemButton();
 			else
 				if itemLocation and itemLocation:IsValid() then
@@ -483,7 +483,7 @@ function AuctionHouseInteractableItemDisplayMixin:SetItemLocation(itemLocation, 
 				end
 			end
 		else
-			if not isLockbox then
+			if not isLockboxOrHasCharges then
 				ClickAuctionSellItemButton();
 			else
 				ClearCursor();

@@ -1,4 +1,5 @@
 E_TOAST_CATEGORY = Enum.CreateMirror({
+	INTERFACE_HANDLED = -1,
 	UNKNOWN = 0,
 	FRIENDS = 1,
 	HEAD_HUNTING = 2,
@@ -12,11 +13,12 @@ E_TOAST_CATEGORY = Enum.CreateMirror({
 })
 
 E_TOAST_DATA = {
+	[E_TOAST_CATEGORY.INTERFACE_HANDLED]	= { allowCustomEvent = true, },
 	[E_TOAST_CATEGORY.UNKNOWN]				= { sound = SOUNDKIT.UI_BNET_TOAST },
 	[E_TOAST_CATEGORY.FRIENDS]				= { sound = SOUNDKIT.UI_BNET_TOAST,				cvar = "C_CVAR_SOCIAL_TOAST_SOUND" },
 	[E_TOAST_CATEGORY.HEAD_HUNTING]			= { sound = "UI_PetBattles_InitiateBattle",		cvar = "C_CVAR_HEAD_HUNTING_TOAST_SOUND" },
 	[E_TOAST_CATEGORY.BATTLE_PASS]			= { sound = "UI_FightClub_Start",				cvar = "C_CVAR_BATTLE_PASS_TOAST_SOUND" },
-	[E_TOAST_CATEGORY.BATTLE_PASS_QUEST]	= { sound = "UI_FightClub_Start",				cvar = "C_CVAR_BATTLE_PASS_TOAST_SOUND" },
+	[E_TOAST_CATEGORY.BATTLE_PASS_QUEST]	= { sound = "UI_FightClub_Start",				cvar = "C_CVAR_BATTLE_PASS_TOAST_SOUND", allowCustomEvent = true },
 	[E_TOAST_CATEGORY.QUEUE]				= { sound = "UI_GroupFinderReceiveApplication",	cvar = "C_CVAR_QUEUE_TOAST_SOUND" },
 	[E_TOAST_CATEGORY.AUCTION_HOUSE]		= { sound = "UI_DigsiteCompletion_Toast",		cvar = "C_CVAR_AUCTION_HOUSE_TOAST_SOUND" },
 	[E_TOAST_CATEGORY.CALL_OF_ADVENTURE]	= { sound = "UI_CallOfAdventure_Toast",			cvar = "C_CVAR_CALL_OF_ADVENTURE_TOAST_SOUND" },
@@ -151,17 +153,16 @@ end
 
 function SocialToastSystemMixin:OnEvent(event, ...)
 	if event == "SHOW_TOAST" then
-		local categoryID, toastID, iconSource, title, text = ...
+		local categoryID, toastID, iconSource, title, text, sound = ...
 
-		if self:IsCategoryBlocked(categoryID) then
-			return
+		if E_TOAST_DATA[categoryID] and E_TOAST_DATA[categoryID].allowCustomEvent and not self:IsCategoryBlocked(categoryID) then
+			self:AddToast(categoryID, {
+				titleText	= title,
+				bodyText	= text,
+				iconSource	= self:GetIconSource(toastID, iconSource),
+				sound		= sound,
+			})
 		end
-
-		self:AddToast(categoryID, {
-			titleText	= title,
-			bodyText	= text,
-			iconSource	= self:GetIconSource(toastID, iconSource),
-		})
 	end
 end
 
@@ -231,7 +232,11 @@ function SocialToastSystemMixin:ShowToast(toastFrame)
     toastFrame.categoryID = categoryID
 
 	if E_TOAST_DATA[categoryID] then
-		if E_TOAST_DATA[categoryID].forced
+		if categoryID == E_TOAST_CATEGORY.INTERFACE_HANDLED then
+			if toast.toastData.sound then
+				PlaySound(toast.toastData.sound)
+			end
+		elseif E_TOAST_DATA[categoryID].forced
 		or (C_CVar:GetValue("C_CVAR_PLAY_TOAST_SOUND") ~= "0" and C_CVar:GetValue(E_TOAST_DATA[categoryID].cvar) ~= "0")
 		then
 			PlaySound(E_TOAST_DATA[categoryID].sound or E_TOAST_DATA[E_TOAST_CATEGORY.UNKNOWN].sound)
@@ -345,6 +350,7 @@ local TOAST_TYPE_ICONS = {
 	[19] = "pvpcurrency-honor-",
 	[20] = "achievement_quests_completed_vashjir",
 	[21] = "item_shop_giftbox01",
+	[22] = "ability_warrior_endlessrage",
 }
 
 local TOAST_ICON_ID = {
@@ -369,6 +375,7 @@ local TOAST_ICON_ID = {
 	[57] = 19,
 	[58] = 20, [59] = 20,
 	[60] = 21, [61] = 21, [62] = 21, [63] = 21,
+	[65] = 22,
 }
 
 local TOAST_TITLE_ID = {
@@ -397,6 +404,9 @@ local TOAST_TEXT_ID = {
 }
 
 function SocialToastSystemMixin:IsCategoryBlocked(categoryID)
+	if categoryID == E_TOAST_CATEGORY.INTERFACE_HANDLED then
+		return false
+	end
 	if C_CVar:GetValue("C_CVAR_SHOW_TOASTS") ~= "1"
 	or (CATEGORY_BLOCKING_CVARS[categoryID] and C_CVar:GetValue(CATEGORY_BLOCKING_CVARS[categoryID]) ~= "1")
 	then

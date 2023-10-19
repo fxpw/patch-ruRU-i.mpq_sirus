@@ -21,12 +21,14 @@ end
 
 
 --noinspection UnusedDef
-function ezSpectator_MessageHandler:EventHandler(Event, prefix, message, distribution, sender)
-    if Event == 'CHAT_MSG_ADDON' then
-        if prefix == 'ARENASPEC' and distribution == 'WHISPER' and sender == '' then
-            self.Parent:ProcessMessage(message)
-        end
-    end
+function ezSpectator_MessageHandler:EventHandler(event, prefix, message, distribution, sender)
+	if event == "CHAT_MSG_ADDON" then
+		if prefix == "ARENASPEC" and distribution == "WHISPER" and sender == "" then
+			self.Parent:ProcessMessage(message)
+		elseif prefix == "ASMSG_AR_PAUSED" and distribution == "UNKNOWN" and sender == UnitName("player") then
+			self.Parent.Parent.Interface.IsPaused = self.Parent.Parent.Interface.TopFrame.Play:IsShown() == 1
+		end
+	end
 end
 
 

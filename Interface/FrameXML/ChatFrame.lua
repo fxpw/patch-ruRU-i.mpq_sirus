@@ -1,3 +1,7 @@
+
+local forceinsecure = forceinsecure;
+local issecure = issecure;
+
 MESSAGE_SCROLLBUTTON_INITIAL_DELAY = 0;
 MESSAGE_SCROLLBUTTON_SCROLL_DELAY = 0.05;
 CHAT_BUTTON_FLASH_TIME = 0.5;
@@ -20,6 +24,7 @@ local dangerousFunctions = {
 	"DeleteCursorItem",
 	"CreateMacro",
 	"SetBindingMacro",
+	"GuildSetLeader",
 	"GuildDisband",
 	"GuildUninvite",
 	"GuildLeave",
@@ -43,9 +48,10 @@ local chatFilters = {};
 -- if you change what these tables point to (ie slash command, emote, chat)
 -- then you need to invalidate the entry in the hash table
 local hash_SecureCmdList = {}
-hash_SlashCmdList = {}
+--Note: These need to remain global for AddOns
+hash_SlashCmdList = {}				--[localizedCommand] -> function
 hash_EmoteTokenList = {}
-hash_ChatTypeInfoList = {}
+hash_ChatTypeInfoList = {}			--[localizedCommand] -> identifier (Stores all slash commands)
 
 ChatTypeInfo = { };
 ChatTypeInfo["SYSTEM"]									= { sticky = 0, flashTab = false, flashTabOnGeneral = false };
@@ -1426,6 +1432,9 @@ SecureCmdList["CLICK"] = function(msg)
 		if ( not name ) then
 			name = action;
 		end
+		if ( not mouseButton ) then
+			mouseButton = "LeftButton";
+		end
 		local button = GetClickFrame(name);
 		if ( button and button:IsObjectType("Button") ) then
 			button:Click(mouseButton, down);
@@ -1433,15 +1442,128 @@ SecureCmdList["CLICK"] = function(msg)
 	end
 end
 
+SecureCmdList["EQUIP_SET"] = function(msg)
+	local set = SecureCmdOptionParse(msg);
+	if ( set and set ~= "" ) then
+		EquipmentManager_EquipSet(set);
+	end
+end
+
+SecureCmdList["WORLD_MARKER"] = function(msg)
+	local marker = SecureCmdOptionParse(msg);
+	if ( tonumber(marker) ) then
+		PlaceRaidMarker(tonumber(marker));
+	end
+end
+
+SecureCmdList["CLEAR_WORLD_MARKER"] = function(msg)
+	local marker = SecureCmdOptionParse(msg);
+	if ( tonumber(marker) ) then
+		ClearRaidMarker(tonumber(marker));
+	elseif ( type(marker) == "string" and strtrim(strlower(marker)) == strlower(ALL) ) then
+		ClearRaidMarker(nil);	--Clear all world markers.
+	end
+end
+
+SecureCmdList["LOGOUT"] = function(msg)
+	Logout();
+end
+
+SecureCmdList["QUIT"] = function(msg)
+	Quit();
+end
+
+SecureCmdList["GUILD_UNINVITE"] = function(msg)
+	if(msg == "") then
+		msg = UnitName("target");
+	end
+	if( msg and (strlen(msg) > MAX_CHARACTER_NAME_BYTES) ) then
+		ChatFrame_DisplayUsageError(ERR_NAME_TOO_LONG2);
+		return;
+	end
+	GuildUninvite(msg);
+end
+
+SecureCmdList["GUILD_PROMOTE"] = function(msg)
+	if( msg and (strlen(msg) > MAX_CHARACTER_NAME_BYTES) ) then
+		ChatFrame_DisplayUsageError(ERR_NAME_TOO_LONG2);
+		return;
+	end
+	GuildPromote(msg);
+end
+
+SecureCmdList["GUILD_DEMOTE"] = function(msg)
+	if( msg and (strlen(msg) > MAX_CHARACTER_NAME_BYTES) ) then
+		ChatFrame_DisplayUsageError(ERR_NAME_TOO_LONG2);
+		return;
+	end
+	GuildDemote(msg);
+end
+
+SecureCmdList["GUILD_LEADER"] = function(msg)
+--[[
+	if not msg or msg == "" then
+		GuildSetLeader()
+		return
+	end
+	if( msg and (strlen(msg) > MAX_CHARACTER_NAME_BYTES) ) then
+		ChatFrame_DisplayUsageError(ERR_NAME_TOO_LONG2);
+		return;
+	end
+	StaticPopup_Show("CONFIRM_GUILD_PROMOTE", msg, nil, msg)
+--]]
+	ChatFrame_DisplayUsageError(GUILD_PROMOTE_SLASH_CMD_ERR)
+end
+
+SecureCmdList["GUILD_LEAVE"] = function(msg)
+	StaticPopup_Show("DIALOG_SLASH_GUILD_LEAVE")
+end
+
+SecureCmdList["GUILD_DISBAND"] = function(msg)
+	if ( IsGuildLeader() ) then
+		StaticPopup_Show("CONFIRM_GUILD_DISBAND");
+	end
+end
+
+SecureCmdList["GUILD_INVITE"] = function(msg)
+	if not issecure() then
+		return
+	end
+	if(msg == "") then
+		msg = UnitName("target");
+	end
+	if( msg and (strlen(msg) > MAX_CHARACTER_NAME_BYTES) ) then
+		ChatFrame_DisplayUsageError(ERR_NAME_TOO_LONG2);
+		return;
+	end
+	GuildInvite(msg);
+end
+
+function AddSecureCmd(cmd, cmdString)
+	if not issecure() then
+		error("Cannot call AddSecureCmd from insecure code");
+	end
+
+	hash_SecureCmdList[strupper(cmdString)] = cmd;
+end
+
+function AddSecureCmdAliases(cmd, ...)
+	for i = 1, select("#", ...) do
+		local cmdString = select(i, ...);
+		AddSecureCmd(cmd, cmdString);
+	end
+end
+
 -- Pre-populate the secure command hash table
 for index, value in pairs(SecureCmdList) do
 	local i = 1;
-	local cmdString = _G["SLASH_"..index..i];
-	while ( cmdString ) do
-		cmdString = strupper(cmdString);
-		hash_SecureCmdList[cmdString] = value;	-- add to hash
-		i = i + 1;
+	local cmdString = "";
+	while cmdString do
 		cmdString = _G["SLASH_"..index..i];
+		if cmdString then
+			AddSecureCmd(value, cmdString);
+			i = i + 1;
+		end
 	end
 end
 
@@ -1449,6 +1571,7 @@ end
 SlashCmdList = { };
 
 SlashCmdList["CONSOLE"] = function(msg)
+	forceinsecure();
 	ConsoleExec(msg);
 end
 
@@ -1541,18 +1664,10 @@ SlashCmdList["INSPECT"] = function(msg)
 	InspectUnit("target");
 end
 
-SlashCmdList["LOGOUT"] = function(msg)
-	Logout();
-end
-
-SlashCmdList["QUIT"] = function(msg)
-	Quit();
-end
-
 SlashCmdList["JOIN"] = 	function(msg)
 	local name = gsub(msg, "%s*([^%s]+).*", "%1");
 	local password = gsub(msg, "%s*([^%s]+)%s*(.*)", "%2");
-	if(strlen(name) <= 0) then
+	if(name == "") then
 		local joinhelp = CHAT_JOIN_HELP;
 		local info = ChatTypeInfo["SYSTEM"];
 		DEFAULT_CHAT_FRAME:AddMessage(joinhelp, info.r, info.g, info.b, info.id);
@@ -1627,7 +1742,7 @@ SlashCmdList["CHAT_OWNER"] =
 			ChatFrame_DisplayUsageError(ERR_NAME_TOO_LONG2);
 			return;
 		end
-		if ( strlen(channel) > 0 ) then
+		if ( channel ~= "" ) then
 			if ( newOwnerLen > 0 ) then
 				SetChannelOwner(channel, newOwner);
 			else
@@ -1895,66 +2010,8 @@ SlashCmdList["TEAM_DISBAND"] = function(msg)
 	ChatFrame_DisplayUsageError(ERROR_SLASH_TEAM_DISBAND);
 end
 
-SlashCmdList["GUILD_INVITE"] = function(msg)
-	if(msg == "") then
-		msg = UnitName("target");
-	end
-	if( msg and (strlen(msg) > MAX_CHARACTER_NAME_BYTES) ) then
-		ChatFrame_DisplayUsageError(ERR_NAME_TOO_LONG2);
-		return;
-	end
-	GuildInvite(msg);
-end
-
-SlashCmdList["GUILD_UNINVITE"] = function(msg)
-	if(msg == "") then
-		msg = UnitName("target");
-	end
-	if( msg and (strlen(msg) > MAX_CHARACTER_NAME_BYTES) ) then
-		ChatFrame_DisplayUsageError(ERR_NAME_TOO_LONG2);
-		return;
-	end
-	GuildUninvite(msg);
-end
-
-SlashCmdList["GUILD_PROMOTE"] = function(msg)
-	if( msg and (strlen(msg) > MAX_CHARACTER_NAME_BYTES) ) then
-		ChatFrame_DisplayUsageError(ERR_NAME_TOO_LONG2);
-		return;
-	end
-	GuildPromote(msg);
-end
-
-SlashCmdList["GUILD_DEMOTE"] = function(msg)
-	if( msg and (strlen(msg) > MAX_CHARACTER_NAME_BYTES) ) then
-		ChatFrame_DisplayUsageError(ERR_NAME_TOO_LONG2);
-		return;
-	end
-	GuildDemote(msg);
-end
-
-SlashCmdList["GUILD_LEADER"] = function(msg)
-	if( msg and (strlen(msg) > MAX_CHARACTER_NAME_BYTES) ) then
-		ChatFrame_DisplayUsageError(ERR_NAME_TOO_LONG2);
-		return;
-	end
-
-	local popup = StaticPopup_Show("DIALOG_SLASH_GUILD_LEADER", msg)
-	popup.data = msg
-end
-
 SlashCmdList["GUILD_MOTD"] = function(msg)
 	GuildSetMOTD(msg)
-end
-
-SlashCmdList["GUILD_LEAVE"] = function(msg)
-	StaticPopup_Show("DIALOG_SLASH_GUILD_LEAVE")
-end
-
-SlashCmdList["GUILD_DISBAND"] = function(msg)
-	if ( IsGuildLeader() ) then
-		StaticPopup_Show("CONFIRM_GUILD_DISBAND");
-	end
 end
 
 SlashCmdList["GUILD_INFO"] = function(msg)
@@ -2008,8 +2065,7 @@ SlashCmdList["FRIENDS"] = function(msg)
 end
 
 SlashCmdList["REMOVEFRIEND"] = function(msg)
-	local popup = StaticPopup_Show("DIALOG_SLASH_REMOVEFRIEND", msg)
-	popup.data = msg
+	StaticPopup_Show("DIALOG_SLASH_REMOVEFRIEND", msg, nil, msg)
 end
 
 SlashCmdList["IGNORE"] = function(msg)
@@ -2039,9 +2095,8 @@ end
 
 SlashCmdList["SCRIPT"] = function(msg)
 	for _, funcName in ipairs(dangerousFunctions) do
-		if string.find(msg, funcName) then
-			local dialog = StaticPopup_Show("DANGEROUS_SCRIPTS_WARNING")
-			dialog.data = msg
+		if string.find(msg, funcName, 1, true) then
+			StaticPopup_Show("DANGEROUS_SCRIPTS_WARNING", nil, nil, msg)
 			return
 		end
 	end
@@ -2108,7 +2163,7 @@ SlashCmdList["RANDOM"] = function(msg)
 	local rest = gsub(msg, "(%s*)(%d+)(.*)", "%3", 1);
 	local num2 = "";
 	local numSubs;
-	if ( strlen(rest) > 0 ) then
+	if ( rest ~= "" ) then
 		num2, numSubs = gsub(msg, "(%s*)(%d+)([-%s]+)(%d+)(.*)", "%4", 1);
 		if ( numSubs == 0 ) then
 			num2 = "";
@@ -2250,13 +2305,6 @@ SlashCmdList["ACHIEVEMENTUI"] = function(msg)
 	ToggleAchievementFrame();
 end
 
-SlashCmdList["EQUIP_SET"] = function(msg)
-	local set = SecureCmdOptionParse(msg);
-	if ( set and set ~= "" ) then
-		EquipmentManager_EquipSet(set);
-	end
-end
-
 SlashCmdList["SET_TITLE"] = function(msg)
 	local name = SecureCmdOptionParse(msg);
 	if ( name and name ~= "") then
@@ -2306,9 +2354,8 @@ end
 SlashCmdList["DUMP"] = function(msg)
 	-- UIParentLoadAddOn("Blizzard_DebugTools");
 	for _, funcName in ipairs(dangerousFunctions) do
-		if string.find(msg, funcName) then
-			local dialog = StaticPopup_Show("DANGEROUS_SCRIPTS_WARNING")
-			dialog.data = msg
+		if string.find(msg, funcName, 1, true) then
+			StaticPopup_Show("DANGEROUS_SCRIPTS_WARNING", nil, nil, msg)
 			return
 		end
 	end
@@ -2317,22 +2364,6 @@ end
 
 SlashCmdList["RELOAD"] = function(msg)
 	ConsoleExec("reloadui");
-end
-
-SlashCmdList["WORLD_MARKER"] = function(msg)
-	local marker = SecureCmdOptionParse(msg)
-	if ( tonumber(marker) ) then
-		PlaceRaidMarker(tonumber(marker))
-	end
-end
-
-SlashCmdList["CLEAR_WORLD_MARKER"] = function(msg)
-	local marker = SecureCmdOptionParse(msg)
-	if ( tonumber(marker) ) then
-		ClearRaidMarker(tonumber(marker))
-	elseif ( type(marker) == "string" and strtrim(strlower(marker)) == strlower(ALL) ) then
-		ClearRaidMarker(nil)
-	end
 end
 
 SlashCmdList["COUNTDOWN"] = function(msg)
@@ -3014,7 +3045,7 @@ function ChatFrame_MessageEventHandler(self, event, ...)
 				playerLink = "|HBNplayer:"..arg2..":"..arg13..":"..arg11..":"..chatGroup..(chatTarget and ":"..chatTarget or "").."|h";
 			end
 
-			if ( (strlen(arg3) > 0) and (arg3 ~= "Universal") and (arg3 ~= self.defaultLanguage) ) then
+			if ( (strlen(arg3) > 0) and (((arg3 ~= "Universal") and (arg3 ~= self.defaultLanguage)) or arg3 == LANGUAGE_RENEGADE) ) then
 				local languageHeader = "["..arg3.."] ";
 				if ( showLink and (strlen(arg2) > 0) ) then
 					body = format(_G["CHAT_"..type.."_GET"]..languageHeader..arg1, pflag..playerLink.."["..coloredName.."]".."|h");
@@ -4471,7 +4502,7 @@ function TextEmoteSort(token1, token2)
 	local i = 1;
 	local string1, string2;
 	local token = _G["EMOTE"..i.."_TOKEN"];
-	while ( token ) do
+	while ( i <= MAXEMOTEINDEX ) do
 		if ( token == token1 ) then
 			string1 = _G["EMOTE"..i.."_CMD1"];
 			if ( string2 ) then
@@ -4497,7 +4528,7 @@ function OnMenuLoad(self,list,func)
 	for index, value in pairs(list) do
 		local i = 1;
 		local token = _G["EMOTE"..i.."_TOKEN"];
-		while ( token ) do
+		while ( i < MAXEMOTEINDEX ) do
 			if ( token == value ) then
 				break;
 			end
@@ -4979,6 +5010,11 @@ function ParseURLsInText(msg)
 end
 
 function AddChatTyppedMessage(messageType, message)
+	if messageType == "SYSTEM" then
+		SendSystemMessage(message)
+		return
+	end
+
 	local info = ChatTypeInfo[messageType];
 	if not info then
 		error(string.format("AddChatTyppedMessage: unknown messageType (%s)", messageType), 2)

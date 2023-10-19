@@ -9,6 +9,8 @@ local ExecuteFrameScript = ExecuteFrameScript
 local GetFramesRegisteredForEvent = GetFramesRegisteredForEvent
 local UnitName = UnitName
 
+local REGISTERED_CUSTOM_EVENTS = {}
+
 local function SecureNext(elements, key)
 	return securecall(next, elements, key)
 end
@@ -19,14 +21,36 @@ function FireClientEvent(event, ...)
 	end
 end
 
-function FireCustomClientEvent(eventID, ...)
-	local eventName = type(eventID) == "number" and E_CLIEN_CUSTOM_EVENTS[eventID] or eventID;
-
-	if eventName and REGISTERED_CUSTOM_EVENTS[eventName] then
-		for frame in SecureNext, REGISTERED_CUSTOM_EVENTS[eventName] do
-			securecall(ExecuteFrameScript, frame, "OnEvent", eventName, ...)
+function FireCustomClientEvent(event, ...)
+	if REGISTERED_CUSTOM_EVENTS[event] then
+		for frame in SecureNext, REGISTERED_CUSTOM_EVENTS[event] do
+			securecall(ExecuteFrameScript, frame, "OnEvent", event, ...)
 		end
 	end
+end
+
+local eventRegistrar = CreateFrame("Frame")
+eventRegistrar:SetScript("OnAttributeChanged", function(this, name, value)
+	if name == "1" then
+		if not REGISTERED_CUSTOM_EVENTS[value] then
+			REGISTERED_CUSTOM_EVENTS[value] = {}
+		end
+		REGISTERED_CUSTOM_EVENTS[value][this:GetAttribute("f")] = true
+	elseif name == "0" then
+		if REGISTERED_CUSTOM_EVENTS[value] then
+			REGISTERED_CUSTOM_EVENTS[value][this:GetAttribute("f")] = nil
+		end
+	end
+end)
+
+function RegisterCustomEvent(self, event)
+	eventRegistrar:SetAttribute("f", self)
+	eventRegistrar:SetAttribute("1", event)
+end
+
+function UnregisterCustomEvent(self, event)
+	eventRegistrar:SetAttribute("f", self)
+	eventRegistrar:SetAttribute("0", event)
 end
 
 local UNIT_LIST = {}

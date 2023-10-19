@@ -1,9 +1,3 @@
---	Filename:	API_Guild.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 SIRUS_GUILD_RENAME = {}
 
 API_Guild = CreateFrame("Frame")
@@ -13,21 +7,21 @@ API_Guild:RegisterEvent("PLAYER_GUILD_UPDATE")
 API_Guild:SetScript("OnEvent", function(self, event)
 	if event == "PLAYER_LOGIN" then
 		if IsInGuild() then
-			SendAddonMessage("ACMSG_GUILD_LEVEL_REQUEST", nil, "WHISPER", UnitName("player"))
-			SendAddonMessage("ACMSG_GUILD_REPUTATION_REQUEST", nil, "WHISPER", UnitName("player"))
-			SendAddonMessage("ACMSG_GUILD_SPELLS_REQUEST", nil, "WHISPER", UnitName("player"))
-			SendAddonMessage("ACMSG_GUILD_REPUTATION_REWARDS_REQUEST", nil, "WHISPER", UnitName("player"))
-			SendAddonMessage("ACMSG_GUILD_ONLINE_REQUEST", nil, "WHISPER", UnitName("player"))
-			SendAddonMessage("ACMSG_GUILD_CATEGORY_REQUEST", nil, "WHISPER", UnitName("player"))
+			SendServerMessage("ACMSG_GUILD_LEVEL_REQUEST")
+			SendServerMessage("ACMSG_GUILD_REPUTATION_REQUEST")
+			SendServerMessage("ACMSG_GUILD_SPELLS_REQUEST")
+			SendServerMessage("ACMSG_GUILD_REPUTATION_REWARDS_REQUEST")
+			SendServerMessage("ACMSG_GUILD_ONLINE_REQUEST")
+			SendServerMessage("ACMSG_GUILD_CATEGORY_REQUEST")
 
 			self.SendRequest = false;
 		end
 	elseif event == "PLAYER_GUILD_UPDATE" then
 		if IsInGuild() then
 			if self.SendRequest then
-				SendAddonMessage("ACMSG_GUILD_SPELLS_REQUEST", nil, "WHISPER", UnitName("player"))
-				SendAddonMessage("ACMSG_GUILD_REPUTATION_REWARDS_REQUEST", nil, "WHISPER", UnitName("player"))
-				SendAddonMessage("ACMSG_GUILD_REPUTATION_REQUEST", nil, "WHISPER", UnitName("player"))
+				SendServerMessage("ACMSG_GUILD_SPELLS_REQUEST")
+				SendServerMessage("ACMSG_GUILD_REPUTATION_REWARDS_REQUEST")
+				SendServerMessage("ACMSG_GUILD_REPUTATION_REQUEST")
 
 				self.SendRequest = false;
 			end

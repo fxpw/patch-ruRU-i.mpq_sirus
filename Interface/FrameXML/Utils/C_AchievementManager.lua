@@ -61,7 +61,7 @@ function C_AchievementManagerMixin:ValidationFaction( entry )
 		end
 	elseif (achievementFactionID ~= 2 and C_Unit.GetServerFactionID("player") ~= achievementFactionID) then
 		return false
-	elseif achievementFactionID == 2 and C_Service:IsLockRenegadeFeatures() then
+	elseif achievementFactionID == 2 and not C_Service.IsRenegadeRealm() then
 		return false
 	else
 		local isRenegade = C_Unit.IsRenegade("player")

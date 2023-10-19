@@ -39,7 +39,7 @@ LOGIN_MODEL_LIGHTS = {
 NEW_YEAR = false
 
 function AccountLogin_OnLoad(self)
-	self.LoginUI.Logo:SetAtlas("ServerGameLogo-11")
+	self.LoginUI.Logo:SetAtlas(C_RealmInfo.GetServerLogo(0))
 	self.BGModel:SetModel(BACKGROUND_MODEL)
 	self.Models = {}
 
@@ -54,7 +54,7 @@ function AccountLogin_OnLoad(self)
 	self:RegisterEvent("FRAMES_LOADED")
 
 	if NEW_YEAR then
-		self.LoginUI.BGTexture:SetTexture("Interface\\Custom_LoginScreen\\do_not_fine")
+		self.LoginUI.BGTexture:SetTexture([[Interface\Custom_LoginScreen\Kelthuzad_Room]])
 		self.LoginUI.BGTexture:Show()
 		self.BGModel:Hide()
 
@@ -122,12 +122,6 @@ function AccountLogin_OnEvent(self, event, ...)
 
 				if C_GlueCVars.GetCVar("AUTO_LOGIN") == "1" then
 					AccountLoginAutoLogin:SetChecked(1)
-
-					C_Timer:NewTicker(0.01, function()
-						if AccountLogin:IsVisible() then
-							DefaultServerLogin(GetSavedAccountName(), GetCVar("readTerminationWithoutNotice"))
-						end
-					end, 5)
 				end
 			end
 
@@ -190,6 +184,16 @@ function AccountLogin_Login()
 
 		PlaySound(SOUNDKIT.GS_LOGIN)
 		DefaultServerLogin(login, password)
+	end
+end
+
+function AccountLogin_AutoLogin()
+	if C_GlueCVars.GetCVar("AUTO_LOGIN") == "1" then
+		C_Timer:NewTicker(0.01, function()
+			if AccountLogin:IsVisible() then
+				DefaultServerLogin(GetSavedAccountName(), GetCVar("readTerminationWithoutNotice"))
+			end
+		end, 5)
 	end
 end
 

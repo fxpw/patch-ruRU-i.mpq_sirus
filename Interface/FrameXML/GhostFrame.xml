@@ -38,7 +38,7 @@
 			</OnHide>
 			<OnClick>
 				PlaySound("igMainMenuOpen");
-				SendAddonMessage("ACMSG_RETURN_TO_GRAVEYARD", nil, "WHISPER", UnitName("player"))
+				SendServerMessage("ACMSG_RETURN_TO_GRAVEYARD")
 			</OnClick>
 		</Scripts>
 	</Button>

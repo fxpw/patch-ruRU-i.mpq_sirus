@@ -15,7 +15,11 @@ function C_ConnectManagerMixin:OnLoad()
 end
 
 function C_ConnectManagerMixin:SHOW_SERVER_ALERT(_, serverAlertText)
-    local ipList, alert = string.match(serverAlertText, "%:%{(.*)%}%:(.*)")
+	local ipList, text = string.match(serverAlertText, ":{([^}]+)}:(.*)")
+	local autologinAlert, alert = string.match(text, ":%[(.*)%]:(.*)")
+
+    local s,e = string.find(alert, ".*<br/>")
+    alert = string.sub(alert, 1, e + 1)
 
     if ipList then
         local splitData = C_Split(ipList, ", ")
@@ -31,14 +35,22 @@ function C_ConnectManagerMixin:SHOW_SERVER_ALERT(_, serverAlertText)
             })
         end
 
-        AccountLoginUI_UpdateServerAlertText(alert..">")
+        AccountLoginUI_UpdateServerAlertText(alert.."</body></html>")
 
         AccountLoginChooseRealmDropDown:Init()
     else
         AccountLoginUI_UpdateServerAlertText(serverAlertText)
     end
 
-    AccountLoginChooseRealmDropDown:SetShown(ipList)
+	AccountLoginChooseRealmDropDown:SetShown(ipList)
+
+	if AccountLogin:IsShown() then
+		if autologinAlert and autologinAlert ~= "" then
+			GlueDialog:ShowDialog("OKAY_SERVER_ALERT", autologinAlert)
+		else
+			AccountLogin_AutoLogin()
+		end
+	end
 end
 
 function C_ConnectManagerMixin:OPEN_STATUS_DIALOG(_, dialogKey)

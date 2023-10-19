@@ -59,7 +59,7 @@ function PKBT_TitleMixin:OnShow()
 end
 
 function PKBT_TitleMixin:UpdateRect()
-	self:SetWidth(self.TitleText:GetStringWidth() + 78)
+	self:SetWidth(math.max(240, self.TitleText:GetStringWidth() + 78))
 end
 
 PKBT_DialogMixin = CreateFromMixins(TitledPanelMixin)
@@ -71,6 +71,11 @@ end
 
 function PKBT_DialogMixin:GetTitleText()
 	return self.NineSlice.TitleText
+end
+
+function PKBT_DialogMixin.onCloseCallback(closeButton)
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+	return true
 end
 
 PKBT_ButtonMixin = CreateFromMixins(ThreeSliceButtonMixin)
@@ -99,6 +104,38 @@ function PKBT_ButtonMixin:GetButtonStateExt(buttonState)
 	end
 end
 
+function PKBT_ButtonMixin:SetThreeSliceAtlas(atlasName)
+	if self.atlasName ~= atlasName then
+		self.atlasName = atlasName
+		self:InitButton()
+		self:UpdateButton()
+	end
+end
+
+function PKBT_ButtonMixin:ShowSpinner()
+	if not self.__spinner then
+		self.__spinner = CreateFrame("Frame", "$parentSpinner", self, "PKBT_LoadingSpinnerTemplate")
+		self.__spinner:SetPoint("CENTER", 0, 0)
+	end
+
+	local spinnderHeight = self:GetHeight() - 10
+	self.__spinner:SetSize(spinnderHeight, spinnderHeight)
+	self.__spinner:Show()
+
+	if self.ButtonText then
+		self.ButtonText:Hide()
+	end
+end
+
+function PKBT_ButtonMixin:HideSpinner()
+	if self.__spinner then
+		self.__spinner:Hide()
+	end
+	if self.ButtonText then
+		self.ButtonText:Show()
+	end
+end
+
 PKBT_VirtualCheckButtonMixin = CreateFromMixins()
 
 function PKBT_VirtualCheckButtonMixin:OnLoad()
@@ -116,16 +153,17 @@ function PKBT_VirtualCheckButtonMixin:SetChecked(checked, userInput)
 	local changed = self.__isChecked ~= checked
 
 	if changed then
-		if self.blockUserUncheck and userInput and not checked then
+		if self.__blockUserUncheck and userInput and not checked then
 			if self.callUpdateOnBlock then
 				if type(self.OnChecked) == "function" then
-					self:OnChecked(true, userInput)
+					self:OnChecked(self.__isChecked, userInput)
 				end
 			end
+			getmetatable(self).__index.SetChecked(self, self.__isChecked)
 			return
 		end
 
-		if self.lockCheckedTextOffset then
+		if self.__lockCheckedTextOffset then
 			if checked then
 				local x, y = self:GetPushedTextOffset()
 				self.__pushedOffsetX = x
@@ -147,6 +185,14 @@ function PKBT_VirtualCheckButtonMixin:SetChecked(checked, userInput)
 	end
 end
 
+function PKBT_VirtualCheckButtonMixin:SetBlockedUncheck(state)
+	self.__blockUserUncheck = not not state
+end
+
+function PKBT_VirtualCheckButtonMixin:SetLockCheckedTextOffset(state)
+	self.__lockCheckedTextOffset = not not state
+end
+
 function PKBT_VirtualCheckButtonMixin:GetChecked()
 	return self.__isChecked
 end
@@ -164,6 +210,7 @@ function PKBT_VirtualCheckButtonMixin:GetButtonStateExt(buttonState)
 end
 
 function PKBT_VirtualCheckButtonMixin:UpdateButton()
+	getmetatable(self).__index.SetChecked(self, self.__isChecked)
 end
 
 PKBT_ThreeSliceVirtualCheckButtonMixin = CreateFromMixins(PKBT_ButtonMixin, PKBT_VirtualCheckButtonMixin)
@@ -210,9 +257,13 @@ function PKBT_ThreeSliceVirtualCheckButtonMixin:OnLeave()
 	PKBT_ButtonMixin.OnLeave(self)
 end
 
-local CURRENCY_ICONS = {
-	[1] = "PKBT-Icon-Currency-BonusOld",
-}
+PKBT_ButtonMultiWidgetControllerMixin = {}
+
+function PKBT_ButtonMultiWidgetControllerMixin:OnShow()
+	local parent = self:GetParent()
+	parent:UpdateHolderRect()
+	parent:UpdateButton()
+end
 
 PKBT_ButtonMultiWidgetMixin = CreateFromMixins(PKBT_ButtonMixin)
 
@@ -226,10 +277,8 @@ function PKBT_ButtonMultiWidgetMixin:OnLoad()
 	self.__padding = 20
 	self.__offsetX = 3
 
-	self.Controller:SetScript("OnShow", function(this)
-		self:UpdateHolderRect()
-		self:UpdateButton()
-	end)
+	Mixin(self.Controller, PKBT_ButtonMultiWidgetControllerMixin)
+	self.Controller:SetScript("OnShow", self.Controller.OnShow)
 end
 
 function PKBT_ButtonMultiWidgetMixin:OnEnter()
@@ -259,14 +308,35 @@ end
 
 function PKBT_ButtonMultiWidgetMixin:SetPadding(padding)
 	self.__padding = padding or 15
+	self.__dirty = true
+end
+
+function PKBT_ButtonMultiWidgetMixin:Show()
+	if self:IsShown() then
+		self.__dirty = true
+		self:UpdateHolderRect()
+	else
+		getmetatable(self).__index.Show(self)
+	end
 end
 
 function PKBT_ButtonMultiWidgetMixin:GetPadding()
 	return self.__padding
 end
 
+function PKBT_ButtonMultiWidgetMixin:SetMinWidth(width)
+	self.__minWidth = width
+	self.__dirty = true
+end
+
+function PKBT_ButtonMultiWidgetMixin:SetMaxWidth(width)
+	self.__maxWidth = width
+	self.__dirty = true
+end
+
 function PKBT_ButtonMultiWidgetMixin:SetFixedWidth(width)
 	self.__fixedWidth = width
+	self.__dirty = true
 end
 
 function PKBT_ButtonMultiWidgetMixin:GetFixedWidth()
@@ -346,10 +416,12 @@ function PKBT_ButtonMultiWidgetMixin:UpdateWidgetPosition(obj, currentWidth)
 	end
 
 	local objWidth
-	if obj:IsObjectType("FontString") then
-		objWidth = obj:GetStringWidth()
-	else
-		objWidth = obj:GetWidth()
+	if obj:IsShown() then
+		if obj:IsObjectType("FontString") then
+			objWidth = obj:GetStringWidth()
+		else
+			objWidth = obj:GetWidth()
+		end
 	end
 
 	local offsetX
@@ -366,6 +438,12 @@ function PKBT_ButtonMultiWidgetMixin:UpdateWidgetPosition(obj, currentWidth)
 end
 
 function PKBT_ButtonMultiWidgetMixin:UpdateHolderRect()
+	if not self.__dirty then
+		return
+	end
+
+	self.__dirty = nil
+
 	local holderWidth = 0
 	for _, obj in ipairs(self.__persistantObjectsPre) do
 		holderWidth = self:UpdateWidgetPosition(obj, holderWidth)
@@ -391,10 +469,16 @@ function PKBT_ButtonMultiWidgetMixin:UpdateHolderRect()
 	end
 
 	local buttonWidth = holderWidth + self.__padding * 2
-	if self.minWidth then
-		self:SetWidth(math.max(self.minWidth, buttonWidth))
+	if self.__minWidth or self.__maxWidth then
+		if self.__maxWidth then
+			buttonWidth = math.min(self.__maxWidth, buttonWidth)
+		end
+		if self.__minWidth then
+			buttonWidth = math.max(self.__minWidth, buttonWidth)
+		end
+		self:SetWidth(buttonWidth)
 	else
-		self:SetWidth(math.max(40, self.__fixedWidth ~= 0 and self.__fixedWidth or buttonWidth))
+		self:SetWidth(math.max(60, self.__fixedWidth ~= 0 and self.__fixedWidth or buttonWidth))
 	end
 end
 
@@ -407,6 +491,7 @@ function PKBT_ButtonMultiWidgetMixin:ClearObjects()
 		obj:Hide()
 	end
 	table.wipe(self.__activeObjects)
+	self.__dirty = true
 end
 
 function PKBT_ButtonMultiWidgetMixin:ClearPersistantPreObjects()
@@ -415,6 +500,7 @@ function PKBT_ButtonMultiWidgetMixin:ClearPersistantPreObjects()
 		obj:Hide()
 	end
 	table.wipe(self.__persistantObjectsPre)
+	self.__dirty = true
 end
 
 function PKBT_ButtonMultiWidgetMixin:ClearPersistantPostObjects()
@@ -423,33 +509,42 @@ function PKBT_ButtonMultiWidgetMixin:ClearPersistantPostObjects()
 		obj:Hide()
 	end
 	table.wipe(self.__persistantObjectsPost)
+	self.__dirty = true
 end
 
 function PKBT_ButtonMultiWidgetMixin:AddText(text, offsetX, offsetY, template)
 	local pool = self.__fontStringPoolCollection:GetOrCreatePool(self.WidgetHolder, "ARTWORK", nil, template or "PKBT_Button_Font_15")
 	local obj = pool:Acquire()
 	table.insert(self.__activeObjects, obj)
+	self.__dirty = true
+
 	obj:SetText(text)
 	obj.offsetX = tonumber(offsetX) or self.__offsetX
 	obj.offsetY = tonumber(offsetY) or 0
 	obj:Show()
+
 	return obj
 end
 
 function PKBT_ButtonMultiWidgetMixin:AddTexture(texture, width, height, offsetX, offsetY)
 	local obj = self.__texturePool:Acquire()
 	table.insert(self.__activeObjects, obj)
+	self.__dirty = true
+
 	obj:SetTexture(texture)
 	obj:SetSize(width or self:GetHeight(), height or self:GetHeight())
 	obj.offsetX = tonumber(offsetX) or self.__offsetX
 	obj.offsetY = tonumber(offsetY) or 0
 	obj:Show()
+
 	return obj
 end
 
 function PKBT_ButtonMultiWidgetMixin:AddTextureAtlas(atlasName, useAtlasSize, overrideWidth, overrideHeight, offsetX, offsetY)
 	local obj = self.__texturePool:Acquire()
 	table.insert(self.__activeObjects, obj)
+	self.__dirty = true
+
 	obj:SetAtlas(atlasName, useAtlasSize)
 	if overrideWidth then
 		obj:SetWidth(overrideWidth)
@@ -461,18 +556,23 @@ function PKBT_ButtonMultiWidgetMixin:AddTextureAtlas(atlasName, useAtlasSize, ov
 	elseif not useAtlasSize then
 		obj:SetHeight(self:GetHeight() - self.__padding)
 	end
+
 	obj.offsetX = tonumber(offsetX) or self.__offsetX
 	obj.offsetY = tonumber(offsetY) or 0
 	obj:Show()
+
 	return obj
 end
 
 function PKBT_ButtonMultiWidgetMixin:AddFrame(obj, offsetX, offsetY)
 	table.insert(self.__activeObjects, obj)
+	self.__dirty = true
+
 	obj:SetParent(self.WidgetHolder)
 	obj.offsetX = tonumber(offsetX) or self.__offsetX
 	obj.offsetY = tonumber(offsetY) or 0
 	obj:Show()
+
 	return obj
 end
 
@@ -491,6 +591,7 @@ function PKBT_ButtonMultiWidgetMixin:MoveToPersistantPre(obj, index)
 		else
 			table.insert(self.__persistantObjectsPre, index, obj)
 		end
+		self.__dirty = true
 	end
 
 	return found or false
@@ -511,42 +612,190 @@ function PKBT_ButtonMultiWidgetMixin:MoveToPersistantPost(obj, index)
 		else
 			table.insert(self.__persistantObjectsPost, index, obj)
 		end
+		self.__dirty = true
 	end
 
 	return found or false
 end
 
 function PKBT_ButtonMultiWidgetMixin:ShowSpinner()
-	if not self.__spinner then
-		self.__spinner = CreateFrame("Frame", "$parentSpinner", self, "PKBT_LoadingSpinnerTemplate")
-		self.__spinner:SetPoint("CENTER", 0, 0)
-	end
-
-	local spinnderHeight = self:GetHeight() - 10
-	self.__spinner:SetSize(spinnderHeight, spinnderHeight)
-	self.__spinner:Show()
+	PKBT_ButtonMixin.ShowSpinner(self)
 	self.WidgetHolder:Hide()
 end
 
 function PKBT_ButtonMultiWidgetMixin:HideSpinner()
+	PKBT_ButtonMixin.HideSpinner(self)
 	if self.__spinner then
-		self.__spinner:Hide()
 		self.WidgetHolder:Show()
 	end
+end
+
+local CURRENCY_ICONS = {
+	[0] = "PKBT-Icon-Currency-Gold",
+	[1] = "PKBT-Icon-Currency-Bonus",
+	[2] = "PKBT-Icon-Currency-Loyality",
+	[3] = "PKBT-Icon-Currency-Vote",
+	[4] = "PKBT-Icon-Currency-Referral",
+}
+
+PKBT_PriceMixin = {}
+
+function PKBT_PriceMixin:OnShow()
+	self:UpdatePriceRect()
+end
+
+function PKBT_PriceMixin:SetPrice(price, originalPrice, currencyType)
+	if price ~= -1 then
+		local isFree = price == 0
+		self.currencyType = currencyType
+		self.value = price
+		self.originalPrice = originalPrice
+
+		self.Value:Show()
+
+		if isFree then
+			self.Value:SetText(self.__freeText or STORE_BUY_FREE)
+			self.Value:SetPoint("LEFT", 0, 0)
+			self.Icon:Hide()
+			self.ValueOriginal:Hide()
+			self.StrikeThrough:Hide()
+		else
+			self.Value:SetText(price)
+			self.Icon:SetAtlas(CURRENCY_ICONS[currencyType], false)
+			self.Icon:Show()
+
+			if not self.__originalPriceHidden and originalPrice and originalPrice > 0 and originalPrice ~= price then
+				self.ValueOriginal:SetText(originalPrice)
+				self.ValueOriginal:Show()
+				self.StrikeThrough:Show()
+				self:UpdateOriginalRect()
+			else
+				self.ValueOriginal:Hide()
+				self.StrikeThrough:Hide()
+				self.Value:SetPoint("LEFT", self.Icon, "RIGHT", 3, 0)
+			end
+		end
+	else
+		self.value = -1
+		self.originalPrice = 0
+
+		self.Value:Hide()
+		self.Icon:Hide()
+		self.ValueOriginal:Hide()
+		self.StrikeThrough:Hide()
+	end
+
+	self:UpdatePriceRect()
+end
+
+function PKBT_PriceMixin:UpdateOriginalRect()
+	if self.ValueOriginal:IsShown() then
+		local originalValueWidth = self.ValueOriginal:GetStringWidth()
+		self.StrikeThrough:SetWidth(originalValueWidth + 4)
+
+		if self.__originalOnTop then
+			local diff = originalValueWidth - self.Value:GetStringWidth()
+			if diff > 0 then
+				self.__originalOnTopOffsetX = math.ceil(diff) * 2 + 1
+			else
+				self.__originalOnTopOffsetX = 0
+			end
+
+			self.Value:SetPoint("LEFT", self.Icon, "RIGHT", 3 + math.floor(self.__originalOnTopOffsetX / 2 + 0.5), -(self.ValueOriginal:GetHeight() / 2) - 1)
+			self.ValueOriginal:ClearAllPoints()
+			self.ValueOriginal:SetPoint("BOTTOM", self.Value, "TOP", 0, 2)
+		else
+			self.ValueOriginal:ClearAllPoints()
+			self.ValueOriginal:SetPoint("LEFT", self.Icon, "RIGHT", 4, -1)
+			self.Value:SetPoint("LEFT", self.Icon, "RIGHT", 6 + originalValueWidth, 0)
+		end
+	end
+end
+
+function PKBT_PriceMixin:UpdatePriceRect()
+	local width = 0
+
+	if self.value and self.value ~= -1 then
+		if self.Icon:IsShown() then
+			width = width + self.Icon:GetWidth() + 3
+		end
+
+		if self.__originalOnTop then
+			width = width + (self.__originalOnTopOffsetX or 0)
+		elseif self.ValueOriginal:IsShown() then
+			width = width + self.ValueOriginal:GetStringWidth() + 3
+		end
+
+		if self.Value:IsShown() then
+			width = width + self.Value:GetStringWidth()
+		end
+	end
+
+	self:SetWidth(width)
+end
+
+PKBT_ButtonMultiWidgetPriceContollerMixin = {}
+
+function PKBT_ButtonMultiWidgetPriceContollerMixin:OnShow()
+	local parent = self:GetParent()
+	parent:UpdatePriceRect()
+	parent:UpdateHolderRect()
+	parent:UpdateButton()
+end
+
+function PKBT_ButtonMultiWidgetPriceContollerMixin:OnEvent(event, ...)
+	local parent = self:GetParent()
+	if event == "SERVICE_STATE_UPDATE" or event == "STORE_BALANCE_UPDATE" then
+		if parent:IsShown() and parent.Price.currencyType == Enum.Store.CurrencyType.Bonus
+		and parent.Price.value and parent.Price.value > 0
+		then
+			parent:CheckBalance()
+		end
+	end
+end
+
+function PKBT_PriceMixin:SetFreeText(text)
+	self.__freeText = type(text) == "string" and text or nil
+end
+
+function PKBT_PriceMixin:SetOriginalPriceHidden(state)
+	self.__originalPriceHidden = not not state
+	if self.currencyType and self.value ~= -1 and self.ValueOriginal:IsShown() then
+		self:UpdateOriginalRect()
+		self:UpdatePriceRect()
+	end
+end
+
+function PKBT_PriceMixin:SetOriginalOnTop(state)
+	self.__originalOnTop = not not state
+	if self.currencyType and self.value ~= -1 and self.ValueOriginal:IsShown() then
+		self:UpdateOriginalRect()
+		self:UpdatePriceRect()
+	end
+end
+
+function PKBT_PriceMixin:SetCurrencyHelpTipEnabled(state)
+	self.__tooltipEnabled = not not state
+	self:SetScript("OnEnter", self.__tooltipEnabled and self.OnEnter or nil)
+	self:SetScript("OnLeave", self.__tooltipEnabled and self.OnLeave or nil)
 end
 
 PKBT_ButtonMultiWidgetPriceMixin = CreateFromMixins(PKBT_ButtonMultiWidgetMixin)
 
 function PKBT_ButtonMultiWidgetPriceMixin:OnLoad()
 	PKBT_ButtonMultiWidgetMixin.OnLoad(self)
+
+	self.PurchaseNote.Icon:SetAtlas("PKBT-Icon-Notification-White", true)
+	self.PurchaseNote.Icon:SetVertexColor(0.961, 0.141, 0.141)
+
 	self:AddFrame(self.Price):Hide()
 	self:MoveToPersistantPost(self.Price)
 
-	self.Controller:SetScript("OnShow", function(this)
-		self:UpdatePriceRect()
-		self:UpdateHolderRect()
-		self:UpdateButton()
-	end)
+	Mixin(self.Controller, PKBT_ButtonMultiWidgetPriceContollerMixin)
+	self.Controller:SetScript("OnShow", self.Controller.OnShow)
+	self.Controller:SetScript("OnEvent", self.Controller.OnEvent)
+	self.Controller:RegisterCustomEvent("SERVICE_STATE_UPDATE")
+	self.Controller:RegisterCustomEvent("STORE_BALANCE_UPDATE")
 end
 
 function PKBT_ButtonMultiWidgetPriceMixin:OnEnable()
@@ -563,8 +812,8 @@ function PKBT_ButtonMultiWidgetPriceMixin:OnEnter()
 	PKBT_ButtonMultiWidgetMixin.OnEnter(self)
 
 	if self:IsEnabled() ~= 1 then
-		if self.Price.currencyIndex and self.Price.value then
-			local balance = Store_GetBalance(self.Price.currencyIndex)
+		if self.Price.currencyType and self.Price.value then
+			local balance = Store_GetBalance(self.Price.currencyType)
 			if self.Price.value > balance then
 				self.Price.tooltip = true
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -584,21 +833,25 @@ function PKBT_ButtonMultiWidgetPriceMixin:OnLeave()
 end
 
 function PKBT_ButtonMultiWidgetPriceMixin:UpdatePriceRect()
-	local width = 0
+	PKBT_PriceMixin.UpdatePriceRect(self.Price)
 
-	if self.Price.Icon:IsShown() then
-		width = width + self.Price.Icon:GetWidth() + 3
+	if self:IsShown() then
+		self:UpdateHolderRect()
 	end
+end
 
-	if self.Price.ValueOriginal:IsShown() then
-		width = width + self.Price.ValueOriginal:GetStringWidth() + 3
+function PKBT_ButtonMultiWidgetPriceMixin:SetOriginalPriceHidden(state)
+	PKBT_PriceMixin.SetOriginalPriceHidden(self.Price, state)
+	self.__dirty = true
+
+	if self:IsShown() then
+		self:UpdateHolderRect()
 	end
+end
 
-	if self.Price.Value:IsShown() then
-		width = width + self.Price.Value:GetStringWidth()
-	end
-
-	self.Price:SetWidth(width)
+function PKBT_ButtonMultiWidgetPriceMixin:SetOriginalOnTop(state)
+	PKBT_PriceMixin.SetOriginalOnTop(self.Price, state)
+	self.__dirty = true
 
 	if self:IsShown() then
 		self:UpdateHolderRect()
@@ -608,57 +861,124 @@ end
 function PKBT_ButtonMultiWidgetPriceMixin:UpdatePriceColor()
 	if self:IsEnabled() ~= 1 then
 		self.Price.Value:SetTextColor(0.5, 0.5, 0.5)
-	elseif self.Price.ValueOriginal:IsShown() then
-		self.Price.Value:SetTextColor(0.102, 1, 0.102)
+		self.Price.Icon:SetDesaturated(true)
 	else
-		self.Price.Value:SetTextColor(1, 0.82, 0)
+		self.Price.Icon:SetDesaturated(false)
+		if self.Price.ValueOriginal:IsShown() then
+			self.Price.Value:SetTextColor(0.102, 1, 0.102)
+		else
+			self.Price.Value:SetTextColor(1, 0.82, 0)
+		end
 	end
 end
 
-function PKBT_ButtonMultiWidgetPriceMixin:SetPrice(price, originalPrice, currencyIndex)
-	local isFree = price == 0
-	self.Price.currencyIndex = currencyIndex
-	self.Price.value = price
+function PKBT_ButtonMultiWidgetPriceMixin:SetPrice(price, originalPrice, currencyType)
+	PKBT_PriceMixin.SetPrice(self.Price, price, originalPrice, currencyType)
 
-	if isFree then
-		self.Price.Value:SetText(self.Price.freeText or STORE_BUY_FREE)
-		self.Price.Icon:Hide()
-		self.Price.Value:SetPoint("LEFT", 0, 0)
+	if price == -1 then
+		self.Price:Hide()
 	else
-		self.Price.Value:SetText(price)
-		self.Price.Icon:SetAtlas(CURRENCY_ICONS[currencyIndex], false)
-		self.Price.Icon:Show()
+		self.Price:Show()
+		self:UpdatePriceColor()
+		self:CheckBalance()
 	end
 
-	if not self.hideOriginalPrice and originalPrice and originalPrice > 0 then
-		self.Price.ValueOriginal:SetText(originalPrice)
-		self.Price.ValueOriginal:Show()
-		self.Price.StrikeThrough:Show()
-		local originalValueWidth = self.Price.ValueOriginal:GetStringWidth()
-		self.Price.StrikeThrough:SetWidth(originalValueWidth + 4)
-		self.Price.Value:SetPoint("LEFT", self.Price.Icon, "RIGHT", originalValueWidth + 6, 0)
-	else
-		self.Price.ValueOriginal:Hide()
-		self.Price.StrikeThrough:Hide()
-		if not isFree then
-			self.Price.Value:SetPoint("LEFT", self.Price.Icon, "RIGHT", 3, 0)
-		end
-	end
-
-	self.Price:Show()
-	self:UpdatePriceColor()
-	self:CheckBalance()
+	self.__dirty = true
 	self:UpdatePriceRect()
 	self:UpdateButton()
 end
 
 function PKBT_ButtonMultiWidgetPriceMixin:CheckBalance()
-	if self.Price.currencyIndex and self.Price.value then
-		local balance = Store_GetBalance(self.Price.currencyIndex)
-		self:SetEnabled(self.Price.value <= balance)
+	if self.Price.currencyType and self.Price.value then
+		local balance = Store_GetBalance(self.Price.currencyType)
+
+		if self.__allowReplenishment and self.Price.currencyType == Enum.Store.CurrencyType.Bonus then
+			self.PurchaseNote:SetShown(self.__showReplenishmentIcon and self.Price.value > balance and not C_Service.IsInGMMode())
+			self:Enable()
+		else
+			self.PurchaseNote:Hide()
+			self:SetEnabled(self.Price.value <= balance or C_Service.IsInGMMode())
+		end
 	else
+		self.PurchaseNote:Hide()
 		self:Enable()
 	end
+end
+
+function PKBT_ButtonMultiWidgetPriceMixin:SetAllowReplenishment(state, showIcon)
+	self.__allowReplenishment = not not state
+	self.__showReplenishmentIcon = not not showIcon
+
+	if self:IsShown() then
+		self:CheckBalance()
+	end
+end
+
+function PKBT_ButtonMultiWidgetPriceMixin:OnNoteEnter()
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+	GameTooltip:AddLine(STORE_NOT_ENOUGH_CURRENCY_REPLENISH, 1, 1, 1)
+	GameTooltip:Show()
+end
+
+function PKBT_ButtonMultiWidgetPriceMixin:OnNoteLeave()
+	GameTooltip:Hide()
+end
+
+PKBT_CheckButtonBaseMixin = {}
+
+function PKBT_CheckButtonBaseMixin:OnLoad()
+	self:SetText(getmetatable(self).__index.GetText(self))
+end
+
+function PKBT_CheckButtonBaseMixin:OnShow()
+	self:UpdateHitRect()
+end
+
+function PKBT_CheckButtonBaseMixin:SetText(text)
+	self.ButtonText:SetText(text)
+	self:UpdateHitRect()
+end
+
+function PKBT_CheckButtonBaseMixin:GetText()
+	return self.ButtonText:GetText()
+end
+
+function PKBT_CheckButtonBaseMixin:UpdateHitRect()
+	self:SetHitRectInsets(0, -(5 + self.ButtonText:GetStringWidth()), -4, -4)
+end
+
+function PKBT_CheckButtonBaseMixin:OnClick(button, userInput)
+	if self:IsEnabled() == 1 then
+		if type(self.OnChecked) == "function" then
+			self:OnChecked(not not self:GetChecked(), userInput or false)
+		end
+	end
+end
+
+function PKBT_CheckButtonBaseMixin:SetChecked(checked)
+	checked = not not checked
+	if (not not self:GetChecked()) == checked then
+		return
+	end
+
+	getmetatable(self).__index.SetChecked(self, checked)
+
+	if type(self.OnChecked) == "function" then
+		self:OnChecked(checked, false)
+	end
+end
+
+PKBT_CheckButtonMixin = CreateFromMixins(PKBT_CheckButtonBaseMixin)
+
+function PKBT_CheckButtonMixin:OnLoad()
+	PKBT_CheckButtonBaseMixin.OnLoad(self)
+	self:SetNormalAtlas("PKBT-Checkbox-Default")
+	self:SetPushedAtlas("PKBT-Checkbox-Default")
+	self:SetDisabledAtlas("PKBT-Checkbox-Default")
+	self:GetDisabledTexture():SetDesaturated(true)
+	self:SetHighlightAtlas("PKBT-Checkbox-Highlight")
+	self:SetCheckedTexture("")
+	self:GetCheckedTexture():SetAtlas("PKBT-Checkbox-Checked", true)
 end
 
 PKBT_RibbonMixin = {}
@@ -756,12 +1076,14 @@ function PKBT_TabButtonMixin:SetSelected(selected)
 			self.Center:SetAtlas("PKBT-Tab-Background-Center-Selected")
 			self:SetHeight(44)
 			self.ButtonText:SetPoint("CENTER", 0, 2)
+			self:SetPushedTextOffset(0, 0)
 		else
 			self.Left:SetAtlas("PKBT-Tab-Background-Left", true)
 			self.Right:SetAtlas("PKBT-Tab-Background-Right", true)
 			self.Center:SetAtlas("PKBT-Tab-Background-Center")
 			self:SetHeight(38)
 			self.ButtonText:SetPoint("CENTER", 0, 6)
+			self:SetPushedTextOffset(2, -1)
 		end
 	end
 end
@@ -828,8 +1150,12 @@ function PKBT_TabButtonWithIconMixin:SetIcon(texture, isAtlas, useAtlasSize)
 	end
 end
 
+function PKBT_TabButtonWithIconMixin:SetIconSize(size)
+	self.Icon:SetSize(size, size)
+end
+
 function PKBT_TabButtonWithIconMixin:OnMouseDown(button)
-	if self:IsEnabled() == 1 then
+	if self:IsEnabled() == 1 and not self:IsSelected() then
 		self.Icon:SetPoint("RIGHT", self.ButtonText, "LEFT", -self.ICON_OFFSET + 2, -1)
 	end
 end
@@ -840,79 +1166,56 @@ function PKBT_TabButtonWithIconMixin:OnMouseUp(button)
 	end
 end
 
-PKBT_MultiBuyEditBoxMixin = {}
+PKBT_UIPanelScrollBarMixin = {}
 
-function PKBT_MultiBuyEditBoxMixin:OnLoad()
-	self.BackgroundLeft:SetAtlas("PKBT-Input-Background-Left", true)
-	self.BackgroundRight:SetAtlas("PKBT-Input-Background-Right", true)
-	self.BackgroundCenter:SetAtlas("PKBT-Input-Background-Center", true)
+function PKBT_UIPanelScrollBarMixin:OnLoad()
+	self.Top:SetAtlas("PKBT-ScrollBar-Vertical-Background-Top", true)
+	self.Bottom:SetAtlas("PKBT-ScrollBar-Vertical-Background-Bottom", true)
+	self.Middle:SetAtlas("PKBT-ScrollBar-Vertical-Background-Middle")
 
-	self.DecrementButton:SetNormalAtlas("PKBT-Icon-Minus")
-	self.DecrementButton:SetDisabledAtlas("PKBT-Icon-Minus-Disabled")
-	self.DecrementButton:SetPushedAtlas("PKBT-Icon-Minus-Pressed")
-	self.DecrementButton:SetHighlightAtlas("PKBT-Icon-PlusMinus-Highlight")
+	self.ThumbTextureTop:SetAtlas("PKBT-ScrollBar-Vertical-Thumb-Top", true)
+	self.ThumbTextureBottom:SetAtlas("PKBT-ScrollBar-Vertical-Thumb-Bottom", true)
+	self.ThumbTextureMiddle:SetAtlas("PKBT-ScrollBar-Vertical-Thumb-Middle", true)
 
-	self.IncrementButton:SetNormalAtlas("PKBT-Icon-Plus")
-	self.IncrementButton:SetDisabledAtlas("PKBT-Icon-Plus-Disabled")
-	self.IncrementButton:SetPushedAtlas("PKBT-Icon-Plus-Pressed")
-	self.IncrementButton:SetHighlightAtlas("PKBT-Icon-PlusMinus-Highlight")
+	self.ThumbTextureTop:SetPoint("TOP", self.ThumbTexture, "TOP", 0, 0)
+	self.ThumbTextureBottom:SetPoint("BOTTOM", self.ThumbTexture, "BOTTOM", 0, 0)
 end
 
-function PKBT_MultiBuyEditBoxMixin:OnTextChanged(userInput)
-	if self.ignoreTextChanged then
-		return
+function PKBT_UIPanelScrollBarMixin:OnSizeChanged(width, height)
+	self:UpdateThumbSize(width, height)
+end
+
+function PKBT_UIPanelScrollBarMixin:OnMinMaxChanged(minValue, maxValue)
+	self:UpdateThumbSize(nil, nil, minValue, maxValue)
+end
+
+function PKBT_UIPanelScrollBarMixin:UpdateThumbSize(width, height, minValue, maxValue)
+	if not minValue or not maxValue then
+		minValue, maxValue = self:GetMinMaxValues()
 	end
-
-	local value = self:GetNumber() or 0
-
-	if userInput then
-		local originalValue = value
-
-		if type(self.maxValue) == "number" then
-			value = math.min(self.maxValue, value)
-		elseif type(self.maxValue) == "function" then
-			value = math.min(self.maxValue(), value)
+	if minValue == 0 and maxValue == 0 then
+		self.ThumbTexture:SetHeight(self:GetHeight())
+	elseif maxValue ~= 0 then
+		if not height then
+			height = self:GetHeight()
 		end
-
-		if type(self.minValue) == "number" then
-			value = math.max(self.minValue, value)
-		elseif type(self.minValue) == "function" then
-			value = math.max(self.minValue(), value)
-		end
-
-		if value ~= originalValue then
-			self:SetText(value)
-			return
-		end
-	end
-
-	if not self.minValue
-	or (type(self.minValue) == "number" and self.minValue < value)
-	or (type(self.minValue) == "function" and self.minValue() < value)
-	then
-		self.DecrementButton:Enable()
-	else
-		self.DecrementButton:Disable()
-	end
-
-	if not self.maxValue
-	or (type(self.maxValue) == "number" and self.maxValue > value)
-	or (type(self.maxValue) == "function" and self.maxValue() > value)
-	then
-		self.IncrementButton:Enable()
-	else
-		self.IncrementButton:Disable()
-	end
-
-	if type(self.OnValueChanged) then
-		self.OnValueChanged(value, userInput)
+		local parentHeight = self:GetParent():GetHeight()
+		local visibleHeight = parentHeight / (maxValue + parentHeight) * height
+		self.ThumbTexture:SetHeight(math.min(math.max(27, visibleHeight), height * 0.5))
+	elseif height then
+		self.ThumbTexture:SetHeight(height)
 	end
 end
 
-function PKBT_MultiBuyEditBoxMixin:SetTextNoScript(text)
-	self.ignoreTextChanged = true
-	self:SetText(text)
-	self.ignoreTextChanged = nil
+function PKBT_UIPanelScrollBarMixin:SetScrollBarHideable(state)
+	state = not not state
+	self:GetParent().scrollBarHideable = state
+end
+
+function PKBT_UIPanelScrollBarMixin:SetBackgroundShown(state)
+	self.Top:SetShown(state)
+	self.Bottom:SetShown(state)
+	self.Middle:SetShown(state)
 end
 
 PKBT_MinimalScrollBarButtonMixin = {}
@@ -1190,20 +1493,300 @@ function PKBT_MinimalHorizontalScrollMixin:Disable()
 	self.ScrollBar.ScrollRightButton:Disable()
 end
 
+PKBT_ScrollShadowMixin = {}
+
+function PKBT_ScrollShadowMixin:OnLoad()
+	self.Top:SetAtlas("PKBT-Background-Shadow-Small-Bottom", true)
+	self.Top:SetSubTexCoord(0, 1, 1, 0)
+	self.Bottom:SetAtlas("PKBT-Background-Shadow-Small-Bottom", true)
+
+	self:GetParent().ScrollBar:HookScript("OnValueChanged", function(this, value)
+		self:UpdateAlpha(this, value)
+	end)
+	self:GetParent().ScrollBar:HookScript("OnMinMaxChanged", function(this)
+		self:UpdateAlpha(this)
+	end)
+	self:GetParent().ScrollBar.ScrollDownButton:HookScript("OnEnable", function(this)
+		self:UpdateAlpha(this:GetParent())
+	end)
+	self:GetParent().ScrollBar.ScrollDownButton:HookScript("OnDisable", function(this)
+		self.Bottom:SetAlpha(0)
+	end)
+end
+
+function PKBT_ScrollShadowMixin:OnShow()
+	self:UpdateFrameLevel()
+	self:UpdateAlpha()
+end
+
+function PKBT_ScrollShadowMixin:SetFrameLevelOffset(offset)
+	self.__frameLevelOffset = type(offset) == "number" and offset or nil
+	if self:IsShown() then
+		self:UpdateFrameLevel()
+	end
+end
+
+function PKBT_ScrollShadowMixin:SetEnabled(enabled)
+	enabled = not not enabled
+	self.__disabled = not enabled
+	if enabled then
+		self:UpdateAlpha()
+	else
+		self.Top:SetAlpha(0)
+		self.Bottom:SetAlpha(0)
+	end
+end
+
+function PKBT_ScrollShadowMixin:UpdateFrameLevel()
+	SetParentFrameLevel(self, self.__frameLevelOffset or 5)
+end
+
+function PKBT_ScrollShadowMixin:UpdateAlpha(scrollBar, value)
+	if not self:IsShown() or self.__disabled then
+		return
+	end
+
+	if not scrollBar then
+		scrollBar = self:GetParent().ScrollBar
+	end
+	if not value then
+		value = scrollBar:GetValue() or 0
+	end
+
+	local minValue, maxValue = scrollBar:GetMinMaxValues()
+	local topHeight = self.Top:GetHeight()
+	local bottomHeight = self.Bottom:GetHeight()
+
+	if value == 0 then
+		self.Top:SetAlpha(0)
+	elseif (value - minValue >= topHeight) then
+		self.Top:SetAlpha(1)
+	else
+		self.Top:SetAlpha((value - minValue) / topHeight)
+	end
+
+	if (value - maxValue) == 0 then
+		self.Bottom:SetAlpha(0)
+	elseif (value + bottomHeight <= maxValue) then
+		self.Bottom:SetAlpha(1)
+	else
+		self.Bottom:SetAlpha((maxValue - value) / bottomHeight)
+	end
+end
+
+PKBT_EditBoxCodeMixin = {}
+
+function PKBT_EditBoxCodeMixin:OnChar(char)
+	if self.__blockChanges then
+		self:SetText(self.__originalText)
+		if self.__autoSelectOnBlock then
+			self:HighlightText()
+		end
+	else
+		if self.__filterFunction then
+			local text = self:GetText()
+			local success, result = pcall(self.__filterFunction, text)
+			if success then
+				self:SetText(result or text)
+			else
+				geterrorhandler()(result)
+			end
+		end
+		if self.__noNewLine then
+			self:SetText(self:GetText():gsub("[\n\r]", ""))
+		end
+		if self.__noWhitespace then
+			self:SetText(self:GetText():gsub("%s", ""))
+		elseif self.__noMultipleSpaces then
+			self:SetText(self:GetText():gsub("%s%s+", " "))
+		end
+	end
+end
+
+function PKBT_EditBoxCodeMixin:OnTabPressed()
+	InputScrollFrame_OnTabPressed(self)
+end
+
+function PKBT_EditBoxCodeMixin:OnEscapePressed()
+	self:ClearFocus()
+end
+
+function PKBT_EditBoxCodeMixin:OnTextSet()
+	if self.__blockChanges then
+		self.__originalText = self:GetText()
+	end
+end
+
+function PKBT_EditBoxCodeMixin:OnTextChanged(userInput)
+	if self.__ignoreTextChanged then
+		return
+	end
+
+	local text = self:GetText()
+	self.Instructions:SetShown(text == "")
+
+	if type(self.OnValueChanged) == "function" then
+		self.OnValueChanged(text, userInput)
+	end
+end
+
+function PKBT_EditBoxCodeMixin:SetTextNoScript(text)
+	self.__ignoreTextChanged = true
+	self:SetText(text)
+	self.__ignoreTextChanged = nil
+end
+
+function PKBT_EditBoxCodeMixin:SetBlockChanges(state)
+	self.__blockChanges = not not state
+	self.__originalText = self:GetText()
+end
+
+function PKBT_EditBoxCodeMixin:SetSelectOnBlock(state)
+	self.__autoSelectOnBlock = not not state
+end
+
+function PKBT_EditBoxCodeMixin:SetBlockNewLines(state)
+	self.__noNewLine = not not state
+	if self.__noNewLine then
+		self:OnChar("")
+	end
+end
+
+function PKBT_EditBoxCodeMixin:SetBlockMultipleSpaces(state)
+	self.__noMultipleSpaces = not not state
+	if self.__noMultipleSpaces then
+		self:OnChar("")
+	end
+end
+
+function PKBT_EditBoxCodeMixin:SetBlockWhitespaces(state)
+	self.__noWhitespace = not not state
+	if self.__noWhitespace then
+		self:OnChar("")
+	end
+end
+
+function PKBT_EditBoxCodeMixin:SetCustomCharFilter(filterFunction)
+	self.__filterFunction = type(filterFunction) == "function" and filterFunction or nil
+	if self.__filterFunction then
+		self:OnChar("")
+	end
+end
+
+function PKBT_EditBoxCodeMixin:SetInstructions(instructions)
+	assert(instructions == nil or type(instructions) == "string")
+	self.Instructions:SetText(instructions)
+end
+
+PKBT_EditBoxMixin = CreateFromMixins(PKBT_EditBoxCodeMixin)
+
+function PKBT_EditBoxMixin:OnLoad()
+	self.BackgroundLeft:SetAtlas("PKBT-Input-Background-Left", true)
+	self.BackgroundRight:SetAtlas("PKBT-Input-Background-Right", true)
+	self.BackgroundCenter:SetAtlas("PKBT-Input-Background-Center", true)
+
+	self.Instructions:SetFontObject("PKBT_Font_16")
+	self.Instructions:ClearAllPoints()
+	self.Instructions:SetPoint("LEFT", 9, -2)
+end
+
+PKBT_EditBoxAltMixin = CreateFromMixins(PKBT_EditBoxCodeMixin)
+
+function PKBT_EditBoxAltMixin:OnLoad()
+	self.BackgroundLeft:SetAtlas("PKBT-InputAlt-Background-Left", true)
+	self.BackgroundRight:SetAtlas("PKBT-InputAlt-Background-Right", true)
+	self.BackgroundCenter:SetAtlas("PKBT-InputAlt-Background-Center", true)
+
+	self.Instructions:ClearAllPoints()
+	self.Instructions:SetPoint("LEFT", 9, -2)
+end
+
+PKBT_MultiBuyEditBoxMixin = CreateFromMixins(PKBT_EditBoxMixin)
+
+function PKBT_MultiBuyEditBoxMixin:OnLoad()
+	PKBT_EditBoxMixin.OnLoad(self)
+
+	self.DecrementButton:SetNormalAtlas("PKBT-Icon-Minus")
+	self.DecrementButton:SetDisabledAtlas("PKBT-Icon-Minus-Disabled")
+	self.DecrementButton:SetPushedAtlas("PKBT-Icon-Minus-Pressed")
+	self.DecrementButton:SetHighlightAtlas("PKBT-Icon-PlusMinus-Highlight")
+
+	self.IncrementButton:SetNormalAtlas("PKBT-Icon-Plus")
+	self.IncrementButton:SetDisabledAtlas("PKBT-Icon-Plus-Disabled")
+	self.IncrementButton:SetPushedAtlas("PKBT-Icon-Plus-Pressed")
+	self.IncrementButton:SetHighlightAtlas("PKBT-Icon-PlusMinus-Highlight")
+end
+
+function PKBT_MultiBuyEditBoxMixin:OnTextChanged(userInput)
+	if self.__ignoreTextChanged then
+		return
+	end
+
+	local value = self:GetNumber() or 0
+
+	if userInput then
+		local originalValue = value
+
+		if type(self.maxValue) == "number" then
+			value = math.min(self.maxValue, value)
+		elseif type(self.maxValue) == "function" then
+			value = math.min(self.maxValue(), value)
+		end
+
+		if type(self.minValue) == "number" then
+			value = math.max(self.minValue, value)
+		elseif type(self.minValue) == "function" then
+			value = math.max(self.minValue(), value)
+		end
+
+		if value ~= originalValue then
+			self:SetText(value)
+			return
+		end
+	end
+
+	if not self.minValue
+	or (type(self.minValue) == "number" and self.minValue < value)
+	or (type(self.minValue) == "function" and self.minValue() < value)
+	then
+		self.DecrementButton:Enable()
+	else
+		self.DecrementButton:Disable()
+	end
+
+	if not self.maxValue
+	or (type(self.maxValue) == "number" and self.maxValue > value)
+	or (type(self.maxValue) == "function" and self.maxValue() > value)
+	then
+		self.IncrementButton:Enable()
+	else
+		self.IncrementButton:Disable()
+	end
+
+	if type(self.OnValueChanged) == "function" then
+		self.OnValueChanged(value, userInput)
+	end
+end
+
+function PKBT_MultiBuyEditBoxMixin:SetTextNoScript(text)
+	self.__ignoreTextChanged = true
+	self:SetText(text)
+	self.__ignoreTextChanged = nil
+end
 PKBT_CountdownThrottledBaseMixin = {}
 
 function PKBT_CountdownThrottledBaseMixin:OnCountdownUpdate(timeLeft, isFinished)
 end
 
-function PKBT_CountdownThrottledBaseMixin:SetCountdown(timeLeft, throttleSec, customUpdateHandler, initTimeLeft)
+function PKBT_CountdownThrottledBaseMixin:SetCountdown(timeLeft, throttleSec, customUpdateHandler, ceilTime)
 	if type(timeLeft) == "number" and timeLeft > 0 then
 		self.__timeLeft = timeLeft
 		self.__throttleSec = throttleSec or 0.1
 		self.__elapsed = 0
+		self.__ceilTime = ceilTime
 		self:SetScript("OnUpdate", self.OnUpdate)
 	else
-		self.__timeLeft = 0
-		self:SetScript("OnUpdate", nil)
+		self:CancelCountdown()
 	end
 
 	if type(customUpdateHandler) == "function" then
@@ -1213,11 +1796,16 @@ function PKBT_CountdownThrottledBaseMixin:SetCountdown(timeLeft, throttleSec, cu
 	end
 
 	local handler = self.__customUpdateHandler or self.OnCountdownUpdate
-	handler(self, initTimeLeft or self.__timeLeft, false)
+	handler(self, ceilTime and math.ceil(self.__timeLeft) or self.__timeLeft, false)
 end
 
 function PKBT_CountdownThrottledBaseMixin:SetTimeLeft(timeLeft, throttleSec, customUpdateHandler)
-	self:SetCountdown(timeLeft > 0 and timeLeft + 1 or 0, throttleSec, customUpdateHandler, timeLeft)
+	self:SetCountdown(timeLeft, throttleSec, customUpdateHandler, true)
+end
+
+function PKBT_CountdownThrottledBaseMixin:CancelCountdown()
+	self.__timeLeft = 0
+	self:SetScript("OnUpdate", nil)
 end
 
 function PKBT_CountdownThrottledBaseMixin:OnUpdate(elapsed)
@@ -1234,7 +1822,7 @@ function PKBT_CountdownThrottledBaseMixin:OnUpdate(elapsed)
 			self:SetScript("OnUpdate", nil)
 			handler(self, self.__timeLeft, true)
 		else
-			handler(self, self.__timeLeft, false)
+			handler(self, self.__ceilTime and math.ceil(self.__timeLeft) or self.__timeLeft, false)
 		end
 	end
 end

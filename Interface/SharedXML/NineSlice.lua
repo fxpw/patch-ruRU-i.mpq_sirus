@@ -1,7 +1,7 @@
 --[[
 	Nine-slice utility for creating themed background frames without rewriting a lot of boilerplate code.
 	There are some utilities to help with anchoring, and others to create a border and theme it from scratch.
-	AnchorUtil.ApplyLayout makes use of a layout table, and is probably what most setups will use.
+	NineSliceUtil.ApplyLayout makes use of a layout table, and is probably what most setups will use.
 
 	What the layout table should look like:
 	- A table of tables, where each inner table describes a corner, edge, or center of the nine-slice frame.
@@ -169,6 +169,36 @@ function NineSliceUtil.ApplyLayout(container, userLayout, textureKit)
 			else
 				SetupPieceVisuals(piece, setup, pieceLayout, textureKit, userLayout);
 			end
+		end
+	end
+end
+
+do 
+	local function ForEachPiece(fn)
+		return function(container)
+			for pieceIndex, setup in ipairs(nineSliceSetup) do
+				local pieceName = setup.pieceName;
+				local piece, pieceAlreadyExisted = GetNineSlicePiece(container, pieceName);
+				if piece then
+					fn(piece);
+				end
+			end
+		end
+	end
+
+	NineSliceUtil.HideLayout = ForEachPiece(function(piece)
+		piece:Hide();
+	end);
+
+	NineSliceUtil.ShowLayout = ForEachPiece(function(piece)
+		piece:Show();
+	end);
+
+	function NineSliceUtil.SetLayoutShown(container, show)
+		if show then
+			NineSliceUtil.ShowLayout(container);
+		else
+			NineSliceUtil.HideLayout(container);
 		end
 	end
 end

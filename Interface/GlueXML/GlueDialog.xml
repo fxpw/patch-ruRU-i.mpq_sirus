@@ -110,6 +110,49 @@
 							</OnEscapePressed>
 						</Scripts>
 					</EditBox>
+					<Frame name="$parentHardcoreProposal" parentKey="HardcoreProposal">
+						<Size x="0" y="70"/>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentText" relativePoint="BOTTOM" x="0" y="-10"/>
+							<Anchor point="LEFT" x="20" y="0"/>
+							<Anchor point="RIGHT" x="-20" y="0"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString name="$parentWarning" parentKey="Warning" inherits="GlueFontNormal" text="CHARACTER_HARDCORE_PROPOSAL_WARNING">
+									<Anchors>
+										<Anchor point="TOP" x="0" y="-10"/>
+									</Anchors>
+									<Color r="1" g="0.2" b="0.2"/>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Frames>
+							<Frame name="$parentIconFrame" parentKey="IconFrame">
+								<Size x="50" y="50"/>
+								<Anchors>
+									<Anchor point="TOP" x="0" y="0"/>
+								</Anchors>
+								<Layers>
+									<Layer level="ARTWORK">
+										<Texture name="$parentIcon" parentKey="Icon" setAllPoints="true"/>
+									</Layer>
+								</Layers>
+								<Scripts>
+									<OnEnter>
+										GlueTooltip:SetOwner(self, "ANCHOR_RIGHT")
+										GlueTooltip:SetMaxWidth(350)
+										GlueTooltip:AddLine(CHARACTER_CREATE_HARDCORE_LABEL, 1, 1, 1)
+										GlueTooltip:AddLine(CHARACTER_CREATE_HARDCORE_TIP, 1, 0.82, 0)
+										GlueTooltip:Show()
+									</OnEnter>
+									<OnLeave>
+										GlueTooltip:Hide()
+									</OnLeave>
+								</Scripts>
+							</Frame>
+						</Frames>
+					</Frame>
 				</Frames>
 			</Frame>
 		</Frames>
@@ -118,6 +161,9 @@
 				Mixin(self, GlueDialogMixin)
 				self:OnLoad()
 			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
 			<OnShow>
 				self:OnShow()
 			</OnShow>

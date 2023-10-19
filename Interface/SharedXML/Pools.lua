@@ -107,18 +107,26 @@ local function FramePoolFactory(framePool)
 end
 
 local function ForbiddenFramePoolFactory(framePool)
-	print(framePool.frameType, string.format("PoolFrame_%s", time()), framePool.parent, framePool.frameTemplate)
-	return
+	return FramePoolFactory(framePool)
 end
 
 function FramePoolMixin:OnLoad(frameType, parent, frameTemplate, resetterFunc, forbidden, frameInitFunc)
 	if forbidden then
-		ObjectPoolMixin.OnLoad(self, ForbiddenFramePoolFactory, resetterFunc);
+		local creationFunc = ForbiddenFramePoolFactory;
+		if frameInitFunc ~= nil then
+			creationFunc = function(framePool)
+				local frame =  ForbiddenFramePoolFactory(framePool);
+				frameInitFunc(frame);
+				return frame;
+			end
+		end
+
+		ObjectPoolMixin.OnLoad(self, creationFunc, resetterFunc);
 	else
 		local creationFunc = FramePoolFactory;
 		if frameInitFunc ~= nil then
 			creationFunc = function(framePool)
-				local frame = ForbiddenFramePoolFactory(framePool);
+				local frame = FramePoolFactory(framePool);
 				frameInitFunc(frame);
 				return frame;
 			end

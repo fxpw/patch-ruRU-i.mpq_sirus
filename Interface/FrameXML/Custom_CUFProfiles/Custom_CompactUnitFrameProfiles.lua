@@ -37,6 +37,7 @@ local FLATTENDED_OPTIONS = {
 	["rangeAlpha"] = 1,
 	["raidTargetIcon"] = 1,
 	["partyInRaid"] = 1,
+	["useOwnerClassColors"] = 1,
 };
 
 local DEFAULT_PROFILE = {
@@ -73,6 +74,7 @@ local DEFAULT_PROFILE = {
 	rangeAlpha = 55,
 	raidTargetIcon = false,
 	partyInRaid = false,
+	useOwnerClassColors = false,
 };
 
 function GetNumRaidProfiles()
@@ -868,6 +870,7 @@ CUFProfileActionTable = {
 	keepGroupsTogether = CompactUnitFrameProfiles_GenerateRaidManagerSetting("KeepGroupsTogether"),
 	sortBy = CompactUnitFrameProfiles_GenerateRaidManagerSetting("SortMode"),
 	displayPets = CompactUnitFrameProfiles_GenerateRaidManagerSetting("DisplayPets"),
+	useOwnerClassColors = CompactUnitFrameProfiles_GenerateOptionSetter("useOwnerClassColors", "mini"),
 	displayRaidRoleGroupIcon = CompactUnitFrameProfiles_GenerateOptionSetter("displayRaidRoleGroupIcon", "normal"),
 	displayMainTankAndAssist = CompactUnitFrameProfiles_GenerateRaidManagerSetting("DisplayMainTankAndAssist"),
 	displayPowerBar = CompactUnitFrameProfiles_GenerateSetUpOptionSetter("displayPowerBar", "normal"),

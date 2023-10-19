@@ -227,6 +227,21 @@ function AlliedRacesFrameMixin:OnLoad()
 	self.Banner:SetAtlas("AlliedRace-UnlockingFrame-RaceBanner", true);
 end
 
+function AlliedRacesFrameMixin:TraitsHintOnEnter(this)
+	local raceID, signName, signDesc, signIcon, signAtlas = C_ZodiacSign.GetZodiacSignInfo(self.raceID)
+	if signName then
+		GameTooltip:SetOwner(this, "ANCHOR_RIGHT")
+		GameTooltip:SetMinimumWidth(400)
+		GameTooltip:AddLine(signName)
+		GameTooltip:AddLine(string.format(ALLIED_RACE_ZODIAC_HINT, signName), 1, 1, 1, 1)
+		GameTooltip:Show()
+	end
+end
+
+function AlliedRacesFrameMixin:TraitsHintOnLeave(this)
+	GameTooltip:Hide()
+end
+
 function AlliedRacesFrameMixin:ASMSG_ALLIED_RACE_OPEN(msg)
 	local raceID = tonumber(msg);
 	if raceID and C_AlliedRaces.GetRaceInfoByID(raceID) then

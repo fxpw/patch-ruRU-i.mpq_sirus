@@ -379,7 +379,7 @@
 	<Button name="ezSpectator_DebugButton" inherits="ezSpectator_ButtonTemplate" parent="ArenaSpectatorFrame" frameStrata="TOOLTIP" text="SHOW_HIDE_LABEL">
 		<Size x="140" y="32"/>
 		<Anchors>
-			<Anchor point="TOPLEFT" x="10" y="-40" />
+			<Anchor point="TOPLEFT" x="3" y="-40" />
 		</Anchors>
 		<Scripts>
 			<OnClick>

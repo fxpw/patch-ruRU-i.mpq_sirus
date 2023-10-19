@@ -208,12 +208,36 @@ NineSliceLayouts =
 		RightEdge			= { layer = "ARTWORK", atlas = "PKBT-UI-Frame-Metal-EdgeRight", },
 	},
 
+	PKBT_PanelNoPortraitSlim =
+	{
+		TopLeftCorner		= { layer = "ARTWORK", atlas = "PKBT-UI-Frame-Metal-CornerTopLeft-Alt", x = -4, y = 11, },
+		TopRightCorner		= { layer = "ARTWORK", atlas = "PKBT-UI-Frame-Metal-CornerTopRight-Alt", x = 11, y = 11, },
+		BottomLeftCorner	= { layer = "ARTWORK", atlas = "PKBT-UI-Frame-Metal-CornerBottomLeft", x = -4, y = -11, },
+		BottomRightCorner	= { layer = "ARTWORK", atlas = "PKBT-UI-Frame-Metal-CornerBottomRight", x = 11, y = -11, },
+		TopEdge				= { layer = "ARTWORK", atlas = "PKBT-UI-Frame-Metal-EdgeTop-Alt", },
+		BottomEdge			= { layer = "ARTWORK", atlas = "PKBT-UI-Frame-Metal-EdgeBottom", },
+		LeftEdge			= { layer = "ARTWORK", atlas = "PKBT-UI-Frame-Metal-EdgeLeft", },
+		RightEdge			= { layer = "ARTWORK", atlas = "PKBT-UI-Frame-Metal-EdgeRight", },
+	},
+
+	PKBT_InsetFrameTemplate =
+	{
+		TopLeftCorner		= { layer = "BORDER", atlas = "PKBT-Inset-CornerTopLeft", },
+		TopRightCorner		= { layer = "BORDER", atlas = "PKBT-Inset-CornerTopRight", },
+		BottomLeftCorner	= { layer = "BORDER", atlas = "PKBT-Inset-CornerBottomLeft", x = 0, y = -1, },
+		BottomRightCorner	= { layer = "BORDER", atlas = "PKBT-Inset-CornerBottomRight", x = 0, y = -1, },
+		TopEdge				= { layer = "BORDER", atlas = "PKBT-Inset-EdgeTop", },
+		BottomEdge			= { layer = "BORDER", atlas = "PKBT-Inset-EdgeBottom", },
+		LeftEdge			= { layer = "BORDER", atlas = "PKBT-Inset-EdgeLeft", },
+		RightEdge			= { layer = "BORDER", atlas = "PKBT-Inset-EdgeRight", },
+	},
+
 	PKBT_DialogBorder =
 	{
-		TopLeftCorner		= { atlas = "PKBT-UI-Frame-DiamondMetal-CornerTopLeft", x = -15, y = 15, },
-		TopRightCorner		= { atlas = "PKBT-UI-Frame-DiamondMetal-CornerTopRight", x = 15, y = 15, },
-		BottomLeftCorner	= { atlas = "PKBT-UI-Frame-DiamondMetal-CornerBottomLeft", x = -15, y = -15, },
-		BottomRightCorner	= { atlas = "PKBT-UI-Frame-DiamondMetal-CornerBottomRight", x = 15, y = -15, },
+		TopLeftCorner		= { atlas = "PKBT-UI-Frame-DiamondMetal-CornerTopLeft", x = -15, y = 14, },
+		TopRightCorner		= { atlas = "PKBT-UI-Frame-DiamondMetal-CornerTopRight", x = 15, y = 14, },
+		BottomLeftCorner	= { atlas = "PKBT-UI-Frame-DiamondMetal-CornerBottomLeft", x = -15, y = -14, },
+		BottomRightCorner	= { atlas = "PKBT-UI-Frame-DiamondMetal-CornerBottomRight", x = 15, y = -14, },
 		TopEdge				= { atlas = "PKBT-UI-Frame-DiamondMetal-EdgeTop", },
 		BottomEdge			= { atlas = "PKBT-UI-Frame-DiamondMetal-EdgeBottom", },
 		LeftEdge			= { atlas = "PKBT-UI-Frame-DiamondMetal-EdgeLeft", },
@@ -233,10 +257,10 @@ NineSliceLayouts =
 	},
 
 	PKBT_ItemPlate = {
-		TopLeftCorner		= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-CornerTopLeft", x = -4, y = 8, },
-		TopRightCorner		= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-CornerTopRight", x = 5, y = 8, },
-		BottomLeftCorner	= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-CornerBottomLeft", x = -4, y = -8, },
-		BottomRightCorner	= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-CornerBottomRight", x = 5, y = -8, },
+		TopLeftCorner		= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-CornerTopLeft", x = -8, y = 8, },
+		TopRightCorner		= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-CornerTopRight", x = 8, y = 8, },
+		BottomLeftCorner	= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-CornerBottomLeft", x = -8, y = -8, },
+		BottomRightCorner	= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-CornerBottomRight", x = 8, y = -8, },
 		TopEdge				= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-EdgeTop", },
 		BottomEdge			= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-EdgeBottom", },
 		LeftEdge			= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-EdgeLeft", },

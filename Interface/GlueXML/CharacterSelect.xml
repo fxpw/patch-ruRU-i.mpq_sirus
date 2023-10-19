@@ -75,8 +75,7 @@
 		<Scripts>
 			<OnLoad>
 				Mixin(self, CharacterSelectServiceButtonMixin)
-
-				 self:OnLoad()
+				self:OnLoad()
 			</OnLoad>
 			<OnClick>
 				self:OnClick()
@@ -89,6 +88,7 @@
 				if tooltip then
 					GlueTooltip:SetOwner(self)
 					GlueTooltip:SetText(tooltip)
+					GlueTooltip:Show()
 				end
 			</OnEnter>
 			<OnLeave>
@@ -123,6 +123,7 @@
 	</Button>
 	<Button name="CharSelectCharacterButtonTemplate" virtual="true" hidden="true">
 		<Size x="300" y="66"/>
+		<HitRectInsets left="6" right="0" top="0" bottom="0"/>
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture name="$parentBackground" parentKey="Background">
@@ -157,21 +158,36 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Frame name="$parentPortraitFrame" parentKey="PortraitFrame">
+			<Button name="$parentPortraitFrame" parentKey="PortraitFrame">
 				<Size x="40" y="40"/>
 				<Anchors>
-					<Anchor point="LEFT" relativePoint="LEFT" x="20" y="0" />
+					<Anchor point="LEFT" x="20" y="0"/>
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
+						<Texture name="$parentZodiacBackground" parentKey="ZodiacBackground" file="Interface/GuildFrame/GuildLogoMask_L" hidden="true">
+							<Size x="58" y="58"/>
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0"/>
+							</Anchors>
+							<Color r="0.1" g="0.1" b="0.1"/>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
 						<Texture name="$parentIcon" parentKey="Icon">
 							<Size x="50" y="50"/>
 							<Anchors>
 								<Anchor point="CENTER" x="0" y="0" />
 							</Anchors>
 						</Texture>
+						<Texture name="$parentZodiacSign" parentKey="ZodiacSign" hidden="true">
+							<Size x="40" y="40"/>
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0"/>
+							</Anchors>
+						</Texture>
 					</Layer>
-					<Layer level="BORDER">
+					<Layer level="ARTWORK">
 						<Texture name="$parentBorder" parentKey="Border">
 							<Size x="144" y="144"/>
 							<Anchors>
@@ -179,7 +195,7 @@
 							</Anchors>
 						</Texture>
 					</Layer>
-					<Layer level="ARTWORK">
+					<Layer level="OVERLAY">
 						<Texture name="$parentFactionBorder" alpha="0.9" parentKey="FactionBorder">
 							<Size x="144" y="144"/>
 							<Anchors>
@@ -258,15 +274,38 @@
 				</Frames>
 				<Scripts>
 					<OnLoad>
-						self.Border:SetAtlas("UI-Frame-jailerstower-Portrait")
-						self.FactionBorder:SetAtlas("UI-Frame-jailerstower-Portrait-border")
-
-						self.LevelFrame.Border:SetAtlas("UI-Frame-jailerstower-Portrait")
-
-						self.MailIcon:SetFrameLevel(self:GetFrameLevel() + 1)
+						Mixin(self, CharacterSelectButtonPortraitMixin)
+						self:OnLoad()
 					</OnLoad>
+					<OnDisable>
+						self:OnDisable()
+					</OnDisable>
+					<OnEnter>
+						self:OnEnter()
+					</OnEnter>
+					<OnLeave>
+						self:OnLeave()
+					</OnLeave>
+					<OnMouseDown>
+						self:GetParent():OnMouseDown(button)
+					</OnMouseDown>
+					<OnMouseUp>
+						self:GetParent():OnMouseUp(button)
+					</OnMouseUp>
+					<OnClick>
+						self:GetParent():OnClick(button)
+					</OnClick>
+					<OnDoubleClick>
+						self:GetParent():OnDoubleClick(button)
+					</OnDoubleClick>
+					<OnDragStart>
+						self:GetParent():OnDragStart(button)
+					</OnDragStart>
+					<OnDragStop>
+						self:GetParent():OnDragStop()
+					</OnDragStop>
 				</Scripts>
-			</Frame>
+			</Button>
 			<Frame name="$parentButtonText" toplevel="true" parentKey="buttonText">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentPortraitFrame" relativePoint="TOPRIGHT" x="14" y="0" />
@@ -274,26 +313,54 @@
 				</Anchors>
 				<Layers>
 					<Layer level="BORDER">
-						<FontString name="$parentName" inherits="GlueFontNormal" justifyH="LEFT" parentKey="name">
+						<FontString name="$parentName" parentKey="name" inherits="GlueFontNormal" justifyH="LEFT">
 							<Anchors>
 								<Anchor point="TOPLEFT" x="4" y="0" />
 							</Anchors>
 						</FontString>
-						<FontString name="$parentLocation" maxLines="2" inherits="GlueFontDisableSmall" justifyV="TOP" justifyH="LEFT" parentKey="Location">
+						<FontString name="$parentLocation" parentKey="Location" maxLines="2" inherits="GlueFontDisableSmall" justifyV="TOP" justifyH="LEFT">
 							<Size x="170" y="20"/>
 							<Anchors>
-								<Anchor point="TOPLEFT" relativeTo="$parentName" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+								<Anchor point="TOP" relativeTo="$parentName" relativePoint="BOTTOM" x="0" y="-2"/>
+								<Anchor point="LEFT" x="4" y="0"/>
 							</Anchors>
 						</FontString>
-						<FontString name="$parentItemLevel" parentKey="ItemLevel" inherits="GlueFontNormalExtraSmall" justifyV="TOP" justifyH="LEFT" hidden="true">
+						<FontString name="$parentItemLevel" parentKey="ItemLevel" inherits="GlueFontNormalExtraSmall" justifyH="LEFT" hidden="true">
 							<Size x="170" y="20"/>
 							<Anchors>
-								<Anchor point="TOPLEFT" relativeTo="$parentName" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
+								<Anchor point="BOTTOMLEFT" x="4" y="3"/>
 							</Anchors>
 							<Color r="0.5" g="0.5" b="0.5"/>
 						</FontString>
 					</Layer>
 				</Layers>
+				<Frames>
+					<Button name="$parentHardcoreIcon" parentKey="HardcoreIcon" hidden="true">
+						<Size x="22" y="22"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="0" y="5"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture name="$parentIcon" parentKey="Icon" setAllPoints="true"/>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnEnter>
+								self:GetParent():GetParent():OnEnterHardcoreIcon(self)
+							</OnEnter>
+							<OnLeave>
+								self:GetParent():GetParent():OnLeaveHardcoreIcon(self)
+							</OnLeave>
+							<OnEnable>
+								self.Icon:SetVertexColor(1, 1, 1)
+							</OnEnable>
+							<OnDisable>
+								self.Icon:SetVertexColor(0.5, 0.5, 0.5)
+							</OnDisable>
+						</Scripts>
+					</Button>
+				</Frames>
 			</Frame>
 
 			<Button name="$parentMoveUp" parentKey="upButton" inherits="CharSelectMoveButtonTemplate">
@@ -459,8 +526,125 @@
 				<Scripts>
 					<OnLoad>
 						Mixin(self, CharacterSelectPAIDButtonMixin)
-
 						self:OnLoad()
+					</OnLoad>
+					<OnClick>
+						self:OnClick()
+					</OnClick>
+					<OnEnable>
+						self:OnEnable()
+					</OnEnable>
+					<OnDisable>
+						self:OnDisable()
+					</OnDisable>
+					<OnMouseDown>
+						self:OnMouseDown()
+					</OnMouseDown>
+					<OnMouseUp>
+						self:OnMouseUp()
+					</OnMouseUp>
+					<OnEnter>
+						self:OnEnter()
+					</OnEnter>
+					<OnLeave>
+						self:OnLeave()
+					</OnLeave>
+				</Scripts>
+			</Button>
+			<Button name="$parentPaidZodiacButton" parentKey="PaidZodiacButton" id="5">
+				<Size x="30" y="30"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parentPortraitFrame" relativePoint="TOPLEFT" x="6" y="13"/>
+				</Anchors>
+				<HitRectInsets left="0" right="0" top="0" bottom="-3"/>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background" file="Interface/GuildFrame/GuildLogoMask_L">
+							<Size x="38" y="38"/>
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0"/>
+							</Anchors>
+							<Color r="0.1" g="0.1" b="0.1"/>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture name="$parentIcon" parentKey="Icon">
+							<Size x="24" y="24"/>
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+							<Color r="1" g="0" b="0"/>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<Texture name="$parentBorder" parentKey="Border">
+							<Size x="94" y="94"/>
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+							<Animations>
+								<AnimationGroup parentKey="Anim" looping="REPEAT">
+									<Rotation duration="6" order="1" degrees="-360"/>
+								</AnimationGroup>
+							</Animations>
+						</Texture>
+						<Texture name="$parentBorder2" alpha="1" hidden="true" alphaMode="ADD" parentKey="Border2">
+							<Size x="96" y="96"/>
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+							<Animations>
+								<AnimationGroup parentKey="ShowAnim">
+									<Alpha change="-1" duration="0" order="1"/>
+									<Alpha change="1" duration="0.3" order="1"/>
+								</AnimationGroup>
+								<AnimationGroup parentKey="HideAnim">
+									<Alpha smoothing="IN" change="-1" duration="0.2" order="1"/>
+									<Scripts>
+										<OnFinished>
+											self:GetParent().Anim:Stop()
+											self:GetParent():Hide()
+										</OnFinished>
+									</Scripts>
+								</AnimationGroup>
+								<AnimationGroup parentKey="Anim" looping="REPEAT">
+									<Rotation duration="6" order="1" degrees="360"/>
+								</AnimationGroup>
+							</Animations>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture name="$parentBorder3" alpha="0.5" hidden="true" parentKey="Border3">
+							<Size x="98" y="98"/>
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" />
+							</Anchors>
+							<Animations>
+								<AnimationGroup parentKey="ShowAnim">
+									<Alpha change="-1" duration="0" order="1"/>
+									<Alpha change="0.5" duration="0.3" order="1"/>
+								</AnimationGroup>
+								<AnimationGroup parentKey="HideAnim">
+									<Alpha smoothing="IN" change="-1" duration="0.2" order="1"/>
+									<Scripts>
+										<OnFinished>
+											self:GetParent().Anim:Stop()
+											self:GetParent():Hide()
+										</OnFinished>
+									</Scripts>
+								</AnimationGroup>
+								<AnimationGroup parentKey="Anim" looping="REPEAT">
+									<Rotation duration="6" order="1" degrees="-360"/>
+								</AnimationGroup>
+							</Animations>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, CharacterSelectPAIDButtonMixin)
+						self:OnLoad()
+						self:SetPAID(4)
 					</OnLoad>
 					<OnClick>
 						self:OnClick()
@@ -491,6 +675,9 @@
 				Mixin(self, CharacterSelectButtonMixin)
 				self:OnLoad()
 			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
 			<OnHide>
 				self:OnHide()
 			</OnHide>
@@ -501,7 +688,7 @@
 				self:OnDisable()
 			</OnDisable>
 			<OnDragStart>
-				self:OnDragStart()
+				self:OnDragStart(button)
 			</OnDragStart>
 			<OnDragStop>
 				self:OnDragStop()
@@ -510,7 +697,7 @@
 				self:OnMouseDown(button)
 			</OnMouseDown>
 			<OnMouseUp>
-				self:OnMouseUp()
+				self:OnMouseUp(button)
 			</OnMouseUp>
 			<OnClick>
 				self:OnClick(button)
@@ -699,8 +886,7 @@
 						</Layers>
 						<Scripts>
 							<OnLoad>
-								Mixin(self, GlueEasingAnimMixin, CharacterSelectPlayerNameFrameMixin)
-
+								Mixin(self, CharacterSelectPlayerNameFrameMixin)
 								self:OnLoad()
 							</OnLoad>
 						</Scripts>
@@ -712,8 +898,7 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								Mixin(self, GlueDark_ButtonMixin, GlueEasingAnimMixin, CharSelectChangeRealmButtonMixin)
-
+								Mixin(self, GlueDark_ButtonMixin, CharSelectChangeRealmButtonMixin)
 								self:OnLoad()
 								self:OnLoadStyle()
 							</OnLoad>
@@ -727,37 +912,15 @@
 						<Anchors>
 							<Anchor point="TOPLEFT" x="0" y="-40" />
 						</Anchors>
-						<Layers>
-							<Layer level="BACKGROUND">
-								<Texture name="$parentBackground" parentKey="Background" hidden="true">
-									<Size x="350" y="500"/>
-									<Anchors>
-										<Anchor point="CENTER" x="0" y="0" />
-									</Anchors>
-								</Texture>
-								<Texture name="$parentBackground2" alphaMode="ADD" parentKey="Background2">
-									<Size x="150" y="200"/>
-									<Anchors>
-										<Anchor point="CENTER" x="0" y="40" />
-									</Anchors>
-									<Animations>
-										<AnimationGroup parentKey="PulseAnim" looping="BOUNCE">
-											<Scale startDelay="5" smoothing="IN_OUT" duration="5" order="1" scaleX="2.3" scaleY="3"/>
-											<Alpha startDelay="8" duration="3" order="1" change="-1"/>
-										</AnimationGroup>
-									</Animations>
-								</Texture>
-							</Layer>
-						</Layers>
 						<Frames>
-							<Frame name="CharacterSelectLogoFrame" toplevel="true">
+							<Frame name="CharacterSelectLogoFrame">
 								<Size x="226" y="130"/>
 								<Anchors>
 									<Anchor point="TOP" x="0" y="8"/>
 								</Anchors>
 								<Layers>
 									<Layer level="OVERLAY">
-										<Texture name="$parentLogo" file="Interface\Custom_LoginScreen\Logo">
+										<Texture name="$parentLogo">
 											<Size x="226" y="130"/>
 											<Anchors>
 												<Anchor point="CENTER" x="0" y="0"/>
@@ -766,9 +929,9 @@
 									</Layer>
 								</Layers>
 								<Scripts>
-									<OnLoad>
-										self:SetFrameLevel(self:GetParent():GetFrameLevel() + 10)
-									</OnLoad>
+									<OnShow>
+										SetParentFrameLevel(self, 5)
+									</OnShow>
 								</Scripts>
 							</Frame>
 							<Frame name="$parentCharacterBoostInfoFrame" parentKey="CharacterBoostInfoFrame" hidden="true">
@@ -927,6 +1090,7 @@
 										if self.tooltip then
 											GlueTooltip:SetOwner(self)
 											GlueTooltip:SetText(self.tooltip, 1.0, 1.0, 1.0)
+											GlueTooltip:Show()
 										end
 									</OnEnter>
 									<OnLeave>
@@ -937,8 +1101,7 @@
 						</Frames>
 						<Scripts>
 							<OnLoad>
-								Mixin(self, GlueEasingAnimMixin, CharacterSelectLeftPanelMixin)
-
+								Mixin(self, CharacterSelectLeftPanelMixin)
 								self:OnLoad()
 							</OnLoad>
 						</Scripts>
@@ -1018,8 +1181,7 @@
 						</Frames>
 						<Scripts>
 							<OnLoad>
-								Mixin(self, GlueEasingAnimMixin, CharacterSelectCharacterMixin)
-
+								Mixin(self, CharacterSelectCharacterMixin)
 								self:OnLoad()
 							</OnLoad>
 						</Scripts>
@@ -1121,6 +1283,7 @@
 								if self:IsEnabled() ~= 1 and not CharSelectServicesFlowFrame:IsShown() then
 									GlueTooltip:SetOwner(self, "ANCHOR_BOTTOM", 0, -10)
 									GlueTooltip:SetText(CHARACTER_UNDELETE_NOT_CHARACTER)
+									GlueTooltip:Show()
 								end
 							</OnEnter>
 							<OnLeave>
@@ -1219,8 +1382,7 @@
 						</Frames>
 						<Scripts>
 							<OnLoad>
-								Mixin(self, GlueEasingAnimMixin, CharacterSelectBottomLeftPanelMixin)
-
+								Mixin(self, CharacterSelectBottomLeftPanelMixin)
 								self:OnLoad()
 							</OnLoad>
 						</Scripts>

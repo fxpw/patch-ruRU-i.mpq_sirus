@@ -91,7 +91,7 @@ GlueDialogTypes["REALM_IS_FULL"] = {
 	showAlert = 1,
 	OnAccept = function()
 		SetGlueScreen("charselect");
-		ChangeRealm(RealmList.selectedCategory , RealmList.currentRealm);
+		C_RealmList.ChangeRealm(RealmList.selectedCategory , RealmList.currentRealm);
 	end,
 	OnCancel = function()
 		CharacterSelect_ChangeRealm();
@@ -107,7 +107,7 @@ GlueDialogTypes["SUGGEST_REALM"] = {
 	end,
 	OnAccept = function()
 		SetGlueScreen("charselect");
-		ChangeRealm(RealmWizard.suggestedCategory, RealmWizard.suggestedID);
+		C_RealmList.ChangeRealm(RealmWizard.suggestedCategory, RealmWizard.suggestedID);
 	end,
 	OnCancel = function()
 		SetGlueScreen("charselect");
@@ -632,7 +632,7 @@ GlueDialogTypes["OKAY_REALM_DOWN"] = {
 		if RealmList:IsShown() then
 			RealmListUpdate()
 		else
-			RequestRealmList(1)
+			C_RealmList.RequestRealmList(1)
 		end
 	end,
 	OnCancel = function()
@@ -642,6 +642,27 @@ GlueDialogTypes["OKAY_REALM_DOWN"] = {
 GlueDialogTypes["OKAY_VOID"] = {
 	button1 = OKAY,
 	showAlert = 1,
+}
+
+GlueDialogTypes["OKAY_SERVER_ALERT"] = {
+	button1 = OKAY,
+	showAlert = 1,
+	OnHide = function()
+		AccountLogin_AutoLogin()
+	end,
+}
+
+GlueDialogTypes["HARDCORE_PROPOSAL"] = {
+	text = CHARACTER_HARDCORE_PROPOSAL,
+	button1 = ACCEPT,
+	button2 = DECLINE,
+	hardcoreProposal = true,
+	OnAccept = function(dialog)
+		C_CharacterList.SendHardcoreProposalAnswer(dialog.data, true)
+	end,
+	OnCancel = function(dialog)
+		C_CharacterList.SendHardcoreProposalAnswer(dialog.data, false)
+	end,
 }
 
 local DELAYED_DIALOGUES = {
@@ -662,7 +683,9 @@ local DIALOG_EDITBOX_OFFSET_Y = -5
 GlueDialogMixin = {}
 
 function GlueDialogMixin:OnLoad()
-	self:RegisterHookListener()
+	self:RegisterEvent("OPEN_STATUS_DIALOG")
+	self:RegisterEvent("UPDATE_STATUS_DIALOG")
+	self:RegisterEvent("CLOSE_STATUS_DIALOG")
 
 	self:EnableMouseWheel(true)
 
@@ -674,9 +697,18 @@ function GlueDialogMixin:OnLoad()
 	self.Container.alertWidth = 640
 	self.Container.origWidth = self.Container:GetWidth()
 	self.Container.Text.origWidth = self.Container.Text:GetWidth()
+
+	self.Container.HardcoreProposal.Warning:SetPoint("TOP", self.Container.HardcoreProposal.IconFrame, "BOTTOM", 0, -10)
+	self.Container.HardcoreProposal.IconFrame.Icon:SetAtlas("Custom-Challenges-Button-Round-Hardcore-Up")
 end
 
-function GlueDialogMixin:OPEN_STATUS_DIALOG(event, which, text, data)
+function GlueDialogMixin:OnEvent(event, ...)
+	if type(self[event]) == "function" then
+		self[event](self, ...)
+	end
+end
+
+function GlueDialogMixin:OPEN_STATUS_DIALOG(which, text, data)
 	if self.dialogTimer then
 		self.dialogTimer:Cancel()
 		self.dialogTimer = nil
@@ -693,7 +725,7 @@ function GlueDialogMixin:OPEN_STATUS_DIALOG(event, which, text, data)
 	end
 end
 
-function GlueDialogMixin:UPDATE_STATUS_DIALOG(event, text, buttonText)
+function GlueDialogMixin:UPDATE_STATUS_DIALOG(text, buttonText)
 	if not text or text == "" then return end
 
 	local info = GlueDialogTypes[self.which]
@@ -898,6 +930,14 @@ function GlueDialogMixin:ShowDialog(which, text, data)
 		self.Container.Text:SetWidth(displayWidth - DIALOG_BACKGROUND_OFFSET_X * 3)
 	end
 
+	if dialogInfo.hardcoreProposal then
+		self.Container.HardcoreProposal.Warning:SetWidth(self.Container.Text:GetWidth())
+		self.Container.HardcoreProposal:SetHeight(50 + self.Container.HardcoreProposal.Warning:GetHeight())
+		self.Container.HardcoreProposal:Show()
+	else
+		self.Container.HardcoreProposal:Hide()
+	end
+
 	-- Get the height of the string
 	local _, textHeight
 	if dialogInfo.html then
@@ -928,6 +968,10 @@ function GlueDialogMixin:ShowDialog(which, text, data)
 
 	if dialogInfo.spinner then
 		displayHeight = displayHeight + self.Container.Spinner:GetHeight()
+	end
+
+	if dialogInfo.hardcoreProposal then
+		displayHeight = displayHeight + self.Container.HardcoreProposal:GetHeight() + 20
 	end
 
 	self.Container:SetHeight(math.floor(displayHeight + 0.5))

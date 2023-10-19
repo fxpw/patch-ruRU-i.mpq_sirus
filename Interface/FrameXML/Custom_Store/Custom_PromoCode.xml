@@ -68,7 +68,7 @@
 		</Animations>
 		<Scripts>
 			<OnLoad>
-				SetParentArray(self, "rewardButtons", self)
+				self:SetParentArray("rewardButtons", self)
 			</OnLoad>
 			<OnShow>
 				self.animIn:Play()
@@ -227,16 +227,18 @@
 						</Anchors>
 						<Layers>
 							<Layer level="BACKGROUND">
-								<Texture name="$parentbackground" parentKey="background" file="Interface\QUESTFRAME\TalkingHeads2">
+								<Texture name="$parentbackground" parentKey="background">
 									<Size x="300" y="70"/>
 									<Anchors>
 										<Anchor point="CENTER" x="0" y="0" />
 									</Anchors>
-									<TexCoords left="0.000976562" right="0.557617" top="0.460938" bottom="0.612305"/>
 								</Texture>
 							</Layer>
 						</Layers>
 						<Scripts>
+							<OnLoad>
+								self.background:SetAtlas("TalkingHeads-Renegade-TextBackground")
+							</OnLoad>
 							<OnTextChanged>
 								local text = self:GetText()
 								if text then
@@ -315,7 +317,7 @@
 					<Anchor point="TOP" relativeTo="$parentItemButton1" relativePoint="BOTTOM" x="0" y="-2" />
 				</Anchors>
 			</Button>
-			<Button name="parentItemButton3" parentKey="ItemButton3" inherits="PromoCodeLootButtonTemplate" virtual="true">
+			<Button name="$parentItemButton3" parentKey="ItemButton3" inherits="PromoCodeLootButtonTemplate" virtual="true">
 				<Anchors>
 					<Anchor point="TOP" relativeTo="$parentItemButton2" relativePoint="BOTTOM" x="0" y="-2" />
 				</Anchors>

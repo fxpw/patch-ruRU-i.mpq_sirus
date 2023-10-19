@@ -90,8 +90,8 @@ function CollectionWardrobeUtil.SortSources(sources, primaryVisualID, primarySou
 	return sources;
 end
 
-function CollectionWardrobeUtil.GetSortedAppearanceSources(visualID, categoryID, subCategoryID)
-	local sources = C_TransmogCollection.GetAppearanceSources(visualID, categoryID, subCategoryID);
+function CollectionWardrobeUtil.GetSortedAppearanceSources(visualID, categoryID, subCategoryID, exclusion)
+	local sources = C_TransmogCollection.GetAppearanceSources(visualID, categoryID, subCategoryID, exclusion);
 	return CollectionWardrobeUtil.SortSources(sources, nil, nil, categoryID, subCategoryID);
 end
 
@@ -199,17 +199,13 @@ function CollectionWardrobeUtil.GetIllusionSourceTextAndColor(illsionInfo)
 			text = strconcat(text, illsionInfo.descriptionText);
 		end
 
-		local addNewLine = true;
 		if illsionInfo.holidayText ~= "" then
-			addNewLine = false;
-			text = strconcat(text or "", "\n");
+			text = strconcat(text, "\n");
 			text = strconcat(text, illsionInfo.holidayText);
 		end
 
 		if illsionInfo.priceText ~= "" then
-			if addNewLine then
-				text = strconcat(text or "", "\n");
-			end
+			text = strconcat(text, "\n");
 
 			local priceText;
 			if illsionInfo.factionSide == 1 then
@@ -221,7 +217,7 @@ function CollectionWardrobeUtil.GetIllusionSourceTextAndColor(illsionInfo)
 				priceText = illsionInfo.priceText:gsub("-Team.", "-"..faction..".");
 			end
 
-			text = strconcat(text or "", priceText);
+			text = strconcat(text, priceText);
 		end
 
 		color = HIGHLIGHT_FONT_COLOR;

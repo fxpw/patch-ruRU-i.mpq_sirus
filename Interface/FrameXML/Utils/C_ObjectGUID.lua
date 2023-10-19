@@ -33,7 +33,7 @@ function C_ObjectGUIDMixin:GetGUIDLow()
 end
 
 function C_ObjectGUIDMixin:IsPlayer()
-    return self:GetType() == E_OBJECT_GUID_TYPES.PLAYER
+    return not self:IsEmpty() and self:GetType() == E_OBJECT_GUID_TYPES.PLAYER
 end
 
 function C_ObjectGUIDMixin:IsWorldObject()

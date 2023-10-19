@@ -188,7 +188,7 @@ local spellbookCustomMountSpell = {
 local spellbookSecondaryProfessionData = {
 	[PROFESSION_FISHING] = {
 		["Up"] = nil,
-		["Down"] = {7620, 7731, 7732, 18248, 33095, 51294},
+		["Down"] = {7620, 7731, 7732, 18248, 33095, 51294, 321750},
 		isLearned = false,
 		skillIndex = nil,
 		skillName = nil,
@@ -210,7 +210,7 @@ local spellbookSecondaryProfessionData = {
 	},
 	[PROFESSION_FIRST_AID] = {
 		["Up"] = nil,
-		["Down"] = {3273, 3274, 7924, 10846, 27028, 45542},
+		["Down"] = {3273, 3274, 7924, 10846, 27028, 45542, 318621},
 		isLearned = false,
 		skillIndex = nil,
 		skillName = nil,
@@ -225,16 +225,16 @@ local spellbookMainProfessionValue = {}
 local spellbookMainProfessionData = {
 	[TRADESKILL_ALCHEMY] = {
 		["Up"] = nil,
-		["Down"] = {2259, 3101, 3464, 11611, 28596, 51304, 28677, 28675, 28672}
+		["Down"] = {2259, 3101, 3464, 11611, 28596, 51304, 28677, 28675, 28672, 321607}
 	},
 	[TRADESKILL_BLACKSMITHING] = {
 		["Up"] = nil,
-		["Down"] = {2018, 29844, 51300, 3538, 3100, 9785, 9788, 9787},
+		["Down"] = {2018, 29844, 51300, 3538, 3100, 9785, 9788, 9787, 318625},
 		["Down2"] = {17039, 17040, 17041}
 	},
 	[TRADESKILL_ENCHANTING] = {
 		["Up"] = 13262,
-		["Down"] = {7411, 7412, 7413, 13920, 28029, 51313}
+		["Down"] = {7411, 7412, 7413, 13920, 28029, 51313, 318463}
 	},
 	[TRADESKILL_ENGINEERING] = {
 		["Up"] = nil,
@@ -242,7 +242,7 @@ local spellbookMainProfessionData = {
 	},
 	[TRADESKILL_HERBALISM] = {
 		["Up"] = nil,
-		["Down"] = {2366, 2368, 3570, 11993, 28695, 50300}
+		["Down"] = {2366, 2368, 3570, 11993, 28695, 50300, 321987}
 	},
 	[TRADESKILL_INSCRIPTION] = {
 		["Up"] = 51005,
@@ -250,23 +250,23 @@ local spellbookMainProfessionData = {
 	},
 	[TRADESKILL_JEWELCRAFTING] = {
 		["Up"] = 31252,
-		["Down"] = {25229, 25230, 28894, 28895, 28897, 51311}
+		["Down"] = {25229, 25230, 28894, 28895, 28897, 51311, 321990}
 	},
 	[TRADESKILL_LEATHERWORKING] = {
 		["Up"] = nil,
-		["Down"] = {2108, 3104, 3811, 10662, 32549, 51302, 10656, 10660, 10658}
+		["Down"] = {2108, 3104, 3811, 10662, 32549, 51302, 10656, 10660, 10658, 321816}
 	},
 	[TRADESKILL_MINING] = {
 		["Up"] = nil,
-		["Down"] = {2656}
+		["Down"] = {2656, 321744}
 	},
 	[TRADESKILL_SKINNING] = {
 		["Up"] = nil,
-		["Down"] = {8613, 8617, 8618, 10768, 32678, 50305}
+		["Down"] = {8613, 8617, 8618, 10768, 32678, 50305, 321751}
 	},
 	[TRADESKILL_TAILORING] = {
 		["Up"] = nil,
-		["Down"] = {3908, 3909, 3910, 12180, 26790, 51309, 26798, 26797, 26801}
+		["Down"] = {3908, 3909, 3910, 12180, 26790, 51309, 26798, 26797, 26801, 321754}
 	},
 }
 
@@ -382,17 +382,21 @@ function SpellBookFrame_OnEvent(self, event, ...)
 end
 
 function SpellBook_UpdateTutorial()
+	HelpPlate_Hide(tutorialSpellBook.spellLearn)
+
+	if C_Hardcore.IsFeatureAvailable(Enum.Hardcore.Features.VIP) then
+		return
+	end
+
 	local spellForbsIsland
 	local spellVipSelect
 	local tutorialText
-
-	HelpPlate_Hide(tutorialSpellBook.spellLearn)
 
 	if not NPE_TutorialPointerFrame:GetKey("SpellBook_Learn_307810_1") then
 		spellForbsIsland = IsSpellKnown(307810)
 	end
 	if not NPE_TutorialPointerFrame:GetKey("SpellBook_Learn_308230_1") then
-		spellVipSelect 	= IsSpellKnown(308230)
+		spellVipSelect = IsSpellKnown(308230)
 	end
 
 	if spellForbsIsland and spellVipSelect then
@@ -1367,7 +1371,9 @@ function SpellBookFrame_Update(showing)
 		local page = SpellBook_GetSpellPage(307810, 1)
 
 		if page and page ~= SpellBook_GetCurrentPage() then
-			tutorialSpellBook.openPage = NPE_TutorialPointerFrame:Show(string.format(FORBS_ISLAND_TUTORIAL_2, page), "LEFT", SpellBookNextPageButton, 0, 0)
+			if not C_Hardcore.IsFeatureAvailable(Enum.Hardcore.Features.VIP) then
+				tutorialSpellBook.openPage = NPE_TutorialPointerFrame:Show(string.format(FORBS_ISLAND_TUTORIAL_2, page), "LEFT", SpellBookNextPageButton, 0, 0)
+			end
 		end
 	end
 
@@ -1563,7 +1569,7 @@ function SpellButton_OnShow(self)
 	SpellButton_UpdateBorderOverlay(self)
 
 	if not NPE_TutorialPointerFrame:GetKey("SpellBook_Learn_307810_2") then
-		if self.data == 307810 then
+		if self.data == 307810 and not C_Hardcore.IsFeatureAvailable(Enum.Hardcore.Features.VIP) then
 			C_Timer:After(0.1, function()
 				if not SpellBookFrame:IsShown() then
 					return

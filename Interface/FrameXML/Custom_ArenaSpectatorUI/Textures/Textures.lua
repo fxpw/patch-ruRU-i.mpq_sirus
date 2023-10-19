@@ -350,25 +350,9 @@ end
 
 
 
-function ezSpectator_Textures:Sirus_Logo(Frame)
-    local Texture = self:Load(Frame, 'Interface\\Custom_LoginScreen\\Logo')
-    local id = GetServerID()
-
-    if id == 57 then
-        id = 11
-    elseif id == 9 then
-        id = 12
-    elseif id == 33 then
-        id = 13
-    elseif id == 21 then
-        id = 2
-    elseif id == 5 then
-        id = 1
-    else
-        id = 1
-    end
-
-    Texture:SetAtlas("ServerGameLogo-"..id)
+function ezSpectator_Textures:SetServerLogo(Frame)
+	local Texture = self:Load(Frame)
+	Texture:SetAtlas(C_RealmInfo.GetServerLogo(GetServerID()))
     Texture:SetAllPoints(Frame)
     Frame.texture = Texture
 end

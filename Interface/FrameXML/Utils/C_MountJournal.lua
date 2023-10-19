@@ -1,3 +1,5 @@
+local COLLECTION_MOUNTDATA = COLLECTION_MOUNTDATA;
+
 Enum.MountAbility = {
 	Speed60 = 1,
 	Speed100 = 2,
@@ -29,6 +31,7 @@ Enum.MountAbilityFlag = {
 local NUM_MOUNT_FILTERS = 2;
 local NUM_MOUNT_ABILITIES = 11;
 local NUM_MOUNT_SOURCES = 10;
+local NUM_MOUNT_TRAVELING_MERCHANTS = 3;
 local NUM_MOUNT_FACTIONS = 4;
 
 local SOURCE_TYPES = {
@@ -42,6 +45,11 @@ local SOURCE_TYPES = {
 	[16] = 9,
 	[17] = 10,
 };
+local TRAVELING_MERCHANTS = {
+	[6101] = 1,
+	[6100] = 2,
+	[6102] = 3,
+}
 
 local CATEGORY_FILTER;
 local SEARCH_FILTER = "";
@@ -95,10 +103,10 @@ local function SortedMountJornal(a, b)
 end
 
 local realmFilterData = {
-	[E_REALM_ID.FROSTMOURNE] = 1,
-	[E_REALM_ID.SCOURGE] = 2,
-	[E_REALM_ID.NELTHARION] = 4,
-	[E_REALM_ID.LEGACY_X10] = 8,
+	[E_REALM_ID.SOULSEEKER]	= 0x1,
+	[E_REALM_ID.SCOURGE]	= 0x2,
+	[E_REALM_ID.ALGALON]	= 0x4,
+	[E_REALM_ID.SIRUS]		= 0x8,
 };
 
 local function MountMathesFilter(collectedShown, notCollectedShown, isCollected, abilityShown, sourceShown, factionShown, name)
@@ -150,14 +158,33 @@ function FilteredMountJornal()
 		local notCollectedShown = C_CVar:GetCVarBitfield("C_CVAR_MOUNT_JOURNAL_GENERAL_FILTERS", LE_MOUNT_JOURNAL_FILTER_NOT_COLLECTED);
 		local abilityFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_ABILITY_FILTER")) or 0;
 		local sourceFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_SOURCE_FILTER")) or 0;
+		local travelingMerchantFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_TRAVELING_MERCHANT_FILTER")) or 0;
 		local factionFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_FACTION_FILTER")) or 0;
 
 		for i = 1, #COLLECTION_MOUNTDATA do
 			local mountInfo = COLLECTION_MOUNTDATA[i];
 			local product = CUSTOM_ROLLED_ITEMS_IN_SHOP[mountInfo.hash];
 			local currency = product and product.currency or mountInfo.currency;
-			local sourceType = mountInfo.holidayText ~= "" and 6 or (currency and currency ~= 0 and mountInfo.lootType ~= 15 and 7 or (SOURCE_TYPES[mountInfo.lootType] or 1));
-			local sourceFlag = (product or mountInfo.lootType ~= 0) and bit.lshift(1, sourceType - 1) or 0;
+			local sourceType;
+			if mountInfo.holidayText ~= "" then
+				sourceType = 6;
+			elseif currency and currency ~= 0 and mountInfo.lootType ~= 15 then
+				sourceType = 7;
+			elseif mountInfo.lootType == 0 and mountInfo.shopCategory == 3 then
+				sourceType = 7;
+			else
+				sourceType = SOURCE_TYPES[mountInfo.lootType] or 1;
+			end
+			local sourceFlag = ((product or sourceType == 7) or mountInfo.lootType ~= 0) and bit.lshift(1, sourceType - 1) or 0;
+			local travelingMerchantFlag = 0;
+			if type(mountInfo.ownersList) == "table" and #mountInfo.ownersList > 0 then
+				for _, ownerID in ipairs(mountInfo.ownersList) do
+					local ownerFlag = TRAVELING_MERCHANTS[ownerID];
+					if ownerFlag then
+						travelingMerchantFlag = bit.bor(travelingMerchantFlag, bit.lshift(1, ownerFlag - 1));
+					end
+				end
+			end
 			local factionFlag = 0;
 			if mountInfo.factionSide == 0 then
 				factionFlag = bit.lshift(1, 3 - 1);
@@ -173,7 +200,11 @@ function FilteredMountJornal()
 				end
 			end
 
-			if MountMathesFilter(collectedShown, notCollectedShown, COMPANION_INFO[mountInfo.hash], abilityFiltersFlag == 0 or bit.band(abilityFiltersFlag, (mountInfo.specialAbilities or 0)) ~= (mountInfo.specialAbilities or 0), sourceFiltersFlag == 0 or bit.band(sourceFiltersFlag, sourceFlag) ~= sourceFlag, factionFiltersFlag == 0 or bit.band(factionFiltersFlag, factionFlag) ~= factionFlag, mountInfo.name or "") then
+			if MountMathesFilter(collectedShown, notCollectedShown, COMPANION_INFO[mountInfo.hash],
+				abilityFiltersFlag == 0 or bit.band(abilityFiltersFlag, (mountInfo.specialAbilities or 0)) ~= (mountInfo.specialAbilities or 0),
+				(sourceFiltersFlag == 0 and travelingMerchantFiltersFlag == 0) or (bit.band(sourceFiltersFlag, sourceFlag) ~= sourceFlag or bit.band(travelingMerchantFiltersFlag, travelingMerchantFlag) ~= travelingMerchantFlag),
+				factionFiltersFlag == 0 or bit.band(factionFiltersFlag, factionFlag) ~= factionFlag, mountInfo.name or "")
+			then
 				MOUNT_INFO_BY_INDEX[#MOUNT_INFO_BY_INDEX + 1] = i;
 			end
 		end
@@ -186,7 +217,7 @@ end
 _G.FilteredMountJornal = FilteredMountJornal;
 
 local function InitMountInfo()
-	local realmID = C_Service:GetRealmID();
+	local realmID = C_Service.GetRealmID();
 	local realmFlag = realmFilterData[realmID];
 
 	for i = #COLLECTION_MOUNTDATA, 1, -1 do
@@ -650,6 +681,73 @@ function C_MountJournal.IsValidSourceFilter(filterIndex)
 	return true;
 end
 
+function C_MountJournal.GetNumTravelingMerchantFilters()
+	return NUM_MOUNT_TRAVELING_MERCHANTS;
+end
+
+function C_MountJournal.SetTravelingMerchantFilter(filterIndex, isChecked)
+	if type(filterIndex) == "string" then
+		filterIndex = tonumber(filterIndex);
+	end
+	if type(filterIndex) ~= "number" or isChecked == nil then
+		error("Usage: C_MountJournal.SetTravelingMerchantFilter(filterIndex, isChecked)", 2);
+	end
+	if type(isChecked) ~= "boolean" then
+		isChecked = not not isChecked;
+	end
+
+	if filterIndex > 0 and filterIndex <= NUM_MOUNT_TRAVELING_MERCHANTS then
+		C_CVar:SetCVarBitfield("C_CVAR_MOUNT_JOURNAL_TRAVELING_MERCHANT_FILTER", filterIndex, not isChecked);
+
+		FilteredMountJornal();
+	end
+end
+
+function C_MountJournal.SetAllTravelingMerchantFilters(isChecked)
+	if isChecked == nil then
+		error("Usage: C_MountJournal.SetAllTravelingMerchantFilters(isChecked)", 2);
+	end
+	if type(isChecked) ~= "boolean" then
+		isChecked = not not isChecked;
+	end
+
+	for index = 1, NUM_MOUNT_TRAVELING_MERCHANTS do
+		C_CVar:SetCVarBitfield("C_CVAR_MOUNT_JOURNAL_TRAVELING_MERCHANT_FILTER", index, not isChecked);
+	end
+
+	FilteredMountJornal();
+end
+
+function C_MountJournal.IsTravelingMerchantChecked(filterIndex)
+	if type(filterIndex) == "string" then
+		filterIndex = tonumber(filterIndex);
+	end
+	if type(filterIndex) ~= "number" then
+		error("Usage: local isChecked = C_MountJournal.IsTravelingMerchantChecked(filterIndex)", 2);
+	end
+
+	if C_CVar:GetCVarBitfield("C_CVAR_MOUNT_JOURNAL_TRAVELING_MERCHANT_FILTER", filterIndex) then
+		return false;
+	end
+
+	return true;
+end
+
+function C_MountJournal.IsValidTravelingMerchantFilter(filterIndex)
+	if type(filterIndex) == "string" then
+		filterIndex = tonumber(filterIndex);
+	end
+	if type(filterIndex) ~= "number" then
+		error("Usage: local isValid = C_MountJournal.IsValidTravelingMerchantFilter(filterIndex)", 2);
+	end
+
+	if filterIndex <= 0 or filterIndex > NUM_MOUNT_TRAVELING_MERCHANTS then
+		return false;
+	end
+
+	return true;
+end
+
 function C_MountJournal.SetFactionFilter(filterIndex, isChecked)
 	if type(filterIndex) == "string" then
 		filterIndex = tonumber(filterIndex);
@@ -717,6 +815,7 @@ function C_MountJournal.SetDefaultFilters()
 	C_CVar:SetValue("C_CVAR_MOUNT_JOURNAL_GENERAL_FILTERS", "0");
 	C_CVar:SetValue("C_CVAR_MOUNT_JOURNAL_ABILITY_FILTER", "0");
 	C_CVar:SetValue("C_CVAR_MOUNT_JOURNAL_SOURCE_FILTER", "0");
+	C_CVar:SetValue("C_CVAR_MOUNT_JOURNAL_TRAVELING_MERCHANT_FILTER", "0");
 	C_CVar:SetValue("C_CVAR_MOUNT_JOURNAL_FACTION_FILTER", "0");
 
 	FilteredMountJornal();
@@ -726,6 +825,7 @@ function C_MountJournal.IsUsingDefaultFilters()
 	if tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_GENERAL_FILTERS")) ~= 0
 	or tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_ABILITY_FILTER")) ~= 0
 	or tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_SOURCE_FILTER")) ~= 0
+	or tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_TRAVELING_MERCHANT_FILTER")) ~= 0
 	or tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_FACTION_FILTER")) ~= 0
 	then
 		return false;

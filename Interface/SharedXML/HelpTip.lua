@@ -3,6 +3,7 @@
 		text,									-- also acts as a key for various API, MUST BE SET
 		textColor = HIGHLIGHT_FONT_COLOR,
 		textJustifyH = "LEFT",
+		textFontObject = "GameFontHighlightLeft",
 		buttonStyle = HelpTip.ButtonStyle.None	-- button to close the helptip, or no button at all
 		targetPoint = HelpTip.Point.BottomEdgeCenter,	-- where at the parent/relativeRegion the helptip should point
 		alignment = HelpTip.Alignment.Center,	-- alignment of the helptip relative to the parent/relativeRegion (basically where the arrow is located)
@@ -521,6 +522,7 @@ end
 function HelpTipTemplateMixin:ApplyText()
 	local info = self.info;
 
+	self.Text:SetFontObject(info.textFontObject or "GameFontHighlightLeft");
 	self.Text:SetText(info.text);
 
 	local color = info.textColor or HIGHLIGHT_FONT_COLOR;

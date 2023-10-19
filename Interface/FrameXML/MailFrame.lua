@@ -1501,9 +1501,6 @@ end
 
 function MailManagmentMixin:ProcessNextItem()
 	local _, _, _, _, money, CODAmount, daysLeft, itemCount, wasRead, _, _, _, isGM = GetInboxHeaderInfo(self.mailIndex)
-	local itemLink = GetInboxItemLink(self.mailIndex, self.attachmentIndex)
-	local itemID = itemLink and tonumber(string.match(itemLink, "item:(%d+)"))
-	local _, _, count = GetInboxItem(self.mailIndex, self.attachmentIndex)
 
 	if ( isGM or (CODAmount and CODAmount > 0) ) then
 		self:AdvanceAndProcessNextItem();
@@ -1514,15 +1511,11 @@ function MailManagmentMixin:ProcessNextItem()
 		self.CommandPending = true
 		TakeInboxMoney(self.mailIndex);
 		self.timeUntilNextRetrieval = OPEN_ALL_MAIL_MIN_DELAY;
-		self:AddTakeItem(-1, money)
-
 		GetInboxText(self.mailIndex)
 	elseif (self.workState == 0 or self.workState == 3) and (itemCount and itemCount > 0) then
 		self.CommandPending = true
 		TakeInboxItem(self.mailIndex, self.attachmentIndex);
 		self.timeUntilNextRetrieval = OPEN_ALL_MAIL_MIN_DELAY;
-		self:AddTakeItem(itemID, count)
-
 		GetInboxText(self.mailIndex)
 	else
 		self:AdvanceAndProcessNextItem();
@@ -1591,18 +1584,6 @@ end
 
 function MailManagmentMixin:IsItemBlacklisted(itemID)
 	return self.blacklistedItemIDs and self.blacklistedItemIDs[itemID or 0]
-end
-
-function MailManagmentMixin:AddTakeItem( itemID, itemCount )
-	if not self.takeItemsList then
-		self.takeItemsList = {}
-	end
-
-	if not self.takeItemsList[itemID] then
-		self.takeItemsList[itemID] = itemCount
-	else
-		self.takeItemsList[itemID] = self.takeItemsList[itemID] + itemCount
-	end
 end
 
 function MailManagmentMixin:CreateFinalData()

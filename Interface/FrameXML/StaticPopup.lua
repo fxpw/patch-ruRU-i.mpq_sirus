@@ -8,6 +8,7 @@ StaticPopupDialogs = { };
 
 local AcceptBattlefieldPort = AcceptBattlefieldPort
 local GuildInvite = GuildInvite
+local GuildSetLeader = GuildSetLeader
 
 function StaticPopup_StandardConfirmationTextHandler(self, expectedText)
 	local parent = self:GetParent();
@@ -853,7 +854,7 @@ StaticPopupDialogs["SIRUS_RENAME_GUILD_CONFIRM"] = {
 	button1 = YES,
 	button2 = NO,
 	OnAccept = function(self, data)
-		SendAddonMessage("ACMSG_GUILD_RENAME_REQUEST", data, "WHISPER", UnitName("player"))
+		SendServerMessage("ACMSG_GUILD_RENAME_REQUEST", data)
 	end,
 	OnCancel = function(self)
 		if not GuildMicroButtonHelpBox:IsShown() and not GuildFrame:IsShown() then
@@ -1912,6 +1913,22 @@ StaticPopupDialogs["ABANDON_PET"] = {
 	end,
 	OnUpdate = function(self, elapsed)
 		if ( not UnitExists("pet") ) then
+			self:Hide();
+		end
+	end,
+	timeout = 0,
+	exclusive = 1,
+	hideOnEscape = 1
+};
+StaticPopupDialogs["ABANDON_STABLE_PET"] = {
+	text = ABANDON_STABLE_PET,
+	button1 = OKAY,
+	button2 = CANCEL,
+	OnAccept = function(self)
+		SendServerMessage("CMSGM_STABLED_PET_ABANDON", self.data)
+	end,
+	OnUpdate = function(self, elapsed)
+		if ( not IsAtStableMaster() ) then
 			self:Hide();
 		end
 	end,
@@ -3286,6 +3303,8 @@ StaticPopupDialogs["TALENTS_EXPORT_URL_POPUP"] = {
 		self.wideEditBox:SetText(self.url)
 		self.wideEditBox:HighlightText()
 	end,
+	EditBoxOnEnterPressed = StaticPopup_StandardEditBoxOnEscapePressed,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	whileDead = 1,
 	interruptCinematic = 1,
@@ -3302,6 +3321,8 @@ StaticPopupDialogs["TALENTS_EXPORT_INGAMELINK_POPUP"] = {
 		self.wideEditBox:SetText("/run print(\""..self.link.."\")")
 		self.wideEditBox:HighlightText()
 	end,
+	EditBoxOnEnterPressed = StaticPopup_StandardEditBoxOnEscapePressed,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	whileDead = 1,
 	interruptCinematic = 1,
@@ -3318,6 +3339,8 @@ StaticPopupDialogs["ARENA_REPLAY_INGAMELINK_POPUP"] = {
 		self.wideEditBox:SetText("/run print(\""..self.link.."\")")
 		self.wideEditBox:HighlightText()
 	end,
+	EditBoxOnEnterPressed = StaticPopup_StandardEditBoxOnEscapePressed,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	whileDead = 1,
 	interruptCinematic = 1,
@@ -3333,6 +3356,8 @@ StaticPopupDialogs["STORE_REFER_URL_DIALOG"] = {
 		self.wideEditBox:SetText("https://welcome.sirus.su/#/page-9?ref="..GetAccountID())
 		self.wideEditBox:HighlightText()
 	end,
+	EditBoxOnEnterPressed = StaticPopup_StandardEditBoxOnEscapePressed,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	whileDead = 1,
 	interruptCinematic = 1,
@@ -3363,17 +3388,6 @@ StaticPopupDialogs["DIALOG_SLASH_GUILD_LEAVE"] = {
 	hideOnEscape = 1
 }
 
-StaticPopupDialogs["DIALOG_SLASH_GUILD_LEADER"] = {
-	text = DIALOG_SLASH_GUILD_LEADER,
-	button1 = YES,
-	button2 = CANCEL,
-	OnAccept = function(self, data)
-		GuildSetLeader(data)
-	end,
-	showAlert = 1,
-	timeout = 0,
-	hideOnEscape = 1
-}
 StaticPopupDialogs["ASMSG_ARENA_READY_CHECK"] = {
 	text = ASMSG_ARENA_READY_CHECK,
 	button1 = YES,
@@ -3517,6 +3531,25 @@ StaticPopupDialogs["EXTERNAL_URL_POPUP"] = {
 		self.wideEditBox:SetText(self.data)
 		self.wideEditBox:HighlightText()
 	end,
+	EditBoxOnEnterPressed = StaticPopup_StandardEditBoxOnEscapePressed,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
+	timeout = 0,
+	whileDead = 1,
+	interruptCinematic = 1,
+	hideOnEscape = 1,
+};
+
+StaticPopupDialogs["DONATE_URL_POPUP"] = {
+	text = STORE_DONATE_DIALOG_TEXT,
+	button1 = OKAY,
+	hasEditBox = 1,
+	hasWideEditBox = 1,
+	OnShow = function(self)
+		self.wideEditBox:SetText(string.format(DONATE_URL, math.max(10, self.data)))
+		self.wideEditBox:HighlightText()
+	end,
+	EditBoxOnEnterPressed = StaticPopup_StandardEditBoxOnEscapePressed,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	whileDead = 1,
 	interruptCinematic = 1,
@@ -3557,14 +3590,19 @@ StaticPopupDialogs["CONFIRM_FORCE_CUSTOMIZATION"] = {
 	text = CONFIRM_FORCE_CUSTOMIZATION,
 	button1 = YES,
 	button2 = NO,
-	OnAccept = function (self)
-		SendServerMessage("ACMSG_ALLIED_RACE_STANDART", self.data)
+	OnShow = function(self)
+		local _, name = C_ZodiacSign.GetZodiacSignInfo(self.data)
+		self.CheckButton:SetFormattedText(StaticPopupDialogs[self.which].checkButtonText, name)
 	end,
-	OnCancel = function () end,
+	OnAccept = function(self)
+		SendServerMessage("ACMSG_ALLIED_RACE_STANDART", self.data, self.CheckButton:GetChecked() == 1 and 1 or 0)
+	end,
 	hideOnEscape = 1,
 	timeout = 0,
 	exclusive = 1,
-	whileDead = 1
+	whileDead = 1,
+	checkButtonText = CONFIRM_FORCE_CUSTOMIZATION_ZODIAC,
+	zodiacSpells = true,
 };
 
 StaticPopupDialogs["STORY_END_REFUND"] = {
@@ -3572,7 +3610,7 @@ StaticPopupDialogs["STORY_END_REFUND"] = {
 	button1 = YES,
 	button2 = NO,
 	OnAccept = function(self)
-		SendAddonMessage("ACMSG_TRANSMOGRIFICATION_PREPARE_REQUEST", self.data, "WHISPER", UnitName("player"))
+		SendServerMessage("ACMSG_TRANSMOGRIFICATION_PREPARE_REQUEST", self.data)
 	end,
 	timeout = 0,
 	exclusive = 1,
@@ -3586,21 +3624,13 @@ StaticPopupDialogs["ENABLE_X1_RATE"] = {
 	button2 = NO,
 	OnShow = function(self) self.HelpBox.Text:SetText(ENABLE_X1_RATE_HELPBOX) end,
 	OnAccept = function(self)
-		SendAddonMessage("ACMSG_ENABLE_X1_RATE", "", "WHISPER", UnitName("player"))
+		C_Service.RequestRateX1()
 	end,
 	hideOnEscape = 1,
 	timeout = 0,
 	exclusive = 1,
 	whileDead = 1,
 	HelpBox = 1
-};
-
-StaticPopupDialogs["WARMODE_TOGGLE"] = {
-	text = "",
-	timeout = 0,
-	warModeToggle = 1,
-	exclusive = 1,
-	hideOnEscape = 1,
 };
 
 StaticPopupDialogs["LOOKING_FOR_GUILD_URL"] = {
@@ -3612,6 +3642,8 @@ StaticPopupDialogs["LOOKING_FOR_GUILD_URL"] = {
 		self.wideEditBox:SetText(self.data);
 		self.wideEditBox:HighlightText();
 	end,
+	EditBoxOnEnterPressed = StaticPopup_StandardEditBoxOnEscapePressed,
+	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 	timeout = 0,
 	whileDead = 1,
 	interruptCinematic = 1,
@@ -3879,11 +3911,24 @@ StaticPopupDialogs["PVP_REJECT_PROPOSAL"] = {
 	hideOnEscape = 1,
 }
 
-function EventHandler:ASMSG_ALLIED_RACE_STANDART( raceID )
-	raceID = tonumber(raceID)
+StaticPopupDialogs["CONFIRM_ROULETTE_PLAY"] = {
+	text = CONFIRM_ROULETTE_PLAY,
+	button1 = OKAY,
+	button2 = CANCEL,
+	OnAccept = function(self)
+		Custom_RouletteFrame.confirmPlayWithBonuses = true;
+		Custom_RouletteFrame:SelectCurrency(self.data);
+	end,
+	timeout = 0,
+	hideOnEscape = 1,
+};
 
-	local dialog = StaticPopup_Show("CONFIRM_FORCE_CUSTOMIZATION", _G[E_CHARACTER_RACES[raceID].."_CONFIRM"])
-	dialog.data = raceID
+function EventHandler:ASMSG_ALLIED_RACE_STANDART(raceID)
+	raceID = tonumber(raceID)
+	local race = E_CHARACTER_RACES[raceID]
+	if race then
+		StaticPopup_Show("CONFIRM_FORCE_CUSTOMIZATION", _G[race.."_CONFIRM"], nil, raceID)
+	end
 end
 
 function StaticPopup_FindVisible(which, data)
@@ -3942,10 +3987,6 @@ function StaticPopup_Resize(dialog, which, hiddenButton)
 		width = 370
 	end
 
-	if info.warModeToggle then
-		width = 600
-	end
-
 	if ( width > maxWidthSoFar )  then
 		dialog:SetWidth(width);
 		dialog.maxWidthSoFar = width;
@@ -3985,12 +4026,12 @@ function StaticPopup_Resize(dialog, which, hiddenButton)
 		end
 	end
 
-	if info.warModeToggle then
-		height = height + 300
-	end
-
 	if dialog.equipmentSetCount then
 		height = height + max(44, (44 * Round(dialog.equipmentSetCount / 2))) + 12
+	end
+
+	if info.checkButtonText then
+		height = height + dialog.CheckButton:GetHeight() + 6
 	end
 
 	if ( height > maxHeightSoFar ) then
@@ -4117,8 +4158,13 @@ function StaticPopup_Show(which, text_arg1, text_arg2, data)
 
 	dialog.HelpBox:SetShown(info.HelpBox)
 	dialog.ReplayInfoFrame:SetShown(info.replayInfo)
-	dialog.WarModeFrame:SetShown(info.warModeToggle)
 	dialog.BootPlayerPVPStatsFrame:SetShown(info.bootPlayerPVPStats)
+
+	if info.zodiacSpells then
+		dialog.ZodiacSpellFrame:SetZodiacSpells(data)
+	else
+		dialog.ZodiacSpellFrame:Hide()
+	end
 
 	dialog.maxHeightSoFar, dialog.maxWidthSoFar = 0, 0;
 	-- Set the text of the dialog
@@ -4264,6 +4310,15 @@ function StaticPopup_Show(which, text_arg1, text_arg2, data)
 		end
 	else
 		dialog.ItemFrame:Hide();
+	end
+
+	if info.checkButtonText then
+		dialog.CheckButton.hint = info.checkButtonHint
+		dialog.CheckButton.ButtonText:SetText(info.checkButtonText)
+		dialog.CheckButton:SetChecked(info.checkButtonChecked)
+		dialog.CheckButton:Show()
+	else
+		dialog.CheckButton:Hide()
 	end
 
 	-- Set the buttons of the dialog
@@ -4795,187 +4850,47 @@ function EventHandler:ASMSG_ARENA_READY_CHECK( msg )
 	end
 end
 
-function EventHandler:ASMSG_WARMODE_SET_MODE( msg )
-	local splitData = C_Split(msg, ",")
-	local status 	= tonumber(splitData[E_WARMODE_SET_MODE.STATUS])
+StaticPopupCheckButtonMixin = {}
 
-	if status >= 0 then
-		C_CacheInstance:Set("ASMSG_WARMODE_SET_MODE", {
-			status 	= status,
-			timer 	= time() + tonumber(splitData[E_WARMODE_SET_MODE.TIMER]),
-		})
+function StaticPopupCheckButtonMixin:OnShow()
+	self:UpdateRectAndPosition()
+end
 
-		local frame = StaticPopup_FindVisible("WARMODE_TOGGLE")
-		if frame then
-			frame.WarModeFrame.ActivateButton:UpdateState()
-		end
-	else
-		local errorText = _G["WARMODE_ERROR_"..status]
-
-		if errorText then
-			UIErrorsFrame:AddMessage(errorText, 1.0, 0.1, 0.1, 1.0)
-		end
+function StaticPopupCheckButtonMixin:OnEnter()
+	if self.hint then
+		GameTooltip:SetOwner(self, "ANCHOT_RIGHT")
+		GameTooltip:AddLine(self.hint)
+		GameTooltip:Show()
 	end
 end
 
-StaticPopupWarModeFrameMixin = {}
-
-function StaticPopupWarModeFrameMixin:OnLoad()
-	self.onCloseCallback = function()
-		self:GetParent():Hide()
-	end
-
-	self.Background:SetAtlas("bonusobjectives-title-icon-honor")
-
-	self.TopTile:SetAtlas("_Talent-Top-Tile")
-	self.BottomTile:SetAtlas("_Talent-Bottom-Tile")
-
-	self.TLCorner:SetAtlas("Talent-TopLeftCurlies", true)
-	self.TRCorner:SetAtlas("Talent-TopRightCurlies", true)
-	self.BLCorner:SetAtlas("Talent-BottomLeftCurlies", true)
-	self.BRCorner:SetAtlas("Talent-BottomRightCurlies", true)
-
-	self.TextBackground:SetAtlas("GarrMission_RewardsBanner")
-	self.ContentFrame.LeftTextBackground:SetAtlas("covenantchoice-celebration-background")
-	self.ContentFrame.RightTextBackground:SetAtlas("covenantchoice-celebration-background")
-end
-
-function StaticPopupWarModeFrameMixin:OnShow()
-	local faction = UnitFactionGroup("player")
-
-	self.ActivateButton.Glow:SetAtlas("BattlegroundInvite-Queue-Button-Glow-"..faction)
-	self.ActivateButton:SetNormalAtlas("BattlegroundInvite-Queue-Button-Normal-"..faction, true)
-	self.ActivateButton:SetDisabledAtlas("BattlegroundInvite-Queue-Button-Normal-"..faction, true)
-	self.ActivateButton.DisabledTexture:SetDesaturated(1)
-	self.ActivateButton:SetHighlightAtlas("BattlegroundInvite-Queue-Button-Highlight-"..faction, true)
-
-	self.ActivateButton.NormalTexture:SetVertexColor(0.41, 0.28, 0.06)
-	self.ActivateButton.HighlightTexture:SetVertexColor(0.41, 0.28, 0.06)
-
-	self.FooterTexture:SetAtlas("scoreboard-header-"..faction:lower())
-
-	self.ContentFrame.BottomBlockBackground:SetAtlas("TalkingHeads-".. faction .."-TextBackground")
-	self.ContentFrame.BottomTextAlert:SetText(faction == PLAYER_FACTION_GROUP[PLAYER_FACTION_GROUP.Renegade] and WAR_MODE_NORMAL_RENEGADE_TEXT or WAR_MODE_NORMAL_ALERT_TEXT)
-
-	self.ActivateButton:UpdateState()
-end
-
-enum:E_WARMODE_SET_MODE {
-	"STATUS",
-	"TIMER"
-}
-
-function StaticPopupWarModeFrameMixin:GetTimeLeft()
-	return C_CacheInstance:Get("ASMSG_WARMODE_SET_MODE", {}).timer and C_CacheInstance:Get("ASMSG_WARMODE_SET_MODE", {}).timer - time()
-end
-
-function StaticPopupWarModeFrameMixin:GetStatus()
-	return C_CacheInstance:Get("ASMSG_WARMODE_SET_MODE", {}).status
-end
-
-function StaticPopupWarModeFrameMixin:IsActive()
-	return self:GetStatus() and self:GetStatus() == 1
-end
-
-StaticPopupWarModeFrameActivateButtonMixin = {}
-
-function StaticPopupWarModeFrameActivateButtonMixin:OnClick()
-	SendServerMessage("ACMSG_WARMODE_SET_MODE", self:IsActive() and 0 or 1)
-end
-
-function StaticPopupWarModeFrameActivateButtonMixin:OnEnter()
-	GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT", -22, 26)
-	GameTooltip:AddLine(self:GetParent():IsActive() and WAR_MODE_ACTIVE_STATUS_TEXT or WAR_MODE_INACTIVE_STATUS_TEXT)
-	GameTooltip:Show()
-end
-
-function StaticPopupWarModeFrameActivateButtonMixin:OnLeave()
+function StaticPopupCheckButtonMixin:OnLeave()
 	GameTooltip:Hide()
 end
 
-function StaticPopupWarModeFrameActivateButtonMixin:OnEnable()
-	self:UpdateState()
+function StaticPopupCheckButtonMixin:OnEnable()
+	self.ButtonText:SetTextColor(1, 0.82, 0)
 end
 
-function StaticPopupWarModeFrameActivateButtonMixin:IsActive()
-	return self:GetParent():IsActive()
+function StaticPopupCheckButtonMixin:OnDisable()
+	self.ButtonText:SetTextColor(0.5, 0.5, 0.5)
 end
 
-function StaticPopupWarModeFrameActivateButtonMixin:GetTimeLeft()
-	return self:GetParent():GetTimeLeft()
+function StaticPopupCheckButtonMixin:SetText(text)
+	self.ButtonText:SetText(text)
+	self:UpdateRectAndPosition()
 end
 
-function StaticPopupWarModeFrameActivateButtonMixin:UpdateState()
-	if self.playAnim then
-		return
-	end
-
-	local faction = UnitFactionGroup("player")
-
-	self.LockFrame:SetShown((self:GetTimeLeft() and self:GetTimeLeft() > 0) or faction == PLAYER_FACTION_GROUP[PLAYER_FACTION_GROUP.Renegade])
-
-	self.LockFrame.TextBackground:SetShown(faction ~= PLAYER_FACTION_GROUP[PLAYER_FACTION_GROUP.Renegade])
-	self.LockFrame.Timer:SetShown(faction ~= PLAYER_FACTION_GROUP[PLAYER_FACTION_GROUP.Renegade])
-
-	if self:IsActive() then
-		self:GetParent().FooterTexture:Show()
-		self:GetParent().FooterTexture.animIn:Play()
-
-		self.animIn:Play()
-
-		self.Glow:Show()
-		self.Glow.animIn:Play()
-
-		self.NormalTexture:SetVertexColor(1, 1, 1)
-		self.HighlightTexture:SetVertexColor(1, 1, 1)
-	else
-		self:GetParent().FooterTexture.animOut:Play()
-
-		self.NormalTexture:SetVertexColor(0.41, 0.28, 0.06)
-		self.HighlightTexture:SetVertexColor(0.41, 0.28, 0.06)
-	end
-
-	self.playAnim = true
-
-	C_Timer:After(0.5, function() self.playAnim = false end)
+function StaticPopupCheckButtonMixin:SetFormattedText(...)
+	self:SetText(string.format(...))
 end
 
-function StaticPopupWarModeFrameActivateButtonMixin:StarInAnimation()
-	self.NormalTexture:SetVertexColor(1, 1, 1)
-	self.HighlightTexture:SetVertexColor(1, 1, 1)
-end
+function StaticPopupCheckButtonMixin:UpdateRectAndPosition()
+	self.ButtonText:SetWidth(self:GetParent():GetWidth() - 70)
 
-StaticPopupWarModeFrameActivateButtonLockFrameMixin = {}
-
-function StaticPopupWarModeFrameActivateButtonLockFrameMixin:OnLoad()
-	self.Lock:SetAtlas("Monuments-Lock")
-	self.TextBackground:SetAtlas("Monuments-LockedOverlay", true)
-
-	self.Lock:SetDesaturated(1)
-end
-
-function StaticPopupWarModeFrameActivateButtonLockFrameMixin:OnShow()
-	self:GetParent():Disable()
-
-	if self.timer then
-		self.timer:Cancel()
-		self.timer = nil
-	end
-
-	self.timer = C_Timer:NewTicker(self:GetParent():GetTimeLeft() or 0, function() self:Hide() end, 1)
-end
-
-function StaticPopupWarModeFrameActivateButtonLockFrameMixin:OnHide()
-	if self.timer then
-		self.timer:Cancel()
-		self.timer = nil
-	end
-
-	self:GetParent():Enable()
-end
-
-function StaticPopupWarModeFrameActivateButtonLockFrameMixin:OnUpdate()
-	self.Timer:SetRemainingTime(self:GetParent():GetTimeLeft(), false)
+	local textWidth = self.ButtonText:GetStringWidth()
+	self:SetHitRectInsets(0, -textWidth, 0, 0)
+	self:SetPoint("BOTTOM", -(textWidth / 2), 43)
 end
 
 StaticPopupBootPlayerPVPStatsMixin = {}
@@ -5180,5 +5095,96 @@ function StatusPopupDelayCountdownMixin:OnUpdate(elapsed)
 
 	if self.timeLeft <= 0 then
 		self:Hide()
+	end
+end
+
+StatusPopupZodiacSpellMixin = {}
+
+function StatusPopupZodiacSpellMixin:OnLoad()
+	self.spellButtonPool = CreateFramePool("Frame", self, "StatisPopupSpellButtonTemplate")
+end
+
+function StatusPopupZodiacSpellMixin:OnShow()
+	SetParentFrameLevel(self.Border)
+end
+
+function StatusPopupZodiacSpellMixin:SetZodiacSpells(raceID)
+	if E_CHARACTER_RACES[raceID] then
+		local activaSpells, passiveSpells = C_ZodiacSign.GetZodiacSignSpells(raceID)
+		if activaSpells then
+			local firstButtonOffsetX = 10 + math.max(self.ActiveSpells.Label:GetStringWidth(), self.PassiveSpells.Label:GetStringWidth())
+			self:CreateSpellButtons(self.ActiveSpells, activaSpells, firstButtonOffsetX)
+			self:CreateSpellButtons(self.PassiveSpells, passiveSpells, firstButtonOffsetX)
+
+			if self.ActiveSpells:GetWidth() < self.PassiveSpells:GetWidth() then
+				self.ActiveSpells:SetWidth(self.PassiveSpells:GetWidth())
+			end
+
+			self:Show()
+			return
+		end
+	end
+	self:Hide()
+end
+
+function StatusPopupZodiacSpellMixin:CreateSpellButtons(parent, spellList, firstButtonOffsetX, offsetX)
+	if not offsetX then
+		offsetX = 10
+	end
+	local buttonSize = 0
+
+	local lastSpell
+	for index, spellID in ipairs(spellList) do
+		local spell = self.spellButtonPool:Acquire()
+		spell:SetID(index)
+		spell:SetParent(parent)
+
+		if not lastSpell then
+			spell:SetPoint("LEFT", firstButtonOffsetX or 0, 0)
+		else
+			spell:SetPoint("LEFT", lastSpell, "RIGHT", offsetX, 0)
+		end
+
+		local _, _, icon = GetSpellInfo(spellID)
+		spell.Icon:SetTexture(icon)
+		spell.spellID = spellID
+		spell:Show()
+
+		lastSpell = spell
+		if buttonSize == 0 then
+			buttonSize = spell:GetWidth()
+		end
+	end
+
+	parent:SetSize(firstButtonOffsetX + buttonSize * #spellList + offsetX * (#spellList - 1), buttonSize)
+end
+
+StatusPopupZodiacSpellButtonMixin = {}
+
+function StatusPopupZodiacSpellButtonMixin:OnLoad()
+	self.Border:SetAtlas("PKBT-ItemBorder2")
+end
+
+function StatusPopupZodiacSpellButtonMixin:OnEnter()
+	if self.spellID then
+		local spellLink, tradeSkillLink = GetSpellLink(self.spellID)
+		if spellLink or tradeSkillLink then
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+			GameTooltip:SetHyperlink(tradeSkillLink or spellLink)
+			GameTooltip:Show()
+		end
+	end
+end
+
+function StatusPopupZodiacSpellButtonMixin:OnLeave()
+	GameTooltip:Hide()
+end
+
+function StatusPopupZodiacSpellButtonMixin:OnClick(button)
+	if self.spellID and IsModifiedClick("CHATLINK") then
+		local spellLink, tradeSkillLink = GetSpellLink(self.spellID)
+		if spellLink or tradeSkillLink then
+			ChatEdit_InsertLink(tradeSkillLink or spellLink)
+		end
 	end
 end

@@ -242,6 +242,7 @@ take("CreateSecureMixinCopy");
 
 retain("GetFinalNameFromTextureKit")
 retain("C_Texture");
+take("C_HardcoreSecure");
 
 --retain("C_RecruitAFriend");
 
@@ -250,11 +251,24 @@ retain("C_Texture");
 remove("SECURE_IsForbidden");
 remove("SECURE_SetForbidden");
 
+remove("RegisterCustomEvent");
+remove("UnregisterCustomEvent");
 remove("TRACKED_CVARS");
 
+retain("ZODIAC_DEBUFFS");
 retain("FACTION_OVERRIDE_BY_DEBUFFS");
 retain("S_CATEGORY_SPELL_ID");
 retain("S_VIP_STATUS_DATA");
+
+take("COLLECTION_MOUNTDATA");
+take("COLLECTION_PETDATA");
+take("ITEM_APPEARANCE_STORAGE");
+take("ITEM_MODIFIED_APPEARANCE_STORAGE");
+take("ITEM_IGNORED_APPEARANCE_STORAGE");
+take("COLLECTION_ENCHANTDATA");
+take("COLLECTION_TOYDATA");
+take("COLLECTION_HEIRLOOMDATA");
+take("HARDCORE_CHALLENGES");
 
 take("WORLDMAP_MAP_NAME_BY_ID");
 

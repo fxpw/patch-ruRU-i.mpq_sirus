@@ -1,3 +1,7 @@
+local ITEM_APPEARANCE_STORAGE = ITEM_APPEARANCE_STORAGE;
+local ITEM_MODIFIED_APPEARANCE_STORAGE = ITEM_MODIFIED_APPEARANCE_STORAGE;
+local ITEM_IGNORED_APPEARANCE_STORAGE = ITEM_IGNORED_APPEARANCE_STORAGE;
+
 Enum = Enum or {};
 Enum.TransmogModification = {Main = 0, Secondary = 1};
 Enum.TransmogPendingType = {Apply = 0, Revert = 1, ToggleOn = 2, ToggleOff = 3};
@@ -217,15 +221,38 @@ local function SetPending(transmogLocation, pendingInfo)
 		elseif pendingVisualID ~= appliedVisualID then
 			local pendingData = TRANSMOG_INFO:Get("Pending", slotID, transmogType, true);
 
-			if isAppearance and IsStoreRefundableItem(pendingSourceID) then
-				local itemName, itemLink, itemQuality, _, _, _, _, _, _, itemIcon = GetItemInfo(pendingSourceID);
-				pendingData.warning = {
-					itemName = itemName,
-					itemLink = itemLink,
-					itemQuality = itemQuality,
-					itemIcon = itemIcon,
-					text = STORY_END_REFUND,
-				};
+			if isAppearance then
+				if pendingSourceID and pendingSourceID ~= 0 and IsStoreRefundableItem(pendingSourceID) then
+					local itemName, itemLink, itemQuality, _, _, _, _, _, _, itemIcon = GetItemInfo(pendingSourceID);
+					pendingData.warning = {
+						itemName = itemName,
+						itemLink = itemLink,
+						itemQuality = itemQuality,
+						itemIcon = itemIcon,
+						text = STORY_END_REFUND,
+					};
+				elseif baseSourceID and baseSourceID ~= 0 and IsStoreRefundableItem(baseSourceID) then
+					local itemName, itemLink, itemQuality, _, _, _, _, _, _, itemIcon = GetItemInfo(baseSourceID);
+					pendingData.warning = {
+						itemName = itemName,
+						itemLink = itemLink,
+						itemQuality = itemQuality,
+						itemIcon = itemIcon,
+						text = STORY_END_REFUND,
+					};
+				end
+			else
+				local itemID = GetTransmogSlotInfo(slotID, Enum.TransmogType.Appearance)
+				if itemID and itemID ~= 0 and IsStoreRefundableItem(itemID) then
+					local itemName, itemLink, itemQuality, _, _, _, _, _, _, itemIcon = GetItemInfo(itemID);
+					pendingData.warning = {
+						itemName = itemName,
+						itemLink = itemLink,
+						itemQuality = itemQuality,
+						itemIcon = itemIcon,
+						text = STORY_END_REFUND,
+					};
+				end
 			end
 
 			pendingData.hasPending = false;
@@ -302,7 +329,7 @@ function C_Transmog.ClearPending(transmogLocation)
 	if pendingData then
 		TRANSMOG_INFO:Clear("Pending", transmogLocation.slotID, transmogLocation.type);
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_UPDATE, CreateAndSetFromMixin(TransmogLocationMixin, transmogLocation.slotID, transmogLocation.type, transmogLocation.modification), "clear");
+		FireCustomClientEvent("TRANSMOGRIFY_UPDATE", CreateAndSetFromMixin(TransmogLocationMixin, transmogLocation.slotID, transmogLocation.type, transmogLocation.modification), "clear");
 	end
 end
 
@@ -567,7 +594,7 @@ function C_Transmog.LoadOutfit(outfitID)
 		end
 	end
 
-	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_UPDATE);
+	FireCustomClientEvent("TRANSMOGRIFY_UPDATE");
 end
 
 function C_Transmog.SetPending(transmogLocation, pendingInfo)
@@ -577,7 +604,7 @@ function C_Transmog.SetPending(transmogLocation, pendingInfo)
 
 	local location, action = SetPending(transmogLocation, pendingInfo);
 	if location and action then
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_UPDATE, location, action);
+		FireCustomClientEvent("TRANSMOGRIFY_UPDATE", location, action);
 	end
 end
 
@@ -653,11 +680,11 @@ function EventHandler:ASMSG_TRANSMOGRIFICATION_MENU_OPEN(msg)
 		end
 	end
 
-	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_OPEN);
+	FireCustomClientEvent("TRANSMOGRIFY_OPEN");
 end
 
 function EventHandler:ASMSG_TRANSMOGRIFICATION_MENU_CLOSE(msg)
-	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_CLOSE);
+	FireCustomClientEvent("TRANSMOGRIFY_CLOSE");
 end
 
 function EventHandler:ASMSG_TRANSMOGRIFICATION_PREPARE_RESPONSE(msg)
@@ -681,7 +708,7 @@ function EventHandler:ASMSG_TRANSMOGRIFICATION_PREPARE_RESPONSE(msg)
 			pendingData.errorType = errorType;
 			pendingData.cost = transmogCost;
 
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_UPDATE, CreateAndSetFromMixin(TransmogLocationMixin, slotID, Enum.TransmogType.Appearance, 0), "set");
+			FireCustomClientEvent("TRANSMOGRIFY_UPDATE", CreateAndSetFromMixin(TransmogLocationMixin, slotID, Enum.TransmogType.Appearance, 0), "set");
 		end
 
 		pendingData = TRANSMOG_INFO:Get("Pending", slotID, Enum.TransmogType.Illusion);
@@ -695,7 +722,7 @@ function EventHandler:ASMSG_TRANSMOGRIFICATION_PREPARE_RESPONSE(msg)
 			pendingData.errorType = errorType;
 			pendingData.cost = enchantCost;
 
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_UPDATE, CreateAndSetFromMixin(TransmogLocationMixin, slotID, Enum.TransmogType.Illusion, 0), "set");
+			FireCustomClientEvent("TRANSMOGRIFY_UPDATE", CreateAndSetFromMixin(TransmogLocationMixin, slotID, Enum.TransmogType.Illusion, 0), "set");
 		end
 	else
 		local error = _G["TRANSMOGRIFY_ERROR_"..errorType];
@@ -705,9 +732,9 @@ function EventHandler:ASMSG_TRANSMOGRIFICATION_PREPARE_RESPONSE(msg)
 
 		if slotID then
 			TRANSMOG_INFO:Clear("Pending", slotID, Enum.TransmogType.Appearance);
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_UPDATE, CreateAndSetFromMixin(TransmogLocationMixin, slotID, Enum.TransmogType.Appearance, 0), "clear");
+			FireCustomClientEvent("TRANSMOGRIFY_UPDATE", CreateAndSetFromMixin(TransmogLocationMixin, slotID, Enum.TransmogType.Appearance, 0), "clear");
 			TRANSMOG_INFO:Clear("Pending", slotID, Enum.TransmogType.Illusion);
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_UPDATE, CreateAndSetFromMixin(TransmogLocationMixin, slotID, Enum.TransmogType.Illusion, 0), "clear");
+			FireCustomClientEvent("TRANSMOGRIFY_UPDATE", CreateAndSetFromMixin(TransmogLocationMixin, slotID, Enum.TransmogType.Illusion, 0), "clear");
 		end
 	end
 end
@@ -734,7 +761,7 @@ function EventHandler:ASMSG_TRANSMOGRIFICATION_APPLY_RESPONSE(msg)
 					TRANSMOG_INFO:Clear("Applied", slotID, transmogType);
 				end
 
-				FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOGRIFY_SUCCESS, CreateAndSetFromMixin(TransmogLocationMixin, slotID, transmogType, Enum.TransmogModification.Main));
+				FireCustomClientEvent("TRANSMOGRIFY_SUCCESS", CreateAndSetFromMixin(TransmogLocationMixin, slotID, transmogType, Enum.TransmogModification.Main));
 			end
 		end
 

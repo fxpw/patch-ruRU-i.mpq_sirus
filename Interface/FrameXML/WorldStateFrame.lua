@@ -1366,7 +1366,7 @@ local AFK_PLAYER_CLICKED = nil;
 
 function ScorePlayer_OnMouseUp(self, mouseButton)
 	if ( mouseButton == "RightButton" ) then
-		if ( not UnitIsUnit(self.name,"player") and UnitInRaid(self.name)) then
+		if ( not UnitIsUnit(self.name, "player") and UnitInRaid(self.name) and C_Service.IsBattlegroundKickEnabled()) then
 			AFK_PLAYER_CLICKED = self.name;
 			ToggleDropDownMenu(1, nil, ScorePlayerDropDown, self:GetName(), 0, -5);
 		end
@@ -1374,7 +1374,7 @@ function ScorePlayer_OnMouseUp(self, mouseButton)
 end
 
 function ScorePlayerDropDown_OnClick()
-	ReportPlayerIsPVPAFK(AFK_PLAYER_CLICKED);
+	UninviteUnit(AFK_PLAYER_CLICKED)
 	PlaySound("UChatScrollButton");
 	AFK_PLAYER_CLICKED = nil;
 end
@@ -1386,7 +1386,7 @@ end
 
 function ScorePlayerDropDown_Initialize()
 	local info = UIDropDownMenu_CreateInfo();
-	info.text = PVP_REPORT_AFK;
+	info.text = VOTE_TO_KICK;
 	info.func = ScorePlayerDropDown_OnClick;
 	UIDropDownMenu_AddButton(info);
 

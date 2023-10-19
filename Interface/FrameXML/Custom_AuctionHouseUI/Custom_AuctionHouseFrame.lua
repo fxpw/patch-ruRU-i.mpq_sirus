@@ -318,7 +318,7 @@ function AuctionHouseFrameMixin:OnShow()
 	FrameUtil.RegisterFrameForEvents(self, AUCTION_HOUSE_FRAME_EVENTS);
 	FrameUtil.RegisterFrameForCustomEvents(self, AUCTION_HOUSE_FRAME_CUSTOM_EVENTS);
 
-	PortraitFrameTemplate_SetPortraitToUnit(self, "target");
+	self:SetPortraitToUnit("target");
 
 	self:SetDisplayMode(AuctionHouseFrameDisplayMode.Buy);
 

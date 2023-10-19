@@ -2816,6 +2816,14 @@
 					<OnClick function="Adventure_TabOnClick"/>
 				</Scripts>
 			</Button>
+			<Button name="$parentTab3" inherits="CharacterFrameTabButtonTemplate" text="HARDCORE_CHALLENGES_TITLE" id="3" parentKey="tab3">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab2" relativePoint="RIGHT" x="-16" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="Adventure_TabOnClick"/>
+				</Scripts>
+			</Button>
 		</Frames>
 		<Scripts>
 			<OnLoad function="EncounterJournal_OnLoad"/>

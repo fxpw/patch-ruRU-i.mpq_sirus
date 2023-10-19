@@ -461,20 +461,20 @@ local function GetRequirementToUpgrade(upgradeCostInfo)
 	end
 end
 
-local function GetRaceFlag(raceName)
-	for _, raceInfo in pairs(S_CHARACTER_RACES_INFO) do
-		if _G[raceInfo.raceName] == raceName then
-			local raceIndex = E_CHARACTER_RACES_DBC[raceInfo.raceName];
-			if raceIndex then
-				return bit.lshift(1, raceIndex - 1);
-			end
+local function GetUnitRaceFlag(unit)
+	local _, _, raceID = UnitRace(unit)
+	local raceData = S_CHARACTER_RACES_INFO[raceID]
+	if raceData then
+		local raceIndex = E_CHARACTER_RACES_DBC[raceData.raceName];
+		if raceIndex then
+			return bit.lshift(1, raceIndex - 1);
 		end
  	end
 
 	return 0;
 end
 
-local PLAYER_RACE_FLAG = GetRaceFlag(UnitRace("player"));
+local PLAYER_RACE_FLAG = GetUnitRaceFlag("player");
 
 local _, PLAYER_CLASS = UnitClass("player");
 local CLASS_FLAGS = {
@@ -494,9 +494,9 @@ local CLASS_FLAGS = {
 local PLAYER_CLASS_FLAG = CLASS_FLAGS[PLAYER_CLASS] or 0;
 
 local REALM_FLAGS = {
-	[E_REALM_ID.SCOURGE] = 1,
-	[E_REALM_ID.ALGALON] = 2,
-	[E_REALM_ID.SIRUS] = 4,
+	[E_REALM_ID.SCOURGE]	= 0x1,
+	[E_REALM_ID.ALGALON]	= 0x2,
+	[E_REALM_ID.SIRUS]		= 0x4,
 };
 
 local function SetFilterUpgradeItems(upgradeItemInfo)
@@ -508,7 +508,7 @@ local function SetFilterUpgradeItems(upgradeItemInfo)
 		return false;
 	end
 
-	local realmID = C_Service:GetRealmID();
+	local realmID = C_Service.GetRealmID();
 	if REALM_FLAGS[realmID] and bit.band(upgradeItemInfo[ItemUpgrade.RealmFlag], REALM_FLAGS[realmID]) == 0 then
 		return false;
 	end

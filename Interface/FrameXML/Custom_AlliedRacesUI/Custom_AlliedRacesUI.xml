@@ -352,7 +352,7 @@
 											</Anchors>
 											<Color r="0.208" g="0" b="0"/>
 										</FontString>
-										<FontString name="$parentRacialTraitsLabel" parentKey="RacialTraitsLabel" inherits="QuestFont" text="RACIAL_TRAITS">
+										<FontString name="$parentRacialTraitsLabel" parentKey="RacialTraitsLabel" inherits="QuestFont" text="ALLIED_RACE_TRAITS">
 											<Anchors>
 												<Anchor point="TOPLEFT" relativeTo="$parentRaceDescriptionText" relativePoint="BOTTOMLEFT" x="0" y="-17"/>
 											</Anchors>
@@ -360,6 +360,28 @@
 										</FontString>
 									</Layer>
 								</Layers>
+								<Frames>
+									<Button name="$parentTraitsHint" parentKey="TraitsHint">
+										<Size x="32" y="32"/>
+										<Anchors>
+											<Anchor point="LEFT" relativeTo="$parentRacialTraitsLabel" relativePoint="RIGHT" x="5" y="0"/>
+										</Anchors>
+										<HitRectInsets left="10" right="10" top="10" bottom="10"/>
+										<Layers>
+											<Layer level="ARTWORK">
+												<Texture parentKey="HelpI" file="Interface\common\help-i" setAllPoints="true"/>
+											</Layer>
+										</Layers>
+										<Scripts>
+											<OnEnter>
+												self:GetParent():GetParent():GetParent():GetParent():TraitsHintOnEnter(this)
+											</OnEnter>
+											<OnLeave>
+												self:GetParent():GetParent():GetParent():GetParent():TraitsHintOnLeave(this)
+											</OnLeave>
+										</Scripts>
+									</Button>
+								</Frames>
 							</Frame>
 						</ScrollChild>
 					</ScrollFrame>

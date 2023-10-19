@@ -341,10 +341,10 @@ end
 
 function GetArenaRating( bracketID )
 	local pvpStats = C_CacheInstance:Get("ASMSG_PVP_STATS", {})
-
 	if pvpStats[bracketID] then
-		return pvpStats[bracketID].pvpRating
+		return pvpStats[bracketID].pvpRating or 0
 	end
+	return 0
 end
 
 function GetArenaDistributionTime()
@@ -1620,7 +1620,7 @@ function HonorFrame_Queue(isParty, forceSolo)
 		JoinBattlefield(PVPHonorFrameSpecificFrame.selectionID, isParty)
 	elseif ( PVPHonorFrame.type == "bonus" and PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton ) then
 		if ( PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton:GetID() == 0 ) then
-			SendAddonMessage("ACMSG_JOIN_WINTERGRASP_REQUEST", nil, "WHISPER", UnitName("player"))
+			SendServerMessage("ACMSG_JOIN_WINTERGRASP_REQUEST")
 		elseif PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton:GetID() == 63 then
 			Sirus_BattlegroundRegister(63, isParty)
 		else
@@ -1938,46 +1938,55 @@ PVPFrameBattlePassButtonMixin = {}
 
 function PVPFrameBattlePassButtonMixin:OnLoad()
 	SetPortraitToTexture(self.Icon, "Interface\\Icons\\Battlepas_64x64")
+	self:RegisterCustomEvent("BATTLEPASS_SEASON_UPDATE")
 	self:RegisterCustomEvent("BATTLEPASS_ACCOUNT_UPDATE")
 	self:RegisterCustomEvent("BATTLEPASS_EXPERIENCE_UPDATE")
+	self:RegisterCustomEvent("CUSTOM_CHALLENGE_ACTIVATED")
+	self:RegisterCustomEvent("CUSTOM_CHALLENGE_DEACTIVATED")
 	self:UpdateState()
 end
 
 function PVPFrameBattlePassButtonMixin:OnEvent(event, ...)
-	if event == "BATTLEPASS_ACCOUNT_UPDATE" then
-		local isPremiumActive, seasonTimeLeft = ...
-		self:UpdateState(isPremiumActive, seasonTimeLeft)
+	if event == "BATTLEPASS_SEASON_UPDATE" or event == "BATTLEPASS_ACCOUNT_UPDATE"
+		or event == "CUSTOM_CHALLENGE_ACTIVATED" or event == "CUSTOM_CHALLENGE_DEACTIVATED"
+	then
+		self:UpdateState()
 	elseif event == "BATTLEPASS_EXPERIENCE_UPDATE" then
 		local level = ...
 		self.LevelFrame.Level:SetText(level)
 	end
 end
 
-function PVPFrameBattlePassButtonMixin:UpdateState(isPremiumActive, seasonTimeLeft)
-	if isPremiumActive == nil then
-		isPremiumActive = C_BattlePass.IsPremiumActive()
-	end
-	if seasonTimeLeft == nil then
-		seasonTimeLeft = C_BattlePass.GetSeasonTimeLeft()
-	end
+function PVPFrameBattlePassButtonMixin:UpdateState()
+	local isEnabled = C_BattlePass.IsActiveOrHasRewards() and not C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.BATTLEPASS_REWARDS)
+	self:SetEnabled(isEnabled)
 
-	local isDisabled = seasonTimeLeft == 0 and not C_BattlePass.HasUnclaimedReward()
-	self:SetEnabled(not isDisabled)
-
-	local textColor = isDisabled and GRAY_FONT_COLOR or NORMAL_FONT_COLOR
+	local textColor = isEnabled and NORMAL_FONT_COLOR or GRAY_FONT_COLOR
 
 	self.Name:SetTextColor(textColor.r, textColor.g, textColor.b)
 
-	self.Icon:SetDesaturated(isDisabled)
-	self.Ring:SetDesaturated(isDisabled)
-	self.Background:SetDesaturated(isDisabled)
+	self.Icon:SetDesaturated(not isEnabled)
+	self.Ring:SetDesaturated(not isEnabled)
+	self.Background:SetDesaturated(not isEnabled)
 
-	self.LevelFrame.Wreath:SetDesaturated(isDisabled)
-	self.LevelFrame.Wreath:SetAlpha(isPremiumActive and 1 or 0.3)
+	self.LevelFrame.Wreath:SetDesaturated(not isEnabled)
+	self.LevelFrame.Wreath:SetAlpha(C_BattlePass.IsPremiumActive() and 1 or 0.3)
 end
 
 function PVPFrameBattlePassButtonMixin:OnClick(button)
 	ShowUIPanel(BattlePassFrame)
+end
+
+function PVPFrameBattlePassButtonMixin:OnEnter()
+	if C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.BATTLEPASS_REWARDS) then
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip_AddErrorLine(GameTooltip, string.format(HARDCORE_FEATURE1_17_DISABLE, C_Hardcore.GetChallengeInfoByID(C_Hardcore.GetActiveChallengeID()) or "", true))
+		GameTooltip:Show()
+	end
+end
+
+function PVPFrameBattlePassButtonMixin:OnLeave()
+	GameTooltip_Hide()
 end
 
 BattlegroundInviteMixin = {}
@@ -2022,14 +2031,18 @@ function BattlegroundInviteMixin:OnShow()
 		self.PopupFrame.HideButton:SetShown(self.inviteState == 1)
 		self.PopupFrame.ReadyButtonFrame:SetShown(self.inviteState == 2)
 
-		local time = self.remainingTime - time()
-		if time <= 10 then
-			self.PopupFrame.Timer:SetTextColor(0.8, 0, 0)
-		else
-			self.PopupFrame.Timer:SetTextColor(0, 0, 0)
-		end
+		if self.remainingTime then
+			local time = self.remainingTime - time()
+			if time <= 10 then
+				self.PopupFrame.Timer:SetTextColor(0.8, 0, 0)
+			else
+				self.PopupFrame.Timer:SetTextColor(0, 0, 0)
+			end
 
-		self.PopupFrame.Timer:SetText(SecondsToClock(time))
+			self.PopupFrame.Timer:SetText(SecondsToClock(time))
+		else
+			self.PopupFrame.Timer:SetText("")
+		end
 	end
 
 	PlaySound("PVPTHROUGHQUEUE")

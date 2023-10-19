@@ -503,7 +503,7 @@ function GlueDark_ToggleDropDownMenu(self, level, value, dropDownFrame, anchorNa
 				end
 			elseif ( anchorName == "cursor" ) then
 				relativeTo = "GlueParent";
-				local cursorX, cursorY = GetCursorPosition();
+				local cursorX, cursorY = GetScaledCursorPosition();
 				cursorX = cursorX/uiScale;
 				cursorY = cursorY/uiScale;
 

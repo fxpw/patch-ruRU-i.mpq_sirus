@@ -1,7 +1,7 @@
 # Do not delete the following line!
 ## Interface: 30300
 
-..\..\InterfaceDebug\FrameXMLPre.xml
+FrameXMLPre.xml
 FrameXML.xml
 
 ..\SharedXML\C_TimerAugment.lua
@@ -42,7 +42,8 @@ GlobalStrings.lua
 ..\SharedXML\Utils\C_Talent.lua
 ..\SharedXML\Opcodes.lua
 
-..\SharedXML\ItemsCache.lua
+..\SharedXML\ItemsCache1.lua
+..\SharedXML\ItemsCache2.lua
 ..\SharedXML\L_Easing.lua
 Constants.lua
 ..\SharedXML\SharedFontStyles.xml
@@ -60,12 +61,27 @@ WorldMapFrameData.lua
 
 ..\SharedXML\Utils\C_Cache.lua
 ..\SharedXML\Utils\C_Service.lua
+..\SharedXML\Utils\C_RealmInfo.lua
+..\SharedXML\Utils\C_ZodiacSign.lua
 
 ObjectAPI\ItemLocation.lua
+
+Custom_BattlePass\Custom_BattlePass_Data.lua
+Custom_Collections\Custom_MountCollection_Data.lua
+Custom_Collections\Custom_PetCollection_Data.lua
+Custom_Collections\Custom_ItemAppearancesData.lua
+Custom_Collections\Custom_EnchantCollection_Data.lua
+Custom_Collections\Custom_ToyCollection_Data.lua
+Custom_Collections\Custom_HeirloomCollection_Data.lua
+Custom_Hardcore\Custom_HardcoreChallengesData.lua
 
 Utils\CustomAPI.lua
 Utils\CombatLogFix.lua
 Utils\Deprecated.lua
+
+TrinityCoreAPI.lua
+..\SharedXML\S_Dump.lua
+..\SharedXML\SharedExtendedMethods.lua
 
 Utils\C_CVar.lua
 Utils\C_ObjectGUID.lua
@@ -80,7 +96,6 @@ Utils\C_Cursor.lua
 Utils\C_AuctionHouse.lua
 Utils\C_BattlePass.lua
 Utils\C_BattlefieldStatusManager.lua
-Utils\C_WhoManager.lua
 Utils\C_LookingForGuild.lua
 Utils\C_PetJournal.lua
 Utils\C_TransmogCollection.lua
@@ -91,12 +106,10 @@ Utils\C_IncomingResSummon.lua
 Utils\C_Heirloom.lua
 Utils\C_ItemUpgrade.lua
 Utils\C_MountJournal.lua
+Utils\C_Hardcore.lua
 
-TrinityCoreAPI.lua
-..\SharedXML\S_Dump.lua
 BasicControls.xml
 WorldFrame.xml
-..\SharedXML\SharedExtendedMethods.lua
 UIParent.xml
 AuraUtil.lua
 ItemUtil.lua
@@ -248,6 +261,7 @@ AlternatePowerBar.xml
 AnimationSystem.lua
 GhostFrame.xml
 LevelUpDisplay.xml
+WarModeFrame.xml
 SpellFlyout.xml
 Custom_Achievements_FactionData.lua
 FlowContainer.lua
@@ -311,6 +325,7 @@ Custom_LookingForGuildUI\Custom_LookingForGuildUI.xml
 Custom_BattlefieldMinimap\Custom_BattlefieldMinimap.xml
 Custom_RaidUI\Custom_RaidUI.xml
 Custom_ItemUpgradeUI\Custom_ItemUpgradeUI.xml
+Custom_Hardcore\Custom_Hardcore.xml
 
 # DEVELOPMENT
 #Custom_GuildHouseUI\Custom_GuildHouseUI.xml
@@ -327,8 +342,7 @@ LocalizationPost.xml
 # Do not remove
 Controller.lua
 
-# Dev Tools
-..\..\InterfaceDebug\FrameXML.xml
+FrameXMLPost.xml
 
 #Save off whatever we need available unmodified.
 SecureCapsule.lua

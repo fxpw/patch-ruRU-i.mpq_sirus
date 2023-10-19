@@ -1,4 +1,4 @@
-CurrentGlueMusic = "GS_LichKing"; --"GS_LichKing";
+CurrentGlueMusic = "GS_LichKing";
 
 GlueCreditsSoundKits = { };
 GlueCreditsSoundKits[1] = "Menu-Credits01";
@@ -315,7 +315,7 @@ function GlueParent_OnEvent(event, arg1, arg2, arg3)
 		end
 		AddonList:Hide();
 	elseif ( event == "GET_PREFERRED_REALM_INFO" ) then
-		SetPreferredInfo(1)
+		C_RealmList.SetPreferredInfo(1)
 	elseif ( event == "SERVER_SPLIT_NOTICE" ) then
 		if ( SERVER_SPLIT_STATE_PENDING == -1 and arg1 == 0 and arg2 == 1 ) then
 			SERVER_SPLIT_SHOW_DIALOG = true;
@@ -552,6 +552,20 @@ end
 function nop()
 end
 
+function IsWideScreen()
+	return GetScreenWidth() > 1024
+end
+
+function SetParentFrameLevel(frame, offset)
+	frame:SetFrameLevel(frame:GetParent():GetFrameLevel() + (offset or 0));
+end
+
+function GetScaledCursorPosition()
+	local uiScale = GlueParent:GetEffectiveScale();
+	local x, y = GetCursorPosition();
+	return x / uiScale, y / uiScale;
+end
+
 local modalFrames = {}
 
 function GlueParent_AddModalFrame(frame)
@@ -601,6 +615,14 @@ end
 
 function GlueEasingAnimMixin:IsAnimPlaying()
 	return self.playAnimation
+end
+
+function GlueEasingAnimMixin:IsAnimPlayingNonReverse()
+	return self.playAnimation and self.isRevers
+end
+
+function GlueEasingAnimMixin:IsAnimPlayingReverse()
+	return self.playAnimation and self.isRevers
 end
 
 function GlueEasingAnimMixin:PlayAnim(isRevers, finishCallback, resetAnimation)

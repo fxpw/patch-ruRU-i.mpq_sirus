@@ -1,9 +1,3 @@
---	Filename:	Custom_DeathRecap.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 UIPanelWindows["DeathRecapFrame"] = { area = "center", pushable = 0, whileDead = 1, allowOtherPanels = 1}
 
 DeathRecapMixin = {}
@@ -21,21 +15,7 @@ end
 
 function DeathRecapMixin:OnEvent( event, ... )
 	if event == "COMBAT_LOG_EVENT" then
-		local args = {...}
-
-		if bit.band(args[8], COMBATLOG_FILTER_ME) ~= COMBATLOG_FILTER_ME then
-			return
-		end
-
-		if args[2] == "SWING_DAMAGE" then
-			self:InsertEvent(args[1], args[2], args[3], args[4], args[9], nil, nil)
-		elseif args[2] == "ENVIRONMENTAL_DAMAGE" then
-			self:InsertEvent(args[1], args[2], args[3], args[4], args[10], nil, args[9])
-		elseif args[2] == "SPELL_DAMAGE" then
-			self:InsertEvent(args[1], args[2], args[3], args[4], args[12], args[9], nil)
-		elseif args[2] == "SPELL_PERIODIC_DAMAGE" then
-			self:InsertEvent(args[1], args[2], args[3], args[4], args[12], args[9], nil)
-		end
+		self:OnCombatLogEvent(...)
 	elseif event == "PLAYER_DEAD" then
 		self:RegisterDeath()
 	end
@@ -43,6 +23,23 @@ end
 
 function DeathRecapMixin:OnHide()
 	self.recapID = nil
+end
+
+function DeathRecapMixin:OnCombatLogEvent(timestamp, subEvent, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
+	if bit.band(dstFlags, COMBATLOG_FILTER_ME) ~= COMBATLOG_FILTER_ME then
+		return
+	end
+
+	if subEvent == "SWING_DAMAGE" then
+		local amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = ...
+		self:InsertEvent(timestamp, subEvent, srcGUID, srcName, amount)
+	elseif subEvent == "ENVIRONMENTAL_DAMAGE" then
+		local environmentalType, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = ...
+		self:InsertEvent(timestamp, subEvent, srcGUID, srcName, amount, nil, environmentalType)
+	elseif subEvent == "SPELL_DAMAGE" or subEvent == "SPELL_PERIODIC_DAMAGE" then
+		local spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = ...
+		self:InsertEvent(timestamp, subEvent, srcGUID, srcName, amount, spellId)
+	end
 end
 
 function DeathRecapMixin:InsertEvent( timestamp, subEvent, casterGUID, casterName, damage, spellID, environmentalType )
@@ -147,6 +144,7 @@ function DeathRecapMixin:AssociationIDToData( deathRecapID )
 	if bufferData then
 		self.deathRecapStorage[deathRecapID] = bufferData
 		self.lastDeathRecapRegisterID = deathRecapID
+		FireCustomClientEvent("DEATH_RECAP_REGISTERED", deathRecapID)
 	end
 
 	self:PrintHyperlink(deathRecapID)
@@ -203,9 +201,9 @@ function DeathRecapMixin:OpenDeathRecap(deathRecapData, recapID)
 		deathRecapData = self.deathRecapStorage[self.lastDeathRecapRegisterID]
 	end
 
-	if type(deathRecapData) ~= "table" then
+	if type(deathRecapData) == "string" then
 		self:ConvertStringToDeathRecapData(deathRecapData)
-	else
+	elseif type(deathRecapData) == "table" then
 		if self:IsShown() and recapID == self.recapID then
 			self.recapID = nil
 			HideUIPanel(self)
@@ -275,7 +273,7 @@ function DeathRecapMixin:OpenDeathRecap(deathRecapData, recapID)
 			if not killOwnerData.GUID then
 				GUID:SetGUID(recapData.casterGUID)
 
-				if not GUID:IsEmpty() and GUID:IsPlayer() then
+				if GUID:IsPlayer() then
 					killOwnerData.name = recapData.casterName
 					killOwnerData.GUID = GUID:GetRawValue()
 				end
@@ -303,7 +301,7 @@ function DeathRecapMixin:OpenDeathRecap(deathRecapData, recapID)
 			deathEntry.tombstone:SetPoint("RIGHT", deathEntry.DamageInfo.Amount, "LEFT", -10, 0)
 		end
 
-		if killOwnerData.GUID and not C_Service:IsLockRenegadeFeatures() then
+		if killOwnerData.GUID and C_Service.IsRenegadeRealm() then
 			self.CloseButton:ClearAndSetPoint("BOTTOM", -80, 15)
 
 			self.HeadHuntingButton.playerName = killOwnerData.name
@@ -320,6 +318,13 @@ function DeathRecapMixin:OpenDeathRecap(deathRecapData, recapID)
 		self.Title:SetFormattedText(DEATH_RECAP_TITLE, deathRecapData.unitName or UNKNOWN, date("%H:%M:%S", deathEntry.DamageInfo.timestamp or 0))
 		self.DeathTimeStamp = deathEntry.DamageInfo.timestamp
 	end
+end
+
+function DeathRecapMixin:IsDeathLogEmpty()
+	if type(self.deathRecapStorage[self.lastDeathRecapRegisterID]) == "table" then
+		return not next(DeathRecapFrame.deathRecapStorage[DeathRecapFrame.lastDeathRecapRegisterID])
+	end
+	return true
 end
 
 function DeathRecapFrame_Amount_OnEnter(self)

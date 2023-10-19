@@ -56,7 +56,7 @@ function TargetFrame_OnLoad(self, unit, menuFunc)
 	end
 
 	if unit == "target" or unit == "focus" then
-		self.showCategoryInfo = C_Service:IsStrengthenStatsRealm();
+		self.showCategoryInfo = C_Service.IsStrengthenStatsRealm();
 	end
 
 	_G[thisName.."HealthBar"].LeftText = _G[thisName.."TextureFrameHealthBarTextLeft"];
@@ -526,12 +526,12 @@ function TargetFrame_UpdateAuras(self)
 	local unitDebuffList = {}
 
 	local index = 1
-	name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, _, spellID = UnitDebuff(self.unit, index);
+	name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellID = UnitDebuff(self.unit, index);
 	while name do
-		unitDebuffList[index] = {index, name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, _, spellID}
+		unitDebuffList[index] = {index, name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellID}
 
 		index = index + 1
-		name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, _, spellID = UnitDebuff(self.unit, index);
+		name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellID = UnitDebuff(self.unit, index);
 	end
 
 	table.sort(unitDebuffList, SORT_UNIT_AURAS)
@@ -540,14 +540,14 @@ function TargetFrame_UpdateAuras(self)
 	local isEnemy = UnitCanAttack("player", self.unit);
 	for i = 1, MAX_TARGET_DEBUFFS do
 		if unitDebuffList[i] then
-			index, name, rank, icon, count, debuffType, duration, expirationTime, caster = unpack(unitDebuffList[i]);
+			index, name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellID = unpack(unitDebuffList[i]);
 		else
 			break;
 		end
 
 		if ( not icon ) then
 			break;
-		elseif ( ( not self.maxDebuffs or i <= self.maxDebuffs ) and ( SHOW_CASTABLE_DEBUFFS == "0" or not isEnemy or caster == "player" or caster == "vehicle") ) then
+		elseif ( ( not self.maxDebuffs or i <= self.maxDebuffs ) and TargetFrame_ShouldShowDebuffs(self.unit, caster, isEnemy, spellID) ) then
 			numDebuffs = numDebuffs + 1;
 			local frame = self.Debuff and self.Debuff[numDebuffs];
 			if ( not frame ) then
@@ -646,6 +646,10 @@ function TargetFrame_UpdateAuras(self)
 
 	UnitFrameCategory_Update(self)
 	UnitFrameVip_Update(self)
+end
+
+function TargetFrame_ShouldShowDebuffs(unit, caster, isEnemy, spellID)
+	return SHOW_CASTABLE_DEBUFFS == "0" or not isEnemy or caster == "player" or caster == "vehicle"
 end
 
 function TargetFrame_UpdateAuraPositions(self, auraName, numAuras, numOppositeAuras, largeAuraList, updateFunc, maxRowWidth, offsetX, mirrorAurasVertically)
@@ -1057,7 +1061,7 @@ function Target_Spellbar_AdjustPosition(self)
 	local parentFrame = self:GetParent();
 	if ( parentFrame.haveToT ) then
 		if ( parentFrame.buffsOnTop or parentFrame.auraRows <= 1 ) then
-			self:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, -21 );
+			self:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, parentFrame.smallSize and -21 or -35);
 		else
 			self:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -35);
 		end

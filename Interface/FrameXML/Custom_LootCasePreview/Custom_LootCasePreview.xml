@@ -94,7 +94,7 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				Mixin(self, LootCasePreviewMixin)
+				Mixin(self, PortraitFrameMixin, LootCasePreviewMixin)
 				self:OnLoad()
 			</OnLoad>
 			<OnDragStart>

@@ -1,102 +1,154 @@
+local LINK_TYPE = {
+	NORMAL		= 0,
+	LOOT_CASE	= 1,
+	PET			= 2,
+	MOUNT		= 3,
+	ILLUSION	= 4,
+}
 
 function DressUpItemLink(link)
 	if not link then
 		return;
 	end
 
-	if not IsDressableItem(link) then
-		local dontReturn;
+	local id, linkType, collectionID
 
+	if IsDressableItem(link) then
+		id = link
+		linkType = LINK_TYPE.NORMAL
+	else
 		local itemID = tonumber(string.match(link, "item:(%d+)"))
-		if ( itemID ) then
-			if ( LootCasePreviewFrame:IsPreview(itemID) ) then
-				LootCasePreviewFrame:SetPreview(itemID);
+		if itemID then
+			if LootCasePreviewFrame:IsPreview(itemID) then
+				id = itemID
+				linkType = LINK_TYPE.LOOT_CASE
 			else
-				local _, petID, creatureID;
-				_, petID, _, _, _, _, _, _, creatureID = C_PetJournal.GetPetInfoByItemID(itemID);
+				local creatureID, petID
+				petID, creatureID = select(9, C_PetJournal.GetPetInfoByItemID(itemID))
 
-				if ( petID and creatureID ) then
-					DressUpModel.petID = petID;
+				if petID then
+					id = creatureID
+					linkType = LINK_TYPE.PET
+					collectionID = petID
 				else
-					for index, data in ipairs(COLLECTION_MOUNTDATA) do
-						if ( data.itemID == itemID and data.creatureID ) then
-							creatureID = data.creatureID
-							DressUpModel.index = index;
-							break;
-						end
+					local mountID
+					mountID, creatureID = select(10, C_MountJournal.GetMountFromItem(itemID))
+					if mountID then
+						id = creatureID
+						linkType = LINK_TYPE.MOUNT
+						collectionID = mountID
 					end
 				end
 
-				if ( creatureID ) then
-					if BattlePassFrame:IsShown() then
-						local cursortPositionX = GetScaledCursorPosition()
-
-						DressUpFrame:SetParent(BattlePassFrame)
-						DressUpFrame:Show()
-						DressUpFrame:ClearAllPoints()
-						if cursortPositionX / GetScreenWidth() > 0.4 then
-							DressUpFrame:SetPoint("LEFT", BattlePassFrame.Inset, "LEFT", 6, 16)
-						else
-							DressUpFrame:SetPoint("RIGHT", BattlePassFrame.Inset, "RIGHT", 0, 16)
-						end
-					elseif ( not DressUpFrame:IsShown() ) then
-						if ( StoreFrame:IsShown() ) then
-							DressUpFrame:Show();
-							DressUpFrame:ClearAllPoints();
-							DressUpFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", UIParent:GetAttribute("LEFT_OFFSET") + 15, UIParent:GetAttribute("TOP_OFFSET") -10);
-						else
-							ShowUIPanel(DressUpFrame);
-						end
-					end
-					if ( not DressUpModel.isCreature ) then
-						DressUpModel.disabledZooming = true;
-						DressUpModel.isCreature = true;
-					end
-
-					DressUpFrame.ResetButton:SetShown(DressUpFrame:GetParent() ~= BattlePassFrame)
-					DressUpFrame.ResetButton:SetText(GO_TO_COLLECTION);
-					DressUpModel:SetCreature(creatureID);
-				else
-					local _, enchantID = C_TransmogCollection.GetIllusionInfoByItemID(itemID);
+				if not creatureID then
+					local _, enchantID = C_TransmogCollection.GetIllusionInfoByItemID(itemID)
 					if enchantID then
-						local weaponItemID = (GetInventoryTransmogID("player", 16) or GetInventoryItemID("player", 16)) or C_TransmogCollection.GetFallbackWeaponAppearance();
+						local weaponItemID = (GetInventoryTransmogID("player", 16) or GetInventoryItemID("player", 16)) or C_TransmogCollection.GetFallbackWeaponAppearance()
 						if weaponItemID then
-							link = string.format("item:%d:%d", weaponItemID, enchantID);
-							dontReturn = true;
+							id = string.format("item:%d:%d", weaponItemID, enchantID)
+							linkType = LINK_TYPE.ILLUSION
 						end
 					end
 				end
 			end
 		end
-
-		if not dontReturn then
-			return;
+		if not linkType then
+			return
 		end
 	end
 
-	DressUpFrame.ResetButton:Show()
+	local wasCreature = DressUpModel.isCreature
+	local isStoreDressUp = StoreFrame:IsShown()
+	local isBattlePass = BattlePassFrame:IsShown()
 
-	if StoreFrame:IsShown() then
-		if not StoreDressUPFrame:IsShown() then
-			StoreDressUPFrame:Show()
-			StoreDressUPFrame.Display.DressUPModel:SetUnit("player")
-		end
-		StoreDressUPFrame.Display.DressUPModel:TryOn(link)
+	if isStoreDressUp then
+		StoreDressUPFrame.creatureID = nil
 	else
-		if ( DressUpModel.isCreature ) then
-			DressUpFrame.ResetButton:SetText(RESET);
-			DressUpModel.disabledZooming = nil;
-			DressUpModel:SetUnit("player", true);
-			DressUpModel.isCreature = false;
-			DressUpModel.petID = nil;
-			DressUpModel.index = nil;
-		end
+		DressUpModel.disabledZooming = nil
+		DressUpModel.isCreature = nil
+		DressUpModel.petID = nil
+		DressUpModel.mountID = nil
 
-		if ( not DressUpFrame:IsShown() ) then
-			ShowUIPanel(DressUpFrame);
-			DressUpModel:SetUnit("player", true);
+		if isBattlePass then
+			DressUpFrame:SetParent(BattlePassFrame)
+			DressUpFrame:ClearAllPoints()
+
+			local cursortPositionX = GetScaledCursorPosition()
+			if cursortPositionX / GetScreenWidth() > 0.4 then
+				DressUpFrame:SetPoint("LEFT", BattlePassFrame.Inset, "LEFT", 6, 16)
+			else
+				DressUpFrame:SetPoint("RIGHT", BattlePassFrame.Inset, "RIGHT", 0, 16)
+			end
+
+			DressUpFrame.ResetButton:Hide()
+		else
+			DressUpFrame.ResetButton:Show()
+
+			if linkType == LINK_TYPE.PET or linkType == LINK_TYPE.MOUNT then
+				DressUpFrame.ResetButton:SetText(GO_TO_COLLECTION)
+			else
+				DressUpFrame.ResetButton:SetText(RESET)
+			end
 		end
-		DressUpModel:TryOn(link);
+	end
+
+	if linkType == LINK_TYPE.LOOT_CASE then
+		LootCasePreviewFrame:SetPreview(id)
+	elseif linkType == LINK_TYPE.PET or linkType == LINK_TYPE.MOUNT then
+		if isStoreDressUp then
+			if not StoreDressUPFrame:IsShown() then
+				StoreDressUPFrame:Show()
+			end
+			StoreDressUPFrame.creatureID = id
+			StoreDressUPFrame.Display.DressUPModel:SetCreature(id)
+		else
+			if linkType == LINK_TYPE.PET then
+				DressUpModel.petID = collectionID
+			else
+				DressUpModel.mountID = collectionID
+			end
+
+			if not wasCreature then
+				DressUpModel.disabledZooming = true
+				DressUpModel.isCreature = true
+			end
+
+			DressUpFrame:Show()
+			DressUpModel:SetCreature(id)
+		end
+	elseif linkType == LINK_TYPE.NORMAL or linkType == LINK_TYPE.ILLUSION then
+		if isStoreDressUp then
+			if not StoreDressUPFrame:IsShown() then
+				StoreDressUPFrame:Show()
+				StoreDressUPFrame.Display.DressUPModel:SetUnit("player")
+			end
+			StoreDressUPFrame.Display.DressUPModel:TryOn(id)
+		else
+			if wasCreature then
+				DressUpModel:SetUnit("player", true)
+			end
+
+			if not DressUpFrame:IsShown() then
+				if isBattlePass then
+					DressUpFrame:Show()
+				else
+					ShowUIPanel(DressUpFrame)
+				end
+				DressUpModel:SetUnit("player", true)
+			end
+
+			if isBattlePass then
+				DressUpFrame:ClearAllPoints()
+				local cursortPositionX = GetScaledCursorPosition()
+				if cursortPositionX / GetScreenWidth() > 0.4 then
+					DressUpFrame:SetPoint("LEFT", BattlePassFrame.Inset, "LEFT", 6, 16)
+				else
+					DressUpFrame:SetPoint("RIGHT", BattlePassFrame.Inset, "RIGHT", 0, 16)
+				end
+			end
+
+			DressUpModel:TryOn(id)
+		end
 	end
 end
 

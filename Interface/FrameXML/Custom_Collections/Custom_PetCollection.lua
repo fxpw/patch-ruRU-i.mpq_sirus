@@ -115,7 +115,7 @@ function PetJournal_UpdatePetList()
 		index = offset + i;
 
 		if index <= numPets and showPets then
-			local hash, petID, petIndex, isOwned, isFavorite, name, icon, petType, spellID = C_PetJournal.GetPetInfoByIndex(index);
+			local name, spellID, icon, petType, active, _, isFavorite, isCollected, petID, _, itemID = C_PetJournal.GetPetInfoByIndex(index);
 
 			pet.Name:SetText(name);
 			pet.Icon:SetTexture(icon);
@@ -123,7 +123,7 @@ function PetJournal_UpdatePetList()
 
 			pet.DragButton.Favorite:SetShown(isFavorite);
 
-			if isOwned then
+			if isCollected then
 				pet.Icon:SetDesaturated(false);
 				pet.Name:SetFontObject("GameFontNormal");
 				pet.PetTypeIcon:SetDesaturated(false);
@@ -148,16 +148,14 @@ function PetJournal_UpdatePetList()
 			local isSummoned = petID and petID == summonedPetID;
 			pet.DragButton.ActiveTexture:SetShown(isSummoned);
 
-			pet.hash = hash;
 			pet.petID = petID;
-			pet.owned = isOwned;
-			pet.petIndex = petIndex;
+			pet.isCollected = isCollected;
 			pet.isSummoned = isSummoned;
 			pet.index = index;
 			pet.spellID = spellID;
 			pet:Show();
 
-			pet.SelectedTexture:SetShown(PetJournal.selectedPetID == petID);
+			pet.SelectedTexture:SetShown(PetJournal.selectedItemID == itemID);
 		else
 			pet:Hide();
 		end
@@ -168,6 +166,7 @@ function PetJournal_UpdatePetList()
 
 	if not showPets then
 		PetJournal.selectedPetID = nil;
+		PetJournal.selectedItemID = nil;
 		PetJournal_UpdatePetDisplay();
 	end
 end
@@ -189,8 +188,11 @@ function PetJournalListItem_OnClick(self, button)
 			end
 		end
 	elseif button == "RightButton" then
-		if self.owned and type(self.petIndex) == "number" then
-			PetJournal_ShowPetDropdown(self.petID, self.petIndex, self, 80, 20);
+		if self.isCollected then
+			local petIndex = C_PetJournal.GetPetCompanionIndex(self.petID);
+			if petIndex then
+				PetJournal_ShowPetDropdown(self.petID, petIndex, self, 80, 20);
+			end
 		end
 	else
 		PetJournal_SelectByPetID(self.petID);
@@ -198,11 +200,14 @@ function PetJournalListItem_OnClick(self, button)
 end
 
 function MountListItem_OnDoubleClick(self, button)
-	if type(self.petIndex) == "number" and button == "LeftButton" then
+	if self.isCollected and button == "LeftButton" then
 		if self.isSummoned then
 			DismissCompanion("CRITTER");
 		else
-			CallCompanion("CRITTER", self.petIndex);
+			local petIndex = C_PetJournal.GetPetCompanionIndex(self.petID);
+			if petIndex then
+				CallCompanion("CRITTER", petIndex);
+			end
 		end
 	end
 end
@@ -212,10 +217,6 @@ function PetJournalDragButton_OnEnter(self)
 	local spellID = parent.spellID;
 	if type(spellID) ~= "number" then
 		return;
-	end
-
-	if type(parent.petIndex) ~= "number" then
-		self.Highlight:Hide();
 	end
 
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
@@ -236,10 +237,10 @@ function PetJournalDragButton_OnClick(self, button)
 		end
 	elseif button == "RightButton" then
 		local parent = self:GetParent();
-		local petIndex = parent.petIndex;
+		local petIndex = C_PetJournal.GetPetCompanionIndex(parent.petID);
 
-		if parent.owned and type(petIndex) == "number" then
-			PetJournal_ShowPetDropdown(parent.petID, parent.petIndex, self, 0, 0);
+		if parent.isCollected and petIndex then
+			PetJournal_ShowPetDropdown(parent.petID, petIndex, self, 0, 0);
 		end
 	else
 		PetJournalDragButton_OnDragStart(self);
@@ -247,8 +248,8 @@ function PetJournalDragButton_OnClick(self, button)
 end
 
 function PetJournalDragButton_OnDragStart(self)
-	local petIndex = self:GetParent().petIndex;
-	if type(petIndex) ~= "number" then
+	local petIndex = C_PetJournal.GetPetCompanionIndex(self:GetParent().petID);
+	if not petIndex then
 		return;
 	end
 
@@ -256,7 +257,7 @@ function PetJournalDragButton_OnDragStart(self)
 end
 
 function PetJournalDragButton_OnEvent(self, event, ...)
-	local petIndex = self:GetParent().petIndex;
+	local petIndex = C_PetJournal.GetPetCompanionIndex(self:GetParent().petID);
 	if event == "SPELL_UPDATE_COOLDOWN" and type(petIndex) == "number" then
 		local start, duration, enable = GetCompanionCooldown("CRITTER", petIndex);
 		if start and duration and enable then
@@ -273,12 +274,13 @@ function PetJournal_ShowPetDropdown(petID, petIndex, anchorTo, offsetX, offsetY)
 end
 
 function PetJournal_SelectByIndex(index)
-	local _, petID = C_PetJournal.GetPetInfoByIndex(index);
-	PetJournal_SetSelected(petID);
+	local _, _, _, _, _, _, _, _, petID, _, itemID = C_PetJournal.GetPetInfoByIndex(index);
+	PetJournal_SetSelected(petID, itemID);
 end
 
 function PetJournal_SelectByPetID(petID)
-	PetJournal_SetSelected(petID);
+	local itemID = select(11, C_PetJournal.GetPetInfoByPetID(petID));
+	PetJournal_SetSelected(petID, itemID);
 end
 
 function PetJournal_GetPetButtonHeight()
@@ -298,16 +300,17 @@ end
 
 local function GetPetDisplayIndexByPetID(petID)
 	for i = 1, C_PetJournal.GetNumPets() do
-		local _, currentPetID = C_PetJournal.GetPetInfoByIndex(i);
+		local currentPetID = select(9, C_PetJournal.GetPetInfoByIndex(i));
 		if currentPetID == petID then
 			return i;
 		end
 	end
 end
 
-function PetJournal_SetSelected(selectedPetID)
-	if PetJournal.selectedPetID ~= selectedPetID then
+function PetJournal_SetSelected(selectedPetID, selectedItemID)
+	if PetJournal.selectedPetID ~= selectedPetID or (selectedItemID and PetJournal.selectedItemID ~= selectedItemID) then
 		PetJournal.selectedPetID = selectedPetID;
+		PetJournal.selectedItemID = selectedItemID;
 		PetJournal_UpdatePetDisplay();
 		PetJournal_UpdatePetList();
 
@@ -328,7 +331,7 @@ function PetJournal_UpdatePetDisplay()
 		PetJournal.PetDisplay.ModelScene:Show();
 		PetJournal.PetDisplay.InfoButton:Show();
 
-		local hash, petIndex, isFavorite, name, icon, petType, lootType, currency, price, creatureID, spellID, itemID, sourceText, descriptionText, holidayText = C_PetJournal.GetPetInfoByPetID(PetJournal.selectedPetID);
+		local name, spellID, icon, petType, active, sourceType, isFavorite, isCollected, petID, creatureID, itemID, currency, price, _, priceText, descriptionText, holidayText = C_PetJournal.GetPetInfoByPetID(PetJournal.selectedPetID);
 		if IsGMAccount() then
 			PetJournal.PetDisplay.ModelScene.DebugInfo:SetFormattedText("CreatureID: %s", creatureID);
 			PetJournal.PetDisplay.ModelScene.DebugInfo:Show();
@@ -340,20 +343,20 @@ function PetJournal_UpdatePetDisplay()
 		PetJournal.PetDisplay.InfoButton.Name:SetText(name);
 		PetJournal.PetDisplay.InfoButton.Icon:SetTexture(icon);
 
-		PetJournal.PetDisplay.InfoButton.Source:SetText(sourceText);
-		PetJournal.PetDisplay.InfoButton.Source:SetFormattedText("%s%s", holidayText ~= "" and string.format("%s\n", holidayText) or "", sourceText);
+		PetJournal.PetDisplay.InfoButton.Source:SetText(priceText);
+		PetJournal.PetDisplay.InfoButton.Source:SetFormattedText("%s%s", holidayText ~= "" and string.format("%s\n", holidayText) or "", priceText);
 		PetJournal.PetDisplay.InfoButton.Lore:SetText(descriptionText);
 
 		PetJournal.PetDisplay.ModelScene:SetCreature(creatureID);
 
-		if lootType == 16 then
-			PetJournal.PetDisplay.ModelScene.BuyFrame:SetShown(C_BattlePass.GetSeasonTimeLeft() > 0 and not petIndex);
+		if sourceType == 16 then
+			PetJournal.PetDisplay.ModelScene.BuyFrame:SetShown(C_BattlePass.GetSeasonTimeLeft() > 0 and not isCollected);
 			PetJournal.PetDisplay.ModelScene.BuyFrame.BuyButton:SetText(GO_TO_BATTLE_BASS);
 			PetJournal.PetDisplay.ModelScene.BuyFrame.BuyButton:SetEnabled(true);
 			PetJournal.PetDisplay.ModelScene.BuyFrame.PriceText:SetText("");
 			PetJournal.PetDisplay.ModelScene.BuyFrame.MoneyIcon:SetTexture("");
 		elseif currency and currency ~= 0 then
-			PetJournal.PetDisplay.ModelScene.BuyFrame:SetShown(not petIndex);
+			PetJournal.PetDisplay.ModelScene.BuyFrame:SetShown(not isCollected);
 
 			if currency == 4 then
 				PetJournal.PetDisplay.ModelScene.BuyFrame.BuyButton:SetText(PICK_UP);
@@ -407,11 +410,10 @@ function PetJournalBuyButton_OnClick()
 	HideUIPanel(CollectionsJournal);
 
 	if PetJournal.selectedPetID then
-		local hash = C_PetJournal.GetPetInfoByPetID(PetJournal.selectedPetID);
-		local _, _, name, icon, _, lootType, currency, price, productID, _, _, itemID = C_PetJournal.GetPetInfoByPetHash(hash);
+		local name, _, icon, _, _, sourceType, _, _, _, _, itemID, currency, price, productID = C_PetJournal.GetPetInfoByPetID(PetJournal.selectedPetID);
 
 		if name then
-			if lootType == 16 then
+			if sourceType == 16 then
 				BattlePassFrame:ShowCardWithItem(itemID);
 			else
 				local productData = {

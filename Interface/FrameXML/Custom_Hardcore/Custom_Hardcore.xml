@@ -1,0 +1,2038 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_Hardcore.lua"/>
+
+	<Frame name="HardcorePanelTemplate" virtual="true">
+		<Anchors>
+			<Anchor point="TOPRIGHT" x="-8" y="-106"/>
+			<Anchor point="BOTTOMLEFT" x="8" y="9"/>
+		</Anchors>
+	</Frame>
+	<Button name="HardcorePanelTopTabButtonTemplate" virtual="true">
+		<Size x="120" y="36"/>
+		<HitRectInsets>
+			<AbsInset left="-12" right="-12" top="0" bottom="0"/>
+		</HitRectInsets>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentMid" inherits="_DungeonGridTab-Mid" parentKey="mid" horizTile="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentLeft" inherits="UI-EJ-DungeonGridTab-Left" parentKey="left">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentRight" inherits="UI-EJ-DungeonGridTab-Right" parentKey="right">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="0"/>
+						<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentMidSelect" inherits="_DungeonGridTab-MidSelect" parentKey="midSelect" horizTile="true" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentLeftSelect" inherits="UI-EJ-DungeonGridTab-LeftSelect"
+					parentKey="leftSelect" hidden="true">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentRightSelect" inherits="UI-EJ-DungeonGridTab-RightSelect" parentKey="rightSelect" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="0"/>
+						<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentSelectedGlow" inherits="UI-EJ-DungeonGridTab-SelectedGlow" parentKey="selectedGlow" hidden="true">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="-18" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="18" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture name="$parentMidHighlight" inherits="_DungeonGridTab-MidHighlight" parentKey="midHighlight" horizTile="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentLeftHighlight" inherits="UI-EJ-DungeonGridTab-LeftHighlight" parentKey="leftHighlight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentRightHighlight" inherits="UI-EJ-DungeonGridTab-RightHighlight" parentKey="rightHighlight">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="0"/>
+						<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame enableMouse="true" parentKey="grayBox" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="-14" y="19"/>
+					<Anchor point="BOTTOMRIGHT" x="14" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="7" y="-25"/>
+								<Anchor point="BOTTOMRIGHT" x="-7" y="0"/>
+							</Anchors>
+							<Color r="0" g="0" b="0" a="0.6"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<NormalFont style="GameFontNormalMed1"/>
+		<ButtonText parentKey="ButtonText">
+			<Anchors>
+				<Anchor point="CENTER" x="0" y="-3"/>
+			</Anchors>
+		</ButtonText>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcorePanelTopTabButton)
+				self:OnLoad()
+			</OnLoad>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+			<OnEnable>
+				self:OnEnable()
+			</OnEnable>
+			<OnDisable>
+				self:OnDisable()
+			</OnDisable>
+		</Scripts>
+	</Button>
+	<Frame name="HardcoreSuggestionSecondaryTemplate" virtual="true">
+		<Size x="344" y="161"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background"/>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="64" y="64"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-10" y="-2"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentIconRing" parentKey="IconRing">
+					<Size x="94" y="95"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentIcon"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentCenterDisplay" parentKey="CenterDisplay">
+				<Size x="260" y="152"/>
+				<Anchors>
+					<Anchor point="LEFT" x="70" y="1"/>
+				</Anchors>
+				<Frames>
+					<Frame name="$parentTitle" parentKey="Title">
+						<Size x="260" y="12"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="0" y="-40"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString name="$parentText" parentKey="Text" font="QuestFont18" justifyH="LEFT" justifyV="TOP" wordwrap="false">
+									<Size x="260" y="0"/>
+									<Color r="0" g="0" b="0"/>
+								</FontString>
+							</Layer>
+						</Layers>
+					</Frame>
+					<Frame name="$parentDescription" parentKey="Description">
+						<Size x="240" y="50"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString name="$parentText" parentKey="Text" font="SystemFont_Med1" justifyH="LEFT" justifyV="TOP" wordwrap="true" maxLines="4">
+									<Size x="240" y="0"/>
+									<Color r="0.2824" g="0.0157" b="0.0157"/>
+								</FontString>
+							</Layer>
+						</Layers>
+					</Frame>
+					<Button name="$parentButton" parentKey="Button" inherits="UIPanelButtonTemplate">
+						<Size x="116" y="24"/>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parentDescription" relativePoint="BOTTOM" x="0" y="-8"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								local centerDisplay = self:GetParent()
+								local suggestionFrame = centerDisplay:GetParent()
+
+								if suggestionFrame:GetID() == 2 then
+									HardcoreFrame:SetTopTab(2)
+								elseif suggestionFrame:GetID() == 3 then
+									HardcoreFrame:SetTopTab(4)
+								end
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				self.Background:SetAtlas("adventureguide-pane-small")
+				self.IconRing:SetAtlas("adventureguide-ring")
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="HardcoreChallengeInfoShadowTemplate" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentShadowCornerTopLeft" parentKey="ShadowCornerTopLeft">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentShadowCornerBottomLeft" parentKey="ShadowCornerBottomLeft">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentShadowEdgeLeft" parentKey="ShadowEdgeLeft">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentShadowCornerTopLeft" relativePoint="BOTTOMLEFT"/>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentShadowCornerBottomLeft" relativePoint="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentShadowCornerTopRight" parentKey="ShadowCornerTopRight">
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentShadowCornerBottomRight" parentKey="ShadowCornerBottomRight">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentShadowEdgeRight" parentKey="ShadowEdgeRight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parentShadowCornerTopRight" relativePoint="BOTTOMRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentShadowCornerBottomRight" relativePoint="TOPRIGHT"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentShadowEdgeTop" parentKey="ShadowEdgeTop">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentShadowCornerTopLeft" relativePoint="TOPRIGHT"/>
+						<Anchor point="TOPRIGHT" relativeTo="$parentShadowCornerTopRight" relativePoint="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentShadowEdgeBottom" parentKey="ShadowEdgeBottom">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentShadowCornerBottomLeft" relativePoint="BOTTOMRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentShadowCornerBottomRight" relativePoint="BOTTOMLEFT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreChallengeInfoShadowMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Button name="HardcoreChallengeIconButtonTemplate" virtual="true">
+		<Size x="412" y="54"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parentIconBorder" parentKey="IconBorder">
+					<Size x="78" y="78"/>
+					<Anchors>
+						<Anchor point="LEFT" x="-14" y="0"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentName" parentKey="Name" maxLines="2" inherits="PKBT_Font_14" justifyH="LEFT">
+					<Size y="54"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentIconBorder" relativePoint="RIGHT" x="-8" y="0"/>
+						<Anchor point="RIGHT"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="48" y="48"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentIconBorder" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreChallengeRewardButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+		</Scripts>
+	</Button>
+	<Frame name="HardcoreChallengeInfoLeftFrameTemplate" inherits="HardcoreChallengeInfoShadowTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentShadowRight" parentKey="ShadowRight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parentBackground" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackground" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<ScrollFrame name="$parentScrollFrame" parentKey="ScrollFrame" inherits="UIPanelScrollFrameCodeTemplate">
+				<Size x="467" y="0"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="0"/>
+					<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+				</Anchors>
+				<Frames>
+					<Slider name="$parentScrollBar" parentKey="ScrollBar" inherits="PKBT_UIPanelScrollBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="-62"/>
+							<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="40"/>
+						</Anchors>
+					</Slider>
+				</Frames>
+				<ScrollChild>
+					<Frame name="$parentScrollChild" parentKey="ScrollChild">
+						<Size x="462" y="3"/>
+						<Layers>
+							<Layer level="BORDER">
+								<FontString name="$parentDescriptionText" parentKey="DescriptionText" inherits="PKBT_Font_12" justifyH="LEFT">
+									<Size x="412" y="0"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" x="25" y="-61"/>
+									</Anchors>
+									<Color r="1" g="1" b="1"/>
+								</FontString>
+								<FontString name="$parentRewardText" parentKey="RewardText" inherits="PKBT_Font_20" justifyH="LEFT" text="HARDCORE_REWARD_TEXT" hidden="true">
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="$parentDescriptionText" relativePoint="BOTTOMLEFT" x="0" y="-18"/>
+									</Anchors>
+									<Color r="1" g="0.82" b="0"/>
+								</FontString>
+								<FontString name="$parentAchievementText" parentKey="AchievementText" inherits="PKBT_Font_20" justifyH="LEFT" text="HARDCORE_ACHIEVEMENT_TEXT" hidden="true">
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="$parentDescriptionText" relativePoint="BOTTOMLEFT" x="0" y="-18"/>
+									</Anchors>
+									<Color r="1" g="0.82" b="0"/>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Frames>
+							<SimpleHTML name="$parentHTML" parentKey="HTML" hyperlinkFormat="|H%s|h%s|h" hidden="true">
+								<Size x="412" y="200"/>
+								<Anchors>
+									<Anchor point="TOPLEFT" x="25" y="-61"/>
+								</Anchors>
+								<Scripts>
+									<OnHyperlinkEnter>
+										local linkType, linkFeatureIndex, isFeature1 = string.split(":", link, 3)
+										linkFeatureIndex = tonumber(linkFeatureIndex)
+										if linkType == "desc" and linkFeatureIndex then
+											GameTooltip:SetOwner(self, "ANCHOR_CURSOR_RIGHT", 10, 10)
+											GameTooltip:SetText(text, nil, nil, nil, nil, 1)
+											if isFeature1 == "1" then
+												GameTooltip:AddLine(C_Hardcore.GetFeature1Description(linkFeatureIndex), 1, 1, 1, 1)
+											else
+												GameTooltip:AddLine(C_Hardcore.GetFeatureDescription(linkFeatureIndex), 1, 1, 1, 1)
+											end
+											GameTooltip:Show()
+										end
+									</OnHyperlinkEnter>
+									<OnHyperlinkLeave>
+										GameTooltip:Hide()
+									</OnHyperlinkLeave>
+								</Scripts>
+								<FontString inherits="GameFontHighlight"/>
+							</SimpleHTML>
+						</Frames>
+					</Frame>
+				</ScrollChild>
+			</ScrollFrame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreChallengeInfoLeftFrameMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnHide>
+				self:Reset()
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+	<Button name="HardcoreChallengeInfoRightTabButtonTemplate" virtual="true">
+		<Size x="185" y="38"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentRight" parentKey="Right">
+					<Anchors>
+						<Anchor point="RIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentCenter" parentKey="Center">
+					<Anchors>
+						<Anchor point="LEFT" x="0" y="0"/>
+						<Anchor point="RIGHT" relativeTo="$parentRight" relativePoint="LEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentSelectedGlow" parentKey="SelectedGlow" hidden="true">
+					<Anchors>
+						<Anchor point="RIGHT" x="21" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreChallengeInfoRightTabButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+		</Scripts>
+		<ButtonText name="$parentText" parentKey="Text" inherits="PKBT_Font_13" justifyH="LEFT">
+			<Anchors>
+				<Anchor point="LEFT">
+					<Offset x="14" y="0"/>
+				</Anchor>
+			</Anchors>
+			<Color r="1" g="0.82" b="0"/>
+		</ButtonText>
+	</Button>
+	<Frame name="HardcoreChallengeInfoRightFrameTemplate" inherits="HardcoreChallengeInfoShadowTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" setAllPoints="true"/>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentTabButton1" parentKey="TabButton1" id="1" inherits="HardcoreChallengeInfoRightTabButtonTemplate" text="HARDCORE_CHALLENGE_TAB_DESCRIPTION">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="-46"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentTabButton2" parentKey="TabButton2" id="2" inherits="HardcoreChallengeInfoRightTabButtonTemplate" text="HARDCORE_CHALLENGE_TAB_RESTRICTIONS">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentTabButton1" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentTabButton3" parentKey="TabButton3" id="3" inherits="HardcoreChallengeInfoRightTabButtonTemplate" text="HARDCORE_CHALLENGE_TAB_VICTORY_CONDITIONS">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentTabButton2" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentStartButton" parentKey="StartButton" inherits="PKBT_RedButtonTemplate" text="CHALLENGES_START" motionScriptsWhileDisabled="true">
+				<Size x="0" y="52"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="12" y="12"/>
+					<Anchor point="BOTTOMRIGHT" x="-12" y="12"/>
+				</Anchors>
+				<Frames>
+					<Frame name="$parentGlow" parentKey="Glow" alpha="0">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="-12" y="14"/>
+							<Anchor point="BOTTOMRIGHT" x="11" y="-22"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture name="$parentLeft" parentKey="Left">
+									<Anchors>
+										<Anchor point="TOPLEFT" x="0" y="0"/>
+										<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+									</Anchors>
+								</Texture>
+								<Texture name="$parentRight" parentKey="Right">
+									<Anchors>
+										<Anchor point="TOPRIGHT" x="0" y="0"/>
+										<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+									</Anchors>
+								</Texture>
+								<Texture name="$parentCenter" parentKey="Center">
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="$parentLeft" relativePoint="TOPRIGHT" x="0" y="0"/>
+										<Anchor point="BOTTOMRIGHT" relativeTo="$parentRight" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+						<Animations>
+							<AnimationGroup parentKey="AlphaAnim">
+								<Alpha duration="0" change="-1" order="1"/>
+								<Alpha duration="0.3" change="1" order="2" smoothing="OUT_IN"/>
+								<Alpha duration="0.3" change="-1" order="3" smoothing="IN_OUT"/>
+							</AnimationGroup>
+						</Animations>
+					</Frame>
+				</Frames>
+				<Scripts>
+					<OnClick>
+						HardcoreConfirmChallengeFrame:Toggle(not HardcoreConfirmChallengeFrame:IsShown(), self.challengeID)
+					</OnClick>
+					<OnEnter>
+						if self.disabledReason then
+							GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+							GameTooltip_SetTitle(GameTooltip, HARDCORE_CHALLENGES_DISABLE_REASON_UNAVAILABLE, NORMAL_FONT_COLOR)
+							GameTooltip_AddHighlightLine(GameTooltip, _G[string.format("HARDCORE_CHALLENGES_DISABLE_REASON_%d_DESCRIPTION", self.disabledReason)])
+							GameTooltip:Show()
+						end
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreChallengeInfoRightFrameMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+	<Button name="HardcoreChallengeButtonTemplate" virtual="true">
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parentIconBorder" parentKey="IconBorder">
+					<Size x="64" y="64"/>
+					<Anchors>
+						<Anchor point="LEFT" x="4"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentName" parentKey="Name" inherits="PKBT_Font_20" justifyH="LEFT" maxLines="1">
+					<Size x="340" y="0"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentIconBorder" relativePoint="RIGHT" x="0" y="0"/>
+					</Anchors>
+					<Color r="1" g="0.82" b="0"/>
+				</FontString>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="42" y="42"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentIconBorder"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentLeftShadow" parentKey="LeftShadow">
+					<Size x="173" y="57"/>
+					<Anchors>
+						<Anchor point="LEFT" x="8" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBorderLeft" parentKey="BorderLeft">
+					<Size x="39" y="82"/>
+					<Anchors>
+						<Anchor point="LEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBorderRight" parentKey="BorderRight">
+					<Size x="39" y="82"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBorderMiddle" parentKey="BorderMiddle">
+					<Size x="0" y="82"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentBorderLeft" relativePoint="RIGHT" x="-8"/>
+						<Anchor point="RIGHT" relativeTo="$parentBorderRight" relativePoint="LEFT" x="8"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreChallengeFrameButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Frame name="HardcoreChallengeFrameTemplate" virtual="true">
+		<Size x="750" y="82"/>
+		<Frames>
+			<Frame name="$parentInfoFrame" parentKey="InfoFrame" hidden="true">
+				<Size x="710" y="306"/>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-51"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background" setAllPoints="true">
+							<Color r="0.06" g="0.06" b="0.06" a="0.9"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Frame name="$parentLeftFrame" parentKey="LeftFrame" inherits="HardcoreChallengeInfoLeftFrameTemplate">
+						<Size x="506" y="0"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="0" y="0"/>
+							<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentRightFrame" parentKey="RightFrame" inherits="HardcoreChallengeInfoRightFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentLeftFrame" relativePoint="TOPRIGHT" x="0" y="0"/>
+							<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentBorder" parentKey="Border">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="-12" y="9"/>
+							<Anchor point="BOTTOMRIGHT" x="12" y="-9"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BORDER">
+								<Texture name="$parentCornerTopLeft" parentKey="CornerTopLeft">
+									<Anchors>
+										<Anchor point="TOPLEFT"/>
+									</Anchors>
+								</Texture>
+								<Texture name="$parentCornerBottomLeft" parentKey="CornerBottomLeft">
+									<Anchors>
+										<Anchor point="BOTTOMLEFT"/>
+									</Anchors>
+								</Texture>
+								<Texture name="$parentEdgeLeft" parentKey="EdgeLeft">
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="$parentCornerTopLeft" relativePoint="BOTTOMLEFT"/>
+										<Anchor point="BOTTOMLEFT" relativeTo="$parentCornerBottomLeft" relativePoint="TOPLEFT"/>
+									</Anchors>
+								</Texture>
+								<Texture name="$parentCornerTopRight" parentKey="CornerTopRight">
+									<Anchors>
+										<Anchor point="TOPRIGHT"/>
+									</Anchors>
+								</Texture>
+								<Texture name="$parentCornerBottomRight" parentKey="CornerBottomRight">
+									<Anchors>
+										<Anchor point="BOTTOMRIGHT"/>
+									</Anchors>
+								</Texture>
+								<Texture name="$parentEdgeRight" parentKey="EdgeRight">
+									<Anchors>
+										<Anchor point="TOPRIGHT" relativeTo="$parentCornerTopRight" relativePoint="BOTTOMRIGHT"/>
+										<Anchor point="BOTTOMRIGHT" relativeTo="$parentCornerBottomRight" relativePoint="TOPRIGHT"/>
+									</Anchors>
+								</Texture>
+								<Texture name="$parentEdgeTop" parentKey="EdgeTop">
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="$parentCornerTopLeft" relativePoint="TOPRIGHT"/>
+										<Anchor point="TOPRIGHT" relativeTo="$parentCornerTopRight" relativePoint="TOPLEFT"/>
+									</Anchors>
+								</Texture>
+								<Texture name="$parentEdgeBottom" parentKey="EdgeBottom">
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" relativeTo="$parentCornerBottomLeft" relativePoint="BOTTOMRIGHT"/>
+										<Anchor point="BOTTOMRIGHT" relativeTo="$parentCornerBottomRight" relativePoint="BOTTOMLEFT"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+							<Layer level="ARTWORK">
+								<Texture name="$parentBridgeTop" parentKey="BridgeTop">
+									<Anchors>
+										<Anchor point="TOPLEFT" x="504" y="0"/>
+									</Anchors>
+								</Texture>
+								<Texture name="$parentBridgeBottom" parentKey="BridgeBottom">
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" x="504" y="0"/>
+									</Anchors>
+								</Texture>
+								<Texture name="$parentBridgeVertical" parentKey="BridgeVertical">
+									<Anchors>
+										<Anchor point="TOP" relativeTo="$parentBridgeTop" relativePoint="BOTTOM"/>
+										<Anchor point="BOTTOM" relativeTo="$parentBridgeBottom" relativePoint="TOP"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+							<Layer level="OVERLAY">
+								<Texture name="$parentTabLeft" parentKey="TabLeft" hidden="true"/>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnLoad>
+								self.CornerTopLeft:SetAtlas("Custom-Challenges-Border-CornerTopLeft", true)
+								self.CornerBottomLeft:SetAtlas("Custom-Challenges-Border-CornerBottomLeft", true)
+								self.EdgeLeft:SetAtlas("Custom-Challenges-Border-EdgeLeft", true)
+								self.CornerTopRight:SetAtlas("Custom-Challenges-Border-CornerTopRight", true)
+								self.CornerBottomRight:SetAtlas("Custom-Challenges-Border-CornerBottomRight", true)
+								self.EdgeRight:SetAtlas("Custom-Challenges-Border-EdgeRight", true)
+								self.EdgeTop:SetAtlas("Custom-Challenges-Border-EdgeTop", true)
+								self.EdgeBottom:SetAtlas("Custom-Challenges-Border-EdgeBottom", true)
+
+								self.BridgeTop:SetAtlas("Custom-Challenges-Border-Bridge-Top", true)
+								self.BridgeBottom:SetAtlas("Custom-Challenges-Border-Bridge-Bottom", true)
+								self.BridgeVertical:SetAtlas("Custom-Challenges-Border-Bridge-Vertical", true)
+								self.TabLeft:SetAtlas("Custom-Challenges-Border-MiddleTabButton-Left", true)
+							</OnLoad>
+						</Scripts>
+					</Frame>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, HardcoreChallengeInfoFrameMixin)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Button name="$parentButton" parentKey="Button" inherits="HardcoreChallengeButtonTemplate">
+				<Size x="750" y="82"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreChallengeFrameMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnHide>
+				self:Reset()
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+	<Button name="HardcoreTableHeaderStringTemplate" virtual="true">
+		<Size x="10" y="24"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="0"/>
+					</Anchors>
+					<Color r="0.2" g="0.2" b="0.2" a="0.5"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentLeft" parentKey="Left" file="Interface\FriendsFrame\WhoFrame-ColumnTabs">
+					<Size x="4" y="24"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+					<TexCoords left="0" right="0.078125" top="0" bottom="0.59375"/>
+				</Texture>
+				<Texture name="$parentRight" parentKey="Right" file="Interface\FriendsFrame\WhoFrame-ColumnTabs">
+					<Size x="4" y="24"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.90625" right="0.96875" top="0" bottom="0.59375"/>
+				</Texture>
+				<Texture name="$parentMiddle" parentKey="Middle" file="Interface\FriendsFrame\WhoFrame-ColumnTabs">
+					<Size x="0" y="24"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT"/>
+						<Anchor point="RIGHT" relativeTo="$parentRight" relativePoint="LEFT"/>
+					</Anchors>
+					<TexCoords left="0.078125" right="0.90625" top="0" bottom="0.59375"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentArrow" parentKey="Arrow"/>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture name="$parentLeftHighLight" parentKey="LeftHighLight" alpha="0.8" file="Interface\PaperDollInfoFrame\UI-Character-Tab-Highlight" alphaMode="ADD">
+					<Size x="10" y="34"/>
+					<Anchors>
+						<Anchor point="LEFT" x="0" y="0"/>
+					</Anchors>
+					<TexCoords left="0" right="0.2421875" top="0" bottom="1"/>
+				</Texture>
+				<Texture name="$parentRightHighLight" parentKey="RightHighLight" alpha="0.8" file="Interface\PaperDollInfoFrame\UI-Character-Tab-Highlight" alphaMode="ADD">
+					<Size x="10" y="34"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="0" y="0"/>
+					</Anchors>
+					<TexCoords left="0.7578125" right="1" top="0" bottom="1"/>
+				</Texture>
+				<Texture name="$parentMiddleHighLight" parentKey="MiddleHighLight" alpha="0.8" file="Interface\PaperDollInfoFrame\UI-Character-Tab-Highlight" alphaMode="ADD">
+					<Size x="0" y="34"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentLeftHighLight" relativePoint="RIGHT"/>
+						<Anchor point="RIGHT" relativeTo="$parentRightHighLight" relativePoint="LEFT"/>
+					</Anchors>
+					<TexCoords left="0.2421875" right="0.7578125" top="0" bottom="1"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreTableHeaderStringMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+		</Scripts>
+		<ButtonText name="$parentText" parentKey="Text">
+			<Anchors>
+				<Anchor point="LEFT" x="8" y="0"/>
+			</Anchors>
+			<Color r="1.0" g="0.82" b="0"/>
+		</ButtonText>
+		<NormalFont style="GameFontHighlightSmall"/>
+	</Button>
+	<Button name="HardcoreParticipantsTableHeaderStringTemplate" inherits="HardcoreTableHeaderStringTemplate" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreParticipantsTableHeaderStringMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Button>
+	<Button name="HardcoreLadderTableHeaderStringTemplate" inherits="HardcoreTableHeaderStringTemplate" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreLadderTableHeaderStringMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Button>
+
+	<Frame name="HardcoreTableCellTemplate" virtual="true">
+		<Size y="16"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<FontString parentKey="Text" inherits="GameFontNormal" justifyH="LEFT" setAllPoints="true"/>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreTableCellStringMixin)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="HardcoreTableIconCellTemplate" virtual="true">
+		<Size y="16"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="18" y="18"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentBorder" parentKey="Border" file="Interface\PVPFrame\PVP-Border-Wood">
+					<Size x="22" y="22"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentIcon" relativePoint="CENTER" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreTableIconCellStringMixin)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="HardcoreTableIconTextCellTemplate" virtual="true">
+		<Size y="16"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="18" y="18"/>
+					<Anchors>
+						<Anchor point="LEFT" x="4" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentBorder" parentKey="Border" file="Interface\PVPFrame\PVP-Border-Wood">
+					<Size x="22" y="22"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentIcon" relativePoint="CENTER" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentText" parentKey="Text" inherits="GameFontHighlightLeft">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="6" y="0"/>
+						<Anchor point="RIGHT"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreTableIconTextCellStringMixin)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="HardcoreTableLevelCellTemplate" virtual="true">
+		<Size y="16"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<FontString parentKey="Text" inherits="GameFontHighlightLeft" setAllPoints="true"/>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreTableLevelCellStringMixin)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="HardcoreTableTimeCellTemplate" virtual="true">
+		<Size y="16"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<FontString parentKey="Text" inherits="GameFontHighlightLeft" setAllPoints="true"/>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreLadderTableTimeCellStringMixin)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="HardcoreTableStatusCellTemplate" virtual="true">
+		<Size y="16"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentTexture" parentKey="Texture">
+					<Size x="16" y="16"/>
+					<Anchors>
+						<Anchor point="LEFT" x="4" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="$parentText" parentKey="Text" inherits="GameFontHighlightLeft">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentTexture" relativePoint="RIGHT" x="6" y="0"/>
+						<Anchor point="RIGHT"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreTableStatusCellStringMixin)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Button name="HardcoreTableEntryButtonTemplate" virtual="true">
+		<Size x="0" y="24"/>
+		<Anchors>
+			<Anchor point="LEFT"/>
+			<Anchor point="RIGHT"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background">
+					<Color r="0.8" g="0.8" b="0.8" a="0.1"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreTableEntryButtonMixin)
+			</OnLoad>
+		</Scripts>
+	</Button>
+
+	<EditBox name="HardcoreFilterEditBoxTemplate" inherits="InputBoxTemplate" letters="2" numeric="true" autoFocus="false" virtual="true">
+		<Size x="38" y="16"/>
+		<Scripts>
+			<OnTextChanged>
+				self:GetParent():OnTextChanged()
+			</OnTextChanged>
+			<OnEnter>
+				UIDropDownMenu_StopCounting(self:GetParent():GetParent())
+			</OnEnter>
+			<OnLeave>
+				UIDropDownMenu_StartCounting(self:GetParent():GetParent())
+			</OnLeave>
+		</Scripts>
+	</EditBox>
+
+	<Frame name="HardcoreFrame" inherits="PortraitFrameTemplate" toplevel="true" enableMouse="true" parent="UIParent" hidden="true">
+		<Size x="800" y="496"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0"/>
+		</Anchors>
+		<Frames>
+			<Frame name="$parentNavBar" inherits="NavBarTemplate" parentKey="navBar">
+				<Size x="726" y="34"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="61" y="-22"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BORDER">
+						<Texture name="$parentInsetBotLeftCorner" inherits="UI-Frame-InnerBotLeftCorner" parentKey="InsetBorderBottomLeft">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="-3" y="-3"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentInsetBotRightCorner" inherits="UI-Frame-InnerBotRight" parentKey="InsetBorderBottomRight">
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" x="3" y="-3"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentInsetBottomBorder" inherits="_UI-Frame-InnerBotTile" parentKey="InsetBorderBottom">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeTo="$parentInsetBotLeftCorner" relativePoint="BOTTOMRIGHT"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentInsetBotRightCorner" relativePoint="BOTTOMLEFT"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentInsetLeftBorder" inherits="!UI-Frame-InnerLeftTile" parentKey="InsetBorderLeft">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="-3" y="0"/>
+								<Anchor point="BOTTOMLEFT" relativeTo="$parentInsetBotLeftCorner"
+									relativePoint="TOPLEFT"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentInsetRightBorder" inherits="!UI-Frame-InnerRightTile" parentKey="InsetBorderRight">
+							<Anchors>
+								<Anchor point="TOPRIGHT" x="3" y="0"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentInsetBotRightCorner"
+									relativePoint="TOPRIGHT"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentInset" inherits="InsetFrameTemplate" parentKey="inset">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-4" y="-60"/>
+					<Anchor point="BOTTOMLEFT" x="4" y="5"/>
+				</Anchors>
+			</Frame>
+
+			<Button name="$parentSuggestTab" parentKey="SuggestTab" inherits="HardcorePanelTopTabButtonTemplate" text="HOME" id="1">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="29" y="-105"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentChallengeListTab" parentKey="ChallengeListTab" inherits="HardcorePanelTopTabButtonTemplate" text="HARDCORE_CHALLENGES_LIST" id="2">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentSuggestTab"
+						relativePoint="BOTTOMRIGHT" x="35" y="0"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentParticipantsTab" parentKey="ParticipantsTab" inherits="HardcorePanelTopTabButtonTemplate" text="HARDCORE_CHALLENGES_PARTICIPANTS_LIST" id="3">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentChallengeListTab" relativePoint="BOTTOMRIGHT" x="35" y="0"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentLadderTab" parentKey="LadderTab" inherits="HardcorePanelTopTabButtonTemplate" text="LADDER" id="4">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentParticipantsTab" relativePoint="BOTTOMRIGHT" x="35" y="0"/>
+				</Anchors>
+			</Button>
+
+			<Frame name="$parentSuggestFrame" parentKey="SuggestFrame" enableMouse="true" id="1" inherits="HardcorePanelTemplate" hidden="true">
+				<Frames>
+					<Frame name="$parentSuggestion1" parentKey="Suggestion1">
+						<Size x="335" y="337"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="28" y="-22"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture name="$parentBackground" parentKey="Background"/>
+							</Layer>
+							<Layer level="ARTWORK">
+								<Texture name="$parentIcon" parentKey="Icon">
+									<Size x="64" y="64"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" x="135" y="-2"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+							<Layer level="OVERLAY">
+								<Texture name="$parentIconRing" parentKey="IconRing">
+									<Size x="94" y="95"/>
+									<Anchors>
+										<Anchor point="CENTER" relativeTo="$parentIcon"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+						<Frames>
+							<Frame name="$parentCenterDisplay" parentKey="CenterDisplay">
+								<Size x="264" y="351"/>
+								<Anchors>
+									<Anchor point="CENTER" x="0" y="24"/>
+								</Anchors>
+								<Frames>
+									<Frame name="$parentTitle" parentKey="Title">
+										<Size x="264" y="20"/>
+										<Anchors>
+											<Anchor point="TOPLEFT" x="0" y="-110"/>
+										</Anchors>
+										<Layers>
+											<Layer level="ARTWORK">
+												<FontString name="$parentText" parentKey="Text" font="QuestFont24" justifyH="CENTER" justifyV="TOP" maxLines="2">
+													<Size x="264" y="0"/>
+													<Color r="0" g="0" b="0"/>
+												</FontString>
+											</Layer>
+										</Layers>
+									</Frame>
+									<Frame name="$parentDescription" parentKey="Description">
+										<Size x="264" y="100"/>
+										<Anchors>
+											<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT" x="0" y="-18"/>
+										</Anchors>
+										<Layers>
+											<Layer level="ARTWORK">
+												<FontString name="$parentText" parentKey="Text" font="GameTooltipHeader" justifyH="CENTER" justifyV="TOP">
+													<Size x="264" y="0"/>
+													<Color r="0.2824" g="0.0157" b="0.0157"/>
+												</FontString>
+											</Layer>
+										</Layers>
+									</Frame>
+									<Frame name="$parentSummaryFrame" parentKey="SummaryFrame">
+										<Size x="264" y="30"/>
+										<Anchors>
+											<Anchor point="TOP" relativeTo="$parentDescription" relativePoint="BOTTOM" x="0" y="-20"/>
+										</Anchors>
+										<Layers>
+											<Layer level="BACKGROUND">
+												<Texture name="$parentBackground" parentKey="Background" alpha="0.9">
+													<Size x="300" y="100"/>
+													<Anchors>
+														<Anchor point="TOP" x="0" y="30"/>
+													</Anchors>
+												</Texture>
+											</Layer>
+											<Layer level="BORDER">
+												<FontString name="$parentText" parentKey="Text" inherits="GameTooltipHeader" justifyH="CENTER" justifyV="TOP" text="123">
+													<Anchors>
+														<Anchor point="CENTER" x="0" y="-4"/>
+													</Anchors>
+													<Color r="0.92" g="0.78" b="0.48"/>
+												</FontString>
+											</Layer>
+										</Layers>
+									</Frame>
+								</Frames>
+							</Frame>
+						</Frames>
+						<Scripts>
+							<OnLoad>
+								self.Background:SetAtlas("adventureguide-pane-large")
+								self.IconRing:SetAtlas("adventureguide-ring")
+								self.CenterDisplay.SummaryFrame.Background:SetAtlas("jailerstower-animapowerlist-dropdown-openbg")
+							</OnLoad>
+						</Scripts>
+					</Frame>
+					<Frame name="$parentSuggestion2" parentKey="Suggestion2" id="2" inherits="HardcoreSuggestionSecondaryTemplate">
+						<Size x="344" y="161"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOP" x="1" y="-22"/>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentSuggestion3" parentKey="Suggestion3" id="3" inherits="HardcoreSuggestionSecondaryTemplate">
+						<Size x="344" y="161"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentSuggestion2" relativePoint="BOTTOMLEFT" x="0" y="-11"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, HardcoreSuggestFrameMixin)
+						self:OnLoad()
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Frame name="$parentChallengeListFrame" parentKey="ChallengeListFrame" enableMouse="true" id="2" inherits="HardcorePanelTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-8" y="-106"/>
+					<Anchor point="BOTTOMLEFT" x="8" y="8"/>
+				</Anchors>
+				<Layers>
+				</Layers>
+				<Frames>
+					<ScrollFrame name="$parentScrollFrame" parentKey="ScrollFrame" inherits="HybridScrollFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="2" y="0"/>
+							<Anchor point="BOTTOMRIGHT" x="-20" y="0"/>
+						</Anchors>
+						<Frames>
+							<Slider name="$parentScrollBar" parentKey="scrollBar" inherits="MinimalHybridScrollBarTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="-22"/>
+									<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="17"/>
+								</Anchors>
+							</Slider>
+						</Frames>
+					</ScrollFrame>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, HardcoreChallengeListMixin)
+						self:OnLoad()
+					</OnLoad>
+					<OnShow>
+						self:OnShow()
+					</OnShow>
+					<OnEvent>
+						self:OnEvent(event)
+					</OnEvent>
+				</Scripts>
+			</Frame>
+
+			<Frame name="$parentParticipantsFrame" parentKey="ParticipantsFrame" enableMouse="true" id="3" inherits="HardcorePanelTemplate" hidden="true">
+				<Layers>
+				</Layers>
+				<Frames>
+					<Button name="$parentFilterButton" parentKey="FilterButton" inherits="UIResettableDropdownButtonTemplate" text="FILTER">
+						<Size x="100" y="22"/>
+						<Anchors>
+							<Anchor point="TOPRIGHT" x="-10" y="34"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								PlaySound("igMainMenuOptionCheckBoxOn")
+								ToggleDropDownMenu(1, nil, self:GetParent().FilterDropDown, self, 74, 15)
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Frame name="$parentFilterDropDown" parentKey="FilterDropDown" inherits="UIDropDownMenuTemplate"/>
+					<Frame name="$parentSearchFrame" parentKey="SearchFrame">
+						<Size x="108" y="16"/>
+						<Frames>
+							<EditBox name="$parentSearchBox" parentKey="SearchBox" inherits="HardcoreFilterEditBoxTemplate" letters="12" numeric="false">
+								<Size x="100" y="16"/>
+								<Anchors>
+									<Anchor point="LEFT" x="8" y="0"/>
+								</Anchors>
+							</EditBox>
+						</Frames>
+						<Scripts>
+							<OnLoad>
+								Mixin(self, HardcoreParticipantsSearchFrameMixin)
+							</OnLoad>
+						</Scripts>
+					</Frame>
+					<Frame name="$parentLevelRangeFrame" parentKey="LevelRangeFrame">
+						<Size x="108" y="16"/>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString parentKey="Dash" inherits="GameFontHighlightSmall" text="-">
+									<Anchors>
+										<Anchor point="CENTER" x="0" y="0"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Frames>
+							<EditBox name="$parentMinLevel" parentKey="MinLevel" inherits="HardcoreFilterEditBoxTemplate">
+								<Anchors>
+									<Anchor point="LEFT" x="8" y="0"/>
+								</Anchors>
+							</EditBox>
+							<EditBox name="$parentMaxLevel" parentKey="MaxLevel" inherits="HardcoreFilterEditBoxTemplate">
+								<Anchors>
+									<Anchor point="RIGHT" x="0" y="0"/>
+								</Anchors>
+							</EditBox>
+						</Frames>
+						<Scripts>
+							<OnLoad>
+								Mixin(self, HardcoreParticipantsLevelRangeFrameMixin)
+							</OnLoad>
+						</Scripts>
+					</Frame>
+					<Frame name="$parentHeaderContainer" parentKey="HeaderContainer">
+						<Size x="0" y="24"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="0" y="0"/>
+							<Anchor point="TOPRIGHT" x="-26" y="0"/>
+						</Anchors>
+					</Frame>
+					<ScrollFrame name="$parentScrollFrame" parentKey="ScrollFrame" inherits="HybridScrollFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="2" y="-28"/>
+							<Anchor point="BOTTOMRIGHT" x="-28" y="6"/>
+						</Anchors>
+						<Frames>
+							<Slider name="$parentScrollBar" parentKey="scrollBar" inherits="MinimalHybridScrollBarTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="8" y="6"/>
+									<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="8" y="10"/>
+								</Anchors>
+							</Slider>
+						</Frames>
+					</ScrollFrame>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, HardcoreParticipantsMixin)
+						self:OnLoad()
+					</OnLoad>
+					<OnShow>
+						self:OnShow()
+					</OnShow>
+					<OnEvent>
+						self:OnEvent(event, ...)
+					</OnEvent>
+				</Scripts>
+			</Frame>
+
+			<Frame name="$parentLadderFrame" parentKey="LadderFrame" enableMouse="true" id="4" inherits="HardcorePanelTemplate" hidden="true">
+				<Layers>
+				</Layers>
+				<Frames>
+					<Button name="$parentFilterButton" parentKey="FilterButton" inherits="UIResettableDropdownButtonTemplate" text="FILTER">
+						<Size x="100" y="22"/>
+						<Anchors>
+							<Anchor point="TOPRIGHT" x="-10" y="34"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								PlaySound("igMainMenuOptionCheckBoxOn")
+								ToggleDropDownMenu(1, nil, self:GetParent().FilterDropDown, self, 74, 15)
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Frame name="$parentFilterDropDown" parentKey="FilterDropDown" inherits="UIDropDownMenuTemplate"/>
+					<Frame name="$parentSearchFrame" parentKey="SearchFrame">
+						<Size x="108" y="16"/>
+						<Frames>
+							<EditBox name="$parentSearchBox" parentKey="SearchBox" inherits="HardcoreFilterEditBoxTemplate" letters="12" numeric="false">
+								<Size x="100" y="16"/>
+								<Anchors>
+									<Anchor point="LEFT" x="8" y="0"/>
+								</Anchors>
+							</EditBox>
+						</Frames>
+						<Scripts>
+							<OnLoad>
+								Mixin(self, HardcoreLadderSearchFrameMixin)
+							</OnLoad>
+						</Scripts>
+					</Frame>
+					<Frame name="$parentLevelRangeFrame" parentKey="LevelRangeFrame">
+						<Size x="108" y="16"/>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString parentKey="Dash" inherits="GameFontHighlightSmall" text="-">
+									<Anchors>
+										<Anchor point="CENTER" x="0" y="0"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Frames>
+							<EditBox name="$parentMinLevel" parentKey="MinLevel" inherits="HardcoreFilterEditBoxTemplate">
+								<Anchors>
+									<Anchor point="LEFT" x="8" y="0"/>
+								</Anchors>
+							</EditBox>
+							<EditBox name="$parentMaxLevel" parentKey="MaxLevel" inherits="HardcoreFilterEditBoxTemplate">
+								<Anchors>
+									<Anchor point="RIGHT" x="0" y="0"/>
+								</Anchors>
+							</EditBox>
+						</Frames>
+						<Scripts>
+							<OnLoad>
+								Mixin(self, HardcoreLadderLevelRangeFrameMixin)
+							</OnLoad>
+						</Scripts>
+					</Frame>
+					<Frame name="$parentHeaderContainer" parentKey="HeaderContainer">
+						<Size x="0" y="24"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="0" y="0"/>
+							<Anchor point="TOPRIGHT" x="-26" y="0"/>
+						</Anchors>
+					</Frame>
+					<ScrollFrame name="$parentScrollFrame" parentKey="ScrollFrame" inherits="HybridScrollFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="2" y="-28"/>
+							<Anchor point="BOTTOMRIGHT" x="-28" y="6"/>
+						</Anchors>
+						<Frames>
+							<Slider name="$parentScrollBar" parentKey="scrollBar" inherits="MinimalHybridScrollBarTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="8" y="6"/>
+									<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="8" y="10"/>
+								</Anchors>
+							</Slider>
+						</Frames>
+					</ScrollFrame>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, HardcoreLadderMixin)
+						self:OnLoad()
+					</OnLoad>
+					<OnShow>
+						self:OnShow()
+					</OnShow>
+					<OnEvent>
+						self:OnEvent(event, ...)
+					</OnEvent>
+				</Scripts>
+			</Frame>
+
+			<Button name="$parentTab1" inherits="CharacterFrameTabButtonTemplate" text="ADVENTURE_JOURNAL" id="1" parentKey="tab1">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT"
+						x="19" y="-30"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="Hardcore_TabOnClick"/>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab2" inherits="CharacterFrameTabButtonTemplate" text="HEADHUNTING" id="2" parentKey="tab2">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab1" relativePoint="RIGHT" x="-16"
+						y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="Hardcore_TabOnClick"/>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab3" inherits="CharacterFrameTabButtonTemplate" text="HARDCORE_CHALLENGES_TITLE" id="3" parentKey="tab3">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab2" relativePoint="RIGHT" x="-16" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="Hardcore_TabOnClick"/>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<Frame name="HardcoreConfirmChallengeFrame" parent="HardcoreFrame" inherits="PKBT_DialogTemplate, HardcoreChallengeInfoShadowTemplate" frameStrata="HIGH" enableMouse="true" hidden="true">
+		<Size x="540" y="344"/>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentVignetteTopLeft" parentKey="VignetteTopLeft">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBackground" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentVignetteTopRight" parentKey="VignetteTopRight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parentBackground" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="$parentText" parentKey="Text" inherits="GameFontNormalLarge" wordwrap="true" justifyH="CENTER" justifyV="MIDDLE" text="HARDCORE_CHALLENGE_ACTION_WITH_CHARACTER_TEXT">
+					<Size x="448" y="0"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBackground" x="46" y="-12"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackground" x="-46" y="88"/>
+					</Anchors>
+					<Color r="1" g="1" b="1" a="1"/>
+				</FontString>
+				<Texture name="$parentBottomShadow" parentKey="BottomShadow">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="2" y="1"/>
+						<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentCloseButton" parentKey="CloseButton" inherits="PKBT_CloseButtonTemplate"/>
+			<Button name="$parentAcceptButton" parentKey="AcceptButton" inherits="PKBT_RedButtonMultiWidgetTemplate" text="YES">
+				<Size x="164" y="50"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="-102" y="32"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Accept()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentDeclineButton" parentKey="DeclineButton" inherits="PKBT_RedButtonMultiWidgetTemplate" text="NO">
+				<Size x="164" y="50"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="102" y="32"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Hide()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<EditBox name="$parentEditBox" parentKey="EditBox" inherits="PKBT_EditBoxTemplate" autoFocus="false" >
+				<Size x="200" y="43"/>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentText" relativePoint="BOTTOM" x="0" y="-17"/>
+				</Anchors>
+				<FontString inherits="GameFontNormalLarge" justifyH="LEFT" justifyV="MIDDLE">
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+				<Scripts>
+					<OnTextChanged>
+						self:GetParent():UpdateAccept()
+					</OnTextChanged>
+				</Scripts>
+			</EditBox>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreConfirmChallengeMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+	<Frame name="HardcoreStaticPopupFrame" parent="UIParent" inherits="PKBT_DialogTemplate,HardcoreChallengeInfoShadowTemplate" enableMouse="true" toplevel="true" hidden="true">
+		<Size x="572" y="302"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentVignetteTopLeft" parentKey="VignetteTopLeft">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBackground" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentVignetteTopRight" parentKey="VignetteTopRight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parentBackground" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentBottomShadow" parentKey="BottomShadow">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="2" y="1"/>
+						<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentText" parentKey="Text" inherits="GameFontNormalLarge" justifyH="CENTER" justifyV="MIDDLE" text="HARDCORE_CHALLENGE_ACTION_WITH_CHARACTER_TEXT">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBackground" x="46" y="-12"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackground" x="-46" y="88"/>
+					</Anchors>
+					<Color r="1" g="1" b="1" a="1"/>
+				</FontString>
+				<Texture name="$parentValkyr" parentKey="Valkyr">
+					<Anchors>
+						<Anchor point="BOTTOM" relativePoint="TOP" x="0" y="-26"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentButton1" parentKey="Button1" inherits="PKBT_RedButtonMultiWidgetTemplate" text="HARDCORE_CHARACTER_DELETE">
+				<Size x="220" y="50"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="-130" y="32"/>
+				</Anchors>
+				<Frames>
+					<Button name="$parentHelpPlateButton" parentKey="HelpPlateButton" motionScriptsWhileDisabled="true" inherits="MainHelpPlateButton">
+						<Anchors>
+							<Anchor point="TOPRIGHT" x="26" y="26"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								DeathRecapFrame:OpenDeathRecap()
+							</OnClick>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+								if self:IsEnabled() == 1 then
+									GameTooltip_SetTitle(GameTooltip, DEATH_RECAP_TITLE_DONT_INFO, NORMAL_FONT_COLOR)
+								else
+									GameTooltip_SetTitle(GameTooltip, DEATH_RECAP_UNAVAILABLE, RED_FONT_COLOR)
+								end
+								GameTooltip:Show()
+							</OnEnter>
+							<OnLeave function="GameTooltip_Hide"/>
+							<OnEnable>
+								self.I:SetDesaturated(false)
+								self.Ring:SetDesaturated(false)
+							</OnEnable>
+							<OnDisable>
+								self.I:SetDesaturated(true)
+								self.Ring:SetDesaturated(true)
+							</OnDisable>
+						</Scripts>
+					</Button>
+				</Frames>
+				<Scripts>
+					<OnClick>
+						Logout()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentButton2" parentKey="Button2" inherits="PKBT_RedButtonMultiWidgetPriceTemplate">
+				<Size x="220" y="50"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="130" y="32"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():ShowConfirm()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentOverlayFrame" parentKey="OverlayFrame" setAllPoints="true" enableMouse="true" hidden="true">
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="2" y="-36"/>
+								<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
+							</Anchors>
+							<Color r="0" g="0" b="0" a="0.9"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Button>
+			<Frame name="$parentConfirmFrame" parentKey="ConfirmFrame" enableMouse="true" hidden="true">
+				<Size x="370" y="198"/>
+				<Anchors>
+					<Anchor point="CENTER" relativeTo="$parentBackground" x="0" y="0"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="layoutType" value="PKBT_PanelNoPortrait" type="string"/>
+				</Attributes>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="2" y="-36"/>
+								<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<FontString name="$parentText" parentKey="Text" inherits="GameFontHighlight" justifyH="CENTER" justifyV="MIDDLE" text="HARDCORE_CHARACTER_SAVE_TEXT">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentBackground" x="12" y="-12"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackground" x="-12" y="68"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Frame parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
+					<Button name="$parentButton1" parentKey="Button1" inherits="PKBT_RedButtonMultiWidgetTemplate" text="YES">
+						<Size x="124" y="50"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="-82" y="12"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								self:GetParent():Okay()
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="$parentButton2" parentKey="Button2" inherits="PKBT_RedButtonMultiWidgetTemplate" text="NO">
+						<Size x="124" y="50"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="82" y="12"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								self:GetParent():Hide()
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, HardcoreStaticPopupConfirmMixin)
+						self:OnLoad()
+					</OnLoad>
+					<OnShow>
+						self:OnShow()
+					</OnShow>
+					<OnHide>
+						self:OnHide()
+					</OnHide>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreStaticPopupMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+	<Frame name="HardcoreLossBanner" parent="UIParent" frameStrata="FULLSCREEN_DIALOG" hidden="true" alpha="1">
+		<Size x="128" y="156"/>
+		<Anchors>
+			<Anchor point="TOP" x="0" y="-120"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentBannerTop" parentKey="BannerTop" alphaMode="BLEND">
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-44"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Alpha duration="0" order="1" change="-1"/>
+							<Scale duration="0" order="1" scaleX="0.1" scaleY="1"/>
+							<Alpha startDelay="0.35" duration="0.25" order="2" change="1"/>
+							<Scale startDelay="0.25" duration="0.3" order="2" scaleX="10" scaleY="1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<Texture name="$parentBannerTopGlow" parentKey="BannerTopGlow" alpha="0" alphaMode="ADD">
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-44"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Scale duration="0" order="1" scaleX="0.5" scaleY="1"/>
+							<Alpha startDelay="1.15" duration="0.25" order="2" change="1"/>
+							<Scale startDelay="1.15" duration="0.5" order="2" scaleX="3.2" scaleY="1"/>
+							<Alpha startDelay="1.25" duration="0.6" order="2" change="-1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<Texture name="$parentBannerBottom" parentKey="BannerBottom" alphaMode="BLEND">
+					<Anchors>
+						<Anchor point="BOTTOM" x="0" y="0"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Alpha duration="0" order="1" change="-1"/>
+							<Scale duration="0" order="1" scaleX="0.1" scaleY="1"/>
+							<Alpha startDelay="0.35" duration="0.25" order="2" change="1"/>
+							<Scale startDelay="0.25" duration="0.3" order="2" scaleX="10" scaleY="1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<Texture name="$parentBannerBottomGlow" parentKey="BannerBottomGlow" alpha="0" alphaMode="ADD">
+					<Anchors>
+						<Anchor point="BOTTOM" x="0" y="0"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Scale duration="0" order="1" scaleX="0.5" scaleY="1"/>
+							<Alpha startDelay="1.15" duration="0.25" order="2" change="1"/>
+							<Scale startDelay="1.15" duration="0.5" order="2" scaleX="3.2" scaleY="1"/>
+							<Alpha startDelay="1.25" duration="0.6" order="2" change="-1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBannerMiddle" parentKey="BannerMiddle" alphaMode="BLEND">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBannerTop" x="0" y="-34"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBannerBottom" x="0" y="25"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Alpha duration="0" order="1" change="-1"/>
+							<Scale duration="0" order="1" scaleX="0.1" scaleY="1"/>
+							<Alpha startDelay="0.35" duration="0.25" order="2" change="1"/>
+							<Scale startDelay="0.25" duration="0.3" order="2" scaleX="10" scaleY="1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<Texture name="$parentBannerMiddleGlow" parentKey="BannerMiddleGlow" alpha="0" alphaMode="ADD">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBannerTop" x="0" y="-34"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBannerBottom" x="0" y="25"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Scale duration="0" order="1" scaleX="0.5" scaleY="1"/>
+							<Alpha startDelay="1.15" duration="0.25" order="2" change="1"/>
+							<Scale startDelay="1.15" duration="0.5" order="2" scaleX="3.2" scaleY="1"/>
+							<Alpha startDelay="1.25" duration="0.6" order="2" change="-1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentSkullCircle" parentKey="SkullCircle" alphaMode="BLEND">
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentBannerTop" x="0" y="36"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Scale duration="0" order="1" scaleX="5" scaleY="5"/>
+							<Alpha duration="0" order="1" change="-1"/>
+							<Scale duration="0.15" order="2" scaleX="0.2" scaleY="0.2"/>
+							<Alpha duration="0.1" order="2" change="1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentBottomFillagree" parentKey="BottomFillagree" alphaMode="BLEND">
+					<Anchors>
+						<Anchor point="BOTTOM" x="0" y="8"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Alpha duration="0" order="1" change="-1"/>
+							<Alpha startDelay="0.30" duration="0.15" order="2" change="1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<Texture name="$parentSkullSpikes" parentKey="SkullSpikes" alphaMode="BLEND">
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentSkullCircle" x="-1" y="6"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Scale duration="0" order="1" scaleX="0.5" scaleY="0.5"/>
+							<Alpha duration="0" order="1" change="-1"/>
+							<Scale startDelay="0.25" duration="0.1" order="2" scaleX="2" scaleY="2"/>
+							<Alpha startDelay="0.15" duration="0.1" order="2" change="1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<Texture name="$parentRightFillagree" parentKey="RightFillagree" alphaMode="BLEND">
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentSkullCircle" x="10" y="6"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Alpha duration="0" order="1" change="-1"/>
+							<Scale duration="0" order="1" scaleX="0.5" scaleY="0.5"/>
+							<Alpha startDelay="0.15" duration="0.1" order="2" change="1"/>
+							<Translation parentKey="Translation" startDelay="0.30" duration="0.15" order="2"/>
+							<Scale parentKey="Scale" startDelay="0.30" duration="0.15" order="2" scaleX="2" scaleY="2">
+								<Origin point="LEFT">
+									<Offset x="0" y="0"/>
+								</Origin>
+							</Scale>
+							<Scripts>
+								<OnFinished>
+									local banner = self:GetParent():GetParent()
+									banner.RightFillagree:SetPoint("CENTER", banner.SkullCircle, "CENTER", 47, 6)
+								</OnFinished>
+							</Scripts>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<Texture name="$parentLeftFillagree" parentKey="LeftFillagree" alphaMode="BLEND">
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentSkullCircle" x="-10" y="6"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Alpha duration="0" order="1" change="-1"/>
+							<Scale duration="0" order="1" scaleX="0.5" scaleY="0.5"/>
+							<Alpha startDelay="0.15" duration="0.1" order="2" change="1"/>
+							<Translation parentKey="Translation" startDelay="0.30" duration="0.15" order="2"/>
+							<Scale parentKey="Scale" startDelay="0.30" duration="0.15" order="2" scaleX="2" scaleY="2">
+								<Origin point="RIGHT">
+									<Offset x="0" y="0"/>
+								</Origin>
+							</Scale>
+							<Scripts>
+								<OnFinished>
+									local banner = self:GetParent():GetParent()
+									banner.LeftFillagree:SetPoint("CENTER", banner.SkullCircle, "CENTER", -47, 6)
+								</OnFinished>
+							</Scripts>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<FontString name="$parentTitle" parentKey="Title" inherits="PKBT_Font_16" justifyH="CENTER" justifyV="MIDDLE">
+					<Size x="440" y="34"/>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentBannerTop" x="0" y="-44"/>
+					</Anchors>
+					<Color r="0.829" g="0.788" b="0.793"/>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Alpha duration="0" order="1" change="-1"/>
+							<Alpha startDelay="0.15" duration="0.25" order="2" change="1"/>
+						</AnimationGroup>
+					</Animations>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentOverlay" parentKey="Overlay" setAllPoints="true">
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="FlashBurst" alpha="0" alphaMode="ADD">
+							<Animations>
+								<AnimationGroup parentKey="AnimIn">
+									<Scale duration="0" order="1" scaleX="1" scaleY="0.75"/>
+									<Alpha startDelay="0.25" duration="0.25" order="2" change="1"/>
+									<Scale parentKey="Scale" startDelay="0.25" duration="0.4" order="2" scaleX="1.25" scaleY="1">
+										<Origin point="LEFT">
+											<Offset x="0" y="0"/>
+										</Origin>
+									</Scale>
+									<Translation parentKey="Translation" startDelay="0.25" duration="0.5" order="2"/>
+									<Alpha startDelay="0.25" duration="0.4" order="2" change="-1"/>
+								</AnimationGroup>
+							</Animations>
+						</Texture>
+						<Texture parentKey="FlashBurstLeft" alpha="0" alphaMode="ADD">
+							<Animations>
+								<AnimationGroup parentKey="AnimIn">
+									<Scale duration="0" order="1" scaleX="1" scaleY="0.75"/>
+									<Alpha startDelay="0.4" duration="0.25" order="2" change="1"/>
+									<Scale parentKey="Scale" startDelay="0.4" duration="0.5" order="2" scaleX="1.25" scaleY="1">
+										<Origin point="RIGHT">
+											<Offset x="0" y="0"/>
+										</Origin>
+									</Scale>
+									<Translation parentKey="Translation" startDelay="0.4" duration="0.5" order="2"/>
+									<Alpha startDelay="0.4" duration="0.5" order="2" change="-1"/>
+								</AnimationGroup>
+							</Animations>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture parentKey="FlashBurstCenter" alpha="0" alphaMode="ADD">
+							<Animations>
+								<AnimationGroup parentKey="AnimIn">
+									<Alpha startDelay="0.4" duration="0.25" order="1" change="1"/>
+									<Scale startDelay="0.4" duration="0.5" order="1" scaleX="1.25" scaleY="1.25"/>
+									<Alpha startDelay="0.4" duration="0.5" order="1" change="-1"/>
+								</AnimationGroup>
+							</Animations>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture parentKey="RedFlash" alpha="0" alphaMode="ADD">
+							<Animations>
+								<AnimationGroup parentKey="AnimIn">
+									<Scale duration="0" order="1" scaleX="2.5" scaleY="2.5"/>
+									<Alpha startDelay="0.15" duration="0.1" order="2" change="1"/>
+									<Scale startDelay="0.15" smoothing="IN" duration="0.25" order="2" scaleX="0.375" scaleY="0.375"/>
+									<Alpha startDelay="0.4" duration="0.5" order="2" change="-1"/>
+								</AnimationGroup>
+							</Animations>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						local banner = self:GetParent()
+						self.FlashBurst:ClearAllPoints()
+						self.FlashBurst:SetPoint("CENTER", banner.SkullSpikes, 15, -4)
+						self.FlashBurstLeft:ClearAllPoints()
+						self.FlashBurstLeft:SetPoint("CENTER", banner.SkullSpikes, -15, -4)
+						self.FlashBurstCenter:ClearAllPoints()
+						self.FlashBurstCenter:SetPoint("CENTER", banner.SkullSpikes, 0, 0)
+						self.RedFlash:ClearAllPoints()
+						self.RedFlash:SetPoint("CENTER", banner.SkullSpikes, 1, -4)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Animations>
+			<AnimationGroup parentKey="AnimOut">
+				<Alpha duration="0.5" order="1" change="-1"/>
+				<Scripts>
+					<OnFinished function="HardcoreLossBanner_OnAnimOutFinished"/>
+				</Scripts>
+			</AnimationGroup>
+		</Animations>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, HardcoreLossBannerMixin)
+				self:OnLoad();
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+		</Scripts>
+	</Frame>
+</Ui>

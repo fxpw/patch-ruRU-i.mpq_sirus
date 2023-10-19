@@ -140,7 +140,7 @@ function ShapeshiftBar_Update ()
 			ShapeshiftBarMiddle:SetTexCoord(0, numForms-2, 0, 1);
 			ShapeshiftBarRight:SetPoint("LEFT", "ShapeshiftBarMiddle", "RIGHT", 0, 0);
 		end
-		
+
 		ShapeshiftBarFrame:Show();
 	else
 		ShapeshiftBarFrame:Hide();
@@ -160,7 +160,7 @@ function ShapeshiftBar_UpdateState ()
 		if ( i <= numForms ) then
 			texture, name, isActive, isCastable = GetShapeshiftFormInfo(i);
 			icon:SetTexture(texture);
-			
+
 			--Cooldown stuffs
 			cooldown = _G["ShapeshiftButton"..i.."Cooldown"];
 			if ( texture ) then
@@ -170,7 +170,7 @@ function ShapeshiftBar_UpdateState ()
 			end
 			start, duration, enable = GetShapeshiftFormCooldown(i);
 			CooldownFrame_SetTimer(cooldown, start, duration, enable);
-			
+
 			if ( isActive ) then
 				ShapeshiftBarFrame.lastSelected = button:GetID();
 				button:SetChecked(1);
@@ -268,7 +268,15 @@ function PossessButton_OnClick (self)
 
 	local id = self:GetID();
 	if ( id == POSSESS_CANCEL_SLOT ) then
-		if ( UnitControllingVehicle("player") and CanExitVehicle() ) then
+		if ( UnitOnTaxi("player") ) then
+			TaxiRequestEarlyLanding();
+
+			-- Show that the request for landing has been received.
+			local icon = self.icon;
+			icon:SetDesaturated(true);
+			self:SetChecked(true);
+			self:Disable();
+		elseif ( UnitControllingVehicle("player") and CanExitVehicle() ) then
 			VehicleExit();
 		else
 			local texture, name = GetPossessInfo(id);

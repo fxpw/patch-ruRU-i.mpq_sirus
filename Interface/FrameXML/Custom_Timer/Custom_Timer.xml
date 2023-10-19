@@ -271,6 +271,43 @@
 				</Texture>
 			</Layer>
 		</Layers>
+		<Frames>
+			<Frame name="$parentGlow" parentKey="Glow" alpha="0">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="-12" y="12"/>
+					<Anchor point="BOTTOMRIGHT" x="11" y="-17"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentLeft" parentKey="Left">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+								<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentRight" parentKey="Right">
+							<Anchors>
+								<Anchor point="TOPRIGHT" x="0" y="0"/>
+								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentCenter" parentKey="Center">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentLeft" relativePoint="TOPRIGHT" x="0" y="0"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentRight" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Animations>
+					<AnimationGroup parentKey="AlphaAnim" looping="REPEAT">
+						<Alpha duration="0" change="-1" order="1"/>
+						<Alpha duration="1" change="1" order="2" smoothing="OUT_IN"/>
+						<Alpha duration="1" change="-1" order="3" smoothing="IN_OUT"/>
+					</AnimationGroup>
+				</Animations>
+			</Frame>
+		</Frames>
 		<Scripts>
 			<OnLoad>
 				Mixin(self, TimerTrackerReadyButtonMixin)

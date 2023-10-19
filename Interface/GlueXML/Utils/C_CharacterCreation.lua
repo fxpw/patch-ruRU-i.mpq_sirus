@@ -2,6 +2,12 @@ local MODEL_FRAME
 local IN_CHARACTER_CREATE = false
 
 local SELECTED_SEX, SELECTED_RACE, SELECTED_CLASS
+local SELECTED_SIGN = 1
+
+PAID_SERVICE_CHARACTER_ID = nil
+PAID_SERVICE_TYPE = nil
+
+local ZODIAC_SIGNS_ENABLED = true
 
 local ZOOM_TIME_SECONDS = 0.75
 local CAMERA_ZOOM_LEVEL = 0
@@ -11,8 +17,9 @@ local CAMERA_ZOOM_LEVEL_AMOUNT = 20
 local CAMERA_ZOOM_IN_PROGRESS = false
 local CAMERA_ZOOM_RESET_BLOCKED = false
 
-local CHARACTER_SELECT_INDEX = 0
 local CHARACTER_SELECT_GHOST = false
+
+local CHARACTER_CUSTOM_FLAG = 0
 
 local CHARACTER_CREATE_DRESSED = true
 local CHARACTER_CREATE_DRESS_STATE_QUEUED = false
@@ -27,9 +34,23 @@ E_PAID_SERVICE = Enum.CreateMirror({
 	CUSTOMIZATION		= 1,
 	CHANGE_RACE			= 2,
 	CHANGE_FACTION		= 3,
-	BOOST_SERVICE		= 4,
-	BOOST_SERVICE_NEW	= 5,
+	CHANGE_ZODIAC		= 4,
+	BOOST_SERVICE		= 5,
+	BOOST_SERVICE_NEW	= 6,
 })
+
+E_CHARACTER_CUSTOMIZATION = Enum.CreateMirror({
+	"SKIN_COLOR",
+	"FACE",
+	"HAIR",
+	"HAIR_COLOR",
+	"FACIAL_HAIR",
+--	"ARMOR_STYLE"
+})
+
+local CUSTOM_FLAGS = {
+	HARDCORE = 0x1,
+}
 
 local INACCESSIBILITY_FLAGS = {
 	CREATION			= 0x01,
@@ -45,7 +66,7 @@ local RACE_INACCESSIBILITY = {
 }
 
 local CLASS_INACCESSIBILITY = {
-	[CLASS_ID_DEMONHUNTER] = true
+	[CLASS_ID_DEMONHUNTER] = CLASS_DISABLE_REASON_DEMON_HUNTER
 }
 
 local CHARACTER_CREATE_CAMERA_ZOOMED_SETTINGS = {
@@ -254,19 +275,29 @@ for _, raceData in ipairs(ALL_RACES) do
 	AVAILABLE_RACES[raceID] = true
 end
 
-E_CHARACTER_CUSTOMIZATION = Enum.CreateMirror({
-	"SKIN_COLOR",
-	"FACE",
-	"HAIR",
-	"HAIR_COLOR",
-	"FACIAL_HAIR",
---	"ARMOR_STYLE"
-})
+local ZODIAC_STATUS = {
+	SUCCESS = 0,
+	UNAVAILABLE = 1,
+}
+
+local CUSTOM_FLAG_STATUS = {
+	SUCCESS = 0,
+	UNAVAILABLE = 1,
+}
+
+local CUSTOMIZATION_ZODIAC_STATUS = {
+	SUCCESS = 0,
+	INVALID_PARAMETERS = 1,
+	CHARACTER_NOT_FOUND = 2,
+	RACE_LOCKED = 3,
+	INVALID_RACE_ID = 4,
+	INTERNAL_ERROR = 5,
+}
 
 local eventHandler = CreateFrame("Frame")
 eventHandler:Hide()
-eventHandler:RegisterEvent("UPDATE_SELECTED_CHARACTER")
 eventHandler:RegisterEvent("UPDATE_STATUS_DIALOG")
+eventHandler:RegisterEvent("SERVER_SPLIT_NOTICE")
 eventHandler:RegisterCustomEvent("GLUE_CHARACTER_CREATE_BACKGROUND_UPDATE")
 eventHandler:RegisterCustomEvent("GLUE_CHARACTER_CREATE_VISIBILITY_CHANGED")
 eventHandler:SetScript("OnEvent", function(self, event, ...)
@@ -276,9 +307,6 @@ eventHandler:SetScript("OnEvent", function(self, event, ...)
 		self:Hide()
 		CAMERA_ZOOM_LEVEL = 0
 		CAMERA_ZOOM_IN_PROGRESS = false
-	elseif event == "UPDATE_SELECTED_CHARACTER" then
-		local index = ...
-		CHARACTER_SELECT_INDEX = index
 	elseif event == "UPDATE_STATUS_DIALOG" then
 		local text = ...
 		if text == CHAR_CREATE_SUCCESS then
@@ -294,11 +322,10 @@ eventHandler:SetScript("OnEvent", function(self, event, ...)
 		end
 	elseif event == "SERVER_SPLIT_NOTICE" then
 		local msg = select(3, ...)
-		local prefix, status = string.split(":", msg)
+		local prefix, content = string.split(":", msg, 2)
 
 		if prefix == "SMSG_TOGGLE_ITEMS_FOR_CUSTOMIZE" then
-			self:UnregisterEvent(event)
-
+			local status = content
 			if CHARACTER_CREATE_DRESS_STATE_QUEUED then
 				if status == "OK" then
 					CHARACTER_CREATE_DRESSED = not CHARACTER_CREATE_DRESSED	-- state change confirmed
@@ -311,7 +338,7 @@ eventHandler:SetScript("OnEvent", function(self, event, ...)
 				else
 					CHARACTER_CREATE_DRESS_STATE_QUEUED = false
 					GlueDialog:HideDialog("SERVER_WAITING")
-					GlueDialog:ShowDialog("OKAY", WAIT_MODEL_LOADING_ERROR)
+					GlueDialog:ShowDialog("OKAY_VOID", WAIT_MODEL_LOADING_ERROR)
 				end
 
 				FireCustomClientEvent("GLUE_CHARACTER_CREATE_DRESS_STATE_UPDATE", status == "OK")
@@ -324,6 +351,55 @@ eventHandler:SetScript("OnEvent", function(self, event, ...)
 
 				if CHARACTER_SELECT_LIST_UPDATE_QUEUED then
 					GetCharacterListUpdate()
+				end
+			end
+		elseif prefix == "SMSG_CHARACTER_CREATION_INFO" then
+			local zodiacSignStatus, customFlagStatus = string.split(":", content)
+			zodiacSignStatus = tonumber(zodiacSignStatus) or 0
+			customFlagStatus = tonumber(customFlagStatus) or 0
+
+			GlueDialog:HideDialog("SERVER_WAITING")
+
+			if zodiacSignStatus == ZODIAC_STATUS.SUCCESS
+			and customFlagStatus == CUSTOM_FLAG_STATUS.SUCCESS
+			then
+				CreateCharacter(CHARACTER_CREATING_NAME)
+			else
+				local zodiacErrorText
+				local customFlagErrorText
+
+				if zodiacSignStatus ~= ZODIAC_STATUS.SUCCESS then
+					local err = string.format("CHARACTER_CREATION_INFO_ZODIAC_SIGN_ERROR_%d", zodiacSignStatus)
+					zodiacErrorText = _G[err] or string.format("CHARACTER_CREATION_INFO: zodiac sign error #%s", zodiacSignStatus)
+				end
+
+				if customFlagStatus ~= CUSTOM_FLAG_STATUS.SUCCESS then
+					local err = string.format("CHARACTER_CREATION_INFO_CUSTOM_FLAG_ERROR_%d", customFlagStatus)
+					customFlagErrorText = _G[err] or string.format("CHARACTER_CREATION_INFO: flag error #%s", customFlagStatus)
+				end
+
+				local errorText
+				if zodiacErrorText and customFlagErrorText then
+					errorText = string.join(";", zodiacErrorText, customFlagErrorText)
+				else
+					errorText = zodiacErrorText or customFlagErrorText
+				end
+
+				GlueDialog:ShowDialog("OKAY_VOID", errorText)
+			end
+		elseif prefix == "SMSG_CHARACTER_ZODIAC" then
+			local status = tonumber(content)
+
+			GlueDialog:HideDialog("SERVER_WAITING")
+
+			if status == CUSTOMIZATION_ZODIAC_STATUS.SUCCESS then
+				SetGlueScreen("charselect")
+			else
+				local errorText = _G[string.format("CUSTOMIZATION_ZODIAC_STATUS_%i", status)]
+				if errorText then
+					GlueDialog:ShowDialog("OKAY_VOID", errorText)
+				else
+					GlueDialog:ShowDialog("OKAY_VOID", string.format("[ERROR] SMSG_CHARACTER_ZODIAC: error %s", status))
 				end
 			end
 		end
@@ -380,14 +456,24 @@ end
 
 C_CharacterCreation = {}
 
-function C_CharacterCreation.IsRaceAvailable(raceID)
+function C_CharacterCreation.IsRaceAvailable(raceID, skipRaceOverride)
+	if not skipRaceOverride and OVERRIDE_RACEID[raceID] then
+		raceID = OVERRIDE_RACEID[raceID]
+	end
 	if AVAILABLE_RACES[raceID] then
 		if C_CharacterCreation.IsAlliedRace(raceID) then
-			return C_CharacterCreation.IsAlliedRacesUnlocked()
+			if C_CharacterCreation.IsAlliedRacesUnlocked(raceID) then
+				return true
+			else
+				local raceFile = S_CHARACTER_RACES_INFO[raceID].clientFileString
+				local disableReason = RACE_UNAVAILABLE
+				local disableReasonInfo = string.format("%s - %s", ALLIED_RACE_DISABLE, _G[string.format("ALLIED_RACE_DISABLE_REASON_%s", raceFile:upper())] or "MISSING")
+				return false, disableReason, disableReasonInfo
+			end
 		end
 		return true
 	end
-	return false
+	return false, RACE_UNAVAILABLE
 end
 
 function C_CharacterCreation.IsAlliedRace(raceID)
@@ -425,10 +511,11 @@ function C_CharacterCreation.GetCharCustomizeFrame()
 	return MODEL_FRAME
 end
 
-function C_CharacterCreation.SetCreateScreen(paidServiceID, characterIndex)
+function C_CharacterCreation.SetCreateScreen(paidServiceID, characterID)
 	if GetCurrentGlueScreenName() == "charcreate" then return end
 
-	CHARACTER_SELECT_GHOST = CHARACTER_SELECT_INDEX ~= 0 and select(7, GetCharacterInfo(CHARACTER_SELECT_INDEX)) == true
+	local selectedCharacterID = C_CharacterList.GetSelectedCharacter()
+	CHARACTER_SELECT_GHOST = selectedCharacterID ~= 0 and select(7, GetCharacterInfo(selectedCharacterID)) == true
 
 	if CHARACTER_SELECT_GHOST then
 		GlueFFXModel:Hide()
@@ -436,7 +523,10 @@ function C_CharacterCreation.SetCreateScreen(paidServiceID, characterIndex)
 
 	if paidServiceID then
 		PAID_SERVICE_TYPE = paidServiceID
-		PAID_SERVICE_CHARACTER_ID = characterIndex
+
+		if paidServiceID ~= E_PAID_SERVICE.BOOST_SERVICE_NEW and paidServiceID ~= E_PAID_SERVICE.BOOST_SERVICE then
+			C_CharacterCreation.CustomizeExistingCharacter(characterID)
+		end
 	end
 
 	SetGlueScreen("charcreate")
@@ -453,7 +543,11 @@ function C_CharacterCreation.SetInCharacterCreate(state)
 		CAMERA_ZOOM_RESET_BLOCKED = false
 		PAID_SERVICE_CHARACTER_ID = nil
 		PAID_SERVICE_TYPE = nil
+		PAID_OVERRIDE_CURRENT_RACE_INDEX = nil
 		CHARACTER_CREATING_NAME = nil
+
+		SELECTED_SIGN = 1
+		CHARACTER_CUSTOM_FLAG = 0
 
 		local defaultFacing = C_CharacterCreation.GetDefaultCharacterCreateFacing()
 		if GetCharacterCreateFacing() ~= defaultFacing then
@@ -462,12 +556,10 @@ function C_CharacterCreation.SetInCharacterCreate(state)
 
 		if not CHARACTER_CREATE_DRESSED then
 			CHARACTER_SELECT_DRESS_QUEUED = true
-			eventHandler:RegisterEvent("SERVER_SPLIT_NOTICE")
 			C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.ToggleItemsForCustomize)
 		end
 	end
 
-	PAID_OVERRIDE_CURRENT_RACE_INDEX = nil
 	FireCustomClientEvent("GLUE_CHARACTER_CREATE_VISIBILITY_CHANGED", IN_CHARACTER_CREATE)
 end
 
@@ -508,7 +600,7 @@ function C_CharacterCreation.ResetCharCustomize()
 
 	local changedRace, changedClass
 
-	while not C_CharacterCreation.IsRaceAvailable(SELECTED_RACE) or not C_CharacterCreation.IsRaceClassValid(SELECTED_RACE, SELECTED_CLASS) do
+	while not C_CharacterCreation.IsRaceAvailable(SELECTED_RACE, true) or not C_CharacterCreation.IsRaceClassValid(SELECTED_RACE, SELECTED_CLASS) do
 		SELECTED_RACE = ALL_RACES[math.random(1, #ALL_RACES)].raceID
 		changedRace = true
 	end
@@ -528,15 +620,20 @@ function C_CharacterCreation.ResetCharCustomize()
 		SELECTED_CLASS = select(3, GetSelectedClass())
 	end
 
+	C_CharacterCreation.SetSelectedZodiacSignByRaceID(SELECTED_RACE)
+
 	resetModelSettings()
 end
 
 function C_CharacterCreation.CustomizeExistingCharacter(paidServiceCharacterID)
 	CustomizeExistingCharacter(paidServiceCharacterID)
+	PAID_SERVICE_CHARACTER_ID = paidServiceCharacterID
 
 	SELECTED_SEX = GetSelectedSex()
 	SELECTED_RACE = GetSelectedRace()
 	SELECTED_CLASS = select(3, GetSelectedClass())
+	local paidZodiacRaceID = C_CharacterCreation.PaidChange_GetZodiacRaceID()
+	C_CharacterCreation.SetSelectedZodiacSignByRaceID(paidZodiacRaceID ~= 0 and paidZodiacRaceID or SELECTED_RACE)
 
 	resetModelSettings()
 end
@@ -555,11 +652,38 @@ function C_CharacterCreation.CreateCharacter(name)
 		end
 	end
 
-	name = string.trim(name):gsub("%d+", "")
+	CHARACTER_CREATING_NAME = string.trim(name):gsub("%d+", "")
 
-	CHARACTER_CREATING_NAME = name
-
-	return CreateCharacter(name)
+	if C_CharacterCreation.PaidChange_IsActive(true) then
+		if C_CharacterCreation.PaidChange_CanChangeZodiac() then
+			local zodiacRaceID = C_ZodiacSign.GetZodiacSignInfoByIndex(SELECTED_SIGN)
+			if zodiacRaceID then
+				if zodiacRaceID ~= C_CharacterCreation.PaidChange_GetZodiacRaceID() then
+					local signDBCRaceID = E_CHARACTER_RACES_DBC[E_CHARACTER_RACES[zodiacRaceID]]
+					GlueDialog:ShowDialog("SERVER_WAITING", CHAR_ZODIAC_IN_PROGRESS)
+					C_GluePackets:SendPacket(C_GluePackets.OpCodes.SendCharacterCustomizationInfo, PAID_SERVICE_CHARACTER_ID, signDBCRaceID or 0)
+				else
+					GlueDialog:ShowDialog("OKAY_VOID", CUSTOMIZATION_ZODIAC_ALREADY_SELECTED)
+				end
+			else
+				GlueDialog:ShowDialog("OKAY_VOID", CUSTOMIZATION_ZODIAC_NOT_FOUND)
+			end
+		else
+			CreateCharacter(CHARACTER_CREATING_NAME)
+		end
+	else
+		if C_CharacterCreation.IsZodiacSignsEnabled() or CHARACTER_CUSTOM_FLAG ~= 0 then
+			local signDBCRaceID
+			local zodiacRaceID = C_ZodiacSign.GetZodiacSignInfoByIndex(SELECTED_SIGN)
+			if zodiacRaceID then
+				signDBCRaceID = E_CHARACTER_RACES_DBC[E_CHARACTER_RACES[zodiacRaceID]]
+			end
+			GlueDialog:ShowDialog("SERVER_WAITING", CHAR_CREATE_IN_PROGRESS)
+			C_GluePackets:SendPacket(C_GluePackets.OpCodes.SendCharacterCreationInfo, signDBCRaceID or 0, CHARACTER_CUSTOM_FLAG or 0)
+		else
+			CreateCharacter(CHARACTER_CREATING_NAME)
+		end
+	end
 end
 
 function C_CharacterCreation.SetDressState(state)
@@ -568,7 +692,6 @@ function C_CharacterCreation.SetDressState(state)
 
 	CHARACTER_CREATE_DRESS_STATE_QUEUED = true
 	GlueDialog:ShowDialog("SERVER_WAITING", WAIT_MODEL_LOADING)
-	eventHandler:RegisterEvent("SERVER_SPLIT_NOTICE")
 	C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.ToggleItemsForCustomize)
 end
 
@@ -584,15 +707,38 @@ function C_CharacterCreation.IsDressStateChangingBack()
 	return CHARACTER_SELECT_DRESS_QUEUED
 end
 
+function C_CharacterCreation.CanCreateHardcoreCharacter()
+	return C_Service.IsHardcoreEnabledOnRealm()
+end
+
+function C_CharacterCreation.SetHardcoreFlag(state)
+	if C_CharacterCreation.CanCreateHardcoreCharacter() then
+		if state then
+			CHARACTER_CUSTOM_FLAG = bit.bor(CHARACTER_CUSTOM_FLAG, CUSTOM_FLAGS.HARDCORE)
+		else
+			CHARACTER_CUSTOM_FLAG = bit.bxor(CHARACTER_CUSTOM_FLAG, CUSTOM_FLAGS.HARDCORE)
+		end
+
+		FireCustomClientEvent("GLUE_CHARACTER_CREATE_UPDATE_CLASSES")
+	end
+end
+
+function C_CharacterCreation.GetHardcoreFlag()
+	if C_CharacterCreation.CanCreateHardcoreCharacter() then
+		return bit.band(CHARACTER_CUSTOM_FLAG, CUSTOM_FLAGS.HARDCORE) ~= 0
+	else
+		return false
+	end
+end
+
 function C_CharacterCreation.QueueListUpdate()
 	CHARACTER_SELECT_LIST_UPDATE_QUEUED = true
 end
 
-function C_CharacterCreation.IsAlliedRacesUnlocked(raceID)
-	return IsGMAccount() or ALLIED_RACES_UNLOCK[raceID] or false
-end
-
-function C_CharacterCreation.IsAlliedRacesUnlockedRaw(raceID)
+function C_CharacterCreation.IsAlliedRacesUnlocked(raceID, skipGMCheck)
+	if not skipGMCheck and IsGMAccount() then
+		return true
+	end
 	return ALLIED_RACES_UNLOCK[raceID] or false
 end
 
@@ -629,31 +775,25 @@ function C_CharacterCreation.GetAvailableRaces()
 end
 
 function C_CharacterCreation.GetAvailableClasses()
-	local t = {GetAvailableClasses()}
+	local classInfo = {GetAvailableClasses()}
 	local classes = {}
-	local index = 0
+	local classID = 0
 
-	for i = 1, #t, 3 do
-		index = index + 1
+	for i = 1, #classInfo, 3 do
+		classID = classID + 1
 
-		local disabled, hidden
-
-		if index == CLASS_ID_DEMONHUNTER then
+		local hidden
+		if classID == CLASS_ID_DEMONHUNTER then
 			hidden = true
-			disabled = CLASS_DISABLE_REASON_DEMON_HUNTER
-		elseif index == CLASS_ID_DEATHKNIGHT and not C_CharacterList.CanCreateDeathKnight() and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW then
-			disabled = CLASS_DISABLE_REASON_DEATH_KNIGHT
-		else
-			--RACE_CLASS_ERROR
 		end
 
-		classes[#classes + 1] = {
-			index = index,
-			name = t[i] or t[i + 1] or string.format("[%i] NO CLASS NAME", index),
-			clientFileString = t[i + 1],
-			hidden = hidden or false,
-			disabled = disabled or false,
-		}
+		if not hidden then
+			classes[#classes + 1] = {
+				classID = classID,
+				name = classInfo[i] or classInfo[i + 1] or string.format("[%i] NO CLASS NAME", classID),
+				clientFileString = classInfo[i + 1],
+			}
+		end
 	end
 
 	return classes
@@ -669,26 +809,42 @@ function C_CharacterCreation.GetFactionForRace(raceID)
 end
 
 function C_CharacterCreation.IsRaceClassValid(raceID, classID)
+	local valid, disabledReason = C_CharacterCreation.IsClassValid(classID)
+	if not valid then
+		return false, disabledReason
+	end
+
 	if RACE_INACCESSIBILITY[raceID] and not IsGMAccount() then
-		if CLASS_INACCESSIBILITY[classID]
-		or bit.band(RACE_INACCESSIBILITY[raceID], INACCESSIBILITY_FLAGS.CREATION) ~= 0
-		or (classID == CLASS_ID_DEATHKNIGHT and bit.band(RACE_INACCESSIBILITY[raceID], INACCESSIBILITY_FLAGS.CREATION_DK) ~= 0)
-		then
-			return false
+		if bit.band(RACE_INACCESSIBILITY[raceID], INACCESSIBILITY_FLAGS.CREATION) ~= 0 then
+			return false, string.format(RACE_DISABLE_REASON_REALM, _G[S_CHARACTER_RACES_INFO[raceID].raceName])
+		elseif classID == CLASS_ID_DEATHKNIGHT and bit.band(RACE_INACCESSIBILITY[raceID], INACCESSIBILITY_FLAGS.CREATION_DK) ~= 0 then
+			return false, RACE_DISABLE_REASON_REALM_DEATH_KNIGHT
 		end
 	end
 
-	return IsRaceClassValid(raceID, classID) == 1
+	if IsRaceClassValid(raceID, classID) ~= 1 then
+		return false, RACE_DISABLE_CLASS_COMBINATION
+	end
+
+	return true, nil
 end
 
 function C_CharacterCreation.IsClassValid(classID)
-	if not IsGMAccount() then
-		if (classID == CLASS_ID_DEATHKNIGHT and not C_CharacterList.CanCreateDeathKnight() and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW) then
-			return false
-		end
+	if C_CharacterCreation.PaidChange_IsActive() then
+		return true
 	end
 
-	return true
+	local disabledReason
+
+	if CLASS_INACCESSIBILITY[classID] then
+		disabledReason = CLASS_INACCESSIBILITY[classID]
+	elseif classID == CLASS_ID_DEATHKNIGHT and not C_CharacterList.CanCreateDeathKnight() then
+		disabledReason = CLASS_DISABLE_REASON_DEATH_KNIGHT
+	elseif classID == CLASS_ID_DEATHKNIGHT and C_CharacterCreation.GetHardcoreFlag() then
+		disabledReason = CLASS_DISABLE_REASON_DEATH_KNIGHT_HARDCORE
+	end
+
+	return disabledReason == nil, disabledReason
 end
 
 function C_CharacterCreation.SetSelectedRace(raceID)
@@ -696,6 +852,7 @@ function C_CharacterCreation.SetSelectedRace(raceID)
 
 	SetSelectedRace(raceID)
 	SELECTED_RACE = GetSelectedRace()
+	C_CharacterCreation.SetSelectedZodiacSignByRaceID(SELECTED_RACE)
 
 	if not C_CharacterCreation.IsRaceClassValid(raceID, SELECTED_CLASS) then
 		while true do
@@ -814,6 +971,112 @@ function C_CharacterCreation.GetAvailableCustomizations()
 	return styles
 end
 
+function C_CharacterCreation.IsZodiacSignsEnabled()
+	return ZODIAC_SIGNS_ENABLED
+end
+
+function C_CharacterCreation.CanChangeZodiacSign()
+	if C_CharacterCreation.PaidChange_IsActive(true) then
+		return C_CharacterCreation.PaidChange_CanChangeZodiac()
+	end
+	return true
+end
+
+function C_CharacterCreation.GetSelectedZodiacSign()
+	return SELECTED_SIGN or 1
+end
+
+function C_CharacterCreation.SetSelectedZodiacSign(signIndex)
+	if type(signIndex) ~= "number" then
+		error(string.format("bad argument #1 to 'C_CharacterCreation.SetSelectedZodiacSign' (number expected, got %s)", type(signIndex)), 2)
+	elseif signIndex <= 0 and signIndex > C_ZodiacSign.GetNumZodiacSigns() then
+		error(string.format("Zodiac sign id out or range `%s`", signIndex), 2)
+	end
+
+	if signIndex ~= SELECTED_SIGN then
+		SELECTED_SIGN = signIndex
+		FireCustomClientEvent("GLUE_CHARACTER_CREATE_ZODIAC_SELECTED", signIndex)
+	end
+end
+
+function C_CharacterCreation.SetSelectedZodiacSignByRaceID(raceID)
+	if type(raceID) ~= "number" then
+		error(string.format("bad argument #1 to 'C_CharacterCreation.SetSelectedZodiacSignByRaceID' (number expected, got %s)", type(raceID)), 2)
+	end
+
+	if OVERRIDE_RACEID[raceID] then
+		raceID = OVERRIDE_RACEID[raceID]
+	end
+
+	local index = C_ZodiacSign.GetZodiacSignIndexByRaceID(raceID)
+	if index then
+		SELECTED_SIGN = index
+		FireCustomClientEvent("GLUE_CHARACTER_CREATE_ZODIAC_SELECTED", index)
+		return
+	end
+
+	error(string.format("Zodiac sign with race id `%d` not found", raceID), 2)
+end
+
+function C_CharacterCreation.GetNumZodiacSigns()
+	return C_ZodiacSign.GetNumZodiacSigns()
+end
+
+function C_CharacterCreation.IsSignAvailable(signIndex)
+	if type(signIndex) ~= "number" then
+		error(string.format("bad argument #1 to 'C_CharacterCreation.IsSignAvailable' (number expected, got %s)", type(signIndex)), 2)
+	elseif signIndex <= 0 and signIndex > C_ZodiacSign.GetNumZodiacSigns() then
+		error(string.format("Zodiac sign id out or range `%s`", signIndex), 2)
+	end
+
+	local zodiacRaceID, name, description, icon, atlas = C_ZodiacSign.GetZodiacSignInfoByIndex(signIndex)
+
+	if C_CharacterCreation.PaidChange_CanChangeZodiac() and zodiacRaceID == C_CharacterCreation.PaidChange_GetZodiacRaceID() then
+		return false, ZODIAC_SIGN_DISABLE, CUSTOMIZATION_ZODIAC_ALREADY_SELECTED
+	end
+
+	local isAvailable, disableReason, disableReasonInfo = C_CharacterCreation.IsRaceAvailable(zodiacRaceID)
+	if not isAvailable then
+		local raceFile = S_CHARACTER_RACES_INFO[zodiacRaceID].clientFileString
+		local requirement = _G[string.format("ALLIED_RACE_DISABLE_REASON_%s", raceFile:upper())] or "MISSING"
+		disableReason = ZODIAC_SIGN_DISABLE
+		disableReasonInfo = string.format("%s - %s", string.format(ALLIED_RACE_SIGN_DISABLE, name), requirement)
+	end
+
+	return isAvailable, disableReason, disableReasonInfo
+end
+
+function C_CharacterCreation.GetZodiacSignInfo(signIndex)
+	if type(signIndex) ~= "number" then
+		error(string.format("bad argument #1 to 'C_CharacterCreation.GetZodiacSignInfo' (number expected, got %s)", type(signIndex)), 2)
+	elseif signIndex <= 0 and signIndex > C_ZodiacSign.GetNumZodiacSigns() then
+		error(string.format("Zodiac sign id out or range `%s`", signIndex), 2)
+	end
+
+	local zodiacRaceID, name, description, icon, atlas = C_ZodiacSign.GetZodiacSignInfoByIndex(signIndex)
+	local available = C_CharacterCreation.IsRaceAvailable(zodiacRaceID)
+	return zodiacRaceID, name, description, icon, atlas, available
+end
+
+function C_CharacterCreation.GetZodiacSignInfoByRaceID(raceID)
+	if type(raceID) ~= "number" then
+		error(string.format("bad argument #1 to 'C_CharacterCreation.GetZodiacSignInfoByRaceID' (number expected, got %s)", type(raceID)), 2)
+	elseif raceID <= 0 and raceID > C_ZodiacSign.GetNumZodiacSigns() then
+		error(string.format("Zodiac sign id out or range `%s`", raceID), 2)
+	end
+
+	if OVERRIDE_RACEID[raceID] then
+		raceID = OVERRIDE_RACEID[raceID]
+	end
+
+	local index = C_ZodiacSign.GetZodiacSignIndexByRaceID(raceID)
+	if index then
+		return C_CharacterCreation.GetZodiacSignInfo(index)
+	end
+
+	error(string.format("Zodiac sign with race id `%d` not found", raceID), 2)
+end
+
 function C_CharacterCreation.SetCharCustomizeBackground(modelName)
 	SetCharCustomizeBackground(modelName)
 end
@@ -842,7 +1105,7 @@ function C_CharacterCreation.GetSelectedModelName(ignoreOverirde)
 		return "Pandaren"
 	end
 
-	if not ignoreOverirde and PAID_SERVICE_TYPE and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW and C_CharacterCreation.GetSelectedRace() == C_CharacterCreation.PaidChange_GetCurrentRaceIndex() then
+	if not ignoreOverirde and C_CharacterCreation.PaidChange_IsActive(true) and C_CharacterCreation.GetSelectedRace() == C_CharacterCreation.PaidChange_GetCurrentRaceIndex() then
 		local _, _, factionID = C_CharacterCreation.PaidChange_GetCurrentFaction()
 		if factionID == SERVER_PLAYER_FACTION_GROUP.Horde then
 			if raceID == E_CHARACTER_RACES.RACE_ZANDALARITROLL then
@@ -856,7 +1119,7 @@ function C_CharacterCreation.GetSelectedModelName(ignoreOverirde)
 			return "Alliance"
 		end
 	elseif raceID == E_CHARACTER_RACES.RACE_ZANDALARITROLL then
-		if PAID_SERVICE_TYPE and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW and select(3, C_CharacterCreation.PaidChange_GetCurrentFaction()) == SERVER_PLAYER_FACTION_GROUP.Alliance then
+		if C_CharacterCreation.PaidChange_IsActive(true) and select(3, C_CharacterCreation.PaidChange_GetCurrentFaction()) == SERVER_PLAYER_FACTION_GROUP.Alliance then
 			return "Zandalar_Alliance"
 		end
 		return "Zandalar_Horde"
@@ -908,7 +1171,7 @@ function C_CharacterCreation.GetCameraSettingsDefault()
 	if C_CharacterCreation.GetSelectedRace() == E_CHARACTER_RACES.RACE_ZANDALARITROLL then
 		if select(2, C_CharacterCreation.GetSelectedClass()) == "DEATHKNIGHT" then
 			modelName = "Zandalar_DeathKnight"
-		elseif PAID_SERVICE_TYPE and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW and select(3, C_CharacterCreation.PaidChange_GetCurrentFaction()) == SERVER_PLAYER_FACTION_GROUP.Alliance then
+		elseif C_CharacterCreation.PaidChange_IsActive(true) and select(3, C_CharacterCreation.PaidChange_GetCurrentFaction()) == SERVER_PLAYER_FACTION_GROUP.Alliance then
 			modelName = "Zandalar_Alliance"
 		else
 			modelName = "Zandalar_Horde"
@@ -943,7 +1206,7 @@ function C_CharacterCreation.GetCameraSettingsZoomed(sexID, raceID, className)
 		error(string.format("C_CharacterCreation.GetCameraSettingsZoomed: No camera info (Race=%s) (Sex=%s) (Class=%s) ", tostring(E_CHARACTER_RACES[raceID]), tostring(E_SEX[sexID]), className), 2)
 	end
 
-	if PAID_SERVICE_TYPE and PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW and C_CharacterCreation.GetSelectedRace() == C_CharacterCreation.PaidChange_GetCurrentRaceIndex() then
+	if C_CharacterCreation.PaidChange_IsActive(true) and C_CharacterCreation.GetSelectedRace() == C_CharacterCreation.PaidChange_GetCurrentRaceIndex() then
 		local modelName = C_CharacterCreation.GetSelectedModelName()
 		local defaultModelName = C_CharacterCreation.GetSelectedModelName(true)
 		if modelName ~= defaultModelName then
@@ -1060,6 +1323,17 @@ end
 
 
 
+function C_CharacterCreation.PaidChange_IsActive(ignoreBoostNewCharater)
+	if PAID_SERVICE_TYPE ~= nil then
+		if ignoreBoostNewCharater then
+			return PAID_SERVICE_TYPE ~= E_PAID_SERVICE.BOOST_SERVICE_NEW
+		else
+			return true
+		end
+	end
+	return false
+end
+
 function C_CharacterCreation.PaidChange_GetName()
 	return PaidChange_GetName() or ""
 end
@@ -1111,7 +1385,7 @@ function C_CharacterCreation.PaidChange_ChooseFaction(factionID, reverse)
 	end
 
 	if PAID_OVERRIDE_CURRENT_RACE_INDEX then
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.GLUE_CHARACTER_CREATE_FORCE_RACE_CHANGE, PAID_OVERRIDE_CURRENT_RACE_INDEX)
+		FireCustomClientEvent("GLUE_CHARACTER_CREATE_FORCE_RACE_CHANGE", PAID_OVERRIDE_CURRENT_RACE_INDEX)
 	end
 end
 
@@ -1136,4 +1410,18 @@ function C_CharacterCreation.IsServicesAvailableForRace(serviceType, raceID)
 	end
 
 	return true
+end
+
+function C_CharacterCreation.PaidChange_CanChangeZodiac()
+	if C_CharacterCreation.IsZodiacSignsEnabled() and C_CharacterCreation.PaidChange_IsActive(true) and PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_ZODIAC and PAID_SERVICE_CHARACTER_ID then
+		return C_CharacterList.CanCharacterChangeZodiac(PAID_SERVICE_CHARACTER_ID)
+	end
+	return false
+end
+
+function C_CharacterCreation.PaidChange_GetZodiacRaceID()
+	if C_CharacterCreation.PaidChange_CanChangeZodiac() then
+		return C_CharacterList.GetCharacterZodiacRaceID(PAID_SERVICE_CHARACTER_ID)
+	end
+	return 0
 end

@@ -528,6 +528,10 @@ function TransmogSlotButtonMixin:Update()
 		end
 
 		if hasPending or hasUndo or canTransmogrify then
+			if not texture then
+				local illusionInfo = C_TransmogCollection.GetIllusionInfo(self:GetEffectiveTransmogID());
+				texture = illusionInfo and illusionInfo.icon;
+			end
 			self.Icon:SetTexture(texture or ENCHANT_EMPTY_SLOT_FILEDATAID);
 			self.NoItemTexture:Hide();
 		else
@@ -1371,7 +1375,7 @@ function WardrobeItemsCollectionMixin:SetActiveCategory(category, subCategory)
 	end
 
 	if previousCategoryChanged and self.transmogLocation:IsAppearance() then
-		C_TransmogCollection.SetSearchAndFilterCategory(category, subCategory);
+		C_TransmogCollection.SetSearchAndFilterCategory(category, subCategory, self:GetExclusionForSlotName());
 		if isWeapon then
 			self.lastWeaponCategory = category;
 		end
@@ -1694,25 +1698,27 @@ function WardrobeItemsCollectionMixin:UpdateProgressBar()
 			end
 		end
 	else
-		collected = C_TransmogCollection.GetCategoryCollectedCount(self.activeCategory, self.activeSubCategory);
+		collected = C_TransmogCollection.GetCategoryCollectedCount(self.activeCategory, self.activeSubCategory, self:GetExclusionForSlotName());
 		total = C_TransmogCollection.GetCategoryTotal(self.activeCategory, self.activeSubCategory);
 	end
 
 	self:GetParent():UpdateProgressBar(collected, total);
 end
 
+function WardrobeItemsCollectionMixin:GetExclusionForSlotName(slotName)
+	slotName = slotName or self:GetActiveSlot();
+	if slotName == "MAINHANDSLOT" then
+		return LE_ITEM_FILTER_TYPE_OFF_HAND;
+	elseif slotName == "SECONDARYHANDSLOT" then
+		return LE_ITEM_FILTER_TYPE_MAIN_HAND;
+	end
+end
+
 function WardrobeItemsCollectionMixin:RefreshVisualsList()
 	if self.transmogLocation:IsIllusion() then
 		self.visualsList = C_TransmogCollection.GetIllusions();
 	else
-		local exclusion;
-		local activeSlot = self:GetActiveSlot();
-		if activeSlot == "MAINHANDSLOT" then
-			exclusion = LE_ITEM_FILTER_TYPE_OFF_HAND;
-		elseif activeSlot == "SECONDARYHANDSLOT" then
-			exclusion = LE_ITEM_FILTER_TYPE_MAIN_HAND;
-		end
-		self.visualsList = C_TransmogCollection.GetCategoryAppearances(self.activeCategory, self.activeSubCategory, exclusion);
+		self.visualsList = C_TransmogCollection.GetCategoryAppearances(self.activeCategory, self.activeSubCategory, self:GetExclusionForSlotName());
 	end
 
 	self:FilterVisuals();
@@ -1727,7 +1733,7 @@ end
 function WardrobeItemsCollectionMixin:GetAnAppearanceSourceFromVisual(visualID, mustBeUsable)
 	local sourceID = self:GetChosenVisualSource(visualID);
 	if sourceID == NO_TRANSMOG_VISUAL_ID then
-		local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(visualID, self.activeCategory, self.activeSubCategory);
+		local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(visualID, self.activeCategory, self.activeSubCategory, self:GetExclusionForSlotName());
 		for i = 1, #sources do
 			-- first 1 if it doesn't have to be usable
 			if not mustBeUsable or self:IsAppearanceUsableForActiveCategory(sources[i]) then
@@ -1833,7 +1839,7 @@ function WardrobeItemsCollectionMixin:RefreshAppearanceTooltip(sources)
 	if not self.tooltipVisualID then
 		return;
 	end
-	sources = sources or CollectionWardrobeUtil.GetSortedAppearanceSources(self.tooltipVisualID, self.activeCategory, self.activeSubCategory);
+	sources = sources or CollectionWardrobeUtil.GetSortedAppearanceSources(self.tooltipVisualID, self.activeCategory, self.activeSubCategory, self:GetExclusionForSlotName());
 	local chosenSourceID = self:GetChosenVisualSource(self.tooltipVisualID);
 	self:GetParent():SetAppearanceTooltip(self, sources, chosenSourceID);
 end
@@ -1898,7 +1904,7 @@ function WardrobeItemsCollectionMixin:ValidateChosenVisualSources()
 	for visualID, sourceID in pairs(self.chosenVisualSources) do
 		if sourceID ~= NO_TRANSMOG_VISUAL_ID then
 			local keep = false;
-			local sources = C_TransmogCollection.GetAppearanceSources(visualID, self.activeCategory, self.activeSubCategory);
+			local sources = C_TransmogCollection.GetAppearanceSources(visualID, self.activeCategory, self.activeSubCategory, self:GetExclusionForSlotName());
 			if sources then
 				for i = 1, #sources do
 					if sources[i].sourceID == sourceID then
@@ -1961,7 +1967,8 @@ function WardrobeItemsModelMixin:OnMouseDown(button)
 		if itemsCollectionFrame.transmogLocation:IsIllusion() then
 			_, link = C_TransmogCollection.GetIllusionStrings(self.visualInfo.sourceID);
 		else
-			local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(self.visualInfo.visualID, itemsCollectionFrame:GetActiveCategory());
+			local activeCategory, activeSubCategory = itemsCollectionFrame:GetActiveCategory();
+			local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(self.visualInfo.visualID, activeCategory, activeSubCategory, itemsCollectionFrame:GetExclusionForSlotName());
 			if WardrobeCollectionFrame.tooltipSourceIndex then
 				local index = CollectionWardrobeUtil.GetValidIndexForNumSources(WardrobeCollectionFrame.tooltipSourceIndex, #sources);
 				link = select(6, C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID));
@@ -1976,7 +1983,8 @@ function WardrobeItemsModelMixin:OnMouseDown(button)
 			local appearanceSourceID = itemsCollectionFrame:GetWeaponInfoForEnchant();
 			DressUpItemLink(string.format("item:%d:%d", appearanceSourceID, self.visualInfo.sourceID));
 		else
-			local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(self.visualInfo.visualID, itemsCollectionFrame:GetActiveCategory());
+			local activeCategory, activeSubCategory = itemsCollectionFrame:GetActiveCategory();
+			local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(self.visualInfo.visualID, activeCategory, activeSubCategory, itemsCollectionFrame:GetExclusionForSlotName());
 			local index = CollectionWardrobeUtil.GetValidIndexForNumSources(WardrobeCollectionFrame.tooltipSourceIndex or 1, #sources);
 			local sourceUD = sources[index].sourceID;
 
@@ -2013,7 +2021,8 @@ function WardrobeItemsModelMixin:OnMouseDown(button)
 				local sources = C_TransmogCollection.GetIllusionsByItemVisual(self.visualInfo.sourceID, self.visualInfo.itemVisual);
 				self:GetParent():RefreshIllusionTooltip(sources);
 			else
-				local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(self.visualInfo.visualID, itemsCollectionFrame:GetActiveCategory());
+				local activeCategory, activeSubCategory = itemsCollectionFrame:GetActiveCategory();
+				local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(self.visualInfo.visualID, activeCategory, activeSubCategory, itemsCollectionFrame:GetExclusionForSlotName());
 				self:GetParent():RefreshAppearanceTooltip(sources);
 
 				local index = CollectionWardrobeUtil.GetValidIndexForNumSources(WardrobeCollectionFrame.tooltipSourceIndex or 1, #sources);
@@ -2318,7 +2327,8 @@ function WardrobeCollectionFrameRightClickDropDown_Init(self)
 		UIDropDownMenu_AddButton(info);
 
 		local headerInserted = false;
-		local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(appearanceID, WardrobeCollectionFrame.ItemsCollectionFrame:GetActiveCategory());
+		local activeCategory, activeSubCategory = WardrobeCollectionFrame.ItemsCollectionFrame:GetActiveCategory();
+		local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(appearanceID, activeCategory, activeSubCategory, WardrobeCollectionFrame.ItemsCollectionFrame:GetExclusionForSlotName());
 		local chosenSourceID = WardrobeCollectionFrame.ItemsCollectionFrame:GetChosenVisualSource(appearanceID);
 		info.func = WardrobeCollectionFrameModelDropDown_SetSource;
 		for i = 1, #sources do
@@ -2366,7 +2376,8 @@ function WardrobeCollectionFrameModelDropDown_SetFavorite(visualID, value, confi
 	--[[
 	if set and not confirmed then
 		local allSourcesConditional = true;
-		local sources = C_TransmogCollection.GetAppearanceSources(visualID, WardrobeCollectionFrame.ItemsCollectionFrame:GetActiveCategory());
+		local activeCategory, activeSubCategory = WardrobeCollectionFrame.ItemsCollectionFrame:GetActiveCategory();
+		local sources = C_TransmogCollection.GetAppearanceSources(visualID, activeCategory, activeSubCategory, WardrobeCollectionFrame.ItemsCollectionFrame:GetExclusionForSlotName());
 		for i, sourceInfo in ipairs(sources) do
 			local info = C_TransmogCollection.GetAppearanceInfoBySource(sourceInfo.sourceID);
 			if info.sourceIsCollectedPermanent then

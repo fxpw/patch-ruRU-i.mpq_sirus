@@ -6,139 +6,9 @@ PANEL_INSET_BOTTOM_BUTTON_OFFSET = 26;
 PANEL_INSET_TOP_OFFSET = -24;
 PANEL_INSET_ATTIC_OFFSET = -60;
 
-function PortraitFrameCloseButton_OnClick(self)
-	if UIPanelWindows[self:GetParent():GetName()] then
-		ToggleFrame(self:GetParent())
-	else
-		self:GetParent():Hide();
-	end
-end
-
--- ButtonFrameTemplate code
-function ButtonFrameTemplate_HideButtonBar(self)
-	if self.bottomInset then
-		self.bottomInset:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", PANEL_INSET_RIGHT_OFFSET, PANEL_INSET_BOTTOM_OFFSET)
-	else
-		_G[self:GetName() .. "Inset"]:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", PANEL_INSET_RIGHT_OFFSET, PANEL_INSET_BOTTOM_OFFSET)
-	end
-	_G[self:GetName() .. "BtnCornerLeft"]:Hide()
-	_G[self:GetName() .. "BtnCornerRight"]:Hide()
-	_G[self:GetName() .. "ButtonBottomBorder"]:Hide()
-end
-
-function ButtonFrameTemplate_ShowButtonBar(self)
-	if self.topInset then
-		self.topInset:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", PANEL_INSET_RIGHT_OFFSET, PANEL_INSET_BOTTOM_BUTTON_OFFSET)
-	else
-		_G[self:GetName() .. "Inset"]:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", PANEL_INSET_RIGHT_OFFSET, PANEL_INSET_BOTTOM_BUTTON_OFFSET)
-	end
-	_G[self:GetName() .. "BtnCornerLeft"]:Show()
-	_G[self:GetName() .. "BtnCornerRight"]:Show()
-	_G[self:GetName() .. "ButtonBottomBorder"]:Show()
-end
-
-function ButtonFrameTemplate_HideAttic(self)
-	if self.topInset then
-		self.topInset:SetPoint("TOPLEFT", self, "TOPLEFT", PANEL_INSET_LEFT_OFFSET, PANEL_INSET_TOP_OFFSET)
-	else
-		self.Inset:SetPoint("TOPLEFT", self, "TOPLEFT", PANEL_INSET_LEFT_OFFSET, PANEL_INSET_TOP_OFFSET)
-	end
-	self.TopTileStreaks:Hide()
-end
-
-function ButtonFrameTemplate_ShowAttic(self)
-	if self.topInset then
-		self.topInset:SetPoint("TOPLEFT", self, "TOPLEFT", PANEL_INSET_LEFT_OFFSET, PANEL_INSET_ATTIC_OFFSET)
-	else
-		self.Inset:SetPoint("TOPLEFT", self, "TOPLEFT", PANEL_INSET_LEFT_OFFSET, PANEL_INSET_ATTIC_OFFSET)
-	end
-	self.TopTileStreaks:Show()
-end
-
-
-function ButtonFrameTemplate_HidePortrait(self)
-	self.portrait:Hide()
-	self.portraitFrame:Hide()
-	self.topLeftCorner:Show()
-	self.topBorderBar:SetPoint("TOPLEFT", self.topLeftCorner, "TOPRIGHT",  0, 0)
-	self.leftBorderBar:SetPoint("TOPLEFT", self.topLeftCorner, "BOTTOMLEFT",  0, 0)
-
-	self.TopTileStreaks:ClearAllPoints()
-	self.TopTileStreaks:SetPoint("TOPLEFT", 0, -21)
-	self.TopTileStreaks:SetPoint("TOPRIGHT", -2, -21)
-end
-
-
-function ButtonFrameTemplate_ShowPortrait(self)
-	self.portrait:Show()
-	self.portraitFrame:Show()
-	self.topLeftCorner:Hide()
-	self.topBorderBar:SetPoint("TOPLEFT", self.portraitFrame, "TOPRIGHT",  0, -10)
-	self.leftBorderBar:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT",  8, 0)
-
-	self.TopTileStreaks:ClearAllPoints()
-	self.TopTileStreaks:SetPoint("TOPLEFT", 50, -21)
-	self.TopTileStreaks:SetPoint("TOPRIGHT", -2, -21)
-end
-
-function ButtonFrameTemplateMinimizable_HidePortrait(self)
-	local layout = AnchorUtil.GetNineSliceLayout("ButtonFrameTemplateNoPortraitMinimizable");
-	AnchorUtil.ApplyNineSliceLayout(self.NineSlice, layout);
-	PortraitFrameTemplate_SetPortraitShown(self, false);
-end
-
-function ButtonFrameTemplateMinimizable_ShowPortrait(self)
-	local layout = AnchorUtil.GetNineSliceLayout("PortraitFrameTemplateMinimizable");
-	AnchorUtil.ApplyNineSliceLayout(self.NineSlice, layout);
-	PortraitFrameTemplate_SetPortraitShown(self, true);
-end
-
-function PortraitFrameTemplate_SetBorder(self, layoutName)
-	local layout = AnchorUtil.GetNineSliceLayout(layoutName);
-	AnchorUtil.ApplyNineSliceLayout(self.NineSlice, layout);
-end
-
-function PortraitFrameTemplate_SetPortraitToAsset(self, texture)
-	SetPortraitToTexture(self.portrait, texture);
-end
-
-function PortraitFrameTemplate_SetPortraitToUnit(self, unit)
-	SetPortraitTexture(self.portrait, unit);
-end
-
-function PortraitFrameTemplate_SetPortraitTextureRaw(self, texture)
-	self.portrait:SetTexture(texture);
-end
-
-function PortraitFrameTemplate_SetPortraitAtlasRaw(self, atlas, ...)
-	self.portrait:SetAtlas(atlas, ...);
-end
-
-function PortraitFrameTemplate_SetPortraitTexCoord(self, ...)
-	self.portrait:SetTexCoord(...);
-end
-
-function PortraitFrameTemplate_SetPortraitShown(self, shown)
-	self.portrait:SetShown(shown);
-end
-
-function PortraitFrameTemplate_SetTitleColor(self, color)
-	self.TitleText:SetTextColor(color:GetRGBA());
-end
-
 function PortraitFrameTemplate_SetTitle(self, title)
 	self.TitleText:SetText(title);
 end
-
-function PortraitFrameTemplate_SetTitleFormatted(self, fmt, ...)
-	self.TitleText:SetFormattedText(fmt, ...);
-end
-
-function PortraitFrameTemplate_SetTitleMaxLinesAndHeight(self, maxLines, height)
-	self.TitleText:SetMaxLines(maxLines);
-	self.TitleText:SetHeight(height);
-end
-
 
 -- Magic Button code
 function MagicButton_OnLoad(self)
@@ -157,18 +27,18 @@ function MagicButton_OnLoad(self)
 
 			if (relativeTo.RightSeparator) then
 				-- Modify separator to make it a Middle
-				self.LeftSeparator = relativeTo.RightSeparator
+				self.LeftSeparator = relativeTo.RightSeparator;
 			else
 				-- Add a Middle separator
-				self.LeftSeparator = self:CreateTexture(self:GetName() and self:GetName().."_LeftSeparator" or nil, "BORDER")
-				relativeTo.RightSeparator = self.LeftSeparator
+				self.LeftSeparator = self:CreateTexture(self:GetName() and self:GetName().."_LeftSeparator" or nil, "BORDER");
+				relativeTo.RightSeparator = self.LeftSeparator;
 			end
 
-			self.LeftSeparator:SetTexture("Interface\\FrameGeneral\\UI-Frame")
-			self.LeftSeparator:SetTexCoord(0.00781250, 0.10937500, 0.75781250, 0.95312500)
-			self.LeftSeparator:SetWidth(13)
-			self.LeftSeparator:SetHeight(25)
-			self.LeftSeparator:SetPoint("TOPRIGHT", self, "TOPLEFT", 5, 1)
+			self.LeftSeparator:SetTexture("Interface\\FrameGeneral\\UI-Frame");
+			self.LeftSeparator:SetTexCoord(0.00781250, 0.10937500, 0.75781250, 0.95312500);
+			self.LeftSeparator:SetWidth(13);
+			self.LeftSeparator:SetHeight(25);
+			self.LeftSeparator:SetPoint("TOPRIGHT", self, "TOPLEFT", 5, 1);
 
 			leftHandled = true;
 
@@ -180,18 +50,18 @@ function MagicButton_OnLoad(self)
 
 			if (relativeTo.LeftSeparator) then
 				-- Modify separator to make it a Middle
-				self.RightSeparator = relativeTo.LeftSeparator
+				self.RightSeparator = relativeTo.LeftSeparator;
 			else
 				-- Add a Middle separator
-				self.RightSeparator = self:CreateTexture(self:GetName() and self:GetName().."_RightSeparator" or nil, "BORDER")
-				relativeTo.LeftSeparator = self.RightSeparator
+				self.RightSeparator = self:CreateTexture(self:GetName() and self:GetName().."_RightSeparator" or nil, "BORDER");
+				relativeTo.LeftSeparator = self.RightSeparator;
 			end
 
-			self.RightSeparator:SetTexture("Interface\\FrameGeneral\\UI-Frame")
-			self.RightSeparator:SetTexCoord(0.00781250, 0.10937500, 0.75781250, 0.95312500)
-			self.RightSeparator:SetWidth(13)
-			self.RightSeparator:SetHeight(25)
-			self.RightSeparator:SetPoint("TOPLEFT", self, "TOPRIGHT", -5, 1)
+			self.RightSeparator:SetTexture("Interface\\FrameGeneral\\UI-Frame");
+			self.RightSeparator:SetTexCoord(0.00781250, 0.10937500, 0.75781250, 0.95312500);
+			self.RightSeparator:SetWidth(13);
+			self.RightSeparator:SetHeight(25);
+			self.RightSeparator:SetPoint("TOPLEFT", self, "TOPRIGHT", -5, 1);
 
 			rightHandled = true;
 
@@ -216,12 +86,12 @@ function MagicButton_OnLoad(self)
 	if (not leftHandled) then
 		if (not self.LeftSeparator) then
 			-- Add a Left border
-			self.LeftSeparator = self:CreateTexture(self:GetName() and self:GetName().."_LeftSeparator" or nil, "BORDER")
-			self.LeftSeparator:SetTexture("Interface\\FrameGeneral\\UI-Frame")
-			self.LeftSeparator:SetTexCoord(0.24218750, 0.32812500, 0.63281250, 0.82812500)
-			self.LeftSeparator:SetWidth(11)
-			self.LeftSeparator:SetHeight(25)
-			self.LeftSeparator:SetPoint("TOPRIGHT", self, "TOPLEFT", 6, 1)
+			self.LeftSeparator = self:CreateTexture(self:GetName() and self:GetName().."_LeftSeparator" or nil, "BORDER");
+			self.LeftSeparator:SetTexture("Interface\\FrameGeneral\\UI-Frame");
+			self.LeftSeparator:SetTexCoord(0.24218750, 0.32812500, 0.63281250, 0.82812500);
+			self.LeftSeparator:SetWidth(11);
+			self.LeftSeparator:SetHeight(25);
+			self.LeftSeparator:SetPoint("TOPRIGHT", self, "TOPLEFT", 6, 1);
 		end
 	end
 
@@ -229,12 +99,12 @@ function MagicButton_OnLoad(self)
 	if (not rightHandled) then
 		if (not self.RightSeparator) then
 			-- Add a Right border
-			self.RightSeparator = self:CreateTexture(self:GetName() and self:GetName().."_RightSeparator" or nil, "BORDER")
-			self.RightSeparator:SetTexture("Interface\\FrameGeneral\\UI-Frame")
-			self.RightSeparator:SetTexCoord(0.90625000, 0.99218750, 0.00781250, 0.20312500)
-			self.RightSeparator:SetWidth(11)
-			self.RightSeparator:SetHeight(25)
-			self.RightSeparator:SetPoint("TOPLEFT", self, "TOPRIGHT", -6, 1)
+			self.RightSeparator = self:CreateTexture(self:GetName() and self:GetName().."_RightSeparator" or nil, "BORDER");
+			self.RightSeparator:SetTexture("Interface\\FrameGeneral\\UI-Frame");
+			self.RightSeparator:SetTexCoord(0.90625000, 0.99218750, 0.00781250, 0.20312500);
+			self.RightSeparator:SetWidth(11);
+			self.RightSeparator:SetHeight(25);
+			self.RightSeparator:SetPoint("TOPLEFT", self, "TOPRIGHT", -6, 1);
 		end
 	end
 end
@@ -244,6 +114,88 @@ function DynamicResizeButton_Resize(self)
 	local width = self:GetWidth();
 	local textWidth = self:GetTextWidth() + padding;
 	self:SetWidth(math.max(width, textWidth));
+end
+
+-- Frame template utilities to show/hide various decorative elements and to resize content areas
+function FrameTemplate_SetAtticHeight(self, atticHeight)
+	if self.bottomInset then
+		self.bottomInset:SetPoint("TOPLEFT", self, "TOPLEFT", PANEL_INSET_LEFT_OFFSET, -atticHeight);
+	else
+		self.Inset:SetPoint("TOPLEFT", self, "TOPLEFT", PANEL_INSET_LEFT_OFFSET, -atticHeight);
+	end
+end
+
+function FrameTemplate_SetButtonBarHeight(self, buttonBarHeight)
+	if self.topInset then
+		self.topInset:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", PANEL_INSET_RIGHT_OFFSET, buttonBarHeight);
+	else
+		self.Inset:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", PANEL_INSET_RIGHT_OFFSET, buttonBarHeight);
+	end
+end
+
+-- ButtonFrameTemplate code
+function ButtonFrameTemplate_HideButtonBar(self)
+	FrameTemplate_SetButtonBarHeight(self, PANEL_INSET_BOTTOM_OFFSET);
+	_G[self:GetName() .. "BtnCornerLeft"]:Hide();
+	_G[self:GetName() .. "BtnCornerRight"]:Hide();
+	_G[self:GetName() .. "ButtonBottomBorder"]:Hide();
+end
+
+function ButtonFrameTemplate_ShowButtonBar(self)
+	FrameTemplate_SetButtonBarHeight(self, PANEL_INSET_BOTTOM_BUTTON_OFFSET);
+	_G[self:GetName() .. "BtnCornerLeft"]:Show();
+	_G[self:GetName() .. "BtnCornerRight"]:Show();
+	_G[self:GetName() .. "ButtonBottomBorder"]:Show();
+end
+
+function ButtonFrameTemplate_HideAttic(self)
+	FrameTemplate_SetAtticHeight(self, -PANEL_INSET_TOP_OFFSET);
+
+	if self.TopTileStreaks then
+		self.TopTileStreaks:Hide();
+	end
+end
+
+function ButtonFrameTemplate_ShowAttic(self)
+	FrameTemplate_SetAtticHeight(self, -PANEL_INSET_ATTIC_OFFSET);
+
+	if self.TopTileStreaks then
+		self.TopTileStreaks:Show();
+	end
+end
+
+function ButtonFrameTemplate_HidePortrait(self)
+	self.portrait:Hide();
+	self.portraitFrame:Hide();
+	self.topLeftCorner:Show();
+	self.topBorderBar:SetPoint("TOPLEFT", self.topLeftCorner, "TOPRIGHT",  0, 0);
+	self.leftBorderBar:SetPoint("TOPLEFT", self.topLeftCorner, "BOTTOMLEFT",  0, 0);
+
+	self.TopTileStreaks:ClearAllPoints();
+	self.TopTileStreaks:SetPoint("TOPLEFT", 0, -21);
+	self.TopTileStreaks:SetPoint("TOPRIGHT", -2, -21);
+end
+
+function ButtonFrameTemplate_ShowPortrait(self)
+	self.portrait:Show();
+	self.portraitFrame:Show();
+	self.topLeftCorner:Hide();
+	self.topBorderBar:SetPoint("TOPLEFT", self.portraitFrame, "TOPRIGHT",  0, -10);
+	self.leftBorderBar:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT",  8, 0);
+
+	self.TopTileStreaks:ClearAllPoints();
+	self.TopTileStreaks:SetPoint("TOPLEFT", 50, -21);
+	self.TopTileStreaks:SetPoint("TOPRIGHT", -2, -21);
+end
+
+function ButtonFrameTemplateMinimizable_HidePortrait(self)
+	self:SetBorder("ButtonFrameTemplateNoPortraitMinimizable");
+	self:SetPortraitShown(false);
+end
+
+function ButtonFrameTemplateMinimizable_ShowPortrait(self)
+	self:SetBorder("PortraitFrameTemplateMinimizable");
+	self:SetPortraitShown(true);
 end
 
 function UIPanelCloseButton_OnClick(self)
@@ -471,8 +423,6 @@ function InputBoxInstructions_OnEnable(self)
 	InputBoxInstructions_UpdateColorForEnabledState(self, self.enabledColor);
 end
 
--- SearchBoxTemplate
-
 function SearchBoxTemplate_OnLoad(self)
 	local instructions = _G[self:GetAttribute("Instructions")] or self:GetAttribute("Instructions")
 
@@ -507,11 +457,14 @@ function SearchBoxTemplate_OnTextChanged(self)
 	InputBoxInstructions_OnTextChanged(self);
 end
 
+function SearchBoxTemplate_ClearText(self)
+	self:SetText("");
+	self:ClearFocus();
+end
+
 function SearchBoxTemplateClearButton_OnClick(self)
 	PlaySound("igMainMenuOptionCheckBoxOn");
-	local editBox = self:GetParent();
-	editBox:SetText("");
-	editBox:ClearFocus();
+	SearchBoxTemplate_ClearText(self:GetParent());
 end
 
 -- functions to manage tab interfaces where only one tab of a group may be selected
@@ -1138,6 +1091,14 @@ function UIButtonMixin:InitButton()
 	end
 end
 
+function UIButtonMixin:OnClick(...)
+	PlaySound(self.onClickSoundKit or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+
+	if self.onClickHandler then
+		self.onClickHandler(self, ...);
+	end
+end
+
 function UIButtonMixin:OnEnter()
 	if self.onEnterHandler and self.onEnterHandler(self) then
 		return;
@@ -1162,7 +1123,8 @@ function UIButtonMixin:OnEnter()
 		end
 	else
 		if self.disabledTooltip then
-			GameTooltip_ShowDisabledTooltip(GameTooltip, self, self.disabledTooltip, self.disabledTooltipAnchor or defaultTooltipAnchor, self.disabledTooltipOffsetX, self.disabledTooltipOffsetY);
+			local tooltip = GetAppropriateTooltip();
+			GameTooltip_ShowDisabledTooltip(tooltip, self, self.disabledTooltip, self.disabledTooltipAnchor or defaultTooltipAnchor, self.disabledTooltipOffsetX, self.disabledTooltipOffsetY);
 		end
 	end
 end
@@ -1170,14 +1132,6 @@ end
 function UIButtonMixin:OnLeave()
 	local tooltip = GetAppropriateTooltip();
 	tooltip:Hide();
-end
-
-function UIButtonMixin:OnClick(...)
-	PlaySound(self.onClickSoundKit or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
-
-	if self.onClickHandler then
-		self.onClickHandler(self, ...);
-	end
 end
 
 function UIButtonMixin:SetButtonArtKit(buttonArtKit)

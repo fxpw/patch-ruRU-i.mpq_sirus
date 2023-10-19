@@ -251,7 +251,7 @@ do	-- GetInventoryTransmogID
 				end
 			end
 
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.PLAYER_TRANSMOGRIFICATION_CHANGED);
+			FireCustomClientEvent("PLAYER_TRANSMOGRIFICATION_CHANGED");
 		end
 	end
 end
@@ -504,8 +504,8 @@ do	-- GetCategoryList
 
 	local GetCategoryList = GetCategoryList
 	_G.GetCategoryList = function()
-		local isLockRenegade = C_Service:IsLockRenegadeFeatures()
-		local isLockStrengthenStats = C_Service:IsLockStrengthenStatsFeature()
+		local isLockRenegade = not C_Service.IsRenegadeRealm()
+		local isLockStrengthenStats = not C_Service.IsStrengthenStatsRealm()
 
 		if isLockRenegade or isLockStrengthenStats then
 			if categoryList and #categoryList == 0 then
@@ -526,5 +526,71 @@ do	-- GetCategoryList
 		else
 			return GetCategoryList()
 		end
+	end
+end
+
+do -- UpgradeLoadedVariables
+	local _G = _G
+	local pcall = pcall
+	local DeepMergeTable = DeepMergeTable
+	local IsInterfaceDevClient = IsInterfaceDevClient
+
+	UpgradeLoadedVariables = function(variableName, localVariable, upgradeHandler)
+		if _G[variableName] then
+			if type(upgradeHandler) == "function" then
+				local success, result = pcall(upgradeHandler, _G[variableName])
+				if not success then
+					geterrorhandler()(result)
+				end
+			end
+
+			DeepMergeTable(_G[variableName], localVariable)
+			local variables = _G[variableName]
+
+			if not IsInterfaceDevClient() then
+				_G[variableName] = nil
+			end
+
+			return variables
+		else
+			if IsInterfaceDevClient() then
+				_G[variableName] = localVariable
+			end
+
+			return localVariable
+		end
+	end
+end
+
+do -- TaxiRequestEarlyLanding
+	TaxiRequestEarlyLanding = function()
+		SendServerMessage("ACMSG_TAXI_REQUEST_EARLY_LANDING")
+	end
+end
+
+do -- GetWhoInfo
+	local error = error
+	local tonumber = tonumber
+	local type = type
+	local strmatch = string.match
+	local GetWhoInfo = GetWhoInfo
+
+	_G.GetWhoInfo = function(index)
+		index = tonumber(index)
+		if type(index) ~= "number" then
+			error("Usage: GetWhoInfo(index)", 2)
+		end
+
+		local name, guild, level, race, class, zone, classFileName = GetWhoInfo(index)
+		local itemLevel
+		if name and name ~= "" then
+			local newName, iLevel = strmatch(name, "(.-)%((%d+)%)")
+			if iLevel then
+				name = newName
+				itemLevel = tonumber(iLevel)
+			end
+		end
+
+		return name, guild, level, race, class, zone, classFileName, itemLevel or 0
 	end
 end

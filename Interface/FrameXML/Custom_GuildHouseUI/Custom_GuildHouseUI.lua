@@ -185,10 +185,12 @@ function GuildHousePlotMixIn:UpdateIcons()
 end
 
 function GuildHousePlotMixIn:UpdatePlot()
-	local buttonsData = SetParentArray(self:GetParent(), "PlotButtons", self)
+	local parent = self:GetParent()
+	parent:SetParentArray("PlotButtons", self)
+	local array = parent:GetParent().PlotButtons
 
-	self:SetID(#buttonsData)
-	self.DebugID:SetText(#buttonsData)
+	self:SetID(#array)
+	self.DebugID:SetText(#array)
 
 	self:UpdateSize()
 	self:UpdateIcons()

@@ -47,12 +47,11 @@ function PVPLadderFrameMixin:OnLoad()
 
 	RaiseFrameLevelByTwo(self.Shadows)
 
-	local function UpdateFaction()
+	C_FactionManager:RegisterFactionOverrideCallback(function()
 		SetPortraitToTexture(self.Art.portrait, PVPUIFRAME_PORTRAIT_DATA[C_Unit.GetFactionID("player")])
-	end
+	end, true)
 
-	C_FactionManager:RegisterFactionOverrideCallback(UpdateFaction, true)
-
+	PanelTemplates_SetNumTabs(self, 3)
 	self:ResetFrame()
 end
 

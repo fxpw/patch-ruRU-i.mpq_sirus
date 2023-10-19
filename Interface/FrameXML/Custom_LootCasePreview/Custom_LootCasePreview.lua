@@ -75,7 +75,7 @@ function LootCasePreviewMixin:SetPreview(itemID)
 
 	local name, _, quality, _, _, _, _, _, _, icon = GetItemInfo(itemID);
 
-	PortraitFrameTemplate_SetPortraitToAsset(self, icon);
+	self:SetPortraitToAsset(icon)
 
 	local qualityColor = ITEM_QUALITY_COLORS[quality or 1];
 	self.ItemName:SetText(name);

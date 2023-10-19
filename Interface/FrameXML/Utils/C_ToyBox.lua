@@ -1,3 +1,5 @@
+local COLLECTION_TOYDATA = COLLECTION_TOYDATA;
+
 local TOY_BOX_COLLECTED = 1;
 local TOY_BOX_UNCOLLECTED = 2;
 
@@ -15,11 +17,11 @@ local SOURCE_TYPES = {
 	[17] = 10,
 };
 
-local REALMS = {
-	[E_REALM_ID.FROSTMOURNE] = 1,
-	[E_REALM_ID.SCOURGE] = 2,
-	[E_REALM_ID.NELTHARION] = 4,
-	[E_REALM_ID.LEGACY_X10] = 8,
+local REALM_FLAGS = {
+	[E_REALM_ID.SOULSEEKER]	= 0x1,
+	[E_REALM_ID.SCOURGE]	= 0x2,
+	[E_REALM_ID.ALGALON]	= 0x4,
+	[E_REALM_ID.SIRUS]		= 0x8,
 }
 
 local FILTER_STRING = "";
@@ -53,7 +55,7 @@ end
 local function InitToys()
 	table.wipe(TOYS);
 
-	local realmFlag = REALMS[C_Service:GetRealmID()];
+	local realmFlag = REALM_FLAGS[C_Service.GetRealmID()];
 	local faction = FACTIONS[PLAYER_FACTION_ID];
 
 	local failedSpells = {};
@@ -82,7 +84,7 @@ local function InitToys()
 		end
 	end
 
-	if #failedSpells ~= 0 then
+	if #failedSpells ~= 0 and IsGMAccount() then
 		StaticPopup_Show("TOYBOX_LOAD_ERROR_DIALOG", table.concat(failedSpells, ", "));
 	end
 end
@@ -135,7 +137,7 @@ local function SetFilteredToys()
 
 	table.sort(FILTERED_TOYS, SortFilteredToys);
 
-	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TOYS_UPDATED);
+	FireCustomClientEvent("TOYS_UPDATED");
 end
 
 local frame = CreateFrame("Frame");
@@ -460,7 +462,7 @@ function EventHandler:ASMSG_C_ADD_TOY(msg)
 
 			SetFilteredToys();
 
-			FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TOYS_UPDATED, toy.itemID, true);
+			FireCustomClientEvent("TOYS_UPDATED", toy.itemID, true);
 		end
 	end
 end

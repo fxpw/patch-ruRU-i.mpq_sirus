@@ -21,13 +21,13 @@ function ezSpectator_TopFrame:Create(Parent)
     self.MainFrame:SetScale(_ezSpectatorScale)
     self.MainFrame:SetPoint('TOP', 0, 0)
 
-    self.SirusLogo = CreateFrame('Frame', nil,  self.MainFrame)
-    self.SirusLogo:SetFrameStrata('TOOLTIP')
-    self.SirusLogo:SetPoint('TOPRIGHT', UIParent, 'TOPRIGHT', 0, 0)
-    self.SirusLogo:SetSize(128, 64)
-    self.SirusLogo:SetScale(_ezSpectatorScale)
-    self.Textures:Sirus_Logo(self.SirusLogo)
-    self.SirusLogo.texture:SetVertexColor(1, 1, 1, 0.5)
+    self.ServerLogo = CreateFrame('Frame', nil,  self.MainFrame)
+    self.ServerLogo:SetFrameStrata('TOOLTIP')
+    self.ServerLogo:SetPoint('TOPRIGHT', UIParent, 'TOPRIGHT', 0, 0)
+    self.ServerLogo:SetSize(128, 64)
+    self.ServerLogo:SetScale(_ezSpectatorScale)
+    self.Textures:SetServerLogo(self.ServerLogo)
+    self.ServerLogo.texture:SetVertexColor(1, 1, 1, 0.5)
 
     self.LeftTeam = ezSpectator_TeamFrame:Create(self.Parent, true, 'TOP', -290, -1)
     self.RightTeam = ezSpectator_TeamFrame:Create(self.Parent, false, 'TOP', 290, -1)
@@ -46,7 +46,9 @@ function ezSpectator_TopFrame:Create(Parent)
     self.UpdateFrame.Parent = self
     self.UpdateFrame:SetScript('OnUpdate', function(self, Elapsed)
         if self.Parent.MatchTime ~= nil and self.Parent.Parent.Interface.IsRunning then
-            self.Parent.MatchTime = self.Parent.MatchTime + (Elapsed * ArenaSpectatorFrame:GetSpeed())
+			if not self.Parent.Parent.Interface.IsPaused then
+				self.Parent.MatchTime = self.Parent.MatchTime + (Elapsed * ArenaSpectatorFrame:GetSpeed())
+			end
 
             self.Parent.Time:SetText(self.Parent.Parent.Data:SecondsToTime(self.Parent.MatchTime))
 
@@ -80,14 +82,14 @@ function ezSpectator_TopFrame:Create(Parent)
         ArenaSpectatorFrame.SharedReplay:SetShown(not ArenaSpectatorFrame.SharedReplay:IsShown())
     end)
     self.Share:SetTooltip(ARENAREPLAY_SHARED, ARENAREPLAY_SHARED_DESC)
-
+--[[
     self.Settings = ezSpectator_ClickIcon:Create(self.Parent, self.MainFrame, 'gold', 34 / _ezSpectatorScale, 'LEFT', self.Share.Normal, 'RIGHT', -3, 0)
     self.Settings:SetIcon('settings')
     self.Settings:SetAction(function() end)
     self.Settings:SetEnabled(false)
     self.Settings:SetTooltip(ARENAREPLAY_SETTINGS, ARENAREPLAY_SETTINGS_DESC)
-
-    self.Reset = ezSpectator_ClickIcon:Create(self.Parent, self.MainFrame, 'gold', 34 / _ezSpectatorScale, 'LEFT', self.Settings.Normal, 'RIGHT', -3, 0)
+--]]
+    self.Reset = ezSpectator_ClickIcon:Create(self.Parent, self.MainFrame, 'gold', 34 / _ezSpectatorScale, 'LEFT', self.Share.Normal, 'RIGHT', -3, 0)
     self.Reset:SetIcon('Refresh')
     self.Reset:SetAction(function()
         SendServerMessage("ACMSG_AR_SPECTATE_VIEW", UnitName('player'))
@@ -152,7 +154,7 @@ function ezSpectator_TopFrame:Hide()
     self.LeftTeam:Hide()
     self.RightTeam:Hide()
     self.EnrageOrb:Hide()
-    self.SirusLogo:Hide()
+    self.ServerLogo:Hide()
     self.TournamentInfo:SetText('')
 
     self.Play:Hide()
@@ -165,8 +167,8 @@ function ezSpectator_TopFrame:Show()
     self.MainFrame:Show()
     self.LeftTeam:Show()
     self.RightTeam:Show()
-    self.Textures:Sirus_Logo(self.SirusLogo)
-    self.SirusLogo:Show()
+    self.Textures:SetServerLogo(self.ServerLogo)
+    self.ServerLogo:Show()
     if self.Parent.Interface.IsTournament then
         self.EnrageOrb:Show()
         self.TournamentStage = nil

@@ -569,3 +569,17 @@ function LockTable(t)
 		__metatable = false
 	})
 end
+
+function DeepMergeTable(destination, source)
+	for k, v in pairs(source) do
+		if type(v) == "table" then
+			if type(destination[k]) == "table" then
+				DeepMergeTable(destination[k], v)
+			else
+				destination[k] = CopyTable(v)
+			end
+		else
+			destination[k] = v
+		end
+	end
+end

@@ -48,7 +48,9 @@ function QueueStatusMinimapButton_OnClick(self, button)
 			local miniGameInviteID, miniGameID, acceptedPlayers, maxPlayers = C_MiniGames.GetInviteID();
 
 			if bgInviteData and bgInviteData.inviteID then
-				BattlegroundInviteFrame:ShowInviteFrame();
+				if not BattlegroundInviteFrame:IsShown() then
+					BattlegroundInviteFrame:ShowInviteFrame();
+				end
 			elseif miniGameID then
 				if miniGameInviteID then
 					MiniGameReadyPopup:ShowReadyDialog(miniGameInviteID, miniGameID);
@@ -179,6 +181,20 @@ do
 	end
 end
 
+function QueueStatusFrame_CreateHelpTip(text, bitfieldFlag)
+	return {
+		text = text,
+		textJustifyH = "LEFT",
+		checkCVars = type(bitfieldFlag) == "number",
+		cvarBitfield = "C_CVAR_CLOSED_INFO_FRAMES",
+		bitfieldFlag = bitfieldFlag,
+		buttonStyle = HelpTip.ButtonStyle.None,
+		targetPoint = HelpTip.Point.LeftEdgeCenter,
+		alignment = HelpTip.Alignment.Top,
+		acknowledgeOnHide = true,
+	}
+end
+
 function QueueStatusFrame_Update(self)
 	local helpTipInfo;
 	local animateEye;
@@ -223,29 +239,11 @@ function QueueStatusFrame_Update(self)
 			if not helpTipInfo and gameName then
 				if status == "active" and mapAreaID and mapAreaID == GetCurrentMapAreaID() then
 					if gameName == "FRAGILEFLOOR" and C_MiniGames.GetInstanceRunTime() == 0 then
-						helpTipInfo = {
-							text = MINI_GAME_FRAGILEFLOOR_TUTORIAL,
-							textJustifyH = "LEFT",
-							checkCVars = true,
-							cvarBitfield = "C_CVAR_CLOSED_INFO_FRAMES",
-							bitfieldFlag = LE_FRAME_TUTORIAL_MINI_GAME_FRAGILEFLOOR,
-							buttonStyle = HelpTip.ButtonStyle.None,
-							targetPoint = HelpTip.Point.LeftEdgeCenter,
-							alignment = HelpTip.Alignment.Top,
-							acknowledgeOnHide = true,
-						};
+						helpTipInfo = QueueStatusFrame_CreateHelpTip(MINI_GAME_FRAGILEFLOOR_TUTORIAL, LE_FRAME_TUTORIAL_MINI_GAME_FRAGILEFLOOR)
 					elseif (gameName == "FROZEN_SNOWMAN_LAIR_STORY" or gameName == "FROZEN_SNOWMAN_LAIR_SURVIVAL") then
-						helpTipInfo = {
-							text = MINI_GAME_FROZEN_SNOWMAN_LAIR_STORY_TUTORIAL,
-							textJustifyH = "LEFT",
-							checkCVars = true,
-							cvarBitfield = "C_CVAR_CLOSED_INFO_FRAMES",
-							bitfieldFlag = LE_FRAME_TUTORIAL_MINI_GAME_FROZEN_SNOWMAN_LAIR,
-							buttonStyle = HelpTip.ButtonStyle.None,
-							targetPoint = HelpTip.Point.LeftEdgeCenter,
-							alignment = HelpTip.Alignment.Top,
-							acknowledgeOnHide = true,
-						}
+						helpTipInfo = QueueStatusFrame_CreateHelpTip(MINI_GAME_FROZEN_SNOWMAN_LAIR_STORY_TUTORIAL, LE_FRAME_TUTORIAL_MINI_GAME_FROZEN_SNOWMAN_LAIR)
+					elseif gameName == "DOOR_DASH" then
+						helpTipInfo = QueueStatusFrame_CreateHelpTip(MINI_GAME_DOOR_DASH_TUTORIAL, LE_FRAME_TUTORIAL_MINI_GAME_DOOR_DASH)
 					end
 				end
 			end

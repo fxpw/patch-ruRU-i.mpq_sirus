@@ -1,9 +1,3 @@
---	Filename:	PaperDollFrame.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 EQUIPPED_FIRST = 1;
 EQUIPPED_LAST = 19;
 
@@ -185,7 +179,7 @@ function PaperDollFrame_OnLoad (self)
 		verticalAnchorY = 0,
 	};
 
-	self.isDisabledStrengthenFrame = C_Service:IsLockStrengthenStatsFeature()
+	self.isDisabledStrengthenFrame = not C_Service.IsStrengthenStatsRealm()
 
 	if self.isDisabledStrengthenFrame then
 		PaperDollFrame_DisableStrengthenFrame(self)
@@ -377,8 +371,6 @@ function PaperDollFrame_SetLevel()
 	local level = UnitLevel("player");
 	local race = UnitRace("player")
 	local _, faction = UnitFactionGroup("player")
-
-	race = string.gsub(race, " %("..faction.."%)", "")
 
 	CharacterLevelText:SetFormattedText(PAPERDOLLFRAME_PLAYER_INFO, level, classColorString, classDisplayName, race, faction)
 end
@@ -2730,11 +2722,11 @@ local RefreshInspectFrameH = CreateFrame("Frame")
 function CharacterStrengthenButton_OnClick( self, ... )
 	local id = self:GetParent():GetID()
 	if IsModifiedClick("SHIFT") then
-		SendAddonMessage("INCREASE_STRENGTHENING_STAT", id..":10", "WHISPER", UnitName("player"))
+		SendServerMessage("INCREASE_STRENGTHENING_STAT", id..":10")
 	elseif IsModifiedClick("CTRL") then
-		SendAddonMessage("INCREASE_STRENGTHENING_STAT", id..":100", "WHISPER", UnitName("player"))
+		SendServerMessage("INCREASE_STRENGTHENING_STAT", id..":100")
 	else
-		SendAddonMessage("INCREASE_STRENGTHENING_STAT", id..":1", "WHISPER", UnitName("player"))
+		SendServerMessage("INCREASE_STRENGTHENING_STAT", id..":1")
 	end
 
 	if not NPE_TutorialPointerFrame:GetKey("PaperDollFrame_Strengthen") then

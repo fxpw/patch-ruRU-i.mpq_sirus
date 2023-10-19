@@ -210,7 +210,7 @@ function ezSpectator_PlayerWorker:SetCast(Spell, Time)
     end
 
     if Time == self.Parent.Data.CAST_SUCCESS then
-        self.SmallFrame.SpellFrame:Push(Spell)
+	--	self.SmallFrame.SpellFrame:Push(Spell)
         self.PlayerFrame.SpellFrame:Push(Spell)
         self.VictimFrame.SpellFrame:Push(Spell)
     end
@@ -462,7 +462,7 @@ end
 
 
 function ezSpectator_PlayerWorker:BindViewpoint()
-    SendAddonMessage("ACMSG_AR_SPECTATE_VIEW", self.Nickname, "WHISPER", UnitName("player"))
+    SendServerMessage("ACMSG_AR_SPECTATE_VIEW", self.Nickname)
     self.Parent.Interface:ResetViewpoint()
 
     self.Parent.Interface.Viewpoint = self

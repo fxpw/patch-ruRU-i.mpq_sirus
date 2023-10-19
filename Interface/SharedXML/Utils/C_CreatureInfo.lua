@@ -1,17 +1,13 @@
---	Filename:	C_CreatureInfo.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 C_CreatureInfo = {}
 
-function C_CreatureInfo.GetClassInfo( class )
-	assert(class, "C_CreatureInfo.GetClassInfo: class должен быть указан.")
-
+function C_CreatureInfo.GetClassInfo(class)
+	if not class then
+		error(string.format("Usage: C_CreatureInfo.GetClassInfo(classID|className)", class), 2)
+	end
 	local classData = S_CLASS_SORT_ORDER[class] or S_CLASS_DATA_LOCALIZATION_ASSOC[class]
-
-	assert(classData, "C_CreatureInfo.GetClassInfo: класс "..class.." не найден.")
+	if not classData then
+		error(string.format("C_CreatureInfo.GetClassInfo: No class info was found for '%s'", class), 2)
+	end
 
 	local ClassInfo = {}
 
@@ -35,16 +31,8 @@ function C_CreatureInfo.GetFactionInfo( race )
 	end
 
 	local raceData = S_CHARACTER_RACES_INFO[race] or S_CHARACTER_RACES_INFO_LOCALIZATION_ASSOC[race]
-
-	--assert(raceData, "C_CreatureInfo.GetFactionInfo: расса "..race.." не найдена.")
-
 	if not raceData then
-		raceData = {
-			raceName = "RACE_HUMAN",
-			clientFileString = "Human",
-			raceID = 1,
-			factionID = 1
-		}
+		raceData = S_CHARACTER_RACES_INFO[E_CHARACTER_RACES.RACE_HUMAN]
 	end
 
 	local FactionInfo = {}
@@ -65,16 +53,8 @@ function C_CreatureInfo.GetRaceInfo( race )
 	end
 
 	local raceData = S_CHARACTER_RACES_INFO[race] or S_CHARACTER_RACES_INFO_LOCALIZATION_ASSOC[race]
-
-	--assert(raceData, "C_CreatureInfo.GetRaceInfo: расса "..race.." не найдена.")
-
 	if not raceData then
-		raceData = {
-			raceName = "RACE_HUMAN",
-			clientFileString = "Human",
-			raceID = 1,
-			factionID = 1
-		}
+		raceData = S_CHARACTER_RACES_INFO[E_CHARACTER_RACES.RACE_HUMAN]
 	end
 
 	local RaceInfo  = {}
@@ -83,8 +63,8 @@ function C_CreatureInfo.GetRaceInfo( race )
 	RaceInfo.clientFileString 	= raceData.clientFileString
 	RaceInfo.raceID 			= raceData.raceID
 	RaceInfo.localizeName 		= {
-		male = _G[raceData.overrideRaceName] or _G[raceData.raceName],
-		female = _G[raceData.overrideRaceNameFemale] or _G[raceData.raceNameFemale]
+		male = _G[raceData.raceName],
+		female = _G[raceData.raceNameFemale]
 	}
 
 	return RaceInfo

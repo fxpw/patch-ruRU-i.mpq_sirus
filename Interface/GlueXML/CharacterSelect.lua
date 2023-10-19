@@ -1,7 +1,13 @@
-CHARACTER_SELECT_ROTATION_START_X = nil;
-CHARACTER_SELECT_INITIAL_FACING = nil;
+local CHARACTER_SELECT_ROTATION_START_X = nil;
+local CHARACTER_SELECT_INITIAL_FACING = nil;
 
-CHARACTER_ROTATION_CONSTANT = 0.6;
+local CHARACTER_ROTATION_CONSTANT = 0.6;
+
+local DRAG_ACTIVE = false
+local DRAG_BUTTON_INDEX = nil
+local DRAG_HOLD_BUTTON = nil
+local DRAG_HOLD_BUTTON_TIME = 0
+local DRAG_HOLD_DELAY_TIME = 0.5
 
 local DEFAULT_TEXT_OFFSET_X = 4
 local DEFAULT_TEXT_OFFSET_Y = 0
@@ -9,9 +15,11 @@ local DEFAULT_TEXT_OFFSET_Y = 0
 local MOVING_TEXT_OFFSET_X = 12
 local MOVING_TEXT_OFFSET_Y = 0
 
-local CHARACTER_BUTTON_HEIGHT = 64
-local CHARACTER_LIST_TOP = 680
-local AUTO_DRAG_TIME = 0.5
+local DEFAULT_HC_ICON_OFFSET_X = 0
+local DEFAULT_HC_ICON_OFFSET_Y = 5
+
+local MOVING_HC_ICON_OFFSET_X = 8
+local MOVING_HC_ICON_OFFSET_Y = 5
 
 local translationTable = {}
 local translationServerCache = {}
@@ -19,19 +27,6 @@ local translationServerCache = {}
 FACTION_OVERRIDE = {}
 
 local SERVICE_BUTTON_ACTIVATION_DELAY = 0.400
-
-local SERVER_LOGO = {
-	DEFAULT = "ServerGameLogo-11",
-	[SHARED_NELTHARION_REALM_NAME] = "ServerGameLogo-2",
-	[SHARED_FROSTMOURNE_REALM_NAME] = "ServerGameLogo-3",
-	[SHARED_SIRUS_REALM_NAME] = "ServerGameLogo-11",
-	[SHARED_SCOURGE_REALM_NAME] = "ServerGameLogo-12",
-	[SHARED_ALGALON_REALM_NAME] = "ServerGameLogo-13",
-}
-
-for serverName, logo in pairs(SERVER_LOGO) do
-	SERVER_LOGO[string.format("Proxy %s", serverName)] = logo
-end
 
 function CharacterSelect_SaveCharacterOrder()
     if CharacterSelect.orderChanged and not CharacterSelect.lockCharacterMove then
@@ -64,17 +59,10 @@ function CharacterSelect_OnLoad(self)
 	self:RegisterEvent("SUGGEST_REALM");
 	self:RegisterEvent("FORCE_RENAME_CHARACTER");
 	self:RegisterEvent("SERVER_SPLIT_NOTICE")
+	self:RegisterCustomEvent("SERVICE_DATA_UPDATE")
 	self:RegisterCustomEvent("CUSTOM_CHARACTER_LIST_UPDATE")
 	self:RegisterCustomEvent("CUSTOM_CHARACTER_INFO_UPDATE")
 	self:RegisterCustomEvent("CUSTOM_CHARACTER_FIXED")
-
-	Hook:RegisterCallback("CharacterSelect", "SERVICE_DATA_RECEIVED", function()
-		local forceChangeFactionEvent = tonumber(GetSafeCVar("ForceChangeFactionEvent") or "-1")
-
-		if forceChangeFactionEvent and forceChangeFactionEvent == -1 then
-			GlueDialog:HideDialog("SERVER_WAITING")
-		end
-	end)
 end
 
 function CharacterSelect_OnShow()
@@ -91,7 +79,7 @@ function CharacterSelect_OnShow()
 	CharacterSelect.AutoEnterWorld = false
 
 	local forceChangeFactionEvent = tonumber(GetSafeCVar("ForceChangeFactionEvent") or "-1")
-	local isNeedShowDialogWaitData = (forceChangeFactionEvent and forceChangeFactionEvent == -1) and not C_Service:GetAccountID()
+	local isNeedShowDialogWaitData = (forceChangeFactionEvent and forceChangeFactionEvent == -1) and not C_Service.GetAccountID()
 
 	if isNeedShowDialogWaitData then
 		GlueDialog:ShowDialog("SERVER_WAITING")
@@ -131,7 +119,7 @@ function CharacterSelect_OnShow()
 
 	CharacterBoostButton:Show()
 
-	CharacterSelectLogoFrameLogo:SetAtlas(SERVER_LOGO[GetServerName()] or SERVER_LOGO.DEFAULT)
+	CharacterSelectLogoFrameLogo:SetAtlas(C_RealmInfo.GetServerLogo(C_RealmInfo.GetServerIDByName(GetServerName())))
 
 	CharacterSelectCharacterFrame:Hide()
 	CharacterSelectLeftPanel:Hide()
@@ -144,6 +132,17 @@ end
 function CharacterSelect_OnHide()
 	GlueDialog:HideDialog("ADDON_INVALID_VERSION_DIALOG")
 	CharacterSelect_CloseDropdowns()
+
+	if DRAG_ACTIVE then
+		DRAG_ACTIVE = false
+		DRAG_HOLD_BUTTON = nil
+		DRAG_HOLD_BUTTON_TIME = 0
+
+		if DRAG_BUTTON_INDEX then
+			_G["CharSelectCharacterButton"..DRAG_BUTTON_INDEX]:OnDragStop()
+			DRAG_BUTTON_INDEX = nil
+		end
+	end
 
 	C_CharacterList.ForceSetPlayableMode()
 
@@ -199,10 +198,10 @@ function CharacterSelect_OnUpdate(self, elapsed)
 		end
 	end
 
-	if self.pressDownButton then
-		self.pressDownTime = self.pressDownTime + elapsed
-		if self.pressDownTime >= AUTO_DRAG_TIME then
-			CharacterSelectButton_OnDragStart(self.pressDownButton)
+	if DRAG_HOLD_BUTTON then
+		DRAG_HOLD_BUTTON_TIME = DRAG_HOLD_BUTTON_TIME + elapsed
+		if DRAG_HOLD_BUTTON_TIME >= DRAG_HOLD_DELAY_TIME then
+			DRAG_HOLD_BUTTON:OnDragStart()
 		end
 	end
 
@@ -344,12 +343,12 @@ function UpdateCharacterSelectListView()
 		inPlayableMode = true
 	end
 
-	CharacterSelectLeftPanel.Background:SetShown(inPlayableMode and numCharacters > 0)
-	CharacterSelectLeftPanel.Background2:SetShown(inPlayableMode and numCharacters > 0)
-	CharacterSelectLeftPanel.CharacterBoostInfoFrame:SetShown(inPlayableMode and numCharacters > 0)
-	CharacterBoostButton:SetShown(inPlayableMode and numCharacters > 0)
 	CharacterSelectOptionsButton:SetShown(inPlayableMode)
 	CharSelectRestoreButton:SetShown(not inPlayableMode)
+
+	local showBoostServicePanel = inPlayableMode and numCharacters > 0 --and C_CharacterServices.GetBoostStatus() ~= Enum.CharacterServices.BoostServiceStatus.Disabled
+	CharacterBoostButton:SetShown(showBoostServicePanel)
+	CharacterSelectLeftPanel.CharacterBoostInfoFrame:SetShown(showBoostServicePanel)
 
 	if not inPlayableMode then
 		CharSelectCreateCharacterMiddleButton:Hide()
@@ -357,7 +356,6 @@ function UpdateCharacterSelectListView()
 		CharSelectChangeListStateButton:Hide()
 
 		CharSelectCharacterName:Show()
-		CharSelectEnterWorldButton:Hide()
 		CharacterSelectAddonsButton:Hide()
 
 		CharacterSelect_UpdateRealmButton()
@@ -368,18 +366,19 @@ function UpdateCharacterSelectListView()
 		CharSelectChangeListStateButton:SetText(CHARACTER_SELECT_UNDELETED_CHARACTER)
 
 		CharSelectCharacterName:SetShown(connected and numCharacters > 0)
-		CharSelectEnterWorldButton:SetShown(connected and numCharacters > 0)
 		CharacterSelectAddonsButton:SetShown(connected and GetNumAddOns() > 0)
 
 		CharSelectChangeRealmButton:Show()
 		CharacterSelect_UIShowAnim()
 	end
 
+	CharacterSelect_UpdateEnterWorldButton()
+
 	if CharacterSelect.UndeleteCharacterAlert then
 		if CharacterSelect.UndeleteCharacterAlert == 1 then
-			GlueDialog:ShowDialog("OKAY", CHARACTER_UNDELETE_ALERT_1)
+			GlueDialog:ShowDialog("OKAY_VOID", CHARACTER_UNDELETE_ALERT_1)
 		else
-			GlueDialog:ShowDialog("OKAY", CHARACTER_UNDELETE_ALERT_2)
+			GlueDialog:ShowDialog("OKAY_VOID", CHARACTER_UNDELETE_ALERT_2)
 		end
 		CharacterSelect.UndeleteCharacterAlert = nil
 	end
@@ -412,12 +411,12 @@ function CharacterSelect_OnEvent(self, event, ...)
 			CharacterSelect_SelectCharacter(CharSelectServicesFlowFrame.selectedCharacterIndex, CharSelectServicesFlowFrame.selectedCharacterIndex)
 
 			if GetCharIDFromIndex(CharacterSelect.selectedIndex) == CharSelectServicesFlowFrame.selectedCharacterIndex then
-				EnterWorld()
+				C_CharacterList.EnterWorld()
 				CharacterSelect.AutoEnterWorld = false
 			end
 		end
 
-		C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.RequestCharacterListInfo)
+		C_GluePackets:SendPacket(C_GluePackets.OpCodes.RequestCharacterListInfo)
 		CharacterSelect_UpdateRealmButton()
 		UpdateCharacterSelectListView()
 		UpdateCharacterSelection()
@@ -432,7 +431,7 @@ function CharacterSelect_OnEvent(self, event, ...)
 				GlueDialog:ShowDialog("SERVER_WAITING", factionText)
 
 				C_Timer:After(3, function()
-					EnterWorld()
+					C_CharacterList.EnterWorld()
 				end)
 			end
 
@@ -456,10 +455,10 @@ function CharacterSelect_OnEvent(self, event, ...)
 		CharacterSelect_SelectCharacter(1, 1);
 	elseif ( event == "SUGGEST_REALM" ) then
 		local category, id = ...;
-		local name = GetRealmInfo(category, id);
+		local name = C_RealmList.GetRealmInfo(category, id);
 		if ( name ) then
 			SetGlueScreen("charselect");
-			ChangeRealm(category, id);
+			C_RealmList.ChangeRealm(category, id);
 		else
 			if ( RealmList:IsShown() ) then
 				RealmListUpdate();
@@ -471,6 +470,11 @@ function CharacterSelect_OnEvent(self, event, ...)
 		local message = ...;
 		CharacterRenameDialog:Show();
 		CharacterRenameDialog.Container.Title:SetText(_G[message]);
+	elseif event == "SERVICE_DATA_UPDATE" then
+		local forceChangeFactionEvent = tonumber(GetSafeCVar("ForceChangeFactionEvent")) or -1
+		if forceChangeFactionEvent == -1 then
+			GlueDialog:HideDialog("SERVER_WAITING")
+		end
 	elseif event == "CUSTOM_CHARACTER_LIST_UPDATE" then
 		local listModeChanged = ...
 
@@ -488,9 +492,12 @@ function CharacterSelect_OnEvent(self, event, ...)
 
 		CharSelectEnterWorldButton:SetEnabled(C_CharacterList.CanEnterWorld(GetCharIDFromIndex(CharacterSelect.selectedIndex)))
 	elseif event == "CUSTOM_CHARACTER_INFO_UPDATE" then
-		local characterIndex = ...
-		if CharacterSelectCharacterFrame.characterSelectButtons[characterIndex] then
-			CharacterSelectCharacterFrame.characterSelectButtons[characterIndex]:UpdateCharData()
+		local characterID = ...
+		if CharacterSelectCharacterFrame.characterSelectButtons[characterID] then
+			CharacterSelectCharacterFrame.characterSelectButtons[characterID]:UpdateCharData()
+		end
+		if characterID == C_CharacterList.GetSelectedCharacter() then
+			CharacterSelect_UpdateEnterWorldButton()
 		end
 	elseif event == "CUSTOM_CHARACTER_FIXED" then
 		local characterID = ...
@@ -605,17 +612,17 @@ function UpdateCharacterSelection()
 		button.FactionEmblem:Show()
 
 		if inPlayableMode and not CharSelectServicesFlowFrame:IsShown() then
-			CharacterSelectButton_EnableDrag(button)
+			button:EnableDrag()
 		else
-			CharacterSelectButton_DisableDrag(button)
+			button:DisableDrag()
 		end
 
-		CharacterSelectButton_HideMoveButtons(button)
+		button:HideMoveButtons()
 
 		if inPlayableMode then
 			button:UpdatePaidServicerID()
 		else
-			button.PAIDButton:SetPAID(4)
+			button.PAIDButton:SetPAID(0)
 		end
 	end
 
@@ -624,9 +631,7 @@ function UpdateCharacterSelection()
 		button = _G["CharSelectCharacterButton"..index]
 		if ( button ) then
 			button.selection:Show()
-			if ( button:IsMouseOver() ) then
-				button:OnEnter()
-			end
+			button:UpdateMouseOver()
 		end
 	end
 end
@@ -740,7 +745,7 @@ function CharacterSelect_TabResize(self)
 	self:SetWidth(width + (2 * leftWidth));
 end
 
-function CharacterSelect_OpenCharacterCreate(paidServiceID, characterIndex, onShowAnim)
+function CharacterSelect_OpenCharacterCreate(paidServiceID, characterID, onShowAnim)
 	if CharacterSelectBottomLeftPanel and CharacterSelectBottomLeftPanel:IsAnimPlaying() then
 		return
 	end
@@ -751,7 +756,7 @@ function CharacterSelect_OpenCharacterCreate(paidServiceID, characterIndex, onSh
 			onShowAnim()
 		end
 		PlaySound("gsCharacterSelectionCreateNew");
-		C_CharacterCreation.SetCreateScreen(paidServiceID, characterIndex)
+		C_CharacterCreation.SetCreateScreen(paidServiceID, characterID)
 	end)
 
 	return true
@@ -817,24 +822,37 @@ function CharacterSelect_SelectCharacter(characterIndex, noCreate)
 			if forceCharCustomization ~= -1 then
 				if PAID_SERVICE_CHARACTER_ID ~= 0 then
 					RunNextFrame(function()
-						CharacterSelect_OpenCharacterCreate(PAID_CHARACTER_CUSTOMIZATION, characterID)
+						CharacterSelect_OpenCharacterCreate(E_PAID_SERVICE.CUSTOMIZATION, characterID)
 					end)
 					SetSafeCVar("FORCE_CHAR_CUSTOMIZATION", -1)
 					return
 				end
 			end
 
-			if C_CharacterList.HasCharacterForcedCustomization(characterID) then
-				CharSelectEnterWorldButton:SetText("Завершить настройку")
-			else
-				CharSelectEnterWorldButton:SetText(ENTER_WORLD)
-			end
-
-			CharSelectEnterWorldButton:SetEnabled(C_CharacterList.CanEnterWorld(characterID))
+			CharacterSelect_UpdateEnterWorldButton()
 		else
 			CharacterModelManager.SetBackground("Alliance")
 		end
 	end
+end
+
+function CharacterSelect_UpdateEnterWorldButton()
+	if C_CharacterList.IsInPlayableMode() and IsConnectedToServer() == 1 and C_CharacterList.GetNumCharactersOnPage() > 0 then
+		CharSelectEnterWorldButton:Show()
+	else
+		CharSelectEnterWorldButton:Hide()
+		return
+	end
+
+	local characterID = C_CharacterList.GetSelectedCharacter()
+	if C_CharacterList.HasCharacterForcedCustomization(characterID) then
+		CharSelectEnterWorldButton:SetText(COMPLETE_FORCED_CUSTOMIZATION)
+	elseif C_CharacterList.HasCharacterHardcoreProposal(characterID) then
+		CharSelectEnterWorldButton:SetText(COMPLETE_FORCED_CUSTOMIZATION)
+	else
+		CharSelectEnterWorldButton:SetText(ENTER_WORLD)
+	end
+	CharSelectEnterWorldButton:SetEnabled(C_CharacterList.CanEnterWorld(characterID))
 end
 
 function CharacterSelect_EnterWorld()
@@ -843,8 +861,11 @@ function CharacterSelect_EnterWorld()
 	local characterID = GetCharIDFromIndex(CharacterSelect.selectedIndex)
 
 	if C_CharacterList.HasCharacterForcedCustomization(characterID) then
-		CharacterSelect_OpenCharacterCreate(PAID_CHARACTER_CUSTOMIZATION, characterID)
+		CharacterSelect_OpenCharacterCreate(E_PAID_SERVICE.CUSTOMIZATION, characterID)
 		SetSafeCVar("FORCE_CHAR_CUSTOMIZATION", -1)
+		return
+	elseif C_CharacterList.HasCharacterHardcoreProposal(characterID) then
+		GlueDialog:ShowDialog("HARDCORE_PROPOSAL", nil, characterID)
 		return
 	end
 
@@ -854,7 +875,7 @@ function CharacterSelect_EnterWorld()
 	if CharSelectServicesFlowFrame:IsShown() then
 		CharacterServicesMaster_OnWorldEnterAttempt()
 	elseif C_CharacterList.CanEnterWorld(characterID) then
-		EnterWorld();
+		C_CharacterList.EnterWorld()
 	end
 end
 
@@ -886,12 +907,12 @@ end
 
 function CharacterSelect_ChangeRealm()
 	PlaySound("gsCharacterSelectionDelCharacter");
-	RequestRealmList(1);
+	C_RealmList.RequestRealmList(1);
 end
 
 function CharacterSelectFrame_OnMouseDown(button)
 	if ( button == "LeftButton" ) then
-		CHARACTER_SELECT_ROTATION_START_X = GetCursorPosition();
+		CHARACTER_SELECT_ROTATION_START_X = GetScaledCursorPosition();
 		CHARACTER_SELECT_INITIAL_FACING = GetCharacterSelectFacing();
 	end
 
@@ -906,7 +927,7 @@ end
 
 function CharacterSelectFrame_OnUpdate()
 	if ( CHARACTER_SELECT_ROTATION_START_X ) then
-		local cursorPos = GetCursorPosition();
+		local cursorPos = GetScaledCursorPosition();
 		local diff = (cursorPos - CHARACTER_SELECT_ROTATION_START_X) * CHARACTER_ROTATION_CONSTANT;
 		CHARACTER_SELECT_ROTATION_START_X = cursorPos;
 		SetCharacterSelectFacing(GetCharacterSelectFacing() + diff);
@@ -940,138 +961,6 @@ function RealmSplit_SetChoiceText()
 	RealmSplitCurrentChoice:Show();
 end
 
-function CharacterSelectButton_HideMoveButtons(self)
-	self.buttonText.Location:Show()
-	self.upButton:Hide()
-	self.downButton:Hide()
-	self.FactionEmblem:Show()
-
-	for _, serviceButton in ipairs(self.serviceButtons) do
-		serviceButton:Hide()
-	end
-
-	self.buttonText.Location:Show()
-	self.buttonText.ItemLevel:Hide()
-end
-
-function CharacterSelectButton_ShowMoveButtons(self)
-	if not C_CharacterList.IsInPlayableMode() or CharSelectServicesFlowFrame:IsShown() then return end
-
-	if not CharacterSelect.draggedIndex and self.level then
-		local characterIndex = self:GetID()
-		local characterID = GetCharIDFromIndex(characterIndex)
-		local isPendingDK = C_CharacterList.IsCharacterPendingBoostDK(characterID)
-
-		self.serviceButtons[1]:Show()
-		self.serviceButtons[2]:SetShown(not isPendingDK)
-		self.serviceButtons[3]:SetShown(C_CharacterServices.IsBoostAvailableForLevel(self.level))
-		self.serviceButtons[3]:SetPoint("RIGHT", isPendingDK and self.serviceButtons[1] or self.serviceButtons[2], "LEFT", -4, 0)
-
-		self.buttonText.Location:Hide()
-		self.upButton:Show()
-		self.upButton.normalTexture:SetPoint("CENTER", 0, 0)
-		self.upButton.highlightTexture:SetPoint("CENTER", 0, 0)
-		self.downButton:Show()
-		self.downButton.normalTexture:SetPoint("CENTER", 0, 0)
-		self.downButton.highlightTexture:SetPoint("CENTER", 0, 0)
-
-		self.FactionEmblem:Hide()
-
-		if characterIndex == 1 then
-			self.upButton:Disable()
-			self.upButton:SetAlpha(0.35)
-		else
-			self.upButton:Enable()
-			self.upButton:SetAlpha(1)
-		end
-
-		if characterIndex == C_CharacterList.GetNumCharactersOnPage() then
-			self.downButton:Disable()
-			self.downButton:SetAlpha(0.35)
-		else
-			self.downButton:Enable()
-			self.downButton:SetAlpha(1)
-		end
-
-		self.buttonText.ItemLevel:Show()
-		self.buttonText.Location:Hide()
-	end
-end
-
-function CharacterSelectButton_OnDragUpdate(self)
-    if not CharacterSelect.draggedIndex then
-        CharacterSelectButton_OnDragStop(self)
-        return
-    end
-    local _, cursorY = GetCursorPosition()
-
-    if cursorY <= CHARACTER_LIST_TOP then
-        local buttonIndex = floor((CHARACTER_LIST_TOP - cursorY) / CHARACTER_BUTTON_HEIGHT) + 1
-        local button = _G["CharSelectCharacterButton"..buttonIndex]
-
-        if button and button:GetID() ~= CharacterSelect.draggedIndex and button:IsShown() then
-            if ( button:GetID() > CharacterSelect.draggedIndex ) then
-                MoveCharacter(CharacterSelect.draggedIndex, CharacterSelect.draggedIndex + 1, true)
-            else
-                MoveCharacter(CharacterSelect.draggedIndex, CharacterSelect.draggedIndex - 1, true)
-            end
-        end
-    end
-end
-
-function CharacterSelectButton_OnDragStart(self)
-	if not C_CharacterList.IsInPlayableMode() or CharSelectServicesFlowFrame:IsShown() or CharacterSelect.lockCharacterMove then return end
-
-    if C_CharacterList.GetNumCharactersOnPage() > 1 then
-		if not CharacterSelect.draggedIndex then
-			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-		end
-
-        CharacterSelect.pressDownButton = nil
-        CharacterSelect.draggedIndex = self:GetID()
-        self:SetScript("OnUpdate", CharacterSelectButton_OnDragUpdate)
-        for index = 1, C_CharacterList.GetNumCharactersPerPage() do
-            local button = _G["CharSelectCharacterButton"..index]
-            if button ~= self then
-                button:SetAlpha(0.6)
-            end
-        end
-
-        self:LockHighlight()
-		CharacterSelect_CloseDropdowns()
-		CharacterSelectButton_HideMoveButtons(self)
-    end
-end
-
-function CharacterSelectButton_OnDragStop(self)
-	if CharacterSelect.draggedIndex then
-		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
-	end
-
-	local stopIndex
-	CharacterSelect.draggedIndex = nil
-	CharacterSelect.pressDownButton = nil
-
-    self:SetScript("OnUpdate", nil)
-    for index = 1, C_CharacterList.GetNumCharactersPerPage() do
-        local button = _G["CharSelectCharacterButton"..index]
-        button:SetAlpha(1)
-        button:UnlockHighlight()
-		button.buttonText.name:SetPoint("TOPLEFT", DEFAULT_TEXT_OFFSET_X, DEFAULT_TEXT_OFFSET_Y)
-        if button:IsMouseOver() then
-        	stopIndex = button:GetID()
-        end
-        if button.selection:IsShown() and button:IsMouseOver() then
-        	stopIndex = button:GetID()
-			button:OnEnter()
-        end
-    end
-
-    if self:GetID() ~= stopIndex then
-    	CharacterSelect_SaveCharacterOrder()
-    end
-end
-
 function MoveCharacter(originIndex, targetIndex, fromDrag)
 	if CharacterSelect.lockCharacterMove then return end
 
@@ -1091,41 +980,32 @@ function MoveCharacter(originIndex, targetIndex, fromDrag)
 
     -- update character list
     if ( fromDrag ) then
-        CharacterSelect.draggedIndex = targetIndex
+		DRAG_BUTTON_INDEX = targetIndex
 
         local oldButton = _G["CharSelectCharacterButton"..originIndex]
         local currentButton = _G["CharSelectCharacterButton"..targetIndex]
 
         oldButton:SetAlpha(0.6)
         oldButton:UnlockHighlight()
-        oldButton.buttonText.name:SetPoint("TOPLEFT", DEFAULT_TEXT_OFFSET_X, DEFAULT_TEXT_OFFSET_Y)
+		if C_CharacterList.IsHardcoreCharacter(oldButton.characterID) then
+			oldButton.buttonText.HardcoreIcon:SetPoint("TOPLEFT", DEFAULT_HC_ICON_OFFSET_X, DEFAULT_HC_ICON_OFFSET_Y)
+		else
+			oldButton.buttonText.name:SetPoint("TOPLEFT", DEFAULT_TEXT_OFFSET_X, DEFAULT_TEXT_OFFSET_Y)
+		end
 
         currentButton:SetAlpha(1)
         currentButton:LockHighlight()
-        currentButton.buttonText.name:SetPoint("TOPLEFT", MOVING_TEXT_OFFSET_X, MOVING_TEXT_OFFSET_Y)
+		if C_CharacterList.IsHardcoreCharacter(currentButton.characterID) then
+			currentButton.buttonText.HardcoreIcon:SetPoint("TOPLEFT", MOVING_HC_ICON_OFFSET_X, MOVING_HC_ICON_OFFSET_Y)
+		else
+			currentButton.buttonText.name:SetPoint("TOPLEFT", MOVING_TEXT_OFFSET_X, MOVING_TEXT_OFFSET_Y)
+		end
      else
      	CharacterSelect_SaveCharacterOrder()
     end
 
     UpdateCharacterSelection(CharacterSelect)
     UpdateCharacterList( true )
-end
-
-function CharacterSelectButton_DisableDrag(button)
-    button:SetScript("OnMouseDown", nil)
-    button:SetScript("OnMouseUp", nil)
-    button:SetScript("OnDragStart", nil)
-    button:SetScript("OnDragStop", nil)
-end
-
-function CharacterSelectButton_EnableDrag(button)
-    button:SetScript("OnDragStart", CharacterSelectButton_OnDragStart)
-    button:SetScript("OnDragStop", CharacterSelectButton_OnDragStop)
-    button:SetScript("OnMouseDown", function(self)
-        CharacterSelect.pressDownButton = self
-        CharacterSelect.pressDownTime = 0
-    end)
-    button:SetScript("OnMouseUp", CharacterSelectButton_OnDragStop)
 end
 
 -- translation functions
@@ -1322,15 +1202,16 @@ end
 CharacterSelectPAIDButtonMixin = {}
 
 local PAID_OPTIONS_INFO = {
+	[0] = {icon = "PAID_CIRCLE_UNDELETE", text = PAID_CHARACTER_RESTORE_TOOLTIP},
 	{icon = "PAID_CIRCLE_CUSTOMIZE", text = PAID_CHARACTER_CUSTOMIZE_TOOLTIP},
 	{icon = "PAID_CIRCLE_RACE", text = PAID_RACE_CHANGE_TOOLTIP},
 	{icon = "PAID_CIRCLE_FACTION", text = PAID_FACTION_CHANGE_TOOLTIP},
-	{icon = "PAID_CIRCLE_UNDELETE", text = PAID_CHARACTER_RESTORE_TOOLTIP},
+	{text = PAID_ZODIAC_CHANGE_TOOLTIP},
 }
 
 function CharacterSelectPAIDButtonMixin:OnLoad()
-	self.buttonW = self:GetWidth()
-	self.buttonH = self:GetHeight()
+	self.buttonW = self.Icon:GetWidth()
+	self.buttonH = self.Icon:GetHeight()
 
 	self:SetFrameLevel(self:GetParent().PortraitFrame:GetFrameLevel() + 5)
 
@@ -1345,13 +1226,21 @@ function CharacterSelectPAIDButtonMixin:SetColor( r, g, b )
 	self.Border3:SetVertexColor(r, g, b)
 end
 
-function CharacterSelectPAIDButtonMixin:SetPAID( paID )
-	self:SetShown(paID)
-
+function CharacterSelectPAIDButtonMixin:SetPAID(paID)
 	self.paID = paID
+	self:SetShown(paID)
+	self:UpdateIcon()
+end
 
-	if PAID_OPTIONS_INFO[paID] then
-		self.Icon:SetAtlas(PAID_OPTIONS_INFO[paID].icon)
+function CharacterSelectPAIDButtonMixin:UpdateIcon()
+	if PAID_OPTIONS_INFO[self.paID] then
+		if self.paID == 4 then
+			local raceID = C_CharacterList.GetCharacterZodiacRaceID(self:GetParent().characterID)
+			local zodiacRaceID, name, description, icon, atlas, available = C_CharacterCreation.GetZodiacSignInfoByRaceID(raceID ~= 0 and raceID or 1)
+			self.Icon:SetAtlas(atlas.."-Small")
+		else
+			self.Icon:SetAtlas(PAID_OPTIONS_INFO[self.paID].icon)
+		end
 	end
 end
 
@@ -1376,7 +1265,7 @@ end
 function CharacterSelectPAIDButtonMixin:OnClick()
 	CharacterSelect_CloseDropdowns()
 
-	if self.paID == 4 then
+	if self.paID == 0 then
 		CharacterServiceRestoreCharacterFrame:SetPurchaseArgs(self:GetParent():GetID())
 		CharacterServiceRestoreCharacterFrame:SetPrice(C_CharacterServices.GetCharacterRestorePrice())
 		CharacterServiceRestoreCharacterFrame:Show()
@@ -1384,6 +1273,7 @@ function CharacterSelectPAIDButtonMixin:OnClick()
 	end
 
 	CharacterSelect_OpenCharacterCreate(self.paID, GetCharIDFromIndex(self:GetParent():GetID()))
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 end
 
 function CharacterSelectPAIDButtonMixin:OnEnter()
@@ -1398,6 +1288,7 @@ function CharacterSelectPAIDButtonMixin:OnEnter()
 	if PAID_OPTIONS_INFO[self.paID] then
 		GlueTooltip:SetOwner(self, "ANCHOR_LEFT", 7, -7)
 		GlueTooltip:SetText(PAID_OPTIONS_INFO[self.paID].text)
+		GlueTooltip:Show()
 	end
 end
 
@@ -1428,7 +1319,7 @@ function CharacterSelectUIMixin:OnUpdate()
 	CharacterSelectFrame_OnUpdate()
 end
 
-CharacterSelectCharacterMixin = {}
+CharacterSelectCharacterMixin = CreateFromMixins(GlueEasingAnimMixin)
 
 function CharacterSelectCharacterMixin:Init()
 	self.startPoint = 300
@@ -1451,7 +1342,7 @@ function CharacterSelectCharacterMixin:SetPosition(easing, progress)
 	end
 end
 
-CharacterSelectLeftPanelMixin = {}
+CharacterSelectLeftPanelMixin = CreateFromMixins(GlueEasingAnimMixin)
 
 function CharacterSelectLeftPanelMixin:Init()
 	self.startPoint = -300
@@ -1472,7 +1363,7 @@ function CharacterSelectLeftPanelMixin:SetPosition(easing, progress)
 	end
 end
 
-CharSelectChangeRealmButtonMixin = {}
+CharSelectChangeRealmButtonMixin = CreateFromMixins(GlueEasingAnimMixin)
 
 function CharSelectChangeRealmButtonMixin:Init()
 	self.startPoint = 40
@@ -1493,7 +1384,7 @@ function CharSelectChangeRealmButtonMixin:OnClick(button)
 	CharacterSelect_ChangeRealm()
 end
 
-CharacterSelectBottomLeftPanelMixin = {}
+CharacterSelectBottomLeftPanelMixin = CreateFromMixins(GlueEasingAnimMixin)
 
 function CharacterSelectBottomLeftPanelMixin:Init()
 	self.startPoint = -150
@@ -1514,7 +1405,7 @@ function CharacterSelectBottomLeftPanelMixin:SetPosition(easing, progress)
 	end
 end
 
-CharacterSelectPlayerNameFrameMixin = {}
+CharacterSelectPlayerNameFrameMixin = CreateFromMixins(GlueEasingAnimMixin)
 
 function CharacterSelectPlayerNameFrameMixin:Init()
 	self.startPoint = -100
@@ -1542,6 +1433,13 @@ function CharacterSelectButtonMixin:OnLoad()
 	self.selection:SetAtlas("jailerstower-animapowerlist-dropdown-closedbg2")
 
 	self.HighlightTexture:SetAtlas("jailerstower-animapowerlist-dropdown-closedbg")
+
+	self.PortraitFrame.Border:SetAtlas("UI-Frame-jailerstower-Portrait")
+	self.PortraitFrame.FactionBorder:SetAtlas("UI-Frame-jailerstower-Portrait-border")
+
+	self.PortraitFrame.LevelFrame.Border:SetAtlas("UI-Frame-jailerstower-Portrait")
+
+	self.buttonText.HardcoreIcon.Icon:SetAtlas("Custom-Challenges-Icon-Hardcore")
 end
 
 function CharacterSelectButtonMixin:UpdateCharacterInfo()
@@ -1580,6 +1478,10 @@ function CharacterSelectButtonMixin:ClearCharacterInfo()
 	self.PFC = nil
 end
 
+function CharacterSelectButtonMixin:OnShow()
+	SetParentFrameLevel(self.PortraitFrame.MailIcon, 1)
+end
+
 function CharacterSelectButtonMixin:OnHide()
 	self:ClearCharacterInfo()
 end
@@ -1588,45 +1490,48 @@ function CharacterSelectButtonMixin:OnEnable()
 	self.PortraitFrame.Icon:SetVertexColor(1, 1, 1)
 	self.PortraitFrame.LevelFrame.Level:SetTextColor(1, 1, 1)
 	self.PortraitFrame.MailIcon:Enable()
+	self.buttonText.HardcoreIcon:Enable()
 
 	self:UpdateNameColor()
 --	self.buttonText.Info:SetTextColor(1, 1, 1)
 	self.buttonText.Location:SetTextColor(0.5, 0.5, 0.5)
 
 	self.PAIDButton:Enable()
+	self.PaidZodiacButton:Enable()
+	self.PortraitFrame:Enable()
 end
 
 function CharacterSelectButtonMixin:OnDisable()
+	self:HideMoveButtons()
+
 	self.PortraitFrame.Icon:SetVertexColor(0.3, 0.3, 0.3)
 	self.PortraitFrame.LevelFrame.Level:SetTextColor(0.3, 0.3, 0.3)
 	self.PortraitFrame.MailIcon:Disable()
+	self.buttonText.HardcoreIcon:Disable()
 
 	self.buttonText.name:SetTextColor(0.3, 0.3, 0.3)
 --	self.buttonText.Info:SetTextColor(0.3, 0.3, 0.3)
 	self.buttonText.Location:SetTextColor(0.3, 0.3, 0.3)
 
 	self.PAIDButton:Disable()
-end
-
-function CharacterSelectButtonMixin:OnDragStart()
-	CharacterSelectButton_OnDragStart(self)
-end
-
-function CharacterSelectButtonMixin:OnDragStop()
-	CharacterSelectButton_OnDragStop(self)
+	self.PaidZodiacButton:Disable()
+	self.PortraitFrame:Disable()
 end
 
 function CharacterSelectButtonMixin:OnMouseDown(button)
-	if button == "RightButton" then
+	if self:IsEnabled() ~= 1 or button == "RightButton" then
 		return
 	end
 
-	CharacterSelect.pressDownButton = self
-	CharacterSelect.pressDownTime = 0
+	DRAG_HOLD_BUTTON = self
+	DRAG_HOLD_BUTTON_TIME = 0
 end
 
-function CharacterSelectButtonMixin:OnMouseUp()
-	CharacterSelectButton_OnDragStop(self)
+function CharacterSelectButtonMixin:OnMouseUp(button)
+	if self:IsEnabled() ~= 1 then
+		return
+	end
+	self:OnDragStop()
 end
 
 function CharacterSelectButtonMixin:OnClick(button)
@@ -1663,11 +1568,13 @@ end
 
 function CharacterSelectButtonMixin:OnEnter()
 	if self.selection:IsShown() then
-		CharacterSelectButton_ShowMoveButtons(self)
+		self:ShowMoveButtons()
 	end
 
-	self.buttonText.ItemLevel:Show()
-	self.buttonText.Location:Hide()
+	if not DRAG_ACTIVE then
+		self.buttonText.ItemLevel:Show()
+		self.buttonText.Location:Hide()
+	end
 end
 
 function CharacterSelectButtonMixin:OnLeave()
@@ -1678,22 +1585,198 @@ function CharacterSelectButtonMixin:OnLeave()
 	end
 
 	if self.upButton:IsShown() and not (self.upButton:IsMouseOver() or self.downButton:IsMouseOver()) then
-		CharacterSelectButton_HideMoveButtons(self)
+		self:HideMoveButtons()
 	end
 
 	self.buttonText.Location:Show()
 	self.buttonText.ItemLevel:Hide()
 end
 
+function CharacterSelectButtonMixin:OnDragStart(button)
+	if not C_CharacterList.IsInPlayableMode() or CharSelectServicesFlowFrame:IsShown() or CharacterSelect.lockCharacterMove then return end
+
+	if C_CharacterList.GetNumCharactersOnPage() > 1 then
+		if not DRAG_ACTIVE then
+			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+			DRAG_ACTIVE = true
+		end
+
+		DRAG_HOLD_BUTTON = nil
+		DRAG_BUTTON_INDEX = self:GetID()
+		self:SetScript("OnUpdate", self.OnDragUpdate)
+		for index = 1, C_CharacterList.GetNumCharactersPerPage() do
+			local charButton = _G["CharSelectCharacterButton"..index]
+			if charButton ~= self then
+				charButton:SetAlpha(0.6)
+			end
+		end
+
+		self.PortraitFrame:HideZodiacSign()
+		self:HideMoveButtons()
+		self:LockHighlight()
+		CharacterSelect_CloseDropdowns()
+	end
+end
+
+function CharacterSelectButtonMixin:OnDragStop()
+	if not C_CharacterList.IsInPlayableMode() or CharSelectServicesFlowFrame:IsShown() or CharacterSelect.lockCharacterMove then return end
+
+	if DRAG_ACTIVE then
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
+		DRAG_ACTIVE = false
+	end
+
+	DRAG_BUTTON_INDEX = nil
+	DRAG_HOLD_BUTTON = nil
+
+	self:OnLeave()
+	self:SetScript("OnUpdate", nil)
+
+	local stopIndex
+	for index = 1, C_CharacterList.GetNumCharactersPerPage() do
+		local button = _G["CharSelectCharacterButton"..index]
+		button:SetAlpha(1)
+		button:UnlockHighlight()
+		button:UpdateMouseOver()
+
+		if C_CharacterList.IsHardcoreCharacter(button.characterID) then
+			button.buttonText.HardcoreIcon:SetPoint("TOPLEFT", DEFAULT_HC_ICON_OFFSET_X, DEFAULT_HC_ICON_OFFSET_Y)
+		else
+			button.buttonText.name:SetPoint("TOPLEFT", DEFAULT_TEXT_OFFSET_X, DEFAULT_TEXT_OFFSET_Y)
+		end
+
+		if button.selection:IsShown() or button:IsMouseOver() then
+			stopIndex = button:GetID()
+		end
+	end
+
+	if self:GetID() ~= stopIndex then
+		CharacterSelect_SaveCharacterOrder()
+	end
+end
+
+function CharacterSelectButtonMixin:OnDragUpdate(elapsed)
+	if DRAG_ACTIVE then
+		local draggedButton = _G["CharSelectCharacterButton"..DRAG_BUTTON_INDEX]
+		local _, bottomOffset, _, buttonHeight = draggedButton:GetRect()
+
+		local _, cursorY = GetScaledCursorPosition()
+		if cursorY < bottomOffset then
+			if DRAG_BUTTON_INDEX < C_CharacterList.GetNumCharactersOnPage() then
+				MoveCharacter(DRAG_BUTTON_INDEX, DRAG_BUTTON_INDEX + 1, true)
+			end
+		elseif cursorY > bottomOffset + buttonHeight then
+			if DRAG_BUTTON_INDEX > 1 then
+				MoveCharacter(DRAG_BUTTON_INDEX, DRAG_BUTTON_INDEX - 1, true)
+			end
+		end
+	else
+		self:OnDragStop()
+	end
+end
+
+function CharacterSelectButtonMixin:EnableDrag()
+	self:SetScript("OnDragStart", self.OnDragStart)
+	self:SetScript("OnDragStop", self.OnDragStop)
+	self:SetScript("OnMouseUp", self.OnDragStop)
+	self:SetScript("OnMouseDown", self.OnMouseDown)
+end
+
+function CharacterSelectButtonMixin:DisableDrag()
+	self:SetScript("OnDragStart", nil)
+	self:SetScript("OnDragStop", nil)
+	self:SetScript("OnMouseUp", nil)
+	self:SetScript("OnMouseDown", nil)
+end
+
+function CharacterSelectButtonMixin:ShowMoveButtons()
+	if not C_CharacterList.IsInPlayableMode() or CharSelectServicesFlowFrame:IsShown() then return end
+
+	if not DRAG_ACTIVE and self.level then
+		local characterIndex = self:GetID()
+		local characterID = GetCharIDFromIndex(characterIndex)
+		local isPendingDK = C_CharacterList.IsCharacterPendingBoostDK(characterID)
+
+		self.serviceButtons[1]:Show()
+		self.serviceButtons[2]:SetShown(not isPendingDK)
+		self.serviceButtons[3]:SetShown(C_CharacterServices.IsBoostAvailableForLevel(self.level) and not C_CharacterList.IsHardcoreCharacter(characterID))
+		self.serviceButtons[3]:SetPoint("RIGHT", isPendingDK and self.serviceButtons[1] or self.serviceButtons[2], "LEFT", -4, 0)
+
+		self.buttonText.Location:Hide()
+		self.upButton:Show()
+		self.upButton.normalTexture:SetPoint("CENTER", 0, 0)
+		self.upButton.highlightTexture:SetPoint("CENTER", 0, 0)
+		self.downButton:Show()
+		self.downButton.normalTexture:SetPoint("CENTER", 0, 0)
+		self.downButton.highlightTexture:SetPoint("CENTER", 0, 0)
+
+		self.FactionEmblem:Hide()
+
+		if characterIndex == 1 then
+			self.upButton:Disable()
+			self.upButton:SetAlpha(0.35)
+		else
+			self.upButton:Enable()
+			self.upButton:SetAlpha(1)
+		end
+
+		if characterIndex == C_CharacterList.GetNumCharactersOnPage() then
+			self.downButton:Disable()
+			self.downButton:SetAlpha(0.35)
+		else
+			self.downButton:Enable()
+			self.downButton:SetAlpha(1)
+		end
+
+		self.buttonText.ItemLevel:Show()
+		self.buttonText.Location:Hide()
+	end
+end
+
+function CharacterSelectButtonMixin:HideMoveButtons()
+	self.buttonText.Location:Show()
+	self.upButton:Hide()
+	self.downButton:Hide()
+	self.FactionEmblem:Show()
+
+	for _, serviceButton in ipairs(self.serviceButtons) do
+		serviceButton:Hide()
+	end
+
+	self.buttonText.Location:Show()
+	self.buttonText.ItemLevel:Hide()
+end
+
+function CharacterSelectButtonMixin:UpdateMouseOver()
+	if self:IsEnabled() == 1 then
+		if self.PortraitFrame:IsMouseOver() then
+			self.PortraitFrame:OnEnter()
+		elseif self:IsMouseOver() then
+			self:OnEnter()
+		end
+	end
+end
+
+function CharacterSelectButtonMixin:OnEnterHardcoreIcon(this)
+	self:OnEnter()
+	GlueTooltip:SetOwner(this)
+	GlueTooltip:AddLine(CHARACTER_INFO_HARDCORE_LABEL)
+	GlueTooltip:Show()
+end
+
+function CharacterSelectButtonMixin:OnLeaveHardcoreIcon(this)
+	self:OnLeave()
+	GlueTooltip:Hide()
+end
+
 function CharacterSelectButtonMixin:SetBoostMode(state, selectable)
 	if state then
 		self.selection:Hide()
-		self.PAIDButton:Disable()
-		self.PortraitFrame.MailIcon:Disable()
-	else
-		self.PAIDButton:Enable()
-		self.PortraitFrame.MailIcon:Enable()
 	end
+
+	self.PAIDButton:SetEnabled(not state)
+	self.PaidZodiacButton:SetEnabled(not state)
+	self.PortraitFrame.MailIcon:SetEnabled(not state)
 
 	self.Arrow:SetShown(state and selectable)
 
@@ -1733,21 +1816,43 @@ end
 function CharacterSelectButtonMixin:UpdateCharData()
 	self.PortraitFrame.MailIcon:SetShown(C_CharacterList.GetCharacterMailCount(self.characterID) > 0)
 
+	if C_CharacterList.IsHardcoreCharacter(self.characterID) then
+		self.buttonText.HardcoreIcon:Show()
+		self.buttonText.name:ClearAllPoints()
+		self.buttonText.name:SetPoint("LEFT", self.buttonText.HardcoreIcon, "RIGHT", -2, -1)
+	else
+		self.buttonText.HardcoreIcon:Hide()
+		self.buttonText.name:ClearAllPoints()
+		self.buttonText.name:SetPoint("TOPLEFT", DEFAULT_TEXT_OFFSET_X, DEFAULT_TEXT_OFFSET_Y)
+	end
+
 	local itemLevel = C_CharacterList.GetCharacterItemLevel(self.characterID)
 	local itemLevelShown
 
 	local color = getItemLevelColor(itemLevel)
 	self.buttonText.ItemLevel:SetFormattedText("%s |c%s%i|r", CHARACTER_ITEM_LEVEL, color:GenerateHexColor(), itemLevel)
 
-	if self:IsMouseOver() then
-		self.buttonText.Location:Hide()
-		self.buttonText.ItemLevel:Show()
-		itemLevelShown = true
+	if C_CharacterList.CanCharacterChangeZodiac(self.characterID) then
+		self.PaidZodiacButton:Show()
+		self.PaidZodiacButton:UpdateIcon(4)
+	else
+		self.PaidZodiacButton:Hide()
 	end
 
-	if not itemLevelShown then
-		self.buttonText.Location:Show()
-		self.buttonText.ItemLevel:Hide()
+	local zodiacSignRaceID = C_CharacterList.GetCharacterZodiacRaceID(self.characterID)
+	if zodiacSignRaceID and zodiacSignRaceID ~= 0 then
+		local zodiacRaceID, name, description, icon, atlas = C_ZodiacSign.GetZodiacSignInfo(zodiacSignRaceID)
+		self.PortraitFrame.ZodiacSign.name = name
+		self.PortraitFrame.ZodiacSign:SetAtlas(atlas)
+	else
+		self.PortraitFrame.ZodiacSign.name = nil
+		self.PortraitFrame:HideZodiacSign()
+	end
+
+	if not DRAG_ACTIVE then
+		local isMouseOver = self:IsMouseOver()
+		self.buttonText.Location:SetShown(not isMouseOver)
+		self.buttonText.ItemLevel:SetShown(isMouseOver)
 	end
 end
 
@@ -1775,6 +1880,7 @@ function CharacterSelectButtonMixin:UpdateFaction()
 	self.PortraitFrame.LevelFrame.Border:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
 	self.selection:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
 	self.PAIDButton:SetColor(factionColor.r, factionColor.g, factionColor.b)
+	self.PaidZodiacButton:SetColor(factionColor.r, factionColor.g, factionColor.b)
 
 	local raceAtlas = string.format("RACE_ICON_%s_%s_%s", string.upper(raceInfo.clientFileString), E_SEX[self.sex or 0], string.upper(factionGroup))
 	self.PortraitFrame.Icon:SetAtlas(S_ATLAS_STORAGE[raceAtlas] and raceAtlas or "RACE_ICON_HUMAN_MALE_HORDE")
@@ -1805,13 +1911,54 @@ end
 
 function CharacterSelectButtonMixin:UpdatePaidServicerID()
 	if self.PFC then
-		self.PAIDButton:SetPAID(PAID_FACTION_CHANGE)
+		self.PAIDButton:SetPAID(E_PAID_SERVICE.CHANGE_FACTION)
 	elseif self.PRC then
-		self.PAIDButton:SetPAID(PAID_RACE_CHANGE)
+		self.PAIDButton:SetPAID(E_PAID_SERVICE.CHANGE_RACE)
 	elseif self.PCC then
-		self.PAIDButton:SetPAID(PAID_CHARACTER_CUSTOMIZATION)
+		self.PAIDButton:SetPAID(E_PAID_SERVICE.CUSTOMIZATION)
 	else
 		self.PAIDButton:Hide()
+	end
+end
+
+CharacterSelectButtonPortraitMixin = {}
+
+function CharacterSelectButtonPortraitMixin:OnLoad()
+	self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+	self:RegisterForDrag("LeftButton")
+end
+
+function CharacterSelectButtonPortraitMixin:OnDisable()
+	self:HideZodiacSign()
+end
+
+function CharacterSelectButtonPortraitMixin:OnEnter()
+	if not DRAG_ACTIVE then
+		if self.ZodiacSign.name then
+			self.Icon:Hide()
+			self.ZodiacBackground:Show()
+			self.ZodiacSign:Show()
+
+			GlueTooltip:SetOwner(self, "ANCHOR_LEFT")
+			GlueTooltip:AddLine(self.ZodiacSign.name)
+			GlueTooltip:Show()
+		end
+	end
+end
+
+function CharacterSelectButtonPortraitMixin:OnLeave()
+	GlueTooltip:Hide()
+	self.Icon:Show()
+	self.ZodiacBackground:Hide()
+	self.ZodiacSign:Hide()
+end
+
+function CharacterSelectButtonPortraitMixin:HideZodiacSign()
+	if self:IsMouseOver() then
+		GlueTooltip:Hide()
+		self.Icon:Show()
+		self.ZodiacBackground:Hide()
+		self.ZodiacSign:Hide()
 	end
 end
 
@@ -1826,6 +1973,7 @@ function CharacterSelectButtonMailMixin:OnEnter()
 
 	GlueTooltip:SetOwner(self)
 	GlueTooltip:SetText(string.format(UNREAD_MAILS, C_CharacterList.GetCharacterMailCount(GetCharIDFromIndex(self.charButton:GetID()))))
+	GlueTooltip:Show()
 end
 
 function CharacterSelectButtonMailMixin:OnLeave()
@@ -1902,7 +2050,7 @@ function CharacterSelectButtonDropDownMenuMixin:UpdateButtons()
 	for index, settings in ipairs(self.buttonSettings) do
 		local skipOption
 		if (index == 1 and C_CharacterList.IsCharacterPendingBoostDK(GetCharIDFromIndex(self.owner:GetID())))
-		or (index == 3 and not (self.owner.level and C_CharacterServices.IsBoostAvailableForLevel(self.owner.level)))
+		or (index == 3 and not (self.owner.level and C_CharacterServices.IsBoostAvailableForLevel(self.owner.level) and not C_CharacterList.IsHardcoreCharacter(GetCharIDFromIndex(self.owner:GetID()))))
 		then
 			skipOption = true
 		end
@@ -1970,7 +2118,7 @@ function CharacterSelectServiceButtonMixin:OnClick()
 	end
 
 	CharacterSelect_CloseDropdowns()
-	CharacterSelectButton_HideMoveButtons(parent)
+	parent:HideMoveButtons()
 	parent.buttonText.Location:Show()
 	parent.buttonText.ItemLevel:Hide()
 end

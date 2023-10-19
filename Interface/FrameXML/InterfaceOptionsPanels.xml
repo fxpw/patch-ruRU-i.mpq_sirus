@@ -46,7 +46,36 @@
 		</Layers>
 	</CheckButton>
 
-	<CheckButton name="InterfaceOptionsCheckAudioTestButtonTemplate" virtual="true" inherits="InterfaceOptionsCheckButtonTemplate">
+	<Frame name="InterfaceOptionsDropDownCustomTemplate" inherits="UIDropDownMenuTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<FontString name="$parentLabel" parentKey="Label" inherits="GameFontNormalSmall">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="16" y="3"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, InterfaceOptionsDropDownMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+		</Scripts>
+	</Frame>
+	<CheckButton name="InterfaceOptionsCheckAudioTestButtonTemplate" inherits="InterfaceOptionsCheckButtonTemplate" virtual="true">
 		<Frames>
 			<Button name="$parentPlaySoundButton" parentKey="PlaySoundButton">
 				<Size x="16" y="16"/>
@@ -504,8 +533,8 @@
 					</OnLoad>
 					<OnEvent>
 						self:UnregisterEvent(event)
-						local race = UnitRace("player")
-						if C_CreatureInfo.GetRaceInfo(race).raceID == E_CHARACTER_RACES.RACE_DRACTHYR then
+						local _, _, raceID = UnitRace("player")
+						if raceID == E_CHARACTER_RACES.RACE_DRACTHYR then
 							self:Show()
 						end
 					</OnEvent>
@@ -4112,9 +4141,38 @@
 			</Layer>
 		</Layers>
 		<Frames>
+			<CheckButton name="$parentFlashClientIcon" inherits="InterfaceOptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentSubText" relativePoint="BOTTOMLEFT" x="-2" y="8"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX
+						self.cvar = "C_CVAR_FLASH_CLIENT_ICON"
+
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelShowToasts, self)
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+
+			<CheckButton name="$parentShowHardcoreBanner" inherits="InterfaceOptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentFlashClientIcon" relativePoint="BOTTOM" x="0" y="-8"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX
+						self.cvar = "C_CVAR_SHOW_HARDCORE_BANNER"
+
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+
 			<CheckButton name="$parentShowToasts" inherits="InterfaceOptionsCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentSubText" relativePoint="BOTTOMLEFT" x="-2" y="-8"/>
+					<Anchor point="TOP" relativeTo="$parentShowHardcoreBanner" relativePoint="BOTTOM" x="0" y="-8"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -4425,6 +4483,100 @@
 				self.name = NOTIFICATION_LABEL;
 				self.options = NotificationPanelOptions;
 				InterfaceOptionsPanel_OnLoad(self);
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<!-- Hardcore panel -->
+	<Frame name="InterfaceOptionsHardcorePanel" hidden="true" parent="InterfaceOptionsFramePanelContainer">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentTitle" text="HARDCORE_LABEL" inherits="GameFontNormalLarge" justifyH="LEFT" justifyV="TOP">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="16" y="-16"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentSubText" text="HARDCORE_SUBTEXT" inherits="GameFontHighlightSmall" nonspacewrap="true" maxLines="3" justifyH="LEFT" justifyV="TOP">
+					<Size y="32" x="0"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT">
+							<Offset x="0" y="-8"/>
+						</Anchor>
+						<Anchor point="RIGHT" x="-32" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentNotificationTypeDropDown" inherits="InterfaceOptionsDropDownCustomTemplate">
+				<Attributes>
+					<Attribute name="width" type="number" value="130"/>
+					<Attribute name="label" type="string" value="HARDCORE_NOTIFICATION_TYPE_OPTION_LABEL"/>
+					<Attribute name="cvar" type="string" value="C_CVAR_SHOW_HARDCORE_NOTIFICATION"/>
+					<Attribute name="initFunction" type="string" value="InterfaceOptionsHardcorePanelNotificationTypeDropDown_Initialize"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentSubText" relativePoint="BOTTOMLEFT" x="-13" y="-2"/>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentNotificationLevelDropDown" inherits="InterfaceOptionsDropDownCustomTemplate">
+				<Attributes>
+					<Attribute name="width" type="number" value="100"/>
+					<Attribute name="label" type="string" value="HARDCORE_NOTIFICATION_LEVEL_OPTION_LABEL"/>
+					<Attribute name="cvar" type="string" value="C_CVAR_SHOW_HARDCORE_NOTIFICATION_LEVEL"/>
+					<Attribute name="initFunction" type="string" value="InterfaceOptionsHardcorePanelNotificationLevelDropDown_Initialize"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentNotificationTypeDropDown" relativePoint="TOPRIGHT" x="5" y="0"/>
+				</Anchors>
+			</Frame>
+			<CheckButton name="$parentNotificationSound" inherits="InterfaceOptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentNotificationTypeDropDown" relativePoint="BOTTOMLEFT" x="15" y="-20"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX
+						self.cvar = "C_CVAR_SHOW_HARDCORE_NOTIFICATION_SOUND"
+
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<Slider name="$parentNotificationScaleSlider" valueStep="0.05" minValue="0.5" maxValue="1.5" inherits="OptionsSliderTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentNotificationSound" relativePoint="RIGHT" x="162" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.Text:SetText(HARDCORE_NOTIFICATION_POPUP_SCALE)
+						self:RegisterEvent("VARIABLES_LOADED")
+					</OnLoad>
+					<OnValueChanged>
+						self.value = value
+						C_CVar:SetValue("C_CVAR_SHOW_HARDCORE_NOTIFICATION_SCALE", tostring(value))
+						HardcoreLossBanner:SetScale(value)
+						if self.userInput then
+							HardcoreLossBanner:TestFrame()
+						end
+					</OnValueChanged>
+					<OnEvent>
+						self.value = tonumber(C_CVar:GetValue("C_CVAR_SHOW_HARDCORE_NOTIFICATION_SCALE")) or 1
+						self:SetValue(self.value)
+					</OnEvent>
+					<OnMouseDown>
+						self.userInput = true
+					</OnMouseDown>
+					<OnMouseUp>
+						self.userInput = nil
+					</OnMouseUp>
+				</Scripts>
+			</Slider>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				self.name = HARDCORE_LABEL;
+				self.options = HardcorePanelOptions;
+				InterfaceOptionsHardcorePanel_OnLoad(self);
 			</OnLoad>
 		</Scripts>
 	</Frame>

@@ -1,3 +1,5 @@
+local COLLECTION_PETDATA = COLLECTION_PETDATA;
+
 local NUM_PET_FILTERS = 2;
 local NUM_PET_TYPES = 10;
 local NUM_PET_SOURCES = 10;
@@ -33,12 +35,22 @@ local COMPANION_INFO = {};
 local PET_INFO_BY_INDEX = {};
 local PET_INFO_BY_PET_ID = {};
 local PET_INFO_BY_ITEM_ID = {};
-local PET_INFO_BY_PET_HASH = {};
+local PET_INFO_BY_SPELL_ID = {};
 local NUM_OWNED_PETS = 0;
 local SUMMONED_PET_ID;
 
-local function GetPetID(creatureID, spellID)
-	return string.format("%s%s", tostring(creatureID), tostring(spellID));
+local function GetPetInfoByCompanionsSpellID(spellID)
+	local petInfo;
+	if spellID == 66096 then
+		if UnitFactionGroup("player") == "Alliance" then
+			petInfo = PET_INFO_BY_ITEM_ID[46820];
+		else
+			petInfo = PET_INFO_BY_ITEM_ID[46821];
+		end
+	else
+		petInfo = PET_INFO_BY_SPELL_ID[spellID];
+	end
+	return petInfo;
 end
 
 local function UpdateCompanionInfo()
@@ -46,18 +58,16 @@ local function UpdateCompanionInfo()
 
 	local foundActive;
 	for index = 1, GetNumCompanions("CRITTER") do
-		local creatureID, _, spellID, _, active = GetCompanionInfo("CRITTER", index);
-		local petID = GetPetID(creatureID, spellID);
+		local _, _, spellID, _, active = GetCompanionInfo("CRITTER", index);
+		local petInfo = GetPetInfoByCompanionsSpellID(spellID);
 
-		COMPANION_INFO[petID] = index;
+		if petInfo then
+			COMPANION_INFO[petInfo.hash] = index;
 
-		if active and not foundActive then
-			SUMMONED_PET_ID = petID;
-			foundActive = true;
-		end
-
-		if PET_INFO_BY_PET_ID[petID] then
-			PET_INFO_BY_PET_ID[petID].petIndex = index;
+			if active and not foundActive then
+				SUMMONED_PET_ID = petInfo.hash;
+				foundActive = true;
+			end
 		end
 	end
 
@@ -72,25 +82,28 @@ local SORT_PARAMETERS = {
 }
 
 local function SortedPetJornal(a, b)
-	if a.isOwned and not b.isOwned then
+	local aPetInfo = COLLECTION_PETDATA[a];
+	local bPetInfo = COLLECTION_PETDATA[b];
+
+	if COMPANION_INFO[aPetInfo.hash] and not COMPANION_INFO[bPetInfo.hash] then
 		return true;
 	end
 
-	if not a.isOwned and b.isOwned then
+	if not COMPANION_INFO[aPetInfo.hash] and COMPANION_INFO[bPetInfo.hash] then
 		return false;
 	end
 
-	if a.isOwned and b.isOwned then
-		if a.isFavorite and not b.isFavorite then
+	if COMPANION_INFO[aPetInfo.hash] and COMPANION_INFO[bPetInfo.hash] then
+		if SIRUS_COLLECTION_FAVORITE_PET[aPetInfo.hash] and not SIRUS_COLLECTION_FAVORITE_PET[bPetInfo.hash] then
 			return true;
 		end
-		if not a.isFavorite and b.isFavorite then
+		if not SIRUS_COLLECTION_FAVORITE_PET[aPetInfo.hash] and SIRUS_COLLECTION_FAVORITE_PET[bPetInfo.hash] then
 			return false;
 		end
 	end
 
-	local c = a[SORT_PARAMETERS[PET_SORT_PARAMETER]] or "";
-	local d = b[SORT_PARAMETERS[PET_SORT_PARAMETER]] or "";
+	local c = aPetInfo[SORT_PARAMETERS[PET_SORT_PARAMETER]] or "";
+	local d = bPetInfo[SORT_PARAMETERS[PET_SORT_PARAMETER]] or "";
 
 	return c < d;
 end
@@ -127,7 +140,6 @@ local function FilteredPetJornal()
 
 	for i = 1, #COLLECTION_PETDATA do
 		local data = COLLECTION_PETDATA[i];
-		local petID = GetPetID(data.creatureID, data.spellID);
 
 		local _, name, icon;
 		local petInfoByItemID = PET_INFO_BY_ITEM_ID[data.itemID];
@@ -137,58 +149,90 @@ local function FilteredPetJornal()
 			name, _, icon = GetSpellInfo(data.spellID);
 		end
 
-		local petIndex = COMPANION_INFO[petID];
+		local petIndex = COMPANION_INFO[data.hash];
 		local isOwned = petIndex and true or false;
-		local isFavorite = SIRUS_COLLECTION_FAVORITE_PET[data.hash] and true or false;
 		local product = CUSTOM_ROLLED_ITEMS_IN_SHOP[data.hash];
 		local currency = product and product.currency or data.currency;
-		local sourceType = currency and currency ~= 0 and data.lootType ~= 15 and 7 or (SOURCE_TYPES[data.lootType] or 1);
-		local sourceFlag = (product or data.lootType ~= 0) and bit.lshift(1, sourceType - 1) or 0;
+		local sourceType;
 		if data.holidayText ~= "" then
-			sourceFlag = bit.bor(sourceFlag, bit.lshift(1, 6 - 1));
+			sourceType = 6;
+		elseif currency and currency ~= 0 and data.lootType ~= 15 then
+			sourceType = 7;
+		elseif data.lootType == 0 and data.shopCategory == 3 then
+			sourceType = 7;
+		else
+			sourceType = SOURCE_TYPES[data.lootType] or 1;
 		end
+		local sourceFlag = ((product or sourceType == 7) or data.lootType ~= 0) and bit.lshift(1, sourceType - 1) or 0;
 
 		if isOwned then
 			NUM_OWNED_PETS = NUM_OWNED_PETS + 1;
 		end
 
 		if PetMathesFilter(isOwned, data.subCategoryID, sourceFiltersFlag == 0 or bit.band(sourceFiltersFlag, sourceFlag) ~= sourceFlag, data.expansion or 0, name or "") then
-			PET_INFO_BY_INDEX[#PET_INFO_BY_INDEX + 1] = {
-				hash = data.hash,
-				petID = petID,
-				petIndex = petIndex,
-				isOwned = isOwned,
-				isFavorite = isFavorite,
-				name = name,
-				icon = icon,
-				subCategoryID = data.subCategoryID,
-				spellID = data.spellID,
-			};
+			PET_INFO_BY_INDEX[#PET_INFO_BY_INDEX + 1] = i;
 		end
 	end
 
 	table.sort(PET_INFO_BY_INDEX, SortedPetJornal);
 
-	FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.PET_JOURNAL_LIST_UPDATE);
+	FireCustomClientEvent("PET_JOURNAL_LIST_UPDATE");
 end
 
 local function InitPetInfo()
-	for i = 1, #COLLECTION_PETDATA do
+	for i = #COLLECTION_PETDATA, 1, -1 do
 		local data = COLLECTION_PETDATA[i];
-		local petID = GetPetID(data.creatureID, data.spellID);
 		local name, _, icon = GetSpellInfo(data.spellID);
 
-		data.petID = petID;
 		data.name = name;
 		data.icon = icon;
 
-		PET_INFO_BY_PET_ID[petID] = data;
+		PET_INFO_BY_PET_ID[data.hash] = data;
 		PET_INFO_BY_ITEM_ID[data.itemID] = data;
-		PET_INFO_BY_PET_HASH[data.hash] = data;
+		PET_INFO_BY_SPELL_ID[data.spellID] = data;
 	end
 
 	UpdateCompanionInfo();
 	FilteredPetJornal();
+end
+
+local function GetPetInfo(infoTable, value)
+	local petInfo = infoTable[value];
+	if petInfo then
+		local _, active, isFavorite, isCollected, currency, price, productID, priceText = nil, false, false, false, nil, nil, nil, nil;
+		if COMPANION_INFO[petInfo.hash] then
+			_, _, _, _, active = GetCompanionInfo("MOUNT", COMPANION_INFO[petInfo.hash]);
+			isCollected = true;
+		end
+		local product = CUSTOM_ROLLED_ITEMS_IN_SHOP[petInfo.hash];
+		if product then
+			currency = product.currency;
+			price = product.price;
+			productID = product.productID;
+		else
+			currency = petInfo.currency;
+			price = petInfo.price;
+		end
+		local sourceType = petInfo.holidayText ~= "" and 6 or (currency and currency ~= 0 and petInfo.lootType ~= 15 and 7 or (SOURCE_TYPES[petInfo.lootType] or 1));
+		if SIRUS_COLLECTION_FAVORITE_PET[petInfo.hash] then
+			isFavorite = true;
+		end
+		if petInfo.factionSide == 2 then
+			priceText = petInfo.priceText:gsub("-Team.", "-Horde.");
+		elseif petInfo.factionSide == 1 then
+			isFactionSpecific = true;
+			faction = 1;
+			priceText = petInfo.priceText:gsub("-Team.", "-Alliance.");
+		else
+			local factionGroup = UnitFactionGroup("player");
+			priceText = petInfo.priceText:gsub("-Team.", "-"..factionGroup..".");
+		end
+
+		return petInfo.name, petInfo.spellID, petInfo.icon, petInfo.subCategoryID, active, sourceType, isFavorite,
+			isCollected, petInfo.hash,
+			petInfo.creatureID, petInfo.itemID, currency, price, productID,
+			priceText or "", petInfo.descriptionText or "", petInfo.holidayText or "";
+	end
 end
 
 local frame = CreateFrame("Frame");
@@ -444,45 +488,27 @@ function C_PetJournal.SetAllPetExpansionsChecked(checked)
 	FilteredPetJornal();
 end
 
-function C_PetJournal.GetPetInfoByIndex(index)
-	local petInfo = PET_INFO_BY_INDEX[index] or {};
-	local hash = petInfo.hash
-	local isFavorite = hash and SIRUS_COLLECTION_FAVORITE_PET[hash];
-	return hash, petInfo.petID, COMPANION_INFO[petInfo.petID], petInfo.isOwned, isFavorite, petInfo.name, petInfo.icon, petInfo.subCategoryID, petInfo.spellID;
+function C_PetJournal.GetPetCompanionIndex(petID)
+	return COMPANION_INFO[petID];
 end
 
-function C_PetJournal.GetPetInfoByItemID(itemID)
-	local petInfo = PET_INFO_BY_ITEM_ID[itemID];
-	if petInfo then
-		local isFavorite = SIRUS_COLLECTION_FAVORITE_PET[petInfo.hash];
-		local product = CUSTOM_ROLLED_ITEMS_IN_SHOP[petInfo.hash];
-		local price = product and product.price or petInfo.price;
-		local currency = product and product.currency or petInfo.currency;
-		return isFavorite, petInfo.petID, petInfo.name, petInfo.icon, petInfo.subCategoryID, petInfo.lootType, currency, price, petInfo.creatureID, petInfo.spellID, petInfo.itemID, petInfo.priceText, petInfo.descriptionText, petInfo.holidayText;
+function C_PetJournal.GetPetInfoByIndex(index)
+	local petIndex = PET_INFO_BY_INDEX[index];
+	if petIndex then
+		return GetPetInfo(COLLECTION_PETDATA, petIndex);
 	end
 end
 
 function C_PetJournal.GetPetInfoByPetID(petID)
-	local petInfo = PET_INFO_BY_PET_ID[petID];
-	if petInfo then
-		local isFavorite = SIRUS_COLLECTION_FAVORITE_PET[petInfo.hash];
-		local product = CUSTOM_ROLLED_ITEMS_IN_SHOP[petInfo.hash];
-		local currency = product and product.currency or petInfo.currency;
-		local price = product and product.price or petInfo.price;
-		return petInfo.hash, COMPANION_INFO[petInfo.petID], isFavorite, petInfo.name, petInfo.icon, petInfo.subCategoryID, petInfo.lootType, currency, price, petInfo.creatureID, petInfo.spellID, petInfo.itemID, petInfo.priceText, petInfo.descriptionText, petInfo.holidayText;
-	end
+	return GetPetInfo(PET_INFO_BY_PET_ID, petID);
 end
 
-function C_PetJournal.GetPetInfoByPetHash(hash)
-	local petInfo = PET_INFO_BY_PET_HASH[hash];
-	if petInfo then
-		local isFavorite = hash and SIRUS_COLLECTION_FAVORITE_PET[hash];
-		local product = CUSTOM_ROLLED_ITEMS_IN_SHOP[hash];
-		local currency = product and product.currency or petInfo.currency;
-		local price = product and product.price or petInfo.price;
-		local productID = product and petInfo.productID;
-		return COMPANION_INFO[petInfo.petID], isFavorite, petInfo.name, petInfo.icon, petInfo.subCategoryID, petInfo.lootType, currency, price, productID, petInfo.creatureID, petInfo.spellID, petInfo.itemID, petInfo.priceText, petInfo.descriptionText, petInfo.holidayText;
-	end
+function C_PetJournal.GetPetInfoByItemID(itemID)
+	return GetPetInfo(PET_INFO_BY_ITEM_ID, itemID);
+end
+
+function C_PetJournal.GetPetInfoBySpellID(spellID)
+	return GetPetInfo(PET_INFO_BY_SPELL_ID, spellID);
 end
 
 function C_PetJournal.GetSummonedPetID()
@@ -492,7 +518,7 @@ end
 function C_PetJournal.PetIsSummonable(petID)
 	local petInfo = PET_INFO_BY_PET_ID[petID];
 	if petInfo then
-		local isSummonable = COMPANION_INFO[petInfo.petID] and true or false;
+		local isSummonable = COMPANION_INFO[petID] and true or false;
 		if petInfo.factionSide ~= 0 and petInfo.factionSide ~= 4 then
 			local factionGroup = UnitFactionGroup("player");
 			local factionFlag = factionGroup and FACTION_FLAGS[factionGroup];
@@ -507,7 +533,7 @@ end
 function C_PetJournal.GetPetSummonInfo(petID)
 	local petInfo = PET_INFO_BY_PET_ID[petID];
 	if petInfo then
-		local isSummonable, errorType, errorText = COMPANION_INFO[petInfo.petID] and true or false, 0;
+		local isSummonable, errorType, errorText = COMPANION_INFO[petID] and true or false, 0;
 		if petInfo.factionSide ~= 0 and petInfo.factionSide ~= 4 then
 			local factionGroup = UnitFactionGroup("player");
 			local factionFlag = factionGroup and FACTION_FLAGS[factionGroup];
@@ -520,10 +546,11 @@ function C_PetJournal.GetPetSummonInfo(petID)
 end
 
 function C_PetJournal.SummonPetByPetID(petID)
-	local petIndex = PET_INFO_BY_PET_ID[petID] and COMPANION_INFO[PET_INFO_BY_PET_ID[petID].petID];
+	local petIndex = COMPANION_INFO[petID];
 	if petIndex then
-		local creatureID, _, spellID = GetCompanionInfo("CRITTER", petIndex);
-		if SUMMONED_PET_ID == GetPetID(creatureID, spellID) then
+		local _, _, spellID = GetCompanionInfo("CRITTER", petIndex);
+		local petInfo = GetPetInfoByCompanionsSpellID(spellID);
+		if petInfo and SUMMONED_PET_ID == petInfo.hash then
 			DismissCompanion("CRITTER");
 		else
 			CallCompanion("CRITTER", petIndex);
@@ -532,20 +559,14 @@ function C_PetJournal.SummonPetByPetID(petID)
 end
 
 function C_PetJournal.PetIsFavorite(petID)
-	local hash = PET_INFO_BY_PET_ID[petID] and PET_INFO_BY_PET_ID[petID].hash;
-	if hash then
-		return SIRUS_COLLECTION_FAVORITE_PET[hash];
-	end
+	return SIRUS_COLLECTION_FAVORITE_PET[petID];
 end
 
 function C_PetJournal.SetFavorite(petID, isFavorite)
-	local hash = PET_INFO_BY_PET_ID[petID] and PET_INFO_BY_PET_ID[petID].hash;
-	if hash then
-		if isFavorite then
-			SendServerMessage("ACMSG_C_A_F", string.format("%d|%s", CHAR_COLLECTION_PET, hash));
-		else
-			SendServerMessage("ACMSG_C_R_F", string.format("%d|%s", CHAR_COLLECTION_PET, hash));
-		end
+	if isFavorite then
+		SendServerMessage("ACMSG_C_A_F", string.format("%d|%s", CHAR_COLLECTION_PET, petID));
+	else
+		SendServerMessage("ACMSG_C_R_F", string.format("%d|%s", CHAR_COLLECTION_PET, petID));
 	end
 end
 
@@ -631,11 +652,10 @@ function EventHandler:ASMSG_C_A_F(msg)
 		SIRUS_COLLECTION_FAVORITE_PET[item] = true;
 
 		FilteredPetJornal();
-		PetJournal_UpdatePetList();
 	elseif collectionType == CHAR_COLLECTION_APPEARANCE then
 		SIRUS_COLLECTION_FAVORITE_APPEARANCES[tonumber(item)] = true;
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOG_COLLECTION_UPDATED);
+		FireCustomClientEvent("TRANSMOG_COLLECTION_UPDATED");
 	elseif collectionType == CHAR_COLLECTION_TOY then
 		SIRUS_COLLECTION_FAVORITE_TOY[item] = true;
 
@@ -655,11 +675,10 @@ function EventHandler:ASMSG_C_R_F(msg)
 		SIRUS_COLLECTION_FAVORITE_PET[item] = nil;
 
 		FilteredPetJornal();
-		PetJournal_UpdatePetList();
 	elseif collectionType == CHAR_COLLECTION_APPEARANCE then
 		SIRUS_COLLECTION_FAVORITE_APPEARANCES[tonumber(item)] = nil;
 
-		FireCustomClientEvent(E_CLIEN_CUSTOM_EVENTS.TRANSMOG_COLLECTION_UPDATED);
+		FireCustomClientEvent("TRANSMOG_COLLECTION_UPDATED");
 	elseif collectionType == CHAR_COLLECTION_TOY then
 		SIRUS_COLLECTION_FAVORITE_TOY[item] = nil;
 

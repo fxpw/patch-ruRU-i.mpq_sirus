@@ -48,7 +48,28 @@ C_Cache = setmetatable({
 						return value
 					end
 				end
-			end
+			end,
+			Clear = function(this, key, isGlobal)
+				local itemKey = itemKey(isGlobal)
+				local items = _G[cacheKey]
+				if items[itemKey] then
+					if key then
+						if items[itemKey][key] then
+							items[itemKey][key] = nil
+						end
+					else
+						table.wipe(items[itemKey])
+					end
+				end
+			end,
+			ClearAll = function(this)
+				table.wipe(_G[cacheKey])
+			end,
+			GetRaw = function(this, isGlobal)
+				local itemKey = itemKey(isGlobal)
+				local items = _G[cacheKey]
+				return items[itemKey]
+			end,
 		}, {
 			__index = function(this, key)
 				return rawget(this, "Get")(this, key)

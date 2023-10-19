@@ -44,12 +44,23 @@
 					</OnClick>
 				</Scripts>
 			</Button>
-			<Button name="GameMenuButtonStore" inherits="GameMenuButtonTemplate" text="GAMEMENU_BUTTON_STORE">
+			<Button name="GameMenuButtonStore" inherits="GameMenuButtonTemplate,UIPanelButtonChallengeStateHandlerTemplate" text="GAMEMENU_BUTTON_STORE">
+				<Attributes>
+					<Attribute name="featureFlag" type="string" value="0x0000800"/>
+				</Attributes>
 				<Anchors>
 					<Anchor point="TOP" relativeTo="GameMenuButtonHelp" relativePoint="BOTTOM" x="0" y="-1"/>
 				</Anchors>
 				<Scripts>
 					<OnClick function="ToggleStoreFrame"/>
+					<OnEnter>
+						if C_Hardcore.IsFeatureAvailable(Enum.Hardcore.Features.GAME_SHOP) then
+							GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+							GameTooltip_AddErrorLine(GameTooltip, string.format(HARDCORE_FEATURE_12_DISABLE, C_Hardcore.GetChallengeInfoByID(C_Hardcore.GetActiveChallengeID()) or "", true))
+							GameTooltip:Show()
+						end
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
 				</Scripts>
 			</Button>
 			<Button name="GameMenuButtonPromoCodes" inherits="GameMenuButtonTemplate" text="GAMEMENU_BUTTON_PROMOCODES">

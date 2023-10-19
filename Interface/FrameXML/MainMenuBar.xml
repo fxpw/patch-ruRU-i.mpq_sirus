@@ -141,7 +141,7 @@
 						if ( GetCVar("xpBarText") == "1" ) then
 							TextStatusBar_UpdateTextString(self);
 						end
-					</OnShow>					
+					</OnShow>
 					<OnEnter>
 						TextStatusBar_UpdateTextString(self);
 						ShowTextStatusBarText(self);
@@ -343,10 +343,8 @@
 				<Scripts>
 					<OnLoad function="MainMenuBarVehicleLeaveButton_OnLoad"/>
 					<OnEvent function="MainMenuBarVehicleLeaveButton_OnEvent"/>
-					<OnClick function="VehicleExit"/>
-					<OnEnter>
-						GameTooltip_AddNewbieTip(self, LEAVE_VEHICLE, 1.0, 1.0, 1.0, nil);
-					</OnEnter>
+					<OnClick function="MainMenuBarVehicleLeaveButton_OnClicked"/>
+					<OnEnter function="MainMenuBarVehicleLeaveButton_OnEnter"/>
 					<OnLeave function="GameTooltip_Hide"/>
 				</Scripts>
 				<NormalTexture file="Interface\Vehicles\UI-Vehicles-Button-Exit-Up">

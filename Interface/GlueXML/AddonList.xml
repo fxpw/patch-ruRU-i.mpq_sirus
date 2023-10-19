@@ -52,6 +52,7 @@
 						if ( self.tooltip ) then
 							GlueTooltip:SetOwner(self)
 							GlueTooltip:SetText(self.tooltip)
+							GlueTooltip:Show()
 						end
 					</OnEnter>
 					<OnLeave>
@@ -73,6 +74,7 @@
 					<OnEnter>
 						GlueTooltip:SetOwner(self)
 						GlueTooltip:SetText(ADDON_CLICK_TO_OPEN_UPDATE_PAGE)
+						GlueTooltip:Show()
 					</OnEnter>
 					<OnLeave>
 						GlueTooltip:Hide()

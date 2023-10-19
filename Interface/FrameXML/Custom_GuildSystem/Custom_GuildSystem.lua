@@ -58,7 +58,7 @@ StaticPopupDialogs["GUILD_REWARDS_CONFIRM_BUY"] = {
 	button1 = BUY,
 	button2 = CANCEL,
 	OnAccept = function(self, data)
-		SendAddonMessage("ACMSG_GUILD_GET_REPUTATION_REWARD", data.itemID, "WHISPER", UnitName("player"))
+		SendServerMessage("ACMSG_GUILD_GET_REPUTATION_REWARD", data.itemID)
 	end,
 	OnShow = function(self, data)
 		MoneyFrame_Update(self.moneyFrame, data.moneyCost)
@@ -150,6 +150,20 @@ function GetGuildChallengeInfo( index )
 	end
 
 	return nil
+end
+
+local function GetClassFile(localizedClassName)
+	for classfile, localizedClassNameM in pairs(LOCALIZED_CLASS_NAMES_MALE) do
+		if localizedClassNameM == localizedClassName then
+			return classfile
+		end
+	end
+
+	for classfile, localizedClassNameF in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
+		if localizedClassNameF == localizedClassName then
+			return classfile
+		end
+	end
 end
 
 local TradeSkillbuffer = {}
@@ -337,8 +351,8 @@ function GuildFrame_OnEvent( self, event, ... )
 		GuildInfoMOTD:SetText(..., true)
 	elseif event == "PLAYER_LOGIN" then
 		if IsInGuild() then
-			SendAddonMessage("ACMSG_GUILD_EMBLEM_REQUEST", nil, "WHISPER", UnitName("player"))
-			SendAddonMessage("ACMSG_GUILD_ILVLS_REQUEST", nil, "WHISPER", UnitName("player"))
+			SendServerMessage("ACMSG_GUILD_EMBLEM_REQUEST")
+			SendServerMessage("ACMSG_GUILD_ILVLS_REQUEST")
 		end
 	end
 end
@@ -972,25 +986,11 @@ function GuildRoster_Update()
 			local name, rank, rankIndex, level, class, zone, note, officernote, online, categoryID, _, lastOnline = unpack(GUILD_MEMBER_INFO_DATA[index])
 			button.guildIndex = index
 			local displayedName = name
-			local classFile = "PRIEST"
+			local classFile = GetClassFile(class) or "PRIEST"
 			button.online = online
 			button.name = name
 
 			button.header:Hide()
-
-			for classfileMale, classlocaleMale in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-				if classfileMale and classlocaleMale == class then
-					classFile = classfileMale
-					break
-				end
-			end
-
-			for classfileFemale, classlocaleFemale in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
-				if classfileFemale and classlocaleFemale == class then
-					classFile = classfileFemale
-					break
-				end
-			end
 
 			if ( currentGuildView == "playerStatus" ) then
 				GuildRosterButton_SetStringText(button.string1, level, online)
@@ -1985,7 +1985,7 @@ function GuildRecruitmentDropDown_OnClick(button, action)
 	elseif ( action == "addfriend" ) then
 		AddOrRemoveFriend(name);
 	elseif ( action == "url" ) then
-		StaticPopup_Show("LOOKING_FOR_GUILD_URL", GUILD_RECRUITMENT_URL_TEXT, nil, string.format("https://sirus.su/base/character/%d/%d", C_Service:GetRealmID(), guid or 0));
+		StaticPopup_Show("LOOKING_FOR_GUILD_URL", GUILD_RECRUITMENT_URL_TEXT, nil, string.format("https://sirus.su/base/character/%d/%d", C_Service.GetRealmID(), guid or 0));
 	elseif ( action == "decline" ) then
 		DeclineGuildApplicant(GuildRecruitmentDropDown.index);
 	end

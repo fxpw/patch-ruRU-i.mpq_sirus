@@ -1,5 +1,5 @@
-local Texture, FontString, DressUpModel, TabardModel
-local Frame = getmetatable(CreateFrame("Frame"))
+local FrameObj = CreateFrame("Frame")
+local Frame = getmetatable(FrameObj)
 local Button = getmetatable(CreateFrame("Button"))
 local Slider = getmetatable(CreateFrame("Slider"))
 local StatusBar = getmetatable(CreateFrame("StatusBar"))
@@ -7,42 +7,27 @@ local SimpleHTML = getmetatable(CreateFrame("SimpleHTML"))
 local ScrollFrame = getmetatable(CreateFrame("ScrollFrame"))
 local CheckButton = getmetatable(CreateFrame("CheckButton"))
 local Model = getmetatable(CreateFrame("Model"))
+local GameTooltip, PlayerModel, DressUpModel, TabardModel
 
 local EditBox = CreateFrame("EditBox")
 EditBox:Hide()
 EditBox = getmetatable(EditBox)
 
-if WorldFrame then
+if not IsOnGlueScreen() then
+	GameTooltip = getmetatable(CreateFrame("GameTooltip"))
+	PlayerModel = getmetatable(CreateFrame("PlayerModel"))
 	DressUpModel = getmetatable(CreateFrame("DressUpModel"))
 	TabardModel = getmetatable(CreateFrame("TabardModel"))
 end
+
+local Texture = getmetatable(FrameObj:CreateTexture())
+local FontString = getmetatable(FrameObj:CreateFontString())
 
 -- local Cooldown = getmetatable(CreateFrame("Cooldown"))
 -- local ColorSelect = getmetatable(CreateFrame("ColorSelect"))
 -- local MessageFrame = getmetatable(CreateFrame("MessageFrame"))
 -- local Model = getmetatable(CreateFrame("Model"))
 -- local Minimap = getmetatable(CreateFrame("Minimap"))
--- local EditBox = getmetatable(CreateFrame("editBox"))
-
-local FrameData = {
-	CreateFrame("Frame"),
-	CreateFrame("Button"),
-	-- CreateFrame("GameTooltip"),
-	CreateFrame("SimpleHTML"),
-	CreateFrame("Slider"),
-	CreateFrame("StatusBar"),
-	CreateFrame("ScrollFrame"),
-	CreateFrame("CheckButton"),
-}
-
-function InitSubFrame()
-	for _, v in pairs(FrameData) do
-		Texture = getmetatable(v:CreateTexture())
-		FontString = getmetatable(v:CreateFontString())
-	end
-end
-
-InitSubFrame()
 
 local function nop() end
 
@@ -185,12 +170,19 @@ local CONST_ATLAS_TILESHORIZ	= 7
 local CONST_ATLAS_TILESVERT		= 8
 local CONST_ATLAS_TEXTUREPATH	= 9
 
+local S_ATLAS_STORAGE = S_ATLAS_STORAGE
+
 local function Method_SetAtlas( self, atlasName, useAtlasSize, filterMode )
-	assert(self, "SetAtlas: not found object")
-	assert(atlasName, "SetAtlas: AtlasName must be specified")
-	assert(S_ATLAS_STORAGE[atlasName], "SetAtlas: Atlas named "..atlasName.." does not exist")
+	if type(self) ~= "table" then
+		error("Attempt to find 'this' in non-table object (used '.' instead of ':' ?)", 3)
+	elseif type(atlasName) ~= "string" then
+		error(string.format("Usage: %s:SetAtlas(\"atlasName\"[, useAtlasSize])", self:GetName() or tostring(self)), 3)
+	end
 
 	local atlas = S_ATLAS_STORAGE[atlasName]
+	if not atlas then
+		error(string.format("%s:SetAtlas: Atlas %s does not exist", self:GetName() or tostring(self), atlasName), 3)
+	end
 
 	self:SetTexture(atlas[CONST_ATLAS_TEXTUREPATH] or "", atlas[CONST_ATLAS_TILESHORIZ], atlas[CONST_ATLAS_TILESVERT])
 
@@ -310,24 +302,15 @@ function Method_EditBox_Disable(self)
 	self.__ext_Disabled = true
 end
 
-REGISTERED_CUSTOM_EVENTS = {}
+local RegisterCustomEvent = RegisterCustomEvent
+local UnregisterCustomEvent = UnregisterCustomEvent
 
 function Method_RegisterCustomEvent(self, event)
-	if not REGISTERED_CUSTOM_EVENTS[event] then
-		REGISTERED_CUSTOM_EVENTS[event] = {}
-	end
-
-	REGISTERED_CUSTOM_EVENTS[event][self] = 1
+	RegisterCustomEvent(self, event)
 end
 
 function Method_UnregisterCustomEvent(self, event)
-	if REGISTERED_CUSTOM_EVENTS[event] then
-		REGISTERED_CUSTOM_EVENTS[event][self] = nil
-
-		if not next(REGISTERED_CUSTOM_EVENTS[event]) then
-			REGISTERED_CUSTOM_EVENTS[event] = nil;
-		end
-	end
+	UnregisterCustomEvent(self, event)
 end
 
 function Method_IsTruncated(fontString)
@@ -379,6 +362,15 @@ local function Method_SetHighlightAtlas(self, atlasName, useAtlasSize, filterMod
 	if not texture then
 		self:SetHighlightTexture("")
 		texture = self:GetHighlightTexture()
+	end
+	Method_SetAtlas(texture, atlasName, useAtlasSize, filterMode)
+end
+
+local function Method_SetCheckedAtlas(self, atlasName, useAtlasSize, filterMode)
+	local texture = self:GetCheckedTexture()
+	if not texture then
+		self:SetCheckedTexture("")
+		texture = self:GetCheckedTexture()
 	end
 	Method_SetAtlas(texture, atlasName, useAtlasSize, filterMode)
 end
@@ -487,6 +479,7 @@ function CheckButton.__index:SetNormalAtlas(atlasName, useAtlasSize, filterMode)
 function CheckButton.__index:SetPushedAtlas(atlasName, useAtlasSize, filterMode) Method_SetPushedAtlas(self, atlasName, useAtlasSize, filterMode) end
 function CheckButton.__index:SetDisabledAtlas(atlasName, useAtlasSize, filterMode) Method_SetDisabledAtlas(self, atlasName, useAtlasSize, filterMode) end
 function CheckButton.__index:SetHighlightAtlas(atlasName, useAtlasSize, filterMode) Method_SetHighlightAtlas(self, atlasName, useAtlasSize, filterMode) end
+function CheckButton.__index:SetCheckedAtlas(atlasName, useAtlasSize, filterMode) Method_SetCheckedAtlas(self, atlasName, useAtlasSize, filterMode) end
 function CheckButton.__index:ClearClearNormalTexture() Method_ClearNormalTexture(self) end
 function CheckButton.__index:ClearPushedTexture() Method_ClearPushedTexture(self) end
 function CheckButton.__index:ClearDisabledTexture() Method_ClearDisabledTexture(self) end
@@ -495,28 +488,6 @@ function CheckButton.__index:GetScaledRect() return Method_GetScaledRect(self) e
 function CheckButton.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
 function CheckButton.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
 function CheckButton.__index:SetDisabled( ... ) Method_SetDisabled( self, ... ) end
-
--- DressUpModel
-if DressUpModel then
-	DressUpModel.__index.__SetUnit = DressUpModel.__index.__SetUnit or DressUpModel.__index.SetUnit
-	function DressUpModel.__index:SetUnit( ... ) Method_SetUnit( self, ... ) end
-	function DressUpModel.__index:SetParentArray( arrayName, element, setInSelf ) Method_SetParentArray( self, arrayName, element, setInSelf ) end
-	function DressUpModel.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
-	function DressUpModel.__index:GetScaledRect() return Method_GetScaledRect(self) end
-	function DressUpModel.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
-	function DressUpModel.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
-end
-
--- TabardModel
-if TabardModel then
-	TabardModel.__index.__SetUnit = TabardModel.__index.__SetUnit or TabardModel.__index.SetUnit
-	function TabardModel.__index:SetUnit( ... ) Method_SetUnit( self, ... ) end
-	function TabardModel.__index:SetParentArray( arrayName, element, setInSelf ) Method_SetParentArray( self, arrayName, element, setInSelf ) end
-	function TabardModel.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
-	function TabardModel.__index:GetScaledRect() return Method_GetScaledRect(self) end
-	function TabardModel.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
-	function TabardModel.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
-end
 
 -- Model
 function Model.__index:SetShown( ... ) Method_SetShown( self, ... ) end
@@ -536,11 +507,8 @@ function EditBox.__index:GetScaledRect() return Method_GetScaledRect(self) end
 function EditBox.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
 function EditBox.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
 
--- GameTooltip Method
-if WorldFrame then
-	local GameTooltip = getmetatable(CreateFrame("GameTooltip"))
-	local PlayerModel = getmetatable(CreateFrame("PlayerModel"))
-
+if not IsOnGlueScreen() then
+	-- GameTooltip Method
 	function GameTooltip.__index:SetTransmogrifyItem(transmogID, hasPending, hasUndo) Method_SetTransmogrifyItem(self, transmogID, hasPending, hasUndo) end
 	function GameTooltip.__index:GetScaledRect() return Method_GetScaledRect(self) end
 	function GameTooltip.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
@@ -553,4 +521,22 @@ if WorldFrame then
 	function PlayerModel.__index:GetScaledRect() return Method_GetScaledRect(self) end
 	function PlayerModel.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
 	function PlayerModel.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
+
+	-- DressUpModel
+	DressUpModel.__index.__SetUnit = DressUpModel.__index.__SetUnit or DressUpModel.__index.SetUnit
+	function DressUpModel.__index:SetUnit( ... ) Method_SetUnit( self, ... ) end
+	function DressUpModel.__index:SetParentArray( arrayName, element, setInSelf ) Method_SetParentArray( self, arrayName, element, setInSelf ) end
+	function DressUpModel.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
+	function DressUpModel.__index:GetScaledRect() return Method_GetScaledRect(self) end
+	function DressUpModel.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
+	function DressUpModel.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
+
+	-- TabardModel
+	TabardModel.__index.__SetUnit = TabardModel.__index.__SetUnit or TabardModel.__index.SetUnit
+	function TabardModel.__index:SetUnit( ... ) Method_SetUnit( self, ... ) end
+	function TabardModel.__index:SetParentArray( arrayName, element, setInSelf ) Method_SetParentArray( self, arrayName, element, setInSelf ) end
+	function TabardModel.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
+	function TabardModel.__index:GetScaledRect() return Method_GetScaledRect(self) end
+	function TabardModel.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
+	function TabardModel.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
 end

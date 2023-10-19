@@ -245,16 +245,29 @@ function HeadHuntingMixin:OnLoad()
 
     NavBar_Initialize(self.navBar, "NavButtonTemplate", self.panels[1].navBarData, self.navBar.home, self.navBar.overflow)
 
-    self.tab1:SetFrameLevel(1)
-    self.tab2:SetFrameLevel(1)
+	self.tab1:SetFrameLevel(1)
+	self.tab2:SetFrameLevel(1)
+	self.tab3:SetFrameLevel(1)
 
-    PanelTemplates_SetNumTabs(self, 2)
-    self.maxTabWidth = (self:GetWidth() - 19) / 2
+	self.maxTabWidth = (self:GetWidth() - 19) / 3
+
+	PanelTemplates_SetNumTabs(self, 3)
 
     self:SetFilterFlags(bit.bor(HEADHUNTING_FILTER_VALUE.ALL_ONLINE, HEADHUNTING_FILTER_VALUE.WITH_AND_WITHOUT_GUILD_CONTRACTS))
 
     self:SelectedTab(E_HEADHUNTING_TAB.HOME)
     self:SetSelectedCategory(E_HEADHUNTING_CATEGORY.REWARD_FOR_HEAD)
+
+	self:RegisterCustomEvent("SERVICE_DATA_UPDATE")
+	self:RegisterCustomEvent("CUSTOM_CHALLENGE_DEACTIVATED")
+end
+
+function HeadHuntingMixin:OnEvent(event, ...)
+	if event == "SERVICE_DATA_UPDATE"
+	or (event == "CUSTOM_CHALLENGE_DEACTIVATED" and select(2, ...) == Enum.HardcoreDeathReason.RESTORE)
+	then
+		self:UpdateTabs()
+	end
 end
 
 function HeadHuntingMixin:OnShow()
@@ -269,6 +282,16 @@ function HeadHuntingMixin:OnHide()
     self.Container.YouTargetsPanel.SetRewardFrame:Hide()
     self:CloaseAllPopup()
     StaticPopup_Hide("HEADHUNTING_REMOVE_CONTRACT")
+end
+
+function HeadHuntingMixin:UpdateTabs()
+	if not C_Service.IsRenegadeRealm() then
+		PanelTemplates_HideTab(self, 2)
+		HeadHuntingFrameTab3:SetPoint("LEFT", HeadHuntingFrameTab1, "RIGHT", -16, 0);
+	end
+	if not C_Service.IsHardcoreEnabledOnRealm() then
+		PanelTemplates_HideTab(self, 3)
+	end
 end
 
 function HeadHuntingMixin:SetFilterFlags( flags )
@@ -1250,14 +1273,14 @@ HeadHuntingPlayerFrameMixin = {}
 function HeadHuntingPlayerFrameMixin:SetPlayer( name, raceID, classID, gender )
     local classInfo = C_CreatureInfo.GetClassInfo(classID)
     local raceInfo  = C_CreatureInfo.GetRaceInfo(raceID)
-    local raceIcon  = string.format("Interface\\Custom_LoginScreen\\RaceIcon\\RACE_ICON_%s%s", string.upper(raceInfo.clientFileString), S_GENDER_FILESTRING[gender or 0])
     local playerName = GetClassColorObj(classInfo.classFile):WrapTextInColorCode(name or "~no name~")
 
     self.Name:SetText(playerName)
     self:GetParent().name = name
     self:GetParent().stylishName = playerName
 
-    SetPortraitToTexture(self.RaceIcon, raceIcon)
+	local raceIconAtlas = string.format("RACE_ICON_%s_%s", string.upper(raceInfo.clientFileString), S_GENDER_FILESTRING[gender or 0])
+	self.RaceIcon:SetAtlas(raceIconAtlas)
 end
 
 HeadHuntingClassFrameMixin = {}
@@ -1868,7 +1891,11 @@ function HeadHuntingSetRewardButtonMixin:UpdateButtonState()
 end
 
 function HeadHuntingSetRewardButtonMixin:OnEnter()
-    if #self.disableReason > 0 and self:GetParent():IsShown() then
+	if C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.HEADHUNTING) then
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip_AddErrorLine(GameTooltip, string.format(HARDCORE_FEATURE1_10_DISABLE, C_Hardcore.GetChallengeInfoByID(C_Hardcore.GetActiveChallengeID()) or "", true))
+		GameTooltip:Show()
+    elseif #self.disableReason > 0 and self:GetParent():IsShown() then
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
         GameTooltip:SetText(HEADHUNTING_SET_REWARD_BUTTON_TOOLTIP)
         GameTooltip:AddLine(HEADHUNTING_SET_REWARD_BUTTON_TOOLTIP_DESC, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, true)
@@ -2251,14 +2278,12 @@ function HeadHuntingContractOnPlayerFrameMixin:ToggleContractContent( isNoContra
 
     if selectedCategory == E_HEADHUNTING_CATEGORY.REWARD_FOR_HEAD then
         local playerName    = UnitName("player")
-        local raceName      = UnitRace("player")
+		local _, _, raceID	= UnitRace("player")
         local _, _, classID = UnitClass("player")
         local genderID      = UnitSex("player")
-        local raceInfo      = C_CreatureInfo.GetRaceInfo(raceName)
         local factionID     = C_Unit.GetFactionID("player")
 
-
-        self.PlayerFrame.PlayerFrame:SetPlayer(playerName, raceInfo.raceID, classID, S_GENDER_FILESTRING_INVERT[E_SEX[genderID]])
+		self.PlayerFrame.PlayerFrame:SetPlayer(playerName, raceID, classID, S_GENDER_FILESTRING_INVERT[E_SEX[genderID]])
         self.PlayerFrame.ClassFrame:SetClass(classID)
         self.PlayerFrame.FactionFrame:SetFaction(factionID)
 

@@ -483,6 +483,10 @@ TimerTrackerReadyButtonMixin = {}
 
 function TimerTrackerReadyButtonMixin:OnLoad()
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+	self.Glow.Left:SetAtlas("PKBT-Button-Glow-Left", true)
+	self.Glow.Right:SetAtlas("PKBT-Button-Glow-Right", true)
+	self.Glow.Center:SetAtlas("PKBT-Button-Glow-Center")
 end
 
 function TimerTrackerReadyButtonMixin:OnEvent(event, ... )
@@ -494,6 +498,7 @@ function TimerTrackerReadyButtonMixin:OnEvent(event, ... )
 end
 
 function TimerTrackerReadyButtonMixin:OnShow()
+	SetParentFrameLevel(self.Glow, -1)
 	self.HighlightTexture:Hide()
 	self:UpdateText(false)
 end
@@ -557,6 +562,14 @@ function TimerTrackerReadyButtonMixin:UpdateText(forceUpdate)
 			self.ReadyTextDescription.AnimSwap:Play()
 		end
 
+		if state.value then
+			if self.Glow.AlphaAnim:IsPlaying() then
+				self.Glow.AlphaAnim:Stop()
+			end
+		else
+			self.Glow.AlphaAnim:Play()
+		end
+
 		self.checked = state.value
 		self:SetChecked(state.value)
 
@@ -578,7 +591,11 @@ function TimerTrackerReadyButtonMixin:UpdateText(forceUpdate)
 			end
 		else
 			self.ReadyText:SetText(READY_LABEL)
-			self.ReadyTextDescription:SetText(READY_ARENA_DESCRIPTION_LABEL)
+			if C_MiniGames.GetActiveID() then
+				self.ReadyTextDescription:SetText(READY_MINIGAME_DESCRIPTION_LABEL)
+			else
+				self.ReadyTextDescription:SetText(READY_ARENA_DESCRIPTION_LABEL)
+			end
 		end
 	end
 end

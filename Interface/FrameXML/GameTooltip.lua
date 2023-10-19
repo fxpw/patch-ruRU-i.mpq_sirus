@@ -349,7 +349,7 @@ function C_Tooltip_CustomRender( self, ... )
 
 					newLines = true
 				end
-			elseif ITEM_MODIFIED_APPEARANCE_STORAGE[itemID] and not SIRUS_COLLECTION_COLLECTED_APPEARANCES[ITEM_MODIFIED_APPEARANCE_STORAGE[itemID][1]] then
+			elseif C_TransmogCollection.PlayerCanCollectSource(itemID) and not C_TransmogCollection.IsCollectedSource(itemID) then
 				local _, _, _, isKnown, isUsable = GetItemModifiedAppearanceCategoryInfo(itemID, true);
 				if isKnown and isUsable then
 					showAppearanceLine = true;
@@ -683,96 +683,103 @@ function GameTooltip_HideResetCursor()
 	ResetCursor();
 end
 
-local function GameTooltip_OnToyByItemID(self)
-	if not self.isToyByItemID then
+local function GameTooltip_OnToyByItemID(self, itemID)
+	if not self.isToyByItemID or not itemID then
 		return;
 	end
 
-	local _, itemLink = self:GetItem();
-	if itemLink then
-		local itemID = tonumber(string.match(itemLink, ":(%d+)"));
-		if itemID then
-			local _, spellID, _, _, _, descriptionText, priceText, holidayText = C_ToyBox.GetToyInfo(itemID);
-			if spellID then
+	local _, spellID, _, _, _, descriptionText, priceText, holidayText = C_ToyBox.GetToyInfo(itemID);
+	if spellID then
+		if PlayerHasToy(itemID) then
+			local name, rank = GetSpellInfo(spellID);
+			local start, duration = GetSpellCooldown(name, rank);
 
-				local name, rank = GetSpellInfo(spellID);
-				local start, duration = GetSpellCooldown(name, rank);
-
-				if start and start > 0 and duration and duration > 0 then
-					local time = duration - (GetTime() - start);
-					GameTooltip_AddHighlightLine(self, string.format(ITEM_COOLDOWN_TIME, SecondsToTime(time, time >= 60)), 1);
-				end
-
-				if descriptionText ~= "" then
-					GameTooltip_AddBlankLineToTooltip(self);
-					GameTooltip_AddNormalLine(self, descriptionText, 1);
-				end
-
-				local addBlankLine = true;
-				if holidayText ~= "" then
-					addBlankLine = false;
-					GameTooltip_AddBlankLineToTooltip(self);
-					GameTooltip_AddHighlightLine(self, holidayText, 1);
-				end
-
-				if priceText ~= "" then
-					if addBlankLine then
-						GameTooltip_AddBlankLineToTooltip(self);
-					end
-					GameTooltip_AddHighlightLine(self, priceText, 1);
-				end
-
-				self:Show();
+			if start and start > 0 and duration and duration > 0 then
+				local time = duration - (GetTime() - start);
+				GameTooltip_AddHighlightLine(self, string.format(ITEM_COOLDOWN_TIME, SecondsToTime(time, time >= 60)), 1);
 			end
 		end
+
+		if descriptionText ~= "" then
+			GameTooltip_AddBlankLineToTooltip(self);
+			GameTooltip_AddNormalLine(self, descriptionText, 1);
+		end
+
+		local addBlankLine = true;
+		if holidayText ~= "" then
+			addBlankLine = false;
+			GameTooltip_AddBlankLineToTooltip(self);
+			GameTooltip_AddHighlightLine(self, holidayText, 1);
+		end
+
+		if priceText ~= "" then
+			if addBlankLine then
+				GameTooltip_AddBlankLineToTooltip(self);
+			end
+			GameTooltip_AddHighlightLine(self, priceText, 1);
+		end
+
+		self:Show();
 	end
 
 	self.isToyByItemID = nil;
 end
 
-local function GameTooltip_OnHeirloomByItemID(self)
-	if not self.isHeirloomItemID then
+local function GameTooltip_OnHeirloomByItemID(self, itemID)
+	if not self.isHeirloomItemID or not itemID then
 		return;
 	end
 
-	local _, itemLink = self:GetItem();
-	if itemLink then
-		local itemID = tonumber(string.match(itemLink, ":(%d+)"));
-		if itemID then
-			local spellID = C_Heirloom.GetHeirloomSpellID(itemID);
-			local _, _, _, descriptionText, priceText = C_Heirloom.GetHeirloomInfo(itemID);
+	local spellID = C_Heirloom.GetHeirloomSpellID(itemID);
+	if spellID then
+		if C_Heirloom.PlayerHasHeirloom(itemID) then
+			local name, rank = GetSpellInfo(spellID);
+			local start, duration = GetSpellCooldown(name, rank);
 
-			if spellID then
-				local name, rank = GetSpellInfo(spellID);
-				local start, duration = GetSpellCooldown(name, rank);
-
-				if start and start > 0 and duration and duration > 0 then
-					local time = duration - (GetTime() - start);
-					GameTooltip_AddHighlightLine(self, string.format(ITEM_COOLDOWN_TIME, SecondsToTime(time, time >= 60)), 1);
-				end
-
-				if descriptionText ~= "" then
-					GameTooltip_AddBlankLineToTooltip(self);
-					GameTooltip_AddNormalLine(self, descriptionText, 1);
-				end
-
-				if priceText ~= "" then
-					GameTooltip_AddBlankLineToTooltip(self);
-					GameTooltip_AddHighlightLine(self, priceText, 1);
-				end
-
-				self:Show();
+			if start and start > 0 and duration and duration > 0 then
+				local time = duration - (GetTime() - start);
+				GameTooltip_AddHighlightLine(self, string.format(ITEM_COOLDOWN_TIME, SecondsToTime(time, time >= 60)), 1);
 			end
 		end
+
+		local _, _, _, descriptionText, priceText = C_Heirloom.GetHeirloomInfo(itemID);
+
+		if descriptionText ~= "" then
+			GameTooltip_AddBlankLineToTooltip(self);
+			GameTooltip_AddNormalLine(self, descriptionText, 1);
+		end
+
+		if priceText ~= "" then
+			GameTooltip_AddBlankLineToTooltip(self);
+			GameTooltip_AddHighlightLine(self, priceText, 1);
+		end
+
+		self:Show();
 	end
 
 	self.isHeirloomItemID = nil;
 end
 
+local function GameTooltip_CustomOnTooltipSetItem(self, ...)
+	local _, itemLink = self:GetItem();
+	if itemLink then
+		local itemID = tonumber(string.match(itemLink, ":(%d+)"));
+		if itemID then
+			GameTooltip_OnToyByItemID(self, itemID);
+			GameTooltip_OnHeirloomByItemID(self, itemID);
+		end
+	end
+
+	GameTooltip_OnTooltipSetItem(self, ...);
+end
+
 GameTooltipMixin = {}
 
 function GameTooltipMixin:OnLoad()
-	self:SetScript("OnTooltipSetItem", GameTooltip_OnTooltipSetItem);
+	self.tooltipMetatable = getmetatable(self).__index;
+	self.funcList = {};
+
+	self:SetScript("OnTooltipSetItem", nil);
 
 	GameTooltip_OnLoad(self)
 	self.shoppingTooltips = { ShoppingTooltip1, ShoppingTooltip2, ShoppingTooltip3 }
@@ -784,24 +791,53 @@ end
 
 function GameTooltipMixin:SetScript(handler, func)
 	if handler == "OnTooltipSetItem" then
+		self.tooltipMetatable.SetScript(self, handler, GameTooltip_CustomOnTooltipSetItem);
+
 		if type(func) == "function" then
-			local function hook()
-				GameTooltip_OnToyByItemID(self);
-				GameTooltip_OnHeirloomByItemID(self);
+			table.wipe(self.funcList);
+			self.funcList[#self.funcList + 1] = func;
+			self.tooltipMetatable.HookScript(self, handler, func);
+		end
+	else
+		self.tooltipMetatable.SetScript(self, handler, func);
+	end
+end
 
-				local ok, ret = pcall(func, self);
-				if not ok then
-					geterrorhandler()(ret);
-					return;
-				end
-				return ret;
-			end
-
-			return getmetatable(self).__index.SetScript(self, handler, hook);
+function GameTooltipMixin:HookScript(handler, func)
+	if handler == "OnTooltipSetItem" then
+		if type(func) == "function" then
+			self.funcList[#self.funcList + 1] = func;
 		end
 	end
 
-	return getmetatable(self).__index.SetScript(self, handler, func);
+	self.tooltipMetatable.HookScript(self, handler, func);
+end
+
+function GameTooltipMixin:GetScript(handler)
+	if handler == "OnTooltipSetItem" then
+		local func = self.tooltipMetatable.GetScript(self, handler);
+		if func then
+			if func == GameTooltip_CustomOnTooltipSetItem then
+				return nil;
+			end
+
+			self.tooltipMetatable.SetScript(self, handler, nil);
+			for i = 1, #self.funcList do
+				self.tooltipMetatable.HookScript(self, handler, self.funcList[i]);
+			end
+
+			func = self.tooltipMetatable.GetScript(self, handler);
+
+			self.tooltipMetatable.SetScript(self, handler, GameTooltip_CustomOnTooltipSetItem);
+			for i = 1, #self.funcList do
+				self.tooltipMetatable.HookScript(self, handler, self.funcList[i]);
+			end
+
+			return func;
+		end
+	end
+
+	return self.tooltipMetatable.GetScript(self, handler);
 end
 
 function GameTooltipMixin:SetToyByItemID(itemID)

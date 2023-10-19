@@ -1,4 +1,5 @@
 TOOLTIP_UPDATE_TIME = 0.2;
+BOSS_FRAME_CASTBAR_HEIGHT = 16;
 ROTATIONS_PER_SECOND = .5;
 
 local ClearTarget = ClearTarget
@@ -24,7 +25,7 @@ local CHECK_FIT_DEFAULT_EXTRA_HEIGHT = 20;
 
 -- Per panel settings
 UIPanelWindows = {};
-UIPanelWindows["GameMenuFrame"] =		{ area = "center",	pushable = 0,	whileDead = 1 };
+UIPanelWindows["GameMenuFrame"] =		{ area = "center",	pushable = 0,	whileDead = 1, allowAlwaysShow = 1 };
 UIPanelWindows["VideoOptionsFrame"] =		{ area = "center",	pushable = 0,	whileDead = 1 };
 UIPanelWindows["AudioOptionsFrame"] =		{ area = "center",	pushable = 0,	whileDead = 1 };
 UIPanelWindows["InterfaceOptionsFrame"] =	{ area = "center",	pushable = 0,	whileDead = 1 };
@@ -247,6 +248,8 @@ function UIParent_OnLoad(self)
 
 	-- Event for Hook AchievementUI and AuctionUI
 	self:RegisterEvent("ADDON_LOADED")
+
+	self:RegisterCustomEvent("SERVICE_DATA_UPDATE")
 end
 
 function UIParent_OnShow(self)
@@ -558,7 +561,7 @@ end
 function InspectUnit(unit)
 	InspectFrame_LoadUI();
 	if ( InspectFrame_Show ) then
-		SendAddonMessage("ACMSG_INSPECT_TRANSMOGRIFICATION_REQUEST", UnitGUID(unit), "WHISPER", UnitName("player"))
+		SendServerMessage("ACMSG_INSPECT_TRANSMOGRIFICATION_REQUEST", UnitGUID(unit))
 		InspectFrame_Show(unit);
 	end
 end
@@ -627,10 +630,14 @@ function UIParent_OnEvent(self, event, ...)
 			SendServerMessage("ACMSG_I_S", table.concat(msg, "|"))
 		end
 	elseif ( event == "PLAYER_DEAD" ) then
-		if ( not StaticPopup_Visible("DEATH") ) then
-			CloseAllWindows(1);
-			if ( GetReleaseTimeRemaining() > 0 or GetReleaseTimeRemaining() == -1 ) then
-				StaticPopup_Show("DEATH");
+		if C_Service.IsHardcoreCharacter() then
+			HardcoreStaticPopupFrame:Show()
+		else
+			if ( not StaticPopup_Visible("DEATH") ) then
+				CloseAllWindows(1);
+				if ( GetReleaseTimeRemaining() > 0 or GetReleaseTimeRemaining() == -1 ) then
+					StaticPopup_Show("DEATH");
+				end
 			end
 		end
 	elseif ( event == "PLAYER_ALIVE" or event == "RAISED_AS_GHOUL" ) then
@@ -812,7 +819,13 @@ function UIParent_OnEvent(self, event, ...)
 		else
 			GhostFrame:Hide();
 		end
-		if ( GetReleaseTimeRemaining() > 0 or GetReleaseTimeRemaining() == -1 ) then
+
+		local hardcorePopup = C_Service.IsHardcoreCharacter() and (UnitIsGhost("player") or GetReleaseTimeRemaining() > 0 or GetReleaseTimeRemaining() == -1)
+		if hardcorePopup then
+			HardcoreStaticPopupFrame:Show()
+		end
+
+		if not hardcorePopup and GetReleaseTimeRemaining() > 0 or GetReleaseTimeRemaining() == -1 then
 			StaticPopup_Show("DEATH");
 		end
 
@@ -839,6 +852,12 @@ function UIParent_OnEvent(self, event, ...)
 	elseif ( event == "TRADE_REQUEST_CANCEL" ) then
 		StaticPopup_Hide("TRADE");
 	elseif ( event == "CONFIRM_XP_LOSS" ) then
+		if C_Service.IsHardcoreCharacter() then
+			HideUIPanel(GossipFrame)
+			CloseGossip()
+			return
+		end
+
 		local resSicknessTime = GetResSicknessDuration();
 		if ( resSicknessTime ) then
 			local dialog;
@@ -863,9 +882,13 @@ function UIParent_OnEvent(self, event, ...)
 		end
 		HideUIPanel(GossipFrame);
 	elseif ( event == "CORPSE_IN_RANGE" ) then
-		StaticPopup_Show("RECOVER_CORPSE");
+		if not C_Service.IsHardcoreCharacter() then
+			StaticPopup_Show("RECOVER_CORPSE");
+		end
 	elseif ( event == "CORPSE_IN_INSTANCE" ) then
-		StaticPopup_Show("RECOVER_CORPSE_INSTANCE");
+		if not C_Service.IsHardcoreCharacter() then
+			StaticPopup_Show("RECOVER_CORPSE_INSTANCE");
+		end
 	elseif ( event == "CORPSE_OUT_OF_RANGE" ) then
 		StaticPopup_Hide("RECOVER_CORPSE");
 		StaticPopup_Hide("RECOVER_CORPSE_INSTANCE");
@@ -1354,6 +1377,13 @@ function UIParent_OnEvent(self, event, ...)
 		else
 			StaticPopup_Show("TALENTS_INVOLUNTARILY_RESET");
 		end
+	elseif event == "SERVICE_DATA_UPDATE" then
+		UpdatePVPTabs(RenegadeLadderFrame)
+		UpdatePVPTabs(PVPLadderFrame)
+		UpdatePVPTabs(LFDParentFrame)
+		UpdatePVPTabs(PVPUIFrame)
+
+		UpdateMicroButtons()
 	elseif event == "CHANNEL_UI_UPDATE" then
 		if C_CVar:GetValue("C_CVAR_AUTOJOIN_TO_LFG") == "1" and not C_CacheInstance:Get("AUTOJOIN_TO_LFG") then
 			JoinPermanentChannel(LFG_CHANNEL_NAME)
@@ -1576,7 +1606,7 @@ FramePositionDelegate:SetScript("OnAttributeChanged", FramePositionDelegate_OnAt
 function FramePositionDelegate:ShowUIPanel(frame, force)
 	local frameArea, framePushable;
 	frameArea = GetUIPanelAttribute(frame, "area");
-	if ( not CanOpenPanels() and frameArea ~= "center" and frameArea ~= "full" ) then
+	if ( (AreAllPanelsDisallowed(frame)) or ( not CanOpenPanels() and frameArea ~= "center" and frameArea ~= "full" ) ) then
 		self:ShowUIPanelFailed(frame);
 		return;
 	end
@@ -1874,6 +1904,10 @@ function FramePositionDelegate:HideUIPanel(frame, skipSetPoint)
 	if ( frame == centerFrame ) then
 		self:MoveUIPanel("right", "center", skipSetPoint);
 	elseif ( frame == self:GetUIPanel("left") ) then
+		if GetUIPanelAttribute(frame, "disableClosePanel") then
+			return
+		end
+
 		-- If we're hiding the left frame, move the other frames left, unless the center is a native center frame
 		if ( centerFrame ) then
 			local area = GetUIPanelAttribute(centerFrame, "area");
@@ -2056,13 +2090,15 @@ function FramePositionDelegate:UIParentManageFramePositions()
 			tinsert(yOffsetFrames, "pet");
 			hasPetBar = 1;
 		end
-		if ( ReputationWatchBar:IsShown() and MainMenuExpBar:IsShown() ) then
+		local numWatchBars = 0;
+		numWatchBars = numWatchBars + (ReputationWatchBar:IsShown() and 1 or 0);
+		numWatchBars = numWatchBars + (MainMenuExpBar:IsShown() and 1 or 0);
+		if ( numWatchBars > 1 ) then
 			tinsert(yOffsetFrames, "reputation");
 		end
 		if ( MainMenuBarMaxLevelBar:IsShown() ) then
 			tinsert(yOffsetFrames, "maxLevel");
 		end
-
 		if ( TutorialFrameAlertButton:IsShown() ) then
 			tinsert(yOffsetFrames, "tutorialAlert");
 		end
@@ -2140,6 +2176,7 @@ function FramePositionDelegate:UIParentManageFramePositions()
 
 	-- Setup y anchors
 	local anchorY = 0
+	local buffsAnchorY = min(0, (MINIMAP_BOTTOM_EDGE_EXTENT or 0) - BuffFrame.bottomEdgeExtent);
 	-- Count right action bars
 	local rightActionBars = 0;
 	if ( SHOW_MULTI_ACTIONBAR_3 ) then
@@ -2149,30 +2186,39 @@ function FramePositionDelegate:UIParentManageFramePositions()
 		end
 	end
 
-	-- Capture bars
+	-- Capture bars - need to move below buffs/debuffs if at least 1 right action bar is showing
 	if ( NUM_EXTENDED_UI_FRAMES ) then
 		local captureBar;
+		local numCaptureBars = 0;
 		for i=1, NUM_EXTENDED_UI_FRAMES do
 			captureBar = _G["WorldStateCaptureBar"..i];
 			if ( captureBar and captureBar:IsShown() ) then
+				numCaptureBars = numCaptureBars + 1
+				if ( numCaptureBars == 1 and rightActionBars > 0 ) then
+					anchorY = min(anchorY, buffsAnchorY);
+				end
 				captureBar:SetPoint("TOPRIGHT", MinimapCluster, "BOTTOMRIGHT", -CONTAINER_OFFSET_X, anchorY);
-				anchorY = anchorY - captureBar:GetHeight();
+				anchorY = anchorY - captureBar:GetHeight() - 4;
 			end
 		end
 	end
 
-	--Setup Vehicle seat indicator offset
-	if ( VehicleSeatIndicator ) then
-		if ( VehicleSeatIndicator and VehicleSeatIndicator:IsShown() ) then
-			anchorY = anchorY - VehicleSeatIndicator:GetHeight() - 18;	--The -18 is there to give a small buffer for things like the QuestTimeFrame below the Seat Indicator
+	--Setup Vehicle seat indicator offset - needs to move below buffs/debuffs if both right action bars are showing
+	if ( VehicleSeatIndicator and VehicleSeatIndicator:IsShown() ) then
+		if ( rightActionBars == 2 ) then
+			anchorY = min(anchorY, buffsAnchorY);
+			VehicleSeatIndicator:SetPoint("TOPRIGHT", MinimapCluster, "BOTTOMRIGHT", -100, anchorY);
+		elseif ( rightActionBars == 1 ) then
+			VehicleSeatIndicator:SetPoint("TOPRIGHT", MinimapCluster, "BOTTOMRIGHT", -62, anchorY);
+		else
+			VehicleSeatIndicator:SetPoint("TOPRIGHT", MinimapCluster, "BOTTOMRIGHT", 0, anchorY);
 		end
-
+		anchorY = anchorY - VehicleSeatIndicator:GetHeight() - 4;	--The -4 is there to give a small buffer for things like the QuestTimeFrame below the Seat Indicator
 	end
 
-	-- Boss frames
+	-- Boss frames - need to move below buffs/debuffs if both right action bars are showing
 	local numBossFrames = 0;
 	local durabilityXOffset = CONTAINER_OFFSET_X;
-	local durabilityYOffset = anchorY;
 	if ( Boss1TargetFrame ) then
 		for i = 1, MAX_BOSS_FRAMES do
 			if ( _G["Boss"..i.."TargetFrame"]:IsShown() ) then
@@ -2182,20 +2228,19 @@ function FramePositionDelegate:UIParentManageFramePositions()
 			end
 		end
 		if ( numBossFrames > 0 ) then
-			Boss1TargetFrame:SetPoint("TOPRIGHT", "MinimapCluster", "BOTTOMRIGHT", -(CONTAINER_OFFSET_X * 1.3) + 60, anchorY + 20);
-			anchorY = anchorY - 6 - numBossFrames * 66;
-			durabilityXOffset = durabilityXOffset + 135;
+			if ( rightActionBars > 1 ) then
+				anchorY = min(anchorY, buffsAnchorY);
+			end
+			Boss1TargetFrame:SetPoint("TOPRIGHT", "MinimapCluster", "BOTTOMRIGHT", -(CONTAINER_OFFSET_X * 1.3) + 60, anchorY * 1.333);	-- by 1.333 because it's 0.75 scale
+			anchorY = anchorY - (numBossFrames * (68 + BOSS_FRAME_CASTBAR_HEIGHT) + BOSS_FRAME_CASTBAR_HEIGHT);
 		end
 	end
 
 	-- Setup durability offset
 	if ( DurabilityFrame ) then
-		if ( DurabilityShield:IsShown() or DurabilityOffWeapon:IsShown() or DurabilityRanged:IsShown() ) then
-			durabilityXOffset = durabilityXOffset + 20;
-		end
-		DurabilityFrame:SetPoint("TOPRIGHT", "MinimapCluster", "BOTTOMRIGHT", -durabilityXOffset, durabilityYOffset);
-		if ( DurabilityFrame:IsShown() and numBossFrames == 0 ) then
-			anchorY = anchorY - DurabilityFrame:GetHeight() - 10;
+		DurabilityFrame:SetPoint("TOPRIGHT", "MinimapCluster", "BOTTOMRIGHT", -CONTAINER_OFFSET_X, anchorY);
+		if ( DurabilityFrame:IsShown() ) then
+			anchorY = anchorY - DurabilityFrame:GetHeight();
 		end
 	end
 
@@ -2208,6 +2253,10 @@ function FramePositionDelegate:UIParentManageFramePositions()
 		CONTAINER_OFFSET_X = CONTAINER_OFFSET_X + 16
 	end
 
+	-- Watch frame - needs to move below buffs/debuffs if at least 1 right action bar is showing
+	if ( rightActionBars > 0 ) then
+		anchorY = min(anchorY, buffsAnchorY);
+	end
 	if ( WatchFrame and not WatchFrame:IsUserPlaced() ) then
 		local numArenaOpponents = GetNumArenaOpponents();
 		if ( ArenaEnemyFrames and ArenaEnemyFrames:IsShown() and (numArenaOpponents > 0) ) then
@@ -2217,9 +2266,6 @@ function FramePositionDelegate:UIParentManageFramePositions()
 			-- We're using Simple Quest Tracking, automagically size and position!
 			WatchFrame:ClearAllPoints();
 			-- move up if only the minimap cluster is above, move down a little otherwise
-			if ( anchorY == 0 ) then
-				anchorY = 20;
-			end
 			WatchFrame:SetPoint("TOPRIGHT", "MinimapCluster", "BOTTOMRIGHT", -CONTAINER_OFFSET_X, anchorY - 10);
 			-- OnSizeChanged for WatchFrame handles its redraw
 		end
@@ -2378,6 +2424,40 @@ function CanOpenPanels()
 	return 1;
 end
 
+function AreAllPanelsDisallowed(frame)
+	if frame and GetUIPanelAttribute(frame, "allowAlwaysShow") then
+		return false
+	end
+
+	local currentWindow = GetUIPanel("left");
+	if not currentWindow then
+		currentWindow = GetUIPanel("center");
+		if not currentWindow then
+			currentWindow = GetUIPanel("full");
+			if not currentWindow then
+				return false;
+			end
+		end
+	end
+
+	local neverAllowOtherPanels = GetUIPanelAttribute(currentWindow, "neverAllowOtherPanels");
+	return neverAllowOtherPanels;
+end
+
+function CanClosePanel(frame)
+	local currentWindow = GetUIPanel("left");
+	if not currentWindow then
+		return true;
+	end
+
+	if frame ~= currentWindow then
+		return true
+	end
+
+	local neverAllowOtherPanels = GetUIPanelAttribute(currentWindow, "disableClosePanel");
+	return not neverAllowOtherPanels;
+end
+
 -- this function handles possibly tainted values and so
 -- should always be called from secure code using securecall()
 function CloseChildWindows()
@@ -2411,6 +2491,9 @@ function CloseWindows(ignoreCenter, frameToIgnore)
 	local rightFrame = GetUIPanel("right");
 	local doublewideFrame = GetUIPanel("doublewide");
 	local fullScreenFrame = GetUIPanel("fullscreen");
+	if leftFrame and GetUIPanelAttribute(leftFrame, "disableClosePanel") then
+		leftFrame = nil
+	end
 	local found = leftFrame or centerFrame or rightFrame or doublewideFrame or fullScreenFrame;
 
 	if ( not frameToIgnore or frameToIgnore ~= leftFrame ) then
@@ -4074,7 +4157,7 @@ function UpdatePVPTabs( self )
 			local isShow = true
 
 			if data.isRenegadeFeature then
-				isShow = not C_Service:IsLockRenegadeFeatures()
+				isShow = C_Service.IsRenegadeRealm()
 			end
 
 			tab:SetShown(isShow)
@@ -4100,13 +4183,6 @@ function PVEFrame_TabOnShow( self )
 	PanelTemplates_TabResize(self, 0, nil, self:GetTextWidth());
 end
 
-Hook:RegisterCallback("UIParent", "SERVICE_DATA_RECEIVED", function()
-	UpdatePVPTabs(RenegadeLadderFrame)
-	UpdatePVPTabs(PVPLadderFrame)
-	UpdatePVPTabs(LFDParentFrame)
-	UpdatePVPTabs(PVPUIFrame)
-end)
-
 LAST_FINDPARTY_FRAME = nil
 function ToggleLFDParentFrame()
 	if C_Unit.IsNeutral("player") then
@@ -4126,7 +4202,7 @@ function ToggleLFDParentFrame()
 	ShowUIPanel(LAST_FINDPARTY_FRAME or _G[pvpTabPanels[1].name])
 end
 
-local adventureTabPanels = {"EncounterJournal", "HeadHuntingFrame"}
+local adventureTabPanels = {"EncounterJournal", "HeadHuntingFrame", "HardcoreFrame"}
 
 function Adventure_TabOnClick( self )
 	PlaySound("igCharacterInfoTab")
@@ -4173,11 +4249,6 @@ function SetAutoDeclineGuildInvites(value)
 	else
 		ChatFrame_RemoveMessageEventFilter("CHAT_MSG_SYSTEM", AutoDeclineGuildInvites_MessageFilter)
 	end
-end
-
-function EventHandler:ASMSG_ENABLE_X1_RATE(msg)
-	msg = tonumber(msg)
-	C_CacheInstance:Set("ASMSG_ENABLE_X1_RATE", msg and msg ~= 2)
 end
 
 local INVISIBLE_STATUS;

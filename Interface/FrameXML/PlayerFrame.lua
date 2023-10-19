@@ -1,7 +1,7 @@
 REQUIRED_REST_HOURS = 5;
 
 function PlayerFrame_OnLoad(self)
-	self.showCategoryInfo = C_Service:IsStrengthenStatsRealm();
+	self.showCategoryInfo = C_Service.IsStrengthenStatsRealm();
 	self.borderTexture = PlayerFrameTexture
 	self.PVPTooltipTitle = nil
 	self.PVPTooltipText = nil
@@ -173,6 +173,7 @@ function PlayerFrame_OnEvent(self, event, ...)
 		if ( arg1 == "player" ) then
 			PlayerLevelText:SetText(UnitLevel(self.unit));
 			PlayerFrame_UpdatePvPStatus()
+			PlayerFrame_CheckTutorials(self);
 		end
 	elseif ( event == "UNIT_COMBAT" ) then
 		if ( arg1 == self.unit ) then
@@ -289,6 +290,43 @@ function PlayerFrame_OnEvent(self, event, ...)
 		if ( PLAYER_FRAME_CASTBARS_SHOWN ) then
 			PlayerFrame_AttachCastBar();
 		end
+
+		PlayerFrame_CheckTutorials(self);
+	end
+end
+
+function PlayerFrame_CheckTutorials(self)
+	if not self:IsShown() then
+		return;
+	end
+
+	if HelpTip:IsShowing(UIParent, REFUSE_XP_RATE_HELPTIP_TEXT) then
+		HelpTip:Hide(UIParent, REFUSE_XP_RATE_HELPTIP_TEXT);
+		return;
+	end
+
+	if not C_Service.CanEnableRateX1() or C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.SERVER_XP_RATE) then
+		return
+	end
+
+	if UnitLevel(self.unit) ~= 1 then
+		return;
+	end
+
+	if not C_CVar:GetCVarBitfield("C_CVAR_CLOSED_INFO_FRAMES", LE_FRAME_TUTORIAL_REFUSE_XP_RATE) then
+		local helpTipInfo = {
+			text = REFUSE_XP_RATE_HELPTIP_TEXT,
+			textJustifyH = "CENTER",
+			textFontObject = "GameFontNormal16",
+			cvarBitfield = "C_CVAR_CLOSED_INFO_FRAMES",
+			bitfieldFlag = LE_FRAME_TUTORIAL_REFUSE_XP_RATE,
+			offsetX = -42,
+			buttonStyle = HelpTip.ButtonStyle.Close,
+			targetPoint = HelpTip.Point.BottomEdgeCenter,
+			alignment = HelpTip.Alignment.Left,
+			extraWidth = 24,
+		};
+		HelpTip:Show(UIParent, helpTipInfo, self);
 	end
 end
 

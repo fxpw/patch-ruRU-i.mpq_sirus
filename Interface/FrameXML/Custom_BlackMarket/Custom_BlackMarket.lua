@@ -198,6 +198,7 @@ function BlackMarketItem_OnClick(self, button, down)
 	MoneyInputFrame_SetCopper(BlackMarketBidPrice, self.minNextBid)
 	BlackMarketFrame.selectedMarketID = self.marketID
 	BlackMarketScrollFrame_Update()
+	BlackMarketFrame_UpdateBidButton()
 end
 
 function BlackMarketFrame_UpdateHotItem(self)

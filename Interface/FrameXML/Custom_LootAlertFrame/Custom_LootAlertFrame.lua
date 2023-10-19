@@ -1,18 +1,20 @@
 LOOTALERT_NUM_BUTTONS = 4
 
+local SPOILS_OF_WAR_ITEM = 150732
+
 LootAlertFrameMixIn = {}
 
 LootAlertFrameMixIn.alertQueue = {}
 LootAlertFrameMixIn.alertButton = {}
 
-function LootAlertFrameMixIn:AddAlert( name, link, quality, texture, count, ignoreLevel, tooltipText )
+function LootAlertFrameMixIn:AddAlert( itemID, name, link, quality, texture, count, ignoreLevel, tooltipText )
 	if Custom_RouletteFrame and Custom_RouletteFrame:IsShown() then
 		LOOTALERT_NUM_BUTTONS = 3
 	else
 		LOOTALERT_NUM_BUTTONS = 4
 	end
 
-	if not ignoreLevel then
+	if not ignoreLevel or (itemID and itemID ~= SPOILS_OF_WAR_ITEM) then
 		if UnitLevel("player") < 80 then
 			if quality < 2 then
 				return
@@ -96,7 +98,7 @@ function LootAlertFrame_OnEvent( self, event, arg1 )
 
 				local name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, texture, vendorPrice = GetItemInfo(itemID)
 				if link then
-					self:AddAlert(name, link, quality, texture, count)
+					self:AddAlert(itemID, name, link, quality, texture, count)
 				end
 			end
 		end
@@ -242,7 +244,7 @@ function EventHandler:ASMSG_SHOW_LOOT_POPUP( msg )
 		end
 
 		if name then
-			LootAlertFrame:AddAlert(name, link, quality, texture, itemCount, true, tooltipText)
+			LootAlertFrame:AddAlert(itemID, name, link, quality, texture, itemCount, true, tooltipText)
 		end
 	end
 end

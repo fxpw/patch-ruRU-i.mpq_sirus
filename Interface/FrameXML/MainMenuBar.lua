@@ -102,6 +102,7 @@ function MainMenuBar_ToVehicleArt(self)
 	PossessBar_Update(true);
 	ShowBonusActionBar(true);	--Now, when we are switching to vehicle art we will ALWAYS be using the BonusActionBar
 	UIParent_ManageFramePositions();	--This is called in PossessBar_Update, but it doesn't actually do anything but change an attribute, so it is worth keeping
+	VehicleMenuBarLeaveButton_Update();
 
 	VehicleMenuBar_SetSkin(VehicleMenuBar.skin, IsVehicleAimAngleAdjustable());
 end
@@ -142,14 +143,29 @@ function MainMenuBarVehicleLeaveButton_OnLoad(self)
 	self:RegisterEvent("UPDATE_BONUS_ACTIONBAR");
 	self:RegisterEvent("UPDATE_MULTI_CAST_ACTIONBAR");
 	self:RegisterEvent("VEHICLE_UPDATE");
+	self:RegisterEvent("PLAYER_ENTERING_WORLD");
+	self:RegisterEvent("UNIT_FLAGS");
+end
+
+function MainMenuBarVehicleLeaveButton_OnEnter(self)
+	if ( UnitOnTaxi("player") ) then
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+		GameTooltip:SetText(TAXI_CANCEL, 1, 1, 1);
+		GameTooltip:AddLine(TAXI_CANCEL_DESCRIPTION, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, true);
+		GameTooltip:Show();
+	else
+		GameTooltip_AddNewbieTip(self, LEAVE_VEHICLE, 1.0, 1.0, 1.0, nil);
+	end
 end
 
 function MainMenuBarVehicleLeaveButton_OnEvent(self, event, ...)
+	if event == "UNIT_FLAGS" and ... ~= "player" then return end
+
 	MainMenuBarVehicleLeaveButton_Update();
 end
 
 function MainMenuBarVehicleLeaveButton_Update()
-	if ( CanExitVehicle() ) then
+	if ( CanExitVehicle() or UnitOnTaxi("player") ) then
 		MainMenuBarVehicleLeaveButton:ClearAllPoints();
 		if ( IsPossessBarVisible() ) then
 			MainMenuBarVehicleLeaveButton:SetPoint("LEFT", PossessButton2, "RIGHT", 30, 0);
@@ -161,13 +177,30 @@ function MainMenuBarVehicleLeaveButton_Update()
 			MainMenuBarVehicleLeaveButton:SetPoint("LEFT", PossessBarFrame, "LEFT", 10, 0);
 		end
 		MainMenuBarVehicleLeaveButton:Show();
+		MainMenuBarVehicleLeaveButton:Enable();
 		ShowPetActionBar(true);
 	else
+		MainMenuBarVehicleLeaveButton:UnlockHighlight();
 		MainMenuBarVehicleLeaveButton:Hide();
 		ShowPetActionBar(true);
 	end
 
+	VehicleMenuBarLeaveButton_Update();
+
 	UIParent_ManageFramePositions();
+end
+
+function MainMenuBarVehicleLeaveButton_OnClicked(self)
+	if ( UnitOnTaxi("player") ) then
+		TaxiRequestEarlyLanding();
+
+		-- Show that the request for landing has been received.
+		self:Disable();
+		self:SetHighlightTexture([[Interface\Buttons\CheckButtonHilight]], "ADD");
+		self:LockHighlight();
+	else
+		VehicleExit();
+	end
 end
 
 function MainMenuBar_OnLoad(self)

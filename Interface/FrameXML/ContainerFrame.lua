@@ -1035,7 +1035,7 @@ function ContainerFrameItemButton_OnClick(self, button)
 		-- this hack for right click when custom auction is open
 		if AuctionHouseFrame and AuctionHouseFrame:IsShown() then
 			local bagItemLocation = ItemLocation:CreateFromBagAndSlot(bagID, slotID);
-			local valid, isLockbox = C_AuctionHouse.IsSellItemValid(bagItemLocation);
+			local valid, isLockboxOrHasCharges = C_AuctionHouse.IsSellItemValid(bagItemLocation);
 
 			local auctionSellFrame = AuctionHouseFrame.ItemSellFrame:IsShown() and AuctionHouseFrame.ItemSellFrame or AuctionHouseFrame.CommoditiesSellFrame;
 
@@ -1048,23 +1048,23 @@ function ContainerFrameItemButton_OnClick(self, button)
 					end
 				end
 
-				if not isLockbox then
+				if not isLockboxOrHasCharges then
 					PickupContainerItem(bagID, slotID);
 				end
 
 				ClickAuctionSellItemButton();
 				ClearCursor();
 
-				if isLockbox or select(3, GetContainerItemInfo(bagID, slotID)) then
+				if isLockboxOrHasCharges or select(3, GetContainerItemInfo(bagID, slotID)) then
 					auctionSellFrame.ItemDisplay:SetItemLocation(bagItemLocation, nil, true);
 				end
 			else
-				if not isLockbox then
+				if not isLockboxOrHasCharges then
 					PickupContainerItem(bagID, slotID);
 					ClickAuctionSellItemButton();
 				end
 
-				if isLockbox or GetAuctionSellItemInfo() then
+				if isLockboxOrHasCharges or GetAuctionSellItemInfo() then
 					auctionSellFrame.ItemDisplay:SetItemLocation(bagItemLocation, nil, true);
 				else
 					ClearCursor();
@@ -1113,7 +1113,7 @@ function ContainerFrameItemButton_CustomClickHandler(self, button)
 		local slotID = self:GetID()
 		local itemID = GetContainerItemID(containerID, slotID)
 		if itemID and JEWELERS_PIN_SWAP[itemID] then
-			SendAddonMessage("ACMSG_JEWELERS_STUD_SWAP", string.format("%i:%i", containerID, slotID), "WHISPER", UnitName("player"))
+			SendServerMessage("ACMSG_JEWELERS_STUD_SWAP", string.format("%i:%i", containerID, slotID))
 			return true
 		end
 	end

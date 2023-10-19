@@ -2092,7 +2092,7 @@
 									</OnShow>
 								</Scripts>
 							</Frame>
-							<Button name="$parentFindGroupButton" inherits="MagicButtonTemplate" text="FIND_A_GROUP">
+							<Button name="$parentFindGroupButton" inherits="MagicButtonTemplate,UIPanelButtonChallengeStateHandlerTemplate" text="FIND_A_GROUP">
 								<Size>
 									<AbsDimension x="135" y="22"/>
 								</Size>
@@ -2103,6 +2103,9 @@
 										</Offset>
 									</Anchor>
 								</Anchors>
+								<Attributes>
+									<Attribute name="featureFlag1" type="string" value="0x0001000"/>
+								</Attributes>
 								<Scripts>
 									<OnClick>
 										local mode, subMode = GetLFGMode();
@@ -2112,6 +2115,14 @@
 										LFDQueueFrame_Join();
 										end
 									</OnClick>
+									<OnEnter>
+										if C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.DUNGEON_AVAILABLE) then
+											GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+											GameTooltip_AddErrorLine(GameTooltip, string.format(HARDCORE_FEATURE1_13_DISABLE, C_Hardcore.GetChallengeInfoByID(C_Hardcore.GetActiveChallengeID()) or "", true))
+											GameTooltip:Show()
+										end
+									</OnEnter>
+									<OnLeave function="GameTooltip_Hide"/>
 								</Scripts>
 							</Button>
 							<Frame name="$parentCooldownFrame" hidden="true" enableMouse="true">
@@ -2599,15 +2610,26 @@
 							</ScrollFrame>
 						</Frames>
 					</Frame>
-					<Button name="$parentFindGroupButton" parentKey="FindGroupButton" inherits="MagicButtonTemplate" text="FIND_A_GROUP">
+					<Button name="$parentFindGroupButton" parentKey="FindGroupButton" inherits="MagicButtonTemplate,UIPanelButtonChallengeStateHandlerTemplate" text="FIND_A_GROUP">
 						<Size x="135" y="22"/>
 						<Anchors>
 							<Anchor point="BOTTOM" x="0" y="3"/>
 						</Anchors>
+						<Attributes>
+							<Attribute name="featureFlag1" type="string" value="0x0000080"/>
+						</Attributes>
 						<Scripts>
 							<OnClick>
 								self:GetParent():JoinMiniGame();
 							</OnClick>
+							<OnEnter>
+								if C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.MINIGAME) then
+									GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+									GameTooltip_AddErrorLine(GameTooltip, string.format(HARDCORE_FEATURE1_8_DISABLE, C_Hardcore.GetChallengeInfoByID(C_Hardcore.GetActiveChallengeID()) or "", true))
+									GameTooltip:Show()
+								end
+							</OnEnter>
+							<OnLeave function="GameTooltip_Hide"/>
 						</Scripts>
 					</Button>
 					<Frame name="MiniGamesFrame" toplevel="true" setAllPoints="true">

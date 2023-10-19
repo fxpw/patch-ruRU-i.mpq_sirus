@@ -800,6 +800,12 @@
 	<Font name="GameTooltipHeaderText" inherits="GameTooltipHeader" justifyH="LEFT" virtual="true">
 		<Color r="1.0" g="1.0" b="1.0"/>
 	</Font>
+	<Font name="GlueTooltipText" inherits="Tooltip_Med" justifyH="LEFT" virtual="true">
+		<Color r="1.0" g="1.0" b="1.0"/>
+	</Font>
+	<Font name="GlueTooltipHeaderText" inherits="GameTooltipHeader" justifyH="LEFT" virtual="true">
+		<Color r="1.0" g="0.82" b="0"/>
+	</Font>
 	<Font name="WorldMapTextFont" inherits="SystemFont_OutlineThick_WTF" virtual="true">
 		<Color r="1.0" g="0.9294" b="0.7607"/>
 	</Font>

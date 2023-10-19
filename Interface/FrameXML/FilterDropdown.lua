@@ -7,7 +7,8 @@ FilterComponent = EnumUtil.MakeEnum(
 	"Separator", 			-- Grey separator line (uninteractable)
 	"Title", 				-- Yellow text (uninteractable)
 	"Submenu", 				-- White text with a small arrow on the right, hovering over this will display the submenu. An optional "on click" function can be specified.
-	"CustomFunction" 		-- Calls the passed in function to initialize filters (for complex/special cases)
+	"CustomFunction", 		-- Calls the passed in function to initialize filters (for complex/special cases)
+	"CustomFrame"
 );
 
 --[[
@@ -127,6 +128,8 @@ function FilterDropDownSystem.SetUpDropDownLevel(dropdown, filterSystem, level)
 			FilterDropDownSystem.AddSubMenuButton(filterInfo.text, filterInfo.value, filterInfo.set, level);
 		elseif filterInfo.type == FilterComponent.CustomFunction then
 			filterInfo.customFunc(filterSystem, level);
+		elseif filterInfo.type == FilterComponent.CustomFrame then
+			FilterDropDownSystem.AddCustomFrame(filterInfo.name and _G[filterInfo.name] or dropdown[filterInfo.key], level);
 		end
 	end
 end
@@ -294,4 +297,12 @@ function FilterDropDownSystem.AddSubMenuButton(text, value, set, level)
 	};
 
 	UIDropDownMenu_AddButton(subMenuInfo, level);
+end
+
+function FilterDropDownSystem.AddCustomFrame(frame, level)
+	local customFrameInfo = {
+		customFrame = frame,
+	};
+
+	UIDropDownMenu_AddButton(customFrameInfo, level);
 end

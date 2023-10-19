@@ -758,8 +758,11 @@
 
                 self:OnLoad()
             </OnLoad>
+            <OnShow>
+                self:OnShow()
+            </OnShow>
             <OnHide>
-                self:Reset()
+                self:OnHide()
             </OnHide>
             <OnEvent>
                 self:OnEvent( event )

@@ -754,6 +754,11 @@
 	<Binding name="TOGGLECURRENCY">
 		ToggleCharacter("TokenFrame");
 	</Binding>
+	<Binding name="TOGGLEBATTLEPASS">
+		if C_BattlePass.IsActiveOrHasRewards() and not C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.BATTLEPASS_REWARDS) then
+			ToggleFrame(BattlePassFrame)
+		end
+	</Binding>
 
 	<!-- Misc -->
 	<Binding name="STOPCASTING" header="MISC">

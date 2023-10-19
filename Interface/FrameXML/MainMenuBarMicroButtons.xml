@@ -54,31 +54,14 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-			<OnEnter>
-				if self.Tittle then
-					GameTooltip_AddNewbieTip(self, self.Tittle, 1.0, 1.0, 1.0, self.Description)
-				end
-
-				if self.tooltipText then
-					GameTooltip_AddNewbieTip(self, self.tooltipText, 1.0, 1.0, 1.0, self.newbieText)
-				end
-
-				if self:IsEnabled() == 0 and (self.DisableReason or self.minLevel) then
-					GameTooltip:AddLine(" ")
-					GameTooltip:AddLine(self.DisableReason or format(FEATURE_BECOMES_AVAILABLE_AT_LEVEL, self.minLevel), RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, true)
-				end
-
-				GameTooltip:Show()
-			</OnEnter>
+			<OnEnter function="MainMenuBarMicroButton_OnEnter"/>
 			<OnEnable>
 				self:SetAlpha(1)
 			</OnEnable>
 			<OnDisable>
 				self:SetAlpha(0.5)
 			</OnDisable>
-			<OnLeave>
-				GameTooltip:Hide()
-			</OnLeave>
+			<OnLeave function="GameTooltip_Hide"/>
 		</Scripts>
 	</Button>
 	<Button name="CharacterMicroButton" inherits="MainMenuBarMicroButton" parent="MainMenuBarArtFrame">
@@ -387,7 +370,7 @@
 			</OnClick>
 		</Scripts>
 	</Button>
-	<Button name="CollectionsMicroButton" inherits="MainMenuBarMicroButton" parent="MainMenuBarArtFrame">
+	<Button name="CollectionsMicroButton" inherits="MainMenuBarMicroButton,UIPanelButtonChallengeStateHandlerTemplate" parent="MainMenuBarArtFrame">
 		<Anchors>
 			<Anchor point="BOTTOMLEFT" relativeTo="LFDMicroButton" relativePoint="BOTTOMRIGHT">
 				<Offset>
@@ -395,6 +378,9 @@
 				</Offset>
 			</Anchor>
 		</Anchors>
+		<Attributes>
+			<Attribute name="featureFlag" type="string" value="0x0000100"/>
+		</Attributes>
 		<Scripts>
 			<OnLoad>
 				LoadMicroButtonTextures(self, "Mounts")
@@ -426,17 +412,29 @@
 			<OnLoad>
 				LoadMicroButtonTextures(self, "EJ")
 				SetDesaturation(self:GetDisabledTexture(), true)
+				self:RegisterCustomEvent("CUSTOM_CHALLENGE_ACTIVATED")
+				self:RegisterCustomEvent("CUSTOM_CHALLENGE_DEACTIVATED")
 				self.tooltipText = MicroButtonTooltipText(ADVENTURE, "TOGGLEENCOUNTERJOURNAL")
-				self.newbieText = MAINMENUBAR_EJ_NEWBIE_TOOLTIP
+				if C_Hardcore.IsFeatureAvailable(Enum.Hardcore.Features.COLLECTIONS) then
+					self.newbieText = MAINMENUBAR_EJ_NEWBIE_TOOLTIP .. "\n\n" .. string.format(HARDCORE_FEATURE_9_DISABLE, C_Hardcore.GetChallengeInfoByID(C_Hardcore.GetActiveChallengeID()) or "")
+				else
+					self.newbieText = MAINMENUBAR_EJ_NEWBIE_TOOLTIP
+				end
 			</OnLoad>
 			<OnEvent>
 				self.tooltipText = MicroButtonTooltipText(ADVENTURE, "TOGGLEENCOUNTERJOURNAL")
 				self.newbieText = MAINMENUBAR_EJ_NEWBIE_TOOLTIP
+
+				if C_Hardcore.IsFeatureAvailable(Enum.Hardcore.Features.COLLECTIONS) then
+					self.newbieText = MAINMENUBAR_EJ_NEWBIE_TOOLTIP .. "\n\n" .. string.format(HARDCORE_FEATURE_9_DISABLE, C_Hardcore.GetChallengeInfoByID(C_Hardcore.GetActiveChallengeID()) or "")
+				else
+					self.newbieText = MAINMENUBAR_EJ_NEWBIE_TOOLTIP
+				end
 			</OnEvent>
 			<OnClick function="ToggleEncounterJournalFrame"/>
 		</Scripts>
 	</Button>
-	<Button name="StoreMicroButton" inherits="MainMenuBarMicroButton" parent="MainMenuBarArtFrame" hidden="false">
+	<Button name="StoreMicroButton" inherits="MainMenuBarMicroButton,UIPanelButtonChallengeStateHandlerTemplate" parent="MainMenuBarArtFrame" hidden="false">
 		<Anchors>
 			<Anchor point="BOTTOMLEFT" relativeTo="EncounterJournalMicroButton" relativePoint="BOTTOMRIGHT">
 				<Offset>
@@ -444,6 +442,9 @@
 				</Offset>
 			</Anchor>
 		</Anchors>
+		<Attributes>
+			<Attribute name="featureFlag" type="string" value="0x0000800"/>
+		</Attributes>
 		<Frames>
 			<Frame parentKey="Spinner" inherits="LoadingSpinnerTemplate" toplevel="true" frameStrata="HIGH" hidden="true">
 				<Size x="28" y="28"/>
@@ -454,21 +455,20 @@
 					<OnShow>
 						UpdateMicroButtons()
 						self.AnimFrame.Anim:Play()
-						self:GetParent().DisableReason = STORE_UPDATE_CACHE_DATA
-
 						GameMenuButtonStore:Disable()
 					</OnShow>
 					<OnHide>
 						UpdateMicroButtons()
 						self.AnimFrame.Anim:Stop()
-						self:GetParent().DisableReason = nil
-
 						GameMenuButtonStore:Enable()
 					</OnHide>
 					<OnUpdate>
-						if self:IsShown() then
-							self:GetParent():Disable()
-							GameMenuButtonStore:Disable()
+						self:GetParent():Disable()
+						GameMenuButtonStore:Disable()
+
+						if self:GetParent():IsMouseOver(-18) then
+							ExecuteFrameScript(self:GetParent(), "OnEvent")
+							MainMenuBarMicroButton_OnEnter(self:GetParent())
 						end
 					</OnUpdate>
 				</Scripts>
@@ -480,11 +480,20 @@
 				self.Description = MAINMENUBAR_STORE_BUTTON_DESC
 				self.Tittle = MAINMENUBAR_STORE_BUTTON
 				self.DisableReason = MAINMENUBAR_STORE_DISABLE_REASON_1
+
+				self:RegisterCustomEvent("CUSTOM_STORE_AVAILABILITY_CHANGED")
+				self:RegisterCustomEvent("CUSTOM_CHALLENGE_ACTIVATED")
+				self:RegisterCustomEvent("CUSTOM_CHALLENGE_DEACTIVATED")
 			</OnLoad>
 			<OnEvent>
 				self.Description = MAINMENUBAR_STORE_BUTTON_DESC
 				self.Tittle = MAINMENUBAR_STORE_BUTTON
-				self.DisableReason = MAINMENUBAR_STORE_DISABLE_REASON_1
+
+				local enabled, loading, reson = IsStoreEnable()
+				self.DisableReason = reson
+				self.Spinner:SetShown(loading)
+
+				UpdateMicroButtons()
 			</OnEvent>
 			<OnClick function="ToggleStoreFrame"/>
 		</Scripts>

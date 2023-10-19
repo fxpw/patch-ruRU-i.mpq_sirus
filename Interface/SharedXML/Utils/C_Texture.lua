@@ -1,8 +1,4 @@
---	Filename:	C_Texture.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
+local S_ATLAS_STORAGE = S_ATLAS_STORAGE
 
 C_Texture = {}
 
@@ -17,24 +13,24 @@ local CONST_ATLAS_TILESVERT		= 8
 local CONST_ATLAS_TEXTUREPATH	= 9
 
 function C_Texture.GetAtlasInfo(atlasName)
-	if not atlasName then
-		error("C_Texture.GetAtlasInfo: AtlasName must be specified", 2)
-	elseif not S_ATLAS_STORAGE[atlasName] then
-		error(string.format("C_Texture.GetAtlasInfo: Atlas named %s does not exist", atlasName), 2)
+	if type(atlasName) ~= "string" then
+		error("Usage: C_Texture.GetAtlasInfo(\"atlasName\")", 2)
 	end
 
 	local atlas = S_ATLAS_STORAGE[atlasName]
-	local AtlasInfo = {}
+	if not atlas then
+		error(string.format("C_Texture.GetAtlasInfo: Atlas %s does not exist", atlasName), 2)
+	end
 
-	AtlasInfo.width 			= atlas[CONST_ATLAS_WIDTH]
-	AtlasInfo.height 			= atlas[CONST_ATLAS_HEIGHT]
-	AtlasInfo.leftTexCoord 		= atlas[CONST_ATLAS_LEFT]
-	AtlasInfo.rightTexCoord 	= atlas[CONST_ATLAS_RIGHT]
-	AtlasInfo.topTexCoord 		= atlas[CONST_ATLAS_TOP]
-	AtlasInfo.bottomTexCoord 	= atlas[CONST_ATLAS_BOTTOM]
-	AtlasInfo.tilesHorizontally = atlas[CONST_ATLAS_TILESHORIZ]
-	AtlasInfo.tilesVertically 	= atlas[CONST_ATLAS_TILESVERT]
-	AtlasInfo.filename 			= atlas[CONST_ATLAS_TEXTUREPATH]
-
-	return AtlasInfo
+	return {
+		width 				= atlas[CONST_ATLAS_WIDTH],
+		height 				= atlas[CONST_ATLAS_HEIGHT],
+		leftTexCoord 		= atlas[CONST_ATLAS_LEFT],
+		rightTexCoord 		= atlas[CONST_ATLAS_RIGHT],
+		topTexCoord 		= atlas[CONST_ATLAS_TOP],
+		bottomTexCoord 		= atlas[CONST_ATLAS_BOTTOM],
+		tilesHorizontally	= atlas[CONST_ATLAS_TILESHORIZ],
+		tilesVertically 	= atlas[CONST_ATLAS_TILESVERT],
+		filename 			= atlas[CONST_ATLAS_TEXTUREPATH],
+	}
 end

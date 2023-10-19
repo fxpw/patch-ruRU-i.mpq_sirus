@@ -18,7 +18,7 @@
 		</Backdrop>
 		<Layers>
 			<Layer level="ARTWORK">
-				<FontString name="$parentTextLeft1" inherits="GlueFontNormal" justifyH="LEFT" hidden="true" parentKey="TextLeft1">
+				<FontString name="$parentTextLeft1" inherits="GlueTooltipHeaderText" justifyH="LEFT" hidden="true" parentKey="TextLeft1">
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset>
@@ -27,7 +27,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentTextRight1" inherits="GlueFontNormal" justifyH="RIGHT" hidden="true" parentKey="TextRight1">
+				<FontString name="$parentTextRight1" inherits="GlueTooltipHeaderText" justifyH="RIGHT" hidden="true" parentKey="TextRight1">
 					<Anchors>
 						<Anchor point="RIGHT" relativeTo="$parentTextLeft1" relativePoint="LEFT">
 							<Offset>
@@ -36,7 +36,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentTextLeft2" inherits="GlueFontNormalSmall" justifyH="LEFT" hidden="true" parentKey="TextLeft2">
+				<FontString name="$parentTextLeft2" inherits="GlueTooltipText" justifyH="LEFT" hidden="true" parentKey="TextLeft2">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentTextLeft1" relativePoint="BOTTOMLEFT">
 							<Offset>
@@ -45,7 +45,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentTextRight2" inherits="GlueFontNormalSmall" justifyH="RIGHT" hidden="true" parentKey="TextRight2">
+				<FontString name="$parentTextRight2" inherits="GlueTooltipText" justifyH="RIGHT" hidden="true" parentKey="TextRight2">
 					<Anchors>
 						<Anchor point="RIGHT" relativeTo="$parentTextLeft2" relativePoint="LEFT">
 							<Offset>
@@ -54,7 +54,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentTextLeft3" inherits="GlueFontNormalSmall" justifyH="LEFT" hidden="true" parentKey="TextLeft3">
+				<FontString name="$parentTextLeft3" inherits="GlueTooltipText" justifyH="LEFT" hidden="true" parentKey="TextLeft3">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentTextLeft2" relativePoint="BOTTOMLEFT">
 							<Offset>
@@ -63,7 +63,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentTextRight3" inherits="GlueFontNormalSmall" justifyH="RIGHT" hidden="true" parentKey="TextRight3">
+				<FontString name="$parentTextRight3" inherits="GlueTooltipText" justifyH="RIGHT" hidden="true" parentKey="TextRight3">
 					<Anchors>
 						<Anchor point="RIGHT" relativeTo="$parentTextLeft3" relativePoint="LEFT">
 							<Offset>
@@ -72,7 +72,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentTextLeft4" inherits="GlueFontNormalSmall" justifyH="LEFT" hidden="true" parentKey="TextLeft4">
+				<FontString name="$parentTextLeft4" inherits="GlueTooltipText" justifyH="LEFT" hidden="true" parentKey="TextLeft4">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentTextLeft3" relativePoint="BOTTOMLEFT">
 							<Offset>
@@ -81,7 +81,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentTextRight4" inherits="GlueFontNormalSmall" justifyH="RIGHT" hidden="true" parentKey="TextRight4">
+				<FontString name="$parentTextRight4" inherits="GlueTooltipText" justifyH="RIGHT" hidden="true" parentKey="TextRight4">
 					<Anchors>
 						<Anchor point="RIGHT" relativeTo="$parentTextLeft4" relativePoint="LEFT">
 							<Offset>
@@ -90,32 +90,32 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentTextLeft5" inherits="GlueFontNormalSmall" justifyH="LEFT" hidden="true" parentKey="TextLeft5">
+				<FontString name="$parentTextLeft5" inherits="GlueTooltipText" justifyH="LEFT" hidden="true" parentKey="TextLeft5">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentTextLeft4" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentTextRight5" inherits="GlueFontNormalSmall" justifyH="RIGHT" hidden="true" parentKey="TextRight5">
+				<FontString name="$parentTextRight5" inherits="GlueTooltipText" justifyH="RIGHT" hidden="true" parentKey="TextRight5">
 					<Anchors>
 						<Anchor point="RIGHT" relativeTo="$parentTextLeft5" relativePoint="LEFT" x="40" y="0"/>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentTextLeft6" inherits="GlueFontNormalSmall" justifyH="LEFT" hidden="true" parentKey="TextLeft6">
+				<FontString name="$parentTextLeft6" inherits="GlueTooltipText" justifyH="LEFT" hidden="true" parentKey="TextLeft6">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentTextLeft5" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentTextRight6" inherits="GlueFontNormalSmall" justifyH="RIGHT" hidden="true" parentKey="TextRight6">
+				<FontString name="$parentTextRight6" inherits="GlueTooltipText" justifyH="RIGHT" hidden="true" parentKey="TextRight6">
 					<Anchors>
 						<Anchor point="RIGHT" relativeTo="$parentTextLeft6" relativePoint="LEFT" x="40" y="0"/>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentTextLeft7" inherits="GlueFontNormalSmall" justifyH="LEFT" hidden="true" parentKey="TextLeft7">
+				<FontString name="$parentTextLeft7" inherits="GlueTooltipText" justifyH="LEFT" hidden="true" parentKey="TextLeft7">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentTextLeft6" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentTextRight7" inherits="GlueFontNormalSmall" justifyH="RIGHT" hidden="true" parentKey="TextRight7">
+				<FontString name="$parentTextRight7" inherits="GlueTooltipText" justifyH="RIGHT" hidden="true" parentKey="TextRight7">
 					<Anchors>
 						<Anchor point="RIGHT" relativeTo="$parentTextLeft7" relativePoint="LEFT" x="40" y="0"/>
 					</Anchors>

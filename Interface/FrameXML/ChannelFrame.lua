@@ -164,7 +164,7 @@ end
 --[ Channel List Functions ]--
 function ChannelList_Update()
 	-- Scroll Bar Handling --
-	local frameHeight = ChannelListScrollChildFrame:GetHeight();
+	local frameHeight = 0;
 	local button, buttonName, buttonLines, buttonCollapsed, buttonSpeaker, hideVoice;
 	local name, header, collapsed, channelNumber, active, count, category, voiceEnabled, voiceActive;
 	local channelCount = GetNumDisplayChannels();
@@ -251,13 +251,14 @@ function ChannelList_Update()
 				channelNumber = nil;
 			end
 			button:Show();
+
+			-- Scroll Bar Handling --
+			frameHeight = frameHeight + button:GetHeight();
 		else
 --			button.channel = nil;
 			button:Hide();
 			button.voiceEnabled = nil;
 			button.voiceActive = nil;
-			-- Scroll Bar Handling --
-			frameHeight = frameHeight - button:GetHeight();
 		end
 	end	
 
@@ -553,8 +554,6 @@ function ChannelRoster_Update(id)
 	local channel, header, collapsed, channelNumber, count, active, category = GetChannelDisplayInfo(id);
 	local button, buttonName, buttonRank, buttonRankTexture, buttonVoice, buttonVoiceMuted, newWidth, nameWidth;
 
-	count = count or 0
-
 	if ( count ) then
 		if ( category == "CHANNEL_CATEGORY_GROUP" ) then
 			ChannelRosterChannelCount:SetText("("..count..")");
@@ -588,6 +587,7 @@ function ChannelRoster_Update(id)
 		ChannelRosterScrollFrame.scrolling = nil;
 		ChannelRosterChannelName:SetText("");
 		ChannelRosterChannelCount:SetText("");
+		count = 0;
 	end
 	local rosterOffset = FauxScrollFrame_GetOffset(ChannelRosterScrollFrame);
 	local name, owner, moderator, muted, active, enabled;
@@ -595,7 +595,11 @@ function ChannelRoster_Update(id)
 	for i=1, MAX_CHANNEL_MEMBER_BUTTONS do
 		rosterIndex = rosterOffset + i;
 		button = _G["ChannelMemberButton"..i];
-		name, owner, moderator, muted, active, enabled = GetChannelRosterInfo(id, rosterIndex)
+		if ( rosterIndex <= count ) then
+			name, owner, moderator, muted, active, enabled = GetChannelRosterInfo(id, rosterIndex)
+		else
+			name = nil
+		end
 
 		if ( name ) then
 			buttonName = _G["ChannelMemberButton"..i.."Name"];
@@ -621,8 +625,6 @@ function ChannelRoster_Update(id)
 
 			button:SetID(rosterIndex);
 			button:Show();
-
-			count = count + 1
 		else		
 			button:Hide();
 		end
@@ -1082,7 +1084,7 @@ function ChannelPulloutRoster_Update (roster)
 	local name = 1;
 	
 	if ( not CHANNELPULLOUT_OPTIONS.session ) then
-		CHANNEL_EMPTY_DATA[name] = GRAY_FONT_COLOR_CODE .. NO_VOICE_SESSIONS;
+		CHANNEL_EMPTY_DATA[name] = GRAY_FONT_COLOR_CODE .. NO_VOICE_SESSIONS .. FONT_COLOR_CODE_CLOSE ;
 		ChannelPulloutRoster_DrawButton(rosterFrame.buttons[1], CHANNEL_EMPTY_DATA);
 		for i = 2, #rosterFrame.buttons do
 			ChannelPulloutRoster_DrawButton(rosterFrame.buttons[i], nil);

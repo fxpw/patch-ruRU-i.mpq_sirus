@@ -862,6 +862,11 @@ function WatchFrame_DisplayTrackedQuests (lineFrame, initialOffset, maxHeight, f
 
 	if numQuestWatches < 1 then
 		WatchFrameLines.QuestHeader:Hide()
+	else
+		SetParentFrameLevel(WatchFrameLines.QuestHeader)
+		WatchFrameLines.QuestHeader:Show()
+		WatchFrameLines.QuestHeader:SetPoint("TOPRIGHT", lineFrame, "TOPRIGHT", 16, (initialOffset + 30))
+		WatchFrameLines.QuestHeader.Text:SetText(QUESTS_LABEL)
 	end
 
 	table.wipe(VISIBLE_WATCHES);
@@ -897,11 +902,6 @@ function WatchFrame_DisplayTrackedQuests (lineFrame, initialOffset, maxHeight, f
 				questTitle = WatchFrame_GetQuestLine();
 				WatchFrame_SetLine(questTitle, lastLine, -WATCHFRAME_QUEST_OFFSET, IS_HEADER, title, DASH_NONE, item);
 				if ( not lastLine ) then -- First line
-					WatchFrameLines.QuestHeader:SetFrameLevel(questTitle:GetFrameLevel() - 1)
-					WatchFrameLines.QuestHeader:Show()
-					WatchFrameLines.QuestHeader:SetPoint("TOPRIGHT", lineFrame, "TOPRIGHT", 16, (initialOffset + 30))
-					WatchFrameLines.QuestHeader.Text:SetText(QUESTS_LABEL)
-
 					questTitle:SetPoint("TOPRIGHT", lineFrame, "TOPRIGHT", 0, initialOffset);
 					questTitle:SetPoint("TOPLEFT", lineFrame, "TOPLEFT", 0, initialOffset);
 					topEdge = questTitle:GetTop();
@@ -1586,4 +1586,12 @@ function ObjectiveTracker_Expand( self, ... )
 	WatchFrame.HeaderMenu.MinimizeButton:GetNormalTexture():SetTexCoord(0, 0.5, 0.5, 1)
 	WatchFrame.HeaderMenu.MinimizeButton:GetPushedTexture():SetTexCoord(0.5, 1, 0.5, 1)
 	WatchFrame.HeaderMenu.Title:Hide()
+end
+
+function ObjectiveTrackerHeader_OnLoad(self)
+	self.Background:SetAtlas("Objective-Header", true)
+	self.LineGlow:SetAtlas("OBJFX_LineGlow", true)
+	self.SoftGlow:SetAtlas("OBJFX_Glow", true)
+	self.StarBurst:SetAtlas("OBJFX_StarBurst", true)
+	self.LineSheen:SetAtlas("OBJFX_LineBurst")
 end

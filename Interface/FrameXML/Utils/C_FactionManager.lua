@@ -25,7 +25,7 @@ local function fireCallbackType(callbacks, secure)
 			geterrorhandler()(err)
 		end
 
-		if hasArgs and callback[2] then
+		if not hasArgs or not callback[2] then
 			table.remove(callbacks, index)
 			size = size - 1
 		else
@@ -149,7 +149,7 @@ function C_FactionManager.UnregisterCallback(callback)
 	local callbacks = issecure() and secureCallbacks or addonCallbacks
 
 	for i = 1, #callbacks do
-		if type(callbacks[i]) == "table" and callbacks[i][1] == callback or callbacks[i] == callback then
+		if callbacks[i] == callback or (type(callbacks[i]) == "table" and callbacks[i][1] == callback) then
 			table.remove(callbacks, i)
 			return
 		end
@@ -197,16 +197,16 @@ end
 ---@return string factionName
 ---@return string factionNameLocalized
 function C_FactionManager.GetFactionInfoOriginal()
-	local race = UnitRace("player")
-	local raceData = S_CHARACTER_RACES_INFO_LOCALIZATION_ASSOC[race]
+	local _, _, raceID = UnitRace("player")
 
-	if raceData and raceData.raceID == E_CHARACTER_RACES.RACE_DRACTHYR then
+	if raceID == E_CHARACTER_RACES.RACE_DRACTHYR then
 		local factionID = C_FactionManager:GetOriginalFaction()
 		if factionID then
 			return returnFactionInfo(factionID)
 		end
 	end
 
+	local raceData = S_CHARACTER_RACES_INFO[raceID]
 	return returnFactionInfo(raceData.factionID)
 end
 

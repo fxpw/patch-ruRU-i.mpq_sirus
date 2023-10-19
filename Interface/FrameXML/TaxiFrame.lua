@@ -148,7 +148,7 @@ function TaxiNodeOnButtonEnter(button)
 				sY = TaxiGetSrcY(index, i)*h;
 				dX = TaxiGetDestX(index, i)*w;
 				dY = TaxiGetDestY(index, i)*h;
-				DrawLine(line, "TaxiRouteMap", sX, sY, dX, dY, 32, TAXIROUTE_LINEFACTOR_2);
+				DrawLine(line, "TaxiRouteMap", sX, sY, dX, dY, 32, TAXIROUTE_LINEFACTOR);
 				line:Show();
 			else
 				line:Hide();
@@ -187,7 +187,7 @@ function DrawOneHopLines()
 				sY = TaxiGetSrcY(i, 1)*h;
 				dX = TaxiGetDestX(i, 1)*w;
 				dY = TaxiGetDestY(i, 1)*h;
-				DrawLine(line, "TaxiRouteMap", sX, sY, dX, dY, 32, TAXIROUTE_LINEFACTOR_2);
+				DrawLine(line, "TaxiRouteMap", sX, sY, dX, dY, 32, TAXIROUTE_LINEFACTOR);
 				line:Show();
 			end
 		end
