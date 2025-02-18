@@ -8,6 +8,7 @@ TableUtil.Constants =
 {
 	AssociativePriorityTable = true,
 	ArraylikePriorityTable = false,
+	IsIndexTable = true,
 };
 
 function ipairs_reverse(table)
@@ -21,13 +22,13 @@ function ipairs_reverse(table)
 	return Enumerator, table, #table + 1;
 end
 
-function CreateTableEnumerator(tbl, indexBegin, indexEnd)
-	indexBegin = indexBegin and (indexBegin - 1) or 0;
-	indexEnd = indexEnd or math.huge;
+function CreateTableEnumerator(tbl, minIndex, maxIndex)
+	minIndex = minIndex and (minIndex - 1) or 0;
+	maxIndex = maxIndex or math.huge;
 
 	local function Enumerator(tbl, index)
 		index = index + 1;
-		if index <= indexEnd then
+		if index <= maxIndex then
 			local value = tbl[index];
 			if value ~= nil then
 				return index, value;
@@ -35,7 +36,24 @@ function CreateTableEnumerator(tbl, indexBegin, indexEnd)
 		end
 	end
 
-	return Enumerator, tbl, indexBegin;
+	return Enumerator, tbl, minIndex;
+end
+
+function CreateTableReverseEnumerator(tbl, minIndex, maxIndex)
+	minIndex = minIndex or 1;
+	maxIndex = (maxIndex or #tbl) + 1;
+
+	local function Enumerator(tbl, index)
+		index = index - 1;
+		if index >= minIndex then
+			local value = tbl[index];
+			if value ~= nil then
+				return index, value;
+			end
+		end
+	end
+
+	return Enumerator, tbl, maxIndex;
 end
 
 function tCount(t)
@@ -89,6 +107,21 @@ function tContainsValue(tbl, item)
 	return false;
 end
 
+function TableUtil.ContainsAllKeys(lhsTable, rhsTable)
+	for key, _ in pairs(lhsTable) do
+		if rhsTable[key] == nil then
+			return false;
+		end
+	end
+	return true;
+end
+
+function TableUtil.CompareValuesAsKeys(lhsTable, rhsTable, valueToKeyOp)
+	local lhsKeys = CopyTransformedValuesAsKeys(lhsTable, valueToKeyOp);
+	local rhsKeys = CopyTransformedValuesAsKeys(rhsTable, valueToKeyOp);
+	return TableUtil.ContainsAllKeys(lhsKeys, rhsKeys)
+end
+
 -- This is a deep compare on the values of the table (based on depth) but not a deep comparison
 -- of the keys, as this would be an expensive check and won't be necessary in most cases.
 function tCompare(lhsTable, rhsTable, depth)
@@ -125,6 +158,32 @@ function tInvert(tbl)
 		inverted[v] = k;
 	end
 	return inverted;
+end
+
+function TableUtil.TrySet(tbl, key)
+	if not tbl[key] then
+		tbl[key] = true;
+		return true;
+	end
+	return false;
+end
+
+function TableUtil.CopyUnique(tbl, isIndexTable)
+	local found = {};
+	local function FilterPredicate(value)
+		return TableUtil.TrySet(found, value);
+	end
+
+	return tFilter(tbl, FilterPredicate, isIndexTable);
+end
+
+function TableUtil.CopyUniqueByPredicate(tbl, isIndexTable, unaryPredicate)
+	local found = {};
+	local function FilterPredicate(value)
+		return TableUtil.TrySet(found, unaryPredicate(value));
+	end
+
+	return tFilter(tbl, FilterPredicate, isIndexTable);
 end
 
 function tFilter(tbl, pred, isIndexTable)
@@ -229,6 +288,14 @@ function TableUtil.ExecuteUntil(tbl, op)
 	return nil;
 end
 
+function TableUtil.Transform(tbl, op)
+	local result = {};
+	for k, v in pairs(tbl) do
+		table.insert(result, op(v));
+	end
+	return result;
+end
+
 function ContainsIf(tbl, pred)
 	for k, v in pairs(tbl) do
 		if (pred(v)) then
@@ -304,14 +371,22 @@ function CopyValuesAsKeys(tbl)
 	return output;
 end
 
+function CopyTransformedValuesAsKeys(tbl, transformOp)
+	local output = {};
+	for _, v in ipairs(tbl) do
+		output[transformOp(v)] = v;
+	end
+	return output;
+end
+
 function SafePack(...)
 	local tbl = { ... };
 	tbl.n = select("#", ...);
 	return tbl;
 end
 
-function SafeUnpack(tbl)
-	return unpack(tbl, 1, tbl.n);
+function SafeUnpack(tbl, startIndex)
+	return unpack(tbl, startIndex or 1, tbl.n);
 end
 
 function GetOrCreateTableEntry(table, key, defaultValue)
@@ -390,6 +465,16 @@ function SwapTableEntries(lhsTable, rhsTable, key)
 	rhsTable[key] = lhsValue;
 end
 
+function GetKeysArraySortedByValue(tbl)
+	local keysArray = GetKeysArray(tbl);
+
+	table.sort(keysArray, function(a, b) 
+		return tbl[a] < tbl[b];
+	end);
+	
+	return keysArray;
+end
+
 function TableUtil.OperateOnKeys(tbl, operation)
 	for key, value in pairs(tbl) do
 		operation(key);
@@ -403,6 +488,16 @@ function TableUtil.GetTableValueListFromEnumeration(tableKey, ...)
 	end
 
 	return values;
+end
+
+function TableUtil.GetHighestNumericalValueInTable(table)
+	local highestValue = nil;
+	for key, value in pairs(table) do
+		if type(value) == "number" and (not highestValue or value > highestValue) then
+			highestValue = value;
+		end
+	end
+	return highestValue;
 end
 
 --[[
@@ -559,15 +654,6 @@ function TableUtil.CreatePriorityTable(comparator, isAssociative)
 	setmetatable(t, mt);
 
 	return t;
-end
-
-function LockTable(t)
-	setmetatable(t, {
-		__newindex = function(_, key, value)
-			(print or printc)(string.format("LOCKTABLE: attempt to update a read-only table, operation %s = not performed\n%s", tostring(key), tostring(value), debugstack(2)))
-		end,
-		__metatable = false
-	})
 end
 
 function DeepMergeTable(destination, source)

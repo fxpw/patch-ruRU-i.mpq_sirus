@@ -1,0 +1,137 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_RealmShout.lua"/>
+
+	<Frame name="RealmShoutFrame" parent="UIParent" inherits="PKBT_PanelNoPortraitTemplate" frameStrata="DIALOG" enableMouse="true" hidden="true">
+		<Size x="585" y="575"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0"/>
+		</Anchors>
+		<Frames>
+			<Frame name="$parentContent" parentKey="Content">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="3" y="-37"/>
+					<Anchor point="BOTTOMRIGHT" x="-3" y="1"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackgroundTop" parentKey="BackgroundTop">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+								<Anchor point="TOPRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentBackgroundBottom" parentKey="BackgroundBottom">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentBackgroundMiddle" parentKey="BackgroundMiddle">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentBackgroundTop" relativePoint="BOTTOMLEFT" x="0" y="6"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackgroundBottom" relativePoint="TOPRIGHT" x="0" y="-6"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture name="$parentShadowBottom" parentKey="ShadowBottom">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<FontString name="$parentHeaderText" parentKey="HeaderText" inherits="PKBT_Font_16" text="STORE_REALM_SHOUT_HEADER">
+							<Size x="500" y="0"/>
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="$parentBackgroundTop" x="0" y="-4"/>
+							</Anchors>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+						<FontString name="$parentBodyText" parentKey="BodyText" inherits="PKBT_Font_15_NoShadow" justifyH="LEFT" text="STORE_REALM_SHOUT_BODY">
+							<Size x="500" y="0"/>
+							<Anchors>
+								<Anchor point="TOP" relativeTo="$parentBackgroundMiddle" x="0" y="-40"/>
+							</Anchors>
+							<Color r="0.161" g="0.075" b="0.043"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<ScrollFrame name="$parentEditBoxScroll" parentKey="EditBoxScroll" inherits="PKBT_EditBoxMulilineScrollTemplate">
+						<Size x="490" y="130"/>
+						<Anchors>
+							<Anchor point="BOTTOM" relativeTo="$parentBackgroundMiddle" x="0" y="50"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture name="$parentDecorTop" parentKey="DecorTop">
+									<Anchors>
+										<Anchor point="BOTTOM" relativePoint="TOP" x="0" y="6"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+					</ScrollFrame>
+					<Frame name="$parentBalance" parentKey="Balance" inherits="PKBT_BalanceTemplate">
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" x="30" y="25"/>
+						</Anchors>
+					</Frame>
+					<Button name="$parentPurchaseButton" parentKey="PurchaseButton" inherits="PKBT_RedButtonMultiWidgetPriceTemplate">
+						<Size x="180" y="52"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="0" y="16"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								self:GetParent():GetParent():OnPurchaseClick(button)
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="$parentPreviewButton" parentKey="PreviewButton" inherits="PKBT_BlueButtonTemplate" text="STORE_REALM_SHOUT_PREVIEW">
+						<Size x="165" y="52"/>
+						<Anchors>
+							<Anchor point="BOTTOMRIGHT" x="-16" y="16"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								self:GetParent():GetParent():OnPreviewClick(button)
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+			<Frame name="$parentBlockFrame" parentKey="BlockFrame" enableMouse="true" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="4" y="-4"/>
+					<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background" setAllPoints="true" alpha="0.5">
+							<Color r="0" g="0" b="0"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnMouseWheel function="nop"/>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, DefaultPanelMixin, PKBT_PanelNoPortraitMixin, StoreRealmShoutMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+</Ui>

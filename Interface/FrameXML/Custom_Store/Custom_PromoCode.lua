@@ -1,358 +1,460 @@
---	Filename:	Sirus_PromoCode.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
+local C_StoreSecure = C_StoreSecure
 
-PROMOCODE_ITEM_DATA = {}
+local VIEW_STATE = {
+	ENTER_CODE		= 0,
+	CLAIM_REWARDS	= 1,
+	ACTIVATED		= 2,
+}
 
-local DEFAULT_WINDOW_HEIGHT = 280
-local REWARD_BUTTON_HEIGHT = 62
-local REWARD_BUTTON_MAX_DISPLAYED = 3
+PromoCodeMixin = {}
 
-local PROMOCODE_CACHE = C_Cache("SIRUS_PROMOCODE_CACHE", false)
-
-function GetPromoCodeRewardCount()
-	return #PROMOCODE_ITEM_DATA
-end
-
-function PromoCodeFrame_OnLoad( self, ... )
+function PromoCodeMixin:OnLoad()
+	self.BASE_HEIGHT = self:GetHeight()
+	self.SCROLL_WIDTH = self.Content.Scroll:GetWidth()
+	self.MAX_SCROLL_ITEMS = 3
+	self.SCROLL_OFFSET_Y = 22
+	self.BUTTON_OFFSET_Y = 9
 	self.elapsed = 0
-	self.offset = 0
-end
+	self.state = VIEW_STATE.ENTER_CODE
+	self.dirty = true
 
-local buttonShowData = {
-	{0.150, {}},
-	{0.250, {}},
-	{0.400, {}}
-}
+	self:SetTitle(STORE_PROMOCODE_TITLE)
 
-function PromoCodeFrame_OnShow( self, ... )
-	PROMOCODE_ITEM_DATA = {}
+	self.Content.BackgroundTop:SetAtlas("PKBT-Store-Background-DarkSandstone-Bottom", true)
+	self.Content.BackgroundBottom:SetAtlas("PKBT-Tile-DarkSandstone-256")
 
-	PromoCodeFrame_ResetAnimation()
+	self.Content.BackgroundBottom:SetPoint("TOP", self.Content.Code, "BOTTOM", 0, 0)
 
-	for index, button in pairs(self.rewardButtons) do
-		button:Hide()
+	self.Content.Code.Background:SetAtlas("PKBT-Tile-Wood-128", true)
 
-		buttonShowData[index][2] = button
+	self.Content.ShadowBottom:SetAtlas("PKBT-Panel-Shadow-Bottom", true)
+
+	self.Content.Code.ShadowTop:SetAtlas("PKBT-WoodShadow-Top", true)
+	self.Content.Code.ShadowBottom:SetAtlas("PKBT-WoodShadow-Top", true)
+	self.Content.Code.ShadowBottom:SetSubTexCoord(0, 1, 1, 0)
+	self.Content.Code.ShadowLeft:SetAtlas("PKBT-WoodShadow-Left", true)
+	self.Content.Code.ShadowRight:SetAtlas("PKBT-WoodShadow-Left", true)
+	self.Content.Code.ShadowRight:SetSubTexCoord(1, 0, 0, 1)
+
+	self.Content.Code.VignetteTopLeft:SetAtlas("PKBT-Vignette-Bronze-TopLeft", true)
+	self.Content.Code.VignetteTopRight:SetAtlas("PKBT-Vignette-Bronze-TopRight", true)
+	self.Content.Code.VignetteBottomLeft:SetAtlas("PKBT-Vignette-Bronze-BottomLeft", true)
+	self.Content.Code.VignetteBottomRight:SetAtlas("PKBT-Vignette-Bronze-BottomRight", true)
+
+	self.Content.Code.DividerTop:SetAtlas("PKBT-Divider-Dark", true)
+	self.Content.Code.DividerBottom:SetAtlas("PKBT-Divider-Dark", true)
+	self.Content.Code.DividerBottom:SetSubTexCoord(0, 1, 1, 0)
+
+	self.Content.Code.EditBox.Background:SetAtlas("PKBT-TitlePanel-Background-Center", true)
+
+	self.Content.Code.EditBox.DecorTop:SetAtlas("PKBT-Panel-Gold-Deacor-Header", true)
+	self.Content.Code.EditBox.DecorBottom:SetAtlas("PKBT-Panel-Gold-Deacor-Footer", true)
+
+	self.Content.Code.EditBox.DecorLeft:SetAtlas("PKBT-Store-PromoDecor-Left", true)
+	self.Content.Code.EditBox.DecorRight:SetAtlas("PKBT-Store-PromoDecor-Right", true)
+
+	self.Content.Code.EditBox:SetMaxLetters(C_StoreSecure.GetPromoCodeMaxLenght())
+	self.Content.Code.EditBox:SetCustomCharFilter(function(text)
+		return text:upper():gsub("[^A-Z]+", "")
+	end)
+	self.Content.Code.EditBox.OnTextValueChanged = function(this, value, userInput)
+		self:ValidateCode()
 	end
 
-	self.Container.PromoCodeEditBoxFrame:SetText("")
-	self.ScrollFrame:Hide()
+	self.Content.Scroll.ScrollBar:SetBackgroundShown(false)
+	self.Content.Scroll.ScrollBar.Show = function(this)
+		local scrollFrame = this:GetParent()
+		scrollFrame:SetPoint("RIGHT", -50, 0)
+		local scrollWidth = self.SCROLL_WIDTH - 30
+		scrollFrame.scrollChild:SetWidth(scrollWidth)
 
-	self.ActionButton:SetText(PROMOCODE_SHOW_REWARD)
-	self.ActionButton:Disable()
-	self.ActionButton.tooltip = nil
+		for _, button in ipairs(scrollFrame.buttons) do
+			button:SetWidth(scrollWidth)
+		end
+		getmetatable(this).__index.Show(this)
+	end
+	self.Content.Scroll.ScrollBar.Hide = function(this)
+		local scrollFrame = this:GetParent()
+		scrollFrame:SetPoint("RIGHT", -20, 0)
+		local scrollWidth = self.SCROLL_WIDTH
+		scrollFrame.scrollChild:SetWidth(scrollWidth)
 
-	self:SetHeight(DEFAULT_WINDOW_HEIGHT)
+		for _, button in ipairs(scrollFrame.buttons) do
+			button:SetWidth(scrollWidth)
+		end
+		getmetatable(this).__index.Hide(this)
+	end
+	self.Content.Scroll.update = function(scrollFrame)
+		self:UpdateItemList()
+	end
 
-	self.CloseButton:SetToplevel(true)
-	self.CloseButton:SetFrameStrata("TOOLTIP")
-	self.CloseButton:SetScript("OnClick", function(self, ...) HideUIPanel(self:GetParent()) end)
+	self.Content.Scroll.scrollBar = self.Content.Scroll.ScrollBar
+	HybridScrollFrame_CreateButtons(self.Content.Scroll, "PromoCodeItemPlateTemplate", 0, 0, nil, nil, nil, -self.BUTTON_OFFSET_Y)
 
-	self.WaitServerResponseFrame:Hide()
-
-	self.promoCode = nil
-	self.windowState = 1
-	self.offset = 0
-
-	local scrollbar = _G[PromoCodeFrame.ScrollFrame:GetName().."ScrollBar"]
-	scrollbar:SetValue(self.offset)
-
-	PromoCodePopupFrame:Hide()
-
-	self.Container.PromoCodeEditBoxFrame:Show()
-	self.header.description:Show()
-	self.header.promoCodeActiveLabel:Hide()
-	self.Container.databaseText:Hide()
-
-	self.Container.PromoCodeEditBoxFrame:EnableKeyboard(true)
+	self:RegisterCustomEvent("STORE_PROMOCODE_ITEMLIST")
+	self:RegisterCustomEvent("STORE_PROMOCODE_REWARD_CLAIMED")
+	self:RegisterCustomEvent("STORE_PROMOCODE_ERROR")
+	self:RegisterCustomEvent("STORE_PROMOCODE_WAIT")
+	self:RegisterCustomEvent("STORE_PROMOCODE_READY")
 end
 
-function PromoCodeFrame_OnHide( self, ... )
-	PromoCodePopupFrame:Hide()
-	PromoCodeErrorFrame:Hide()
-end
+function PromoCodeMixin:OnEvent(event, ...)
+	if event == "STORE_PROMOCODE_ITEMLIST" then
+		local code, canActivate = ...
 
-local animationTime = 0.500
-function PromoCodeFrame_OnUpdate( self, elapsed, ... )
-	if not self.isAnimationEnd then
-		local rewardCount = GetPromoCodeRewardCount()
-		local rewardCountMax = rewardCount > REWARD_BUTTON_MAX_DISPLAYED and REWARD_BUTTON_MAX_DISPLAYED or rewardCount
-		local isShowAnimation = PromoCodeFrame.isAnimationShow
-		local heightCalc = (60 * rewardCountMax) + (3 * rewardCountMax)
-		local height =  inBack(self.elapsed, 0, heightCalc, animationTime)
-		local offset
-
-		if isShowAnimation then
-			offset = self.height + height
+		if canActivate then
+			self.blockAction = nil
+			self.Content.ActionButton.disabledTooltip = nil
 		else
-			offset = self.height - height
+			self.blockAction = true
+			self.Content.ActionButton.disabledTooltip = STORE_PROMOCODE_ACTION_BUTTON_ERROR
+			self.Content.ActionButton:Disable()
 		end
 
-		if isShowAnimation then
-			for i = 1, rewardCountMax do
-				local button = buttonShowData[i]
+		self:SetState(VIEW_STATE.CLAIM_REWARDS)
+		self.dirty = true
+		self:UpdateItemList()
 
-				if button and not button[2]:IsShown() then
-					if self.elapsed >= button[1] then
-						button[2]:Show()
-					end
-				end
-			end
+		if C_StoreSecure.GetNumPromoCodeItems(self:GetCode()) > 0 then
+			self:Expand()
 		else
-			for i = rewardCountMax, 1, -1 do
-				local button = buttonShowData[i]
-				local elapsed = 0.500 - self.elapsed
+			self:Colapse()
+		end
+	elseif event == "STORE_PROMOCODE_REWARD_CLAIMED" then
+		local code, message = ...
+		self:SetState(VIEW_STATE.ACTIVATED)
+		self:ShowMessage(message)
+		self:Colapse()
+	elseif event == "STORE_PROMOCODE_WAIT" then
+		self:DisableInput()
+	elseif event == "STORE_PROMOCODE_READY" then
+		self:EnableInput()
+	elseif event == "STORE_PROMOCODE_ERROR" then
+		local errorMessage = ...
+		self:EnableInput(self:GetState() == VIEW_STATE.ENTER_CODE)
+		C_StoreSecure.GetStoreFrame():ShowError(self, errorMessage)
+	end
+end
 
-				if button and button[2]:IsShown() then
-					if elapsed <= button[1] then
-						button[2].animOut:Play()
-					end
-				end
+function PromoCodeMixin:OnShow()
+	self.Content.Code.Message:SetWidth(self.Content.Code:GetWidth() - 100)
+	self:Reset()
+	self:ValidateCode()
+	PlaySound(SOUNDKIT.UI_IG_STORE_BUY_BUTTON)
+end
+
+function PromoCodeMixin:GetState()
+	return self.state
+end
+
+function PromoCodeMixin:SetState(state)
+	if self.state == state then
+		return
+	end
+
+	self.state = state
+
+	if state == VIEW_STATE.ENTER_CODE then
+		self.Content.TopText:SetText(STORE_PROMOCODE_TEXT)
+		self.Content.ActionButton:SetText(STORE_PROMOCODE_ACTIVATE)
+	elseif state == VIEW_STATE.CLAIM_REWARDS then
+		self.Content.ActionButton:SetText(STORE_PROMOCODE_TAKE_ITEMS)
+	elseif state == VIEW_STATE.ACTIVATED then
+		self.Content.TopText.animNextText = STORE_PROMOCODE_ACTIVATED
+		self.Content.ActionButton:SetText(CLOSE)
+	end
+end
+
+function PromoCodeMixin:Reset()
+	self:SetState(VIEW_STATE.ENTER_CODE)
+
+	self.blockAction = nil
+	self:ToggleBlockFrame(false)
+	C_StoreSecure.GetStoreFrame():HideErrors(self)
+
+	self.Content.Code.Message.FadeInAnim:Stop()
+	self.Content.Code.EditBox.FadeOutAnim:Stop()
+	self.Content.TopText.FadeOutAnim:Stop()
+
+	self.Content.TopText:SetAlpha(1)
+	self.Content.Code.Message:Hide()
+	self.Content.Code.EditBox:SetText("")
+	self.Content.Code.EditBox:SetAlpha(1)
+	self.Content.Code.EditBox:Show()
+	self.Content.ActionButton.disabledTooltip = nil
+
+	self.Content.Scroll.ScrollBar:SetValue(0)
+
+	self:StopAnimation()
+	self:Colapse(true)
+	self:EnableInput(true, true)
+end
+
+function PromoCodeMixin:ToggleBlockFrame(toggle)
+	if toggle and not self:IsShown() then
+		return
+	end
+
+	self.BlockFrame:SetShown(toggle)
+
+	if toggle then
+		SetParentFrameLevel(self.BlockFrame, 5)
+	end
+end
+
+function PromoCodeMixin:SetCode(code)
+	self.Content.Code.EditBox:SetText(code)
+end
+
+function PromoCodeMixin:GetCode()
+	return self.Content.Code.EditBox:GetText()
+end
+
+function PromoCodeMixin:IsCodeValid(code)
+	return C_StoreSecure.IsCorrectPromoCodeFormat(code)
+end
+
+function PromoCodeMixin:ValidateCode()
+	self.Content.ActionButton:SetEnabled(self:IsCodeValid(self:GetCode()))
+end
+
+function PromoCodeMixin:OnActionClick(button)
+	if self.Content.ActionButton:IsEnabled() ~= 1 then
+		return
+	end
+
+	if self.state == VIEW_STATE.ENTER_CODE then
+		local onAccept = function(dialog)
+			self:DisableInput(true)
+			self:ToggleBlockFrame(false)
+			local success = C_StoreSecure.ActivatePromoCode(self:GetCode())
+			if success then
+				PlaySound(SOUNDKIT.UI_IG_STORE_CONFIRM_PURCHASE_BUTTON)
+			else
+				self:EnableInput(true)
+			end
+			return true
+		end
+		local onCancel = function(dialog)
+			self:EnableInput(true)
+			self:ToggleBlockFrame(false)
+			return true
+		end
+
+		self:DisableInput(true)
+		self:ToggleBlockFrame(true)
+
+		C_StoreSecure.GetStoreFrame():ShowError(self,
+			STORE_PROMOCODE_POPUP_FASTEN_DESC, STORE_PROMOCODE_POPUP_FASTEN_HEAD, Enum.StoreDialogStyle.Wood,
+			YES, onAccept,
+			nil, onCancel
+		)
+	elseif self.state == VIEW_STATE.CLAIM_REWARDS then
+		C_StoreSecure.ClaimPromoCodeRewards(self:GetCode())
+		PlaySound(SOUNDKIT.UI_IG_STORE_CONFIRM_PURCHASE_BUTTON)
+	elseif self.state == VIEW_STATE.ACTIVATED then
+		HideUIPanel(self)
+	end
+end
+
+function PromoCodeMixin:DisableInput(disableCodeBox, force)
+	if self:IsAnimationPlaying() and not force then
+		return
+	end
+
+	if disableCodeBox then
+		self.Content.Code.EditBox:Disable()
+	end
+	self.Content.ActionButton:ShowSpinner()
+	self.Content.ActionButton:Disable()
+end
+
+function PromoCodeMixin:EnableInput(enableCodeBox, force)
+	if self:IsAnimationPlaying() and not force then
+		return
+	end
+
+	if enableCodeBox then
+		self.Content.Code.EditBox:Enable()
+	end
+	self.Content.ActionButton:HideSpinner()
+	if not self.blockAction then
+		self.Content.ActionButton:Enable()
+	end
+end
+
+local ANIMATION_DURATION = 0.500
+local ANIMATION_SCROLL_DURATION = 0.150
+local ANIMATION_SCROLL_START = ANIMATION_DURATION - ANIMATION_SCROLL_DURATION
+
+function PromoCodeMixin:OnUpdate(elapsed)
+	self.elapsed = self.elapsed + elapsed
+
+	local numItems = C_StoreSecure.GetNumPromoCodeItems(self:GetCode())
+	local numScrollItems = math.min(self.MAX_SCROLL_ITEMS, numItems)
+	local buttonHeight = self.Content.Scroll.buttons[1]:GetHeight()
+	local scrollHeight = (buttonHeight * numScrollItems) + (self.SCROLL_OFFSET_Y + self.BUTTON_OFFSET_Y * (numScrollItems - 1)) + 2
+	local animElapsed = math.min(self.elapsed, ANIMATION_DURATION)
+	local progressHeight = inBack(animElapsed, 0, scrollHeight, ANIMATION_DURATION, 1.5)
+
+	if self.animExpand then
+		self:SetHeight(self.BASE_HEIGHT + progressHeight)
+	else
+		self:SetHeight(self.BASE_HEIGHT + scrollHeight - progressHeight)
+	end
+
+	if numItems > self.MAX_SCROLL_ITEMS then
+		local scrollAlpha = self.animExpand and 0 or 1
+		if animElapsed >= ANIMATION_SCROLL_START then
+			if self.animExpand then
+				scrollAlpha = (animElapsed - ANIMATION_SCROLL_START) / ANIMATION_SCROLL_DURATION
+			else
+				scrollAlpha = 1 - (animElapsed - ANIMATION_SCROLL_START) / ANIMATION_SCROLL_DURATION
 			end
 		end
 
-		self:SetHeight(offset)
+		self.Content.Scroll.ScrollBar:SetAlpha(scrollAlpha)
+	end
 
-		self.elapsed = self.elapsed + elapsed
-		if self.elapsed > 0.500 then
-			self.Container.PromoCodeEditBoxFrame:EnableKeyboard(false)
+	if self.elapsed >= ANIMATION_DURATION then
+		self:StopAnimation()
 
-			if isShowAnimation then
-				self.windowState = 2
-				PromoCodeFrameActionButton:SetText(PROMOCODE_RECIVE_REWARD)
-				self.ScrollFrame:SetShown(rewardCount > REWARD_BUTTON_MAX_DISPLAYED)
-				self:SetHeight(self.height + heightCalc)
-				PromoCodeFrame_UpdateRewardButtons()
-			else
-				self:SetHeight(self.height - heightCalc)
-				self.Container.PromoCodeEditBoxFrame.animOut:Play()
-				self.header.description.animOut:Play()
-				self.ScrollFrame:Hide()
-				PromoCodeFrameActionButton:SetText(CLOSE)
-
-				PromoCodeFrame.windowState = 3
-			end
-
-			PromoCodeFrame_ResetAnimation()
+		if self.animColapse then
+			self.Content.Scroll:Hide()
 		end
 	end
 end
 
-function PromoCodeFrame_ResetAnimation()
-	PromoCodeFrame.isAnimationEnd = true
-	PromoCodeFrame.elapsed = 0
-
-	PromoCodeFrame:SetScript("OnUpdate", nil)
+function PromoCodeMixin:IsAnimationPlaying()
+	return self.animExpand or self.animColapse
 end
 
-function PromoCodeFrame_StartAnimation( animationType )
-	if PromoCodeFrame.isAnimationEnd then
-		PromoCodeFrame.isAnimationEnd = false
-		PromoCodeFrame.elapsed = 0
-		PromoCodeFrame.isAnimationShow = animationType
-		PromoCodeFrame.height = PromoCodeFrame:GetHeight()
+function PromoCodeMixin:StopAnimation()
+	self.animExpand = nil
+	self.animColapse = nil
+	self.elapsed = 0
+	self:SetScript("OnUpdate", nil)
+	self:EnableInput()
+end
 
-		PromoCodeFrame:SetScript("OnUpdate", PromoCodeFrame_OnUpdate)
+function PromoCodeMixin:Expand(skipAnimation)
+	if self.expanded or self.animExpand then
+		return
+	end
+
+	self:DisableInput()
+
+	self.Content.Scroll:Show()
+	self.Content.Scroll.ScrollBar:SetAlpha(0)
+
+	self.expanded = true
+
+	if skipAnimation then
+		self:OnUpdate(ANIMATION_DURATION)
+	else
+		self.animExpand = true
+		self:SetScript("OnUpdate", self.OnUpdate)
+		self:OnUpdate(0)
 	end
 end
 
-function PromoCodeFrameActionButton_OnClick( self, ... )
-	if PromoCodeFrame.isAnimationEnd then
-		if PromoCodeFrame.windowState == 1 then
-			if not PromoCodePopupFrame:IsShown() then
-				local promoCodeStorage = PROMOCODE_CACHE:Get("ACTIVE_PROMOCODE", {}, nil, true)
-				local editBoxText = PromoCodeFrame.Container.PromoCodeEditBoxFrame:GetText()
+function PromoCodeMixin:Colapse(skipAnimation)
+	if not self.expanded or self.animColapse then
+		return
+	end
 
-				if not promoCodeStorage[tostring(editBoxText)] then
-					PromoCodePopupFrame:Show()
-				else
-					PromoCodeFrameEditBox_EnterCode(PromoCodeFrame.Container.PromoCodeEditBoxFrame)
-				end
-			end
-		elseif PromoCodeFrame.windowState == 2 then
-			SendServerMessage("ACMSG_PROMOCODE_SUBMIT", PromoCodeFrame.promoCode)
-		elseif PromoCodeFrame.windowState == 3 then
-			HideUIPanel(PromoCodeFrame)
-		end
+	self:DisableInput()
+
+	self.expanded = nil
+
+	if skipAnimation then
+		self:OnUpdate(ANIMATION_DURATION)
+		self.Content.Scroll:Hide()
+	else
+		self.animColapse = true
+		self:SetScript("OnUpdate", self.OnUpdate)
+		self:OnUpdate(0)
 	end
 end
 
-function PromoCodeFrameEditBox_EnterCode( self, ... )
-	PromoCodeFrame.WaitServerResponseFrame:Show()
-	PromoCodeFrame.promoCode = tostring(self:GetText())
-
-	self:ClearFocus()
-	
-	SendServerMessage("ACMSG_PROMOCODE_REWARD", PromoCodeFrame.promoCode)
-
-	local promoCodeStorage = PROMOCODE_CACHE:Get("ACTIVE_PROMOCODE", {}, nil, true)
-	promoCodeStorage[PromoCodeFrame.promoCode] = PromoCodeFrame.promoCode
-
-	PROMOCODE_CACHE:Set("ACTIVE_PROMOCODE", promoCodeStorage, nil, true)
+function PromoCodeMixin:ShowMessage(message)
+	self.Content.Code.Message:SetText(message)
+	self.Content.Code.Message:Show()
+	self.Content.Code.Message.FadeInAnim:Play()
+	self.Content.Code.EditBox.FadeOutAnim:Play()
+	self.Content.TopText.FadeOutAnim:Play()
 end
 
-function PromoCodeScrollFrame_OnVerticalScroll(self, offset)
-	local scrollbar = _G[self:GetName().."ScrollBar"]
-	scrollbar:SetValue(offset) 
-	PromoCodeFrame.offset = floor((offset / REWARD_BUTTON_HEIGHT) + 0.5)
-	PromoCodeFrame_UpdateRewardButtons()
-end
+function PromoCodeMixin:UpdateItemList()
+	local scrollFrame = self.Content.Scroll
+	local numItems = C_StoreSecure.GetNumPromoCodeItems(self:GetCode())
 
-local PromoCodeTemplate = {
-	[1] = { -- Быстрый старт
-		icon = "Interface\\ICONS\\UI_Promotion_CharacterBoost",
-		name = PROMOCODE_FAST_LEVEL_BOOST,
-	},
-	[2] = { -- Золото
-		icon = "Interface\\ICONS\\Inv_misc_coin_01",
-		name = PROMOCODE_GOLD,
-	}
-}
+	if numItems == 0 then
+		self:Colapse()
+		scrollFrame:Hide()
+		return
+	end
 
-function PromoCodeFrame_UpdateRewardButtons()
-	local rewardCount = GetPromoCodeRewardCount()
-	local rewardCountMax = rewardCount > REWARD_BUTTON_MAX_DISPLAYED and REWARD_BUTTON_MAX_DISPLAYED or rewardCount
-	
-	for i = 1, rewardCountMax do
-		local index = PromoCodeFrame.offset + i
-		local button = PromoCodeFrame.rewardButtons[i]
+	local offset = HybridScrollFrame_GetOffset(scrollFrame)
 
-		local itemData = PROMOCODE_ITEM_DATA[index]
-
-		if itemData and button then
-			local itemType, itemEntry, itemCount = unpack(itemData)
-			local icon, name, link, quality
-
-			if itemType == 0 then
-				local itemName, itemLink, itemQuality, _, _, _, _, _, _, itemTexture = GetItemInfo(itemEntry)
-
-				icon 	= itemTexture
-				name 	= itemName
-				link 	= itemLink
-				quality = itemQuality
-			else
-				local data = PromoCodeTemplate[itemType]
-
-				if data then
-					icon = data.icon
-					name = data.name
-				end
-			end
-
-			button.Icon:SetTexture(icon or "")
-			button.Text:SetText(name or "")
-
-			if quality then
-				button.Text:SetTextColor(GetItemQualityColor(quality))
-			else
-				button.Text:SetTextColor(1, 1, 1)
-			end
-
-			if itemCount > 1 then
-				button.Count:SetText(itemCount)
-			else
-				button.Count:SetText("")
-			end
-
-			button.link = link
+	for index, button in ipairs(scrollFrame.buttons) do
+		local itemIndex = index + offset
+		if itemIndex <= numItems then
+			local name, link, rarity, icon, amount = C_StoreSecure.GetPromoCodeItemsInfo(self:GetCode(), itemIndex)
+			button:SetOwner(self)
+			button:SetID(itemIndex)
+			button:SetItem(name, link, rarity, icon, amount)
+			button:Show()
+		else
+			button:Hide()
 		end
 	end
 
-	if rewardCount > REWARD_BUTTON_MAX_DISPLAYED then
-		FauxScrollFrame_Update(PromoCodeFrame.ScrollFrame, rewardCount, REWARD_BUTTON_MAX_DISPLAYED, REWARD_BUTTON_HEIGHT, nil, nil, nil, nil, nil, nil, true)
-	end
-
-	if PromoCodeFrame.activeButton then
-		PromoCodeLootButton_OnEnter(PromoCodeFrame.activeButton)
+	if self.dirty then
+		local buttonHeight = scrollFrame.buttons[1] and scrollFrame.buttons[1]:GetHeight() or 0
+		local scrollHeight = buttonHeight * numItems + self.BUTTON_OFFSET_Y * (numItems - 1) + -self.BUTTON_OFFSET_Y / 3
+		HybridScrollFrame_Update(scrollFrame, scrollHeight, scrollFrame:GetHeight())
+		self.dirty = nil
 	end
 end
 
-function PromoCodeLootButton_OnEnter( self, ... )
-	if self.link then
+PromoCodeItemPlateMixin = CreateFromMixins(PKBT_OwnerMixin)
+
+function PromoCodeItemPlateMixin:OnLoad()
+	self.UpdateTooltip = self.OnEnter
+end
+
+function PromoCodeItemPlateMixin:OnEnter()
+	self.Background:SetTexture(0.157, 0.157, 0.157)
+
+	if self.itemLink then
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-		GameTooltip:SetHyperlink(self.link)
+		GameTooltip:SetHyperlink(self.itemLink)
 		GameTooltip:Show()
+	end
 
-		self:GetParent().activeButton = self
-	else
-		if GameTooltip:IsShown() then
-			GameTooltip_Hide()
-		end
+	CursorUpdate(self)
+end
+
+function PromoCodeItemPlateMixin:OnLeave()
+	self.Background:SetTexture(0.059, 0.059, 0.059)
+	if self.itemLink then
+		GameTooltip_Hide()
+	end
+	ResetCursor()
+end
+
+function PromoCodeItemPlateMixin:OnClick(button)
+	if self.itemLink then
+		HandleModifiedItemClick(self.itemLink)
 	end
 end
 
-function PromoCodePopupFrameAcceptButton_OnClick( self, ... )
-	PromoCodeFrameEditBox_EnterCode(PromoCodeFrame.Container.PromoCodeEditBoxFrame)
-
-	self:GetParent():Hide()
-end
-
-function PromoCodeShowErrorFrame( text )
-	PromoCodeErrorFrame:Show()
-	PromoCodeErrorFrame.Title:SetText(STORE_ERROR)
-	PromoCodeErrorFrame.Description:SetText(text)
-	PromoCodeErrorFrame.CloseButton:Hide()
-end
-
-function PromoCodeCacheRemove( promoCode )
-	if not promoCode then
-		return
-	end
-
-	local promoCodeStorage = PROMOCODE_CACHE:Get("ACTIVE_PROMOCODE", {}, nil, true)
-
-	promoCodeStorage[promoCode] = nil
-	PROMOCODE_CACHE:Set("ACTIVE_PROMOCODE", promoCodeStorage, nil, true)
-end
-
-function EventHandler:ASMSG_PROMOCODE_REWARD( msg )
-	PROMOCODE_ITEM_DATA = {}
-
-	PromoCodeFrame.WaitServerResponseFrame:Hide()
-
-	local splitStorage = C_Split(msg, "|")
-	local isCanActivatePromoCode = nil
-
-	if #splitStorage > 1 then
-		isCanActivatePromoCode = tonumber(table.remove(splitStorage, #splitStorage))
-
-		for i = 1, #splitStorage do
-			local splitData = splitStorage[i]
-
-			if splitData then
-				local itemData = C_Split(splitData, ":")
-				PROMOCODE_ITEM_DATA[#PROMOCODE_ITEM_DATA + 1] = {tonumber(itemData[1]), tonumber(itemData[2]), tonumber(itemData[3])}
-			end
-		end
-		PromoCodeFrame_StartAnimation(true)
-	else
-		local errorID = tonumber(msg)
-		PromoCodeShowErrorFrame(_G["ASMSG_PROMOCODE_REWARD_ERROR"..errorID])
-
-		PromoCodeCacheRemove(PromoCodeFrame.promoCode)
-		return
-	end
-
-	PromoCodeFrame.ActionButton:SetEnabled(isCanActivatePromoCode == 1)
-
-	if isCanActivatePromoCode ~= 1 then
-		PromoCodeFrame.ActionButton.tooltip = PROMOCODE_ACTION_BUTTON_ERROR
-	end
-end
-
-function EventHandler:ASMSG_PROMOCODE_SUBMIT( msg )
-	local splitStorage = C_Split(msg, ":")
-	PromoCodeCacheRemove(PromoCodeFrame.promoCode)
-
-	if #splitStorage > 1 then
-		PromoCodeFrame.Container.databaseText:SetText(splitStorage[2])
-		PromoCodeFrame_StartAnimation(false)
-	else
-		local errorID = tonumber(msg)
-		PromoCodeShowErrorFrame(_G["ASMSG_PROMOCODE_SUBMIT_EROR"..errorID])
-		return
-	end
+function PromoCodeItemPlateMixin:SetItem(name, itemLink, rarity, icon, amount)
+	self.Item:SetIcon(icon)
+	self.Item:SetAmount(amount)
+	self.Name:SetText(name)
+	self.Name:SetTextColor(GetItemQualityColor(rarity))
+	self.itemLink = itemLink
+	self.hasItem = itemLink ~= nil
 end

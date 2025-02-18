@@ -176,6 +176,7 @@
 				<HighlightTexture alphaMode="ADD" file="Interface\Vehicles\UI-Vehicles-Button-Highlight">
 					<TexCoords left="0.130625" right="0.879375" top="0.130625" bottom="0.879375"/>
 				</HighlightTexture>
+				<DisabledTexture/>
 			</Button>
 			<Frame name="VehicleMenuBarActionButtonFrame" frameStrata="HIGH" enableMouse="false" toplevel="true">
 				<Size>

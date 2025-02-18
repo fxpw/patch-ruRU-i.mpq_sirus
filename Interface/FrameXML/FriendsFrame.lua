@@ -810,7 +810,7 @@ function WhoList_Update()
 		if ilevel then
 			ilevel = tonumber(ilevel)
 			if ilevel then
-				local ilevelColor = ItemLevelMixIn:GetColor(ilevel)
+				local ilevelColor = GetItemLevelColor(ilevel)
 				ilevelText = ilevelColor:WrapTextInColorCode(ilevel)
 			end
 		end

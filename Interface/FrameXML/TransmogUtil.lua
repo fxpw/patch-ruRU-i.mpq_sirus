@@ -253,7 +253,7 @@ TRANSMOG_SLOTS = {};
 
 -- this will indirectly populate slotIDToName
 do
-	function Add(slotName, transmogType, modification, armorCategoryID)
+	local function Add(slotName, transmogType, modification, armorCategoryID)
 		local location = TransmogUtil.CreateTransmogLocation(slotName, transmogType, modification);
 		local lookupKey = location:GetLookupKey();
 		TRANSMOG_SLOTS[lookupKey] = {location = location, armorCategoryID = armorCategoryID};

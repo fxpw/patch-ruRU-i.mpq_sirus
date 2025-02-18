@@ -1,0 +1,331 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_ItemBrowser.lua"/>
+
+	<Button name="ItemBrowserListHeaderButtonTemplate" virtual="true">
+		<Size x="50" y="30"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" setAllPoints="true">
+					<Color r="0.2" g="0.2" b="0.2"/>
+				</Texture>
+			</Layer>
+	<!--
+			<Layer level="HIGHLIGHT">
+				<Texture name="$parentHighlight" parentKey="Highlight" setAllPoints="true" alpha="0.2" alphaMode="ADD">
+					<Color r="1" g="1" b="1"/>
+				</Texture>
+			</Layer>
+	-->
+		</Layers>
+
+		<NormalFont style="SystemFont_Shadow_Small"/>
+		<PushedTextOffset x="0" y="0"/>
+	<!--
+		<PushedTextOffset x="1" y="-1"/>
+		<ButtonText name="$parentButtonText" parentKey="ButtonText">
+			<Anchors>
+				<Anchor point="CENTER" x="0" y="0"/>
+			</Anchors>
+		</ButtonText>
+	-->
+
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ItemBrowserListHeaderButtonMixin)
+			</OnLoad>
+	<!--
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+	-->
+		</Scripts>
+	</Button>
+	<Button name="ItemBrowserListRowButtonTemplate" virtual="true">
+		<Size x="0" y="46"/>
+		<Anchors>
+			<Anchor point="LEFT" x="1" y="0"/>
+			<Anchor point="RIGHT" x="-1" y="0"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" setAllPoints="true" inherits="_SearchBarLg"/>
+			</Layer>
+		</Layers>
+		<HighlightTexture file="Interface\Common\Search">
+			<TexCoords left="0.001953" right="0.501953" top="0.234375" bottom="0.601562"/>
+		</HighlightTexture>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ItemBrowserListRowButton)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+			<OnClick>
+				self:OnClick()
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Frame name="ItemBrowserListCellNameIconTemplate" virtual="true">
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parentBorder" parentKey="Border" file="Interface\Common\Search">
+					<Size x="40" y="40"/>
+					<Anchors>
+						<Anchor point="LEFT" x="10" y="0"/>
+					</Anchors>
+					<TexCoords left="0.755859" right="0.830078" top="0.234375" bottom="0.531250"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBorder" x="1" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorder" x="-1" y="1"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentText" parentKey="Text" inherits="GameFontNormalLarge" justifyH="LEFT" maxLines="1">
+					<Size x="0" y="0"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="10" y="8"/>
+					</Anchors>
+					<Color r="0.96875" g="0.8984375" b="0.578125" a="1"/>
+				</FontString>
+				<FontString name="$parentSubText" parentKey="SubText" inherits="GameFontNormal" justifyH="LEFT">
+					<Size x="400" y="0"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentText" relativePoint="BOTTOMLEFT" x="0" y="-5"/>
+					</Anchors>
+					<Color r="0.66796875" g="0.51171875" b="0.3359375" a="1"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ItemBrowserListCellNameIconMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="ItemBrowserListCellItemLevelTemplate" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" parentKey="Text" inherits="GameFontNormalLarge" maxLines="1">
+					<Size x="0" y="0"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ItemBrowserListCellItemLevelMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="ItemBrowserListCellItemIDTemplate" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" parentKey="Text" inherits="GameFontNormalLarge" maxLines="1">
+					<Size x="0" y="0"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ItemBrowserListCellItemIDMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="ItemBrowser" inherits="PortraitFrameTemplate" toplevel="true" enableMouse="true" parent="UIParent" hidden="true">
+		<Size x="800" y="496"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0"/>
+		</Anchors>
+
+		<Frames>
+			<Frame name="$parentInset" inherits="InsetFrameTemplate" parentKey="inset">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-4" y="-60"/>
+					<Anchor point="BOTTOMLEFT" x="4" y="5"/>
+				</Anchors>
+			</Frame>
+
+			<EditBox name="$parentSearchBox" parentKey="SearchBox" inherits="PKBT_EditBoxTemplate" letters="64">
+				<Size x="130" y="36"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="60" y="-22"/>
+					<Anchor point="TOPRIGHT" x="-10" y="-22"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture name="$parentSearchIcon" parentKey="searchIcon" file="Interface\Common\UI-Searchbox-Icon">
+							<Size x="14" y="14"/>
+							<Anchors>
+								<Anchor point="LEFT" x="5" y="-2"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Button name="$parentClearButton" parentKey="clearButton" hidden="true">
+						<Size x="22" y="22"/>
+						<Anchors>
+							<Anchor point="RIGHT" x="-5" y="-1"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture parentKey="texture" file="Interface\FriendsFrame\ClearBroadcastIcon" alpha="0.5" setAllPoints="true"/>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnEnter>
+								self.texture:SetAlpha(1.0)
+							</OnEnter>
+							<OnLeave>
+								self.texture:SetAlpha(0.5)
+							</OnLeave>
+							<OnMouseDown>
+								if self:IsEnabled() == 1 then
+									self.texture:SetPoint("TOPLEFT", self, "TOPLEFT", 1, -1)
+								end
+							</OnMouseDown>
+							<OnMouseUp>
+								self.texture:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
+							</OnMouseUp>
+							<OnClick>
+								self:GetParent():OnClearClick(button)
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, ItemBrowserSearchBoxMixin)
+						self:OnLoad()
+					</OnLoad>
+					<OnHide>
+						self:OnHide()
+					</OnHide>
+					<OnTextChanged>
+						self:OnTextChanged(userInput)
+					</OnTextChanged>
+					<OnEnterPressed>
+						self:OnEnterPressed()
+					</OnEnterPressed>
+					<OnEditFocusLost>
+						self:OnEditFocusLost()
+					</OnEditFocusLost>
+					<OnEditFocusGained function="SearchBoxTemplate_OnEditFocusGained"/>
+				</Scripts>
+			</EditBox>
+
+			<StatusBar name="$parentSearchProgressBar" parentKey="SearchProgressBar" minValue="0" maxValue="1" alpha="0">
+				<Size x="0" y="6"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentSearchBox" relativePoint="BOTTOMLEFT" x="7" y="1"/>
+					<Anchor point="TOPRIGHT" relativeTo="$parentSearchBox" relativePoint="BOTTOMRIGHT" x="-7" y="1"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="Background">
+							<Anchors>
+								<Anchor point="TOPLEFT"/>
+								<Anchor point="BOTTOMRIGHT"/>
+							</Anchors>
+							<Color r="0" g="0" b="0" a="0.3"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
+				<BarColor r="0" g="1" b="0"/>
+			</StatusBar>
+
+			<ScrollFrame name="$parentScroll" parentKey="Scroll" inherits="HybridScrollFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentInset" relativePoint="TOPLEFT" x="10" y="-50"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentInset" relativePoint="BOTTOMRIGHT" x="-36" y="10"/>
+				</Anchors>
+				<Frames>
+					<Slider name="$parentScrollBar" parentKey="ScrollBar" inherits="PKBT_HybridScrollBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="5" y="-25"/>
+							<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="5" y="27"/>
+						</Anchors>
+					</Slider>
+				</Frames>
+			</ScrollFrame>
+
+			<Frame name="$parentHeaderHolder" parentKey="HeaderHolder">
+				<Size x="0" y="30"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentScroll" relativePoint="TOPLEFT" x="0" y="12"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentScroll" relativePoint="TOPRIGHT" x="0" y="12"/>
+				</Anchors>
+			</Frame>
+
+			<Button name="$parentTab1" inherits="CharacterFrameTabButtonTemplate" text="ADVENTURE_JOURNAL" id="1" parentKey="tab1">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT" x="19" y="-30"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="Adventure_TabOnClick"/>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab2" inherits="CharacterFrameTabButtonTemplate" text="HEADHUNTING" id="2" parentKey="tab2">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab1" relativePoint="RIGHT" x="-16" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="Adventure_TabOnClick"/>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab3" inherits="CharacterFrameTabButtonTemplate" text="HARDCORE_CHALLENGES_TITLE" id="3" parentKey="tab3">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab2" relativePoint="RIGHT" x="-16" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="Adventure_TabOnClick"/>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab4" inherits="CharacterFrameTabButtonTemplate" text="ITEM_BROWSER" id="4" parentKey="tab4">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab3" relativePoint="RIGHT" x="-16" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="Adventure_TabOnClick"/>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ItemBrowserMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+		</Scripts>
+	</Frame>
+</Ui>

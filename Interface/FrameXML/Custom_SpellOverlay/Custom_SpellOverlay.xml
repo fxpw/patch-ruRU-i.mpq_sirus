@@ -1,11 +1,3 @@
-<!--
-
-	Filename:	Custom_SpellOverlay.xml
-	Project:	Custom Game Interface
-	Author:		Nyll & Blizzard Entertainment
-
--->
-
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\..\FrameXML\UI.xsd">
 	<Script file="Custom_SpellOverlay.lua"/>
@@ -56,7 +48,7 @@
 			<OnLoad function="SpellActivationOverlay_OnLoad"/>
 		</Scripts>
 	</Frame>
-	<Frame name="AuraTrackerFrame" parent="UIParent" hidden="true">
+	<Frame name="AuraTrackerFrame" hidden="true">
 		<Scripts>
 			<OnLoad function="AuraTrackerFrame_OnLoad"/>
 			<OnEvent function="AuraTrackerFrame_OnEvent"/>

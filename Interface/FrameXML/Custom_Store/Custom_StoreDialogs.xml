@@ -1,0 +1,479 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_StoreDialogs.lua"/>
+
+	<Frame name="StoreReferralDialogStepTemplate" virtual="true">
+		<Size x="298" y="418"/>
+		<Attributes>
+			<Attribute name="layoutType" value="PKBT_InsetFrameTemplate" type="string"/>
+			<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
+		</Attributes>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentLabel" parentKey="Label" inherits="PKBT_Font_20">
+					<Size x="290" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" x="0" y="0"/>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+				<FontString name="$parentText" parentKey="Text" inherits="PKBT_Font_13">
+					<Size x="290" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentLabel" relativePoint="BOTTOM" x="0" y="-10"/>
+					</Anchors>
+					<Color r="0.824" g="0.788" b="0.761"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentArtworkNineSlice" parentKey="ArtworkNineSlice" inherits="NineSlicePanelTemplate">
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentArtwork" parentKey="Artwork" setAllPoints="true"/>
+					</Layer>
+					<Layer level="ARTWORK">
+						<Texture name="$parentNumberBorder" parentKey="NumberBorder">
+							<Anchors>
+								<Anchor point="TOP" x="0" y="23"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentArrow" parentKey="Arrow">
+							<Anchors>
+								<Anchor point="RIGHT" x="76" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture name="$parentNumber" parentKey="Number">
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="$parentNumberBorder" x="0" y="2"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreReferralDialogStepMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="StorePremiumBonusTemplate" virtual="true">
+		<Size x="170" y="30"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Anchors>
+						<Anchor point="LEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentText" parentKey="Text" inherits="PKBT_Font_13" justifyH="LEFT">
+					<Size x="135" y="0"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="5" y="0"/>
+					</Anchors>
+					<Color r="1" g="0.82" b="0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+	<CheckButton name="StorePremiumOptionTemplate" inherits="PKBT_RadioButtonTemplate" virtual="true">
+		<Size x="21" y="21"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentDiscountText" parentKey="DiscountText" inherits="PKBT_Font_12" justifyH="LEFT">
+					<Size x="135" y="0"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentButtonText" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+					</Anchors>
+					<Color r="0.553" g="0.522" b="0.494"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentPrice" parentKey="Price" inherits="PKBT_PriceTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="RIGHT" x="250" y="0"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, PKBT_RadioButtonMixin, StorePremiumOptionMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+		</Scripts>
+	</CheckButton>
+
+	<Frame name="$parentLinkDialog" parentKey="LinkDialog" parent="StoreFrame" inherits="StoreSubDialogTemplate" frameStrata="DIALOG" enableMouse="true" hidden="true">
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0"/>
+		</Anchors>
+		<Frames>
+			<EditBox name="$parentEditBox" parentKey="EditBox" inherits="PKBT_EditBoxAltCopyButtonTemplate" autoFocus="true">
+				<Size x="460" y="60"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="60"/>
+				</Anchors>
+				<Scripts>
+					<OnEscapePressed>
+						self:GetParent():Close()
+						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+					</OnEscapePressed>
+					<OnEditFocusGained>
+						self:HighlightText()
+					</OnEditFocusGained>
+				</Scripts>
+			</EditBox>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreLinkDialogMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<Frame name="$parentAgreementDialog" parentKey="AgreementDialog" parent="StoreFrame" inherits="PKBT_DialogTemplate" frameStrata="DIALOG" enableMouse="true" hidden="true">
+		<Size x="600" y="575"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0"/>
+		</Anchors>
+		<Frames>
+			<Button name="$parentCloseButton" parentKey="CloseButton" inherits="PKBT_CloseButtonTemplate">
+				<Scripts>
+					<OnClick>
+						self:GetParent():OnRefuseClick(button)
+						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Frame name="$parentContent" parentKey="Content">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="3" y="-37"/>
+					<Anchor point="BOTTOMRIGHT" x="-3" y="1"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackgroundTop" parentKey="BackgroundTop">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+								<Anchor point="TOPRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentBackgroundBottom" parentKey="BackgroundBottom">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentBackgroundMiddle" parentKey="BackgroundMiddle">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentBackgroundTop" relativePoint="BOTTOMLEFT" x="0" y="6"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackgroundBottom" relativePoint="TOPRIGHT" x="0" y="-6"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<FontString name="$parentHeaderText" parentKey="HeaderText" inherits="PKBT_Font_16" text="STORE_AGREEMENT_HEADER">
+							<Size x="480" y="0"/>
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="$parentBackgroundTop" x="0" y="0"/>
+							</Anchors>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<ScrollFrame name="$parentScroll" parentKey="Scroll" inherits="UIPanelScrollFrameCodeTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentBackgroundMiddle" x="55" y="-30"/>
+							<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackgroundMiddle" x="-70" y="30"/>
+						</Anchors>
+						<Frames>
+							<Slider name="$parentScrollBar" parentKey="ScrollBar" inherits="PKBT_UIPanelScrollBarTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="16" y="-26"/>
+									<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="16" y="26"/>
+								</Anchors>
+							</Slider>
+						</Frames>
+						<ScrollChild>
+							<SimpleHTML name="$parentScrollChildFrame" parentKey="ScrollChildFrame">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="0" y="0"/>
+								</Anchors>
+								<FontString inherits="PKBT_Font_13_NoShadow">
+									<Color r="0.161" g="0.075" b="0.043"/>
+								</FontString>
+							</SimpleHTML>
+						</ScrollChild>
+					</ScrollFrame>
+					<Button name="$parentAgreeButton" parentKey="AgreeButton" inherits="PKBT_BlueButtonTemplate" text="STORE_AGREEMENT_AGREE">
+						<Size x="165" y="52"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="0" y="16"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								self:GetParent():GetParent():OnAgreeClick(button)
+								PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, PKBT_DialogMixin, StoreAgreementMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<Frame name="$parentReferralInviteDialog" parentKey="ReferralInviteDialog" parent="StoreFrame" inherits="PKBT_PanelNoPortraitTemplate" frameStrata="DIALOG" enableMouse="true" hidden="true">
+		<Size x="1062" y="689"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0"/>
+		</Anchors>
+		<Frames>
+			<Frame name="$parentContent" parentKey="Content">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="3" y="-37"/>
+					<Anchor point="BOTTOMRIGHT" x="-3" y="1"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BORDER">
+						<Texture name="$parentShadowTop" parentKey="ShadowTop">
+							<Size x="0" y="38"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+								<Anchor point="TOPRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture name="$parentVignetteTopLeft" parentKey="VignetteTopLeft">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentVignetteTopRight" parentKey="VignetteTopRight">
+							<Anchors>
+								<Anchor point="TOPRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentVignetteBottomLeft" parentKey="VignetteBottomLeft">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="0" y="1"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentVignetteBottomRight" parentKey="VignetteBottomRight">
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" x="0" y="1"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Frame name="$parentStep1" parentKey="Step1" inherits="StoreReferralDialogStepTemplate" id="1">
+						<Attributes>
+							<Attribute name="atlasName" value="PKBT-Store-Artwork-Referral-1"/>
+							<Attribute name="label" value="STORE_REFERRAL_STEP1_LABEL"/>
+							<Attribute name="text" value="STORE_REFERRAL_STEP1_TEXT"/>
+						</Attributes>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="36" y="-46"/>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentStep2" parentKey="Step2" inherits="StoreReferralDialogStepTemplate" id="2">
+						<Attributes>
+							<Attribute name="atlasName" value="PKBT-Store-Artwork-Referral-2"/>
+							<Attribute name="label" value="STORE_REFERRAL_STEP2_LABEL"/>
+							<Attribute name="text" value="STORE_REFERRAL_STEP2_TEXT"/>
+						</Attributes>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentStep1" relativePoint="TOPRIGHT" x="45" y="0"/>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentStep3" parentKey="Step3" inherits="StoreReferralDialogStepTemplate" id="3">
+						<Attributes>
+							<Attribute name="atlasName" value="PKBT-Store-Artwork-Referral-3"/>
+							<Attribute name="label" value="STORE_REFERRAL_STEP3_LABEL"/>
+							<Attribute name="text" value="STORE_REFERRAL_STEP3_TEXT"/>
+						</Attributes>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentStep2" relativePoint="TOPRIGHT" x="45" y="0"/>
+						</Anchors>
+					</Frame>
+					<Button name="$parentInviteButton" parentKey="InviteButton" inherits="PKBT_RedButtonTemplate" text="STORE_REFERRAL_INVITE">
+						<Size x="162" y="52"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="110" y="18"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								self:GetParent():GetParent():OnInviteClick(button)
+								PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="$parentInfoButton" parentKey="InfoButton" inherits="PKBT_RedButtonTemplate" text="STORE_REFERRAL_INVITE_INFO">
+						<Size x="162" y="52"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="-110" y="18"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								self:GetParent():GetParent():OnInfoClick(button)
+								PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, DefaultPanelMixin, PKBT_PanelNoPortraitMixin, StoreReferralDialogMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+	<Frame name="$parentPremiumPurchaseDialog" parentKey="PremiumPurchaseDialog" parent="StoreFrame" inherits="PKBT_PanelNoPortraitTemplate" frameStrata="DIALOG" enableMouse="true" hidden="true">
+		<Size x="622" y="636"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0"/>
+		</Anchors>
+		<Frames>
+			<Frame name="$parentContent" parentKey="Content">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="2" y="-37"/>
+					<Anchor point="BOTTOMRIGHT" x="-2" y="1"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackgroundBottom" parentKey="BackgroundBottom">
+							<Size x="0" y="414"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+							<Color r="0.102" g="0.102" b="0.102"/>
+						</Texture>
+						<Texture name="$parentBackgroundTop" parentKey="BackgroundTop">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackgroundBottom" relativePoint="TOPRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture name="$parentDivider" parentKey="Divider">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentBackgroundBottom" x="0" y="2"/>
+								<Anchor point="TOPRIGHT" relativeTo="$parentBackgroundBottom" x="0" y="2"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture name="$parentVignetteTopLeft" parentKey="VignetteTopLeft">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentVignetteTopRight" parentKey="VignetteTopRight">
+							<Anchors>
+								<Anchor point="TOPRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentArtworkBottomLeft" parentKey="ArtworkBottomLeft">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="0" y="1"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentArtworkBottomRight" parentKey="ArtworkBottomRight">
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" x="0" y="1"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<FontString name="$parentPremiumLabel" parentKey="PremiumLabel" inherits="PKBT_Font_30" text="STORE_PREMIUM_LABEL">
+							<Size x="540" y="0"/>
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-30"/>
+							</Anchors>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+						<FontString name="$parentBonusListLabel" parentKey="BonusListLabel" inherits="PKBT_Font_16" text="STORE_PREMIUM_BONUS_LABEL">
+							<Size x="540" y="0"/>
+							<Anchors>
+								<Anchor point="TOP" relativeTo="$parentPremiumLabel" relativePoint="BOTTOM" x="0" y="-10"/>
+							</Anchors>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+						<FontString name="$parentOptionHint" parentKey="OptionHint" inherits="PKBT_Font_14" text="STORE_PREMIUM_PURCHASE_OPTION_HINT">
+							<Size x="540" y="0"/>
+							<Anchors>
+								<Anchor point="TOP" relativeTo="$parentBackgroundBottom" x="0" y="-20"/>
+							</Anchors>
+							<Color r="0.553" g="0.522" b="0.494"/>
+						</FontString>
+						<FontString name="$parentOptionLabel" parentKey="OptionLabel" inherits="PKBT_Font_30" text="STORE_PREMIUM_PURCHASE_OPTION_LABEL">
+							<Size x="540" y="0"/>
+							<Anchors>
+								<Anchor point="TOP" relativeTo="$parentOptionHint" relativePoint="BOTTOM" x="0" y="-8"/>
+							</Anchors>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Button name="$parentPurchaseButton" parentKey="PurchaseButton" inherits="PKBT_GoldButtonMultiWidgetPriceTemplate">
+						<Size x="272" y="72"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="0" y="35"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								self:GetParent():GetParent():OnPurchaseClick(button)
+								PlaySound(SOUNDKIT.UI_IG_STORE_CONFIRM_PURCHASE_BUTTON)
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, DefaultPanelMixin, PKBT_PanelNoPortraitMixin, StorePremiumPurchaseDialogMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+		</Scripts>
+	</Frame>
+</Ui>

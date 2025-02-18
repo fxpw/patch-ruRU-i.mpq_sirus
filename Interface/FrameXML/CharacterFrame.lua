@@ -23,8 +23,8 @@ function ToggleCharacter (tab, onlyShow)
 					CharacterFrame_ShowSubFrame(tab);
 				end
 			else
-				ShowUIPanel(CharacterFrame);
 				CharacterFrame_ShowSubFrame(tab);
+				ShowUIPanel(CharacterFrame);
 			end
 		end
 	end
@@ -37,10 +37,13 @@ end
 
 function CharacterFrame_ShowSubFrame (frameName)
 	for index, value in pairs(CHARACTERFRAME_SUBFRAMES) do
+		if ( value ~= frameName ) then
+			_G[value]:Hide();
+		end
+	end
+	for index, value in pairs(CHARACTERFRAME_SUBFRAMES) do
 		if ( value == frameName ) then
-			_G[value]:Show()
-		else
-			_G[value]:Hide();	
+			_G[value]:Show()	
 		end	
 	end 
 end

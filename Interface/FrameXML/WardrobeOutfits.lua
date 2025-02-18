@@ -301,7 +301,8 @@ function WardrobeOutfitFrameMixin:ShowPopup(popup, ...)
 		StaticPopupSpecial_Hide(WardrobeOutfitEditFrame);
 	end
 
-	self.popupDropDown = self.dropDown;
+	-- use either the dropdown that opened us, or a previously cached popupDropDown (ie from StartOutfitSave)
+	self.popupDropDown = self.dropDown or self.popupDropDown;
 	if popup == WardrobeOutfitEditFrame then
 		StaticPopupSpecial_Show(WardrobeOutfitEditFrame);
 	else
@@ -407,7 +408,9 @@ function WardrobeOutfitFrameMixin:ContinueWithSave()
 	if self.outfitID then
 		C_TransmogCollection.ModifyOutfit(self.outfitID, self.itemTransmogInfoList);
 		self:SaveLastOutfit(self.outfitID);
-		self.popupDropDown:OnOutfitModified(self.outfitID);
+		if ( self.popupDropDown ) then
+			self.popupDropDown:OnOutfitModified(self.outfitID);
+		end
 		WardrobeOutfitFrame:ClosePopups();
 	else
 		WardrobeOutfitFrame:ShowPopup("NAME_TRANSMOG_OUTFIT");

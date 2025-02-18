@@ -2,6 +2,8 @@ local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
 local GetRemainingTime = GetRemainingTime
 
+local C_StoreSecure = C_StoreSecure
+
 local PAGE_TYPE = {
 	CARDS = 1,
 	QUESTS = 2,
@@ -70,7 +72,6 @@ local pageButtonDisabledColor = {1, 1, 1}
 BattlePassMixin = CreateFromMixins(TitledPanelMixin)
 
 function BattlePassMixin:OnLoad()
-	self.maxScale = 1
 	self.selectedPageIndex = 0
 	self.pages = {}
 	self.pageButtons = {}
@@ -125,8 +126,24 @@ function BattlePassMixin:OnLoad()
 	self:RegisterCustomEvent("BATTLEPASS_REWARD_ITEMS")
 	self:RegisterCustomEvent("BATTLEPASS_QUEST_LIST_UPDATE")
 	self:RegisterCustomEvent("BATTLEPASS_POINTS_UPDATE")
+	self:RegisterCustomEvent("AJ_ACTION_BATTLE_PASS")
 
 	C_BattlePass.SetUIFrame(self)
+
+	if IsNewYearDecorationEnabled() then
+		self.Inset.ArtworkBottomLeft:Hide()
+		self.Inset.VignetteBottomLeft:Hide()
+		self.Inset.VignetteBottomRight:Hide()
+
+		self.Inset.DecorOverlay:Show()
+		self.Inset.DecorOverlay.Top:SetAtlas("Trading-Post-Winterveil-Decor", true)
+		self.Inset.DecorOverlay.TopRight:SetAtlas("Trading-Post-Winterveil-Snow-Left", true)
+		self.Inset.DecorOverlay.Bottom:SetAtlas("Trading-Post-Winterveil-Snow-Right", true)
+		self.Inset.DecorOverlay.Bottom:SetSize(self.Inset.DecorOverlay.Bottom:GetWidth() * 0.6, self.Inset.DecorOverlay.Bottom:GetHeight() * 0.6)
+		self.Inset.DecorOverlay.BottomLeft:SetAtlas("Trading-Post-Winterveil-Snowman-Right", true)
+		self.Inset.DecorOverlay.BottomLeft:SetSubTexCoord(1, 0, 0, 1)
+		self.Inset.DecorOverlay.BottomRight:SetAtlas("Trading-Post-Winterveil-Snow-LeftEdge", true)
+	end
 end
 
 function BattlePassMixin:OnEvent(event, ...)
@@ -156,6 +173,19 @@ function BattlePassMixin:OnEvent(event, ...)
 		end
 	elseif event == "BATTLEPASS_POINTS_UPDATE" then
 		self:UpdateTutorialTexts()
+	elseif event == "AJ_ACTION_BATTLE_PASS" then
+		local showQuestTab = ...
+		if C_BattlePass.IsActiveOrHasRewards() and not C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.BATTLEPASS_REWARDS) then
+			if not self:IsShown() then
+				ShowUIPanel(self)
+			end
+
+			local targetPage = showQuestTab and PAGE_TYPE.QUESTS or PAGE_TYPE.CARDS
+
+			if self:GetPage() ~= targetPage then
+				self:SetPage(targetPage)
+			end
+		end
 	end
 end
 
@@ -167,7 +197,10 @@ function BattlePassMixin:OnShow()
 	self:QuestStatusUpdate()
 	self:SetTutorialReminderShown(true)
 
+	SetParentFrameLevel(self.Inset.DecorOverlay, 9)
 	PlaySound(SOUNDKIT.UI_IG_STORE_WINDOW_OPEN_BUTTON)
+
+	EventRegistry:TriggerEvent("BattlePassFrame.OnShow")
 end
 
 function BattlePassMixin:OnHide()
@@ -387,10 +420,10 @@ function BattlePassMixin:UpdateTutorialPositions()
 end
 
 function BattlePassMixin:UpdateTutorialTexts()
-	local pointsBG, pointsArena, pointsArenaSoloQ, pointsArena1v1 = C_BattlePass.GetSourceExperience()
+	local pointsBG, pointsArena, pointsArenaSoloQ, pointsArena1v1, pointsMiniGame = C_BattlePass.GetSourceExperience()
 	local maxLevel = C_BattlePass.GetMaxLevel()
 
-	self.tutorialData[1].ToolTipText = string.format(BATTLEPASS_EXPERIENCE_INFO, pointsBG, pointsArena, pointsArenaSoloQ, pointsArena1v1)
+	self.tutorialData[1].ToolTipText = string.format(BATTLEPASS_EXPERIENCE_INFO, pointsBG, pointsArena, pointsArenaSoloQ, pointsArena1v1, pointsMiniGame)
 	self.tutorialData[4].ToolTipText = string.format(BATTLEPASS_TUTORIAL_TEXT_4, maxLevel)
 	self.tutorialData[5].ToolTipText = string.format(BATTLEPASS_TUTORIAL_TEXT_5, maxLevel)
 end
@@ -566,11 +599,11 @@ function BattlePassExperiencePanelMixin:PurchaseClick(button)
 end
 
 function BattlePassExperiencePanelMixin:StatusBarOnEnter(button)
-	local pointsBG, pointsArena, pointsArenaSoloQ, pointsArena1v1 = C_BattlePass.GetSourceExperience()
+	local pointsBG, pointsArena, pointsArenaSoloQ, pointsArena1v1, pointsMiniGame = C_BattlePass.GetSourceExperience()
 
 	GameTooltip:SetOwner(self.StatusBar, "ANCHOR_TOP", 0, 10)
 	GameTooltip:AddLine(BATTLEPASS_EXPERIENCE_LABEL)
-	GameTooltip:AddLine(string.format(BATTLEPASS_EXPERIENCE_INFO, pointsBG, pointsArena, pointsArenaSoloQ, pointsArena1v1), 1, 1, 1)
+	GameTooltip:AddLine(string.format(BATTLEPASS_EXPERIENCE_INFO, pointsBG, pointsArena, pointsArenaSoloQ, pointsArena1v1, pointsMiniGame), 1, 1, 1)
 	GameTooltip:Show()
 end
 
@@ -591,10 +624,6 @@ function BattlePassMainPageMixin:OnLoad()
 	self.PurchasePremiumButton:AddTextureAtlas("PKBT-Icon-Crown", true, nil, nil, -20, 0)
 	self.PurchasePremiumButton:AddText(BATTLEPASS_PURCHASE_PREMIUM, -12, 0, "PKBT_Font_18")
 	self.PurchasePremiumButton:SetPadding(28)
-
-	self.PurchasePremiumButton.Glow.Left:SetAtlas("PKBT-Button-Glow-Left", true)
-	self.PurchasePremiumButton.Glow.Right:SetAtlas("PKBT-Button-Glow-Right", true)
-	self.PurchasePremiumButton.Glow.Center:SetAtlas("PKBT-Button-Glow-Center")
 
 	self.PremiumActiveIcon:SetAtlas("PKBT-Icon-Crown", true)
 
@@ -641,8 +670,13 @@ function BattlePassMainPageMixin:OnLoad()
 end
 
 function BattlePassMainPageMixin:OnShow()
-	self.mainFrame.Inset.ArtworkBottomLeft:Show()
-	self.mainFrame.Inset.VignetteBottomLeft:Show()
+	if IsNewYearDecorationEnabled() then
+		self.mainFrame.Inset.DecorOverlay.BottomLeft:Show()
+		self.mainFrame.Inset.DecorOverlay.BottomRight:Show()
+	else
+		self.mainFrame.Inset.ArtworkBottomLeft:Show()
+		self.mainFrame.Inset.VignetteBottomLeft:Show()
+	end
 
 	SetParentFrameLevel(self.ExperienceScrollFrame, 2)
 	SetParentFrameLevel(self.ShieldScrollFrame, 3)
@@ -1128,7 +1162,7 @@ function BattlePassLevelCardMixin:SetRewardItems(items, holder, state, isPremium
 	for itemIndex, itemData in ipairs(items) do
 		local itemButton = self.itemPool:Acquire()
 
-		itemButton:SetItem(itemData.itemID, itemData.amount, state, isPremium)
+		itemButton:SetItem(itemData.itemID, itemData.amount, itemData.isCollected, state, isPremium)
 		itemButton:SetParent(holder)
 		itemButton.card = self
 
@@ -1204,7 +1238,7 @@ function BattlePassLevelCardItemMixin:OnClick(button)
 	end
 end
 
-function BattlePassLevelCardItemMixin:SetItem(itemLink, amount, state, isPremium)
+function BattlePassLevelCardItemMixin:SetItem(itemLink, amount, isCollected, state, isPremium)
 	local _, link, rarity, _, _, _, _, _, _, texture = GetItemInfo(itemLink)
 	local r, g, b = GetItemQualityColor(rarity or 2)
 
@@ -1212,13 +1246,17 @@ function BattlePassLevelCardItemMixin:SetItem(itemLink, amount, state, isPremium
 	self.hasItem = link ~= nil
 	self.Icon:SetTexture(texture)
 
-	if amount > 1 then
-		if state == Enum.BattlePass.CardState.Looted then
-			self.Amount:SetTextColor(0.5, 0.5, 0.5)
-		else
-			self.Amount:SetTextColor(1, 1, 1)
-		end
+	if isCollected then
+		self.Icon:SetVertexColor(0.5, 0.5, 0.5)
+		self.Highlight:SetVertexColor(0.5, 0.5, 0.5)
+		self.Amount:SetTextColor(0.5, 0.5, 0.5)
+	else
+		self.Icon:SetVertexColor(1, 1, 1)
+		self.Highlight:SetVertexColor(1, 1, 1)
+		self.Amount:SetTextColor(1, 1, 1)
+	end
 
+	if amount > 1 then
 		self.Amount:SetText(amount)
 		self.Amount:Show()
 	else
@@ -1226,19 +1264,8 @@ function BattlePassLevelCardItemMixin:SetItem(itemLink, amount, state, isPremium
 	end
 
 	self.Border:SetVertexColor(r, g, b)
-	self.Glow:SetShown(state == Enum.BattlePass.CardState.LootAvailable)
-
-	if state == Enum.BattlePass.CardState.Looted then
-		self.Icon:SetVertexColor(0.5, 0.5, 0.5)
-		self.Highlight:SetVertexColor(0.5, 0.5, 0.5)
-	else
-		self.Icon:SetVertexColor(1, 1, 1)
-		self.Highlight:SetVertexColor(1, 1, 1)
-
-		if state == Enum.BattlePass.CardState.LootAvailable then
-			self.Glow:SetVertexColor(r, g, b)
-		end
-	end
+	self.Glow:SetVertexColor(r, g, b)
+	self.Glow:SetShown(not isCollected and state == Enum.BattlePass.CardState.LootAvailable)
 end
 
 BattlePassQuestPageMixin = {}
@@ -1327,6 +1354,11 @@ function BattlePassQuestPageMixin:OnShow()
 	self.mainFrame.Inset.ArtworkBottomLeft:Hide()
 	self.mainFrame.Inset.VignetteBottomLeft:Hide()
 
+	if IsNewYearDecorationEnabled() then
+		self.mainFrame.Inset.DecorOverlay.BottomLeft:Hide()
+	--	self.mainFrame.Inset.DecorOverlay.BottomRight:Show()
+	end
+
 	self:UpdateQuestHolders()
 end
 
@@ -1402,6 +1434,10 @@ function BattlePassQuestHolderMixin:OnEvent(event, ...)
 	if event == "BATTLEPASS_QUEST_RESET_TIMER_UPDATE" then
 		self:SetTimeLeft(C_BattlePass.GetQuestTypeTimeLeft(self.api.questType))
 	end
+end
+
+function BattlePassQuestHolderMixin:OnHide()
+	self:MaskQuestsSeen()
 end
 
 function BattlePassQuestHolderMixin:SetType(apiType)
@@ -1483,8 +1519,16 @@ function BattlePassQuestHolderMixin:UpdateQuest(questIndex, isTextUpdate, wasRep
 	questFrame.Progress.Description:SetText(description)
 	questFrame.Reward.Value:SetText(rewardAmount)
 
+	questFrame.NewIndicator:SetShown(C_BattlePass.IsNewQuest(self.api.questType, questIndex))
+
 	if not isTextUpdate then
 		questFrame:SetProgress(progressValue, progressMaxValue, isPercents, wasReplaced)
+	end
+end
+
+function BattlePassQuestHolderMixin:MaskQuestsSeen()
+	for questIndex = 1, C_BattlePass.GetNumQuests(self.api.questType) do
+		C_BattlePass.MarkQuestSeen(self.api.questType, questIndex)
 	end
 end
 
@@ -1493,6 +1537,8 @@ BattlePassQuestMixin = {}
 function BattlePassQuestMixin:OnLoad()
 	self.buttonDefaultAtlas = "PKBT-128-RedButton"
 	self.buttonReplaceAtlas = "PKBT-128-BlueButton"
+
+	self.NewIndicator:SetAtlas("PKBT-Icon-New-CornerTopLeft-GreenW", true)
 
 	self.Reward.Icon:ClearAllPoints()
 	self.Reward.Icon:SetPoint("TOP", 0, 0)
@@ -1779,16 +1825,29 @@ function BattlePassPurchasePremiumDialogMixin:OnLoad()
 	self.Background:SetAtlas("PKBT-BattlePass-Background-Premium", true)
 	self.BodyText:SetWidth(self:GetWidth() - 230)
 
-	self.PurchaseButton:SetAllowReplenishment(true, true)
+	self.PurchaseButton:SetAllowReplenishment(C_StoreSecure.IsBonusReplenishmentAllowed(), true)
 	self.PurchaseButton:AddText(BATTLEPASS_PURCHASE_PREMIUM)
+
+	self:RegisterCustomEvent("BATTLEPASS_PRODUCT_LIST_UPDATE")
+	self:RegisterCustomEvent("BATTLEPASS_PRODUCT_LIST_RENEW")
 
 	self:GetParent():RegisterDialogWidget(DIALOG_TYPE.PurchasePremium, self)
 end
 
+function BattlePassPurchasePremiumDialogMixin:OnEvent(event, ...)
+	if not self:IsVisible() then
+		return
+	end
+	if event == "BATTLEPASS_PRODUCT_LIST_UPDATE"
+	or event == "BATTLEPASS_PRODUCT_LIST_RENEW"
+	then
+		self:UpdatePrice()
+	end
+end
+
 function BattlePassPurchasePremiumDialogMixin:OnShow()
-	local price, originalPrice, currencyType = C_BattlePass.GetPremiumPrice()
-	self.PurchaseButton:SetPrice(price, originalPrice, currencyType)
 	self:GetParent():ToggleBlockFrame(true)
+	self:UpdatePrice()
 end
 
 function BattlePassPurchasePremiumDialogMixin:OnHide()
@@ -1796,10 +1855,15 @@ function BattlePassPurchasePremiumDialogMixin:OnHide()
 	StaticPopup_Hide("DONATE_URL_POPUP")
 end
 
+function BattlePassPurchasePremiumDialogMixin:UpdatePrice()
+	local price, originalPrice, currencyType = C_BattlePass.GetPremiumPrice()
+	self.PurchaseButton:SetPrice(price, originalPrice, currencyType)
+end
+
 function BattlePassPurchasePremiumDialogMixin:PurchaseOnClick(button)
 	local price, originalPrice, currencyType = C_BattlePass.GetPremiumPrice()
 	if currencyType == Enum.Store.CurrencyType.Bonus then
-		local balance = Store_GetBalance(currencyType)
+		local balance = C_StoreSecure.GetBalance(currencyType)
 		if price > balance and not C_Service.IsInGMMode() then
 			StaticPopup_Show("DONATE_URL_POPUP", nil, nil, price - balance)
 			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
@@ -1831,36 +1895,47 @@ function BattlePassPurchaseExperienceDialogMixin:OnLoad()
 	self.experienceIconMarkup = CreateAtlasMarkup("PKBT-BattlePass-Icon-Gem-Sapphire", 21, 21, 0, 0, 2048, 2048)
 	self.optionButtons = {}
 
-	self.allowCurrencyReplenishment = true
+	self.PurchaseButton:SetAllowReplenishment(C_StoreSecure.IsBonusReplenishmentAllowed(), true)
 
-	self.PurchaseButton:SetAllowReplenishment(self.allowCurrencyReplenishment, true)
-
+	self.OptionAmount:SetNumberNoScript(0)
 	self.OptionAmount.limit = 1000
 	self.OptionAmount.minValue = 1
 	self.OptionAmount.maxValue = function()
-		if self.allowCurrencyReplenishment then
+		if C_StoreSecure.IsBonusReplenishmentAllowed() and self:CanReplenishCurrency() then
 			return self.OptionAmount.limit
 		else
 			return self:GetMaxSelectedAmount()
 		end
 	end
 
-	self.OptionAmount.OnValueChanged = function(value, userInput)
+	self.OptionAmount.OnTextValueChanged = function(this, value, userInput)
 		self:Summery()
 	end
 
 	self.selectedOptionIndex = 1
-	self.OptionAmount:SetTextNoScript(1)
+
+	self:RegisterCustomEvent("BATTLEPASS_PRODUCT_LIST_UPDATE")
+	self:RegisterCustomEvent("BATTLEPASS_PRODUCT_LIST_RENEW")
 
 	self:GetParent():RegisterDialogWidget(DIALOG_TYPE.PurchaseExperience, self)
+end
+
+function BattlePassPurchaseExperienceDialogMixin:OnEvent(event, ...)
+	if not self:IsVisible() then
+		return
+	end
+	if event == "BATTLEPASS_PRODUCT_LIST_UPDATE"
+	or event == "BATTLEPASS_PRODUCT_LIST_RENEW"
+	then
+		self:UpdateOptions()
+		self:Summery()
+	end
 end
 
 function BattlePassPurchaseExperienceDialogMixin:OnShow()
 	self:GetParent():ToggleBlockFrame(true)
 
 	self:SetSelectedOption(1)
-	self.OptionAmount:SetText(1)
-
 	self:UpdateOptions()
 	self:Summery()
 end
@@ -1870,12 +1945,22 @@ function BattlePassPurchaseExperienceDialogMixin:OnHide()
 	StaticPopup_Hide("DONATE_URL_POPUP")
 end
 
-function BattlePassPurchaseExperienceDialogMixin:PurchaseOnClick()
-	local option = C_BattlePass.GetExperiencePurchaseOptionInfo(self.selectedOptionIndex)
+function BattlePassPurchaseExperienceDialogMixin:CanReplenishCurrency()
+	if self.selectedOptionIndex then
+		local itemID, experience, productID, price, originalPrice, currencyType, altPrice, altOriginalPrice, altCurrencyType = C_BattlePass.GetExperiencePurchaseOptionInfo(self.selectedOptionIndex)
+		if currencyType == Enum.Store.CurrencyType.Bonus then
+			return true
+		end
+	end
+	return false
+end
 
-	if option and option.currencyType == Enum.Store.CurrencyType.Bonus then
-		local balance = Store_GetBalance(option.currencyType)
-		local price = option.price * self.OptionAmount:GetNumber()
+function BattlePassPurchaseExperienceDialogMixin:PurchaseOnClick()
+	local itemID, experience, productID, price, originalPrice, currencyType, altPrice, altOriginalPrice, altCurrencyType = C_BattlePass.GetExperiencePurchaseOptionInfo(self.selectedOptionIndex)
+
+	if currencyType == Enum.Store.CurrencyType.Bonus then
+		local balance = C_StoreSecure.GetBalance(currencyType)
+		local price = price * self.OptionAmount:GetNumber()
 		if price > balance and not C_Service.IsInGMMode() then
 			StaticPopup_Show("DONATE_URL_POPUP", nil, nil, price - balance)
 			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
@@ -1946,8 +2031,8 @@ function BattlePassPurchaseExperienceDialogMixin:SetOptionAmount(count)
 end
 
 function BattlePassPurchaseExperienceDialogMixin:Summery()
-	local option = C_BattlePass.GetExperiencePurchaseOptionInfo(self.selectedOptionIndex)
-	if not option then
+	local itemID, experience, productID, price, originalPrice, currencyType, altPrice, altOriginalPrice, altCurrencyType = C_BattlePass.GetExperiencePurchaseOptionInfo(self.selectedOptionIndex)
+	if not productID then
 		self.PurchaseButton:Hide()
 		self.OptionAmount:Hide()
 		return
@@ -1956,7 +2041,7 @@ function BattlePassPurchaseExperienceDialogMixin:Summery()
 	local amount = math.max(1, self.OptionAmount:GetNumber())
 
 	do	-- Text
-		local totalExperience = option.experience * amount
+		local totalExperience = experience * amount
 		local level = C_BattlePass.GetLevelInfo()
 		local newLevel = C_BattlePass.CalculateAddedExperience(totalExperience)
 
@@ -1965,17 +2050,17 @@ function BattlePassPurchaseExperienceDialogMixin:Summery()
 	end
 
 	do	-- Balance
-		local balance = Store_GetBalance(option.currencyType)
-		local price = option.price * amount
-		local originalPrice = option.originalPrice * amount
+		local balance = C_StoreSecure.GetBalance(currencyType)
+		local price = price * amount
+		local originalPrice = originalPrice * amount
 
-		self.PurchaseButton:SetPrice(price, originalPrice, option.currencyType)
+		self.PurchaseButton:SetPrice(price, originalPrice, currencyType)
 		self.PurchaseButton:Show()
 
-		if self.allowCurrencyReplenishment then
+		if currencyType == Enum.Store.CurrencyType.Bonus and C_StoreSecure.IsBonusReplenishmentAllowed() then
 			self.OptionAmount.IncrementButton:SetEnabled(amount < self.OptionAmount.limit)
 		else
-			self.OptionAmount.IncrementButton:SetEnabled(amount < self.OptionAmount.limit and option.price * (amount + 1) <= balance)
+			self.OptionAmount.IncrementButton:SetEnabled(amount < self.OptionAmount.limit and price * (amount + 1) <= balance)
 		end
 
 		self.OptionAmount:Show()
@@ -1983,12 +2068,12 @@ function BattlePassPurchaseExperienceDialogMixin:Summery()
 end
 
 function BattlePassPurchaseExperienceDialogMixin:GetMaxSelectedAmount()
-	local option = C_BattlePass.GetExperiencePurchaseOptionInfo(self.selectedOptionIndex)
-	if not option then
+	local itemID, experience, productID, price, originalPrice, currencyType, altPrice, altOriginalPrice, altCurrencyType = C_BattlePass.GetExperiencePurchaseOptionInfo(self.selectedOptionIndex)
+	if not productID then
 		return 0
 	end
-	local balance = Store_GetBalance(option.currencyType)
-	local amount = math.modf(balance / option.price)
+	local balance = C_StoreSecure.GetBalance(currencyType)
+	local amount = math.modf(balance / price)
 	return amount
 end
 
@@ -2025,17 +2110,25 @@ function BattlePassExperienceOptionMixin:OnClick(button)
 end
 
 function BattlePassExperienceOptionMixin:UpdateInfo()
-	local option = C_BattlePass.GetExperiencePurchaseOptionInfo(self:GetID())
+	local optionIndex = self:GetID()
+	local itemID, experience, productID, price, originalPrice, currencyType, altPrice, altOriginalPrice, altCurrencyType = C_BattlePass.GetExperiencePurchaseOptionInfo(optionIndex)
+	local iconAtlas, iconAnimAtlas, checkedAtlas, highlightAtlas = C_BattlePass.GetExperiencePurchaseOptionArtKit(optionIndex)
 
-	self.CheckedTexture:SetAtlas(option.checkedAtlas, true)
-	self.HighlightTexture:SetAtlas(option.highlightAtlas, true)
-	self:SetIconAtlas(option.iconAnimAtlas)
+	self.CheckedTexture:SetAtlas(checkedAtlas, true)
+	self.HighlightTexture:SetAtlas(highlightAtlas, true)
+	self:SetIconAtlas(iconAnimAtlas)
 
-	self.Experience.Amount:SetFormattedText(BATTLEPASS_PURCHASE_EXPERIENCE_FORMAT, option.experience)
+	self.Experience.Amount:SetFormattedText(BATTLEPASS_PURCHASE_EXPERIENCE_FORMAT, experience)
 	self.Experience:SetWidth(math.max(70, self.Experience.Amount:GetStringWidth() + 20))
 
-	self.Price.Icon:SetAtlas(option.currencyAtlas)
-	self.Price.Amount:SetText(option.price)
+	local name, description, link, currencyTexture, currencyIconAtlas = C_StorePublic.GetCurrencyInfo(currencyType)
+
+	if currencyIconAtlas then
+		self.Price.Icon:SetAtlas(currencyIconAtlas)
+	else
+		self.Price.Icon:SetTexture(currencyTexture)
+	end
+	self.Price.Amount:SetText(price)
 
 	local iconWidth = self.Price.Icon:GetWidth() + self.iconOffsetX
 	self.Price.Amount:SetPoint("BOTTOM", iconWidth / 2, 0)
@@ -2056,7 +2149,7 @@ function BattlePassPurchaseLevelExperienceDialogMixin:OnLoad()
 
 	self.optionButtons = {}
 
-	self.PurchaseButton:SetAllowReplenishment(true, true)
+	self.PurchaseButton:SetAllowReplenishment(C_StoreSecure.IsBonusReplenishmentAllowed(), true)
 
 	self:GetParent():RegisterDialogWidget(DIALOG_TYPE.PurchaseLevelExperience, self)
 end
@@ -2077,7 +2170,8 @@ function BattlePassPurchaseLevelExperienceDialogMixin:ShowLevelDialog(level)
 	local options, price, originalPrice, currencyType = C_BattlePass.GetRequiredExperienceOptionsForLevel(level)
 
 	for index, option in ipairs(options) do
-		local optionInfo = C_BattlePass.GetExperiencePurchaseOptionInfo(option.optionIndex)
+		local _, experience = C_BattlePass.GetExperiencePurchaseOptionInfo(option.optionIndex)
+		local iconAtlas, iconAnimAtlas, checkedAtlas, highlightAtlas = C_BattlePass.GetExperiencePurchaseOptionArtKit(option.optionIndex)
 
 		local button = self.optionButtons[index]
 		if not button then
@@ -2094,8 +2188,8 @@ function BattlePassPurchaseLevelExperienceDialogMixin:ShowLevelDialog(level)
 			button:SetPoint("CENTER", self.OptionContainer, "CENTER", -((#options - 1) * ((button:GetWidth() + 10) / 2)), 0)
 		end
 
-		button:SetIconAtlas(optionInfo.iconAnimAtlas)
-		button.Text:SetFormattedText(BATTLEPASS_PURCHASE_LEVEL_EXPERIENCE_OPTION_FORMAT, optionInfo.experience, option.amount)
+		button:SetIconAtlas(iconAnimAtlas)
+		button.Text:SetFormattedText(BATTLEPASS_PURCHASE_LEVEL_EXPERIENCE_OPTION_FORMAT, experience, option.amount)
 		button:Show()
 	end
 
@@ -2111,7 +2205,7 @@ function BattlePassPurchaseLevelExperienceDialogMixin:PurchaseOnClick()
 	local option, price, originalPrice, currencyType = C_BattlePass.GetRequiredExperienceOptionsForLevel(self.level)
 
 	if currencyType == Enum.Store.CurrencyType.Bonus then
-		local balance = Store_GetBalance(currencyType)
+		local balance = C_StoreSecure.GetBalance(currencyType)
 		if price > balance and not C_Service.IsInGMMode() then
 			StaticPopup_Show("DONATE_URL_POPUP", nil, nil, price - balance)
 			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
@@ -2253,7 +2347,7 @@ end
 BattlePassItemPlateMixin = {}
 
 function BattlePassItemPlateMixin:OnLoad()
-	self.IconBorder:SetAtlas("PKBT-ItemBorder", true)
+	self.IconBorder:SetAtlas("PKBT-ItemBorder-Default", true)
 	self.IconHighlight:SetAtlas("PKBT-ItemBorder-Highlight", true)
 
 	self.UpdateTooltip = self.OnEnter
@@ -2261,7 +2355,7 @@ end
 
 function BattlePassItemPlateMixin:OnEnter()
 	if self.itemLink then
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 		GameTooltip:SetHyperlink(self.itemLink)
 		GameTooltip:Show()
 	end
@@ -2303,7 +2397,7 @@ function BattlePassAlertFrameMixin:OnLoad()
 	self:RegisterForClicks("RightButtonUp")
 
 	self.Background:SetAtlas("PKBT-BattlePass-Alert-Background", true)
-	self.IconBorder:SetAtlas("PKBT-ItemBorder", true)
+	self.IconBorder:SetAtlas("PKBT-ItemBorder-Default", true)
 	self.Glow:SetAtlas("loottoast-glow")
 
 	self.queue = {}
@@ -2346,7 +2440,7 @@ function BattlePassAlertFrameMixin:SetItem(itemName, icon, amount)
 	end
 
 	self.ItemName:SetText(itemName)
-	self.ItemIcon:SetTexture(icon)
+	self.Icon:SetTexture(icon)
 
 	if amount > 1 then
 		self.Amount:SetText(amount)
@@ -2356,4 +2450,376 @@ function BattlePassAlertFrameMixin:SetItem(itemName, icon, amount)
 	end
 
 	self:Show()
+end
+
+BattlePassSplashFrameMixin = {}
+
+function BattlePassSplashFrameMixin:OnLoad()
+	self.artworkTemplates = {}
+	self:RegisterCustomEvent("BATTLEPASS_SPLASH_SCREEN")
+end
+
+function BattlePassSplashFrameMixin:OnEvent(event, ...)
+	if event == "BATTLEPASS_SPLASH_SCREEN" then
+		local id, splashData = ...
+		if not C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.BATTLEPASS_REWARDS) then
+			self:SetupFrame(id, splashData)
+		end
+	end
+end
+
+function BattlePassSplashFrameMixin:Reset()
+	self.splashID = nil
+	self.useArtworkTemplate = nil
+	self.useArtwork = nil
+
+	self:GetTitleContainer():Hide()
+	self.Content.Background:Hide()
+	self.Content.ActionButton:Hide()
+	self.Content.SimpleActionButton:Hide()
+	self.Content.ModelHolder:Hide()
+
+	for templateName, frame in pairs(self.artworkTemplates) do
+		frame:Hide()
+	end
+end
+
+function BattlePassSplashFrameMixin:SetupFrame(id, splashData)
+	if self:IsVisible() and self.splashID == id then
+		return
+	end
+
+	self:Reset()
+
+	self.splashID = id
+
+	local success
+	if splashData.artworkTemplate then
+		success = self:SetupFrameTemplate(splashData)
+	else
+		success = self:SetupFrameDefault(splashData)
+	end
+
+	if not success then
+		self:Reset()
+	end
+
+	self:SetShown(success)
+end
+
+function BattlePassSplashFrameMixin:SetupFrameDefault(splashData)
+	local panelWidth, panelHeight
+	if splashData.artwork and C_Texture.HasAtlasInfo(splashData.artwork) then
+		local atlasInfo = C_Texture.GetAtlasInfo(splashData.artwork)
+		panelWidth = atlasInfo.width + 3
+		panelHeight = atlasInfo.height + 39
+
+		self.Content.Background:SetAtlas(splashData.artwork)
+		self.Content.Background:Show()
+		self.useArtwork = true
+	end
+
+	if splashData.title then
+		self:SetTitle(splashData.title)
+		self:GetTitleContainer():Show()
+	end
+
+	local actionButton
+	if splashData.buttonNormalAtlas then
+		actionButton = self.Content.SimpleActionButton
+
+		actionButton:SetNormalAtlas(splashData.buttonNormalAtlas)
+		if splashData.buttonHighlightAtlas then
+			actionButton:SetHighlightAtlas(splashData.buttonHighlightAtlas)
+		else
+			actionButton:ClearHighlightTexture()
+		end
+	else
+		actionButton = self.Content.ActionButton
+
+		if splashData.buttonTemplate then
+			actionButton.atlasName = splashData.buttonTemplate
+		else
+			actionButton.atlasName = "PKBT-128-RedButton"
+		end
+		actionButton:InitButton()
+		actionButton:SetPushedTextOffset(splashData.buttonPushedOffsetX or 5, splashData.buttonPushedOffsetY or -5)
+	end
+
+	actionButton:SetNormalFontObject(splashData.buttonNormalFont or "PKBT_Button_Font_15")
+	actionButton:SetHighlightFontObject(splashData.buttonHighlightFont or "PKBT_ButtonHighlight_Font_15")
+	actionButton:SetDisabledFontObject(splashData.buttonDisabledFont or "PKBT_ButtonDisable_Font_15")
+	actionButton:SetText(splashData.buttonText)
+	actionButton:SetSize(splashData.buttonWidth or 228, splashData.buttonHeight or 52)
+	actionButton:ClearAllPoints()
+	actionButton:SetPoint(unpack(splashData.buttonPoint))
+	actionButton:Show()
+	SetParentFrameLevel(actionButton, 10)
+
+	self.Content.ModelHolder:SetModels(splashData.models)
+
+	if panelWidth and panelHeight then
+		self:SetSize(panelWidth, panelHeight)
+	end
+
+	return true
+end
+
+function BattlePassSplashFrameMixin:SetupFrameTemplate(splashData)
+	local frame = self.artworkTemplates[splashData.artworkTemplate]
+	if not frame then
+		local templateID = tCount(self.artworkTemplates) + 1
+		frame = CreateFrame("Frame", string.format("$parentArtworkFrame%d", templateID), self.Content, splashData.artworkTemplate)
+		self.artworkTemplates[splashData.artworkTemplate] = frame
+	end
+
+	self.useArtworkTemplate = true
+
+	frame.ModelHolder:SetModels(splashData.models)
+
+	local artworkWidth, artworkHeight = frame:GetSize()
+	self:SetSize(artworkWidth + 3, artworkHeight + 39)
+
+	return true
+end
+
+
+function BattlePassSplashFrameMixin:OnClickAction(button)
+	HideUIPanel(self)
+	ShowUIPanel(BattlePassFrame)
+end
+
+function BattlePassSplashFrameMixin:Close()
+	HideUIPanel(self)
+	PlaySound(SOUNDKIT.IG_MAINMENU_QUIT)
+end
+
+BattlePassSplashButtonMixin = CreateFromMixins(PKBT_ButtonMixin)
+
+function BattlePassSplashButtonMixin:GetHighlightAtlasName()
+	local highlightAtlasName = PKBT_ButtonMixin.GetHighlightAtlasName(self)
+	if C_Texture.HasAtlasInfo(highlightAtlasName) then
+		return highlightAtlasName
+	end
+	return "PKBT-128-RedButton-Highlight"
+end
+
+BattlePassSplashModelHolderMixin = {}
+
+function BattlePassSplashModelHolderMixin:OnLoad()
+	self.modelPool = CreateFramePool("Frame", self, "BattlePassSplashModelTemplate", function(framePool, frame)
+		frame.Model:ResetFull()
+		FramePool_HideAndClearAnchors(framePool, frame)
+	end)
+end
+
+function BattlePassSplashModelHolderMixin:OnShow()
+	if self.frameLevel then
+		SetParentFrameLevel(self, self.frameLevel)
+	end
+end
+
+function BattlePassSplashModelHolderMixin:OnHide()
+	self.modelPool:ReleaseAll()
+end
+
+function BattlePassSplashModelHolderMixin:SetModels(models)
+	self.modelPool:ReleaseAll()
+
+	if not models or not models.items then
+		self:Hide()
+		return false
+	end
+
+	local width, height = 0, 0
+	local lastModel
+
+	local modelWidth = models.width or 100
+	local modelHeight = models.height or 200
+	local modelOffsetX = models.offsetX or 0
+	local modelOffsetY = models.offsetY or 0
+
+	for rowIndex, rowItems in ipairs(models.items) do
+		local rowWidth = 0
+		local holderScaleTable = type(models.modelHolderScales) == "table" and models.modelHolderScales[rowIndex]
+		local hasHolderScaleTable = type(holderScaleTable) == "table"
+
+		local modelScaleTable = type(models.modelScales) == "table" and models.modelScales[rowIndex]
+		local hasModelScaleTable = type(modelScaleTable) == "table"
+
+		local modelFacingTable = type(models.modelFacing) == "table" and models.modelFacing[rowIndex]
+		local hasModelFacingTable = type(modelFacingTable) == "table"
+
+		local modelPosOffsetTable = type(models.modelPosOffset) == "table" and models.modelPosOffset[rowIndex]
+		local hasModelPosOffsetTable = type(modelPosOffsetTable) == "table"
+
+		local baseItemOverrideTable = type(models.itemBaseOverride) == "table" and models.itemBaseOverride[rowIndex]
+		local hasBaseItemOverrideTable = type(baseItemOverrideTable) == "table"
+
+		for itemIndex, itemID in ipairs(rowItems) do
+			local modelHolder = self.modelPool:Acquire()
+
+			local modelHolderScale = hasHolderScaleTable and holderScaleTable[itemIndex] or 1
+			local modelScale = hasModelScaleTable and modelScaleTable[itemIndex] or 1
+			local modelFacing = hasModelFacingTable and modelFacingTable[itemIndex] or nil
+			local modelPosOffset = hasModelPosOffsetTable and modelPosOffsetTable[itemIndex] or nil
+			local modelPosX, modelPosY, modelPosZ
+			if modelPosOffset then
+				modelPosX, modelPosY, modelPosZ = unpack(modelPosOffset, 1, 3)
+			end
+			local baseItemOverrideID = hasBaseItemOverrideTable and baseItemOverrideTable[itemIndex] or nil
+
+			modelHolder:SetSize(modelWidth * modelHolderScale, modelHeight * modelHolderScale)
+			modelHolder:DressUpItemLink(itemID, modelFacing, false, modelPosX, modelPosY, modelPosZ, baseItemOverrideID)
+			modelHolder.itemLink = string.format("item:%d", itemID)
+
+			modelHolder.Model:SetSize(modelWidth * modelHolderScale * modelScale, modelHeight * modelHolderScale * modelScale)
+
+			if itemIndex == 1 then
+				rowWidth = rowWidth + modelWidth * modelHolderScale
+				local offsetX, offsetY
+
+				if hasHolderScaleTable then
+					local maxHeight, totalWidth = 0, 0
+
+					for i = 1, #rowItems do
+						maxHeight = math.max(maxHeight, modelHeight * modelHolderScale)
+						if i ~= 1 then
+							totalWidth = totalWidth + modelWidth * modelHolderScale + modelOffsetX
+						end
+					end
+
+					height = height + maxHeight * modelHolderScale + (rowIndex == 1 and 0 or modelOffsetY)
+				--	offsetX = math.ceil(totalWidth / 2)
+					offsetY = math.ceil((maxHeight * modelHolderScale + modelOffsetY) * (rowIndex - 1))
+				else
+					height = height + modelHeight * modelHolderScale + (rowIndex == 1 and 0 or modelOffsetY)
+				--	offsetX = math.ceil((modelWidth * modelScale + modelOffsetX) * (#rowItems - 1) / 2)
+					offsetY = math.ceil((modelHeight * modelHolderScale + modelOffsetY) * (rowIndex - 1))
+				end
+
+				modelHolder:SetPoint("LEFT", 0, -offsetY)
+			else
+				rowWidth = rowWidth + modelWidth * modelHolderScale + modelOffsetX
+				modelHolder:SetPoint("LEFT", lastModel, "RIGHT", modelOffsetX, 0)
+			end
+
+			if models.cardBorderLayour then
+				NineSliceUtil.ApplyLayoutByName(modelHolder.NineSlice, models.cardBorderLayour)
+				modelHolder.NineSlice:Show()
+			else
+				modelHolder.NineSlice:Hide()
+			end
+
+			if models.cardBorderAtlas and not models.cardBorderLayour then
+				modelHolder.Border:SetAtlas(models.cardBorderAtlas)
+			else
+				modelHolder.Border:SetTexture(nil)
+			end
+
+			if models.cardBackgroundAtlas then
+				modelHolder.Background:SetAtlas(models.cardBackgroundAtlas)
+			else
+				modelHolder.Background:SetTexture(nil)
+			end
+
+			if models.cardBackgroundGlowAtlas then
+				local backgroundGlowColorTable = type(models.cardBackgroundGlowColors) == "table" and models.cardBackgroundGlowColors[rowIndex]
+				local backgroundGlowColor = backgroundGlowColorTable and backgroundGlowColorTable[itemIndex]
+
+				modelHolder.BackgroundGlow:SetAtlas(models.cardBackgroundGlowAtlas)
+
+				if backgroundGlowColor then
+					modelHolder.BackgroundGlow:SetVertexColor(unpack(backgroundGlowColor, 1, 3))
+				else
+					modelHolder.BackgroundGlow:SetVertexColor(1, 1, 1)
+				end
+			else
+				modelHolder.BackgroundGlow:SetTexture(nil)
+			end
+
+			modelHolder:Show()
+			lastModel = modelHolder
+		end
+
+		width = math.max(width, rowWidth)
+	end
+
+	self.frameLevel = models.frameLevel
+
+	self:ClearAllPoints()
+	self:SetPoint(unpack(models.containerPoint))
+	self:SetSize(width, height)
+	self:Show()
+
+	return true
+end
+
+local MODEL_FACING = math.rad(25)
+
+BattlePassSplashModelMixin = CreateFromMixins(PKBT_ModelMixin)
+
+function BattlePassSplashModelMixin:OnLoad()
+	self.UpdateTooltip = self.OnEnter
+end
+
+function BattlePassSplashModelMixin:OnEnter()
+	if self.itemLink then
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:SetHyperlink(self.itemLink)
+		GameTooltip:Show()
+	end
+end
+
+function BattlePassSplashModelMixin:OnLeave()
+	GameTooltip:Hide()
+end
+
+function BattlePassSplashModelMixin:DressUpItemLink(link, facing, undress, posMultX, posMultY, posMultZ, baseItemOverrideID)
+	local linkType, id, collectionID = GetDressUpItemLinkInfo(link)
+
+	if linkType == Enum.DressUpLinkType.Default then
+		return self.Model:SetModelAuto(Enum.ModelType.Item, id, facing or -MODEL_FACING, posMultX, posMultY, posMultZ, undress)
+	elseif linkType == Enum.DressUpLinkType.Pet or linkType == Enum.DressUpLinkType.Mount then
+		return self.Model:SetModelAuto(Enum.ModelType.Creature, id, facing or -MODEL_FACING, posMultX, posMultY, posMultZ, undress)
+	elseif linkType == Enum.DressUpLinkType.Illusion then
+		if type(link) == "string" then
+			id = tonumber(strmatch(link, "item:(%d+)"))
+		else
+			id = link
+		end
+		return self.Model:SetModelAuto(Enum.ModelType.Illusion, id, facing or -MODEL_FACING, posMultX, posMultY, posMultZ, baseItemOverrideID or C_TransmogCollection.GetFallbackWeaponAppearance())
+	end
+
+	return false
+end
+
+BattlePassSplashArtworkBase243Mixin = {}
+
+function BattlePassSplashArtworkBase243Mixin:OnLoad()
+	self.Artwork:SetAtlas("Custom-Splash-BattlePass-2024-4", true)
+	self.Artwork:SetSubTexCoord(0, 1, 0.12, 1.12)
+	self.ArtworkDecor:SetAtlas("Custom-Splash-BattlePass-2024-3-Assets-ArtworkDecor", true)
+
+	self.Overlay:SetScale(0.85)
+	self.Overlay.TitleBackdrop:SetAtlas("Custom-Splash-BattlePass-2024-3-Assets-TitlePanel", true)
+	self.Overlay.TitleText:SetAtlas("Custom-Splash-BattlePass-2024-3-Assets-TitleText", true)
+
+	self.ModelPanel.Background:SetAtlas("PKBT-Tile-Oribos-256", true)
+	self.ModelPanel.Background:SetVertexColor(0.75, 0.68, 0.60)
+	self.ModelPanel.DecoreLeft:SetAtlas("Custom-Splash-BattlePass-2024-3-Assets-Decor-Left", true)
+	self.ModelPanel.DecoreRight:SetAtlas("Custom-Splash-BattlePass-2024-3-Assets-Decor-Right", true)
+
+	self.ModelPanel.ActionButton:SetNormalAtlas("Custom-Splash-BattlePass-2024-3-Assets-Button", true)
+	self.ModelPanel.ActionButton:SetPushedAtlas("Custom-Splash-BattlePass-2024-3-Assets-Button-Pressed", true)
+	self.ModelPanel.ActionButton:SetHighlightAtlas("PKBT-128-BlueButton-Highlight")
+	self.ModelPanel.ActionButton:SetPushedTextOffset(1, -2)
+
+	self.ModelHolder = self.ModelPanel.ModelHolder -- for template handler
+end
+
+function BattlePassSplashArtworkBase243Mixin:OnShow()
+	SetParentFrameLevel(self.Overlay, 8)
+	SetParentFrameLevel(self.ModelPanel, 9)
+	SetParentFrameLevel(self.ModelPanel.ActionButton, 2)
 end

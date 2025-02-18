@@ -53,7 +53,7 @@ PAPERDOLL_SIDEBARS = {
 	},
 	{
 		name=EQUIPMENT_MANAGER;
-		frame="PaperDollEquipmentManagerPane";
+		frame="GearManagerDialog";
 		icon = "Interface\\PaperDollInfoFrame\\PaperDollSidebarTabs";
 		texCoords = {0.01562500, 0.53125000, 0.46875000, 0.60546875};
 	},
@@ -119,6 +119,8 @@ local InspectSlotButton = {
 local itemSlotButtons = {};
 
 local StrengthenStats = {SPELL_STAT1_NAME, SPELL_STAT2_NAME, SPELL_STAT3_NAME, SPELL_STAT4_NAME, SPELL_STAT5_NAME, PAPERDOLLFRAME_UPS_SPELL_POWER, ATTACK_POWER}
+
+local CastSpell = CastSpell
 
 function PaperDollFrame_OnLoad (self)
 	self.equipmentItemsList = {}
@@ -278,10 +280,8 @@ end
 function PaperDollFrame_OnEvent (self, event, ...)
 	local unit = ...;
 
-	if event == "PLAYER_ENTERING_WORLD" and not self.transmogInfoReqest then
-		SendServerMessage("ACMSG_TRANSMOGRIFICATION_INFO_REQUEST", UnitGUID("player"));
-
-		self.transmogInfoReqest = true;
+	if event == "PLAYER_ENTERING_WORLD" then
+		RequestInventoryTransmogInfo()
 	end
 
 	if event == "PLAYER_ENTERING_WORLD"
@@ -301,7 +301,7 @@ function PaperDollFrame_OnEvent (self, event, ...)
 	end
 
 	if event == "PLAYER_EQUIPMENT_CHANGED" then
-		SendServerMessage("ACMSG_TRANSMOGRIFICATION_INFO_REQUEST", UnitGUID("player"))
+		RequestInventoryTransmogInfo(true)
 	end
 
 	if ( event == "ADDON_LOADED" ) then
@@ -1300,25 +1300,6 @@ function PaperDollFrame_OnShow(self)
 			DisableStrengthenFrame:Hide()
 		end
 
-		if not NPE_TutorialPointerFrame:GetKey("PaperDollFrame_ItemLevel") then
-			if tutorialData.ItemLevel then
-				NPE_TutorialPointerFrame:Hide(tutorialData.ItemLevel)
-				tutorialData.ItemLevel = nil
-			end
-
-			tutorialData.ItemLevel = NPE_TutorialPointerFrame:Show(PAPERDOLLFRAME_ILEVEL_HELP_1, "UP", CharacterItemLevelFrame, 0, -8)
-		end
-
-		CharacterItemLevelFrame:HookScript("OnEnter", function( ... )
-			if not NPE_TutorialPointerFrame:GetKey("PaperDollFrame_ItemLevel") then
-				if tutorialData.ItemLevel then
-					NPE_TutorialPointerFrame:Hide(tutorialData.ItemLevel)
-					tutorialData.ItemLevel = nil
-					NPE_TutorialPointerFrame:SetKey("PaperDollFrame_ItemLevel", true)
-				end
-			end
-		end)
-
 		if not NPE_TutorialPointerFrame:GetKey("PaperDollFrame_Strengthen") then
 			if tutorialData.Strengthen then
 				NPE_TutorialPointerFrame:Hide(tutorialData.Strengthen)
@@ -1327,7 +1308,13 @@ function PaperDollFrame_OnShow(self)
 			end
 
 			if PaperDollFrameStrengthenFrame.StrengthenTittle.Current and PaperDollFrameStrengthenFrame.StrengthenTittle.Current >= 1 then
-				tutorialData.Strengthen = NPE_TutorialPointerFrame:Show(PAPERDOLLFRAME_UPS_HELP_1, "RIGHT", PaperDollFrameStrengthenFrame, 0, 0)
+				local onClose = function()
+					NPE_TutorialPointerFrame:Hide(tutorialData.Strengthen)
+					tutorialData.Strengthen = nil
+					PaperDollFrameStrengthenFrame.TutorialGlow:Hide()
+					NPE_TutorialPointerFrame:SetKey("PaperDollFrame_Strengthen", true)
+				end
+				tutorialData.Strengthen = NPE_TutorialPointerFrame:Show(PAPERDOLLFRAME_UPS_HELP_1, "RIGHT", PaperDollFrameStrengthenFrame, 0, 0, nil, nil, nil, nil, onClose)
 				PaperDollFrameStrengthenFrame.TutorialGlow:Show()
 			end
 		end
@@ -1340,6 +1327,9 @@ function PaperDollFrame_OnShow(self)
 	ButtonFrameTemplate_HideButtonBar(CharacterFrame)
 	CharacterFrame.Inset:Hide()
 	CharacterFrame_Expand()
+
+	PaperDollFrame_UpdateSpellButtons()
+	EventRegistry:RegisterFrameEventAndCallback("SPELLS_CHANGED", PaperDollFrame_UpdateSpellButtons, "PaperDollFrame")
 end
 
 function PaperDollFrame_OnHide(self)
@@ -1348,16 +1338,20 @@ function PaperDollFrame_OnHide(self)
 	PlayerTitlePickerFrame:Hide();
 	GearManagerDialog:Hide();
 
-	if not self.isDisabledStrengthenFrame then
-		if not NPE_TutorialPointerFrame:GetKey("PaperDollFrame_ItemLevel") then
-			if tutorialData.ItemLevel then
-				NPE_TutorialPointerFrame:Hide(tutorialData.ItemLevel)
-				tutorialData.ItemLevel = nil
-			end
-		end
-	end
-
 	CharacterFrame_Collapse()
+
+	EventRegistry:UnregisterFrameEventAndCallback("SPELLS_CHANGED", "PaperDollFrame")
+end
+
+function PaperDollFrame_UpdateSpellButtons()
+	local isSpellKnown = PaperDollFrame.ItemSetSwapButton:IsSpellKnown()
+	PaperDollFrame.ItemSetSwapButton:SetShown(isSpellKnown)
+
+	if isSpellKnown then
+		CharacterLevelText:SetPoint("TOP", -36, -35)
+	else
+		CharacterLevelText:SetPoint("TOP", 0, -35)
+	end
 end
 
 function PaperDollFrame_DisableStrengthenFrame()
@@ -2034,7 +2028,7 @@ function PaperDollFrameItemFlyoutButton_OnClick(self)
 		slot.ignored = true;
 		PaperDollItemSlotButton_Update(slot);
 		EquipmentFlyout_Show(slot);
-		PaperDollFrame.EquipmentManagerPane.SaveSet:Enable();
+		GearManagerDialog.SaveSet:Enable();
 	elseif ( self.location == EQUIPMENTFLYOUT_UNIGNORESLOT_LOCATION ) then
 		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 		local slot = EquipmentFlyoutFrame.button;
@@ -2042,7 +2036,7 @@ function PaperDollFrameItemFlyoutButton_OnClick(self)
 		slot.ignored = nil;
 		PaperDollItemSlotButton_Update(slot);
 		EquipmentFlyout_Show(slot);
-		PaperDollFrame.EquipmentManagerPane.SaveSet:Enable();
+		GearManagerDialog.SaveSet:Enable();
 	elseif ( self.location == EQUIPMENTFLYOUT_PLACEINBAGS_LOCATION ) then
 		if ( UnitAffectingCombat("player") and not INVSLOTS_EQUIPABLE_IN_COMBAT[EquipmentFlyoutFrame.button:GetID()] ) then
 			UIErrorsFrame:AddMessage(ERR_CLIENT_LOCKED_OUT, 1.0, 0.1, 0.1, 1.0);
@@ -2767,4 +2761,227 @@ PaperDollItemSlotButtonMixin = {};
 
 function PaperDollItemSlotButtonMixin:GetItemContextMatchResult()
 	return ItemButtonUtil.GetItemContextMatchResultForItem(ItemLocation:CreateFromEquipmentSlot(self:GetID()));
+end
+
+PaperDollSpellButtonMixin = {}
+
+function PaperDollSpellButtonMixin:OnLoad()
+	self:RegisterForDrag("LeftButton")
+	self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+	self.UpdateTooltip = self.OnEnter
+	self.dirty = true
+	self:RegisterEvent("SPELLS_CHANGED")
+end
+
+function PaperDollSpellButtonMixin:OnEvent(event, ...)
+	if event == "SPELLS_CHANGED" then
+		self.dirty = true
+	elseif event == "SPELL_UPDATE_COOLDOWN" then
+		self:UpdateCooldown()
+	elseif event == "CURRENT_SPELL_CAST_CHANGED"
+--	or event == "TRADE_SKILL_SHOW"
+--	or event == "TRADE_SKILL_CLOSE"
+	then
+		self:UpdateSelection()
+	elseif event == "PET_BAR_UPDATE" then
+		self.dirty = true
+		self:UpdateInfo()
+	end
+end
+
+function PaperDollSpellButtonMixin:OnShow()
+	self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+	self:RegisterEvent("CURRENT_SPELL_CAST_CHANGED")
+	self:RegisterEvent("TRADE_SKILL_SHOW")
+	self:RegisterEvent("TRADE_SKILL_CLOSE")
+
+	if self:GetBookType() == "pet" then
+		self:RegisterEvent("PET_BAR_UPDATE")
+	end
+
+	self:UpdateInfo()
+end
+
+function PaperDollSpellButtonMixin:OnHide()
+	self:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
+	self:UnregisterEvent("CURRENT_SPELL_CAST_CHANGED")
+	self:UnregisterEvent("TRADE_SKILL_SHOW")
+	self:UnregisterEvent("TRADE_SKILL_CLOSE")
+	self:UnregisterEvent("PET_BAR_UPDATE")
+end
+
+function PaperDollSpellButtonMixin:OnClick(button)
+	local spellID = self:GetSpellID()
+	if not spellID then
+		return
+	end
+
+	if IsModifiedClick() then
+		if IsModifiedClick("CHATLINK") then
+			if MacroFrame and MacroFrame:IsShown() then
+				local spellName, subSpellName = GetSpellInfo(spellID)
+				if spellName and not IsPassiveSpell(spellName) then
+					if subSpellName and subSpellName ~= "" then
+						ChatEdit_InsertLink(spellName.."("..subSpellName..")")
+					else
+						ChatEdit_InsertLink(spellName)
+					end
+				end
+				return
+			else
+				local spellLink, tradeSkillLink = GetSpellLink(spellID)
+				if tradeSkillLink then
+					ChatEdit_InsertLink(tradeSkillLink)
+				elseif spellLink then
+					ChatEdit_InsertLink(spellLink)
+				end
+				return
+			end
+		end
+		if IsModifiedClick("PICKUPACTION") then
+			local spellSlot = self:GetSpellSlot()
+			if spellSlot then
+				PickupSpell(spellSlot, self:GetBookType())
+				return
+			end
+		end
+		if IsModifiedClick("SELFCAST") then
+			local spellSlot = self:GetSpellSlot()
+			if spellSlot then
+				CastSpell(spellSlot, self:GetBookType(), true)
+				return
+			end
+		end
+	else
+		local bookType = self:GetBookType()
+		if button ~= "LeftButton" and bookType == "pet" then
+			local spellSlot = self:GetSpellSlot()
+			if spellSlot then
+				ToggleSpellAutocast(spellSlot, bookType)
+			end
+		else
+			if GetFlyoutInfo(spellID) then
+				SpellFlyout:Toggle(spellID, self, "RIGHT", 1, false, 0, true)
+				SpellFlyout:SetBorderColor(0.70703125, 0.6328125, 0.3515625)
+			else
+				local spellSlot = self:GetSpellSlot()
+				if spellSlot then
+					CastSpell(spellSlot, self:GetBookType())
+				end
+			end
+			self:UpdateSelection()
+		end
+	end
+end
+
+function PaperDollSpellButtonMixin:OnDragStart(button)
+	local spellSlot = self:GetSpellSlot()
+	if spellSlot then
+		PickupSpell(spellSlot, self:GetBookType())
+	end
+end
+
+function PaperDollSpellButtonMixin:OnReceiveDrag()
+	self:OnDragStart()
+end
+
+function PaperDollSpellButtonMixin:OnEnter()
+	local spellID = self:GetSpellID()
+	if spellID then
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:SetHyperlink(GetSpellLink(spellID))
+	end
+end
+
+function PaperDollSpellButtonMixin:OnLeave()
+	GameTooltip:Hide()
+end
+
+function PaperDollSpellButtonMixin:GetSpellID()
+	return self:GetAttribute("spellid")
+end
+
+function PaperDollSpellButtonMixin:GetBookType()
+	return self:GetAttribute("bookType")
+end
+
+function PaperDollSpellButtonMixin:IsSpellKnown()
+	local spellID = self:GetSpellID()
+	local bookType = self:GetBookType()
+	if spellID and bookType then
+		return IsSpellKnown(spellID, bookType == "pet")
+	end
+	return false
+end
+
+function PaperDollSpellButtonMixin:GetSpellSlot()
+	if self.dirty then
+		self.spellSlot = nil
+		self.dirty = nil
+
+		local spellID = self:GetSpellID()
+		local bookType = self:GetBookType()
+		if spellID and bookType then
+			self.spellSlot = SpellBook_GetSpellIndex(spellID, bookType)
+		end
+	end
+
+	return self.spellSlot
+end
+
+function PaperDollSpellButtonMixin:UpdateCooldown()
+	local spellID = self:GetSpellID()
+	if not spellID then
+		return
+	end
+
+	local start, duration, enable = GetSpellCooldown(spellID)
+	CooldownFrame_SetTimer(self.Cooldown, start, duration, enable)
+
+	if enable == 1 then
+		self.Icon:SetVertexColor(1.0, 1.0, 1.0)
+	else
+		self.Icon:SetVertexColor(0.4, 0.4, 0.4)
+	end
+end
+
+function PaperDollSpellButtonMixin:UpdateSelection()
+	local spellID = self:GetSpellID()
+	if not spellID then
+		return
+	end
+
+	local spellname = GetSpellInfo(spellID)
+	if IsSelectedSpell(spellname) then
+		self:SetChecked(true)
+	else
+		self:SetChecked(false)
+	end
+end
+
+function PaperDollSpellButtonMixin:UpdateInfo()
+	local spellID = self:GetSpellID()
+	if not spellID then
+		return
+	end
+
+	self:UpdateCooldown()
+	self:UpdateSelection()
+
+	local spellName, subSpellName, texture, cost, isFunnel, powerType, castTime, minRage, maxRange = GetSpellInfo(spellID)
+
+	if not texture or texture == "" then
+		texture = GetSpellTexture(spellName)
+	end
+
+	self.Icon:SetTexture(texture or [[Interface\ICONS\INV_Misc_QuestionMark]])
+
+	self:SetEnabled(not IsPassiveSpell(spellName))
+
+	if GetFlyoutInfo(spellID) then
+		SetClampedTextureRotation(self.FlyoutArrow.Arrow, 90)
+		self.FlyoutArrow:Show()
+	else
+		self.FlyoutArrow:Hide()
+	end
 end

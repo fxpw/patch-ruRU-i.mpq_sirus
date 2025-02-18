@@ -782,31 +782,26 @@
 		<Frames>
 			<Frame name="$parentRewardFrame" parentKey="RewardFrame" setAllPoints="true">
 				<Frames>
-					<Frame name="$parentCurrencyReward" enableMouse="true" parentKey="CurrencyReward" hidden="true">
+					<Frame name="$parentCurrencyReward" parentKey="CurrencyReward" inherits="PKBT_CurrencyListTemplate" hidden="true">
 						<Size x="68" y="28"/>
 						<Anchors>
 							<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-6" y="0" />
 						</Anchors>
 						<Layers>
 							<Layer level="BACKGROUND">
-								<Texture parentKey="BG" alpha="0.5">
-									<Anchors>
-										<Anchor point="TOPLEFT"/>
-										<Anchor point="BOTTOMRIGHT"/>
-									</Anchors>
-								</Texture>
+								<Texture name="$parentBackground" parentKey="Background" setAllPoints="true" alpha="0.5"/>
 							</Layer>
 							<Layer level="BORDER">
 								<Texture name="$parentBorderLeft" parentKey="BorderLeft" alpha="0.5">
 									<Size x="10" y="28"/>
 									<Anchors>
-										<Anchor point="LEFT" x="-4"/>
+										<Anchor point="LEFT" x="-4" y="0"/>
 									</Anchors>
 								</Texture>
 								<Texture name="$parentBorderRight" parentKey="BorderRight" alpha="0.5">
 									<Size x="10" y="28"/>
 									<Anchors>
-										<Anchor point="RIGHT" x="4"/>
+										<Anchor point="RIGHT" x="4" y="0"/>
 									</Anchors>
 								</Texture>
 								<Texture parentKey="BorderCenter" alpha="0.5">
@@ -815,21 +810,6 @@
 										<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderRight" relativePoint="BOTTOMLEFT"/>
 									</Anchors>
 								</Texture>
-							</Layer>
-							<Layer level="ARTWORK">
-								<Texture parentKey="Icon" name="$parentIcon" file="Interface\PVPFrame\PVPCurrency-Conquest1-Alliance">
-									<Size x="16" y="16"/>
-									<Anchors>
-										<Anchor point="RIGHT" relativePoint="RIGHT" x="-4" y="1" />
-									</Anchors>
-								</Texture>
-								<FontString name="$parentCount" parentKey="Count" inherits="GameFontNormal" justifyH="RIGHT" justifyV="MIDDLE">
-									<Size x="60" y="20"/>
-									<Anchors>
-										<Anchor point="RIGHT" relativeTo="$parentIcon" relativePoint="LEFT" x="-4" y="0" />
-									</Anchors>
-									<Color r="1" g="1" b="1"/>
-								</FontString>
 							</Layer>
 							<Layer level="HIGHLIGHT">
 								<Texture name="$parentBorderLeftHighlight" parentKey="BorderLeftHighlight" alphaMode="ADD" alpha="0.5">
@@ -854,19 +834,19 @@
 						</Layers>
 						<Scripts>
 							<OnEnter>
-								GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-								if PVPQueueFrame.selectedCategory == 2 then
-									GameTooltip:SetText(PVPFRAME_CURRENCY_REWARD_TOOLTIP_HEAD_CONQUEST)
-									GameTooltip:AddLine(PVPFRAME_CURRENCY_REWARD_TOOLTIP_CONQUEST, 1, 1, 1, true)
-								elseif PVPQueueFrame.selectedCategory == 3 then
-									GameTooltip:SetText(PVPFRAME_CURRENCY_REWARD_TOOLTIP_HEAD_HONOR)
-									GameTooltip:AddLine(PVPFRAME_CURRENCY_REWARD_TOOLTIP_HONOR, 1, 1, 1, true)
+								if self.tooltipDesc then
+									GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+									GameTooltip:SetText(PVPFRAME_CURRENCY_REWARD_TOOLTIP_HEAD)
+									GameTooltip:AddLine(self.tooltipDesc, 1, 1, 1, true)
+									GameTooltip:Show()
 								end
-								GameTooltip:Show()
 							</OnEnter>
 							<OnLeave function="GameTooltip_Hide"/>
 							<OnLoad>
-								self.BG:SetAtlas("objectivewidget-bar-background")
+								Mixin(self, PKBT_CurrencyListMixin)
+								self:OnLoad()
+
+								self.Background:SetAtlas("objectivewidget-bar-background")
 								self.BorderLeft:SetAtlas("objectivewidget-bar-border-left")
 								self.BorderRight:SetAtlas("objectivewidget-bar-border-right")
 								self.BorderCenter:SetAtlas("objectivewidget-bar-border-middle")
@@ -874,13 +854,22 @@
 								self.BorderLeftHighlight:SetAtlas("objectivewidget-bar-border-left")
 								self.BorderRightHighlight:SetAtlas("objectivewidget-bar-border-right")
 								self.BorderCenterHighlight:SetAtlas("objectivewidget-bar-border-middle")
+
+								self:SetCurrencyInvertValueSide(true)
+								self:SetCurrencyOffset(5)
+								self:SetAdditionalWidth(10)
+								self:SetCurrencyTextOffset(2)
+								self:SetCurrencySize(16)
+								self:SetCurrencyFont("GameFontNormal")
+								self:SetCurrencyTextColor(1, 1, 1)
+								self:SetCurrencyTooltipEnabled(false)
 							</OnLoad>
 						</Scripts>
 					</Frame>
 					<Frame name="$parentLootReward" enableMouse="true" parentKey="LootReward" hidden="true">
 						<Size x="34" y="29"/>
 						<Anchors>
-							<Anchor point="TOPRIGHT" x="-22" y="-2" />
+							<Anchor point="RIGHT" relativeTo="$parentCurrencyReward" relativePoint="LEFT" x="-8" y="0" />
 						</Anchors>
 						<Layers>
 							<Layer level="BORDER">
@@ -899,10 +888,6 @@
 										<Anchor point="CENTER" x="0" y="-2" />
 									</Anchors>
 								</Texture>
-							</Layer>
-							<Layer level="ARTWORK">
-							</Layer>
-							<Layer level="OVERLAY">
 							</Layer>
 						</Layers>
 						<Scripts>
@@ -929,7 +914,7 @@
 	<Frame name="PVPUIFrame" inherits="PortraitFrameTemplate2" toplevel="true" enableMouse="true" parent="UIParent" hidden="true">
 		<Size x="563" y="428"/>
 		<Frames>
-			<Frame parentKey="LeftInset" name="$parentLeftInset" inherits="InsetFrameTemplate4">
+			<Frame parentKey="LeftInset" name="$parentLeftInset" inherits="InsetFrameTemplate">
 				<Size x="217" y="496"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" x="4" y="-24" />
@@ -1026,6 +1011,7 @@
 				</Frames>
 				<Scripts>
 					<OnLoad>
+						self.Bgs:Hide()
 						self:SetFrameLevel(2)
 					</OnLoad>
 				</Scripts>
@@ -1291,7 +1277,7 @@
 							</Layer>
 						</Layers>
 					</Button>
-					<Frame name="$parentCapTopFrame" parentKey="CapTopFrame" inherits="StandartInsetFrameTemplate" toplevel="true">
+					<Frame name="$parentCapTopFrame" parentKey="CapTopFrame" inherits="InsetFrameTemplate" toplevel="true">
 						<Size x="333" y="58"/>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="222" y="-25" />
@@ -1490,7 +1476,7 @@
 							</Frame>
 						</Frames>
 					</Frame>
-					<Frame name="$parentStepBottomFrame" parentKey="StepBottomFrame" inherits="StandartInsetFrameTemplate3" toplevel="true">
+					<Frame name="$parentStepBottomFrame" parentKey="StepBottomFrame" inherits="InsetFrameTemplate3" toplevel="true">
 						<Size x="333" y="42"/>
 						<Anchors>
 							<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="222" y="27" />
@@ -1666,12 +1652,23 @@
 									</OnHide>
 								</Scripts>
 							</Frame>
-							<Frame parentKey="ShadowOverlay" inherits="ShadowOverlaySmallTemplate2" toplevel="true">
+							<Frame parentKey="ShadowOverlay" inherits="ShadowOverlaySmallTemplate" toplevel="true">
 								<Anchors>
 									<Anchor point="TOPLEFT" x="2" y="-2"/>
 									<Anchor point="BOTTOMRIGHT" x="-2" y="0"/>
 								</Anchors>
 								<Scripts>
+									<OnLoad>
+										self.TopRight:SetTexCoord(0, 1, 1, 1, 0, 0, 1, 0);
+										self.BottomRight:SetTexCoord(1, 1, 1, 0, 0, 1, 0, 0);
+										self.BottomLeft:SetTexCoord(1, 0, 0, 0, 1, 1, 0, 1);
+										self.TopLeft:SetHeight(14)
+										self.TopRight:SetHeight(14)
+										self.BottomLeft:SetHeight(14)
+										self.BottomRight:SetHeight(14)
+										self.Top:SetHeight(14)
+										self.Bottom:SetHeight(14)
+									</OnLoad>
 									<OnShow>
 										self:SetFrameLevel(self:GetParent():GetFrameLevel() + 2)
 									</OnShow>
@@ -1685,7 +1682,7 @@
 							<Anchor point="TOPLEFT" x="220" y="-22"/>
 						</Anchors>
 						<Frames>
-							<Frame name="$parentBottomInset" parentKey="BottomInset" inherits="InsetFrameTemplate4">
+							<Frame name="$parentBottomInset" parentKey="BottomInset" inherits="InsetFrameTemplate">
 								<Size x="333" y="238"/>
 								<Anchors>
 									<Anchor point="TOP" relativeTo="PVPQueueFrameCapTopFrame" relativePoint="BOTTOM" x="0" y="-32" />
@@ -1805,10 +1802,13 @@
 															</Layer>
 														</Layers>
 														<Scripts>
-															<OnLoad>
-																SetParentFrameLevel(self, 10)
-															</OnLoad>
 															<OnShow>
+																SetParentFrameLevel(self, 10)
+
+																self.qualifiedWeeksRequired = 10
+																self.qualifiedWeeksMax = 12
+																self.requiredMatches = 20
+
 																local pvpStats = C_CacheInstance:Get("ASMSG_PVP_STATS", {})
 																local bracketID = 2
 																local qualifiedWeeks
@@ -1822,8 +1822,8 @@
 															<OnEnter>
 																if self.qualifiedWeeks then
 																	GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
-																	GameTooltip:SetText(string.format(ARENA_2V2_INFO_HEADER, self.qualifiedWeeks))
-																	GameTooltip:AddLine(ARENA_2V2_INFO_TEXT, 1, 1, 1, 1)
+																	GameTooltip:SetText(string.format(ARENA_2V2_INFO_HEADER, self.qualifiedWeeks, self.qualifiedWeeksMax))
+																	GameTooltip:AddLine(string.format(ARENA_2V2_INFO_TEXT, self.qualifiedWeeksRequired, self.qualifiedWeeksMax, self.requiredMatches, 1, 2, 3), 1, 1, 1, 1)
 																	GameTooltip:Show()
 																end
 																self.IconHighLight:Show()
@@ -1918,6 +1918,11 @@
 										</Frames>
 									</Frame>
 								</Frames>
+								<Scripts>
+									<OnLoad>
+										self.Bgs:Hide()
+									</OnLoad>
+								</Scripts>
 							</Frame>
 							<Frame name="$parentNoSeason" parentKey="NoSeason" inherits="GlowBoxTemplate" hidden="true" toplevel="true" enableMouse="true">
 								<Anchors>
@@ -2003,7 +2008,7 @@
 							<Anchor point="TOPLEFT" x="220" y="-22"/>
 						</Anchors>
 						<Frames>
-							<Button name="$parentSoloQueueButton" parentKey="SoloQueueButton" inherits="MagicButtonTemplate,UIPanelButtonChallengeStateHandlerTemplate" text="BATTLEFIELD_JOIN">
+							<Button name="$parentSoloQueueButton" parentKey="SoloQueueButton" inherits="MagicButtonTemplate,UIPanelButtonChallengeStateHandlerTemplate" text="BATTLEFIELD_JOIN" motionScriptsWhileDisabled="true">
 								<Size x="116" y="22"/>
 								<Anchors>
 									<Anchor point="BOTTOMLEFT" x="1" y="0"/>
@@ -2016,17 +2021,11 @@
 										PlaySound("igMainMenuOptionCheckBoxOn");
 										HonorFrame_Queue();
 									</OnClick>
-									<OnEnter>
-										if C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.BATTLEGROUND) then
-											GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-											GameTooltip_AddErrorLine(GameTooltip, string.format(HARDCORE_FEATURE1_6_DISABLE, C_Hardcore.GetChallengeInfoByID(C_Hardcore.GetActiveChallengeID()) or "", true))
-											GameTooltip:Show()
-										end
-									</OnEnter>
+									<OnEnter function="PVPHonorFrameSoloQueueButton_OnEnter"/>
 									<OnLeave function="GameTooltip_Hide"/>
 								</Scripts>
 							</Button>
-							<Button name="$parentGroupQueueButton" parentKey="GroupQueueButton" inherits="MagicButtonTemplate,UIPanelButtonChallengeStateHandlerTemplate" text="BATTLEFIELD_GROUP_JOIN">
+							<Button name="$parentGroupQueueButton" parentKey="GroupQueueButton" inherits="MagicButtonTemplate,UIPanelButtonChallengeStateHandlerTemplate" text="BATTLEFIELD_GROUP_JOIN" motionScriptsWhileDisabled="true">
 								<Size x="116" y="22"/>
 								<Anchors>
 									<Anchor point="BOTTOMRIGHT" x="1" y="0"/>
@@ -2039,17 +2038,11 @@
 										PlaySound("igMainMenuOptionCheckBoxOn");
 										HonorFrame_Queue(true);
 									</OnClick>
-									<OnEnter>
-										if C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.BATTLEGROUND) then
-											GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-											GameTooltip_AddErrorLine(GameTooltip, string.format(HARDCORE_FEATURE1_6_DISABLE, C_Hardcore.GetChallengeInfoByID(C_Hardcore.GetActiveChallengeID()) or "", true))
-											GameTooltip:Show()
-										end
-									</OnEnter>
+									<OnEnter function="PVPHonorFrameGroupQueueButton_OnEnter"/>
 									<OnLeave function="GameTooltip_Hide"/>
 								</Scripts>
 							</Button>
-							<Frame parentKey="BottomInset" name="$parentBottomInset" inherits="InsetFrameTemplate4">
+							<Frame parentKey="BottomInset" name="$parentBottomInset" inherits="InsetFrameTemplate">
 								<Size x="333" y="238"/>
 								<Anchors>
 									<Anchor point="TOP" relativeTo="PVPQueueFrameCapTopFrame" relativePoint="BOTTOM" x="0" y="-32" />
@@ -2231,24 +2224,6 @@
 												<Anchors>
 													<Anchor point="TOP" relativeTo="$parentRandomBGButton" relativePoint="BOTTOM" x="0" y="0"/>
 												</Anchors>
-												<Layers>
-													<!-- <Layer level="ARTWORK">
-														<Texture name="$parentTempBackground" parentKey="TempBackground" alphaMode="ADD" alpha="0.3" file="Interface\Challenges\challenges-metalglow">
-															<Size x="260" y="84"/>
-															<Anchors>
-																<Anchor point="CENTER" x="0" y="-2" />
-															</Anchors>
-														</Texture>
-													</Layer> -->
-													<!-- <Layer level="OVERLAY">
-														<FontString name="$parentTempLabel" parentKey="TempLabel" inherits="GameFontNormalLarge" text="SOON">
-															<Anchors>
-																<Anchor point="CENTER" x="0" y="0" />
-															</Anchors>
-															<Color r="1" g="1" b="1"/>
-														</FontString>
-													</Layer> -->
-												</Layers>
 												<Frames>
 													<Frame parentKey="Contents" inherits="PVPBonusBattlegroundContentsTemplate">
 														<Layers>
@@ -2265,44 +2240,20 @@
 																	<Color r="0.7" g="0.7" b="0.7"/>
 																</FontString>
 															</Layer>
+															<Layer level="OVERLAY">
+																<Texture name="$parentDailyComplete" parentKey="DailyComplete" hidden="true">
+																	<Anchors>
+																		<Anchor point="RIGHT" x="-12" y="4"/>
+																	</Anchors>
+																</Texture>
+															</Layer>
 														</Layers>
 													</Frame>
 												</Frames>
 												<Scripts>
-													<OnEnter>
-															local info = C_CacheInstance:Get("ASMSG_BRAWL_SELECTED", "")
-															if info == "" or info.id == "0" then
-																return
-															end
-															GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-															GameTooltip:AddLine(BATTLEGROUND_BRAWL_TOOLTIP_HEADER)
-															GameTooltip:AddLine(string.format(BATTLEGROUND_LOCK_TOOLTIP_BGNAME, info.name), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, 1)
-
-															for index, rewardInfo in pairs(info.rewards) do
-																GameTooltip:AddLine("|n")
-																GameTooltip:AddLine(_G["BATTLEGROUND_BRAWL_TOOLTIP_REWARDS_"..index])
-																for k, v in pairs(rewardInfo) do
-																	GameTooltip:AddLine(v.name .. " x" .. v.count, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, 1)
-																end
-															end
-
-															GameTooltip:Show()
-													</OnEnter>
-													<OnLeave>
-														GameTooltip_Hide(self)
-													</OnLeave>
-													<OnShow>
-														local info = C_CacheInstance:Get("ASMSG_BRAWL_SELECTED", "")
-														if info == "" or info.id == "0" then
-															self.NormalTexture:SetDesaturated(1)
-															self:Disable()
-															self.Contents.Title:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
-															return
-														end
-														self.Contents.Title:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
-														self.NormalTexture:SetDesaturated(0)
-														self:Enable()
-													</OnShow>
+													<OnShow function="PVPFrameBrawlButton_OnShow"/>
+													<OnEnter function="PVPFrameBrawlButton_OnEnter"/>
+													<OnLeave function="GameTooltip_Hide"/>
 												</Scripts>
 											</Button>
 										</Frames>
@@ -2315,6 +2266,8 @@
 												else
 													self.Background:SetTexCoord(0.00195313, 0.63867188, 0.31738281, 0.44238281)
 												end
+
+												self.CallToArmsButton.Contents.DailyComplete:SetAtlas("worldquest-tracker-checkmark", true)
 											</OnLoad>
 										</Scripts>
 									</Frame>
@@ -2389,6 +2342,11 @@
 										</Scripts>
 									</Frame>
 								</Frames>
+								<Scripts>
+									<OnLoad>
+										self.Bgs:Hide()
+									</OnLoad>
+								</Scripts>
 							</Frame>
 							<Frame parentKey="NoSeason" inherits="GlowBoxTemplate" hidden="true" toplevel="true" enableMouse="true">
 								<Anchors>
@@ -2434,13 +2392,15 @@
 							<Anchor point="TOPLEFT" x="220" y="-22"/>
 						</Anchors>
 						<Frames>
-							<Frame name="$parentInset" inherits="InsetFrameTemplateNoBackground">
+							<Frame name="$parentInset" inherits="InsetFrameTemplate">
 								<Anchors>
 									<Anchor point="TOPLEFT" x="0" y="0" />
 									<Anchor point="BOTTOMRIGHT" x="0" y="28" />
 								</Anchors>
 								<Scripts>
 									<OnLoad>
+										self.Bgs:SetHorizTile(false)
+										self.Bgs:SetVertTile(false)
 										self.Bgs:SetTexture("Interface\\GuildFrame\\GuildInspect-Parts")
 										self.Bgs:SetTexCoord(0.00195313, 0.62890625, 0.00195313, 0.65429688)
 
@@ -3327,7 +3287,7 @@
 					</Layer>
 				</Layers>
 				<Frames>
-					<Button name="$parentEnterButton" parentKey="EnterButton" inherits="StoreGoldButtonTemplate" text="ENTER" hidden="true">
+					<Button name="$parentEnterButton" parentKey="EnterButton" inherits="StoreGoldButtonCustomTemplate" text="ENTER" hidden="true">
 						<Size x="148" y="30"/>
 						<Anchors>
 							<Anchor point="BOTTOM" x="0" y="56" />

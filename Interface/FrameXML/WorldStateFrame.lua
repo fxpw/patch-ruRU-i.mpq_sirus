@@ -45,6 +45,9 @@ CLASS_BUTTONS = {
 	["DEATHKNIGHT"]	= {0.25, 0.49609375, 0.5, 0.75},
 };
 
+
+ExtendedUI = {};
+
 local RatedBattleGroundRankCoords = {
 	{0.0009765625, 0.1259765625, 0.001953125, 0.251953125},
 	{0.1259765625, 0.2509765625, 0.001953125, 0.251953125},
@@ -62,7 +65,8 @@ local RatedBattleGroundRankCoords = {
 	{0.0009765625, 0.1259765625, 0.501953125, 0.751953125},
 }
 
-ExtendedUI = {};
+local DEFAULT_ICON_TEXCOORDS = {0, 1, 0, 1}
+local EYE_OF_THE_STORM_FLAG_COLOR = {0.5, 0.85, 0.3}
 
 local rankScoreSorted = nil
 local playerRatingData = {}
@@ -213,11 +217,6 @@ function WorldStateAlwaysUpFrame_OnEvent(self, event, ...)
 end
 
 function WorldStateAlwaysUpFrame_Update()
-	local slaveryValleyCapture = {
-		["Alliance"] = 0,
-		["Horde"] = 0
-	}
-
 	local currentMapAreaID = GetCurrentMapAreaID()
 	local numUI = GetNumWorldStateUI();
 	local name, frame, frameText, frameDynamicIcon, frameIcon, frameFlash, flashTexture, frameDynamicButton;
@@ -228,6 +227,12 @@ function WorldStateAlwaysUpFrame_Update()
 	local extendedUIShown = 1;
 
 	local isShownWidgetWorldState
+
+	local isSlaveryValley = currentMapAreaID == BATTLEGROUND_SLAVERY_VALLEY
+	local slaveryValleyCapture
+	if isSlaveryValley then
+		slaveryValleyCapture = {}
+	end
 
 	for i=1, numUI do
 		uiType, state, text, icon, dynamicIcon, tooltip, dynamicTooltip, extendedUI, extendedUIState1, extendedUIState2, extendedUIState3 = GetWorldStateUIInfo(i);
@@ -273,9 +278,8 @@ function WorldStateAlwaysUpFrame_Update()
 					frameIcon:SetTexture(icon)
 					frameDynamicIcon:SetTexture(dynamicIcon);
 
-					if currentMapAreaID == 611 and text and (i == 1 or i == 2) then
+					if isSlaveryValley and text and (i == 1 or i == 2) then
 						local baseCount = string.match(text, BASE_CAPTURE_PATTERN)
-
 						if baseCount then
 							slaveryValleyCapture[i == 1 and "Alliance" or "Horde"] = tonumber(baseCount)
 						end
@@ -304,7 +308,7 @@ function WorldStateAlwaysUpFrame_Update()
 
 					if WorldStateTopCenterFrame then
 						local statusBar = string.find(icon, "Alliance") and WorldStateTopCenterFrame.LeftBar or WorldStateTopCenterFrame.RightBar
-						local barID = statusBar:GetID()
+						local barID = -(statusBar:GetID())
 
 						if i == 1 and icon == "" then
 							WorldStateTopCenterFrame.TimeLeft:SetText(text)
@@ -314,7 +318,7 @@ function WorldStateAlwaysUpFrame_Update()
 							WorldStateTopCenterFrame.TimeLeft:Hide()
 						end
 
-						if currentMapAreaID == BATTLEGROUND_WARSONG_GULCH then
+						if currentMapAreaID == BATTLEGROUND_WARSONG_GULCH or currentMapAreaID == BATTLEGROUND_THE_MAGNIFICENT_FIVE then
 							local flagCountCurrent, flagCountMax = string.match(text, ".-%: (%d+)/(%d+)")
 
 							if flagCountCurrent and flagCountMax then
@@ -331,7 +335,7 @@ function WorldStateAlwaysUpFrame_Update()
 								WorldStateTopCenterFrameUpdateInfo(statusBar, tooltip, flagCountCurrent, flagCountMax)
 								isShownWidgetWorldState = true
 							end
-						elseif currentMapAreaID == BATTLEGROUND_ARATHI_BASIN then
+						elseif currentMapAreaID == BATTLEGROUND_ARATHI_BASIN or currentMapAreaID == BATTLEGROUND_ARATHI_BLIZZARD then
 							local resourceCurrent, resourceMax = string.match(text, ".-%: %d .-%: (%d+)/(%d+)")
 
 							if resourceCurrent and resourceMax then
@@ -352,7 +356,7 @@ function WorldStateAlwaysUpFrame_Update()
 								WorldStateTopCenterFrameUpdateInfo(statusBar, tooltip, resourceCurrent, resourceMax)
 								isShownWidgetWorldState = true
 							end
-						elseif currentMapAreaID == BATTLEGROUND_EYE_OF_THE_STORM then
+						elseif currentMapAreaID == BATTLEGROUND_EYE_OF_THE_STORM or currentMapAreaID == BATTLEGROUND_GRAVITY_LAPSE then
 							local resourceCurrent, resourceMax = string.match(text, ".-%: (%d+)/(%d+)")
 
 							if resourceCurrent and resourceMax then
@@ -442,7 +446,7 @@ function WorldStateAlwaysUpFrame_Update()
 		WorldStateTopCenterFrame:SetShown(isShownWidgetWorldState)
 	end
 
-	if GetCurrentMapAreaID() == 611 and SlaveryValleySwordFrame then
+	if isSlaveryValley and SlaveryValleySwordFrame then
 		if slaveryValleyCapture["Alliance"] == 3 then
 			if not SlaveryValleySwordFrame:IsShown() then
 				SlaveryValleySwordFrame.captureFaction = "ALLIANCE"
@@ -1523,6 +1527,16 @@ end
 
 function WorldStateTopCenterFrame_OnLoad( self, ... )
 	self.BattlegroundPOIData = {}
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
+end
+
+function WorldStateTopCenterFrame_OnEvent(self, event, ...)
+	if event == "PLAYER_ENTERING_WORLD" then
+		local _, instanceType = IsInInstance()
+		if instanceType == "none" then
+			table.wipe(self.BattlegroundPOIData)
+		end
+	end
 end
 
 function WorldStateTopCenterFrame_OnShow( self, ... )
@@ -1534,10 +1548,15 @@ function WorldStateTopCenterFrame_OnShow( self, ... )
 	self.UpdateStateTimer = C_Timer:NewTicker(1, function()
 		WorldStateTopCenterFrame_UpdateState(self)
 	end)
+	WorldStateTopCenterFrame_UpdateState(self)
 end
 
 local BattlegroundPOITextureID = {
 	[BATTLEGROUND_ARATHI_BASIN] = { -- Низина Арати
+		Alliance = {17, 22, 27, 32, 37, 18, 23, 28, 33, 38},
+		Horde 	 = {19, 24, 29, 34, 39, 20, 25, 30, 35, 40},
+	},
+	[BATTLEGROUND_ARATHI_BLIZZARD] = { -- Зимняя Низина Арати
 		Alliance = {17, 22, 27, 32, 37, 18, 23, 28, 33, 38},
 		Horde 	 = {19, 24, 29, 34, 39, 20, 25, 30, 35, 40},
 	},
@@ -1546,6 +1565,10 @@ local BattlegroundPOITextureID = {
 	-- 	Horde 	 = {149, 139, 144, 19, 154, 148, 138, 153, 20, 153},
 	-- },
 	[BATTLEGROUND_EYE_OF_THE_STORM] = {
+		Alliance = {9, 11},
+		Horde 	 = {10, 12}
+	},
+	[BATTLEGROUND_GRAVITY_LAPSE] = {
 		Alliance = {9, 11},
 		Horde 	 = {10, 12}
 	},
@@ -1565,80 +1588,71 @@ local FactionIDToMinecartAssoc = {
 	[PLAYER_FACTION_GROUP.Horde] = "Interface\\Minimap\\Vehicle-SilvershardMines-MineCartRed",
 }
 
-local eyeOfTheStormFlagIndex
 function WorldStateTopCenterFrame_UpdateState( self )
 	local currentMapAreaID = GetCurrentMapAreaID()
 
+	for i in pairs(self.BattlegroundPOIData) do
+		if i > 0 then -- ignore world state flags
+			self.BattlegroundPOIData[i] = nil
+		end
+	end
+
 	for i = 1, 5 do
 		local name, description, textureIndex, x, y, mapLinkID = GetMapLandmarkInfo(i)
-
 		if textureIndex and textureIndex ~= 0 then
 			local texturePOIData = BattlegroundPOITextureID[currentMapAreaID]
-
-			if currentMapAreaID == BATTLEGROUND_EYE_OF_THE_STORM then
-				if textureIndex == 45 then
-					eyeOfTheStormFlagIndex = i
-				end
-			end
-
 			if texturePOIData then
 				if tContains(texturePOIData.Alliance, textureIndex) then
-					self.BattlegroundPOIData[i] = {"Alliance", textureIndex, name, description}
+					table.insert(self.BattlegroundPOIData, {"Alliance", textureIndex, name, description})
 				elseif tContains(texturePOIData.Horde, textureIndex) then
-					self.BattlegroundPOIData[i] = {"Horde", textureIndex, name, description}
-				else
-					self.BattlegroundPOIData[i] = nil
-				end
-			end
-		else
-			if currentMapAreaID ~= BATTLEGROUND_WARSONG_GULCH then
-				if currentMapAreaID == BATTLEGROUND_EYE_OF_THE_STORM and i == eyeOfTheStormFlagIndex then
-					local factionID = WORLDMAP_CACHE:Get("ASMSG_UPDATE_BATTLEFIELD_FLAG", nil)
-
-					if factionID then
-						self.BattlegroundPOIData[i] = {PLAYER_FACTION_GROUP[factionID], 45, EYE_OF_THE_STORM_FLAG_NAME, EYE_OF_THE_STORM_FLAG_DESC}
-					end
-				elseif currentMapAreaID == BATTLEGROUND_SILVERSHARD_MINES then
-					for i = 1, 3 do
-						local _, _, unitName, _, vehicleType = GetBattlefieldVehicleInfo(i)
-						local factionID = MinecartToFactionIDAssoc[vehicleType]
-
-						if factionID then
-							self.BattlegroundPOIData[i] = {PLAYER_FACTION_GROUP[factionID], FactionIDToMinecartAssoc[factionID], unitName, BATTLEGROUND_SILVERSHARD_MINES_MINECART_DESC}
-						else
-							self.BattlegroundPOIData[i] = nil
-						end
-					end
-				elseif currentMapAreaID == BATTLEGROUND_TEMPLE_OF_KOTMGU then
-					for i = 1, 4 do
-						local _, _, unitName, _, vehicleType, _, _, _, factionID = GetBattlefieldVehicleInfo(i)
-
-						if factionID then
-							self.BattlegroundPOIData[i] = {PLAYER_FACTION_GROUP[factionID], VEHICLE_TEXTURES[vehicleType][1], unitName, "", iconCoord = {0, 1, 0, 1}}
-						else
-							self.BattlegroundPOIData[i] = nil
-						end
-					end
-				else
-					self.BattlegroundPOIData[i] = nil
+					table.insert(self.BattlegroundPOIData, {"Horde", textureIndex, name, description})
 				end
 			end
 		end
 	end
 
-	local index = {}
-	index["Alliance"] = 1
-	index["Horde"] = 1
+	if currentMapAreaID == BATTLEGROUND_SILVERSHARD_MINES then
+		for i = 1, 3 do
+			local _, _, unitName, _, vehicleType = GetBattlefieldVehicleInfo(i)
+			local factionID = MinecartToFactionIDAssoc[vehicleType]
+
+			if factionID then
+				table.insert(self.BattlegroundPOIData, {PLAYER_FACTION_GROUP[factionID], FactionIDToMinecartAssoc[factionID], unitName, BATTLEGROUND_SILVERSHARD_MINES_MINECART_DESC})
+			end
+		end
+	elseif currentMapAreaID == BATTLEGROUND_TEMPLE_OF_KOTMGU then
+		for i = 1, 4 do
+			local _, _, unitName, _, vehicleType, _, _, _, factionID = GetBattlefieldVehicleInfo(i)
+			if factionID then
+				table.insert(self.BattlegroundPOIData, {PLAYER_FACTION_GROUP[factionID], VEHICLE_TEXTURES[vehicleType][1], unitName, "", iconCoord = DEFAULT_ICON_TEXCOORDS})
+			end
+		end
+	elseif currentMapAreaID == BATTLEGROUND_EYE_OF_THE_STORM or currentMapAreaID == BATTLEGROUND_GRAVITY_LAPSE then
+		if GetNumBattlefieldFlagPositions() ~= 0 then
+			local factionOverrideID = C_CacheInstance:Get("ASMSG_UPDATE_BATTLEFIELD_FLAG1")
+			local factionToken
+			if factionOverrideID then
+				factionToken = SERVER_PLAYER_FACTION_GROUP[factionOverrideID]
+			else
+				factionToken = "AllianceFlag" and "Alliance" or "Horde"
+			end
+			table.insert(self.BattlegroundPOIData, {factionToken, 45, EYE_OF_THE_STORM_FLAG_NAME, EYE_OF_THE_STORM_FLAG_DESC, vertexColor = EYE_OF_THE_STORM_FLAG_COLOR})
+		end
+	end
+
+	local buttonIndex = {}
+	buttonIndex["Alliance"] = 1
+	buttonIndex["Horde"] = 1
 
 	for _, POIData in pairs(self.BattlegroundPOIData) do
 		local button
 
 		if POIData[1] == "Alliance" then
-			button = self.LeftBar.POIButtons[index["Alliance"]]
-			index["Alliance"] = index["Alliance"] + 1
+			button = self.LeftBar.POIButtons[buttonIndex["Alliance"]]
+			buttonIndex["Alliance"] = buttonIndex["Alliance"] + 1
 		else
-			button = self.RightBar.POIButtons[index["Horde"]]
-			index["Horde"] = index["Horde"] + 1
+			button = self.RightBar.POIButtons[buttonIndex["Horde"]]
+			buttonIndex["Horde"] = buttonIndex["Horde"] + 1
 		end
 
 		if button then
@@ -1657,6 +1671,12 @@ function WorldStateTopCenterFrame_UpdateState( self )
 				end
 			end
 
+			if POIData.vertexColor then
+				button.Icon:SetVertexColor(unpack(POIData.vertexColor))
+			else
+				button.Icon:SetVertexColor(1, 1, 1)
+			end
+
 			button.name = POIData[3]
 			button.description = POIData[4]
 
@@ -1664,23 +1684,23 @@ function WorldStateTopCenterFrame_UpdateState( self )
 		end
 	end
 
-	for i = index["Alliance"], 5 do
-		local button = self.LeftBar.POIButtons[index["Alliance"]]
+	for i = buttonIndex["Alliance"], 5 do
+		local button = self.LeftBar.POIButtons[buttonIndex["Alliance"]]
 
 		if button then
 			button:Hide()
 		end
 	end
 
-	for i = index["Horde"], 5 do
-		local button = self.RightBar.POIButtons[index["Horde"]]
+	for i = buttonIndex["Horde"], 5 do
+		local button = self.RightBar.POIButtons[buttonIndex["Horde"]]
 
 		if button then
 			button:Hide()
 		end
 	end
 
-	if index["Alliance"] > 1 or index["Horde"] > 1 then
+	if buttonIndex["Alliance"] > 1 or buttonIndex["Horde"] > 1 then
 		WorldStateTopCenterFrame.BottomLabel:SetPoint("TOP", WorldStateTopCenterFrame, "BOTTOM", 0, 2)
 	else
 		WorldStateTopCenterFrame.BottomLabel:SetPoint("TOP", WorldStateTopCenterFrame, "BOTTOM", 0, 20)
@@ -1695,8 +1715,6 @@ function WorldStateTopCenterFrame_OnHide( self, ... )
 		self.UpdateStateTimer:Cancel()
 		self.UpdateStateTimer = nil
 	end
-
-	self.BattlegroundPOIData = {}
 end
 
 function EventHandler:ASMSG_BG_SCORE_RANKS( msg )

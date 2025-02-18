@@ -34,3 +34,10 @@ function C_Texture.GetAtlasInfo(atlasName)
 		filename 			= atlas[CONST_ATLAS_TEXTUREPATH],
 	}
 end
+
+function C_Texture.HasAtlasInfo(atlasName)
+	if type(atlasName) ~= "string" then
+		error("Usage: C_Texture.GetAtlasInfo(\"atlasName\")", 2)
+	end
+	return S_ATLAS_STORAGE[atlasName] ~= nil
+end

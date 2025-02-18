@@ -270,7 +270,7 @@ function FCFOptionsDropDown_Initialize(dropDown)
 				info.value = value;
 				info.func = FCF_SetChatWindowFontSize;
 
-				local fontFile, fontHeight, fontFlags = FCF_GetCurrentChatFrame():GetFont();
+				local fontFile, fontHeight, fontFlags = chatFrame:GetFont();
 				if ( value == floor(fontHeight+0.5) ) then
 					info.checked = 1;
 				end
@@ -281,27 +281,29 @@ function FCFOptionsDropDown_Initialize(dropDown)
 		end
 		return;
 	end
-	-- Window options
-	info = UIDropDownMenu_CreateInfo();
-	if ( FCF_GetCurrentChatFrame(dropDown) and FCF_GetCurrentChatFrame(dropDown).isLocked ) then
-		info.text = UNLOCK_WINDOW;
-	else
-		info.text = LOCK_WINDOW;
-	end
-	info.func = FCF_ToggleLock;
-	info.notCheckable = 1;
-	UIDropDownMenu_AddButton(info);
 
-	--Add Uninteractable button
-	info = UIDropDownMenu_CreateInfo();
-	if ( FCF_GetCurrentChatFrame(dropDown) and FCF_GetCurrentChatFrame(dropDown).isUninteractable) then
-		info.text = MAKE_INTERACTABLE;
-	else
-		info.text = MAKE_UNINTERACTABLE;
+	-- Window options
+	local dropDownChatFrame = FCF_GetCurrentChatFrame(dropDown);
+	if( dropDownChatFrame ) then
+		info = UIDropDownMenu_CreateInfo();
+		if ( dropDownChatFrame.isLocked ) then
+			info.text = UNLOCK_WINDOW;
+			info.func = FCF_ToggleLock;
+		else
+			info.text = LOCK_WINDOW;
+			info.func = FCF_ToggleLock;
+		end
+
+		info.notCheckable = 1;
+		UIDropDownMenu_AddButton(info);
+	
+		--Add Uninteractable button
+		info = UIDropDownMenu_CreateInfo();
+		info.text = dropDownChatFrame.isUninteractable and MAKE_INTERACTABLE or MAKE_UNINTERACTABLE;
+		info.func = FCF_ToggleUninteractable;
+		info.notCheckable = 1;
+		UIDropDownMenu_AddButton(info);
 	end
-	info.func = FCF_ToggleUninteractable;
-	info.notCheckable = 1;
-	UIDropDownMenu_AddButton(info);
 
 	if ( not isTemporary ) then
 		-- Add name button
@@ -337,29 +339,29 @@ function FCFOptionsDropDown_Initialize(dropDown)
 			info = UIDropDownMenu_CreateInfo();
 			info.text = CLOSE_CHAT_WINDOW;
 			info.func = FCF_PopInWindow;
-			info.arg1 = FCF_GetCurrentChatFrame(dropDown);
+			info.arg1 = dropDownChatFrame;
 			info.notCheckable = 1;
 			UIDropDownMenu_AddButton(info);
 		elseif ( chatFrame.isTemporary and (chatFrame.chatType == "WHISPER" or chatFrame.chatType == "BN_WHISPER") ) then
 			info = UIDropDownMenu_CreateInfo();
 			info.text = CLOSE_CHAT_WHISPER_WINDOW;
 			info.func = FCF_PopInWindow;
-			info.arg1 = FCF_GetCurrentChatFrame(dropDown);
+			info.arg1 = dropDownChatFrame;
 			info.notCheckable = 1;
 			UIDropDownMenu_AddButton(info);
 		elseif ( chatFrame.isTemporary and (chatFrame.chatType == "BN_CONVERSATION" ) ) then
-			if ( GetCVar("conversationMode") == "popout" ) then
+			if ( GetCVar("conversationMode") == "popout" or GetCVar("conversationMode") == "popout_and_inline" ) then
 				info = UIDropDownMenu_CreateInfo();
 				info.text = CLOSE_AND_LEAVE_CHAT_CONVERSATION_WINDOW;
 				info.func = FCF_LeaveConversation;
-				info.arg1 = FCF_GetCurrentChatFrame(dropDown);
+				info.arg1 = dropDownChatFrame;
 				info.notCheckable = 1;
 				UIDropDownMenu_AddButton(info);
 			else
 				info = UIDropDownMenu_CreateInfo();
 				info.text = CLOSE_CHAT_CONVERSATION_WINDOW;
 				info.func = FCF_PopInWindow;
-				info.arg1 = FCF_GetCurrentChatFrame(dropDown);
+				info.arg1 = dropDownChatFrame;
 				info.notCheckable = 1;
 				UIDropDownMenu_AddButton(info);
 			end
@@ -389,6 +391,7 @@ function FCFOptionsDropDown_Initialize(dropDown)
 	info = UIDropDownMenu_CreateInfo();
 	info.text = BACKGROUND;
 	info.hasColorSwatch = 1;
+	info.notCheckable = 1;
 	info.r = r;
 	info.g = g;
 	info.b = b;
@@ -737,16 +740,16 @@ function FCF_SetTemporaryWindowType(chatFrame, chatType, chatTarget)
 	end
 
 	--Set the icon
-	local conversationIcon;
+	local icon;
 	if ( chatType == "WHISPER" or chatType == "BN_WHISPER" ) then
-		conversationIcon = "Interface\\ChatFrame\\UI-ChatWhisperIcon";
+		icon = "Interface\\ChatFrame\\UI-ChatWhisperIcon";
 	else
-		conversationIcon = "Interface\\ChatFrame\\UI-ChatConversationIcon";
+		icon = "Interface\\ChatFrame\\UI-ChatConversationIcon";
 	end
 
-	chatTab.conversationIcon:SetTexture(conversationIcon);
+	chatTab.conversationIcon:SetTexture(icon);
 	if ( chatFrame.minFrame ) then
-		chatFrame.minFrame.conversationIcon:SetTexture(conversationIcon);
+		chatFrame.minFrame.conversationIcon:SetTexture(icon);
 	end
 
 	--Register this frame
@@ -821,13 +824,13 @@ function FCF_OpenTemporaryWindow(chatType, chatTarget, sourceChatFrame, selectWi
 		--Stop displaying this type of chat in the old chat frame.
 		--Remove the messages from the old frame.
 		if (not (chatType == "WHISPER" and GetCVar("C_CVAR_WHISPER_MODE") == "popout_and_inline")
-				and not (chatType == "BN_WHISPER" and GetCVar("C_CVAR_WHISPER_MODE") == "popout_and_inline") ) then
+			and not (chatType == "BN_WHISPER" and GetCVar("C_CVAR_WHISPER_MODE") == "popout_and_inline") ) then
 
 			if ( chatType == "WHISPER" or chatType == "BN_WHISPER" ) then
-				ChatFrame_ExcludePrivateMessageTarget(sourceChatFrame, chatTarget)
+				ChatFrame_ExcludePrivateMessageTarget(sourceChatFrame, chatTarget);
 			end
 
-			sourceChatFrame:RemoveMessagesByAccessID(accessID)
+			sourceChatFrame:RemoveMessagesByAccessID(accessID);
 		end
 	end
 
@@ -934,7 +937,7 @@ function FCF_SetWindowAlpha(frame, alpha, doNotSave)
 		SetChatWindowAlpha(frame:GetID(), alpha);
 	end
 	-- Remember the alpha
-	frame.oldAlpha = alpha;
+	frame.oldAlpha = alpha or DEFAULT_CHATFRAME_ALPHA;
 end
 
 function FCF_GetCurrentChatFrameID()
@@ -1099,7 +1102,7 @@ function FCF_FadeInChatFrame(chatFrame)
 		UIFrameFadeIn(chatFrame.buttonFrame, CHAT_FRAME_FADE_TIME, chatFrame.buttonFrame:GetAlpha(), 1);
 	end
 
-	FCF_FadeInScrollbar(chatFrame)
+	FCF_FadeInScrollbar(chatFrame);
 end
 
 function FCF_FadeOutChatFrame(chatFrame)
@@ -1131,7 +1134,7 @@ function FCF_FadeOutChatFrame(chatFrame)
 		UIFrameFadeOut(chatFrame.buttonFrame, CHAT_FRAME_FADE_OUT_TIME, chatFrame.buttonFrame:GetAlpha(), CHAT_FRAME_BUTTON_FRAME_MIN_ALPHA);
 	end
 
-	FCF_FadeOutScrollbar(chatFrame)
+	FCF_FadeOutScrollbar(chatFrame);
 end
 
 local LAST_CURSOR_X, LAST_CURSOR_Y;
@@ -1367,8 +1370,8 @@ function FCF_IsValidChatFrame(chatFrame)
 end
 
 function FCF_UpdateButtonSide(chatFrame)
-	local leftDist =  chatFrame:GetLeft();
-	local rightDist = GetScreenWidth() - chatFrame:GetRight();
+	local leftDist =  chatFrame:GetLeft() or 0;
+	local rightDist = GetScreenWidth() - (chatFrame:GetRight() or 0);
 	local changed = nil;
 	if (( leftDist > 0 and leftDist <= rightDist ) or rightDist < 0 ) then
 		if ( chatFrame.buttonSide ~= "left" ) then
@@ -1842,7 +1845,7 @@ function FCF_ResetChatWindows()
 		if ( chatFrameName ~= "ChatFrame1" ) then
 			local chatFrame = _G[chatFrameName];
 			if ( chatFrame.isTemporary and chatFrame.chatType == "BN_CONVERSATION" and
-				BNGetConversationInfo(tonumber(chatFrame.chatTarget)) and GetCVar("conversationMode") == "popout" ) then
+				BNGetConversationInfo(tonumber(chatFrame.chatTarget)) and (GetCVar("conversationMode") == "popout" or GetCVar("conversationMode") == "popout_and_inline") ) then
 				--We're still in this conversation, so we just want to reset the position, not remove the frame.
 				FCF_DockFrame(chatFrame, 3);	--Put it after General and Combat Log
 			else
@@ -2306,7 +2309,7 @@ function FCFDock_GetInsertIndex(dock, chatFrame, mouseX, mouseY)
 		return maxPosition + 1;
 	else
 		--Find the dynamic insertion spot
-		local maxPosition = 9^9;
+		local maxPosition = 387420489; -- 9^9
 		local leftTab = FCFDockScrollFrame_GetLeftmostTab(dock.scrollFrame);
 		local numDynTabsDisplayed = dock.scrollFrame:GetWidth() / dock.scrollFrame.dynTabSize;
 
@@ -2577,16 +2580,37 @@ function FCFManager_ShouldSuppressMessage(chatFrame, chatType, chatTarget)
 		return false;
 	end
 
-	if ( chatType == "BN_CONVERSATION" and GetCVar("conversationMode") == "popout" ) then
+	if ( (chatType == "BN_WHISPER" and GetCVar("C_CVAR_WHISPER_MODE") == "popout")
+		or (chatType == "WHISPER" and GetCVar("C_CVAR_WHISPER_MODE") == "popout") ) then
 		return true;
 	end
 
-	if ( (chatType == "BN_WHISPER" and GetCVar("C_CVAR_WHISPER_MODE") == "popout")
-			or (chatType == "WHISPER" and GetCVar("C_CVAR_WHISPER_MODE") == "popout") ) then
-		return true
+	return false;
+end
+
+function FCFManager_ShouldSuppressMessageFlash(chatFrame, chatType, chatTarget)
+	--Using GetToken probably isn't the best way to do this due to the string concatenation, but it's the easiest to get in quickly.
+	if ( chatFrame.chatType and FCFManager_GetToken(chatType, chatTarget) == FCFManager_GetToken(chatFrame.chatType, chatFrame.chatTarget) ) then
+		--This frame is a dedicated frame of this type, so we should always display.
+		return false;
+	end
+
+	if ( (chatType == "BN_WHISPER" and GetCVar("C_CVAR_WHISPER_MODE") == "popout_and_inline")
+		or (chatType == "WHISPER" and GetCVar("C_CVAR_WHISPER_MODE") == "popout_and_inline") ) then
+		return true;
 	end
 
 	return false;
+end
+
+function FCFManager_StopFlashOnDedicatedWindows(chatType, chatTarget)
+	local token = FCFManager_GetToken(chatType, chatTarget);
+	local windowList = dedicatedWindows[token];
+	if (windowList) then
+		for i, frame in pairs(windowList) do
+			FCF_StopAlertFlash(frame);
+		end
+	end
 end
 
 function FloatingChatFrameManager_OnLoad(self)
@@ -2603,28 +2627,28 @@ end
 function FloatingChatFrameManager_OnEvent(self, event, ...)
 	local arg1 = ...;
 	if ( strsub(event, 1, 9) == "CHAT_MSG_" ) then
-		local chatType = strsub(event, 10)
-		local chatGroup = Chat_GetChatCategory(chatType)
+		local chatType = strsub(event, 10);
+		local chatGroup = Chat_GetChatCategory(chatType);
 
 		if ( (chatGroup == "BN_WHISPER" and (GetCVar("C_CVAR_WHISPER_MODE") == "popout" or GetCVar("C_CVAR_WHISPER_MODE") == "popout_and_inline"))
 				or (chatGroup == "WHISPER" and (GetCVar("C_CVAR_WHISPER_MODE") == "popout" or GetCVar("C_CVAR_WHISPER_MODE") == "popout_and_inline"))) then
-			local chatTarget = tostring(select(2, ...))
+			local chatTarget = tostring(select(2, ...));
 
 			if ( FCFManager_GetNumDedicatedFrames(chatGroup, chatTarget) == 0 ) then
-				local chatFrame = FCF_OpenTemporaryWindow(chatGroup, chatTarget)
-				chatFrame:GetScript("OnEvent")(chatFrame, event, ...)	--Re-fire the event for the frame.
+				local chatFrame = FCF_OpenTemporaryWindow(chatGroup, chatTarget);
+				chatFrame:GetScript("OnEvent")(chatFrame, event, ...);	--Re-fire the event for the frame.
 
 				-- If you started the whisper, immediately select the tab
 				if ((event == "CHAT_MSG_WHISPER_INFORM" and GetCVar("C_CVAR_WHISPER_MODE") == "popout")
 						or (event == "CHAT_MSG_BN_WHISPER_INFORM" and GetCVar("C_CVAR_WHISPER_MODE") == "popout") ) then
-					FCF_SelectDockFrame(chatFrame)
-					FCF_FadeInChatFrame(chatFrame)
+					FCF_SelectDockFrame(chatFrame);
+					FCF_FadeInChatFrame(chatFrame);
 				end
 			else
 				-- While in "Both" mode, if you reply to a whisper, stop the flash on that dedicated whisper tab
 				if ( (chatType == "WHISPER_INFORM" and GetCVar("C_CVAR_WHISPER_MODE") == "popout_and_inline")
 						or (chatType == "BN_WHISPER_INFORM" and GetCVar("C_CVAR_WHISPER_MODE") == "popout_and_inline")) then
-					FCFManager_StopFlashOnDedicatedWindows(chatGroup, chatTarget)
+					FCFManager_StopFlashOnDedicatedWindows(chatGroup, chatTarget);
 				end
 			end
 		end

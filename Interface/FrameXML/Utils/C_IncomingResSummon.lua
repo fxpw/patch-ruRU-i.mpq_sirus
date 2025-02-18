@@ -17,15 +17,15 @@ eventHandler:SetScript("OnEvent", function(self, event, unit)
 		local unitName = UnitName(unit)
 		if resurrectList[unitName] and not UnitIsDeadOrGhost(unit) then
 			resurrectList[unitName] = nil
-			FireCustomClientUnitNameGroupEvent("INCOMING_RESURRECT_CHANGED", unitName)
+			FireCustomClientUnitGroupEvent("INCOMING_RESURRECT_CHANGED", UnitGUID(unit))
 		end
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		for unitName in pairs(resurrectList) do
-			FireCustomClientUnitNameGroupEvent("INCOMING_RESURRECT_CHANGED", unitName)
+			FireCustomClientUnitGroupEvent("INCOMING_RESURRECT_CHANGED", UnitGUID(unitName))
 			resurrectList[unitName] = nil
 		end
 		for unitName in pairs(summonList) do
-			FireCustomClientUnitNameGroupEvent("INCOMING_SUMMON_CHANGED", unitName)
+			FireCustomClientUnitGroupEvent("INCOMING_SUMMON_CHANGED", UnitGUID(unitName))
 			summonList[unitName] = nil
 		end
 	end
@@ -35,12 +35,12 @@ function EventHandler:ASMSG_INCOMING_SUMMON_CHANGED(msg)
 	local status, unitName = string.split(",", msg)
 	status = tonumber(status)
 	summonList[unitName] = status
-	FireCustomClientUnitNameGroupEvent("INCOMING_SUMMON_CHANGED", unitName)
+	FireCustomClientUnitGroupEvent("INCOMING_SUMMON_CHANGED", UnitGUID(unitName))
 
 	if status == Enum.SummonStatus.Accepted or status == Enum.SummonStatus.Declined then
 		C_Timer:After(5, function()
 			summonList[unitName] = nil
-			FireCustomClientUnitNameGroupEvent("INCOMING_SUMMON_CHANGED", unitName)
+			FireCustomClientUnitGroupEvent("INCOMING_SUMMON_CHANGED", UnitGUID(unitName))
 		end)
 	end
 end
@@ -68,7 +68,7 @@ end
 function EventHandler:ASMSG_INCOMING_RESURRECT_CHANGED(msg)
 	local status, unitName = string.split(",", msg)
 	resurrectList[unitName] = tonumber(status) == 1 and true or nil
-	FireCustomClientUnitNameGroupEvent("INCOMING_RESURRECT_CHANGED", unitName)
+	FireCustomClientUnitGroupEvent("INCOMING_RESURRECT_CHANGED", UnitGUID(unitName))
 end
 
 function UnitHasIncomingResurrection(unit)

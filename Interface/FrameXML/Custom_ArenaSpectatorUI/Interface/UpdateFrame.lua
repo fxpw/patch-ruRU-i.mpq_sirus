@@ -15,7 +15,7 @@ function ezSpectator_UpdateFrame:Create()
     self.MainFrame:SetPoint('TOP', 0, -50);
     self.MainFrame:SetBackdrop({
         bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
-        edgeFile = 'Interface\\ArenaSpectator\\TooltipEdge',
+        edgeFile = 'Interface\\Custom\\ArenaSpectator\\TooltipEdge',
         tile = true, tileSize = 16, edgeSize = 16,
         insets = {
             left = 4,
@@ -52,7 +52,7 @@ function ezSpectator_UpdateFrame:Create()
     self.LinkHolder:SetPoint('TOP', self.Line4, 'BOTTOM', 0, -5)
     self.LinkHolder:SetBackdrop({
         bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
-        edgeFile = 'Interface\\ArenaSpectator\\TooltipEdge',
+        edgeFile = 'Interface\\Custom\\ArenaSpectator\\TooltipEdge',
         tile = true, tileSize = 16, edgeSize = 16,
         insets = {
             left = 4,

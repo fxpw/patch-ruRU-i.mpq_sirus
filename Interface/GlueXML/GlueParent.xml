@@ -18,28 +18,16 @@
 			</Frame>
 		</Frames>
 		<Scripts>
-			<!-- Register here for any events you want to monitor globally -->
-			<OnLoad>
-				GlueParent_OnLoad(self);
-
-				-- Reset CVar
-				SetSafeCVar("factionOverride", -1)
-				SetSafeCVar("showToolsUI", "return {}")
-			</OnLoad>
-			<!-- Respond here to any events you want to monitor globally -->
-			<OnEvent>
-				GlueParent_OnEvent(event, ...);
-			</OnEvent>
-			<OnUpdate>
-				GlueFrameFadeUpdate(elapsed);
-			</OnUpdate>
+			<OnLoad function="GlueParent_OnLoad"/>
+			<OnEvent function="GlueParent_OnEvent"/>
+			<OnUpdate function="GlueFrameFadeUpdate"/>
 		</Scripts>
 	</Frame>
 
 	<ModelFFX name="GlueFFXModel" parent="GlueParent" setAllPoints="true">
 		<Layers>
 			<Layer level="OVERLAY">
-				<Texture name="$parentBackground" parentKey="Background" alpha="0.2" file="Interface\Custom_Glues\UI-CharacterSelect-Background">
+				<Texture name="$parentBackground" parentKey="Background" alpha="0.2" file="Interface\Custom\Glue\Vignette-256">
 					<Anchors>
 						<Anchor point="TOPLEFT" x="-14" y="10" />
 						<Anchor point="BOTTOMRIGHT" x="14" y="-10" />

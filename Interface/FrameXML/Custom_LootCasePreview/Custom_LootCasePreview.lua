@@ -1,3 +1,5 @@
+UIPanelWindows["LootCasePreviewFrame"] = { area = "left", pushable = 7 };
+
 local BASE_HEIGHT = 76;
 local BUTTON_HEIGHT = 48;
 local BUTTON_SPACING = 1;

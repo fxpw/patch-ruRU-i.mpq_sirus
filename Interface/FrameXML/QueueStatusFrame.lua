@@ -75,6 +75,13 @@ function QueueStatusMinimapButton_OnHide(self)
 	QueueStatusFrame:Hide();
 end
 
+function QueueStatusMinimapButton_UpdateDropdown(self)
+	if self:IsShown() and self.DropDown:IsShown() and self.DropDown == UIDROPDOWNMENU_OPEN_MENU then
+		CloseDropDownMenus(1)
+		ToggleDropDownMenu(1, nil, self.DropDown, self:GetName(), 0, 0)
+	end
+end
+
 ----------------------------------------------
 ------------QueueStatusFrame------------------
 ----------------------------------------------
@@ -122,6 +129,7 @@ function QueueStatusFrame_OnEvent(self)
 	QueueStatusActiveType, QueueStatusActiveIndex = QueueStatus_IsActiveQueue()
 
 	QueueStatusFrame_Update(self);
+	QueueStatusMinimapButton_UpdateDropdown(QueueStatusMinimapButton)
 end
 
 function QueueStatusFrame_OnShow(self)
@@ -234,16 +242,20 @@ function QueueStatusFrame_Update(self)
 				animateEye = true;
 			end
 
-			local _, _, _, _, _, _, gameName, mapAreaID = C_MiniGames.GetGameInfo(miniGameID);
+			local _, _, _, _, _, _, _, gameName, mapAreaID = C_MiniGames.GetGameInfo(miniGameID);
 
 			if not helpTipInfo and gameName then
 				if status == "active" and mapAreaID and mapAreaID == GetCurrentMapAreaID() then
 					if gameName == "FRAGILEFLOOR" and C_MiniGames.GetInstanceRunTime() == 0 then
 						helpTipInfo = QueueStatusFrame_CreateHelpTip(MINI_GAME_FRAGILEFLOOR_TUTORIAL, LE_FRAME_TUTORIAL_MINI_GAME_FRAGILEFLOOR)
-					elseif (gameName == "FROZEN_SNOWMAN_LAIR_STORY" or gameName == "FROZEN_SNOWMAN_LAIR_SURVIVAL") then
+					elseif (gameName == "FROZEN_SNOWMAN_LAIR_STORY" or gameName == "FROZEN_SNOWMAN_LAIR_SURVIVAL" or gameName == "FROZEN_SNOWMAN_LAIR_SURVIVAL_HARD") then
 						helpTipInfo = QueueStatusFrame_CreateHelpTip(MINI_GAME_FROZEN_SNOWMAN_LAIR_STORY_TUTORIAL, LE_FRAME_TUTORIAL_MINI_GAME_FROZEN_SNOWMAN_LAIR)
 					elseif gameName == "DOOR_DASH" then
 						helpTipInfo = QueueStatusFrame_CreateHelpTip(MINI_GAME_DOOR_DASH_TUTORIAL, LE_FRAME_TUTORIAL_MINI_GAME_DOOR_DASH)
+					elseif gameName == "TIPTOE" then
+						helpTipInfo = QueueStatusFrame_CreateHelpTip(MINI_GAME_TIPTOE_TUTORIAL, LE_FRAME_TUTORIAL_MINI_GAME_TIPTOE)
+					elseif gameName == "COLORED_CAPTURE" then
+						helpTipInfo = QueueStatusFrame_CreateHelpTip(MINI_GAME_COLORED_CAPTURE_TUTORIAL, LE_FRAME_TUTORIAL_MINI_GAME_COLORED_CAPTURE)
 					end
 				end
 			end
@@ -831,7 +843,8 @@ function QueueStatusDropDown_AddBattlefieldButtons(idx, shownHearthAndRes)
 
 		if ( status == "queued" ) then
 			local bgInviteData = C_CacheInstance:Get("ASMSG_SEND_BG_INVITE");
-			if bgInviteData and bgInviteData.inviteID then
+			local bgInviteID = bgInviteData and bgInviteData.inviteID
+			if bgInviteID then
 				info.text = ENTER;
 				info.func = wrapFunc(BattlegroundInviteFrame_Accept);
 				info.arg1 = nil;
@@ -840,7 +853,11 @@ function QueueStatusDropDown_AddBattlefieldButtons(idx, shownHearthAndRes)
 			end
 
 			info.text = LEAVE_QUEUE;
-			info.func = wrapFunc(AcceptBattlefieldPort);
+			if bgInviteID then
+				info.func = wrapFunc(QueueStatusDropDown_RejectPVPProposal)
+			else
+				info.func = wrapFunc(AcceptBattlefieldPort);
+			end
 			info.arg1 = idx;
 			info.arg2 = nil;
 			UIDropDownMenu_AddButton(info);

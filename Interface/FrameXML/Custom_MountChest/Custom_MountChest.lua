@@ -326,11 +326,9 @@ function CustomMountChestCardMixin:SetDisabledCard( isDisabled )
 end
 
 function MountChestFrameMixin:ASMSG_LOTTERY_MOUNT_CHEST_INFO( msg )
-    local disableCards = C_Split(msg, ",")
-
     local buffer = {}
 
-    for _, cards in pairs(disableCards) do
+	for _, cards in ipairs({StringSplitEx(",", msg)}) do
         buffer[tonumber(cards)] = true
     end
 

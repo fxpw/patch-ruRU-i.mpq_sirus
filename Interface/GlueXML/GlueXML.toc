@@ -1,14 +1,14 @@
 GlueXMLPre.xml
-
 GlueXML.xml
+
+..\SharedXML\Utils\CVars.lua
+
 ..\SharedXML\AtlasStorage.lua
 ..\SharedXML\AddonVersion.lua
 ..\SharedXML\SharedStrings.lua
 GlueStrings.lua
 ..\SharedXML\middleclass.lua
-..\SharedXML\StringUTF8Util.lua
 ..\SharedXML\DataDumper.lua
-..\SharedXML\UUID.lua
 ..\SharedXML\Util.lua
 ..\SharedXML\Hook.lua
 ..\SharedXML\Utils\CustomSharedAPI.lua
@@ -20,24 +20,30 @@ GlueStrings.lua
 ..\SharedXML\EventHandler.lua
 ..\SharedXML\MathUtil.lua
 ..\SharedXML\TextureUtil.lua
+..\SharedXML\CallbackRegistry.lua
 ..\SharedXML\Color.lua
 ..\SharedXML\ColorUtil.lua
 ..\SharedXML\TimeUtil.lua
 ..\SharedXML\NineSliceLayouts.lua
 ..\SharedXML\NineSlice.lua
 ..\SharedXML\FrameUtil.lua
+..\SharedXML\SoundKitConstants.lua
 ..\SharedXML\Pools.lua
 ..\SharedXML\CircularBuffer.lua
+..\SharedXML\PixelUtilSecure.lua
+..\SharedXML\PixelUtil.lua
 ..\SharedXML\AnchorUtil.lua
 ..\SharedXML\StringUtil.lua
+..\SharedXML\GlobalCallbackRegistry.lua
 ..\SharedXML\TypeUtil.lua
+..\SharedXML\Dump.lua
 ..\SharedXML\MixinUtil.lua
 ..\SharedXML\Utils\C_Texture.lua
 ..\SharedXML\Utils\C_CreatureInfo.lua
-..\SharedXML\Opcodes.lua
 
-..\SharedXML\S_Dump.lua
-..\SharedXML\SoundKitConstants.lua
+..\SharedXML\ItemsCache1.lua
+..\SharedXML\ItemsCache2.lua
+
 ..\SharedXML\SharedConstants.lua
 ..\SharedXML\C_TimerAugment.lua
 ..\SharedXML\SharedExtendedMethods.lua
@@ -49,12 +55,14 @@ GlueStrings.lua
 ..\SharedXML\SecureUIPanelTemplates.xml
 ..\SharedXML\SharedUIPanelTemplates.xml
 ..\SharedXML\SharedUIPanelDFTemplates.xml
+..\SharedXML\SharedUIPanelPKBTTemplates.xml
 ..\SharedXML\SharedBasicControls.xml
 ..\SharedXML\HybridScrollFrame.xml
 
 ..\SharedXML\Utils\C_Cache.lua
 ..\SharedXML\Utils\C_Service.lua
 ..\SharedXML\Utils\C_RealmInfo.lua
+..\SharedXML\Utils\C_Item.lua
 
 Utils\C_ConnectManager.lua
 Utils\C_GluePackets.lua
@@ -70,11 +78,11 @@ GlueBasicControls.xml
 GlueParent.xml
 ..\SharedXML\HelpTip.xml
 GlueButtons.xml
+GlueTooltip.xml
 GlueTemplates.xml
 GlueDarkTemplates.xml
 GlueDialog.xml
 GlueDropDownMenu.xml
-GlueTooltip.xml
 GlueSplash.xml
 RealmList.xml
 AddonList.xml
@@ -94,11 +102,7 @@ VideoOptionsPanels.xml
 AudioOptionsFrame.xml
 AudioOptionsPanels.xml
 OptionsSelect.xml
-#CameraSelect.xml
 CharacterServices.xml
-
-#..\..\PatchSettings\ini.lua
-
 
 # This Always Runs Last, Add New Items above it.
 GlueLocalizationPost.xml

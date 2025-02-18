@@ -1,38 +1,6 @@
-<!--
-
-	Filename:	Custom_Toast.xml
-	Project:	Custom Game Interface
-	Author:		Nyll & Blizzard Entertainment
-
--->
-
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\..\FrameXML\UI.xsd">
     <Script file="Custom_Toast.lua"/>
-
-    <Button name="SocialToastCloseButtonTemplate" parentKey="CloseButton" virtual="true">
-        <Size x="18" y="18"/>
-        <Anchors>
-            <Anchor point="TOPRIGHT" x="-4" y="-3"/>
-        </Anchors>
-        <Scripts>
-            <OnLoad>
-                Mixin(self, SocialToastCloseButtonMixin)
-            </OnLoad>
-            <OnEnter>
-                self:OnEnter()
-            </OnEnter>
-            <OnLeave>
-                self:OnLeave()
-            </OnLeave>
-            <OnClick>
-                self:OnClick()
-            </OnClick>
-        </Scripts>
-        <NormalTexture file="Interface\FriendsFrame\UI-Toast-CloseButton-Up"/>
-        <PushedTexture file="Interface\FriendsFrame\UI-Toast-CloseButton-Down"/>
-        <HighlightTexture file="Interface\FriendsFrame\UI-Toast-CloseButton-Highlight" alphaMode="ADD"/>
-    </Button>
 
     <Button name="SocialToastTemplate" virtual="true" parent="UIParent" frameStrata="LOW" movable="true" toplevel="true" hidden="true">
         <Size x="250" y="50"/>
@@ -48,11 +16,8 @@
                 <Alpha startDelay="4" change="1" duration="0" order="1"/>
                 <Alpha startDelay="4" change="-1" duration="1.5" parentKey="animOut" order="2"/>
                 <Scripts>
-                    <OnLoad>
-                        Mixin(self, DefaultAnimOutMixin)
-                    </OnLoad>
                     <OnFinished>
-                        self:OnFinished()
+						self:GetParent():Hide()
                     </OnFinished>
                 </Scripts>
             </AnimationGroup>
@@ -86,7 +51,7 @@
                     <Anchors>
                         <Anchor point="TOPLEFT" relativeTo="$parentTitleText" relativePoint="BOTTOMLEFT" x="0" y="-6"/>
                     </Anchors>
-                    <Color r="0.486" g="0.518" b="0.541" />
+					<Color r="1" g="1" b="1"/>
                 </FontString>
             </Layer>
             <Layer level="OVERLAY">
@@ -111,7 +76,27 @@
             </Layer>
         </Layers>
         <Frames>
-            <Button name="$parentCloseButton" parentKey="CloseButton" inherits="SocialToastCloseButtonTemplate"/>
+			<Button name="$parentCloseButton" parentKey="CloseButton">
+				<Size x="18" y="18"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-4" y="-3"/>
+				</Anchors>
+				<Scripts>
+					<OnEnter>
+						self:GetParent():OnEnter()
+					</OnEnter>
+					<OnLeave>
+						self:GetParent():OnLeave()
+					</OnLeave>
+					<OnClick>
+						self:GetParent():Hide()
+						PlaySound("igMainMenuOptionCheckBoxOn")
+					</OnClick>
+				</Scripts>
+				<NormalTexture file="Interface\FriendsFrame\UI-Toast-CloseButton-Up"/>
+				<PushedTexture file="Interface\FriendsFrame\UI-Toast-CloseButton-Down"/>
+				<HighlightTexture file="Interface\FriendsFrame\UI-Toast-CloseButton-Highlight" alphaMode="ADD"/>
+			</Button>
         </Frames>
         <Scripts>
             <OnLoad>
@@ -156,7 +141,6 @@
 				<Scripts>
 					<OnLoad>
 						Mixin(self, SocialToastMoveFrameMixin)
-
 						self:OnLoad()
 					</OnLoad>
 					<OnShow>

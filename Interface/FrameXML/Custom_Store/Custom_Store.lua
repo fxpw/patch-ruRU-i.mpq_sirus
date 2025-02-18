@@ -1,7163 +1,4012 @@
-selectedCategoryID = nil
-selectedMoneyID = nil
-selectedSubCategoryID = 0
-local selectedItemCardPage = 1
-local selectedSpecialOfferPage = 1
-local selectedShowAllItemCheckBox = 0
-local selectedSpecID = nil
-local selectedPremiumID = nil
-local selectedSubsID = 0
+local min, max = math.min, math.max
+local strformat = string.format
 
-local selectedRemoveOffer = nil
+local UnitFactionGroup = UnitFactionGroup
+local PlaySound = PlaySound
 
-local STORE_SLIDER_NORMAL_UPDATE = 8
-local STORE_SLIDER_HOVER_UPDATE = 30
+local C_StorePublic = C_StorePublic
+local C_StoreSecure = C_StoreSecure
+local IsGMAccount = IsGMAccount
+local IsInterfaceDevClient = IsInterfaceDevClient
 
-local STORE_REFUND_DATA = {}
-local STORE_REFUND_DATA_BY_GUID = {}
-local STORE_CATEGORIES_DATA = {}
-local STORE_SUB_CATEGORY_DATA = {}
-local STORE_SUBSCRIBE_DATA = {}
-local STORE_PRODUCT_DATA = {}
-local STORE_PRODUCT_LIST = {}
-local STORE_SPECIAL_OFFER_INFO_DATA = {}
-local STORE_SPECIAL_OFFER_POPUP = {}
-local STPRE_SPECIAL_OFFER_DETAILS_DATA = {}
-local STORE_SMALL_SPECIAL_OFFER_BUFFER = {}
+local OFFER_SCROLL_TIME = 8
+local MAX_ALERT_FRAMES = 1
+local TRANSMOG_REROLL_BUTTON_ON_MAIN_PAGE = false
 
-local STORE_EQUIPMENT_CATEGORY_ID = 2
-local STORE_COLLECTIONS_CATEGORY_ID = 3
-local STORE_TRANSMOGRIFY_CATEGORY_ID = 6
-local STORE_SUBSCRIPTIONS_CATEGORY_ID = 5
+local ALERT_QUEUE = {}
 
-Enum.Store = {}
-Enum.Store.CurrencyType = Enum.CreateMirror({
-	[1] = "Bonus",
-	[2] = "Vote",
-	[3] = "Referral",
-	[4] = "Loyality",
+local POPUP = {
+	REF_OWNER = "MainMenuBar",
+	REF_OWNER_KEY = "Store_TutorialPoint",
+
+	CURRENT_NPE_ID = nil,
+	CURRENT_ID = nil,
+	CURRENT_PRIORITY = nil,
+	QUEUE = nil,
+	BLOCK_RELEASE_NPE_ID = nil,
+	OWNER_FREED_CALLBACK = nil,
+}
+POPUP.Release = function(force)
+	local hasNPE = POPUP.CURRENT_NPE_ID ~= nil
+
+	if hasNPE then
+		NPE_TutorialPointerFrame:Hide(POPUP.CURRENT_NPE_ID)
+	end
+
+	POPUP.CURRENT_NPE_ID = nil
+	POPUP.CURRENT_ID = nil
+	POPUP.CURRENT_PRIORITY = nil
+
+	if hasNPE or force then
+		C_TutorialManager.ClearOwner(POPUP.REF_OWNER, POPUP.REF_OWNER_KEY)
+	end
+end
+POPUP.OnClose = function()
+	POPUP.Release()
+end
+POPUP.OnRelease = function(npeID)
+	if POPUP.BLOCK_RELEASE_NPE_ID and POPUP.BLOCK_RELEASE_NPE_ID ~= npeID then
+		POPUP.Release()
+	end
+end
+
+Enum.StoreWidget = Enum.CreateMirror({
+	ProductPurchase		= 0,
+	Referral			= 1,
+	PremiumPurchase		= 2,
+	Agreement			= 3,
 })
 
-local STORE_CURRENCY_INFO = {
-	BALANCE = {},
-	LOYALITY = {},
-};
+Enum.StoreViewMode = Enum.CreateMirror({
+	ItemList	= 1,
+	Refund		= 2,
+})
 
-local STORE_FRAME_DATA = {
-	"StoreItemListFrame",
-	"StoreSpecialOfferFrame",
-	"StoreItemCardFrame",
-	"StoreModelPreviewFrame",
-	"StoreConfirmationFrame",
-	"StoreErrorFrame",
-	"StorePurchaseAlertFrame",
-	"SpecialOfferInfoFrame",
-	"StoreSubCategorySelectFrame",
-	"SpecialOfferDetailsInfoFrame",
-	"StoreBuyPremiumFrame",
-	"StoreSubscribeFrame",
-	"StoreSpecialOfferDetailFrame",
-	"StoreRefundFrame",
-	"StoreDressUPFrame",
-	"StoreTransmogrifyFrame",
-	"StoreTransmogrifySubCategoryFrame"
+local CATEGORY_OVERVIEW = {
+	[Enum.Store.Category.Equipment] = true,
+	[Enum.Store.Category.Subscriptions] = true,
+	[Enum.Store.Category.Transmogrification] = true,
 }
 
-STORE_HIGHLIGHT_CATEGORY_BUTTON = {}
-
-STORE_ITEM_FLAG_NONE                 = 0x00000000
-STORE_ITEM_FLAG_NEW                  = 0x00000001
-STORE_ITEM_FLAG_PVP                  = 0x00000002
-STORE_ITEM_FLAG_RECOMMENDED          = 0x00000004
-STORE_ITEM_FLAG_PROMOTIONAL          = 0x00000008
-STORE_ITEM_FLAG_SPECIAL              = 0x00000010
-STORE_ITEM_FLAG_ITEM_GIFT			 = 0x00000020
-STORE_ITEM_FLAG_MULTIPLE_BUY 		 = 0x00000400
-
-local STORE_FLAG_SERVICE_CUSTOMIZATION 	= 0x008
-local STORE_FLAG_SERVICE_CHANGEFACTION 	= 0x040
-local STORE_FLAG_SERVICE_CHANGERACE 	= 0x080
-local STORE_FLAG_SERVICE_CHANGEZODIAC	= 0x80000
-
-local STORE_SERVICE_FLAG_DATA = {
-	{
-		flag = STORE_FLAG_SERVICE_CUSTOMIZATION,
-		text = STORE_SERVICE_LABEL_1,
-	},
-	{
-		flag = STORE_FLAG_SERVICE_CHANGEFACTION,
-		text = STORE_SERVICE_LABEL_2,
-	},
-	{
-		flag = STORE_FLAG_SERVICE_CHANGERACE,
-		text = STORE_SERVICE_LABEL_3,
-	},
-	{
-		flag = STORE_FLAG_SERVICE_CHANGEZODIAC,
-		text = STORE_SERVICE_LABEL_4,
-	},
+local CATEGORY_NO_SUBMENU = {
+	[Enum.Store.Category.Equipment] = true,
+	[Enum.Store.Category.Subscriptions] = true,
+	[Enum.Store.Category.Transmogrification] = true,
 }
 
-local STORE_ITEM_FLAG_DATA = {
-	{
-		flag = STORE_ITEM_FLAG_NEW,
-		text = STORE_ITEM_FLAG_1,
-		isNew = true,
-		isHot = false,
-		isPVP = false,
-		isDiscount = true
-	},
-	{
-		flag = bit.bor(STORE_ITEM_FLAG_NEW, STORE_ITEM_FLAG_RECOMMENDED),
-		text = STORE_ITEM_FLAG_2,
-		isNew = true,
-		isHot = false,
-		isPVP = false,
-		isDiscount = true
-	},
-	{
-		flag = bit.bor(STORE_ITEM_FLAG_NEW, STORE_ITEM_FLAG_PROMOTIONAL),
-		text = STORE_ITEM_FLAG_3,
-		isNew = true,
-		isHot = false,
-		isPVP = false,
-		isDiscount = true
-	},
-	{
-		flag = bit.bor(STORE_ITEM_FLAG_NEW, STORE_ITEM_FLAG_PROMOTIONAL, STORE_ITEM_FLAG_RECOMMENDED),
-		text = STORE_ITEM_FLAG_3,
-		isNew = true,
-		isHot = false,
-		isPVP = false,
-		isDiscount = true
-	},
-	{
-		flag = STORE_ITEM_FLAG_RECOMMENDED,
-		text = STORE_ITEM_FLAG_2,
-		isNew = false,
-		isHot = true,
-		isPVP = false,
-		isDiscount = true
-	},
-	{
-		flag = bit.bor(STORE_ITEM_FLAG_RECOMMENDED, STORE_ITEM_FLAG_PROMOTIONAL),
-		text = STORE_ITEM_FLAG_3,
-		isNew = false,
-		isHot = true,
-		isPVP = false,
-		isDiscount = true
-	},
+local SUBSCRIPTION_TRACKED_PRIORITY = {
+	Enum.Store.SubscriptionType.Julia,
+	Enum.Store.SubscriptionType.StrategicPack,
+	Enum.Store.SubscriptionType.AllInclusive,
+	Enum.Store.SubscriptionType.Transmogrify,
+	Enum.Store.SubscriptionType.Mounts,
+	Enum.Store.SubscriptionType.Pets,
 }
 
-local STORE_MONEY_BUTTON_DATA = {
-	{
-		Icon = "coins",
-		Name = STORE_COINS_BUTTON_TOOLTIP_LABEL,
-		Description = STORE_COINS_BUTTON_TOOLTIP,
-		ChieldFrame = "StoreSpecialOfferFrame",
-		Disable = false,
-		Selected = true
-	},
-	{
-		Icon = "mmotop",
-		Name = STORE_MMOTOP_BUTTON_TOOLTIP_LABEL,
-		Description = STORE_MMOTOP_BUTTON_TOOLTIP,
-		ChieldFrame = "StoreItemListFrame",
-		Disable = false,
-		Selected = false
-	},
-	{
-		Icon = "refer",
-		Name = STORE_REFER_BUTTON_TOOLTIP_LABEL,
-		Description = STORE_REFER_BUTTON_TOOLTIP,
-		ChieldFrame = "StoreItemListFrame",
-		Disable = false,
-		Selected = false
-	},
-	{
-		Icon = "loyal",
-		Name = STORE_LOYAL_BUTTON_TOOLTIP_LABEL,
-		Description = STORE_LOYAL_BUTTON_TOOLTIP,
-		ChieldFrame = "StoreItemListFrame",
-		Disable = false,
-		Selected = false
-	},
-}
-STORE_CATEGORIES_DATA[1] = {
-	{
-		Icon = "category-icon-featured",
-		Name = STORE_CATEGORY_1,
-		IsNew = false,
-		Disable = false,
-		ChieldFrame = "StoreSpecialOfferFrame",
-		Color = {r = 1, g = 0, b = 0}
-	},
-	{
-		Icon = "category-icon-armor",
-		Name = STORE_CATEGORY_2,
-		IsNew = false,
-		Disable = false,
-		ChieldFrame = "StoreSubCategorySelectFrame",
-		subCategoryFrame = "StoreItemListFrame",
-		Level = 12,
-		dontItemRequest = true
-	},
-	{
-		Icon = "category-icon-mounts",
-		Name = STORE_CATEGORY_3_NEW,
-		IsNew = false,
-		Disable = false,
-		ChieldFrame = "StoreItemCardFrame",
-		SlideOther = true,
-		subCategoryDefault = true
-	},
-	{
-		Icon = "category-icon-hot",
-		Name = STORE_CATEGORY_4_NEW,
-		IsNew = false,
-		Disable = false,
-		ChieldFrame = "StoreItemListFrame",
-		SlideOther = true,
-		subCategoryDefault = true
-	},
-	{
-		Icon = "category-icon-box",
-		Name = STORE_CATEGORY_9,
-		IsNew = false,
-		Disable = true,
-		ChieldFrame = "StoreSubscribeFrame",
-		Color = {r = 0, g = 1, b = 0},
-		Debuff = 90004,
-		Level = 80,
-		dontItemRequest = true,
-		SlideOther = true
-	},
-	{
-		Icon = "category-icon-clothes",
-		Name = STORE_CATEGORY_10,
-		IsNew = false,
-		Disable = false,
-		--ChieldFrame = "StoreTransmogrifyFrame",
-		ChieldFrame = "StoreTransmogrifySubCategoryFrame",
-		subCategoryFrame = "StoreTransmogrifyFrame",
-		dontItemRequest = true
-	},
-}
+StoreMixin = CreateFromMixins(PortraitFrameMixin)
 
-STORE_SUB_CATEGORY_DATA[STORE_SUBSCRIPTIONS_CATEGORY_ID] = {
-	{
-		Name = STORE_SUB_CATEGORY_9_1,
-		SubCategoryId = 2,
-		CategoryId = 9,
-		Locked = true,
-		Callback = function() selectedCategoryID = STORE_SUBSCRIPTIONS_CATEGORY_ID; selectedSubCategoryID = 2; StoreSubscribeSetup() end
-	},
-	{
-		Name = STORE_SUB_CATEGORY_9_2,
-		SubCategoryId = 3,
-		CategoryId = 9,
-		Locked = true,
-		Callback = function() selectedCategoryID = STORE_SUBSCRIPTIONS_CATEGORY_ID; selectedSubCategoryID = 3; StoreSubscribeSetup() end
-	},
-	{
-		Name = STORE_SUB_CATEGORY_9_3,
-		SubCategoryId = 4,
-		CategoryId = 9,
-		Locked = true,
-		Callback = function() selectedCategoryID = STORE_SUBSCRIPTIONS_CATEGORY_ID; selectedSubCategoryID = 4; StoreSubscribeSetup() end
-	},
-	{
-		Name = STORE_SUB_CATEGORY_9_4,
-		SubCategoryId = 5,
-		CategoryId = 9,
-		Locked = true,
-		Callback = function() selectedCategoryID = STORE_SUBSCRIPTIONS_CATEGORY_ID; selectedSubCategoryID = 5; StoreSubscribeSetup() end
-	},
-	{
-		Name = STORE_SUB_CATEGORY_9_6,
-		SubCategoryId = 6,
-		CategoryId = 9,
-		Locked = true,
-		Callback = function() selectedCategoryID = STORE_SUBSCRIPTIONS_CATEGORY_ID; selectedSubCategoryID = 6; StoreSubscribeSetup() end
-	},
-}
+function StoreMixin:OnLoad()
+	if self:GetName() ~= "StoreFrame" and StoreFrame == nil then
+		StoreFrame = self
+	end
 
-STORE_SUB_CATEGORY_DATA[3] = {
-	{
-		Name = STORE_SUB_CATEGORY_3_1,
-		SubCategoryId = 1,
-		CategoryId = 3,
-		Callback = function() selectedCategoryID = 3; selectedSubCategoryID = 1; StoreSubCategorySelectClick() end,
-		Check = function(self) return (20 <= UnitLevel("player")) end
-	},
-	{
-		Name = STORE_SUB_CATEGORY_3_2,
-		SubCategoryId = 2,
-		CategoryId = 3,
-		Callback = function() selectedCategoryID = 3; selectedSubCategoryID = 2; StoreSubCategorySelectClick() end
-	},
-	{
-		Name = STORE_SUB_CATEGORY_3_3,
-		SubCategoryId = 3,
-		CategoryId = 3,
-		Callback = function() selectedCategoryID = 3; selectedSubCategoryID = 3; StoreSubCategorySelectClick() end
-	}
-}
+	self.maxScale = 1 --0.75
+	self.pages = {}
+	self.dialogWidgets = {}
+	self.viewWidgets = {}
+	self.categoryButtons = {}
 
-STORE_SUB_CATEGORY_DATA[4] = {
-	{
-		Name = STORE_SUB_CATEGORY_4_1,
-		SubCategoryId = 1,
-		CategoryId = 4,
-		Callback = function() selectedCategoryID = 4; selectedSubCategoryID = 1; StoreSubCategorySelectClick() end,
-		Check = function(self) return (20 <= UnitLevel("player")) end
-	},
-	{
-		Name = STORE_SUB_CATEGORY_4_2,
-		SubCategoryId = 2,
-		CategoryId = 4,
-		Callback = function() selectedCategoryID = 4; selectedSubCategoryID = 2; StoreSubCategorySelectClick() end
-	},
-	{
-		Name = STORE_SUB_CATEGORY_4_3,
-		SubCategoryId = 3,
-		CategoryId = 4,
-		Callback = function() selectedCategoryID = 4; selectedSubCategoryID = 3; StoreSubCategorySelectClick() end
-	},
-	{
-		Name = STORE_SUB_CATEGORY_4_4,
-		SubCategoryId = 4,
-		CategoryId = 4,
-		Callback = function() selectedCategoryID = 4; selectedSubCategoryID = 4; StoreSubCategorySelectClick() end
-	},
-	{
-		Name = STORE_SUB_CATEGORY_4_5,
-		SubCategoryId = 5,
-		CategoryId = 4,
-		Callback = function() selectedCategoryID = 4; selectedSubCategoryID = 5; StoreSubCategorySelectClick() end,
-		Check = function(self) return (10 <= UnitLevel("player")) end
-	},
-	{
-		Name = STORE_SUB_CATEGORY_4_6,
-		SubCategoryId = 6,
-		CategoryId = 4,
-		Callback = function() selectedCategoryID = 4; selectedSubCategoryID = 6; StoreSubCategorySelectClick() end,
-		Check = function(self) return (80 <= UnitLevel("player")) end
-	},
-	{
-		Name = STORE_SUB_CATEGORY_4_7,
-		SubCategoryId = 7,
-		CategoryId = 4,
-		Callback = function() selectedCategoryID = 4; selectedSubCategoryID = 7; StoreSubCategorySelectClick() end
-	},
-	{
-		Name = STORE_SUB_CATEGORY_4_8,
-		SubCategoryId = 8,
-		CategoryId = 4,
-		Callback = function() selectedCategoryID = 4; selectedSubCategoryID = 8; StoreSubCategorySelectClick() end,
-		Check = function(self) return (C_Service.IsStrengthenStatsRealm and 80 <= UnitLevel("player")) end
-	}
-}
+	self.selectedCategory = 0
+	self.selectedSubCategory = 0
 
-local STORE_GIFT_DATA = {
-	{
-		Text = STORE_GIFT_LABEL_1,
-		Value = {Texture = 0, Key = 41}
-	},
-	{
-		Text = STORE_GIFT_LABEL_2,
-		Value = {Texture = "Stationery_Chr", Key = 65}
-	},
-	{
-		Text = STORE_GIFT_LABEL_3,
-		Value = {Texture = "Stationery_Val", Key = 64}
-	},
-}
+	self:GetTitleContainer():Hide()
 
-local STORE_PREMIUM_DATA = {
-	{
-		Text = STORE_PREMIUM_BUY_1,
-		Price = 3,
-		Info = STORE_PREMIUM_DISCOUNT_INFO_1
-	},
-	{
-		Text = STORE_PREMIUM_BUY_2,
-		Price = 9,
-		Info = STORE_PREMIUM_DISCOUNT_INFO_2
-	},
-	{
-		Text = STORE_PREMIUM_BUY_3,
-		Price = 29,
-		Info = STORE_PREMIUM_DISCOUNT_INFO_3
-	},
-	{
-		Text = STORE_PREMIUM_BUY_4,
-		Price = 499,
-		Info = STORE_PREMIUM_DISCOUNT_INFO_4
-	},
-}
+	self.navPanelAtlas = C_Texture.GetAtlasInfo("PKBT-Store-Background-NavPanel")
+	self:GetNavPanel().Background:SetAtlas("PKBT-Store-Background-NavPanel")
 
-STORE_CATEGORIES_DATA[2] = {
-	text = STORE_CATEGORY_INFO_1
-}
-STORE_CATEGORIES_DATA[3] = {
-	text = STORE_CATEGORY_INFO_2
-}
-STORE_CATEGORIES_DATA[4] = {
-	text = STORE_CATEGORY_INFO_3
-}
+	self.DressUp.onClose = function(this)
+		self:ToggleDressUp(false)
+	end
 
-STORE_SPECIAL_OFFERS_3D = {
-	[33] = { -- Foxes
-		Name = "Foxy",
-		BorderColor = {0.38, 0.88, 1},
-		PopupCreature = 130523,
-		PopupModelInfo = {130523, 0.1, "BOTTOM", "TOP", 0, -40, 280, 280, 1},
+	local premiumPanel = self:GetPremiumPanel()
+	premiumPanel.Background:SetTexture(self.navPanelAtlas.filename)
+	premiumPanel.Background:SetTexCoord(
+		self.navPanelAtlas.leftTexCoord,
+		self.navPanelAtlas.rightTexCoord,
+		self.navPanelAtlas.topTexCoord,
+		self.navPanelAtlas.topTexCoord + (self.navPanelAtlas.bottomTexCoord - self.navPanelAtlas.topTexCoord) * (premiumPanel:GetHeight() / self.navPanelAtlas.height)
+	)
 
-		Banner = {
-			TimerColor			= {0.92, 0.9, 1},
-			TitleColor			= {0.99, 0.2, 0.68},
-			NameColor			= {0.92, 0.9, 1},
-			DescriptionColor	= {1, 0.3, 0.78},
-			PriceLabelColor		= {0.92, 0.9, 1},
-			PriceColor			= {0.92, 0.9, 1},
-			NoSideBG = true,
+	Mixin(premiumPanel.Purchase, PKBT_OwnerMixin)
+	premiumPanel.Purchase:SetOwner(self)
+	premiumPanel.Purchase:AddTextureAtlas("PKBT-Icon-Crown", true, 60, 60, -16, 0)
+	premiumPanel.Purchase:AddText(STORE_PURCHASE_PREMIUM, -10, 0, "PKBT_Font_18")
+	premiumPanel.Purchase:SetPadding(28)
 
-			SceneInfo = {
-				{130519, 462, 469, {"RIGHT", nil, "RIGHT", 50, 0}, -39},
-				{130523, 232, 232, {"BOTTOMRIGHT", nil, "BOTTOMRIGHT", 40, -60}, 6},
-			},
-		},
-	},
-	[35] = { -- Pink foxes
-		Name = "FoxyPink",
-		BorderColor = {1, 0.3, 0.3},
-		PopupCreature = 130521,
-		PopupModelInfo = {130521, -0.6, "BOTTOM", "TOP", 0, -74, 280, 280, 1},
+	self.dialogFramePool = CreateFramePool("Frame", self, "StoreGenericDialogTemplate")
+	self.purchaseAlertPool = CreateFramePool("Button", self, "StorePurchaseAlertTemplate", nil, nil, function(this)
+		this:SetParent(UIParent)
+		this:SetFrameStrata("FULLSCREEN_DIALOG")
+	end)
 
-		Banner = {
-			TimerColor			= {0.92, 0.90, 1},
-			TitleColor			= {0.99, 0.2, 0.68},
-			NameColor			= {0.92, 0.90, 1},
-			DescriptionColor	= {0.99, 0.2, 0.68},
-			PriceLabelColor		= {0.92, 0.90, 1},
-			PriceColor			= {0.92, 0.90, 1},
-			NoSideBG = true,
+	C_StoreSecure.SetStoreFrame(self)
 
-			SceneInfo = {
-				{130521, 382, 389, {"RIGHT", nil, "RIGHT", 60, -10}, -39, nil, nil, {1, 0, -0.663, 0.827, -0.417, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
-			},
-		},
-	},
-	[36] = { -- Fly rat
-		Name = "FlyRat",
-		BorderColor = {0.98, 0.65, 0.68},
-		PopupCreature = 200041,
-		PopupModelInfo = {200041, -0.5, "BOTTOM", "TOP", 0, 0, 200, 200, 1},
+	self:RegisterCustomEvent("SERVICE_DATA_UPDATE")
+	self:RegisterCustomEvent("STORE_AVAILABILITY_CHANGED")
+	self:RegisterCustomEvent("CUSTOM_CHALLENGE_ACTIVATED")
+	self:RegisterCustomEvent("CUSTOM_CHALLENGE_DEACTIVATED")
 
-		Banner = {
-			TimerColor			= {1, 0.89, 0.88},
-			TitleColor			= {1, 0.2, 0.2},
-			NameColor			= {1, 0.89, 0.88},
-			DescriptionColor	= {1, 0.2, 0.2},
-			PriceLabelColor		= {1, 0.89, 0.88},
-			PriceColor			= {1, 0.89, 0.88},
-			NoSideBG = true,
+	self:RegisterCustomEvent("STORE_RELOADED")
+	self:RegisterCustomEvent("STORE_ERROR")
+	self:RegisterCustomEvent("STORE_BALANCE_UPDATE")
+	self:RegisterCustomEvent("STORE_PREMIUM_UPDATE")
+	self:RegisterCustomEvent("STORE_PREMIUM_PURCHASED")
+	self:RegisterCustomEvent("STORE_CATEGORY_SELECTED")
+	self:RegisterCustomEvent("STORE_CATEGORY_INFO_UPDATE")
+	self:RegisterCustomEvent("STORE_CATEGORY_NEW_PRODUCTS")
+	self:RegisterCustomEvent("STORE_PRODUCT_LIST_UPDATE")
+	self:RegisterCustomEvent("STORE_RANDOM_ITEM_POLL_UPDATE")
+	self:RegisterCustomEvent("STORE_SPECIAL_OFFER_POPUP_SMALL_SHOW")
+	self:RegisterCustomEvent("STORE_SPECIAL_OFFER_POPUP_SMALL_HIDE")
+	self:RegisterCustomEvent("STORE_SPECIAL_OFFER_ALERT_LAST_HOUR")
+	self:RegisterCustomEvent("STORE_PURCHASE_ERROR")
+	self:RegisterCustomEvent("STORE_PURCHASE_COMPLETE")
+	self:RegisterCustomEvent("STORE_SERVICE_DIALOG")
+	self:RegisterCustomEvent("STORE_NEW_ITEMS_AVAILABLE")
 
-			SceneInfo = {
-				{200041, 322, 322, {"CENTER", nil, "CENTER", 0, 6}, -39, nil, nil, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
-			},
-		},
-	},
-	[48] = { -- Leffel
-		Name = "Leffel",
-		BorderColor = {0.38, 0.88, 1},
-		PopupCreature = 130893,
-		PopupModelInfo = {130893, -0.68, "BOTTOM", "TOP", 0, 0, 200, 200, 0.7},
+	C_FactionManager:RegisterFactionOverrideCallback(function()
+		self:UpdatePortraitFallback()
+	end, true)
 
-		Banner = {
-			TimerColor			= {1, 0.9, 0.9},
-			TitleColor			= {1, 0.2, 0.2},
-			NameColor			= {1, 0.9, 0.9},
-			DescriptionColor	= {1, 0.2, 0.2},
-			PriceLabelColor		= {1, 0.9, 0.9},
-			PriceColor			= {1, 0.9, 0.9},
-			NoSideBG = true,
+	if IsInterfaceDevClient() then
+		OFFER_SCROLL_TIME = _G["DEV_STORE_OFFER_SCROLL_TIME"] or OFFER_SCROLL_TIME
 
-			SceneInfo = {
-				{130893, nil, nil, nil, -39, nil, {-0.490, 0.670, 0.500}, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
-			},
-		},
-	},
-	[42] = { -- Rainbow steed
-		Name = "RainbowSteed",
-		BorderColor = {0.38, 0.88, 1},
-
-		Banner = {
-			TimerColor			= {1, 1, 1},
-			TitleColor			= {1, 0.9294, 0.7607},
-			NameColor			= {1, 1, 1},
-			DescriptionColor	= {1, 0.9294, 0.7607},
-			PriceLabelColor		= {1, 0.9, 0.9},
-			PriceColor			= {1, 0.9, 0.9},
-		},
-	},
-	[47] = { -- Meat wagon
-		Name = "Meat",
-		BorderColor = {1, 0.3, 0.3},
-		PopupCreature = 130945,
-		PopupModelInfo = {130945, -0.3, "BOTTOM", "TOP", 10, -60, 200, 200, 1},
-
-		Banner = {
-			TimerColor			= {1, 0.9, 0.9},
-			TitleColor			= {0.45, 0.14, 0.77},
-			NameColor			= {1, 0.9, 0.9},
-			DescriptionColor	= {0.45, 0.14, 0.77},
-			PriceLabelColor		= {1, 0.9, 0.9},
-			PriceColor			= {1, 0.9, 0.9},
-
-			SceneInfo = {
-				{130945, 362, 369, {"RIGHT", nil, "RIGHT", 0, -24}, -39, nil, nil, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
-			},
-		},
-	},
-	[53] = { -- Hand of suffer
-		Name = "HandOfSuffer",
-		BorderColor = {0.82, 0.34, 0.12},
-		PopupCreature = 131067,
-		PopupModelInfo = {131067, -0.68, "BOTTOM", "TOP", 0, -70, 400, 400, 0.7},
-
-		Banner = {
-			TimerColor			= {0.98, 0.63, 0.1},
-			TitleColor			= {0.82, 0.34, 0.12},
-			NameColor			= {0.98, 0.63, 0.1},
-			DescriptionColor	= {0.82, 0.34, 0.12},
-			PriceLabelColor		= {0.98, 0.63, 0.1},
-			PriceColor			= {1, 0.9, 0.9},
-
-			SceneInfo = {
-				{131067, 362, 469, {"CENTER", nil, "CENTER", 0, 14}, -39, nil, nil, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
-			},
-		},
-	},
-	[54] = { -- Mur mur
-		Name = "MurMur",
-		BorderColor = {0.82, 0.34, 0.12},
-		PopupCreature = 131349,
-		PopupModelInfo = {131349, -0.68, "BOTTOM", "TOP", -20, -50, 350, 320, 0.7},
-
-		Banner = {
-			TimerColor			= {0.94, 0.6, 0.4},
-			TitleColor			= {0.97, 0.86, 0.8},
-			NameColor			= {0.94, 0.6, 0.4},
-			DescriptionColor	= {0.97, 0.86, 0.8},
-			PriceLabelColor		= {0.94, 0.6, 0.4},
-			PriceColor			= {1, 0.9, 0.9},
-
-			SceneInfo = {
-				{131349, 379, 300, {"RIGHT", nil, "RIGHT", 0, -20}, 39, nil, nil, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
-			},
-		},
-	},
-	[55] = { -- Heart glider
-		Name = "HeartGlider",
-		BorderColor = {1, 0.3, 0.3},
-		PopupCreature = 131231,
-		PopupModelInfo = {131231, -0.68, "BOTTOM", "TOP", 0, -250, 350, 420, 0.7},
-
-		Banner = {
-			TimerColor			= {1, 0.3, 0.3},
-			TitleColor			= {0.97, 0.86, 0.8},
-			NameColor			= {1, 0.3, 0.3},
-			DescriptionColor	= {0.97, 0.86, 0.8},
-			PriceLabelColor		= {1, 0.3, 0.3},
-			PriceColor			= {1, 0.9, 0.9},
-
-			SceneInfo = {
-				{131231, 432, 529, {"RIGHT", nil, "RIGHT", 60, -174}, -39, nil, nil, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
-			},
-		},
-	},
-	[56] = { -- Death Breath
-		Name = "DeathBreath",
-		BorderColor = {1, 0.3, 0.3},
-		PopupCreature = 74539,
-		PopupModelInfo = {74539, -0.68, "BOTTOM", "TOP", 0, -30, 150, 220, 0.7},
-
-		Banner = {
-			TimerColor			= {0.71, 0.84, 0.65},
-			TitleColor			= {1, 1, 1},
-			NameColor			= {0.71, 0.84, 0.65},
-			DescriptionColor	= {1, 1, 1},
-			PriceLabelColor		= {0.71, 0.84, 0.65},
-			PriceColor			= {1, 1, 1},
-
-			SceneInfo = {
-				{74539, 202, 299, {"RIGHT", nil, "RIGHT", -90, -10}, -16, nil, nil, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
-				{74383, 172, 172, {"BOTTOMRIGHT", nil, "BOTTOMRIGHT", 30, 60}, -6},
-			},
-		},
-	},
-	[57] = { -- Sirin
-		Name = "Sirin",
-		BorderColor = {1, 0.3, 0.3},
-		PopupCreature = 131250,
-		PopupModelInfo = {131250, -0.38, "BOTTOM", "TOP", 0, 20, 350, 220, 0.7},
-
-		Banner = {
-			TimerColor			= {0.67, 0.34, 0.63},
-			TitleColor			= {1, 1, 1},
-			NameColor			= {0.67, 0.34, 0.63},
-			DescriptionColor	= {1, 1, 1},
-			PriceLabelColor		= {0.67, 0.34, 0.63},
-			PriceColor			= {1, 1, 1},
-
-			SceneInfo = {
-				{131250, 382, 229, {"RIGHT", nil, "RIGHT", 0, -10}, -16, nil, nil, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
-			},
-		},
-	},
-	[58] = { -- VenLo
-		Name = "VenLo",
-		BorderColor = {1, 0.3, 0.3},
-		PopupCreature = 131261,
-		PopupModelInfo = {131261, -0.645, "BOTTOM", "TOP", 0, -60, 400, 320, 0.5},
-
-		Banner = {
-			TimerColor			= {0.67, 0.34, 0.63},
-			TitleColor			= {1, 1, 1},
-			NameColor			= {0.67, 0.34, 0.63},
-			DescriptionColor	= {1, 1, 1},
-			PriceLabelColor		= {0.67, 0.34, 0.63},
-			PriceColor			= {1, 1, 1},
-
-			SceneInfo = {
-				{131261, 379, 250, {"TOPRIGHT", nil, "TOPRIGHT", -1, -1}, -37, 0.5, nil, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
-			},
-		},
-	},
-	[59] = { -- HW2022
-		Name = "HW2022",
-		BorderColor = {0.82, 0.34, 0.12},
-		PopupCreature = 131057,
-		PopupModelInfo = {131057, -0.645, "BOTTOM", "TOP", 0, -60, 400, 320, 0.5},
-
-		Banner = {
-			TimerColor			= {0.98, 0.63, 0.1},
-			TitleColor			= {0.82, 0.34, 0.12},
-			NameColor			= {0.98, 0.63, 0.1},
-			DescriptionColor	= {0.82, 0.34, 0.12},
-			PriceLabelColor		= {0.98, 0.63, 0.1},
-			PriceColor			= {1, 0.9, 0.9},
-
-			SceneInfo = {
-				{131057, 379, 290, {"TOPRIGHT", nil, "TOPRIGHT", -1, -1}, -37, 1, {0, 0, -0.300}, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
-			},
-		},
-	},
-	[60] = { -- WinterFurline
-		Name = "WinterFurline",
-		BorderColor = {0.11, 0.67, 0.84},
-		PopupCreature = 131348,
-		PopupModelInfo = {131348, -0.68, "BOTTOM", "TOP", -30, -50, 350, 320, 0.95},
-
-		Banner = {
-			TimerColor			= {0.11, 0.67, 0.84},
-			TitleColor			= {0.8, 0.86, 0.97},
-			NameColor			= {0.11, 0.67, 0.84},
-			DescriptionColor	= {0.8, 0.86, 0.97},
-			PriceLabelColor		= {0.11, 0.67, 0.84},
-			PriceColor			= {1, 0.9, 0.9},
-
-			SceneInfo = {
-				{131348, 379, 240, {"TOPRIGHT", nil, "TOPRIGHT", -1, -1}, -37, 1, {0, 0, -0.300}, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
-			},
-		},
-	},
-	[61] = {
-		Name = "VD2023",
-		BorderColor = {0.733, 0.262, 0.494},
-		PopupCreature = 131352,
-		PopupModelInfo = {131352, -0.68, "BOTTOM", "TOP", 60, -15, 450, 180, 1},
-
-		Banner = {
-			TimerColor			= {0.733, 0.262, 0.494},
-			TitleColor			= {1, 0.8588, 0.9137},
-			NameColor			= {0.733, 0.262, 0.494},
-			DescriptionColor	= {1, 0.8588, 0.9137},
-			PriceLabelColor		= {0.733, 0.262, 0.494},
-			PriceColor			= {1, 0.9, 0.9},
-
-			SceneInfo = {
-				{131352, 429, 190, {"BOTTOMRIGHT", nil, "BOTTOMRIGHT", 70, 1}, -37, 1, {0, 0, -0.300}, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
-				{131232, 279, 180, {"BOTTOMRIGHT", nil, "BOTTOMRIGHT", 80, 0}, -37, 1, {0, 0, -0.300}, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
-			},
-		},
-	},
-	[62] = {
-		Name = "AF2023",
-		BorderColor = {0.071, 0.565, 1},
-		PopupCreature = 50027,
-		PopupModelInfo = {50027, -0.68, "BOTTOM", "TOP", 0, -15, 300, 220, 1},
-
-		Banner = {
-			TimerColor			= {0.733, 0.262, 0.494},
-			TitleColor			= {1, 0.8588, 0.9137},
-			NameColor			= {0.733, 0.262, 0.494},
-			DescriptionColor	= {1, 0.8588, 0.9137},
-			PriceLabelColor		= {0.733, 0.262, 0.494},
-			PriceColor			= {1, 0.9, 0.9},
-
-			SceneInfo = {
-				{50027, 285, 209, {"BOTTOMRIGHT", nil, "BOTTOMRIGHT", -85, 26}, -37, 1, {0, 0, 0}, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
-				{131198, 229, 90, {"BOTTOMRIGHT", nil, "BOTTOMRIGHT", 0, 7}, -37, 1, {0, 0, -0.300}, {1, 0, -0.674, -0.428, 0.520, 1, 0.702, 0.702, 0.702, 1, 1, 1, 0.8}},
-			},
-		},
-	},
-}
-
-STORE_CACHE = C_Cache("SIRUS_STORE_CACHE", true)
-
-local NO_CLASS_FILTER = 0
-local ALL_EXPANSION_FILTER = -1
-local ALL_SOURCE_FILTER = 0
-local ALL_WEAPON_FILTER = 0
-local ALL_WEAPON_NEW_FILTER = -2
-
-local storeTransmogrifySetsData = {}
-local storeTransmogrifyNewWeaponTypes = {}
-
-storeTransmogrifyShowShoulders = true
-
-STORE_TRANSMOGRIFY_SETS_STOREID 				= 1
-STORE_TRANSMOGRIFY_SETS_NAME 					= 2
-STORE_TRANSMOGRIFY_SETS_ICON 					= 3
-STORE_TRANSMOGRIFY_SETS_CLASSID 				= 4
-STORE_TRANSMOGRIFY_SETS_EXPANSION 				= 5
-STORE_TRANSMOGRIFY_SETS_QUALITY 				= 6
-STORE_TRANSMOGRIFY_SETS_ITEMS 					= 7
-STORE_TRANSMOGRIFY_SETS_WEAPONTYPE 				= 8
-
-STORE_TRANSMOGRIFY_ITEM_ITEMID 					= 1
-STORE_TRANSMOGRIFY_ITEM_ICON 					= 2
-STORE_TRANSMOGRIFY_ITEM_ITEMLINK 				= 3
-STORE_TRANSMOGRIFY_ITEM_QUALITY 				= 4
-STORE_TRANSMOGRIFY_ITEM_NAME					= 5
-
-STORE_TRANSMOGRIFY_STORAGE_STOREID 				= 1
-STORE_TRANSMOGRIFY_STORAGE_ITEMID				= 2
-STORE_TRANSMOGRIFY_STORAGE_CLASSID 				= 3
-STORE_TRANSMOGRIFY_STORAGE_EXPANSION 			= 4
-STORE_TRANSMOGRIFY_STORAGE_ITEMS 				= 5
-
-STORE_TRANSMOGRIFY_SERVER_STOREID 				= 1
-STORE_TRANSMOGRIFY_SERVER_ITEMID 				= 2
-STORE_TRANSMOGRIFY_SERVER_ITEMCOUNT 			= 3
-STORE_TRANSMOGRIFY_SERVER_STOREPRICE 			= 4
-STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNT 		= 5
-STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNTPRICE 	= 6
-STORE_TRANSMOGRIFY_SERVER_STOREFLAGS 			= 7
-STORE_TRANSMOGRIFY_SERVER_ISPVP 				= 8
-STORE_TRANSMOGRIFY_SERVER_ALT_CURRENCY 			= 9
-STORE_TRANSMOGRIFY_SERVER_ALT_PRICE 			= 10
-STORE_TRANSMOGRIFY_SERVER_ALT_CURRENCY_NAME 	= 11
-STORE_TRANSMOGRIFY_SERVER_ALT_CURRENCY_ICON 	= 12
-
-STORE_STORAGE_DATA_ID 							= 1
-STORE_STORAGE_DATA_ENTRY 						= 2
-STORE_STORAGE_DATA_COUNT 						= 3
-STORE_STORAGE_DATA_PRICE 						= 4
-STORE_STORAGE_DATA_REMAININGTIME 				= 5
-STORE_STORAGE_DATA_DISCOUNT 					= 6
-STORE_STORAGE_DATA_DISCOUNTEDPRICE 				= 7
-STORE_STORAGE_DATA_CREATUREENTRY 				= 8
-STORE_STORAGE_DATA_FLAGS 						= 9
-STORE_STORAGE_DATA_ALT_CURRENCY 				= 10
-STORE_STORAGE_DATA_ALT_PRICE    				= 11
-STORE_STORAGE_DATA_ISPVP 						= 12
-STORE_STORAGE_DATA_DISCOUNTSHOW 				= 13
-
-local STORE_TRANSMOGRIFY_WEAPON_SUB_CLASSES = {
-	{name = ITEM_SUB_CLASS_2_0, classID = 2, subClassID = 0},
-	{name = ITEM_SUB_CLASS_2_1, classID = 2, subClassID = 1},
-	{name = ITEM_SUB_CLASS_2_2, classID = 2, subClassID = 2},
-	{name = ITEM_SUB_CLASS_2_3, classID = 2, subClassID = 3},
-	{name = ITEM_SUB_CLASS_2_4, classID = 2, subClassID = 4},
-	{name = ITEM_SUB_CLASS_2_5, classID = 2, subClassID = 5},
-	{name = ITEM_SUB_CLASS_2_6, classID = 2, subClassID = 6},
-	{name = ITEM_SUB_CLASS_2_7, classID = 2, subClassID = 7},
-	{name = ITEM_SUB_CLASS_2_8, classID = 2, subClassID = 8},
-	{name = ITEM_SUB_CLASS_2_10, classID = 2, subClassID = 10},
-	{name = ITEM_SUB_CLASS_2_13, classID = 2, subClassID = 13},
-	{name = ITEM_SUB_CLASS_2_15, classID = 2, subClassID = 15},
-	{name = ITEM_SUB_CLASS_2_16, classID = 2, subClassID = 16},
-	{name = ITEM_SUB_CLASS_2_18, classID = 2, subClassID = 18},
-	{name = ITEM_SUB_CLASS_2_19, classID = 2, subClassID = 19},
-	{name = ITEM_SUB_CLASS_4_6, classID = 4, subClassID = 6, inventoryType = 14},
-}
-
-STORE_TRANSMOGRIFY_WEAPON_TYPES = {}
-for i = 1, #STORE_TRANSMOGRIFY_WEAPON_SUB_CLASSES do
-	STORE_TRANSMOGRIFY_WEAPON_TYPES[STORE_TRANSMOGRIFY_WEAPON_SUB_CLASSES[i].name] = i
+		for categoryIndex in pairs(CATEGORY_NO_SUBMENU) do
+			CATEGORY_NO_SUBMENU[categoryIndex] = false
+		end
+	end
 end
 
-STORE_TRANSMOGRIFY_SETS_DATA = {}
-STORE_TRANSMOGRIFY_ITEM_DATA = {}
-STORE_TRANSMOGRIFY_SERVER_DATA = {}
+function StoreMixin:OnShow()
+	if not C_StorePublic.IsEnabled() then
+		self:Hide()
+		return
+	end
 
-STORE_TRANSMOGRIFY_SORT_ID = nil
-STORE_TRANSMOGRIFY_FILTER_CLASSID = nil
-STORE_TRANSMOGRIFY_FILTER_EXPANSION = nil
-STORE_TRANSMOGRIFY_FILTER_SOURCE = nil
-STORE_TRANSMOGRIFY_FILTER_WEAPON = nil
+	self:RegisterEvent("UNIT_PORTRAIT_UPDATE")
 
-STORE_SEARCH_TEXT = nil
+	self:RequestData()
 
-Store_CoroutineRequestItems = nil
+	self:HidePopup()
+	self:UpdatePortrait()
+	self:UpdateAccountInfo()
 
-STORE_CATEGORY_NEW_ITEMS_INDICATOR = {}
+	self:UpdatePremium()
+	self:UpdateBalance()
+	self:UpdateVote()
+	self:UpdateReferral()
+	self:UpdateLoyality()
 
-enum:E_STORE_CATEGORY_NEW_ITEMS_INDICATOR {
-	"CURRENCY",
-	"CATEGORYID",
-	"SUBCATEGORYID"
-}
-
-local TransomgCategory = {
-	Headgear = 1,
-	Weapons = 2,
-	Invisible = 3,
-	Sets = 4,
-}
-
-local TransmogSortTypes = {
-	Name = 1,
-	Quality = 2,
-	Price = 3,
-	WeaponType = 4,
-}
-
-local TransmogFilterTypes = {
-	Weapons = 1,
-	Sets = 2,
-}
-
-local StoreRequestMoneyID
-local StoreRequestCategoryID
-local StoreRequestSubCategoryID
-local StoreRequestIgnoreFilters
-
-local storeRequestQueue = {}
-local storeQueueTimer
-
-local LOADING_DATA_TIME = IsGMAccount() and 0 or 60
-local POPUP_QUEUED
-
-function IsStoreEnable()
-	if not C_Service.IsStoreEnabled() then
-		return false, false, MAINMENUBAR_STORE_DISABLE_REASON_1
-	elseif C_Hardcore.IsFeatureAvailable(Enum.Hardcore.Features.GAME_SHOP) and C_Hardcore.GetActiveChallengeID() then
-		local name = C_Hardcore.GetChallengeInfoByID(C_Hardcore.GetActiveChallengeID())
-		return false, false, string.format(HARDCORE_FEATURE_12_DISABLE, name or UNKNOWN)
+	if self.closeTimestamp and time() - self.closeTimestamp > 15 then
+		C_StoreSecure.SetSelectedCategory(Enum.Store.Category.Main)
 	else
-		local loadingTimestamp = C_CVar:GetSessionCVar("STORE_LOADING_DATA_TIMESTAMP")
-		if loadingTimestamp then
-			local timeLeft = (loadingTimestamp + LOADING_DATA_TIME) - time()
-			if timeLeft > 0 then
-				return false, true, string.format(MAINMENUBAR_STORE_DISABLE_REASON_2, SecondsToTime(timeLeft))
-			else
-				C_CVar:SetSessionCVar("STORE_LOADING_DATA_TIMESTAMP", nil)
-			end
-		end
+		local categoryIndex, subCategoryIndex = C_StoreSecure.GetSelectedCategory()
+		self:UpdateCategoryButtons(categoryIndex, subCategoryIndex)
+		self:UpdateCategoryContent(categoryIndex, subCategoryIndex)
 	end
-	return true
+
+	self:UpdateSubscriptionTracker()
+
+	PlaySound(SOUNDKIT.UI_IG_STORE_WINDOW_OPEN_BUTTON)
+
+	self:StopMicroButtonPulse()
+	UpdateMicroButtons()
+
+	EventRegistry:TriggerEvent("StoreFrame.OnShow")
 end
 
-function Store_GetBalance(currencyIndex)
-	if type(currencyIndex) ~= "number" then
-		error(string.format("bad argument #1 to 'Store_GetBalance' (number expected, got %s)", type(currencyIndex)), 2)
-	elseif currencyIndex < 1 or currencyIndex > #Enum.Store.CurrencyType then
-		error("bad argument #1 to 'Store_GetBalance' (index out of range)", 2)
-	end
+function StoreMixin:OnHide()
+	PlaySound(SOUNDKIT.UI_IG_STORE_WINDOW_CLOSE_BUTTON)
 
-	if IsInterfaceDevClient(true) then
-		return 0
+	self:UnregisterEvent("UNIT_PORTRAIT_UPDATE")
+
+	self:HideLinkDialog()
+	self:HideErrors(self)
+	self:HideDialogs(self)
+
+	local categoryIndex, subCategoryIndex = C_StoreSecure.GetSelectedCategory()
+	if categoryIndex ~= Enum.Store.Category.Main then
+		self.closeTimestamp = time()
 	else
-		return STORE_CURRENCY_INFO.BALANCE[currencyIndex] or 0
+		self.closeTimestamp = nil
 	end
+
+	self.transmogInfoRequested = nil
+
+	self:UpdateMicroButtonPulse()
+	UpdateMicroButtons()
+
+	EventRegistry:TriggerEvent("StoreFrame.OnHide")
 end
 
-function Store_GetLoyalityInfo()
-	return STORE_CURRENCY_INFO.LOYALITY.level or 0,
-		STORE_CURRENCY_INFO.LOYALITY.current or 0,
-		STORE_CURRENCY_INFO.LOYALITY.min or 0,
-		STORE_CURRENCY_INFO.LOYALITY.max or 0
-end
+function StoreMixin:OnEvent(event, ...)
+	if event == "STORE_ERROR" or event == "STORE_PURCHASE_ERROR" then
+		local errorText, debugInfo = ...
+		self:ShowError(nil, errorText):SetDebugInfo(debugInfo)
+	elseif event == "STORE_NEW_ITEMS_AVAILABLE" then
+		self:ShowPopup(10, "STORE_NEW_ITEMS_AVAILABLE", STORE_NEW_ITEMS_AVAILABLE_TEXT, "DOWN", StoreMicroButton, 0, -5, nil, nil, nil, 255, POPUP.OnClose, POPUP.OnRelease)
+	elseif event == "STORE_BALANCE_UPDATE" then
+		self:UpdateBalance()
+		self:UpdateVote()
+		self:UpdateReferral()
+		self:UpdateLoyality()
+	elseif event == "STORE_PREMIUM_UPDATE" then
+		self:UpdatePremium()
+	elseif event == "STORE_PREMIUM_PURCHASED" then
+		self:AddPurchaseAlert("Interface/Icons/VIP", STORE_PREMIUM_STATUS, STORE_DELIVERED_PREMIUM)
+	elseif event == "STORE_CATEGORY_SELECTED" then
+		local categoryIndex, subCategoryIndex = ...
+		self:ToggleDressUp(false)
+		self:UpdateCategoryButtons(categoryIndex, subCategoryIndex)
+		self:UpdateCategoryContent(categoryIndex, subCategoryIndex)
+		self:UpdateSubscriptionTracker()
+		C_StoreSecure.SetCategoryRenewSeen(categoryIndex)
 
-function Store_GetTransmogCategoryByStoreID(storeID)
-	for transmogCategoryID, typeData in ipairs(STORE_TRANSMOGRIFY_STORAGE) do
-		for _, transmogData in ipairs(typeData) do
-			if transmogData[STORE_TRANSMOGRIFY_STORAGE_STOREID] == storeID then
-				return transmogCategoryID, transmogData[STORE_TRANSMOGRIFY_STORAGE_CLASSID]
+		if categoryIndex == Enum.Store.Category.Transmogrification then
+			if not self.transmogInfoRequested then
+				self.transmogInfoRequested = true
+				RequestInventoryTransmogInfo(true)
 			end
 		end
-	end
+	elseif event == "STORE_CATEGORY_INFO_UPDATE" then
+		local categoryIndex, subCategoryIndex = ...
+		if categoryIndex then
+			self:UpdateCategoryButtonInfo(categoryIndex, subCategoryIndex)
+		else
+			self:UpdateCategoryButtons()
+		end
+	elseif event == "STORE_PRODUCT_LIST_UPDATE" then
+		local categoryIndex, subCategoryIndex = ...
+		local selectedCategoryIndex, selectedSubCategoryIndex = C_StoreSecure.GetSelectedCategory()
 
-	for transmogCategoryID, typeData in ipairs(STORE_TRANSMOGRIFY_SETS_DATA) do
-		for _, transmogData in ipairs(typeData) do
-			if transmogData[STORE_TRANSMOGRIFY_SETS_STOREID] == storeID then
-				return transmogCategoryID, transmogData[STORE_TRANSMOGRIFY_SETS_CLASSID]
-			end
+		if categoryIndex == selectedCategoryIndex
+		and subCategoryIndex == selectedSubCategoryIndex
+		then
+			self:UpdateCategoryContent(categoryIndex, subCategoryIndex, true)
+		end
+	elseif event == "STORE_SPECIAL_OFFER_POPUP_SMALL_SHOW" then
+		local newOfferPopupIndex = ...
+		self:ShowOfferPopup(newOfferPopupIndex)
+	elseif event == "STORE_SPECIAL_OFFER_POPUP_SMALL_HIDE" then
+		local offerID = ...
+		self:HideOfferPopup(offerID)
+	elseif event == "STORE_SPECIAL_OFFER_ALERT_LAST_HOUR" then
+		local offerIndex = ...
+		self:OnOfferAlertLastHour(offerIndex)
+	elseif event == "STORE_PURCHASE_COMPLETE" then
+		local productID, itemID, wasGifted = ...
+		if itemID then
+			local name, _, _, _, _, _, _, _, _, texture = GetItemInfo(itemID)
+			self:AddPurchaseAlert(texture, name, wasGifted and STORE_DELIVERED_PURCHASE_GIFT or STORE_DELIVERED_PURCHASE_SELF)
+		end
+	elseif event == "STORE_SERVICE_DIALOG" then
+		local serviceName = ...
+		StaticPopup_Show("STORE_SERVICE_DIALOG", serviceName)
+	elseif event == "STORE_CATEGORY_NEW_PRODUCTS" then
+		local categoryIndex = ...
+		if categoryIndex == Enum.Store.Category.Collections then
+			self:UpdateMicroButtonPulse()
+		end
+	elseif event == "STORE_RANDOM_ITEM_POLL_UPDATE" then
+		local changed = ...
+		if changed then
+			self:UpdateMicroButtonPulse()
+		end
+	elseif event == "UNIT_PORTRAIT_UPDATE" then
+		local unit = ...
+		if self:IsShown() and UnitIsUnit(unit, "player") then
+			self:UpdatePortrait()
+		end
+	elseif event == "STORE_AVAILABILITY_CHANGED"
+	or event == "CUSTOM_CHALLENGE_ACTIVATED"
+	or event == "CUSTOM_CHALLENGE_DEACTIVATED"
+	then
+		if C_StorePublic.IsEnabled() then
+			self:UpdateMicroButtonPulse()
+			self:ProcessPopupQueue()
+		else
+			self:StopMicroButtonPulse()
+		end
+	elseif event == "SERVICE_DATA_UPDATE" then
+		if not C_StorePublic.IsEnabled() then
+			self:StopMicroButtonPulse()
+		end
+	elseif event == "STORE_RELOADED" then
+		self.dataReloaded = true
+		if self:IsVisible() then
+			self:RequestData()
 		end
 	end
 end
 
-function GetStoreHyperlinkInfo( link )
-	local splitData = C_Split(link, ":")
+function StoreMixin:RequestData()
+	if not self.dataReloaded or not self:IsVisible() then
+		return
+	end
 
-	local moneyID 		= tonumber(splitData[2])
-	local categoryID 	= tonumber(splitData[3])
-	local subCategoryID = tonumber(splitData[4])
-	local storeID 		= tonumber(splitData[5])
+	self.dataReloaded = nil
 
-	ShowUIPanel(StoreFrame)
+	C_StoreSecure.RequestNewCategoryItems()
+	C_StoreSecure.RequestNextSpecialOfferTime()
+	C_StoreSecure.RequestNextTransmogOfferTime()
+	C_StoreSecure.RequestSubscriptions()
+end
 
-	local setClassID
-	if moneyID == 1 then
-		if categoryID == 6 and subCategoryID == 0 then
-			subCategoryID, setClassID = Store_GetTransmogCategoryByStoreID(storeID)
+function StoreMixin:UpdateMicroButtonPulse()
+	if C_StorePublic.IsEnabled() and C_StoreSecure.IsAnyCategoryRenewed() then
+		if StoreMicroButton:IsEnabled() == 1 and not tContains(PULSEBUTTONS, StoreMicroButton) then
+			SetButtonPulse(StoreMicroButton, 60, 0.50)
 		end
-
-		StoreSelectCategory(categoryID, subCategoryID)
+		if GameMenuButtonStore:IsEnabled() == 1 and not tContains(PULSEBUTTONS, GameMenuButtonStore) then
+			SetButtonPulse(GameMenuButtonStore, 60, 0.50)
+		end
 	else
-		_G["StoreMoneyButton"..moneyID]:Click()
-		_G["StoreCategoryButton"..categoryID]:Click()
-	end
-
-	if not StoreTransmogrifyFrame.selectedSets or StoreTransmogrifyFrame.selectedSets ~= storeID then
-		StoreTransmogrifyButton_SelectedSetByStoreID(storeID, setClassID)
+		self:StopMicroButtonPulse()
 	end
 end
 
-function StoreGenerateHyperlink( moneyID, categoryID, subCategoryID, storeID, name )
-	return string.format("|cff66bbff|Hstore:%d:%d:%d:%d|h[%s]|h|r", moneyID or 0, categoryID or 0, subCategoryID or 0, storeID or 0, name or "~ unknown name ~")
+function StoreMixin:StopMicroButtonPulse()
+	ButtonPulse_StopPulse(StoreMicroButton)
+	ButtonPulse_StopPulse(GameMenuButtonStore)
 end
 
-local storeTransmogirfyUseExpansion = {}
-function StoreTransmogrifyCreateItemData()
-	STORE_TRANSMOGRIFY_SETS_DATA = {}
-	STORE_TRANSMOGRIFY_ITEM_DATA = {}
-	storeTransmogirfyUseExpansion = {}
+function StoreMixin:HideContentLayers()
+	self.Content.NineSliceInset:Hide()
+	self.Content.Background:Hide()
+	self.Content.ShadowTop:Hide()
+	self.Content.ShadowBottom:Hide()
+	self.Content.ShadowLeft:Hide()
+	self.Content.ShadowRight:Hide()
+end
 
-	for i = 1, 4 do
-		local storage = STORE_TRANSMOGRIFY_STORAGE[i]
+function StoreMixin:ShowContentLayers()
+	self.Content.NineSliceInset:Show()
+	self.Content.Background:Show()
+	self.Content.ShadowTop:Show()
+	self.Content.ShadowBottom:Show()
+	self.Content.ShadowLeft:Show()
+	self.Content.ShadowRight:Show()
+end
 
-		if storage then
-			STORE_TRANSMOGRIFY_SETS_DATA[i] = {}
-			STORE_TRANSMOGRIFY_ITEM_DATA[i] = {}
+function StoreMixin:UpdatePortrait()
+	SetParentFrameLevel(self:GetAccountPanel().PortraitContainer, 25)
+	self:SetPortraitToUnit("player")
+end
 
-			for _, data in pairs(storage) do
-				local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice = GetItemInfo(data[STORE_TRANSMOGRIFY_STORAGE_ITEMID])
+function StoreMixin:UpdatePortraitFallback()
+	local portrait = self:GetAccountPanel().PortraitContainer.PortraitFallback
 
-				if data[STORE_TRANSMOGRIFY_STORAGE_ITEMS] and #data[STORE_TRANSMOGRIFY_STORAGE_ITEMS] > 0 then
-					table.insert(STORE_TRANSMOGRIFY_SETS_DATA[i], {
-						data[STORE_TRANSMOGRIFY_STORAGE_STOREID],
-						itemName,
-						itemTexture,
-						data[STORE_TRANSMOGRIFY_STORAGE_CLASSID],
-						data[STORE_TRANSMOGRIFY_STORAGE_EXPANSION],
-						itemRarity,
-						data[STORE_TRANSMOGRIFY_STORAGE_ITEMS],
-						STORE_TRANSMOGRIFY_WEAPON_TYPES[itemSubType] or -1,
-					})
-					storeTransmogirfyUseExpansion[data[STORE_TRANSMOGRIFY_STORAGE_EXPANSION]] = true
-				else
-					STORE_TRANSMOGRIFY_ITEM_DATA[i][data[STORE_TRANSMOGRIFY_STORAGE_STOREID]] = {data[STORE_TRANSMOGRIFY_STORAGE_ITEMID], itemTexture, itemLink, itemRarity, itemName}
-				end
-			end
-		end
+	local _, race = UnitRace("player")
+	local sex = UnitSex("player") or 3
+	local faction = UnitFactionGroup("player")
+
+	local atlas = string.format("RACE_ICON_ROUND_%s_%s_%s", string.upper(race), E_SEX[sex], string.upper(faction))
+	if C_Texture.GetAtlasInfo(atlas) then
+		portrait:SetAtlas(atlas)
+	else
+		portrait:SetTexture(nil)
 	end
 end
 
-function StoreTransmogrifyValidation( data )
-	if not data then
-		return false
-	end
-
-	local storeID = data[STORE_TRANSMOGRIFY_SETS_STOREID];
-	local serverData = STORE_TRANSMOGRIFY_SERVER_DATA[storeID];
-
-	if not serverData then
-		return false;
-	end
-
-	local flags = serverData[STORE_TRANSMOGRIFY_SERVER_STOREFLAGS];
-	if flags and bit.band(flags, 512) == 512 then
-		return false;
-	end
-
-	if selectedSubCategoryID ~= 2 then
-		if STORE_TRANSMOGRIFY_FILTER_CLASSID ~= NO_CLASS_FILTER then
-			local classID = data[STORE_TRANSMOGRIFY_SETS_CLASSID];
-
-			if STORE_TRANSMOGRIFY_FILTER_CLASSID ~= classID and classID ~= NO_CLASS_FILTER and classID ~= -1 then
-				return false;
-			end
-		end
-
-		if STORE_TRANSMOGRIFY_FILTER_EXPANSION ~= ALL_EXPANSION_FILTER then
-			local expansionID = data[STORE_TRANSMOGRIFY_SETS_EXPANSION];
-
-			if bit.lshift(1, STORE_TRANSMOGRIFY_FILTER_EXPANSION) ~= expansionID then
-				return false;
-			end
-		end
-
-		if STORE_TRANSMOGRIFY_FILTER_SOURCE ~= ALL_SOURCE_FILTER then
-			local isPvP = not not serverData[STORE_TRANSMOGRIFY_SERVER_ISPVP];
-
-			if STORE_TRANSMOGRIFY_FILTER_SOURCE == 1 ~= isPvP then
-				return false;
-			end
-		end
-	elseif selectedSubCategoryID == 2 then
-		if STORE_TRANSMOGRIFY_FILTER_WEAPON == ALL_WEAPON_NEW_FILTER then
-			if not storeID or bit.band(serverData[STORE_TRANSMOGRIFY_SERVER_STOREFLAGS] or 0, STORE_ITEM_FLAG_NEW) == 0 then
-				return false;
-			end
-		elseif STORE_TRANSMOGRIFY_FILTER_WEAPON ~= ALL_WEAPON_FILTER then
-			if STORE_TRANSMOGRIFY_FILTER_WEAPON ~= data[STORE_TRANSMOGRIFY_SETS_WEAPONTYPE] then
-				return false;
-			end
-		end
-	end
-
-	return true;
+function StoreMixin:GetPortrait()
+	return self:GetAccountPanel().PortraitContainer.Portrait
 end
 
-function StoreTransmogrifySearchValidation( data )
-	if not data then
-		return false
+function StoreMixin:GetAccountPanel()
+	return self.TopPanel.AccountPanel
+end
+
+function StoreMixin:GetBalancePanel()
+	return self.TopPanel.BalancePanel
+end
+
+function StoreMixin:GetVotePanel()
+	return self.TopPanel.VotePanel
+end
+
+function StoreMixin:GetReferralPanel()
+	return self.TopPanel.ReferralPanel
+end
+
+function StoreMixin:GetLoyalityPanel()
+	return self.TopPanel.LoyalityPanel
+end
+
+function StoreMixin:GetLeftPanel()
+	return self.LeftPanel
+end
+
+function StoreMixin:GetNavPanel()
+	return self.LeftPanel.NavPanel
+end
+
+function StoreMixin:GetPremiumPanel()
+	return self.LeftPanel.PremiumPanel
+end
+
+function StoreMixin:ShowProductDressUp(parent, productID, allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton)
+	local success = self.DressUp:SetProduct(productID, allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton)
+	if success then
+		self:ToggleDressUp(true, parent)
 	end
+end
 
-	local text = STORE_SEARCH_TEXT or ""
-
-	if #text <= 2 then
-		return true
+function StoreMixin:ShowItemDressUp(parent, itemLink, allowToHide, allowEquipmentToggle, allowPortraitCamera)
+	local success = self.DressUp:SetItem(itemLink, allowToHide, allowEquipmentToggle, allowPortraitCamera)
+	if success then
+		self:ToggleDressUp(true, parent)
 	end
+end
 
-	text = string.upper(text)
-
-	if string.find(string.upper(data[STORE_TRANSMOGRIFY_SETS_NAME]), text) then
-		return true
+function StoreMixin:ToggleDressUp(state, parent)
+	if state then
+		self.DressUp:SetParent(parent)
+		self.DressUp:SetPoint("TOPRIGHT", 0, 0)
+		self.DressUp:SetPoint("BOTTOMRIGHT", 0, 0)
+		self.DressUp:Show()
+		SetParentFrameLevel(self.DressUp, 10)
+	else
+		self.DressUp:Hide()
 	end
+end
 
-	for _, storeID in pairs(data[STORE_TRANSMOGRIFY_SETS_ITEMS]) do
-		local itemData = STORE_TRANSMOGRIFY_ITEM_DATA[selectedSubCategoryID][storeID]
+function StoreMixin:GetToastFrame()
+	return StoreToastFrame
+end
 
-		if itemData then
-			local itemName = itemData[STORE_TRANSMOGRIFY_ITEM_NAME]
+function StoreMixin:RegisterPageWidget(pageWidget)
+	self.pages[pageWidget:GetID()] = pageWidget
+end
 
-			if itemName then
-				if string.find(string.upper(itemName), text) then
-					return true
-				end
-			end
+function StoreMixin:GetPage(id)
+	return self.pages[id]
+end
+
+function StoreMixin:GetSelectedPage()
+	return self.pages[self.selectedCategory]
+end
+
+function StoreMixin:IsDialogShownWithParent(dialog, parent)
+	return dialog:IsShown() and (not parent or dialog:GetParent() == parent)
+end
+
+function StoreMixin:HasShownDialogs(parent)
+	for _, dialogWidget in pairs(self.dialogWidgets) do
+		if self:IsDialogShownWithParent(dialogWidget, parent) then
+			return true
 		end
 	end
-
 	return false
 end
 
-function StoreTransmogrifyGenerateData( isFiltered )
-	local index = 1
-	storeTransmogrifySetsData = {}
-	storeTransmogrifyNewWeaponTypes = {}
-
-	if STORE_TRANSMOGRIFY_SETS_DATA[selectedSubCategoryID] then
-		for _, data in pairs(STORE_TRANSMOGRIFY_SETS_DATA[selectedSubCategoryID]) do
-			local storeID = data[STORE_TRANSMOGRIFY_SETS_STOREID]
-
-			if selectedSubCategoryID == 2 then
-				local weaponType = data[STORE_TRANSMOGRIFY_SETS_WEAPONTYPE];
-
-				if weaponType and weaponType ~= -1 then
-					if STORE_TRANSMOGRIFY_SERVER_DATA[storeID] and bit.band(STORE_TRANSMOGRIFY_SERVER_DATA[storeID][STORE_TRANSMOGRIFY_SERVER_STOREFLAGS] or 0, STORE_ITEM_FLAG_NEW) ~= 0 then
-						storeTransmogrifyNewWeaponTypes[weaponType] = true;
-					end
-				end
-			end
-
-			if StoreTransmogrifyValidation(data) and StoreTransmogrifySearchValidation(data) then
-				storeTransmogrifySetsData[index] = data
-				index = index + 1
-			end
-		end
-	end
-
-	CloseDropDownMenus()
-	StoreTransmogrifyFrame_UpdateScrollFrame()
-
-	if isFiltered then
-		StoreTransmogrifyFrame.LeftContainer.ScrollFrame.scrollBar:SetValue(0)
-		StoreTransmogrifyButton_Selected(1, nil, true)
-	end
+function StoreMixin:HasShownLinkDialog(parent)
+	return self:IsDialogShownWithParent(self.LinkDialog, parent)
 end
 
-function GetStoreTransmogrifySetsInfo( index )
-	index = index or StoreTransmogrifyFrame.selectedIndex
-
-	if not index then
-		return
-	end
-
-	local data = storeTransmogrifySetsData[index]
-
-	if not data then
-		return
-	end
-
-	local storeID 		= data[STORE_TRANSMOGRIFY_SETS_STOREID]
-	local setName 		= data[STORE_TRANSMOGRIFY_SETS_NAME]
-	local iconTexture 	= data[STORE_TRANSMOGRIFY_SETS_ICON]
---	local isPVP 		= nil --data[STORE_TRANSMOGRIFY_SETS_ISPVP]
-	local classID 		= data[STORE_TRANSMOGRIFY_SETS_CLASSID]
-	local expansionID 	= data[STORE_TRANSMOGRIFY_SETS_EXPANSION]
-	local qualityID 	= data[STORE_TRANSMOGRIFY_SETS_QUALITY]
-	local itemsStoreID 	= data[STORE_TRANSMOGRIFY_SETS_ITEMS]
-
-	local serverData = STORE_TRANSMOGRIFY_SERVER_DATA[storeID]
-	local storePrice, storeDiscount, storeDiscountPrice, isPVP, altCurrency, altPrice, altCurrencyName, altCurrencyIcon
-
-	if serverData then
-		storePrice 			= serverData[STORE_TRANSMOGRIFY_SERVER_STOREPRICE]
-		storeDiscount 		= serverData[STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNT]
-		storeDiscountPrice 	= serverData[STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNTPRICE]
-		isPVP 				= serverData[STORE_TRANSMOGRIFY_SERVER_ISPVP]
-		altCurrency 		= serverData[STORE_TRANSMOGRIFY_SERVER_ALT_CURRENCY];
-		altPrice 			= serverData[STORE_TRANSMOGRIFY_SERVER_ALT_PRICE];
-		altCurrencyName 	= serverData[STORE_TRANSMOGRIFY_SERVER_ALT_CURRENCY_NAME];
-		altCurrencyIcon 	= serverData[STORE_TRANSMOGRIFY_SERVER_ALT_CURRENCY_ICON];
-	end
-
-	return storeID, setName, iconTexture, isPVP, classID, expansionID, qualityID, itemsStoreID, storePrice, storeDiscount, storeDiscountPrice, isPVP, altCurrency, altPrice, altCurrencyName, altCurrencyIcon;
-end
-
-function GetNumStoreTransmogrifySets()
-	return #storeTransmogrifySetsData
-end
-
-function GetNumStoreTransmogrifyItems()
-	local index = StoreTransmogrifyFrame.selectedIndex
-
-	if not index then
-		return 0
-	end
-
-	local _, _, _, _, _, _, _, itemsStoreID = GetStoreTransmogrifySetsInfo()
-
-	if itemsStoreID then
-		return #itemsStoreID
-	end
-
-	return 0
-end
-
-function GetStoreTransmogrifyItemsInfo( index )
-	if not index then
-		return
-	end
-
-	local _, _, _, _, _, _, _, itemsStoreID = GetStoreTransmogrifySetsInfo()
-
-	if not itemsStoreID then
-		return
-	end
-
-	local storeID = itemsStoreID[index]
-
-	if not storeID then
-		return
-	end
-
-	local data = STORE_TRANSMOGRIFY_ITEM_DATA[selectedSubCategoryID] and STORE_TRANSMOGRIFY_ITEM_DATA[selectedSubCategoryID][storeID]
-
-	if not data then
-		return
-	end
-
-	local storeID 		= storeID
-	local itemID 		= data[STORE_TRANSMOGRIFY_ITEM_ITEMID]
-	local iconTexture 	= data[STORE_TRANSMOGRIFY_ITEM_ICON]
-	local itemLink 		= data[STORE_TRANSMOGRIFY_ITEM_ITEMLINK]
-	local itemRarity 	= data[STORE_TRANSMOGRIFY_ITEM_QUALITY]
-
-	local serverData = STORE_TRANSMOGRIFY_SERVER_DATA[storeID]
-	local storePrice, storeDiscount, storeDiscountPrice, isPVP, altCurrency, altPrice, altCurrencyName, altCurrencyIcon;
-
-	if serverData then
-		storePrice 			= serverData[STORE_TRANSMOGRIFY_SERVER_STOREPRICE]
-		storeDiscount 		= serverData[STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNT]
-		storeDiscountPrice 	= serverData[STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNTPRICE]
-		isPVP 				= serverData[STORE_TRANSMOGRIFY_SERVER_ISPVP]
-		altCurrency 		= serverData[STORE_TRANSMOGRIFY_SERVER_ALT_CURRENCY];
-		altPrice 			= serverData[STORE_TRANSMOGRIFY_SERVER_ALT_PRICE];
-		altCurrencyName 	= serverData[STORE_TRANSMOGRIFY_SERVER_ALT_CURRENCY_NAME];
-		altCurrencyIcon 	= serverData[STORE_TRANSMOGRIFY_SERVER_ALT_CURRENCY_ICON];
-	end
-
-	return storeID, itemID, iconTexture, itemLink, itemRarity, storePrice, storeDiscount, storeDiscountPrice, isPVP, altCurrency, altPrice, altCurrencyName, altCurrencyIcon;
-end
-
-function StoreGetSpecialOfferByOfferID( offerID )
-	for _, value in pairs(STORE_SPECIAL_OFFER_INFO_DATA) do
-		if value.offerID == offerID then
-			return value
-		end
-	end
-
-	return nil
-end
-
-function StoreGetSpecialOfferByIndex( index )
-	if STORE_SPECIAL_OFFER_INFO_DATA[index] then
-		return STORE_SPECIAL_OFFER_INFO_DATA[index]
-	end
-
-	return nil
-end
-
-function StoreGetSpecialOfferCount()
-	if STORE_SPECIAL_OFFER_INFO_DATA then
-		return #STORE_SPECIAL_OFFER_INFO_DATA
-	end
-
-	return nil
-end
-
-function StoreRemoveOffer( index )
-	if STORE_SPECIAL_OFFER_INFO_DATA[index] then
-		if STORE_SPECIAL_OFFER_INFO_DATA[index].Timer then
-			STORE_SPECIAL_OFFER_INFO_DATA[index].Timer:Cancel()
-			STORE_SPECIAL_OFFER_INFO_DATA[index].Timer = nil
-		end
-
-		table.remove(STORE_SPECIAL_OFFER_INFO_DATA, index)
-	end
-end
-
-function GetStoreProductVersion()
-	return STORE_CACHE:Get("ASMSG_SHOP_VERSION")
-end
-
-function GetStoreRenewalDiscounts()
-	return STORE_CACHE:Get("ASMSG_SHOP_MOUNT_RENEWAL_PRICE") or 3, STORE_CACHE:Get("ASMSG_SHOP_PET_RENEWAL_PRICE") or 3, STORE_CACHE:Get("ASMSG_SHOP_ILLUSION_RENEWAL_PRICE") or 5, STORE_CACHE:Get("ASMSG_SHOP_TRANSMOG_RENEWAL_PRICE") or 10;
-end
-
-function GetStoreRolledItemsVersion(categoryId, subCategoryId)
-	local cacheName = categoryId == 3 and subCategoryId == 3 and "CATEGORY_DROP_COUNT3_3" or "CATEGORY_DROP_COUNT"..categoryId;
-	return PackNumber(STORE_CACHE:Get("MOUNT_RENEW_WEEK", 0), STORE_CACHE:Get(cacheName, 0))
-end
-
-function StoreFrame_OnLoad( self, ... )
-	self.CategoryFrames = {}
-	self.SubCategoryFrames = {}
-
-	self:RegisterEvent("VARIABLES_LOADED")
-	self:RegisterEvent("PLAYER_LEVEL_UP")
-	self:RegisterEvent("PLAYER_LOGIN")
-	self:RegisterCustomEvent("SERVICE_DATA_UPDATE")
-	self:RegisterCustomEvent("SESSION_VARIABLES_LOADED")
-	self:RegisterCustomEvent("CUSTOM_STORE_AVAILABILITY_CHANGED")
-
-	self:SetScale(0.8)
-	SetPortraitToTexture(self.portrait, "Interface\\ICONS\\WoW_Store")
-	self.TitleText:SetText(STORE_WINDOW_TITLE)
-
-	RegisterForSave("STORE_HIGHLIGHT_CATEGORY_BUTTON")
-
-	StoreTransmogrifyCreateItemData()
-end
-
-function StoreCacheDataGenerate( reset )
-	if reset then
-		STORE_CACHE:Set("PRODUCT_CACHE", {}, 259200)
-	end
-
-	STORE_PRODUCT_CACHE = STORE_CACHE:Get("PRODUCT_CACHE", {}, 259200)
-
-	for moneyID = 1, #STORE_CATEGORIES_DATA do
-		if not STORE_PRODUCT_CACHE[moneyID] then
-			STORE_PRODUCT_CACHE[moneyID] = {}
-		end
-
-		for categoryID = 0, #STORE_CATEGORIES_DATA[moneyID] do
-			if not STORE_PRODUCT_CACHE[moneyID][categoryID] then
-				STORE_PRODUCT_CACHE[moneyID][categoryID] = {}
-			end
-
-			if not STORE_PRODUCT_CACHE[moneyID][categoryID][0] then
-				STORE_PRODUCT_CACHE[moneyID][categoryID][0] = {}
-			end
-
-			for filter = 0, 1 do
-				if not STORE_PRODUCT_CACHE[moneyID][categoryID][0][filter] then
-					STORE_PRODUCT_CACHE[moneyID][categoryID][0][filter] = {}
-				end
-			end
-
-			if categoryID == 2 then
-				for subCategoryID = 1, 15 do
-					if not STORE_PRODUCT_CACHE[moneyID][categoryID][subCategoryID] then
-						STORE_PRODUCT_CACHE[moneyID][categoryID][subCategoryID] = {}
-					end
-
-					for filter = 0, 1 do
-						if not STORE_PRODUCT_CACHE[moneyID][categoryID][subCategoryID][filter] then
-							STORE_PRODUCT_CACHE[moneyID][categoryID][subCategoryID][filter] = {}
-						end
-					end
-				end
-			elseif categoryID == STORE_TRANSMOGRIFY_CATEGORY_ID then
-				for subCategoryID = 1, 4 do
-					if not STORE_PRODUCT_CACHE[moneyID][categoryID][subCategoryID] then
-						STORE_PRODUCT_CACHE[moneyID][categoryID][subCategoryID] = {}
-					end
-
-					for filter = 0, 1 do
-						if not STORE_PRODUCT_CACHE[moneyID][categoryID][subCategoryID][filter] then
-							STORE_PRODUCT_CACHE[moneyID][categoryID][subCategoryID][filter] = {}
-						end
-					end
-				end
-			elseif STORE_SUB_CATEGORY_DATA[categoryID] and #STORE_SUB_CATEGORY_DATA[categoryID] > 0 then
-				for subCategoryID = 1, #STORE_SUB_CATEGORY_DATA[categoryID] do
-					if not STORE_PRODUCT_CACHE[moneyID][categoryID][subCategoryID] then
-						STORE_PRODUCT_CACHE[moneyID][categoryID][subCategoryID] = {}
-					end
-					for filter = 0, 1 do
-						if not STORE_PRODUCT_CACHE[moneyID][categoryID][subCategoryID][filter] then
-							STORE_PRODUCT_CACHE[moneyID][categoryID][subCategoryID][filter] = {}
-						end
-					end
-				end
-			end
-		end
-	end
-
-	-- BattlePass hardcode.
-	if not STORE_PRODUCT_CACHE[1][101] then
-		STORE_PRODUCT_CACHE[1][101] = {}
-	end
-
-	if not STORE_PRODUCT_CACHE[1][101][1] then
-		STORE_PRODUCT_CACHE[1][101][1] = {}
-	end
-
-	if not STORE_PRODUCT_CACHE[1][101][2] then
-		STORE_PRODUCT_CACHE[1][101][2] = {}
-	end
-
-	if not STORE_PRODUCT_CACHE[1][101][1][0] then
-		STORE_PRODUCT_CACHE[1][101][1][0] = {}
-	end
-
-	if not STORE_PRODUCT_CACHE[1][101][1][1] then
-		STORE_PRODUCT_CACHE[1][101][1][1] = {}
-	end
-
-	if not STORE_PRODUCT_CACHE[1][101][2][0] then
-		STORE_PRODUCT_CACHE[1][101][2][0] = {}
-	end
-
-	if not STORE_PRODUCT_CACHE[1][101][2][1] then
-		STORE_PRODUCT_CACHE[1][101][2][1] = {}
-	end
-end
-
-function StoreShowPopup(...)
-	if IsStoreEnable() then
-		StoreFrame.Popup = NPE_TutorialPointerFrame:Show(...)
+function StoreMixin:GetBestDialogParent(parent, allowWorldFrame)
+	if parent then
+		return parent
+	elseif self:IsShown() then
+		return self
+	elseif allowWorldFrame and not UIParent:IsShown() then
+		return WorldFrame
 	else
-		POPUP_QUEUED = {...}
+		return UIParent
 	end
 end
 
-function StoreHidePopup()
-	POPUP_QUEUED = nil
-	if StoreFrame.Popup then
-		NPE_TutorialPointerFrame:Hide(StoreFrame.Popup)
-		StoreFrame.Popup = nil
-	end
-end
-
-local function updateLoadingTimer()
-	local loadingTimestamp = C_CVar:GetSessionCVar("STORE_LOADING_DATA_TIMESTAMP", nil)
-	if loadingTimestamp then
-		local timeLeft = (loadingTimestamp + LOADING_DATA_TIME) - time()
-		if timeLeft > 0 then
-			C_Timer:After(timeLeft, function()
-				if C_CVar:GetSessionCVar("STORE_LOADING_DATA_TIMESTAMP", nil) then
-					C_CVar:SetSessionCVar("STORE_LOADING_DATA_TIMESTAMP", nil)
-					FireCustomClientEvent("CUSTOM_STORE_AVAILABILITY_CHANGED")
-				end
-			end)
-		end
-	end
-end
-
-function StoreFrame_OnEvent( self, event, ... )
-	if event == "PLAYER_LOGIN" then
-		SendServerMessage("ACMSG_SHOP_CATEGORY_NEW_ITEMS_REQUEST")
-		SendServerMessage("ACMSG_SHOP_BALANCE_REQUEST")
-		SendServerMessage("ACMSG_SHOP_SUBSCRIPTION_LIST_REQUEST")
-		STORE_SUBSCRIBE_DATA = {}
-
-		if LOADING_DATA_TIME > 0 then
-			updateLoadingTimer()
-		end
-	elseif event == "VARIABLES_LOADED" then
-		local playerName = UnitName("player")
-		if not STORE_HIGHLIGHT_CATEGORY_BUTTON[playerName] then
-			STORE_HIGHLIGHT_CATEGORY_BUTTON[playerName] = {}
-		end
-
-		StoreCacheDataGenerate()
-	elseif event == "CUSTOM_STORE_AVAILABILITY_CHANGED" then
-		if IsStoreEnable() then
-			if STORE_CACHE:Get("flashCategoryMountRenew") == true then
-				ButtonPulse_StopPulse(StoreMicroButton)
-				ButtonPulse_StopPulse(GameMenuButtonStore)
-
-				if StoreMicroButton:IsEnabled() == 1 then
-					SetButtonPulse(StoreMicroButton, 60, 0.50)
-				end
-
-				if GameMenuButtonStore:IsEnabled() == 1 then
-					SetButtonPulse(GameMenuButtonStore, 60, 0.50)
-				end
-			end
-
-			if POPUP_QUEUED then
-				StoreShowPopup(unpack(POPUP_QUEUED))
-				POPUP_QUEUED = nil
-			end
-		else
-			ButtonPulse_StopPulse(StoreMicroButton)
-			ButtonPulse_StopPulse(GameMenuButtonStore)
-		end
-	elseif event == "SERVICE_DATA_UPDATE" then
-		local realmStage = C_Service.GetRealmStage()
-		if realmStage ~= 0 and realmStage ~= STORE_CACHE:Get("REALM_STAGE") then
-		--	STORE_CACHE:Clear("ASMSG_SHOP_ILLUSION_RENEWAL_PRICE")
-		--	STORE_CACHE:Clear("ASMSG_SHOP_MOUNT_RENEWAL_PRICE")
-		--	STORE_CACHE:Clear("ASMSG_SHOP_PET_RENEWAL_PRICE")
-		--	STORE_CACHE:Clear("ASMSG_SHOP_TRANSMOG_RENEWAL_PRICE")
-		--	STORE_CACHE:Clear("ASMSG_SHOP_VERSION")
-			STORE_CACHE:Clear("CATEGORY_DROP_COUNT1")
-			STORE_CACHE:Clear("CATEGORY_DROP_COUNT3")
-			STORE_CACHE:Clear("CATEGORY_DROP_COUNT3_3")
-			STORE_CACHE:Clear("CATEGORY_DROP_COUNT6")
-			STORE_CACHE:Clear("MOUNT_RENEW_TIME_LEFT")
-			STORE_CACHE:Clear("MOUNT_RENEW_WEEK")
-			STORE_CACHE:Clear("PRODUCT_CACHE")
-			STORE_CACHE:Clear("RENEW_TIME")
-			STORE_CACHE:Clear("STORE_OFFER_HOUR_SHOWN")
-			STORE_CACHE:Clear("T_MOG_RENEW_TIME_LEFT")
-
-			STORE_CACHE:Set("REALM_STAGE", realmStage)
-		end
-
-		FireCustomClientEvent("CUSTOM_STORE_AVAILABILITY_CHANGED")
-	elseif event == "PLAYER_LEVEL_UP" then
-		local unitLevel = select(1, ...)
-
-		if unitLevel == 80 then
-			StoreCacheDataGenerate(true)
-		end
-	elseif event == "SESSION_VARIABLES_LOADED" then
-		table.wipe(CUSTOM_ROLLED_ITEMS_IN_SHOP);
-
-		if LOADING_DATA_TIME > 0 then
-			local now = time()
-			C_CVar:SetSessionCVar("STORE_LOADING_DATA_TIMESTAMP", now)
-			FireCustomClientEvent("CUSTOM_STORE_AVAILABILITY_CHANGED")
-			updateLoadingTimer()
-		end
-	end
-end
-
-function StoreFrame_OnShow( self, ... )
-	selectedSubCategoryID = 0
-	selectedCategoryID = 1
-	selectedMoneyID = 1
-
-	SendServerMessage("ACMSG_PREMIUM_INFO_REQUEST")
-	SendServerMessage("ACMSG_SHOP_BALANCE_REQUEST")
-	SendServerMessage("ACMSG_SHOP_REFUNDABLE_PURCHASE_LIST_REQUEST")
-
-	self.Ticker = C_Timer:NewTicker(1, function()
-		for d = 1, #STORE_PRODUCT_DATA do
-			if STORE_PRODUCT_DATA[d] and STORE_PRODUCT_DATA[d].RemainingTime then
-				STORE_PRODUCT_DATA[d].RemainingTime = STORE_PRODUCT_DATA[d].RemainingTime - 1
-			end
-		end
-	end, nil)
-
-	StoreCloseAllFrame()
-	StoreFrame_UpdateCategories(self)
-	UpdateMicroButtons()
-
-	if self.Popup then
-		NPE_TutorialPointerFrame:Hide(self.Popup)
-		self.Popup = nil
-	end
-
-	ButtonPulse_StopPulse(StoreMicroButton)
-	ButtonPulse_StopPulse(GameMenuButtonStore)
-
-	StoreFrame.TutorialButton:SetShown(selectedCategoryID == 1)
-
-	PlaySound("igCharacterInfoOpen")
-end
-
-function StoreFrame_OnHide( self, ... )
-	self.Ticker:Cancel()
-	self.Ticker = nil
-
-	for i = 1, StoreGetSpecialOfferCount() do
-		local offerData = StoreGetSpecialOfferByIndex(i)
-
-		if offerData then
-			if offerData.IsNew then
-				offerData.IsNew = false
-			end
-		end
-	end
-
-	StoreCloseAllFrame()
-	UpdateMicroButtons()
-
-	if STORE_CACHE:Get("flashCategoryMountRenew") == true then
-		ButtonPulse_StopPulse(StoreMicroButton)
-		ButtonPulse_StopPulse(GameMenuButtonStore)
-
-		if StoreMicroButton:IsEnabled() == 1 then
-			SetButtonPulse(StoreMicroButton, 60, 0.50)
-		end
-
-		if GameMenuButtonStore:IsEnabled() == 1 then
-			SetButtonPulse(GameMenuButtonStore, 60, 0.50)
-		end
-	end
-
-	if DressUpFrame:IsShown() then
-		DressUpFrame:Hide();
-	end
-
-	PlaySound("igCharacterInfoClose")
-
-	self.transmogrificationInfoRequest = nil;
-end
-
-function StoreMoneyButton_OnLoad( self, ... )
-	local data = STORE_MONEY_BUTTON_DATA[self:GetID()]
-	selectedMoneyID = 1
-
-	self.Icon:SetTexture("Interface\\Store\\"..data.Icon)
-
-	if data.Selected then
-		self.Selected:Show()
-	end
-
-	if data.Disable then
-		self:Disable()
-		self.Icon:SetDesaturated(1)
-		self.Background:SetDesaturated(1)
-		self.Selected:Hide()
-		self.Text:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
-	end
-end
-
-function StoreMoneyButton_OnClick( self, ... )
-	if self:GetID() == selectedMoneyID then
-		return
-	end
-
-	local id = self:GetID()
-	local data = STORE_MONEY_BUTTON_DATA[id]
-	local frame = _G[data.ChieldFrame]
-	selectedMoneyID = id
-	selectedSubCategoryID = 0
-
-	StoreCloseAllFrame()
-	if frame then
-		frame:Show()
-	end
-
-	self.Selected:Show()
-	StoreFrame_UpdateCategories(StoreFrame)
-	if id ~= 1 then
-		StoreItemListUpdate()
-	end
-
-	if id ~= 4 and StoreItemListScrollFrame:GetScript("OnUpdate") then
-		StoreItemListScrollFrame:SetScript("OnUpdate", nil)
-	end
-
-	StoreUpdateGenericButtons()
-end
-
-function StoreMoneyButton_OnEnter(self)
-	local id = self:GetID();
-	local data = STORE_MONEY_BUTTON_DATA[id]
-
-	self.Highlight:Show()
-
-	GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -15)
-	GameTooltip:SetText(data.Name)
-	GameTooltip:AddLine(data.Description, 1, 1, 1, 1)
-
-	if id == Enum.Store.CurrencyType.Loyality then
-		local _, loyalCurrent, loyalMin, loyalMax = Store_GetLoyalityInfo();
-
-		if loyalMax > 0 then
-			GameTooltip:AddLine(" ")
-			GameTooltip:AddLine(string.format(SOTRE_LOYAL_NEXT_LEVEL, loyalCurrent, loyalMax), 1, 1, 1, 1)
-			GameTooltip:AddLine(" ")
-			GameTooltip:AddLine(" ")
-			-- loyalCurrent, loyalMax, loyalMin
-			StoreLoyalProgressBarSetValue(loyalCurrent - loyalMin, loyalMax - loyalMin)
-			StoreLoyalProgressBar:Show()
-		end
-	end
-	GameTooltip:Show()
-end
-
-function StoreMoneyButton_OnLeave( self, ... )
-	self.Highlight:Hide()
-	StoreLoyalProgressBar:Hide()
-	GameTooltip:Hide()
-end
-
-function StoreCategory_OnLoad( self, ... )
-	self.PulseTexture:SetVertexColor(1, 0.5, 0.5)
-end
-
-function StoreCategory_OnClick( self, ... )
-	if self:GetID() == selectedCategoryID and self:GetID() ~= 2 and self:GetID() ~= STORE_TRANSMOGRIFY_CATEGORY_ID and self.data.SlideOther == nil and selectedSubCategoryID ~= 0 then
-		return
-	end
-
-	selectedCategoryID = self:GetID()
-	selectedSubCategoryID = 0
-	if StoreFrame.CategoryFrames[selectedCategoryID].data.subCategoryDefault then
-		selectedSubCategoryID = 1
-		for i = 1, #STORE_SUB_CATEGORY_DATA[selectedCategoryID] do
-			data = STORE_SUB_CATEGORY_DATA[selectedCategoryID][i]
-			if (not data.Check or (data.Check and data.Check())) and not IsSubCategoryEmpty(i) then
-				selectedSubCategoryID = i
-				break
-			end
-		end
-	end
-
-	selectedShowAllItemCheckBox = 0
-	StoreShowAllItemCheckButton:SetChecked(false)
-
-	if StoreItemListUpdate() then
-		StoreSelectCategory(selectedCategoryID, selectedSubCategoryID)
-	end
-	if StoreFrame.CategoryFrames[selectedCategoryID].data.subCategoryDefault then
-		StoreSubCategory_OnClick(StoreFrame.SubCategoryFrames[selectedSubCategoryID])
-	end
-end
-
-function StoreUpdateGenericButtons()
-	StoreFrame.TutorialButton:SetShown(selectedMoneyID == 1 and selectedCategoryID == 1)
-	StoreRefundButton:SetShown(selectedMoneyID == 1 and selectedCategoryID == 2 and #STORE_REFUND_DATA > 0);
-	StoreRefreshMountListButton:SetShown(selectedMoneyID == 1 and selectedCategoryID == 3 and (selectedSubCategoryID == 1 or selectedSubCategoryID == 2 or selectedSubCategoryID == 3))
-	StoreShowAllItemCheckButton:SetShown(selectedMoneyID == 1 and (selectedCategoryID == 2 or selectedCategoryID == 6) and selectedSubCategoryID ~= 0)
-	StoreRefreshTransmogListButton:SetShown(selectedMoneyID == 1 and selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID)
-	StoreFrameLeftInset.ReferAFriendFrame:SetShown(selectedMoneyID == 3)
-	StoreFrameLeftInset.InviteFriendButton:SetShown(selectedMoneyID == 3)
-	StoreFrameLeftInset.ReferDetailsButton:SetShown(selectedMoneyID == 3)
-
-	local renewTimeshow = StoreRefreshMountListButton:IsShown() or StoreRefreshTransmogListButton:IsShown();
-	StoreRenewTimeFrame:SetShown(renewTimeshow);
-	if renewTimeshow then
-		StoreRenewTimeFrame_UpdateTime();
-	end
-end
-
-function StorePlayerTransmogRequest()
-	if not StoreFrame.transmogrificationInfoRequest then
-		SendServerMessage("ACMSG_TRANSMOGRIFICATION_INFO_REQUEST", UnitGUID("player"));
-
-		StoreFrame.transmogrificationInfoRequest = true;
-	end
-end
-
-function StoreSelectCategory( categoryID, subCategoryID )
-	local self = StoreFrame.CategoryFrames[categoryID]
-
-	if self then
-		local frame = _G[self.data.ChieldFrame]
-		local subCategoryFrame = _G[self.data.subCategoryFrame]
-
-		selectedCategoryID = self:GetID()
-		selectedSubCategoryID = subCategoryID or 0
-
-		for _, button in pairs(StoreFrame.CategoryFrames) do
-			button.SelectedTexture:Hide()
-		end
-
-		StoreCloseAllFrame()
-
-		if frame then
-			frame:Show()
-		end
-
-		if subCategoryFrame and selectedSubCategoryID ~= 0 then
-			frame:Hide()
-			subCategoryFrame:Show()
-		end
-
-		if self.isHighlight and not tContains(STORE_HIGHLIGHT_CATEGORY_BUTTON[UnitName("player")], self:GetName()) then
-			table.insert(STORE_HIGHLIGHT_CATEGORY_BUTTON[UnitName("player")], self:GetName())
-			self.PulseTexture:Hide()
-		end
-
-		if STORE_CACHE:Get("flashCategoryMountRenew") == true and self:GetID() == 3 then
-			STORE_CACHE:Set("flashCategoryMountRenew", "false")
-			self.PulseTexture:Hide()
-		end
-
-		self.SelectedTexture:Show()
-
-		for i, button in pairs(StoreFrame.SubCategoryFrames) do
-			button:Hide()
-		end
-
-		if self.data.SlideOther then
-			local buttonsShown = 0
-			local prevFrame
-
-			for i = 1, #STORE_SUB_CATEGORY_DATA[categoryID] do
-				local data = STORE_SUB_CATEGORY_DATA[categoryID][i]
-				local subFrame = StoreFrame.SubCategoryFrames[i]
-
-				if ( not subFrame ) then
-					subFrame = CreateFrame("Button", "StoreSubCategoryButton"..i, StoreFrameLeftInset, "StoreSubCategoryTemplate")
-					StoreFrame.SubCategoryFrames[i] = subFrame
-				end
-
-				subFrame:ClearAllPoints();
-				if i == 1 then
-					subFrame:SetPoint("TOP", StoreFrame.CategoryFrames[categoryID], "BOTTOM", 0, 0)
-				else
-					subFrame:SetPoint("TOPLEFT", prevFrame, "BOTTOMLEFT", 0, 0)
-				end
-
-				prevFrame = subFrame
-				StoreFrame.SubCategoryFrames[i].data = data
-				subFrame:SetID(i)
-				subFrame.Text:SetText(data.Name)
-
-				subFrame.NewItems:SetShown(StoreFrame_SubCategoryIsNew(selectedMoneyID, selectedCategoryID, i));
-
-				if data.Disabled or (data.Check and not data.Check()) or IsSubCategoryEmpty(i) then
-					subFrame:Disable()
-					subFrame.Category:SetDesaturated(1)
-					subFrame.Text:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
-					subFrame.NewItems:SetDesaturated(1)
-				else
-					subFrame:Enable()
-					subFrame.Category:SetDesaturated(0)
-					subFrame.Text:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
-					subFrame.NewItems:SetDesaturated(0)
-				end
-				if i == selectedSubCategoryID then
-					subFrame.SelectedTexture:Show()
-				else
-					subFrame.SelectedTexture:Hide()
-				end
-
-				if data.Locked then
-					subFrame:Hide()
-				else
-					subFrame:Show()
-					buttonsShown = buttonsShown + 1
-				end
-			end
-
-			local height = 22 * buttonsShown
-			for i, button in pairs(StoreFrame.CategoryFrames) do
-				local isHidden = button.data.Hidden;
-
-				if not isHidden or true then
-					if i ~= 1 then
-						if i == (categoryID + 1) then
-							button:SetPoint("TOPLEFT", StoreFrame.CategoryFrames[i-1], "BOTTOMLEFT", 0, -height)
-						else
-							button:SetPoint("TOPLEFT", StoreFrame.CategoryFrames[i-1], "BOTTOMLEFT", 0, 0)
-						end
-					end
-
-					prevFrame = button;
-				end
-			end
-		else
-			local prevFrame;
-			for i, button in pairs(StoreFrame.CategoryFrames) do
-				local isHidden = button.data.Hidden;
-
-				if not isHidden or true then
-					if i ~= 1 then
-						button:SetPoint("TOPLEFT", prevFrame, "BOTTOMLEFT", 0, 0)
-					end
-
-					prevFrame = button;
-				end
-			end
-		end
-
-		if selectedCategoryID == 3 then
-			StoreItemListFrame.activeSortId = 6
-		else
-			StoreItemListFrame.activeSortId = 5
-		end
-	end
-	StoreItemListUpdate()
-	StoreUpdateGenericButtons()
-end
-
-function StoreCategory_OnEnter( self, ... )
-	self.HighlightTexture:Show()
-end
-
-function StoreCategory_OnLeave( self, ... )
-	self.HighlightTexture:Hide()
-end
-
-function StoreSubCategory_OnEnter( self, ... )
-	self.HighlightTexture:Show()
-end
-
-function StoreSubCategory_OnLeave( self, ... )
-	self.HighlightTexture:Hide()
-end
-
-function StoreSubCategory_OnClick( self, ... )
-	if not self then
-		return
-	end
-	for _, button in pairs(StoreFrame.SubCategoryFrames) do
-		button.SelectedTexture:Hide()
-	end
-	self.SelectedTexture:Show()
-	self.data.Callback()
-end
-
-function StoreItemListFrame_OnLoad( self, ... )
-	StoreItemListScrollFrame.update = StoreFrame_UpdateItemList
-	HybridScrollFrame_CreateButtons(StoreItemListScrollFrame, "StoreItemListButtonTemplate", 0, 0, nil, nil, 0, -5)
-	HybridScrollFrame_OnLoad(StoreItemListScrollFrame)
-
-	self.reverseSort = true;
-	self.activeSortId = 5;
-end
-
-function StoreItemListFrame_OnShow( self, ... )
-	StoreItemListFrameContainerSortDiscount:SetShown(selectedMoneyID ~= 4 and selectedMoneyID ~= 3)
-	StoreItemListFrameContainerSortItemlevel:SetShown(selectedMoneyID ~= 4 and selectedMoneyID ~= 3)
-	StoreItemListFrameContainerSortPVP:SetShown(selectedMoneyID ~= 4 and selectedMoneyID ~= 3)
-
-	if selectedMoneyID == 4 then
-		StoreItemListFrameContainerSortPrice.Text:SetText(STORE_LEVEL_LABEL)
-	else
-		StoreItemListFrameContainerSortPrice.Text:SetText(STORE_PRICE_LABEL)
-	end
-end
-
-function StoreItemListFrame_OnHide( self, ... )
-	STORE_PRODUCT_DATA = {}
-	STORE_PRODUCT_LIST = {}
-
-	StoreItemListFrame_ResetFilters();
-end
-
-function StoreItemListFrame_SetShownSearchBox(show)
-	local container = StoreItemListFrameContainer;
-	local searchBox = container.SearchBox;
-
-	if show then
-		searchBox:Show();
-		searchBox:SetText("");
-	else
-		searchBox:Hide();
-		searchBox:SetText("");
-	end
-
-	container.SortName:SetShown(not show);
-	container.SortDiscount:SetShown(not show);
-	container.SortItemlevel:SetShown(not show);
-	container.SortPVP:SetShown(not show);
-	container.SortPrice:SetShown(not show);
-end
-
-function StoreItemListFrame_ResetFilters()
-	StoreItemListFrame.reverseSort = true;
-	StoreItemListFrame.activeSortId = 5;
-
-	StoreItemListFrame_SetShownSearchBox(false);
-	StoreItemListFrameContainer.SortItemlevel.NumericBox:Hide();
-
-	StoreItemListFrame.isDiscount = false;
-	StoreItemListFrame.isPvP = false;
-	StoreItemListFrame.iLvl = nil;
-end
-
-function StoreItemListButtonTooltip(self)
-	if self.data.Entry then
-		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-		GameTooltip:SetHyperlink("Hitem:"..self.data.Entry)
-		GameTooltip:AddLine(" ")
-		GameTooltip:AddLine(STORE_ITEM_TOOLTIP_CLICK_TO_BUY_LABEL, 0, 0.8, 1)
-		GameTooltip:Show()
-
-		self.UpdateTooltip = StoreItemListButtonTooltip;
-	else
-		self.UpdateTooltip = nil
-	end
-end
-
-function StoreItemListButton_OnEnter( self, ... )
-	StoreItemListScrollFrame.activeButton = self
-	StoreItemListButtonTooltip(self)
-
-	self.Icon:SetSize(44 + 5, 44 + 5)
-	self.IconBorder:SetSize(53 + 5, 53 + 5)
-
-	if selectedMoneyID == 4 or selectedMoneyID == 3 or selectedMoneyID == 2 or (selectedMoneyID == 1 and self.data.Entry == 54311) then
-		if self.data.CreatureEntry and not StoreConfirmationFrame:IsShown() then
-			StoreModelPreviewFrame:Hide()
-			StoreModelPreviewFrame.data = self.data
-			StoreModelPreviewFrame:Show()
-
-			StoreModelPreviewFrame:SetSize(415, 565 - 100)
-
-			StoreModelPreviewFrame:ClearAllPoints()
-			StoreModelPreviewFrame:SetPoint("LEFT", StoreFrame, "RIGHT", 6, 0)
-		end
-	end
-end
-
-function StoreItemListButton_OnLeave( self, ... )
-	StoreItemListScrollFrame.activeButton = nil
-	GameTooltip:Hide()
-
-	self.IconBorder:SetSize(53, 53)
-	self.Icon:SetSize(44, 44)
-
-	if StoreModelPreviewFrame:IsShown() and not StoreConfirmationFrame:IsShown() then
-		StoreModelPreviewFrame:Hide()
-	end
-end
-
-function StoreItemListButton_OnClick( self, ... )
-	if ( self.data.Entry ) and IsModifiedClick() then
-		local _, link = GetItemInfo(self.data.Entry)
-		if HandleModifiedItemClick(link) then
-			return
-		end
-	end
-
-	StoreFrame_ProductBuy( self.data )
-end
-
-function StoreRequestSpecialOffer()
-	selectedSpecialOfferPage = 1
-	SendServerMessage("ACMSG_SHOP_SPECIAL_OFFER_LIST_REQUEST")
-end
-
-function StoreSpecialOfferSetPage( page )
-	if STORE_SPECIAL_OFFER_INFO_DATA[page] then
-		selectedSpecialOfferPage = page
-	else
-		selectedSpecialOfferPage = 1
-	end
-end
-
-function StoreSpecialOfferInfoUpdate()
-	local shownOfferData = STORE_CACHE:Get("STORE_OFFER_HOUR_SHOWN", {})
-
-	for index, offerData in pairs(STORE_SPECIAL_OFFER_INFO_DATA) do
-		offerData.pageID = index
-
-		if offerData.Timer then
-			offerData.Timer:Cancel()
-			offerData.Timer = nil
-		end
-
-		local timerTime = 0
-
-		if offerData.EndTime then
-			timerTime = (offerData.EndTime - time()) - 3600
-		end
-
-		if timerTime > 0 and not shownOfferData[offerData.offerID] then
-			offerData.Timer = C_Timer:After(timerTime, function(self)
-				local shownOfferData = STORE_CACHE:Get("STORE_OFFER_HOUR_SHOWN", {})
-
-				shownOfferData[self.offerID] = true
-				StoreSpecialOfferSetPage(self.pageID)
-
-				StoreHidePopup()
-
-				if not StoreMicroButton:IsVisible() or not StoreMicroButton:IsShown() then
-					StoreToastButton.TopLine:SetText(STPRE_TOAST_SPECIAL_OFFER_END_TITLE)
-					StoreToastButton.MiddleLine:SetText(self.title)
-					StoreToastButton:Show()
-				else
-					StoreShowPopup(string.format(STORE_SPECIAL_OFFER_POPUP_LESS_THAN_HOUR, self.title), "DOWN", StoreMicroButton, 0, -5)
-				end
-
-				STORE_CACHE:Set("STORE_OFFER_HOUR_SHOWN", shownOfferData)
-			end)
-
-			offerData.Timer.offerID = offerData.offerID
-			offerData.Timer.pageID 	= index
-			offerData.Timer.endTime = offerData.EndTime
-			offerData.Timer.title 	= offerData.Title
-		end
-	end
-end
-
-function StoreSpecialOfferSortUpdate()
-	table.sort(STORE_SPECIAL_OFFER_INFO_DATA, function(a, b)
-		local isNew_A = a and a.IsNew or false
-		local isNew_B = b and b.IsNew or false
-
-		local is3D_A = a and STORE_SPECIAL_OFFERS_3D[a.offerID] or false
-		local is3D_B = b and STORE_SPECIAL_OFFERS_3D[b.offerID] or false
-
-		if is3D_A and not is3D_B then
-			return true
-		elseif not is3D_A and is3D_B then
-			return false
-		end
-
-		if isNew_A and not isNew_B then
-			return true
-		elseif not isNew_A and isNew_B then
-			return false
-		end
-
-		local endTime_A = a.EndTime or -1
-		local entTime_B = b.EndTime or -1
-
-		return endTime_A < entTime_B
+function StoreMixin:ShowProductPurchaseDialog(productID)
+	self:ShowDialogWidget(Enum.StoreWidget.ProductPurchase, nil, function(dialog)
+		local success = dialog:SetProductID(productID)
+		return success
 	end)
 end
 
-function StoreSpecialOfferFrame_OnLoad( self, ... )
-	self:RegisterEvent("PLAYER_LOGIN")
-	self:RegisterEvent("UNIT_LEVEL")
+function StoreMixin:RegisterDialogWidget(dialogWidget, widgetType)
+	assert(Enum.StoreWidget[widgetType] ~= nil)
+	self.dialogWidgets[widgetType] = dialogWidget
+	dialogWidget:SetParent(self)
 end
 
-function StoreSpecialOfferFrame_OnEvent(self, event, unit)
-	if event == "PLAYER_LOGIN" or (event == "UNIT_LEVEL" and unit == "player" and UnitLevel("player") == 80) then
-		StoreRequestSpecialOffer()
+function StoreMixin:ShowDialogWidget(widgetType, parent, preShowCallback)
+	local widget = self.dialogWidgets[widgetType]
+	assert(widget ~= nil)
+
+	if not parent then
+		parent = self:GetBestDialogParent(parent)
 	end
-end
 
-function StoreSpecialOfferFrame_OnShow( self, ... )
-	StoreSliderSetup(STORE_SLIDER_NORMAL_UPDATE)
-	StoreFrame_SpecialOfferSetup()
-end
+	FrameUtil.SetParentMaintainRenderLayering(widget, parent)
 
-function StoreSpecialOfferFrame_OnHide( self, ... )
-	STORE_PRODUCT_DATA = {}
-	STORE_PRODUCT_LIST = {}
-
-	if self.SliderTicker then
-		self.SliderTicker:Cancel()
-		self.SliderTicker = nil
-	end
-end
-
-function StoreToastButton_OnClick( self, ... )
-	self:Hide()
-	ShowUIPanel(StoreFrame)
-end
-
-function StoreItemCardButton_OnClick( self, ... )
-	if ( self.data.Entry ) and IsModifiedClick() then
-		local _, link = GetItemInfo(self.data.Entry)
-		if HandleModifiedItemClick(link) then
-			return
+	if type(preShowCallback) == "function" then
+		local success = preShowCallback(widget)
+		if not success then
+			return widget, false
 		end
 	end
 
-	StoreFrame_ProductBuy( self.data )
-end
-
-function StoreItemCardButton_OnEnter( self, ... )
-	if self.data.Entry then
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-		GameTooltip:SetHyperlink("Hitem:"..self.data.Entry)
-		GameTooltip:AddLine(" ")
-		GameTooltip:AddLine(STORE_ITEM_TOOLTIP_CLICK_TO_BUY_LABEL, 0, 0.8, 1)
-		GameTooltip:Show()
-	end
-
-	self.Highlight:Show()
-	self.Icon:SetSize(68 + 5, 68 + 5)
-	self.IconBorder:SetSize(78 + 5, 78 + 5)
-
-	if not self.Model.isIllusions then
-		self.Model:SetModelScale(1.1)
-	end
-
-	self.Magnifier:SetShown(self.data.CreatureEntry or self.Model.isIllusions)
-end
-
-function StoreItemCardButton_OnLeave( self, ... )
-	GameTooltip:Hide()
-	self.Highlight:Hide()
-	self.Icon:SetSize(68, 68)
-	self.IconBorder:SetSize(78, 78)
-
-	if not self.Model.isIllusions then
-		self.Model:SetModelScale(1)
-	end
-
-	self.Magnifier:Hide()
-end
-
-function StoreSpecialOfferBanner_OnLoad( self, ... )
-	-- body
-end
-
-function StoreSpecialOfferBanner_OnShow( self, ... )
-	selectedItemCardPage = 1
-	SetParentFrameLevel(self.LeftPanel.BuyButton, 2)
-end
-
-function StoreSpecialOfferBanner_OnHide( self, ... )
-	-- body
-end
-
-function StoreSpecialOfferBanner_OnEnter( self, ... )
-	StoreSliderSetup(STORE_SLIDER_HOVER_UPDATE)
-end
-
-function StoreSpecialOfferBanner_OnLeave( self, ... )
-	StoreSliderSetup(STORE_SLIDER_NORMAL_UPDATE)
-end
-
-function StoreSpecialOfferBannerNextPrevPageButton_OnEnter(self)
-	StoreSliderSetup(STORE_SLIDER_HOVER_UPDATE)
-end
-
-function StoreSpecialOfferBannerNextPrevPageButton_OnLeave(self)
-	StoreSliderSetup(STORE_SLIDER_NORMAL_UPDATE)
-end
-
-function StoreItemCardFrame_OnLoad( self, ... )
-	-- body
-end
-
-function StoreItemCardFrame_OnShow( self, ... )
-	selectedItemCardPage = 1
-	StoreItemCardFrameNavigationBarPrevPageButton:Disable()
-end
-
-function StoreItemCardFrame_OnHide( self, ... )
-	STORE_PRODUCT_DATA = {}
-	STORE_PRODUCT_LIST = {}
-end
-
-function StoreItemCardButtonMagnifyingGlass_OnClick(self)
-	local parent = self:GetParent();
-	local data = parent.data;
-	if parent.Model.isIllusions then
-		if data and data.Entry then
-			DressUpItemLink(select(2, GetItemInfo(data.Entry)));
+	widget.OnCloseCallback = function()
+		HideUIPanel(widget)
+		if not self:HasShownDialogs(parent) then
+			self:ToggleBlockFrame(false)
 		end
-	else
-		StoreModelPreviewFrame.data = data
-		StoreModelPreviewFrame:Show()
+	end
+
+	widget:Show()
+
+	if parent == self then
+		self:ToggleBlockFrame(true)
+	end
+
+	return widget, true
+end
+
+function StoreMixin:HideDialogWidget(widgetType, parent)
+	local widget = self.dialogWidgets[widgetType]
+	assert(widget ~= nil)
+	widget:Hide()
+
+	if not self:HasShownDialogs(self) then
+		self:ToggleBlockFrame(false)
 	end
 end
 
-function StoreItemCardButtonMagnifyingGlass_OnEnter( self, ... )
-	StoreItemCardButton_OnEnter(self:GetParent())
-end
-
-function StoreItemCardButtonMagnifyingGlass_OnLeave( self, ... )
-	StoreItemCardButton_OnLeave(self:GetParent())
-end
-
-function StoreItemCardFrameNavigationBarPrevPageButton_OnClick( self, ... )
-	selectedItemCardPage = selectedItemCardPage - 1
-	StoreFrame_UpdateItemCard()
-end
-
-function StoreItemCardFrameNavigationBarNextPageButton_OnClick( self, ... )
-	selectedItemCardPage = selectedItemCardPage + 1
-	StoreFrame_UpdateItemCard()
-end
-
-function StoreConfirmationFrame_OnHide( self, ... )
-	if StoreModelPreviewFrame:IsShown() then
-		StoreModelPreviewFrame:Hide()
+function StoreMixin:HideDialogs(parent)
+	for _, dialogWidget in pairs(self.dialogWidgets) do
+		dialogWidget:Hide()
+	end
+	if not self:HasShownDialogs(parent) and not self:HasShownLinkDialog(parent) then
+		self:ToggleBlockFrame(false)
 	end
 end
 
-function StoreConfirmationBackButton_OnClick( self, ... )
-	local data = self:GetParent().backData
-
-	if not data then
+function StoreMixin:ToggleBlockFrame(toggle)
+	if toggle and not self:IsShown() then
 		return
 	end
 
-	if data.func then
-		data.func()
-	end
+	self.BlockFrame:SetShown(toggle)
 
-	if data.backFrame then
-		data.backFrame:Show()
+	if toggle then
+		SetParentFrameLevel(self.BlockFrame, 20)
 	end
-
-	self:GetParent():Hide()
 end
 
-function StoreConfirmationFrame_OnShow( self, ... )
-	StoreConfirmationSendGiftCheckButton:SetChecked(false)
-	StoreConfirmationFrame_UpdateState(StoreConfirmationSendGiftCheckButton)
-	StoreConfirmationSendGiftCheckButton:SetEnabled(self.data.Flags and bit.band(self.data.Flags, STORE_ITEM_FLAG_ITEM_GIFT) == STORE_ITEM_FLAG_ITEM_GIFT)
-	StoreConfirmationSendGiftCheckButton:SetShown(self.data.Flags and bit.band(self.data.Flags, STORE_ITEM_FLAG_ITEM_GIFT) == STORE_ITEM_FLAG_ITEM_GIFT)
+function StoreMixin:ShowLinkDialog(parent, title, text, url)
+	local frame = self.LinkDialog
 
-	self.data.buyCount = 1
-	StoreConfirmationFrame.MultipleBuyFrame:SetShown(self.data.Flags and bit.band(self.data.Flags, STORE_ITEM_FLAG_MULTIPLE_BUY) == STORE_ITEM_FLAG_MULTIPLE_BUY)
-	StoreConfirmationFrame.MultipleBuyFrame.EditBox:SetText(1)
-
-
-	SetPortraitToTexture(self.Art.Icon, self.data.Texture)
-	self.Art.ProductName:SetText(self.data.Name)
-
-	self.MailBackgroundRight:Hide()
-	self.MailBackgroundLeft:Hide()
-
-	self.BackButton:SetShown(self.backData)
-
-	if self.backData then
-		self.BuyButton:SetPoint("BOTTOMRIGHT", -30, 17)
-	else
-		self.BuyButton:SetPoint("BOTTOM", 0, 17)
+	if not parent then
+		parent = self:GetBestDialogParent(parent)
 	end
 
-	self.isAltCurrency = false;
-	self.NoticeFrame.AltCurrencySelectFrame.currency = self.data.AltCurrency;
+	FrameUtil.SetParentMaintainRenderLayering(frame, parent)
+	frame:SetTitle(title)
+	frame:SetText(text)
+	frame:SetLink(url)
+	frame:Show()
 
-	StoreConfirmationFrame_Update(self);
+	if parent == self then
+		self:ToggleBlockFrame(true)
+	end
 
-	if self.data.DescriptionText then
-		self.NoticeFrame.Notice:SetText(self.data.DescriptionText)
-	else
-		if (selectedCategoryID == STORE_EQUIPMENT_CATEGORY_ID) then
-			self.NoticeFrame.Notice:SetFormattedText("%s\n\n%s", STORE_CONFIRM_NOTICE_WARNING2, STORE_CONFIRM_NOTICE)
-		elseif (selectedCategoryID == 7)
-		or (selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID and selectedMoneyID == 1)
-		or (selectedCategoryID == STORE_COLLECTIONS_CATEGORY_ID and selectedSubCategoryID == 3 and selectedMoneyID == 1)
-		then
-			self.NoticeFrame.Notice:SetFormattedText("%s\n\n%s", STORE_CONFIRM_NOTICE_WARNING, STORE_CONFIRM_NOTICE)
-		else
-			self.NoticeFrame.Notice:SetText(STORE_CONFIRM_NOTICE)
+	frame:Raise()
+
+	return frame
+end
+
+function StoreMixin:HideLinkDialog(parent)
+	if self:HasShownLinkDialog(parent) then
+		self.LinkDialog:Hide()
+	end
+	if not self:HasShownDialogs(self) then
+		self:ToggleBlockFrame(false)
+	end
+end
+
+function StoreMixin:ShowError(parent, text, title, styleIndex, actionButtonText, actionButtonHandler, cancelButtonText, cancelButtonHandler)
+	local frame = self.dialogFramePool:GetNextActive() or self.dialogFramePool:Acquire()
+
+	if not parent then
+		parent = self:GetBestDialogParent(parent)
+	end
+
+	if not styleIndex then
+		styleIndex = parent.dialogStyle or Enum.StoreDialogStyle.Wood
+	end
+
+	if not cancelButtonHandler then
+		cancelButtonHandler = function()
+			if not self:HasShownDialogs(parent) then
+				self:ToggleBlockFrame(false)
+			end
+			return true
 		end
 	end
 
-	StoreConfirmationGiftFrame.MessageFrame.EditBox:SetText("")
-	StoreConfirmationGiftFrame.CharacterName:SetText("")
+	frame:SetParent(parent)
+	frame:SetFrameStrata("DIALOG")
+	frame:ClearAllPoints()
+	frame:SetPoint("CENTER", 0, 0)
+	frame:ShowGenericDialog(styleIndex, title, text, actionButtonText, cancelButtonText, actionButtonHandler, cancelButtonHandler)
 
-	if self.data.SelectedSpec then
-		selectedSpecID = 0
-		local _, fileName = UnitClass("player")
-		local RoleLocale = {
-			["DAMAGER"] = DAMAGER,
-			["HEALER"] = HEALER,
-			["TANK"] = TANK
-		}
-		self:SetSize(403, 396 + 60)
-		self.NoticeFrame:SetSize(400, 208 + 60)
+	if parent == self then
+		self:ToggleBlockFrame(true)
+	end
 
-		StoreConfirmationSelectSpec:Show()
+	return frame
+end
 
-		for i = 1, 3 do
-			local data = SHARED_CONSTANTS_SPECIALIZATION[fileName][i]
-			local button = _G["StoreConfirmationSelectSpecSelectSpecButton"..i]
-
-			button.tooltipTitle = data.name
-			button.tooltip = data.description
-
-			button.SpecName:SetText(data.name)
-			button.RoleIcon:SetTexCoord(GetTexCoordsForRole(data.role))
-			button.SpecIcon:SetTexture(data.icon)
-			button.RoleName:SetText(RoleLocale[data.role])
-
-			button:SetShown(StoreSpecialOfferDetailFrame.selectRole == i)
+function StoreMixin:HideErrors(parent)
+	if parent then
+		for frame in self.dialogFramePool:EnumerateActive() do
+			if frame:GetParent() == parent then
+				self.dialogFramePool:Release(frame)
+			end
 		end
 	else
-		selectedSpecID = nil
-		StoreConfirmationSelectSpec:Hide()
+		self.dialogFramePool:ReleaseAll()
 	end
 
-	StoreConfirmationFrame_UpdateSize(self);
-
-	if selectedMoneyID == 4 or selectedMoneyID == 3 or selectedMoneyID == 2 then
-		if self.data.CreatureEntry then
-			StoreModelPreviewFrame.data = self.data
-			StoreModelPreviewFrame:Show()
-
-			StoreModelPreviewFrame:SetSize(415, 565 - 100)
-
-			StoreModelPreviewFrame:ClearAllPoints()
-			StoreModelPreviewFrame:SetPoint("LEFT", StoreFrame, "RIGHT", 6, 0)
-		end
+	if not self:HasShownDialogs(parent) then
+		self:ToggleBlockFrame(false)
 	end
 end
 
-function StoreConfirmationFrameMoneySelectFrame_OnClick(self)
-	local id;
-
-	if self.SelectButton then
-		id = self:GetID();
-	else
-		id = self:GetParent():GetID();
-	end
-
-	StoreConfirmationFrame.isAltCurrency = id == 2 and true or false;
-
-	StoreConfirmationFrame_Update(StoreConfirmationFrame);
+function StoreMixin:RegisterViewMode(viewWidget, viewModeType)
+	assert(Enum.StoreViewMode[viewModeType] ~= nil)
+	self.viewWidgets[viewModeType] = viewWidget
+	viewWidget:SetParent(self)
 end
 
-function SelectedStyleDropDown_OnLoad( self, ... )
-	RaiseFrameLevel(self)
-	UIDropDownMenu_Initialize(self, SelectedStyleDropDown_Initialize)
-	UIDropDownMenu_SetSelectedValue(self, nil)
-	UIDropDownMenu_SetText(self, STORE_MAIL_CHOOSE_STYLE)
-	UIDropDownMenu_SetWidth(self, 160)
-	UIDropDownMenu_JustifyText(self, "LEFT")
-
-	self.Label:SetText(STORE_MAIL_STYLE)
+function StoreMixin:GetViewMode(viewModeType)
+	local widget = self.viewWidgets[viewModeType]
+	assert(widget ~= nil)
+	return widget
 end
 
-function SelectedStyleDropDown_OnShow( self, ... )
-	UIDropDownMenu_Initialize(self, SelectedStyleDropDown_Initialize)
-	UIDropDownMenu_SetSelectedValue(self, nil)
-	UIDropDownMenu_SetText(self, STORE_MAIL_CHOOSE_STYLE)
+function StoreMixin:SetActiveViewMode(viewModeType)
+	assert(self.viewWidgets[viewModeType] ~= nil)
+	self.activeViewWidget = viewModeType
+	self:HideContentLayers()
 end
 
-function SelectedStyleDropDown_Initialize( self, ... )
-	local info = UIDropDownMenu_CreateInfo()
-	for i = 1, #STORE_GIFT_DATA do
-		local data = STORE_GIFT_DATA[i]
-		info.text = data.Text
-		info.func = SelectedStyleDropDown_OnClick
-		info.value = data.Value
-		info.checked = false
-		info.owner = UIDROPDOWNMENU_OPEN_MENU
-		UIDropDownMenu_AddButton(info)
-	end
+function StoreMixin:RemoveActiveViewMode(viewModeType)
+	assert(self.viewWidgets[viewModeType] ~= nil)
+	self.activeViewWidget = nil
+	self:ShowContentLayers()
 end
 
-function SelectedStyleDropDown_OnClick( self, ... )
-	UIDropDownMenu_SetSelectedValue(self.owner, self.value)
-	local frame = StoreConfirmationFrame
-	if self.value.Texture == 0 then
-		frame.MailBackgroundLeft:Hide()
-		frame.MailBackgroundRight:Hide()
-	else
-		frame.MailBackgroundRight:Show()
-		frame.MailBackgroundLeft:Show()
-		frame.MailBackgroundRight:SetTexture("Interface\\Stationery\\"..self.value.Texture.."1")
-		frame.MailBackgroundLeft:SetTexture("Interface\\Stationery\\"..self.value.Texture.."2")
-	end
+function StoreMixin:GetActiveViewMode()
+	return self.activeViewWidget
 end
 
-function StoreConfirmationGiftSocialMessageFrame_OnLoad( self, ... )
-	self.EditBox:SetFontObject("GameFontHighlight")
-	self.EditBox.Instructions:SetFontObject("GameFontHighlight")
-	self.maxLetters = 120
-	self.instructions = STORE_GIFT_MESSAGE_INSTRUCTION
-	InputScrollFrame_OnLoad(self)
-end
-
-function StoreConfirmationSendGiftCheckButton_OnClick( self, ... )
-	StoreConfirmationFrame_UpdateState(self)
-
-	StoreConfirmationFrame_Update(StoreConfirmationFrame);
-	StoreConfirmationFrame_UpdateSize(StoreConfirmationFrame);
-end
-
-function StoreConfirmationButton_OnClick( self, ... )
-	local parent = self:GetParent();
-	local data = parent.data
-
-	if data.confirmationFunc then
-		data.confirmationFunc()
-		parent:Hide()
+function StoreMixin:AddPurchaseAlert(icon, title, description)
+	if not icon or not title then
 		return
 	end
 
-	if StoreConfirmationSendGiftCheckButton:GetChecked() then
-		local frame = StoreConfirmationGiftFrame
-		local name = frame.CharacterName:GetText()
-		local dropDown = UIDropDownMenu_GetSelectedValue(frame.SelectedStyle)
-		local text = frame.MessageFrame.EditBox:GetText()
-
-		if not name or not dropDown or not text or string.len(text) == 0 then
-			StoreShowErrorFrame(STORE_ERROR, STORE_ERROR_FILL_FIELDS)
-			return
-		end
-
-		SendServerMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d|%d|1|%s|%d|%s", data.ID, data.buyCount or 1, name, dropDown.Key, text))
+	if self.purchaseAlertPool:GetNumActive() < MAX_ALERT_FRAMES and #ALERT_QUEUE == 0 then
+		self:ShowPurchaseAlert(icon, title, description)
 	else
-		if data.SelectedSpec and StoreSpecialOfferDetailFrame.selectRole and StoreSpecialOfferDetailFrame.selectRole ~= 0 then
-			SendServerMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d|%d|0|%d|%d", data.ID, data.buyCount or 1, StoreSpecialOfferDetailFrame.selectRole, parent.isAltCurrency and 1 or 0))
-		elseif data.isSubscribe then
-			SendServerMessage("ACMSG_SHOP_SUBSCRIBE", string.format("%d:%d", data.ID, data.Time))
-			STORE_SUBSCRIBE_DATA = {}
-		else
-			SendServerMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d|%d|0|0|%d", data.ID, data.buyCount or 1, parent.isAltCurrency and 1 or 0))
+		table.insert(ALERT_QUEUE, {icon, title, description})
+	end
+end
+
+function StoreMixin:ProcessAlertQueue()
+	if self.purchaseAlertPool:GetNumActive() < MAX_ALERT_FRAMES and #ALERT_QUEUE > 0 then
+		local alertData = table.remove(ALERT_QUEUE, 1)
+		self:ShowPurchaseAlert(unpack(alertData))
+	end
+end
+
+function StoreMixin:ShowPurchaseAlert(icon, title, description)
+	local alert = self.purchaseAlertPool:Acquire()
+
+	if not self.alertOnHideCallback then
+		self.alertOnHideCallback = function(this)
+			self.purchaseAlertPool:Release(this)
+			this.onHideCallback = nil
+			self:ProcessAlertQueue()
 		end
 	end
 
-	if not data.IsReusable and data.Title then
-		selectedRemoveOffer = data.pageID
-	end
-	parent:Hide()
+	alert.onHideCallback = self.alertOnHideCallback
+
+	alert:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 128)
+	alert:SetAlertInfo(icon, title, description)
+	alert:Show()
 end
 
-function StoreConfirmationButton_OnEnter(self)
-	if self:IsEnabled() == 0 then
-		if selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID and selectedSubCategoryID ~= 0 then
-			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-			GameTooltip:AddLine(STORE_BUY_TRANSMOG_WARNING, 1, 0, 0, 1, 1)
-			GameTooltip:Show()
-		end
-	end
-end
+function StoreMixin:ShowToast(title, description, creatureID)
+	local toast = self:GetToastFrame()
+	toast.Title:SetText(title)
+	toast.Description:SetText(description)
+	toast:Show()
 
-function StorePurchaseAlertFrame_OnShow( self, ... )
-	self.animIn:Play()
-	self.waitAndAnimOut:Play()
-
-	self.glow:Show()
-	self.glow.animIn:Play()
-
-	self.shine:Show()
-	self.shine.animIn:Play()
-end
-
-function StorePurchaseAlertFrame_OnClick( self, ... )
-	StorePurchaseAlertFrame_OnHide( self, ... )
-	self:Hide()
-end
-
-function StorePurchaseAlertFrame_OnHide( self, ... )
-	self.animIn:Stop()
-	self.waitAndAnimOut:Stop()
-
-	self.glow:Hide()
-	self.glow.animIn:Stop()
-
-	self.shine:Hide()
-	self.shine.animIn:Stop()
-end
-
-function StoreSpecialOfferTopFrameBuyButton_OnClick( self, ... )
-	local data = {
-		ID = 1488,
-		Texture = "Interface\\ICONS\\INV_Misc_Bag_34",
-		Name = STORE_STARTER_KIT_NAME,
-		Flags = 0,
-		Price = 49
-	}
-
-	StoreFrame_ProductBuy(data)
-end
-
-function StoreSpecialOfferItem_OnEnter( self, ... )
-	if self.Link then
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-		GameTooltip:SetHyperlink(self.Link)
-		GameTooltip:Show()
-	end
-
-	self.IconBorderHighlight:Show()
-end
-
-function StoreSpecialOfferItem_OnLeave( self, ... )
-	GameTooltip:Hide()
-	self.IconBorderHighlight:Hide()
-end
-
-function StoreSpecialOfferItem_OnClick( self, ... )
-	if ( self.Link ) and IsModifiedClick() then
-		if HandleModifiedItemClick(self.Link) then
-			return
-		end
+	if creatureID then
+		toast.Model:Show()
+		toast.Model:SetCreatureModel(creatureID, C_StorePublic.GetPreferredModelFacing())
+	else
+		toast.Model:Hide()
 	end
 end
 
-function SpecialOfferInfoFrame_OnLoad( self, ... )
-	self.ItemButton = {}
+function StoreMixin:UpdateAccountInfo()
+	local panel = self:GetAccountPanel()
+	local accountName = C_StoreSecure.GetAccountInfo()
+	panel:SetUserName(accountName)
 end
 
-function SpecialOfferInfoFrame_OnShow( self, ... )
-	local data = STORE_SPECIAL_OFFER_POPUP
-	local size = (44 / 2) * #data.Item
-	local offset = 0
+function StoreMixin:UpdateBalance()
+	local panel = self:GetBalancePanel()
+	local amount = C_StoreSecure.GetBalance(Enum.Store.CurrencyType.Bonus)
+	panel:SetValue(amount)
+end
 
-	self.Banner:SetTexture("Interface\\Store\\"..data.Texture)
-	self.Banner:SetTexCoord(0, 0.5634765625, 0, 0.9765625)
+function StoreMixin:UpdateVote()
+	local panel = self:GetVotePanel()
+	local amount = C_StoreSecure.GetBalance(Enum.Store.CurrencyType.Vote)
+	panel:SetValue(amount)
+end
 
-	self.NameText:SetText(data.Title)
-	self.DescriptionText:SetText(data.Description)
+function StoreMixin:UpdateReferral()
+	local panel = self:GetReferralPanel()
+	local currentValue, minValue, maxValue = C_StoreSecure.GetReferralInfo()
 
-	if self.Ticker then
-		self.Ticker:Cancel()
-		self.Ticker = nil
+	panel:SetStatusBarMinMax(minValue, maxValue)
+	panel:SetStatusBarValue(currentValue)
+end
+
+function StoreMixin:UpdateLoyality()
+	local panel = self:GetLoyalityPanel()
+	local level, currentValue, minValue, maxValue = C_StoreSecure.GetLoyalityInfo()
+
+	panel:SetStatusBarMinMax(minValue, maxValue)
+	panel:SetStatusBarValue(currentValue)
+	panel:SetValue(level)
+end
+
+function StoreMixin:UpdatePremium()
+	local accountPanel = self:GetAccountPanel()
+	accountPanel:SetPremiumTimeLeft(C_StoreSecure.GetPremiumTimeLeft())
+
+	local navPanel = self:GetNavPanel()
+	local premiumPanel = self:GetPremiumPanel()
+
+	if C_StoreSecure.IsPremiumActive() then
+		navPanel.Background:SetTexCoord(
+			self.navPanelAtlas.leftTexCoord,
+			self.navPanelAtlas.rightTexCoord,
+			self.navPanelAtlas.topTexCoord,
+			self.navPanelAtlas.bottomTexCoord
+		)
+
+		navPanel:SetPoint("TOPLEFT", 0, 0)
+		premiumPanel:Hide()
+	else
+		navPanel.Background:SetTexCoord(
+			self.navPanelAtlas.leftTexCoord,
+			self.navPanelAtlas.rightTexCoord,
+			self.navPanelAtlas.topTexCoord + (self.navPanelAtlas.bottomTexCoord - self.navPanelAtlas.topTexCoord) * ((premiumPanel:GetHeight() + 4) / self.navPanelAtlas.height),
+			self.navPanelAtlas.bottomTexCoord
+		)
+
+		navPanel:SetPoint("TOPLEFT", premiumPanel, "BOTTOMLEFT", 0, -4)
+		premiumPanel:Show()
+	end
+end
+
+function StoreMixin:UpdateSubscriptionTracker()
+	if C_StoreSecure.GetSelectedCategory() == Enum.Store.Category.Main then
+		self:GetLeftPanel().SubscriptionTracker:UpdateSubscription()
+	else
+		self:GetLeftPanel().SubscriptionTracker:Hide()
+	end
+end
+
+function StoreMixin:UpdateCategoryButtonInfo(categoryIndex, subCategoryIndex)
+	if self.categoryButtons[categoryIndex] then
+		self.categoryButtons[categoryIndex]:UpdateInfo()
+	end
+end
+
+function StoreMixin:UpdateCategoryButtons(selectedCategoryIndex, selectedSubCategoryIndex)
+	local OFFSET_FIRST = 15
+	local PADDING = 10
+
+	if not selectedCategoryIndex then
+		selectedCategoryIndex, selectedSubCategoryIndex = C_StoreSecure.GetSelectedCategory()
 	end
 
-	if data.RemainingTime and not self.Ticker then
-		self.TimerText:SetRemainingTime(STORE_SPECIAL_OFFER_POPUP.RemainingTime)
-		self.TimerBlock:SetShown(STORE_SPECIAL_OFFER_POPUP.RemainingTime > 0)
-		self.Ticker = C_Timer:NewTicker(1, function()
-			STORE_SPECIAL_OFFER_POPUP.RemainingTime = STORE_SPECIAL_OFFER_POPUP.RemainingTime - 1
-			if self:IsVisible() then
-				self.TimerBlock:SetShown(STORE_SPECIAL_OFFER_POPUP.RemainingTime > 0)
-				self.TimerText:SetRemainingTime(STORE_SPECIAL_OFFER_POPUP.RemainingTime)
+	local numCategories = C_StoreSecure.GetNumCategories()
+
+	for index = 1, numCategories do
+		local button = self.categoryButtons[index]
+		if not button then
+			button = CreateFrame("CheckButton", strformat("$parentCategoryButton%u", index), self:GetNavPanel(), "StoreCategoryButtonTemplate")
+			button:SetOwner(self)
+			button:SetID(index)
+			button:SetBlockedUncheck(true)
+			button:SetLockCheckedTextOffset(true)
+
+			button:SetPoint("LEFT", PADDING, 0)
+			button:SetPoint("RIGHT", -PADDING, 0)
+
+			if index == 1 then
+				button:SetPoint("TOP", 0, -OFFSET_FIRST)
 			else
-				self.Ticker:Cancel()
-				self.Ticker = nil
+				button:SetPoint("TOP", self.categoryButtons[index - 1].SubCategoryMenu, "BOTTOM", 0, -PADDING)
 			end
-		end, data.RemainingTime + 1)
-	end
 
-	for i = 1, #data.Item do
-		local frame = self.ItemButton[i]
-		local Entry = data.Item[i].Entry
-
-		if not frame then
-			frame = CreateFrame("Button", nil, self, "StoreSpecialOfferItemTemplate")
-			self.ItemButton[i] = frame
+			self.categoryButtons[index] = button
 		end
 
-		local _, link, _, _, _, _, _, _, _, texture = GetItemInfo(Entry)
-		frame.Link = link
-
-		frame.Icon:SetTexture(texture)
-
-		frame:SetPoint("BOTTOM", self, -size + 45 * offset + 22, 30)
-		frame:Show()
-		offset = offset + 1
+		button:SetChecked(index == selectedCategoryIndex)
+		button:UpdateInfo()
+		button:Show()
+		button.SubCategoryMenu:UpdateSubCategories(selectedCategoryIndex, selectedSubCategoryIndex)
 	end
 
-	for i = #data.Item + 1, #self.ItemButton do
-		self.ItemButton[i]:Hide()
+	for index = #self.categoryButtons + 1, numCategories do
+		self.categoryButtons[index]:Hide()
 	end
 end
 
-function SpecialOfferInfoFrame_OnHide( self, ... )
-	-- body
+function StoreMixin:UpdateSpecialOffers()
+	self:GetPage(Enum.Store.Category.Main):UpdateSpecialOffers()
 end
 
-function StoreSpecialOfferBannerPrevPageButton_OnClick( self, ... )
-	selectedSpecialOfferPage = selectedSpecialOfferPage - 1
-	StoreFrame_SpecialOfferSetup()
+function StoreMixin:UpdateRecommendations()
+	self:GetPage(Enum.Store.Category.Main):UpdateRecommendations()
 end
 
-function StoreSpecialOfferBannerNextPageButton_OnClick( self, ... )
-	selectedSpecialOfferPage = selectedSpecialOfferPage + 1
-	StoreFrame_SpecialOfferSetup()
+function StoreMixin:UpdateCategoryContent(categoryIndex, subCategoryIndex, cacheReceived)
+	if self.pages[self.selectedCategory] then
+		self.pages[self.selectedCategory]:Hide()
+	end
+
+	self.selectedCategory = categoryIndex
+	self.selectedSubCategory = subCategoryIndex
+	self.pages[categoryIndex]:ShowSubCategoryPage(subCategoryIndex)
 end
 
-function StoreSpecialOfferBannerDetails_OnClick( self, ... )
-	local data = StoreGetSpecialOfferByIndex(selectedSpecialOfferPage)
-	if data.Price == 0 and not data.FreeSubscribe then
-		SendServerMessage("ACMSG_SHOP_BUY_ITEM", string.format("%d|1|0|0|0", data.ID))
-		if not data.IsReusable and data.Title then
-			StoreRemoveOffer(data.pageID)
-			selectedSpecialOfferPage = 1
-			StoreFrame_SpecialOfferSetup()
-		end
-	elseif data.FreeSubscribe then
-		selectedCategoryID = 9
-		StoreCloseAllFrame()
-		StoreSubscribeFrame:Show()
+function StoreMixin:OnOfferAlertLastHour(offerIndex)
+	local offerID, title = C_StoreSecure.GetSpecialOfferInfo(offerIndex)
+
+	if StoreMicroButton:IsVisible() and StoreMicroButton:IsShown() then
+		self:ShowPopup(100, "OFFER_ALERT_LAST_HOUR", string.format(STORE_SPECIAL_OFFER_POPUP_LESS_THAN_HOUR, title), "DOWN", StoreMicroButton, 0, -5, nil, nil, nil, nil, POPUP.OnClose, POPUP.OnRelease)
 	else
-		StoreSpecialOfferDetailFrame.offerData = data
-		StoreSpecialOfferDetailFrame:Show()
+		self:ShowToast(STPRE_TOAST_SPECIAL_OFFER_END_TITLE, title)
 	end
 end
 
-function SpecialOfferFullScreenBannerBody_OnLoad( self, ... )
-	SetPortraitToTexture(self.Icon, "Interface\\ICONS\\INV_Misc_Bag_34")
-end
+function StoreMixin:ShowOfferPopup(offerPopupIndex)
+	self:HidePopup()
 
-function SpecialOfferFullScreenBannerBody_OnShow( self, ... )
-	local data = STORE_SPECIAL_OFFER_POPUP
-	self.CountItemButton = 0
+	local offerID, text, modelInfo = C_StoreSecure.GetOfferPopupInfo(offerPopupIndex)
 
-	for i = 1, #data.Item do
-		local frame = _G["SpecialOfferFullScreenItemButton"..i]
-		local Entry = data.Item[i].Entry
-		local _, link, _, _, _, _, _, _, _, texture = GetItemInfo(Entry or 0)
-		frame.Link = link
-
-		frame.Icon:SetTexture(texture)
-		frame:Show()
-
-		self.CountItemButton = self.CountItemButton + 1
-	end
-
-	if self.Ticker then
-		self.Ticker:Cancel()
-		self.Ticker = nil
-	end
-
-	for i = #data.Item + 1, self.CountItemButton do
-		local frame = _G["SpecialOfferFullScreenItemButton"..i]
-		frame:Hide()
-	end
-
-	if data.RemainingTime and not self.Ticker then
-		self.Timer:SetRemainingTime(data.RemainingTime)
-		self.Ticker = C_Timer:NewTicker(1, function()
-			data.RemainingTime = data.RemainingTime - 1
-			if self:IsVisible() then
-				self.Timer:SetRemainingTime(data.RemainingTime)
-			else
-				self.Ticker:Cancel()
-				self.Ticker = nil
-			end
-		end, data.RemainingTime + 1)
-	end
-end
-
-function StoreSelectSpecButton_OnClick( self, ... )
-	for i = 1, 3 do
-		local button = _G["StoreConfirmationSelectSpecSelectSpecButton"..i]
-		if button:GetID() ~= self:GetID() then
-			button:SetChecked(0)
-		end
-	end
-
-	selectedSpecID = self:GetID()
-end
-
-function StoreSubCategorySelectContainer_OnLoad( self, ... )
-	-- body
-end
-
-function StoreSubCategorySelectContainer_OnShow( self, ... )
-	for index, button in pairs(self.subCategoryButtons) do
-		local isNew = StoreFrame_SubCategoryIsNew(selectedMoneyID, selectedCategoryID, index)
-
-		button.IsNewFrame:SetShown(isNew)
-	end
-end
-
-function StoreSubCategorySelectContainer_OnHide( self, ... )
-	-- body
-end
-
-function StoreSubCategorySelectButton_OnLoad( self, ... )
-	self:SetParentArray("subCategoryButtons")
-
-	local name = strsub(self:GetName(), 32)
-	local _, texture = GetInventorySlotInfo(name)
-
-	self.Text:SetText(_G[strupper(name)])
-	self.Icon:SetTexture(texture)
-
-	if self:GetID() >= 7 and self:GetID() <= 12 then
-		self.Icon:ClearAndSetPoint("RIGHT", 0, 0)
-		self.IsNewFrame:ClearAndSetPoint("BOTTOMLEFT", self.IconBorder, "BOTTOMLEFT", 2, 2)
-	end
-
-	if self:GetID() == 13 then
-		self.Icon:ClearAllPoints()
-		self.Icon:SetPoint("RIGHT", 0, 0)
-		self.Background:SetSize(180, 42)
-		self:SetSize(180, 42)
-	end
-
-	if self:GetID() == 14 then
-		self.Icon:ClearAllPoints()
-		self.Icon:SetPoint("LEFT", 0, 0)
-		self.Background:SetSize(180, 42)
-		self.BackgroundHighlight:SetSize(162, 42)
-		self:SetHitRectInsets(0, 14, 0, 0)
-		self:SetSize(180, 42)
-	end
-
-	if self:GetID() == 15 then
-		self.Background:SetSize(180, 42)
-		self:SetSize(180, 42)
-		self.Text:SetText(STORE_RANGED)
-	end
-end
-
-function StoreSubCategorySelectButton_OnEnter( self, ... )
-	self.IconBorderHighlight:Show()
-	self.BackgroundHighlight:Show()
-end
-
-function StoreSubCategorySelectButton_OnLeave( self, ... )
-	self.IconBorderHighlight:Hide()
-	self.BackgroundHighlight:Hide()
-end
-
-function StoreSubCategorySelectButton_OnClick( self, ... )
-	selectedCategoryID = 2
-	selectedSubCategoryID = self:GetID()
-
-	StoreSubCategorySelectClick()
-end
-
-function StoreSubCategorySelectClick()
-	if selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID then
-		local isShowAllItems = tonumber(C_CVar:GetValue("C_CVAR_STORE_SHOW_ALL_TRANSMOG_ITEMS")) == 1;
-		if isShowAllItems then
-			selectedShowAllItemCheckBox = 0;
-			StoreItemListUpdate();
-			selectedShowAllItemCheckBox = 1;
+	if StoreMicroButton:IsVisible() and StoreMicroButton:IsEnabled() == 1 then
+		local popupID = string.format("OfferPopup%i", offerID)
+		if modelInfo then
+			self:ShowPopup(90, popupID, text, "DOWN", StoreMicroButton, 0, -5, nil, nil, modelInfo, nil, POPUP.OnClose, POPUP.OnRelease)
 		else
-			selectedShowAllItemCheckBox = 0;
+			self:ShowPopup(90, popupID, text, "DOWN", StoreMicroButton, 0, -5, nil, nil, nil, nil, POPUP.OnClose, POPUP.OnRelease)
 		end
-		StoreShowAllItemCheckButton:SetChecked(isShowAllItems);
 	else
-		selectedShowAllItemCheckBox = 0
-		StoreShowAllItemCheckButton:SetChecked(false)
-	end
-
-	if StoreItemListUpdate() then
-		StoreSelectCategory(selectedCategoryID, selectedSubCategoryID)
+		local creatureID = modelInfo and modelInfo[1]
+		self:ShowToast(STORE_TOAST_SPECIAL_OFFER_TITLE, STORE_TOAST_SPECIAL_OFFER_BODY, creatureID)
 	end
 end
 
-function StoreShowAllItemCheckButton_OnClick( self, ... )
-	selectedShowAllItemCheckBox = self:GetChecked() and 1 or 0
-
-	if selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID then
-		C_CVar:SetValue("C_CVAR_STORE_SHOW_ALL_TRANSMOG_ITEMS", tostring(selectedShowAllItemCheckBox));
-	end
-
-	StoreItemListUpdate()
+function StoreMixin:HideOfferPopup(offerID)
+	local popupID = string.format("OfferPopup%i", offerID)
+	self:HidePopup(popupID)
 end
 
-function StorePremiumButtons_OnEnter( self, ... )
-	self.BorderHighlight:Show()
-	self.IconBorderHighlight:Show()
-end
+function StoreMixin:ShowPopup(priority, id, ...)
+	if C_StorePublic.IsEnabled() then
+		if not self:IsShown() and (not POPUP.CURRENT_NPE_ID or POPUP.CURRENT_PRIORITY < priority) then
+			local isPriorityOverride = POPUP.CURRENT_NPE_ID and POPUP.CURRENT_PRIORITY < priority
+			if C_TutorialManager.IsOwnerEmpty(POPUP.REF_OWNER) or isPriorityOverride then
+				if isPriorityOverride then
+					POPUP.BLOCK_RELEASE_NPE_ID = POPUP.CURRENT_NPE_ID
+					NPE_TutorialPointerFrame:Hide(POPUP.CURRENT_NPE_ID)
+					POPUP.BLOCK_RELEASE_NPE_ID = nil
+				end
 
-function StorePremiumButtons_OnLeave( self, ... )
-	self.BorderHighlight:Hide()
-	self.IconBorderHighlight:Hide()
-end
-
-function StorePremiumButtons_OnClick( self, ... )
-	StoreBuyPremiumFrame:Show()
-end
-
-function StorePremiumSelectCheckButton_OnLoad( self, ... )
-	local data = STORE_PREMIUM_DATA[self:GetID()]
-
-	self.Sched:SetText(data.Text)
-	self.Price:SetFormattedText(STORE_PREMIUM_PRICE_FORMAT, data.Price)
-	self.SchedInfo:SetText(data.Info)
-end
-
-function StorePremiumSelectCheckButton_OnShow( self, ... )
-	self:SetChecked(0)
-
-	SelectPremiumButton1:SetChecked(true)
-	StoreBuyPremiumFrame.Price:SetText(STORE_PREMIUM_DATA[1].Price)
-end
-
-function StorePremiumSelectCheckButton_OnClick( self, ... )
-	for i = 1, 4 do
-		local button = _G["SelectPremiumButton"..i]
-		if button:GetID() ~= self:GetID() then
-			button:SetChecked(0)
-		else
-			button:SetChecked(1)
-		end
-	end
-
-	selectedPremiumID = self:GetID()
-	StoreBuyPremiumFrame.Price:SetText(STORE_PREMIUM_DATA[self:GetID()].Price)
-end
-
-local CURRENCY_PERCENT = 5
-local XP_PERCENT = 50
-if C_Service.GetRealmID() == E_REALM_ID.SOULSEEKER then
-	XP_PERCENT = 20
-end
-local GOLD_PERCENT = 50
-
-function StoreBuyPremiumFrame_OnShow( self, ... )
-	selectedPremiumID = 1
-	self.infotext:SetFormattedText(STORE_PREMIUM_INFO, CURRENCY_PERCENT, XP_PERCENT, GOLD_PERCENT)
-end
-
-function StorePremiumBuyButton_OnClick( self, ... )
-	SendServerMessage("ACMSG_PREMIUM_RENEW_REQUEST", selectedPremiumID)
-	StoreBuyPremiumFrame:Hide()
-end
-
-function StoreSubscribeFrame_OnShow( self, ... )
-	SendServerMessage("ACMSG_SHOP_SUBSCRIPTION_LIST_REQUEST")
-	STORE_SUBSCRIBE_DATA = {}
-end
-
-function StoreSubscribeItem_OnShow(self)
-	self.glow.AnimGlow:Play()
-	self.glow2.AnimGlow:Play()
-end
-
-function StoreSubscribeItem_OnHide(self)
-	self.glow.AnimGlow:Stop()
-	self.glow2.AnimGlow:Stop()
-end
-
-function StoreSubscribeItem_OnEnter( self, ... )
-	if self.Link then
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-		GameTooltip:SetHyperlink(self.Link)
-		GameTooltip:Show()
-	end
-end
-
-function StoreSubscribeBuyButton_OnClick( self, ... )
-	if STORE_SUBSCRIBE_DATA[selectedSubsID] and STORE_SUBSCRIBE_DATA[selectedSubsID].ShowTrial then
-		SendServerMessage("ACMSG_SHOP_SUBSCRIBE", string.format("%d:%d", STORE_SUBSCRIBE_DATA[selectedSubsID].ID, 1))
-		STORE_SUBSCRIBE_DATA = {}
-	else
-		StoreFrame_ProductBuy(self.SubscribeData)
-	end
-end
-
-function StoreRefundFrame_OnLoad( self, ... )
-	StoreRefundListScrollFrame.scrollBar.doNotHide = true
-	StoreRefundListScrollFrameScrollBarBG:Show()
-	StoreRefundListScrollFrameScrollBarBG:SetVertexColor(0, 0, 0, 0.3)
-	StoreRefundListScrollFrameScrollBarTop:Hide()
-	StoreRefundListScrollFrameScrollBarBottom:Hide()
-	StoreRefundListScrollFrameScrollBarMiddle:Hide()
-
-	StoreRefundListScrollFrame.update = StoreRefundListScrollFrame_UpdateItemList
-	HybridScrollFrame_CreateButtons(StoreRefundListScrollFrame, "StoreRefundButtonTemplate", 2.4, 0, nil, nil, 0, 0, "TOP", "BOTTOM")
-end
-
-function StoreRefundFrame_OnShow( self, ... )
-	StoreRefundItem_Select(1)
-end
-
-function StoreRefundFrame_OnHide( self, ... )
-	StoreRefundFrame.selectedItemGUID = nil
-	StoreRefundFrame.selectedIndex = nil
-end
-
-function StoreRefundListScrollFrame_UpdateItemList()
-	local scrollFrame = StoreRefundListScrollFrame
-	local offset = HybridScrollFrame_GetOffset(scrollFrame)
-	local buttons = scrollFrame.buttons
-
-	local numRefundData = #STORE_REFUND_DATA
-	local displayedHeight = 0
-	local showItem = true
-
-	showItem = numRefundData < 1 and 0 or 1
-
-	for i = 1, #buttons do
-		local button = buttons[i]
-		local displayIndex = i + offset
-
-		if displayIndex <= numRefundData and STORE_REFUND_DATA[displayIndex] then
-			local data = STORE_REFUND_DATA[displayIndex]
-			local itemlink = data.bag == "255" and GetInventoryItemLink("player", data.slot) or GetContainerItemLink(data.bag, data.slot)
-
-			if itemlink then
-				local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture = GetItemInfo(itemlink)
-				local buyDate = date("%d.%m.%Y", data.purchaseDate)
-
-				button.itemLink = itemlink
-				button.index = displayIndex
-				button.data = data
-
-				if StoreRefundFrame.selectedItemGUID == data.itemGUID then
-					button.BackgroundSelected:Show()
+				POPUP.CURRENT_NPE_ID = NPE_TutorialPointerFrame:Show(...)
+				if POPUP.CURRENT_NPE_ID and POPUP.CURRENT_NPE_ID ~= 0 then
+					POPUP.CURRENT_PRIORITY = priority
+					POPUP.CURRENT_ID = id
+					C_TutorialManager.MarkOwnerUsed(POPUP.REF_OWNER, POPUP.REF_OWNER_KEY)
 				else
-					button.BackgroundSelected:Hide()
+					POPUP.CURRENT_PRIORITY = nil
+					POPUP.CURRENT_ID = nil
+					POPUP.CURRENT_NPE_ID = nil
 				end
-
-				local penalty = string.format(STORE_REFUND_PANELTY_LABEL, data.penalty > 0 and "FF0000" or "00FF00", data.penalty)
-
-				button.Icon:SetTexture(itemTexture)
-				button.ItemName:SetText(itemName.." - "..penalty)
-
-				button.itemDescription:SetRemainingTime(STORE_REFUND_DATA[displayIndex].remainingTime, true)
-				button.itemDescription:SetFormattedText(STORE_REFUND_ITEM_DESCRIPTION, buyDate, button.itemDescription:GetText())
-
-				if button.Timer then
-					button.Timer:Cancel()
-					button.Timer = nil
+			else
+				if POPUP.OWNER_FREED_CALLBACK then
+					EventRegistry:UnregisterCallback("TutorialManager.OwnerFreed", self)
 				end
+				POPUP.OWNER_FREED_CALLBACK = true
 
-				button.Timer = C_Timer:NewTicker(1, function()
-					if STORE_REFUND_DATA and STORE_REFUND_DATA[displayIndex] then
-						STORE_REFUND_DATA[displayIndex].remainingTime = STORE_REFUND_DATA[displayIndex].remainingTime - 1
-						button.itemDescription:SetRemainingTime(STORE_REFUND_DATA[displayIndex].remainingTime, true)
-						button.itemDescription:SetFormattedText(STORE_REFUND_ITEM_DESCRIPTION, buyDate, button.itemDescription:GetText())
-
-						if STORE_REFUND_DATA[displayIndex].remainingTime <= 0 then
-							table.remove(STORE_REFUND_DATA, displayIndex)
-							StoreRefundListScrollFrame_UpdateItemList()
-						end
+				local args = {...}
+				EventRegistry:RegisterCallback("TutorialManager.OwnerFreed", function(this, owner)
+					if owner == POPUP.REF_OWNER then
+						EventRegistry:UnregisterCallback("TutorialManager.OwnerFreed", this)
+						POPUP.OWNER_FREED_CALLBACK = nil
+						self:ShowPopup(priority, id, unpack(args))
 					end
-
-					if not button:IsVisible() and button.Timer then
-						button.Timer:Cancel()
-						button.Timer = nil
-					end
-				end)
-
-				local rarityColor = BAG_ITEM_QUALITY_COLORS[itemRarity]
-
-				if rarityColor then
-					button.ItemName:SetTextColor(rarityColor.r, rarityColor.g, rarityColor.b)
-					SetItemButtonQuality(button.IconHitBox, itemRarity, itemlink)
-				end
-
-				displayedHeight = displayedHeight + button:GetHeight()
-				button:Show()
+				end, self)
 			end
-		else
-			button:Hide()
 		end
-	end
-
-	local totalHeight = (numRefundData * buttons[1]:GetHeight() + 40) - buttons[1]:GetHeight()
-	HybridScrollFrame_Update(scrollFrame, totalHeight, displayedHeight)
-
-	if ( not showItem ) then
-		StoreRefundFrame.selectedItemGUID = nil
-		StoreRefundFrame.selectedIndex = nil
-	end
-end
-
-function StoreRefundButton_OnClick( self, ... )
-	StoreRefundItem_Select(self.index)
-end
-
-function StoreRefundItem_Select( index )
-	if STORE_REFUND_DATA and STORE_REFUND_DATA[index] then
-		local data = STORE_REFUND_DATA[index]
-		if StoreRefundFrame.selectedItemGUID ~= data.itemGUID then
-			StoreRefundFrame.selectedItemGUID = data.itemGUID
-			StoreRefundFrame.selectedIndex = index
-
-			StoreRefundFrame.price:SetText(data.refundBonuses)
-
-			StoreRefundListScrollFrame_UpdateItemList()
+	else
+		if not POPUP.QUEUE or POPUP.QUEUE.priority < priority then
+			POPUP.QUEUE = {priority = priority, id = id, ...}
 		end
 	end
 end
 
-function RefundButton_OnClick( self, ... )
-	if STORE_REFUND_DATA and STORE_REFUND_DATA[StoreRefundFrame.selectedIndex] then
-		local data = STORE_REFUND_DATA[StoreRefundFrame.selectedIndex]
-		SendServerMessage("ACMSG_SHOP_PURCHASE_REFUND", data.itemGUID)
+function StoreMixin:HidePopup(id)
+	if id then
+		if POPUP.QUEUE and POPUP.QUEUE.id == id then
+			POPUP.QUEUE = nil
+			return
+		end
 
-		StoreRefundFrame.RefundButton:Disable()
-		StoreRefundFrame:Hide()
-	end
-end
-
-function StoreRefundButtonHitBox_OnEnter( self, ... )
-	if not self:GetParent().itemLink then
-		return
-	end
-
-	GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-	GameTooltip:SetHyperlink(self:GetParent().itemLink)
-	GameTooltip:Show()
-end
-
-function StoreRefundButtonHitBox_OnLeave( self, ... )
-	GameTooltip:Hide()
-end
-
-function StoreRefundButtonHitBox_OnClick( self, ... )
-	local itemLink = self:GetParent().itemLink
-	if ( itemLink ) and IsModifiedClick() then
-		if HandleModifiedItemClick(itemLink) then
+		if POPUP.CURRENT_ID and POPUP.CURRENT_ID ~= id then
 			return
 		end
 	end
-end
 
-function IsStoreRefundableItem( itemID )
-	if not itemID then
-		return;
+	POPUP.QUEUE = nil
+
+	if POPUP.OWNER_FREED_CALLBACK then
+		EventRegistry:UnregisterCallback("TutorialManager.OwnerFreed", self)
+		POPUP.OWNER_FREED_CALLBACK = nil
 	end
 
-	for _, data in ipairs(STORE_REFUND_DATA) do
-		if itemID == data.itemID and data.remainingTime - (GetTime() - data.requestTime) > 0 then
+	POPUP.Release()
+end
+
+function StoreMixin:ProcessPopupQueue()
+	if C_StorePublic.IsEnabled() and POPUP.QUEUE then
+		self:ShowPopup(999, POPUP.QUEUE.id, unpack(POPUP.QUEUE))
+		POPUP.QUEUE = nil
+	end
+end
+
+function StoreMixin:OnPremiumPurchaseClick(button)
+	self:ShowDialogWidget(Enum.StoreWidget.PremiumPurchase)
+end
+
+function StoreMixin:ShowProductCategory(productID, forcedCategoryIndex, forcedSubCategoryIndex)
+	local product = C_StoreSecure.GetProductInfo(productID)
+	if not product then
+		if type(forcedCategoryIndex) == "number" then
+			ShowUIPanel(self)
+			C_StoreSecure.SetSelectedCategory(forcedCategoryIndex, forcedSubCategoryIndex)
+		end
+		return
+	end
+
+	ShowUIPanel(self)
+
+	C_StoreSecure.SetSelectedCategory(forcedCategoryIndex or product.categoryID, forcedSubCategoryIndex or (product.subCategoryID ~= 0 and product.subCategoryID or nil))
+
+	if product.categoryID ~= Enum.Store.Category.Subscriptions then
+		self:ShowProductPurchaseDialog(productID)
+		PlaySound(SOUNDKIT.UI_IG_STORE_BUY_BUTTON)
+	end
+end
+
+function StoreMixin:ProcessHyperlink(link)
+	local categoryIndex, subCategoryIndex, productID = C_StoreSecure.GetProductHyperlinkInfo(link)
+	if not categoryIndex then
+		return
+	end
+
+	ShowUIPanel(self)
+
+	C_StoreSecure.SetSelectedCategory(categoryIndex, subCategoryIndex ~= 0 and subCategoryIndex or nil)
+
+	if productID and categoryIndex ~= Enum.Store.Category.Subscriptions then
+		self:ShowProductPurchaseDialog(productID)
+		PlaySound(SOUNDKIT.UI_IG_STORE_BUY_BUTTON)
+	end
+end
+
+StoreContentBackdropMixin = {}
+
+function StoreContentBackdropMixin:OnLoad()
+	self.Background:SetAtlas("PKBT-Tile-Obsidian-256", true)
+	self.ShadowTop:SetAtlas("PKBT-Background-Shadow-Small-Top", true)
+	self.ShadowBottom:SetAtlas("PKBT-Background-Shadow-Small-Bottom", true)
+	self.ShadowLeft:SetAtlas("PKBT-Background-Shadow-Small-Left", true)
+	self.ShadowRight:SetAtlas("PKBT-Background-Shadow-Small-Right", true)
+end
+
+StoreSubViewMixin = CreateFromMixins(PKBT_OwnerMixin)
+
+function StoreSubViewMixin:RegisterViewMode(viewModeType)
+	self:SetID(viewModeType)
+	self:SetOwner(C_StoreSecure.GetStoreFrame())
+	self:GetOwner():RegisterViewMode(self, viewModeType)
+end
+
+function StoreSubViewMixin:SetParentPage(page, dontShow)
+	self:SetParent(page)
+	if not dontShow then
+		self:Show()
+	end
+end
+
+function StoreSubViewMixin:OnShow()
+	local owner = self:GetOwner()
+	if owner then
+		owner:SetActiveViewMode(self:GetID())
+	end
+	SetParentFrameLevel(self, 5)
+end
+
+function StoreSubViewMixin:OnHide()
+	self:Hide()
+	local owner = self:GetOwner()
+	if owner then
+		owner:RemoveActiveViewMode(self:GetID())
+	end
+end
+
+StoreAccountPanelMixin = CreateFromMixins(PKBT_CountdownThrottledBaseMixin)
+
+function StoreAccountPanelMixin:OnLoad()
+	self.PortraitContainer.Ring:SetAtlas("PKBT-Portrait-Ring-Gold", true)
+	self.InfoContainer.PremiumTimerIcon:SetAtlas("PKBT-Icon-Timer", true)
+
+	self.InfoContainer.PremiumLabel:SetFormattedText("%s:", STORE_PREMIUM_LABEL)
+end
+
+function StoreAccountPanelMixin:SetUserName(name)
+	self.InfoContainer.AccountName:SetText(name)
+end
+
+function StoreAccountPanelMixin:SetPremiumTimeLeft(timeLeft)
+	self:SetTimeLeft(timeLeft)
+end
+
+function StoreAccountPanelMixin:OnCountdownUpdate(timeLeft, timerFinished)
+	if timeLeft > 0 and not timerFinished then
+		self.InfoContainer.PremiumTime:SetText(GetRemainingTime(timeLeft))
+	else
+		if C_StoreSecure.IsPremiumPermanent() then
+			self.InfoContainer.PremiumTime:SetText(STORE_PREMIUM_PERMANENT)
+		else
+			self.InfoContainer.PremiumTime:SetText(STORE_PREMIUM_INACTIVE)
+		end
+	end
+end
+
+StoreAccountCurrencyPanelMixin = {}
+
+function StoreAccountCurrencyPanelMixin:OnLoad()
+	self.Divider:SetAtlas("PKBT-Store-MenuPanel-Divider", true)
+	self.Icon:SetAtlas(self:GetAttribute("iconAtlas"))
+
+	self.Button:AddTextureAtlas(self:GetAttribute("buttonIconAtlas"), false, 24, 24)
+	self.Button:AddText(_G[self:GetAttribute("buttonText")])
+	self.Button:SetPadding(15)
+
+	self:Resize()
+end
+
+function StoreAccountCurrencyPanelMixin:SetValue(value)
+	self.Value:SetText(tonumber(value) or 0)
+	self:Resize()
+end
+
+function StoreAccountCurrencyPanelMixin:Resize()
+	self:SetWidth(self.Icon:GetWidth() + 10 + self.Value:GetStringWidth() + 14 + self.Button:GetWidth())
+end
+
+function StoreAccountCurrencyPanelMixin:ActionClick()
+end
+
+StoreAccountBalancePanelMixin = CreateFromMixins(StoreAccountCurrencyPanelMixin)
+
+function StoreAccountBalancePanelMixin:OnLoad()
+	StoreAccountCurrencyPanelMixin.OnLoad(self)
+	self.Divider:Show()
+end
+
+function StoreAccountBalancePanelMixin:ActionClick(button)
+	C_StoreSecure.GetStoreFrame():ShowLinkDialog(nil, STORE_DONATE_DIALOG_TITLE, STORE_DONATE_DIALOG_TEXT, C_StoreSecure.GetDonationLink())
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+end
+
+StoreAccountVotePanelMixin = CreateFromMixins(StoreAccountCurrencyPanelMixin)
+
+function StoreAccountVotePanelMixin:OnLoad()
+	StoreAccountCurrencyPanelMixin.OnLoad(self)
+
+	self.Divider:Show()
+	self:SetID(Enum.Store.Category.Vote)
+	self:RegisterCustomEvent("STORE_CATEGORY_SELECTED")
+end
+
+function StoreAccountVotePanelMixin:OnEvent(event, ...)
+	if event == "STORE_CATEGORY_SELECTED" then
+		local categoryIndex, subCategoryIndex = ...
+		self.BrowseButton:SetChecked(categoryIndex == self:GetID() and subCategoryIndex == 0)
+	end
+end
+
+function StoreAccountVotePanelMixin:Resize()
+	self:SetWidth(self.Icon:GetWidth() + 10 + self.Value:GetStringWidth() + 14 + self.Button:GetWidth() + 3 + self.BrowseButton:GetWidth())
+end
+
+function StoreAccountVotePanelMixin:ActionClick()
+	C_StoreSecure.GetStoreFrame():ShowLinkDialog(nil, STORE_VOTE_DIALOG_TITLE, STORE_VOTE_DIALOG_TEXT, C_StoreSecure.GetVoteLink())
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+end
+
+function StoreAccountVotePanelMixin:BrowseClick(button)
+	self.BrowseButton:SetChecked(true)
+	C_StoreSecure.GetStoreFrame():GetPage(self:GetID()):ShowSubCategoryPage(0)
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+end
+
+StoreAccountProgressPanelMixin = CreateFromMixins(PKBT_OwnerMixin)
+
+function StoreAccountProgressPanelMixin:OnLoad()
+	self.Divider:SetAtlas("PKBT-Store-MenuPanel-Divider", true)
+
+	self.Label:SetPoint("BOTTOMLEFT", self.StatusBar, "TOPLEFT", -4, 7)
+	self.Value:SetPoint("BOTTOMRIGHT", self.StatusBar, "TOPRIGHT", 4, 7)
+	self.Label:SetFormattedText("%s:", _G[self:GetAttribute("label")])
+
+	self:SetOwner(self:GetParent():GetParent())
+
+	self:RegisterCustomEvent("STORE_CATEGORY_SELECTED")
+end
+
+function StoreAccountProgressPanelMixin:OnEvent(event, ...)
+	if event == "STORE_CATEGORY_SELECTED" then
+		local categoryIndex, subCategoryIndex = ...
+		self.BrowseButton:SetChecked(categoryIndex == self:GetID() and subCategoryIndex == 0)
+	end
+end
+
+function StoreAccountProgressPanelMixin:SetValue(value)
+	if value then
+		self.Value:SetText(value)
+		self.Value:Show()
+	else
+		self.Value:Hide()
+	end
+end
+
+function StoreAccountProgressPanelMixin:SetStatusBarValue(value)
+	self.StatusBar:SetStatusBarValue(value)
+end
+
+function StoreAccountProgressPanelMixin:SetStatusBarMinMax(minValue, maxValue)
+	self.StatusBar:SetStatusBarMinMax(minValue, maxValue)
+end
+
+function StoreAccountProgressPanelMixin:BrowseClick(button)
+	self.BrowseButton:SetChecked(true)
+	C_StoreSecure.GetStoreFrame():GetPage(self:GetID()):ShowSubCategoryPage(0)
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+end
+
+function StoreAccountProgressPanelMixin:StatusBarEnter()
+end
+
+function StoreAccountProgressPanelMixin:StatusBarLeave()
+end
+
+StoreAccountLoyalityPanelMixin = CreateFromMixins(StoreAccountProgressPanelMixin)
+
+function StoreAccountLoyalityPanelMixin:OnLoad()
+	StoreAccountProgressPanelMixin.OnLoad(self)
+
+	self.Divider:Show()
+	self:SetID(Enum.Store.Category.Loyality)
+end
+
+StoreAccountReferralPanelMixin = CreateFromMixins(StoreAccountProgressPanelMixin)
+
+function StoreAccountReferralPanelMixin:OnLoad()
+	StoreAccountProgressPanelMixin.OnLoad(self)
+
+	self.Divider:Show()
+	self.AddButton:AddTextureAtlas("PKBT-Store-Icon-Referral-Add", true)
+	self.AddButton:SetFixedWidth(45)
+	self:SetID(Enum.Store.Category.Referral)
+end
+
+function StoreAccountReferralPanelMixin:OnAddClick(button)
+	self:GetOwner():ShowDialogWidget(Enum.StoreWidget.Referral)
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+end
+
+StoreSubscriptionTrackerMixin = CreateFromMixins(PKBT_CountdownThrottledBaseMixin)
+
+function StoreSubscriptionTrackerMixin:OnLoad()
+	self.NextPackegeTimerIcon:SetAtlas("PKBT-Icon-Timer", true)
+
+	self.itemButtons = {}
+
+	self:RegisterCustomEvent("STORE_SUBSCRIPTION_LIST_UPDATE")
+end
+
+function StoreSubscriptionTrackerMixin:OnShow()
+	SetParentFrameLevel(self, 2)
+end
+
+function StoreSubscriptionTrackerMixin:OnEvent(event, ...)
+	if event == "STORE_SUBSCRIPTION_LIST_UPDATE" then
+		if C_StoreSecure.GetStoreFrame():IsShown() then
+			self:UpdateSubscription()
+		end
+	end
+end
+
+function StoreSubscriptionTrackerMixin:GetDesiredSubscriptionIndex()
+	for index, subscriptionID in ipairs(SUBSCRIPTION_TRACKED_PRIORITY) do
+		local subscriptionIndex = C_StoreSecure.GetSubscriptionIndexByID(subscriptionID)
+		if subscriptionIndex then
+			local state, upgradeTimeLeft, nextSupplyTimeLeft, remainingSupplyTimes = C_StoreSecure.GetSubscriptionState(subscriptionIndex)
+			if nextSupplyTimeLeft > 0 then
+				if state == Enum.Store.SubscriptionState.StandardActive
+				or state == Enum.Store.SubscriptionState.ExtraActive
+				or state == Enum.Store.SubscriptionState.TrialActive
+				then
+					return subscriptionIndex
+				end
+			end
+		end
+	end
+end
+
+function StoreSubscriptionTrackerMixin:UpdateSubscription()
+	if C_StoreSecure.GetSelectedCategory() ~= Enum.Store.Category.Main
+	or not C_StoreSecure.IsSubscriptionsLoaded()
+	then
+		self.subscriptionIndex = nil
+		self:Hide()
+		return
+	end
+
+	local subscriptionIndex = self:GetDesiredSubscriptionIndex()
+	if not subscriptionIndex then
+		self.subscriptionIndex = nil
+		self:Hide()
+		return
+	end
+
+	local subscriptionID, name, description, styleType, backgroundAtlas, bannerAtlas, artworkAtlas = C_StoreSecure.GetSubscriptionInfo(subscriptionIndex)
+	local state, upgradeTimeLeft, nextSupplyTimeLeft, remainingSupplyTimes = C_StoreSecure.GetSubscriptionState(subscriptionIndex)
+
+	self.Name:SetText(name)
+	self.Artwork:SetAtlas(artworkAtlas)
+	self:SetTimeLeft(nextSupplyTimeLeft, nil, self.OnPackageCountdownUpdate)
+	self.subscriptionIndex = subscriptionIndex
+
+	local itemList = C_StoreSecure.GetSubscriptionItems(subscriptionIndex, false)
+	local numItems = #itemList
+
+	for index = 1, numItems do
+		local item = self.itemButtons[index]
+		if not item then
+			item = CreateFrame("Button", strformat("$parentItemButton%u", index), self, "StoreSubscriptionItemTemplate")
+			item:SetID(index)
+			item:SetOwner(self)
+			item:SetSize(48, 48)
+			item.IconGlow:Show()
+			item.Amount:Hide()
+
+			if index == 1 then
+				item:SetPoint("LEFT", self.ItemHolder, "LEFT", 0, 0)
+			else
+				item:SetPoint("LEFT", self.itemButtons[index - 1], "RIGHT", 10, 0)
+			end
+
+			self.itemButtons[index] = item
+		end
+
+		local itemID, amount, isBonusItem = unpack(itemList[index])
+		local _, link, _, _, _, _, _, _, _, texture = GetItemInfo(itemID)
+		item.Icon:SetTexture(texture)
+		item.link = link
+		item:Show()
+	end
+
+	for index = numItems + 1, #self.itemButtons do
+		self.itemButtons[index]:Hide()
+	end
+
+	if numItems > 0 then
+		self.ItemHolder:SetWidth(self.itemButtons[1]:GetWidth() * numItems + 10 * (numItems - 1))
+		self.ItemHolder:Show()
+		self:SetHeight(320)
+	else
+		self.ItemHolder:Hide()
+		self:SetHeight(260)
+	end
+
+	self:Show()
+end
+
+function StoreSubscriptionTrackerMixin:OnActionClick(button)
+	if self.subscriptionIndex then
+		local subscriptionIndex = C_StoreSecure.GetSubscriptionIndexByID(self.subscriptionIndex)
+		if subscriptionIndex then
+			C_StoreSecure.SetSelectedCategory(Enum.Store.Category.Subscriptions)
+			C_StoreSecure.GetStoreFrame():GetPage(Enum.Store.Category.Subscriptions):ShowSubCategoryPage(subscriptionIndex)
+			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+		end
+	end
+end
+
+function StoreSubscriptionTrackerMixin:OnPackageCountdownUpdate(timeLeft, timerFinished)
+	if timeLeft > 0 and not timerFinished then
+		self.NextPackegeTimerText:SetFormattedText(STORE_SUBSCRIPTION_NEXT_PACKAGE_TIMELEFT_SHORT, GetRemainingTime(timeLeft))
+		self.NextPackegeTimerText:Show()
+		self.NextPackegeTimerIcon:Show()
+	else
+		self.NextPackegeTimerText:Hide()
+		self.NextPackegeTimerIcon:Hide()
+
+		if timerFinished then
+			self:UpdateSubscription()
+		end
+	end
+end
+
+StoreCategorySubMenuMixin = {}
+
+function StoreCategorySubMenuMixin:OnLoad()
+	self.baseHeight = 5
+	self.subCategoryButtons = {}
+end
+
+function StoreCategorySubMenuMixin:OnShow()
+	SetParentFrameLevel(self, -1)
+end
+
+function StoreCategorySubMenuMixin:OnHide()
+	self:Close()
+end
+
+function StoreCategorySubMenuMixin:Close()
+	for _, button in ipairs(self.subCategoryButtons) do
+		button:Hide()
+	end
+
+	self:SetHeight(self.baseHeight)
+end
+
+function StoreCategorySubMenuMixin:UpdateSubCategories(selectedCategoryIndex, selectedSubCategoryIndex)
+	local categoryIndex = self:GetParent():GetID()
+	if categoryIndex ~= selectedCategoryIndex then
+		self:Close()
+		return
+	end
+
+	local numSubCategories = C_StoreSecure.GetNumSubCategories(categoryIndex)
+	if numSubCategories == 0 or CATEGORY_NO_SUBMENU[selectedCategoryIndex] then
+		self:Close()
+		return
+	end
+
+	if not selectedSubCategoryIndex then
+		selectedSubCategoryIndex = select(2, C_StoreSecure.GetSelectedCategory())
+	end
+
+	local OFFSET_Y = 10
+	local PADDING = 2
+
+	for index = 1, numSubCategories do
+		local button = self.subCategoryButtons[index]
+		if not button then
+			button = CreateFrame("CheckButton", strformat("$parentSubCategoryButton%u", index), self, "StoreSubCategoryButtonTemplate")
+			button:SetOwner(self:GetParent())
+			button:SetID(index)
+			button:SetBlockedUncheck(true)
+			button:SetLockCheckedTextOffset(true)
+
+			button:SetPoint("LEFT", PADDING, 0)
+			button:SetPoint("RIGHT", -PADDING, 0)
+
+			if index == 1 then
+				button:SetPoint("TOP", 0, -(self.baseHeight + OFFSET_Y))
+			else
+				button:SetPoint("TOP", self.subCategoryButtons[index - 1], "BOTTOM", 0, -PADDING)
+			end
+
+			self.subCategoryButtons[index] = button
+		end
+
+		button:SetChecked(index == selectedSubCategoryIndex)
+		button:UpdateInfo()
+		button:Show()
+	end
+
+	for index = #self.subCategoryButtons + 1, numSubCategories do
+		self.subCategoryButtons[index]:Hide()
+	end
+
+	self:SetHeight(self.baseHeight + (self.subCategoryButtons[1]:GetHeight() + PADDING) * numSubCategories - PADDING + OFFSET_Y * 2)
+	self:Show()
+end
+
+StoreCategoryButtonProtoMixin = {}
+
+function StoreCategoryButtonProtoMixin:UpdateState()
+end
+
+function StoreCategoryButtonProtoMixin:OnEnter()
+	self:UpdateState()
+
+	if self.reason and self:IsEnabled() ~= 1 then
+		GameTooltip:SetOwner(self, self.tooltipAnchor or "ANCHOR_RIGHT")
+		GameTooltip:AddLine(self.reason)
+		GameTooltip:Show()
+	end
+end
+
+function StoreCategoryButtonProtoMixin:OnLeave()
+	self:UpdateState()
+
+	if self.reason and self:IsEnabled() ~= 1 then
+		GameTooltip:Hide()
+	end
+end
+
+function StoreCategoryButtonProtoMixin:OnEnable()
+	self:UpdateState()
+end
+
+function StoreCategoryButtonProtoMixin:OnDisable()
+	self:UpdateState()
+end
+
+function StoreCategoryButtonProtoMixin:OnMouseDown()
+	self:UpdateState()
+end
+
+function StoreCategoryButtonProtoMixin:OnMouseUp()
+	self:UpdateState()
+end
+
+StoreCategoryButtonMixin = CreateFromMixins(PKBT_OwnerMixin, PKBT_ThreeSliceVirtualCheckButtonMixin, StoreCategoryButtonProtoMixin)
+
+function StoreCategoryButtonMixin:OnLoad()
+	PKBT_ThreeSliceVirtualCheckButtonMixin.OnLoad(self)
+
+	self.NewIcon:SetAtlas("PKBT-Icon-Notification", true)
+end
+
+function StoreCategoryButtonMixin:UpdateInfo()
+	local categoryIndex = self:GetID()
+	local name, icon, isNew, enabled, reason = C_StoreSecure.GetCategoryInfo(categoryIndex)
+	enabled = enabled and self:GetOwner():GetPage(categoryIndex) ~= nil
+
+	self.callUpdateOnBlock = true
+	self:SetText(name)
+	self.Icon:SetTexture(icon)
+	self.NewIcon:SetShown(enabled and isNew)
+	self.reason = reason
+	self:SetEnabled(enabled)
+	self.Icon:SetDesaturated(not enabled)
+end
+
+function StoreCategoryButtonMixin:UpdateState()
+	self:UpdateButton()
+end
+
+function StoreCategoryButtonMixin:OnChecked(checked, userInput)
+	if checked and userInput then
+		C_StoreSecure.SetSelectedCategory(self:GetID())
+	end
+end
+
+function StoreCategoryButtonMixin:OnEnter()
+	PKBT_ThreeSliceVirtualCheckButtonMixin.OnEnter(self)
+	StoreCategoryButtonProtoMixin.OnEnter(self)
+end
+
+function StoreCategoryButtonMixin:OnLeave()
+	PKBT_ThreeSliceVirtualCheckButtonMixin.OnLeave(self)
+	StoreCategoryButtonProtoMixin.OnLeave(self)
+end
+
+function StoreCategoryButtonMixin:OnClick(button)
+	if button == "LeftButton" and self:IsEnabled() == 1 then
+		if not self:GetChecked() then
+			self:SetChecked(true, true)
+			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+		else
+			local refundView = self:GetOwner():GetViewMode(Enum.StoreViewMode.Refund)
+			if refundView:IsShown() then
+				refundView:Hide()
+			end
+
+			local page = self:GetOwner():GetSelectedPage()
+			if page and CATEGORY_OVERVIEW[page:GetID()] and page:GetSubCategoryIndex() ~= 0 then
+			--	self:GetOwner():UpdateCategoryContent(page:GetID(), 0)
+				C_StoreSecure.SetSelectedCategory(page:GetID(), 0)
+				PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+			end
+		end
+	end
+end
+
+StoreSubCategoryButtonMixin = CreateFromMixins(PKBT_OwnerMixin, PKBT_VirtualCheckButtonMixin, StoreCategoryButtonProtoMixin)
+
+function StoreSubCategoryButtonMixin:OnLoad()
+	PKBT_VirtualCheckButtonMixin.OnLoad(self)
+
+	self.NewIcon:SetAtlas("PKBT-Icon-Notification", true)
+end
+
+function StoreSubCategoryButtonMixin:UpdateInfo()
+	local categoryIndex = self:GetOwner():GetID()
+	local subCategoryIndex = self:GetID()
+	local name, icon, isNew, enabled, reason = C_StoreSecure.GetCategoryInfo(categoryIndex, subCategoryIndex)
+
+	self:SetText(name)
+	self.Icon:SetAtlas(icon)
+	self.NewIcon:SetShown(enabled and isNew)
+	self.reason = reason
+	self:SetEnabled(enabled)
+	self:UpdateState()
+end
+
+function StoreSubCategoryButtonMixin:OnChecked(checked, userInput)
+	local categoryIndex = self:GetOwner():GetID()
+	local subCategoryIndex = self:GetID()
+
+	if checked and userInput then
+		C_StoreSecure.SetSelectedCategory(categoryIndex, subCategoryIndex)
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+	end
+end
+
+function StoreSubCategoryButtonMixin:UpdateState()
+	if self:IsEnabled() ~= 1 then
+		self.Icon:SetVertexColor(0.553, 0.522, 0.494)
+		self.ButtonText:SetTextColor(0.553, 0.522, 0.494)
+	elseif self:IsMouseOver() then
+		self.Icon:SetVertexColor(0.102, 1, 0.102)
+		self.ButtonText:SetTextColor(0.102, 1, 0.102)
+	elseif self:GetChecked() then
+		self.Icon:SetVertexColor(1, 0.82, 0)
+		self.ButtonText:SetTextColor(1, 0.82, 0)
+	else
+		self.Icon:SetVertexColor(1, 1, 1)
+		self.ButtonText:SetTextColor(1, 1, 1)
+	end
+end
+
+StoreCategoryPagesMixin = {}
+
+function StoreCategoryPagesMixin:ShowSubCategoryPage(subCategoryIndex)
+	self.subCategoryIndex = subCategoryIndex
+	if not self:IsShown() then
+		self:Show()
+	elseif self.OnShow then
+		self:OnShow()
+	end
+end
+
+function StoreCategoryPagesMixin:SetSubCategoryIndex(index)
+	self.subCategoryIndex = index
+end
+
+function StoreCategoryPagesMixin:GetSubCategoryIndex()
+	return self.subCategoryIndex or 0
+end
+
+StorePageMainMixin = CreateFromMixins(PKBT_OwnerMixin, StoreCategoryPagesMixin)
+
+function StorePageMainMixin:OnLoad()
+	self.SpecialPanel.Banner.Background:SetTexture([[Interface\Custom\StoreBanner\default]])
+	self.SpecialPanel.Banner.Background:SetTexCoord(0, 0.570312, 0, 1)
+
+	self:SetID(Enum.Store.Category.Main)
+	self:SetOwner(self:GetParent():GetParent())
+	self:GetOwner():RegisterPageWidget(self)
+end
+
+function StorePageMainMixin:OnShow()
+	self.SpecialPanel.OfferAnnouncement:UpdateTimer()
+	self:UpdateSpecialOffers(true)
+	self:UpdateRecommendations()
+end
+
+function StorePageMainMixin:UpdateSpecialOffers(resetPage)
+	if C_StoreSecure.IsSpecialOfferLoaded() and C_StoreSecure.GetNumSpecialOffers() > 0 then
+		self.SpecialPanel.Banner.Offer:Show()
+		self.SpecialPanel.Banner.Offer:Refresh(resetPage)
+	else
+		self.SpecialPanel.Banner.Offer:Hide()
+	end
+end
+
+function StorePageMainMixin:UpdateRecommendations()
+	self.RecommendationPanel:UpdateRecommendations()
+end
+
+StoreSpecialOfferMixin = CreateFromMixins(PKBT_CountdownThrottledBaseMixin)
+
+function StoreSpecialOfferMixin:OnLoad()
+	self.currentIndex = 0
+	self.offerScenes = {}
+
+	self:RegisterCustomEvent("STORE_SPECIAL_OFFER_UPDATE")
+--	self:RegisterCustomEvent("STORE_SPECIAL_OFFER_LIST_WAIT")
+--	self:RegisterCustomEvent("STORE_SPECIAL_OFFER_LIST_READY")
+end
+
+function StoreSpecialOfferMixin:OnShow()
+	SetParentFrameLevel(self.ActionButton, 5)
+end
+
+function StoreSpecialOfferMixin:OnEvent(event, ...)
+	if event == "STORE_SPECIAL_OFFER_UPDATE" then
+		local offerID, rangeChanged = ...
+		self:Refresh(false, offerID)
+	end
+end
+
+function StoreSpecialOfferMixin:Refresh(resetPage, offerID)
+	local numOffers = C_StoreSecure.GetNumSpecialOffers()
+	local currentIndex, numPages = self.Paginator:GetPage()
+
+	if currentIndex == 0 and numOffers > 0 then
+		self.Paginator:SetNumPages(numOffers)
+	else
+		self.Paginator:SetNumPages(numOffers, true)
+
+		if numOffers > 0 then
+			if resetPage then
+				self:SetOfferIndex(1, true)
+				self.Paginator:SetPage(1)
+			else
+				local newIndex = self.offerID and C_StoreSecure.GetSpecialOfferIndexByID(self.offerID)
+				if not newIndex then
+					newIndex = 1
+				end
+
+				currentIndex, numPages = self.Paginator:GetPage()
+
+				if currentIndex == newIndex then
+					self:SetOfferIndex(currentIndex, true)
+				else
+					self.Paginator:SetPage(newIndex)
+				end
+			end
+		else
+			self.currentIndex = 0
+		end
+	end
+
+	self.Paginator:ResetScrollTimer()
+	self:SetShown(numOffers ~= 0)
+end
+
+function StoreSpecialOfferMixin:SetOfferIndex(index, refresh)
+	if index == self.currentIndex and not refresh then
+		return
+	end
+
+	self.currentIndex = index
+	self:UpdateOfferInfo()
+end
+
+function StoreSpecialOfferMixin:UpdateOfferInfo()
+	if self.currentIndex == 0 then
+		return
+	end
+
+	local offerID, title, name, description, remainingTime, price, discountPrice, currencyType, productID, isFreeSubscribe, isNew = C_StoreSecure.GetSpecialOfferInfo(self.currentIndex)
+	local style = C_StoreSecure.GetSpecialOfferStyleInfo(self.currentIndex)
+
+	self.offerID = offerID
+	self.productID = productID
+	self.isFreeSubscribe = isFreeSubscribe
+
+	if self:IsVisible() then
+		C_StoreSecure.ClearOfferNewFlag(self.currentIndex)
+	end
+
+	self.Background:SetTexture(style.background)
+	self.Background:SetTexCoord(unpack(style.backgroundTexCoords))
+
+	self.Info.ShadowBackground:SetShown(not style.NoSideBG)
+
+	self.Info.Title:SetText(title)
+	self.Info.Title:SetTextColor(unpack(style.TitleColor))
+
+	if remainingTime == -1 then
+		self:CancelCountdown()
+		self.Info.TimerLabel:Hide()
+		self.Info.Timer:Hide()
+	else
+		self:SetTimeLeft(remainingTime)
+		self.Info.Timer:SetTextColor(unpack(style.TimerColor))
+		self.Info.TimerLabel:Show()
+		self.Info.Timer:Show()
+	end
+
+	self.Info.Name:SetText(name)
+	self.Info.Name:SetTextColor(unpack(style.NameColor))
+
+	local fontFile, fontHeight, fontFlags = self.Info.Name:GetFont()
+	self.Info.Name:SetFont(fontFile, style.NameHeight or 20, fontFlags)
+
+	self.Info.Description:SetText(description)
+	self.Info.Description:SetTextColor(unpack(style.DescriptionColor))
+
+	if self.activeScene then
+		self.activeScene:Hide()
+	end
+
+	if style.SceneInfo then
+		if not self.offerScenes[offerID] then
+			self.offerScenes[offerID] = self:CreateOfferScene(style.SceneInfo, offerID)
+		end
+		self.offerScenes[offerID]:Show()
+		self.activeScene = self.offerScenes[offerID]
+	end
+end
+
+function StoreSpecialOfferMixin:OnCountdownUpdate(timeLeft, timerFinished)
+	if timeLeft > 0 and not timerFinished then
+		self.Info.Timer:SetText(GetRemainingTime(timeLeft))
+
+		if timeLeft < 3600 then
+			self.Info.Timer:SetTextColor(1, 1, 1)
+		end
+	elseif timerFinished then
+		self:Refresh()
+	end
+end
+
+function StoreSpecialOfferMixin:CreateOfferScene(sceneInfo, sceneID)
+	local scene = CreateFrame("Frame", string.format("$parentScene%u", sceneID), self.ModelScene)
+	scene:SetAllPoints(true)
+	scene:Hide()
+
+	scene.sceneID = sceneID
+	scene.sceneInfo = sceneInfo
+	scene.models = {}
+
+	for index, modelInfo in ipairs(sceneInfo) do
+		local creatureID, width, height, anchorPoint, rotation, scale, position, light, raceID = unpack(modelInfo)
+
+		local frameType = raceID and "DressUpModel" or "PlayerModel"
+		local model = CreateFrame(frameType, string.format("$parentModel%u", index), scene, "StoreSpecialOfferModelTemplate")
+		model:SetID(index)
+		model:SetSize(width or self.ModelScene:GetWidth(), height or self.ModelScene:GetHeight())
+
+		if anchorPoint then
+			local point, relativeTo, relativePoint, x, y = unpack(anchorPoint)
+			if type(relativeTo) == "number" then
+				model:SetPoint(point, scene.models[index] or self.ModelScene, relativePoint, x, y)
+			else
+				model:SetPoint(point, relativeTo or self.ModelScene, relativePoint, x, y)
+			end
+		else
+			model:SetPoint("CENTER", 0, 0)
+		end
+
+		model.LoadingSpinner:SetAlpha(0)
+		model:SetSettings(scale, position, light)
+		model:SetCreatureModel(creatureID, math.rad(rotation))
+
+		scene.models[index] = model
+	end
+
+	return scene
+end
+
+function StoreSpecialOfferMixin:OnActionClick(button)
+	if self.isFreeSubscribe then
+		C_StoreSecure.SetSelectedCategory(Enum.Store.Category.Subscriptions, 0)
+	else
+		C_StoreSecure.GetStoreFrame():ShowProductPurchaseDialog(self.productID)
+	end
+	PlaySound(SOUNDKIT.UI_IG_STORE_BUY_BUTTON)
+end
+
+StoreSpecialOfferModelMixin = CreateFromMixins(PKBT_ModelMixin)
+
+function StoreSpecialOfferModelMixin:SetSettings(scale, position, light)
+	scale = tonumber(scale)
+	self.scale = type(scale) == "number" and scale or nil
+	self.position = type(position) == "table" and position or nil
+	self.light = type(light) == "table" and light or nil
+end
+
+function StoreSpecialOfferModelMixin:OnModelPresetApplied()
+	self:SetModelScale(self.scale or 1)
+
+	if self.position then
+		self:SetPosition(unpack(self.position, 1, 3))
+	end
+
+	if self.light then
+		self:SetLight(unpack(self.light))
+	end
+end
+
+StoreSpecialOfferPaginatorMixin = CreateFromMixins(PKBT_PaginatorMixin)
+
+function StoreSpecialOfferPaginatorMixin:OnLoad()
+	PKBT_PaginatorMixin.OnLoad(self)
+
+	self.NextButton:ClearAllPoints()
+	self.NextButton:SetPoint("RIGHT")
+	self.PrevButton:SetPoint("RIGHT", self.NextButton, "LEFT", -5, 0)
+	self.PageText:ClearAllPoints()
+	self.PageText:SetPoint("RIGHT", self.PrevButton, "LEFT", -5, 0)
+
+	self.elapsed = 0
+end
+
+function StoreSpecialOfferPaginatorMixin:OnShow()
+	self.elapsed = 0
+	SetParentFrameLevel(self, 5)
+end
+
+function StoreSpecialOfferPaginatorMixin:OnUpdate(elapsed)
+	local parent = self:GetParent()
+	if parent:IsMouseOver() then
+		self.elapsed = 0
+		return
+	end
+
+	self.elapsed = self.elapsed + elapsed
+
+	if self.elapsed >= OFFER_SCROLL_TIME then
+		self.elapsed = 0
+		self:NextPage(true)
+	end
+end
+
+function StoreSpecialOfferPaginatorMixin:ResetScrollTimer()
+	self.elapsed = 0
+end
+
+function StoreSpecialOfferPaginatorMixin:OnPageChanged(currentPage, numPages)
+	if numPages > 1 then
+		self.elapsed = 0
+		self:SetWidth(self.PageText:GetStringWidth() + 72)
+	end
+
+	self:GetParent():SetOfferIndex(currentPage)
+end
+
+StoreOfferAnnouncementMixin = CreateFromMixins(PKBT_CountdownThrottledBaseMixin)
+
+function StoreOfferAnnouncementMixin:OnLoad()
+	self.Artwork:SetAtlas("PKBT-Store-Artwork-Offer", true)
+	self.HeaderText:SetText(STORE_NEXT_OFFER_SOON)
+	self.Ribbon:SetText(STORE_NEXT_OFFER_UPDATE)
+
+	self:RegisterCustomEvent("STORE_SPECIAL_OFFER_NEXT_TIMER_READY")
+--	self:RegisterCustomEvent("STORE_SPECIAL_OFFER_NEXT_TIMER_WAIT")
+end
+
+function StoreOfferAnnouncementMixin:OnShow()
+	SetParentFrameLevel(self.Ribbon, 2)
+end
+
+function StoreOfferAnnouncementMixin:OnEvent(event, ...)
+	if event == "STORE_SPECIAL_OFFER_NEXT_TIMER_READY" then
+		self:UpdateTimer()
+	end
+end
+
+function StoreOfferAnnouncementMixin:UpdateTimer()
+	local timeLeft = C_StoreSecure.GetNextSpecialOfferTimeLeft()
+
+	self:SetTimeLeft(timeLeft)
+
+	if timeLeft == 0 and C_StoreSecure.IsNextSpecialOfferLoaded() then
+		C_StoreSecure.RequestNextSpecialOfferTime()
+	end
+end
+
+function StoreOfferAnnouncementMixin:OnCountdownUpdate(timeLeft, timerFinished)
+	if timeLeft > 0 and not timerFinished then
+		self.Timer.Value:SetText(GetRemainingTime(timeLeft))
+		self:Show()
+	else
+		self:Hide()
+
+		if timerFinished then
+			C_StoreSecure.RequestNextSpecialOfferTime()
+		end
+	end
+end
+
+StoreRecommendationPanelMixin = {}
+
+function StoreRecommendationPanelMixin:OnLoad()
+	self.Paginator.Background:SetAtlas("PKBT-Store-Pagination-Arrow-Background", true)
+	self.Paginator:SetPageFormat(STORE_PAGE_FORMAT)
+	self.Paginator.OnPageChanged = function(this, currentPage, numPages)
+		self:UpdateRecommendations()
+	end
+
+	self.cardPoolCollection = CreateFramePoolCollection()
+	self.cardHorizontalPool = self.cardPoolCollection:CreatePool("Button", self, "StoreRecommendationHorizontalTemplate")
+	self.cardVerticalPool = self.cardPoolCollection:CreatePool("Button", self, "StoreRecommendationVerticalTemplate")
+
+	self:RegisterCustomEvent("STORE_RECOMMENDATION_UPDATE")
+	self:RegisterCustomEvent("STORE_PRODUCT_LIST_RENEW")
+
+	self.cardSpace = 8
+	self.sortedProductIndexes = {}
+	self.dirty = true
+end
+
+function StoreRecommendationPanelMixin:OnEvent(event, ...)
+	if event == "STORE_RECOMMENDATION_UPDATE" then
+		self.dirty = true
+		if self:IsVisible() then
+			self:UpdateRecommendations()
+		end
+	elseif event == "STORE_PRODUCT_LIST_RENEW" then
+		local categoryIndex, subCategoryIndex = ...
+		if categoryIndex == Enum.Store.Category.Main then
+			self.dirty = true
+			if self:IsVisible() then
+				self:UpdateRecommendations()
+			end
+		end
+	end
+end
+
+function StoreRecommendationPanelMixin:OnShow()
+	self.Paginator:SetPage(1)
+end
+
+function StoreRecommendationPanelMixin:OnMouseWheel(delta)
+	if delta > 0 then
+		self.Paginator:PreviousPage()
+	else
+		self.Paginator:NextPage()
+	end
+end
+
+function StoreRecommendationPanelMixin:SortProductIndexes()
+	if not self.dirty and #self.sortedProductIndexes == C_StoreSecure.GetNumRecommendations() then
+		return
+	end
+
+	table.wipe(self.sortedProductIndexes)
+	self.dirty = nil
+
+	local pageSlotsLeft = self.cardSpace
+	local skipped = {}
+	local page = 1
+
+	for itemIndex = 1, C_StoreSecure.GetNumRecommendations() do
+		local name, itemLink, rarity, icon, artwork, modelType, modelID, amount, productID, price, originalPrice, currencyType, altPrice, altOriginalPrice, altCurrencyType = C_StoreSecure.GetRecommendationInfo(itemIndex)
+		local slots
+		if modelType == Enum.ModelType.Creature then
+			slots = 2
+		else
+			slots = 1
+		end
+		if pageSlotsLeft >= slots then
+			if not self.sortedProductIndexes[page] then
+				self.sortedProductIndexes[page] = {}
+			end
+
+			pageSlotsLeft = pageSlotsLeft - slots
+			table.insert(self.sortedProductIndexes[page], itemIndex)
+
+			if pageSlotsLeft == 0 then
+				pageSlotsLeft = self.cardSpace
+				page = page + 1
+
+				if #skipped > 0 then
+					if not self.sortedProductIndexes[page] then
+						self.sortedProductIndexes[page] = {}
+					end
+
+					for i = 1, #skipped do
+						pageSlotsLeft = pageSlotsLeft - skipped[i][2]
+						table.insert(self.sortedProductIndexes[page], skipped[i][1])
+						skipped[i] = nil
+					end
+				end
+			end
+		else
+			table.insert(skipped, {itemIndex, slots})
+		end
+	end
+
+	if #skipped > 0 then
+		if pageSlotsLeft < skipped[1][2] then
+			page = page + 1
+		end
+
+		if not self.sortedProductIndexes[page] then
+			self.sortedProductIndexes[page] = {}
+		end
+		for i = 1, #skipped do
+			pageSlotsLeft = pageSlotsLeft - skipped[i][2]
+			table.insert(self.sortedProductIndexes[page], skipped[i][1])
+			skipped[i] = nil
+		end
+	end
+
+	self.Paginator:SetNumPages(#self.sortedProductIndexes, true)
+end
+
+function StoreRecommendationPanelMixin:UpdateRecommendations()
+	self:SortProductIndexes()
+
+	local currentPage, numPages = self.Paginator:GetPage()
+	self.cardPoolCollection:ReleaseAll()
+
+	if not self.sortedProductIndexes[currentPage] then
+		return
+	end
+
+	local lastCard
+
+	for index, productIndex in ipairs(self.sortedProductIndexes[currentPage]) do
+		local name, itemLink, rarity, icon, artwork, modelType, modelID, amount, productID, price, originalPrice, currencyType, altPrice, altOriginalPrice, altCurrencyType = C_StoreSecure.GetRecommendationInfo(productIndex)
+
+		local template
+		if modelType == Enum.ModelType.Creature then
+			template = "StoreRecommendationHorizontalTemplate"
+		else
+			template = "StoreRecommendationVerticalTemplate"
+		end
+
+		local card = self.cardPoolCollection:Acquire(template)
+		card:SetID(productIndex)
+		card:SetOwner(self)
+
+		if index == 1 then
+			card:SetPoint("LEFT", -1, 30)
+		else
+			card:SetPoint("TOPLEFT", lastCard, "TOPRIGHT", 16, 0)
+		end
+
+		card:UpdateProduct()
+		card:Show()
+
+		lastCard = card
+	end
+end
+
+StoreRecommendationMixin = CreateFromMixins(PKBT_OwnerMixin)
+
+function StoreRecommendationMixin:OnLoad()
+	self.PurchaseButton:SetFixedWidth(120)
+	self.PurchaseButton:SetAllowReplenishment(C_StoreSecure.IsBonusReplenishmentAllowed(), false)
+	self.UpdateTooltip = self.OnEnter
+end
+
+function StoreRecommendationMixin:OnShow()
+	SetParentFrameLevel(self.Overlay, 2)
+	SetParentFrameLevel(self.Special, 3)
+	SetParentFrameLevel(self.PurchaseButton, 3)
+	SetParentFrameLevel(self.DetailsButton, 3)
+end
+
+function StoreRecommendationMixin:OnEnter()
+	if self.itemLink then
+		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+		GameTooltip:SetHyperlink(self.itemLink)
+		if self.productID and (IsGMAccount() or IsInterfaceDevClient()) then
+			GameTooltip:AddDoubleLine("ProductID", self.productID, 0.44, 0.54, 0.68, 1, 1, 1)
+			local flags, dynamicFlags = C_StoreSecure.GetProductFlags(self.productID)
+			if flags then
+				GameTooltip:AddDoubleLine("ProductFlags", string.format("0x%x", flags), 0.44, 0.54, 0.68, 1, 1, 1)
+			end
+			if dynamicFlags then
+				GameTooltip:AddDoubleLine("ProductDynFlags", string.format("0x%x", dynamicFlags), 0.44, 0.54, 0.68, 1, 1, 1)
+			end
+		end
+		GameTooltip:Show()
+	end
+
+	CursorUpdate(self)
+end
+
+function StoreRecommendationMixin:OnLeave()
+	if self.itemLink then
+		GameTooltip_Hide()
+	end
+	ResetCursor()
+end
+
+function StoreRecommendationMixin:OnClick(button)
+	if IsAltKeyDown() and C_StoreSecure.AddProductItems(self.productID) then
+		return
+	end
+	if IsModifiedClick("DRESSUP") then
+		local allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton = true, true, false, true
+		C_StoreSecure.GetStoreFrame():ShowProductDressUp(self:GetOwner():GetParent(), self.productID, allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton)
+	elseif IsModifiedClick("CHATLINK") then
+	--	local link = C_StoreSecure.GenerateProductHyperlink(item.productID)
+		if self.itemLink and ChatEdit_InsertLink(self.itemLink) then
 			return true;
 		end
 	end
 end
 
-function StoreSpecialOfferDetailFrame_OnLoad( self, ... )
-	self.selectRole = 1
-	self.offerID = 1
-	self.offerData = {}
-
-	StoreSpecialOfferDetailFrameListScrollFrame.update = StoreSpecialOfferDetailFrame_UpdateItemList
-	StoreSpecialOfferDetailFrameListScrollFrame.ScrollBar.doNotHide = true
-	StoreSpecialOfferDetailFrameListScrollFrameScrollBarBG:Hide()
-	StoreSpecialOfferDetailFrameListScrollFrameScrollBarTop:Hide()
-	StoreSpecialOfferDetailFrameListScrollFrameScrollBarBottom:Hide()
-	StoreSpecialOfferDetailFrameListScrollFrameScrollBarMiddle:Hide()
-	HybridScrollFrame_CreateButtons(StoreSpecialOfferDetailFrameListScrollFrame, "StoreSpecialOfferDetailItemTemplate", 0, 0)
-	HybridScrollFrame_OnLoad(StoreSpecialOfferDetailFrameListScrollFrame)
-
-	self.noItems.text:SetText(STORE_SPECIAL_OFFER_DETAIL_NO_ITEM_LEBEL)
-	self.selectRoleFrame.text:SetText(STORE_SPECIAL_OFFER_DETAIL_ROLE_INFO)
+function StoreRecommendationMixin:SetModel(modelType, modelID, facing)
+	self.Model:SetModelAuto(modelType, modelID, facing or C_StorePublic.GetPreferredModelFacing())
 end
 
-local offerDetailData = {
-	{
-		{47078, 40343, 47789, 48381, 100367, 47209, 47432, 45978}
-	},
-	{
-		{1}
-	},
-	{
-		{48650, 39419, 42267, 47423}
-	}
-}
+function StoreRecommendationMixin:DetailsOnClick(button)
+end
 
-function StoreSpecialOfferDetailFrame_UpdateItemList()
-	local scrollFrame = StoreSpecialOfferDetailFrameListScrollFrame
+function StoreRecommendationMixin:OnPurchaseClick(button)
+	C_StoreSecure.GetStoreFrame():ShowProductPurchaseDialog(self.productID)
+	PlaySound(SOUNDKIT.UI_IG_STORE_BUY_BUTTON)
+end
+
+function StoreRecommendationMixin:UpdateProduct()
+end
+
+StoreRecommendationVerticalMixin = CreateFromMixins(StoreRecommendationMixin)
+
+function StoreRecommendationVerticalMixin:OnLoad()
+	StoreRecommendationMixin.OnLoad(self)
+
+	self.Overlay.Shadow:SetAtlas("PKBT-Store-Cards-Product-Frame-Vertical-Shadow", true)
+	self.Overlay.Border:SetAtlas("PKBT-Store-Cards-Product-Frame-Vertical-Border", true)
+	self.Overlay.Name:SetWidth(self:GetWidth() - 30)
+
+	self.Item.IconShadow:SetAtlas("PKBT-Store-Product-Item-Shadow", true)
+	self.Item.Border:SetAtlas("PKBT-ItemBorder-Normal", true)
+
+	self.PurchaseButton:SetOriginalOnTop(true)
+end
+
+function StoreRecommendationVerticalMixin:OnModelTypeChanged(modelType, modelID)
+	if modelType == Enum.ModelType.Illusion then
+		self.Model:SetPoint("BOTTOMRIGHT", -7, 14)
+	else
+		self.Model:SetPoint("BOTTOMRIGHT", -7, 32)
+	end
+end
+
+function StoreRecommendationVerticalMixin:UpdateProduct()
+	local name, itemLink, rarity, icon, artwork, modelType, modelID, amount, productID, price, originalPrice, currencyType, altPrice, altOriginalPrice, altCurrencyType = C_StoreSecure.GetRecommendationInfo(self:GetID())
+
+	self.productID = productID
+	self.itemLink = itemLink
+
+	if artwork then
+		self.Background:SetTexture(artwork)
+		self.Background:ClearAllPoints()
+		self.Background:SetPoint("TOPLEFT", 5, -6)
+		self.Background:SetPoint("BOTTOMRIGHT", -5, 6)
+	else
+		self.Background:SetAtlas("PKBT-Store-Cards-Product-Frame-Vertical-Background", true)
+		self.Background:ClearAllPoints()
+		self.Background:SetPoint("CENTER", 0, 0)
+	end
+
+	if modelType == Enum.ModelType.Illusion
+	or modelType == Enum.ModelType.ItemTransmog
+	then
+		self.Item:Hide()
+		self.Model:SetModelAuto(modelType, modelID)
+		self.Model:Show()
+	else
+		self.Model:Hide()
+		self.Model:ResetFull()
+		self.Item.Icon:SetTexture(icon)
+		self.Item.Amount:SetText(amount > 1 and amount or "")
+		self.Item:Show()
+	end
+
+	self.Overlay.Name:SetText(name)
+
+	if originalPrice and originalPrice ~= price and originalPrice > 0 then
+		self.Special.Text:SetFormattedText(STORE_DISCOUNT_AMOUNT_FORMAT, C_StoreSecure.GetDiscountForProductID(productID))
+		self.Special:Show()
+	else
+		self.Special:Hide()
+	end
+
+	self.PurchaseButton:SetPrice(price, originalPrice, currencyType)
+--	self.PurchaseButton:SetShown(not altCurrencyType)
+--	self.DetailsButton:SetShown(altCurrencyType)
+end
+
+StoreRecommendationHorizontalMixin = CreateFromMixins(StoreRecommendationMixin)
+
+function StoreRecommendationHorizontalMixin:OnLoad()
+	StoreRecommendationMixin.OnLoad(self)
+
+	self.Overlay.Shadow:SetAtlas("PKBT-Store-Cards-Product-Frame-Horizontal-Shadow", true)
+	self.Overlay.Border:SetAtlas("PKBT-Store-Cards-Product-Frame-Horizontal-Border", true)
+	self.Overlay.Name:SetWidth(self:GetWidth() - 60)
+end
+
+function StoreRecommendationHorizontalMixin:UpdateProduct()
+	local name, itemLink, rarity, icon, artwork, modelType, modelID, amount, productID, price, originalPrice, currencyType, altPrice, altOriginalPrice, altCurrencyType = C_StoreSecure.GetRecommendationInfo(self:GetID())
+
+	self.productID = productID
+	self.itemLink = itemLink
+
+	if artwork then
+		self.Background:SetTexture(artwork)
+		self.Background:ClearAllPoints()
+		self.Background:SetPoint("TOPLEFT", 5, -6)
+		self.Background:SetPoint("BOTTOMRIGHT", -5, 6)
+	else
+		self.Background:SetAtlas("PKBT-Store-Cards-Product-Frame-Horizontal-Background", true)
+		self.Background:ClearAllPoints()
+		self.Background:SetPoint("CENTER", 0, 0)
+	end
+
+	self.Model:SetModelAuto(modelType, modelID, C_StorePublic.GetPreferredModelFacing())
+	self.Model:Show()
+
+	self.Overlay.Name:SetText(name)
+
+	if originalPrice and originalPrice ~= price and originalPrice > 0 then
+		self.Special.Text:SetFormattedText(STORE_DISCOUNT_AMOUNT_FORMAT, C_StoreSecure.GetDiscountForProductID(productID))
+		self.Special:Show()
+	else
+		self.Special:Hide()
+	end
+
+	self.PurchaseButton:SetPrice(price, originalPrice, currencyType)
+
+	if false and altCurrencyType then
+		self.DetailsButton:Show()
+		self.DetailsButton:SetPoint("BOTTOMLEFT", 15, -30)
+		self.PurchaseButton:ClearAllPoints()
+		self.PurchaseButton:SetPoint("BOTTOMRIGHT", -15, -30)
+		self.PurchaseButton:Show()
+	else
+		self.DetailsButton:Hide()
+		self.PurchaseButton:ClearAllPoints()
+		self.PurchaseButton:SetPoint("BOTTOM", 0, -30)
+		self.PurchaseButton:Show()
+	end
+end
+
+StorePageLoyalityMixin = CreateFromMixins(PKBT_OwnerMixin, StoreCategoryPagesMixin)
+
+function StorePageLoyalityMixin:OnLoad()
+	self:SetID(Enum.Store.Category.Loyality)
+	self:SetOwner(self:GetParent():GetParent())
+	self:GetOwner():RegisterPageWidget(self)
+end
+
+function StorePageLoyalityMixin:OnShow()
+	local subCategoryIndex = self:GetSubCategoryIndex()
+	local itemListView = self:GetOwner():GetViewMode(Enum.StoreViewMode.ItemList)
+	itemListView:SetParentPage(self)
+	itemListView:SetViewCategory(self:GetID(), subCategoryIndex)
+end
+
+StorePageReferralMixin = CreateFromMixins(StorePageLoyalityMixin)
+
+function StorePageReferralMixin:OnLoad()
+	self:SetID(Enum.Store.Category.Referral)
+	self:SetOwner(self:GetParent():GetParent())
+	self:GetOwner():RegisterPageWidget(self)
+end
+
+StorePageVoteMixin = CreateFromMixins(StorePageLoyalityMixin)
+
+function StorePageVoteMixin:OnLoad()
+	self:SetID(Enum.Store.Category.Vote)
+	self:SetOwner(self:GetParent():GetParent())
+	self:GetOwner():RegisterPageWidget(self)
+end
+
+StorePageEquipmentMixin = CreateFromMixins(PKBT_OwnerMixin, StoreCategoryPagesMixin)
+
+function StorePageEquipmentMixin:OnLoad()
+	self.PaperDoll.ShadowTop:SetAtlas("PKBT-Background-Shadow-Large-Top", true)
+	self.PaperDoll.ShadowBottom:SetAtlas("PKBT-Background-Shadow-Large-Bottom", true)
+	self.PaperDoll.ShadowLeft:SetAtlas("PKBT-Background-Shadow-Large-Left", true)
+	self.PaperDoll.ShadowRight:SetAtlas("PKBT-Background-Shadow-Large-Right", true)
+	self.PaperDoll.ShadowBottom:Hide()
+
+	self.PaperDoll.Ribbon:SetText(STORE_SELECT_SLOT)
+
+	self.slotButtons = {}
+	self.itemLevelsDirty = true
+
+	self:RegisterEvent("UNIT_MODEL_CHANGED")
+	self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+	self:RegisterCustomEvent("STORE_REFUND_LIST_UPDATE")
+--	self:RegisterCustomEvent("STORE_EQUIPMENT_ITEM_LEVELS_WAIT")
+	self:RegisterCustomEvent("STORE_EQUIPMENT_ITEM_LEVELS_READY")
+	self:RegisterCustomEvent("STORE_EQUIPMENT_ITEM_LEVELS_OUTDATE")
+
+	self:SetID(Enum.Store.Category.Equipment)
+	self:SetOwner(self:GetParent():GetParent())
+	self:GetOwner():RegisterPageWidget(self)
+end
+
+function StorePageEquipmentMixin:OnEvent(event, ...)
+	if not self:IsVisible() then
+		return
+	end
+
+	if event == "UNIT_MODEL_CHANGED" then
+		local unit = ...
+		if unit == "player" then
+			self.PaperDoll.Model:SetUnit("player")
+		end
+	elseif event == "STORE_REFUND_LIST_UPDATE" then
+		self:UpdateRefundButton()
+	elseif event == "PLAYER_EQUIPMENT_CHANGED"
+	or event == "STORE_EQUIPMENT_ITEM_LEVELS_READY"
+	or event == "STORE_EQUIPMENT_ITEM_LEVELS_WAIT"
+	then
+		self:UpdateSlots()
+	elseif event == "STORE_EQUIPMENT_ITEM_LEVELS_OUTDATE" then
+		if self:IsShown() then
+			C_StoreSecure.RequestEquipmentItemLevels()
+		else
+			self.equipmentItemLevelDirty = true
+		end
+	end
+end
+
+function StorePageEquipmentMixin:OnShow()
+	if self.itemLevelsDirty then
+		self.itemLevelsDirty = nil
+		C_StoreSecure.RequestEquipmentItemLevels()
+	end
+
+	local subCategoryIndex = self:GetSubCategoryIndex()
+
+	self.PaperDoll:SetShown(subCategoryIndex == 0)
+
+	if subCategoryIndex == 0 then
+		if not self.initialized then
+			if UnitFactionGroup("player") == "Horde" then
+				self.PaperDoll.Background:SetAtlas("PKBT-Store-Equipment-Background-BloodElf")
+			else
+				self.PaperDoll.Background:SetAtlas("PKBT-Store-Equipment-Background-Dragon")
+			end
+			self.initialized = true
+		end
+
+		self.PaperDoll.Model:SetUnit("player")
+
+		self:UpdateRefundButton()
+		self:UpdateSlots()
+
+		C_StoreSecure.RequestRefundList()
+	else
+		local itemListView = self:GetOwner():GetViewMode(Enum.StoreViewMode.ItemList)
+		itemListView:SetParentPage(self)
+		itemListView:SetViewCategory(self:GetID(), subCategoryIndex)
+	end
+end
+
+function StorePageEquipmentMixin:UpdateRefundButton()
+	self.PaperDoll.Refund:SetShown(C_StoreSecure.GetNumRefundProducts() ~= 0)
+end
+
+function StorePageEquipmentMixin:UpdateSlots()
+	local BUTTON_PADDING = 15
+
+	for index = 1, C_StoreSecure.GetNumEquipmentSlots() do
+		local slot = self.slotButtons[index]
+		if not slot then
+			slot = CreateFrame("Button", strformat("$parentSlotButton%u", index), self.PaperDoll, "StoreEquipmentButtonTemplate")
+			slot:SetOwner(self)
+			slot:SetID(index)
+
+			local slotID, name, icon = C_StoreSecure.GetEquipmentSlotInfo(index)
+			slot:SetSlotInfo(slotID, name, icon)
+
+			slot:SetIconPosition(index <= 6 or index == 14 or index == 15)
+
+			if index <= 6 then
+				if index == 1 then
+					slot:SetPoint("TOPRIGHT", self.PaperDoll.Model, "TOPLEFT", 0, 0)
+				else
+					slot:SetPoint("TOPLEFT", self.slotButtons[index - 1], "BOTTOMLEFT", 0, -BUTTON_PADDING)
+				end
+			elseif index <= 12 then
+				if index == 7 then
+					slot:SetPoint("TOPLEFT", self.PaperDoll.Model, "TOPRIGHT", 0, 0)
+				else
+					slot:SetPoint("TOPLEFT", self.slotButtons[index - 1], "BOTTOMLEFT", 0, -BUTTON_PADDING)
+				end
+			elseif index == 13 then
+				slot:SetPoint("TOP", self.PaperDoll.Model, "BOTTOM", -((slot:GetWidth() + slot.Icon:GetWidth()) + 50), 30)
+			elseif index == 14 then
+				slot:SetPoint("TOP", self.PaperDoll.Model, "BOTTOM", slot.Icon:GetWidth() / 2, 30)
+			elseif index == 15 then
+				slot:SetPoint("TOP", self.PaperDoll.Model, "BOTTOM", ((slot:GetWidth() + slot.Icon:GetWidth()) + 50), 30)
+			end
+
+			self.slotButtons[index] = slot
+		end
+
+		slot:SetNew(C_StoreSecure.HasEquipmentSlotNewItems(index))
+		slot:SetUpgrage(C_StoreSecure.HasEquipmentSlotUpgradeItems(index))
+	end
+end
+
+function StorePageEquipmentMixin:SlotClick(button, slotID)
+	self:ShowSubCategoryPage(slotID)
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+end
+
+function StorePageEquipmentMixin:OnBrowseAllClick(button)
+	local itemListView = self:GetOwner():GetViewMode(Enum.StoreViewMode.ItemList)
+	itemListView:SetParentPage(self)
+	itemListView:SetViewCategory(self:GetID(), 0)
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+end
+
+function StorePageEquipmentMixin:OnOpenRefundClick(button)
+	self:GetOwner():GetViewMode(Enum.StoreViewMode.Refund):SetParentPage(self)
+	PlaySound(SOUNDKIT.UI_IG_STORE_BUY_BUTTON)
+end
+
+StoreRefundViewMixin = CreateFromMixins(StoreSubViewMixin)
+
+function StoreRefundViewMixin:OnLoad()
+	self.Background:SetAtlas("PKBT-Tile-Obsidian-256", true)
+	self.BackgroundBottom:SetAtlas("PKBT-Tile-Wood-128")
+
+	self.VignetteBottomLeft:SetAtlas("PKBT-Vignette-Bronze-BottomLeft", true)
+	self.VignetteBottomRight:SetAtlas("PKBT-Vignette-Bronze-BottomRight", true)
+
+	self.PageHeader:SetLabel(STORE_PRODUCT_REFUND_TITLE)
+
+	self:RegisterCustomEvent("STORE_REFUND_LIST_UPDATE")
+	self:RegisterCustomEvent("STORE_REFUND_LIST_WAIT")
+	self:RegisterCustomEvent("STORE_REFUND_ERROR")
+	self:RegisterCustomEvent("STORE_REFUND_SUCCESS")
+	self:RegisterCustomEvent("STORE_REFUND_WAIT")
+	self:RegisterCustomEvent("STORE_REFUND_READY")
+
+	self.BUTTON_OFFSET_Y = 9
+
+	self.selectionDict = {}
+
+	self.Scroll.ScrollBar:SetBackgroundShown(false)
+	self.Scroll.update = function(scrollFrame)
+		self:UpdateProductList()
+	end
+	self.Scroll.ScrollBar.doNotHide = true
+	self.Scroll.scrollBar = self.Scroll.ScrollBar
+	HybridScrollFrame_CreateButtons(self.Scroll, "StoreRefundProductPlateTemplate", 0, 0, nil, nil, nil, -self.BUTTON_OFFSET_Y)
+
+	self.RefundAmount.CurrencyList.OnRectUpdate = function(this, value)
+		local width = self.RefundAmount.Label:GetStringWidth() + this:GetWidth() + 10
+		self.RefundAmount:SetWidth(width)
+		self.RefundAmount:SetPoint("BOTTOM", self.RefundButton, "TOP", -(this:GetWidth() + 10) / 2, 15)
+	end
+
+	self:RegisterViewMode(Enum.StoreViewMode.Refund)
+end
+
+function StoreRefundViewMixin:OnEvent(event, ...)
+	if event == "STORE_REFUND_LIST_UPDATE" then
+		if self:IsShown() then
+			self.dirty = true
+			self:ClearSelection()
+			self:UpdateProductList()
+			self.Loading:Hide()
+		end
+	elseif event == "STORE_REFUND_LIST_WAIT" then
+		if self:IsShown() then
+			self.Loading:Show()
+		end
+	elseif event == "STORE_REFUND_ERROR" then
+		local errorText = ...
+		self:GetOwner():ShowError(self, errorText)
+	elseif event == "STORE_REFUND_SUCCESS" then
+		local currencyTypes = ...
+		for index, currencyType in ipairs(currencyTypes) do
+			local name, description, link, texture, iconAtlas = C_StorePublic.GetCurrencyInfo(currencyType)
+			if texture or iconAtlas then
+				self:GetOwner():AddPurchaseAlert(iconAtlas or texture, name, STORE_DELIVERED_REFUND)
+			end
+		end
+	elseif event == "STORE_REFUND_WAIT" then
+		self.RefundButton:ShowSpinner()
+		self.RefundButton:Disable()
+	elseif event == "STORE_REFUND_READY" then
+		self.RefundButton:HideSpinner()
+		self:Summery()
+	end
+end
+
+function StoreRefundViewMixin:OnShow()
+	StoreSubViewMixin.OnShow(self)
+
+	C_StoreSecure.RequestRefundList()
+
+	SetParentFrameLevel(self.Loading, 10)
+	self.Loading:SetShown(C_StoreSecure.IsAwaitingRefundList())
+
+	if C_StoreSecure.IsAwaitingRefundAnswer() then
+		self.RefundButton:ShowSpinner()
+		self.RefundButton:Disable()
+	else
+		self.RefundButton:HideSpinner()
+	end
+
+	self.dirty = true
+	self:ClearSelection()
+	self.Scroll.ScrollBar:SetValue(0)
+	self:UpdateProductList()
+end
+
+function StoreRefundViewMixin:OnHide()
+	StoreSubViewMixin.OnHide(self)
+end
+
+function StoreRefundViewMixin:ClearSelection(skipVisualUpdate)
+	table.wipe(self.selectionDict)
+
+	if not skipVisualUpdate then
+		if not self.dirty then
+			for index, button in ipairs(self.Scroll.buttons) do
+				if button:IsShown() then
+					button:SetSelected(false)
+				end
+			end
+		end
+
+		self:Summery()
+	end
+
+	self.RefundAmount.CurrencyList:SetCurrency(Enum.Store.CurrencyType.Bonus, 0)
+	self.RefundButton:Disable()
+end
+
+function StoreRefundViewMixin:SetSelectedProduct(index, state)
+	self.selectionDict[index] = state
+	self:Summery()
+end
+
+function StoreRefundViewMixin:UpdateProductList()
+	local scrollFrame = self.Scroll
 	local offset = HybridScrollFrame_GetOffset(scrollFrame)
-	local buttons = scrollFrame.buttons
-	local numButtons = #buttons
-	local button, index
-	local role = StoreSpecialOfferDetailFrame.selectRole
-	local offerID = StoreSpecialOfferDetailFrame.offerID
-	local numProduct
-	if STPRE_SPECIAL_OFFER_DETAILS_DATA and STPRE_SPECIAL_OFFER_DETAILS_DATA[offerID] and STPRE_SPECIAL_OFFER_DETAILS_DATA[offerID]["items"] and STPRE_SPECIAL_OFFER_DETAILS_DATA[offerID]["items"][role] then
-		numProduct = #STPRE_SPECIAL_OFFER_DETAILS_DATA[offerID]["items"][role]
-	else
-		numProduct = -1
-	end
-	local displayedHeight = 0
+	local numRefundProducts = C_StoreSecure.GetNumRefundProducts()
 
-	local roleName = {STORE_MELEE_FIGHTER, STORE_RANGED_FIGHTER, STORE_TANK, STORE_HEALER}
-
-	for i = 1, numButtons do
-		button = buttons[i]
-		index = offset + i
-
-		if numProduct ~= -1 and STPRE_SPECIAL_OFFER_DETAILS_DATA[offerID]["items"][role][index] then
-			local itemID = STPRE_SPECIAL_OFFER_DETAILS_DATA[offerID]["items"][role][index].itemID
-			local count = STPRE_SPECIAL_OFFER_DETAILS_DATA[offerID]["items"][role][index].count
-			local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture = GetItemInfo(itemID)
-
-			if itemID == 0 then
-				itemName = GUILDCONTROL_OPTION16
-				itemRarity = 1
-				itemTexture = "Interface\\ICONS\\INV_Misc_Coin_02"
-			end
-
-			local rarityColor = BAG_ITEM_QUALITY_COLORS[itemRarity]
-
-			if rarityColor then
-				button.ItemName:SetTextColor(rarityColor.r, rarityColor.g, rarityColor.b)
-				SetItemButtonQuality(button.IconHitBox, itemRarity, itemLink)
-			end
-
-			count = itemID == 0 and count / 10000 or count
-
-			button.Icon:SetTexture(itemTexture)
-			button.ItemName:SetText(itemName)
-			button.roleName:SetText("x"..count)
-
-			button.itemLink = itemLink
-
-			displayedHeight = displayedHeight + button:GetHeight()
+	for index, button in ipairs(scrollFrame.buttons) do
+		local productIndex = index + offset
+		if productIndex <= numRefundProducts then
+			button:SetOwner(self)
+			button:SetID(productIndex)
+			button:UpdateProductInfo()
+			button:SetChecked(self.selectionDict[productIndex])
 			button:Show()
 		else
 			button:Hide()
 		end
 	end
 
-	scrollFrame:SetShown(numProduct ~= -1)
-	StoreSpecialOfferDetailFrame.noItems.text:SetShown(numProduct == -1)
-
-	local totalHeight = (numProduct * buttons[1]:GetHeight() + 40) - buttons[1]:GetHeight()
-	HybridScrollFrame_Update(scrollFrame, totalHeight, displayedHeight)
-end
-
-function StoreSpecialOfferDetailFrame_OnShow( self, ... )
-	local oldKeyValue
-	self.offerID = self.offerData.offerID
-
-	self.Bottom.BuyButton:Disable()
-
-	self.Shown = true
-
-	self.header.description:SetText(STPRE_SPECIAL_OFFER_DETAILS_DATA[self.offerID]["description"])
-	self.header.Title:SetText(STPRE_SPECIAL_OFFER_DETAILS_DATA[self.offerID]["title"])
-
-	self.Bottom.Price:SetText(STPRE_SPECIAL_OFFER_DETAILS_DATA[self.offerID]["price"])
-
-	self:SetSize(400, 400)
-	self.Role:Show()
-
-	self.BlockLayer:ClearAllPoints()
-	self.BlockLayer:SetPoint("TOPLEFT", self.ParchmentMiddle, 20, -200)
-	self.BlockLayer:SetPoint("BOTTOMRIGHT", self.ParchmentMiddle, -20, 80)
-
-	for i = 1, 3 do
-		local button = _G["StoreSpecialOfferDetailRoleButton"..i]
-		button:Disable()
-	end
-
-	for k, v in pairs(STPRE_SPECIAL_OFFER_DETAILS_DATA[self.offerID]["items"]) do
-		if k and k ~= 0 then
-			local button = _G["StoreSpecialOfferDetailRoleButton"..k]
-			if button then
-				button:Enable()
-				if not oldKeyValue then
-					oldKeyValue = true
-					if self.isBack then
-						StoreSpecialOfferDetailRoleButton_OnClick( button )
-					else
-						StoreSpecialOfferDetailFrameListScrollFrame:Hide()
-						self.selectRoleFrame:Show()
-					end
-				end
-			end
-		elseif k == 0 then
-			StoreSpecialOfferDetailFrame.selectRole = k
-		end
-
-		if k == 0 or tCount(STPRE_SPECIAL_OFFER_DETAILS_DATA[self.offerID]["items"]) == 0 then
-			StoreSpecialOfferDetailFrame:SetSize(400, 500)
-
-			self.BlockLayer:ClearAllPoints()
-			self.BlockLayer:SetPoint("TOPLEFT", self.ParchmentMiddle, 20, -135)
-			self.BlockLayer:SetPoint("BOTTOMRIGHT", self.ParchmentMiddle, -20, 80)
-
-			StoreSpecialOfferDetailFrame.selectRole = k
-			StoreSpecialOfferDetailFrame_UpdateItemList()
-
-			self.Role:Hide()
-
-			StoreSpecialOfferDetailFrame.selectRoleFrame:Hide()
-			StoreSpecialOfferDetailFrame.Bottom.BuyButton:Enable()
-		end
+	if self.dirty then
+		local buttonHeight = scrollFrame.buttons[1] and scrollFrame.buttons[1]:GetHeight() or 0
+		local scrollHeight = buttonHeight * numRefundProducts + self.BUTTON_OFFSET_Y * (numRefundProducts - 1) + self.BUTTON_OFFSET_Y / 3
+		HybridScrollFrame_Update(scrollFrame, scrollHeight, scrollFrame:GetHeight())
+		self.dirty = nil
 	end
 end
 
-function StoreSpecialOfferDetailFrame_OnHide( self, ... )
-	self.Shown = false
-end
+function StoreRefundViewMixin:Summery()
+	local numSelected = 0
+	local currencyList = {}
 
-function StoreSpecialOfferDetailRoleButton_OnLoad( self, ... )
-	local id = self:GetID()
-	local _, fileName = UnitClass("player")
-	local data = SHARED_CONSTANTS_SPECIALIZATION[fileName][id]
+	for index, selected in pairs(self.selectionDict) do
+		if selected then
+			local itemLink, amount, purchaseDate, remainingTime, penalty, price, originalPrice, currencyType = C_StoreSecure.GetRefundProductInfo(index)
+			numSelected = numSelected + 1
 
-	if data then
-		SetPortraitToTexture(self.specIcon, data.icon)
-	end
-end
-
-function StoreSpecialOfferDetailItemHitBox_OnEnter( self, ... )
-	if not self:GetParent().itemLink then
-		return
-	end
-
-	GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-	GameTooltip:SetHyperlink(self:GetParent().itemLink)
-	GameTooltip:Show()
-end
-
-function StoreSpecialOfferDetailItemHitBox_OnLeave( self, ... )
-	GameTooltip:Hide()
-end
-
-function StoreSpecialOfferDetailItemHitBox_OnClick( self, ... )
-	local itemLink = self:GetParent().itemLink
-	if ( itemLink ) and IsModifiedClick() then
-		if HandleModifiedItemClick(itemLink) then
-			return
-		end
-	end
-end
-
-function StoreSpecialOfferDetailRoleButton_OnShow( self, ... )
-	self.IconGlow:Hide()
-	self.Arrow:Hide()
-end
-
-function StoreSpecialOfferDetailRoleButton_OnEnter( self, ... )
-	self.IconBorderHighlight:Show()
-end
-
-function StoreSpecialOfferDetailRoleButton_OnLeave( self, ... )
-	self.IconBorderHighlight:Hide()
-end
-
-function StoreSpecialOfferDetailRoleButton_OnClick( self, ... )
-	self.IconGlow:Show()
-	self.Arrow:Show()
-	StoreSpecialOfferDetailFrame.selectRole = self:GetID()
-	StoreSpecialOfferDetailFrame_UpdateItemList()
-
-	StoreSpecialOfferDetailFrame.selectRoleFrame:Hide()
-	StoreSpecialOfferDetailFrame.Bottom.BuyButton:Enable()
-
-	if StoreSpecialOfferDetailFrame.isBack then
-		StoreSpecialOfferDetailFrame:SetSize(400, 600)
-		StoreSpecialOfferDetailFrame.isBack = false
-	end
-
-	local _, _sizeY = StoreSpecialOfferDetailFrame:GetSize()
-	_sizeY = math.ceil( _sizeY )
-
-	if _sizeY < 600 and StoreSpecialOfferDetailFrame.Shown then
-		local sizeY = 400
-		StoreSpecialOfferDetailFrame.Shown = false
-		StoreSpecialOfferDetailFrame.ListScrollFrame.AnimIn:Play()
-
-		StoreSpecialOfferDetailFrame.ScaleTimer = C_Timer:NewTicker(0.0001, function()
-			sizeY = sizeY + 6
-			StoreSpecialOfferDetailFrame:SetSize(400, sizeY)
-			if sizeY >= 600 and StoreSpecialOfferDetailFrame.ScaleTimer then
-				StoreSpecialOfferDetailFrame:SetSize(400, 600)
-				StoreSpecialOfferDetailFrame_UpdateItemList()
-				StoreSpecialOfferDetailFrame.ScaleTimer:Cancel()
-				StoreSpecialOfferDetailFrame.ScaleTimer = nil
-			end
-		end)
-	end
-
-	for i = 1, 3 do
-		if i ~= self:GetID() then
-			local button = _G["StoreSpecialOfferDetailRoleButton"..i]
-
-			if button then
-				button.IconGlow:Hide()
-				button.Arrow:Hide()
-			end
-		end
-	end
-end
-
-function StoreSpecialOfferDetailFrame_OnClick( self, ... )
-	StoreSpecialOfferDetailFrame:Hide()
-
-	local backData = {
-		backFrame = StoreSpecialOfferDetailFrame,
-		func = function() StoreSpecialOfferDetailFrame.isBack = true end
-	}
-
-	StoreFrame_ProductBuy(StoreSpecialOfferDetailFrame.offerData, backData)
-end
-
-local SUBSCRIBE_BUY_BUTTONS = 3
-local SUBSCRIBE_ITEM_BUTTONS = 3
-local SUBSCRIBE_ITEM_BONUS_BUTTONS = 1
-local SUBSCRIBE_ITEM_SIZE = 50
-local SUBSCRIBE_ITEM_OFFSET = 135
-
-function StoreSubscribeSetup()
-	-- main subs always first
-	selectedSubsID = selectedSubCategoryID > 0 and selectedSubCategoryID or 1
-	local data = STORE_SUBSCRIBE_DATA[selectedSubsID]
-	if data == nil then
-		return
-	end
-
-	StoreSubscribeSetupModel();
-
-	if StoreSubscribeFrame.Ticker then
-		StoreSubscribeFrame.Ticker:Cancel()
-		StoreSubscribeFrame.Ticker = nil
-	end
-
-	local currentSubID = selectedSubsID
-	StoreSubscribeContainer.Active.timer1:SetRemainingTime(STORE_SUBSCRIBE_DATA[selectedSubsID].Seconds)
-	StoreSubscribeFrame.Ticker = C_Timer:NewTicker(1, function()
-		if StoreSubscribeContainer.Active.timer1:IsVisible() and STORE_SUBSCRIBE_DATA[currentSubID] then
-			STORE_SUBSCRIBE_DATA[currentSubID].Seconds = STORE_SUBSCRIBE_DATA[currentSubID].Seconds - 1
-			StoreSubscribeContainer.Active.timer1:SetRemainingTime(STORE_SUBSCRIBE_DATA[currentSubID].Seconds)
-		else
-			StoreSubscribeFrame.Ticker:Cancel()
-			StoreSubscribeFrame.Ticker = nil
-		end
-	end, data.Seconds)
-
-	do
-		for _, button in ipairs(StoreSubscribeContainer.ItemContainer.buttons) do
-			button:Hide()
-		end
-
-		local numSubscribeButtons = math.min(#data.EveryDayItem, SUBSCRIBE_ITEM_BUTTONS)
-		for i = 1, numSubscribeButtons do
-			local button = StoreSubscribeContainer.ItemContainer.buttons[i]
-			if not button then
-				button = CreateFrame("Button", string.format("$parentItemButton%i", i), StoreSubscribeContainer.ItemContainer, "StoreSubscribeItemTemplate")
-				button:SetID(i)
-				StoreSubscribeContainer.ItemContainer.buttons[i] = button
-			end
-
-			local itemID = data.EveryDayItem[i].Entry
-			local itemCount = data.EveryDayItem[i].Count
-			local name, link, _, _, _, _, _, _, _, texture = GetItemInfo(tonumber(itemID))
-			button.Link = link
-
-			button.iconTexture:SetTexture(texture)
-			button.name:SetText(name)
-			button.count:SetText(itemCount)
-
-			button:ClearAllPoints()
-			if i == 1 then
-				button:SetPoint("TOPLEFT", 0, -32)
+			if currencyList[currencyType] then
+				currencyList[currencyType] = currencyList[currencyType] + price
 			else
-				button:SetPoint("LEFT", StoreSubscribeContainer.ItemContainer.buttons[i - 1], "RIGHT", SUBSCRIBE_ITEM_OFFSET, 0)
+				currencyList[currencyType] = price
 			end
-
-			button:Show()
-		end
-
-		StoreSubscribeContainer.ItemContainer:SetSize(SUBSCRIBE_ITEM_SIZE * numSubscribeButtons + SUBSCRIBE_ITEM_OFFSET * (numSubscribeButtons), SUBSCRIBE_ITEM_SIZE)
-	end
-
-	do
-		for i = 1, SUBSCRIBE_ITEM_BONUS_BUTTONS do
-			_G["StoreSubscribeBonusItemButton"..i]:Hide()
-		end
-
-		for i = 1, math.min(#data.OnSubscribeItem, SUBSCRIBE_ITEM_BONUS_BUTTONS) do
-			local button = _G["StoreSubscribeBonusItemButton"..i]
-			local itemID = data.OnSubscribeItem[i].Entry
-			local itemCount = data.OnSubscribeItem[i].Count
-			local name, link, _, _, _, _, _, _, _, texture = GetItemInfo(tonumber(itemID))
-			button.Link = link
-
-			button.iconTexture:SetTexture(texture)
-			button.name:SetText(name)
-			button.count:SetText(itemCount)
-			button:Show()
 		end
 	end
 
-	do
-		for i = 1, SUBSCRIBE_BUY_BUTTONS do
-			_G["StoreSubscribeContainerBuyButton"..i]:Hide()
-		end
-
-		local subData = STORE_SUBSCRIBE_DATA[selectedSubsID];
-
-		if data.ShowTrial and not data.Dayz then
-			StoreSubscribeContainer.BuyButton1:SetText(STORE_BUY_FOR_FREE)
-
-			StoreSubscribeContainer.BuyButton1:Show()
-		elseif not data.ShowTrial and not data.Dayz then
-			StoreSubscribeContainer.BuyButton1:SetFormattedText(STORE_SUBSCRIBE_BUY_1, data.ShortPrice)
-			StoreSubscribeContainer.BuyButton2:SetFormattedText(STORE_SUBSCRIBE_BUY_2, data.LongPrice)
-
-			StoreSubscribeContainer.BuyButton1.SubscribeData = StoreConfigurateSubscribeData(2, string.format(STORE_SUBSCRIBE_BUY_TIME, subData.Name, 7), data.ShortPrice, string.format(STORE_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
-			StoreSubscribeContainer.BuyButton2.SubscribeData = StoreConfigurateSubscribeData(3, string.format(STORE_SUBSCRIBE_BUY_TIME, subData.Name, 30), data.LongPrice, string.format(STORE_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
-
-			StoreSubscribeContainer.BuyButton1:Show()
-			StoreSubscribeContainer.BuyButton2:Show()
-		elseif not data.ActiveTrial and data.Dayz and not data.ActiveExtra then
-			StoreSubscribeContainer.BuyButton1:SetFormattedText(STORE_SUBSCRIBE_PROLONG_1, data.ShortPrice)
-			StoreSubscribeContainer.BuyButton2:SetFormattedText(STORE_SUBSCRIBE_PROLONG_2, data.LongPrice)
-			StoreSubscribeContainer.BuyButton3:SetFormattedText(STORE_EXTRA_SUBSCRIBE_UPGRADE, data.ExtraPrice)
-
-			StoreSubscribeContainer.BuyButton1.SubscribeData = StoreConfigurateSubscribeData(2, string.format(STORE_SUBSCRIBE_BUY_TIME, subData.Name, 7 + 1), data.ShortPrice, string.format(STORE_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
-			StoreSubscribeContainer.BuyButton2.SubscribeData = StoreConfigurateSubscribeData(3, string.format(STORE_SUBSCRIBE_BUY_TIME, subData.Name, 30 + 3), data.LongPrice, string.format(STORE_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
-			StoreSubscribeContainer.BuyButton3.SubscribeData = StoreConfigurateSubscribeData(4, string.format(STORE_EXTRA_SUBSCRIBE_BUYUP_TIME, subData.Name, data.Dayz), data.ExtraPrice, string.format(STORE_EXTRA_SUBSCRIBE_BUY_DESCRIPTION, subData.Name))
-
-			StoreSubscribeContainer.BuyButton3:ShowGlow(true)
-
-			StoreSubscribeContainer.BuyButton1:Show()
-			StoreSubscribeContainer.BuyButton2:Show()
-			StoreSubscribeContainer.BuyButton3:Show()
-		elseif not data.ActiveTrial and data.Dayz and data.ActiveExtra then
-			StoreSubscribeContainer.BuyButton1:SetFormattedText(STORE_SUBSCRIBE_PROLONG_1, data.ShortPrice)
-			StoreSubscribeContainer.BuyButton2:SetFormattedText(STORE_SUBSCRIBE_PROLONG_2, data.LongPrice)
-
-			StoreSubscribeContainer.BuyButton1.SubscribeData = StoreConfigurateSubscribeData(2, string.format(STORE_EXTRA_SUBSCRIBE_BUY_TIME, subData.Name, 7 + 1), data.ShortPrice, STORE_EXTRA_SUBSCRIBE_BUY_DESCRIPTION)
-			StoreSubscribeContainer.BuyButton2.SubscribeData = StoreConfigurateSubscribeData(3, string.format(STORE_EXTRA_SUBSCRIBE_BUY_TIME, subData.Name, 30 + 3), data.LongPrice, STORE_EXTRA_SUBSCRIBE_BUY_DESCRIPTION)
-
-			StoreSubscribeContainer.BuyButton1:ShowGlow(nil, 0.5)
-			StoreSubscribeContainer.BuyButton2:ShowGlow(nil, 0.5)
-
-			StoreSubscribeContainer.BuyButton1:Show()
-			StoreSubscribeContainer.BuyButton2:Show()
-		end
-	end
-
-	if data.ActiveExtra then
-		StoreSubscribeContainer.HeaderText:SetFormattedText("%s %s", STORE_EXTRA_SUBSCRIBE, data.Name)
+	if next(currencyList) then
+		self.RefundAmount.CurrencyList:SetCurrencyHashList(currencyList)
 	else
-		StoreSubscribeContainer.HeaderText:SetText(data.Name)
+		self.RefundAmount.CurrencyList:SetCurrency(Enum.Store.CurrencyType.Bonus, 0)
 	end
-
-	local headerWidth = math.max(256, StoreSubscribeContainer.HeaderText:GetStringWidth() + 70)
-	StoreSubscribeContainer.HeaderBackground:SetWidth(headerWidth)
-	StoreSubscribeContainer.HeaderBackgroundAlpha:SetWidth(headerWidth + 6)
-
-	StoreSubscribeContainer.InfoText:SetText(data.Description)
-
-	if data.Dayz then
-		StoreSubscribeFrame.BackgroundTile:SetVertexColor(0.6, 1, 0.6)
-		StoreSubscribeContainer.Active.timer2:SetFormattedText(STORE_SUBSCRIBE_ACTIVE_TIME_LABEL, data.Dayz)
-	else
-		StoreSubscribeFrame.BackgroundTile:SetVertexColor(1, 1, 1)
-		StoreSubscribeContainer.Inactive.ItemContainer:SetShown(#data.OnSubscribeItem > 0)
-		StoreSubscribeContainer.Inactive.BuyText:SetShown(#data.OnSubscribeItem <= 0)
-	end
-
-	StoreSubscribeContainer.VIPBackground:SetShown(data.Dayz and data.ActiveExtra)
-	StoreSubscribeContainer.BackgroundColor:SetShown(data.Dayz and data.ActiveExtra)
-	StoreSubscribeContainer.HeaderBackgroundAlpha:SetShown(data.Dayz and data.ActiveExtra)
-
-	StoreSubscribeContainer.Inactive:SetShown(not data.Dayz)
-	StoreSubscribeContainer.Active:SetShown(data.Dayz)
+	self.RefundButton:SetEnabled(not C_StoreSecure.IsAwaitingRefundAnswer() and numSelected ~= 0)
 end
 
-function StoreSubscribeSetupModel(self)
-	self = self or StoreSubscribeContainer.ModelLeft;
-
-	if selectedSubsID == 6 then
-		self:Hide()
-	elseif selectedSubsID ~= 1 then
-		self:Show()
-		self:SetRotation(0.40);
-		self:SetCreature(9000295);
-	elseif C_Service.IsStrengthenStatsRealm() then
-		self:Show()
-		self:SetRotation(0.40);
-		self:SetCreature(50001);
-	end
-end
-
-function StoreConfigurateSubscribeData( ID, name, cost, description, icon )
-	local SubscribeData = {
-		Texture = icon or "Interface\\ICONS\\inv_misc_crystalepic",
-		Name = name,
-		Price = cost,
-		isSubscribe = true,
-		ID = STORE_SUBSCRIBE_DATA[selectedSubsID].ID,
-		Time = ID,
-		DescriptionText = description
-	}
-
-	return SubscribeData
-end
-
-function StoreSliderSetup( time )
-	if StoreSpecialOfferFrame.SliderTicker then
-		StoreSpecialOfferFrame.SliderTicker:Cancel()
-		StoreSpecialOfferFrame.SliderTicker = nil
-	end
-
-	StoreSpecialOfferFrame.SliderTicker = C_Timer:NewTicker(time, function()
-		local offerCount = StoreGetSpecialOfferCount()
-
-		if offerCount ~= 0 and StoreSpecialOfferFrame:IsVisible() then
-			selectedSpecialOfferPage = selectedSpecialOfferPage + 1
-			if selectedSpecialOfferPage > offerCount then
-				selectedSpecialOfferPage = 1
-			end
-			StoreFrame_SpecialOfferSetup()
-		else
-			if StoreSpecialOfferFrame.SliderTicker then
-				StoreSpecialOfferFrame.SliderTicker:Cancel()
-				StoreSpecialOfferFrame.SliderTicker = nil
-			end
-		end
-	end, nil)
-end
-
-function StoreFrame_SpecialOfferSetup()
-	local self = StoreSpecialOfferBanner
-
-	local offerCount = StoreGetSpecialOfferCount()
-	local offerData = StoreGetSpecialOfferByIndex(selectedSpecialOfferPage)
-
-	self.NavigationBar.PrevPageButton:SetEnabled(selectedSpecialOfferPage > 1)
-	self.NavigationBar.NextPageButton:SetEnabled(selectedSpecialOfferPage ~= offerCount)
-
-	if offerData and offerCount > 0 then
-		self.data = offerData
-
-		local leftPanel
-		local offer3DName = STORE_SPECIAL_OFFERS_3D[offerData.offerID] and STORE_SPECIAL_OFFERS_3D[offerData.offerID].Name or ""
-
-		if offer3DName ~= "" then
-			leftPanel = self[offer3DName .. "Offer"].LeftPanel
-		else
-			leftPanel = self.LeftPanel
-		end
-
-		self.LeftPanel.BuyButton.Glow:SetShown(offerData.IsNew)
-		self.Overlay.GlowBorder:SetShown(offerData.IsNew)
-		self.NavigationBar.PageText:SetFormattedText(STORE_PAGE_NUMBER, selectedSpecialOfferPage, offerCount)
-
-		if STORE_SMALL_SPECIAL_OFFER_BUFFER and STORE_SMALL_SPECIAL_OFFER_BUFFER[offerData.offerID] then
-			STORE_SMALL_SPECIAL_OFFER_BUFFER[offerData.offerID] = nil
-		end
-
-		self.Background:SetTexture("Interface\\Store\\SpecialOfferBanner\\"..offerData.Background)
-		self.Background:SetTexCoord(0, 0.5634765625, 0.02734375, 1)
-
-		leftPanel.TitleText:SetText(offerData.MainTitle)
-		leftPanel.NameText:SetText(offerData.Title)
-		leftPanel.DescriptionText:SetText(offerData.Description)
-
-		if offerData.FreeSubscribe or offerData.Price ~= 0 then
-			self.LeftPanel.BuyButton:SetText(STORE_SPECIAL_OFFER_MORE_LABEL)
-		else
-			self.LeftPanel.BuyButton:SetText(STORE_SPECIAL_OFFER_FREE_LABEL)
-		end
-
-		leftPanel.TimerText:SetShown(offerData.EndTime)
-		self.LeftPanel.TimerLabel:SetShown(offerData.EndTime)
-
-		if offerData.EndTime then
-			local remainingTime = offerData.EndTime - time()
-			leftPanel.TimerText:SetRemainingTime(remainingTime)
-
-			if remainingTime and remainingTime <= 3600 then
-				self.LeftPanel.TimerText:SetTextColor(1, 0, 0)
-			else
-				self.LeftPanel.TimerText:SetTextColor(1, 1, 1)
-			end
-
-			if self.LeftPanel.TimerText.Ticker then
-				self.LeftPanel.TimerText.Ticker:Cancel()
-				self.LeftPanel.TimerText.Ticker = nil
-			end
-
-			self.LeftPanel.TimerText.Ticker = C_Timer:NewTicker(1, function()
-				local offerCount = StoreGetSpecialOfferCount()
-				local offerData = StoreGetSpecialOfferByIndex(selectedSpecialOfferPage)
-
-				if self:IsVisible() and offerData and offerData.EndTime then
-					local currentOfferRemainingTime = offerData.EndTime - time()
-					leftPanel.TimerText:SetRemainingTime(currentOfferRemainingTime)
-
-					if currentOfferRemainingTime and currentOfferRemainingTime <= 3600 then
-						self.LeftPanel.TimerText:SetTextColor(1, 0, 0)
-					else
-						self.LeftPanel.TimerText:SetTextColor(1, 1, 1)
-					end
-
-					for i = 1, offerCount do
-						local offerData = StoreGetSpecialOfferByIndex(i)
-						if offerData and offerData.EndTime then
-							local remainingTime = offerData.EndTime - time()
-
-							if remainingTime <= 0 then
-								StoreRemoveOffer(i)
-								selectedSpecialOfferPage = 1
-
-								StoreSpecialOfferSortUpdate()
-								StoreSpecialOfferInfoUpdate()
-								StoreFrame_SpecialOfferSetup()
-							end
-						end
-					end
-				else
-					self.LeftPanel.TimerText:Hide()
-					self.LeftPanel.TimerLabel:Hide()
-
-					self.LeftPanel.TimerText.Ticker:Cancel()
-					self.LeftPanel.TimerText.Ticker = nil
-				end
-			end)
-		end
-	else
-		self.Background:SetTexture("Interface\\Store\\SpecialOfferBanner\\m0")
-		self.Background:SetTexCoord(0, 0.5634765625, 0.02734375, 1)
-
-		self.LeftPanel.TimerText:Hide()
-		self.Overlay.GlowBorder:Hide()
-	end
-
-	self.NavigationBar.PrevPageButton:SetShown(offerCount > 0)
-	self.NavigationBar.NextPageButton:SetShown(offerCount > 0)
-	self.NavigationBar.PageText:SetShown(offerCount > 0)
-	self.LeftPanel:SetShown(offerCount > 0)
-
-	StoreSpecialOfferSetupTemplate(self)
-end
-
-function StoreSpecialOfferSetupTemplate( self )
-	local offerCount = StoreGetSpecialOfferCount()
-
-	if self.data and offerCount > 0 then
-		local data = self.data
-
-		if data.offerID then
-			local offer3DName = STORE_SPECIAL_OFFERS_3D[data.offerID] and STORE_SPECIAL_OFFERS_3D[data.offerID].Name or ""
-			for k, v in pairs(STORE_SPECIAL_OFFERS_3D) do
-				if k ~= data.offerID and self[v.Name .. "Offer"]:IsShown() then
-					self[v.Name .. "Offer"]:SetShown(false)
-				end
-			end
-
-			if offer3DName ~= "" then
-				if not self[offer3DName .. "Offer"]:IsShown() then
-					self[offer3DName .. "Offer"]:SetShown(true);
-					StoreSpecialOfferCustomUpdateState(_G["StoreSpecialOfferBanner" .. offer3DName .. "Offer"])
-				else
-					self.LeftPanel:Hide()
-				end
-			end
-
-			if offer3DName ~= "" then
-				data.Flags = STORE_ITEM_FLAG_ITEM_GIFT
-			end
-		end
-	end
-end
-
-function StoreSpecialOfferCustomUpdateState( self )
-	local isShown = self:IsShown()
-	local offerFrame = self:GetParent()
-
-	if isShown then
-		offerFrame.NavigationBar.PageText:ClearAllPoints()
-		offerFrame.NavigationBar.PrevPageButton:ClearAllPoints()
-
-		offerFrame.NavigationBar.PageText:SetPoint("TOPRIGHT", -74, -17)
-		offerFrame.NavigationBar.PrevPageButton:SetPoint("TOPRIGHT", -40, -7)
-
-		local color = STORE_SPECIAL_OFFERS_3D[offerFrame.data.offerID] and STORE_SPECIAL_OFFERS_3D[offerFrame.data.offerID].BorderColor
-		if color then
-			offerFrame.Border:SetVertexColor(color[1], color[2], color[3])
-		else
-			offerFrame.Border:SetVertexColor(0.38, 0.88, 1)
-		end
-
-		offerFrame.Background:SetTexCoord(0, 0.564453125, 0.015625, 1)
-
-		if offerFrame.data then
-			self.LeftPanel.Price:SetText(offerFrame.data.Price or 0)
-		end
-	else
-		local offerCount = StoreGetSpecialOfferCount()
-
-		if offerCount > 0 then
-			offerFrame.NavigationBar.PageText:ClearAllPoints()
-			offerFrame.NavigationBar.PrevPageButton:ClearAllPoints()
-
-			offerFrame.NavigationBar.PageText:SetPoint("BOTTOMRIGHT", -74, 17)
-			offerFrame.NavigationBar.PrevPageButton:SetPoint("BOTTOMRIGHT", -40, 7)
-
-			offerFrame.Background:SetTexCoord(0, 0.5634765625, 0.02734375, 1)
-			offerFrame.Border:SetVertexColor(1, 1, 1)
+function StoreRefundViewMixin:OnRefundClick(button)
+	local selectedProducts = {}
+	for index, selected in pairs(self.selectionDict) do
+		if selected then
+			table.insert(selectedProducts, index)
 		end
 	end
 
-	offerFrame.LeftPanel:SetShown(not isShown)
-end
-
-function StoreLoyalProgressBarSetValue( minv, maxv )
-	local MAX_BAR = StoreLoyalProgressBar:GetWidth() - 4
-	local progresss = min(MAX_BAR * minv / maxv, MAX_BAR)
-	StoreLoyalProgressBar.progress:SetWidth(progresss + 1)
-end
-
-function StoreCloseAllFrame()
-	for _, frame in pairs(STORE_FRAME_DATA) do
-		local Frame = _G[frame]
-		if Frame and not Frame.dontHide then
-			Frame:Hide()
-		end
+	if #selectedProducts ~= 0 then
+		C_StoreSecure.RefundProductIndexes(unpack(selectedProducts))
+		PlaySound(SOUNDKIT.UI_IG_STORE_CONFIRM_PURCHASE_BUTTON)
 	end
 end
 
-function StoreShowPurchaseAlert(name, texture, itemID)
-	if itemID and BattlePassFrame:IsShown() and (C_BattlePass.IsPremiumItem(itemID) or C_BattlePass.IsExperienceItem(itemID)) then
-		return
+StoreRefundProductPlateMixin = CreateFromMixins(PKBT_OwnerMixin, PKBT_CountdownThrottledBaseMixin)
+
+function StoreRefundProductPlateMixin:OnLoad()
+	self.Price:SetOriginalOnTop(true)
+	self.selected = false
+	self.CheckButton.OnChecked = function(this, checked)
+		self:OnChecked(checked)
 	end
-
-	StorePurchaseAlertFrame:Show()
-
-	StorePurchaseAlertFrame.Icon:SetTexture(texture)
-	StorePurchaseAlertFrame.Title:SetText(name)
+	self.UpdateTooltip = self.OnEnter
 end
 
-function StoreShowErrorFrame( title, text, parent, dontHide )
-	if BattlePassFrame:IsShown() then
-		FireCustomClientEvent("BATTLEPASS_OPERATION_ERROR", text)
-		return
-	end
-
-	if not parent then
-		StoreErrorFrame:SetParent("StoreFrame")
-	else
-		StoreErrorFrame:SetParent(parent)
-	end
-
-	StoreErrorFrame:Show()
-	StoreErrorFrame.dontHide = dontHide
-	StoreErrorFrame.Title:SetText(title)
-	StoreErrorFrame.Description:SetText(text)
-	StoreErrorFrame.CloseButton:Hide()
-end
-
-function StoreConfirmationFrame_Update(self)
-	local giftChecked = StoreConfirmationSendGiftCheckButton:IsShown() and StoreConfirmationSendGiftCheckButton:GetChecked();
-	local hasAltCurrency = not giftChecked and self.data.AltCurrency and self.data.AltCurrency ~= 0;
-	self.hasAltCurrency = hasAltCurrency;
-
-	self.NoticeFrame.TotalLabel:SetShown(not hasAltCurrency);
-	self.NoticeFrame.AltCurrencyLabel:SetShown(hasAltCurrency);
-
-	self.NoticeFrame.MoneyIcon:SetShown(not hasAltCurrency);
-	self.NoticeFrame.Price:SetShown(not hasAltCurrency);
-	self.NoticeFrame.MoneySelectFrame:SetShown(hasAltCurrency);
-	self.NoticeFrame.AltCurrencySelectFrame:SetShown(hasAltCurrency);
-
-	local moneyIcon = "Interface\\Store\\"..STORE_PRODUCT_MONEY_ICON[selectedMoneyID];
-	local price = self.data.DiscountedPrice and self.data.DiscountedPrice or self.data.Price;
-	self.NoticeFrame.Price:SetText(price);
-	self.NoticeFrame.MoneyIcon:SetTexture(moneyIcon);
-
-	if hasAltCurrency then
-		local moneyData = STORE_MONEY_BUTTON_DATA[selectedMoneyID or 1];
-		self.NoticeFrame.MoneySelectFrame.SelectButton.Text:SetText(moneyData.Name);
-		self.NoticeFrame.MoneySelectFrame.MoneyFrame.Icon:SetTexture(moneyIcon);
-		self.NoticeFrame.MoneySelectFrame.MoneyFrame.Price:SetText(price);
-
-		self.NoticeFrame.AltCurrencySelectFrame.SelectButton.Text:SetText(self.data.AltCurrencyName);
-		self.NoticeFrame.AltCurrencySelectFrame.MoneyFrame.Icon:SetTexture(self.data.AltCurrencyIcon);
-		self.NoticeFrame.AltCurrencySelectFrame.MoneyFrame.Price:SetText(self.data.AltPrice);
-	end
-
-	self.AlphaLayer:SetPoint("BOTTOMRIGHT", self.ParchmentMiddle, 0, hasAltCurrency and 82 or 62);
-	self.Line2:SetPoint("BOTTOM", self.ParchmentMiddle, "BOTTOM", 0, hasAltCurrency and 80 or 60);
-
-	if giftChecked then
-		self.isAltCurrency = false;
-	end
-
-	if self.isAltCurrency then
-		self.NoticeFrame.MoneySelectFrame.SelectButton:SetChecked(nil);
-		self.NoticeFrame.AltCurrencySelectFrame.SelectButton:SetChecked(1);
-
-		self.NoticeFrame.MoneySelectFrame.MoneyFrame.Icon:SetSize(20, 20);
-		self.NoticeFrame.AltCurrencySelectFrame.MoneyFrame.Icon:SetSize(26, 26);
-		self.NoticeFrame.MoneySelectFrame.MoneyFrame.Price:SetFontObject(GameFontNormalShadowHuge12);
-		self.NoticeFrame.AltCurrencySelectFrame.MoneyFrame.Price:SetFontObject(GameFontNormalShadowHuge17);
-	else
-		self.NoticeFrame.MoneySelectFrame.SelectButton:SetChecked(1);
-		self.NoticeFrame.AltCurrencySelectFrame.SelectButton:SetChecked(nil);
-
-		self.NoticeFrame.MoneySelectFrame.MoneyFrame.Icon:SetSize(30, 30);
-		self.NoticeFrame.AltCurrencySelectFrame.MoneyFrame.Icon:SetSize(17, 17);
-		self.NoticeFrame.MoneySelectFrame.MoneyFrame.Price:SetFontObject(GameFontNormalShadowHuge17);
-		self.NoticeFrame.AltCurrencySelectFrame.MoneyFrame.Price:SetFontObject(GameFontNormalShadowHuge12);
-	end
-
-	StoreConfirmationSendGiftCheckButton:SetEnabled(not self.isAltCurrency);
-
-	local giftOverride
-	if selectedMoneyID == 1 and selectedCategoryID ~= 5 and self.data.Entry then
-		if Store_GetBalance(Enum.Store.CurrencyType.Loyality) >= 30 then
-			StoreConfirmationSendGiftCheckButton:SetShown(true)
-
-			if giftChecked and not (self.data.Flags and bit.band(self.data.Flags, STORE_ITEM_FLAG_ITEM_GIFT) == STORE_ITEM_FLAG_ITEM_GIFT) then
-				self.NoticeFrame.OriginalPrice:SetText(price)
-				self.NoticeFrame.OriginalPrice:Show()
-				self.NoticeFrame.Strikethrough:Show()
-				local newPrice = price * 1.1;
-				if not tostring(newPrice):match("^%-?%d+$") then
-					newPrice = math.ceil(newPrice)
-				end
-				self.NoticeFrame.Price:SetText(newPrice)
-				self.NoticeFrame.Price:SetPoint("RIGHT", self.NoticeFrame.MoneyIcon, "LEFT", 0, -8)
-				self.NoticeFrame.Price:SetTextColor(0.3, 0.7, 1)
-				giftOverride = true
-			end
-		end
-	elseif self.data.ShowDiscountedPrice and self.data.DiscountedPrice then
-		self.NoticeFrame.OriginalPrice:SetText(self.data.Price);
-		self.NoticeFrame.OriginalPrice:Show();
-		self.NoticeFrame.Strikethrough:Show();
-		self.NoticeFrame.Price:SetText(self.data.DiscountedPrice);
-		self.NoticeFrame.Price:SetPoint("RIGHT", self.NoticeFrame.MoneyIcon, "LEFT", 0, -8);
-		self.NoticeFrame.Price:SetTextColor(0.1, 1, 0.1);
-		giftOverride = true;
-	end
-
-	if not giftOverride then
-		self.NoticeFrame.Price:SetTextColor(1, 1, 1)
-		self.NoticeFrame.Price:SetPoint("RIGHT", self.NoticeFrame.MoneyIcon, "LEFT", 0, 0)
-		self.NoticeFrame.OriginalPrice:Hide()
-		self.NoticeFrame.Strikethrough:Hide()
-	end
-
-	if not giftChecked and self.data.ID ~= -1 and selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID and selectedSubCategoryID ~= 0 and selectedShowAllItemCheckBox == 1 then
-		local storage = STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][0];
-		StoreConfirmationFrameBuyButton:SetEnabled(storage.data and storage.data[self.data.ID] and true or false);
-	else
-		StoreConfirmationFrameBuyButton:SetEnabled(true);
-	end
-end
-
-function StoreConfirmationFrame_UpdateSize(self)
-	local giftChecked = StoreConfirmationSendGiftCheckButton:IsShown() and StoreConfirmationSendGiftCheckButton:GetChecked();
-
-	local width, height = 403, 416;
-	local noticeWidth, noticeHeight = 396, 228;
-
-	if not self.data.SelectedSpec and self.data.selfSize then
-		width, height = self.data.selfSize[1], self.data.selfSize[2];
-
-		if self.data.noticeSize then
-			noticeWidth, noticeHeight = self.data.noticeSize[1], self.data.noticeSize[2];
-		end
-	end
-
-	if self.data.SelectedSpec then
-		height = height + 60;
-		noticeHeight = noticeHeight + 60;
-	else
-		if giftChecked then
-			height = height + 180;
-			noticeHeight = noticeHeight + 180;
-		end
-		if self.hasAltCurrency then
-			height = height + 20;
-			noticeHeight = noticeHeight + 20;
-		end
-	end
-
-	self:SetSize(width, height);
-	self.NoticeFrame:SetSize(noticeWidth, noticeHeight);
-end
-
-
-function StoreConfirmationFrame_UpdateState( self )
-	if self:GetChecked() then
-		StoreConfirmationGiftFrame:Show()
-	else
-		StoreConfirmationGiftFrame:Hide()
-		StoreConfirmationFrame.MailBackgroundRight:Hide()
-		StoreConfirmationFrame.MailBackgroundLeft:Hide()
-	end
-end
-
-function StoreFrame_ProductBuy( data, backData )
-	StoreConfirmationFrame.data = data
-	StoreConfirmationFrame.backData = backData
-	StoreConfirmationFrame:Show()
-end
-
-function StoreFrame_ProductBuyWithOpenPage( data )
-	ShowUIPanel(StoreFrame)
-	if data.currency and data.currency ~= 0 then
-		_G["StoreMoneyButton"..data.currency]:Click()
-	end
-	StoreFrame_ProductBuy(data)
-end
-
-function StoreFrame_UpdateItemCard()
-	local numButtons
-	local buttonName
-
-	if StoreItemCardFrame:IsShown() then
-		buttonName = "StoreItemCardButton"
-		numButtons = 8
-	else
-		buttonName = "StoreSpecialOfferCardButton"
-		numButtons = 4
-	end
-
-	StoreItemCardFrameNavigationBarPrevPageButton:SetEnabled(selectedItemCardPage ~= 1)
-
-	local isIllusions = selectedCategoryID == 3 and selectedSubCategoryID == 3;
-
-	for i = 1, numButtons do
-		local button = _G[string.format("%s%d", buttonName, i)]
-		local data = STORE_PRODUCT_LIST[i + numButtons * (selectedItemCardPage - 1)]
-		if data then
-			button.data = data
-			if data.Count then
-				button.Count:SetText("x"..data.Count)
-			end
-			button.Name:SetText(data.Name)
-			button.MoneyIcon:SetTexture("Interface\\Store\\"..STORE_PRODUCT_MONEY_ICON[selectedMoneyID])
-
-			local hasAltCurrency = data.AltCurrency and data.AltCurrency ~= 0;
-			button.AltCurrencyIcon:SetShown(hasAltCurrency);
-			if hasAltCurrency then
-				button.AltCurrencyIcon:SetTexture(data.AltCurrencyIcon);
-			end
-
-			button.Count:SetShown(data.Count)
-
-			if data.DiscountedPrice and data.Discount then
-				button.NormalPrice:Hide()
-				button.SalePrice:Show()
-				button.Strikethrough:Show()
-				button.CurrentPrice:Show()
-
-				button.CurrentPrice:SetText(data.Price)
-				button.SalePrice:SetText(data.DiscountedPrice)
-			else
-				button.NormalPrice:Show()
-				button.SalePrice:Hide()
-				button.Strikethrough:Hide()
-				button.CurrentPrice:Hide()
-
-				button.NormalPrice:SetText(data.Price)
-			end
-
-			if data.Discount then
-				button.Discount:Show()
-				button.DiscountText:Show()
-				button.DiscountText:SetFormattedText("-%s%%", data.Discount)
-			else
-				button.Discount:Hide()
-				button.DiscountText:Hide()
-			end
-
-			if data.CreatureEntry or isIllusions then
-				button.Model.New:SetShown(bit.band(data.Flags, STORE_ITEM_FLAG_NEW) == STORE_ITEM_FLAG_NEW)
-				button.Model.New:SetPoint("TOPLEFT", 0, button.Discount:IsShown() and -26 or 0);
-
-				button.IconBorder:Hide()
-				button.Icon:Hide()
-
-				button.Model.isIllusions = isIllusions;
-				StoreFrame_UpdateItemCardModel(button.Model);
-				button.Model:Show();
-			else
-				button.Model:Hide()
-				button.Model.creature = nil;
-				button.IconBorder:Show()
-				button.Icon:Show()
-
-				SetPortraitToTexture(button.Icon, data.Texture)
-			end
-			button:Show()
-		else
-			button:Hide()
-		end
-		local numPages = math.ceil(#STORE_PRODUCT_LIST / numButtons)
-		StoreItemCardFrameNavigationBarNextPageButton:SetEnabled(selectedItemCardPage ~= numPages)
-	end
-end
-
-function StoreFrame_GetIllusionInfoByEntry(entry)
-	local _, enchantID = C_TransmogCollection.GetIllusionInfoByItemID(entry);
-	if enchantID then
-		local itemID = (GetInventoryTransmogID("player", 16) or GetInventoryItemID("player", 16)) or C_TransmogCollection.GetFallbackWeaponAppearance();
-		if itemID then
-			return itemID, enchantID, string.format("item:%d:%d", itemID, enchantID);
-		end
-	end
-end
-
-function StoreFrame_UpdateItemCardModel(self)
-	local button = self:GetParent();
-	local data = button.data;
-	if not data then
-		return;
-	end
-
-	self:SetPosition(0, 0, 0);
-	self:ClearModel();
-
-	if self.isIllusions then
-		self.useOnUpdateModel = true;
-
-		local itemID, enchantID, dressUpLink = StoreFrame_GetIllusionInfoByEntry(data.Entry);
-		if itemID and enchantID and dressUpLink then
-			DummyWardrobeUnitModel:Dress();
-			self:Undress();
-
-			local cameraID = C_TransmogCollection.GetAppearanceCameraIDBySource(itemID);
-			self:SetCreature(413);
-			Model_ApplyUICamera(self, cameraID);
-			self:TryOn(dressUpLink);
-			self:SetModelScale(1);
-		end
-	elseif data.CreatureEntry then
-		self.useOnUpdateModel = false;
-
-		self:SetRotation(0.40, false);
-		self:SetCreature(data.CreatureEntry);
-	end
-end
-
-function StoreFrame_UpdateItemList()
-	local scrollFrame = StoreItemListScrollFrame
-	scrollFrame.ScrollBar.doNotHide = true
-	local offset = HybridScrollFrame_GetOffset(scrollFrame)
-	local buttons = scrollFrame.buttons
-	local numButtons = #buttons
-	local button, index
-	local numProduct = #STORE_PRODUCT_LIST
-	local displayedHeight = 0
-	local currentLoyal = Store_GetBalance(Enum.Store.CurrencyType.Loyality)
-
-	for i = 1, numButtons do
-		button = buttons[i]
-		index = offset + i
-		if STORE_PRODUCT_LIST[index] then
-			local data = STORE_PRODUCT_LIST[index]
-			button.data = data
-
-			button.MoneyIcon:SetTexture("Interface\\Store\\"..STORE_PRODUCT_MONEY_ICON[selectedMoneyID])
-
-			local hasAltCurrency = data.AltCurrency and data.AltCurrency ~= 0;
-			button.AltCurrencyIcon:SetShown(hasAltCurrency);
-
-			button.CurrentPrice:ClearAllPoints();
-			button.NormalPrice:ClearAllPoints();
-			if hasAltCurrency then
-				button.AltCurrencyIcon:SetTexture(data.AltCurrencyIcon);
-
-				button.CurrentPrice:SetPoint("LEFT", button.AltCurrencyIcon, "RIGHT", 3, 0);
-				button.NormalPrice:SetPoint("LEFT", button.AltCurrencyIcon, "RIGHT", 5, 6);
-			else
-				button.CurrentPrice:SetPoint("LEFT", button.MoneyIcon, "RIGHT", 0, 0);
-				button.NormalPrice:SetPoint("LEFT", button.MoneyIcon, "RIGHT", 2, 6);
-			end
-
-			button.Name:SetText(data.Name)
-			button.iLevel:SetText(data.Ilevel)
-
-			button.iLevel:SetShown((selectedMoneyID ~= 4 and selectedMoneyID ~= 3) and (data.Ilevel and data.Ilevel > 1))
-
-			if data.Quality then
-				local r, g, b = GetItemQualityColor(data.Quality)
-				button.Name:SetTextColor(r, g, b)
-				button.Name.originalColor = {r, g, b}
-			end
-
-			SetPortraitToTexture(button.Icon, data.Texture)
-
-			button.Count:SetShown(data.Count)
-			button.Count:SetText(data.Count)
-			button.PVPIcon:SetShown(bit.band(data.Flags, STORE_ITEM_FLAG_PVP) == STORE_ITEM_FLAG_PVP)
-
-			button.DiscountText:Hide()
-			button.New:Hide()
-			button.Hot:Hide()
-			button.Discount:Hide()
-
-			button.DiscountTimerText:SetShown(data.RemainingTime)
-
-			for i = 1, #STORE_ITEM_FLAG_DATA do
-				local flagData = STORE_ITEM_FLAG_DATA[i]
-				if bit.band(data.Flags, flagData.flag) == flagData.flag then
-					button.DiscountText:SetText(flagData.text)
-
-					button.DiscountText:SetShown(flagData.text)
-					button.New:SetShown(flagData.isNew)
-					button.Hot:SetShown(flagData.isHot)
-					button.Discount:SetShown(flagData.isDiscount)
-
-					STORE_PRODUCT_LIST[index].DiscountShow = true
-				end
-			end
-
-			if data.DiscountedPrice and data.Discount then
-				button.NormalPrice:Show()
-				button.SalePrice:Show()
-				button.Strikethrough:Show()
-				button.CurrentPrice:Hide()
-
-				button.NormalPrice:SetText(data.Price)
-				button.SalePrice:SetText(data.DiscountedPrice)
-			else
-				button.NormalPrice:Hide()
-				button.SalePrice:Hide()
-				button.Strikethrough:Hide()
-				button.CurrentPrice:Show()
-
-				button.CurrentPrice:SetText(data.Price)
-			end
-
-			if data.Discount and (selectedMoneyID ~= 4 and selectedMoneyID ~= 3) then
-				button.Discount:Show()
-				button.DiscountText:Show()
-				button.DiscountText:SetFormattedText(STORE_ITEM_DISCOUNT_LABEL, data.Discount)
-
-				STORE_PRODUCT_LIST[index].DiscountShow = true
-			end
-
-			if data.RemainingTime and not buttons[i].Ticker then
-				buttons[i].DiscountTimerText:SetRemainingTime(buttons[i].data.RemainingTime)
-				buttons[i].Ticker = C_Timer:NewTicker(1, function()
-					if buttons[i]:IsVisible() then
-						buttons[i].DiscountTimerText:SetRemainingTime(buttons[i].data.RemainingTime)
-					else
-						buttons[i].Ticker:Cancel()
-						buttons[i].Ticker = nil
-					end
-				end, data.RemainingTime + 1)
-			end
-
-			if selectedMoneyID and selectedMoneyID == 4 and currentLoyal then
-				button:SetAlpha(data.Price <= currentLoyal and 1 or 0.5)
-			else
-				button:SetAlpha(1)
-			end
-
-			displayedHeight = displayedHeight + button:GetHeight()
-			button:Show()
-		else
-			if buttons[i].Ticker then
-				buttons[i].Ticker:Cancel()
-				buttons[i].Ticker = nil
-			end
-			button:Hide()
-		end
-	end
-
-	local totalHeight = numProduct * buttons[1]:GetHeight() + (numProduct - 1) * 5 + 4
-	HybridScrollFrame_Update(scrollFrame, totalHeight, scrollFrame:GetHeight())
-
-	if ( StoreItemListScrollFrame.activeButton ) then
-		StoreItemListButton_OnEnter(StoreItemListScrollFrame.activeButton)
-	end
-end
-
-local function sortItemList(a, b)
-	if StoreItemListFrame.activeSortId == 6 then
-		local IsNewA = bit.band(a.Flags, STORE_ITEM_FLAG_NEW) == STORE_ITEM_FLAG_NEW
-		local IsNewB = bit.band(b.Flags, STORE_ITEM_FLAG_NEW) == STORE_ITEM_FLAG_NEW
-		if IsNewA and not IsNewB then
-			return true
-		elseif not IsNewA and IsNewB then
-			return false
-		else
-			return a.Price > b.Price;
-		end
-	elseif StoreItemListFrame.activeSortId == 5 then
-		if a.Price ~= b.Price then
-			if StoreItemListFrame.reverseSort then
-				return a.Price > b.Price;
-			else
-				return a.Price < b.Price;
-			end
-		end
-	elseif StoreItemListFrame.activeSortId == 4 then
-		if a.IsPVP ~= b.IsPVP then
-			if StoreItemListFrame.reverseSort then
-				return b.IsPVP and not a.IsPVP;
-			else
-				return a.IsPVP and not b.IsPVP;
-			end
-		end
-	elseif StoreItemListFrame.activeSortId == 3 then
-		if a.Ilevel ~= b.Ilevel then
-			if StoreItemListFrame.reverseSort then
-				return a.Ilevel > b.Ilevel;
-			else
-				return a.Ilevel < b.Ilevel;
-			end
-		end
-	elseif StoreItemListFrame.activeSortId == 2 then
-		if a.DiscountShow ~= b.DiscountShow then
-			if StoreItemListFrame.reverseSort then
-				return b.DiscountShow and not a.DiscountShow;
-			else
-				return a.DiscountShow and not b.DiscountShow;
-			end
-		end
-	elseif StoreItemListFrame.activeSortId == 1 then
-		if a.Name ~= b.Name then
-			if StoreItemListFrame.reverseSort then
-				return a.Name > b.Name;
-			else
-				return a.Name < b.Name;
-			end
-		end
-	end
-
-	if a.Quality ~= b.Quality then
-		return a.Quality > b.Quality;
-	elseif a.Name ~= b.Name then
-		return a.Name < b.Name;
-	elseif a.Price ~= b.Price then
-		return a.Price > b.Price;
-	else
-		return (a.Count or 1) > (b.Count or 1);
-	end
-end
-
-function StoreDataTableCopy(useFilter)
-	local hasUseFilters = StoreItemListFrame.isPvP or StoreItemListFrame.isDiscount or StoreItemListFrame.iLvl;
-
-	if useFilter and hasUseFilters then
-		STORE_PRODUCT_LIST = {};
-
-		for i = 1, #STORE_PRODUCT_DATA do
-			local product = STORE_PRODUCT_DATA[i];
-
-			if (StoreItemListFrame.isPvP and product.IsPVP) or (StoreItemListFrame.isDiscount and product.DiscountShow) or (StoreItemListFrame.iLvl and StoreItemListFrame.iLvl == product.Ilevel) then
-				STORE_PRODUCT_LIST[#STORE_PRODUCT_LIST + 1] = product;
-			end
-		end
-	else
-		STORE_PRODUCT_LIST = STORE_PRODUCT_DATA
-	end
-
-	table.sort(STORE_PRODUCT_LIST, sortItemList);
-
-	StoreFrame_UpdateItemList()
-	if selectedMoneyID == 1 then
-		StoreFrame_UpdateItemCard()
-	end
-
-	StoreItemListScrollFrame.ScrollBar:SetValue(0)
-
-	if selectedMoneyID == 4 then
-		local currentLoyal = Store_GetBalance(Enum.Store.CurrencyType.Loyality)
-		local numProduct 	= #STORE_PRODUCT_LIST
-
-		if currentLoyal and numProduct > 0 then
-			local elapsed = 0
-
-			StoreItemListScrollFrame:SetScript("OnUpdate", function( _, diff )
-				local scrollIndex = C_inOutSine(elapsed, 4, numProduct - currentLoyal, 1)
-				elapsed = elapsed + diff
-
-				MountJournal_UpdateScrollPos(StoreItemListScrollFrame, scrollIndex)
-
-				if elapsed >= 1 then
-					elapsed = 0
-					MountJournal_UpdateScrollPos(StoreItemListScrollFrame, numProduct - currentLoyal)
-
-					StoreItemListScrollFrame:SetScript("OnUpdate", nil)
-				end
-			end)
-		end
-	end
-end
-
-function StoreRequestBattlePass()
-	selectedMoneyID = 1
-	selectedCategoryID = 1
-	selectedSubCategoryID = 0
-
-	StoreRequestShopItems(1, 101, 1)
-	StoreRequestShopItems(1, 101, 2)
-end
-
-function StoreItemListUpdate()
-	if (STORE_CATEGORIES_DATA[selectedMoneyID][selectedCategoryID] and STORE_CATEGORIES_DATA[selectedMoneyID][selectedCategoryID].dontItemRequest) then
-		if not selectedSubCategoryID or selectedSubCategoryID == 0 then
-			return true
-		end
-	end
-
-	STORE_PRODUCT_DATA 	= {}
-	STORE_PRODUCT_LIST 	= {}
-
-	local storage = STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][selectedShowAllItemCheckBox]
-
-	local function clearStorage()
-		STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][selectedShowAllItemCheckBox] = {}
-	end
-
-	if storage and storage.version then
-		if GetStoreProductVersion() == storage.version then
-			local unitFaction = UnitFactionGroup("player") or "Alliance"
-			if not storage.unitFaction or storage.unitFaction ~= unitFaction then
-				clearStorage()
-				STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][selectedShowAllItemCheckBox].unitFaction = unitFaction
-				STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][selectedShowAllItemCheckBox].rolledItemsVersion = GetStoreRolledItemsVersion(selectedCategoryID, selectedSubCategoryID)
-
-				StoreRequestShopItems( selectedMoneyID, selectedCategoryID, selectedSubCategoryID, selectedShowAllItemCheckBox )
-			else
-				if ((selectedCategoryID == 3 and (selectedSubCategoryID == 1 or selectedSubCategoryID == 2 or selectedSubCategoryID == 3)) or selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID) and (not storage.rolledItemsVersion or storage.rolledItemsVersion ~= GetStoreRolledItemsVersion(selectedCategoryID, selectedSubCategoryID)) then
-					clearStorage()
-					STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][selectedSubCategoryID][selectedShowAllItemCheckBox].rolledItemsVersion = GetStoreRolledItemsVersion(selectedCategoryID, selectedSubCategoryID)
-
-					StoreRequestShopItems( selectedMoneyID, selectedCategoryID, selectedSubCategoryID, selectedShowAllItemCheckBox )
-				else
-					if storage.data then
-						local isTransmogCategorySelected = selectedMoneyID == 1 and selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID;
-						if isTransmogCategorySelected then
-							table.wipe(STORE_TRANSMOGRIFY_SERVER_DATA);
-						end
-
-						for storeID, data in pairs(storage.data) do
-							local altCurrency = data[STORE_STORAGE_DATA_ALT_CURRENCY];
-
-							local altCurrencyName, altCurrencyIcon = "", "";
-							if altCurrency and altCurrency ~= 0 then
-								altCurrencyName, _, _, _, _, _, _, _, _, altCurrencyIcon = GetItemInfo(data[STORE_STORAGE_DATA_ALT_CURRENCY])
-							end
-
-							if isTransmogCategorySelected then
-								STORE_TRANSMOGRIFY_SERVER_DATA[storeID] = {
-									storeID,
-									data[STORE_STORAGE_DATA_ENTRY],
-									data[STORE_STORAGE_DATA_COUNT],
-									data[STORE_STORAGE_DATA_PRICE],
-									data[STORE_STORAGE_DATA_DISCOUNT],
-									data[STORE_STORAGE_DATA_DISCOUNTEDPRICE],
-									data[STORE_STORAGE_DATA_FLAGS],
-									data[STORE_STORAGE_DATA_ISPVP],
-									altCurrency,
-									data[STORE_STORAGE_DATA_ALT_PRICE],
-									altCurrencyName,
-									altCurrencyIcon,
-								}
-							else
-								local name, link, quality, ilevel, _, _, _, _, _, texture = GetItemInfo(data[STORE_STORAGE_DATA_ENTRY])
-
-								table.insert(STORE_PRODUCT_DATA, {
-									ID 				= data[STORE_STORAGE_DATA_ID],
-									Entry 			= data[STORE_STORAGE_DATA_ENTRY],
-									Count 			= data[STORE_STORAGE_DATA_COUNT],
-									Price 			= data[STORE_STORAGE_DATA_PRICE],
-									RemainingTime 	= data[STORE_STORAGE_DATA_REMAININGTIME],
-									Discount 		= data[STORE_STORAGE_DATA_DISCOUNT],
-									DiscountedPrice = data[STORE_STORAGE_DATA_DISCOUNTEDPRICE],
-									CreatureEntry 	= data[STORE_STORAGE_DATA_CREATUREENTRY],
-									Flags 			= data[STORE_STORAGE_DATA_FLAGS],
-									AltCurrency		= altCurrency,
-									AltPrice		= data[STORE_STORAGE_DATA_ALT_PRICE],
-									AltCurrencyName	= altCurrencyName,
-									AltCurrencyIcon	= altCurrencyIcon,
-									Name 			= name,
-									Link 			= link,
-									Quality 		= quality or 1,
-									Ilevel 			= ilevel,
-									Texture 		= texture,
-									IsPVP 			= data[STORE_STORAGE_DATA_ISPVP],
-									DiscountShow	= data[STORE_STORAGE_DATA_DISCOUNTSHOW],
-								})
-							end
-						end
-
-						if selectedMoneyID == 1 and selectedCategoryID == STORE_TRANSMOGRIFY_CATEGORY_ID then
-							StoreTransmogrifyFrame_UpdateRightContainer()
-							StoreTransmogrifyGenerateData(true)
-						else
-							StoreDataTableCopy()
-						end
-
-						return true
-					end
-				end
-			end
-		else
-			clearStorage()
-			StoreRequestShopItems( selectedMoneyID, selectedCategoryID, selectedSubCategoryID, selectedShowAllItemCheckBox )
-		end
-	else
-		StoreRequestShopItems( selectedMoneyID, selectedCategoryID, selectedSubCategoryID, selectedShowAllItemCheckBox )
-	end
-
-	return false
-end
-
-function StoreFrame_UpdateCategories( self )
-	local categories = STORE_CATEGORIES_DATA[selectedMoneyID]
-
-	StoreFrameLeftInset.BrowseNotice:Hide()
-
-	for _, button in pairs(StoreFrame.SubCategoryFrames) do
-		button:Hide()
-	end
-	for i, button in pairs(StoreFrame.CategoryFrames) do
-		if i ~= 1 then
-			button:SetPoint("TOPLEFT", StoreFrame.CategoryFrames[i-1], "BOTTOMLEFT", 0, 0)
-		end
-	end
-
-	local prevFrame
-	if categories and #categories > 0 then
-		for i = 1, #categories do
-			local frame = self.CategoryFrames[i]
-			local data = categories[i]
-
-			if ( not frame ) then
-				frame = CreateFrame("Button", "StoreCategoryButton"..i, StoreFrameLeftInset, "StoreCategoryTemplate")
-				if i == 1 then
-					frame:SetPoint("TOP", 0, -20)
-				else
-					frame:SetPoint("TOPLEFT", prevFrame, "BOTTOMLEFT", 0, 0)
-				end
-
-				self.CategoryFrames[i] = frame
-			end
-
-			frame:SetID(i)
-			frame.Icon:SetTexture("Interface\\Store\\"..data.Icon)
-			frame.Text:SetText(data.Name)
-			frame.SelectedTexture:Hide()
-
-			self.CategoryFrames[i].data = data
-
-			if i == 1 then
-				local ChieldFrame = _G[data.ChieldFrame]
-				selectedCategoryID = 1
-				frame.SelectedTexture:Show()
-				StoreItemListUpdate()
-
-				if ChieldFrame then
-					ChieldFrame:Show()
-				end
-			end
-
-			local isNew = StoreFrame_CategoryIsNew(selectedMoneyID, i)
-
-			frame.NewItems:SetShown(isNew)
-
-			if data.Color then
-				frame.ColoredTexture:SetVertexColor(data.Color.r, data.Color.g, data.Color.b)
-			end
-
-			if data.Disable or ( data.Level and data.Level > UnitLevel("player") ) then
-				frame:Disable()
-				frame.Icon:SetDesaturated(1)
-				frame.Category:SetDesaturated(1)
-				frame.NewItems:SetDesaturated(1)
-				frame.Text:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
-				frame.isEnable = false
-			else
-				frame.ColoredTexture:SetShown(data.Color)
-				frame:Enable()
-				frame.Icon:SetDesaturated(0)
-				frame.Category:SetDesaturated(0)
-				frame.NewItems:SetDesaturated(0)
-				frame.Text:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
-				frame.isEnable = true
-
-				if data.Level and not tContains(STORE_HIGHLIGHT_CATEGORY_BUTTON[UnitName("player")], frame:GetName()) then
-					frame.PulseTexture:Show()
-					frame.isHighlight = true
-				end
-
-				if STORE_CACHE:Get("flashCategoryMountRenew") == true and i == 3 then
-					frame.PulseTexture:Show()
-					frame.isHighlight = true
-				end
-			end
-			prevFrame = frame
-			frame:Show()
-		end
-	else
-		selectedCategoryID = 0
-		StoreFrameLeftInset.BrowseNotice:Show()
-		StoreFrameLeftInset.BrowseNotice:SetText(categories.text)
-	end
-
-	for i = #categories + 1, #self.CategoryFrames do
-		self.CategoryFrames[i]:Hide()
-	end
-
-	for i = 1, #STORE_MONEY_BUTTON_DATA do
-		local button = _G["StoreMoneyButton"..i]
-		button.Selected:Hide()
-	end
-	_G["StoreMoneyButton"..selectedMoneyID].Selected:Show()
-
-	StoreShowAllItemCheckButton:ClearAllPoints()
-	StoreShowAllItemCheckButton:SetPoint("TOPLEFT", prevFrame, "BOTTOMLEFT", 0, -4)
-
-	StoreUpdateGenericButtons()
-end
-
-function StoreSortButton_OnClick( self, button, ... )
-	local id = self:GetID();
-
-	if button == "LeftButton" then
-		if id == 0 then
-			StoreItemListFrame_ResetFilters();
-			StoreDataTableCopy();
-		else
-			StoreItemListFrame.reverseSort = id ~= StoreItemListFrame.activeSortId and false or not StoreItemListFrame.reverseSort;
-			StoreItemListFrame.activeSortId = id;
-
-			table.sort(STORE_PRODUCT_LIST, sortItemList);
-		end
-
-		StoreFrame_UpdateItemList();
-	elseif button == "RightButton" then
-		if id == 1 then
-			StoreItemListFrame_SetShownSearchBox(true);
-		elseif id == 2 then
-			StoreItemListFrame.isDiscount = not StoreItemListFrame.isDiscount;
-
-			StoreDataTableCopy(true);
-		elseif id == 3 then
-			local numericBox = self.NumericBox;
-			if numericBox and not numericBox:IsShown() then
-				numericBox:Show();
-				numericBox:SetText("");
-			end
-		elseif id == 4 then
-			StoreItemListFrame.isPvP = not StoreItemListFrame.isPvP;
-
-			StoreDataTableCopy(true);
-		end
-	end
-end
-
-function StoreSortButton_OnEnter(self)
-	if self.tooltipText then
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-		GameTooltip:AddLine(self.tooltipText, 0, 1, 0);
-		GameTooltip:Show();
-	end
-end
-
-
-local searchStats = {}
-
-local searchBoxFilters = {
-	{
-		name = STORE_SEARCH_OPTION_ARMOR,
-		desc = STORE_SEARCH_OPTION_ARMOR_DESC,
-		filters = {
-			"ITEM_SUB_CLASS_4_1",
-			"ITEM_SUB_CLASS_4_2",
-			"ITEM_SUB_CLASS_4_3",
-			"ITEM_SUB_CLASS_4_4",
-		},
-		func = function(option, filter, itemID, itemLink, itemName)
-			if itemID then
-				local _, _, _, _, _, _, itemSubType = GetItemInfo(itemID);
-				local nameName = _G[filter];
-
-				if nameName and itemSubType and itemSubType == nameName then
-					return true;
-				end
-			end
-		end,
-	},
-	{
-		name = STORE_SEARCH_OPTION_WEAPON,
-		desc = STORE_SEARCH_OPTION_WEAPON_DESC,
-		filters = {
-			"ITEM_SUB_CLASS_2_0",
-			"ITEM_SUB_CLASS_2_1",
-			"ITEM_SUB_CLASS_2_2",
-			"ITEM_SUB_CLASS_2_3",
-			"ITEM_SUB_CLASS_2_4",
-			"ITEM_SUB_CLASS_2_5",
-			"ITEM_SUB_CLASS_2_6",
-			"ITEM_SUB_CLASS_2_7",
-			"ITEM_SUB_CLASS_2_8",
-			"ITEM_SUB_CLASS_2_10",
-			"ITEM_SUB_CLASS_2_13",
-			"ITEM_SUB_CLASS_2_14",
-			"ITEM_SUB_CLASS_2_15",
-			"ITEM_SUB_CLASS_2_16",
-			"ITEM_SUB_CLASS_2_18",
-			"ITEM_SUB_CLASS_2_19",
-			"ITEM_SUB_CLASS_4_6",
-			"ITEM_SUB_CLASS_4_7",
-			"ITEM_SUB_CLASS_4_8",
-			"ITEM_SUB_CLASS_4_9",
-			"ITEM_SUB_CLASS_4_10",
-		},
-		func = function(option, filter, itemID, itemLink, itemName)
-			if itemID then
-				local _, _, _, _, _, _, itemSubType = GetItemInfo(itemID);
-				local nameName = _G[filter];
-
-				if nameName and itemSubType and itemSubType == nameName then
-					return true;
-				end
-			end
-		end,
-	},
-	{
-		name = STORE_SEARCH_OPTION_STATISTIC,
-		desc = STORE_SEARCH_OPTION_STATISTIC_DESC,
-		func = function(option, filter, itemID, itemLink, itemName)
-			if itemLink then
-				table.wipe(searchStats);
-
-				searchStats = GetItemStats(itemLink, searchStats);
-
-				if searchStats then
-					for statName in pairs(searchStats) do
-						if statName == filter then
-							return true;
-						end
-					end
-				end
-			end
-		end,
-		filters = {
-			"EMPTY_SOCKET_BLUE",
-			"EMPTY_SOCKET_YELLOW",
-			"EMPTY_SOCKET_RED",
-			"EMPTY_SOCKET_META",
-			"EMPTY_SOCKET_NO_COLOR",
-			"ITEM_MOD_AGILITY_SHORT",
-			"ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT",
-			"ITEM_MOD_ATTACK_POWER_SHORT",
-			"ITEM_MOD_BLOCK_RATING_SHORT",
-			"ITEM_MOD_BLOCK_VALUE_SHORT",
-			"ITEM_MOD_CRIT_MELEE_RATING_SHORT",
-			"ITEM_MOD_CRIT_RANGED_RATING_SHORT",
-			"ITEM_MOD_CRIT_RATING_SHORT",
-			"ITEM_MOD_CRIT_SPELL_RATING_SHORT",
-			"ITEM_MOD_CRIT_TAKEN_MELEE_RATING_SHORT",
-			"ITEM_MOD_CRIT_TAKEN_RANGED_RATING_SHORT",
-			"ITEM_MOD_CRIT_TAKEN_RATING_SHORT",
-			"ITEM_MOD_CRIT_TAKEN_SPELL_RATING_SHORT",
-			"ITEM_MOD_DAMAGE_PER_SECOND_SHORT",
-			"ITEM_MOD_DEFENSE_SKILL_RATING_SHORT",
-			"ITEM_MOD_DODGE_RATING_SHORT",
-			"ITEM_MOD_EXPERTISE_RATING_SHORT",
-			"ITEM_MOD_FERAL_ATTACK_POWER_SHORT",
-			"ITEM_MOD_HASTE_MELEE_RATING_SHORT",
-			"ITEM_MOD_HASTE_RANGED_RATING_SHORT",
-			"ITEM_MOD_HASTE_RATING_SHORT",
-			"ITEM_MOD_HASTE_SPELL_RATING_SHORT",
-			"ITEM_MOD_HEALTH_REGENERATION_SHORT",
-			"ITEM_MOD_HEALTH_REGEN_SHORT",
-			"ITEM_MOD_HEALTH_SHORT",
-			"ITEM_MOD_HIT_MELEE_RATING_SHORT",
-			"ITEM_MOD_HIT_RANGED_RATING_SHORT",
-			"ITEM_MOD_HIT_RATING_SHORT",
-			"ITEM_MOD_HIT_SPELL_RATING_SHORT",
-			"ITEM_MOD_HIT_TAKEN_MELEE_RATING_SHORT",
-			"ITEM_MOD_HIT_TAKEN_RANGED_RATING_SHORT",
-			"ITEM_MOD_HIT_TAKEN_RATING_SHORT",
-			"ITEM_MOD_HIT_TAKEN_SPELL_RATING_SHORT",
-			"ITEM_MOD_INTELLECT_SHORT",
-			"ITEM_MOD_MANA_REGENERATION_SHORT",
-			"ITEM_MOD_MANA_SHORT",
-			"ITEM_MOD_MELEE_ATTACK_POWER_SHORT",
-			"ITEM_MOD_PARRY_RATING_SHORT",
-			"ITEM_MOD_POWER_REGEN0_SHORT",
-			"ITEM_MOD_POWER_REGEN1_SHORT",
-			"ITEM_MOD_POWER_REGEN2_SHORT",
-			"ITEM_MOD_POWER_REGEN3_SHORT",
-			"ITEM_MOD_POWER_REGEN4_SHORT",
-			"ITEM_MOD_POWER_REGEN5_SHORT",
-			"ITEM_MOD_POWER_REGEN6_SHORT",
-			"ITEM_MOD_RANGED_ATTACK_POWER_SHORT",
-			"ITEM_MOD_RESILIENCE_RATING_SHORT",
-			"ITEM_MOD_SPELL_DAMAGE_DONE_SHORT",
-			"ITEM_MOD_SPELL_HEALING_DONE_SHORT",
-			"ITEM_MOD_SPELL_PENETRATION_SHORT",
-			"ITEM_MOD_SPELL_POWER_SHORT",
-			"ITEM_MOD_SPIRIT_SHORT",
-			"ITEM_MOD_STAMINA_SHORT",
-			"ITEM_MOD_STRENGTH_SHORT",
-			"RESISTANCE0_NAME",
-			"RESISTANCE1_NAME",
-			"RESISTANCE2_NAME",
-			"RESISTANCE3_NAME",
-			"RESISTANCE4_NAME",
-			"RESISTANCE5_NAME",
-			"RESISTANCE6_NAME",
-		},
-	},
-	{
-		name = STORE_SEARCH_OPTION_NAME,
-		desc = STORE_SEARCH_OPTION_NAME_DESC,
-		func = function(option, filter, itemID, itemLink, itemName)
-			return itemName and itemName ~= "" and string.find(strlower(itemName), filter, 1, true)
-		end,
-	},
-}
-
-local function SortOptionFilters(a, b)
-	local aName, bName = _G[a], _G[b];
-
-	if aName and bName then
-		return aName < bName;
-	end
-end
-
-function StoreSortButtonSearchBox_OnLoad(self)
-	SearchBoxTemplate_OnLoad(self);
-
-	self.HasStickyFocus = function()
-		return DoesAncestryInclude(self.PreviewContainer, GetMouseFocus()) or DoesAncestryInclude(self.SearchOption, GetMouseFocus()) or DoesAncestryInclude(self.FilterFrom, GetMouseFocus());
-	end
-
-	self.Filters = {};
-
-	for i = 1, #searchBoxFilters do
-		local optionInfo = searchBoxFilters[i];
-		local filters = optionInfo.filters;
-
-		if filters then
-			table.sort(filters, SortOptionFilters);
-		end
-	end
-
-	self.Left:SetTexture("Interface\\Store\\Store-Main");
-	self.Left:SetSize(31, 31);
-	self.Left:SetPoint("LEFT", -15, -1);
-	self.Left:SetTexCoord(0.734375, 0.7646484375, 0.4970703125, 0.52734375);
-	self.Right:SetTexture("Interface\\Store\\Store-Main");
-	self.Right:SetSize(31, 31);
-	self.Right:SetPoint("RIGHT", 10, -1);
-	self.Right:SetTexCoord(0.8720703125, 0.90234375, 0.4970703125, 0.52734375);
-	self.Middle:SetTexture("Interface\\Store\\Store-Main");
-	self.Middle:SetHeight(31);
-	self.Middle:SetTexCoord(0.7646484375, 0.8720703125, 0.4970703125, 0.52734375);
-end
-
-function StoreSortButtonSearchBox_OnShow(self)
-	self:SetFrameLevel(self:GetParent():GetFrameLevel() + 10);
-
-	self:SetFocus();
-end
-
-function StoreSortButtonSearchBox_OnHide(self)
-	self.SearchOption:Hide();
-	self.FilterFrom:Hide();
-	self.SearchResults:Hide();
-end
-
-function StoreSortButtonSearchBox_OnMouseDown(self, button)
-	if not self:HasFocus() then
-		if button == "RightButton" then
-			self.clearFocus = true;
-		end
-	end
-end
-
-function StoreSortButtonSearchBox_OnMouseUp(self, button)
-	if button == "RightButton" then
-		StoreItemListFrame_SetShownSearchBox(false);
-	end
-end
-
-function StoreSortButtonSearchBox_OnEnterPressed(self)
-	if self.FilterFrom:IsShown() then
-		if self.FilterFrom.buttons[1] then
-			self.FilterFrom.buttons[1]:Click();
-		end
-	elseif self.PreviewContainer:IsShown() then
-		if strlen(self:GetText()) < MIN_CHARACTER_SEARCH then
-			return;
-		end
-
-		if self.selectedIndex == 6 then
-			if self.PreviewContainer.ShowAllSearchResults:IsShown() then
-				self.PreviewContainer.ShowAllSearchResults:Click();
-			end
-		elseif self.selectedIndex then
-			local preview = self.PreviewContainer.SearchPreviews[self.selectedIndex];
-			if preview:IsShown() then
-				preview:Click();
-			end
-		end
-	end
-end
-
-function StoreSortButtonSearchBox_OnEditFocusLost(self)
-	SearchBoxTemplate_OnEditFocusLost(self);
-
-	StoreSortButtonSearchBox_HideSearchPreview(self);
-	self.SearchOption:Hide();
-	self.FilterFrom:Hide();
-end
-
-function StoreSortButtonSearchBox_OnEditFocusGained(self)
-	if self.clearFocus then
-		self:ClearFocus();
-
-		self.clearFocus = nil;
-	else
-		SearchBoxTemplate_OnEditFocusGained(self);
-		self.SearchResults:Hide();
-		StoreSortButtonSearchBox_ShowSearchPreviewResults(self);
-	end
-end
-
-function StoreSortButtonSearchBox_OnTextChanged(self)
-	SearchBoxTemplate_OnTextChanged(self);
-
-	if self:HasFocus() then
-		StoreSortButtonSearchBox_ShowSearchPreviewResults(self);
-	end
-end
-
-function StoreSortButtonSearchBox_OnCursorChanged(self, x, y, w, h)
-
-end
-
-local s_qualityToAtlasColorName = {
-	[Enum.ItemQuality.Poor] = "gray",
-	[Enum.ItemQuality.Common] = "white",
-	[Enum.ItemQuality.Uncommon] = "green",
-	[Enum.ItemQuality.Rare] = "blue",
-	[Enum.ItemQuality.Epic] = "purple",
-	[Enum.ItemQuality.Legendary] = "orange",
-	[Enum.ItemQuality.Artifact] = "artifact",
-	[Enum.ItemQuality.Heirloom] = "artifact",
-};
-
-function StoreSortButtonSearchBox_ShowSearchOptions(self, hideOptionName)
-	local lastButton;
-
-	table.wipe(self.SearchOption.buttons);
-	self.SearchOption.optionPool:ReleaseAll();
-
-	for i = 1, #searchBoxFilters do
-		local optionInfo = searchBoxFilters[i];
-		local optionName = optionInfo.name;
-
-		if not hideOptionName or not hideOptionName[optionName] then
-			local optionButton = self.SearchOption.optionPool:Acquire();
-			optionButton:SetPoint("TOPLEFT", lastButton or self.SearchOption.HeaderBackground, "BOTTOMLEFT");
-
-			optionButton.OptionName:SetText(optionName);
-			optionButton.FilterName:SetText(optionInfo.desc);
-			optionButton:Show();
-
-			lastButton = optionButton;
-
-			self.SearchOption.buttons[#self.SearchOption.buttons + 1] = optionButton;
-		end
-	end
-
-	if lastButton then
-		self.SearchOption.BorderAnchor:SetPoint("BOTTOM", lastButton, "BOTTOM", 0, -8);
-		self.SearchOption:Show();
-	else
-		self.SearchOption:Hide();
-	end
-end
-
-function StoreSortButtonSearchBox_ShowSearchFilters(self, filter, filterText)
-	if not filter or not filter.filters then
-		self.FilterFrom:Hide();
-		return;
-	end
-
-	local lastButton;
-
-	self.FilterFrom.HeaderText:SetText(filter.desc);
-
-	table.wipe(self.FilterFrom.buttons);
-	self.FilterFrom.filterPool:ReleaseAll();
-
-	for i = 1, #filter.filters do
-		local name = _G[filter.filters[i]];
-
-		if name then
-			local lowerName = strlower(name);
-
-			if name and (not filterText or string.find(lowerName, filterText, 1, true)) then
-				local filterButton = self.FilterFrom.filterPool:Acquire();
-				filterButton:SetPoint("TOPLEFT", lastButton or self.FilterFrom.HeaderBackground, "BOTTOMLEFT");
-
-				filterButton.FilterName:SetText(lowerName);
-				filterButton:Show();
-
-				lastButton = filterButton;
-
-				self.FilterFrom.buttons[#self.FilterFrom.buttons + 1] = filterButton;
-
-				if #self.FilterFrom.buttons == 8 then
-					break;
-				end
-			end
-		end
-	end
-
-	if lastButton then
-		self.FilterFrom.BorderAnchor:SetPoint("BOTTOM", lastButton, "BOTTOM", 0, -8);
-		self.FilterFrom:Show();
-	else
-		self.FilterFrom:Hide();
-	end
-end
-
-function StoreSortButtonSearchBox_ShowSearchPreviewResults(self)
-	table.wipe(self.Filters);
-	table.wipe(self.PreviewContainer.Results);
-
-	local usageOptions = {};
-	local shouldShowOptions, shouldShowFilters = true, false;
-
-	local filterText;
-
-	local searchBoxText = self:GetText() or "";
-	local trimmedText = strtrim(searchBoxText) == "";
-
-	if trimmedText then
-		usageOptions[STORE_SEARCH_OPTION_NAME] = true;
-		StoreSortButtonSearchBox_ShowSearchOptions(self, usageOptions);
-		self.FilterFrom:Hide();
-		StoreSortButtonSearchBox_HideSearchPreview(self);
-		return;
-	end
-
-	local utf8CursorPosition = self:GetUTF8CursorPosition();
-	local cursorPosition = self:GetCursorPosition();
-
-	local searchText = searchBoxText;
-	for i = 1, #searchBoxFilters do
-		local name = searchBoxFilters[i].name;
-
-		if name then
-			searchText = string.gsub(searchText, name, strconcat("|", name, "|"));
-		end
-	end
-
-	local parsedFilter = {strsplit("|", searchText)};
-	table.remove(parsedFilter, 1);
-
-	self.textCursorX = nil;
-	self.textCursorY = nil;
-
-	local foundOption;
-
-	for i = 1, #parsedFilter, 2 do
-		local option = parsedFilter[i];
-		local filter = parsedFilter[i + 1] or "";
-
-		for j = 1, #searchBoxFilters do
-			local searchOption = searchBoxFilters[j];
-
-			if searchOption.name == option then
-				usageOptions[option] = true;
-
-				local optionX, optionY = strfind(searchBoxText, option, -cursorPosition, true);
-				local filterX, filterY = strfind(searchBoxText, filter, optionY or 1, true);
-
-				local lowerFilter = strlower(filter);
-
-				if searchOption.filters then
-					local foundTrimmed, foundFilter;
-
-					for k = 1, #searchOption.filters do
-						local optionFilter = searchOption.filters[k];
-						local filterName = _G[searchOption.filters[k]];
-
-						if filterName then
-							local lowerFilterName = strlower(filterName);
-
-							if strfind(lowerFilterName, lowerFilter, 1, true) then
-								self.textCursorX = filterX;
-								self.textCursorY = filterY;
-
-								shouldShowFilters = searchOption;
-								filterText = lowerFilter;
-							end
-
-							if not foundTrimmed and lowerFilterName == strtrim(lowerFilter) then
-								foundTrimmed = optionFilter;
-							end
-
-							if lowerFilterName == lowerFilter then
-								foundFilter = optionFilter;
-							end
-						end
-					end
-
-					shouldShowOptions = foundTrimmed and not foundFilter;
-
-					if foundTrimmed then
-						shouldShowFilters = false;
-
-						if foundFilter or foundTrimmed then
-							self.Filters[foundFilter or foundTrimmed] = searchOption.func;
-
-							if foundFilter then
-								filterText = nil;
-							end
-						end
-					end
-				else
-					shouldShowOptions = false;
-
-					self.Filters[lowerFilter] = searchOption.func;
-				end
-
-				foundOption = true;
-
-				break;
-			end
-		end
-	end
-
-	if not foundOption then
-		shouldShowOptions = false;
-	end
-
-	if shouldShowFilters then
-		StoreSortButtonSearchBox_ShowSearchFilters(self, shouldShowFilters, filterText);
-
-		self.SearchOption:Hide();
-		StoreSortButtonSearchBox_HideSearchPreview(self);
-		return;
-	else
-		if shouldShowOptions then
-			StoreSortButtonSearchBox_ShowSearchOptions(self, usageOptions);
-			StoreSortButtonSearchBox_HideSearchPreview(self);
-			return;
-		else
-			self.SearchOption:Hide();
-		end
-
-		self.FilterFrom:Hide();
-	end
-
-	local onlyTextSearch = not parsedFilter[1] and not (shouldShowOptions and shouldShowFilters and parsedFilter[2])
-	local foundFilter = next(self.Filters) or onlyTextSearch;
-
-	if foundFilter then
-		for index = 1, #STORE_PRODUCT_LIST do
-			local product = STORE_PRODUCT_LIST[index];
-
-			local macthFilter = true;
-
-			if onlyTextSearch then
-				local name = product.Name;
-
-				if not name or name == "" or not string.find(strlower(name), searchText, 1, true) then
-					macthFilter = false;
-				end
-			else
-				for filter, func in pairs(self.Filters) do
-					if not func(nil, filter, product.Entry, product.Link, product.Name) then
-						macthFilter = false;
-						break;
-					end
-				end
-			end
-
-			if macthFilter then
-				self.PreviewContainer.Results[#self.PreviewContainer.Results + 1] = index;
-			end
-		end
-	end
-
-	local numResults = #self.PreviewContainer.Results;
-	if numResults > 0 then
-		StoreSortButtonSearchBox_SetSearchPreviewSelection(self, 1);
-	end
-
-	local lastButton;
-
-	for index = 1, 5 do
-		local searchPreview = self.PreviewContainer.SearchPreviews[index];
-		local productIndex = self.PreviewContainer.Results[index];
-		local product = productIndex and STORE_PRODUCT_LIST[productIndex];
-
-		if index <= numResults and product then
-			searchPreview.Name:SetText(product.Name);
-			searchPreview.Icon:SetTexture(product.Texture);
-
-			searchPreview.SelectedTexture:Hide();
-
-			local borderType;
-
-			if product.Quality then
-				local r, g, b = GetItemQualityColor(product.Quality);
-				searchPreview.Name:SetTextColor(r, g, b);
-
-				borderType = s_qualityToAtlasColorName[product.Quality];
-			else
-				searchPreview.Name:SetTextColor(0.96875, 0.8984375, 0.578125);
-			end
-
-			searchPreview.IconBorder:SetAtlas("dressingroom-itemborder-"..(borderType or "gray"));
-
-			searchPreview.itemID = product.Entry
-			searchPreview.productIndex = productIndex;
-			searchPreview:Show();
-
-			lastButton = searchPreview;
-		else
-			searchPreview.itemID = nil
-			searchPreview.productIndex = nil;
-			searchPreview:Hide();
-		end
-	end
-
-	if numResults > 5 then
-		self.PreviewContainer.ShowAllSearchResults:Show();
-		lastButton = self.PreviewContainer.ShowAllSearchResults;
-		self.PreviewContainer.ShowAllSearchResults.Text:SetText(string.format(ENCOUNTER_JOURNAL_SHOW_SEARCH_RESULTS, numResults));
-	else
-		self.PreviewContainer.ShowAllSearchResults:Hide();
-	end
-
-	if lastButton then
-		self.PreviewContainer.BorderAnchor:SetPoint("BOTTOM", lastButton, "BOTTOM", 0, -8);
-		self.PreviewContainer.Background:Hide();
-		self.PreviewContainer:Show();
-	else
-		self.PreviewContainer:Hide();
-	end
-end
-
-function StoreSortButtonSearchBox_HideSearchPreview(self)
-	self.PreviewContainer:Hide();
-
-	for index = 1, 5 do
-		self.PreviewContainer.SearchPreviews[index]:Hide();
-	end
-
-	self.PreviewContainer.ShowAllSearchResults:Hide();
-end
-
-function StoreSortButtonSearchBox_SetSearchPreviewSelection(self, selectedIndex)
-	local numShown = 0;
-
-	for index = 1, 5 do
-		local searchPreview = self.PreviewContainer.SearchPreviews[index];
-		searchPreview.SelectedTexture:Hide();
-
-		if searchPreview:IsShown() then
-			numShown = numShown + 1;
-		end
-	end
-
-	if self.PreviewContainer.ShowAllSearchResults:IsShown() then
-		numShown = numShown + 1;
-	end
-
-	self.PreviewContainer.ShowAllSearchResults.SelectedTexture:Hide();
-
-	if numShown <= 0 then
-		selectedIndex = 1;
-	else
-		selectedIndex = (selectedIndex - 1) % numShown + 1;
-	end
-
-	self.selectedIndex = selectedIndex;
-
-	if selectedIndex == 6 then
-		self.PreviewContainer.ShowAllSearchResults.SelectedTexture:Show();
-	else
-		self.PreviewContainer.SearchPreviews[selectedIndex].SelectedTexture:Show();
-	end
-end
-
-function StoreSortButtonSearchBox_ShowFullSearch(self)
-	if #self.PreviewContainer.Results == 0 then
-		self.SearchResults:Hide();
-		return;
-	end
-
-	StoreSortButtonSearchBox_UpdateFullSearchResults();
-	StoreSortButtonSearchBox_HideSearchPreview(self);
-	self:ClearFocus();
-	self.SearchResults:Show();
-end
-
-function StoreSortButtonSearchPreviewButton_OnLoad(self)
-	self.NormalTexture:SetDrawLayer("BACKGROUND");
-	self.PushedTexture:SetDrawLayer("BACKGROUND");
-
-	self:SetParentArray("SearchPreviews");
-end
-
-function StoreSortButtonSearchPreviewButton_OnEnter(self)
-	local previewContainer = self:GetParent();
-	StoreSortButtonSearchBox_SetSearchPreviewSelection(previewContainer:GetParent(), self:GetID());
-
-	if self.itemID then
-		GameTooltip:SetOwner(self, "TOPLEFT")
-		GameTooltip:SetHyperlink(string.format("item:%d", self.itemID))
-	end
-end
-
-function StoreSortButtonSearchPreviewButton_OnClick(self)
-	if self.productIndex then
-		MountJournal_UpdateScrollPos(StoreItemListScrollFrame, self.productIndex);
-
-		local previewContainer = self:GetParent();
-		local searchBox = previewContainer:GetParent();
-		searchBox.SearchResults:Hide();
-		StoreSortButtonSearchBox_HideSearchPreview(searchBox);
-		searchBox:ClearFocus();
-	end
-end
-
-function StoreSortButtonSearchBox_UpdateFullSearchResults()
-	local searchBox = StoreItemListFrameContainer.SearchBox;
-	local results = searchBox.PreviewContainer.Results;
-	local numResults = #results;
-
-	local scrollFrame = searchBox.SearchResults.scrollFrame;
-	local offset = HybridScrollFrame_GetOffset(scrollFrame);
-	local buttons = scrollFrame.buttons;
-
-	for i = 1, #buttons do
-		local button = buttons[i];
-		local index = offset + i;
-
-		local productIndex = results[index];
-		local product = productIndex and STORE_PRODUCT_LIST[productIndex];
-
-		if index <= numResults and product then
-			button.Name:SetText(product.Name);
-			button.Icon:SetTexture(product.Texture);
-
-			local borderType
-
-			if product.Quality then
-				local r, g, b = GetItemQualityColor(product.Quality);
-				button.Name:SetTextColor(r, g, b);
-
-				borderType = s_qualityToAtlasColorName[product.Quality];
-			else
-				button.Name:SetTextColor(0.96875, 0.8984375, 0.578125);
-			end
-
-			button.IconBorder:SetAtlas("dressingroom-itemborder-"..(borderType or "gray"));
-
-			button.itemID = product.Entry
-			button.productIndex = productIndex;
-			button:Show();
-		else
-			button:Hide();
-			button.itemID = nil
-			button.productIndex = nil;
-		end
-	end
-
-	local totalHeight = numResults * 49;
-	HybridScrollFrame_Update(scrollFrame, totalHeight, 270);
-
-	searchBox.SearchResults.TitleText:SetText(string.format(ENCOUNTER_JOURNAL_SEARCH_RESULTS, searchBox:GetText(), numResults));
-end
-
-function StoreSortButtonNumericBox_OnLoad(self)
-	self:SetTextInsets(0, 16, 0, 0);
-
-	self.Left:Hide();
-	self.Right:Hide();
-	self.Middle:Hide();
-end
-
-function StoreSortButtonNumericBox_OnShow(self)
-	local buttonText = self:GetParent().Text;
-	if buttonText then
-		buttonText:Hide();
-	end
-
-	self:SetFocus();
-end
-
-function StoreSortButtonNumericBox_OnHide(self)
-	local buttonText = self:GetParent().Text;
-	if buttonText then
-		buttonText:Show();
-	end
-end
-
-function StoreSortButtonNumericBox_OnMouseDown(self, button)
-	if button == "RightButton" and not self:HasFocus() then
-		self.clearFocus = true;
-	end
-end
-
-function StoreSortButtonNumericBox_OnMouseUp(self, button)
-	if button == "RightButton" then
-		self:Hide();
-	end
-end
-
-function StoreSortButtonNumericBox_OnEnter(self)
-	self:GetParent():LockHighlight();
-end
-
-function StoreSortButtonNumericBox_OnLeave(self)
-	self:GetParent():UnlockHighlight();
-end
-
-function StoreSortButtonNumericBox_OnEditFocusLost(self)
-	if self:GetText() == "" then
-		if not self.ClearButton:IsMouseOver() then
-			self.ClearButton:Hide();
-		end
-	end
-end
-
-function StoreSortButtonNumericBox_OnEditFocusGained(self)
-	if self.clearFocus then
-		self:ClearFocus();
-
-		self.clearFocus = nil;
-	else
-		self.ClearButton:Show();
-	end
-end
-
-function StoreSortButtonNumericBox_OnTextChanged(self)
-	if not self:HasFocus() and self:GetText() == "" then
-		self.ClearButton:Hide();
-	else
-		self.ClearButton:Show();
-	end
-
-	InputBoxInstructions_OnTextChanged(self);
-
-	local number = self:GetNumber();
-	if not number or number == 0 then
-		StoreItemListFrame.iLvl = nil;
-	else
-		StoreItemListFrame.iLvl = number;
-	end
-
-	StoreDataTableCopy(true);
-end
-
-function StoreSortButtonNumericBoxClearButton_OnClick(self)
-	SearchBoxTemplateClearButton_OnClick(self);
-
-	self:GetParent():Hide();
-
-	StoreItemListFrame.iLvl = nil;
-	StoreDataTableCopy(true);
-end
-
-function StoreDressUPFrame_OnLoad( self, ... )
-	ButtonFrameTemplate_HidePortrait(self)
-	ButtonFrameTemplate_HideAttic(self)
-
-	self:SetFrameLevel(StoreFrame:GetFrameLevel() + 2)
-
-	self.TitleText:SetText(STORE_DRESSUP_TITLE)
-	self.Inset:Hide()
-
-	self:RegisterForDrag("LeftButton")
-
-	self.Display.DressUPModel.SetCreature = function(this, ...)
-		getmetatable(this).__index.SetCreature(this, ...)
-		SharedXML_Model_Reset(self.Display.DressUPModel)
-	end
-end
-
-function StoreDressUPFrame_OnShow(self)
-	SharedXML_Model_Reset(self.Display.DressUPModel)
-end
-
-function StoreTransmogrifyFrame_OnLoad( self, ... )
-	local _, _, classID, classMask = UnitClass("player")
-
-	STORE_TRANSMOGRIFY_SORT_ID = 0
-	STORE_TRANSMOGRIFY_FILTER_CLASSID = classMask
-	STORE_TRANSMOGRIFY_FILTER_EXPANSION = ALL_EXPANSION_FILTER
-	STORE_TRANSMOGRIFY_FILTER_SOURCE = ALL_SOURCE_FILTER
-	STORE_TRANSMOGRIFY_FILTER_WEAPON = ALL_WEAPON_FILTER
-
-	for i = 1, 4 do
-		StoreTransmogrifySetSorted(STORE_TRANSMOGRIFY_SORT_ID, i)
-	end
-
-	self.LeftContainer.ScrollFrame.update = StoreTransmogrifyFrame_UpdateScrollFrame
-	self.LeftContainer.ScrollFrame.scrollBar.doNotHide = true
-	HybridScrollFrame_CreateButtons(self.LeftContainer.ScrollFrame, "StoreTransmogrifyFrameScrollButtonTemplate", 1, 0)
-
-	StoreTransmogrifyGenerateData()
-end
-
-function StoreTransmogrifyButtonSetIconBorder( button, quality )
-	if quality == LE_ITEM_QUALITY_UNCOMMON then
-		button.IconBorder:SetAtlas("loottab-set-itemborder-green")
-	elseif quality == LE_ITEM_QUALITY_RARE then
-		button.IconBorder:SetAtlas("loottab-set-itemborder-blue")
-	elseif quality == LE_ITEM_QUALITY_EPIC then
-		button.IconBorder:SetAtlas("loottab-set-itemborder-purple")
-	elseif quality == LE_ITEM_QUALITY_LEGENDARY then
-		button.IconBorder:SetAtlas("loottab-set-itemborder-orange")
-	else
-		button.IconBorder:SetAtlas("loottab-set-itemborder-white")
-	end
-end
-
-function StoreTransmogrifyFrame_UpdateScrollFrame()
-	local scrollFrame = StoreTransmogrifyFrame.LeftContainer.ScrollFrame
-	local rightContainer = StoreTransmogrifyFrame.RightContainer
-	local offset = HybridScrollFrame_GetOffset(scrollFrame)
-	local buttons = scrollFrame.buttons
-	local numButtons = #buttons
-	local button, index
-
-	local numSets = GetNumStoreTransmogrifySets()
-
-	rightContainer.ContentFrame:SetShown(numSets > 0)
-	rightContainer.ReceiptLine:SetShown(numSets > 0)
-	rightContainer.EmptyFrame:SetShown(numSets == 0)
-
-	for i = 1, numButtons do
-		button = buttons[i]
-		index = offset + i
-
-		if index <= numSets then
-			local storeID, setName, iconTexture, isPVP, classID, expansionID, qualityID, itemsStoreID = GetStoreTransmogrifySetsInfo(index)
-
-			button.index = index
-
-			button.Name:SetText(setName)
-			button.Icon:SetTexture(iconTexture)
-
-			StoreTransmogrifyButtonSetIconBorder(button, qualityID)
-
-			button.selectedTexture:SetShown(StoreTransmogrifyFrame.selectedIndex and StoreTransmogrifyFrame.selectedIndex == index)
-
-			local serverData = STORE_TRANSMOGRIFY_SERVER_DATA[storeID]
-
-			if serverData then
-				local flags = serverData[STORE_TRANSMOGRIFY_SERVER_STOREFLAGS]
-
-				if flags then
-					local isNew = bit.band(flags, STORE_ITEM_FLAG_NEW) == STORE_ITEM_FLAG_NEW
-
-					button.NewItems:SetShown(isNew)
-				end
-			end
-
-			button:Show()
-		else
-			button:Hide()
-		end
-	end
-
-	local totalHeight = numSets * buttons[1]:GetHeight()
-	HybridScrollFrame_Update(scrollFrame, totalHeight, scrollFrame:GetHeight())
-end
-
-function StoreTransmogrifyFrame_UpdateRightContainer()
-	local itemCount = GetNumStoreTransmogrifyItems()
-	local _, setName = GetStoreTransmogrifySetsInfo()
-	local containerFrame = StoreTransmogrifyFrame.RightContainer.ContentFrame.OverlayElements
-	local buttonsList = StoreTransmogrifyFrame.RightContainer.ContentFrame.Buttons
-	local size = (34 / 2) * itemCount
-
-	containerFrame:GetParent().previewItems = {}
-	containerFrame.selectedItem = nil
-
-	if selectedSubCategoryID == 1 then
-		StoreTransmogrifyFrame.RightContainer.Background:SetTexCoord(0.14453125, 0.7578125, 0.107421875, 0.791015625);
-	end
-
-	containerFrame.Title:SetText(setName)
-
-	for i = 1, itemCount do
-		local storeID, itemID, iconTexture, itemLink, itemRarity, storePrice, storeDiscount, storeDiscountPrice, isPVP = GetStoreTransmogrifyItemsInfo(i)
-		local button = buttonsList[i]
-
-		button.itemLink = itemLink
-		table.insert(containerFrame:GetParent().previewItems, itemLink)
-
-		button.Icon:SetTexture(iconTexture)
-		StoreTransmogrifyButtonSetIconBorder(button, itemRarity)
-
-		button.Icon:SetDesaturated(false)
-		button.Icon:SetAlpha(1)
-		button.IconBorder:SetDesaturated(false)
-		button.IconBorder:SetAlpha(1)
-
-		button:SetPoint("CENTER", containerFrame.IconRowBackground, -size + 34 * i - 17, 0)
-		button:Show()
-	end
-
-	StoreTransmogrifyUpdatePrice()
-
-	for i = (itemCount + 1), 9 do
-		local button = buttonsList[i]
-		button:Hide()
-	end
-
-	StoreTransmogrifyFrame_UpdatePlayerModel();
-end
-
-function StoreTransmogrifyFrame_UpdatePlayerModel()
-	local modelFrame = StoreTransmogrifyFrame.RightContainer.ContentFrame.Model;
-	modelFrame:Undress();
-
-	if selectedSubCategoryID == 1 then
-		modelFrame:SetUnit("player", true, STORE_TRANSMOGRIFY_CAMERA_SETTINGS_HEAD);
-		modelFrame:Undress();
-
-		StoreTransmogrifyFrame.RightContainer.Background:SetTexCoord(0.14453125, 0.7578125, 0.107421875, 0.791015625);
-	else
-		modelFrame:SetUnit("player", true);
-		modelFrame:Undress();
-	end
-
-	if selectedSubCategoryID == 1 then
-		Store_TryOnModel(modelFrame, 1, not storeTransmogrifyShowShoulders and 3 or 0);
-	elseif selectedSubCategoryID == 3 then
-		Store_TryOnModel(modelFrame);
-	end
-
-	for i = 1, GetNumStoreTransmogrifyItems() do
-		local _, _, _, itemLink = GetStoreTransmogrifyItemsInfo(i)
-		if itemLink then
-			modelFrame:TryOn(itemLink);
-		end
-	end
-end
-
-function StoreTransmogrifyFrameScrollButton_OnClick( self, ... )
-	if ( IsModifiedClick("CHATLINK") ) then
-		local storeID, setName = GetStoreTransmogrifySetsInfo(self.index)
-		if ( ChatEdit_InsertLink(StoreGenerateHyperlink( 1, STORE_TRANSMOGRIFY_CATEGORY_ID, 0, storeID, setName )) ) then
-			return true
-		end
-	end
-
-	StoreTransmogrifyButton_Selected(self.index)
-end
-
-function StoreTransmogrifyButton_SelectedSetByStoreID(storeID, setClassID)
-	if not storeID then
-		return
-	end
-
-	STORE_TRANSMOGRIFY_FILTER_CLASSID = setClassID
-	StoreTransmogrifyGenerateData()
-
-	for index, data in pairs(storeTransmogrifySetsData) do
-		if data[STORE_TRANSMOGRIFY_SETS_STOREID] == storeID then
-			StoreTransmogrifyButton_Selected(index, true)
-			return
-		end
-	end
-end
-
-function StoreTransmogrifyButton_Selected( index, focusScroll, forceUpdate )
-	if forceUpdate or focusScroll or StoreTransmogrifyFrame.selectedIndex ~= index then
-		StoreTransmogrifyFrame.selectedIndex = index
-		StoreTransmogrifyFrame_UpdateScrollFrame()
-
-		if focusScroll then
-			MountJournal_UpdateScrollPos(StoreTransmogrifyFrame.LeftContainer.ScrollFrame, index)
-		end
-
-		StoreTransmogrifyFrame.RightContainer.ContentFrame.selectedItem = nil
-
-		local storeID = GetStoreTransmogrifySetsInfo(index)
-		if not StoreTransmogrifyFrame.selectedSets or StoreTransmogrifyFrame.selectedSets ~= storeID then
-			StoreTransmogrifyFrame_UpdateRightContainer()
-		end
-		StoreTransmogrifyFrame.selectedSets = storeID
-	end
-end
-
-function StoreTransmogrifyItemButton_OnEnter( self, ... )
-	if self.itemLink then
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-		GameTooltip:SetHyperlink(self.itemLink)
+function StoreRefundProductPlateMixin:OnEnter()
+	self.Background:SetTexture(0.157, 0.157, 0.157)
+
+	if self.link then
+		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+		GameTooltip:SetHyperlink(self.link)
 		GameTooltip:Show()
 	end
 end
 
-function StoreTransmogrifyItemButton_OnLeave( self, ... )
+function StoreRefundProductPlateMixin:OnLeave()
+	self.Background:SetTexture(0.059, 0.059, 0.059)
 	GameTooltip:Hide()
 end
 
-function StoreTransmogrifyUpdatePrice()
-	local _, storePrice, storeDiscount, storeDiscountPrice, altCurrency, altCurrencyIcon;
-	local containerFrame = StoreTransmogrifyFrame.RightContainer.ContentFrame.OverlayElements
-	local selectedItem = StoreTransmogrifyFrame.RightContainer.ContentFrame.selectedItem
+function StoreRefundProductPlateMixin:OnClick(button)
+	local checked = not self.CheckButton:GetChecked()
+	self.CheckButton:SetChecked(checked)
 
-	if selectedItem then
-		_, _, _, _, _, storePrice, storeDiscount, storeDiscountPrice, _, altCurrency, _, _, altCurrencyIcon = GetStoreTransmogrifyItemsInfo(selectedItem)
+	if checked then
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 	else
-		_, _, _, _, _, _, _, _, storePrice, storeDiscount, storeDiscountPrice, _, altCurrency, _, _, altCurrencyIcon = GetStoreTransmogrifySetsInfo()
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
 	end
-
-	if not storePrice or not storeDiscountPrice then
-		return
-	end
-
-	if storeDiscountPrice and storeDiscount then
-		containerFrame.Price:SetFontObject(GameFontNormal13)
-	else
-		containerFrame.Price:SetFontObject(GameFontNormal16)
-	end
-
-	local hasAltCurrency = altCurrency and altCurrency ~= 0;
-	containerFrame.AltCurrencyIcon:SetShown(hasAltCurrency);
-	if hasAltCurrency then
-		containerFrame.AltCurrencyIcon:SetTexture(altCurrencyIcon);
-
-		containerFrame.PriceIcon:SetPoint("BOTTOMRIGHT", -40, 68);
-	else
-		containerFrame.PriceIcon:SetPoint("BOTTOMRIGHT", -20, 68);
-	end
-
-	containerFrame.Price:SetText(storePrice)
-	containerFrame.DiscountPrice:SetText(storeDiscountPrice or 0)
-
-	containerFrame.DiscountPrice:SetShown(storeDiscountPrice and storeDiscount)
-	containerFrame.Strikethrough:SetShown(storeDiscountPrice and storeDiscount)
 end
 
-function StoreTransmogrifyItemButton_OnClick( self, ... )
-	if HandleModifiedItemClick(self.itemLink) then
+function StoreRefundProductPlateMixin:OnChecked(checked)
+	self:GetOwner():SetSelectedProduct(self:GetID(), checked)
+
+	if checked then
+--		NineSliceUtil.ApplyLayoutByName(self.NineSlice, "PKBT_ItemPlateHighlight")
+	else
+--		NineSliceUtil.ApplyLayoutByName(self.NineSlice, "PKBT_ItemPlate")
+	end
+end
+
+function StoreRefundProductPlateMixin:SetChecked(state)
+	self.CheckButton:SetChecked(state)
+end
+
+function StoreRefundProductPlateMixin:GetChecked()
+	return not not self.CheckButton:GetChecked()
+end
+
+function StoreRefundProductPlateMixin:UpdateProductInfo()
+	local itemLink, amount, purchaseDate, remainingTime, penalty, price, originalPrice, currencyType = C_StoreSecure.GetRefundProductInfo(self:GetID())
+	local name, link, rarity, level, minLevel, itemType, itemSubType, stackCount, equipLoc, icon, vendorPrice = GetItemInfo(itemLink)
+
+	self.Item:SetIcon(icon)
+	self.Item:SetAmount(amount)
+
+	self.Name:SetText(name)
+	self.Name:SetTextColor(GetItemQualityColor(rarity))
+	self.PurchaseDate:SetFormattedText(STORE_PRODUCT_REFUND_PURCHASE_DATE, date("%d.%m.%Y", purchaseDate))
+	self.Penalty:SetFormattedText(STORE_PRODUCT_REFUND_PURCHASE_PENALTY, penalty)
+	self.link = itemLink
+
+	self.Price:SetPrice(price, originalPrice, currencyType)
+	self:SetCountdown(remainingTime)
+end
+
+function StoreRefundProductPlateMixin:OnCountdownUpdate(timeLeft, isFinished)
+	self.TimeLeft:SetFormattedText(STORE_PRODUCT_REFUND_PURCHASE_TIMELEFT, GetRemainingTime(timeLeft))
+	if isFinished then
+		self:GetOwner():UpdateProductList()
+	end
+end
+
+StorePageCollectionsMixin = CreateFromMixins(PKBT_OwnerMixin, StoreCategoryPagesMixin)
+
+function StorePageCollectionsMixin:OnLoad()
+	self.RefreshFrame.RefreshButton:AddTextureAtlas("PKBT-Icon-Refresh", true)
+	self.RefreshFrame.RefreshButton:AddText(STORE_REFRESH_PRODUCTS)
+
+	Mixin(self.RefreshFrame, PKBT_CountdownThrottledBaseMixin)
+
+	self.Paginator.Background:SetAtlas("PKBT-Store-Pagination-Arrow-Background", true)
+	self.Paginator:SetPageFormat(STORE_PAGE_FORMAT)
+	self.Paginator.OnPageChanged = function(this, currentPage, numPages)
+		self:UpdateProducts()
+	end
+
+	self.RefreshFrame:SetScript("OnShow", function(this)
+		self:UpdateRefreshTimer()
+	end)
+
+	self.tabButtons = {}
+	self.productButtons = {}
+	self.productsPerRow = 5
+	self.numRows = 2
+
+	self:RegisterCustomEvent("STORE_PRODUCT_LIST_UPDATE")
+	self:RegisterCustomEvent("STORE_PRODUCT_LIST_LOADING")
+	self:RegisterCustomEvent("STORE_PRODUCT_LIST_RENEW")
+	self:RegisterCustomEvent("STORE_RANDOM_ITEM_POLL_UPDATE")
+
+	self:SetID(Enum.Store.Category.Collections)
+	self:SetOwner(self:GetParent():GetParent())
+	self:GetOwner():RegisterPageWidget(self)
+end
+
+function StorePageCollectionsMixin:OnEvent(event, ...)
+	if not self:IsVisible() then
 		return
 	end
 
-	if StoreDressUPFrame:IsShown() then
-		return
+	if event == "STORE_PRODUCT_LIST_LOADING" then
+		local categoryIndex, subCategoryIndex = ...
+		if self.categoryIndex == categoryIndex and self.subCategoryIndex == subCategoryIndex then
+			self.Loading:Show()
+		end
+	elseif event == "STORE_PRODUCT_LIST_UPDATE"
+	or event == "STORE_PRODUCT_LIST_RENEW"
+	then
+		local categoryIndex, subCategoryIndex = ...
+		if categoryIndex == self:GetID() then
+			if not subCategoryIndex or subCategoryIndex == self:GetSubCategoryIndex() then
+				self:UpdateProducts()
+			end
+		end
+	elseif event == "STORE_RANDOM_ITEM_POLL_UPDATE" then
+		self:UpdateRefreshTimer()
+	end
+end
+
+function StorePageCollectionsMixin:OnShow()
+	if not self.initialized then
+		local name = C_StoreSecure.GetCategoryInfo(self:GetID())
+		self.PageHeader:SetLabel(name)
+		self.initialized = true
 	end
 
-	local containerFrame = StoreTransmogrifyFrame.RightContainer.ContentFrame
-	local modelFrame = containerFrame.Model
-	local buttonID = self:GetID()
+	SetParentFrameLevel(self.Loading, 10)
+	self.Loading:Show()
 
-	containerFrame.previewItems = {}
+	local _, selectedSubCategoryIndex = C_StoreSecure.GetSelectedCategory()
+	self:SetSubCategory(selectedSubCategoryIndex)
+	self.Paginator:SetPage(1)
+end
 
-	modelFrame:Undress()
+function StorePageCollectionsMixin:OnHide()
+	self.Loading:Hide()
+end
 
-	if containerFrame.selectedItem == buttonID then
-		containerFrame.selectedItem = nil
-		StoreTransmogrifyFrame_UpdateRightContainer()
-		return
+function StorePageCollectionsMixin:OnMouseWheel(delta)
+	if delta > 0 then
+		self.Paginator:PreviousPage()
+	else
+		self.Paginator:NextPage()
 	end
+end
 
-	for i = 1, 9 do
-		local button = self:GetParent().Buttons[i]
+function StorePageCollectionsMixin:UpdateRefreshTimer()
+	local timeLeft, isRefreshAvailable = C_StoreSecure.GetCollectionRefreshTimeLeft(self:GetSubCategoryIndex())
+	if timeLeft > 0 then
+		self.RefreshFrame.RefreshButton:SetEnabled(isRefreshAvailable)
+	else
+		self.RefreshFrame.RefreshButton:Disable()
+	end
+	self.RefreshFrame:SetTimeLeft(timeLeft, nil, self.OnRefreshCountdownUpdate)
+end
 
-		if button then
-			if button:GetID() == buttonID then
-				button.Icon:SetDesaturated(false)
-				button.Icon:SetAlpha(1)
-				button.IconBorder:SetDesaturated(false)
-				button.IconBorder:SetAlpha(1)
+function StorePageCollectionsMixin.OnRefreshCountdownUpdate(this, timeLeft, timerFinished)
+	if timeLeft > 0 then
+		this.Timer:SetText(GetRemainingTime(timeLeft))
+		this:Show()
+	else
+		this:Hide()
 
-				table.insert(containerFrame.previewItems, button.itemLink)
+		if timerFinished then
+			this:GetParent():UpdateProducts()
+		end
+	end
+end
 
-				modelFrame:TryOn(button.itemLink)
-			else
-				button.Icon:SetDesaturated(true)
-				button.Icon:SetAlpha(0.3)
-				button.IconBorder:SetDesaturated(true)
-				button.IconBorder:SetAlpha(0.3)
+function StorePageCollectionsMixin:CanRefreshList()
+	return C_StoreSecure.GetCollectionRefreshTimeLeft(self:GetSubCategoryIndex()) ~= -1
+end
+
+function StorePageCollectionsMixin:AttachRefreshFrame()
+	if self:CanRefreshList() then
+		local numProducts = C_StoreSecure.GetNumCollectionProducts(self:GetSubCategoryIndex())
+		local productsPerPage = self.productsPerRow * self.numRows - 1
+
+		if numProducts == 0 then
+			self.RefreshFrame:ClearAllPoints()
+			self.RefreshFrame:SetPoint("CENTER", 0, 0)
+			self.RefreshFrame:Show()
+			return
+		elseif self.productsPerRow % 2 == 1 then
+			local centerButtonIndex = math.ceil(self.productsPerRow / 2)
+			local centerButton = self.productButtons[centerButtonIndex]
+			if centerButton and centerButton:IsShown() then
+				local currentPage, numPages = self.Paginator:GetPage()
+
+				if numProducts == self.productsPerRow
+				or (currentPage == numPages and (numProducts - productsPerPage) % self.productsPerRow == 0)
+				then
+					self.RefreshFrame:ClearAllPoints()
+					self.RefreshFrame:SetPoint("TOP", centerButton, "BOTTOM", 0, -25)
+					self.RefreshFrame:Show()
+					return
+				end
+			end
+		end
+
+		local lastButtonIndex
+
+		if numProducts <= productsPerPage then
+			lastButtonIndex = numProducts
+		else
+			lastButtonIndex = productsPerPage
+		end
+
+		for index = lastButtonIndex, 1, -1 do
+			local button = self.productButtons[index]
+			if button and button:IsShown() then
+				self.RefreshFrame:ClearAllPoints()
+				if index % self.productsPerRow == 0 then
+					self.RefreshFrame:SetPoint("TOPLEFT", self.productButtons[1], "BOTTOMLEFT", 0, -25)
+				else
+					self.RefreshFrame:SetPoint("TOPLEFT", self.productButtons[index], "TOPRIGHT", 10, 0)
+				end
+				self.RefreshFrame:Show()
+
+				return
 			end
 		end
 	end
 
-	containerFrame.selectedItem = buttonID
-	StoreTransmogrifyUpdatePrice()
+	self.RefreshFrame:Hide()
 end
 
-function StoreTransmogrifyFrameRightContainerContentFrameModelMagnifier_OnClick( self, ... )
-	local previewItems = StoreTransmogrifyFrame.RightContainer.ContentFrame.previewItems
+function StorePageCollectionsMixin:SetSubCategory(subCategoryIndex)
+	self:SetSubCategoryIndex(subCategoryIndex)
 
-	if not StoreDressUPFrame:IsShown() then
-		StoreDressUPFrame:Show()
+	local categoryIndex = self:GetID()
+	local numSubCategories = C_StoreSecure.GetNumSubCategories(categoryIndex)
+
+	for index = 1, numSubCategories do
+		local button = self.tabButtons[index]
+		if not button then
+			button = CreateFrame("Button", strformat("$parentTabButton%u", index), self, "StoreCategoryTabTemplate")
+			button:SetID(index)
+			button:SetIconSize(18)
+
+			if index == 1 then
+				button:SetPoint("TOPLEFT", self.PageHeader, "BOTTOMLEFT", 20, 0)
+			else
+				button:SetPoint("TOPLEFT", self.tabButtons[index - 1], "TOPRIGHT", -6, 0)
+			end
+
+			self.tabButtons[index] = button
+		end
+
+		local name, icon, isNew, enabled, reason = C_StoreSecure.GetCategoryInfo(categoryIndex, index)
+
+		button.categoryIndex = categoryIndex
+		button:SetText(name)
+		button:SetIcon(icon, true, false)
+		button:SetEnabled(enabled)
+		button.reason = reason
+
+		button:SetSelected(index == subCategoryIndex)
+		button:UpdateState()
+		button:Show()
 	end
-	StoreDressUPFrame.Display.DressUPModel:SetUnit("player")
-	StoreDressUPFrame.Display.DressUPModel:Undress()
 
-	if selectedSubCategoryID == 1 then
-		Store_TryOnModel(StoreDressUPFrame.Display.DressUPModel, 1, not storeTransmogrifyShowShoulders and 3 or 0)
+	for index = numSubCategories + 1, #self.tabButtons do
+		self.tabButtons[index]:Hide()
 	end
 
-	for _, itemLink in pairs(previewItems) do
-		StoreDressUPFrame.Display.DressUPModel:TryOn(itemLink)
+	self:UpdateProducts()
+end
+
+function StorePageCollectionsMixin:UpdateProducts()
+	local subCategoryIndex = self:GetSubCategoryIndex()
+	local numProducts = C_StoreSecure.GetNumCollectionProducts(subCategoryIndex)
+
+	local productsPerPage = self.productsPerRow * self.numRows
+	if self:CanRefreshList() then
+		productsPerPage = productsPerPage - 1
+	end
+
+	self.Paginator:SetNumPages(math.ceil(numProducts / productsPerPage), true)
+	local currentPage, numPages = self.Paginator:GetPage()
+	self.Paginator:SetShown(numPages > 1)
+
+	local offset = (currentPage - 1) * productsPerPage
+
+	for index = 1, productsPerPage do
+		local productIndex = index + offset
+		local button = self.productButtons[index]
+
+		if productIndex <= numProducts then
+			if not button then
+				button = CreateFrame("Button", strformat("$parentProduct%u", index), self, "StoreCollectionProductTemplate")
+				button:SetOwner(self)
+
+				if index == 1 then
+					button:SetPoint("TOPLEFT", 20, -120)
+				elseif index % self.productsPerRow == 1 then
+					button:SetPoint("TOPLEFT", self.productButtons[index - self.productsPerRow], "BOTTOMLEFT", 0, -25)
+				else
+					button:SetPoint("TOPLEFT", self.productButtons[index - 1], "TOPRIGHT", 10, 0)
+				end
+
+				self.productButtons[index] = button
+			end
+
+			local productID = C_StoreSecure.GetCollectionProductID(subCategoryIndex, productIndex)
+
+			button:SetID(productIndex)
+			button:SetProductID(productID)
+			button:Show()
+		elseif button then
+			button:Hide()
+		end
+	end
+
+	for index = productsPerPage + 1, #self.productButtons do
+		self.productButtons[index]:Hide()
+	end
+
+	self:AttachRefreshFrame()
+	self.Loading:SetShown(not C_StoreSecure.IsCategoryProductsLoaded(self:GetID(), subCategoryIndex))
+end
+
+function StorePageCollectionsMixin:OnReRollClick(button)
+	local productID = C_StoreSecure.GetRefreshCollectionProductID(self:GetSubCategoryIndex())
+	assert(productID, "No product id for category refresh")
+	C_StoreSecure.GetStoreFrame():ShowProductPurchaseDialog(productID)
+	PlaySound(SOUNDKIT.UI_IG_STORE_BUY_BUTTON)
+end
+
+StorePageCollectionsTabMixin = CreateFromMixins(PKBT_TabButtonWithIconMixin, StoreCategoryButtonProtoMixin)
+
+function StorePageCollectionsTabMixin:OnClick(button)
+	if not self:IsSelected() then
+		C_StoreSecure.SetSelectedCategory(self.categoryIndex, self:GetID())
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 	end
 end
 
-function StoreTransmogrifyFilterDropDown_OnLoad( self, ... )
-	UIDropDownMenu_Initialize(self, StoreTransmogrifyFilterDropDown_Initialize, "MENU")
+function StorePageCollectionsTabMixin:OnMouseDown(button)
+	PKBT_TabButtonWithIconMixin.OnMouseDown(self, button)
+	StoreCategoryButtonProtoMixin.OnMouseDown(self, button)
 end
 
-function StoreTransmogrifySorted( _, sortID )
-	StoreTransmogrifySetSorted( sortID, selectedSubCategoryID )
-	StoreTransmogrifyGenerateData(true)
+function StorePageCollectionsTabMixin:OnMouseUp(button)
+	PKBT_TabButtonWithIconMixin.OnMouseUp(self, button)
+	StoreCategoryButtonProtoMixin.OnMouseUp(self, button)
 end
 
-function StoreTransmogrifySetSorted( sortID, subcategoryID )
-	subcategoryID = subcategoryID or selectedSubCategoryID
+function StorePageCollectionsTabMixin:UpdateState()
+	if self:IsEnabled() ~= 1 then
+		self.Icon:SetVertexColor(0.553, 0.522, 0.494)
+		self.ButtonText:SetTextColor(0.553, 0.522, 0.494)
+	elseif self:IsSelected() then
+		self.Icon:SetVertexColor(1, 0.82, 0)
+		self.ButtonText:SetTextColor(1, 0.82, 0)
+	else
+		self.Icon:SetVertexColor(1, 1, 1)
+		self.ButtonText:SetTextColor(1, 1, 1)
+	end
+end
 
-	if not STORE_TRANSMOGRIFY_SETS_DATA[subcategoryID] then
+StoreSpecialPageServicesMixin = CreateFromMixins(PKBT_OwnerMixin, StoreCategoryPagesMixin)
+
+function StoreSpecialPageServicesMixin:OnLoad()
+	self:SetID(Enum.Store.Category.SpecialServices)
+	self:SetOwner(self:GetParent():GetParent())
+	self:GetOwner():RegisterPageWidget(self)
+end
+
+function StoreSpecialPageServicesMixin:OnShow()
+	self:GetOwner():GetViewMode(Enum.StoreViewMode.ItemList):SetParentPage(self)
+	local _, subCategoryIndex = C_StoreSecure.GetSelectedCategory()
+	self:SetSubCategory(subCategoryIndex)
+end
+
+function StoreSpecialPageServicesMixin:SetSubCategory(subCategoryIndex)
+	self:GetOwner():GetViewMode(Enum.StoreViewMode.ItemList):SetViewCategory(self:GetID(), subCategoryIndex)
+end
+
+StorePageSubscriptionsMixin = CreateFromMixins(PKBT_OwnerMixin, StoreCategoryPagesMixin)
+
+function StorePageSubscriptionsMixin:OnLoad()
+	self.subscriptionPanels = {}
+	self.subscriptionsPerRow = 3
+	self.FRAME_PADDING = 30
+
+	self:RegisterCustomEvent("STORE_SUBSCRIPTION_LIST_LOADING")
+	self:RegisterCustomEvent("STORE_SUBSCRIPTION_LIST_UPDATE")
+
+	self:SetID(Enum.Store.Category.Subscriptions)
+	self:SetOwner(self:GetParent():GetParent())
+	self:GetOwner():RegisterPageWidget(self)
+end
+
+function StorePageSubscriptionsMixin:OnShow()
+	SetParentFrameLevel(self.Loading, 10)
+	self:SetViewIndex(self:GetSubCategoryIndex())
+end
+
+function StorePageSubscriptionsMixin:OnEvent(event, ...)
+	if event == "STORE_SUBSCRIPTION_LIST_UPDATE" then
+		if self:GetSubCategoryIndex() == 0 then
+			self:UpdateSubscriptions()
+		else
+			local subscriptionID = self.ViewDetailsFrame.subscriptionID
+			local subscriptionIndex = subscriptionID and C_StoreSecure.GetSubscriptionIndexByID(subscriptionID)
+			if subscriptionIndex == self:GetSubCategoryIndex() then
+				self:UpdateViewDetails()
+			else
+				self:SetSubCategoryIndex(0)
+			end
+		end
+	elseif event == "STORE_SUBSCRIPTION_LIST_LOADING" then
+		local isLoading = ...
+		self.Loading:SetShown(isLoading)
+	end
+end
+
+function StorePageSubscriptionsMixin:SetSubCategoryIndex(subCategoryIndex)
+	StoreCategoryPagesMixin.SetSubCategoryIndex(self, subCategoryIndex)
+	self:SetViewIndex(subCategoryIndex)
+end
+
+function StorePageSubscriptionsMixin:SetViewIndex(subCategoryIndex)
+	if not subCategoryIndex then
+		subCategoryIndex = self:GetSubCategoryIndex()
+	end
+
+	self.Loading:SetShown(not C_StoreSecure.IsSubscriptionsLoaded())
+	self.ListScrollFrame:SetShown(subCategoryIndex == 0)
+	self.ViewDetailsFrame:SetShown(subCategoryIndex ~= 0)
+
+	if subCategoryIndex == 0 then
+		self.PageHeader:SetLabel(STORE_SUBSCRIPTIONS_TITLE)
+		self:UpdateSubscriptions()
+		self.ViewDetailsFrame.subscriptionID = nil
+	else
+		C_StoreSecure.SetSelectedCategory(self:GetID(), subCategoryIndex)
+		self:UpdateViewDetails()
+	end
+end
+
+function StorePageSubscriptionsMixin:UpdateViewDetails()
+	self.ViewDetailsFrame:SetSubscriptionIndex(self:GetSubCategoryIndex())
+end
+
+function StorePageSubscriptionsMixin:UpdateSubscriptions()
+	local numSubscriptions = C_StoreSecure.GetNumSubscriptions()
+	for index = 1, numSubscriptions do
+		local panel = self.subscriptionPanels[index]
+		if not panel then
+			panel = CreateFrame("Button", strformat("$parentSubscription%u", index), self.ListScrollFrame.ScrollChild, "StoreSubscriptionPanelTemplate")
+			panel:SetOwner(self)
+			panel:SetID(index)
+
+			if index == 1 then
+				panel:SetPoint("TOPLEFT", self.FRAME_PADDING, -self.FRAME_PADDING)
+			elseif index % self.subscriptionsPerRow == 1 then
+				panel:SetPoint("TOPLEFT", self.subscriptionPanels[index - self.subscriptionsPerRow], "BOTTOMLEFT", 0, -self.FRAME_PADDING)
+			else
+				panel:SetPoint("TOPLEFT", self.subscriptionPanels[index - 1], "TOPRIGHT", self.FRAME_PADDING, 0)
+			end
+
+			self.subscriptionPanels[index] = panel
+		end
+
+		panel:UpdateSubscriptionInfo()
+		panel:Show()
+	end
+
+	for index = numSubscriptions + 1, #self.subscriptionPanels do
+		self.subscriptionPanels[index]:Hide()
+	end
+
+	if numSubscriptions > 0 then
+		local numRows = math.ceil(numSubscriptions / self.subscriptionsPerRow)
+		self.ListScrollFrame.ScrollChild:SetSize(self.ListScrollFrame:GetWidth(), (self.subscriptionPanels[1]:GetHeight() + self.FRAME_PADDING) * numRows + self.FRAME_PADDING)
+		self.ListScrollFrame:UpdateScrollChildRect()
+	end
+end
+
+local SUBSCRIPTION_STYLE_TYPE = {
+	[1] = "Bronze",
+	[2] = "Silver",
+	[3] = "MetalBlack",
+}
+
+StoreSubscriptionPanelMixin = CreateFromMixins(PKBT_OwnerMixin, PKBT_CountdownThrottledBaseMixin)
+
+function StoreSubscriptionPanelMixin:OnLoad()
+	self.TimerIcon:SetAtlas("PKBT-Icon-Timer", true)
+
+	self.PurchaseButton:SetMinWidth(120)
+	self.PurchaseButton:SetAllowReplenishment(C_StoreSecure.IsBonusReplenishmentAllowed(), false)
+	self.PurchaseButton.Price:SetFreeText(STORE_BUY_FREE_TRIAL)
+
+	self.PurchaseButton.Glow.Left:SetAtlas("PKBT-Button-Glow-Left", true)
+	self.PurchaseButton.Glow.Right:SetAtlas("PKBT-Button-Glow-Right", true)
+	self.PurchaseButton.Glow.Center:SetAtlas("PKBT-Button-Glow-Center")
+
+	self.itemButtons = {}
+	self.ITEM_PADDING = 10
+
+	Mixin(self.NineSliceBorder, NineSlicePanelMixin)
+end
+
+function StoreSubscriptionPanelMixin:DetailsOnClick(button)
+	self:GetOwner():ShowSubCategoryPage(self:GetID())
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+end
+
+function StoreSubscriptionPanelMixin:PurchaseOnClick(this, button)
+	if this.productID then
+		C_StoreSecure.GetStoreFrame():ShowProductPurchaseDialog(this.productID)
+	else
+		local days, isTrial, price, originalPrice, currencyType, productID = C_StoreSecure.GetSubscriptionOptionInfo(self:GetID(), this.optionIndex)
+		if isTrial then
+			self.PurchaseButton:ShowSpinner()
+			self.PurchaseButton:Disable()
+			C_StoreSecure.PurchaseSubcription(self:GetID(), this.optionIndex)
+		else
+			C_StoreSecure.GetStoreFrame():ShowProductPurchaseDialog(productID)
+		end
+	end
+	PlaySound(SOUNDKIT.UI_IG_STORE_BUY_BUTTON)
+end
+
+function StoreSubscriptionPanelMixin:SetStyle(styleType)
+	local styleName = SUBSCRIPTION_STYLE_TYPE[styleType]
+
+	self.NineSliceBorder:SetAttribute("layoutType", strformat("PKBT_Panel%sBorder", styleName))
+	NineSlicePanelMixin.OnLoad(self.NineSliceBorder)
+
+	self.NineSliceBorder.Title.Left:SetAtlas(strformat("PKBT-Panel-%s-Header-Left", styleName), true)
+	self.NineSliceBorder.Title.Right:SetAtlas(strformat("PKBT-Panel-%s-Header-Right", styleName), true)
+	self.NineSliceBorder.Title.Center:SetAtlas(strformat("PKBT-Panel-%s-Header-Center", styleName))
+	self.NineSliceBorder.Title.Left:SetSize(83, 35)
+	self.NineSliceBorder.Title.Right:SetSize(83, 35)
+end
+
+function StoreSubscriptionPanelMixin:UpdateSubscriptionInfo()
+	local subscriptionID, name, description, styleType, backgroundAtlas, bannerAtlas, artworkAtlas = C_StoreSecure.GetSubscriptionInfo(self:GetID())
+	local state, upgradeTimeLeft, nextSupplyTimeLeft, remainingSupplyTimes = C_StoreSecure.GetSubscriptionState(self:GetID())
+	local itemList = C_StoreSecure.GetSubscriptionItems(self:GetID(), false)
+
+	local numItems = #itemList
+	for index = 1, numItems do
+		local item = self.itemButtons[index]
+		if not item then
+			item = CreateFrame("Button", strformat("$parentItemButton%u", index), self, "StoreSubscriptionItemTemplate")
+			item:SetID(index)
+			item:SetOwner(self)
+
+			if index == 1 then
+				item:SetPoint("LEFT", self.ItemHolder, "LEFT", 0, 0)
+			else
+				item:SetPoint("LEFT", self.itemButtons[index - 1], "RIGHT", self.ITEM_PADDING, 0)
+			end
+
+			self.itemButtons[index] = item
+		end
+
+		local itemID, amount, isBonus = unpack(itemList[index])
+		local _, link, _, _, _, _, _, _, _, texture = GetItemInfo(itemID)
+
+		item.Icon:SetTexture(texture)
+		item.Amount.Value:SetText(amount)
+		item.link = link
+		item:Show()
+	end
+
+	for index = numItems + 1, #self.itemButtons do
+		self.itemButtons[index]:Hide()
+	end
+
+	if numItems > 0 then
+		self.ItemHolder:SetWidth(self.itemButtons[1]:GetWidth() * numItems + self.ITEM_PADDING * (numItems - 1))
+	end
+
+	self:SetStyle(styleType)
+
+	self.NineSliceBorder.Title.maxWidth = self:GetWidth() - 60
+	self.NineSliceBorder.Title:SetText(name)
+
+	self.Background:SetAtlas(bannerAtlas)
+
+	if state == Enum.Store.SubscriptionState.InactiveTrialAvailable then
+		local days, isTrial, price, originalPrice, currencyType, productID = C_StoreSecure.GetSubscriptionOptionInfo(self:GetID(), 1)
+		self.PurchaseButton:SetPrice(price, originalPrice, Enum.Store.CurrencyType.Bonus)
+		self.PurchaseButton.optionIndex = 0
+		self.PurchaseButton:Show()
+
+		self.DetailsButton:ClearAllPoints()
+		self.DetailsButton:SetPoint("LEFT", self.ButtonHolder, "LEFT", 0, 0)
+	else
+		self.PurchaseButton.optionIndex = nil
+		self.PurchaseButton:Hide()
+
+		self.DetailsButton:ClearAllPoints()
+		self.DetailsButton:SetPoint("CENTER", self.ButtonHolder, "CENTER", 0, 0)
+	end
+
+	if state == Enum.Store.SubscriptionState.Inactive
+	or state == Enum.Store.SubscriptionState.InactiveTrialAvailable
+	then
+		self.InfoText:SetPoint("TOP", 0, -45)
+		self.InfoText:SetFormattedText("%s:", STORE_SUBSCRIPTION_INFO)
+		self.InfoText:SetTextColor(1, 1, 1)
+		self.TimerIcon:Hide()
+
+		self:SetNextSupplyCountdown(0)
+
+		self.PurchaseButton.Glow.AlphaAnim:Stop()
+		self.PurchaseButton.Glow:Hide()
+	else
+		self.InfoText:SetPoint("TOP", 0, -34)
+		self.InfoText:SetText(STORE_SUBSCRIPTION_RENEW)
+		self.InfoText:SetTextColor(1, 1, 1)
+		self.TimerIcon:Show()
+
+		if self.PurchaseButton.Glow.AlphaAnim:IsPlaying() then
+			self.PurchaseButton.Glow.AlphaAnim:Stop()
+		end
+		self.PurchaseButton.Glow.AlphaAnim:Play()
+		self.PurchaseButton.Glow:Show()
+
+		self:SetNextSupplyCountdown(nextSupplyTimeLeft)
+	end
+
+	self.PurchaseButton:Enable()
+	self.PurchaseButton:HideSpinner()
+	self.ButtonHolder:SetWidth(self.DetailsButton:GetWidth() + 10 + self.PurchaseButton:GetWidth())
+end
+
+function StoreSubscriptionPanelMixin:SetNextSupplyCountdown(timeLeft)
+	self:SetTimeLeft(timeLeft)
+end
+
+function StoreSubscriptionPanelMixin:OnCountdownUpdate(timeLeft, timerFinished)
+	if timeLeft > 0 and not timerFinished then
+		self.SupplyCountdown:SetText(GetRemainingTime(timeLeft))
+		self.SupplyCountdown:Show()
+	else
+		self.SupplyCountdown:Hide()
+
+		self.InfoText:SetPoint("TOP", 0, -45)
+		self.InfoText:SetFormattedText("%s:", STORE_SUBSCRIPTION_INFO)
+		self.InfoText:SetTextColor(1, 1, 1)
+		self.TimerIcon:Hide()
+
+		if timerFinished then
+			self:UpdateSubscriptionInfo()
+		end
+	end
+end
+
+StoreSubscriptionTitleMixin = {}
+
+function StoreSubscriptionTitleMixin:OnShow()
+	self:UpdateSize()
+end
+
+function StoreSubscriptionTitleMixin:UpdateSize()
+	self:SetWidth(min(max(self.Text:GetStringWidth() + 100, self.minWidth or 0), self.maxWidth or math.huge))
+end
+
+function StoreSubscriptionTitleMixin:SetText(...)
+	self.Text:SetText(...)
+	self:UpdateSize()
+end
+
+function StoreSubscriptionTitleMixin:SetFormattedText(...)
+	self.Text:SetFormattedText(...)
+	self:UpdateSize()
+end
+
+StoreSubscriptionItemMixin = CreateFromMixins(PKBT_OwnerMixin)
+
+function StoreSubscriptionItemMixin:OnLoad()
+	self.IconGlow:SetAtlas("PKBT-ItemBorder-Gold")
+
+	self.Amount.Left:SetAtlas("PKBT-Input-Digit-Background-Left", true)
+	self.Amount.Right:SetAtlas("PKBT-Input-Digit-Background-Right", true)
+	self.Amount.Center:SetAtlas("PKBT-Input-Digit-Background-Center", true)
+end
+
+function StoreSubscriptionItemMixin:OnClick(button)
+	if IsAltKeyDown() and C_StoreSecure.AddItem(self.link) then
 		return
 	end
-
-	if sortID == TransmogSortTypes.Name then
-		table.sort(STORE_TRANSMOGRIFY_SETS_DATA[subcategoryID], function(a, b)
-			return a[STORE_TRANSMOGRIFY_SETS_NAME] < b[STORE_TRANSMOGRIFY_SETS_NAME]
-		end)
-	elseif sortID == TransmogSortTypes.Quality then
-		table.sort(STORE_TRANSMOGRIFY_SETS_DATA[subcategoryID], function(a, b)
-			if a[STORE_TRANSMOGRIFY_SETS_QUALITY] ~= b[STORE_TRANSMOGRIFY_SETS_QUALITY] then
-				return a[STORE_TRANSMOGRIFY_SETS_QUALITY] > b[STORE_TRANSMOGRIFY_SETS_QUALITY]
-			end
-			return a[STORE_TRANSMOGRIFY_SETS_NAME] < b[STORE_TRANSMOGRIFY_SETS_NAME]
-		end)
-	elseif sortID == TransmogSortTypes.Price then
-		table.sort(STORE_TRANSMOGRIFY_SETS_DATA[subcategoryID], function(a, b)
-			local a_StoreID = a[STORE_TRANSMOGRIFY_SETS_STOREID]
-			local b_StoreID = b[STORE_TRANSMOGRIFY_SETS_STOREID]
-
-			if not STORE_TRANSMOGRIFY_SERVER_DATA[a_StoreID] then
-				return false
-			elseif not STORE_TRANSMOGRIFY_SERVER_DATA[b_StoreID] then
+	if self.link then
+		if IsModifiedClick("DRESSUP") then
+			local allowToHide, allowEquipmentToggle, allowPortraitCamera = true, true, false
+			C_StoreSecure.GetStoreFrame():ShowItemDressUp(self:GetOwner(), self.link, allowToHide, allowEquipmentToggle, allowPortraitCamera)
+		elseif IsModifiedClick("CHATLINK") then
+			if ChatEdit_InsertLink(self.link) then
 				return true
 			end
+		end
+	end
+end
 
-			local aPrice, bPrice
+function StoreSubscriptionItemMixin:OnEnter()
+	if self.link then
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:SetHyperlink(self.link)
+		GameTooltip:Show()
+	end
+end
 
-			if STORE_TRANSMOGRIFY_SERVER_DATA[a_StoreID][STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNT] then
-				aPrice = STORE_TRANSMOGRIFY_SERVER_DATA[a_StoreID][STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNTPRICE]
+function StoreSubscriptionItemMixin:OnLeave()
+	GameTooltip:Hide()
+end
+
+StoreSubscriptionViewDetailsMixin = CreateFromMixins(PKBT_CountdownThrottledBaseMixin)
+
+function StoreSubscriptionViewDetailsMixin:OnLoad()
+	self.UpgradeTimerIcon:SetAtlas("PKBT-Icon-Timer", true)
+
+	self.UpgradeTimerText:SetPoint("LEFT", self:GetParent().HeaderText, "RIGHT", 60, -1)
+
+	self.SubscriptionFrame.Background:SetAtlas("PKBT-Store-Subscription-Pack-Background")
+
+	self.SubscriptionFrame.ShadowTopLeft:SetAtlas("PKBT-Vignette-Shadow-TopLeft", true)
+	self.SubscriptionFrame.ShadowTopRight:SetAtlas("PKBT-Vignette-Shadow-TopRight", true)
+	self.SubscriptionFrame.ShadowBottomLeft:SetAtlas("PKBT-Vignette-Shadow-BottomLeft", true)
+	self.SubscriptionFrame.ShadowBottomRight:SetAtlas("PKBT-Vignette-Shadow-BottomRight", true)
+
+	self.SubscriptionFrame.NineSliceBorder.Title.maxWidth = self.SubscriptionFrame:GetWidth() - 60
+	self.SubscriptionFrame.NineSliceBorder.Title:SetText(STORE_SUBSCRIPTION_INFO)
+
+	self.SubscriptionFrame.NineSliceBorder.UpgradeBonus:SetScale(0.65)
+	self.SubscriptionFrame.NineSliceBorder.UpgradeBonus.Artwork:SetAtlas("PKBT-Store-Subscription-Pack-Special-Button", true)
+	self.SubscriptionFrame.NineSliceBorder.UpgradeBonus.Glow:SetAtlas("PKBT-ItemBorder-Gold-Glow")
+
+	self.SubscriptionFrame.NextPackegeTimerIcon:SetAtlas("PKBT-Icon-Timer", true)
+
+	self.UpgradeMultiplierInactiveIcon:SetAtlas("PKBT-Icon-Help-i", true)
+	self.UpgradeMultiplierInactiveText:SetPoint("TOP", self.UpgradePurchaseButton, "BOTTOM", math.ceil(self.UpgradeMultiplierInactiveIcon:GetWidth() / 2), -10)
+
+	self.UpgradePurchaseButton:SetFixedWidth(360)
+	self.UpgradePurchaseButton:SetAllowReplenishment(C_StoreSecure.IsBonusReplenishmentAllowed(), false)
+	self.UpgradePurchaseButton:AddText(STORE_SUBSCRIPTION_EXTRA_UPGRADE, nil, nil, "PKBT_Font_18")
+
+	Mixin(self.SubscriptionFrame, PKBT_CountdownThrottledBaseMixin)
+	Mixin(self.SubscriptionFrame.NineSliceBorder, NineSlicePanelMixin)
+
+	self.itemButtons = {}
+	self.subscriptionOptionsButtons = {}
+
+	self.subscriptionIndex = 0
+end
+
+function StoreSubscriptionViewDetailsMixin:OnShow()
+	SetParentFrameLevel(self.SubscriptionFrame.NineSliceBorder, 1)
+	SetParentFrameLevel(self.SubscriptionFrame.NineSliceBorder.Title, 2)
+	SetParentFrameLevel(self.SubscriptionFrame.NineSliceBorder.UpgradeBonus, 2)
+	SetParentFrameLevel(self.SubscriptionFrame.NineSliceGlow, 2)
+end
+
+function StoreSubscriptionViewDetailsMixin:SetSubscriptionIndex(index)
+	self.subscriptionIndex = index
+	self:UpdateAll()
+end
+
+function StoreSubscriptionViewDetailsMixin:GetSubscriptionIndex()
+	return self.subscriptionIndex
+end
+
+function StoreSubscriptionViewDetailsMixin:UpdateAll()
+	self:UpdateView()
+	self:UpdateState()
+end
+
+function StoreSubscriptionViewDetailsMixin:SetStyle(styleType)
+	local styleName = SUBSCRIPTION_STYLE_TYPE[styleType]
+
+	self.SubscriptionFrame.NineSliceBorder.Title.Left:SetAtlas(strformat("PKBT-Panel-%s-Header-Left", styleName), true)
+	self.SubscriptionFrame.NineSliceBorder.Title.Right:SetAtlas(strformat("PKBT-Panel-%s-Header-Right", styleName), true)
+	self.SubscriptionFrame.NineSliceBorder.Title.Center:SetAtlas(strformat("PKBT-Panel-%s-Header-Center", styleName))
+	self.SubscriptionFrame.NineSliceBorder.Title.Left:SetSize(83, 35)
+	self.SubscriptionFrame.NineSliceBorder.Title.Right:SetSize(83, 35)
+
+	self.SubscriptionFrame.NineSliceBorder.Title.DecorTop:SetAtlas(strformat("PKBT-Panel-%s-Deacor-Header", styleName), true)
+	self.SubscriptionFrame.NineSliceBorder.Title.DecorBottom:SetAtlas(strformat("PKBT-Panel-%s-Deacor-Footer", styleName), true)
+
+	self.SubscriptionFrame.NineSliceBorder.DecorFooter:SetAtlas(strformat("PKBT-Panel-%s-Deacor-Header", styleName), true)
+	self.SubscriptionFrame.NineSliceBorder.DecorFooter:SetSubTexCoord(0, 1, 1, 0)
+end
+
+function StoreSubscriptionViewDetailsMixin:UpdateState()
+	local subscriptionIndex = self:GetSubscriptionIndex()
+
+	local upgradeMultiplier, upgradeCurrency, upgradePrice, upgradeOriginalPrice, upgradeProductID = C_StoreSecure.GetSubscriptionUpgradeInfo(subscriptionIndex)
+	local state, upgradeTimeLeft, nextSupplyTimeLeft, remainingSupplyTimes = C_StoreSecure.GetSubscriptionState(subscriptionIndex)
+
+	local numSubscriptionOptions = C_StoreSecure.GetNumSubscriptionOptions(subscriptionIndex)
+	for optionIndex = 1, numSubscriptionOptions do
+		local button = self.subscriptionOptionsButtons[optionIndex]
+		if not button then
+			button = CreateFrame("Button", strformat("$parentPurchaseButton%u", optionIndex), self, "PKBT_RedButtonMultiWidgetPriceTemplate")
+			button:SetID(optionIndex)
+			button:SetHeight(72)
+			button:SetFixedWidth(360)
+			button:SetAllowReplenishment(C_StoreSecure.IsBonusReplenishmentAllowed(), false)
+			button.Price:SetFreeText("")
+
+			button:SetScript("OnClick", function(this, b)
+				self:PurchaseOnClick(this, b)
+			end)
+
+			self.subscriptionOptionsButtons[optionIndex] = button
+
+			if optionIndex ~= 1 then
+				button:SetPoint("TOP", self.subscriptionOptionsButtons[optionIndex - 1], "BOTTOM", 0, -10)
+			end
+		end
+
+		if optionIndex == 1 then
+			local offsetY
+			if state == Enum.Store.SubscriptionState.StandardActive then
+				offsetY = -55
+			elseif state == Enum.Store.SubscriptionState.InactiveTrialAvailable then
+				offsetY = -160
 			else
-				aPrice = STORE_TRANSMOGRIFY_SERVER_DATA[a_StoreID][STORE_TRANSMOGRIFY_SERVER_STOREPRICE]
+				offsetY = -110
 			end
+			button:SetPoint("TOP", self.SubscriptionFrame, "BOTTOM", 0, offsetY)
+		end
 
-			if STORE_TRANSMOGRIFY_SERVER_DATA[b_StoreID][STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNT] then
-				bPrice = STORE_TRANSMOGRIFY_SERVER_DATA[b_StoreID][STORE_TRANSMOGRIFY_SERVER_STOREDISCOUNTPRICE]
+		local days, isTrial, price, originalPrice, currencyType, productID = C_StoreSecure.GetSubscriptionOptionInfo(subscriptionIndex, optionIndex)
+		button:ClearObjects()
+		if isTrial then
+			button:AddText(STORE_TRY_FOR_FREE, nil, nil, "PKBT_Font_18")
+		elseif state == Enum.Store.SubscriptionState.Inactive then
+			button:AddText(strformat(STORE_SUBSCRIPTION_PURCHASE_DAYS, days), nil, nil, "PKBT_Font_18")
+		else
+			button:AddText(strformat(STORE_SUBSCRIPTION_PURCHASE_EXTEND_DAYS, days), nil, nil, "PKBT_Font_18")
+		end
+		button:SetPrice(price, originalPrice, currencyType)
+		button.productID = productID
+		button:Show()
+	end
+
+	for index = numSubscriptionOptions + 1, #self.subscriptionOptionsButtons do
+		self.subscriptionOptionsButtons[index]:Hide()
+	end
+
+	if state == Enum.Store.SubscriptionState.ExtraActive then
+		self.SubscriptionFrame.UpgradeMultiplierActiveText:SetFormattedText(STORE_SUBSCRIPTION_EXTRA_MULT_ACTIVE, upgradeMultiplier)
+		self.SubscriptionFrame.UpgradeMultiplierActiveText:Show()
+
+		self.UpgradeMultiplierInactiveText:Hide()
+		self.UpgradeMultiplierInactiveIcon:Hide()
+
+		self.SubscriptionFrame.NineSliceGlow:Show()
+		self.SubscriptionFrame.NineSliceGlow.AlphaAnim:Stop()
+		self.SubscriptionFrame.NineSliceGlow.AlphaAnim:Play()
+
+		if upgradeMultiplier > 1 then
+			self.SubscriptionFrame.NineSliceBorder.UpgradeBonus:Show()
+			self.SubscriptionFrame.NineSliceBorder.UpgradeBonus.Glow.AlphaAnim:Stop()
+			self.SubscriptionFrame.NineSliceBorder.UpgradeBonus.Glow.AlphaAnim:Play()
+		else
+			self.SubscriptionFrame.NineSliceBorder.UpgradeBonus:Hide()
+		end
+
+		self.SubscriptionFrame.NineSliceBorder.UpgradeBonus.Multiplier:SetAtlas("PKBT-Store-Subscription-Pack-Special-x2", true)
+
+		self.UpgradePurchaseButton.productID = nil
+		self.UpgradePurchaseButton:Hide()
+	else
+		self.SubscriptionFrame.UpgradeMultiplierActiveText:Hide()
+		self.SubscriptionFrame.NineSliceBorder.UpgradeBonus:Hide()
+
+		self.SubscriptionFrame.NineSliceGlow:Hide()
+		self.SubscriptionFrame.NineSliceGlow.AlphaAnim:Stop()
+
+		self.SubscriptionFrame.NineSliceBorder.UpgradeBonus:Hide()
+		self.SubscriptionFrame.NineSliceBorder.UpgradeBonus.Glow.AlphaAnim:Stop()
+
+		if state == Enum.Store.SubscriptionState.StandardActive then
+			self.UpgradePurchaseButton:SetPoint("TOP", self.subscriptionOptionsButtons[numSubscriptionOptions], "BOTTOM", 0, -10)
+			self.UpgradePurchaseButton:SetPrice(upgradePrice, upgradeOriginalPrice, upgradeCurrency)
+			self.UpgradePurchaseButton.productID = upgradeProductID
+			self.UpgradePurchaseButton:Show()
+
+			if upgradeMultiplier > 1 then
+				self.UpgradeMultiplierInactiveText:SetFormattedText(STORE_SUBSCRIPTION_EXTRA_MULT_INACTIVE, upgradeMultiplier)
+				self.UpgradeMultiplierInactiveText:Show()
+				self.UpgradeMultiplierInactiveIcon:Show()
 			else
-				bPrice = STORE_TRANSMOGRIFY_SERVER_DATA[b_StoreID][STORE_TRANSMOGRIFY_SERVER_STOREPRICE]
+				self.UpgradeMultiplierInactiveText:Hide()
+				self.UpgradeMultiplierInactiveIcon:Hide()
 			end
-
-			if aPrice ~= bPrice then
-				return aPrice > bPrice
-			end
-
-			return a[STORE_TRANSMOGRIFY_SETS_NAME] < b[STORE_TRANSMOGRIFY_SETS_NAME]
-		end)
-	elseif sortID == TransmogSortTypes.WeaponType then
-		table.sort(STORE_TRANSMOGRIFY_SETS_DATA[subcategoryID], function(a, b)
-			if a[STORE_TRANSMOGRIFY_SETS_WEAPONTYPE] ~= b[STORE_TRANSMOGRIFY_SETS_WEAPONTYPE] then
-				return a[STORE_TRANSMOGRIFY_SETS_WEAPONTYPE] < b[STORE_TRANSMOGRIFY_SETS_WEAPONTYPE]
-			elseif a[STORE_TRANSMOGRIFY_SETS_QUALITY] ~= b[STORE_TRANSMOGRIFY_SETS_QUALITY] then
-				return a[STORE_TRANSMOGRIFY_SETS_QUALITY] > b[STORE_TRANSMOGRIFY_SETS_QUALITY]
-			end
-			return a[STORE_TRANSMOGRIFY_SETS_NAME] < b[STORE_TRANSMOGRIFY_SETS_NAME]
-		end)
-	end
-
-	STORE_TRANSMOGRIFY_SORT_ID = sortID
-end
-
-function StoreTransmogrifySetClassFilter( _, classMask )
-	STORE_TRANSMOGRIFY_FILTER_CLASSID = classMask
-	StoreTransmogrifyGenerateData(true)
-end
-
-function StoreTransmogrifySetWeaponFilter( _, weaponID )
-	STORE_TRANSMOGRIFY_FILTER_WEAPON = weaponID
-	StoreTransmogrifyGenerateData(true)
-end
-
-function StoreTransmogrifyResetAllFilter()
-	local _, _, classID, classMask = UnitClass("player")
-
-	STORE_TRANSMOGRIFY_SORT_ID = 1
-	STORE_TRANSMOGRIFY_FILTER_CLASSID = classMask
-	STORE_TRANSMOGRIFY_FILTER_EXPANSION = ALL_EXPANSION_FILTER
-	STORE_TRANSMOGRIFY_FILTER_SOURCE = ALL_SOURCE_FILTER
-	STORE_TRANSMOGRIFY_FILTER_WEAPON = ALL_WEAPON_FILTER
-	StoreTransmogrifySetSorted(STORE_TRANSMOGRIFY_SORT_ID)
-
-	StoreTransmogrifyFrame_ClearSearch(StoreTransmogrifyFrame.LeftContainer.searchBox)
-end
-
-local newIconString = "|TInterface\\Store\\Store-Main.blp:18:18:2:0:1024:1024:957:967:286:304|t";
-
-function StoreTransmogrify_IsValidClassFilter(classID)
-	if classID == 10 then -- temp remove demonhunter
-		return false;
-	end
-
-	if selectedShowAllItemCheckBox == 0 then
-		local _, _, playerClassID = UnitClass("player")
-
-		if classID ~= playerClassID then
-			return false;
-		end
-	end
-
-	return true;
-end
-
-function StoreTransmogrify_IsValidWeaponFilter(classID, subClassID, inventoryType)
-	if selectedShowAllItemCheckBox == 0 then
-		return C_TransmogCollection.GetCategory(classID, subClassID, inventoryType);
-	end
-
-	return true;
-end
-
-function StoreTransmogrifyFilterDropDown_Initialize( self, level )
-	local info = UIDropDownMenu_CreateInfo()
-
-	if selectedSubCategoryID == TransomgCategory.Weapons and UIDROPDOWNMENU_MENU_VALUE == TransmogFilterTypes.Weapons then
-		info.text = STORE_TRANSMOGRIFY_FILTER_NEW
-		info.checked = STORE_TRANSMOGRIFY_FILTER_WEAPON == ALL_WEAPON_NEW_FILTER
-		info.arg1 = ALL_WEAPON_NEW_FILTER
-		info.func = StoreTransmogrifySetWeaponFilter
-		UIDropDownMenu_AddButton(info, level)
-
-		info.text = STORE_TRANSMOGRIFY_FILTER_ALL_WEAPON
-		info.checked = STORE_TRANSMOGRIFY_FILTER_WEAPON == ALL_WEAPON_FILTER
-		info.arg1 = ALL_WEAPON_FILTER
-		info.func = StoreTransmogrifySetWeaponFilter
-		UIDropDownMenu_AddButton(info, level)
-
-		for i, subClassInfo in ipairs(STORE_TRANSMOGRIFY_WEAPON_SUB_CLASSES) do
-			if StoreTransmogrify_IsValidWeaponFilter(subClassInfo.classID, subClassInfo.subClassID, subClassInfo.inventoryType) then
-				if storeTransmogrifyNewWeaponTypes[i] then
-					info.text = subClassInfo.name .. newIconString
-				else
-					info.text = subClassInfo.name
-				end
-
-				info.checked = STORE_TRANSMOGRIFY_FILTER_WEAPON == i
-				info.arg1 = i
-				info.func = StoreTransmogrifySetWeaponFilter
-				UIDropDownMenu_AddButton(info, level)
-			end
-		end
-	elseif TransomgCategory.Sets == 4 and UIDROPDOWNMENU_MENU_VALUE == TransmogFilterTypes.Sets then
-		info.text = ALL_CLASSES
-		info.checked = STORE_TRANSMOGRIFY_FILTER_CLASSID == NO_CLASS_FILTER
-		info.arg1 = NO_CLASS_FILTER
-		info.func = StoreTransmogrifySetClassFilter
-		UIDropDownMenu_AddButton(info, level)
-
-		local numClasses = GetNumClasses()
-		for i = 1, numClasses do
-			local classDisplayName, classTag, classID, classMask = GetClassInfo(i)
-			if StoreTransmogrify_IsValidClassFilter(classID) then
-				info.text = classDisplayName
-				info.checked = STORE_TRANSMOGRIFY_FILTER_CLASSID == classMask
-				info.arg1 = classMask
-				info.func = StoreTransmogrifySetClassFilter
-				UIDropDownMenu_AddButton(info, level)
-			end
-		end
-	end
-
-	if level == 1 then
-		info.text = STORE_TRANSMOGRIFY_FILTER_SORT_TITLE
-		info.func = nil
-		info.isTitle = true
-		info.notCheckable = true
-		UIDropDownMenu_AddButton(info, level)
-
-		info.isTitle = false
-		info.notCheckable = false
-		info.disabled = false
-
-		info.text = STORE_TRANSMOGRIFY_SORT_BY_NAME
-		info.func = StoreTransmogrifySorted
-		info.arg1 = TransmogSortTypes.Name
-		info.checked = STORE_TRANSMOGRIFY_SORT_ID == TransmogSortTypes.Name
-		UIDropDownMenu_AddButton(info, level)
-
-		info.text = STORE_TRANSMOGRIFY_SORT_BY_QUALITY
-		info.func = StoreTransmogrifySorted
-		info.arg1 = TransmogSortTypes.Quality
-		info.checked = STORE_TRANSMOGRIFY_SORT_ID == TransmogSortTypes.Quality
-		UIDropDownMenu_AddButton(info, level)
-
-		info.text = STORE_TRANSMOGRIFY_SORT_BY_PRICE
-		info.func = StoreTransmogrifySorted
-		info.arg1 = TransmogSortTypes.Price
-		info.checked = STORE_TRANSMOGRIFY_SORT_ID == TransmogSortTypes.Price
-		UIDropDownMenu_AddButton(info, level)
-
-		if selectedSubCategoryID == TransomgCategory.Weapons then
-			info.text = STORE_TRANSMOGRIFY_SORT_BY_WEAPON
-			info.func = StoreTransmogrifySorted
-			info.arg1 = TransmogSortTypes.WeaponType
-			info.checked = STORE_TRANSMOGRIFY_SORT_ID == TransmogSortTypes.WeaponType
-			UIDropDownMenu_AddButton(info, level)
-		end
-
-		info.func = nil
-
-		if selectedSubCategoryID == TransomgCategory.Weapons or selectedSubCategoryID == TransomgCategory.Sets then
-			info.text = STORE_TRANSMOGRIFY_FILTER_LABEL
-			info.isTitle = true
-			info.notCheckable = true
-			UIDropDownMenu_AddButton(info, level)
-
-			info.isTitle = false
-			info.notCheckable = false
-			info.disabled = false
-		end
-
-		if selectedSubCategoryID == TransomgCategory.Weapons then
-			info.text = STORE_TRANSMOGRIFY_WEAPON_LABEL
-			info.notCheckable = true
-			info.hasArrow = true
-			info.value = TransmogFilterTypes.Weapons
-			UIDropDownMenu_AddButton(info, level)
-		elseif selectedSubCategoryID == TransomgCategory.Sets then
-			info.text = STORE_TRANSMOGRIFY_CLASS_LABEL
-			info.notCheckable = true
-			info.hasArrow = true
-			info.value = TransmogFilterTypes.Sets
-			UIDropDownMenu_AddButton(info, level)
-		end
-
-		UIDropDownMenu_AddSeparator(level)
-
-		local info = UIDropDownMenu_CreateInfo()
-
-		info.isTitle = nil
-		info.notCheckable = true
-
-		info.text = STORE_TRANSMOGRIFY_RESET_ALL
-		info.func = StoreTransmogrifyResetAllFilter
-		info.arg1 = nil
-		info.checked = nil
-		UIDropDownMenu_AddButton(info, level)
-	end
-end
-
-function StoreTransmogrifyFrame_OnSearchTextChanged( self, ... )
-	SearchBoxTemplate_OnTextChanged(self)
-	STORE_SEARCH_TEXT = self:GetText()
-	StoreTransmogrifyGenerateData(true)
-end
-
-function StoreTransmogrifyFrame_ClearSearch( self, ... )
-	self:SetText("")
-	STORE_SEARCH_TEXT = nil
-	StoreTransmogrifyGenerateData(true)
-end
-
-local storeLoadingScreenTimer
-function StoreToggleLoadingScreen( isActive, forceState )
-	if storeLoadingScreenTimer then
-		storeLoadingScreenTimer:Cancel()
-		storeLoadingScreenTimer = nil
-	end
-
-	if isActive then
-		if forceState then
-			StoreLoadingFrame:Show()
 		else
-			storeLoadingScreenTimer = C_Timer:NewTicker(0.200, function()
-				StoreLoadingFrame:Show()
-			end, 1)
+			self.UpgradePurchaseButton.productID = nil
+			self.UpgradePurchaseButton:Hide()
+
+			self.UpgradeMultiplierInactiveText:Hide()
+			self.UpgradeMultiplierInactiveIcon:Hide()
 		end
+	end
+
+	self:SetTimeLeft(upgradeTimeLeft, nil, self.OnUpgradeCountdownUpdate)
+	self.SubscriptionFrame:SetTimeLeft(nextSupplyTimeLeft, nil, self.OnPackageCountdownUpdate)
+	self.SubscriptionFrame.TotalPackegeLeftText:SetFormattedText(STORE_SUBSCRIPTION_AMOUNT_PACKAGE_LEFT, remainingSupplyTimes)
+end
+
+function StoreSubscriptionViewDetailsMixin:OnUpgradeCountdownUpdate(timeLeft, timerFinished)
+	if timeLeft > 0 and not timerFinished then
+		self.UpgradeTimerText:SetFormattedText(STORE_SUBSCRIPTION_EXTRA_TIMELEFT, GetRemainingTime(timeLeft))
+		self.UpgradeTimerText:Show()
+		self.UpgradeTimerIcon:Show()
 	else
-		if StoreLoadingFrame:IsShown() then
-			if forceState then
-				StoreLoadingFrame:Hide()
+		self.UpgradeTimerText:Hide()
+		self.UpgradeTimerIcon:Hide()
+
+		if timerFinished then
+			self:UpdateState()
+		end
+	end
+end
+
+function StoreSubscriptionViewDetailsMixin.OnPackageCountdownUpdate(this, timeLeft, timerFinished)
+	if timeLeft > 0 and not timerFinished then
+		this.NextPackegeTimerText:SetFormattedText(STORE_SUBSCRIPTION_NEXT_PACKAGE_TIMELEFT, GetRemainingTime(timeLeft))
+		this.NextPackegeTimerText:Show()
+		this.NextPackegeTimerIcon:Show()
+		this.TotalPackegeLeftText:Show()
+	else
+		this.NextPackegeTimerText:Hide()
+		this.NextPackegeTimerIcon:Hide()
+		this.TotalPackegeLeftText:Hide()
+
+		if timerFinished then
+			this:GetParent():UpdateAll()
+		end
+	end
+end
+
+function StoreSubscriptionViewDetailsMixin:UpdateView()
+	local subscriptionIndex = self:GetSubscriptionIndex()
+	local subscriptionID, name, description, styleType, backgroundAtlas, bannerAtlas, artworkAtlas = C_StoreSecure.GetSubscriptionInfo(subscriptionIndex)
+	local itemList = C_StoreSecure.GetSubscriptionItems(subscriptionIndex, true)
+
+	local state, upgradeTimeLeft, nextSupplyTimeLeft, remainingSupplyTimes = C_StoreSecure.GetSubscriptionState(subscriptionIndex)
+	local hasBonusItem
+
+	self.subscriptionID = subscriptionID
+	self:GetParent().PageHeader:SetLabel(name)
+
+	local numItems = #itemList
+	local itemPadding = 0
+
+	for index = 1, numItems do
+		local item = self.itemButtons[index]
+		if not item then
+			item = CreateFrame("Button", strformat("$parentItemButton%u", index), self.SubscriptionFrame, "StoreSubscriptionViewItemTemplate")
+			item:SetID(index)
+			item:SetOwner(self)
+
+			if index == 1 then
+				item:SetPoint("LEFT", self.SubscriptionFrame.ItemHolder, "LEFT", 0, 0)
+			end
+
+			self.itemButtons[index] = item
+		end
+
+		if index ~= 1 then
+			if itemPadding == 0 then
+				itemPadding = item.Name:GetWidth() - item:GetWidth() + 4
+			end
+			item:SetPoint("LEFT", self.itemButtons[index - 1], "RIGHT", itemPadding, 0)
+		end
+
+		local itemID, amount, isBonusItem = unpack(itemList[index])
+		local itemName, link, _, _, _, _, _, _, _, texture = GetItemInfo(itemID)
+
+		item.Name:SetText(itemName)
+		item.Icon:SetTexture(texture)
+		item.IconGlow:SetShown(isBonusItem)
+		item.BonusText:SetShown(isBonusItem)
+		item.Amount.Value:SetText(amount)
+		item.link = link
+		item:Show()
+
+		if isBonusItem then
+			hasBonusItem = true
+		end
+	end
+
+	for index = numItems + 1, #self.itemButtons do
+		self.itemButtons[index]:Hide()
+	end
+
+	if numItems > 0 then
+		self.SubscriptionFrame.ItemHolder:SetWidth(self.itemButtons[1]:GetWidth() * numItems + itemPadding * (numItems - 1))
+	end
+
+	if hasBonusItem and upgradeTimeLeft and upgradeTimeLeft > 0 then
+		self.SubscriptionFrame.ItemHolder:SetPoint("CENTER", 0, -2)
+	else
+		self.SubscriptionFrame.ItemHolder:SetPoint("CENTER", 0, 7)
+	end
+
+	self:SetStyle(styleType)
+	self.Description:SetText(description)
+
+	if C_Texture.HasAtlasInfo(backgroundAtlas) then
+		self.Background:SetAtlas(backgroundAtlas, true)
+		self.Background:Show()
+	else
+		self.Background:Hide()
+	end
+end
+
+function StoreSubscriptionViewDetailsMixin:PurchaseOnClick(this, button)
+	C_StoreSecure.GetStoreFrame():ShowProductPurchaseDialog(this.productID)
+	PlaySound(SOUNDKIT.UI_IG_STORE_BUY_BUTTON)
+end
+
+function StoreSubscriptionViewDetailsMixin:UpgradePurchaseOnClick(this, button)
+	C_StoreSecure.GetStoreFrame():ShowProductPurchaseDialog(this.productID)
+	PlaySound(SOUNDKIT.UI_IG_STORE_BUY_BUTTON)
+end
+
+StorePageTransmogrificationMixin = CreateFromMixins(PKBT_OwnerMixin, StoreCategoryPagesMixin, PKBT_CountdownThrottledBaseMixin)
+
+function StorePageTransmogrificationMixin:OnLoad()
+	self.List.PageHeader.Background:SetSubTexCoord(0, 1, 1, 0)
+
+	self.List.PageHeader.TimerIcon:SetAtlas("PKBT-Icon-Timer", true)
+	self.List.OfferHeader.TimerIcon:SetAtlas("PKBT-Icon-Timer", true)
+
+	self.List.RefreshButton:SetParent(self.List.PageHeader)
+	self.List.RefreshButton:AddTextureAtlas("PKBT-Icon-Refresh", true)
+	self.List.RefreshButton:AddText(STORE_REFRESH_PRODUCTS)
+
+	self.List.Separator:SetParent(self.List.Scroll.ScrollChild)
+
+	Mixin(self.List.OfferHeader, PKBT_OwnerMixin, PKBT_CountdownThrottledBaseMixin)
+	self.List.OfferHeader:SetOwner(self)
+	self.List.OfferHeader:SetParent(self.List.Scroll.ScrollChild)
+
+	self.List.OfferHeader.OnCountdownUpdate = function(this, timeLeft, timerFinished)
+		if timeLeft > 0 and not timerFinished then
+			self.List.OfferHeader.Timer:SetFormattedText(STORE_REFRESH_PRODUCTS_INFO_SHORT_FORMAT, GetRemainingTime(timeLeft))
+			self.List.OfferHeader.Timer:Show()
+			self.List.OfferHeader.TimerIcon:Show()
+		else
+			self.List.OfferHeader.Timer:Hide()
+			self.List.OfferHeader.TimerIcon:Hide()
+
+			if timerFinished then
+				C_StoreSecure.RequestNextTransmogOfferTime()
+				self:UpdateOfferInfo()
+			end
+		end
+	end
+
+	self.OfferDressUp:SetOwner(self)
+	self.OfferDressUp:SetRotateEnabled(true)
+--	self.OfferDressUp:SetZoomEnabled(true)
+--	self.OfferDressUp:SetPanningEnabled(true)
+
+	self.subCategoryButtons = {}
+	self.offerButtons = {}
+	self.setOfferButtons = {}
+
+	if not TRANSMOG_REROLL_BUTTON_ON_MAIN_PAGE then
+		self.List.RefreshButton:Hide()
+	end
+
+	self:RegisterCustomEvent("STORE_RANDOM_ITEM_POLL_UPDATE")
+	self:RegisterCustomEvent("STORE_PRODUCT_LIST_RENEW")
+	self:RegisterCustomEvent("STORE_TRANSMOG_OFFER_UPDATE")
+	self:RegisterCustomEvent("STORE_TRANSMOG_OFFER_RENEW")
+	self:RegisterCustomEvent("STORE_TRANSMOG_OFFER_NEXT_TIMER_READY")
+	self:RegisterCustomEvent("STORE_TRANSMOG_OFFER_NEXT_TIMER_WAIT")
+
+	self:SetID(Enum.Store.Category.Transmogrification)
+	self:SetOwner(self:GetParent():GetParent())
+	self:GetOwner():RegisterPageWidget(self)
+end
+
+function StorePageTransmogrificationMixin:OnEvent(event, ...)
+	if not self:IsVisible() then
+		return
+	end
+
+	if event == "STORE_RANDOM_ITEM_POLL_UPDATE" then
+		if self:GetSubCategoryIndex() == 0 then
+			self:UpdateTransmogRefreshTimer()
+		end
+	elseif event == "STORE_PRODUCT_LIST_RENEW" then
+		local categoryIndex, subCategoryIndex = ...
+		if categoryIndex == Enum.Store.Category.Transmogrification then
+			self:UpdateOfferInfo()
+		end
+	elseif event == "STORE_TRANSMOG_OFFER_UPDATE"
+	or event == "STORE_TRANSMOG_OFFER_RENEW"
+	or event == "STORE_TRANSMOG_OFFER_NEXT_TIMER_READY"
+	or event == "STORE_TRANSMOG_OFFER_NEXT_TIMER_WAIT"
+	then
+		self:UpdateOfferInfo()
+	end
+end
+
+function StorePageTransmogrificationMixin:OnShow()
+	local subCategoryIndex = self:GetSubCategoryIndex()
+
+	self.List:SetShown(subCategoryIndex == 0)
+	self.OfferDressUp:SetShown(subCategoryIndex == 0)
+	self:GetOwner():HideContentLayers()
+
+	if subCategoryIndex == 0 then
+		if not self.initialized then
+			local name, icon, isNew, enabled, reason = C_StoreSecure.GetCategoryInfo(self:GetID())
+			self.List.PageHeader:SetLabel(name)
+
+			self.initialized = true
+		end
+
+		self.List.Scroll:SetVerticalScroll(0)
+
+		self:UpdateTransmogRefreshTimer()
+		self:UpdateOfferInfo()
+	else
+		local itemListView = self:GetOwner():GetViewMode(Enum.StoreViewMode.ItemList)
+		itemListView:SetParentPage(self)
+		itemListView:SetViewCategory(self:GetID(), subCategoryIndex)
+	end
+end
+
+function StorePageTransmogrificationMixin:OnHide()
+	self:GetOwner():ShowContentLayers()
+end
+
+function StorePageTransmogrificationMixin:UpdateOfferInfo()
+	self:UpdateTransmogOfferRefreshTimer()
+	self:UpdateOffers()
+	self:UpdateItemSetOffer()
+end
+
+function StorePageTransmogrificationMixin:UpdateTransmogRefreshTimer()
+	local timeLeft, isRefreshAvailable = C_StoreSecure.GetTransmogRefrestTimeLeft()
+	if timeLeft > 0 then
+		self.List.RefreshButton:SetEnabled(isRefreshAvailable)
+	else
+		self.List.RefreshButton:Disable()
+	end
+	self:SetTimeLeft(isRefreshAvailable and timeLeft or 0)
+end
+
+function StorePageTransmogrificationMixin:UpdateTransmogOfferRefreshTimer()
+	local transmogOfferTimeLeft = C_StoreSecure.GetNextTransmogOfferTimeLeft()
+	self.List.OfferHeader:SetTimeLeft(transmogOfferTimeLeft or 0)
+end
+
+function StorePageTransmogrificationMixin:OnReRollClick(button)
+	local productID = C_StoreSecure.GetRefreshTransmogProductID()
+	assert(productID, "No product id for category refresh")
+	C_StoreSecure.GetStoreFrame():ShowProductPurchaseDialog(productID)
+	PlaySound(SOUNDKIT.UI_IG_STORE_BUY_BUTTON)
+end
+
+function StorePageTransmogrificationMixin:OnCountdownUpdate(timeLeft, timerFinished)
+	if timeLeft > 0 and not timerFinished then
+		self.List.PageHeader.Timer:SetFormattedText(STORE_REFRESH_PRODUCTS_INFO_SHORT_FORMAT, GetRemainingTime(timeLeft))
+		self.List.PageHeader.Timer:Show()
+		self.List.PageHeader.TimerIcon:Show()
+	else
+		self.List.PageHeader.Timer:Hide()
+		self.List.PageHeader.TimerIcon:Hide()
+	end
+end
+
+local TRANSMOG_SCROLL_PADDING = 25
+
+local TRANSMOG_TYPES_PER_ROW = 2
+local TRANSMOG_TYPES_OFFSET_X = 20
+local TRANSMOG_TYPES_OFFSET_Y = 20
+
+local TRANSMOG_OFFERS_PER_ROW = 2
+local TRANSMOG_OFFERS_OFFSET_X = 20
+local TRANSMOG_OFFERS_OFFSET_Y = 0
+
+local TRANSMOG_SEPARATOR_OFFSET_Y = 25
+
+function StorePageTransmogrificationMixin:UpdateOffers()
+	local numTransmogSubCategories = C_StoreSecure.GetNumTransmogSubCategories()
+	for transmogTypeIndex = 1, numTransmogSubCategories do
+		local button = self.subCategoryButtons[transmogTypeIndex]
+		if not button then
+			button = CreateFrame("Frame", strformat("$parentSubCategoryButton%u", transmogTypeIndex), self.List.Scroll.ScrollChild, "StoreTransmogSubCategoryButtonTemplate")
+			button:SetOwner(self)
+			button:SetID(transmogTypeIndex)
+			button:UpdateInfo()
+
+			if transmogTypeIndex == 1 then
+				button:SetPoint("TOPLEFT", TRANSMOG_SCROLL_PADDING, -TRANSMOG_SCROLL_PADDING)
+			elseif transmogTypeIndex % TRANSMOG_TYPES_PER_ROW == 1 then
+				button:SetPoint("TOPLEFT", self.subCategoryButtons[transmogTypeIndex - TRANSMOG_TYPES_PER_ROW], "BOTTOMLEFT", 0, -TRANSMOG_TYPES_OFFSET_Y)
 			else
-				C_Timer:After(2, function()
-					StoreLoadingFrame:Hide()
-				end)
-			end
-		end
-	end
-end
-
-function StoreSetDesaturatedAndDisableButtonInLoadingScreen( toggle )
-	local categories = STORE_CATEGORIES_DATA[selectedMoneyID] or {}
-
-	for i = 1, 4 do
-		local moneyButton = _G["StoreMoneyButton"..i]
-
-		if moneyButton then
-			moneyButton.Icon:SetDesaturated(toggle)
-			moneyButton.Background:SetDesaturated(toggle)
-			moneyButton.Highlight:SetDesaturated(toggle)
-			moneyButton.Selected:SetDesaturated(toggle)
-			moneyButton.Text:SetDesaturated(toggle)
-			moneyButton:SetEnabled(not toggle)
-		end
-	end
-
-	for i = 1, #categories do
-		local categoryButton = _G["StoreCategoryButton"..i]
-
-		if categoryButton then
-			if categoryButton.isEnable then
-				categoryButton.Category:SetDesaturated(toggle)
-				categoryButton.SelectedTexture:SetDesaturated(toggle)
-				categoryButton.HighlightTexture:SetDesaturated(toggle)
-				categoryButton.ColoredTexture:SetDesaturated(toggle)
-				categoryButton.PulseTexture:SetDesaturated(toggle)
-				categoryButton.Text:SetDesaturated(toggle)
-				categoryButton.NewItems:SetDesaturated(toggle)
-				categoryButton.Icon:SetDesaturated(toggle)
-				categoryButton:SetEnabled(not toggle)
-			end
-		end
-	end
-
-	StorePremiumButtons.Background:SetDesaturated(toggle)
-	StorePremiumButtons.Border:SetDesaturated(toggle)
-	StorePremiumButtons.BorderHighlight:SetDesaturated(toggle)
-	StorePremiumButtons.Text:SetDesaturated(toggle, StorePremiumButtons.Text.color)
-	StorePremiumButtons.Icon:SetDesaturated(toggle)
-	StorePremiumButtons.IconBorder:SetDesaturated(toggle)
-	StorePremiumButtons.IconBorderHighlight:SetDesaturated(toggle)
-	StorePremiumButtons:SetEnabled(not toggle)
-end
-
-function StoreLoadingFrame_OnShow( self, ... )
-	self:SetFrameLevel(self:GetParent():GetFrameLevel() + 20)
-	StoreSetDesaturatedAndDisableButtonInLoadingScreen(true)
-end
-
-function StoreLoadingFrame_OnHide( self, ... )
-	StoreSetDesaturatedAndDisableButtonInLoadingScreen(false)
-end
-
-function StoreTransmogrifyBuyButton_OnClick( self, ... )
-	local containerFrame = StoreTransmogrifyFrame.RightContainer.ContentFrame
-	local storeID, name, itemID, iconTexture, itemLink, itemRarity, isPVP, classID, expansionID, qualityID, itemsStoreID, storePrice, storeDiscount, storeDiscountPrice, isPVP, price, altCurrency, altPrice, altCurrencyName, altCurrencyIcon
-
-	if containerFrame.selectedItem then
-		storeID, itemID, iconTexture, itemLink, itemRarity, storePrice, storeDiscount, storeDiscountPrice, isPVP, altCurrency, altPrice, altCurrencyName, altCurrencyIcon = GetStoreTransmogrifyItemsInfo(containerFrame.selectedItem)
-	else
-		storeID, name, iconTexture, isPVP, classID, expansionID, qualityID, itemsStoreID, storePrice, storeDiscount, storeDiscountPrice, isPVP, altCurrency, altPrice, altCurrencyName, altCurrencyIcon = GetStoreTransmogrifySetsInfo()
-	end
-
-	name 	= name or GetItemInfo(itemID)
-	price 	= storeDiscount and storeDiscountPrice or storePrice
-
-	local storeBuyData = {
-		Texture 		= iconTexture,
-		Name 			= name,
-		Price 			= price,
-		ID 				= storeID,
-		Flags 			= STORE_TRANSMOGRIFY_SERVER_DATA[storeID][STORE_TRANSMOGRIFY_SERVER_STOREFLAGS],
-		AltCurrency 	= altCurrency,
-		AltPrice 		= altPrice,
-		AltCurrencyName = altCurrencyName,
-		AltCurrencyIcon = altCurrencyIcon,
-	}
-
-
-	StoreFrame_ProductBuy(storeBuyData)
-end
-
-
-local StoreTransmogrify_HelpPlate = {
-	FramePos = { x = 2, y = -2 },
-	FrameSize = { width = 594, height = 468 },
-	[1] = { ButtonPos = { x = 84, y = -212 }, HighLightBox = { x = 0, y = 0, width = 216, height = 465 }, ToolTipDir = "RIGHT", ToolTipText = STORE_TRANSMOGRIFY_TUTORIAL_1 }
-}
-
-function StoreTransmogrify_ToggleTutorial( self, ... )
-	local titleHeight = StoreTransmogrifyFrame.RightContainer.ContentFrame.OverlayElements.Title:GetStringHeight()
-
-	if titleHeight > 20 then
-		StoreTransmogrify_HelpPlate[2] = { ButtonPos = { x = 390, y = -97 }, HighLightBox = { x = 246, y = -67, width = 340, height = 50 }, ToolTipDir = "DOWN", ToolTipText = STORE_TRANSMOGRIFY_TUTORIAL_2 }
-	else
-		StoreTransmogrify_HelpPlate[2] = { ButtonPos = { x = 390, y = -80 }, HighLightBox = { x = 246, y = -50, width = 340, height = 50 }, ToolTipDir = "DOWN", ToolTipText = STORE_TRANSMOGRIFY_TUTORIAL_2 }
-	end
-
-	local helpPlate = StoreTransmogrify_HelpPlate
-	if ( helpPlate and not HelpPlate_IsShowing(helpPlate) ) then
-		HelpPlate_Show( helpPlate, StoreTransmogrifyFrame, StoreTransmogrifyFrame.TutorialButton )
-	else
-		HelpPlate_Hide(true)
-	end
-end
-
-local function GetRenewTimeTextFormat(seconds)
-	if seconds < 60 then
-		return STORE_RENEW_TIME_LEFT_SECONDS, seconds;
-	elseif seconds < 3600 then
-		return STORE_RENEW_TIME_LEFT_MINUTES, math.floor(seconds / 60);
-	elseif seconds < 86400 then
-		return STORE_RENEW_TIME_LEFT_HOURS, math.floor(seconds / 3600);
-	else
-		return STORE_RENEW_TIME_LEFT_DAYS, math.floor(seconds / 86400);
-	end
-end
-
-function StoreRenewTimeFrame_UpdateTime()
-	local frame = StoreRenewTimeFrame;
-
-	local renewTime;
-	if selectedCategoryID == 3 then
-		if selectedSubCategoryID == 3 then
-			renewTime = STORE_CACHE:Get("T_MOG_RENEW_TIME_LEFT", -1);
-		else
-			renewTime = STORE_CACHE:Get("MOUNT_RENEW_TIME_LEFT", -1);
-		end
-	elseif selectedCategoryID == 6 then
-		renewTime = STORE_CACHE:Get("T_MOG_RENEW_TIME_LEFT", -1);
-	end
-
-	local storeRenewMsgTime = STORE_CACHE:Get("RENEW_TIME", -1);
-
-	if not storeRenewMsgTime or not renewTime or renewTime == -1 then
-		frame:Hide();
-		return
-	end
-
-	local timeLeft = storeRenewMsgTime - (time() - renewTime);
-	if timeLeft <= 0 then
-		local renewWeeks = STORE_CACHE:Get("MOUNT_RENEW_WEEK", 0);
-
-		if renewWeeks ~= 0 then
-			STORE_CACHE:Set("MOUNT_RENEW_WEEK", 0);
-			STORE_CACHE:Set("CATEGORY_DROP_COUNT3", 1);
-			STORE_CACHE:Set("CATEGORY_DROP_COUNT3_3", 1);
-			STORE_CACHE:Set("CATEGORY_DROP_COUNT6", 1);
-		end
-
-		frame:Hide();
-		return
-	end
-
-	local timeFormat, timeText = GetRenewTimeTextFormat(timeLeft);
-	frame.TimerFrame.TimerText:SetFormattedText(timeFormat, timeText);
-end
-
-local Store_HelpPlate = {
-	FramePos = { x = 2, y = -24 },
-	FrameSize = { width = 794, height = 506 },
-	[1] = { ButtonPos = { x = 70, y = -200 }, HighLightBox = { x = 2, y = -40, width = 190, height = 386 }, ToolTipDir = "RIGHT", ToolTipText = STORE_TUTORIAL_1 },
-	[2] = { ButtonPos = { x = 464, y = -380 }, HighLightBox = { x = 198, y = -308, width = 592, height = 200 }, ToolTipDir = "UP", ToolTipText = STORE_TUTORIAL_2 },
-	[3] = { ButtonPos = { x = 464, y = -140 }, HighLightBox = { x = 198, y = -40, width = 592, height = 264 }, ToolTipDir = "DOWN", ToolTipText = STORE_TUTORIAL_3 },
-	[4] = { ButtonPos = { x = 320, y = 4 }, HighLightBox = { x = 54, y = 2, width = 574, height = 40 }, ToolTipDir = "DOWN", ToolTipText = STORE_TUTORIAL_4 },
-	[5] = { ButtonPos = { x = 680, y = 4 }, HighLightBox = { x = 630, y = 2, width = 160, height = 40 }, ToolTipDir = "DOWN", ToolTipText = STORE_TUTORIAL_5 },
-}
-
-function StoreFrame_ToggleTutorial(self, ...)
-	local helpPlate = Store_HelpPlate
-	if ( helpPlate and not HelpPlate_IsShowing(helpPlate) ) then
-		HelpPlate_Show( helpPlate, StoreFrame, StoreFrame.TutorialButton )
-	else
-		HelpPlate_Hide(true)
-	end
-end
-
-function StoreFrame_CategoryIsNew( currency, category )
-	return STORE_CATEGORY_NEW_ITEMS_INDICATOR[currency] and STORE_CATEGORY_NEW_ITEMS_INDICATOR[currency][category]
-end
-
-function StoreFrame_SubCategoryIsNew( currency, category, subCategory )
-	if STORE_CATEGORY_NEW_ITEMS_INDICATOR[currency] and STORE_CATEGORY_NEW_ITEMS_INDICATOR[currency][category] then
-		return STORE_CATEGORY_NEW_ITEMS_INDICATOR[currency][category][subCategory]
-	end
-end
-
-function StoreFrame_MultipleBuyUpdateCount(self)
-	local text = self:GetNumber()
-
-	if text < 1 then
-		self:SetText(1)
-		return
-	end
-
-	if text >= (10 ^ self:GetMaxLetters() - 1) then
-		self.IncrementButton:Disable()
-		self.DecrementButton:Enable()
-	elseif text <= 1 then
-		self.IncrementButton:Enable()
-		self.DecrementButton:Disable()
-	else
-		self.IncrementButton:Enable()
-		self.DecrementButton:Enable()
-	end
-
-	local confirmFrame = self:GetParent():GetParent()
-	local price = (confirmFrame.data.DiscountedPrice or confirmFrame.data.Price) * text
-	confirmFrame.NoticeFrame.Price:SetText(price)
-	if confirmFrame.hasAltCurrency then
-		confirmFrame.NoticeFrame.MoneySelectFrame.MoneyFrame.Price:SetText(price);
-		confirmFrame.NoticeFrame.AltCurrencySelectFrame.MoneyFrame.Price:SetText(confirmFrame.data.AltPrice * text);
-	end
-	confirmFrame.data.buyCount = text
-end
-
-function EventHandler:ASMSG_SHOP_BALANCE_RESPONSE( msg )
-	local bonus, vote, refer, loyalLevel, loyalMin, loyalMax, loyalCurrent = strsplit(":", msg)
-
-	bonus			= tonumber(bonus)
-	vote			= tonumber(vote)
-	refer			= tonumber(refer)
-	loyalLevel 		= tonumber(loyalLevel)
-	loyalMin 		= tonumber(loyalMin)
-	loyalMax 		= tonumber(loyalMax)
-	loyalCurrent 	= tonumber(loyalCurrent)
-
-	STORE_CURRENCY_INFO.BALANCE[Enum.Store.CurrencyType.Bonus] = bonus
-	STORE_CURRENCY_INFO.BALANCE[Enum.Store.CurrencyType.Vote] = vote
-	STORE_CURRENCY_INFO.BALANCE[Enum.Store.CurrencyType.Referral] = refer
-	STORE_CURRENCY_INFO.BALANCE[Enum.Store.CurrencyType.Loyality] = loyalLevel
-
-	STORE_CURRENCY_INFO.LOYALITY.min = loyalMin
-	STORE_CURRENCY_INFO.LOYALITY.max = loyalMax
-	STORE_CURRENCY_INFO.LOYALITY.current = loyalCurrent
-	STORE_CURRENCY_INFO.LOYALITY.level = loyalLevel
-
-	_G["StoreMoneyButton1"].Text:SetText(bonus)
-	_G["StoreMoneyButton2"].Text:SetText(vote)
-	_G["StoreMoneyButton3"].Text:SetText(refer)
-	_G["StoreMoneyButton4"].Text:SetText(loyalLevel)
-
-	FireCustomClientEvent("STORE_BALANCE_UPDATE")
-end
-
-function EventHandler:ASMSG_SHOP_CATEGORY_NEW_ITEMS_RESPONSE( msg )
-	local storage = C_Split(msg, "|")
-
-	wipe(STORE_CATEGORY_NEW_ITEMS_INDICATOR)
-
-	for _, splitedMsg in pairs(storage) do
-		local data 			= C_Split(splitedMsg, ":")
-		local currency 		= tonumber(data[E_STORE_CATEGORY_NEW_ITEMS_INDICATOR.CURRENCY])
-		local categoryID 	= tonumber(data[E_STORE_CATEGORY_NEW_ITEMS_INDICATOR.CATEGORYID])
-		local subCategoryID = tonumber(data[E_STORE_CATEGORY_NEW_ITEMS_INDICATOR.SUBCATEGORYID])
-
-		if currency and categoryID then
-			if not STORE_CATEGORY_NEW_ITEMS_INDICATOR[currency] then
-				STORE_CATEGORY_NEW_ITEMS_INDICATOR[currency] = {}
+				button:SetPoint("TOPLEFT", self.subCategoryButtons[transmogTypeIndex - 1], "TOPRIGHT", TRANSMOG_TYPES_OFFSET_X, 0)
 			end
 
-			if not STORE_CATEGORY_NEW_ITEMS_INDICATOR[currency][categoryID] then
-				STORE_CATEGORY_NEW_ITEMS_INDICATOR[currency][categoryID] = {}
-			end
-
-			if (STORE_CATEGORY_NEW_ITEMS_INDICATOR[currency] and STORE_CATEGORY_NEW_ITEMS_INDICATOR[currency][categoryID]) and subCategoryID then
-				STORE_CATEGORY_NEW_ITEMS_INDICATOR[currency][categoryID][subCategoryID] = true
-			end
+			self.subCategoryButtons[transmogTypeIndex] = button
 		end
-	end
-end
 
-function EventHandler:ASMSG_SHOP_ITEM( msg )
-	local ID, Entry, count, Price, Discount, DiscountedPrice, creatureEntry, Flags, altCurrency, altPrice, categoryID, subCategoryID = strsplit(":", msg)
-
-	local storeID 				= tonumber(ID)
-	local itemEntry 			= tonumber(Entry)
-	local itemCount 			= tonumber(count)
-	local storePrice 			= tonumber(Price)
-	local storeDiscount 		= tonumber(Discount)
-	local storeDiscountPrice 	= tonumber(DiscountedPrice)
-	local creatureEntry 		= tonumber(creatureEntry)
-	local storeFlags 			= tonumber(Flags)
-	local storeCategoryID 		= tonumber(categoryID)
-	local storeSubCategoryID 	= tonumber(subCategoryID)
-	local isPVP 				= bit.band(storeFlags, STORE_ITEM_FLAG_PVP) == STORE_ITEM_FLAG_PVP
-
-	storeDiscount = storeDiscount ~= 0 and storeDiscount
-	itemCount = itemCount > 1 and itemCount
-	storeDiscountPrice = storeDiscountPrice ~= 0 and storeDiscountPrice
-	creatureEntry = creatureEntry ~= 0 and creatureEntry
-
-	local storage = STORE_PRODUCT_CACHE[StoreRequestMoneyID][StoreRequestCategoryID][StoreRequestSubCategoryID][StoreRequestIgnoreFilters]
-
-	if storeID == 0 then
-		local categoryID 	= itemEntry
-		local subCategoryID = tonumber(count)
-
-		storage.version = GetStoreProductVersion()
-
-		StoreSelectCategory(categoryID, subCategoryID)
-
-		StoreRequestMoneyID 		= nil
-		StoreRequestCategoryID 		= nil
-		StoreRequestSubCategoryID 	= nil
-		StoreRequestIgnoreFilters 	= nil
-
-		storeRequestQueue[1][2] = true
-		-- coroutine.resume(Store_CoroutineRequestItems)
-
-		StoreToggleLoadingScreen(false, true)
-		return
+		button:Show()
 	end
 
-	if not storage.data then
-		storage.data = {}
+	for transmogTypeIndex = numTransmogSubCategories + 1, #self.subCategoryButtons do
+		self.subCategoryButtons[transmogTypeIndex]:Hide()
 	end
 
-	storage.data[storeID] = {
-		storeID,
-		itemEntry,
-		itemCount,
-		storePrice,
-		nil,
-		storeDiscount,
-		storeDiscountPrice,
-		creatureEntry,
-		storeFlags,
-		tonumber(altCurrency),
-		tonumber(altPrice),
-		isPVP,
-		false,
-	}
-end
+	local categoryIndex = self:GetID()
+	local subCategoryIndex = self:GetSubCategoryIndex()
+	local isLoading = not C_StoreSecure.IsCategoryProductsLoaded(categoryIndex, subCategoryIndex)
 
-function EventHandler:ASMSG_SHOP_BUY_ITEM_RESPONSE( msg )
-	local Response, value = strsplit(":", msg)
+	local numTransmogOffers = C_StoreSecure.GetNumTransmogOffers()
+	for transmogOfferIndex = 1, numTransmogOffers do
+		local button = self.offerButtons[transmogOfferIndex]
+		if not button then
+			button = CreateFrame("Button", strformat("$parentTransmogOfferButton%u", transmogOfferIndex), self.List.Scroll.ScrollChild, "StoreTransmogOfferButtonTemplate")
+			button:SetOwner(self)
+			button:SetID(transmogOfferIndex)
 
-	if Response == "ERROR_RECEIVER_NOT_FOUND" then
-		StoreShowErrorFrame(STORE_ERROR, STORE_BUY_ITEM_ERROR_1)
-	elseif Response == "ERROR_CANNOT_GIFT_TO_SELF" then
-		StoreShowErrorFrame(STORE_ERROR, STORE_BUY_ITEM_ERROR_2)
-	elseif Response == "ERROR_NOT_AVAILABLE_FOR" then
-		StoreShowErrorFrame(STORE_ERROR, string.format(STORE_BUY_ITEM_ERROR_3, value))
-
-		StoreRequestShopItems()
-	elseif Response == "ERROR_LOYALTY_ALREADY_TAKEN" then
-		StoreShowErrorFrame(STORE_ERROR, ERROR_LOYALTY_ALREADY_TAKEN)
-	elseif Response == "ERROR_BALANCE" then
-		if selectedMoneyID == 4 then
-			StoreShowErrorFrame(STORE_ERROR, STORE_BUY_ITEM_ERROR_4)
-		else
-			StoreShowErrorFrame(STORE_ERROR, STORE_BUY_ITEM_ERROR_5)
-		end
-	elseif Response == "OK" then
-		local itemID = tonumber(value)
-		local name, _, _, _, _, _, _, _, _, texture = GetItemInfo(itemID)
-
-		StoreShowPurchaseAlert(name, texture, itemID)
-		SendServerMessage("ACMSG_SHOP_REFUNDABLE_PURCHASE_LIST_REQUEST")
-
-		if selectedRemoveOffer then
-			selectedSpecialOfferPage = 1
-			table.remove(STORE_SPECIAL_OFFER_INFO_DATA, selectedRemoveOffer)
-			selectedRemoveOffer = nil
-			StoreFrame_SpecialOfferSetup()
-		end
-	end
-end
-
-function EventHandler:ASMSG_SHOP_SPECIAL_OFFER_INFO( msg )
-	local splitData = C_Split(msg, "|")
-
-	if splitData and #splitData > 0 then
-		local offerID 		= tonumber(splitData[1])
-		local background 	= splitData[2]
-		local headline 		= splitData[3]
-		local title 		= splitData[4]
-		local description 	= splitData[5]
-		local remainingTime = tonumber(splitData[6])
-		local endTime 		= splitData[6] ~= "0" and time() + remainingTime or nil
-		local productID 	= tonumber(splitData[7])
-		local itemEntry 	= tonumber(splitData[8])
-		local price 		= tonumber(splitData[9])
-		local selectedSpec  = splitData[10] ~= "0"
-		local freeSubscribe = splitData[11] ~= "0"
-		local isReusable 	= splitData[12] ~= "0"
-		local IsNew 		= STORE_SMALL_SPECIAL_OFFER_BUFFER[offerID]
-
-		local itemName, _, _, _, _, _, _, _, _, itemTexture = GetItemInfo(itemEntry)
-
-		if not StoreGetSpecialOfferByOfferID(offerID) then
-			table.insert(STORE_SPECIAL_OFFER_INFO_DATA, {
-				ID 				= productID,
-				Background 		= background,
-				MainTitle 		= headline,
-				Title 			= title,
-				Description 	= description,
-				EndTime 		= endTime,
-				Name 			= itemName,
-				Texture 		= itemTexture,
-				SelectedSpec 	= selectedSpec,
-				Price 			= price,
-				FreeSubscribe 	= freeSubscribe,
-				IsReusable 		= isReusable,
-				offerID 		= offerID,
-				IsNew 			= IsNew
-			})
-		end
-	end
-
-	StoreSpecialOfferSortUpdate()
-	StoreSpecialOfferInfoUpdate()
-	StoreFrame_SpecialOfferSetup()
-end
-
-function EventHandler:ASMSG_SHOP_SPECIAL_OFFER_POPUP( msg )
-	if msg:sub(1, 1) == "~" then
-		loadstring(string.format([[%s]], msg:sub(2)))() -- Для динамического отображения SpecialOffer.
-	else
-		local tempdata = {}
-		local data = {strsplit("|", msg)}
-
-		for i = 6, #data, 2 do
-			table.insert(tempdata, {Entry = data[i], Count = data[i + 1]})
-		end
-
-		STORE_SPECIAL_OFFER_POPUP = {
-			Texture 		= data[1],
-			MainTitle 		= data[2],
-			Title 			= data[3],
-			Description 	= data[4],
-			ID 				= tonumber(data[5]),
-			RemainingTime 	= tonumber(data[6]),
-			Item 			= CopyTable(tempdata)
-		}
-	end
-end
-
-function EventHandler:ASMSG_SHOP_SPECIAL_OFFER_POPUP_SMALL( msg )
-	local splitData = C_Split(msg, "|")
-	local offerID 	= tonumber(splitData[1])
-
-	StoreHidePopup()
-
-	STORE_SMALL_SPECIAL_OFFER_BUFFER[offerID] = true
-
-	if not StoreMicroButton:IsVisible() or not StoreMicroButton:IsShown() then
-		StoreToastButton.TopLine:SetText(STPRE_TOAST_SPECIAL_OFFER_TITLE)
-		StoreToastButton.MiddleLine:SetText(STORE_TOAST_SPECIAL_OFFER_BODY)
-		StoreToastButton:Show()
-
-		local offer3DModel = STORE_SPECIAL_OFFERS_3D[offerID] and STORE_SPECIAL_OFFERS_3D[offerID].PopupCreature or nil
-
-		StoreToastButton.ModelFrame:SetShown(offer3DModel ~= nil)
-
-		if offer3DModel ~= nil then
-			StoreToastButton.ModelFrame:SetCreature(offer3DModel)
-		end
-	else
-		local offerBanner3DModel = STORE_SPECIAL_OFFERS_3D[offerID] and STORE_SPECIAL_OFFERS_3D[offerID].PopupModelInfo or nil
-		if offerBanner3DModel ~= nil then
-			StoreShowPopup(splitData[2], "DOWN", StoreMicroButton, 0, -5, nil, nil, offerBanner3DModel)
-		else
-			StoreShowPopup(splitData[2], "DOWN", StoreMicroButton, 0, -5)
-		end
-	end
-
-	StoreRequestSpecialOffer()
-end
-
-local premiumGreenColor = CreateColor(0, 1, 0)
-local premiumRedColor = CreateColor(0, 1, 0)
-function EventHandler:ASMSG_PREMIUM_INFO_RESPONSE( msg )
-	local timer = tonumber(msg)
-
-	if timer ~= 0 then
-		StorePremiumButtons.Text:SetTextColor(premiumGreenColor.r, premiumGreenColor.g, premiumGreenColor.b)
-		StorePremiumButtons.Text:SetRemainingTime(timer, true)
-		StorePremiumButtons.Text.color = premiumGreenColor
-
-		if timer < 86400 then
-			StorePremiumButtons.Text:SetTextColor(premiumRedColor.r, premiumRedColor.g, premiumRedColor.b)
-			StorePremiumButtons.Text.color = premiumRedColor
-		elseif timer >= 43200000 then
-			StorePremiumButtons.Text:SetText(STORE_PREMIUM_FOREVER_LABEL)
-			StorePremiumButtons.Text:SetTextColor(premiumGreenColor.r, premiumGreenColor.g, premiumGreenColor.b)
-			StorePremiumButtons.Text.color = premiumGreenColor
-			return
-		end
-
-		if StorePremiumButtons.Ticker then
-			StorePremiumButtons.Ticker:Cancel()
-			StorePremiumButtons.Ticker = nil
-		end
-
-		StorePremiumButtons.Ticker = C_Timer:NewTicker(1, function()
-			if StorePremiumButtons:IsVisible() then
-				timer = timer - 1
-				StorePremiumButtons.Text:SetRemainingTime(timer, true)
+			if transmogOfferIndex == 1 then
+				button:SetPoint("LEFT", TRANSMOG_SCROLL_PADDING, 0)
+			elseif transmogOfferIndex % TRANSMOG_OFFERS_PER_ROW == 1 then
+				button:SetPoint("TOPLEFT", self.offerButtons[transmogOfferIndex - TRANSMOG_OFFERS_PER_ROW], "BOTTOMLEFT", 0, TRANSMOG_OFFERS_OFFSET_Y)
 			else
-				StorePremiumButtons.Ticker:Cancel()
-				StorePremiumButtons.Ticker = nil
+				button:SetPoint("TOPLEFT", self.offerButtons[transmogOfferIndex - 1], "TOPRIGHT", TRANSMOG_OFFERS_OFFSET_X, 0)
 			end
-		end)
+
+			self.offerButtons[transmogOfferIndex] = button
+		end
+
+		if transmogOfferIndex == 1 then
+			button:SetPoint("TOP", self.List.OfferHeader, "BOTTOM", 0, -TRANSMOG_SEPARATOR_OFFSET_Y)
+		end
+
+		button:SetOfferIndex(transmogOfferIndex)
+	--	button:SetLoading(isLoading) -- layering limitation
+		button:Show()
+	end
+
+	local height = TRANSMOG_SCROLL_PADDING * 2
+
+	if numTransmogSubCategories > 0 and numTransmogOffers > 0 then
+		height = height + self.List.Separator:GetHeight() + TRANSMOG_SEPARATOR_OFFSET_Y * 2
+		self.List.Separator:SetPoint("TOP", self.subCategoryButtons[numTransmogSubCategories], "BOTTOM", 0, -TRANSMOG_SEPARATOR_OFFSET_Y)
+		self.List.Separator:Show()
 	else
-		StorePremiumButtons.Text:SetText(STORE_BUY)
-		StorePremiumButtons.Text:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
-		StorePremiumButtons.Text.color = NORMAL_FONT_COLOR
-	end
-end
-
-function EventHandler:ASMSG_PREMIUM_RENEW_RESPONSE( msg )
-	if msg == "ERROR_BALANCE" then
-		StoreShowErrorFrame(STORE_ERROR, STORE_BUY_PREMIUM_ERROR_1)
-	elseif msg == "OK" then
-		StoreShowPurchaseAlert(STORE_PREMIUM_STATUS_LABEL, "Interface\\ICONS\\VIP")
-	end
-end
-
-function EventHandler:ASMSG_SHOP_SUBSCRIPTION_INFO( msg )
-	if tonumber(msg) == -1 then
-		STORE_CATEGORIES_DATA[1][STORE_SUBSCRIPTIONS_CATEGORY_ID].Hidden = true
-		return
+		self.List.Separator:Hide()
 	end
 
-	if STORE_CATEGORIES_DATA[1][STORE_SUBSCRIPTIONS_CATEGORY_ID].Disable then
-		STORE_CATEGORIES_DATA[1][STORE_SUBSCRIPTIONS_CATEGORY_ID].Disable = false
-	end
-
-	local everyDayItem = {}
-	local onSubscribeItem = {}
-	local arg = {string.match(msg, "(.*):EVERYDAY:(.*):ONSUBSCRIBE:(.*)")}
-	local ID, ShortPrice, LongPrice, ExtraPrice, Flags, Dayz, Seconds, ShowTrial, ActiveTrial, ActiveExtra, Name, Description = strsplit(":", arg[1])
-	local everyDay = {strsplit(":", arg[2])}
-	local onSubscribe = {strsplit(":", arg[3])}
-
-	for i = 1, #everyDay, 2 do
-		if everyDay[i] and everyDay[i + 1] then
-			table.insert(everyDayItem, {Entry = everyDay[i], Count = everyDay[i + 1]})
-		end
-	end
-	for s = 1, #onSubscribe, 2 do
-		if onSubscribe[s] and onSubscribe[s + 1] then
-			table.insert(onSubscribeItem, {Entry = onSubscribe[s], Count = onSubscribe[s + 1]})
-		end
-	end
-
-	Flags = Flags ~= "0" and tonumber(Flags) or nil
-	Dayz = Dayz ~= "0" and tonumber(Dayz) or nil
-	Seconds = Seconds ~= "0" and tonumber(Seconds) or nil
-	ShowTrial = ShowTrial ~= "0"
-	ActiveTrial = ActiveTrial ~= "0"
-	ActiveExtra = ActiveExtra ~= "0"
-
-	local tempTable = {
-		ID 					= tonumber(ID),
-		ShortPrice 			= tonumber(ShortPrice),
-		LongPrice 			= tonumber(LongPrice),
-		ExtraPrice			= tonumber(ExtraPrice),
-		Flags 				= Flags,
-		Dayz 				= Dayz,
-		Seconds 			= Seconds,
-		ShowTrial 			= ShowTrial,
-		EveryDayItem 		= CopyTable(everyDayItem),
-		OnSubscribeItem 	= CopyTable(onSubscribeItem),
-		ActiveTrial			= ActiveTrial,
-		ActiveExtra			= ActiveExtra,
-        Name                = Name,
-		Description			= Description
-	}
-
-	for _, subscriptionData in ipairs(STORE_SUB_CATEGORY_DATA[STORE_SUBSCRIPTIONS_CATEGORY_ID]) do
-		if subscriptionData.SubCategoryId == tempTable.ID then
-			subscriptionData.Locked = nil
-			break
-		end
-	end
-
-	table.insert(STORE_SUBSCRIBE_DATA, tempTable)
-
-	StoreSubscribeSetup()
-end
-
-StaticPopupDialogs["STORE_SERVICE_DIALOG"] = {
-	text = STORE_SERVICE_POPUP_TEXT,
-	button1 = EXIT,
-	button2 = CANCEL,
-	OnAccept = function(self, data)
-		Logout()
-	end,
-	OnCancel = function(self) end,
-	timeout = 0,
-	exclusive = 1,
-	whileDead = 1,
-	showAlert = 1,
-	hideOnEscape = 1
-};
-
-function Store_TryOnModel( frame, ... )
-	frame:Undress()
-
-	for i = 1, 19 do
-		local link = GetInventoryTransmogID("player", i) or GetInventoryItemLink("player", i);
-
-		if link and not isOneOf(i, ...) then
-			frame:TryOn(link)
-		end
-	end
-end
-
-function EventHandler:ASMSG_ACTIVATE_SHOP_SERVICE( msg )
-	for i = 1, #STORE_SERVICE_FLAG_DATA do
-		local data = STORE_SERVICE_FLAG_DATA[i]
-		if data then
-			if bit.band(tonumber(msg), data.flag) == data.flag then
-				StaticPopup_Show("STORE_SERVICE_DIALOG", data.text)
-			end
-		end
-	end
-end
-
-function EventHandler:ASMSG_SHOP_SPECIAL_OFFER_DETAILS( msg )
-	local id, title, description, price, itemData = strsplit("|", msg)
-
-	if id and title and description and price then
-
-		id = tonumber( id )
-		price = tonumber( price )
-
-		STPRE_SPECIAL_OFFER_DETAILS_DATA[id] = {}
-		STPRE_SPECIAL_OFFER_DETAILS_DATA[id]["items"] = {}
-		STPRE_SPECIAL_OFFER_DETAILS_DATA[id]["title"] = title
-		STPRE_SPECIAL_OFFER_DETAILS_DATA[id]["description"] = description
-		STPRE_SPECIAL_OFFER_DETAILS_DATA[id]["price"] = price
-
-		if itemData then
-			local items = {strsplit(":", itemData)}
-			for i = 1, #items do
-				local itemID, role, count = string.match( items[i], "(%d+)<(%d+)><(%d+)>" )
-				if itemID and role and count then
-					itemID = tonumber( itemID )
-					role = tonumber( role )
-					count = tonumber( count )
-
-					if STPRE_SPECIAL_OFFER_DETAILS_DATA[id]["items"] and not STPRE_SPECIAL_OFFER_DETAILS_DATA[id]["items"][role] then
-						STPRE_SPECIAL_OFFER_DETAILS_DATA[id]["items"][role] = {}
-					end
-
-					if STPRE_SPECIAL_OFFER_DETAILS_DATA[id]["items"][role] then
-						table.insert(STPRE_SPECIAL_OFFER_DETAILS_DATA[id]["items"][role], {itemID = itemID, count = count})
-					end
-				end
-			end
-		end
-	end
-end
-
-function EventHandler:ASMSG_SHOP_REFUNDABLE_PURCHASE_LIST( msg )
-	local listData = {strsplit("|", msg)}
-
-	STORE_REFUND_DATA = {}
-
-	if listData and #listData > 0 then
-		for i = 1, #listData do
-			local itemGUID, bag, slot, purchaseDate, remainingTime, penalty, refundBonuses = string.match( listData[i], "(%d+):(%d+):(%d+):(%d+):(%d+):(%d+):(%d+)" )
-			if bag and slot and itemGUID then
-				table.insert(STORE_REFUND_DATA, {
-					bag = bag,
-					slot = slot,
-					purchaseDate = purchaseDate,
-					remainingTime = tonumber(remainingTime),
-					penalty = tonumber(penalty),
-					refundBonuses = refundBonuses,
-					itemGUID = itemGUID,
-					itemID = bag == "255" and GetInventoryItemID("player", slot) or GetContainerItemID(bag, slot),
-					requestTime = GetTime(),
-				})
-			end
-		end
-	end
-
-	StoreRefundListScrollFrame_UpdateItemList()
-end
-
-function EventHandler:ASMSG_SHOP_PURCHASE_REFUND_RESPONSE( msg )
-	msg = tonumber(string.sub(msg, 1, 1))
-
-	if msg == 0 then
-		StoreShowPurchaseAlert(STORE_BONUS_COIN_LABEL, "Interface\\ICONS\\WoW_Store")
-		StoreRefundFrame.RefundButton:Enable()
-
-		SendServerMessage("ACMSG_SHOP_REFUNDABLE_PURCHASE_LIST_REQUEST")
-	else
-		StoreShowErrorFrame(STORE_ERROR, STORE_REFUND_ERROR_PERFORM_ANOTHER_OPERATION)
-		StoreRefundFrame.RefundButton:Disable()
-	end
-end
-
-function EventHandler:ASMSG_SHOP_ROLLED_TEMS_INFO( msg )
-	ReportBug("Configuration")
-
-	local temsInfo = C_Split(msg, ":");
-	local renewWeeks = tonumber(temsInfo[1]);
-	local mountTimeRenew = tonumber(temsInfo[2]);
-	local tmogTimeRenew = tonumber(temsInfo[3]);
-
-	storeRenewMsgTime = time();
-
-	STORE_CACHE:Set("RENEW_TIME", time());
-	STORE_CACHE:Set("MOUNT_RENEW_TIME_LEFT", mountTimeRenew or -1);
-	STORE_CACHE:Set("T_MOG_RENEW_TIME_LEFT", tmogTimeRenew or -1);
-
-	local cacheRenewWeeks 	= STORE_CACHE:Get("MOUNT_RENEW_WEEK", 0)
-
-	if cacheRenewWeeks ~= renewWeeks then
-		STORE_CACHE:Set("MOUNT_RENEW_WEEK", renewWeeks)
-		STORE_CACHE:Set("CATEGORY_DROP_COUNT3", 1)
-		STORE_CACHE:Set("CATEGORY_DROP_COUNT3_3", 1)
-		STORE_CACHE:Set("CATEGORY_DROP_COUNT6", 1)
-
-		local moneyID = 1
-		if STORE_PRODUCT_CACHE and STORE_PRODUCT_CACHE[moneyID] then
-			if STORE_PRODUCT_CACHE[moneyID][STORE_COLLECTIONS_CATEGORY_ID] then
-				local category = STORE_PRODUCT_CACHE[moneyID][STORE_COLLECTIONS_CATEGORY_ID]
-				for subCategoryID = 1, #STORE_SUB_CATEGORY_DATA[STORE_COLLECTIONS_CATEGORY_ID] do
-					if category[subCategoryID] then
-						for filter = 0, 1 do
-							if category[subCategoryID][filter] and category[subCategoryID][filter].data then
-								table.wipe(category[subCategoryID][filter].data)
-							end
-						end
-					end
-				end
-			end
-			if STORE_PRODUCT_CACHE[moneyID][STORE_TRANSMOGRIFY_CATEGORY_ID] then
-				local category = STORE_PRODUCT_CACHE[moneyID][STORE_TRANSMOGRIFY_CATEGORY_ID]
-				for subCategoryID = 1, 4 do
-					if category[subCategoryID] then
-						for filter = 0, 1 do
-							if category[subCategoryID][filter] and category[subCategoryID][filter].data then
-								table.wipe(category[subCategoryID][filter].data)
-							end
-						end
-					end
-				end
-			end
-		end
-
-		ButtonPulse_StopPulse(StoreMicroButton)
-		ButtonPulse_StopPulse(GameMenuButtonStore)
-
-		if StoreMicroButton:IsEnabled() == 1 then
-			SetButtonPulse(StoreMicroButton, 60, 0.50)
-		end
-
-		if GameMenuButtonStore:IsEnabled() == 1 then
-			SetButtonPulse(GameMenuButtonStore, 60, 0.50)
-		end
-	end
-end
-
-function EventHandler:ASMSG_SHOP_RENEW_ITEMS( msg )
-	local answer = C_Split(msg, ":")
-	local responseID = tonumber(answer[1])
-	local categoryId = tonumber(answer[2])
-	local subCategoryId = tonumber(answer[3])
-
-	if responseID == 0 then
-		local cacheName = categoryId == 3 and subCategoryId == 3 and "CATEGORY_DROP_COUNT3_3" or "CATEGORY_DROP_COUNT"..categoryId;
-		local cacheDropsCount = STORE_CACHE:Get(cacheName, 0)
-		STORE_CACHE:Set(cacheName, cacheDropsCount + 1)
-
-		if categoryId == STORE_COLLECTIONS_CATEGORY_ID then
-			if subCategoryId == 3 then
-				STORE_CACHE:Set("ASMSG_SHOP_ILLUSION_RENEWAL_PRICE", 5);
-			elseif subCategoryId == 2 then
-				STORE_CACHE:Set("ASMSG_SHOP_PET_RENEWAL_PRICE", 3);
-			elseif subCategoryId == 1 then
-				STORE_CACHE:Set("ASMSG_SHOP_MOUNT_RENEWAL_PRICE", 3);
-			end
-		elseif categoryId == STORE_TRANSMOGRIFY_CATEGORY_ID then
-			STORE_CACHE:Set("ASMSG_SHOP_TRANSMOG_RENEWAL_PRICE", 10);
-		end
-
-		if selectedSubCategoryID ~= 0 then
-			if categoryId == STORE_TRANSMOGRIFY_CATEGORY_ID then
-				STORE_TRANSMOGRIFY_SERVER_DATA = {}
-			end
-
-			StoreToggleLoadingScreen(true, true)
-
-			if selectedShowAllItemCheckBox == 1 then
-				selectedShowAllItemCheckBox = 0;
-				StoreItemListUpdate();
-				selectedShowAllItemCheckBox = 1;
-			end
-
-			StoreItemListUpdate()
-			StoreFrame_UpdateItemCard()
-		end
-	else
-		StoreShowErrorFrame(STORE_ERROR, STORE_BUY_ITEM_ERROR_5)
-	end
-
-	if selectedSubCategoryID == 0 then
-		StoreToggleLoadingScreen(false, true)
-	end
-end
-
-function StoreRequestShopItems( moneyID, categoryID, subCategoryID, ignireFilters )
-	local _StoreRequestMoneyID 			= (moneyID or selectedMoneyID) or 0
-	local _StoreRequestCategoryID 		= (categoryID or selectedCategoryID) or 0
-	local _StoreRequestSubCategoryID 	= (subCategoryID or selectedSubCategoryID) or 0
-	local _StoreRequestIgnoreFilters 	= (ignireFilters or selectedShowAllItemCheckBox) or 0
-
-	--                             Request  Response
-	table.insert(storeRequestQueue, {false, false,
-			_StoreRequestMoneyID,
-			_StoreRequestCategoryID,
-			_StoreRequestSubCategoryID,
-			_StoreRequestIgnoreFilters
-		})
-
-	if not storeQueueTimer and #storeRequestQueue > 0 then
-		storeQueueTimer = C_Timer:NewTicker(0.1, function()
-			if #storeRequestQueue > 0 then
-				if not storeRequestQueue[1][1] then
-					StoreRequestMoneyID 		= storeRequestQueue[1][3]
-					StoreRequestCategoryID 		= storeRequestQueue[1][4]
-					StoreRequestSubCategoryID 	= storeRequestQueue[1][5]
-					StoreRequestIgnoreFilters 	= storeRequestQueue[1][6]
-
-					SendServerMessage("ACMSG_SHOP_ITEM_LIST_REQUEST", string.format("%d:%d:%d:%d",
-							StoreRequestMoneyID,
-							StoreRequestCategoryID,
-							StoreRequestSubCategoryID,
-							StoreRequestIgnoreFilters
-						))
-
-					storeRequestQueue[1][1] = true
-					StoreToggleLoadingScreen(true, false)
-				else
-					if storeRequestQueue[1][2] then
-						table.remove(storeRequestQueue, 1)
-					end
-				end
-			else
-				storeQueueTimer:Cancel()
-				storeQueueTimer = nil
-			end
-		end)
-	end
-end
-
-function EventHandler:ASMSG_SHOP_VERSION(msg)
-	local version, mountRenewalPrice, petRenewalPrice, illusionRenewalPrice, transmogRenewalPrice = strsplit(":", msg);
-	STORE_CACHE:Set("ASMSG_SHOP_VERSION", tonumber(version));
-	STORE_CACHE:Set("ASMSG_SHOP_MOUNT_RENEWAL_PRICE", tonumber(mountRenewalPrice) or 3);
-	STORE_CACHE:Set("ASMSG_SHOP_PET_RENEWAL_PRICE", tonumber(petRenewalPrice) or 3);
-	STORE_CACHE:Set("ASMSG_SHOP_ILLUSION_RENEWAL_PRICE", tonumber(illusionRenewalPrice) or 5);
-	STORE_CACHE:Set("ASMSG_SHOP_TRANSMOG_RENEWAL_PRICE", tonumber(transmogRenewalPrice) or 10);
-end
-
-CUSTOM_ROLLED_ITEMS_IN_SHOP = {};
-
-function EventHandler:ASMSG_ROLLED_ITEMS_IN_SHOP(msg)
-	for _, subCategoryMsg in ipairs({string.split(";", (msg:gsub(";$", "")))}) do
-		local subCategoryID, subCategoryData = string.split(":", subCategoryMsg, 2);
-		subCategoryID = tonumber(subCategoryID);
-
-		if subCategoryID and subCategoryData and subCategoryData ~= "" then
-			for _, data in ipairs({string.split("|", (subCategoryData:gsub("|$", "")))}) do
-				local hash, currency, price, productID = strsplit(",", (data:gsub(",$", "")));
-				currency, price, productID = tonumber(currency), tonumber(price), tonumber(productID);
-
-				if hash and currency and price and productID then
-					CUSTOM_ROLLED_ITEMS_IN_SHOP[hash] = {
-						currency = currency,
-						price = price,
-						productID = productID
-					};
-				end
-			end
-		end
-	end
-
-	FireCustomClientEvent("STORE_ROLLED_ITEMS_IN_SHOP");
-end
-
-StoreTransmogrifySubCategoryFrameMixin = {}
-
-function StoreTransmogrifySubCategoryFrameMixin:OnLoad()
-	self.Background:SetAtlas("Store-Transmogrify-Page-Background")
-end
-
-function StoreTransmogrifySubCategoryFrameMixin:OnShow()
-	StorePlayerTransmogRequest();
-end
-
-StoreTransmogrifySubCategoryCardMixin = {}
-
-function StoreTransmogrifySubCategoryCardMixin:OnLoad()
-	self.iconAtlas 				= self:GetAttribute("iconAtlas")
-	self.disabledSubCategory 	= self:GetAttribute("disabledSubCategory")
-	self.text 					= self:GetAttribute("text") and _G[self:GetAttribute("text")] or self:GetAttribute("text")
-
-	self:SetParentArray("cardButtons")
-
-	self.Title:SetText(self.text)
-	self.Icon:SetAtlas(self.iconAtlas)
-	self.BackgroundTexture:SetAtlas("shop-card-bundle")
-
-	local textColor = not self.disabledSubCategory and HIGHLIGHT_FONT_COLOR or DISABLED_FONT_COLOR
-	self.Title:SetTextColor(textColor.r, textColor.g, textColor.b)
-
-	self.BackgroundTexture:SetDesaturated(self.disabledSubCategory)
-	self.Icon:SetDesaturated(self.disabledSubCategory)
-	self.Icon:SetAlpha(self.disabledSubCategory and 0.5 or 1)
-
-	self.Button:SetEnabled(not self.disabledSubCategory)
-end
-
-StoreTransmogrifySubCategoryFrameButtonMixin = {}
-
-STORE_TRANSMOGRIFY_CAMERA_SETTINGS_HEAD = {
-	["Human2"] = {2.455001, 1.023000, 0.369000},
-	["Human3"] = {2.148000, 1.020001, 0.409000},
-	["Dwarf2"] = {2.734001, 0.993001, 0.532000},
-	["Dwarf3"] = {1.988001, 0.962001, 0.656000},
-	["NightElf2"] = {2.941001, 1.000000, 0.226000},
-	["NightElf3"] = {3.675001, 0.985001, 0.295000},
-	["Gnome2"] = {1.712001, 1.000000, 0.790000},
-	["Gnome3"] = {1.657001, 1.000000, 0.862001},
-	["Draenei2"] = {3.863001, 1.000000, 0.224000},
-	["Draenei3"] = {3.402001, 0.951001, 0.175000},
-	["Worgen2"] = {3.459000, 0.992000, 0.417000},
-	["Worgen3"] = {3.664000, 1.039000, 0.353000},
-	["Queldo2"] = {3.299001, 1.014001, 0.281000},
-	["Queldo3"] = {2.839001, 1.033000, 0.426001},
-	["Orc2"] = {2.429001, 1.046000, 0.380001},
-	["Orc3"] = {2.875001, 0.987001, 0.411000},
-	["Scourge2"] = {2.582000, 1.057001, 0.431001},
-	["Scourge3"] = {3.552001, 1.031000, 0.482000},
-	["Tauren2"] = {3.200001, 1.007001, 0.431001},
-	["Tauren3"] = {2.838001, 1.025001, 0.596000},
-	["Goblin2"] = {2.377001, 1.028000, 0.790000},
-	["Goblin3"] = {2.429001, 1.000000, 0.790000},
-	["Troll2"] = {3.351001, 0.959001, 0.534001},
-	["Troll3"] = {3.504001, 1.011001, 0.380001},
-	["Naga2"] = {3.351001, 1.076001, 0.534001},
-	["Naga3"] = {3.863001, 1.099001, 0.482000},
-	["BloodElf2"] = {3.299001, 1.013000, 0.277000},
-	["BloodElf3"] = {2.736001, 1.036000, 0.450000},
-	["Pandaren2"] = {2.917001, 1.022001, 0.305000},
-	["Pandaren3"] = {2.149001, 1.022001, 0.356000},
-	["Vulpera2"] = {3.248001, 1.037001, 0.867001},
-	["Vulpera3"] = {3.556001, 1.028000, 0.818000},
-	["Nightborne2"] = {2.941001, 0.979000, 0.226000},
-	["Nightborne3"] = {2.839001, 1.021001, 0.426001},
-	["VoidElf2"] = {2.582000, 1.044001, 0.431001},
-	["VoidElf3"] = {2.839001, 0.968001, 0.426001},
-	["Eredar2"] = {3.863001, 1.000000, 0.224000},
-	["Eredar3"] = {3.402001, 0.951001, 0.175000},
-	["DarkIronDwarf2"] = {2.734001, 0.993001, 0.532000},
-	["DarkIronDwarf3"] = {1.988001, 0.962001, 0.574000},
-	["ZandalariTroll2"] = {3.958000, 1.053000, 0.026000},
-	["ZandalariTroll3"] = {4.252000, 1.080000, 0.065000},
-	["Lightforged2"] = {3.863001, 1.000000, 0.224000},
-	["Lightforged3"] = {3.402001, 0.951001, 0.175000},
-}
-
-function StoreTransmogrifySubCategoryFrameButtonMixin:OnClick()
-	selectedCategoryID = STORE_TRANSMOGRIFY_CATEGORY_ID
-	selectedSubCategoryID = self:GetParent():GetID()
-
-	StoreSubCategorySelectClick()
-
-	StoreTransmogrifyFrame.RightContainer.ContentFrame.OverlayElements.ShowShoulders:SetShown(selectedSubCategoryID == 1)
-
-	if Dev_ModelControl and IsDevClient() then
-		Dev_ModelControl:SetModelFrame(StoreTransmogrifyFrame.RightContainer.ContentFrame.Model)
-	end
-end
-
-function IsSubCategoryEmpty(id)
-	local storage = STORE_PRODUCT_CACHE[selectedMoneyID][selectedCategoryID][id][selectedShowAllItemCheckBox]
-
-	if not storage.data and storage.version then
-		return true
-	end
-	return false
-end
-
-local OFFER_DELAY_MODEL_UPDATE = false
-
-StoreOfferMixin = {}
-
-local offerModelPool_HideAndClearAnchors = function(framePool, frame)
-	frame:Hide()
-	frame:ClearAllPoints()
-	frame.index = nil
-end
-
-function StoreOfferMixin:OnLoad()
-	self.offerID = self:GetID()
-	self.offerData = STORE_SPECIAL_OFFERS_3D[self.offerID]
-
-	if not self.offerData then
-		GMError(string.format("Unknown offer id [%i]", self.offerID))
-		return
-	end
-
-	if self.offerData.Banner.SceneInfo then
-		self.playerModelPool = CreateFramePool("PlayerModel", self, "StoreOfferPlayerModelTemplate", offerModelPool_HideAndClearAnchors)
-		self.dressupModelPool = CreateFramePool("DressUpModel", self, "StoreOfferDressUpModelTemplate", offerModelPool_HideAndClearAnchors)
-	end
-
-	self.LeftPanel.Background:SetShown(not self.offerData.Banner.NoSideBG)
-
-	if self.offerData.Banner.TimerColor then
-		self.LeftPanel.TimerText:SetTextColor(unpack(self.offerData.Banner.TimerColor))
-	end
-	if self.offerData.Banner.TitleColor then
-		self.LeftPanel.TitleText:SetTextColor(unpack(self.offerData.Banner.TitleColor))
-	end
-	if self.offerData.Banner.NameColor then
-		self.LeftPanel.NameText:SetTextColor(unpack(self.offerData.Banner.NameColor))
-	end
-	if self.offerData.Banner.DescriptionColor then
-		self.LeftPanel.DescriptionText:SetTextColor(unpack(self.offerData.Banner.DescriptionColor))
-	end
-	if self.offerData.Banner.PriceLabelColor then
-		self.LeftPanel.PriceLabel:SetTextColor(unpack(self.offerData.Banner.PriceLabelColor))
-	end
-	if self.offerData.Banner.PriceColor then
-		self.LeftPanel.Price:SetTextColor(unpack(self.offerData.Banner.PriceColor))
-	end
-end
-
-function StoreOfferMixin:UpdateModels()
-	if not self.offerData then return end
-
-	self.playerModelPool:ReleaseAll()
-	self.dressupModelPool:ReleaseAll()
-
-	for index, modelInfo in ipairs(self.offerData.Banner.SceneInfo) do
-		local model = modelInfo[9] and self.dressupModelPool:Acquire() or self.playerModelPool:Acquire()
-		model.index = index
-		model:SetSettings(modelInfo)
-		model:Show()
-	end
-end
-
-function StoreOfferMixin:GetModelByIndex(index)
-	if self.playerModelPool then
-		for model in self.playerModelPool:EnumerateActive() do
-			if model.index == index then
-				return model
-			end
-		end
-	end
-	if self.dressupModelPool then
-		for model in self.dressupModelPool:EnumerateActive() do
-			if model.index == index then
-				return model
-			end
-		end
-	end
-end
-
-function StoreOfferMixin:OnShow()
-	if self.offerData and self.offerData.Banner.SceneInfo then
-		self:UpdateModels()
-	end
-end
-
-function StoreOfferMixin:Show()
-	if self:IsShown() then
-		self:OnShow()
-	else
-		getmetatable(self).__index.Show(self)
-	end
-end
-
-function StoreOfferMixin:Purchase()
-	local data = self:GetParent().data
-	if STPRE_SPECIAL_OFFER_DETAILS_DATA[data.offerID] then
-		StoreSpecialOfferBannerDetails_OnClick()
-	else
-		StoreFrame_ProductBuy(data)
-	end
-end
-
-StoreOfferModelMixin = {}
-
-function StoreOfferModelMixin:OnLoad()
-	self.settings = {}
-end
-
-local defaultModelPoint = {"CENTER", "$parentRightPanel"}
-function StoreOfferModelMixin:SetSettings(settings)
-	table.wipe(self.settings)
-
-	self.settings.creatureID = settings[1]
-	self.settings.width = settings[2] or self:GetParent().RightPanel:GetWidth()
-	self.settings.hieght = settings[3] or self:GetParent().RightPanel:GetHeight()
-	self.settings.point = settings[4]
-	self.settings.rotation = settings[5] or 0
-	self.settings.scale = settings[6] or 1
-	self.settings.position = settings[7]
-	self.settings.light = settings[8]
-	self.settings.raceID = settings[9]
-
-	if not self.settings.point then
-		self.settings.point = defaultModelPoint
-		self.settings.updateRelativePoint = nil
-	elseif self.settings.point[2] == nil then
-		self.settings.point[2] = self:GetParent().RightPanel
-		self.settings.updateRelativePoint = nil
-	elseif type(self.settings.point[2]) == "number" then
-		self.settings.updateRelativePoint = true
-	end
-end
-
-function StoreOfferModelMixin:UpdateModel()
-	if not next(self.settings) then return end
-
-	if self.settings.point then
-		self:SetSize(self.settings.width, self.settings.hieght)
-		self:ClearAllPoints()
-
-		if self.settings.updateRelativePoint then
-			local point, rel, relPoint, x, y = unpack(self.settings.point)
-			rel = self:GetParent():GetModelByIndex(rel) or self:GetParent().RightPanel
-			self:SetPoint(point, rel, relPoint, x, y)
+	if numTransmogOffers > 0 then
+		if numTransmogSubCategories > 0 then
+			self.List.OfferHeader:SetPoint("TOP", self.List.Separator, "BOTTOM", 0, -TRANSMOG_SEPARATOR_OFFSET_Y + 5)
 		else
-			self:SetPoint(unpack(self.settings.point))
+			self.List.OfferHeader:SetPoint("TOP", -TRANSMOG_SEPARATOR_OFFSET_Y)
 		end
+		self.List.OfferHeader:Show()
 	else
-		self:SetAllPoints()
+		self.List.OfferHeader:Hide()
 	end
 
-	self:SetRotation(math.rad(self.settings.rotation))
+	if numTransmogSubCategories > 0 then
+		local numRows = math.ceil(numTransmogSubCategories / TRANSMOG_TYPES_PER_ROW)
+		height = height + (self.subCategoryButtons[1]:GetHeight() + TRANSMOG_TYPES_OFFSET_Y) * numRows - TRANSMOG_TYPES_OFFSET_Y
+	end
+	if numTransmogOffers > 0 then
+		local numRows = math.ceil(numTransmogOffers / TRANSMOG_OFFERS_PER_ROW)
+		height = height + (self.offerButtons[1]:GetHeight() + TRANSMOG_TYPES_OFFSET_Y) * numRows - TRANSMOG_TYPES_OFFSET_Y
+	end
 
-	if OFFER_DELAY_MODEL_UPDATE then
-		self:SetScript("OnUpdate", self.DelayedUpdate)
+	self.List.Scroll.ScrollChild:SetSize(self.List.Scroll:GetWidth(), height)
+	self.List.Scroll:UpdateScrollChildRect()
+end
+
+function StorePageTransmogrificationMixin:UpdateItemSetOffer()
+	local name, link, rarity, icon, amount, productID, price, originalPrice, currencyType, altPrice, altOriginalPrice, altCurrencyType = C_StoreSecure.GetTransomgItemSetOffer()
+	if productID then
+		local transmogOfferTimeLeft = C_StoreSecure.GetNextTransmogOfferTimeLeft()
+		self.OfferDressUp:SetOfferCountdown(transmogOfferTimeLeft or 0)
+
+		if not transmogOfferTimeLeft or transmogOfferTimeLeft > 0 then
+			local allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton = false, true, true, true
+			self.OfferDressUp:SetProduct(productID, allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton)
+			self.OfferDressUp.Header:SetShown(price ~= originalPrice and price < originalPrice)
+		end
 	else
-		self:DelayedUpdate()
+		self.OfferDressUp:SetOfferCountdown(0)
+		self.OfferDressUp:ShowItemSetModel(0)
 	end
 end
 
-function StoreOfferModelMixin:DelayedUpdate(elapsed)
-	if OFFER_DELAY_MODEL_UPDATE then
-		self:SetScript("OnUpdate", nil)
-		if not next(self.settings) then
-			return
-		end
-	end
-
-	self:SetCreature(self.settings.creatureID)
-	self:SetModelScale(self.settings.scale)
-
-	if self.settings.position then
-		self:SetPosition(unpack(self.settings.position, 1, 3))
-	end
-
-	if self.settings.light then
-		self:SetLight(unpack(self.settings.light))
-	end
+function StorePageTransmogrificationMixin:OnItemSetOfferCountdownFinish()
+	self.OfferDressUp:ShowItemSetModel(0)
+	C_StoreSecure.RequestNextTransmogOfferTime()
 end
 
-function StoreOfferModelMixin:OnShow()
-	self:UpdateModel()
+function StorePageTransmogrificationMixin:SetSubCategory(subCategoryIndex)
+	self:GetOwner():GetViewMode(Enum.StoreViewMode.ItemList):SetViewCategory(self:GetID(), subCategoryIndex)
+end
+
+StoreTransmogSubCategoryButtonMixin = CreateFromMixins(PKBT_OwnerMixin)
+
+function StoreTransmogSubCategoryButtonMixin:OnLoad()
+	self.NewIcon:SetAtlas("PKBT-Icon-Notification", true)
+	self.NewIcon:SetPoint("LEFT", self.ActionButton, "RIGHT", 9, 0)
+	self.ActionButton:SetPoint("CENTER", self.ActionButton:GetWidth() / 2, -30)
+	self.Name:SetPoint("BOTTOM", self.ActionButton, "TOP", 0, 10)
+end
+
+function StoreTransmogSubCategoryButtonMixin:UpdateInfo()
+	local name, icon, isNew, enabled, reason = C_StoreSecure.GetCategoryInfo(Enum.Store.Category.Transmogrification, self:GetID())
+	local artworkAtlas = C_StoreSecure.GetTransmogSubCategoryArtwork(self:GetID())
+	self.Name:SetText(name)
+	self.Artwork:SetAtlas(artworkAtlas, true)
+	self.ActionButton:SetEnabled(enabled)
+	self.NewIcon:SetShown(isNew)
+	self.reason = reason
+end
+
+function StoreTransmogSubCategoryButtonMixin:OnActionClick(button)
+	self:GetOwner():ShowSubCategoryPage(self:GetID())
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 end

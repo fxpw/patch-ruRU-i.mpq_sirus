@@ -187,6 +187,15 @@
 					<EdgeSize val="20"/>
 				</Backdrop>
 			</Frame>
+
+			<Button name="$parentCloseButton" parentKey="CloseButton" inherits="UIPanelCloseButton" hidden="true" frameLevel="111">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parentContent" x="5" y="5"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="nop"/>
+				</Scripts>
+			</Button>
 		</Frames>
 	</Frame>
 </Ui>

@@ -6,15 +6,17 @@ Enum.MiniGames.ScoreboardType = {
 Enum.MiniGames.GameType = {
 	FragileFloor = 0,
 	FrozenSnowman = 1,
-	DoorDash = 3,
+	DoorDash = 2,
+	TipToe = 3,
+	ColoredCapture = 4,
 }
 
 local MINI_GAMES_INFO = {
-	{
+	[1] = {
 		gameName = "FRAGILEFLOOR",
 		icon = "Interface\\Icons\\Inv_radientazeritematrix",
 		background = "Interface\\LFGFrame\\UI-LFG-BACKGROUND-QUESTPAPER",
-		mapAreaID = 957,
+		mapAreaID = 956 + 1,
 		gameType = Enum.MiniGames.GameType.FragileFloor,
 		scoreboardType = Enum.MiniGames.ScoreboardType.Default,
 		defaultSortField = "seconds",
@@ -25,11 +27,11 @@ local MINI_GAMES_INFO = {
 			{name = "time", text = MINI_GAME_STAT_TIME, icon = "", tooltip = "", width = 92, sortType = "seconds"},
 		},
 	},
-	{
+	[2] = {
 		gameName = "FROZEN_SNOWMAN_LAIR_STORY",
 		icon = "Interface\\Icons\\Achievement_challengemode_scholomance_gold",
 		background = "Interface\\LFGFrame\\UI-LFG-BACKGROUND-QUESTPAPER",
-		mapAreaID = 932,
+		mapAreaID = 931 + 1,
 		gameType = Enum.MiniGames.GameType.FrozenSnowman,
 		scoreboardType = Enum.MiniGames.ScoreboardType.Role,
 		stats = {
@@ -38,11 +40,24 @@ local MINI_GAMES_INFO = {
 			{name = "role", text = MINI_GAME_STAT_ROLE, type = "ROLE"},
 		},
 	},
-	{
+	[3] = {
 		gameName = "FROZEN_SNOWMAN_LAIR_SURVIVAL",
 		icon = "Interface\\Icons\\inv_10_jewelcrafting_gem3primal_frost_cut_blue",
 		background = "Interface\\LFGFrame\\UI-LFG-BACKGROUND-QUESTPAPER",
-		mapAreaID = 932,
+		mapAreaID = 931 + 1,
+		gameType = Enum.MiniGames.GameType.FrozenSnowman,
+		scoreboardType = Enum.MiniGames.ScoreboardType.Role,
+		stats = {
+			{name = "name", text = MINI_GAME_STAT_NAME},
+			{name = "stat1", text = MINI_GAME_STAT_SNOWMAN_ARMOR, type = "SNOWMAN_ARMOR"},
+			{name = "role", text = MINI_GAME_STAT_ROLE, type = "ROLE"},
+		},
+	},
+	[4] = {
+		gameName = "FROZEN_SNOWMAN_LAIR_SURVIVAL_HARD",
+		icon = "Interface\\Icons\\Inv_10_jewelcrafting_gem3primal_fire_cut_black",
+		background = "Interface\\LFGFrame\\UI-LFG-BACKGROUND-QUESTPAPER",
+		mapAreaID = 931 + 1,
 		gameType = Enum.MiniGames.GameType.FrozenSnowman,
 		scoreboardType = Enum.MiniGames.ScoreboardType.Role,
 		stats = {
@@ -55,7 +70,7 @@ local MINI_GAMES_INFO = {
 		gameName = "DOOR_DASH",
 		icon = "Interface\\Icons\\Ability_warrior_victoryrush",
 		background = "Interface\\LFGFrame\\UI-LFG-BACKGROUND-QUESTPAPER",
-		mapAreaID = 976,
+		mapAreaID = 975 + 1,
 		gameType = Enum.MiniGames.GameType.DoorDash,
 		scoreboardType = Enum.MiniGames.ScoreboardType.Default,
 		defaultSortField = "stat1",
@@ -64,6 +79,36 @@ local MINI_GAMES_INFO = {
 			{name = "position", text = MINI_GAME_STAT_POSITION, icon = "", tooltip = "", width = 48, default = true},
 			{name = "stat1", text = MINI_GAME_STAT_DOORDASH_DOORS, icon = "", tooltip = "", width = 92},
 			{name = "stat2", text = MINI_GAME_STAT_DOORDASH_KNOCKDOWNS, icon = "", tooltip = "", width = 92},
+		},
+	},
+	[6] = {
+		gameName = "TIPTOE",
+		icon = "Interface\\Icons\\Ability_Racial_ForceShield",
+		background = "Interface\\LFGFrame\\UI-LFG-BACKGROUND-QUESTPAPER",
+		mapAreaID = 976 + 1,
+		gameType = Enum.MiniGames.GameType.TipToe,
+		scoreboardType = Enum.MiniGames.ScoreboardType.Default,
+		defaultSortField = "stat1",
+		stats = {
+			{name = "name", text = MINI_GAME_STAT_NAME, icon = "", tooltip = "", width = 200, alignment = "LEFT"},
+			{name = "position", text = MINI_GAME_STAT_POSITION, icon = "", tooltip = "", width = 48, default = true},
+			{name = "stat1", text = MINI_GAME_STAT_TIPTOE_PLATFORMS, icon = "", tooltip = "", width = 92},
+			{name = "stat2", text = MINI_GAME_STAT_TIPTOE_FALLS, icon = "", tooltip = "", width = 92},
+		},
+	},
+	[7] = {
+		gameName = "COLORED_CAPTURE",
+		icon = "Interface\\Icons\\Inv_10_jewelcrafting3_rainbowgemstone_color1",
+		background = "Interface\\LFGFrame\\UI-LFG-BACKGROUND-QUESTPAPER",
+		mapAreaID = 981 + 1,
+		gameType = Enum.MiniGames.GameType.ColoredCapture,
+		scoreboardType = Enum.MiniGames.ScoreboardType.Default,
+		defaultSortField = "stat1",
+		stats = {
+			{name = "name", text = MINI_GAME_STAT_NAME, icon = "", tooltip = "", width = 200, alignment = "LEFT"},
+			{name = "position", text = MINI_GAME_STAT_POSITION, icon = "", tooltip = "", width = 48, default = true},
+			{name = "stat1", text = MINI_GAME_STAT_COLORED_CAPTURE_COLOR, icon = "", tooltip = "", width = 92},
+			{name = "stat2", text = MINI_GAME_STAT_COLORED_CAPTURE_PLATFORMS, icon = "", tooltip = "", width = 92},
 		},
 	},
 };
@@ -87,6 +132,20 @@ local MINI_GAME_STAT_TYPES = {
 		[8] = SHARED_MAGE_MALE,
 		[9] = SHARED_WARLOCK_MALE,
 		[11] = MINI_GAME_STAT_VALUE_SHREDDER,
+		[12] = SHARED_DEMONHUNTER_MALE,
+		[13] = SHARED_EVOKER_MALE,
+		[14] = SHARED_MONK_MALE,
+	},
+	COLOR = {
+		[0] = MINI_GAME_STAT_VALUE_NO_COLOR,
+		[1] = MINI_GAME_STAT_VALUE_PURPLE,
+		[2] = MINI_GAME_STAT_VALUE_BLACK,
+		[3] = MINI_GAME_STAT_VALUE_BLUE,
+		[4] = MINI_GAME_STAT_VALUE_GREEN,
+		[5] = MINI_GAME_STAT_VALUE_ORANGE,
+		[6] = MINI_GAME_STAT_VALUE_RED,
+		[7] = MINI_GAME_STAT_VALUE_WHITE,
+		[8] = MINI_GAME_STAT_VALUE_YELLOW,
 	},
 }
 
@@ -174,12 +233,22 @@ end
 
 C_MiniGames = {};
 
+function C_MiniGames.IsValidGameID(miniGameID)
+	if type(miniGameID) == "string" then
+		miniGameID = tonumber(miniGameID)
+	end
+	if type(miniGameID) ~= "number" then
+		error("Usage: local isValid = C_MiniGames.IsValidGameID(miniGameID)", 2)
+	end
+	return MINI_GAMES_INFO[miniGameID] ~= nil
+end
+
 function C_MiniGames.GetGameIDFromIndex(miniGameIndex)
 	if type(miniGameIndex) == "string" then
 		miniGameIndex = tonumber(miniGameIndex);
 	end
 	if type(miniGameIndex) ~= "number" then
-		error("Usage: local miniGameID = C_MiniGames.GetGameInfo(miniGameIndex)", 2);
+		error("Usage: local miniGameID = C_MiniGames.GetGameIDFromIndex(miniGameIndex)", 2);
 	end
 
 	return MINI_GAMES_LIST[miniGameIndex];
@@ -190,7 +259,7 @@ function C_MiniGames.GetGameInfo(miniGameID)
 		miniGameID = tonumber(miniGameID);
 	end
 	if type(miniGameID) ~= "number" then
-		error("Usage: local name, description, icon, background, objective, maxPlayers, gameName, mapAreaID = C_MiniGames.GetGameInfo(miniGameID)", 2);
+		error("Usage: local name, description, icon, background, objective, minPlayers, maxPlayers, gameName, mapAreaID = C_MiniGames.GetGameInfo(miniGameID)", 2);
 	end
 
 	local miniGame = MINI_GAMES_INFO[miniGameID];
@@ -204,7 +273,7 @@ function C_MiniGames.GetGameInfo(miniGameID)
 		RECEIVED_MINI_GAMES[miniGameID] = true;
 	end
 
-	return miniGame.name, miniGame.description, miniGame.icon, miniGame.background, miniGame.objective, miniGame.maxPlayers, miniGame.gameName, miniGame.mapAreaID;
+	return miniGame.name, miniGame.description, miniGame.icon, miniGame.background, miniGame.objective, miniGame.minPlayers, miniGame.maxPlayers, miniGame.gameName, miniGame.mapAreaID;
 end
 
 function C_MiniGames.GetGameRewards(miniGameID)
@@ -661,6 +730,7 @@ function EventHandler:ASMSG_MG_INFO(msg)
 
 			miniGameInfo.money = tonumber(miniGameData[12]);
 			miniGameInfo.maxPlayers = tonumber(miniGameData[13]);
+			miniGameInfo.minPlayers = tonumber(miniGameData[14]);
 
 			FireCustomClientEvent("UPDATE_MINI_GAME", miniGameID);
 		end
@@ -769,7 +839,9 @@ local function processLogMessage(logMessage)
 						stat1 = tonumber(stat1) or 0,
 						seconds = seconds,
 					};
-				elseif game.gameType == Enum.MiniGames.GameType.DoorDash then
+				elseif game.gameType == Enum.MiniGames.GameType.DoorDash
+				or game.gameType == Enum.MiniGames.GameType.TipToe
+				then
 					local stat1, stat2 = string.split(":", statList)
 
 					MINI_GAME_SCORE_DATA[entryIndex] = {
@@ -777,6 +849,17 @@ local function processLogMessage(logMessage)
 						stat1 = tonumber(stat1) or 0,
 						stat2 = tonumber(stat2) or 0,
 					};
+				elseif game.gameType == Enum.MiniGames.GameType.ColoredCapture then
+					local stat1, stat2 = string.split(":", statList)
+
+					stat1 = tonumber(stat1) or 0
+					stat1 = MINI_GAME_STAT_TYPES.COLOR[stat1]
+
+					MINI_GAME_SCORE_DATA[entryIndex] = {
+						name = name,
+						stat1 = stat1,
+						stat2 = tonumber(stat2) or 0,
+					}
 				end
 			else
 				local stat1, role = string.split(":", statList)

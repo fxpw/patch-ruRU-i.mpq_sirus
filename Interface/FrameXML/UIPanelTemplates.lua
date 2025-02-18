@@ -217,6 +217,11 @@ function InlineHyperlinkFrame_OnClick(self, link, text, button)
 	SetItemRef(link, text, button);
 end
 
+function InlineHyperlinkFrame_SimpleHTMLAsFontString_OnLoad(self)
+	Mixin(self, PKBT_SimpleHTMLAsFontStringMixin)
+	self:OnLoadSimpleHTMLAsFontString()
+end
+
 ButtonWithDisableMixin = {};
 
 function ButtonWithDisableMixin:SetDisableTooltip(tooltipTitle, tooltipText)
@@ -318,10 +323,10 @@ function CurrencyHorizontalLayoutFrameMixin:AddCurrency(currencyType, currencyID
 	else
 		if currencyType == "money" then
 			amountString = floor(GetMoney() / (COPPER_PER_SILVER * SILVER_PER_GOLD));
-		elseif currencyType == "currency" then
-			amountString = GetCurrencyCount(currencyID);
-		elseif currencyType == "item" then
-			amountString = GetItemCount(currencyID)
+		elseif currencyType == "currency" or currencyType == "item" then
+			amountString = GetItemCount(currencyID);
+		else
+			amountString = 0
 		end
 	end
 

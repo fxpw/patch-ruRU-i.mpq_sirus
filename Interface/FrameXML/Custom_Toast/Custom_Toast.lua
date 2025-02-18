@@ -1,6 +1,6 @@
 E_TOAST_CATEGORY = Enum.CreateMirror({
 	INTERFACE_HANDLED = -1,
-	UNKNOWN = 0,
+	DEFAULT = 0,
 	FRIENDS = 1,
 	HEAD_HUNTING = 2,
 	BATTLE_PASS = 3,
@@ -10,11 +10,13 @@ E_TOAST_CATEGORY = Enum.CreateMirror({
 	MISC = 7,
 	VOTE_KICK = 8,
 	BATTLE_PASS_QUEST = 9,
+	RAID = 10,
+	GUILD_INVITE = 11,
 })
 
 E_TOAST_DATA = {
 	[E_TOAST_CATEGORY.INTERFACE_HANDLED]	= { allowCustomEvent = true, },
-	[E_TOAST_CATEGORY.UNKNOWN]				= { sound = SOUNDKIT.UI_BNET_TOAST },
+	[E_TOAST_CATEGORY.DEFAULT]				= { sound = SOUNDKIT.UI_BNET_TOAST },
 	[E_TOAST_CATEGORY.FRIENDS]				= { sound = SOUNDKIT.UI_BNET_TOAST,				cvar = "C_CVAR_SOCIAL_TOAST_SOUND" },
 	[E_TOAST_CATEGORY.HEAD_HUNTING]			= { sound = "UI_PetBattles_InitiateBattle",		cvar = "C_CVAR_HEAD_HUNTING_TOAST_SOUND" },
 	[E_TOAST_CATEGORY.BATTLE_PASS]			= { sound = "UI_FightClub_Start",				cvar = "C_CVAR_BATTLE_PASS_TOAST_SOUND" },
@@ -23,7 +25,9 @@ E_TOAST_DATA = {
 	[E_TOAST_CATEGORY.AUCTION_HOUSE]		= { sound = "UI_DigsiteCompletion_Toast",		cvar = "C_CVAR_AUCTION_HOUSE_TOAST_SOUND" },
 	[E_TOAST_CATEGORY.CALL_OF_ADVENTURE]	= { sound = "UI_CallOfAdventure_Toast",			cvar = "C_CVAR_CALL_OF_ADVENTURE_TOAST_SOUND" },
 	[E_TOAST_CATEGORY.MISC]					= { sound = "UI_Misc_Toast",					cvar = "C_CVAR_MISC_TOAST_SOUND" },
-	[E_TOAST_CATEGORY.VOTE_KICK]			= { sound = "ReadyCheck",						forced = true, },
+	[E_TOAST_CATEGORY.VOTE_KICK]			= { sound = "ReadyCheck",						forced = true, allowCustomEvent = true },
+	[E_TOAST_CATEGORY.RAID]					= { sound = SOUNDKIT.UI_BNET_TOAST,				forced = true, },
+	[E_TOAST_CATEGORY.GUILD_INVITE]			= { sound = "LevelUp",							forced = true, },
 }
 
 local CATEGORY_BLOCKING_CVARS = {
@@ -35,47 +39,21 @@ local CATEGORY_BLOCKING_CVARS = {
 	[E_TOAST_CATEGORY.MISC]					= "C_CVAR_SHOW_MISC_TOAST",
 }
 
-DefaultAnimOutMixin = {}
-
-function DefaultAnimOutMixin:OnFinished()
-    self:GetParent():Hide()
-end
-
-SocialToastCloseButtonMixin = {}
-
-function SocialToastCloseButtonMixin:OnEnter()
-    self:GetParent():OnEnter()
-end
-
-function SocialToastCloseButtonMixin:OnLeave()
-    self:GetParent():OnLeave()
-end
-
-function SocialToastCloseButtonMixin:OnClick()
-    self:GetParent():Hide()
-end
-
 SocialToastMixin = {}
 
 function SocialToastMixin:OnHide()
     local parent = self:GetParent()
     parent.toastPool:Release(self)
 
-    local removedIndex
-    for index, toastFrame in ipairs(parent.toastFrames) do
-        if toastFrame == self then
-            table.remove(parent.toastFrames, index)
-            removedIndex = index
-            break
-        end
-    end
+	local activeIndex = tIndexOf(parent.activeToasts, self)
+	if activeIndex then
+		table.remove(parent.activeToasts, activeIndex)
 
-    if removedIndex then
-        local toastFrame = parent.toastFrames[removedIndex]
-        if toastFrame then
-            toastFrame:AdjustAnchors(removedIndex - 1)
-        end
-    end
+		local toastFrame = parent.activeToasts[activeIndex]
+		if toastFrame then
+			toastFrame:AdjustAnchors(activeIndex - 1)
+		end
+	end
 
     C_Timer:After(0.1, function () parent:CheckShowToast() end)
 end
@@ -93,7 +71,20 @@ function SocialToastMixin:OnClick(button)
 		return
 	end
 
-	if self.categoryID == E_TOAST_CATEGORY.FRIENDS then
+	if self.toastID == 70 then
+		if not C_Unit.IsNeutral("player") and IsInGuild() then
+			ShowUIPanel(GuildFrame)
+			GuildFrame_TabClicked(4)
+			GuildInfoFrameTab3:Click()
+		end
+	elseif self.toastID == 71 then
+		if not C_Unit.IsNeutral("player") and not IsInGuild() then
+			ShowUIPanel(LookingForGuildFrame)
+			if LookingForGuildFrame.PendingTab:IsEnabled() == 1 then
+				LookingForGuildFrame.PendingTab:Click()
+			end
+		end
+	elseif self.categoryID == E_TOAST_CATEGORY.FRIENDS then
 		if not FriendsFrame:IsShown() then
 			ToggleFriendsFrame(1);
 		end
@@ -129,7 +120,7 @@ function SocialToastMixin:AdjustAnchors(index)
     if index == 0 then
         self:SetPoint("BOTTOM", self:GetParent(), 0, 0)
     else
-        self:SetPoint("BOTTOM", self:GetParent().toastFrames[index], "TOP", 0, 10)
+		self:SetPoint("BOTTOM", self:GetParent().activeToasts[index], "TOP", 0, 10)
     end
 end
 
@@ -139,14 +130,13 @@ function SocialToastSystemMixin:OnLoad()
     self:RegisterEventListener()
 	self:RegisterCustomEvent("SHOW_TOAST")
 
-    self.toastFrames = {}
-    self.toastStorage = {}
+	self.activeToasts = {}
+	self.queue = {}
 
-    local function ToastFrameReset(_, frame)
-        frame.categoryID = nil
-    end
-
-    self.toastPool = CreateFramePool("Button", self, "SocialToastTemplate", ToastFrameReset)
+	self.toastPool = CreateFramePool("Button", self, "SocialToastTemplate", function(framePool, frame)
+		frame.toastID = nil
+		frame.categoryID = nil
+	end)
 
     hooksecurefunc("FCF_SetButtonSide", function() self:UpdatePosition() end)
 end
@@ -156,7 +146,9 @@ function SocialToastSystemMixin:OnEvent(event, ...)
 		local categoryID, toastID, iconSource, title, text, sound = ...
 
 		if E_TOAST_DATA[categoryID] and E_TOAST_DATA[categoryID].allowCustomEvent and not self:IsCategoryBlocked(categoryID) then
-			self:AddToast(categoryID, {
+			self:AddToast({
+				toastID		= toastID,
+				categoryID	= categoryID,
 				titleText	= title,
 				bodyText	= text,
 				iconSource	= self:GetIconSource(toastID, iconSource),
@@ -200,49 +192,37 @@ function SocialToastSystemMixin:ShowToast(toastFrame)
     if not toastFrame then
         toastFrame = self.toastPool:Acquire()
 
-        local numToasts = #self.toastFrames
-        table.insert(self.toastFrames, toastFrame)
+		local numToasts = #self.activeToasts
+		table.insert(self.activeToasts, toastFrame)
         toastFrame:AdjustAnchors(numToasts)
     end
 
-    local toast = table.remove(self.toastStorage, 1)
-    local categoryID = toast.categoryID
+	local toastInfo = table.remove(self.queue, 1)
 
-    toastFrame.TitleText:SetText(toast.toastData.titleText)
-    toastFrame.BodyText:SetText(toast.toastData.bodyText)
+	toastFrame.TitleText:SetText(toastInfo.titleText)
+	toastFrame.BodyText:SetText(toastInfo.bodyText)
 
-    local iconSource = toast.toastData.iconSource
+	if type(toastInfo.iconSource) == "number" then
+		toastFrame.Icon:SetTexture(GetItemIcon(toastInfo.iconSource) or QUESTION_MARK_ICON)
+	else
+		toastFrame.Icon:SetTexture(toastInfo.iconSource or QUESTION_MARK_ICON)
+	end
 
-    if type(iconSource) == "number" then
-		local function setIcon(_, _, _, _, _, _, _, _, _, _, itemTexture)
-            toastFrame.Icon:SetTexture(itemTexture)
-        end
+	toastFrame.toastID = toastInfo.toastID
+	toastFrame.categoryID = toastInfo.categoryID
 
-		local _, _, _, _, _, _, _, _, _, itemTexture = C_Item.GetItemInfo(iconSource, false, setIcon)
-
-        if itemTexture then
-			toastFrame.Icon:SetTexture(itemTexture)
-        else
-			toastFrame.Icon:SetTexture("Interface\\ICONS\\INV_Misc_QuestionMark")
-        end
-    else
-		toastFrame.Icon:SetTexture("Interface\\ICONS\\"..iconSource)
-    end
-
-    toastFrame.categoryID = categoryID
-
-	if E_TOAST_DATA[categoryID] then
-		if categoryID == E_TOAST_CATEGORY.INTERFACE_HANDLED then
-			if toast.toastData.sound then
-				PlaySound(toast.toastData.sound)
+	if E_TOAST_DATA[toastInfo.categoryID] then
+		if toastInfo.categoryID == E_TOAST_CATEGORY.INTERFACE_HANDLED then
+			if toastInfo.sound then
+				PlaySound(toastInfo.sound)
 			end
-		elseif E_TOAST_DATA[categoryID].forced
-		or (C_CVar:GetValue("C_CVAR_PLAY_TOAST_SOUND") ~= "0" and C_CVar:GetValue(E_TOAST_DATA[categoryID].cvar) ~= "0")
+		elseif E_TOAST_DATA[toastInfo.categoryID].forced
+		or (C_CVar:GetValue("C_CVAR_PLAY_TOAST_SOUND") ~= "0" and C_CVar:GetValue(E_TOAST_DATA[toastInfo.categoryID].cvar) ~= "0")
 		then
-			PlaySound(E_TOAST_DATA[categoryID].sound or E_TOAST_DATA[E_TOAST_CATEGORY.UNKNOWN].sound)
+			PlaySound(E_TOAST_DATA[toastInfo.categoryID].sound or E_TOAST_DATA[E_TOAST_CATEGORY.DEFAULT].sound)
 		end
 	else
-		PlaySound(E_TOAST_DATA[E_TOAST_CATEGORY.UNKNOWN].sound)
+		PlaySound(E_TOAST_DATA[E_TOAST_CATEGORY.DEFAULT].sound)
 	end
 
 	toastFrame:Show()	-- force recalculate text rect
@@ -251,43 +231,45 @@ function SocialToastSystemMixin:ShowToast(toastFrame)
     AlertFrame_ShowNewAlert(toastFrame)
 end
 
-function SocialToastSystemMixin:RemoveToast(categoryID, toastData)
-    for toastIndex, toast in ipairs(self.toastStorage) do
-        if toast.categoryID == categoryID and (categoryID == E_TOAST_CATEGORY.QUEUE or toast.toastData == toastData) then
-            table.remove(self.toastStorage, toastIndex)
-            return
-        end
-    end
+function SocialToastSystemMixin:RemoveToast(targetToastInfo)
+	for index, toastInfo in ipairs(self.queue) do
+		if toastInfo == targetToastInfo
+		or (toastInfo.categoryID == targetToastInfo.categoryID and targetToastInfo.categoryID == E_TOAST_CATEGORY.QUEUE)
+		then
+			table.remove(self.queue, index)
+			return
+		end
+	end
 end
 
-function SocialToastSystemMixin:AddToast( categoryID, toastData )
-    self:RemoveToast(categoryID, toastData)
-    table.insert(self.toastStorage, { categoryID = categoryID, toastData = toastData })
+function SocialToastSystemMixin:AddToast(toastInfo)
+	self:RemoveToast(toastInfo)
+	table.insert(self.queue, toastInfo)
 
     if not self:IsShown() then
         self:Show()
     end
 
-    if categoryID == E_TOAST_CATEGORY.QUEUE then
-        for _, toastFrame in ipairs(self.toastFrames) do
-            if toastFrame.categoryID == categoryID then
+	if toastInfo.categoryID == E_TOAST_CATEGORY.QUEUE then
+		for _, toastFrame in ipairs(self.activeToasts) do
+			if toastFrame.categoryID == toastInfo.categoryID then
                 self:ShowToast(toastFrame)
                 return
             end
         end
     end
 
-    if #self.toastFrames < C_CVar:GetValue("C_CVAR_NUM_DISPLAY_SOCIAL_TOASTS") then
-        self:ShowToast()
-    end
+	if #self.activeToasts < C_CVar:GetValue("C_CVAR_NUM_DISPLAY_SOCIAL_TOASTS") then
+		self:ShowToast()
+	end
 end
 
 function SocialToastSystemMixin:CheckShowToast()
-    if #self.toastStorage > 0 and #self.toastFrames < C_CVar:GetValue("C_CVAR_NUM_DISPLAY_SOCIAL_TOASTS") then
-        self:ShowToast()
-    elseif #self.toastFrames == 0 and not self.MoveFrame:IsShown() then
-        self:Hide()
-    end
+	if #self.queue > 0 and #self.activeToasts < C_CVar:GetValue("C_CVAR_NUM_DISPLAY_SOCIAL_TOASTS") then
+		self:ShowToast()
+	elseif #self.activeToasts == 0 and not self.MoveFrame:IsShown() then
+		self:Hide()
+	end
 end
 
 function SocialToastSystemMixin:SavedPosition()
@@ -324,6 +306,11 @@ function SocialToastSystemMixin:ClearPosition()
     C_CVar:SetValue("C_CVAR_TOAST_POSITION", nil)
 end
 
+local TOAST_ITEM_ICON = {
+	[67] = true,
+	[68] = true,
+}
+
 local TOAST_FACTION_ICON = {
 	[19] = true,
 }
@@ -351,6 +338,7 @@ local TOAST_TYPE_ICONS = {
 	[20] = "achievement_quests_completed_vashjir",
 	[21] = "item_shop_giftbox01",
 	[22] = "ability_warrior_endlessrage",
+	[23] = "inv_engineering_failure detection pylon",
 }
 
 local TOAST_ICON_ID = {
@@ -376,6 +364,7 @@ local TOAST_ICON_ID = {
 	[58] = 20, [59] = 20,
 	[60] = 21, [61] = 21, [62] = 21, [63] = 21,
 	[65] = 22,
+	[66] = 23,
 }
 
 local TOAST_TITLE_ID = {
@@ -416,19 +405,24 @@ function SocialToastSystemMixin:IsCategoryBlocked(categoryID)
 end
 
 function SocialToastSystemMixin:GetIconSource(toastID, iconSource)
-	local iconID = TOAST_ICON_ID[toastID] or toastID
+	if not iconSource or iconSource == "" then
+		return
+	end
+
 	if iconSource == "0" then
+		local iconID = TOAST_ICON_ID[toastID] or toastID
 		if TOAST_TYPE_ICONS[iconID] then
 			if TOAST_FACTION_ICON[iconID] then
-				return strconcat(TOAST_TYPE_ICONS[iconID], (UnitFactionGroup("player")))
+				return strconcat([[Interface\Icons\]], TOAST_TYPE_ICONS[iconID], (UnitFactionGroup("player")))
 			else
-				return TOAST_TYPE_ICONS[iconID]
+				return strconcat([[Interface\Icons\]], TOAST_TYPE_ICONS[iconID])
 			end
-		else
-			return "INV_Misc_QuestionMark"
 		end
+	elseif TOAST_ITEM_ICON[toastID] then
+		return tonumber(iconSource)
+	else
+		return strconcat([[Interface\Icons\]], iconSource)
 	end
-	return iconSource
 end
 
 function SocialToastSystemMixin:GetTitleText(toastID, ...)
@@ -448,7 +442,7 @@ function SocialToastSystemMixin:GetBodyText(toastID, ...)
 end
 
 function SocialToastSystemMixin:ASMSG_TOAST(msg)
-	local toastID, categoryID, flags, iconSource, numTitleParams, textParams = string.split("|", (msg:gsub("|$", "")), 6)
+	local toastID, categoryID, flags, iconSource, numTitleParams, textParams = StringSplitEx("|", msg, 6)
 
 	categoryID = tonumber(categoryID)
 	flags = tonumber(flags)
@@ -476,7 +470,9 @@ function SocialToastSystemMixin:ASMSG_TOAST(msg)
 		end
 	end
 
-	self:AddToast(categoryID, {
+	self:AddToast({
+		toastID		= toastID,
+		categoryID	= categoryID,
 		titleText	= titleText or _G["TOAST_TITLE_"..titleID] or "",
 		bodyText	= bodyText or _G["TOAST_BODY_"..textID] or "",
 		iconSource	= self:GetIconSource(toastID, iconSource),

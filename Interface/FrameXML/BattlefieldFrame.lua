@@ -161,7 +161,7 @@ function BattlefieldTimerFrame_OnUpdate(self, elapsed)
 	BATTLEFIELD_SHUTDOWN_TIMER = BATTLEFIELD_SHUTDOWN_TIMER - elapsed;
 	-- Set the time for the score frame
 	local isArena, isRegistered = IsActiveBattlefieldArena()
-	WorldStateScoreFrame.Container.BattlegroundCloseLabel:SetFormattedText(isArena and TIME_TO_PORT_ARENA2 or TIME_TO_PORT2, string.format(SecondsToTimeAbbrev(BATTLEFIELD_SHUTDOWN_TIMER)))
+	WorldStateScoreFrame.Container.BattlegroundCloseLabel:SetFormattedText(isArena and TIME_TO_PORT_ARENA2 or (C_PvP.IsInBrawl() and TIME_TO_PORT3 or TIME_TO_PORT2), string.format(SecondsToTimeAbbrev(BATTLEFIELD_SHUTDOWN_TIMER)))
 	-- WorldStateScoreFrameTimer:SetFormattedText(SecondsToTimeAbbrev(BATTLEFIELD_SHUTDOWN_TIMER));
 	-- Check if I should send a message only once every 3 seconds (BATTLEFIELD_TIMER_DELAY)
 	frame.timerDelay = frame.timerDelay + elapsed;
@@ -188,7 +188,11 @@ function BattlefieldTimerFrame_OnUpdate(self, elapsed)
 					if ( isArena ) then
 						string = format(ARENA_COMPLETE_MESSAGE, SecondsToTime(ceil(BATTLEFIELD_SHUTDOWN_TIMER/threshold) * threshold));
 					else
-						string = format(BATTLEGROUND_COMPLETE_MESSAGE, SecondsToTime(ceil(BATTLEFIELD_SHUTDOWN_TIMER/threshold) * threshold));
+						if not C_PvP.IsInBrawl() then
+							string = format(BATTLEGROUND_COMPLETE_MESSAGE, SecondsToTime(ceil(BATTLEFIELD_SHUTDOWN_TIMER/threshold) * threshold));
+						else
+							string = format(BRAWL_COMPLETE_MESSAGE, SecondsToTime(ceil(BATTLEFIELD_SHUTDOWN_TIMER/threshold) * threshold));
+						end
 					end
 				else
 					string = format(INSTANCE_SHUTDOWN_MESSAGE, SecondsToTime(ceil(BATTLEFIELD_SHUTDOWN_TIMER/threshold) * threshold));
@@ -828,6 +832,17 @@ function IsAlreadyInQueue(mapName)
 	return inQueue;
 end
 
-function EventHandler:ASMSG_BG_DESERTION_RESPONSE( msg )
-	StaticPopup_Show("CONFIRM_LEAVE_BATTLEFIELDS", SecondsToTime(floor(tonumber(msg) / 1000)))
+function EventHandler:ASMSG_BG_DESERTION_RESPONSE(msg)
+	local desertionTime, desertionType = strsplit(":", msg)
+	desertionTime, desertionType = SecondsToTime(floor(tonumber(desertionTime) / 1000)), tonumber(desertionType)
+
+	local leaveText
+	if not desertionType or desertionType == 0 then
+		leaveText = string.format(CONFIRM_LEAVE_BATTLEFIELD, desertionTime)
+	elseif desertionType == 1 then
+		leaveText = string.format(CONFIRM_LEAVE_BRAWL, desertionTime)
+	end
+	if leaveText then
+		StaticPopup_Show("CONFIRM_LEAVE_BATTLEFIELDS", leaveText)
+	end
 end

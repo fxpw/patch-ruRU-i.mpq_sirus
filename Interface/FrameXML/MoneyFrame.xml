@@ -343,6 +343,7 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
+				<HitRectInsets left="-13" right="13" top="0" bottom="0"/>
 				<Scripts>
 					<OnEnter>
 						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
@@ -362,6 +363,7 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
+				<HitRectInsets left="-13" right="13" top="0" bottom="0"/>
 				<Scripts>
 					<OnEnter>
 						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");

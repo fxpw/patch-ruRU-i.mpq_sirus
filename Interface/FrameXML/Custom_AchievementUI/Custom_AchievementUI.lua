@@ -498,7 +498,7 @@ function AchievementFrame_UpdateFullSearchResults()
 
 			local categoryID = GetAchievementCategory(achievementID);
 			local categoryName, parentCategoryID = GetCategoryInfo(categoryID);
-			path = categoryName;
+			local path = categoryName;
 			while ( not (parentCategoryID == -1) ) do
 				categoryName, parentCategoryID = GetCategoryInfo(parentCategoryID);
 				path = categoryName.." > "..path;
@@ -573,7 +573,7 @@ function AchievementFrame_UpdateSearch()
 end
 
 local init = false
-function InitCustonAchievementUI()
+function InitCustomAchievementUI()
 	if init then
 		return;
 	end
@@ -609,32 +609,6 @@ function InitCustonAchievementUI()
 		AchievementFrame.searchResults:Hide();
 		old_AchievementFrameComparisonTab_OnClick(id);
 		SwitchAchievementSearchTab(id);
-	end
-
-	function AchievementFrameComparison_UpdateStatusBars(id)
-		if not id then
-			return;
-		end
-
-		local numAchievements, numCompleted = GetCategoryNumAchievements(id);
-		local name = GetCategoryInfo(id);
-
-		if id == ACHIEVEMENT_COMPARISON_SUMMARY_ID then
-			name = ACHIEVEMENT_SUMMARY_CATEGORY;
-		end
-
-		local statusBar = AchievementFrameComparisonSummaryPlayerStatusBar;
-		statusBar:SetMinMaxValues(0, numAchievements);
-		statusBar:SetValue(numCompleted);
-		statusBar.title:SetText(string.format(ACHIEVEMENTS_COMPLETED_CATEGORY, name));
-		statusBar.text:SetText(numCompleted.."/"..numAchievements);
-
-		local friendCompleted = GetComparisonCategoryNumAchievements(id);
-
-		statusBar = AchievementFrameComparisonSummaryFriendStatusBar;
-		statusBar:SetMinMaxValues(0, numAchievements);
-		statusBar:SetValue(friendCompleted);
-		statusBar.text:SetText(friendCompleted.."/"..numAchievements);
 	end
 
 	init = true;

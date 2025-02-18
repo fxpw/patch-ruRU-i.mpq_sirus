@@ -11,6 +11,7 @@ local CUF_SPELL_VISIBILITY_TYPES = CUF_SPELL_VISIBILITY_TYPES
 local FACTION_OVERRIDE_BY_DEBUFFS = FACTION_OVERRIDE_BY_DEBUFFS
 local S_CATEGORY_SPELL_ID = S_CATEGORY_SPELL_ID
 local S_VIP_STATUS_DATA = S_VIP_STATUS_DATA
+local ZODIAC_DEBUFFS = ZODIAC_DEBUFFS
 
 local unitPetOwnerMap = {
 	pet = "player",
@@ -77,6 +78,7 @@ function CompactUnitFrame_OnLoad(self)
 	self:RegisterCustomEvent("INCOMING_RESURRECT_CHANGED");
 	self:RegisterCustomEvent("INCOMING_SUMMON_CHANGED");
 	self:RegisterEvent("RAID_TARGET_UPDATE");
+	self:RegisterEvent("UNIT_PORTRAIT_UPDATE");
 
 	self.name = self.healthBar.name;
 	self.statusText = self.healthBar.statusText;
@@ -124,7 +126,7 @@ function CompactUnitFrame_OnEvent(self, event, ...)
 	else
 		local unitMatches = arg1 == self.unit or arg1 == self.displayedUnit;
 		if ( unitMatches ) then
-			if ( event == "UNIT_MAXHEALTH" ) then
+			if ( event == "UNIT_MAXHEALTH" or (event == "UNIT_PORTRAIT_UPDATE" and string.find(arg1, "pet", 1, true)) ) then
 				CompactUnitFrame_UpdateMaxHealth(self);
 				CompactUnitFrame_UpdateHealth(self);
 
@@ -986,6 +988,7 @@ function CompactUnitFrame_Util_ShouldDisplayDebuff(unit, ...)
 
 	if CUF_SPELL_VISIBILITY_BLACKLIST[spellId]
 	or FACTION_OVERRIDE_BY_DEBUFFS[spellId]
+	or ZODIAC_DEBUFFS[spellId]
 	or S_CATEGORY_SPELL_ID[spellId]
 	or S_VIP_STATUS_DATA[spellId]
 	then
@@ -1006,6 +1009,7 @@ function CompactUnitFrame_Util_IsBossAura(...)
 	if CUF_SPELL_VISIBILITY_BLACKLIST[spellId]
 	or CUF_SPELL_VISIBILITY_SELF_BUFF[spellId]
 	or FACTION_OVERRIDE_BY_DEBUFFS[spellId]
+	or ZODIAC_DEBUFFS[spellId]
 	or S_CATEGORY_SPELL_ID[spellId]
 	or S_VIP_STATUS_DATA[spellId]
 	then
@@ -1426,23 +1430,6 @@ function SpellIsSelfBuff(spellId)
 	return CUF_SPELL_VISIBILITY_SELF_BUFF[spellId] or false;
 end
 
-local function getCurrentSpecTabID()
-	local talents = C_Talent.GetSpecInfoCache()
-	if talents and talents.activeTalentGroup then
-		local maxTabID, maxTalents = 0, 0
-		for tabID = 1, 3 do
-		--	local count = C_Talent.GetTabPointSpent(tabID)
-			local count = talents.talentGroupData[talents.activeTalentGroup][tabID]
-			if count > maxTalents then
-				maxTalents = count
-				maxTabID = tabID
-			end
-		end
-		return maxTabID
-	end
-	return 0
-end
-
 ---@param spellId integer|string
 ---@param visType string @ "RAID_INCOMBAT | RAID_OUTOFCOMBAT | ENEMY_TARGET"
 ---@return boolean hasCustom @"whether the spell visibility should be customized, if false it means always display"
@@ -1475,7 +1462,7 @@ function SpellGetVisibilityInfo(spellId, visType)
 
 		if visInfo then
 			local talents = visInfo.talents;
-			local currentSpecTabID = getCurrentSpecTabID()
+			local currentSpecTabID = C_Talent.GetCurrentSpecTabIndex()
 
 			if talents and talents[PLAYER_CLASS] and currentSpecTabID ~= 0 then
 				return true, bit.band(visInfo.flag, 1) ~= 0, talents[PLAYER_CLASS][currentSpecTabID] or false;
@@ -1512,6 +1499,7 @@ function CompactUnitFrame_Util_SpellIsBlacklisted(spellId)
 
 	if CUF_SPELL_VISIBILITY_BLACKLIST[spellId]
 	or FACTION_OVERRIDE_BY_DEBUFFS[spellId]
+	or ZODIAC_DEBUFFS[spellId]
 	or S_CATEGORY_SPELL_ID[spellId]
 	or S_VIP_STATUS_DATA[spellId]
 	then

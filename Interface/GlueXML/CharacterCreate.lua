@@ -92,7 +92,6 @@ function CharacterCreateMixin:OnLoad()
 	self:RegisterCustomEvent("GLUE_CHARACTER_CREATE_UPDATE_CLASSES")
 	self:RegisterCustomEvent("GLUE_CHARACTER_CREATE_FORCE_RACE_CHANGE")
 	self:RegisterCustomEvent("GLUE_CHARACTER_CREATE_ZOOM_UPDATE")
-	self:RegisterCustomEvent("GLUE_CHARACTER_CREATE_DRESS_STATE_UPDATE")
 	self:RegisterCustomEvent("GLUE_CHARACTER_CREATE_ZODIAC_SELECTED")
 
 	self.raceButtonPerLine = 5
@@ -123,8 +122,6 @@ function CharacterCreateMixin:OnShow()
 		self:UpdateCreationState()
 		self.NavigationFrame.CreateNameEditBox:SetText(C_CharacterCreation.PaidChange_GetName())
 		self.NavigationFrame.HardcoreButton:Hide()
-		self.CustomizationFrame.DressCheckButton:SetChecked(C_CharacterCreation.IsDressed())
-		self.CustomizationFrame.DressCheckButton:Show()
 	else
 		C_CharacterCreation.ResetCharCustomize()
 		self:UpdateCreationState()
@@ -135,15 +132,15 @@ function CharacterCreateMixin:OnShow()
 		else
 			self.NavigationFrame.HardcoreButton:Hide()
 		end
-		self.CustomizationFrame.DressCheckButton:Hide()
 	end
 
 	self.NavigationFrame.CreateNameEditBox:Show()
 	self.NavigationFrame.RandomNameButton:Show()
+	self.CustomizationFrame.DressCheckButton:SetChecked(C_CharacterCreation.IsDressed())
 
 	self:UpdateBackground()
 
-	if PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION and select(3, C_CharacterCreation.PaidChange_GetCurrentFaction()) == PLAYER_FACTION_GROUP.Neutral then
+	if PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION and select(3, C_CharacterCreation.PaidChange_GetCurrentFaction()) == SERVER_PLAYER_FACTION_GROUP.Neutral then
 		self.NavigationFrame.CreateNameEditBox:SetAutoFocus(false)
 		self.NavigationFrame.CreateNameEditBox:ClearFocus()
 		self.NavigationFrame:Hide()
@@ -606,7 +603,7 @@ function CharacterCreateMixin:CreateClassButtons()
 		local button = self.classButtonPool:Acquire()
 		button:SetID(data.classID)
 		button.index = index
-		button.Icon:SetAtlas("CIRCLE_CLASS_ICON_"..data.clientFileString)
+		button.Icon:SetAtlas("CLASS_ICON_ROUND_"..data.clientFileString)
 		if not prevButton then
 			button:SetPoint("LEFT", 47, 0)
 		else
@@ -862,7 +859,7 @@ function CharacterCreateRaceButtonMixin:OnEnter()
 			if PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION then
 				self.tooltip = factionID == PAID_RACE_SERVICE_OVERRIDE_FACTIONS[currentFaction]
 			else
-				self.tooltip = factionID == PAID_SERVICE_ORIGINAL_FACTION[currentFaction]
+				self.tooltip = factionID == PAID_SERVICE_ORIGINAL_FACTION[currentFaction] or C_CharacterCreation.IsNeutralBaseRace(C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
 			end
 		else
 			self.tooltip = true
@@ -910,13 +907,6 @@ end
 
 function CharacterCreateRaceButtonMixin:UpdateButton()
 	local clientData = self.mainFrame:GetClientRaceInfo(self.data.raceID)
-	local factionColor = PLAYER_FACTION_COLORS[self.data.factionID]
-
-	self.Border:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
-	self.FactionBorder:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
-	self.ArtFrame.Border2:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
-	self.ArtFrame.Border3:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
-
 	if C_CharacterCreation.IsPandarenRace(clientData.index) or C_CharacterCreation.IsVulperaRace(clientData.index) then
 		self.data.name = _G[string.upper(clientData.clientFileString)]
 	else
@@ -925,10 +915,10 @@ function CharacterCreateRaceButtonMixin:UpdateButton()
 
 	self.data.clientFileString = clientData.clientFileString
 
-	local atlas = string.format("RACE_ICON_%s_%s_%s", string.upper(clientData.clientFileString), E_SEX[C_CharacterCreation.GetSelectedSex()], string.upper(PLAYER_FACTION_GROUP[self.data.factionID]))
+	local atlas = string.format("RACE_ICON_ROUND_%s_%s_%s", string.upper(clientData.clientFileString), E_SEX[C_CharacterCreation.GetSelectedSex()], string.upper(PLAYER_FACTION_GROUP[self.data.factionID]))
 
-	if not S_ATLAS_STORAGE[atlas] then
-		atlas = "RACE_ICON_HUMAN_MALE_HORDE"
+	if not C_Texture.HasAtlasInfo(atlas) then
+		atlas = "RACE_ICON_ROUND_HUMAN_MALE_HORDE"
 	end
 
 	self.Icon:SetAtlas(atlas)
@@ -936,16 +926,22 @@ function CharacterCreateRaceButtonMixin:UpdateButton()
 	self.index = clientData.index
 
 	local allow = false
+	local factionIDOverride
 	local alliedRaceLocked
 
 	if C_CharacterCreation.PaidChange_IsActive(true) then
-		local faction = C_CharacterCreation.PaidChange_GetCurrentFaction()
+		local faction, _, _, factionID = C_CharacterCreation.PaidChange_GetCurrentFaction()
 		local raceID = C_CharacterCreation.PaidChange_GetCurrentRaceIndex()
 
 		if PAID_SERVICE_TYPE == E_PAID_SERVICE.CUSTOMIZATION then
 			allow = self.index == raceID
 		elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_RACE then
-			allow = C_CharacterCreation.IsNeutralBaseRace(self.index) or (PAID_RACE_SERVICE_DYNAMIC[self.index] or faction == C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
+			if C_CharacterCreation.IsNeutralBaseRace(raceID) then
+				factionIDOverride = factionID
+				allow = true
+			else
+				allow = C_CharacterCreation.IsNeutralBaseRace(self.index) or (PAID_RACE_SERVICE_DYNAMIC[self.index] or faction == C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
+			end
 		elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION then
 			allow = C_CharacterCreation.IsNeutralBaseRace(self.index) or (PAID_RACE_SERVICE_DYNAMIC[self.index] or faction ~= C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
 		end
@@ -961,6 +957,13 @@ function CharacterCreateRaceButtonMixin:UpdateButton()
 			alliedRaceLocked = true
 		end
 	end
+
+	local factionColor = PLAYER_FACTION_COLORS[factionIDOverride or self.data.factionID]
+
+	self.Border:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
+	self.FactionBorder:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
+	self.ArtFrame.Border2:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
+	self.ArtFrame.Border3:SetVertexColor(factionColor.r, factionColor.g, factionColor.b)
 
 	self.alliedRaceGMAllowed = not C_CharacterCreation.IsAlliedRacesUnlocked(self.index, true)
 	self.alliedRaceLocked = alliedRaceLocked
@@ -1152,7 +1155,7 @@ end
 
 CharacterCreateAllianceRacesFrameMixin = CreateFromMixins(GlueEasingAnimMixin)
 
-function CharacterCreateAllianceRacesFrameMixin:Init()
+function CharacterCreateAllianceRacesFrameMixin:OnLoad()
 	self.Logo:SetAtlas("charactercreate-icon-alliance")
 
 	self.startPoint = -400
@@ -1170,7 +1173,7 @@ end
 
 CharacterCreateHordeRacesFrameMixin = CreateFromMixins(GlueEasingAnimMixin)
 
-function CharacterCreateHordeRacesFrameMixin:Init()
+function CharacterCreateHordeRacesFrameMixin:OnLoad()
 	self.Logo:SetAtlas("charactercreate-icon-horde")
 	self.startPoint = 400
 	self.endPoint = -10
@@ -1187,7 +1190,7 @@ end
 
 CharacterCreateNeutralRacesFrameMixin = CreateFromMixins(GlueEasingAnimMixin)
 
-function CharacterCreateNeutralRacesFrameMixin:Init()
+function CharacterCreateNeutralRacesFrameMixin:OnLoad()
 	self.startPoint = 100
 	self.endPoint = -30
 	self.duration = 0.500
@@ -1203,7 +1206,7 @@ end
 
 CharacterCreateClassesFrameMixin = CreateFromMixins(GlueEasingAnimMixin)
 
-function CharacterCreateClassesFrameMixin:Init()
+function CharacterCreateClassesFrameMixin:OnLoad()
 	self.startPoint = -80
 	self.endPoint = 10
 	self.duration = 0.500
@@ -1219,7 +1222,7 @@ end
 
 CharacterCreateGenderFrameMixin = CreateFromMixins(GlueEasingAnimMixin)
 
-function CharacterCreateGenderFrameMixin:Init()
+function CharacterCreateGenderFrameMixin:OnLoad()
 	self.startPoint = 20
 	self.endPoint = 70
 	self.duration = 0.500
@@ -1939,7 +1942,7 @@ end
 CharacterCreateZodiacSignSpellMixin = {}
 
 function CharacterCreateZodiacSignSpellMixin:OnLoad()
-	self.Border:SetAtlas("PKBT-ItemBorder2")
+	self.Border:SetAtlas("PKBT-ItemBorder-Default")
 end
 
 function CharacterCreateZodiacSignSpellMixin:OnEnter()

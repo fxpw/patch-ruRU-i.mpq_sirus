@@ -47,18 +47,18 @@
 		<Scripts>
 			<OnLoad>
 				local x, y = self:GetSize()
-				self.normalTexture:SetSize(x, y)
-				self.highlightTexture:SetSize(x, y)
+				self.NormalTexture:SetSize(x, y)
+				self.HighlightTexture:SetSize(x, y)
 			</OnLoad>
 			<OnMouseDown>
-				if ( self:IsEnabled() == "1" ) then
-					self.normalTexture:SetPoint("CENTER", 1, -1);
-					self.highlightTexture:SetPoint("CENTER", 1, -1);
+				if self:IsEnabled() == 1 then
+					self.NormalTexture:SetPoint("CENTER", 1, -1);
+					self.HighlightTexture:SetPoint("CENTER", 1, -1);
 				end
 			</OnMouseDown>
 			<OnMouseUp>
-				self.normalTexture:SetPoint("CENTER", 0, 0);
-				self.highlightTexture:SetPoint("CENTER", 0, 0);
+				self.NormalTexture:SetPoint("CENTER", 0, 0);
+				self.HighlightTexture:SetPoint("CENTER", 0, 0);
 			</OnMouseUp>
 			<OnEnter>
 				self:GetParent():OnEnter();
@@ -121,6 +121,119 @@
 			</Anchors>
 		</HighlightTexture>
 	</Button>
+	<Button name="CharacterPaidServiceButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
+		<Size x="30" y="30"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" file="Interface/GuildFrame/GuildLogoMask_L">
+					<Size x="38" y="38"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+					<Color r="0.1" g="0.1" b="0.1"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="30" y="30"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0" />
+					</Anchors>
+					<Color r="1" g="0" b="0"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentBorder" parentKey="Border">
+					<Size x="94" y="94"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0" />
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="Anim" looping="REPEAT">
+							<Rotation duration="6" order="1" degrees="-360"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<Texture name="$parentBorder2" alpha="1" hidden="true" alphaMode="ADD" parentKey="Border2">
+					<Size x="96" y="96"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0" />
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="ShowAnim">
+							<Alpha change="-1" duration="0" order="1"/>
+							<Alpha change="1" duration="0.3" order="1"/>
+						</AnimationGroup>
+						<AnimationGroup parentKey="HideAnim">
+							<Alpha smoothing="IN" change="-1" duration="0.2" order="1"/>
+							<Scripts>
+								<OnFinished>
+									self:GetParent().Anim:Stop()
+									self:GetParent():Hide()
+								</OnFinished>
+							</Scripts>
+						</AnimationGroup>
+						<AnimationGroup parentKey="Anim" looping="REPEAT">
+							<Rotation duration="6" order="1" degrees="360"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentBorder3" alpha="0.5" hidden="true" parentKey="Border3">
+					<Size x="98" y="98"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0" />
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="ShowAnim">
+							<Alpha change="-1" duration="0" order="1"/>
+							<Alpha change="0.5" duration="0.3" order="1"/>
+						</AnimationGroup>
+						<AnimationGroup parentKey="HideAnim">
+							<Alpha smoothing="IN" change="-1" duration="0.2" order="1"/>
+							<Scripts>
+								<OnFinished>
+									self:GetParent().Anim:Stop()
+									self:GetParent():Hide()
+								</OnFinished>
+							</Scripts>
+						</AnimationGroup>
+						<AnimationGroup parentKey="Anim" looping="REPEAT">
+							<Rotation duration="6" order="1" degrees="-360"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharacterSelectPAIDButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+			<OnEnable>
+				self:OnEnable()
+			</OnEnable>
+			<OnDisable>
+				self:OnDisable()
+			</OnDisable>
+			<OnMouseDown>
+				self:OnMouseDown(button)
+			</OnMouseDown>
+			<OnMouseUp>
+				self:OnMouseUp(button)
+			</OnMouseUp>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+		</Scripts>
+	</Button>
 	<Button name="CharSelectCharacterButtonTemplate" virtual="true" hidden="true">
 		<Size x="300" y="66"/>
 		<HitRectInsets left="6" right="0" top="0" bottom="0"/>
@@ -152,7 +265,7 @@
 				<Texture parentKey="FactionEmblem" alpha="1" alphaMode="ADD">
 					<Size x="24" y="24"/>
 					<Anchors>
-						<Anchor point="RIGHT" x="-25" y="2" />
+						<Anchor point="RIGHT" x="-20" y="2" />
 					</Anchors>
 				</Texture>
 			</Layer>
@@ -244,7 +357,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="ARTWORK">
-								<Texture name="$parentIcon" parentKey="Icon" file="Interface\Custom_Glues\GlueMailIcon">
+								<Texture name="$parentIcon" parentKey="Icon">
 									<Size x="16" y="16"/>
 									<Anchors>
 										<Anchor point="CENTER" x="0" y="0"/>
@@ -286,27 +399,9 @@
 					<OnLeave>
 						self:OnLeave()
 					</OnLeave>
-					<OnMouseDown>
-						self:GetParent():OnMouseDown(button)
-					</OnMouseDown>
-					<OnMouseUp>
-						self:GetParent():OnMouseUp(button)
-					</OnMouseUp>
-					<OnClick>
-						self:GetParent():OnClick(button)
-					</OnClick>
-					<OnDoubleClick>
-						self:GetParent():OnDoubleClick(button)
-					</OnDoubleClick>
-					<OnDragStart>
-						self:GetParent():OnDragStart(button)
-					</OnDragStart>
-					<OnDragStop>
-						self:GetParent():OnDragStop()
-					</OnDragStop>
 				</Scripts>
 			</Button>
-			<Frame name="$parentButtonText" toplevel="true" parentKey="buttonText">
+			<Frame name="$parentButtonText" parentKey="buttonText" toplevel="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentPortraitFrame" relativePoint="TOPRIGHT" x="14" y="0" />
 					<Anchor point="BOTTOMRIGHT" x="-50" y="10" />
@@ -318,17 +413,18 @@
 								<Anchor point="TOPLEFT" x="4" y="0" />
 							</Anchors>
 						</FontString>
-						<FontString name="$parentLocation" parentKey="Location" maxLines="2" inherits="GlueFontDisableSmall" justifyV="TOP" justifyH="LEFT">
-							<Size x="170" y="20"/>
+						<FontString name="$parentLocation" parentKey="Location" maxLines="1" inherits="GlueFontDisableSmall" justifyH="LEFT" justifyV="TOP">
+							<Size x="178" y="0"/>
 							<Anchors>
-								<Anchor point="TOP" relativeTo="$parentName" relativePoint="BOTTOM" x="0" y="-2"/>
+								<Anchor point="TOP" relativeTo="$parentName" relativePoint="BOTTOM" x="0" y="-1"/>
 								<Anchor point="LEFT" x="4" y="0"/>
 							</Anchors>
 						</FontString>
-						<FontString name="$parentItemLevel" parentKey="ItemLevel" inherits="GlueFontNormalExtraSmall" justifyH="LEFT" hidden="true">
-							<Size x="170" y="20"/>
+						<FontString name="$parentItemLevel" parentKey="ItemLevel" inherits="GlueDark_Font_Outline_11" justifyH="LEFT" justifyV="TOP" hidden="true">
+							<Size x="178" y="0"/>
 							<Anchors>
-								<Anchor point="BOTTOMLEFT" x="4" y="3"/>
+								<Anchor point="TOP" relativeTo="$parentName" relativePoint="BOTTOM" x="0" y="-1"/>
+								<Anchor point="LEFT" x="4" y="0"/>
 							</Anchors>
 							<Color r="0.5" g="0.5" b="0.5"/>
 						</FontString>
@@ -360,13 +456,70 @@
 							</OnDisable>
 						</Scripts>
 					</Button>
+					<Button name="$parentCategoryIcon" parentKey="CategoryIcon" hidden="true">
+						<Size x="16" y="16"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="0" y="5"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture name="$parentIcon" parentKey="Icon" setAllPoints="true"/>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnEnter>
+								self:GetParent():GetParent():OnEnterCategoryIcon(self)
+							</OnEnter>
+							<OnLeave>
+								self:GetParent():GetParent():OnLeaveCategoryIcon(self)
+							</OnLeave>
+							<OnEnable>
+								self.Icon:SetVertexColor(1, 1, 1)
+							</OnEnable>
+							<OnDisable>
+								self.Icon:SetVertexColor(0.5, 0.5, 0.5)
+							</OnDisable>
+						</Scripts>
+					</Button>
+					<Button name="$parentGearBoost" parentKey="GearBoost" hidden="true">
+						<Size x="10" y="10"/>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" x="4" y="-3"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString name="$parentText" parentKey="Text" inherits="GlueFontNormalExtraSmall" justifyH="LEFT" text="RPE_GEAR_UPDATE">
+									<Size x="0" y="20"/>
+									<Anchors>
+										<Anchor point="LEFT" x="0" y="0"/>
+									</Anchors>
+									<Color r="0.666" g="1" b="0.666"/>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnEnter>
+								self:GetParent():GetParent():OnEnterGearBoost(self)
+							</OnEnter>
+							<OnLeave>
+								self:GetParent():GetParent():OnLeaveGearBoost(self)
+							</OnLeave>
+							<OnEnable>
+								self.Text:SetTextColor(0.666, 1, 0.666)
+							</OnEnable>
+							<OnDisable>
+								self.Text:SetTextColor(0.3, 0.3, 0.3)
+							</OnDisable>
+						</Scripts>
+					</Button>
 				</Frames>
 			</Frame>
 
-			<Button name="$parentMoveUp" parentKey="upButton" inherits="CharSelectMoveButtonTemplate">
+			<Button name="$parentMoveUp" parentKey="MoveUp" inherits="CharSelectMoveButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPRIGHT" x="-20" y="-6"/>
+					<Anchor point="TOPRIGHT" x="-15" y="-5"/>
 				</Anchors>
+				<HitRectInsets left="0" right="0" top="0" bottom="2"/>
 				<Scripts>
 					<OnClick>
 						PlaySound("igMainMenuOptionCheckBoxOn");
@@ -374,21 +527,22 @@
 						MoveCharacter(index, index - 1);
 					</OnClick>
 				</Scripts>
-				<NormalTexture file="Interface\Custom_Glues\Glue-Char-Up" parentKey="normalTexture">
+				<NormalTexture parentKey="NormalTexture" inherits="GlueDark-Button-Move-Up">
 					<Anchors>
 						<Anchor point="CENTER"/>
 					</Anchors>
 				</NormalTexture>
-				<HighlightTexture file="Interface\Custom_Glues\Glue-Char-Up-Hover" parentKey="highlightTexture">
+				<HighlightTexture parentKey="HighlightTexture" inherits="GlueDark-Button-Move-Up-Highlight">
 					<Anchors>
 						<Anchor point="CENTER"/>
 					</Anchors>
 				</HighlightTexture>
 			</Button>
-			<Button name="$parentMoveDown" parentKey="downButton" inherits="CharSelectMoveButtonTemplate">
+			<Button name="$parentMoveDown" parentKey="MoveDown" inherits="CharSelectMoveButtonTemplate">
 				<Anchors>
-					<Anchor point="TOP" relativeTo="$parentMoveUp" relativePoint="BOTTOM" x="0" y="4" />
+					<Anchor point="TOP" relativeTo="$parentMoveUp" relativePoint="BOTTOM" x="0" y="3"/>
 				</Anchors>
+				<HitRectInsets left="0" right="0" top="2" bottom="0"/>
 				<Scripts>
 					<OnClick>
 						PlaySound("igMainMenuOptionCheckBoxOn");
@@ -396,12 +550,12 @@
 						MoveCharacter(index, index + 1);
 					</OnClick>
 				</Scripts>
-				<NormalTexture file="Interface\Custom_Glues\Glue-Char-Down" parentKey="normalTexture">
+				<NormalTexture parentKey="NormalTexture" inherits="GlueDark-Button-Move-Down">
 					<Anchors>
 						<Anchor point="CENTER"/>
 					</Anchors>
 				</NormalTexture>
-				<HighlightTexture file="Interface\Custom_Glues\Glue-Char-Down-Hover" parentKey="highlightTexture">
+				<HighlightTexture parentKey="HighlightTexture" inherits="GlueDark-Button-Move-Down-Highlight">
 					<Anchors>
 						<Anchor point="CENTER"/>
 					</Anchors>
@@ -410,12 +564,12 @@
 
 			<Button name="$parentServiceButton2" parentKey="ServiceButton2" id="2" inherits="CharacterSelectServiceButtonTemplate">
 				<Anchors>
-					<Anchor point="BOTTOMRIGHT" x="-50" y="14" />
+					<Anchor point="BOTTOMRIGHT" x="-44" y="12"/>
 				</Anchors>
 				<Attributes>
-					<Attribute name="normalTextureAtlas" type="string" value="CharacterSelect-Service-Delete-Normal"/>
-					<Attribute name="pushedTextureAtlas" type="string" value="CharacterSelect-Service-Delete-Pushed"/>
-					<Attribute name="highlightTextureAtlas" type="string" value="CharacterSelect-Service-Delete-Highlight"/>
+					<Attribute name="normalTextureAtlas" type="string" value="GlueDark-Button-Service-Delete-Normal"/>
+					<Attribute name="pushedTextureAtlas" type="string" value="GlueDark-Button-Service-Delete-Pushed"/>
+					<Attribute name="highlightTextureAtlas" type="string" value="GlueDark-Button-Service-Delete-Highlight"/>
 					<Attribute name="tooltipText" type="string" value="CHARACTER_SERVICES_DELETE"/>
 				</Attributes>
 			</Button>
@@ -424,9 +578,9 @@
 					<Anchor point="RIGHT" relativeTo="$parentServiceButton2" relativePoint="LEFT" x="-4" y="0" />
 				</Anchors>
 				<Attributes>
-					<Attribute name="normalTextureAtlas" type="string" value="CharacterSelect-Service-Fix-Normal"/>
-					<Attribute name="pushedTextureAtlas" type="string" value="CharacterSelect-Service-Fix-Pushed"/>
-					<Attribute name="highlightTextureAtlas" type="string" value="CharacterSelect-Service-Fix-Highlight"/>
+					<Attribute name="normalTextureAtlas" type="string" value="GlueDark-Button-Service-Fix-Normal"/>
+					<Attribute name="pushedTextureAtlas" type="string" value="GlueDark-Button-Service-Fix-Pushed"/>
+					<Attribute name="highlightTextureAtlas" type="string" value="GlueDark-Button-Service-Fix-Highlight"/>
 					<Attribute name="tooltipText" type="string" value="CHARACTER_SERVICES_FIX_CHARACTER"/>
 				</Attributes>
 			</Button>
@@ -435,238 +589,29 @@
 					<Anchor point="RIGHT" relativeTo="$parentServiceButton1" relativePoint="LEFT" x="-4" y="0" />
 				</Anchors>
 				<Attributes>
-					<Attribute name="normalTextureAtlas" type="string" value="CharacterSelect-Service-Boost-Normal"/>
-					<Attribute name="pushedTextureAtlas" type="string" value="CharacterSelect-Service-Boost-Pushed"/>
-					<Attribute name="highlightTextureAtlas" type="string" value="CharacterSelect-Service-Boost-Highlight"/>
+					<Attribute name="normalTextureAtlas" type="string" value="GlueDark-Button-Service-Boost-Normal"/>
+					<Attribute name="pushedTextureAtlas" type="string" value="GlueDark-Button-Service-Boost-Pushed"/>
+					<Attribute name="highlightTextureAtlas" type="string" value="GlueDark-Button-Service-Boost-Highlight"/>
 					<Attribute name="tooltipText" type="string" value="CHARACTER_SERVICES_BOOST"/>
 				</Attributes>
 			</Button>
 
-			<Button name="$parentPAIDButton" parentKey="PAIDButton">
-				<Size x="30" y="30"/>
+			<Button name="$parentPAIDButton" parentKey="PAIDButton" inherits="CharacterPaidServiceButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPRIGHT" relativeTo="$parentPortraitFrame" relativePoint="BOTTOMLEFT" x="6" y="20" />
 				</Anchors>
-				<Layers>
-					<Layer level="BACKGROUND">
-						<Texture name="$parentIcon" parentKey="Icon">
-							<Size x="30" y="30"/>
-							<Anchors>
-								<Anchor point="CENTER" x="0" y="0" />
-							</Anchors>
-							<Color r="1" g="0" b="0"/>
-						</Texture>
-					</Layer>
-					<Layer level="BORDER">
-						<Texture name="$parentBorder" parentKey="Border">
-							<Size x="94" y="94"/>
-							<Anchors>
-								<Anchor point="CENTER" x="0" y="0" />
-							</Anchors>
-							<Animations>
-								<AnimationGroup parentKey="Anim" looping="REPEAT">
-									<Rotation duration="6" order="1" degrees="-360"/>
-								</AnimationGroup>
-							</Animations>
-						</Texture>
-					</Layer>
-					<Layer level="ARTWORK">
-						<Texture name="$parentBorder2" alpha="1" hidden="true" alphaMode="ADD" parentKey="Border2">
-							<Size x="96" y="96"/>
-							<Anchors>
-								<Anchor point="CENTER" x="0" y="0" />
-							</Anchors>
-							<Animations>
-								<AnimationGroup parentKey="ShowAnim">
-									<Alpha change="-1" duration="0" order="1"/>
-									<Alpha change="1" duration="0.3" order="1"/>
-								</AnimationGroup>
-								<AnimationGroup parentKey="HideAnim">
-									<Alpha smoothing="IN" change="-1" duration="0.2" order="1"/>
-									<Scripts>
-										<OnFinished>
-											self:GetParent().Anim:Stop()
-											self:GetParent():Hide()
-										</OnFinished>
-									</Scripts>
-								</AnimationGroup>
-								<AnimationGroup parentKey="Anim" looping="REPEAT">
-									<Rotation duration="6" order="1" degrees="360"/>
-								</AnimationGroup>
-							</Animations>
-						</Texture>
-					</Layer>
-					<Layer level="OVERLAY">
-						<Texture name="$parentBorder3" alpha="0.5" hidden="true" parentKey="Border3">
-							<Size x="98" y="98"/>
-							<Anchors>
-								<Anchor point="CENTER" x="0" y="0" />
-							</Anchors>
-							<Animations>
-								<AnimationGroup parentKey="ShowAnim">
-									<Alpha change="-1" duration="0" order="1"/>
-									<Alpha change="0.5" duration="0.3" order="1"/>
-								</AnimationGroup>
-								<AnimationGroup parentKey="HideAnim">
-									<Alpha smoothing="IN" change="-1" duration="0.2" order="1"/>
-									<Scripts>
-										<OnFinished>
-											self:GetParent().Anim:Stop()
-											self:GetParent():Hide()
-										</OnFinished>
-									</Scripts>
-								</AnimationGroup>
-								<AnimationGroup parentKey="Anim" looping="REPEAT">
-									<Rotation duration="6" order="1" degrees="-360"/>
-								</AnimationGroup>
-							</Animations>
-						</Texture>
-					</Layer>
-				</Layers>
 				<Scripts>
-					<OnLoad>
-						Mixin(self, CharacterSelectPAIDButtonMixin)
-						self:OnLoad()
-					</OnLoad>
-					<OnClick>
-						self:OnClick()
-					</OnClick>
-					<OnEnable>
-						self:OnEnable()
-					</OnEnable>
-					<OnDisable>
-						self:OnDisable()
-					</OnDisable>
-					<OnMouseDown>
-						self:OnMouseDown()
-					</OnMouseDown>
-					<OnMouseUp>
-						self:OnMouseUp()
-					</OnMouseUp>
 					<OnEnter>
-						self:OnEnter()
+						self:GetParent():OnPAIDButtonEnter()
 					</OnEnter>
 					<OnLeave>
-						self:OnLeave()
+						self:GetParent():OnPAIDButtonLeave()
 					</OnLeave>
-				</Scripts>
-			</Button>
-			<Button name="$parentPaidZodiacButton" parentKey="PaidZodiacButton" id="5">
-				<Size x="30" y="30"/>
-				<Anchors>
-					<Anchor point="TOPRIGHT" relativeTo="$parentPortraitFrame" relativePoint="TOPLEFT" x="6" y="13"/>
-				</Anchors>
-				<HitRectInsets left="0" right="0" top="0" bottom="-3"/>
-				<Layers>
-					<Layer level="BACKGROUND">
-						<Texture name="$parentBackground" parentKey="Background" file="Interface/GuildFrame/GuildLogoMask_L">
-							<Size x="38" y="38"/>
-							<Anchors>
-								<Anchor point="CENTER" x="0" y="0"/>
-							</Anchors>
-							<Color r="0.1" g="0.1" b="0.1"/>
-						</Texture>
-					</Layer>
-					<Layer level="BORDER">
-						<Texture name="$parentIcon" parentKey="Icon">
-							<Size x="24" y="24"/>
-							<Anchors>
-								<Anchor point="CENTER" x="0" y="0" />
-							</Anchors>
-							<Color r="1" g="0" b="0"/>
-						</Texture>
-					</Layer>
-					<Layer level="ARTWORK">
-						<Texture name="$parentBorder" parentKey="Border">
-							<Size x="94" y="94"/>
-							<Anchors>
-								<Anchor point="CENTER" x="0" y="0" />
-							</Anchors>
-							<Animations>
-								<AnimationGroup parentKey="Anim" looping="REPEAT">
-									<Rotation duration="6" order="1" degrees="-360"/>
-								</AnimationGroup>
-							</Animations>
-						</Texture>
-						<Texture name="$parentBorder2" alpha="1" hidden="true" alphaMode="ADD" parentKey="Border2">
-							<Size x="96" y="96"/>
-							<Anchors>
-								<Anchor point="CENTER" x="0" y="0" />
-							</Anchors>
-							<Animations>
-								<AnimationGroup parentKey="ShowAnim">
-									<Alpha change="-1" duration="0" order="1"/>
-									<Alpha change="1" duration="0.3" order="1"/>
-								</AnimationGroup>
-								<AnimationGroup parentKey="HideAnim">
-									<Alpha smoothing="IN" change="-1" duration="0.2" order="1"/>
-									<Scripts>
-										<OnFinished>
-											self:GetParent().Anim:Stop()
-											self:GetParent():Hide()
-										</OnFinished>
-									</Scripts>
-								</AnimationGroup>
-								<AnimationGroup parentKey="Anim" looping="REPEAT">
-									<Rotation duration="6" order="1" degrees="360"/>
-								</AnimationGroup>
-							</Animations>
-						</Texture>
-					</Layer>
-					<Layer level="OVERLAY">
-						<Texture name="$parentBorder3" alpha="0.5" hidden="true" parentKey="Border3">
-							<Size x="98" y="98"/>
-							<Anchors>
-								<Anchor point="CENTER" x="0" y="0" />
-							</Anchors>
-							<Animations>
-								<AnimationGroup parentKey="ShowAnim">
-									<Alpha change="-1" duration="0" order="1"/>
-									<Alpha change="0.5" duration="0.3" order="1"/>
-								</AnimationGroup>
-								<AnimationGroup parentKey="HideAnim">
-									<Alpha smoothing="IN" change="-1" duration="0.2" order="1"/>
-									<Scripts>
-										<OnFinished>
-											self:GetParent().Anim:Stop()
-											self:GetParent():Hide()
-										</OnFinished>
-									</Scripts>
-								</AnimationGroup>
-								<AnimationGroup parentKey="Anim" looping="REPEAT">
-									<Rotation duration="6" order="1" degrees="-360"/>
-								</AnimationGroup>
-							</Animations>
-						</Texture>
-					</Layer>
-				</Layers>
-				<Scripts>
-					<OnLoad>
-						Mixin(self, CharacterSelectPAIDButtonMixin)
-						self:OnLoad()
-						self:SetPAID(4)
-					</OnLoad>
 					<OnClick>
-						self:OnClick()
+						self:GetParent():OnPAIDButtonClick(button)
 					</OnClick>
-					<OnEnable>
-						self:OnEnable()
-					</OnEnable>
-					<OnDisable>
-						self:OnDisable()
-					</OnDisable>
-					<OnMouseDown>
-						self:OnMouseDown()
-					</OnMouseDown>
-					<OnMouseUp>
-						self:OnMouseUp()
-					</OnMouseUp>
-					<OnEnter>
-						self:OnEnter()
-					</OnEnter>
-					<OnLeave>
-						self:OnLeave()
-					</OnLeave>
+					<OnMouseDown function="nop"/>
+					<OnMouseUp function="nop"/>
 				</Scripts>
 			</Button>
 		</Frames>
@@ -675,6 +620,9 @@
 				Mixin(self, CharacterSelectButtonMixin)
 				self:OnLoad()
 			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
 			<OnShow>
 				self:OnShow()
 			</OnShow>
@@ -764,7 +712,174 @@
 		</PushedTexture>
 	</Button>
 
-	<Frame name="CharacterSelect" toplevel="true" parent="GlueFFXModel" setAllPoints="true" enableKeyboard="true" hidden="true">
+	<Frame name="CharacterActionDialogTemplate" frameStrata="DIALOG" toplevel="true" enableMouse="true" virtual="true">
+		<Size x="410" y="195"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="35"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark-Backdrops-Background-Main"/>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentTopShadow" parentKey="TopShadow" inherits="GlueDark-Backdrops-Shadow-Top2">
+					<Size x="0" y="182"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentTitle" parentKey="Title" inherits="GlueDark_Font_Shadow_19" justifyH="CENTER" justifyV="TOP">
+					<Size x="400" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-16"/>
+					</Anchors>
+				</FontString>
+				<Texture name="$parentSeparator" parentKey="Separator" inherits="GlueDark-Separator">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentTitle" x="-55" y="-11"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentTitle" x="55" y="-11"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentCharacterInfo" parentKey="CharacterInfo" inherits="GlueDark_Font_Shadow_16" justifyH="CENTER">
+					<Size x="400" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentTitle" relativePoint="BOTTOM" x="0" y="-3"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentDescription" parentKey="Description" inherits="GlueDark_Font_Shadow_13" justifyH="CENTER">
+					<Size x="370" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentCharacterInfo" relativePoint="BOTTOM" x="0" y="-7"/>
+					</Anchors>
+					<Color r="0.66274509803922" g="0.66274509803922" b="0.66274509803922"/>
+				</FontString>
+				<FontString name="$parentWarning" parentKey="Warning" inherits="GlueDark_Font_12" spacing="2" justifyH="CENTER">
+					<Size x="335" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentDescription" relativePoint="BOTTOM" x="0" y="-10"/>
+					</Anchors>
+					<Color r="0.97647058823529" g="0.43529411764706" b="0.43529411764706"/>
+				</FontString>
+				<Texture name="$parentAlertIcon" parentKey="AlertIcon" file="Interface\DialogFrame\UI-Dialog-Icon-AlertNew" hidden="true">
+					<Size x="48" y="48"/>
+					<Anchors>
+						<Anchor point="LEFT" x="24" y="10"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate">
+				<Attributes>
+					<Attribute name="layoutType" value="GlueDarkTemplate" type="string"/>
+					<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
+				</Attributes>
+			</Frame>
+
+			<EditBox name="$parentEditBox" parentKey="EditBox" inherits="GlueDark_EditBoxTemplate" letters="32" historyLines="1" hidden="true">
+				<Size x="180" y="32"/>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentDescription" relativePoint="BOTTOM" x="0" y="-12"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="$parentInstruction" parentKey="Instruction" inherits="GlueDark_Font_Shadow_13" justifyH="CENTER">
+							<Size x="370" y="0"/>
+							<Anchors>
+								<Anchor point="BOTTOM" relativeTo="$parent" relativePoint="TOP" x="0" y="10"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnTextChanged>
+						self:GetParent():OnEditBoxTextChanged(self, userInput)
+					</OnTextChanged>
+					<OnEnterPressed>
+						self:GetParent():OnEditBoxEnterPressed(self)
+					</OnEnterPressed>
+					<OnEscapePressed>
+						self:GetParent():OnEditBoxEscapePressed(self)
+					</OnEscapePressed>
+				</Scripts>
+			</EditBox>
+			<Button name="$parentInfoIcon" parentKey="InfoIcon" inherits="GlueDark_InfoButtonTemplate" hidden="true">
+				<Size x="20" y="20"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="20" y="-15"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentAcceptButton" parentKey="AcceptButton" inherits="GlueDark_ButtonTemplate" text="OKAY">
+				<Size x="86" y="26"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="-60" y="20"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Accept()
+						PlaySound("gsTitleOptionOK")
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentCancelButton" parentKey="CancelButton" inherits="GlueDark_ButtonTemplate" text="CANCEL">
+				<Size x="86" y="26"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="60" y="20"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Cancel()
+						PlaySound("gsTitleOptionExit")
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharacterActionDialogMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+			<OnKeyDown>
+				self:OnKeyDown(key)
+			</OnKeyDown>
+		</Scripts>
+	</Frame>
+<!--
+	<Frame name="TestCharacterDialog" parent="CharacterSelectUI" inherits="CharacterActionDialogTemplate" hidden="true">
+		<Attributes>
+			<Attribute name="Title" type="string" value="GLOBAL_TEST_TITLE"/>
+			<Attribute name="Description" type="string" value="GLOBAL_TEST_DESCRIPTION"/>
+			<Attribute name="Warning" type="string" value="GLOBAL_TEST_WARNING"/>
+			<Attribute name="ShowEditBox" type="boolean" value="false"/>
+			<Attribute name="EditBoxWidth" type="number" value="130"/>
+			<Attribute name="EditBoxConfirmation" type="string" value="GLOBAL_TEST_EDITBOX_CONFIRMATION"/>
+			<Attribute name="EditBoxInstruction" type="string" value="GLOBAL_TEST_EDITBOX_INSTRUCTION"/>
+			<Attribute name="AcceptText" type="string" value="OKAY"/>
+			<Attribute name="CancelText" type="string" value="CANCEL"/>
+			<Attribute name="AlertIcon" type="boolean" value="false"/>
+			<Attribute name="InfoHeader" type="string" value="GLOBAL_TEST_HELP_HEAD"/>
+			<Attribute name="InfoText" type="string" value="GLOBAL_TEST_HELP_TEXT"/>
+			<Attribute name="ShowCharInfo" type="boolean" value="true"/>
+		</Attributes>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, TestCharacterDialogMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+-->
+
+	<Frame name="CharacterSelect" parent="GlueFFXModel" toplevel="true" setAllPoints="true" enableKeyboard="true" hidden="true">
 		<Frames>
 			<Frame name="CharacterSelectUI" setAllPoints="true" enableMouse="true">
 				<Animations>
@@ -783,7 +898,7 @@
 				</Animations>
 				<Layers>
 					<Layer level="BACKGROUND">
-						<Texture name="$parentBackground" parentKey="Background" alpha="0.6" file="Interface\Custom_Glues\UI-CharacterSelect-Background">
+						<Texture name="$parentBackground" parentKey="Background" alpha="0.6" file="Interface\Custom\Glue\Vignette-256">
 							<Anchors>
 								<Anchor point="TOPLEFT" x="-14" y="10" />
 								<Anchor point="BOTTOMRIGHT" x="14" y="-10" />
@@ -934,7 +1049,7 @@
 									</OnShow>
 								</Scripts>
 							</Frame>
-							<Frame name="$parentCharacterBoostInfoFrame" parentKey="CharacterBoostInfoFrame" hidden="true">
+							<Frame name="$parentCharacterBoostInfoFrame" parentKey="CharacterBoostInfoFrame" enableMouse="true" hidden="true">
 								<Size x="180" y="250"/>
 								<Anchors>
 									<Anchor point="TOP" relativeTo="CharacterSelectLogoFrame" relativePoint="BOTTOM" x="0" y="40"/>
@@ -946,7 +1061,7 @@
 
 								<Layers>
 									<Layer level="BACKGROUND">
-										<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_backdrop"/>
+										<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark-Backdrops-Background-Main"/>
 									</Layer>
 								</Layers>
 
@@ -959,7 +1074,7 @@
 										</Anchors>
 										<Layers>
 											<Layer level="BACKGROUND">
-												<Texture name="$parentIcon" parentKey="Icon" file="Interface\Store\Achievement_Level_80_circle">
+												<Texture name="$parentIcon" parentKey="Icon" file="Interface\Custom\Misc\Achievement_Level_80_circle">
 													<Size x="54" y="54"/>
 													<Anchors>
 														<Anchor point="CENTER" x="0" y="0" />
@@ -1010,7 +1125,7 @@
 										</Anchors>
 										<Layers>
 											<Layer level="OVERLAY">
-												<FontString name="$parentCharacterBoost" text="CHARACTER_SERVICES_BUYBOOST" inherits="GameFontNormal" justifyH="CENTER" parentKey="CharacterBoost">
+												<FontString name="$parentCharacterBoost" text="CHARACTER_SERVICES_BOOST_PURCHASE_LABEL" inherits="GameFontNormal" justifyH="CENTER" parentKey="CharacterBoost">
 													<Anchors>
 														<Anchor point="TOP" x="0" y="0" />
 													</Anchors>
@@ -1038,7 +1153,7 @@
 										</Anchors>
 										<Layers>
 											<Layer level="OVERLAY">
-												<FontString name="$parentStatus1" inherits="SystemFont_Shadow_Large2" justifyH="CENTER" parentKey="Status1">
+												<FontString name="$parentStatus1" inherits="PKBT_Font_18" justifyH="CENTER" parentKey="Status1">
 													<Anchors>
 														<Anchor point="TOP" x="0" y="-5"/>
 													</Anchors>
@@ -1050,34 +1165,45 @@
 													</Animations>
 													<Color r="1" g="1" b="1"/>
 												</FontString>
-												<FontString name="$parentStatus2" inherits="SystemFont_Shadow_Large2" justifyH="CENTER" parentKey="Status2">
+												<FontString name="$parentStatus2" inherits="PKBT_Font_18" justifyH="CENTER" parentKey="Status2">
 													<Anchors>
-														<Anchor point="BOTTOM" x="0" y="5"/>
+														<Anchor point="TOP" relativeTo="$parentStatus1" relativePoint="BOTTOM" x="0" y="-10"/>
 													</Anchors>
 													<Color r="0" g="1" b="0"/>
 												</FontString>
 											</Layer>
 										</Layers>
 									</Frame>
+									<Frame name="$parentButtonHolder" parentKey="ButtonHolder">
+										<Size x="160" y="32"/>
+										<Anchors>
+											<Anchor point="BOTTOM" x="0" y="10"/>
+										</Anchors>
+									</Frame>
 								</Frames>
 								<Scripts>
 									<OnLoad>
-										self.Background:SetVertexColor(0.5, 0.5, 0.5)
+										Mixin(self, CharacterBoostInfoMixin)
+										self:OnLoad()
 									</OnLoad>
+									<OnShow>
+										self:OnShow()
+									</OnShow>
 								</Scripts>
 							</Frame>
 							<Button name="CharacterBoostButton" inherits="GlueDark_ButtonTemplate" motionScriptsWhileDisabled="true" hidden="true">
 								<Size x="160" y="32"/>
 								<Anchors>
-									<Anchor point="BOTTOM" relativeTo="$parentCharacterBoostInfoFrame" x="0" y="10" />
+									<Anchor point="BOTTOMRIGHT" relativeTo="$parentCharacterBoostInfoFrameButtonHolder" x="0" y="0"/>
 								</Anchors>
 								<Scripts>
 									<OnLoad>
 										Mixin(self, GlueDark_ButtonMixin)
-
 										self:OnLoadStyle(true)
-										self:SetFrameLevel(self:GetParent():GetFrameLevel() + 2)
 									</OnLoad>
+									<OnShow>
+										SetParentFrameLevel(self, 2)
+									</OnShow>
 									<OnClick>
 										CharacterSelect_OpenBoost()
 									</OnClick>
@@ -1096,6 +1222,131 @@
 									<OnLeave>
 										GlueTooltip:Hide()
 									</OnLeave>
+								</Scripts>
+							</Button>
+							<Button name="CharacterBoostRefundButton" inherits="GlueDark_ButtonTemplate" hidden="true">
+								<Size x="32" y="32"/>
+								<Anchors>
+									<Anchor point="BOTTOMLEFT" relativeTo="$parentCharacterBoostInfoFrameButtonHolder" x="0" y="0"/>
+								</Anchors>
+								<Layers>
+									<Layer level="ARTWORK">
+										<Texture name="$parentIcon" parentKey="Icon">
+											<Size x="28" y="28"/>
+											<Anchors>
+												<Anchor point="CENTER" x="0" y="0"/>
+											</Anchors>
+										</Texture>
+									</Layer>
+								</Layers>
+								<Scripts>
+									<OnLoad>
+										Mixin(self, GlueDark_ButtonMixin)
+										self:OnLoadStyle(true)
+										self.Icon:SetAtlas("GlueDark-Icon-Boost-Refund")
+									</OnLoad>
+									<OnShow>
+										SetParentFrameLevel(self, 2)
+										CharacterBoostButton:SetWidth(120)
+									</OnShow>
+									<OnHide>
+										CharacterBoostButton:SetWidth(160)
+									</OnHide>
+									<OnClick>
+										CharacterSelect_OpenBoostRefund()
+									</OnClick>
+									<OnEnter>
+										GlueDark_ButtonMixin.OnEnter(self)
+										GlueTooltip:SetOwner(self, "ANCHOR_RIGHT")
+										GlueTooltip:SetText(CHARACTER_SERVICES_BOOST_REFUND_LABEL)
+										GlueTooltip:Show()
+									</OnEnter>
+									<OnLeave>
+										GlueDark_ButtonMixin.OnLeave(self)
+										GlueTooltip:Hide()
+									</OnLeave>
+									<OnMouseDown>
+										self.Icon:SetPoint("CENTER", 1, -1)
+									</OnMouseDown>
+									<OnMouseUp>
+										self.Icon:SetPoint("CENTER", 0, 0)
+									</OnMouseUp>
+								</Scripts>
+							</Button>
+
+							<Button name="CharacterGearBoostButton" inherits="PKBT_GoldButtonTemplate" text="RPE_GEAR_UPDATE">
+								<Size x="180" y="52"/>
+								<Anchors>
+									<Anchor point="TOP" relativeTo="$parentCharacterBoostInfoFrame" relativePoint="BOTTOM" x="0" y="-110"/>
+								</Anchors>
+
+								<Layers>
+									<Layer level="OVERLAY">
+										<Texture name="$parentIcon" parentKey="Icon">
+											<Anchors>
+												<Anchor point="CENTER" x="0" y="0"/>
+											</Anchors>
+										</Texture>
+									</Layer>
+								</Layers>
+								<Frames>
+									<Frame name="$parentCircleBorder" parentKey="CircleBorder">
+										<Size x="80" y="80"/>
+										<Anchors>
+											<Anchor point="BOTTOM" relativePoint="TOP" x="0" y="-26"/>
+										</Anchors>
+										<Layers>
+											<Layer level="BACKGROUND">
+												<Texture name="$parentGlow" parentKey="Glow" alpha="0">
+													<Anchors>
+														<Anchor point="CENTER" x="0" y="0"/>
+													</Anchors>
+													<Animations>
+														<AnimationGroup parentKey="AlphaAnim" looping="REPEAT">
+															<Alpha duration="0" change="-1" order="1"/>
+															<Alpha duration="1" change="1" order="2" smoothing="OUT_IN"/>
+															<Alpha duration="1" change="-1" order="3" smoothing="IN_OUT"/>
+														</AnimationGroup>
+													</Animations>
+												</Texture>
+											</Layer>
+											<Layer level="BORDER">
+												<Texture name="$parentBorder" parentKey="Border">
+													<Anchors>
+														<Anchor point="CENTER" x="0" y="0"/>
+													</Anchors>
+												</Texture>
+											</Layer>
+										</Layers>
+									</Frame>
+									<Frame name="$parentGlow" parentKey="Glow" inherits="PKBT_ButtonGlowTemplate" alpha="0">
+										<Anchors>
+											<Anchor point="TOPLEFT" x="-12" y="12"/>
+											<Anchor point="BOTTOMRIGHT" x="11" y="-17"/>
+										</Anchors>
+										<Animations>
+											<AnimationGroup parentKey="AlphaAnim" looping="REPEAT">
+												<Alpha duration="0" change="-1" order="1"/>
+												<Alpha duration="1" change="1" order="2" smoothing="OUT_IN"/>
+												<Alpha duration="1" change="-1" order="3" smoothing="IN_OUT"/>
+											</AnimationGroup>
+										</Animations>
+									</Frame>
+								</Frames>
+								<Scripts>
+									<OnLoad>
+										Mixin(self, CharacterGearBoostButtonMixin)
+										self:OnLoad()
+									</OnLoad>
+									<OnShow>
+										self:OnShow()
+									</OnShow>
+									<OnHide>
+										self:OnHide()
+									</OnHide>
+									<OnClick>
+										self:OnClick(button)
+									</OnClick>
 								</Scripts>
 							</Button>
 						</Frames>
@@ -1280,7 +1531,7 @@
 							</OnLoad>
 							<OnClick function="CharSelectChangeListState_OnClick" />
 							<OnEnter>
-								if self:IsEnabled() ~= 1 and not CharSelectServicesFlowFrame:IsShown() then
+								if self:IsEnabled() ~= 1 and not CharacterServiceBoostFlowFrame:IsShown() then
 									GlueTooltip:SetOwner(self, "ANCHOR_BOTTOM", 0, -10)
 									GlueTooltip:SetText(CHARACTER_UNDELETE_NOT_CHARACTER)
 									GlueTooltip:Show()
@@ -1317,7 +1568,6 @@
 								</Anchors>
 								<Scripts>
 									<OnClick>
-										CharacterSelect_CloseDropdowns()
 										PlaySound(SOUNDKIT.GS_LOGIN_NEW_ACCOUNT)
 										LaunchURL("https://forum.sirus.su/categories/4/")
 									</OnClick>
@@ -1331,7 +1581,6 @@
 								</Anchors>
 								<Scripts>
 									<OnClick>
-									CharacterSelect_CloseDropdowns()
 										OptionsSelectFrame:Show()
 									</OnClick>
 								</Scripts>
@@ -1374,7 +1623,6 @@
 								<Scripts>
 									<OnClick>
 										PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-										CharacterSelect_CloseDropdowns()
 										AddonList:Show();
 									</OnClick>
 								</Scripts>
@@ -1399,6 +1647,45 @@
 							</OnClick>
 						</Scripts>
 					</Button>
+
+					<Frame name="$parentPaidServiceSelection" parentKey="PaidServiceSelection" hidden="true">
+						<Size x="10" y="10"/>
+						<Anchors>
+							<Anchor point="BOTTOM" relativeTo="CharSelectEnterWorldButton" relativePoint="TOP" x="0" y="50"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark-Backdrops-Service-Actions" hidden="true">
+									<Anchors>
+										<Anchor point="CENTER" x="0" y="-12"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+							<Layer level="BORDER">
+								<Texture name="$parentBackgroundHighlight" parentKey="BackgroundHighlight" inherits="GlueDark-Backdrops-Service-Actions" alpha="0" alphaMode="ADD">
+									<Anchors>
+										<Anchor point="CENTER" x="0" y="-12"/>
+									</Anchors>
+									<Animations>
+										<AnimationGroup parentKey="AnimPulse">
+											<Alpha change="-1" duration="0" order="1"/>
+											<Alpha change="0.5" duration="0.3" smoothing="IN_OUT" order="2"/>
+											<Alpha change="-0.5" duration="0.3" smoothing="OUT_IN" order="3"/>
+										</AnimationGroup>
+									</Animations>
+								</Texture>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnLoad>
+								Mixin(self, CharacterPaidServiceSelectionMixin)
+								self:OnLoad()
+							</OnLoad>
+							<OnEvent>
+								self:OnEvent(event, ...)
+							</OnEvent>
+						</Scripts>
+					</Frame>
 				</Frames>
 				<Scripts>
 					<OnLoad>
@@ -1439,247 +1726,85 @@
 		</Scripts>
 	</Frame>
 
-	<Frame name="CharacterDeleteDialog" inherits="GlueDark_DialogFrameTemplate" parent="CharacterSelectUI" frameStrata="DIALOG" setAllPoints="true" enableMouse="true" hidden="true">
-		<Frames>
-			<Frame name="$parentContainer" parentKey="Container">
-				<Size x="410" y="195"/>
-				<Anchors>
-					<Anchor point="CENTER" x="0" y="35"/>
-				</Anchors>
-				<Attributes>
-					<Attribute name="layoutType" value="GlueDarkTemplate" type="string"/>
-					<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
-				</Attributes>
-
-				<Layers>
-					<Layer level="BACKGROUND">
-						<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_backdrop" />
-					</Layer>
-					<Layer level="BORDER">
-						<Texture name="$parentTopShadow" parentKey="TopShadow" inherits="GlueDark_backdropTopSplash2">
-							<Size x="0" y="182"/>
-							<Anchors>
-								<Anchor point="TOPLEFT" x="0" y="0"/>
-								<Anchor point="TOPRIGHT" x="0" y="0"/>
-							</Anchors>
-						</Texture>
-					</Layer>
-					<Layer level="ARTWORK">
-						<FontString name="$parentTitle" parentKey="Title" inherits="GlueDark_Font_Shadow_19" justifyH="CENTER" justifyV="TOP" text="CONFIRM_CHAR_DELETE">
-							<Anchors>
-								<Anchor point="TOP" x="0" y="-16"/>
-							</Anchors>
-						</FontString>
-						<Texture name="$parentSeparator" parentKey="Separator" inherits="GlueDark_separator">
-							<Anchors>
-								<Anchor point="BOTTOMLEFT" relativeTo="$parentTitle" x="0" y="-11"/>
-								<Anchor point="BOTTOMRIGHT" relativeTo="$parentTitle" x="0" y="-11"/>
-							</Anchors>
-						</Texture>
-						<FontString name="$parentCharacter" parentKey="Character" inherits="GlueDark_Font_Shadow_16" justifyH="CENTER">
-							<Size x="400" y="0"/>
-							<Anchors>
-								<Anchor point="TOP" relativeTo="$parentTitle" relativePoint="BOTTOM" x="0" y="-3"/>
-							</Anchors>
-						</FontString>
-						<FontString name="$parentNote" parentKey="Note" inherits="GlueDark_Font_Shadow_13" justifyH="CENTER" text="CONFIRM_CHAR_DELETE_INSTRUCTIONS">
-							<Size x="400" y="0"/>
-							<Anchors>
-								<Anchor point="TOP" relativeTo="$parentCharacter" relativePoint="BOTTOM" x="0" y="-7"/>
-							</Anchors>
-						</FontString>
-					<!--
-						<Texture name="$parentAlertIcon" parentKey="AlertIcon" file="Interface\DialogFrame\UI-Dialog-Icon-AlertNew">
-							<Size x="48" y="48"/>
-							<Anchors>
-								<Anchor point="LEFT" x="24" y="10"/>
-							</Anchors>
-						</Texture>
-					-->
-					</Layer>
-				</Layers>
-
-				<Frames>
-					<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
-
-					<EditBox name="$parentEditBox" parentKey="EditBox" inherits="GlueDark_EditBoxTemplate" letters="32" historyLines="1">
-						<Size x="130" y="32"/>
-						<Anchors>
-							<Anchor point="TOP" relativeTo="$parentNote" relativePoint="BOTTOM" x="0" y="-12"/>
-						</Anchors>
-
-						<Scripts>
-							<OnTextChanged>
-								if strupper(self:GetText()) == strupper(DELETE_CONFIRM_STRING) then
-									self:GetParent().OKButton:Enable()
-								else
-									self:GetParent().OKButton:Disable()
-								end
-							</OnTextChanged>
-							<OnEnterPressed>
-								if self:GetParent().OKButton:IsEnabled() == 1 then
-									self:GetParent().OKButton:Click()
-								end
-							</OnEnterPressed>
-							<OnEscapePressed>
-								self:GetParent():GetParent():Hide()
-							</OnEscapePressed>
-						</Scripts>
-					</EditBox>
-					<Button name="$parentOKButton" parentKey="OKButton" inherits="GlueDark_ButtonTemplate" text="OKAY">
-						<Size x="86" y="26"/>
-						<Anchors>
-							<Anchor point="BOTTOM" x="-60" y="20"/>
-						</Anchors>
-
-						<Scripts>
-							<OnClick function="CharacterDeleteDialog_OKButton_OnClick"/>
-						</Scripts>
-					</Button>
-					<Button name="$parentCancelButton" parentKey="CancelButton" inherits="GlueDark_ButtonTemplate" text="CANCEL">
-						<Size x="86" y="26"/>
-						<Anchors>
-							<Anchor point="BOTTOM" x="60" y="20"/>
-						</Anchors>
-
-						<Scripts>
-							<OnClick>
-								self:GetParent():GetParent():Hide();
-								PlaySound("gsTitleOptionExit");
-							</OnClick>
-						</Scripts>
-					</Button>
-				</Frames>
-
-				<Scripts>
-					<OnLoad>
-						self.TopShadow:SetVertexColor(0, 0, 0, 0.4)
-					</OnLoad>
-				</Scripts>
-			</Frame>
-		</Frames>
+	<Frame name="CharacterDeleteDialog" parent="CharacterSelectUI" inherits="CharacterActionDialogTemplate" hidden="true">
+		<Attributes>
+			<Attribute name="Title" type="string" value="CONFIRM_CHAR_DELETE"/>
+			<Attribute name="ShowEditBox" type="boolean" value="true"/>
+			<Attribute name="EditBoxWidth" type="number" value="130"/>
+			<Attribute name="EditBoxConfirmation" type="string" value="DELETE_CONFIRM_STRING"/>
+			<Attribute name="EditBoxInstruction" type="string" value="CONFIRM_CHAR_DELETE_INSTRUCTIONS"/>
+			<Attribute name="ShowCharInfo" type="boolean" value="true"/>
+		</Attributes>
 		<Scripts>
-			<OnHide function="CharacterDeleteDialog_OnHide"/>
+			<OnLoad>
+				Mixin(self, CharacterDeleteDialogMixin)
+				self:OnLoad()
+			</OnLoad>
 		</Scripts>
 	</Frame>
-	<Frame name="CharacterRenameDialog" inherits="GlueDark_DialogFrameTemplate" parent="CharacterSelectUI" frameStrata="DIALOG" setAllPoints="true" enableMouse="true" hidden="true">
-		<Frames>
-			<Frame name="$parentContainer" parentKey="Container">
-				<Size x="410" y="185"/>
-				<Anchors>
-					<Anchor point="CENTER" x="0" y="35"/>
-				</Anchors>
-				<Attributes>
-					<Attribute name="layoutType" value="GlueDarkTemplate" type="string"/>
-					<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
-				</Attributes>
-
-				<Layers>
-					<Layer level="BACKGROUND">
-						<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_backdrop" />
-					</Layer>
-					<Layer level="BORDER">
-						<Texture name="$parentTopShadow" parentKey="TopShadow" inherits="GlueDark_backdropTopSplash2">
-							<Size x="0" y="182"/>
-							<Anchors>
-								<Anchor point="TOPLEFT" x="0" y="0"/>
-								<Anchor point="TOPRIGHT" x="0" y="0"/>
-							</Anchors>
-						</Texture>
-					</Layer>
-					<Layer level="ARTWORK">
-						<FontString name="$parentTitle" parentKey="Title" inherits="GlueDark_Font_Shadow_19" text="CHAR_RENAME_DESCRIPTION">
-							<Size x="400" y="0"/>
-							<Anchors>
-								<Anchor point="TOP" x="0" y="-16"/>
-							</Anchors>
-						</FontString>
-						<Texture name="$parentSeparator" parentKey="Separator" inherits="GlueDark_separator">
-							<Anchors>
-								<Anchor point="BOTTOMLEFT" relativeTo="$parentTitle" x="0" y="-11"/>
-								<Anchor point="BOTTOMRIGHT" relativeTo="$parentTitle" x="0" y="-11"/>
-							</Anchors>
-						</Texture>
-						<FontString name="$parentInstruction" parentKey="Instruction" inherits="GlueDark_Font_Shadow_16" text="CHAR_RENAME_INSTRUCTIONS">
-							<Size x="400" y="0"/>
-							<Anchors>
-								<Anchor point="TOP" relativeTo="$parentTitle" relativePoint="BOTTOM" x="0" y="-25"/>
-							</Anchors>
-						</FontString>
-						<Texture name="$parentAlertIcon" parentKey="AlertIcon" file="Interface\DialogFrame\UI-Dialog-Icon-AlertNew">
-							<Size x="48" y="48"/>
-							<Anchors>
-								<Anchor point="LEFT" x="24" y="10"/>
-							</Anchors>
-						</Texture>
-					</Layer>
-				</Layers>
-				<Frames>
-					<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
-
-					<Button name="$parentOKButton" parentKey="OKButton" inherits="GlueDark_ButtonTemplate" id="1" text="OKAY">
-						<Size x="86" y="26"/>
-						<Anchors>
-							<Anchor point="BOTTOM" x="-70" y="20"/>
-						</Anchors>
-						<Scripts>
-							<OnClick>
-								if ( RenameCharacter(GetCharIDFromIndex(CharacterSelect.selectedIndex), CharacterRenameDialogContainerEditBox:GetText()) ) then
-									CharacterRenameDialog:Hide();
-								end
-							</OnClick>
-						</Scripts>
-					</Button>
-					<Button name="$parentCancelButton" parentKey="CancelButton" inherits="GlueDark_ButtonTemplate" id="2" text="CANCEL">
-						<Size x="86" y="26"/>
-						<Anchors>
-							<Anchor point="BOTTOM" x="70" y="20"/>
-						</Anchors>
-						<Scripts>
-							<OnClick>
-								CharacterRenameDialog:Hide();
-							</OnClick>
-						</Scripts>
-					</Button>
-					<EditBox name="$parentEditBox" parentKey="EditBox" inherits="GlueDark_EditBoxTemplate" letters="12" historyLines="1">
-						<Size x="180" y="32"/>
-						<Anchors>
-							<Anchor point="TOP" relativeTo="$parentInstruction" relativePoint="BOTTOM" x="0" y="-14"/>
-						</Anchors>
-
-						<Scripts>
-							<OnTextChanged>
-								if strlenutf8(self:GetText()) > 1 then
-									self:GetParent().OKButton:Enable()
-								else
-									self:GetParent().OKButton:Disable()
-								end
-							</OnTextChanged>
-							<OnEnterPressed>
-								if ( RenameCharacter(GetCharIDFromIndex(CharacterSelect.selectedIndex), self:GetText()) ) then
-									CharacterRenameDialog:Hide();
-								end
-							</OnEnterPressed>
-							<OnEscapePressed>
-								CharacterRenameDialog:Hide();
-							</OnEscapePressed>
-						</Scripts>
-					</EditBox>
-				</Frames>
-				<Scripts>
-					<OnLoad>
-						self.TopShadow:SetVertexColor(0, 0, 0, 0.4)
-					</OnLoad>
-					<OnHide>
-						self.EditBox:SetText("");
-					</OnHide>
-				</Scripts>
-			</Frame>
-		</Frames>
+	<Frame name="CharacterRenameDialog" parent="CharacterSelectUI" inherits="CharacterActionDialogTemplate" hidden="true">
+		<Attributes>
+			<Attribute name="Title" type="string" value="CHAR_RENAME_DESCRIPTION"/>
+			<Attribute name="ShowEditBox" type="boolean" value="true"/>
+			<Attribute name="EditBoxWidth" type="number" value="180"/>
+			<Attribute name="EditBoxInstruction" type="string" value="CHAR_RENAME_INSTRUCTIONS"/>
+			<Attribute name="AlertIcon" type="boolean" value="true"/>
+		</Attributes>
 		<Scripts>
-			<OnShow>
-				self:Raise();
-			</OnShow>
+			<OnLoad>
+				Mixin(self, CharacterRenameDialogMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="CharacterFixDialog" parent="CharacterSelectUI" inherits="CharacterActionDialogTemplate" hidden="true">
+		<Attributes>
+			<Attribute name="Title" type="string" value="CHARACTER_SELECT_FIX_CHARACTER_TITLE"/>
+			<Attribute name="Description" type="string" value="CHARACTER_SELECT_FIX_CHARACTER_DESC"/>
+			<Attribute name="Warning" type="string" value="CHARACTER_SELECT_FIX_CHARACTER_NOTE"/>
+			<Attribute name="InfoHeader" type="string" value="CHARACTER_FIX_HELP_HEAD"/>
+			<Attribute name="InfoText" type="string" value="CHARACTER_FIX_HELP_TEXT"/>
+			<Attribute name="ShowCharInfo" type="boolean" value="true"/>
+		</Attributes>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharacterFixDialogMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="CharacterBoostCancelDialog" parent="CharacterSelectUI" inherits="CharacterActionDialogTemplate" hidden="true">
+		<Attributes>
+			<Attribute name="Title" type="string" value="BOOST_CANCEL_TITLE"/>
+			<Attribute name="Description" type="string" value="BOOST_CANCEL_DESCRIPTION"/>
+			<Attribute name="Warning" type="string" value="BOOST_CANCEL_WARNING"/>
+			<Attribute name="ShowEditBox" type="boolean" value="true"/>
+			<Attribute name="EditBoxWidth" type="number" value="130"/>
+			<Attribute name="EditBoxConfirmation" type="string" value="BOOST_CANCEL_CONFIRM"/>
+			<Attribute name="EditBoxInstruction" type="string" value="BOOST_CANCEL_CONFIRM_INSTRUCTION"/>
+			<Attribute name="ShowCharInfo" type="boolean" value="true"/>
+		</Attributes>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharacterBoostCancelDialogMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="CharacterBoostRefundConfirmationDialog" parent="CharacterSelectUI" inherits="CharacterActionDialogTemplate" hidden="true">
+		<Attributes>
+			<Attribute name="Title" type="string" value="CHARACTER_SERVICES_BOOST_REFUND_LABEL"/>
+			<Attribute name="Description" type="string" value="BOOST_REFUND_DESCRIPTION"/>
+			<Attribute name="ShowEditBox" type="boolean" value="true"/>
+			<Attribute name="EditBoxWidth" type="number" value="130"/>
+			<Attribute name="EditBoxConfirmation" type="string" value="BOOST_REFUND_CONFIRM"/>
+			<Attribute name="EditBoxInstruction" type="string" value="BOOST_REFUND_CONFIRM_INSTRUCTION"/>
+		</Attributes>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharacterBoostRefundConfirmationDialogMixin)
+				self:OnLoad()
+			</OnLoad>
 		</Scripts>
 	</Frame>
 </Ui>

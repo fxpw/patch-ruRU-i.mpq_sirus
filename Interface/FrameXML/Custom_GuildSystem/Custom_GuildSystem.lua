@@ -1,14 +1,6 @@
 UIPanelWindows["GuildFrame"] = { area = "left", pushable = 1, whileDead = 1, xOffset = "15", yOffset = "-10", width = 370, height = 424 }
 GUILDS_SUBFRAMES = { "GuildRosterFrame", "GuildPerksFrame", "GuildRewardsFrame", "GuildInfoFrame" }
 
-local GuildInvite = GuildInvite
-
-local REPLACE_GUILD_MASTER_DAYS = 90
-local CAN_REPLACE_GUILD_MASTER = false
-
-local GUILD_LEVEL_DATA = {}
-local GUILD_REPUTATION_DATA = {}
-GUILD_CHARACTER_ILEVEL_DATA = {}
 local GUILD_MEMBER_INFO_DATA = {}
 local GUILD_MEMBER_INFO_BY_NAME_DATA = {}
 local currentGuildView
@@ -129,12 +121,12 @@ local function UpdateRosterData(force)
 
 	for i = 1, numcharacter do
 		local name, rank, rankIndex, level, class, zone, note, officernote, online = GetGuildRosterInfo(i)
-		local category = GetGuildCharacterCategory(name)
-		local lastonline = GuildFrame_GetLastOnline(i)
-
 		if not name then
 			break
 		end
+
+		local category = GetGuildCharacterCategory(name)
+		local lastonline = GuildFrame_GetLastOnline(i)
 
 		table.insert(GUILD_MEMBER_INFO_DATA, { name, rank, rankIndex, level, class, zone, note, officernote, online, category, i, lastonline })
 		GUILD_MEMBER_INFO_BY_NAME_DATA[name] = GUILD_MEMBER_INFO_DATA[i]
@@ -256,13 +248,17 @@ function GuildFrame_OnLoad( self, ... )
 	self:RegisterEvent("GUILD_ROSTER_UPDATE")
 	self:RegisterEvent("PLAYER_GUILD_UPDATE")
 	self:RegisterEvent("GUILD_MOTD")
-	self:RegisterEvent("PLAYER_LOGIN")
-
-	Hook:RegisterCallback("GUILD", "ASMSG_GUILD_TEAM", GuildFrame_UpdateFactionIcon)
+	self:RegisterCustomEvent("GUILD_EMBLEM_UPDATE")
+	self:RegisterCustomEvent("GUILD_XP_UPDATE")
+	self:RegisterCustomEvent("GUILD_FACTION_UPDATE")
+	self:RegisterCustomEvent("GUILD_FACTION_CHANGED")
+	self:RegisterCustomEvent("GUILD_ROSTER_UPDATE_EX")
+	self:RegisterCustomEvent("GUILD_RENAME_AVAILABLE")
+	self:RegisterCustomEvent("GUILD_RENAME_RESULT")
 end
 
 function GuildFrame_OnShow( self, ... )
-	local level, experience, nextLevelxperience, remaining = GetGuildXP()
+	local guildLevel, maxGuildLevel = GetGuildLevel()
 	local onlinePlayer, totalPlayer = GetGuildOnline()
 
 	UpdateRosterData()
@@ -273,7 +269,7 @@ function GuildFrame_OnShow( self, ... )
 	self.needUpdateTradeSkill = true
 	GuildRosterViewDropDown_OldValue = nil
 
-	GuildLevelFrameText:SetText(level)
+	GuildLevelFrameText:SetText(guildLevel)
 	GuildRosterFrameMembersCount:SetFormattedText("%s / %s", onlinePlayer, totalPlayer)
 
 	GuildFrame_UpdateFactionIcon()
@@ -287,11 +283,11 @@ function GuildFrame_OnShow( self, ... )
 	end
 
 	PlaySound("igCharacterInfoOpen")
+	EventRegistry:TriggerEvent("GuildFrame.OnShow")
 end
 
 function GuildFrame_UpdateFactionIcon()
-	local playerFactionTag = UnitFactionGroup("player")
-	local factionTag = C_CacheInstance:Get("ASMSG_GUILD_TEAM", playerFactionTag)
+	local factionTag, factionGroupID = GetGuildFaction()
 	GuildFactionFrame.Icon:SetTexture("Interface\\TargetingFrame\\UI-PVP-"..factionTag)
 end
 
@@ -306,7 +302,7 @@ function GuildTextEditFrame_OnLoad(self)
 end
 
 function GuildFrame_OnEvent( self, event, ... )
-	if event == "GUILD_ROSTER_UPDATE" then
+	if event == "GUILD_ROSTER_UPDATE" or event == "GUILD_ROSTER_UPDATE_EX" then
 		rosterDataDirty = true
 
 		if self:IsShown() then
@@ -349,10 +345,32 @@ function GuildFrame_OnEvent( self, event, ... )
 		end
 	elseif event == "GUILD_MOTD" then
 		GuildInfoMOTD:SetText(..., true)
-	elseif event == "PLAYER_LOGIN" then
-		if IsInGuild() then
-			SendServerMessage("ACMSG_GUILD_EMBLEM_REQUEST")
-			SendServerMessage("ACMSG_GUILD_ILVLS_REQUEST")
+	elseif event == "GUILD_EMBLEM_UPDATE" then
+		local isFullInfo = ...
+		if isFullInfo then
+			GuildFrame_UpdateTabard()
+		end
+	elseif ( event == "GUILD_XP_UPDATE" ) then
+		GuildFrame_UpdateXP();
+	elseif ( event == "GUILD_FACTION_UPDATE" ) then
+		GuildFrame_UpdateFaction();
+	elseif ( event == "GUILD_FACTION_CHANGED" ) then
+		GuildFrame_UpdateFactionIcon()
+	elseif ( event == "GUILD_RENAME_AVAILABLE" ) then
+		local canRename, isForcedRename = ...
+		GuildFrame_UpdateRename()
+
+		if canRename and isForcedRename then
+			StaticPopup_Show("SIRUS_RENAME_GUILD")
+		end
+	elseif ( event == "GUILD_RENAME_RESULT" ) then
+		local success, errCode = ...
+		if ( success ) then
+			GuildFrame_UpdateRename()
+			StaticPopup_Show("SIRUS_RENAME_GUILD_COMPLETE")
+		else
+			local errText = errCode and _G["GUILD_RENAME_ERROR_"..errCode]
+			StaticPopup_Show("SIRUS_RENAME_GUILD_ERROR", errText or string.format("GUILD_RENAME_ERROR %s", errCode or "NULL"))
 		end
 	end
 end
@@ -372,14 +390,12 @@ function GuildFrame_OnHide( self, ... )
 end
 
 function GuildFrame_Toggle()
-	if IsInGuild() then
-		if GetGuildXP() and GetGuildReputation() and GetGuildNumPerks() > 0 and GetGuildNumRewards() > 0 then
-			if ( GuildFrame:IsShown() ) then
-				HideUIPanel(GuildFrame)
-			else
-				ShowUIPanel(GuildFrame)
-				GuildFrame_TabClicked(1)
-			end
+	if IsInGuild() and IsGuildDataLoaded() then
+		if ( GuildFrame:IsShown() ) then
+			HideUIPanel(GuildFrame)
+		else
+			ShowUIPanel(GuildFrame)
+			GuildFrame_TabClicked(1)
 		end
 	end
 end
@@ -390,22 +406,6 @@ function GuildFrame_TabClicked( newID )
 		GuildFrameRightTab5:SetChecked(false);
 		return;
 	end
-
-	local level, experience, nextLevelxperience, remaining = GetGuildXP()
-	local reputationRank, reputationMin, reputationMax = GetGuildReputation()
-
-	GUILD_LEVEL_DATA = {
-		level 				= level,
-		experience 			= experience,
-		nextLevelxperience 	= nextLevelxperience,
-		remaining 			= remaining,
-	}
-
-	GUILD_REPUTATION_DATA = {
-		reputationRank 	= reputationRank,
-		reputationMin 	= reputationMin,
-		reputationMax 	= reputationMax,
-	}
 
 	local newFrame = _G[GUILDS_SUBFRAMES[newID]]
 	local oldFrame = _G[GUILDS_SUBFRAMES[GuildFrame.selectedTab or 1]]
@@ -429,23 +429,25 @@ function GuildFrame_TabClicked( newID )
 			GuildRoster()
 			GuildRoster_Update()
 		elseif newID == 2 then
-			local data = GUILD_LEVEL_DATA
+			local guildLevel, maxGuildLevel = GetGuildLevel()
+			local currentXP, nextLevelXP = UnitGetGuildXP("player")
+			local dailyCapXP = GetGuildXPDailtyCap()
 
 			ButtonFrameTemplate_HideButtonBar(GuildFrame)
 			GuildFrameInset:SetPoint("TOPLEFT", 4, -65)
 			GuildFrameInset:SetPoint("BOTTOMRIGHT", -7, 44)
 
-			GuildBar_SetProgress(GuildXPBar, data.experience, data.nextLevelxperience, data.remaining)
-			GuildXPFrame.Text:SetFormattedText(GUILD_LEVEL, data.level or 1);
+			GuildBar_SetProgress(GuildXPBar, currentXP, nextLevelXP, dailyCapXP)
+			GuildXPFrame.Text:SetFormattedText(GUILD_LEVEL, guildLevel);
 			GuildPerks_Update()
 		elseif newID == 3 then
-			local data = GUILD_REPUTATION_DATA
+			local reputationRank, reputationMin, reputationMax = GetGuildReputation()
 
 			ButtonFrameTemplate_HideButtonBar(GuildFrame)
 			GuildFrameInset:SetPoint("TOPLEFT", 4, -65)
 			GuildFrameInset:SetPoint("BOTTOMRIGHT", -7, 44)
 
-			GuildBar_SetProgress(GuildXPBar, data.reputationMin, data.reputationMax, 0)
+			GuildBar_SetProgress(GuildXPBar, reputationMin, reputationMax, 0)
 			GuildXPFrame.Text:SetText(GUILD_REPUTATION)
 			GuildRewards_Update()
 		elseif newID == 4 then
@@ -468,6 +470,64 @@ function GuildFrame_TabClicked( newID )
 	end
 
 	GuildFrame.selectedTab = newID
+end
+
+function GuildFrame_UpdateXP()
+	if GuildFrame:IsShown() and PanelTemplates_GetSelectedTab(GuildFrame) == 2 then
+		local currentXP, nextLevelXP = UnitGetGuildXP("player");
+		if ( nextLevelXP > 0 ) then
+			GuildBar_SetProgress(GuildXPBar, currentXP, nextLevelXP + currentXP, GetGuildXPDailtyCap());
+		end
+	end
+
+	local guildLevel, maxGuildLevel = GetGuildLevel()
+	GuildLevelFrameText:SetText(guildLevel)
+	GuildXPFrame.Text:SetFormattedText(GUILD_LEVEL, guildLevel)
+end
+
+function GuildFrame_UpdateFaction()
+	if GuildFrame:IsShown() and PanelTemplates_GetSelectedTab(GuildFrame) == 3 then
+		local standingID, reputationMin, reputationMax = GetGuildReputation()
+		GuildBar_SetProgress(GuildXPBar, reputationMin, reputationMax, 0)
+	end
+end
+
+function GuildFrame_UpdateTabard()
+	local emblemStyle, emblemColor, emblemBorderStyle, emblemBorderColor, emblemBackgroundColor = GetGuildEmblemInfo()
+
+	local button = GuildMicroButton
+	local tabard = GuildMicroButtonTabard
+	button:SetNormalTexture("Interface\\Buttons\\UI-MicroButtonCharacter-Up")
+	button:SetPushedTexture("Interface\\Buttons\\UI-MicroButtonCharacter-Down")
+	tabard:Show()
+
+	if SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor] then
+		tabard.background:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor])))
+		GuildFrameTabardBackground:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor])))
+	end
+
+	if SHARED_TABARD_EMBLEM_COLOR[emblemColor] then
+		tabard.emblem:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_EMBLEM_COLOR[emblemColor])))
+		GuildFrameTabardEmblem:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_EMBLEM_COLOR[emblemColor])))
+	end
+
+	if SHARED_TABARD_BORDER_COLOR[emblemBorderStyle] then
+		if SHARED_TABARD_BORDER_COLOR[emblemBorderStyle][emblemBorderColor] then
+			GuildFrameTabardBorder:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BORDER_COLOR[emblemBorderStyle][emblemBorderColor])))
+		end
+	elseif SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor] then
+		GuildFrameTabardBorder:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor])))
+	end
+
+	GuildFrameTabardBackground:Show()
+	GuildFrameTabardEmblem:Show()
+	GuildFrameTabardBorder:Show()
+	SetSmallGuildTabardTextures(tabard.emblem, emblemStyle)
+	SetLargeGuildTabardTextures(GuildFrameTabardEmblem, emblemStyle)
+end
+
+function GuildFrame_UpdateRename()
+	GuildFrame_RenameButtonToggle(CanRenameGuild())
 end
 
 function GuildRosterButton_SetStringText(buttonString, text, isOnline, class)
@@ -761,15 +821,13 @@ function GuildRoster_SortByColumn( sortType, sortIndex )
 			end)
 		elseif sortType == "ilevel" then
 			table.sort(GUILD_MEMBER_INFO_DATA, function(a, b)
-				local _a = GUILD_CHARACTER_ILEVEL_DATA[string.upper(a[1])] or -1
-				local _b = GUILD_CHARACTER_ILEVEL_DATA[string.upper(b[1])] or -1
+				local _a = GetGuildMemberItemLevel(a[1]) or -1
+				local _b = GetGuildMemberItemLevel(b[1]) or -1
 
-				if _a and _b then
-					if sortIndex[sortType] then
-						return _a < _b
-					else
-						return _a > _b
-					end
+				if sortIndex[sortType] then
+					return _a < _b
+				else
+					return _a > _b
 				end
 			end)
 		elseif sortType == "class" then
@@ -992,20 +1050,31 @@ function GuildRoster_Update()
 
 			button.header:Hide()
 
+			local challengeID = GetGuildMemberChallenge(name)
+			if challengeID and challengeID ~= 0 then
+				local challengeName, _, challengeIcon = C_Hardcore.GetChallengeInfoByID(challengeID)
+				button.ChallengeIcon:SetTexture(challengeIcon)
+				button.ChallengeIcon:SetDesaturated(true)
+				button.ChallengeIcon:Show()
+			else
+				button.ChallengeIcon:Hide()
+			end
+
 			if ( currentGuildView == "playerStatus" ) then
 				GuildRosterButton_SetStringText(button.string1, level, online)
 				GuildRosterButton_SetStringText(button.string4, zone, online)
 				button.icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[classFile]))
 				GuildRosterButton_SetStringText(button.string3, displayedName, online, classFile)
 
-				if GUILD_CHARACTER_ILEVEL_DATA and GUILD_CHARACTER_ILEVEL_DATA[string.upper(name)] then
+				local itemLevel = GetGuildMemberItemLevel(name)
+				if itemLevel then
 					if online then
-						local color = ItemLevelMixIn:GetColor(GUILD_CHARACTER_ILEVEL_DATA[string.upper(name)])
-						GuildRosterButton_SetStringText(button.string2, color:WrapTextInColorCode(GUILD_CHARACTER_ILEVEL_DATA[string.upper(name)]), online)
+						local color = GetItemLevelColor(itemLevel)
+						GuildRosterButton_SetStringText(button.string2, color:WrapTextInColorCode(itemLevel), online)
 					else
-						GuildRosterButton_SetStringText(button.string2, GUILD_CHARACTER_ILEVEL_DATA[string.upper(name)], online)
+						GuildRosterButton_SetStringText(button.string2, itemLevel, online)
 					end
-					button.ilvl = GUILD_CHARACTER_ILEVEL_DATA[string.upper(name)]
+					button.ilvl = itemLevel
 				else
 					GuildRosterButton_SetStringText(button.string2, "-", online)
 				end
@@ -1117,8 +1186,19 @@ function GuildRoster_UpdateTradeSkills()
 					end
 				end
 				button.header.skillID = skillID
+				button.ChallengeIcon:Hide()
 				button:Show()
 			elseif ( playerName ) then
+				local challengeID = GetGuildMemberChallenge(playerName)
+				if challengeID and challengeID ~= 0 then
+					local challengeName, _, challengeIcon = C_Hardcore.GetChallengeInfoByID(challengeID)
+					button.ChallengeIcon:SetTexture(challengeIcon)
+					button.ChallengeIcon:SetDesaturated(true)
+					button.ChallengeIcon:Show()
+				else
+					button.ChallengeIcon:Hide()
+				end
+
 				GuildRosterButton_SetStringText(button.string1, playerName, online, classFileName)
 				GuildRosterButton_SetStringText(button.string2, zone, online)
 				if skill then
@@ -1174,29 +1254,31 @@ function GuildXPBar_OnEnter( self, ... )
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 
 	if tabID == 2 then
-		local data = GUILD_LEVEL_DATA
-		local percentTotal = tostring(math.ceil((data.experience / data.nextLevelxperience) * 100))
+		local currentXP, nextLevelXP = UnitGetGuildXP("player")
+		local dailyCapXP = GetGuildXPDailtyCap()
+
+		local percentTotal = tostring(math.ceil((currentXP / nextLevelXP) * 100))
 
 		GameTooltip:SetText(COMBAT_GUILD_XP_GAIN)
 		GameTooltip:AddLine(GUILD_XP_HELP_1, 1, 1, 1, 1)
 		GameTooltip:AddLine(" ")
 		GameTooltip:AddLine(GUILD_EXPERIENCE_CAP, 1, 1, 1, 1)
 
-		if data.remaining > 0 then
+		if dailyCapXP > 0 then
 			local maxExp = 60000
-			GameTooltip:AddLine(string.format(GUILD_EXPERIENCE_CURRENT, data.experience, data.nextLevelxperience, percentTotal))
-			local percentDaily = tostring(math.ceil(((maxExp - data.remaining) / maxExp) * 100))
-			GameTooltip:AddLine(string.format(GUILD_EXPERIENCE_DAILY, maxExp - data.remaining, maxExp, percentDaily))
+			GameTooltip:AddLine(string.format(GUILD_EXPERIENCE_CURRENT, currentXP, nextLevelXP, percentTotal))
+			local percentDaily = tostring(math.ceil(((maxExp - dailyCapXP) / maxExp) * 100))
+			GameTooltip:AddLine(string.format(GUILD_EXPERIENCE_DAILY, maxExp - dailyCapXP, maxExp, percentDaily))
 		else
-			GameTooltip:AddLine(string.format(GUILD_EXPERIENCE_CURRENT, data.experience, data.nextLevelxperience, percentTotal))
+			GameTooltip:AddLine(string.format(GUILD_EXPERIENCE_CURRENT, currentXP, nextLevelXP, percentTotal))
 		end
 	elseif tabID == 3 then
-		local data = GUILD_REPUTATION_DATA
-		local factionStandingtext = GetText("FACTION_STANDING_LABEL"..GUILD_REPUTATION_DATA.reputationRank + 1, UnitSex("player"))
+		local reputationRank, reputationMin, reputationMax = GetGuildReputation()
+		local factionStandingtext = GetText("FACTION_STANDING_LABEL"..reputationRank + 1, UnitSex("player"))
 
 		GameTooltip:SetText(GUILD_REPUTATION)
 		GameTooltip:AddLine(GUILD_REPUTATION_HELP_1, 1, 1, 1, 1)
-		GameTooltip:AddLine(string.format(GUILD_EXPERIENCE_CURRENT, data.reputationMin, data.reputationMax, tostring(math.ceil((data.reputationMin / data.reputationMax) * 100))))
+		GameTooltip:AddLine(string.format(GUILD_EXPERIENCE_CURRENT, reputationMin, reputationMax, tostring(math.ceil((reputationMin / reputationMax) * 100))))
 		GameTooltip:AddLine(string.format(GUILD_REPUTATION_COUNT, factionStandingtext))
 	end
 
@@ -1204,10 +1286,11 @@ function GuildXPBar_OnEnter( self, ... )
 end
 
 function GuildRewardsButton_OnEnter( self )
+	local reputationRank, reputationMin, reputationMax = GetGuildReputation()
 	GuildRewardsFrame.activeButton = self
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 28, 0)
 	GameTooltip:SetHyperlink("item:"..self.itemID)
-	if ( self.reputationID > GUILD_REPUTATION_DATA.reputationRank ) then
+	if ( self.reputationID > reputationRank ) then
 		local factionStandingtext = GetText("FACTION_STANDING_LABEL"..self.reputationID + 1, UnitSex("player"))
 		GameTooltip:AddLine(" ", 1, 0, 0, 1)
 		GameTooltip:AddLine(string.format(REQUIRES_GUILD_FACTION_TOOLTIP, factionStandingtext), 1, 0, 0, 1)
@@ -1268,57 +1351,51 @@ function GuildRewards_Update()
 	local numButtons = #buttons
 	local button, index
 	local playerMoney = GetMoney()
-	local numRewards = GetGuildNumRewards()
+	local numRewards = GetNumGuildRewards()
 	local gender = UnitSex("player")
+	local reputationRank, reputationMin, reputationMax = GetGuildReputation()
 
 	for i = 1, numButtons do
 		button = buttons[i]
 		index = offset + i
 
-		if GetGuildRewards(index) then
-			local itemID, reputationID, moneyCost  = GetGuildRewards(index)
-			local itemName, _, _, _, _, _, _, _, _, iconTexture = GetItemInfo(itemID)
+		local achievementID, itemID, itemName, iconTexture, repLevel, moneyCost = GetGuildRewardInfo(index);
+		if itemName then
+			button.name:SetText(itemName)
+			button.icon:SetTexture(iconTexture)
+			button:Show()
 
-			if itemName then
-				button.name:SetText(itemName)
-				button.icon:SetTexture(iconTexture)
-				button:Show()
-
-				if ( moneyCost and moneyCost > 0 ) then
-					MoneyFrame_Update(button.money:GetName(), moneyCost)
-					if ( playerMoney >= moneyCost ) then
-						SetMoneyFrameColor(button.money:GetName(), "white")
-					else
-						SetMoneyFrameColor(button.money:GetName(), "red")
-					end
-					button.money:Show()
+			if ( moneyCost and moneyCost > 0 ) then
+				MoneyFrame_Update(button.money:GetName(), moneyCost)
+				if ( playerMoney >= moneyCost ) then
+					SetMoneyFrameColor(button.money:GetName(), "white")
 				else
-					button.money:Hide()
+					SetMoneyFrameColor(button.money:GetName(), "red")
 				end
-
-				button.achievementID = nil
-				button.icon:SetDesaturated(0)
-				button.name:SetFontObject(GameFontNormal)
-
-				if ( GUILD_REPUTATION_DATA.reputationRank and reputationID > GUILD_REPUTATION_DATA.reputationRank ) then
-					local factionStandingtext = GetText("FACTION_STANDING_LABEL"..reputationID + 1, gender)
-					button.subText:SetFormattedText(REQUIRES_GUILD_FACTION, factionStandingtext)
-					button.subText:Show()
-					button.disabledBG:Show()
-					button.icon:SetVertexColor(1, 0, 0)
-				else
-					button.subText:Hide()
-					button.disabledBG:Hide()
-					button.icon:SetVertexColor(1, 1, 1)
-				end
-
-				button.reputationID = reputationID
-				button.itemID = itemID
-				button.moneyCost = moneyCost
-				button.index = index
+				button.money:Show()
 			else
-				button:Hide()
+				button.money:Hide()
 			end
+
+			button.icon:SetDesaturated(0)
+			button.name:SetFontObject(GameFontNormal)
+
+			if ( reputationRank and repLevel > reputationRank ) then
+				local factionStandingtext = GetText("FACTION_STANDING_LABEL"..repLevel + 1, gender)
+				button.subText:SetFormattedText(REQUIRES_GUILD_FACTION, factionStandingtext)
+				button.subText:Show()
+				button.disabledBG:Show()
+				button.icon:SetVertexColor(1, 0, 0)
+			else
+				button.subText:Hide()
+				button.disabledBG:Hide()
+				button.icon:SetVertexColor(1, 1, 1)
+			end
+
+			button.reputationID = repLevel
+			button.itemID = itemID
+			button.moneyCost = moneyCost
+			button.index = index
 		else
 			button:Hide()
 		end
@@ -1339,23 +1416,21 @@ function GuildPerks_Update()
 	local buttons = scrollFrame.buttons
 	local numButtons = #buttons
 	local button, index
-	local numPerks = GetGuildNumPerks()
-	local guildLevel = GUILD_LEVEL_DATA.level
+	local numPerks = GetNumGuildPerks();
+	local guildLevel = GetGuildLevel();
 
 	for i = 1, numButtons do
 		button = buttons[i]
 		index = offset + i
 		if ( index <= numPerks ) then
-			local spellID, spellLevel = GetGuildPerks(index)
-			local name, _, iconTexture = GetSpellInfo(spellID)
-
+			local name, spellID, iconTexture, level = GetGuildPerkInfo(index);
 			button.name:SetText(name)
-			button.level:SetFormattedText(FLOOR_NUMBER, spellLevel)
+			button.level:SetFormattedText(PERK_LEVEL, level)
 			button.icon:SetTexture(iconTexture)
 			button.spellID = spellID
 			button:Show()
 
-			if ( guildLevel and spellLevel > guildLevel ) then
+			if ( level > guildLevel ) then
 				button:EnableDrawLayer("BORDER")
 				button:DisableDrawLayer("BACKGROUND")
 				button.icon:SetDesaturated(1)
@@ -1395,7 +1470,8 @@ function GuildRewardsButton_OnClick(self, button)
 		return
 	end
 
-	if ( GUILD_REPUTATION_DATA.reputationRank and self.reputationID <= GUILD_REPUTATION_DATA.reputationRank ) then
+	local reputationRank, reputationMin, reputationMax = GetGuildReputation()
+	if ( reputationRank and self.reputationID <= reputationRank ) then
 		local _, link = GetItemInfo(self.itemID)
 		local dialog = StaticPopup_Show("GUILD_REWARDS_CONFIRM_BUY", link, 1, {itemID = self.itemID, moneyCost = self.moneyCost})
 	else
@@ -1538,34 +1614,10 @@ end
 function GuildInfoFrameInfo_OnShow( self, ... )
 	GuildInfoFrame_UpdatePermissions()
 	GuildInfoFrame_UpdateText()
-
-	if SIRUS_GUILD_RENAME and SIRUS_GUILD_RENAME[1] then
-		GuildFrame_RenameButtonToggle(SIRUS_GUILD_RENAME[1])
-	end
+	GuildFrame_UpdateRename()
 end
 
 function GuildInfoFrame_UpdatePermissions()
-	do
-		if IsInGuild() and not IsGuildLeader() then
-			local playerName = UnitName("player")
-			local gmCanBeReplaced, playerCanBeGM
-			for i = 1, GetNumGuildMembers() do
-				local name, rank, rankIndex = GetGuildRosterInfo(i)
-				if rankIndex == 0 then
-					local year, month, day, hour = GetGuildRosterLastOnline(i)
-					day = (day or 0) + (month and month * 30 or 0)
-					if day >= REPLACE_GUILD_MASTER_DAYS then
-						gmCanBeReplaced = true
-					end
-				elseif name == playerName and rankIndex == 1 then
-					playerCanBeGM = true
-				end
-			end
-
-			CAN_REPLACE_GUILD_MASTER = (gmCanBeReplaced and playerCanBeGM) or false
-		end
-	end
-
 	if ( CanReplaceGuildMaster() ) then
 		GuildGMImpeachButton:Show();
 		GuildInfoFrameInfo:SetPoint("TOPLEFT", 0, -18)
@@ -1769,7 +1821,7 @@ function GuildRecruitmentInviteButton_OnClick(self, button)
 	PlaySound("igMainMenuOptionCheckBoxOn");
 	local name = GetGuildApplicantInfo(GetGuildApplicantSelection());
 	if ( name ) then
-		GuildInvite(name);
+		SendServerMessage("ACMSG_GF_ACCEPT_RECRUIT", name)
 	end
 end
 
@@ -1801,13 +1853,15 @@ function GuildInfoFrameApplicants_Update()
 	for i = 1, numButtons do
 		button = buttons[i];
 		index = offset + i;
-		local name, isOnline, level, class, _, _, _, _, _, _, _, isTank, isHealer, isDamage, _, _, _, _, comment, timeSince, timeLeft = GetGuildApplicantInfo(index);
+		local name, guid, level, class, isOnline, isInviteSent, isQuest, isDungeon, isRaid, isPvP, isRP, isWeekdays, isWeekends, isTank, isHealer, isDamage, isMorning, isDay, isEvening, isNight, comment, timeSince, timeLeft = GetGuildApplicantInfo(index);
 		if ( name ) then
-			button.name:SetText(name);
+			button.Status:SetTexture(isOnline and FRIENDS_TEXTURE_ONLINE or FRIENDS_TEXTURE_OFFLINE)
+			button.name:SetFormattedText("%s |cffFFFFFF(%s)|r", name, (isOnline and FRIENDS_LIST_AVAILABLE or FRIENDS_LIST_OFFLINE):lower());
 			button.levelFrame.level:SetText(level);
 			button.comment:SetText(comment);
 			button.fullComment:SetText(comment);
 			button.classFrame.class:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]));
+
 			-- time left
 			local daysLeft = floor(timeLeft / 86400); -- seconds in a day
 			if ( daysLeft < 1 ) then
@@ -1837,11 +1891,13 @@ function GuildInfoFrameApplicants_Update()
 				button.selectedTex:Show();
 				local commentHeight = button.fullComment:GetHeight();
 				if ( commentHeight > GUILD_COMMENT_HEIGHT ) then
-					buttonHeight = GUILD_BUTTON_HEIGHT + commentHeight - GUILD_COMMENT_HEIGHT + GUILD_COMMENT_BORDER;
+					buttonHeight = GUILD_BUTTON_HEIGHT + commentHeight - GUILD_COMMENT_HEIGHT + GUILD_COMMENT_BORDER + button.timeLeft:GetHeight();
 				end
 			else
 				button.selectedTex:Hide();
 			end
+
+			button.InviteSent:SetShown(isInviteSent)
 
 			button:SetHeight(buttonHeight);
 			button:Show();
@@ -1896,7 +1952,7 @@ function GuildRecruitmentApplicant_OnClick(self, button)
 end
 
 function GuildRecruitmentApplicant_ShowTooltip(self)
-	local name, isOnline, level, class, bQuest, bDungeon, bRaid, bPvP, bRP, bWeekdays, bWeekends, bTank, bHealer, bDamage, bMorning, bDay, bEvening, bNight, comment, timeSince, timeLeft = GetGuildApplicantInfo(self.index);
+	local name, guid, level, class, isOnline, isInviteSent, bQuest, bDungeon, bRaid, bPvP, bRP, bWeekdays, bWeekends, bTank, bHealer, bDamage, bMorning, bDay, bEvening, bNight, comment, timeSince, timeLeft = GetGuildApplicantInfo(self.index);
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 	GameTooltip:SetText(name);
 	local buf = "";
@@ -1934,7 +1990,7 @@ function GuildRecruitmentDropDown_Initialize(self)
 	end
 
 	local info = UIDropDownMenu_CreateInfo();
-	local name, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, guid = GetGuildApplicantInfo(GuildRecruitmentDropDown.index);
+	local name, guid, level, class, isOnline, isInviteSent, isQuest, isDungeon, isRaid, isPvP, isRP, isWeekdays, isWeekends, isTank, isHealer, isDamage, isMorning, isDay, isEvening, isNight, comment, timeSince, timeLeft = GetGuildApplicantInfo(GuildRecruitmentDropDown.index);
 	if not name then
 		name = UNKNOWN;
 	end
@@ -1949,10 +2005,20 @@ function GuildRecruitmentDropDown_Initialize(self)
 
 	info.text = INVITE;
 	info.arg1 = "invite";
+	info.disabled = isInviteSent
+	info.tooltipTitle = GUILD_INVITE_SENT
+	info.tooltipWhileDisabled = true
+	info.noTooltipWhileEnabled = true
+	info.tooltipOnButton = true
 	UIDropDownMenu_AddButton(info, UIDROPDOWN_MENU_LEVEL);
 
 	info.text = WHISPER;
 	info.arg1 = "whisper";
+	info.disabled = nil
+	info.tooltipTitle = nil
+	info.tooltipWhileDisabled = nil
+	info.noTooltipWhileEnabled = nil
+	info.tooltipOnButton = nil
 	UIDropDownMenu_AddButton(info, UIDROPDOWN_MENU_LEVEL);
 
 	info.text = ADD_FRIEND;
@@ -1974,12 +2040,12 @@ function GuildRecruitmentDropDown_Initialize(self)
 end
 
 function GuildRecruitmentDropDown_OnClick(button, action)
-	local name, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, guid = GetGuildApplicantInfo(GuildRecruitmentDropDown.index);
+	local name, guid = GetGuildApplicantInfo(GuildRecruitmentDropDown.index);
 	if ( not name ) then
 		return;
 	end
 	if ( action == "invite" ) then
-		GuildInvite(name);
+		SendServerMessage("ACMSG_GF_ACCEPT_RECRUIT", name)
 	elseif ( action == "whisper" ) then
 		ChatFrame_SendTell(name);
 	elseif ( action == "addfriend" ) then
@@ -2217,71 +2283,14 @@ function GuildFrame_LinkItem(button, itemID, itemLink)
 	end
 end
 
-PLAYER_GUILD_EMBLEM_DATA = {}
+function GuildInviteFrame_OnEvent(self, event, ...)
+	if ( event == "GUILD_INVITE_REQUEST_EX" ) then
+		local inviterName, guildName, guildLevel, oldGuildName, isNewGuild = ...;
+		local emblemStyle, emblemColor, emblemBorderStyle, emblemBorderColor, emblemBackgroundColor = select(6, ...)
 
-function EventHandler:ASMSG_PLAYER_GUILD_EMBLEM_INFO( msg )
-	local emblemStyle, emblemColor, emblemBorderStyle, emblemBorderColor, emblemBackgroundColor = strsplit(":", msg)
-
-	if emblemStyle and emblemColor and emblemBorderStyle and emblemBorderColor and emblemBackgroundColor then
-		emblemStyle = tonumber(emblemStyle)
-		emblemColor = tonumber(emblemColor)
-		emblemBorderStyle = tonumber(emblemBorderStyle)
-		emblemBorderColor = tonumber(emblemBorderColor)
-		emblemBackgroundColor = tonumber(emblemBackgroundColor)
-
-		PLAYER_GUILD_EMBLEM_DATA = {
-			emblemStyle 			= emblemStyle,
-			emblemColor 			= emblemColor,
-			emblemBorderStyle 		= emblemBorderStyle,
-			emblemBorderColor 		= emblemBorderColor,
-			emblemBackgroundColor 	= emblemBackgroundColor,
-		}
-
-		local button = GuildMicroButton
-		local tabard = GuildMicroButtonTabard
-		button:SetNormalTexture("Interface\\Buttons\\UI-MicroButtonCharacter-Up")
-		button:SetPushedTexture("Interface\\Buttons\\UI-MicroButtonCharacter-Down")
-		tabard:Show()
-
-		if SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor] then
-			tabard.background:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor])))
-			GuildFrameTabardBackground:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor])))
-		end
-
-		if SHARED_TABARD_EMBLEM_COLOR[emblemColor] then
-			tabard.emblem:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_EMBLEM_COLOR[emblemColor])))
-			GuildFrameTabardEmblem:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_EMBLEM_COLOR[emblemColor])))
-		end
-
-		if SHARED_TABARD_BORDER_COLOR[emblemBorderStyle] then
-			if SHARED_TABARD_BORDER_COLOR[emblemBorderStyle][emblemBorderColor] then
-				GuildFrameTabardBorder:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BORDER_COLOR[emblemBorderStyle][emblemBorderColor])))
-			end
-		else
-			if SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor] then
-				GuildFrameTabardBorder:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor])))
-			end
-		end
-
-		GuildFrameTabardBackground:Show()
-		GuildFrameTabardEmblem:Show()
-		GuildFrameTabardBorder:Show()
-		SetSmallGuildTabardTextures(tabard.emblem, emblemStyle)
-		SetLargeGuildTabardTextures(GuildFrameTabardEmblem, emblemStyle)
-	end
-end
-
-function EventHandler:ASMSG_GUILD_INVITE_REQUEST( msg )
-	local guildLevel, emblemStyle, emblemColor, emblemBorderStyle, emblemBorderColor, emblemBackgroundColor = strsplit(":", msg)
-
-	if guildLevel and emblemStyle and emblemColor and emblemBorderStyle and emblemBorderColor and emblemBackgroundColor then
-
-		guildLevel = tonumber(guildLevel)
-		emblemStyle = tonumber(emblemStyle)
-		emblemColor = tonumber(emblemColor)
-		emblemBorderStyle = tonumber(emblemBorderStyle)
-		emblemBorderColor = tonumber(emblemBorderColor)
-		emblemBackgroundColor = tonumber(emblemBackgroundColor)
+		GuildInviteFrameInviteText:SetFormattedText(GUILD_INVITE_LABEL, inviterName);
+		GuildInviteFrameGuildName:SetText(guildName);
+		GuildInviteFrameLevelNumber:SetText(guildLevel);
 
 		if SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor] then
 			GuildInviteFrameTabardBackground:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BACKGROUND_COLOR[emblemBackgroundColor])))
@@ -2295,30 +2304,11 @@ function EventHandler:ASMSG_GUILD_INVITE_REQUEST( msg )
 			if SHARED_TABARD_BORDER_COLOR[emblemBorderStyle][emblemBorderColor] then
 				GuildInviteFrameTabardArtTabardBorder:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BORDER_COLOR[emblemBorderStyle][emblemBorderColor])))
 			end
-		else
-			if SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor] then
-				GuildInviteFrameTabardArtTabardBorder:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor])))
-			end
+		elseif SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor] then
+			GuildInviteFrameTabardArtTabardBorder:SetVertexColor(RGB255To1(unpack(SHARED_TABARD_BORDER_COLOR["ALL"][emblemBorderColor])))
 		end
 
-		GuildInviteFrameLevelNumber:SetText(guildLevel)
 		SetLargeGuildTabardTextures(GuildInviteFrameTabardEmblem, emblemStyle)
-	end
-end
-
-function EventHandler:ASMSG_GUILD_PLAYERS_ILVL( msg )
-	for name, ilvl in string.gmatch(string.upper(msg), "(.-):(%d+)|") do
-		GUILD_CHARACTER_ILEVEL_DATA[name] = tonumber(ilvl)
-	end
-end
-
-function EventHandler:ASMSG_GUILD_RENAME_RESPONSE( msg )
-	msg = tonumber(msg)
-
-	if msg == 0 then
-		StaticPopup_Show("SIRUS_RENAME_GUILD_COMPLETE")
-	elseif msg then
-		StaticPopup_Show("SIRUS_RENAME_GUILD_ERROR", _G["GUILD_RENAME_ERROR_"..msg])
 	end
 end
 
@@ -2398,20 +2388,5 @@ function EventHandler:ASMSG_GUILD_TRADE_SKILL_LIST( msg )
 
 		UIDropDownMenu_SetSelectedValue(GuildRosterViewDropdown, currentGuildView)
 		GenerateGuildTradeSkillInfo()
-	end
-end
-
-function EventHandler:ASMSG_GUILD_TEAM( msg )
-	C_CacheInstance:Set("ASMSG_GUILD_TEAM", SERVER_PLAYER_FACTION_GROUP[tonumber(msg)])
-	Hook:FireEvent("ASMSG_GUILD_TEAM")
-end
-
-function CanReplaceGuildMaster()
-	return CAN_REPLACE_GUILD_MASTER
-end
-
-function ReplaceGuildMaster()
-	if CAN_REPLACE_GUILD_MASTER then
-		SendServerMessage("ACMSG_GUILD_REPLACE_GUILD_MASTER")
 	end
 end

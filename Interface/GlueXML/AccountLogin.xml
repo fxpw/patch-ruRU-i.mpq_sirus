@@ -31,7 +31,7 @@
 						<Texture name="$parentBGTexture" parentKey="BGTexture" setAllPoints="true" hidden="true"/>
 					</Layer>
 					<Layer level="BORDER">
-						<Texture parentKey="Logo">
+						<Texture name="$parentLogo" parentKey="Logo">
 							<Size x="226" y="130"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" x="40" y="-15"/>
@@ -40,7 +40,7 @@
 					</Layer>
 				</Layers>
 				<Frames>
-					<Frame name="$parentLeftButtonsFrame">
+					<Frame name="$parentLeftButtonsFrame" parentKey="LeftButtonsFrame">
 						<Size x="200" y="125"/>
 						<Anchors>
 							<Anchor point="BOTTOMLEFT" x="20" y="20"/>
@@ -84,7 +84,7 @@
 							</Button>
 						</Frames>
 					</Frame>
-					<Frame name="$parentRightButtonsFrame">
+					<Frame name="$parentRightButtonsFrame" parentKey="RightButtonsFrame">
 						<Size x="200" y="90"/>
 						<Anchors>
 							<Anchor point="BOTTOMRIGHT" x="-20" y="20"/>
@@ -120,7 +120,7 @@
 								<Scripts>
 									<OnClick>
 										PlaySound(SOUNDKIT.GS_LOGIN_NEW_ACCOUNT)
-										LaunchURL("https://sirus.su/vote/mmotop")
+										LaunchURL("https://sirus.su/vote")
 									</OnClick>
 								</Scripts>
 							</Button>
@@ -150,7 +150,7 @@
 							</Button>
 						</Frames>
 					</Frame>
-					<Frame name="$parentLoginBoxFrame">
+					<Frame name="$parentLoginBoxFrame" parentKey="LoginBoxFrame">
 						<Size x="200" y="230"/>
 						<Anchors>
 							<Anchor point="CENTER" x="0" y="-110"/>
@@ -347,7 +347,7 @@
 
 								<Layers>
 									<Layer level="BACKGROUND">
-										<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_backdrop"/>
+										<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark-Backdrops-Background-Main"/>
 									</Layer>
 									<Layer level="ARTWORK">
 										<FontString name="$parentTitleText" parentKey="TitleText" inherits="GlueDark_Font_Outline_13" justifyH="CENTER" text="SECURITY_CODE">

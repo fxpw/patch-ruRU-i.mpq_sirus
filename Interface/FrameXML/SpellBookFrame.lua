@@ -21,10 +21,7 @@ SIRUS_SPELLBOOK_SPELL = {}
 SIRUS_SPELLBOOK_SKILLLINE = {}
 
 local spellbookCustomRender = {}
-spellbookCustomHiddenChatSpell = {
-	[305310] = "",
-	[305355] = ""
-}
+local spellbookCustomHiddenChatSpell = {305310, 305355}
 
 local TECHNICAL_SKILL_LINES = {
 	[SKILLNAME_COLLECTION_TOYS] = true,
@@ -40,6 +37,8 @@ local SPECIAL_SKILL_LINES = {
 local shapeshiftIgnoreSpell = {9634, 1066, 768, 783, 40120, 2457, 71, 2458, 465, 643, 1032, 7294, 10290, 10291, 10292, 10293, 10298, 10299, 10300, 10301, 19746, 19876, 19888, 19891, 19895, 19896, 19897, 19898, 19899, 19900, 27149, 27150, 27151, 27152, 27153, 27733, 30515, 30519, 32223, 35126, 40803, 41106, 42184, 48263, 48265, 48266, 48941, 48942, 48943, 48945, 48947, 54043, 55357, 55366, 63510, 63514, 63531, 63611, 260024, 260025, 302768}
 local spellbookCustomHiddenSpell = {305495, 305036, 305037, 305038, 305039, 305040, 305041, 305042, 305043, 305044, 305045, 305046, 305047, 305048, 305049, 305050, 305051, 305052, 305053, 305054, 305055, 305056, 305057, 305058, 305059, 305060, 305061, 305062, 305063, 305064, 305065, 305066, 305067, 305068, 305069, 305070, 305071,
 	317619,
+	373391,
+	374135,
 	 -- proffesion
 	2259,
 	3101,
@@ -199,7 +198,7 @@ local spellbookSecondaryProfessionData = {
 	},
 	[PROFESSION_COOKING] = {
 		["Up"] = 818,
-		["Down"] = {2550, 3102, 3413, 18260, 33359, 51296},
+		["Down"] = {2550, 3102, 3413, 18260, 33359, 51296, 371933},
 		isLearned = false,
 		skillIndex = nil,
 		skillName = nil,
@@ -238,7 +237,7 @@ local spellbookMainProfessionData = {
 	},
 	[TRADESKILL_ENGINEERING] = {
 		["Up"] = nil,
-		["Down"] = {4036, 4037, 4038, 12656, 30350, 51306, 20222, 20219}
+		["Down"] = {4036, 4037, 4038, 12656, 30350, 51306, 20222, 20219, 371826}
 	},
 	[TRADESKILL_HERBALISM] = {
 		["Up"] = nil,
@@ -246,7 +245,7 @@ local spellbookMainProfessionData = {
 	},
 	[TRADESKILL_INSCRIPTION] = {
 		["Up"] = 51005,
-		["Down"] = {45357, 45358, 45359, 45360, 45361, 45363}
+		["Down"] = {45357, 45358, 45359, 45360, 45361, 45363, 371613}
 	},
 	[TRADESKILL_JEWELCRAFTING] = {
 		["Up"] = 31252,
@@ -269,6 +268,12 @@ local spellbookMainProfessionData = {
 		["Down"] = {3908, 3909, 3910, 12180, 26790, 51309, 26798, 26797, 26801, 321754}
 	},
 }
+local professionNameOverride = {
+	[(GetSpellInfo(2656))] = TRADESKILL_MINING,
+}
+local professionIconOverride = {
+	[TRADESKILL_MINING] = [[Interface\Icons\Trade_Mining]],
+}
 
 local ceil = ceil
 local strlen = strlen
@@ -280,6 +285,10 @@ local function HelpPlate_Hide( data )
 		NPE_TutorialPointerFrame:Hide(data)
 		data = nil
 	end
+end
+
+function GetNumProfessions()
+	return tCount(spellbookMainProfessionValue)
 end
 
 function ToggleSpellBook( bookType )
@@ -337,11 +346,8 @@ function SpellBookFrame_OnLoad(self)
 	SetPortraitToTexture(self.portrait, "Interface\\Spellbook\\Spellbook-Icon")
 	SpellBookFrame_UpdateSpellRender()
 
-	for spellID in pairs(spellbookCustomHiddenChatSpell) do
-		local spellName = GetSpellInfo(spellID)
-		if spellName then
-			spellbookCustomHiddenChatSpell[spellID] = spellName
-		end
+	for _, spellID in ipairs(spellbookCustomHiddenChatSpell) do
+		FilterOutSpellLearn(spellID)
 	end
 end
 
@@ -407,10 +413,74 @@ function SpellBook_UpdateTutorial()
 		tutorialText = VIP_SELECTED_TUTORIAL_1
 	end
 
-	if tutorialText then
-		tutorialSpellBook.spellLearn = NPE_TutorialPointerFrame:Show(tutorialText, "DOWN", SpellbookMicroButton, 0, 0)
+	if tutorialText and tutorialSpellBook.spellTutorialText ~= tutorialText then
+		tutorialSpellBook.spellTutorialText = tutorialText
 		tutorialSpellBook.spellLearnData = {spellForbsIsland, spellVipSelect}
-		tutorialText = nil
+
+		local blockedTutorialID
+
+		local onClose = function()
+			C_TutorialManager.ClearOwner("MainMenuBar", "SpellBook_TutorialPoint")
+
+			NPE_TutorialPointerFrame:Hide(tutorialSpellBook.spellLearn)
+			tutorialSpellBook.spellLearn = nil
+
+			if tutorialSpellBook.spellLearnData[1] then
+				NPE_TutorialPointerFrame:SetKey("SpellBook_Learn_307810_1", true)
+			end
+			if tutorialSpellBook.spellLearnData[2] then
+				NPE_TutorialPointerFrame:SetKey("SpellBook_Learn_308230_1", true)
+			end
+		end
+		local onRelease = function(tutorialPointerID)
+			if blockedTutorialID ~= tutorialPointerID then
+				C_TutorialManager.ClearOwner("MainMenuBar", "SpellBook_TutorialPoint")
+			end
+		end
+
+		if tutorialSpellBook.callbackRegistered then
+			EventRegistry:UnregisterCallback("TutorialManager.OwnerFreed", tutorialSpellBook)
+			tutorialSpellBook.callbackRegistered = nil
+		end
+
+		if C_TutorialManager.IsOwnerEmpty("MainMenuBar")
+		or tutorialSpellBook.spellLearn -- in case popup already shown, we update it
+		then
+			if tutorialSpellBook.spellLearn then -- close old one for update of content
+				blockedTutorialID = tutorialSpellBook.spellLearn
+				NPE_TutorialPointerFrame:Hide(tutorialSpellBook.spellLearn)
+				blockedTutorialID = nil
+			end
+
+			tutorialSpellBook.spellLearn = NPE_TutorialPointerFrame:Show(tutorialText, "DOWN", SpellbookMicroButton, 0, 0, nil, nil, nil, nil, onClose, onRelease)
+
+			if tutorialSpellBook.spellLearn and tutorialSpellBook.spellLearn ~= 0 then
+				C_TutorialManager.MarkOwnerUsed("MainMenuBar", "SpellBook_TutorialPoint")
+			else
+				tutorialSpellBook.spellLearn = nil
+				tutorialSpellBook.spellLearnData = nil
+				tutorialSpellBook.spellTutorialText = nil
+			end
+		else
+			tutorialSpellBook.callbackRegistered = true
+
+			EventRegistry:RegisterCallback("TutorialManager.OwnerFreed", function(this, owner)
+				if owner == "MainMenuBar" then
+					EventRegistry:UnregisterCallback("TutorialManager.OwnerFreed", this)
+					tutorialSpellBook.callbackRegistered = nil
+
+					tutorialSpellBook.spellLearn = NPE_TutorialPointerFrame:Show(tutorialText, "DOWN", SpellbookMicroButton, 0, 0, nil, nil, nil, nil, onClose, onRelease)
+
+					if tutorialSpellBook.spellLearn and tutorialSpellBook.spellLearn ~= 0 then
+						C_TutorialManager.MarkOwnerUsed("MainMenuBar", "SpellBook_TutorialPoint")
+					else
+						tutorialSpellBook.spellLearn = nil
+						tutorialSpellBook.spellLearnData = nil
+						tutorialSpellBook.spellTutorialText = nil
+					end
+				end
+			end, tutorialSpellBook)
+		end
 	end
 end
 
@@ -444,6 +514,8 @@ function SpellBookFrame_OnShow(self)
 	SpellBookFrame_PlayOpenSound()
 
 	PrimaryProfession_Update()
+
+	EventRegistry:TriggerEvent("SpellBookFrame.OnShow")
 end
 
 function SpellBookFrame_OnHide(self)
@@ -469,6 +541,8 @@ function SpellBookFrame_OnHide(self)
 
 	-- Do this last, it can cause taint.
 	UpdateMicroButtons()
+
+	EventRegistry:TriggerEvent("SpellBookFrame.OnHide")
 end
 
 function SpellLinkToSpellID( link )
@@ -551,7 +625,7 @@ function SpellBookFrame_UpdateSpellRender()
 	spellbookCustomRender = {}
 	SpellBookFrame.selectedSkillLineOffset = {}
 	SpellBookFrame.selectedSkillLineNumSpells = {}
-	spellbookMainProfessionValue = {}
+	table.wipe(spellbookMainProfessionValue)
 
 	for i = 1, GetNumSkillLines() do
 		local skillName, isHeader, isExpanded, skillRank, numTempPoints, skillModifier, skillMaxRank, isAbandonable, stepCost, rankCost, minLevel, skillCostType, skillDescription = GetSkillLineInfo(i)
@@ -758,9 +832,10 @@ function PrimaryProfession_Update()
 
 		if frame then
 			local _frame = frame.Learn
+			local skillName = professionNameOverride[v.skillName] or v.skillName
 
 			_frame.skillIndex = v.skillIndex
-			_frame.skillName = v.skillName
+			_frame.skillName = skillName
 
 			if v.downSpell then
 				local downName, downSubName, downTexture = GetSpellInfo(v.downSpell)
@@ -769,12 +844,13 @@ function PrimaryProfession_Update()
 				_frame.button1:SetAttribute("spell", v.downSpell)
 				_frame.button1:SetAttribute("name", downName)
 
-				_frame.professionName:SetText(downName)
+				_frame.professionName:SetText(skillName)
 
 				_frame.button1.iconTexture:SetTexture(downTexture)
 				_frame.button1.spellString:SetText(downName)
 
-				SetPortraitToTexture(_frame.icon, downTexture)
+				local icon = professionIconOverride[skillName] or downTexture
+				SetPortraitToTexture(_frame.icon, icon)
 			end
 
 			if v.upSpell then
@@ -829,9 +905,10 @@ function PrimaryProfession_Update()
 		local frame = _G["SecondaryProfession"..c.index]
 		if frame and c.skillRank and c.skillName then
 			local _frame = frame.Learn
+			local skillName = professionNameOverride[c.skillName] or c.skillName
 
 			_frame.skillIndex = c.skillIndex
-			_frame.skillName = c.skillName
+			_frame.skillName = skillName
 
 			if c.downSpell then
 				local downName, downSubName, downTexture = GetSpellInfo(c.downSpell)
@@ -840,7 +917,7 @@ function PrimaryProfession_Update()
 				_frame.button1:SetAttribute("spell", c.downSpell)
 				_frame.button1:SetAttribute("name", c.skillName)
 
-				_frame.professionName:SetText(c.skillName)
+				_frame.professionName:SetText(_frame.skillName)
 				_frame.rank:SetText(downSubName)
 
 				_frame.button1.iconTexture:SetTexture(downTexture)
@@ -1372,7 +1449,12 @@ function SpellBookFrame_Update(showing)
 
 		if page and page ~= SpellBook_GetCurrentPage() then
 			if not C_Hardcore.IsFeatureAvailable(Enum.Hardcore.Features.VIP) then
-				tutorialSpellBook.openPage = NPE_TutorialPointerFrame:Show(string.format(FORBS_ISLAND_TUTORIAL_2, page), "LEFT", SpellBookNextPageButton, 0, 0)
+				local onClose = function()
+					NPE_TutorialPointerFrame:Hide(tutorialSpellBook.openPage)
+					tutorialSpellBook.openPage = nil
+					NPE_TutorialPointerFrame:SetKey("SpellBook_Learn_307810_1", true)
+				end
+				tutorialSpellBook.openPage = NPE_TutorialPointerFrame:Show(string.format(FORBS_ISLAND_TUTORIAL_2, page), "LEFT", SpellBookNextPageButton, 0, 0, nil, nil, nil, nil, onClose)
 			end
 		end
 	end
@@ -1579,7 +1661,13 @@ function SpellButton_OnShow(self)
 					HelpPlate_Hide(tutorialSpellBook.spellForbsIslandOnEnter)
 					HelpPlate_Hide(tutorialSpellBook.openPage)
 
-					tutorialSpellBook.spellForbsIslandOnEnter = NPE_TutorialPointerFrame:Show(FORBS_ISLAND_TUTORIAL_3, "LEFT", self, 0, 0)
+					local onClose = function()
+						NPE_TutorialPointerFrame:Hide(tutorialSpellBook.spellForbsIslandOnEnter)
+						tutorialSpellBook.spellForbsIslandOnEnter = nil
+						NPE_TutorialPointerFrame:SetKey("SpellBook_Learn_307810_2", true)
+					end
+
+					tutorialSpellBook.spellForbsIslandOnEnter = NPE_TutorialPointerFrame:Show(FORBS_ISLAND_TUTORIAL_3, "LEFT", self, 0, 0, nil, nil, nil, nil, onClose)
 				end
 			end)
 		end
@@ -1594,7 +1682,13 @@ function SpellButton_OnShow(self)
 
 				HelpPlate_Hide(tutorialSpellBook.spellVipSelectOnEnter)
 
-				tutorialSpellBook.spellVipSelectOnEnter = NPE_TutorialPointerFrame:Show(VIP_SELECTED_TUTORIAL_2, "LEFT", self, 0, 0)
+				local onClose = function()
+					NPE_TutorialPointerFrame:Hide(tutorialSpellBook.spellVipSelectOnEnter)
+					tutorialSpellBook.spellVipSelectOnEnter = nil
+					NPE_TutorialPointerFrame:SetKey("SpellBook_Learn_308230_2", true)
+				end
+
+				tutorialSpellBook.spellVipSelectOnEnter = NPE_TutorialPointerFrame:Show(VIP_SELECTED_TUTORIAL_2, "LEFT", self, 0, 0, nil, nil, nil, nil, onClose)
 			end)
 		end
 	end
@@ -2015,6 +2109,8 @@ function SpellBookFrameTabButton_OnClick(self)
 			HelpPlate_Hide(tutorialSpellBook.openPage)
 		end
 	end
+
+	EventRegistry:TriggerEvent("SpellBookFrame.SetTab", self.bookType)
 end
 
 function SpellBook_GetSpellID(id)
@@ -2173,6 +2269,7 @@ function EventHandler:ASMSG_AUTOLEARN_SPELLS( msg )
 				end
 			end
 		end
+		EventRegistry:TriggerEvent("LevelUpSpells.Received")
 		SpellBookFrame_UpdateSpellRender()
 	end
 end
@@ -2194,8 +2291,29 @@ function EventHandler:ASMSG_AUTOLEARN_SKILL_NAMES( msg )
 	end
 end
 
+function IsLevelDataSpellsLoaded()
+	return next(SIRUS_SPELLBOOK_SPELL) ~= nil
+end
+
+function GetCurrentLevelSpells(level)
+	if not IsLevelDataSpellsLoaded() then
+		return
+	end
+
+	local levelSpells = {}
+	for skillLine, spellList in pairs(SIRUS_SPELLBOOK_SPELL) do
+		for index, spell in ipairs(spellList) do
+			if spell.spellLevel == level then
+				table.insert(levelSpells, spell.spellID)
+			end
+		end
+	end
+
+	return unpack(levelSpells)
+end
+
 function ChatFrame_MessageSpellFilter( self, event, msg )
-	for spellID, spellName in pairs(spellbookCustomHiddenChatSpell) do
+	for spellID, spellName in EnumSpellLearnFilters() do
 		if msg == string.format(ERR_LEARN_SPELL_S, spellName) or msg == string.format(ERR_SPELL_UNLEARNED_S, spellName) then
 			return true
 		end

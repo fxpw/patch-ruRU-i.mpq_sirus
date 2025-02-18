@@ -1,7 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 	<Script file="HelpTip.lua"/>
-	<Frame name="HelpTipTemplate" inherits="GlowBoxTemplate" hidden="true" virtual="true" enableMouse="true">
+	<Frame name="HelpTipTemplate" inherits="GlowBoxTemplate" hidden="true" virtual="true" enableMouse="true" clampedToScreen="true">
 		<Size x="226" y="10"/>
 		<Layers>
 			<Layer level="OVERLAY">
@@ -51,7 +51,7 @@
 				self:OnHide();
 			</OnHide>
 			<OnEvent>
-				self:OnEvent(event);
+				self:OnEvent(event, ...);
 			</OnEvent>
 		</Scripts>
 	</Frame>

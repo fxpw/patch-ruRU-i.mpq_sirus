@@ -191,7 +191,9 @@ function SetItemRef(link, text, button, chatFrame)
 		ChatUrlHyperlink_OnClick(link, text)
 		return
 	elseif ( strsub(link, 1, 5) == "store" ) then
-		GetStoreHyperlinkInfo(link)
+		if C_StorePublic.IsEnabled() then
+			StoreFrame:ProcessHyperlink(link)
+		end
 		return
 	elseif ( strsub(link, 1, 6) == "replay" ) then
 		ArenaSpectatorFrame:WatchReplayAtHyperlink(link)

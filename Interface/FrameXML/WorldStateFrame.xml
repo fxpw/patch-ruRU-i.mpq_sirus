@@ -849,6 +849,7 @@
 		</Layers>
 		<Scripts>
 			<OnLoad function="WorldStateTopCenterFrame_OnLoad" />
+			<OnEvent function="WorldStateTopCenterFrame_OnEvent" />
 			<OnHide function="WorldStateTopCenterFrame_OnHide" />
 			<OnShow function="WorldStateTopCenterFrame_OnShow" />
 		</Scripts>
@@ -1154,7 +1155,7 @@
 							</Layer>
 						</Layers>
 					</Frame>
-					<Frame name="$parentInset" parentKey="Inset" inherits="StandartInsetFrameTemplate">
+					<Frame name="$parentInset" parentKey="Inset" inherits="InsetFrameTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parentSeparator" x="10" y="-48" />
 							<Anchor point="BOTTOMRIGHT" relativeTo="$parentBg" x="-6" y="67" />
@@ -1926,13 +1927,15 @@
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
-				<FontString name="$parentName" parentKey="Name" inherits="SystemFont_Shadow_Med3">
+				<FontString name="$parentName" parentKey="Name" inherits="SystemFont_Shadow_Med3" maxLines="1">
+					<Size x="128" y="0"/>
 					<Anchors>
 						<Anchor point="TOP" relativeTo="$parentIcon" relativePoint="BOTTOM" x="0" y="-10"/>
 					</Anchors>
 					<Color r="1" g="1" b="1"/>
 				</FontString>
-				<FontString name="$parentScore" parentKey="Score" inherits="SystemFont_Shadow_Large">
+				<FontString name="$parentScore" parentKey="Score" inherits="SystemFont_Shadow_Large" justifyV="TOP">
+					<Size x="128" y="0"/>
 					<Anchors>
 						<Anchor point="TOP" relativeTo="$parentName" relativePoint="BOTTOM" x="0" y="-20"/>
 					</Anchors>

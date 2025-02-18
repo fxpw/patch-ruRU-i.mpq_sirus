@@ -7,6 +7,9 @@ TIMER_TYPE_ARENA = 4
 TIMER_TYPE_MINIGAMES = 5;
 TIMER_TYPE_MINIGAMES_SHORT = 6;
 
+local TIMER_TYPE_SERVER_HANDLED = TIMER_TYPE_SERVER_HANDLED
+local TIMER_TYPE_PLAYER_COUNTDOWN = TIMER_TYPE_PLAYER_COUNTDOWN
+
 TIMER_DATA = {
 	[0] = { updateInterval = 10 },
 	[1] = { mediumMarker = 11, largeMarker = 6, updateInterval = 10 },
@@ -462,6 +465,10 @@ function StartTimer_NumberAnimOnFinished(self)
 		self.GoTextureAnim:Play();
 
 		C_CacheInstance:Set("TimerTrackerReadyButtonState", {value = false})
+
+		if self.type == TIMER_TYPE_SERVER_HANDLED then
+			FlashClientIcon()
+		end
 	end
 end
 
@@ -483,10 +490,6 @@ TimerTrackerReadyButtonMixin = {}
 
 function TimerTrackerReadyButtonMixin:OnLoad()
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
-
-	self.Glow.Left:SetAtlas("PKBT-Button-Glow-Left", true)
-	self.Glow.Right:SetAtlas("PKBT-Button-Glow-Right", true)
-	self.Glow.Center:SetAtlas("PKBT-Button-Glow-Center")
 end
 
 function TimerTrackerReadyButtonMixin:OnEvent(event, ... )
@@ -686,7 +689,9 @@ function EventHandler:ASMSG_EVENT_START_TIMER(msg)
 	TIMER_DATA[TIMER_TYPE_SERVER_HANDLED].goTexture = tonumber(goTexture)
 	TIMER_DATA[TIMER_TYPE_SERVER_HANDLED].readyButton = readyButton == "1"
 
-	if readyButton ~= "1" then
+	if readyButton == "1" then
+		FlashClientIcon()
+	else
 		TimerTracker_ReadyStatusButton:Toggle(false)
 	end
 

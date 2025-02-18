@@ -185,7 +185,7 @@
 				</Scripts>
 			</Frame>
 			<Frame name="$parentArenaSpectatorBackdrop" setAllPoints="true">
-				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\ArenaSpectator\TooltipEdge" tile="true">
+				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Custom\ArenaSpectator\TooltipEdge" tile="true">
 					<BackgroundInsets left="4" right="4" top="4" bottom="4"/>
 					<TileSize val="16"/>
 					<EdgeSize val="16"/>
@@ -226,6 +226,11 @@
 
 	<Button name="UIDropDownMenuButtonScriptTemplate" virtual="true">
 		<Scripts>
+			<OnLoad>
+				self.HandlesGlobalMouseEvent = function(this, buttonID, event)
+					return event == "GLOBAL_MOUSE_DOWN" and buttonID == "LeftButton"
+				end
+			</OnLoad>
 			<OnEnter function="UIDropDownMenuButtonScript_OnEnter"/>
 			<OnLeave function="UIDropDownMenuButtonScript_OnLeave"/>
 			<OnClick function="UIDropDownMenuButtonScript_OnClick"/>

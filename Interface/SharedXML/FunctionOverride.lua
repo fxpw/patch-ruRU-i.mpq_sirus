@@ -3,10 +3,48 @@ local securecall = securecall
 local IN_GLUE_STATE = IsOnGlueScreen()
 
 do	-- CVars
-	if not IN_GLUE_STATE then
+	if IN_GLUE_STATE then
+		local SetCVar = SetCVar
+		_G.SetCVar = function(cvar, value, raiseEvent)
+			if C_GlueCVars and C_GlueCVars.HasCVar(cvar) then
+				C_GlueCVars.SetCVar(cvar, value)
+				return
+			end
+
+			SetCVar(cvar, value, raiseEvent)
+		end
+
+		local GetCVar = GetCVar
+		_G.GetCVar = function(cvar)
+			if C_GlueCVars and C_GlueCVars.HasCVar(cvar) then
+				return C_GlueCVars.GetCVar(cvar)
+			end
+			return GetCVar(cvar)
+		end
+
+		local GetCVarBool = GetCVarBool
+		_G.GetCVarBool = function(cvar)
+			if C_GlueCVars and C_GlueCVars.HasCVar(cvar) then
+				return ValueToBoolean(C_GlueCVars.GetCVar(cvar))
+			end
+			return GetCVarBool(cvar)
+		end
+
+		local GetCVarDefault = GetCVarDefault
+		_G.GetCVarDefault = function(cvar)
+			if C_GlueCVars and C_GlueCVars.HasCVar(cvar) then
+				return C_GlueCVars.GetCVarDefault(cvar)
+			end
+			return GetCVarDefault(cvar)
+		end
+	else
 		TRACKED_CVARS = {
 			"autoDismountFlying",
 			"C_CVAR_DRACTHYR_RETURN_MORTAL_FORM",
+			"C_CVAR_WARMODE_PVP_ASSIST_ENABLED",
+			"C_CVAR_BLOCK_GROUP_INVITES",
+			"C_CVAR_BLOCK_GUILD_INVITES",
+			"C_CVAR_AUTO_ACCEPT_GROUP_INVITES",
 		}
 
 		local tonumber = tonumber
@@ -217,7 +255,16 @@ do -- AddonManager
 
 	local select = select
 	local GetAddOnEnableState = GetAddOnEnableState
-	_G.GetAddOnEnableState = function(character, addonIndex)
+	_G.GetAddOnEnableState = function(characterName, addonIndex)
+		if type(characterName) == "number" and addonIndex == nil then
+			addonIndex = characterName
+			if IN_GLUE_STATE then
+				characterName = nil
+			else
+				characterName = UnitName("player")
+			end
+		end
+
 		local newVersion
 
 		if IN_GLUE_STATE then
@@ -230,11 +277,12 @@ do -- AddonManager
 			return 0
 		end
 
-		return GetAddOnEnableState(character, addonIndex)
+		return GetAddOnEnableState(characterName, addonIndex)
 	end
 
 	if not IN_GLUE_STATE then
 		local customAddons = {
+			blizzard_barbershopui = true,
 			blizzard_battlefieldminimap = true,
 			blizzard_calendar = true,
 			blizzard_glyphui = true,
@@ -372,7 +420,7 @@ if not IN_GLUE_STATE then
 	---@return string englishFaction
 	---@return string localizedFaction
 	_G.UnitFactionGroup = function(unit)
-		if not UnitExists(unit) or not C_Service.IsRenegadeRealm() then
+		if not UnitExists(unit) then
 			return UnitFactionGroup(unit)
 		end
 
@@ -386,10 +434,10 @@ if not IN_GLUE_STATE then
 				return UnitFactionGroup(unit)
 			end
 		else
-			local factionTag, localizedFaction 	= UnitFactionGroup(unit)
-			local overrideFactionID 			= C_Unit.GetFactionByDebuff(unit)
+			local factionTag, localizedFaction = UnitFactionGroup(unit)
+			local overrideFactionID = C_Unit.GetFactionByDebuff(unit)
 
-			if overrideFactionID and factionTag then
+			if overrideFactionID then
 				local overrideFactionTag = PLAYER_FACTION_GROUP[overrideFactionID]
 
 				if overrideFactionTag ~= factionTag then
@@ -437,6 +485,10 @@ if not IN_GLUE_STATE then
 	local GetHonorCurrency = GetHonorCurrency
 	_G.GetHonorCurrency = function()
 		return GetHonorCurrency(), 2500000
+	end
+	local GetArenaCurrency = GetArenaCurrency
+	_G.GetArenaCurrency = function()
+		return GetArenaCurrency(), 25000
 	end
 
 	local pairs = pairs
@@ -582,5 +634,42 @@ if not IN_GLUE_STATE then
 				end
 			end
 		end)
+	end
+
+	do -- GetMoney
+		local GetMoney = GetMoney
+		local PlaySound = PlaySound
+
+		local MAX_NATIVE_MONEY = 2^31 - 1
+
+		local eventHandler = CreateFrame("Frame")
+		eventHandler:RegisterEvent("CHAT_MSG_ADDON")
+		eventHandler:SetScript("OnEvent", function(this, event, ...)
+			if event == "CHAT_MSG_ADDON" then
+				local prefix, msg, distribution, sender = ...
+				if distribution ~= "UNKNOWN" or sender ~= UnitName("player") then
+					return
+				end
+				if prefix == "ASMSG_P_M" then
+					local money = tonumber(msg)
+					money = type(money) == "number" and money or nil
+
+					local customMoney = C_CacheInstance and tonumber(C_CacheInstance:Get("PLAYER_MONEY")) or nil
+					if customMoney -- skip initial msg
+					and customMoney ~= money -- changed
+					and customMoney >= MAX_NATIVE_MONEY -- native was already overflowed
+					then
+						PlaySound("LOOTWINDOWCOINSOUND")
+					end
+					C_CacheInstance:Set("PLAYER_MONEY", money)
+					FireClientEvent("PLAYER_MONEY")
+				end
+			end
+		end)
+
+		_G.GetMoney = function()
+			local customMoney = C_CacheInstance and C_CacheInstance:Get("PLAYER_MONEY") or nil
+			return customMoney and tonumber(customMoney) or GetMoney()
+		end
 	end
 end

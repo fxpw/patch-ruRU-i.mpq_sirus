@@ -1,10 +1,3 @@
---	Filename:	Sirus_TradeSkill.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
-
 TRADE_SKILLS_DISPLAYED = 25;
 MAX_TRADE_SKILL_REAGENTS = 8;
 TRADE_SKILL_HEIGHT = 16;
@@ -40,6 +33,20 @@ function CloseTradeSkill()
 	CloseTradeSkill_old()
 end
 
+local Panels = {"CollectionsJournal", "EncounterJournal"}
+local function FixOpenPanel(self)
+	-- Hack, due to the strangeness of the positioning system. Necessary for the correct positioning of the Professions panel
+	for i = 1, #Panels do
+		local panel = _G[Panels[i]]
+
+		if panel and panel:IsShown() then
+			HideUIPanel(panel)
+			ShowUIPanel(self)
+			return true
+		end
+	end
+end
+
 function TradeSkillFrame_Show()
 	if ((AuctionFrame and AuctionFrame:IsShown() or (AuctionHouseFrame and AuctionHouseFrame:IsShown())) or GetMaxUIPanelsWidth() < 1280) and MaximizeMinimizeFrame:IsShown() then
 		SetCVar("miniTradeSkillFrame", 1)
@@ -48,7 +55,7 @@ function TradeSkillFrame_Show()
 
 	TradeSkillFrame_ToggleMode( GetCVarBool("miniTradeSkillFrame") )
 
-	if not TradeSkillFrame:FixOpenPanel() then
+	if not FixOpenPanel(TradeSkillFrame) then
 		ShowUIPanel(TradeSkillFrame)
 	end
 	TradeSkillCreateButton:Disable();
@@ -67,6 +74,8 @@ function TradeSkillFrame_Show()
 
 	-- Moved to the bottom to prevent addons which hook it from blocking tradeskills
 	CloseDropDownMenus();
+
+	SetParentFrameLevel(TradeSkillExpandButtonFrame, 2)
 
 	if TradeSkillFrame.isGuildOpen then
 		TradeSkillFrame.RetrievingFrame:Show()
@@ -119,7 +128,7 @@ function TradeSkillFrame_ToggleMode( value )
 		TradeSkillRankFrame:ClearAllPoints()
 		TradeSkillRankFrame:SetPoint("TOP", 10, -33)
 
-		self.SearchBox:SetSize(138, 20)
+		self.SearchBox:SetWidth(168)
 
 		for i = 12, 25 do
 			local skillButton = _G["TradeSkillSkill"..i]
@@ -168,9 +177,11 @@ function TradeSkillFrame_ToggleMode( value )
 		TradeSkillDescription:ClearAllPoints()
 		TradeSkillDescription:SetPoint("TOPLEFT", 8, -85)
 
-		TradeSkillRankFrame:SetSize(547, 14)
+		TradeSkillRankFrame:SetSize(560, 14)
 		TradeSkillRankFrame:ClearAllPoints()
-		TradeSkillRankFrame:SetPoint("TOP", 20, -33)
+		TradeSkillRankFrame:SetPoint("TOP", 10, -33)
+
+		self.SearchBox:SetWidth(240)
 
 		for i = 12, 25 do
 			local skillButton = _G["TradeSkillSkill"..i]
@@ -525,8 +536,6 @@ function TradeSkillFrame_SetSelection(id)
 		TradeSkillRequirementText:SetText("");
 	end
 
-	-- print(spellFocus)
-
 	if ( creatable ) then
 		TradeSkillCreateButton:Enable();
 		TradeSkillCreateAllButton:Enable();
@@ -542,11 +551,9 @@ function TradeSkillFrame_SetSelection(id)
 	if ( descriptionText and descriptionText ~= "" ) then
 		TradeSkillDescription:SetText(GetTradeSkillDescription(id))
 		TradeSkillRequirementLabel:SetPoint("TOPLEFT", "TradeSkillDescription", "BOTTOMLEFT", 0, -14);
-		-- print(321)
 	else
 		TradeSkillDescription:SetText(" ");
 		TradeSkillRequirementLabel:SetPoint("TOPLEFT", 8, -85);
-		-- print(123)
 	end
 
 	-- Reset the number of items to be created

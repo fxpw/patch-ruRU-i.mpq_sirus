@@ -38,7 +38,7 @@ function ezSpectator_AuraIcon:Create(Parent, ParentFrame, Size, ...)
     self.OverlayFrame:SetPoint('BOTTOMRIGHT', self.MainFrame, 'BOTTOMRIGHT', 2, -2)
 
     self.Overlay = self.OverlayFrame:CreateTexture(nil, 'OVERLAY')
-    self.Overlay:SetTexture('Interface\\ArenaSpectator\\AuraIcon_Border')
+    self.Overlay:SetTexture('Interface\\Custom\\ArenaSpectator\\AuraIcon_Border')
     self.Overlay:SetAllPoints(self.OverlayFrame)
 
     self.IsFree = true

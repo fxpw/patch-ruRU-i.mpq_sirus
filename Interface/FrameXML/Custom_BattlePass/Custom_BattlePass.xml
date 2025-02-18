@@ -191,22 +191,6 @@
 	<Button name="BattlePassLevelCardItemTemplate" virtual="true">
 		<Size x="52" y="52"/>
 		<Layers>
-			<Layer level="ARTWORK">
-				<Texture name="$parentBorder" parentKey="Border">
-					<Size x="84" y="84"/>
-					<Anchors>
-						<Anchor point="CENTER" x="0" y="0"/>
-					</Anchors>
-				</Texture>
-			</Layer>
-			<Layer level="OVERLAY">
-				<Texture name="$parentGlow" parentKey="Glow">
-					<Size x="84" y="84"/>
-					<Anchors>
-						<Anchor point="CENTER" x="0" y="0"/>
-					</Anchors>
-				</Texture>
-			</Layer>
 			<Layer level="BACKGROUND">
 				<Texture name="$parentIcon" parentKey="Icon">
 					<Size x="50" y="50"/>
@@ -217,17 +201,33 @@
 				</Texture>
 			</Layer>
 			<Layer level="BORDER">
+				<Texture name="$parentBorder" parentKey="Border">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentIcon" x="-4" y="4"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="4" y="-4"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
 				<FontString name="$parentAmount" parentKey="Amount" justifyH="RIGHT" justifyV="BOTTOM" inherits="PKBT_Font_14_OUTLINE">
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="-1" y="2"/>
 					</Anchors>
 				</FontString>
 			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentGlow" parentKey="Glow">
+					<Size x="84" y="84"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
 			<Layer level="HIGHLIGHT">
 				<Texture name="$parentHighlight" parentKey="Highlight" alphaMode="ADD">
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentBorder" relativePoint="TOPLEFT" x="18" y="-16"/>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorder" relativePoint="BOTTOMRIGHT" x="-18" y="18"/>
+						<Anchor point="TOPLEFT" relativeTo="$parentIcon" relativePoint="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
 					</Anchors>
 				</Texture>
 			</Layer>
@@ -322,6 +322,9 @@
 			<OnEvent>
 				self:OnEvent(event, ...)
 			</OnEvent>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
 		</Scripts>
 	</Frame>
 
@@ -345,6 +348,13 @@
 				<Texture name="$parentVignetteRight" parentKey="VignetteRight">
 					<Anchors>
 						<Anchor point="RIGHT" x="-6" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentNewIndicator" parentKey="NewIndicator">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="7" y="-5"/>
 					</Anchors>
 				</Texture>
 			</Layer>
@@ -670,22 +680,9 @@
 		<Size x="285" y="60"/>
 		<Attributes>
 			<Attribute name="layoutType" value="PKBT_ItemPlate" type="string"/>
+			<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
 		</Attributes>
 		<Layers>
-			<Layer level="OVERLAY">
-				<Texture name="$parentIconBorder" parentKey="IconBorder">
-					<Size x="48" y="48"/>
-					<Anchors>
-						<Anchor point="LEFT" x="-9" y="0"/>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentName" parentKey="Name" inherits="PKBT_Font_14" justifyH="LEFT" maxLines="3">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="65" y="-4"/>
-						<Anchor point="BOTTOMRIGHT" x="-11" y="5"/>
-					</Anchors>
-				</FontString>
-			</Layer>
 			<Layer level="BACKGROUND">
 				<Texture name="$parentBackground" parentKey="Background">
 					<Anchors>
@@ -697,25 +694,39 @@
 			</Layer>
 			<Layer level="BORDER">
 				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="44" y="44"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentIconBorder" relativePoint="TOPLEFT" x="17" y="-16"/>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIconBorder" relativePoint="BOTTOMRIGHT" x="-17" y="17"/>
+						<Anchor point="LEFT" x="8" y="0"/>
 					</Anchors>
 					<TexCoords left="0.04" right="0.96" top="0.04" bottom="0.96"/>
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
+				<Texture name="$parentIconBorder" parentKey="IconBorder">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentIcon" x="-2" y="2"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="2" y="-2"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentName" parentKey="Name" inherits="PKBT_Font_14" justifyH="LEFT" maxLines="3">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="65" y="-4"/>
+						<Anchor point="BOTTOMRIGHT" x="-11" y="5"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
 				<FontString name="$parentAmount" parentKey="Amount" justifyH="RIGHT" justifyV="BOTTOM" inherits="PKBT_Font_14_OUTLINE">
 					<Anchors>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="-2" y="1"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="-1" y="1"/>
 					</Anchors>
 				</FontString>
 			</Layer>
 			<Layer level="HIGHLIGHT">
 				<Texture name="$parentIconHighlight" parentKey="IconHighlight" alphaMode="ADD">
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentIconBorder" relativePoint="TOPLEFT" x="17" y="-16"/>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIconBorder" relativePoint="BOTTOMRIGHT" x="-17" y="17"/>
+						<Anchor point="TOPLEFT" relativeTo="$parentIcon" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="0" y="0"/>
 					</Anchors>
 				</Texture>
 			</Layer>
@@ -816,6 +827,37 @@
 				</Layers>
 				<Frames>
 					<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
+					<Frame name="$parentDecorOverlay" parentKey="DecorOverlay" setAllPoints="true" hidden="true">
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture name="$parentTop" parentKey="Top">
+									<Anchors>
+										<Anchor point="TOP" x="0" y="8"/>
+									</Anchors>
+								</Texture>
+								<Texture name="$parentTopRight" parentKey="TopRight">
+									<Anchors>
+										<Anchor point="TOPRIGHT" x="-46" y="142"/>
+									</Anchors>
+								</Texture>
+								<Texture name="$parentBottom" parentKey="Bottom">
+									<Anchors>
+										<Anchor point="BOTTOM" x="270" y="-42"/>
+									</Anchors>
+								</Texture>
+								<Texture name="$parentBottomLeft" parentKey="BottomLeft">
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" x="-26" y="-76"/>
+									</Anchors>
+								</Texture>
+								<Texture name="$parentBottomRight" parentKey="BottomRight">
+									<Anchors>
+										<Anchor point="BOTTOMRIGHT" x="1" y="-7"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Frame>
 				</Frames>
 			</Frame>
 			<Frame name="$parentTopPanel" parentKey="TopPanel">
@@ -1025,9 +1067,8 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				Mixin(self, DefaultScaleFrameMixin, PKBT_PanelNoPortraitMixin, BattlePassMixin)
+				Mixin(self, PKBT_PanelNoPortraitMixin, BattlePassMixin)
 				self:OnLoad()
-				self:OnDefaultScaleFrameLoad()
 			</OnLoad>
 			<OnEvent>
 				self:OnEvent(event, ...)
@@ -1159,33 +1200,11 @@
 					<Anchor point="BOTTOM" x="0" y="20"/>
 				</Anchors>
 				<Frames>
-					<Frame name="$parentGlow" parentKey="Glow" alpha="0">
+					<Frame name="$parentGlow" parentKey="Glow" inherits="PKBT_ButtonGlowTemplate" alpha="0">
 						<Anchors>
 							<Anchor point="TOPLEFT" x="-12" y="14"/>
 							<Anchor point="BOTTOMRIGHT" x="11" y="-22"/>
 						</Anchors>
-						<Layers>
-							<Layer level="BACKGROUND">
-								<Texture name="$parentLeft" parentKey="Left">
-									<Anchors>
-										<Anchor point="TOPLEFT" x="0" y="0"/>
-										<Anchor point="BOTTOMLEFT" x="0" y="0"/>
-									</Anchors>
-								</Texture>
-								<Texture name="$parentRight" parentKey="Right">
-									<Anchors>
-										<Anchor point="TOPRIGHT" x="0" y="0"/>
-										<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
-									</Anchors>
-								</Texture>
-								<Texture name="$parentCenter" parentKey="Center">
-									<Anchors>
-										<Anchor point="TOPLEFT" relativeTo="$parentLeft" relativePoint="TOPRIGHT" x="0" y="0"/>
-										<Anchor point="BOTTOMRIGHT" relativeTo="$parentRight" relativePoint="BOTTOMLEFT" x="0" y="0"/>
-									</Anchors>
-								</Texture>
-							</Layer>
-						</Layers>
 						<Animations>
 							<AnimationGroup parentKey="AlphaAnim" looping="REPEAT">
 								<Alpha duration="0" change="-1" order="1"/>
@@ -1200,6 +1219,9 @@
 						Mixin(self, BattlePassPurchasePremiumMixin)
 						self:OnLoad()
 					</OnLoad>
+					<OnEvent>
+						self:OnEvent(event, ...)
+					</OnEvent>
 					<OnClick>
 						self:OnClick(button)
 					</OnClick>
@@ -1516,6 +1538,9 @@
 				Mixin(self, BattlePassPurchaseExperienceDialogMixin)
 				self:OnLoad()
 			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
 			<OnShow>
 				self:OnShow()
 			</OnShow>
@@ -1714,7 +1739,7 @@
 				</Texture>
 			</Layer>
 			<Layer level="BORDER">
-				<Texture name="$parentItemIcon" parentKey="ItemIcon">
+				<Texture name="$parentIcon" parentKey="Icon">
 					<Size x="44" y="44"/>
 					<Anchors>
 						<Anchor point="LEFT" x="15" y="-1"/>
@@ -1724,16 +1749,11 @@
 			</Layer>
 			<Layer level="ARTWORK">
 				<Texture name="$parentIconBorder" parentKey="IconBorder">
-					<Size x="48" y="48"/>
 					<Anchors>
-						<Anchor point="CENTER" relativeTo="$parentItemIcon" x="0" y="0"/>
+						<Anchor point="TOPLEFT" relativeTo="$parentIcon" x="-2" y="2"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="2" y="-2"/>
 					</Anchors>
 				</Texture>
-				<FontString name="$parentAmount" parentKey="Amount" justifyH="RIGHT" justifyV="BOTTOM" inherits="PKBT_Font_14_OUTLINE">
-					<Anchors>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parentItemIcon" x="-2" y="1"/>
-					</Anchors>
-				</FontString>
 				<FontString name="$parentItemName" parentKey="ItemName" inherits="PKBT_Font_14" justifyH="LEFT" maxLines="1">
 					<Anchors>
 						<Anchor point="TOPLEFT" x="69" y="-20"/>
@@ -1748,6 +1768,12 @@
 				</FontString>
 			</Layer>
 			<Layer level="OVERLAY">
+				<FontString name="$parentAmount" parentKey="Amount" justifyH="RIGHT" justifyV="BOTTOM" inherits="PKBT_Font_14_OUTLINE">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="-1" y="1"/>
+					</Anchors>
+				</FontString>
+
 				<!--LootWin-Glow-->
 				<Texture parentKey="Glow" alphaMode="ADD" hidden="true">
 					<Anchors>
@@ -1812,4 +1838,275 @@
 			</OnClick>
 		</Scripts>
 	</Button>
+
+	<Frame name="BattlePassSplashModelHolderTemplate" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, BattlePassSplashModelHolderMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+	<Frame name="BattlePassSplashModelTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" setAllPoints="true"/>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentBackgroundGlow" parentKey="BackgroundGlow" setAllPoints="true"/>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentBorder" parentKey="Border" setAllPoints="true"/>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate" hidden="true"/>
+			<DressUpModel name="$parentModel" parentKey="Model" inherits="PKBT_ModelTemplate">
+				<Anchors>
+					<Anchor point="CENTER" x="0" y="0"/>
+				</Anchors>
+			</DressUpModel>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, BattlePassSplashModelMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+		</Scripts>
+	</Frame>
+	<Frame name="BattlePassSplashArtworkBase243Template" virtual="true">
+		<Size x="1024" y="610"/>
+		<Anchors>
+			<Anchor point="TOPLEFT" x="0" y="0"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentArtwork" parentKey="Artwork">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentArtworkDecor" parentKey="ArtworkDecor">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="-264"/>
+						<Anchor point="TOPRIGHT" x="0" y="-264"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentOverlay" parentKey="Overlay" setAllPoints="true">
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentArtwork" parentKey="Artwork">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="-44" y="152"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture name="$parentTitleBackdrop" parentKey="TitleBackdrop">
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-10"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<Texture name="$parentTitleText" parentKey="TitleText">
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="$parentTitleBackdrop" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentModelPanel" parentKey="ModelPanel">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="-372"/>
+					<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<Texture name="$parentDecoreLeft" parentKey="DecoreLeft">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="-1" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentDecoreRight" parentKey="DecoreRight">
+							<Anchors>
+								<Anchor point="TOPRIGHT" x="1" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Frame name="$parentModelHolder" parentKey="ModelHolder" inherits="BattlePassSplashModelHolderTemplate" hidden="true">
+						<Size x="200" y="100"/>
+						<Anchors>
+							<Anchor point="CENTER" x="0" y="0"/>
+						</Anchors>
+					</Frame>
+					<Button name="$parentActionButton" parentKey="ActionButton" text="SPLASH_ACTION_OPEN_LABLE">
+						<Size x="251" y="96"/>
+						<Anchors>
+							<Anchor point="TOP" x="0" y="60"/>
+						</Anchors>
+						<ButtonText parentKey="ButtonText" inherits="PKBT_Font_18" maxLines="1">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="3"/>
+							</Anchors>
+						</ButtonText>
+						<NormalTexture name="$parentNormalTexture"/>
+						<HighlightTexture alphaMode="ADD" alpha="0.5">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="20" y="-20"/>
+								<Anchor point="BOTTOMRIGHT" x="-20" y="20"/>
+							</Anchors>
+						</HighlightTexture>
+						<Scripts>
+							<OnClick>
+								self:GetParent():GetParent():GetParent():GetParent():OnClickAction(button)
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, BattlePassSplashArtworkBase243Mixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</Frame>
+	<Frame name="BattlePassSplashArtwork-2024-3-Template" inherits="BattlePassSplashArtworkBase243Template" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, BattlePassSplashArtworkBase243Mixin)
+				self:OnLoad()
+
+				self.Artwork:SetAtlas("Custom-Splash-BattlePass-2024-3", true)
+				self.Overlay.Artwork:SetAtlas("Custom-Splash-BattlePass-2024-3-Assets-ArtworkOverlay", true)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="BattlePassSplashArtwork-2024-4-Template" inherits="BattlePassSplashArtworkBase243Template" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, BattlePassSplashArtworkBase243Mixin)
+				self:OnLoad()
+
+				self.Artwork:SetAtlas("Custom-Splash-BattlePass-2024-4", true)
+				self.Artwork:SetSubTexCoord(0, 1, 0.12, 1.12)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="BattlePassSplashArtwork-2025-1-Template" inherits="BattlePassSplashArtworkBase243Template" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, BattlePassSplashArtworkBase243Mixin)
+				self:OnLoad()
+
+				self.Artwork:SetAtlas("Custom-Splash-BattlePass-2025-1", true)
+				self.Artwork:SetSubTexCoord(0, 1, 0.12, 1.12)
+
+				self.ModelPanel.ActionButton:SetNormalAtlas("Custom-Splash-BattlePass-2025-1-Assets-Button", true)
+				self.ModelPanel.ActionButton:SetPushedAtlas("Custom-Splash-BattlePass-2025-1-Assets-Button-Pressed", true)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="BattlePassSplashFrame" parent="UIParent" inherits="PKBT_PanelNoPortraitTemplate" frameStrata="DIALOG" toplevel="true" enableMouse="true" hidden="true">
+		<Size x="1027" y="551"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="20"/>
+		</Anchors>
+		<Frames>
+			<Frame name="$parentContent" parentKey="Content">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="2" y="-37"/>
+					<Anchor point="BOTTOMRIGHT" x="-1" y="2"/>
+				</Anchors>
+
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background" setAllPoints="true"/>
+					</Layer>
+				</Layers>
+
+				<Frames>
+					<Button name="$parentActionButton" parentKey="ActionButton" inherits="PKBT_RedButtonTemplate">
+						<Size x="228" y="52"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="0" y="20"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								Mixin(self, BattlePassSplashButtonMixin)
+								self:OnLoad()
+							</OnLoad>
+							<OnClick>
+								self:GetParent():GetParent():OnClickAction(button)
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="$parentSimpleActionButton" parentKey="SimpleActionButton" hidden="true">
+						<Size x="228" y="52"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="0" y="20"/>
+						</Anchors>
+						<ButtonText parentKey="ButtonText" font="PKBT_Button_Font_18">
+							<Color r="1" g="1" b="0.4"/>
+						</ButtonText>
+						<Scripts>
+							<OnClick>
+								self:GetParent():GetParent():OnClickAction(button)
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Frame name="$parentModelHolder" parentKey="ModelHolder" inherits="BattlePassSplashModelHolderTemplate" hidden="true">
+						<Size x="200" y="100"/>
+						<Anchors>
+							<Anchor point="CENTER" x="0" y="0"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, PKBT_PanelNoPortraitMixin, BattlePassSplashFrameMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnMouseWheel function="nop"/>
+		</Scripts>
+	</Frame>
 </Ui>

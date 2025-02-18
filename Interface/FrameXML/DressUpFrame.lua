@@ -1,41 +1,56 @@
-local LINK_TYPE = {
-	NORMAL		= 0,
-	LOOT_CASE	= 1,
-	PET			= 2,
-	MOUNT		= 3,
-	ILLUSION	= 4,
+Enum.DressUpLinkType = {
+	Default		= 0,
+	LootCase	= 1,
+	Pet			= 2,
+	Mount		= 3,
+	Illusion	= 4,
 }
 
-function DressUpItemLink(link)
-	if not link then
-		return;
-	end
+local invTypeBlackList = {
+	INVTYPE_NECK = true,
+	INVTYPE_FINGER = true,
+	INVTYPE_TRINKET = true,
+	INVTYPE_BAG = true,
+	INVTYPE_AMMO = true,
+	INVTYPE_QUIVER = true,
+	INVTYPE_RELIC = true,
+}
 
-	local id, linkType, collectionID
+function GetDressUpItemLinkInfo(link)
+	local linkType, id, collectionID
 
 	if IsDressableItem(link) then
-		id = link
-		linkType = LINK_TYPE.NORMAL
+		local _, _, _, _, _, _, _, _, invType = GetItemInfo(link)
+		if not invTypeBlackList[invType] then
+			id = link
+			linkType = Enum.DressUpLinkType.Default
+		end
 	else
-		local itemID = tonumber(string.match(link, "item:(%d+)"))
+		local itemID
+		if type(link) == "number" then
+			itemID = link
+		else
+			itemID = tonumber(string.match(link, "item:(%d+)"))
+		end
+
 		if itemID then
 			if LootCasePreviewFrame:IsPreview(itemID) then
 				id = itemID
-				linkType = LINK_TYPE.LOOT_CASE
+				linkType = Enum.DressUpLinkType.LootCase
 			else
 				local creatureID, petID
 				petID, creatureID = select(9, C_PetJournal.GetPetInfoByItemID(itemID))
 
 				if petID then
 					id = creatureID
-					linkType = LINK_TYPE.PET
+					linkType = Enum.DressUpLinkType.Pet
 					collectionID = petID
 				else
 					local mountID
 					mountID, creatureID = select(10, C_MountJournal.GetMountFromItem(itemID))
 					if mountID then
 						id = creatureID
-						linkType = LINK_TYPE.MOUNT
+						linkType = Enum.DressUpLinkType.Mount
 						collectionID = mountID
 					end
 				end
@@ -46,15 +61,26 @@ function DressUpItemLink(link)
 						local weaponItemID = (GetInventoryTransmogID("player", 16) or GetInventoryItemID("player", 16)) or C_TransmogCollection.GetFallbackWeaponAppearance()
 						if weaponItemID then
 							id = string.format("item:%d:%d", weaponItemID, enchantID)
-							linkType = LINK_TYPE.ILLUSION
+							linkType = Enum.DressUpLinkType.Illusion
 						end
 					end
 				end
 			end
 		end
-		if not linkType then
-			return
-		end
+
+	end
+
+	return linkType, id, collectionID
+end
+
+function DressUpItemLink(link)
+	if not link then
+		return;
+	end
+
+	local linkType, id, collectionID = GetDressUpItemLinkInfo(link)
+	if not linkType then
+		return
 	end
 
 	local wasCreature = DressUpModel.isCreature
@@ -84,7 +110,7 @@ function DressUpItemLink(link)
 		else
 			DressUpFrame.ResetButton:Show()
 
-			if linkType == LINK_TYPE.PET or linkType == LINK_TYPE.MOUNT then
+			if linkType == Enum.DressUpLinkType.Pet or linkType == Enum.DressUpLinkType.Mount then
 				DressUpFrame.ResetButton:SetText(GO_TO_COLLECTION)
 			else
 				DressUpFrame.ResetButton:SetText(RESET)
@@ -92,9 +118,9 @@ function DressUpItemLink(link)
 		end
 	end
 
-	if linkType == LINK_TYPE.LOOT_CASE then
+	if linkType == Enum.DressUpLinkType.LootCase then
 		LootCasePreviewFrame:SetPreview(id)
-	elseif linkType == LINK_TYPE.PET or linkType == LINK_TYPE.MOUNT then
+	elseif linkType == Enum.DressUpLinkType.Pet or linkType == Enum.DressUpLinkType.Mount then
 		if isStoreDressUp then
 			if not StoreDressUPFrame:IsShown() then
 				StoreDressUPFrame:Show()
@@ -102,21 +128,23 @@ function DressUpItemLink(link)
 			StoreDressUPFrame.creatureID = id
 			StoreDressUPFrame.Display.DressUPModel:SetCreature(id)
 		else
-			if linkType == LINK_TYPE.PET then
+			if linkType == Enum.DressUpLinkType.Pet then
 				DressUpModel.petID = collectionID
 			else
 				DressUpModel.mountID = collectionID
 			end
 
-			if not wasCreature then
-				DressUpModel.disabledZooming = true
-				DressUpModel.isCreature = true
-			end
+			DressUpModel.disabledZooming = true
+			DressUpModel.isCreature = true
 
-			DressUpFrame:Show()
+			if isBattlePass then
+				DressUpFrame:Show()
+			else
+				ShowUIPanel(DressUpFrame)
+			end
 			DressUpModel:SetCreature(id)
 		end
-	elseif linkType == LINK_TYPE.NORMAL or linkType == LINK_TYPE.ILLUSION then
+	elseif linkType == Enum.DressUpLinkType.Default or linkType == Enum.DressUpLinkType.Illusion then
 		if isStoreDressUp then
 			if not StoreDressUPFrame:IsShown() then
 				StoreDressUPFrame:Show()
@@ -124,10 +152,6 @@ function DressUpItemLink(link)
 			end
 			StoreDressUPFrame.Display.DressUPModel:TryOn(id)
 		else
-			if wasCreature then
-				DressUpModel:SetUnit("player", true)
-			end
-
 			if not DressUpFrame:IsShown() then
 				if isBattlePass then
 					DressUpFrame:Show()
@@ -135,16 +159,8 @@ function DressUpItemLink(link)
 					ShowUIPanel(DressUpFrame)
 				end
 				DressUpModel:SetUnit("player", true)
-			end
-
-			if isBattlePass then
-				DressUpFrame:ClearAllPoints()
-				local cursortPositionX = GetScaledCursorPosition()
-				if cursortPositionX / GetScreenWidth() > 0.4 then
-					DressUpFrame:SetPoint("LEFT", BattlePassFrame.Inset, "LEFT", 6, 16)
-				else
-					DressUpFrame:SetPoint("RIGHT", BattlePassFrame.Inset, "RIGHT", 0, 16)
-				end
+			elseif wasCreature then
+				DressUpModel:SetUnit("player", true)
 			end
 
 			DressUpModel:TryOn(id)

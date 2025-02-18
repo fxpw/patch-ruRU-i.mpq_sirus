@@ -1,9 +1,3 @@
---	Filename:	Sirus_TokenUI.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 UIPanelWindows["TokenFrame"] = { area = "left", pushable = 1, whileDead = 1 };
 TOKEN_BUTTON_OFFSET = 3;
 MAX_WATCHED_TOKENS = 3;
@@ -26,23 +20,25 @@ function TokenButton_OnLoad(self)
 end
 
 function TokenFrame_OnLoad()
-	-- TokenFrameContainerScrollBar.Show = 
-	-- 	function (self)
-	-- 		TokenFrameContainer:SetWidth(299);
-	-- 		for _, button in next, _G["TokenFrameContainer"].buttons do
-	-- 			button:SetWidth(295);
-	-- 		end
-	-- 		getmetatable(self).__index.Show(self);
-	-- 	end
-		
-	-- TokenFrameContainerScrollBar.Hide = 
-	-- 	function (self)
-	-- 		TokenFrameContainer:SetWidth(313);
-	-- 		for _, button in next, TokenFrameContainer.buttons do
-	-- 			button:SetWidth(313);
-	-- 		end
-	-- 		getmetatable(self).__index.Hide(self);
-	-- 	end
+--[[
+	TokenFrameContainerScrollBar.Show =
+	function (self)
+		TokenFrameContainer:SetWidth(299);
+		for _, button in next, _G["TokenFrameContainer"].buttons do
+			button:SetWidth(295);
+		end
+		getmetatable(self).__index.Show(self);
+	end
+
+	TokenFrameContainerScrollBar.Hide =
+	function (self)
+		TokenFrameContainer:SetWidth(313);
+		for _, button in next, TokenFrameContainer.buttons do
+		button:SetWidth(313);
+		end
+		getmetatable(self).__index.Hide(self);
+	end
+--]]
 	TokenFrameContainer.update = TokenFrame_Update;
 	TokenFrameContainer.scrollBar.doNotHide = true
 	HybridScrollFrame_CreateButtons(TokenFrameContainer, "TokenButtonTemplate", 0, -2, "TOPLEFT", "TOPLEFT", 0, -TOKEN_BUTTON_OFFSET);
@@ -60,6 +56,8 @@ function TokenFrame_OnShow(self)
 	ButtonFrameTemplate_HideButtonBar(CharacterFrame)
 	SetButtonPulse(CharacterFrameTab4, 0, 1);	--Stop the button pulse
 	TokenFrame_Update();
+
+	EventRegistry:TriggerEvent("TokenFrame.OnShow")
 end
 
 function TokenFrame_Update()
@@ -146,7 +144,7 @@ function TokenFrame_Update()
 	local displayedHeight = #buttons * (button:GetHeight()+TOKEN_BUTTON_OFFSET);
 
 	HybridScrollFrame_Update(scrollFrame, totalHeight, displayedHeight);
-	
+
 	if ( numTokenTypes == 0 ) then
 		CharacterFrameTab4:Hide();
 	else
@@ -170,7 +168,7 @@ end
 
 function BackpackTokenFrame_Update()
 	local watchButton;
-	local name, count, extraCurrencyType, icon;
+	local name, count, extraCurrencyType, icon, itemID;
 	for i=1, MAX_WATCHED_TOKENS do
 		name, count, extraCurrencyType, icon, itemID = GetBackpackCurrencyInfo(i);
 		-- Update watched tokens
@@ -261,7 +259,7 @@ function TokenButton_OnClick(self)
 			BackpackTokenFrame_Update();
 			ManageBackpackTokenFrame();
 		else
-			
+
 			if ( TokenFramePopup:IsShown() ) then
 				if ( TokenFrame.selectedID == self.index ) then
 					TokenFramePopup:Hide();

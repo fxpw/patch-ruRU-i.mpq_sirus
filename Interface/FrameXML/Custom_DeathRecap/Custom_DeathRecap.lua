@@ -3,7 +3,7 @@ UIPanelWindows["DeathRecapFrame"] = { area = "center", pushable = 0, whileDead =
 DeathRecapMixin = {}
 
 function DeathRecapMixin:OnLoad()
-	self:RegisterEvent("COMBAT_LOG_EVENT")
+	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	self:RegisterEvent("PLAYER_DEAD")
 
 	self.deathRecapData = {}
@@ -14,7 +14,7 @@ function DeathRecapMixin:OnLoad()
 end
 
 function DeathRecapMixin:OnEvent( event, ... )
-	if event == "COMBAT_LOG_EVENT" then
+	if event == "COMBAT_LOG_EVENT_UNFILTERED" then
 		self:OnCombatLogEvent(...)
 	elseif event == "PLAYER_DEAD" then
 		self:RegisterDeath()
@@ -36,9 +36,12 @@ function DeathRecapMixin:OnCombatLogEvent(timestamp, subEvent, srcGUID, srcName,
 	elseif subEvent == "ENVIRONMENTAL_DAMAGE" then
 		local environmentalType, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = ...
 		self:InsertEvent(timestamp, subEvent, srcGUID, srcName, amount, nil, environmentalType)
-	elseif subEvent == "SPELL_DAMAGE" or subEvent == "SPELL_PERIODIC_DAMAGE" then
+	elseif subEvent == "SPELL_DAMAGE" or subEvent == "SPELL_PERIODIC_DAMAGE" or subEvent == "RANGE_DAMAGE" then
 		local spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = ...
 		self:InsertEvent(timestamp, subEvent, srcGUID, srcName, amount, spellId)
+	elseif subEvent == "SPELL_INSTAKILL" then
+		local spellId, spellName, spellSchool = ...
+		self:InsertEvent(timestamp, subEvent, srcGUID, srcName, nil, spellId)
 	end
 end
 
@@ -47,8 +50,13 @@ function DeathRecapMixin:InsertEvent( timestamp, subEvent, casterGUID, casterNam
 	local unitHealth = UnitHealth("player")
 
 	if (not spellName and not texture) and spellID then
+		local _
 		spellName, _, texture = GetSpellInfo(spellID)
-		texture = string.gsub(texture, "Interface\\Icons\\", "")
+		texture = string.gsub(texture:lower(), "interface\\icons\\", "")
+	end
+
+	if subEvent == "SPELL_INSTAKILL" then
+		damage = unitHealth
 	end
 
 	if spellName and texture then
@@ -270,7 +278,7 @@ function DeathRecapMixin:OpenDeathRecap(deathRecapData, recapID)
 			recapEntry.SpellInfo.Time:SetFormattedText("%s.%d", date("%H:%M:%S", timestamp), string.match(timestamp, "%d%.(%d+)"))
 			recapEntry.SpellInfo.Icon:SetTexture("Interface\\Icons\\"..recapData.texture)
 
-			if not killOwnerData.GUID then
+			if not killOwnerData.GUID and recapData.casterGUID and recapData.casterGUID ~= UnitGUID("player") then
 				GUID:SetGUID(recapData.casterGUID)
 
 				if GUID:IsPlayer() then
@@ -307,6 +315,8 @@ function DeathRecapMixin:OpenDeathRecap(deathRecapData, recapID)
 			self.HeadHuntingButton.playerName = killOwnerData.name
 			self.HeadHuntingButton.GUID = killOwnerData.GUID
 			self.HeadHuntingButton:Show()
+
+			EventRegistry:TriggerEvent("DeathRecap.DeathByOtherPlayer")
 		else
 			self.CloseButton:ClearAndSetPoint("BOTTOM", 0, 15)
 
@@ -322,7 +332,7 @@ end
 
 function DeathRecapMixin:IsDeathLogEmpty()
 	if type(self.deathRecapStorage[self.lastDeathRecapRegisterID]) == "table" then
-		return not next(DeathRecapFrame.deathRecapStorage[DeathRecapFrame.lastDeathRecapRegisterID])
+		return not next(DeathRecapFrame.deathRecapStorage[DeathRecapFrame.lastDeathRecapRegisterID]), DeathRecapFrame.deathRecapStorage[DeathRecapFrame.lastDeathRecapRegisterID]
 	end
 	return true
 end
@@ -338,7 +348,7 @@ function DeathRecapFrame_Amount_OnEnter(self)
 		GameTooltip:AddLine(string.format(DEATH_RECAP_CAST_BY_TT, self.spellName, self.caster), 1, 1, 1, true)
 	end
 
-	local seconds = math.abs(DeathRecapFrame.DeathTimeStamp - self.timestamp)
+	local seconds = math.abs(self:GetParent():GetParent().DeathTimeStamp - self.timestamp)
 	if seconds > 0 then
 		GameTooltip:AddLine(string.format(DEATH_RECAP_CURR_HP_TT, string.format("%.1F", seconds), self.hpPercent), 1, 0.824, 0, true)
 	else

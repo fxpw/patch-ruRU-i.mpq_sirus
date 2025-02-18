@@ -252,9 +252,10 @@
 	</Button>
 	<Button name="MountAbilityButtonTemplate" motionScriptsWhileDisabled="true" virtual="true" hidden="true">
 		<Size x="64" y="61"/>
+		<HitRectInsets left="10" right="0" top="3" bottom="3"/>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentCreature" parentKey="creature">
+				<Texture name="$parentIcon" parentKey="Icon">
 					<Size x="52" y="51"/>
 					<Anchors>
 						<Anchor point="CENTER" x="-3" y="1"/>
@@ -315,7 +316,7 @@
 						</Texture>
 						<Texture name="$parentLockIcon" parentKey="LockIcon" file="Interface\PetBattles\PetBattle-LockIcon" setAllPoints="true" hidden="true"/>
 						<FontString name="$parentSpellName" inherits="GameFontNormal" maxLines="2" justifyH="RIGHT" parentKey="spellname" text="RANDOM_FAVORITE_MOUNT">
-							<Size x="170" y="0"/>
+							<Size x="156" y="0"/>
 							<Color r="1" g="1" b="1"/>
 							<Anchors>
 								<Anchor point="RIGHT" relativePoint="LEFT" relativeTo="$parentBorder" x="-2" y="0"/>
@@ -376,7 +377,7 @@
 					</OnClick>
 				</Scripts>
 			</Button>
-			<Frame name="$parentFilterDropDown" inherits="UIDropDownMenuTemplate2">
+			<Frame name="$parentFilterDropDown" inherits="UIDropDownMenuTemplate">
 				<Scripts>
 					<OnLoad function="MountJournalFilterDropDown_OnLoad"/>
 				</Scripts>
@@ -450,18 +451,9 @@
 					<Frame parentKey="ShadowOverlay" inherits="ShadowOverlayTemplate" setAllPoints="true"/>
 					<DressUpModel parentKey="ModelScene" enableMouse="true" name="MountDisplayModelScene" inherits="ModelTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" x="5" y="-5"/>
-							<Anchor point="BOTTOMRIGHT" x="-5" y="5"/>
+							<Anchor point="TOPLEFT" x="1" y="-1"/>
+							<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
 						</Anchors>
-						<Layers>
-							<Layer level="OVERLAY">
-								<FontString name="$parentDebugInfo" parentKey="DebugInfo" inherits="GameFontNormalLarge" justifyH="LEFT">
-									<Anchors>
-										<Anchor point="BOTTOM" x="0" y="86"/>
-									</Anchors>
-								</FontString>
-							</Layer>
-						</Layers>
 						<Frames>
 							<Button name="MountDisplayModelSceneRotateLeftButton" parentKey="RotateLeftButton">
 								<Size x="35" y="35"/>
@@ -636,31 +628,12 @@
 										</Anchors>
 										<Scripts>
 											<OnShow>
-												self:SetEnabled(IsStoreEnable())
+												self:SetEnabled(C_StorePublic.IsEnabled())
 											</OnShow>
 											<OnClick function="MountJournalBuyButton_OnClick"/>
 										</Scripts>
 									</Button>
 								</Frames>
-							</Frame>
-							<Frame name="$parentDebugFrame" parentKey="DebugFrame" hidden="true">
-								<Size x="280" y="280"/>
-								<Anchors>
-									<Anchor point="CENTER" x="0" y="0"/>
-								</Anchors>
-								<Backdrop bgFile="" edgeFile="Interface\BUTTONS\WHITE8X8" tile="false">
-									<EdgeSize>
-										<AbsValue val="3"/>
-									</EdgeSize>
-									<BackgroundInsets>
-										<AbsInset left="0" right="0" top="0" bottom="0"/>
-									</BackgroundInsets>
-								</Backdrop>
-								<Scripts>
-									<OnLoad>
-										self:SetBackdropBorderColor(1, 0, 0);
-									</OnLoad>
-								</Scripts>
 							</Frame>
 						</Frames>
 						<Scripts>
@@ -863,12 +836,12 @@
 					<Layer level="BORDER">
 						<Texture name="$parentInsetBotLeftCorner" inherits="UI-Frame-InnerBotLeftCorner" parentKey="InsetBorderBottomLeft">
 							<Anchors>
-								<Anchor point="BOTTOMLEFT"  x="-3" y="-3"/>
+								<Anchor point="BOTTOMLEFT" x="-3" y="-3"/>
 							</Anchors>
 						</Texture>
 						<Texture name="$parentInsetBotRightCorner" inherits="UI-Frame-InnerBotRight" parentKey="InsetBorderBottomRight">
 							<Anchors>
-								<Anchor point="BOTTOMRIGHT"  x="3" y="-3"/>
+								<Anchor point="BOTTOMRIGHT" x="3" y="-3"/>
 							</Anchors>
 						</Texture>
 						<Texture name="$parentInsetBottomBorder" inherits="_UI-Frame-InnerBotTile" parentKey="InsetBorderBottom">
@@ -885,7 +858,7 @@
 						</Texture>
 						<Texture name="$parentInsetRightBorder" inherits="!UI-Frame-InnerRightTile" parentKey="InsetBorderRight">
 							<Anchors>
-								<Anchor point="TOPRIGHT"  x="3" y="0"/>
+								<Anchor point="TOPRIGHT" x="3" y="0"/>
 								<Anchor point="BOTTOMRIGHT" relativeTo="$parentInsetBotRightCorner" relativePoint="TOPRIGHT"/>
 							</Anchors>
 						</Texture>

@@ -20,6 +20,9 @@ local AcceptBattlefieldPort = AcceptBattlefieldPort
 local activeButton = 1
 
 local RATED_BATTLEGROUND_BRACKET_ID = 4
+local BRAWL_BATTLEGROUND_ID = 63
+
+local BRAWL_DAILY_QUEST_ID = 14004
 
 local RATED_BATTLEGROUND_UNIT_DATA = {}
 
@@ -335,6 +338,12 @@ local RatedBattlegroundRankIndex = {
 	[PVP_RANK_18_1] = 14,
 }
 
+local CONQUEST_TYPE = {
+	CONQUEST_SOLOQ = 1,
+	CONQUEST_2v2 = 2,
+	CONQUEST_1v1 = 5,
+}
+
 function TryToJoinSoloQ( isRated )
 	SendServerMessage("ACMSG_ARENA_SOLOQ_JOIN", isRated and 1 or 0)
 end
@@ -511,6 +520,13 @@ function GetBattlegroundInfoByID( battlegroundID )
 		if BattleGroundID == battlegroundID then
 			return name, canEnter, isHoliday, isRandom, BattleGroundID
 		end
+	end
+end
+
+function GetCurrentBrawlID()
+	local brawlInfo = C_CacheInstance:Get("ASMSG_BRAWL_SELECTED")
+	if type(brawlInfo) then
+		return brawlInfo.id
 	end
 end
 
@@ -704,6 +720,7 @@ function PVPUIFrame_OnLoad( self, ... )
 	self:RegisterEvent("UNIT_LEVEL")
 	self:RegisterEvent("UPDATE_BATTLEFIELD_STATUS")
 	self:RegisterEvent("VARIABLES_LOADED")
+	self:RegisterCustomEvent("AJ_ACTION_PVP_LFG")
 
 	PanelTemplates_SetNumTabs(self, 3)
 	PVPFrame_SetupTitle()
@@ -749,6 +766,8 @@ function PVPFrame_TabOnClick( self, button, ... )
 	PlaySound("igCharacterInfoTab")
 	HideUIPanel(self:GetParent())
 	ShowUIPanel(_G[panels[self:GetID()].name])
+
+	EventRegistry:TriggerEvent("LFDFrame.TabChanged", self)
 end
 
 function PVPFrame_TabOnShow( self )
@@ -770,6 +789,8 @@ function PVPUIFrame_OnShow( self, ... )
 	end
 
 	PVPFrame_SetupTitle()
+
+	EventRegistry:TriggerEvent("PVPUIFrame.OnShow")
 end
 
 function PVPUIFrame_OnHide( self, ... )
@@ -783,6 +804,8 @@ function PVPUIFrame_OnHide( self, ... )
 	end
 
 	LAST_FINDPARTY_FRAME = self
+
+	EventRegistry:TriggerEvent("PVPUIFrame.OnHide")
 end
 
 function PVPUIFrame_OnEvent( self, event, ... )
@@ -817,10 +840,32 @@ function PVPUIFrame_OnEvent( self, event, ... )
 		end
 	elseif event == "VARIABLES_LOADED" then
 		UpdatePVPTabs(self)
+	elseif event == "AJ_ACTION_PVP_LFG" then
+		local desiredViewType = ...
+
+		if not self:IsShown() then
+			ShowUIPanel(self)
+		end
+
+		local categoryIndex = desiredViewType == "pvp-arena-rating" and 2 or 3
+
+		if PVPQueueFrame.selectedCategory ~= categoryIndex then
+			PVPQueueFrameButton_SetCategoryIndex(categoryIndex)
+		end
+
+		if desiredViewType == "pvp-arena-rating" then
+			-- pass
+		elseif desiredViewType == "pvp-honor-random" then
+			HonorFrameBonusFrame_SelectButton(PVPHonorFrame.BottomInset.BonusBattlefieldContainer.RandomBGButton)
+		elseif desiredViewType == "pvp-honor-brawl" then
+			HonorFrameBonusFrame_SelectButton(PVPHonorFrame.BottomInset.BonusBattlefieldContainer.CallToArmsButton)
+		elseif desiredViewType == "pvp-honor-wintergrasp" then
+			HonorFrameBonusFrame_SelectButton(PVPHonorFrame.BottomInset.WorldPVPContainer.WorldPVP2Button)
+		end
 	end
 end
 
-function PVPHonorFrame_OnLoad( self, ... )
+function PVPHonorFrame_OnLoad(self)
 	PVPHonorFrame.type = "bonus"
 
 	PVPHonorFrameSpecificFrame.scrollBar.doNotHide = true
@@ -829,11 +874,16 @@ function PVPHonorFrame_OnLoad( self, ... )
 	HybridScrollFrame_OnLoad(PVPHonorFrameSpecificFrame)
 end
 
-function PVPHonorFrame_OnEvent( self, event, ... )
-	-- body
+function PVPHonorFrame_OnEvent(self, event, ...)
+	if event == "PLAYER_LEVEL_UP" then
+		local unitLevel = ...
+		if unitLevel == 80 then
+			HonorFrame_UpdateQueueButtons(unitLevel)
+		end
+	end
 end
 
-function PVPHonorFrameSpecificFrame_OnShow( self, ... )
+function PVPHonorFrameSpecificFrame_OnShow(self, ...)
 	local buttons = self.buttons
 	for i = 1, #buttons do
 		buttons[i].SelectedTexture:Hide()
@@ -920,7 +970,7 @@ function HonorFrameSpecificBattlegroundButton_OnClick( self, ... )
 	HonorFrame_UpdateQueueButtons()
 end
 
-function HonorFrame_UpdateQueueButtons()
+function HonorFrame_UpdateQueueButtons(unitLevel)
 	local canQueue
 	local selectedButtonID = PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton and PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton:GetID()
 
@@ -932,11 +982,16 @@ function HonorFrame_UpdateQueueButtons()
 		end
 	elseif ( PVPHonorFrame.type == "bonus" ) then
 		if ( selectedButtonID ) then
-			canQueue = true
 			if selectedButtonID == 0 then
 				if GetWintergraspWaitTime() and GetWintergraspWaitTime() >= 900 then
 					canQueue = false
+				else
+					canQueue = true
 				end
+			elseif selectedButtonID == BRAWL_BATTLEGROUND_ID then
+				canQueue = (unitLevel or UnitLevel("player")) == 80
+			else
+				canQueue = true
 			end
 		end
 	end
@@ -944,11 +999,15 @@ function HonorFrame_UpdateQueueButtons()
 	PVPHonorFrame.SoloQueueButton:SetEnabled(canQueue)
 	PVPHonorFrame.GroupQueueButton:SetEnabled(canQueue and IsPartyLeader() and (selectedButtonID and selectedButtonID ~= 0))
 
-	RatedBattlegroundFrame.SoloQueueButton:SetEnabled(true)
-	RatedBattlegroundFrame.GroupQueueButton:SetEnabled(IsPartyLeader())
+	RatedBattlegroundFrame.SoloQueueButton:SetEnabled(canQueue)
+	RatedBattlegroundFrame.GroupQueueButton:SetEnabled(canQueue and IsPartyLeader() and (selectedButtonID and selectedButtonID ~= 0))
 end
 
-function PVPHonorFrame_OnShow( self, ... )
+function PVPHonorFrame_OnShow(self)
+	if UnitLevel("player") < 80 then
+		self:RegisterEvent("PLAYER_LEVEL_UP")
+	end
+
 	HonorFrame_SetType(PVPHonorFrame.type or "bonus")
 
 	local wintergraspWaitTime = GetWintergraspWaitTime()
@@ -976,7 +1035,7 @@ function PVPHonorFrame_OnShow( self, ... )
 		worldPVP2Button.Contents.TimeText:SetRemainingTime(wintergraspWaitTime or 0)
 	end)
 
-	PVPHonorFrame.BottomInset.BonusBattlefieldContainer.CallToArmsButton:SetID(63)
+	PVPHonorFrame.BottomInset.BonusBattlefieldContainer.CallToArmsButton:SetID(BRAWL_BATTLEGROUND_ID)
 
 	for i = 1, GetNumBattlegroundTypes() do
 		local BGname, canEnter, isHoliday, isRandom, BattleGroundID = GetBattlegroundInfo(i)
@@ -1000,14 +1059,54 @@ function PVPHonorFrame_OnShow( self, ... )
 
 	HonorFrameBonusFrame_Update()
 	HonorFrame_UpdateQueueButtons()
+
+	EventRegistry:TriggerEvent("PVPHonorFrame.OnShow")
 end
 
-function PVPHonorFrame_OnHide( self, ... )
+function PVPHonorFrame_OnHide(self)
+	if self:IsEventRegistered("PLAYER_LEVEL_UP") then
+		self:UnregisterEvent("PLAYER_LEVEL_UP")
+	end
+
 	HelpPlate_Hide(false)
 
 	if self.BottomInset.WorldPVPContainer.WorldPVP2Button.Timer then
 		self.BottomInset.WorldPVPContainer.WorldPVP2Button.Timer:Cancel()
 		self.BottomInset.WorldPVPContainer.WorldPVP2Button.Timer = nil
+	end
+end
+
+function PVPHonorFrameSoloQueueButton_OnEnter(self)
+	if C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.BATTLEGROUND) then
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip_AddErrorLine(GameTooltip, string.format(HARDCORE_FEATURE1_6_DISABLE, C_Hardcore.GetChallengeInfoByID(C_Hardcore.GetActiveChallengeID()) or "", true))
+		GameTooltip:Show()
+	else
+		local selectedButtonID = PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton and PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton:GetID()
+		if selectedButtonID == BRAWL_BATTLEGROUND_ID then
+			if UnitLevel("player") < 80 then
+				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+				GameTooltip_AddErrorLine(GameTooltip, BRAWL_QUEUE_ERROR)
+				GameTooltip:Show()
+			end
+		end
+	end
+end
+
+function PVPHonorFrameGroupQueueButton_OnEnter(self)
+	if C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.BATTLEGROUND) then
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip_AddErrorLine(GameTooltip, string.format(HARDCORE_FEATURE1_6_DISABLE, C_Hardcore.GetChallengeInfoByID(C_Hardcore.GetActiveChallengeID()) or "", true))
+		GameTooltip:Show()
+	else
+		local selectedButtonID = PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton and PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton:GetID()
+		if selectedButtonID == BRAWL_BATTLEGROUND_ID then
+			if UnitLevel("player") < 80 then
+				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+				GameTooltip_AddErrorLine(GameTooltip, BRAWL_QUEUE_ERROR)
+				GameTooltip:Show()
+			end
+		end
 	end
 end
 
@@ -1136,21 +1235,24 @@ function PVPUI_ArenaTeamDetails_OnTabClick( tabID )
 	end
 end
 
-function PVPQueueFrameButton_OnClick( self, ... )
-	local buttonID = self:GetID()
-	local frameName = pvpFrames[buttonID]
-	local factionID = C_Unit.GetFactionID("player")
+function PVPQueueFrameButton_OnClick(self, button)
+	PVPQueueFrameButton_SetCategoryIndex(self:GetID())
+end
 
-	if PVPQueueFrame.selectedCategory and PVPQueueFrame.selectedCategory == buttonID then
+function PVPQueueFrameButton_SetCategoryIndex(categoryIndex)
+	if PVPQueueFrame.selectedCategory and PVPQueueFrame.selectedCategory == categoryIndex then
 		return
 	end
 
-	PVPQueueFrame.CapTopFrame:SetShown(buttonID == 2 or buttonID == 3)
-	PVPQueueFrame.StepBottomFrame:SetShown(buttonID == 2 or buttonID == 3)
-	PVPQueueFrame.StepBottomFrame.Step4:SetShown(buttonID == 2)
-	PVPQueueFrame.StepBottomFrame.Step3:SetShown(buttonID == 2)
+	local frameName = pvpFrames[categoryIndex]
+	local factionID = C_Unit.GetFactionID("player")
 
-	if buttonID == 2 then
+	PVPQueueFrame.CapTopFrame:SetShown(categoryIndex == 2 or categoryIndex == 3)
+	PVPQueueFrame.StepBottomFrame:SetShown(categoryIndex == 2 or categoryIndex == 3)
+	PVPQueueFrame.StepBottomFrame.Step4:SetShown(categoryIndex == 2)
+	PVPQueueFrame.StepBottomFrame.Step3:SetShown(categoryIndex == 2)
+
+	if categoryIndex == 2 then
 		PVPQueueFrame.StepBottomFrame.StepEnd.Icon:SetTexture("Interface\\PVPFrame\\PVPCurrency-Conquest1-"..PLAYER_FACTION_GROUP[factionID])
 		PVPQueueFrame.StepBottomFrame.StepEnd.WinLabel:SetFormattedText(PVPFRAME_STEPEND_WINS_LABEL, 5)
 
@@ -1159,7 +1261,7 @@ function PVPQueueFrameButton_OnClick( self, ... )
 		elseif ConquestFrame.state == 2 then
 			PVPFrame_StepButtonAndCapBarDisable()
 		end
-	elseif buttonID == 3 then
+	elseif categoryIndex == 3 then
 		PVPQueueFrame.StepBottomFrame.StepEnd.Icon:SetTexture("Interface\\PVPFrame\\PVPCurrency-Honor1-"..PLAYER_FACTION_GROUP[factionID])
 		PVPQueueFrame.StepBottomFrame.StepEnd.WinLabel:SetFormattedText(PVPFRAME_STEPEND_WINS_LABEL, 3)
 
@@ -1173,17 +1275,17 @@ function PVPQueueFrameButton_OnClick( self, ... )
 	PVPQueueFrame.CapTopFrame.DisableOverlay:Hide()
 	PVPQueueFrame.StepBottomFrame.DisableOverlay:Hide()
 
-	PVPFrameStepButton_UpdateState(buttonID)
-	PVPQueueFrameCapTopFrameStatusBar_UpdateValue(buttonID)
-	PVPFrameStepButton_UpdateReward(buttonID)
-	PVPQueueFrame_UpdateReward(buttonID)
+	PVPFrameStepButton_UpdateState(categoryIndex)
+	PVPQueueFrameCapTopFrameStatusBar_UpdateValue(categoryIndex)
+	PVPFrameStepButton_UpdateReward(categoryIndex)
+	PVPQueueFrame_UpdateReward(categoryIndex)
 
 	PVPQueueFrame_ShowFrame(_G[frameName])
 
 	PlaySound("igCharacterInfoOpen")
 
-	PVPQueueFrame.selectedCategory = buttonID
-	lastCategoryButtonSelect = buttonID
+	PVPQueueFrame.selectedCategory = categoryIndex
+	lastCategoryButtonSelect = categoryIndex
 end
 
 function PVPQueueFrame_ShowFrame( frame )
@@ -1219,7 +1321,7 @@ function ConquestFrameButton_OnClick( self, button )
 	ConquestFrame_SelectButton(self)
 	PlaySound("igMainMenuOptionCheckBoxOn")
 
-	if buttonID == 1 or buttonID == 2 or buttonID == 5 then
+	if buttonID == CONQUEST_TYPE.CONQUEST_2v2 or buttonID == CONQUEST_TYPE.CONQUEST_SOLOQ or buttonID == CONQUEST_TYPE.CONQUEST_1v1 then
 		PVPFrameStepButton_UpdateReward(2)
 		PVPQueueFrame_UpdateReward(2)
 	end
@@ -1340,18 +1442,13 @@ function ConquestFrame_UpdateJoinButton()
 		button:Enable()
 		return
 	elseif ConquestFrame.state == 2 or ALLOW_NON_SEASON_ARENA_GAMES or GetCurrentArenaSeason() ~= NO_ARENA_SEASON then
-		local groupSize = GetNumPartyMembers() + 1
-
 		if ConquestFrame.selectedButton then
-			if ConquestFrame.selectedButton.id == 1 or ConquestFrame.selectedButton.id == 5 then
-				if groupSize > 1 then
-					button.tooltip = CONQUEST_JOIN_ERROR_1
-				else
-					button:Enable()
-					button.tooltip = nil
-					return
-				end
+			if ConquestFrame.selectedButton.id == CONQUEST_TYPE.CONQUEST_SOLOQ or ConquestFrame.selectedButton.id == CONQUEST_TYPE.CONQUEST_1v1 then
+				button:Enable()
+				button.tooltip = nil
+				return
 			else
+				local groupSize = GetNumPartyMembers() + 1
 				if groupSize == 0 then
 					button.tooltip = PVP_NO_QUEUE_GROUP
 				elseif not IsPartyLeader() then
@@ -1397,10 +1494,15 @@ function ConquestFrameJoinButton_OnClick( self, ... )
 	if not ConquestFrame.state or not ConquestFrame.selectedButton then
 		return
 	end
-
-	local isParty = GetNumPartyMembers() >= 1 and 1 or 0
 	local state = ConquestFrame.state == 2 and 0 or 1
 	local selectedButton = ConquestFrame.state == 1 and ConquestFrame.selectedButton or ConquestFrame.selectedButtonSkirmish
+	local isParty
+
+	if selectedButton.id == CONQUEST_TYPE.CONQUEST_SOLOQ or selectedButton.id == CONQUEST_TYPE.CONQUEST_1v1 then
+		isParty = 0
+	else
+		isParty = GetNumPartyMembers() >= 1 and 1 or 0
+	end
 
 	if isParty == 1 and not IsPartyLeader() then
 		UIErrorsFrame:AddMessage(ERR_NOT_LEADER, 1.0, 0.1, 0.1, 1.0)
@@ -1422,8 +1524,8 @@ function ConquestFrameButton_OnEnter( self, ... )
 		local buttonID = self:GetID()
 		local pvpStats = C_CacheInstance:Get("ASMSG_PVP_STATS", {})
 
-		tooltip.TodayBest:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKWINS, pvpStats[buttonID] and pvpStats[buttonID].TodayWins or 0)
-		tooltip.TodayGamesPlayed:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKGAME, pvpStats[buttonID] and pvpStats[buttonID].TodayGames or 0)
+		tooltip.TodayBest:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKWINS, pvpStats[buttonID] and pvpStats[buttonID].todayWins or 0)
+		tooltip.TodayGamesPlayed:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKGAME, pvpStats[buttonID] and pvpStats[buttonID].todayGames or 0)
 		tooltip.WeeklyBest:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKWINS, pvpStats[buttonID] and pvpStats[buttonID].weekWins or 0)
 		tooltip.WeeklyGamesPlayed:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKGAME, pvpStats[buttonID] and pvpStats[buttonID].weekGames or 0)
 		tooltip.SeasonBest:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKWINS, pvpStats[buttonID] and pvpStats[buttonID].seasonWins or 0)
@@ -1621,8 +1723,8 @@ function HonorFrame_Queue(isParty, forceSolo)
 	elseif ( PVPHonorFrame.type == "bonus" and PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton ) then
 		if ( PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton:GetID() == 0 ) then
 			SendServerMessage("ACMSG_JOIN_WINTERGRASP_REQUEST")
-		elseif PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton:GetID() == 63 then
-			Sirus_BattlegroundRegister(63, isParty)
+		elseif PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton:GetID() == BRAWL_BATTLEGROUND_ID then
+			Sirus_BattlegroundRegister(BRAWL_BATTLEGROUND_ID, isParty)
 		else
 			RequestBattlegroundInstanceInfo(PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton:GetID())
 			JoinBattlefield(PVPHonorFrame.BottomInset.BonusBattlefieldContainer.selectedButton:GetID(), isParty)
@@ -1868,9 +1970,9 @@ end
 local ConquestFrame_HelpPlate = {
 	FramePos = { x = 0, y = 0 },
 	FrameSize = { width = 342, height = 406 },
-	[1] = { ButtonPos = { x = 312, y = -10 }, HighLightBox = { x = 2, y = -2, width = 336, height = 60 }, ToolTipDir = "DOWN", ToolTipText = CONQUESTFRAME_TUTORIAL_1 },
-	[2] = { ButtonPos = { x = 312, y = -86 }, HighLightBox = { x = 250, y = -92, width = 84, height = 36 }, ToolTipDir = "RIGHT", ToolTipText = CONQUESTFRAME_TUTORIAL_2 },
-	-- [5] = { ButtonPos = { x = 294, y = -280 }, HighLightBox = { x = 20, y = -280, width = 298, height = 42 }, ToolTipDir = "RIGHT", ToolTipText = CONQUESTFRAME_TUTORIAL_4 },
+	[1] = { ButtonPos = { x = 312, y = -10 }, HighLightBox = { x = 2, y = -2, width = 336, height = 60 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_CONQUESTFRAME_TUTORIAL_1 },
+	[2] = { ButtonPos = { x = 312, y = -86 }, HighLightBox = { x = 250, y = -92, width = 84, height = 36 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_CONQUESTFRAME_TUTORIAL_2 },
+	[3] = { ButtonPos = { x = 312, y = -228 }, HighLightBox = { x = 250, y = -234, width = 84, height = 36 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_CONQUESTFRAME_TUTORIAL_2 },
 }
 
 function ConquestFrame_ToggleTutorial( self, ... )
@@ -1880,7 +1982,7 @@ function ConquestFrame_ToggleTutorial( self, ... )
 		or rewardFinalStepCurrency.arenaReward2v2
 
 	if arenaReward then
-		ConquestFrame_HelpPlate[3] = { ButtonPos = { x = 312, y = -336 }, HighLightBox = { x = 2, y = -334, width = 336, height = 48 }, ToolTipDir = "RIGHT", ToolTipText = string.format(CONQUESTFRAME_TUTORIAL_3, arenaReward) }
+		ConquestFrame_HelpPlate[4] = { ButtonPos = { x = 312, y = -336 }, HighLightBox = { x = 2, y = -334, width = 336, height = 48 }, ToolTipDir = "RIGHT", ToolTipText = string.format(HEPLPLATE_CONQUESTFRAME_TUTORIAL_3, arenaReward) }
 	end
 
 	local helpPlate = ConquestFrame_HelpPlate
@@ -1895,16 +1997,21 @@ end
 local PVPHonorFrame_HelpPlate = {
 	FramePos = { x = 0, y = 0 },
 	FrameSize = { width = 342, height = 406 },
-	[1] = { ButtonPos = { x = 312, y = -10 }, HighLightBox = { x = 2, y = -2, width = 336, height = 60 }, ToolTipDir = "DOWN", ToolTipText = PVPHONORFRAME_TUTORIAL_1 },
-	[2] = { ButtonPos = { x = 312, y = -87 }, HighLightBox = { x = 250, y = -92, width = 84, height = 36 }, ToolTipDir = "RIGHT", ToolTipText = PVPHONORFRAME_TUTORIAL_2 },
-	[3] = { ButtonPos = { x = 312, y = -231 }, HighLightBox = { x = 250, y = -235, width = 84, height = 36 }, ToolTipDir = "RIGHT", ToolTipText = PVPHONORFRAME_TUTORIAL_2 },
+	[1] = { ButtonPos = { x = 312, y = -10 }, HighLightBox = { x = 2, y = -2, width = 336, height = 60 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_PVPHONORFRAME_TUTORIAL_1 },
+	[2] = { ButtonPos = { x = 312, y = -87 }, HighLightBox = { x = 250, y = -92, width = 84, height = 36 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_PVPHONORFRAME_TUTORIAL_2 },
+	[3] = { ButtonPos = { x = 312, y = -231 }, HighLightBox = { x = 250, y = -235, width = 84, height = 36 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_PVPHONORFRAME_TUTORIAL_2 },
+	[4] = { ButtonPos = { x = 298, y = -188 }, HighLightBox = { x = 16, y = -185, width = 306, height = 48 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_PVPHONORFRAME_TUTORIAL_3:format(0) }
 }
 
 function PVPHonorFrame_ToggleTutorial( ... )
-	local rewardFinalStepCurrency = C_CacheInstance:Get("ASMSG_PVP_DAILY_REWARDS", {})
+	local brawlData = C_CacheInstance:Get("ASMSG_BRAWL_SELECTED", nil)
+	if brawlData then
+		PVPHonorFrame_HelpPlate[4].ToolTipText = HEPLPLATE_PVPHONORFRAME_TUTORIAL_3:format(brawlData.itemLevelRequirement or 0)
+	end
 
+	local rewardFinalStepCurrency = C_CacheInstance:Get("ASMSG_PVP_DAILY_REWARDS", {})
 	if rewardFinalStepCurrency and rewardFinalStepCurrency.battlegroundReward then
-		PVPHonorFrame_HelpPlate[4] = { ButtonPos = { x = 312, y = -336 }, HighLightBox = { x = 2, y = -334, width = 336, height = 48 }, ToolTipDir = "RIGHT", ToolTipText = string.format(PVPHONORFRAME_TUTORIAL_3, rewardFinalStepCurrency.battlegroundReward) }
+		PVPHonorFrame_HelpPlate[5] = { ButtonPos = { x = 312, y = -336 }, HighLightBox = { x = 2, y = -334, width = 336, height = 48 }, ToolTipDir = "RIGHT", ToolTipText = string.format(HEPLPLATE_PVPHONORFRAME_TUTORIAL_4, rewardFinalStepCurrency.battlegroundReward) }
 	end
 
 	local helpPlate = PVPHonorFrame_HelpPlate
@@ -1919,10 +2026,10 @@ end
 local RatedBattlegroundFrame_HelpPlate = {
 	FramePos = { x = 0, y = 0 },
 	FrameSize = { width = 342, height = 406 },
-	[1] = { ButtonPos = { x = 312, y = 0 }, HighLightBox = { x = 6, y = -16, width = 330, height = 45 }, ToolTipDir = "RIGHT", ToolTipText = RATED_BATTLEGROUND_TUTORIAL_1 },
-	[2] = { ButtonPos = { x = 312, y = -56 }, HighLightBox = { x = 6, y = -65, width = 330, height = 28 }, ToolTipDir = "RIGHT", ToolTipText = RATED_BATTLEGROUND_TUTORIAL_2 },
-	[3] = { ButtonPos = { x = 312, y = -166 }, HighLightBox = { x = 6, y = -97, width = 330, height = 186 }, ToolTipDir = "RIGHT", ToolTipText = RATED_BATTLEGROUND_TUTORIAL_3 },
-	[4] = { ButtonPos = { x = 312, y = -310 }, HighLightBox = { x = 6, y = -287, width = 330, height = 84 }, ToolTipDir = "RIGHT", ToolTipText = RATED_BATTLEGROUND_TUTORIAL_4 },
+	[1] = { ButtonPos = { x = 312, y = 0 }, HighLightBox = { x = 6, y = -16, width = 330, height = 45 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_RATED_BATTLEGROUND_TUTORIAL_1 },
+	[2] = { ButtonPos = { x = 312, y = -56 }, HighLightBox = { x = 6, y = -65, width = 330, height = 28 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_RATED_BATTLEGROUND_TUTORIAL_2 },
+	[3] = { ButtonPos = { x = 312, y = -166 }, HighLightBox = { x = 6, y = -97, width = 330, height = 186 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_RATED_BATTLEGROUND_TUTORIAL_3 },
+	[4] = { ButtonPos = { x = 312, y = -310 }, HighLightBox = { x = 6, y = -287, width = 330, height = 84 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_RATED_BATTLEGROUND_TUTORIAL_4 },
 }
 
 function RatedBattlegroundFrame_ToggleTutorial( self, ... )
@@ -2026,6 +2133,7 @@ function BattlegroundInviteMixin:OnShow()
 		self:Reset(true)
 		return
 	else
+		self.PopupFrame.Title:SetText(self.inviteType == 1 and YOU_CAN_ENTER_SOLO or YOU_CAN_ENTER_BATTLEGROUND)
 		self.PopupFrame.EnterButton:SetShown(self.inviteState == 1)
 		self.PopupFrame.CancelButton:SetShown(self.inviteState == 1)
 		self.PopupFrame.HideButton:SetShown(self.inviteState == 1)
@@ -2108,7 +2216,10 @@ function BattlegroundInviteMixin:OnUpdate( elapsed )
 		if self.readyPlayers < self.readyCount then
 			if self.PopupFrame:IsVisible() and self.PopupFrame.ReadyButtonFrame:IsVisible() then
 				self.readyPlayers = self.readyPlayers + 1
-				self.readyButtons[self.readyPlayers].Icon.activeButton:Play()
+				local readyButton = self.readyButtons[self.readyPlayers]
+				if readyButton then
+					readyButton.Icon.activeButton:Play()
+				end
 			end
 		end
 
@@ -2133,6 +2244,7 @@ function BattlegroundInviteMixin:Init()
 	self.inviteID 		= data.inviteID
 	self.inviteState 	= data.inviteState
 	self.remainingTime 	= data.remainingTime
+	self.inviteType 	= data.inviteType
 	self.readyCount 	= readyCount
 
 	self.elapsedReady 	= 0
@@ -2169,8 +2281,13 @@ end
 
 function BattlegroundInviteMixin:ResetReadyButtons()
 	local factionID = C_Unit.GetFactionID("player")
+	local buttonCount = self.inviteType == 1 and 6 or 20
 
-	for i = 1, 20 do
+	if factionID == PLAYER_FACTION_GROUP.Neutral then
+		buttonCount = 0
+	end
+
+	for i = 1, buttonCount do
 		local button = self.readyButtons[i]
 
 		if not button then
@@ -2186,9 +2303,16 @@ function BattlegroundInviteMixin:ResetReadyButtons()
 		button:SetAlpha(0.5)
 		button.Icon:SetAtlas("objectivewidget-icon-"..self.factionIcons[factionID])
 		button.IconHit:SetAtlas("objectivewidget-icon-"..self.factionIcons[factionID])
+		button:Show()
 
 		self.readyButtons[i] = button
 	end
+
+	for i = buttonCount + 1, #self.readyButtons do
+		self.readyButtons[i]:Hide()
+	end
+
+	self.PopupFrame.ReadyButtonFrame:SetWidth(20 * buttonCount)
 end
 
 function BattlegroundInviteMixin:Accept()
@@ -2546,9 +2670,6 @@ function PVPFrameStepButton_SetState( self, state )
 
 	self.Background:SetDesaturated(not textureColor)
 
-	-- if buttonID == 5 then
-	-- end
-
 	self.IsDisable = not textureColor
 end
 
@@ -2665,6 +2786,52 @@ function PVPFrameStepButton_UpdateReward( categoryID )
 	end
 end
 
+function PVPFrameBrawlButton_OnShow(self)
+	local brawlInfo = C_CacheInstance:Get("ASMSG_BRAWL_SELECTED")
+	local hasBrawlInfo = type(brawlInfo) == "table"
+
+	self:SetEnabled(hasBrawlInfo)
+	self.NormalTexture:SetDesaturated(hasBrawlInfo)
+
+	if hasBrawlInfo then
+		self.Contents.Title:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+	else
+		self.Contents.Title:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
+	end
+
+	self.Contents.DailyComplete:SetShown(IsQuestCompleted(BRAWL_DAILY_QUEST_ID))
+end
+
+function PVPFrameBrawlButton_OnEnter(self)
+	local brawlInfo = C_CacheInstance:Get("ASMSG_BRAWL_SELECTED")
+	if not brawlInfo then
+		return
+	end
+
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+	GameTooltip:AddLine(BATTLEGROUND_BRAWL_TOOLTIP_HEADER)
+	GameTooltip:AddLine(string.format(BATTLEGROUND_LOCK_TOOLTIP_BGNAME, brawlInfo.name), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, 1)
+
+	for index, items in ipairs(brawlInfo.rewards) do
+		GameTooltip_AddBlankLineToTooltip(GameTooltip)
+		GameTooltip:AddLine(_G["BATTLEGROUND_BRAWL_TOOLTIP_REWARDS_"..index])
+		for _, itemInfo in ipairs(items) do
+			local name = GetItemInfo(itemInfo.itemID) or UNKNOWN
+			GameTooltip:AddLine(string.format("%s x%s", name, itemInfo.amount or 1), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, 1)
+		end
+	end
+
+	GameTooltip_AddBlankLineToTooltip(GameTooltip)
+	GameTooltip_AddDisabledLine(GameTooltip, BATTLEGROUND_BRAWL_HELP_TOOLTIP)
+
+	if IsQuestCompleted(BRAWL_DAILY_QUEST_ID) then
+		GameTooltip_AddBlankLineToTooltip(GameTooltip)
+		GameTooltip:AddLine(BATTLEGROUND_BRAWL_DAILY_COMPLETE, 0, 1, 0, true)
+	end
+
+	GameTooltip:Show()
+end
+
 ASMSG_PVP_REWARDS_ARENA_2V2 	= 1
 ASMSG_PVP_REWARDS_ARENA_3V3 	= 2
 ASMSG_PVP_REWARDS_ARENA_SOLO 	= 3
@@ -2673,50 +2840,91 @@ ASMSG_PVP_REWARDS_BF 			= 5
 ASMSG_PVP_REWARDS_ARENA_1V1 	= 6
 
 function PVPQueueFrame_UpdateReward( categoryID )
-	local pvpRewards = C_CacheInstance:Get("ASMSG_PVP_REWARDS", {})
-	local factionID = C_Unit.GetFactionID("player")
-	local xOffset
-
 	if categoryID == 2 then
-		local rateArenaRewards = ConquestFrame.selectedButton == ConquestFrame.BottomInset.ArenaContainer.Arena1v1 and pvpRewards[ASMSG_PVP_REWARDS_ARENA_1V1] or pvpRewards[ASMSG_PVP_REWARDS_ARENA_2V2]
-		ConquestFrame.BottomInset.ArenaContainer.Header.RewardFrame.CurrencyReward:SetShown(rateArenaRewards and rateArenaRewards.currency > 0)
-		ConquestFrame.BottomInset.ArenaContainer.Header.RewardFrame.LootReward:SetShown(rateArenaRewards and rateArenaRewards.loot == 1)
+		local pvpRewards = C_CacheInstance:Get("ASMSG_PVP_REWARDS")
+		local pointsBG, pointsArena, pointsArenaSoloQ, pointsArena1v1, pointsMiniGame = C_BattlePass.GetSourceExperience()
+		local rewardData, rewardBP
 
-		xOffset = (rateArenaRewards and rateArenaRewards.loot == 1 and rateArenaRewards.currency > 0) and -98 or -22
-		ConquestFrame.BottomInset.ArenaContainer.Header.RewardFrame.LootReward:SetPoint("TOPRIGHT", xOffset, -2)
+		if ConquestFrame.selectedButton == ConquestFrame.BottomInset.ArenaContainer.Arena1v1 then
+			rewardData = pvpRewards and pvpRewards[ASMSG_PVP_REWARDS_ARENA_1V1]
+			rewardBP = pointsArena1v1
+		else
+			rewardData = pvpRewards and pvpRewards[ASMSG_PVP_REWARDS_ARENA_2V2]
+			rewardBP = pointsArena
+		end
 
-		local soloArenaRewards = pvpRewards[ASMSG_PVP_REWARDS_ARENA_SOLO]
-		ConquestFrame.BottomInset.SoloArenaContainer.Header.RewardFrame.CurrencyReward:SetShown(soloArenaRewards and soloArenaRewards.currency > 0)
-		ConquestFrame.BottomInset.SoloArenaContainer.Header.RewardFrame.LootReward:SetShown(soloArenaRewards and soloArenaRewards.loot == 1)
+		local rewardAP = rewardData and rewardData.currency or 0
+		local rewardLoot = rewardData and rewardData.loot or 0
 
-		xOffset = (soloArenaRewards and soloArenaRewards.loot == 1 and soloArenaRewards.currency > 0) and -98 or -22
-		ConquestFrame.BottomInset.SoloArenaContainer.Header.RewardFrame.LootReward:SetPoint("TOPRIGHT", xOffset, -2)
+		local rewardDataSoloQ = pvpRewards and pvpRewards[ASMSG_PVP_REWARDS_ARENA_SOLO]
+		local rewardAPSoloQ = rewardDataSoloQ and rewardDataSoloQ.currency or 0
+		local rewardLootSoloQ = rewardDataSoloQ and rewardDataSoloQ.loot or 0
 
-		ConquestFrame.BottomInset.ArenaContainer.Header.RewardFrame.CurrencyReward.Count:SetText(rateArenaRewards and rateArenaRewards.currency)
-		ConquestFrame.BottomInset.SoloArenaContainer.Header.RewardFrame.CurrencyReward.Count:SetText(soloArenaRewards and soloArenaRewards.currency)
+		local arenaRewardFrame = ConquestFrame.BottomInset.ArenaContainer.Header.RewardFrame
+		local soloQRewardFrame = ConquestFrame.BottomInset.SoloArenaContainer.Header.RewardFrame
 
-		ConquestFrame.BottomInset.ArenaContainer.Header.RewardFrame.CurrencyReward.Icon:SetTexture("Interface\\PVPFrame\\PVPCurrency-Conquest1-"..PLAYER_FACTION_GROUP[factionID])
-		ConquestFrame.BottomInset.SoloArenaContainer.Header.RewardFrame.CurrencyReward.Icon:SetTexture("Interface\\PVPFrame\\PVPCurrency-Conquest1-"..PLAYER_FACTION_GROUP[factionID])
+		arenaRewardFrame.CurrencyReward:Clear()
+		soloQRewardFrame.CurrencyReward:Clear()
+
+		if rewardAP > 0 then
+			arenaRewardFrame.CurrencyReward:AddCurrency(Enum.Store.CurrencyType.ArenaPoint, rewardAP)
+		end
+		if rewardBP > 0 then
+			arenaRewardFrame.CurrencyReward:AddCurrency(Enum.Store.CurrencyType.BattlePassExp, rewardBP)
+		end
+
+		if rewardAPSoloQ > 0 then
+			soloQRewardFrame.CurrencyReward:AddCurrency(Enum.Store.CurrencyType.ArenaPoint, rewardAPSoloQ)
+		end
+		if pointsArenaSoloQ > 0 then
+			soloQRewardFrame.CurrencyReward:AddCurrency(Enum.Store.CurrencyType.BattlePassExp, pointsArenaSoloQ)
+		end
+
+		arenaRewardFrame.CurrencyReward.tooltipDesc = PVPFRAME_CURRENCY_REWARD_TOOLTIP_CONQUEST
+		soloQRewardFrame.CurrencyReward.tooltipDesc = PVPFRAME_CURRENCY_REWARD_TOOLTIP_CONQUEST
+
+		arenaRewardFrame.CurrencyReward:SetShown(rewardAP > 0 or rewardBP > 0)
+		soloQRewardFrame.CurrencyReward:SetShown(rewardAPSoloQ > 0 or pointsArenaSoloQ > 0)
+
+		arenaRewardFrame.LootReward:SetShown(rewardLoot == 1)
+		soloQRewardFrame.LootReward:SetShown(rewardLootSoloQ == 1)
 	elseif categoryID == 3 then
-		local bgRewards = pvpRewards[ASMSG_PVP_REWARDS_BG]
-		PVPHonorFrame.BottomInset.BonusBattlefieldContainer.Header.RewardFrame.CurrencyReward:SetShown(bgRewards and bgRewards.currency > 0)
-		PVPHonorFrame.BottomInset.BonusBattlefieldContainer.Header.RewardFrame.LootReward:SetShown(bgRewards and bgRewards.loot == 1)
+		local pvpRewards = C_CacheInstance:Get("ASMSG_PVP_REWARDS")
+		local pointsBG, pointsArena, pointsArenaSoloQ, pointsArena1v1, pointsMiniGame = C_BattlePass.GetSourceExperience()
 
-		xOffset = (bgRewards and bgRewards.loot == 1 and bgRewards.currency > 0) and -98 or -22
-		PVPHonorFrame.BottomInset.BonusBattlefieldContainer.Header.RewardFrame.LootReward:SetPoint("TOPRIGHT", xOffset, -2)
+		local rewardDataBG = pvpRewards and pvpRewards[ASMSG_PVP_REWARDS_BG]
+		local rewardHPBG = rewardDataBG and rewardDataBG.currency or 0
+		local rewardLootBG = rewardDataBG and rewardDataBG.loot or 0
 
-		local bfRewards = pvpRewards[ASMSG_PVP_REWARDS_BF]
-		PVPHonorFrame.BottomInset.WorldPVPContainer.Header.RewardFrame.CurrencyReward:SetShown(bfRewards and bfRewards.currency > 0)
-		PVPHonorFrame.BottomInset.WorldPVPContainer.Header.RewardFrame.LootReward:SetShown(bfRewards and bfRewards.loot == 1)
+		local rewardDataW = pvpRewards and pvpRewards[ASMSG_PVP_REWARDS_BF]
+		local rewardHPW = rewardDataW and rewardDataW.currency or 0
+		local rewardLootW = rewardDataW and rewardDataW.loot or 0
 
-		xOffset = (bfRewards and bfRewards.loot == 1 and bfRewards.currency > 0) and -98 or -22
-		PVPHonorFrame.BottomInset.WorldPVPContainer.Header.RewardFrame.LootReward:SetPoint("TOPRIGHT", xOffset, -2)
+		local bgRewardFrame = PVPHonorFrame.BottomInset.BonusBattlefieldContainer.Header.RewardFrame
+		local wbRewardFrame = PVPHonorFrame.BottomInset.WorldPVPContainer.Header.RewardFrame
 
-		PVPHonorFrame.BottomInset.BonusBattlefieldContainer.Header.RewardFrame.CurrencyReward.Count:SetText(bgRewards and bgRewards.currency)
-		PVPHonorFrame.BottomInset.WorldPVPContainer.Header.RewardFrame.CurrencyReward.Count:SetText(bfRewards and bfRewards.currency)
+		bgRewardFrame.CurrencyReward:Clear()
+		wbRewardFrame.CurrencyReward:Clear()
 
-		PVPHonorFrame.BottomInset.BonusBattlefieldContainer.Header.RewardFrame.CurrencyReward.Icon:SetTexture("Interface\\PVPFrame\\PVPCurrency-Honor1-"..PLAYER_FACTION_GROUP[factionID])
-		PVPHonorFrame.BottomInset.WorldPVPContainer.Header.RewardFrame.CurrencyReward.Icon:SetTexture("Interface\\PVPFrame\\PVPCurrency-Honor1-"..PLAYER_FACTION_GROUP[factionID])
+		if rewardHPBG > 0 then
+			bgRewardFrame.CurrencyReward:AddCurrency(Enum.Store.CurrencyType.Honor, rewardHPBG)
+		end
+		if pointsBG > 0 then
+			bgRewardFrame.CurrencyReward:AddCurrency(Enum.Store.CurrencyType.BattlePassExp, pointsBG)
+		end
+
+		if rewardHPW > 0 then
+			wbRewardFrame.CurrencyReward:AddCurrency(Enum.Store.CurrencyType.Honor, rewardHPW)
+		end
+
+		bgRewardFrame.CurrencyReward.tooltipDesc = PVPFRAME_CURRENCY_REWARD_TOOLTIP_HONOR
+		wbRewardFrame.CurrencyReward.tooltipDesc = PVPFRAME_CURRENCY_REWARD_TOOLTIP_HONOR_WORLD_PVP
+
+		bgRewardFrame.CurrencyReward:SetShown(rewardHPBG > 0 or pointsBG > 0)
+		wbRewardFrame.CurrencyReward:SetShown(rewardHPW > 0)
+
+		bgRewardFrame.LootReward:SetShown(rewardLootBG == 1)
+		wbRewardFrame.LootReward:SetShown(rewardLootW == 1)
 	end
 end
 
@@ -2924,33 +3132,6 @@ function EventHandler:ASMSG_CHARACTER_RBG_STATS( msg )
 	})
 end
 
-function EventHandler:ASMSG_BG_EVENT_START_TIMER( msg )
-	if msg then
-		local splitData = C_Split(msg, ":")
-		local timeRemaining = ( tonumber( splitData[1] ) / 1000 )
-		local timerSubType = tonumber( splitData[2] )
-		local timerType, totalTime = TimerTracker_GetTimerTypeInfo(timerSubType);
-
-		if timerSubType ~= 0 then
-			FreeAllTimerTrackerTimer();
-		end
-
-		FireCustomClientEvent("START_TIMER", timerType, timeRemaining, totalTime);
-
-		if not GetCVar("BattlegroundTimerType") then
-			RegisterCVar("BattlegroundTimerType", timerSubType)
-		end
-
-		if not GetCVar("BattlegroundStartTimer") then
-			RegisterCVar("BattlegroundStartTimer", time() + timeRemaining)
-			return
-		end
-
-		SetCVar("BattlegroundStartTimer", time() + timeRemaining)
-		SetCVar("BattlegroundTimerType", timerSubType)
-	end
-end
-
 function EventHandler:ASMSG_CHARACTER_ARENA_INFO( msg )
 	local teamData 	= C_Split(msg, "|")
 	local GUID 		= table.remove(teamData, 1)
@@ -3040,33 +3221,28 @@ function EventHandler:ASMSG_PVP_REWARDS( msg )
 	PVPQueueFrame_UpdateReward(3)
 end
 
-function EventHandler:ASMSG_PVP_STATS( msg )
-	local msgData = C_Split(msg, "|")
-	local pvpStats = C_CacheInstance:Get("ASMSG_PVP_STATS", {})
+function EventHandler:ASMSG_PVP_STATS(msg)
+	local pvpStats = C_CacheInstance:Get("ASMSG_PVP_STATS")
+	if not pvpStats then
+		pvpStats = {}
+		C_CacheInstance:Set("ASMSG_PVP_STATS", pvpStats)
+	else
+		table.wipe(pvpStats)
+	end
 
-	for _, splittedMSG in pairs(msgData) do
-		local splitData = C_Split(splittedMSG, ":")
-
-		local pvpType = tonumber(splitData[1])
-		local pvpRating = tonumber(splitData[2])
-		local seasonGames = tonumber(splitData[3])
-		local seasonWins = tonumber(splitData[4])
-		local weekGames = tonumber(splitData[5])
-		local weekWins = tonumber(splitData[6])
-		local TodayGames = tonumber(splitData[7])
-		local TodayWins = tonumber(splitData[8])
-		local qualifiedWeeks = tonumber(splitData[9])
-
+	for index, pvpBrecketInfo in ipairs({StringSplitEx("|", msg)}) do
+		local pvpType, pvpRating, seasonGames, seasonWins, weekGames, weekWins, todayGames, todayWins, qualifiedWeeks = string.split(":", pvpBrecketInfo)
+		pvpType = tonumber(pvpType)
 		pvpStats[pvpType] = {
-			pvpType = pvpType,
-			pvpRating = pvpRating,
-			seasonGames = seasonGames,
-			seasonWins = seasonWins,
-			weekGames = weekGames,
-			weekWins = weekWins,
-			TodayGames = TodayGames,
-			TodayWins = TodayWins,
-			qualifiedWeeks = qualifiedWeeks,
+			pvpType			= pvpType,
+			pvpRating		= tonumber(pvpRating),
+			seasonGames		= tonumber(seasonGames),
+			seasonWins		= tonumber(seasonWins),
+			weekGames		= tonumber(weekGames),
+			weekWins		= tonumber(weekWins),
+			todayGames		= tonumber(todayGames),
+			todayWins		= tonumber(todayWins),
+			qualifiedWeeks	= tonumber(qualifiedWeeks),
 		}
 	end
 end
@@ -3136,11 +3312,13 @@ function EventHandler:ASMSG_SEND_BG_INVITE( msg )
 	local inviteID 		= tonumber(splitData[1])
 	local inviteState 	= 1
 	local remainingTime = time() + tonumber(splitData[2])
+	local inviteType	= tonumber(splitData[3])
 
 	C_CacheInstance:Set("ASMSG_SEND_BG_INVITE", {
 		inviteID 		= inviteID,
 		inviteState 	= inviteState,
-		remainingTime 	= remainingTime
+		remainingTime 	= remainingTime,
+		inviteType		= inviteType,
 	})
 
 	BattlegroundInviteFrame.PopupFrame.EnterButton:Enable()
@@ -3153,7 +3331,10 @@ function EventHandler:ASMSG_SEND_BG_INVITE_STATUS( msg )
 
 	if BattlegroundInviteFrame.PopupFrame:IsVisible() and BattlegroundInviteFrame.PopupFrame.ReadyButtonFrame:IsVisible() then
 		for i = 1, playerIndex do
-			BattlegroundInviteFrame.readyButtons[i].Icon.activeButton:Play()
+			local readyButton = BattlegroundInviteFrame.readyButtons[i]
+			if readyButton then
+				BattlegroundInviteFrame.readyButtons[i].Icon.activeButton:Play()
+			end
 		end
 	end
 
@@ -3183,29 +3364,44 @@ function EventHandler:ASMSG_BATTLEGROUND_LOCKED( msg )
 end
 
 function EventHandler:ASMSG_BRAWL_SELECTED( msg )
-	local msg = C_Split(msg, "|")
-	local brawlInfo = {}
+	local brawlID, itemLevelRequirement, rewardData = StringSplitEx("|", msg, 3)
 
-	brawlInfo.id = msg[1]
-	if brawlInfo.id == "0" then
+	if brawlID == "0" then
+		C_CacheInstance:Set("ASMSG_BRAWL_SELECTED", nil)
 		return
 	end
-	brawlInfo.name = GetBattlegroundInfoByID(msg[1])
-	brawlInfo.rewards = {}
 
-	for i=1,2 do
-		brawlInfo.rewards[i] = {}
-		local questRewards = C_Split(msg[i+1], ";")
-		for index, rewardInfo in pairs(questRewards) do
-			rewardInfo = C_Split(rewardInfo, ",")
-			if rewardInfo then
-				brawlInfo.rewards[i][index] = {}
-				brawlInfo.rewards[i][index].id = rewardInfo[1]
-				brawlInfo.rewards[i][index].count = rewardInfo[2]
-				brawlInfo.rewards[i][index].name = GetItemInfo(rewardInfo[1])
+	brawlID = tonumber(brawlID)
+	itemLevelRequirement = tonumber(itemLevelRequirement)
+
+	local brawlInfo = {
+		id = brawlID,
+		itemLevelRequirement = itemLevelRequirement,
+		name = GetBattlegroundInfoByID(brawlID),
+		rewards = {},
+	}
+
+	for rewardIndex, itemList in ipairs({StringSplitEx("|", rewardData)}) do
+		brawlInfo.rewards[rewardIndex] = {}
+
+		for _, itemInfo in ipairs({StringSplitEx(";", itemList)}) do
+			local itemID, amount = string.split(",", itemInfo)
+			itemID = tonumber(itemID)
+			if itemID then
+				table.insert(brawlInfo.rewards[rewardIndex], {
+					itemID = itemID,
+					amount = tonumber(amount),
+				})
 			end
 		end
 	end
 
 	C_CacheInstance:Set("ASMSG_BRAWL_SELECTED", brawlInfo)
+
+	local lastBrawlID = tonumber(GetCVar("lastSeenBrawlID"))
+	SetCVar("lastSeenBrawlID", brawlInfo.id)
+
+	if lastBrawlID ~= brawlInfo.id then
+		EventRegistry:TriggerEvent("Brawl.Changed", brawlInfo.id)
+	end
 end

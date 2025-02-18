@@ -71,7 +71,7 @@ function GMClientMixIn:PDumpCharacterCallback(playerName, unitAccountData)
 	if unitAccountData and unitAccountData.accountLogin and unitAccountData.accountLogin ~= "" and playerName then
 		local lenPlayerName = strlenutf8(playerName);
 		local isUTF8Name = lenPlayerName ~= string.len(playerName);
-		local newPlayerName = lenPlayerName > 10 and utf8sub(playerName, 1, 10) or playerName;
+		local newPlayerName = lenPlayerName > 10 and utf8.sub(playerName, 1, 10) or playerName;
 
 		TrinityCoreMixIn:SendCommand(string.format("pdump copy %s %s %s", playerName, unitAccountData.accountLogin, (newPlayerName .. (isUTF8Name and "пд" or "pd"))), createResultHandler("pdump"));
 	end

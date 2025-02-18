@@ -1117,63 +1117,67 @@
 
 	<!-- Similar to InsetFrameTemplate3, but without the dark background -->
 	<Frame name="InsetFrameTemplate4" virtual="true">
-		<Size x="64" y="64"/>
 		<Layers>
-			<Layer level="BACKGROUND">
-				<Texture name="$parentBgs" file="Interface\FrameGeneral\UI-Background-Marble" horizTile="true" vertTile="true" parentKey="Bgs">
+			<Layer level="BORDER">
+				<Texture name="$parentBorderTopRight" parentKey="BorderTopRight" file="Interface/FrameGeneral/GeneralFrameInsetBorders">
+					<Size x="8" y="8"/>
 					<Anchors>
-						<Anchor point="TOPLEFT"/>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.859375" right="0.984375" top="0.03125" bottom="0.28125"/>
+				</Texture>
+				<Texture name="$parentBorderBottomRight" parentKey="BorderBottomRight" file="Interface/FrameGeneral/GeneralFrameInsetBorders">
+					<Size x="8" y="8"/>
+					<Anchors>
 						<Anchor point="BOTTOMRIGHT"/>
 					</Anchors>
+					<TexCoords left="0.515625" right="0.640625" top="0.6875" bottom="0.9375"/>
 				</Texture>
-			</Layer>
-			<Layer level="OVERLAY">
-				<Texture name="$parentInsetBorderTopLeft" inherits="UI-Frame-InnerTopLeft" parentKey="InsetBorderTopLeft">
+				<Texture name="$parentBorderRightMiddle" parentKey="BorderRightMiddle" file="Interface/FrameGeneral/GeneralFrameInsetBorders">
+					<Size x="8" y="32"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentBgs"/>
+						<Anchor point="TOP" relativeTo="$parentBorderTopRight" relativePoint="BOTTOM"/>
+						<Anchor point="BOTTOM" relativeTo="$parentBorderBottomRight" relativePoint="TOP"/>
 					</Anchors>
+					<TexCoords left="0.171875" right="0.296875" top="0" bottom="1"/>
 				</Texture>
-				<Texture name="$parentInsetBorderTopRight" inherits="UI-Frame-InnerTopRight" parentKey="InsetBorderTopRight">
+				<Texture name="$parentBorderTopLeft" parentKey="BorderTopLeft" file="Interface/FrameGeneral/GeneralFrameInsetBorders">
+					<Size x="8" y="8"/>
 					<Anchors>
-						<Anchor point="TOPRIGHT" relativeTo="$parentBgs"/>
+						<Anchor point="TOPLEFT"/>
 					</Anchors>
+					<TexCoords left="0.703125" right="0.828125" top="0.03125" bottom="0.28125"/>
 				</Texture>
-
-				<Texture name="$parentInsetBorderBottomLeft" inherits="UI-Frame-InnerBotLeftCorner" parentKey="InsetBorderBottomLeft">
+				<Texture name="$parentBorderBottomLeft" parentKey="BorderBottomLeft" file="Interface/FrameGeneral/GeneralFrameInsetBorders">
+					<Size x="8" y="8"/>
 					<Anchors>
-						<Anchor point="BOTTOMLEFT" relativeTo="$parentBgs" y="-1"/>
+						<Anchor point="BOTTOMLEFT"/>
 					</Anchors>
+					<TexCoords left="0.328125" right="0.453125" top="0.6875" bottom="0.9375"/>
 				</Texture>
-
-				<Texture name="$parentInsetBorderBottomRight" inherits="UI-Frame-InnerBotRight" parentKey="InsetBorderBottomRight">
+				<Texture name="$parentBorderLeftMiddle" parentKey="BorderLeftMiddle" file="Interface/FrameGeneral/GeneralFrameInsetBorders">
+					<Size x="8" y="32"/>
 					<Anchors>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBgs" y="-1"/>
+						<Anchor point="TOPLEFT" relativeTo="$parentBorderTopLeft" relativePoint="BOTTOMLEFT"/>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentBorderBottomLeft" relativePoint="TOPLEFT"/>
 					</Anchors>
+					<TexCoords left="0.015625" right="0.140625" top="0" bottom="1"/>
 				</Texture>
-
-				<Texture name="$parentInsetTopBorder" inherits="_UI-Frame-InnerTopTile" parentKey="InsetBorderTop">
+				<Texture name="$parentBorderTopMiddle" parentKey="BorderTopMiddle" file="Interface/FrameGeneral/GeneralFrameInsetBordersHorizontal" horizTile="true" vertTile="true">
+					<Size x="32" y="8"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentInsetBorderTopLeft" relativePoint="TOPRIGHT"/>
-						<Anchor point="TOPRIGHT" relativeTo="$parentInsetBorderTopRight" relativePoint="TOPLEFT"/>
+						<Anchor point="RIGHT" relativeTo="$parentBorderTopRight" relativePoint="LEFT"/>
+						<Anchor point="LEFT" relativeTo="$parentBorderTopLeft" relativePoint="RIGHT"/>
 					</Anchors>
+					<TexCoords left="0" right="0.5" top="0.65625" bottom="0.90625"/>
 				</Texture>
-				<Texture name="$parentInsetBottomBorder" inherits="_UI-Frame-InnerBotTile" parentKey="InsetBorderBottom">
+				<Texture name="$parentBorderBottomMiddle" parentKey="BorderBottomMiddle" file="Interface/FrameGeneral/GeneralFrameInsetBordersHorizontal" horizTile="true" vertTile="true">
+					<Size x="32" y="8"/>
 					<Anchors>
-						<Anchor point="BOTTOMLEFT" relativeTo="$parentInsetBorderBottomLeft" relativePoint="BOTTOMRIGHT"/>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parentInsetBorderBottomRight" relativePoint="BOTTOMLEFT"/>
+						<Anchor point="RIGHT" relativeTo="$parentBorderBottomRight" relativePoint="LEFT"/>
+						<Anchor point="LEFT" relativeTo="$parentBorderBottomLeft" relativePoint="RIGHT"/>
 					</Anchors>
-				</Texture>
-				<Texture name="$parentInsetLeftBorder" inherits="!UI-Frame-InnerLeftTile" parentKey="InsetBorderLeft">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentInsetBorderTopLeft" relativePoint="BOTTOMLEFT" x="0" y="0" />
-						<Anchor point="BOTTOMLEFT" relativeTo="$parentInsetBorderBottomLeft" relativePoint="TOPLEFT"/>
-					</Anchors>
-				</Texture>
-				<Texture name="$parentInsetRightBorder" inherits="!UI-Frame-InnerRightTile" parentKey="InsetBorderRight">
-					<Anchors>
-						<Anchor point="TOPRIGHT" relativeTo="$parentInsetBorderTopRight" relativePoint="BOTTOMRIGHT"/>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parentInsetBorderBottomRight" relativePoint="TOPRIGHT"/>
-					</Anchors>
+					<TexCoords left="0" right="0.5" top="0.34375" bottom="0.59375"/>
 				</Texture>
 			</Layer>
 		</Layers>
@@ -1312,28 +1316,28 @@
 						<Anchor point="BOTTOMRIGHT"/>
 					</Anchors>
 				</Texture>
-				<Texture name="$parentTop" file="Interface\Common\ShadowOverlay-Top">
+				<Texture name="$parentTop" file="Interface\Common\ShadowOverlay-Top" parentKey="Top">
 					<Size x="0" y="24"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentTopLeft" relativePoint="TOPRIGHT"/>
 						<Anchor point="TOPRIGHT" relativeTo="$parentTopRight" relativePoint="TOPLEFT"/>
 					</Anchors>
 				</Texture>
-				<Texture name="$parentBottom" parentKey="Bottom" file="Interface\Common\ShadowOverlay-Bottom">
+				<Texture name="$parentBottom" file="Interface\Common\ShadowOverlay-Bottom" parentKey="Bottom">
 					<Size x="0" y="24"/>
 					<Anchors>
 						<Anchor point="BOTTOMLEFT" relativeTo="$parentBottomLeft" relativePoint="BOTTOMRIGHT"/>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBottomRight" relativePoint="BOTTOMLEFT"/>
 					</Anchors>
 				</Texture>
-				<Texture name="$parentLeft" file="Interface\Common\ShadowOverlay-Left">
+				<Texture name="$parentLeft" file="Interface\Common\ShadowOverlay-Left" parentKey="Left">
 					<Size x="24" y="0"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentTopLeft" relativePoint="BOTTOMLEFT"/>
 						<Anchor point="BOTTOMLEFT" relativeTo="$parentBottomLeft" relativePoint="TOPLEFT"/>
 					</Anchors>
 				</Texture>
-				<Texture name="$parentRight" file="Interface\Common\ShadowOverlay-Right">
+				<Texture name="$parentRight" file="Interface\Common\ShadowOverlay-Right" parentKey="Right">
 					<Size x="24" y="0"/>
 					<Anchors>
 						<Anchor point="TOPRIGHT" relativeTo="$parentTopRight" relativePoint="BOTTOMRIGHT"/>
@@ -1595,16 +1599,20 @@
 				</Texture>
 			</Layer>
 		</Layers>
-		<!-- <Animations>
+		<Animations>
 			<AnimationGroup parentKey="LingerAndFade">
-				<Alpha childKey="FadeOut" startDelay="5" fromAlpha="1" toAlpha="0" duration="1" smoothing="IN_OUT" order="2"/>
+				<Alpha startDelay="5" change="1" duration="0" order="1"/>
+				<Alpha change="-1" duration="1" smoothing="IN_OUT" order="2"/>
 				<Scripts>
+					<OnUpdate>
+						self:GetParent().BG:SetGradient("VERTICAL", 0.23, 0.19, 0, 0, 0, 0)
+					</OnUpdate>
 					<OnFinished>
 						self:GetParent():Hide();
 					</OnFinished>
 				</Scripts>
 			</AnimationGroup>
-		</Animations> -->
+		</Animations>
 		<Scripts>
 			<OnLoad>
 				self.Text:SetSpacing(4);

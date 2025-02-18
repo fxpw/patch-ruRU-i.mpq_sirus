@@ -547,7 +547,7 @@
 	<Frame name="CharacterCreate" toplevel="true" parent="GlueParent" setAllPoints="true" enableKeyboard="true" hidden="true">
 		<Layers>
 			<Layer level="OVERLAY">
-				<Texture name="$parentOverlay" parentKey="Overlay" alpha="0.6" file="Interface\Custom_Glues\UI-CharacterSelect-Background">
+				<Texture name="$parentOverlay" parentKey="Overlay" alpha="0.6" file="Interface\Custom\Glue\Vignette-256">
 					<Anchors>
 						<Anchor point="TOPLEFT" x="-14" y="10" />
 						<Anchor point="BOTTOMRIGHT" x="14" y="-10" />
@@ -567,7 +567,7 @@
 						</AnimationGroup>
 					</Animations>
 				</Texture>
-				<Texture name="$parentCustomizationVignette" parentKey="CustomizationVignette" alpha="0" file="Interface\Custom_Glues\UI-CharacterSelect-Background">
+				<Texture name="$parentCustomizationVignette" parentKey="CustomizationVignette" alpha="0" file="Interface\Custom\Glue\Vignette-256">
 					<Anchors>
 						<Anchor point="TOPLEFT" x="-14" y="10" />
 						<Anchor point="BOTTOMRIGHT" x="14" y="-10" />
@@ -1048,7 +1048,7 @@
 							</Button>
 						</Frames>
 					</Frame>
-					<CheckButton name="$parentDressCheckButton" parentKey="DressCheckButton" inherits="GlueDark_CheckBoxTemplate" hidden="true">
+					<CheckButton name="$parentDressCheckButton" parentKey="DressCheckButton" inherits="GlueDark_CheckBoxTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parentRandomizeCustomizationButton" relativePoint="BOTTOMLEFT" x="7" y="-25"/>
 						</Anchors>

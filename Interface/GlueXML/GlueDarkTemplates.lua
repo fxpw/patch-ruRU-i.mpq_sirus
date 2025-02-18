@@ -626,6 +626,25 @@ function GlueDark_CloseDropDownMenus(level)
 	end
 end
 
+local function GlueDark_DropDownMenu_ContainsMouse()
+	for i = 1, GLUEDARK_DROPDOWNMENU_MAXLEVELS do
+		local dropdown = _G["GlueDark_DropDownList"..i];
+		if dropdown:IsShown() and dropdown:IsMouseOver() then
+			return true;
+		end
+	end
+
+	return false;
+end
+
+function GlueDark_DropDownMenu_HandleGlobalMouseEvent(button, event)
+	if event == "GLOBAL_MOUSE_DOWN" and (button == "LeftButton" or button == "RightButton") then
+		if not GlueDark_DropDownMenu_ContainsMouse() then
+			GlueDark_CloseDropDownMenus();
+		end
+	end
+end
+
 function GlueDark_DropDownMenu_SetWidth(frame, width, fullWidthButtonHitRect)
 	frame.Middle:SetWidth(width)
 	frame:SetWidth(width + 25 + 25);
@@ -804,9 +823,9 @@ function GlueDark_ButtonMixin:OnLoadStyle(hookScripts)
 
 	self.ButtonText:SetTextColor(unpack(self._buttonTextColor))
 
-	self.Left:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2-DisabledLeft"], 3, 6))
-	self.Middle:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2-DisabledMiddle"], 3, 6))
-	self.Right:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2-DisabledRight"], 3, 6))
+	self.Left:SetAtlas("GlueDark-Button-Bright-Left-Disabled")
+	self.Middle:SetAtlas("GlueDark-Button-Bright-Center-Disabled")
+	self.Right:SetAtlas("GlueDark-Button-Bright-Right-Disabled")
 
 	if hookScripts then
 		for _, scriptName in ipairs(buttonMixinScripts) do
@@ -824,17 +843,17 @@ function GlueDark_ButtonMixin:OnShow()
 		self.Middle:SetVertexColor(unpack(self._buttonColor))
 		self.Right:SetVertexColor(unpack(self._buttonColor))
 
-		self.Left:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2Left"], 3, 6))
-		self.Middle:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2Middle"], 3, 6))
-		self.Right:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2Right"], 3, 6))
+		self.Left:SetAtlas("GlueDark-Button-Bright-Left")
+		self.Middle:SetAtlas("GlueDark-Button-Bright-Center")
+		self.Right:SetAtlas("GlueDark-Button-Bright-Right")
 	else
 		self.Left:SetVertexColor(unpack(self._buttonDisableColor))
 		self.Middle:SetVertexColor(unpack(self._buttonDisableColor))
 		self.Right:SetVertexColor(unpack(self._buttonDisableColor))
 
-		self.Left:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2-DisabledLeft"], 3, 6))
-		self.Middle:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2-DisabledMiddle"], 3, 6))
-		self.Right:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2-DisabledRight"], 3, 6))
+		self.Left:SetAtlas("GlueDark-Button-Bright-Left-Disabled")
+		self.Middle:SetAtlas("GlueDark-Button-Bright-Center-Disabled")
+		self.Right:SetAtlas("GlueDark-Button-Bright-Right-Disabled")
 	end
 end
 
@@ -845,9 +864,9 @@ function GlueDark_ButtonMixin:OnEnable()
 
 	self.ButtonText:SetTextColor(unpack(self._buttonTextColor))
 
-	self.Left:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2Left"], 3, 6))
-	self.Middle:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2Middle"], 3, 6))
-	self.Right:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2Right"], 3, 6))
+	self.Left:SetAtlas("GlueDark-Button-Bright-Left")
+	self.Middle:SetAtlas("GlueDark-Button-Bright-Center")
+	self.Right:SetAtlas("GlueDark-Button-Bright-Right")
 end
 
 function GlueDark_ButtonMixin:OnDisable()
@@ -857,9 +876,9 @@ function GlueDark_ButtonMixin:OnDisable()
 
 	self.ButtonText:SetTextColor(unpack(self._buttonDisableTextColor))
 
-	self.Left:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2-DisabledLeft"], 3, 6))
-	self.Middle:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2-DisabledMiddle"], 3, 6))
-	self.Right:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2-DisabledRight"], 3, 6))
+	self.Left:SetAtlas("GlueDark-Button-Bright-Left-Disabled")
+	self.Middle:SetAtlas("GlueDark-Button-Bright-Center-Disabled")
+	self.Right:SetAtlas("GlueDark-Button-Bright-Right-Disabled")
 end
 
 function GlueDark_ButtonMixin:OnEnter()
@@ -868,9 +887,9 @@ function GlueDark_ButtonMixin:OnEnter()
 		self.Middle:SetVertexColor(unpack(self._buttonHoverColor))
 		self.Right:SetVertexColor(unpack(self._buttonHoverColor))
 
-		self.Left:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2-HoverLeft"], 3, 6))
-		self.Middle:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2-HoverMiddle"], 3, 6))
-		self.Right:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2-HoverRight"], 3, 6))
+		self.Left:SetAtlas("GlueDark-Button-Bright-Left-Highlight")
+		self.Middle:SetAtlas("GlueDark-Button-Bright-Center-Highlight")
+		self.Right:SetAtlas("GlueDark-Button-Bright-Right-Highlight")
 	end
 end
 
@@ -880,8 +899,115 @@ function GlueDark_ButtonMixin:OnLeave()
 		self.Middle:SetVertexColor(unpack(self._buttonColor))
 		self.Right:SetVertexColor(unpack(self._buttonColor))
 
-		self.Left:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2Left"], 3, 6))
-		self.Middle:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2Middle"], 3, 6))
-		self.Right:SetTexCoord(unpack(S_ATLAS_STORAGE["GlueDark-buttonBright2Right"], 3, 6))
+		self.Left:SetAtlas("GlueDark-Button-Bright-Left")
+		self.Middle:SetAtlas("GlueDark-Button-Bright-Center")
+		self.Right:SetAtlas("GlueDark-Button-Bright-Right")
 	end
+end
+
+function GlueDark_ButtonMixin:SetText(text)
+	getmetatable(self).__index.SetText(self, text)
+	self:UpdateRect()
+end
+
+function GlueDark_ButtonMixin:SetAutoSize(state, additionalWidth, minWidth)
+	if state then
+		if not self.__defaultWidth then
+			self.__defaultWidth = self:GetWidth()
+		end
+		self.__autoSize = true
+		self.__additionalWidth = additionalWidth
+		self.__minWidth = minWidth
+		self:UpdateRect()
+	else
+		self.__autoSize = nil
+		self.__additionalWidth = nil
+		if self.__defaultWidth then
+			self:SetWidth(self.__defaultWidth)
+		end
+	end
+end
+
+function GlueDark_ButtonMixin:UpdateRect()
+	if self.__autoSize then
+		self:SetWidth(Round(math.max(self.__minWidth or 0, self.ButtonText:GetStringWidth() + 20 + self.__additionalWidth)))
+	end
+end
+
+GlueDark_InfoButtonMixin = {}
+
+function GlueDark_InfoButtonMixin:OnLoad()
+	self.InfoHeader = _G[self:GetAttribute("InfoHeader")] or self.InfoHeader
+	self.InfoText = _G[self:GetAttribute("InfoText")] or self.InfoText
+end
+
+function GlueDark_InfoButtonMixin:OnShow()
+	if self.InfoHeader and self.InfoText and self:GetAttribute("TOOLTIP_HINT_ANIMATION") then
+		self:PlayTooltipHintAnimation(
+			self:GetAttribute("TOOLTIP_HINT_FADEIN_SECONDS"),
+			self:GetAttribute("TOOLTIP_HINT_FADEOUT_SECONDS"),
+			self:GetAttribute("TOOLTIP_HINT_HOLD_SECONDS")
+		)
+	end
+end
+
+function GlueDark_InfoButtonMixin:OnHide()
+	self.Tooltip:Hide()
+end
+
+function GlueDark_InfoButtonMixin:OnEnter()
+	if self.InfoHeader and self.InfoText then
+		if not self.Tooltip:IsShown() then
+			self.Tooltip:SetOwner(self, self:GetAttribute("TOOLTIP_ANCHOR"))
+			self.Tooltip:AddLine(self.InfoHeader)
+			self.Tooltip:AddLine(self.InfoText, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, 1, true)
+			self.Tooltip:Show()
+		else
+			self.Tooltip:FadeStop()
+		end
+	end
+end
+
+function GlueDark_InfoButtonMixin:OnLeave()
+	self.Tooltip:Hide()
+end
+
+function GlueDark_InfoButtonMixin:PlayTooltipHintAnimation(fadeInTime, fadeOutTime, holdTime)
+	self:OnEnter()
+	self.Tooltip:FadeInOut(fadeInTime, fadeOutTime, holdTime)
+end
+
+GlueDark_InfoButtonTooltipMixin = {}
+
+function GlueDark_InfoButtonTooltipMixin:OnLoad()
+	GlueTooltip_OnLoad(self)
+end
+
+function GlueDark_InfoButtonTooltipMixin:OnFadeFinish()
+	self:Hide()
+end
+
+function GlueDark_InfoButtonTooltipMixin:FadeInOut(fadeInTime, fadeOutTime, holdTime)
+	if self.AlphaAnim:IsPlaying() then
+		self.AlphaAnim:Stop()
+	end
+
+	self.AlphaAnim.AnimIn:SetDuration(fadeInTime or 0.5)
+	self.AlphaAnim.AnimOut:SetDuration(fadeOutTime or 0.5)
+	self.AlphaAnim.AnimOut:SetStartDelay(holdTime or 2)
+
+	self.AlphaAnim:Play()
+	self:Show()
+end
+
+function GlueDark_InfoButtonTooltipMixin:FadeStop()
+	if self.AlphaAnim:IsPlaying() then
+		self.AlphaAnim:Stop()
+	end
+	self:SetAlpha(1)
+end
+
+function GlueDark_InfoButtonTooltipMixin:OnHide()
+	GlueTooltip_OnHide(self)
+	self:SetAlpha(1)
 end

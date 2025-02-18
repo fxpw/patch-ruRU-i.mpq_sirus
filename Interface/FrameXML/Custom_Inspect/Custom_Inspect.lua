@@ -114,7 +114,7 @@ function InspectFrame_OnHide(self)
 	-- it actually ends up feeling natural to have this behavior happen every time the frame is shown
 	PanelTemplates_SetTab(InspectTalentFrame, nil)
 
-	if not self.UpdateTimer then
+	if self.UpdateTimer then
 		self.UpdateTimer:Cancel()
 		self.UpdateTimer = nil
 	end
@@ -399,6 +399,7 @@ end
 
 function InspectPVPFrame_OnLoad(self)
 	self:RegisterEvent("INSPECT_HONOR_UPDATE")
+	self:RegisterCustomEvent("INSPECT_PVP_LADDER")
 
 	PanelTemplates_SetNumTabs(self, 3)
 	InspectPVPFrameTab_OnClick(InspectPVPFrameTab1)
@@ -577,6 +578,10 @@ end
 function InspectPVPFrame_OnEvent(self, event, ...)
 	if ( event == "INSPECT_HONOR_UPDATE" ) then
 		InspectPVPFrame_Update()
+	elseif event == "INSPECT_PVP_LADDER" then
+		local selectedCategory, entryData = ...
+		InspectPVPFrame.Ladder.statsData[selectedCategory] = entryData
+		InspectPVPFrame.Ladder:UpdatePlayerInfo()
 	end
 end
 
@@ -808,9 +813,7 @@ function InspectRatedBattleGrounds_OnShow( self, ... )
 	local currTitle, currRankID, currRankIconCoord, currRating, weekWins, weekGames, totalWins, totalGames, laurelCoord = GetUnitRatedBattlegroundRankInfo(InspectFrame.unit)
 	local factionID = C_Unit.GetFactionID(InspectFrame.unit)
 
-	if factionID then
-		self.Container.LaurelBackground:SetTexCoord(unpack(PVPFRAME_PRESTIGE_LARGE_BACKGROUNDS[factionID]))
-	end
+	self.Container.LaurelBackground:SetTexCoord(unpack(PVPFRAME_PRESTIGE_LARGE_BACKGROUNDS[factionID or PLAYER_FACTION_GROUP.Neutral]))
 
 	local bColor = BackgroundColors[factionID]
 
@@ -834,6 +837,8 @@ function InspectRatedBattleGrounds_OnShow( self, ... )
 
 	if currRankIconCoord then
 		self.Container.RankIcon:SetTexCoord(unpack(currRankIconCoord))
+	else
+		self.Container.RankIcon:SetAtlas("honorsystem-icon-prestige-1")
 	end
 
 	if laurelCoord then
@@ -860,8 +865,8 @@ function InspectPVPTeam_OnEnter( self, ... )
 	local buttonID = self:GetID()
 	local pvpStats = PVPStatsInfo[buttonID]
 
-	tooltip.TodayBest:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKWINS, pvpStats and pvpStats.TodayWins or 0)
-	tooltip.TodayGamesPlayed:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKGAME, pvpStats and pvpStats.TodayGames or 0)
+	tooltip.TodayBest:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKWINS, pvpStats and pvpStats.todayWins or 0)
+	tooltip.TodayGamesPlayed:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKGAME, pvpStats and pvpStats.todayGames or 0)
 	tooltip.WeeklyBest:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKWINS, pvpStats and pvpStats.weekWins or 0)
 	tooltip.WeeklyGamesPlayed:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKGAME, pvpStats and pvpStats.weekGames or 0)
 	tooltip.SeasonBest:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKWINS, pvpStats and pvpStats.seasonWins or 0)
@@ -930,7 +935,28 @@ InspectLadderMixin = {
 	selectedRightTab = nil
 }
 
+function InspectLadderMixin:OnLoad()
+	self:RegisterCustomEvent("INSPECT_REPLAY_LIST_UPDATE")
+end
+
+function InspectLadderMixin:OnEvent(event, ...)
+	if event == "INSPECT_REPLAY_LIST_UPDATE" then
+		if self:IsVisible() then
+			InspectPVPFrame.Ladder:HideLoadingSpinner()
+			InspectPVPFrame.Ladder:UpdateScrollFrame()
+		else
+			self.dirty = true
+		end
+	end
+end
+
 function InspectLadderMixin:OnShow()
+	if self.dirty then
+		InspectPVPFrame.Ladder:HideLoadingSpinner()
+		InspectPVPFrame.Ladder:UpdateScrollFrame()
+		self.dirty = nil
+	end
+
 	for i = 0, 3 do
 		if self.replayData[i] and #self.replayData[i] > 0 then
 			self:TabClick(self.tabButtons[i + 1])
@@ -973,16 +999,14 @@ function InspectLadderMixin:GetSelectedTab()
 	return self.selectedRightTab
 end
 
-function InspectLadderMixin:GetPlayerWithRequest()
-	return InspectFrame.unit and UnitName(InspectFrame.unit) or 0
-end
-
 function InspectLadderMixin:GetReplayCount()
-	return self.replayData[self:GetSelectedTab() or 0] and #self.replayData[self:GetSelectedTab() or 0] or 0
+	local selectedBracketID = self:GetSelectedTab() or 0
+	return self.replayData[selectedBracketID] and #self.replayData[selectedBracketID] or 0
 end
 
-function InspectLadderMixin:GetReplayInfo( replayIndex )
-	local data = self.replayData[self:GetSelectedTab() or 0][replayIndex]
+function InspectLadderMixin:GetReplayInfo(replayIndex)
+	local selectedBracketID = self:GetSelectedTab() or 0
+	local data = self.replayData[selectedBracketID] and self.replayData[selectedBracketID][replayIndex]
 
 	if not data then
 		return
@@ -994,15 +1018,15 @@ function InspectLadderMixin:GetReplayInfo( replayIndex )
 	local playerTeam 	= data.playerTeam
 	local team1Rating 	= data.team1Rating
 	local team2Rating 	= data.team2Rating
-	local team1Players 	= self.replayData[self:GetSelectedTab() or 0][replayIndex].players[1]
-	local team2Players 	= self.replayData[self:GetSelectedTab() or 0][replayIndex].players[2]
+	local team1Players 	= data.players[1]
+	local team2Players 	= data.players[2]
 
 	return replayID, bracket, winnerTeam, playerTeam, team1Rating, team2Rating, team1Players, team2Players
 end
 
 function InspectLadderMixin:UpdatePlayerInfo()
-	local selectedTab 	= self:GetSelectedTab() or 1
-	local data 			= self.statsData[selectedTab]
+	local selectedBracketID = self:GetSelectedTab() or 1
+	local data = self.statsData[selectedBracketID]
 
 	if data then
 		local raceInfo = C_CreatureInfo.GetRaceInfo(data.raceID)
@@ -1205,165 +1229,120 @@ function EventHandler:ASMSG_INSPECT_GUILD_INFO_RESPONSE( msg )
 	SetLargeGuildTabardTextures(InspectGuildFrameEmblem, emblemStyle)
 end
 
-function EventHandler:ASMSG_PVP_STATS_INSPECT( msg )
-	local splitData = C_Split(msg, "|")
-	PVPStatsInfo = {}
+function EventHandler:ASMSG_PVP_STATS_INSPECT(msg)
+	table.wipe(PVPStatsInfo)
 
-	for _, splittedMSG in pairs(splitData) do
-		local splitData = C_Split(splittedMSG, ":")
-
-		local pvpType = tonumber(splitData[1])
-		local pvpRating = tonumber(splitData[2])
-		local seasonGames = tonumber(splitData[3])
-		local seasonWins = tonumber(splitData[4])
-		local weekGames = tonumber(splitData[5])
-		local weekWins = tonumber(splitData[6])
-		local TodayGames = tonumber(splitData[7])
-		local TodayWins = tonumber(splitData[8])
+	for index, pvpBrecketInfo in ipairs({StringSplitEx("|", msg)}) do
+		local pvpType, pvpRating, seasonGames, seasonWins, weekGames, weekWins, todayGames, todayWins = StringSplitEx(":", pvpBrecketInfo)
+		pvpType = tonumber(pvpType)
 
 		PVPStatsInfo[pvpType] = {
-			pvpType = pvpType,
-			pvpRating = pvpRating,
-			seasonGames = seasonGames,
-			seasonWins = seasonWins,
-			weekGames = weekGames,
-			weekWins = weekWins,
-			TodayGames = TodayGames,
-			TodayWins = TodayWins
+			pvpType		= pvpType,
+			pvpRating	= tonumber(pvpRating),
+			seasonGames	= tonumber(seasonGames),
+			seasonWins	= tonumber(seasonWins),
+			weekGames	= tonumber(weekGames),
+			weekWins	= tonumber(weekWins),
+			todayGames	= tonumber(todayGames),
+			todayWins	= tonumber(todayWins),
 		}
 	end
 end
 
-function EventHandler:ASMSG_PVP_LADDER_PLAYER_INSPECT( msg )
-	local playerData 		= C_Split(msg, "|")
-	local selectedCategory 	= tonumber(table.remove(playerData, 1))
-
-	InspectPVPFrame.Ladder.statsData[selectedCategory] = nil
-
-	if playerData[1] then
-		local playerInfo 	= C_Split(playerData[1], ":")
-
-		local rank 			= tonumber(playerInfo[1])
-		local name 			= playerInfo[2]
-		local raceID 		= tonumber(playerInfo[3])
-		local classID 		= tonumber(playerInfo[4])
-		local gender 		= tonumber(playerInfo[5])
-		local totalRating 	= tonumber(playerInfo[6])
-		local seasonGames 	= tonumber(playerInfo[7])
-		local seasonWins 	= tonumber(playerInfo[8])
-		local weekGames 	= tonumber(playerInfo[9])
-		local weekWins 		= tonumber(playerInfo[10])
-		local dayGames 		= tonumber(playerInfo[11])
-		local dayWins 		= tonumber(playerInfo[12])
-
-		if rank and name then
-			InspectPVPFrame.Ladder.statsData[selectedCategory] = {
-				rank 		= rank,
-				name 		= name,
-				raceID 		= raceID,
-				classID 	= classID,
-				gender 		= gender,
-				totalRating = totalRating,
-				seasonGames = seasonGames,
-				seasonWins 	= seasonWins,
-				weekGames 	= weekGames,
-				weekWins 	= weekWins,
-				dayGames 	= dayGames,
-				dayWins 	= dayWins,
-			}
-		end
-	end
-
-	InspectPVPFrame.Ladder:UpdatePlayerInfo()
-end
-
-local bracketOverride = {
+local BRACKET_OVERRIDE = {
 	[0] = 3,
 	[1] = 2,
 	[2] = 1,
 	[3] = 5
 }
 
-function EventHandler:ASMSG_AR_LAST_INSPECT_REPLAYS( msg )
-	local replayStorage 	= C_Split(msg, "|")
-	local bracketID		 	= tonumber(table.remove(replayStorage, 1))
+function EventHandler:ASMSG_AR_LAST_INSPECT_REPLAYS(msg)
+	local bracketID, replayListStr = string.split("|", msg, 2)
+	bracketID = tonumber(bracketID)
+
+	if not bracketID then
+		table.wipe(InspectPVPFrame.Ladder.replayData)
+		FireCustomClientEvent("INSPECT_REPLAY_LIST_UPDATE")
+		return
+	end
 
 	if bracketID == 5 then
 		bracketID = 2
 	end
 
-	local playerWithRequest = InspectPVPFrame.Ladder:GetPlayerWithRequest()
-
-	InspectPVPFrame.Ladder.replayData[bracketID] = {}
-
-	if replayStorage then
-		for index, replayMsg in pairs(replayStorage) do
-			local replayData 	= C_Split(replayMsg, ":")
-			local replayID 		= tonumber(table.remove(replayData, 1))
-			local winnerTeam 	= tonumber(table.remove(replayData, 3))
-
-			local winTeam 	= 1
-			local lossTeam 	= 2
-
-			if winnerTeam ~= 2 then
-				if winnerTeam == 1 then
-					winTeam 	= 1
-					lossTeam 	= 2
-				else
-					winTeam 	= 2
-					lossTeam 	= 1
-				end
-			end
-
-			local team1Data 	= C_Split(replayData[winTeam], ",")
-			local team2Data 	= C_Split(replayData[lossTeam], ",")
-			local rating 		= C_Split(replayData[3], ",")
-
-			InspectPVPFrame.Ladder.replayData[bracketID][index] = {
-				replayID 	= replayID,
-				winnerTeam 	= winnerTeam,
-				bracket 	= bracketOverride[bracketID],
-				team1Rating = rating[winTeam],
-				team2Rating = rating[lossTeam],
-			}
-
-			InspectPVPFrame.Ladder.replayData[bracketID][index].players = {
-				[1] = {},
-				[2] = {}
-			}
-
-			for i = 1, #team1Data, 2 do
-				local team1PlayerName 						= team1Data[i]
-				local team1ClassID 							= max(1, team1Data[i + 1])
-				local team1ClassName, team1ClassFileString 	= GetClassInfo(tonumber(team1ClassID))
-
-				local team2PlayerName 						= team2Data[i]
-				local team2ClassID 							= max(1, team2Data[i + 1])
-				local team2ClassName, team2ClassFileString 	= GetClassInfo(tonumber(team2ClassID))
-
-				table.insert(InspectPVPFrame.Ladder.replayData[bracketID][index].players[1], {
-					name 			= team1PlayerName,
-					className 		= team1ClassName,
-					classFileString = team1ClassFileString
-				})
-
-				table.insert(InspectPVPFrame.Ladder.replayData[bracketID][index].players[2], {
-					name 			= team2PlayerName,
-					className 		= team2ClassName,
-					classFileString = team2ClassFileString
-				})
-
-				if playerWithRequest then
-					if playerWithRequest == team1PlayerName then
-						InspectPVPFrame.Ladder.replayData[bracketID][index].playerTeam = 0
-					elseif playerWithRequest == team2PlayerName then
-						InspectPVPFrame.Ladder.replayData[bracketID][index].playerTeam = 1
-					end
-				end
-			end
-		end
+	if not InspectPVPFrame.Ladder.replayData[bracketID] then
+		InspectPVPFrame.Ladder.replayData[bracketID] = {}
+	else
+		table.wipe(InspectPVPFrame.Ladder.replayData[bracketID])
 	end
 
-	InspectPVPFrame.Ladder:HideLoadingSpinner()
-	InspectPVPFrame.Ladder:UpdateScrollFrame()
+	if not replayListStr or replayListStr == "" then
+		FireCustomClientEvent("INSPECT_REPLAY_LIST_UPDATE")
+		return
+	end
+
+	local playerWithRequest = InspectFrame.unit and UnitName(InspectFrame.unit)
+
+	for index, replayEntryStr in ipairs({StringSplitEx("|", replayListStr)}) do
+		local replayID, team1Str, team2Str, winnerTeam, ratingStr = StringSplitEx(":", replayEntryStr)
+		replayID = tonumber(replayID)
+		winnerTeam = tonumber(winnerTeam)
+
+		local team1Data = {StringSplitEx(",", team1Str)}
+		local team2Data = {StringSplitEx(",", team2Str)}
+		local rating = {StringSplitEx(",", ratingStr)}
+
+		local winTeam = 1
+		local lossTeam = 2
+
+		if winnerTeam == 0 then
+			winTeam = 2
+			lossTeam = 1
+			team1Data, team2Data = team2Data, team1Data
+		end
+
+		local replayEntry = {
+			replayID 	= replayID,
+			winnerTeam 	= winnerTeam,
+			bracket 	= BRACKET_OVERRIDE[bracketID],
+			team1Rating = rating[winTeam],
+			team2Rating = rating[lossTeam],
+			players = {
+				[1] = {},
+				[2] = {},
+			},
+		}
+
+		for i = 1, #team1Data, 2 do
+			local team1PlayerName 						= team1Data[i]
+			local team1ClassID 							= max(1, team1Data[i + 1])
+			local team1ClassName, team1ClassFileString 	= GetClassInfo(tonumber(team1ClassID))
+
+			local team2PlayerName 						= team2Data[i]
+			local team2ClassID 							= max(1, team2Data[i + 1])
+			local team2ClassName, team2ClassFileString 	= GetClassInfo(tonumber(team2ClassID))
+
+			table.insert(replayEntry.players[1], {
+				name 			= team1PlayerName,
+				className 		= team1ClassName,
+				classFileString = team1ClassFileString
+			})
+
+			table.insert(replayEntry.players[2], {
+				name 			= team2PlayerName,
+				className 		= team2ClassName,
+				classFileString = team2ClassFileString
+			})
+
+			if playerWithRequest == team1PlayerName then
+				replayEntry.playerTeam = 0
+			elseif playerWithRequest == team2PlayerName then
+				replayEntry.playerTeam = 1
+			end
+		end
+
+		InspectPVPFrame.Ladder.replayData[bracketID][index] = replayEntry
+	end
+
+	FireCustomClientEvent("INSPECT_REPLAY_LIST_UPDATE")
 end

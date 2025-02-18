@@ -43,7 +43,7 @@ local function setOriginalFaction(factionID)
 	ORIGINAL_FACTION_ID = factionID
 
 	if not GetSafeCVar("originalFaction") then
-		RegisterCVar("originalFaction", factionID)
+		RegisterCVar("originalFaction", "")
 	end
 
 	SetSafeCVar("originalFaction", factionID)
@@ -53,7 +53,7 @@ local function setFactionOverride(factionID)
 	OVERRIDE_FACTION_ID = factionID
 
 	if not GetSafeCVar("factionOverride") then
-		RegisterCVar("factionOverride", factionID)
+		RegisterCVar("factionOverride", "")
 	end
 
 	SetSafeCVar("factionOverride", factionID)
@@ -104,12 +104,12 @@ function C_FactionManagerMixin:ASMSG_PLAYER_FACTION_CHANGE(msg)
 	setOriginalFaction(PLAYER_FACTION_GROUP[SERVER_PLAYER_FACTION_GROUP[tonumber(originalFactionID)]])
 	setFactionOverride(PLAYER_FACTION_GROUP[SERVER_PLAYER_FACTION_GROUP[tonumber(factionID)]])
 	fireCallbacks()
+	EventRegistry:TriggerEvent("PlayerFaction.Update")
 end
 
 ---@class C_FactionManager : C_FactionManagerMixin
 C_FactionManager = CreateFromMixins(C_FactionManagerMixin)
 C_FactionManager:OnLoad()
-
 
 function C_FactionManager:RegisterFactionOverrideCallback(callback, isNeedRunning, persistent)
 	C_FactionManager.RegisterCallback(callback, isNeedRunning, persistent)
@@ -123,23 +123,23 @@ function C_FactionManager.RegisterCallback(callback, shouldExecute, persistent)
 		error("Usage: C_FactionManager.RegisterCallback(callback, [shouldExecute, persistent])")
 	end
 
-	if shouldExecute then
-		callback()
+	local callbackData
+	if persistent then
+		callbackData = {callback, persistent}
+	else
+		callbackData = callback
 	end
 
-	if not OVERRIDE_FACTION_ID then
-		local callbackData = persistent and {callback, persistent} or callback
+	if issecure() then
+		table.insert(secureCallbacks, callbackData)
+	else
+		table.insert(addonCallbacks, callbackData)
+	end
 
-		if persistent then
-			callbackData = {callback, persistent}
-		else
-			callbackData = callback
-		end
-
-		if issecure() then
-			table.insert(secureCallbacks, callbackData)
-		else
-			table.insert(addonCallbacks, callbackData)
+	if shouldExecute then
+		local success, err = securecall(pcall, callback)
+		if not success then
+			geterrorhandler()(err)
 		end
 	end
 end
@@ -156,28 +156,27 @@ function C_FactionManager.UnregisterCallback(callback)
 	end
 end
 
-function C_FactionManager.GetOriginalFactionCVar()
-	local cVarOriginalFaction = GetSafeCVar("originalFaction")
-
-	cVarOriginalFaction = tonumber(cVarOriginalFaction or "-1")
-
-	if cVarOriginalFaction == -1 then
-		cVarOriginalFaction = nil
+function C_FactionManager.IsFactionDataAvailable()
+	if GetSafeCVar("originalFaction", "") ~= "" and GetSafeCVar("factionOverride", "") ~= "" then
+		return true
 	end
+	return false
+end
 
-	return cVarOriginalFaction
+function C_FactionManager.GetOriginalFactionCVar()
+	local factionID = GetSafeCVar("originalFaction", "")
+	if factionID == "" then
+		return
+	end
+	return tonumber(factionID)
 end
 
 function C_FactionManager.GetFactionOverrideCVar()
-	local cVarFactionOverride = GetSafeCVar("factionOverride")
-
-	cVarFactionOverride = tonumber(cVarFactionOverride or "-1")
-
-	if cVarFactionOverride == -1 then
-		cVarFactionOverride = nil
+	local factionID = GetSafeCVar("factionOverride", "")
+	if factionID == "" then
+		return
 	end
-
-	return cVarFactionOverride
+	return tonumber(factionID)
 end
 
 ---@return integer factionID
@@ -200,7 +199,7 @@ function C_FactionManager.GetFactionInfoOriginal()
 	local _, _, raceID = UnitRace("player")
 
 	if raceID == E_CHARACTER_RACES.RACE_DRACTHYR then
-		local factionID = C_FactionManager:GetOriginalFaction()
+		local factionID = C_FactionManager.GetOriginalFaction()
 		if factionID then
 			return returnFactionInfo(factionID)
 		end
@@ -220,3 +219,8 @@ function C_FactionManager.GetFactionInfoOverride()
 		return returnFactionInfo(factionID)
 	end
 end
+
+local FireClientEvent = FireClientEvent
+C_FactionManager.RegisterCallback(function()
+	FireClientEvent("UNIT_FACTION", "player")
+end, false, true)

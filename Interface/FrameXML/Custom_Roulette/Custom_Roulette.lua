@@ -1,3 +1,5 @@
+local C_StoreSecure = C_StoreSecure
+
 UIPanelWindows["Custom_RouletteFrame"] = { area = "center",	pushable = 0,	whileDead = 1 }
 
 RouletteFrameMixin = {}
@@ -6,7 +8,7 @@ enum:E_ROULETTE_STAGE {
     "STOP",
     "STARTING",
     "PLAYING",
-    "FINISH",
+    "PREFINISH",
     "FINISHING",
     "FINISHED"
 }
@@ -15,6 +17,8 @@ enum:E_ROULETTE_CURRENCY {
 	"LUCKY_COIN",
 	"BONUS",
 }
+
+local RING_ON_LUCK = 90860
 
 function RouletteFrameMixin:OnLoad()
     self:RegisterEventListener()
@@ -29,6 +33,8 @@ function RouletteFrameMixin:OnLoad()
 
     local nineSliceLayout = NineSliceUtil.GetLayout("Roulette")
     NineSliceUtil.ApplyLayout(self, nineSliceLayout)
+
+	self.Background:SetAtlas("Roulette-Background", true)
 
     self.TopBorder:SetAtlas("Roulette-top-corner", true)
     self.BottomBorder:SetAtlas("Roulette-bottom-corner", true)
@@ -54,21 +60,19 @@ function RouletteFrameMixin:OnLoad()
     self.RightBorder:SetPoint("TOPRIGHT", self.TopRightCorner, "BOTTOMRIGHT", -8.6, 1)
     self.RightBorder:SetPoint("BOTTOMRIGHT", self.BotRightCorner, "TOPRIGHT", 0, 0)
 
-    self.currencyFrameElapsed   = 0
-    self.selectedCurrency       = 1
+	self.stage = E_ROULETTE_STAGE.STOP
+	self.currencyFrameElapsed = 0
+	self.selectedCurrency = 1
 
-    self.marging                = 0
-    self.blockSize              = math.floor(self.itemButtons[1]:GetWidth()) + self.marging
-    self.totalSize              = self.blockSize * #self.itemButtons
-    self.speedLimit             = 14
-
-    self.ringOfLuckItemEntry    = 90860
+	self.marging = 0
+	self.cardWidth = math.floor(self.itemButtons[1]:GetWidth()) + self.marging
+	self.cardHolderWidth = self.cardWidth * #self.itemButtons
 
     self.rewardDataAssociate =  {}
     self.rewardQualityMap    =  {}
     self.rewardButtons       = {}
 
-    self.ToggleCurrencyFrame.currencyButtons[2].Text:SetFormattedText(STORE_PREMIUM_PRICE_FORMAT, 0)
+	self.ToggleCurrencyFrame.currencyButtons[2].Text:SetFormattedText(STORE_CURRENCY_BONUS_FORMAT, 0)
 end
 
 function RouletteFrameMixin:OnShow()
@@ -82,23 +86,21 @@ function RouletteFrameMixin:OnHide()
 end
 
 ---@param event string
-function RouletteFrameMixin:OnEvent( event )
+function RouletteFrameMixin:OnEvent(event, ...)
     if event == "CURRENCY_DISPLAY_UPDATE" then
-        self.ToggleCurrencyFrame.currencyButtons[1].Text:SetFormattedText(ROULETTE_LUCKY_COIN_BUTTON_TEXT, 0)
-
-        for i = 1, GetCurrencyListSize() do
-            local _, _, _, _, _, count, _, _, itemID = GetCurrencyListInfo(i)
-
-            if itemID == 280511 then
-                self.ToggleCurrencyFrame.currencyButtons[1].Text:SetFormattedText(ROULETTE_LUCKY_COIN_BUTTON_TEXT, count)
-                self.currentLuckiCoin = count
-
-                self:UpdateSpinButton()
-                break
-            end
-        end
+		local amount = GetItemCount(280511)
+		if self.currentLuckiCoin ~= amount then
+			self.currentLuckiCoin = amount
+			self.ToggleCurrencyFrame.currencyButtons[1].Text:SetFormattedText(ROULETTE_LUCKY_COIN_BUTTON_TEXT, amount)
+			self:UpdateSpinButton()
+		end
 	elseif event == "STORE_BALANCE_UPDATE" then
-		self:UpdateBalance()
+		local bonus = C_StoreSecure.GetBalance(Enum.Store.CurrencyType.Bonus)
+		if self.currentBonuses ~= bonus then
+			self.currentBonuses = bonus
+			self.ToggleCurrencyFrame.currencyButtons[2].Text:SetFormattedText(STORE_CURRENCY_BONUS_FORMAT, bonus)
+			self:UpdateSpinButton()
+		end
     elseif event == "VARIABLES_LOADED" then
 		local info = C_CacheInstance:Get("ASMSG_LOTTERY_INFO")
 		if info and #info > 0 then
@@ -109,7 +111,16 @@ function RouletteFrameMixin:OnEvent( event )
     end
 end
 
+function RouletteFrameMixin:HasItems()
+	return self.rewardData and #self.rewardData > 0
+end
+
 function RouletteFrameMixin:UpdateSpinButton()
+	if not self:HasItems() then
+		self.SpinButton:SetEnabled(false)
+		return
+	end
+
 	local selectedCurrency = self:GetSelectedCurrency()
 	local isEnabled, rollPrice
 
@@ -118,9 +129,9 @@ function RouletteFrameMixin:UpdateSpinButton()
 		rollPrice = 1
 		isEnabled = self.currentLuckiCoin and self.currentLuckiCoin >= rollPrice
 	elseif selectedCurrency == E_ROULETTE_CURRENCY.BONUS then
-		self.SpinButton.PriceText:SetFormattedText(_G[string.format("ROULETTE_CURRENCY_PRICE_TITLE_%d", selectedCurrency)], self.bonusPrice)
+		self.SpinButton.PriceText:SetFormattedText(_G[string.format("ROULETTE_CURRENCY_PRICE_TITLE_%d", selectedCurrency)], self.bonusPrice or 999)
 		rollPrice = self.bonusPrice or 999
-		isEnabled = self.currentBonuses and self.currentBonuses >= rollPrice
+		isEnabled = C_Service.IsInGMMode() or (self.currentBonuses and self.currentBonuses >= rollPrice)
 	end
 
 	local color = isEnabled and HIGHLIGHT_FONT_COLOR or CreateColor(0.8, 0.8, 0.8)
@@ -196,13 +207,13 @@ function RouletteFrameMixin:CurrencyFrameUpdate( elapsed )
     local startOffset       = selectedCurrency == E_ROULETTE_CURRENCY.LUCKY_COIN and 76 or -76
     local endOfset          = selectedCurrency == E_ROULETTE_CURRENCY.LUCKY_COIN and -76 or 76
 
+	self.currencyFrameElapsed = self.currencyFrameElapsed + elapsed
+
     local xOffset = C_outCirc(self.currencyFrameElapsed, startOffset, endOfset, 0.300)
 
     self.ToggleCurrencyFrame.CurrencySelector:SetPoint("CENTER", xOffset, 0)
 
-    self.currencyFrameElapsed = self.currencyFrameElapsed + elapsed
-
-    if self.currencyFrameElapsed > 0.300 then
+	if self.currencyFrameElapsed >= 0.300 then
         self.toggleAnimation        = false
         self.currencyFrameElapsed   = 0
 
@@ -244,16 +255,15 @@ end
 function RouletteFrameMixin:Initialize()
     self.stage = E_ROULETTE_STAGE.STOP
 
-    self.timer              = 0
-    self.speed              = 0
+	self.elapsed = 0
+	self.speedFactor = 0
+	self.totalOffset = 0
+	self.rewardCardOffset = 0
+	self.currentCardID = 0
+	self.rewardCardID = 0
 
-    self.targetOffset       = 0
-    self.targetTimer        = 0
-    self.currentId          = 1
-    self.targetId           = 0
-
-    self.offset             = 0
-    self.lastOffset         = 0
+	self.accelerationTime = 0.5
+	self.maxSpeedPixelPerSecond = 2000
 
     self.items              = {}
     self.blackList          = {}
@@ -292,7 +302,7 @@ function RouletteFrameMixin:Initialize()
 			self.rewardButtons[index]:SetItem(data)
 			self.rewardButtons[index]:SetShown(data)
 
-			self.rewardDataAssociate[string.format("%d:%d:%d", data.itemEntry, data.itemCountMin and data.itemCountMin or 0, data.isJackpot and 1 or 0)] = data
+			self.rewardDataAssociate[string.format("%d:%d:%d", data.itemID, data.amountMin and data.amountMin or 0, data.isJackpot and 1 or 0)] = data
 
 			self.indexes[data] = index
 			self.itemsList[index] = data
@@ -321,102 +331,141 @@ function RouletteFrameMixin:SetFastAnimationState( state )
     self.fastAnimation = state
 end
 
-local TARGET_FPS = 1 / 60
 function RouletteFrameMixin:OnUpdate(elapsed)
 	if self.stage == E_ROULETTE_STAGE.STOP or self.stage == E_ROULETTE_STAGE.FINISHED then
-        return
-    end
+		return
+	end
 
-    for _ = 1, self:isAnimationSkipped() and 30 or 2 do
-        if self.stage == E_ROULETTE_STAGE.STARTING then
-            if self.speed < self.speedLimit then
-                self.speed = (self.speed + 0.1) * 1.025
-            else
-                self.speed = self.speedLimit
-                self:ChangeStage(E_ROULETTE_STAGE.PLAYING)
-            end
-        elseif self.stage == E_ROULETTE_STAGE.FINISH then
-            local rndState = math.random(0, 10)
+	local timeMult = self:isAnimationSkipped() and 15 or 1
+	self.elapsed = self.elapsed + elapsed * timeMult
 
-            if WithinRange(rndState, 0, 3) then
-                self.targetOffset = math.random(-420, 0) / 1000
-            elseif WithinRange(rndState, 4, 6) then
-                self.targetOffset = math.random(-420, 420) / 1000
-            elseif WithinRange(rndState, 7, 10) then
-                self.targetOffset = math.random(0, 420) / 1000
-            end
+	if self.stage == E_ROULETTE_STAGE.STARTING then
+		self.speedFactor = self.elapsed / self.accelerationTime
 
-            self.targetTimer = (math.floor(self.timer / self.totalSize) + 2) * self.totalSize
-            self.targetId = self.currentId + math.abs(math.floor(((self.targetTimer - self.timer) / self.totalSize) * #self.itemButtons))
-            self.targetTimer = self.targetTimer + self.targetOffset * self.blockSize + self.blockSize / 2
-            self.randomSpeed = math.random(500, 600) / 100
+		if self.speedFactor >= 1 then
+			self.speedFactor = 1
+			self:ChangeStage(E_ROULETTE_STAGE.PLAYING)
+		end
+	elseif self.stage == E_ROULETTE_STAGE.PREFINISH then
+		local rndState = math.random(0, 100)
+		local rndRewardOffset
+		local screenDistanceMult
 
-            self:ChangeStage(E_ROULETTE_STAGE.FINISHING)
-        elseif self.stage == E_ROULETTE_STAGE.FINISHING then
-            if self.timer < self.targetTimer then
-                local dist = self.targetTimer - self.timer
-                local offset = dist / (self.speedLimit * self.randomSpeed)
+		if rndState <= 30 then
+			rndRewardOffset = math.random(-420, 0) / 1000
+		elseif rndState <= 70 then
+			rndRewardOffset = math.random(-420, 420) / 1000
+		else
+			rndRewardOffset = math.random(0, 420) / 1000
+		end
 
-                self.speed = math.min(offset + 0.1, self.speedLimit)
-            else
-                self.speed = 0
-                self.timer = self.targetTimer
+		if GetFramerate() >= 60 then
+			if self:isAnimationSkipped() then
+				screenDistanceMult = math.random(14, 20)
+			else
+				screenDistanceMult = math.random(8, 18)
+			end
+		else
+			if self:isAnimationSkipped() then
+				screenDistanceMult = math.random(14, 20)
+			else
+				screenDistanceMult = math.random(8, 16)
+			end
+		end
 
-                self:ChangeStage(E_ROULETTE_STAGE.FINISHED)
-            end
-        end
+		local speedScreenRatio = self.cardHolderWidth / self.maxSpeedPixelPerSecond
+		local rewardScreenDistance = math.floor(speedScreenRatio * screenDistanceMult)
+		local baseRewardOffset = (math.floor(self.totalOffset / self.cardHolderWidth) + rewardScreenDistance) * self.cardHolderWidth
 
-		self.timer = self.timer + self.speed
+		self.rewardCardID = self.currentCardID + math.abs(math.floor((baseRewardOffset - self.totalOffset) / self.cardHolderWidth * #self.itemButtons))
+		self.rewardCardOffset = baseRewardOffset + rndRewardOffset * self.cardWidth + self.cardWidth / 2
+		self.rewardCardDistance = self.rewardCardOffset - self.totalOffset
 
-        self.lastOffset = self.offset
-        self.offset = (self.timer % self.blockSize)
+		self:ChangeStage(E_ROULETTE_STAGE.FINISHING)
+	end
+	if self.stage == E_ROULETTE_STAGE.FINISHING then
+		local rewardDistanceLeft = self.rewardCardOffset - self.totalOffset + 8
+		local distLeftProgress = outSine(rewardDistanceLeft, 0, 1, self.rewardCardDistance)
+		self.speedFactor = distLeftProgress * timeMult
+	end
 
-        if self.stage ~= E_ROULETTE_STAGE.FINISHED then
-            if self.lastOffset > self.offset then
-                self.currentId = self.currentId + 1
+	local pixelsPerSecond = self.maxSpeedPixelPerSecond * self.speedFactor
+	local tickOffset = (elapsed * pixelsPerSecond)
+	local newOffset = self.totalOffset + tickOffset
+	local done
 
-                local item = self:GetRandomReward()
+	if self.stage == E_ROULETTE_STAGE.FINISHING and newOffset >= self.rewardCardOffset then
+		newOffset = self.rewardCardOffset
+		done = true
+	end
 
-                if self.stage == E_ROULETTE_STAGE.FINISHING then
-                    local targetId = self.targetId - self.currentId
+	local currentOffset = self.totalOffset
+	local buttonOffset = newOffset % self.cardWidth
+	local lastButtonID = math.floor(currentOffset / self.cardWidth)
+	local currentButtonID = math.floor(newOffset / self.cardWidth)
 
-                    if targetId == 3 then
-                        if not self.winnerRewardData then
-                            local color = RED_FONT_COLOR
-                            UIErrorsFrame:AddMessage(ROULETTE_ERROR_UNKNOWN, color.r, color.g, color.b)
+	self.totalOffset = newOffset
+	self.itemButtons[1]:SetPoint("LEFT", -buttonOffset, 0)
 
-                            HideUIPanel(self)
-                        end
+	if lastButtonID ~= currentButtonID then
+		local invert = lastButtonID > currentButtonID
+		local diff = invert and (lastButtonID - currentButtonID) or (currentButtonID - lastButtonID)
+		local iter = invert and -1 or 1
 
-                        item = self.winnerRewardData
-                    end
-                end
+		for i = 1, diff do
+			self.currentCardID = self.currentCardID + iter
 
-                table.remove(self.items, 1)
-                table.insert(self.items, item)
+			local item
 
-                for i=1, #self.itemButtons do
-                    local rewardData    = self.items[i]
-                    local button        = self.itemButtons[i]
+			if self.stage == E_ROULETTE_STAGE.FINISHING then
+				if self.rewardCardID - self.currentCardID == 3 then
+					if self.winnerRewardData then
+						item = self.winnerRewardData
+					else
+						local color = RED_FONT_COLOR
+						UIErrorsFrame:AddMessage(ROULETTE_ERROR_UNKNOWN, color.r, color.g, color.b)
+						HideUIPanel(self)
+						return
+					end
+				end
+			end
 
-                    if self.winnerRewardData == rewardData then
-                        self.winnerButton = button
-                    end
+			if not item then
+				item = self:GetRandomReward()
+			end
 
-                    button:SetItem(rewardData)
-                end
-            end
-        end
+			if invert then
+				table.remove(self.items)
+				table.insert(self.items, 1, item)
+			else
+				table.remove(self.items, 1)
+				table.insert(self.items, item)
+			end
+		end
 
-        self.itemButtons[1]:SetPoint("LEFT", -self.offset, 0)
-    end
+		for index, button in ipairs(self.itemButtons) do
+			local rewardData = self.items[index]
+			if self.winnerRewardData == rewardData then
+				self.winnerButton = button
+			end
+
+			button:SetID(currentButtonID - 5 + index)
+			button:SetItem(rewardData)
+		end
+	end
+
+	if done then
+		self:ChangeStage(E_ROULETTE_STAGE.FINISHED)
+	end
 end
 
 function RouletteFrameMixin:Start()
     if self.stage == E_ROULETTE_STAGE.STOP or self.stage == E_ROULETTE_STAGE.FINISHED then
-        self.timer = (self.timer % self.blockSize)
+		self.totalOffset = (self.totalOffset % self.cardWidth)
+		self.elapsed = (self.elapsed % 1)
+		self.speedFactor = 0
 
-        self.currentId = 1
+		self.currentCardID = self.totalOffset > 0 and 1 or 0
 
         self:ChangeStage(E_ROULETTE_STAGE.STARTING)
     end
@@ -424,11 +473,15 @@ end
 
 function RouletteFrameMixin:Stop()
     if self.stage == E_ROULETTE_STAGE.PLAYING then
-        self:ChangeStage(E_ROULETTE_STAGE.FINISH)
+        self:ChangeStage(E_ROULETTE_STAGE.PREFINISH)
     end
 end
 
 function RouletteFrameMixin:Reset()
+	if not self:HasItems() then
+		return
+	end
+
     if self.requestReward then
         self:UpdateSpinButton()
         self.requestReward = false
@@ -443,18 +496,18 @@ end
 
 function RouletteFrameMixin:SpinButtonOnClick()
     for i = 11, 12 do
-        if GetInventoryItemID("player", i) == self.ringOfLuckItemEntry then
+		if GetInventoryItemID("player", i) == RING_ON_LUCK then
             self.ringOfLuckEquipment = true
             break
         end
     end
 
-    local selectedCurrency = self:GetSelectedCurrency()
-    SendServerMessage("ACMSG_LOTTERY_PLAY", selectedCurrency == E_ROULETTE_CURRENCY.LUCKY_COIN and 1 or 0)
-
     if self.winnerButton then
         self.winnerButton:HideWinnerEffect()
     end
+
+	local selectedCurrency = self:GetSelectedCurrency()
+	SendServerMessage("ACMSG_LOTTERY_PLAY", selectedCurrency == E_ROULETTE_CURRENCY.LUCKY_COIN and 1 or 0)
 end
 
 ---@return boolean ringOfLuckEquipment
@@ -465,6 +518,8 @@ end
 ---@param newStage number
 function RouletteFrameMixin:ChangeStage(newStage, skipFinishingEffect)
     self.stage = newStage
+
+	self.SkipAnimation:SetEnabled(self.stage == E_ROULETTE_STAGE.STOP or self.stage == E_ROULETTE_STAGE.FINISHED)
 
     if self.stage == E_ROULETTE_STAGE.STARTING then
         self.WinnerEffectFrame:StopAnim()
@@ -499,104 +554,84 @@ function RouletteFrameMixin:ChangeStage(newStage, skipFinishingEffect)
     end
 end
 
-function RouletteFrameMixin:UpdateBalance()
-	local bonus = Store_GetBalance(Enum.Store.CurrencyType.Bonus)
-    self.ToggleCurrencyFrame.currencyButtons[2].Text:SetFormattedText(STORE_PREMIUM_PRICE_FORMAT, bonus)
-    self.currentBonuses = bonus
-
-    self:UpdateSpinButton()
-end
+local CLOSE_STATUS = {
+	ROULETTE_ERROR_SUSPECT,
+	ROULETTE_ERROR_OUT_RANGE,
+	ROULETTE_ERROR_NOT_ENOUGHT_BONUSES,
+	ROULETTE_ERROR_NOT_ENOUGHT_LUCKY_COINS
+}
 
 function RouletteFrameMixin:ASMSG_LOTTERY_OPEN()
-    if not self:IsShown() then
-        ShowUIPanel(self)
-    end
+	ShowUIPanel(self)
 end
 
-enum:E_LOTTERY_CLOSE_ERRORS {
-    ROULETTE_ERROR_SUSPECT,
-    ROULETTE_ERROR_OUT_RANGE,
-    ROULETTE_ERROR_NOT_ENOUGHT_BONUSES,
-    ROULETTE_ERROR_NOT_ENOUGHT_LUCKY_COINS
-}
+function RouletteFrameMixin:ASMSG_LOTTERY_CLOSE(msg)
+	local errorMsg = CLOSE_STATUS[tonumber(msg)]
 
-function RouletteFrameMixin:ASMSG_LOTTERY_CLOSE( msg )
-    local errorMsg  = E_LOTTERY_CLOSE_ERRORS[tonumber(msg)]
-    local color     = RED_FONT_COLOR
+	if errorMsg then
+		UIErrorsFrame:AddMessage(errorMsg, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b)
+	end
 
-    if errorMsg then
-        UIErrorsFrame:AddMessage(errorMsg, color.r, color.g, color.b)
-    end
-
-    if self:IsShown() then
-        HideUIPanel(self)
-    end
+	HideUIPanel(self)
 end
-
-enum:E_LOTTERY_LOTTERY_REWARD {
-    "ENTRY",
-    "MIN",
-    "ISJACKPOT"
-}
-
-enum:E_LOTTERY_REWARDS_LIST {
-    "ENTRY",
-    "MIN",
-    "MAX",
-    "ISJACKPOT",
-    "QUALITY"
-}
 
 function RouletteFrameMixin:ASMSG_LOTTERY_REWARD(msg)
-    local rewardData = C_Split(msg, ":")
+	local itemID, amount, isJackpot = string.split(":", msg)
+	local quality = Custom_RouletteFrame.rewardDataAssociate[msg] and Custom_RouletteFrame.rewardDataAssociate[msg].quality or 1
 
-    if rewardData and #rewardData == 3 then
-        self.winnerRewardData = {
-            itemEntry      = tonumber(rewardData[E_LOTTERY_LOTTERY_REWARD.ENTRY]),
-            itemCountMin   = tonumber(rewardData[E_LOTTERY_LOTTERY_REWARD.MIN]),
-            isJackpot      = tonumber(rewardData[E_LOTTERY_LOTTERY_REWARD.ISJACKPOT]) ~= 0,
-            quality        = Custom_RouletteFrame.rewardDataAssociate[msg] and Custom_RouletteFrame.rewardDataAssociate[msg].quality or 1
-        }
+	if isJackpot then
+		self.winnerRewardData = {
+			itemID = tonumber(itemID),
+			amount = tonumber(amount),
+			quality = quality,
+			isJackpot = isJackpot == "1",
+		}
 
-        if self:IsShown() then
-            self:Start()
-        end
-    end
+		if self:IsShown() then
+			self:Start()
+		end
+	end
+end
+
+local sortByQuality = function(a, b)
+	return a.quality < b.quality
 end
 
 function RouletteFrameMixin:ASMSG_LOTTERY_INFO(msg)
 	local bonusPrice, itemListStr = string.split("|", msg, 2)
-	local splitData = C_Split(itemListStr, "|")
-    local buffer    = {}
 
-    for _, data in pairs(splitData) do
-        local rewardData = C_Split(data, ",")
-        local itemEntry  = rewardData[E_LOTTERY_REWARDS_LIST.ENTRY]
+	if itemListStr == "" then
+		return
+	end
 
-		local name = C_Item.GetItemInfoRaw(itemEntry)
+	local itemList = {}
+
+	for index, itemStr in ipairs({string.split("|", (itemListStr:gsub("|$", "")))}) do
+		local itemID, amountMin, amountMax, isJackpot, quality = string.split(",", itemStr)
+		itemID = tonumber(itemID)
+
+		local name = C_Item.GetItemInfoRaw(itemID)
 		if not name then
-			C_Item.RequestServerCache(itemEntry)
+			C_Item.RequestServerCache(itemID)
 		end
 
-        table.insert(buffer, {
-            itemEntry      = tonumber(itemEntry),
-            itemCountMin   = tonumber(rewardData[E_LOTTERY_REWARDS_LIST.MIN]),
-            itemCountMax   = tonumber(rewardData[E_LOTTERY_REWARDS_LIST.MAX]),
-            isJackpot      = tonumber(rewardData[E_LOTTERY_REWARDS_LIST.ISJACKPOT]) ~= 0,
-            quality        = tonumber(rewardData[E_LOTTERY_REWARDS_LIST.QUALITY]),
-        })
-    end
+		table.insert(itemList, {
+			itemID		= itemID,
+			amountMin	= tonumber(amountMin),
+			amountMax	= tonumber(amountMax),
+			isJackpot	= isJackpot == "1",
+			quality		= tonumber(quality) or 1,
+		})
+	end
 
-    table.sort(buffer, function(a, b)
-        return a.quality < b.quality
-    end)
+	table.sort(itemList, sortByQuality)
 
 	self.bonusPrice = tonumber(bonusPrice)
-	buffer[0] = self.bonusPrice
+	itemList[0] = self.bonusPrice
 
-	C_CacheInstance:Set("ASMSG_LOTTERY_INFO", buffer)
+	C_CacheInstance:Set("ASMSG_LOTTERY_INFO", itemList)
 
-	if #buffer > 0 then
+	if #itemList > 0 then
 		self:Initialize()
 	end
 end
@@ -663,55 +698,56 @@ end
 ---@param itemInfo table
 function RouletteItemButtonMixin:SetItem( itemInfo )
     if itemInfo then
-		local function ItemInfoResponceCallback(_, itemName, itemLink, _, _, _, _, _, _, _, itemTexture)
-            self.itemLink = itemLink
-
-            self.OverlayFrame.ChildFrame.ItemName:SetText(itemName)
-            SetPortraitToTexture(self.OverlayFrame.ChildFrame.Icon, itemTexture)
-        end
-
         self:SetQuality(itemInfo.quality)
 
-        if itemInfo.itemEntry == -1 or itemInfo.itemEntry == -2 then
-            local function UpdateFaction()
+        if itemInfo.itemID == -1 or itemInfo.itemID == -2 then
+            local function updateFaction()
                 local unitFaction   = UnitFactionGroup("player")
 
-                if itemInfo.itemEntry == -1 then
+                if itemInfo.itemID == -1 then
                     SetPortraitToTexture(self.OverlayFrame.ChildFrame.Icon, "Interface\\ICONS\\PVPCurrency-Honor-"..unitFaction)
                 else
                     SetPortraitToTexture(self.OverlayFrame.ChildFrame.Icon, "Interface\\ICONS\\PVPCurrency-Conquest-"..unitFaction)
                 end
             end
 
-            C_FactionManager:RegisterFactionOverrideCallback(UpdateFaction, true)
+            C_FactionManager:RegisterFactionOverrideCallback(updateFaction, true)
 
             self.itemLink       = nil
-            self.tooltipHeader  = itemInfo.itemEntry == -1 and HONOR_POINTS or ARENA_POINTS
-            self.tooltipText    = itemInfo.itemEntry == -1 and TOOLTIP_HONOR_POINTS or TOOLTIP_ARENA_POINTS
+            self.tooltipHeader  = itemInfo.itemID == -1 and HONOR_POINTS or ARENA_POINTS
+            self.tooltipText    = itemInfo.itemID == -1 and TOOLTIP_HONOR_POINTS or TOOLTIP_ARENA_POINTS
 
-            self.OverlayFrame.ChildFrame.ItemName:SetText(itemInfo.itemEntry == -1 and HONOR_POINTS or ARENA_POINTS)
+            self.OverlayFrame.ChildFrame.ItemName:SetText(itemInfo.itemID == -1 and HONOR_POINTS or ARENA_POINTS)
         else
-			local itemName, itemLink, _, _, _, _, _, _, _, itemTexture = C_Item.GetItemInfo(itemInfo.itemEntry, false, ItemInfoResponceCallback)
+			local function itemInfoResponceCallback(_, itemName, itemLink, _, _, _, _, _, _, _, itemTexture)
+				self.itemLink = itemLink
+
+				self.OverlayFrame.ChildFrame.ItemName:SetText(itemName)
+				SetPortraitToTexture(self.OverlayFrame.ChildFrame.Icon, itemTexture)
+			end
+
+			local itemName, itemLink, _, _, _, _, _, _, _, itemTexture = C_Item.GetItemInfo(itemInfo.itemID, false, itemInfoResponceCallback, true)
 
             if itemName then
-				ItemInfoResponceCallback(nil, itemName, itemLink, nil, nil, nil, nil, nil, nil, nil, itemTexture)
+				itemInfoResponceCallback(nil, itemName, itemLink, nil, nil, nil, nil, nil, nil, nil, itemTexture)
             else
-				ItemInfoResponceCallback(nil, TOOLTIP_UNIT_LEVEL_ILEVEL_LOADING_LABEL, "Hitem:1", nil, nil, nil, nil, nil, nil, nil, "Interface\\ICONS\\INV_Misc_QuestionMark")
+				itemInfoResponceCallback(nil, LOADING_LABEL, "Hitem:1", nil, nil, nil, nil, nil, nil, nil, "Interface\\ICONS\\INV_Misc_QuestionMark")
             end
         end
 
         self:SetJackpot(itemInfo.isJackpot)
 
-        if itemInfo.itemCountMax then
-            if itemInfo.itemCountMin == itemInfo.itemCountMax then
-                self.OverlayFrame.ChildFrame.ItemCount:SetText(itemInfo.itemCountMin)
+        if itemInfo.amountMax then
+            if itemInfo.amountMin == itemInfo.amountMax then
+                self.OverlayFrame.ChildFrame.ItemCount:SetText(itemInfo.amountMin)
             else
-                self.OverlayFrame.ChildFrame.ItemCount:SetText(itemInfo.itemCountMin.. " - " ..itemInfo.itemCountMax)
+                self.OverlayFrame.ChildFrame.ItemCount:SetFormattedText("%s - %s", itemInfo.amountMin, itemInfo.amountMax)
             end
         else
-            self.OverlayFrame.ChildFrame.ItemCount:SetText(itemInfo.itemCountMin)
+            self.OverlayFrame.ChildFrame.ItemCount:SetText(itemInfo.amountMin or itemInfo.amount)
         end
 
-        self.OverlayFrame.ChildFrame.ItemCount:SetShown(itemInfo.itemCountMin and itemInfo.itemCountMin > 1)
+		local amount = itemInfo.amountMin or itemInfo.amount
+        self.OverlayFrame.ChildFrame.ItemCount:SetShown(amount and amount > 1)
     end
 end

@@ -1,0 +1,451 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_CharacterCustomize.lua"/>
+
+	<GameTooltip name="CharCustomizeTooltipTemplate" inherits="SharedTooltipTemplate, DefaultScaleFrame" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, DefaultScaleFrameMixin)
+				self.maxScale = CHAR_CUSTOMIZE_MAX_SCALE
+				self:OnDefaultScaleFrameLoad()
+				SharedTooltip_OnLoad(self)
+			</OnLoad>
+		</Scripts>
+	</GameTooltip>
+
+	<GameTooltip name="CharCustomizeNoHeaderTooltip" inherits="CharCustomizeTooltipTemplate">
+		<Attributes>
+			<Attribute name="textLeft1Font" value="GameFontNormalMed2" type="string"/>
+			<Attribute name="textRight1Font" value="GameFontNormalMed2" type="string"/>
+			<Attribute name="textLeft2Font" value="GameFontNormalMed2" type="string"/>
+			<Attribute name="textRight2Font" value="GameFontNormalMed2" type="string"/>
+		</Attributes>
+	</GameTooltip>
+
+	<Frame name="CharCustomizeFrameWithTooltipTemplate" virtual="true">
+		<Attributes>
+			<Attribute name="tooltipAnchor" value="ANCHOR_TOPRIGHT" type="string"/>
+			<Attribute name="tooltipXOffset" value="10" type="number"/>
+			<Attribute name="tooltipYOffset" value="0" type="number"/>
+			<Attribute name="tooltipMinWidth" value="300" type="number"/>
+			<Attribute name="tooltipPadding" value="5" type="number"/>
+		</Attributes>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharCustomizeFrameWithTooltipMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+		</Scripts>
+	</Frame>
+
+	<Button name="CharCustomizeBaseButtonTemplate" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharCustomizeBaseButtonMixin)
+			</OnLoad>
+			<OnClick>
+				self:OnBaseButtonClick(button)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Button name="CharCustomizeSmallButtonTemplate" inherits="CharCustomizeBaseButtonTemplate, CharCustomizeFrameWithTooltipTemplate" motionScriptsWhileDisabled="true" virtual="true">
+		<Size x="48" y="48"/>
+		<Attributes>
+			<Attribute name="tooltipAnchor" value="ANCHOR_BOTTOMRIGHT" type="string"/>
+			<Attribute name="tooltipXOffset" value="-5" type="number"/>
+			<Attribute name="tooltipYOffset" value="-5" type="number"/>
+			<Attribute name="tooltipMinWidth" type="nil"/>
+		</Attributes>
+		<HitRectInsets left="6" right="6" top="6" bottom="6"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Icon">
+					<Size x="24" y="23"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeSmallButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnMouseDown>
+				self:OnMouseDown(button)
+			</OnMouseDown>
+			<OnMouseUp>
+				self:OnMouseUp(button)
+			</OnMouseUp>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+		</Scripts>
+		<NormalTexture parentKey="NormalTexture"/>
+		<HighlightTexture parentKey="HighlightTexture" alphaMode="ADD" alpha="0.4"/>
+		<PushedTexture parentKey="PushedTexture">
+			<Anchors>
+				<Anchor point="TOPLEFT" x="1" y="-1"/>
+				<Anchor point="BOTTOMRIGHT" x="1" y="-1"/>
+			</Anchors>
+		</PushedTexture>
+	</Button>
+
+	<Button name="CharCustomizeClickOrHoldButtonTemplate" inherits="CharCustomizeSmallButtonTemplate" virtual="true">
+		<Attributes>
+			<Attribute name="holdWaitTimeSeconds" value="0.25" type="number"/>
+		</Attributes>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeFrameWithTooltipMixin, CharCustomizeSmallButtonMixin, CharCustomizeClickOrHoldButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Button>
+
+	<CheckButton name="CharCustomizeMaskedButtonTemplate" inherits="CharCustomizeBaseButtonTemplate, CharCustomizeFrameWithTooltipTemplate" motionScriptsWhileDisabled="true" virtual="true">
+		<Attributes>
+			<Attribute name="disabledOverlayAlpha" value="0" type="number"/>
+			<Attribute name="newTagYOffset" value="-5" type="number"/>
+		</Attributes>
+		<NormalTexture parentKey="NormalTexture"/>
+		<HighlightTexture parentKey="HighlightTexture" alphaMode="ADD" alpha="0.5"/>
+		<PushedTexture parentKey="PushedTexture">
+			<Anchors>
+				<Anchor point="TOPLEFT" x="1" y="-1"/>
+				<Anchor point="BOTTOMRIGHT" x="1" y="-1"/>
+			</Anchors>
+		</PushedTexture>
+		<CheckedTexture parentKey="CheckedTexture">
+			<Anchors>
+				<Anchor point="CENTER" />
+			</Anchors>
+		</CheckedTexture>
+
+		<Layers>
+			<Layer level="BORDER">
+				<Texture parentKey="DisabledOverlay" hidden="true" setAllPoints="true">
+					<Color r="0.0" g="0.0" b="0.0"/>
+				</Texture>
+				<Texture parentKey="Ring">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeMaskedButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnMouseDown>
+				self:OnMouseDown(button)
+			</OnMouseDown>
+			<OnMouseUp>
+				self:OnMouseUp(button)
+			</OnMouseUp>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+		</Scripts>
+	</CheckButton>
+
+	<CheckButton name="CharCustomizeAlteredFormButtonTemplate" inherits="CharCustomizeMaskedButtonTemplate" virtual="true">
+		<Size x="79" y="79"/>
+		<Attributes>
+			<Attribute name="ringAtlas" value="charactercreate-ring-metallight" type="string"/>
+			<Attribute name="ringWidth" value="139" type="number"/>
+			<Attribute name="ringHeight" value="140" type="number"/>
+			<Attribute name="checkedTextureSize" value="118" type="number"/>
+			<Attribute name="disabledOverlayAlpha" value="0.5" type="number"/>
+			<Attribute name="tooltipYOffset" value="-5" type="number"/>
+			<Attribute name="flipTextures" value="true" type="boolean"/>
+			<Attribute name="tooltipMinWidth" type="nil"/>
+		</Attributes>
+
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeAlteredFormButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</CheckButton>
+
+	<CheckButton name="CharCustomizeAlteredFormSmallButtonTemplate" inherits="CharCustomizeMaskedButtonTemplate" virtual="true">
+		<Size x="64" y="64"/>
+		<Attributes>
+			<Attribute name="ringAtlas" value="charactercreate-ring-metallight" type="string"/>
+			<Attribute name="ringWidth" value="109" type="number"/>
+			<Attribute name="ringHeight" value="110" type="number"/>
+			<Attribute name="checkedTextureSize" value="93" type="number"/>
+			<Attribute name="disabledOverlayAlpha" value="0.5" type="number"/>
+			<Attribute name="tooltipYOffset" value="-5" type="number"/>
+			<Attribute name="flipTextures" value="true" type="boolean"/>
+			<Attribute name="tooltipMinWidth" type="nil"/>
+		</Attributes>
+
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeAlteredFormButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</CheckButton>
+
+	<CheckButton name="CharCustomizeCategoryButtonTemplate" inherits="CharCustomizeMaskedButtonTemplate" virtual="true">
+		<Size x="104" y="105"/>
+		<Attributes>
+			<Attribute name="ringAtlas" value="charactercreate-ring-metallight" type="string"/>
+			<Attribute name="ringWidth" value="108" type="number"/>
+			<Attribute name="ringHeight" value="109" type="number"/>
+			<Attribute name="checkedTextureSize" value="93" type="number"/>
+			<Attribute name="tooltipAnchor" value="ANCHOR_LEFT" type="string"/>
+			<Attribute name="tooltipXOffset" value="30" type="number"/>
+			<Attribute name="tooltipYOffset" value="-16" type="number"/>
+			<Attribute name="newTagYOffset" value="15" type="number"/>
+			<Attribute name="tooltipMinWidth" type="nil"/>
+		</Attributes>
+		<HitRectInsets left="15" right="15" top="15" bottom="15"/>
+
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeCategoryButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</CheckButton>
+
+	<CheckButton name="CharCustomizeShapeshiftFormButtonTemplate" inherits="CharCustomizeMaskedButtonTemplate" virtual="true">
+		<Size x="64" y="64"/>
+		<Attributes>
+			<Attribute name="ringAtlas" value="charactercreate-ring-metallight" type="string"/>
+			<Attribute name="ringWidth" value="109" type="number"/>
+			<Attribute name="ringHeight" value="110" type="number"/>
+			<Attribute name="checkedTextureSize" value="94" type="number"/>
+			<Attribute name="tooltipYOffset" value="-5" type="number"/>
+			<Attribute name="tooltipMinWidth" type="nil"/>
+		</Attributes>
+
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeShapeshiftFormButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</CheckButton>
+
+	<CheckButton name="CharCustomizeRidingDrakeButtonTemplate" inherits="CharCustomizeMaskedButtonTemplate" virtual="true">
+		<Size x="64" y="64"/>
+		<Attributes>
+			<Attribute name="ringAtlas" value="charactercreate-ring-metallight" type="string"/>
+			<Attribute name="ringWidth" value="109" type="number"/>
+			<Attribute name="ringHeight" value="110" type="number"/>
+			<Attribute name="checkedTextureSize" value="94" type="number"/>
+			<Attribute name="tooltipYOffset" value="-5" type="number"/>
+			<Attribute name="tooltipMinWidth" type="nil"/>
+		</Attributes>
+
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeRidingDrakeButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</CheckButton>
+
+	<Frame name="CharCustomizeOptionSelectionFrameTemplate" virtual="true">
+		<Size x="150" y="38"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Background"/>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Label" inherits="GameFontHighlightMed2" justifyH="CENTER" setAllPoints="true"/>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture parentKey="Highlight" hidden="true"/>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button parentKey="IncrementButton" motionScriptsWhileDisabled="true">
+				<Size x="32" y="32"/>
+				<NormalTexture parentKey="NormalTexture"/>
+				<PushedTexture parentKey="PushedTexture"/>
+				<DisabledTexture/>
+			</Button>
+			<Button parentKey="DecrementButton" motionScriptsWhileDisabled="true">
+				<Size x="32" y="32"/>
+				<NormalTexture parentKey="NormalTexture"/>
+				<PushedTexture parentKey="PushedTexture"/>
+				<DisabledTexture/>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharCustomizeOptionSelectionFrameMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+		</Scripts>
+	</Frame>
+
+	<Frame name="CharCustomizeFrame" parent="UIParent" setAllPoints="true">
+		<Frames>
+			<Frame parentKey="AlteredForms" inherits="HorizontalLayoutFrame">
+				<Attributes>
+					<Attribute name="spacing" value="18" type="number"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-41" y="-37"/>
+				</Anchors>
+			</Frame>
+
+			<Button parentKey="RandomizeAppearanceButton" inherits="CharCustomizeSmallButtonTemplate">
+				<Attributes>
+					<Attribute name="iconAtlas" value="charactercreate-icon-dice" type="string"/>
+					<Attribute name="tooltipAnchor" value="ANCHOR_LEFT" type="string"/>
+					<Attribute name="tooltipXOffset" value="9" type="number"/>
+					<Attribute name="tooltipYOffset" value="-9" type="number"/>
+				</Attributes>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeFrameWithTooltipMixin, CharCustomizeSmallButtonMixin, CharCustomizeRandomizeAppearanceButtonMixin)
+						self:OnLoad()
+					</OnLoad>
+				</Scripts>
+			</Button>
+
+			<Frame name="$parentOptions" parentKey="Options" inherits="VerticalLayoutFrame">
+				<Size x="1" y="1"/>
+				<Attributes>
+					<Attribute name="spacing" value="32" type="number"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-69" y="-297"/>
+				</Anchors>
+			</Frame>
+			<CheckButton name="$parentDressStateButton" parentKey="DressStateButton" inherits="PKBT_CheckButtonTemplate" text="SHOW_EQUIPPED_ITEMS">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentOptions" relativePoint="BOTTOMLEFT" x="-32" y="-34"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():ToggleDressState(button)
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+
+		<!--
+			<Frame parentKey="SmallButtons" inherits="HorizontalLayoutFrame">
+				<Attributes>
+					<Attribute name="spacing" value="-5" type="number"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="40" y="-30"/>
+				</Anchors>
+				<Frames>
+					<Button parentKey="ResetCameraButton" inherits="CharCustomizeSmallButtonTemplate">
+						<Attributes>
+							<Attribute name="layoutIndex" value="1" type="number"/>
+							<Attribute name="iconAtlas" value="common-icon-undo" type="string"/>
+						</Attributes>
+						<Scripts>
+							<OnLoad>
+								Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeFrameWithTooltipMixin, CharCustomizeSmallButtonMixin, CharCustomizeResetCameraButtonMixin)
+								self:OnLoad()
+								self.simpleTooltipLine = RESET_CAMERA
+							</OnLoad>
+						</Scripts>
+					</Button>
+					<Button parentKey="ZoomOutButton" inherits="CharCustomizeClickOrHoldButtonTemplate">
+						<Attributes>
+							<Attribute name="layoutIndex" value="2" type="number"/>
+							<Attribute name="iconAtlas" value="common-icon-zoomout" type="string"/>
+							<Attribute name="clickAmount" value="-20" type="number"/>
+							<Attribute name="holdAmountPerSecond" value="-200" type="number"/>
+						</Attributes>
+						<Scripts>
+							<OnLoad>
+								Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeFrameWithTooltipMixin, CharCustomizeSmallButtonMixin, CharCustomizeClickOrHoldButtonMixin, CharCustomizeZoomButtonMixin)
+								self:OnLoad()
+								self.simpleTooltipLine = ZOOM_OUT
+							</OnLoad>
+						</Scripts>
+					</Button>
+					<Button parentKey="ZoomInButton" inherits="CharCustomizeClickOrHoldButtonTemplate">
+						<Attributes>
+							<Attribute name="layoutIndex" value="3" type="number"/>
+							<Attribute name="iconAtlas" value="common-icon-zoomin" type="string"/>
+							<Attribute name="clickAmount" value="20" type="number"/>
+							<Attribute name="holdAmountPerSecond" value="200" type="number"/>
+						</Attributes>
+						<Scripts>
+							<OnLoad>
+								Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeFrameWithTooltipMixin, CharCustomizeSmallButtonMixin, CharCustomizeClickOrHoldButtonMixin, CharCustomizeZoomButtonMixin)
+								self:OnLoad()
+								self.simpleTooltipLine = ZOOM_IN
+							</OnLoad>
+						</Scripts>
+					</Button>
+					<Button parentKey="RotateLeftButton" inherits="CharCustomizeClickOrHoldButtonTemplate">
+						<Attributes>
+							<Attribute name="layoutIndex" value="4" type="number"/>
+							<Attribute name="iconAtlas" value="common-icon-rotateleft" type="string"/>
+							<Attribute name="leftPadding" value="30" type="number"/>
+							<Attribute name="clickAmount" value="-10" type="number"/>
+							<Attribute name="holdAmountPerSecond" value="-100" type="number"/>
+						</Attributes>
+						<Scripts>
+							<OnLoad>
+								Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeFrameWithTooltipMixin, CharCustomizeSmallButtonMixin, CharCustomizeClickOrHoldButtonMixin, CharCustomizeRotateButtonMixin)
+								self:OnLoad()
+								self.simpleTooltipLine = ROTATE_LEFT
+							</OnLoad>
+						</Scripts>
+					</Button>
+					<Button parentKey="RotateRightButton" inherits="CharCustomizeClickOrHoldButtonTemplate">
+						<Attributes>
+							<Attribute name="layoutIndex" value="5" type="number"/>
+							<Attribute name="iconAtlas" value="common-icon-rotateright" type="string"/>
+							<Attribute name="clickAmount" value="10" type="number"/>
+							<Attribute name="holdAmountPerSecond" value="100" type="number"/>
+						</Attributes>
+						<Scripts>
+							<OnLoad>
+								Mixin(self, CharCustomizeBaseButtonMixin, CharCustomizeFrameWithTooltipMixin, CharCustomizeSmallButtonMixin, CharCustomizeClickOrHoldButtonMixin, CharCustomizeRotateButtonMixin)
+								self:OnLoad()
+								self.simpleTooltipLine = ROTATE_RIGHT
+							</OnLoad>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+		-->
+		</Frames>
+
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharCustomizeMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>

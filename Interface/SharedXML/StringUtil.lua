@@ -26,3 +26,19 @@ function StringStartsWith(str, stringStart, caseInsensitive)
 
 	return string.sub(str, 1, string.len(stringStart)) == stringStart
 end
+
+function StringEndsWith(str, stringEnd, caseInsensitive)
+	if caseInsensitive then
+		str = string.lower(str)
+		stringEnd = string.lower(stringEnd)
+	end
+
+	return string.sub(str, -(string.len(stringEnd))) == stringEnd
+end
+
+function StringSplitEx(delimiter, str, pieces)
+	str = string.gsub(str, strconcat(delimiter, "$"), "")
+	if str ~= "" then
+		return string.split(delimiter, str, pieces)
+	end
+end

@@ -86,21 +86,6 @@ function MerchantFrame_Update()
 	else
 		MerchantFrame_UpdateBuybackInfo();
 	end
-
-end
-
-local function GetMerchantItemID(index)
-	if not index then
-		return
-	end
-
-	local itemLink = GetMerchantItemLink(index)
-	if itemLink then
-		local itemEntry = string.match(itemLink, "item:(%d+)")
-		if itemEntry then
-			return tonumber(itemEntry)
-		end
-	end
 end
 
 function MerchantFrame_UpdateMerchantInfo()
@@ -125,34 +110,28 @@ function MerchantFrame_UpdateMerchantInfo()
 			SetItemButtonStock(itemButton, numAvailable);
 			SetItemButtonTexture(itemButton, texture);
 
-			local requirementItemList = REQUIREMENT_ITEM_LIST[GetServerID()]
-			if requirementItemList then
-				local itemID = GetMerchantItemID(index)
-				local merchantItemRequirement = requirementItemList[itemID]
+			local itemLink = GetMerchantItemLink(index)
+			local honorPoints, arenaPoints = GetMerchantItemCostInfo(index);
+			local requirementType, requiredRating = C_Item.GetRequiredPVPRating(itemLink, honorPoints, arenaPoints)
 
-				if merchantItemRequirement then
-					local honorPoints, arenaPoints = GetMerchantItemCostInfo(index)
-
-					if arenaPoints ~= 0 then
-						local rating = math.max(GetArenaRating(1), GetArenaRating(2))
-						if rating ~= 0 and merchantItemRequirement[1] ~= 0 and rating >= merchantItemRequirement[1] then
-							isUsable = true
-						end
-					end
-
-					if honorPoints ~= 0 then
-						local _, _, _, _, rating = GetRatedBattlegroundRankInfo()
-						if rating ~= 0 and merchantItemRequirement[2] ~= 0 and rating >= merchantItemRequirement[2] then
-							isUsable = true
-						end
-					end
+			if requirementType == Enum.ItemRequirementType.Removed then
+				isUsable = true
+			elseif requirementType == Enum.ItemRequirementType.Battleground then
+				local _, _, _, _, rating = GetRatedBattlegroundRankInfo()
+				if rating >= requiredRating then
+					isUsable = true
+				end
+			elseif requirementType == Enum.ItemRequirementType.Arena then
+				local rating = math.max(GetArenaRating(1), GetArenaRating(2))
+				if rating >= requiredRating then
+					isUsable = true
 				end
 			end
 
 			if ( extendedCost and (price <= 0) ) then
 				itemButton.price = nil;
 				itemButton.extendedCost = true;
-				itemButton.link = GetMerchantItemLink(index);
+				itemButton.link = itemLink;
 				itemButton.texture = texture;
 				MerchantFrame_UpdateAltCurrency(index, i);
 				merchantAltCurrency:ClearAllPoints();
@@ -162,7 +141,7 @@ function MerchantFrame_UpdateMerchantInfo()
 			elseif ( extendedCost and (price > 0) ) then
 				itemButton.price = price;
 				itemButton.extendedCost = true;
-				itemButton.link = GetMerchantItemLink(index);
+				itemButton.link = itemLink;
 				itemButton.texture = texture;
 				MerchantFrame_UpdateAltCurrency(index, i);
 				MoneyFrame_Update(merchantMoney:GetName(), price);
@@ -173,7 +152,7 @@ function MerchantFrame_UpdateMerchantInfo()
 			else
 				itemButton.price = price;
 				itemButton.extendedCost = nil;
-				itemButton.link = GetMerchantItemLink(index);
+				itemButton.link = itemLink;
 				itemButton.texture = texture;
 				MoneyFrame_Update(merchantMoney:GetName(), price);
 				merchantAltCurrency:Hide();
@@ -483,14 +462,42 @@ function MerchantItemButton_OnModifiedClick(self, button)
 			return;
 		end
 		if ( IsModifiedClick("SPLITSTACK") ) then
-			local maxStack = GetMerchantItemMaxStack(self:GetID());
-			if ( maxStack > 1 ) then
-				if ( self.price and (self.price > 0) ) then
-					local canAfford = floor(GetMoney() / self.price);
-					if ( canAfford < maxStack ) then
-						maxStack = canAfford;
+			local index = self:GetID()
+			local maxStack = GetMerchantItemMaxStack(index);
+			if ( self.price and (self.price > 0) ) then
+				local canAfford = floor(GetMoney() / self.price);
+				if ( canAfford < maxStack or maxStack == 1 ) then
+					maxStack = canAfford;
+				end
+			end
+			if self.extendedCost then
+				local honorPoints, arenaPoints, itemCount = GetMerchantItemCostInfo(index)
+				if honorPoints > 0 then
+					local canAfford = math.floor((GetHonorCurrency() or 0) / honorPoints)
+					if canAfford < maxStack or maxStack == 1 then
+						maxStack = canAfford
 					end
 				end
+				if arenaPoints > 0 then
+					local canAfford = math.floor((GetArenaCurrency() or 0) / arenaPoints)
+					if canAfford < maxStack or maxStack == 1 then
+						maxStack = canAfford
+					end
+				end
+				if itemCount > 0 then
+					for i = 1, itemCount, 1 do
+						local itemTexture, itemValue, itemLink = GetMerchantItemCostItem(index, i)
+						local itemID = itemLink and tonumber(strmatch(itemLink, "item:(%d+)"))
+						if itemValue and itemID then
+							local canAfford = math.floor((GetItemCount(itemID) or 0) / itemValue)
+							if canAfford < maxStack or maxStack == 1 then
+								maxStack = canAfford
+							end
+						end
+					end
+				end
+			end
+			if maxStack > 1 then
 				OpenStackSplitFrame(maxStack, self, "BOTTOMLEFT", "TOPLEFT");
 			end
 			return;
@@ -503,6 +510,7 @@ end
 function MerchantItemButton_OnEnter(button)
 	GameTooltip:SetOwner(button, "ANCHOR_RIGHT");
 	if ( MerchantFrame.selectedTab == 1 ) then
+		GameTooltip.merchantSlotIndex = button:GetID()
 		GameTooltip:SetMerchantItem(button:GetID());
 		GameTooltip_ShowCompareItem(GameTooltip);
 		MerchantFrame.itemHover = button:GetID();

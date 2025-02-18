@@ -1,64 +1,85 @@
+RAID_NOTICE_DEFAULT_HOLD_TIME = 10.0;
+RAID_NOTICE_FADE_IN_TIME = 0.2;
+RAID_NOTICE_FADE_OUT_TIME = 3.0;
 
 function RaidNotice_FadeInit( slotFrame )
 	FadingFrame_OnLoad(slotFrame);
-	FadingFrame_SetFadeInTime(slotFrame, 0.2);
-	FadingFrame_SetHoldTime(slotFrame, 10.0);
-	FadingFrame_SetFadeOutTime(slotFrame, 3.0);
+	FadingFrame_SetFadeInTime(slotFrame, RAID_NOTICE_FADE_IN_TIME);
+	FadingFrame_SetHoldTime(slotFrame, RAID_NOTICE_DEFAULT_HOLD_TIME);
+	FadingFrame_SetFadeOutTime(slotFrame, RAID_NOTICE_FADE_OUT_TIME);
 end
 
-function RaidNotice_AddMessage( noticeFrame, textString, colorInfo )
+function RaidNotice_AddMessage( noticeFrame, textString, colorInfo, displayTime )
 	if ( not noticeFrame or not noticeFrame.slot1 or not noticeFrame.slot2 or not textString ) then
 		return;
+	end
+
+	if (not displayTime or displayTime == 0) then
+		displayTime = RAID_NOTICE_DEFAULT_HOLD_TIME;
+	else
+		displayTime = displayTime - RAID_NOTICE_FADE_OUT_TIME;
+		displayTime = max(displayTime, 1.0);
 	end
 
 	noticeFrame:Show();
 	if ( not noticeFrame.slot1:IsShown() ) then
 		noticeFrame.slot1_text = textString;
-		RaidNotice_SetSlot( noticeFrame.slot1, noticeFrame.slot1_text, colorInfo, noticeFrame.timings["RAID_NOTICE_MIN_HEIGHT"] );
+		RaidNotice_SetSlot( noticeFrame.slot1, noticeFrame.slot1_text, colorInfo, noticeFrame.timings["RAID_NOTICE_MIN_HEIGHT"], displayTime );
 		noticeFrame.slot1.scrollTime = 0;
 	else
 		if ( noticeFrame.slot2:IsShown() ) then
 			noticeFrame.slot1_text = noticeFrame.slot2_text;
 			RaidNotice_SetSlot( noticeFrame.slot1, noticeFrame.slot1_text, colorInfo, noticeFrame.timings["RAID_NOTICE_MIN_HEIGHT"] );
 			noticeFrame.slot1.scrollTime = noticeFrame.slot2.scrollTime;
+			FadingFrame_CopyTimes(noticeFrame.slot2, noticeFrame.slot1);
 		end
 
 		noticeFrame.slot2_text = textString;
-		RaidNotice_SetSlot( noticeFrame.slot2, noticeFrame.slot2_text, colorInfo, noticeFrame.timings["RAID_NOTICE_MIN_HEIGHT"] );
+		RaidNotice_SetSlot( noticeFrame.slot2, noticeFrame.slot2_text, colorInfo, noticeFrame.timings["RAID_NOTICE_MIN_HEIGHT"], displayTime );
 		noticeFrame.slot2.scrollTime = 0;
 	end
 end
 
-function RaidNotice_SetSlot( slotFrame, textString, colorInfo, minHeight )
+function RaidNotice_SetSlot( slotFrame, textString, colorInfo, minHeight, displayTime )
 	slotFrame:SetText( textString );
 	slotFrame:SetTextColor( colorInfo.r, colorInfo.g, colorInfo.b, 1.0 )
 	slotFrame:SetTextHeight(minHeight);
+	FadingFrame_SetHoldTime(slotFrame, displayTime or RAID_NOTICE_DEFAULT_HOLD_TIME );
 	FadingFrame_Show( slotFrame );
 end
 
-local RaidNotice_unused = false;
 function RaidNotice_OnUpdate( noticeFrame, elapsedTime )
 	if ( not noticeFrame or not noticeFrame.slot1 or not noticeFrame.slot2 ) then
 		return;
 	end
 
-	RaidNotice_unused = true;
+	local inUse = false;
 	if ( noticeFrame.slot1:IsShown() ) then
-		RaidNotice_UpdateSlot( noticeFrame.slot1, noticeFrame.timings, elapsedTime );
-		RaidNotice_unused = false;
+		RaidNotice_UpdateSlot( noticeFrame.slot1, noticeFrame.timings, elapsedTime, true );
+		inUse = true;
 	end
 
 	if ( noticeFrame.slot2:IsShown() ) then
-		RaidNotice_UpdateSlot( noticeFrame.slot2, noticeFrame.timings, elapsedTime );
-		RaidNotice_unused = false;
+		RaidNotice_UpdateSlot( noticeFrame.slot2, noticeFrame.timings, elapsedTime, true );
+		inUse = true;
 	end
 
-	if ( RaidNotice_unused ) then
+	if ( not inUse ) then
 		noticeFrame:Hide();
 	end
 end
 
-function RaidNotice_UpdateSlot( slotFrame, timings, elapsedTime )
+function RaidNotice_Clear( noticeFrame )
+	RaidNotice_ClearSlot(noticeFrame.slot1);
+	RaidNotice_ClearSlot(noticeFrame.slot2);
+end
+
+function RaidNotice_ClearSlot( slotFrame )
+	slotFrame.scrollTime = nil;
+	slotFrame:Hide();
+end
+
+function RaidNotice_UpdateSlot( slotFrame, timings, elapsedTime, hasFading )
 	if ( slotFrame.scrollTime ) then
 		slotFrame.scrollTime = slotFrame.scrollTime + elapsedTime;
 		if ( slotFrame.scrollTime <= timings["RAID_NOTICE_SCALE_UP_TIME"] ) then
@@ -70,7 +91,9 @@ function RaidNotice_UpdateSlot( slotFrame, timings, elapsedTime )
 			slotFrame.scrollTime = nil;
 		end
 	end
-	FadingFrame_OnUpdate(slotFrame);
+	if ( hasFading ) then
+		FadingFrame_OnUpdate(slotFrame);
+	end
 end
 
 
@@ -112,8 +135,6 @@ end
 
 -----------  BOSS EMOTE
 function RaidBossEmoteFrame_OnLoad(self)
-	self.slot1 = RaidBossEmoteFrameSlot1;
-	self.slot2 = RaidBossEmoteFrameSlot2;
 	RaidNotice_FadeInit(self.slot1);
 	RaidNotice_FadeInit(self.slot2);
 	self.timings = { };

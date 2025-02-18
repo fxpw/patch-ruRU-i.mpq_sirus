@@ -1,11 +1,3 @@
-<!--
-
-	Filename:	Custom_ChooseItem.xml
-	Project:	Custom Game Interface
-	Author:		Nyll & Blizzard Entertainment
-
--->
-
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\..\FrameXML\UI.xsd">
 	<Script file="Custom_ChooseItem.lua"/>
@@ -66,16 +58,16 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Button parentKey="OptionButton" inherits="UIPanelButtonTemplate" text="CHOOSEITEM_SELECT" toplevel="true">
+			<Button name="$parentOptionButton" parentKey="OptionButton" inherits="UIPanelButtonTemplate" text="CHOOSEITEM_SELECT">
 				<Size x="120" y="22"/>
 				<Anchors>
 					<Anchor point="BOTTOM" x="0" y="2" />
 				</Anchors>
 				<Scripts>
-					<OnClick function="QuestChoiceOpticonSelectButton_OnClick"/>
+					<OnClick function="QuestChoiceOptionButton_OnClick"/>
 				</Scripts>
 			</Button>
-			<Frame parentKey="Header" toplevel="true">
+			<Frame name="$parentHeader" parentKey="Header">
 				<Size x="240" y="32"/>
 				<Anchors>
 					<Anchor point="TOP" y="10"/>
@@ -97,7 +89,7 @@
 					</Layer>
 				</Layers>
 			</Frame>
-			<Button parentKey="Item" toplevel="true">
+			<Button name="$parentItem" parentKey="Item">
 				<Size x="172" y="88"/>
 				<Anchors>
 					<Anchor point="CENTER" x="0" y="-40" />
@@ -112,8 +104,8 @@
 							<Animations>
 								<AnimationGroup parentKey="animIn">
 									<Alpha change="-1" duration="0" order="1"/>
-	  								<Alpha change="1" duration="1" order="2"/>
-	  								<Alpha change="-1" duration="1" order="3"/>
+									<Alpha change="1" duration="1" order="2"/>
+									<Alpha change="-1" duration="1" order="3"/>
 									<Scripts>
 										<OnFinished>
 											self:GetParent():Hide();
@@ -168,8 +160,6 @@
 
 	<Frame name="ChooseItemFrame" parent="UIParent" frameStrata="HIGH" toplevel="true" enableMouse="true" hidden="true">
 		<Size x="380" y="368"/>
-		<!-- 1 - 380 -->
-		<!-- 230 -->
 		<Anchors>
 			<Anchor point="CENTER" x="0" y="0" />
 		</Anchors>
@@ -322,6 +312,8 @@
 			</Button>
 		</Frames>
 		<Scripts>
+			<OnLoad function="ChooseItemFrame_OnLoad"/>
+			<OnEvent function="ChooseItemFrame_OnEvent"/>
 			<OnShow function="ChooseItemFrame_OnShow"/>
 		</Scripts>
 	</Frame>

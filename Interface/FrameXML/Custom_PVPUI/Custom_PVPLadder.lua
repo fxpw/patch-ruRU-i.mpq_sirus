@@ -1,28 +1,8 @@
---	Filename:	Custom_PVPLadder.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
+local ZODIAC_DEBUFFS = ZODIAC_DEBUFFS
 
-PVPLadderFrameMixin = {}
+UIPanelWindows["PVPLadderFrame"] = { area = "left",	pushable = 0, whileDead = 1, xOffset = "15", yOffset = "-10", width = 593, height = 428 }
 
-PVPLadderInfoFrameMixin = {
-	replayData = {}
-}
-
-PVPLadderCategoryMixin = {
-	categoryButtons = {},
-	categoryData = {
-		selectedCategory = nil
-	}
-}
-
-PVPLadderTabsMixin = {
-	tabButtons = {},
-	tabData = {
-		selectedRightTab = nil
-	},
-}
+local CACHE_TIME_TO_LIFE = 300
 
 enum:E_LADDER_BRACKET {
 	[0] = "ARENA_SOLO",
@@ -32,17 +12,16 @@ enum:E_LADDER_BRACKET {
 	[4] = "RENEGADE",
 }
 
-UIPanelWindows["PVPLadderFrame"] = { area = "left",	pushable = 0, whileDead = 1, xOffset = "15", yOffset = "-10", width = 593, height = 428 }
-
-local CACHE_TIME_TO_LIFE = 300
+PVPLadderFrameMixin = {}
 
 function PVPLadderFrameMixin:OnLoad()
 	self:RegisterHookListener()
 
 	self.factionIcons = {
-		[PLAYER_FACTION_GROUP.Horde]    = "right",
-		[PLAYER_FACTION_GROUP.Alliance] = "left",
-		[PLAYER_FACTION_GROUP.Renegade] = "Renegade",
+		[PLAYER_FACTION_GROUP.Horde]	= "objectivewidget-icon-right",
+		[PLAYER_FACTION_GROUP.Alliance]	= "objectivewidget-icon-left",
+		[PLAYER_FACTION_GROUP.Renegade]	= "objectivewidget-icon-Renegade",
+		[PLAYER_FACTION_GROUP.Neutral]	= "TargetingFrame-UI-PVP-FFA",
 	}
 
 	RaiseFrameLevelByTwo(self.Shadows)
@@ -53,6 +32,15 @@ function PVPLadderFrameMixin:OnLoad()
 
 	PanelTemplates_SetNumTabs(self, 3)
 	self:ResetFrame()
+
+	self.helpPlate = {
+		FramePos = { x = 0, y = -24 },
+		FrameSize = { width = 595, height = 402 },
+		[1] = { ButtonPos = { x = 92, y = -224 }, HighLightBox = { x = 4, y = -34, width = 212, height = 364 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_PVPLADDERFRAME_TUTORIAL_1 },
+		[2] = { ButtonPos = { x = 360, y = -194 }, HighLightBox = { x = 222, y = -34, width = 334, height = 318 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_PVPLADDERFRAME_TUTORIAL_2 },
+		[3] = { ButtonPos = { x = 556, y = -48 }, HighLightBox = { x = 559, y = -51, width = 40, height = 40 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_PVPLADDERFRAME_TUTORIAL_3 },
+		[4] = { ButtonPos = { x = 562, y = -227 }, HighLightBox = { x = 559, y = -101, width = 26, height = 300 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_PVPLADDERFRAME_TUTORIAL_4 },
+	}
 end
 
 function PVPLadderFrameMixin:OnShow()
@@ -68,11 +56,28 @@ function PVPLadderFrameMixin:OnShow()
 	self:InitializeScrollFrame("PVPLadderScrollPlayerButtonTemplate")
 
 	self.categoryButtons[self:GetSelectedCategory() and self:GetSelectedCategory() + 1 or 1]:Click()
+	if self:GetSelectedTab() and PVPLadderFrame.tabButtons[self:GetSelectedTab()] then
+		PVPLadderFrame.tabButtons[self:GetSelectedTab()]:Click() -- force check content ttl
+	end
+
+	EventRegistry:TriggerEvent("PVPLadderFrame.OnShow")
 end
 
 function PVPLadderFrameMixin:OnHide()
 	UpdateMicroButtons()
 	LAST_FINDPARTY_FRAME = self
+
+	HelpPlate_Hide(false)
+
+	EventRegistry:TriggerEvent("PVPLadderFrame.OnHide")
+end
+
+function PVPLadderFrameMixin:ToggleTutorial()
+	if not HelpPlate_IsShowing(self.helpPlate) then
+		HelpPlate_Show(self.helpPlate, self, self.TutorialButton)
+	else
+		HelpPlate_Hide(true)
+	end
 end
 
 function PVPLadderFrameMixin:VARIABLES_LOADED()
@@ -90,7 +95,7 @@ function PVPLadderFrameMixin:GetPlayerInfo( index )
 		data = storage[selectedCategory]
 	elseif selectedTab == 2 then
 		if self.searchBuffer[selectedCategory] then
-			self.topBuffer 	= {}
+			self.topBuffertopBuffer 	= {}
 			data 			= self.searchBuffer[selectedCategory]
 		end
 	elseif selectedTab > 2 then
@@ -104,22 +109,11 @@ function PVPLadderFrameMixin:GetPlayerInfo( index )
 
 	self.topBuffer = data or self.topBuffer
 
-	if self.topBuffer[index] then
-		local rank 			= self.topBuffer[index].rank
-		local name 			= self.topBuffer[index].name
-		local raceID 		= self.topBuffer[index].raceID
-		local classID 		= self.topBuffer[index].classID
-		local gender 		= self.topBuffer[index].gender
-		local totalRating 	= self.topBuffer[index].totalRating
-		local seasonGames 	= self.topBuffer[index].seasonGames
-		local weekGames 	= self.topBuffer[index].weekGames
-		local dayGames 		= self.topBuffer[index].dayGames
-		local seasonWins 	= self.topBuffer[index].seasonWins
-		local weekWins 		= self.topBuffer[index].weekWins
-		local dayWins		= self.topBuffer[index].dayWins
-		local teamID 		= self.topBuffer[index].teamID
+	local entry = self.topBuffer[index]
 
-		return rank, name, raceID, classID, gender, totalRating, seasonGames, weekGames, dayGames, seasonWins, weekWins, dayWins, teamID
+	if entry then
+		return entry.rank, entry.name, entry.raceID, entry.classID, entry.gender, entry.zodiacID, entry.factionID,
+			entry.totalRating, entry.seasonGames, entry.weekGames, entry.dayGames, entry.seasonWins, entry.weekWins, entry.dayWins
 	end
 end
 
@@ -169,14 +163,24 @@ function PVPLadderFrameMixin:UpdateSelfPlayerInfo()
 		frame.PlayerName:SetText(data.name)
 		frame.Rating:SetText(data.totalRating)
 
-		frame.RaceIcon.Icon:SetTexture(string.format("Interface\\Custom_LoginScreen\\RaceIcon\\RACE_ICON_%s%s", string.upper(raceInfo.clientFileString), S_GENDER_FILESTRING[data.gender]))
+		frame.RaceIcon.Icon:SetTexture(string.format("Interface\\Custom\\RaceIcon\\RACE_ICON_%s%s", string.upper(raceInfo.clientFileString), S_GENDER_FILESTRING[data.gender]))
 		frame.RaceIcon.raceName = raceInfo.raceName
 
-		frame.ClassIcon.Icon:SetTexture("Interface\\Custom_LoginScreen\\ClassIcon\\CLASS_ICON_"..string.upper(classFileString))
+		frame.ClassIcon.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..string.upper(classFileString))
 		frame.ClassIcon.classLocalizedName = classLocalizedName
 
-		frame.FactionIcon.Icon:SetAtlas("objectivewidget-icon-"..self.factionIcons[data.teamID])
-		frame.FactionIcon.factionName = _G["FACTION_"..string.upper(PLAYER_FACTION_GROUP[data.teamID])]
+		if C_Texture.HasAtlasInfo(self.factionIcons[data.factionID]) then
+			frame.FactionIcon.Icon:SetAtlas(self.factionIcons[data.factionID])
+		else
+			frame.FactionIcon.Icon:SetTexture(nil)
+		end
+		frame.FactionIcon.factionName = _G["FACTION_"..string.upper(PLAYER_FACTION_GROUP[data.factionID])]
+
+		if data.zodiacID then
+			local _, zodiacName, zodiacDescription, zodiacIcon, zodiacAtlas = C_ZodiacSign.GetZodiacSignInfo(data.zodiacID)
+			frame.ZodiacIcon.Icon:SetTexture(zodiacIcon)
+			frame.ZodiacIcon.name = zodiacName
+		end
 	end
 
 	frame.Number:SetShown(data)
@@ -185,6 +189,7 @@ function PVPLadderFrameMixin:UpdateSelfPlayerInfo()
 	frame.RaceIcon:SetShown(data)
 	frame.ClassIcon:SetShown(data)
 	frame.FactionIcon:SetShown(data)
+	frame.ZodiacIcon:SetShown(data and data.zodiacID)
 
 	frame.PlayerNotRank:SetShown(not data)
 	frame.Background:SetDesaturated(not data)
@@ -253,7 +258,7 @@ function PVPLadderFrameMixin:UpdateScrollFrame( isHideSpinner )
 		index = offset + i
 
 		if index <= playerCount then
-			local rank, name, raceID, classID, gender, totalRating, _, _, _, _, _, _, teamID = self:GetPlayerInfo(index)
+			local rank, name, raceID, classID, gender, zodiacID, factionID, totalRating = self:GetPlayerInfo(index)
 			local classLocalizedName, classFileString = GetClassInfo(classID)
 			local raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
 			local r, g, b = GetClassColor(classFileString)
@@ -262,14 +267,27 @@ function PVPLadderFrameMixin:UpdateScrollFrame( isHideSpinner )
 			button.FontStringFrame.PlayerName:SetText(name)
 			button.FontStringFrame.PlayerName:SetTextColor(r, g, b)
 
-			button.RaceIcon.Icon:SetTexture(string.format("Interface\\Custom_LoginScreen\\RaceIcon\\RACE_ICON_%s%s", string.upper(raceInfo.clientFileString), S_GENDER_FILESTRING[gender]))
+			button.RaceIcon.Icon:SetTexture(string.format("Interface\\Custom\\RaceIcon\\RACE_ICON_%s%s", string.upper(raceInfo.clientFileString), S_GENDER_FILESTRING[gender]))
 			button.RaceIcon.raceName = raceInfo.raceName
 
-			button.ClassIcon.Icon:SetTexture("Interface\\Custom_LoginScreen\\ClassIcon\\CLASS_ICON_"..string.upper(classFileString))
+			button.ClassIcon.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..string.upper(classFileString))
 			button.ClassIcon.classLocalizedName = classLocalizedName
 
-			button.FactionIcon.Icon:SetAtlas("objectivewidget-icon-"..self.factionIcons[teamID])
-			button.FactionIcon.factionName = _G["FACTION_"..string.upper(PLAYER_FACTION_GROUP[teamID])]
+			if C_Texture.HasAtlasInfo(self.factionIcons[factionID]) then
+				button.FactionIcon.Icon:SetAtlas(self.factionIcons[factionID])
+			else
+				button.FactionIcon.Icon:SetTexture(nil)
+			end
+			button.FactionIcon.factionName = _G["FACTION_"..string.upper(PLAYER_FACTION_GROUP[factionID])]
+
+			if zodiacID then
+				local _, zodiacName, zodiacDescription, zodiacIcon, zodiacAtlas = C_ZodiacSign.GetZodiacSignInfo(zodiacID)
+				button.ZodiacIcon.Icon:SetTexture(zodiacIcon)
+				button.ZodiacIcon.name = zodiacName
+				button.ZodiacIcon:Show()
+			else
+				button.ZodiacIcon:Hide()
+			end
 
 			button.FontStringFrame.Rating:SetText(totalRating)
 
@@ -301,6 +319,11 @@ end
 function PVPLadderFrameMixin:HideLoadingSpinner()
 	self.Container.RightContainer.CentralContainer.ScrollFrame.Spinner:Hide()
 end
+
+PVPLadderCategoryMixin = {
+	categoryButtons = {},
+	categoryData = {--[[selectedCategory]]},
+}
 
 function PVPLadderCategoryMixin:CategoryOnLoad()
 	local icon 			= self:GetAttribute("icon")
@@ -349,6 +372,11 @@ function PVPLadderCategoryMixin:GetSelectedCategory()
 	return self.categoryData.selectedCategory
 end
 
+PVPLadderTabsMixin = {
+	tabButtons = {},
+	tabData = {--[[selectedRightTab]]},
+}
+
 function PVPLadderTabsMixin:TabOnLoad()
 	local icon 							= self:GetAttribute("icon")
 	local localizedClassName, className = GetClassInfo(self:GetID())
@@ -357,7 +385,7 @@ function PVPLadderTabsMixin:TabOnLoad()
 	if icon then
 		self.Icon:SetTexture("Interface\\Icons\\"..icon)
 	else
-		self.Icon:SetTexture("Interface\\Custom_LoginScreen\\ClassIcon\\CLASS_ICON_"..string.upper(className))
+		self.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..string.upper(className))
 	end
 
 	self.localizedClassName = localizedClassName
@@ -370,21 +398,29 @@ function PVPLadderTabsMixin:TabOnLoad()
 end
 
 function PVPLadderTabsMixin:TabClick()
+	local selectedTab = self.buttonIndex or 1
+	local data, expiredTTL
+
+	if selectedTab == 1 then
+		data, expiredTTL = C_CacheInstance:Get("ASMSG_PVP_LADDER_TOP", {}, CACHE_TIME_TO_LIFE)
+	elseif selectedTab > 2 then
+		data, expiredTTL = C_CacheInstance:Get("ASMSG_PVP_LADDER_CLASS_TOP", {}, CACHE_TIME_TO_LIFE)
+	end
+
 	if self:GetSelectedTab() and self:GetSelectedTab() == self.buttonIndex then
 		self:SetChecked(true)
-		return
+		if not expiredTTL then
+			return
+		end
 	end
 
 	PVPLadderFrame:ShowDetailsFrame(nil)
 	PVPLadderFrame:ShowLoadingSpinner()
 	self:SetSelectedTab(self.buttonIndex)
 
-	local selectedTab 		= self:GetSelectedTab() or 1
 	local selectedCategory 	= self:GetSelectedCategory()
 
 	if selectedTab == 1 then
-		local data = C_CacheInstance:Get("ASMSG_PVP_LADDER_TOP", {}, CACHE_TIME_TO_LIFE)
-
 		if data[selectedCategory] and data[selectedCategory][1] then
 			PVPLadderFrame:UpdateScrollFrame( true )
 		else
@@ -394,9 +430,7 @@ function PVPLadderTabsMixin:TabClick()
 		PVPLadderFrame.Container.RightContainer.CentralContainer.ScrollFrame.TextLabelFrame.Text:SetText(PVP_LADDER_SEARCH_TUTORIAL)
 		PVPLadderFrame:UpdateScrollFrame( true )
 	elseif selectedTab > 2 then
-		local data 		= C_CacheInstance:Get("ASMSG_PVP_LADDER_CLASS_TOP", {}, CACHE_TIME_TO_LIFE)
 		local button  	= self.tabButtons[selectedTab]
-
 		if data[selectedCategory] and (data[selectedCategory][button.buttonID] and data[selectedCategory][button.buttonID][1]) then
 			PVPLadderFrame:UpdateScrollFrame( true )
 		else
@@ -439,6 +473,10 @@ end
 function PVPLadderTabsMixin:GetSelectedTab()
 	return self.tabData.selectedRightTab
 end
+
+PVPLadderInfoFrameMixin = {
+	replayData = {}
+}
 
 function PVPLadderInfoFrameMixin:OnLoad()
 	self:SetBorder("ButtonFrameTemplateNoPortrait")
@@ -510,7 +548,7 @@ function PVPLadderInfoFrameMixin:ShowFrame( playerIndex )
 		return
 	end
 
-	local rank, name, raceID, classID, gender, totalRating, seasonGames, weekGames, dayGames, seasonWins, weekWins, dayWins = PVPLadderFrame:GetPlayerInfo(playerIndex)
+	local rank, name, raceID, classID, gender, zodiacID, factionID, totalRating, seasonGames, weekGames, dayGames, seasonWins, weekWins, dayWins = PVPLadderFrame:GetPlayerInfo(playerIndex)
 	local raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
 
 	self:RequestInfo(name)
@@ -660,7 +698,7 @@ function PVPLadderInfoFrameMixin:UpdateScrollFrame()
 
 				if leftPlayer then
 					leftPlayerFrame.PlayerName:SetText(leftPlayer.name)
-					leftPlayerFrame.ClassIcon.Icon:SetTexture("Interface\\Custom_LoginScreen\\ClassIcon\\CLASS_ICON_"..leftPlayer.classFileString)
+					leftPlayerFrame.ClassIcon.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..leftPlayer.classFileString)
 					leftPlayerFrame.ClassIcon.className = leftPlayer.className
 				end
 
@@ -668,7 +706,7 @@ function PVPLadderInfoFrameMixin:UpdateScrollFrame()
 
 				if rightPlayer then
 					rightPlayerFrame.PlayerName:SetText(rightPlayer.name)
-					rightPlayerFrame.ClassIcon.Icon:SetTexture("Interface\\Custom_LoginScreen\\ClassIcon\\CLASS_ICON_"..rightPlayer.classFileString)
+					rightPlayerFrame.ClassIcon.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..rightPlayer.classFileString)
 					rightPlayerFrame.ClassIcon.className = rightPlayer.className
 				end
 
@@ -695,56 +733,87 @@ function PVPLadderInfoFrameMixin:UpdateScrollFrame()
 	HybridScrollFrame_Update(scrollFrame, totalHeight, displayedHeight)
 end
 
-function EventHandler:ASMSG_PVP_LADDER_TOP( msg )
-	local playerData 		= C_Split(msg, "|")
-	local selectedCategory 	= tonumber(table.remove(playerData, 1))
+local createLadderEntryData = function(playerEntryStr, isRenegade)
+	local rank, name, data = string.split(":", playerEntryStr, 3)
+	rank = tonumber(rank)
 
-	if selectedCategory == E_LADDER_BRACKET.RENEGADE then
-		Hook:FireEvent("RENEGADE_LADDER_TOP", playerData)
+	if rank and name then
+		local raceID, classID, gender, zodiacAuraID, serverFactionID, specificData = string.split(":", data, 6)
+		local zodiacSignID = ZODIAC_DEBUFFS[tonumber(zodiacAuraID)]
+		local factionID = SERVER_FACTION_TO_GAME_FACTION[tonumber(serverFactionID)]
+
+		if isRenegade then
+			local kills = specificData
+
+			return {
+				rank 		= rank,
+				name 		= name,
+				raceID 		= tonumber(raceID),
+				classID 	= tonumber(classID),
+				gender 		= tonumber(gender),
+				zodiacID	= zodiacSignID,
+				factionID	= factionID,
+				kills		= tonumber(kills),
+			}
+		else
+			local totalRating, seasonGames, seasonWins, weekGames, weekWins, dayGames, dayWins = string.split(":", specificData)
+
+			return {
+				rank 		= rank,
+				name 		= name,
+				raceID 		= tonumber(raceID),
+				classID 	= tonumber(classID),
+				gender 		= tonumber(gender),
+				zodiacID	= zodiacSignID,
+				factionID 	= factionID,
+				totalRating = tonumber(totalRating),
+				seasonGames = tonumber(seasonGames),
+				seasonWins 	= tonumber(seasonWins),
+				weekGames 	= tonumber(weekGames),
+				weekWins 	= tonumber(weekWins),
+				dayGames 	= tonumber(dayGames),
+				dayWins 	= tonumber(dayWins),
+			}
+		end
+	end
+end
+
+local createLadderEntryDataList = function(playerDataStr, isRenegade)
+	if not playerDataStr or playerDataStr == "" then
 		return
 	end
 
-	if #playerData > 0 then
-		for _, playerString in pairs(playerData) do
-			local playerInfo = C_Split(playerString, ":")
-			local storage = C_CacheInstance:Get("ASMSG_PVP_LADDER_TOP", {}, CACHE_TIME_TO_LIFE)
+	local entryDataList = {}
+	for _, playerEntryStr in ipairs({StringSplitEx("|", playerDataStr)}) do
+		local entry = createLadderEntryData(playerEntryStr, isRenegade)
+		if entry then
+			entryDataList[#entryDataList + 1] = entry
+		end
+	end
+	return entryDataList
+end
 
-			local rank 			= tonumber(playerInfo[1])
-			local name 			= playerInfo[2]
-			local raceID 		= tonumber(playerInfo[3])
-			local classID 		= tonumber(playerInfo[4])
-			local gender 		= tonumber(playerInfo[5])
-			local totalRating 	= tonumber(playerInfo[6])
-			local seasonGames 	= tonumber(playerInfo[7])
-			local seasonWins 	= tonumber(playerInfo[8])
-			local weekGames 	= tonumber(playerInfo[9])
-			local weekWins 		= tonumber(playerInfo[10])
-			local dayGames 		= tonumber(playerInfo[11])
-			local dayWins 		= tonumber(playerInfo[12])
-			local teamID 		= tonumber(playerInfo[13])
+function EventHandler:ASMSG_PVP_LADDER_TOP(msg)
+	local selectedCategory, playerData = string.split("|", msg, 2)
+	selectedCategory = tonumber(selectedCategory)
 
-			teamID = SERVER_FACTION_TO_GAME_FACTION[teamID]
+	if selectedCategory == E_LADDER_BRACKET.RENEGADE then
+		local entryList = createLadderEntryDataList(playerData, true)
+		Hook:FireEvent("RENEGADE_LADDER_TOP", entryList)
+		return
+	end
 
-			if rank and name then
+	if playerData and playerData ~= "" then
+		local storage = C_CacheInstance:Get("ASMSG_PVP_LADDER_TOP", {}, CACHE_TIME_TO_LIFE)
+
+		for _, playerEntryStr in ipairs({StringSplitEx("|", playerData)}) do
+			local entry = createLadderEntryData(playerEntryStr)
+			if entry then
 				if not storage[selectedCategory] then
 					storage[selectedCategory] = {}
 				end
 
-				storage[selectedCategory][#storage[selectedCategory] + 1] = {
-					rank 		= rank,
-					name 		= name,
-					raceID 		= raceID,
-					classID 	= classID,
-					gender 		= gender,
-					totalRating = totalRating,
-					seasonGames = seasonGames,
-					seasonWins 	= seasonWins,
-					weekGames 	= weekGames,
-					weekWins 	= weekWins,
-					dayGames 	= dayGames,
-					dayWins 	= dayWins,
-					teamID 		= teamID
-				}
+				table.insert(storage[selectedCategory], entry)
 			end
 		end
 	else
@@ -755,203 +824,136 @@ function EventHandler:ASMSG_PVP_LADDER_TOP( msg )
 	PVPLadderFrame:UpdateScrollFrame( true )
 end
 
-function EventHandler:ASMSG_PVP_LADDER_CLASS_TOP( msg )
-	local playerData 		= C_Split(msg, "|")
-	local selectedCategory 	= tonumber(table.remove(playerData, 1))
-	local _classID 			= tonumber(table.remove(playerData, 1))
+function EventHandler:ASMSG_PVP_LADDER_CLASS_TOP(msg)
+	local selectedCategory, selectedClassID, playerData = string.split("|", msg, 3)
+	selectedCategory = tonumber(selectedCategory)
+	selectedClassID = tonumber(selectedClassID)
 
 	if selectedCategory == E_LADDER_BRACKET.RENEGADE then
-		Hook:FireEvent("RENEGADE_LADDER_CLASS_TOP", playerData)
+		local entryList = createLadderEntryDataList(playerData, true)
+		Hook:FireEvent("RENEGADE_LADDER_CLASS_TOP", entryList)
 		return
 	end
 
-	local storage
+	local storage = C_CacheInstance:Get("ASMSG_PVP_LADDER_CLASS_TOP", {}, CACHE_TIME_TO_LIFE)
 
-	if #playerData > 0 then
-		for _, playerString in pairs(playerData) do
-			local playerInfo = C_Split(playerString, ":")
-			storage 		 = C_CacheInstance:Get("ASMSG_PVP_LADDER_CLASS_TOP", {}, CACHE_TIME_TO_LIFE)
-
-			local rank 			= tonumber(playerInfo[1])
-			local name 			= playerInfo[2]
-			local raceID 		= tonumber(playerInfo[3])
-			local classID 		= tonumber(playerInfo[4])
-			local gender 		= tonumber(playerInfo[5])
-			local totalRating 	= tonumber(playerInfo[6])
-			local seasonGames 	= tonumber(playerInfo[7])
-			local seasonWins 	= tonumber(playerInfo[8])
-			local weekGames 	= tonumber(playerInfo[9])
-			local weekWins 		= tonumber(playerInfo[10])
-			local dayGames 		= tonumber(playerInfo[11])
-			local dayWins 		= tonumber(playerInfo[12])
-			local teamID 		= tonumber(playerInfo[13])
-
-			teamID = SERVER_FACTION_TO_GAME_FACTION[teamID]
-
-			if rank and name then
+	if playerData and playerData ~= "" then
+		for _, playerEntryStr in ipairs({StringSplitEx("|", playerData)}) do
+			local entry = createLadderEntryData(playerEntryStr)
+			if entry then
 				if not storage[selectedCategory] then
 					storage[selectedCategory] = {}
 				end
 
-				if not storage[selectedCategory][classID] then
-					storage[selectedCategory][classID] = {}
+				if not storage[selectedCategory][entry.classID] then
+					storage[selectedCategory][entry.classID] = {}
 				end
 
-				storage[selectedCategory][classID][#storage[selectedCategory][classID] + 1] = {
-					rank 		= rank,
-					name 		= name,
-					raceID 		= raceID,
-					classID 	= classID,
-					gender 		= gender,
-					totalRating = totalRating,
-					seasonGames = seasonGames,
-					seasonWins 	= seasonWins,
-					weekGames 	= weekGames,
-					weekWins 	= weekWins,
-					dayGames 	= dayGames,
-					dayWins 	= dayWins,
-					teamID 		= teamID
-				}
+				table.insert(storage[selectedCategory][entry.classID], entry)
 			end
 		end
 	else
 		PVPLadderFrame:ResetFrame(true)
-		local data = C_CacheInstance:Get("ASMSG_PVP_LADDER_CLASS_TOP", {}, CACHE_TIME_TO_LIFE)
-
-		if data[selectedCategory] and data[selectedCategory][_classID] then
-			data[selectedCategory][_classID] = nil
+		if storage[selectedCategory] and storage[selectedCategory][selectedClassID] then
+			storage[selectedCategory][selectedClassID] = nil
 		end
 	end
 
 	PVPLadderFrame:UpdateScrollFrame( true )
 end
 
-function EventHandler:ASMSG_PVP_LADDER_PLAYER( msg )
-	local storage 			= {}
-	local playerData 		= C_Split(msg, "|")
-	local selectedCategory 	= tonumber(table.remove(playerData, 1))
+function EventHandler:ASMSG_PVP_LADDER_PLAYER(msg)
+	local selectedCategory, playerEntryStr = string.split("|", msg, 2)
+	selectedCategory = tonumber(selectedCategory)
 
 	if selectedCategory == E_LADDER_BRACKET.RENEGADE then
-		Hook:FireEvent("RENEGADE_LADDER_PLAYER", playerData)
+		local entry = createLadderEntryData(playerEntryStr, true)
+		local entryList = entry and {entry} or nil
+		Hook:FireEvent("RENEGADE_LADDER_PLAYER", entryList)
 		return
 	end
 
-	if playerData[1] then
-		local playerInfo 		= C_Split(playerData[1], ":")
+	local storage = C_CacheInstance:Get("ASMSG_PVP_LADDER_PLAYER", {}, CACHE_TIME_TO_LIFE)
 
-		storage 	 = C_CacheInstance:Get("ASMSG_PVP_LADDER_PLAYER", {})
-
-		local rank 			= tonumber(playerInfo[1])
-		local name 			= playerInfo[2]
-		local raceID 		= tonumber(playerInfo[3])
-		local classID 		= tonumber(playerInfo[4])
-		local gender 		= tonumber(playerInfo[5])
-		local totalRating 	= tonumber(playerInfo[6])
-		local seasonGames 	= tonumber(playerInfo[7])
-		local seasonWins 	= tonumber(playerInfo[8])
-		local weekGames 	= tonumber(playerInfo[9])
-		local weekWins 		= tonumber(playerInfo[10])
-		local dayGames 		= tonumber(playerInfo[11])
-		local dayWins 		= tonumber(playerInfo[12])
-		local teamID 		= tonumber(playerInfo[13])
-
-		teamID = SERVER_FACTION_TO_GAME_FACTION[teamID]
-
-		if rank and name then
-			storage[selectedCategory] = {
-				rank 		= rank,
-				name 		= name,
-				raceID 		= raceID,
-				classID 	= classID,
-				gender 		= gender,
-				totalRating = totalRating,
-				seasonGames = seasonGames,
-				seasonWins 	= seasonWins,
-				weekGames 	= weekGames,
-				weekWins 	= weekWins,
-				dayGames 	= dayGames,
-				dayWins 	= dayWins,
-				teamID 		= teamID
-			}
-
+	if playerEntryStr and playerEntryStr ~= "" then
+		local entry = createLadderEntryData(playerEntryStr)
+		if entry then
+			storage[selectedCategory] = entry
 			PVPLadderFrame:UpdateSelfPlayerInfo()
 		end
 	else
-		storage = C_CacheInstance:Get("ASMSG_PVP_LADDER_PLAYER", {}, CACHE_TIME_TO_LIFE)
 		storage[selectedCategory] = nil
 	end
 end
 
-function EventHandler:ASMSG_PVP_LADDER_SEARCH_RESULT( msg )
-	local textLabel = PVPLadderFrame.Container.RightContainer.CentralContainer.ScrollFrame.TextLabelFrame.Text
+function EventHandler:ASMSG_PVP_LADDER_SEARCH_RESULT(msg)
+	local status, selectedCategory, playerData = string.split("|", msg, 3)
+	selectedCategory = tonumber(selectedCategory)
 
-	local playerData 		= C_Split(msg, "|")
-	local selectedCategory 	= tonumber(table.remove(playerData, 1))
-
-	if selectedCategory == E_LADDER_BRACKET.RENEGADE then
-		Hook:FireEvent("RENEGADE_LADDER_SEARCH_RESULT", playerData)
-		return
-	end
-
-	PVPLadderFrame.Container.RightContainer.TopContainer.SearchButton:StartDelay()
-
-	PVPLadderFrame.searchBuffer[selectedCategory] = {}
-
-	if msg == "-1" then
-		textLabel:SetText(PVP_LADDER_SEARCH_INVALID_PARAMS)
-		PVPLadderFrame:UpdateScrollFrame( true )
-	elseif msg == "-2" then
-		textLabel:SetText(PVP_LADDER_SEARCH_DELAY)
-		PVPLadderFrame:UpdateScrollFrame( true )
-	else
-		if #playerData == 0 then
-			textLabel:SetText(PVP_LADDER_SEARCH_NOT_RESULT)
-			PVPLadderFrame:UpdateScrollFrame( true )
+	if status == "0" then
+		if selectedCategory == E_LADDER_BRACKET.RENEGADE then
+			local entryList = createLadderEntryDataList(playerData, true)
+			Hook:FireEvent("RENEGADE_LADDER_SEARCH_RESULT", entryList)
 			return
-		end
-	end
-
-	for _, playerString in pairs(playerData) do
-		local playerInfo = C_Split(playerString, ":")
-
-		if #playerInfo >= 1 then
-			local rank 			= tonumber(playerInfo[1])
-			local name 			= playerInfo[2]
-			local raceID 		= tonumber(playerInfo[3])
-			local classID 		= tonumber(playerInfo[4])
-			local gender 		= tonumber(playerInfo[5])
-			local totalRating 	= tonumber(playerInfo[6])
-			local seasonGames 	= tonumber(playerInfo[7])
-			local seasonWins 	= tonumber(playerInfo[8])
-			local weekGames 	= tonumber(playerInfo[9])
-			local weekWins 		= tonumber(playerInfo[10])
-			local dayGames 		= tonumber(playerInfo[11])
-			local dayWins 		= tonumber(playerInfo[12])
-			local teamID 		= tonumber(playerInfo[13])
-
-			teamID = SERVER_FACTION_TO_GAME_FACTION[teamID]
-
-			if rank and name then
-				PVPLadderFrame.searchBuffer[selectedCategory][#PVPLadderFrame.searchBuffer[selectedCategory] + 1] = {
-					rank 		= rank,
-					name 		= name,
-					raceID 		= raceID,
-					classID 	= classID,
-					gender 		= gender,
-					totalRating = totalRating,
-					seasonGames = seasonGames,
-					seasonWins 	= seasonWins,
-					weekGames 	= weekGames,
-					weekWins 	= weekWins,
-					dayGames 	= dayGames,
-					dayWins 	= dayWins,
-					teamID 		= teamID
-				}
+		else
+			if PVPLadderFrame.searchBuffer[selectedCategory] then
+				table.wipe(PVPLadderFrame.searchBuffer[selectedCategory])
+			else
+				PVPLadderFrame.searchBuffer[selectedCategory] = {}
 			end
+
+			PVPLadderFrame.Container.RightContainer.TopContainer.SearchButton:StartDelay()
+			RenegadeLadderFrame.Container.RightContainer.TopContainer.SearchFrame.SearchButton:StartDelay()
+
+			for _, playerString in ipairs({StringSplitEx("|", playerData)}) do
+				local entry = createLadderEntryData(playerString)
+				if entry then
+					table.insert(PVPLadderFrame.searchBuffer[selectedCategory], entry)
+				end
+			end
+
+			PVPLadderFrame:UpdateScrollFrame(true)
+		end
+	else
+		local rightContainer
+		if selectedCategory == E_LADDER_BRACKET.RENEGADE then
+			rightContainer = RenegadeLadderFrame.Container.RightContainer
+		else
+			rightContainer = PVPLadderFrame.Container.RightContainer
+		end
+
+		if status == "1" then
+			PVPLadderFrame.Container.RightContainer.TopContainer.SearchButton:StartDelay()
+			RenegadeLadderFrame.Container.RightContainer.TopContainer.SearchFrame.SearchButton:StartDelay()
+
+			rightContainer.CentralContainer.ScrollFrame.TextLabelFrame.Text:SetText(PVP_LADDER_SEARCH_INVALID_PARAMS)
+		elseif status == "2" then
+			local delay = tonumber(playerData)
+
+			PVPLadderFrame.Container.RightContainer.TopContainer.SearchButton:StartDelay(delay)
+			RenegadeLadderFrame.Container.RightContainer.TopContainer.SearchFrame.SearchButton:StartDelay(delay)
+
+			rightContainer.CentralContainer.ScrollFrame.TextLabelFrame.Text:SetText(PVP_LADDER_SEARCH_DELAY)
+		end
+
+		if selectedCategory == E_LADDER_BRACKET.RENEGADE then
+			Hook:FireEvent("RENEGADE_LADDER_SEARCH_RESULT", {})
+		else
+			if selectedCategory and PVPLadderFrame.searchBuffer[selectedCategory] then
+				table.wipe(PVPLadderFrame.searchBuffer[selectedCategory])
+			end
+			PVPLadderFrame:UpdateScrollFrame(true)
 		end
 	end
+end
 
-	PVPLadderFrame:UpdateScrollFrame( true )
+function EventHandler:ASMSG_PVP_LADDER_PLAYER_INSPECT(msg)
+	local selectedCategory, playerEntryStr = string.split("|", msg, 2)
+	local entry
+	if playerEntryStr and playerEntryStr ~= "" then
+		entry = createLadderEntryData(playerEntryStr)
+	end
+	FireCustomClientEvent("INSPECT_PVP_LADDER", tonumber(selectedCategory), entry)
 end
 
 local bracketOverride = {

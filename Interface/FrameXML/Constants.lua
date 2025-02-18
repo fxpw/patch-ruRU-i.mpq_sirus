@@ -148,6 +148,7 @@ CRITERIA_TYPE_ACHIEVEMENT = 8;
 ACHIEVEMENT_FLAGS_STATISTIC				= 0x00000001;
 ACHIEVEMENT_FLAGS_HIDDEN				= 0x00000002;
 ACHIEVEMENT_FLAGS_HAS_PROGRESS_BAR 		= 0x00000080;
+ACHIEVEMENT_FLAGS_ACCOUNT 				= 0x00020000;
 NUM_ACHIEVEMENT_FLAGS			= 3;
 
 -- Criteria Flags
@@ -506,6 +507,10 @@ CUSTOM_GOSSIP_TEXTS[CUSTOM_GOSSIP_TEXT_5] = "portraitroledamager";
 CUSTOM_GOSSIP_TEXTS[CUSTOM_GOSSIP_TEXT_6] = "portraitroledamager";
 CUSTOM_GOSSIP_TEXTS[CUSTOM_GOSSIP_TEXT_7] = "portraitrolehealer";
 CUSTOM_GOSSIP_TEXTS[CUSTOM_GOSSIP_TEXT_8] = "portraitrolehealer";
+CUSTOM_GOSSIP_TEXTS[CUSTOM_GOSSIP_TEXT_9] = "portraitroletank";
+CUSTOM_GOSSIP_TEXTS[CUSTOM_GOSSIP_TEXT_10] = "portraitroledamager";
+CUSTOM_GOSSIP_TEXTS[CUSTOM_GOSSIP_TEXT_11] = "portraitroledamager";
+CUSTOM_GOSSIP_TEXTS[CUSTOM_GOSSIP_TEXT_12] = "portraitrolehealer";
 
 STORE_PRODUCT_MONEY_ICON = {
 	"coins",
@@ -519,6 +524,8 @@ LE_FRAME_TUTORIAL_MINI_GAME_FRAGILEFLOOR = 1;
 LE_FRAME_TUTORIAL_MINI_GAME_FROZEN_SNOWMAN_LAIR = 2;
 LE_FRAME_TUTORIAL_MINI_GAME_DOOR_DASH = 3
 LE_FRAME_TUTORIAL_REFUSE_XP_RATE = 4
+LE_FRAME_TUTORIAL_MINI_GAME_TIPTOE = 5
+LE_FRAME_TUTORIAL_MINI_GAME_COLORED_CAPTURE = 6
 
 PET_TYPE_SUFFIX = {
 	[1] = "Water",
@@ -653,6 +660,8 @@ NEW_ITEM_ATLAS_BY_QUALITY = {
 
 -- Loot
 LOOT_BORDER_BY_QUALITY = {
+	[Enum.ItemQuality.Poor] = "loottoast-itemborder-gray",
+	[Enum.ItemQuality.Common] = "loottoast-itemborder-gray",
 	[Enum.ItemQuality.Uncommon] = "loottoast-itemborder-green",
 	[Enum.ItemQuality.Rare] = "loottoast-itemborder-blue",
 	[Enum.ItemQuality.Epic] = "loottoast-itemborder-purple",

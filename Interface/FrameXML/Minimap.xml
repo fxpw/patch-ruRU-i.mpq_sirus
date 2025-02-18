@@ -158,6 +158,7 @@
 								if( GameTooltip:IsOwned(self) ) then
 									MinimapMailFrameUpdate();
 								end
+								EventRegistry:TriggerEvent("MiniMapMailFrame.OnEnter")
 							</OnEnter>
 							<OnLeave function="GameTooltip_Hide"/>
 						</Scripts>

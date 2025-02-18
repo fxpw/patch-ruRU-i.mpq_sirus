@@ -378,18 +378,9 @@
 					</Button>
 					<DressUpModel name="$parentModelScene" parentKey="ModelScene" enableMouse="true" inherits="ModelTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT"/>
-							<Anchor point="BOTTOMRIGHT"/>
+							<Anchor point="TOPLEFT" x="1" y="-1"/>
+							<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
 						</Anchors>
-						<Layers>
-							<Layer level="OVERLAY">
-								<FontString name="$parentDebugInfo" parentKey="DebugInfo" inherits="GameFontNormalLarge" justifyH="LEFT">
-									<Anchors>
-										<Anchor point="BOTTOM" x="0" y="86"/>
-									</Anchors>
-								</FontString>
-							</Layer>
-						</Layers>
 						<Frames>
 							<Button name="$parentRotateLeftButton" parentKey="RotateLeftButton">
 								<Size x="35" y="35"/>
@@ -471,31 +462,12 @@
 										</Anchors>
 										<Scripts>
 											<OnShow>
-												self:SetEnabled(IsStoreEnable())
+												self:SetEnabled(C_StorePublic.IsEnabled())
 											</OnShow>
 											<OnClick function="PetJournalBuyButton_OnClick"/>
 										</Scripts>
 									</Button>
 								</Frames>
-							</Frame>
-							<Frame name="$parentDebugFrame" parentKey="DebugFrame" hidden="true">
-								<Size x="280" y="280"/>
-								<Anchors>
-									<Anchor point="CENTER" x="0" y="0"/>
-								</Anchors>
-								<Backdrop bgFile="" edgeFile="Interface\BUTTONS\WHITE8X8" tile="false">
-									<EdgeSize>
-										<AbsValue val="3"/>
-									</EdgeSize>
-									<BackgroundInsets>
-										<AbsInset left="0" right="0" top="0" bottom="0"/>
-									</BackgroundInsets>
-								</Backdrop>
-								<Scripts>
-									<OnLoad>
-										self:SetBackdropBorderColor(1, 0, 0);
-									</OnLoad>
-								</Scripts>
 							</Frame>
 						</Frames>
 					</DressUpModel>

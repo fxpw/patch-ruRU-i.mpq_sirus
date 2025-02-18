@@ -218,9 +218,8 @@ function DeclineGuildApplicant(index)
 		error("Usage: DeclineGuildApplicant(index)", 2);
 	end
 
-	if GUILD_APPLICANT_INFO[index] and GUILD_APPLICANT_INFO[index][22] then
-		SendServerMessage("ACMSG_GF_DECLINE_RECRUIT", GUILD_APPLICANT_INFO[index][22]);
-
+	if GUILD_APPLICANT_INFO[index] and GUILD_APPLICANT_INFO[index][2] then
+		SendServerMessage("ACMSG_GF_DECLINE_RECRUIT", GUILD_APPLICANT_INFO[index][2]);
 		GUILD_APPLICANT_SELECTION = nil;
 	end
 end
@@ -234,7 +233,7 @@ function GetGuildApplicantInfo(index)
 		error("Usage: GetGuildApplicantInfo(index)", 2);
 	end
 
-	return unpack(GUILD_APPLICANT_INFO[index] or {}, 1, 22);
+	return unpack(GUILD_APPLICANT_INFO[index] or {}, 1, 23);
 end
 
 function GetGuildMembershipRequestInfo(index)
@@ -246,7 +245,10 @@ function GetGuildMembershipRequestInfo(index)
 		error("Usage: GetGuildMembershipRequestInfo(index)", 2);
 	end
 
-	return unpack(GUILD_MEMBERSHIP_REQUEST_INFO[index] or {}, 1, 7);
+
+	if GUILD_MEMBERSHIP_REQUEST_INFO[index] then
+		return unpack(GUILD_MEMBERSHIP_REQUEST_INFO[index], 1, 8)
+	end
 end
 
 function GetGuildMembershipRequestSettings(index)
@@ -258,7 +260,9 @@ function GetGuildMembershipRequestSettings(index)
 		error("Usage: GetGuildMembershipRequestSettings(index)", 2);
 	end
 
-	return unpack(GUILD_MEMBERSHIP_REQUEST_INFO[index] or {}, 8, 21);
+	if GUILD_MEMBERSHIP_REQUEST_INFO[index] then
+		return unpack(GUILD_MEMBERSHIP_REQUEST_INFO[index], 9, 22)
+	end
 end
 
 function GetGuildMembershipRequestTabardInfo(index)
@@ -270,7 +274,9 @@ function GetGuildMembershipRequestTabardInfo(index)
 		error("Usage: GetRecruitingGuildTabardInfo(index)", 2);
 	end
 
-	return unpack(GUILD_MEMBERSHIP_REQUEST_INFO[index] or {}, 22, 26);
+	if GUILD_MEMBERSHIP_REQUEST_INFO[index] then
+		return unpack(GUILD_MEMBERSHIP_REQUEST_INFO[index], 23, 27)
+	end
 end
 
 function GetNumGuildApplicants()
@@ -458,6 +464,20 @@ function RequestRecruitingGuildsList(searchName)
 	SendServerMessage("ACMSG_GF_BROWSE", string.format("%s|%s|%s|%s|%s|%s", classRoles, availability, interests, activityTimes, guildSize, searchName));
 end
 
+function AcceptGuildMembership(index)
+	if type(index) ~= "number" then
+		error("Usage: AcceptGuildMembership(index)", 2)
+	end
+
+	local requestInfo = GUILD_MEMBERSHIP_REQUEST_INFO[index]
+	if requestInfo and requestInfo[8] then
+		local guildID = requestInfo[30]
+		if guildID then
+			SendServerMessage("ACMSG_GF_ACCEPT_INVITE", guildID)
+		end
+	end
+end
+
 function EventHandler:ASMSG_GF_BROWSE_UPDATED(msg)
 	table.wipe(GUILD_MEMBERSHIP_REQUESTS);
 	table.wipe(RECRUITING_GUILD_INFO);
@@ -559,6 +579,7 @@ local GF_MEMBERSHIP_LIST_UPDATE = {
 	MemberCount = 11,
 	GuildComment = 12,
 	EmblemInfo = 13,
+	HAS_INVITE = 14,
 };
 
 function EventHandler:ASMSG_GF_MEMBERSHIP_LIST_UPDATE(msg)
@@ -572,6 +593,7 @@ function EventHandler:ASMSG_GF_MEMBERSHIP_LIST_UPDATE(msg)
 	requestInfo[5] = tonumber(request[GF_MEMBERSHIP_LIST_UPDATE.TimeSince]) or 0;
 	requestInfo[6] = tonumber(request[GF_MEMBERSHIP_LIST_UPDATE.TimeLeft]) or 0;
 	requestInfo[7] = false; -- declined
+	requestInfo[8] = request[GF_MEMBERSHIP_LIST_UPDATE.HAS_INVITE] == "1"
 
 	local interests = tonumber(request[GF_MEMBERSHIP_LIST_UPDATE.Interests]) or 0;
 	for index = 0, (NUM_LF_GUILD_INTERESTS_FLAGS - 1) do
@@ -631,6 +653,7 @@ local GF_RECRUIT_LIST_UPDATE = {
 	Class = 11,
 	ActivityTimes = 12,
 	Online = 13,
+	InviteSent = 14,
 };
 
 function EventHandler:ASMSG_GF_RECRUIT_LIST_UPDATE(msg)
@@ -638,9 +661,11 @@ function EventHandler:ASMSG_GF_RECRUIT_LIST_UPDATE(msg)
 
 	local requestInfo = {};
 	requestInfo[1] = request[GF_RECRUIT_LIST_UPDATE.Name];
-	requestInfo[2] = tonumber(request[GF_RECRUIT_LIST_UPDATE.Online]) == 1;
+	requestInfo[2] = tonumber(request[GF_RECRUIT_LIST_UPDATE.Guid]);
 	requestInfo[3] = tonumber(request[GF_RECRUIT_LIST_UPDATE.Level]) or 0;
 	requestInfo[4] = select(2, GetClassInfo( tonumber(request[GF_RECRUIT_LIST_UPDATE.Class]) or 1 ));
+	requestInfo[5] = tonumber(request[GF_RECRUIT_LIST_UPDATE.Online]) == 1;
+	requestInfo[6] = tonumber(request[GF_RECRUIT_LIST_UPDATE.InviteSent]) == 1
 
 	local interests = tonumber(request[GF_RECRUIT_LIST_UPDATE.Interests]) or 0;
 	for index = 0, (NUM_LF_GUILD_INTERESTS_FLAGS - 1) do
@@ -662,10 +687,9 @@ function EventHandler:ASMSG_GF_RECRUIT_LIST_UPDATE(msg)
 		requestInfo[#requestInfo + 1] = bit.band(activityTimes, bit.lshift(1, index)) ~= 0;
 	end
 
-	requestInfo[19] = request[GF_RECRUIT_LIST_UPDATE.Comment];
-	requestInfo[20] = tonumber(request[GF_RECRUIT_LIST_UPDATE.TimeSince]) or 0;
-	requestInfo[21] = tonumber(request[GF_RECRUIT_LIST_UPDATE.TimeLeft]) or 0;
-	requestInfo[22] = tonumber(request[GF_RECRUIT_LIST_UPDATE.Guid]);
+	requestInfo[21] = request[GF_RECRUIT_LIST_UPDATE.Comment];
+	requestInfo[22] = tonumber(request[GF_RECRUIT_LIST_UPDATE.TimeSince]) or 0;
+	requestInfo[23] = tonumber(request[GF_RECRUIT_LIST_UPDATE.TimeLeft]) or 0;
 
 	GUILD_APPLICANT_INFO[#GUILD_APPLICANT_INFO + 1] = requestInfo;
 

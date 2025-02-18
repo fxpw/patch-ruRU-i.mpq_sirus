@@ -3,7 +3,6 @@
 		text,									-- also acts as a key for various API, MUST BE SET
 		textColor = HIGHLIGHT_FONT_COLOR,
 		textJustifyH = "LEFT",
-		textFontObject = "GameFontHighlightLeft",
 		buttonStyle = HelpTip.ButtonStyle.None	-- button to close the helptip, or no button at all
 		targetPoint = HelpTip.Point.BottomEdgeCenter,	-- where at the parent/relativeRegion the helptip should point
 		alignment = HelpTip.Alignment.Center,	-- alignment of the helptip relative to the parent/relativeRegion (basically where the arrow is located)
@@ -20,9 +19,15 @@
 		useParentStrata	= false,				-- whether to use parent framestrata
 		system = ""								-- reference string
 		systemPriority = 0,						-- if a system and a priority is specified, higher priority helptips will close another helptip in that system
-		extraWidth = 0,							-- extra width of the helptip
 		extraRightMarginPadding = 0,			--  extra padding on the right side of the helptip
 		acknowledgeOnHide = false,				-- whether to treat a hide as an acknowledge
+		handlesGlobalMouseEventCallback	= nil,	-- if a helptip is tied to a drop down set a global mouse callback on the helptip info
+		appendFrame = nil,						-- if a helptip needs a custom display you can append your own frame to the text
+		appendFrameYOffset = nil,				-- the offset for the vertical anchor for appendFrame
+
+		textFontObject = "GameFontHighlightLeft",
+		extraWidth = 0,							-- extra width of the helptip
+		frameStrata = nil,
 	}
 ]]--
 
@@ -133,6 +138,10 @@ do
 		frame:ClearAllPoints();
 		frame:Hide();
 		frame:Reset();
+
+		if IsOnGlueScreen() then
+			frame:SetScale(PixelUtil.GetPixelToUIUnitFactor())
+		end
 	end
 
 	HelpTip.framePool = CreateFramePool("FRAME", nil, "HelpTipTemplate", HelpTipReset);
@@ -188,8 +197,14 @@ function HelpTip:CanShow(info)
 			end
 		end
 		if info.cvarBitfield then
-			if C_CVar:GetCVarBitfield(info.cvarBitfield, info.bitfieldFlag) then
-				return false;
+			if IsOnGlueScreen() then
+				if C_GlueCVars.GetCVarBitfield(info.cvarBitfield, info.bitfieldFlag) then
+					return false;
+				end
+			else
+				if C_CVar:GetCVarBitfield(info.cvarBitfield, info.bitfieldFlag) then
+					return false;
+				end
 			end
 		end
 	end
@@ -329,13 +344,22 @@ function HelpTipTemplateMixin:OnLoad()
 end
 
 function HelpTipTemplateMixin:OnShow()
-	self:RegisterEvent("UPDATE_FLOATING_CHAT_WINDOWS");
+	self:RegisterEvent("UI_SCALE_CHANGED");
+	self:RegisterEvent("DISPLAY_SIZE_CHANGED");
 end
 
 function HelpTipTemplateMixin:OnHide()
-	self:UnregisterEvent("UPDATE_FLOATING_CHAT_WINDOWS");
+	self:UnregisterEvent("UI_SCALE_CHANGED");
+	self:UnregisterEvent("DISPLAY_SIZE_CHANGED");
 
 	local info = self.info;
+	local appendFrame = info.appendFrame;
+	if appendFrame then
+		appendFrame:Hide();
+		appendFrame:ClearAllPoints();
+		appendFrame:SetParent(UIParent);
+	end
+
 	if info.onHideCallback then
 		info.onHideCallback(self.acknowledged, info.callbackArg);
 	end
@@ -414,10 +438,15 @@ end
 
 function HelpTipTemplateMixin:Init(parent, info, relativeRegion)
 	self:SetParent(parent);
+
 	if info.useParentStrata then
 		self:SetFrameLevel(100);
 	else
-		self:SetFrameStrata("DIALOG");
+		if IsOnGlueScreen() then
+			self:SetFrameStrata(info.frameStrata or "HIGH")
+		else
+			self:SetFrameStrata(info.frameStrata or "DIALOG");
+		end
 	end
 	self.info = info;
 	self.relativeRegion = relativeRegion;
@@ -507,12 +536,35 @@ function HelpTipTemplateMixin:Layout()
 		if buttonInfo.text then
 			self[buttonInfo.parentKey]:SetText(buttonInfo.text);
 		end
+		self[buttonInfo.parentKey].HandlesGlobalMouseEvent = self.info.handlesGlobalMouseEventCallback;
 	end
 	-- set height based on the text
 	self:ApplyText();
 	self.Text:SetWidth(textWidth);
-	self.Text:SetPoint("LEFT", textOffsetX, textOffsetY);
+
+	local info = self.info;
+	local appendFrame = info.appendFrame;
+	self.Text:ClearAllPoints();
+	if appendFrame then
+		self.Text:SetPoint("TOPLEFT", textOffsetX, textOffsetY - 16);
+	else
+		self.Text:SetPoint("LEFT", textOffsetX, textOffsetY);
+	end
+
 	height = height + self.Text:GetHeight();
+
+	if appendFrame then
+		appendFrame:ClearAllPoints();
+		appendFrame:SetParent(self);
+
+		local anchorOffset = info.appendFrameYOffset or 0;
+		appendFrame:SetPoint("TOP", self.Text, "BOTTOM", 0, anchorOffset);
+		appendFrame:SetPoint("LEFT", self.Text, "LEFT");
+		appendFrame:SetPoint("RIGHT", self.Text, "RIGHT");
+		appendFrame:Show();
+		height = (height + appendFrame:GetHeight()) - anchorOffset;
+	end
+
 	if pointInfo.arrowRotation == HelpTip.ArrowRotation.Left or pointInfo.arrowRotation == HelpTip.ArrowRotation.Right then
 		height = max(height, HelpTip.minimumHeight);
 	end
@@ -567,7 +619,11 @@ function HelpTipTemplateMixin:HandleAcknowledge()
 		SetCVar(info.cvar, info.cvarValue);
 	end
 	if info.cvarBitfield then
-		C_CVar:SetCVarBitfield(info.cvarBitfield, info.bitfieldFlag, true);
+		if IsOnGlueScreen() then
+			C_GlueCVars.SetCVarBitfield(info.cvarBitfield, info.bitfieldFlag, true)
+		else
+			C_CVar:SetCVarBitfield(info.cvarBitfield, info.bitfieldFlag, true);
+		end
 	end
 	self.acknowledged = true;
 end

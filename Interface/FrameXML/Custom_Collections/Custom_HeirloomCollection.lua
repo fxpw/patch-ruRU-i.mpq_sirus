@@ -85,6 +85,9 @@ function HeirloomsMixin:OnShow()
 	if self.needsRefresh then
 		self:RefreshView();
 	end
+
+	self:UpdateResetFiltersButtonVisibility()
+	EventRegistry:TriggerEvent("HeirloomsJournal.OnShow")
 end
 
 function HeirloomsMixin:OnMouseWheel(delta)

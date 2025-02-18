@@ -1,0 +1,1922 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_StoreTemplates.lua"/>
+
+	<CheckButton name="StoreBagCheckButtonTemplate" virtual="true">
+		<Size x="50" y="50"/>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreBagCheckButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</CheckButton>
+
+	<Frame name="StoreAccountCurrencyPanelTemplate" virtual="true">
+		<Size x="0" y="68"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentDivider" parentKey="Divider" hidden="true">
+					<Anchors>
+						<Anchor point="RIGHT" relativePoint="LEFT" x="-30" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="42" y="42"/>
+					<Anchors>
+						<Anchor point="LEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentValue" parentKey="Value" inherits="SystemFont_Shadow_Huge3" text="0">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="10" y="0"/>
+					</Anchors>
+					<Color r="1.0" g="0.82" b="0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentButton" parentKey="Button" inherits="PKBT_RedButtonMultiWidgetTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentValue" relativePoint="RIGHT" x="14" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():ActionClick(button)
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreAccountCurrencyPanelMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="StoreAccountProgressPanelTemplate" virtual="true">
+		<Size x="196" y="68"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentDivider" parentKey="Divider" hidden="true">
+					<Anchors>
+						<Anchor point="RIGHT" relativePoint="LEFT" x="-30" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentLabel" parentKey="Label" inherits="PKBT_Font_15">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+					</Anchors>
+					<Color r="1.0" g="0.82" b="0"/>
+				</FontString>
+				<FontString name="$parentValue" parentKey="Value" inherits="PKBT_Font_15" hidden="true">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+					<Color r="0.823" g="0.788" b="0.756"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<StatusBar name="$parentStatusBar" parentKey="StatusBar" inherits="PKBT_StatusBarTemplate">
+				<Size x="130" y="19"/>
+				<Attributes>
+					<Attribute name="BarTexture" value="PKBT-StatusBar-Green" type="string"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="LEFT" x="5" y="-7"/>
+				</Anchors>
+			</StatusBar>
+			<CheckButton name="$parentBrowseButton" parentKey="BrowseButton" inherits="StoreBagCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" x="0" y="-3"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():BrowseClick(button)
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreAccountProgressPanelMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+		</Scripts>
+	</Frame>
+
+	<Button name="StoreEquipmentButtonTemplate" virtual="true">
+		<Size x="192" y="54"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackgroundLeft" parentKey="BackgroundLeft">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBackgroundRight" parentKey="BackgroundRight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBackgroundCenter" parentKey="BackgroundCenter">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBackgroundLeft" relativePoint="TOPRIGHT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackgroundRight" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentHighlight" parentKey="Highlight" hidden="true"/>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentNewIcon" parentKey="NewIcon" hidden="true">
+					<Animations>
+						<AnimationGroup name="$parentAnim" parentKey="Anim" looping="REPEAT">
+							<Alpha change="-1" duration="0" order="1"/>
+							<Alpha change="0.5" duration="0" order="2"/>
+							<Alpha change="0.5" duration="0.5" smoothing="OUT" order="3"/>
+							<Alpha change="-0.5" duration="0.5" order="4"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentIcon" parentKey="Icon">
+				<Size x="64" y="64"/>
+				<Layers>
+					<Layer level="BORDER">
+						<Texture name="$parentBorder" parentKey="Border">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentBorder" x="6" y="-6"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorder" x="-6" y="6"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture name="$parentUpgrade" parentKey="Upgrade" hidden="true">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="1" y="1"/>
+							</Anchors>
+							<Animations>
+								<AnimationGroup name="$parentAnim" parentKey="Anim" looping="BOUNCE">
+									<Translation offsetX="0" offsetY="6" duration="0.8" smoothing="OUT" order="1"/>
+								</AnimationGroup>
+							</Animations>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnter>
+						self:GetParent():OnEnter()
+					</OnEnter>
+					<OnLeave>
+						self:GetParent():OnLeave()
+					</OnLeave>
+					<OnClick>
+						self:GetParent():OnClick(button)
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+
+		<NormalFont style="PKBT_Button_Font_22"/>
+		<DisabledFont style="PKBT_ButtonDisable_Font_22"/>
+		<PushedTextOffset x="0" y="0"/>
+		<ButtonText name="$parentButtonText" parentKey="ButtonText"/>
+
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreEquipmentButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+			<OnEnable>
+				self:OnEnable()
+			</OnEnable>
+			<OnDisable>
+				self:OnDisable()
+			</OnDisable>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Frame name="StoreOfferTimerTemplate" virtual="true">
+		<Size x="219" y="76"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackgroundLeft" parentKey="BackgroundLeft">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBackgroundRight" parentKey="BackgroundRight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBackgroundCenter" parentKey="BackgroundCenter">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBackgroundLeft" relativePoint="TOPRIGHT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackgroundRight" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentValue" parentKey="Value" inherits="PKBT_Font_30" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+					<Color r="1.0" g="0.82" b="0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreOfferTimerMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="StorePageHeaderTemplate" virtual="true">
+		<Size x="0" y="62"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentBackground" parentKey="Background" setAllPoints="true"/>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="$parentText" parentKey="Text" inherits="PKBT_Font_30" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="LEFT" x="25" y="0"/>
+					</Anchors>
+					<Color r="1.0" g="0.82" b="0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StorePageHeaderTemplate)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="StoreSpecialRibbonTemplate" virtual="true">
+		<Size x="80" y="43"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackgroundLeft" parentKey="BackgroundLeft">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBackgroundRight" parentKey="BackgroundRight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBackgroundCenter" parentKey="BackgroundCenter">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBackgroundLeft" relativePoint="TOPRIGHT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackgroundRight" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" parentKey="Text" inherits="PKBT_Font_14" maxLines="1">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+					<Shadow>
+						<Offset x="1" y="-1"/>
+					</Shadow>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreSpecialRibbonMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="StoreLoadingItemPlateTemplate" virtual="true" enableMouse="true" hidden="true">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="11" y="-12"/>
+			<Anchor point="BOTTOMRIGHT" x="-11" y="12"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" alpha="0.5">
+					<Color r="0" g="0" b="0"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentSpinner" parentKey="Spinner" file="Interface\Common\StreamCircle">
+					<Size x="48" y="48"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="12"/>
+					</Anchors>
+					<Color r="1" g="0.82" b="0"/>
+					<Animations>
+						<AnimationGroup parentKey="AnimRotation" looping="REPEAT">
+							<Rotation duration="2" degrees="-360" order="1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<FontString name="$parentText" parentKey="Text" inherits="PKBT_Font_14" text="STORE_LOADING_PRODUCTS">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentSpinner" relativePoint="BOTTOM" x="0" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnShow>
+				self.Spinner.AnimRotation:Play()
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<Frame name="StoreLoadingViewTemplate" virtual="true" enableMouse="true" setAllPoints="true" hidden="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" alpha="0.5">
+					<Color r="0" g="0" b="0"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentSpinner" parentKey="Spinner">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="40"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AnimRotation" looping="REPEAT">
+							<Rotation duration="2" degrees="-360" order="1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<FontString name="$parentText" parentKey="Text" inherits="PKBT_Font_22" text="STORE_LOADING_PRODUCTS">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentSpinner" relativePoint="BOTTOM" x="0" y="-20"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self.Spinner:SetAtlas("auctionhouse-ui-loadingspinner", true)
+			</OnLoad>
+			<OnShow>
+				self.Spinner.AnimRotation:Play()
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<Button name="StoreRecommendationTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<DressUpModel name="$parentModel" parentKey="Model" inherits="PKBT_ModelTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="7" y="-7"/>
+					<Anchor point="BOTTOMRIGHT" x="-7" y="32"/>
+				</Anchors>
+			</DressUpModel>
+			<Frame name="$parentOverlay" parentKey="Overlay">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="0"/>
+					<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BORDER">
+						<Texture name="$parentShadow" parentKey="Shadow" setAllPoints="true"/>
+					</Layer>
+					<Layer level="ARTWORK">
+						<Texture name="$parentBorder" parentKey="Border">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<FontString name="$parentName" parentKey="Name" inherits="PKBT_Font_12" maxLines="4">
+							<Anchors>
+								<Anchor point="BOTTOM" x="0" y="45"/>
+							</Anchors>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentSpecial" parentKey="Special" inherits="StoreSpecialRibbonTemplate" hidden="true">
+				<Size x="77" y="43"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="5" y="-3"/>
+				</Anchors>
+			</Frame>
+			<Button name="$parentPurchaseButton" parentKey="PurchaseButton" inherits="PKBT_RedButtonMultiWidgetPriceTemplate">
+				<Size x="126" y="70"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="-30"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():OnPurchaseClick(button)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentDetailsButton" parentKey="DetailsButton" inherits="PKBT_RedButtonTemplate" text="STORE_DETAILS" hidden="true">
+				<!-- <Size x="126" y="70"/> -->
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="-30"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():DetailsOnClick(button)
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreRecommendationMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+		</Scripts>
+	</Button>
+	<Button name="StoreRecommendationVerticalTemplate" inherits="StoreRecommendationTemplate" virtual="true">
+		<Size x="140" y="203"/>
+		<HitRectInsets left="6" right="6" top="5" bottom="33"/>
+		<Frames>
+			<Frame name="$parentItem" parentKey="Item" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentBackground" x="0" y="0"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackground" x="0" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentIcon" parentKey="Icon">
+							<Size x="68" y="68"/>
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-30"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentIconShadow" parentKey="IconShadow">
+							<Anchors>
+								<Anchor point="TOP" relativeTo="$parentIcon" relativePoint="BOTTOM" x="0" y="-10"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture name="$parentBorder" parentKey="Border">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentIcon" x="-4" y="4"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="4" y="-4"/>
+							</Anchors>
+						</Texture>
+						<FontString name="$parentAmount" parentKey="Amount" justifyH="RIGHT" justifyV="BOTTOM" inherits="PKBT_Font_14_OUTLINE">
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="-4" y="3"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreRecommendationVerticalMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Button>
+	<Button name="StoreRecommendationHorizontalTemplate" inherits="StoreRecommendationTemplate" virtual="true">
+		<Size x="296" y="203"/>
+		<HitRectInsets left="6" right="6" top="5" bottom="33"/>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreRecommendationHorizontalMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Button>
+
+	<Button name="StoreCollectionProductTemplate" virtual="true">
+		<Size x="236" y="266"/>
+		<HitRectInsets left="7" right="8" top="8" bottom="8"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" setAllPoints="true"/>
+			</Layer>
+		</Layers>
+		<Frames>
+			<DressUpModel name="$parentModel" parentKey="Model" inherits="PKBT_ModelTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="15" y="-15"/>
+					<Anchor point="BOTTOMRIGHT" x="-14" y="32"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentName" parentKey="Name" inherits="PKBT_Font_13" maxLines="3">
+							<Anchors>
+								<Anchor point="TOP" x="0" y="0"/>
+							</Anchors>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+					</Layer>
+				</Layers>
+			</DressUpModel>
+			<Frame name="$parentSpecial" parentKey="Special" inherits="StoreSpecialRibbonTemplate">
+				<Size x="77" y="43"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="11" y="-23"/>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentNew" parentKey="New" hidden="true">
+				<Size x="52" y="52"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-12" y="-12"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture name="$parentIndicator" parentKey="Indicator" setAllPoints="true"/>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Button name="$parentFavoriteButton" parentKey="FavoriteButton">
+				<Size x="26" y="26"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="14" y="-14"/>
+				</Anchors>
+				<HighlightTexture alphaMode="ADD" alpha="0.7"/>
+				<Scripts>
+					<OnClick>
+						self:GetParent():OnFavoriteClick(button)
+					</OnClick>
+					<OnEnter>
+						self:GetParent():OnFavoriteEnter(self)
+					</OnEnter>
+					<OnLeave>
+						self:GetParent():OnFavoriteLeave(self)
+					</OnLeave>
+				</Scripts>
+			</Button>
+			<Button name="$parentActionButton" parentKey="ActionButton" inherits="PKBT_RedButtonMultiWidgetPriceTemplate">
+				<Size x="140" y="51"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="-15"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():OnActionClick(button)
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreCollectionProductMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+		</Scripts>
+	</Button>
+
+	<Frame name="StoreSubscriptionTitleTemplate" virtual="true">
+		<Size x="220" y="35"/>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentLeft" parentKey="Left">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentRight" parentKey="Right">
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentCenter" parentKey="Center">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentLeft" relativePoint="TOPRIGHT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentRight" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" parentKey="Text" inherits="PKBT_Font_18" maxLines="1">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="1"/>
+					</Anchors>
+					<Color r="1.0" g="0.82" b="0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreSubscriptionTitleMixin)
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<Button name="StoreSubscriptionItemTemplate" virtual="true">
+		<Size x="68" y="68"/>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+					</Anchors>
+					<TexCoords left="0.08" right="0.92" top="0.08" bottom="0.92"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentBorder" parentKey="Border" file="Interface/Spellbook/GuildSpellbooktabIconFrame">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentIcon" x="-3" y="3"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="3" y="-3"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentIconGlow" parentKey="IconGlow" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentIcon" x="-19" y="19"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="19" y="-19"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture name="$parentHighlight" parentKey="Highlight" alphaMode="ADD">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBorder" relativePoint="TOPLEFT" x="17" y="-16"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorder" relativePoint="BOTTOMRIGHT" x="-17" y="17"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentAmount" parentKey="Amount">
+				<Size x="58" y="38"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="-23"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture name="$parentLeft" parentKey="Left">
+							<Anchors>
+								<Anchor point="LEFT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentRight" parentKey="Right">
+							<Anchors>
+								<Anchor point="RIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentCenter" parentKey="Center">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parentLeft" relativePoint="TOPRIGHT" x="0" y="0"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentRight" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<FontString name="$parentValue" parentKey="Value" inherits="PKBT_Font_12">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="1"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreSubscriptionItemMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+		</Scripts>
+	</Button>
+
+	<Button name="StoreSubscriptionViewItemTemplate" inherits="StoreSubscriptionItemTemplate" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentName" parentKey="Name" inherits="PKBT_Font_14" justifyV="TOP" maxLines="3">
+					<Size x="150" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="BOTTOM" x="0" y="-30"/>
+					</Anchors>
+					<Color r="1.0" g="0.82" b="0"/>
+				</FontString>
+				<FontString name="$parentBonusText" parentKey="BonusText" inherits="PKBT_Font_12" text="STORE_SUBSCRIPTION_BONUS" hidden="true">
+					<Anchors>
+						<Anchor point="BOTTOM" relativePoint="TOP" x="0" y="10"/>
+					</Anchors>
+					<Color r="0.102" g="1" b="0.102"/>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Button>
+
+	<Frame name="StoreSubscriptionPanelTemplate" virtual="true">
+		<Size x="360" y="250"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="6" y="-4"/>
+						<Anchor point="BOTTOMRIGHT" x="-6" y="4"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentInfoText" parentKey="InfoText" inherits="PKBT_Font_15">
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-45"/>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+				<FontString name="$parentSupplyCountdown" parentKey="SupplyCountdown" inherits="PKBT_Font_20">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentInfoText" relativePoint="BOTTOM" x="0" y="0"/>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+				<Texture name="$parentTimerIcon" parentKey="TimerIcon" hidden="true">
+					<Anchors>
+						<Anchor point="RIGHT" relativeTo="$parentInfoText" relativePoint="LEFT" x="-3" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentNineSliceBorder" parentKey="NineSliceBorder" setAllPoints="true">
+				<Frames>
+					<Frame name="$parentTitle" parentKey="Title" inherits="StoreSubscriptionTitleTemplate">
+						<Anchors>
+							<Anchor point="TOP" x="0" y="16"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+			</Frame>
+
+			<Frame name="$parentItemHolder" parentKey="ItemHolder">
+				<Size x="68" y="68"/>
+				<Anchors>
+					<Anchor point="CENTER" x="0" y="7"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentButtonHolder" parentKey="ButtonHolder">
+				<Size x="262" y="52"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="18"/>
+				</Anchors>
+			</Frame>
+
+			<Button name="$parentPurchaseButton" parentKey="PurchaseButton" inherits="PKBT_RedButtonMultiWidgetPriceTemplate">
+				<Attributes>
+					<Attribute name="freeText" value="STORE_SUBSCRIPTION_FREE" type="string"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentButtonHolder" x="0" y="0"/>
+				</Anchors>
+				<Frames>
+					<Frame name="$parentGlow" parentKey="Glow" alpha="0">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="-8" y="4"/>
+							<Anchor point="BOTTOMRIGHT" x="11" y="-6"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture name="$parentLeft" parentKey="Left">
+									<Anchors>
+										<Anchor point="TOPLEFT" x="0" y="0"/>
+										<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+									</Anchors>
+								</Texture>
+								<Texture name="$parentRight" parentKey="Right">
+									<Anchors>
+										<Anchor point="TOPRIGHT" x="0" y="0"/>
+										<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+									</Anchors>
+								</Texture>
+								<Texture name="$parentCenter" parentKey="Center">
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="$parentLeft" relativePoint="TOPRIGHT" x="0" y="0"/>
+										<Anchor point="BOTTOMRIGHT" relativeTo="$parentRight" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+						<Animations>
+							<AnimationGroup parentKey="AlphaAnim" looping="REPEAT">
+								<Alpha duration="0" change="-1" order="1"/>
+								<Alpha duration="1" change="1" order="2" smoothing="OUT_IN"/>
+								<Alpha duration="1" change="-1" order="3" smoothing="IN_OUT"/>
+							</AnimationGroup>
+						</Animations>
+					</Frame>
+				</Frames>
+				<Scripts>
+					<OnClick>
+						self:GetParent():PurchaseOnClick(this, button)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentDetailsButton" parentKey="DetailsButton" inherits="PKBT_BlueButtonTemplate" text="STORE_DETAILS">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButtonHolder" x="0" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():DetailsOnClick(button)
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreSubscriptionPanelMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="StoreAnnonceBlockTemplate" virtual="true">
+		<Size x="1279" y="70"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackgroundLeft" parentKey="BackgroundLeft">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBackgroundRight" parentKey="BackgroundRight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-3" y="-3"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBackgroundCenter" parentKey="BackgroundCenter">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBackgroundLeft" relativePoint="TOPRIGHT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackgroundRight" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentHeader" parentKey="Header" inherits="PKBT_Font_30">
+					<Anchors>
+						<Anchor point="LEFT" x="30" y="0"/>
+					</Anchors>
+					<Color r="1.0" g="0.82" b="0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentNineSliceInset" parentKey="NineSliceInset" inherits="NineSlicePanelTemplate">
+				<Attributes>
+					<Attribute name="layoutType" value="PKBT_InsetFrameTemplate" type="string"/>
+				</Attributes>
+			</Frame>
+			<Frame name="$parentCountdown" parentKey="Countdown">
+				<Size x="120" y="0"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-10" y="-3"/>
+					<Anchor point="BOTTOMRIGHT" x="-10" y="-3"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="$parentTimer" parentKey="Timer" inherits="PKBT_Font_20">
+							<Anchors>
+								<Anchor point="RIGHT" x="0" y="0"/>
+							</Anchors>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+						<FontString name="$parentTimerText" parentKey="TimerText" inherits="PKBT_Font_16" text="STORE_SPECIAL_OFFER_TIMER">
+							<Anchors>
+								<Anchor point="RIGHT" relativeTo="$parentTimer" relativePoint="LEFT" x="0" y="0"/>
+							</Anchors>
+							<Color r="0.824" g="0.788" b="0.757"/>
+						</FontString>
+						<Texture name="$parentTimerIcon" parentKey="TimerIcon">
+							<Anchors>
+								<Anchor point="RIGHT" relativeTo="$parentTimerText" relativePoint="LEFT" x="-4" y="-1"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreAnnonceBlockMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+	<Frame name="StoreFrustratedCatAnimationTemplate" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentNoItemText" parentKey="NoItemText" inherits="PKBT_Font_20" text="STORE_LIST_VIEW_NO_PRODUCTS">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<ScrollFrame name="$parentScroll" parentKey="Scroll" setAllPoints="true">
+				<ScrollChild>
+					<Frame name="$parentCat" parentKey="Cat" alpha="0" hidden="true">
+						<Size x="238" y="208"/>
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture name="$parentTexture" parentKey="Texture" setAllPoints="true"/>
+							</Layer>
+						</Layers>
+						<Animations>
+							<AnimationGroup name="$parentPickAnim" parentKey="PickAnim">
+								<Path name="$parentResetPath" parentKey="ResetPath" duration="0" order="1">
+									<ControlPoints>
+										<ControlPoint offsetX="0" offsetY="0"/>
+									</ControlPoints>
+								</Path>
+								<Path name="$parentInPath" parentKey="InPath" curve="SMOOTH" duration="1.5" endDelay="5.0" order="2">
+									<ControlPoints>
+										<ControlPoint offsetX="130" offsetY="-20"/>
+										<ControlPoint offsetX="150" offsetY="0"/>
+									</ControlPoints>
+								</Path>
+								<Path name="$parentRepickPath" parentKey="RepickPath" curve="SMOOTH" duration="1.0" endDelay="2" order="3">
+									<ControlPoints>
+										<ControlPoint offsetX="150" offsetY="-200"/>
+										<ControlPoint offsetX="75" offsetY="-40"/>
+									</ControlPoints>
+								</Path>
+								<Path name="$parentOutPath" parentKey="OutPath" curve="SMOOTH" duration="0.5" endDelay="1" order="4">
+									<ControlPoints>
+										<ControlPoint offsetX="75" offsetY="-200"/>
+									</ControlPoints>
+								</Path>
+								<Scripts>
+									<OnUpdate>
+										self.elapsed = (self.elapsed or 0) + elapsed
+										if self.elapsed >= 0.05 then
+											self:GetParent():SetAlpha(1)
+											self.elapsed = 0
+											PlaySound(5554)
+										end
+									</OnUpdate>
+									<OnFinished>
+										self.elapsed = nil
+										self:GetParent():GetParent():GetParent():OnPickDone()
+									</OnFinished>
+								</Scripts>
+							</AnimationGroup>
+						</Animations>
+					</Frame>
+				</ScrollChild>
+			</ScrollFrame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreFrustratedCatAnimationMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+	<Button name="StoreTransmogOfferButtonTemplate" virtual="true">
+		<Size x="355" y="91"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackgroundLeft" parentKey="BackgroundLeft">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBackgroundRight" parentKey="BackgroundRight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBackgroundCenter" parentKey="BackgroundCenter">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBackgroundLeft" relativePoint="TOPRIGHT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackgroundRight" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="64" y="64"/>
+					<Anchors>
+						<Anchor point="LEFT" x="13" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIconBorder" parentKey="IconBorder">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentIcon" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentAmount" parentKey="Amount" inherits="PKBT_Font_14_OUTLINE" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="-4" y="4"/>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+				<FontString name="$parentName" parentKey="Name" inherits="PKBT_Font_15" justifyH="LEFT" maxLines="2">
+					<Size x="170" y="0"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentIcon" relativePoint="TOPRIGHT" x="12" y="-4"/>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentLoading" parentKey="Loading" inherits="StoreLoadingItemPlateTemplate"/>
+
+			<Frame name="$parentNineSliceHighlight" parentKey="NineSliceHighlight" inherits="NineSlicePanelTemplate" hidden="true">
+				<Attributes>
+					<Attribute name="layoutType" value="PKBT_StoreItemPlateHighlight" type="string"/>
+					<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
+				</Attributes>
+			</Frame>
+			<Frame name="$parentSpecial" parentKey="Special" inherits="StoreSpecialRibbonTemplate">
+				<Size x="130" y="43"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentIcon" relativePoint="BOTTOMRIGHT" x="6" y="-6"/>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentPrice" parentKey="Price" inherits="PKBT_PriceTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" x="-25" y="0"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreTransmogOfferButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+			<OnClick>
+				self:OnClick()
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Frame name="StoreMountAbilityOverlayTemplate" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreMountAbilityOverlayMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="StoreDressUpTemplate" inherits="PKBT_DressUpTemplate" virtual="true">
+		<Size x="462" y="777"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackgroundAlt" parentKey="BackgroundAlt" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBackground" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackground" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentPurchaseButton" parentKey="PurchaseButton" inherits="PKBT_RedButtonMultiWidgetPriceTemplate">
+				<Size x="230" y="68"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="80"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():OnPurchaseClick(button)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Frame name="$parentSetOverlay" parentKey="SetOverlay" setAllPoints="true">
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="$parentName" parentKey="Name" inherits="PKBT_Font_20" maxLines="2" justifyV="MIDDLE">
+							<Size x="437" y="46"/>
+							<Anchors>
+								<Anchor point="BOTTOM" x="0" y="0"/>
+							</Anchors>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Frame name="$parentItems" parentKey="Items">
+						<Size x="1" y="1"/>
+						<Anchors>
+							<Anchor point="TOP" x="0" y="-110"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+			</Frame>
+
+			<Frame name="$parentAbilityOverlay" parentKey="AbilityOverlay" inherits="StoreMountAbilityOverlayTemplate" setAllPoints="true" hidden="true"/>
+
+			<Button name="$parentMinimizeButton" parentKey="MinimizeButton" inherits="PKBT_MaximizeMinimizeButtonTemplate" hidden="true">
+				<Size x="38" y="38"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-1" y="-1"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Close()
+						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<Frame name="$parentNoProduct" parentKey="NoProduct" inherits="StoreFrustratedCatAnimationTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="3" y="-2"/>
+					<Anchor point="BOTTOMRIGHT" x="-3" y="2"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreDressUpMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="StoreDressUpOfferTemplate" inherits="StoreDressUpTemplate" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentHeader" parentKey="Header" inherits="PKBT_Font_Morpheus_30" text="STORE_TRANSMOG_SPECIAL_OFFER_FOR_YOU">
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-25"/>
+					</Anchors>
+					<Color r="1.0" g="0.82" b="0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+
+		<Frames>
+			<Frame name="$parentOfferOverlay" parentKey="OfferOverlay" setAllPoints="true" hidden="true">
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="$parentTimerText" parentKey="TimerText" inherits="PKBT_Font_16" text="STORE_SPECIAL_OFFER_TIMER">
+							<Anchors>
+								<Anchor point="BOTTOM" x="0" y="180"/>
+							</Anchors>
+							<Color r="0.824" g="0.788" b="0.757"/>
+						</FontString>
+						<Texture name="$parentTimerIcon" parentKey="TimerIcon">
+							<Anchors>
+								<Anchor point="RIGHT" relativeTo="$parentTimerText" relativePoint="LEFT" x="-4" y="-1"/>
+							</Anchors>
+						</Texture>
+						<FontString name="$parentTimer" parentKey="Timer" inherits="PKBT_Font_20">
+							<Anchors>
+								<Anchor point="TOP" relativeTo="$parentTimerText" relativePoint="BOTTOM" x="0" y="0"/>
+							</Anchors>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreDressUpOfferMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+	<Button name="StoreDressUpSetItemTemplate" virtual="true">
+		<Size x="38" y="38"/>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentIcon" parentKey="Icon" setAllPoints="true"/>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreDressUpSetItemMixin)
+			</OnLoad>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Frame name="StoreSubDialogTemplate" toplevel="true" hidden="true" virtual="true">
+		<Size x="523" y="196"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" setAllPoints="true"/>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentShadowTop" parentKey="ShadowTop">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentShadowBottom" parentKey="ShadowBottom">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentTitle" parentKey="Title" inherits="PKBT_Font_20_NoShadow" maxLines="1">
+					<Size x="500" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-25"/>
+					</Anchors>
+					<Color r="0.160" g="0.074" b="0.043"/>
+				</FontString>
+				<Texture name="$parentDivider" parentKey="Divider">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentTitle" relativePoint="BOTTOM" x="0" y="-5"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentText" parentKey="Text" inherits="PKBT_Font_15_NoShadow">
+					<Size x="500" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentDivider" relativePoint="BOTTOM" x="0" y="-5"/>
+					</Anchors>
+					<Color r="0.160" g="0.074" b="0.043"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate">
+				<Attributes>
+					<Attribute name="layoutType" value="PKBT_PanelMetalBorder" type="string"/>
+				</Attributes>
+			</Frame>
+			<Button name="$parentActionButton" parentKey="ActionButton" inherits="PKBT_RedButtonTemplate" text="OKAY">
+				<Size x="120" y="37"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="20"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():OnActionClick(button)
+						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentCancelButton" parentKey="CancelButton" inherits="PKBT_RedButtonTemplate" text="CANCEL">
+				<Size x="120" y="37"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="20"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():OnCancelClick(button)
+						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreSubDialogMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="StoreGenericDialogTemplate" frameStrata="DIALOG" toplevel="true" enableMouse="true" virtual="true">
+		<Size x="425" y="320"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBackgroundTile" parentKey="BackgroundTile" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentBackgroundShadowTop" parentKey="BackgroundShadowTop">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBackgroundShadowBottom" parentKey="BackgroundShadowBottom">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIconShadow" parentKey="IconShadow">
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-28"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentTitle" parentKey="Title" inherits="PKBT_Font_20_NoShadow" maxLines="1">
+					<Size x="400" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentIconShadow" relativePoint="BOTTOM" x="0" y="0"/>
+					</Anchors>
+					<Color r="0.160" g="0.074" b="0.043"/>
+				</FontString>
+				<Texture name="$parentDivider" parentKey="Divider">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentTitle" relativePoint="BOTTOM" x="0" y="-10"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentIconShadow" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentVignetteTopLeft" parentKey="VignetteTopLeft">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-2"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentVignetteTopRight" parentKey="VignetteTopRight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-2" y="-2"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentDebugInfo" parentKey="DebugInfo" inherits="PKBT_Font_10_NoShadow" justifyH="RIGHT" justifyV="BOTTOM" maxLines="1">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+					<Color r="1" g="1" b="1" a="0.2"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
+
+			<SimpleHTML name="$parentTextContent" parentKey="TextContent" inherits="InlineHyperlinkFrameTemplate">
+				<Size x="10" y="10"/>
+				<FontString inherits="PKBT_Font_15_NoShadow" justifyH="CENTER" justifyV="TOP" spacing="2">
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentDivider" relativePoint="BOTTOM" x="0" y="-10"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad function="InlineHyperlinkFrame_SimpleHTMLAsFontString_OnLoad"/>
+					<OnHyperlinkClick>
+						self:GetParent():OnHyperlinkClick(self, link, text, button)
+					</OnHyperlinkClick>
+					<OnHyperlinkEnter>
+						self:GetParent():OnHyperlinkEnter(self, link, text)
+					</OnHyperlinkEnter>
+					<OnHyperlinkLeave>
+						self:GetParent():OnHyperlinkLeave(self, link, text)
+					</OnHyperlinkLeave>
+				</Scripts>
+			</SimpleHTML>
+
+			<Button name="$parentActionButton" parentKey="ActionButton" inherits="PKBT_RedButtonTemplate">
+				<Size x="140" y="52"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="-82" y="40"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():OnActionClick(button)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentCancelButton" parentKey="CancelButton" inherits="PKBT_BlueButtonTemplate" text="CLOSE">
+				<Size x="140" y="52"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="82" y="40"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():OnCancelClick(button)
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, DefaultPanelMixin, PKBT_PanelNoPortraitMixin, StoreGenericDialogMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+	<Frame name="StoreGiftPanelTemplate" enableMouse="true" virtual="true">
+		<Size x="302" y="392"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackgroundTop" parentKey="BackgroundTop">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentBackgroundMailLeft" parentKey="BackgroundMailLeft">
+					<Size x="252" y="256"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBackgroundMailRight" parentKey="BackgroundMailRight">
+					<Size x="50" y="256"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBackgroundMailLeft" relativePoint="TOPRIGHT" x="0" y="0"/>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentBackgroundMailLeft" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+					<TexCoords left="0" right="0.78125" top="0" bottom="1"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentHeaderText" parentKey="HeaderText" inherits="PKBT_Font_18" text="STORE_PRODUCT_PURCHASE_OPTION_GIFT_HEADER">
+					<Size x="280" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentBackgroundTop" x="0" y="-15"/>
+					</Anchors>
+					<Color r="1" g="0.82" b="0"/>
+				</FontString>
+				<Texture name="$parentShadowTop" parentKey="ShadowTop">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBackgroundMailLeft" x="0" y="0"/>
+						<Anchor point="TOPRIGHT" relativeTo="$parentBackgroundMailRight" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentShadowBottom" parentKey="ShadowBottom">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentBackgroundMailLeft" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackgroundMailRight" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentDividerTop" parentKey="DividerTop">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBackgroundMailLeft" x="0" y="2"/>
+						<Anchor point="TOPRIGHT" relativeTo="$parentBackgroundMailRight" x="0" y="2"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate">
+				<Attributes>
+					<Attribute name="layoutType" value="PKBT_PanelNoPortraitSlim" type="string"/>
+				</Attributes>
+			</Frame>
+			<EditBox name="$parentNameEditBox" parentKey="NameEditBox" inherits="PKBT_EditBoxTemplate" letters="12">
+				<Size x="260" y="30"/>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-45"/>
+				</Anchors>
+			</EditBox>
+			<Frame name="$parentStyleDropdown" parentKey="StyleDropdown" inherits="PKBT_DropdownMenuTemplate">
+				<Size x="260" y="30"/>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentNameEditBox" relativePoint="BOTTOM" x="0" y="-6"/>
+				</Anchors>
+			</Frame>
+			<ScrollFrame name="$parentTextEditBoxScroll" parentKey="TextEditBoxScroll" inherits="PKBT_EditBoxMulilineScrollTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentBackgroundMailLeft" x="35" y="-71"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackgroundMailRight" x="-35" y="71"/>
+				</Anchors>
+			</ScrollFrame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreGiftPanelMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<Frame name="StoreModelPanelTemplate" inherits="PKBT_DressUpBaseTemplate" virtual="true">
+		<Size x="302" y="392"/>
+		<Anchors>
+			<Anchor point="RIGHT" relativePoint="LEFT" x="-10" y="0"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentShadowTop" parentKey="ShadowTop">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentShadowBottom" parentKey="ShadowBottom">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentShadowLeft" parentKey="ShadowLeft">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentShadowRight" parentKey="ShadowRight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate">
+				<Attributes>
+					<Attribute name="layoutType" value="PKBT_PanelNoPortraitSlim" type="string"/>
+				</Attributes>
+			</Frame>
+
+			<Button name="$parentCloseButton" parentKey="CloseButton" inherits="PKBT_CloseButtonTemplate">
+				<Size x="24" y="24"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="4" y="3"/>
+				</Anchors>
+			</Button>
+
+			<CheckButton name="$parentEquipmentToggle" parentKey="EquipmentToggle" inherits="PKBT_WardrobeButtonTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-5" y="-5"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PKBT_WardrobeButtonMixin.OnClick(self, button)
+						self:GetParent():TogglePlayerEquipment(self:GetChecked() == 1)
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+
+			<Frame name="$parentAbilityOverlay" parentKey="AbilityOverlay" inherits="StoreMountAbilityOverlayTemplate" setAllPoints="true" hidden="true"/>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreModelPanelMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<Button name="StorePurchaseAlertTemplate" toplevel="true" hidden="true" virtual="true">
+		<Size x="294" y="84"/>
+		<Anchors>
+			<Anchor point="BOTTOM" x="0" y="128"/>
+		</Anchors>
+		<Animations>
+			<AnimationGroup parentKey="AnimIn">
+				<Alpha change="-1" duration="0" order="1"/>
+				<Alpha change="1" duration="0.2" order="2"/>
+				<Scripts>
+					<OnFinished>
+						self:GetParent().WaitAndAnimOut:Play()
+					</OnFinished>
+				</Scripts>
+			</AnimationGroup>
+			<AnimationGroup parentKey="WaitAndAnimOut">
+				<Alpha startDelay="3.85" change="-1" duration="1.5" parentKey="AnimOut">
+					<Scripts>
+						<OnFinished>
+							self:GetRegionParent():Hide()
+						</OnFinished>
+					</Scripts>
+				</Alpha>
+			</AnimationGroup>
+		</Animations>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" file="Interface\Store\Store-Main">
+					<TexCoords left="0.50878906" right="0.79589844" top="0.54199219" bottom="0.62402344"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="44" y="44"/>
+					<Anchors>
+						<Anchor point="LEFT" x="21" y="0"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentTitle" parentKey="Title" inherits="GameFontNormalLarge" justifyV="MIDDLE">
+					<Size x="200" y="24"/>
+					<Anchors>
+						<Anchor point="TOP" x="30" y="-15"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentDescription" parentKey="Description" inherits="GameFontHighlight" text="STORE_DELIVERED_PURCHASE_SELF">
+					<Anchors>
+						<Anchor point="BOTTOM" x="30" y="23"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentGlow" parentKey="Glow" file="Interface\AchievementFrame\UI-Achievement-Alert-Glow" alphaMode="ADD" alpha="0" hidden="true">
+					<Size x="375" y="175"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+					<TexCoords left="0" right="0.78125" top="0" bottom="0.66796875"/>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Alpha change="1" duration="0.2" order="1"/>
+							<Alpha change="-1" duration="0.5" order="2"/>
+							<Scripts>
+								<OnFinished>
+									self:GetParent():Hide()
+								</OnFinished>
+							</Scripts>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+				<Texture name="$parentShine" parentKey="Shine" file="Interface\AchievementFrame\UI-Achievement-Alert-Glow" alphaMode="ADD" alpha="0" hidden="true">
+					<Size x="67" y="85"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+					</Anchors>
+					<TexCoords left="0.78125" right="0.912109375" top="0" bottom="0.28125"/>
+					<Animations>
+						<AnimationGroup parentKey="AnimIn">
+							<Alpha change="1" duration="0.2" order="1"/>
+							<Translation offsetX="200" offsetY="0" duration="0.71" order="2"/>
+							<Alpha startDelay="0.15" change="-1" duration="0.5" order="2"/>
+							<Scripts>
+								<OnFinished>
+									self:GetParent():Hide()
+								</OnFinished>
+							</Scripts>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StorePurchaseAlertMixin)
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Button name="StoreToastFrame" parent="UIParent" frameStrata="LOW" toplevel="true" hidden="true">
+		<Size x="264" y="50"/>
+		<Anchors>
+			<Anchor point="TOP" x="0" y="-100"/>
+		</Anchors>
+		<Backdrop bgFile="Interface\Collections\CollectionsBackgroundTile" edgeFile="Interface\FriendsFrame\UI-Toast-Border" tile="true">
+			<BackgroundInsets left="4" right="4" top="4" bottom="4"/>
+			<TileSize val="64"/>
+			<EdgeSize val="12"/>
+		</Backdrop>
+		<Animations>
+			<AnimationGroup name="$parentAnimIn" parentKey="AnimIn">
+				<Alpha change="-1" duration="0" order="1"/>
+				<Alpha change="1" duration="0.2" order="2"/>
+			</AnimationGroup>
+		</Animations>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentIcon" parentKey="Icon" file="Interface\Custom\Misc\Wow-Store-Circle">
+					<Size x="38" y="38"/>
+					<Anchors>
+						<Anchor point="LEFT" x="8" y="0"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentTitle" parentKey="Title" inherits="FriendsFont_Normal" justifyH="LEFT" justifyV="MIDDLE">
+					<Size x="0" y="10"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="52" y="-12"/>
+						<Anchor point="RIGHT" x="-20" y="0"/>
+					</Anchors>
+					<Color r="0.510" g="0.773" b="1"/>
+				</FontString>
+				<FontString name="$parentDescription" parentKey="Description" inherits="FriendsFont_Normal" justifyH="LEFT" justifyV="MIDDLE">
+					<Size x="0" y="10"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
+					</Anchors>
+					<Color r="0.486" g="0.518" b="0.541"/>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentGlow" parentKey="Glow" file="Interface\FriendsFrame\UI-Toast-Flair" alphaMode="ADD" alpha="0">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-1" y="3"/>
+						<Anchor point="BOTTOMRIGHT" x="1" y="-3"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup name="$parentAnimIn" parentKey="AnimIn">
+							<Alpha change="-1" duration="0" order="1"/>
+							<Alpha change="1" duration="0.2" order="1"/>
+							<Alpha change="-1" duration="0.5" order="2"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture name="$parentIconHighlight" parentKey="IconHighlight" alphaMode="ADD" alpha="0.2" file="Interface\Custom\Misc\Wow-Store-Circle">
+					<Size x="38" y="38"/>
+					<Anchors>
+						<Anchor point="LEFT" x="8" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentCloseButton" parentKey="CloseButton">
+				<Size x="18" y="18"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-4" y="-3"/>
+				</Anchors>
+				<NormalTexture file="Interface\FriendsFrame\UI-Toast-CloseButton-Up"/>
+				<PushedTexture file="Interface\FriendsFrame\UI-Toast-CloseButton-Down"/>
+				<HighlightTexture file="Interface\FriendsFrame\UI-Toast-CloseButton-Highlight" alphaMode="ADD"/>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Hide()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<PlayerModel name="$parentModel" parentKey="Model" inherits="PKBT_ModelTemplate" hidden="true" enableMouse="false">
+				<Size x="232" y="232"/>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="RIGHT" x="-70" y="14"/>
+				</Anchors>
+			</PlayerModel>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, StoreToastMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+			<OnMouseDown>
+				self:OnMouseDown(button)
+			</OnMouseDown>
+			<OnMouseUp>
+				self:OnMouseUp(button)
+			</OnMouseUp>
+		</Scripts>
+	</Button>
+</Ui>

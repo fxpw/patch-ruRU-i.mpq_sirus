@@ -398,7 +398,7 @@ EffectsPanelOptions = {
 	farclip = { text = "FARCLIP", minValue = OPTIONS_FARCLIP_MIN, maxValue = OPTIONS_FARCLIP_MAX, valueStep = (OPTIONS_FARCLIP_MAX - OPTIONS_FARCLIP_MIN)/10},
 	TerrainMip = { text = "TERRAIN_MIP", minValue = 0, maxValue = 1, valueStep = 1, logout = 1, tooltip = OPTION_TOOLTIP_TERRAIN_TEXTURE, tooltipRequirement = OPTION_LOGOUT_REQUIREMENT,},
 	particleDensity = { text = "PARTICLE_DENSITY", minValue = 0.1, maxValue = 1.0, valueStep = 0.1},
-	environmentDetail = { text = "ENVIRONMENT_DETAIL", minValue = 0.5, maxValue = 1.5, valueStep = .25},
+	environmentDetail = { text = "ENVIRONMENT_DETAIL", minValue = 0.5, maxValue = 10, valueStep = .25},
 	groundEffectDensity = { text = "GROUND_DENSITY", minValue = 16, maxValue = 64, valueStep = 8},
 	groundEffectDist = { text = "GROUND_RADIUS", minValue = 70, maxValue = 140, valueStep = 10 },
 	BaseMip = { text = "TEXTURE_DETAIL", minValue = 0, maxValue = 1, valueStep = 1, tooltipOwnerPoint = "TOPLEFT", },

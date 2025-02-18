@@ -1,54 +1,129 @@
-local FrameObj = CreateFrame("Frame")
-local Frame = getmetatable(FrameObj)
-local Button = getmetatable(CreateFrame("Button"))
-local Slider = getmetatable(CreateFrame("Slider"))
-local StatusBar = getmetatable(CreateFrame("StatusBar"))
-local SimpleHTML = getmetatable(CreateFrame("SimpleHTML"))
-local ScrollFrame = getmetatable(CreateFrame("ScrollFrame"))
-local CheckButton = getmetatable(CreateFrame("CheckButton"))
-local Model = getmetatable(CreateFrame("Model"))
-local GameTooltip, PlayerModel, DressUpModel, TabardModel
-
-local EditBox = CreateFrame("EditBox")
-EditBox:Hide()
-EditBox = getmetatable(EditBox)
-
-if not IsOnGlueScreen() then
-	GameTooltip = getmetatable(CreateFrame("GameTooltip"))
-	PlayerModel = getmetatable(CreateFrame("PlayerModel"))
-	DressUpModel = getmetatable(CreateFrame("DressUpModel"))
-	TabardModel = getmetatable(CreateFrame("TabardModel"))
+local function getObjTypeMeta(objType)
+	local obj = CreateFrame(objType)
+	obj:Hide()
+	return getmetatable(obj).__index, obj
 end
 
-local Texture = getmetatable(FrameObj:CreateTexture())
-local FontString = getmetatable(FrameObj:CreateFontString())
+local FrameMeta, FrameObj = getObjTypeMeta("Frame")
+local FontStringMeta = getmetatable(FrameObj:CreateFontString()).__index
+local TextureMeta = getmetatable(FrameObj:CreateTexture()).__index
 
--- local Cooldown = getmetatable(CreateFrame("Cooldown"))
--- local ColorSelect = getmetatable(CreateFrame("ColorSelect"))
--- local MessageFrame = getmetatable(CreateFrame("MessageFrame"))
--- local Model = getmetatable(CreateFrame("Model"))
--- local Minimap = getmetatable(CreateFrame("Minimap"))
+local ButtonMeta = getObjTypeMeta("Button")
+local CheckButtonMeta = getObjTypeMeta("CheckButton")
+local EditBoxMeta = getObjTypeMeta("EditBox")
+local SimpleHTMLMeta = getObjTypeMeta("SimpleHTML")
+local SliderMeta = getObjTypeMeta("Slider")
+local StatusBarMeta = getObjTypeMeta("StatusBar")
+local ScrollFrameMeta = getObjTypeMeta("ScrollFrame")
+local MessageFrameMeta = getObjTypeMeta("MessageFrame")
+local ScrollingMessageFrameMeta = getObjTypeMeta("ScrollingMessageFrame")
+local ModelMeta = getObjTypeMeta("Model")
+--local ColorSelectMeta = createAndGetMeta("ColorSelect")
+--local MovieFrameMeta = createAndGetMeta("MovieFrame")
+
+local GameTooltipMeta, PlayerModelMeta, DressUpModelMeta, TabardModelMeta, ModelFFXMeta
+
+if IsOnGlueScreen() then
+	ModelFFXMeta = getObjTypeMeta("ModelFFX")
+else
+	GameTooltipMeta = getObjTypeMeta("GameTooltip")
+	PlayerModelMeta = getObjTypeMeta("PlayerModel")
+	DressUpModelMeta = getObjTypeMeta("DressUpModel")
+	TabardModelMeta = getObjTypeMeta("TabardModel")
+
+--	local CooldownMeta = createAndGetMeta("Cooldown")
+--	local MinimapMeta = createAndGetMeta("Minimap")
+--	local TaxiRouteFrameMeta = createAndGetMeta("TaxiRouteFrame")
+--	local QuestPOIFrameMeta = createAndGetMeta("QuestPOIFrame")
+--	local WorldFrameMeta = createAndGetMeta("WorldFrame")
+end
 
 local function nop() end
 
-local function Method_SetShown( self, ... )
-	if ... then
+local function ScriptRegion_SetShown(self, show)
+	if show then
 		self:Show()
 	else
 		self:Hide()
 	end
 end
 
-local function Method_SetEnabled( self, ... )
-	if ... then
-		self:Enable()
+local function ScriptRegion_GetScaledRect(self)
+	local left, bottom, width, height = self:GetRect()
+	if left and bottom and width and height then
+		local scale = self:GetEffectiveScale()
+		return left * scale, bottom * scale, width * scale, height * scale
+	end
+end
+
+local function ScriptRegion_IsMouseOverEx(self, ignoreVisibility)
+	if ignoreVisibility or self:IsVisible() then
+		local l, r, t, b = self:GetHitRectInsets()
+		return self:IsMouseOver(-t, b, l, -r)
+	end
+	return false
+end
+
+local function ScriptRegionResizing_ClearAndSetPoint(self, ...)
+	self:ClearAllPoints()
+	self:SetPoint(...)
+end
+
+local function Region_GetEffectiveScale(self)
+	return self:GetParent():GetEffectiveScale()
+end
+
+local function LayoutFrame_SetParentArray(self, arrayName, element, setInSelf)
+	local parent = not setInSelf and self:GetParent() or self
+
+	if not parent[arrayName] then
+		parent[arrayName] = {}
+	end
+
+	table.insert(parent[arrayName], element or self)
+end
+
+local RegisterCustomEvent = RegisterCustomEvent
+local UnregisterCustomEvent = UnregisterCustomEvent
+
+local function Frame_RegisterCustomEvent(self, event)
+	RegisterCustomEvent(self, event)
+end
+
+local function Frame_UnregisterCustomEvent(self, event)
+	UnregisterCustomEvent(self, event)
+end
+
+local function FontString_IsTruncated(fontString)
+	local stringWidth = fontString:GetStringWidth()
+	local width = fontString:GetWidth()
+	fontString:SetWidth(width + 10000)
+	local isTruncated = fontString:GetStringWidth() ~= stringWidth
+	fontString:SetWidth(width)
+	if not isTruncated then
+		local stringHeight = fontString:GetStringHeight()
+		local height = fontString:GetHeight()
+		fontString:SetHeight(height + 10000)
+		isTruncated = fontString:GetStringHeight() ~= stringHeight
+		fontString:SetHeight(height)
+	end
+	return isTruncated
+end
+
+local function FontString_SetDesaturated(self, toggle, color)
+	if toggle then
+		self:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
 	else
-		self:Disable()
+		if type(color) == "table" then
+			self:SetTextColor(color.r, color.g, color.b)
+		else
+			self:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
+		end
 	end
 end
 
 local SECONDS_PER_DAY = 86400
-local function Method_SetRemainingTime(self, seconds, daysformat)
+local function FontString_SetRemainingTime(self, seconds, daysformat)
 	if type(seconds) ~= "number" then
 		self:SetText("")
 		return
@@ -60,19 +135,17 @@ local function Method_SetRemainingTime(self, seconds, daysformat)
 		else
 			self:SetText(date("!%X", seconds))
 		end
-	elseif seconds and seconds >= 0 then
-		if seconds >= SECONDS_PER_DAY then
-			local days = string.format(DAY_ONELETTER_ABBR_SHORT, math.floor(seconds / SECONDS_PER_DAY))
-			self:SetFormattedText("%s %s", days, date("!%X", seconds % SECONDS_PER_DAY))
-		else
-			self:SetText(date("!%X", seconds))
-		end
+	elseif seconds >= SECONDS_PER_DAY then
+		local days = string.format(DAY_ONELETTER_ABBR_SHORT, math.floor(seconds / SECONDS_PER_DAY))
+		self:SetFormattedText("%s %s", days, date("!%X", seconds % SECONDS_PER_DAY))
+	elseif seconds >= 0 then
+		self:SetText(date("!%X", seconds))
 	else
 		self:SetText("")
 	end
 end
 
-local function Method_SetSubTexCoord( self, left, right, top, bottom )
+local function Texture_SetSubTexCoord(self, left, right, top, bottom)
     local ULx, ULy, LLx, LLy, URx, URy, LRx, LRy = self:GetTexCoord()
 
     local leftedge = ULx
@@ -100,79 +173,19 @@ local function Method_SetSubTexCoord( self, left, right, top, bottom )
     self:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy)
 end
 
-local function Method_SetTransmogrifyItem(self, transmogID, hasPending, hasUndo)
-	local lastTransmogText, transmogTextHeight;
-
-	if not self.TransmogText1:IsShown() and not self.TransmogText2:IsShown() then
-		if hasUndo then
-			self.TransmogText1:Show();
-			self.TransmogText1:SetText(TRANSMOGRIFY_TOOLTIP_REVERT);
-
-			lastTransmogText = self.TransmogText1;
-			transmogTextHeight = self.TransmogText1:GetHeight() + 2;
-		elseif transmogID then
-			local name = GetItemInfo(transmogID);
-			if name then
-				self.TransmogText1:Show();
-				self.TransmogText2:Show();
-				if hasPending then
-					self.TransmogText1:SetText(WILL_BE_TRANSMOGRIFIED_HEADER);
-				else
-					self.TransmogText1:SetText(TRANSMOGRIFIED_HEADER);
-				end
-				self.TransmogText2:SetText(name);
-
-				lastTransmogText = self.TransmogText2;
-				transmogTextHeight = (self.TransmogText1:GetHeight() + self.TransmogText2:GetHeight()) + 4;
-			end
-		end
-	end
-
-	if lastTransmogText and transmogTextHeight then
-		self.TextLeft2:ClearAllPoints();
-		self.TextLeft2:SetPoint("TOPLEFT", lastTransmogText, "BOTTOMLEFT", 0, -2);
-
-		self:SetHeight(self:GetHeight() + transmogTextHeight);
-
-		Hook:FireEvent("TRANSMOGRIFY_ITEM_UPDATE", self, transmogID);
-	end
-end
-
-local function Method_SetPortrait( self, displayID )
-	local portrait = "Interface\\PORTRAITS\\Portrait_model_"..tonumber(displayID)
-	self:SetTexture(portrait)
-end
-
-local Panels = {"CollectionsJournal", "EncounterJournal"}
-local function Method_FixOpenPanel( self )
-	-- Хак, в связи с странностями работы системы позиционирования.
-	-- Необходим для корректной работы системы Профессий.
-	for i = 1, #Panels do
-		local panel = _G[Panels[i]]
-
-		if panel then
-			if panel:IsShown() then
-				HideUIPanel(panel)
-				ShowUIPanel(self)
-				return true
-			end
-		end
-	end
-end
-
-local CONST_ATLAS_WIDTH			= 1
-local CONST_ATLAS_HEIGHT		= 2
-local CONST_ATLAS_LEFT			= 3
-local CONST_ATLAS_RIGHT			= 4
-local CONST_ATLAS_TOP			= 5
-local CONST_ATLAS_BOTTOM		= 6
-local CONST_ATLAS_TILESHORIZ	= 7
-local CONST_ATLAS_TILESVERT		= 8
-local CONST_ATLAS_TEXTUREPATH	= 9
+local ATLAS_FIELD_WIDTH			= 1
+local ATLAS_FIELD_HEIGHT		= 2
+local ATLAS_FIELD_LEFT			= 3
+local ATLAS_FIELD_RIGHT			= 4
+local ATLAS_FIELD_TOP			= 5
+local ATLAS_FIELD_BOTTOM		= 6
+local ATLAS_FIELD_TILESHORIZ	= 7
+local ATLAS_FIELD_TILESVERT		= 8
+local ATLAS_FIELD_TEXTUREPATH	= 9
 
 local S_ATLAS_STORAGE = S_ATLAS_STORAGE
 
-local function Method_SetAtlas( self, atlasName, useAtlasSize, filterMode )
+local function Texture_SetAtlas(self, atlasName, useAtlasSize, filterMode)
 	if type(self) ~= "table" then
 		error("Attempt to find 'this' in non-table object (used '.' instead of ':' ?)", 3)
 	elseif type(atlasName) ~= "string" then
@@ -184,98 +197,119 @@ local function Method_SetAtlas( self, atlasName, useAtlasSize, filterMode )
 		error(string.format("%s:SetAtlas: Atlas %s does not exist", self:GetName() or tostring(self), atlasName), 3)
 	end
 
-	self:SetTexture(atlas[CONST_ATLAS_TEXTUREPATH] or "", atlas[CONST_ATLAS_TILESHORIZ], atlas[CONST_ATLAS_TILESVERT])
-
-	if useAtlasSize then
-		self:SetWidth(atlas[CONST_ATLAS_WIDTH])
-		self:SetHeight(atlas[CONST_ATLAS_HEIGHT])
-	end
-
-	self:SetTexCoord(atlas[CONST_ATLAS_LEFT], atlas[CONST_ATLAS_RIGHT], atlas[CONST_ATLAS_TOP], atlas[CONST_ATLAS_BOTTOM])
-
-	self:SetHorizTile(atlas[CONST_ATLAS_TILESHORIZ])
-	self:SetVertTile(atlas[CONST_ATLAS_TILESVERT])
-end
-
-local function Method_SmoothSetValue( self, value )
-	-- local smoothFrame = self._SmoothUpdateFrame or CreateFrame("Frame")
-	-- self._SmoothUpdateFrame =  smoothFrame
-end
-
-local function Method_SetUnit( self, unit, isCustomPosition, positionData )
-	local objectType = self:GetObjectType()
-
-	if isCustomPosition then
-		if objectType == "TabardModel" then
-			self:SetPosition(0, 0, 0)
-		else
-			self:SetPosition(1, 1, 1)
+	local success = self:SetTexture(atlas[ATLAS_FIELD_TEXTUREPATH] or "", atlas[ATLAS_FIELD_TILESHORIZ], atlas[ATLAS_FIELD_TILESVERT])
+	if success then
+		if useAtlasSize then
+			self:SetWidth(atlas[ATLAS_FIELD_WIDTH])
+			self:SetHeight(atlas[ATLAS_FIELD_HEIGHT])
 		end
+
+		self:SetTexCoord(atlas[ATLAS_FIELD_LEFT], atlas[ATLAS_FIELD_RIGHT], atlas[ATLAS_FIELD_TOP], atlas[ATLAS_FIELD_BOTTOM])
+
+		self:SetHorizTile(atlas[ATLAS_FIELD_TILESHORIZ])
+		self:SetVertTile(atlas[ATLAS_FIELD_TILESVERT])
 	end
 
-	self:__SetUnit(unit)
-
-	if isCustomPosition then
-		local unitSex = UnitSex(unit) or 2
-		local _, unitRace = UnitRace(unit)
-		local positionStorage = positionData or (objectType == "TabardModel" and TABARDMODEL_CAMERA_POSITION or DRESSUPMODEL_CAMERA_POSITION)
-		local data = positionStorage[string.format("%s%d", unitRace or "Human", unitSex)]
-
-		if data then
-			local positionX, positionY, positionZ = unpack(data)
-
-			self.positionX = positionX
-			self.positionY = positionY
-			self.positionZ = positionZ
-			self:SetPosition(positionX, positionY, positionZ)
-
-			if data[4] then
-				self:SetFacing(math.rad(data[4]))
-			end
-		end
-	end
+	return success
 end
 
-function Method_SetDesaturated( self, toggle, color )
-	if toggle then
-		self:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
+local function Texture_SetPortrait(self, displayID)
+	local portrait = strconcat("Interface\\PORTRAITS\\Portrait_model_", tonumber(displayID))
+	local success = self:SetTexture(portrait)
+	return success
+end
+
+local function Button_SetEnabled(self, enabled)
+	if enabled then
+		self:Enable()
 	else
-		if color then
-			self:SetTextColor(color.r, color.g, color.b)
-		else
-			self:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
-		end
+		self:Disable()
 	end
 end
 
-function Method_SetParentArray( self, arrayName, element, setInSelf)
-	local parent = not setInSelf and self:GetParent() or self
-
-    if not parent[arrayName] then
-		parent[arrayName] = {}
-    end
-
-    table.insert(parent[arrayName], element or self)
-end
-
-function Method_ClearAndSetPoint( self, ... )
-	self:ClearAllPoints()
-	self:SetPoint(...)
-end
-
-function Method_GetScaledRect(self)
-	local left, bottom, width, height = self:GetRect()
-	if left and bottom and width and height then
-		local scale = self:GetEffectiveScale()
-		return left * scale, bottom * scale, width * scale, height * scale
+local function Button_SetNormalAtlas(self, atlasName, useAtlasSize, filterMode)
+	local texture = self:GetNormalTexture()
+	if not texture then
+		self:SetNormalTexture("")
+		texture = self:GetNormalTexture()
 	end
+	Texture_SetAtlas(texture, atlasName, useAtlasSize, filterMode)
 end
 
-function Method_EditBox_IsEnabled(self)
+local function Button_SetPushedAtlas(self, atlasName, useAtlasSize, filterMode)
+	local texture = self:GetPushedTexture()
+	if not texture then
+		self:SetPushedTexture("")
+		texture = self:GetPushedTexture()
+	end
+	Texture_SetAtlas(texture, atlasName, useAtlasSize, filterMode)
+end
+
+local function Button_SetDisabledAtlas(self, atlasName, useAtlasSize, filterMode)
+	local texture = self:GetDisabledTexture()
+	if not texture then
+		self:SetDisabledTexture("")
+		texture = self:GetDisabledTexture()
+	end
+	Texture_SetAtlas(texture, atlasName, useAtlasSize, filterMode)
+end
+
+local function Button_SetHighlightAtlas(self, atlasName, useAtlasSize, filterMode)
+	local texture = self:GetHighlightTexture()
+	if not texture then
+		self:SetHighlightTexture("")
+		texture = self:GetHighlightTexture()
+	end
+	Texture_SetAtlas(texture, atlasName, useAtlasSize, filterMode)
+end
+
+local function Button_ClearNormalTexture(self)
+	self:SetNormalTexture("")
+end
+
+local function Button_ClearPushedTexture(self)
+	self:SetPushedTexture("")
+end
+
+local function Button_ClearDisabledTexture(self)
+	self:SetDisabledTexture("")
+end
+
+local function Button_ClearHighlightTexture(self)
+	self:SetHighlightTexture("")
+end
+
+local function CheckButton_SetCheckedAtlas(self, atlasName, useAtlasSize, filterMode)
+	local texture = self:GetCheckedTexture()
+	if not texture then
+		self:SetCheckedTexture("")
+		texture = self:GetCheckedTexture()
+	end
+	Texture_SetAtlas(texture, atlasName, useAtlasSize, filterMode)
+end
+
+local function CheckButton_SetDisabledCheckedAtlas(self, atlasName, useAtlasSize, filterMode)
+	local texture = self:GetDisabledCheckedTexture()
+	if not texture then
+		self:SetDisabledCheckedTexture("")
+		texture = self:GetDisabledCheckedTexture()
+	end
+	Texture_SetAtlas(texture, atlasName, useAtlasSize, filterMode)
+end
+
+local function CheckButton_ClearCheckedTexture(self)
+	self:SetCheckedTexture("")
+end
+
+local function CheckButton_ClearDisabledCheckedTexture(self)
+	self:SetDisabledCheckedTexture("")
+end
+
+local function EditBox_IsEnabled(self)
 	return self.__ext_Disabled ~= true
 end
 
-function Method_EditBox_Enabled(self)
+local function EditBox_Enabled(self)
 	if self.__ext_mouseEnabled then
 		self:EnableMouse(true)
 	end
@@ -290,7 +324,7 @@ function Method_EditBox_Enabled(self)
 	self.__ext_mouseEnabled = nil
 end
 
-function Method_EditBox_Disable(self)
+local function EditBox_Disable(self)
 	if not self.__ext_Disabled then
 		self.__ext_autoFocus = self:IsAutoFocus() == 1
 		self.__ext_mouseEnabled = self:IsMouseEnabled() == 1
@@ -302,241 +336,201 @@ function Method_EditBox_Disable(self)
 	self.__ext_Disabled = true
 end
 
-local RegisterCustomEvent = RegisterCustomEvent
-local UnregisterCustomEvent = UnregisterCustomEvent
+local function DressUpModel_SetUnit(self, unit, isCustomPosition, positionData)
+	local objectType = self:GetObjectType()
 
-function Method_RegisterCustomEvent(self, event)
-	RegisterCustomEvent(self, event)
-end
-
-function Method_UnregisterCustomEvent(self, event)
-	UnregisterCustomEvent(self, event)
-end
-
-function Method_IsTruncated(fontString)
-	local stringWidth = fontString:GetStringWidth();
-	local width = fontString:GetWidth();
-	fontString:SetWidth(width + 10000);
-	local isTruncated = fontString:GetStringWidth() ~= stringWidth;
-	fontString:SetWidth(width);
-	return isTruncated;
- end
-
-function Method_SetDisabled( self, ... )
-	if ... then
-		self:Disable()
-	else
-		self:Enable()
+	if isCustomPosition then
+		if objectType == "TabardModel" then
+			self:SetPosition(0, 0, 0)
+		else
+			self:SetPosition(1, 1, 1)
+		end
 	end
-end
 
-local function Method_SetNormalAtlas(self, atlasName, useAtlasSize, filterMode)
-	local texture = self:GetNormalTexture()
-	if not texture then
-		self:SetNormalTexture("")
-		texture = self:GetNormalTexture()
+	self:SetUnitRaw(unit)
+
+	if isCustomPosition then
+		local unitSex = UnitSex(unit) or 2
+		local _, unitRace = UnitRace(unit)
+		local positionStorage = positionData or (objectType == "TabardModel" and TABARDMODEL_CAMERA_POSITION or DRESSUPMODEL_CAMERA_POSITION)
+		local data = positionStorage[string.format("%s%d", unitRace or "Human", unitSex)]
+
+		if data then
+			local positionX, positionY, positionZ = unpack(data, 1, 3)
+			self.basePositionOverrideX = positionX
+			self.basePositionOverrideY = positionY
+			self.basePositionOverrideZ = positionZ
+			self.basePositionOverrideXasZ = true
+			self:SetPosition(positionX or 0, positionY or 0, positionZ or 0)
+
+			if data[4] then
+				self:SetFacing(math.rad(data[4]))
+			end
+			return
+		end
 	end
-	Method_SetAtlas(texture, atlasName, useAtlasSize, filterMode)
+
+	self.basePositionOverrideX = nil
+	self.basePositionOverrideY = nil
+	self.basePositionOverrideZ = nil
+	self.basePositionOverrideXasZ = nil
 end
 
-local function Method_SetPushedAtlas(self, atlasName, useAtlasSize, filterMode)
-	local texture = self:GetPushedTexture()
-	if not texture then
-		self:SetPushedTexture("")
-		texture = self:GetPushedTexture()
-	end
-	Method_SetAtlas(texture, atlasName, useAtlasSize, filterMode)
-end
+FrameMeta.SetShown = ScriptRegion_SetShown
+FrameMeta.GetScaledRect = ScriptRegion_GetScaledRect
+FrameMeta.IsMouseOverEx = ScriptRegion_IsMouseOverEx
+FrameMeta.ClearAndSetPoint = ScriptRegionResizing_ClearAndSetPoint
+FrameMeta.SetParentArray = LayoutFrame_SetParentArray
+FrameMeta.RegisterCustomEvent = Frame_RegisterCustomEvent
+FrameMeta.UnregisterCustomEvent = Frame_UnregisterCustomEvent
 
-local function Method_SetDisabledAtlas(self, atlasName, useAtlasSize, filterMode)
-	local texture = self:GetDisabledTexture()
-	if not texture then
-		self:SetDisabledTexture("")
-		texture = self:GetDisabledTexture()
-	end
-	Method_SetAtlas(texture, atlasName, useAtlasSize, filterMode)
-end
+FontStringMeta.SetShown = ScriptRegion_SetShown
+FontStringMeta.ClearAndSetPoint = ScriptRegionResizing_ClearAndSetPoint
+FontStringMeta.GetEffectiveScale = Region_GetEffectiveScale
+FontStringMeta.SetParentArray = LayoutFrame_SetParentArray
+FontStringMeta.GetScaledRect = ScriptRegion_GetScaledRect
+FontStringMeta.IsTruncated = FontString_IsTruncated
+FontStringMeta.SetDesaturated = FontString_SetDesaturated
+FontStringMeta.SetRemainingTime = FontString_SetRemainingTime
 
-local function Method_SetHighlightAtlas(self, atlasName, useAtlasSize, filterMode)
-	local texture = self:GetHighlightTexture()
-	if not texture then
-		self:SetHighlightTexture("")
-		texture = self:GetHighlightTexture()
-	end
-	Method_SetAtlas(texture, atlasName, useAtlasSize, filterMode)
-end
+TextureMeta.SetShown = ScriptRegion_SetShown
+TextureMeta.GetScaledRect = ScriptRegion_GetScaledRect
+TextureMeta.ClearAndSetPoint = ScriptRegionResizing_ClearAndSetPoint
+TextureMeta.GetEffectiveScale = Region_GetEffectiveScale
+TextureMeta.SetParentArray = LayoutFrame_SetParentArray
+TextureMeta.SetSubTexCoord = Texture_SetSubTexCoord
+TextureMeta.SetAtlas = Texture_SetAtlas
+TextureMeta.SetPortrait = Texture_SetPortrait
 
-local function Method_SetCheckedAtlas(self, atlasName, useAtlasSize, filterMode)
-	local texture = self:GetCheckedTexture()
-	if not texture then
-		self:SetCheckedTexture("")
-		texture = self:GetCheckedTexture()
-	end
-	Method_SetAtlas(texture, atlasName, useAtlasSize, filterMode)
-end
+ButtonMeta.SetShown = ScriptRegion_SetShown
+ButtonMeta.GetScaledRect = ScriptRegion_GetScaledRect
+ButtonMeta.IsMouseOverEx = ScriptRegion_IsMouseOverEx
+ButtonMeta.ClearAndSetPoint = ScriptRegionResizing_ClearAndSetPoint
+ButtonMeta.SetParentArray = LayoutFrame_SetParentArray
+ButtonMeta.RegisterCustomEvent = Frame_RegisterCustomEvent
+ButtonMeta.UnregisterCustomEvent = Frame_UnregisterCustomEvent
+ButtonMeta.SetEnabled = Button_SetEnabled
+ButtonMeta.SetNormalAtlas = Button_SetNormalAtlas
+ButtonMeta.SetPushedAtlas = Button_SetPushedAtlas
+ButtonMeta.SetDisabledAtlas = Button_SetDisabledAtlas
+ButtonMeta.SetHighlightAtlas = Button_SetHighlightAtlas
+ButtonMeta.ClearClearNormalTexture = Button_ClearNormalTexture
+ButtonMeta.ClearPushedTexture = Button_ClearPushedTexture
+ButtonMeta.ClearDisabledTexture = Button_ClearDisabledTexture
+ButtonMeta.ClearHighlightTexture = Button_ClearHighlightTexture
 
-local function Method_ClearNormalTexture(self)
-	self:SetNormalTexture("")
-end
+CheckButtonMeta.SetShown = ScriptRegion_SetShown
+CheckButtonMeta.IsMouseOverEx = ScriptRegion_IsMouseOverEx
+CheckButtonMeta.GetScaledRect = ScriptRegion_GetScaledRect
+CheckButtonMeta.ClearAndSetPoint = ScriptRegionResizing_ClearAndSetPoint
+CheckButtonMeta.SetParentArray = LayoutFrame_SetParentArray
+CheckButtonMeta.RegisterCustomEvent = Frame_RegisterCustomEvent
+CheckButtonMeta.UnregisterCustomEvent = Frame_UnregisterCustomEvent
+CheckButtonMeta.SetEnabled = Button_SetEnabled
+CheckButtonMeta.SetNormalAtlas = Button_SetNormalAtlas
+CheckButtonMeta.SetPushedAtlas = Button_SetPushedAtlas
+CheckButtonMeta.SetDisabledAtlas = Button_SetDisabledAtlas
+CheckButtonMeta.SetHighlightAtlas = Button_SetHighlightAtlas
+CheckButtonMeta.SetCheckedAtlas = CheckButton_SetCheckedAtlas
+CheckButtonMeta.SetDisabledCheckedAtlas = CheckButton_SetDisabledCheckedAtlas
+CheckButtonMeta.ClearClearNormalTexture = Button_ClearNormalTexture
+CheckButtonMeta.ClearPushedTexture = Button_ClearPushedTexture
+CheckButtonMeta.ClearDisabledTexture = Button_ClearDisabledTexture
+CheckButtonMeta.ClearHighlightTexture = Button_ClearHighlightTexture
+CheckButtonMeta.ClearDisabledCheckedTexture = CheckButton_ClearCheckedTexture
+CheckButtonMeta.ClearDisabledCheckedTexture = CheckButton_ClearDisabledCheckedTexture
 
-local function Method_ClearPushedTexture(self)
-	self:SetPushedTexture("")
-end
+EditBoxMeta.SetShown = ScriptRegion_SetShown
+EditBoxMeta.GetScaledRect = ScriptRegion_GetScaledRect
+EditBoxMeta.ClearAndSetPoint = ScriptRegionResizing_ClearAndSetPoint
+EditBoxMeta.RegisterCustomEvent = Frame_RegisterCustomEvent
+EditBoxMeta.UnregisterCustomEvent = Frame_UnregisterCustomEvent
+EditBoxMeta.SetEnabled = Button_SetEnabled
+EditBoxMeta.IsEnabled = EditBox_IsEnabled
+EditBoxMeta.Enable = EditBox_Enabled
+EditBoxMeta.Disable = EditBox_Disable
 
-local function Method_ClearDisabledTexture(self)
-	self:SetDisabledTexture("")
-end
+SimpleHTMLMeta.SetShown = ScriptRegion_SetShown
+SimpleHTMLMeta.GetScaledRect = ScriptRegion_GetScaledRect
+SimpleHTMLMeta.ClearAndSetPoint = ScriptRegionResizing_ClearAndSetPoint
+SimpleHTMLMeta.SetParentArray = LayoutFrame_SetParentArray
+SimpleHTMLMeta.RegisterCustomEvent = Frame_RegisterCustomEvent
+SimpleHTMLMeta.UnregisterCustomEvent = Frame_UnregisterCustomEvent
 
-local function Method_ClearHighlightTexture(self)
-	self:SetHighlightTexture("")
-end
+SliderMeta.SetShown = ScriptRegion_SetShown
+SliderMeta.GetScaledRect = ScriptRegion_GetScaledRect
+SliderMeta.IsMouseOverEx = ScriptRegion_IsMouseOverEx
+SliderMeta.ClearAndSetPoint = ScriptRegionResizing_ClearAndSetPoint
+SliderMeta.SetParentArray = LayoutFrame_SetParentArray
+SliderMeta.RegisterCustomEvent = Frame_RegisterCustomEvent
+SliderMeta.UnregisterCustomEvent = Frame_UnregisterCustomEvent
+SliderMeta.SetEnabled = Button_SetEnabled
 
--- Frame Method
-function Frame.__index:SetShown( ... ) Method_SetShown( self, ... ) end
-function Frame.__index:FixOpenPanel( ... ) Method_FixOpenPanel( self, ... ) end
-function Frame.__index:SetParentArray( arrayName, element, setInSelf ) Method_SetParentArray( self, arrayName, element, setInSelf ) end
-function Frame.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
-function Frame.__index:GetScaledRect() return Method_GetScaledRect(self) end
-function Frame.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
-function Frame.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
+StatusBarMeta.SetShown = ScriptRegion_SetShown
+StatusBarMeta.GetScaledRect = ScriptRegion_GetScaledRect
+StatusBarMeta.ClearAndSetPoint = ScriptRegionResizing_ClearAndSetPoint
+StatusBarMeta.SetParentArray = LayoutFrame_SetParentArray
+StatusBarMeta.RegisterCustomEvent = Frame_RegisterCustomEvent
+StatusBarMeta.UnregisterCustomEvent = Frame_UnregisterCustomEvent
 
--- Button Method
-function Button.__index:SetShown( ... ) Method_SetShown( self, ... ) end
-function Button.__index:SetEnabled( ... ) Method_SetEnabled( self, ... ) end
-function Button.__index:SetParentArray( arrayName, element, setInSelf ) Method_SetParentArray( self, arrayName, element, setInSelf ) end
-function Button.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
-function Button.__index:SetNormalAtlas(atlasName, useAtlasSize, filterMode) Method_SetNormalAtlas(self, atlasName, useAtlasSize, filterMode) end
-function Button.__index:SetPushedAtlas(atlasName, useAtlasSize, filterMode) Method_SetPushedAtlas(self, atlasName, useAtlasSize, filterMode) end
-function Button.__index:SetDisabledAtlas(atlasName, useAtlasSize, filterMode) Method_SetDisabledAtlas(self, atlasName, useAtlasSize, filterMode) end
-function Button.__index:SetHighlightAtlas(atlasName, useAtlasSize, filterMode) Method_SetHighlightAtlas(self, atlasName, useAtlasSize, filterMode) end
-function Button.__index:ClearClearNormalTexture() Method_ClearNormalTexture(self) end
-function Button.__index:ClearPushedTexture() Method_ClearPushedTexture(self) end
-function Button.__index:ClearDisabledTexture() Method_ClearDisabledTexture(self) end
-function Button.__index:ClearHighlightTexture() Method_ClearHighlightTexture(self) end
-function Button.__index:GetScaledRect() return Method_GetScaledRect(self) end
-function Button.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
-function Button.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
+ScrollFrameMeta.SetShown = ScriptRegion_SetShown
+ScrollFrameMeta.GetScaledRect = ScriptRegion_GetScaledRect
+ScrollFrameMeta.ClearAndSetPoint = ScriptRegionResizing_ClearAndSetPoint
+ScrollFrameMeta.SetParentArray = LayoutFrame_SetParentArray
+ScrollFrameMeta.RegisterCustomEvent = Frame_RegisterCustomEvent
+ScrollFrameMeta.UnregisterCustomEvent = Frame_UnregisterCustomEvent
 
--- Slider Method
-function Slider.__index:SetShown( ... ) Method_SetShown( self, ... ) end
-function Slider.__index:SetParentArray( arrayName, element, setInSelf ) Method_SetParentArray( self, arrayName, element, setInSelf ) end
-function Slider.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
-function Slider.__index:GetScaledRect() return Method_GetScaledRect(self) end
-function Slider.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
-function Slider.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
+MessageFrameMeta.SetShown = ScriptRegion_SetShown
+MessageFrameMeta.GetScaledRect = ScriptRegion_GetScaledRect
+MessageFrameMeta.ClearAndSetPoint = ScriptRegionResizing_ClearAndSetPoint
+MessageFrameMeta.SetParentArray = LayoutFrame_SetParentArray
+MessageFrameMeta.RegisterCustomEvent = Frame_RegisterCustomEvent
+MessageFrameMeta.UnregisterCustomEvent = Frame_UnregisterCustomEvent
 
--- Texture Method
-function Texture.__index:SetShown( ... ) Method_SetShown( self, ... ) end
-function Texture.__index:SetSubTexCoord( left, right, top, bottom ) Method_SetSubTexCoord( self, left, right, top, bottom ) end
-function Texture.__index:SetPortrait( displayID ) Method_SetPortrait( self, displayID ) end
-function Texture.__index:SetAtlas( atlasName, useAtlasSize, filterMode ) Method_SetAtlas( self, atlasName, useAtlasSize, filterMode ) end
-function Texture.__index:SetParentArray( arrayName, element, setInSelf ) Method_SetParentArray( self, arrayName, element, setInSelf ) end
-function Texture.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
-function Texture.__index:GetEffectiveScale() return self:GetParent():GetEffectiveScale() end
-function Texture.__index:GetScaledRect() return Method_GetScaledRect(self) end
+ScrollingMessageFrameMeta.SetShown = ScriptRegion_SetShown
+ScrollingMessageFrameMeta.GetScaledRect = ScriptRegion_GetScaledRect
+ScrollingMessageFrameMeta.ClearAndSetPoint = ScriptRegionResizing_ClearAndSetPoint
+ScrollingMessageFrameMeta.SetParentArray = LayoutFrame_SetParentArray
+ScrollingMessageFrameMeta.RegisterCustomEvent = Frame_RegisterCustomEvent
+ScrollingMessageFrameMeta.UnregisterCustomEvent = Frame_UnregisterCustomEvent
 
--- StatusBar Method
-function StatusBar.__index:SetShown( ... ) Method_SetShown( self, ... ) end
-function StatusBar.__index:SmoothSetValue( value ) Method_SmoothSetValue( self, value ) end
-function StatusBar.__index:SetParentArray( arrayName, element, setInSelf ) Method_SetParentArray( self, arrayName, element, setInSelf ) end
-function StatusBar.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
-function StatusBar.__index:GetScaledRect() return Method_GetScaledRect(self) end
-function StatusBar.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
-function StatusBar.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
+ModelMeta.SetShown = ScriptRegion_SetShown
+ModelMeta.GetScaledRect = ScriptRegion_GetScaledRect
+ModelMeta.ClearAndSetPoint = ScriptRegionResizing_ClearAndSetPoint
+ModelMeta.RegisterCustomEvent = Frame_RegisterCustomEvent
+ModelMeta.UnregisterCustomEvent = Frame_UnregisterCustomEvent
 
--- SimpleHTML Method
-function SimpleHTML.__index:SetShown( ... ) Method_SetShown( self, ... ) end
-function SimpleHTML.__index:SetParentArray( arrayName, element, setInSelf ) Method_SetParentArray( self, arrayName, element, setInSelf ) end
-function SimpleHTML.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
-function SimpleHTML.__index:GetScaledRect() return Method_GetScaledRect(self) end
-function SimpleHTML.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
-function SimpleHTML.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
+if IsOnGlueScreen() then
+	ModelFFXMeta.SetShown = ScriptRegion_SetShown
+	ModelFFXMeta.RegisterCustomEvent = Frame_RegisterCustomEvent
+	ModelFFXMeta.UnregisterCustomEvent = Frame_UnregisterCustomEvent
+else
+	GameTooltipMeta.GetScaledRect = ScriptRegion_GetScaledRect
+	GameTooltipMeta.RegisterCustomEvent = Frame_RegisterCustomEvent
+	GameTooltipMeta.UnregisterCustomEvent = Frame_UnregisterCustomEvent
 
--- FontString Method
-function FontString.__index:SetShown( ... ) Method_SetShown( self, ... ) end
-function FontString.__index:SetRemainingTime( time, daysformat ) Method_SetRemainingTime( self, time, daysformat ) end
-function FontString.__index:SetDesaturated( toggle, color ) Method_SetDesaturated( self, toggle, color ) end
-function FontString.__index:SetParentArray( arrayName, element, setInSelf ) Method_SetParentArray( self, arrayName, element, setInSelf ) end
-function FontString.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
-function FontString.__index:GetEffectiveScale() return self:GetParent():GetEffectiveScale() end
-function FontString.__index:GetScaledRect() return Method_GetScaledRect(self) end
-function FontString.__index:IsTruncated() return Method_IsTruncated(self) end
+	PlayerModelMeta.SetShown = ScriptRegion_SetShown
+	PlayerModelMeta.GetScaledRect = ScriptRegion_GetScaledRect
+	PlayerModelMeta.ClearAndSetPoint = ScriptRegionResizing_ClearAndSetPoint
+	PlayerModelMeta.SetParentArray = LayoutFrame_SetParentArray
+	PlayerModelMeta.RegisterCustomEvent = Frame_RegisterCustomEvent
+	PlayerModelMeta.UnregisterCustomEvent = Frame_UnregisterCustomEvent
 
--- ScrollFrame Method
-function ScrollFrame.__index:SetShown( ... ) Method_SetShown( self, ... ) end
-function ScrollFrame.__index:SetParentArray( arrayName, element, setInSelf ) Method_SetParentArray( self, arrayName, element, setInSelf ) end
-function ScrollFrame.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
-function ScrollFrame.__index:GetScaledRect() return Method_GetScaledRect(self) end
-function ScrollFrame.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
-function ScrollFrame.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
+	DressUpModelMeta.SetShown = ScriptRegion_SetShown
+	DressUpModelMeta.GetScaledRect = ScriptRegion_GetScaledRect
+	DressUpModelMeta.ClearAndSetPoint = ScriptRegionResizing_ClearAndSetPoint
+	DressUpModelMeta.SetParentArray = LayoutFrame_SetParentArray
+	DressUpModelMeta.RegisterCustomEvent = Frame_RegisterCustomEvent
+	DressUpModelMeta.UnregisterCustomEvent = Frame_UnregisterCustomEvent
+	DressUpModelMeta.SetUnitRaw = DressUpModelMeta.SetUnit
+	DressUpModelMeta.SetUnit = DressUpModel_SetUnit
 
--- CheckButton Method
-function CheckButton.__index:SetShown( ... ) Method_SetShown( self, ... ) end
-function CheckButton.__index:SetEnabled( ... ) Method_SetEnabled( self, ... ) end
-function CheckButton.__index:SetParentArray( arrayName, element, setInSelf ) Method_SetParentArray( self, arrayName, element, setInSelf ) end
-function CheckButton.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
-function CheckButton.__index:SetNormalAtlas(atlasName, useAtlasSize, filterMode) Method_SetNormalAtlas(self, atlasName, useAtlasSize, filterMode) end
-function CheckButton.__index:SetPushedAtlas(atlasName, useAtlasSize, filterMode) Method_SetPushedAtlas(self, atlasName, useAtlasSize, filterMode) end
-function CheckButton.__index:SetDisabledAtlas(atlasName, useAtlasSize, filterMode) Method_SetDisabledAtlas(self, atlasName, useAtlasSize, filterMode) end
-function CheckButton.__index:SetHighlightAtlas(atlasName, useAtlasSize, filterMode) Method_SetHighlightAtlas(self, atlasName, useAtlasSize, filterMode) end
-function CheckButton.__index:SetCheckedAtlas(atlasName, useAtlasSize, filterMode) Method_SetCheckedAtlas(self, atlasName, useAtlasSize, filterMode) end
-function CheckButton.__index:ClearClearNormalTexture() Method_ClearNormalTexture(self) end
-function CheckButton.__index:ClearPushedTexture() Method_ClearPushedTexture(self) end
-function CheckButton.__index:ClearDisabledTexture() Method_ClearDisabledTexture(self) end
-function CheckButton.__index:ClearHighlightTexture() Method_ClearHighlightTexture(self) end
-function CheckButton.__index:GetScaledRect() return Method_GetScaledRect(self) end
-function CheckButton.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
-function CheckButton.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
-function CheckButton.__index:SetDisabled( ... ) Method_SetDisabled( self, ... ) end
-
--- Model
-function Model.__index:SetShown( ... ) Method_SetShown( self, ... ) end
-function Model.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
-function Model.__index:GetScaledRect() return Method_GetScaledRect(self) end
-function Model.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
-function Model.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
-
--- EditBox
-function EditBox.__index:SetShown(...) Method_SetShown(self, ...) end
-function EditBox.__index:SetEnabled( ... ) Method_SetEnabled( self, ... ) end
-function EditBox.__index:IsEnabled( ... ) Method_EditBox_IsEnabled( self, ... ) end
-function EditBox.__index:Enable( ... ) Method_EditBox_Enabled( self, ... ) end
-function EditBox.__index:Disable( ... ) Method_EditBox_Disable( self, ... ) end
-function EditBox.__index:ClearAndSetPoint(...) Method_ClearAndSetPoint(self, ...) end
-function EditBox.__index:GetScaledRect() return Method_GetScaledRect(self) end
-function EditBox.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
-function EditBox.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
-
-if not IsOnGlueScreen() then
-	-- GameTooltip Method
-	function GameTooltip.__index:SetTransmogrifyItem(transmogID, hasPending, hasUndo) Method_SetTransmogrifyItem(self, transmogID, hasPending, hasUndo) end
-	function GameTooltip.__index:GetScaledRect() return Method_GetScaledRect(self) end
-	function GameTooltip.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
-	function GameTooltip.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
-
-	-- PlayerModel Method
-	function PlayerModel.__index:SetShown( ... ) Method_SetShown( self, ... ) end
-	function PlayerModel.__index:SetParentArray( arrayName, element, setInSelf ) Method_SetParentArray( self, arrayName, element, setInSelf ) end
-	function PlayerModel.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
-	function PlayerModel.__index:GetScaledRect() return Method_GetScaledRect(self) end
-	function PlayerModel.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
-	function PlayerModel.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
-
-	-- DressUpModel
-	DressUpModel.__index.__SetUnit = DressUpModel.__index.__SetUnit or DressUpModel.__index.SetUnit
-	function DressUpModel.__index:SetUnit( ... ) Method_SetUnit( self, ... ) end
-	function DressUpModel.__index:SetParentArray( arrayName, element, setInSelf ) Method_SetParentArray( self, arrayName, element, setInSelf ) end
-	function DressUpModel.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
-	function DressUpModel.__index:GetScaledRect() return Method_GetScaledRect(self) end
-	function DressUpModel.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
-	function DressUpModel.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
-
-	-- TabardModel
-	TabardModel.__index.__SetUnit = TabardModel.__index.__SetUnit or TabardModel.__index.SetUnit
-	function TabardModel.__index:SetUnit( ... ) Method_SetUnit( self, ... ) end
-	function TabardModel.__index:SetParentArray( arrayName, element, setInSelf ) Method_SetParentArray( self, arrayName, element, setInSelf ) end
-	function TabardModel.__index:ClearAndSetPoint( ... ) Method_ClearAndSetPoint( self, ... ) end
-	function TabardModel.__index:GetScaledRect() return Method_GetScaledRect(self) end
-	function TabardModel.__index:RegisterCustomEvent(event) return Method_RegisterCustomEvent(self, event) end
-	function TabardModel.__index:UnregisterCustomEvent(event) return Method_UnregisterCustomEvent(self, event) end
+	TabardModelMeta.SetShown = ScriptRegion_SetShown
+	TabardModelMeta.GetScaledRect = ScriptRegion_GetScaledRect
+	TabardModelMeta.ClearAndSetPoint = ScriptRegionResizing_ClearAndSetPoint
+	TabardModelMeta.SetParentArray = LayoutFrame_SetParentArray
+	TabardModelMeta.RegisterCustomEvent = Frame_RegisterCustomEvent
+	TabardModelMeta.UnregisterCustomEvent = Frame_UnregisterCustomEvent
+	TabardModelMeta.SetUnitRaw = TabardModelMeta.SetUnit
+	TabardModelMeta.SetUnit = DressUpModel_SetUnit
 end

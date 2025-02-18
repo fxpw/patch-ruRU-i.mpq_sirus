@@ -1,3 +1,5 @@
+local IsGMAccount = IsGMAccount
+
 local COLLECTION_HEIRLOOMDATA = COLLECTION_HEIRLOOMDATA;
 
 local HEIRLOOM_COLLECTED = 1;
@@ -30,7 +32,7 @@ local HEIRLOOM_SPEC_ROLE_FLAG = {
 	-- DemonHunter
 	[504] = HEIRLOOM_DAMAGER_FLAG, [505] = HEIRLOOM_DAMAGER_FLAG, [506] = HEIRLOOM_DAMAGER_FLAG,
 	-- Druid
-	[283] = HEIRLOOM_DAMAGER_FLAG, [281] = bit.bor(HEIRLOOM_DAMAGER_FLAG, HEIRLOOM_TANK_FLAG), [282] = HEIRLOOM_HEAL_FLAG,
+	[283] = HEIRLOOM_RANGED_DAMAGER_FLAG, [281] = bit.bor(HEIRLOOM_DAMAGER_FLAG, HEIRLOOM_TANK_FLAG), [282] = HEIRLOOM_HEAL_FLAG,
 };
 
 local SOURCE_TYPES = {
@@ -69,29 +71,39 @@ local function PlayerHasHeirloom(itemID)
 	return false;
 end
 
-local function CheckFilter(collected, classesFlag, classFlag, roleFlag, specFlag, sourceShown, name)
-	if not COLLECTED_SHOWN and collected then
+local function CheckFilter(data, classFlag, specFlag, sourceFiltersFlag, sourceFlag, isGM)
+	if not COLLECTED_SHOWN and PlayerHasHeirloom(data.itemID) then
 		return false;
 	end
 
-	if not UNCOLLECTED_SHOWN and not collected then
+	if not UNCOLLECTED_SHOWN and not PlayerHasHeirloom(data.itemID) then
 		return false;
 	end
 
-	if classFlag and classesFlag ~= 0 and bit.band(classesFlag, classFlag) == 0 then
+	if classFlag and data.classFlags ~= 0 and bit.band(data.classFlags, classFlag) == 0 then
 		return false;
 	end
 
-	if specFlag and bit.band(roleFlag, specFlag) == 0 then
+	if specFlag and bit.band(data.roleFlag, specFlag) == 0 then
 		return false;
 	end
 
-	if not sourceShown then
+	if not (sourceFiltersFlag == 0 or bit.band(sourceFiltersFlag, sourceFlag) ~= sourceFlag) then
 		return false;
 	end
 
-	if FILTER_STRING ~= "" and not string.find(string.lower(name), FILTER_STRING, 1, true) then
-		return false;
+	if FILTER_STRING ~= "" then
+		if isGM then
+			local searchID = tonumber(FILTER_STRING)
+			if searchID and (searchID == data.itemID or searchID == data.spellID) then
+				return true
+			end
+		end
+
+		local name = GetSpellInfo(data.spellID);
+		if not name or not string.find(string.lower(name), FILTER_STRING, 1, true) then
+			return false;
+		end
 	end
 
 	return true
@@ -103,21 +115,24 @@ local function SetFilteredHeirlooms()
 	local sourceFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_HEIRLOOM_SOURCE_FILTERS")) or 0;
 	local classFlag = CLASS_FILTER ~= 0 and bit.lshift(1, CLASS_FILTER - 1);
 	local specFlag = SPEC_FILTER ~= 0 and HEIRLOOM_SPEC_ROLE_FLAG[SPEC_FILTER];
+	local isGM = IsGMAccount()
 
 	for i = 1, #COLLECTION_HEIRLOOMDATA do
 		local data = COLLECTION_HEIRLOOMDATA[i];
-
-		local spellName = GetSpellInfo(data.spellID);
 
 		local sourceFlag = data.lootType ~= 0 and bit.lshift(1, ((data.currency ~= 0 and data.lootType ~= 15 and 7 or SOURCE_TYPES[data.lootType]) or 1) - 1) or 0;
 		if data.holidayText ~= "" then
 			sourceFlag = bit.bor(sourceFlag, bit.lshift(1, 6 - 1));
 		end
 
-		if CheckFilter(PlayerHasHeirloom(data.itemID), data.classFlags, classFlag, data.roleFlag, specFlag, sourceFiltersFlag == 0 or bit.band(sourceFiltersFlag, sourceFlag) ~= sourceFlag, spellName or "") then
+		if CheckFilter(data, classFlag, specFlag, sourceFiltersFlag, sourceFlag, isGM) then
 			HEIRLOOMS[#HEIRLOOMS + 1] = data;
 		end
 	end
+end
+
+function ReloadCollectionHearloomData()
+	COLLECTION_HEIRLOOMDATA = _G.COLLECTION_HEIRLOOMDATA
 end
 
 local frame = CreateFrame("Frame");
@@ -132,13 +147,8 @@ frame:SetScript("OnEvent", function(_, event)
 		for i = 1, #COLLECTION_HEIRLOOMDATA do
 			local data = COLLECTION_HEIRLOOMDATA[i];
 
-			local spellName = GetSpellInfo(data.spellID);
-
 			HEIRLOOM_BY_ITEM_ID[data.itemID] = data;
-
-			if not spellbookCustomHiddenChatSpell[data.spellID] then
-				spellbookCustomHiddenChatSpell[data.spellID] = spellName;
-			end
+			FilterOutSpellLearn(data.spellID)
 		end
 
 		SetFilteredHeirlooms();
@@ -148,10 +158,7 @@ frame:SetScript("OnEvent", function(_, event)
 end);
 
 function IsHeirloom(spellID)
-	if spellbookCustomHiddenChatSpell[spellID] then
-		return true;
-	end
-	return false;
+	return IsSpellIDLearnFiltered(spellID);
 end
 
 C_Heirloom = {};
@@ -168,6 +175,27 @@ end
 
 function C_Heirloom.GetNumDisplayedHeirlooms()
 	return #HEIRLOOMS;
+end
+
+function C_Heirloom.GetNumLearnedHeirloomsForClass(classID)
+	if type(classID) ~= "number" then
+		error("Usage: C_Heirloom.GetNumLearnedHeirloomsForClass(classID)", 2);
+	end
+
+	local num = 0
+	if classID then
+		local classFlag = bit.lshift(1, classID - 1)
+
+		for i = 1, #COLLECTION_HEIRLOOMDATA do
+			local data = COLLECTION_HEIRLOOMDATA[i]
+			if data.classFlags == 0 or bit.band(data.classFlags, classFlag) ~= 0 then
+				if data.spellID and IsSpellKnown(data.spellID) then
+					num = num + 1
+				end
+			end
+		end
+	end
+	return num
 end
 
 function C_Heirloom.GetHeirloomItemIDFromDisplayedIndex(index)
@@ -209,9 +237,17 @@ function C_Heirloom.GetHeirloomInfo(itemID)
 	local data = HEIRLOOM_BY_ITEM_ID[itemID];
 	if data then
 		local spellName = GetSpellInfo(data.spellID);
-		local _, _, _, _, _, _, _, _, itemEquipLoc, itemIcon = C_Item.GetItemInfo(data.itemID, nil, nil, nil, true);
+		local _, _, _, _, _, _, _, _, itemEquipLoc, itemIcon = C_Item.GetItemInfo(data.itemID, false, nil, true, true);
+		local priceText;
+		if data.factionSide == 2 then
+			priceText = data.priceText:gsub("-Team.", "-Horde.");
+		elseif data.factionSide == 1 then
+			priceText = data.priceText:gsub("-Team.", "-Alliance.");
+		else
+			priceText = data.priceText:gsub("-Team.", "-"..(UnitFactionGroup("player"))..".");
+		end
 
-		return spellName, itemEquipLoc, itemIcon, data.descriptionText, data.priceText;
+		return spellName, itemEquipLoc, itemIcon, data.descriptionText, priceText;
 	end
 end
 
@@ -451,5 +487,6 @@ function EventHandler:ASMSG_C_H_ADD(msg)
 		SetFilteredHeirlooms();
 
 		FireCustomClientEvent("HEIRLOOMS_UPDATED", itemID, true);
+		EventRegistry:TriggerEvent("Heirloom.Updated", itemID, true)
 	end
 end

@@ -944,7 +944,7 @@ end
 local string_distance
 do
 	local max, min = math.max, math.min
-	local utf8byte, utf8len = utf8byte, strlenutf8
+	local utf8byte, utf8len = utf8.byte, strlenutf8
 
 	local aLen, bLen
 
@@ -1047,8 +1047,9 @@ do
 	local max = math.max
 	local strfind = string.find
 	local tsort = table.sort
-	local utf8sub = utf8sub
+	local utf8sub = utf8.sub
 
+	local CalculateStringEditDistance = CalculateStringEditDistance
 	local ClampedPercentageBetween = ClampedPercentageBetween
 
 	local sortDistance = function(a, b)
@@ -1150,7 +1151,8 @@ do
 --			mult = SCORE_VALUE.LONG
 		end
 
-		local distance = getStringDistance(word, kWord, 1, 1, 1)
+	--	local distance = getStringDistance(word, kWord, 1, 1, 1)
+		local distance = CalculateStringEditDistance(word, kWord)
 		local score = ClampedPercentageBetween(distance, 5, 1)
 
 		if not mult then

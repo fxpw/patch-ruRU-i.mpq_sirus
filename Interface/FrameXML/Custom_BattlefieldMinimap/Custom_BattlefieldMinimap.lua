@@ -411,13 +411,19 @@ function BattlefieldMinimap_OnUpdate(self, elapsed)
 			local flagFrame = _G[flagFrameName];
 			if ( i <= numFlags ) then
 				local flagX, flagY, flagToken = GetBattlefieldFlagPosition(i);
-				local flagTexture = _G[flagFrameName.."Texture"];
 				if ( flagX == 0 and flagY == 0 ) then
 					flagFrame:Hide();
 				else
 					flagX = flagX * BattlefieldMinimap:GetWidth();
 					flagY = -flagY * BattlefieldMinimap:GetHeight();
 					flagFrame:SetPoint("CENTER", "BattlefieldMinimap", "TOPLEFT", flagX, flagY);
+
+					local factionOverrideID = C_CacheInstance:Get("ASMSG_UPDATE_BATTLEFIELD_FLAG"..i)
+					if factionOverrideID then
+						local factionName = factionOverrideID and SERVER_PLAYER_FACTION_GROUP[factionOverrideID]
+						flagToken = factionName.."Flag"
+					end
+
 					local flagTexture = _G[flagFrameName.."Texture"];
 					flagTexture:SetTexture("Interface\\WorldStateFrame\\"..flagToken);
 					flagFrame:Show();

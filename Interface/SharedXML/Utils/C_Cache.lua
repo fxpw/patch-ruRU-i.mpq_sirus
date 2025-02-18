@@ -1,7 +1,3 @@
---	Filename:	C_Cache.lua
---	Project:	Custom Game Interface
---	Author:		Nyll & Blizzard Entertainment
-
 ---@class C_CacheMixin : Mixin
 C_CacheMixin = {}
 
@@ -15,7 +11,9 @@ function C_CacheMixin:OnLoad()
     self:SetSavedState(false)
     self._cache = {}
 
-    self:LoadData()
+	if not IsOnGlueScreen() then
+		self:LoadData()
+	end
 end
 
 function C_CacheMixin:SetSavedState( isSaved )
@@ -33,9 +31,7 @@ function C_CacheMixin:PLAYER_LOGOUT()
 end
 
 function C_CacheMixin:VARIABLES_LOADED()
-    if self._cache and #self._cache == 0 then
-        self:LoadData()
-    end
+	self:LoadData()
 end
 
 function C_CacheMixin:SaveData()
@@ -43,17 +39,28 @@ function C_CacheMixin:SaveData()
     SetSafeCVar("showToolsUI", DataDumper(self._cache))
 end
 
+local function tableCopyUnique(to, from)
+	for key, value in pairs(from) do
+		if to[key] == nil then
+			to[key] = value
+		elseif type(value) == "table" and type(to[key]) == "table" then
+			tableCopyUnique(to[key], value)
+		end
+	end
+end
+
 function C_CacheMixin:LoadData()
-    if not UnitName then
-        self._cache = {}
-        return
-    end
+	local isSuccess, data = pcall(function()
+		return loadstring(strconcat("return (function() ", GetSafeCVar("showToolsUI", "return {}"), " end)()"))()
+	end)
 
-    local isSuccess, data = xpcall(function()
-        return loadstring("return (function() "..GetSafeCVar("showToolsUI", "return {}").." end)()")()
-    end, nil)
-
-    self._cache = isSuccess and data or {}
+	if self._cache and next(self._cache) == nil then
+		if isSuccess then
+			self._cache = data
+		end
+	elseif isSuccess then
+		tableCopyUnique(self._cache, data)
+	end
 end
 
 ---@param key string
@@ -70,8 +77,10 @@ end
 ---@param value? string | table | boolean | number
 ---@param timeToLife? number
 function C_CacheMixin:Get( key, value, timeToLife )
+	local expiredTTL
     if (self._cache[key] and self._cache[key].ttl) and self._cache[key].ttl ~= 0 and self._cache[key].ttl < time() then
         self._cache[key] = nil
+		expiredTTL = true
     end
 
     if not self._cache[key] then
@@ -81,11 +90,11 @@ function C_CacheMixin:Get( key, value, timeToLife )
                 value = value
             }
         else
-            return nil
+            return nil, expiredTTL
         end
     end
 
-    return self._cache[key].value
+    return self._cache[key].value, expiredTTL
 end
 
 ---@class C_CacheInstance : C_CacheMixin

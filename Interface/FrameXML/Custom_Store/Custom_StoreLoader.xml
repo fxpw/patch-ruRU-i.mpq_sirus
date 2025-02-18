@@ -1,0 +1,14 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_StoreTransmogrifyData.lua"/>
+	<Script file="C_Store.lua"/>
+
+	<Include file="Custom_StoreTemplates.xml"/>
+	<Include file="Custom_Store.xml"/>
+	<Include file="Custom_StoreItemListView.xml"/>
+	<Include file="Custom_StoreDialogs.xml"/>
+	<Include file="Custom_StorePurchase.xml"/>
+
+	<Include file="Custom_PromoCode.xml"/>
+	<Include file="Custom_RealmShout.xml"/>
+</Ui>

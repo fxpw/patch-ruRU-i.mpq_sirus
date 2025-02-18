@@ -33,19 +33,19 @@ end
 
 function QuestInfo_Display(template, parentFrame, acceptButton, cancelButton, material)
 	local lastFrame = nil;
-	local shownFrame = nil;	
-	local bottomShownFrame = nil;	
+	local shownFrame = nil;
+	local bottomShownFrame = nil;
 	local elementsTable = template.elements;
-	
+
 	QuestInfoFrame.questLog = template.questLog;
 	QuestInfoFrame.chooseItems = template.chooseItems;
-	QuestInfoFrame.tooltip = template.tooltip;	
+	QuestInfoFrame.tooltip = template.tooltip;
 	QuestInfoFrame.acceptButton = acceptButton;
 	QuestInfoFrame.cancelButton = cancelButton;
-	
+
 	if ( QuestInfoFrame.material ~= material ) then
-		QuestInfoFrame.material = material;	
-		local textColor, titleTextColor = GetMaterialTextColors(material);	
+		QuestInfoFrame.material = material;
+		local textColor, titleTextColor = GetMaterialTextColors(material);
 		-- headers
 		QuestInfoTitleHeader:SetTextColor(titleTextColor[1], titleTextColor[2], titleTextColor[3]);
 		QuestInfoDescriptionHeader:SetTextColor(titleTextColor[1], titleTextColor[2], titleTextColor[3]);
@@ -59,13 +59,13 @@ function QuestInfo_Display(template, parentFrame, acceptButton, cancelButton, ma
 		-- reward frame text
 		QuestInfoItemChooseText:SetTextColor(textColor[1], textColor[2], textColor[3]);
 		QuestInfoItemReceiveText:SetTextColor(textColor[1], textColor[2], textColor[3]);
-		QuestInfoSpellLearnText:SetTextColor(textColor[1], textColor[2], textColor[3]);		
+		QuestInfoSpellLearnText:SetTextColor(textColor[1], textColor[2], textColor[3]);
 		QuestInfoHonorFrameReceiveText:SetTextColor(textColor[1], textColor[2], textColor[3]);
 		QuestInfoArenaPointsFrameReceiveText:SetTextColor(textColor[1], textColor[2], textColor[3]);
 		QuestInfoTalentFrameReceiveText:SetTextColor(textColor[1], textColor[2], textColor[3]);
 		QuestInfoXPFrameReceiveText:SetTextColor(textColor[1], textColor[2], textColor[3]);
 	end
-	
+
 	for i = 1, #elementsTable, 3 do
 		shownFrame, bottomShownFrame = elementsTable[i]();
 		if ( shownFrame ) then
@@ -73,7 +73,7 @@ function QuestInfo_Display(template, parentFrame, acceptButton, cancelButton, ma
 			if ( lastFrame ) then
 				shownFrame:SetPoint("TOPLEFT", lastFrame, "BOTTOMLEFT", elementsTable[i+1], elementsTable[i+2]);
 			else
-				shownFrame:SetPoint("TOPLEFT", parentFrame, "TOPLEFT", elementsTable[i+1], elementsTable[i+2]);			
+				shownFrame:SetPoint("TOPLEFT", parentFrame, "TOPLEFT", elementsTable[i+1], elementsTable[i+2]);
 			end
 			lastFrame = bottomShownFrame or shownFrame;
 		end
@@ -103,37 +103,93 @@ function QuestInfo_ShowDescriptionText()
 		questDescription = GetQuestLogQuestText();
 	else
 		questDescription = GetQuestText();
-	end	
+	end
 	QuestInfoDescriptionText:SetText(questDescription);
-	QuestInfoDescriptionText:SetAlphaGradient(0, 0);	
+	QuestInfoDescriptionText:SetAlphaGradient(0, 0);
 	return QuestInfoDescriptionText;
 end
 
 function QuestInfo_ShowObjectives()
-	local numObjectives = GetNumQuestLeaderBoards();
-	local objective;
-	local text, type, finished;
+	local questIndex = GetQuestLogSelection()
+	local numObjectives = GetNumQuestLeaderBoards()
+
+	local itemIndex, textIndex = 0, 0
+	local lastItemFrame, lastFrame
+
 	for i = 1, numObjectives do
-		objective = _G["QuestInfoObjective"..i];
-		text, type, finished = GetQuestLogLeaderBoard(i);
-		if ( not text or strlen(text) == 0 ) then
-			text = type;
-		end
-		if ( finished ) then
-			objective:SetTextColor(0.2, 0.2, 0.2);
-			text = text.." ("..COMPLETE..")";
+		local text, objType, finished = GetQuestLogLeaderBoard(i)
+
+		if objType == "item" and GetQuestLogLeaderBoardItem(questIndex, itemIndex + 1) then
+			itemIndex = itemIndex + 1
+
+			local itemID, itemCountTotal = GetQuestLogLeaderBoardItem(questIndex, itemIndex)
+			local name, hyperlink, _, _, _, _, _, _, _, texture = GetItemInfo(itemID)
+
+			local itemCount, totalItems2 = string.match(text, "(%d+)/(%d+)$")
+
+			local objective = _G["QuestRequiredItem"..itemIndex]
+			SetItemButtonTexture(objective, texture)
+			objective.Name:SetText(name)
+			objective.Checkmark:SetShown(finished)
+			_G["QuestRequiredItem"..itemIndex.."Count"]:SetFormattedText("%i / %i", itemCount or 0, itemCountTotal)
+			objective.itemID = itemID
+			objective.hyperlink = hyperlink
+
+			if itemIndex > 1 then
+				if itemIndex % 2 == 1 then
+					objective:ClearAndSetPoint("TOPLEFT", "QuestRequiredItem"..(itemIndex - 2), "BOTTOMLEFT", 0, -2)
+					lastItemFrame = objective
+				else
+					objective:ClearAndSetPoint("TOPLEFT", "QuestRequiredItem"..(itemIndex - 1), "TOPRIGHT", 1, 0)
+				end
+			else
+				lastItemFrame = objective
+			end
+
+			objective:Show()
 		else
-			objective:SetTextColor(0, 0, 0);
+			textIndex = textIndex + 1
+
+			local objective = _G["QuestInfoObjective"..textIndex]
+
+			if not text or strlen(text) == 0 then
+				text = type
+			end
+
+			if finished then
+				objective:SetTextColor(0.2, 0.2, 0.2)
+				text = string.format("%s (%s)", text, COMPLETE)
+			else
+				objective:SetTextColor(0, 0, 0)
+			end
+
+			objective:SetText(text)
+			objective:Show()
 		end
-		objective:SetText(text);
-		objective:Show();
 	end
-	for i = numObjectives + 1, MAX_OBJECTIVES do
-		_G["QuestInfoObjective"..i]:Hide();
+
+	if textIndex > 0 then
+		if lastItemFrame then
+			QuestInfoObjective1:ClearAndSetPoint("TOPLEFT", lastItemFrame, "BOTTOMLEFT", 0, -6)
+		else
+			QuestInfoObjective1:ClearAndSetPoint("TOPLEFT", 0, 0)
+		end
+
+		lastFrame = _G["QuestInfoObjective"..textIndex]
+	else
+		lastFrame = lastItemFrame
 	end
-	if ( objective ) then
+
+	for i = itemIndex + 1, MAX_OBJECTIVES do
+		_G["QuestRequiredItem"..i]:Hide()
+	end
+	for i = textIndex + 1, MAX_OBJECTIVES do
+		_G["QuestInfoObjective"..i]:Hide()
+	end
+
+	if lastFrame then
 		QuestInfoObjectivesFrame:Show();
-		return QuestInfoObjectivesFrame, objective;
+		return QuestInfoObjectivesFrame, lastFrame;
 	else
 		QuestInfoObjectivesFrame:Hide();
 		return nil;
@@ -144,7 +200,7 @@ function QuestInfo_DoReputations(anchor)
 	local numReputations = GetNumQuestLogRewardFactions();
 	local factionName, amount, factionId, isHeader, hasRep, _;
 	local index = 0;
-	for i = 1, numReputations do		
+	for i = 1, numReputations do
 		factionId, amount = GetQuestLogRewardFactionInfo(i);
 		factionName, _, _, _, _, _, _, _, isHeader, _, hasRep = GetFactionInfoByID(factionId);
 		if ( factionName and ( not isHeader or hasRep ) ) then
@@ -294,12 +350,12 @@ function QuestInfo_ShowRewards()
 		playerTitle = GetRewardTitle();
 	end
 
-	local totalRewards = numQuestRewards + numQuestChoices + numQuestSpellRewards;	
+	local totalRewards = numQuestRewards + numQuestChoices + numQuestSpellRewards;
 	if ( totalRewards == 0 and money == 0 and honor == 0 and arenaPoints == 0 and talents == 0 and xp == 0 and not playerTitle ) then
 		QuestInfoRewardsFrame:Hide();
 		return nil;
 	end
-		
+
 	-- Hide unused rewards
 	for i = totalRewards + 1, MAX_NUM_ITEMS, 1 do
 		_G["QuestInfoItem"..i]:Hide();
@@ -307,26 +363,26 @@ function QuestInfo_ShowRewards()
 	-- Hide non-icon rewards (for now)
 	QuestInfoMoneyFrame:Hide();
 	QuestInfoHonorFrame:Hide();
-	QuestInfoArenaPointsFrame:Hide();	
+	QuestInfoArenaPointsFrame:Hide();
 	QuestInfoTalentFrame:Hide();
 	QuestInfoXPFrame:Hide();
-	QuestInfoPlayerTitleFrame:Hide();	
-	
+	QuestInfoPlayerTitleFrame:Hide();
+
 	local questItem, name, texture, isTradeskillSpell, isSpellLearned, quality, isUsable, numItems;
 	local rewardsCount = 0;
 	local lastFrame = QuestInfoRewardsHeader;
 	local questItemReceiveText = QuestInfoItemReceiveText;
 	questItemReceiveText:SetText(REWARD_ITEMS_ONLY);
-	
+
 	-- Setup choosable rewards
 	if ( numQuestChoices > 0 ) then
 		local itemChooseText = QuestInfoItemChooseText;
-		questItemReceiveText:SetText(REWARD_ITEMS);		
+		questItemReceiveText:SetText(REWARD_ITEMS);
 		itemChooseText:Show();
-		
+
 		local index;
 		local baseIndex = rewardsCount;
-		for i = 1, numQuestChoices, 1 do	
+		for i = 1, numQuestChoices, 1 do
 			index = i + baseIndex;
 			questItem = _G["QuestInfoItem"..index];
 			questItem.type = "choice";
@@ -371,7 +427,7 @@ function QuestInfo_ShowRewards()
 	else
 		QuestInfoItemChooseText:Hide();
 	end
-	
+
 	-- Setup spell rewards
 	if ( numQuestSpellRewards > 0 ) then
 		questItemReceiveText:SetText(REWARD_ITEMS);
@@ -384,7 +440,7 @@ function QuestInfo_ShowRewards()
 		else
 			texture, name, isTradeskillSpell, isSpellLearned = GetRewardSpell();
 		end
-		
+
 		if ( isTradeskillSpell ) then
 			learnSpellText:SetText(REWARD_TRADESKILL_SPELL);
 		elseif ( not isSpellLearned ) then
@@ -392,7 +448,7 @@ function QuestInfo_ShowRewards()
 		else
 			learnSpellText:SetText(REWARD_SPELL);
 		end
-		
+
 		rewardsCount = rewardsCount + 1;
 		questItem = _G["QuestInfoItem"..rewardsCount];
 		questItem:Show();
@@ -406,11 +462,11 @@ function QuestInfo_ShowRewards()
 	else
 		QuestInfoSpellLearnText:Hide();
 	end
-	
+
 	-- Setup mandatory rewards
 	if ( numQuestRewards > 0 or money > 0 or honor > 0 or arenaPoints > 0 or talents > 0 or xp > 0 or playerTitle ) then
 		questItemReceiveText:SetPoint("TOPLEFT", lastFrame, "BOTTOMLEFT", 3, -5);
-		questItemReceiveText:Show();		
+		questItemReceiveText:Show();
 		lastFrame = questItemReceiveText;
 		-- Money rewards
 		if ( money > 0 ) then
@@ -418,11 +474,11 @@ function QuestInfo_ShowRewards()
 			QuestInfoMoneyFrame:Show();
 		end
 		-- XP rewards
-		lastFrame = QuestInfo_ToggleRewardElement("QuestInfoXPFrame", xp, "Points", lastFrame);		
+		lastFrame = QuestInfo_ToggleRewardElement("QuestInfoXPFrame", xp, "Points", lastFrame);
 		-- Honor rewards
 		lastFrame = QuestInfo_ToggleRewardElement("QuestInfoHonorFrame", honor, "Points", lastFrame);
 		-- Arena point rewards
-		lastFrame = QuestInfo_ToggleRewardElement("QuestInfoArenaPointsFrame", arenaPoints, "Points", lastFrame);		
+		lastFrame = QuestInfo_ToggleRewardElement("QuestInfoArenaPointsFrame", arenaPoints, "Points", lastFrame);
 		-- Talent rewards
 		lastFrame = QuestInfo_ToggleRewardElement("QuestInfoTalentFrame", talents, "Points", lastFrame);
 		-- Title reward
@@ -454,7 +510,7 @@ function QuestInfo_ShowRewards()
 				SetItemButtonTextureVertexColor(questItem, 0.9, 0, 0);
 				SetItemButtonNameFrameVertexColor(questItem, 0.9, 0, 0);
 			end
-			
+
 			if ( i > 1 ) then
 				if ( mod(i,2) == 1 ) then
 					questItem:SetPoint("TOPLEFT", "QuestInfoItem"..(index - 2), "BOTTOMLEFT", 0, -2);
@@ -468,20 +524,20 @@ function QuestInfo_ShowRewards()
 			end
 			rewardsCount = rewardsCount + 1;
 		end
-	else	
+	else
 		questItemReceiveText:Hide();
 	end
 
 	-- deselect item
 	QuestInfoFrame.itemChoice = 0;
 	QuestInfoItemHighlight:Hide();
-	
+
 	QuestInfoRewardsFrame:Show();
 	return QuestInfoRewardsFrame, lastFrame;
 end
 
 function QuestInfo_ShowFadingFrame()
-		QuestInfoFadingFrame:SetAlpha(0);		
+		QuestInfoFadingFrame:SetAlpha(0);
 		QuestInfoFrame.acceptButton:Disable();
 		QuestInfoFadingFrame.fading = 1;
 		QuestInfoFadingFrame.fadingProgress = 0;
@@ -514,9 +570,9 @@ QUEST_TEMPLATE_DETAIL1 = { questLog = nil, chooseItems = nil, tooltip = nil,
 	}
 }
 
-QUEST_TEMPLATE_DETAIL2 = { questLog = nil, chooseItems = nil, tooltip = "GameTooltip", 
+QUEST_TEMPLATE_DETAIL2 = { questLog = nil, chooseItems = nil, tooltip = "GameTooltip",
 	elements = {
-		QuestInfo_ShowObjectivesHeader, 0, -10,	
+		QuestInfo_ShowObjectivesHeader, 0, -10,
 		QuestInfo_ShowObjectivesText, 0, -5,
 		QuestInfo_ShowGroupSize, 0, -10,
 		QuestInfo_ShowRewards, 0, -15,

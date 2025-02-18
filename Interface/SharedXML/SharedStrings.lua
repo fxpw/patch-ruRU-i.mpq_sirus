@@ -1,4 +1,4 @@
-local SIRUS_LOCALIZATION = {
+local SHARED_STRINGS = {
 	["ACCEPT"] = {
 		ruRU = "Принять",
 		enGB = "Accept"
@@ -182,6 +182,10 @@ local SIRUS_LOCALIZATION = {
 	["DEBUG_FRAMESTACK"] = {
 		ruRU = "Соединение рамок",
 		enGB = "Frame Stack"
+	},
+	["DECIMAL_SEPERATOR"] = {
+		ruRU = ",",
+		enGB = "."
 	},
 	["DECLENSION_SET"] = {
 		ruRU = "%s из %s",
@@ -507,9 +511,17 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "%d ч.",
 		enGB = "%d |4Hr:Hr;"
 	},
+	["HOURS_MINUTES_SECONDS"] = {
+		ruRU = "%.2d:%.2d:%.2d",
+		enGB = "%.2d:%.2d:%.2d"
+	},
 	["LANGUAGES_LABEL"] = {
 		ruRU = "Языки",
 		enGB = "Languages"
+	},
+	["LARGE_NUMBER_SEPERATOR"] = {
+		ruRU = "",
+		enGB = ","
 	},
 	["LEVEL"] = {
 		ruRU = "Уровень",
@@ -562,6 +574,10 @@ local SIRUS_LOCALIZATION = {
 	["MINUTE_ONELETTER_ABBR"] = {
 		ruRU = "%d м.",
 		enGB = "%d m"
+	},
+	["MINUTES_SECONDS"] = {
+		ruRU = "%.2d:%.2d",
+		enGB = "%.2d:%.2d"
 	},
 	["MISCELLANEOUS"] = {
 		ruRU = "Разное",
@@ -983,6 +999,18 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "%2$d/%1$02d/%3$02d",
 		enGB = "%2$d/%1$02d/%3$02d"
 	},
+	["SHORTDATE_EU"] = {
+		ruRU = "%1$d/%2$d/%3$02d",
+		enGB = "%1$d/%2$d/%3$02d"
+	},
+	["SHORTDATENOYEAR"] = {
+		ruRU = "%1$02d/%2$d",
+		enGB = "%2$d/%1$02d"
+	},
+	["SHORTDATENOYEAR_EU"] = {
+		ruRU = "%1$d/%2$d",
+		enGB = "%1$d/%2$d"
+	},
 	["SOUNDOPTIONS_MENU"] = {
 		ruRU = "Звук",
 		enGB = "Sound"
@@ -1175,6 +1203,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Интенсивность осадков",
 		enGB = "Weather Intensity"
 	},
+	["WEEKS_ABBR"] = {
+		ruRU = "%d |4неделя:недели:недель;",
+		enGB = "%d |4Week:Weeks;",
+	},
 	["WIDESCREEN_TAG"] = {
 		ruRU = "(Широкий экран)",
 		enGB = "(Wide)"
@@ -1251,9 +1283,17 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Паладин",
 		enGB = "Paladin"
 	},
+	["SHARED_MONK_FEMALE"] = {
+		ruRU = "Монахиня",
+		enGB = "Monk"
+	},
 	["SHARED_DEMONHUNTER_FEMALE"] = {
 		ruRU = "Охотница на демонов",
 		enGB = "Demon Hunter"
+	},
+	["SHARED_EVOKER_FEMALE"] = {
+		ruRU = "Пробудительница",
+		enGB = "Evoker"
 	},
 	["SHARED_DEATHKNIGHT_MALE"] = {
 		ruRU = "Рыцарь смерти",
@@ -1295,9 +1335,21 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Паладин",
 		enGB = "Paladin"
 	},
+	["SHARED_MONK_MALE"] = {
+		ruRU = "Монах",
+		enGB = "Monk"
+	},
 	["SHARED_DEMONHUNTER_MALE"] = {
 		ruRU = "Охотник на демонов",
 		enGB = "Demon Hunter"
+	},
+	["SHARED_EVOKER_MALE"] = {
+		ruRU = "Пробудитель",
+		enGB = "Evoker"
+	},
+	["SHOW_EQUIPPED_ITEMS"] = {
+		ruRU = "Показывать экипировку",
+		enGB = "Show equipped items"
 	},
 	["RACE_HUMAN"] = {
 		ruRU = "Человек",
@@ -1664,7 +1716,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Reset Position",
 	},
 	["ROTATE_LEFT"] = {
-		ruRU = "Сброс позиции",
+		ruRU = "Вращение влево",
 		enGB = "Rotate Left",
 	},
 	["ROTATE_RIGHT"] = {
@@ -1683,6 +1735,699 @@ local SIRUS_LOCALIZATION = {
 	["SPELLS_PASSIVE"] = {
 		ruRU = "Пассивные:",
 		enGB = "Passive:"
+	},
+
+	["ITEM_CLASS_0"] = {
+		ruRU = "Расходуемые",
+		enGB = "Consumable"
+	},
+	["ITEM_CLASS_1"] = {
+		ruRU = "Сумки",
+		enGB = "Container"
+	},
+	["ITEM_CLASS_2"] = {
+		ruRU = "Оружие",
+		enGB = "Weapon"
+	},
+	["ITEM_CLASS_3"] = {
+		ruRU = "Самоцветы",
+		enGB = "Gem"
+	},
+	["ITEM_CLASS_4"] = {
+		ruRU = "Доспехи",
+		enGB = "Armor"
+	},
+	["ITEM_CLASS_5"] = {
+		ruRU = "Реагенты",
+		enGB = "Reagent"
+	},
+	["ITEM_CLASS_6"] = {
+		ruRU = "Боеприпасы",
+		enGB = "Projectile"
+	},
+	["ITEM_CLASS_7"] = {
+		ruRU = "Хозяйственные товары",
+		enGB = "Trade Goods"
+	},
+	["ITEM_CLASS_8"] = {
+		ruRU = "Игрушка",
+		enGB = "Toy"
+	},
+	["ITEM_CLASS_9"] = {
+		ruRU = "Рецепты",
+		enGB = "Recipe"
+	},
+	["ITEM_CLASS_10"] = {
+		ruRU = "Деньги",
+		enGB = "Money"
+	},
+	["ITEM_CLASS_11"] = {
+		ruRU = "Амуниция",
+		enGB = "Quiver"
+	},
+	["ITEM_CLASS_12"] = {
+		ruRU = "Задания",
+		enGB = "Quest"
+	},
+	["ITEM_CLASS_13"] = {
+		ruRU = "Ключи",
+		enGB = "Key"
+	},
+	["ITEM_CLASS_14"] = {
+		ruRU = "Постоянные(НЕ ИСП.)",
+		enGB = "Permanent(OBSOLETE)"
+	},
+	["ITEM_CLASS_15"] = {
+		ruRU = "Разное",
+		enGB = "Miscellaneous"
+	},
+	["ITEM_CLASS_16"] = {
+		ruRU = "Символы",
+		enGB = "Glyph"
+	},
+	["ITEM_SUB_CLASS_0_0"] = {
+		ruRU = "Расходуемые",
+		enGB = "Consumable"
+	},
+	["ITEM_SUB_CLASS_0_1"] = {
+		ruRU = "Зелья",
+		enGB = "Potion"
+	},
+	["ITEM_SUB_CLASS_0_2"] = {
+		ruRU = "Эликсиры",
+		enGB = "Elixir"
+	},
+	["ITEM_SUB_CLASS_0_3"] = {
+		ruRU = "Настойки",
+		enGB = "Flask"
+	},
+	["ITEM_SUB_CLASS_0_4"] = {
+		ruRU = "Свитки",
+		enGB = "Scroll"
+	},
+	["ITEM_SUB_CLASS_0_5"] = {
+		ruRU = "Еда и напитки",
+		enGB = "Food & Drink"
+	},
+	["ITEM_SUB_CLASS_0_6"] = {
+		ruRU = "Улучшения",
+		enGB = "Item Enhancement"
+	},
+	["ITEM_SUB_CLASS_0_7"] = {
+		ruRU = "Бинты",
+		enGB = "Bandage"
+	},
+	["ITEM_SUB_CLASS_0_8"] = {
+		ruRU = "Другое",
+		enGB = "Other"
+	},
+	["ITEM_SUB_CLASS_1_0"] = {
+		ruRU = "Сумка",
+		enGB = "Bag"
+	},
+	["ITEM_SUB_CLASS_1_1"] = {
+		ruRU = "Сумка душ",
+		enGB = "Soul Bag"
+	},
+	["ITEM_SUB_CLASS_1_2"] = {
+		ruRU = "Сумка травника",
+		enGB = "Herb Bag"
+	},
+	["ITEM_SUB_CLASS_1_3"] = {
+		ruRU = "Сумка зачаровывателя",
+		enGB = "Enchanting Bag"
+	},
+	["ITEM_SUB_CLASS_1_4"] = {
+		ruRU = "Сумка инженера",
+		enGB = "Engineering Bag"
+	},
+	["ITEM_SUB_CLASS_1_5"] = {
+		ruRU = "Сумка ювелира",
+		enGB = "Gem Bag"
+	},
+	["ITEM_SUB_CLASS_1_6"] = {
+		ruRU = "Сумка шахтера",
+		enGB = "Mining Bag"
+	},
+	["ITEM_SUB_CLASS_1_7"] = {
+		ruRU = "Сумка кожевника",
+		enGB = "Leatherworking Bag"
+	},
+	["ITEM_SUB_CLASS_1_8"] = {
+		ruRU = "Сумка начертателя",
+		enGB = "Inscription Bag"
+	},
+	["ITEM_SUB_CLASS_1_9"] = {
+		ruRU = "Кулинарная сумка",
+		enGB = "Cooking Bag"
+	},
+	["ITEM_SUB_CLASS_2_0"] = {
+		ruRU = "Одноручные топоры",
+		enGB = "One-Handed Axes"
+	},
+	["ITEM_SUB_CLASS_2_1"] = {
+		ruRU = "Двуручные топоры",
+		enGB = "Two-Handed Axes"
+	},
+	["ITEM_SUB_CLASS_2_2"] = {
+		ruRU = "Луки",
+		enGB = "Bows"
+	},
+	["ITEM_SUB_CLASS_2_3"] = {
+		ruRU = "Огнестрельное",
+		enGB = "Guns"
+	},
+	["ITEM_SUB_CLASS_2_4"] = {
+		ruRU = "Одноручное дробящее",
+		enGB = "One-Handed Maces"
+	},
+	["ITEM_SUB_CLASS_2_5"] = {
+		ruRU = "Двуручное дробящее",
+		enGB = "Two-Handed Maces"
+	},
+	["ITEM_SUB_CLASS_2_6"] = {
+		ruRU = "Древковое",
+		enGB = "Polearms"
+	},
+	["ITEM_SUB_CLASS_2_7"] = {
+		ruRU = "Одноручные мечи",
+		enGB = "One-Handed Swords"
+	},
+	["ITEM_SUB_CLASS_2_8"] = {
+		ruRU = "Двуручные мечи",
+		enGB = "Two-Handed Swords"
+	},
+	["ITEM_SUB_CLASS_2_9"] = {
+		ruRU = "Устаревшие",
+		enGB = "Obsolete"
+	},
+	["ITEM_SUB_CLASS_2_10"] = {
+		ruRU = "Посохи",
+		enGB = "Staves"
+	},
+	["ITEM_SUB_CLASS_2_11"] = {
+		ruRU = "Одноручное экзотическое",
+		enGB = "One-Handed Exotics"
+	},
+	["ITEM_SUB_CLASS_2_12"] = {
+		ruRU = "Двуручное экзотическое",
+		enGB = "Two-Handed Exotics"
+	},
+	["ITEM_SUB_CLASS_2_13"] = {
+		ruRU = "Кистевое",
+		enGB = "Fist Weapons"
+	},
+	["ITEM_SUB_CLASS_2_14"] = {
+		ruRU = "Разное",
+		enGB = "Miscellaneous"
+	},
+	["ITEM_SUB_CLASS_2_15"] = {
+		ruRU = "Кинжалы",
+		enGB = "Daggers"
+	},
+	["ITEM_SUB_CLASS_2_16"] = {
+		ruRU = "Метательное",
+		enGB = "Thrown"
+	},
+	["ITEM_SUB_CLASS_2_17"] = {
+		ruRU = "Копья",
+		enGB = "Spears"
+	},
+	["ITEM_SUB_CLASS_2_18"] = {
+		ruRU = "Арбалеты",
+		enGB = "Crossbows"
+	},
+	["ITEM_SUB_CLASS_2_19"] = {
+		ruRU = "Жезлы",
+		enGB = "Wands"
+	},
+	["ITEM_SUB_CLASS_2_20"] = {
+		ruRU = "Удочки",
+		enGB = "Fishing Poles"
+	},
+	["ITEM_SUB_CLASS_3_0"] = {
+		ruRU = "Красные",
+		enGB = "Red"
+	},
+	["ITEM_SUB_CLASS_3_1"] = {
+		ruRU = "Синие",
+		enGB = "Blue"
+	},
+	["ITEM_SUB_CLASS_3_2"] = {
+		ruRU = "Желтые",
+		enGB = "Yellow"
+	},
+	["ITEM_SUB_CLASS_3_3"] = {
+		ruRU = "Фиолетовые",
+		enGB = "Purple"
+	},
+	["ITEM_SUB_CLASS_3_4"] = {
+		ruRU = "Зеленые",
+		enGB = "Green"
+	},
+	["ITEM_SUB_CLASS_3_5"] = {
+		ruRU = "Оранжевые",
+		enGB = "Orange"
+	},
+	["ITEM_SUB_CLASS_3_6"] = {
+		ruRU = "Особые",
+		enGB = "Meta"
+	},
+	["ITEM_SUB_CLASS_3_7"] = {
+		ruRU = "Простые",
+		enGB = "Simple"
+	},
+	["ITEM_SUB_CLASS_3_8"] = {
+		ruRU = "Радужные",
+		enGB = "Prismatic"
+	},
+	["ITEM_SUB_CLASS_4_0"] = {
+		ruRU = "Разное",
+		enGB = "Miscellaneous"
+	},
+	["ITEM_SUB_CLASS_4_1"] = {
+		ruRU = "Тканевые",
+		enGB = "Cloth"
+	},
+	["ITEM_SUB_CLASS_4_2"] = {
+		ruRU = "Кожаные",
+		enGB = "Leather"
+	},
+	["ITEM_SUB_CLASS_4_3"] = {
+		ruRU = "Кольчужные",
+		enGB = "Mail"
+	},
+	["ITEM_SUB_CLASS_4_4"] = {
+		ruRU = "Латные",
+		enGB = "Plate"
+	},
+	["ITEM_SUB_CLASS_4_5"] = {
+		ruRU = "Декоративный предмет",
+		enGB = "Tmog"
+	},
+	["ITEM_SUB_CLASS_4_6"] = {
+		ruRU = "Щиты",
+		enGB = "Shields"
+	},
+	["ITEM_SUB_CLASS_4_7"] = {
+		ruRU = "Манускрипты",
+		enGB = "Librams"
+	},
+	["ITEM_SUB_CLASS_4_8"] = {
+		ruRU = "Идолы",
+		enGB = "Idols"
+	},
+	["ITEM_SUB_CLASS_4_9"] = {
+		ruRU = "Тотемы",
+		enGB = "Totems"
+	},
+	["ITEM_SUB_CLASS_4_10"] = {
+		ruRU = "Печати",
+		enGB = "Sigils"
+	},
+	["ITEM_SUB_CLASS_5_0"] = {
+		ruRU = "Реагент",
+		enGB = "Reagent"
+	},
+	["ITEM_SUB_CLASS_6_0"] = {
+		ruRU = "Жезл(НЕ ИСП.)",
+		enGB = "Wand(OBSOLETE)"
+	},
+	["ITEM_SUB_CLASS_6_1"] = {
+		ruRU = "Болт(НЕ ИСП.)",
+		enGB = "Bolt(OBSOLETE)"
+	},
+	["ITEM_SUB_CLASS_6_2"] = {
+		ruRU = "Стрелы",
+		enGB = "Arrow"
+	},
+	["ITEM_SUB_CLASS_6_3"] = {
+		ruRU = "Пули",
+		enGB = "Bullet"
+	},
+	["ITEM_SUB_CLASS_6_4"] = {
+		ruRU = "Метательное(НЕ ИСП.)",
+		enGB = "Thrown(OBSOLETE)"
+	},
+	["ITEM_SUB_CLASS_7_0"] = {
+		ruRU = "Хозяйственные товары",
+		enGB = "Trade Goods"
+	},
+	["ITEM_SUB_CLASS_7_1"] = {
+		ruRU = "Детали",
+		enGB = "Parts"
+	},
+	["ITEM_SUB_CLASS_7_2"] = {
+		ruRU = "Взрывчатка",
+		enGB = "Explosives"
+	},
+	["ITEM_SUB_CLASS_7_3"] = {
+		ruRU = "Устройства",
+		enGB = "Devices"
+	},
+	["ITEM_SUB_CLASS_7_4"] = {
+		ruRU = "Ювелирное дело",
+		enGB = "Jewelcrafting"
+	},
+	["ITEM_SUB_CLASS_7_5"] = {
+		ruRU = "Ткань",
+		enGB = "Cloth"
+	},
+	["ITEM_SUB_CLASS_7_6"] = {
+		ruRU = "Кожа",
+		enGB = "Leather"
+	},
+	["ITEM_SUB_CLASS_7_7"] = {
+		ruRU = "Металл и камень",
+		enGB = "Metal & Stone"
+	},
+	["ITEM_SUB_CLASS_7_8"] = {
+		ruRU = "Мясо",
+		enGB = "Meat"
+	},
+	["ITEM_SUB_CLASS_7_9"] = {
+		ruRU = "Трава",
+		enGB = "Herb"
+	},
+	["ITEM_SUB_CLASS_7_10"] = {
+		ruRU = "Стихии",
+		enGB = "Elemental"
+	},
+	["ITEM_SUB_CLASS_7_11"] = {
+		ruRU = "Другое",
+		enGB = "Other"
+	},
+	["ITEM_SUB_CLASS_7_12"] = {
+		ruRU = "Наложение чар",
+		enGB = "Enchanting"
+	},
+	["ITEM_SUB_CLASS_7_13"] = {
+		ruRU = "Материалы",
+		enGB = "Materials"
+	},
+	["ITEM_SUB_CLASS_7_14"] = {
+		ruRU = "Чары для доспехов",
+		enGB = "Armor Enchantment"
+	},
+	["ITEM_SUB_CLASS_7_15"] = {
+		ruRU = "Чары для оружия",
+		enGB = "Weapon Enchantment"
+	},
+	["ITEM_SUB_CLASS_8_0"] = {
+		ruRU = "Игрушка",
+		enGB = "Toy"
+	},
+	["ITEM_SUB_CLASS_9_0"] = {
+		ruRU = "Книга",
+		enGB = "Book"
+	},
+	["ITEM_SUB_CLASS_9_1"] = {
+		ruRU = "Кожевничество",
+		enGB = "Leatherworking"
+	},
+	["ITEM_SUB_CLASS_9_2"] = {
+		ruRU = "Портняжное дело",
+		enGB = "Tailoring"
+	},
+	["ITEM_SUB_CLASS_9_3"] = {
+		ruRU = "Инженерное дело",
+		enGB = "Engineering"
+	},
+	["ITEM_SUB_CLASS_9_4"] = {
+		ruRU = "Кузнечное дело",
+		enGB = "Blacksmithing"
+	},
+	["ITEM_SUB_CLASS_9_5"] = {
+		ruRU = "Кулинария",
+		enGB = "Cooking"
+	},
+	["ITEM_SUB_CLASS_9_6"] = {
+		ruRU = "Алхимия",
+		enGB = "Alchemy"
+	},
+	["ITEM_SUB_CLASS_9_7"] = {
+		ruRU = "Первая помощь",
+		enGB = "First Aid"
+	},
+	["ITEM_SUB_CLASS_9_8"] = {
+		ruRU = "Наложение чар",
+		enGB = "Enchanting"
+	},
+	["ITEM_SUB_CLASS_9_9"] = {
+		ruRU = "Рыбная ловля",
+		enGB = "Fishing"
+	},
+	["ITEM_SUB_CLASS_9_10"] = {
+		ruRU = "Ювелирное дело",
+		enGB = "Jewelcrafting"
+	},
+	["ITEM_SUB_CLASS_9_11"] = {
+		ruRU = "Начертание",
+		enGB = "Inscription"
+	},
+	["ITEM_SUB_CLASS_10_0"] = {
+		ruRU = "Деньги (НЕ ИСП.)",
+		enGB = "Money(OBSOLETE)"
+	},
+	["ITEM_SUB_CLASS_11_0"] = {
+		ruRU = "Колчан(НЕ ИСП.)",
+		enGB = "Quiver(OBSOLETE)"
+	},
+	["ITEM_SUB_CLASS_11_1"] = {
+		ruRU = "Колчан(НЕ ИСП.)",
+		enGB = "Quiver(OBSOLETE)"
+	},
+	["ITEM_SUB_CLASS_11_2"] = {
+		ruRU = "Колчан",
+		enGB = "Quiver"
+	},
+	["ITEM_SUB_CLASS_11_3"] = {
+		ruRU = "Подсумок",
+		enGB = "Ammo Pouch"
+	},
+	["ITEM_SUB_CLASS_12_0"] = {
+		ruRU = "Задания",
+		enGB = "Quest"
+	},
+	["ITEM_SUB_CLASS_13_0"] = {
+		ruRU = "Ключ",
+		enGB = "Key"
+	},
+	["ITEM_SUB_CLASS_13_1"] = {
+		ruRU = "Отмычка",
+		enGB = "Lockpick"
+	},
+	["ITEM_SUB_CLASS_14_0"] = {
+		ruRU = "Постоянные",
+		enGB = "Permanent"
+	},
+	["ITEM_SUB_CLASS_15_0"] = {
+		ruRU = "Хлам",
+		enGB = "Junk"
+	},
+	["ITEM_SUB_CLASS_15_1"] = {
+		ruRU = "Реагенты",
+		enGB = "Reagent"
+	},
+	["ITEM_SUB_CLASS_15_2"] = {
+		ruRU = "Питомцы",
+		enGB = "Pet"
+	},
+	["ITEM_SUB_CLASS_15_3"] = {
+		ruRU = "Праздничные предметы",
+		enGB = "Holiday"
+	},
+	["ITEM_SUB_CLASS_15_4"] = {
+		ruRU = "Другое",
+		enGB = "Other"
+	},
+	["ITEM_SUB_CLASS_15_5"] = {
+		ruRU = "Верховые животные",
+		enGB = "Mount"
+	},
+	["ITEM_SUB_CLASS_16_1"] = {
+		ruRU = "Воин",
+		enGB = "Warrior"
+	},
+	["ITEM_SUB_CLASS_16_2"] = {
+		ruRU = "Паладин",
+		enGB = "Paladin"
+	},
+	["ITEM_SUB_CLASS_16_3"] = {
+		ruRU = "Охотник",
+		enGB = "Hunter"
+	},
+	["ITEM_SUB_CLASS_16_4"] = {
+		ruRU = "Разбойник",
+		enGB = "Rogue"
+	},
+	["ITEM_SUB_CLASS_16_5"] = {
+		ruRU = "Жрец",
+		enGB = "Priest"
+	},
+	["ITEM_SUB_CLASS_16_6"] = {
+		ruRU = "Рыцарь смерти",
+		enGB = "Death Knight"
+	},
+	["ITEM_SUB_CLASS_16_7"] = {
+		ruRU = "Шаман",
+		enGB = "Shaman"
+	},
+	["ITEM_SUB_CLASS_16_8"] = {
+		ruRU = "Маг",
+		enGB = "Mage"
+	},
+	["ITEM_SUB_CLASS_16_9"] = {
+		ruRU = "Чернокнижник",
+		enGB = "Warlock"
+	},
+	["ITEM_SUB_CLASS_16_11"] = {
+		ruRU = "Друид",
+		enGB = "Druid"
+	},
+
+	["INVTYPE_HEAD"] = {
+		ruRU = "Голова",
+		enGB = "Head"
+	},
+	["INVTYPE_NECK"] = {
+		ruRU = "Шея",
+		enGB = "Neck"
+	},
+	["INVTYPE_SHOULDER"] = {
+		ruRU = "Плечо",
+		enGB = "Shoulder"
+	},
+	["INVTYPE_CLOAK"] = {
+		ruRU = "Спина",
+		enGB = "Back"
+	},
+	["INVTYPE_CHEST"] = {
+		ruRU = "Грудь",
+		enGB = "Chest"
+	},
+	["INVTYPE_ROBE"] = {
+		ruRU = "Грудь",
+		enGB = "Chest"
+	},
+	["INVTYPE_BODY"] = {
+		ruRU = "Рубашка",
+		enGB = "Shirt"
+	},
+	["INVTYPE_TABARD"] = {
+		ruRU = "Гербовая накидка",
+		enGB = "Tabard"
+	},
+	["INVTYPE_WRIST"] = {
+		ruRU = "Запястья",
+		enGB = "Wrist"
+	},
+	["INVTYPE_HAND"] = {
+		ruRU = "Кисти рук",
+		enGB = "Hands"
+	},
+	["INVTYPE_WAIST"] = {
+		ruRU = "Пояс",
+		enGB = "Waist"
+	},
+	["INVTYPE_LEGS"] = {
+		ruRU = "Ноги",
+		enGB = "Legs"
+	},
+	["INVTYPE_FEET"] = {
+		ruRU = "Ступни",
+		enGB = "Feet"
+	},
+	["INVTYPE_FINGER"] = {
+		ruRU = "Палец",
+		enGB = "Finger"
+	},
+	["INVTYPE_TRINKET"] = {
+		ruRU = "Аксессуар",
+		enGB = "Trinket"
+	},
+	["INVTYPE_WEAPONMAINHAND"] = {
+		ruRU = "Правая рука",
+		enGB = "Main Hand"
+	},
+	["INVTYPE_WEAPON"] = {
+		ruRU = "Одноручное",
+		enGB = "One-Hand"
+	},
+	["INVTYPE_WEAPONMAINHAND_PET"] = {
+		ruRU = "Основная атака",
+		enGB = "Main Attack"
+	},
+	["INVTYPE_2HWEAPON"] = {
+		ruRU = "Двуручное",
+		enGB = "Two-Hand"
+	},
+	["INVTYPE_WEAPONOFFHAND"] = {
+		ruRU = "Левая рука",
+		enGB = "Off Hand"
+	},
+	["INVTYPE_HOLDABLE"] = {
+		ruRU = "Левая рука",
+		enGB = "Held In Off-hand"
+	},
+	["INVTYPE_SHIELD"] = {
+		ruRU = "Левая рука",
+		enGB = "Off Hand"
+	},
+	["INVTYPE_RANGED"] = {
+		ruRU = "Дальний бой",
+		enGB = "Ranged"
+	},
+	["INVTYPE_RANGEDRIGHT"] = {
+		ruRU = "Оружие дальнего боя",
+		enGB = "Ranged"
+	},
+	["INVTYPE_THROWN"] = {
+		ruRU = "Метательное",
+		enGB = "Thrown"
+	},
+	["INVTYPE_RELIC"] = {
+		ruRU = "Реликвия",
+		enGB = "Relic"
+	},
+	["INVTYPE_AMMO"] = {
+		ruRU = "Боеприпасы",
+		enGB = "Ammo"
+	},
+	["INVTYPE_BAG"] = {
+		ruRU = "Сумка",
+		enGB = "Bag"
+	},
+	["INVTYPE_QUIVER"] = {
+		ruRU = "Колчан",
+		enGB = "Quiver"
+	},
+
+	["ITEM_LEVEL"] = {
+		ruRU = "Уровень предмета: %d",
+		enGB = "Item Level %d"
+	},
+	["ITEM_LEVEL_COLORED"] = {
+		ruRU = "Уровень предмета: |c%s%d|r",
+		enGB = "Item Level |c%s%d|r"
+	},
+	["UNKNOWN"] = {
+		ruRU = "Неизвестно",
+		enGB = "Unknown"
+	},
+	["STORE_BUY_FREE"] = {
+		ruRU = "Получить",
+		enGB = ""
+	},
+
+	["CHARACTER_CATEGORY_OOC"] = {
+		ruRU = "Вне Категорий%s",
+	},
+	["CHARACTER_CATEGORY_FORMAT"] = {
+		ruRU = "%d%s Категория",
+	},
+	["CHARACTER_CATEGORY_LEVEL_MARK"] = {
+		ruRU = "+",
 	},
 
 	["CHAR_INFO_RACE_HUMAN_SPELL_ACTIVE1"] = {
@@ -1704,7 +2449,7 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "316243|Аватара (PvP)|warrior_talent_icon_avatar|Вы пробуждаете в вашей крови все то, что роднит вас с металлами и кузней, мгновенно рассеивая все эффекты болезней, яда и кровотечения, а также приобретая полную невосприимчивость к ним и оглушению, ошеломлению, параличу сроком на 3 сек.\nПерезарядка: 120 сек.",
 	},
 	["CHAR_INFO_RACE_DWARF_SPELL_ACTIVE2"] = {
-		ruRU = "316246|Мощь Горна (PvE)|ability_racial_avatar|Вы издаете клич, пробуждающий Мощь Горна,  повышая весь наносимый вами урон на 10%, творимое исцеление - на 9%, а также снижает получаемый физический урон на 21% сроком на 10 сек.\nПерезарядка: 60 сек.",
+		ruRU = "316246|Мощь Горна (PvE)|ability_racial_avatar|Вы издаете клич, пробуждающий Мощь Горна, повышая весь наносимый вами урон на 10%, творимое исцеление - на 10%, а также снижает получаемый физический урон на 20% сроком на 10 сек.\nПерезарядка: 60 сек.",
 	},
 	["CHAR_INFO_RACE_DWARF_SPELL_PASSIVE1"] = {
 		ruRU = "316240|Закаляющие Сталь|achievement_dungeon_ulduarraid_irondwarf_01|Ваше мастерство в трудной работе с металлами придало вам сил закалять союзников для новых боев, повышая скорость атаки и произнесения заклинаний всех членов группы на 1%.",
@@ -1719,7 +2464,7 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "316254|Под защитой Теней (PvP)|ability_ambush|Вы сливаетесь с тенями, понижая вероятность того, что противник вас заметит. Действует до отмены или любого движения. По окончании действия эффекта восстанавливается прежний уровень угрозы по отношению к еще сражающимся противникам, при этом получаемый вами урон от атак и заклинаний снижается на 50% сроком на 3 сек.\nПерезарядка: 120 сек.",
 	},
 	["CHAR_INFO_RACE_NIGHTELF_SPELL_ACTIVE2"] = {
-		ruRU = "316256|Милость (PvE)|spell_nature_moonglow|Вы возносите молитву, и созвездие, под которым вам было суждено начать путь в этом мире, отвечает на ваш призыв, наделяя своей милостью. Наносимый урон и творимое исцеление увеличивается на 5%, а показатель сопротивления - на 1.25 ед. за каждый уровень персонажа (вплоть до 100 ед.) сроком на 10 сек.\nПерезарядка: 30 сек.",
+		ruRU = "316256|Милость (PvE)|spell_nature_moonglow|Вы возносите молитву, и созвездие, под которым вам было суждено начать путь в этом мире, отвечает на ваш призыв, наделяя своей милостью. Наносимый урон и творимое исцеление увеличивается на 5%, а получаемый магический урон снижается на 10% сроком на 10 сек.\nПерезарядка: 30 сек.",
 	},
 	["CHAR_INFO_RACE_NIGHTELF_SPELL_PASSIVE1"] = {
 		ruRU = "316247|Неутомимый порыв|ability_hunter_onewithnature|Рожденные под созвездием Часового неутомимы в битве, и каждый взмах клинка или произнесение заклинания обращается им обратно во благо. Применение способностей и заклинаний с шансом 25% восстановит вам 9 ед. силы рун, ярости, энергии или 6% от базового запаса маны (в зависимости от того, какой ресурс используется).",
@@ -1830,7 +2575,7 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "319322|Неизбежная кара (PvP)|ability_paladin_blindinglight2|Вы выпускаете силу Наару для свершения неизбежного правосудия. Мгновенно снижает скорость передвижения противника на 95%. С каждой секундой к противнику возвращается 5% от обычной скорости передвижения. Время действия - 10 сек. Развеивание этого эффекта поразит сделавшего это \"Оковами света\", сковывая его передвижение на 3 сек.\nПерезарядка: 90 сек.",
 	},
 	["CHAR_INFO_RACE_LIGHTFORGED_SPELL_ACTIVE2"] = {
-		ruRU = "319321|Воплощение (PvE)|spell_holy_healingfocus|Вы воплощаете волю Наару, приобретая новые силы от вашей веры. Пока вы ведомы волей Наару, наносимый вами урон и исходящее исцеление повышаются на 20%, а получаемый магический урон снижается на 40%.\nПерезарядка: 60 сек.",
+		ruRU = "319321|Воплощение (PvE)|spell_holy_healingfocus|Вы воплощаете волю Наару, приобретая новые силы от вашей веры. Пока вы ведомы волей Наару, наносимый вами урон и исходящее исцеление повышаются на 20%, а получаемый магический урон снижается на 40%. Время действия - 5.5 сек.\nПерезарядка: 60 сек.",
 	},
 	["CHAR_INFO_RACE_LIGHTFORGED_SPELL_PASSIVE1"] = {
 		ruRU = "319316|Высшее предназначение|racial_highpurpose|Само присутствие рожденного под созвездием Наару, живого проводника воли Света, наполняет сердца его союзников чувством праведности и решимостью добиться цели любой ценой. Показатель силы атаки и силы заклинаний у каждого участника группы повышен на 1%.",
@@ -1860,10 +2605,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "316371|Непреклонность|warrior_talent_icon_innerrage|Физическая сила и непоколебимость рожденных под созвездием Варвара общеизвестны. Показатель блокирования увеличен на 20%, а вероятность парирования - на 2%.",
 	},
 	["CHAR_INFO_RACE_SCOURGE_SPELL_ACTIVE1"] = {
-		ruRU = "316380|Воля Вурдалака (PvP)|spell_shadow_raisedead|Не существует тех ужасов, которые смогли бы сломить вас. Волевым усилием вы мгновенно развеиваете любые эффекты контроля над разумом, сна, страха, ужаса, ошеломления и паралича. Имеет общее время перезарядки с другими подобными эффектами, равное 45 сек.\nПерезарядка: 120 сек.",
+		ruRU = "316380|Воля Вурдалака (PvP)|spell_shadow_raisedead|Не существует тех ужасов, которые смогли бы сломить вас. Волевым усилием вы мгновенно развеиваете любые эффекты контроля над разумом, сна, страха, ужаса, ошеломления и паралича. Имеет общее время перезарядки с другими подобными эффектами, равное 90 сек.\nПерезарядка: 120 сек.",
 	},
 	["CHAR_INFO_RACE_SCOURGE_SPELL_ACTIVE2"] = {
-		ruRU = "316382|Касание проклятого|spell_shadow_fingerofdeath|Одно лишь ваше касание способно забрать жизненную силу врага в ваше опустошенное тело, нанося цели урон от темной магии в размере 200% от силы атаки или 400% от силы заклинаний (в зависимости от того, какой показатель больше) за 10 сек. Вы восстанавливаете себе здоровье в объеме 100% от этого урона.\nПерезарядка: 60 сек.",
+		ruRU = "316382|Касание проклятого (PvE)|spell_shadow_fingerofdeath|Одно лишь ваше касание способно забрать жизненную силу врага в ваше опустошенное тело, нанося цели урон от темной магии в размере 200% от силы атаки или 400% от силы заклинаний (в зависимости от того, какой показатель больше) за 10 сек. Вы восстанавливаете себе здоровье в объеме 100% от этого урона.\nПерезарядка: 60 сек.",
 	},
 	["CHAR_INFO_RACE_SCOURGE_SPELL_PASSIVE1"] = {
 		ruRU = "316374|Бешенство мертвеца|spell_necro_deathall|Применяя способности ближнего боя, дальнего боя, а также произнося заклинания, вы с некоторой вероятностью повышаете свой показатель силы атаки или силы заклинаний (в зависимости от того, какой показатель больше) на 1% вплоть до 3%, сроком на 10 сек.",
@@ -1935,7 +2680,7 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "316412|Змеиная чешуя|spell_naga_armor_racial|Показатель брони увеличен на 5%, получаемый физический урон снижен на 1%.",
 	},
 	["CHAR_INFO_RACE_BLOODELF_SPELL_ACTIVE1"] = {
-		ruRU = "316418|Поток энергии (PvP)|spell_shadow_teleport|Мстительное пламя ярости внутри рожденного под созвездием Феникса высасывает энергию из окружающего пространства, вызывая немоту у всех противников в радиусе 8м на 3 сек. и предоставляя небольшой процент основного ресурса.\nПерезарядка: 90 сек.",
+		ruRU = "316418|Поток энергии (PvP)|spell_shadow_teleport|Мстительное пламя ярости внутри рожденного под созвездием Феникса высасывает энергию из окружающего пространства, вызывая немоту у всех противников в радиусе 8 м на 2 сек. и предоставляя небольшой процент основного ресурса.\nПерезарядка: 120 сек.",
 	},
 	["CHAR_INFO_RACE_BLOODELF_SPELL_ACTIVE2"] = {
 		ruRU = "316422|Сжигающее отчаяние (PvE)|inv_misc_gem_bloodstone_01|Мстительный гнев присущ всем рожденным под созвездием Феникса, и он наполняет вас, заставляя сражаться с недоступными вам до этого силами. Получаемый вами магический урон снижается на 20%, а наносимый урон и эффективность исцеляющих заклинаний повышаются на 10% сроком на 10 сек.\nПерезарядка: 60 сек.",
@@ -1950,7 +2695,7 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "316417|Сожжение магии|s_spell_shadow_antimagicshell_teal|Любое заклинание, направленное против рожденного под созвездием Феникса, неминуемо обречено на провал. Само естество Феникса сжигает любую враждебную магию. Получаемый магический урон снижен на 4%.",
 	},
 	["CHAR_INFO_RACE_NIGHTBORNE_SPELL_ACTIVE1"] = {
-		ruRU = "316431|Темпоральное искажение (PvP)|spell_arcane_arcane01_nightborne|Вы отмечаете противника знаком, который активируется после применения им заклинания или способности, вызвав темпоральное искажение, увеличивающее время перезарядки способности или заклинания, вызвавшего этот эффект, на 10 сек.\nПерезарядка: 30 сек.",
+		ruRU = "316431|Темпоральное искажение (PvP)|spell_arcane_arcane01_nightborne|Вы отмечаете противника знаком, который активируется после применения им заклинания или способности, вызвав темпоральное искажение, увеличивающее время перезарядки способности или заклинания, вызвавшего этот эффект, на 6 сек.\nПерезарядка: 40 сек.",
 	},
 	["CHAR_INFO_RACE_NIGHTBORNE_SPELL_ACTIVE2"] = {
 		ruRU = "316432|Чародейское сосредоточение (PvE)|sha_ability_rogue_bloodyeye_nightborne|Вы полностью сосредотачиваетесь на своем Даре, обретая невосприимчивость к эффектам прерывания и немоты, при этом расход вашего ресурса на способности и заклинания снижается на 50% сроком на 10 сек.\nПерезарядка: 30 сек.",
@@ -1971,7 +2716,7 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "316465|Движение Хаоса (PvP)|spell_warlock_demonicportal_green|Вы используете остаточную связь с Круговертью Пустоты, чтобы переместиться в указанную точку (на расстояние, не превышающее 20 м.), если на пути нет препятствий.\nИмеет общее время восстановления равное 10 сек. со следующими способностями:\n- Рывок;\n- Перехват;\n- Вмешательство;\n- Демонический прыжок;\n- Звериная атака - кошка;\n- Звериная атака - медведь;\n- Шаг сквозь тень;\n- Скачок;\n- Отрыв.\nПерезарядка: 60 сек.",
 	},
 	["CHAR_INFO_RACE_EREDAR_SPELL_ACTIVE2"] = {
-		ruRU = "316466|Путь Возвышения|spell_bloodmage_soulgem|Вы раскалываете \"Фрагмент души\", освобождая всю содержащуюся в нем мощь, усиливая себя на краткое время. Наносимый вами урон и эффективность исцеления повышаются на 4%, а получаемый урон снижается на 4%.\nПерезарядка: \"Не имеет времени перезарядки.\"",
+		ruRU = "316466|Путь Возвышения (PvE)|spell_bloodmage_soulgem|Вы раскалываете \"Фрагмент души\", освобождая всю содержащуюся в нем мощь, усиливая себя на краткое время. Наносимый вами урон и эффективность исцеления повышаются на 4%, а получаемый урон снижается на 4%.\nПерезарядка: \"Не имеет времени перезарядки.\"",
 	},
 	["CHAR_INFO_RACE_EREDAR_SPELL_PASSIVE1"] = {
 		ruRU = "316458|Мощь первобытного Демона|ability_bloodmage_drain|Дьявольская сила и стремление к разрушению излучаются рожденными под звездой Демона, создавая ауру, которая дарует его союзникам частичку демонической силы. Множитель критического эффекта всех атак, способностей и заклинаний у членов группы - повышен на 2%.",
@@ -1983,7 +2728,7 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "316461|Ловец душ|ability_bloodmage_hotstreak_red|Рожденные под созвездием Демона знают, что лучший способ становиться сильнее - забирать силу у тех, кого они победили. Одерживая победу над противником, за которого был начислен опыт или честь, вы также получаете 1 \"Фрагмент души\". До тех пор, пока у вас есть хотя бы один \"Фрагмент души\", наносимый вами урон и эффективность исцеления повышаются на 2%. Вы можете иметь не более чем 10 \"Фрагментов души\". Эффект усиления не увеличивается с ростом количества накопленных фрагментов. Находясь вне боя, вы накапливаете 1 \"Фрагмент души\" раз в 5 сек.",
 	},
 	["CHAR_INFO_RACE_EREDAR_SPELL_PASSIVE4"] = {
-		ruRU = "316464|Кожа Демона|passive_demonskin_racial|Сила скверны и хаотических стихий Круговерти Пустоты навечно укрепили ваше тело. Сопротивление всем школам магии увеличено на 0.5 ед. за каждый уровень персонажа (вплоть до 40 ед.), а показатель брони увеличен на 2%.",
+		ruRU = "316464|Кожа Демона|passive_demonskin_racial|Сила скверны и хаотических стихий Круговерти Пустоты навечно укрепили ваше тело. Получаемый урон от магии снижен на 2%, а показатель брони увеличен на 2%.",
 	},
 	["CHAR_INFO_RACE_ZANDALARITROLL_SPELL_ACTIVE1"] = {
 		ruRU = "310810|Тяжелый рев Ящера (PvP)|Inv_bone_skull_04|Вы совершаете оглушительный рев Ящера, ошеломляющий разум противников, слышащих его, в радиусе 10 м. и снижающий их скорость передвижения на 75% в течение 5 сек.\nПерезарядка: 90 сек.",
@@ -2049,7 +2794,7 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "320543|Пульсации жизни|ability_evoker_fontofmagic_green|Первенцы Титанов всегда умели обращаться с созданием и поддержанием жизни, что передалось и рожденным под созвездием Дракона. Модификатор критического исцеления увеличен на 8%.",
 	},
 	["CHAR_INFO_RACE_DRACTHYR_SPELL_PASSIVE3"] = {
-		ruRU = "320544|Хроматическое наследие|ability_evoker_quell|В вашей душе присутствует наследие каждого рода драконов, ступавшего по Азероту. Это причудливое наследие позволяет вам  адаптироваться к любой ситуации, пробуждая в своей крови наследие нужного Вам драконьего Рода.",
+		ruRU = "320544|Хроматическое наследие|ability_evoker_quell|В вашей душе присутствует наследие каждого рода драконов, ступавшего по Азероту. Это причудливое наследие позволяет вам адаптироваться к любой ситуации, пробуждая в своей крови наследие нужного Вам драконьего Рода.",
 	},
 
 	["ZODIAC_SING_OF_LION_NAME"] = {
@@ -2219,9 +2964,9 @@ do
 	local _G = _G
 	local next = next
 	local locale = GetLocale()
-	for key, data in next, SIRUS_LOCALIZATION do
+	for key, data in next, SHARED_STRINGS do
 		_G[key] = data[locale] or data.enGB or key
 	end
-	table.wipe(SIRUS_LOCALIZATION)
-	SIRUS_LOCALIZATION = nil
+	table.wipe(SHARED_STRINGS)
+	SHARED_STRINGS = nil
 end

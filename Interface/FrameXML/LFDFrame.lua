@@ -44,6 +44,7 @@ function LFDFrame_OnLoad(self)
 	self:RegisterEvent("VARIABLES_LOADED");
 
 	self:RegisterCustomEvent("UPDATE_AVAILABLE_MINI_GAMES");
+	self:RegisterCustomEvent("AJ_ACTION_PVE_LFG")
 
 	LFDQueueParentFrame.Inset:SetPoint("TOPLEFT", LFDQueueParentFrame, "BOTTOMLEFT", 2, 284)
 	LFDQueueParentFrame.Inset:SetPoint("BOTTOMRIGHT", LFDQueueParentFrame, "BOTTOMRIGHT", -2, 26)
@@ -66,11 +67,16 @@ function LFDFrame_OnLoad(self)
 	self.groupButton2.bg:SetTexCoord(0.00390625, 0.87890625, 0.59179688, 0.66992188)
 end
 
-function GroupFinderFrameGroupButton_OnClick( self, ... )
-	local frameName = groupFrames[self:GetID()];
-	LFDFrame_ShowGroupFrame(_G[frameName]);
+function GroupFinderFrameGroupButton_OnClick(self, button)
+	GroupFinderFrameGroupButton_SetGroupTabIndex(self:GetID())
 end
 
+function GroupFinderFrameGroupButton_SetGroupTabIndex(tabIndex)
+	local frame = _G[groupFrames[tabIndex]]
+	if frame and LFDParentFrame.selection ~= frame then
+		LFDFrame_ShowGroupFrame(frame)
+	end
+end
 
 function LFDFrame_OnEvent(self, event, ...)
 	if ( event == "LFG_PROPOSAL_UPDATE" ) then
@@ -155,6 +161,39 @@ function LFDFrame_OnEvent(self, event, ...)
 		else
 			self.groupButton2.name:SetTextColor(0.6, 0.6, 0.6);
 		end
+	elseif event == "AJ_ACTION_PVE_LFG" then
+		local desiredViewType, lfgDungeonID = ...
+
+		if not self:IsShown() then
+			ShowUIPanel(self)
+		end
+
+		local categoryIndex = desiredViewType == "pve-lfg-minigame" and 2 or 1
+
+		GroupFinderFrameGroupButton_SetGroupTabIndex(categoryIndex)
+
+		if desiredViewType == "pve-lfg-dungeon" then
+			if lfgDungeonID ~= 0 and IsLFGDungeonJoinable(lfgDungeonID) then
+				local name, typeID, minLevel, maxLevel, _, _, _, expansionLevel = GetLFGDungeonInfo(lfgDungeonID)
+				if name then
+					local level = UnitLevel("player")
+					if level >= minLevel and level <= maxLevel and EXPANSION_LEVEL >= expansionLevel then
+						LFDQueueFrame_SetType(lfgDungeonID)
+					end
+				end
+			end
+		elseif desiredViewType == "pve-lfg-minigame" then
+			if lfgDungeonID ~= 0 then
+				for index = 1, C_MiniGames.GetNumGames() do
+					if C_MiniGames.GetGameIDFromIndex(index) == lfgDungeonID then
+						MiniGamesParentFrame:SetSelectedGame(lfgDungeonID)
+						break
+					end
+				end
+			end
+		end
+
+		return
 	end
 	LFDQueueFrame_UpdatePortrait();
 end
@@ -173,6 +212,8 @@ function LFDFrame_OnShow(self)
 	else
 		PanelTemplates_EnableTab(self, 1)
 	end
+
+	EventRegistry:TriggerEvent("LFDParentFrame.OnShow")
 end
 
 function LFDFrame_OnHide(self)
@@ -186,6 +227,8 @@ function LFDFrame_OnHide(self)
 	LFG_SetRoleIconIncentive(LFDQueueFrameRoleButtonTank, nil);
 	LFG_SetRoleIconIncentive(LFDQueueFrameRoleButtonHealer, nil);
 	LFG_SetRoleIconIncentive(LFDQueueFrameRoleButtonDPS, nil);
+
+	EventRegistry:TriggerEvent("LFDParentFrame.OnHide")
 end
 
 function LFDFrame_ShowGroupFrame(frame)
@@ -819,7 +862,7 @@ function LFDQueueFrameTypeDropDown_Initialize()
 	UIDropDownMenu_AddButton(info);
 
 	for i=1, GetNumRandomDungeons() do
-		local id, name = GetLFGRandomDungeonInfo(i);
+		local id, name, _, _, _, _, _, _, _, groupID = GetLFGRandomDungeonInfo(i);
 		local isAvailable = IsLFGDungeonJoinable(id);
 		if ( isRandomDungeonDisplayable(id) ) then
 			if ( isAvailable ) then
@@ -829,10 +872,38 @@ function LFDQueueFrameTypeDropDown_Initialize()
 				info.func = LFDQueueFrameTypeDropDownButton_OnClick;
 				info.disabled = nil;
 				info.checked = (LFDQueueFrame.type == info.value);
-				info.tooltipWhileDisabled = nil;
-				info.tooltipOnButton = nil;
-				info.tooltipTitle = nil;
-				info.tooltipText = nil;
+
+				info.tooltipWhileDisabled = nil
+				local dungeonIDs = LFGGetDungeonListByHeaderID(groupID)
+				if dungeonIDs then
+					local names = {}
+					for _, dungeonID in ipairs(dungeonIDs) do
+						local dungeonInfo = LFGGetDungeonInfoByID(dungeonID)
+						local color
+						if LFGLockList[dungeonID] then
+							color = "|cff808080"
+						else
+							local difficultyColor = GetQuestDifficultyColor(dungeonInfo[LFG_RETURN_VALUES.recLevel])
+							color = string.format("|cff%.2x%.2x%.2x", difficultyColor.r*255, difficultyColor.g*255, difficultyColor.b*255)
+						end
+						table.insert(names, string.format("%s%s|r", color, dungeonInfo[LFG_RETURN_VALUES.name]))
+					end
+
+					if #names > 0 then
+						info.tooltipOnButton = 1
+						info.tooltipTitle = LFD_DUNGEON_RANDOM_TOOLTIP_HEADER
+						info.tooltipText = table.concat(names, "\n")
+					else
+						info.tooltipOnButton = nil
+						info.tooltipTitle = nil
+						info.tooltipText = nil
+					end
+				else
+					info.tooltipOnButton = nil
+					info.tooltipTitle = nil
+					info.tooltipText = nil
+				end
+
 				UIDropDownMenu_AddButton(info);
 			else
 				info.text = name;
@@ -1327,6 +1398,18 @@ function MiniGameReadyDialogReward_OnEnter(self)
 		SetTooltipMoney(GameTooltip, self.money, nil);
 	elseif self.itemLink then
 		GameTooltip:SetHyperlink(self.itemLink);
+	elseif self.currency and self.currency > 0 then
+		local name, description, link, texture, iconAtlas = C_StorePublic.GetCurrencyInfo(Enum.Store.CurrencyType.BattlePassExp)
+		local markup
+		if texture then
+			markup = CreateTextureMarkup(texture, 64, 64, 16, 16, 0, 0, 0, 0)
+		elseif iconAtlas then
+			markup = CreateAtlasMarkup(iconAtlas, 16, 16)
+		end
+		if markup then
+			GameTooltip:AddLine(REWARD_ITEMS_ONLY);
+			GameTooltip:AddLine(string.format("%d %s", self.currency, markup), 1, 1, 1);
+		end
 	end
 	GameTooltip:Show();
 end
@@ -1342,12 +1425,20 @@ function MiniGamesFrameMixin:OnLoad()
 	self:RegisterCustomEvent("MINI_GAME_INVITE_ACCEPT");
 	self:RegisterCustomEvent("MINI_GAME_INVITE_ABADDON");
 
-	self.gameButtonPool = CreateFramePool("Button", self.TopInset.ScrollFrame.ChildFrame, "MiniGameButtonTemplate");
+	self.gameButtonPool = CreateFramePool("Button", self.TopInset.ScrollFrame, "MiniGameButtonTemplate");
 	self.items = {};
 	self.lootPool = CreateFramePool("Button", self.BottomInset.ScrollFrame.ChildFrame, "MiniGameLootTemplate");
 
 	self:UpdateGames();
 	self:UpdateFindGroupButton();
+
+	self.helpPlate = {
+		FramePos = { x = -224, y = -24 },
+		FrameSize = { width = 595, height = 402 },
+		[1] = { ButtonPos = { x = 192, y = -116 }, HighLightBox = { x = 4, y = -96, width = 212, height = 84 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_MINIGAMESFRAME_TUTORIAL_1 },
+		[2] = { ButtonPos = { x = 192, y = -206 }, HighLightBox = { x = 4, y = -186, width = 212, height = 84 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_MINIGAMESFRAME_TUTORIAL_2 },
+		[3] = { ButtonPos = { x = 368, y = -30 }, HighLightBox = { x = 232, y = -4, width = 320, height = 102 }, ToolTipDir = "UP", ToolTipText = HEPLPLATE_MINIGAMESFRAME_TUTORIAL_3 },
+	}
 end
 
 function MiniGamesFrameMixin:OnShow()
@@ -1355,7 +1446,7 @@ function MiniGamesFrameMixin:OnShow()
 
 	local numGames = C_MiniGames.GetNumGames();
 	if numGames > 0 then
-		self:SetSelectedGame(self.selectedGameID or 1);
+		self:SetSelectedGame(self.selectedGameID or C_MiniGames.GetGameIDFromIndex(1));
 	end
 end
 
@@ -1445,7 +1536,7 @@ end
 
 function MiniGamesFrameMixin:SetValue(value)
 	self.value = Clamp(value, self.minValue, self.maxValue);
-	self.TopInset.ScrollFrame:SetHorizontalScroll(self.value);
+--	self.TopInset.ScrollFrame:SetHorizontalScroll(self.value);
 end
 
 function MiniGamesFrameMixin:GetValue()
@@ -1457,8 +1548,14 @@ function MiniGamesFrameMixin:SetSelectedGame(miniGameID)
 		button.Selected:SetShown(button:GetID() == miniGameID)
 	end
 
-	local name, description, icon, background, _, maxPlayers = C_MiniGames.GetGameInfo(miniGameID);
-	if not icon then
+	if not C_MiniGames.IsValidGameID(miniGameID) then
+		return
+	end
+
+	self.selectedGameID = miniGameID;
+
+	local name, description, icon, background, objective, minPlayers, maxPlayers, gameName, mapAreaID = C_MiniGames.GetGameInfo(miniGameID);
+	if not name then
 		return;
 	end
 
@@ -1469,31 +1566,35 @@ function MiniGamesFrameMixin:SetSelectedGame(miniGameID)
 	scrollChild.Title:SetText(name);
 	scrollChild.Description:SetText(description);
 
+	if minPlayers and maxPlayers then
+		scrollChild.NumPlayers:SetFormattedText(LFD_NUM_PLAYERS_FORMAT_RANGE, minPlayers, maxPlayers)
+		scrollChild.NumPlayers:Show()
+	else
+		scrollChild.NumPlayers:Hide()
+	end
+
 	table.wipe(self.items);
 
 	self.lootPool:ReleaseAll();
 
 	local doneToday, money, rewards = C_MiniGames.GetGameRewards(miniGameID);
+	local pointsBG, pointsArena, pointsArenaSoloQ, pointsArena1v1, pointsMiniGame = C_BattlePass.GetSourceExperience()
 	local numRewards = rewards and #rewards or 0;
 
 	local lastFrame = scrollChild.Description;
-
-	if maxPlayers then
-		scrollChild.MembersDescription:SetFormattedText(MINI_GAME_MEMBERS_NUMBER, maxPlayers);
-		scrollChild.MembersLabel:Show();
-		scrollChild.MembersDescription:Show();
-		lastFrame = scrollChild.MembersDescription;
-	else
-		scrollChild.MembersLabel:Hide();
-		scrollChild.MembersDescription:Hide();
-	end
 
 	scrollChild.RewardsLabel:SetPoint("TOPLEFT", lastFrame, "BOTTOMLEFT", 0, -10);
 
 	if doneToday then
 		scrollChild.RewardsDescription:SetText(LFD_HOLIDAY_REWARD_EXPLANATION2);
 	else
-		scrollChild.RewardsDescription:SetText(LFD_HOLIDAY_REWARD_EXPLANATION1);
+		if gameName == "FROZEN_SNOWMAN_LAIR_SURVIVAL" then
+			scrollChild.RewardsDescription:SetText(LFD_HOLIDAY_REWARD_EXPLANATION_SURVIVAL);
+		elseif gameName == "FROZEN_SNOWMAN_LAIR_SURVIVAL_HARD" then
+			scrollChild.RewardsDescription:SetText(LFD_HOLIDAY_REWARD_EXPLANATION_HARDCORE);
+		else
+			scrollChild.RewardsDescription:SetText(LFD_HOLIDAY_REWARD_EXPLANATION1);
+		end
 	end
 
 	lastFrame = scrollChild.RewardsLabel;
@@ -1526,7 +1627,7 @@ function MiniGamesFrameMixin:SetSelectedGame(miniGameID)
 		end
 	end
 
-	if numRewards > 0 or money > 0 then
+	if numRewards > 0 or money > 0 or pointsMiniGame > 0 then
 		scrollChild.RewardsLabel:Show();
 		scrollChild.RewardsDescription:Show();
 		lastFrame = scrollChild.RewardsDescription;
@@ -1544,16 +1645,25 @@ function MiniGamesFrameMixin:SetSelectedGame(miniGameID)
 		scrollChild.MoneyLabel:SetPoint("TOPLEFT", lastFrame, "BOTTOMLEFT", 20, -10);
 		scrollChild.MoneyLabel:Show();
 		scrollChild.MoneyFrame:Show();
-
 		lastFrame = scrollChild.MoneyLabel;
 	else
 		scrollChild.MoneyLabel:Hide();
 		scrollChild.MoneyFrame:Hide();
 	end
 
-	scrollChild.Spacer:SetPoint("TOPLEFT", lastFrame, "BOTTOMLEFT", 0, -10);
+	if pointsMiniGame > 0 then
+		local hasMoneyReward = money > 0
+		scrollChild.CurrencyLabel:SetPoint("TOPLEFT", lastFrame, "BOTTOMLEFT", hasMoneyReward and 0 or 20, hasMoneyReward and -5 or -10)
+		scrollChild.CurrencyLabel:Show()
+		scrollChild.CurrencyFrame:SetValue(pointsMiniGame, Enum.Store.CurrencyType.BattlePassExp)
+		scrollChild.CurrencyFrame:Show()
+		lastFrame = scrollChild.CurrencyFrame
+	else
+		scrollChild.CurrencyLabel:Hide()
+		scrollChild.CurrencyFrame:Hide()
+	end
 
-	self.selectedGameID = miniGameID;
+	scrollChild.Spacer:SetPoint("TOPLEFT", lastFrame, "BOTTOMLEFT", 0, -10);
 
 	self:UpdateFindGroupButton();
 end
@@ -1564,15 +1674,19 @@ function MiniGamesFrameMixin:UpdateGames()
 	self.gameButtonPool:ReleaseAll();
 
 	local lastGameButton;
+	local width = 0
 	for i = 1, numGames do
 		local gameButton = self.gameButtonPool:Acquire();
 
 		if i == 1 then
-			gameButton:SetPoint("LEFT", self.TopInset.ScrollFrame.ChildFrame, 4, 0);
-		--	gameButton:SetPoint("CENTER", self.TopInset.ScrollFrame.ChildFrame, -((numGames - 1) * (72 + 8) * 0.5), 0);
+			gameButton:SetPoint("LEFT", self.TopInset.ScrollFrame.ButtonHolder, 4, 0);
+		--	gameButton:SetPoint("CENTER", self.TopInset.ScrollFrame.ButtonHolder, -((numGames - 1) * (72 + 8) * 0.5), 0);
+			width = width + 4
 		else
 			gameButton:SetPoint("LEFT", lastGameButton, "RIGHT", 8, 0);
+			width = width + 8
 		end
+		width = width + gameButton:GetWidth()
 
 		local miniGameID = C_MiniGames.GetGameIDFromIndex(i);
 		local name, _, icon = C_MiniGames.GetGameInfo(miniGameID);
@@ -1585,6 +1699,8 @@ function MiniGamesFrameMixin:UpdateGames()
 		lastGameButton = gameButton;
 	end
 
+	self.TopInset.ScrollFrame.ButtonHolder:SetWidth(width)
+
 	local maxValue = (numGames - 4) * (72 + 8);
 	if numGames < 4 then
 		local value = maxValue * 0.5;
@@ -1594,6 +1710,25 @@ function MiniGamesFrameMixin:UpdateGames()
 		self:SetMinMaxValues(0, maxValue);
 		self:SetValue(0);
 	end
+end
+
+LFDReadyPopupMixin = {}
+
+function LFDReadyPopupMixin:OnEvent(event, ...)
+	if event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_REGEN_DISABLED" then
+		self.EnterButton:SetEnabled(event == "PLAYER_REGEN_ENABLED")
+	end
+end
+
+function LFDReadyPopupMixin:OnShow()
+	self:RegisterEvent("PLAYER_REGEN_ENABLED");
+	self:RegisterEvent("PLAYER_REGEN_DISABLED");
+	self.EnterButton:SetEnabled(not InCombatLockdown())
+end
+
+function LFDReadyPopupMixin:OnHide()
+	self:UnregisterEvent("PLAYER_REGEN_ENABLED");
+	self:UnregisterEvent("PLAYER_REGEN_DISABLED");
 end
 
 MiniGameReadyPopupMixin = {}
@@ -1621,12 +1756,14 @@ function MiniGameReadyPopupMixin:UpdateRewards(miniGameID)
 	MiniGameReadyDialog.RewardsFrame.rewardPool:ReleaseAll();
 
 	local doneToday, money, rewards = C_MiniGames.GetGameRewards(miniGameID);
+	local pointsBG, pointsArena, pointsArenaSoloQ, pointsArena1v1, pointsMiniGame = C_BattlePass.GetSourceExperience()
 
 	local lastFrame;
 	local hasMoney = money > 0 and 1 or 0;
+	local hasPoints = pointsMiniGame > 0 and 1 or 0
 
-	local positionPerIcon = 1 / (2 * (#rewards + hasMoney)) * 72;
-	local iconOffset = 2 * positionPerIcon - 40;
+	local positionPerIcon = 1 / (2 * (#rewards + hasMoney + hasPoints)) * 72;
+	local iconOffset = 2 * positionPerIcon - 36;
 
 	if hasMoney > 0 then
 		local frame = MiniGameReadyDialog.RewardsFrame.rewardPool:Acquire();
@@ -1660,6 +1797,25 @@ function MiniGameReadyPopupMixin:UpdateRewards(miniGameID)
 
 		lastFrame = frame;
 	end
+
+	if pointsMiniGame > 0 then
+		local frame = MiniGameReadyDialog.RewardsFrame.rewardPool:Acquire();
+		frame:SetPoint("LEFT", lastFrame, "RIGHT", iconOffset, 0)
+
+		local name, description, link, texture, iconAtlas = C_StorePublic.GetCurrencyInfo(Enum.Store.CurrencyType.BattlePassExp)
+		if texture then
+			SetPortraitToTexture(frame.Texture, texture)
+		else
+			frame.Texture:SetAtlas(iconAtlas)
+		end
+
+		frame.itemID = nil
+		frame.itemLink = nil
+		frame.currency = pointsMiniGame
+		frame:Show()
+
+		lastFrame = frame
+	end
 end
 
 function MiniGameReadyPopupMixin:ShowReadyDialog(inviteID, miniGameID)
@@ -1682,12 +1838,32 @@ end
 MiniGamesBannerMixin = {};
 
 function MiniGamesBannerMixin:OnLoad()
+	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 	self:RegisterCustomEvent("MINI_GAME_LOST");
 	self:RegisterCustomEvent("MINI_GAME_WON");
 end
 
 function MiniGamesBannerMixin:OnEvent(event, ...)
-	if event == "MINI_GAME_LOST" then
+	if event == "PLAYER_ENTERING_WORLD" then
+		self:RegisterEvent("WORLD_MAP_UPDATE");
+	elseif event == "WORLD_MAP_UPDATE" then
+		self:UnregisterEvent(event);
+
+		if not self:IsShown() then
+			return;
+		end
+
+		local miniGameID = C_MiniGames.GetActiveID();
+		if miniGameID then
+			local currentMapAreaID = GetCurrentMapAreaID();
+			local _, _, _, _, _, _, _, _, mapAreaID = C_MiniGames.GetGameInfo(miniGameID);
+			if currentMapAreaID == mapAreaID then
+				return;
+			end
+		end
+
+		self:StopBanner();
+	elseif event == "MINI_GAME_LOST" then
 		self:PlayBanner({title = LOSS, isRedBanner = true});
 	elseif event == "MINI_GAME_WON" then
 		self:PlayBanner({title = WIN, isRedBanner = false});

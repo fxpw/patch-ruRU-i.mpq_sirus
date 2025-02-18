@@ -48,7 +48,7 @@
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="-2" y="3"/>
 					</Anchors>
 				</FontString>
-				<Texture parentKey="IconBorder" file="Interface/LootFrame/LootToastAtlas">
+				<Texture parentKey="IconBorder">
 					<Size x="60" y="60"/>
 					<Anchors>
 						<Anchor point="CENTER" relativeTo="$parentIcon" relativePoint="CENTER" x="0" y="0"/>

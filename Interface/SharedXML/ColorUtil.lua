@@ -69,6 +69,31 @@ function GetFactionColor(factionGroupTag)
 	return PLAYER_FACTION_COLORS[PLAYER_FACTION_GROUP[factionGroupTag]];
 end
 
+local ITEM_LEVEL_COLORS = {
+	[1] = CreateColor(0.65882, 0.65882, 0.65882),
+	[2] = CreateColor(0.08235, 0.70196, 0),
+	[3] = CreateColor(0, 0.56863, 0.94902),
+	[4] = CreateColor(0.78431, 0.27059, 0.98039),
+	[5] = CreateColor(1, 0.50196, 0),
+	[6] = CreateColor(1, 0, 0),
+}
+
+function GetItemLevelColor(itemLevel)
+	if itemLevel < 150 then
+		return ITEM_LEVEL_COLORS[1]
+	elseif WithinRange(itemLevel, 150, 185) then
+		return ITEM_LEVEL_COLORS[2]
+	elseif WithinRange(itemLevel, 185, 200) then
+		return ITEM_LEVEL_COLORS[3]
+	elseif WithinRange(itemLevel, 200, 277) then
+		return ITEM_LEVEL_COLORS[4]
+	elseif WithinRange(itemLevel, 277, 296) then
+		return ITEM_LEVEL_COLORS[5]
+	else
+		return ITEM_LEVEL_COLORS[6]
+	end
+end
+
 function RGB255To1(r, g, b)
 	return r / 255, g / 255, b / 255
 end

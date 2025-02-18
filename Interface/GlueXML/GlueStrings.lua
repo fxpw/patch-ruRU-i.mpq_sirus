@@ -1,8 +1,4 @@
-local SIRUS_LOCALIZATION = {
-	["CHARACTER_BOOST_CONFIRM_TEXT"] = {
-		ruRU = "Вы уверены, что хотите использовать функцию Быстрого Старта на этого персонажа?",
-		enGB = "Are you sure you want to use Character Boost on this character?"
-	},
+local GLUE_STRINGS = {
 	["SCANDLL_MESSAGE_HACK"] = {
 		ruRU = "<html><body><p>В вашей системе обнаружена программа \"%1$s\". Ее запуск может привести к к нежелательным последствиям – вплоть до невозможности игры в World of Warcraft. Крайне рекомендуется устранить эту проблему до начала игры.</p><p>Подробнее см. <a href='%2$s'>здесь</a></p></body></html>",
 		enGB = "<html><body><p>\"%1$s\" has been detected on your computer. Running this program may compromise the security of your computer and jeopardize your ability to play World of Warcraft. It is highly advised that you correct this problem before playing the game.</p><p>For more information: <a href='%2$s'>Click Here</a></p></body></html>"
@@ -116,8 +112,8 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Deleting a character"
 	},
 	["CONFIRM_CHAR_DELETE2"] = {
-		ruRU = "\n|cffffffff%1$s, %3$s %2$d-го уровня|r",
-		enGB = "\n|cffffffff%s   Level %d   %s|r"
+		ruRU = "|cffffffff%1$s, %3$s %2$d-го уровня|r",
+		enGB = "|cffffffff%s   Level %d   %s|r"
 	},
 	["BILLING_HAS_FALLBACK_PAYMENT"] = {
 		ruRU = "Для вашей учетной записи может быть доступно дополнительное время за счет других тарифных планов.",
@@ -355,10 +351,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "<html><body><p align=\"CENTER\">Вы ввели неверную информацию. Пожалуйста, проверьте правильность написания имени учетной записи, пароля и пин-кода. Для восстановления забытых или украденных пароля, учетной записи или пин-кода посетите страницу <a href=\"https://www.wow-europe.com/login-support/?locale=ru_RU\">https://www.wow-europe.com/login-support/?locale=ru_RU</a>.</p></body></html>",
 		enGB = "<html><body><p align=\"CENTER\">The information you have entered is not valid.  Please check the spelling of the account name, password, and PIN.  If you need help in retrieving a lost or stolen password, account, or PIN see <a href=\"http://www.worldofwarcraft.com/loginsupport\">www.worldofwarcraft.com/loginsupport</a> for more information.</p></body></html>"
 	},
-	["CHARACTER_SERVICES_BUYBOOST"] = {
-		ruRU = "Быстрый старт",
-		enGB = "Character Boost"
-	},
 	["LOGIN_AUTH_OUTAGE"] = {
 		ruRU = "<html><body><p align=\"CENTER\">Сервер авторизации в настоящее время занят. Пожалуйста, попробуйте подключиться позднее. Если вы постоянно получаете это сообщение, то свяжитесь со службой технической поддержки.</p></body></html>",
 		enGB = "<html><body><p align=\"CENTER\">The login server is currently busy. Please try again later. If the problem persists, please contact Technical Support at.</p></body></html>"
@@ -423,6 +415,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Боец",
 		enGB = "Damager"
 	},
+	["CHOOSE_SPECIALIZATION_TYPE"] = {
+		ruRU = "Выберите тип специализации",
+		enGB = "Choose Your PVE Specialization"
+	},
 	["CHOOSE_SPECIALIZATION"] = {
 		ruRU = "Выберите PVE специализацию",
 		enGB = "Choose Your PVE Specialization"
@@ -430,6 +426,21 @@ local SIRUS_LOCALIZATION = {
 	["CHOOSE_PVP_SPECIALIZATION"] = {
 		ruRU = "Выберите PVP специализацию",
 		enGB = "Choose Your PVP Specialization"
+	},
+	["BOOST_SPEC_ITEMS_PVE"] = {
+		ruRU = "PVE специализация",
+		enGB = "PVE Specialization"
+	},
+	["BOOST_SPEC_ITEMS_PVP"] = {
+		ruRU = "PVP специализация",
+		enGB = "PVP Specialization"
+	},
+	["BOOST_SPEC_ITEMS_LOADING"] = {
+		ruRU = "Загрузка предметов",
+		enGB = "Loading items..."
+	},
+	["BOOST_SPEC_ITEMS_CLICK_TIP"] = {
+		ruRU = "Кликните чтобы посмотреть подробное описание предмета в нашей базе знаний",
 	},
 	["SCANDLL_URL_LAUNCHER_TXT"] = {
 		ruRU = "",
@@ -526,10 +537,6 @@ local SIRUS_LOCALIZATION = {
 	["CREATE_NEW_CHARACTER"] = {
 		ruRU = "Новый персонаж",
 		enGB = "Create New Character"
-	},
-	["CHARACTER_BOOST_INFO_TEXT"] = {
-		ruRU = "Уважаемые игроки проекта Sirus! Мы решили сделать подарок всем лояльным игрокам нашего проекта:\n\n\nДля игроков с |cff00FF00VIP Silver|r и выше - 1 быстрый старт на х2 |cff00FF00БЕСПЛАТНО|r\n\nДля игроков с |cff00FF00VIP Bronze|r - 1 быстрый старт на х2 со скидкой |cff00FF0085%|r (29 бонусов)\n\nДля игроков зарегистрированных до открытия х2 (23.02.17) - 1 быстрый старт со скидкой |cff00FF0070%|r (59 бонусов)",
-		enGB = "Dear players of the Sirus project, We’ve decided to give a present to all our project’s loyal players:\n\n\nFor players with |cff00FF00VIP Silver|r status and above, 1 Character Boost for х2 |cff00FF00FOR FREE|r\n\nFor players with|cff00FF00VIP Bronze|r status, 1 Character Boost for х2 with an |cff00FF0085%|r discount (29 bonuses)\n\nFor players who registered before the opening of х2 (23.02.17), 1 Character Boost with a |cff00FF0070%|r discount (59 bonuses)"
 	},
 	["STR"] = {
 		ruRU = "СИЛ",
@@ -759,33 +766,49 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "PvE – обычный игровой мир.\nPvP – мир, в котором по умолчанию разрешены бои между игроками.\nRP – ролевой игровой мир.\nRPPvP – ролевой игровой мир, в котором по умолчанию разрешены бои между игроками.",
 		enGB = "Normal = No special rules on this realm.\nPvP = Player versus Player.\nRP = Roleplaying realm.\nRPPvP = Roleplaying, Player versus Player realm."
 	},
-	["CHARACTER_SERVICES_BOOST_DESCRIPTION_PRE"] = {
-		ruRU = "Иногда не хочется ждать, а сразу приступить к приключениям...",
-		enGB = "Sometimes you just don’t want to wait and want to start adventuring right away..."
+	["CHARACTER_SERVICES_BOOST_PURCHASE_LABEL"] = {
+		ruRU = "Быстрый старт",
+		enGB = "Character Boost"
 	},
-	["CHARACTER_SERVICES_BOOST_DESCRIPTION"] = {
+	["CHARACTER_SERVICES_BOOST_PURCHASE_DESCRIPTION"] = {
 		ruRU = "Отличные новости! Наши гномские инженеры смогли изобрести машину времени и достать вас из будущего! Более того, мы можем это будущее отредактировать и научить вас всему чему вы хотите, прямо как в гоблиноматрице!\n\nВаш герой получит прекрасную экипировку, обучится паре профессий и мигом достигнет 80-го уровня!",
 		enGB = "Great news! Our Gnomish engineers were able to invent a time machine and bring your future self back in time! We can now even edit this future and teach you anything you want, just like in the Goblin Matrix!\n\nYour hero will receive excellent equipment, learn a couple of professions, and instantly reach level 80!"
 	},
-	["CHARACTER_SERVICES_BOOST_WARNING"] = {
-		ruRU = "<html><body><p align=\"CENTER\">|cffd53838«Внимание! Есть ограничения!»|r\n<a href=\"https://forum.sirus.su/threads/60986/\">Подробности</a></p></body></html>",
-		enGB = ""
+	["CHARACTER_SERVICES_BOOST_PURCHASE_WARNING"] = {
+		ruRU = "<html><body><p align=\"CENTER\">|cffd53838«Внимание! Есть ограничения!»|r</p><p align=\"CENTER\">|cffd53838Только для низкоуровневых персонажей.|r</p><p align=\"CENTER\"><a href=\"https://forum.sirus.su/threads/60986/\">Подробности</a></p></body></html>",
+	},
+	["CHARACTER_SERVICES_BOOST_REFUND_ACTION"] = {
+		ruRU = "Вернуть",
+	},
+	["CHARACTER_SERVICES_BOOST_REFUND_AMOUNT"] = {
+		ruRU = "Вы получите %d",
+	},
+	["CHARACTER_SERVICES_BOOST_REFUND_LABEL"] = {
+		ruRU = "Возврат Быстрого Старта",
+	},
+	["CHARACTER_SERVICES_BOOST_REFUND_DESCRIPTION"] = {
+		ruRU = "Неиспользованный Быстрый Старт можно вернуть, получив возмещение бонусов.\n\nПравила возврата:\n|TInterface/Scenarios/ScenarioIcon-Combat:16:16:0:-6:16:16:0:16:0:16|tЕсли Быстрый Старт был приобретен менее 1 часа назад, то размер выплаты составит 100%% от цены покупки в бонусах.\n|TInterface/Scenarios/ScenarioIcon-Combat:16:16:0:-6:16:16:0:16:0:16|tЕсли Быстрый Старт был приобретен более 1 часа и менее 14 дней назад, размер выплаты составит %d%% от цены покупки в бонусах.",
+	},
+	["CHARACTER_SERVICES_BOOST_REFUND_TIMELEFT_FULL"] = {
+		ruRU = "Время для возврата |cff1aff1a100%|r стоимости:",
+	},
+	["CHARACTER_SERVICES_BOOST_REFUND_TIMELEFT_PENALTY"] = {
+		ruRU = "Время для возврата |cffff1a1a%d%%|r стоимости:",
+	},
+	["CHARACTER_SERVICES_BOOST_REFUND_WARNING"] = {
+		ruRU = "<html><body><p align=\"CENTER\">|cffd53838Возврат доступен в течение 14 дней с момента покупки.|r</p></body></html>",
 	},
 	["CHARACTER_SERVICES_LISTPAGE_TITLE"] = {
 		ruRU = "Еще больше персонажей",
-		enGB = ""
 	},
 	["CHARACTER_SERVICES_LISTPAGE_DESCRIPTION"] = {
-		ruRU = "Внимание! Чтобы разблокировать 2-ю страницу персонажей для создания новых героев вне лимита - необходимо иметь не менее 7 персонажей 80-го уровня.\n\nНо благодаря гномскому проворству и технологиям озаренных можно расширить не только пространство, время и сумки, но и место на вашем аккаунте, раз и навсегда. Вам станет доступно создание еще 10 новых персонажей, что позволит собрать свой небольшой отряд бойцов!",
-		enGB = ""
+		ruRU = "Внимание! Чтобы бесплатно разблокировать 2-ю страницу персонажей для создания новых героев вне лимита - необходимо иметь не менее 7 персонажей 80-го уровня.\n\nНо благодаря гномскому проворству и технологиям озаренных можно расширить не только пространство, время и сумки, но и место на вашем аккаунте, раз и навсегда. Вам станет доступно создание еще 10 новых персонажей, что позволит собрать свой небольшой отряд бойцов!",
 	},
 	["CHARACTER_SERVICES_LISTPAGE_DESCRIPTION_ALT"] = {
 		ruRU = "Уже поговаривают, что вы собираете свою небольшую армию...\nА у нас хорошие новости! Умельцы Кезана неплохо потрудились, и у вас теперь есть возможность воспользоваться технологиями гоблинов для расширения места на своем аккаунте, чтобы создать еще больше персонажей!",
-		enGB = ""
 	},
 	["CHARACTER_SERVICES_LISTPAGE_WARNING"] = {
 		ruRU = "<html><body><p align=\"CENTER\">|cffd53838ВНИМАНИЕ! Обмену и возврату данная услуга не подлежит|r</p></body></html>",
-		enGB = ""
 	},
 	["CHARACTER_SERVICES_RESTORE_CHARACTER_TITLE"] = {
 		ruRU = "Восстановление персонажа",
@@ -1060,8 +1083,8 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Choosing a Realm"
 	},
 	["CHARACTER_BOOST_CHOOSE_CHARACTER_FACTION"] = {
-		ruRU = "Выберите фракцию персонажа",
-		enGB = "Choose a faction for your character"
+		ruRU = "Выберите фракцию",
+		enGB = "Choose a faction"
 	},
 	["LOGIN_EXPIRED"] = {
 		ruRU = "<html><body><p align=\"CENTER\">Оплаченное игровое время для вашей учетной записи закончилось. Для продолжения игры необходимо оплатить дополнительное время. Вы можете сделать это по адресу <a href=\"https://www.wow-europe.com/login/login?service=https%3A%2F%2Fwww.wow-europe.com%2Faccount%2F&amp;locale=ru_RU\">https://www.wow-europe.com/account/</a>.</p></body></html>",
@@ -1077,39 +1100,48 @@ local SIRUS_LOCALIZATION = {
 	},
 	["CHARACTER_SERVICES_BOOST_ERROR_2"] = {
 		ruRU = "Персонаж уже максимального уровня",
-		enGB = ""
 	},
 	["CHARACTER_SERVICES_BOOST_ERROR_3"] = {
 		ruRU = "Указана недопустимая профессия",
-		enGB = ""
 	},
 	["CHARACTER_SERVICES_BOOST_ERROR_4"] = {
 		ruRU = "Указана недопустимая специализация",
-		enGB = ""
 	},
 	["CHARACTER_SERVICES_BOOST_ERROR_5"] = {
 		ruRU = "Указана неверная фракция",
-		enGB = ""
 	},
 	["CHARACTER_SERVICES_BOOST_ERROR_6"] = {
 		ruRU = "Быстрый старт временно недоступен",
-		enGB = ""
 	},
 	["CHARACTER_SERVICES_BOOST_ERROR_7"] = {
 		ruRU = "Услуга быстрого старта уже приобретена",
-		enGB = ""
 	},
 	["CHARACTER_SERVICES_BOOST_ERROR_8"] = {
 		ruRU = "Указанный персонаж не найден",
-		enGB = ""
 	},
 	["CHARACTER_SERVICES_BOOST_ERROR_9"] = {
 		ruRU = "Услуга быстрого старта уже применена к этому персонажу, вам необходимо зайти им в игру",
-		enGB = ""
 	},
 	["CHARACTER_SERVICES_BOOST_ERROR_10"] = {
 		ruRU = "Внутренняя ошибка",
-		enGB = ""
+	},
+	["CHARACTER_SERVICES_BOOST_ERROR_13"] = {
+		ruRU = "Внутренняя ошибка",
+	},
+	["CHARACTER_SERVICES_BOOST_ERROR_14"] = {
+		ruRU = "Отмена Быстрого старта временно недоступена",
+	},
+	["CHARACTER_SERVICES_BOOST_ERROR_16"] = {
+		ruRU = "Персонаж является главой гильдии. Для отмены Быстрого Старта необходимо передать звание главы другому персонажу",
+	},
+	["CHARACTER_SERVICES_BOOST_ERROR_17"] = {
+		ruRU = "Персонаж является капитаном команды арены. Для отмены Быстрого Старта необходимо передать звание капитана другому персонажу",
+	},
+	["CHARACTER_SERVICES_BOOST_ERROR_18"] = {
+		ruRU = "Вы не можете отменить Быстрый Старт, пока есть другой неиспользованный Быстрый Старт",
+	},
+	["CHARACTER_SERVICES_BOOST_ERROR_19"] = {
+		ruRU = "Указанный персонаж не найден",
 	},
 	["CONFIRM_DISABLE_ADDONS"] = {
 		ruRU = "После установки обновленных версий модификаций вам нужно подключить их еще раз. Вы действительно хотите отключить их?\n\n|cffffffffПодключение можно осуществить, нажав кнопку «Модификации» в левой нижней части экрана.|r",
@@ -1120,8 +1152,8 @@ local SIRUS_LOCALIZATION = {
 		enGB = "This IGR usage plan has 30 minutes or less of play time left on it."
 	},
 	["CHARACTER_SERVICES_DISABLE_SUSPECT_ACCOUNT"] = {
-		ruRU = "<html><body><p align=\"CENTER\">Услуга недоступна для неподтвержденных учетных записей. Более подробно тут <a href=\"https://sirus.su/suspect\">https://sirus.su/suspect</a></p></body></html>",
-		enGB = "<html><body><p align=\"CENTER\">The service is not available for suspicious accounts. Please see <a href=\"https://sirus.su/suspect\">https://sirus.su/suspect</a> for more information.</p></body></html>"
+		ruRU = "<html><body><p align=\"CENTER\">Услуга недоступна для неподтвержденных учетных записей. Более подробно тут <a href=\"https://sirus.su/unconfirmed\">https://sirus.su/unconfirmed</a></p></body></html>",
+		enGB = "<html><body><p align=\"CENTER\">The service is not available for suspicious accounts. Please see <a href=\"https://sirus.su/unconfirmed\">https://sirus.su/unconfirmed</a> for more information.</p></body></html>"
 	},
 	["CHARACTER_SERVICES_DISABLED"] = {
 		ruRU = "Услуга временно недоступна в этом мире",
@@ -1275,6 +1307,14 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "PVP Специализация:",
 		enGB = "PVP Specialization:"
 	},
+	["SPECIALIZATIONS_PVE_LABEL"] = {
+		ruRU = "PVE Специализации",
+		enGB = "PVE Specializations"
+	},
+	["SPECIALIZATIONS_PVP_LABEL"] = {
+		ruRU = "PVP Специализации",
+		enGB = "PVP Specializations"
+	},
 	["CHAR_FACTION_CHANGE_GOLD_LIMIT"] = {
 		ruRU = "Вы превысили лимит на количество золота, предусмотренный для смены фракции.",
 		enGB = "You have exceeded the gold limit for faction transfer."
@@ -1328,8 +1368,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Copy"
 	},
 	["LOGIN_SUSPENDED"] = {
-		ruRU = "<html><body><p align=\"CENTER\">Данная учетная запись World of Warcraft временно заблокирована. Более подробную информацию вы найдете в Личном Кабинете на сайте:</p><p align=\"CENTER\"><a href=\"https://forum.sirus.su/threads/17670/\">https://forum.sirus.su/threads/17670/</a></p></body></html>",
-		enGB = "<html><body><p align=\"CENTER\">This World of Warcraft account has been temporarily suspended. Please go to <a href=\"https://forum.sirus.su/threads/17670/\">https://forum.sirus.su/threads/17670/</a> for further information.</p></body></html>"
+		ruRU = "<html><body><p align=\"CENTER\">Учетная запись временно заблокирована.</p><p>Причина блокировки указана в Личном кабинете</p><p align=\"CENTER\"><a href=\"https://sirus.su/user/\">https://sirus.su/user/</a></p><p align=\"CENTER\">Узнать подробности вы можете в теме</p><p align=\"CENTER\"><a href=\"https://forum.sirus.su/threads/17670/\">https://forum.sirus.su/threads/17670/</a></p></body></html>",
 	},
 	["LOADING_REALM_LIST"] = {
 		ruRU = "Загрузка списка игровых миров...",
@@ -1370,6 +1409,12 @@ local SIRUS_LOCALIZATION = {
 	["CHARACTER_DELETE_BLOCKED_BOOST_DEATH_KNIGHT"] = {
 		ruRU = "Перед удалением текущего персонажа необходимо завершить применение \"Быстрого старта\" для Рыцаря смерти либо удалить его.",
 		enGB = "",
+	},
+	["CHARACTER_GEAR_BOOST_CONFIRM_TEXT"] = {
+		ruRU = "Вы уверены, что хотите использовать услугу \"Апгрейд!\" на персонажа |c%s%s|r?\n\n|cffFFD200ВНИМАНИЕ! Услуга \"Апгрейд!\" не подлежит обмену или возврату.|r",
+	},
+	["CHARACTER_SERVICES_DIALOG_GEAR_BOOST_ENTER_WORLD"] = {
+		ruRU = "В момент конфигурации персонажа с помощью функции \"Апгрейд!\", вход в игровой мир недоступен.\nПрервать конфигурацию?",
 	},
 	["MENU_EDIT_UNDO"] = {
 		ruRU = "Отменить",
@@ -2371,6 +2416,13 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Вы пользуетесь пробной учетной записью. В этом случае плата за игру не взимается.",
 		enGB = "You are currently in your free trial period and will not be charged."
 	},
+	["CHARACTER_SERVICES_BALANCE_LABEL"] = {
+		ruRU = "У вас",
+	},
+	["CHARACTER_SERVICES_PRICE_LABEL"] = {
+		ruRU = "Цена",
+		enGB = "Price"
+	},
 	["CHARACTER_SERVICES_BUYCOST"] = {
 		ruRU = "Цена: %s",
 		enGB = "Price: %s"
@@ -2460,8 +2512,8 @@ local SIRUS_LOCALIZATION = {
 		enGB = "http://launcher.worldofwarcraft.com/legal/eula.htm"
 	},
 	["CHAR_LOGIN_LOCKED_BY_BILLING"] = {
-		ruRU = "Персонаж заблокирован. Обратитесь в службу оплаты.",
-		enGB = "Character locked.  Contact Billing for more information."
+		ruRU = "Персонаж заблокирован. Обратитесь в службу поддержки.",
+		enGB = "Character locked. Contact Technical Support for more information."
 	},
 	["GAMETYPE_PVP_TEXT"] = {
 		ruRU = "В мирах данного типа акцент смещен на бои между игроками. Помните: покинув исходную позицию или город, вы всегда рискуете подвергнуться нападению со стороны другого игрока.",
@@ -2571,10 +2623,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Авторизация",
 		enGB = "Authenticating"
 	},
-	["OPTION_TOOLTIP_AMBIENT_VOLUME"] = {
-		ruRU = "Регулировка громкости звуков окружающего мира.",
-		enGB = "Adjusts the ambient sound volume."
-	},
 	["SCANDLL_URL_HACK"] = {
 		ruRU = "http://eu.blizzard.com/support/article.xml?articleId=28360",
 		enGB = "http://us.blizzard.com/support/article.xml?articleId=21583"
@@ -2664,8 +2712,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Help"
 	},
 	["CHARACTER_BOOST_CHOOSE_CHARACTER_PROFESSION"] = {
-		ruRU = "Выберите профессию персонажа",
-		enGB = "Choose a profession for your character"
+		ruRU = "Выберите профессию",
+		enGB = "Choose a profession"
+	},
+	["CHARACTER_BOOST_PROFESSION_WARNING"] = {
+		ruRU = "Внимание!\nВсе имеющиеся у персонажа профессии будут удалены и заменены на выбранные вами профессии максимального уровня навыка, но без рецептов.",
 	},
 	["RACE_INFO_SCOURGE"] = {
 		ruRU = "Отрекшиеся, не попавшие под власть Короля-лича, ищут способ положить конец его правлению. Под предводительством банши Сильваны они сражаются против Армии Плети. Их врагами стали и люди, неустанно стремящиеся стереть с лица земли любую нежить. Отверженные не хранят верность союзам и даже Орду считают всего лишь инструментом воплощения своих темных замыслов.",
@@ -2930,11 +2981,18 @@ local SIRUS_LOCALIZATION = {
 	},
 	["CHARACTER_SERVICES_FIX_CHARACTER"] = {
 		ruRU = "Исправить персонажа",
-		enGB = ""
 	},
 	["CHARACTER_SERVICES_DELETE"] = {
 		ruRU = "Удалить",
-		enGB = ""
+	},
+	["CHARACTER_SERVICES_BOOST_LABEL"] = {
+		ruRU = "Быстрый Старт",
+	},
+	["CHARACTER_SERVICES_BOOST_CONFIRMATION_DESCRIPTION"] = {
+		ruRU = "Вы уверены, что хотите использовать Быстрый Cтарт?",
+	},
+	["CHARACTER_SERVICES_BOOST_CONFIRMATION_WARNING"] = {
+		ruRU = "После подтверждения у вас будет возможность один раз изменить выбор персонажа в течение 2 дней с момента активации Быстрого Старта, если персонаж проведёт в игре менее 6 часов.\nПри этом текущий персонаж будет удален без возможности восстановления.",
 	},
 	["PAID_CHARACTER_CUSTOMIZE_TOOLTIP"] = {
 		ruRU = "Нажмите здесь, чтобы изменить персонажа",
@@ -2955,6 +3013,15 @@ local SIRUS_LOCALIZATION = {
 	["PAID_ZODIAC_CHANGE_TOOLTIP"] = {
 		ruRU = "Нажмите здесь, чтобы сменить знак зодиака персонажа",
 		enGB = "Click to change your character's zodiac sign"
+	},
+	["PAID_BOOST_CANCEL_TOOLTIP"] = {
+		ruRU = "Нажмите здесь, чтобы отменить Быстрый Старт.",
+	},
+	["PAID_BOOST_CANCEL_REMAINING_TIME"] = {
+		ruRU = "Отмена услуги \"Быстрый старт\" доступна в течение 2-х дней с момента ее активации и если персонаж провел в игре менее 6 часов.\nОсталось |cff00FF00%s|r\nПроведено в игре |cff00FF00%s|r",
+	},
+	["PAID_BOOST_CANCEL_TOOLTIP_DESCRIPTION"] = {
+		ruRU = "Это можно сделать до истечения срока возможного возврата.",
 	},
 	["RIGHT_CLICK_FOR_LESS"] = {
 		ruRU = "ПКМ: убрать подсказку",
@@ -4114,6 +4181,9 @@ local SIRUS_LOCALIZATION = {
 	["COMPLETE_FORCED_CUSTOMIZATION"] = {
 		ruRU = "Завершить настройку"
 	},
+	["COMPLETE_FORCED_RENAME"] = {
+		ruRU = "Смена имени и вход в игровой мир"
+	},
 	["CHARACTER_NO_NAME"] = {
 		ruRU = "Без имени",
 		enGB = "",
@@ -4170,18 +4240,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Поддержка",
 		enGB = "",
 	},
-	["SHOW_EQUIPPED_ITEMS"] = {
-		ruRU = "Показывать экипировку",
-		enGB = "Show equipped items"
-	},
-	["WAIT_MODEL_LOADING"] = {
-		ruRU = "Загрузка модели",
-		enGB = "Loading model"
-	},
-	["WAIT_MODEL_LOADING_ERROR"] = {
-		ruRU = "Ошибка при загрузке модели",
-		enGB = "Error loading model"
-	},
 	["INSPECT_CHARACTER"] = {
 		ruRU = "Осмотреть",
 		enGB = "Inspect"
@@ -4230,6 +4288,15 @@ local SIRUS_LOCALIZATION = {
 	["CHARACTER_CREATION_INFO_CUSTOM_FLAG_ERROR_1"] = {
 		ruRU = "Этот класс не может быть создан с активированным режимом испытаний",
 	},
+	["CUSTOMIZATION_DISABLED_REASON_FORCED_RENAME"] = {
+		ruRU = "Использование сервисов недоступно для этого персонажа до завершения смены имени, которое произойдет при входе в мир."
+	},
+	["CUSTOMIZATION_DISABLED_REASON_FORCED_CUSTOMIZATION"] = {
+		ruRU = "Использование сервисов недоступно для этого персонажа до завершения настройки персонажа."
+	},
+	["CUSTOMIZATION_DISABLED_REASON_BOOST_SERVICE_MODE"] = {
+		ruRU = "Использование сервисов недоступно до завершения настроек Быстрого старта."
+	},
 	["CUSTOMIZATION_ZODIAC_ALREADY_SELECTED"] = {
 		ruRU = "Вы должны выбрать знак зодиака отличный от текущего",
 	},
@@ -4250,6 +4317,9 @@ local SIRUS_LOCALIZATION = {
 	},
 	["CUSTOMIZATION_ZODIAC_STATUS_5"] = {
 		ruRU = "Внутренняя ошибка",
+	},
+	["CUSTOMIZATION_ZODIAC_STATUS_7"] = {
+		ruRU = "Это действие невозможно для неподтвержденных учетных записей",
 	},
 	["CHAR_ZODIAC_IN_PROGRESS"] = {
 		ruRU = "Обновление знака зодика…",
@@ -4291,15 +4361,117 @@ local SIRUS_LOCALIZATION = {
 	["REALM_LABEL_NEW"] = {
 		ruRU = "НОВЫЙ ИГРОВОЙ МИР",
 	},
+	["LOADING_DATA_LABEL"] = {
+		ruRU = "Загрузка данных"
+	},
+	["BOOST_SERVICE_BROWSE_ITEMS"] = {
+		ruRU = "Предметы %.0f",
+	},
+	["PREVIEW"] = {
+		ruRU = "Предпросмотр",
+	},
+	["BOOST_SERVICE_UPDATE_TIP"] = {
+		ruRU = "Ознакомьтесь с содержимым быстрого старта!",
+	},
+	["RPE_UPDATE"] = {
+		ruRU = "Обновить",
+	},
+	["RPE_GEAR_UPDATE"] = {
+		ruRU = "Апгрейд!",
+	},
+	["RPE_GEAR_UPDATE_DESCRIPTION"] = {
+		ruRU = "Воспользовавшись этой услугой вы получите один комплект экипировки для выбранной вами специализации.\n\nВещи будут добавлены в ваш инвентарь или экипированы на персонажа, если уровень имеющейся экипировки достаточно низок.\n\n|cffff0000Обратите внимание, что эта услуга не подлежит обмену или возврату.|r",
+	},
+	["RPE_CHARACTER_INFO"] = {
+		ruRU = "%s\n|c%s%s|r",
+	},
+	["RPE_INFO_TEXT1"] = {
+		ruRU = "Для персонажей 80 уровня",
+	},
+	["RPE_INFO_TEXT2"] = {
+		ruRU = "Один комплект экипировки на выбор: PVE или PVP",
+	},
+	["RPE_INFO_TEXT2_NOPVP"] = {
+		ruRU = "Комплект PvE экипировки",
+	},
+	["RPE_INFO_TEXT3"] = {
+		ruRU = "Комплекты экипировки соответствуют наборам Быстрого Старта",
+	},
+	["RPE_TOOLTIP_LINE1"] = {
+		ruRU = "Доступно обновление экипировки!",
+	},
+	["RPE_TOOLTIP_LINE2"] = {
+		ruRU = "Ваш уровень экипировки: |c%s%d|r",
+	},
+	["RPE_TOOLTIP_LINE3"] = {
+		ruRU = "Доступный уровень PVE экипировки: |c%s%d|r",
+	},
+	["RPE_TOOLTIP_LINE4"] = {
+		ruRU = "Доступный уровень PVP экипировки: |c%s%d|r",
+	},
+	["RPE_NO_SPEC_SELECTED"] = {
+		ruRU = "Выберите специализацию",
+	},
+	["RPE_EQUIP_ITEMS"] = {
+		ruRU = "Экипировать на персонажа",
+	},
+	["RPE_EQUIP_ITEMS_TOOLTIP"] = {
+		ruRU = "При выборе \"Экипировать на персонажа\" - все экипированные предметы на вашем персонаже перенесутся в сумку, а новый приобретенный комплект экипировки будет автоматически надет на вашего персонажа.\nВ обратном случае новый комплект экипировки будет ожидать вас в инвентаре.",
+	},
+	["BOOST_PREVIEW_SELECT_CLASS"] = {
+		ruRU = "Выберите класс",
+	},
+	["BOOST_PREVIEW_SELECT_SPEC"] = {
+		ruRU = "Выберите специализацию",
+	},
+	["BOOST_PREVIEW_PVP_SPEC_NOT_AVAILABLE"] = {
+		ruRU = "PVP экипировка отсутствует",
+	},
+	["CHARACTER_CREATION_STATUS_1"] = {
+		ruRU = "Это действие невозможно для неподтвержденных учетных записей",
+	},
+	["ENABLE_GLUE_MUSIC"] = {
+		ruRU = "Музыка главного меню",
+	},
+	["BOOST_REFUND_DESCRIPTION"] = {
+		ruRU = "Вы хотите воспользоваться услугой возврата Быстрого Старта?\nОбратите внимание, сумма выплаты зависит от стоимости, по которой вы приобретали Быстрый Старт, а не от текущей стоимости Быстрого Старта. Отменить услугу возврата после подтверждения будет невозможно, но вы сможете купить Быстрый Старт заново за полную стоимость, актуальную на момент новой покупки.",
+	},
+	["BOOST_REFUND_CONFIRM"] = {
+		ruRU = "СОГЛАСЕН",
+	},
+	["BOOST_REFUND_CONFIRM_INSTRUCTION"] = {
+		ruRU = "Для подтверждения введите слово \"СОГЛАСЕН\"",
+	},
+	["BOOST_CANCEL_TITLE"] = {
+		ruRU = "Отмена Быстрого Старта",
+	},
+	["BOOST_CANCEL_DESCRIPTION"] = {
+		ruRU = "Вы хотите воспользоваться услугой отмены Быстрого Старта. Ее можно применить 1 раз на каждый полученный вами Быстрый старт.",
+	},
+	["BOOST_CANCEL_WARNING"] = {
+		ruRU = "Обратите внимание, что персонаж будет безвозвратно удален, и вернуть его невозможно.",
+	},
+	["BOOST_CANCEL_CONFIRM"] = {
+		ruRU = "УДАЛИТЬ",
+	},
+	["BOOST_CANCEL_CONFIRM_INSTRUCTION"] = {
+		ruRU = "Для подтверждения введите слово \"УДАЛИТЬ\"",
+	},
+	["CHARACTER_SERVICES_AVAILABLE"] = {
+		ruRU = "Персонажу доступны особые услуги"
+	},
+	["GLUE_STATUS_DIALOG_TEXT_200"] = {
+		ruRU = "Вы не можете удалить персонажа с активным периодом отмены Быстрого Старта.",
+	},
 }
 
 do
 	local _G = _G
 	local next = next
 	local locale = GetLocale()
-	for key, data in next, SIRUS_LOCALIZATION do
+	for key, data in next, GLUE_STRINGS do
 		_G[key] = data[locale] or data.enGB or key
 	end
-	table.wipe(SIRUS_LOCALIZATION)
-	SIRUS_LOCALIZATION = nil
+	table.wipe(GLUE_STRINGS)
+	GLUE_STRINGS = nil
 end

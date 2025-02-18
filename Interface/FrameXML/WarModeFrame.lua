@@ -78,6 +78,8 @@ function WarModeMixin:OnEvent(event, ...)
 					GMError(string.format("[ASMSG_WARMODE_SET_MODE] Unknown Warmode status #%s", status))
 				end
 			end
+		elseif prefix == "ASMSG_WARMODE_ASSIST_SET_INACTIVE" then
+			FireCustomClientEvent("WARMODE_ASSIST_SET_INACTIVE", msg == "1")
 		end
 	elseif event == "SERVICE_STATE_UPDATE" then
 		self.ActivateButton:UpdateState()

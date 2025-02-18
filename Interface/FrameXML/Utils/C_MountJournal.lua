@@ -1,3 +1,5 @@
+local IsGMAccount = IsGMAccount
+
 local COLLECTION_MOUNTDATA = COLLECTION_MOUNTDATA;
 
 Enum.MountAbility = {
@@ -109,7 +111,7 @@ local realmFilterData = {
 	[E_REALM_ID.SIRUS]		= 0x8,
 };
 
-local function MountMathesFilter(collectedShown, notCollectedShown, isCollected, abilityShown, sourceShown, factionShown, name)
+local function MountMathesFilter(data, collectedShown, notCollectedShown, isCollected, abilityShown, sourceShown, factionShown, isGM)
 	if collectedShown and isCollected then
 		return false;
 	end
@@ -130,8 +132,17 @@ local function MountMathesFilter(collectedShown, notCollectedShown, isCollected,
 		return false;
 	end
 
-	if SEARCH_FILTER ~= "" and not string.find(string.lower(name), SEARCH_FILTER, 1, true) then
-		return false;
+	if SEARCH_FILTER ~= "" then
+		if isGM then
+			local searchID = tonumber(SEARCH_FILTER)
+			if searchID and (searchID == data.itemID or searchID == data.spellID or searchID == data.creatureID) then
+				return true
+			end
+		end
+
+		if not data.name or not string.find(string.lower(data.name), SEARCH_FILTER, 1, true) then
+			return false;
+		end
 	end
 
 	return true;
@@ -160,22 +171,25 @@ function FilteredMountJornal()
 		local sourceFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_SOURCE_FILTER")) or 0;
 		local travelingMerchantFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_TRAVELING_MERCHANT_FILTER")) or 0;
 		local factionFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_FACTION_FILTER")) or 0;
+		local isGM = IsGMAccount()
 
 		for i = 1, #COLLECTION_MOUNTDATA do
 			local mountInfo = COLLECTION_MOUNTDATA[i];
-			local product = CUSTOM_ROLLED_ITEMS_IN_SHOP[mountInfo.hash];
-			local currency = product and product.currency or mountInfo.currency;
+			local productID, price, originalPrice, currencyType = mountInfo.hash and C_StorePublic.GetRolledItemInfoByHash(mountInfo.hash)
+			if not productID then
+				currencyType = mountInfo.currency;
+			end
 			local sourceType;
 			if mountInfo.holidayText ~= "" then
 				sourceType = 6;
-			elseif currency and currency ~= 0 and mountInfo.lootType ~= 15 then
+			elseif currencyType and currencyType ~= 0 and mountInfo.lootType ~= 15 then
 				sourceType = 7;
 			elseif mountInfo.lootType == 0 and mountInfo.shopCategory == 3 then
 				sourceType = 7;
 			else
 				sourceType = SOURCE_TYPES[mountInfo.lootType] or 1;
 			end
-			local sourceFlag = ((product or sourceType == 7) or mountInfo.lootType ~= 0) and bit.lshift(1, sourceType - 1) or 0;
+			local sourceFlag = ((productID or sourceType == 7) or mountInfo.lootType ~= 0) and bit.lshift(1, sourceType - 1) or 0;
 			local travelingMerchantFlag = 0;
 			if type(mountInfo.ownersList) == "table" and #mountInfo.ownersList > 0 then
 				for _, ownerID in ipairs(mountInfo.ownersList) do
@@ -200,10 +214,11 @@ function FilteredMountJornal()
 				end
 			end
 
-			if MountMathesFilter(collectedShown, notCollectedShown, COMPANION_INFO[mountInfo.hash],
+			if MountMathesFilter(mountInfo, collectedShown, notCollectedShown, COMPANION_INFO[mountInfo.hash],
 				abilityFiltersFlag == 0 or bit.band(abilityFiltersFlag, (mountInfo.specialAbilities or 0)) ~= (mountInfo.specialAbilities or 0),
 				(sourceFiltersFlag == 0 and travelingMerchantFiltersFlag == 0) or (bit.band(sourceFiltersFlag, sourceFlag) ~= sourceFlag or bit.band(travelingMerchantFiltersFlag, travelingMerchantFlag) ~= travelingMerchantFlag),
-				factionFiltersFlag == 0 or bit.band(factionFiltersFlag, factionFlag) ~= factionFlag, mountInfo.name or "")
+				factionFiltersFlag == 0 or bit.band(factionFiltersFlag, factionFlag) ~= factionFlag,
+				isGM)
 			then
 				MOUNT_INFO_BY_INDEX[#MOUNT_INFO_BY_INDEX + 1] = i;
 			end
@@ -241,29 +256,39 @@ local function InitMountInfo()
 			MOUNT_INFO_BY_SPELL_ID[data.spellID] = data;
 		end
 	end
+end
 
+local function PopulateMountInfo()
 	UpdateCompanionInfo();
 	FilteredMountJornal();
 end
 
+function ReloadCollectionMountData()
+	COLLECTION_MOUNTDATA = _G.COLLECTION_MOUNTDATA
+	table.wipe(MOUNT_INFO_BY_MOUNT_ID)
+	table.wipe(MOUNT_INFO_BY_ITEM_ID)
+	table.wipe(MOUNT_INFO_BY_SPELL_ID)
+	InitMountInfo()
+end
+
+InitMountInfo()
+
 local function GetMountInfo(infoTable, value)
 	local mountInfo = infoTable[value];
 	if mountInfo then
-		local _, active, isFavorite, isFactionSpecific, faction, isCollected, currency, price, productID, priceText = nil, false, false, false, nil, false, nil, nil, nil, nil;
+		local _, active, isFavorite, isFactionSpecific, faction, isCollected, priceText = nil, false, false, false, nil, false, nil;
 		if COMPANION_INFO[mountInfo.hash] then
 			_, _, _, _, active = GetCompanionInfo("MOUNT", COMPANION_INFO[mountInfo.hash]);
 			isCollected = true;
 		end
-		local product = CUSTOM_ROLLED_ITEMS_IN_SHOP[mountInfo.hash];
-		if product then
-			currency = product.currency;
-			price = product.price;
-			productID = product.productID;
-		else
-			currency = mountInfo.currency;
+
+		local productID, price, originalPrice, currencyType = mountInfo.hash and C_StorePublic.GetRolledItemInfoByHash(mountInfo.hash)
+		if not productID then
+			currencyType = mountInfo.currency;
 			price = mountInfo.price;
 		end
-		local sourceType = mountInfo.holidayText ~= "" and 6 or (currency and currency ~= 0 and mountInfo.lootType ~= 15 and 7 or (SOURCE_TYPES[mountInfo.lootType] or 1));
+
+		local sourceType = mountInfo.holidayText ~= "" and 6 or (currencyType and currencyType ~= 0 and mountInfo.lootType ~= 15 and 7 or (SOURCE_TYPES[mountInfo.lootType] or 1));
 		if SIRUS_MOUNTJOURNAL_FAVORITE_PET[mountInfo.hash] then
 			isFavorite = true;
 		end
@@ -282,23 +307,23 @@ local function GetMountInfo(infoTable, value)
 
 		return mountInfo.name, mountInfo.spellID, mountInfo.icon, active, sourceType, isFavorite,
 			isFactionSpecific, faction, isCollected, mountInfo.hash,
-			mountInfo.creatureID, mountInfo.itemID, currency, price, productID,
+			mountInfo.creatureID, mountInfo.itemID, currencyType, price, productID,
 			priceText or "", mountInfo.descriptionText or "", mountInfo.holidayText or "";
 	end
 end
 
 local abilityIcons = {
-	[1] = "Interface/Collections/Icons/s_speed_60",
-	[2] = "Interface/Collections/Icons/s_speed_100",
-	[3] = "Interface/Collections/Icons/s_speed_280",
-	[4] = "Interface/Collections/Icons/s_speed_310",
-	[5] = "Interface/Collections/Icons/s_water_walk",
-	[6] = "Interface/Collections/Icons/s_swimming_mount",
-	[7] = "Interface/Collections/Icons/s_two_sits",
-	[8] = "Interface/Collections/Icons/s_three_sits",
-	[9] = "Interface/Collections/Icons/s_mount_vendor",
-	[10] = "Interface/Collections/Icons/s_unblock_310",
-	[11] = "Interface/Collections/Icons/s_accountwide_mount_2",
+	[1] = "Interface/Custom/CollectionIcons/s_speed_60",
+	[2] = "Interface/Custom/CollectionIcons/s_speed_100",
+	[3] = "Interface/Custom/CollectionIcons/s_speed_280",
+	[4] = "Interface/Custom/CollectionIcons/s_speed_310",
+	[5] = "Interface/Custom/CollectionIcons/s_water_walk",
+	[6] = "Interface/Custom/CollectionIcons/s_swimming_mount",
+	[7] = "Interface/Custom/CollectionIcons/s_two_sits",
+	[8] = "Interface/Custom/CollectionIcons/s_three_sits",
+	[9] = "Interface/Custom/CollectionIcons/s_mount_vendor",
+	[10] = "Interface/Custom/CollectionIcons/s_unblock_310",
+	[11] = "Interface/Custom/CollectionIcons/s_accountwide_mount_2",
 };
 
 local function GetMountAbilitiesInfo(infoTable, value)
@@ -325,13 +350,12 @@ frame:RegisterEvent("VARIABLES_LOADED");
 frame:RegisterEvent("PLAYER_LOGIN");
 frame:SetScript("OnEvent", function(_, event, companionType)
 	if (event == "COMPANION_UPDATE" and (not companionType or companionType == "CRITTER")) or event == "COMPANION_LEARNED" or event == "COMPANION_UNLEARNED" then
-		UpdateCompanionInfo();
-		FilteredMountJornal();
+		PopulateMountInfo()
 	elseif event == "VARIABLES_LOADED" then
-		frame:RegisterCustomEvent("STORE_ROLLED_ITEMS_IN_SHOP");
+		frame:RegisterCustomEvent("STORE_ROLLED_ITEM_HASHES");
 	elseif event == "PLAYER_LOGIN" then
-		InitMountInfo();
-	elseif event == "STORE_ROLLED_ITEMS_IN_SHOP" then
+		PopulateMountInfo();
+	elseif event == "STORE_ROLLED_ITEM_HASHES" then
 		FilteredMountJornal();
 	end
 end);
@@ -422,6 +446,20 @@ function C_MountJournal.GetMountAbilitiesInfoByID(mountID)
 	end
 
 	return GetMountAbilitiesInfo(MOUNT_INFO_BY_MOUNT_ID, mountID);
+end
+
+function C_MountJournal.GetMountAbilitiesInfoByItemID(itemID)
+	if type(itemID) == "string" then
+		if string.find(itemID, "item:", 1, true) then
+			itemID = string.match(itemID, "item:(%d+)")
+		end
+		itemID = tonumber(itemID);
+	end
+	if type(itemID) ~= "number" then
+		error("Usage: C_MountJournal.GetMountAbilitiesInfoByItemID(itemID)", 2);
+	end
+
+	return GetMountAbilitiesInfo(MOUNT_INFO_BY_ITEM_ID, itemID);
 end
 
 function C_MountJournal.GetAbilityInfo(abilityID)

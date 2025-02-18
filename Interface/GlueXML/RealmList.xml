@@ -326,10 +326,10 @@
 
 				<Layers>
 					<Layer level="BACKGROUND">
-						<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_backdrop"/>
+						<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark-Backdrops-Background-Main"/>
 					</Layer>
 					<Layer level="BORDER">
-						<Texture name="$parentTopShadow" parentKey="TopShadow" inherits="GlueDark_backdropTopSplash2">
+						<Texture name="$parentTopShadow" parentKey="TopShadow" inherits="GlueDark-Backdrops-Shadow-Top2">
 							<Size x="0" y="182"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" x="0" y="0"/>
@@ -427,7 +427,11 @@
 	<Frame name="RealmList" toplevel="true" parent="GlueParent" setAllPoints="true" enableMouse="true" enableKeyboard="true" frameStrata="DIALOG" hidden="true">
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture setAllPoints="true">
+				<Texture>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-1" y="1"/>
+						<Anchor point="BOTTOMRIGHT" x="1" y="-1"/>
+					</Anchors>
 					<Color a="0.9" r="0" g="0" b="0"/>
 				</Texture>
 			</Layer>
@@ -455,20 +459,12 @@
 					<Anchor point="LEFT" relativeTo="$parentMainRealmCardHolder" x="0" y="0"/>
 				</Anchors>
 			</Frame>
-			<Frame name="$parentAlgalonRealmCard" parentKey="AlgalonRealmCard" inherits="RealmListCardTemplate">
-				<Attributes>
-					<Attribute name="style" value="Algalon" type="string"/>
-				</Attributes>
-				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentSoulseekerRealmCard" relativePoint="RIGHT" x="20" y="0"/>
-				</Anchors>
-			</Frame>
 			<Frame name="$parentScourgeRealmCard" parentKey="ScourgeRealmCard" inherits="RealmListCardTemplate">
 				<Attributes>
 					<Attribute name="style" value="Scourge" type="string"/>
 				</Attributes>
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentAlgalonRealmCard" relativePoint="RIGHT" x="20" y="0"/>
+					<Anchor point="LEFT" relativeTo="$parentSoulseekerRealmCard" relativePoint="RIGHT" x="20" y="0"/>
 				</Anchors>
 			</Frame>
 			<Frame name="$parentSirusRealmCard" parentKey="SirusRealmCard" inherits="RealmListCardTemplate">

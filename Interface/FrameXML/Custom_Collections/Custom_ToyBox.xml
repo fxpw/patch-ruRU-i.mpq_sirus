@@ -23,6 +23,26 @@
 
 	<Frame name="ToyBox" parent="CollectionsJournal" setAllPoints="true" hidden="true">
 		<Frames>
+			<Button name="$parentTutorialButton" parentKey="TutorialButton" inherits="MainHelpPlateButton" toplevel="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="40" y="18"/>
+				</Anchors>
+				<Scripts>
+					<OnEnter>
+						Main_HelpPlate_Button_OnLeave(self)
+						GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
+						GameTooltip_AddNormalLine(GameTooltip, HELPTIP_TOYS_HEAD)
+						GameTooltip_AddBlankLineToTooltip(GameTooltip)
+						GameTooltip_AddHighlightLine(GameTooltip, HELPTIP_TOYS)
+						GameTooltip:Show()
+					</OnEnter>
+					<OnLeave>
+						Main_HelpPlate_Button_OnLeave(self)
+						GameTooltip:Hide()
+					</OnLeave>
+				</Scripts>
+			</Button>
+
 			<StatusBar name="$parentProgressBar" parentKey="ProgressBar" inherits="CollectionsProgressBarTemplate"/>
 
 			<!-- Searching -->

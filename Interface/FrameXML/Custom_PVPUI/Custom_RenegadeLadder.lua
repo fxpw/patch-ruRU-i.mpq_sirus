@@ -1,20 +1,6 @@
---	Filename:	Custom_RenegadeLadder.lua
---	Project:	Custom Game Interface
---	Author:		Nyll & Blizzard Entertainment
-
-RenegadeLadderFrameMixin = {}
-
 UIPanelWindows["RenegadeLadderFrame"] = { area = "left",	pushable = 0, whileDead = 1, xOffset = "15", yOffset = "-10", width = 593, height = 428 }
 
-enum:E_LADDER_PLAYER_INFO {
-    "RANK",
-    "NAME",
-    "RACEID",
-    "CLASSID",
-    "GENDER",
-    "KILLS",
-    "TEAMID"
-}
+local CACHE_TIME_TO_LIFE = 300
 
 enum:E_RENEGADE_KINGS {
     "NAME",
@@ -23,11 +9,12 @@ enum:E_RENEGADE_KINGS {
     "AREAID"
 }
 
+RenegadeLadderFrameMixin = {}
+
 function RenegadeLadderFrameMixin:OnLoad()
     self:RegisterHookListener()
     self:RegisterEventListener()
 
-    self.CacheTTL       = 300
     self.factionIcons   = {
         [PLAYER_FACTION_GROUP.Horde]    = "right",
         [PLAYER_FACTION_GROUP.Alliance] = "left",
@@ -36,11 +23,19 @@ function RenegadeLadderFrameMixin:OnLoad()
 
     RaiseFrameLevelByTwo(self.Shadows)
 
-    local function UpdateFaction()
+    C_FactionManager:RegisterFactionOverrideCallback(function()
         SetPortraitToTexture(self.Art.portrait, PVPUIFRAME_PORTRAIT_DATA[C_Unit.GetFactionID("player")])
-    end
+    end, true)
 
-    C_FactionManager:RegisterFactionOverrideCallback(UpdateFaction, true)
+	self.helpPlate = {
+		FramePos = { x = 0, y = -24 },
+		FrameSize = { width = 595, height = 402 },
+		[1] = { ButtonPos = { x = 156, y = -50 }, HighLightBox = { x = 4, y = -34, width = 212, height = 80 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_RENEGADELADDERFRAME_TUTORIAL_1 },
+		[2] = { ButtonPos = { x = 92, y = -224 }, HighLightBox = { x = 4, y = -124, width = 212, height = 274 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_RENEGADELADDERFRAME_TUTORIAL_2 },
+		[3] = { ButtonPos = { x = 360, y = -194 }, HighLightBox = { x = 222, y = -34, width = 334, height = 318 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_RENEGADELADDERFRAME_TUTORIAL_3 },
+		[4] = { ButtonPos = { x = 556, y = -48 }, HighLightBox = { x = 559, y = -51, width = 40, height = 40 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_RENEGADELADDERFRAME_TUTORIAL_4 },
+		[5] = { ButtonPos = { x = 562, y = -227 }, HighLightBox = { x = 559, y = -101, width = 26, height = 300 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_RENEGADELADDERFRAME_TUTORIAL_5 },
+	}
 end
 
 function RenegadeLadderFrameMixin:OnShow()
@@ -65,6 +60,25 @@ function RenegadeLadderFrameMixin:OnShow()
 
     -- TODO: Если будет нужно добавить кэширование +/- на 30 секунд, дабы не было флуда запросами на сервер.
     SendServerMessage("ACMSG_RENEGADE_KINGS")
+
+	EventRegistry:TriggerEvent("RenegadeLadderFrame.OnShow")
+end
+
+function RenegadeLadderFrameMixin:OnHide()
+	UpdateMicroButtons()
+	LAST_FINDPARTY_FRAME = self
+
+	HelpPlate_Hide(false)
+
+	EventRegistry:TriggerEvent("RenegadeLadderFrame.OnHide")
+end
+
+function RenegadeLadderFrameMixin:ToggleTutorial()
+	if not HelpPlate_IsShowing(self.helpPlate) then
+		HelpPlate_Show(self.helpPlate, self, self.TutorialButton)
+	else
+		HelpPlate_Hide(true)
+	end
 end
 
 function RenegadeLadderFrameMixin:VARIABLES_LOADED()
@@ -81,37 +95,11 @@ function RenegadeLadderFrameMixin:GetActiveTab()
     return self.activeTab or 0
 end
 
----@param playerData table
----@return table playerInfoStorage
-function RenegadeLadderFrameMixin:GeneratePlayerInfo( playerData )
-    if not playerData or #playerData == 0 then
-        return
-    end
-
-    local playerInfoStorage = {}
-
-    for index, data in pairs(playerData) do
-        local playerInfo = C_Split(data, ":")
-
-        playerInfoStorage[index] = {
-            rank        = tonumber(playerInfo[E_LADDER_PLAYER_INFO.RANK]),
-            name        = playerInfo[E_LADDER_PLAYER_INFO.NAME],
-            raceID      = tonumber(playerInfo[E_LADDER_PLAYER_INFO.RACEID]),
-            classID     = tonumber(playerInfo[E_LADDER_PLAYER_INFO.CLASSID]),
-            gender      = tonumber(playerInfo[E_LADDER_PLAYER_INFO.GENDER]),
-            kills       = tonumber(playerInfo[E_LADDER_PLAYER_INFO.KILLS]),
-            teamID      = SERVER_FACTION_TO_GAME_FACTION[tonumber(playerInfo[E_LADDER_PLAYER_INFO.TEAMID])]
-        }
-    end
-
-    return playerInfoStorage
-end
-
 ---@param key string
 ---@param value string | number | table
 ---@param isNeedTTL? boolean
 function RenegadeLadderFrameMixin:SetCache( key, value, isNeedTTL )
-    C_CacheInstance:Set(key, value, isNeedTTL and self.CacheTTL)
+    C_CacheInstance:Set(key, value, isNeedTTL and CACHE_TIME_TO_LIFE)
 end
 
 ---@param key string
@@ -166,14 +154,20 @@ function RenegadeLadderFrameMixin:UpdateLocalPlayerInfo()
         frame.PlayerName:SetText(playerInfo.name)
         frame.Rating:SetText(playerInfo.kills)
 
-        frame.RaceIcon.Icon:SetTexture(string.format("Interface\\Custom_LoginScreen\\RaceIcon\\RACE_ICON_%s%s", string.upper(playerInfo.raceInfo.clientFileString), S_GENDER_FILESTRING[playerInfo.gender]))
+        frame.RaceIcon.Icon:SetTexture(string.format("Interface\\Custom\\RaceIcon\\RACE_ICON_%s%s", string.upper(playerInfo.raceInfo.clientFileString), S_GENDER_FILESTRING[playerInfo.gender]))
         frame.RaceIcon.raceName = playerInfo.raceInfo.raceName
 
-        frame.ClassIcon.Icon:SetTexture("Interface\\Custom_LoginScreen\\ClassIcon\\CLASS_ICON_"..string.upper(playerInfo.classInfo.fileString))
+        frame.ClassIcon.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..string.upper(playerInfo.classInfo.fileString))
         frame.ClassIcon.classLocalizedName = playerInfo.classInfo.localizedName
 
-        frame.FactionIcon.Icon:SetAtlas("objectivewidget-icon-"..self.factionIcons[playerInfo.teamID])
-        frame.FactionIcon.factionName = _G["FACTION_"..string.upper(PLAYER_FACTION_GROUP[playerInfo.teamID])]
+		frame.FactionIcon.Icon:SetAtlas("objectivewidget-icon-"..self.factionIcons[playerInfo.factionID])
+		frame.FactionIcon.factionName = _G["FACTION_"..string.upper(PLAYER_FACTION_GROUP[playerInfo.factionID])]
+
+		if playerInfo.zodiacID then
+			local _, zodiacName, zodiacDescription, zodiacIcon, zodiacAtlas = C_ZodiacSign.GetZodiacSignInfo(playerInfo.zodiacID)
+			frame.ZodiacIcon.Icon:SetTexture(zodiacIcon)
+			frame.ZodiacIcon.name = zodiacName
+		end
     end
 
     frame.Number:SetShown(playerInfo)
@@ -182,6 +176,7 @@ function RenegadeLadderFrameMixin:UpdateLocalPlayerInfo()
     frame.RaceIcon:SetShown(playerInfo)
     frame.ClassIcon:SetShown(playerInfo)
     frame.FactionIcon:SetShown(playerInfo)
+	frame.ZodiacIcon:SetShown(playerInfo and playerInfo.zodiacID)
 
     frame.PlayerNotRank:SetShown(not playerInfo)
     frame.Background:SetDesaturated(not playerInfo)
@@ -231,15 +226,15 @@ function RenegadeLadderFrameMixin:GetLadderPlayerInfo( index )
     playerInfo.classInfo = playerInfo.classInfo or {
         localizedName   = classLocalizedName,
         fileString      = classFileString,
-        icon            = "Interface\\Custom_LoginScreen\\ClassIcon\\CLASS_ICON_"..string.upper(classFileString)
+        icon            = "Interface\\Custom\\ClassIcon\\CLASS_ICON_"..string.upper(classFileString)
     }
 
     playerInfo.raceInfo = playerInfo.raceInfo or C_CreatureInfo.GetRaceInfo(playerInfo.raceID)
-    playerInfo.raceInfo.icon = playerInfo.raceInfo.icon or string.format("Interface\\Custom_LoginScreen\\RaceIcon\\RACE_ICON_%s%s", string.upper(playerInfo.raceInfo.clientFileString), S_GENDER_FILESTRING[playerInfo.gender])
+    playerInfo.raceInfo.icon = playerInfo.raceInfo.icon or string.format("Interface\\Custom\\RaceIcon\\RACE_ICON_%s%s", string.upper(playerInfo.raceInfo.clientFileString), S_GENDER_FILESTRING[playerInfo.gender])
 
     playerInfo.factionInfo = playerInfo.factionInfo or {}
-    playerInfo.factionInfo.name = _G["FACTION_"..string.upper(PLAYER_FACTION_GROUP[playerInfo.teamID])]
-    playerInfo.factionInfo.iconAtlas = playerInfo.factionInfo.iconAtlas or "objectivewidget-icon-"..self.factionIcons[playerInfo.teamID]
+	playerInfo.factionInfo.name = _G["FACTION_"..string.upper(PLAYER_FACTION_GROUP[playerInfo.factionID])]
+	playerInfo.factionInfo.iconAtlas = playerInfo.factionInfo.iconAtlas or ("objectivewidget-icon-"..self.factionIcons[playerInfo.factionID])
 
     playerInfo.index = index
 
@@ -285,6 +280,15 @@ function RenegadeLadderFrameMixin:UpdateLadderScrollFrame()
             button.FactionIcon.factionName = playerInfo.factionInfo.name
             button.FactionIcon:SetAlpha(playerInfo.factionInfo.name == FACTION_RENEGADE and 1 or 0.5)
 
+			if playerInfo.zodiacID then
+				local _, zodiacName, zodiacDescription, zodiacIcon, zodiacAtlas = C_ZodiacSign.GetZodiacSignInfo(playerInfo.zodiacID)
+				button.ZodiacIcon.Icon:SetTexture(zodiacIcon)
+				button.ZodiacIcon.name = zodiacName
+				button.ZodiacIcon:Show()
+			else
+				button.ZodiacIcon:Hide()
+			end
+
             button.FontStringFrame.Rating:SetText(playerInfo.kills)
 
             button.Background:SetShown(index % 2 ~= 0)
@@ -300,41 +304,36 @@ function RenegadeLadderFrameMixin:UpdateLadderScrollFrame()
     HybridScrollFrame_Update(scrollFrame, totalHeight, scrollFrame:GetHeight())
 end
 
-function RenegadeLadderFrameMixin:RENEGADE_LADDER_TOP( playerData )
-    local playerInfo = self:GeneratePlayerInfo(playerData)
-
-    if not playerInfo then
+function RenegadeLadderFrameMixin:RENEGADE_LADDER_TOP(playerEntryList)
+	if not playerEntryList then
         for _, tabButton in pairs(self.tabs) do
             self:SetCache("RENEGADE_LADDER_PLAYERS_CACHE_"..tabButton.buttonID, {}, true)
         end
 
         self:SetCache("RENEGADE_LADDER_PLAYER", {}, true)
     else
-        self:SetCache("RENEGADE_LADDER_PLAYERS_CACHE_"..self:GetActiveTab(), playerInfo, true)
+		self:SetCache("RENEGADE_LADDER_PLAYERS_CACHE_"..self:GetActiveTab(), playerEntryList, true)
     end
 
     self:HideLoading()
     self:UpdateLadderScrollFrame()
 end
 
-function RenegadeLadderFrameMixin:RENEGADE_LADDER_CLASS_TOP( playerData )
-    local playerInfo = self:GeneratePlayerInfo(playerData)
-    self:SetCache("RENEGADE_LADDER_PLAYERS_CACHE_"..self:GetActiveTab(), playerInfo, true)
+function RenegadeLadderFrameMixin:RENEGADE_LADDER_CLASS_TOP(playerEntryList)
+	self:SetCache("RENEGADE_LADDER_PLAYERS_CACHE_"..self:GetActiveTab(), playerEntryList, true)
 
     self:HideLoading()
     self:UpdateLadderScrollFrame()
 end
 
-function RenegadeLadderFrameMixin:RENEGADE_LADDER_PLAYER( playerData )
-    local playerInfo = self:GeneratePlayerInfo(playerData)
-
-    self:SetCache("RENEGADE_LADDER_PLAYER", playerInfo, true)
+function RenegadeLadderFrameMixin:RENEGADE_LADDER_PLAYER(playerEntryList)
+	self:SetCache("RENEGADE_LADDER_PLAYER", playerEntryList, true)
     self:UpdateLocalPlayerInfo()
 end
 
-function RenegadeLadderFrameMixin:RENEGADE_LADDER_SEARCH_RESULT( playerData )
+function RenegadeLadderFrameMixin:RENEGADE_LADDER_SEARCH_RESULT(playerEntryList)
     self.Container.RightContainer.TopContainer.SearchFrame.SearchButton:StartDelay()
-    self:RENEGADE_LADDER_CLASS_TOP( playerData )
+	self:RENEGADE_LADDER_CLASS_TOP(playerEntryList)
 end
 
 function RenegadeLadderFrameMixin:ASMSG_RENEGADE_KINGS( msg )
@@ -368,7 +367,7 @@ function RenegadeLadderTabsMixin:OnLoad()
     if icon then
         self.Icon:SetTexture("Interface\\Icons\\"..icon)
     else
-        self.Icon:SetTexture("Interface\\Custom_LoginScreen\\ClassIcon\\CLASS_ICON_"..string.upper(className))
+        self.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..string.upper(className))
     end
 
     self:SetFrameLevel(self:GetParent():GetFrameLevel() + 3)
@@ -381,10 +380,13 @@ end
 
 function RenegadeLadderTabsMixin:OnClick()
     local mainFrame = self:GetParent():GetParent()
+	local playerCache, expiredTTL = mainFrame:GetCache("RENEGADE_LADDER_PLAYERS_CACHE_"..self.buttonID)
 
     if mainFrame:GetActiveTab() == self.buttonID then
         self:SetChecked(true)
-        return
+		if not expiredTTL then
+			return
+		end
     end
 
     for _, button in pairs(mainFrame.tabs) do
@@ -392,8 +394,6 @@ function RenegadeLadderTabsMixin:OnClick()
     end
 
     mainFrame:SetActiveTab(self.buttonID)
-
-    local playerCache = mainFrame:GetCache("RENEGADE_LADDER_PLAYERS_CACHE_"..self.buttonID)
 
     self:GetParent().RightContainer.TopContainer.SearchFrame:SetShown(self.buttonID == 2)
     self:GetParent().RightContainer.TopContainer.TitleFrame:SetShown(self.buttonID ~= 2)

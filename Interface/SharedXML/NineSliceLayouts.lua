@@ -267,6 +267,17 @@ NineSliceLayouts =
 		RightEdge			= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-EdgeRight", },
 	},
 
+	PKBT_ItemPlateHighlight = {
+		TopLeftCorner		= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-Highlight-CornerTopLeft", x = -8, y = 8, },
+		TopRightCorner		= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-Highlight-CornerTopRight", x = 8, y = 8, },
+		BottomLeftCorner	= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-Highlight-CornerBottomLeft", x = -8, y = -8, },
+		BottomRightCorner	= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-Highlight-CornerBottomRight", x = 8, y = -8, },
+		TopEdge				= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-Highlight-EdgeTop", },
+		BottomEdge			= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-Highlight-EdgeBottom", },
+		LeftEdge			= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-Highlight-EdgeLeft", },
+		RightEdge			= { layer = "BORDER", atlas = "PKBT-ItemPlate-Border-Highlight-EdgeRight", },
+	},
+
 	PKBT_PanelRhodiumBorder = {
 		TopLeftCorner		= { layer = "BORDER", atlas = "PKBT-Panel-Rhodium-Border-CornerTopLeft", x = -1, y = 1, },
 		TopRightCorner		= { layer = "BORDER", atlas = "PKBT-Panel-Rhodium-Border-CornerTopRight", x = 1, y = 1, },
@@ -301,14 +312,128 @@ NineSliceLayouts =
 	},
 
 	PKBT_PanelBronzeGlow = {
-		TopLeftCorner		= { layer = "BORDER", atlas = "PKBT-Panel-Bronze-Glow-CornerTopLeft", x = -15, y = 17 },
-		TopRightCorner		= { layer = "BORDER", atlas = "PKBT-Panel-Bronze-Glow-CornerTopRight", x = 15, y = 17, },
-		BottomLeftCorner	= { layer = "BORDER", atlas = "PKBT-Panel-Bronze-Glow-CornerBottomLeft", x = -15, y = -17, },
-		BottomRightCorner	= { layer = "BORDER", atlas = "PKBT-Panel-Bronze-Glow-CornerBottomRight", x = 15, y = -17, },
+		TopLeftCorner		= { layer = "BORDER", atlas = "PKBT-Panel-Bronze-Glow-CornerTopLeft", x = -17, y = 15 },
+		TopRightCorner		= { layer = "BORDER", atlas = "PKBT-Panel-Bronze-Glow-CornerTopRight", x = 16, y = 15, },
+		BottomLeftCorner	= { layer = "BORDER", atlas = "PKBT-Panel-Bronze-Glow-CornerBottomLeft", x = -17, y = -15, },
+		BottomRightCorner	= { layer = "BORDER", atlas = "PKBT-Panel-Bronze-Glow-CornerBottomRight", x = 16, y = -15, },
 		TopEdge				= { layer = "BORDER", atlas = "PKBT-Panel-Bronze-Glow-EdgeTop", },
 		BottomEdge			= { layer = "BORDER", atlas = "PKBT-Panel-Bronze-Glow-EdgeBottom", },
 		LeftEdge			= { layer = "BORDER", atlas = "PKBT-Panel-Bronze-Glow-EdgeLeft", },
 		RightEdge			= { layer = "BORDER", atlas = "PKBT-Panel-Bronze-Glow-EdgeRight", },
+	},
+
+	PKBT_PanelMetalBlackBorder = {
+		TopLeftCorner		= { layer = "BORDER", atlas = "PKBT-Panel-MetalBlack-Border-CornerTopLeft", x = -7, y = 9, },
+		TopRightCorner		= { layer = "BORDER", atlas = "PKBT-Panel-MetalBlack-Border-CornerTopRight", x = 7, y = 9, },
+		BottomLeftCorner	= { layer = "BORDER", atlas = "PKBT-Panel-MetalBlack-Border-CornerBottomLeft", x = -7, y = -9, },
+		BottomRightCorner	= { layer = "BORDER", atlas = "PKBT-Panel-MetalBlack-Border-CornerBottomRight", x = 7, y = -9, },
+		TopEdge				= { layer = "BORDER", atlas = "PKBT-Panel-MetalBlack-Border-EdgeTop", },
+		BottomEdge			= { layer = "BORDER", atlas = "PKBT-Panel-MetalBlack-Border-EdgeBottom", },
+		LeftEdge			= { layer = "BORDER", atlas = "PKBT-Panel-MetalBlack-Border-EdgeLeft", },
+		RightEdge			= { layer = "BORDER", atlas = "PKBT-Panel-MetalBlack-Border-EdgeRight", },
+	},
+
+	PKBT_PanelMetalBlackGlow = {
+		TopLeftCorner		= { layer = "BORDER", atlas = "PKBT-Panel-MetalBlack-Glow-CornerTopLeft", x = -18, y = 20 },
+		TopRightCorner		= { layer = "BORDER", atlas = "PKBT-Panel-MetalBlack-Glow-CornerTopRight", x = 18, y = 20, },
+		BottomLeftCorner	= { layer = "BORDER", atlas = "PKBT-Panel-MetalBlack-Glow-CornerBottomLeft", x = -18, y = -20, },
+		BottomRightCorner	= { layer = "BORDER", atlas = "PKBT-Panel-MetalBlack-Glow-CornerBottomRight", x = 18, y = -20, },
+		TopEdge				= { layer = "BORDER", atlas = "PKBT-Panel-MetalBlack-Glow-EdgeTop", },
+		BottomEdge			= { layer = "BORDER", atlas = "PKBT-Panel-MetalBlack-Glow-EdgeBottom", },
+		LeftEdge			= { layer = "BORDER", atlas = "PKBT-Panel-MetalBlack-Glow-EdgeLeft", },
+		RightEdge			= { layer = "BORDER", atlas = "PKBT-Panel-MetalBlack-Glow-EdgeRight", },
+	},
+
+	PKBT_PanelMetalBorder = {
+		TopLeftCorner		= { layer = "BORDER", atlas = "PKBT-Panel-Metal-Border-CornerTopLeft", x = -10, y = 10, },
+		TopRightCorner		= { layer = "BORDER", atlas = "PKBT-Panel-Metal-Border-CornerTopRight", x = 10, y = 10, },
+		BottomLeftCorner	= { layer = "BORDER", atlas = "PKBT-Panel-Metal-Border-CornerBottomLeft", x = -10, y = -10, },
+		BottomRightCorner	= { layer = "BORDER", atlas = "PKBT-Panel-Metal-Border-CornerBottomRight", x = 10, y = -10, },
+		TopEdge				= { layer = "BORDER", atlas = "PKBT-Panel-Metal-Border-EdgeTop", },
+		BottomEdge			= { layer = "BORDER", atlas = "PKBT-Panel-Metal-Border-EdgeBottom", },
+		LeftEdge			= { layer = "BORDER", atlas = "PKBT-Panel-Metal-Border-EdgeLeft", },
+		RightEdge			= { layer = "BORDER", atlas = "PKBT-Panel-Metal-Border-EdgeRight", },
+	},
+
+	PKBT_InputMultilineOpaque = {
+		TopLeftCorner		= { layer = "BORDER", atlas = "PKBT-InputMultiline-Opaque-Backdrop-CornerTopLeft", x = -14, y = 14, },
+		TopRightCorner		= { layer = "BORDER", atlas = "PKBT-InputMultiline-Opaque-Backdrop-CornerTopRight", x = 14, y = 14, },
+		BottomLeftCorner	= { layer = "BORDER", atlas = "PKBT-InputMultiline-Opaque-Backdrop-CornerBottomLeft", x = -14, y = -15, },
+		BottomRightCorner	= { layer = "BORDER", atlas = "PKBT-InputMultiline-Opaque-Backdrop-CornerBottomRight", x = 14, y = -15, },
+		TopEdge				= { layer = "BORDER", atlas = "PKBT-InputMultiline-Opaque-Backdrop-EdgeTop", },
+		BottomEdge			= { layer = "BORDER", atlas = "PKBT-InputMultiline-Opaque-Backdrop-EdgeBottom", },
+		LeftEdge			= { layer = "BORDER", atlas = "PKBT-InputMultiline-Opaque-Backdrop-EdgeLeft", },
+		RightEdge			= { layer = "BORDER", atlas = "PKBT-InputMultiline-Opaque-Backdrop-EdgeRight", },
+		Center				= { layer = "BORDER", atlas = "PKBT-InputMultiline-Opaque-Backdrop-Center", },
+	},
+
+	PKBT_InputMultilineTransparent = {
+		TopLeftCorner		= { layer = "BORDER", atlas = "PKBT-InputMultiline-Transparent-Backdrop-CornerTopLeft", x = -4, y = 3, },
+		TopRightCorner		= { layer = "BORDER", atlas = "PKBT-InputMultiline-Transparent-Backdrop-CornerTopRight", x = 4, y = 3, },
+		BottomLeftCorner	= { layer = "BORDER", atlas = "PKBT-InputMultiline-Transparent-Backdrop-CornerBottomLeft", x = -4, y = -4, },
+		BottomRightCorner	= { layer = "BORDER", atlas = "PKBT-InputMultiline-Transparent-Backdrop-CornerBottomRight", x = 4, y = -4, },
+		TopEdge				= { layer = "BORDER", atlas = "PKBT-InputMultiline-Transparent-Backdrop-EdgeTop", },
+		BottomEdge			= { layer = "BORDER", atlas = "PKBT-InputMultiline-Transparent-Backdrop-EdgeBottom", },
+		LeftEdge			= { layer = "BORDER", atlas = "PKBT-InputMultiline-Transparent-Backdrop-EdgeLeft", },
+		RightEdge			= { layer = "BORDER", atlas = "PKBT-InputMultiline-Transparent-Backdrop-EdgeRight", },
+		Center				= { layer = "BORDER", atlas = "PKBT-InputMultiline-Transparent-Backdrop-Center", },
+	},
+
+	PKBT_PanelSilverBorder = {
+		TopLeftCorner		= { layer = "BORDER", atlas = "PKBT-Panel-Silver-Border-CornerTopLeft", x = -1, y = 1, },
+		TopRightCorner		= { layer = "BORDER", atlas = "PKBT-Panel-Silver-Border-CornerTopRight", x = 1, y = 1, },
+		BottomLeftCorner	= { layer = "BORDER", atlas = "PKBT-Panel-Silver-Border-CornerBottomLeft", x = -1, y = -2, },
+		BottomRightCorner	= { layer = "BORDER", atlas = "PKBT-Panel-Silver-Border-CornerBottomRight", x = 1, y = -2, },
+		TopEdge				= { layer = "BORDER", atlas = "PKBT-Panel-Silver-Border-EdgeTop", },
+		BottomEdge			= { layer = "BORDER", atlas = "PKBT-Panel-Silver-Border-EdgeBottom", },
+		LeftEdge			= { layer = "BORDER", atlas = "PKBT-Panel-Silver-Border-EdgeLeft", },
+		RightEdge			= { layer = "BORDER", atlas = "PKBT-Panel-Silver-Border-EdgeRight", },
+	},
+
+	PKBT_SubMenu = {
+		TopLeftCorner		= { layer = "BORDER", atlas = "PKBT-Store-SubMenu-Background-EdgeLeft", },
+		TopRightCorner		= { layer = "BORDER", atlas = "PKBT-Store-SubMenu-Background-EdgeRight", },
+		BottomLeftCorner	= { layer = "BORDER", atlas = "PKBT-Store-SubMenu-Background-CornerBottomLeft", },
+		BottomRightCorner	= { layer = "BORDER", atlas = "PKBT-Store-SubMenu-Background-CornerBottomRight", },
+		TopEdge				= { layer = "BORDER", atlas = "PKBT-Store-SubMenu-Background", },
+		BottomEdge			= { layer = "BORDER", atlas = "PKBT-Store-SubMenu-Background-EdgeBottom", },
+		LeftEdge			= { layer = "BORDER", atlas = "PKBT-Store-SubMenu-Background-EdgeLeft", },
+		RightEdge			= { layer = "BORDER", atlas = "PKBT-Store-SubMenu-Background-EdgeRight", },
+		Center				= { layer = "BORDER", atlas = "PKBT-Store-SubMenu-Background", },
+	},
+
+	PKBT_StoreItemPlateHighlight = {
+		TopLeftCorner		= { layer = "ARTWORK", atlas = "PKBT-Store-ItemPlate-Highlight-CornerTopLeft", x = 6, y = -6 },
+		TopRightCorner		= { layer = "ARTWORK", atlas = "PKBT-Store-ItemPlate-Highlight-CornerTopRight", x = -5, y = -6 },
+		BottomLeftCorner	= { layer = "ARTWORK", atlas = "PKBT-Store-ItemPlate-Highlight-CornerBottomLeft", x = 6, y = 7 },
+		BottomRightCorner	= { layer = "ARTWORK", atlas = "PKBT-Store-ItemPlate-Highlight-CornerBottomRight", x = -5, y = 7 },
+		TopEdge				= { layer = "ARTWORK", atlas = "PKBT-Store-ItemPlate-Highlight-EdgeTop", },
+		BottomEdge			= { layer = "ARTWORK", atlas = "PKBT-Store-ItemPlate-Highlight-EdgeBottom", },
+		LeftEdge			= { layer = "ARTWORK", atlas = "PKBT-Store-ItemPlate-Highlight-EdgeLeft", },
+		RightEdge			= { layer = "ARTWORK", atlas = "PKBT-Store-ItemPlate-Highlight-EdgeRight", },
+		Center				= { layer = "ARTWORK", atlas = "PKBT-Store-ItemPlate-Highlight-Center", },
+	},
+
+	PKBT_StoreCardPlate = {
+		TopLeftCorner		= { layer = "BORDER", atlas = "PKBT-Store-Cards-NineSlice-Border-CornerTopLeft", x = -12, y = 12 },
+		TopRightCorner		= { layer = "BORDER", atlas = "PKBT-Store-Cards-NineSlice-Border-CornerTopRight", x = 12, y = 12 },
+		BottomLeftCorner	= { layer = "BORDER", atlas = "PKBT-Store-Cards-NineSlice-Border-CornerBottomLeft", x = -12, y = -12 },
+		BottomRightCorner	= { layer = "BORDER", atlas = "PKBT-Store-Cards-NineSlice-Border-CornerBottomRight", x = 12, y = -12 },
+		TopEdge				= { layer = "BORDER", atlas = "PKBT-Store-Cards-NineSlice-Border-EdgeTop", },
+		BottomEdge			= { layer = "BORDER", atlas = "PKBT-Store-Cards-NineSlice-Border-EdgeBottom", },
+		LeftEdge			= { layer = "BORDER", atlas = "PKBT-Store-Cards-NineSlice-Border-EdgeLeft", },
+		RightEdge			= { layer = "BORDER", atlas = "PKBT-Store-Cards-NineSlice-Border-EdgeRight", },
+	},
+
+	PKBT_StoreCardPlateShadow = {
+		TopLeftCorner		= { layer = "BORDER", atlas = "PKBT-Store-Cards-NineSlice-Shadow-CornerTopLeft", x = -12, y = 12 },
+		TopRightCorner		= { layer = "BORDER", atlas = "PKBT-Store-Cards-NineSlice-Shadow-CornerTopRight", x = 12, y = 12 },
+		BottomLeftCorner	= { layer = "BORDER", atlas = "PKBT-Store-Cards-NineSlice-Shadow-CornerBottomLeft", x = -12, y = -12 },
+		BottomRightCorner	= { layer = "BORDER", atlas = "PKBT-Store-Cards-NineSlice-Shadow-CornerBottomRight", x = 12, y = -12 },
+		TopEdge				= { layer = "BORDER", atlas = "PKBT-Store-Cards-NineSlice-Shadow-EdgeTop", },
+		BottomEdge			= { layer = "BORDER", atlas = "PKBT-Store-Cards-NineSlice-Shadow-EdgeBottom", },
+		LeftEdge			= { layer = "BORDER", atlas = "PKBT-Store-Cards-NineSlice-Shadow-EdgeLeft", },
+		RightEdge			= { layer = "BORDER", atlas = "PKBT-Store-Cards-NineSlice-Shadow-EdgeRight", },
 	},
 
 	Roulette =
@@ -319,27 +444,50 @@ NineSliceLayouts =
 		BottomRightCorner =	{ atlas = "Roulette-right-bottom-corner", x = 5.6, y = -5.8, },
 	},
 
-	GlueDarkTemplate =
-	{
-		TopLeftCorner =		{ layer = "OVERLAY", atlas = "GlueDark-border-CornerTopLeft", x = -8, y = 8, },
-		TopRightCorner =	{ layer = "OVERLAY", atlas = "GlueDark-border-CornerTopRight", x = 8, y = 8, },
-		BottomLeftCorner =	{ layer = "OVERLAY", atlas = "GlueDark-border-CornerBottomLeft", x = -8, y = -8, },
-		BottomRightCorner =	{ layer = "OVERLAY", atlas = "GlueDark-border-CornerBottomRight", x = 8, y = -8, },
-		TopEdge =			{ layer = "OVERLAY", atlas = "GlueDark-border-Top", },
-		BottomEdge =		{ layer = "OVERLAY", atlas = "GlueDark-border-Bottom", },
-		LeftEdge =			{ layer = "OVERLAY", atlas = "GlueDark-border-Left", },
-		RightEdge =			{ layer = "OVERLAY", atlas = "GlueDark-border-Right", },
+	SplashBattlePass_2024_2 = {
+		TopLeftCorner		= { layer = "BORDER", atlas = "Custom-Splash-BattlePass-2024-2-Assets-Card-Border-CornerTopLeft", x = -15, y = 17 },
+		TopRightCorner		= { layer = "BORDER", atlas = "Custom-Splash-BattlePass-2024-2-Assets-Card-Border-CornerTopRight", x = 15, y = 17, },
+		BottomLeftCorner	= { layer = "BORDER", atlas = "Custom-Splash-BattlePass-2024-2-Assets-Card-Border-CornerBottomLeft", x = -15, y = -17, },
+		BottomRightCorner	= { layer = "BORDER", atlas = "Custom-Splash-BattlePass-2024-2-Assets-Card-Border-CornerBottomRight", x = 15, y = -17, },
+		TopEdge				= { layer = "BORDER", atlas = "Custom-Splash-BattlePass-2024-2-Assets-Card-Border-EdgeTop", },
+		BottomEdge			= { layer = "BORDER", atlas = "Custom-Splash-BattlePass-2024-2-Assets-Card-Border-EdgeBottom", },
+		LeftEdge			= { layer = "BORDER", atlas = "Custom-Splash-BattlePass-2024-2-Assets-Card-Border-EdgeLeft", },
+		RightEdge			= { layer = "BORDER", atlas = "Custom-Splash-BattlePass-2024-2-Assets-Card-Border-EdgeRight", },
 	},
 
-	GlueDarkDropDownTemplate =
+	GlueDarkTemplate =
 	{
-		TopLeftCorner =		{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-CornerTopLeft", x = -2, y = 2, },
-		TopRightCorner =	{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-CornerTopRight", x = 2, y = 2, },
-		BottomLeftCorner =	{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-CornerBottomLeft", x = -2, y = -2, },
-		BottomRightCorner =	{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-CornerBottomRight", x = 2, y = -2, },
-		TopEdge =			{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-Top", },
-		BottomEdge =		{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-Bottom", },
-		LeftEdge =			{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-Left", },
-		RightEdge =			{ layer = "OVERLAY", atlas = "GlueDark-borderDropdown-Right", },
+		TopLeftCorner =		{ layer = "ARTWORK", atlas = "GlueDark-Border-Panel-CornerTopLeft", x = -8, y = 8, },
+		TopRightCorner =	{ layer = "ARTWORK", atlas = "GlueDark-Border-Panel-CornerTopRight", x = 8, y = 8, },
+		BottomLeftCorner =	{ layer = "ARTWORK", atlas = "GlueDark-Border-Panel-CornerBottomLeft", x = -8, y = -8, },
+		BottomRightCorner =	{ layer = "ARTWORK", atlas = "GlueDark-Border-Panel-CornerBottomRight", x = 8, y = -8, },
+		TopEdge =			{ layer = "ARTWORK", atlas = "GlueDark-Border-Panel-EdgeTop", },
+		BottomEdge =		{ layer = "ARTWORK", atlas = "GlueDark-Border-Panel-EdgeBottom", },
+		LeftEdge =			{ layer = "ARTWORK", atlas = "GlueDark-Border-Panel-EdgeLeft", },
+		RightEdge =			{ layer = "ARTWORK", atlas = "GlueDark-Border-Panel-EdgeRight", },
 	},
+
+	GlueDarkDropDownBorder =
+	{
+		TopLeftCorner =		{ layer = "OVERLAY", atlas = "GlueDark-Border-Dropdown-CornerTopLeft", x = -1, y = 1, },
+		TopRightCorner =	{ layer = "OVERLAY", atlas = "GlueDark-Border-Dropdown-CornerTopRight", x = 1, y = 1, },
+		BottomLeftCorner =	{ layer = "OVERLAY", atlas = "GlueDark-Border-Dropdown-CornerBottomLeft", x = -1, y = -1, },
+		BottomRightCorner =	{ layer = "OVERLAY", atlas = "GlueDark-Border-Dropdown-CornerBottomRight", x = 1, y = -1, },
+		TopEdge =			{ layer = "OVERLAY", atlas = "GlueDark-Border-Dropdown-EdgeTop", },
+		BottomEdge =		{ layer = "OVERLAY", atlas = "GlueDark-Border-Dropdown-EdgeBottom", },
+		LeftEdge =			{ layer = "OVERLAY", atlas = "GlueDark-Border-Dropdown-EdgeLeft", },
+		RightEdge =			{ layer = "OVERLAY", atlas = "GlueDark-Border-Dropdown-EdgeRight", },
+	},
+
+	GlueDarkMetalTripleBorder =
+	{
+		TopLeftCorner =		{ layer = "OVERLAY", atlas = "GlueDark-Metal-Triple-Border-CornerTopLeft", x = -11, y = 7, },
+		TopRightCorner =	{ layer = "OVERLAY", atlas = "GlueDark-Metal-Triple-Border-CornerTopRight", x = 11, y = 7, },
+		BottomLeftCorner =	{ layer = "OVERLAY", atlas = "GlueDark-Metal-Triple-Border-CornerBottomLeft", x = -11, y = -8, },
+		BottomRightCorner =	{ layer = "OVERLAY", atlas = "GlueDark-Metal-Triple-Border-CornerBottomRight", x = 11, y = -8, },
+		TopEdge =			{ layer = "OVERLAY", atlas = "GlueDark-Metal-Triple-Border-EdgeTop", },
+		BottomEdge =		{ layer = "OVERLAY", atlas = "GlueDark-Metal-Triple-Border-EdgeBottom", },
+		LeftEdge =			{ layer = "OVERLAY", atlas = "GlueDark-Metal-Triple-Border-EdgeLeft", },
+		RightEdge =			{ layer = "OVERLAY", atlas = "GlueDark-Metal-Triple-Border-EdgeRight", },
+	}
 }

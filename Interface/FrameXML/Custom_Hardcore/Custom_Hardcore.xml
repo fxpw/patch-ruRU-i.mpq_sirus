@@ -270,28 +270,28 @@
 	<Button name="HardcoreChallengeIconButtonTemplate" virtual="true">
 		<Size x="412" y="54"/>
 		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="46" y="46"/>
+					<Anchors>
+						<Anchor point="LEFT" x="1" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
 			<Layer level="OVERLAY">
 				<Texture name="$parentIconBorder" parentKey="IconBorder">
-					<Size x="78" y="78"/>
 					<Anchors>
-						<Anchor point="LEFT" x="-14" y="0"/>
+						<Anchor point="TOPLEFT" relativeTo="$parentIcon" x="-2" y="2"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="2" y="-2"/>
 					</Anchors>
 				</Texture>
 				<FontString name="$parentName" parentKey="Name" maxLines="2" inherits="PKBT_Font_14" justifyH="LEFT">
-					<Size y="54"/>
+					<Size x="0" y="54"/>
 					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentIconBorder" relativePoint="RIGHT" x="-8" y="0"/>
+						<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="9" y="0"/>
 						<Anchor point="RIGHT"/>
 					</Anchors>
 				</FontString>
-			</Layer>
-			<Layer level="BORDER">
-				<Texture name="$parentIcon" parentKey="Icon">
-					<Size x="48" y="48"/>
-					<Anchors>
-						<Anchor point="CENTER" relativeTo="$parentIconBorder" x="0" y="0"/>
-					</Anchors>
-				</Texture>
 			</Layer>
 		</Layers>
 		<Scripts>
@@ -305,6 +305,9 @@
 			<OnLeave>
 				self:OnLeave()
 			</OnLeave>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
 		</Scripts>
 	</Button>
 	<Frame name="HardcoreChallengeInfoLeftFrameTemplate" inherits="HardcoreChallengeInfoShadowTemplate" virtual="true">
@@ -368,7 +371,7 @@
 						</Layers>
 						<Frames>
 							<SimpleHTML name="$parentHTML" parentKey="HTML" hyperlinkFormat="|H%s|h%s|h" hidden="true">
-								<Size x="412" y="200"/>
+								<Size x="412" y="1"/>
 								<Anchors>
 									<Anchor point="TOPLEFT" x="25" y="-61"/>
 								</Anchors>
@@ -379,7 +382,9 @@
 										if linkType == "desc" and linkFeatureIndex then
 											GameTooltip:SetOwner(self, "ANCHOR_CURSOR_RIGHT", 10, 10)
 											GameTooltip:SetText(text, nil, nil, nil, nil, 1)
-											if isFeature1 == "1" then
+											if isFeature1 == "custom" then
+												GameTooltip:AddLine(C_Hardcore.GetFeatureCustomDescription(linkFeatureIndex), 1, 1, 1, 1)
+											elseif isFeature1 == "1" then
 												GameTooltip:AddLine(C_Hardcore.GetFeature1Description(linkFeatureIndex), 1, 1, 1, 1)
 											else
 												GameTooltip:AddLine(C_Hardcore.GetFeatureDescription(linkFeatureIndex), 1, 1, 1, 1)
@@ -390,8 +395,16 @@
 									<OnHyperlinkLeave>
 										GameTooltip:Hide()
 									</OnHyperlinkLeave>
+									<OnHyperlinkClick>
+										local linkType = string.split(":", link)
+										if linkType == "kbase" then
+											RunNextFrame(function()	-- workaround block of SimpleHTML widget text change when hyperlink is clicked
+												SetItemRef(link, text, button, self)
+											end)
+										end
+									</OnHyperlinkClick>
 								</Scripts>
-								<FontString inherits="GameFontHighlight"/>
+								<FontString text="123" inherits="GameFontHighlight"/>
 							</SimpleHTML>
 						</Frames>
 					</Frame>
@@ -480,33 +493,11 @@
 					<Anchor point="BOTTOMRIGHT" x="-12" y="12"/>
 				</Anchors>
 				<Frames>
-					<Frame name="$parentGlow" parentKey="Glow" alpha="0">
+					<Frame name="$parentGlow" parentKey="Glow" inherits="PKBT_ButtonGlowTemplate" alpha="0">
 						<Anchors>
 							<Anchor point="TOPLEFT" x="-12" y="14"/>
 							<Anchor point="BOTTOMRIGHT" x="11" y="-22"/>
 						</Anchors>
-						<Layers>
-							<Layer level="BACKGROUND">
-								<Texture name="$parentLeft" parentKey="Left">
-									<Anchors>
-										<Anchor point="TOPLEFT" x="0" y="0"/>
-										<Anchor point="BOTTOMLEFT" x="0" y="0"/>
-									</Anchors>
-								</Texture>
-								<Texture name="$parentRight" parentKey="Right">
-									<Anchors>
-										<Anchor point="TOPRIGHT" x="0" y="0"/>
-										<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
-									</Anchors>
-								</Texture>
-								<Texture name="$parentCenter" parentKey="Center">
-									<Anchors>
-										<Anchor point="TOPLEFT" relativeTo="$parentLeft" relativePoint="TOPRIGHT" x="0" y="0"/>
-										<Anchor point="BOTTOMRIGHT" relativeTo="$parentRight" relativePoint="BOTTOMLEFT" x="0" y="0"/>
-									</Anchors>
-								</Texture>
-							</Layer>
-						</Layers>
 						<Animations>
 							<AnimationGroup parentKey="AlphaAnim">
 								<Alpha duration="0" change="-1" order="1"/>
@@ -544,26 +535,26 @@
 	</Frame>
 	<Button name="HardcoreChallengeButtonTemplate" virtual="true">
 		<Layers>
-			<Layer level="OVERLAY">
-				<Texture name="$parentIconBorder" parentKey="IconBorder">
-					<Size x="64" y="64"/>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="40" y="40"/>
 					<Anchors>
-						<Anchor point="LEFT" x="4"/>
+						<Anchor point="LEFT" x="16" y="0"/>
 					</Anchors>
 				</Texture>
 				<FontString name="$parentName" parentKey="Name" inherits="PKBT_Font_20" justifyH="LEFT" maxLines="1">
 					<Size x="340" y="0"/>
 					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentIconBorder" relativePoint="RIGHT" x="0" y="0"/>
+						<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="12" y="0"/>
 					</Anchors>
 					<Color r="1" g="0.82" b="0"/>
 				</FontString>
 			</Layer>
-			<Layer level="ARTWORK">
-				<Texture name="$parentIcon" parentKey="Icon">
-					<Size x="42" y="42"/>
+			<Layer level="OVERLAY">
+				<Texture name="$parentIconBorder" parentKey="IconBorder">
 					<Anchors>
-						<Anchor point="CENTER" relativeTo="$parentIconBorder"/>
+						<Anchor point="TOPLEFT" relativeTo="$parentIcon" x="-2" y="2"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="2" y="-2"/>
 					</Anchors>
 				</Texture>
 			</Layer>
@@ -1042,15 +1033,13 @@
 						<Texture name="$parentInsetLeftBorder" inherits="!UI-Frame-InnerLeftTile" parentKey="InsetBorderLeft">
 							<Anchors>
 								<Anchor point="TOPLEFT" x="-3" y="0"/>
-								<Anchor point="BOTTOMLEFT" relativeTo="$parentInsetBotLeftCorner"
-									relativePoint="TOPLEFT"/>
+								<Anchor point="BOTTOMLEFT" relativeTo="$parentInsetBotLeftCorner" relativePoint="TOPLEFT"/>
 							</Anchors>
 						</Texture>
 						<Texture name="$parentInsetRightBorder" inherits="!UI-Frame-InnerRightTile" parentKey="InsetBorderRight">
 							<Anchors>
 								<Anchor point="TOPRIGHT" x="3" y="0"/>
-								<Anchor point="BOTTOMRIGHT" relativeTo="$parentInsetBotRightCorner"
-									relativePoint="TOPRIGHT"/>
+								<Anchor point="BOTTOMRIGHT" relativeTo="$parentInsetBotRightCorner" relativePoint="TOPRIGHT"/>
 							</Anchors>
 						</Texture>
 					</Layer>
@@ -1134,20 +1123,26 @@
 											</Layer>
 										</Layers>
 									</Frame>
-									<Frame name="$parentDescription" parentKey="Description">
-										<Size x="264" y="100"/>
+
+									<SimpleHTML name="$parentDescription" parentKey="Description" hyperlinkFormat="|H%s|h%s|h">
+										<Size x="264" y="148"/>
 										<Anchors>
-											<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT" x="0" y="-18"/>
+											<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT" x="0" y="0"/>
 										</Anchors>
-										<Layers>
-											<Layer level="ARTWORK">
-												<FontString name="$parentText" parentKey="Text" font="GameTooltipHeader" justifyH="CENTER" justifyV="TOP">
-													<Size x="264" y="0"/>
-													<Color r="0.2824" g="0.0157" b="0.0157"/>
-												</FontString>
-											</Layer>
-										</Layers>
-									</Frame>
+										<Scripts>
+											<OnHyperlinkClick>
+												local linkType = string.split(":", link)
+												if linkType == "kbase" then
+													RunNextFrame(function()	-- workaround block of SimpleHTML widget text change when hyperlink is clicked
+														SetItemRef(link, text, button, self)
+													end)
+												end
+											</OnHyperlinkClick>
+										</Scripts>
+										<FontString inherits="GameTooltipHeader">
+											<Color r="0.2824" g="0.0157" b="0.0157"/>
+										</FontString>
+									</SimpleHTML>
 									<Frame name="$parentSummaryFrame" parentKey="SummaryFrame">
 										<Size x="264" y="30"/>
 										<Anchors>
@@ -1463,6 +1458,14 @@
 					<OnClick function="Hardcore_TabOnClick"/>
 				</Scripts>
 			</Button>
+			<Button name="$parentTab4" inherits="CharacterFrameTabButtonTemplate" text="ITEM_BROWSER" id="4" parentKey="tab4">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab3" relativePoint="RIGHT" x="-16" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="Hardcore_TabOnClick"/>
+				</Scripts>
+			</Button>
 		</Frames>
 		<Scripts>
 			<OnLoad>
@@ -1475,6 +1478,9 @@
 			<OnShow>
 				self:OnShow()
 			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
 		</Scripts>
 	</Frame>
 
@@ -1566,47 +1572,48 @@
 	<Frame name="HardcoreStaticPopupFrame" parent="UIParent" inherits="PKBT_DialogTemplate,HardcoreChallengeInfoShadowTemplate" enableMouse="true" toplevel="true" hidden="true">
 		<Size x="572" y="302"/>
 		<Anchors>
-			<Anchor point="CENTER" x="0" y="0"/>
+			<Anchor point="CENTER" x="0" y="-30"/>
 		</Anchors>
-		<Layers>
-			<Layer level="BORDER">
-				<Texture name="$parentVignetteTopLeft" parentKey="VignetteTopLeft">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentBackground" x="0" y="0"/>
-					</Anchors>
-				</Texture>
-				<Texture name="$parentVignetteTopRight" parentKey="VignetteTopRight">
-					<Anchors>
-						<Anchor point="TOPRIGHT" relativeTo="$parentBackground" x="0" y="0"/>
-					</Anchors>
-				</Texture>
-			</Layer>
-			<Layer level="OVERLAY">
-				<Texture name="$parentBottomShadow" parentKey="BottomShadow">
-					<Anchors>
-						<Anchor point="BOTTOMLEFT" x="2" y="1"/>
-						<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentText" parentKey="Text" inherits="GameFontNormalLarge" justifyH="CENTER" justifyV="MIDDLE" text="HARDCORE_CHALLENGE_ACTION_WITH_CHARACTER_TEXT">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentBackground" x="46" y="-12"/>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackground" x="-46" y="88"/>
-					</Anchors>
-					<Color r="1" g="1" b="1" a="1"/>
-				</FontString>
-				<Texture name="$parentValkyr" parentKey="Valkyr">
-					<Anchors>
-						<Anchor point="BOTTOM" relativePoint="TOP" x="0" y="-26"/>
-					</Anchors>
-				</Texture>
-			</Layer>
-		</Layers>
 		<Frames>
+			<Frame name="$parentDeathRecapFrame" parentKey="DeathRecapFrame">
+				<Size x="348" y="32"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="0"/>
+				</Anchors>
+				<Frames>
+					<Frame name="$parentRecap1" parentKey="Recap1" inherits="DeathRecapEntryTemplate">
+						<Anchors>
+							<Anchor point="BOTTOM" x="0" y="32"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture parentKey="tombstone" file="Interface\Durability\DeathRecap">
+									<Size x="15" y="20"/>
+									<Anchors>
+										<Anchor point="RIGHT" relativeTo="$parent" relativePoint="LEFT" x="-10" y="0"/>
+									</Anchors>
+									<TexCoords left="0.658203125" right="0.6875" top="0.00390625" bottom="0.08203125"/>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Frame>
+					<Frame name="$parentRecap2" parentKey="Recap2" inherits="DeathRecapEntryTemplate">
+						<Anchors>
+							<Anchor point="BOTTOM" relativeTo="$parentRecap1" relativePoint="TOP" x="0" y="14"/>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentRecap3" parentKey="Recap3" inherits="DeathRecapEntryTemplate">
+						<Anchors>
+							<Anchor point="BOTTOM" relativeTo="$parentRecap2" relativePoint="TOP" x="0" y="14"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+			</Frame>
+
 			<Button name="$parentButton1" parentKey="Button1" inherits="PKBT_RedButtonMultiWidgetTemplate" text="HARDCORE_CHARACTER_DELETE">
 				<Size x="220" y="50"/>
 				<Anchors>
-					<Anchor point="BOTTOM" x="-130" y="32"/>
+					<Anchor point="BOTTOM" relativeTo="$parentDeathRecapFrame" relativePoint="TOP" x="-130" y="0"/>
 				</Anchors>
 				<Frames>
 					<Button name="$parentHelpPlateButton" parentKey="HelpPlateButton" motionScriptsWhileDisabled="true" inherits="MainHelpPlateButton">
@@ -1647,7 +1654,7 @@
 			<Button name="$parentButton2" parentKey="Button2" inherits="PKBT_RedButtonMultiWidgetPriceTemplate">
 				<Size x="220" y="50"/>
 				<Anchors>
-					<Anchor point="BOTTOM" x="130" y="32"/>
+					<Anchor point="BOTTOM" relativeTo="$parentDeathRecapFrame" relativePoint="TOP" x="130" y="0"/>
 				</Anchors>
 				<Scripts>
 					<OnClick>
@@ -1733,6 +1740,42 @@
 				</Scripts>
 			</Frame>
 		</Frames>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentVignetteTopLeft" parentKey="VignetteTopLeft">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBackground" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentVignetteTopRight" parentKey="VignetteTopRight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parentBackground" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentBottomShadow" parentKey="BottomShadow">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="2" y="1"/>
+						<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentText" parentKey="Text" inherits="GameFontNormalLarge" justifyH="CENTER" justifyV="MIDDLE" text="HARDCORE_CHALLENGE_ACTION_WITH_CHARACTER_TEXT">
+					<Size x="480" y="0"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentBackground" x="46" y="-12"/>
+						<Anchor point="TOPRIGHT" relativeTo="$parentBackground" x="-46" y="-12"/>
+				<!--	<Anchor point="BOTTOM" relativeTo="$parentDeathRecapFrame" relativePoint="TOP" x="0" y="120"/> -->
+					</Anchors>
+					<Color r="1" g="1" b="1" a="1"/>
+				</FontString>
+				<Texture name="$parentValkyr" parentKey="Valkyr">
+					<Anchors>
+						<Anchor point="BOTTOM" relativePoint="TOP" x="0" y="-26"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
 		<Scripts>
 			<OnLoad>
 				Mixin(self, HardcoreStaticPopupMixin)

@@ -1,0 +1,116 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_BarberShopUI.lua"/>
+
+	<Button name="BarberShopButtonTemplate" inherits="SharedButtonLargeTemplate" virtual="true">
+		<Size x="150" y="40"/>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ThreeSliceButtonMixin, BarberShopButtonMixin)
+				ThreeSliceButtonMixin.OnLoad(self)
+				self:OnLoad()
+			</OnLoad>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Frame name="CustomBarberShopFrame" inherits="DefaultScaleFrame" toplevel="true" setAllPoints="true" enableKeyboard="true" hidden="true">
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture parentKey="TopBackgroundOverlay">
+					<Size x="1" y="451"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="LeftBackgroundOverlay">
+					<Size x="703" y="1"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="RightBackgroundOverlay">
+					<Size x="703" y="1"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentOverlayFrameHolder" parentKey="OverlayFrameHolder" frameStrata="HIGH" setAllPoints="true"/>
+
+			<Frame name="$parentSexes" parentKey="Sexes" inherits="HorizontalLayoutFrame">
+				<Attributes>
+					<Attribute name="spacing" value="22" type="number"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="TOP" y="-27"/>
+				</Anchors>
+			</Frame>
+			<Button name="$parentCancelButton" parentKey="CancelButton" inherits="BarberShopButtonTemplate" text="CANCEL">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="30" y="15"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="barberShopOnClickMethod" value="Cancel" type="string"/>
+				</Attributes>
+			</Button>
+
+			<Button name="$parentResetButton" parentKey="ResetButton" inherits="BarberShopButtonTemplate" text="RESET">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentCancelButton" relativePoint="TOPLEFT" y="15"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="barberShopOnClickMethod" value="Reset" type="string"/>
+				</Attributes>
+			</Button>
+
+			<Button name="$parentAcceptButton" parentKey="AcceptButton" inherits="BarberShopButtonTemplate" text="ACCEPT">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="-30" y="15"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="barberShopOnClickMethod" value="ApplyChanges" type="string"/>
+				</Attributes>
+			</Button>
+
+			<Frame name="$parentPriceFrame" parentKey="PriceFrame" inherits="MoneyDisplayFrameTemplate">
+				<Anchors>
+					<Anchor point="BOTTOM" relativeTo="$parentAcceptButton" relativePoint="TOP" y="15"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="hideCopper" value="true" type="boolean"/>
+					<Attribute name="resizeToFit" value="true" type="boolean"/>
+					<Attribute name="useAuctionHouseIcons" value="true" type="boolean"/>
+				</Attributes>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, DefaultScaleFrameMixin, BarberShopMixin)
+				self.maxScale = CHAR_CUSTOMIZE_MAX_SCALE
+				self:OnDefaultScaleFrameLoad()
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnDefaultScaleFrameEvent(event, ...)
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+			<OnKeyDown>
+				self:OnKeyDown(key)
+			</OnKeyDown>
+		</Scripts>
+	</Frame>
+</Ui>

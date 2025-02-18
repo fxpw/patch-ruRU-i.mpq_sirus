@@ -200,6 +200,7 @@
 					</Layer>
 				</Layers>
 			</Frame>
+
 			<Frame name="$parentStateInfo" parentKey="StateInfo">
 				<Size x="400" y="109"/>
 				<Anchors>

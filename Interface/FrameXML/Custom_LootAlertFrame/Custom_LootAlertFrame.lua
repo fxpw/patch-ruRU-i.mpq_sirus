@@ -1,29 +1,26 @@
 LOOTALERT_NUM_BUTTONS = 4
 
-local SPOILS_OF_WAR_ITEM = 150732
+local ignoreQualityCheck = {
+	[150732] = true,
+}
 
 LootAlertFrameMixIn = {}
 
 LootAlertFrameMixIn.alertQueue = {}
 LootAlertFrameMixIn.alertButton = {}
 
-function LootAlertFrameMixIn:AddAlert( itemID, name, link, quality, texture, count, ignoreLevel, tooltipText )
+function LootAlertFrameMixIn:AddAlert( itemID, name, link, quality, texture, count, skipQualityCheck, tooltipText )
+ 	if not skipQualityCheck and (itemID and not ignoreQualityCheck[itemID]) then
+		local alertThreshold = tonumber(C_CVar:GetValue("C_CVAR_LOOT_ALERT_THRESHOLD")) or 0
+		if alertThreshold == -1 or alertThreshold > quality then
+			return
+		end
+	end
+
 	if Custom_RouletteFrame and Custom_RouletteFrame:IsShown() then
 		LOOTALERT_NUM_BUTTONS = 3
 	else
 		LOOTALERT_NUM_BUTTONS = 4
-	end
-
-	if not ignoreLevel or (itemID and itemID ~= SPOILS_OF_WAR_ITEM) then
-		if UnitLevel("player") < 80 then
-			if quality < 2 then
-				return
-			end
-		else
-			if quality < 4 then
-				return
-			end
-		end
 	end
 
 	table.insert(self.alertQueue, {name = name, link = link, quality = quality, texture = texture, count = count, tooltipText = tooltipText})
@@ -70,37 +67,25 @@ function LootAlertFrameMixIn:AdjustAnchors()
 end
 
 function LootAlertFrame_OnLoad( self )
-	self:RegisterEvent("CHAT_MSG_LOOT")
+	self:RegisterCustomEvent("PLAYER_LOOT_ITEM")
 
 	self.updateTime = 0.30
 
 	Mixin(self, LootAlertFrameMixIn)
 end
 
-function LootAlertFrame_OnEvent( self, event, arg1 )
-	if event == "CHAT_MSG_LOOT" then
-		if IsDevClient() then
+function LootAlertFrame_OnEvent(self, event, itemID, amount, lootEventType)
+	if event == "PLAYER_LOOT_ITEM" then
+		if IsDevClient()
+		or lootEventType == Enum.PlayerLootEventType.Pushed
+		or BattlePassFrame:IsShown() and C_BattlePass.IsBattlePassItem(itemID)
+		then
 			return
 		end
 
-		if string.find(arg1, string.sub(LOOT_ITEM_SELF, 1, 21)) or string.find(arg1, string.sub(LOOT_ITEM_CREATED_SELF, 1, 21)) then
-			local itemID, count = string.match(arg1, "|Hitem:(%d+).*x(%d+)")
-
-			if not itemID then
-				itemID = string.match(arg1, "|Hitem:(%d+)")
-			end
-
-			itemID = tonumber(itemID)
-			if itemID then
-				if itemID and BattlePassFrame:IsShown() and C_BattlePass.IsBattlePassItem(itemID) then
-					return
-				end
-
-				local name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, texture, vendorPrice = GetItemInfo(itemID)
-				if link then
-					self:AddAlert(itemID, name, link, quality, texture, count)
-				end
-			end
+		local name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, texture, vendorPrice = GetItemInfo(itemID)
+		if link then
+			self:AddAlert(itemID, name, link, quality, texture, amount)
 		end
 	end
 end
@@ -127,7 +112,6 @@ end
 
 function LootAlertButtonTemplate_OnLoad( self )
 	self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-	self.IconBorder:SetAtlas("loottoast-itemborder-green")
 	self.glow:SetAtlas("loottoast-glow", true)
 	table.insert(LootAlertFrameMixIn.alertButton, self)
 end
@@ -140,7 +124,7 @@ function LootAlertButtonTemplate_OnShow( self )
 
 	local data = self.data
 	if data.name then
-		local qualityColor = ITEM_QUALITY_COLORS[data.quality] or nil
+		local qualityColor = ITEM_QUALITY_COLORS[data.quality] or ITEM_QUALITY_COLORS[Enum.ItemQuality.Common]
 
 		if data.count then
 			self.Count:SetText(data.count)
@@ -155,9 +139,7 @@ function LootAlertButtonTemplate_OnShow( self )
 			self.ItemName:SetTextColor(qualityColor.r, qualityColor.g, qualityColor.b)
 		end
 
-		if LOOT_BORDER_BY_QUALITY[data.quality] then
-			self.IconBorder:SetAtlas(LOOT_BORDER_BY_QUALITY[data.quality])
-		end
+		self.IconBorder:SetAtlas(LOOT_BORDER_BY_QUALITY[data.quality] or LOOT_BORDER_BY_QUALITY[Enum.ItemQuality.Common])
 
 		self.hyperLink 		= data.link
 		self.tooltipText 	= data.tooltipText
@@ -204,6 +186,10 @@ function LootAlertButtonTemplate_OnEnter( self )
 	GameTooltip:Show()
 end
 
+local onItemCacheRecieved = function(itemCount, itemID, itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice)
+	LootAlertFrame:AddAlert(itemID, itemName, itemLink, itemRarity, itemTexture, itemCount, true)
+end
+
 function EventHandler:ASMSG_SHOW_LOOT_POPUP( msg )
 	local splitStorage = C_Split(msg, "|")
 
@@ -217,34 +203,40 @@ function EventHandler:ASMSG_SHOW_LOOT_POPUP( msg )
 			return
 		end
 
-		local name, link, quality, _, _, _, _, _, _, texture = GetItemInfo(itemID)
-		local unitFaction = UnitFactionGroup("player") or "Alliance"
-		local tooltipText
+		local name, link, quality, texture, tooltipText, _
 
 		if itemID == -1 then
+			local unitFaction = UnitFactionGroup("player") or "Alliance"
 			name 		= HONOR_POINTS
 			texture 	= "Interface\\ICONS\\PVPCurrency-Honor-"..unitFaction
 			quality 	= LE_ITEM_QUALITY_EPIC
 			tooltipText = TOOLTIP_HONOR_POINTS
 		elseif itemID == -2 then
+			local unitFaction = UnitFactionGroup("player") or "Alliance"
 			name 		= ARENA_POINTS
 			texture 	= "Interface\\ICONS\\PVPCurrency-Conquest-"..unitFaction
 			quality 	= LE_ITEM_QUALITY_EPIC
 			tooltipText = TOOLTIP_ARENA_POINTS
 		elseif itemID == -3 then
-			name 		= STORE_COINS_BUTTON_TOOLTIP_LABEL
+			name 		= STORE_CURRENCY_BONUS_LABEL
 			texture 	= "Interface\\Store\\coins"
 			quality 	= LE_ITEM_QUALITY_LEGENDARY
-			tooltipText = STORE_COINS_BUTTON_TOOLTIP
+			tooltipText = STORE_CURRENCY_BONUS_DESCRIPTION
 		elseif itemID == -4 then
-			name 		= STORE_VOTE_COIN_LABEL
+			name 		= STORE_CURRENCY_VOTE_LABEL
 			texture 	= "Interface\\Store\\mmotop"
 			quality 	= LE_ITEM_QUALITY_LEGENDARY
-			tooltipText = STORE_MMOTOP_BUTTON_TOOLTIP
+			tooltipText = STORE_CURRENCY_VOTE_DESCRIPTION
+		else
+			name, link, quality, _, _, _, _, _, _, texture = C_Item.GetItemInfo(itemID, false, nil, true, true)
 		end
 
 		if name then
 			LootAlertFrame:AddAlert(itemID, name, link, quality, texture, itemCount, true, tooltipText)
+		else
+			C_Item.RequestServerCache(itemID, function(...)
+				onItemCacheRecieved(itemCount, ...)
+			end)
 		end
 	end
 end

@@ -85,8 +85,10 @@ function HybridScrollFrameScrollButton_OnClick (self, button, down)
 	local parent = self.parent or self:GetParent():GetParent();
 
 	if ( down ) then
-		self.timeSinceLast = (self.timeToStart or -0.2);
-		self:SetScript("OnUpdate", HybridScrollFrameScrollButton_OnUpdate);
+		if IsMouseButtonDown then
+			self.timeSinceLast = (self.timeToStart or -0.2);
+			self:SetScript("OnUpdate", HybridScrollFrameScrollButton_OnUpdate);
+		end
 		HybridScrollFrame_OnMouseWheel (parent, self.direction);
 		PlaySound("UChatScrollButton");
 	else

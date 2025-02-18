@@ -2,24 +2,6 @@
 ..\FrameXML\UI.xsd">
 	<Script file="TargetFrame.lua"/>
 
-	<Frame name="HeadHuntingWantedFrameTemplate" virtual="true">
-		<Size x="50" y="26"/>
-		<Layers>
-			<Layer level="BACKGROUND">
-				<Texture name="$parentBackground" parentKey="Background"/>
-			</Layer>
-		</Layers>
-		<Scripts>
-			<OnLoad>
-				Mixin(self, HeadHuntingWantedFrameMixin)
-				self:OnLoad()
-			</OnLoad>
-			<OnShow>
-				SetParentFrameLevel(self, 3)
-			</OnShow>
-		</Scripts>
-	</Frame>
-
 	<Frame name="TargetofTargetDebuffFrameTemplate" virtual="true" enableMouse="true" hidden="true">
 		<Size x="12" y="12"/>
 		<Layers>
@@ -103,6 +85,12 @@
 
 				parent.Debuff[#parent.Debuff + 1] = self
 			</OnLoad>
+			<OnShow>
+				local textureFrame = self:GetParent().TextureFrame
+				if textureFrame then
+					self:SetFrameLevel(textureFrame:GetFrameLevel() + 1)
+				end
+			</OnShow>
 			<OnUpdate>
 				if ( GameTooltip:IsOwned(self) ) then
 					GameTooltip:SetUnitDebuff(self.unit, self:GetID());
@@ -158,6 +146,12 @@
 
 				parent.Buff[#parent.Buff + 1] = self
 			</OnLoad>
+			<OnShow>
+				local textureFrame = self:GetParent().TextureFrame
+				if textureFrame then
+					self:SetFrameLevel(textureFrame:GetFrameLevel() + 1)
+				end
+			</OnShow>
 			<OnUpdate>
 				if ( GameTooltip:IsOwned(self) ) then
 					GameTooltip:SetUnitBuff(self.unit, self:GetID());
@@ -412,21 +406,24 @@
 					</OnShow>
 				</Scripts>
 			</Frame>
-			<Frame name="$parentHeadHuntingWantedFrame" parentKey="HeadHuntingWantedFrame" inherits="HeadHuntingWantedFrameTemplate">
+			<Frame name="$parentHeadHuntingWantedFrame" parentKey="HeadHuntingWantedFrame">
+				<Size x="50" y="26"/>
 				<Anchors>
-					<Anchor point="TOP" relativeTo="$parentPortrait" relativePoint="BOTTOM" x="-6" y="10" />
+					<Anchor point="TOP" relativeTo="$parentPortrait" relativePoint="BOTTOM" x="-6" y="10"/>
 				</Anchors>
-				<Frames>
-					<Frame name="$parentScriptsFrame" parentKey="ScriptsFrame">
-						<Scripts>
-							<OnLoad>
-								self = self:GetParent()
-
-								self:SetFrameLevel(self:GetParent().TextureFrame:GetFrameLevel())
-							</OnLoad>
-						</Scripts>
-					</Frame>
-				</Frames>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background"/>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self.Background:SetAtlas("HeadHunting-Target-Wanted-Background", true)
+					</OnLoad>
+					<OnShow>
+						SetParentFrameLevel(self, 3)
+					</OnShow>
+				</Scripts>
 			</Frame>
 		</Frames>
 		<Scripts>

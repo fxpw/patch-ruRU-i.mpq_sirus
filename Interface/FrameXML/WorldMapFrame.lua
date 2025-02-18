@@ -27,77 +27,6 @@ BAD_BOY_COUNT = 0;
 
 BattlegroundLandmarkLockSync = false
 
-local MapLevelData = {
-	["SilvermoonCity"] = {0, 80},
-	["EversongWoods"] = {1, 10},
-	["Ghostlands"] = {10, 20},
-	["EasternPlaguelands"] = {53, 60},
-	["WesternPlaguelands"] = {51, 58},
-	["Tirisfal"] = {1, 10},
-	["Silverpine"] = {10, 20},
-	["Alterac"] = {30, 40},
-	["Hinterlands"] = {45, 50},
-	["Hilsbrad"] = {20, 30},
-	["Arathi"] = {30, 40},
-	["Wetlands"] = {20, 30},
-	["DunMorogh"] = {1, 10},
-	["Ironforge"] = {0, 80},
-	["LochModan"] = {10, 20},
-	["SearingGorge"] = {43, 50},
-	["Badlands"] = {35, 45},
-	["BurningSteppes"] = {50, 58},
-	["Elwynn"] = {1, 10},
-	["Redridge"] = {15, 25},
-	["Westfall"] = {10, 20},
-	["Duskwood"] = {18, 30},
-	["DeadwindPass"] = {55, 60},
-	["SwampOfSorrows"] = {35, 45},
-	["Stranglethorn"] = {30, 45},
-	["BlastedLands"] = {45, 55},
-	["Teldrassil"] = {1, 10},
-	["Darnassis"] = {0, 80},
-	["BloodmystIsle"] = {10, 20},
-	["AzuremystIsle"] = {1, 10},
-	["TheExodar"] = {0, 80},
-	["Darkshore"] = {10, 20},
-	["Winterspring"] = {53, 60},
-	["Felwood"] = {48, 55},
-	["Ashenvale"] = {18, 30},
-	["Aszhara"] = {48, 55},
-	["StonetalonMountains"] = {15, 27},
-	["Barrens"] = {10, 25},
-	["Durotar"] = {1, 10},
-	["Mulgore"] = {1, 10},
-	["ThunderBluff"] = {0, 80},
-	["Feralas"] = {40, 50},
-	["Dustwallow"] = {35, 45},
-	["ThousandNeedles"] = {25, 35},
-	["Silithus"] = {55, 60},
-	["UngoroCrater"] = {48, 55},
-	["Tanaris"] = {40, 50},
-	["Netherstorm"] = {67, 70},
-	["BladesEdgeMountains"] = {65, 68},
-	["Zangarmarsh"] = {60, 64},
-	["Hellfire"] = {58, 63},
-	["Nagrand"] = {64, 67},
-	["TerokkarForest"] = {62, 65},
-	["ShattrathCity"] = {8, 80},
-	["ShadowmoonValley"] = {67, 70},
-	["BoreanTundra"] = {68, 72},
-	["Dragonblight"] = {71, 74},
-	["HowlingFjord"] = {68, 72},
-	["GrizzlyHills"] = {73, 75},
-	["SholazarBasin"] = {76, 78},
-	["LakeWintergrasp"] = {77, 80},
-	["ZulDrak"] = {74, 77},
-	["CrystalsongForest"] = {74, 76},
-	["TheStormPeaks"] = {77, 80},
-	["IcecrownGlacier"] = {77, 80},
-	["ClassicMountHyjal"] = {1, 10},
-	["Desolace"] = {30, 40},
-	["Moonglade"] = {55, 60}
-}
-
 MAP_VEHICLES = {};
 VEHICLE_TEXTURES = {};
 VEHICLE_TEXTURES["Drive"] = {
@@ -359,10 +288,10 @@ function WorldMapFrame_OnEvent(self, event, ...)
 			HideUIPanel(WorldMapFrame);
 		end
 
-		local _, instanceTyp = IsInInstance()
-
-		if instanceTyp == "none" then
-			C_CacheInstance:Set("ASMSG_UPDATE_BATTLEFIELD_FLAG", nil)
+		local _, instanceType = IsInInstance()
+		if instanceType == "none" then
+			C_CacheInstance:Set("ASMSG_UPDATE_BATTLEFIELD_FLAG1", nil)
+			C_CacheInstance:Set("ASMSG_UPDATE_BATTLEFIELD_FLAG2", nil)
 		end
 	elseif ( event == "WORLD_MAP_UPDATE" ) then
 		if ( not self.blockWorldMapUpdate and self:IsShown() ) then
@@ -606,6 +535,10 @@ function BattlegroundLandmarkUpdate( name )
 	end
 end
 
+local function GetSpriteFromImage(x, y, w, h, iw, ih)
+	return (x*w)/iw, ((x+1)*w)/iw, (y*h)/ih, ((y+1)*h)/ih
+end
+
 function GetBattlegroundLandmarkSprite( iterator )
     local pos = iterator
     local px = pos % 20
@@ -726,11 +659,7 @@ function WorldMapFrame_Update()
 				worldMapPOI.HighlightTexture:SetSize(16, 16)
 			end
 
-			if textureIndex == 41 or (textureIndex == 174 and C_Service.GetRealmID() == E_REALM_ID.ALGALON) then
-				worldMapPOI:SetShown(IsGMAccount())
-			else
-				worldMapPOI:Show();
-			end
+			worldMapPOI:Show();
 		else
 			worldMapPOI:Hide();
 		end
@@ -945,7 +874,7 @@ function WorldMapContinentsDropDown_Update()
 	UIDropDownMenu_Initialize(WorldMapContinentDropDown, WorldMapContinentsDropDown_Initialize);
 	UIDropDownMenu_SetWidth(WorldMapContinentDropDown, 130);
 
-	if ( (GetCurrentMapContinent() == 0) or (GetCurrentMapContinent() == WORLDMAP_COSMIC_ID) ) then
+	if ( (GetCurrentMapContinent() == WORLDMAP_WORLD_ID) or (GetCurrentMapContinent() == WORLDMAP_COSMIC_ID) ) then
 		UIDropDownMenu_ClearAll(WorldMapContinentDropDown);
 	else
 		UIDropDownMenu_SetSelectedValue(WorldMapContinentDropDown, GetCurrentMapContinent());
@@ -972,7 +901,7 @@ function WorldMapZoneDropDown_Update()
 	UIDropDownMenu_Initialize(WorldMapZoneDropDown, WorldMapZoneDropDown_Initialize);
 	UIDropDownMenu_SetWidth(WorldMapZoneDropDown, 130);
 
-	if ( (GetCurrentMapContinent() == 0) or (GetCurrentMapContinent() == WORLDMAP_COSMIC_ID) ) then
+	if ( (GetCurrentMapContinent() == WORLDMAP_WORLD_ID) or (GetCurrentMapContinent() == WORLDMAP_COSMIC_ID) ) then
 		UIDropDownMenu_ClearAll(WorldMapZoneDropDown);
 	else
 		UIDropDownMenu_SetSelectedID(WorldMapZoneDropDown, GetCurrentMapZone());
@@ -1061,6 +990,7 @@ function WorldMapZoneButton_OnClick(self)
 end
 
 function WorldMapZoomOutButton_OnClick()
+	PlaySound("igMainMenuOptionCheckBoxOn");
 	WorldMapTooltip:Hide();
 	if ( GetCurrentMapZone() ~= WORLDMAP_WORLD_ID ) then
 		SetMapZoom(GetCurrentMapContinent());
@@ -1203,29 +1133,32 @@ function WorldMapButton_OnUpdate(self, elapsed)
 	local adjustedY = (centerY + (height/2) - y ) / height;
 	local adjustedX = (x - (centerX - (width/2))) / width;
 
-	local name, fileName, texPercentageX, texPercentageY, textureX, textureY, scrollChildX, scrollChildY
+	local name, fileName, texPercentageX, texPercentageY, textureX, textureY, scrollChildX, scrollChildY, minLevel, maxLevel
 	if ( self:IsMouseOver() ) then
-		name, fileName, texPercentageX, texPercentageY, textureX, textureY, scrollChildX, scrollChildY = UpdateMapHighlight( adjustedX, adjustedY );
+		name, fileName, texPercentageX, texPercentageY, textureX, textureY, scrollChildX, scrollChildY, minLevel, maxLevel = UpdateMapHighlight( adjustedX, adjustedY );
 	end
 
 	WorldMapFrame.areaName = name;
 	if ( not WorldMapFrame.poiHighlight ) then
-		if name and name ~= "" and MapLevelData[fileName] then
-			local playerLevel = UnitLevel("player")
-			local minLevel, maxLevel = unpack(MapLevelData[fileName])
-			local color
-
+		if (name and name ~= "" and minLevel and maxLevel and minLevel > 0 and maxLevel > 0) then
+			local playerLevel = UnitLevel("player");
+			local color;
 			if (playerLevel < minLevel) then
-				color = GetQuestDifficultyColor(minLevel)
+				color = GetQuestDifficultyColor(minLevel);
 			elseif (playerLevel > maxLevel) then
-				color = GetQuestDifficultyColor(maxLevel - 2)
+				--subtract 2 from the maxLevel so zones entirely below the player's level won't be yellow
+				color = GetQuestDifficultyColor(maxLevel - 2);
 			else
-				color = QuestDifficultyColors["difficult"]
+				color = QuestDifficultyColors["difficult"];
 			end
 
-			WorldMapFrameAreaLabel:SetFormattedText("%s |cff%2x%2x%2x(%i-%i)|r", name, color.r * 255, color.g * 255, color.b * 255, minLevel, maxLevel)
+			if (minLevel ~= maxLevel) then
+				WorldMapFrameAreaLabel:SetFormattedText("%s |cff%2x%2x%2x(%i-%i)|r", name, color.r * 255, color.g * 255, color.b * 255, minLevel, maxLevel)
+			else
+				WorldMapFrameAreaLabel:SetFormattedText("%s |cff%2x%2x%2x(%i)|r", name, color.r * 255, color.g * 255, color.b * 255, maxLevel)
+			end
 		else
-			WorldMapFrameAreaLabel:SetText(name)
+			WorldMapFrameAreaLabel:SetText(name);
 		end
 	end
 	if ( fileName ) then
@@ -1344,19 +1277,6 @@ function WorldMapButton_OnUpdate(self, elapsed)
 	local currenMapID = GetCurrentMapAreaID()
 	for i=1, numFlags do
 		local flagX, flagY, flagToken = GetBattlefieldFlagPosition(i);
-		local factionID = C_CacheInstance:Get("ASMSG_UPDATE_BATTLEFIELD_FLAG")
-
-		if currenMapID ~= 483 and numFlags > 1 then
-			flagToken = i == 1 and "HordeFlag" or "AllianceFlag"
-		else
-			if factionID then
-				local factionName = PLAYER_FACTION_GROUP[factionID]
-
-				if factionName then
-					flagToken = factionName.."Flag"
-				end
-			end
-		end
 
 		local flagFrameName = "WorldMapFlag"..i;
 		local flagFrame = _G[flagFrameName];
@@ -1366,8 +1286,15 @@ function WorldMapButton_OnUpdate(self, elapsed)
 			flagX = flagX * WorldMapDetailFrame:GetWidth();
 			flagY = -flagY * WorldMapDetailFrame:GetHeight();
 			flagFrame:SetPoint("CENTER", "WorldMapDetailFrame", "TOPLEFT", flagX, flagY);
-			local flagTexture = _G[flagFrameName.."Texture"];
+
+			local factionOverrideID = C_CacheInstance:Get("ASMSG_UPDATE_BATTLEFIELD_FLAG"..i)
+			if factionOverrideID then
+				local factionName = factionOverrideID and SERVER_PLAYER_FACTION_GROUP[factionOverrideID]
+				flagToken = factionName.."Flag"
+			end
+
 			if flagToken then
+				local flagTexture = _G[flagFrameName.."Texture"];
 				flagTexture:SetTexture("Interface\\WorldStateFrame\\"..flagToken);
 				flagFrame:Show();
 			end
@@ -2224,7 +2151,7 @@ function WorldMapFrame_DisplayQuestPOI(questFrame, isComplete)
 	local index = questFrame.index;
 	local poiButton;
 	if ( isComplete ) then
-		poiButton = QuestPOI_DisplayButton("WorldMapPOIFrame", QUEST_POI_COMPLETE_SWAP, index, questFrame.questId);
+		poiButton = QuestPOI_DisplayButton("WorldMapPOIFrame", QUEST_POI_COMPLETE_SWAP, questFrame.completedIndex, questFrame.questId);
 	else
 		poiButton = QuestPOI_DisplayButton("WorldMapPOIFrame", QUEST_POI_NUMERIC, index - numCompletedQuests, questFrame.questId);
 	end
@@ -2271,6 +2198,7 @@ function WorldMapFrame_GetQuestFrame(index, isComplete)
 	if ( isComplete ) then
 		numCompletedQuests = numCompletedQuests + 1;
 		poiButton = QuestPOI_DisplayButton("WorldMapQuestScrollChildFrame", QUEST_POI_COMPLETE_IN, numCompletedQuests, 0);
+		frame.completedIndex = numCompletedQuests;
 	else
 		poiButton = QuestPOI_DisplayButton("WorldMapQuestScrollChildFrame", QUEST_POI_NUMERIC, index - numCompletedQuests, 0);
 	end
@@ -2885,28 +2813,16 @@ function EventHandler:ASMSG_BG_SM_CART_STATES( msg )
 	vehicleInfo[VEHICLE_ID_TO_VEHICLE_NAME[vehicleKey]] = {VEHICLE_CUSTOM_INFO[VEHICLE_ID_TO_VEHICLE_NAME[vehicleKey]][1], VEHICLE_TYPE_MAP[vahicleType]}
 end
 
-function EventHandler:ASMSG_UPDATE_BATTLEFIELD_FLAG( msg )
-	if msg then
-		local factionID = tonumber(msg)
-
-		if factionID then
-			C_CacheInstance:Set("ASMSG_UPDATE_BATTLEFIELD_FLAG", factionID)
-			WorldStateTopCenterFrame_UpdateState(WorldStateTopCenterFrame)
-		end
-	end
+function EventHandler:ASMSG_UPDATE_BATTLEFIELD_FLAG(msg)
+	local carrierFactionID_1, carrierFactionID_2 = string.split(":", msg)
+	C_CacheInstance:Set("ASMSG_UPDATE_BATTLEFIELD_FLAG1", tonumber(carrierFactionID_1))
+	C_CacheInstance:Set("ASMSG_UPDATE_BATTLEFIELD_FLAG2", tonumber(carrierFactionID_2))
+	WorldStateTopCenterFrame_UpdateState(WorldStateTopCenterFrame)
 end
 
-enum:E_BG_KT_ORB_STATE {
-	"ID",
-	"FACTIONID"
-}
-
 function EventHandler:ASMSG_BG_KT_ORB_STATE(msg)
-	local orbStorage = C_Split(msg, ",")
+	local orbID, factionID = string.split(",", msg)
+
 	local orbData = C_CacheInstance:Get("ASMSG_BG_KT_ORB_STATE", {})
-
-	local orbID = tonumber(orbStorage[E_BG_KT_ORB_STATE.ID])
-	local factionID = tonumber(orbStorage[E_BG_KT_ORB_STATE.FACTIONID])
-
-	orbData[orbID] = factionID
+	orbData[tonumber(orbID)] = tonumber(factionID)
 end

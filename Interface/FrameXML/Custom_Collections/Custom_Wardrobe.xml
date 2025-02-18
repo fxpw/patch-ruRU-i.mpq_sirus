@@ -161,7 +161,7 @@
 		</HighlightTexture>
 		<Scripts>
 			<OnClick>
-				WardrobeCollectionFrame.ItemsCollectionFrame:SetActiveSlot(self.transmogLocation);
+				WardrobeCollectionFrame.ItemsCollectionFrame:SetActiveSlot(self.transmogLocation, nil, nil, nil, true);
 			</OnClick>
 			<OnEnter>
 				local slotName = _G[self.slot];
@@ -212,6 +212,16 @@
 
 	<Frame name="WardrobeCollectionFrame" parent="CollectionsJournal" setAllPoints="true" hidden="true">
 		<Frames>
+			<Button name="$parentTutorialButton" parentKey="TutorialButton" inherits="MainHelpPlateButton" toplevel="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="40" y="18" />
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():ToggleTutorial()
+					</OnClick>
+				</Scripts>
+			</Button>
 			<Button name="$parentTab1" parentKey="ItemsTab" inherits="TabButtonTemplate" text="WARDROBE_ITEMS" id="1" frameLevel="4">
 				<Anchors>
 					<Anchor point="TOPLEFT" x="58" y="-28"/>
@@ -266,6 +276,37 @@
 						self.Icon:SetDesaturated(true);
 						self.ResetButton:Hide();
 					</OnDisable>
+				</Scripts>
+			</Button>
+			<Button name="$parentHelpButton" parentKey="HelpButton" inherits="UIMenuButtonStretchTemplate" frameLevel="10" hidden="true">
+				<Size x="28" y="22"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentFilterButton" relativePoint="RIGHT" x="2" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture name="$parentIcon" parentKey="Icon" file="Interface\ChatFrame\ChatFrameExpandArrow">
+							<Size x="10" y="12"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentMiddleLeft" relativePoint="LEFT" x="5"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentQuestIcon" parentKey="QuestIcon">
+							<Size x="12" y="12"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="-3"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, WardrobeCollectionFrameHelpButtonMixin);
+						self.QuestIcon:SetAtlas("PKBT-Icon-Questionmark")
+					</OnLoad>
+					<OnClick>
+						self:OnClick();
+					</OnClick>
 				</Scripts>
 			</Button>
 			<Frame name="WardrobeFilterDropDown" parentKey="FilterDropDown" inherits="UIDropDownMenuTemplate">
@@ -1140,10 +1181,9 @@
 					<Anchor point="TOPLEFT" x="36" y="24" />
 				</Anchors>
 				<Scripts>
-					<OnEnter>
-						self:GetParent():ShowPointerTutorial();
-					</OnEnter>
-					<OnLeave function="GameTooltip_Hide"/>
+					<OnClick>
+						self:GetParent():ToggleTutorial()
+					</OnClick>
 				</Scripts>
 			</Button>
 			<Frame name="WardrobeTransmogFrame" inherits="InsetFrameTemplate">
@@ -1383,6 +1423,50 @@
 			<OnEvent>
 				self:OnEvent(event, ...)
 			</OnEvent>
+		</Scripts>
+	</Frame>
+
+	<Frame name="WardrobeFrameHelpFrame" parent="WardrobeFrame" parentKey="HelpFrame" inherits="GlowBoxTemplate" enableMouse="true" toplevel="true" hidden="true">
+		<Size x="312" y="522"/>
+		<Anchors>
+			<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-15" y="-69"/>
+		</Anchors>
+		<Frames>
+			<Button name="$parentKnowledgeBaseButton" parentKey="KnowledgeBaseButton" inherits="PKBT_RedButtonTemplate" text="TRANSMOG_HELP_BUTTON">
+				<Size x="158" y="39"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="22"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						SetItemRef("kbase:1:47", nil, button)
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parentHeaderText" parentKey="HeaderText" inherits="GameFontNormal18" text="TRANSMOG_HELP_HEADER">
+					<Size x="248" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" y="-16"/>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+				<FontString name="$parentBodyText" parentKey="BodyText" inherits="GameFontNormal12" justifyH="LEFT" justifyV="TOP">
+					<Size x="248" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentHeaderText" relativePoint="BOTTOM" y="-24"/>
+				<!--	<Anchor point="BOTTOM" relativeTo="$parentKnowledgeBaseButton" relativePoint="TOP" y="24"/> -->
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self.BodyText:SetPoint("BOTTOM", self.KnowledgeBaseButton, "TOP", 0, 24)
+			</OnLoad>
 		</Scripts>
 	</Frame>
 </Ui>

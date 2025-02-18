@@ -6,6 +6,7 @@ local SELECTED_SIGN = 1
 
 PAID_SERVICE_CHARACTER_ID = nil
 PAID_SERVICE_TYPE = nil
+local PAID_OVERRIDE_CURRENT_RACE_INDEX
 
 local ZODIAC_SIGNS_ENABLED = true
 
@@ -17,27 +18,10 @@ local CAMERA_ZOOM_LEVEL_AMOUNT = 20
 local CAMERA_ZOOM_IN_PROGRESS = false
 local CAMERA_ZOOM_RESET_BLOCKED = false
 
-local CHARACTER_SELECT_GHOST = false
-
 local CHARACTER_CUSTOM_FLAG = 0
-
 local CHARACTER_CREATE_DRESSED = true
-local CHARACTER_CREATE_DRESS_STATE_QUEUED = false
-local CHARACTER_SELECT_DRESS_QUEUED = false
-local CHARACTER_SELECT_LIST_UPDATE_QUEUED = false
 
 local CHARACTER_CREATING_NAME
-
-local PAID_OVERRIDE_CURRENT_RACE_INDEX
-
-E_PAID_SERVICE = Enum.CreateMirror({
-	CUSTOMIZATION		= 1,
-	CHANGE_RACE			= 2,
-	CHANGE_FACTION		= 3,
-	CHANGE_ZODIAC		= 4,
-	BOOST_SERVICE		= 5,
-	BOOST_SERVICE_NEW	= 6,
-})
 
 E_CHARACTER_CUSTOMIZATION = Enum.CreateMirror({
 	"SKIN_COLOR",
@@ -315,7 +299,7 @@ eventHandler:SetScript("OnEvent", function(self, event, ...)
 			local isBoostedCreation = PAID_SERVICE_TYPE == E_PAID_SERVICE.BOOST_SERVICE_NEW
 
 			if characterIndex == 0 then
-				characterIndex = 10
+				characterIndex = C_CharacterList.GetNumCharactersPerPage()
 			end
 
 			FireCustomClientEvent("CHARACTER_CREATED", characterIndex, characterListIndex, isBoostedCreation, CHARACTER_CREATING_NAME)
@@ -324,35 +308,12 @@ eventHandler:SetScript("OnEvent", function(self, event, ...)
 		local msg = select(3, ...)
 		local prefix, content = string.split(":", msg, 2)
 
-		if prefix == "SMSG_TOGGLE_ITEMS_FOR_CUSTOMIZE" then
-			local status = content
-			if CHARACTER_CREATE_DRESS_STATE_QUEUED then
-				if status == "OK" then
-					CHARACTER_CREATE_DRESSED = not CHARACTER_CREATE_DRESSED	-- state change confirmed
-
-					C_CharacterCreation.SetBlockCameraReset(true)
-					self.cameraPreserve = C_CharacterCreation.GetCameraPosition()
-
-					self:RegisterEvent("CHARACTER_LIST_UPDATE")
-					GetCharacterListUpdate()
-				else
-					CHARACTER_CREATE_DRESS_STATE_QUEUED = false
-					GlueDialog:HideDialog("SERVER_WAITING")
-					GlueDialog:ShowDialog("OKAY_VOID", WAIT_MODEL_LOADING_ERROR)
-				end
-
-				FireCustomClientEvent("GLUE_CHARACTER_CREATE_DRESS_STATE_UPDATE", status == "OK")
-			elseif CHARACTER_SELECT_DRESS_QUEUED then
-				CHARACTER_SELECT_DRESS_QUEUED = false
-
-				if status == "OK" then
-					CHARACTER_CREATE_DRESSED = not CHARACTER_CREATE_DRESSED	-- state change confirmed
-				end
-
-				if CHARACTER_SELECT_LIST_UPDATE_QUEUED then
-					GetCharacterListUpdate()
-				end
+		if prefix == "ASMSG_ALLIED_RACES" then
+			for _, raceID in ipairs({StringSplitEx(":", content)}) do
+				ALLIED_RACES_UNLOCK[tonumber(raceID)] = true
 			end
+		elseif prefix == "ASMSG_SERVICE_MSG" then
+			table.wipe(ALLIED_RACES_UNLOCK)
 		elseif prefix == "SMSG_CHARACTER_CREATION_INFO" then
 			local zodiacSignStatus, customFlagStatus = string.split(":", content)
 			zodiacSignStatus = tonumber(zodiacSignStatus) or 0
@@ -380,7 +341,7 @@ eventHandler:SetScript("OnEvent", function(self, event, ...)
 
 				local errorText
 				if zodiacErrorText and customFlagErrorText then
-					errorText = string.join(";", zodiacErrorText, customFlagErrorText)
+					errorText = string.join("\n", zodiacErrorText, customFlagErrorText)
 				else
 					errorText = zodiacErrorText or customFlagErrorText
 				end
@@ -402,34 +363,14 @@ eventHandler:SetScript("OnEvent", function(self, event, ...)
 					GlueDialog:ShowDialog("OKAY_VOID", string.format("[ERROR] SMSG_CHARACTER_ZODIAC: error %s", status))
 				end
 			end
-		end
-	elseif event == "CHARACTER_LIST_UPDATE" then
-		self:UnregisterEvent(event)
-
-		if CHARACTER_CREATE_DRESS_STATE_QUEUED then
-			CHARACTER_CREATE_DRESS_STATE_QUEUED = false
-
-			CharacterModelManager.SetBackground("Alliance", true)
-			CharacterModelManager.SetBackground(C_CharacterCreation.GetSelectedModelName(), true)
-
-			if CHARACTER_SELECT_GHOST then
-				GlueFFXModel:Hide()
+		elseif prefix == "SMSG_CHARACTER_CREATION_STATUS" then
+			local status = tonumber(content)
+			local errorText = _G[string.format("CHARACTER_CREATION_STATUS_%i", status)]
+			if errorText then
+				GlueDialog:ShowDialog("OKAY_VOID", errorText)
+			else
+				GlueDialog:ShowDialog("OKAY_VOID", string.format("[ERROR] SMSG_CHARACTER_CREATION_STATUS: error %s", status))
 			end
-
-			-- force update model
-			SetSelectedSex(SELECTED_SEX == 3 and 2 or 3)
-			SetSelectedSex(SELECTED_SEX)
-			SELECTED_SEX = GetSelectedSex()
-
-			if CHARACTER_SELECT_GHOST then
-				GlueFFXModel:Show()
-			end
-
-			C_CharacterCreation.SetCameraPosition(self.cameraPreserve)
-			C_CharacterCreation.SetBlockCameraReset(false)
-			self.cameraPreserve = nil
-
-			GlueDialog:HideDialog("SERVER_WAITING")
 		end
 	end
 end)
@@ -515,9 +456,10 @@ function C_CharacterCreation.SetCreateScreen(paidServiceID, characterID)
 	if GetCurrentGlueScreenName() == "charcreate" then return end
 
 	local selectedCharacterID = C_CharacterList.GetSelectedCharacter()
-	CHARACTER_SELECT_GHOST = selectedCharacterID ~= 0 and select(7, GetCharacterInfo(selectedCharacterID)) == true
+	local isSelectedCharacterGhost = selectedCharacterID ~= 0 and select(7, GetCharacterInfo(selectedCharacterID)) == true
 
-	if CHARACTER_SELECT_GHOST then
+	if isSelectedCharacterGhost then
+		GlueFFXModel.ghostBugWorkaround = true
 		GlueFFXModel:Hide()
 	end
 
@@ -531,8 +473,9 @@ function C_CharacterCreation.SetCreateScreen(paidServiceID, characterID)
 
 	SetGlueScreen("charcreate")
 
-	if CHARACTER_SELECT_GHOST then
+	if isSelectedCharacterGhost then
 		GlueFFXModel:Show()
+		GlueFFXModel.ghostBugWorkaround = nil
 	end
 end
 
@@ -549,14 +492,14 @@ function C_CharacterCreation.SetInCharacterCreate(state)
 		SELECTED_SIGN = 1
 		CHARACTER_CUSTOM_FLAG = 0
 
+		if not CHARACTER_CREATE_DRESSED then
+			CHARACTER_CREATE_DRESSED = true
+			CharCustomization_Dress()
+		end
+
 		local defaultFacing = C_CharacterCreation.GetDefaultCharacterCreateFacing()
 		if GetCharacterCreateFacing() ~= defaultFacing then
 			SetCharacterCreateFacing(defaultFacing)
-		end
-
-		if not CHARACTER_CREATE_DRESSED then
-			CHARACTER_SELECT_DRESS_QUEUED = true
-			C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.ToggleItemsForCustomize)
 		end
 	end
 
@@ -652,16 +595,25 @@ function C_CharacterCreation.CreateCharacter(name)
 		end
 	end
 
-	CHARACTER_CREATING_NAME = string.trim(name):gsub("%d+", "")
+	CHARACTER_CREATING_NAME = name
 
 	if C_CharacterCreation.PaidChange_IsActive(true) then
+		if C_CharacterList.HasCharacterForcedCustomization(PAID_SERVICE_CHARACTER_ID) then
+			local customizationFlags = CharCustomization_GetFlags(PAID_SERVICE_CHARACTER_ID)
+			if customizationFlags and bit.band(customizationFlags, CHARACTER_CUSTOMIZE_FLAGS.CUSTOMIZATION) ~= 0 then
+				CreateCharacter(CHARACTER_CREATING_NAME, CHARACTER_CUSTOMIZE_FLAGS.CUSTOMIZATION)
+				return
+			end
+		end
+
 		if C_CharacterCreation.PaidChange_CanChangeZodiac() then
 			local zodiacRaceID = C_ZodiacSign.GetZodiacSignInfoByIndex(SELECTED_SIGN)
 			if zodiacRaceID then
 				if zodiacRaceID ~= C_CharacterCreation.PaidChange_GetZodiacRaceID() then
+					local characterIndex = C_CharacterList.GetCharacterIndexByID(PAID_SERVICE_CHARACTER_ID)
 					local signDBCRaceID = E_CHARACTER_RACES_DBC[E_CHARACTER_RACES[zodiacRaceID]]
 					GlueDialog:ShowDialog("SERVER_WAITING", CHAR_ZODIAC_IN_PROGRESS)
-					C_GluePackets:SendPacket(C_GluePackets.OpCodes.SendCharacterCustomizationInfo, PAID_SERVICE_CHARACTER_ID, signDBCRaceID or 0)
+					C_GluePackets:SendPacket(C_GluePackets.OpCodes.SendCharacterCustomizationInfo, characterIndex, signDBCRaceID or 0)
 				else
 					GlueDialog:ShowDialog("OKAY_VOID", CUSTOMIZATION_ZODIAC_ALREADY_SELECTED)
 				end
@@ -669,7 +621,16 @@ function C_CharacterCreation.CreateCharacter(name)
 				GlueDialog:ShowDialog("OKAY_VOID", CUSTOMIZATION_ZODIAC_NOT_FOUND)
 			end
 		else
-			CreateCharacter(CHARACTER_CREATING_NAME)
+			local customizationFlag
+			if PAID_SERVICE_TYPE == E_PAID_SERVICE.CUSTOMIZATION then
+				customizationFlag = CHARACTER_CUSTOMIZE_FLAGS.CUSTOMIZATION
+			elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_RACE then
+				customizationFlag = CHARACTER_CUSTOMIZE_FLAGS.CHANGE_RACE
+			elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION then
+				customizationFlag = CHARACTER_CUSTOMIZE_FLAGS.CHANGE_FACTION
+			end
+
+			CreateCharacter(CHARACTER_CREATING_NAME, customizationFlag)
 		end
 	else
 		if C_CharacterCreation.IsZodiacSignsEnabled() or CHARACTER_CUSTOM_FLAG ~= 0 then
@@ -690,21 +651,18 @@ function C_CharacterCreation.SetDressState(state)
 	state = not not state
 	if state == CHARACTER_CREATE_DRESSED then return end
 
-	CHARACTER_CREATE_DRESS_STATE_QUEUED = true
-	GlueDialog:ShowDialog("SERVER_WAITING", WAIT_MODEL_LOADING)
-	C_GluePackets:SendPacketThrottled(C_GluePackets.OpCodes.ToggleItemsForCustomize)
+	if state then
+		CharCustomization_Dress()
+	else
+		CharCustomization_Undress()
+	end
+
+	CHARACTER_CREATE_DRESSED = state
+	FireCustomClientEvent("GLUE_CHARACTER_CREATE_DRESS_STATE_UPDATE", state)
 end
 
 function C_CharacterCreation.IsDressed()
 	return CHARACTER_CREATE_DRESSED
-end
-
-function C_CharacterCreation.IsDressStateChanging()
-	return CHARACTER_CREATE_DRESS_STATE_QUEUED
-end
-
-function C_CharacterCreation.IsDressStateChangingBack()
-	return CHARACTER_SELECT_DRESS_QUEUED
 end
 
 function C_CharacterCreation.CanCreateHardcoreCharacter()
@@ -731,26 +689,11 @@ function C_CharacterCreation.GetHardcoreFlag()
 	end
 end
 
-function C_CharacterCreation.QueueListUpdate()
-	CHARACTER_SELECT_LIST_UPDATE_QUEUED = true
-end
-
 function C_CharacterCreation.IsAlliedRacesUnlocked(raceID, skipGMCheck)
 	if not skipGMCheck and IsGMAccount() then
 		return true
 	end
 	return ALLIED_RACES_UNLOCK[raceID] or false
-end
-
-function C_CharacterCreation.SetAlliedRacesData(unlockData)
-	if not unlockData then
-		table.wipe(ALLIED_RACES_UNLOCK)
-		return
-	end
-
-	for _, raceID in ipairs(unlockData) do
-		ALLIED_RACES_UNLOCK[tonumber(raceID)] = true
-	end
 end
 
 function C_CharacterCreation.GetAvailableRacesForCreation()
@@ -805,7 +748,7 @@ end
 
 function C_CharacterCreation.GetFactionForRace(raceID)
 	local factionLocalized, faction = GetFactionForRace(raceID)
-	return factionLocalized, faction, SERVER_PLAYER_FACTION_GROUP[faction]
+	return factionLocalized, faction, SERVER_PLAYER_FACTION_GROUP[faction], PLAYER_FACTION_GROUP[faction]
 end
 
 function C_CharacterCreation.IsRaceClassValid(raceID, classID)
@@ -877,6 +820,10 @@ function C_CharacterCreation.SetSelectedRace(raceID)
 
 	resetModelSettings()
 
+	if not CHARACTER_CREATE_DRESSED then
+		CharCustomization_Undress()
+	end
+
 	return true
 end
 
@@ -892,6 +839,10 @@ function C_CharacterCreation.SetSelectedClass(classID)
 
 	resetModelSettings()
 
+	if not CHARACTER_CREATE_DRESSED then
+		CharCustomization_Undress()
+	end
+
 	return true
 end
 
@@ -905,6 +856,10 @@ function C_CharacterCreation.SetSelectedSex(sexID)
 	SetSelectedSex(sexID)
 	SELECTED_SEX = GetSelectedSex()
 
+	if not CHARACTER_CREATE_DRESSED then
+		CharCustomization_Undress()
+	end
+
 	return true
 end
 
@@ -914,6 +869,10 @@ end
 
 function C_CharacterCreation.RandomizeCharCustomization()
 	RandomizeCharCustomization()
+
+	if not CHARACTER_CREATE_DRESSED then
+		CharCustomization_Undress()
+	end
 end
 
 function C_CharacterCreation.SetCustomizationChoice(optionID, delta)
@@ -1351,16 +1310,14 @@ function C_CharacterCreation.PaidChange_GetPreviousRaceIndex()
 end
 
 function C_CharacterCreation.PaidChange_GetCurrentFaction()
-	if FACTION_OVERRIDE[PAID_SERVICE_CHARACTER_ID] and not PAID_OVERRIDE_CURRENT_RACE_INDEX then
-		local factionID = FACTION_OVERRIDE[PAID_SERVICE_CHARACTER_ID]
-		local faction = SERVER_PLAYER_FACTION_GROUP[factionID]
-
-		if PLAYER_FACTION_GROUP[faction] == PLAYER_FACTION_GROUP.Renegade then
+	local factionOverrideID, factionOverrideGroup = C_CharacterList.GetCharacterFactionOverride(PAID_SERVICE_CHARACTER_ID)
+	if factionOverrideID and not PAID_OVERRIDE_CURRENT_RACE_INDEX then
+		if PLAYER_FACTION_GROUP[factionOverrideGroup] == PLAYER_FACTION_GROUP.Renegade then
 			return C_CharacterCreation.GetFactionForRace(C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
 		end
 
-		local factionLocalized = _G[string.upper(faction)]
-		return factionLocalized, faction, factionID
+		local factionLocalized = _G[string.upper(factionOverrideGroup)]
+		return factionLocalized, factionOverrideGroup, factionOverrideID, PLAYER_FACTION_GROUP[factionOverrideGroup]
 	end
 	return C_CharacterCreation.GetFactionForRace(C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
 end

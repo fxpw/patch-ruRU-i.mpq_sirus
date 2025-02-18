@@ -199,14 +199,31 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX;
+						self.cvar = "autoDismount";
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentAutoDismountFlying" inherits="InterfaceOptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAutoDismount" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-8"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX;
 						self.cvar = "autoDismountFlying";
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
+						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsControlsPanelAutoDismount, self)
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
 			<CheckButton name="$parentAutoClearAFK" inherits="InterfaceOptionsCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentAutoDismount" relativePoint="BOTTOMLEFT">
+					<Anchor point="TOPLEFT" relativeTo="$parentAutoDismountFlying" relativePoint="BOTTOMLEFT">
 						<Offset>
 							<AbsDimension x="0" y="-8"/>
 						</Offset>
@@ -247,30 +264,9 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX;
-						self.text = _G[self:GetName().."Text"];
-						self.text:SetText(BLOCK_GUILD_INVITES);
-						self.tooltipText = OPTION_TOOLTIP_BLOCK_GUILD_INVITES;
-						self.defaultValue = "0";
+						self.cvar = "C_CVAR_BLOCK_GUILD_INVITES";
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
-
-						self.GetValue = function (self) return GetAutoDeclineGuildInvites(); end
-						self.SetValue = function (self, value) self.value = value; self:SetChecked(value); SetAutoDeclineGuildInvites(value); end
-						self:RegisterEvent("VARIABLES_LOADED");
 					</OnLoad>
-					<OnClick>
-						local value = ((self:GetChecked() and "1") or "0");
-						if ( value == "1" ) then
-							PlaySound("igMainMenuOptionCheckBoxOn");
-						else
-							PlaySound("igMainMenuOptionCheckBoxOff");
-						end
-						self:SetValue(value);
-					</OnClick>
-					<OnEvent>
-						self:SetChecked(GetAutoDeclineGuildInvites());
-						self.value = GetAutoDeclineGuildInvites();
-						self:SetValue(self.value);
-					</OnEvent>
 				</Scripts>
 			</CheckButton>
 			<CheckButton name="$parentLootAtMouse" inherits="InterfaceOptionsCheckButtonTemplate">
@@ -342,6 +338,28 @@
 					<OnEvent function="InterfaceOptionsControlsPanelAutoLootKeyDropDown_OnEvent"/>
 					<OnLeave function="GameTooltip_Hide"/>
 				</Scripts>
+			</Frame>
+			<Frame name="$parentBlockGroupInvites" inherits="InterfaceOptionsDropDownCustomTemplate">
+				<Attributes>
+					<Attribute name="width" type="number" value="180"/>
+					<Attribute name="label" type="string" value="SETTINGS_BLOCK_GROUP_INVITES"/>
+					<Attribute name="cvar" type="string" value="C_CVAR_BLOCK_GROUP_INVITES"/>
+					<Attribute name="initFunction" type="string" value="InterfaceOptionsDisplayPanelBlockGroupInvitesDropDown_Initialize"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAutoLootKeyDropDown" relativePoint="BOTTOMLEFT" x="0" y="-24"/>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentAutoAcceptGroupInvites" inherits="InterfaceOptionsDropDownCustomTemplate">
+				<Attributes>
+					<Attribute name="width" type="number" value="180"/>
+					<Attribute name="label" type="string" value="SETTINGS_AUTO_ACCEPT_GROUP_INVITES"/>
+					<Attribute name="cvar" type="string" value="C_CVAR_AUTO_ACCEPT_GROUP_INVITES"/>
+					<Attribute name="initFunction" type="string" value="InterfaceOptionsDisplayPanelAutoAcceptGroupInvitesDropDown_Initialize"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentBlockGroupInvites" relativePoint="BOTTOMLEFT" x="0" y="-24"/>
+				</Anchors>
 			</Frame>
 		</Frames>
 		<Scripts>
@@ -518,9 +536,34 @@
 					<OnLeave function="GameTooltip_Hide"/>
 				</Scripts>
 			</CheckButton>
-			<CheckButton name="$parentDracthyrReturnMortalForm" inherits="InterfaceOptionsCheckButtonTemplate" hidden="true">
+			<CheckButton name="$parentAssistModeCheckButton" parentKey="AssistModeCheckButton" inherits="InterfaceOptionsCheckButtonTemplate" motionScriptsWhileDisabled="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentLossOfControll" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:RegisterCustomEvent("WARMODE_ASSIST_SET_INACTIVE")
+
+						self.type = CONTROLTYPE_CHECKBOX
+						self.cvar = "C_CVAR_WARMODE_PVP_ASSIST_ENABLED"
+
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+					</OnLoad>
+					<OnEvent>
+						local isInactive = ...
+						if isInactive then
+							self:Disable()
+							self.tooltipRequirement = OPTION_TOOLTIP_WARMODE_ASSIST_MODE_LABEL_DISABLED
+						else
+							self:Enable()
+							self.tooltipRequirement = nil
+						end
+					</OnEvent>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentDracthyrReturnMortalForm" inherits="InterfaceOptionsCheckButtonTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAssistModeCheckButton" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -1123,6 +1166,17 @@
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
+			<Frame name="$parentLootAlertThreshold" inherits="InterfaceOptionsDropDownCustomTemplate">
+				<Attributes>
+					<Attribute name="width" type="number" value="120"/>
+					<Attribute name="label" type="string" value="SETTINGS_LOOT_ALERT_THRESHOLD"/>
+					<Attribute name="cvar" type="string" value="C_CVAR_LOOT_ALERT_THRESHOLD"/>
+					<Attribute name="initFunction" type="string" value="InterfaceOptionsDisplayPanelLootAlertThresholdDropDown_Initialize"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentCinematicSubtitles" relativePoint="BOTTOMLEFT" x="-13" y="-24"/>
+				</Anchors>
+			</Frame>
 		</Frames>
 		<Scripts>
 			<OnLoad function="InterfaceOptionsDisplayPanel_OnLoad"/>
@@ -1447,7 +1501,9 @@
 						self.type = CONTROLTYPE_CHECKBOX
 						self.cvar = "C_CVAR_AUTOJOIN_TO_LFG"
 
-						self.setFunc = function() C_CacheInstance:Set("AUTOJOIN_TO_LFG", true) end
+						self.setFunc = function(value)
+							UpdateAutoJoinLFG()
+						end
 
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
 					</OnLoad>
@@ -3896,9 +3952,21 @@
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
+			<CheckButton name="$parentShowCustomTutorials" inherits="InterfaceOptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentShowTutorials" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX;
+						self.cvar = "showCustomTutorials";
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
 			<CheckButton name="$parentLoadingScreenTips" inherits="InterfaceOptionsCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentShowTutorials" relativePoint="BOTTOMLEFT">
+					<Anchor point="TOPLEFT" relativeTo="$parentShowCustomTutorials" relativePoint="BOTTOMLEFT">
 						<Offset>
 							<AbsDimension x="0" y="-8"/>
 						</Offset>
@@ -3974,7 +4042,7 @@
 				</Anchors>
 				<Scripts>
 					<OnShow>
-						if ( CanResetTutorials() ) then
+						if ( CanResetTutorials() or C_TutorialManager.CanResetTutorials() ) then
 							self:Enable();
 						else
 							self:Disable();
@@ -3982,16 +4050,25 @@
 					</OnShow>
 					<OnClick>
 						PlaySound("gsTitleOptionOK");
-						ResetTutorials();
-						TutorialFrame_ClearQueue();
-						local tutorialsCheckButton = _G[self:GetParent():GetName() .. "ShowTutorials"];
-						if ( not tutorialsCheckButton:GetChecked() ) then
-							tutorialsCheckButton:Click()
+						if ( CanResetTutorials() ) then
+							ResetTutorials();
+							TutorialFrame_ClearQueue();
+							local tutorialsCheckButton = _G[self:GetParent():GetName() .. "ShowTutorials"];
+							if ( not tutorialsCheckButton:GetChecked() ) then
+								tutorialsCheckButton:Click()
+							end
+							TriggerTutorial(42);
+							TriggerTutorial(2);
+							TriggerTutorial(3);
+							TriggerTutorial(1);
 						end
-						TriggerTutorial(42);
-						TriggerTutorial(2);
-						TriggerTutorial(3);
-						TriggerTutorial(1);
+						if C_TutorialManager.CanResetTutorials() then
+							C_TutorialManager.ResetTutorials()
+						end
+						local name = UnitName("player")
+						if SIRUS_TUTORIAL_KEY and SIRUS_TUTORIAL_KEY[name] then
+							table.wipe(SIRUS_TUTORIAL_KEY[name])
+						end
 						self:Disable();
 					</OnClick>
 				</Scripts>
@@ -4156,23 +4233,9 @@
 				</Scripts>
 			</CheckButton>
 
-			<CheckButton name="$parentShowHardcoreBanner" inherits="InterfaceOptionsCheckButtonTemplate">
-				<Anchors>
-					<Anchor point="TOP" relativeTo="$parentFlashClientIcon" relativePoint="BOTTOM" x="0" y="-8"/>
-				</Anchors>
-				<Scripts>
-					<OnLoad>
-						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_SHOW_HARDCORE_BANNER"
-
-						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
-					</OnLoad>
-				</Scripts>
-			</CheckButton>
-
 			<CheckButton name="$parentShowToasts" inherits="InterfaceOptionsCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOP" relativeTo="$parentShowHardcoreBanner" relativePoint="BOTTOM" x="0" y="-8"/>
+					<Anchor point="TOP" relativeTo="$parentFlashClientIcon" relativePoint="BOTTOM" x="0" y="-8"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -4445,7 +4508,7 @@
 						if self:GetChecked() then
 							SocialToastAnchorFrame:Show()
 						else
-							SocialToastAnchorFrame:SetShown(#SocialToastAnchorFrame.toastFrames > 0)
+							SocialToastAnchorFrame:SetShown(#SocialToastAnchorFrame.activeToasts > 0)
 						end
 
 						SocialToastAnchorFrame.MoveFrame:SetShown(self:GetChecked())

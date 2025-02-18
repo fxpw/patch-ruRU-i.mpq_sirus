@@ -1,10 +1,3 @@
---	Filename:	LevelUpDisplay.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
--- PlayerEarnCategoryHandler
 function LevelUpDisplay_OnLoad( self, ... )
 	self:RegisterEvent("PLAYER_LEVEL_UP")
 end

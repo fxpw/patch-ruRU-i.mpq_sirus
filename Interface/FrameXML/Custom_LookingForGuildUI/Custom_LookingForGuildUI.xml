@@ -36,14 +36,14 @@
 			<OnClick>
 				local parent = self:GetParent();
 				local id = self:GetID();
+				local changed = parent.selectedTab ~= id
 
 				if id == 1 then
 					parent.selectedTab = 1;
-					parent:GetDisplayModeBasedOnSelectedTab();
 				elseif id == 2 then
 					parent.selectedTab = 2;
-					parent:GetDisplayModeBasedOnSelectedTab();
 				end
+				parent:GetDisplayModeBasedOnSelectedTab(changed);
 			</OnClick>
 			<OnEnter>
 				if self.tooltip then
@@ -182,7 +182,7 @@
 				<FontString name="$parentDescription" parentKey="Description" maxLines="6" justifyH="CENTER" inherits="GameFontNormal" text="Description">
 					<Size x="155" y="95"/>
 					<Anchors>
-						<Anchor point="CENTER" relativePoint="CENTER" x="0" y="-32"/>
+						<Anchor point="BOTTOM" relativeTo="$parentGuildBannerBorder" relativePoint="BOTTOM" x="0" y="-123"/>
 					</Anchors>
 				</FontString>
 				<FontString name="$parentRequestStatus" parentKey="RequestStatus" inherits="GameFontNormal" text="Request Status">
@@ -210,6 +210,18 @@
 					<OnClick>
 						PlaySound(SOUNDKIT.IG_MAINMENU_OPEN);
 						self:GetParent():RequestToJoinClub();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentJoin" parentKey="Join" inherits="UIPanelButtonTemplate" text="ENTER">
+				<Size x="150" y="25"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="10"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+						self:GetParent():JoinClub();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -571,6 +583,16 @@
 			<Anchor point="CENTER"/>
 		</Anchors>
 		<Frames>
+			<Button name="$parentTutorialButton" parentKey="TutorialButton" inherits="MainHelpPlateButton" toplevel="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="40" y="18"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():ToggleTutorial()
+					</OnClick>
+				</Scripts>
+			</Button>
 			<Frame name="$parentInsetFrame" inherits="InsetFrameTemplate" parentKey="InsetFrame">
 				<Anchors>
 					<Anchor point="TOPLEFT" x="4" y="-80"/>

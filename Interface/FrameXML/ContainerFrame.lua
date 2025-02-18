@@ -13,7 +13,7 @@ CONTAINER_OFFSET_X = 0;
 CONTAINER_SCALE = 0.75;
 BACKPACK_HEIGHT = 255;
 
-local TutorialData = {}
+local tutorialData = {}
 
 local searchText
 
@@ -86,11 +86,7 @@ function ContainerFrame_OnLoad(self)
 	ContainerFrame1.bags = {};
 end
 
-Container_NewItemBuffer = {}
-function ContainerFrameManager_OnLoad( self, ... )
-	self:RegisterEvent("BAG_UPDATE")
-	self:RegisterEvent("CHAT_MSG_LOOT")
-
+function ContainerFrameManager_OnLoad(self)
 	self:RegisterEvent("AUCTION_HOUSE_SHOW");
 	self:RegisterEvent("AUCTION_HOUSE_CLOSED");
 	self:RegisterEvent("BANKFRAME_OPENED");
@@ -106,32 +102,11 @@ function ContainerFrameManager_OnLoad( self, ... )
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 end
 
-function ContainerFrameManager_OnEvent( self, event, arg1 )
-	if event == "BAG_UPDATE" then
-		for bagID, bagData in pairs(Container_NewItemBuffer) do
-			for slotID, _ in pairs(bagData) do
-				local itemEntry = GetContainerItemID(bagID, slotID)
-				if not itemEntry then
-					Container_NewItemBuffer[bagID][slotID] = nil
-				end
-			end
-		end
-	elseif CONTAINER_CAN_ITEM_USE_EVENTS[event] then
+function ContainerFrameManager_OnEvent(_, event)
+	if CONTAINER_CAN_ITEM_USE_EVENTS[event] then
 		CONTAINER_CAN_ITEM_USE = CONTAINER_CAN_ITEM_USE_EVENTS[event];
 	elseif CONTAINER_CAN_ITEM_USE_UN_EVENTS[event] then
 		CONTAINER_CAN_ITEM_USE = nil;
-	end
-end
-
-function RemoveHighlight( frame, container, slot )
-	if Container_NewItemBuffer[container] and Container_NewItemBuffer[container][slot] then
-		Container_NewItemBuffer[container][slot] = nil
-
-		if frame.HighlightFrame.NewItemTexture.Anim:IsPlaying() then
-			frame.HighlightFrame.NewItemTexture.Anim:Stop()
-		end
-
-		frame.HighlightFrame.NewItemTexture.AnimOut:Play()
 	end
 end
 
@@ -233,6 +208,8 @@ function ContainerFrame_OnHide(self)
 	self:UnregisterEvent("BAG_UPDATE_COOLDOWN");
 	self:UnregisterEvent("DISPLAY_SIZE_CHANGED");
 
+	UpdateNewItemList(self);
+
 	if ( self:GetID() == 0 ) then
 		MainMenuBarBackpackButton:SetChecked(0);
 
@@ -307,6 +284,8 @@ function ContainerFrame_OnShow(self)
 	if ( ManageBackpackTokenFrame ) then
 		ManageBackpackTokenFrame();
 	end
+
+	EventRegistry:TriggerEvent("ContainerFrame.OnShow", self:GetID())
 end
 
 function OpenBag(id)
@@ -336,6 +315,7 @@ function CloseBag(id)
 	for i=1, NUM_CONTAINER_FRAMES, 1 do
 		local containerFrame = _G["ContainerFrame"..i];
 		if ( containerFrame:IsShown() and (containerFrame:GetID() == id) ) then
+			UpdateNewItemList(containerFrame);
 			containerFrame:Hide();
 			return;
 		end
@@ -387,6 +367,40 @@ function CloseBackpack()
 	end
 end
 
+function UpdateNewItemList(containerFrame)
+	local id = containerFrame:GetID()
+	local name = containerFrame:GetName()
+
+	for i=1, containerFrame.size, 1 do
+		local itemButton = _G[name.."Item"..i];
+		C_NewItems.RemoveNewItem(id, itemButton:GetID());
+	end
+end
+
+function SearchBagsForItem(itemID)
+	for i = 0, NUM_BAG_SLOTS do
+		for j = 1, GetContainerNumSlots(i) do
+			local id = GetContainerItemID(i, j);
+			if (id == itemID and C_NewItems.IsNewItem(i, j)) then
+				return i;
+			end
+		end
+	end
+	return -1;
+end
+
+function SearchBagsForItemLink(itemLink)
+	for i = 0, NUM_BAG_SLOTS do
+		for j = 1, GetContainerNumSlots(i) do
+			local _, _, _, _, _, _, link = GetContainerItemInfo(i, j);
+			if (link == itemLink and C_NewItems.IsNewItem(i, j)) then
+				return i;
+			end
+		end
+	end
+	return -1;
+end
+
 function ContainerFrame_GetOpenFrame()
 	for i=1, NUM_CONTAINER_FRAMES, 1 do
 		local frame = _G["ContainerFrame"..i];
@@ -411,6 +425,7 @@ function ContainerFrame_Update(frame)
 	local itemButton;
 	local texture, itemCount, locked, quality, readable;
 	local isQuestItem, questId, isActive, questTexture;
+	local flash, newItemAnim;
 	local highlightFrame, itemID, itemName, _
 	local tooltipOwner = GameTooltip:GetOwner();
 	for i=1, frame.size, 1 do
@@ -445,25 +460,33 @@ function ContainerFrame_Update(frame)
 			questTexture:Hide();
 		end
 
-		highlightFrame:Hide()
-		local newItem
+		local isNewItem = C_NewItems.IsNewItem(id, itemButton:GetID());
 
-		if Container_NewItemBuffer and Container_NewItemBuffer[id] and Container_NewItemBuffer[id][itemButton:GetID()] then
-			newItem = Container_NewItemBuffer[id][itemButton:GetID()]
+		flash = highlightFrame.flash.Anim;
+		newItemAnim = highlightFrame.NewItemTexture.Anim;
 
-			highlightFrame.container = id
-			highlightFrame.slot = itemButton:GetID()
-			highlightFrame.buffer = Container_NewItemBuffer[id][itemButton:GetID()]
+		if isNewItem then
+			if quality and NEW_ITEM_ATLAS_BY_QUALITY[quality] then
+				highlightFrame.NewItemTexture:SetAtlas(NEW_ITEM_ATLAS_BY_QUALITY[quality]);
+			else
+				highlightFrame.NewItemTexture:SetAtlas("bags-glow-white");
+			end
+			highlightFrame:Show();
 
-			if NEW_ITEM_ATLAS_BY_QUALITY[quality] then
-				highlightFrame.NewItemTexture:SetAtlas(NEW_ITEM_ATLAS_BY_QUALITY[quality])
+			if (not flash:IsPlaying() and not newItemAnim:IsPlaying()) then
+				flash:Play();
+				newItemAnim:Play();
+			end
+		else
+			highlightFrame:Hide();
+			if (flash:IsPlaying() or newItemAnim:IsPlaying()) then
+				flash:Stop();
+				newItemAnim:Stop();
 			end
 		end
 
 		itemButton.containerID = id
 		itemButton.slotID = itemButton:GetID()
-
-		highlightFrame:SetShown(newItem)
 
 		itemButton:UpdateItemContextMatching();
 
@@ -575,12 +598,18 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 		bgTextureTop:Show();
 
 		if not NPE_TutorialPointerFrame:GetKey("KeyRing") and HasKey() then
-			if TutorialData.TutorialFrame then
-				NPE_TutorialPointerFrame:Hide(TutorialData.TutorialFrame)
-				TutorialData.TutorialFrame = nil
+			if tutorialData.TutorialFrame then
+				NPE_TutorialPointerFrame:Hide(tutorialData.TutorialFrame)
+				tutorialData.TutorialFrame = nil
 			end
 
-			TutorialData.TutorialFrame = NPE_TutorialPointerFrame:Show(CONTAINER_FRAME_HELP_1, "RIGHT", _G[name.."KeyRingFrame"], 0, 0)
+			local onClose = function()
+				NPE_TutorialPointerFrame:Hide(tutorialData.TutorialFrame)
+				tutorialData.TutorialFrame = nil
+				NPE_TutorialPointerFrame:SetKey("KeyRing", true)
+			end
+
+			tutorialData.TutorialFrame = NPE_TutorialPointerFrame:Show(CONTAINER_FRAME_HELP_1, "RIGHT", _G[name.."KeyRingFrame"], 0, 0, nil, nil, nil, nil, onClose)
 		end
 
 		-- Hide unused textures
@@ -602,9 +631,9 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 			_G[name.."SearchBox"]:Hide()
 
 			if not NPE_TutorialPointerFrame:GetKey("KeyRing") and HasKey() then
-				if TutorialData.TutorialFrame then
-					NPE_TutorialPointerFrame:Hide(TutorialData.TutorialFrame)
-					TutorialData.TutorialFrame = nil
+				if tutorialData.TutorialFrame then
+					NPE_TutorialPointerFrame:Hide(tutorialData.TutorialFrame)
+					tutorialData.TutorialFrame = nil
 				end
 			end
 		else
@@ -1154,6 +1183,19 @@ function ContainerFrameItemButton_OnEnter(self)
 		return;
 	end
 
+	C_NewItems.RemoveNewItem(self:GetParent():GetID(), self:GetID());
+
+	local highlightFrame = self.HighlightFrame;
+	local flash = highlightFrame.flash.Anim;
+	local newItemGlowAnim = highlightFrame.NewItemTexture.Anim;
+
+	highlightFrame:Hide();
+
+	if (flash:IsPlaying() or newItemGlowAnim:IsPlaying()) then
+		flash:Stop();
+		newItemGlowAnim:Stop();
+	end
+
 	local showSell = nil;
 	local hasCooldown, repairCost = GameTooltip:SetBagItem(self:GetParent():GetID(), self:GetID());
 	if ( InRepairMode() and (repairCost and repairCost > 0) ) then
@@ -1173,8 +1215,6 @@ function ContainerFrameItemButton_OnEnter(self)
 	else
 		ResetCursor();
 	end
-
-	RemoveHighlight(self, self:GetParent():GetID(), self:GetID())
 end
 
 function ContainerFrame_CanItemUse()
@@ -1287,9 +1327,9 @@ function ToggleKeyRing()
 		SetButtonPulse(KeyRingButton, 0, 1);
 
 		if not NPE_TutorialPointerFrame:GetKey("KeyRing") and HasKey() then
-			if TutorialData.TutorialFrame then
-				NPE_TutorialPointerFrame:Hide(TutorialData.TutorialFrame)
-				TutorialData.TutorialFrame = nil
+			if tutorialData.TutorialFrame then
+				NPE_TutorialPointerFrame:Hide(tutorialData.TutorialFrame)
+				tutorialData.TutorialFrame = nil
 				NPE_TutorialPointerFrame:SetKey("KeyRing", true)
 			end
 		end
@@ -1377,22 +1417,5 @@ function ContainerFrame_UpdateAll()
 		for i = 1, NUM_BANKGENERIC_SLOTS, 1 do
 			BankFrameItemButton_Update(_G["BankFrameItem"..i])
 		end
-	end
-end
-
-function EventHandler:ASMSG_GLOW_ITEM( msg )
-	local splitData = C_Split(msg, ";")
-
-	for _, data in pairs(splitData) do
-		local itemData 	= C_Split(data, ":")
-		local bagID 	= tonumber(itemData[1])
-		local slotID 	= tonumber(itemData[2]) + 1
-
-		if not Container_NewItemBuffer[bagID] then
-			Container_NewItemBuffer[bagID] = {}
-		end
-
-		Container_NewItemBuffer[bagID][slotID] = {}
-		Container_NewItemBuffer[bagID][slotID].isFirstAnimation = false
 	end
 end

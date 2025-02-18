@@ -5,12 +5,6 @@ ROTATIONS_PER_SECOND = .5;
 local ClearTarget = ClearTarget
 local TRACKED_CVARS = TRACKED_CVARS
 
-GUILD_INVITE_REQUEST_TEXT = nil
-
--- Alpha animation stuff
-FADEFRAMES = {};
-FLASHFRAMES = {};
-
 -- Pulsing stuff
 PULSEBUTTONS = {};
 
@@ -48,7 +42,7 @@ UIPanelWindows["PVPBannerFrame"] =		{ area = "left",	pushable = 0 };
 UIPanelWindows["GuildRegistrarFrame"] =		{ area = "left",	pushable = 0 };
 UIPanelWindows["ArenaRegistrarFrame"] =		{ area = "left",	pushable = 0 };
 UIPanelWindows["PetitionFrame"] =		{ area = "left",	pushable = 0 };
-UIPanelWindows["HelpFrame"] =			{ area = "center",	pushable = 0,	whileDead = 1, allowOtherPanels = 1 };
+UIPanelWindows["HelpFrame"] =			{ area = "center",	pushable = 0,	whileDead = 1, allowOtherPanels = 1, allowAlwaysShow = 1 };
 UIPanelWindows["GossipFrame"] =			{ area = "left",	pushable = 0 };
 UIPanelWindows["MailFrame"] =			{ area = "left",	pushable = 0, xOffset = 15, yOffset = -10, };
 UIPanelWindows["BattlefieldFrame"] =		{ area = "left",	pushable = 0,	whileDead = 1 };
@@ -62,25 +56,44 @@ UIPanelWindows["LFRParentFrame"] =		{ area = "left",	pushable = 1,	whileDead = 1
 UIPanelWindows["ArenaFrame"] =			{ area = "left",	pushable = 0 };
 UIPanelWindows["ChatConfigFrame"] =		{ area = "center",	pushable = 0,	whileDead = 1 };
 UIPanelWindows["PVPParentFrame"] =			{ area = "left",	pushable = 0,	whileDead = 1 };
-UIPanelWindows["StoreFrame"] = 			{ area = "center", pushable = 0, whileDead = 1, allowOtherPanels = 1}
+UIPanelWindows["StoreFrame"] =			{ area = "center",	pushable = 0,	whileDead = 1, checkFit = 1, checkFitExtraWidth = 360, checkFitExtraHeight = 170 }
 UIPanelWindows["PromoCodeFrame"] =		{ area = "center",	pushable = 0,	whileDead = 1 }
 UIPanelWindows["BattlePassFrame"] =	{ area = "center",	pushable = 0,	whileDead = 1, checkFit = 1, checkFitExtraWidth = 360, checkFitExtraHeight = 170 }
+UIPanelWindows["CustomBarberShopFrame"] =	{ area = "full",	pushable = 0, ignoreControlLost = 1};
+UIPanelWindows["ServerNewsFrame"] =		{ area = "center",	pushable = 0,	whileDead = 1, ignoreControlLost = 1};
+
+local function SetFrameAttributes(frame, attributes)
+	frame:SetAttribute("UIPanelLayout-defined", true);
+	for name, value in pairs(attributes) do
+		frame:SetAttribute("UIPanelLayout-"..name, value);
+	end
+	frame:SetAttribute("UIPanelLayout-enabled", true);
+end
 
 local function GetUIPanelAttribute(frame, name)
-	if ( not frame:GetAttribute("UIPanelLayout-defined") ) then
-		local info = UIPanelWindows[frame:GetName()];
-		if ( not info ) then
+	if not frame:GetAttribute("UIPanelLayout-defined") then
+	    local attributes = UIPanelWindows[frame:GetName()];
+	    if not attributes then
 			return;
-		end
-		frame:SetAttribute("UIPanelLayout-defined", true);
-		for _name, value in pairs(info) do
-			frame:SetAttribute("UIPanelLayout-".._name, value);
-		end
-		frame:SetAttribute("UIPanelLayout-enabled", true);
+	    end
+		SetFrameAttributes(frame, attributes);
 	end
 	if ( frame:GetAttribute("UIPanelLayout-enabled") ) then
 		return frame:GetAttribute("UIPanelLayout-"..name);
 	end
+end
+
+function SetUIPanelAttribute(frame, name, value)
+	local attributes = UIPanelWindows[frame:GetName()];
+	if not attributes then
+		return;
+	end
+
+	if not frame:GetAttribute("UIPanelLayout-defined") then
+		SetFrameAttributes(frame, attributes);
+	end
+
+	frame:SetAttribute("UIPanelLayout-"..name, value);
 end
 
 -- These are windows that rely on a parent frame to be open.  If the parent closes or a pushable frame overlaps them they must be hidden.
@@ -249,7 +262,13 @@ function UIParent_OnLoad(self)
 	-- Event for Hook AchievementUI and AuctionUI
 	self:RegisterEvent("ADDON_LOADED")
 
+	-- Events for Global Mouse Down
+	self:RegisterEvent("GLOBAL_MOUSE_DOWN");
+	self:RegisterEvent("GLOBAL_MOUSE_UP");
+
 	self:RegisterCustomEvent("SERVICE_DATA_UPDATE")
+	self:RegisterCustomEvent("CUSTOM_CHALLENGE_ACTIVATED")
+	self:RegisterCustomEvent("CUSTOM_CHALLENGE_DEACTIVATED")
 end
 
 function UIParent_OnShow(self)
@@ -344,7 +363,7 @@ function ItemSocketingFrame_LoadUI()
 end
 
 function BarberShopFrame_LoadUI()
-	UIParentLoadAddOn("Blizzard_BarberShopUI");
+--	UIParentLoadAddOn("Blizzard_BarberShopUI");
 end
 
 function AchievementFrame_LoadUI()
@@ -410,10 +429,6 @@ function ToggleTalentFrame()
 	if ( PlayerTalentFrame_Toggle ) then
 		PlayerTalentFrame_Toggle(false, GetActiveTalentGroup())
 	end
-end
-
-function ToggleGuildFrame()
-	GuildsFrame_Toggle()
 end
 
 function ToggleGlyphFrame()
@@ -513,8 +528,9 @@ function ToggleBugReportFrame()
 	UpdateMicroButtons()
 end
 
-function ToggleStoreFrame()
-	if ( StoreFrame:IsShown() ) then
+function ToggleStoreUI()
+	local enabled, loading, reson = C_StorePublic.IsEnabled()
+	if ( StoreFrame:IsShown() or not enabled or loading ) then
 		HideUIPanel(StoreFrame)
 	else
 		ShowUIPanel(StoreFrame)
@@ -571,6 +587,17 @@ local lockedItem = nil
 
 function GetContainerLockedItem()
 	return lockedContainer, lockedItem
+end
+
+local function HandlesGlobalMouseEvent(focus, buttonID, event)
+	return focus and focus.HandlesGlobalMouseEvent and focus:HandlesGlobalMouseEvent(buttonID, event);
+end
+
+local function HasVisibleAutoCompleteBox(autoCompleteBoxList, mouseFocus)
+	if autoCompleteBoxList:IsShown() and DoesAncestryInclude(autoCompleteBoxList, mouseFocus) then
+		return true;
+	end
+	return false;
 end
 
 -- UIParent_OnEvent --
@@ -644,6 +671,10 @@ function UIParent_OnEvent(self, event, ...)
 		StaticPopup_Hide("DEATH");
 		StaticPopup_Hide("RESURRECT_NO_SICKNESS");
 
+		if C_Service.IsHardcoreCharacter() and not UnitIsGhost("player") then
+			HardcoreStaticPopupFrame:Hide()
+		end
+
 		local resurrectOfferer = ResurrectGetOfferer();
 		if resurrectOfferer then
 			ShowResurrectRequest(resurrectOfferer);
@@ -660,6 +691,11 @@ function UIParent_OnEvent(self, event, ...)
 		StaticPopup_Hide("RESURRECT_NO_TIMER");
 		StaticPopup_Hide("SKINNED");
 		StaticPopup_Hide("SKINNED_REPOP");
+
+		if C_Service.IsHardcoreCharacter() then
+			HardcoreStaticPopupFrame:Hide()
+		end
+
 		GhostFrame:Hide();
 	elseif ( event == "RESURRECT_REQUEST" ) then
 		ShowResurrectRequest(arg1);
@@ -689,18 +725,11 @@ function UIParent_OnEvent(self, event, ...)
 			dialog.data = arg1;
 		end
 	elseif ( event == "PARTY_INVITE_REQUEST" ) then
-		FlashClientIcon();
 		StaticPopup_Show("PARTY_INVITE", arg1);
+		FlashClientIcon();
 	elseif ( event == "PARTY_INVITE_CANCEL" ) then
 		StaticPopup_Hide("PARTY_INVITE");
 	elseif ( event == "GUILD_INVITE_REQUEST" ) then
-		if C_CVar:GetValue("C_CVAR_BLOCK_GUILD_INVITES") == "1" then
-			DeclineGuild()
-			StaticPopupSpecial_Hide(GuildInviteFrame)
-			GUILD_INVITE_REQUEST_TEXT = string.format(ERR_INVITED_TO_GUILD_SSS, arg1, arg1, arg2)
-			return
-		end
-
 		GuildInviteFrameInviteText:SetFormattedText(GUILD_INVITE_LABEL, arg1)
 		GuildInviteFrameGuildName:SetText(arg2)
 		StaticPopupSpecial_Show(GuildInviteFrame)
@@ -1102,14 +1131,10 @@ function UIParent_OnEvent(self, event, ...)
 
 	-- Event for BarberShop handling
 	elseif ( event == "BARBER_SHOP_OPEN" ) then
-		BarberShopFrame_LoadUI();
-		if ( BarberShopFrame ) then
-			ShowUIPanel(BarberShopFrame);
-		end
+		-- Handled in C_BarberShop
+
 	elseif ( event == "BARBER_SHOP_CLOSE" ) then
-		if ( BarberShopFrame and BarberShopFrame:IsVisible() ) then
-			HideUIPanel(BarberShopFrame);
-		end
+		-- Handled in C_BarberShop
 
 	-- Event for guildbank handling
 	elseif ( event == "GUILDBANKFRAME_OPENED" ) then
@@ -1134,181 +1159,8 @@ function UIParent_OnEvent(self, event, ...)
 		-- self:UnregisterEvent(event);
 	elseif event == "ADDON_LOADED" then
 		if arg1 == "Blizzard_AchievementUI" then
-			if AchievementFrameAchievementsContainer.buttons then
-				local function Achievement_OnEnter(self)
-					if C_CVar:GetValue("C_CVAR_SHOW_ACHIEVEMENT_TOOLTIP") == "1" then
-						GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
-						GameTooltip:SetText(self.label:GetText())
-						GameTooltip:AddLine(self.description:GetText(), 1, 1, 1, 1)
-						GameTooltip:Show()
-					end
-				end
-
-				for _, button in pairs(AchievementFrameAchievementsContainer.buttons) do
-					button:HookScript("OnEnter", Achievement_OnEnter)
-					button:HookScript("OnLeave", GameTooltip_Hide)
-				end
-
-				AchievementFrameAchievementsContainer:HookScript("OnMouseWheel", function(self)
-					for _, button in ipairs(self.buttons) do
-						if button.highlight:IsShown() then
-							Achievement_OnEnter(button)
-							break
-						end
-					end
-				end)
-			end
-
-			function AchievementFrame_SelectAchievement(id, forceSelect)
-				if ( not AchievementFrame:IsShown() and not forceSelect ) then
-					return;
-				end
-
-				local _, _, _, achCompleted = GetAchievementInfo(id);
-				if ( achCompleted and (ACHIEVEMENTUI_SELECTEDFILTER == AchievementFrameFilters[ACHIEVEMENT_FILTER_INCOMPLETE].func) ) then
-					AchievementFrame_SetFilter(ACHIEVEMENT_FILTER_ALL);
-				elseif ( (not achCompleted) and (ACHIEVEMENTUI_SELECTEDFILTER == AchievementFrameFilters[ACHIEVEMENT_FILTER_COMPLETE].func) ) then
-					AchievementFrame_SetFilter(ACHIEVEMENT_FILTER_ALL);
-				end
-
-				AchievementFrameTab_OnClick = AchievementFrameBaseTab_OnClick;
-				AchievementFrameTab_OnClick(1);
-				AchievementFrameSummary:Hide();
-				AchievementFrameAchievements:Show();
-
-				-- Figure out if this is part of a progressive achievement; if it is and it's incomplete, make sure the previous level was completed. If not, find the first incomplete achievement in the chain and display that instead.
-				local _, _, _, completed = GetAchievementInfo(id);
-				if ( not completed and GetPreviousAchievement(id) ) then
-					local prevID = GetPreviousAchievement(id);
-					_, _, _, completed = GetAchievementInfo(prevID);
-					while ( prevID and not completed ) do
-						id = prevID;
-						prevID = GetPreviousAchievement(id);
-						if ( prevID ) then
-							_, _, _, completed = GetAchievementInfo(prevID);
-						end
-					end
-				elseif ( completed ) then
-					local nextID, completed = GetNextAchievement(id);
-					if ( nextID and completed ) then
-						local newID
-						while ( nextID and completed ) do
-							newID, completed = GetNextAchievement(nextID);
-							if ( completed ) then
-								nextID = newID;
-							end
-						end
-						id = nextID;
-					end
-				end
-
-				AchievementFrameCategories_ClearSelection();
-				local category = GetAchievementCategory(id);
-
-				local categoryIndex, parent, hidden = 0;
-				for i, entry in next, ACHIEVEMENTUI_CATEGORIES do
-					if ( entry.id == category ) then
-						parent = entry.parent;
-					end
-				end
-
-				for i, entry in next, ACHIEVEMENTUI_CATEGORIES do
-					if ( entry.id == parent ) then
-						entry.collapsed = false;
-					elseif ( entry.parent == parent ) then
-						entry.hidden = false;
-					elseif ( entry.parent == true ) then
-						entry.collapsed = true;
-					elseif ( entry.parent ) then
-						entry.hidden = true;
-					end
-				end
-
-				achievementFunctions.selectedCategory = category;
-				AchievementFrameCategoriesContainerScrollBar:SetValue(0);
-				AchievementFrameCategories_Update();
-
-				local shown, i = false, 1;
-				while ( not shown ) do
-					for _, button in next, AchievementFrameCategoriesContainer.buttons do
-						if ( button.categoryID == category and math.ceil(button:GetBottom()) >= math.ceil(AchievementFrameAchievementsContainer:GetBottom())) then
-							shown = true;
-						end
-					end
-
-					if ( not shown ) then
-						local _, maxVal = AchievementFrameCategoriesContainerScrollBar:GetMinMaxValues();
-						if ( AchievementFrameCategoriesContainerScrollBar:GetValue() == maxVal ) then
-							--assert(false)
-							return;
-						else
-							HybridScrollFrame_OnMouseWheel(AchievementFrameCategoriesContainer, -1);
-						end
-					end
-
-					-- Remove me if everything's working fine
-					i = i + 1;
-					if ( i > 100 ) then
-						return;
-					end
-				end
-
-				AchievementFrameAchievements_ClearSelection();
-				AchievementFrameAchievementsContainerScrollBar:SetValue(0);
-				AchievementFrameAchievements_Update();
-
-				shown, i = false, 0;
-				while ( not shown ) do
-					for _, button in next, AchievementFrameAchievementsContainer.buttons do
-						if ( button.id == id and math.ceil(button:GetTop()) >= math.ceil(AchievementFrameAchievementsContainer:GetBottom())) then
-							-- The "True" here ignores modifiers, so you don't accidentally track or link this achievement. :P
-							AchievementButton_OnClick(button, true);
-
-							-- We found the button!
-							shown = button;
-							break;
-						end
-					end
-
-					local _, maxVal = AchievementFrameAchievementsContainerScrollBar:GetMinMaxValues();
-					if ( shown ) then
-						-- If we can, move the achievement we're scrolling to to the top of the screen.
-						local newHeight = AchievementFrameAchievementsContainerScrollBar:GetValue() + AchievementFrameAchievementsContainer:GetTop() - shown:GetTop();
-						newHeight = min(newHeight, maxVal);
-						AchievementFrameAchievementsContainerScrollBar:SetValue(newHeight);
-					else
-						if ( AchievementFrameAchievementsContainerScrollBar:GetValue() == maxVal ) then
-							return;
-						else
-							HybridScrollFrame_OnMouseWheel(AchievementFrameAchievementsContainer, -1);
-						end
-					end
-
-					-- Remove me if everything's working fine
-					i = i + 1;
-					if ( i > 100 ) then
-						return;
-					end
-				end
-			end
-
-			if AchievementObjectives_DisplayCriteria then
-				hooksecurefunc("AchievementObjectives_DisplayCriteria", function(objectivesFrame, id)
-					local numCriteria = GetAchievementNumCriteria(id)
-					if id and numCriteria > 0 then
-						local textStrings = 0
-						for i = 1, numCriteria do
-							local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString = GetAchievementCriteriaInfo(id, i)
-							if criteriaType ~= CRITERIA_TYPE_ACHIEVEMENT and bit.band(flags, ACHIEVEMENT_CRITERIA_PROGRESS_BAR) ~= ACHIEVEMENT_CRITERIA_PROGRESS_BAR then
-								textStrings = textStrings + 1
-								local criteria = AchievementButton_GetCriteria(textStrings)
-								if criteria and not objectivesFrame.completed and not completed and criteriaString and quantity and reqQuantity and reqQuantity > 1 then
-									criteria.name:SetText(string.format("%d / %d %s", quantity, reqQuantity, criteriaString))
-								end
-							end
-						end
-					end
-				end)
+			if type(InitCustomAchievementUI) == "function" then
+				InitCustomAchievementUI()
 			end
 		elseif arg1 == "Blizzard_AuctionUI" then
 			if StartPrice and BuyoutPrice then
@@ -1377,6 +1229,27 @@ function UIParent_OnEvent(self, event, ...)
 		else
 			StaticPopup_Show("TALENTS_INVOLUNTARILY_RESET");
 		end
+	elseif (event == "GLOBAL_MOUSE_DOWN" or event == "GLOBAL_MOUSE_UP") then
+		local buttonID = ...
+
+		-- Close dropdown(s).
+		local mouseFocus = GetMouseFocus();
+		if not HandlesGlobalMouseEvent(mouseFocus, buttonID, event) then
+			UIDropDownMenu_HandleGlobalMouseEvent(buttonID, event);
+		end
+
+		-- Clear keyboard focus.
+		if AutoCompleteBox and not HasVisibleAutoCompleteBox(AutoCompleteBox, mouseFocus) then
+			if event == "GLOBAL_MOUSE_DOWN" and buttonID == "LeftButton" and not IsModifierKeyDown() then
+				local keyBoardFocus = GetCurrentKeyBoardFocus();
+				if keyBoardFocus and keyBoardFocus ~= mouseFocus then
+					local hasStickyFocus = keyBoardFocus.HasStickyFocus and keyBoardFocus:HasStickyFocus();
+					if keyBoardFocus.ClearFocus and not (hasStickyFocus or keyBoardFocus:GetAttribute("chatType")) and keyBoardFocus ~= mouseFocus then
+						keyBoardFocus:ClearFocus();
+					end
+ 				end
+			end
+		end
 	elseif event == "SERVICE_DATA_UPDATE" then
 		UpdatePVPTabs(RenegadeLadderFrame)
 		UpdatePVPTabs(PVPLadderFrame)
@@ -1384,14 +1257,8 @@ function UIParent_OnEvent(self, event, ...)
 		UpdatePVPTabs(PVPUIFrame)
 
 		UpdateMicroButtons()
-	elseif event == "CHANNEL_UI_UPDATE" then
-		if C_CVar:GetValue("C_CVAR_AUTOJOIN_TO_LFG") == "1" and not C_CacheInstance:Get("AUTOJOIN_TO_LFG") then
-			JoinPermanentChannel(LFG_CHANNEL_NAME)
-			JoinPermanentChannel(LFG_CHANNEL_NAME_ALLIANCE)
-			JoinPermanentChannel(LFG_CHANNEL_NAME_HORDE)
-
-			C_CacheInstance:Set("AUTOJOIN_TO_LFG", true)
-		end
+	elseif event == "CHANNEL_UI_UPDATE" or event == "CUSTOM_CHALLENGE_ACTIVATED" or event == "CUSTOM_CHALLENGE_DEACTIVATED" then
+		UpdateAutoJoinLFG(event == "CUSTOM_CHALLENGE_ACTIVATED" or event == "CUSTOM_CHALLENGE_DEACTIVATED")
 	end
 end
 
@@ -1435,13 +1302,13 @@ function UIParent_UpdateTopFramePositions()
 
 	if PlayerFrame and not PlayerFrame:IsUserPlaced() and not PlayerFrame_IsAnimatedOut(PlayerFrame) then
 		if PlayerFrame.state ~= "vehicle" then
-			local classificationInfo = C_Unit.GetClassification("player")
+			local vipCategory = C_Unit.GetVipCategory("player")
 
-			if classificationInfo.vipCategory == 1 then
+			if vipCategory == 1 then
 				playerLeftOffset = playerLeftOffset + 4
-			elseif classificationInfo.vipCategory == 2 then
+			elseif vipCategory == 2 then
 				playerLeftOffset = playerLeftOffset + 23
-			elseif classificationInfo.vipCategory == 3 then
+			elseif vipCategory == 3 then
 				playerLeftOffset = playerLeftOffset + 34
 			end
 		end
@@ -1450,7 +1317,11 @@ function UIParent_UpdateTopFramePositions()
 	end
 
 	if TargetFrame and not TargetFrame:IsUserPlaced() then
-		TargetFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 250 + playerLeftOffset, -4 - topOffset);
+		if TargetFrame.buffsOnTop then
+			TargetFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 250 + playerLeftOffset, -4 - topOffset - 16)
+		else
+			TargetFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 250 + playerLeftOffset, -4 - topOffset);
+		end
 	end
 end
 UIPARENT_MANAGED_FRAME_POSITIONS = {
@@ -2500,7 +2371,13 @@ function CloseWindows(ignoreCenter, frameToIgnore)
 		HideUIPanel(leftFrame, UIPANEL_SKIP_SET_POINT);
 	end
 
-	HideUIPanel(fullScreenFrame, UIPANEL_SKIP_SET_POINT);
+	if fullScreenFrame then
+		local ignoreControlLost = GetUIPanelAttribute(fullScreenFrame, "ignoreControlLost")
+		if not ignoreControlLost then
+			HideUIPanel(fullScreenFrame, 1);
+		end
+	end
+
 	HideUIPanel(doublewideFrame, UIPANEL_SKIP_SET_POINT);
 
 	if ( not frameToIgnore or frameToIgnore ~= centerFrame ) then
@@ -2667,262 +2544,6 @@ function RecentTimeDate(year, month, day, hour)
 	return lastOnline;
 end
 
-
--- Frame fading and flashing --
-
-local frameFadeManager = CreateFrame("FRAME");
-
--- Generic fade function
-function UIFrameFade(frame, fadeInfo)
-	if (not frame) then
-		return;
-	end
-	if ( not fadeInfo.mode ) then
-		fadeInfo.mode = "IN";
-	end
-	local alpha;
-	if ( fadeInfo.mode == "IN" ) then
-		if ( not fadeInfo.startAlpha ) then
-			fadeInfo.startAlpha = 0;
-		end
-		if ( not fadeInfo.endAlpha ) then
-			fadeInfo.endAlpha = 1.0;
-		end
-		alpha = 0;
-	elseif ( fadeInfo.mode == "OUT" ) then
-		if ( not fadeInfo.startAlpha ) then
-			fadeInfo.startAlpha = 1.0;
-		end
-		if ( not fadeInfo.endAlpha ) then
-			fadeInfo.endAlpha = 0;
-		end
-		alpha = 1.0;
-	end
-	frame:SetAlpha(fadeInfo.startAlpha);
-
-	frame.fadeInfo = fadeInfo;
-	frame:Show();
-
-	local index = 1;
-	while FADEFRAMES[index] do
-		-- If frame is already set to fade then return
-		if ( FADEFRAMES[index] == frame ) then
-			return;
-		end
-		index = index + 1;
-	end
-	tinsert(FADEFRAMES, frame);
-	frameFadeManager:SetScript("OnUpdate", UIFrameFade_OnUpdate);
-end
-
--- Convenience function to do a simple fade in
-function UIFrameFadeIn(frame, timeToFade, startAlpha, endAlpha)
-	local fadeInfo = {};
-	fadeInfo.mode = "IN";
-	fadeInfo.timeToFade = timeToFade;
-	fadeInfo.startAlpha = startAlpha;
-	fadeInfo.endAlpha = endAlpha;
-	UIFrameFade(frame, fadeInfo);
-end
-
--- Convenience function to do a simple fade out
-function UIFrameFadeOut(frame, timeToFade, startAlpha, endAlpha)
-	local fadeInfo = {};
-	fadeInfo.mode = "OUT";
-	fadeInfo.timeToFade = timeToFade;
-	fadeInfo.startAlpha = startAlpha;
-	fadeInfo.endAlpha = endAlpha;
-	UIFrameFade(frame, fadeInfo);
-end
-
-function UIFrameFadeRemoveFrame(frame)
-	tDeleteItem(FADEFRAMES, frame);
-end
-
-function UIFrameFlashRemoveFrame(frame)
-	tDeleteItem(FLASHFRAMES, frame);
-end
-
--- Function that actually performs the alpha change
---[[
-Fading frame attribute listing
-============================================================
-frame.timeToFade  [Num]		Time it takes to fade the frame in or out
-frame.mode  ["IN", "OUT"]	Fade mode
-frame.finishedFunc [func()]	Function that is called when fading is finished
-frame.finishedArg1 [ANYTHING]	Argument to the finishedFunc
-frame.finishedArg2 [ANYTHING]	Argument to the finishedFunc
-frame.finishedArg3 [ANYTHING]	Argument to the finishedFunc
-frame.finishedArg4 [ANYTHING]	Argument to the finishedFunc
-frame.fadeHoldTime [Num]	Time to hold the faded state
- ]]
-
-function UIFrameFade_OnUpdate(self, elapsed)
-	local index = 1;
-	local frame, fadeInfo;
-	while FADEFRAMES[index] do
-		frame = FADEFRAMES[index];
-		fadeInfo = FADEFRAMES[index].fadeInfo;
-		-- Reset the timer if there isn't one, this is just an internal counter
-		if ( not fadeInfo.fadeTimer ) then
-			fadeInfo.fadeTimer = 0;
-		end
-		fadeInfo.fadeTimer = fadeInfo.fadeTimer + elapsed;
-
-		-- If the fadeTimer is less then the desired fade time then set the alpha otherwise hold the fade state, call the finished function, or just finish the fade
-		if ( fadeInfo.fadeTimer < fadeInfo.timeToFade ) then
-			if ( fadeInfo.mode == "IN" ) then
-				frame:SetAlpha((fadeInfo.fadeTimer / fadeInfo.timeToFade) * (fadeInfo.endAlpha - fadeInfo.startAlpha) + fadeInfo.startAlpha);
-			elseif ( fadeInfo.mode == "OUT" ) then
-				frame:SetAlpha(((fadeInfo.timeToFade - fadeInfo.fadeTimer) / fadeInfo.timeToFade) * (fadeInfo.startAlpha - fadeInfo.endAlpha)  + fadeInfo.endAlpha);
-			end
-		else
-			frame:SetAlpha(fadeInfo.endAlpha);
-			-- If there is a fadeHoldTime then wait until its passed to continue on
-			if ( fadeInfo.fadeHoldTime and fadeInfo.fadeHoldTime > 0  ) then
-				fadeInfo.fadeHoldTime = fadeInfo.fadeHoldTime - elapsed;
-			else
-				-- Complete the fade and call the finished function if there is one
-				UIFrameFadeRemoveFrame(frame);
-				if ( fadeInfo.finishedFunc ) then
-					fadeInfo.finishedFunc(fadeInfo.finishedArg1, fadeInfo.finishedArg2, fadeInfo.finishedArg3, fadeInfo.finishedArg4);
-					fadeInfo.finishedFunc = nil;
-				end
-			end
-		end
-
-		index = index + 1;
-	end
-
-	if ( #FADEFRAMES == 0 ) then
-		self:SetScript("OnUpdate", nil);
-	end
-end
-
-function UIFrameIsFading(frame)
-	for index, value in pairs(FADEFRAMES) do
-		if ( value == frame ) then
-			return 1;
-		end
-	end
-	return nil;
-end
-
-local frameFlashManager = CreateFrame("FRAME");
-
-local UIFrameFlashTimers = {};
-
--- Function to start a frame flashing
-function UIFrameFlash(frame, fadeInTime, fadeOutTime, flashDuration, showWhenDone, flashInHoldTime, flashOutHoldTime, syncId)
-	if ( frame ) then
-		local index = 1;
-		-- If frame is already set to flash then return
-		while FLASHFRAMES[index] do
-			if ( FLASHFRAMES[index] == frame ) then
-				return;
-			end
-			index = index + 1;
-		end
-
-		if (syncId) then
-			frame.syncId = syncId;
-			if (UIFrameFlashTimers[syncId] == nil) then
-				UIFrameFlashTimers[syncId] = 0;
-			end
-		else
-			frame.syncId = nil;
-		end
-
-		-- Time it takes to fade in a flashing frame
-		frame.fadeInTime = fadeInTime;
-		-- Time it takes to fade out a flashing frame
-		frame.fadeOutTime = fadeOutTime;
-		-- How long to keep the frame flashing
-		frame.flashDuration = flashDuration;
-		-- Show the flashing frame when the fadeOutTime has passed
-		frame.showWhenDone = showWhenDone;
-		-- Internal timer
-		frame.flashTimer = 0;
-		-- How long to hold the faded in state
-		frame.flashInHoldTime = flashInHoldTime;
-		-- How long to hold the faded out state
-		frame.flashOutHoldTime = flashOutHoldTime;
-
-		tinsert(FLASHFRAMES, frame);
-
-		frameFlashManager:SetScript("OnUpdate", UIFrameFlash_OnUpdate);
-	end
-end
-
--- Called every frame to update flashing frames
-function UIFrameFlash_OnUpdate(self, elapsed)
-	local frame;
-	local index = #FLASHFRAMES;
-
-	-- Update timers for all synced frames
-	for syncId, timer in pairs(UIFrameFlashTimers) do
-		UIFrameFlashTimers[syncId] = timer + elapsed;
-	end
-
-	while FLASHFRAMES[index] do
-		frame = FLASHFRAMES[index];
-		frame.flashTimer = frame.flashTimer + elapsed;
-
-		if ( (frame.flashTimer > frame.flashDuration) and frame.flashDuration ~= -1 ) then
-			UIFrameFlashStop(frame);
-		else
-			local flashTime = frame.flashTimer;
-			local alpha;
-
-			if (frame.syncId) then
-				flashTime = UIFrameFlashTimers[frame.syncId];
-			end
-
-			flashTime = flashTime%(frame.fadeInTime+frame.fadeOutTime+(frame.flashInHoldTime or 0)+(frame.flashOutHoldTime or 0));
-			if (flashTime < frame.fadeInTime) then
-				alpha = flashTime/frame.fadeInTime;
-			elseif (flashTime < frame.fadeInTime+(frame.flashInHoldTime or 0)) then
-				alpha = 1;
-			elseif (flashTime < frame.fadeInTime+(frame.flashInHoldTime or 0)+frame.fadeOutTime) then
-				alpha = 1 - ((flashTime - frame.fadeInTime - (frame.flashInHoldTime or 0))/frame.fadeOutTime);
-			else
-				alpha = 0;
-			end
-
-			frame:SetAlpha(alpha);
-			frame:Show();
-		end
-
-		-- Loop in reverse so that removing frames is safe
-		index = index - 1;
-	end
-
-	if ( #FLASHFRAMES == 0 ) then
-		self:SetScript("OnUpdate", nil);
-	end
-end
-
--- Function to see if a frame is already flashing
-function UIFrameIsFlashing(frame)
-	for index, value in pairs(FLASHFRAMES) do
-		if ( value == frame ) then
-			return 1;
-		end
-	end
-	return nil;
-end
-
--- Function to stop flashing
-function UIFrameFlashStop(frame)
-	tDeleteItem(FLASHFRAMES, frame);
-	frame:SetAlpha(1.0);
-	frame.flashTimer = nil;
-	if ( frame.showWhenDone ) then
-		frame:Show();
-	else
-		frame:Hide();
-	end
-end
 
 -- Functions to handle button pulsing (Highlight, Unhighlight)
 function SetButtonPulse(button, duration, pulseRate)
@@ -3207,6 +2828,8 @@ function ToggleGameMenu()
 	elseif ( ClearTarget() and (not UnitIsCharmed("player")) ) then
 	elseif ( OpacityFrame:IsShown() ) then
 		OpacityFrame:Hide();
+	elseif ( BattlePassSplashFrame:IsShown() ) then
+		BattlePassSplashFrame:Close();
 	else
 		PlaySound("igMainMenuOpen");
 		ShowUIPanel(GameMenuFrame);
@@ -3992,37 +3615,6 @@ end
 function nop()
 end
 
-local VipData = {
-	[VIP_STATUS_1] = 1,
-	[VIP_STATUS_2] = 2,
-	[VIP_STATUS_3] = 3,
-	[VIP_STATUS_4] = 4,
-	[VIP_STATUS_5] = 5,
-	[VIP_STATUS_6] = 6,
-	[VIP_STATUS_7] = 7,
-}
-
-function GetUnitVipStatus( unit )
-	if not unit then
-		return
-	end
-
-	if unit ~= "player" and not UnitIsPlayer(unit) then
-		return
-	end
-
-	for i = 1, 16 do
-		local name = UnitDebuff(unit, i)
-		if name then
-			if VipData[name] then
-				return VipData[name]
-			end
-		end
-	end
-
-	return 0
-end
-
 function GetSpecializationIndex()
 	local activeTab = GetActiveTalentGroup()
 	local tabCache
@@ -4177,6 +3769,8 @@ function PVEFrame_TabOnClick( self, button, ... )
 	PlaySound("igCharacterInfoTab")
 	HideUIPanel(self:GetParent())
 	ShowUIPanel(_G[pvpTabPanels[self:GetID()].name])
+
+	EventRegistry:TriggerEvent("LFDFrame.TabChanged", self)
 end
 
 function PVEFrame_TabOnShow( self )
@@ -4202,12 +3796,38 @@ function ToggleLFDParentFrame()
 	ShowUIPanel(LAST_FINDPARTY_FRAME or _G[pvpTabPanels[1].name])
 end
 
-local adventureTabPanels = {"EncounterJournal", "HeadHuntingFrame", "HardcoreFrame"}
+local adventureTabPanels = {"EncounterJournal", "HeadHuntingFrame", "HardcoreFrame", "ItemBrowser"}
+local adventureSwitchingPanel
 
 function Adventure_TabOnClick( self )
 	PlaySound("igCharacterInfoTab")
-	HideUIPanel(self:GetParent())
+	local parent = self:GetParent()
+	adventureSwitchingPanel = true
+	HideUIPanel(parent)
 	ShowUIPanel(_G[adventureTabPanels[self:GetID()]])
+	adventureSwitchingPanel = nil
+end
+
+function ShowAdventureJournalTab(tabIndex)
+	local targetUIPanel = _G[adventureTabPanels[tabIndex]]
+	if not targetUIPanel or targetUIPanel:IsShown() then
+		return
+	end
+
+	adventureSwitchingPanel = true
+
+	for index, uiPanelName in ipairs(adventureTabPanels) do
+		if index ~= tabIndex then
+			HideUIPanel(_G[uiPanelName])
+		end
+	end
+
+	ShowUIPanel(targetUIPanel)
+	adventureSwitchingPanel = nil
+end
+
+function IsAdventureTabSwitching()
+	return adventureSwitchingPanel
 end
 
 function EventHandler:ASMSG_PLAYER_ATTACK_STOP()
@@ -4228,27 +3848,6 @@ function EventHandler:ASMSG_FORCE_CHAR_CUSTOMIZATION()
 	end
 
 	SetSafeCVar("FORCE_CHAR_CUSTOMIZATION", 1)
-end
-
-function AutoDeclineGuildInvites_MessageFilter(self, event, msg)
-	if GUILD_INVITE_REQUEST_TEXT and msg == GUILD_INVITE_REQUEST_TEXT then
-		GUILD_INVITE_REQUEST_TEXT = nil
-		return true
-	end
-end
-
-function GetAutoDeclineGuildInvites()
-	return C_CVar:GetValue("C_CVAR_BLOCK_GUILD_INVITES") or "0"
-end
-
-function SetAutoDeclineGuildInvites(value)
-	C_CVar:SetValue("C_CVAR_BLOCK_GUILD_INVITES", value)
-
-	if value == "1" then
-		ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", AutoDeclineGuildInvites_MessageFilter)
-	else
-		ChatFrame_RemoveMessageEventFilter("CHAT_MSG_SYSTEM", AutoDeclineGuildInvites_MessageFilter)
-	end
 end
 
 local INVISIBLE_STATUS;
@@ -4296,83 +3895,6 @@ function EventHandler:ASMSG_QUEST_ACCEPTED(msg)
 	end
 end
 
-local GLOBAL_MOUSE_BUTTONS_STATE = {};
-local GLOBAL_MOUSE_BUTTONS = {
-	[1] = "LeftButton",
-	[2] = "RightButton",
---	[3] = "MiddleButton",
---	[4] = "Button4",
---	[5] = "Button5",
-};
-
-local function UIDropDownMenu_ContainsMouse()
-	for i = 1, UIDROPDOWNMENU_MAXLEVELS do
-		local dropdown = _G["DropDownList"..i]
-		if dropdown:IsShown() and dropdown:IsMouseOver() then
-			return true;
-		end
-	end
-
-	return false;
-end
-
-local function HasVisibleAutoCompleteBox(autoCompleteBoxList, mouseFocus)
-	if autoCompleteBoxList:IsShown() and DoesAncestryInclude(autoCompleteBoxList, mouseFocus) then
-		return true;
-	end
-
-	return false;
-end
-
-function GlobalMouse_OnUpdate()
-	for index, buttonID in ipairs(GLOBAL_MOUSE_BUTTONS) do
-		local buttonState = IsMouseButtonDown(index);
-
-		if GLOBAL_MOUSE_BUTTONS_STATE[index] ~= buttonState then
-			FireCustomClientEvent(buttonState == 1 and "GLOBAL_MOUSE_DOWN" or "GLOBAL_MOUSE_UP", buttonID);
-
-			GLOBAL_MOUSE_BUTTONS_STATE[index] = buttonState;
-
-			if buttonState then
-				local mouseFocus = GetMouseFocus();
-
-				if mouseFocus and (buttonID == "LeftButton" or buttonID == "RightButton") then
-					if UIDROPDOWNMENU_OPEN_MENU then
-						local mouseFocusParent = mouseFocus:GetParent();
-
-						if mouseFocusParent ~= UIDROPDOWNMENU_OPEN_MENU and DropDownList1:IsShown() then
-							local _, anchor = DropDownList1:GetPoint();
-							if (anchor and (type(anchor) == "string" and _G[anchor] or anchor) ~= mouseFocus) and not UIDropDownMenu_ContainsMouse() then
-								CloseDropDownMenus();
-							end
-						end
-					end
-				end
-
-				if buttonID == "LeftButton" and not IsModifierKeyDown() then
-					if not HasVisibleAutoCompleteBox(AutoCompleteBox, mouseFocus) then
-						local keyBoardFocus = GetCurrentKeyBoardFocus();
-						if keyBoardFocus and keyBoardFocus ~= mouseFocus and not (keyBoardFocus:GetAttribute("chatType") or keyBoardFocus.HasStickyFocus and keyBoardFocus:HasStickyFocus()) then
-							keyBoardFocus:ClearFocus();
-						end
-					end
-				end
-			end
-		end
-	end
-end
-
-function GetCurrencyCount(currencyID)
-	for i = 1, GetCurrencyListSize() do
-		local _, _, _, _, _, count, _, _, itemID = GetCurrencyListInfo(i);
-		if currencyID == itemID then
-			return count or 0;
-		end
-	end
-
-	return 0;
-end
-
 function GetCurrencyString(currencyType, currencyID, overrideAmount, colorCode)
 	local _, currencyTexture;
 	if currencyType == "money" then
@@ -4390,9 +3912,7 @@ function GetCurrencyString(currencyType, currencyID, overrideAmount, colorCode)
 		else
 			if currencyType == "money" then
 				amountString = floor(GetMoney() / (COPPER_PER_SILVER * SILVER_PER_GOLD));
-			elseif currencyType == "currency" then
-				amountString = GetCurrencyCount(currencyID);
-			elseif currencyType == "item" then
+			elseif currencyType == "currency" or currencyType == "item" then
 				amountString = GetItemCount(currencyID);
 			end
 		end
@@ -4402,4 +3922,86 @@ function GetCurrencyString(currencyType, currencyID, overrideAmount, colorCode)
 	end
 
 	return "";
+end
+
+local function hasChannel(channelName)
+	for i = 1, GetNumDisplayChannels() do
+		if GetChannelDisplayInfo(i) == channelName then
+			return true
+		end
+	end
+end
+
+local function hasChatWindowChannel(targetChannelName, ...)
+	for i = 1, select("#", ...), 2 do
+		local channelName, channelID = select(i, ...)
+		if channelName == targetChannelName then
+			return true
+		end
+	end
+	return false
+end
+
+local awaitChannelJoin = {}
+local function addChatFrameChannel(channelName)
+	local chatFrame = ChatFrame1
+	local _, _, _, _, _, _, shown = GetChatWindowInfo(chatFrame:GetID())
+	if not chatFrame or not shown then
+		awaitChannelJoin[channelName] = nil
+		return
+	end
+
+	if chatFrame then
+		ChatFrame_AddChannel(chatFrame, channelName)
+
+		if hasChatWindowChannel(channelName, GetChatWindowChannels(chatFrame:GetID())) then
+			awaitChannelJoin[channelName] = nil
+		else
+			awaitChannelJoin[channelName] = true
+		end
+	end
+end
+
+function UpdateAutoJoinLFG(forceUpdateConfig)
+	if C_Service.IsHardcoreCharacter() then
+		if hasChannel(LFG_CHANNEL_NAME) then
+			LeaveChannelByName(LFG_CHANNEL_NAME)
+		--	LeaveChannelByName(LFG_CHANNEL_NAME_ALLIANCE)
+		--	LeaveChannelByName(LFG_CHANNEL_NAME_HORDE)
+		end
+
+		if C_CVar:GetValue("C_CVAR_AUTOJOIN_TO_LFG") == "1" then
+			if not C_CacheInstance:Get("AUTOJOIN_TO_LFG_HARDCORE") then
+				JoinPermanentChannel(LFG_HARDCORE_CHANNEL_NAME)
+				if forceUpdateConfig then
+					awaitChannelJoin[LFG_HARDCORE_CHANNEL_NAME] = true
+				end
+				C_CacheInstance:Set("AUTOJOIN_TO_LFG_HARDCORE", true)
+			end
+
+			if awaitChannelJoin[LFG_HARDCORE_CHANNEL_NAME] then
+				addChatFrameChannel(LFG_HARDCORE_CHANNEL_NAME)
+			end
+		end
+	else
+		if C_CVar:GetValue("C_CVAR_AUTOJOIN_TO_LFG") == "1" then
+			if not C_CacheInstance:Get("AUTOJOIN_TO_LFG") then
+				JoinPermanentChannel(LFG_CHANNEL_NAME)
+				JoinPermanentChannel(LFG_CHANNEL_NAME_ALLIANCE)
+				JoinPermanentChannel(LFG_CHANNEL_NAME_HORDE)
+				if forceUpdateConfig then
+					awaitChannelJoin[LFG_CHANNEL_NAME] = true
+					awaitChannelJoin[LFG_CHANNEL_NAME_ALLIANCE] = true
+					awaitChannelJoin[LFG_CHANNEL_NAME_HORDE] = true
+				end
+				C_CacheInstance:Set("AUTOJOIN_TO_LFG", true)
+			end
+
+			if awaitChannelJoin[LFG_CHANNEL_NAME] or awaitChannelJoin[LFG_CHANNEL_NAME_ALLIANCE] or awaitChannelJoin[LFG_CHANNEL_NAME_HORDE] then
+				addChatFrameChannel(LFG_CHANNEL_NAME)
+				addChatFrameChannel(LFG_CHANNEL_NAME_ALLIANCE)
+				addChatFrameChannel(LFG_CHANNEL_NAME_HORDE)
+			end
+		end
+	end
 end

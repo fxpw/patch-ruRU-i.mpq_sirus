@@ -1,552 +1,4 @@
-local SIRUS_LOCALIZATION = {
-	["ITEM_CLASS_0"] = {
-		ruRU = "Расходуемые",
-		enGB = "Consumable"
-	},
-	["ITEM_CLASS_1"] = {
-		ruRU = "Сумки",
-		enGB = "Container"
-	},
-	["ITEM_CLASS_2"] = {
-		ruRU = "Оружие",
-		enGB = "Weapon"
-	},
-	["ITEM_CLASS_3"] = {
-		ruRU = "Самоцветы",
-		enGB = "Gem"
-	},
-	["ITEM_CLASS_4"] = {
-		ruRU = "Доспехи",
-		enGB = "Armor"
-	},
-	["ITEM_CLASS_5"] = {
-		ruRU = "Реагенты",
-		enGB = "Reagent"
-	},
-	["ITEM_CLASS_6"] = {
-		ruRU = "Боеприпасы",
-		enGB = "Projectile"
-	},
-	["ITEM_CLASS_7"] = {
-		ruRU = "Хозяйственные товары",
-		enGB = "Trade Goods"
-	},
-	["ITEM_CLASS_8"] = {
-		ruRU = "Игрушка",
-		enGB = "Toy"
-	},
-	["ITEM_CLASS_9"] = {
-		ruRU = "Рецепты",
-		enGB = "Recipe"
-	},
-	["ITEM_CLASS_10"] = {
-		ruRU = "Деньги",
-		enGB = "Money"
-	},
-	["ITEM_CLASS_11"] = {
-		ruRU = "Амуниция",
-		enGB = "Quiver"
-	},
-	["ITEM_CLASS_12"] = {
-		ruRU = "Задания",
-		enGB = "Quest"
-	},
-	["ITEM_CLASS_13"] = {
-		ruRU = "Ключи",
-		enGB = "Key"
-	},
-	["ITEM_CLASS_14"] = {
-		ruRU = "Постоянные(НЕ ИСП.)",
-		enGB = "Permanent(OBSOLETE)"
-	},
-	["ITEM_CLASS_15"] = {
-		ruRU = "Разное",
-		enGB = "Miscellaneous"
-	},
-	["ITEM_CLASS_16"] = {
-		ruRU = "Символы",
-		enGB = "Glyph"
-	},
-	["ITEM_SUB_CLASS_0_0"] = {
-		ruRU = "Расходуемые",
-		enGB = "Consumable"
-	},
-	["ITEM_SUB_CLASS_0_1"] = {
-		ruRU = "Зелья",
-		enGB = "Potion"
-	},
-	["ITEM_SUB_CLASS_0_2"] = {
-		ruRU = "Эликсиры",
-		enGB = "Elixir"
-	},
-	["ITEM_SUB_CLASS_0_3"] = {
-		ruRU = "Настойки",
-		enGB = "Flask"
-	},
-	["ITEM_SUB_CLASS_0_4"] = {
-		ruRU = "Свитки",
-		enGB = "Scroll"
-	},
-	["ITEM_SUB_CLASS_0_5"] = {
-		ruRU = "Еда и напитки",
-		enGB = "Food & Drink"
-	},
-	["ITEM_SUB_CLASS_0_6"] = {
-		ruRU = "Улучшения",
-		enGB = "Item Enhancement"
-	},
-	["ITEM_SUB_CLASS_0_7"] = {
-		ruRU = "Бинты",
-		enGB = "Bandage"
-	},
-	["ITEM_SUB_CLASS_0_8"] = {
-		ruRU = "Другое",
-		enGB = "Other"
-	},
-	["ITEM_SUB_CLASS_1_0"] = {
-		ruRU = "Сумка",
-		enGB = "Bag"
-	},
-	["ITEM_SUB_CLASS_1_1"] = {
-		ruRU = "Сумка душ",
-		enGB = "Soul Bag"
-	},
-	["ITEM_SUB_CLASS_1_2"] = {
-		ruRU = "Сумка травника",
-		enGB = "Herb Bag"
-	},
-	["ITEM_SUB_CLASS_1_3"] = {
-		ruRU = "Сумка зачаровывателя",
-		enGB = "Enchanting Bag"
-	},
-	["ITEM_SUB_CLASS_1_4"] = {
-		ruRU = "Сумка инженера",
-		enGB = "Engineering Bag"
-	},
-	["ITEM_SUB_CLASS_1_5"] = {
-		ruRU = "Сумка ювелира",
-		enGB = "Gem Bag"
-	},
-	["ITEM_SUB_CLASS_1_6"] = {
-		ruRU = "Сумка шахтера",
-		enGB = "Mining Bag"
-	},
-	["ITEM_SUB_CLASS_1_7"] = {
-		ruRU = "Сумка кожевника",
-		enGB = "Leatherworking Bag"
-	},
-	["ITEM_SUB_CLASS_1_8"] = {
-		ruRU = "Сумка начертателя",
-		enGB = "Inscription Bag"
-	},
-	["ITEM_SUB_CLASS_1_9"] = {
-		ruRU = "Кулинарная сумка",
-		enGB = "Cooking Bag"
-	},
-	["ITEM_SUB_CLASS_2_0"] = {
-		ruRU = "Одноручные топоры",
-		enGB = "One-Handed Axes"
-	},
-	["ITEM_SUB_CLASS_2_1"] = {
-		ruRU = "Двуручные топоры",
-		enGB = "Two-Handed Axes"
-	},
-	["ITEM_SUB_CLASS_2_2"] = {
-		ruRU = "Луки",
-		enGB = "Bows"
-	},
-	["ITEM_SUB_CLASS_2_3"] = {
-		ruRU = "Огнестрельное",
-		enGB = "Guns"
-	},
-	["ITEM_SUB_CLASS_2_4"] = {
-		ruRU = "Одноручное дробящее",
-		enGB = "One-Handed Maces"
-	},
-	["ITEM_SUB_CLASS_2_5"] = {
-		ruRU = "Двуручное дробящее",
-		enGB = "Two-Handed Maces"
-	},
-	["ITEM_SUB_CLASS_2_6"] = {
-		ruRU = "Древковое",
-		enGB = "Polearms"
-	},
-	["ITEM_SUB_CLASS_2_7"] = {
-		ruRU = "Одноручные мечи",
-		enGB = "One-Handed Swords"
-	},
-	["ITEM_SUB_CLASS_2_8"] = {
-		ruRU = "Двуручные мечи",
-		enGB = "Two-Handed Swords"
-	},
-	["ITEM_SUB_CLASS_2_9"] = {
-		ruRU = "Устаревшие",
-		enGB = "Obsolete"
-	},
-	["ITEM_SUB_CLASS_2_10"] = {
-		ruRU = "Посохи",
-		enGB = "Staves"
-	},
-	["ITEM_SUB_CLASS_2_11"] = {
-		ruRU = "Одноручное экзотическое",
-		enGB = "One-Handed Exotics"
-	},
-	["ITEM_SUB_CLASS_2_12"] = {
-		ruRU = "Двуручное экзотическое",
-		enGB = "Two-Handed Exotics"
-	},
-	["ITEM_SUB_CLASS_2_13"] = {
-		ruRU = "Кистевое",
-		enGB = "Fist Weapons"
-	},
-	["ITEM_SUB_CLASS_2_14"] = {
-		ruRU = "Разное",
-		enGB = "Miscellaneous"
-	},
-	["ITEM_SUB_CLASS_2_15"] = {
-		ruRU = "Кинжалы",
-		enGB = "Daggers"
-	},
-	["ITEM_SUB_CLASS_2_16"] = {
-		ruRU = "Метательное",
-		enGB = "Thrown"
-	},
-	["ITEM_SUB_CLASS_2_17"] = {
-		ruRU = "Копья",
-		enGB = "Spears"
-	},
-	["ITEM_SUB_CLASS_2_18"] = {
-		ruRU = "Арбалеты",
-		enGB = "Crossbows"
-	},
-	["ITEM_SUB_CLASS_2_19"] = {
-		ruRU = "Жезлы",
-		enGB = "Wands"
-	},
-	["ITEM_SUB_CLASS_2_20"] = {
-		ruRU = "Удочки",
-		enGB = "Fishing Poles"
-	},
-	["ITEM_SUB_CLASS_3_0"] = {
-		ruRU = "Красные",
-		enGB = "Red"
-	},
-	["ITEM_SUB_CLASS_3_1"] = {
-		ruRU = "Синие",
-		enGB = "Blue"
-	},
-	["ITEM_SUB_CLASS_3_2"] = {
-		ruRU = "Желтые",
-		enGB = "Yellow"
-	},
-	["ITEM_SUB_CLASS_3_3"] = {
-		ruRU = "Фиолетовые",
-		enGB = "Purple"
-	},
-	["ITEM_SUB_CLASS_3_4"] = {
-		ruRU = "Зеленые",
-		enGB = "Green"
-	},
-	["ITEM_SUB_CLASS_3_5"] = {
-		ruRU = "Оранжевые",
-		enGB = "Orange"
-	},
-	["ITEM_SUB_CLASS_3_6"] = {
-		ruRU = "Особые",
-		enGB = "Meta"
-	},
-	["ITEM_SUB_CLASS_3_7"] = {
-		ruRU = "Простые",
-		enGB = "Simple"
-	},
-	["ITEM_SUB_CLASS_3_8"] = {
-		ruRU = "Радужные",
-		enGB = "Prismatic"
-	},
-	["ITEM_SUB_CLASS_4_0"] = {
-		ruRU = "Разное",
-		enGB = "Miscellaneous"
-	},
-	["ITEM_SUB_CLASS_4_1"] = {
-		ruRU = "Тканевые",
-		enGB = "Cloth"
-	},
-	["ITEM_SUB_CLASS_4_2"] = {
-		ruRU = "Кожаные",
-		enGB = "Leather"
-	},
-	["ITEM_SUB_CLASS_4_3"] = {
-		ruRU = "Кольчужные",
-		enGB = "Mail"
-	},
-	["ITEM_SUB_CLASS_4_4"] = {
-		ruRU = "Латные",
-		enGB = "Plate"
-	},
-	["ITEM_SUB_CLASS_4_5"] = {
-		ruRU = "Декоративный предмет",
-		enGB = "Tmog"
-	},
-	["ITEM_SUB_CLASS_4_6"] = {
-		ruRU = "Щиты",
-		enGB = "Shields"
-	},
-	["ITEM_SUB_CLASS_4_7"] = {
-		ruRU = "Манускрипты",
-		enGB = "Librams"
-	},
-	["ITEM_SUB_CLASS_4_8"] = {
-		ruRU = "Идолы",
-		enGB = "Idols"
-	},
-	["ITEM_SUB_CLASS_4_9"] = {
-		ruRU = "Тотемы",
-		enGB = "Totems"
-	},
-	["ITEM_SUB_CLASS_4_10"] = {
-		ruRU = "Печати",
-		enGB = "Sigils"
-	},
-	["ITEM_SUB_CLASS_5_0"] = {
-		ruRU = "Реагент",
-		enGB = "Reagent"
-	},
-	["ITEM_SUB_CLASS_6_0"] = {
-		ruRU = "Жезл(НЕ ИСП.)",
-		enGB = "Wand(OBSOLETE)"
-	},
-	["ITEM_SUB_CLASS_6_1"] = {
-		ruRU = "Болт(НЕ ИСП.)",
-		enGB = "Bolt(OBSOLETE)"
-	},
-	["ITEM_SUB_CLASS_6_2"] = {
-		ruRU = "Стрелы",
-		enGB = "Arrow"
-	},
-	["ITEM_SUB_CLASS_6_3"] = {
-		ruRU = "Пули",
-		enGB = "Bullet"
-	},
-	["ITEM_SUB_CLASS_6_4"] = {
-		ruRU = "Метательное(НЕ ИСП.)",
-		enGB = "Thrown(OBSOLETE)"
-	},
-	["ITEM_SUB_CLASS_7_0"] = {
-		ruRU = "Хозяйственные товары",
-		enGB = "Trade Goods"
-	},
-	["ITEM_SUB_CLASS_7_1"] = {
-		ruRU = "Детали",
-		enGB = "Parts"
-	},
-	["ITEM_SUB_CLASS_7_2"] = {
-		ruRU = "Взрывчатка",
-		enGB = "Explosives"
-	},
-	["ITEM_SUB_CLASS_7_3"] = {
-		ruRU = "Устройства",
-		enGB = "Devices"
-	},
-	["ITEM_SUB_CLASS_7_4"] = {
-		ruRU = "Ювелирное дело",
-		enGB = "Jewelcrafting"
-	},
-	["ITEM_SUB_CLASS_7_5"] = {
-		ruRU = "Ткань",
-		enGB = "Cloth"
-	},
-	["ITEM_SUB_CLASS_7_6"] = {
-		ruRU = "Кожа",
-		enGB = "Leather"
-	},
-	["ITEM_SUB_CLASS_7_7"] = {
-		ruRU = "Металл и камень",
-		enGB = "Metal & Stone"
-	},
-	["ITEM_SUB_CLASS_7_8"] = {
-		ruRU = "Мясо",
-		enGB = "Meat"
-	},
-	["ITEM_SUB_CLASS_7_9"] = {
-		ruRU = "Трава",
-		enGB = "Herb"
-	},
-	["ITEM_SUB_CLASS_7_10"] = {
-		ruRU = "Стихии",
-		enGB = "Elemental"
-	},
-	["ITEM_SUB_CLASS_7_11"] = {
-		ruRU = "Другое",
-		enGB = "Other"
-	},
-	["ITEM_SUB_CLASS_7_12"] = {
-		ruRU = "Наложение чар",
-		enGB = "Enchanting"
-	},
-	["ITEM_SUB_CLASS_7_13"] = {
-		ruRU = "Материалы",
-		enGB = "Materials"
-	},
-	["ITEM_SUB_CLASS_7_14"] = {
-		ruRU = "Чары для доспехов",
-		enGB = "Armor Enchantment"
-	},
-	["ITEM_SUB_CLASS_7_15"] = {
-		ruRU = "Чары для оружия",
-		enGB = "Weapon Enchantment"
-	},
-	["ITEM_SUB_CLASS_8_0"] = {
-		ruRU = "Игрушка",
-		enGB = "Toy"
-	},
-	["ITEM_SUB_CLASS_9_0"] = {
-		ruRU = "Книга",
-		enGB = "Book"
-	},
-	["ITEM_SUB_CLASS_9_1"] = {
-		ruRU = "Кожевничество",
-		enGB = "Leatherworking"
-	},
-	["ITEM_SUB_CLASS_9_2"] = {
-		ruRU = "Портняжное дело",
-		enGB = "Tailoring"
-	},
-	["ITEM_SUB_CLASS_9_3"] = {
-		ruRU = "Инженерное дело",
-		enGB = "Engineering"
-	},
-	["ITEM_SUB_CLASS_9_4"] = {
-		ruRU = "Кузнечное дело",
-		enGB = "Blacksmithing"
-	},
-	["ITEM_SUB_CLASS_9_5"] = {
-		ruRU = "Кулинария",
-		enGB = "Cooking"
-	},
-	["ITEM_SUB_CLASS_9_6"] = {
-		ruRU = "Алхимия",
-		enGB = "Alchemy"
-	},
-	["ITEM_SUB_CLASS_9_7"] = {
-		ruRU = "Первая помощь",
-		enGB = "First Aid"
-	},
-	["ITEM_SUB_CLASS_9_8"] = {
-		ruRU = "Наложение чар",
-		enGB = "Enchanting"
-	},
-	["ITEM_SUB_CLASS_9_9"] = {
-		ruRU = "Рыбная ловля",
-		enGB = "Fishing"
-	},
-	["ITEM_SUB_CLASS_9_10"] = {
-		ruRU = "Ювелирное дело",
-		enGB = "Jewelcrafting"
-	},
-	["ITEM_SUB_CLASS_9_11"] = {
-		ruRU = "Начертание",
-		enGB = "Inscription"
-	},
-	["ITEM_SUB_CLASS_10_0"] = {
-		ruRU = "Деньги (НЕ ИСП.)",
-		enGB = "Money(OBSOLETE)"
-	},
-	["ITEM_SUB_CLASS_11_0"] = {
-		ruRU = "Колчан(НЕ ИСП.)",
-		enGB = "Quiver(OBSOLETE)"
-	},
-	["ITEM_SUB_CLASS_11_1"] = {
-		ruRU = "Колчан(НЕ ИСП.)",
-		enGB = "Quiver(OBSOLETE)"
-	},
-	["ITEM_SUB_CLASS_11_2"] = {
-		ruRU = "Колчан",
-		enGB = "Quiver"
-	},
-	["ITEM_SUB_CLASS_11_3"] = {
-		ruRU = "Подсумок",
-		enGB = "Ammo Pouch"
-	},
-	["ITEM_SUB_CLASS_12_0"] = {
-		ruRU = "Задания",
-		enGB = "Quest"
-	},
-	["ITEM_SUB_CLASS_13_0"] = {
-		ruRU = "Ключ",
-		enGB = "Key"
-	},
-	["ITEM_SUB_CLASS_13_1"] = {
-		ruRU = "Отмычка",
-		enGB = "Lockpick"
-	},
-	["ITEM_SUB_CLASS_14_0"] = {
-		ruRU = "Постоянные",
-		enGB = "Permanent"
-	},
-	["ITEM_SUB_CLASS_15_0"] = {
-		ruRU = "Хлам",
-		enGB = "Junk"
-	},
-	["ITEM_SUB_CLASS_15_1"] = {
-		ruRU = "Реагенты",
-		enGB = "Reagent"
-	},
-	["ITEM_SUB_CLASS_15_2"] = {
-		ruRU = "Питомцы",
-		enGB = "Pet"
-	},
-	["ITEM_SUB_CLASS_15_3"] = {
-		ruRU = "Праздничные предметы",
-		enGB = "Holiday"
-	},
-	["ITEM_SUB_CLASS_15_4"] = {
-		ruRU = "Другое",
-		enGB = "Other"
-	},
-	["ITEM_SUB_CLASS_15_5"] = {
-		ruRU = "Верховые животные",
-		enGB = "Mount"
-	},
-	["ITEM_SUB_CLASS_16_1"] = {
-		ruRU = "Воин",
-		enGB = "Warrior"
-	},
-	["ITEM_SUB_CLASS_16_2"] = {
-		ruRU = "Паладин",
-		enGB = "Paladin"
-	},
-	["ITEM_SUB_CLASS_16_3"] = {
-		ruRU = "Охотник",
-		enGB = "Hunter"
-	},
-	["ITEM_SUB_CLASS_16_4"] = {
-		ruRU = "Разбойник",
-		enGB = "Rogue"
-	},
-	["ITEM_SUB_CLASS_16_5"] = {
-		ruRU = "Жрец",
-		enGB = "Priest"
-	},
-	["ITEM_SUB_CLASS_16_6"] = {
-		ruRU = "Рыцарь смерти",
-		enGB = "Death Knight"
-	},
-	["ITEM_SUB_CLASS_16_7"] = {
-		ruRU = "Шаман",
-		enGB = "Shaman"
-	},
-	["ITEM_SUB_CLASS_16_8"] = {
-		ruRU = "Маг",
-		enGB = "Mage"
-	},
-	["ITEM_SUB_CLASS_16_9"] = {
-		ruRU = "Чернокнижник",
-		enGB = "Warlock"
-	},
-	["ITEM_SUB_CLASS_16_11"] = {
-		ruRU = "Друид",
-		enGB = "Druid"
-	},
+local GLOBAL_STRINGS = {
 	["ERR_NO_TARGET_OR_NAME"] = {
 		ruRU = "Вы не указали цель или имя.",
 		enGB = "No target or name specified."
@@ -747,10 +199,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "при атаке",
         enGB = "on hit"
     },
-    ["STORE_ITEM_DISCOUNT_LABEL"] = {
-        ruRU = "Скидка -%s%%",
-        enGB = "Discount -%s%%"
-    },
     ["EMOTE386_CMD2"] = {
         ruRU = "/challenge",
         enGB = "/challenge"
@@ -810,10 +258,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_LFG_GROUP_FULL"] = {
         ruRU = "Ваша группа уже набрана.",
         enGB = "Your group is already full."
-    },
-    ["INVTYPE_TRINKET"] = {
-        ruRU = "Аксессуар",
-        enGB = "Trinket"
     },
     ["SPIRIT_HEALER_RELEASE_RED"] = {
         ruRU = "|cffff2020Целитель душ|r",
@@ -955,10 +399,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "%.2f мин",
         enGB = "%.2f min"
     },
-    ["TRANSMOGRIFY_FRAME_HELP_TOOLTIP_HEAD"] = {
-        ruRU = "Особенности трансмогрификации",
-        enGB = "Features of transmogrification"
-    },
     ["EXTEND_RAID_LOCK"] = {
         ruRU = "Продлить сохранение",
         enGB = "Extend Raid Lock"
@@ -1039,10 +479,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Лекарь",
         enGB = "Healer"
     },
-    ["VIP_STATUS_2"] = {
-        ruRU = "VIP Silver",
-        enGB = "VIP Silver"
-    },
     ["PVP_OPTIONS"] = {
         ruRU = "Игрок против игрока",
         enGB = "Player vs. Player"
@@ -1102,10 +538,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_DAMAGE_SHIELD_FULL_TEXT_NO_SOURCE"] = {
         ruRU = "%2$s\" отражает %9$s |4единицу:единицы:единиц; |3-6(%7$s) на |3-3(%4$s)%6$s.",
         enGB = "%2$s reflects %9$s %7$s damage to %4$s.%6$s"
-    },
-    ["INVTYPE_WAIST"] = {
-        ruRU = "Пояс",
-        enGB = "Waist"
     },
     ["SLASH_LOOT_GROUP2"] = {
         ruRU = "/group",
@@ -1214,10 +646,6 @@ local SIRUS_LOCALIZATION = {
     ["TEXT_MODE_A_STRING_2"] = {
         ruRU = "%2$s |3-1(%1$s) - %3$s - %4$s - %5$s%6$s.",
         enGB = "%1$s %3$s %2$s %4$s %5$s. %6$s"
-    },
-    ["STORE_BUY_ITEM_ERROR_2"] = {
-        ruRU = "Вы не можете отправить подарок самому себе.",
-        enGB = "You can't send a gift to yourself"
     },
     ["SLASH_STOPATTACK2"] = {
         ruRU = "/стопатака",
@@ -1354,10 +782,6 @@ local SIRUS_LOCALIZATION = {
     ["NOTE_SUBMIT_FAILED"] = {
         ruRU = "Сохранить заметку не удалось",
         enGB = "Note submission failed"
-    },
-    ["OPTION_TOOLTIP_SHOW_TUTORIALS"] = {
-        ruRU = "Отображение советов по игре, которые помогут вам быстрее освоиться в World of Warcraft.",
-        enGB = "Display tutorials which help introduce you to WoW."
     },
     ["SLASH_RAID_INFO1"] = {
         ruRU = "/рейдинфо",
@@ -1627,10 +1051,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Правая рука",
         enGB = "Main Hand"
     },
-    ["STORE_CATEGORY_10"] = {
-        ruRU = "Трансмогрификация",
-        enGB = "Transmogrification"
-    },
     ["ACTION_DAMAGE_SHIELD_FULL_TEXT"] = {
         ruRU = "%2$s\" |3-1(%1$s) отражает %9$s |4единицу:единицы:единиц; |3-6(%7$s) на |3-3(%4$s)%6$s.",
         enGB = "%1$s %2$s reflects %9$s %7$s damage to %4$s.%6$s"
@@ -1674,10 +1094,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_CHANNEL1"] = {
         ruRU = "/c",
         enGB = "/c"
-    },
-    ["STORE_TUTORIAL_2"] = {
-        ruRU = "В этом блоке отображаются \"особые\" товары, рекомендуем вам обратить на них внимание.",
-        enGB = ""
     },
     ["PVP_LADDER_SEARCH_INVALID_PARAMS"] = {
         ruRU = "Неверные данные для поиска.\nВ поиске разрешено использовать только буквы русского и английского алфавита.",
@@ -1727,10 +1143,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Верховный вождь",
         enGB = "High Warlord"
     },
-    ["INVTYPE_QUIVER"] = {
-        ruRU = "Колчан",
-        enGB = "Quiver"
-    },
     ["SPELL_FAILED_CUSTOM_ERROR_49"] = {
         ruRU = "Требуется быть великим мастером инженерного дела",
         enGB = "Requires Grand Master Engineer"
@@ -1754,10 +1166,6 @@ local SIRUS_LOCALIZATION = {
     ["RGB_RANK_8_HORDE"] = {
         ruRU = "Легионер",
         enGB = "Legionnaire"
-    },
-    ["PVPHONORFRAME_TUTORIAL_2"] = {
-        ruRU = "До достижения лимита дневных игр вы будете получать очки чести.\nПосле достижения дневного лимита вы с некоторой вероятностью сможете получить сундук с добычей.",
-        enGB = "You will receive Honor Points until you reach the daily games limit.\nAfter reaching the daily games limit, you may receive a loot chest."
     },
     ["INCREASE_POTENTIAL"] = {
         ruRU = " |cffffffff%s|r: потенциал возрастает до |cffffffff%d|r!",
@@ -1886,10 +1294,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_TEAM_INVITE2"] = {
         ruRU = "/tinvite",
         enGB = "/tinvite"
-    },
-    ["PROMOCODE_ACTION_BUTTON_ERROR"] = {
-        ruRU = "Вы уже использовали этот промокод!",
-        enGB = "You have already used this promo code!"
     },
     ["TIME_TO_PORT"] = {
         ruRU = "Поле боя закроется через",
@@ -2151,10 +1555,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Все ячейки",
         enGB = "All Slots"
     },
-    ["TRANSMOGRIFY_FRAME_HELP_TOOLTIP"] = {
-        ruRU = "Вы не сможете вернуть предмет в магазин если:\nЕсли вы произведете трансмогрификацию в этот предмет.\nЕсли вы произведете трансмогрификацию этого предмета в другой.\n\nПосле использовать трансмогрификации оба предмета станут персональными, в том числе фамильная броня и оружие.\n\nВы потеряете облик трансмогрификации, если удалите или продадите торговцу предмет, имеющий таймер возврата или передачи.\n\nНаложение визуальных зачарований на оружие - делает его персональным.",
-        enGB = ""
-    },
     ["MINECART1"] = {
         ruRU = "Вагонетка 1",
         enGB = "Cart 1"
@@ -2375,10 +1775,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "[%d. %s]: ",
         enGB = "[%d. %s]: "
     },
-    ["ERR_INVITED_TO_GUILD_SSS"] = {
-        ruRU = "\"%s\" желает видеть вас в своих рядах. Вас приглашает|Hplayer:%s|h[%s]|h.",
-        enGB = "|Hplayer:%s|h[%s]|h invites you to join %s."
-    },
+	["ERR_INVITED_TO_GUILD_SSS"] = {
+		ruRU = "|Hplayer:%s|h[%s]|h приглашает вас присоединиться к гильдии \"%s\".",
+		enGB = "|Hplayer:%s|h[%s]|h invites you to join %s."
+	},
     ["SLASH_DUEL1"] = {
         ruRU = "/дуэль",
         enGB = "/duel"
@@ -2655,10 +2055,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Нет уж.",
         enGB = "No way."
     },
-    ["STORE_SPECIAL_OFFER_DETAIL_ROLE_INFO"] = {
-        ruRU = "Используя кнопки выше\nпросмотрите и выберите набор вещей\nдля интересующей вас специализации.",
-        enGB = "Using buttons higher\nyou can pick a set\nfor the desired specialization."
-    },
     ["SPELL_FAILED_NOT_STANDING"] = {
         ruRU = "Это можно сделать только стоя.",
         enGB = "You must be standing to do that"
@@ -2859,10 +2255,20 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Нужна помощь!",
         enGB = "I need help!"
     },
-    ["SHOW_TUTORIALS"] = {
-        ruRU = "Обучение",
-        enGB = "Tutorials"
-    },
+	["SHOW_TUTORIALS"] = {
+		ruRU = "Обучение",
+		enGB = "Tutorials"
+	},
+	["OPTION_TOOLTIP_SHOW_TUTORIALS"] = {
+		ruRU = "Отображение советов по игре, которые помогут вам быстрее освоиться в World of Warcraft.",
+		enGB = "Display tutorials which help introduce you to WoW."
+	},
+	["SHOW_CUSTOM_TUTORIALS"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tПродвинутое обучение",
+	},
+	["OPTION_TOOLTIP_SHOW_CUSTOM_TUTORIALS"] = {
+		ruRU = "Отображение дополнительных советов по игре, которые помогут вам быстрее освоиться с новыми возможностями на нашем проекте.",
+	},
     ["RAID_INSTANCE_WARNING_MIN"] = {
         ruRU = "Подземелье \"%s\" будет обновлено через %d |4минуту:минуты:минут;!",
         enGB = "Your instance lock for %s will expire in %d |4minute:minutes;!"
@@ -2891,6 +2297,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Золото:",
         enGB = "Money:"
     },
+	["BATTLEPASS_COLON"] = {
+		ruRU = "Боевой пропуск:",
+		enGB = "Battle Pass:"
+	},
     ["SPELL_FAILED_CUSTOM_ERROR_60"] = {
         ruRU = "Необходимо вооружиться копьем.",
         enGB = "You must have a lance equipped."
@@ -3027,13 +2437,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Крест",
         enGB = "Cross"
     },
-    ["MAINMENUBAR_STORE_DISABLE_REASON_1"] = {
-        ruRU = "Магазин в данный момент недоступен!\nСледите за новостями сервера.",
-        enGB = "The shop is currently unavailable!\nFollow the server news."
-    },
-	["MAINMENUBAR_STORE_DISABLE_REASON_2"] = {
-		ruRU = "Магазин в данный момент недоступен!\nДанные загружаются (%s).",
-	},
     ["EMOTE68_CMD1"] = {
         ruRU = "/кивок",
         enGB = "/nod"
@@ -3266,10 +2669,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Активировать список рейдов",
         enGB = "Toggle Raid Browser"
     },
-    ["STORE_TRANSMOGRIFY_SORT_BY_PRICE"] = {
-        ruRU = "По цене",
-        enGB = "By price"
-    },
     ["ACTION_SPELL_PERIODIC_ENERGIZE"] = {
         ruRU = "Энергия",
         enGB = "energized"
@@ -3317,10 +2716,6 @@ local SIRUS_LOCALIZATION = {
     ["PET_UNSPENT_TALENT_POINTS"] = {
         ruRU = "У вашего питомца|cffffd200 %s |r|4неизрасходованное очко талантов:неизрасходованных очка талантов:неизрасходованных очков талантов;.",
         enGB = "Your pet has|cffffd200 %s|r |4unspent talent point:unspent talent points;."
-    },
-    ["CONQUESTFRAME_TUTORIAL_1"] = {
-        ruRU = "Под недельным лимитом подразумевается количество очков арены, которое вы можете получить за неделю.\nОчки арены можно получить за победы на аренах.\n\nДля того, чтобы увеличить свой лимит очков, требуется:\n- Заполнить шкалу лимит за текущую неделю\n- Набрать рейтинг арены выше 1500 ед.",
-        enGB = "The weekly limit is the number of Arena Points that you can get in a week.\nYou can earn Arena Points by being victorious in arena combat.\n\nTo increase your point limit:\n- Fill up the limit bar for the current week\n- Have an arena rating above 1500"
     },
     ["BATTLEGROUND_HOLIDAY"] = {
         ruRU = "Призыв к оружию",
@@ -3590,10 +2985,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы не можете покинуть это место, находясь под властью Короля-лича.",
         enGB = "Until you've escaped The Lich King's grasp, you cannot leave this place!"
     },
-    ["STORE_PREMIUM_FOREVER_LABEL"] = {
-        ruRU = "Навсегда!",
-        enGB = "Forever!"
-    },
     ["KEY_DELETE"] = {
         ruRU = "Delete",
         enGB = "Delete"
@@ -3613,10 +3004,6 @@ local SIRUS_LOCALIZATION = {
     ["PVP_LABEL_HONOR"] = {
         ruRU = "ЧЕСТЬ:",
         enGB = "HONOR:"
-    },
-    ["STORE_EXTRA_SUBSCRIBE_TOOLTIP_WAITING_THE_END"] = {
-        ruRU = "Купить экстра-поставки возможно только если нет других активных поставок.",
-        enGB = "You can only buy extra supplies if you do not have any other active supplies."
     },
     ["SLASH_UNINVITE4"] = {
         ruRU = "/отмприглашение",
@@ -3878,10 +3265,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Прекратить слежение",
         enGB = "Stop Tracking"
     },
-    ["STPRE_YOUR_REWARD_DELIVERED_LABEL"] = {
-        ruRU = "Ваша награда доставлена",
-        enGB = "Your reward has been delivered"
-    },
     ["CHAT_YOU_LEFT_NOTICE"] = {
         ruRU = "Вы покинули канал |Hchannel:%d|h[%s]|h.",
         enGB = "Left Channel: |Hchannel:%d|h[%s]|h"
@@ -3897,10 +3280,6 @@ local SIRUS_LOCALIZATION = {
     ["CALENDAR_VIEW_EVENT_REMOVE"] = {
         ruRU = "Удалить",
         enGB = "Remove"
-    },
-    ["INVTYPE_WEAPONMAINHAND"] = {
-        ruRU = "Правая рука",
-        enGB = "Main Hand"
     },
     ["SLASH_EMOTE8"] = {
         ruRU = "/me",
@@ -4158,10 +3537,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Только притронься к моей еде – руку оторву.",
         enGB = "Get between me and my food, and you'll lose a hand."
     },
-    ["LFD_HOLIDAY_REWARD_EXPLANATION1"] = {
-        ruRU = "Первая победа в течение дня принесет вам:",
-        enGB = "Your first victory per day will earn you:"
-    },
     ["EMOTE62_CMD7"] = {
         ruRU = "/lay",
         enGB = "/lay"
@@ -4197,10 +3572,6 @@ local SIRUS_LOCALIZATION = {
     ["SPELL_EXTRA_ATTACKS_COMBATLOG_TOOLTIP"] = {
         ruRU = "Отображение сообщений о дополнительных атаках, предоставляемых заклинаниями или способностями (\"Оружие неистовства ветра\", \"Специализация на владении мечами\" и т.п.).",
         enGB = "Show messages when a spell or ability grants additional attacks, such as Windfury Weapon or Sword Specialization."
-    },
-    ["RATED_BATTLEGROUND_TUTORIAL_1"] = {
-        ruRU = "Узнайте, какое звание следующее, отслеживайте, сколько очков рейтинга вам осталось.",
-        enGB = "Find out which rank will be next and track how many rating points you still need."
     },
     ["VOICEMACRO_0_Tr_1_FEMALE"] = {
         ruRU = "На помощь!",
@@ -4394,10 +3765,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Создатель: %s",
         enGB = "%s (Creator)"
     },
-    ["SPELL_FAILED_CUSTOM_ERROR_28"] = {
-        ruRU = "Не достаточно здоровья!",
-        enGB = "Not enough health!"
-    },
+	["SPELL_FAILED_CUSTOM_ERROR_28"] = {
+		ruRU = "Недостаточно здоровья!",
+		enGB = "Not enough health!"
+	},
     ["COD_INSUFFICIENT_MONEY"] = {
         ruRU = "У вас недостаточно средств, чтобы оплатить расходы наложенным платежом.",
         enGB = "You do not have enough money to pay the C.O.D. charges."
@@ -4502,10 +3873,22 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы в полете.",
         enGB = "You are in flight"
     },
-    ["LFG_CHANNEL_NAME"] = {
-        ruRU = "ПоискСпутников",
-        enGB = "LookingForGroup"
-    },
+	["LFG_CHANNEL_NAME"] = {
+		ruRU = "ПоискСпутников",
+		enGB = "LookingForGroup"
+	},
+	["LFG_CHANNEL_NAME_HORDE"] = {
+		ruRU = "ПоискСпутников(О)",
+		enGB = "LookingForGroup(H)"
+	},
+	["LFG_CHANNEL_NAME_ALLIANCE"] = {
+		ruRU = "ПоискСпутников(А)",
+		enGB = "LookingForGroup(A)"
+	},
+	["LFG_HARDCORE_CHANNEL_NAME"] = {
+		ruRU = "ПоискСпутников(И)",
+		enGB = "LookingForGroup(HC)"
+	},
     ["SPELL_SUMMON_COMBATLOG_TOOLTIP"] = {
         ruRU = "Показывать сообщения, когда с помощью заклинания призывается существо.",
         enGB = "Show messages when a spell or ability summons a creature or creates an object."
@@ -4618,10 +4001,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Зов предков",
         enGB = "Call of the Ancestors"
     },
-    ["STORE_SUBSCRIBE_ACTIVE_TIME_LABEL"] = {
-        ruRU = "%d |4день:дня:дней;",
-        enGB = "%d |4day:days:days;"
-    },
     ["PRIMARY"] = {
         ruRU = "Основное",
         enGB = "Primary"
@@ -4633,10 +4012,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_SPELL_AURA_APPLIED_DOSE_DEBUFF_FULL_TEXT_NO_SOURCE"] = {
         ruRU = "%4$s находится под воздействием эффекта \"%2$s\" (%9$s).",
         enGB = "%4$s is afflicted by %2$s (%9$s)."
-    },
-    ["STORE_EXTRA_SUBSCRIBE_BUY_TIME"] = {
-        ruRU = "Экстра-%s %d |4день:дня:дней;",
-        enGB = "Extra %s for %d |4day:days:days;"
     },
     ["CALENDAR_REPEAT_WEEKLY"] = {
         ruRU = "Раз в неделю",
@@ -4850,10 +4225,14 @@ local SIRUS_LOCALIZATION = {
         ruRU = "ждать",
         enGB = "wait"
     },
-    ["TOOLTIP_HONOR_POINTS"] = {
-        ruRU = "Сражаясь с персонажами противоположной стороны, вы зарабатываете очки чести. Впоследствии их можно тратить на приобретение уникальных предметов.",
-        enGB = "Honor is gained by killing members of the opposite faction in PvP combat. You can use honor points to purchase special items."
-    },
+	["TOOLTIP_HONOR_POINTS"] = {
+		ruRU = "Сражаясь с персонажами противоположной стороны, вы зарабатываете очки чести. Впоследствии их можно тратить на приобретение уникальных предметов.\n|cffff0000Вы не можете накопить более чем 2,500,000 очков чести. В случае достижения лимита новые очки не могут быть получены.|r",
+		enGB = "Honor is gained by killing members of the opposite faction in PvP combat. You can use honor points to purchase special items."
+	},
+	["TOOLTIP_ARENA_POINTS"] = {
+		ruRU = "Очки арены присуждаются за победы на арене. Впоследствии их можно тратить на приобретение уникальных предметов!\n|cffff0000Вы не можете накопить более чем 25,000 очков арены. В случае достижения лимита новые очки не могут быть получены.|r",
+		enGB = "Arena Points are gained by being victorious in arena combat. You can trade in these arena points for fabulous prizes!"
+	},
     ["ERR_PETITION_SIGNED"] = {
         ruRU = "Вы подписали хартию.",
         enGB = "Charter signed."
@@ -4861,10 +4240,6 @@ local SIRUS_LOCALIZATION = {
     ["AIM_DOWN"] = {
         ruRU = "Опустить прицел",
         enGB = "Aim Down"
-    },
-    ["STORE_MMOTOP_BUTTON_TOOLTIP"] = {
-        ruRU = "Валюта, получаемая за поддержку сервера на ресурсе MMOTOP.",
-        enGB = "Currency that you receive for voting on MMOTOP."
     },
     ["RESISTANCE_TYPE3"] = {
         ruRU = "природа",
@@ -4893,10 +4268,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_LEAVE5"] = {
         ruRU = "/уйти",
         enGB = "/leave"
-    },
-    ["STORE_GIFT_MESSAGE_INSTRUCTION"] = {
-        ruRU = "Текст сообщения, который придет получателю на почту.",
-        enGB = "Message to your mail receiver."
     },
     ["EXAMPLE_TEXT"] = {
         ruRU = "Пример текста:",
@@ -5053,46 +4424,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_NOT_ENOUGH_HONOR_POINTS"] = {
         ruRU = "У вас недостаточно очков чести",
         enGB = "You don't have enough honor points"
-    },
-    ["STORE_CATEGORY_4"] = {
-        ruRU = "Питомцы",
-        enGB = "Pets"
-    },
-    ["STORE_CATEGORY_4_NEW"] = {
-        ruRU = "Особые услуги",
-        enGB = "Specials"
-    },
-    ["STORE_SUB_CATEGORY_4_1"] = {
-		ruRU = "Сервисы",
-        enGB = "Services"
-    },
-    ["STORE_SUB_CATEGORY_4_2"] = {
-		ruRU = "Профессии",
-        enGB = "Professions"
-    },
-    ["STORE_SUB_CATEGORY_4_3"] = {
-		ruRU = "Расходуемое",
-        enGB = "Consumables"
-    },
-    ["STORE_SUB_CATEGORY_4_4"] = {
-		ruRU = "Реагенты",
-        enGB = "Reagents"
-    },
-    ["STORE_SUB_CATEGORY_4_5"] = {
-		ruRU = "Задания",
-        enGB = "Quests"
-    },
-    ["STORE_SUB_CATEGORY_4_6"] = {
-		ruRU = "Репутации",
-        enGB = "Reputations"
-    },
-    ["STORE_SUB_CATEGORY_4_7"] = {
-		ruRU = "Валюта",
-        enGB = "Currencies"
-    },
-    ["STORE_SUB_CATEGORY_4_8"] = {
-		ruRU = "Категории",
-        enGB = "Categories"
     },
     ["VOICEMACRO_5_Ta_0_FEMALE"] = {
         ruRU = "Мне нужно восполнить ману!",
@@ -5694,10 +5025,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Цель недружелюбна.",
         enGB = "Target is unfriendly."
     },
-    ["PROMOCODE_WINDOW_DESC"] = {
-        ruRU = "Если вы получили промокод и желаете им воспользоваться - введите его ниже.",
-        enGB = "If you received a promo code and would like to use it, enter it below."
-    },
     ["TUTORIAL48"] = {
         ruRU = "Вы находитесь в очереди на поле боя. Вы можете проверить свой статус, наведя указатель мыши на значок рядом с мини-картой.",
         enGB = "You are now in a queue to enter a battleground.  You may check your status by moving your mouse cursor over the icon on your minimap."
@@ -5830,10 +5157,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "1",
         enGB = "1"
     },
-    ["STORE_CHOOSE_SLOT_LABEL"] = {
-        ruRU = "Выберите слот",
-        enGB = "Choose slot"
-    },
     ["ARENA_RATING"] = {
         ruRU = "Рейтинг арены",
         enGB = "Arena rating"
@@ -5942,10 +5265,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "при применении заклинания \"%s",
         enGB = "on %s cast"
     },
-    ["STORE_ITEM_TOOLTIP_CLICK_TO_BUY_LABEL"] = {
-        ruRU = "Нажмите, чтобы приобрести",
-        enGB = "Press to purchase"
-    },
     ["ERR_LFG_PROPOSAL_DECLINED_PARTY"] = {
         ruRU = "Вы вышли из очереди в подземелье, потому что один из участников вашей группы не принял приглашение.",
         enGB = "You have been removed from the Dungeon queue because someone in your party did not accept the invitation."
@@ -5969,10 +5288,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_SCRIPT1"] = {
         ruRU = "/script",
         enGB = "/script"
-    },
-    ["STORE_EXTRA_SUBSCRIBE_PROLONG_2"] = {
-        ruRU = "Продлить на %d |4день:дня:дней;",
-        enGB = "Extend for %d |4day:days;"
     },
     ["EMOTE61_CMD3"] = {
         ruRU = "/laugh",
@@ -6334,10 +5649,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Аудиосистема",
         enGB = "Speakers"
     },
-    ["STORE_YOU_WILL_REFUND_LABEL"] = {
-        ruRU = "Вы получите при возврате",
-        enGB = "You will receive after refund"
-    },
     ["OPTION_TOOLTIP_COMBAT_TEXT_SHOW_AURA_FADE"] = {
         ruRU = "Отображение сообщения о прекращении действия ауры.",
         enGB = "Shows a message when an aura fades from the player."
@@ -6582,10 +5893,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы уверены, что хотите удалить игрока %s из списка друзей по Battle.net?",
         enGB = "Are you sure you want to remove %s as a Real ID friend?"
     },
-    ["STORE_SHOW_REWARDS"] = {
-        ruRU = "Показать награды",
-        enGB = "Show Rewards"
-    },
     ["VOICEMACRO_19_Or_2"] = {
         ruRU = "У меня шесть разных улыбок: первая – когда я злюсь, вторая – когда я разрываю мясо, третья – когда жую мясо, четвертая – когда обчищаю трупы, пятая – когда сдираю шкуру и шестая – когда хочу кого-то убить.",
         enGB = "You have six different smiles; one for when you're angry, one for when you tear flesh, one for when you chew flesh, one for when you loot bodies, one for when you skin game, and one for when you want to kill something."
@@ -6617,10 +5924,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_ALREADY_INVITED_TO_GUILD_S"] = {
         ruRU = "%s уже состоит в гильдии.",
         enGB = "%s has already been invited to a guild."
-    },
-    ["STORE_TUTORIAL_5"] = {
-        ruRU = "Здесь отображается оставшаяся длительность премиума, а нажатие позволить его продлить на длительный срок.\n\nПремиум увеличивает количество получаемого опыта и золота из добычи, а также количество получаемых очков чести, арены и доблести.\n\nГолосование за наш сервер позволяет получить премиум на 24 часа.",
-        enGB = ""
     },
     ["OPTION_TOOLTIP_CHAT_MOUSE_WHEEL_SCROLL"] = {
         ruRU = "Включить прокручивание текста чата колесиком мыши при наведении на окно чата указателя мыши.",
@@ -6685,10 +5988,6 @@ local SIRUS_LOCALIZATION = {
     ["KBASE_REPORTISSUE"] = {
         ruRU = "Сообщить о проблеме",
         enGB = "Report Problem"
-    },
-    ["STORE_TRANSMOGRIFY_FILTER_SORT_TITLE"] = {
-        ruRU = "Сортировка",
-        enGB = "Sort"
     },
     ["AUCTION_DURATION_THREE"] = {
         ruRU = "48 ч.",
@@ -7062,10 +6361,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Промах",
         enGB = "missed"
     },
-    ["HOURS_MINUTES_SECONDS"] = {
-        ruRU = "%.2d:%.2d:%.2d",
-        enGB = "%.2d:%.2d:%.2d"
-    },
     ["REWARD_TRADESKILL_SPELL"] = {
         ruRU = "Вы узнаете, как создавать:",
         enGB = "You will learn how to create:"
@@ -7105,10 +6400,6 @@ local SIRUS_LOCALIZATION = {
     ["BINDING_NAME_MULTIACTIONBAR4BUTTON9"] = {
         ruRU = "Кнопка действия 9 (вторая колонка справа)",
         enGB = "Right ActionBar 2 Button 9"
-    },
-    ["STORE_TRANSMOGRIFY_SORT_BY_EXPANSION"] = {
-        ruRU = "По дополнению",
-        enGB = "By expansion"
     },
     ["VOICEMACRO_6_Tr_1"] = {
         ruRU = "Пойдемте со мной.",
@@ -7213,10 +6504,6 @@ local SIRUS_LOCALIZATION = {
     ["ARENAREPLAY_SHARED_REPLAY_MESSAGE_PH"] = {
         ruRU = "Введите сопутствующее сообщение.",
         enGB = "Enter accompanying message."
-    },
-    ["INVTYPE_WEAPONMAINHAND_PET"] = {
-        ruRU = "Основная атака",
-        enGB = "Main Attack"
     },
     ["CHAT_NOT_OWNER_NOTICE_BN"] = {
         ruRU = "|Hchannel:CHANNEL:%d|h[%s]|h Вы не являетесь владельцем канала.",
@@ -7441,10 +6728,6 @@ local SIRUS_LOCALIZATION = {
     ["PARTY_OPTIONS_LABEL"] = {
         ruRU = "Параметры группы",
         enGB = "Party Options"
-    },
-    ["STORE_BUY_FOR_FREE"] = {
-        ruRU = "Попробовать бесплатно",
-        enGB = "Try for free"
     },
     ["COMBATLOG_HIGHLIGHT_DAMAGE"] = {
         ruRU = "Урон",
@@ -7738,14 +7021,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/кыш",
         enGB = "/shoo"
     },
-    ["PVPFRAME_CURRENCY_REWARD_TOOLTIP_CONQUEST"] = {
-        ruRU = "Количество очков арены, которое вы получите за победу на аренах.",
-        enGB = "The number of Arena Points that you'll get for being victorious in arenas."
-    },
-    ["STORE_TANK"] = {
-        ruRU = "Танк",
-        enGB = "Tank"
-    },
     ["ACTION_SPELL_PERIODIC_DAMAGE_POSSESSIVE"] = {
         ruRU = "1",
         enGB = "1"
@@ -7769,10 +7044,6 @@ local SIRUS_LOCALIZATION = {
     ["ITEM_MOD_CRIT_TAKEN_SPELL_RATING"] = {
         ruRU = "Рейтинг уклонения от крит. удара (заклинания) +%d.",
         enGB = "Improves spell critical avoidance rating by %d."
-    },
-    ["INVTYPE_WEAPON"] = {
-        ruRU = "Одноручное",
-        enGB = "One-Hand"
     },
     ["OPTION_TOOLTIP_AUTO_SELF_CAST_ALT_KEY"] = {
         ruRU = "Использовать клавишу Alt для перенаправления заклинания, предназначенного дружественной цели, на вашего персонажа, даже если цель не выбрана или эта цель – противник.",
@@ -7966,10 +7237,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Исцелите меня!",
         enGB = "I need healing!"
     },
-    ["STORE_EXTRA_SUBSCRIBE_BUYUP_TIME"] = {
-        ruRU = "Экстра-%s %d |4день:дня:дней;",
-        enGB = "Extra %s for %d |4day:days:days;"
-    },
     ["PVP_RANK_16_1_FEMALE"] = {
         ruRU = "Маршал",
         enGB = "Marshal"
@@ -8113,10 +7380,6 @@ local SIRUS_LOCALIZATION = {
     ["TALENTS_INVOLUNTARILY_RESET"] = {
         ruRU = "Очки ваших талантов были сброшены.",
         enGB = "Your talents have been reset."
-    },
-    ["TOOLTIP_UNIT_LEVEL_ILEVEL_LABEL"] = {
-        ruRU = "Уровень предметов: Загрузка...",
-        enGB = "Item level: Loading..."
     },
     ["CHAT_SET_VOICE_NOTICE_BN"] = {
         ruRU = "|Hchannel:CHANNEL:%d|h[%s]|h %s получает разрешение на общение.",
@@ -8385,10 +7648,6 @@ local SIRUS_LOCALIZATION = {
     ["BINDING_NAME_PITCHDECREMENT"] = {
         ruRU = "Уменьшить наклон",
         enGB = "Pitch Decrement"
-    },
-    ["STORE_CATEGORY_INFO_2"] = {
-        ruRU = "Приглашайте своих друзей, чтобы окунуться вместе с ними в уникальный мир sirus.su, и получайте награды!\n\nПри совместной игре с другом вы будете получать на 30% больше опыта, сможете призывать друг друга и дарить уровни.\n\nЧтобы забрать награду, соответствующую определённому количеству друзей, необходимо чтобы указанное количество приглашенных друзей получили пятую категорию.",
-        enGB = "Invite your friends to the unique sirus.su realm and immerse yourselves in the game to get rewards!\n\nWhen playing with a friend, you will get 30% more experience and will also be able summon each other or gift each other levels.\n\nIn order to collect the reward that corresponds to a certain number of friends, these players must have reached Category 5."
     },
     ["HONOR_ESTIMATED_TOOLTIP"] = {
         ruRU = "Честь (сегодня)",
@@ -8742,14 +8001,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Достойно!",
         enGB = "Good job."
     },
-    ["STORE_MOUNT_REFRESH_DESC"] = {
-        ruRU = "Цена обновления списка ездовых животных сбрасывается каждую неделю.",
-        enGB = ""
-    },
-    ["STORE_REFRESH_DESC"] = {
-        ruRU = "Давайте посмотрим что тут есть новенького!",
-        enGB = ""
-    },
     ["MESSAGE_TYPES"] = {
         ruRU = "Типы сообщений",
         enGB = "Message Types"
@@ -8769,10 +8020,6 @@ local SIRUS_LOCALIZATION = {
     ["BATTLEFIELDS"] = {
         ruRU = "Поля боя",
         enGB = "Battlegrounds"
-    },
-    ["PROMOCODE_GOLD"] = {
-        ruRU = "Золото",
-        enGB = "Gold"
     },
     ["RAID_DESCRIPTION"] = {
         ruRU = "Рейд – это группа, состоящая более чем из пяти человек, которая обычно создается для борьбы с уникальными противниками высоких уровней. \n\n|cffffffff– Члены рейдовых групп не получают наград за выполнение нерейдовых заданий. В частности, они не получают внерейдовых наград за убийство существ и сбор предметов, необходимых для заданий.\n\n– За убийство монстров члены рейдовых групп также получают значительно меньше опыта, чем члены обычных групп.\n\n– Зато рейды позволяют одолеть монстров, которые в других случаях кажутся непобедимыми.|r",
@@ -9030,10 +8277,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Клевая задница.",
         enGB = "Nice butt."
     },
-    ["INVTYPE_HEAD"] = {
-        ruRU = "Голова",
-        enGB = "Head"
-    },
     ["NOT_TAMEABLE"] = {
         ruRU = "Приручить нельзя",
         enGB = "Cannot be Tamed"
@@ -9089,10 +8332,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_18_Ta_1_FEMALE"] = {
         ruRU = "Великолепно.",
         enGB = "Excellent."
-    },
-    ["INVTYPE_LEGS"] = {
-        ruRU = "Ноги",
-        enGB = "Legs"
     },
     ["EMOTE83_CMD2"] = {
         ruRU = "/holler",
@@ -9350,17 +8589,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Подписи для этой петиции собраны.",
         enGB = "That petition is full"
     },
-    ["STORE_THE_14TH_OF_FEBRUARY_CAPS"] = {
-        ruRU = "14 ФЕВРАЛЯ",
-        enGB = "FEBRUARY 14"
-    },
     ["ERR_LEARN_SPELL_S"] = {
         ruRU = "Вы выучили новое заклинание: \"%s\".",
         enGB = "You have learned a new spell: %s."
-    },
-    ["PVPHONORFRAME_TUTORIAL_1"] = {
-        ruRU = "Под недельным лимитом подразумевается количество очков чести, которое вы можете получить за неделю.\nОчки чести можно получить за победы на полях боя, за почетные убийства игроков и за убийство предводителей фракции.\n\nДля того, чтобы увеличить свой лимит очков чести, требуется повысить свое звание \"Службы\".",
-        enGB = "The weekly limit is the number of Honor Points that you can get in a week.\nYou can earn Honor Points for being victorious in battlegrounds, for honorable kills of players, and for killing faction leaders.\n\nTo increase your weekly Honor Point limit, improve your Service standing."
     },
     ["NEWBIE_TOOLTIP_HONOR_CONTRIBUTION_POINTS"] = {
         ruRU = "Игрок получает единицы чести, убивая противников в PvP-боях. Количество этих единиц прямо пропорционально величине нанесенного противнику урона. В случае коллективной победы честь распределяются между членами группы или участниками рейда. Убийство одного и того же противника через короткие промежутки времени будет приносить вам все меньше и меньше чести. Вскоре за его убийство вы не получите ничего.",
@@ -9602,10 +8833,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "|TInterface\\FriendsFrame\\UI-Toast-ToastIcons.tga:16:16:0:0:128:64:98:127:2:29|tУ вас %s |4запрос:запроса:запросов; на добавление в друзья.",
         enGB = "|TInterface\\FriendsFrame\\UI-Toast-ToastIcons.tga:16:16:0:0:128:64:98:127:2:29|tYou have %s friend |4request:requests;."
     },
-    ["INVTYPE_WRIST"] = {
-        ruRU = "Запястья",
-        enGB = "Wrist"
-    },
     ["ITEM_ENCHANT_TIME_LEFT_SEC"] = {
         ruRU = "%s (%d сек.)",
         enGB = "%s (%d sec)"
@@ -9706,10 +8933,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "член группы",
         enGB = "party member"
     },
-    ["STORE_CHOOSE_SPECIALIZATION_LABEL"] = {
-        ruRU = "Выбранная специализация",
-        enGB = "Selected specialization"
-    },
     ["ACTION_SPELL_AURA_BROKEN_BUFF_POSSESSIVE"] = {
         ruRU = "0",
         enGB = "0"
@@ -9725,10 +8948,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICE_LISTENING"] = {
         ruRU = "Прослушивание",
         enGB = "Listening"
-    },
-    ["INVTYPE_RANGED"] = {
-        ruRU = "Дальний бой",
-        enGB = "Ranged"
     },
     ["ITEM_MOD_CRIT_RANGED_RATING_SHORT"] = {
         ruRU = "к рейтингу критического удара в дальнем бою",
@@ -9818,17 +9037,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Неприязнь",
         enGB = "Unfriendly"
     },
-    ["INVTYPE_RELIC"] = {
-        ruRU = "Реликвия",
-        enGB = "Relic"
-    },
     ["NEWBIE_TOOLTIP_UNIT_PET_ABANDON"] = {
         ruRU = "Отпустить питомца на волю. Однажды отпустив питомца, вы больше не сможете его приручить.",
         enGB = "Abandons your pet, letting it return to the wild. Once you abandon a pet, you can never regain its companionship."
-    },
-    ["LOOT_ITEM_SELF_MULTIPLE"] = {
-        ruRU = "Ваша добыча: %sx%d.",
-        enGB = "You receive loot: %sx%d."
     },
     ["ACTION_SPELL_STOLEN_POSSESSIVE"] = {
         ruRU = "1",
@@ -9889,10 +9100,6 @@ local SIRUS_LOCALIZATION = {
     ["CHARACTER_KEY_BINDINGS"] = {
         ruRU = "Клавиши для |3-1(%s)",
         enGB = "Key Bindings for %s"
-    },
-    ["LOOT_ITEM"] = {
-        ruRU = "%s получает добычу: %s.",
-        enGB = "%s receives loot: %s."
     },
     ["TUTORIAL23"] = {
         ruRU = "Вы можете сказать что-нибудь, нажав клавишу ENTER, набрав сообщение, а затем нажав клавишу ENTER повторно. Вас услышат только находящиеся рядом игроки.",
@@ -10145,10 +9352,6 @@ local SIRUS_LOCALIZATION = {
     ["BNET_REPORT_ABUSE_PROMPT"] = {
         ruRU = "Пожалуйста, добавьте описание оскорбления. Это поможет нам в решении проблемы.",
         enGB = "Please leave a comment to help resolve the type of abuse."
-    },
-    ["STORE_UPDATE_CACHE_DATA"] = {
-        ruRU = "Обновление данных, пожалуйста подождите.",
-        enGB = "Data is updating. Please wait."
     },
     ["VOICEMACRO_12_Dw_0"] = {
         ruRU = "Как жизнь?",
@@ -10594,26 +9797,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Чары льда",
         enGB = "Spellfrost"
     },
-    ["STORE_MOUNT_REFRESH_TITLE"] = {
-        ruRU = "Обновление списка ездовых животных",
-        enGB = ""
-    },
-    ["STORE_PET_REFRESH_TITLE"] = {
-        ruRU = "Обновление списка питомцев",
-        enGB = ""
-    },
-	["STORE_ILLUSION_REFRESH_TITLE"] = {
-		ruRU = "Обновление списка иллюзий",
-		enGB = ""
-    },
-    ["STORE_TRANSMOGRIFY_REFRESH_TITLE"] = {
-        ruRU = "Обновление списка трансмогрификации",
-        enGB = ""
-    },
-    ["STORE_TRANSMOGRIFY_REFRESH_TOOLTIP"] = {
-        ruRU = "Обновить ассортимент трансмогрификации",
-        enGB = ""
-    },
     ["ITEM_DURATION_SEC"] = {
         ruRU = "Срок действия: %d |4секунда:секунды:секунд;",
         enGB = "Duration: %d sec"
@@ -10725,10 +9908,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_USE_TALENT_SPEC2"] = {
         ruRU = "/usetalents",
         enGB = "/usetalents"
-    },
-    ["STORE_TUTORIAL_3"] = {
-        ruRU = "В этом блоке отображаются специальные предложения, как правило, они действуют ограниченное время, но существенно выгоднее чем отдельные предметы.",
-        enGB = ""
     },
     ["EMOTE428_CMD4"] = {
         ruRU = "/fist",
@@ -10902,10 +10081,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "rofl",
         enGB = "rofl"
     },
-    ["RATED_BATTLEGROUND_TUTORIAL_3"] = {
-        ruRU = "Это ваш ранг. Получайте звания в награду за сражения.\nРанги могут потребоваться для улучшения наборов пвп вещей.",
-        enGB = "This is your rank. Receive ranks as a reward for playing rated battlegrounds.\nRanks may be needed to improve PvP items."
-    },
     ["SLASH_TEAM_INVITE1"] = {
         ruRU = "/teaminvite",
         enGB = "/teaminvite"
@@ -11033,10 +10208,6 @@ local SIRUS_LOCALIZATION = {
     ["PHYSICAL_HARASSMENT_TEXT5"] = {
         ruRU = "Засада у трупа\" (ожидание у трупа игрока, чтобы напасть на него, когда он воскреснет)",
         enGB = "Corpse camping\" (waiting by a player's corpse to attack them as they resurrect)"
-    },
-    ["STORE_GIFT_LABEL_1"] = {
-        ruRU = "Стандартный",
-        enGB = "Default"
     },
     ["BINDING_HEADER_MOVEMENT"] = {
         ruRU = "Перемещение",
@@ -11274,10 +10445,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы получили %d |4очко арены:очка арены:очков арены;.",
         enGB = "You have been awarded %d arena points."
     },
-    ["STORE_TRANSMOGRIFY_FILTER_ALL_SOURCE"] = {
-        ruRU = "Все источники",
-        enGB = "All sources"
-    },
     ["PLAYERSTAT_SPELL_COMBAT"] = {
         ruRU = "Магия",
         enGB = "Spell"
@@ -11469,10 +10636,6 @@ local SIRUS_LOCALIZATION = {
     ["CLOSE_CHAT_CONVERSATION_WINDOW"] = {
         ruRU = "Закрыть окно разговора",
         enGB = "Close Conversation Window"
-    },
-    ["STORE_CATEGORY_2"] = {
-        ruRU = "Экипировка",
-        enGB = "Equipment"
     },
     ["PROFESSION_FISHING"] = {
         ruRU = "Рыбная ловля",
@@ -11730,10 +10893,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "На |3-3(%4$s) не подействовало заклинание \"%2$s\".%6$s",
         enGB = "%4$s was immune to %2$s.%6$s"
     },
-    ["STORE_PREMIUM_DISCOUNT_INFO_1"] = {
-        ruRU = " ",
-        enGB = " "
-    },
     ["SPELL_TARGET_TYPE0_DESC"] = {
         ruRU = "заклинатель",
         enGB = "caster"
@@ -11893,10 +11052,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_2_Or_2_FEMALE"] = {
         ruRU = "Пленных не брать!",
         enGB = "Leave none alive!"
-    },
-    ["ASMSG_PROMOCODE_SUBMIT_EROR1"] = {
-        ruRU = "Вы уже использовали этот промокод!",
-        enGB = "You have already used this promo code!"
     },
     ["TALENTS_REFRESH_ERROR_2"] = {
         ruRU = "Недостаточно предметов",
@@ -12154,13 +11309,13 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы можете войти на поле боя",
         enGB = "Your Battleground is ready"
     },
+	["YOU_CAN_ENTER_SOLO"] = {
+		ruRU = "Вы можете войти на арену SoloQ",
+		enGB = ""
+	},
     ["EMOTE153_CMD1"] = {
         ruRU = "/му",
         enGB = "/moo"
-    },
-    ["STORE_CATEGORY_INFO_1"] = {
-        ruRU = "Ежедневная поддержка проекта Sirus в рейтинге серверов World of Warcraft на ресурсе MMOTOP позволяет Вам зарабатывать уникальную серверную валюту, потратить которую можно на улучшение характеристик Вашего персонажа, приобретение различных игровых предметов и средств передвижения.",
-        enGB = "Everyday vote for Sirus on mmotop allows you to earn server currency that can be spent on character stats enchancement or some in-game items and mounts."
     },
     ["EMOTE71_CMD2"] = {
         ruRU = "/присмотреться",
@@ -12190,6 +11345,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Уровень %d",
         enGB = "Area %d"
     },
+	["PERK_LEVEL"] = {
+		ruRU = "%d-й уровень",
+		enGB = "Level %d"
+	},
     ["PVP_RANK_19_0"] = {
         ruRU = "Лидер",
         enGB = "Leader"
@@ -12214,6 +11373,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "НП должен быть <= %1$d%2$s",
         enGB = "C.O.D. must be <= %1$d%2$s"
     },
+	["MAIL_SEND_ERROR_COLORBLIND"] = {
+		ruRU = "Сумма должна быть <= %1$d%2$s",
+		enGB = ""
+	},
     ["INTERFACE_ACTION_BLOCKED"] = {
         ruRU = "Ошибка интерфейсной операции, вызванная модификацией",
         enGB = "Interface action failed because of an AddOn"
@@ -12249,10 +11412,6 @@ local SIRUS_LOCALIZATION = {
     ["HONOR_STANDING"] = {
         ruRU = "Отношение",
         enGB = "Standing"
-    },
-    ["STORE_REFER_BANNER_TITLE_3"] = {
-        ruRU = "Получайте награды",
-        enGB = "Receive rewards"
     },
     ["QUEST_ITEMS_NEEDED_NOPROGRESS"] = {
         ruRU = "%s x%d",
@@ -12337,10 +11496,6 @@ local SIRUS_LOCALIZATION = {
     ["ERROR_SLASH_TEAM_CAPTAIN"] = {
         ruRU = "Правильный формат – /ккапитан [2v2, 3v3, 5v5] [имя игрока]",
         enGB = "Appropriate format is /teamcaptain [2v2, 3v3, 5v5] [player name]"
-    },
-    ["STORE_REFER_BANNER_DESC_1"] = {
-        ruRU = "",
-        enGB = ""
     },
     ["ACTION_SPELL_CREATE_FULL_TEXT_NO_SOURCE"] = {
         ruRU = "%2$s\" создает \"%4$s\"%6$s.",
@@ -12726,10 +11881,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Добавить",
         enGB = "Add Another"
     },
-    ["STORE_REFER_BANNER_DESC_2"] = {
-        ruRU = "Играйте вместе и пользуйтесь уникальными возможностями, такими как мгновенное перемещение к другу, дополнительный опыт и подарочные уровни.",
-        enGB = "Play together and take advantage of unique features such as instant teleportation to your friend, extra experience, and gift levels."
-    },
     ["EMOTE94_CMD1"] = {
         ruRU = "/говорить",
         enGB = "/talk"
@@ -12793,10 +11944,6 @@ local SIRUS_LOCALIZATION = {
     ["STAMINA_COLON"] = {
         ruRU = "Выносливость:",
         enGB = "Stamina:"
-    },
-    ["MINUTES_SECONDS"] = {
-        ruRU = "%.2d:%.2d",
-        enGB = "%.2d:%.2d"
     },
     ["FACTION_STANDING_LABEL4"] = {
         ruRU = "Равнодушие",
@@ -12954,10 +12101,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Сообщите другим игрокам, какое подземелье, рейд, задание или зона вас интересует.",
         enGB = "Let other players know what dungeon, raid, quest, or zone you are interested in."
     },
-    ["INVTYPE_CLOAK"] = {
-        ruRU = "Спина",
-        enGB = "Back"
-    },
     ["SPELL_FAILED_TRANSFORM_UNUSABLE"] = {
         ruRU = "Новый предмет невозможно использовать.",
         enGB = "You can't use the new item"
@@ -12982,10 +12125,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/stopcasting",
         enGB = "/stopcasting"
     },
-    ["PROMOCODE_ACTIVATED_LABEL"] = {
-        ruRU = "Промокод активирован!",
-        enGB = "Promo Code Activated!"
-    },
     ["CALENDAR_INVITELIST_SETMODERATOR"] = {
         ruRU = "Наделить правами модератора",
         enGB = "Grant Moderator Status"
@@ -12997,10 +12136,6 @@ local SIRUS_LOCALIZATION = {
     ["SPELL_FAILED_CUSTOM_ERROR_30"] = {
         ruRU = "Вы создали требуемое количество вурдалаков. Возвращайтесь к Готику Жнецу в Разлом Смерти",
         enGB = "You've created enough ghouls. Return to Gothik the Harvester at Death's Breach."
-    },
-    ["STORE_PRICE_LABEL"] = {
-        ruRU = "Цена",
-        enGB = "Price"
     },
     ["BINDING_NAME_MULTICASTACTIONBUTTON1"] = {
         ruRU = "Тотем земли",
@@ -13050,10 +12185,22 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Это не банкир!",
         enGB = "That unit is not a banker!"
     },
-    ["AUTO_DISMOUNT_FLYING_TEXT"] = {
-        ruRU = "Автоматическое спешивание",
-        enGB = "Auto Dismount in Flight"
-    },
+	["AUTO_DISMOUNT_TEXT"] = {
+		ruRU = "Автоматическое спешивание",
+		enGB = "Auto Dismount on Ground"
+	},
+	["OPTION_TOOLTIP_AUTO_DISMOUNT"] = {
+		ruRU = "Если включено, то ваш персонаж будет автоматически спешиваться на земле при различных действиях.",
+		enGB = "If enabled, your character will automatically dismount before casting while flying."
+	},
+	["AUTO_DISMOUNT_FLYING_TEXT"] = {
+		ruRU = "Автоматическое спешивание в полете",
+		enGB = "Auto Dismount in Flight"
+	},
+	["OPTION_TOOLTIP_AUTO_DISMOUNT_FLYING"] = {
+		ruRU = "Если включено, то ваш персонаж будет автоматически спешиваться при попытке применения заклинания во время полета.",
+		enGB = "If enabled, your character will automatically dismount before casting while flying."
+	},
     ["CHAT_YOU_LEFT_NOTICE_BN"] = {
         ruRU = "Вы покинули канал |Hchannel:CHANNEL:%d|h[%s]|h.",
         enGB = "Left Channel: |Hchannel:CHANNEL:%d|h[%s]|h"
@@ -13061,10 +12208,6 @@ local SIRUS_LOCALIZATION = {
     ["TUTORIAL25"] = {
         ruRU = "Вы стали призраком. Вы можете вернуться к жизни, если найдете свое тело или поговорите с ближайшим целителем душ.|n|nРасположение вашего тела отображается в виде значка на мини-карте в верхней правой части экрана.",
         enGB = "You are now a ghost. You can return to life by either finding your corpse or talking to a nearby spirit healer.|n|nYour corpse shows up as an icon in the minimap at the upper right hand portion of the screen."
-    },
-    ["STORE_GIFT_LABEL_3"] = {
-        ruRU = "Любовный",
-        enGB = "Lovely"
     },
     ["BLIZZARD_COMBAT_LOG_MENU_SPELL_LINK"] = {
         ruRU = "Отправить ссылку на \"%s\" в чат.",
@@ -13209,10 +12352,6 @@ local SIRUS_LOCALIZATION = {
     ["OPTION_TOOLTIP_ENABLE_MICROPHONE"] = {
         ruRU = "Включение микрофона.",
         enGB = "Enables your microphone."
-    },
-    ["INVTYPE_THROWN"] = {
-        ruRU = "Метательное",
-        enGB = "Thrown"
     },
     ["CHAT_HELP_TEXT_LINE8"] = {
         ruRU = "/owner (/владелец) <канал> [игрок] – узнать имя нынешнего владельца канала или назначить нового",
@@ -13518,10 +12657,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/бежать",
         enGB = "/flee"
     },
-    ["STORE_ITEM_LEVEL_LABEL"] = {
-        ruRU = "ilevel",
-        enGB = "ilevel"
-    },
     ["VOICEMACRO_18_Sc_1_FEMALE"] = {
         ruRU = "Умирают все, но не я.",
         enGB = "It's always somebody else."
@@ -13621,10 +12756,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_15_Dw_0_FEMALE"] = {
         ruRU = "Нет.",
         enGB = "No."
-    },
-    ["STORE_TRANSMOGRIFY_TUTORIAL_1"] = {
-        ruRU = "Здесь отображаются все доступные для приобретения комплекты трансмогрификации.\n\n|cff00ccffClick для просмотра комплекта.\nShift+Click для отправки ссылки на комплект в чат.|r",
-        enGB = "This shows all transmogrification sets available for purchase.\n\n|cff00ccffClick to view the set.\nShift+Click to link the set in chat.|r"
     },
     ["DUNGEON_FLOOR_ULDUAR3"] = {
         ruRU = "Темница Йогг-Сарона",
@@ -13765,10 +12896,6 @@ local SIRUS_LOCALIZATION = {
     ["GUILD_HELP_TEXT_LINE5"] = {
         ruRU = "/гпригласить <имя игрока> – пригласить указанного игрока в вашу гильдию",
         enGB = "'/ginvite <player>' invites another player to join your guild"
-    },
-    ["STORE_LEVEL_LABEL"] = {
-        ruRU = "Уровень",
-        enGB = "Level"
     },
     ["LFG_TAB_NAME"] = {
         ruRU = "Поиск подземелья",
@@ -14174,10 +13301,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "%1$s погибает, вы получаете %2$d |4очко:очка:очков; опыта (штраф %4$s: %3$s, группа: +%5$d).",
         enGB = "%s dies, you gain %d experience. (%s exp %s penalty, +%d group bonus)"
     },
-    ["INVTYPE_2HWEAPON"] = {
-        ruRU = "Двуручное",
-        enGB = "Two-Hand"
-    },
     ["EXIT"] = {
         ruRU = "Выход",
         enGB = "Exit"
@@ -14269,10 +13392,6 @@ local SIRUS_LOCALIZATION = {
     ["OPTION_TOOLTIP_LOOT_UNDER_MOUSE"] = {
         ruRU = "Открывать окно добычи там, где находится указатель мыши.",
         enGB = "When checked the loot window will open up under the current mouse location."
-    },
-    ["STORE_REFUND"] = {
-        ruRU = "Возврат",
-        enGB = "Refund"
     },
     ["SPELL_COLOR_BY_SCHOOL_COMBATLOG_TOOLTIP"] = {
         ruRU = "Цветовое выделение названий заклинаний в соответствии с школами магии.",
@@ -14466,10 +13585,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Отображение на экране дополнительных сообщений во время боя.",
         enGB = "Checking this will enable additional combat messages to appear in the playfield."
     },
-    ["STORE_REFER_INVITE_FRIENDS_LABEL"] = {
-        ruRU = "Пригласи друга",
-        enGB = "Recruit A Friend"
-    },
     ["SPELL_FAILED_NEED_MORE_ITEMS"] = {
         ruRU = "Требуется: %2$s %1$d.",
         enGB = "Requires %d %s."
@@ -14477,10 +13592,6 @@ local SIRUS_LOCALIZATION = {
     ["CONQUEST_JOIN_ERROR_1"] = {
         ruRU = "Выбранный вами брекет не доступен в группе или рейде.",
         enGB = "The bracket you have chosen is not available in the group or raid."
-    },
-    ["STORE_TRANSMOGRIFY_RESET_ALL"] = {
-        ruRU = "Очистить все",
-        enGB = "Clear all"
     },
     ["UNITNAME_SUMMON_TITLE10"] = {
         ruRU = "Скакун |3-1(%s)",
@@ -14541,10 +13652,6 @@ local SIRUS_LOCALIZATION = {
     ["GUILD_CHALLENGE_REWARD_GUILD_EXP"] = {
         ruRU = "%d ед. опыта гильдии",
         enGB = "%d guild experience points"
-    },
-    ["STORE_UNTIL_THE_END_SUBSCRIBES"] = {
-        ruRU = "До окончания поставок:",
-        enGB = "Time left till the end of supplies:"
     },
     ["SPELL_TARGET_CONE_TEMPLATE"] = {
         ruRU = "Цель (%s) находится в радиусе %d м от |3-1(%s).",
@@ -14750,6 +13857,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Оплата при получении не должна превышать %d.",
         enGB = "C.O.D. must be <= %d"
     },
+	["MAIL_SEND_ERROR"] = {
+		ruRU = "Отправляемая сумма не должна превышать %d.",
+		enGB = ""
+	},
     ["HONOR_YESTERDAY"] = {
         ruRU = "Вчера",
         enGB = "Yesterday"
@@ -14826,18 +13937,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Невероятно!",
         enGB = "Fantastic."
     },
-    ["STORE_CONFIRM_NOTICE"] = {
-        ruRU = "Приобретенные предметы попадут в ваши сумки. Если на момент доставки ваши сумки окажутся полными, предмет будет отправлен вам по почте.",
-        enGB = "Purchased items will appear in your bags. If your bags are full when the item arrives, you'll receive it by mail."
-    },
-    ["STORE_CONFIRM_NOTICE_WARNING"] = {
-        ruRU = "|cffFF0000Внимание! Данный товар будет невозможно вернуть после покупки!|r",
-        enGB = ""
-    },
-    ["STORE_CONFIRM_NOTICE_WARNING2"] = {
-        ruRU = "|cffFF0000Внимание! Вы не сможете вернуть предмет в магазин, если используете его в трансмогрификации!|r",
-        enGB = ""
-    },
     ["EMOTE165_CMD1"] = {
         ruRU = "/флирт",
         enGB = "/flirt"
@@ -14865,10 +13964,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_ARENA_TEAM_FOUNDER_S"] = {
         ruRU = "Поздравляем! Вы основали команду \"%s\"! Чтобы выйти из команды, используйте команду /квыйти [2v2, 3v3, 5v5].",
         enGB = "Congratulations, you are a founding member of %s!  To leave, use /teamquit [2v2, 3v3, 5v5]."
-    },
-    ["STORE_TOAST_SPECIAL_OFFER_BODY"] = {
-        ruRU = "Нажмите тут для информации",
-        enGB = "Click here for information"
     },
     ["RAID_INSTANCE_WELCOME_LOCKED"] = {
         ruRU = "Добро пожаловать! Подземелье \"%s\" будет обновлено через %s",
@@ -14953,10 +14048,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_1_Hu_0"] = {
         ruRU = "Защищайтесь!",
         enGB = "Guard yourself!"
-    },
-    ["STORE_TRANSMOGRIFY_EXPANSION_LABEL"] = {
-        ruRU = "Дополнение",
-        enGB = "Expansion"
     },
     ["ERR_CHAT_PLAYER_NOT_FOUND_S"] = {
         ruRU = "Персонаж по имени \"%s\" в игре не найден.",
@@ -15190,10 +14281,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Инкрустировав предмет этим самоцветом, вы уничтожите один или несколько самоцветов. Вы действительно хотите это сделать?",
         enGB = "One or more gems will be destroyed by socketing. Do you really want to socket the new gem(s)?"
     },
-    ["STORE_TRANSMOGRIFY_SORT_BY_NAME"] = {
-        ruRU = "По названию",
-        enGB = "By name"
-    },
     ["CALENDAR_TOOLTIP_SIGNUPBUTTON"] = {
         ruRU = "Подписаться на участие в событии.",
         enGB = "Add yourself to this event."
@@ -15206,6 +14293,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Поле боя закроется через: |cffFFFFFF%s|r",
         enGB = "Battleground closing in: |cffFFFFFF%s|r"
     },
+	["TIME_TO_PORT3"] = {
+		ruRU = "Потасовка закроется через: |cffFFFFFF%s|r",
+		enGB = "Brawl closing in: |cffFFFFFF%s|r"
+	},
     ["SLASH_TRADE2"] = {
         ruRU = "/торг",
         enGB = "/trade"
@@ -15277,10 +14368,6 @@ local SIRUS_LOCALIZATION = {
     ["ZOOM_OUT_BUTTON_TEXT"] = {
         ruRU = "Отдаление карты – правая кнопка мыши.",
         enGB = "Right Click On Map To Zoom Out"
-    },
-    ["STORE_EXTRA_SUBSCRIBE"] = {
-        ruRU = "Экстра",
-        enGB = "Extra"
     },
     ["COMBAT_TEXT_ARENA_POINTS_GAINED"] = {
         ruRU = "Очки арены %s",
@@ -15530,10 +14617,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Нижняя правая панель",
         enGB = "Bottom Right Bar"
     },
-    ["TOOLTIP_ARENA_POINTS"] = {
-        ruRU = "Очки арены присуждаются за победы на арене. Впоследствии их можно тратить на приобретение уникальных предметов!",
-        enGB = "Arena Points are gained by being victorious in arena combat. You can trade in these arena points for fabulous prizes!"
-    },
     ["VOICEMACRO_14_Ta_2_FEMALE"] = {
         ruRU = "Конечно.",
         enGB = "Of course."
@@ -15718,10 +14801,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/беспокойство",
         enGB = "/nervous"
     },
-    ["CONTROLS_LABEL"] = {
-        ruRU = "Управление",
-        enGB = "Controls"
-    },
+	["CONTROLS_LABEL"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tУправление",
+		enGB = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tControls"
+	},
     ["SLASH_SET_TITLE1"] = {
         ruRU = "/settitle",
         enGB = "/settitle"
@@ -15818,10 +14901,7 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/officer",
         enGB = "/officer"
     },
-    ["CONQUESTFRAME_TUTORIAL_2"] = {
-        ruRU = "До достижения лимита дневных игр вы будете получать очки арены.\nПосле достижения дневного лимита вы с некоторой вероятностью сможете получить сундук с добычей.",
-        enGB = "You will receive Arena Points until you reach the daily games limit.\nAfter reaching the daily games limit, you may receive a loot chest."
-    },
+
     ["ERR_NOT_DURING_ARENA_MATCH"] = {
         ruRU = "Вы не можете этого делать, пока участвуете в состязании арены",
         enGB = "You can't do that while in an arena match"
@@ -15854,10 +14934,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Опыт:",
         enGB = "Experience:"
     },
-    ["LOOTJOURNAL_ITEM_SETS"] = {
-        ruRU = "Комплекты",
-        enGB = "Item Sets"
-    },
+	["LOOT_JOURNAL_ITEM_SETS"] = {
+		ruRU = "Комплекты",
+		enGB = "Item Sets"
+	},
     ["ERR_PETITION_RESTRICTED_ACCOUNT"] = {
         ruRU = "Пользователи пробных учетных записей не могут вступать в гильдии.",
         enGB = "Trial accounts may not sign guild charters."
@@ -15886,10 +14966,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Если этот параметр включен, видеоролики будут записаны со звуком.",
         enGB = "If this is checked, sound will be recorded in the movie."
     },
-    ["INVTYPE_SHOULDER"] = {
-        ruRU = "Плечо",
-        enGB = "Shoulder"
-    },
     ["ERR_GROUP_JOIN_BATTLEGROUND_S"] = {
         ruRU = "Ваша группа встала в очередь на поле боя \"%s\".",
         enGB = "Your group has joined the queue for %s"
@@ -15917,10 +14993,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_VOICE_CHAT_PARENTAL_DISABLE_ALL"] = {
         ruRU = "Голосовой чат отключен системой родительского контроля.",
         enGB = "Voice Chat has been disabled by Parental Controls."
-    },
-    ["LOOT_ITEM_PUSHED_SELF"] = {
-        ruRU = "Вы получаете предмет: %s.",
-        enGB = "You receive item: %s."
     },
     ["KEY_PRINTSCREEN"] = {
         ruRU = "Print Screen",
@@ -15989,10 +15061,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_ENVIRONMENTAL_DAMAGE_POSSESSIVE"] = {
         ruRU = "0",
         enGB = "0"
-    },
-    ["ITEM_LEVEL"] = {
-        ruRU = "Уровень предмета: %d",
-        enGB = "Item Level %d"
     },
     ["ITEM_LEVEL_PATTERN"] = {
         ruRU = "Уровень предмета: (%d+)",
@@ -16241,10 +15309,6 @@ local SIRUS_LOCALIZATION = {
     ["CHAT_MSG_WHISPER_INFORM"] = {
         ruRU = "Шепот",
         enGB = "Whisper"
-    },
-    ["LFD_RANDOM_REWARD_EXPLANATION1"] = {
-        ruRU = "За прохождение случайного подземелья вы получите:",
-        enGB = "The first random dungeon that you complete each day will earn you:"
     },
     ["DEBUFF_SYMBOL_POISON"] = {
         ruRU = "Яд",
@@ -16605,10 +15669,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_RANGE_DAMAGE"] = {
         ruRU = "Попадание",
         enGB = "hit"
-    },
-    ["STORE_ERROR"] = {
-        ruRU = "Ошибка!",
-        enGB = "Error!"
     },
     ["LEVEL_UP_HEALTH_MANA"] = {
         ruRU = "Вы получили %d |4единицу:единицы:единиц; здоровья и %d |4единицу:единицы:единиц; маны.",
@@ -16994,10 +16054,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/chathelp",
         enGB = "/chathelp"
     },
-    ["STORE_SERVICE_LABEL_2"] = {
-        ruRU = "Смена фракции",
-        enGB = "Change faction"
-    },
     ["ACTION_UNIT_DESTROYED"] = {
         ruRU = "Уничтожение",
         enGB = "destroyed"
@@ -17085,10 +16141,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_10_Tr_0"] = {
         ruRU = "Пристрелить их!",
         enGB = "Shoot 'em!"
-    },
-    ["STORE_REFUND_ITEM_LABEL"] = {
-        ruRU = "Возврат предмета",
-        enGB = "Refund item"
     },
     ["SLASH_WORLD_MARKER3"] = {
         ruRU = "/метка",
@@ -17210,10 +16262,19 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Динь!",
         enGB = "Ding!"
     },
-    ["PVPFRAME_CURRENCY_REWARD_TOOLTIP_HONOR"] = {
-        ruRU = "Количество очков чести, которое вы получите за победу на полях боя. Количество изменяется в зависимости от вашей эффективности.",
-        enGB = "The number of Honor Points that you'll get for being victorious in battlegrounds. The number changes depending on your efficiency."
-    },
+	["PVPFRAME_CURRENCY_REWARD_TOOLTIP_HEAD"] = {
+		ruRU = "Награда за победу",
+		enGB = "Reward for win"
+	},
+	["PVPFRAME_CURRENCY_REWARD_TOOLTIP_CONQUEST"] = {
+		ruRU = "Количество очков арены и опыта Боевого Пропуска, которое вы получите за победу на аренах.",
+	},
+	["PVPFRAME_CURRENCY_REWARD_TOOLTIP_HONOR"] = {
+		ruRU = "Количество очков чести и опыта Боевого Пропуска, которое вы получите за победу на полях боя. Количество изменяется в зависимости от вашей эффективности.",
+	},
+	["PVPFRAME_CURRENCY_REWARD_TOOLTIP_HONOR_WORLD_PVP"] = {
+		ruRU = "Количество очков чести, которое вы получите за победу на полях боя. Количество изменяется в зависимости от вашей эффективности.",
+	},
     ["BINDING_NAME_TOGGLESOUND"] = {
         ruRU = "Звук",
         enGB = "Toggle Sound"
@@ -17257,10 +16318,6 @@ local SIRUS_LOCALIZATION = {
     ["LFG_LABEL"] = {
         ruRU = "Мне хотелось бы присоединиться к группе",
         enGB = "I would like to join a group"
-    },
-    ["STORE_REWARDS_LABEL"] = {
-        ruRU = "Награды",
-        enGB = "Rewards"
     },
     ["BINDING_NAME_CHATBOTTOM"] = {
         ruRU = "В конец окна общения",
@@ -17337,10 +16394,6 @@ local SIRUS_LOCALIZATION = {
     ["KILLS_COMBATLOG_TOOLTIP"] = {
         ruRU = "Отображение сообщений об убийстве противников членами вашей группы.",
         enGB = "Show messages when a member of your party kills something."
-    },
-    ["STORE_SPECIAL_OFFER_MORE_LABEL"] = {
-        ruRU = "Подробнее",
-        enGB = "More info"
     },
     ["KEY_MINUS"] = {
         ruRU = "-",
@@ -17421,10 +16474,6 @@ local SIRUS_LOCALIZATION = {
     ["ENVIRONMENTAL_DAMAGE"] = {
         ruRU = "Урон от окружающего мира",
         enGB = "Environmental Damage"
-    },
-    ["STORE_EXTRA_SUBSCRIBE_UPGRADE"] = {
-        ruRU = "Улучшить до \"Экстра\" за %d |TInterface\\Store\\coins:22:22:0:-1|t",
-        enGB = "Upgrade to \"\"Extra\"\" for %d |TInterface\\Store\\coins:22:22:0:-1|t"
     },
     ["DODGE"] = {
         ruRU = "Уклон.",
@@ -17606,10 +16655,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Скорость записи:",
         enGB = "Recording Data Rate:"
     },
-    ["VIP_STATUS_7"] = {
-        ruRU = "Elite VIP Black",
-        enGB = "Elite VIP Black"
-    },
     ["CREATED_ITEM"] = {
         ruRU = "%s создает: %s.",
         enGB = "%s creates: %s."
@@ -17634,30 +16679,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "До воскрешения: %d %s",
         enGB = "%d %s until resurrection"
     },
-    ["STORE_CATEGORY_9"] = {
-        ruRU = "Поставки",
-        enGB = "Supplies"
-    },
-    ["STORE_SUB_CATEGORY_9_1"] = {
-		ruRU = "Питомцы",
-        enGB = "Pets"
-    },
-    ["STORE_SUB_CATEGORY_9_2"] = {
-		ruRU = "Транспорт",
-        enGB = "Mounts"
-    },
-    ["STORE_SUB_CATEGORY_9_3"] = {
-		ruRU = "Иллюзии",
-        enGB = "Illusions"
-	},
-    ["STORE_SUB_CATEGORY_9_4"] = {
-        ruRU = "Всё включено",
-        enGB = "All-in-one"
-    },
-	["STORE_SUB_CATEGORY_9_6"] = {
-		ruRU = "Стратегический пакет",
-		enGB = "Strategic package"
-	},
     ["ITEM_ENCHANT_DISCLAIMER"] = {
         ruRU = "Предмет не будет передан при обмене!",
         enGB = "Item will not be traded!"
@@ -17710,10 +16731,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/plead",
         enGB = "/plead"
     },
-    ["STORE_ITEM_FLAG_1"] = {
-        ruRU = "Новый",
-        enGB = "New"
-    },
     ["PLAYERSTAT_MELEE_COMBAT"] = {
         ruRU = "Ближний бой",
         enGB = "Melee"
@@ -17741,10 +16758,6 @@ local SIRUS_LOCALIZATION = {
     ["LOCALE_SPELL_MECHANIC_DAZE"] = {
         ruRU = "Головокружение",
         enGB = "Dazed"
-    },
-    ["STORE_GIFT_LABEL_2"] = {
-        ruRU = "Новогодний",
-        enGB = "New Year"
     },
     ["RGB_RANK_12_HORDE"] = {
         ruRU = "Генерал",
@@ -18274,10 +17287,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Эй!",
         enGB = "Hey."
     },
-    ["VIP_STATUS_1"] = {
-        ruRU = "VIP Bronze",
-        enGB = "VIP Bronze"
-    },
     ["ERR_LOOT_ROLL_PENDING"] = {
         ruRU = "Этот предмет пока не разыграли.",
         enGB = "That item is still being rolled for."
@@ -18562,10 +17571,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Рыцарь-лейтенант",
         enGB = "Knight-Lieutenant"
     },
-    ["STORE_SPECIAL_OFFER_LABEL"] = {
-        ruRU = "Спец. предложение",
-        enGB = "Special offer"
-    },
     ["ACTION_ENVIRONMENTAL_DAMAGE_DROWNING"] = {
         ruRU = "Утопление",
         enGB = "Drowning"
@@ -18694,10 +17699,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Сообщения заклинаний",
         enGB = "Spell Messages"
     },
-    ["STORE_BUY_ITEM_ERROR_4"] = {
-        ruRU = "Вашего уровня лояльности недостаточно для покупки.",
-        enGB = "You loyalty level isn't high enough to buy this."
-    },
     ["ACTION_SPELL_DURABILITY_DAMAGE"] = {
         ruRU = "Повреждение предмета",
         enGB = "durability loss"
@@ -18797,10 +17798,6 @@ local SIRUS_LOCALIZATION = {
     ["MAKE_UNINTERACTABLE"] = {
         ruRU = "Выкл. интерактивный режим",
         enGB = "Make Noninteractive"
-    },
-    ["MICRO_MENU_LFD_ALERT2"] = {
-        ruRU = "Вам доступен поиск группы для прохождения подземелий!",
-        enGB = "You can use a tool to find a group to complete dungeons!"
     },
     ["ACTION_SPELL_CAST_START_FULL_TEXT_NO_SOURCE"] = {
         ruRU = "%1$s начинает произносить %2$s для применения к |3-2(%4$s).",
@@ -19074,10 +18071,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Тотем воздуха",
         enGB = "Air Totem"
     },
-    ["STORE_PREMIUM_WINDOW_TITLE"] = {
-        ruRU = "Покупка премиум статуса",
-        enGB = "Buy premium status"
-    },
     ["ERR_OUT_OF_FOCUS"] = {
         ruRU = "Недостаточно тонуса",
         enGB = "Not enough focus"
@@ -19122,6 +18115,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "(%d - %d)",
         enGB = "(%d - %d)"
     },
+	["LFD_NUM_PLAYERS_FORMAT_RANGE"] = {
+		ruRU = "(%d - %d игроков)",
+	},
     ["MANA_LOW"] = {
         ruRU = "Мана на исходе",
         enGB = "Mana Low"
@@ -20074,14 +19070,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Му-у! Теперь довольны?",
         enGB = "Moo.  Are you happy now?"
     },
-    ["LOOT_ITEM_SELF"] = {
-        ruRU = "Ваша добыча: %s.",
-        enGB = "You receive loot: %s."
-    },
-    ["STORE_BUY_ITEM_ERROR_5"] = {
-        ruRU = "Недостаточно средств для покупки.",
-        enGB = "Not enought funds to buy."
-    },
     ["VOICEMACRO_19_Sc_4_FEMALE"] = {
         ruRU = "Я романов заводить не хочу. Раз уже влюбилась – и посмотрите, к чему это привело!",
         enGB = "I don't care that much about romance.  I fell in love before, and look what happened to me."
@@ -20113,10 +19101,6 @@ local SIRUS_LOCALIZATION = {
     ["TIMEMANAGER_12HOUR"] = {
         ruRU = "%d",
         enGB = "%d"
-    },
-    ["INVTYPE_HOLDABLE"] = {
-        ruRU = "Левая рука",
-        enGB = "Held In Off-hand"
     },
     ["PUSHTOTALK_SOUND_TEXT"] = {
         ruRU = "Звуковой сигнал",
@@ -20526,10 +19510,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Кнопка мыши 26",
         enGB = "Mouse Button 26"
     },
-    ["PROMOCODE_FAST_LEVEL_BOOST"] = {
-        ruRU = "Быстрый старт",
-        enGB = "Character Boost"
-    },
     ["ERR_ARENA_TEAM_NOT_ALLIED"] = {
         ruRU = "Вы не можете приглашать противников.",
         enGB = "You cannot invite players from the opposing alliance."
@@ -20573,10 +19553,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_LABEL_TRAIN1"] = {
         ruRU = "обучиться",
         enGB = "train"
-    },
-    ["STORE_SPECIAL_OFFER_ITEMS"] = {
-        ruRU = "Список предметов предложения",
-        enGB = "Special offer item list"
     },
     ["BINDING_HEADER_CAMERA"] = {
         ruRU = "Обзор",
@@ -21054,10 +20030,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Задание \"%s\" было удалено из вашего журнала.",
         enGB = "The quest %s has been removed from your quest log"
     },
-    ["LFG_CHANNEL_NAME_HORDE"] = {
-        ruRU = "ПоискСпутниковО",
-        enGB = "LookingForGroupH"
-    },
     ["STRENGTH_TOOLTIP"] = {
         ruRU = "Увеличивает силу атаки и количество единиц урона в секунду. Вероятность\nнанесения критического удара противнику не зависит от\nсилы персонажа, как и вероятность блокировать удар.\nСила лишь уменьшает величину получаемого урона (некоторые персонажи могут использовать для этой цели еще и щит).",
         enGB = "Adds to your Attack Power, Damage-Per-Second. Strength\ndoes not affect Critical Hit chances at all. Strength does\nnot improve your chance to block, but rather the amount\nblocked when you succeed. This amount is determined in\npart by Strength (and the other part by your shield). "
@@ -21126,21 +20098,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/списокгильдии",
         enGB = "/guildroster"
     },
-    ["TALENT_SUMMARIES_TUTORIAL_1"] = {
-        ruRU = "Нажатие на эту кнопку переключает показ информации о доступных для вашего класса специализациях.",
-        enGB = ""
-    },
     ["ACTION_SPELL_STOLEN_BUFF_FULL_TEXT_NO_SOURCE"] = {
         ruRU = "%2$s\" похищает заклинание \"%5$s\" |3-1(%4$s).",
         enGB = "%2$s steals %4$s %5$s."
-    },
-    ["STORE_TUTORIAL_4"] = {
-        ruRU = "Это список возможных валют, чтобы узнать подробнее - наведите указатель мыши, или нажмите левой кнопкой мыши чтобы перейти в раздел, связанный с выбранной валютой.\n\nСлева вам будет доступно описание валюты.",
-        enGB = ""
-    },
-    ["STORE_TUTORIAL_1"] = {
-        ruRU = "Предметы, доступные в магазине распределены по категориям, некоторые из которых доступны только на 80-м уровне. Ассортимент так же зависит от уровня вашего персонажа.",
-        enGB = ""
     },
     ["NEUTRAL_RACE_DISABLE_FEATURE"] = {
         ruRU = "Это действие становится доступным после того как вы выберете фракцию.",
@@ -21230,10 +20190,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "ЗА ОРДУ",
         enGB = ""
     },
-    ["STORE_REFER_BUTTON_TOOLTIP"] = {
-        ruRU = "Валюта, получаемая за приглашение друзей на сервер.",
-        enGB = "Currency that you receive for inviting friends."
-    },
     ["SPELL_FAILED_UNIQUE_GLYPH"] = {
         ruRU = "Этот символ уже начертан в вашей книге заклинаний.",
         enGB = "That Glyph is already inscribed in your spellbook."
@@ -21246,17 +20202,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Первый набор символов",
         enGB = "Primary Glyphs"
     },
-    ["STORE_VOTE_COIN_LABEL"] = {
-        ruRU = "Голоса",
-        enGB = ""
-    },
     ["CREATE_CONVERSATION_WITH"] = {
         ruRU = "Начать разговор",
         enGB = "Create Conversation"
-    },
-    ["STORE_SPECIAL_OFFER_TIME_LEFT"] = {
-        ruRU = "Осталось времени до окончания предложения",
-        enGB = "Time left for the special offer"
     },
     ["ROULETTE_SKIP_ANIMATION_LABEL"] = {
         ruRU = "Пропустить анимацию прокрутки",
@@ -21265,10 +20213,6 @@ local SIRUS_LOCALIZATION = {
     ["GUILD_PRIVILEGE"] = {
         ruRU = "Гильдейские привилегии",
         enGB = "Guild privileges"
-    },
-    ["STORE_REFRESH_MOUNT"] = {
-        ruRU = "Обновить",
-        enGB = ""
     },
     ["ROULETTE_NOT_ENOUGHT_CURRENCY_TOOLTIP_TEXT"] = {
         ruRU = "У вас недостаточно валюты для прокрутки рулетки.",
@@ -21350,10 +20294,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Цена продажи",
         enGB = "Sell Price"
     },
-    ["STORE_CHARACTER_NAME_LABEL"] = {
-        ruRU = "Имя персонажа",
-        enGB = "Character name"
-    },
     ["ITEMSLOTTEXT"] = {
         ruRU = "Ячейки для предметов",
         enGB = "Item Slots"
@@ -21406,10 +20346,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Установленный режим сложности: %s.",
         enGB = "Difficulty set to %s."
     },
-    ["STORE_COST"] = {
-        ruRU = "Стоимость",
-        enGB = "Cost"
-    },
     ["SETTINGS_AUTOJOIN_TO_LFG"] = {
         ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tПрисоединяться к каналу поиска спутников",
         enGB = ""
@@ -21458,10 +20394,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/yw",
         enGB = "/yw"
     },
-    ["STORE_SHOW_ALL_ITEMS_TOOLTIP"] = {
-        ruRU = "Включить отображение всех предметов в текущем разделе.\nОбратите внимание, некоторые из них вы не сможете носить.",
-        enGB = "Show all items in the current section.\nPlease note that you may not be able to equip some items"
-    },
     ["NEXT_WINTERGRASP_LABEL"] = {
         ruRU = "Через:",
         enGB = "In:"
@@ -21477,10 +20409,6 @@ local SIRUS_LOCALIZATION = {
     ["ADD_FRIEND"] = {
         ruRU = "Добавить",
         enGB = "Add Friend"
-    },
-    ["INVTYPE_ROBE"] = {
-        ruRU = "Грудь",
-        enGB = "Chest"
     },
     ["CHAT_PLAYER_UNBANNED_NOTICE"] = {
         ruRU = "|Hchannel:%d|h[%s]|h Игрок %s разблокирован |3-4(%s).",
@@ -21662,10 +20590,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Осталось %d сек.",
         enGB = "%d sec left"
     },
-    ["AJ_SUGGESTED_CONTENT_TAB"] = {
-        ruRU = "Рекомендуемый контент",
-        enGB = "Suggested Content"
-    },
     ["ACTION_SPELL_PERIODIC_MISSED_RESIST_FULL_TEXT"] = {
         ruRU = "%2$s\" |3-1(%1$s) не действует на |3-3(%4$s). %4$s сопротивляется заклинанию. %6$s.",
         enGB = "%1$s %2$s does not affect %4$s. %4$s resisted.%6$s"
@@ -21686,7 +20610,7 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Предмет",
         enGB = "Item"
     },
-    ["GARRISON_RECRUIT_ABILITY"] = {
+	["ENCOUNTER_JOURNAL_ABILITY"] = {
         ruRU = "Способность",
         enGB = "Ability"
     },
@@ -21954,10 +20878,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/г <текст сообщения> – отправить сообщение всем членам вашей гильдии",
         enGB = "'/g <message>' sends a chat message to all members of your guild"
     },
-    ["STORE_SEND_AS_GIFT"] = {
-        ruRU = "Отправить как подарок",
-        enGB = "Send as a gift"
-    },
     ["BATTLEFIELD_CONFIRM_STATUS"] = {
         ruRU = "Поле боя готово",
         enGB = "Ready to Enter"
@@ -22126,10 +21046,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Атака дальнего боя наносит |3-2(%4$s) %5$s%6$s.",
         enGB = "A ranged shot hit %4$s for %5$s.%6$s"
     },
-    ["INVTYPE_NECK"] = {
-        ruRU = "Шея",
-        enGB = "Neck"
-    },
     ["DEAD"] = {
         ruRU = "цель мертва",
         enGB = "Dead"
@@ -22221,10 +21137,6 @@ local SIRUS_LOCALIZATION = {
     ["INSTANCE_UNAVAILABLE_SELF_QUEST_NOT_COMPLETED"] = {
         ruRU = "Вы не выполнили требуемое задание.",
         enGB = "You have not completed the required quest."
-    },
-    ["STORE_LOYAL_BUTTON_TOOLTIP"] = {
-        ruRU = "Показатель уровня Вашей поддержки сервера.",
-        enGB = "Index that displays how much you support the server."
     },
     ["CONTINUE_VIEWING"] = {
         ruRU = "Продолжить просмотр",
@@ -22398,10 +21310,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Трансмогрификация",
         enGB = "Transmogrification"
     },
-    ["CONQUESTFRAME_TUTORIAL_4"] = {
-        ruRU = "",
-        enGB = ""
-    },
     ["ENCOUNTER_JOURNAL_ENCOUNTER"] = {
         ruRU = "Босс",
         enGB = "Boss"
@@ -22558,10 +21466,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Опыт гильдии можно получать, выполняя задания и ежедневные поручения Джулии.",
         enGB = "You can earn guild experience by completing Julia's tasks and daily quests."
     },
-    ["STORE_MAIL_CHOOSE_STYLE"] = {
-        ruRU = "Выберите стиль письма",
-        enGB = "Choose mail style"
-    },
     ["GUILD_HELP_1"] = {
         ruRU = "Щелкните правой кнопкой мыши по игроку, состоящем в гильдии, чтобы получить доступ к дополнительным параметрам.",
         enGB = "Right-click on a guild member for more options."
@@ -22570,10 +21474,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Репутация в гильдии",
         enGB = "Guild Reputation"
     },
-    ["GAMEMENU_BUTTON_WHATNEW"] = {
-        ruRU = "Чего нового",
-        enGB = "What's New"
-    },
+	["GAMEMENU_NEW_BUTTON"] = {
+		ruRU = "Что нового?",
+		enGB = "What's New"
+	},
     ["REQ_LEVEL_ABBR"] = {
         ruRU = "Ур.",
         enGB = "Lvl"
@@ -22647,8 +21551,8 @@ local SIRUS_LOCALIZATION = {
         enGB = "Actions performed on invisible targets."
     },
     ["NEW_MOUNT_HELP_1"] = {
-        ruRU = "Вы получили новое средство передвижения.\n\n|cFF00FFFFНажмите на значок|r чтобы посмотреть подробности.",
-        enGB = "You have received a new mount.\n\n|cFF00FFFFClick on this icon|r to see more."
+        ruRU = "Вы изучили новое средство передвижения.\n\n|cFF00FFFFНажмите на значок|r чтобы посмотреть подробности.",
+        enGB = ""
     },
 	["NEW_PET_HELP_1"] = {
 		ruRU = "Вы получили нового спутника.\n\n|cFF00FFFFНажмите на значок|r чтобы посмотреть подробности.",
@@ -22698,10 +21602,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "|cFF00FFFFОчки усилений|r позволяют вам увеличить базовые характеристики персонажа.\n\nНажмите на |TInterface\\Buttons\\on:18:18|t чтобы повысить выбранную вами характеристику.",
         enGB = "|cFF00FFFFEnhancement points|r allow you to increase the character's base stats.\n\nClick |TInterface\\Buttons\\on:18:18|t to improve a chosen stat."
     },
-    ["PAPERDOLLFRAME_ILEVEL_HELP_1"] = {
-        ruRU = "Это средний уровень вашей экипировки. Каждый ваш предмет имеет свой уровень.\n\n|cFF00FFFFНаведите курсор|r чтобы получить подробности.",
-        enGB = "This is the average level of your equipment. Each of your items has its own level.\n\n|cFF00FFFFMouse over|r to view details."
-    },
     ["PAPERDOLLFRAME_PLAYER_INFO"] = {
 		ruRU = "|c%2$s%3$s|r, %4$s (%5$s), %1$s-го уровня",
 		enGB = "Level %s |c%s%s|r %s (%s)"
@@ -22733,10 +21633,6 @@ local SIRUS_LOCALIZATION = {
     ["MAINMENUBAR_EJ_NEWBIE_TOOLTIP"] = {
         ruRU = "Сведения (включая описание способностей и добычу) о боссах подземелий и рейдов.",
         enGB = "View information about dungeon and raid bosses, including their abilities and loot."
-    },
-    ["STORE_PVP_LABEL"] = {
-        ruRU = "PVP",
-        enGB = "PVP"
     },
     ["COMBATLOG_XPGAIN_EXHAUSTION2"] = {
         ruRU = "%1$s погибает, вы получаете %2$d |4очко:очка:очков; опыта (%4$s: %3$s).",
@@ -22901,10 +21797,6 @@ local SIRUS_LOCALIZATION = {
     ["REQUIRED_MONEY"] = {
         ruRU = "Требующаяся сумма денег:",
         enGB = "Required Money:"
-    },
-    ["STORE_ITEM_FLAG_3"] = {
-        ruRU = "Акция",
-        enGB = "Action"
     },
     ["PVP_LADDER_INFO_BATTLEGROUND_DISABLE"] = {
         ruRU = "Записи игр недоступны на полях боя",
@@ -23074,18 +21966,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы временно отсутствуете.",
         enGB = "You are now Away."
     },
-	["ASMSG_PROMOCODE_REWARD_ERROR1"] = {
-		ruRU = "Вы ввели неверный промокод!",
-		enGB = "You've entered an invalid promo code!"
-	},
-	["ASMSG_PROMOCODE_REWARD_ERROR2"] = {
-		ruRU = "Данный промокод уже использовался на другой учетной записи.",
-		enGB = "This promo code has already been used on another account."
-	},
-	["ASMSG_PROMOCODE_REWARD_ERROR3"] = {
-		ruRU = "Быстрый старт уже активен!",
-		enGB = "Boost service already activated"
-	},
     ["ACTION_SWING_MISSED_ABSORB"] = {
         ruRU = ": поглощение",
         enGB = "(Absorbed)"
@@ -23121,10 +22001,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_DAMAGE_SPLIT"] = {
         ruRU = "Разделение урона",
         enGB = "shared damage"
-    },
-    ["STORE_SERVICE_LABEL_1"] = {
-        ruRU = "Смена имени и внешности",
-        enGB = "Change name and appearance"
     },
     ["COMBATLOG_DISHONORGAIN"] = {
         ruRU = "%s умирает. Бесчестное убийство!",
@@ -23306,41 +22182,17 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы хотите еще что-нибудь добавить? Есть ли у вас пожелания или рекомендации?",
         enGB = "Is there anything else you would like to tell us about? What could we have done to make this a better experience for you?"
     },
-    ["STORE_TRANSMOGRIFY_NOT_RESOULT_FOUND"] = {
-        ruRU = "По вашему запросу ничего не найдено.",
-        enGB = "Nothing found."
-    },
     ["TOOLTIP_TRACKER_SORT_MANUAL"] = {
         ruRU = "Задания будут сортироваться вручную.",
         enGB = "Check this to be able to list the quests in any order you want."
-    },
-    ["STORE_TRANSMOGRIFY_SOURCE_LABEL"] = {
-        ruRU = "Источник",
-        enGB = "Source"
-    },
-    ["STORE_TRANSMOGRIFY_CLASS_LABEL"] = {
-        ruRU = "Класс",
-        enGB = "Class"
-    },
-    ["STORE_TRANSMOGRIFY_FILTER_LABEL"] = {
-        ruRU = "Фильтры",
-        enGB = "Filters"
     },
     ["MAINMENUBAR_LATENCY_LABEL"] = {
         ruRU = "Задержка: %.0f мс",
         enGB = "Latency: %.0f ms"
     },
-    ["STORE_TRANSMOGRIFY_SORT_BY_QUALITY"] = {
-        ruRU = "По качеству",
-        enGB = "By quality"
-    },
     ["ERR_NAME_CONSECUTIVE_SPACES"] = {
         ruRU = "Использование нескольких пробелов подряд не допускается. Введите другое название.",
         enGB = "Consecutive spaces are not allowed.  Enter a new name."
-    },
-    ["STORE_TRANSMOGRIFY_FILTER_PVE_REWARD"] = {
-        ruRU = "PVE",
-        enGB = "PvE"
     },
     ["ENCHANTS"] = {
         ruRU = "Чары на оружии",
@@ -23362,10 +22214,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Побед",
         enGB = "Kills"
     },
-    ["STORE_TRANSMOGRIFY_FILTER_ALL_EXPANSION"] = {
-        ruRU = "Все дополнения",
-        enGB = "All expansions"
-    },
     ["EYE_OF_THE_STORM_FLAG_DESC"] = {
         ruRU = "Отнесите этот флаг на любую захваченную точку, чтобы получить очки победы.",
         enGB = "Take this flag to any captured point to get victory points."
@@ -23377,10 +22225,6 @@ local SIRUS_LOCALIZATION = {
     ["EYE_OF_THE_STORM_FLAG_NAME"] = {
         ruRU = "Флаг Пустоверти",
         enGB = "Netherstorm Flag"
-    },
-    ["STORE_REFER_URL_DIALOG"] = {
-        ruRU = "Отправьте эту ссылку другу чтобы вы смогли получить бонусы",
-        enGB = "Send this link to a friend to get bonuses"
     },
     ["EMOTE381_CMD2"] = {
         ruRU = "/absent",
@@ -23470,10 +22314,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы не можете атаковать, поддерживая заклинание.",
         enGB = "Can't attack while channeling."
     },
-    ["PVPFRAME_CURRENCY_REWARD_TOOLTIP_HEAD_HONOR"] = {
-        ruRU = "Награда за победу",
-        enGB = "Reward for win"
-    },
     ["CALENDAR_EDIT_ANNOUNCEMENT"] = {
         ruRU = "Изменить уведомление",
         enGB = "Edit Announcement"
@@ -23534,10 +22374,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Параметры чата",
         enGB = "Chat Options"
     },
-    ["LOOT_ITEM_PUSHED_SELF_MULTIPLE"] = {
-        ruRU = "Вы получаете предмет: %sx%d.",
-        enGB = "You receive item: %sx%d."
-    },
     ["SHIFT_KEY_TEXT"] = {
         ruRU = "SHIFT",
         enGB = "SHIFT"
@@ -23594,10 +22430,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/random",
         enGB = "/random"
     },
-    ["STORE_PREMIUM_INFO"] = {
-        ruRU = "Премиум аккаунт предоставляет следующие бонусы:\n- Увеличивает на %d%% получаемые вами очки чести, арены и доблести;\n- Увеличивает на %d%% кол-во получаемого опыта;\n- Увеличивает на %d%% кол-во получаемого золота.\nПремиум можно приобрести тут или проголосовав за сервер.",
-        enGB = "Premium account gives you the following advantages:\n Increases the amount of Honor Points, Arena Points and Valor Points by %d%%;\n Increases the amount of XP received by %d%%;\n Increases the amount of gold received by %d%%.\nYou can purchase premium or get it for free::\nJust vote for our server in the tops everyday!"
-    },
     ["RANGED_ATTACK_TOOLTIP"] = {
         ruRU = "Рейтинг дальнего боя",
         enGB = "Ranged Attack Rating"
@@ -23646,10 +22478,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Тонус: %d",
         enGB = "%d Focus"
     },
-    ["STORE_CATEGORY_8"] = {
-        ruRU = "Разное",
-        enGB = "Miscellaneous"
-    },
     ["REMOVE_WORLD_MARKERS"] = {
         ruRU = "Убрать все метки",
         enGB = "Clear All"
@@ -23670,26 +22498,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Нельзя отправлять по почте персональные предметы.",
         enGB = "You can't mail soulbound items."
     },
-    ["PROMOCODE_POPUP_FASTEN_HEAD"] = {
-        ruRU = "Обратите внимание",
-        enGB = "Important"
-    },
-    ["PROMOCODE_POPUP_FASTEN_DESC"] = {
-        ruRU = "Вы уверены, что хотите закрепить промокод за данной учетной записью?",
-        enGB = "Are you sure you want to use the promo code on this account?"
-    },
-    ["PROMOCODE_WINDOW_HEADER"] = {
-        ruRU = "Окно ввода промокодов",
-        enGB = "Promo code entry window"
-    },
-    ["PROMOCODE_RECIVE_REWARD"] = {
-        ruRU = "Получить награды",
-        enGB = "Claim rewards"
-    },
-    ["PROMOCODE_SHOW_REWARD"] = {
-        ruRU = "Показать награды",
-        enGB = "Show Rewards"
-    },
     ["ERR_QUEST_OBJECTIVE_COMPLETE_S"] = {
         ruRU = "Цель достигнута: %s",
         enGB = "%s (Complete)"
@@ -23709,10 +22517,6 @@ local SIRUS_LOCALIZATION = {
     ["DEMONHUNTER_REVENGE_DESC"] = {
         ruRU = "Использует силу внутреннего демона, чтобы испепелять противников и защищать союзников.",
         enGB = "Embraces the demon within to incinerate enemies and protect their allies."
-    },
-    ["STORE_REFER_BANNER_TITLE_2"] = {
-        ruRU = "Развивайтесь вместе",
-        enGB = "Level up together"
     },
     ["EMOTE48_CMD1"] = {
         ruRU = "/злорадство",
@@ -23942,10 +22746,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Рейтинг уклонения от крит. удара оруж. дистанц. боя +%d.",
         enGB = "Improves ranged critical avoidance rating by %d."
     },
-    ["DISPLAY_LABEL"] = {
-        ruRU = "Графика",
-        enGB = "Display"
-    },
+	["DISPLAY_LABEL"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tГрафика",
+		enGB = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tDisplay"
+	},
     ["MAGE_SPEC_FIRE_TITLE"] = {
         ruRU = "Огонь",
         enGB = "Fire"
@@ -23993,10 +22797,6 @@ local SIRUS_LOCALIZATION = {
     ["UNIT_NAMEPLATES_SHOW_FRIENDLY_TOTEMS"] = {
         ruRU = "Тотемы",
         enGB = "Totems"
-    },
-    ["STORE_LOYAL_BUTTON_TOOLTIP_LABEL"] = {
-        ruRU = "Лояльность",
-        enGB = "Loyalty"
     },
     ["COMBATLOG_UNKNOWN_UNIT"] = {
         ruRU = "Что-то",
@@ -24078,10 +22878,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Тренировочные",
         enGB = "Skirmish"
     },
-    ["STORE_SPECIAL_OFFER_DETAIL_NO_ITEM_LEBEL"] = {
-        ruRU = "Что-то пошло не так!\nКто-то украл предметы",
-        enGB = "Somthing went wrong!\nSomeone stole the items"
-    },
     ["BATTLEGROUND_TEAM_BALANCE_TOOLTIP_NAME"] = {
         ruRU = "Баланс команд",
         enGB = "Team balance"
@@ -24142,10 +22938,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "%4$s блокирует заклинание \"%2$s\" |3-1(%1$s)%6$s",
         enGB = "%1$s %2$s was blocked by %4$s.%6$s"
     },
-    ["MICRO_MENU_LFD_ALERT1"] = {
-        ruRU = "Вам доступны сражения на полях боя!",
-        enGB = "You can now fight in battlegrounds!"
-    },
     ["EMOTE66_CMD1"] = {
         ruRU = "/скорбь",
         enGB = "/mourn"
@@ -24194,10 +22986,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "-PH- Large plot label",
         enGB = "-PH- Large plot label"
     },
-    ["STPRE_TOAST_SPECIAL_OFFER_TITLE"] = {
-        ruRU = "Специальное предложение",
-        enGB = "Special offer"
-    },
     ["TIME_PLAYED_TOTAL"] = {
         ruRU = "Общее время игры: %s",
         enGB = "Total time played: %s"
@@ -24205,10 +22993,6 @@ local SIRUS_LOCALIZATION = {
     ["COLORS"] = {
         ruRU = "Цвета",
         enGB = "Colors"
-    },
-    ["STORE_BONUS_PURCHASE"] = {
-        ruRU = "Бонус при покупке",
-        enGB = "Purchase bonus"
     },
     ["ERR_CHAT_RESTRICTED"] = {
         ruRU = "Владелец пробной учетной записи может посылать ограниченное число сообщений. Пожалуйста, подождите прежде, чем посылать новые сообщения.",
@@ -24218,37 +23002,13 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Применение: %.3g сек.",
         enGB = "%.3g sec cast"
     },
-    ["STORE_BUY_NOW_LABEL"] = {
-        ruRU = "Приобрести сейчас",
-        enGB = "Buy now"
-    },
-    ["STORE_TIME_LEFT_OF_THE_OFFER"] = {
-        ruRU = "Осталось до конца предложения",
-        enGB = "Time left till the end of the offer"
-    },
     ["UNIT_TYPE_PLUS_LEVEL_TEMPLATE"] = {
         ruRU = "%2$s %1$d-го уровня (элита)",
         enGB = "Level %d Elite %s"
     },
-    ["STORE_REFUND_ITEM_INFO"] = {
-        ruRU = "Выберите предмет, который бы вы хотели вернуть.\n\n|cffFF1100ВАЖНО!|r Все улучшения предмета будут безвозвратно удалены вместе с предметом.",
-        enGB = "Choose an item that you want to refund.\n\n|cffFF1100IMPORTANT!|r Every item improvement will be irretrievably removed together with the item."
-    },
     ["SHOW_FRIENDS_LIST"] = {
         ruRU = "Показывать список друзей",
         enGB = "Show Friends List"
-    },
-    ["STORE_UNTIL_NEXT_DELIVERY_LABEL"] = {
-        ruRU = "До следующей поставки:",
-        enGB = "Till next supply:"
-    },
-    ["STORE_PAGE_NUMBER"] = {
-        ruRU = "%d / %d",
-        enGB = "%d / %d"
-    },
-    ["STORE_SUBSCRIBE_YOU_GET_LABEL"] = {
-        ruRU = "В каждой поставке вы будете получать:",
-        enGB = "Supplies you'll get every day:"
     },
     ["BINDING_NAME_CAMERAZOOMIN"] = {
         ruRU = "Приблизить",
@@ -24261,10 +23021,6 @@ local SIRUS_LOCALIZATION = {
     ["ROULETTE_SKIP_ANIMATION_TOOLTIP"] = {
         ruRU = "Пропустить анимацию",
         enGB = ""
-    },
-    ["STORE_SPECIAL_OFFER_INFORMATION_LABEL"] = {
-        ruRU = "Информация о специальном предложении",
-        enGB = "Special offer information"
     },
     ["ENCHANT_CONDITION_LESS_VALUE"] = {
         ruRU = "меньше, чем %d |4камень:камня:камней; |3-1(%s) цвета",
@@ -24290,10 +23046,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "\n|cffff0000Вам нужно отдохнуть в таверне.|r",
         enGB = "\n|cffff0000You should rest at an Inn.|r"
     },
-    ["STORE_PROOF_OF_PURCHASE_LABEL"] = {
-        ruRU = "Подтверждение покупки",
-        enGB = "Purchase confirmation"
-    },
     ["SPELL_TARGET_CREATURE_TYPE1_DESC"] = {
         ruRU = "%s",
         enGB = "%s"
@@ -24314,17 +23066,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вне закона",
         enGB = "Outlaw"
     },
-    ["STORE_ITEM_NAME_LABEL"] = {
-        ruRU = "Имя предмета",
-        enGB = "Item name"
-    },
     ["OPTION_TOOLTIP_SCROLL_UP"] = {
         ruRU = "Прокручивание текста в сторону верхней части экрана.",
         enGB = "Scrolls combat text towards the top of the screen."
-    },
-    ["STORE_RESET_LABEL"] = {
-        ruRU = "Сброс",
-        enGB = "Reset"
     },
     ["PVP_SEASON_STATISTICS"] = {
         ruRU = "Статистика сезона:",
@@ -24334,53 +23078,17 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Отображение подробных сведений о различных элементах интерфейса пользователя. Опытные пользователи, возможно, захотят отключить эту функцию.",
         enGB = "Show detailed information about various user interface elements.  Advanced players may want to turn this off."
     },
-    ["STORE_PVP_TOOLTIP"] = {
-        ruRU = "Предмет подходящий для сражений игрок против игрока",
-        enGB = "An item suitable for player versus player combat"
-    },
-    ["STORE_PVP_TOOLTIP_TITLE"] = {
-        ruRU = "PVP Предмет",
-        enGB = "PVP Item"
-    },
     ["RAID"] = {
         ruRU = "Рейд",
         enGB = "Raid"
-    },
-    ["STORE_BONUS_COIN_LABEL"] = {
-        ruRU = "Внутриигровые бонусы",
-        enGB = "In-game bonuses"
-    },
-    ["STORE_SERVICE_POPUP_TEXT"] = {
-        ruRU = "Вы активировали услугу \"%s\"\nЧтобы использовать её сейчас, выйдите в меню выбора персонажа.",
-        enGB = "You have activated the service \"%s\"\nPlease, log out to the character list menu in order to apply the changes"
-    },
-    ["LFD_RANDOM_REWARD_EXPLANATION2"] = {
-        ruRU = "Каждое последующее подземелье, которые вы проходите в течение дня, приносит:",
-        enGB = "Random dungeons which you complete subsequent to the first each day will earn you:"
-    },
-    ["STORE_PREMIUM_STATUS_LABEL"] = {
-        ruRU = "Премиум статус",
-        enGB = "Premium status"
     },
     ["AURA_END"] = {
         ruRU = "<%s> рассеивается",
         enGB = "<%s> fades"
     },
-    ["STORE_BUY"] = {
-        ruRU = "Купить",
-        enGB = "Buy"
-    },
     ["OPTION_TOOLTIP_WATER_COLLISION"] = {
         ruRU = "Расположение камеры над водой, если персонаж находится на поверхности воды, и под водой, если он ныряет.",
         enGB = "Set the camera to be above water when your character is above water, and below water when your character is below water."
-    },
-    ["STORE_BUY_ITEM_ERROR_3"] = {
-        ruRU = "Этот предмет недоступен игроку %s.",
-        enGB = "This item is unavailable for %s."
-    },
-    ["ERROR_LOYALTY_ALREADY_TAKEN"] = {
-        ruRU = "Вы уже забирали это вознаграждение за лояльность",
-        enGB = "You have already collected this loyalty reward"
     },
     ["EMOTE451_CMD2"] = {
         ruRU = "/sweat",
@@ -24394,17 +23102,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Призвать друга",
         enGB = "Summon Linked Friend"
     },
-    ["STORE_SPECIAL_OFFER_FREE_LABEL"] = {
-        ruRU = "БЕСПЛАТНО",
-        enGB = "FOR FREE"
-    },
     ["SOCIAL_BUTTON"] = {
         ruRU = "Общение",
         enGB = "Social"
-    },
-    ["STORE_SUBSCRIBE_BUY_3"] = {
-        ruRU = "Экстра на 30 дней (%d |4бонус:бонуса:бонусов;)",
-        enGB = "Extra for 30 days (%d |4bonus:bonuses:bonuses;)"
     },
     ["YELLOW_GEM"] = {
         ruRU = "желтый",
@@ -24430,14 +23130,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Перенестись в подземелье",
         enGB = "Teleport To Dungeon"
     },
-    ["STORE_SUBSCRIBE_BUY_2"] = {
-        ruRU = "Купить на 30 дней (%d |4бонус:бонуса:бонусов;)",
-        enGB = "Buy for 30 days (%d |4bonus:bonuses:bonuses;)"
-    },
-    ["STORE_SUBSCRIBE_BUY_1"] = {
-        ruRU = "Купить на 7 дней (%d |4бонус:бонуса:бонусов;)",
-        enGB = "Buy for 7 days (%d |4bonus:bonuses:bonuses;)"
-    },
     ["VEHICLE_LEAVE"] = {
         ruRU = "Уйти",
         enGB = "Leave"
@@ -24446,29 +23138,13 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/flirt",
         enGB = "/flirt"
     },
-    ["STORE_SUBSCRIBE_PROLONG_1"] = {
-        ruRU = "Продлить на 8 дней (%d |4бонус:бонуса:бонусов;)",
-        enGB = "Prolongate subscription for 8 days (%d |4bonus:bonuses:bonuses;)"
-    },
     ["EMOTE44_CMD3"] = {
         ruRU = "/ах",
         enGB = "/gasp"
     },
-    ["STORE_HEALER"] = {
-        ruRU = "Лекарь",
-        enGB = "Healer"
-    },
     ["NEWBIE_TOOLTIP_MINIMAPTOGGLE"] = {
         ruRU = "Отображение мини-карты.",
         enGB = "Toggle display of the minimap."
-    },
-    ["STORE_RANGED_FIGHTER"] = {
-        ruRU = "Боец дальнего боя",
-        enGB = "Ranged unit"
-    },
-    ["STORE_MELEE_FIGHTER"] = {
-        ruRU = "Боец ближнего боя",
-        enGB = "Melee unit"
     },
     ["EMBLEM_SYMBOL"] = {
         ruRU = "Герб",
@@ -24482,14 +23158,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Нет зарядов",
         enGB = "No charges"
     },
-    ["STORE_REFUND_PANELTY_LABEL"] = {
-        ruRU = "|cff7F7F7FШтраф |cff%s%d%%|r|r",
-        enGB = "|cff7F7F7FPenalty |cff%s%d%%|r|r"
-    },
-    ["STORE_EXTRA_SUBSCRIBE_BUY_DESCRIPTION"] = {
-        ruRU = "Вы приобретаете подписку на ежедневные экстра-%s.\nПредметы будут ежедневно поступать вам на внутри игровую почту в 12:00 и в 20:00.",
-        enGB = "You will get subscription to everyday extra-supplies %s.\nItems will be arriving to you everyday at 12:00 and 20:00."
-    },
     ["REQUEST_SIGNATURE"] = {
         ruRU = "Попросить подпись",
         enGB = "Request Signature"
@@ -24498,21 +23166,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Параметры рейда",
         enGB = "Raid Options"
     },
-    ["STORE_SUBSCRIBE_BUY_DESCRIPTION"] = {
-        ruRU = "Вы приобретаете подписку на ежедневные %s.\nПредметы будут ежедневно поступать вам на внутри игровую почту в 12:00.",
-        enGB = "You will get subscription to everyday supplies %s.\nItems will be arriving to you everyday at 12:00."
-    },
     ["ERR_ARENA_TEAM_INTERNAL"] = {
         ruRU = "Внутренняя ошибка команды арены",
         enGB = "Internal arena team error"
-    },
-    ["STORE_EXTRA_SUBSCRIBE_PROLONG_LABEL"] = {
-        ruRU = "Продление поставок возможно только после окончания экстра-поставок.",
-        enGB = "Supplies may be extended only after extra supplies have expired."
-    },
-    ["STORE_EXTRA_SUBSCRIBE_TOOLTIP"] = {
-        ruRU = "Улучшите ваши поставки, добавив ещё одно поступление в 20:00.",
-        enGB = "Improve your supplies by adding another delivery at 20:00."
     },
     ["DUNGEON_FLOOR_COTSTRATHOLME0"] = {
         ruRU = "Дорога в Стратхольм",
@@ -24526,18 +23182,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Ремонтирует",
         enGB = "Repairs"
     },
-    ["STORE_SUBSCRIBE_BUY_TIME"] = {
-        ruRU = "%s %d дней",
-        enGB = "%s for %d days"
-    },
-    ["STORE_STARTER_KIT_NAME"] = {
-        ruRU = "Стартовый комплект",
-        enGB = "Starter kit"
-    },
-    ["STORE_ERROR_FILL_FIELDS"] = {
-        ruRU = "Заполните все поля и попробуйте еще раз!",
-        enGB = "Fill all the fields and try again."
-    },
     ["COMBAT_GUILD_XP_GAIN"] = {
         ruRU = "Опыт гильдии",
         enGB = "Guild Experience"
@@ -24545,10 +23189,6 @@ local SIRUS_LOCALIZATION = {
     ["SOTRE_LOYAL_NEXT_LEVEL"] = {
         ruRU = "До следующего уровня: %s/%s",
         enGB = "To next level: %s/%s"
-    },
-    ["STORE_REFER_BANNER_DESC_3"] = {
-        ruRU = "Когда определенное количество ваших приглашенных друзей получат 5-ю категорию - вы сможете забрать потрясающие средства передвижения.",
-        enGB = "Once a specific number of your invited friends reach Category 5, you will be able to collect some awesome mounts."
     },
     ["DEMONHUNTER_HAVOC_DESC"] = {
         ruRU = "Мрачный мастер боевых клинков и разрушительной магии Скверны.",
@@ -24570,21 +23210,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Список взятых вами заданий. Одновременно вы можете выполнять не более 25 заданий.",
         enGB = "A list of all the active quests you currently have. You can have up to 25 active quests at one time."
     },
-    ["STORE_REFER_BANNER_TITLE_1"] = {
-        ruRU = "Зовите своих друзей",
-        enGB = "Invite your friends"
-    },
     ["GUILD_HELP_TEXT_LINE2"] = {
         ruRU = "/ginfo – получение кратких сведений о вашей гильдии",
         enGB = "'/ginfo' gives some basic information about your guild"
-    },
-    ["STORE_REFER_DETAILS"] = {
-        ruRU = "Подробнее",
-        enGB = "More Info"
-    },
-    ["STORE_REFER_INVITE"] = {
-        ruRU = "Пригласить",
-        enGB = "Invite"
     },
     ["BINDING_NAME_EXTRAACTIONBUTTON1"] = {
         ruRU = "Дополнительная кнопка действия 1",
@@ -24594,26 +23222,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Офицерские заметки",
         enGB = "Officer's Notes"
     },
-    ["STORE_REFER_INVITE_CODE"] = {
-        ruRU = "Ваш код приглашения %d",
-        enGB = "Your invite code %d"
-    },
-    ["STORE_CATEGORY_INFO_3"] = {
-        ruRU = "Повысить свой уровень лояльности Вы сможете двумя способами: голосованием за сервер в рейтинге онлайн-игр ММОТОР, а также посредством игрового пожертвования (доната).\n\nОтслеживать количество необходимых бонусных очков до следующего уровня Вы сможете по шкале лояльности, которая находится в «Панели управления» Вашей учетной записи и во внутриигровом «Магазине».\n\nПо всем интересующим вопросам обращайтесь к нам на форум, техническая поддержка оперативно решит любую Вашу проблему.\n\nПриятной игры! Побеждайте!",
-        enGB = "There are two ways to increase your loyalty level: vote for our us on MMOTOP or donate to the server.\n\nYou can check the required amount of bonuses needed to reach the next loyalty level in the «Control Panel» of your account and in the in-game shop.\n\nIf you have any questions, our support team will always help you.\n\nHave a good game! Be a winner!"
-    },
-    ["STORE_ITEM_FLAG_2"] = {
-        ruRU = "Рекомендуем",
-        enGB = "Recommended"
-    },
-    ["STORE_SERVICE_LABEL_3"] = {
-        ruRU = "Смена расы",
-        enGB = "Change race"
-    },
-	["STORE_SERVICE_LABEL_4"] = {
-		ruRU = "Смена знака Зодиака",
-		enGB = "Change zodiac sign"
-	},
     ["HUNTER_AGILITY_TOOLTIP"] = {
         ruRU = "Увеличивает силу атаки в ближнем и дальнем бою, а также повышает вероятность критического удара при использовании оружия.|nПовышает броню и вероятность уклонения.",
         enGB = "Increases attack power with both melee and ranged weapons, and improves chance to score a critical hit with all weapons.|nIncreases armor and chance to dodge attacks."
@@ -24625,26 +23233,6 @@ local SIRUS_LOCALIZATION = {
     ["TIMEMANAGER_24HOURMODE"] = {
         ruRU = "24 часа",
         enGB = "24 Hour Mode"
-    },
-    ["STORE_PREMIUM_PRICE_FORMAT"] = {
-        ruRU = "%d |4бонус:бонуса:бонусов;",
-        enGB = "%d |4bonus:bonuses:bonuses;"
-    },
-    ["STORE_PREMIUM_DISCOUNT_INFO_4"] = {
-        ruRU = "ЛУЧШАЯ ЦЕНА",
-        enGB = "BEST PRICE"
-    },
-    ["STORE_PREMIUM_DISCOUNT_INFO_3"] = {
-        ruRU = "Экономия 35%",
-        enGB = "Discount 35%"
-    },
-    ["STORE_PREMIUM_DISCOUNT_INFO_2"] = {
-        ruRU = "Экономия 18%",
-        enGB = "Discount 18%"
-    },
-    ["STORE_PREMIUM_BUY_4"] = {
-        ruRU = "Купить навсегда.",
-        enGB = "Buy for forever."
     },
     ["TUTORIAL28"] = {
         ruRU = "Плавание почти ничем не отличается от ходьбы, за исключением того, что при плавании вы можете всплывать или погружаться, нажимая |cffffd200правую кнопку мыши|r и глядя в ту сторону, куда хотите направиться.",
@@ -24658,10 +23246,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Доп. урон",
         enGB = "Bonus Damage"
     },
-    ["STORE_PREMIUM_BUY_3"] = {
-        ruRU = "Купить на 30 дней.",
-        enGB = "Buy for 30 days."
-    },
     ["PLAYERSTAT_DEFENSES"] = {
         ruRU = "Защита",
         enGB = "Defenses"
@@ -24669,10 +23253,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE4_CMD4"] = {
         ruRU = "/sorry",
         enGB = "/sorry"
-    },
-    ["STORE_PREMIUM_BUY_1"] = {
-        ruRU = "Купить на 48 часов.",
-        enGB = "Buy for 48 hours."
     },
     ["STARTING_PRICE"] = {
         ruRU = "Начальная цена",
@@ -24698,34 +23278,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Рыцарь-защитник",
         enGB = "Knight-Champion"
     },
-    ["STORE_CATEGORY_5"] = {
-        ruRU = "Категория",
-        enGB = "Category"
-    },
-    ["STORE_CATEGORY_3"] = {
-        ruRU = "Ездовые животные",
-        enGB = "Mounts"
-    },
-    ["STORE_CATEGORY_3_NEW"] = {
-        ruRU = "Коллекции",
-        enGB = "Collections"
-    },
-    ["STORE_SUB_CATEGORY_3_1"] = {
-        ruRU = "Транспорт",
-        enGB = "Mounts"
-    },
-    ["STORE_SUB_CATEGORY_3_2"] = {
-        ruRU = "Питомцы",
-        enGB = "Pets"
-    },
-    ["STORE_SUB_CATEGORY_3_3"] = {
-        ruRU = "Иллюзии",
-        enGB = "Illusions"
-    },
-    ["STORE_CATEGORY_1"] = {
-        ruRU = "Спец. предложения",
-        enGB = "Special offers"
-    },
     ["TRAINING"] = {
         ruRU = "ПОДГОТОВКА",
         enGB = "TRAINING"
@@ -24750,10 +23302,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Забрать",
         enGB = ""
     },
-    ["STORE_REFER_BUTTON_TOOLTIP_LABEL"] = {
-        ruRU = "Рефералы",
-        enGB = "Referrals"
-    },
     ["EMOTE395_CMD1"] = {
         ruRU = "/мигрень",
         enGB = "/headache"
@@ -24762,17 +23310,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Можно воскресить",
         enGB = "Resurrectable"
     },
-    ["STORE_COINS_BUTTON_TOOLTIP"] = {
-        ruRU = "Валюта, получаемая за турниры, розыгрыши и поддержку сервера.",
-        enGB = "Currency received for tournaments, lotteries, and supporting the server."
-    },
     ["TRANSFER_ABORT_INSUF_EXPAN_LVL1"] = {
         ruRU = "Необходимо установить The Burning Crusade, чтобы получить доступ к этой области.",
         enGB = "You must have The Burning Crusade expansion installed to access this area."
-    },
-    ["STORE_COINS_BUTTON_TOOLTIP_LABEL"] = {
-        ruRU = "Бонусы",
-        enGB = "Bonuses"
     },
     ["PVP_RANK_6_0"] = {
         ruRU = "Рубака",
@@ -25038,10 +23578,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Набор талантов, который вы хотите просмотреть, доступен только для класса %s.",
         enGB = "The talent set you want to view is only available for the %s class."
     },
-    ["STORE_WAIT_SERVER_RESPONSE"] = {
-        ruRU = "Ожидание ответа от сервера",
-        enGB = "Waiting for a response from the server"
-    },
     ["PLAYER_TALENT_LEARN_PREVIEW_TEXT_PAY"] = {
         ruRU = "Вы можете сделать это прямо сейчас за",
         enGB = "You can do this right now for"
@@ -25218,29 +23754,12 @@ local SIRUS_LOCALIZATION = {
         ruRU = "1 (Плохо)",
         enGB = "1 (Poor)"
     },
-    ["HELPBOX_VIP_PROFFESION"] = {
-        ruRU = "По достижении VIP статуса, можно иметь 4 профессии.",
-        enGB = "Once you acquire VIP status, you can have 4 professions."
-    },
-    ["VIP_STATUS_6"] = {
-        ruRU = "Elite VIP Gold",
-        enGB = "Elite VIP Gold"
-    },
-    ["VIP_STATUS_5"] = {
-        ruRU = "Elite VIP Silver",
-        enGB = "Elite VIP Silver"
-    },
-    ["VIP_STATUS_4"] = {
-        ruRU = "Elite VIP Bronze",
-        enGB = "Elite VIP Bronze"
-    },
+	["HELPBOX_VIP_PROFFESION"] = {
+		ruRU = "При достижении VIP статуса, можно иметь 4 основных профессии.",
+	},
     ["DUNGEON_DIFFICULTY_5PLAYER_HEROIC"] = {
         ruRU = "5 игроков (героич.)",
         enGB = "5 Player (Heroic)"
-    },
-    ["VIP_STATUS_3"] = {
-        ruRU = "VIP Gold",
-        enGB = "VIP Gold"
     },
     ["MINECART3"] = {
         ruRU = "Вагонетка 3",
@@ -25254,17 +23773,9 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Ошибки сценариев Lua",
         enGB = "Display Lua Errors"
     },
-    ["PVPHONORFRAME_TUTORIAL_3"] = {
-        ruRU = "За первые 3 победы в день вы получите дополнительно %d ед. очков чести.\nДанные очки чести не учитываются в недельный лимит и начисляются сверх него.",
-        enGB = "For the first 3 wins each day, you'll get %d additional Honor Points.\nThese Honor Points are not counted towards the weekly limit and are awarded in addition to it."
-    },
     ["FORMATED_HOURS"] = {
         ruRU = "%d ч.",
         enGB = "%d |4Hour:Hours;"
-    },
-    ["CONQUESTFRAME_TUTORIAL_3"] = {
-        ruRU = "За первые 5 побед в день вы получите дополнительно %d ед. очков арены.\nДанные очки арены не учитываются в недельный лимит и начисляются сверх него.",
-        enGB = "For the first 5 wins each day, you'll get %d additional Arena Points.\nThese Arena Points are not counted towards the weekly limit and are awarded in addition to it."
     },
     ["BUTTON_LAG_LOOT_TOOLTIP"] = {
         ruRU = "Задержка получения добычи",
@@ -25421,10 +23932,6 @@ local SIRUS_LOCALIZATION = {
     ["GARRISON_TIER"] = {
         ruRU = "Уровень",
         enGB = "Tier"
-    },
-    ["RATED_BATTLEGROUND_TUTORIAL_5"] = {
-        ruRU = "Быстрее в бой. Если вы идете группой - возьмите с собой целителя!\n\n|cffFF0000Внимание. Дезертирство жестоко наказывается. Срок наказания увеличивается каждый  раз и может достигнуть недели!|r\nКаждую неделю у вас снимается одно очко наказаний.",
-        enGB = "Leap into action. If you're in a group, take a healer with you!\n\n|cffFF0000Attention. There are strict penalties for deserting. The penalty period will increase each time and be up to one week!|r\nOne penalty point will be lifted from you each week."
     },
     ["ERR_BADATTACKPOS"] = {
         ruRU = "Вы слишком далеко!",
@@ -25818,10 +24325,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Отображение текста заданий полностью без задержки.",
         enGB = "Check this to make quest text appear instantly."
     },
-    ["STORE_MAIL_STYLE"] = {
-        ruRU = "Стиль письма",
-        enGB = "Mail style"
-    },
     ["STRING_SCHOOL_HOLY"] = {
         ruRU = "Свет",
         enGB = "Holy"
@@ -25886,10 +24389,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы невидимы и не можете начать дуэль.",
         enGB = "You can't start a duel while invisible"
     },
-    ["STORE_MMOTOP_BUTTON_TOOLTIP_LABEL"] = {
-        ruRU = "Голосование",
-        enGB = "Vote"
-    },
     ["VOICEMACRO_4_Hu_0"] = {
         ruRU = "Прикройте меня!",
         enGB = "Aid my attack!"
@@ -25906,10 +24405,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Выберите себе награду:",
         enGB = "Choose your reward:"
     },
-    ["STORE_BUY_ITEM_ERROR_1"] = {
-        ruRU = "Получатель не найден.",
-        enGB = "User not found"
-    },
     ["VOICEMACRO_0_Sc_1"] = {
         ruRU = "Нужна помощь!",
         enGB = "Help me!"
@@ -25917,10 +24412,6 @@ local SIRUS_LOCALIZATION = {
     ["RGB_RANK_9_ALLIANCE"] = {
         ruRU = "Рыцарь-защитник",
         enGB = "Knight-Champion"
-    },
-    ["OPTION_TOOLTIP_AUTO_DISMOUNT_FLYING"] = {
-        ruRU = "Автоматическое спешивание при применении заклинания.",
-        enGB = "If enabled, your character will automatically dismount before casting while flying."
     },
     ["UNITNAME_SUMMON_TITLE5"] = {
         ruRU = "Спутник |3-1(%s)",
@@ -26398,10 +24889,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Подземелье: %s",
         enGB = "Queued for %s"
     },
-    ["STORE_TOTAL_LABEL"] = {
-        ruRU = "Всего",
-        enGB = "Total"
-    },
     ["ACTION_SPELL_AURA_REMOVED_BUFF_FULL_TEXT"] = {
         ruRU = "Действие эффекта \"%2$s\", наложенного |3-4(%1$s) на |3-3(%4$s), заканчивается.",
         enGB = "%1$s %2$s fades from %4$s."
@@ -26850,10 +25337,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Атакуем здесь!",
         enGB = "Attack over here!"
     },
-    ["ITEM_REQ_ARENA_RATING_5V5"] = {
-        ruRU = "Требуется личный рейтинг и рейтинг команды Арены %d|nв команде 5 на 5",
-        enGB = "Requires personal and team arena rating of %d|nin 5v5 brackets"
-    },
     ["ERR_INITIATE_TRADE_S"] = {
         ruRU = "Вы предложили |3-2(%s) обмен.",
         enGB = "You have requested to trade with %s."
@@ -26861,10 +25344,6 @@ local SIRUS_LOCALIZATION = {
     ["COMBATLOG_HIGHLIGHT_KILL"] = {
         ruRU = "Убийства",
         enGB = "Kill"
-    },
-    ["INVTYPE_RANGEDRIGHT"] = {
-        ruRU = "Оружие дальнего боя",
-        enGB = "Ranged"
     },
     ["VOICEMACRO_4_Ni_0"] = {
         ruRU = "Бейте моего противника!",
@@ -27081,10 +25560,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_FRIEND_OFFLINE_S"] = {
         ruRU = "%s выходит из игрового мира.",
         enGB = "%s has gone offline."
-    },
-    ["INVTYPE_AMMO"] = {
-        ruRU = "Боеприпасы",
-        enGB = "Ammo"
     },
     ["REPLY_MESSAGE"] = {
         ruRU = "Ответить",
@@ -27402,10 +25877,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Неизвестная единица.",
         enGB = "Unknown unit."
     },
-    ["STORE_REFUND_ITEM_DESCRIPTION"] = {
-        ruRU = "Куплено %s. Можно вернуть еще %s",
-        enGB = "Bought %s. You can refund %s"
-    },
     ["BLIZZARD_COMBAT_LOG_MENU_OUTGOING"] = {
         ruRU = "Действия |3-1(%s)",
         enGB = "What did %s do?"
@@ -27501,10 +25972,6 @@ local SIRUS_LOCALIZATION = {
     ["ERROR_SLASH_EQUIP_TO_SLOT"] = {
         ruRU = "Правильный формат: /надеть x [название предмета], где x – место для предмета, который может быть частью экипировки в диапазоне от %d до %d.",
         enGB = "Appropriate format is /equipslot x [item name] where x is an equippable item slot in the range %d to %d."
-    },
-    ["STORE_TRANSMOGRIFY_FILTER_PVP_REWARD"] = {
-        ruRU = "PVP",
-        enGB = "PVP"
     },
     ["ALREADY_LEARNED"] = {
         ruRU = "Уже изучено",
@@ -27626,10 +26093,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вне зоны действия.",
         enGB = "Out of range"
     },
-    ["STORE_TRANSMOGRIFY_FILTER_QUEST_REWARD"] = {
-        ruRU = "Награда за задание",
-        enGB = "Quest reward"
-    },
     ["LOCATION_COLON"] = {
         ruRU = "Местность:",
         enGB = "Location:"
@@ -27705,10 +26168,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_17_Ta_2"] = {
         ruRU = "Мы же союзники!",
         enGB = "Anything for an ally."
-    },
-    ["PVPFRAME_CURRENCY_REWARD_TOOLTIP_HEAD_CONQUEST"] = {
-        ruRU = "Награда за победу",
-        enGB = "Reward for win"
     },
     ["VOICEMACRO_19_Hu_4"] = {
         ruRU = "Вы, наверное, в прачечной работаете? Весь день мне мозги полощете!",
@@ -27905,10 +26364,6 @@ local SIRUS_LOCALIZATION = {
     ["MOVE_TO_CONVERSATION_WINDOW"] = {
         ruRU = "Переместить в окно разговора",
         enGB = "Move to Conversation Window"
-    },
-    ["INVTYPE_TABARD"] = {
-        ruRU = "Гербовая накидка",
-        enGB = "Tabard"
     },
     ["BROWSE"] = {
         ruRU = "Просмотр",
@@ -28647,8 +27102,12 @@ local SIRUS_LOCALIZATION = {
         enGB = "drained"
     },
     ["CONFIRM_LEAVE_BATTLEFIELD"] = {
-        ruRU = "Покинуть поле боя?\n\n|cffFF0000Если вы покините поле боя сейчас, вы получите штраф на|r %s",
+        ruRU = "Покинуть поле боя?\n\n|cffFF0000Если вы покинете поле боя сейчас, вы получите штраф на|r %s",
         enGB = "Leave battleground?\n\n|cffFF0000If you leave the battleground now, you will get the Deserter debuff for |r %s"
+    },
+    ["CONFIRM_LEAVE_BRAWL"] = {
+        ruRU = "Покинуть потасовку?\n\n|cffFF0000Если вы покинете потасовку сейчас, то вы получите штраф на|r %s",
+        enGB = ""
     },
     ["EMOTE399_CMD2"] = {
         ruRU = "/holdhand",
@@ -29286,10 +27745,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Эй, привет!",
         enGB = "Hi, there."
     },
-    ["INVTYPE_WEAPONOFFHAND"] = {
-        ruRU = "Левая рука",
-        enGB = "Off Hand"
-    },
     ["PLAYER_COUNT_ALLIANCE"] = {
         ruRU = "%d |4игрок Альянса:игрока Альянса:игроков Альянса;",
         enGB = "%d Alliance |4Player:Players;"
@@ -29746,10 +28201,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Похищение",
         enGB = "stole"
     },
-    ["STORE_WINDOW_TITLE"] = {
-        ruRU = "Sirus Store - Игровой Магазин",
-        enGB = "Sirus Store - In-game Shop"
-    },
     ["INSTANCE_UNAVAILABLE_SELF_RAID_LOCKED"] = {
         ruRU = "За вами уже сохранена копия этого подземелья.",
         enGB = "You are already locked to this instance."
@@ -29785,10 +28236,6 @@ local SIRUS_LOCALIZATION = {
     ["ERR_GUILD_FOUNDER_S"] = {
         ruRU = "Поздравляем! Вы основали гильдию \"%s\"!",
         enGB = "Congratulations, you are a founding member of %s!"
-    },
-    ["STORE_CATEGORY_7"] = {
-        ruRU = "Сервисы",
-        enGB = "Services"
     },
     ["ERR_QUEST_PUSH_DECLINED_S"] = {
         ruRU = "%s отказывается от вашего задания",
@@ -29965,10 +28412,6 @@ local SIRUS_LOCALIZATION = {
     ["EMOTE410_CMD2"] = {
         ruRU = "/pet",
         enGB = "/pet"
-    },
-    ["STORE_REFUND_ERROR_PERFORM_ANOTHER_OPERATION"] = {
-        ruRU = "Выполняется другая операция.",
-        enGB = "Performing another operation right now."
     },
     ["RAID_DIFFICULTY1"] = {
         ruRU = "10 игроков",
@@ -30293,10 +28736,6 @@ local SIRUS_LOCALIZATION = {
     ["DONE_BY"] = {
         ruRU = "Источник:",
         enGB = "Done By:"
-    },
-    ["INVTYPE_FINGER"] = {
-        ruRU = "Палец",
-        enGB = "Finger"
     },
     ["CANT_USE_ITEM"] = {
         ruRU = "Вы не можете использовать этот предмет.",
@@ -30738,10 +29177,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "По правилам очередности все члены группы в порядке очереди получают доступ к добыче. Деньги автоматически распределяются между всеми членами группы.",
         enGB = "Under round-robin rules, group members take turns looting the monsters that they help the group to kill. Money is automatically divided between group members."
     },
-    ["RATED_BATTLEGROUND_TUTORIAL_2"] = {
-        ruRU = "Зарабатывайте рейтинг, сражаясь с соперниками на полях боя. Чем выше ваша эффективность на поле боя, тем больше рейтинга вы получаете и тем меньше теряете.",
-        enGB = "Earn rating by fighting your opponents in battlegrounds. The more efficient you are in battlegrounds, the more rating you get and the less you lose."
-    },
     ["TUTORIAL_TITLE40"] = {
         ruRU = "Заклинания и способности",
         enGB = "The Spellbook"
@@ -30897,10 +29332,6 @@ local SIRUS_LOCALIZATION = {
     ["ACTION_SPELL_MISSED_MISS_FULL_TEXT_NO_SOURCE"] = {
         ruRU = "%2$s\" не попадает по |3-2(%4$s).",
         enGB = "%2$s misses %4$s."
-    },
-    ["STORE_SUBSCRIBE_PROLONG_2"] = {
-        ruRU = "Продлить на 33 дня (%d |4бонус:бонуса:бонусов;)",
-        enGB = "Renew the subscription for 33 days (%d |4bonus:bonuses:bonuses;)"
     },
     ["BUILDING_HEAL_COMBATLOG_TOOLTIP"] = {
         ruRU = "Показывать сообщения о ремонте здания при помощи заклинания или способности.",
@@ -31187,7 +29618,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "Skill points are used to learn specialized skills\nat various trainers throughout the world."
     },
     ["AUTO_JOIN_GUILD_CHANNEL"] = {
-        ruRU = "Автовход в канал \"Набор в гильдию",
+        ruRU = "Автовход в канал \"Набор в гильдию\"",
         enGB = "Auto Join Guild Recruitment Channel"
     },
     ["SLASH_ACHIEVEMENTUI5"] = {
@@ -31389,10 +29820,6 @@ local SIRUS_LOCALIZATION = {
     ["CONFIRM_GUILD_DISBAND"] = {
         ruRU = "Вы действительно хотите распустить свою гильдию?",
         enGB = "Do you really want to disband your guild?"
-    },
-    ["LOOT_ITEM_MULTIPLE"] = {
-        ruRU = "%s получает добычу: %sx%d.",
-        enGB = "%s receives loot: %sx%d."
     },
     ["TRAINER_COOLDOWN_TIME_MIN"] = {
         ruRU = "Восстановление: |cffffffff%d мин.|r",
@@ -31686,10 +30113,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Черный список",
         enGB = "Ignore"
     },
-    ["INVTYPE_HAND"] = {
-        ruRU = "Кисти рук",
-        enGB = "Hands"
-    },
     ["VICTORY_TEXT0"] = {
         ruRU = "Орда побеждает",
         enGB = "Horde Wins"
@@ -31882,10 +30305,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Связка ключей",
         enGB = "Toggle Keyring"
     },
-    ["STORE_SPECIAL_OFFER_POPUP_LESS_THAN_HOUR"] = {
-        ruRU = "Спец. предложение \"%s\" заканчивается в течение часа",
-        enGB = "Special offer \"%s\" expires in next hour"
-    },
     ["VOICEMACRO_0_Or_0_FEMALE"] = {
         ruRU = "Нужна помощь!",
         enGB = "I need help!"
@@ -32017,10 +30436,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_7_Hu_1"] = {
         ruRU = "Ждите здесь.",
         enGB = "Stay here."
-    },
-    ["STORE_DRESSUP_TITLE"] = {
-        ruRU = "Предварительный просмотр",
-        enGB = "Preview"
     },
     ["VERTEX_ANIMATION_SHADERS"] = {
         ruRU = "Анимация вершинных шейдеров",
@@ -32162,10 +30577,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "С помощью этих настроек вы можете изменить настройки звука.",
         enGB = "These options control sound hardware and input settings for the voice chat system."
     },
-    ["LOOT_ITEM_CREATED_SELF"] = {
-        ruRU = "Вы создаете: %s.",
-        enGB = "You create: %s."
-    },
     ["SLASH_HELP5"] = {
         ruRU = "/h",
         enGB = "/h"
@@ -32185,10 +30596,6 @@ local SIRUS_LOCALIZATION = {
     ["MORE_REAGENTS"] = {
         ruRU = "Другие реагенты",
         enGB = "More Reagents"
-    },
-    ["STORE_CATEGORY_6"] = {
-        ruRU = "Профессии",
-        enGB = "Professions"
     },
     ["ERR_SHAPESHIFT_FORM_CANNOT_EQUIP"] = {
         ruRU = "Нельзя экипироваться предметом в этом облике.",
@@ -33110,10 +31517,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/reload",
         enGB = "/reload"
     },
-    ["STORE_PREMIUM_CHOOSE_DURATION"] = {
-        ruRU = "Выберите длительность",
-        enGB = "Choose the duration"
-    },
     ["SLASH_REMOVEFRIEND2"] = {
         ruRU = "/удлдруга",
         enGB = "/remfriend"
@@ -33392,7 +31795,7 @@ local SIRUS_LOCALIZATION = {
     },
     ["ITEM_MIN_LEVEL"] = {
         ruRU = "Требуется уровень: %d",
-        enGB = "Requires Level %d\nHONOR_RANK_REQ_LABEL"
+        enGB = "Requires Level %d"
     },
     ["ACTION_SPELL_PERIODIC_ENERGIZE_FULL_TEXT_NO_SOURCE"] = {
         ruRU = "%4$s получает %9$s |4единицу:единицы:единиц; |3-1(%8$s) от заклинания \"%2$s\".",
@@ -33586,10 +31989,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "%4$s уклоняется от заклинания \"%2$s\".",
         enGB = "%2$s was dodged by %4$s."
     },
-    ["STORE_BUY_PREMIUM_ERROR_1"] = {
-        ruRU = "Недостаточно средств для покупки.",
-        enGB = "Not enought funds to buy."
-    },
     ["SPELL_FAILED_INTERRUPTED"] = {
         ruRU = "Прервано",
         enGB = "Interrupted"
@@ -33673,10 +32072,6 @@ local SIRUS_LOCALIZATION = {
     ["SPELL_REQUIRED_FORM"] = {
         ruRU = "Требуется: %s",
         enGB = "Requires %s"
-    },
-    ["INVTYPE_CHEST"] = {
-        ruRU = "Грудь",
-        enGB = "Chest"
     },
     ["PHYSICAL_HARASSMENT_TEXT2"] = {
         ruRU = "Нападение на монстра или NPC, с которым уже сражается другой игрок",
@@ -33842,10 +32237,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Упакованные предметы нельзя хранить в банке гильдии.",
         enGB = "You cannot store wrapped items in the guild bank"
     },
-    ["STORE_PREMIUM_BUY_2"] = {
-        ruRU = "Купить на 7 дней.",
-        enGB = "Buy for 7 days."
-    },
     ["TRACKER_SORT_MANUAL_TOP"] = {
         ruRU = "Наверх",
         enGB = "Move to Top"
@@ -33853,10 +32244,6 @@ local SIRUS_LOCALIZATION = {
     ["SLASH_YELL3"] = {
         ruRU = "/кр",
         enGB = "/sh"
-    },
-    ["INVTYPE_BODY"] = {
-        ruRU = "Рубашка",
-        enGB = "Shirt"
     },
     ["VOICEMACRO_2_Ni_0_FEMALE"] = {
         ruRU = "За Элуну!",
@@ -34378,10 +32765,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "%d |4руна:руны:рун; нечестивости",
         enGB = "%d Unholy"
     },
-    ["ITEM_REQ_ARENA_RATING"] = {
-        ruRU = "Требуется рейтинг на арене 2на2 или SoloQ (не 1на1) не ниже %d",
-        enGB = "Requires arena rating of %d"
-    },
     ["ENCHANT_AURA_COMBATLOG_TOOLTIP"] = {
         ruRU = "Отображение сообщений о наложении и снятии чар, связанных с оружием.",
         enGB = "Show when a weapon enchantment is gained or removed."
@@ -34521,10 +32904,6 @@ local SIRUS_LOCALIZATION = {
     ["INBOX_TOO_MUCH_MAIL_TOOLTIP"] = {
         ruRU = "Отображаются не все письма.|nУдалите часть писем, чтобы освободить место.",
         enGB = "Not all of your mail can be displayed.|nPlease delete some mail to make room."
-    },
-    ["INVTYPE_SHIELD"] = {
-        ruRU = "Левая рука",
-        enGB = "Off Hand"
     },
     ["SLASH_EVENTTRACE1"] = {
         ruRU = "/отслежсобыт",
@@ -35506,6 +33885,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Требуется 65 уровень",
         enGB = "Requires level 65"
     },
+	["SPELL_FAILED_CUSTOM_ERROR_91"] = {
+		ruRU = "Требуется 70 уровень",
+		enGB = "Requires level 70"
+	},
     ["EMOTE126_CMD2"] = {
         ruRU = "/ямогу",
         enGB = "/volunteer"
@@ -35513,10 +33896,6 @@ local SIRUS_LOCALIZATION = {
     ["STRENGTH_COLON"] = {
         ruRU = "Сила:",
         enGB = "Strength:"
-    },
-    ["LFG_CHANNEL_NAME_ALLIANCE"] = {
-        ruRU = "ПоискСпутниковА",
-        enGB = "LookingForGroupA"
     },
     ["ERR_PURCHASE_LEVEL_TOO_LOW"] = {
         ruRU = "Для покупки этого предмета требуется %d уровень.",
@@ -35786,10 +34165,38 @@ local SIRUS_LOCALIZATION = {
         ruRU = "%s игнорирует вас.",
         enGB = "%s is ignoring you."
     },
-    ["LOOT_ITEM_CREATED_SELF_MULTIPLE"] = {
-        ruRU = "Вы создаете: %sx%d.",
-        enGB = "You create: %sx%d."
-    },
+	["LOOT_ITEM_SELF"] = {
+		ruRU = "Ваша добыча: %s.",
+		enGB = "You receive loot: %s."
+	},
+	["LOOT_ITEM_SELF_MULTIPLE"] = {
+		ruRU = "Ваша добыча: %sx%d.",
+		enGB = "You receive loot: %sx%d."
+	},
+	["LOOT_ITEM_PUSHED_SELF"] = {
+		ruRU = "Вы получаете предмет: %s.",
+		enGB = "You receive item: %s."
+	},
+	["LOOT_ITEM_PUSHED_SELF_MULTIPLE"] = {
+		ruRU = "Вы получаете предмет: %sx%d.",
+		enGB = "You receive item: %sx%d."
+	},
+	["LOOT_ITEM_CREATED_SELF"] = {
+		ruRU = "Вы создаете: %s.",
+		enGB = "You create: %s."
+	},
+	["LOOT_ITEM_CREATED_SELF_MULTIPLE"] = {
+		ruRU = "Вы создаете: %sx%d.",
+		enGB = "You create: %sx%d."
+	},
+	["LOOT_ITEM_MULTIPLE"] = {
+		ruRU = "%s получает добычу: %sx%d.",
+		enGB = "%s receives loot: %sx%d."
+	},
+	["LOOT_ITEM"] = {
+		ruRU = "%s получает добычу: %s.",
+		enGB = "%s receives loot: %s."
+	},
     ["SLASH_CLEARFOCUS2"] = {
         ruRU = "/сбросфокуса",
         enGB = "/clearfocus"
@@ -35974,10 +34381,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Выход из застревания",
         enGB = "Stuck"
     },
-    ["STORE_TRANSMOGRIFY_TUTORIAL_2"] = {
-        ruRU = "Здесь отображаются все предметы, входящие в выбранный комплект.\n\nНажатие на какой-то конкретный предмет позволит купить его отдельно от всего комплекта. Повторное нажатие позволит вновь купить весь комплект целиком.\n\n|cff00ccffClick для выбора конкретного предмета.\nCtrl+Click для предпросмотра.\nShift+Click для отправки ссылки на предмет в чат.|r",
-        enGB = "This displays all items as part of the selected set.\n\nClicking on a particular item will allow you to buy it separately from the whole set. Clicking again will allow you to buy the whole set.\n\n|cff00ccffClick to select a specific item.\nCtrl+Click to preview.\nShift+Click to link the item in chat.|r"
-    },
     ["OPTION_TOOLTIP_VOICE_SOUND"] = {
         ruRU = "Регулировка громкости звука в игре во время голосового общения.",
         enGB = "Adjusts the game sound volume during voice chat."
@@ -36073,10 +34476,6 @@ local SIRUS_LOCALIZATION = {
     ["BINDING_NAME_ITUNES_VOLUMEDOWN"] = {
         ruRU = "iTunes: понизить громкость",
         enGB = "iTunes Volume Down"
-    },
-    ["STORE_RANGED"] = {
-        ruRU = "Дальний",
-        enGB = "Ranged"
     },
     ["BINDING_NAME_MULTIACTIONBAR2BUTTON4"] = {
         ruRU = "Кнопка действия 4 (справа внизу)",
@@ -36439,7 +34838,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "You are already in an arena team of that size."
     },
     ["NOSEASON_INFO_TEXT"] = {
-        ruRU = "Битвы на аренах и рейтинговых полях боя доступны только во время PvP-сезонов. Новый сезон скоро начнется!\n\nВы можете закрыть это окно и продолжить играть арену как и раньше, но у вас не будет меняться статистика и рейтинг",
+        ruRU = "Битвы на аренах и полях боя с начислением рейтинга доступны только во время PVP-сезонов. Новый сезон скоро начнётся!\n\nВы можете закрыть это окно и продолжить играть арену и поля боя как и раньше, но у вас не будет меняться статистика и рейтинг.",
         enGB = "Arena battles and Rated Battlegrounds are only available during an active PvP season. The next season will start soon!"
     },
     ["ACTION_ENCHANT_APPLIED_FULL_TEXT"] = {
@@ -36778,10 +35177,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/ррр",
         enGB = "/rawr"
     },
-    ["TOOLTIP_UNIT_LEVEL_ILEVEL_LOADING_LABEL"] = {
-        ruRU = "Загрузка...",
-        enGB = "Loading..."
-    },
     ["VOICEMACRO_3_Gn_2_FEMALE"] = {
         ruRU = "Отходим!",
         enGB = "Retreat!"
@@ -36846,10 +35241,26 @@ local SIRUS_LOCALIZATION = {
         ruRU = "1",
         enGB = "1"
     },
-    ["ITEM_REQ_ARENA_RATING_3V3"] = {
-        ruRU = "Требуется рейтинг службы %d",
-        enGB = "Requires service rating %d"
-    },
+	["ITEM_REQ_ARENA_RATING"] = {
+		ruRU = "Требуется рейтинг на арене 2на2 или SoloQ (не 1на1) не ниже %d",
+		enGB = "Requires arena rating of %d"
+	},
+	["ITEM_REQ_ARENA_RATING_PATTERN"] = {
+		ruRU = "Требуется рейтинг на арене 2на2 или SoloQ %(не 1на1%) не ниже (%d+)",
+		enGB = "Requires arena rating of (%d+)"
+	},
+	["ITEM_REQ_ARENA_RATING_3V3"] = {
+		ruRU = "Требуется рейтинг службы %d",
+		enGB = "Requires service rating %d"
+	},
+	["ITEM_REQ_ARENA_RATING_3V3_PATTERN"] = {
+		ruRU = "Требуется рейтинг службы (%d+)",
+		enGB = "Requires service rating (%d+)"
+	},
+	["ITEM_REQ_ARENA_RATING_5V5"] = {
+		ruRU = "Требуется личный рейтинг и рейтинг команды Арены %d|nв команде 5 на 5",
+		enGB = "Requires personal and team arena rating of %d|nin 5v5 brackets"
+	},
     ["COPPER_AMOUNT_SYMBOL"] = {
         ruRU = "м",
         enGB = "c"
@@ -37065,10 +35476,6 @@ local SIRUS_LOCALIZATION = {
     ["EXAMPLE_TARGET_MONSTER"] = {
         ruRU = "Монстр",
         enGB = "Monster"
-    },
-    ["UNKNOWN"] = {
-        ruRU = "Неизвестно",
-        enGB = "Unknown"
     },
     ["SLASH_TARGET_LAST_TARGET2"] = {
         ruRU = "/цельпослцель",
@@ -37531,7 +35938,7 @@ local SIRUS_LOCALIZATION = {
         enGB = "Chaos"
     },
 	["STRING_SCHOOL_SPIRITFIRE"] = {
-		ruRU = "Призрачный огонь",
+		ruRU = "урона от призрачного огня",
 		enGB = "Spiritfire"
 	},
     ["ERR_PET_SPELL_TARGETS_DEAD"] = {
@@ -37561,10 +35968,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_12_Gn_3"] = {
         ruRU = "Эй, привет!",
         enGB = "Hi, there."
-    },
-    ["INVTYPE_BAG"] = {
-        ruRU = "Сумка",
-        enGB = "Bag"
     },
     ["VOICEMACRO_12_Hu_0_FEMALE"] = {
         ruRU = "Привет!",
@@ -37846,10 +36249,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Мы еще увидимся!",
         enGB = "Catch you later."
     },
-    ["STORE_TO_END"] = {
-        ruRU = "До окончания",
-        enGB = "Left"
-    },
     ["ITEM_BIND_ON_EQUIP"] = {
         ruRU = "Становится персональным при надевании",
         enGB = "Binds when equipped"
@@ -37918,6 +36317,10 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Бой завершен. До закрытия поля боя %s",
         enGB = "The battle has ended. This battleground will close in %s"
     },
+	["BRAWL_COMPLETE_MESSAGE"] = {
+		ruRU = "Бой завершен. До закрытия потасовки %s",
+		enGB = "The battle has ended. This brawl will close in %s"
+	},
     ["SLASH_DUEL_CANCEL1"] = {
         ruRU = "/поражение",
         enGB = "/yield"
@@ -38049,10 +36452,6 @@ local SIRUS_LOCALIZATION = {
     ["VOICEMACRO_14_Sc_2_FEMALE"] = {
         ruRU = "Думаю, да.",
         enGB = "I suppose so."
-    },
-    ["INVTYPE_FEET"] = {
-        ruRU = "Ступни",
-        enGB = "Feet"
     },
     ["KEYBINDINGFRAME_MOUSEWHEEL_ERROR"] = {
         ruRU = "Колесико прокрутки не может быть назначено для выполнения действий типа включено/выключено.",
@@ -38758,10 +37157,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "/chatexit",
         enGB = "/chatexit"
     },
-    ["STORE_EXTRA_SUBSCRIBE_PROLONG_1"] = {
-        ruRU = "Продлить на %d |4день:дня:дней;",
-        enGB = "Prolong for %d |4day:days;"
-    },
     ["MAINMENUBAR_FPS_LABEL"] = {
         ruRU = "Частота смены кадров: %.0f кадров в сек.",
         enGB = "Framerate: %.0f fps"
@@ -38966,10 +37361,22 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Приглашение заблокировано",
         enGB = "Blocked Invite"
     },
-    ["TOOLTIP_UNIT_LEVEL_RACE_CLASS_TYPE"] = {
-        ruRU = "%2$s, |3-6(%3$s) %1$s-го уровня (%4$s)\nУровень предметов: Загрузка...",
-        enGB = "Level %s %s %s (%s)\nItem level: Loading..."
-    },
+	["TOOLTIP_UNIT_LEVEL_RACE_CLASS_TYPE"] = {
+		ruRU = "%2$s, |3-6(%3$s) %1$s-го уровня (%4$s)\nЗнак зодиака: Загрузка...\nУровень предметов: Загрузка...",
+		enGB = "Level %s %s %s (%s)\nZodiac Sign: Loading\nItem level: Loading..."
+	},
+	["TOOLTIP_UNIT_ITEM_LEVEL_LABEL"] = {
+		ruRU = "(Уровень предметов): Загрузка...",
+		enGB = "(Item level): Loading..."
+	},
+	["TOOLTIP_UNIT_ZODIAC_LABEL"] = {
+		ruRU = "(Знак зодиака): Загрузка...",
+		enGB = "(Zodiac Sign): Loading..."
+	},
+	["LOADING_LABEL"] = {
+		ruRU = "Загрузка...",
+		enGB = "Loading..."
+	},
     ["VOICEMACRO_18_Gn_3_FEMALE"] = {
         ruRU = "Чудесно.",
         enGB = "Wonderful."
@@ -39262,10 +37669,6 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Нужна помощь!",
         enGB = "I need help!"
     },
-    ["LFD_HOLIDAY_REWARD_EXPLANATION2"] = {
-        ruRU = "Каждая последующая победа, которую вы одерживаете в течения дня, приносит:",
-        enGB = "Each victory subsequent to the first each day will earn you:"
-    },
     ["ZHTW"] = {
         ruRU = "Китайский традиционный",
         enGB = "Traditional Chinese"
@@ -39506,13 +37909,12 @@ local SIRUS_LOCALIZATION = {
         ruRU = "Вы не можете занять эту очередь.",
         enGB = "You may not queue for this."
     },
+	["LFD_DUNGEON_RANDOM_TOOLTIP_HEADER"] = {
+		ruRU = "Доступные подземелья",
+	},
     ["ZHCN"] = {
         ruRU = "Упрощ. кит.",
         enGB = "Simplified Chinese"
-    },
-    ["STORE_SHOW_ALL_ITEMS_LABEL"] = {
-        ruRU = "Показать все предметы",
-        enGB = "Show all items"
     },
     ["DRUNK_MESSAGE_ITEM_SELF3"] = {
         ruRU = "Вы пьянеете от напитка \"%s\".",
@@ -39699,7 +38101,7 @@ local SIRUS_LOCALIZATION = {
         enGB = ""
     },
     ["HEADHUNTING_SET_REWARD_HELP_MONEY_ERROR_1"] = {
-        ruRU = "Сумма не может превышать\n200000|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:0|t",
+        ruRU = "Сумма не может превышать\n%d|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:0|t",
         enGB = ""
     },
     ["HEADHUNTING_SET_REWARD_HELP_MONEY_ERROR_2"] = {
@@ -39718,32 +38120,26 @@ local SIRUS_LOCALIZATION = {
         ruRU = "название гильдии",
         enGB = ""
     },
-    ["HEADHUNTING_SET_REWARD_HELP_BOX_STEP_1"] = {
-        ruRU = "– Введите %s и нажмите \"Поиск\".",
-        enGB = ""
-    },
-    ["HEADHUNTING_SET_REWARD_HELP_BOX_STEP_2_PLAYER"] = {
-        ruRU = "– Выберите интересующего вас игрока.",
-        enGB = ""
-    },
-    ["HEADHUNTING_SET_REWARD_HELP_BOX_STEP_2_GUILD"] = {
-        ruRU = "– Выберите интересующую вас гильдию.",
-        enGB = ""
-    },
-    ["HEADHUNTING_SET_REWARD_HELP_BOX_STEP_3"] = {
-        ruRU = "– Укажите желаемое количество убийств.\n(Минимум %d)",
-        enGB = ""
-    },
-    ["HEADHUNTING_SET_REWARD_HELP_BOX_STEP_4"] = {
-        ruRU = "– Укажите награду за одно убийство.\n(От 100|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:0|t до 10000|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:0|t)",
-        enGB = ""
-    },
-    ["HEADHUNTING_SET_REWARD_HELP_BOX_TOTAL_MONEY"] = {
-        ruRU = "Будет оплачено:\n%s|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:-2|t",
-        enGB = ""
-    },
+	["HEADHUNTING_SET_REWARD_HELP_BOX_STEP_1"] = {
+		ruRU = "- Введите %s и нажмите \"Поиск\".",
+	},
+	["HEADHUNTING_SET_REWARD_HELP_BOX_STEP_2_PLAYER"] = {
+		ruRU = "- Выберите интересующего вас игрока.",
+	},
+	["HEADHUNTING_SET_REWARD_HELP_BOX_STEP_2_GUILD"] = {
+		ruRU = "- Выберите интересующую вас гильдию.",
+	},
+	["HEADHUNTING_SET_REWARD_HELP_BOX_STEP_3"] = {
+		ruRU = "- Укажите желаемое количество убийств.\n(Минимум %d)",
+	},
+	["HEADHUNTING_SET_REWARD_HELP_BOX_STEP_4"] = {
+		ruRU = "- Укажите награду за одно убийство.\n(От 100|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:0|t до 10000|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:0|t)",
+	},
+	["HEADHUNTING_SET_REWARD_HELP_BOX_TOTAL_MONEY"] = {
+		ruRU = "Будет оплачено: %s|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:-2|t",
+	},
     ["HEADHUNTING_TOAST_CONTRACT_SUCCESSFULLY_CANCEL"] = {
-        ruRU = "Контракт отменет.",
+        ruRU = "Контракт отменен.",
         enGB = ""
     },
     ["HEADHUNTING_TOAST_CONTRACT_SUCCESSFULLY_REGISTER"] = {
@@ -39890,18 +38286,18 @@ local SIRUS_LOCALIZATION = {
         ruRU = "На гильдию этого игрока назначен контракт.",
         enGB = ""
     },
-    ["GOSSIP_EDIT_BOX_KEY_OPTIONS_1"] = {
-    	ruRU = "Я ищу кое-кого.",
-    	enGB = ""
-    },
-    ["GOSSIP_EDIT_BOX_KEY_OPTIONS_2"] = {
-        ruRU = "Ответ на вопрос",
-        enGB = ""
-    },
-    ["ANSWER_THE_QUESTION"] = {
-    	ruRU = "Ответить на вопрос",
-    	enGB = "Answer the question"
-    },
+	["GOSSIP_EDIT_BOX_KEY_OPTIONS_1"] = {
+		ruRU = "Я ищу кое-кого.",
+		enGB = ""
+	},
+	["GOSSIP_EDIT_BOX_KEY_OPTIONS_2"] = {
+		ruRU = "Ответить на вопрос",
+		enGB = "Answer the question"
+	},
+	["ANSWER_THE_QUESTION"] = {
+		ruRU = "Ответ на вопрос",
+		enGB = "Answer the question"
+	},
     ["ALL_ARENA"] = {
     	ruRU = "Все арены",
     	enGB = ""
@@ -39916,30 +38312,6 @@ local SIRUS_LOCALIZATION = {
     },
     ["MOUNT_COLLECTION_ENCOUNTER_SHOW"] = {
         ruRU = "Просмотреть",
-        enGB = ""
-    },
-    ["STORE_TRANSMOGRIFY_SUBCATEGORY_HEAD"] = {
-    	ruRU = "Головные уборы",
-    	enGB = ""
-    },
-    ["STORE_TRANSMOGRIFY_SUBCATEGORY_WEAPON"] = {
-        ruRU = "Оружие",
-        enGB = ""
-    },
-    ["STORE_TRANSMOGRIFY_SUBCATEGORY_INVIS_ARMOR"] = {
-        ruRU = "Невидимая броня",
-        enGB = ""
-    },
-    ["STORE_TRANSMOGRIFY_SUBCATEGORY_ARMOR_SETS"] = {
-        ruRU = "Наборы брони",
-        enGB = ""
-    },
-	["STORE_TRANSMOGRIFY_SUBCATEGORY_TITLE"] = {
-		ruRU = "Заголовок сабкатегории",
-		enGB = ""
-	},
-    ["STORE_TRANSMOGRIFY_SUBCATEGORY_OPEN"] = {
-        ruRU = "Открыть",
         enGB = ""
     },
     ["CONFIRM_DESTROY_EQUIPMENTSET_ITEM"] = {
@@ -39966,33 +38338,32 @@ local SIRUS_LOCALIZATION = {
     	ruRU = "На этой неделе неактивны следующие поля боя:",
     	enGB = ""
     },
-    ["BATTLEGROUND_BRAWL_TOOLTIP_HEADER"] = {
-    	ruRU = "Активная на этой неделе потасовка:",
-    	enGB = ""
-    },
+	["BATTLEGROUND_BRAWL_TOOLTIP_HEADER"] = {
+		ruRU = "Активная на этой неделе потасовка:",
+	},
     ["BATTLEGROUND_BRAWL_TOOLTIP_REWARDS_1"] = {
     	ruRU = "За первую победу в день вы получите:",
-    	enGB = ""
     },
     ["BATTLEGROUND_BRAWL_TOOLTIP_REWARDS_2"] = {
     	ruRU = "За остальные победы вы получите:",
-    	enGB = ""
+    },
+    ["BATTLEGROUND_BRAWL_HELP_TOOLTIP"] = {
+    	ruRU = "Подтверждение чести предоставляет 400 очков Боевого пропуска.\n\nНаграда за первую победу в день игнорирует лимит очков чести.",
     },
     ["BATTLEGROUND_LOCK_TOOLTIP_BGNAME"] = {
         ruRU = "- %s",
-        enGB = ""
     },
 	["BATTLEGROUND_RANDOM_HEADER_TOOLTIP"] = {
 		ruRU = "Эффективность на поле боя",
-		enGB = ""
 	},
 	["BATTLEGROUND_RANDOM_BODY_TOOLTIP"] = {
-		ruRU = "На полях боя работает система эффективности, которая помогает не терять рейтинг службы в случае, если вы проигрываете. Участвуйте битве с противниками, помогайте вашим союзникам, захватывайте и защищайте базы, носите и отбирайте флаги - делайте все возможное, чтобы победить. И если по окончанию проигрышного поля боя у вас будет высокая эффективность, очки рейтинга службы сняты не будут и вы сможете получить небольшую прибавку к вашему рейтингу службы.",
-		enGB = ""
+		ruRU = "На полях боя работает система эффективности, которая помогает не терять рейтинг службы в случае, если вы проигрываете. Участвуйте в битвах с противниками, помогайте вашим союзникам, захватывайте и защищайте базы, носите и отбирайте флаги - делайте все возможное, чтобы победить. И если по окончании проигрышного поля боя у вас будет высокая эффективность, очки рейтинга службы сняты не будут, и вы сможете получить небольшую прибавку к вашему рейтингу службы.",
 	},
 	["BATTLEGROUND_RANDOM_HELP_TOOLTIP"] = {
 		ruRU = "Более подробная информация в нашей игровой энциклопедии: ESC > Помощь.",
-		enGB = ""
+	},
+	["BATTLEGROUND_BRAWL_DAILY_COMPLETE"] = {
+		ruRU = "Награда за первую победу в день получена",
 	},
     ["ORB_NAME_PATTERN"] = {
     	ruRU = "Сфера могущества %- (%d+)",
@@ -40020,10 +38391,6 @@ local SIRUS_LOCALIZATION = {
     },
     ["EQUIPMENT_SET_PATTERN"] = {
     	ruRU = "^Комплект",
-    	enGB = ""
-    },
-    ["STORE_MULTIPLY_BUY_TITLE"] = {
-    	ruRU = "Количество",
     	enGB = ""
     },
     ["BATTLEGROUND_TEMPLE_OF_ALAWASHTE"] = {
@@ -40102,13 +38469,17 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "На протяжении многих тысячелетий армия Света сражалась с полчищами Пылающего Легиона в Круговерти Пустоты. Самые преданные делу дренеи проходили особый ритуал, чтобы стать одним целым с энергией Света и войти в число озаренных. Некоторые из них были призваны на Азерот и объединились со своими собратьями из Экзодара, чтобы помочь в грядущей войне с демонами и защитить наару от тех, кто смеет посягать на Свет.",
 		enGB = "",
 	},
-    ["CONFIRM_FORCE_CUSTOMIZATION"] = {
-    	ruRU = "Данное действие необратимо. Вы уверены, что хотите сменить свою расу, став %s?",
-    	enGB = ""
-    },
-	["CONFIRM_FORCE_CUSTOMIZATION_ZODIAC"] = {
-		ruRU = "Принять %s",
-		enGB = ""
+	["CONFIRM_FORCE_CUSTOMIZATION"] = {
+		ruRU = "Выберите способ перерождения.\n|cffFF2000Данное действие необратимо.|r\nЕсли уверены, то напишите \"СОГЛАСЕН\".",
+	},
+	["CONFIRM_FORCE_CUSTOMIZATION_OPTION1"] = {
+		ruRU = "Сменить расу",
+	},
+	["CONFIRM_FORCE_CUSTOMIZATION_OPTION2"] = {
+		ruRU = "Сменить созвездие",
+	},
+	["CONFIRM_FORCE_CUSTOMIZATION_OPTION3"] = {
+		ruRU = "Сменить расу и созвездие",
 	},
     ["ROULETTE_CURRENCY_PRICE_TITLE_1"] = {
         ruRU = "1 ВРАЩЕНИЕ = 1 МОНЕТА ДЖУЛИИ",
@@ -40118,10 +38489,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "1 ВРАЩЕНИЕ = %i |4БОНУС:БОНУСА:БОНУСОВ;",
         enGB = ""
     },
-    ["BLOCK_GUILD_INVITES"] = {
-        ruRU = "Блокировать приглашения в гильдию",
-        enGB = "Block Guild Invites"
-    },
+	["BLOCK_GUILD_INVITES"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tБлокировать приглашения в гильдию",
+		enGB = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tBlock Guild Invites"
+	},
     ["OPTION_TOOLTIP_BLOCK_GUILD_INVITES"] = {
         ruRU = "Блокировать все приглашения в гильдию.",
         enGB = "Block all incoming guild invites."
@@ -40130,28 +38501,20 @@ local SIRUS_LOCALIZATION = {
         ruRU = "В коллекцию",
         enGB = "Go to Collection"
     },
-    ["STORE_TRANSMOGRIFY_WEAPON_LABEL"] = {
-        ruRU = "Вид оружия",
-        enGB = ""
-    },
-    ["STORE_TRANSMOGRIFY_FILTER_NEW"] = {
-        ruRU = "Новинки",
-        enGB = ""
-    },
-    ["STORE_TRANSMOGRIFY_FILTER_ALL_WEAPON"] = {
-        ruRU = "Все виды",
-        enGB = ""
-    },
-    ["STORE_TRANSMOGRIFY_SORT_BY_WEAPON"] = {
-        ruRU = "По виду оружия",
-        enGB = ""
-    },
     ["LOOT_CASE_PREVIEW_TITLE"] = {
 	    ruRU = "Предпросмотр предметов",
 	    enGB = ""
     },
     ["STORY_END_REFUND"] = {
 	    ruRU = "|cffFF0000Внимание!|r Данное действие не позволит вернуть данный предмет в магазин. Вы уверены?",
+	    enGB = ""
+    },
+    ["MERCHANT_END_REFUND"] = {
+	    ruRU = "|cffFF0000Внимание!|r Данное действие не позволит вернуть данный предмет торговцу. Вы уверены?",
+	    enGB = ""
+    },
+    ["TRANSMOG_END_BOUND_TRADEABLE"] = {
+	    ruRU = "|cffFF0000Внимание!|r Данное действие не позволит передать этот предмет другому игроку. Вы уверены?",
 	    enGB = ""
     },
     ["GUILD_RENAME_ERROR_TEXT"] = {
@@ -40210,54 +38573,65 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Вы не можете менять режим войны пока участвуете в испытании",
 		enGB = ""
 	},
-    ["CUSTOM_GOSSIP_TEXT_1"] = {
-	    ruRU = "Снежный святой латный доспех",
-	    enGB = "Paladin snow armor"
-    },
-    ["CUSTOM_GOSSIP_TEXT_2"] = {
-	    ruRU = "Снежный кровавый латный доспех",
-	    enGB = "Death Knight snow armor"
-    },
-    ["CUSTOM_GOSSIP_TEXT_3"] = {
-	    ruRU = "Снежный латный доспех ярости",
-	    enGB = "Warrior snow armor"
-    },
-    ["CUSTOM_GOSSIP_TEXT_4"] = {
-	    ruRU = "Снежный кожаный доспех клинков",
-	    enGB = "Rogue snow armor"
-    },
-    ["CUSTOM_GOSSIP_TEXT_5"] = {
-	    ruRU = "Снежное одеяние элементов",
-	    enGB = "Mage snow armor"
-    },
-    ["CUSTOM_GOSSIP_TEXT_6"] = {
-	    ruRU = "Снежное демоническое одеяние",
-	    enGB = "Warlock snow armor"
-    },
-    ["CUSTOM_GOSSIP_TEXT_7"] = {
-	    ruRU = "Снежное одеяние света",
-	    enGB = "Priest snow armor"
-    },
-    ["CUSTOM_GOSSIP_TEXT_8"] = {
-	    ruRU = "Снежное одеяние целителя",
-	    enGB = "Shaman snow armor"
-    },
+	["CUSTOM_GOSSIP_TEXT_1"] = {
+		ruRU = "Снежный святой латный доспех",
+		enGB = "Paladin snow armor"
+	},
+	["CUSTOM_GOSSIP_TEXT_2"] = {
+		ruRU = "Снежный кровавый латный доспех",
+		enGB = "Death Knight snow armor"
+	},
+	["CUSTOM_GOSSIP_TEXT_3"] = {
+		ruRU = "Снежный латный доспех ярости",
+		enGB = "Warrior snow armor"
+	},
+	["CUSTOM_GOSSIP_TEXT_4"] = {
+		ruRU = "Снежный кожаный доспех клинков",
+		enGB = "Rogue snow armor"
+	},
+	["CUSTOM_GOSSIP_TEXT_5"] = {
+		ruRU = "Снежное одеяние элементов",
+		enGB = "Mage snow armor"
+	},
+	["CUSTOM_GOSSIP_TEXT_6"] = {
+		ruRU = "Снежное демоническое одеяние",
+		enGB = "Warlock snow armor"
+	},
+	["CUSTOM_GOSSIP_TEXT_7"] = {
+		ruRU = "Снежное одеяние света",
+		enGB = "Priest snow armor"
+	},
+	["CUSTOM_GOSSIP_TEXT_8"] = {
+		ruRU = "Снежное одеяние целителя",
+		enGB = "Shaman snow armor"
+	},
+	["CUSTOM_GOSSIP_TEXT_9"] = {
+		ruRU = "Крошшер Ледокрушителя",
+		enGB = "Shredder snow armor"
+	},
+	["CUSTOM_GOSSIP_TEXT_10"] = {
+		ruRU = "Снежный мстительный доспех",
+		enGB = "DH snow armor"
+	},
+	["CUSTOM_GOSSIP_TEXT_11"] = {
+		ruRU = "Снежная кольчуга опустошителя",
+		enGB = "Evoker snow armor"
+	},
+	["CUSTOM_GOSSIP_TEXT_12"] = {
+		ruRU = "Снежное одеяние туманов",
+		enGB = "Monk snow armor"
+	},
     ["REFUSE_XP_RATE"] = {
         ruRU = "Отказаться от ускоренной прокачки",
         enGB = ""
     },
-	["REFUSE_XP_RATE_HELPTIP_TEXT"] = {
-		ruRU = "Вы можете отказаться от ускоренной прокачки, нажав ПКМ по портрету персонажа и выбрав пункт \"Отказаться от ускоренной прокачки\".",
-		enGB = ""
-	},
     ["ENABLE_X1_RATE_TEXT"] = {
         ruRU = "Вы уверены, что хотите развивать этого персонажа без ускоренного получения опыта?",
         enGB = ""
     },
-    ["ENABLE_X1_RATE_HELPBOX"] = {
-        ruRU = "На персонажа не будет действовать общий бонус к получаемому опыту, зависящий от игрового мира, в том числе ауры и зелья, предоставляющие бонусы к опыту.\nОбращаем ваше внимание, что это решение нельзя будет изменить.",
-        enGB = ""
-    },
+	["ENABLE_X1_RATE_HELPBOX"] = {
+		ruRU = "На персонажа не будет действовать общий бонус к получаемому опыту, зависящий от игрового мира, а также ауры и зелья, предоставляющие бонусы к опыту.\nОбращаем ваше внимание, что это решение нельзя будет изменить.",
+	},
 	["WARMODE_ERROR_1"] = {
 		ruRU = "Режим войны отключен",
 		enGB = ""
@@ -40289,6 +38663,12 @@ local SIRUS_LOCALIZATION = {
 	["WARMODE_ERROR_8"] = {
 		ruRU = "Вы не можете включить режим войны пока находитесь под эффектов Метки миротворца",
 		enGB = ""
+	},
+	["WARMODE_ERROR_9"] = {
+		ruRU = "Вы не можете переключить режим войны во время боя.",
+	},
+	["WARMODE_ERROR_10"] = {
+		ruRU = "Вы не можете переключить режим войны, пока участвуете в испытании.",
 	},
     ["STAT_AVERAGE_ITEM_LEVEL"] = {
         ruRU = "Уровень предметов",
@@ -41698,74 +40078,34 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "На выбранном облике оружия не отображаются эффекты зачарований и иллюзии.",
 		enGB = ""
 	},
-    ["STORE_SEARCH_OPTIONS"] = {
-        ruRU = "Параметры поиска",
-        enGB = "Search Options"
-    },
-    ["STORE_SEARCH_OPTION_ARMOR"] = {
-        ruRU = "броня:",
-        enGB = "armor:"
-    },
-    ["STORE_SEARCH_OPTION_ARMOR_DESC"] = {
-        ruRU = "тип брони",
-        enGB = ""
-    },
-    ["STORE_SEARCH_OPTION_WEAPON"] = {
-        ruRU = "оружие:",
-        enGB = "weapon:"
-    },
-    ["STORE_SEARCH_OPTION_WEAPON_DESC"] = {
-        ruRU = "тип оружия",
-        enGB = ""
-    },
-    ["STORE_SEARCH_OPTION_STATISTIC"] = {
-        ruRU = "стат:",
-        enGB = "stat:"
-    },
-    ["STORE_SEARCH_OPTION_STATISTIC_DESC"] = {
-        ruRU = "характеристика",
-        enGB = ""
-    },
-    ["STORE_SEARCH_OPTION_NAME"] = {
-        ruRU = "имя:",
-        enGB = "name:"
-    },
-    ["STORE_SEARCH_OPTION_NAME_DESC"] = {
-        ruRU = "предмета",
-        enGB = ""
-    },
-    ["STORE_SORT_OPTION"] = {
-        ruRU = "Нажмите правой кнопкой мыши для дополнительных фильтров.",
-        enGB = ""
-    },
     ["DISCORD_NAME_LEVEL_RACE_CLASS"] = {
         ruRU = "%s - %s %s %s-го уровня",
         enGB = "%s - %s %s Level %s"
     },
-    ["MINI_GAMES"] = {
-	    ruRU = "Мини-игры",
-	    enGB = ""
-    },
-    ["FIND_A_MINI_GAME"] = {
-	    ruRU = "Найти игру",
-	    enGB = ""
-    },
-    ["MINI_GAME_IS_READY"] = {
-	    ruRU = "Сформирована игра:",
-	    enGB = ""
-    },
-    ["YOUR_GOAL"] = {
-	    ruRU = "Ваша цель",
-	    enGB = "Your goal"
-    },
-    ["ENTER_MINI_GAME"] = {
-	    ruRU = "В игру",
-	    enGB = "Enter minigame"
-    },
-    ["MINI_GAME_QUEUE_NAME"] = {
-	    ruRU = "Мини-игра: %s",
-	    enGB = "Minigame: %s"
-    },
+	["MINI_GAMES"] = {
+		ruRU = "Мини-игры",
+		enGB = ""
+	},
+	["FIND_A_MINI_GAME"] = {
+		ruRU = "Найти игру",
+		enGB = ""
+	},
+	["MINI_GAME_IS_READY"] = {
+		ruRU = "Сформирована игра:",
+		enGB = ""
+	},
+	["YOUR_GOAL"] = {
+		ruRU = "Ваша цель",
+		enGB = "Your goal"
+	},
+	["ENTER_MINI_GAME"] = {
+		ruRU = "В игру",
+		enGB = "Enter minigame"
+	},
+	["MINI_GAME_QUEUE_NAME"] = {
+		ruRU = "Мини-игра: %s",
+		enGB = "Minigame: %s"
+	},
 	["MINI_GAME_FILLUP_ACTIVE"] = {
 		ruRU = "Поиск игроков активен",
 		enGB = ""
@@ -41774,26 +40114,34 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Поиск игроков неактивен",
 		enGB = ""
 	},
-    ["LEAVE_MINI_GAME"] = {
-	    ruRU = "Покинуть мини-игру",
-	    enGB = "Leave minigame"
-    },
+	["LEAVE_MINI_GAME"] = {
+		ruRU = "Покинуть мини-игру",
+		enGB = "Leave minigame"
+	},
 	["MINI_GAME_STAT_NAME"] = {
-	    ruRU = "Имя",
-	    enGB = "Name"
-    },
+		ruRU = "Имя",
+		enGB = "Name"
+	},
 	["MINI_GAME_STAT_POSITION"] = {
-	    ruRU = "№",
-	    enGB = "#"
-    },
+		ruRU = "№",
+		enGB = "#"
+	},
 	["MINI_GAME_STAT_ROLE"] = {
 		ruRU = "Роль",
 		enGB = "Role"
 	},
 	["MINI_GAME_STAT_TIME"] = {
-	    ruRU = "Время",
-	    enGB = "Time"
-    },
+		ruRU = "Время",
+		enGB = "Time"
+	},
+	["MINI_GAME_STAT_COLORED_CAPTURE_COLOR"] ={
+		ruRU = "Цвет",
+		enGB = "Color",
+	},
+	["MINI_GAME_STAT_COLORED_CAPTURE_PLATFORMS"] ={
+		ruRU = "Платформы",
+		enGB = "Platforms",
+	},
 	["MINI_GAME_STAT_DOORDASH_DOORS"] ={
 		ruRU = "Выломано дверей",
 		enGB = "",
@@ -41803,9 +40151,17 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["MINI_GAME_STAT_FRAGILEFLOOR_PLATFORMS"] = {
-	    ruRU = "Платформы",
-	    enGB = "Platforms"
-    },
+		ruRU = "Платформы",
+		enGB = "Platforms"
+	},
+	["MINI_GAME_STAT_TIPTOE_FALLS"] = {
+		ruRU = "Падения",
+		enGB = "Falls",
+	},
+	["MINI_GAME_STAT_TIPTOE_PLATFORMS"] = {
+		ruRU = "Платформы",
+		enGB = "Platforms",
+	},
 	["MINI_GAME_STAT_SNOWMAN_ARMOR"] = {
 		ruRU = "Доспех",
 		enGB = "Armor"
@@ -41817,6 +40173,42 @@ local SIRUS_LOCALIZATION = {
 	["MINI_GAME_STAT_VALUE_SHREDDER"] = {
 		ruRU = "Крошшер",
 		enGB = "Shredder"
+	},
+	["MINI_GAME_STAT_VALUE_NO_COLOR"] = {
+		ruRU = "Без цвета",
+		enGB = "No color"
+	},
+	["MINI_GAME_STAT_VALUE_PURPLE"] = {
+		ruRU = "Фиолетовый",
+		enGB = "Purple"
+	},
+	["MINI_GAME_STAT_VALUE_BLACK"] = {
+		ruRU = "Черный",
+		enGB = "Black"
+	},
+	["MINI_GAME_STAT_VALUE_BLUE"] = {
+		ruRU = "Синий",
+		enGB = "Blue"
+	},
+	["MINI_GAME_STAT_VALUE_GREEN"] = {
+		ruRU = "Зеленый",
+		enGB = "Green"
+	},
+	["MINI_GAME_STAT_VALUE_ORANGE"] = {
+		ruRU = "Оранжевый",
+		enGB = "Orange"
+	},
+	["MINI_GAME_STAT_VALUE_RED"] = {
+		ruRU = "Красный",
+		enGB = "Red"
+	},
+	["MINI_GAME_STAT_VALUE_WHITE"] = {
+		ruRU = "Белый",
+		enGB = "White"
+	},
+	["MINI_GAME_STAT_VALUE_YELLOW"] = {
+		ruRU = "Желтый",
+		enGB = "Yellow"
 	},
     ["MINI_GAME_TIME_CLOSED"] = {
         ruRU = "Мини-игра закроется через:",
@@ -41871,12 +40263,18 @@ local SIRUS_LOCALIZATION = {
         enGB = ""
     },
 	["MINI_GAME_FROZEN_SNOWMAN_LAIR_STORY_TUTORIAL"] = {
-		ruRU = "Логово замерзшего снеговика:\n\n- Разбейте ледяную глыбу и освободите снеговика Оскара.\n- Посоветуйтесь с союзниками и решите кто хочет занять роль принимающую на себя основной урон (танк), роль нанесения урона и роль лекаля группы.\n- Выберете снежный доспех и следуйте за Оскаром.\n- Характеристика вашего персонажа и ауры не влияют на прохождение этой локации.\n- Чтобы открыть статистику, нажмите на |TInterface\\lfgframe\\battlenetworking0.blp:20:20:3:0:64:64:12:58:12:58|t",
+		ruRU = "Логово замерзшего снеговика:\n\n- Разбейте ледяную глыбу и освободите снеговика Оскара.\n- Посоветуйтесь с союзниками и решите кто хочет занять роль принимающую на себя основной урон (танк), роль нанесения урона и роль лекаря группы.\n- Выберете снежный доспех и следуйте за Оскаром.\n- Характеристика вашего персонажа и ауры не влияют на прохождение этой локации.\n- Чтобы открыть статистику, нажмите на |TInterface\\lfgframe\\battlenetworking0.blp:20:20:3:0:64:64:12:58:12:58|t",
 		enGB = ""
 	},
 	["MINI_GAME_DOOR_DASH_TUTORIAL"] = {
 		ruRU = "Ломая двери:\n\n- По окончанию подготовки вы сможете начать бежать к дверям.\n- Чтобы пройти через дверь - её нужно открыть нажав на дверь правой кнопкой мышки.\n- Часть дверей открывается, а часть заперта и попытка открыть такие двери остановит вашего персонажа на пару мгновений.\n- Пробежав все двери и затем спрыгнув/упав на финишную платформу первым - засчитывается победа (1 победитель на каждые 5 игроков)\n- Чтобы открыть статистику, нажмите на |TInterface\\lfgframe\\battlenetworking0.blp:20:20:3:0:64:64:12:58:12:58|t",
 		enGB = ""
+	},
+	["MINI_GAME_TIPTOE_TUTORIAL"] = {
+		ruRU = "На грани:\n\n- По окончанию подготовки вы сможете начать бежать по гексам.\n- Платформа может быть надежной или упадёт вниз, смелость окупается победой.\n- Падение с платформы не означает проигрыш.\n- Раз в какое-то время случайный игрок отмечается и если он не откроет новую платформу в течении нескольких секунд - ему будет засчитано поражение.\n- При попадании на финишную платформу первым - засчитывается победа (1 победитель на каждые 5 игроков).\n- Чтобы открыть статистику, нажмите на |TInterface\\lfgframe\\battlenetworking0.blp:20:20:3:0:64:64:12:58:12:58|t",
+	},
+	["MINI_GAME_COLORED_CAPTURE_TUTORIAL"] = {
+		ruRU = "Цветной захват:\n\n- По окончанию подготовки вы будете автоматически бежать по гексам.\n- Наступая на гекс вы отмечаете его, но он ещё не захвачен, чтобы он окрасился в ваш цвет вернитесь на гекс вашего цвета.\n- Пересекайте линию захвата соперников, чтобы отправить их в аут и не пересекайте свою, иначе проиграете.\n- Если ваша линяя захвата не соприкасается с гексом вашего цвета или у вас не останется захваченных гексов - вы проиграли.\n- Вы победите, если не останется соперников или наберете наибольшее число платформ во время истечения таймера.\n- Чтобы открыть статистику, нажмите на |TInterface\\lfgframe\\battlenetworking0.blp:20:20:3:0:64:64:12:58:12:58|t",
 	},
     ["SLASH_CHAT_INVISIBLE1"] = {
         ruRU = "/невидимка",
@@ -41901,10 +40299,6 @@ local SIRUS_LOCALIZATION = {
     ["LFG_CALL_TO_ARMS_EXPLANATION"] = {
         ruRU = "Взяв на себя эту роль, вы получите дополнительные награды!",
         enGB = "If you perform this role, you will receive bonus rewards!"
-    },
-    ["STORE_AVAILABLE_TO_PAY_ALT_CURRENCY"] = {
-	    ruRU = "Возможна оплата другой валютой",
-	    enGB = ""
     },
     ["CR_ONSLAUGHT_RATING_REDUSE_TOOLTIP"] = {
 	    ruRU = "Рейтинг натиска: %d (рейтинг устойчивости противника снижен на %d ед.)",
@@ -42238,6 +40632,28 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "/cd",
 		enGB = "/cd",
 	},
+	["LFD_RANDOM_REWARD_EXPLANATION1"] = {
+		ruRU = "За прохождение случайного подземелья вы получите:",
+		enGB = "The first random dungeon that you complete each day will earn you:"
+	},
+	["LFD_RANDOM_REWARD_EXPLANATION2"] = {
+		ruRU = "Каждое последующее подземелье, которые вы проходите в течение дня, приносит:",
+		enGB = "Random dungeons which you complete subsequent to the first each day will earn you:"
+	},
+	["LFD_HOLIDAY_REWARD_EXPLANATION1"] = {
+		ruRU = "Первая победа в течение дня принесет вам:",
+		enGB = "Your first victory per day will earn you:"
+	},
+	["LFD_HOLIDAY_REWARD_EXPLANATION2"] = {
+		ruRU = "Каждая последующая победа, которую вы одерживаете в течение дня, приносит:",
+		enGB = "Each victory subsequent to the first each day will earn you:"
+	},
+	["LFD_HOLIDAY_REWARD_EXPLANATION_SURVIVAL"] = {
+		ruRU = "Первая победа или поражение на 15 уровне и выше в течение дня принесет вам:",
+	},
+	["LFD_HOLIDAY_REWARD_EXPLANATION_HARDCORE"] = {
+		ruRU = "Первое поражение на 3 уровне и выше в течение дня принесет вам:",
+	},
 	["ENCOUNTER_JOURNAL_SECTION_LOOP_ERROR"] = {
 		ruRU = "Возникла ошибка при попытке открыть путеводитель по приключениям.\nСообщите нам на форуме следующую информацию:\nСекция: № %s",
 		enGB = ""
@@ -42354,50 +40770,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Ренегаты",
 		enGB = "Renegade"
 	},
-	["STORE_RENEW_TIME_DESCRIPTION"] = {
-		ruRU = "До обновления ассортимента:",
-		enGB = ""
-	},
-	["STORE_RENEW_TIME_LEFT_MOUNTS_TOOLTIP"] = {
-		ruRU = "Обновление ассортимента происходит 1 раз в неделю.",
-		enGB = ""
-	},
-	["STORE_RENEW_TIME_LEFT_TMOG_TOOLTIP"] = {
-		ruRU = "Обновление ассортимента происходит 1 раз в 2 недели.",
-		enGB = ""
-	},
-	["STORE_RENEW_TIME_LEFT_SECONDS"] = {
-		ruRU = "%d |4секунда:секунды:секунд;.",
-		enGB = "%d |4second:seconds;."
-	},
-	["STORE_RENEW_TIME_LEFT_MINUTES"] = {
-		ruRU = "%d |4минутa:минуты:минут;.",
-		enGB = "%d |4minute:minutes;."
-	},
-	["STORE_RENEW_TIME_LEFT_HOURS"] = {
-		ruRU = "%d |4час:часа:часов;.",
-		enGB = "%d |4hour:hours;."
-	},
-	["STORE_RENEW_TIME_LEFT_DAYS"] = {
-		ruRU = "%d |4день:дня:дней;.",
-		enGB = "%d |4day:days;."
-	},
-	["STORE_BUY_TRANSMOG_WARNING"] = {
-		ruRU = "Ваш персонаж не знает как с этим обращаться, пожалуйста убедитесь что соответствуете требованиям для ношения этого предмета.",
-		enGB = ""
-	},
-	["STORE_UPDATE_TITLE"] = {
-		ruRU = "Обновление",
-		enGB = ""
-	},
-	["STORE_REPACK_PROMO_DESC"] = {
-		ruRU = "Спасибо, что обновились до последней версии. Это обновление было большего размера, чем обычно, но оно очень необходимо для дальнейшего развития нашего проекта. В качестве компенсации вы получаете три дня поставок.",
-		enGB = ""
-	},
-	["STORE_GET_SUPPLIES"] = {
-		ruRU = "Получить поставки",
-		enGB = ""
-	},
 	["QUEST_ACCEPTED_21220_POPUP_TEXT"] = {
 		ruRU = "При принятии и завершении этого задания вы продолжите приключения в Поднявшихся глубинах. Вы не сможете выбрать задание [Очаровательная дипломатия Вайш\'ира] ведущее к выходу в открытый мир через короткое завершение сюжета в Поднявшихся глубинах.",
 		enGB = ""
@@ -42428,6 +40800,14 @@ local SIRUS_LOCALIZATION = {
 	},
 	["QUEST_ACCEPTED_21484_POPUP_TEXT"] = {
 		ruRU = "При принятии и завершении этого задания вы завершите приключения в Гилнеасе. Вы попадете в открытый мир и не сможете продолжить полную цепочку сюжетных заданий",
+		enGB = ""
+	},
+	["QUEST_ACCEPTED_25639_POPUP_TEXT"] = {
+		ruRU = "При принятии и завершении этого задания Вы продолжите приключения в Тел'Абиме. Вы не сможете выбрать задание [Запрыгивай, полетели!] ведущее к выходу в открытый мир через короткое завершение сюжета в Тель'Абиме.",
+		enGB = ""
+	},
+	["QUEST_ACCEPTED_25641_POPUP_TEXT"] = {
+		ruRU = "При принятии и завершении этого задания Вы завершите приключения в Тел'Абиме. Вы попадете в открытый мир и не сможете продолжить полную цепочку сюжетных заданий.",
 		enGB = ""
 	},
 	["QUEST_ACCEPTED_26135_POPUP_TEXT"] = {
@@ -42991,7 +41371,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Right-Click"
 	},
 	["HELPFRAME_REPORT_PLAYER_TEXT"] = {
-		ruRU = "<html><body><p>Мы хотим, чтобы игра на проекте Sirus была как можно более комфортной, а процесс был безопасным и приносил удовольствие.</p><br/><p>Если вам встретился персонаж, который использует различные оскорбительные выражения для разжигания межнациональной розни, ведет политические дискуссии или шлет в чат сообщения, содержащие рекламу (спам), существует быстрый и простой способ сообщить об этом нам!</p><br/><p>Чтобы пожаловаться на игрока, который ведет себя неподобающим образом или нарушает правила, щелкните по по его имени в чате правой кнопкой мыши и выберите из списка |cff71d5ff«Пожаловаться»|r.\n\nОбратите внимание, что при подаче жалобы подобным образом меры принимаются только в указанных выше ситуациях.</p><br/><p>Если же вы обнаружили игрока, который нарушает иные правила сервера, пожалуйста, оставьте жалобу на данного игрока на форуме в разделе <a href=\"http:https://forum.sirus.su/forums/8/\">Жалобы на игроков</a></p><br/><p>Ознакомиться с правилами сервера вы можете в статье <a href=\"kbase:1:1\">Правила проекта Sirus.su</a></p></body></html>",
+		ruRU = "<html><body><p>Мы хотим, чтобы игра на проекте Sirus была как можно более комфортной, а процесс был безопасным и приносил удовольствие.</p><br/><p>Если вам встретился персонаж, нарушающий правила внутриигрового общения, использующий различные оскорбительные выражения, в том числе для разжигания межнациональной розни, ведет политические дискуссии или шлет в чат сообщения, содержащие рекламу (спам), существует быстрый и простой способ сообщить об этом нам!</p><br/><p>Чтобы пожаловаться на игрока, который ведет себя неподобающим образом или нарушает правила, щелкните по его имени в чате правой кнопкой мыши и выберите из списка |cff71d5ff«Пожаловаться»|r.\n\nОбратите внимание, что при подаче жалобы подобным образом  меры принимаются только по нарушениям правил внутриигрового общения.</p><br/><p>Если же вы обнаружили игрока, который нарушает иные правила сервера, пожалуйста, оставьте жалобу на данного игрока на форуме в разделе <a href=\"http:https://forum.sirus.su/forums/8/\">Жалобы на игроков</a></p><br/><p>Ознакомиться с правилами сервера вы можете в статье <a href=\"kbase:1:1\">Правила проекта Sirus.su</a></p></body></html>",
 		enGB = ""
 	},
 	["HELPFRAME_REPORT_PLAYER_TITLE"] = {
@@ -43079,11 +41459,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["ARENA_2V2_INFO_HEADER"] = {
-		ruRU = "Вы квалифицировались в %i |4неделе:неделях:неделях; из 12",
+		ruRU = "Вы квалифицировались в %i |4неделе:неделях:неделях; из %i",
 		enGB = ""
 	},
 	["ARENA_2V2_INFO_TEXT"] = {
-		ruRU = "\nДля того, чтобы претендовать на денежный приз (в том числе в виде бонусов) вам необходимо квалифицироваться в 9 неделях из 12 недель сезона.\n\nКвалификацией в текущей неделе считается отыгрывание по меньшей мере 20 игр. Таким образом, чтобы претендовать на денежный приз вам необходимо сыграть как минимум 20 игр в 9 из 12 игровых недель в сезоне.",
+		ruRU = "\nДля того, чтобы претендовать на денежный приз (в том числе в виде бонусов), вам необходимо квалифицироваться в %1$i из %2$i недель сезона.\n\nКвалификацией в текущей неделе считается отыгрывание минимум %3$i игр.\n\nТаким образом, чтобы претендовать на денежный приз, вам необходимо сыграть как минимум %3$i игр в %1$i из %2$i недель сезона.",
 		enGB = ""
 	},
 	["SHOW_SHOULDERS"] = {
@@ -43098,38 +41478,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Модель",
 		enGB = "Model"
 	},
-	["SHOUT_MESSAGE"] = {
-		ruRU = "Громкий крик",
-		enGB = ""
-	},
-	["SHOUT_MESSAGE_POPUP_TEXT"] = {
-		ruRU = "Любая фраза, сказанная вами таким образом, будет видна всему серверу, если уверены, что вам есть что заявить - это ваш шанс.",
-		enGB = ""
-	},
-	["SHOUT_MESSAGE_POPUP_HELPBOX_TEXT"] = {
-		ruRU = "Отправляя сообщение вы соглашаетесь с тем, что ознакомлены с правилами сервера и обязуетесь их соблюдать.\n\nДля нас очень важна атмосфера на проекте, поэтому мы так же предупреждаем вас, любое нарушение правил при помощи этой функции приведет к блокировке вашего аккаунта.\n\nВозвраты невозможны ни в каком виде.",
-		enGB = ""
-	},
-	["SHOUT_MESSAGE_PREVIEW"] = {
-		ruRU = "|cffffff00[|cffff0000%s|c1f40af20 громко кричит|r|cffffff00]:|r %s|r",
-		enGB = ""
-	},
-	["SHOUT_MESSAGE_CONFIRMATION"] = {
-		ruRU = "Вы уверены, что хотите отправить сообщение?",
-		enGB = ""
-	},
-	["SHOP_POPUP_EDITBOX_INSTRUCTION"] = {
-		ruRU = "Введите текст сообщения",
-		enGB = ""
-	},
-	["SHOP_POPUP_BALANCE"] = {
-		ruRU = "У вас %s бонусов",
-		enGB = ""
-	},
-	["PREVIEW_MESSAGE"] = {
-		ruRU = "Предпросмотр",
-		enGB = ""
-	},
 	["ERR_GENERIC_THROTTLE"] = {
 		ruRU = "Вы слишком сильно разогнались.",
 		enGB = "You're doing that too fast"
@@ -43139,7 +41487,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = ""
 	},
 	["OPTION_TOOLTIP_DRACTHYR_RETURN_MORTAL_FORM"] = {
-		ruRU = "Применение способностей \"Полет\" и \"Взмах крыльями\" превращает вас в дракона. Включение этой настройки позволит автоматически вернуться к изначальной форме после окончания их действия.",
+		ruRU = "Применение способностей \"Полет\" и \"Духовные крылья\" превращает вас в дракона. Включение этой настройки позволит автоматически вернуться к изначальной форме после окончания их действия.",
 		enGB = ""
 	},
 	["SETTINGS_SHOW_TOASTS"] = {
@@ -43168,11 +41516,15 @@ local SIRUS_LOCALIZATION = {
 	},
 	["SETTINGS_SHOW_AUCTION_HOUSE_TOAST"] = {
 		ruRU = "Аукцион",
-		enGB = ""
+	},
+	["OPTION_TOOLTIP_SETTINGS_SHOW_AUCTION_HOUSE_TOAST"] = {
+		ruRU = "Показывать всплывающие уведомления, связанные с аукционом. Например, уведомление о том, что кто-то купил ваш товар.",
 	},
 	["SETTINGS_SHOW_CALL_OF_ADVENTURE_TOAST"] = {
 		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tЗов приключений",
-		enGB = ""
+	},
+	["OPTION_TOOLTIP_SETTINGS_SHOW_CALL_OF_ADVENTURE_TOAST"] = {
+		ruRU = "Показывать всплывающие уведомления, сообщающие о начале нового Зова Приключений.",
 	},
 	["OPTION_TOOLTIP_SETTINGS_SHOW_HEAD_HUNTING_TOAST"] = {
 		ruRU = "Показывать всплывающие уведомления о социальной активности. Например уведомление о входе / выходе друга из игры.",
@@ -43196,7 +41548,9 @@ local SIRUS_LOCALIZATION = {
 	},
 	["SETTINGS_SHOW_MISC_TOAST"] = {
 		ruRU = "Прочие уведомления",
-		enGB = ""
+	},
+	["OPTION_TOOLTIP_SETTINGS_SHOW_MISC_TOAST"] = {
+		ruRU = "Показывать всплывающие уведомления, не попадающие ни в одну из указанных выше групп. Например, получение Очков Чести.",
 	},
 	["SETTINGS_SOCIAL_SOUND"] = {
 		ruRU = "Воспроизводить звуки уведомлений",
@@ -43350,6 +41704,22 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "решил",
 		enGB = ""
 	},
+	["FACTION_SELECT_FRIEND_FEMALE"] = {
+		ruRU = "подруга",
+		enGB = ""
+	},
+	["FACTION_SELECT_FRIEND_MALE"] = {
+		ruRU = "друг",
+		enGB = ""
+	},
+	["FACTION_SELECT_GLAD_FEMALE"] = {
+		ruRU = "рада",
+		enGB = ""
+	},
+	["FACTION_SELECT_GLAD_MALE"] = {
+		ruRU = "рад",
+		enGB = ""
+	},
 	["FACTION_SELECT_TEXT_DK_HORDE"] = {
 		ruRU = "Гордые и свободолюбивые расы Орды объединились в борьбе против враждебного внешнего мира, который стремится их уничтожить.\n\nЦелеустремленные и свирепые, воины Орды ценят честь и силу, но порой не могут сдержать излишней агрессии.",
 		enGB = "The proud nations of the Horde are loosely joined in an alliance of convenience against a hostile world that would see them destroyed.\n\nFocused, ferocious, and sometimes monstrous, the Horde values strength and honor, but struggles to keep aggression in check."
@@ -43360,11 +41730,15 @@ local SIRUS_LOCALIZATION = {
 	},
 	["FACTION_SELECT_TEXT_VULPERA_HORDE"] = {
 		ruRU = "Старина Хоззик не растерял своей харизмы! Не зря я обучался тимбилдингу в университете Кезана.\n\nМоя начальница в лагере Черного Копья уже в курсе происходящего. Уверен, после всей этой передряги я могу рассчитывать на небольшой отпуск. Так что смело отправляемся в Оргриммар, сердце Орды!",
-		enGB = ""
 	},
 	["FACTION_SELECT_TEXT_VULPERA_ALLIANCE"] = {
 		ruRU = "Значит, ты %s отправиться со мной? Готов поспорить, ты ни на минуту не разочаруешься в своем выборе!\n\nЯ отправил весточку союзникам в лагере Песни Сирены, так что мы можем отправляться прямиком в Штормград. Там ты увидишь, что из себя представляет Альянс, и найдешь применение своим навыкам.",
-		enGB = ""
+	},
+	["FACTION_SELECT_TEXT_VULPERA_LATE_HORDE"] = {
+		ruRU = "Уверен, капитан Капитан Джан'зо будет рад узнать, что ты отправляешься с нами, ведь в тебе живет дух настоящего волка.\n\nНаши бойцы уже готовятся покинуть остров Тель'Абим. Так что смотри в оба, %s: скоро мы будем в Дуротаре, где бьется сердце Орды — город Оргриммар. Тебе там понравится, зуб даю.",
+	},
+	["FACTION_SELECT_TEXT_VULPERA_LATE_ALLIANCE"] = {
+		ruRU = "Значит, ты %s отправиться с нами? Я знал, что в тебе бьется сердце истинного льва.\n\nДумаю, ты будешь %s слышать, что «Дух Тиффин» снова на плаву. Мы отправляемся домой, в Штормград. Там ты увидишь, что из себя представляет Альянс, и найдешь применение своим навыкам.",
 	},
 	["FACTION_SELECT_TEXT_PANDAREN_HORDE"] = {
 		ruRU = "Магия Клариссы Хладовей помогла мне повергнуть пробуждающего духов Шань-Цзитуна и пробраться в рудники Гуанси.\n\nПо её рассказам гордые и свободолюбивые расы объединились под флагом Орды в борьбе против враждебного внешнего мира, который стремится их уничтожить.",
@@ -43575,7 +41949,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = ""
 	},
 	["TOAST_BODY_6"] = {
-		ruRU = "На вашу гильдию появидся контракт!",
+		ruRU = "На вашу гильдию появился контракт!",
 		enGB = ""
 	},
 	["TOAST_TITLE_7"] = {
@@ -43870,6 +42244,24 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Внимание! Некоторые предметы вашей экипировки были сняты.",
 		enGB = ""
 	},
+	["TOAST_TITLE_66"] = {
+		ruRU = "Задание провалено!",
+	},
+	["TOAST_BODY_66"] = {
+		ruRU = "'%s' провалено. Отмените задание и возьмите заново.",
+	},
+	["TOAST_TITLE_67"] = {
+		ruRU = "Лимит валюты!",
+	},
+	["TOAST_BODY_67"] = {
+		ruRU = "Вы почти достигли лимита \"%s\"",
+	},
+	["TOAST_TITLE_68"] = {
+		ruRU = "Лимит валюты!",
+	},
+	["TOAST_BODY_68"] = {
+		ruRU = "Вы достигли лимита \"%s\"",
+	},
 	["TOAST_CS_VOTE_KICK_BG_TITLE"] = {
 		ruRU = "Голосование",
 		enGB = ""
@@ -43946,69 +42338,56 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Игрок против Игрока - |cffFFFFFFСезон окончен",
 		enGB = "Player vs. Player - |cffFFFFFFNo Active Season"
 	},
+	["PVPFRAME_ARENA_SEASON_NAME_S5"] = {
+		ruRU = "Сезон смертоносного гладиатора (A5, до окончания |cffffffff%s|r)",
+	},
+	["PVPFRAME_ARENA_SEASON_NAME_S6"] = {
+		ruRU = "Сезон гневного гладиатора (A6, до окончания |cffffffff%s|r)",
+	},
 	["PVPFRAME_ARENA_SEASON_NAME_S7"] = {
 		ruRU = "Сезон неумолимого гладиатора (A7, до окончания |cffffffff%s|r)",
-		enGB = ""
 	},
 	["PVPFRAME_ARENA_SEASON_NAME_S8"] = {
 		ruRU = "Сезон разгневанного гладиатора (A8, до окончания |cffffffff%s|r)",
-		enGB = ""
 	},
 	["PVPFRAME_ARENA_SEASON_NAME_S9"] = {
 		ruRU = "Сезон яростного гладиатора (A9, до окончания |cffffffff%s|r)",
-		enGB = ""
 	},
 	["PVPFRAME_ARENA_SEASON_NAME_S10"] = {
 		ruRU = "Сезон яростного гладиатора (A9, до окончания |cffffffff%s|r)",
-		enGB = ""
 	},
 	["PVPFRAME_ARENA_SEASON_NAME_S11"] = {
 		ruRU = "Сезон беспощадного гладиатора (A10, до окончания |cffffffff%s|r)",
-		enGB = ""
 	},
 	["PVPFRAME_ARENA_SEASON_NAME_S12"] = {
 		ruRU = "Сезон беспощадного гладиатора (A10, до окончания |cffffffff%s|r)",
-		enGB = ""
 	},
 	["PVPFRAME_ARENA_SEASON_NAME_S13"] = {
 		ruRU = "Сезон беспощадного гладиатора (A10, до окончания |cffffffff%s|r)",
-		enGB = ""
 	},
 	["PVPFRAME_ARENA_SEASON_NAME_S14"] = {
 		ruRU = "Сезон беспощадного гладиатора (A10, до окончания |cffffffff%s|r)",
-		enGB = ""
 	},
 	["PVPFRAME_ARENA_SEASON_NAME_S15"] = {
 		ruRU = "Сезон злонравного гладиатора (A11, до окончания |cffffffff%s|r)",
-		enGB = ""
 	},
 	["PVPFRAME_ARENA_SEASON_NAME_S16"] = {
 		ruRU = "Сезон злонравного гладиатора (A11, до окончания |cffffffff%s|r)",
-		enGB = ""
 	},
 	["PVPFRAME_ARENA_SEASON_NAME_S17"] = {
-		ruRU = "Сезон тиранического гладиатора (A12, до окончания |cffffffff%s|r)",
-		enGB = ""
+		ruRU = "Сезон деспотичного гладиатора (A12, до окончания |cffffffff%s|r)",
 	},
 	["PVPFRAME_ARENA_SEASON_NAME_S18"] = {
-		ruRU = "Сезон тиранического гладиатора (A12, до окончания |cffffffff%s|r)",
-		enGB = ""
+		ruRU = "Сезон деспотичного гладиатора (A12, до окончания |cffffffff%s|r)",
 	},
 	["PVPFRAME_ARENA_SEASON_NAME_S19"] = {
-		ruRU = "Сезон тиранического гладиатора (A12, до окончания |cffffffff%s|r)",
-		enGB = ""
+		ruRU = "Сезон деспотичного гладиатора (A12, до окончания |cffffffff%s|r)",
 	},
 	["PVPFRAME_ARENA_SEASON_NAME_S20"] = {
 		ruRU = "Сезон бездушного гладиатора (A13, до окончания |cffffffff%s|r)",
-		enGB = ""
 	},
-	["HEIRLOOM_FRAME_HELP_TOOLTIP_HEAD"] = {
-		ruRU = "Особенности коллекции \"Наследство\"",
-		enGB = ""
-	},
-	["HEIRLOOM_FRAME_HELP_TOOLTIP"] = {
-		ruRU = "\nНа нашем проекте фамильные предметы добавляются в коллекцию с помощью специальных токенов.\nВы можете их приобрести в игре за внутриигровую валюту или в нашем магазине.\n\nПосле добавления предмета в коллекцию - он доступен вам на любом персонаже аккаунта внутри игрового мира.\n\nЧтобы получить фамильный предмет - щелкните левой кнопкой мыши по нему, и он попадет к вам в сумку.\nДелать это можно неограниченное количество раз.",
-		enGB = ""
+	["PVPFRAME_ARENA_SEASON_NAME_S21"] = {
+		ruRU = "Сезон проклятого гладиатора (A14, до окончания |cffffffff%s|r)",
 	},
 	["ENCOUNTER_JOURNAL_SECTION_FLAG0"] = {
 		ruRU = "Вниманию танка",
@@ -44130,6 +42509,10 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "|c00FF7FFFИллюзия: (.+)|r$",
 		enGB = ""
 	},
+	["TOOLTIP_TITANIUM_WEAPON_CHAIN_SPELL"] = {
+		ruRU = "Титановая цепь для оружия",
+		enGB = "Titanium Weapon Chain"
+	},
 	["ITEM_UPGRADE_LEFT_ITEM_LIST"] = {
 		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tСразу отображать улучшаемые предметы",
 		enGB = ""
@@ -44234,14 +42617,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Распространение на аккаунт",
 		enGB = ""
 	},
-	["STORE_BUY_FREE"] = {
-		ruRU = "Получить",
-		enGB = ""
-	},
-	["STORE_NOT_ENOUGHT_CURRENCY"] = {
-		ruRU = "|cffff0000У вас недостаточно средств.|r\n(В наличии %d |4бонус:бонуса:бонусов;.)",
-		enGB = "",
-	},
 	["ARENA_REPLAY_DISABLE"] = {
 		ruRU = "Просмотр записей арены в данный момент недоступен.",
 		enGB = "Arena replays are currently unavailable."
@@ -44274,8 +42649,12 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Опыт Боевого Пропуска",
 		enGB = "",
 	},
+	["BATTLEPASS_EXPERIENCE_DESCRIPTION"] = {
+		ruRU = "Выполняя разные активности, вы зарабатываете опыт Боевого Пропуска, который увеличивает уровень вашего Боевого пропуска. Увеливая уровень Боевого Пропуска вы получаете разнообразные награды, в том числе уникальные.",
+		enGB = "",
+	},
 	["BATTLEPASS_EXPERIENCE_INFO"] = {
-		ruRU = "Основным источником опыта являются задания Боевого Пропуска.\nТакже опыт начисляется за ПВП активности:\nПобеда на Поле Боя принесет %s ед. опыта.\nПобеда на Арене - %s ед. (%s в SoloQ, %s в 1на1).",
+		ruRU = "Основным источником опыта являются задания Боевого Пропуска.\nТакже опыт начисляется за активности:\nПобеда на Поле Боя принесет %s ед. опыта.\nПобеда на Арене - %s ед. (%s в SoloQ, %s в 1на1).\nПобеда в мини-игре - %s ед.",
 		enGB = "",
 	},
 	["BATTLEPASS_ITEM_EXP_TO_LEVEL"] = {
@@ -44335,7 +42714,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["BATTLEPASS_PURCHASE_PREMIUM"] = {
-		ruRU = "Получить «Premium»",
+		ruRU = "Купить «Premium»",
 		enGB = "",
 	},
 	["BATTLEPASS_PURCHASE_PREMIUM_BODY"] = {
@@ -44406,33 +42785,29 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Боевой пропуск: дополнительное задание",
 		enGB = "",
 	},
-	["BATTLEPASS_QUEST_MSG_STATUS_LEVEL_REWARD_INV_FULL"] = {
+	["BATTLEPASS_STATUS_LEVEL_REWARD_INV_FULL"] = {
 		ruRU = "В вашем инвентаре недостаточно свободного места",
-		enGB = "",
 	},
-	["BATTLEPASS_QUEST_MSG_STATUS_LEVEL_REWARD_NOT_FOUND"] = {
+	["BATTLEPASS_STATUS_REWARD_NOT_FOUND"] = {
 		ruRU = "Награды за уровни не найдены",
-		enGB = "",
 	},
-	["BATTLEPASS_QUEST_MSG_STATUS_QUEST_ALREADY_COMPLETE"] = {
+	["BATTLEPASS_STATUS_QUEST_ALREADY_COMPLETE"] = {
 		ruRU = "Задание уже выполнено",
-		enGB = "",
 	},
-	["BATTLEPASS_QUEST_MSG_STATUS_QUEST_DATA_ERROR"] = {
+	["BATTLEPASS_STATUS_QUEST_DATA_ERROR"] = {
 		ruRU = "Ошибка данных при замене задания",
-		enGB = "",
 	},
-	["BATTLEPASS_QUEST_MSG_STATUS_INVALIDE_QUEST"] = {
+	["BATTLEPASS_STATUS_INVALIDE_QUEST"] = {
 		ruRU = "Это задание не является частью Боевого Пропуска",
-		enGB = "",
 	},
-	["BATTLEPASS_QUEST_MSG_STATUS_DONT_HAVE_QUEST"] = {
+	["BATTLEPASS_STATUS_DONT_HAVE_QUEST"] = {
 		ruRU = "Нельзя заменить недоступное задание",
-		enGB = "",
 	},
-	["BATTLEPASS_QUEST_MSG_STATUS_QUEST_NOT_COMPLETE"] = {
+	["BATTLEPASS_STATUS_QUEST_NOT_COMPLETE"] = {
 		ruRU = "Задание не выполнено",
-		enGB = "",
+	},
+	["BATTLEPASS_STATUS_ITEM_AMOUNT_LIMIT"] = {
+		ruRU = "У вас слишком много таких предметов",
 	},
 	["BATTLEPASS_QUEST_NO_AVAILABLE"] = {
 		ruRU = "%s закончились\nНовые задания через: |cffd2c9c1%s|r",
@@ -44570,14 +42945,6 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "xp",
 		enGB = "",
 	},
-	["STORE_NOT_ENOUGH_CURRENCY_REPLENISH"] = {
-		ruRU = "|cffFF0000Внимание. У вас недостаточно средств!|r\nПри нажатии на кнопку покупки, вам будет предложено\nсовершить пожертвование на недостающую сумму бонусов.",
-		enGB = "",
-	},
-	["STORE_DONATE_DIALOG_TEXT"] = {
-		ruRU = "Ссылка для совершения пожертвования",
-		enGB = "",
-	},
 	["BINDING_NAME_TOGGLEBATTLEPASS"] = {
 		ruRU = "Боевой пропуск",
 		enGB = "",
@@ -44657,7 +43024,7 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "Чтобы отказаться от участия в испытании - необходимо находиться в столице.",
 	},
 	["HARDCORE_CHALLENGE_1_DESCRIPTION"] = {
-		ruRU = "Испытайте себя на стойкость и выносливость, столкнувшись лицом к лицу с этим жестоким миром. Но помните, что вы не бессмертны, у вас есть всего лишь одна жизнь. Но вам не обязательно проходить это приключение в одиночку: объединяйтесь с другими истинными искателями приключений, чтобы пройти испытание вместе. Сможете ли вы преодолеть это непростое испытание, чтобы достичь небывалых высот? Покажите на что вы способны и станьте настоящей легендой!",
+		ruRU = "Испытайте себя на стойкость и выносливость, столкнувшись лицом к лицу с этим жестоким миром. Но помните, что вы не бессмертны, у вас есть всего лишь одна жизнь. Но вам не обязательно проходить это приключение в одиночку: объединяйтесь с другими истинными искателями приключений, чтобы пройти испытание вместе. Сможете ли вы преодолеть это непростое испытание, чтобы достичь небывалых высот? Покажите на что вы способны и станьте настоящей легендой!\n\nПодробнее про режим испытания вы можете узнать по этой ссылке |cfff5e6bd|Hkbase:1:68|h[Испытание \"Один шанс!\"]|h|r",
 		enGB = "",
 	},
 	["HARDCORE_CHALLENGE_1_FINISH_INFO"] = {
@@ -44809,11 +43176,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "You cannot purchase items with bonuses while you are participating in the \"%s\" challenge.",
 	},
 	["HARDCORE_FEATURE_13_NAME"] = {
-		ruRU = "Недоступны классовые способности предотвращения смерти",
+		ruRU = "Недоступны некоторые классовые способности",
 		enGB = "",
 	},
 	["HARDCORE_FEATURE_13_DESCRIPTION"] = {
-		ruRU = "Вы не сможете использовать классовые способности , которые гарантированно спасут от смерти вас или других игроков. К ним относятся \"Камень души\" чернокнижников и \"Перерождение\" шаманов.",
+		ruRU = "Вы не сможете использовать классовые способности, которые гарантированно спасут от смерти вас или других игроков, а также, которые гарантируют смерть вам. К ним относятся \"Камень души\" чернокнижников, \"Перерождение\" шаманов и \"Божественное вмешательство\" паладинов.",
 		enGB = "",
 	},
 	["HARDCORE_FEATURE_13_DISABLE"] = {
@@ -44833,11 +43200,11 @@ local SIRUS_LOCALIZATION = {
 		enGB = "The auction is not available in challenge mode \"%s\".",
 	},
 	["HARDCORE_FEATURE_15_NAME"] = {
-		ruRU = "Игровая почта недоступна",
+		ruRU = "Использование почты ограничено",
 		enGB = "",
 	},
 	["HARDCORE_FEATURE_15_DESCRIPTION"] = {
-		ruRU = "Вы не сможете забирать содержимое писем или отправлять письма другим игрокам.",
+		ruRU = "Вы не сможете забирать содержимое писем или отправлять письма другим игрокам.\nДоступен сбор предметов только с автоматических писем или писем от администрации проекта.",
 		enGB = "",
 	},
 	["HARDCORE_FEATURE_15_DISABLE"] = {
@@ -44894,6 +43261,14 @@ local SIRUS_LOCALIZATION = {
 	},
 	["HARDCORE_FEATURE_19_DISABLE"] = {
 		ruRU = "",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_20_NAME"] = {
+		ruRU = "Чёрный рынок недоступен",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_20_DESCRIPTION"] = {
+		ruRU = "Вы не сможете участвовать в аукционе Черного рынка.",
 		enGB = "",
 	},
 	["HARDCORE_FEATURE1_1_NAME"] = {
@@ -45101,7 +43476,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "Receiving Battle Pass rewards is not available in the \"%s\" challenge mode.",
 	},
 	["HARDCORE_FEATURE1_18_NAME"] = {
-		ruRU = "Недоступна часть коллекции",
+		ruRU = "Недоступна часть коллекции и заклинания, распространяемые на аккаунт",
 		enGB = "",
 	},
 	["HARDCORE_FEATURE1_18_DESCRIPTION"] = {
@@ -45123,6 +43498,30 @@ local SIRUS_LOCALIZATION = {
 	["HARDCORE_FEATURE1_19_DISABLE"] = {
 		ruRU = "Гильдейский банк недоступен в режиме испытания \"%s\".",
 		enGB = "The Guild Bank is not available in Challenge Mode \"%s\".",
+	},
+	["HARDCORE_FEATURE1_20_NAME"] = {
+		ruRU = "Рулетка тысячелетия недоступна",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE1_20_DESCRIPTION"] = {
+		ruRU = "Вы не сможете попытать удачу в Рулетке тысячелетия у Велеса.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_CUSTOM_1_NAME"] = {
+		ruRU = "Недоступен сундук арены Гурубаши",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_CUSTOM_1_DESCRIPTION"] = {
+		ruRU = "На арене Гурубаши в Тернистой Долине вы не сможете забрать награды из сундука Арены с сокровищами.",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_CUSTOM_2_NAME"] = {
+		ruRU = "Использование реферальной программы имеет ограничения",
+		enGB = "",
+	},
+	["HARDCORE_FEATURE_CUSTOM_2_DESCRIPTION"] = {
+		ruRU = "Во время участия в испытании вы не будете получать бонус к опыту, возможность призыва друга и дарения уровней.",
+		enGB = "",
 	},
 	["HARDCORE_SELECT_CHALLENGE_HELPTIP_TEXT"] = {
 		ruRU = "Выберите испытание!\nТщательно ознакомьтесь с описанием, изменить свое решение вы уже не сможете.\nУ вас только 1 шанс и только 1 попытка проявить себя.",
@@ -45149,7 +43548,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["HARDCORE_START_CHALLENGE_TEXT"] = {
-		ruRU = "Вы уверены, что хотите начать испытание %s?\n\nВо время данного испытания у вас будет лишь одна жизнь. Испытание будет провалено, если вы умрете во время его прохождения.\n\nВосстановление персонажа через обращение к администрации проекта невозможно. Независимо от причин гибели, будь то игровой момент или технические неполадки, смерть вашего персонажа будет окончательной. Соглашаясь на прохождение испытания, вы принимаете данные условия.",
+		ruRU = "Вы уверены, что хотите начать испытание %s?\n\nВо время данного испытания у вас будет лишь одна жизнь. Испытание будет провалено, если вы умрете во время его прохождения.\n\nСоглашаясь на прохождение испытания, вы принимаете данные условия.",
 		enGB = "",
 	},
 	["HARDCORE_CANCEL_CHALLENGE_TEXT"] = {
@@ -45269,7 +43668,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["HARDCORE_LOSS_BANNER_TEXT"] = {
-		ruRU = "|c%s%s|r, |cffffffff%s %d-го уровня|r, умер от |3-1(%s) в зоне \"%s\"",
+		ruRU = "|c%s%s|r, |cffffffff%s %d-го уровня|r, умер в зоне \"%s\", причина смерти: %s",
 		enGB = "",
 	},
 	["HARDCORE_LOSS_BANNER_TEXT_NPC"] = {
@@ -45280,8 +43679,11 @@ local SIRUS_LOCALIZATION = {
 		ruRU = "|c%s%s|r, |cffffffff%s %d-го уровня|r, умер в PvP схватке в зоне \"%s\"",
 		enGB = "",
 	},
+	["HARDCORE_LOSS_BANNER_TEXT_FRIENDLY_FIRE"] = {
+		ruRU = "|c%s%s|r, |cffffffff%s %d-го уровня|r, погиб от действий союзника в зоне \"%s\"",
+	},
 	["HARDCORE_LOSS_TOAST_TEXT"] = {
-		ruRU = "|c%s%s|r, %s %d-го уровня, умер от |3-1(%s) в зоне \"%s\"",
+		ruRU = "|c%s%s|r, %s %d-го уровня, умер в зоне \"%s\", причина смерти: %s",
 		enGB = "",
 	},
 	["HARDCORE_LOSS_TOAST_TEXT_NPC"] = {
@@ -45290,6 +43692,10 @@ local SIRUS_LOCALIZATION = {
 	},
 	["HARDCORE_LOSS_TOAST_TEXT_PVP"] = {
 		ruRU = "|c%s%s|r, %s %d-го уровня, умер в PvP схватке в зоне \"%s\"",
+		enGB = "",
+	},
+	["HARDCORE_COMPLETE_BANNER_TEXT"] = {
+		ruRU = "|c%s%s|r, %s %s успешно завершил испытание \"%s\"",
 		enGB = "",
 	},
 	["HARDCORE_SUGGESTION_TITLE_1"] = {
@@ -45305,7 +43711,7 @@ local SIRUS_LOCALIZATION = {
 		enGB = "",
 	},
 	["HARDCORE_SUGGESTION_DESCRIPTION_1"] = {
-		ruRU = "Возможность показать всем вокруг свою стойкость и выдержку, а также доказать себе, что вы способны выжить даже в самых экстремальных условиях. Испытайте себя, чтобы достичь небывалых высот и получить ценные награды за свои подвиги!",
+		ruRU = "Возможность показать всем вокруг свою стойкость и выдержку, а также доказать себе, что вы способны выжить даже в самых экстремальных условиях. Испытайте себя, чтобы достичь небывалых высот и получить ценные награды за свои подвиги!\n\nПодробнее про режим испытания вы можете узнать по этой ссылке |cfff5e6bd|Hkbase:1:68|h[Испытание \"Один шанс!\"]|h|r",
 		enGB = "",
 	},
 	["HARDCORE_SUGGESTION_DESCRIPTION_2"] = {
@@ -45399,15 +43805,1623 @@ local SIRUS_LOCALIZATION = {
 	["OPTION_SHOW_HARDCORE_NOTIFICATION_LEVEL_3"] = {
 		ruRU = "Вы будете получать уведомления о смертях игроков, уровень которых равен или превышает 60.",
 	},
+	["SETTINGS_LOOT_ALERT_THRESHOLD"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tПолученная добыча",
+	},
+	["OPTION_LOOT_ALERT_THRESHOLD"] = {
+		ruRU = "Отображение всплывающего уведомления о получении добычи определенного качества и выше",
+	},
+	["OPTION_LOOT_ALERT_THRESHOLD_DISABLED"] = {
+		ruRU = "Отключено",
+	},
+	["SETTINGS_BLOCK_GROUP_INVITES"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tБлокировать приглашения в группу",
+	},
+	["SETTINGS_BLOCK_GROUP_INVITES_0"] = {
+		ruRU = "Отключено",
+	},
+	["SETTINGS_BLOCK_GROUP_INVITES_1"] = {
+		ruRU = "Блокировать все",
+	},
+	["SETTINGS_BLOCK_GROUP_INVITES_2"] = {
+		ruRU = "Кроме друзей",
+	},
+	["SETTINGS_BLOCK_GROUP_INVITES_3"] = {
+		ruRU = "Кроме согильдейцев",
+	},
+	["SETTINGS_BLOCK_GROUP_INVITES_4"] = {
+		ruRU = "Кроме друзей и согильдейцев",
+	},
+	["OPTION_BLOCK_GROUP_INVITES_0"] = {
+		ruRU = "Блокировка приглашений отключена",
+	},
+	["OPTION_BLOCK_GROUP_INVITES_1"] = {
+		ruRU = "Блокировать все приглашения",
+	},
+	["OPTION_BLOCK_GROUP_INVITES_2"] = {
+		ruRU = "Блокировать все приглашения, кроме приглашений от друзей",
+	},
+	["OPTION_BLOCK_GROUP_INVITES_3"] = {
+		ruRU = "Блокировать все приглашения, кроме приглашений от согильдейцев",
+	},
+	["OPTION_BLOCK_GROUP_INVITES_4"] = {
+		ruRU = "Блокировать все приглашения, кроме приглашений от друзей и согильдейцев",
+	},
+	["SETTINGS_AUTO_ACCEPT_GROUP_INVITES"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tАвтопринятие приглашений в группу",
+	},
+	["SETTINGS_AUTO_ACCEPT_GROUP_INVITES_0"] = {
+		ruRU = "Ни от кого",
+	},
+	["SETTINGS_AUTO_ACCEPT_GROUP_INVITES_1"] = {
+		ruRU = "От друзей",
+	},
+	["SETTINGS_AUTO_ACCEPT_GROUP_INVITES_2"] = {
+		ruRU = "От согильдийцев",
+	},
+	["SETTINGS_AUTO_ACCEPT_GROUP_INVITES_3"] = {
+		ruRU = "От друзей и согильдийцев",
+	},
+	["OPTION_AUTO_ACCEPT_GROUP_INVITES_0"] = {
+		ruRU = "Никакие приглашения в группу не будут приниматься автоматически",
+	},
+	["OPTION_AUTO_ACCEPT_GROUP_INVITES_1"] = {
+		ruRU = "Автоматически принимаются приглашения в группу от друзей.",
+	},
+	["OPTION_AUTO_ACCEPT_GROUP_INVITES_2"] = {
+		ruRU = "Автоматически принимаются приглашения в группу от членов вашей гильдии.",
+	},
+	["OPTION_AUTO_ACCEPT_GROUP_INVITES_3"] = {
+		ruRU = "Автоматически принимаются приглашения в группу от друзей и членов вашей гильдии.",
+	},
+	["CHARACTER_FORM"] = {
+		ruRU = "Облик |3-1(%s)",
+		enGB = "%s Form",
+	},
+	["STATUS_MESSAGE_INVALID_PARAMETERS"] = {
+		ruRU = "Неверные параметры",
+		enGB = "Invalid parameters"
+	},
+	["CUSTOMIZATION_FORM_VISAGE"] = {
+		ruRU = "Человек",
+		enGB = "Visage"
+	},
+	["CUSTOMIZATION_FORM_DRACTHYR"] = {
+		ruRU = "Драктир",
+		enGB = "Dracthyr"
+	},
+	["CUSTOMIZATION_OPTION_EYES_COLOR"] = {
+		ruRU = "Цвет глаз",
+		enGB = "Eyes color",
+	},
+	["CUSTOMIZATION_OPTION_HORNS_ARMOR"] = {
+		ruRU = "Рога и броня",
+		enGB = "Horns and armor",
+	},
+	["BARBER_SHOP_MODE_CHANGE_WARNING"] = {
+		ruRU = "Вы потереяете все не сохраненные изменения внешности при изменении режима",
+		enGB = "",
+	},
+	["BATTLE_PASS_SPLASH_NEW_SEASON_TITLE"] = {
+		ruRU = "Новый Боевой пропуск",
+	},
+	["BATTLE_PASS_SPLASH_ACTION_LABLE"] = {
+		ruRU = "Открыть Боевой пропуск",
+	},
+	["SPLASH_ACTION_OPEN_LABLE"] = {
+		ruRU = "Открыть",
+	},
+	["BRAWL_QUEUE_ERROR"] = {
+		ruRU = "Потасовки доступны с 80 уровня персонажа.",
+	},
+	["WARMODE_ASSIST_MODE_LABEL"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tПомощь в PvP сражениях",
+	},
+	["OPTION_TOOLTIP_WARMODE_ASSIST_MODE_LABEL"] = {
+		ruRU = "Если эта функция включена, вы сможете помогать союзным игрокам в PvP сражениях. Но при этом вы потеряете нейтральный статус и войдете в PvP бой.\n\nЕсли эта функция отключена, вы сохраните нейтральный статус и не сможете помогать союзным игрокам в PvP сражениях. Это также относится к игрокам, использующим \"Знак миротворца\".",
+	},
+	["OPTION_TOOLTIP_WARMODE_ASSIST_MODE_LABEL_DISABLED"] = {
+		ruRU = "\n|cffff2000Вам присвоен нейтральный статус, пока на вас действует эффект \"Бремя мира\".|r",
+	},
+	["TIME_RELATIVE_NOW"] = {
+		ruRU = "Только что",
+	},
+	["TIME_RELATIVE_YESTERDAY"] = {
+		ruRU = "Вчера",
+	},
+	["TIME_RELATIVE_SECOND"] = {
+		ruRU = "%d |4секунда:секунды:секунд;",
+	},
+	["TIME_RELATIVE_MINUT"] = {
+		ruRU = "%d |4минуту:минуты:минут;",
+	},
+	["TIME_RELATIVE_HOUR"] = {
+		ruRU = "%d |4час:часа:часов;",
+	},
+	["TIME_RELATIVE_DAY"] = {
+		ruRU = "%d |4день:дня:дней;",
+	},
+	["TIME_RELATIVE_WEEK"] = {
+		ruRU = "%d |4неделя:недели:недель;",
+	},
+	["TIME_RELATIVE_MONTH"] = {
+		ruRU = "%d |4месяц:месяца:месяцев;",
+	},
+	["TIME_RELATIVE_YEAR"] = {
+		ruRU = "%d |4год:года:лет;",
+	},
+	["TIME_RELATIVE_AGO"] = {
+		ruRU = "%s назад",
+	},
+	["SERVER_NEWS_TITLE"] = {
+		ruRU = "Новости сервера",
+	},
+	["SERVER_NEWS_ANNONCES"] = {
+		ruRU = "Анонсы",
+	},
+	["SERVER_NEWS_CHANGES"] = {
+		ruRU = "Изменения",
+	},
+	["SERVER_NEWS_LINK_TEXT"] = {
+		ruRU = "ссылка",
+	},
+	["SERVER_NEWS_EMBED_NO_DESCRIPTION_LINK"] = {
+		ruRU = "Подробности по ссылке",
+	},
+	["SERVER_NEWS_ENTRY_UPDATE_TOOLTIP_1"] = {
+		ruRU = "Сообщение было обновлено!",
+	},
+	["SERVER_NEWS_ENTRY_UPDATE_TOOLTIP_2"] = {
+		ruRU = "Оригинальное сообщение от %s",
+	},
+	["HELPTIP_MICRO_MENU_LFD_BATTLGROUND"] = {
+		ruRU = "Вам доступны сражения на полях боя!",
+		enGB = "You can now fight in battlegrounds!"
+	},
+	["HELPTIP_MICRO_MENU_LFD_DUNGEON"] = {
+		ruRU = "Вам доступен поиск группы для прохождения подземелий!",
+	},
+	["HELPTIP_MICRO_MENU_LFD_DUNGEON_HEROIC"] = {
+		ruRU = "Вам стали доступны к прохождению героические подземелья!",
+	},
+	["HELPTIP_MICRO_MENU_LFD_DUNGEON_HEROIC_DROPDOWN"] = {
+		ruRU = "Героические подземелья предназначены для игроков 80 уровня и обладают повышенной сложностью, но при этом предлагают и хорошие награды.\n\nНекоторые героические подземелья доступны сразу для прохождения, другие же требуют более высокий уровень вашей экипировки или выполнение особого задания.",
+	},
+	["HELPTIP_MICRO_MENU_GUILD"] = {
+		ruRU = "Вы можете найти помощь и друзей, вступив в гильдию. Вместе веселей!",
+	},
+	["HELPTIP_MICRO_MENU_ENCOUNTER_JOURNAL"] = {
+		ruRU = "Полезную информацию о подземельях, рейдах, боссах и добычи с них, можно найти во вкладке \"Приключения\".",
+	},
+	["HELPTIP_MICRO_MENU_ENCOUNTER_JOURNAL_SUGGESTED_CONTENT"] = {
+		ruRU = "Ключевые активности нашей игры можно отслеживать в журнале \"Рекомендуемый контент\".",
+	},
+	["HELPTIP_MICRO_MENU_ENCOUNTER_JOURNAL_SUGGESTED_CONTENT_CHANGE_TAB"] = {
+		ruRU = "Большинство рекомендаций обновляется по мере выполнения активностей и изменений в игровом мире. Эта вкладка поможет вам удобнее отслеживать свой текущий прогресс и находить новые цели для дальнейшего развития в игре.\nЗаглядывайте сюда почаще!",
+	},
+	["HELPTIP_NEW_BRAWL_AVAILABLE"] = {
+		ruRU = "Стала доступна потасовка %s",
+	},
+	["HELPTIP_BATTLEPASS_AVAILABLE"] = {
+		ruRU = "Вам доступен Боевой Пропуск!",
+	},
+	["HELPTIP_MOUNT_IN_BAGS_AVAILABLE"] = {
+		ruRU = "Вы получили средство передвижения. Чтобы его использовать, нужно изучить навык \"Верховая езда\" соответствующего уровня.",
+	},
+	["HELPTIP_FIRST_PROFESSION_LEARNED"] = {
+		ruRU = "Вы изучили новую профессию.\nОткройте \"Заклинания и Способности\", чтобы получить больше информации.",
+	},
+	["HELPTIP_FIRST_PROFESSION_LEARNED_STEP2"] = {
+		ruRU = "Перейдите во вкладку \"Профессия\", чтобы увидеть все ваши профессии и уровень вашего навыка в них.",
+	},
+	["HELPTIP_FIRST_MOUNT_LEARNED"] = {
+		ruRU = "Вы изучили новое средство передвижения.\n\n|cFF00FFFFНажмите на значок|r чтобы посмотреть подробности.",
+	},
+	["HELPTIP_COLLECTION_MOUNT_CHANGE_TAB"] = {
+		ruRU = "Перейдите на вкладку, чтобы увидеть список доступных средств передвижения.",
+	},
+	["HELPTIP_PET_IN_BAGS_AVAILABLE"] = {
+		ruRU = "Вы получили нового спутника!",
+	},
+	["HELPTIP_FIRST_PET_LEARNED"] = {
+		ruRU = "Вы изучили нового спутника.\n\n|cFF00FFFFНажмите на значок|r чтобы посмотреть подробности.",
+	},
+	["HELPTIP_COLLECTION_PET_CHANGE_TAB"] = {
+		ruRU = "Перейдите на вкладку, чтобы посмотреть список доступных спутников.",
+	},
+	["HELPTIP_TOY_IN_BAGS_AVAILABLE"] = {
+		ruRU = "Вы получили новую игрушку!",
+	},
+	["HELPTIP_FIRST_TOY_LEARNED"] = {
+		ruRU = "Вы изучили новую игрушку!\n\n|cFF00FFFFНажмите на значок|r, чтобы посмотреть подробности.",
+	},
+	["HELPTIP_COLLECTION_TOY_CHANGE_TAB"] = {
+		ruRU = "Перейдите на вкладку, чтобы увидеть список доступных игрушек.",
+	},
+	["HELPTIP_TOYS_HEAD"] = {
+		ruRU = "Особенности коллекции \"Игрушки\"",
+	},
+	["HELPTIP_TOYS"] = {
+		ruRU = "Игрушки - это предметы, которые предназначены для развлечения.\n\nОдни дают косметический эффект, другие позволяют призвать игровой объект в мир для взаимодействия.\n\nНаведитесь на интересующую вас игрушку, чтобы узнать о её применении или способе добычи.",
+	},
+	["HELPTIP_HEIRLOOM_HEAD"] = {
+		ruRU = "Особенности коллекции \"Наследство\"",
+	},
+	["HELPTIP_HEIRLOOM"] = {
+		ruRU = "Фамильные предметы - это предметы, которые предназначены для облегчения прокачки персонажа. Такие предметы, как правило, увеличивают опыт, получаемый персонажем игрока за задания и убийство монстров. А ещё у таких предметов увеличиваются характеристики вместе с уровнем персонажа вплоть до 80 уровня.\n\nНа нашем проекте фамильные предметы добавляются в коллекцию с помощью специальных токенов. Вы можете их приобрести в игре за внутриигровую валюту или в нашем магазине.\n\nПосле добавления предмета в коллекцию - он доступен вам на любом персонаже аккаунта внутриигрового мира,\n\nЧтобы получить фамильный предмет - щелкните левой кнопкой мыши по нему, и он попадёт к вам в сумку. Делать это можно неограничнное количество раз.",
+	},
+	["HELPTIP_FIRST_HEIRLOOM_LEARNED"] = {
+		ruRU = "Вам доступен новый фамильный предмет!\n\n|cFF00FFFFНажмите на значок|r, чтобы посмотреть подробности.",
+	},
+	["HELPTIP_COLLECTION_HEIRLOOM_CHANGE_TAB"] = {
+		ruRU = "Перейдите на вкладку, чтобы увидеть список доступных игрушек.",
+	},
+	["HELPTIP_NEW_SKILL_AVAILABLE"] = {
+		ruRU = "Вам стало доступно новое умение!",
+	},
+	["HELPTIP_TALENT_AVAILABLE"] = {
+		ruRU = "Вам стали доступны очки талантов. Теперь ваш персонаж будет получать 1 очко таланта за каждый новый уровень. Используйте их для усиления персонажа.",
+	},
+	["HELPTIP_TALENT_SUMMARY"] = {
+		ruRU = "Информация о специализациях вашего класса.",
+	},
+	["HELPTIP_GUILD_JOINED"] = {
+		ruRU = "Вы вступили в гильдию!\nТеперь вам доступны соответствующие привилегии и награды, а также информация о других членах гильдии. А в чате стал доступен \"Канал гильдии\" для общения с согильдийцами.",
+	},
+	["HELPTIP_LILY_BAG_AVAILABLE"] = {
+		ruRU = "Вам стали доступны подарки из сумки Лили.\nПриятной игры!",
+	},
+	["HELPTIP_KNOWLEDGEBASE_NOTIFICATION"] = {
+		ruRU = "Возник вопрос по игре или требуется наша помощь?\n\nМы собрали обширную базу информации по нашему серверу в разделе \"Помощь\".\nА ещё там можно связаться с нами по проблемам технического характера или по неподобающему поведению игроков.",
+	},
+	["HELPTIP_KNOWLEDGEBASE_NOTIFICATION_2"] = {
+		ruRU = "Откройте вкладку \"Помощь\", чтобы изучить все её возможности.",
+	},
+	["HELPTIP_HEAD_HUNTING_NOTIFICATION"] = {
+		ruRU = "Вы можете назначить награду за убийство другого игрока!",
+	},
+	["HELPTIP_HEAD_HUNTING_TAB_NOTIFICATION"] = {
+		ruRU = "Перейдите на вкладку, чтобы увидеть информацию об охоте за головами.",
+	},
+	["HELPTIP_ACHIEVEMENT_NOTIFICATION"] = {
+		ruRU = "Вы получили достижение!",
+	},
+	["HELPTIP_RIDING_SKILL_AVAILABLE"] = {
+		ruRU = "Вам доступно задание от тренера верховой езды!",
+	},
+	["HELPTIP_REPUTATION_HEAD"] = {
+		ruRU = "Репутация начисляется за выполнение заданий и убийство противников.\n\nКаждое последующее отношение с фракцией требует больше очков репутации. Наивысшие отношение с фракцией - превознесение.\n\nНажмите на репутацию, чтобы посмотреть информацию о фракции, сделать репутацию неактивной, настроить индикатор отображения или отметить фракцию, как своего противника. Наведитесь в выбранной репутации на интересующий вас пункт, чтобы узнать больше о его применении.",
+	},
+	["HELPTIP_CURRENCY_HEAD"] = {
+		ruRU = "Валюта начисляется за выполнение заданий, убийство противников и победы в активностях.\n\nНаведите курсор на интересующую вас валюту, чтобы получить краткую информацию о ней.\n\nНажмите на валюту, чтобы сделать её неактивной или настроить отображение в рюкзаке. Наведитесь в выбранной валюте на интересующий вас пункт, чтобы узнать больше о его применении.",
+	},
+	["HELPTIP_QUEST_MAP"] = {
+		ruRU = "Чтобы открыть место выполнения задания, нажмите на карту в журнале заданий.",
+	},
+	["HEPLPLATE_KNOWLEDGEBASE_TUTORIAL_1"] = {
+		ruRU = "Здесь собрана подробная информация по проекту WoW Sirus.\n\nВы можете вручную найти интересующую вас тему или воспользоваться поиском.\n\nЧтобы воспользоваться поиском, введите полное или частичное название в поле ввода данных. После этого нажмите кнопку \"Поиск\".",
+	},
+	["HEPLPLATE_KNOWLEDGEBASE_TUTORIAL_2"] = {
+		ruRU = "Здесь собрана информация о способах защиты вашей учётной записи.",
+	},
+	["HEPLPLATE_KNOWLEDGEBASE_TUTORIAL_3"] = {
+		ruRU = "Здесь собрана информация о способах связи, если вы хотите сообщить о найденном баге или предложить свою идею по улучшению проекта.",
+	},
+	["HEPLPLATE_KNOWLEDGEBASE_TUTORIAL_4"] = {
+		ruRU = "Здесь собраны ключевые интернет-ресурсы, где мы публикуем актуальную информацию о нашем сервере.",
+	},
+	["HEPLPLATE_KNOWLEDGEBASE_TUTORIAL_5"] = {
+		ruRU = "Здесь можно решить проблему, если ваш персонаж застрял.",
+	},
+	["HEPLPLATE_KNOWLEDGEBASE_TUTORIAL_6"] = {
+		ruRU = "Здесь собрана информация о том, что делать, если вы столкнулись с неподобающим поведением других игроков.",
+	},
+	["HEPLPLATE_KNOWLEDGEBASE_TUTORIAL_7"] = {
+		ruRU = "Здесь вы можете напрямую связаться с нами, если возникли проблемы.",
+	},
+	["HEPLPLATE_ENCOUNTER_JOURNAL_TUTORIAL_1"] = {
+		ruRU = "В этой вкладке отображается список рекомендаций, соответствующий вашему уровню персонажа и прогрессу игрового мира.\n\nБольшинство рекомендаций обновляется по мере выполнения активностей и изменений в игровом мире.\n\nЭта вкладка поможет вам удобнее отслеживать свой текущий прогресс и находить новые цели для дальнейшего развития в игре.",
+	},
+	["HEPLPLATE_ENCOUNTER_JOURNAL_TUTORIAL_2"] = {
+		ruRU = "В этой вкладке отображается список подземелий, которые связаны с выбранным дополнением. Чтобы получить информацию о боссах и их способностях, а также возможной добыче, нажмите на название интересующего вас подземелья.",
+	},
+	["HEPLPLATE_ENCOUNTER_JOURNAL_TUTORIAL_3"] = {
+		ruRU = "В этой вкладке отображается список рейдов, которые связаны с выбранным дополнением. Чтобы получить информацию о боссах и их способностях, а также возможной добыче, нажмите на название интересующего вас рейда.",
+	},
+	["HEPLPLATE_ENCOUNTER_JOURNAL_TUTORIAL_4"] = {
+		ruRU = "В этой вкладке вы можете увидеть список комплектов экипировки и их уровень предметов. Чтобы получить информацию о том, как можно получить конкретный комплект, просто наведите курсор на его название.",
+	},
+	["HEPLPLATE_ENCOUNTER_JOURNAL_TUTORIAL_5"] = {
+		ruRU = "Чтобы отобразить подземелья и рейды из соответствующего дополнения, выберите здесь.",
+	},
+	["HEPLPLATE_ENCOUNTER_JOURNAL_TUTORIAL_6"] = {
+		ruRU = "Чтобы найти интересующее вас подземелье, рейд, конкретного босса или добычу с него, просто начните вводить его название в строку \"Поиск\".",
+	},
+	["HEPLPLATE_HEAD_HUNTING_TUTORIAL_1"] = {
+		ruRU = "Охота за головами позволяет вам назначить награду за убийство конкретного игрока или целой гильдии. Кроме того, это также хороший способ заработать дополнительные золото - необходимо лишь нанести смертельный удар игроку из списка \"Цели охоты\".\nСрок действия награды составляет 7 дней с момента размещения контракта.\n\nВнимание! Если на игроке активен эффект \"Цель без награды\", вы не получите вознаграждение за его убийство. Этот эффект действует на игрока в течении одной минуты после назначения награды (контракта) и пять минут после первого убийства.",
+	},
+	["HEPLPLATE_HEAD_HUNTING_TUTORIAL_2"] = {
+		ruRU = "Здесь отображается информация о игроках, за убийство которых уже назначена награда. Чтобы найти такого игрока, обратитесь к Информатору Кодаю за информацией о его местоположении.\n\nТакже, вы можете щелкнуть правой кнопкой мыши на своем портрете, в появившемся меню выбрать \"Охота за головами\" и нажать \"включить\". Теперь, если вы находитесь в одной игровой зоне с игроком, за которого назначена награда, вы получите уведомление.",
+	},
+	["HEPLPLATE_HEAD_HUNTING_TUTORIAL_3"] = {
+		ruRU = "Здесь отображается список целей, за убийство которых вы назначили награды.\n\nЧтобы назначить награду, нажмите кнопку \"Назначить награду\" и следуйте дальнейшим инструкциям. Вы также можете нажать правой кнопкой мыши по портрету другого игрока и выбрать \"Назначить награду\".\nПомимо этого, если вас убил другой игрок, вы можете назначить награду за его убийство, нажав кнопку \"Отомстить\".\n\nВнимание! Вы не можете изменить назначенную награду, но вы можете отменить её и выставить заново. При этом будет взиматься штраф за досрочное завершение контракта.",
+	},
+	["HEPLPLATE_STORE_TUTORIAL_1"] = {
+		ruRU = "Предметы в магазине распределены по категориям. Доступный ассортимент зависит от уровня вашего персонажа, фракции, а иногда и класса.",
+	},
+	["HEPLPLATE_STORE_TUTORIAL_2"] = {
+		ruRU = "Здесь отображаются особые товары, на которые стоит обратить внимание.",
+	},
+	["HEPLPLATE_STORE_TUTORIAL_3"] = {
+		ruRU = "Здесь отображаются специальные предложения с выгодными ценами или уникальными предметами. Но спешите, специальные предложения доступны ограниченное время и второго шанса может не быть!",
+	},
+	["HEPLPLATE_STORE_TUTORIAL_4"] = {
+		ruRU = "Это список возможных валют в магазине. Чтобы узнать подробнее - наведите указатель мыши, или нажмите левой кнопкой мыши чтобы перейти в раздел, связанный с выбранной валютой.\n\nСлева вам будет доступно описание выбранной валюты.",
+	},
+	["HEPLPLATE_STORE_TUTORIAL_5"] = {
+		ruRU = "Нажав на кнопку \"Купить\" вы перейдёте в окно покупки статуса \"Премиум\". Здесь же отображается и время до его окончания.\n\n\"Премиум\" увеличивает количество получаемого опыта и золота из добычи, а также количество получаемых очков чести, арены и доблести.\n\nГолосование за наш сервер позволяет получить \"Премиум\" на 24 часа.",
+	},
+	["HEPLPLATE_LOOKING_FOR_GUILD_SEARCH_TUTORIAL_1"] = {
+		ruRU = "Здесь можно выбрать дополнительные условия к искомой гильдии, которые соответствуют вашим интересам и времени активности. После этого нажмите кнопку \"Поиск\".",
+	},
+	["HEPLPLATE_LOOKING_FOR_GUILD_SEARCH_TUTORIAL_2"] = {
+		ruRU = "Здесь можно выбрать размер искомой гильдии. После этого нажмите кнопку \"Поиск\".",
+	},
+	["HEPLPLATE_LOOKING_FOR_GUILD_SEARCH_TUTORIAL_3"] = {
+		ruRU = "Здесь вы можете выбрать свою предполагаемую роль в гильдии. После этого нажмите кнопку \"Поиск\".",
+	},
+	["HEPLPLATE_LOOKING_FOR_GUILD_SEARCH_TUTORIAL_4"] = {
+		ruRU = "Чтобы найти интересующую вас гильдию, по её полному или частичному названию, введите название в соответствующее поле. После этого нажмите кнопку \"Поиск\".",
+	},
+	["HEPLPLATE_LOOKING_FOR_GUILD_SEARCH_TUTORIAL_5"] = {
+		ruRU = "Здесь отображается список гильдий, соответствующих вашим условиям поиска.\n\nНаведите курсор на гильдию из списка, чтобы узнать о ней подробности. Чтобы отправить ваш запрос на вступление в гильдию, нажмите на кнопку \"Отправить запрос\".\n\nЧтобы обновить список гильдий, повторно нажмите кнопку \"Поиск\".",
+	},
+	["HEPLPLATE_LOOKING_FOR_GUILD_REQUESTS_TUTORIAL_1"] = {
+		ruRU = "Здесь отображается список гильдий, которым вы направили запрос на вступление.\n\nНаведите курсор на гильдию из списка, чтобы узнать о ней подробности.",
+	},
+	["HEPLPLATE_LOOKING_FOR_GUILD_REQUESTS_TUTORIAL_2"] = {
+		ruRU = "Чтобы отменить свой запрос на вступление в гильдию, нажмите на \"крестик\".\n\nВнимание! Действие не требует дополнительного подтверждения.",
+	},
+	["HEPLPLATE_LOOKING_FOR_GUILD_REQUESTS_TUTORIAL_3"] = {
+		ruRU = "Если ваш запрос на вступление в гильдию не будет подтвержден до указанного срока, то он будет автоматически отклонён.",
+	},
+	["HEPLPLATE_STORE_TRANSMOGRIFY_TUTORIAL_1"] = {
+		ruRU = "Здесь отображаются все доступные для приобретения комплекты трансмогрификации.\n\n|cff00ccffClick для просмотра комплекта.\nShift+Click для отправки ссылки на комплект в чат.|r",
+		enGB = "This shows all transmogrification sets available for purchase.\n\n|cff00ccffClick to view the set.\nShift+Click to link the set in chat.|r"
+	},
+	["HEPLPLATE_STORE_TRANSMOGRIFY_TUTORIAL_2"] = {
+		ruRU = "Здесь отображаются все предметы, входящие в выбранный комплект.\n\nНажатие на какой-то конкретный предмет позволит купить его отдельно от всего комплекта. Повторное нажатие позволит вновь купить весь комплект целиком.\n\n|cff00ccffClick для выбора конкретного предмета.\nCtrl+Click для предпросмотра.\nShift+Click для отправки ссылки на предмет в чат.|r",
+		enGB = "This displays all items as part of the selected set.\n\nClicking on a particular item will allow you to buy it separately from the whole set. Clicking again will allow you to buy the whole set.\n\n|cff00ccffClick to select a specific item.\nCtrl+Click to preview.\nShift+Click to link the item in chat.|r"
+	},
+	["HEPLPLATE_RATED_BATTLEGROUND_TUTORIAL_1"] = {
+		ruRU = "Здесь отображается ваше следующее звание и сколько очков рейтинга требуется для его достижения.",
+	},
+	["HEPLPLATE_RATED_BATTLEGROUND_TUTORIAL_2"] = {
+		ruRU = "Зарабатывайте очки рейтинга службы, сражаясь с противниками на полях боя. Рейтинг службы может потребоваться для приобретения и улучшения PvP экипировки.",
+	},
+	["HEPLPLATE_RATED_BATTLEGROUND_TUTORIAL_3"] = {
+		ruRU = "Здесь отображается ваш текущий ранг и звание в награду за сражения.",
+	},
+	["HEPLPLATE_RATED_BATTLEGROUND_TUTORIAL_4"] = {
+		ruRU = "|cffFF0000Внимание!|r Дезертирство жестоко наказывается - на вашего персонажа будет наложен суммирующийся эффект \"Дезертир\", который запрещает вступать на поле боя до окончания его действия. Каждое последующее дезертирство увеличивает уровень эффекта \"Дезертир\" и время его действия.\nКаждую неделю уровень эффекта \"Дезертир\" снижается на 1.",
+	},
+	["HEPLPLATE_CONQUESTFRAME_TUTORIAL_1"] = {
+		ruRU = "Под недельным лимитом подразумевается количество очков арены, которое вы можете получить за неделю. Очки арены можно получить за победы в рейтинговых боях арены и SoloQ.\n\nДля того, чтобы увеличить свой лимит очков, требуется:\n-Заполнить шкалу лимита за текущую неделю\n-Набрать рейтинг арены или SoloQ выше 1500 ед.",
+	},
+	["HEPLPLATE_CONQUESTFRAME_TUTORIAL_2"] = {
+		ruRU = "Количество боёв в день, за которое можно получить очки арены, ограничено. Достигнув ограничения, у вас появляется шанс получить за бой сундук с ценной добычей.",
+	},
+	["HEPLPLATE_CONQUESTFRAME_TUTORIAL_3"] = {
+		ruRU = "За первые 5 побед в день вы получите дополнительно %d ед. очков арены.\nДанные очки арены не учитываются в недельный лимит и начисляются сверх него.",
+		enGB = "For the first 5 wins each day, you'll get %d additional Arena Points.\nThese Arena Points are not counted towards the weekly limit and are awarded in addition to it."
+	},
+	["HEPLPLATE_PVPHONORFRAME_TUTORIAL_1"] = {
+		ruRU = "Под недельным лимитом подразумевается количество очков чести, которое вы можете получить за неделю.\nОчки чести можно получить, например, за победы на полях боя, за почётные убийства игроков, за предводителей фракций, но и не только.\n\nДля того, чтобы увеличить свой лимит очков чести, требуется повысить свой ранг. Текущий ранг и звание можно узнать во вкладке \"Службы\".",
+		enGB = "The weekly limit is the number of Honor Points that you can get in a week.\nYou can earn Honor Points for being victorious in battlegrounds, for honorable kills of players, and for killing faction leaders.\n\nTo increase your weekly Honor Point limit, improve your Service standing."
+	},
+	["HEPLPLATE_PVPHONORFRAME_TUTORIAL_2"] = {
+		ruRU = "Количество боёв в день, за которое можно получить очки чести, ограничено. Достигнув ограничения, у вас появляется шанс получить за бой сундук с ценной добычей.",
+	},
+	["HEPLPLATE_PVPHONORFRAME_TUTORIAL_3"] = {
+		ruRU = "Потасовки - это отдельная PVP-активность, где на привычных полях боя действуют новые правила. Потасовки сменяют друг друга каждую неделю.\n\nЧтобы вступить на Потасовку требуется достигнуть 80 уровня персонажа и иметь средний уровень экипировки не ниже %i уровня.",
+	},
+	["HEPLPLATE_PVPHONORFRAME_TUTORIAL_4"] = {
+		ruRU = "За первые 3 победы в день вы получите дополнительно %d ед. очков чести.\nДанные очки чести не учитываются в недельный лимит и начисляются сверх него.",
+		enGB = "For the first 3 wins each day, you'll get %d additional Honor Points.\nThese Honor Points are not counted towards the weekly limit and are awarded in addition to it."
+	},
+	["HEPLPLATE_PVPLADDERFRAME_TUTORIAL_1"] = {
+		ruRU = "Чтобы увидеть топ-20 игроков в интересующей вас PvP-активности, нажмите на нее.",
+	},
+	["HEPLPLATE_PVPLADDERFRAME_TUTORIAL_2"] = {
+		ruRU = "Здесь отображается топ-20 игроков. Нажмите на интересующего вас игрока, чтобы увидеть подробную информацию о его победах и поражениях.\n\nВы также можете увидеть запись боя на арене. Для этого нажмите на интересующего вас игрока, выберите бой и нажмите на иконку \"лупы\".",
+	},
+	["HEPLPLATE_PVPLADDERFRAME_TUTORIAL_3"] = {
+		ruRU = "Здесь можно найти интересующего вас игрока по его нику.",
+	},
+	["HEPLPLATE_PVPLADDERFRAME_TUTORIAL_4"] = {
+		ruRU = "Здесь можно посмотреть топ-10 игроков интересующего вас класса в рамках выбранной вами PvP-активности.",
+	},
+	["HEPLPLATE_RENEGADELADDERFRAME_TUTORIAL_1"] = {
+		ruRU = "Ренегаты - третья фракция, которая враждебна и Альянсу и Орде.\nВы можете перейти на их сторону, связавшись с информатором Кодай в Шаттрате, или с помощью предмета \"Лицензия на смену фракции\" из внутриигрового магазина.",
+	},
+	["HEPLPLATE_RENEGADELADDERFRAME_TUTORIAL_2"] = {
+		ruRU = "Здесь отображаются недельный топ-3 самых кровожадных ренегатов. Каждую неделю эти игроки получают визуальный эффект \"Корона\" и положительный эффект на неделю, который улучшает их характеристики в открытом мире.",
+	},
+	["HEPLPLATE_RENEGADELADDERFRAME_TUTORIAL_3"] = {
+		ruRU = "Здесь отображается топ-20 среди ренегатов, и количество совершённых ими убийств в открытом мире.",
+	},
+	["HEPLPLATE_RENEGADELADDERFRAME_TUTORIAL_4"] = {
+		ruRU = "Здесь можно найти интересующего вас ренегата по его нику.",
+	},
+	["HEPLPLATE_RENEGADELADDERFRAME_TUTORIAL_5"] = {
+		ruRU = "Здесь можно найти топ-10 ренегатов интересующего вас класса в рамках выбранной вами PvP-активности.",
+	},
+	["HEPLPLATE_LFDQUEUEFRAME_TUTORIAL_1"] = {
+		ruRU = "Здесь вы можете найти группу и отправиться в подземелье. Выберите роль, подземелье, нажмите \"Найти группу\" и отправляйтесь навстречу приключениям!\n\nВажно! Покинув подземелье до убийства последнего босса, вы получите отрицательный эффект \"Покинувший подземелье\", во время которого не сможете повторно воспользоваться \"Поиском подземелий\".",
+	},
+	["HEPLPLATE_LFDQUEUEFRAME_TUTORIAL_2"] = {
+		ruRU = "В мини-играх вы можете отвлечься от обычных занятий и испытать себя в весёлых соревнованиях. Для победы нужны ловкость, смекалка и немного везения!",
+	},
+	["HEPLPLATE_LFDQUEUEFRAME_TUTORIAL_3"] = {
+		ruRU = "Вы не сможете найти группу, пока не выберете вашу роль.",
+	},
+	["HEPLPLATE_LFDQUEUEFRAME_TUTORIAL_4"] = {
+		ruRU = "Выберите интересующее вас подземелье или отправляйтесь в случайно выбранное. За прохождение случайного подземелья можно получить дополнительные награды!",
+	},
+	["HEPLPLATE_MINIGAMESFRAME_TUTORIAL_1"] = {
+		ruRU = "Здесь вы можете найти группу и отправиться в подземелье. Выберите роль, подземелье, нажмите \"Найти группу\" и отправляйтесь навстречу приключениям!\n\nВажно! Покинув подземелье до убийства последнего босса, вы получите отрицательный эффект \"Покинувший подземелье\", во время которого не сможете повторно воспользоваться \"Поиском подземелий\".",
+	},
+	["HEPLPLATE_MINIGAMESFRAME_TUTORIAL_2"] = {
+		ruRU = "В мини-играх вы можете отвлечься от обычных занятий и испытать себя в весёлых соревнованиях. Для победы нужны ловкость, смекалка и немного везения!",
+	},
+	["HEPLPLATE_MINIGAMESFRAME_TUTORIAL_3"] = {
+		ruRU = "Здесь можно выбрать интересующую вас мини-игру.",
+	},
+	["HEPLPLATE_WARDROBE_COLLECTION_TUTORIAL_1"] = {
+		ruRU = "Здесь отображается количество собранных вами обликов предметов. Оно меняется в зависимости от выбранного слота и типа предметов.",
+	},
+	["HEPLPLATE_WARDROBE_COLLECTION_TUTORIAL_2"] = {
+		ruRU = "Здесь можно выбрать необходимый вам слот для предметов.",
+	},
+	["HEPLPLATE_WARDROBE_COLLECTION_TUTORIAL_3"] = {
+		ruRU = "Здесь можно выбрать необходимый вам тип облика предметов.",
+	},
+	["HEPLPLATE_WARDROBE_COLLECTION_TUTORIAL_4"] = {
+		ruRU = "Здесь можно выбрать источник добычи обликов предметов, которые вами уже получены.",
+	},
+	["HEPLPLATE_WARDROBE_COLLECTION_TUTORIAL_5"] = {
+		ruRU = "Чтобы найти интересующий вас облик предмета, выберите необходимый слот для этого предмета. После этого начните вводить его название в строку \"Поиск\".",
+	},
+	["HEPLPLATE_WARDROBE_COLLECTION_TUTORIAL_6"] = {
+		ruRU = "Здесь отображаются облики предметов, соответствующие вашим фильтрам и условию поиска.\n\nОблики предметов, который вы уже получили, отображаются в начале списка. Чтобы поместить облик в начало списка, необходимо добавить его в Избранное. Для этого нажмите правой кнопкой мыши по предмету и выберите \"добавить в Избранное\".\nДобытые облики вы можете использовать для Трансмогрификации.\n\nОблики предметов, который ещё предстоит получить, выделены особой рамкой. Наведитесь на интересующий вас облик предмета, чтобы узнать о способе его добычи.",
+	},
+	["HEPLPLATE_WARDROBE_TRANSMOG_TUTORIAL_1"] = {
+		ruRU = "Трансмогрификация поможет изменить облик ваших предметов экипировки. Но есть несколько важных моментов.\n\n1. После трансмогрификации вы не сможете вернуть предметы в магазин. Это касается как предмета, которому вы сменили облик, так и того предмета, облик которого вы используете.\n\n2. Если вы удалите или продадите предмет, который имеет таймер возврата или передачи, то вы потеряете облик для трансмогрификации.\n\n3. После трансмогрификации оба предмета становятся персональными. Это касается в том числе фамильной брони и оружия.\n\n4. Наложение визуальных зачарований на оружие также делает предмет персональным.\n\n5. Эффект трансмогрификации снимается с фамильных предметов, отправленных по почте.",
+	},
+	["HEPLPLATE_WARDROBE_TRANSMOG_TUTORIAL_2"] = {
+		ruRU = "Здесь отображается количество собранных вами обликов предметов. Отображаемое количество меняется в зависимости от выбранного слота и типа предметов.",
+	},
+	["HEPLPLATE_WARDROBE_TRANSMOG_TUTORIAL_3"] = {
+		ruRU = "Чтобы найти интересующий вас облик предмета, начните вводить его название в строку \"Поиск\".",
+	},
+	["HEPLPLATE_WARDROBE_TRANSMOG_TUTORIAL_4"] = {
+		ruRU = "Здесь можно выбрать источник получения облика предметов, которые вами уже получены.",
+	},
+	["HEPLPLATE_WARDROBE_TRANSMOG_TUTORIAL_5"] = {
+		ruRU = "Здесь можно включить/выключить отображение окна подсказок для трансмогрификации выбранного типа предметов. Если окно подсказок включено, то, нажав на кнопку \"Полные правила\", вы сможете перейти к подробной информации о всех правилах трансмогрификации в энциклопедии.",
+	},
+	["HEPLPLATE_WARDROBE_TRANSMOG_TUTORIAL_6"] = {
+		ruRU = "Здесь вы можете сохранить все ваши образы.\n\nВыберите необходимые облики для предметов, после чего нажмите \"Новое снаряжение\". Задайте ему уникальное имя и нажмите \"Применить\". Теперь ваш образ сохранён и вы можете его использовать в дальнейшем для быстрой смены трансмогрификации.",
+	},
+	["HEPLPLATE_WARDROBE_TRANSMOG_TUTORIAL_7"] = {
+		ruRU = "Здесь вы можете выбрать предмет, которому хотите придать новый облик.\n\nЧтобы отменить изменения для конкретного предмета, нажмите на него правой кнопкой мыши или на всплывающую стрелочку рядом с ним.\n\nЕсли вы хотите отменить изменения для всех предметов сразу, нажмите на стрелочку в верхнем правом углу.\n\nОбратите внимание, что отменять изменения для всех предметов разом можно только до оплаты услуги трансмогрификации.",
+	},
+	["HEPLPLATE_WARDROBE_TRANSMOG_TUTORIAL_8"] = {
+		ruRU = "Здесь можно выбрать необходимый вам тип облика предметов.",
+	},
+	["HEPLPLATE_WARDROBE_TRANSMOG_TUTORIAL_9"] = {
+		ruRU = "Здесь отображаются все ваши облики предметов, соответствующие фильтрам и условию поиска.\n\nЧтобы поместить облик в начало списка, необходимо добавить его в Избранное. Для этого нажмите правой кнопкой мыши по предмету и выберите \"добавить в Избранное\".",
+	},
+	["TRANSMOG_HELP_BUTTON"] = {
+		ruRU = "Полные правила",
+	},
+	["TRANSMOG_HELP_HEADER"] = {
+		ruRU = "Правила трансмогрификации выбранного типа предмета",
+	},
+	["TRANSMOG_HELP_BODY_1"] = {
+		ruRU = "Вы можете трансмогрифицировать только те предметы, которые можете на себя надеть.",
+	},
+	["TRANSMOG_HELP_BODY_2"] = {
+		ruRU = "Трансмогрифицировать предметы можно только при соблюдении слотов. Например, наплечники трансмогрифицируются только в наплечники, их нельзя видоизменить в двуручный топор.",
+	},
+	["TRANSMOG_HELP_CATEGORY_ARMOR_1"] = {
+		ruRU = "Трансмогрифицировать экипировку можно только при соблюдении типа брони. Например, броню с типом \"Ткань\" нельзя трансмогрифицировать в броню с типом \"Кожа\" и наоборот.",
+	},
+	["TRANSMOG_HELP_CATEGORY_TMOG_1"] = {
+		ruRU = "Декоративные предметы можно использовать вне зависимости от типа носимой брони.",
+	},
+	["TRANSMOG_HELP_CATEGORY_12_1"] = {
+		ruRU = "Жезлы можно трансмогрифицировать в жезлы."
+	},
+	["TRANSMOG_HELP_CATEGORY_13_1"] = {
+		ruRU = "Одноручные топоры можно трансмогрифицировать в одноручные топоры, одноручные мечи, одноручные дробящие, кистевые, кинжалы.",
+	},
+	["TRANSMOG_HELP_CATEGORY_13_2"] = {
+		ruRU = "При трансмогрификации оружия должно сохраняться правило левых и правых рук у одноручного оружия. Вы не сможете трансмогрифицировать леворучное оружие в праворучное и наоборот. При этом одноручное оружие может быть использовано в трансмогрификации и в правую и в левую руку в соответствующем слоте.",
+	},
+	["TRANSMOG_HELP_CATEGORY_14_1"] = {
+		ruRU = "Одноручные мечи можно трансмогрифицировать в одноручные топоры, одноручные мечи, одноручные дробящие, кистевые, кинжалы.",
+	},
+	["TRANSMOG_HELP_CATEGORY_14_2"] = {
+		ruRU = "При трансмогрификации оружия должно сохраняться правило левых и правых рук у одноручного оружия. Вы не сможете трансмогрифицировать леворучное оружие в праворучное и наоборот. При этом одноручное оружие может быть использовано в трансмогрификации и в правую и в левую руку в соответствующем слоте.",
+	},
+	["TRANSMOG_HELP_CATEGORY_15_1"] = {
+		ruRU = "Одноручные дробящие можно трансмогрифицировать в одноручные топоры, одноручные мечи, одноручные дробящие, кистевые, кинжалы.",
+	},
+	["TRANSMOG_HELP_CATEGORY_15_2"] = {
+		ruRU = "При трансмогрификации оружия должно сохраняться правило левых и правых рук у одноручного оружия. Вы не сможете трансмогрифицировать леворучное оружие в праворучное и наоборот. При этом одноручное оружие может быть использовано в трансмогрификации и в правую и в левую руку в соответствующем слоте.",
+	},
+	["TRANSMOG_HELP_CATEGORY_16_1"] = {
+		ruRU = "Кинжалы можно трансмогрифицировать в одноручные топоры, одноручные мечи, одноручные дробящие, кистевые, кинжалы."
+	},
+	["TRANSMOG_HELP_CATEGORY_16_2"] = {
+		ruRU = "При трансмогрификации оружия должно сохраняться правило левых и правых рук у одноручного оружия. Вы не сможете трансмогрифицировать леворучное оружие в праворучное и наоборот. При этом одноручное оружие может быть использовано в трансмогрификации и в правую и в левую руку в соответствующем слоте."
+	},
+	["TRANSMOG_HELP_CATEGORY_17_1"] = {
+		ruRU = "Кистевые можно трансмогрифицировать в одноручные топоры, одноручные мечи, одноручные дробящие, кистевые, кинжалы."
+	},
+	["TRANSMOG_HELP_CATEGORY_17_2"] = {
+		ruRU = "При трансмогрификации оружия должно сохраняться правило левых и правых рук у одноручного оружия. Вы не сможете трансмогрифицировать леворучное оружие в праворучное и наоборот. При этом одноручное оружие может быть использовано в трансмогрификации и в правую и в левую руку в соответствующем слоте."
+	},
+	["TRANSMOG_HELP_CATEGORY_18_1"] = {
+		ruRU = "Щиты можно трансмогрифицировать в щиты."
+	},
+	["TRANSMOG_HELP_CATEGORY_19_1"] = {
+		ruRU = "Тип предмета \"Левая рука\" может быть трансмогрифицирован только в тип предмета \"Левая рука\"."
+	},
+	["TRANSMOG_HELP_CATEGORY_20_1"] = {
+		ruRU = "Двуручные топоры можно трансмогрифицировать в двуручные топоры, двуручные мечи, двуручные дробящие, древковые."
+	},
+	["TRANSMOG_HELP_CATEGORY_21_1"] = {
+		ruRU = "Двуручные мечи можно трансмогрифицировать в двуручные топоры, двуручные мечи, двуручные дробящие, древковые."
+	},
+	["TRANSMOG_HELP_CATEGORY_22_1"] = {
+		ruRU = "Двуручные дробящие можно трансмогрифицировать в двуручные топоры, двуручные мечи, двуручные дробящие, древковые."
+	},
+	["TRANSMOG_HELP_CATEGORY_23_1"] = {
+		ruRU = "Посохи можно трансмогрифицировать в посохи, двуручные дробящие, древковые."
+	},
+	["TRANSMOG_HELP_CATEGORY_24_1"] = {
+		ruRU = "Древковые можно трансмогрифицировать в посохи, двуручные топоры, двуручные мечи, двуручные дробящие, древковые."
+	},
+	["TRANSMOG_HELP_CATEGORY_25_1"] = {
+		ruRU = "Луки можно трансмогрифицировать в луки, ружья и арбалеты."
+	},
+	["TRANSMOG_HELP_CATEGORY_26_1"] = {
+		ruRU = "Ружья можно трансмогрифицировать в луки, ружья и арбалеты."
+	},
+	["TRANSMOG_HELP_CATEGORY_27_1"] = {
+		ruRU = "Арбалеты можно трансмогрифицировать в луки, ружья и арбалеты."
+	},
+	["TRANSMOG_HELP_CATEGORY_28_1"] = {
+		ruRU = "Метательное можно трансмогрифицировать в метательное."
+	},
+	["ITEM_BROWSER"] = {
+		ruRU = "Предметы",
+	},
+	["GUILD_INVITE_SENT"] = {
+		ruRU = "Приглашение отправлено",
+	},
+	["EXILES_REACH"] = {
+		ruRU = "Остров Изгнанников",
+	},
+	["DEEPWIND_GORGE"] = {
+		ruRU = "Каньон Суровых Ветров",
+	},
+	["ASHRAN"] = {
+		ruRU = "Ашран",
+	},
+	["SEETHING_SHORE"] = {
+		ruRU = "Бурлящий берег",
+	},
+	["WARSONG_GULCH"] = {
+		ruRU = "Ущелье Песни Войны",
+	},
+	["ARATHI_BASIN"] = {
+		ruRU = "Низина Арати",
+	},
+	["EXILES_REACH_SHIP_ALLIANCE"] = {
+		ruRU = "Корабль Альянса",
+	},
+	["EXILES_REACH_SHIP_HORDE"] = {
+		ruRU = "Корабль Орды",
+	},
+	["EJ_INSTANCE_REQUIREMENT_LABLE"] = {
+		ruRU = "Требования:",
+	},
+	["EJ_INSTANCE_REQUIREMENT_DIFFICULTY"] = {
+		ruRU = "Сложность: %s",
+	},
+	["EJ_INSTANCE_REQUIREMENT_LEVEL"] = {
+		ruRU = "Уровень: %s",
+	},
+	["EJ_INSTANCE_REQUIREMENT_LEVEL_RANGE"] = {
+		ruRU = "Уровень: %s-%s",
+	},
+	["EJ_INSTANCE_REQUIREMENT_ITEM_LEVEL"] = {
+		ruRU = "Средний уровень предметов: %s",
+	},
+	["EJ_INSTANCE_REQUIREMENT_QUESTS"] = {
+		ruRU = "Задания:",
+	},
+	["EJ_INSTANCE_REQUIREMENT_ACHIEVEMENTS"] = {
+		ruRU = "Достижения:",
+	},
+	["AJ_ACTION_TEXT_JOIN_BATTLE"] = {
+		ruRU = "Вступить в бой",
+	},
+	["AJ_ACTION_TEXT_JOIN_GROUP"] = {
+		ruRU = "Вступить в группу",
+	},
+	["AJ_ACTION_TEXT_OPEN_EJ"] = {
+		ruRU = "Открыть журнал",
+	},
+	["AJ_ACTION_TEXT_SHOW_QUEST"] = {
+		ruRU = "Открыть задания",
+	},
+	["AJ_ACTION_TEXT_START_HUNT"] = {
+		ruRU = "Открыть охоту",
+	},
+	["AJ_ACTION_TEXT_START_QUEST"] = {
+		ruRU = "Начать задание",
+	},
+	["AJ_LFG_REWARD_DEFAULT_IRANGE_TEXT"] = {
+		ruRU = "%s: здесь можно получить предметы экипировки %i - %i уровней.",
+		enGB = "%s drops item level %i to %i gear.",
+	},
+	["AJ_LFG_REWARD_DEFAULT_TEXT"] = {
+		ruRU = "%s: здесь можно получить предметы экипировки %i-го уровня.",
+		enGB = "%s drops item level %i gear.",
+	},
+	["AJ_LFG_REWARD_DIFFICULTY_IRANGE_TEXT"] = {
+		ruRU = "%s (%s): здесь можно получить предметы экипировки %i - %i уровней.",
+		enGB = "%s (%s) drops item level %i to %i gear.",
+	},
+	["AJ_LFG_REWARD_DIFFICULTY_TEXT"] = {
+		ruRU = "%s (%s): здесь можно получить предметы экипировки %i-го уровня.",
+		enGB = "%s (%s) drops item level %i gear.",
+	},
+	["AJ_PRIMARY_REWARD_TEXT"] = {
+		ruRU = "Награда:",
+		enGB = "Reward:",
+	},
+	["AJ_REWARD_CLICK_TEXT"] = {
+		ruRU = "Щелкните для просмотра всех наград.",
+		enGB = "Click to view all rewards",
+	},
+	["AJ_SAMPLE_REWARD_TEXT"] = {
+		ruRU = "\n\nПример награды:",
+		enGB = "\n\nSample reward:",
+	},
+	["AJ_SUGGESTED_CONTENT_TAB"] = {
+		ruRU = "Рекомендуемый контент",
+		enGB = "Suggested Content",
+	},
+	["COLLECTION_LOCATION_STORE_PATTERN"] = {
+		ruRU = "Может встретиться во внутриигровом магазине.",
+	},
+	["TRANSMOGRIFY_FILTER_SORT_TITLE"] = {
+		ruRU = "Сортировка",
+		enGB = "Sort"
+	},
+	["WAIT_SERVER_RESPONSE"] = {
+		ruRU = "Ожидание ответа от сервера",
+		enGB = "Waiting for a response from the server"
+	},
+	["MAINMENUBAR_STORE_DISABLE_REASON_UNAVAILABLE"] = {
+		ruRU = "Магазин в данный момент недоступен!\nСледите за новостями сервера.",
+		enGB = "The shop is currently unavailable!\nFollow the server news."
+	},
+	["MAINMENUBAR_STORE_DISABLE_REASON_LOADING"] = {
+		ruRU = "Магазин в данный момент недоступен!\nДанные загружаются (%s).",
+	},
+	["MAINMENUBAR_STORE_DISABLE_REASON_HARDCORE"] = {
+		ruRU = "Вы должны выбрать испытание",
+	},
+	["STORE_AGREEMENT_AGREE"] = {
+		ruRU = "Я согласен",
+	},
+	["STORE_AGREEMENT_BODY"] = {
+		ruRU = "Знаменитое рейдовое подземелье, мрачный дом Медива, в котором он и встретил свою смерть. Адаптированный под 80-й уровень Каражан в обычной сложности рейда является одним из подземелий, где игроки могут получить первые фрагменты рейдового набора т4, сразившись с классическими версиями боссов. А в героической сложности рейда способности и поведение всех боссов абсолютно новые и заставят попотеть даже опытных игроков, но и награда будет значительно лучше.\n\n\nПоследнее пристанище Короля-Лича, главный рейд дополнения WotLK. Привычные игрокам боссы будут усложнены отсутствием усиливающего рейд бафа, а для тех, кто все-таки сокрушит Короля-лича в героической версии рейда для 25 человек - будет еще одно, финальное испытание.\n\n\nБастион Кель'таса, падшего принца эльфов крови, заключившего пакт с Кил'джеденом, это рейдовое подземелье, хоть и не изобилует большим числом противников, но компенсирует это их силой и сложностью. Принц и четверо его соратников станут финальным испытанием. В героической сложности рейда каждый из боссов меняет своё поведение и набор способностей.",
+	},
+	["STORE_AGREEMENT_HEADER"] = {
+		ruRU = "Соглашаетесь с тем, что ознакомлены с правилами сервера и обязуетесь их соблюдать",
+	},
+	["STORE_AGREEMENT_TITLE"] = {
+		ruRU = "Соглашение с правилами",
+	},
+	["STORE_ATTENTION_LABEL"] = {
+		ruRU = "Внимание",
+	},
+	["STORE_BALANCE_LABEL"] = {
+		ruRU = "Баланс",
+	},
+	["STORE_BROWSE_ALL_ITEMS"] = {
+		ruRU = "Все предметы",
+	},
+	["STORE_BUY"] = {
+		ruRU = "Купить",
+		enGB = "Buy"
+	},
+	["STORE_BUY_FREE_TRIAL"] = {
+		ruRU = "Попробовать\nбесплатно",
+	},
+	["STORE_BUY_PREMIUM_ERROR_1"] = {
+		ruRU = "Недостаточно средств для покупки.",
+		enGB = "Not enought funds to buy."
+	},
+	["STORE_CATEGORY_COLLECTIONS"] = {
+		ruRU = "Коллекции",
+		enGB = "Collections"
+	},
+	["STORE_CATEGORY_EQUIPMENT"] = {
+		ruRU = "Экипировка",
+		enGB = "Equipment"
+	},
+	["STORE_CATEGORY_SPECIALS"] = {
+		ruRU = "Особые услуги",
+		enGB = "Specials"
+	},
+	["STORE_CATEGORY_SPECIAL_OFFERS"] = {
+		ruRU = "Спец. предложения",
+		enGB = "Special offers"
+	},
+	["STORE_CATEGORY_SUPPLIES"] = {
+		ruRU = "Поставки",
+		enGB = "Supplies"
+	},
+	["STORE_CATEGORY_TRANSMOGRIFICATION"] = {
+		ruRU = "Трансмогрификация",
+		enGB = "Transmogrification"
+	},
+	["STORE_CATEGORY_UNAVAILABLE_LEVEL"] = {
+		ruRU = "Доступно с %u уровня",
+	},
+	["STORE_CATEGORY_UNAVAILABLE_NEUTRAL_FACTION"] = {
+		ruRU = "Недоступно персонажам нейтральной фракции",
+	},
+	["STORE_CATEGORY_UNAVAILABLE_SERVER"] = {
+		ruRU = "Недоступно",
+	},
+	["STORE_CATEGORY_UNAVAILABLE_STRENGTHEN_STATS"] = {
+		ruRU = "Доступно только в мире с усилениями характеристик",
+	},
+	["STORE_CONFIRM_NOTICE_WARNING_GENERIC"] = {
+		ruRU = "|cffFF0000Внимание! Данный товар будет невозможно вернуть после покупки!|r",
+	},
+	["STORE_CONFIRM_NOTICE_WARNING_RENEW_LIST"] = {
+		ruRU = "|cffFF0000Внимание! Обновление не влияет на ассортимент спецпредложений раздела!|r",
+	},
+	["STORE_CONFIRM_NOTICE_WARNING_QUEST"] = {
+		ruRU = "|cffFF0000Приобретение этого предмета не освобождает от выполнения последнего задания в цепочке.|r",
+	},
+	["STORE_COST"] = {
+		ruRU = "Стоимость",
+		enGB = "Cost"
+	},
+	["STORE_CURRENCY_BONUS_DESCRIPTION"] = {
+		ruRU = "Валюта, получаемая за турниры, розыгрыши и поддержку сервера.",
+		enGB = "Currency received for tournaments, lotteries, and supporting the server."
+	},
+	["STORE_CURRENCY_BONUS_FORMAT"] = {
+		ruRU = "%d |4бонус:бонуса:бонусов;",
+		enGB = "%d |4bonus:bonuses:bonuses;"
+	},
+	["STORE_CURRENCY_BONUS_LABEL"] = {
+		ruRU = "Бонусы",
+		enGB = "Bonuses"
+	},
+	["STORE_CURRENCY_GOLD_LABEL"] = {
+		ruRU = "Золото",
+		enGB = "Gold"
+	},
+	["STORE_CURRENCY_LOYALITY_DESCRIPTION"] = {
+		ruRU = "Показатель уровня Вашей поддержки сервера.",
+		enGB = "Index that displays how much you support the server."
+	},
+	["STORE_CURRENCY_LOYALITY_LABEL"] = {
+		ruRU = "Лояльность",
+		enGB = "Loyalty"
+	},
+	["STORE_CURRENCY_REFERRAL_DESCRIPTION"] = {
+		ruRU = "Валюта, получаемая за приглашение друзей на сервер.",
+		enGB = "Currency that you receive for inviting friends."
+	},
+	["STORE_CURRENCY_REFERRAL_LABEL"] = {
+		ruRU = "Рефералы",
+		enGB = "Referrals"
+	},
+	["STORE_CURRENCY_VOTE_DESCRIPTION"] = {
+		ruRU = "Валюта, получаемая за поддержку сервера на ресурсе MMOTOP.",
+		enGB = "Currency that you receive for voting on MMOTOP."
+	},
+	["STORE_CURRENCY_VOTE_LABEL"] = {
+		ruRU = "Голоса",
+		enGB = "Vote"
+	},
+	["STORE_DELIVERED_PREMIUM"] = {
+		ruRU = "Активирован",
+	},
+	["STORE_DELIVERED_PURCHASE_GIFT"] = {
+		ruRU = "Ваш подарок доставлен",
+	},
+	["STORE_DELIVERED_PURCHASE_SELF"] = {
+		ruRU = "Ваша награда доставлена",
+		enGB = "Your reward has been delivered"
+	},
+	["STORE_DELIVERED_REFUND"] = {
+		ruRU = "Возвращены",
+	},
+	["STORE_DETAILS"] = {
+		ruRU = "Подробнее",
+	},
+	["STORE_DISCOUNT_AMOUNT_FORMAT"] = {
+		ruRU = "-%i%%",
+	},
+	["STORE_DONATE_DIALOG_TEXT"] = {
+		ruRU = "Ссылка для совершения пожертвования",
+	},
+	["STORE_DONATE_DIALOG_TITLE"] = {
+		ruRU = "Пожертвование",
+	},
+	["STORE_ERROR_FILL_FIELDS"] = {
+		ruRU = "Заполните все поля и попробуйте еще раз!",
+		enGB = "Fill all the fields and try again."
+	},
+	["STORE_ERROR_LABEL"] = {
+		ruRU = "Ошибка!",
+		enGB = "Error!"
+	},
+	["STORE_ERROR_PRODUCT_MISSING"] = {
+		ruRU = "Продукт не найден.\n%s - %s",
+	},
+	["STORE_ERROR_PURCHASE_IN_PROCESS"] = {
+		ruRU = "Ожидается ответ на предыдущую покупку.",
+	},
+	["STORE_ERROR_SUBSCRIPTION_PURCHASE_INTERNAL"] = {
+		ruRU = "Внутренняя ошибка #%s при попытке активации поставок.",
+	},
+	["STORE_ERROR_SUBSCRIPTION_TRIAL_UNAVAILABLE"] = {
+		ruRU = "Пробный режим недоступен для данных поставок",
+	},
+	["STORE_ERROR_SUBSCRIPTION_UPGRADE_UNAVAILABLE"] = {
+		ruRU = "Улучшение подписки возможно только при наличии активной подписки",
+	},
+	["STORE_FAVORITE_ERROR_1"] = {
+		ruRU = "Вы можете иметь только %i избранный предмет в данном разделе",
+	},
+	["STORE_FAVORITE_ERROR_2"] = {
+		ruRU = "Вы не можете добавить этот предмет в избранное",
+	},
+	["STORE_FAVORITE_ERROR_3"] = {
+		ruRU = "Предмет не найден",
+	},
+	["STORE_FAVORITE_ERROR_4"] = {
+		ruRU = "Некорректные данные",
+	},
+	["STORE_FAVORITE_ERROR_5"] = {
+		ruRU = "Некорректное количество данных",
+	},
+	["STORE_FAVORITE_SET"] = {
+		ruRU = "Добавить в \"Избранное\"",
+	},
+	["STORE_FAVORITE_UNSET"] = {
+		ruRU = "Удалить из \"Избранного\"",
+	},
+	["STORE_FILTER_HINT_BITMASK"] = {
+		ruRU = "Для отображения полного списка предметов все опции должны быть |cff00FF00включены|r",
+	},
+	["STORE_FILTER_HINT_BITMASK_INVERTED"] = {
+		ruRU = "Для отображения полного списка предметов все опции должны быть |cffFF0000отключены|r",
+	},
+	["STORE_FILTER_LABEL_ARMOR_SUBTYPE"] = {
+		ruRU = "Тип брони",
+	},
+	["STORE_FILTER_LABEL_CLASS"] = {
+		ruRU = "Класс",
+	},
+	["STORE_FILTER_LABEL_NEW_ITEMS_LABEL"] = {
+		ruRU = "Новые предметы",
+	},
+	["STORE_FILTER_LABEL_NON_CLASS_ITEMS_LABEL"] = {
+		ruRU = "Показать все предметы",
+	},
+	["STORE_FILTER_LABEL_STATS"] = {
+		ruRU = "Характеристики",
+	},
+	["STORE_FILTER_LABEL_WEAPON_SUBTYPE"] = {
+		ruRU = "Тип оружия",
+	},
+	["STORE_FILTER_RANGE_MAX"] = {
+		ruRU = "до",
+	},
+	["STORE_FILTER_RANGE_MIN"] = {
+		ruRU = "от",
+	},
+	["STORE_FILTER_RESET"] = {
+		ruRU = "Сбросить",
+	},
+	["STORE_GIFT_ERROR_NO_RECEIVER_NAME"] = {
+		ruRU = "Не указано имя получателя",
+	},
+	["STORE_GIFT_ERROR_NO_STYLE"] = {
+		ruRU = "Не выбран стиль письма",
+	},
+	["STORE_GIFT_ERROR_RECEIVER_NAME_LENGTH"] = {
+		ruRU = "Имя должно содержать от %d до %d букв",
+	},
+	["STORE_GIFT_ERROR_RECEIVER_TEXT_LENGTH"] = {
+		ruRU = "Сообщение письма должно содержать от %d до %d букв",
+	},
+	["STORE_GIFT_LABEL_1"] = {
+		ruRU = "Стандартный",
+		enGB = "Default"
+	},
+	["STORE_GIFT_LABEL_2"] = {
+		ruRU = "Новогодний",
+		enGB = "New Year"
+	},
+	["STORE_GIFT_LABEL_3"] = {
+		ruRU = "Любовный",
+		enGB = "Lovely"
+	},
+	["STORE_GLOBAL_DISCOUNT_LABEL"] = {
+		ruRU = "Сезон скидок до %i%%",
+	},
+	["STORE_ILLUSION_REFRESH_TITLE"] = {
+		ruRU = "Обновление списка иллюзий",
+	},
+	["STORE_LIST_VIEW_NO_PRODUCTS"] = {
+		ruRU = "Простите, но сейчас тут ничего нет",
+	},
+	["STORE_LOADING_PRODUCTS"] = {
+		ruRU = "Загрузка данных...",
+	},
+	["STORE_LOYALITY_LABEL"] = {
+		ruRU = "Лояльность",
+	},
+	["STORE_MODEL_CONTROL_PANNING"] = {
+		ruRU = "Позиция",
+	},
+	["STORE_MODEL_CONTROL_ROTATE"] = {
+		ruRU = "Повернуть",
+	},
+	["STORE_MODEL_CONTROL_ZOOM"] = {
+		ruRU = "Масштаб",
+	},
+	["STORE_MOUNT_REFRESH_TITLE"] = {
+		ruRU = "Обновление списка ездовых животных",
+	},
+	["STORE_NEW_ITEMS_AVAILABLE_TEXT"] = {
+		ruRU = "Тут есть что-то новенькое!",
+	},
+	["STORE_NEXT_OFFER_SOON"] = {
+		ruRU = "Скоро новое предложение",
+	},
+	["STORE_NEXT_OFFER_UPDATE"] = {
+		ruRU = "До обновления",
+	},
+	["STORE_NOT_ENOUGHT_FOR_PURCHASE_BASE"] = {
+		ruRU = "|cffff0000%s|r\n(В наличии %d)",
+	},
+	["STORE_NOT_ENOUGHT_FOR_PURCHASE_GENERIC"] = {
+		ruRU = "У вас недостаточно средств.",
+	},
+	["STORE_NOT_ENOUGHT_FOR_PURCHASE_BONUS"] = {
+		ruRU = "У вас недостаточно бонусов.",
+	},
+	["STORE_NOT_ENOUGHT_FOR_PURCHASE_LOYALITY"] = {
+		ruRU = "У вас недостаточный уровень лояльности.",
+	},
+	["STORE_NOT_ENOUGHT_FOR_PURCHASE_REFERRAL"] = {
+		ruRU = "У вас недостаточно рефералов.",
+	},
+	["STORE_NOT_ENOUGHT_FOR_PURCHASE_VOTE"] = {
+		ruRU = "У вас недостаточно голосов.",
+	},
+	["STORE_NOT_ENOUGH_CURRENCY_REPLENISH"] = {
+		ruRU = "|cffFF0000Внимание. У вас недостаточно средств!|r\nПри нажатии на кнопку покупки, вам будет предложено\nсовершить пожертвование на недостающую сумму бонусов.",
+	},
+	["STORE_OPEN_LABEL"] = {
+		ruRU = "Открыть",
+	},
+	["STORE_PAGE_FORMAT"] = {
+		ruRU = "Страница %u/%u",
+	},
+	["STORE_PET_REFRESH_TITLE"] = {
+		ruRU = "Обновление списка питомцев",
+	},
+	["STORE_PREMIUM_BONUS_1"] = {
+		ruRU = "На %i%% больше очков чести, арены и доблести",
+	},
+	["STORE_PREMIUM_BONUS_2"] = {
+		ruRU = "На %i%% больше получаемого золота",
+	},
+	["STORE_PREMIUM_BONUS_3"] = {
+		ruRU = "На %i%% больше получаемого опыта",
+	},
+	["STORE_PREMIUM_BONUS_LABEL"] = {
+		ruRU = "Премиум-статус предоставляет следующие бонусы:",
+	},
+	["STORE_PREMIUM_BUY_1"] = {
+		ruRU = "Купить на 48 часов.",
+		enGB = "Buy for 48 hours."
+	},
+	["STORE_PREMIUM_BUY_2"] = {
+		ruRU = "Купить на 7 дней.",
+		enGB = "Buy for 7 days."
+	},
+	["STORE_PREMIUM_BUY_3"] = {
+		ruRU = "Купить на 30 дней.",
+		enGB = "Buy for 30 days."
+	},
+	["STORE_PREMIUM_BUY_4"] = {
+		ruRU = "Купить навсегда.",
+		enGB = "Buy for forever."
+	},
+	["STORE_PREMIUM_DISCOUNT_INFO_1"] = {
+		ruRU = " ",
+	},
+	["STORE_PREMIUM_DISCOUNT_INFO_2"] = {
+		ruRU = "Экономия 18%",
+		enGB = "Discount 18%"
+	},
+	["STORE_PREMIUM_DISCOUNT_INFO_3"] = {
+		ruRU = "Экономия 35%",
+		enGB = "Discount 35%"
+	},
+	["STORE_PREMIUM_DISCOUNT_INFO_4"] = {
+		ruRU = "ЛУЧШАЯ ЦЕНА",
+		enGB = "BEST PRICE"
+	},
+	["STORE_PREMIUM_INACTIVE"] = {
+		ruRU = "Неактивен",
+	},
+	["STORE_PREMIUM_LABEL"] = {
+		ruRU = "Премиум",
+	},
+	["STORE_PREMIUM_STATUS"] = {
+		ruRU = "Премиум-статус",
+	},
+	["STORE_PREMIUM_PERMANENT"] = {
+		ruRU = "Перманентный",
+	},
+	["STORE_PREMIUM_PURCHASE_OPTION_HINT"] = {
+		ruRU = "Премиум-статус можно приобрести тут или проголосовав за сервер",
+	},
+	["STORE_PREMIUM_PURCHASE_OPTION_LABEL"] = {
+		ruRU = "Выберите длительность",
+	},
+	["STORE_PREMIUM_TITLE"] = {
+		ruRU = "Покупка премиум-статуса",
+	},
+	["STORE_PRICE_FREE"] = {
+		ruRU = "Бесплатно",
+	},
+	["STORE_PRODUCT_DISCOUNT"] = {
+		ruRU = "Скидка -%u%%",
+	},
+	["STORE_PRODUCT_NAME_LABEL"] = {
+		ruRU = "Имя предмета",
+	},
+	["STORE_PRODUCT_PURCHASE_CURRENCY_NOT_SELECTED"] = {
+		ruRU = "Выберите валюту для покупки",
+	},
+	["STORE_PRODUCT_PURCHASE_HINT"] = {
+		ruRU = "Приобретенные предметы попадут в ваши сумки. Если на момент доставки ваши сумки окажутся полными, предмет будет отправлен вам по почте.",
+	},
+	["STORE_PRODUCT_PURCHASE_LABEL"] = {
+		ruRU = "Приобрести",
+	},
+	["STORE_PRODUCT_PURCHASE_OPTION_AMOUNT"] = {
+		ruRU = "Количество:",
+	},
+	["STORE_PRODUCT_PURCHASE_OPTION_GIFT"] = {
+		ruRU = "Отправить как подарок",
+	},
+	["STORE_PRODUCT_PURCHASE_OPTION_GIFT_CHOOSE_STYLE"] = {
+		ruRU = "Выберите стиль письма",
+	},
+	["STORE_PRODUCT_PURCHASE_OPTION_GIFT_HEADER"] = {
+		ruRU = "Кому отправить письмо?",
+	},
+	["STORE_PRODUCT_PURCHASE_OPTION_GIFT_NAME_INSTRUCTIONS"] = {
+		ruRU = "Имя персонажа",
+	},
+	["STORE_PRODUCT_PURCHASE_OPTION_GIFT_TEXT_INSTRUCTIONS"] = {
+		ruRU = "Текст сообщения",
+	},
+	["STORE_PRODUCT_PURCHASE_SUBSCRIPTION_DESCRIPTION_DEFAULT"] = {
+		ruRU = "Вы приобретаете подписку на ежедневные %s.\nПредметы будут ежедневно поступать вам на внутриигровую почту в 12:00.",
+	},
+	["STORE_PRODUCT_PURCHASE_SUBSCRIPTION_DESCRIPTION_EXTRA"] = {
+		ruRU = "Вы приобретаете подписку на ежедневные экстра-%s.\nПредметы будут ежедневно поступать вам на внутриигровую почту в 12:00 и в 20:00.",
+	},
+	["STORE_PRODUCT_PURCHASE_SUBSCRIPTION_NAME"] = {
+		ruRU = "%s\n%d |4день:дня:дней;",
+	},
+	["STORE_PRODUCT_PURCHASE_TITLE"] = {
+		ruRU = "Подтверждение покупки",
+	},
+	["STORE_PRODUCT_REFUND_AMOUNT_LABEL"] = {
+		ruRU = "Вы получите при возврате",
+	},
+	["STORE_PRODUCT_REFUND_HINT"] = {
+		ruRU = "Выберите предмет, который вы хотели бы вернуть\n\n|cffFF0000Внимание!|r Все улучшения предмета будут безвозвратно удалены вместе с предметом",
+	},
+	["STORE_PRODUCT_REFUND_LABEL"] = {
+		ruRU = "Вернуть",
+	},
+	["STORE_PRODUCT_REFUND_LABEL_ALT"] = {
+		ruRU = "Возврат",
+	},
+	["STORE_PRODUCT_REFUND_PURCHASE_DATE"] = {
+		ruRU = "Куплено %s",
+	},
+	["STORE_PRODUCT_REFUND_PURCHASE_PENALTY"] = {
+		ruRU = "Штраф |cffFF0000%u%%|r",
+	},
+	["STORE_PRODUCT_REFUND_PURCHASE_TIMELEFT"] = {
+		ruRU = "Можно вернуть %s",
+	},
+	["STORE_PRODUCT_REFUND_TITLE"] = {
+		ruRU = "Возврат предметов",
+	},
+	["STORE_PRODUCT_ROLLABLE_UNAVAILABLE"] = {
+		ruRU = "Предмет недоступен.\nЕсть шанс, что он появится в продаже в следующем обновлении ассортимента.",
+	},
+	["STORE_PRODUCT_UNAVAILABLE"] = {
+		ruRU = "Предмет недоступен.",
+	},
+	["STORE_PROMOCODE_ACTION_BUTTON_ERROR"] = {
+		ruRU = "Вы уже использовали этот промокод!",
+		enGB = "You have already used this promo code!"
+	},
+	["STORE_PROMOCODE_ACTIVATE"] = {
+		ruRU = "Активировать",
+	},
+	["STORE_PROMOCODE_ACTIVATED"] = {
+		ruRU = "Промокод активирован!",
+	},
+	["STORE_PROMOCODE_POPUP_FASTEN_DESC"] = {
+		ruRU = "Вы уверены, что хотите закрепить промокод за данной учетной записью?",
+		enGB = "Are you sure you want to use the promo code on this account?"
+	},
+	["STORE_PROMOCODE_POPUP_FASTEN_HEAD"] = {
+		ruRU = "Обратите внимание",
+		enGB = "Important"
+	},
+	["STORE_PROMOCODE_REWARD_ERROR_1"] = {
+		ruRU = "Вы ввели неверный промокод!",
+		enGB = "You've entered an invalid promo code!"
+	},
+	["STORE_PROMOCODE_REWARD_ERROR_2"] = {
+		ruRU = "Данный промокод уже использовался на другой учетной записи.",
+		enGB = "This promo code has already been used on another account."
+	},
+	["STORE_PROMOCODE_REWARD_ERROR_3"] = {
+		ruRU = "Быстрый старт уже активен!",
+		enGB = "Boost service already activated"
+	},
+	["STORE_PROMOCODE_REWARD_FAST_LEVEL_BOOST"] = {
+		ruRU = "Быстрый старт",
+		enGB = "Character Boost"
+	},
+	["STORE_PROMOCODE_REWARD_GOLD"] = {
+		ruRU = "Золото",
+		enGB = "Gold"
+	},
+	["STORE_PROMOCODE_SUBMIT_ERROR_1"] = {
+		ruRU = "Вы уже использовали этот промокод!",
+		enGB = "You have already used this promo code!"
+	},
+	["STORE_PROMOCODE_TAKE_ITEMS"] = {
+		ruRU = "Забрать награду",
+	},
+	["STORE_PROMOCODE_TEXT"] = {
+		ruRU = "Если вы получили промокод и желаете им воспользоваться - введите его ниже",
+	},
+	["STORE_PROMOCODE_TITLE"] = {
+		ruRU = "Промокод",
+	},
+	["STORE_PURCHASE_ERROR_1"] = {
+		ruRU = "Магазин отключен.",
+	},
+	["STORE_PURCHASE_ERROR_2"] = {
+		ruRU = "Магазин недоступен в режиме испытания.",
+	},
+	["STORE_PURCHASE_ERROR_3"] = {
+		ruRU = "Некорректные данные.",
+	},
+	["STORE_PURCHASE_ERROR_4"] = {
+		ruRU = "Ваш уровень недостаточен для приобретения этого товара.",
+	},
+	["STORE_PURCHASE_ERROR_5"] = {
+		ruRU = "Предмет недоступен.",
+	},
+	["STORE_PURCHASE_ERROR_6"] = {
+		ruRU = "Сезон Боевого пропуска окончен, покупка невозможна.",
+	},
+	["STORE_PURCHASE_ERROR_7"] = {
+		ruRU = "Предмет недоступен к дарению на вашем уровне лояльности.",
+	},
+	["STORE_PURCHASE_ERROR_8"] = {
+		ruRU = "Предмет нельзя дарить при покупке за эту валюту.",
+	},
+	["STORE_PURCHASE_ERROR_9"] = {
+		ruRU = "Не выбран стиль письма.",
+	},
+	["STORE_PURCHASE_ERROR_10"] = {
+		ruRU = "Получатель не найден.",
+		enGB = "Recipient not found"
+	},
+	["STORE_PURCHASE_ERROR_11"] = {
+		ruRU = "Вы не можете отправить подарок самому себе.",
+		enGB = "You can't send a gift to yourself"
+	},
+	["STORE_PURCHASE_ERROR_12"] = {
+		ruRU = "Вы не можете отправить подарок персонажу, участвующему в испытании.",
+	},
+	["STORE_PURCHASE_ERROR_13"] = {
+		ruRU = "Предмет из спецпредложения недоступен или отсутствует.",
+	},
+	["STORE_PURCHASE_ERROR_14"] = {
+		ruRU = "Этот предмет недоступен игроку %s.",
+		enGB = "This item is unavailable for %s."
+	},
+	["STORE_PURCHASE_ERROR_15"] = {
+		ruRU = "Предмет отсутствует в доступных к приобретению товарах.",
+	},
+	["STORE_PURCHASE_ERROR_16"] = {
+		ruRU = "Предмет недоступен к приобретению при завершенном сезоне Боевого Пропуска.",
+	},
+	["STORE_PURCHASE_ERROR_17"] = {
+		ruRU = "Вы уже получили эту награду.",
+	},
+	["STORE_PURCHASE_ERROR_19"] = {
+		ruRU = "Вы не можете приобретать товары на неподтвержденный аккаунт.\nПодробности на https://sirus.su/unconfirmed",
+	},
+	["STORE_PURCHASE_ERROR_20"] = {
+		ruRU = "Предмет не подходит игроку %s по уровню.",
+	},
+	["STORE_PURCHASE_ERROR_21"] = {
+		ruRU = "Предмет не подходит фракции игрока %s.",
+	},
+	["STORE_PURCHASE_ERROR_22"] = {
+		ruRU = "Предмет не подходит классу игрока %s.",
+	},
+	["STORE_PURCHASE_ERROR_23"] = {
+		ruRU = "Предмет не подходит игроку %s. Возможно, он уже приобретал его ранее?",
+	},
+	["STORE_PURCHASE_ERROR_24"] = {
+		ruRU = "Игрок %s должен находиться онлайн, чтобы получить этот подарок.",
+	},
+	["STORE_PURCHASE_ERROR_25"] = {
+		ruRU = "Предмет недоступен для приобретения при вашем уровне персонажа.",
+	},
+	["STORE_PURCHASE_ERROR_26"] = {
+		ruRU = "Предмет недоступен для вашей фракции.",
+	},
+	["STORE_PURCHASE_ERROR_27"] = {
+		ruRU = "Предмет недоступен для вашего класса.",
+	},
+	["STORE_PURCHASE_ERROR_28"] = {
+		ruRU = "Предмет недоступен для приобретения. Возможно, вы уже его покупали ранее?",
+	},
+	["STORE_PURCHASE_ERROR_BALANCE_BONUS"] = {
+		ruRU = "Недостаточно средств для покупки.",
+		enGB = "Not enought funds to buy."
+	},
+	["STORE_PURCHASE_ERROR_LOYALITY_LEVEL"] = {
+		ruRU = "Вашего уровня лояльности недостаточно для покупки.",
+		enGB = "You loyalty level isn't high enough to buy this."
+	},
+	["STORE_PURCHASE_PREMIUM"] = {
+		ruRU = "Купить «Premium»",
+	},
+	["STORE_PURCHASE_PREMIUM_ALT"] = {
+		ruRU = "Получить «Premium»",
+	},
+	["STORE_REALM_SHOUT_BODY"] = {
+		ruRU = "Отправляя сообщение вы соглашаетесь с тем, что ознакомлены с правилами сервера и обязуетесь их соблюдать.\n\nДля нас очень важна атмосфера на проекте, поэтому мы так же предупреждаем вас, что любое нарушение правил при помощи этой функции приведёт к блокировке вашего аккаунта.\n\nВозвраты невозможны ни в каком виде.",
+	},
+	["STORE_REALM_SHOUT_HEADER"] = {
+		ruRU = "Любая фраза, сказанная вами таким образом, будет видна всему серверу. Если уверены, что вам есть что заявить - это ваш шанс",
+	},
+	["STORE_REALM_SHOUT_INSTRUCTION"] = {
+		ruRU = "Введите ваше сообщение",
+	},
+	["STORE_REALM_SHOUT_PREVIEW"] = {
+		ruRU = "Предпросмотр",
+	},
+	["STORE_REALM_SHOUT_PURCHASE"] = {
+		ruRU = "Отправить",
+	},
+	["STORE_REALM_SHOUT_TITLE"] = {
+		ruRU = "Громкий крик",
+	},
+	["STORE_RECOMMENDATIONS"] = {
+		ruRU = "Рекомендации",
+	},
+	["STORE_REFERRAL_INVITE"] = {
+		ruRU = "Пригласить",
+	},
+	["STORE_REFERRAL_INVITE_COPY"] = {
+		ruRU = "Скопировать",
+	},
+	["STORE_REFERRAL_INVITE_INFO"] = {
+		ruRU = "Подробности",
+	},
+	["STORE_REFERRAL_INVITE_TEXT"] = {
+		ruRU = "Отправьте эту ссылку другу, чтобы вы могли получить бонусы",
+	},
+	["STORE_REFERRAL_INFO_TEXT"] = {
+		ruRU = "Чтобы узнать все подробности и условия этой услуги, пройдите по ссылке на наш форум",
+	},
+	["STORE_REFERRAL_LABEL"] = {
+		ruRU = "Рефералы",
+	},
+	["STORE_REFERRAL_STEP1_LABEL"] = {
+		ruRU = "Приглашай своих друзей!",
+	},
+	["STORE_REFERRAL_STEP1_TEXT"] = {
+		ruRU = "Просто отправь ссылку своему другу и вы оба получите бонусы",
+	},
+	["STORE_REFERRAL_STEP2_LABEL"] = {
+		ruRU = "Развивайтесь вместе",
+	},
+	["STORE_REFERRAL_STEP2_TEXT"] = {
+		ruRU = "Когда определённое количество ваших приглашённых друзей получат 5-ю категорию — вы сможете забрать потрясающие средства передвижения",
+	},
+	["STORE_REFERRAL_STEP3_LABEL"] = {
+		ruRU = "Получайте награды",
+	},
+	["STORE_REFERRAL_STEP3_TEXT"] = {
+		ruRU = "Играйте вместе и пользуйтесь уникальными возможностями, такими как мгновенное перемещение к другу, дополнительный опыт и подарочные уровни",
+	},
+	["STORE_REFERRAL_TITLE"] = {
+		ruRU = "Пригласи друга",
+	},
+	["STORE_REFRESH_DESCRIPTION_GENERIC"] = {
+		ruRU = "Давайте посмотрим что тут есть новенького!",
+	},
+	["STORE_REFRESH_DESCRIPTION_TRANSMOG"] = {
+		ruRU = "Это действие обновит ассортимент товаров трансмогрификации разделов \"Оружие\", \"Наборы брони\" и \"Головные уборы\"",
+	},
+	["STORE_REFRESH_PRODUCTS"] = {
+		ruRU = "Обновить",
+	},
+	["STORE_REFRESH_PRODUCTS_INFO"] = {
+		ruRU = "До обновления ассортимента",
+	},
+	["STORE_REFRESH_PRODUCTS_INFO_SHORT_FORMAT"] = {
+		ruRU = "До обновления: |cffFFFFFF%s|r",
+	},
+	["STORE_REFUND_STATUS_ERROR_1"] = {
+		ruRU = "Предмет %s нельзя вернуть.",
+	},
+	["STORE_REFUND_STATUS_ERROR_2"] = {
+		ruRU = "Внутренняя ошибка #2 при попытке возврата %s",
+	},
+	["STORE_REFUND_STATUS_ERROR_3"] = {
+		ruRU = "Истекло время для возврата %s",
+	},
+	["STORE_REFUND_STATUS_ERROR_4"] = {
+		ruRU = "Возврат %s отменен по причине штрафа",
+	},
+	["STORE_REFUND_STATUS_ERROR_5"] = {
+		ruRU = "Внутренняя ошибка #5 (предмет не найден) при попытке возврата %s",
+	},
+	["STORE_SELECT_SLOT"] = {
+		ruRU = "Выберите слот",
+	},
+	["STORE_SERVICE_LABEL_1"] = {
+		ruRU = "Смена имени и внешности",
+		enGB = "Change name and appearance"
+	},
+	["STORE_SERVICE_LABEL_2"] = {
+		ruRU = "Смена фракции",
+		enGB = "Change faction"
+	},
+	["STORE_SERVICE_LABEL_3"] = {
+		ruRU = "Смена расы",
+		enGB = "Change race"
+	},
+	["STORE_SERVICE_LABEL_4"] = {
+		ruRU = "Смена знака Зодиака",
+		enGB = "Change zodiac sign"
+	},
+	["STORE_SHOUT_MESSAGE_CONFIRMATION"] = {
+		ruRU = "Вы уверены, что хотите отправить сообщение?",
+	},
+	["STORE_SHOUT_MESSAGE_LABEL"] = {
+		ruRU = "Громкий крик",
+	},
+	["STORE_SHOUT_MESSAGE_PREVIEW"] = {
+		ruRU = "|cffFF008E[%s] громко кричит (демо): %s|r",
+	},
+	["STORE_SORT_DISCOUNT"] = {
+		ruRU = "Спец. предложение",
+	},
+	["STORE_SORT_ITEM_LEVEL"] = {
+		ruRU = "ilevel",
+	},
+	["STORE_SORT_PRICE"] = {
+		ruRU = "Цена",
+	},
+	["STORE_SORT_PVP"] = {
+		ruRU = "PvP",
+	},
+	["STORE_SORT_RESET"] = {
+		ruRU = "Сброс",
+	},
+	["STORE_SPECIAL_OFFER_POPUP_LESS_THAN_HOUR"] = {
+		ruRU = "Спец. предложение \"%s\" заканчивается в течение часа",
+		enGB = "Special offer \"%s\" expires in next hour"
+	},
+	["STORE_SPECIAL_OFFER_TIMER"] = {
+		ruRU = "Спецпредложение действует:",
+	},
+	["STORE_SUBSCRIPTIONS_TITLE"] = {
+		ruRU = "Поставки",
+	},
+	["STORE_SUBSCRIPTION_BONUS"] = {
+		ruRU = "Бонус\nпри покупке!",
+	},
+	["STORE_SUBSCRIPTION_EXTRA_MULT_ACTIVE"] = {
+		ruRU = "Поставка увеличена |cff1AFF1Aв %u |4раз:раза:раз;|r",
+	},
+	["STORE_SUBSCRIPTION_EXTRA_MULT_INACTIVE"] = {
+		ruRU = "Увеличивает все поставки |cff1AFF1Aв %u |4раз:раза:раз;|r",
+	},
+	["STORE_SUBSCRIPTION_EXTRA_TIMELEFT"] = {
+		ruRU = "До окончания поставок: |cffFFFFFF%s|r",
+	},
+	["STORE_SUBSCRIPTION_EXTRA_UPGRADE"] = {
+		ruRU = "Улучшить до «Extra»",
+	},
+	["STORE_SUBSCRIPTION_FREE"] = {
+		ruRU = "Попробовать\nбесплатно",
+	},
+	["STORE_SUBSCRIPTION_INFO"] = {
+		ruRU = "В каждой поставке вы будете получать",
+	},
+	["STORE_SUBSCRIPTION_AMOUNT_PACKAGE_LEFT"] = {
+		ruRU = "Осталось |cff1aff1a%d|r |4день:дня:дней;",
+	},
+	["STORE_SUBSCRIPTION_NEXT_PACKAGE_TIMELEFT"] = {
+		ruRU = "Следующая поставка через: |cff1aff1a%s|r",
+	},
+	["STORE_SUBSCRIPTION_NEXT_PACKAGE_TIMELEFT_SHORT"] = {
+		ruRU = "Обновится через: |cffFFFFFF%s|r",
+	},
+	["STORE_SUBSCRIPTION_PURCHASE_DAYS"] = {
+		ruRU = "Купить на %u |4день:дня:дней;",
+	},
+	["STORE_SUBSCRIPTION_PURCHASE_EXTEND_DAYS"] = {
+		ruRU = "Продлить на %u |4день:дня:дней;",
+	},
+	["STORE_SUBSCRIPTION_RENEW"] = {
+		ruRU = "Следующая поставка через:",
+	},
+	["STORE_SUB_CATEGORY_CATEGORIES"] = {
+		ruRU = "Категории",
+		enGB = "Categories"
+	},
+	["STORE_SUB_CATEGORY_CONSUMABLES"] = {
+		ruRU = "Расходуемое",
+		enGB = "Consumables"
+	},
+	["STORE_SUB_CATEGORY_CURRENCIES"] = {
+		ruRU = "Валюта",
+		enGB = "Currencies"
+	},
+	["STORE_SUB_CATEGORY_FACTIONS"] = {
+		ruRU = "Фракции",
+		enGB = "Factions"
+	},
+	["STORE_SUB_CATEGORY_ILLUSIONS"] = {
+		ruRU = "Иллюзии",
+		enGB = "Illusions"
+	},
+	["STORE_SUB_CATEGORY_MOUNTS"] = {
+		ruRU = "Транспорт",
+		enGB = "Mounts"
+	},
+	["STORE_SUB_CATEGORY_PETS"] = {
+		ruRU = "Питомцы",
+		enGB = "Pets"
+	},
+	["STORE_SUB_CATEGORY_PROFESSIONS"] = {
+		ruRU = "Профессии",
+		enGB = "Professions"
+	},
+	["STORE_SUB_CATEGORY_QUESTS"] = {
+		ruRU = "Задания",
+		enGB = "Quests"
+	},
+	["STORE_SUB_CATEGORY_REAGENTS"] = {
+		ruRU = "Реагенты",
+		enGB = "Reagents"
+	},
+	["STORE_SUB_CATEGORY_SERVICES"] = {
+		ruRU = "Сервисы",
+		enGB = "Services"
+	},
+	["STORE_SUB_CATEGORY_TOYS"] = {
+		ruRU = "Игрушки",
+		enGB = "Toys"
+	},
+	["STORE_SUB_CATEGORY_TRANSMOG_ARMOR_SETS"] = {
+		ruRU = "Наборы брони",
+	},
+	["STORE_SUB_CATEGORY_TRANSMOG_HEADGEAR"] = {
+		ruRU = "Головные уборы",
+	},
+	["STORE_SUB_CATEGORY_TRANSMOG_INVISIBLE_ARMOR"] = {
+		ruRU = "Невидимая броня",
+	},
+	["STORE_SUB_CATEGORY_TRANSMOG_WEAPONS"] = {
+		ruRU = "Оружие",
+	},
+	["STORE_TIME_LEFT"] = {
+		ruRU = "До окончания",
+	},
+	["STORE_TOAST_SPECIAL_OFFER_BODY"] = {
+		ruRU = "Нажмите тут для информации",
+		enGB = "Click here for information"
+	},
+	["STORE_TOAST_SPECIAL_OFFER_TITLE"] = {
+		ruRU = "Специальное предложение",
+		enGB = "Special offer"
+	},
+	["STORE_TRANSMOGRIFY_REFRESH_TITLE"] = {
+		ruRU = "Обновление списка трансмогрификации",
+	},
+	["STORE_TRANSMOG_OFFERS"] = {
+		ruRU = "Спецпредложения",
+	},
+	["STORE_TRANSMOG_SPECIAL_OFFER_FOR_YOU"] = {
+		ruRU = "Скидка для тебя!",
+	},
+	["STORE_TRY_FOR_FREE"] = {
+		ruRU = "Попробовать бесплатно",
+		enGB = "Try for free"
+	},
+	["STORE_VOTE_DIALOG_TEXT"] = {
+		ruRU = "Голосование позволяет Вам зарабатывать уникальную серверную валюту, потратить которую можно на приобретение различных игровых предметов.",
+	},
+	["STORE_VOTE_DIALOG_TITLE"] = {
+		ruRU = "Голосование за сервер",
+	},
+	["STORE_VOTE_LABEL"] = {
+		ruRU = "Голосовать",
+	},
+	["PLAYER_EQUIPMENT_SHOW"] = {
+		ruRU = "Показывать экипировку",
+	},
+	["PLAYER_EQUIPMENT_HIDE"] = {
+		ruRU = "Скрыть экипировку",
+	},
 }
 
 do
 	local _G = _G
 	local next = next
 	local locale = GetLocale()
-	for key, data in next, SIRUS_LOCALIZATION do
+	for key, data in next, GLOBAL_STRINGS do
 		_G[key] = data[locale] or data.enGB or key
 	end
-	table.wipe(SIRUS_LOCALIZATION)
-	SIRUS_LOCALIZATION = nil
+	table.wipe(GLOBAL_STRINGS)
+	GLOBAL_STRINGS = nil
 end

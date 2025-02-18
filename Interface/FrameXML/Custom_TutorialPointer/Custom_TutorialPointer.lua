@@ -72,7 +72,7 @@ end
 
 -- ------------------------------------------------------------------------------------------------------------
 -- @Usage NPE_TutorialPointerFrame:Show(content, direction, frame, ofsX, ofsY [,relativePoint])
-function NPE_TutorialPointerFrame:Show(content, direction, anchorFrame, ofsX, ofsY, relativePoint, backupDirection, modelData)
+function NPE_TutorialPointerFrame:Show(content, direction, anchorFrame, ofsX, ofsY, relativePoint, backupDirection, modelData, width, closeButtonCallback, onReleaseCallback)
 	if self.disableContent[content] then
 		return
 	end
@@ -116,6 +116,10 @@ function NPE_TutorialPointerFrame:Show(content, direction, anchorFrame, ofsX, of
 			end
 		end
 	end
+
+	width = width or 240
+	frame.Content:SetWidth(width)
+	frame.Content.Text:SetWidth(width - 40)
 
 	-- Anchor the frame
 	frame:ClearAllPoints();
@@ -162,6 +166,19 @@ function NPE_TutorialPointerFrame:Show(content, direction, anchorFrame, ofsX, of
 
 		model:SetShown(modelData)
 	end
+
+	if type(closeButtonCallback) == "function" then
+		frame.CloseButton:SetScript("OnClick", function()
+			frame:Hide()
+			closeButtonCallback()
+		end)
+		frame.CloseButton:Show()
+	else
+		frame.CloseButton:SetScript("OnClick", nil)
+		frame.CloseButton:Hide()
+	end
+
+	frame.onReleaseCallback = onReleaseCallback
 
 	frame:Show();
 
@@ -271,6 +288,14 @@ end
 
 -- ------------------------------------------------------------------------------------------------------------
 function NPE_TutorialPointerFrame:_RetireFrame(frame)
+
+	if type(frame.onReleaseCallback) == "function" then
+		local success, err = pcall(frame.onReleaseCallback, frame)
+		if not success then
+			geterrorhandler()(err)
+		end
+		frame.onReleaseCallback = nil
+	end
 
 	-- TODO: fade the frame out?
 	frame:Hide();

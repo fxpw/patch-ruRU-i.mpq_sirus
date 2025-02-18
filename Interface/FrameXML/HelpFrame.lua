@@ -163,6 +163,18 @@ function HelpFrame_OnLoad(self)
 	self.Bg:SetTexture("Interface\\FrameGeneral\\UI-Background-Rock", true, true);
 	self.Bg:SetHorizTile(true);
 	self.Bg:SetVertTile(true);
+
+	self.helpPlate = {
+		FramePos = { x = 12, y = -44 },
+		FrameSize = { width = 949, height = 468 },
+		[1] = { ButtonPos = { x = 166, y = 20 }, HighLightBox = { x = 6, y = 26, width = 184, height = 58 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_KNOWLEDGEBASE_TUTORIAL_1 },
+		[2] = { ButtonPos = { x = 166, y = -47 }, HighLightBox = { x = 6, y = -41, width = 184, height = 58 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_KNOWLEDGEBASE_TUTORIAL_2 },
+		[3] = { ButtonPos = { x = 166, y = -113 }, HighLightBox = { x = 6, y = -107, width = 184, height = 58 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_KNOWLEDGEBASE_TUTORIAL_3 },
+		[4] = { ButtonPos = { x = 166, y = -179 }, HighLightBox = { x = 6, y = -173, width = 184, height = 58 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_KNOWLEDGEBASE_TUTORIAL_4 },
+		[5] = { ButtonPos = { x = 166, y = -277 }, HighLightBox = { x = 6, y = -271, width = 184, height = 58 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_KNOWLEDGEBASE_TUTORIAL_5 },
+		[6] = { ButtonPos = { x = 166, y = -343 }, HighLightBox = { x = 6, y = -337, width = 184, height = 58 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_KNOWLEDGEBASE_TUTORIAL_6 },
+		[7] = { ButtonPos = { x = 166, y = -409 }, HighLightBox = { x = 6, y = -403, width = 184, height = 58 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_KNOWLEDGEBASE_TUTORIAL_7 },
+	}
 end
 
 function HelpFrame_OnShow(self)
@@ -176,6 +188,8 @@ function HelpFrame_OnShow(self)
 	button:RegisterEvent("SPELL_UPDATE_USABLE");
 	button:RegisterEvent("SPELL_UPDATE_COOLDOWN");
 	button:RegisterEvent("CURRENT_SPELL_CAST_CHANGED");
+
+	EventRegistry:TriggerEvent("HelpFrame.OnShow")
 end
 
 function HelpFrame_OnHide(self)
@@ -190,6 +204,7 @@ function HelpFrame_OnHide(self)
 	button:UnregisterEvent("CURRENT_SPELL_CAST_CHANGED");
 
 	StaticPopup_Hide("EXTERNAL_URL_POPUP")
+	HelpPlate_Hide(false)
 end
 
 local function formatURL(url)
@@ -433,6 +448,14 @@ function HelpFrame_SetButtonEnabled(button, enabled)
 		button.icon:SetDesaturated(true);
 		button.icon:SetVertexColor(0.5, 0.5, 0.5);
 		button.text:SetFontObject(GameFontDisableMed3);
+	end
+end
+
+function HelpFrame_ToggleTutorial()
+	if not HelpPlate_IsShowing(HelpFrame.helpPlate) then
+		HelpPlate_Show(HelpFrame.helpPlate, HelpFrame, HelpFrame.TutorialButton)
+	else
+		HelpPlate_Hide(true)
 	end
 end
 

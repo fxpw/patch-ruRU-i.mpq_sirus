@@ -52,6 +52,7 @@ Enum.Hardcore.Features = {
 	ASSISTANT								= 0x0010000,
 	GUILD_BONUSES							= 0x0020000,
 	FACTION_TENACITY						= 0x0040000,
+	HARDCORE_FEATURE_LOTTERY				= 0x0080000,
 }
 Enum.Hardcore.Features1 = {
 	GUILD_REPAIR							= 0x0000001,
@@ -73,6 +74,10 @@ Enum.Hardcore.Features1 = {
 	BATTLEPASS_REWARDS						= 0x0010000,
 	ACCOUNT_WIDE_SPELLS						= 0x0020000,
 	GUILD									= 0x0040000,
+	HARDCORE_FEATURE1_BLACK_MARKET			= 0x0080000,
+}
+Enum.Hardcore.FeaturesCustom = {
+	GURUBASHI								= 0x0000001,
 }
 Enum.Hardcore.DeathSouce = {
 	Exhausted = 0,
@@ -83,6 +88,8 @@ Enum.Hardcore.DeathSouce = {
 	Fire = 5,
 	FallToVoid = 6,
 	NPC = 7,
+	PVP = 8,
+	FriendlyFire = 9,
 }
 
 local ENVIROMENTAL_DAMAGE = {
@@ -104,7 +111,7 @@ local PARTICIPANTS_LIST = {}
 local LADDER_LIST = {}
 
 local CHALLENGE_ICONS = {
-	[1] = "Interface\\ICONS\\Achievement_ChallengeMode_UpperBRSpire_Bronze",
+	[1] = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_8",
 }
 
 for id, data in pairs(HARDCORE_CHALLENGES) do
@@ -296,6 +303,23 @@ function C_Hardcore.GetChallengeFeatures1ByID(challengeID)
 	return features
 end
 
+function C_Hardcore.GetChallengeFeaturesCustomByID()
+	local features = {}
+
+	local index = 1
+	local name = _G[("HARDCORE_FEATURE_CUSTOM_%d_NAME"):format(index)]
+	while name do
+		features[#features + 1] = {
+			index = index,
+			name = name,
+		}
+		index = index + 1
+		name = _G[("HARDCORE_FEATURE_CUSTOM_%d_NAME"):format(index)]
+	end
+
+	return features
+end
+
 function C_Hardcore.GetFeatureDescription(featureIndex)
 	if type(featureIndex) ~= "number" then
 		error("Usage: C_Hardcore.GetFeatureDescription(featureIndex)", 2)
@@ -310,6 +334,14 @@ function C_Hardcore.GetFeature1Description(featureIndex)
 	end
 
 	return _G[("HARDCORE_FEATURE1_%d_DESCRIPTION"):format(featureIndex)]
+end
+
+function C_Hardcore.GetFeatureCustomDescription(featureIndex)
+	if type(featureIndex) ~= "number" then
+		error("Usage: C_Hardcore.GetFeatureCustomDescription(featureIndex)", 2)
+	end
+
+	return _G[("HARDCORE_FEATURE_CUSTOM_%d_DESCRIPTION"):format(featureIndex)]
 end
 
 function C_Hardcore.GetChallengeFinishConditionsByID(challengeID)
@@ -868,10 +900,6 @@ function C_HardcoreSecure.SaveCharacter()
 	SendServerMessage("ACMSG_REMOVE_HARDCORE", 2)
 end
 
-function EventHandler:ASMSG_HARDCORE_CHALLENGE_ACTIVATE(msg)
-	local status = tonumber(msg)
-end
-
 local SPLIT_LIMIT = 1024
 local function ProcessParticipantsListMessages(msg)
 	for _, challengeMsg in ipairs({strsplit("|", msg)}) do
@@ -993,4 +1021,10 @@ function EventHandler:ASMSG_HARDCORE_DEATH(msg)
 	else
 		FireCustomClientEvent("HARDCORE_DEATH", name, tonumber(race), tonumber(gender), tonumber(class), tonumber(level), zone, tonumber(reason) or 0, npc, tonumber(npcLevel))
 	end
+end
+
+function EventHandler:ASMSG_HARDCORE_COMPLETE(msg)
+	local name, race, gender, class, challengeID = strsplit(":", msg)
+
+	FireCustomClientEvent("HARDCORE_COMPLETE", name, tonumber(race), tonumber(gender), tonumber(class), tonumber(challengeID) or 0)
 end

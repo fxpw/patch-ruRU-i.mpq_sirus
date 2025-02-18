@@ -114,7 +114,7 @@ function MainMenuBar_ToPlayerArt(self)
 
 	MultiBarRight:SetPoint(MainMenuBar_GetRightABPos(MultiBarRight, 1));
 
-	-- SetUpAnimation(MainMenuBar, AnimDataTable.MenuBar_Slide, nil, true);
+-- SetUpAnimation(MainMenuBar, AnimDataTable.MenuBar_Slide, nil, true);
 	SetUpAnimation(MultiBarRight, AnimDataTable.ActionBar_Slide, MainMenuBar_UnlockAB, true);
 	SetUpAnimation(VehicleSeatIndicator, AnimDataTable.SeatIndicator_Slide, nil, true);
 
@@ -140,10 +140,12 @@ function MainMenuBar_ToPlayerArt(self)
 end
 
 function MainMenuBarVehicleLeaveButton_OnLoad(self)
+	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 	self:RegisterEvent("UPDATE_BONUS_ACTIONBAR");
 	self:RegisterEvent("UPDATE_MULTI_CAST_ACTIONBAR");
+	self:RegisterEvent("UNIT_ENTERED_VEHICLE");
+	self:RegisterEvent("UNIT_EXITED_VEHICLE");
 	self:RegisterEvent("VEHICLE_UPDATE");
-	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 	self:RegisterEvent("UNIT_FLAGS");
 end
 
@@ -180,6 +182,7 @@ function MainMenuBarVehicleLeaveButton_Update()
 		MainMenuBarVehicleLeaveButton:Enable();
 		ShowPetActionBar(true);
 	else
+		MainMenuBarVehicleLeaveButton:SetHighlightTexture([[Interface\Buttons\ButtonHilight-Square]], "ADD");
 		MainMenuBarVehicleLeaveButton:UnlockHighlight();
 		MainMenuBarVehicleLeaveButton:Hide();
 		ShowPetActionBar(true);
@@ -343,12 +346,10 @@ function ExhaustionTick_OnEvent(self, event, ...)
 	if ((event == "PLAYER_ENTERING_WORLD") or (event == "PLAYER_XP_UPDATE") or (event == "UPDATE_EXHAUSTION") or (event == "PLAYER_LEVEL_UP")) then
 		local playerCurrXP = UnitXP("player");
 		local playerMaxXP = UnitXPMax("player");
-		--local exhaustionCurrXP, exhaustionMaxXP;
-		--exhaustionCurrXP, exhaustionMaxXP = GetXPExhaustion();
 		local exhaustionThreshold = GetXPExhaustion();
 		local exhaustionStateID, exhaustionStateName, exhaustionStateMultiplier;
 		exhaustionStateID, exhaustionStateName, exhaustionStateMultiplier = GetRestState();
-		if (exhaustionStateID >= 3) then
+		if (exhaustionStateID and exhaustionStateID >= 3) then
 			ExhaustionTick:SetPoint("CENTER", "MainMenuExpBar", "RIGHT", 0, 0);
 		end
 
@@ -357,15 +358,10 @@ function ExhaustionTick_OnEvent(self, event, ...)
 			ExhaustionLevelFillBar:Hide();
 		else
 			local exhaustionTickSet = max(((playerCurrXP + exhaustionThreshold) / playerMaxXP) * MainMenuExpBar:GetWidth(), 0);
---			local exhaustionTotalXP = playerCurrXP + (exhaustionMaxXP - exhaustionCurrXP);
---			local exhaustionTickSet = (exhaustionTotalXP / playerMaxXP) * MainMenuExpBar:GetWidth();
 			ExhaustionTick:ClearAllPoints();
 			if (exhaustionTickSet > MainMenuExpBar:GetWidth() or MainMenuBarMaxLevelBar:IsShown()) then
 				ExhaustionTick:Hide();
 				ExhaustionLevelFillBar:Hide();
-				-- Saving this code in case we want to always leave the exhaustion tick onscreen
---				ExhaustionTick:SetPoint("CENTER", "MainMenuExpBar", "RIGHT", 0, 0);
---				ExhaustionLevelFillBar:SetPoint("TOPRIGHT", "MainMenuExpBar", "TOPRIGHT", 0, 0);
 			else
 				ExhaustionTick:Show();
 				ExhaustionTick:SetPoint("CENTER", "MainMenuExpBar", "LEFT", exhaustionTickSet, 0);
@@ -398,15 +394,13 @@ function ExhaustionTick_OnEvent(self, event, ...)
 end
 
 function ExhaustionToolTipText()
-	-- If showing newbie tips then only show the explanation
-	--[[if ( SHOW_NEWBIE_TIPS == "1" ) then
-		return;
+	local exhaustionStateID, exhaustionStateName, exhaustionStateMultiplier = GetRestState();
+	if not exhaustionStateID then
+		return
 	end
-	]]
 
 	if ( SHOW_NEWBIE_TIPS ~= "1" ) then
-		local x,y;
-		x,y = ExhaustionTick:GetCenter();
+		local x = ExhaustionTick:GetCenter();
 		if ( ExhaustionTick:IsShown() ) then
 			if ( x >= ( GetScreenWidth() / 2 ) ) then
 				GameTooltip:SetOwner(ExhaustionTick, "ANCHOR_LEFT");
@@ -418,20 +412,8 @@ function ExhaustionToolTipText()
 		end
 	end
 
-	local exhaustionStateID, exhaustionStateName, exhaustionStateMultiplier;
-	exhaustionStateID, exhaustionStateName, exhaustionStateMultiplier = GetRestState();
-
-	-- Saving this code in case we want to display xp to next rest state
-	local exhaustionCurrXP, exhaustionMaxXP;
 	local exhaustionThreshold = GetXPExhaustion();
---	local exhaustionXPDifference;
---	if (exhaustionMaxXP) then
---		exhaustionXPDifference = (exhaustionMaxXP - exhaustionCurrXP) * exhaustionStateMultiplier;
---	else
---		exhaustionXPDifference = 0;
---	end
-
-	exhaustionStateMultiplier = exhaustionStateMultiplier * 100 or 0;
+	exhaustionStateMultiplier = exhaustionStateMultiplier * 100;
 	local exhaustionCountdown = nil;
 	if ( GetTimeToWellRested() ) then
 		exhaustionCountdown = GetTimeToWellRested() / 60;
@@ -440,7 +422,6 @@ function ExhaustionToolTipText()
 	local currXP = UnitXP("player");
 	local nextXP = UnitXPMax("player");
 	local percentXP = math.ceil(currXP/nextXP*100);
-
 	local XPText = format( XP_TEXT, currXP, nextXP, percentXP );
 	local tooltipText = XPText..format(EXHAUST_TOOLTIP1, exhaustionStateName, exhaustionStateMultiplier);
 	local append = nil;
@@ -465,28 +446,6 @@ function ExhaustionToolTipText()
 			GameTooltip.canAddRestStateLine = nil;
 		end
 	end
-
---[[
-	if ((exhaustionStateID == 1) and (IsResting()) and (not exhaustionThreshold)) then
-		GameTooltip:SetText(format(EXHAUST_TOOLTIP1, exhaustionStateName, exhaustionStateMultiplier));
-	elseif ((exhaustionStateID == 1) and (IsResting())) then
-		GameTooltip:SetText(format(EXHAUST_TOOLTIP1,exhaustionStateName,exhaustionStateMultiplier) .. format(EXHAUST_TOOLTIP4,exhaustionCountdown));
-	elseif ((exhaustionStateID == 2) and (IsResting())) then
-		GameTooltip:SetText(format(EXHAUST_TOOLTIP1,exhaustionStateName,exhaustionStateMultiplier) .. format(EXHAUST_TOOLTIP4,exhaustionCountdown));
-	elseif ((exhaustionStateID == 3) and (IsResting())) then
-		GameTooltip:SetText(format(EXHAUST_TOOLTIP1,exhaustionStateName,exhaustionStateMultiplier) .. format(EXHAUST_TOOLTIP4,exhaustionCountdown));
-	elseif ((exhaustionStateID == 4) and (IsResting())) then
-		GameTooltip:SetText(format(EXHAUST_TOOLTIP1,exhaustionStateName,exhaustionStateMultiplier) .. format(EXHAUST_TOOLTIP4,exhaustionCountdown));
-	elseif ((exhaustionStateID == 5) and (IsResting())) then
-		GameTooltip:SetText(format(EXHAUST_TOOLTIP1,exhaustionStateName,exhaustionStateMultiplier) .. format(EXHAUST_TOOLTIP4,exhaustionCountdown));
-	elseif (exhaustionStateID <= 3) then
-		GameTooltip:SetText(format(EXHAUST_TOOLTIP1,exhaustionStateName,exhaustionStateMultiplier));
-	elseif (exhaustionStateID == 4) then
-		GameTooltip:SetText(format(EXHAUST_TOOLTIP1,exhaustionStateName,exhaustionStateMultiplier) .. EXHAUST_TOOLTIP2);
-	elseif (exhaustionStateID == 5) then
-		GameTooltip:SetText(format(EXHAUST_TOOLTIP1,exhaustionStateName,exhaustionStateMultiplier) .. EXHAUST_TOOLTIP2);
-	end
-]]
 end
 
 function ExhaustionTick_OnUpdate(self, elapsed)
@@ -531,12 +490,12 @@ function MainMenuBarPerformanceBarFrame_OnEnter(self)
 	-- latency
 	local bandwidthIn, bandwidthOut, latency = GetNetStats();
 	string = format(MAINMENUBAR_LATENCY_LABEL, latency);
-	GameTooltip:AddLine("\n");
+	GameTooltip:AddLine(" ");
 	GameTooltip:AddLine(string, 1.0, 1.0, 1.0);
 	if ( SHOW_NEWBIE_TIPS == "1" ) then
 		GameTooltip:AddLine(NEWBIE_TOOLTIP_LATENCY, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1);
 	end
-	GameTooltip:AddLine("\n");
+	GameTooltip:AddLine(" ");
 
 	-- framerate
 	string = format(MAINMENUBAR_FPS_LABEL, GetFramerate());

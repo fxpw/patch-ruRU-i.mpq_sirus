@@ -25,6 +25,7 @@ function PetJournal_OnShow(self)
 	PetJournal_FullUpdate(self);
 
 	PetJournalResetFiltersButton_UpdateVisibility();
+	EventRegistry:TriggerEvent("PetJournal.OnShow")
 end
 
 function PetJournal_OnEvent(self, event)
@@ -332,14 +333,6 @@ function PetJournal_UpdatePetDisplay()
 		PetJournal.PetDisplay.InfoButton:Show();
 
 		local name, spellID, icon, petType, active, sourceType, isFavorite, isCollected, petID, creatureID, itemID, currency, price, _, priceText, descriptionText, holidayText = C_PetJournal.GetPetInfoByPetID(PetJournal.selectedPetID);
-		if IsGMAccount() then
-			PetJournal.PetDisplay.ModelScene.DebugInfo:SetFormattedText("CreatureID: %s", creatureID);
-			PetJournal.PetDisplay.ModelScene.DebugInfo:Show();
-		else
-			PetJournal.PetDisplay.ModelScene.DebugInfo:Hide();
-		end
-		PetJournal.PetDisplay.ModelScene.DebugFrame:SetShown(IsGMAccount());
-
 		PetJournal.PetDisplay.InfoButton.Name:SetText(name);
 		PetJournal.PetDisplay.InfoButton.Icon:SetTexture(icon);
 
@@ -410,21 +403,14 @@ function PetJournalBuyButton_OnClick()
 	HideUIPanel(CollectionsJournal);
 
 	if PetJournal.selectedPetID then
-		local name, _, icon, _, _, sourceType, _, _, _, _, itemID, currency, price, productID = C_PetJournal.GetPetInfoByPetID(PetJournal.selectedPetID);
+		local name, _, icon, _, _, sourceType, _, _, _, _, itemID, currencyType, price, productID = C_PetJournal.GetPetInfoByPetID(PetJournal.selectedPetID);
 
 		if name then
 			if sourceType == 16 then
 				BattlePassFrame:ShowCardWithItem(itemID);
-			else
-				local productData = {
-					Texture = icon,
-					Name = name,
-					Price = price,
-					ID = productID,
-					currency = currency
-				};
-
-				StoreFrame_ProductBuyWithOpenPage(productData);
+			elseif currencyType and currencyType ~= 0 then
+				local categoryIndex, subCategoryIndex = C_StoreSecure.GetVirtualCategoryByRemoteID(currencyType, 0, 0)
+				StoreFrame:ShowProductCategory(productID, categoryIndex, subCategoryIndex)
 			end
 		end
 	end
@@ -515,7 +501,7 @@ function PetJournalFilterDropDown_Initialize(self, level)
 					},
 				},
 			},
-			{ type = FilterComponent.Submenu, text = STORE_TRANSMOGRIFY_FILTER_SORT_TITLE, value = 3, childrenInfo = {
+			{ type = FilterComponent.Submenu, text = TRANSMOGRIFY_FILTER_SORT_TITLE, value = 3, childrenInfo = {
 					filters = {
 						{ type = FilterComponent.CustomFunction, customFunc = PetJournalFilterDropDown_AddInSortParameters, },
 					},

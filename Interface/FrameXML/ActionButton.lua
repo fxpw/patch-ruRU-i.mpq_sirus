@@ -343,12 +343,14 @@ function ActionButton_OnLoad (self)
 
 	self.flashing = 0;
 	self.flashtime = 0;
+	self:SetAttribute("_ignore", true);
 	self:SetAttribute("showgrid", 0);
 	self:SetAttribute("type", "action");
 	self:SetAttribute("checkselfcast", true);
 	self:SetAttribute("checkfocuscast", true);
 	self:SetAttribute("useparent-unit", true);
 	self:SetAttribute("useparent-actionpage", true);
+	self:SetAttribute("_ignore", nil);
 	self:RegisterForDrag("LeftButton", "RightButton");
 	self:RegisterForClicks("AnyUp");
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
@@ -592,6 +594,8 @@ function ActionButton_Update (self)
 		if ActionButton_IsFlashing(self) then
 			ActionButton_StopFlash(self);
 		end
+
+		self:SetChecked(false);
 	end
 
 	-- Add a green border if button is an equipped item

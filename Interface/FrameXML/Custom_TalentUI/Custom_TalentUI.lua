@@ -34,6 +34,7 @@ NUM_TALENT_POPUP_ICON_ROWS = 7
 TALENT_POPUP_ICON_ROW_HEIGHT = 36
 
 local SECOND_SPEC_PRICE = 10000000
+local CONFIG_REPORTED   = false
 
 -- speed references
 local next                                          = next;
@@ -132,6 +133,26 @@ local classAssociation = {
     ["DRUID"]       = "q"
 }
 
+function AnimationStopAndPlay(object, ...)
+	local numVarArg = select("#", ...)
+	if numVarArg > 0 then
+		for i = 1, numVarArg do
+			local obj = select(i, ...)
+			if obj and obj:IsPlaying() then
+				obj:Stop()
+			end
+		end
+	end
+
+	if object then
+		if object:IsPlaying() then
+			object:Stop()
+		end
+
+		object:Play()
+	end
+end
+
 function GetTalentHyperlinkInfo(link)
     wipe(SIRUS_TALENT_CACHE)
     SIRUS_TALENT_CACHE.talentData = {}
@@ -184,20 +205,18 @@ function GetTalentHyperlinkInfo(link)
                 SIRUS_TALENT_CACHE.glyphData[2] = {}
             end
 
-            for i = 1, 3 do
-                if glyphMajorList then
+			if glyphMajorList then
+				for i = 1, 3 do
                     local glyphID = glyphMajorList[i]
-
                     if glyphID then
                         table.insert(SIRUS_TALENT_CACHE.glyphData[1], tonumber(glyphID))
                     end
                 end
             end
 
-            for i = 1, 3 do
-                if glyphMinorList then
+			if glyphMinorList then
+					for i = 1, 3 do
                     local glyphID = glyphMinorList[i]
-
                     if glyphID then
                         table.insert(SIRUS_TALENT_CACHE.glyphData[2], tonumber(glyphID))
                     end
@@ -228,7 +247,38 @@ function TalentLetterDecode(letter)
     return nil
 end
 
-function TalentPreviewExport()
+function HasPlayerAnyTalentInfo(includePreview, checkGlyphs)
+	local talentGroup
+	local lastSecondTalentGroup = C_Talent.GetLastSecondTalentGroup()
+	if lastSecondTalentGroup then
+		talentGroup = C_Talent.GetActiveTalentGroup() ~= lastSecondTalentGroup and 2 or 1
+	else
+		talentGroup = C_Talent.GetActiveTalentGroup()
+	end
+
+	local num = 0
+
+	for talentTree = 1, 3 do
+		local _, _, pointsSpent, _, previewPointsSpent = GetTalentTabInfo(talentTree, false, false, talentGroup)
+		num = num + pointsSpent
+		if includePreview then
+			num = num + previewPointsSpent
+		end
+	end
+
+	if checkGlyphs then
+		for glyphIndex = 1, 6 do
+			local _, glyphType, glyphSpell = GetGlyphSocketInfo(glyphIndex, talentGroup)
+			if glyphSpell and glyphType then
+				num = num + 1
+			end
+		end
+	end
+
+	return num > 0
+end
+
+function TalentPreviewExport(includePreviewPoints)
     local buffer                      = {}
     local specPointSpent              = {}
 
@@ -245,87 +295,104 @@ function TalentPreviewExport()
 		talentGroup = C_Talent.GetActiveTalentGroup() ~= lastSecondTalentGroup and 2 or 1
 	end
 
-    for talentTree = 1, 3 do
-        local _, _, pointsSpent, _, previewPointsSpent = GetTalentTabInfo(talentTree, PlayerTalentFrame.inspect, PlayerTalentFrame.pet, talentGroup)
-        specPointSpent[talentTree]                     = (pointsSpent + previewPointsSpent)
+	for tabIndex = 1, 3 do
+		local _, _, pointsSpent, _, previewPointsSpent = GetTalentTabInfo(tabIndex, false, false, talentGroup)
+		if includePreviewPoints then
+			specPointSpent[tabIndex] = pointsSpent + previewPointsSpent
+		else
+			specPointSpent[tabIndex] = pointsSpent
+		end
 
-        buffer.talentData[talentTree]                  = ""
+		buffer.talentData[tabIndex] = {}
 
-        for talentIndex = 1, 40 do
-            local _, _, _, _, rank, _, _, _, _, _ = GetTalentInfo(talentTree, talentIndex, PlayerTalentFrame.inspect, PlayerTalentFrame.pet, talentGroup)
-            buffer.talentData[talentTree]         = buffer.talentData[talentTree] .. rank
-        end
+		for talentIndex = 1, GetNumTalents(tabIndex, false, false) do
+			local _, _, _, _, rank, _, _, _, previewRank = GetTalentInfo(tabIndex, talentIndex, false, false, talentGroup)
+			local displayRank
+			if includePreviewPoints then
+				displayRank = previewRank
+			else
+				displayRank = rank
+			end
+			buffer.talentData[tabIndex][talentIndex] = displayRank
+		end
 
-        for i = strlenutf8(buffer.talentData[talentTree]), 1, -1 do
-            local number = tonumber(string.sub(buffer.talentData[talentTree], i, i))
-            if number ~= 0 then
-                buffer.talentData[talentTree] = string.sub(buffer.talentData[talentTree], 1, i)
-                break
-            end
-        end
+		for index = #buffer.talentData[tabIndex], 1, -1 do
+			if buffer.talentData[tabIndex][index] == 0 then
+				buffer.talentData[tabIndex][index] = nil
+			else
+				break
+			end
+		end
 
-        if strlenutf8(buffer.talentData[talentTree]) == 40 then
-            buffer.talentData[talentTree] = ""
-        end
+		if #buffer.talentData[tabIndex] > 0 then
+			local patternBuffer = ""
 
-        if strlenutf8(buffer.talentData[talentTree]) ~= 0 then
-            local patternBuffer = ""
+			local numRanks = #buffer.talentData[tabIndex]
+			for index = 1, numRanks, 2 do
+				local rank1 = buffer.talentData[tabIndex][index]
+				local rank2
+				if index + 1 <= numRanks then
+					rank2 = buffer.talentData[tabIndex][index + 1]
+				else
+					rank2 = 0
+				end
 
-            for i = 1, strlenutf8(buffer.talentData[talentTree]), 2 do
-                local couple          = string.sub(buffer.talentData[talentTree], i, i + 1)
-                local coupleNumber    = { string.sub(couple, 1, 1), string.sub(couple, 2, 2) == "" and "0" or string.sub(couple, 2, 2) }
+				local patternPosition = ((rank1 * 6) + rank2) + 1
+				local pattern = string.sub(talentPattern, patternPosition, patternPosition)
 
-                local patternPosition = ((coupleNumber[1] * 6) + coupleNumber[2]) + 1
-                local pattern         = string.sub(talentPattern, patternPosition, patternPosition)
+				patternBuffer = strconcat(patternBuffer, pattern)
+			end
 
-                patternBuffer         = patternBuffer .. pattern
-            end
+			buffer.talentData[tabIndex] = patternBuffer
+		else
+			buffer.talentData[tabIndex] = ""
+		end
+	end
 
-            buffer.talentData[talentTree] = patternBuffer
-        end
-    end
+	for glyphIndex = 1, 6 do
+		local _, glyphType, glyphSpell = GetGlyphSocketInfo(glyphIndex, talentGroup)
+		if glyphSpell and glyphType then
+			table.insert(buffer.glyphData[glyphType], glyphSpell)
+		end
+	end
 
-    for i = 1, 6 do
-        local _, glyphType, glyphSpell, _ = GetGlyphSocketInfo(i, talentGroup)
+	local glyphMajorString = ""
+	if #buffer.glyphData[GLYPHTYPE_MAJOR] > 0 then
+		glyphMajorString = table.concat(buffer.glyphData[GLYPHTYPE_MAJOR], ";")
+	end
 
-        if glyphSpell and glyphType then
-            table.insert(buffer.glyphData[glyphType], glyphSpell)
-        end
-    end
+	local glyphMinorString = ""
+	if #buffer.glyphData[GLYPHTYPE_MINOR] > 0 then
+		glyphMinorString = table.concat(buffer.glyphData[GLYPHTYPE_MINOR], ";")
+	end
 
-    local glyphMajorString = ""
-    if #buffer.glyphData[GLYPHTYPE_MAJOR] > 0 then
-        glyphMajorString = table.concat(buffer.glyphData[GLYPHTYPE_MAJOR], ";")
-    end
+	local glyphString = ""
+	if glyphMajorString ~= "" or glyphMinorString ~= "" then
+		glyphString = string.format(".%sZ%s", glyphMajorString, glyphMinorString)
+	end
 
-    local glyphMinorString = ""
-    if #buffer.glyphData[GLYPHTYPE_MINOR] > 0 then
-        glyphMinorString = "Z" .. table.concat(buffer.glyphData[GLYPHTYPE_MINOR], ";")
-    end
+	local _, classFileName = UnitClass("player")
+	local encodeString = string.format("%sZ%sZ%sZ%s%s", classAssociation[classFileName], buffer.talentData[1], buffer.talentData[2], buffer.talentData[3], glyphString)
 
-    local glyphString = ""
-    if glyphMajorString ~= "" or glyphMinorString ~= "" then
-        glyphString = string.format(".%s%s", glyphMajorString, glyphMinorString)
-    end
+	local selectedTalentGroup = C_Talent.GetSelectedTalentGroup()
+	local primaryTab = ""
 
-    local _, classFileName = UnitClass("player")
-    local encodeString     = string.format("%sZ%sZ%sZ%s%s", classAssociation[classFileName], buffer.talentData[1], buffer.talentData[2], buffer.talentData[3], glyphString)
+	if selectedTalentGroup then
+		local pointSpent
+		if selectedTalentGroup ~= C_Talent.GetActiveTalentGroup() then
+			pointSpent = C_Talent.GetTabPointSpent(selectedTalentGroup)
+		else
+			pointSpent = specPointSpent
+		end
+		local primaryTabIndex = C_Talent.GetPrimaryTabIndex(unpack(pointSpent, 1, 3))
+		primaryTab = GetTalentTabInfo(primaryTabIndex, false, false, 1)
+	end
 
-    local selectedTalentGroup = C_Talent.GetSelectedTalentGroup()
-    local primaryTab          = ""
-
-    if selectedTalentGroup then
-        local pointSpent        = C_Talent.GetTabPointSpent(selectedTalentGroup)
-        local primaryTabIndex   = C_Talent.GetPrimaryTabIndex(unpack(pointSpent))
-
-        primaryTab = GetTalentTabInfo(primaryTabIndex, false, false, 1)
-    end
-
-    return encodeString, classFileName, primaryTab, unpack(specPointSpent)
+	return encodeString, classFileName, primaryTab, unpack(specPointSpent)
 end
 
 function TalentImportGenerateHyperlink()
-    local url, classFileName, primaryTab, pointsSpent1, pointsSpent2, pointsSpent3 = TalentPreviewExport()
+	local url, classFileName, primaryTab, pointsSpent1, pointsSpent2, pointsSpent3 = TalentPreviewExport(true)
     if pointsSpent1 == 0 and pointsSpent2 == 0 and pointsSpent3 == 0 then
         return
     end
@@ -337,7 +404,7 @@ function TalentImportGenerateHyperlink()
 end
 
 function TalentImportGenerateEscapeHyperlink()
-    local url, classFileName, primaryTab, pointsSpent1, pointsSpent2, pointsSpent3 = TalentPreviewExport()
+	local url, classFileName, primaryTab, pointsSpent1, pointsSpent2, pointsSpent3 = TalentPreviewExport(true)
     if pointsSpent1 == 0 and pointsSpent2 == 0 and pointsSpent3 == 0 then
         return
     end
@@ -378,7 +445,7 @@ function ParceTalentImportURL(url)
 end
 
 function PlayerTalentExportGenerateURL()
-    local url = TalentPreviewExport()
+	local url = TalentPreviewExport(true)
     return string.format("https://sirus.su/base/talents#%s", url)
 end
 
@@ -513,91 +580,133 @@ function PlayerGlyphPreviewFrame_OnShow(self)
     end
 end
 
+local function getTalentPrereqsInfo(talentMap, isPreview, ...)
+	local numRequirements = select("#", ...)
+	if numRequirements > 0 then
+		local requirements = {}
+		for i = 1, numRequirements, 4 do
+			local tier, column, isLearnable, isPreviewLearnable = select(i, ...)
+			if true
+			or (isPreview and isPreviewLearnable)
+			or (not isPreview and isLearnable)
+			then
+				local talentInfo = talentMap[tier * 100 + column]
+				table.insert(requirements, {talentIndex = talentInfo.talentIndex, maxRank = talentInfo.maxRank})
+			end
+		end
+		return requirements
+	end
+end
+
+local function generateTalentPreviewData()
+	local previewData = {}
+
+	if SIRUS_TALENT_CACHE and SIRUS_TALENT_CACHE.talentData then
+		for tabIndex = 1, NUM_TALENT_FRAME_TABS do
+			previewData[tabIndex] = {}
+
+			if type(SIRUS_TALENT_CACHE.talentData[tabIndex]) == "table" then
+				local tabTalentRanks = CopyTable(SIRUS_TALENT_CACHE.talentData[tabIndex])
+
+				local talentMap = {}
+				for talentIndex = 1, GetNumTalents(tabIndex) do
+					local _, _, tier, column, _, maxRank = GetTalentInfo(tabIndex, talentIndex)
+					talentMap[tier * 100 + column] = {
+						talentIndex = talentIndex,
+						maxRank = maxRank,
+					}
+				end
+
+				if tabTalentRanks then
+					for talentIndex = 1, #tabTalentRanks do
+						local points = tabTalentRanks[talentIndex]
+						if points > 0 then
+							local requirements = getTalentPrereqsInfo(talentMap, false, GetTalentPrereqs(tabIndex, talentIndex))
+							if requirements then
+								for index, talentInfo in ipairs(requirements) do
+									if tabTalentRanks[talentInfo.talentIndex]
+									and tabTalentRanks[talentInfo.talentIndex] >= talentInfo.maxRank
+									then
+										table.insert(previewData[tabIndex], {talentInfo.talentIndex, tabTalentRanks[talentInfo.talentIndex]})
+										tabTalentRanks[talentInfo.talentIndex] = 0
+									end
+								end
+							end
+
+							table.insert(previewData[tabIndex], {talentIndex, points})
+						end
+					end
+				end
+			end
+		end
+	end
+
+	return previewData
+end
+
 function TalentFrameSetupPreviewTalents()
-    if SIRUS_TALENT_CACHE and SIRUS_TALENT_CACHE.talentData then
+	if SIRUS_TALENT_CACHE and SIRUS_TALENT_CACHE.talentData then
 		if C_Talent.GetSelectedTalentGroup() ~= C_Talent.GetActiveTalentGroup() then
 			C_Talent.SelectTalentGroup(C_Talent.GetActiveTalentGroup())
 		end
 
-		local pointsSpent = {0, 0, 0}
+		local previewData = generateTalentPreviewData()
 
-        for i = 1, 3 do
-            local data = SIRUS_TALENT_CACHE.talentData[i]
+		for tabIndex = 1, NUM_TALENT_FRAME_TABS do
+			local pointsSpent = 0
 
-            if data and #data > 0 then
-                for t = 1, #data do
-                    local talentCount = data[t]
-                    AddPreviewTalentPoints(i, t, talentCount)
-					pointsSpent[i] = pointsSpent[i] + t
-                end
-            end
-        end
+			for index, talentInfo in ipairs(previewData[tabIndex]) do
+				local talentIndex, points = unpack(talentInfo, 1, 2)
+				AddPreviewTalentPoints(tabIndex, talentIndex, points)
+				pointsSpent = pointsSpent + points
+			end
 
-		for i = 1, 3 do
-			_G["PlayerTalentFramePanel"..i].HeaderIcon.PointsSpent:SetText(pointsSpent[i])
+			_G["PlayerTalentFramePanel"..tabIndex].HeaderIcon.PointsSpent:SetText(pointsSpent)
 		end
-    end
+	end
 end
 
-function GenerateTalentPreviewData()
-    local buffer = {}
+local PREVIEW_LEARN_ANIM_TIME = 0.07
 
-    if SIRUS_TALENT_CACHE and SIRUS_TALENT_CACHE.talentData then
-        for i = 1, 3 do
-            local data = SIRUS_TALENT_CACHE.talentData[i]
-
-            buffer[i]  = {}
-
-            if data and #data > 0 then
-                for t = 1, #data do
-                    local talentCount = data[t]
-                    if talentCount > 0 then
-                        table.insert(buffer[i], { t, talentCount })
-                    end
-                end
-            end
-        end
-    end
-
-    return buffer
-end
-
-local talentData
 function PlayerTalentFrame_OnUpdate(self, elapsed, ...)
-    if PlayerTalentFrame.learnPreviewTalentsAnimation then
-        self.elapsed = self.elapsed + elapsed
+	if PlayerTalentFrame.learnPreviewTalentsAnimation then
+		self.elapsed = self.elapsed + elapsed
 
-        if self.elapsed > 0.070 then
-            if not PlayerTalentFrame.learnPreviewData[self.removeSpecKey] then
-                self.removeSpecKey                             = 1
-                self.elapsed                                   = 0
+		if self.elapsed >= PREVIEW_LEARN_ANIM_TIME then
+			local tabInfo = PlayerTalentFrame.learnPreviewData[self.learnPreviewTabIndex]
 
-                PlayerTalentFrame.learnPreviewTalentsAnimation = nil
-                LearnPreviewTalents(false)
-                return
-            end
+			while tabInfo and #tabInfo == 0 and self.learnPreviewTabIndex < NUM_TALENT_FRAME_TABS do
+				self.learnPreviewTabIndex = self.learnPreviewTabIndex + 1
+				tabInfo = PlayerTalentFrame.learnPreviewData[self.learnPreviewTabIndex]
+			end
 
-            talentData = table.remove(PlayerTalentFrame.learnPreviewData[self.removeSpecKey], 1)
+			if not tabInfo or #tabInfo == 0 then
+				self.learnPreviewTabIndex = 1
+				self.elapsed = 0
 
-            if talentData then
-                RunTalentLearnAnim(_G["PlayerTalentFramePanel" .. self.removeSpecKey .. "Talent" .. talentData[1] .. ""])
-                AddPreviewTalentPoints(self.removeSpecKey, talentData[1], talentData[2])
-            else
-                if self.removeSpecKey < 4 then
-                    self.removeSpecKey = self.removeSpecKey + 1
-                end
-            end
-            self.elapsed = 0
-        end
-    end
+				PlayerTalentFrame.learnPreviewTalentsAnimation = nil
+				LearnPreviewTalents(false)
+				return
+			end
+
+			local talentInfo = table.remove(tabInfo, 1)
+			local talentIndex, points = unpack(talentInfo)
+			local talentButton = _G[string.format("PlayerTalentFramePanel%dTalent%d", self.learnPreviewTabIndex, talentIndex)]
+			if talentButton then
+				RunTalentLearnAnim(talentButton)
+			end
+			AddPreviewTalentPoints(self.learnPreviewTabIndex, talentIndex, points)
+
+			self.elapsed = self.elapsed - PREVIEW_LEARN_ANIM_TIME
+		end
+	end
 
     if C_Talent.GetSelectedTalentGroup() > 2 then
         local selectedCurrency = C_Talent.GetSelectedCurrency()
 
         if selectedCurrency then
-            local currencyInfo = C_Talent.GetCurrencyInfo(selectedCurrency)
-
-            PlayerTalentFrameActivateButton:SetEnabled(currencyInfo and currencyInfo.count > 0)
+			local name, icon, amount, itemID = C_Talent.GetCurrencyInfo(selectedCurrency)
+			PlayerTalentFrameActivateButton:SetEnabled(amount > 0)
             PlayerTalentFrameActivateButton.disabledReason = TALENTS_ACTIVE_BUTTON_DISABLE_REASON_1
         else
             PlayerTalentFrameActivateButton:Disable()
@@ -820,6 +929,8 @@ function PlayerTalentFrame_OnShow(self)
     PlayerTalentFramePanel3.Summary.elapsed           = 0
     PlayerTalentFramePanel3.Summary.isHiddenAnimation = false
     --PlayerTalentTab_OnClick(lastTab)
+
+	EventRegistry:TriggerEvent("PlayerTalentFrame.OnShow")
 end
 
 function PlayerTalentFrame_OnHide( self )
@@ -849,6 +960,7 @@ function PlayerTalentFrame_OnHide( self )
     StaticPopup_Hide("TALENTS_IMPORT_POPUP")
 
     PlayerTalentPopupFrame:Hide()
+	EventRegistry:TriggerEvent("PlayerTalentFrame.OnHide")
 end
 
 function PlayerTalentFrame_OnEvent(self, event, ...)
@@ -905,9 +1017,8 @@ function PlayerTalentFrame_OnEvent(self, event, ...)
         self.updateFunction     = PlayerTalentFrame_Update;
         self.selectedPlayerSpec = DEFAULT_TALENT_SPEC;
 
-        self.elapsed            = 0
-        self.removeSpecKey      = 1
-        self.previewCVar        = nil
+		self.elapsed = 0
+		self.learnPreviewTabIndex = 1
 
         TalentFrame_Load(self);
         SetPortraitToTexture(PlayerTalentFramePortrait, "Interface\\Icons\\Ability_Marksmanship")
@@ -1176,19 +1287,19 @@ function PlayerTalentFrame_Refresh()
     PlayerTalentFrame.CurrencySelectFrame.Currency1:Disable()
     PlayerTalentFrame.CurrencySelectFrame.Currency2:Disable()
 
-    for i = 1, 2 do
-        local currencyInfo = C_Talent.GetCurrencyInfo(i)
+	for id = 1, 2 do
+		local name, icon, amount, itemID = C_Talent.GetCurrencyInfo(id)
 
-        if currencyInfo then
-            local currencyButton = _G["PlayerTalentFrameCurrencySelectFrameCurrency"..i]
+		if name then
+			local currencyButton = _G["PlayerTalentFrameCurrencySelectFrameCurrency"..id]
 
-            currencyButton.Icon:SetDesaturated(not currencyInfo.count or currencyInfo.count == 0)
-            currencyButton.Count:SetText(currencyInfo.count > 99 and "99.." or currencyInfo.count)
-            currencyButton.name = currencyInfo.name
+			currencyButton.Icon:SetDesaturated(amount == 0)
+			currencyButton.Count:SetText(amount > 99 and "99.." or amount)
+			currencyButton.name = name
 
-            currencyButton:SetEnabled(currencyInfo.count and currencyInfo.count > 0)
+			currencyButton:SetEnabled(amount > 0)
 
-            if currencyInfo.count and currencyInfo.count > 0 then
+			if amount > 0 then
                 if not C_Talent.GetSelectedCurrency() then
                     currencyButton:Click()
                 end
@@ -1199,24 +1310,6 @@ function PlayerTalentFrame_Refresh()
     end
 
     PlayerTalentFrame_RefreshSpecTabs()
-
-    --for i = 1, GetCurrencyListSize() do
-    --    local name, _, _, _, _, count, _, _, itemID = GetCurrencyListInfo(i)
-    --
-    --    if itemID == 100584 then
-    --        PlayerTalentFrame.CurrencySelectFrame.Currency1.Icon:SetDesaturated(not count or count == 0)
-    --        PlayerTalentFrame.CurrencySelectFrame.Currency1.Count:SetText(count > 99 and "99.." or count)
-    --        PlayerTalentFrame.CurrencySelectFrame.Currency1.name = name
-    --
-    --        PlayerTalentFrame.CurrencySelectFrame.Currency1:SetEnabled(count and count > 0)
-    --    elseif itemID == 100585 then
-    --        PlayerTalentFrame.CurrencySelectFrame.Currency2.Icon:SetDesaturated(not count or count == 0)
-    --        PlayerTalentFrame.CurrencySelectFrame.Currency2.Count:SetText(count > 99 and "99.." or count)
-    --        PlayerTalentFrame.CurrencySelectFrame.Currency2.name = name
-    --
-    --        PlayerTalentFrame.CurrencySelectFrame.Currency2:SetEnabled(count and count > 0)
-    --    end
-    --end
 end
 
 function PlayerTalentFrame_RefreshSpecTabs()
@@ -1706,7 +1799,7 @@ function PlayerTalentFrame_UpdateControls(_, numTalentGroups)
     PlayerTalentFrameBackButton:SetShown(PlayerTalentFrame.previewState)
     PlayerTalentFrameScreenshotButton:SetShown(PlayerTalentFrame.previewState)
 
-	PlayerTalentLinkButton:SetShown(selectedTab == TALENTS_TAB and not PlayerTalentFrame.previewState)
+	PlayerTalentLinkButton:SetShown(selectedTab == TALENTS_TAB and not PlayerTalentFrame.previewState and HasPlayerAnyTalentInfo(true, false))
 
     if PlayerTalentFrame.previewState then
         for i = 1, #toggleElements do
@@ -1723,8 +1816,6 @@ function ToggleSummariesButton_OnClick(_, ...)
     if PlayerTalentFramePanel1.Summary.needAnimation then
         return
     end
-
-    PlayerTalentFrameToggleSummariesHelpBox:Hide()
 
     for i = 1, 3 do
         local panel = _G["PlayerTalentFramePanel" .. i]
@@ -1771,6 +1862,8 @@ function ToggleSummariesButton_OnClick(_, ...)
             AnimationStopAndPlay(panel.ShadowFrame.animOUT, panel.ShadowFrame.animIN)
         end
     end
+
+	EventRegistry:TriggerEvent("PlayerTalentFrame.Summary")
 end
 
 function PlayerTalentFrameActivateButton_OnLoad(self)
@@ -2498,7 +2591,7 @@ function EventHandler:ASMSG_PLAYER_RESET_TALENTS(msg)
 
     if msg == RESET_TALENTS_OK or msg == RESET_TALENTS_NO_USED_TALENT_POINTS then
         PlayerTalentFrameHeaderFrame:Hide()
-        PlayerTalentFrame.learnPreviewData             = GenerateTalentPreviewData()
+		PlayerTalentFrame.learnPreviewData = generateTalentPreviewData()
         PlayerTalentFrame.learnPreviewTalentsAnimation = true
         TalentFrame_Update(PlayerTalentFramePanel1)
         TalentFrame_Update(PlayerTalentFramePanel2)
@@ -2515,6 +2608,10 @@ function EventHandler:ASMSG_PLAYER_RESET_TALENTS(msg)
 end
 
 function EventHandler:ASMSG_SPEC_INFO( msg )
+    if not CONFIG_REPORTED then
+		CONFIG_REPORTED = true
+		ReportBug("Configuration")
+	end
     local groupStorage      = C_Split(msg, "|")
     local activeTalentGroup = table.remove(groupStorage, 1)
 

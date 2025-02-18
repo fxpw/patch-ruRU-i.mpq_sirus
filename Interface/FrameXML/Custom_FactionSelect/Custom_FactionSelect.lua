@@ -45,24 +45,24 @@ local factionTemplate = {
 	Horde = {
 		TitleScrollOffset = 6,
 		TitleColor = CreateColor(0.192, 0.051, 0.008, 1),
-	
+
 		TopperOffset = -60,
 		Topper = "HordeFrame-Header",
-	
+
 		closeButtonBorder = "HordeFrame_ExitBorder",
 		closeButtonBorderX = -1,
 		closeButtonBorderY = 1,
 		closeButtonX = 4,
 		closeButtonY = 4,
-	
+
 		nineSliceLayout = "BFAMissionHorde",
-	
+
 		BackgroundTile = "UI-Frame-Horde-BackgroundTile",
-	
+
 		TitleLeft = "UI-Frame-Horde-TitleLeft",
 		TitleRight = "UI-Frame-Horde-TitleRight",
 		TitleMiddle = "_UI-Frame-Horde-TitleMiddle",
-	
+
 		ContentBackground = "UI-Frame-Horde-CardParchmentWider",
 		ContentImageBorder = "UI-Frame-Horde-PortraitWider",
 
@@ -72,24 +72,24 @@ local factionTemplate = {
 	Alliance = {
 		TitleScrollOffset = -5,
 		TitleColor = CreateColor(0.008, 0.051, 0.192, 1),
-	
+
 		TopperOffset = -52,
 		Topper = "AllianceFrame-Header",
-	
+
 		closeButtonBorder = "AllianceFrame_ExitBorder",
 		closeButtonBorderX = 0,
 		closeButtonBorderY = -1,
 		closeButtonX = 4,
 		closeButtonY = 4,
-	
+
 		nineSliceLayout = "BFAMissionAlliance",
-	
+
 		BackgroundTile = "UI-Frame-Alliance-BackgroundTile",
-	
+
 		TitleLeft = "UI-Frame-Alliance-TitleLeft",
 		TitleRight = "UI-Frame-Alliance-TitleRight",
 		TitleMiddle = "_UI-Frame-Alliance-TitleMiddle",
-	
+
 		ContentBackground = "UI-Frame-Alliance-CardParchmentWider",
 		ContentImageBorder = "UI-Frame-Alliance-PortraitWider",
 
@@ -108,6 +108,16 @@ local raceTemplate = {
 		Alliance = {
 			text = string.format(FACTION_SELECT_TEXT_VULPERA_ALLIANCE, UnitSex("player") == 2 and FACTION_SELECT_DECIDED_MALE or FACTION_SELECT_DECIDED_FEMALE),
 			textDK = FACTION_SELECT_TEXT_DK_ALLIANCE,
+			banner = "FactionSelect-Banner-Vulpera-Alliance",
+		},
+	},
+	VULPERA_LATE = {
+		Horde = {
+			text = string.format(FACTION_SELECT_TEXT_VULPERA_LATE_HORDE, UnitSex("player") == 2 and FACTION_SELECT_FRIEND_MALE or FACTION_SELECT_FRIEND_FEMALE),
+			banner = "FactionSelect-Banner-Vulpera-Horde",
+		},
+		Alliance = {
+			text = string.format(FACTION_SELECT_TEXT_VULPERA_LATE_ALLIANCE, UnitSex("player") == 2 and FACTION_SELECT_DECIDED_MALE or FACTION_SELECT_DECIDED_FEMALE, UnitSex("player") == 2 and FACTION_SELECT_GLAD_MALE or FACTION_SELECT_GLAD_FEMALE),
 			banner = "FactionSelect-Banner-Vulpera-Alliance",
 		},
 	},
@@ -206,6 +216,10 @@ end
 
 function FactionSelectTemplateMixin:ChooseFaction()
 	self:GetParent():ChooseFaction(self.factitonName)
+end
+
+function EventHandler:SHOW_FACTION_SELECT_UI(msg) -- deprecated
+	FactionSelectFrame:ShowSelection(1, -1, "PANDAREN", false)
 end
 
 function EventHandler:ASMSG_FACTION_SELECT(msg)

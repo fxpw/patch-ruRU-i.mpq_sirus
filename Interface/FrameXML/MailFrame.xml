@@ -328,10 +328,10 @@
 		</Scripts>
 		<HighlightTexture alphaMode="ADD" file="Interface\Buttons\ButtonHilight-Square"/>
 	</Button>
-	<Frame name="MailFrameContainerTemplate" inherits="StandartInsetFrameTemplate" virtual="true">
+	<Frame name="MailFrameContainerTemplate" inherits="InsetFrameTemplate" virtual="true">
 		<Layers>
 			<Layer level="BORDER">
-				<Texture name="$parentBackgroundTile" parentKey="BackgroundTile" file="Interface\Store\CollectionsBackgroundTile" vertTile="true" horizTile="true">
+				<Texture name="$parentBackgroundTile" parentKey="BackgroundTile" file="Interface\Collections\CollectionsBackgroundTile" vertTile="true" horizTile="true">
 					<Size x="256" y="256"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="4" y="-4" />
@@ -353,6 +353,11 @@
 				</Scripts>
 			</Frame>
 		</Frames>
+		<Scripts>
+			<OnLoad>
+				self.Bgs:Hide()
+			</OnLoad>
+		</Scripts>
 	</Frame>
 
 	<Frame name="MailFrame" toplevel="true" parent="UIParent" enableMouse="true" hidden="true" inherits="ButtonFrameTemplate_NineSlice">
@@ -1066,11 +1071,6 @@
 						SendMailRadioButton_OnClick(self, 1);
 					</OnLoad>
 					<OnShow>
-						if ( ENABLE_COLORBLIND_MODE == "1" ) then
-						SendMailErrorText:SetFormattedText(MAIL_COD_ERROR_COLORBLIND, MAX_COD_AMOUNT, GOLD_AMOUNT_SYMBOL);
-						else
-						SendMailErrorText:SetFormattedText(MAIL_COD_ERROR, MAX_COD_AMOUNT);
-						end
 						SendMailNameEditBox:SetFocus();
 					</OnShow>
 					<OnMouseUp>

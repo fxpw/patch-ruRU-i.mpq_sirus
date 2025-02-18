@@ -336,6 +336,7 @@
 				self:RegisterEvent("UPDATE_BINDINGS")
 				self:RegisterEvent("PLAYER_GUILD_UPDATE")
 
+				self:RegisterCustomEvent("GUILD_DATA_LOADED")
 				self:RegisterCustomEvent("LF_GUILD_RECRUIT_LIST_CHANGED")
 				self:RegisterCustomEvent("LF_GUILD_MEMBERSHIP_LIST_CHANGED")
 			</OnLoad>
@@ -386,11 +387,8 @@
 				LoadMicroButtonTextures(self, "Mounts")
 				self.tooltipText = MicroButtonTooltipText(COLLECTIONS, "TOGGLECOLLECTIONS")
 				self.newbieText = MAINMENUBAR_COLLECTIONS_BUTTON_DESC
-				self:RegisterEvent("COMPANION_LEARNED");
-				self:RegisterCustomEvent("TOYS_UPDATED");
 			</OnLoad>
 			<OnEvent>
-				CollectionsMicroButton_OnEvent(self, event, ...);
 				LoadMicroButtonTextures(self, "Mounts")
 				self.tooltipText = MicroButtonTooltipText(COLLECTIONS, "TOGGLECOLLECTIONS")
 				self.newbieText = MAINMENUBAR_COLLECTIONS_BUTTON_DESC
@@ -479,9 +477,9 @@
 				LoadMicroButtonTextures(self, "BStore")
 				self.Description = MAINMENUBAR_STORE_BUTTON_DESC
 				self.Tittle = MAINMENUBAR_STORE_BUTTON
-				self.DisableReason = MAINMENUBAR_STORE_DISABLE_REASON_1
+				self.DisableReason = MAINMENUBAR_STORE_DISABLE_REASON_UNAVAILABLE
 
-				self:RegisterCustomEvent("CUSTOM_STORE_AVAILABILITY_CHANGED")
+				self:RegisterCustomEvent("STORE_AVAILABILITY_CHANGED")
 				self:RegisterCustomEvent("CUSTOM_CHALLENGE_ACTIVATED")
 				self:RegisterCustomEvent("CUSTOM_CHALLENGE_DEACTIVATED")
 			</OnLoad>
@@ -489,13 +487,13 @@
 				self.Description = MAINMENUBAR_STORE_BUTTON_DESC
 				self.Tittle = MAINMENUBAR_STORE_BUTTON
 
-				local enabled, loading, reson = IsStoreEnable()
+				local enabled, loading, reson = C_StorePublic.IsEnabled()
 				self.DisableReason = reson
 				self.Spinner:SetShown(loading)
 
 				UpdateMicroButtons()
 			</OnEvent>
-			<OnClick function="ToggleStoreFrame"/>
+			<OnClick function="ToggleStoreUI"/>
 		</Scripts>
 	</Button>
 	<Button name="MainMenuMicroButton" inherits="MainMenuBarMicroButton" parent="MainMenuBarArtFrame">
@@ -591,12 +589,4 @@
 			</OnLeave>
 		</Scripts>
 	</Button>
-	<Frame name="LFDMicroButtonAlert" inherits="MicroButtonAlertTemplate" frameStrata="TOOLTIP" toplevel="true">
-		<Scripts>
-			<OnLoad>
-				self.MicroButton = LFDMicroButton
-				MicroButtonAlert_OnLoad(self);
-			</OnLoad>
-		</Scripts>
-	</Frame>
 </Ui>

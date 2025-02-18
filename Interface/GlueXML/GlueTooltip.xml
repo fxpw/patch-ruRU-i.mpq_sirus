@@ -126,10 +126,8 @@
 			<OnLoad>
 				GlueTooltip_OnLoad(self);
 			</OnLoad>
-			<OnHide>
-				self:Clear();
-				self.owner = nil;
-			</OnHide>
+			<OnHide function="GlueTooltip_OnHide"/>
+			<OnUpdate function="GlueTooltip_OnUpdate"/>
 		</Scripts>
 	</Frame>
 	<Frame name="GlueTooltip" frameStrata="TOOLTIP" hidden="true" parent="GlueParent" inherits="GlueTooltipTemplate">

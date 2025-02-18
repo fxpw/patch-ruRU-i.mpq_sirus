@@ -7,6 +7,8 @@ HEADHUNTING_MIN_CONTRACT_GOLD_PER_KILL    = 100
 HEADHUNTING_MAX_CONTRACT_GOLD_PER_KILL    = 10000
 HEADHUNTING_MAX_CONTRACT_GOLD_TOTAL       = 200000
 
+local CONTRACT_PRICE_LIMIT = 200000
+
 enum:E_HEADHUNTING_TAB {
     "HOME",
     "ALL_TARGETS",
@@ -245,13 +247,16 @@ function HeadHuntingMixin:OnLoad()
 
     NavBar_Initialize(self.navBar, "NavButtonTemplate", self.panels[1].navBarData, self.navBar.home, self.navBar.overflow)
 
+	self.inset.Bgs:SetAtlas("UI-EJ-BattleforAzeroth")
+
 	self.tab1:SetFrameLevel(1)
 	self.tab2:SetFrameLevel(1)
 	self.tab3:SetFrameLevel(1)
+	self.tab4:SetFrameLevel(1)
 
-	self.maxTabWidth = (self:GetWidth() - 19) / 3
+	self.maxTabWidth = (self:GetWidth() - 19) / 4
 
-	PanelTemplates_SetNumTabs(self, 3)
+	PanelTemplates_SetNumTabs(self, 4)
 
     self:SetFilterFlags(bit.bor(HEADHUNTING_FILTER_VALUE.ALL_ONLINE, HEADHUNTING_FILTER_VALUE.WITH_AND_WITHOUT_GUILD_CONTRACTS))
 
@@ -260,6 +265,15 @@ function HeadHuntingMixin:OnLoad()
 
 	self:RegisterCustomEvent("SERVICE_DATA_UPDATE")
 	self:RegisterCustomEvent("CUSTOM_CHALLENGE_DEACTIVATED")
+	self:RegisterCustomEvent("AJ_ACTION_HEAD_HUNTING")
+
+	self.helpPlate = {
+		FramePos = { x = 0, y = -24 },
+		FrameSize = { width = 800, height = 468 },
+		[1] = { ButtonPos = { x = 41, y = -24 }, HighLightBox = { x = 17, y = -47, width = 94, height = 36 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_HEAD_HUNTING_TUTORIAL_1 },
+		[2] = { ButtonPos = { x = 159, y = -24 }, HighLightBox = { x = 122, y = -47, width = 121, height = 36 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_HEAD_HUNTING_TUTORIAL_2 },
+		[3] = { ButtonPos = { x = 285, y = -24 }, HighLightBox = { x = 251, y = -47, width = 115, height = 36 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_HEAD_HUNTING_TUTORIAL_3 },
+	}
 end
 
 function HeadHuntingMixin:OnEvent(event, ...)
@@ -267,6 +281,8 @@ function HeadHuntingMixin:OnEvent(event, ...)
 	or (event == "CUSTOM_CHALLENGE_DEACTIVATED" and select(2, ...) == Enum.HardcoreDeathReason.RESTORE)
 	then
 		self:UpdateTabs()
+	elseif event == "AJ_ACTION_HEAD_HUNTING" then
+		ShowAdventureJournalTab(2)
 	end
 end
 
@@ -276,12 +292,15 @@ function HeadHuntingMixin:OnShow()
     if HeadHuntingSetRewardExternalFrame and HeadHuntingSetRewardExternalFrame:IsShown() then
         HeadHuntingSetRewardExternalFrame:Hide()
     end
+
+	EventRegistry:TriggerEvent("HeadHuntingFrame.OnShow")
 end
 
 function HeadHuntingMixin:OnHide()
     self.Container.YouTargetsPanel.SetRewardFrame:Hide()
     self:CloaseAllPopup()
     StaticPopup_Hide("HEADHUNTING_REMOVE_CONTRACT")
+	HelpPlate_Hide(false)
 end
 
 function HeadHuntingMixin:UpdateTabs()
@@ -291,6 +310,9 @@ function HeadHuntingMixin:UpdateTabs()
 	end
 	if not C_Service.IsHardcoreEnabledOnRealm() then
 		PanelTemplates_HideTab(self, 3)
+	end
+	if not C_Service.IsGMAccount() then
+		PanelTemplates_HideTab(self, 4)
 	end
 end
 
@@ -741,10 +763,10 @@ function HeadHuntingMixin:GetErrorID()
 end
 
 function HeadHuntingMixin:ErrorBuilder( errorID )
-    if isOneOf(errorID,
-            E_HEADHUNTING_RESULTS.CONTRACT_NOT_FOUND,
-            E_HEADHUNTING_RESULTS.NO_CONTRACTS_FOR_TYPE,
-            E_HEADHUNTING_RESULTS.SEARCH_NO_TARGETS) then
+	if errorID == E_HEADHUNTING_RESULTS.CONTRACT_NOT_FOUND
+	or errorID == E_HEADHUNTING_RESULTS.NO_CONTRACTS_FOR_TYPE
+	or errorID == E_HEADHUNTING_RESULTS.SEARCH_NO_TARGETS
+	then
         self:ShowError(errorID)
     else
         local text = E_HEADHUNTING_RESULTS[errorID] and (_G["HEADHUNTING_"..E_HEADHUNTING_RESULTS[errorID]] or E_HEADHUNTING_RESULTS[errorID]) or errorID
@@ -759,7 +781,11 @@ function HeadHuntingMixin:ShowError( errorID )
     local isSearchFrame     = false
     local textFrame
 
-    if not errorID or isOneOf(errorID, E_HEADHUNTING_RESULTS.SEARCH_NAME_TOO_SHORT, E_HEADHUNTING_RESULTS.SEARCH_INVALID_NAME, E_HEADHUNTING_RESULTS.SEARCH_NO_TARGETS) then
+	if not errorID
+	or errorID == E_HEADHUNTING_RESULTS.SEARCH_NAME_TOO_SHORT
+	or errorID == E_HEADHUNTING_RESULTS.SEARCH_INVALID_NAME
+	or errorID == E_HEADHUNTING_RESULTS.SEARCH_NO_TARGETS
+	then
         if panel.SetRewardFrame and panel.SetRewardFrame:IsShown() then
             textFrame = panel.SetRewardFrame.CentralContainer.ScrollFrame.TextFrame
         elseif HeadHuntingSetRewardExternalFrame and HeadHuntingSetRewardExternalFrame:IsShown() then
@@ -815,6 +841,14 @@ function HeadHuntingMixin:ShowPopup( text )
         popupFrame:SetText(text)
         popupFrame:Show()
     end
+end
+
+function HeadHuntingMixin:ToggleTutorial()
+	if not HelpPlate_IsShowing(self.helpPlate) then
+		HelpPlate_Show(self.helpPlate, self, self.TutorialButton)
+	else
+		HelpPlate_Hide(true)
+	end
 end
 
 function HeadHuntingMixin:ASMSG_HEADHUNTING_PLAYER_CONTRACTS_LIST( msg )
@@ -1279,7 +1313,7 @@ function HeadHuntingPlayerFrameMixin:SetPlayer( name, raceID, classID, gender )
     self:GetParent().name = name
     self:GetParent().stylishName = playerName
 
-	local raceIconAtlas = string.format("RACE_ICON_%s_%s", string.upper(raceInfo.clientFileString), S_GENDER_FILESTRING[gender or 0])
+	local raceIconAtlas = string.format("RACE_ICON_ROUND_%s_%s", string.upper(raceInfo.clientFileString), S_GENDER_FILESTRING[gender or 0])
 	self.RaceIcon:SetAtlas(raceIconAtlas)
 end
 
@@ -1288,22 +1322,27 @@ HeadHuntingClassFrameMixin = {}
 function HeadHuntingClassFrameMixin:SetClass( classID )
     local classInfo = C_CreatureInfo.GetClassInfo(classID)
 
-    SetPortraitToTexture(self.ClassIcon, "Interface\\Custom_LoginScreen\\ClassIcon\\CLASS_ICON_"..string.upper(classInfo.classFile))
+    SetPortraitToTexture(self.ClassIcon, "Interface\\Custom\\ClassIcon\\CLASS_ICON_"..string.upper(classInfo.classFile))
 end
 
 HeadHuntingFactionFrameMixin = {}
 
 function HeadHuntingFactionFrameMixin:OnLoad()
-    self.factionIcons = {
-        [PLAYER_FACTION_GROUP.Horde]    = "right",
-        [PLAYER_FACTION_GROUP.Alliance] = "left",
-        [PLAYER_FACTION_GROUP.Renegade] = "Renegade",
-		[PLAYER_FACTION_GROUP.Neutral] = "Neutral",
-    }
+	self.factionIcons = {
+		[PLAYER_FACTION_GROUP.Horde]	= "objectivewidget-icon-right",
+		[PLAYER_FACTION_GROUP.Alliance]	= "objectivewidget-icon-left",
+		[PLAYER_FACTION_GROUP.Renegade]	= "objectivewidget-icon-Renegade",
+		[PLAYER_FACTION_GROUP.Neutral]	= "TargetingFrame-UI-PVP-FFA",
+	}
 end
 
-function HeadHuntingFactionFrameMixin:SetFaction( factionID )
-	self.FactionIcon:SetAtlas("objectivewidget-icon-"..self.factionIcons[factionID])
+function HeadHuntingFactionFrameMixin:SetFaction(factionID)
+	local atlasName = self.factionIcons[factionID]
+	if C_Texture.HasAtlasInfo(atlasName) then
+		self.FactionIcon:SetAtlas(atlasName)
+	else
+		self.FactionIcon:SetTexture(nil)
+	end
 end
 
 HeadHuntingMoneyFrameMixin = {}
@@ -1325,20 +1364,53 @@ end
 
 HeadHuntingGuildFrameMixin = {}
 
-function HeadHuntingGuildFrameMixin:SetGuild( name, emblemID, borderStyleID, emblemColorID, backgroundColorID, borderColorID )
-    local emblemCoords      = C_Guild:GetTabardSmallEmblemCoords(emblemID)
-    local emblemColor       = C_Guild:GetTabardEmblemColor(emblemColorID)
-    local backgroundColor   = C_Guild:GetTabardBackgroundColor(backgroundColorID)
-    local borderColor       = C_Guild:GetTabardBorderColor(borderStyleID, borderColorID)
+function HeadHuntingGuildFrameMixin:GetTabardEmblemCoords(emblemSize, columns, offset, emblemID)
+	local xCoord = mod(emblemID, columns) * emblemSize
+	local yCoord = floor(emblemID / columns) * emblemSize
+	return xCoord + offset, xCoord + emblemSize - offset, yCoord + offset, yCoord + emblemSize - offset
+end
 
+function HeadHuntingGuildFrameMixin:GetTabardLargeEmblemCoords(emblemID)
+	return self:GetTabardEmblemCoords(64 / 1024, 16, 0, emblemID)
+end
+
+function HeadHuntingGuildFrameMixin:GetTabardSmallEmblemCoords( emblemID )
+	return self:GetTabardEmblemCoords(18 / 256, 14, 1 / 256, emblemID)
+end
+
+function HeadHuntingGuildFrameMixin:GetTabardEmblemColor(emblemColorID)
+	local color = GUILD_TABARD_EMBLEM_COLOR[emblemColorID]
+	if color then
+		return color:GetRGB()
+	end
+	return 1, 1, 1
+end
+
+function HeadHuntingGuildFrameMixin:GetTabardBackgroundColor(backgroundColorID)
+	local color = GUILD_TABARD_BACKGROUND_COLOR[backgroundColorID]
+	if color then
+		return color:GetRGB()
+	end
+	return 1, 1, 1
+end
+
+function HeadHuntingGuildFrameMixin:GetTabardBorderColor(borderStyleID, borderColorID)
+	local color = GUILD_TABARD_BORDER_COLOR[borderStyleID] and GUILD_TABARD_BORDER_COLOR[borderStyleID][borderColorID] or GUILD_TABARD_BORDER_COLOR["ALL"][borderColorID]
+	if color then
+		return color:GetRGB()
+	end
+	return 1, 1, 1
+end
+
+function HeadHuntingGuildFrameMixin:SetGuild( name, emblemID, borderStyleID, emblemColorID, backgroundColorID, borderColorID )
     self.Name:SetText(name)
     self:GetParent().name = name
 
-    self.Emblem:SetTexCoord(unpack(emblemCoords))
+	self.Emblem:SetTexCoord(self:GetTabardSmallEmblemCoords(emblemID))
 
-    self.Emblem:SetVertexColor(emblemColor.r, emblemColor.g, emblemColor.b)
-    self.Banner:SetVertexColor(backgroundColor.r, backgroundColor.g, backgroundColor.b)
-    self.BannerBorder:SetVertexColor(borderColor.r, borderColor.g, borderColor.b)
+	self.Emblem:SetVertexColor(self:GetTabardEmblemColor(emblemColorID))
+	self.Banner:SetVertexColor(self:GetTabardBackgroundColor(backgroundColorID))
+	self.BannerBorder:SetVertexColor(self:GetTabardBorderColor(borderStyleID, borderColorID))
 end
 
 HeadHuntingKillsFrameMixin = {}
@@ -2191,10 +2263,11 @@ function HeadHuntingSetRewardHelpBoxFrameMixin:UpdateTotalMoney()
 
     if (goldPerKill and goldPerKill > 0) and not moneyValidation then
         self.moneyError = HEADHUNTING_SET_REWARD_HELP_MONEY_ERROR_2
+    elseif totalMoney > CONTRACT_PRICE_LIMIT then
+		self.moneyError = string.format(HEADHUNTING_SET_REWARD_HELP_MONEY_ERROR_1, CONTRACT_PRICE_LIMIT)
     elseif totalMoney >= playerGold then
         self.moneyError = string.format(HEADHUNTING_SET_REWARD_HELP_MONEY_ERROR_3, totalMoney)
     end
-
 
     self:SetStepStatus("setNumKills", numKillsValidation)
     self:SetStepStatus("setGoldPerKill", goldPerKill and moneyValidation)
@@ -2290,18 +2363,11 @@ function HeadHuntingContractOnPlayerFrameMixin:ToggleContractContent( isNoContra
         self.PlayerFrame.RewardForKillFrame:SetMoney(contentData.moneyPerKill)
         self.PlayerFrame.TotalRewardFrame:SetMoney(contentData.moneyInBank)
     elseif selectedCategory == E_HEADHUNTING_CATEGORY.REWARD_FOR_GUILD then
-        local playerFactionTag  = UnitFactionGroup("player")
-        local factionTag        = C_CacheInstance:Get("ASMSG_GUILD_TEAM", playerFactionTag)
-        local teamID            = PLAYER_FACTION_GROUP[factionTag]
+		local factionTag, factionGroupID = GetGuildFaction()
+		local style, color, borderStyle, borderColor, backgroundColor = GetGuildEmblemInfo()
 
-        self.GuildFrame.GuildFrame:SetGuild(guildName,
-                PLAYER_GUILD_EMBLEM_DATA.emblemStyle or 1,
-                PLAYER_GUILD_EMBLEM_DATA.emblemColor or 1,
-                PLAYER_GUILD_EMBLEM_DATA.emblemBorderStyle or 1,
-                PLAYER_GUILD_EMBLEM_DATA.emblemBorderColor or 1,
-                PLAYER_GUILD_EMBLEM_DATA.emblemBackgroundColor or 1)
-
-        self.GuildFrame.FactionFrame:SetFaction(teamID or 1)
+		self.GuildFrame.GuildFrame:SetGuild(guildName, style, color, borderStyle, borderColor, backgroundColor)
+		self.GuildFrame.FactionFrame:SetFaction(factionGroupID)
         self.GuildFrame.RewardForKillFrame:SetMoney(contentData.moneyPerKill)
         self.GuildFrame.TotalRewardFrame:SetMoney(contentData.moneyInBank)
     end

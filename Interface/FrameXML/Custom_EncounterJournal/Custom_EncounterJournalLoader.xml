@@ -1,0 +1,12 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_EncounterJournal_Data.lua"/>
+	<Script file="Custom_JournalSuggestionsData.lua"/>
+
+	<Script file="C_EncounterJournal.lua"/>
+	<Script file="C_AdventureJournal.lua"/>
+
+	<Include file="Custom_EncounterJournal.xml"/>
+	<Include file="Custom_LootJournalItems.xml"/>
+	<Include file="Custom_ItemBrowser.xml"/>
+</Ui>

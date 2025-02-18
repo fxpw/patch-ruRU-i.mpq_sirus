@@ -3,6 +3,9 @@ local issecure = issecure;
 local type = type;
 local pairs = pairs;
 local select = select;
+local IsInterfaceDevClient = IsInterfaceDevClient
+
+EventRegistry:TriggerEvent("SECURE_CAPSULE")
 
 --Create a local version of this function just so we don't have to worry about changes
 local function copyTable(tab)
@@ -18,7 +21,7 @@ local function copyTable(tab)
 end
 
 function SecureCapsuleGet(name)
-	if ( not issecure() ) then
+	if ( not issecure() and not IsInterfaceDevClient() ) then
 		return;
 	end
 
@@ -77,10 +80,10 @@ end
 --If storing off Lua functions, be careful that they don't in turn call any other Lua functions that may have been swapped out.
 
 --For store
---take("C_StoreSecure");
---take("CreateForbiddenFrame");
---retain("IsGMClient");
---retain("IsOnGlueScreen");
+take("C_StoreSecure");
+take("CreateForbiddenFrame");
+retain("IsGMAccount");
+retain("IsOnGlueScreen");
 retain("math");
 retain("table");
 retain("string");
@@ -125,15 +128,15 @@ retain("Lerp");
 retain("Clamp");
 retain("PercentageBetween");
 retain("Saturate");
---retain("DeltaLerp");
+retain("DeltaLerp");
 retain("SOUNDKIT");
 retain("GetScreenWidth");
 retain("GetScreenHeight");
---retain("GetPhysicalScreenSize");
+retain("GetPhysicalScreenSize");
 --retain("GetScreenDPIScale");
 --retain("IsTrialAccount");
 --retain("IsVeteranTrialAccount");
---retain("C_StorePublic");
+retain("C_StorePublic");
 --retain("C_Club");
 retain("UnitFactionGroup");
 retain("FrameUtil");
@@ -167,26 +170,23 @@ retain("GetBindingFromClick");
 
 retain("GOLD_AMOUNT_SYMBOL");
 retain("GOLD_AMOUNT_TEXTURE");
---retain("GOLD_AMOUNT_TEXTURE_STRING");
 retain("SILVER_AMOUNT_SYMBOL");
 retain("SILVER_AMOUNT_TEXTURE");
---retain("SILVER_AMOUNT_TEXTURE_STRING");
 retain("COPPER_AMOUNT_SYMBOL");
 retain("COPPER_AMOUNT_TEXTURE");
---retain("COPPER_AMOUNT_TEXTURE_STRING");
 retain("SHORTDATE");
---retain("SHORTDATE_EU");
+retain("SHORTDATE_EU");
 retain("AUCTION_TIME_LEFT1_DETAIL");
 retain("AUCTION_TIME_LEFT2_DETAIL");
 retain("AUCTION_TIME_LEFT3_DETAIL");
 retain("AUCTION_TIME_LEFT4_DETAIL");
---retain("WEEKS_ABBR");
+retain("WEEKS_ABBR");
 retain("DAYS_ABBR");
 retain("HOURS_ABBR");
 retain("MINUTES_ABBR");
 retain("OKAY");
---retain("LARGE_NUMBER_SEPERATOR");
---retain("DECIMAL_SEPERATOR");
+retain("LARGE_NUMBER_SEPERATOR");
+retain("DECIMAL_SEPERATOR");
 retain("TOOLTIP_DEFAULT_COLOR");
 retain("TOOLTIP_DEFAULT_BACKGROUND_COLOR");
 retain("ACCEPT");
@@ -245,6 +245,19 @@ retain("C_Texture");
 take("C_HardcoreSecure");
 
 --retain("C_RecruitAFriend");
+take("C_Camera");
+take("C_Clipboard");
+take("C_Library");
+take("C_Sirus");
+take("C_Verify");
+take("S_SharedStorage");
+take("Barbershop_Dress");
+take("Barbershop_Undress");
+take("GameTooltip_SetScript");
+take("GetSharedStorage");
+take("LaunchURL");
+take("RegisterCVar2");
+take("SaveViewRaw");
 
 -- retain shared constants
 
@@ -254,6 +267,13 @@ remove("SECURE_SetForbidden");
 remove("RegisterCustomEvent");
 remove("UnregisterCustomEvent");
 remove("TRACKED_CVARS");
+
+remove("ReloadCollectionHearloomData");
+remove("ReloadCollectionModelData");
+remove("ReloadCollectionMountData");
+remove("ReloadCollectionPetData");
+remove("ReloadCollectionToyData");
+remove("ReloadWorldMapData");
 
 retain("ZODIAC_DEBUFFS");
 retain("FACTION_OVERRIDE_BY_DEBUFFS");
@@ -269,7 +289,6 @@ take("COLLECTION_ENCHANTDATA");
 take("COLLECTION_TOYDATA");
 take("COLLECTION_HEIRLOOMDATA");
 take("HARDCORE_CHALLENGES");
-
 take("WORLDMAP_MAP_NAME_BY_ID");
 
 take("CUF_SPELL_BOSS_AURA");
@@ -281,3 +300,5 @@ take("CUF_SPELL_PRIORITY_AURA");
 take("CUF_SPELL_VISIBILITY_BLACKLIST");
 take("CUF_SPELL_VISIBILITY_DATA");
 take("CUF_SPELL_VISIBILITY_TYPES");
+
+take("BARBERSHOP_DRACTHYR_DISPLAYS");

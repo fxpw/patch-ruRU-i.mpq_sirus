@@ -1278,8 +1278,9 @@ function C_AuctionHouse.CancelAuction(ownedAuctionID)
 end
 
 function C_AuctionHouse.CancelCommoditiesPurchase()
-	SendServerMessage("ACMSG_AUCTION_CANCEL_COMMODITIES_PURCHASE", format("%s", ACTION_HOUSE_NPC_GUID));
-
+	if ACTION_HOUSE_NPC_GUID then
+		SendServerMessage("ACMSG_AUCTION_CANCEL_COMMODITIES_PURCHASE", format("%s", ACTION_HOUSE_NPC_GUID));
+	end
 	COMMODITY_QUOTE_TIME = nil;
 end
 
@@ -1356,6 +1357,23 @@ if startStr then
 		chargesPatterns[#chargesPatterns + 1] = string.gsub(strconcat(startStr, variant, endStr), "(%%[A-z])", "(%1+)");
 	end
 end
+local durationPatterns = {};
+startStr, plural, endStr = string.match(ITEM_DURATION_HOURS, "^([^|]*)|4([^;]+);(.*)$");
+if startStr then
+	for _, variant in ipairs({string.split(":", plural)}) do
+		durationPatterns[#durationPatterns + 1] = string.gsub(strconcat(startStr, variant, endStr), "(%%[A-z])", "(%1+)");
+	end
+else
+	durationPatterns[#durationPatterns + 1] = string.gsub(ITEM_DURATION_HOURS, "(%%[A-z])", "(%1+)");
+end
+startStr, plural, endStr = string.match(ITEM_DURATION_DAYS, "^([^|]*)|4([^;]+);(.*)$");
+if startStr then
+	for _, variant in ipairs({string.split(":", plural)}) do
+		durationPatterns[#durationPatterns + 1] = string.gsub(strconcat(startStr, variant, endStr), "(%%[A-z])", "(%1+)");
+	end
+else
+	durationPatterns[#durationPatterns + 1] = string.gsub(ITEM_DURATION_DAYS, "(%%[A-z])", "(%1+)");
+end
 
 local LOCKED_WITH_SPELL = string.gsub(LOCKED_WITH_SPELL, "%%s", "");
 
@@ -1403,6 +1421,14 @@ local function IsSellItemValid(bagID, slotID)
 			end
 
 			foundLockbox = true;
+		end
+
+		if #durationPatterns > 0 then
+			for _, durationText in ipairs(durationPatterns) do
+				if string.find(text, durationText) then
+					return false;
+				end
+			end
 		end
 
 		if i <= bindLines then
@@ -2591,8 +2617,8 @@ local frame = CreateFrame("Frame");
 frame:RegisterEvent("VARIABLES_LOADED");
 frame:RegisterEvent("BANKFRAME_OPENED");
 frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-frame:RegisterEvent("PLAYER_TALENT_UPDATE");
-frame:SetScript("OnEvent", function(self, event)
+frame:RegisterCustomEvent("VARIABLES_LOADED_INITIAL");
+frame:SetScript("OnEvent", function(self, event, ...)
 	if event == "VARIABLES_LOADED" then
 		AH_CACHE:Set("FAVORITE_ITEMS", nil); -- Remove later, unused
 
@@ -2613,23 +2639,14 @@ frame:SetScript("OnEvent", function(self, event)
 			HideUIPanel(AuctionHouseFrame);
 		end
 	elseif event == "PLAYER_ENTERING_WORLD" then
-		frame:RegisterEvent("COMMENTATOR_ENTER_WORLD");
-		frame:UnregisterEvent(event);
-	elseif event == "COMMENTATOR_ENTER_WORLD" then
-		twipe(SIRUS_AUCTION_HOUSE_FAVORITE_ITEMS);
-		frame:UnregisterEvent(event);
-	elseif event == "PLAYER_TALENT_UPDATE" then
-		frame:UnregisterEvent("COMMENTATOR_ENTER_WORLD");
-		frame:UnregisterEvent(event);
-	end
-
-	if event == "COMMENTATOR_ENTER_WORLD" or event == "PLAYER_TALENT_UPDATE" then
 		twipe(AUCTION_FAVORITE_ITEMS);
 
 		for _, itemKey in pairs(SIRUS_AUCTION_HOUSE_FAVORITE_ITEMS) do
 			if not AUCTION_FAVORITE_ITEMS[itemKey.itemID] then AUCTION_FAVORITE_ITEMS[itemKey.itemID] = {}; end
 			AUCTION_FAVORITE_ITEMS[itemKey.itemID][itemKey.itemSuffix or 0] = true;
 		end
+	elseif event == "VARIABLES_LOADED_INITIAL" then
+		twipe(SIRUS_AUCTION_HOUSE_FAVORITE_ITEMS);
 	end
 end);
 

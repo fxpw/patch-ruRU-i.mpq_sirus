@@ -213,6 +213,7 @@ end
 
 do	-- GetInventoryTransmogID
 	local transmogrificationInfo = {};
+	local infoRequested
 
 	function GetInventoryTransmogID(unit, slotID)
 		if type(unit) ~= "string" or type(slotID) ~= "number" then
@@ -235,14 +236,20 @@ do	-- GetInventoryTransmogID
 		end
 	end
 
+	function RequestInventoryTransmogInfo(force)
+		if not infoRequested or force then
+			infoRequested = true
+			SendServerMessage("ACMSG_TRANSMOGRIFICATION_INFO_REQUEST", UnitGUID("player"))
+		end
+	end
+
 	function EventHandler:ASMSG_TRANSMOGRIFICATION_INFO_RESPONSE(msg)
 		table.wipe(transmogrificationInfo);
 
-		local msgData = {string.split(";", msg)};
-		local unitGUID = tonumber(table.remove(msgData, 1));
+		local unitGUID, transmogInfo = string.split(";", msg, 2)
 
-		if unitGUID == tonumber(UnitGUID("player")) then
-			for _, slotInfo in pairs(msgData) do
+		if tonumber(unitGUID) == tonumber(UnitGUID("player")) then
+			for _, slotInfo in ipairs({string.split(";", (transmogInfo:gsub(";$", "")))}) do
 				local slotID, transmogrifyID, enchantID = string.split(":", slotInfo, 3);
 				slotID, transmogrifyID, enchantID = tonumber(slotID), tonumber(transmogrifyID), tonumber(enchantID);
 
@@ -262,6 +269,7 @@ do	-- Replace Enchant
 	local IsEquippedItem = IsEquippedItem;
 	local UnitIsUnit = UnitIsUnit;
 
+	local EndRefund = EndRefund;
 	local UseAction = UseAction;
 	local UseInventoryItem = UseInventoryItem;
 	local PickupInventoryItem = PickupInventoryItem;
@@ -271,6 +279,7 @@ do	-- Replace Enchant
 	local ReplaceEnchant = ReplaceEnchant;
 	local ReplaceTradeEnchant = ReplaceTradeEnchant;
 
+	local replaceEnchantArg1, replaceEnchantArg2 = nil, nil;
 	local replaceEnchantText1, replaceEnchantText2 = nil, nil;
 	local tradeReplaceEnchantText1, tradeReplaceEnchantText2 = nil, nil;
 
@@ -309,6 +318,9 @@ do	-- Replace Enchant
 				if string.find(text, TOOLTIP_ENCHANT_SPELL) then
 					enchantText = text;
 					foundEnchant = true;
+				elseif string.find(text, TOOLTIP_TITANIUM_WEAPON_CHAIN_SPELL, 1, true) then
+					enchantText = string.match(text, TOOLTIP_TITANIUM_WEAPON_CHAIN_SPELL);
+					foundEnchant = true;
 				elseif string.find(text, TOOLTIP_ILLUSION_SPELL) then
 					foundEnchant = true;
 				elseif replacedText and string.find(text, replacedText, 1, true) then
@@ -324,28 +336,33 @@ do	-- Replace Enchant
 
 	_G.UseAction = function(action, unit, button)
 		replaceEnchantText1, replaceEnchantText2 = nil, nil;
+		local inventorySlotID;
+		if tonumber(action) then
+			local actionType, id = GetActionInfo(action);
+			if actionType == "item" and id and IsEquippedItem(id) then
+				for slotID = 1, 19 do
+					if id == GetInventoryItemID("player", slotID) then
+						inventorySlotID = slotID;
+						replaceEnchantArg1, replaceEnchantArg2 = slotID, nil;
+						break;
+					end
+				end
+			end
+		end
 		local success, result = pcall(UseAction, action, unit, button);
 		if not success then
 			geterrorhandler()(result);
 			return;
 		end
-		local actionType, id = GetActionInfo(action);
-		if actionType == "item" and id and IsEquippedItem(id) then
-			for slotID = 1, 19 do
-				if id == GetInventoryItemID("player", slotID) then
-					if replaceEnchantText1 and replaceEnchantText2 then
-						local enchantText, enchantNotFound = GetEnchantText("SetInventoryItem", replaceEnchantText1, "player", slotID);
-						if enchantText or enchantNotFound then
-							if enchantText then
-								replaceEnchantText1 = enchantText;
-							end
-							FireCustomClientEvent("CUSTOM_REPLACE_ENCHANT", replaceEnchantText1, replaceEnchantText2);
-						else
-							ReplaceEnchant();
-						end
-					end
-					break;
+		if inventorySlotID and (replaceEnchantText1 and replaceEnchantText2) then
+			local enchantText, enchantNotFound = GetEnchantText("SetInventoryItem", replaceEnchantText1, "player", inventorySlotID);
+			if enchantText or enchantNotFound then
+				if enchantText then
+					replaceEnchantText1 = enchantText;
 				end
+				FireCustomClientEvent("CUSTOM_REPLACE_ENCHANT", replaceEnchantText1, replaceEnchantText2);
+			else
+				ReplaceEnchant();
 			end
 		end
 		return result;
@@ -356,6 +373,7 @@ do	-- Replace Enchant
 			return UseInventoryItem(slotID, target);
 		end
 		replaceEnchantText1, replaceEnchantText2 = nil, nil;
+		replaceEnchantArg1, replaceEnchantArg2 = slotID, target;
 		local result = UseInventoryItem(slotID);
 		if replaceEnchantText1 and replaceEnchantText2 then
 			local enchantText, enchantNotFound = GetEnchantText("SetInventoryItem", replaceEnchantText1, "player", slotID);
@@ -373,6 +391,7 @@ do	-- Replace Enchant
 
 	_G.PickupInventoryItem = function(slotID)
 		replaceEnchantText1, replaceEnchantText2 = nil, nil;
+		replaceEnchantArg1, replaceEnchantArg2 = slotID, nil;
 		local result = PickupInventoryItem(slotID);
 		if replaceEnchantText1 and replaceEnchantText2 then
 			local enchantText, enchantNotFound = GetEnchantText("SetInventoryItem", replaceEnchantText1, "player", slotID);
@@ -388,15 +407,45 @@ do	-- Replace Enchant
 		return result;
 	end
 
-	_G.UseContainerItem = function(...)
+	_G.UseContainerItem = function(bagID, slotID)
 		replaceEnchantText1, replaceEnchantText2 = nil, nil;
-		local success, result = pcall(UseContainerItem, ...);
+		replaceEnchantArg1, replaceEnchantArg2 = bagID, slotID;
+		local success, result = pcall(UseContainerItem, bagID, slotID);
 		if not success then
 			geterrorhandler()(result);
 			return;
 		end
 		if replaceEnchantText1 and replaceEnchantText2 then
-			local enchantText, enchantNotFound = GetEnchantText("SetBagItem", replaceEnchantText1, ...);
+			local enchantText, enchantNotFound = GetEnchantText("SetBagItem", replaceEnchantText1, bagID, slotID);
+			if enchantText or enchantNotFound then
+				if enchantText then
+					replaceEnchantText1 = enchantText;
+				end
+				FireCustomClientEvent("CUSTOM_REPLACE_ENCHANT", replaceEnchantText1, replaceEnchantText2);
+			else
+				ReplaceEnchant();
+			end
+		end
+		return result;
+	end
+
+	_G.EndRefund = function(...)
+		local arg1, arg2 = replaceEnchantArg1, replaceEnchantArg2;
+		replaceEnchantText1, replaceEnchantText2 = nil, nil;
+		replaceEnchantArg1, replaceEnchantArg2 = nil, nil;
+		local success, result = pcall(EndRefund, ...);
+		if not success then
+			geterrorhandler()(result);
+			return;
+		end
+
+		if replaceEnchantText1 and replaceEnchantText2 and (arg1 or arg2) then
+			local enchantText, enchantNotFound
+			if type(arg1) == "number" and type(arg2) == "number" then
+				enchantText, enchantNotFound = GetEnchantText("SetBagItem", replaceEnchantText1, arg1, arg2);
+			else
+				enchantText, enchantNotFound = GetEnchantText("SetInventoryItem", replaceEnchantText1, "player", arg1);
+			end
 			if enchantText or enchantNotFound then
 				if enchantText then
 					replaceEnchantText1 = enchantText;
@@ -483,7 +532,7 @@ do	-- GetServerTime
 	end
 
 	local srvHours, srvMinutes = GetGameTime()
-	srvDiffSeconds = getTimeDiffSeconds(srvHours, srvMinutes)
+	local srvDiffSeconds = getTimeDiffSeconds(srvHours, srvMinutes)
 
 	local frame = CreateFrame("Frame")
 	frame:SetScript("OnUpdate", function(self)
@@ -592,5 +641,415 @@ do -- GetWhoInfo
 		end
 
 		return name, guild, level, race, class, zone, classFileName, itemLevel or 0
+	end
+end
+
+do -- FilterOutSpellLearn | IsSpellIDLearnFiltered | EnumSpellLearnFilters
+	local SPELL_LEARN_FILTER = {}
+	function FilterOutSpellLearn(spellID, spellName)
+		if SPELL_LEARN_FILTER[spellID] then
+			return
+		end
+		if not spellName then
+			spellName = GetSpellInfo(spellID)
+		end
+		SPELL_LEARN_FILTER[spellID] = spellName
+	end
+
+	function IsSpellIDLearnFiltered(spellID)
+		return SPELL_LEARN_FILTER[spellID] ~= nil
+	end
+
+	function EnumSpellLearnFilters()
+		return pairs(SPELL_LEARN_FILTER)
+	end
+end
+
+do -- PLAYER_LOOT_ITEM
+	local ipairs = ipairs
+	local tonumber = tonumber
+	local strmatch = string.match
+	local StringStartsWith = StringStartsWith
+
+	Enum.PlayerLootEventType = {
+		SelfLoot = 1,
+		Created = 2,
+		Pushed = 3,
+	}
+
+	local SELF_LOOT_MESSAGE_VARIANT = {
+		strmatch(LOOT_ITEM_SELF, "^([^:]+: )"),
+		strmatch(LOOT_ITEM_CREATED_SELF, "^([^:]+: )"),
+		strmatch(LOOT_ITEM_PUSHED_SELF, "^([^:]+: )"),
+	}
+
+	EventRegistry:RegisterFrameEventAndCallback("CHAT_MSG_LOOT", function(event, msg, ...)
+		for lootEventType, startLootText in ipairs(SELF_LOOT_MESSAGE_VARIANT) do
+			if StringStartsWith(msg, startLootText) then
+				local itemID, amount = strmatch(msg, "|Hitem:(%d+).*x(%d+)")
+
+				if not itemID then
+					itemID = strmatch(msg, "|Hitem:(%d+)")
+				end
+
+				itemID = tonumber(itemID)
+				if itemID then
+					FireCustomClientEvent("PLAYER_LOOT_ITEM", itemID, amount or 1, lootEventType)
+					EventRegistry:TriggerEvent("PlayerLootItem", itemID, amount or 1, lootEventType)
+				end
+
+				break
+			end
+		end
+	end, "CUSTOM_API")
+end
+
+do -- GetQuestLogIndexByID
+	local GetNumQuestLogEntries = GetNumQuestLogEntries
+	local GetQuestLogTitle = GetQuestLogTitle
+
+	function GetQuestLogIndexByID(questID)
+		if type(questID) ~= "number" then
+			error(string.format("bad argument #1 to 'GetQuestLogIndexByID' (number expected, got %s)", type(questID)), 2)
+		end
+
+		local numEntries, numQuests = GetNumQuestLogEntries()
+		for index = 1, numEntries do
+			local title, level, questTag, suggestedGroup, isHeader, isCollapsed, isComplete, isDaily, _questID = GetQuestLogTitle(index)
+			if not isHeader and questID == _questID then
+				return index
+			end
+		end
+
+		return nil
+	end
+end
+
+do -- IsQuestCompleted
+	local GetQuestsCompleted = GetQuestsCompleted
+	local QueryQuestsCompleted = QueryQuestsCompleted
+	local FireCustomClientEvent = FireCustomClientEvent
+	local twipe = table.wipe
+
+	local COMPLETED_QUESTS = {}
+
+	EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGIN", function(event)
+		QueryQuestsCompleted()
+		EventRegistry:UnregisterFrameEventAndCallback("PLAYER_LOGIN", "IsQuestCompleted")
+	end, "IsQuestCompleted")
+
+	EventRegistry:RegisterFrameEventAndCallback("QUEST_QUERY_COMPLETE", function(event)
+		twipe(COMPLETED_QUESTS)
+		GetQuestsCompleted(COMPLETED_QUESTS)
+		FireCustomClientEvent("QUEST_COMPLETED_BUCKET_UPDATE")
+	end, "IsQuestCompleted")
+
+	EventRegistry:RegisterFrameEventAndCallback("PLAYERBANKSLOTS_CHANGED", function(event)
+		FireClientEvent("QUEST_LOG_UPDATE")
+	end, "PLAYERBANKSLOTS_CHANGED_QUEST_LOG_UPDATE")
+
+	function EventHandler:ASMSG_Q_C(msg)
+		local questID = tonumber(msg)
+		COMPLETED_QUESTS[questID] = true
+		FireCustomClientEvent("QUEST_COMPLETED", questID)
+	end
+
+	IsQuestCompleted = function(questID)
+		if type(questID) ~= "number" then
+			error(string.format("bad argument #1 to 'IsQuestCompleted' (number expected, got %s)", type(questID)), 2)
+		end
+		return COMPLETED_QUESTS[questID] and true or false
+	end
+end
+
+do -- QueryQuestStart
+	local GetQuestLogIndexByID = GetQuestLogIndexByID
+
+	Enum.QueryQuestStartSource = {
+		Suggestion = 1,
+	}
+	local QUERY_QUEST_START_SOURCE = Enum.CreateMirror(CopyTable(Enum.QueryQuestStartSource))
+
+	QueryQuestStart = function(questID, sourceType, sourceID)
+		if type(questID) ~= "number" then
+			error(string.format("bad argument #1 to 'QueryQuestStart' (number expected, got %s)", type(questID)), 2)
+		elseif type(sourceType) ~= "number" then
+			error(string.format("bad argument #2 to 'QueryQuestStart' (number expected, got %s)", type(sourceType)), 2)
+		elseif type(sourceID) ~= "number" then
+			error(string.format("bad argument #3 to 'QueryQuestStart' (number expected, got %s)", type(sourceID)), 2)
+		elseif sourceType < 0 or sourceType > #QUERY_QUEST_START_SOURCE then
+			error(string.format("QueryQuestStart: unknown sourceType (%s)", sourceType), 2)
+		end
+
+		if GetQuestLogIndexByID(questID) then
+			return false
+		end
+
+		SendServerMessage("ACMSG_QUESTGIVER_QUERY_QUEST", questID, sourceType, sourceID)
+
+		return true
+	end
+end
+
+do -- RequestLoadQuestByID | GetQuestNameByID | GetQuestDescriptionByID
+	local strformat = string.format
+	local tinsert, tremove = table.insert, table.remove
+	local securecall = securecall
+
+	local SCANER_MANAGER, SCANER_TOOLTIP
+
+	do
+		local QUEST_BLACKLIST = {}
+
+		SCANER_TOOLTIP = CreateFrame("GameTooltip", "SCANER_TOOLTIP")
+		SCANER_TOOLTIP:Hide()
+		SCANER_TOOLTIP:AddFontStrings(SCANER_TOOLTIP:CreateFontString("$parentTextLeft1"), SCANER_TOOLTIP:CreateFontString("$parentTextRight1"))
+
+		SCANER_TOOLTIP.LINES = {
+			LEFT = {},
+			RIGHT = {},
+		}
+
+		function SCANER_TOOLTIP:GetLine(index, isRight)
+			local lines = isRight and self.LINES.RIGHT or self.LINES.LEFT
+
+			if not lines[index] then
+				lines[index] = _G[strformat(isRight and "%sTextRight%i" or "%sTextLeft%i", self:GetName(), index)]
+			end
+
+			return lines[index]
+		end
+
+		function SCANER_TOOLTIP:GetLineText(index, isRight)
+			local line = self:GetLine(index, isRight)
+			if line then
+				return line:GetText() or ""
+			end
+			return ""
+		end
+
+		function SCANER_TOOLTIP:GetLineDoubleText(index)
+			return self:GetLineText(index, false), self:GetLineText(index, true)
+		end
+
+		function SCANER_TOOLTIP:GetTitleText()
+			return self:GetLineDoubleText(1)
+		end
+
+		function SCANER_TOOLTIP:GetLineTextArray(startIndex, endIndex)
+			local numLines = SCANER_TOOLTIP:NumLines()
+			if endIndex then
+				endIndex = math.min(endIndex, numLines)
+			end
+			local lines = {}
+			for index = startIndex or 1, endIndex or numLines do
+				tinsert(lines, {self:GetLineDoubleText(index)})
+			end
+			return lines
+		end
+
+		SCANER_MANAGER = CreateFrame("Frame")
+		SCANER_MANAGER:Hide()
+		SCANER_MANAGER.QUEUE = {}
+
+		SCANER_MANAGER:SetScript("OnUpdate", function(self, elapsed)
+			local index = 1
+			local queueLen = #self.QUEUE
+			local scanRequest = self.QUEUE[index]
+			while scanRequest and index <= queueLen do
+				local link, id, successCallback, failCallback, timeout = unpack(scanRequest, 1, 5)
+				local failed
+				if link then
+					SCANER_TOOLTIP:SetOwner(WorldFrame, "ANCHOR_NONE")
+					SCANER_TOOLTIP:SetHyperlink(link)
+
+					if SCANER_TOOLTIP:IsShown() then
+						queueLen = queueLen - 1
+						tremove(self.QUEUE, index)
+						FireCustomClientEvent("QUEST_DATA_LOAD_RESULT", true, id)
+						if successCallback then
+							local success, err = securecall(pcall, successCallback, id, SCANER_TOOLTIP:GetLineTextArray())
+							if not success then
+								geterrorhandler()(err)
+							end
+						end
+					else
+						timeout = timeout - elapsed
+						if timeout > 0 then
+							scanRequest[5] = timeout
+							index = index + 1
+						else
+							failed = true
+						end
+					end
+				else
+					failed = true
+				end
+
+				if failed then
+					tremove(self.QUEUE, index)
+
+					QUEST_BLACKLIST[id] = true
+					FireCustomClientEvent("QUEST_DATA_LOAD_RESULT", false, id)
+
+					if failCallback then
+						local success, err = securecall(pcall, failCallback, id)
+						if not success then
+							geterrorhandler()(err)
+						end
+					end
+				end
+
+				scanRequest = self.QUEUE[index]
+			end
+
+			if #self.QUEUE == 0 then
+				self:Hide()
+			end
+		end)
+
+		function SCANER_MANAGER:HasQuestCache(link)
+			SCANER_TOOLTIP:SetOwner(WorldFrame, "ANCHOR_NONE")
+			SCANER_TOOLTIP:SetHyperlink(link)
+			return SCANER_TOOLTIP:IsShown() and true or false
+		end
+
+		function SCANER_MANAGER:EnqueLink(link, id, successCallback, failCallback, timeout)
+			if QUEST_BLACKLIST[id] then
+				return true, false
+			end
+
+			local found
+			for index, scanRequest in ipairs(self.QUEUE) do
+				if scanRequest[1] == link and (successCallback == nil or scanRequest[3] == successCallback) then
+					scanRequest[1] = link
+					scanRequest[2] = id
+					scanRequest[3] = successCallback
+					scanRequest[4] = failCallback
+					scanRequest[5] = timeout or 60
+					found = true
+					break
+				end
+			end
+			if not found then
+				tinsert(self.QUEUE, {link, id, successCallback, failCallback, timeout or 60})
+			end
+			self:Show()
+			return false, not found
+		end
+
+		function SCANER_MANAGER:UnqueueLink(link, successCallback)
+			local removed
+			for index, scanRequest in ipairs(self.QUEUE) do
+				if scanRequest[1] == link and (successCallback == nil or scanRequest[3] == successCallback) then
+					table.remove(self.QUEUE, index)
+					removed = true
+					break
+				end
+			end
+			if removed and #self.QUEUE == 0 then
+				self:Hide()
+			end
+			return removed
+		end
+	end
+
+	function RequestLoadQuestByID(questID, callback, failCallback)
+		if type(questID) ~= "number" then
+			error(string.format("bad argument #1 to 'RequestLoadQuestByID' (number expected, got %s)", questID ~= nil and type(questID) or "no value"), 2)
+		end
+		if type(callback) ~= "function" then
+			callback = nil
+		end
+		if type(failCallback) ~= "function" then
+			failCallback = nil
+		end
+
+		local link = strformat("quest:%s", questID)
+		if not SCANER_MANAGER:HasQuestCache(link) then
+			local ignored, enqueued = SCANER_MANAGER:EnqueLink(link, questID, callback, failCallback)
+			return false, ignored, enqueued
+		end
+		return true, false, false
+	end
+
+	function GetQuestNameByID(questID)
+		if type(questID) ~= "number" then
+			error(strformat("bad argument #1 to 'GetQuestNameByID' (number expected, got %s)", questID ~= nil and type(questID) or "no value"), 2)
+		end
+
+		local link = strformat("quest:%s", questID)
+
+		if not SCANER_MANAGER:HasQuestCache(link) then
+			SCANER_MANAGER:EnqueLink(link, questID)
+			return
+		end
+
+		local title = SCANER_TOOLTIP:GetTitleText()
+		return title
+	end
+
+	function GetQuestDescriptionByID(questID)
+		if type(questID) ~= "number" then
+			error(strformat("bad argument #1 to 'GetQuestNameByID' (number expected, got %s)", questID ~= nil and type(questID) or "no value"), 2)
+		end
+
+		local link = strformat("quest:%s", questID)
+
+		if not SCANER_MANAGER:HasQuestCache(link) then
+			SCANER_MANAGER:EnqueLink(link, questID)
+			return
+		end
+
+		local lines = SCANER_TOOLTIP:GetLineTextArray(2, 4)
+		local description
+
+		for index = 1, 2 do
+			if lines[index][1] == " " then
+				description = lines[index + 1][1]
+				break
+			end
+		end
+
+		return description
+	end
+end
+
+do -- IsGameEventActive
+	function EventHandler:ASMSG_GAME_EVENT_LIST(msg)
+		local gameEvents = C_CacheInstance:Get("GAME_EVENT_LIST")
+		if not gameEvents then
+			gameEvents = {}
+			C_CacheInstance:Set("GAME_EVENT_LIST", gameEvents)
+		else
+			table.wipe(gameEvents)
+		end
+
+		for index, gameEventID in ipairs({StringSplitEx(";", msg)}) do
+			gameEvents[tonumber(gameEventID)] = true
+		end
+
+		FireCustomClientEvent("GAME_EVENT_LIST_UPDATE")
+	end
+
+	function EventHandler:ASMSG_GAME_EVENT_CHANGE(msg)
+		local gameEventID, state = string.split(":", msg)
+
+		local gameEvents = C_CacheInstance:Get("GAME_EVENT_LIST")
+		if not gameEvents then
+			gameEvents = {}
+			C_CacheInstance:Set("GAME_EVENT_LIST", gameEvents)
+		end
+
+		gameEvents[tonumber(gameEventID)] = state == "1" and true or nil
+		FireCustomClientEvent("GAME_EVENT_LIST_UPDATE")
+	end
+
+	function IsGameEventActive(gameEventID)
+		local gameEvents = C_CacheInstance:Get("GAME_EVENT_LIST")
+		if gameEvents and gameEvents[gameEventID] then
+			return true
+		end
+		return false
 	end
 end

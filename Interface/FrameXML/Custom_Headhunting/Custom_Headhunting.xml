@@ -297,7 +297,7 @@
                 <Scripts>
                     <OnLoad>
                         self.LoadingSpinner.showRetrievingText = true
-                        self.LoadingSpinner.Text:SetText(STORE_WAIT_SERVER_RESPONSE)
+						self.LoadingSpinner.Text:SetText(WAIT_SERVER_RESPONSE)
                         self.LoadingSpinner.Text:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
                         self.LoadingSpinner.Dots:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
                     </OnLoad>
@@ -438,7 +438,7 @@
         </Backdrop>
         <Layers>
             <Layer level="BACKGROUND">
-                <Texture name="$parentBackgroundTile" parentKey="BackgroundTile" file="Interface\Store\CollectionsBackgroundTile" vertTile="true" horizTile="true">
+                <Texture name="$parentBackgroundTile" parentKey="BackgroundTile" file="Interface\Collections\CollectionsBackgroundTile" vertTile="true" horizTile="true">
                     <Size x="256" y="256"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" x="4" y="-6" />
@@ -551,14 +551,14 @@
         </Scripts>
     </Frame>
     <Frame name="HeadHuntingSetRewardHelpBoxStepFrameTemplate" virtual="true">
-        <Size x="150" y="10"/>
+		<Size x="180" y="10"/>
         <Layers>
         	<Layer level="BACKGROUND">
-                <FontString name="$parentText" parentKey="Text" inherits="GameFontHighlightLeft">
-                    <Size x="150" y="0"/>
-                    <Anchors>
-                        <Anchor point="CENTER" x="0" y="0" />
-                    </Anchors>
+				<FontString name="$parentText" parentKey="Text" inherits="GameFontHighlightLeft" justifyH="LEFT">
+					<Size x="180" y="0"/>
+					<Anchors>
+						<Anchor point="LEFT" x="0" y="0" />
+					</Anchors>
                 </FontString>
         	</Layer>
         </Layers>
@@ -626,38 +626,38 @@
     <Frame name="HeadHuntingSetRewardFrameTemplate" inherits="PortraitFrameTemplate_NineSlice" toplevel="true" enableMouse="true" virtual="true">
         <Frames>
             <Frame name="$parentHelpBoxFrame" parentKey="HelpBoxFrame" inherits="GlowBoxTemplate" enableMouse="true" frameStrata="DIALOG">
-                <Size x="190" y="290"/>
+				<Size x="220" y="290"/>
                 <Anchors>
                 	<Anchor point="RIGHT" relativePoint="LEFT" x="-10" y="0" />
                 </Anchors>
                 <Layers>
                     <Layer level="OVERLAY">
-                        <FontString name="$parentText" parentKey="Text" inherits="GameFontHighlightLeft" justifyV="TOP" text="HEADHUNTING_SET_REWARD_HELP_TITLE">
-                            <Size x="170" y="40"/>
-                            <Anchors>
-                                <Anchor point="TOPLEFT" x="16" y="-12"/>
-                            </Anchors>
+						<FontString name="$parentText" parentKey="Text" inherits="GameFontHighlightLeft" justifyH="LEFT" justifyV="TOP" text="HEADHUNTING_SET_REWARD_HELP_TITLE">
+							<Size x="190" y="40"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="16" y="-17"/>
+							</Anchors>
                         </FontString>
-                        <FontString name="$parentTotalMoney" parentKey="TotalMoney" inherits="GameFontHighlightLeft" justifyV="TOP">
+						<FontString name="$parentTotalMoney" parentKey="TotalMoney" inherits="GameFontHighlightLeft" justifyH="LEFT" justifyV="TOP">
                             <Size x="180" y="0"/>
-                            <Anchors>
-                            	<Anchor point="BOTTOMLEFT" x="16" y="20" />
-                            </Anchors>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="16" y="17"/>
+							</Anchors>
                         </FontString>
-                        <FontString name="$parentMoneyError" parentKey="MoneyError" inherits="GameFontHighlightLeft" justifyV="TOP">
-                            <Size x="170" y="0"/>
-                            <Anchors>
-                                <Anchor point="BOTTOMLEFT" x="16" y="20" />
-                            </Anchors>
+						<FontString name="$parentMoneyError" parentKey="MoneyError" inherits="GameFontHighlightLeft" justifyH="LEFT" justifyV="TOP">
+							<Size x="180" y="0"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="16" y="17"/>
+							</Anchors>
                             <Color r="1" g="0" b="0"/>
                         </FontString>
                     </Layer>
                 </Layers>
                 <Frames>
                     <Frame name="$parentStep1" parentKey="Step1" inherits="HeadHuntingSetRewardHelpBoxStepFrameTemplate">
-                        <Anchors>
-                        	<Anchor point="TOP" x="-4" y="-60" />
-                        </Anchors>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="16" y="-60" />
+						</Anchors>
                         <Attributes>
                             <Attribute name="text" type="string" value="HEADHUNTING_SET_REWARD_HELP_BOX_STEP_1"/>
                             <Attribute name="key" type="string" value="search"/>
@@ -673,18 +673,18 @@
                         </Attributes>
                     </Frame>
                     <Frame name="$parentStep3" parentKey="Step3" inherits="HeadHuntingSetRewardHelpBoxStepFrameTemplate">
-                        <Anchors>
-                            <Anchor point="TOP" relativeTo="$parentStep2" relativePoint="BOTTOM" x="0" y="-10" />
-                        </Anchors>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentStep2" relativePoint="BOTTOMLEFT" x="0" y="-10" />
+						</Anchors>
                         <Attributes>
                             <Attribute name="text" type="string" value="HEADHUNTING_SET_REWARD_HELP_BOX_STEP_3"/>
                             <Attribute name="key" type="string" value="setNumKills"/>
                         </Attributes>
                     </Frame>
                     <Frame name="$parentStep4" parentKey="Step4" inherits="HeadHuntingSetRewardHelpBoxStepFrameTemplate">
-                        <Anchors>
-                            <Anchor point="TOP" relativeTo="$parentStep3" relativePoint="BOTTOM" x="0" y="-10" />
-                        </Anchors>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentStep3" relativePoint="BOTTOMLEFT" x="0" y="-10" />
+						</Anchors>
                         <Attributes>
                             <Attribute name="text" type="string" value="HEADHUNTING_SET_REWARD_HELP_BOX_STEP_4"/>
                             <Attribute name="key" type="string" value="setGoldPerKill"/>
@@ -712,7 +712,7 @@
                     </OnLoad>
                 </Scripts>
             </Frame>
-            <Frame name="$parentCentralContainer" parentKey="CentralContainer" inherits="StandartInsetFrameTemplate">
+            <Frame name="$parentCentralContainer" parentKey="CentralContainer" inherits="InsetFrameTemplate">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parentSearchFrame" relativePoint="BOTTOMLEFT" x="4" y="0" />
                     <Anchor point="BOTTOMRIGHT" x="-2" y="27" />
@@ -760,7 +760,7 @@
                                 <Scripts>
                                     <OnLoad>
                                         self.LoadingSpinner.showRetrievingText = true
-                                        self.LoadingSpinner.Text:SetText(STORE_WAIT_SERVER_RESPONSE)
+										self.LoadingSpinner.Text:SetText(WAIT_SERVER_RESPONSE)
                                         self.LoadingSpinner.Text:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
                                         self.LoadingSpinner.Dots:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
                                     </OnLoad>
@@ -1743,12 +1743,12 @@
                     <Layer level="BORDER">
                         <Texture name="$parentInsetBotLeftCorner" inherits="UI-Frame-InnerBotLeftCorner" parentKey="InsetBorderBottomLeft">
                             <Anchors>
-                                <Anchor point="BOTTOMLEFT"  x="-3" y="-3"/>
+                                <Anchor point="BOTTOMLEFT" x="-3" y="-3"/>
                             </Anchors>
                         </Texture>
                         <Texture name="$parentInsetBotRightCorner" inherits="UI-Frame-InnerBotRight" parentKey="InsetBorderBottomRight">
                             <Anchors>
-                                <Anchor point="BOTTOMRIGHT"  x="3" y="-3"/>
+                                <Anchor point="BOTTOMRIGHT" x="3" y="-3"/>
                             </Anchors>
                         </Texture>
                         <Texture name="$parentInsetBottomBorder" inherits="_UI-Frame-InnerBotTile" parentKey="InsetBorderBottom">
@@ -1765,27 +1765,18 @@
                         </Texture>
                         <Texture name="$parentInsetRightBorder" inherits="!UI-Frame-InnerRightTile" parentKey="InsetBorderRight">
                             <Anchors>
-                                <Anchor point="TOPRIGHT"  x="3" y="0"/>
+                                <Anchor point="TOPRIGHT" x="3" y="0"/>
                                 <Anchor point="BOTTOMRIGHT" relativeTo="$parentInsetBotRightCorner" relativePoint="TOPRIGHT"/>
                             </Anchors>
                         </Texture>
                     </Layer>
                 </Layers>
             </Frame>
-            <Frame name="$parentInset" inherits="StandartInsetFrameTemplate" parentKey="inset">
+            <Frame name="$parentInset" inherits="InsetFrameTemplate" parentKey="inset">
                 <Anchors>
                     <Anchor point="TOPRIGHT" x="-4" y="-60" />
                     <Anchor point="BOTTOMLEFT" x="4" y="5"/>
                 </Anchors>
-                <Frames>
-                    <Frame name="$parentScripts">
-                        <Scripts>
-                            <OnLoad>
-                                self:GetParent().IBackground:SetAtlas("UI-EJ-BattleforAzeroth")
-                            </OnLoad>
-                        </Scripts>
-                    </Frame>
-                </Frames>
             </Frame>
             <Frame name="$parentContainer" parentKey="Container">
                 <Anchors>
@@ -2067,6 +2058,25 @@
                     <OnClick function="Adventure_TabOnClick"/>
                 </Scripts>
             </Button>
+			<Button name="$parentTab4" inherits="CharacterFrameTabButtonTemplate" text="ITEM_BROWSER" id="4" parentKey="tab4">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab3" relativePoint="RIGHT" x="-16" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="Adventure_TabOnClick"/>
+				</Scripts>
+			</Button>
+
+			<Button name="$parentTutorialButton" parentKey="TutorialButton" inherits="MainHelpPlateButton" toplevel="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="40" y="20"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():ToggleTutorial()
+					</OnClick>
+				</Scripts>
+			</Button>
         </Frames>
         <Scripts>
             <OnLoad>

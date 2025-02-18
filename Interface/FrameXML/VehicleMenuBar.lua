@@ -47,6 +47,9 @@ local SkinsData = {
 			normalTexCoord = { 0.140625, 0.859375, 0.140625, 0.859375 },
 			pushedTexture = [[Interface\Vehicles\UI-Vehicles-Button-Exit-Down]],
 			pushedTexCoord = { 0.140625, 0.859375, 0.140625, 0.859375 },
+			disabledTexture = [[Interface\Vehicles\UI-Vehicles-Button-Exit-Up]],
+			disabledTexCoord = { 0.140625, 0.859375, 0.140625, 0.859375 },
+			disabledDesaturated = true,
 		},
 		["ActionButtonFrame"] = {
 			point = "BOTTOMLEFT",
@@ -335,6 +338,9 @@ local SkinsData = {
 			normalTexCoord = { 0.140625, 0.859375, 0.140625, 0.859375 },
 			pushedTexture = [[Interface\Vehicles\UI-Vehicles-Button-Exit-Down]],
 			pushedTexCoord = { 0.140625, 0.859375, 0.140625, 0.859375 },
+			disabledTexture = [[Interface\Vehicles\UI-Vehicles-Button-Exit-Up]],
+			disabledTexCoord = { 0.140625, 0.859375, 0.140625, 0.859375 },
+			disabledDesaturated = true,
 		},
 		["ActionButtonFrame"] = {
 			point = "BOTTOMLEFT",
@@ -665,6 +671,12 @@ function VehicleMenuBar_SetSkin(skinName, pitchVisible)
 				frame:GetPushedTexture():SetTexCoord( unpack(framedata.pushedTexCoord) );
 			end
 
+			if ( framedata.disabledTexture ) then
+				frame:GetDisabledTexture():SetTexture(framedata.disabledTexture);
+				frame:GetDisabledTexture():SetTexCoord( unpack(framedata.disabledTexCoord) );
+				frame:GetDisabledTexture():SetDesaturated(framedata.disabledDesaturated);
+			end
+
 			if ( framedata.texture ) then
 				frame:SetTexture(framedata.texture);
 				frame:SetTexCoord( unpack(framedata.texCoord) );
@@ -701,15 +713,15 @@ end
 local MicroButtons = {
 	CharacterMicroButton,
 	SpellbookMicroButton,
-	TalentMicroButton,
+--	TalentMicroButton,
 	AchievementMicroButton,
 	QuestLogMicroButton,
 	SocialsMicroButton,
 	GuildMicroButton,
-	CollectionsMicroButton,
 	LFDMicroButton,
-	-- BugreportMicroButton,
-	-- StoreMicroButton,
+	CollectionsMicroButton,
+	EncounterJournalMicroButton,
+--	StoreMicroButton,
 	MainMenuMicroButton,
 	}
 function VehicleMenuBar_MoveMicroButtons(skinName)
@@ -721,9 +733,11 @@ function VehicleMenuBar_MoveMicroButtons(skinName)
 		end
 
 		CharacterMicroButton:ClearAllPoints();
-		CharacterMicroButton:SetPoint("BOTTOMLEFT", 552, 2);
-		SocialsMicroButton:ClearAllPoints();
-		SocialsMicroButton:SetPoint("BOTTOMLEFT", QuestLogMicroButton, "BOTTOMRIGHT", -3, 0);
+		CharacterMicroButton:SetPoint("BOTTOMLEFT", 550, 2);
+		AchievementMicroButton:ClearAllPoints();
+		AchievementMicroButton:SetPoint("LEFT", TalentMicroButton, "RIGHT", -3, 0);
+		GuildMicroButton:ClearAllPoints();
+		GuildMicroButton:SetPoint("LEFT", SocialsMicroButton, "RIGHT", -3, 0);
 		MainMenuMicroButton:ClearAllPoints()
 		MainMenuMicroButton:SetPoint("BOTTOMLEFT", StoreMicroButton, "BOTTOMRIGHT", -3, 0)
 
@@ -736,11 +750,13 @@ function VehicleMenuBar_MoveMicroButtons(skinName)
 			frame:Show();
 		end
 		CharacterMicroButton:ClearAllPoints();
-		CharacterMicroButton:SetPoint("BOTTOMLEFT", VehicleMenuBar, "BOTTOMRIGHT", -340, 41);
-		SocialsMicroButton:ClearAllPoints();
-		SocialsMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "BOTTOMLEFT", 0, 20);
+		CharacterMicroButton:SetPoint("BOTTOMLEFT", VehicleMenuBar, "BOTTOMRIGHT", -341, 41);
+		AchievementMicroButton:ClearAllPoints();
+		AchievementMicroButton:SetPoint("LEFT", SpellbookMicroButton, "RIGHT", -3, 0);
+		GuildMicroButton:ClearAllPoints();
+		GuildMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "BOTTOMLEFT", 0, 20);
 		MainMenuMicroButton:ClearAllPoints()
-		MainMenuMicroButton:SetPoint("LEFT", LFDMicroButton, "RIGHT", -3, 0)
+		MainMenuMicroButton:SetPoint("LEFT", EncounterJournalMicroButton, "RIGHT", -3, 0)
 
 		UpdateMicroButtons();
 	elseif ( skinName == "Natural" ) then
@@ -751,10 +767,12 @@ function VehicleMenuBar_MoveMicroButtons(skinName)
 		end
 		CharacterMicroButton:ClearAllPoints();
 		CharacterMicroButton:SetPoint("BOTTOMLEFT", VehicleMenuBar, "BOTTOMRIGHT", -365, 41);
-		SocialsMicroButton:ClearAllPoints();
-		SocialsMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "BOTTOMLEFT", 0, 20);
+		AchievementMicroButton:ClearAllPoints();
+		AchievementMicroButton:SetPoint("LEFT", SpellbookMicroButton, "RIGHT", -3, 0);
+		GuildMicroButton:ClearAllPoints();
+		GuildMicroButton:SetPoint("TOPLEFT", CharacterMicroButton, "BOTTOMLEFT", 0, 20);
 		MainMenuMicroButton:ClearAllPoints()
-		MainMenuMicroButton:SetPoint("LEFT", LFDMicroButton, "RIGHT", -3, 0)
+		MainMenuMicroButton:SetPoint("LEFT", EncounterJournalMicroButton, "RIGHT", -3, 0)
 
 		UpdateMicroButtons();
 	end
@@ -849,6 +867,8 @@ end
 function VehicleMenuBarLeaveButton_Update()
 	if ( CanExitVehicle() or UnitOnTaxi("player") ) then
 		VehicleMenuBarLeaveButton:Enable();
+	else
+		VehicleMenuBarLeaveButton:Disable();
 	end
 end
 

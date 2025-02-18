@@ -1198,12 +1198,20 @@
 						<PushedTexture file="Interface\Buttons\UI-Panel-HideButton-Down"/>
 						<HighlightTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Highlight" alphaMode="ADD"/>
 					</Button>
-					<Button name="$parentEnterButton" inherits="UIPanelButtonTemplate" text="ENTER_MINI_GAME" parentKey="EnterButton">
+					<Button name="$parentEnterButton" inherits="UIPanelButtonTemplate" text="ENTER_MINI_GAME" parentKey="EnterButton" motionScriptsWhileDisabled="true">
 						<Size x="115" y="22"/>
 						<Anchors>
 							<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOM" x="-7" y="25"/>
 						</Anchors>
 						<Scripts>
+							<OnEnter>
+								if self:IsEnabled() ~= 1 then
+									GameTooltip:SetOwner(self, "ANCHOR_TOP")
+									GameTooltip:AddLine(ERR_NOT_IN_COMBAT, 1, 0.2, 0.2)
+									GameTooltip:Show()
+								end
+							</OnEnter>
+							<OnLeave function="GameTooltip_Hide"/>
 							<OnClick>
 								local inviteID = self:GetParent().inviteID;
 								if inviteID then
@@ -1298,11 +1306,29 @@
 						</Layers>
 						<Scripts>
 							<OnLoad>
-								self.rewardPool = CreateFramePool("Frame", self, "MiniGameReadyRewardTemplate");
+								self.rewardPool = CreateFramePool("Frame", self, "MiniGameReadyRewardTemplate", function(framePool, frame)
+									FramePool_HideAndClearAnchors(framePool, frame)
+									frame.currency = nil
+									frame.Texture:SetTexCoord(0, 1, 0, 1)
+								end);
 							</OnLoad>
 						</Scripts>
 					</Frame>
 				</Frames>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, LFDReadyPopupMixin)
+					</OnLoad>
+					<OnEvent>
+						self:OnEvent(event, ...)
+					</OnEvent>
+					<OnShow>
+						self:OnShow()
+					</OnShow>
+					<OnHide>
+						self:OnHide()
+					</OnHide>
+				</Scripts>
 			</Frame>
 		</Frames>
 		<Scripts>
@@ -1324,7 +1350,7 @@
 			<Anchor point="TOPLEFT" x="100" y="-84"/>
 		</Anchors>
 		<Frames>
-			<Frame parentKey="LeftInset" name="$parentLeftInset" inherits="InsetFrameTemplate4">
+			<Frame parentKey="LeftInset" name="$parentLeftInset" inherits="InsetFrameTemplate">
 				<Size x="217" y="496"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" x="4" y="-24" />
@@ -1421,6 +1447,7 @@
 				</Frames>
 				<Scripts>
 					<OnLoad>
+						self.Bgs:Hide()
 						self:SetFrameLevel(2)
 					</OnLoad>
 				</Scripts>
@@ -1551,6 +1578,21 @@
 					</Layer>
 				</Layers>
 				<Frames>
+					<Button name="$parentTutorialButton" parentKey="TutorialButton" inherits="MainHelpPlateButton" toplevel="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="LFDParentFrame" x="40" y="18" />
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								local parent = self:GetParent()
+								if not HelpPlate_IsShowing(parent.helpPlate) then
+									HelpPlate_Show(parent.helpPlate, parent, parent.TutorialButton)
+								else
+									HelpPlate_Hide(true)
+								end
+							</OnClick>
+						</Scripts>
+					</Button>
 					<Frame name="$parentInset" inherits="InsetFrameTemplate" parentKey="Inset">
 						<Anchors>
 							<Anchor point="TOPLEFT" x="4" y="-60" />
@@ -1577,11 +1619,7 @@
 						<Frames>
 							<Button name="$parentRoleButtonTank" inherits="LFDRoleButtonTemplate" id="2">
 								<Anchors>
-									<Anchor point="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="34" y="334"/>
-										</Offset>
-									</Anchor>
+									<Anchor point="BOTTOMLEFT" x="37" y="334"/>
 								</Anchors>
 								<Scripts>
 									<OnLoad>
@@ -1595,11 +1633,7 @@
 							</Button>
 							<Button name="$parentRoleButtonHealer" inherits="LFDRoleButtonTemplate" id="3">
 								<Anchors>
-									<Anchor point="LEFT" relativeTo="$parentRoleButtonTank" relativePoint="RIGHT">
-										<Offset>
-											<AbsDimension x="25" y="0"/>
-										</Offset>
-									</Anchor>
+									<Anchor point="LEFT" relativeTo="$parentRoleButtonTank" relativePoint="RIGHT" x="23" y="0"/>
 								</Anchors>
 								<Scripts>
 									<OnLoad>
@@ -1613,11 +1647,7 @@
 							</Button>
 							<Button name="$parentRoleButtonDPS" inherits="LFDRoleButtonTemplate" id="1">
 								<Anchors>
-									<Anchor point="LEFT" relativeTo="$parentRoleButtonHealer" relativePoint="RIGHT">
-										<Offset>
-											<AbsDimension x="23" y="0"/>
-										</Offset>
-									</Anchor>
+									<Anchor point="LEFT" relativeTo="$parentRoleButtonHealer" relativePoint="RIGHT" x="23" y="0"/>
 								</Anchors>
 								<Scripts>
 									<OnLoad>
@@ -1631,11 +1661,7 @@
 							</Button>
 							<Button name="$parentRoleButtonLeader" inherits="LFGRoleButtonTemplate" id="4">
 								<Anchors>
-									<Anchor point="LEFT" relativeTo="$parentRoleButtonDPS" relativePoint="RIGHT">
-										<Offset>
-											<AbsDimension x="32" y="0"/>
-										</Offset>
-									</Anchor>
+									<Anchor point="LEFT" relativeTo="$parentRoleButtonDPS" relativePoint="RIGHT" x="23" y="0"/>
 								</Anchors>
 								<Scripts>
 									<OnLoad>
@@ -2424,6 +2450,24 @@
 						</Scripts>
 					</Frame>
 				</Frames>
+				<Scripts>
+					<OnLoad>
+						self.helpPlate = {
+							FramePos = { x = -224, y = -24 },
+							FrameSize = { width = 595, height = 402 },
+							[1] = { ButtonPos = { x = 192, y = -116 }, HighLightBox = { x = 4, y = -96, width = 212, height = 84 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_LFDQUEUEFRAME_TUTORIAL_1 },
+							[2] = { ButtonPos = { x = 192, y = -206 }, HighLightBox = { x = 4, y = -186, width = 212, height = 84 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_LFDQUEUEFRAME_TUTORIAL_2 },
+							[3] = { ButtonPos = { x = 368, y = -20 }, HighLightBox = { x = 232, y = -4, width = 320, height = 78 }, ToolTipDir = "UP", ToolTipText = HEPLPLATE_LFDQUEUEFRAME_TUTORIAL_3 },
+							[4] = { ButtonPos = { x = 252, y = -80 }, HighLightBox = { x = 232, y = -86, width = 320, height = 34 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_LFDQUEUEFRAME_TUTORIAL_4 },
+						}
+					</OnLoad>
+					<OnShow>
+						EventRegistry:TriggerEvent("LFDQueueFrame.OnShow")
+					</OnShow>
+					<OnHide>
+						EventRegistry:TriggerEvent("LFDQueueFrame.OnHide")
+					</OnHide>
+				</Scripts>
 			</Frame>
 			<Frame name="MiniGamesParentFrame" hidden="true">
 				<Size x="338" y="428"/>
@@ -2431,6 +2475,21 @@
 					<Anchor point="TOPLEFT" x="224" y="0"/>
 				</Anchors>
 				<Frames>
+					<Button name="$parentTutorialButton" parentKey="TutorialButton" inherits="MainHelpPlateButton" toplevel="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="LFDParentFrame" x="40" y="18" />
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								local parent = self:GetParent()
+								if not HelpPlate_IsShowing(parent.helpPlate) then
+									HelpPlate_Show(parent.helpPlate, parent, parent.TutorialButton)
+								else
+									HelpPlate_Hide(true)
+								end
+							</OnClick>
+						</Scripts>
+					</Button>
 					<Frame name="$parentTopInset" inherits="InsetFrameTemplate" parentKey="TopInset">
 						<Size x="329" y="111"/>
 						<Anchors>
@@ -2447,16 +2506,19 @@
 							</Layer>
 						</Layers>
 						<Frames>
-							<ScrollFrame name="$parentScrollFrame" parentKey="ScrollFrame">
+							<Frame name="$parentScrollFrame" parentKey="ScrollFrame">
 								<Anchors>
 									<Anchor point="TOPLEFT" x="4" y="0"/>
 									<Anchor point="BOTTOMRIGHT" x="-4" y="0"/>
 								</Anchors>
-								<ScrollChild>
-									<Frame name="$parentChildFrame" parentKey="ChildFrame">
-										<Size x="10" y="111"/>
+								<Frames>
+									<Frame name="$parentButtonHolder" parentKey="ButtonHolder">
+										<Anchors>
+											<Anchor point="TOP" x="0" y="0"/>
+											<Anchor point="BOTTOM" x="0" y="0"/>
+										</Anchors>
 									</Frame>
-								</ScrollChild>
+								</Frames>
 								<Scripts>
 									<OnMouseWheel>
 										if delta > 0 then
@@ -2466,7 +2528,7 @@
 										end
 									</OnMouseWheel>
 								</Scripts>
-							</ScrollFrame>
+							</Frame>
 						</Frames>
 					</Frame>
 					<Frame name="$parentBottomInset" inherits="InsetFrameTemplate" parentKey="BottomInset">
@@ -2540,7 +2602,12 @@
 											<Layer level="ARTWORK">
 												<FontString name="$parentTitle" inherits="QuestTitleFontBlackShadow" justifyH="LEFT" parentKey="Title">
 													<Anchors>
-														<Anchor point="TOPLEFT" x="10" y="-10"/>
+														<Anchor point="TOPLEFT" x="10" y="-5"/>
+													</Anchors>
+												</FontString>
+												<FontString name="$parentNumPlayers" parentKey="NumPlayers" inherits="SystemFont_Small" justifyH="LEFT">
+													<Anchors>
+														<Anchor point="LEFT" relativeTo="$parentTitle" relativePoint="RIGHT" x="5" y="-1"/>
 													</Anchors>
 												</FontString>
 												<FontString name="$parentDescription" inherits="QuestFont" justifyH="LEFT" parentKey="Description">
@@ -2549,21 +2616,9 @@
 														<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT" x="0" y="-5"/>
 													</Anchors>
 												</FontString>
-												<FontString name="$parentMembersLabel" inherits="QuestTitleFontBlackShadow" justifyH="LEFT" parentKey="MembersLabel" text="MINI_GAME_MEMBERS" hidden="true">
-													<Anchors>
-														<Anchor point="TOPLEFT" relativeTo="$parentDescription" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
-													</Anchors>
-												</FontString>
-												<FontString name="$parentMembersDescription" inherits="QuestFont" justifyH="LEFT" parentKey="MembersDescription" hidden="true">
-													<Size x="280" y="0"/>
-													<Anchors>
-														<Anchor point="TOPLEFT" relativeTo="$parentMembersLabel" relativePoint="BOTTOMLEFT" x="0" y="-5"/>
-													</Anchors>
-													<Color r="1" g="1" b="1"/>
-												</FontString>
 												<FontString name="$parentRewardsLabel" inherits="QuestTitleFontBlackShadow" justifyH="LEFT" parentKey="RewardsLabel" text="LFD_REWARDS" hidden="true">
 													<Anchors>
-														<Anchor point="TOPLEFT" relativeTo="$parentMembersDescription" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
+														<Anchor point="TOPLEFT" relativeTo="$parentDescription" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
 													</Anchors>
 												</FontString>
 												<FontString name="$parentRewardsDescription" inherits="QuestFont" justifyH="LEFT" parentKey="RewardsDescription" text="LFD_RANDOM_REWARD_EXPLANATION1" hidden="true">
@@ -2575,6 +2630,11 @@
 												<FontString name="$parentMoneyLabel" inherits="QuestFont" justifyH="LEFT" parentKey="MoneyLabel" text="MONEY_COLON" hidden="true">
 													<Anchors>
 														<Anchor point="TOPLEFT" relativeTo="$parentRewardsLabel" relativePoint="BOTTOMLEFT" x="20" y="-10"/>
+													</Anchors>
+												</FontString>
+												<FontString name="$parentCurrencyLabel" parentKey="CurrencyLabel" inherits="QuestFont" justifyH="LEFT" text="BATTLEPASS_COLON" hidden="true">
+													<Anchors>
+														<Anchor point="TOPLEFT" relativeTo="$parentMoneyLabel" relativePoint="BOTTOMLEFT" x="0" y="-5"/>
 													</Anchors>
 												</FontString>
 											</Layer>
@@ -2591,6 +2651,21 @@
 													</OnLoad>
 												</Scripts>
 											</Frame>
+											<Frame name="$parentCurrencyFrame" parentKey="CurrencyFrame" inherits="PKBT_CurrencyTemplate" hidden="true">
+												<Anchors>
+													<Anchor point="LEFT" relativeTo="$parentCurrencyLabel" relativePoint="RIGHT" x="10" y="0"/>
+												</Anchors>
+												<Scripts>
+													<OnLoad>
+														Mixin(self, PKBT_CurrencyMixin)
+														self:SetInvertValueSide(true)
+														self:SetTextOffset(2)
+														self:SetIconSize(20)
+														self:SetFontObject("QuestFont")
+														self:SetTextColor({1, 1, 1})
+													</OnLoad>
+												</Scripts>
+											</Frame>
 											<Frame name="$parentSpacer" parentKey="Spacer">
 												<Size x="2" y="2"/>
 												<Anchors>
@@ -2600,9 +2675,11 @@
 										</Frames>
 										<Scripts>
 											<OnLoad>
+												self.NumPlayers:SetTextColor(0.9, 0.9, 0.9);
 												self.Description:SetTextColor(1, 1, 1);
 												self.RewardsDescription:SetTextColor(1, 1, 1);
 												self.MoneyLabel:SetTextColor(1, 1, 1);
+												self.CurrencyLabel:SetTextColor(1, 1, 1);
 											</OnLoad>
 										</Scripts>
 									</Frame>
@@ -2632,21 +2709,6 @@
 							<OnLeave function="GameTooltip_Hide"/>
 						</Scripts>
 					</Button>
-					<Frame name="MiniGamesFrame" toplevel="true" setAllPoints="true">
-						<Scripts>
-							<OnLoad>
-								RaiseFrameLevelByTwo(self)
-							</OnLoad>
-							<OnShow>
-								UpdateMicroButtons();
-								PlaySound("igCharacterInfoOpen");
-							</OnShow>
-							<OnHide>
-								UpdateMicroButtons();
-								PlaySound("igCharacterInfoClose");
-							</OnHide>
-						</Scripts>
-					</Frame>
 				</Frames>
 				<Scripts>
 					<OnLoad>

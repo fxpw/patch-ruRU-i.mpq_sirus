@@ -9,10 +9,13 @@
 			<Anchor point="BOTTOMRIGHT"/>
 		</Anchors>
 		<Scripts>
-            <OnEnter>
+			<OnShow>
+				SetParentFrameLevel(self, 1)
+			</OnShow>
+			<OnEnter>
 				TaxiNodeOnButtonEnter(self, motion);
 			</OnEnter>
-            <OnLeave>
+			<OnLeave>
 				GameTooltip:Hide();
 			</OnLeave>
  			<OnClick>

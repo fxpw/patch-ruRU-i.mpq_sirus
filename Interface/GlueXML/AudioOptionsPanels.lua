@@ -113,6 +113,7 @@ SoundPanelOptions = {
 	Sound_MasterVolume = { text = "MASTER_VOLUME", minValue = 0, maxValue = 1, valueStep = 0.01, },
 	Sound_NumChannels = { text = "SOUND_CHANNELS", minValue = 32, maxValue = 64, valueStep = 32, },
 	Sound_OutputQuality = { text = "SOUND_QUALITY", minValue = 0, maxValue = 2, valueStep = 1 },
+	Sound_EnableGluaMusic = { text = "ENABLE_GLUE_MUSIC" },
 }
 
 function AudioOptionsSoundPanel_OnLoad (self)

@@ -1,19 +1,5 @@
---	Filename:	Sirus_ItemLevel.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 ItemLevelMixIn = {}
 ItemLevelMixIn.Cache = {}
-ItemLevelMixIn.Colors = {
-	[1] = CreateColor(0.65882, 0.65882, 0.65882),
-	[2] = CreateColor(0.08235, 0.70196, 0),
-	[3] = CreateColor(0, 0.56863, 0.94902),
-	[4] = CreateColor(0.78431, 0.27059, 0.98039),
-	[5] = CreateColor(1, 0.50196, 0),
-	[6] = CreateColor(1, 0, 0),
-}
 
 function ItemLevelMixIn:Request( unit, ignoreCache )
 	if not unit then
@@ -51,28 +37,6 @@ function ItemLevelMixIn:CanRequest( unit )
 	end
 end
 
-function ItemLevelMixIn:GetColor( itemLevel )
-	local color
-
-	if WithinRange(itemLevel, 0, 100) then
-		color = self.Colors[1]
-	elseif WithinRange(itemLevel, 100, 150) then
-		color = self.Colors[1]
-	elseif WithinRange(itemLevel, 150, 185) then
-		color = self.Colors[2]
-	elseif WithinRange(itemLevel, 185, 200) then
-		color = self.Colors[3]
-	elseif WithinRange(itemLevel, 200, 277) then
-		color = self.Colors[4]
-	elseif WithinRange(itemLevel, 277, 296) then
-		color = self.Colors[5]
-	elseif itemLevel >= 297 then
-		color = self.Colors[6]
-	end
-
-	return color
-end
-
 function ItemLevelMixIn:GetItemLevel( GUID )
 	if not GUID then
 		return
@@ -92,7 +56,7 @@ function ItemLevelMixIn:Update( unit )
 	if UNIT and GUID then
 		local itemLevel = self:GetItemLevel(GUID)
 		if itemLevel and itemLevel ~= -1 then
-			local color = self:GetColor(itemLevel)
+			local color = GetItemLevelColor(itemLevel)
 			if UNIT == "player" then
 				CharacterItemLevelFrame.ilvltext:SetTextColor(color.r, color.g, color.b)
 				CharacterItemLevelFrame.ilvltext:SetText(itemLevel)
@@ -114,8 +78,9 @@ function ItemLevelMixIn:Update( unit )
 						local line = _G["GameTooltipTextLeft"..lineID]
 						local lineText = line:GetText()
 
-						if lineText and string.find(lineText, TOOLTIP_UNIT_LEVEL_ILEVEL_LOADING_LABEL) then
-							line:SetText(string.gsub(lineText, TOOLTIP_UNIT_LEVEL_ILEVEL_LOADING_LABEL, color:WrapTextInColorCode(itemLevel)))
+						if lineText and string.find(lineText, TOOLTIP_UNIT_ITEM_LEVEL_LABEL) then
+							line:SetText(string.gsub(lineText, TOOLTIP_UNIT_ITEM_LEVEL_LABEL, strconcat("%1: ", color:WrapTextInColorCode(itemLevel))))
+							break
 						end
 					end
 				end

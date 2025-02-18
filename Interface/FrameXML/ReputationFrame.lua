@@ -33,6 +33,8 @@ function ReputationFrame_OnShow()
 	CharacterFrame.Inset:Show()
 	ButtonFrameTemplate_HideButtonBar(CharacterFrame)
 	ReputationFrame_Update();
+
+	EventRegistry:TriggerEvent("ReputationFrame.OnShow")
 end
 
 function ReputationFrame_OnEvent(self, event, ...)
@@ -86,7 +88,7 @@ function ReputationFrame_SetRowType(factionRow, rowType, hasRep)	--rowType is a 
 		factionTitle:SetPoint("LEFT",factionButton,"RIGHT",10,0);
 		factionTitle:SetFontObject(GameFontNormalLeft);
 		factionTitle:SetWidth(240);
-		factionBackground:Hide()	
+		factionBackground:Hide()
 		factionLeftTexture:SetHeight(15);
 		factionLeftTexture:SetWidth(60);
 		factionRightTexture:SetHeight(15);
@@ -110,7 +112,7 @@ function ReputationFrame_SetRowType(factionRow, rowType, hasRep)	--rowType is a 
 		factionRightTexture:SetTexCoord(0.0, 0.15234375, 0.390625, 0.625);
 		factionBar:SetWidth(99);
 	end
-	
+
 	if ( (hasRep) or (rowType == 0) or (rowType == 1)) then
 		factionStanding:Show();
 		factionBar:Show();
@@ -141,9 +143,9 @@ function ReputationFrame_Update()
 	local factionOffset = FauxScrollFrame_GetOffset(ReputationListScrollFrame);
 
 	local gender = UnitSex("player");
-	
+
 	local i;
-	
+
 	local offScreenFudgeFactor = 5;
 	local previousBigTextureRows = 0;
 	local previousBigTextureRows2 = 0;
@@ -163,7 +165,7 @@ function ReputationFrame_Update()
 			if ( isCollapsed ) then
 				factionButton:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-Up");
 			else
-				factionButton:SetNormalTexture("Interface\\Buttons\\UI-MinusButton-Up"); 
+				factionButton:SetNormalTexture("Interface\\Buttons\\UI-MinusButton-Up");
 			end
 			factionRow.index = factionIndex;
 			factionRow.isCollapsed = isCollapsed;
@@ -174,14 +176,14 @@ function ReputationFrame_Update()
 			barMax = barMax - barMin;
 			barValue = barValue - barMin;
 			barMin = 0;
-			
+
 			factionRow.standingText = factionStandingtext;
 			factionRow.tooltip = HIGHLIGHT_FONT_COLOR_CODE.." "..barValue.." / "..barMax..FONT_COLOR_CODE_CLOSE;
 			factionBar:SetMinMaxValues(0, barMax);
 			factionBar:SetValue(barValue);
 			local color = FACTION_BAR_COLORS[standingID];
 			factionBar:SetStatusBarColor(color.r, color.g, color.b);
-			
+
 			if ( isHeader and not isChild ) then
 				factionLeftLine:SetTexCoord(0, 0.25, 0, 2);
 				factionBottomLine:Hide();
@@ -201,7 +203,7 @@ function ReputationFrame_Update()
 				previousBigTextureRows2 = 0;
 				previousBigTextureRows = previousBigTextureRows+1;
 				ReputationBar_DrawVerticalLine(previousBigTexture, previousBigTextureRows);
-				
+
 			elseif ( isChild ) then
 				ReputationBar_DrawHorizontalLine(factionLeftLine, 11, factionBackground);
 				factionBottomLine:Hide();
@@ -215,9 +217,9 @@ function ReputationFrame_Update()
 				previousBigTextureRows = previousBigTextureRows+1;
 				ReputationBar_DrawVerticalLine(previousBigTexture, previousBigTextureRows);
 			end
-			
+
 			ReputationFrame_SetRowType(factionRow, ((isChild and 1 or 0) + (isHeader and 2 or 0)), hasRep);
-			
+
 			factionRow:Show();
 
 			-- Update details if this is the selected faction
@@ -275,12 +277,12 @@ function ReputationFrame_Update()
 	if ( GetSelectedFaction() == 0 ) then
 		ReputationDetailFrame:Hide();
 	end
-	
+
 	local i = NUM_
 	for i = (NUM_FACTIONS_DISPLAYED + factionOffset + 1), numFactions, 1 do
 		local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild  = GetFactionInfo(i);
 		if not name then break; end
-		
+
 		if ( isHeader and not isChild ) then
 			break;
 		elseif ( (isHeader and isChild) or not(isHeader or isChild) ) then
@@ -334,7 +336,7 @@ function ReputationWatchBar_Update(newLevel)
 		if ( not ReputationWatchBar:IsShown() ) then
 			visibilityChanged = 1;
 		end
-		
+
 		-- Normalize values
 		max = max - min;
 		value = value - min;
@@ -345,7 +347,7 @@ function ReputationWatchBar_Update(newLevel)
 		local color = FACTION_BAR_COLORS[reaction];
 		ReputationWatchStatusBar:SetStatusBarColor(color.r, color.g, color.b);
 		ReputationWatchBar:Show();
-		
+
 		-- If the player is max level then replace the xp bar with the watched reputation, otherwise stack the reputation watch bar on top of the xp bar
 		ReputationWatchStatusBar:SetFrameLevel(MainMenuBarArtFrame:GetFrameLevel()-1);
 		if ( newLevel < MAX_PLAYER_LEVEL and not IsXPUserDisabled() ) then
@@ -384,7 +386,7 @@ function ReputationWatchBar_Update(newLevel)
 			ReputationXPBarTexture1:Show();
 			ReputationXPBarTexture2:Show();
 			ReputationXPBarTexture3:Show();
-	
+
 			ExhaustionTick:Hide();
 
 			-- Hide the XP bar
@@ -393,7 +395,7 @@ function ReputationWatchBar_Update(newLevel)
 			-- Hide max level bar
 			MainMenuBarMaxLevelBar:Hide();
 		end
-		
+
 	else
 		if ( ReputationWatchBar:IsShown() ) then
 			visibilityChanged = 1;
@@ -410,11 +412,11 @@ function ReputationWatchBar_Update(newLevel)
 			ExhaustionTick:Hide();
 		end
 	end
-	
+
 	-- update the xp bar
 	TextStatusBar_UpdateTextString(MainMenuExpBar);
 	MainMenuExpBar_Update();
-	
+
 	if ( visibilityChanged ) then
 		UIParent_ManageFramePositions();
 		updateContainerFrameAnchors();

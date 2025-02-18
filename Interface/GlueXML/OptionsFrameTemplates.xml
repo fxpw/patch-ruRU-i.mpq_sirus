@@ -118,13 +118,13 @@
 	</Button>
 	<Frame name="OptionsFrameListTemplate" virtual="true">
 		<Attributes>
-			<Attribute name="layoutType" value="GlueDarkDropDownTemplate" type="string"/>
+			<Attribute name="layoutType" value="GlueDarkDropDownBorder" type="string"/>
 			<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
 		</Attributes>
 <!--
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_scrollBackdrop"/>
+				<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark-Backdrops-Background-Scroll"/>
 			</Layer>
 		</Layers>
 -->
@@ -235,17 +235,17 @@
 
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_backdrop"/>
+				<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark-Backdrops-Background-Main"/>
 			</Layer>
 			<Layer level="BORDER">
-				<Texture name="$parentTopShadow" parentKey="TopShadow" inherits="GlueDark_backdropTopSplash1">
+				<Texture name="$parentTopShadow" parentKey="TopShadow" inherits="GlueDark-Backdrops-Shadow-Top1">
 					<Size x="0" y="182"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="0" y="0"/>
 						<Anchor point="TOPRIGHT" x="0" y="0"/>
 					</Anchors>
 				</Texture>
-				<Texture name="$parentBottomShadow" parentKey="BottomShadow" inherits="GlueDark_backdropBottomShadow">
+				<Texture name="$parentBottomShadow" parentKey="BottomShadow" inherits="GlueDark-Backdrops-Shadow-Bottom">
 					<Size x="0" y="182"/>
 					<Anchors>
 						<Anchor point="BOTTOMLEFT" x="0" y="0"/>
@@ -281,7 +281,7 @@
 					</OnLoad>
 				</Scripts>
 			</Frame>
-			
+
 			<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
 
 			<Frame name="$parentCategoryFrame" parentKey="categoryFrame" inherits="OptionsFrameListTemplate">
@@ -305,13 +305,13 @@
 				</Anchors>
 
 				<Attributes>
-					<Attribute name="layoutType" value="GlueDarkDropDownTemplate" type="string"/>
+					<Attribute name="layoutType" value="GlueDarkDropDownBorder" type="string"/>
 					<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
 				</Attributes>
 
 				<!-- <Layers>
 					<Layer level="BACKGROUND">
-						<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_scrollBackdrop"/>
+						<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark-Backdrops-Background-Scroll"/>
 					</Layer>
 				</Layers> -->
 				<Frames>

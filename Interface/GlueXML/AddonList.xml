@@ -6,7 +6,7 @@
 		<Size x="560" y="16"/>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_scrollEntryBackdrop">
+				<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark-Scroll-EntryBackdrop">
 					<Anchors>
 						<Anchor point="TOPLEFT" x="0" y="4"/>
 						<Anchor point="BOTTOMRIGHT" x="0" y="-4"/>
@@ -14,7 +14,7 @@
 				</Texture>
 			</Layer>
 			<Layer level="BORDER">
-				<Texture name="$parentBackgroundHighlight" parentKey="BackgroundHighlight" inherits="GlueDark_scrollEntryBackdrop" setAllPoints="true" alphaMode="ADD" alpha="0.5" hidden="true"/>
+				<Texture name="$parentBackgroundHighlight" parentKey="BackgroundHighlight" inherits="GlueDark-Scroll-EntryBackdrop" setAllPoints="true" alphaMode="ADD" alpha="0.5" hidden="true"/>
 			</Layer>
 			<Layer level="ARTWORK">
 				<FontString name="$parentTitle" parentKey="Title" justifyH="LEFT" inherits="GlueDark_Font_12">
@@ -127,10 +127,10 @@
 
 				<Layers>
 					<Layer level="BACKGROUND">
-						<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_backdrop"/>
+						<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark-Backdrops-Background-Main"/>
 					</Layer>
 					<Layer level="BORDER">
-						<Texture name="$parentTopShadow" parentKey="TopShadow" inherits="GlueDark_backdropTopSplash2">
+						<Texture name="$parentTopShadow" parentKey="TopShadow" inherits="GlueDark-Backdrops-Shadow-Top2">
 							<Size x="0" y="182"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" x="0" y="0"/>
@@ -206,7 +206,7 @@
 
 						<Layers>
 							<Layer level="BACKGROUND">
-								<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_scrollBackdrop"/>
+								<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark-Backdrops-Background-Scroll"/>
 							</Layer>
 						</Layers>
 

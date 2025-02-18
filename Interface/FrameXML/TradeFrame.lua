@@ -2,7 +2,7 @@ MAX_TRADE_ITEMS = 7;
 MAX_TRADABLE_ITEMS = 6;
 TRADE_ENCHANT_SLOT = MAX_TRADE_ITEMS;
 
-local AcceptTrade = AcceptTrade
+local AcceptTradeRaw = AcceptTrade
 
 TradeFrameMixIn = {}
 
@@ -45,8 +45,6 @@ function TradeFrameMixIn:OnUpdate( elapsed )
 	end
 end
 
-local _AcceptTrade = _AcceptTrade or AcceptTrade
-
 StaticPopupDialogs["CONFIRM_TRADE"] = {
 	text = "%s",
 	button1 = YES,
@@ -56,7 +54,7 @@ StaticPopupDialogs["CONFIRM_TRADE"] = {
 			return
 		end
 
-		_AcceptTrade()
+		AcceptTradeRaw()
 	end,
 	OnCancel = function(self)
 		CancelTradeAccept()
@@ -65,9 +63,9 @@ StaticPopupDialogs["CONFIRM_TRADE"] = {
 	whileDead = 1
 }
 
-function AcceptTrade()
+local AcceptTrade = function()
 	if IsActiveBattlefieldArena() then
-		_AcceptTrade()
+		AcceptTradeRaw()
 		return
 	end
 
@@ -157,7 +155,7 @@ function AcceptTrade()
 	if playerMoney >= triggerMoney or targetMoney >= triggerMoney or triggerItem or playerEnchantment or targetEnchantment then
 		StaticPopup_Show("CONFIRM_TRADE", string.format(TRADE_CONFIRM, UnitName("NPC"), GetMoneyString(playerMoney), playerBuffer, GetMoneyString(targetMoney), targetBuffer))
 	else
-		_AcceptTrade()
+		AcceptTradeRaw()
 	end
 end
 
@@ -171,6 +169,7 @@ function TradeFrame_OnLoad(self)
 	self:RegisterEvent("TRADE_PLAYER_ITEM_CHANGED");
 	self:RegisterEvent("TRADE_ACCEPT_UPDATE");
 	self:RegisterEvent("TRADE_POTENTIAL_BIND_ENCHANT");
+	self:RegisterEvent("TRADE_MONEY_CHANGED")
 end
 
 function TradeFrame_OnUpdate( self, elapsed )
@@ -192,9 +191,14 @@ function TradeFrame_OnEvent(self, event, ...)
 			return;
 		end
 
-		self:ResetLock()
 		TradeFrameTradeButton_Enable();
 		TradeFrame_Update();
+
+		if event == "TRADE_SHOW" and (GetPlayerTradeMoney() > 0 or GetTargetTradeMoney() > 0 or GetTradePlayerItemInfo(1)) then
+			self:SetLockTime()
+		else
+			self:ResetLock()
+		end
 	elseif ( event == "TRADE_CLOSED" ) then
 		HideUIPanel(self);
 		self:ResetLock()
@@ -216,6 +220,8 @@ function TradeFrame_OnEvent(self, event, ...)
 		else
 			StaticPopup_Hide("TRADE_POTENTIAL_BIND_ENCHANT");
 		end
+	elseif event == "TRADE_MONEY_CHANGED" then
+		self:SetLockTime()
 	end
 end
 
@@ -365,7 +371,7 @@ end
 function TradeFrame_UpdateMoney()
 	local copper = MoneyInputFrame_GetCopper(TradePlayerInputMoneyFrame);
 
-	if copper > 0 then
+	if copper > 0 or GetPlayerTradeMoney() ~= 0 then
 		TradeFrame:SetLockTime()
 	end
 

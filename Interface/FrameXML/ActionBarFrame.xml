@@ -154,6 +154,7 @@
 				ActionButton_OnLoad(self);
 			</OnLoad>
 			<OnAttributeChanged>
+				if name == "_ignore" or self:GetAttribute("_ignore") then return end
 				ActionButton_UpdateAction(self, name, value);
 			</OnAttributeChanged>
 			<OnEvent>

@@ -1,0 +1,165 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_LootJournalItems.lua"/>
+	<Script file="Custom_EncounterJournal_Loot_Data.lua"/>
+
+	<Button name="LootJournalItemButtonTemplate" virtual="true">
+		<Scripts>
+			<OnEnter function="LootJournalItemButtonTemplate_OnEnter"/>
+			<OnLeave function="LootJournalItemButtonTemplate_OnLeave"/>
+			<OnClick function="LootJournalItemButton_OnClick"/>
+		</Scripts>
+	</Button>
+
+	<Button name="LootJournalItemSetItemButtonTemplate" inherits="LootJournalItemButtonTemplate" virtual="true" hidden="true">
+		<Size x="32" y="32"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="28" y="28"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="Border">
+					<Anchors>
+						<Anchor point="RIGHT" relativeTo="$parentIcon" relativePoint="CENTER" x="20" y="1"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self:SetParentArray("ItemButtons")
+				self.Border:SetAtlas("loottab-set-itemborder-green", true)
+			</OnLoad>
+		</Scripts>
+	</Button>
+
+	<Button name="LootJournalItemSetButtonTemplate" virtual="true">
+		<Size x="744" y="41"/>
+		<HitRectInsets left="34" right="390" top="1" bottom="1"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Background">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentSetName" parentKey="SetName" inherits="GameFontNormalMed2" maxLines="1" justifyH="LEFT">
+					<Size x="320" y="0"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="38" y="-6"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentItemLevel" parentKey="ItemLevel" inherits="GameFontNormal" text="Item Level" maxLines="1" justifyH="LEFT">
+					<Size x="320" y="0"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentSetName" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+					</Anchors>
+					<Color r="0.718" g="0.561" b="0.416"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentPVPIcon" parentKey="PVPIcon" hidden="true">
+				<Size x="30" y="30"/>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="LEFT" x="0" y="2"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentIcon" parentKey="Icon" file="Interface\PVPFrame\Icons\prestige-icon-4"/>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+						GameTooltip:AddLine(LOOTJOURNAL_PVPICON_TOOLTIP_HEAD, 1, 1, 1)
+						GameTooltip:AddLine(LOOTJOURNAL_PVPICON_TOOLTIP, nil, nil, nil, 1)
+						GameTooltip:Show()
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Frame>
+			<Button name="$parentItemButton1" parentKey="ItemButton1" inherits="LootJournalItemSetItemButtonTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="397" y="0"/>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, LootJournalItemSetButtonMixin)
+				self.Background:SetAtlas("loottab-set-background", true)
+			</OnLoad>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave function="GameTooltip_Hide"/>
+		</Scripts>
+	</Button>
+
+	<Frame parent="EncounterJournal" name="$parentLootJournalItems" parentKey="LootJournalItems" hidden="true">
+		<Anchors>
+			<Anchor point="TOPLEFT" relativeTo="$parentInset" x="4" y="-51" />
+			<Anchor point="BOTTOMRIGHT" relativeTo="$parentInset" x="-4" y="0"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Background">
+					<Anchors>
+						<Anchor point="TOP" x="0" y="4"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="LootJournalItemsClassDropDown" parentKey="ClassDropDown" inherits="UIDropDownMenuTemplate" hidden="true">
+				<Scripts>
+					<OnLoad function="LootJournalItemsClassDropDown_OnLoad"/>
+				</Scripts>
+			</Frame>
+			<ScrollFrame name="$parentItemSetsFrame" parentKey="ItemSetsFrame" inherits="MinimalHybridScrollFrameTemplate" hidden="true">
+				<Size x="762" y="332"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="0" y="3"/>
+				</Anchors>
+				<Frames>
+					<Button parentKey="ClassButton" inherits="EJButtonTemplate" text="FILTER">
+						<Size x="114" y="26"/>
+						<Anchors>
+							<Anchor point="TOPRIGHT" x="-12" y="35"/>
+						</Anchors>
+						<Scripts>
+							<OnMouseDown>
+								EJButtonMixin.OnMouseDown(self, button);
+								ToggleDropDownMenu(1, nil, self:GetParent():GetParent().ClassDropDown, self, 5, 0);
+								PlaySound("igMainMenuOptionCheckBoxOn");
+							</OnMouseDown>
+						</Scripts>
+					</Button>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, LootJournalItemSetsMixin)
+						self:OnLoad()
+					</OnLoad>
+					<OnShow>
+						self:OnShow()
+					</OnShow>
+				</Scripts>
+			</ScrollFrame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, LootJournalItemsMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>

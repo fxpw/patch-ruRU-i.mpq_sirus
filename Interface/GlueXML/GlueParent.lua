@@ -1,4 +1,8 @@
-CurrentGlueMusic = "GS_LichKing";
+if IsNewYearDecorationEnabled() then
+	CurrentGlueMusic = "LoginScreenNewYear";
+else
+	CurrentGlueMusic = "SirusLoginScreenBackground";
+end
 
 GlueCreditsSoundKits = { };
 GlueCreditsSoundKits[1] = "Menu-Credits01";
@@ -226,12 +230,16 @@ function SetGlueScreen(name)
 		SetCurrentScreen(name);
 		SetCurrentGlueScreenName(name);
 		if ( name == "credits" ) then
-			StopLoginMusic();
 			PlayCreditsMusic( GlueCreditsSoundKits[CreditsFrame.creditsType] );
 			StopGlueAmbience();
 		elseif ( name ~= "movie" ) then
-			-- PlaySoundFile("Interface\\GLUES\\LoginScreenMusic.mp3")
-			-- PlayGlueMusic("Interface\\GLUES\\LoginScreenMusic.mp3");
+		--[[
+			PlayGlueMusic(CurrentGlueMusic);
+			if (name == "login") then
+				PlayGlueAmbience(GlueAmbienceTracks["DARKPORTAL"], 4.0);
+			end
+		--]]
+			ToggleGlueMusic()
 		end
 	end
 end
@@ -292,23 +300,52 @@ function GlueParent_OnLoad(self)
 	self:RegisterEvent("ACCOUNT_MESSAGES_AVAILABLE");
 	self:RegisterEvent("ACCOUNT_MESSAGES_HEADERS_LOADED");
 	self:RegisterEvent("ACCOUNT_MESSAGES_BODY_LOADED");
+	self:RegisterEvent("DISPLAY_SIZE_CHANGED");
+	-- Events for Global Mouse Down
+	self:RegisterEvent("GLOBAL_MOUSE_DOWN");
+	self:RegisterEvent("GLOBAL_MOUSE_UP");
 
-	OnDisplaySizeChanged(self)
+	OnDisplaySizeChanged(self);
+
+	-- Reset CVar
+	SetSafeCVar("originalFaction", "")
+	SetSafeCVar("factionOverride", "")
+	SetSafeCVar("showToolsUI", "return {}")
 end
 
-function GlueParent_OnEvent(event, arg1, arg2, arg3)
+local function IsGlobalMouseEventHandled(buttonID, event)
+	local frame = GetMouseFocus();
+	return frame and frame.HandlesGlobalMouseEvent and frame:HandlesGlobalMouseEvent(buttonID, event);
+end
+
+function WidgetContainsMouse(widget)
+	if not widget or not widget.GetObjectType or not widget:IsObjectType("Region") then
+		GMError(string.format("Incorrect object type '%s'", type(widget)))
+	elseif widget:IsShown() then
+		local l, r, t, b = widget:GetHitRectInsets()
+		if widget:IsMouseOver(-t, b, l, -r) then
+			return true
+		end
+	end
+	return false
+end
+
+function GlueParent_OnEvent(self, event, ...)
 	if ( event == "FRAMES_LOADED" ) then
 		-- LocalizeFrames();
 	elseif ( event == "SET_GLUE_SCREEN" ) then
-		GlueScreenExit(GetCurrentGlueScreenName(), arg1);
+		local screenName = ...
+		GlueScreenExit(GetCurrentGlueScreenName(), screenName);
 	elseif ( event == "START_GLUE_MUSIC" ) then
-		-- PlaySoundFile("Interface\\GLUES\\LoginScreenMusic.mp3")
-		-- PlayLoginMusic();
-		-- PlayGlueMusic("Interface\\GLUES\\LoginScreenMusic.mp3");
-		PlayGlueMusic(CurrentGlueMusic)
+--[[
+		PlayGlueMusic(CurrentGlueMusic);
+		PlayGlueAmbience(GlueAmbienceTracks["DARKPORTAL"], 4.0);
+--]]
+		ToggleGlueMusic()
 	elseif ( event == "DISCONNECTED_FROM_SERVER" ) then
+		local reason = ...
 		SetGlueScreen("login");
-		if ( arg1 == 4 ) then
+		if ( reason == 4 ) then
 			GlueDialog:ShowDialog("PARENTAL_CONTROL");
 		else
 			GlueDialog:ShowDialog("DISCONNECTED");
@@ -317,12 +354,13 @@ function GlueParent_OnEvent(event, arg1, arg2, arg3)
 	elseif ( event == "GET_PREFERRED_REALM_INFO" ) then
 		C_RealmList.SetPreferredInfo(1)
 	elseif ( event == "SERVER_SPLIT_NOTICE" ) then
-		if ( SERVER_SPLIT_STATE_PENDING == -1 and arg1 == 0 and arg2 == 1 ) then
+		local clientState, statePending, splitDate = ...
+		if ( SERVER_SPLIT_STATE_PENDING == -1 and clientState == 0 and statePending == 1 ) then
 			SERVER_SPLIT_SHOW_DIALOG = true;
 		end
-		SERVER_SPLIT_CLIENT_STATE = arg1;
-		SERVER_SPLIT_STATE_PENDING = arg2;
-		SERVER_SPLIT_DATE = arg3;
+		SERVER_SPLIT_CLIENT_STATE = clientState;
+		SERVER_SPLIT_STATE_PENDING = statePending;
+		SERVER_SPLIT_DATE = splitDate;
 	elseif ( event == "ACCOUNT_MESSAGES_AVAILABLE" ) then
 		ACCOUNT_MSG_HEADERS_LOADED = false;
 		ACCOUNT_MSG_BODY_LOADED = false;
@@ -337,6 +375,14 @@ function GlueParent_OnEvent(event, arg1, arg2, arg3)
 		end
 	elseif ( event == "ACCOUNT_MESSAGES_BODY_LOADED" ) then
 		ACCOUNT_MSG_BODY_LOADED = true;
+	elseif ( event == "DISPLAY_SIZE_CHANGED" ) then
+		OnDisplaySizeChanged(self);
+	elseif (event == "GLOBAL_MOUSE_DOWN" or event == "GLOBAL_MOUSE_UP") then
+		local buttonID = ...;
+		if not IsGlobalMouseEventHandled(buttonID, event) then
+			GlueDark_DropDownMenu_HandleGlobalMouseEvent(buttonID, event);
+			CharacterSelect_CloseDropdowns(buttonID, event)
+		end
 	end
 end
 
@@ -382,7 +428,7 @@ function GlueFrameFadeOut(frame, timeToFade, finishedFunction)
 end
 
 local counterScanDLL = 0
-function GlueFrameFadeUpdate(elapsed)
+function GlueFrameFadeUpdate(self, elapsed)
 	if CharacterSelect:IsShown() then
 		counterScanDLL = 2
 	end
@@ -507,7 +553,7 @@ function TriStateCheckbox_SetState(checked, checkButton)
 		checkButton:SetChecked(1);
 
 		if checkButton.__dark then
-			checkedTexture:SetAtlas("GlueDark-checkBoxMark");
+			checkedTexture:SetAtlas("GlueDark-Checkbox-Checked");
 			checkedTexture:SetAllPoints()
 			checkedTexture:SetAlpha(1)
 		else
@@ -521,7 +567,7 @@ function TriStateCheckbox_SetState(checked, checkButton)
 		checkButton:SetChecked(1);
 
 		if checkButton.__dark then
-			checkedTexture:SetAtlas("GlueDark-radioButtonChecked");
+			checkedTexture:SetAtlas("GlueDark-RadioButton-Checked");
 			checkedTexture:SetPoint("TOPLEFT", 7, -7)
 			checkedTexture:SetPoint("BOTTOMRIGHT", -7, 7)
 			checkedTexture:SetAlpha(0.8)
@@ -566,6 +612,14 @@ function GetScaledCursorPosition()
 	return x / uiScale, y / uiScale;
 end
 
+function ToggleGlueMusic()
+	if GetCVarBool("Sound_EnableGluaMusic") then
+		PlayGlueMusic(CurrentGlueMusic)
+	else
+		StopGlueMusic()
+	end
+end
+
 local modalFrames = {}
 
 function GlueParent_AddModalFrame(frame)
@@ -600,17 +654,7 @@ end
 
 GlueEasingAnimMixin = {}
 
-function GlueEasingAnimMixin:Init()
-end
-
 function GlueEasingAnimMixin:SetPosition(easing)
-end
-
-function GlueEasingAnimMixin:OnLoad()
-	self:Init()
-
-	self.playAnimation = false
-	self.elapsed = 0
 end
 
 function GlueEasingAnimMixin:IsAnimPlaying()
@@ -618,15 +662,17 @@ function GlueEasingAnimMixin:IsAnimPlaying()
 end
 
 function GlueEasingAnimMixin:IsAnimPlayingNonReverse()
-	return self.playAnimation and self.isRevers
+	return self.playAnimation and not self.isRevers
 end
 
 function GlueEasingAnimMixin:IsAnimPlayingReverse()
 	return self.playAnimation and self.isRevers
 end
 
-function GlueEasingAnimMixin:PlayAnim(isRevers, finishCallback, resetAnimation)
-	self:Show()
+function GlueEasingAnimMixin:PlayAnim(isRevers, finishCallback, resetAnimation, skipIfHidden)
+	if skipIfHidden and not self:IsShown() then
+		return
+	end
 
 	self.isRevers = isRevers
 	self.finishCallback = finishCallback
@@ -639,16 +685,17 @@ function GlueEasingAnimMixin:PlayAnim(isRevers, finishCallback, resetAnimation)
 	end
 
 	if isRevers then
-		self:SetPosition(C_inOutSine(self.elapsed, self.endPoint, self.startPoint, self.duration), self.elapsed / self.duration)
+		self:SetPosition(C_inOutSine(self.elapsed, self.endPoint or 0, self.startPoint or 1, self.duration), self.elapsed / self.duration)
 	else
-		self:SetPosition(C_inOutSine(self.elapsed, self.startPoint, self.endPoint, self.duration), self.elapsed / self.duration)
+		self:SetPosition(C_inOutSine(self.elapsed, self.startPoint or 1, self.endPoint or 0, self.duration), self.elapsed / self.duration)
 	end
 
 	self:SetScript("OnUpdate", self.OnUpdate)
+	self:Show()
 end
 
 function GlueEasingAnimMixin:Reset()
-	self.playAnimation = false
+	self.playAnimation = nil
 	self.elapsed = 0
 
 	self:SetScript("OnUpdate", nil)
@@ -660,18 +707,18 @@ function GlueEasingAnimMixin:Reset()
 	end
 end
 
-function GlueEasingAnimMixin:OnUpdate( elapsed )
+function GlueEasingAnimMixin:OnUpdate(elapsed)
 	if self.playAnimation then
-		self.elapsed = self.elapsed + elapsed
+		self.elapsed = (self.elapsed or 0) + elapsed
 
 		if self.elapsed >= self.duration then
 			self:Reset()
 			self:SetPosition()
 		else
 			if self.isRevers then
-				self:SetPosition(C_inOutSine(self.elapsed, self.endPoint, self.startPoint, self.duration), self.elapsed / self.duration)
+				self:SetPosition(C_inOutSine(self.elapsed, self.endPoint or 0, self.startPoint or 1, self.duration), self.elapsed / self.duration)
 			else
-				self:SetPosition(C_inOutSine(self.elapsed, self.startPoint, self.endPoint, self.duration), self.elapsed / self.duration)
+				self:SetPosition(C_inOutSine(self.elapsed, self.startPoint or 1, self.endPoint or 0, self.duration), self.elapsed / self.duration)
 			end
 		end
 	end
@@ -695,12 +742,12 @@ CHARACTER_CAMERA_SETTINGS.Zandalar_Alliance = CHARACTER_CAMERA_SETTINGS.Alliance
 CHARACTER_CAMERA_SETTINGS.Zandalar_DeathKnight = CHARACTER_CAMERA_SETTINGS.DeathKnight
 
 CHARACTER_MODEL_LIGHT = {
-	["Alliance"]	= {2.199000, -4.000000, -3.444000, 0.405020, 1.000000, 1.000000, 1.000000, 1.000000, 1.000000, 1.000000, 1.000000},
-	["Horde"]		= {10.000000, -9.240000, -10.000000, 0.749100, 1.000000, 0.579930, 0.568460, 0.505380, 1.000000, 0.278850, 0.273120},
-	["DeathKnight"]	= {2.287001, -4.996000, -2.301000, 0.333330, 0.565590, 0.855200, 1.000000, 1.000000, 0.419360, 0.769180, 1.000000},
-	["Vulpera"]		= {0.796001, 2.459001, -5.455000, 0.301790, 1.000000, 1.000000, 1.000000, 1.000000, 1.000000, 0.405020, 0.109680},
-	["Pandaren"]	= {3.152250, -2.238738, 1.287381, 1.000000, 0.780392, 0.780392, 0.780392, 1.000000, 1.000000, 1.000000, 1.000000},
-	["Dracthyr"]	= {3.152250, -2.238738, 1.287381, 1.000000, 0.780392, 0.780392, 0.780392, 1.000000, 1.000000, 1.000000, 1.000000},
+	["Alliance"]	= {2.199, -4.000, -3.444,		0.405, 1.000, 1.000, 1.000,		1.000, 1.000, 1.000, 1.000},
+	["Horde"]		= {10.000, -9.240, -10.000,		0.750, 1.000, 1.000, 1.000,		0.500, 1.000, 1.000, 1.000},
+	["DeathKnight"]	= {2.287, -4.996, -2.301,		0.333, 0.566, 0.855, 1.000,		1.000, 0.419, 0.769, 1.000},
+	["Vulpera"]		= {0.796, 2.459, -5.455,		0.302, 1.000, 1.000, 1.000,		1.000, 1.000, 0.405, 0.110},
+	["Pandaren"]	= {3.152, -2.239, 1.287,		1.000, 0.780, 0.780, 0.780,		1.000, 1.000, 1.000, 1.000},
+	["Dracthyr"]	= {3.152, -2.239, 1.287,		1.000, 0.780, 0.780, 0.780,		1.000, 1.000, 1.000, 1.000},
 }
 CHARACTER_MODEL_LIGHT.Pandaren_DeathKnight = CHARACTER_MODEL_LIGHT.DeathKnight
 CHARACTER_MODEL_LIGHT.Zandalar_Horde = CHARACTER_MODEL_LIGHT.Horde

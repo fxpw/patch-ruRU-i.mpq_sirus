@@ -9,7 +9,7 @@ local AURA_START_Y = 32;
 local AURA_OFFSET_Y = 3;
 local LARGE_AURA_SIZE = 21;
 local SMALL_AURA_SIZE = 17;
-local AURA_ROW_WIDTH = 102;
+local AURA_ROW_WIDTH = 122;
 local TOT_AURA_ROW_WIDTH = 101;
 local NUM_TOT_AURA_ROWS = 2;
 
@@ -86,6 +86,7 @@ function TargetFrame_OnLoad(self, unit, menuFunc)
 	self:RegisterEvent("PARTY_MEMBERS_CHANGED");
 	self:RegisterEvent("RAID_TARGET_UPDATE");
 	self:RegisterEvent("UNIT_AURA");
+	self:RegisterCustomEvent("UNIT_HEADHUNTING_WANTED")
 
 	SetParentFrameLevel(self.TextureFrame, 2)
 
@@ -100,25 +101,6 @@ function TargetFrame_OnLoad(self, unit, menuFunc)
 		end
 	end
 	SecureUnitButton_OnLoad(self, self.unit, showmenu);
-end
-
-function TargetFrame_UpdateHeadHuntingWantedFrame( self, dontSendRequest )
-	if self.HeadHuntingWantedFrame then
-		local GUID = UnitGUID(self.unit)
-
-		if UnitIsPlayer(self.unit) and GUID then
-			local wantedStorage = C_CacheInstance:Get("ASMSG_HEADHUNTING_IS_PLAYER_WANTED", {})
-			local isWanted 		= wantedStorage[tonumber(GUID)]
-
-			self.HeadHuntingWantedFrame:SetShown(isWanted)
-
-			if not dontSendRequest then
-				SendServerMessage("ACMSG_HEADHUNTING_IS_PLAYER_WANTED", GUID)
-			end
-		else
-			self.HeadHuntingWantedFrame:Hide()
-		end
-	end
 end
 
 function TargetFrame_Update (self)
@@ -252,6 +234,11 @@ function TargetFrame_OnEvent (self, event, ...)
 			SHOW_CASTABLE_DEBUFFS = GetCVar("showCastableDebuffs");
 			TargetFrame_UpdateAuras(self);
 		end
+	elseif event == "UNIT_HEADHUNTING_WANTED" then
+		local unit = ...
+		if self:IsShown() and self.unit == unit then
+			TargetFrame_UpdateHeadHuntingWantedFrame(self)
+		end
 	end
 end
 
@@ -325,8 +312,8 @@ function TargetFrame_CheckFaction (self)
 		end
 
 		local unitIsPlayer 			= UnitIsPlayer(self.unit)
-		local isRenegade   			= C_Unit.IsRenegade(self.unit)
-		local factionGroup 			= UnitFactionGroup(self.unit)
+		local isRenegade			= C_Unit.IsRenegade(self.unit)
+		local factionGroup 			= UnitFactionGroup(self.unit) or "Neutral"
 		local isBattlegroundRanked 	= currRankID ~= 0 and unitIsPlayer
 
 		self.pvpIcon:SetShown(not isRenegade and unitIsPlayer)
@@ -362,38 +349,6 @@ function TargetFrame_CheckFaction (self)
 		elseif factionGroup then
 			self.pvpIcon:SetTexture("Interface\\TargetingFrame\\UI-PVP-"..factionGroup)
 		end
-
-		--local isBattlegroundRanked
-
-		--if currRankID and currRankID ~= 0 and unitIsPlayer then
-		--	isBattlegroundRanked = true
-		--else
-		--	isBattlegroundRanked = false
-		--end
-		--
-		--self.pvpIcon:SetShown(not isRenegade and not isBattlegroundRanked and unitIsPlayer)
-		--self.TextureFrame.RankFrame:SetShown(not isRenegade and isBattlegroundRanked and unitIsPlayer)
-		--self.renegadeIcon:SetShown(isRenegade and unitIsPlayer)
-		--
-		--if factionGroup and rankBackgroundTexCoord and rankBackgroundTexCoord[factionGroup] then
-		--	self.TextureFrame.RankFrame.Background:SetTexCoord(unpack(rankBackgroundTexCoord[factionGroup]))
-		--else
-		--	self.TextureFrame.RankFrame:Hide()
-		--end
-		--
-		--if currRankIconCoord then
-		--	self.TextureFrame.RankFrame.Icons:SetTexCoord(unpack(currRankIconCoord))
-		--end
-		--
-		--if UnitIsPVPFreeForAll(self.unit) then
-		--	self.pvpIcon:SetTexture("Interface\\TargetingFrame\\UI-PVP-FFA")
-		--
-		--	if rankBackgroundTexCoord then
-		--		self.TextureFrame.RankFrame.Background:SetTexCoord(unpack(rankBackgroundTexCoord["Neutral"]))
-		--	end
-		--elseif factionGroup then
-		--	self.pvpIcon:SetTexture("Interface\\TargetingFrame\\UI-PVP-"..factionGroup)
-		--end
 	end
 end
 
@@ -409,15 +364,15 @@ function TargetFrame_CheckClassification(self, forceNormalTexture)
 
 	if self.threatIndicator then
 		if self.haveElite then
-			self.threatIndicator:SetTexCoord(0, 0.9453125, 0.181640625, 0.400390625)
-			self.threatIndicator:SetWidth(242)
-			self.threatIndicator:SetHeight(112)
-			self.threatIndicator:SetPoint("TOPLEFT", self, "TOPLEFT", -22, 9)
+			self.threatIndicator:SetTexCoord(0, 0.9453125, 0.181640625, 0.400390625);
+			self.threatIndicator:SetWidth(242);
+			self.threatIndicator:SetHeight(112);
+			self.threatIndicator:SetPoint("TOPLEFT", self, "TOPLEFT", -22, 9);
 		else
-			self.threatIndicator:SetTexCoord(0, 0.9453125, 0, 0.181640625)
-			self.threatIndicator:SetWidth(242)
-			self.threatIndicator:SetHeight(93)
-			self.threatIndicator:SetPoint("TOPLEFT", self, "TOPLEFT", -24, 0)
+			self.threatIndicator:SetTexCoord(0, 0.9453125, 0, 0.181640625);
+			self.threatIndicator:SetWidth(242);
+			self.threatIndicator:SetHeight(93);
+			self.threatIndicator:SetPoint("TOPLEFT", self, "TOPLEFT", -24, 0);
 		end
 	end
 end
@@ -456,14 +411,14 @@ local largeBuffList = {};
 local largeDebuffList = {};
 
 function TargetFrame_UpdateAuras(self)
-	local name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, _, spellID;
+	local name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellID;
 	local numBuffs = 0;
 	local playerIsTarget = UnitIsUnit(PlayerFrame.unit, self.unit);
 	local selfName = self:GetName();
 	local powerBarCounter = 0
 
 	for i = 1, MAX_TARGET_BUFFS do
-		name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, _, spellID = UnitBuff(self.unit, i);
+		name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellID = UnitBuff(self.unit, i);
 
 		if spellID == 306455 then -- Jaina bar counter
 			powerBarCounter = count
@@ -1114,6 +1069,7 @@ function TargetFrame_UpdateBuffsOnTop()
 		TargetFrame.buffsOnTop = false;
 	end
 	TargetFrame_UpdateAuras(TargetFrame);
+	UIParent_UpdateTopFramePositions()
 end
 
 -- *********************************************************************************
@@ -1264,33 +1220,9 @@ function FocusFrame_UpdateAuras(self) -- Deprecated
 	TargetFrame_UpdateAuras(self);
 end
 
-enum:E_HEADHUNTING_PLAYER_IS_WANTED {
-	"GUID",
-	"ISWANTED"
-}
-
-HeadHuntingWantedFrameMixin = {}
-
-function HeadHuntingWantedFrameMixin:OnLoad()
-	self:RegisterEventListener()
-
-	self.Background:SetAtlas("HeadHunting-Target-Wanted-Background", true)
-end
-
-function HeadHuntingWantedFrameMixin:ASMSG_HEADHUNTING_IS_PLAYER_WANTED( msg )
-	local parent 			= self:GetParent()
-	local wantedStorage 	= C_CacheInstance:Get("ASMSG_HEADHUNTING_IS_PLAYER_WANTED", {})
-	local messageStorage 	= C_Split(msg, ",")
-	local GUID 				= tonumber(messageStorage[E_HEADHUNTING_PLAYER_IS_WANTED.GUID])
-	local isWanted 			= messageStorage[E_HEADHUNTING_PLAYER_IS_WANTED.ISWANTED] and tonumber(messageStorage[E_HEADHUNTING_PLAYER_IS_WANTED.ISWANTED])
-
-	if not isWanted then
-		return
-	end
-
-	wantedStorage[GUID] = isWanted == 1
-
-	if parent and parent:IsShown() then
-		TargetFrame_UpdateHeadHuntingWantedFrame(parent, true)
+function TargetFrame_UpdateHeadHuntingWantedFrame(self)
+	if self.HeadHuntingWantedFrame then
+		local isWanted = C_Unit.IsHeadHuntingWanted(self.unit)
+		self.HeadHuntingWantedFrame:SetShown(isWanted)
 	end
 end

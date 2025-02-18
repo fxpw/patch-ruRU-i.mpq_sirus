@@ -1,9 +1,3 @@
---	Filename:	Sirus_GlyphUI.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 GLYPHTYPE_MAJOR = 1;
 GLYPHTYPE_MINOR = 2;
 
@@ -92,7 +86,7 @@ function GlyphFrameGlyph_UpdateSlot (self)
 	if not glyphType then
 		return;
 	end
-	
+
 	GlyphFrameGlyph_SetGlyphType(self, glyphType);
 
 	self.elapsed = 0;
@@ -140,15 +134,15 @@ function GlyphFrameGlyph_SetGlyphType (glyph, glyphType)
 
 	if info then
 		glyph.glyphType = glyphType
-		
+
 		glyph.ring:SetWidth(info.ring.size)
 		glyph.ring:SetHeight(info.ring.size)
 		glyph.ring:SetTexCoord(info.ring.left, info.ring.right, info.ring.top, info.ring.bottom)
-		
+
 		glyph.highlight:SetWidth(info.highlight.size)
 		glyph.highlight:SetHeight(info.highlight.size)
 		glyph.highlight:SetTexCoord(info.highlight.left, info.highlight.right, info.highlight.top, info.highlight.bottom)
-		
+
 		glyph.glyph:SetWidth(info.ring.size - 20)
 		glyph.glyph:SetHeight(info.ring.size - 20)
 		glyph.glyph:SetAlpha(0.75)
@@ -161,10 +155,10 @@ end
 -- 	local GLYPHFRAMEGLYPH_HOLD = 4;
 
 -- 	local hasGlyph = self.glyph:IsShown();
-	
+
 -- 	if ( hasGlyph or self.elapsed > 0 ) then
 -- 		self.elapsed = self.elapsed + elapsed;
-		
+
 -- 		elapsed = self.elapsed;
 -- 		if ( elapsed >= GLYPHFRAMEGLYPH_FINISHED ) then
 -- 			-- self.setting:SetAlpha(.6);
@@ -179,35 +173,35 @@ end
 -- 	-- else
 -- 		-- self.setting:SetAlpha(.6);
 -- 	end
-	
-	
+
+
 -- 	local TINT_START, TINT_HOLD, TINT_FINISHED = .6, .8, 1.6;
-	
-	
+
+
 -- 	local id = self:GetID();
 -- 	if ( not hasGlyph and GlyphMatchesSocket(id) ) then -- self.background:IsShown()
 -- 		self.tintElapsed = self.tintElapsed + elapsed;
-		
+
 -- 		-- self.background:SetTexCoord(GLYPH_SLOTS[id].left, GLYPH_SLOTS[id].right, GLYPH_SLOTS[id].top, GLYPH_SLOTS[id].bottom);
-		
+
 -- 		local highlight = false;
 -- 		if ( not MouseIsOver(self) ) then
 -- 			self.highlight:Show();
 -- 			highlight = true;
 -- 		end
-		
+
 -- 		local alpha;
 -- 		elapsed = self.tintElapsed;
 -- 		if ( elapsed >= TINT_FINISHED ) then
 -- 			alpha = 1;
-			
+
 -- 			self.tintElapsed = 0;
 -- 		elseif ( elapsed <= TINT_START ) then
 -- 			alpha = 1 - (.6 * elapsed/TINT_START);
 -- 		elseif ( elapsed >= TINT_HOLD ) then
 -- 			alpha = .4 + (.6 * (elapsed - TINT_HOLD) / (TINT_FINISHED - TINT_HOLD));
 -- 		end
-		
+
 -- 		if ( alpha ) then
 -- 			-- self.background:SetAlpha(alpha);
 -- 			if ( highlight ) then
@@ -220,7 +214,7 @@ end
 -- 		-- self.background:SetTexCoord(GLYPH_SLOTS[0].left, GLYPH_SLOTS[0].right, GLYPH_SLOTS[0].top, GLYPH_SLOTS[0].bottom);
 -- 		-- self.background:SetAlpha(1);
 -- 	end
-	
+
 -- 	if ( self.hasCursor and SpellIsTargeting() ) then
 -- 		if ( GlyphMatchesSocket(self:GetID()) ) then -- self.background:IsShown()
 -- 			SetCursor("CAST_CURSOR");
@@ -253,7 +247,7 @@ function GlyphFrameGlyph_OnClick (self, button)
 	local id = self:GetID();
 	local talentGroup = PlayerTalentFrame and PlayerTalentFrame.talentGroup;
 	local activeEditBox = ChatEdit_GetActiveWindow()
-	
+
 	if ( IsModifiedClick("CHATLINK") and activeEditBox ) then
 		local link = GetGlyphLink(id, talentGroup);
 		if ( link ) then
@@ -433,6 +427,7 @@ function GlyphFrame_Update ()
 	end
 
 	local talentGroupButton = PlayerTalentFrame.specTabs[C_Talent.GetSelectedTalentGroup()]
+	local specIcon
 
 	if talentGroupButton and talentGroupButton.primaryTabIndex and talentGroupButton.tabInfo[talentGroupButton.primaryTabIndex] then
 		specIcon = talentGroupButton.tabInfo[talentGroupButton.primaryTabIndex].icon

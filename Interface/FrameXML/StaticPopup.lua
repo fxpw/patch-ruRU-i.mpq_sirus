@@ -820,16 +820,12 @@ StaticPopupDialogs["SIRUS_RENAME_GUILD"] = {
 	OnAccept = function(self)
 		local text = self.editBox:GetText();
 		self:Hide()
-
-		local popup = StaticPopup_Show("SIRUS_RENAME_GUILD_CONFIRM")
-		popup.data = text
+		StaticPopup_Show("SIRUS_RENAME_GUILD_CONFIRM", nil, nil, text)
 	end,
 	EditBoxOnEnterPressed = function(self)
 		local text = self:GetParent().editBox:GetText();
 		self:GetParent():Hide();
-
-		local popup = StaticPopup_Show("SIRUS_RENAME_GUILD_CONFIRM")
-		popup.data = text
+		StaticPopup_Show("SIRUS_RENAME_GUILD_CONFIRM", nil, nil, text)
 	end,
 	OnCancel = function(self)
 		if not GuildMicroButtonHelpBox:IsShown() and not GuildFrame:IsShown() then
@@ -854,7 +850,7 @@ StaticPopupDialogs["SIRUS_RENAME_GUILD_CONFIRM"] = {
 	button1 = YES,
 	button2 = NO,
 	OnAccept = function(self, data)
-		SendServerMessage("ACMSG_GUILD_RENAME_REQUEST", data)
+		SubmitGuildRename(data)
 	end,
 	OnCancel = function(self)
 		if not GuildMicroButtonHelpBox:IsShown() and not GuildFrame:IsShown() then
@@ -1925,7 +1921,7 @@ StaticPopupDialogs["ABANDON_STABLE_PET"] = {
 	button1 = OKAY,
 	button2 = CANCEL,
 	OnAccept = function(self)
-		SendServerMessage("CMSGM_STABLED_PET_ABANDON", self.data)
+		SendServerMessage("ACMSG_STABLED_PET_ABANDON", self.data)
 	end,
 	OnUpdate = function(self, elapsed)
 		if ( not IsAtStableMaster() ) then
@@ -3213,7 +3209,7 @@ StaticPopupDialogs["GUILD_IMPEACH"] = {
 }
 
 StaticPopupDialogs["CONFIRM_LEAVE_BATTLEFIELDS"] = {
-	text = CONFIRM_LEAVE_BATTLEFIELD,
+	text = "%s",
 	button1 = YES,
 	button2 = CANCEL,
 	OnAccept = function(self)
@@ -3347,23 +3343,6 @@ StaticPopupDialogs["ARENA_REPLAY_INGAMELINK_POPUP"] = {
 	hideOnEscape = 1,
 };
 
-StaticPopupDialogs["STORE_REFER_URL_DIALOG"] = {
-	text = STORE_REFER_URL_DIALOG,
-	button1 = OKAY,
-	hasEditBox = 1,
-	hasWideEditBox = 1,
-	OnShow = function(self)
-		self.wideEditBox:SetText("https://welcome.sirus.su/#/page-9?ref="..GetAccountID())
-		self.wideEditBox:HighlightText()
-	end,
-	EditBoxOnEnterPressed = StaticPopup_StandardEditBoxOnEscapePressed,
-	EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
-	timeout = 0,
-	whileDead = 1,
-	interruptCinematic = 1,
-	hideOnEscape = 1,
-};
-
 StaticPopupDialogs["DIALOG_SLASH_REMOVEFRIEND"] = {
 	text = DIALOG_SLASH_REMOVEFRIEND,
 	button1 = YES,
@@ -3452,7 +3431,7 @@ StaticPopupDialogs["ARENA_REPLAY_CONFIRMATION_WATCH"] = {
 				local r, g, b = GetClassColor(playerLeft.classFileString)
 				leftPlayerFrame.PlayerName:SetText(playerLeft.name)
 				leftPlayerFrame.PlayerName:SetTextColor(r, g, b)
-				leftPlayerFrame.ClassIcon.Icon:SetTexture("Interface\\Custom_LoginScreen\\ClassIcon\\CLASS_ICON_"..playerLeft.classFileString)
+				leftPlayerFrame.ClassIcon.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..playerLeft.classFileString)
 				leftPlayerFrame.ClassIcon.className = playerLeft.className
 			end
 
@@ -3460,7 +3439,7 @@ StaticPopupDialogs["ARENA_REPLAY_CONFIRMATION_WATCH"] = {
 				local r, g, b = GetClassColor(playerRight.classFileString)
 				rightPlayerFrame.PlayerName:SetText(playerRight.name)
 				rightPlayerFrame.PlayerName:SetTextColor(r, g, b)
-				rightPlayerFrame.ClassIcon.Icon:SetTexture("Interface\\Custom_LoginScreen\\ClassIcon\\CLASS_ICON_"..playerRight.classFileString)
+				rightPlayerFrame.ClassIcon.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..playerRight.classFileString)
 				rightPlayerFrame.ClassIcon.className = playerRight.className
 			end
 		end
@@ -3590,18 +3569,45 @@ StaticPopupDialogs["CONFIRM_FORCE_CUSTOMIZATION"] = {
 	text = CONFIRM_FORCE_CUSTOMIZATION,
 	button1 = YES,
 	button2 = NO,
-	OnShow = function(self)
-		local _, name = C_ZodiacSign.GetZodiacSignInfo(self.data)
-		self.CheckButton:SetFormattedText(StaticPopupDialogs[self.which].checkButtonText, name)
-	end,
 	OnAccept = function(self)
-		SendServerMessage("ACMSG_ALLIED_RACE_STANDART", self.data, self.CheckButton:GetChecked() == 1 and 1 or 0)
+		local index = self.RadioButtonHolder:GetSelectedIndex()
+		assert(index, "No options was selected")
+		SendServerMessage("ACMSG_ALLIED_RACE_STANDART", string.join(" ", self.data, index))
+	end,
+	OnShow = function(self)
+		self.button1:Disable();
+		self.button2:Enable();
+		self.editBox:SetFocus();
+		self.RadioButtonHolder:SetSelectedIndex(1)
+	end,
+	OnHide = function(self)
+		ChatEdit_FocusActiveWindow();
+		self.editBox:SetText("");
+	end,
+	EditBoxOnEnterPressed = function(self)
+		local dialog = self:GetParent()
+		if dialog.button1:IsEnabled() == 1 then
+			StaticPopupDialogs[dialog.which].OnAccept(dialog)
+			dialog:Hide()
+		end
+	end,
+	EditBoxOnTextChanged = function (self)
+		StaticPopup_StandardConfirmationTextHandler(self, CONFIRM_TEXT_AGREE);
+	end,
+	EditBoxOnEscapePressed = function(self)
+		StaticPopup_StandardEditBoxOnEscapePressed(self)
+		ClearCursor()
 	end,
 	hideOnEscape = 1,
 	timeout = 0,
 	exclusive = 1,
 	whileDead = 1,
-	checkButtonText = CONFIRM_FORCE_CUSTOMIZATION_ZODIAC,
+	hasEditBox = 1,
+	radioButtonOptions = {
+		CONFIRM_FORCE_CUSTOMIZATION_OPTION1,
+		CONFIRM_FORCE_CUSTOMIZATION_OPTION2,
+		CONFIRM_FORCE_CUSTOMIZATION_OPTION3,
+	},
 	zodiacSpells = true,
 };
 
@@ -3622,7 +3628,9 @@ StaticPopupDialogs["ENABLE_X1_RATE"] = {
 	text = ENABLE_X1_RATE_TEXT,
 	button1 = YES,
 	button2 = NO,
-	OnShow = function(self) self.HelpBox.Text:SetText(ENABLE_X1_RATE_HELPBOX) end,
+	OnShow = function(self)
+		self.HelpBox.Text:SetText(ENABLE_X1_RATE_HELPBOX)
+	end,
 	OnAccept = function(self)
 		C_Service.RequestRateX1()
 	end,
@@ -3826,21 +3834,6 @@ StaticPopupDialogs["QUEST_ACCEPTED"] = {
 	whileDead = 1,
 };
 
-StaticPopupDialogs["SHOUT_CHAT_MESSAGE"] = {
-	text = SHOUT_MESSAGE_CONFIRMATION,
-	button1 = YES,
-	button2 = CANCEL,
-	OnAccept = function(self)
-		SendServerMessage("ACMSG_WORLD_YELL", string.trim(self.data.text))
-		self.data.popup:Hide()
-	end,
-	OnHide = function(self)
-		self.data.popup:Unblock()
-	end,
-	timeout = 0,
-	whileDead = 1,
-};
-
 StaticPopupDialogs["TOYBOX_LOAD_ERROR_DIALOG"] = {
 	text = TOYBOX_LOAD_ERROR,
 	button1 = OKAY,
@@ -3923,6 +3916,17 @@ StaticPopupDialogs["CONFIRM_ROULETTE_PLAY"] = {
 	hideOnEscape = 1,
 };
 
+StaticPopupDialogs["BARBER_SHOP_MODE_CHANGE_WARNING"] = {
+	text = BARBER_SHOP_MODE_CHANGE_WARNING,
+	button1 = OKAY,
+	button2 = CANCEL,
+	OnAccept = function(self)
+		C_BarberShop.SetViewingAlteredForm(self.data, true)
+	end,
+	timeout = 0,
+	hideOnEscape = 1,
+}
+
 function EventHandler:ASMSG_ALLIED_RACE_STANDART(raceID)
 	raceID = tonumber(raceID)
 	local race = E_CHARACTER_RACES[raceID]
@@ -4001,7 +4005,7 @@ function StaticPopup_Resize(dialog, which, hiddenButton)
 		if info.hasMultiLine then
 			local wideEditBox = _G[dialog:GetName().."WideEditBox"];
 			local multiLineEditBox = wideEditBox:IsShown() and wideEditBox or editBox;
-			editBoxHeight = 8 + multiLineEditBox:GetHeight() or 16;
+			editBoxHeight = 8 + (multiLineEditBox:GetHeight() or 16);
 		end
 		height = height + 8 + editBoxHeight;
 	elseif ( info.hasMoneyFrame ) then
@@ -4028,6 +4032,10 @@ function StaticPopup_Resize(dialog, which, hiddenButton)
 
 	if dialog.equipmentSetCount then
 		height = height + max(44, (44 * Round(dialog.equipmentSetCount / 2))) + 12
+	end
+
+	if type(info.radioButtonOptions) == "table" and #info.radioButtonOptions > 0 then
+		height = height + dialog.RadioButtonHolder:GetHeight() + 6
 	end
 
 	if info.checkButtonText then
@@ -4312,10 +4320,40 @@ function StaticPopup_Show(which, text_arg1, text_arg2, data)
 		dialog.ItemFrame:Hide();
 	end
 
+	if type(info.radioButtonOptions) == "table" and #info.radioButtonOptions > 0 then
+		local offset = 0
+		if info.hasEditBox then
+			if info.hasWideEditBox then
+				offset = offset + wideEditBox:GetHeight() + 5
+			else
+				offset = offset + editBox:GetHeight() + 5
+			end
+		end
+		dialog.RadioButtonHolder:SetOptions(info.radioButtonOptions)
+		dialog.RadioButtonHolder:SetPoint("BOTTOM", 0, offset + 44)
+		dialog.RadioButtonHolder:Show()
+	else
+		dialog.RadioButtonHolder:Clear()
+	end
+
 	if info.checkButtonText then
 		dialog.CheckButton.hint = info.checkButtonHint
 		dialog.CheckButton.ButtonText:SetText(info.checkButtonText)
 		dialog.CheckButton:SetChecked(info.checkButtonChecked)
+
+		local offset = 0
+		if info.hasEditBox then
+			if info.hasWideEditBox then
+				offset = offset + wideEditBox:GetHeight() + 5
+			else
+				offset = offset + editBox:GetHeight() + 5
+			end
+		end
+		if dialog.RadioButtonHolder:IsShown() then
+			offset = offset + dialog.RadioButtonHolder:GetHeight() + 5
+		end
+
+		dialog.CheckButton:SetOffset(offset + 43)
 		dialog.CheckButton:Show()
 	else
 		dialog.CheckButton:Hide()
@@ -4885,12 +4923,94 @@ function StaticPopupCheckButtonMixin:SetFormattedText(...)
 	self:SetText(string.format(...))
 end
 
+function StaticPopupCheckButtonMixin:SetOffset(y)
+	self.offsetY = y
+end
+
 function StaticPopupCheckButtonMixin:UpdateRectAndPosition()
 	self.ButtonText:SetWidth(self:GetParent():GetWidth() - 70)
 
 	local textWidth = self.ButtonText:GetStringWidth()
 	self:SetHitRectInsets(0, -textWidth, 0, 0)
-	self:SetPoint("BOTTOM", -(textWidth / 2), 43)
+	self:SetPoint("BOTTOM", -(textWidth / 2), self.offsetY or 43)
+end
+
+StaticPopupRadioButtonHolderMixin = {}
+
+function StaticPopupRadioButtonHolderMixin:OnLoad()
+	local onChecked = function(this, button, userInput)
+		if userInput then
+			self:SetSelectedIndex(this:GetID())
+		end
+	end
+	self.buttonPool = CreateFramePool("CheckButton", self, "PKBT_RadioButtonTemplate", function(pool, this)
+		this:SetChecked(false)
+	end, nil, function(this)
+		this.OnChecked = onChecked
+		this:SetSize(18, 18)
+		this.ButtonText:SetFontObject("PKBT_Font_13")
+	end)
+	self.paddingY = 3
+end
+
+function StaticPopupRadioButtonHolderMixin:OnShow()
+	self:UpdateRect()
+end
+
+function StaticPopupRadioButtonHolderMixin:Clear()
+	self.buttonPool:ReleaseAll()
+	self:Hide()
+end
+
+function StaticPopupRadioButtonHolderMixin:UpdateRect()
+	local numActive = self.buttonPool:GetNumActive()
+	if numActive > 0 then
+		local width = 0
+
+		for radioButton in self.buttonPool:EnumerateActive() do
+			width = math.max(width, radioButton.ButtonText:GetStringWidth())
+		end
+
+		local buttonWidth, buttonHeight = self.buttonPool:GetNextActive():GetSize()
+		self:SetSize(width + 5 + buttonWidth, buttonHeight * numActive + self.paddingY * (numActive - 1))
+	else
+		self:SetSize(1, 1)
+		self:Hide()
+	end
+end
+
+function StaticPopupRadioButtonHolderMixin:SetOptions(options)
+	self.buttonPool:ReleaseAll()
+
+	local lastButton
+	for index, optionText in ipairs(options) do
+		local button = self.buttonPool:Acquire()
+		button:SetID(index)
+		button.ButtonText:SetText(optionText)
+		if not lastButton then
+			button:SetPoint("TOPLEFT", 0, 0)
+		else
+			button:SetPoint("TOPLEFT", lastButton, "BOTTOMLEFT", 0, -self.paddingY)
+		end
+		button:Show()
+		lastButton = button
+	end
+
+	self:UpdateRect()
+end
+
+function StaticPopupRadioButtonHolderMixin:SetSelectedIndex(index)
+	for radioButton in self.buttonPool:EnumerateActive() do
+		radioButton:SetChecked(radioButton:GetID() == index)
+	end
+end
+
+function StaticPopupRadioButtonHolderMixin:GetSelectedIndex()
+	for radioButton in self.buttonPool:EnumerateActive() do
+		if radioButton:GetChecked() == 1 then
+			return radioButton:GetID()
+		end
+	end
 end
 
 StaticPopupBootPlayerPVPStatsMixin = {}
@@ -5162,7 +5282,7 @@ end
 StatusPopupZodiacSpellButtonMixin = {}
 
 function StatusPopupZodiacSpellButtonMixin:OnLoad()
-	self.Border:SetAtlas("PKBT-ItemBorder2")
+	self.Border:SetAtlas("PKBT-ItemBorder-Default")
 end
 
 function StatusPopupZodiacSpellButtonMixin:OnEnter()

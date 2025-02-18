@@ -362,49 +362,53 @@ function BlizzardOptionsPanel_OnLoad (frame, okay, cancel, default, refresh)
 	end
 end
 
+function BlizzardOptionsPanel_LoadControl(control, entry)
+	if ( entry.text ) then
+		control.tooltipText = (_G["OPTION_TOOLTIP_" .. gsub(entry.text, "_TEXT$", "")] or entry.tooltip);
+		local text = _G[control:GetName() .. "Text"];
+		if ( text ) then
+			text:SetText(_G[entry.text] or entry.text);
+		end
+	end
+	control.tooltipRequirement = entry.tooltipRequirement;
+
+	control.gameRestart = entry.gameRestart;
+	control.logout = entry.logout;
+
+	control.event = entry.event or entry.text;
+
+	local minValue, maxValue;
+	if ( control.cvar ) then
+		if ( control.type == CONTROLTYPE_CHECKBOX ) then
+			control.defaultValue = control.defaultValue or GetCVarDefault(control.cvar);
+		else
+			control.defaultValue = BlizzardOptionsPanel_GetCVarDefaultSafe(control.cvar);
+			minValue = entry.minValue;
+			maxValue = entry.maxValue;
+		end
+	else
+		control.defaultValue = control.defaultValue or entry.default;
+		minValue = entry.minValue;
+		maxValue = entry.maxValue;
+	end
+
+	if ( control.type == CONTROLTYPE_SLIDER ) then
+		BlizzardOptionsPanel_Slider_Enable(control);
+		control:SetMinMaxValues(minValue, maxValue);
+		control:SetValueStep(entry.valueStep);
+	end
+
+	securecall(BlizzardOptionsPanel_SetupControl, control);
+end
+
 function BlizzardOptionsPanel_OnEvent (frame, event, ...)
 	if ( event == "PLAYER_ENTERING_WORLD" ) then
 		if ( frame.options and frame.controls ) then
 			local entry;
-			local minValue, maxValue;
 			for i, control in SecureNext, frame.controls do
 				entry = frame.options[(control.cvar or control.label)];
 				if ( entry ) then
-					if ( entry.text ) then
-						control.tooltipText = (_G["OPTION_TOOLTIP_" .. gsub(entry.text, "_TEXT$", "")] or entry.tooltip);
-						local text = _G[control:GetName() .. "Text"];
-						if ( text ) then
-							text:SetText(_G[entry.text] or entry.text);
-						end
-					end
-					control.tooltipRequirement = entry.tooltipRequirement;
-
-					control.gameRestart = entry.gameRestart;
-					control.logout = entry.logout;
-
-					control.event = entry.event or entry.text;
-
-					if ( control.cvar ) then
-						if ( control.type == CONTROLTYPE_CHECKBOX ) then
-							control.defaultValue = control.defaultValue or GetCVarDefault(control.cvar);
-						else
-							control.defaultValue = BlizzardOptionsPanel_GetCVarDefaultSafe(control.cvar);
-							minValue = entry.minValue;
-							maxValue = entry.maxValue;
-						end
-					else
-						control.defaultValue = control.defaultValue or entry.default;
-						minValue = entry.minValue;
-						maxValue = entry.maxValue;
-					end
-
-					if ( control.type == CONTROLTYPE_SLIDER ) then
-						BlizzardOptionsPanel_Slider_Enable(control);
-						control:SetMinMaxValues(minValue, maxValue);
-						control:SetValueStep(entry.valueStep);
-					end
-
-					securecall(BlizzardOptionsPanel_SetupControl, control);
+					BlizzardOptionsPanel_LoadControl(control, entry)
 				end
 			end
 		end

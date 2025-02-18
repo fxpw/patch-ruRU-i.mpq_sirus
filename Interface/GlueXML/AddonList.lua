@@ -265,6 +265,7 @@ function AddonList_HasOutOfDate()
 	local hasOutOfDate = false;
 	for i=1, GetNumAddOns() do
 		local name, title, notes, url, loadable, reason = GetAddOnInfo(i);
+		local enabled --= GetAddOnEnableState(nil, i)
 		if ( enabled and not loadable and reason == "INTERFACE_VERSION" ) then
 			hasOutOfDate = true;
 			break;
@@ -286,6 +287,7 @@ end
 function AddonList_DisableOutOfDate()
 	for i=1, GetNumAddOns() do
 		local name, title, notes, url, loadable, reason = GetAddOnInfo(i);
+		local enabled --= GetAddOnEnableState(nil, i)
 		if ( enabled and not loadable and reason == "INTERFACE_VERSION" ) then
 			DisableAddOn(i);
 		end

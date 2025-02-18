@@ -193,8 +193,8 @@ end
 
 function BlizzardOptionsPanel_SetCVarSafe (cvar, value, event)
 	local oldValue = GetCVar(cvar);
-	oldValueNum = tonumber(oldValue);
-	valueNum = tonumber(value);
+	local oldValueNum = tonumber(oldValue);
+	local valueNum = tonumber(value);
 	if ( oldValueNum or valueNum ) then
 		if ( oldValueNum ~= valueNum ) then
 			SetCVar(cvar, value, event);

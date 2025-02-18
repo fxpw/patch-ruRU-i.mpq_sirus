@@ -219,9 +219,9 @@ function VideoOptionsResolutionPanelResolutionDropDown_LoadResolutions(...)
 		xIndex = strfind(resolution, "x");
 		width = strsub(resolution, 1, xIndex-1);
 		height = strsub(resolution, xIndex+1, strlen(resolution));
-		aspectRation = width / height
-		if commonAspectRatios[aspectRation] then
-			resolution = resolution.." "..commonAspectRatios[aspectRation];
+		aspectRatio = width / height
+		if commonAspectRatios[aspectRatio] then
+			resolution = resolution.." "..commonAspectRatios[aspectRatio];
 		elseif ( width/height > 4/3 ) then
 			resolution = resolution.." "..WIDESCREEN_TAG;
 		end
@@ -383,7 +383,7 @@ EffectsPanelOptions = {
 	farclip = { text = "FARCLIP", minValue = OPTIONS_FARCLIP_MIN, maxValue = OPTIONS_FARCLIP_MAX, valueStep = (OPTIONS_FARCLIP_MAX - OPTIONS_FARCLIP_MIN)/10},
 	TerrainMip = { text = "TERRAIN_MIP", minValue = 0, maxValue = 1, valueStep = 1, tooltip = OPTION_TOOLTIP_TERRAIN_TEXTURE, },
 	particleDensity = { text = "PARTICLE_DENSITY", minValue = 0.1, maxValue = 1.0, valueStep = 0.1},
-	environmentDetail = { text = "ENVIRONMENT_DETAIL", minValue = 0.5, maxValue = 1.5, valueStep = .25},
+	environmentDetail = { text = "ENVIRONMENT_DETAIL", minValue = 0.5, maxValue = 10, valueStep = .25},
 	groundEffectDensity = { text = "GROUND_DENSITY", minValue = 16, maxValue = 64, valueStep = 8},
 	groundEffectDist = { text = "GROUND_RADIUS", minValue = 70, maxValue = 140, valueStep = 10 },
 	BaseMip = { text = "TEXTURE_DETAIL", minValue = 0, maxValue = 1, valueStep = 1, tooltipPoint = "BOTTOMRIGHT", tooltipOwnerPoint = "TOPLEFT", },

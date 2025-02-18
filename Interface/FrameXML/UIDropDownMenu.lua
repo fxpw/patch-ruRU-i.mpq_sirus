@@ -214,7 +214,11 @@ function UIDropDownMenuButton_OnEnter(self)
 	end
 	self.Highlight:Show();
 	UIDropDownMenu_StopCounting(self:GetParent());
-	if ( self.tooltipTitle and not self.noTooltipWhileEnabled ) then
+	if ( self.tooltipHyperlink ) then
+		GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
+		GameTooltip:SetHyperlink(self.tooltipHyperlink)
+		GameTooltip:Show();
+	elseif ( self.tooltipTitle and not self.noTooltipWhileEnabled ) then
 		if ( self.tooltipOnButton ) then
 			local tooltip = GameTooltip
 			tooltip:SetOwner(self, "ANCHOR_RIGHT");
@@ -503,6 +507,7 @@ function UIDropDownMenu_AddButton(info, level)
 	button.tooltipText = info.tooltipText;
 	button.tooltipInstruction = info.tooltipInstruction;
 	button.tooltipWarning = info.tooltipWarning;
+	button.tooltipHyperlink = info.tooltipHyperlink
 	button.arg1 = info.arg1;
 	button.arg2 = info.arg2;
 	button.hasArrow = info.hasArrow;
@@ -1215,6 +1220,25 @@ function CloseDropDownMenus(level)
 	end
 	for i=level, UIDROPDOWNMENU_MAXLEVELS do
 		_G["DropDownList"..i]:Hide();
+	end
+end
+
+local function UIDropDownMenu_ContainsMouse()
+	for i = 1, UIDROPDOWNMENU_MAXLEVELS do
+		local dropdown = _G["DropDownList"..i];
+		if dropdown:IsShown() and dropdown:IsMouseOver() then
+			return true;
+		end
+	end
+
+	return false;
+end
+
+function UIDropDownMenu_HandleGlobalMouseEvent(button, event)
+	if event == "GLOBAL_MOUSE_DOWN" and (button == "LeftButton" or button == "RightButton") then
+		if UIDROPDOWNMENU_OPEN_MENU and not UIDropDownMenu_ContainsMouse() then
+			CloseDropDownMenus();
+		end
 	end
 end
 

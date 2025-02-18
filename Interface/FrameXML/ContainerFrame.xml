@@ -29,43 +29,37 @@
 			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate"/>
 			<Frame name="$parentHighlightFrame" parentKey="HighlightFrame" hidden="true" setAllPoints="true">
 				<Layers>
-					<Layer level="ARTWORK">
-						<Texture parentKey="NewItemTexture" alpha="1" alphaMode="ADD" file="Interface/ContainerFrame/Bags" hidden="true">
-							<Size x="39" y="39"/>
+					<Layer level="OVERLAY">
+						<Texture parentKey="NewItemTexture" alpha="0" alphaMode="ADD">
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+							<Animations>
+								<AnimationGroup parentKey="Anim" looping="REPEAT">
+									<Alpha change="1" duration="0" order="1"/>
+									<Alpha change="-0.8" duration="0.5" order="2"/>
+									<Alpha change="0.8" duration="0.5" order="3"/>
+								</AnimationGroup>
+							</Animations>
+						</Texture>
+						<Texture parentKey="flash" hidden="false" alpha="0" alphaMode="ADD">
 							<Anchors>
 								<Anchor point="CENTER"/>
 							</Anchors>
 							<Animations>
 								<AnimationGroup parentKey="Anim">
-									<Alpha change="-1" duration="0.7" order="1"/>
-									<Alpha change="1" duration="0.7" order="2"/>
-									<Alpha change="-1" duration="0.7" order="3"/>
-									<Alpha change="1" duration="0.7" order="4"/>
-									<Scripts>
-										<OnFinished>
-											self:GetParent():GetParent().buffer.isFirstAnimation = true
-										</OnFinished>
-									</Scripts>
-								</AnimationGroup>
-								<AnimationGroup parentKey="AnimOut">
-									<Alpha change="-1" duration="0.7" order="1"/>
-									<Scripts>
-										<OnFinished>
-											self:GetParent():GetParent():Hide()
-										</OnFinished>
-									</Scripts>
+									<Alpha change="1" duration="0" order="1"/>
+									<Alpha smoothing="OUT" change="-1" duration="0.6" order="2"/>
 								</AnimationGroup>
 							</Animations>
 						</Texture>
 					</Layer>
 				</Layers>
 				<Scripts>
-					<OnShow>
-						self.NewItemTexture:Show()
-						if not self.buffer.isFirstAnimation then
-							self.NewItemTexture.Anim:Play()
-						end
-					</OnShow>
+					<OnLoad>
+						self.NewItemTexture:SetAtlas("bags-glow-green", true)
+						self.flash:SetAtlas("bags-glow-flash", true)
+					</OnLoad>
 				</Scripts>
 			</Frame>
 		</Frames>

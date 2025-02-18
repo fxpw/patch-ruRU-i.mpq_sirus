@@ -120,7 +120,7 @@ end
 function FrameTemplate_SetAtticHeight(self, atticHeight)
 	if self.bottomInset then
 		self.bottomInset:SetPoint("TOPLEFT", self, "TOPLEFT", PANEL_INSET_LEFT_OFFSET, -atticHeight);
-	else
+	elseif self.Inset then
 		self.Inset:SetPoint("TOPLEFT", self, "TOPLEFT", PANEL_INSET_LEFT_OFFSET, -atticHeight);
 	end
 end
@@ -128,7 +128,7 @@ end
 function FrameTemplate_SetButtonBarHeight(self, buttonBarHeight)
 	if self.topInset then
 		self.topInset:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", PANEL_INSET_RIGHT_OFFSET, buttonBarHeight);
-	else
+	elseif self.Inset then
 		self.Inset:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", PANEL_INSET_RIGHT_OFFSET, buttonBarHeight);
 	end
 end

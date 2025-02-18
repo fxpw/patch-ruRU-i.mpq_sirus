@@ -1,3 +1,5 @@
+local IsGMAccount = IsGMAccount
+
 local COLLECTION_TOYDATA = COLLECTION_TOYDATA;
 
 local TOY_BOX_COLLECTED = 1;
@@ -79,14 +81,16 @@ local function InitToys()
 		TOY_BY_SPELL_ID[data.spellID] = data;
 		TOY_BY_ITEM_ID[data.itemID] = data;
 
-		if not spellbookCustomHiddenChatSpell[data.spellID] then
-			spellbookCustomHiddenChatSpell[data.spellID] = spellName;
-		end
+		FilterOutSpellLearn(data.spellID, spellName)
 	end
 
 	if #failedSpells ~= 0 and IsGMAccount() then
 		StaticPopup_Show("TOYBOX_LOAD_ERROR_DIALOG", table.concat(failedSpells, ", "));
 	end
+end
+
+function ReloadCollectionToyData()
+	COLLECTION_TOYDATA = _G.COLLECTION_TOYDATA
 end
 
 local function SortFilteredToys(a, b)
@@ -97,21 +101,30 @@ local function SortFilteredToys(a, b)
 	return (a.spellName or "") < (b.spellName or "");
 end
 
-local function FilterToy(collected, sourceShown, name)
-	if not COLLECTED_SHOWN and collected then
+local function FilterToy(data, sourceFiltersFlag, sourceFlag, isGM)
+	if not COLLECTED_SHOWN and isLearnedToy(data.itemID) then
 		return false;
 	end
 
-	if not UNCOLLECTED_SHOWN and not collected then
+	if not UNCOLLECTED_SHOWN and not isLearnedToy(data.itemID) then
 		return false;
 	end
 
-	if not sourceShown then
+	if not (sourceFiltersFlag == 0 or bit.band(sourceFiltersFlag, sourceFlag) ~= sourceFlag) then
 		return false;
 	end
 
-	if FILTER_STRING ~= "" and not string.find(string.lower(name), FILTER_STRING, 1, true) then
-		return false;
+	if FILTER_STRING ~= "" then
+		if isGM then
+			local searchID = tonumber(FILTER_STRING)
+			if searchID and (searchID == data.itemID or searchID == data.spellID) then
+				return true
+			end
+		end
+
+		if not data.spellName or not string.find(string.lower(data.spellName), FILTER_STRING, 1, true) then
+			return false;
+		end
 	end
 
 	return true;
@@ -121,6 +134,7 @@ local function SetFilteredToys()
 	table.wipe(FILTERED_TOYS);
 
 	local sourceFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_TOY_BOX_SOURCE_FILTERS")) or 0;
+	local isGM = IsGMAccount()
 
 	for i = 1, #TOYS do
 		local data = TOYS[i];
@@ -130,7 +144,7 @@ local function SetFilteredToys()
 			sourceFlag = bit.bor(sourceFlag, bit.lshift(1, 6 - 1));
 		end
 
-		if FilterToy(isLearnedToy(data.itemID), sourceFiltersFlag == 0 or bit.band(sourceFiltersFlag, sourceFlag) ~= sourceFlag, data.spellName or "") then
+		if FilterToy(data, sourceFiltersFlag, sourceFlag, isGM) then
 			FILTERED_TOYS[#FILTERED_TOYS + 1] = data;
 		end
 	end
@@ -212,7 +226,15 @@ function C_ToyBox.GetToyInfo(itemID)
 
 	local toy = TOY_BY_ITEM_ID[itemID];
 	if toy then
-		return toy.itemID, toy.spellID, toy.spellName or "", toy.spellIcon, SIRUS_COLLECTION_FAVORITE_TOY[toy.hash] and isLearnedToy(itemID), toy.descriptionText, toy.priceText, toy.holidayText;
+		local priceText;
+		if toy.factionSide == 2 then
+			priceText = toy.priceText:gsub("-Team.", "-Horde.");
+		elseif toy.factionSide == 1 then
+			priceText = toy.priceText:gsub("-Team.", "-Alliance.");
+		else
+			priceText = toy.priceText:gsub("-Team.", "-"..(UnitFactionGroup("player"))..".");
+		end
+		return toy.itemID, toy.spellID, toy.spellName or "", toy.spellIcon, SIRUS_COLLECTION_FAVORITE_TOY[toy.hash] and isLearnedToy(itemID), toy.descriptionText, priceText, toy.holidayText;
 	end
 end
 
@@ -401,7 +423,6 @@ function C_ToyBox.GetToyLink(itemID)
 	return "";
 end
 
-local tooltip = CreateFrame("GameTooltip", "Test", nil)
 function C_ToyBox.SetToyTooltipByItemID(itemID)
 	if type(itemID) == "string" then
 		itemID = tonumber(itemID);
@@ -463,6 +484,7 @@ function EventHandler:ASMSG_C_ADD_TOY(msg)
 			SetFilteredToys();
 
 			FireCustomClientEvent("TOYS_UPDATED", toy.itemID, true);
+			EventRegistry:TriggerEvent("Toys.Updated", toy.itemID, true)
 		end
 	end
 end

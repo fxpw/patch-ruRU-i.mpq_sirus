@@ -23,10 +23,12 @@ function C_CreatureInfo.GetClassInfo(class)
 	return ClassInfo
 end
 
-function C_CreatureInfo.GetFactionInfo( race )
-	assert(race, "C_CreatureInfo.GetFactionInfo: race должен быть указан.")
+function C_CreatureInfo.GetFactionInfo(race)
+	if type(race) ~= "number" and type(race) ~= "string" then
+		error(string.format("Usage: C_CreatureInfo.GetFactionInfo(raceID|raceName)", race), 2)
+	end
 
-	if race == RACE_NAGA and InGlue() then
+	if race == RACE_NAGA and IsOnGlueScreen() then
 		race = E_CHARACTER_RACES.RACE_NAGA
 	end
 
@@ -45,10 +47,12 @@ function C_CreatureInfo.GetFactionInfo( race )
 	return FactionInfo
 end
 
-function C_CreatureInfo.GetRaceInfo( race )
-	assert(race, "C_CreatureInfo.GetRaceInfo: race должен быть указан.")
+function C_CreatureInfo.GetRaceInfo(race)
+	if type(race) ~= "number" and type(race) ~= "string" then
+		error(string.format("Usage: C_CreatureInfo.GetRaceInfo(raceID|raceName)", race), 2)
+	end
 
-	if race == RACE_NAGA and InGlue() then
+	if race == RACE_NAGA and IsOnGlueScreen() then
 		race = E_CHARACTER_RACES.RACE_NAGA
 	end
 

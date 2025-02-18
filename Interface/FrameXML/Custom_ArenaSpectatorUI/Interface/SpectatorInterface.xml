@@ -27,7 +27,7 @@
 		<Size x="40" y="22"/>
 		<Layers>
 			<Layer level="ARTWORK">
-				<Texture name="$parentLeft" parentKey="Left" file="Interface\ArenaSpectator\TargetFrame_Normal">
+				<Texture name="$parentLeft" parentKey="Left" file="Interface\Custom\ArenaSpectator\TargetFrame_Normal">
 					<Size x="12" y="22"/>
 					<Anchors>
 						<Anchor point="TOPLEFT"/>
@@ -35,7 +35,7 @@
 					</Anchors>
 					<TexCoords left="0.1015625" right="0.21484375" top="0.265625" bottom="0.625"/>
 				</Texture>
-				<Texture name="$parentRight" parentKey="Right" file="Interface\ArenaSpectator\TargetFrame_Normal">
+				<Texture name="$parentRight" parentKey="Right" file="Interface\Custom\ArenaSpectator\TargetFrame_Normal">
 					<Size x="12" y="22"/>
 					<Anchors>
 						<Anchor point="TOPRIGHT"/>
@@ -43,7 +43,7 @@
 					</Anchors>
 					<TexCoords left="0.78515625" right="0.8984375" top="0.265625" bottom="0.625"/>
 				</Texture>
-				<Texture parentKey="Middle" file="Interface\ArenaSpectator\TargetFrame_Normal">
+				<Texture parentKey="Middle" file="Interface\Custom\ArenaSpectator\TargetFrame_Normal">
 					<Size x="12" y="22"/>
 					<Anchors>
 						<Anchor point="CENTER" x="0" y="0" />
@@ -52,7 +52,7 @@
 				</Texture>
 			</Layer>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentBackground" parentKey="Background" file="Interface\ArenaSpectator\TargetFrame_Backdrop">
+				<Texture name="$parentBackground" parentKey="Background" file="Interface\Custom\ArenaSpectator\TargetFrame_Backdrop">
 					<Anchors>
 						<Anchor point="TOPLEFT" x="0" y="0" />
 						<Anchor point="BOTTOMRIGHT" x="0" y="0" />
@@ -88,7 +88,7 @@
 				<Anchors>
 					<Anchor point="CENTER" x="0" y="0" />
 				</Anchors>
-				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\ArenaSpectator\TooltipEdge" tile="true">
+				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Custom\ArenaSpectator\TooltipEdge" tile="true">
 					<BackgroundInsets left="4" right="4" top="4" bottom="4"/>
 					<TileSize val="16"/>
 					<EdgeSize val="16"/>
@@ -117,7 +117,7 @@
 						<Anchors>
 							<Anchor point="TOP" relativeTo="$parentDesc" relativePoint="BOTTOM" x="0" y="-4" />
 						</Anchors>
-						<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\ArenaSpectator\TooltipEdge" tile="true">
+						<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Custom\ArenaSpectator\TooltipEdge" tile="true">
 							<BackgroundInsets left="4" right="4" top="4" bottom="4"/>
 							<TileSize val="16"/>
 							<EdgeSize val="16"/>
@@ -192,7 +192,7 @@
 				<Anchors>
 					<Anchor point="CENTER" x="0" y="0" />
 				</Anchors>
-				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\ArenaSpectator\TooltipEdge" tile="true">
+				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Custom\ArenaSpectator\TooltipEdge" tile="true">
 					<BackgroundInsets left="4" right="4" top="4" bottom="4"/>
 					<TileSize val="16"/>
 					<EdgeSize val="16"/>
@@ -215,7 +215,7 @@
 						<Anchors>
 							<Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="44" />
 						</Anchors>
-						<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\ArenaSpectator\TooltipEdge" tile="true">
+						<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Custom\ArenaSpectator\TooltipEdge" tile="true">
 							<BackgroundInsets left="4" right="4" top="4" bottom="4"/>
 							<TileSize val="16"/>
 							<EdgeSize val="16"/>
@@ -258,7 +258,7 @@
 						<Anchors>
 							<Anchor point="BOTTOM" relativeTo="$parentEditBoxFrame" relativePoint="TOP" x="0" y="2" />
 						</Anchors>
-						<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\ArenaSpectator\TooltipEdge" tile="true">
+						<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Custom\ArenaSpectator\TooltipEdge" tile="true">
 							<BackgroundInsets left="4" right="4" top="4" bottom="4"/>
 							<TileSize val="16"/>
 							<EdgeSize val="16"/>

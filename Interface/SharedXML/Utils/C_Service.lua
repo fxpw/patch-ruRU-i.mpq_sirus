@@ -60,7 +60,7 @@ end
 
 PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 	if event == "SERVER_SPLIT_NOTICE" then
-		local clientState, statePanding, msg = ...
+		local clientState, statePending, msg = ...
 		local prefix, content = strsplit(":", msg, 2)
 
 		if prefix == "ASMSG_SERVICE_MSG" then
@@ -81,7 +81,19 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 			return
 		end
 
-		if prefix == "ASMSG_ENABLE_X1_RATE" then
+		if prefix == "ASMSG_C_V" then
+			local id, value = string.split(":", msg)
+
+			local customValues = C_CacheInstance:Get("ASMSG_C_V")
+			if not customValues then
+				customValues = {}
+				C_CacheInstance:Set("ASMSG_C_V", customValues)
+			end
+
+			customValues[tonumber(id)] = tonumber(value)
+
+			FireCustomClientEvent("PLAYER_CUSTOM_VALUE_UPDATE")
+		elseif prefix == "ASMSG_ENABLE_X1_RATE" then
 			local status = tonumber(msg)
 			if status == ENABLE_X1_RATE_STATUS.SUCCESS
 			or (status == ENABLE_X1_RATE_STATUS.ALREADY_ENABLED and not C_CacheInstance:Get("ASMSG_ENABLE_X1_RATE"))
@@ -175,12 +187,12 @@ PRIVATE.ChallengeModeDisable = function(reason)
 		local playerFlag = C_CacheInstance:Get("C_SERVICE_PLAYER_FLAG")
 		if playerFlag then
 			C_CacheInstance:Set("C_SERVICE_PLAYER_FLAG", bitband(playerFlag, bitbnot(CLIENT_PLAYER_FLAGS.HARDCORE)))
+
+			local challengeID = C_CacheInstance:Get("C_SERVICE_CHALLENGE_ID")
+			C_CacheInstance:Set("C_SERVICE_CHALLENGE_ID", 0)
+			FireCustomClientEvent("CUSTOM_CHALLENGE_DEACTIVATED", challengeID, reason)
 		end
 	end
-
-	local challengeID = C_CacheInstance:Get("C_SERVICE_CHALLENGE_ID")
-	C_CacheInstance:Set("C_SERVICE_CHALLENGE_ID", 0)
-	FireCustomClientEvent("CUSTOM_CHALLENGE_DEACTIVATED", challengeID, reason)
 end
 
 PRIVATE.IsGMAccount = function(skipDevOverride)
@@ -345,6 +357,17 @@ end
 
 function C_Service.IsInGMMode()
 	return PRIVATE.IsGMAccount(true) and C_CacheInstance:Get("C_SERVICE_IS_GM_MODE") or false
+end
+
+function C_Service.GetCustomValue(id)
+	if type(id) ~= "number" then
+		error(string.format("bad argument #1 to 'C_Service.GetCustomValue' (table expected, got %s)", id ~= nil and type(id) or "no value"), 2)
+	end
+
+	local customValues = C_CacheInstance:Get("ASMSG_C_V")
+	if customValues and customValues[id] then
+		return customValues[id] or nil
+	end
 end
 
 function GMError(err)

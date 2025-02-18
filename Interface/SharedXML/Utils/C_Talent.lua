@@ -63,6 +63,17 @@ function C_Talent.SelectedCurrency(currencyID)
 	SELECTED_CURRENCY_ID = currencyID
 end
 
+function C_Talent.GetCurrencyInfo(currencyID)
+	local itemID = E_TALENT_CURRENCY[currencyID]
+	if not itemID then
+		return
+	end
+
+	local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemID)
+	local amount = GetItemCount(itemID)
+	return name, icon, amount, itemID
+end
+
 ---@return table talentPoints
 function C_Talent.GetTabPointSpent( tabIndex )
     assert(tabIndex, "C_Talent.GetTabPointSpent: не указан обязательный параметр 'tabIndex'")
@@ -166,54 +177,6 @@ enum:E_TALENT_CURRENCY {
     100585,
 }
 
----@param currencyID number
----@return table? currencyInfo
-function C_Talent.GetCurrencyInfo( currencyID )
-    local currencyItemID = E_TALENT_CURRENCY[currencyID]
-
-    assert(currencyItemID, "C_Talent.GetCurrencyInfo: не найден ItemID для валюты по currencyID "..currencyID)
-
-	local currencyName, currencyCount, headerIndex, headerExpandEndIndex
-	local numCurrencies = GetCurrencyListSize()
-	local index = 1
-
-	while index <= numCurrencies do
-		local name, isHeader, isExpanded, _, _, count, _, _, itemID = GetCurrencyListInfo(index)
-
-		if isHeader and not isExpanded then
-			ExpandCurrencyList(index, 1)
-			local newNum = GetCurrencyListSize()
-			headerIndex = index
-			headerExpandEndIndex = index + (newNum - numCurrencies)
-			numCurrencies = newNum
-		elseif currencyItemID == itemID then
-			currencyName = name
-			currencyCount = count
-			break
-		elseif index == headerExpandEndIndex then
-			ExpandCurrencyList(headerIndex, 0)
-			numCurrencies = numCurrencies - (headerExpandEndIndex - headerIndex)
-			index = headerIndex
-			headerIndex = nil
-			headerExpandEndIndex = nil
-		end
-
-		index = index + 1
-	end
-
-	if headerIndex then
-		ExpandCurrencyList(headerIndex, 0)
-	end
-
-	if currencyName then
-		return {
-			name	= currencyName,
-			count	= currencyCount,
-			itemID	= currencyItemID,
-		}
-	end
-end
-
 enum:E_TALENT_SETTINGS {
     ["NAME"] = 1,
     ["TEXTURE"] = 2,
@@ -269,6 +232,42 @@ function C_Talent.SetTalentGroupSettings(name, texture)
 
         EDIT_TALENT_GROUP = nil
     end
+end
+
+function C_Talent.GetCurrentSpecTabIndex()
+	local talents = C_Talent.GetSpecInfoCache()
+	if talents and talents.activeTalentGroup then
+		local maxTabID, maxTalents = 0, 0
+		for tabID = 1, 3 do
+		--	local count = C_Talent.GetTabPointSpent(tabID)
+			local count = talents.talentGroupData[talents.activeTalentGroup][tabID]
+			if count > maxTalents then
+				maxTalents = count
+				maxTabID = tabID
+			end
+		end
+		return maxTabID
+	end
+	return 0
+end
+
+function C_Talent.GetCurrentSpecRole()
+	local tabIndex = C_Talent.GetCurrentSpecTabIndex()
+	if tabIndex == 0 then
+		return "DAMAGER"
+	end
+
+	local _, _, classID = UnitClass("player")
+	local spec = S_CALSS_SPECIALIZATION_DATA[classID] and S_CALSS_SPECIALIZATION_DATA[classID][tabIndex]
+	if spec then
+		if bit.band(spec[5], S_SPECIALIZATION_ROLE_TANK_FLAG) then
+			return "TANK"
+		elseif bit.band(spec[5], S_SPECIALIZATION_ROLE_HEAL_FLAG) then
+			return "HEALER"
+		end
+	end
+
+	return "DAMAGER"
 end
 
 ---@return number

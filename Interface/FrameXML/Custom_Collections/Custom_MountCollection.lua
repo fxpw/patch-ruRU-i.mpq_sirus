@@ -115,6 +115,7 @@ function MountJournal_OnShow(self)
 	MountJournal_FullUpdate(self);
 
 	MountJournalResetFiltersButton_UpdateVisibility();
+	EventRegistry:TriggerEvent("MountJournal.OnShow")
 end
 
 function MountJournal_OnHide(self)
@@ -264,15 +265,6 @@ function MountJournal_UpdateMountDisplay(forceSceneChange)
 		local creatureName, spellID, icon, active, sourceType, isFavorite, isFactionSpecific, faction, isCollected, mountID, creatureID, itemID, currency, price, _, priceText, descriptionText, holidayText = C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID);
 
 		if MountJournal.MountDisplay.lastDisplayed ~= itemID or forceSceneChange then
-			local isGMAccount = IsGMAccount()
-			if isGMAccount then
-				MountJournal.MountDisplay.ModelScene.DebugInfo:SetFormattedText("CreatureID: %s", creatureID);
-				MountJournal.MountDisplay.ModelScene.DebugInfo:Show();
-			else
-				MountJournal.MountDisplay.ModelScene.DebugInfo:Hide();
-			end
-			MountJournal.MountDisplay.ModelScene.DebugFrame:SetShown(isGMAccount);
-
 			MountJournal.MountDisplay.ModelScene.creatureID = creatureID;
 			MountJournal.MountDisplay.ModelScene:Hide();
 			MountJournal.MountDisplay.ModelScene:Show();
@@ -321,11 +313,11 @@ function MountJournal_UpdateMountDisplay(forceSceneChange)
 					abilityButton:Show();
 
 					local _, abilityIcon = C_MountJournal.GetAbilityInfo(abilityID);
-					abilityButton.creature:SetTexture(abilityIcon);
+					abilityButton.Icon:SetTexture(abilityIcon);
 					if not firstButton then
 						abilityButton:SetPoint("BOTTOMRIGHT", 5, 82);
 					else
-						abilityButton:SetPoint("BOTTOMRIGHT", firstButton, "TOPRIGHT", 0, -5);
+						abilityButton:SetPoint("BOTTOMRIGHT", firstButton, "TOPRIGHT", 0, -6);
 					end
 					firstButton = abilityButton;
 				end
@@ -791,20 +783,13 @@ function MountJournalBuyButton_OnClick(self, button)
 	end);
 
 	if MountJournal.selectedMountID then
-		local creatureName, _, icon, _, sourceType, _, _, _, _, _, _, itemID, currency, price, productID = C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID);
+		local creatureName, _, icon, _, sourceType, _, _, _, _, _, _, itemID, currencyType, price, productID = C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID);
 
 		if sourceType == 9 then
 			BattlePassFrame:ShowCardWithItem(itemID);
-		else
-			local productData = {
-				Texture = icon,
-				Name = creatureName,
-				Price = price,
-				ID = productID,
-				currency = currency
-			};
-
-			StoreFrame_ProductBuyWithOpenPage(productData);
+		elseif currencyType and currencyType ~= 0 then
+			local categoryIndex, subCategoryIndex = C_StoreSecure.GetVirtualCategoryByRemoteID(currencyType, 0, 0)
+			StoreFrame:ShowProductCategory(productID, categoryIndex, subCategoryIndex)
 		end
 	end
 end

@@ -162,7 +162,6 @@ function InterfaceOptionsDropDownMixin:OnEvent(event)
 		self.defaultValue = GetCVarDefault(self.cvar)
 		self.value = value
 		self.oldValue = value
-		self.tooltip = _G[("OPTION_%s_%s"):format(self.tooltipKey, strupper(value))]
 
 		if self:IsShown() then
 			self:RefreshValue()
@@ -175,9 +174,10 @@ function InterfaceOptionsDropDownMixin:OnShow()
 end
 
 function InterfaceOptionsDropDownMixin:OnEnter()
-	if self.tooltip then
+	local text = self:GetTooltipText()
+	if text then
 		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
-		GameTooltip:SetText(self.tooltip, nil, nil, nil, nil, true)
+		GameTooltip:SetText(text, nil, nil, nil, nil, true)
 	end
 end
 
@@ -189,7 +189,6 @@ function InterfaceOptionsDropDownMixin:SetValue(value)
 	self.value = tostring(value)
 	SetCVar(self.cvar, self.value)
 	UIDropDownMenu_SetSelectedValue(self, self.value)
-	self.tooltip = _G[("OPTION_%s_%s"):format((string.gsub(self.cvar, "C_CVAR_", "")), strupper(value))]
 end
 
 function InterfaceOptionsDropDownMixin:GetValue()
@@ -199,6 +198,14 @@ end
 function InterfaceOptionsDropDownMixin:RefreshValue()
 	UIDropDownMenu_Initialize(self, self.initFunction)
 	UIDropDownMenu_SetSelectedValue(self, self.value)
+end
+
+function InterfaceOptionsDropDownMixin:GetTooltipText()
+	local tooltipKey = self.tooltipKey or string.gsub(self.cvar, "C_CVAR_", "")
+	if tooltipKey then
+		return _G[("OPTION_%s_%s"):format(self.tooltipKey, strupper(self.value))]
+			or _G[("OPTION_%s"):format(self.tooltipKey)]
+	end
 end
 
 function InterfaceOptionsDropDownMixin:OnButtonClick(buttonFrame, arg1, arg2, checked)
@@ -211,9 +218,13 @@ end
 
 ControlsPanelOptions = {
 	deselectOnClick = { text = "GAMEFIELD_DESELECT_TEXT" },
+	autoDismount = { text = "AUTO_DISMOUNT_TEXT" },
 	autoDismountFlying = { text = "AUTO_DISMOUNT_FLYING_TEXT" },
 	autoClearAFK = { text = "CLEAR_AFK" },
 	blockTrades = { text = "BLOCK_TRADES" },
+	C_CVAR_AUTO_ACCEPT_GROUP_INVITES = { text = "SETTINGS_AUTO_ACCEPT_GROUP_INVITES" },
+	C_CVAR_BLOCK_GROUP_INVITES = { text = "SETTINGS_BLOCK_GROUP_INVITES" },
+	C_CVAR_BLOCK_GUILD_INVITES = { text = "BLOCK_GUILD_INVITES" },
 	lootUnderMouse = { text = "LOOT_UNDER_MOUSE_TEXT" },
 	autoLootDefault = { text = "AUTO_LOOT_DEFAULT_TEXT" }, -- When this gets changed, the function SetAutoLootDefault needs to get run with its value.
 	autoLootKey = { text = "AUTO_LOOT_KEY_TEXT", default = "NONE" },
@@ -327,6 +338,38 @@ function InterfaceOptionsControlsPanelAutoLootKeyDropDown_Update (value)
 	end
 end
 
+function InterfaceOptionsDisplayPanelBlockGroupInvitesDropDown_Initialize(self)
+	local value = tostring(self.value)
+	local info = UIDropDownMenu_CreateInfo()
+	info.tooltipOnButton = true
+
+	for i = 0, 4 do
+		info.text = _G["SETTINGS_BLOCK_GROUP_INVITES_"..i]
+		info.func = self.OnButtonClick
+		info.value = tostring(i)
+		info.checked = value == info.value
+		info.tooltipText = _G[("OPTION_%s_%s"):format(self.tooltipKey, strupper(info.value))]
+		info.tooltipTitle = info.tooltipText and info.text or nil
+		UIDropDownMenu_AddButton(info)
+	end
+end
+
+function InterfaceOptionsDisplayPanelAutoAcceptGroupInvitesDropDown_Initialize(self)
+	local value = tostring(self.value)
+	local info = UIDropDownMenu_CreateInfo()
+	info.tooltipOnButton = true
+
+	for i = 0, 3 do
+		info.text = _G["SETTINGS_AUTO_ACCEPT_GROUP_INVITES_"..i]
+		info.func = self.OnButtonClick
+		info.value = tostring(i)
+		info.checked = value == info.value
+		info.tooltipText = _G[("OPTION_%s_%s"):format(self.tooltipKey, strupper(info.value))]
+		info.tooltipTitle = info.tooltipText and info.text or nil
+		UIDropDownMenu_AddButton(info)
+	end
+end
+
 -- [[ Combat Options Panel ]] --
 
 CombatPanelOptions = {
@@ -339,6 +382,7 @@ CombatPanelOptions = {
 	showVKeyCastbar = { text = "SHOW_TARGET_CASTBAR_IN_V_KEY" },
 	ShowClassColorInNameplate = { text = "SHOW_CLASS_COLOR_IN_V_KEY" },
 	lossOfControl = { text = "LOSS_OF_CONTROL" },
+	C_CVAR_WARMODE_PVP_ASSIST_ENABLED = { text = "WARMODE_ASSIST_MODE_LABEL" },
 	C_CVAR_DRACTHYR_RETURN_MORTAL_FORM = { text = "DRACTHYR_RETURN_MORTAL_FORM" },
 	spellActivationOverlay = { text = "SPELL_ACTIVE_OVERLAY" }
 }
@@ -645,6 +689,7 @@ DisplayPanelOptions = {
 	threatPlaySounds = { text = "PLAY_AGGRO_SOUNDS" },
 	colorblindMode = { text = "USE_COLORBLIND_MODE" },
 	showItemLevel = { text = "SHOW_ITEM_LEVEL" },
+	C_CVAR_LOOT_ALERT_THRESHOLD = { text = "SETTINGS_LOOT_ALERT_THRESHOLD" },
 }
 
 function InterfaceOptionsDisplayPanel_OnLoad (self)
@@ -870,6 +915,30 @@ function InterfaceOptionsDisplayPanelAggroWarningDisplay_Initialize()
 	info.tooltipTitle = NEVER;
 	info.tooltipText = OPTION_TOOLTIP_AGGRO_WARNING_DISPLAY1;
 	UIDropDownMenu_AddButton(info);
+end
+
+function InterfaceOptionsDisplayPanelLootAlertThresholdDropDown_Initialize(self)
+	local value = tostring(self.value)
+	local info = UIDropDownMenu_CreateInfo()
+	info.tooltipOnButton = true
+
+	info.text = OPTION_LOOT_ALERT_THRESHOLD_DISABLED
+	info.func = self.OnButtonClick
+	info.value = "-1"
+	info.checked = value == info.value
+	info.tooltipTitle = info.tooltipText and info.text or nil
+	UIDropDownMenu_AddButton(info)
+
+	for qualityIndex = LE_ITEM_QUALITY_UNCOMMON, LE_ITEM_QUALITY_LEGENDARY do
+		local _, _, _, qualityColorHex = GetItemQualityColor(qualityIndex)
+		local qualityName = _G[string.format("ITEM_QUALITY%i_DESC", qualityIndex)]
+		info.text = string.format("%s%s|r", qualityColorHex, qualityName)
+		info.func = self.OnButtonClick
+		info.value = tostring(qualityIndex)
+		info.checked = value == info.value
+		info.tooltipTitle = info.tooltipText and info.text or nil
+		UIDropDownMenu_AddButton(info)
+	end
 end
 
 -- [[ Objectives Options Panel ]] --
@@ -1993,6 +2062,7 @@ FeaturesPanelOptions = {
 
 HelpPanelOptions = {
 	showTutorials = { text = "SHOW_TUTORIALS" },
+	showCustomTutorials = { text = "SHOW_CUSTOM_TUTORIALS" },
 	showGameTips = { text = "SHOW_TIPOFTHEDAY_TEXT" },
 	UberTooltips = { text = "USE_UBERTOOLTIPS" },
 	showNewbieTips = { text = "SHOW_NEWBIE_TIPS_TEXT" },
@@ -2084,7 +2154,6 @@ end
 
 NotificationPanelOptions = {
 	C_CVAR_FLASH_CLIENT_ICON				= { text = "SETTINGS_FLASH_CLIENT_ICON" },
-	C_CVAR_SHOW_HARDCORE_BANNER				= { text = "SETTINGS_SHOW_HARDCORE_BANNER" },
 
 	C_CVAR_SHOW_TOASTS						= { text = "SETTINGS_SHOW_TOASTS" },
 	C_CVAR_SHOW_SOCIAL_TOAST				= { text = "SETTINGS_SHOW_SOCIAL_TOAST" },

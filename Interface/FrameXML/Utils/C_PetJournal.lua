@@ -1,3 +1,5 @@
+local IsGMAccount = IsGMAccount
+
 local COLLECTION_PETDATA = COLLECTION_PETDATA;
 
 local NUM_PET_FILTERS = 2;
@@ -108,7 +110,7 @@ local function SortedPetJornal(a, b)
 	return c < d;
 end
 
-local function PetMathesFilter(isOwned, subCategoryID, sourceShown, expansion, name)
+local function PetMathesFilter(data, isOwned, sourceShown, name, isGM)
 	if PET_FILTER_CHECKED[LE_PET_JOURNAL_FILTER_COLLECTED] and isOwned then
 		return false;
 	end
@@ -121,12 +123,21 @@ local function PetMathesFilter(isOwned, subCategoryID, sourceShown, expansion, n
 		return false;
 	end
 
-	if PET_TYPE_CHECKED[subCategoryID] or PET_EXPANSION_CHECKED[expansion] then
+	if PET_TYPE_CHECKED[data.subCategoryID] or PET_EXPANSION_CHECKED[data.expansion or 0] then
 		return false;
 	end
 
-	if SEARCH_FILTER ~= "" and not string.find(string.lower(name), SEARCH_FILTER, 1, true) then
-		return false;
+	if SEARCH_FILTER ~= "" then
+		if isGM then
+			local searchID = tonumber(SEARCH_FILTER)
+			if searchID and (searchID == data.itemID or searchID == data.spellID or searchID == data.creatureID) then
+				return true
+			end
+		end
+
+		if not name or not string.find(string.lower(name), SEARCH_FILTER, 1, true) then
+			return false;
+		end
 	end
 
 	return true;
@@ -137,6 +148,7 @@ local function FilteredPetJornal()
 	table.wipe(PET_INFO_BY_INDEX);
 
 	local sourceFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_PET_JOURNAL_SOURCE_FILTERS")) or 0;
+	local isGM = IsGMAccount()
 
 	for i = 1, #COLLECTION_PETDATA do
 		local data = COLLECTION_PETDATA[i];
@@ -151,25 +163,27 @@ local function FilteredPetJornal()
 
 		local petIndex = COMPANION_INFO[data.hash];
 		local isOwned = petIndex and true or false;
-		local product = CUSTOM_ROLLED_ITEMS_IN_SHOP[data.hash];
-		local currency = product and product.currency or data.currency;
+		local productID, price, originalPrice, currencyType = data.hash and C_StorePublic.GetRolledItemInfoByHash(data.hash)
+		if not productID then
+			currencyType = data.currency;
+		end
 		local sourceType;
 		if data.holidayText ~= "" then
 			sourceType = 6;
-		elseif currency and currency ~= 0 and data.lootType ~= 15 then
+		elseif currencyType and currencyType ~= 0 and data.lootType ~= 15 then
 			sourceType = 7;
 		elseif data.lootType == 0 and data.shopCategory == 3 then
 			sourceType = 7;
 		else
 			sourceType = SOURCE_TYPES[data.lootType] or 1;
 		end
-		local sourceFlag = ((product or sourceType == 7) or data.lootType ~= 0) and bit.lshift(1, sourceType - 1) or 0;
+		local sourceFlag = ((productID or sourceType == 7) or data.lootType ~= 0) and bit.lshift(1, sourceType - 1) or 0;
 
 		if isOwned then
 			NUM_OWNED_PETS = NUM_OWNED_PETS + 1;
 		end
 
-		if PetMathesFilter(isOwned, data.subCategoryID, sourceFiltersFlag == 0 or bit.band(sourceFiltersFlag, sourceFlag) ~= sourceFlag, data.expansion or 0, name or "") then
+		if PetMathesFilter(data, isOwned, sourceFiltersFlag == 0 or bit.band(sourceFiltersFlag, sourceFlag) ~= sourceFlag, name, isGM) then
 			PET_INFO_BY_INDEX[#PET_INFO_BY_INDEX + 1] = i;
 		end
 	end
@@ -177,6 +191,11 @@ local function FilteredPetJornal()
 	table.sort(PET_INFO_BY_INDEX, SortedPetJornal);
 
 	FireCustomClientEvent("PET_JOURNAL_LIST_UPDATE");
+end
+
+local function PopulatePetInfo()
+	UpdateCompanionInfo();
+	FilteredPetJornal();
 end
 
 local function InitPetInfo()
@@ -191,37 +210,28 @@ local function InitPetInfo()
 		PET_INFO_BY_ITEM_ID[data.itemID] = data;
 		PET_INFO_BY_SPELL_ID[data.spellID] = data;
 	end
-
-	UpdateCompanionInfo();
-	FilteredPetJornal();
 end
 
 local function GetPetInfo(infoTable, value)
 	local petInfo = infoTable[value];
 	if petInfo then
-		local _, active, isFavorite, isCollected, currency, price, productID, priceText = nil, false, false, false, nil, nil, nil, nil;
+		local _, active, isFavorite, isCollected, priceText = nil, false, false, false, nil;
 		if COMPANION_INFO[petInfo.hash] then
 			_, _, _, _, active = GetCompanionInfo("MOUNT", COMPANION_INFO[petInfo.hash]);
 			isCollected = true;
 		end
-		local product = CUSTOM_ROLLED_ITEMS_IN_SHOP[petInfo.hash];
-		if product then
-			currency = product.currency;
-			price = product.price;
-			productID = product.productID;
-		else
-			currency = petInfo.currency;
+		local productID, price, originalPrice, currencyType = petInfo.hash and C_StorePublic.GetRolledItemInfoByHash(petInfo.hash)
+		if not productID then
+			currencyType = petInfo.currency;
 			price = petInfo.price;
 		end
-		local sourceType = petInfo.holidayText ~= "" and 6 or (currency and currency ~= 0 and petInfo.lootType ~= 15 and 7 or (SOURCE_TYPES[petInfo.lootType] or 1));
+		local sourceType = petInfo.holidayText ~= "" and 6 or (currencyType and currencyType ~= 0 and petInfo.lootType ~= 15 and 7 or (SOURCE_TYPES[petInfo.lootType] or 1));
 		if SIRUS_COLLECTION_FAVORITE_PET[petInfo.hash] then
 			isFavorite = true;
 		end
 		if petInfo.factionSide == 2 then
 			priceText = petInfo.priceText:gsub("-Team.", "-Horde.");
 		elseif petInfo.factionSide == 1 then
-			isFactionSpecific = true;
-			faction = 1;
 			priceText = petInfo.priceText:gsub("-Team.", "-Alliance.");
 		else
 			local factionGroup = UnitFactionGroup("player");
@@ -230,10 +240,17 @@ local function GetPetInfo(infoTable, value)
 
 		return petInfo.name, petInfo.spellID, petInfo.icon, petInfo.subCategoryID, active, sourceType, isFavorite,
 			isCollected, petInfo.hash,
-			petInfo.creatureID, petInfo.itemID, currency, price, productID,
+			petInfo.creatureID, petInfo.itemID, currencyType, price, productID,
 			priceText or "", petInfo.descriptionText or "", petInfo.holidayText or "";
 	end
 end
+
+function ReloadCollectionPetData()
+	COLLECTION_PETDATA = _G.COLLECTION_PETDATA
+	InitPetInfo()
+end
+
+InitPetInfo()
 
 local frame = CreateFrame("Frame");
 frame:Hide();
@@ -242,14 +259,17 @@ frame:RegisterEvent("COMPANION_LEARNED");
 frame:RegisterEvent("COMPANION_UNLEARNED");
 frame:RegisterEvent("VARIABLES_LOADED");
 frame:RegisterEvent("PLAYER_LOGIN");
-frame:SetScript("OnEvent", function(_, event, arg1)
+frame:RegisterCustomEvent("VARIABLES_LOADED_INITIAL");
+frame:RegisterCustomEvent("STORE_ROLLED_ITEM_HASHES");
+frame:SetScript("OnEvent", function(_, event, arg1, ...)
 	if (event == "COMPANION_UPDATE" and (not arg1 or arg1 == "CRITTER")) or event == "COMPANION_LEARNED" or event == "COMPANION_LEARNED" then
-		UpdateCompanionInfo();
-		FilteredPetJornal();
+		PopulatePetInfo()
+	elseif event == "VARIABLES_LOADED_INITIAL" then
+		table.wipe(SIRUS_MOUNTJOURNAL_FAVORITE_PET);
+		table.wipe(SIRUS_COLLECTION_FAVORITE_PET);
+		table.wipe(SIRUS_COLLECTION_FAVORITE_APPEARANCES);
+		table.wipe(SIRUS_COLLECTION_FAVORITE_TOY);
 	elseif event == "VARIABLES_LOADED" then
-		frame:RegisterCustomEvent("SESSION_VARIABLES_LOADED");
-		frame:RegisterCustomEvent("STORE_ROLLED_ITEMS_IN_SHOP");
-
 		for index = 1, NUM_PET_FILTERS do
 			PET_FILTER_CHECKED[index] = C_CVar:GetCVarBitfield("C_CVAR_PET_JOURNAL_FILTERS", index);
 		end
@@ -264,13 +284,8 @@ frame:SetScript("OnEvent", function(_, event, arg1)
 
 		PET_SORT_PARAMETER = tonumber(C_CVar:GetValue("C_CVAR_PET_JOURNAL_SORT")) or 1;
 	elseif event == "PLAYER_LOGIN" then
-		InitPetInfo();
-	elseif event == "SESSION_VARIABLES_LOADED" then
-		table.wipe(SIRUS_MOUNTJOURNAL_FAVORITE_PET);
-		table.wipe(SIRUS_COLLECTION_FAVORITE_PET);
-		table.wipe(SIRUS_COLLECTION_FAVORITE_APPEARANCES);
-		table.wipe(SIRUS_COLLECTION_FAVORITE_TOY);
-	elseif event == "STORE_ROLLED_ITEMS_IN_SHOP" then
+		PopulatePetInfo();
+	elseif event == "STORE_ROLLED_ITEM_HASHES" then
 		FilteredPetJornal();
 	end
 end);

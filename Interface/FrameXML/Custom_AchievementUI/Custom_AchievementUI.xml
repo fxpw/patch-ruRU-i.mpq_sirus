@@ -2,7 +2,7 @@
 ..\..\FrameXML\UI.xsd">
 	<Script file="Custom_AchievementUI.lua"/>
 
-	<Button name="AchievementSearchPreviewButton" parentArray="searchPreviews" virtual="true">
+	<Button name="AchievementSearchPreviewButton" virtual="true">
 		<Size x="206" y="27"/>
 		<Layers>
 			<Layer level="OVERLAY">
@@ -475,21 +475,6 @@
 			<OnHide>
 				PlaySound(SOUNDKIT.IG_SPELLBOOK_CLOSE);
 			</OnHide>
-		</Scripts>
-	</Frame>
-
-	<Frame name="CustomAchievementFrame">
-		<Scripts>
-			<OnLoad>
-				self:RegisterEvent("ADDON_LOADED");
-			</OnLoad>
-			<OnEvent>
-				if arg1 == "Blizzard_AchievementUI" then
-					InitCustonAchievementUI();
-
-					self:UnregisterEvent(event);
-				end
-			</OnEvent>
 		</Scripts>
 	</Frame>
 </Ui>

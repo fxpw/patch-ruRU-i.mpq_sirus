@@ -47,6 +47,7 @@ function ToyBox_OnShow(self)
 	ToyBox_UpdateButtons();
 
 	ToyBoxResetFiltersButton_UpdateVisibility();
+	EventRegistry:TriggerEvent("ToyBox.OnShow")
 end
 
 function ToyBox_FindPageForToyID(toyID)

@@ -1,145 +1,132 @@
-ACHIEVEMENTS_FACTION_CHANGE = {
+local type = type
+local unpack = unpack
+local bitband = bit.band
+local tinsert, twipe = table.insert, table.wipe
+
+local GetAchievementInfo = GetAchievementInfo
+local GetCategoryNumAchievements = GetCategoryNumAchievements
+local UnitFactionGroup = UnitFactionGroup
+
+local IsDevClient = IsDevClient
+local IsGMAccount = IsGMAccount
+
+local ACHIEVEMENTS_FACTION_FLAG = {
+	Alliance	= 0x1,
+	Horde		= 0x2,
+	Renegade	= 0x4,
+	Neutral		= 0x8,
+}
+
+local ACHIEVEMENTS_FACTION_CHANGE = {
 	[6411] = PLAYER_FACTION_GROUP.Horde,
 	[6413] = PLAYER_FACTION_GROUP.Horde,
 	[6412] = PLAYER_FACTION_GROUP.Alliance,
 	[6414] = PLAYER_FACTION_GROUP.Alliance,
 }
 
----@class C_AchievementManagerMixin : Mixin
-C_AchievementManagerMixin = {}
+local PRIVATE = {
+	storage = {},
+}
 
-function C_AchievementManagerMixin:OnLoad()
-	self.storage = {}
-	self.counter = {}
+PRIVATE.eventHandler = CreateFrame("Frame")
+PRIVATE.eventHandler:Hide()
+PRIVATE.eventHandler:RegisterEvent("PLAYER_ENTERING_WORLD")
+PRIVATE.eventHandler:RegisterEvent("ACHIEVEMENT_EARNED")
+PRIVATE.eventHandler:SetScript("OnEvent", function(this, event, ...)
+	if event == "PLAYER_ENTERING_WORLD" or event == "ACHIEVEMENT_EARNED" then
+		twipe(PRIVATE.storage)
+	end
+end)
 
-    self._GetAchievementInfo            = GetAchievementInfo
-    self._GetCategoryNumAchievements    = GetCategoryNumAchievements
+PRIVATE.IsAvailableForPlayerFaction = function(achievementID)
+	local achievementFactionFlag = ACHIEVEMENTS_FACTIONDATA[achievementID]
 
-    self:RegisterHookListener()
-end
-
-function C_AchievementManagerMixin:PLAYER_ENTERING_WORLD()
-    self:Reset()
-end
-
-function C_AchievementManagerMixin:ACHIEVEMENT_EARNED()
-    self:Reset()
-end
-
-function C_AchievementManagerMixin:Reset()
-	table.wipe(self.storage)
-	table.wipe(self.counter)
-end
-
----@param entry number
----@return number factionID
-function C_AchievementManagerMixin:GetAchievementFactionID( entry )
-    return ACHIEVEMENTS_FACTIONDATA[entry] and ACHIEVEMENTS_FACTIONDATA[entry][E_ACHIEVEMENTS_FACTIONDATA.FACTION_ID]
-end
-
----@param entry number
----@return boolean isHideForRenegade
-function C_AchievementManagerMixin:IsHideForRenegade( entry )
-    return ACHIEVEMENTS_FACTIONDATA[entry] and ACHIEVEMENTS_FACTIONDATA[entry][E_ACHIEVEMENTS_FACTIONDATA.ISRENEGADE_HIDE]
-end
-
----@param entry number
----@return boolean isAchievementValid
-function C_AchievementManagerMixin:ValidationFaction( entry )
-	local achievementFactionID = self:GetAchievementFactionID(entry)
-
-	if not achievementFactionID then
-		if ACHIEVEMENTS_FACTION_CHANGE[entry] then
+	if achievementFactionFlag then
+		local factionName = UnitFactionGroup("player")
+		local factionFlag = ACHIEVEMENTS_FACTION_FLAG[factionName]
+		return bitband(achievementFactionFlag, factionFlag) ~= 0
+	else
+		if ACHIEVEMENTS_FACTION_CHANGE[achievementID] then
 			local factionID = C_FactionManager.GetFactionInfoOriginal()
 			if factionID == PLAYER_FACTION_GROUP.Neutral then
 				return false
 			else
-				return factionID == ACHIEVEMENTS_FACTION_CHANGE[entry]
+				return factionID == ACHIEVEMENTS_FACTION_CHANGE[achievementID]
 			end
-		else
-			return true
-		end
-	elseif (achievementFactionID ~= 2 and C_Unit.GetServerFactionID("player") ~= achievementFactionID) then
-		return false
-	elseif achievementFactionID == 2 and not C_Service.IsRenegadeRealm() then
-		return false
-	else
-		local isRenegade = C_Unit.IsRenegade("player")
-		local isHideForRenegade = self:IsHideForRenegade(entry)
-
-		if (isRenegade and isHideForRenegade) or (not isRenegade and not isHideForRenegade) then
-			return false
 		end
 	end
 
 	return true
 end
 
----@overload fun(achievementID:integer):...
----@overload fun(categoryID:table, index:integer):...
-function C_AchievementManagerMixin:GetAchievementInfo(categoryID, index)
+PRIVATE.GetAchievementInfo = function(categoryID, index)
+	if type(categoryID) == "string" then
+		categoryID = tonumber(categoryID)
+	end
 	if type(categoryID) ~= "number" then
 		error("Usage: GetAchievementInfo(achievementID)", 3)
 	end
 
-    if AchievementFrame and not AchievementFrame:IsShown() then
-		return self._GetAchievementInfo(categoryID, index)
-    end
+	if AchievementFrame and not AchievementFrame:IsShown() then
+		return GetAchievementInfo(categoryID, index)
+	end
 
+	if type(index) == "string" then
+		index = tonumber(index)
+	end
 	if type(index) ~= "number" then
-		return self._GetAchievementInfo(categoryID) -- achievementID
+		return GetAchievementInfo(categoryID) -- achievementID
 	else
-		local storage = self.storage[categoryID] and self.storage[categoryID][index]
-        if storage then
-            return unpack(storage, 1, 11)
-        else
-			return self._GetAchievementInfo(categoryID, index)
-        end
-    end
+		local storage = PRIVATE.storage[categoryID] and PRIVATE.storage[categoryID][index]
+		if storage then
+			return unpack(storage, 1, 11)
+		else
+			return GetAchievementInfo(categoryID, index)
+		end
+	end
 end
 
----@param categoryID number
----@return number totalAchievement
----@return number completedAchievement
-function C_AchievementManagerMixin:GetCategoryNumAchievements( categoryID )
-    if AchievementFrame and not AchievementFrame:IsShown() then
-        return self._GetCategoryNumAchievements(categoryID)
-    end
+PRIVATE.GetCategoryNumAchievements = function(categoryID)
+	if type(categoryID) ~= "number" then
+		error("Usage: GetCategoryNumAchievements(categoryID)", 3)
+	end
 
-    if not self.storage[categoryID] then
-        self.storage[categoryID] = {}
-        self.counter[categoryID] = {total = 0, completed = 0}
+	if AchievementFrame and not AchievementFrame:IsShown() then
+		return GetCategoryNumAchievements(categoryID)
+	end
 
-        for i = 1, self._GetCategoryNumAchievements(categoryID) do
-            local entry, name, points, completed, month, day, year, description, flags, icon, rewardText = self._GetAchievementInfo(categoryID, i)
+	local category = PRIVATE.storage[categoryID]
+	if not category then
+		category = {total = 0, completed = 0}
 
-            if self:ValidationFaction(entry) then
-				self.counter[categoryID].total = self.counter[categoryID].total + 1
+		for i = 1, GetCategoryNumAchievements(categoryID) do
+			local achievementID, name, points, completed, month, day, year, description, flags, icon, rewardText = GetAchievementInfo(categoryID, i)
+
+			if PRIVATE.IsAvailableForPlayerFaction(achievementID) then
+				category.total = category.total + 1
 
 				if completed then
-					self.counter[categoryID].completed = self.counter[categoryID].completed + 1
+					category.completed = category.completed + 1
 				end
 
 				if IsGMAccount() or IsDevClient() then
-                    name = entry .. " - " .. name
-                end
+					name = strconcat(achievementID, " - ", name)
+				end
 
-                table.insert(self.storage[categoryID], {entry, name, points, completed, month, day, year, description, flags, icon, rewardText})
-            end
-        end
-    end
+				tinsert(category, {achievementID, name, points, completed, month, day, year, description, flags, icon, rewardText})
+			end
+		end
 
-    return self.counter[categoryID].total, self.counter[categoryID].completed
+		PRIVATE.storage[categoryID] = category
+	end
+
+	return category.total, category.completed
 end
 
----@class C_AchievementManager : C_AchievementManagerMixin
-C_AchievementManager = CreateFromMixins(C_AchievementManagerMixin)
-C_AchievementManager:OnLoad()
-
-function GetAchievementInfo(categoryID, index)
-	return C_AchievementManager:GetAchievementInfo(categoryID, index)
+_G.GetAchievementInfo = function(categoryID, index)
+	return PRIVATE.GetAchievementInfo(categoryID, index)
 end
 
-function GetCategoryNumAchievements( categoryID )
-    return C_AchievementManager:GetCategoryNumAchievements(categoryID)
+_G.GetCategoryNumAchievements = function(categoryID)
+	return PRIVATE.GetCategoryNumAchievements(categoryID)
 end

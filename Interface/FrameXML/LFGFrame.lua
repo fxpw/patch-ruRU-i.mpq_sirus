@@ -38,7 +38,7 @@ LFG_INSTANCE_INVALID_CODES = { --Any other codes are unspecified conditions (e.g
 	[1002] = "LEVEL_TOO_HIGH",
 	[1022] = "QUEST_NOT_COMPLETED",
 	[1025] = "MISSING_ITEM",
-	
+
 }
 
 LFG_ROLE_SHORTAGE_RARE = 1;
@@ -58,10 +58,10 @@ function LFGEventFrame_OnLoad(self)
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 	self:RegisterEvent("LFG_LOCK_INFO_RECEIVED");
 	self:RegisterEvent("PARTY_MEMBERS_CHANGED");
-	
+
 	self:RegisterEvent("LFG_OFFER_CONTINUE");
 	self:RegisterEvent("LFG_ROLE_CHECK_ROLE_CHOSEN");
-	
+
 	--These just update states (roles changeable, buttons clickable, etc.)
 	self:RegisterEvent("LFG_PROPOSAL_UPDATE");
 	self:RegisterEvent("LFG_PROPOSAL_SHOW");
@@ -101,16 +101,16 @@ function LFGEventFrame_OnEvent(self, event, ...)
 
 		--Yes, consecutive string concatenation == bad for garbage collection. But the alternative is either extremely unslightly or localization unfriendly. (Also, this happens fairly rarely)
 		local roleList;
-		
+
 		--Horrible hack to deal with a bug in embedded font strings. FIXME
 		--The more icons with absolute sizes in a certain fontstring, the higher up the text goes. This offsets it to make the icons be in line with the text.
 		local numRoles = (isTank and 1 or 0) + (isHealer and 1 or 0) + (isDamage and 1 or 0);
 		local yOffset = 2*(numRoles-1)-2;	--Formula derived through testing.
-		
+
 		local tankIcon = format(tankIcon, yOffset);
 		local healerIcon = format(healerIcon, yOffset);
 		local damageIcon = format(damageIcon, yOffset);
-		
+
 		if ( isTank ) then
 			roleList = tankIcon.." "..TANK;
 		end
@@ -131,7 +131,7 @@ function LFGEventFrame_OnEvent(self, event, ...)
 		assert(roleList);
 		ChatFrame_DisplayUsageError(string.format(LFG_ROLE_CHECK_ROLE_CHOSEN, player, roleList));
 	end
-	
+
 	LFG_UpdateRolesChangeable();
 	LFG_UpdateFindGroupButtons();
 	LFG_UpdateLockedOutPanels();
@@ -140,13 +140,13 @@ end
 
 function LFG_UpdateLockedOutPanels()
 	local mode, submode = GetLFGMode();
-	
+
 	if ( mode == "listed" ) then
 		LFDQueueFrameNoLFDWhileLFR:Show();
 	else
 		LFDQueueFrameNoLFDWhileLFR:Hide();
 	end
-	
+
 	if ( mode == "queued" or mode == "proposal" or mode == "rolecheck" ) then
 		LFRQueueFrameNoLFRWhileLFD:Show();
 	else
@@ -228,7 +228,7 @@ end
 
 function LFG_UpdateAvailableRoles()
 	local canBeTank, canBeHealer, canBeDPS = GetAvailableRoles();
-	
+
 	if ( canBeTank ) then
 		LFG_EnableRoleButton(LFDQueueFrameRoleButtonTank);
 		LFG_EnableRoleButton(LFRQueueFrameRoleButtonTank);
@@ -238,7 +238,7 @@ function LFG_UpdateAvailableRoles()
 		LFG_PermanentlyDisableRoleButton(LFRQueueFrameRoleButtonTank);
 		LFG_PermanentlyDisableRoleButton(LFDRoleCheckPopupRoleButtonTank);
 	end
-	
+
 	if ( canBeHealer ) then
 		LFG_EnableRoleButton(LFDQueueFrameRoleButtonHealer);
 		LFG_EnableRoleButton(LFRQueueFrameRoleButtonHealer);
@@ -248,7 +248,7 @@ function LFG_UpdateAvailableRoles()
 		LFG_PermanentlyDisableRoleButton(LFRQueueFrameRoleButtonHealer);
 		LFG_PermanentlyDisableRoleButton(LFDRoleCheckPopupRoleButtonHealer);
 	end
-	
+
 	if ( canBeDPS ) then
 		LFG_EnableRoleButton(LFDQueueFrameRoleButtonDPS);
 		LFG_EnableRoleButton(LFRQueueFrameRoleButtonDPS);
@@ -258,7 +258,7 @@ function LFG_UpdateAvailableRoles()
 		LFG_PermanentlyDisableRoleButton(LFRQueueFrameRoleButtonDPS);
 		LFG_PermanentlyDisableRoleButton(LFDRoleCheckPopupRoleButtonDPS);
 	end
-	
+
 	local canChangeLeader = (GetNumPartyMembers() == 0 or IsPartyLeader()) and (GetNumRaidMembers() == 0 or IsRaidLeader());
 	if ( canChangeLeader ) then
 		LFG_EnableRoleButton(LFDQueueFrameRoleButtonLeader);
@@ -269,17 +269,17 @@ end
 
 function LFG_UpdateRoleCheckboxes()
 	local leader, tank, healer, dps = GetLFGRoles();
-	
+
 	LFDQueueFrameRoleButtonLeader.checkButton:SetChecked(leader);
-	
+
 	LFDQueueFrameRoleButtonTank.checkButton:SetChecked(tank);
 	LFRQueueFrameRoleButtonTank.checkButton:SetChecked(tank);
 	LFDRoleCheckPopupRoleButtonTank.checkButton:SetChecked(tank);
-	
+
 	LFDQueueFrameRoleButtonHealer.checkButton:SetChecked(healer);
 	LFRQueueFrameRoleButtonHealer.checkButton:SetChecked(healer);
 	LFDRoleCheckPopupRoleButtonHealer.checkButton:SetChecked(healer);
-	
+
 	LFDQueueFrameRoleButtonDPS.checkButton:SetChecked(dps);
 	LFRQueueFrameRoleButtonDPS.checkButton:SetChecked(dps);
 	LFDRoleCheckPopupRoleButtonDPS.checkButton:SetChecked(dps);
@@ -324,13 +324,13 @@ function LFG_UpdateRolesChangeable()
 	if ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "proposal" ) then
 		LFG_DisableRoleButton(LFDQueueFrameRoleButtonTank, true);
 		LFG_DisableRoleButton(LFRQueueFrameRoleButtonTank, true);
-		
+
 		LFG_DisableRoleButton(LFDQueueFrameRoleButtonHealer, true);
 		LFG_DisableRoleButton(LFRQueueFrameRoleButtonHealer, true);
-		
+
 		LFG_DisableRoleButton(LFDQueueFrameRoleButtonDPS, true);
 		LFG_DisableRoleButton(LFRQueueFrameRoleButtonDPS, true);
-		
+
 		LFG_DisableRoleButton(LFDQueueFrameRoleButtonLeader, true);
 	else
 		LFG_UpdateAvailableRoles();
@@ -368,35 +368,35 @@ function LFGSpecificChoiceEnableButton_SetIsRadio(button, isRadio)
 		button:SetSize(17, 17)
 		button:SetNormalTexture("Interface\\Buttons\\UI-RadioButton");
 		button:GetNormalTexture():SetTexCoord(0, 0.25, 0, 1);
-		
+
 		button:SetHighlightTexture("Interface\\Buttons\\UI-RadioButton");
 		button:GetHighlightTexture():SetTexCoord(0.5, 0.75, 0, 1);
-		
+
 		button:SetCheckedTexture("Interface\\Buttons\\UI-RadioButton");
 		button:GetCheckedTexture():SetTexCoord(0.25, 0.5, 0, 1);
-		
+
 		button:SetPushedTexture("Interface\\Buttons\\UI-RadioButton");
 		button:GetPushedTexture():SetTexCoord(0, 0.25, 0, 1);
-		
+
 		button:SetDisabledCheckedTexture("Interface\\Buttons\\UI-RadioButton");
 		button:GetDisabledCheckedTexture():SetTexCoord(0.75, 1, 0, 1);
 	else
 		button:SetSize(20, 20);
 		button:SetNormalTexture("Interface\\Buttons\\UI-CheckBox-Up");
 		button:GetNormalTexture():SetTexCoord(0, 1, 0, 1);
-		
+
 		button:SetHighlightTexture("Interface\\Buttons\\UI-CheckBox-Highlight");
 		button:GetHighlightTexture():SetTexCoord(0, 1, 0, 1);
-		
+
 		button:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check");
 		button:GetCheckedTexture():SetTexCoord(0, 1, 0, 1);
-		
+
 		button:SetPushedTexture("Interface\\Buttons\\UI-CheckBox-Down");
 		button:GetPushedTexture():SetTexCoord(0, 1, 0, 1);
-		
+
 		button:SetDisabledCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check-Disabled");
 		button:GetDisabledCheckedTexture():SetTexCoord(0, 1, 0, 1);
-	end	
+	end
 end
 
 --More functions
@@ -404,7 +404,7 @@ end
 function GetBackgroundTexCoordsForRole(role)
 	local textureHeight, textureWidth = 128, 256;
 	local roleHeight, roleWidth = 75, 75;
-	
+
 	if ( role == "TANK" ) then
 		return GetTexCoordsByGrid(2, 1, textureWidth, textureHeight, roleWidth, roleHeight);
 	elseif ( role == "HEALER" ) then
@@ -433,16 +433,48 @@ function LFGIsIDHeader(id)
 	return id < 0;
 end
 
+local dungeonListByHeaderType = {}
+function LFGGetDungeonListByHeaderID(headerID)
+	return dungeonListByHeaderType[headerID]
+end
+
 -------List filtering functions-----------
 local hasSetUp = false;
 function LFGDungeonList_Setup()
 	if ( not hasSetUp ) then
 		hasSetUp = true;
 		LFGDungeonInfo = GetLFDChoiceInfo(LFGDungeonInfo);	--This will never change (without a patch).
+
+		LFGCollapseList = GetLFDChoiceCollapseState(LFGCollapseList);
+		local collapsedHeaders = {};
+		for id, isCollapse in pairs(LFGCollapseList) do
+			if isCollapse and id < 0 then
+				SetLFGHeaderCollapsed(id, false);
+				table.insert(collapsedHeaders, id);
+			end
+		end
+		LFDDungeonList = GetLFDChoiceOrder(LFDDungeonList);
+		local currentHeaderID;
+		for _, id in ipairs(LFDDungeonList) do
+			if id < 0 then
+				currentHeaderID = -id;
+				dungeonListByHeaderType[currentHeaderID] = {};
+			else
+				if currentHeaderID and dungeonListByHeaderType[currentHeaderID] then
+					table.insert(dungeonListByHeaderType[currentHeaderID], id);
+				else
+					pcall(GMError, string.format("HeaderID not found for dungeonID %i", id));
+				end
+			end
+		end
+		for _, id in ipairs(collapsedHeaders) do
+			SetLFGHeaderCollapsed(id, true);
+		end
+
 		LFGCollapseList = GetLFDChoiceCollapseState(LFGCollapseList);	--We maintain this list in Lua
 		LFGEnabledList = GetLFDChoiceEnabledState(LFGEnabledList);	--We maintain this list in Lua
 		LFGLockList = GetLFDChoiceLockedState(LFGLockList);
-		
+
 		LFDQueueFrame_Update();
 		LFRQueueFrame_Update();
 		return true;
@@ -454,18 +486,18 @@ function LFGQueueFrame_UpdateLFGDungeonList(dungeonList, hiddenByCollapseList, l
 	if ( LFGDungeonList_Setup() ) then
 		return;
 	end
-	
+
 	table.wipe(hiddenByCollapseList);
-	
+
 	--1. Remove all choices that don't match the filter.
 	LFGListFilterChoices(dungeonList, dungeonInfo, filter);
-	
+
 	--2. Remove all headers that have no entries below them.
 	LFGListRemoveHeadersWithoutChildren(dungeonList);
-	
+
 	--3. Update the enabled state of headers.
 	LFGListUpdateHeaderEnabledAndLockedStates(dungeonList, enableList, lockList, hiddenByCollapseList);
-	
+
 	--4. Move the children of collapsed headers into the hiddenByCollapse list.
 	LFGListRemoveCollapsedChildren(dungeonList, collapseList, hiddenByCollapseList);
 end

@@ -13,6 +13,7 @@ ATTACHMENTS_PER_ROW_RECEIVE = 7;
 ATTACHMENTS_MAX_ROWS_RECEIVE = 3;
 STATIONERY_PATH = "Interface\\Stationery\\";
 MAX_COD_AMOUNT = 10000;
+MAX_SEND_AMOUNT = 214000
 SEND_MAIL_TAB_LIST = {};
 SEND_MAIL_TAB_LIST[1] = "SendMailNameEditBox";
 SEND_MAIL_TAB_LIST[2] = "SendMailSubjectEditBox";
@@ -1110,13 +1111,31 @@ function SendMailFrame_CanSend()
 		-- COD must be less than 10000 gold
 		if ( MoneyInputFrame_GetCopper(SendMailMoney) > MAX_COD_AMOUNT * COPPER_PER_GOLD ) then
 			if ( ENABLE_COLORBLIND_MODE ~= "1" ) then
+				SendMailErrorText:SetFormattedText(MAIL_COD_ERROR, MAX_COD_AMOUNT);
 				SendMailErrorCoin:Show();
+			else
+				SendMailErrorText:SetFormattedText(MAIL_COD_ERROR_COLORBLIND, MAX_COD_AMOUNT, GOLD_AMOUNT_SYMBOL);
 			end
 			SendMailErrorText:Show();
 		else
 			SendMailErrorText:Hide();
 			SendMailErrorCoin:Hide();
 			checks = checks + 1;
+		end
+	else
+		checksRequired = checksRequired + 1
+		if MoneyInputFrame_GetCopper(SendMailMoney) > MAX_SEND_AMOUNT * COPPER_PER_GOLD then
+			if ( ENABLE_COLORBLIND_MODE ~= "1" ) then
+				SendMailErrorText:SetFormattedText(MAIL_SEND_ERROR, MAX_SEND_AMOUNT);
+				SendMailErrorCoin:Show();
+			else
+				SendMailErrorText:SetFormattedText(MAIL_SEND_ERROR_COLORBLIND, MAX_SEND_AMOUNT, GOLD_AMOUNT_SYMBOL);
+			end
+			SendMailErrorText:Show()
+		else
+			SendMailErrorText:Hide()
+			SendMailErrorCoin:Hide()
+			checks = checks + 1
 		end
 	end
 
@@ -1732,4 +1751,8 @@ function EventHandler:ASMSG_MAIL_LIST_UPDATE( msg )
 
 	UpdateMailButton.disableTime = timer
 	UpdateMailButton:UpdateState()
+end
+
+function EventHandler:ASMSG_MAILBOX_CLOSE(msg)
+	HideUIPanel(MailFrame)
 end

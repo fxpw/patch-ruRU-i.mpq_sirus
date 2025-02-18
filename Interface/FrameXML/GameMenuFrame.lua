@@ -1,14 +1,8 @@
---	Filename:	GameMenuFrame.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 function GameMenuFrame_OnShow(self)
 	UpdateMicroButtons();
 	Disable_BagButtons();
 
-	GameMenuButtonStore:SetEnabled(IsStoreEnable())
+	GameMenuButtonStore:SetEnabled(C_StorePublic.IsEnabled())
 
 	if GameMenuButtonStore:IsEnabled() == 1 then
 		GameMenuButtonStore:SetText(GAMEMENU_STORE)
@@ -17,6 +11,8 @@ function GameMenuFrame_OnShow(self)
 	end
 
 	GameMenuFrame_UpdateVisibleButtons(self);
+
+	EventRegistry:TriggerEvent("GameMenuFrame.OnShow")
 end
 
 function GameMenuFrame_UpdateVisibleButtons(self)
@@ -26,7 +22,7 @@ function GameMenuFrame_UpdateVisibleButtons(self)
 	local buttonToReanchor = GameMenuButtonWhatsNew;
 	local reanchorYOffset = -1;
 
-	if ( true ) then
+	if not C_ServerNews.CanViewNews() then
 		GameMenuButtonWhatsNew:Hide();
 		height = height - 20;
 		buttonToReanchor = GameMenuButtonOptions;
@@ -38,21 +34,23 @@ function GameMenuFrame_UpdateVisibleButtons(self)
 
 	height = height + 20;
 	GameMenuButtonStore:Show();
-	buttonToReanchor:SetPoint("TOP", GameMenuButtonPromoCodes, "BOTTOM", 0, reanchorYOffset);
+	buttonToReanchor:SetPoint("TOP", GameMenuButtonPromoCode, "BOTTOM", 0, reanchorYOffset);
 
-	-- if ( not GameMenuButtonRatings:IsShown() and GetNumAddOns() == 0 ) then
-	-- 	GameMenuButtonLogout:SetPoint("TOP", GameMenuButtonMacros, "BOTTOM", 0, -16);
-	-- else
-	-- 	if ( GetNumAddOns() ~= 0 ) then
-	-- 		height = height + 20;
-	-- 		GameMenuButtonLogout:SetPoint("TOP", GameMenuButtonAddons, "BOTTOM", 0, -16);
-	-- 	end
+--[[
+	if ( not GameMenuButtonRatings:IsShown() and GetNumAddOns() == 0 ) then
+	 	GameMenuButtonLogout:SetPoint("TOP", GameMenuButtonMacros, "BOTTOM", 0, -16);
+	else
+		if ( GetNumAddOns() ~= 0 ) then
+	 		height = height + 20;
+	 		GameMenuButtonLogout:SetPoint("TOP", GameMenuButtonAddons, "BOTTOM", 0, -16);
+	 	end
 
-	-- 	if ( GameMenuButtonRatings:IsShown() ) then
-	-- 		height = height + 20;
-	-- 		GameMenuButtonLogout:SetPoint("TOP", GameMenuButtonRatings, "BOTTOM", 0, -16);
-	-- 	end
-	-- end
+	 	if ( GameMenuButtonRatings:IsShown() ) then
+	 		height = height + 20;
+	 		GameMenuButtonLogout:SetPoint("TOP", GameMenuButtonRatings, "BOTTOM", 0, -16);
+	 	end
+	end
+--]]
 
 	GameMenuButtonLogout:SetPoint("TOP", GameMenuButtonMacros, "BOTTOM", 0, -16);
 

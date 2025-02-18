@@ -28,6 +28,23 @@ function LookingForGuildMixin:OnLoad()
 	self:RegisterCustomEvent("LF_GUILD_BROWSE_UPDATED");
 	self:RegisterCustomEvent("LF_GUILD_MEMBERSHIP_LIST_UPDATED");
 	self:RegisterCustomEvent("LF_GUILD_MEMBERSHIP_LIST_CHANGED");
+
+	self.helpPlateSearch = {
+		FramePos = { x = 0, y = -24 },
+		FrameSize = { width = 614, height = 402 },
+		[1] = { ButtonPos = { x = 107, y = -5 }, HighLightBox = { x = 58, y = -1, width = 144, height = 54 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_LOOKING_FOR_GUILD_SEARCH_TUTORIAL_1 },
+		[2] = { ButtonPos = { x = 238, y = -5 }, HighLightBox = { x = 208, y = -1, width = 106, height = 54 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_LOOKING_FOR_GUILD_SEARCH_TUTORIAL_2 },
+		[3] = { ButtonPos = { x = 360, y = -5 }, HighLightBox = { x = 319, y = -1, width = 129, height = 54 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_LOOKING_FOR_GUILD_SEARCH_TUTORIAL_3 },
+		[4] = { ButtonPos = { x = 506, y = -5 }, HighLightBox = { x = 450, y = -1, width = 158, height = 54 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_LOOKING_FOR_GUILD_SEARCH_TUTORIAL_4 },
+		[5] = { ButtonPos = { x = 583, y = -190 }, HighLightBox = { x = 6, y = -58, width = 601, height = 316 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_LOOKING_FOR_GUILD_SEARCH_TUTORIAL_5 },
+	}
+	self.helpPlateRequests = {
+		FramePos = { x = 0, y = -24 },
+		FrameSize = { width = 614, height = 402 },
+		[1] = { ButtonPos = { x = 158, y = -46 }, HighLightBox = { x = 167, y = -74, width = 28, height = 28 }, ToolTipDir = "UP", ToolTipText = HEPLPLATE_LOOKING_FOR_GUILD_REQUESTS_TUTORIAL_1 },
+		[2] = { ButtonPos = { x = 164, y = -295 }, HighLightBox = { x = 28, y = -306, width = 158, height = 24 }, ToolTipDir = "DOWN", ToolTipText = HEPLPLATE_LOOKING_FOR_GUILD_REQUESTS_TUTORIAL_2 },
+		[3] = { ButtonPos = { x = 583, y = -190 }, HighLightBox = { x = 206, y = -58, width = 401, height = 316 }, ToolTipDir = "RIGHT", ToolTipText = HEPLPLATE_LOOKING_FOR_GUILD_REQUESTS_TUTORIAL_3 },
+	}
 end
 
 function LookingForGuildMixin:OnEvent(event, ...)
@@ -68,10 +85,22 @@ function LookingForGuildMixin:OnShow()
 	self.selectedTab = 1;
 
 	self:UpdateType();
+
+	EventRegistry:TriggerEvent("LookingForGuild.OnShow")
 end
 
 function LookingForGuildMixin:OnHide()
+	HelpPlate_Hide(false)
 	UpdateMicroButtons();
+end
+
+function LookingForGuildMixin:ToggleTutorial()
+	local helpPlate = self.selectedTab == 1 and self.helpPlateSearch or self.helpPlateRequests
+	if not HelpPlate_IsShowing(helpPlate) then
+		HelpPlate_Show(helpPlate, self, self.TutorialButton)
+	else
+		HelpPlate_Hide(true)
+	end
 end
 
 function LookingForGuildMixin:UpdatePendingTab()
@@ -97,7 +126,7 @@ function LookingForGuildMixin:UpdateType()
 	self:GetDisplayModeBasedOnSelectedTab();
 end
 
-function LookingForGuildMixin:GetDisplayModeBasedOnSelectedTab()
+function LookingForGuildMixin:GetDisplayModeBasedOnSelectedTab(changed)
 	local isInGuild = IsInGuild();
 
 	local isSearchTabSelected = self.selectedTab == 1;
@@ -115,6 +144,10 @@ function LookingForGuildMixin:GetDisplayModeBasedOnSelectedTab()
 	self.OptionsList:SetOptionsState(not isSearchTabSelected);
 
 	self.InsetFrame.GuildDescription:SetText(LOOKING_FOR_GUILD_NO_OPTIONS_SELECTED_GUILD_MESSAGE);
+
+	if changed then
+		HelpPlate_Hide(false)
+	end
 end
 
 LookingForGuildOptionsMixin = {};
@@ -241,6 +274,10 @@ function LookingForGuildCardMixin:RequestToJoinClub()
 	self:GetParent():GetParent().RequestToJoinFrame:Initialize();
 end
 
+function LookingForGuildCardMixin:JoinClub()
+	AcceptGuildMembership(self.cardIndex)
+end
+
 function LookingForGuildCardMixin:UpdateCard()
 	local isPendingCard = self:GetParent().isPendingCards;
 
@@ -254,7 +291,7 @@ function LookingForGuildCardMixin:UpdateCard()
 		emblemStyle, emblemColor, emblemBorderStyle, emblemBorderColor, emblemBackgroundColor = GetRecruitingGuildTabardInfo(self.cardIndex);
 		bQuest, bDungeon, bRaid, bPvP, bRP, bWeekdays, bWeekends, bTank, bHealer, bDamage = GetRecruitingGuildSettings(self.cardIndex);
 	else
-		name, level, numMembers, comment, timeSince, timeLeft, declined = GetGuildMembershipRequestInfo(self.cardIndex);
+		name, level, numMembers, comment, timeSince, timeLeft, declined, hasInvite = GetGuildMembershipRequestInfo(self.cardIndex);
 		emblemStyle, emblemColor, emblemBorderStyle, emblemBorderColor, emblemBackgroundColor = GetGuildMembershipRequestTabardInfo(self.cardIndex);
 		bQuest, bDungeon, bRaid, bPvP, bRP, bWeekdays, bWeekends, bTank, bHealer, bDamage = GetGuildMembershipRequestSettings(self.cardIndex);
 	end
@@ -304,11 +341,13 @@ function LookingForGuildCardMixin:UpdateCard()
 	end
 
 	if requestPending then
+		self.Join:Hide()
 		self.RequestJoin:Hide();
 		self.RequestStatus:Show();
 		self.RequestStatus:SetTextColor(GREEN_FONT_COLOR:GetRGB());
 		self.RequestStatus:SetText(GUILD_MEMBERSHIP_REQUEST_SENT);
 	elseif timeLeft then
+		self.Join:SetShown(hasInvite)
 		self.RequestJoin:Hide();
 		self.RequestStatus:Show();
 		self.RequestStatus:SetTextColor(GREEN_FONT_COLOR:GetRGB());
@@ -320,8 +359,19 @@ function LookingForGuildCardMixin:UpdateCard()
 			self.RequestStatus:SetFormattedText(GUILD_FINDER_DAYS_LEFT, daysLeft);
 		end
 	else
+		self.Join:Hide()
 		self.RequestJoin:SetShown(not IsInGuild());
 		self.RequestStatus:Hide();
+	end
+
+	if timeLeft and hasInvite then
+		self.Description:SetHeight(70)
+		self.Description:SetPoint("BOTTOM", self.GuildBannerBorder, "BOTTOM", 0, -98)
+		self.RequestStatus:SetPoint("BOTTOM", 0, -10)
+	else
+		self.Description:SetHeight(95)
+		self.Description:SetPoint("BOTTOM", self.GuildBannerBorder, "BOTTOM", 0, -123)
+		self.RequestStatus:SetPoint("BOTTOM", 0, -35)
 	end
 
 	self.RemoveButton:SetShown(isPendingCard);
@@ -330,8 +380,8 @@ end
 function LookingForGuildCardMixin:OnEnter()
 	local isPendingCard = self:GetParent().isPendingCards;
 
-	local name, level, numMembers, comment;
-	local _, bTank, bHealer, bDamage, bMorning, bDay, bEvening, bNight;
+	local name, level, numMembers, comment, requestPending;
+	local _, bWeekdays, bWeekends, bTank, bHealer, bDamage, bMorning, bDay, bEvening, bNight, timeSince, timeLeft, declined;
 
 	if not isPendingCard then
 		name, level, numMembers, comment, requestPending = GetRecruitingGuildInfo(self.cardIndex);

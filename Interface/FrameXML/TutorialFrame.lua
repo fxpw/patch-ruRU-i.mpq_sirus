@@ -970,8 +970,10 @@ end
 function HelpPlate_ShowTutorialPrompt( self, mainHelpButton )
 	mainHelpButton.initialTutorial = true;
 	Main_HelpPlate_Button_ShowTooltip(mainHelpButton);
+	if HelpPlateTooltip.LingerAndFade:IsPlaying() then
+		HelpPlateTooltip.LingerAndFade:Stop()
+	end
 	HelpPlateTooltip.LingerAndFade:Play();
-
 end
 
 local HELP_PLATE_CURRENT_PLATE = nil;
@@ -1065,6 +1067,10 @@ function HelpPlate_IsShowing(plate)
 end
 
 function Main_HelpPlate_Button_OnEnter(self)
+	if HelpPlateTooltip.LingerAndFade:IsPlaying() then
+		HelpPlateTooltip.LingerAndFade:Stop()
+		HelpPlateTooltip.BG:SetGradient("VERTICAL", 0.23, 0.19, 0, 0, 0, 0)
+	end
 	Main_HelpPlate_Button_ShowTooltip(self);
 end
 

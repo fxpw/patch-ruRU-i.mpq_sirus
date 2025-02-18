@@ -2,68 +2,77 @@
 ..\FrameXML\UI.xsd">
     <Script file="CharacterFrame.lua"/>
 
+	<Texture name="Char-Stat-Plus" file="Interface\CharacterFrame\Char-Paperdoll-Parts" virtual="true">
+		<Size x="7" y="7"/>
+		<TexCoords left="0.40625000" right="0.43359375" top="0.87500000" bottom="0.92968750"/>
+	</Texture>
+	<Texture name="Char-Stat-Minus" file="Interface\CharacterFrame\Char-Paperdoll-Parts" virtual="true">
+		<Size x="7" y="3"/>
+		<TexCoords left="0.00390625" right="0.03125000" top="0.95312500" bottom="0.97656250"/>
+	</Texture>
+
     <Texture name="Char-Stat-Bottom" file="Interface\CharacterFrame\Char-Paperdoll-Parts" virtual="true" >
-        <Size x="169" y="46"/>  
-        <TexCoords left="0.00390625" right="0.66406250" top="0.00781250" bottom="0.36718750"/>  
+        <Size x="169" y="46"/>
+        <TexCoords left="0.00390625" right="0.66406250" top="0.00781250" bottom="0.36718750"/>
     </Texture>
     <Texture name="Char-Stat-Minimized" file="Interface\CharacterFrame\Char-Paperdoll-Parts" virtual="true" >
-        <Size x="169" y="14"/>  
-        <TexCoords left="0.00390625" right="0.66406250" top="0.38281250" bottom="0.49218750"/>  
+        <Size x="169" y="14"/>
+        <TexCoords left="0.00390625" right="0.66406250" top="0.38281250" bottom="0.49218750"/>
     </Texture>
     <Texture name="Char-RightSlot" file="Interface\CharacterFrame\Char-Paperdoll-Parts" virtual="true" >
-        <Size x="50" y="44"/>   
-        <TexCoords left="0.00390625" right="0.19921875" top="0.59375000" bottom="0.93750000"/>  
+        <Size x="50" y="44"/>
+        <TexCoords left="0.00390625" right="0.19921875" top="0.59375000" bottom="0.93750000"/>
     </Texture>
     <Texture name="Char-LeftSlot" file="Interface\CharacterFrame\Char-Paperdoll-Parts" virtual="true" >
-        <Size x="49" y="44"/>   
-        <TexCoords left="0.20703125" right="0.39843750" top="0.59375000" bottom="0.93750000"/>  
+        <Size x="49" y="44"/>
+        <TexCoords left="0.20703125" right="0.39843750" top="0.59375000" bottom="0.93750000"/>
     </Texture>
     <Texture name="Char-Corner-LowerRight" file="Interface\CharacterFrame\Char-Paperdoll-Parts" virtual="true" >
-        <Size x="7" y="7"/> 
-        <TexCoords left="0.40625000" right="0.43359375" top="0.59375000" bottom="0.64843750"/>  
+        <Size x="7" y="7"/>
+        <TexCoords left="0.40625000" right="0.43359375" top="0.59375000" bottom="0.64843750"/>
     </Texture>
     <Texture name="Char-Corner-LowerLeft" file="Interface\CharacterFrame\Char-Paperdoll-Parts" virtual="true" >
-        <Size x="7" y="7"/> 
-        <TexCoords left="0.40625000" right="0.43359375" top="0.66406250" bottom="0.71875000"/>  
+        <Size x="7" y="7"/>
+        <TexCoords left="0.40625000" right="0.43359375" top="0.66406250" bottom="0.71875000"/>
     </Texture>
     <Texture name="Char-Corner-UpperRight" file="Interface\CharacterFrame\Char-Paperdoll-Parts" virtual="true" >
-        <Size x="7" y="7"/> 
-        <TexCoords left="0.40625000" right="0.43359375" top="0.73437500" bottom="0.78906250"/>  
+        <Size x="7" y="7"/>
+        <TexCoords left="0.40625000" right="0.43359375" top="0.73437500" bottom="0.78906250"/>
     </Texture>
     <Texture name="Char-Corner-UpperLeft" file="Interface\CharacterFrame\Char-Paperdoll-Parts" virtual="true" >
-        <Size x="7" y="7"/> 
-        <TexCoords left="0.40625000" right="0.43359375" top="0.80468750" bottom="0.85937500"/>  
+        <Size x="7" y="7"/>
+        <TexCoords left="0.40625000" right="0.43359375" top="0.80468750" bottom="0.85937500"/>
     </Texture>
     <Texture name="Char-BottomSlot" file="Interface\CharacterFrame\Char-Paperdoll-Parts" virtual="true" >
-        <Size x="42" y="53"/>   
-        <TexCoords left="0.67187500" right="0.83593750" top="0.00781250" bottom="0.42187500"/>  
+        <Size x="42" y="53"/>
+        <TexCoords left="0.67187500" right="0.83593750" top="0.00781250" bottom="0.42187500"/>
     </Texture>
     <Texture name="Char-Slot-Bottom-Right" file="Interface\CharacterFrame\Char-Paperdoll-Parts" virtual="true" >
-        <Size x="7" y="54"/>    
-        <TexCoords left="0.67187500" right="0.69921875" top="0.43750000" bottom="0.85937500"/>  
+        <Size x="7" y="54"/>
+        <TexCoords left="0.67187500" right="0.69921875" top="0.43750000" bottom="0.85937500"/>
     </Texture>
     <Texture name="Char-Slot-Bottom-Left" file="Interface\CharacterFrame\Char-Paperdoll-Parts" virtual="true" >
-        <Size x="6" y="54"/>    
-        <TexCoords left="0.70703125" right="0.73046875" top="0.43750000" bottom="0.85937500"/>  
+        <Size x="6" y="54"/>
+        <TexCoords left="0.70703125" right="0.73046875" top="0.43750000" bottom="0.85937500"/>
     </Texture>
 
     <Texture name="Char-Inner-Bottom" file="Interface\CharacterFrame\Char-Paperdoll-Horizontal" horizTile="true" virtual="true">
-        <Size x="32" y="5"/>    
-        <TexCoords top="0.06250000" bottom="0.37500000"/>   
+        <Size x="32" y="5"/>
+        <TexCoords top="0.06250000" bottom="0.37500000"/>
     </Texture>
     <Texture name="Char-Inner-Top" file="Interface\CharacterFrame\Char-Paperdoll-Horizontal" horizTile="true" virtual="true">
-        <Size x="32" y="5"/>    
-        <TexCoords top="0.50000000" bottom="0.81250000"/>   
+        <Size x="32" y="5"/>
+        <TexCoords top="0.50000000" bottom="0.81250000"/>
     </Texture>
     <Texture name="Char-Inner-Left" file="Interface\CharacterFrame\Char-Paperdoll-Vertical" vertTile="true" virtual="true">
-        <Size x="5" y="32"/>    
-        <TexCoords left="0.06250000" right="0.37500000"/>   
+        <Size x="5" y="32"/>
+        <TexCoords left="0.06250000" right="0.37500000"/>
     </Texture>
     <Texture name="Char-Inner-Right" file="Interface\CharacterFrame\Char-Paperdoll-Vertical" vertTile="true" virtual="true">
-        <Size x="5" y="32"/>    
-        <TexCoords left="0.50000000" right="0.81250000"/>   
+        <Size x="5" y="32"/>
+        <TexCoords left="0.50000000" right="0.81250000"/>
     </Texture>
-    
+
     <Frame name="CharacterFrame" toplevel="true" movable="true" parent="UIParent" hidden="true" inherits="ButtonFrameTemplate">
         <Frames>
             <Button name="CharacterFrameTab1" inherits="CharacterFrameTabButtonTemplate" id="1" text="CHARACTER">

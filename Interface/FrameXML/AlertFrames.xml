@@ -40,7 +40,7 @@
 		<OnLeave function="DungeonCompletionAlertFrameReward_OnLeave"/>
 	</Scripts>
 </Frame>
-	
+
 <Frame name="DungeonCompletionAlertFrameTemplate" parent="UIParent" hidden="true" frameStrata="DIALOG" virtual="true" inherits="AlertFrameTemplate">
 	<Size>
 		<AbsDimension x="336" y="80"/>
@@ -283,7 +283,7 @@
 				</Animations>
 				<TexCoords left="0.78125" right="0.912109375" top="0" bottom="0.28125"/>
 			</Texture>
-		</Layer>		
+		</Layer>
 	</Layers>
 	<Frames>
 		<Frame name="$parentIcon" inherits="AchievementIconFrameTemplate">
@@ -296,8 +296,8 @@
 						<AbsDimension x="-26" y="16"/>
 					</Offset>
 				</Anchor>
-			</Anchors>		
-			<Layers>			
+			</Anchors>
+			<Layers>
 				<Layer level="BACKGROUND">
 					<Texture name="$parentBackfill" file="Interface\AchievementFrame\UI-Achievement-IconFrame-Backfill" hidden="true">
 						<Anchors>
@@ -358,22 +358,22 @@
 					self.bling = _G[name .. "Bling"];
 					self.texture = _G[name .. "Texture"];
 					self.frame = _G[name .. "Overlay"];
-					
-					self.Desaturate = 
-						function (self) 
+
+					self.Desaturate =
+						function (self)
 							self.bling:SetVertexColor(.6, .6, .6, 1);
 							self.frame:SetVertexColor(.75, .75, .75, 1);
 							self.texture:SetVertexColor(.55, .55, .55, 1);
 						end
-						
-					self.Saturate = 
+
+					self.Saturate =
 						function (self)
 							self.bling:SetVertexColor(1, 1, 1, 1);
 							self.frame:SetVertexColor(1, 1, 1, 1);
-							self.texture:SetVertexColor(1, 1, 1, 1);						
+							self.texture:SetVertexColor(1, 1, 1, 1);
 						end
 				</OnLoad>
-			</Scripts>			
+			</Scripts>
 		</Frame>
 		<Frame name="$parentShield">
 			<Size>
@@ -388,7 +388,7 @@
 			</Anchors>
 			<Layers>
 				<Layer level="BACKGROUND">
-					<Texture name="$parentIcon" file="Interface\AchievementFrame\UI-Achievement-Shields">
+					<Texture name="$parentIcon" file="Interface\AchievementFrame\UI-Achievement-Shields" parentKey="icon">
 						<Size>
 							<AbsDimension x="52" y="48"/>
 						</Size>
@@ -403,7 +403,7 @@
 					</Texture>
 				</Layer>
 				<Layer level="OVERLAY">
-					<FontString name="$parentPoints" inherits="GameFontNormal">
+					<FontString name="$parentPoints" inherits="GameFontNormal" parentKey="points">
 						<Anchors>
 							<Anchor point="CENTER">
 								<Offset>
@@ -416,7 +416,7 @@
 						</Size>
 					</FontString>
 				</Layer>
-			</Layers>				
+			</Layers>
 			<Scripts>
 				<OnLoad>
 					AchievementShield_OnLoad(self);

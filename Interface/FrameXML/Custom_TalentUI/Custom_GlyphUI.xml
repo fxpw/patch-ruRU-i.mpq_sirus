@@ -148,28 +148,28 @@
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
-				<Texture name="$parentShadowCornerTopLeft" parentKey="ShadowCornerTopLeft" file="Interface\Store\Collections">
+				<Texture name="$parentShadowCornerTopLeft" parentKey="ShadowCornerTopLeft" file="Interface\Collections\Collections">
 					<Size x="145" y="145"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBackground"/>
 					</Anchors>
 					<TexCoords left="0.181640625" right="0.46484375" top="0.416015625" bottom="0.703125"/>
 				</Texture>
-				<Texture name="$parentShadowCornerTopRight" parentKey="ShadowCornerTopRight" file="Interface\Store\Collections">
+				<Texture name="$parentShadowCornerTopRight" parentKey="ShadowCornerTopRight" file="Interface\Collections\Collections">
 					<Size x="145" y="145"/>
 					<Anchors>
 						<Anchor point="TOPRIGHT" relativeTo="$parentBackground"/>
 					</Anchors>
 					<TexCoords left="0.181640625" right="0.46484375" top="0.416015625" bottom="0.703125"/>
 				</Texture>
-				<Texture name="$parentShadowCornerBottomLeft" parentKey="ShadowCornerBottomLeft" file="Interface\Store\Collections">
+				<Texture name="$parentShadowCornerBottomLeft" parentKey="ShadowCornerBottomLeft" file="Interface\Collections\Collections">
 					<Size x="145" y="145"/>
 					<Anchors>
 						<Anchor point="BOTTOMLEFT" relativeTo="$parentBackground"/>
 					</Anchors>
 					<TexCoords left="0.181640625" right="0.46484375" top="0.416015625" bottom="0.703125"/>
 				</Texture>
-				<Texture name="$parentShadowCornerBottomRight" parentKey="ShadowCornerBottomRight" file="Interface\Store\Collections">
+				<Texture name="$parentShadowCornerBottomRight" parentKey="ShadowCornerBottomRight" file="Interface\Collections\Collections">
 					<Size x="145" y="145"/>
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackground"/>
@@ -177,7 +177,7 @@
 					<TexCoords left="0.181640625" right="0.46484375" top="0.416015625" bottom="0.703125"/>
 				</Texture>
 
-				<Texture parentKey="ShadowCornerTop" file="Interface\Store\Collections">
+				<Texture parentKey="ShadowCornerTop" file="Interface\Collections\Collections">
 					<Size x="145" y="147"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentShadowCornerTopLeft" relativePoint="TOPRIGHT"/>
@@ -185,7 +185,7 @@
 					</Anchors>
 					<TexCoords left="0.181640625" right="0.46484375" top="0.416015625" bottom="0.703125"/>
 				</Texture>
-				<Texture parentKey="ShadowCornerLeft" file="Interface\Store\Collections">
+				<Texture parentKey="ShadowCornerLeft" file="Interface\Collections\Collections">
 					<Size x="145" y="147"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentShadowCornerTopLeft" relativePoint="BOTTOMLEFT"/>
@@ -193,7 +193,7 @@
 					</Anchors>
 					<TexCoords left="0.181640625" right="0.46484375" top="0.416015625" bottom="0.703125"/>
 				</Texture>
-				<Texture parentKey="ShadowCornerRight" file="Interface\Store\Collections">
+				<Texture parentKey="ShadowCornerRight" file="Interface\Collections\Collections">
 					<Size x="145" y="147"/>
 					<Anchors>
 						<Anchor point="TOPRIGHT" relativeTo="$parentShadowCornerTopRight" relativePoint="BOTTOMRIGHT"/>
@@ -201,7 +201,7 @@
 					</Anchors>
 					<TexCoords left="0.181640625" right="0.46484375" top="0.416015625" bottom="0.703125"/>
 				</Texture>
-				<Texture parentKey="ShadowCornerBottom" file="Interface\Store\Collections">
+				<Texture parentKey="ShadowCornerBottom" file="Interface\Collections\Collections">
 					<Size x="145" y="147"/>
 					<Anchors>
 						<Anchor point="BOTTOMLEFT" relativeTo="$parentShadowCornerBottomLeft" relativePoint="BOTTOMRIGHT"/>
@@ -211,28 +211,28 @@
 				</Texture>
 			</Layer>
 			<Layer level="OVERLAY">
-				<Texture name="$parentOverlayShadowTopLeft" parentKey="OverlayShadowTopLeft" file="Interface\Store\Collections">
+				<Texture name="$parentOverlayShadowTopLeft" parentKey="OverlayShadowTopLeft" file="Interface\Collections\Collections">
 					<Size x="13" y="13"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentBackground"/>
 					</Anchors>
 					<TexCoords left="0.181640625" right="0.20703125" top="0.08203125" bottom="0.107421875"/>
 				</Texture>
-				<Texture name="$parentOverlayShadowTopRight" parentKey="OverlayShadowTopRight" file="Interface\Store\Collections">
+				<Texture name="$parentOverlayShadowTopRight" parentKey="OverlayShadowTopRight" file="Interface\Collections\Collections">
 					<Size x="13" y="13"/>
 					<Anchors>
 						<Anchor point="TOPRIGHT" relativeTo="$parentBackground"/>
 					</Anchors>
 					<TexCoords left="0.181640625" right="0.20703125" top="0.08203125" bottom="0.107421875"/>
 				</Texture>
-				<Texture name="$parentOverlayShadowBottomLeft" parentKey="OverlayShadowBottomLeft" file="Interface\Store\Collections">
+				<Texture name="$parentOverlayShadowBottomLeft" parentKey="OverlayShadowBottomLeft" file="Interface\Collections\Collections">
 					<Size x="13" y="13"/>
 					<Anchors>
 						<Anchor point="BOTTOMLEFT" relativeTo="$parentBackground"/>
 					</Anchors>
 					<TexCoords left="0.181640625" right="0.20703125" top="0.08203125" bottom="0.107421875"/>
 				</Texture>
-				<Texture name="$parentOverlayShadowBottomRight" parentKey="OverlayShadowBottomRight" file="Interface\Store\Collections">
+				<Texture name="$parentOverlayShadowBottomRight" parentKey="OverlayShadowBottomRight" file="Interface\Collections\Collections">
 					<Size x="13" y="13"/>
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackground"/>
@@ -240,7 +240,7 @@
 					<TexCoords left="0.181640625" right="0.20703125" top="0.08203125" bottom="0.107421875"/>
 				</Texture>
 
-				<Texture parentKey="OverlayShadowTop" file="Interface\Store\Collections">
+				<Texture parentKey="OverlayShadowTop" file="Interface\Collections\Collections">
 					<Size x="13" y="13"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentOverlayShadowTopLeft" relativePoint="TOPRIGHT" x="0" y="0"/>
@@ -248,7 +248,7 @@
 					</Anchors>
 					<TexCoords left="0.181640625" right="0.20703125" top="0.08203125" bottom="0.107421875"/>
 				</Texture>
-				<Texture parentKey="OverlayShadowLeft" file="Interface\Store\Collections">
+				<Texture parentKey="OverlayShadowLeft" file="Interface\Collections\Collections">
 					<Size x="13" y="13"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentOverlayShadowTopLeft" relativePoint="BOTTOMLEFT"/>
@@ -256,7 +256,7 @@
 					</Anchors>
 					<TexCoords left="0.181640625" right="0.20703125" top="0.08203125" bottom="0.107421875"/>
 				</Texture>
-				<Texture parentKey="OverlayShadowRight" file="Interface\Store\Collections">
+				<Texture parentKey="OverlayShadowRight" file="Interface\Collections\Collections">
 					<Size x="13" y="13"/>
 					<Anchors>
 						<Anchor point="TOPRIGHT" relativeTo="$parentOverlayShadowTopRight" relativePoint="BOTTOMRIGHT"/>
@@ -264,7 +264,7 @@
 					</Anchors>
 					<TexCoords left="0.181640625" right="0.20703125" top="0.08203125" bottom="0.107421875"/>
 				</Texture>
-				<Texture parentKey="OverlayShadowBottom" file="Interface\Store\Collections">
+				<Texture parentKey="OverlayShadowBottom" file="Interface\Collections\Collections">
 					<Size x="13" y="13"/>
 					<Anchors>
 						<Anchor point="BOTTOMLEFT" relativeTo="$parentOverlayShadowBottomLeft" relativePoint="BOTTOMRIGHT" x="0" y="0"/>

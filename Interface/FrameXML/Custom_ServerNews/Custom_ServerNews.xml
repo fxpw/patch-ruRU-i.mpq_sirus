@@ -1,0 +1,580 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_ServerNews.lua"/>
+
+	<Frame name="ServerNewsEntryTemplate" virtual="true">
+		<Size x="200" y="40"/>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentTopLeftFiligree" parentKey="TopLeftFiligree" alphaMode="ADD" alpha=".45" hidden="true">
+					<Size x="46" y="38"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-10" y ="12"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentTopRightFiligree" parentKey="TopRightFiligree" alphaMode="ADD" alpha=".45" hidden="true">
+					<Size x="46" y="38"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="10" y="12"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentSeparator" parentKey="Separator" hidden="true">
+					<Size x="0" y="6"/>
+					<Anchors>
+						<Anchor point="BOTTOM" x="0" y="-5"/>
+						<Anchor point="LEFT" x="10" y="0"/>
+						<Anchor point="RIGHT" x="10" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentTimestamp" parentKey="Timestamp" enableMouse="true">
+				<Size x="3" y="1"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="15" y="-5"/>
+				</Anchors>
+				<HitRectInsets left="-4" right="-4" top="-4" bottom="-4"/>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="$parentText" parentKey="Text" inherits="PKBT_Font_13_NoShadow" justifyH="LEFT" justifyV="MIDDLE" maxLines="1">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+							</Anchors>
+							<Color r="0" g="0" b="0"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnter>
+						if self.tooltipTitle then
+							GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 4, 4)
+							GameTooltip:AddLine(self.tooltipTitle, 1, 1, 1)
+							if self.tooltipText then
+								GameTooltip:AddLine(self.tooltipText, 1, 1, 1)
+							end
+							GameTooltip:Show()
+						end
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Frame>
+			<Frame name="$parentUpdateIndicator" parentKey="UpdateIndicator" enableMouse="true">
+				<Size x="22" y="22"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTimestamp" relativePoint="RIGHT" x="3" y="2"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture name="$parentIcon" parentKey="Icon" setAllPoints="true" alpha="0.7">
+							<Size x="22" y="22"/>
+							<Anchors>
+								<Anchor point="LEFT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnter>
+						if self.tooltipTitle then
+							GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+							GameTooltip:AddLine(self.tooltipTitle, 1, 1, 1)
+							if self.tooltipText then
+								GameTooltip:AddLine(self.tooltipText, 1, 1, 1)
+							end
+							GameTooltip:Show()
+						end
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Frame>
+			<SimpleHTML name="$parentTextContent" parentKey="TextContent" inherits="InlineHyperlinkFrameTemplate" hyperlinkFormat="|cff003ACC|H%s|h[|r|cff003ACC%s|r|cff003ACC]|h|r">
+				<Size x="10" y="10"/>
+				<FontString inherits="PKBT_Font_14_NoShadow" justifyH="LEFT" justifyV="TOP">
+					<Color r="0.25" g="0.1484375" b=".02" a="1"/>
+				</FontString>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentTimestamp" relativePoint="BOTTOM" x="0" y="-5"/>
+					<Anchor point="LEFT" x="5" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad function="InlineHyperlinkFrame_SimpleHTMLAsFontString_OnLoad"/>
+					<OnHyperlinkClick>
+						self:GetParent():OnHyperlinkClick(self, link, text, button)
+					</OnHyperlinkClick>
+					<OnHyperlinkEnter>
+						self:GetParent():OnHyperlinkEnter(self, link, text)
+					</OnHyperlinkEnter>
+					<OnHyperlinkLeave>
+						self:GetParent():OnHyperlinkLeave(self, link, text)
+					</OnHyperlinkLeave>
+				</Scripts>
+			</SimpleHTML>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ServerNewsEntryMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</Frame>
+	<Frame name="ServerNewsEntrySectionTemplate" virtual="true">
+		<Size x="5" y="24"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentDescriptionBG" parentKey="DescriptionBG" inherits="UI-PaperOverlay-AbilityTextBG">
+					<Size x="12" y="12"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-9" y="12"/>
+						<Anchor point="BOTTOMRIGHT" x="9" y="-11"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentDescriptionBGBottom" parentKey="DescriptionBGBottom" inherits="UI-PaperOverlay-AbilityTextBottomBorder">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentDescriptionBG" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+						<Anchor point="RIGHT" relativeTo="$parentDescriptionBG" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentHeaderButton" parentKey="HeaderButton">
+				<Size x="5" y="24"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="0"/>
+					<Anchor point="RIGHT" x="0" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentExpandedIcon" parentKey="ExpandedIcon" inherits="GameFontNormalLarge">
+							<Size x="12" y="12"/>
+							<Anchors>
+								<Anchor point="LEFT" x="5" y="0"/>
+							</Anchors>
+						</FontString>
+						<FontString name="$parentTitle" parentKey="Title" inherits="GameFontNormal" justifyH="LEFT">
+							<Size x="5" y="10"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentExpandedIcon" relativePoint="RIGHT" x="5" y="0"/>
+								<Anchor point="RIGHT" x="-5" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture name="$parentELeftUp" inherits="UI-PaperOverlay-PaperHeader-SelectUp-Left" parentKey="eLeftUp" hidden="true">
+							<Anchors>
+								<Anchor point="LEFT" x="-1" y="-1"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentERightUp" inherits="UI-PaperOverlay-PaperHeader-SelectUp-Right" parentKey="eRightUp" hidden="true">
+							<Anchors>
+								<Anchor point="RIGHT" x="3" y="-1"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentELeftDown" inherits="UI-EJ-PaperHeader-SelectDown-Left" parentKey="eLeftDown" hidden="true">
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentELeftUp" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentERightDown" inherits="UI-EJ-PaperHeader-SelectDown-Right" parentKey="eRightDown" hidden="true">
+							<Anchors>
+								<Anchor point="RIGHT" relativeTo="$parentERightUp" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentCLeftUp" inherits="UI-EJ-PaperHeader-UnSelectUp-Left" parentKey="cLeftUp">
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentELeftUp" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentCRightUp" inherits="UI-EJ-PaperHeader-UnSelectUp-Right" parentKey="cRightUp">
+							<Anchors>
+								<Anchor point="RIGHT" relativeTo="$parentERightUp" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentCLeftDown" inherits="UI-EJ-PaperHeader-UnSelectDown-Left" parentKey="cLeftDown" hidden="true">
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentELeftUp" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentCRightDown" inherits="UI-EJ-PaperHeader-UnSelectDown-Right" parentKey="cRightDown" hidden="true">
+							<Anchors>
+								<Anchor point="RIGHT" relativeTo="$parentERightUp" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentEMidUp" inherits="UI-PaperOverlay-PaperHeader-SelectUp-Mid" parentKey="eMidUp" hidden="true">
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentELeftUp" relativePoint="RIGHT" x="-32" y="0"/>
+								<Anchor point="RIGHT" relativeTo="$parentERightUp" relativePoint="LEFT" x="33" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentEMidDown" inherits="_PaperHeader-SelectDown-Mid" parentKey="eMidDown" hidden="true">
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentELeftDown" relativePoint="RIGHT" x="-32" y="0"/>
+								<Anchor point="RIGHT" relativeTo="$parentERightDown" relativePoint="LEFT" x="33" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentCMidUp" inherits="_PaperHeader-UnSelectUp-Mid" parentKey="cMidUp">
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentELeftUp" relativePoint="RIGHT" x="-32" y="0"/>
+								<Anchor point="RIGHT" relativeTo="$parentERightUp" relativePoint="LEFT" x="33" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentCMidDown" inherits="_PaperHeader-UnSelectDown-Mid" parentKey="cMidDown" hidden="true">
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentELeftDown" relativePoint="RIGHT" x="-32" y="0"/>
+								<Anchor point="RIGHT" relativeTo="$parentERightDown" relativePoint="LEFT" x="33" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="HIGHLIGHT">
+						<Texture name="$parentHighlightLeft" inherits="UI-EJ-PaperHeader-Highlight-Left">
+							<Anchors>
+								<Anchor point="LEFT" x="-1" y="-1"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentHighlightRight" inherits="UI-EJ-PaperHeader-Highlight-Right">
+							<Anchors>
+								<Anchor point="RIGHT" x="3" y="-1"/>
+							</Anchors>
+						</Texture>
+						<Texture name="$parentHighlightMid" inherits="_PaperHeader-Highlight-Mid">
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentHighlightLeft" relativePoint="RIGHT" x="-32" y="0"/>
+								<Anchor point="RIGHT" relativeTo="$parentHighlightRight" relativePoint="LEFT" x="33" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self.textures = {
+							expanded = {
+								up = {self.eLeftUp, self.eMidUp, self.eRightUp},
+								down = {self.eLeftDown, self.eMidDown, self.eRightDown}
+							},
+							collapsed = {
+								up = {self.cLeftUp, self.cMidUp, self.cRightUp},
+								down = {self.cLeftDown, self.cMidDown, self.cRightDown}
+							},
+						}
+						self.tex = self.textures.collapsed;
+					</OnLoad>
+					<OnShow>
+						local oldtex = self.textures.expanded
+						if self:GetParent().expanded then
+							self.tex = self.textures.expanded
+							oldtex = self.textures.collapsed
+							self.ExpandedIcon:SetTextColor(0.929, 0.788, 0.620)
+							self.Title:SetTextColor(0.929, 0.788, 0.620)
+						else
+							self.tex = self.textures.collapsed;
+							self.ExpandedIcon:SetTextColor(0.827, 0.659, 0.463)
+							self.Title:SetTextColor(0.827, 0.659, 0.463)
+						end
+
+						for i = 1, 3 do
+							oldtex.up[i]:Hide()
+							oldtex.down[i]:Hide()
+							self.tex.up[i]:Show()
+							self.tex.down[i]:Hide()
+						end
+					</OnShow>
+					<OnMouseDown>
+						for i = 1, 3 do
+							self.tex.up[i]:Hide()
+							self.tex.down[i]:Show()
+						end
+					</OnMouseDown>
+					<OnMouseUp>
+						for i = 1, 3 do
+							self.tex.up[i]:Show()
+							self.tex.down[i]:Hide()
+						end
+					</OnMouseUp>
+					<OnClick>
+						local parent = self:GetParent()
+						parent:SetExpanded(not parent:IsExpanded())
+						self:GetScript("OnShow")(self)
+						PlaySound("igMainMenuOptionCheckBoxOn")
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+						GameTooltip:SetText(self.Title:GetText(), nil, nil, nil, nil, true)
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Button>
+			<SimpleHTML name="$parentDescription" parentKey="Description" inherits="InlineHyperlinkFrameTemplate" hyperlinkFormat="|cff003ACC|H%s|h[|r|cff003ACC%s|r|cff003ACC]|h|r">
+				<Size x="95" y="10"/>
+				<FontString inherits="PKBT_Font_14_NoShadow" justifyH="LEFT" justifyV="TOP">
+					<Color r="0.25" g="0.1484375" b=".02" a="1"/>
+				</FontString>
+				<Anchors>
+					<Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentHeaderButton" x="0" y="-9"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad function="InlineHyperlinkFrame_SimpleHTMLAsFontString_OnLoad"/>
+					<OnHyperlinkClick>
+						self:GetParent():OnHyperlinkClick(self, link, text, button)
+					</OnHyperlinkClick>
+					<OnHyperlinkEnter>
+						self:GetParent():OnHyperlinkEnter(self, link, text)
+					</OnHyperlinkEnter>
+					<OnHyperlinkLeave>
+						self:GetParent():OnHyperlinkLeave(self, link, text)
+					</OnHyperlinkLeave>
+				</Scripts>
+			</SimpleHTML>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ServerNewsEntrySectionMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<Frame name="ServerNewsDataFeedTemplate" virtual="true">
+		<Attributes>
+			<Attribute name="OnlyNewEntries" type="boolean" value="false"/>
+		</Attributes>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="20" y="-20"/>
+						<Anchor point="BOTTOMRIGHT" x="-20" y="20"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentBottomLeftCorner" parentKey="BottomLeftCorner">
+					<Size x="84" y="84"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBottomRightCorner" parentKey="BottomRightCorner">
+					<Size x="84" y="84"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentTopLeftCorner" parentKey="TopLeftCorner">
+					<Size x="84" y="84"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentTopRightCorner" parentKey="TopRightCorner">
+					<Size x="84" y="84"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-1"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentBottomBorder" parentKey="BottomBorder">
+					<Size x="249" y="84"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentBottomLeftCorner" relativePoint="BOTTOMRIGHT" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBottomRightCorner" relativePoint="BOTTOMLEFT" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentTopBorder" parentKey="TopBorder">
+					<Size x="249" y="84"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentTopLeftCorner" relativePoint="TOPRIGHT" y="0"/>
+						<Anchor point="TOPRIGHT" relativeTo="$parentTopRightCorner" relativePoint="TOPLEFT" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentLeftBorder" parentKey="LeftBorder">
+					<Size x="84" y="110"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentTopLeftCorner" relativePoint="BOTTOMLEFT" x="0"/>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentBottomLeftCorner" relativePoint="TOPLEFT" x="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentRightBorder" parentKey="RightBorder">
+					<Size x="84" y="110"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parentTopRightCorner" relativePoint="BOTTOMRIGHT" x="1"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBottomRightCorner" relativePoint="TOPRIGHT" x="1"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentTitle" parentKey="Title">
+				<Size x="256" y="64"/>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BORDER">
+						<Texture name="$parentHeader" file="Interface\DialogFrame\UI-DialogBox-Header">
+							<Size x="256" y="64"/>
+							<Anchors>
+								<Anchor point="TOP" x="0" y="12"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Text" font="PKBT_Font_12">
+							<Anchors>
+								<Anchor point="TOP" relativeTo="$parentHeader" x="0" y="-14"/>
+							</Anchors>
+							<Color r="1.0" g="0.82" b="0"/>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+
+			<ScrollFrame name="$parentScrollFrame" parentKey="ScrollFrame" inherits="UIPanelScrollFrameCodeTemplate">
+				<Size x="350" y="383"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="15" y="-11"/>
+					<Anchor point="BOTTOMLEFT" x="15" y="9"/>
+					<Anchor point="RIGHT" x="-37" y="0"/>
+				</Anchors>
+				<Frames>
+					<Slider name="$parentScrollBar" parentKey="ScrollBar" inherits="MinimalScrollBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="-40"/>
+							<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="20"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self.trackBG:SetVertexColor(0.2, 0.13, 0.08, 0.15)
+							</OnLoad>
+						</Scripts>
+					</Slider>
+				</Frames>
+				<ScrollChild>
+					<Frame name="$parentScrollChild" parentKey="ScrollChild">
+						<Size x="320" y="372"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="0" y="0"/>
+						</Anchors>
+						<Frames>
+							<Frame name="$parentSpacer" parentKey="Spacer" hidden="true">
+								<Size x="2" y="2"/>
+							</Frame>
+						</Frames>
+					</Frame>
+				</ScrollChild>
+			</ScrollFrame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ServerNewsDataFeedMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<Frame name="ServerNewsPanelTemplate" enableMouse="true" virtual="true">
+		<Size x="250" y="0"/>
+		<Frames>
+			<Frame name="$parentDataFeed" parentKey="DataFeed" inherits="ServerNewsDataFeedTemplate" setAllPoints="true"/>
+
+			<Button name="$parentCloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-10" y="-5"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PlaySound(SOUNDKIT.IG_MAINMENU_CLOSE)
+						self:GetParent():Close()
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ServerNewsPanelMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+		</Scripts>
+	</Frame>
+
+	<Frame name="$parentServerAnnounces" parent="GameMenuFrame" inherits="ServerNewsPanelTemplate" id="1" hidden="true">
+		<Size x="300" y="0"/>
+		<Anchors>
+			<Anchor point="TOPRIGHT" relativePoint="TOPLEFT" x="-10" y="0"/>
+			<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" x="-10" y="0"/>
+		</Anchors>
+	</Frame>
+	<Frame name="$parentServerChanges" parent="GameMenuFrame" inherits="ServerNewsPanelTemplate" id="2" hidden="true">
+		<Size x="300" y="0"/>
+		<Anchors>
+			<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="10" y="0"/>
+			<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="10" y="0"/>
+		</Anchors>
+	</Frame>
+
+	<Frame name="ServerNewsFrame" parent="UIParent" frameStrata="HIGH" toplevel="true" enableMouse="true" hidden="true">
+		<Size x="460" y="530"/>
+		<Anchors>
+			<Anchor point="CENTER" x="0" y="0"/>
+		</Anchors>
+		<Frames>
+			<Frame name="$parentServerAnnounces" parentKey="ServerAnnounces" inherits="ServerNewsDataFeedTemplate" id="1">
+				<Size x="460" y="0"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="0"/>
+					<Anchor point="BOTTOM" x="0" y="0"/>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentServerChanges" parentKey="ServerChanges" inherits="ServerNewsDataFeedTemplate" id="2">
+				<Size x="460" y="0"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="0"/>
+					<Anchor point="BOTTOM" x="0" y="0"/>
+				</Anchors>
+			</Frame>
+
+			<Button name="$parentCloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-10" y="-5"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PlaySound(SOUNDKIT.IG_MAINMENU_CLOSE)
+						HideUIPanel(self:GetParent())
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ServerNewsFrameMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnMouseWheel function="nop"/>
+		</Scripts>
+	</Frame>
+</Ui>

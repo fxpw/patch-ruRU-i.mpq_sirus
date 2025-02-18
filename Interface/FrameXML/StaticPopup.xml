@@ -499,7 +499,7 @@
 			<CheckButton name="$parentCheckButton" parentKey="CheckButton" inherits="UICheckButtonArtTemplate" hidden="true">
 				<Size x="26" y="26"/>
 				<Anchors>
-					<Anchor point="BOTTOM" x="0" y="-43"/>
+					<Anchor point="BOTTOM" x="0" y="43"/>
 				</Anchors>
 				<Layers>
 					<Layer level="ARTWORK">
@@ -531,6 +531,21 @@
 					</OnLeave>
 				</Scripts>
 			</CheckButton>
+			<Frame name="$parentRadioButtonHolder" parentKey="RadioButtonHolder" hidden="true">
+				<Size x="1" y="1"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="43"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, StaticPopupRadioButtonHolderMixin)
+						self:OnLoad()
+					</OnLoad>
+					<OnShow>
+						self:OnShow()
+					</OnShow>
+				</Scripts>
+			</Frame>
 			<StatusBar name="$parentStatusBar" hidden="true" parentKey="bar">
 				<Size x="400" y="13"/>
 				<Anchors>

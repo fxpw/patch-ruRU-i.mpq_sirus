@@ -3,11 +3,11 @@ local ipairs = ipairs
 local next = next
 local type = type
 local strsplit = string.split
-local twipe = table.wipe
 
 local ExecuteFrameScript = ExecuteFrameScript
 local GetFramesRegisteredForEvent = GetFramesRegisteredForEvent
 local UnitName = UnitName
+local UnitTokenFromGUID = UnitTokenFromGUID
 
 local REGISTERED_CUSTOM_EVENTS = {}
 
@@ -53,65 +53,16 @@ function UnregisterCustomEvent(self, event)
 	eventRegistrar:SetAttribute("0", event)
 end
 
-local UNIT_LIST = {}
-local function UpdateValidUnitList(unitName, isGroupCheck)
-	local skipNGTarget, skipNGFocus
-
-	if UnitExists(unitName) then
-		local isPlayer = UnitIsUnit("player", unitName)
-
-		if isPlayer then
-			UNIT_LIST[#UNIT_LIST + 1] = "player"
-		end
-
-		if GetNumRaidMembers() > 0 then
-			local raidID = UnitInRaid(unitName)
-			if raidID then
-				UNIT_LIST[#UNIT_LIST + 1] = "raid"..(raidID + 1)
-			end
-		end
-
-		if not isPlayer and GetNumPartyMembers() > 0 then
-			for i = 1, 4 do
-				if UnitIsUnit("party"..i, unitName) then
-					UNIT_LIST[#UNIT_LIST + 1] = "party"..i
+function FireCustomClientUnitGroupEvent(event, unitGUID, ...)
+	if event and REGISTERED_CUSTOM_EVENTS[event] and unitGUID then
+		local units = {UnitTokenFromGUID(unitGUID)}
+		if #units > 0 then
+			for frame in SecureNext, REGISTERED_CUSTOM_EVENTS[event] do
+				for _, unit in ipairs(units) do
+					securecall(ExecuteFrameScript, frame, "OnEvent", event, unit, ...)
 				end
 			end
 		end
-
-		if UnitIsUnit("target", unitName) then
-			UNIT_LIST[#UNIT_LIST + 1] = "target"
-			skipNGTarget = true
-		end
-
-		if UnitIsUnit("focus", unitName) then
-			UNIT_LIST[#UNIT_LIST + 1] = "focus"
-			skipNGFocus = true
-		end
-	end
-
-	if not isGroupCheck then
-		if not skipNGTarget and UnitExists("target") and UnitIsPlayer("target") and UnitCanCooperate("player", "target") and UnitName("target") == unitName then
-			UNIT_LIST[#UNIT_LIST + 1] = "target"
-		end
-
-		if not skipNGFocus and UnitExists("focus") and UnitIsPlayer("focus") and UnitCanCooperate("player", "focus") and UnitName("focus") == unitName then
-			UNIT_LIST[#UNIT_LIST + 1] = "focus"
-		end
-	end
-end
-
-function FireCustomClientUnitNameGroupEvent(event, unitName, ...)
-	if event and REGISTERED_CUSTOM_EVENTS[event] then
-		UpdateValidUnitList(unitName, true)
-
-		for frame in SecureNext, REGISTERED_CUSTOM_EVENTS[event] do
-			for _, unit in ipairs(UNIT_LIST) do
-				securecall(ExecuteFrameScript, frame, "OnEvent", event, unit, ...)
-			end
-		end
-
-		twipe(UNIT_LIST)
 	end
 end
 
@@ -164,12 +115,3 @@ EventHandlerFrame:RegisterEvent("CHAT_MSG_ADDON")
 EventHandlerFrame:SetScript("OnEvent", function(self, event, opcode, message, unk, sender)
 	EventHandler:Handle(opcode, message, unk, sender)
 end)
-
-function C_OnReceiveOpcodeHandler(opcode, ...)
-    local args = {...}
-    xpcall(function()
-        EventHandler:Handle(opcode, nil, unpack(args))
-    end, function(err)
-        geterrorhandler()(err)
-    end)
-end

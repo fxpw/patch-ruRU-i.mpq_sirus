@@ -59,12 +59,12 @@ function ItemUpgradeMixin:OnShow()
 	ItemButtonUtil.OpenAndFilterBags(self);
 
 	self:RegisterCustomEvent("ITEM_UPGRADE_MASTER_SET_ITEM");
-	self:RegisterCustomEvent("GLOBAL_MOUSE_DOWN");
 	self:RegisterCustomEvent("ITEM_UPGRADE_FAILED");
 	self:RegisterEvent("BAG_UPDATE");
 	self:RegisterEvent("PLAYER_MONEY");
 	self:RegisterEvent("CURRENCY_DISPLAY_UPDATE");
 	self:RegisterEvent("DISPLAY_SIZE_CHANGED");
+	self:RegisterEvent("GLOBAL_MOUSE_DOWN");
 
 	self.FrameErrorText:ClearAllPoints();
 	self.FrameErrorText:SetPoint("BOTTOM", self.UpgradeCostFrame, "TOP", 0, 12);
@@ -72,12 +72,12 @@ end
 
 function ItemUpgradeMixin:OnHide()
 	self:UnregisterCustomEvent("ITEM_UPGRADE_MASTER_SET_ITEM");
-	self:UnregisterCustomEvent("GLOBAL_MOUSE_DOWN");
 	self:UnregisterCustomEvent("ITEM_UPGRADE_FAILED");
 	self:UnregisterEvent("BAG_UPDATE");
 	self:UnregisterEvent("PLAYER_MONEY");
 	self:UnregisterEvent("CURRENCY_DISPLAY_UPDATE");
 	self:UnregisterEvent("DISPLAY_SIZE_CHANGED");
+	self:UnregisterEvent("GLOBAL_MOUSE_DOWN");
 
 	PlaySound(SOUNDKIT.UI_ETHEREAL_WINDOW_CLOSE);
 	StaticPopup_Hide("CONFIRM_UPGRADE_ITEM");
@@ -114,8 +114,8 @@ function ItemUpgradeMixin:OnEvent(event, arg1)
 			end
 		end
 	elseif event == "GLOBAL_MOUSE_DOWN" then
-		local buttonName = arg1;
-		local isRightButton = buttonName == "RightButton";
+		local buttonID = arg1;
+		local isRightButton = buttonID == "RightButton";
 
 		local mouseFocus = GetMouseFocus();
 		local flyoutSelected = not isRightButton and DoesAncestryInclude(EquipmentFlyout_GetFrame(), mouseFocus);
@@ -367,26 +367,15 @@ function ItemUpgradeMixin:PopulatePreviewFrames()
 	if (showRightPreview or (canUpgradeItem and not canItemsSelection)) and costTable then
 		for _, cost in ipairs(costTable) do
 			if cost.type == "money" then
-				if cost.cost > floor(GetMoney() / (COPPER_PER_SILVER * SILVER_PER_GOLD)) then
-					buttonDisabledState = true;
-					self.UpgradeCostFrame:AddCurrency(cost.type, nil, cost.cost, RED_FONT_COLOR);
-				else
-					self.UpgradeCostFrame:AddCurrency(cost.type, nil, cost.cost);
-				end
-			elseif cost.type == "currency" then
-				if cost.cost > GetCurrencyCount(cost.itemID) then
-					buttonDisabledState = true;
-					self.UpgradeCostFrame:AddCurrency(cost.type, cost.itemID, cost.cost, RED_FONT_COLOR);
-				else
-					self.UpgradeCostFrame:AddCurrency(cost.type, cost.itemID, cost.cost);
-				end
-			elseif cost.type == "item" then
-				if cost.cost > GetItemCount(cost.itemID) then
-					buttonDisabledState = true;
-					self.UpgradeCostFrame:AddCurrency(cost.type, cost.itemID, cost.cost, RED_FONT_COLOR);
-				else
-					self.UpgradeCostFrame:AddCurrency(cost.type, cost.itemID, cost.cost);
-				end
+				buttonDisabledState = cost.cost > floor(GetMoney() / (COPPER_PER_SILVER * SILVER_PER_GOLD));
+			elseif cost.type == "currency" or cost.type == "item" then
+				buttonDisabledState = cost.cost > GetItemCount(cost.itemID);
+			end
+
+			if buttonDisabledState then
+				self.UpgradeCostFrame:AddCurrency(cost.type, cost.itemID, cost.cost, RED_FONT_COLOR);
+			else
+				self.UpgradeCostFrame:AddCurrency(cost.type, cost.itemID, cost.cost);
 			end
 		end
 
@@ -450,9 +439,7 @@ function ItemUpgradeMixin:GetUpgradeCostString()
 		local hasEnough = true;
 		if cost.type == "money" then
 			hasEnough = cost.cost <= floor(GetMoney() / (COPPER_PER_SILVER * SILVER_PER_GOLD));
-		elseif cost.type == "currency" then
-			hasEnough = cost.cost <= GetCurrencyCount(cost.itemID);
-		elseif cost.type == "item" then
+		elseif cost.type == "currency" or cost.type == "item" then
 			hasEnough = cost.cost <= GetItemCount(cost.itemID);
 		end
 

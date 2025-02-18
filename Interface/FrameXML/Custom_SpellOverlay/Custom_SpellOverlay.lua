@@ -1,12 +1,6 @@
---	Filename:	Sirus_SpellOverlay.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
-local sizeScale = 0.8
-local longSide = 256 * sizeScale
-local shortSide = 128 * sizeScale
+local sizeScale = 0.8;
+local longSide = 256 * sizeScale;
+local shortSide = 128 * sizeScale;
 
 local complexLocationTable = {
 	["RIGHT (FLIPPED)"] = {
@@ -195,11 +189,10 @@ function SpellOverlay_RegisterSpellUsableTracker()
 end
 
 function SpellActivationOverlay_OnLoad(self)
-	self.overlaysInUse = {}
-
-	self.unusedOverlays = {}
-	self.spellOverlayData = {}
-	self.waitOverlayData = {}
+	self.overlaysInUse = {};
+	self.unusedOverlays = {};
+	self.spellOverlayData = {};
+	self.waitOverlayData = {};
 
 	self:SetSize(longSide, longSide)
 
@@ -231,96 +224,92 @@ function SpellActivationOverlay_RestoreAllOverlays(self)
 end
 
 function SpellActivationOverlay_ShowOverlay(self, spellID, texturePath, position, scale, r, g, b, vFlip, hFlip)
-	if not scale then
-		scale = 1
-	end
+	local overlay = SpellActivationOverlay_GetOverlay(self, spellID, position);
+	overlay.spellID = spellID;
+	overlay.position = position;
 
-	local overlay = SpellActivationOverlay_GetOverlay(self, spellID, position)
+	overlay:ClearAllPoints();
 
-	overlay:SetAlpha(SpellOverlay_OverlayArtAlphaSlider.value)
-
-	overlay.spellID = spellID
-	overlay.position = position
-
-	overlay:ClearAllPoints()
-
-	local texLeft, texRight, texTop, texBottom = 0, 1, 0, 1
+	local texLeft, texRight, texTop, texBottom = 0, 1, 0, 1;
 	if ( vFlip ) then
-		texTop, texBottom = 1, 0
+		texTop, texBottom = 1, 0;
 	end
 	if ( hFlip ) then
-		texLeft, texRight = 1, 0
+		texLeft, texRight = 1, 0;
 	end
-	overlay.texture:SetTexCoord(texLeft, texRight, texTop, texBottom)
+	overlay.texture:SetTexCoord(texLeft, texRight, texTop, texBottom);
 
-	local width, height
+	local width, height;
 	if ( position == "CENTER" ) then
-		width, height = longSide, longSide
-		overlay:SetPoint("CENTER", self, "CENTER", 0, 0)
+		width, height = longSide, longSide;
+		overlay:SetPoint("CENTER", self, "CENTER", 0, 0);
 	elseif ( position == "LEFT" ) then
-		width, height = shortSide, longSide
-		overlay:SetPoint("RIGHT", self, "LEFT", 0, 0)
+		width, height = shortSide, longSide;
+		overlay:SetPoint("RIGHT", self, "LEFT", 0, 0);
 	elseif ( position == "RIGHT" ) then
-		width, height = shortSide, longSide
-		overlay:SetPoint("LEFT", self, "RIGHT", 0, 0)
+		width, height = shortSide, longSide;
+		overlay:SetPoint("LEFT", self, "RIGHT", 0, 0);
 	elseif ( position == "TOP" ) then
-		width, height = longSide, shortSide
-		overlay:SetPoint("BOTTOM", self, "TOP", 0, 0)
+		width, height = longSide, shortSide;
+		overlay:SetPoint("BOTTOM", self, "TOP", 0, 0);
 	elseif ( position == "BOTTOM" ) then
-		width, height = longSide, shortSide
-		overlay:SetPoint("TOP", self, "BOTTOM")
+		width, height = longSide, shortSide;
+		overlay:SetPoint("TOP", self, "BOTTOM");
 	elseif ( position == "TOPRIGHT" ) then
-		width, height = shortSide, shortSide
-		overlay:SetPoint("BOTTOMLEFT", self, "TOPRIGHT", 0, 0)
+		width, height = shortSide, shortSide;
+		overlay:SetPoint("BOTTOMLEFT", self, "TOPRIGHT", 0, 0);
 	elseif ( position == "TOPLEFT" ) then
-		width, height = shortSide, shortSide
-		overlay:SetPoint("BOTTOMRIGHT", self, "TOPLEFT", 0, 0)
+		width, height = shortSide, shortSide;
+		overlay:SetPoint("BOTTOMRIGHT", self, "TOPLEFT", 0, 0);
 	elseif ( position == "BOTTOMRIGHT" ) then
-		width, height = shortSide, shortSide
-		overlay:SetPoint("TOPLEFT", self, "BOTTOMRIGHT", 0, 0)
+		width, height = shortSide, shortSide;
+		overlay:SetPoint("TOPLEFT", self, "BOTTOMRIGHT", 0, 0);
 	elseif ( position == "BOTTOMLEFT" ) then
-		width, height = shortSide, shortSide
-		overlay:SetPoint("TOPRIGHT", self, "BOTTOMLEFT", 0, 0)
+		width, height = shortSide, shortSide;
+		overlay:SetPoint("TOPRIGHT", self, "BOTTOMLEFT", 0, 0);
 	else
-		-- GMError("Unknown SpellActivationOverlay position: "..tostring(position))
+		--GMError("Unknown SpellActivationOverlay position: "..tostring(position));
+		return;
 	end
 
-	overlay:SetSize(width * scale, height * scale)
+	scale = Saturate(tonumber(scale) or 1)
+	overlay:SetAlpha(SpellOverlay_OverlayArtAlphaSlider.value)
+	overlay:SetSize(width * scale, height * scale);
 
-	overlay.texture:SetTexture(texturePath)
-	overlay.texture:SetVertexColor(r, g, b)
+	overlay.texture:SetTexture(texturePath);
+	overlay.texture:SetVertexColor(r, g, b);
 
-	overlay.animOut:Stop()	--In case we're in the process of animating this out.
-	PlaySound(SOUNDKIT.UI_POWER_AURA_GENERIC)
-	overlay:Show()
+	overlay.animOut:Stop();	--In case we're in the process of animating this out.
+	PlaySound(SOUNDKIT.UI_POWER_AURA_GENERIC);
+	overlay:Show();
 end
 
 function SpellActivationOverlay_GetOverlay(self, spellID, position)
-	local overlayList = self.overlaysInUse[spellID]
-	local overlay
+	local overlayList = self.overlaysInUse[spellID];
+	local overlay;
 	if ( overlayList ) then
 		for i=1, #overlayList do
 			if ( overlayList[i].position == position ) then
-				overlay = overlayList[i]
+				overlay = overlayList[i];
 			end
 		end
 	end
 
 	if ( not overlay ) then
-		overlay = SpellActivationOverlay_GetUnusedOverlay(self)
+		overlay = SpellActivationOverlay_GetUnusedOverlay(self);
 		if ( overlayList ) then
-			tinsert(overlayList, overlay)
+			tinsert(overlayList, overlay);
 		else
-			self.overlaysInUse[spellID] = { overlay }
+			self.overlaysInUse[spellID] = { overlay };
 		end
 	end
 
-	return overlay
+	return overlay;
 end
 
 function SpellActivationOverlay_HideOverlaysByPosition(self, spellID, position)
 	local overlayList = self.overlaysInUse[spellID];
-	if overlayList then
+	if ( overlayList ) then
 		for i = 1, #overlayList do
 			local overlay = overlayList[i];
 
@@ -361,36 +350,36 @@ function SpellActivationOverlay_UpdateAlphaAllOverlays(self)
 end
 
 function SpellActivationOverlay_GetUnusedOverlay(self)
-	local overlay = tremove(self.unusedOverlays, #self.unusedOverlays)
+	local overlay = tremove(self.unusedOverlays, #self.unusedOverlays);
 	if ( not overlay ) then
-		overlay = SpellActivationOverlay_CreateOverlay(self)
+		overlay = SpellActivationOverlay_CreateOverlay(self);
 	end
-	return overlay
+	return overlay;
 end
 
 function SpellActivationOverlay_CreateOverlay(self)
-	return CreateFrame("Frame", nil, self, "SpellActivationOverlayTemplate")
+	return CreateFrame("Frame", nil, self, "SpellActivationOverlayTemplate");
 end
 
 function SpellActivationOverlayTexture_OnShow(self)
-	self.animIn:Play()
+	self.animIn:Play();
 end
 
 function SpellActivationOverlayTexture_OnFadeInPlay(animGroup)
-	animGroup:GetParent():SetAlpha(0)
+	animGroup:GetParent():SetAlpha(0);
 end
 
 function SpellActivationOverlayTexture_OnFadeInFinished(animGroup)
-	local overlay = animGroup:GetParent()
-	overlay:SetAlpha(1)
-	overlay.pulse:Play()
+	local overlay = animGroup:GetParent();
+	overlay:SetAlpha(1);
+	overlay.pulse:Play();
 end
 
 function SpellActivationOverlayTexture_OnFadeOutFinished(anim)
-	local overlay = anim:GetRegionParent()
-	local overlayParent = overlay:GetParent()
-	overlay.pulse:Stop()
-	overlay:Hide()
+	local overlay = anim:GetRegionParent();
+	local overlayParent = overlay:GetParent();
+	overlay.pulse:Stop();
+	overlay:Hide();
 	tDeleteItem(overlayParent.overlaysInUse[overlay.spellID], overlay)
-	tinsert(overlayParent.unusedOverlays, overlay)
+	tinsert(overlayParent.unusedOverlays, overlay);
 end

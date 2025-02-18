@@ -7,6 +7,36 @@
 		<TexCoords left="0" right="0.625" top="0" bottom="0.6875"/>
 	</Texture>
 
+	<!-- Paper overlay texture pieces -->
+	<Texture name="UI-PaperOverlay-AbilityTextBG" file="Interface\EncounterJournal\UI-EncounterJournalTextures" virtual="true" >
+		<Size x="256" y="80"/>
+		<TexCoords left="0.00195313" right="0.50195313" top="0.02246094" bottom="0.10058594"/>
+	</Texture>
+	<Texture name="UI-PaperOverlay-Bullet" file="Interface\EncounterJournal\UI-EncounterJournalTextures" virtual="true">
+		<Size x="13" y="13"/>
+		<TexCoords left="0.974609375" right="1.0" top="0.7509765625" bottom="0.763671875"/>
+	</Texture>
+	<Texture name="UI-PaperOverlay-Check" file="Interface\AchievementFrame\UI-Achievement-Criteria-Check" virtual="true">
+		<Size x="13" y="13"/>
+		<TexCoords left="0" right="0.65625" top="0" bottom="1"/>
+	</Texture>
+	<Texture name="UI-PaperOverlay-PaperHeader-SelectUp-Mid" file="Interface\EncounterJournal\UI-EncounterJournalTextures_Tile" virtual="true" horizTile="true" >
+		<Size x="64" y="29"/>
+		<TexCoords top="0.22265625" bottom="0.27929688"/>
+	</Texture>
+	<Texture name="UI-PaperOverlay-AbilityTextBottomBorder" file="Interface\EncounterJournal\UI-EncounterJournalTextures" virtual="true" >
+		<Size x="243" y="9"/>
+		<TexCoords left="0.04492188" right="0.51953125" top="0.00097656" bottom="0.00976563"/>
+	</Texture>
+	<Texture name="UI-PaperOverlay-PaperHeader-SelectUp-Left" file="Interface\EncounterJournal\UI-EncounterJournalTextures" virtual="true" >
+		<Size x="64" y="29"/>
+		<TexCoords left="0.81445313" right="0.93945313" top="0.39453125" bottom="0.42285156"/>
+	</Texture>
+	<Texture name="UI-PaperOverlay-PaperHeader-SelectUp-Right" file="Interface\EncounterJournal\UI-EncounterJournalTextures" virtual="true" >
+		<Size x="64" y="29"/>
+		<TexCoords left="0.34570313" right="0.47070313" top="0.49316406" bottom="0.52148438"/>
+	</Texture>
+
 	<!-- Tiled textures size=64,512-->
 	<Texture name="_SearchBarLg" file="Interface\EncounterJournal\UI-EncounterJournalTextures_Tile" virtual="true" horizTile="true" >
 		<Size x="64" y="49"/>

@@ -64,7 +64,7 @@
 		<Frames>
 			<CheckButton name="$parentEnableSound" inherits="AudioOptionsCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOP" x="-64" y="-72"/>
+					<Anchor point="TOP" x="-64" y="-62"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -75,9 +75,9 @@
 				</Scripts>
 			</CheckButton>
 			<Frame name="$parentPlayback" inherits="OptionsBoxTemplate">
-				<Size x="186" y="316"/>
+				<Size x="186" y="342"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" x="16" y="-116"/>
+					<Anchor point="TOPLEFT" x="16" y="-96"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -148,9 +148,31 @@
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
-			<CheckButton name="$parentLoopMusic" inherits="AudioOptionsSmallCheckButtonTemplate">
+			<CheckButton name="$parentEnableAmbientMusic" inherits="AudioOptionsSmallCheckButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentMusic" relativePoint="BOTTOMLEFT" x="8" y="4"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX
+						self.cvar = "Sound_EnableGluaMusic"
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+						BlizzardOptionsPanel_SetupDependentControl(AudioOptionsSoundPanelMusic, self)
+					</OnLoad>
+					<OnClick>
+						if ( self:GetChecked() ) then
+							PlaySound("igMainMenuOptionCheckBoxOn");
+						else
+							PlaySound("igMainMenuOptionCheckBoxOff");
+						end
+						AudioOptionsPanel_CheckButton_OnClick(self);
+						ToggleGlueMusic()
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentLoopMusic" inherits="AudioOptionsSmallCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentEnableAmbientMusic" relativePoint="BOTTOMLEFT" x="0" y="2"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>

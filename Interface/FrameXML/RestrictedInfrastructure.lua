@@ -704,4 +704,10 @@ do
 	function SECURE_SetForbidden(frame)
 		ForbiddenFrames[frame] = true
 	end
+
+	function CreateForbiddenFrame(...)
+		local frame = CreateFrame(...)
+		ForbiddenFrames[frame] = true
+		return frame
+	end
 end

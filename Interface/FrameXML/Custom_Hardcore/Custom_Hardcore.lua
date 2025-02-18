@@ -5,10 +5,12 @@ UIPanelWindows["HardcoreFrame"] = { area = "left", pushable = 0, whileDead = 1, 
 HardcoreMixin = {}
 
 function Hardcore_TabOnClick(self)
-	Adventure_TabOnClick(self)
-
-	if self:GetID() ~= 3 then
-		HardcoreFrame:PlayStartButton()
+	if C_Service.IsHardcoreCharacter() and not C_Service.HasActiveChallenges() then
+		if self:GetID() ~= 3 then
+			HardcoreFrame:PlayStartButton()
+		end
+	else
+		Adventure_TabOnClick(self)
 	end
 end
 
@@ -65,16 +67,16 @@ function HardcoreMixin:OnLoad()
 
 	NavBar_Initialize(self.navBar, "NavButtonTemplate", self.panels[1].navBarData, self.navBar.home, self.navBar.overflow)
 
-	self.inset.Bgs:SetAtlas("UI-EJ-Cataclysm")
 	self.inset.Bgs:SetAtlas("UI-EJ-BattleforAzeroth")
 
 	self.tab1:SetFrameLevel(1)
 	self.tab2:SetFrameLevel(1)
 	self.tab3:SetFrameLevel(1)
+	self.tab4:SetFrameLevel(1)
 
-	self.maxTabWidth = (self:GetWidth() - 19) / 3
+	self.maxTabWidth = (self:GetWidth() - 19) / 4
 
-	PanelTemplates_SetNumTabs(self, 3)
+	PanelTemplates_SetNumTabs(self, 4)
 
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:RegisterCustomEvent("HARDCORE_SELECTED_CHALLENGE")
@@ -133,6 +135,12 @@ function HardcoreMixin:OnShow()
 	if not self:GetSelectedTopTab() then
 		self:SetTopTab(1)
 	end
+
+	EventRegistry:TriggerEvent("HardcoreFrame.OnShow")
+end
+
+function HardcoreMixin:OnHide()
+	EventRegistry:TriggerEvent("HardcoreFrame.OnHide")
 end
 
 function HardcoreMixin:FirstShow()
@@ -152,6 +160,9 @@ function HardcoreMixin:UpdateBottomTabs()
 	end
 	if not C_Service.IsHardcoreEnabledOnRealm() then
 		PanelTemplates_HideTab(self, 3)
+	end
+	if not C_Service.IsGMAccount() then
+		PanelTemplates_HideTab(self, 4)
 	end
 end
 
@@ -303,7 +314,7 @@ function HardcoreSuggestFrameMixin:RefreshDisplay()
 		local data = self.suggestions[1]
 
 		suggestion.CenterDisplay.Title.Text:SetText(data.title)
-		suggestion.CenterDisplay.Description.Text:SetText(data.description)
+		suggestion.CenterDisplay.Description:SetText(data.description)
 		SetPortraitToTexture(suggestion.Icon, data.iconPath)
 
 		if data.buttonText and #data.buttonText > 0 then
@@ -351,13 +362,13 @@ end
 HardcoreChallengeRewardButtonMixin = {}
 
 function HardcoreChallengeRewardButtonMixin:OnLoad()
-	self.IconBorder:SetAtlas("PKBT-ItemBorder")
+	self.IconBorder:SetAtlas("PKBT-ItemBorder-Default")
 end
 
 function HardcoreChallengeRewardButtonMixin:OnEnter()
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-	if self.itemID then
-		GameTooltip:SetHyperlink(string.format("item:%d", self.itemID))
+	if self.itemLink then
+		GameTooltip:SetHyperlink(self.itemLink)
 	elseif self.achievementID then
 		GameTooltip:SetHyperlink(string.format("achievement:%d:%s:0:0:0:0:0:0:0:0", self.achievementID, UnitGUID("player")))
 	end
@@ -368,9 +379,23 @@ function HardcoreChallengeRewardButtonMixin:OnLeave()
 	GameTooltip_Hide()
 end
 
+function HardcoreChallengeRewardButtonMixin:OnClick(button)
+	if self.itemLink then
+		HandleModifiedItemClick(self.itemLink)
+	elseif self.achievementID then
+		if IsModifiedClick("CHATLINK") and ChatEdit_GetActiveWindow() then
+			local achievementLink = GetAchievementLink(self.achievementID)
+			if achievementLink then
+				ChatEdit_InsertLink(achievementLink)
+			end
+		end
+	end
+end
+
 HardcoreChallengeInfoLeftFrameMixin = CreateFromMixins(HardcoreChallengeInfoShadowMixin)
 
 local function IconButtonPool_ResetterFunc(framePool, frame)
+	frame.itemLink = nil
 	frame.itemID = nil
 	frame.achievementID = nil
 	frame:Hide()
@@ -400,9 +425,9 @@ function HardcoreChallengeInfoLeftFrameMixin:OnTabChanged(tabID)
 	self.iconButtonPool:ReleaseAll()
 
 	if tabID == 1 then
-		scrollChild.DescriptionText:SetText(C_Hardcore.GetChallengeDescriptionByID(self.challengeID))
-		scrollChild.DescriptionText:Show()
-		scrollChild.HTML:Hide()
+		scrollChild.DescriptionText:Hide()
+		scrollChild.HTML:SetText(C_Hardcore.GetChallengeDescriptionByID(self.challengeID))
+		scrollChild.HTML:Show()
 		self:UpdateDescription()
 	elseif tabID == 2 then
 		local htmlContent = {}
@@ -412,6 +437,9 @@ function HardcoreChallengeInfoLeftFrameMixin:OnTabChanged(tabID)
 		end
 		for _, restriction in ipairs(C_Hardcore.GetChallengeFeatures1ByID(self.challengeID)) do
 			table.insert(htmlContent, string.format("%s<p>|cff000000 |r|cff000000 |r|cff000000 |r|cff000000 |r|cff000000 |r<a href=\'desc:%s:1\'>%s</a></p>", htmlDotIcon, restriction.index, restriction.name))
+		end
+		for _, restriction in ipairs(C_Hardcore.GetChallengeFeaturesCustomByID()) do
+			table.insert(htmlContent, string.format("%s<p>|cff000000 |r|cff000000 |r|cff000000 |r|cff000000 |r|cff000000 |r<a href=\'desc:%s:custom\'>%s</a></p>", htmlDotIcon, restriction.index, restriction.name))
 		end
 
 		scrollChild.HTML:SetText(string.format("<html><body>%s<br/></body></html>", table.concat(htmlContent, "<br/>")))
@@ -441,10 +469,12 @@ function HardcoreChallengeInfoLeftFrameMixin:UpdateDescription()
 
 	local lastIconButton
 
+	scrollChild.RewardText:SetPoint("TOPLEFT", scrollChild.HTML:GetRegions(), "BOTTOMLEFT", 0, -18)
+
 	local rewards = C_Hardcore.GetChallengeRewardsByID(self.challengeID)
 	for index, itemID in ipairs(rewards) do
 		local rewardButton = self.iconButtonPool:Acquire()
-		local name, _, quality, _, _, _, _, _, _, icon = GetItemInfo(itemID)
+		local name, link, quality, _, _, _, _, _, _, icon = GetItemInfo(itemID)
 
 		rewardButton.Icon:SetTexture(icon)
 		rewardButton.Name:SetText(name)
@@ -456,6 +486,7 @@ function HardcoreChallengeInfoLeftFrameMixin:UpdateDescription()
 			rewardButton:SetPoint("TOPLEFT", lastIconButton, "BOTTOMLEFT", 0, 0)
 		end
 
+		rewardButton.itemLink = link
 		rewardButton.itemID = itemID
 		rewardButton:Show()
 
@@ -521,10 +552,6 @@ HardcoreChallengeInfoRightFrameMixin = CreateFromMixins(HardcoreChallengeInfoSha
 
 function HardcoreChallengeInfoRightFrameMixin:OnLoad()
 	HardcoreChallengeInfoShadowMixin.OnLoad(self)
-
-	self.StartButton.Glow.Left:SetAtlas("PKBT-Button-Glow-Left", true)
-	self.StartButton.Glow.Right:SetAtlas("PKBT-Button-Glow-Right", true)
-	self.StartButton.Glow.Center:SetAtlas("PKBT-Button-Glow-Center")
 
 	self.Background:SetAtlas("Custom-Challenges-Background-WoodTile")
 end
@@ -821,7 +848,7 @@ HardcoreTableIconCellStringMixin = CreateFromMixins(HardcoreTableCellStringMixin
 function HardcoreTableIconCellStringMixin:Populate(rowData, dataIndex)
 	local classInfo = C_CreatureInfo.GetClassInfo(rowData.class or 1)
 
-	SetPortraitToTexture(self.Icon, string.format("Interface\\Custom_LoginScreen\\ClassIcon\\CLASS_ICON_%s", string.upper(classInfo.classFile)))
+	SetPortraitToTexture(self.Icon, string.format("Interface\\Custom\\ClassIcon\\CLASS_ICON_%s", string.upper(classInfo.classFile)))
 end
 
 HardcoreTableIconTextCellStringMixin = CreateFromMixins(HardcoreTableCellStringMixin)
@@ -832,7 +859,7 @@ function HardcoreTableIconTextCellStringMixin:Populate(rowData, dataIndex)
 
 	local name = GetClassColorObj(classInfo.classFile):WrapTextInColorCode(rowData.name or "?")
 	self.Text:SetText(name)
-	local raceIconAtlas = string.format("RACE_ICON_%s_%s", string.upper(raceInfo.clientFileString), S_GENDER_FILESTRING[rowData.gender == 0 and 0 or 1])
+	local raceIconAtlas = string.format("RACE_ICON_ROUND_%s_%s", string.upper(raceInfo.clientFileString), S_GENDER_FILESTRING[rowData.gender == 0 and 0 or 1])
 	self.Icon:SetAtlas(raceIconAtlas)
 end
 
@@ -1495,6 +1522,10 @@ function HardcoreConfirmChallengeMixin:UpdateAccept()
 	end
 end
 
+local STATIC_POPUP_HEIGHT = 270
+local DEATH_RECAP_BUTTON_HEIGHT = 32
+local DEATH_RECAP_BUTTON_OFFSET = 14
+
 HardcoreStaticPopupMixin = {}
 
 function HardcoreStaticPopupMixin:OnLoad()
@@ -1516,7 +1547,7 @@ end
 function HardcoreStaticPopupMixin:OnEvent(event, ...)
 	if event == "DEATH_RECAP_REGISTERED" then
 		local recapID = ...
-		self:UpdateDeathRecapButton()
+		self:UpdateDeathRecap()
 	end
 end
 
@@ -1525,7 +1556,7 @@ function HardcoreStaticPopupMixin:OnShow()
 	if price then
 		self.Button2:SetPrice(price, price, Enum.Store.CurrencyType.Bonus)
 	end
-	self:UpdateDeathRecapButton()
+	self:UpdateDeathRecap()
 end
 
 function HardcoreStaticPopupMixin:OnHide()
@@ -1538,8 +1569,91 @@ function HardcoreStaticPopupMixin:ShowConfirm()
 	self.ConfirmFrame:Show()
 end
 
-function HardcoreStaticPopupMixin:UpdateDeathRecapButton()
-	self.Button1.HelpPlateButton:SetEnabled(not DeathRecapFrame:IsDeathLogEmpty())
+function HardcoreStaticPopupMixin:UpdateDeathRecap()
+	local numDeathRecap = 0
+	local numRecapEntry = #self.DeathRecapFrame.DeathRecapEntry
+
+	local isDeathLogEmpty, deathRecapData = DeathRecapFrame:IsDeathLogEmpty()
+	if not isDeathLogEmpty and deathRecapData and deathRecapData.recapData then
+		table.sort(deathRecapData.recapData, function(a, b)
+			return a.timestamp > b.timestamp
+		end)
+
+		local highestDamageIndex, highestDamageAmount = 1, 0
+		for index = 1, numRecapEntry do
+			local recapEntry = self.DeathRecapFrame.DeathRecapEntry[index]
+
+			local recapData = deathRecapData.recapData[index]
+			if recapData then
+				if recapData.damage then
+					recapEntry.DamageInfo.Amount:SetText(-recapData.damage)
+					recapEntry.DamageInfo.AmountLarge:SetText(-recapData.damage)
+					recapEntry.DamageInfo.amount = recapData.damage
+
+					if recapData.damage > highestDamageAmount then
+						highestDamageIndex = index
+						highestDamageAmount = recapData.damage
+					end
+
+					recapEntry.DamageInfo.Amount:Show()
+					recapEntry.DamageInfo.AmountLarge:Hide()
+				else
+					recapEntry.DamageInfo.Amount:Hide()
+					recapEntry.DamageInfo.amount = nil
+					recapEntry.DamageInfo.dmgExtraStr = nil
+				end
+
+				recapEntry.DamageInfo.timestamp = recapData.timestamp
+				recapEntry.DamageInfo.hpPercent = math.ceil(recapData.unitHealth / deathRecapData.unitMaxHealth * 100)
+				recapEntry.DamageInfo.spellName = recapData.spellName
+				recapEntry.DamageInfo.caster = recapData.casterName or COMBATLOG_UNKNOWN_UNIT
+				recapEntry.SpellInfo.spellId = recapData.spellID
+
+				recapEntry.SpellInfo.Name:SetText(recapEntry.DamageInfo.spellName)
+				recapEntry.SpellInfo.Caster:SetText(recapEntry.DamageInfo.caster)
+
+				local timestamp = math.abs(recapData.timestamp)
+				recapEntry.SpellInfo.Time:SetFormattedText("%s.%d", date("%H:%M:%S", timestamp), string.match(timestamp, "%d%.(%d+)") or 0)
+				recapEntry.SpellInfo.Icon:SetTexture("Interface\\Icons\\"..recapData.texture)
+
+				recapEntry:Show()
+
+				numDeathRecap = numDeathRecap + 1
+			else
+				recapEntry:Hide()
+			end
+		end
+
+		local recapEntry = self.DeathRecapFrame.DeathRecapEntry[highestDamageIndex]
+		if recapEntry.DamageInfo.amount then
+			recapEntry.DamageInfo.Amount:Hide()
+			recapEntry.DamageInfo.AmountLarge:Show()
+		end
+
+		local deathEntry = self.DeathRecapFrame.DeathRecapEntry[1]
+		if deathEntry == recapEntry then
+			deathEntry.tombstone:SetPoint("RIGHT", deathEntry.DamageInfo.AmountLarge, "LEFT", -10, 0)
+		else
+			deathEntry.tombstone:SetPoint("RIGHT", deathEntry.DamageInfo.Amount, "LEFT", -10, 0)
+		end
+
+		self.DeathRecapFrame.DeathTimeStamp = deathEntry.DamageInfo.timestamp
+	else
+		for index = 1, numRecapEntry do
+			self.DeathRecapFrame.DeathRecapEntry[index]:Hide()
+		end
+	end
+
+	local recapHeight
+	if numDeathRecap == 0 then
+		recapHeight = DEATH_RECAP_BUTTON_HEIGHT
+	else
+		recapHeight = (numDeathRecap * DEATH_RECAP_BUTTON_HEIGHT) + ((numDeathRecap - 1) * DEATH_RECAP_BUTTON_OFFSET) + (DEATH_RECAP_BUTTON_HEIGHT + DEATH_RECAP_BUTTON_OFFSET)
+	end
+	self.DeathRecapFrame:SetHeight(recapHeight)
+	self:SetHeight(STATIC_POPUP_HEIGHT + recapHeight)
+
+	self.Button1.HelpPlateButton:SetEnabled(not isDeathLogEmpty)
 end
 
 HardcoreStaticPopupConfirmMixin = {}
@@ -1587,6 +1701,7 @@ function HardcoreLossBannerMixin:OnLoad()
 
 	self:RegisterEvent("VARIABLES_LOADED")
 	self:RegisterCustomEvent("HARDCORE_DEATH")
+	self:RegisterCustomEvent("HARDCORE_COMPLETE")
 end
 
 function HardcoreLossBannerMixin:OnEvent(event, ...)
@@ -1622,9 +1737,13 @@ function HardcoreLossBannerMixin:OnEvent(event, ...)
 					else
 						data.title = string.format(HARDCORE_LOSS_BANNER_TEXT_PVP, classColorString, name, raceInfo.raceName:lower(), level, zone)
 					end
+				elseif reason == Enum.Hardcore.DeathSouce.PVP then
+					data.title = string.format(HARDCORE_LOSS_BANNER_TEXT_PVP, classColorString, name, raceInfo.raceName:lower(), level, zone)
+				elseif reason == Enum.Hardcore.DeathSouce.FriendlyFire then
+					data.title = string.format(HARDCORE_LOSS_BANNER_TEXT_FRIENDLY_FIRE, classColorString, name, raceInfo.raceName:lower(), level, zone)
 				else
 					local reasonText = C_Hardcore.GetEnviromentalDamageText(reason)
-					data.title = string.format(HARDCORE_LOSS_BANNER_TEXT, classColorString, name, raceInfo.raceName:lower(), level, reasonText:lower(), zone)
+					data.title = string.format(HARDCORE_LOSS_BANNER_TEXT, classColorString, name, raceInfo.raceName:lower(), level, zone, reasonText)
 				end
 
 				self:PlayBanner(data)
@@ -1639,8 +1758,37 @@ function HardcoreLossBannerMixin:OnEvent(event, ...)
 					end
 				else
 					local reasonText = C_Hardcore.GetEnviromentalDamageText(reason)
-					text = string.format(HARDCORE_LOSS_TOAST_TEXT, classColorString, name, raceInfo.raceName:lower(), level, reasonText:lower(), zone)
+					text = string.format(HARDCORE_LOSS_TOAST_TEXT, classColorString, name, raceInfo.raceName:lower(), level, zone, reasonText)
 				end
+
+				if playSound then
+					sound = SOUNDKIT.UI_PERSONAL_LOOT_BANNER
+				end
+
+				FireCustomClientEvent("SHOW_TOAST", E_TOAST_CATEGORY.INTERFACE_HANDLED, 0, "ability_rogue_sealfate", HARDCORE_TOAST_LABEL, text, sound)
+			end
+		end
+	elseif event == "HARDCORE_COMPLETE" then
+		local name, race, gender, class, challengeID = ...
+
+		local raceInfo = C_CreatureInfo.GetRaceInfo(E_CHARACTER_RACES[E_CHARACTER_RACES_DBC[race]])
+		local className, classFileName = GetClassInfo(class)
+		local challengeName = C_Hardcore.GetChallengeInfoByID(challengeID) or ""
+		if raceInfo and className and classFileName then
+			local classColorString = select(4, GetClassColor(classFileName))
+			local playSound = C_CVar:GetValue("C_CVAR_SHOW_HARDCORE_NOTIFICATION_SOUND") == "1"
+
+			if C_CVar:GetValue("C_CVAR_SHOW_HARDCORE_NOTIFICATION") == "2" then
+				local data = {
+					playSound = true,
+					isComplete = true,
+					title = string.format(HARDCORE_COMPLETE_BANNER_TEXT, classColorString, name, raceInfo.raceName:lower(), className:lower(), challengeName),
+				}
+
+				self:PlayBanner(data)
+			elseif C_CVar:GetValue("C_CVAR_SHOW_HARDCORE_NOTIFICATION") == "1" then
+				local sound
+				local text = string.format(HARDCORE_COMPLETE_BANNER_TEXT, classColorString, name, raceInfo.raceName:lower(), className:lower(), challengeName)
 
 				if playSound then
 					sound = SOUNDKIT.UI_PERSONAL_LOOT_BANNER
@@ -1671,6 +1819,28 @@ function HardcoreLossBannerMixin:PlayBanner(data)
 				break
 			end
 		end
+	end
+
+	if data.isComplete then
+		self.BannerTop:SetAtlas("Custom-Challenges-Banner-Top", true)
+		self.BannerTopGlow:SetAtlas("Custom-Challenges-Banner-Top", true)
+		self.BannerBottom:SetAtlas("Custom-Challenges-Banner-Bottom", true)
+		self.BannerBottomGlow:SetAtlas("Custom-Challenges-Banner-Bottom", true)
+		self.SkullCircle:SetAtlas("Custom-Challenges-Icon-Coronet", true)
+		self.BottomFillagree:SetAtlas("Custom-Challenges-Fillagree-Gold-Bottom", true)
+		self.SkullSpikes:SetAtlas("Custom-Challenges-Icon-Spikes", true)
+		self.RightFillagree:SetAtlas("Custom-Challenges-Fillagree-Gold-Right", true)
+		self.LeftFillagree:SetAtlas("Custom-Challenges-Fillagree-Gold-Left", true)
+	else
+		self.BannerTop:SetAtlas("BossBanner-BgBanner-Top", true)
+		self.BannerTopGlow:SetAtlas("BossBanner-BgBanner-Top", true)
+		self.BannerBottom:SetAtlas("BossBanner-BgBanner-Bottom", true)
+		self.BannerBottomGlow:SetAtlas("BossBanner-BgBanner-Bottom", true)
+		self.SkullCircle:SetAtlas("BossBanner-SkullCircle", true)
+		self.BottomFillagree:SetAtlas("BossBanner-BottomFillagree", true)
+		self.SkullSpikes:SetAtlas("BossBanner-SkullSpikes", true)
+		self.RightFillagree:SetAtlas("BossBanner-RightFillagree", true)
+		self.LeftFillagree:SetAtlas("BossBanner-LeftFillagree", true)
 	end
 
 	local scale = self:GetEffectiveScale()

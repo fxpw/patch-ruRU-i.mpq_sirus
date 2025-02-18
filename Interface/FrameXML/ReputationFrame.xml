@@ -267,6 +267,26 @@
 			</Layer>
 		</Layers>
 		<Frames>
+			<Button name="$parentTutorialButton" parentKey="TutorialButton" inherits="MainHelpPlateButton">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="40" y="18"/>
+				</Anchors>
+				<Scripts>
+					<OnEnter>
+						Main_HelpPlate_Button_OnLeave(self)
+						GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
+						GameTooltip_AddNormalLine(GameTooltip, REPUTATION)
+						GameTooltip_AddBlankLineToTooltip(GameTooltip)
+						GameTooltip_AddHighlightLine(GameTooltip, HELPTIP_REPUTATION_HEAD, 1)
+						GameTooltip:Show()
+					</OnEnter>
+					<OnLeave>
+						Main_HelpPlate_Button_OnLeave(self)
+						GameTooltip:Hide()
+					</OnLeave>
+				</Scripts>
+			</Button>
+
 			<Button name="ReputationBar1" inherits="ReputationBarTemplate" id="1">
 				<Anchors>
 					<Anchor point="TOPRIGHT" x="-68" y="-83"/>
@@ -516,7 +536,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="BACKGROUND">
-								<Texture name="$parentBackgroundTile" parentKey="BackgroundTile" file="Interface\Store\CollectionsBackgroundTile" vertTile="true" horizTile="true">
+								<Texture name="$parentBackgroundTile" parentKey="BackgroundTile" file="Interface\Collections\CollectionsBackgroundTile" vertTile="true" horizTile="true">
 									<Size x="256" y="256"/>
 									<Anchors>
 										<Anchor point="TOPLEFT" x="1" y="-1" />

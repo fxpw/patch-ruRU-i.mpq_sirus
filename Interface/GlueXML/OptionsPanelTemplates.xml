@@ -51,7 +51,7 @@
 			</Layer>
 		</Layers>
 	</CheckButton>
-	
+
 	<Slider name="OptionsSliderTemplate" orientation="HORIZONTAL" inherits="GlueDark_SliderTemplate" virtual="true" enableMouse="true">
 		<Size x="144" y="17"/>
 		<Layers>
@@ -93,7 +93,7 @@
 	</Slider>
 	<Frame name="OptionsBoxTemplate" virtual="true">
 		<Attributes>
-			<Attribute name="layoutType" value="GlueDarkDropDownTemplate" type="string"/>
+			<Attribute name="layoutType" value="GlueDarkDropDownBorder" type="string"/>
 			<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
 		</Attributes>
 

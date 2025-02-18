@@ -1,9 +1,3 @@
---	Filename:	Sirus_AddonListUI.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 ADDON_BUTTON_HEIGHT = 16;
 MAX_ADDONS_DISPLAYED = 19;
 
@@ -318,6 +312,7 @@ function AddonList_Update()
 
 			checkbox = _G["AddonListEntry"..i.."Enabled"];
 			local checkboxState = GetAddOnEnableState(character, addonIndex);
+			local enabled
 			if ( not InGlue() ) then
 				enabled = (GetAddOnEnableState(UnitName("player"), addonIndex) > 0);
 			else

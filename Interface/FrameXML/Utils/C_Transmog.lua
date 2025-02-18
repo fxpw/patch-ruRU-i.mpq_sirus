@@ -1,7 +1,3 @@
-local ITEM_APPEARANCE_STORAGE = ITEM_APPEARANCE_STORAGE;
-local ITEM_MODIFIED_APPEARANCE_STORAGE = ITEM_MODIFIED_APPEARANCE_STORAGE;
-local ITEM_IGNORED_APPEARANCE_STORAGE = ITEM_IGNORED_APPEARANCE_STORAGE;
-
 Enum = Enum or {};
 Enum.TransmogModification = {Main = 0, Secondary = 1};
 Enum.TransmogPendingType = {Apply = 0, Revert = 1, ToggleOn = 2, ToggleOff = 3};
@@ -20,6 +16,12 @@ TRANSMOG_INVALID_CODES = {
 	"CANNOT_USE",
 	"SLOT_FOR_RACE",
 }
+
+local scanTooltip = CreateFrame("GameTooltip", "TransmogScanTooltip");
+scanTooltip:AddFontStrings(
+	scanTooltip:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"),
+	scanTooltip:CreateFontString("$parentTextRight1", nil, "GameTooltipText")
+);
 
 local function IsAtTransmogNPC()
 	return WardrobeFrame and WardrobeFrame:IsShown();
@@ -95,17 +97,6 @@ local function GetTransmogSlotInfo(slotID, transmogType, ignoreItem)
 			appliedSourceID = appliedData.transmogID;
 		end
 	else
-		if not ignoreItem then
-			local itemLink = GetInventoryItemLink("player", slotID);
-			if itemLink then
-				local enchantID = string.match(itemLink, "item:%d+:(%d+)");
-				enchantID = tonumber(enchantID);
-				if enchantID then
-					baseSourceID = enchantID;
-				end
-			end
-		end
-
 		local pendingData = TRANSMOG_INFO:Get("Pending", slotID, transmogType);
 		if pendingData then
 			pendingSourceID = pendingData.transmogID;
@@ -132,6 +123,52 @@ local function GetTransmogSlotInfo(slotID, transmogType, ignoreItem)
 	end
 
 	return selectedSourceID;
+end
+
+local REFUND_TYPE = {
+	Store = 1,
+	Merchant = 2,
+}
+
+local function IsMerchantRefundableItem(itemID, slotID)
+	if slotID then
+		local money, honorPoints, arenaPoints, itemCount, refundSec = GetContainerItemPurchaseInfo(0, slotID, 1);
+		if not (not refundSec or (honorPoints == 0 and arenaPoints == 0 and itemCount == 0 and money == 0)) then
+			return true;
+		end
+	else
+		for bag = 0, 4 do
+			for slot = 1, GetContainerNumSlots(bag) do
+				if GetContainerItemID(bag, slot) == itemID then
+					local money, honorPoints, arenaPoints, itemCount, refundSec = GetContainerItemPurchaseInfo(bag, slot);
+					if not (not refundSec or (honorPoints == 0 and arenaPoints == 0 and itemCount == 0 and money == 0)) then
+						return true;
+					end
+				end
+			end
+		end
+	end
+end
+
+local BIND_TRADE_TIME_REMAINING = string.gsub(BIND_TRADE_TIME_REMAINING, "%%s", "(.+)");
+
+function IsBoundTradeableItem(slotID)
+	scanTooltip:SetOwner(WorldFrame, "ANCHOR_NONE");
+	scanTooltip:SetInventoryItem("player", slotID);
+	scanTooltip:Show();
+	for i = ENABLE_COLORBLIND_MODE == "1" and 3 or 2, scanTooltip:NumLines() do
+		local obj = _G["TransmogScanTooltipTextLeft"..i];
+		if not obj then
+			break;
+		end
+
+		local text = obj:GetText();
+		if text and text ~= " " and string.find(text, BIND_TRADE_TIME_REMAINING) then
+			return true;
+		end
+	end
+
+	return false;
 end
 
 local function SetPending(transmogLocation, pendingInfo)
@@ -162,29 +199,22 @@ local function SetPending(transmogLocation, pendingInfo)
 			local itemID = GetInventoryItemID("player", slotID);
 			if itemID then
 				baseSourceID = itemID;
-				baseVisualID = ITEM_MODIFIED_APPEARANCE_STORAGE[itemID] and ITEM_MODIFIED_APPEARANCE_STORAGE[itemID][1] or 0;
+				baseVisualID = select(3, C_TransmogCollection.GetAppearanceSourceInfo(itemID))
 			end
 
 			if transmogID then
 				pendingSourceID = transmogID;
-				pendingVisualID = ITEM_MODIFIED_APPEARANCE_STORAGE[pendingSourceID] and ITEM_MODIFIED_APPEARANCE_STORAGE[pendingSourceID][1] or 0;
+				pendingVisualID = select(3, C_TransmogCollection.GetAppearanceSourceInfo(pendingSourceID))
 			end
 
 			local appliedData = TRANSMOG_INFO:Get("Applied", slotID, transmogType);
 			if appliedData then
 				appliedSourceID = appliedData.transmogID;
-				appliedVisualID = ITEM_MODIFIED_APPEARANCE_STORAGE[appliedSourceID] and ITEM_MODIFIED_APPEARANCE_STORAGE[appliedSourceID][1] or 0;
+				appliedVisualID = select(3, C_TransmogCollection.GetAppearanceSourceInfo(appliedSourceID))
 			end
 		else
-			local itemLink = GetInventoryItemLink("player", slotID);
-			if itemLink then
-				local enchantID = string.match(itemLink, "item:%d+:(%d+)");
-				enchantID = tonumber(enchantID);
-				if enchantID then
-					baseSourceID = enchantID;
-					baseVisualID = enchantID;
-				end
-			end
+			baseSourceID = 0;
+			baseVisualID = 0;
 
 			if transmogID then
 				pendingSourceID = transmogID;
@@ -221,38 +251,51 @@ local function SetPending(transmogLocation, pendingInfo)
 		elseif pendingVisualID ~= appliedVisualID then
 			local pendingData = TRANSMOG_INFO:Get("Pending", slotID, transmogType, true);
 
+			local isRefundableItemType, isRefundableItemID, isBoundTradeableSlotID;
+
 			if isAppearance then
-				if pendingSourceID and pendingSourceID ~= 0 and IsStoreRefundableItem(pendingSourceID) then
-					local itemName, itemLink, itemQuality, _, _, _, _, _, _, itemIcon = GetItemInfo(pendingSourceID);
-					pendingData.warning = {
-						itemName = itemName,
-						itemLink = itemLink,
-						itemQuality = itemQuality,
-						itemIcon = itemIcon,
-						text = STORY_END_REFUND,
-					};
-				elseif baseSourceID and baseSourceID ~= 0 and IsStoreRefundableItem(baseSourceID) then
-					local itemName, itemLink, itemQuality, _, _, _, _, _, _, itemIcon = GetItemInfo(baseSourceID);
-					pendingData.warning = {
-						itemName = itemName,
-						itemLink = itemLink,
-						itemQuality = itemQuality,
-						itemIcon = itemIcon,
-						text = STORY_END_REFUND,
-					};
+				if pendingSourceID and pendingSourceID ~= 0 then
+					if IsMerchantRefundableItem(pendingSourceID) then
+						isRefundableItemType, isRefundableItemID = REFUND_TYPE.Merchant, pendingSourceID
+					end
+				end
+				if baseSourceID and baseSourceID ~= 0 then
+					if IsBoundTradeableItem(slotID) then
+						isBoundTradeableSlotID = slotID;
+					elseif not isRefundableItemType and IsMerchantRefundableItem(baseSourceID, slotID) then
+						isRefundableItemType, isRefundableItemID = REFUND_TYPE.Merchant, baseSourceID
+					end
 				end
 			else
 				local itemID = GetTransmogSlotInfo(slotID, Enum.TransmogType.Appearance)
-				if itemID and itemID ~= 0 and IsStoreRefundableItem(itemID) then
-					local itemName, itemLink, itemQuality, _, _, _, _, _, _, itemIcon = GetItemInfo(itemID);
+				if itemID and itemID ~= 0 then
+					if IsMerchantRefundableItem(itemID) then
+						isRefundableItemType, isRefundableItemID = REFUND_TYPE.Merchant, itemID
+					end
+				end
+			end
+
+			if isBoundTradeableSlotID then
+				local itemIcon = GetInventoryItemTexture("player", isBoundTradeableSlotID);
+				if itemIcon then
+					local itemName, itemLink, itemQuality = GetItemInfo(GetInventoryItemID("player", isBoundTradeableSlotID));
 					pendingData.warning = {
 						itemName = itemName,
 						itemLink = itemLink,
 						itemQuality = itemQuality,
 						itemIcon = itemIcon,
-						text = STORY_END_REFUND,
+						text = TRANSMOG_END_BOUND_TRADEABLE,
 					};
 				end
+			elseif isRefundableItemType and isRefundableItemID then
+				local itemName, itemLink, itemQuality, _, _, _, _, _, _, itemIcon = GetItemInfo(isRefundableItemID);
+				pendingData.warning = {
+					itemName = itemName,
+					itemLink = itemLink,
+					itemQuality = itemQuality,
+					itemIcon = itemIcon,
+					text = isRefundableItemType == REFUND_TYPE.Store and STORE_END_REFUND or MERCHANT_END_REFUND,
+				};
 			end
 
 			pendingData.hasPending = false;
@@ -411,7 +454,7 @@ function C_Transmog.GetSlotEffectiveCategory(transmogLocation)
 	end
 
 	local itemID = GetInventoryItemID("player", slotID);
-	local categoryID, subCategoryID = GetItemModifiedAppearanceCategoryInfo(itemID);
+	local categoryID, subCategoryID = C_TransmogCollection.GetAppearanceSourceInfo(itemID);
 	if categoryID ~= 0 then
 		return categoryID, subCategoryID;
 	end
@@ -523,7 +566,7 @@ function C_Transmog.GetSlotVisualInfo(transmogLocation)
 		local itemID = GetInventoryItemID("player", slotID);
 		if itemID then
 			baseSourceID = itemID;
-			baseVisualID = ITEM_MODIFIED_APPEARANCE_STORAGE[itemID] and ITEM_MODIFIED_APPEARANCE_STORAGE[itemID][1] or 0;
+			baseVisualID = select(3, C_TransmogCollection.GetAppearanceSourceInfo(itemID));
 			itemSubclass = select(14, C_Item.GetItemInfo(itemID));
 		end
 
@@ -536,18 +579,11 @@ function C_Transmog.GetSlotVisualInfo(transmogLocation)
 		else
 			local transmogID = GetInventoryTransmogID("player", slotID) or 0;
 			appliedSourceID = transmogID;
-			appliedVisualID = ITEM_MODIFIED_APPEARANCE_STORAGE[transmogID] and ITEM_MODIFIED_APPEARANCE_STORAGE[transmogID][1] or 0;
+			appliedVisualID = select(3, C_TransmogCollection.GetAppearanceSourceInfo(transmogID));
 		end
 	else
-		local itemLink = GetInventoryItemLink("player", slotID);
-		if itemLink then
-			local enchantID = string.match(itemLink, "item:%d+:(%d+)");
-			enchantID = tonumber(enchantID);
-			if enchantID then
-				baseSourceID = enchantID;
-				baseVisualID = enchantID;
-			end
-		end
+		baseSourceID = 0;
+		baseVisualID = 0;
 
 		local appliedData = TRANSMOG_INFO:Get("Applied", slotID, transmogLocation.type);
 		if appliedData then
@@ -629,20 +665,7 @@ function C_Item.GetAppliedItemTransmogInfo(itemLocation)
 end
 
 function C_Item.GetBaseItemTransmogInfo(itemLocation)
-	local slotID = itemLocation:GetEquipmentSlot();
-
-	local baseSourceID = GetInventoryItemID("player", slotID);
-
-	local itemLink = GetInventoryItemLink("player", slotID);
-	if itemLink then
-		local enchantID = string.match(itemLink, "item:%d+:(%d+)");
-		enchantID = tonumber(enchantID);
-		if enchantID then
-			baseIllusionID = enchantID;
-		end
-	end
-
-	return CreateAndInitFromMixin(ItemTransmogInfoMixin, baseSourceID or 0, baseIllusionID or 0);
+	return CreateAndInitFromMixin(ItemTransmogInfoMixin, GetInventoryItemID("player", itemLocation:GetEquipmentSlot()) or 0, 0);
 end
 
 function EventHandler:ASMSG_TRANSMOGRIFICATION_MENU_OPEN(msg)
@@ -656,15 +679,15 @@ function EventHandler:ASMSG_TRANSMOGRIFICATION_MENU_OPEN(msg)
 
 		if slotID then
 			if transmogID and transmogID ~= 0 then
-				local sourceInfo = ITEM_MODIFIED_APPEARANCE_STORAGE[transmogID];
-				local category, subCategory = GetItemModifiedAppearanceCategoryInfo(transmogID, true);
+				local visualID = select(3, C_TransmogCollection.GetAppearanceSourceInfo(transmogID))
+				if visualID ~= 0 then
+					local category, subCategory = C_TransmogCollection.GetAppearanceSourceInfo(transmogID);
 
-				if sourceInfo then
 					local appliedAppearanceData = TRANSMOG_INFO:Get("Applied", slotID, Enum.TransmogType.Appearance, true);
 					appliedAppearanceData.isTransmogrified = true;
 					appliedAppearanceData.slotID = slotID;
 					appliedAppearanceData.transmogID = transmogID;
-					appliedAppearanceData.visualID = sourceInfo[1];
+					appliedAppearanceData.visualID = visualID;
 					appliedAppearanceData.category = category;
 					appliedAppearanceData.subCategoryID = subCategory;
 				end
@@ -700,7 +723,7 @@ function EventHandler:ASMSG_TRANSMOGRIFICATION_PREPARE_RESPONSE(msg)
 		local pendingData = TRANSMOG_INFO:Get("Pending", slotID, Enum.TransmogType.Appearance);
 		if pendingData and not pendingData.hasPending then
 			pendingData.transmogID = transmogID;
-			pendingData.visualID = ITEM_MODIFIED_APPEARANCE_STORAGE[transmogID] and ITEM_MODIFIED_APPEARANCE_STORAGE[transmogID][1] or 0;
+			pendingData.visualID = select(3, C_TransmogCollection.GetAppearanceSourceInfo(transmogID))
 			pendingData.isPendingCollected = true;
 			pendingData.canTransmogrify = true;
 			pendingData.hasPending = true;
@@ -752,7 +775,7 @@ function EventHandler:ASMSG_TRANSMOGRIFICATION_APPLY_RESPONSE(msg)
 						appliedData.slotID = slotID;
 						appliedData.transmogID = pendingData.transmogID;
 						if transmogType == Enum.TransmogType.Appearance then
-							appliedData.visualID = ITEM_MODIFIED_APPEARANCE_STORAGE[pendingData.transmogID] and ITEM_MODIFIED_APPEARANCE_STORAGE[pendingData.transmogID][1] or 0;
+							appliedData.visualID = select(3, C_TransmogCollection.GetAppearanceSourceInfo(pendingData.transmogID))
 						else
 							appliedData.visualID = pendingData.transmogID;
 						end

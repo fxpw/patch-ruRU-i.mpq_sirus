@@ -38,7 +38,6 @@
 				AutoCastShine_OnUpdate(nil, elapsed);
 				LFRBrowseFrame_OnUpdateAlways(elapsed);
 				BNToastFrame_OnUpdate();
-				GlobalMouse_OnUpdate();
 			</OnUpdate>
 			<!-- used to properly hide and show certain frames when the UI is toggled on and off -->
 			<OnShow function="UIParent_OnShow"/>

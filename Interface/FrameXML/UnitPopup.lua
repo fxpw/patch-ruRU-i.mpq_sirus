@@ -1,3 +1,5 @@
+local FocusUnit = FocusUnit
+
 UNITPOPUP_TITLE_HEIGHT = 26;
 UNITPOPUP_BUTTON_HEIGHT = 15;
 UNITPOPUP_BORDER_HEIGHT = 8;
@@ -7,6 +9,13 @@ UNITPOPUP_NUMBUTTONS = 9;
 UNITPOPUP_TIMEOUT = 5;
 
 UNITPOPUP_SPACER_SPACING = 6;
+
+local SetFocusDelegate = CreateFrame("FRAME");
+SetFocusDelegate:SetScript("OnAttributeChanged", function(self, attribute, value)
+	if attribute == "set-focus" then
+		FocusUnit(value)
+	end
+end)
 
 local function makeUnitPopupSubsectionTitle(titleText)
 	return { text = titleText, isTitle = true, isUninteractable = true, isSubsection = true, isSubsectionTitle = true, isSubsectionSeparator = true, };
@@ -608,8 +617,15 @@ function UnitPopup_ShowMenu (dropdownMenu, which, unit, name, userData)
 				elseif ( info.text == dropdownMenu.selectedLootThreshold ) then
 					info.checked = 1;
 				elseif ( strsub(value, 1, 12) == "RAID_TARGET_" ) then
-					local raidTargetIndex = GetRaidTargetIndex(unit);
-					if ( raidTargetIndex == index ) then
+					local buttonRaidTargetIndex = strsub(value, 13);
+					if ( buttonRaidTargetIndex == "NONE" ) then
+						buttonRaidTargetIndex = nil;
+					else
+						buttonRaidTargetIndex = tonumber(buttonRaidTargetIndex);
+					end
+
+					local activeRaidTargetIndex = GetRaidTargetIndex(unit);
+					if ( activeRaidTargetIndex == buttonRaidTargetIndex ) then
 						info.checked = 1;
 					end
 				elseif ( strsub(value, 1, 18) == "DUNGEON_DIFFICULTY" and (strlen(value) > 18)) then
@@ -870,7 +886,7 @@ function UnitPopup_AddDropDownButton(info, dropdownMenu, cntButton, buttonIndex,
 	end
 
 	-- Setup newbie tooltips
-	info.tooltipTitle = cntButton.text;
+	info.tooltipTitle = GetDropDownButtonText(cntButton, dropdownMenu);
 	local tooltipText = _G["NEWBIE_TOOLTIP_UNIT_"..buttonIndex];
 	if ( not tooltipText ) then
 		tooltipText = cntButton.tooltipText;
@@ -1310,7 +1326,7 @@ function UnitPopup_HideButtons ()
 			if not IsGMAccount() then
 				shown = false
 			end
-		elseif isOneOf(value, "HEADHUNTING_TITLE", "HEADHUNTING_SET_REWARD", "HEADHUNTING_SETTINGS", "HEADHUNTING_ENABLE", "HEADHUNTING_DISABLE") then
+		elseif value == "HEADHUNTING_TITLE" or value == "HEADHUNTING_SET_REWARD" or value == "HEADHUNTING_SETTINGS" or value == "HEADHUNTING_ENABLE" or value == "HEADHUNTING_DISABLE" then
 			if not C_Service.IsRenegadeRealm() then
 				shown = false
 			end
@@ -1717,12 +1733,7 @@ function UnitPopup_OnClick (self)
 	elseif ( button == "VEHICLE_LEAVE" ) then
 		VehicleExit();
 	elseif ( button == "SET_FOCUS" ) then
-		if unit == "target" then
-			-- TODO: Решить проблему с хаком. В данный момент это необходимо для того чтоб аддоны не вызывали Taint, если вызывают это меню с под себя.
-			SecureCallFocusUnit:Show()
-		else
-			FocusUnit(unit)
-		end
+		SetFocusDelegate:SetAttribute("set-focus", unit)
 	elseif ( button == "CLEAR_FOCUS" ) then
 		ClearFocus(unit);
 	elseif ( button == "LOCK_FOCUS_FRAME" ) then

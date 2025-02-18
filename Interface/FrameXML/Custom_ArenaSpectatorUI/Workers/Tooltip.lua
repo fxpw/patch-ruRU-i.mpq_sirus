@@ -76,7 +76,7 @@ end
 function ezSpectator_TooltipWorker:Stylize()
     self.TooltipFrame:SetBackdrop({
         bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
-        edgeFile = 'Interface\\ArenaSpectator\\TooltipEdge',
+        edgeFile = 'Interface\\Custom\\ArenaSpectator\\TooltipEdge',
         tile = true, tileSize = 16, edgeSize = 16,
         insets = {
             left = 4,

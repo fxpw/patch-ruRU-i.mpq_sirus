@@ -673,6 +673,10 @@ local REALM_DOWN_DIALOGUES = {
 	[REALM_LIST_REALM_NOT_FOUND] = true,
 }
 
+local TEXT_OVERRIDES = {
+	["(200)"] = GLUE_STATUS_DIALOG_TEXT_200,
+}
+
 local DIALOG_BACKGROUND_OFFSET_X = 100
 local DIALOG_BACKGROUND_OFFSET_Y = 32
 local DIALOG_BUTTON_OFFSET_X = 15
@@ -721,6 +725,9 @@ function GlueDialogMixin:OPEN_STATUS_DIALOG(which, text, data)
 	elseif which == "OKAY" and REALM_DOWN_DIALOGUES[text] then
 		self:ShowDialog("OKAY_REALM_DOWN", text, data)
 	else
+		if which == "OKAY" and TEXT_OVERRIDES[text] then
+			text = TEXT_OVERRIDES[text]
+		end
 		self:ShowDialog(which, text, data)
 	end
 end
@@ -799,8 +806,6 @@ function GlueDialogMixin:ShowDialog(which, text, data)
 	else
 		self.Container:SetPoint("CENTER", 0, 35)
 	end
-
-	self.data = data
 
 	local glueText
 	if dialogInfo.html then
@@ -904,6 +909,13 @@ function GlueDialogMixin:ShowDialog(which, text, data)
 		end
 		if dialogInfo.maxBytes then
 			self.Container.EditBox:SetMaxBytes(dialogInfo.maxBytes)
+		end
+		if string.trim(glueText:GetText() or "") ~= "" then
+			self.Container.EditBox:ClearAllPoints()
+			self.Container.EditBox:SetPoint("TOP", glueText, "BOTTOM", 0, -10)
+		else
+			self.Container.EditBox:ClearAllPoints()
+			self.Container.EditBox:SetPoint("CENTER", 0, 10)
 		end
 	else
 		self.Container.EditBox:Hide()
@@ -1023,6 +1035,9 @@ function GlueDialogMixin:OnHide()
 			if dialogInfo.OnHide then
 				dialogInfo.OnHide(self)
 			end
+			if dialogInfo.hasEditBox then
+				self.Container.EditBox:SetText("")
+			end
 		end
 	end
 
@@ -1093,24 +1108,28 @@ function GlueDialogButtonMixin:OnLoad()
 end
 
 function GlueDialogButtonMixin:OnClick()
-	self.dialog:Hide()
+	local hide = true
 
 	local id = self:GetID()
 	if id == 1 then
 		local OnAccept = GlueDialogTypes[self.dialog.which].OnAccept
 		if OnAccept then
-			OnAccept(self.dialog)
+			hide = not OnAccept(self.dialog)
 		end
 	elseif id == 2 then
 		local OnCancel = GlueDialogTypes[self.dialog.which].OnCancel
 		if OnCancel then
-			OnCancel(self.dialog)
+			hide = not OnCancel(self.dialog)
 		end
 	elseif id == 3 then
 		local OnAlt = GlueDialogTypes[self.dialog.which].OnAlt
 		if OnAlt then
 			OnAlt(self.dialog)
 		end
+	end
+
+	if hide then
+		self.dialog:Hide()
 	end
 
 	PlaySound("gsTitleOptionOK")

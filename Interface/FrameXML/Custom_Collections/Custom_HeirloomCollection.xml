@@ -53,16 +53,21 @@
 		<Frames>
 			<Button name="$parentTutorialButton" parentKey="TutorialButton" inherits="MainHelpPlateButton">
 				<Anchors>
-					<Anchor point="TOPLEFT" x="36" y="24"/>
+					<Anchor point="TOPLEFT" x="40" y="18"/>
 				</Anchors>
 				<Scripts>
 					<OnEnter>
-						GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT");
-						GameTooltip:SetText(HEIRLOOM_FRAME_HELP_TOOLTIP_HEAD, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-						GameTooltip:AddLine(HEIRLOOM_FRAME_HELP_TOOLTIP, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1);
-						GameTooltip:Show();
+						Main_HelpPlate_Button_OnLeave(self)
+						GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
+						GameTooltip_AddNormalLine(GameTooltip, HELPTIP_HEIRLOOM_HEAD)
+						GameTooltip_AddBlankLineToTooltip(GameTooltip)
+						GameTooltip_AddHighlightLine(GameTooltip, HELPTIP_HEIRLOOM, 1)
+						GameTooltip:Show()
 					</OnEnter>
-					<OnLeave function="GameTooltip_Hide"/>
+					<OnLeave>
+						Main_HelpPlate_Button_OnLeave(self)
+						GameTooltip:Hide()
+					</OnLeave>
 				</Scripts>
 			</Button>
 

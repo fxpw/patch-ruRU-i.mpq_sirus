@@ -1,3 +1,13 @@
+Enum.ModelType = Enum.CreateMirror({
+	M2 = 0,
+	Unit = 1,
+	Creature = 2,
+	Item = 3,
+	ItemSet = 4,
+	Illusion = 5,
+	ItemTransmog = 6,
+})
+
 PKBT_OwnerMixin = {}
 
 function PKBT_OwnerMixin:SetOwner(widget)
@@ -78,6 +88,22 @@ function PKBT_DialogMixin.onCloseCallback(closeButton)
 	return true
 end
 
+PKBT_MaximizeMinimizeButton = {}
+
+function PKBT_MaximizeMinimizeButton:SetMinimizeLook(state)
+	if state then
+		self:SetNormalAtlas("RedButton-Condense")
+		self:SetPushedAtlas("RedButton-Condense-Pressed")
+		self:SetDisabledAtlas("RedButton-Condense-disabled")
+		self:SetHighlightAtlas("RedButton-Highlight")
+	else
+		self:SetNormalAtlas("RedButton-Expand")
+		self:SetPushedAtlas("RedButton-Expand-Pressed")
+		self:SetDisabledAtlas("RedButton-Expand-Disabled")
+		self:SetHighlightAtlas("RedButton-Highlight")
+	end
+end
+
 PKBT_ButtonMixin = CreateFromMixins(ThreeSliceButtonMixin)
 
 function PKBT_ButtonMixin:OnShow()
@@ -134,6 +160,14 @@ function PKBT_ButtonMixin:HideSpinner()
 	if self.ButtonText then
 		self.ButtonText:Show()
 	end
+end
+
+PKBT_ButtonGlowMixin = {}
+
+function PKBT_ButtonGlowMixin:OnLoad()
+	self.Left:SetAtlas("PKBT-Button-Glow-Left", true)
+	self.Right:SetAtlas("PKBT-Button-Glow-Right", true)
+	self.Center:SetAtlas("PKBT-Button-Glow-Center")
 end
 
 PKBT_VirtualCheckButtonMixin = CreateFromMixins()
@@ -285,12 +319,35 @@ function PKBT_ButtonMultiWidgetMixin:OnEnter()
 	PKBT_ButtonMixin.OnEnter(self)
 	self.__isMouseOver = true
 	self:UpdateButton()
+	self:OnEnterTooltip()
 end
 
 function PKBT_ButtonMultiWidgetMixin:OnLeave()
 	PKBT_ButtonMixin.OnEnter(self)
 	self.__isMouseOver = nil
 	self:UpdateButton()
+	self:OnLeaveTooltip()
+end
+
+function PKBT_ButtonMultiWidgetMixin:OnEnterTooltip()
+	if self.disabledReason then
+		self.tooltipShown = true
+		GameTooltip:SetOwner(self, "ANCHOR_TOP")
+		GameTooltip:AddLine(self.disabledReason, 1, 0.1, 0.1, true)
+		GameTooltip:Show()
+	end
+end
+
+function PKBT_ButtonMultiWidgetMixin:OnLeaveTooltip()
+	if self.tooltipShown then
+		self.tooltipShown = nil
+		GameTooltip:Hide()
+	end
+end
+
+function PKBT_ButtonMultiWidgetMixin:RefreshTooltip()
+	self:OnLeaveTooltip()
+	self:OnEnterTooltip()
 end
 
 function PKBT_ButtonMultiWidgetMixin:OnMouseDown(button)
@@ -630,24 +687,194 @@ function PKBT_ButtonMultiWidgetMixin:HideSpinner()
 	end
 end
 
-local CURRENCY_ICONS = {
-	[0] = "PKBT-Icon-Currency-Gold",
-	[1] = "PKBT-Icon-Currency-Bonus",
-	[2] = "PKBT-Icon-Currency-Loyality",
-	[3] = "PKBT-Icon-Currency-Vote",
-	[4] = "PKBT-Icon-Currency-Referral",
-}
+function PKBT_ButtonMultiWidgetMixin:SetDisabledReason(reason)
+	self.disabledReason = reason
+end
 
-PKBT_PriceMixin = {}
+PKBT_CurrencyMixin = {}
+
+function PKBT_CurrencyMixin:OnEnter()
+	if not self.tooltipDisabled and self.currencyType then
+		if self.description then
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+			if self.tooltipTitle then
+				GameTooltip:AddLine(string.format("%s - %s", self.tooltipTitle, self.name))
+			else
+				GameTooltip:AddLine(self.name)
+			end
+			GameTooltip:AddLine(self.description, 1, 1, 1, true)
+			GameTooltip:Show()
+		elseif self.link then
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+			GameTooltip:SetHyperlink(self.link)
+			GameTooltip:Show()
+		end
+	end
+end
+
+function PKBT_CurrencyMixin:OnLeave()
+	if not self.tooltipDisabled then
+		GameTooltip:Hide()
+	end
+end
+
+function PKBT_CurrencyMixin:UpdatePriceRect()
+	local width = 0
+
+	if self.Icon:IsShown() then
+		width = width + self.Icon:GetWidth() + (self.offsetX or 5)
+	end
+	if self.Value:IsShown() then
+		width = width + self.Value:GetStringWidth()
+	end
+
+	self:SetWidth(width)
+end
+
+function PKBT_CurrencyMixin:SetValue(amount, currencyType)
+	local success = true
+	if currencyType then
+		success = self:SetCurrencyType(currencyType)
+	end
+	if success then
+		self.Value:SetText(amount)
+		self:UpdatePriceRect()
+		if type(self.OnAmountChanged) == "function" then
+			self.OnAmountChanged(self, amount)
+		end
+	end
+end
+
+function PKBT_CurrencyMixin:SetCurrencyType(currencyType)
+	local isOnGlueScreen = IsOnGlueScreen()
+
+	if isOnGlueScreen and currencyType then
+		self.currencyType = currencyType
+		self.Icon:SetAtlas(currencyType, false)
+		self:Show()
+
+		return true
+	elseif not isOnGlueScreen and currencyType and C_StorePublic.IsValidCurrencyType(currencyType) then
+		local name, description, link, texture, iconAtlas = C_StorePublic.GetCurrencyInfo(currencyType)
+		self.currencyType = currencyType
+		self.name = name
+		self.description = description
+		self.link = link
+
+		if iconAtlas then
+			self.Icon:SetAtlas(iconAtlas, false)
+		else
+			self.Icon:SetTexCoord(0, 1, 0, 1)
+			self.Icon:SetTexture(texture or [[Interface\Icons\INV_Misc_QuestionMark]])
+		end
+		self:Show()
+
+		return true
+	else
+		self.currencyType = nil
+		self.name = nil
+		self.description = nil
+		self.link = nil
+		self:Hide()
+
+		return false
+	end
+end
+
+function PKBT_CurrencyMixin:UpdateTextOffset()
+	self.Value:ClearAllPoints()
+	if self.invertSide then
+		self.Value:SetPoint("RIGHT", self.Icon, "LEFT", -(self.offsetX or 5), 0)
+	else
+		self.Value:SetPoint("LEFT", self.Icon, "RIGHT", (self.offsetX or 5), 0)
+	end
+end
+
+function PKBT_CurrencyMixin:SetInvertValueSide(state)
+	self.invertSide = not not state
+
+	self.Icon:ClearAllPoints()
+	if self.invertSide then
+		self.Icon:SetPoint("RIGHT", 0, 0)
+	else
+		self.Icon:SetPoint("LEFT", 0, 0)
+	end
+	self:UpdateTextOffset()
+end
+
+function PKBT_CurrencyMixin:SetTextOffset(offset)
+	self.offsetX = type(offset) == "number" and offset or nil
+	self:UpdateTextOffset()
+end
+
+function PKBT_CurrencyMixin:SetTextColor(color)
+	if type(color) == "table" then
+		self.Value:SetTextColor(unpack(color, 1, 3))
+	else
+		self.Value:SetTextColor(1, 0.82, 0)
+	end
+end
+
+function PKBT_CurrencyMixin:SetIconSize(size)
+	self:SetHeight(size or 26)
+	self.Icon:SetSize(size or 26, size or 26)
+end
+
+function PKBT_CurrencyMixin:SetFontObject(fontObject)
+	self.Value:SetFontObject(fontObject or "PKBT_Font_16")
+end
+
+function PKBT_CurrencyMixin:SetTooltipEnabled(state)
+	self.tooltipDisabled = not state
+	self:EnableMouse(state)
+end
+
+PKBT_BalanceMixin = CreateFromMixins(PKBT_CurrencyMixin)
+
+function PKBT_BalanceMixin:OnLoad()
+	self.Icon:SetSize(40, 40)
+	self.Value:SetFontObject("PKBT_Font_20")
+	self.tooltipTitle = STORE_BALANCE_LABEL
+	self:RegisterCustomEvent("STORE_BALANCE_UPDATE")
+end
+
+function PKBT_BalanceMixin:OnShow()
+	self:UpdateBalance()
+end
+
+function PKBT_BalanceMixin:OnEvent(event, ...)
+	if event == "STORE_BALANCE_UPDATE" then
+		if self:IsShown() then
+			self:UpdateBalance()
+		end
+	end
+end
+
+function PKBT_BalanceMixin:UpdateBalance()
+	if self.currencyType then
+		local balance = C_StorePublic and C_StorePublic.GetBalance(self.currencyType) or 0
+		self:SetValue(balance)
+	end
+end
+
+function PKBT_BalanceMixin:SetCurrencyType(currencyType)
+	local success = PKBT_CurrencyMixin.SetCurrencyType(self, currencyType)
+	if success then
+		self:UpdateBalance()
+	end
+end
+
+PKBT_PriceMixin = CreateFromMixins(PKBT_CurrencyMixin)
 
 function PKBT_PriceMixin:OnShow()
 	self:UpdatePriceRect()
 end
 
 function PKBT_PriceMixin:SetPrice(price, originalPrice, currencyType)
-	if price ~= -1 then
+	local success = self:SetCurrencyType(currencyType)
+	if success and price ~= -1 then
 		local isFree = price == 0
-		self.currencyType = currencyType
+
 		self.value = price
 		self.originalPrice = originalPrice
 
@@ -661,7 +888,6 @@ function PKBT_PriceMixin:SetPrice(price, originalPrice, currencyType)
 			self.StrikeThrough:Hide()
 		else
 			self.Value:SetText(price)
-			self.Icon:SetAtlas(CURRENCY_ICONS[currencyType], false)
 			self.Icon:Show()
 
 			if not self.__originalPriceHidden and originalPrice and originalPrice > 0 and originalPrice ~= price then
@@ -675,6 +901,8 @@ function PKBT_PriceMixin:SetPrice(price, originalPrice, currencyType)
 				self.Value:SetPoint("LEFT", self.Icon, "RIGHT", 3, 0)
 			end
 		end
+
+		self:UpdateColors()
 	else
 		self.value = -1
 		self.originalPrice = 0
@@ -686,6 +914,15 @@ function PKBT_PriceMixin:SetPrice(price, originalPrice, currencyType)
 	end
 
 	self:UpdatePriceRect()
+
+	return success
+end
+
+function PKBT_PriceMixin:HasDiscount()
+	if self.value and self.value ~= -1 and self.originalPrice and self.originalPrice > 0 then
+		return self.value ~= self.originalPrice
+	end
+	return false
 end
 
 function PKBT_PriceMixin:UpdateOriginalRect()
@@ -734,24 +971,92 @@ function PKBT_PriceMixin:UpdatePriceRect()
 	self:SetWidth(width)
 end
 
-PKBT_ButtonMultiWidgetPriceContollerMixin = {}
-
-function PKBT_ButtonMultiWidgetPriceContollerMixin:OnShow()
-	local parent = self:GetParent()
-	parent:UpdatePriceRect()
-	parent:UpdateHolderRect()
-	parent:UpdateButton()
-end
-
-function PKBT_ButtonMultiWidgetPriceContollerMixin:OnEvent(event, ...)
-	local parent = self:GetParent()
-	if event == "SERVICE_STATE_UPDATE" or event == "STORE_BALANCE_UPDATE" then
-		if parent:IsShown() and parent.Price.currencyType == Enum.Store.CurrencyType.Bonus
-		and parent.Price.value and parent.Price.value > 0
-		then
-			parent:CheckBalance()
+function PKBT_PriceMixin:UpdateColors()
+	if self:IsPriceDesaturated() then
+		self.Value:SetTextColor(0.5, 0.5, 0.5)
+		self.Icon:SetDesaturated(true)
+	else
+		self.Icon:SetDesaturated(false)
+		if self.ValueOriginal:IsShown() then
+			if self.value > self.originalPrice then
+				self.Value:SetTextColor(self:GetMarkupColor())
+			else
+				self.Value:SetTextColor(self:GetDiscountColor())
+			end
+		else
+			self.Value:SetTextColor(self:GetDefaultValueColor())
 		end
 	end
+end
+
+function PKBT_PriceMixin:SetDefaultValueColorOverride(r, g, b)
+	if type(r) == "number" and type(g) == "number" and type(b) == "number" then
+		self.__colorOverrideDefaultValueR = r
+		self.__colorOverrideDefaultValueG = g
+		self.__colorOverrideDefaultValueB = b
+	else
+		self.__colorOverrideDefaultValueR = nil
+		self.__colorOverrideDefaultValueG = nil
+		self.__colorOverrideDefaultValueB = nil
+	end
+end
+
+function PKBT_PriceMixin:GetDefaultValueColor()
+	if self.__colorOverrideDefaultValueR then
+		return self.__colorOverrideDefaultValueR, self.__colorOverrideDefaultValueG, self.__colorOverrideDefaultValueB
+	end
+	return 1, 1, 1
+end
+
+function PKBT_PriceMixin:SetDiscountColorOverride(r, g, b)
+	if type(r) == "number" and type(g) == "number" and type(b) == "number" then
+		self.__colorOverrideDiscountR = r
+		self.__colorOverrideDiscountG = g
+		self.__colorOverrideDiscountB = b
+	else
+		self.__colorOverrideDiscountR = nil
+		self.__colorOverrideDiscountG = nil
+		self.__colorOverrideDiscountB = nil
+	end
+end
+
+function PKBT_PriceMixin:GetDiscountColor()
+	if self.__colorOverrideDiscountR then
+		return self.__colorOverrideDiscountR, self.__colorOverrideDiscountG, self.__colorOverrideDiscountB
+	end
+	return 0.102, 1, 0.102
+end
+
+function PKBT_PriceMixin:SetMarkupColorOverride(r, g, b)
+	if type(r) == "number" and type(g) == "number" and type(b) == "number" then
+		self.__colorOverrideMarkupR = r
+		self.__colorOverrideMarkupG = g
+		self.__colorOverrideMarkupB = b
+	else
+		self.__colorOverrideMarkupR = nil
+		self.__colorOverrideMarkupG = nil
+		self.__colorOverrideMarkupB = nil
+	end
+end
+
+function PKBT_PriceMixin:GetMarkupColor()
+	if self.__colorOverrideMarkupR then
+		return self.__colorOverrideMarkupR, self.__colorOverrideMarkupG, self.__colorOverrideMarkupB
+	end
+	return 0.3, 0.7, 1
+end
+
+function PKBT_PriceMixin:SetPriceDesaturated(desaturated)
+	desaturated = not not desaturated
+
+	if desaturated ~= self:IsPriceDesaturated() then
+		self.__desaturated = desaturated
+		self:UpdateColors()
+	end
+end
+
+function PKBT_PriceMixin:IsPriceDesaturated()
+	return not not self.__desaturated
 end
 
 function PKBT_PriceMixin:SetFreeText(text)
@@ -780,10 +1085,157 @@ function PKBT_PriceMixin:SetCurrencyHelpTipEnabled(state)
 	self:SetScript("OnLeave", self.__tooltipEnabled and self.OnLeave or nil)
 end
 
+PKBT_CurrencyListMixin = {}
+
+function PKBT_CurrencyListMixin:OnLoad()
+	self.currencyPool = CreateFramePool("Frame", self.ListHolder, "PKBT_CurrencyTemplate")
+	self.activeCurrencies = {}
+	self.offsetX = 5
+end
+
+function PKBT_CurrencyListMixin:OnShow()
+	self:UpdateRect()
+end
+
+function PKBT_CurrencyListMixin:UpdateRect()
+	local width = 0
+	for index, currencyWidget in ipairs(self.activeCurrencies) do
+		width = width + currencyWidget:GetWidth()
+	end
+
+	width = width + (#self.activeCurrencies - 1) * self.offsetX
+	self:SetWidth(width > 0 and width + (self.additionalWidth or 0) or 1)
+
+	if type(self.OnRectUpdate) == "function" then
+		self.OnRectUpdate(self)
+	end
+end
+
+function PKBT_CurrencyListMixin:Clear()
+	self.currencyPool:ReleaseAll()
+	table.wipe(self.activeCurrencies)
+	self:SetWidth(1)
+end
+
+function PKBT_CurrencyListMixin:SetCurrency(currencyType, amount)
+	self:Clear()
+	self:AddCurrency(currencyType, amount)
+end
+
+function PKBT_CurrencyListMixin:AddCurrency(currencyType, amount, suppressRectUpdate)
+	local currencyWidget = self.currencyPool:Acquire()
+
+	local index = #self.activeCurrencies + 1
+	if index == 1 then
+		local baseOffsetX = self.additionalWidth and math.floor(self.additionalWidth / 2 + 0.5) or 0
+		currencyWidget:SetPoint("LEFT", baseOffsetX, 0)
+	else
+		currencyWidget:SetPoint("LEFT", self.activeCurrencies[index - 1], "RIGHT", self.offsetX, 0)
+	end
+
+	currencyWidget:SetInvertValueSide(self.currencyInvertSide)
+	currencyWidget:SetFontObject(self.currencyFontObject)
+	currencyWidget:SetTextColor(self.currencyTextColor)
+	currencyWidget:SetTextOffset(self.currencyTextOffsetX)
+	currencyWidget:SetIconSize(self.currencySize, self.currencySize)
+	currencyWidget:SetTooltipEnabled(not self.tooltipDisabled)
+	currencyWidget:SetValue(amount, currencyType)
+	currencyWidget:Show()
+	self.activeCurrencies[index] = currencyWidget
+
+	if not suppressRectUpdate then
+		self:UpdateRect()
+	end
+end
+
+local sortByCurrencyType = function(a, b)
+	return a[1] < a[2]
+end
+
+function PKBT_CurrencyListMixin:SetCurrencyHashList(list)
+	self:Clear()
+
+	if not next(list) then
+		self:UpdateRect()
+		return
+	end
+
+	local currencyArray = {}
+	for currencyType, amount in pairs(list) do
+		table.insert(currencyArray, {currencyType, amount})
+	end
+
+	table.sort(currencyArray, sortByCurrencyType)
+
+	for index, data in ipairs(currencyArray) do
+		self:AddCurrency(data[1], data[2], true)
+	end
+
+	self:UpdateRect()
+end
+
+function PKBT_CurrencyListMixin:SetAdditionalWidth(width)
+	self.additionalWidth = type(width) == "number" and width or nil
+end
+
+function PKBT_CurrencyListMixin:SetCurrencyOffset(offset)
+	self.offsetX = type(offset) == "number" and offset or 5
+end
+
+function PKBT_CurrencyListMixin:SetCurrencyInvertValueSide(state)
+	self.currencyInvertSide = not not state
+end
+
+function PKBT_CurrencyListMixin:SetCurrencyTextOffset(offset)
+	self.currencyTextOffsetX = type(offset) == "number" and offset or nil
+end
+
+function PKBT_CurrencyListMixin:SetCurrencyTextColor(r, g, b)
+	if type(r) == "number" and type(g) == "number" and type(b) == "number" then
+		self.currencyTextColor = {r, g, b}
+	else
+		self.currencyTextColor = nil
+	end
+end
+
+function PKBT_CurrencyListMixin:SetCurrencySize(size)
+	self.currencySize = type(size) == "number" and size or nil
+end
+
+function PKBT_CurrencyListMixin:SetCurrencyFont(fontObject)
+	self.currencyFontObject = type(fontObject) == "string" and fontObject or nil
+end
+
+function PKBT_CurrencyListMixin:SetCurrencyTooltipEnabled(state)
+	self.tooltipDisabled = not state
+end
+
+PKBT_ButtonMultiWidgetPriceContollerMixin = {}
+
+function PKBT_ButtonMultiWidgetPriceContollerMixin:OnShow()
+	local parent = self:GetParent()
+	parent:UpdatePriceRect()
+	parent:UpdateHolderRect()
+	parent:UpdateButton()
+end
+
+function PKBT_ButtonMultiWidgetPriceContollerMixin:OnEvent(event, ...)
+	local parent = self:GetParent()
+	if event == "SERVICE_STATE_UPDATE" or event == "STORE_BALANCE_UPDATE" then
+		if parent:IsShown() and parent.Price.currencyType == Enum.Store.CurrencyType.Bonus
+		and parent.Price.value and parent.Price.value > 0
+		then
+			parent:CheckBalance()
+		end
+	end
+end
+
 PKBT_ButtonMultiWidgetPriceMixin = CreateFromMixins(PKBT_ButtonMultiWidgetMixin)
 
 function PKBT_ButtonMultiWidgetPriceMixin:OnLoad()
 	PKBT_ButtonMultiWidgetMixin.OnLoad(self)
+
+	self.Price:SetDefaultValueColorOverride(1, 0.82, 0)
 
 	self.PurchaseNote.Icon:SetAtlas("PKBT-Icon-Notification-White", true)
 	self.PurchaseNote.Icon:SetVertexColor(0.961, 0.141, 0.141)
@@ -800,35 +1252,41 @@ end
 
 function PKBT_ButtonMultiWidgetPriceMixin:OnEnable()
 	PKBT_ButtonMultiWidgetMixin.OnEnable(self)
-	self:UpdatePriceColor()
+	self.Price:SetPriceDesaturated(false)
 end
 
 function PKBT_ButtonMultiWidgetPriceMixin:OnDisable()
 	PKBT_ButtonMultiWidgetMixin.OnDisable(self)
-	self:UpdatePriceColor()
+	self.Price:SetPriceDesaturated(true)
 end
 
-function PKBT_ButtonMultiWidgetPriceMixin:OnEnter()
-	PKBT_ButtonMultiWidgetMixin.OnEnter(self)
+function PKBT_ButtonMultiWidgetPriceMixin:OnEnterTooltip()
+	PKBT_ButtonMultiWidgetMixin.OnEnterTooltip(self)
 
-	if self:IsEnabled() ~= 1 then
+	if not self.tooltipShown and self:IsEnabled() ~= 1 then
 		if self.Price.currencyType and self.Price.value then
-			local balance = Store_GetBalance(self.Price.currencyType)
+			local balance = C_StorePublic and C_StorePublic.GetBalance(self.Price.currencyType) or 0
 			if self.Price.value > balance then
-				self.Price.tooltip = true
-				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-				GameTooltip:AddLine(string.format(STORE_NOT_ENOUGHT_CURRENCY, balance))
+				local errorText
+
+				if self.Price.currencyType == Enum.Store.CurrencyType.Bonus then
+					errorText = STORE_NOT_ENOUGHT_FOR_PURCHASE_BONUS
+				elseif self.Price.currencyType == Enum.Store.CurrencyType.Vote then
+					errorText = STORE_NOT_ENOUGHT_FOR_PURCHASE_VOTE
+				elseif self.Price.currencyType == Enum.Store.CurrencyType.Referral then
+					errorText = STORE_NOT_ENOUGHT_FOR_PURCHASE_REFERRAL
+				elseif self.Price.currencyType == Enum.Store.CurrencyType.Loyality then
+					errorText = STORE_NOT_ENOUGHT_FOR_PURCHASE_LOYALITY
+				else
+					errorText = STORE_NOT_ENOUGHT_FOR_PURCHASE_GENERIC
+				end
+
+				self.tooltipShown = true
+				GameTooltip:SetOwner(self, "ANCHOR_TOP")
+				GameTooltip:AddLine(string.format(STORE_NOT_ENOUGHT_FOR_PURCHASE_BASE, errorText, balance), 1, 1, 1, true)
 				GameTooltip:Show()
 			end
 		end
-	end
-end
-
-function PKBT_ButtonMultiWidgetPriceMixin:OnLeave()
-	PKBT_ButtonMultiWidgetMixin.OnLeave(self)
-
-	if self.Price.tooltip then
-		GameTooltip:Hide()
 	end
 end
 
@@ -858,58 +1316,57 @@ function PKBT_ButtonMultiWidgetPriceMixin:SetOriginalOnTop(state)
 	end
 end
 
-function PKBT_ButtonMultiWidgetPriceMixin:UpdatePriceColor()
-	if self:IsEnabled() ~= 1 then
-		self.Price.Value:SetTextColor(0.5, 0.5, 0.5)
-		self.Price.Icon:SetDesaturated(true)
-	else
-		self.Price.Icon:SetDesaturated(false)
-		if self.Price.ValueOriginal:IsShown() then
-			self.Price.Value:SetTextColor(0.102, 1, 0.102)
-		else
-			self.Price.Value:SetTextColor(1, 0.82, 0)
-		end
-	end
-end
-
 function PKBT_ButtonMultiWidgetPriceMixin:SetPrice(price, originalPrice, currencyType)
-	PKBT_PriceMixin.SetPrice(self.Price, price, originalPrice, currencyType)
+	local success = PKBT_PriceMixin.SetPrice(self.Price, price, originalPrice, currencyType)
 
 	if price == -1 then
 		self.Price:Hide()
 	else
 		self.Price:Show()
-		self:UpdatePriceColor()
 		self:CheckBalance()
 	end
 
 	self.__dirty = true
 	self:UpdatePriceRect()
 	self:UpdateButton()
+
+	return success
+end
+
+function PKBT_ButtonMultiWidgetPriceMixin:HasDiscount()
+	return self.Price:HasDiscount()
 end
 
 function PKBT_ButtonMultiWidgetPriceMixin:CheckBalance()
 	if self.Price.currencyType and self.Price.value then
-		local balance = Store_GetBalance(self.Price.currencyType)
+		local balance = C_StorePublic and C_StorePublic.GetBalance(self.Price.currencyType) or 0
 
 		if self.__allowReplenishment and self.Price.currencyType == Enum.Store.CurrencyType.Bonus then
 			self.PurchaseNote:SetShown(self.__showReplenishmentIcon and self.Price.value > balance and not C_Service.IsInGMMode())
-			self:Enable()
+			if not self.disabledReason then
+				self:Enable()
+			end
 		else
 			self.PurchaseNote:Hide()
-			self:SetEnabled(self.Price.value <= balance or C_Service.IsInGMMode())
+			if not self.disabledReason then
+				self:SetEnabled(self.Price.value <= balance or C_Service.IsInGMMode())
+			end
 		end
 	else
 		self.PurchaseNote:Hide()
-		self:Enable()
+		if not self.disabledReason then
+			self:Enable()
+		end
 	end
+
+	self.Price:SetPriceDesaturated(self:IsEnabled() ~= 1)
 end
 
 function PKBT_ButtonMultiWidgetPriceMixin:SetAllowReplenishment(state, showIcon)
 	self.__allowReplenishment = not not state
 	self.__showReplenishmentIcon = not not showIcon
 
-	if self:IsShown() then
+	if self:IsVisible() then
 		self:CheckBalance()
 	end
 end
@@ -928,6 +1385,14 @@ PKBT_CheckButtonBaseMixin = {}
 
 function PKBT_CheckButtonBaseMixin:OnLoad()
 	self:SetText(getmetatable(self).__index.GetText(self))
+end
+
+function PKBT_CheckButtonBaseMixin:OnEnable()
+	self.ButtonText:SetTextColor(1, 1, 1)
+end
+
+function PKBT_CheckButtonBaseMixin:OnDisable()
+	self.ButtonText:SetTextColor(0.5, 0.5, 0.5)
 end
 
 function PKBT_CheckButtonBaseMixin:OnShow()
@@ -974,11 +1439,37 @@ function PKBT_CheckButtonMixin:OnLoad()
 	PKBT_CheckButtonBaseMixin.OnLoad(self)
 	self:SetNormalAtlas("PKBT-Checkbox-Default")
 	self:SetPushedAtlas("PKBT-Checkbox-Default")
-	self:SetDisabledAtlas("PKBT-Checkbox-Default")
-	self:GetDisabledTexture():SetDesaturated(true)
 	self:SetHighlightAtlas("PKBT-Checkbox-Highlight")
-	self:SetCheckedTexture("")
-	self:GetCheckedTexture():SetAtlas("PKBT-Checkbox-Checked", true)
+	self:SetCheckedAtlas("PKBT-Checkbox-Checked", true)
+	self:SetDisabledCheckedAtlas("PKBT-Checkbox-Checked")
+	self:GetDisabledCheckedTexture():SetDesaturated(true)
+end
+
+PKBT_RadioButtonMixin = CreateFromMixins(PKBT_CheckButtonBaseMixin)
+
+function PKBT_RadioButtonMixin:OnLoad()
+	PKBT_CheckButtonBaseMixin.OnLoad(self)
+	self:SetNormalAtlas("PKBT-RadioButton-Default")
+	self:SetPushedAtlas("PKBT-RadioButton-Default")
+	self:SetHighlightAtlas("PKBT-RadioButton-Highlight")
+	self:SetCheckedAtlas("PKBT-RadioButton-Checked", true)
+	self:SetDisabledCheckedAtlas("PKBT-RadioButton-Disabled")
+end
+
+PKBT_SeparatorPikeHorizontalMixin = {}
+
+function PKBT_SeparatorPikeHorizontalMixin:OnLoad()
+	self.Left:SetAtlas("PKBT-Separator-Pike-Horizontal-Left", true)
+	self.Right:SetAtlas("PKBT-Separator-Pike-Horizontal-Right", true)
+	self.Center:SetAtlas("PKBT-Separator-Pike-Horizontal-Center", true)
+end
+
+PKBT_SeparatorPikeVerticalMixin = {}
+
+function PKBT_SeparatorPikeVerticalMixin:OnLoad()
+	self.Top:SetAtlas("PKBT-Separator-Pike-Vertical-Top", true)
+	self.Bottom:SetAtlas("PKBT-Separator-Pike-Vertical-Bottom", true)
+	self.Middle:SetAtlas("PKBT-Separator-Pike-Vertical-Middle", true)
 end
 
 PKBT_RibbonMixin = {}
@@ -991,6 +1482,16 @@ end
 
 function PKBT_RibbonMixin:SetText(text)
 	self.Text:SetText(text)
+end
+
+PKBT_RefreshButtonMixin = {}
+
+function PKBT_RefreshButtonMixin:OnLoad()
+	self:SetNormalAtlas("PKBT-Icon-Refresh")
+	self:SetPushedAtlas("PKBT-Icon-Refresh")
+	self:SetDisabledAtlas("PKBT-Icon-Refresh")
+	self:SetHighlightAtlas("PKBT-Icon-Refresh-Highlight")
+	self:GetDisabledTexture():SetVertexColor(0.5, 0.5, 0.5)
 end
 
 PKBT_StatusBarMixin = {}
@@ -1236,8 +1737,10 @@ end
 
 function PKBT_MinimalScrollBarButtonMixin:OnClick(button, down)
 	if down then
-		self.timeSinceLast = (self.timeToStart or -0.2)
-		self:SetScript("OnUpdate", self.OnUpdate)
+		if IsMouseButtonDown then
+			self.timeSinceLast = (self.timeToStart or -0.2)
+			self:SetScript("OnUpdate", self.OnUpdate)
+		end
 		self.parentScrollFrame:OnMouseWheel(self.direction)
 		PlaySound("UChatScrollButton")
 	else
@@ -1507,9 +2010,11 @@ function PKBT_ScrollShadowMixin:OnLoad()
 		self:UpdateAlpha(this)
 	end)
 	self:GetParent().ScrollBar.ScrollDownButton:HookScript("OnEnable", function(this)
+		self.__scrollDisabled = nil
 		self:UpdateAlpha(this:GetParent())
 	end)
 	self:GetParent().ScrollBar.ScrollDownButton:HookScript("OnDisable", function(this)
+		self.__scrollDisabled = true
 		self.Bottom:SetAlpha(0)
 	end)
 end
@@ -1543,6 +2048,11 @@ end
 
 function PKBT_ScrollShadowMixin:UpdateAlpha(scrollBar, value)
 	if not self:IsShown() or self.__disabled then
+		return
+	end
+
+	if self.__scrollDisabled then
+		self.Bottom:SetAlpha(0)
 		return
 	end
 
@@ -1587,7 +2097,9 @@ function PKBT_EditBoxCodeMixin:OnChar(char)
 			local text = self:GetText()
 			local success, result = pcall(self.__filterFunction, text)
 			if success then
-				self:SetText(result or text)
+				if result and result ~= text then
+					self:SetText(result)
+				end
 			else
 				geterrorhandler()(result)
 			end
@@ -1612,9 +2124,7 @@ function PKBT_EditBoxCodeMixin:OnEscapePressed()
 end
 
 function PKBT_EditBoxCodeMixin:OnTextSet()
-	if self.__blockChanges then
-		self.__originalText = self:GetText()
-	end
+	self.__originalText = self:GetText()
 end
 
 function PKBT_EditBoxCodeMixin:OnTextChanged(userInput)
@@ -1623,10 +2133,11 @@ function PKBT_EditBoxCodeMixin:OnTextChanged(userInput)
 	end
 
 	local text = self:GetText()
+	self.__originalText = text
 	self.Instructions:SetShown(text == "")
 
-	if type(self.OnValueChanged) == "function" then
-		self.OnValueChanged(text, userInput)
+	if type(self.OnTextValueChanged) == "function" then
+		self.OnTextValueChanged(self, text, userInput)
 	end
 end
 
@@ -1701,9 +2212,9 @@ function PKBT_EditBoxAltMixin:OnLoad()
 	self.Instructions:SetPoint("LEFT", 9, -2)
 end
 
-PKBT_MultiBuyEditBoxMixin = CreateFromMixins(PKBT_EditBoxMixin)
+PKBT_NumericEditBoxMixin = CreateFromMixins(PKBT_EditBoxMixin)
 
-function PKBT_MultiBuyEditBoxMixin:OnLoad()
+function PKBT_NumericEditBoxMixin:OnLoad()
 	PKBT_EditBoxMixin.OnLoad(self)
 
 	self.DecrementButton:SetNormalAtlas("PKBT-Icon-Minus")
@@ -1717,7 +2228,7 @@ function PKBT_MultiBuyEditBoxMixin:OnLoad()
 	self.IncrementButton:SetHighlightAtlas("PKBT-Icon-PlusMinus-Highlight")
 end
 
-function PKBT_MultiBuyEditBoxMixin:OnTextChanged(userInput)
+function PKBT_NumericEditBoxMixin:OnTextChanged(userInput)
 	if self.__ignoreTextChanged then
 		return
 	end
@@ -1763,16 +2274,300 @@ function PKBT_MultiBuyEditBoxMixin:OnTextChanged(userInput)
 		self.IncrementButton:Disable()
 	end
 
-	if type(self.OnValueChanged) == "function" then
-		self.OnValueChanged(value, userInput)
+	if type(self.OnTextValueChanged) == "function" then
+		self.OnTextValueChanged(self, value, userInput)
 	end
 end
 
-function PKBT_MultiBuyEditBoxMixin:SetTextNoScript(text)
+function PKBT_NumericEditBoxMixin:SetNumberNoScript(number)
 	self.__ignoreTextChanged = true
-	self:SetText(text)
+	self:SetNumber(number)
 	self.__ignoreTextChanged = nil
 end
+
+PKBT_EditBoxMulilineCodeMixin = CreateFromMixins(PKBT_EditBoxCodeMixin)
+
+function PKBT_EditBoxMulilineCodeMixin:OnTextChanged(userInput)
+	PKBT_EditBoxCodeMixin.OnTextChanged(self, userInput)
+
+	local scrollFrame = self:GetParent()
+	if scrollFrame.CharCount:IsShown() then
+		local limit = self:GetMaxLetters()
+		if limit == 0 then
+			scrollFrame.CharCount:SetText("")
+		else
+			scrollFrame.CharCount:SetText(limit - self:GetNumLetters())
+
+			if scrollFrame.ScrollBar:IsShown() then
+				scrollFrame.CharCount:SetPoint("BOTTOMRIGHT", -24, 2)
+			else
+				scrollFrame.CharCount:SetPoint("BOTTOMRIGHT", -1, 2)
+			end
+		end
+	end
+end
+
+PKBT_EditBoxMulilineScrollMixin = CreateFromMixins(PKBT_EditBoxCodeMixin)
+
+function PKBT_EditBoxMulilineScrollMixin:OnLoad()
+	self.EditBox:SetWidth(self:GetWidth() - 24)
+	self.EditBox.Instructions:SetPoint("TOPLEFT", 1, -1)
+	self.EditBox.Instructions:SetWidth(self:GetWidth() - 2)
+
+	self.scrollBarHideable = 1
+	ScrollFrame_OnLoad(self)
+	ScrollFrame_OnScrollRangeChanged(self)
+	ScrollingEdit_SetCursorOffsets(self.EditBox, 0, 0)
+end
+
+function PKBT_EditBoxMulilineScrollMixin:OnShow()
+	local _, _, width, height = self:GetRect()
+	if not width then
+		width = self:GetWidth()
+	end
+	if not height then
+		height = self:GetHeight()
+	end
+	self:SetSize(width, height)
+	self.EditBox:SetWidth((width or self:GetWidth()) - 24)
+end
+
+function PKBT_EditBoxMulilineScrollMixin:OnSizeChanged(width, height)
+	self.EditBox:SetWidth(width - 24)
+end
+
+function PKBT_EditBoxMulilineScrollMixin:OnMouseUp(button)
+	self.EditBox:SetFocus()
+end
+
+function PKBT_EditBoxMulilineScrollMixin:SetInstructions(instructions)
+	self.EditBox:SetInstructions(instructions)
+end
+
+function PKBT_EditBoxMulilineScrollMixin:SetMaxLetters(letters)
+	if type(letters) ~= "number" or letters < 0 then
+		letters = 0
+	end
+	self.EditBox:SetMaxLetters(letters)
+	self.CharCount:SetShown(letters > 0)
+end
+
+function PKBT_EditBoxMulilineScrollMixin:SetTransperentBackdrop(state)
+	if state then
+		NineSliceUtil.ApplyLayoutByName(self.NineSlice, "PKBT_InputMultilineTransparent")
+	else
+		NineSliceUtil.ApplyLayoutByName(self.NineSlice, "PKBT_InputMultilineOpaque")
+	end
+end
+
+PKBT_SimpleHTMLAsFontStringMixin = {}
+
+function PKBT_SimpleHTMLAsFontStringMixin:OnLoadSimpleHTMLAsFontString()
+	if not self:GetRegions() then
+		getmetatable(self).__index.SetText(self, "") -- initialize font object region
+	end
+end
+
+function PKBT_SimpleHTMLAsFontStringMixin:GetText()
+	return self:GetRegions():GetText()
+end
+
+function PKBT_SimpleHTMLAsFontStringMixin:SetWidth(width)
+	getmetatable(self).__index.SetWidth(self, width)
+	self:GetRegions():SetWidth(width)
+	self:SetHeight(self:GetRegions():GetHeight())
+end
+
+function PKBT_SimpleHTMLAsFontStringMixin:GetStringWidth()
+	return self:GetRegions():GetStringWidth()
+end
+
+function PKBT_SimpleHTMLAsFontStringMixin:GetStringHeight()
+	return self:GetRegions():GetStringHeight()
+end
+
+function PKBT_SimpleHTMLAsFontStringMixin:SetText(text)
+	getmetatable(self).__index.SetText(self, text)
+	self:SetHeight(self:GetRegions():GetHeight())
+end
+
+PKBT_CopyButtonMixin = {}
+
+function PKBT_CopyButtonMixin:OnLoad()
+	self:SetNormalAtlas("PKBT-Icon-Copy", true)
+	self:SetPushedAtlas("PKBT-Icon-Copy-Pressed", true)
+	self:SetHighlightAtlas("PKBT-Icon-Copy-Highlight", true)
+	self:Disable()
+end
+
+function PKBT_CopyButtonMixin:GetEditBox()
+	local editBox = self.editBox or self:GetParent()
+	if type(editBox) == "table" and editBox:IsObjectType("EditBox") then
+		return editBox
+	end
+end
+
+function PKBT_CopyButtonMixin:UpdateEditBoxTextRect()
+	local editBox = self:GetEditBox()
+	if editBox then
+		local leftHitRect, rightHitRect, topHitRect, bottomHitRect = editBox:GetHitRectInsets()
+		local leftText, rightText, topText, bottomText = editBox:GetTextInsets()
+
+		if self:IsEnabled() == 1 then
+			local width = self:GetWidth()
+			local _, _, _, offsetX = self:GetPoint(1)
+			editBox:SetHitRectInsets(leftHitRect, width - offsetX + 4, topHitRect, bottomHitRect)
+			editBox:SetTextInsets(leftText, width - offsetX + 4, topText, bottomText)
+		else
+			editBox:SetHitRectInsets(leftHitRect, leftHitRect, topHitRect, bottomHitRect)
+			editBox:SetTextInsets(leftText, rightText, topText, bottomText)
+		end
+	end
+end
+
+function PKBT_CopyButtonMixin:OnEnable()
+	self:UpdateEditBoxTextRect()
+	self:Show()
+end
+
+function PKBT_CopyButtonMixin:OnDisable()
+	self:UpdateEditBoxTextRect()
+	self:Hide()
+end
+
+function PKBT_CopyButtonMixin:OnClick(button)
+	local editBox = self:GetEditBox()
+	if editBox then
+		if type(editBox.OnCopyClick) == "function" then
+			editBox.OnCopyClick(self, button)
+		end
+	end
+end
+
+PKBT_DropdownMenuMixin = {}
+
+function PKBT_DropdownMenuMixin:OnLoad()
+	self.Left:SetAtlas("PKBT-Input-Background-Left", true)
+	self.Right:SetAtlas("PKBT-Input-Background-Right", true)
+	self.Middle:SetAtlas("PKBT-Input-Background-Center", true)
+
+	self.Button:SetNormalAtlas("PKBT-Arrow-Down", true)
+	self.Button:SetDisabledAtlas("PKBT-Arrow-Down-Disabled", true)
+--	self.Button:SetPushedAtlas("PKBT-Arrow-Down-Pushed", true)
+	self.Button:SetHighlightAtlas("PKBT-Arrow-Down-Highlight", true)
+end
+
+function PKBT_DropdownMenuMixin:UpdateButtonHitRect()
+	self.Button:SetHitRectInsets(-(self:GetWidth() - self.Button:GetWidth() - 13), -7, -2, -2)
+end
+
+function PKBT_DropdownMenuMixin:OnShow()
+	self:UpdateButtonHitRect()
+end
+
+function PKBT_DropdownMenuMixin:OnSizeChanged(width, height)
+	self:UpdateButtonHitRect()
+end
+
+PKBT_PaginatorMixin = {}
+
+function PKBT_PaginatorMixin:OnLoad()
+	self.__numPages = 1
+	self.__currentPage = 1
+end
+
+function PKBT_PaginatorMixin:GetPage()
+	return self.__currentPage, self.__numPages
+end
+
+function PKBT_PaginatorMixin:SetNumPages(numPages, skipCallback)
+	local oldPage = self.__currentPage
+
+	self.__numPages = type(numPages) == "number" and numPages > 0 and numPages or 1
+
+	if self.__currentPage > self.__numPages then
+		self.__currentPage = 1
+	end
+
+	self:UpdatePaginator(oldPage ~= self.__currentPage, skipCallback)
+end
+
+function PKBT_PaginatorMixin:SetPage(pageIndex)
+	if pageIndex ~= self.currentPage and pageIndex > 0 and pageIndex <= self.__numPages then
+		self.__currentPage = pageIndex
+		self:UpdatePaginator(true)
+	end
+end
+
+function PKBT_PaginatorMixin:PreviousPage(around)
+	if self.__numPages <= 1 then
+		return
+	end
+
+	if self.__currentPage == 1 then
+		if not around then
+			return
+		end
+		self.__currentPage = self.__numPages
+	else
+		self.__currentPage = self.__currentPage - 1
+	end
+
+	self:UpdatePaginator(true)
+end
+
+function PKBT_PaginatorMixin:NextPage(around)
+	if self.__numPages <= 1 then
+		return
+	end
+
+	if self.__currentPage == self.__numPages then
+		if not around then
+			return
+		end
+		self.__currentPage = 1
+	else
+		self.__currentPage = self.__currentPage + 1
+	end
+
+	self:UpdatePaginator(true)
+end
+
+function PKBT_PaginatorMixin:SetPageFormat(pageFormat)
+	local oldFormat = self.__pageFormat
+	self.__pageFormat = type(pageFormat) == "string" and pageFormat or nil
+
+	if oldFormat ~= self.__pageFormat then
+		self:UpdatePaginator()
+	end
+end
+
+function PKBT_PaginatorMixin:UpdatePaginator(pageChanged, skipCallback)
+	local currentPage, numPages = self:GetPage()
+	if numPages > 1 then
+		self.PageText:SetFormattedText(self.__pageFormat or "%u/%u", currentPage, numPages)
+		self.PrevButton:SetEnabled(currentPage > 1)
+		self.NextButton:SetEnabled(currentPage < numPages)
+		self:Show()
+
+		if pageChanged and not skipCallback and type(self.OnPageChanged) == "function" then
+			self:OnPageChanged(currentPage, numPages)
+		end
+	else
+		self:Hide()
+	end
+end
+
+function PKBT_PaginatorMixin:OnPrevNextClick(button, delta)
+	if delta > 0 then
+		self:NextPage()
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+	elseif delta < 0 then
+		self:PreviousPage()
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
+	end
+end
+
 PKBT_CountdownThrottledBaseMixin = {}
 
 function PKBT_CountdownThrottledBaseMixin:OnCountdownUpdate(timeLeft, isFinished)
@@ -1824,5 +2619,1119 @@ function PKBT_CountdownThrottledBaseMixin:OnUpdate(elapsed)
 		else
 			handler(self, self.__ceilTime and math.ceil(self.__timeLeft) or self.__timeLeft, false)
 		end
+	end
+end
+
+PKBT_ItemIconMixin = {}
+
+function PKBT_ItemIconMixin:OnLoad()
+	self.Border:SetAtlas("PKBT-ItemBorder-Default", true)
+	self.BorderColored:SetAtlas("PKBT-ItemBorder-Normal", true)
+end
+
+function PKBT_ItemIconMixin:SetIcon(icon)
+	self.Icon:SetTexture(icon)
+end
+
+function PKBT_ItemIconMixin:SetAmount(amount)
+	if type(amount) == "number" and amount > 1 then
+		self.Amount:SetText(amount)
+	else
+		self.Amount:SetText("")
+	end
+end
+
+function PKBT_ItemIconMixin:SetQuality(qualityIndex)
+	if type(qualityIndex) == "number" then
+		self.BorderColored:SetVertexColor(GetItemQualityColor(qualityIndex))
+		self.BorderColored:Show()
+		self.Border:Hide()
+	else
+		self.BorderColored:Hide()
+		self.Border:Show()
+	end
+end
+
+PKBT_WardrobeButtonMixin = {}
+
+function PKBT_WardrobeButtonMixin:OnLoad()
+	self:SetHighlightAtlas("PKBT-Store-Icon-Wardrobe-White-Transparent")
+end
+
+function PKBT_WardrobeButtonMixin:UpdateState()
+	local isEnabled = self:IsEnabled() == 1
+
+	if self:GetChecked() then
+		if isEnabled then
+			self:SetNormalAtlas("PKBT-Store-Icon-Wardrobe-Colored")
+		else
+			self:SetNormalAtlas("PKBT-Store-Icon-Wardrobe-Colored-Transparent")
+		end
+	else
+		if isEnabled then
+			self:SetNormalAtlas("PKBT-Store-Icon-Wardrobe-White")
+		else
+			self:SetNormalAtlas("PKBT-Store-Icon-Wardrobe-White-Transparent")
+		end
+	end
+
+	if isEnabled then
+		if GetMouseFocus() == self then
+			self:OnEnter()
+		end
+	else
+		if GameTooltip:GetOwner() == self then
+			GameTooltip:Hide()
+		end
+	end
+end
+
+function PKBT_WardrobeButtonMixin:OnEnter()
+	GameTooltip:SetOwner(self, "ANCHOR_TOP")
+	if self:GetChecked() then
+		GameTooltip:AddLine(PLAYER_EQUIPMENT_HIDE, 1, 1, 1)
+	else
+		GameTooltip:AddLine(PLAYER_EQUIPMENT_SHOW, 1, 1, 1)
+	end
+	GameTooltip:Show()
+end
+
+function PKBT_WardrobeButtonMixin:OnLeave()
+	GameTooltip:Hide()
+end
+
+function PKBT_WardrobeButtonMixin:OnShow()
+	self:UpdateState()
+end
+
+function PKBT_WardrobeButtonMixin:OnClick(button)
+	self:UpdateState()
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+end
+
+function PKBT_WardrobeButtonMixin:SetChecked(state)
+	getmetatable(self).__index.SetChecked(self, state)
+	self:UpdateState()
+end
+
+function PKBT_WardrobeButtonMixin:Enable(state)
+	getmetatable(self).__index.Enable(self, state)
+	self:UpdateState()
+end
+
+function PKBT_WardrobeButtonMixin:Disable(state)
+	getmetatable(self).__index.Disable(self, state)
+	self:UpdateState()
+end
+
+PKBT_MagnifierButtonMixin = {}
+
+function PKBT_MagnifierButtonMixin:OnLoad()
+	self:SetNormalAtlas("store-icon-magnifyingglass")
+	self:SetHighlightAtlas("store-icon-magnifyingglass")
+	self:SetCheckedAtlas("store-icon-magnifyingglass")
+end
+
+function PKBT_MagnifierButtonMixin:OnClick(button)
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+end
+
+local TRANSMOG_CREATURE_ID = 413
+local ModelLoadHandler = CreateFrame("Frame")
+if not IsOnGlueScreen() then
+	local TOOLTIP = CreateFrame("GameTooltip")
+	TOOLTIP:AddFontStrings(TOOLTIP:CreateFontString(), TOOLTIP:CreateFontString())
+
+	ModelLoadHandler.modelQueue = {}
+	ModelLoadHandler:Hide()
+	ModelLoadHandler:SetScript("OnUpdate", function(self, elapsed)
+		local index = 1
+		local queueLen = #self.modelQueue
+		local modelData = self.modelQueue[index]
+		while modelData and index <= queueLen do
+			local modelType, modelID = modelData[2], modelData[3]
+			local link = self:GetModelCacheHyperlink(modelType, modelID)
+			if link then
+				TOOLTIP:SetOwner(WorldFrame, "ANCHOR_NONE")
+				TOOLTIP:SetHyperlink(link)
+
+				if TOOLTIP:IsShown() then
+					queueLen = queueLen - 1
+					table.remove(self.modelQueue, index)
+					if modelData[4] then
+						local success, err = pcall(modelData[4], modelData[1], modelType, modelID)
+						if not success then
+							geterrorhandler()(err)
+						end
+					end
+				else
+					index = index + 1
+				end
+			else
+				table.remove(self.modelQueue, index)
+				if modelData[5] then
+					local success, err = pcall(modelData[5], modelData[1], modelType, modelID)
+					if not success then
+						geterrorhandler()(err)
+					end
+				end
+			end
+
+			modelData = self.modelQueue[index]
+		end
+
+		if #self.modelQueue == 0 then
+			self:Hide()
+		end
+	end)
+
+	function ModelLoadHandler:GetModelCacheHyperlink(modelType, modelID)
+		if modelType == Enum.ModelType.Creature then
+			return string.format("unit:0xF5300%05X000000", modelID)
+		elseif modelType == Enum.ModelType.Illusion
+		or modelType == Enum.ModelType.ItemTransmog
+		then
+			return string.format("unit:0xF5300%05X000000", TRANSMOG_CREATURE_ID)
+		elseif modelType == Enum.ModelType.Unit then
+			local guid = UnitGUID(modelID)
+			if guid then
+				return string.format("unit:%s", guid)
+			end
+		end
+	end
+
+	function ModelLoadHandler:IsInvalidOrCacheLoaded(modelType, modelID)
+		local link = self:GetModelCacheHyperlink(modelType, modelID)
+		if link then
+			TOOLTIP:SetOwner(WorldFrame, "ANCHOR_NONE")
+			TOOLTIP:SetHyperlink(link)
+			return TOOLTIP:IsShown() == 1
+		end
+		return true
+	end
+
+	function ModelLoadHandler:QueueModel(model, modelType, modelID, successCallback, errorCallback)
+		local found
+		for index, modelRequest in ipairs(self.modelQueue) do
+			if modelRequest[1] == model and (successCallback == nil or modelRequest[4] == successCallback) then
+				modelRequest[2] = modelType
+				modelRequest[3] = modelID
+				modelRequest[4] = successCallback
+				modelRequest[5] = errorCallback
+				found = true
+				break
+			end
+		end
+		if not found then
+			table.insert(self.modelQueue, {model, modelType, modelID, successCallback, errorCallback})
+		end
+		self:Show()
+		return true
+	end
+
+	function ModelLoadHandler:UnqueueModel(model, successCallback)
+		local removed
+		for index, modelRequest in ipairs(self.modelQueue) do
+			if modelRequest[1] == model and (successCallback == nil or modelRequest[4] == successCallback) then
+				table.remove(self.modelQueue, index)
+				removed = true
+				break
+			end
+		end
+		if removed and #self.modelQueue == 0 then
+			self:Hide()
+		end
+		return removed
+	end
+end
+
+local TRANSMOG_SLOT_ITEM = {110000, 110001, 110002, 110003, 110004}
+local ITEM_WEAPON_EQUIP_LOC_IDS = {[13] = true, [14] = true, [15] = true, [17] = true, [21] = true, [22] = true, [25] = true, [26] = true}
+
+PKBT_ModelMixin = {}
+
+function PKBT_ModelMixin:OnEvent(event, ...)
+	if event == "UNIT_MODEL_CHANGED" then
+		local unit = ...
+		if self:IsShown() then
+			if (not self.undress and (self.modelType == Enum.ModelType.Item or self.modelType == Enum.ModelType.ItemSet) and unit == "player")
+			or (self.modelType == Enum.ModelType.Unit and self.guid == UnitGUID(unit))
+			then
+				self:UpdateModelPreset()
+			end
+		end
+	elseif event == "ITEM_DATA_LOAD_RESULT" then
+		local success, itemID = ...
+		if itemID == self.awaitItemDataID then
+			if success then
+				self.needsReload = true
+				self:UpdateModelPreset()
+			end
+			self:UnregisterCustomEvent(event)
+		end
+	end
+end
+
+function PKBT_ModelMixin:OnShow()
+	if self.modelType == Enum.ModelType.Creature
+	or self.modelType == Enum.ModelType.Illusion
+	or self.modelType == Enum.ModelType.ItemTransmog
+	then
+		RunNextFrame(function()
+			self.needsReload = true
+			self:UpdateModelPreset()
+		end)
+	end
+
+	self:UpdateModelPreset()
+end
+
+function PKBT_ModelMixin:OnHide()
+	self:DisablePortraitCamera()
+	self.needsReload = true
+end
+
+function PKBT_ModelMixin:OnUpdateModel()
+	if self.reloadOnFirstUpdate then
+		self.reloadOnFirstUpdate = nil
+		RunNextFrame(function()
+			self.needsReload = true
+			self.LoadingSpinner:Hide()
+			self:UpdateModelPreset()
+		end)
+	end
+
+	if self.modelType == Enum.ModelType.Illusion
+	or self.modelType == Enum.ModelType.ItemTransmog
+	then
+		self:SetSequence(self.animId or 3)
+	elseif self.portraitCamera and self.freezeSequence then
+		if self.modelType == Enum.ModelType.Item
+		or self.modelType == Enum.ModelType.ItemSet
+		or self.modelType == Enum.ModelType.Unit
+		then
+			self:SetSequence(self.animId or 3)
+		end
+	end
+end
+
+function PKBT_ModelMixin:ResetFull(preserveFacting, preservePosition)
+	self:ResetModelData(preserveFacting, preservePosition)
+	self:ResetModel()
+end
+
+function PKBT_ModelMixin:ResetModelData(preserveFacting, preservePosition)
+	if self.queued then
+		self.queued = nil
+		ModelLoadHandler:UnqueueModel(self)
+	end
+	self.modelType = nil
+	self.modelID = nil
+	self.guid = nil
+	self.facing = nil
+	self.undress = nil
+	self.baseItemOverrideID = nil
+	self.portraitCamera = nil
+	self.freezeSequence = nil
+	self.awaitItemDataID = nil
+	self.needsReload = nil
+	self.reloadOnFirstUpdate = nil
+	self:ResetBasePositionOverride()
+
+	if not preserveFacting then
+		self.preservedFacing = nil
+		self.rotation = self.defaultRotation
+	end
+	if not preservePosition then
+		self.basePositionOffsetX = nil
+		self.basePositionOffsetY = nil
+		self.basePositionOffsetZ = nil
+
+		self.preservedPosition = nil
+		self.zoomLevel = self.minZoom
+		self.preservedPortraitCamera = nil
+		self.preservedFreezeSequence = nil
+		self.preservedBasePositionOverrideX = nil
+		self.preservedBasePositionOverrideY = nil
+		self.preservedBasePositionOverrideZ = nil
+	end
+
+	self:UnregisterEvent("UNIT_MODEL_CHANGED")
+	self:UnregisterCustomEvent("ITEM_DATA_LOAD_RESULT")
+	self.LoadingSpinner:Hide()
+end
+
+function PKBT_ModelMixin:ResetModel()
+	self:SetPosition(0, 0, 0)
+	self:SetFacing(0)
+	self:ClearModel()
+	self.LoadingSpinner:Hide()
+end
+
+function PKBT_ModelMixin:SetSpinnerShown(shown)
+	self.LoadingSpinner:SetShown(shown)
+end
+
+function PKBT_ModelMixin:FireModelTypeChanged()
+	local parent = self:GetParent()
+	local handler = parent.OnModelTypeChanged
+	if type(handler) == "function" then
+		local success, err = pcall(handler, parent, self.modelType, self.modelID)
+		if not success then
+			geterrorhandler()(err)
+		end
+	end
+end
+
+function PKBT_ModelMixin:SetM2Model(model, facing, posOffsetX, posOffsetY, posOffsetZ)
+	local modelType = self.modelType
+	self:ResetFull()
+	self.modelType = Enum.ModelType.M2
+	self.modelID = model
+	self.facing = facing
+	self.basePositionOffsetX = posOffsetX
+	self.basePositionOffsetY = posOffsetY
+	self.basePositionOffsetZ = posOffsetZ
+	if modelType ~= self.modelType then
+		self:FireModelTypeChanged()
+	end
+	self:UpdateModelPreset()
+end
+
+function PKBT_ModelMixin:SetUnitModel(unit, facing, posOffsetX, posOffsetY, posOffsetZ)
+	local modelType = self.modelType
+	self:ResetFull()
+	self.modelType = Enum.ModelType.Unit
+	self.modelID = unit
+	self.facing = facing
+	self.basePositionOffsetX = posOffsetX
+	self.basePositionOffsetY = posOffsetY
+	self.basePositionOffsetZ = posOffsetZ
+	self.guid = UnitGUID(unit)
+	if modelType ~= self.modelType then
+		self:FireModelTypeChanged()
+	end
+	self:UpdateModelPreset()
+	self:RegisterEvent("UNIT_MODEL_CHANGED")
+end
+
+function PKBT_ModelMixin:SetCreatureModel(creatureID, facing, posOffsetX, posOffsetY, posOffsetZ)
+	local modelType = self.modelType
+	self:ResetFull()
+	self.modelType = Enum.ModelType.Creature
+	self.modelID = creatureID
+	self.facing = facing
+	self.basePositionOffsetX = posOffsetX
+	self.basePositionOffsetY = posOffsetY
+	self.basePositionOffsetZ = posOffsetZ
+	if modelType ~= self.modelType then
+		self:FireModelTypeChanged()
+	end
+	self:UpdateModelPreset()
+end
+
+function PKBT_ModelMixin:SetItemDressUp(itemLink, facing, posOffsetX, posOffsetY, posOffsetZ, undress, preserveFacting, preservePosition)
+	local modelType = self.modelType
+	self:PreserveCameraSettings(preserveFacting, preservePosition)
+	self:ResetFull(preserveFacting, preservePosition)
+	self.modelType = Enum.ModelType.Item
+	self.modelID = itemLink
+	self.facing = facing
+	self.basePositionOffsetX = posOffsetX
+	self.basePositionOffsetY = posOffsetY
+	self.basePositionOffsetZ = posOffsetZ
+	self.undress = not not undress
+	if modelType ~= self.modelType then
+		self:FireModelTypeChanged()
+	end
+	self:RegisterEvent("UNIT_MODEL_CHANGED")
+	self:UpdateModelPreset()
+end
+
+function PKBT_ModelMixin:SetItemSetDressUp(itemLinkArray, facing, posOffsetX, posOffsetY, posOffsetZ, undress, preserveFacting, preservePosition)
+	local modelType = self.modelType
+	self:PreserveCameraSettings(preserveFacting, preservePosition)
+	self:ResetFull(preserveFacting, preservePosition)
+	self.modelType = Enum.ModelType.ItemSet
+	self.modelID = itemLinkArray
+	self.facing = facing
+	self.basePositionOffsetX = posOffsetX
+	self.basePositionOffsetY = posOffsetY
+	self.basePositionOffsetZ = posOffsetZ
+	self.undress = not not undress
+	if modelType ~= self.modelType then
+		self:FireModelTypeChanged()
+	end
+	self:RegisterEvent("UNIT_MODEL_CHANGED")
+	self:UpdateModelPreset()
+end
+
+function PKBT_ModelMixin:SetItemTransmogModel(itemID, posOffsetX, posOffsetY, posOffsetZ)
+	local modelType = self.modelType
+	self:ResetFull()
+	self.modelType = Enum.ModelType.ItemTransmog
+	self.modelID = itemID
+	self.basePositionOffsetX = posOffsetX
+	self.basePositionOffsetY = posOffsetY
+	self.basePositionOffsetZ = posOffsetZ
+	self.needsReload = true
+	if modelType ~= self.modelType then
+		self:FireModelTypeChanged()
+	end
+	self:UpdateModelPreset()
+end
+
+function PKBT_ModelMixin:SetIllusionModel(illusionProductID, posOffsetX, posOffsetY, posOffsetZ, baseItemOverrideID)
+	local modelType = self.modelType
+	self:ResetFull()
+	self.modelType = Enum.ModelType.Illusion
+	self.modelID = illusionProductID
+	self.basePositionOffsetX = posOffsetX
+	self.basePositionOffsetY = posOffsetY
+	self.basePositionOffsetZ = posOffsetZ
+	self.baseItemOverrideID = baseItemOverrideID
+	self.needsReload = true
+	if modelType ~= self.modelType then
+		self:FireModelTypeChanged()
+	end
+	self:UpdateModelPreset()
+end
+
+function PKBT_ModelMixin:SetModelAuto(modelType, modelID, facing, posOffsetX, posOffsetY, posOffsetZ, ...)
+	if not Enum.ModelType[modelType] or not modelID then
+		self:ResetFull()
+		GMError(string.format("No model type [%s] or model id [%s]", Enum.ModelType[modelType] or "nil", modelID or "nil"))
+		return
+	end
+
+	assert(Enum.ModelType[modelType])
+
+	if modelType == Enum.ModelType.Creature then
+		self:SetCreatureModel(modelID, facing, posOffsetX, posOffsetY, posOffsetZ, ...)
+	elseif modelType == Enum.ModelType.Illusion then
+		self:SetIllusionModel(modelID, posOffsetX, posOffsetY, posOffsetZ, ...)
+	elseif modelType == Enum.ModelType.Item then
+		self:SetItemDressUp(modelID, facing, posOffsetX, posOffsetY, posOffsetZ, ...)
+	elseif modelType == Enum.ModelType.ItemSet then
+		self:SetItemSetDressUp(modelID, facing, posOffsetX, posOffsetY, posOffsetZ, ...)
+	elseif modelType == Enum.ModelType.ItemTransmog then
+		self:SetItemTransmogModel(modelID, posOffsetX, posOffsetY, posOffsetZ, ...)
+	elseif modelType == Enum.ModelType.Unit then
+		self:SetUnitModel(modelID, facing, posOffsetX, posOffsetY, posOffsetZ, ...)
+	elseif modelType == Enum.ModelType.M2 then
+		self:SetM2Model(modelID, facing, posOffsetX, posOffsetY, posOffsetZ, ...)
+	end
+end
+
+function PKBT_ModelMixin:PreserveCameraSettings(preserveFacting, preservePosition)
+	if preserveFacting then
+		self:PreserveFacing()
+	end
+	if preservePosition then
+		self:PreservePosition()
+	end
+end
+
+function PKBT_ModelMixin:PreserveFacing()
+	self.preservedFacing = self:GetFacing()
+end
+
+function PKBT_ModelMixin:PreservePosition()
+	local posX, posY, posZ = self:GetPosition()
+	if posX ~= 0 or posX ~= 0 or posZ ~= 0 then
+		self.preservedPosition = {posX, posY, posZ}
+		self.preservedPortraitCamera = self.portraitCamera
+		self.preservedFreezeSequence = self.freezeSequence
+		self.preservedBasePositionOverrideX = self.basePositionOverrideX
+		self.preservedBasePositionOverrideY = self.basePositionOverrideY
+		self.preservedBasePositionOverrideZ = self.basePositionOverrideZ
+	else
+		self:RemovePreservedPosition()
+	end
+end
+
+function PKBT_ModelMixin:RestorePreservedPosition()
+	if self:HasPreservedPosition() then
+		self:SetPosition(self.preservedPosition[1] or 0, self.preservedPosition[2] or 0, self.preservedPosition[3] or 0)
+		self.portraitCamera = self.preservedPortraitCamera
+		self.freezeSequence = self.preservedFreezeSequence
+		self.basePositionOverrideX = self.preservedBasePositionOverrideX
+		self.basePositionOverrideY = self.preservedBasePositionOverrideY
+		self.basePositionOverrideZ = self.preservedBasePositionOverrideZ
+	end
+end
+
+function PKBT_ModelMixin:RemovePreservedPosition()
+	self.preservedPosition = nil
+	self.zoomLevel = self.minZoom
+	self.preservedPortraitCamera = nil
+	self.preservedFreezeSequence = nil
+end
+
+function PKBT_ModelMixin:HasPreservedPosition()
+	return not not self.preservedPosition
+end
+
+function PKBT_ModelMixin:TogglePlayerEquipment(state)
+	if self.modelType == Enum.ModelType.Item then
+		state = not state
+		if self.undress ~= state then
+			self.undress = state
+			self.needsReload = true
+			self:PreserveFacing()
+			self:PreservePosition()
+			self:UpdateModelPreset()
+		end
+	end
+end
+
+function PKBT_ModelMixin:IsPlayerEquipmentShown()
+	return not self.undress
+end
+
+function PKBT_ModelMixin:DisablePortraitCamera()
+	if self:IsPortraitCamera() then
+		self:RemovePreservedPosition()
+		self.portraitCamera = nil
+		self.freezeSequence = nil
+
+		self.rotation = 0
+		self:ResetBasePositionOverride()
+
+		self:SetFacing(0, 0, 0)
+		self:SetPosition(0, 0, 0)
+
+		if type(self.OnPortraitCameraToggle) == "function" then
+			local success, err = pcall(self.OnPortraitCameraToggle, self, false)
+			if not success then
+				geterrorhandler()(err)
+			end
+		end
+	end
+end
+
+function PKBT_ModelMixin:SetPositionAsBaseOverride()
+	local x, y, z = self:GetPosition()
+	self.basePositionOverrideX = x
+	self.basePositionOverrideY = y
+	self.basePositionOverrideZ = z
+end
+
+function PKBT_ModelMixin:ResetBasePositionOverride()
+	self.basePositionOverrideX = nil
+	self.basePositionOverrideY = nil
+	self.basePositionOverrideZ = nil
+end
+
+function PKBT_ModelMixin:TogglePortraitCamera(state)
+	state = not not state
+	if self:IsPortraitCamera() ~= state then
+		if self.modelType == Enum.ModelType.Item
+		or self.modelType == Enum.ModelType.ItemSet
+		or self.modelType == Enum.ModelType.Unit
+		then
+			if state then
+				local cameraID
+				if self.modelType == Enum.ModelType.Unit then
+					cameraID = GetUICameraIDByType(20, self.modelID)
+				else
+					cameraID = GetUICameraIDByType(20)
+				end
+				if cameraID then
+					self.portraitCamera = state
+					self.freezeSequence = true
+
+					self.rotation = 0
+
+					Model_ApplyUICamera(self, cameraID, nil, nil, nil)
+
+					self:SetPositionAsBaseOverride()
+					self:PreserveFacing()
+					self:PreservePosition()
+
+					if type(self.OnPortraitCameraToggle) == "function" then
+						local success, err = pcall(self.OnPortraitCameraToggle, self, true)
+						if not success then
+							geterrorhandler()(err)
+						end
+					end
+				else
+					self:DisablePortraitCamera()
+				end
+			else
+				self:DisablePortraitCamera()
+			end
+		end
+	end
+end
+
+function PKBT_ModelMixin:IsPortraitCamera()
+	return self.portraitCamera and true or false
+end
+
+local function GetBestIllusionWeaponAppearance(...)
+	for i = 1, select("#", ...) do
+		local itemID = select(i, ...)
+		if itemID then
+			local visualID = C_TransmogCollection.GetItemVisualID(itemID)
+			if visualID and C_TransmogCollection.CanEnchantAppearance(visualID) then
+				return itemID
+			end
+		end
+	end
+end
+
+local function GetIllusionInfoByEntry(entry, baseItemOverrideID)
+	local _, enchantID = C_TransmogCollection.GetIllusionInfoByItemID(entry)
+	if enchantID then
+		local itemID = GetBestIllusionWeaponAppearance(baseItemOverrideID, GetInventoryTransmogID("player", 16), GetInventoryItemID("player", 16))
+		if not itemID then
+			itemID = C_TransmogCollection.GetFallbackWeaponAppearance()
+		end
+
+		if itemID then
+			return itemID, enchantID, string.format("item:%d:%d", itemID, enchantID)
+		end
+	end
+end
+
+function PKBT_ModelMixin:OnModelLoaded(modelType, modelID)
+	self.queued = nil
+	if self.modelType == modelType and self.modelID == modelID then
+		if self.modelType == Enum.ModelType.Creature
+		or self.modelType == Enum.ModelType.Illusion
+		or self.modelType == Enum.ModelType.ItemTransmog
+		then
+			self.reloadOnFirstUpdate = true
+		end
+
+		self.LoadingSpinner:Hide()
+		self:UpdateModelPreset()
+	end
+end
+
+function PKBT_ModelMixin:OnModelError(modelType, modelID)
+	self.queued = nil
+	if self.modelType == modelType and self.modelID == modelID then
+		self.LoadingSpinner:Hide()
+		self:Hide()
+		GMError(string.format("%s: Model cannot be loaded [%s] [%s]", self:GetName() or tostring(self), Enum.ModelType[modelType] or modelType or "nil", modelID or "nil"))
+	end
+end
+
+function PKBT_ModelMixin:OnModelPresetDone()
+	self.preservedFacing = nil
+	self.preservedPosition = nil
+
+	if type(self.OnModelPresetApplied) == "function" then
+		local success, err = pcall(self.OnModelPresetApplied, self)
+		if not success then
+			geterrorhandler()(err)
+		end
+	end
+end
+
+function PKBT_ModelMixin:UpdateModelPreset()
+	if not self:IsVisible() then
+		self.needsReload = true
+		return
+	end
+
+	if self.needsReload then
+		self:ResetModel()
+	end
+
+	if self.modelType == Enum.ModelType.Creature then
+		self:SetCreature(self.modelID)
+
+		if self:GetModel() == self then
+			if ModelLoadHandler:IsInvalidOrCacheLoaded(self.modelType, self.modelID) then
+				self:OnModelError(self.modelType, self.modelID)
+			else
+				self.LoadingSpinner:Show()
+				self.queued = ModelLoadHandler:QueueModel(self, self.modelType, self.modelID, self.OnModelLoaded, self.OnModelError)
+			end
+		else
+			if self:HasPreservedPosition() then
+				self:RestorePreservedPosition()
+			else
+				self:SetPosition(self.basePositionOffsetX or 0, self.basePositionOffsetY or 0, self.basePositionOffsetZ or 0)
+			end
+			self:SetFacing(self.preservedFacing or self.facing or 0)
+			self:OnModelPresetDone()
+		end
+	elseif self.modelType == Enum.ModelType.Illusion then
+		local itemID, enchantID, dressUpLink = GetIllusionInfoByEntry(self.modelID, self.baseItemOverrideID)
+		if itemID and enchantID and dressUpLink then
+			DummyWardrobeUnitModel:Dress()
+			self:Undress()
+
+			self:SetCreature(TRANSMOG_CREATURE_ID)
+
+			if self:GetModel() == self then
+				if ModelLoadHandler:IsInvalidOrCacheLoaded(self.modelType, self.modelID) then
+					self:OnModelError(self.modelType, self.modelID)
+				else
+					self.LoadingSpinner:Show()
+					self.queued = ModelLoadHandler:QueueModel(self, self.modelType, self.modelID, self.OnModelLoaded, self.OnModelError)
+				end
+			else
+				if not C_Item.IsItemInfoLoaded(dressUpLink) and self.awaitItemDataID ~= itemID then
+					self.awaitItemDataID = itemID
+					self:RegisterCustomEvent("ITEM_DATA_LOAD_RESULT")
+					C_Item.RequestServerCache(dressUpLink)
+				end
+
+				if self:HasPreservedPosition() then
+					self:RestorePreservedPosition()
+				else
+					local cameraID = C_TransmogCollection.GetAppearanceCameraIDBySource(itemID)
+					Model_ApplyUICamera(self, cameraID, self.basePositionOffsetX or 1, self.basePositionOffsetY or 1, self.basePositionOffsetZ or 0.8)
+				end
+				if self.preservedFacing then
+					self:SetFacing(self.preservedFacing)
+				end
+
+				self:TryOn(dressUpLink)
+				self:SetModelScale(1)
+				self:OnModelPresetDone()
+			end
+		else
+			self:OnModelError(self.modelType, self.modelID)
+		end
+	elseif self.modelType == Enum.ModelType.ItemTransmog then
+		local itemLink, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice, itemID, classID, subClassID, equipLocID = C_Item.GetItemInfo(self.modelID)
+		if itemLink then
+			if ITEM_WEAPON_EQUIP_LOC_IDS[equipLocID] then
+				DummyWardrobeUnitModel:Dress()
+				self:Undress()
+
+				self:SetCreature(TRANSMOG_CREATURE_ID)
+
+				if self:GetModel() == self then
+					if ModelLoadHandler:IsInvalidOrCacheLoaded(self.modelType, self.modelID) then
+						self:OnModelError(self.modelType, self.modelID)
+					else
+						self.LoadingSpinner:Show()
+						self.queued = ModelLoadHandler:QueueModel(self, self.modelType, self.modelID, self.OnModelLoaded, self.OnModelError)
+					end
+				else
+					if self:HasPreservedPosition() then
+						self:RestorePreservedPosition()
+					else
+						local cameraID = C_TransmogCollection.GetAppearanceCameraIDBySource(self.modelID)
+						Model_ApplyUICamera(self, cameraID, self.basePositionOffsetX or 1, self.basePositionOffsetY or 1, self.basePositionOffsetZ or 0.8)
+					end
+					if self.preservedFacing then
+						self:SetFacing(self.preservedFacing)
+					end
+
+					self:TryOn(self.modelID)
+					self:SetModelScale(1)
+					self:OnModelPresetDone()
+				end
+			else
+				self:SetUnit("player")
+				self:Undress()
+
+				for index, specialItemID in ipairs(TRANSMOG_SLOT_ITEM) do
+					self:TryOn(specialItemID)
+				end
+
+				if self:HasPreservedPosition() then
+					self:RestorePreservedPosition()
+				else
+					local cameraID = C_TransmogCollection.GetAppearanceCameraIDBySource(self.modelID)
+					Model_ApplyUICamera(self, cameraID, self.basePositionOffsetX or 0.8, self.basePositionOffsetY or 0.8, self.basePositionOffsetZ or 1.05)
+				end
+				if self.preservedFacing then
+					self:SetFacing(self.preservedFacing)
+				end
+
+				self:TryOn(self.modelID)
+				self:SetModelScale(1)
+				self:OnModelPresetDone()
+			end
+		else
+			self:OnModelError(self.modelType, self.modelID)
+		end
+	elseif self.modelType == Enum.ModelType.Item then
+		self:SetUnit("player")
+		if self.undress then
+			self:Undress()
+		end
+		if self:HasPreservedPosition() then
+			self:RestorePreservedPosition()
+		else
+			self:SetPosition(self.basePositionOffsetX or 0, self.basePositionOffsetY or 0, self.basePositionOffsetZ or 0)
+		end
+		self:SetFacing(self.preservedFacing or self.facing or 0)
+		self:TryOn(self.modelID)
+		self:OnModelPresetDone()
+	elseif self.modelType == Enum.ModelType.ItemSet then
+		self:SetUnit("player")
+		if self.undress then
+			self:Undress()
+		end
+		if self:HasPreservedPosition() then
+			self:RestorePreservedPosition()
+		else
+			self:SetPosition(self.basePositionOffsetX or 0, self.basePositionOffsetY or 0, self.basePositionOffsetZ or 0)
+		end
+		self:SetFacing(self.preservedFacing or self.facing or 0)
+		for index, itemLink in ipairs(self.modelID) do
+			self:TryOn(itemLink)
+		end
+		self:OnModelPresetDone()
+	elseif self.modelType == Enum.ModelType.Unit then
+		self:SetUnit(self.modelID)
+
+		if self:GetModel() == self then
+			if ModelLoadHandler:IsInvalidOrCacheLoaded(self.modelType, self.modelID) then
+				self:OnModelError(self.modelType, self.modelID)
+			else
+				self.LoadingSpinner:Show()
+				self.queued = ModelLoadHandler:QueueModel(self, self.modelType, self.modelID, self.OnModelLoaded, self.OnModelError)
+			end
+		else
+			if self:HasPreservedPosition() then
+				self:RestorePreservedPosition()
+			else
+				self:SetPosition(self.basePositionOffsetX or 0, self.basePositionOffsetY or 0, self.basePositionOffsetZ or 0)
+			end
+			self:SetFacing(self.preservedFacing or self.facing or 0)
+			self:OnModelPresetDone()
+		end
+	elseif self.modelType == Enum.ModelType.M2 then
+		self:SetModel(self.modelID)
+		if self:HasPreservedPosition() then
+			self:RestorePreservedPosition()
+		else
+			self:SetPosition(self.basePositionOffsetX or 0, self.basePositionOffsetY or 0, self.basePositionOffsetZ or 0)
+		end
+		self:SetFacing(self.preservedFacing or self.facing or 0)
+		self:OnModelPresetDone()
+	end
+
+	self.needsReload = nil
+end
+
+PKBT_DressUpBaseMixin = CreateFromMixins(PKBT_OwnerMixin)
+
+function PKBT_DressUpBaseMixin:OnLoad()
+	self.Overlay.MouseInstruction.MouseRotate:SetAtlas("PKBT-Icon-Mouse-Rotate", true)
+	self.Overlay.MouseInstruction.MouseZoom:SetAtlas("PKBT-Icon-Mouse-Zoom", true)
+	self.Overlay.MouseInstruction.MousePanning:SetAtlas("PKBT-Icon-Mouse-Rotate", true)
+	self.Overlay.MouseInstruction.MousePanning:SetSubTexCoord(1, 0, 0, 1)
+
+	self.Overlay:EnableMouseWheel(false)
+
+	self.Overlay.MouseInstruction.options = {
+		self.Overlay.MouseInstruction.MouseZoom,
+		self.Overlay.MouseInstruction.MouseRotate,
+		self.Overlay.MouseInstruction.MousePanning,
+	}
+
+	SharedXML_Model_OnLoad(self.Model, MODELFRAME_MAX_ZOOM * 2, MODELFRAME_MIN_ZOOM, 0)
+end
+
+function PKBT_DressUpBaseMixin:OnShow()
+	SetParentFrameLevel(self.Overlay, 2)
+	self:UpdatePlayerEquipmentState()
+	self:UpdatePortraitCameraState()
+end
+
+function PKBT_DressUpBaseMixin:OnHide()
+	if self.Model.panning then
+		SharedXML_Model_StopPanning(self.Model)
+	end
+	self.Model.mouseDown = false
+end
+
+function PKBT_DressUpBaseMixin:OnOverlayMouseUp(button)
+	if button == "RightButton" and self.Model.panning then
+		SharedXML_Model_StopPanning(self.Model)
+	elseif self.Model.mouseDown then
+		self.Model.onMouseUpFunc(self.Model, button)
+	end
+
+	if self.Model.onMouseUpCallback then
+		self.Model.onMouseUpCallback(self.Model, button)
+	end
+end
+
+function PKBT_DressUpBaseMixin:OnOverlayMouseDown(button)
+	if button == "RightButton" then
+		if self.modelPanningEnabled and not self.Model.mouseDown then
+			SharedXML_Model_StartPanning(self.Model)
+		end
+	else
+		SharedXML_Model_OnMouseDown(self.Model, button)
+	end
+end
+
+function PKBT_DressUpBaseMixin:OnOverlayMouseWheel(delta)
+	SharedXML_Model_OnMouseWheel(self.Model, delta)
+end
+
+function PKBT_DressUpBaseMixin:SetRotateEnabled(state)
+	self.Overlay.MouseInstruction.MouseRotate:SetShown(state)
+	self.Overlay.MouseInstruction.MouseRotateText:SetShown(state)
+	self.modelRotateEnabled = state
+	self.Overlay:EnableMouse(state)
+	self:UpdateMouseInstruction()
+end
+
+function PKBT_DressUpBaseMixin:SetZoomEnabled(state)
+	self.Overlay.MouseInstruction.MouseZoom:SetShown(state)
+	self.Overlay.MouseInstruction.MouseZoomText:SetShown(state)
+	self.modelZoomEnabled = state
+	self.Overlay:EnableMouseWheel(state)
+	self:UpdateMouseInstruction()
+end
+
+function PKBT_DressUpBaseMixin:SetPanningEnabled(state)
+	self.Overlay.MouseInstruction.MousePanning:SetShown(state)
+	self.Overlay.MouseInstruction.MousePanningText:SetShown(state)
+	self.modelPanningEnabled = state
+	if not state then
+		SharedXML_Model_StopPanning(self.Model)
+	end
+	self:UpdateMouseInstruction()
+end
+
+function PKBT_DressUpBaseMixin:UpdateMouseInstruction()
+	local width = 0
+	local lastOption
+
+	for index, option in ipairs(self.Overlay.MouseInstruction.options) do
+		if option:IsShown() then
+			if not lastOption then
+				option:SetPoint("BOTTOMLEFT", 0, 0)
+			else
+				option:SetPoint("BOTTOMLEFT", lastOption, "BOTTOMRIGHT", 35, 0)
+				width = width + 35
+			end
+			width = width + option:GetWidth()
+			lastOption = option
+		end
+	end
+
+	self.Overlay.MouseInstruction:SetWidth(width)
+end
+
+function PKBT_DressUpBaseMixin:SetPlayerEquipmentToggleEnabled(state)
+	self.Overlay.EquipmentToggle:SetShown(state)
+	self:UpdatePlayerEquipmentState()
+end
+
+function PKBT_DressUpBaseMixin:UpdatePlayerEquipmentState()
+	self.Overlay.EquipmentToggle:SetChecked(self.Model:IsPlayerEquipmentShown())
+end
+
+function PKBT_DressUpBaseMixin:TogglePlayerEquipment(state)
+	self.Model:TogglePlayerEquipment(state)
+	self:UpdatePlayerEquipmentState()
+end
+
+function PKBT_DressUpBaseMixin:SetPortraitCameraToggleEnabled(state)
+	self.Overlay.PortraitCameraToggle:SetShown(state)
+	self:UpdatePortraitCameraState()
+end
+
+function PKBT_DressUpBaseMixin:IsPortraitCamera()
+	return self.Model:IsPortraitCamera()
+end
+
+function PKBT_DressUpBaseMixin:UpdatePortraitCameraState()
+	self.Overlay.PortraitCameraToggle:SetChecked(self.Model:IsPortraitCamera())
+end
+
+function PKBT_DressUpBaseMixin:TogglePortraitCamera(state)
+	self.Model:TogglePortraitCamera(state)
+	self:UpdatePortraitCameraState()
+end
+
+function PKBT_DressUpBaseMixin:SetModel(modelType, modelID)
+	if modelType == Enum.ModelType.Item
+	or modelType == Enum.ModelType.ItemSet
+	then
+		self.Model:SetModelAuto(modelType, modelID)
+		self:SetZoomEnabled(true)
+		self:SetRotateEnabled(true)
+		self:SetPanningEnabled(true)
+		self:SetPlayerEquipmentToggleEnabled(modelType == Enum.ModelType.Item)
+		self:SetPortraitCameraToggleEnabled(false)
+		return true
+	elseif modelType == Enum.ModelType.Creature then
+		local facing = C_StorePublic and C_StorePublic.GetPreferredModelFacing() or math.rad(25)
+		self.Model:SetModelAuto(modelType, modelID, facing)
+		self:SetZoomEnabled(false)
+		self:SetRotateEnabled(true)
+		self:SetPanningEnabled(false)
+		self:SetPlayerEquipmentToggleEnabled(false)
+		self:SetPortraitCameraToggleEnabled(false)
+		return true
+	elseif modelType == Enum.ModelType.Illusion
+	or modelType == Enum.ModelType.ItemTransmog
+	then
+		self.Model:SetModelAuto(modelType, modelID)
+		self:SetZoomEnabled(false)
+		self:SetRotateEnabled(false)
+		self:SetPanningEnabled(false)
+		self:SetPlayerEquipmentToggleEnabled(false)
+		self:SetPortraitCameraToggleEnabled(false)
+		return true
+	else
+		self.Model:ResetFull()
+		self:SetZoomEnabled(false)
+		self:SetRotateEnabled(false)
+		self:SetPanningEnabled(false)
+		self:SetPlayerEquipmentToggleEnabled(false)
+		self:SetPortraitCameraToggleEnabled(false)
+		return false
+	end
+end
+
+function PKBT_DressUpBaseMixin:DressUpItemLink(link)
+	local linkType, id, collectionID = GetDressUpItemLinkInfo(link)
+
+	if linkType == Enum.DressUpLinkType.Default then
+		return self:SetModel(Enum.ModelType.Item, id)
+	elseif linkType == Enum.DressUpLinkType.Pet or linkType == Enum.DressUpLinkType.Mount then
+		return self:SetModel(Enum.ModelType.Creature, id)
+	elseif linkType == Enum.DressUpLinkType.Illusion then
+		id = tonumber(strmatch(link, "item:(%d+)"))
+		return self:SetModel(Enum.ModelType.Illusion, id)
+	elseif linkType == Enum.DressUpLinkType.LootCase then
+		LootCasePreviewFrame:SetPreview(id)
+		LootCasePreviewFrame:Show()
+		return false
+	end
+
+	return false
+end
+
+PKBT_DressUpMixin = CreateFromMixins(PKBT_DressUpBaseMixin)
+
+function PKBT_DressUpMixin:OnLoad()
+	PKBT_DressUpBaseMixin.OnLoad(self)
+
+	self.VignetteTopLeft:SetAtlas("PKBT-Vignette-Bronze-TopLeft", true)
+	self.VignetteTopRight:SetAtlas("PKBT-Vignette-Bronze-TopRight", true)
+	self.VignetteBottomLeft:SetAtlas("PKBT-Vignette-Bronze-BottomLeft", true)
+	self.VignetteBottomRight:SetAtlas("PKBT-Vignette-Bronze-BottomRight", true)
+
+	self.Model:SetPoint("TOPLEFT", 3, -153)
+	self.Model:SetPoint("BOTTOMRIGHT", -3, 3)
+end
+
+function PKBT_DressUpMixin:OnShow()
+	PKBT_DressUpBaseMixin.OnShow(self)
+
+	if not self.initialized then
+		local _, class = UnitClass("player")
+		self.Background:SetAtlas(strconcat("dressingroom-background-", string.lower(class)), true)
+		self.initialized = true
 	end
 end

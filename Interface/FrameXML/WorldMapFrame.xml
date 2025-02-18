@@ -923,7 +923,6 @@
 				self:SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLOR.r, TOOLTIP_DEFAULT_BACKGROUND_COLOR.g, TOOLTIP_DEFAULT_BACKGROUND_COLOR.b);
 				self.shoppingTooltips = { WorldMapCompareTooltip1, WorldMapCompareTooltip2, WorldMapCompareTooltip3 };
 			</OnLoad>
-			<OnTooltipSetItem function="C_Tooltip_CustomRender" />
 		</Scripts>
 	</GameTooltip>
 	<Frame name="WorldMapScreenAnchor" hidden="true" movable="true">

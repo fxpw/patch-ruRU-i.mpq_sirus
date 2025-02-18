@@ -10,15 +10,10 @@
 		<Scripts>
 			<OnLoad>
 				Mixin(self, GameTooltipMixin)
-
 				self:OnLoad()
 			</OnLoad>
-			<OnTooltipSetUnit>
-				if ( self:IsUnit("mouseover") ) then
-					_G[self:GetName().."TextLeft1"]:SetTextColor(GameTooltip_UnitColor("mouseover"));
-				end
-			</OnTooltipSetUnit>
-			<OnTooltipSetSpell function="GameTooltip_OnTooltipSetSpell" />
+			<OnTooltipSetUnit function="GameTooltip_OnTooltipSetUnit" />
+			<OnTooltipSetItem function="GameTooltip_OnTooltipSetItem" />
 			<OnHide>
 				GameTooltip_OnHide(self);
 				ShoppingTooltip1:Hide();

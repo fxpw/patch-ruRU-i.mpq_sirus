@@ -31,7 +31,7 @@
 				</FontString>
 			</Layer>
 		</Layers>
-		<Backdrop bgFile="Interface\Store\CollectionsBackgroundTile" edgeFile="Interface\FriendsFrame\UI-Toast-Border" tile="true">
+		<Backdrop bgFile="Interface\Collections\CollectionsBackgroundTile" edgeFile="Interface\FriendsFrame\UI-Toast-Border" tile="true">
 			<BackgroundInsets left="4" right="4" top="4" bottom="4"/>
 			<TileSize val="64"/>
 			<EdgeSize val="12"/>
@@ -62,7 +62,7 @@
 					<OnShow function="GMClient_MuteFrame_TemplateDropDown_OnShow"/>
 				</Scripts>
 			</Frame>
-			<Frame name="$parentTopInset" parentKey="TopInset" inherits="StandartInsetFrameTemplate" toplevel="true">
+			<Frame name="$parentTopInset" parentKey="TopInset" inherits="InsetFrameTemplate" toplevel="true">
 				<Size x="290" y="60"/>
 				<Anchors>
 					<Anchor point="TOP" relativeTo="$parentInset" x="-1" y="-40" />
@@ -110,7 +110,7 @@
 					</Frame>
 				</Frames>
 			</Frame>
-			<Frame name="$parentBottomInset" parentKey="BottomInset" inherits="StandartInsetFrameTemplate" toplevel="true">
+			<Frame name="$parentBottomInset" parentKey="BottomInset" inherits="InsetFrameTemplate" toplevel="true">
 				<Size x="290" y="248"/>
 				<Anchors>
 					<Anchor point="TOP" relativeTo="$parentTopInset" relativePoint="BOTTOM" x="0" y="-22" />

@@ -253,14 +253,14 @@ end
 function FramePoolCollectionMixin:GetOrCreatePool(frameType, parent, template, resetterFunc, forbidden)
 	local pool = self:GetPool(template);
 	if not pool then
-		pool = self:CreatePool(frameType, parent, template, resetterFunc, forbidden);
+		return self:CreatePool(frameType, parent, template, resetterFunc, forbidden), true;
 	end
-	return pool;
+	return pool, false;
 end
 
-function FramePoolCollectionMixin:CreatePool(frameType, parent, template, resetterFunc, forbidden)
+function FramePoolCollectionMixin:CreatePool(frameType, parent, template, resetterFunc, forbidden, frameInitFunc)
 	assert(self:GetPool(template) == nil);
-	local pool = CreateFramePool(frameType, parent, template, resetterFunc, forbidden);
+	local pool = CreateFramePool(frameType, parent, template, resetterFunc, forbidden, frameInitFunc);
 	self.pools[template] = pool;
 	return pool;
 end
@@ -327,6 +327,15 @@ function FramePoolCollectionMixin:EnumerateActive()
 
 		return currentObject;
 	end, nil;
+end
+
+function FramePoolCollectionMixin:EnumerateInactiveByTemplate(template)
+	local pool = self:GetPool(template);
+	if pool then
+		return pool:EnumerateInactive();
+	end
+
+	return nop;
 end
 
 FixedSizeFramePoolCollectionMixin = CreateFromMixins(FramePoolCollectionMixin);

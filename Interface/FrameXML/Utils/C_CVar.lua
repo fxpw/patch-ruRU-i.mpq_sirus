@@ -6,19 +6,23 @@ local EVENT_TRIGGER_CVAR = "readContest";
 CUSTOM_SESSION_KEYS = {}
 
 local eventHandler = CreateFrame("Frame")
+eventHandler:RegisterEvent("VARIABLES_LOADED")
 eventHandler:RegisterEvent("PLAYER_ENTERING_WORLD")
-eventHandler:RegisterEvent("PLAYER_TALENT_UPDATE")
 eventHandler:SetScript("OnEvent", function(self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
-		self:UnregisterEvent(event)
-		self:RegisterEvent("COMMENTATOR_ENTER_WORLD")
-	elseif event == "COMMENTATOR_ENTER_WORLD" then
-		self:UnregisterEvent(event)
-		table.wipe(CUSTOM_SESSION_KEYS)
-		FireCustomClientEvent("SESSION_VARIABLES_LOADED")
-	elseif event == "PLAYER_TALENT_UPDATE" then
-		self:UnregisterEvent(event)
-		self:UnregisterEvent("COMMENTATOR_ENTER_WORLD")
+		local isInitialLogin, isReloadingUI = ...
+		if isInitialLogin then
+			self.isInitialLogin = true
+			table.wipe(CUSTOM_SESSION_KEYS)
+		end
+	elseif event == "VARIABLES_LOADED" then
+		self.VARIABLES_LOADED = true
+	end
+
+	self:UnregisterEvent(event)
+
+	if self.VARIABLES_LOADED and self.isInitialLogin then
+		FireCustomClientEvent("VARIABLES_LOADED_INITIAL")
 	end
 end)
 
@@ -194,3 +198,7 @@ C_CVar:RegisterDefaultValue("C_CVAR_SHOW_HARDCORE_NOTIFICATION_SOUND", "1")
 
 C_CVar:RegisterDefaultValue("C_CVAR_DRACTHYR_RETURN_MORTAL_FORM", "1")
 C_CVar:RegisterDefaultValue("C_CVAR_ITEM_UPGRADE_LEFT_ITEM_LIST", "0")
+C_CVar:RegisterDefaultValue("C_CVAR_WARMODE_PVP_ASSIST_ENABLED", "0")
+C_CVar:RegisterDefaultValue("C_CVAR_LOOT_ALERT_THRESHOLD", "3")
+C_CVar:RegisterDefaultValue("C_CVAR_BLOCK_GROUP_INVITES", "0")
+C_CVar:RegisterDefaultValue("C_CVAR_AUTO_ACCEPT_GROUP_INVITES", "0")

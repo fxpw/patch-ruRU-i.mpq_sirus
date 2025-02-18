@@ -1,7 +1,3 @@
---	Filename:	C_ConnectManager.lua
---	Project:	Custom Game Interface
---	Author:		Nyll & Blizzard Entertainment
-
 ---@class C_ConnectManagerMixin : Mixin
 C_ConnectManagerMixin = {}
 
@@ -15,42 +11,28 @@ function C_ConnectManagerMixin:OnLoad()
 end
 
 function C_ConnectManagerMixin:SHOW_SERVER_ALERT(_, serverAlertText)
-	local ipList, text = string.match(serverAlertText, ":{([^}]+)}:(.*)")
-	local autologinAlert, alert = string.match(text, ":%[(.*)%]:(.*)")
+	local entryIPList, autologinAlert, alertHTML = string.match(serverAlertText, ":{([^}]*)}:%s*:%[(.*)%]:(.*)$")
 
-    local s,e = string.find(alert, ".*<br/>")
-    alert = string.sub(alert, 1, e + 1)
+	table.wipe(self.realmListStorage)
+	table.wipe(self.realmListCollect)
 
-    if ipList then
-        local splitData = C_Split(ipList, ", ")
-
-        for _, ipStorage in pairs(splitData) do
-            local realmData = C_Split(ipStorage, "|")
-
-            table.insert(self.realmListStorage, realmData[1])
-
-            table.insert(self.realmListCollect, {
-                name = realmData[2],
-                ip = realmData[1]
-            })
-        end
-
-        AccountLoginUI_UpdateServerAlertText(alert.."</body></html>")
-
-        AccountLoginChooseRealmDropDown:Init()
-    else
-        AccountLoginUI_UpdateServerAlertText(serverAlertText)
-    end
-
-	AccountLoginChooseRealmDropDown:SetShown(ipList)
-
-	if AccountLogin:IsShown() then
-		if autologinAlert and autologinAlert ~= "" then
-			GlueDialog:ShowDialog("OKAY_SERVER_ALERT", autologinAlert)
-		else
-			AccountLogin_AutoLogin()
+	if entryIPList then
+		for _, entryStr in ipairs(C_Split(entryIPList, ", ")) do
+			local entryIP, entryName = string.split("|", entryStr)
+			table.insert(self.realmListStorage, entryIP)
+			table.insert(self.realmListCollect, {
+				name = entryName,
+				ip = entryIP,
+			})
 		end
+
+		FireCustomClientEvent("SERVER_ALERT_UPDATE", alertHTML)
+	else
+		FireCustomClientEvent("SERVER_ALERT_UPDATE", serverAlertText)
 	end
+
+	FireCustomClientEvent("CONNECTION_LIST_UPDATE")
+	FireCustomClientEvent("CONNECTION_AUTOLOGIN_READY", autologinAlert ~= "" and autologinAlert or nil)
 end
 
 function C_ConnectManagerMixin:OPEN_STATUS_DIALOG(_, dialogKey)
@@ -69,12 +51,12 @@ function C_ConnectManagerMixin:OPEN_STATUS_DIALOG(_, dialogKey)
 
         StatusDialogClick()
 		GlueDialog:HideDialog(dialogKey)
-        AccountLogin_Login()
+		FireCustomClientEvent("CONNECTION_AUTOLOGIN_READY")
     end
 end
 
 function C_ConnectManagerMixin:GetAllRealmList()
-    return self.realmListCollect or {}
+	return self.realmListCollect
 end
 
 function C_ConnectManagerMixin:RemoveCurrentRealmList()
@@ -96,8 +78,7 @@ end
 function C_ConnectManagerMixin:RestartGameState(dialogKey)
     StatusDialogClick()
 	GlueDialog:HideDialog(dialogKey)
-
-    AccountLoginConnectionErrorFrame:Show()
+	FireCustomClientEvent("CONNECTION_ERROR")
 end
 
 ---@class C_ConnectManager : C_ConnectManagerMixin

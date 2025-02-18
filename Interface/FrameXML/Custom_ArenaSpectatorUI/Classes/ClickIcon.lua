@@ -299,7 +299,7 @@ function ezSpectator_ClickIcon:SetIcon(Name)
         self.Icon:SetSize(Record[6], Record[6])
         self.Cooldown:SetSize(Record[6], Record[6])
 
-        local Texture = self.Textures:Load(self.Icon, 'Interface\\ArenaSpectator\\Icons\\' .. Record[1])
+        local Texture = self.Textures:Load(self.Icon, 'Interface\\Custom\\ArenaSpectator\\Icons\\' .. Record[1])
         Texture:SetTexCoord(Record[2], Record[3], Record[4], Record[5])
         Texture:SetAllPoints(self.Icon)
         self.Icon.texture = Texture

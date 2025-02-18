@@ -7,9 +7,9 @@ local time = time
 local tonumber = tonumber
 local type = type
 local unpack = unpack
-local bitband, bitbor = bit.band, bit.bor
-local mathfloor, mathmax, mathmin, mathmodf = math.floor, math.max, math.min, math.modf
-local strformat, strgsub, strmatch, strsplit, strtrim = string.format, string.gsub, string.match, string.split, string.trim
+local bitband, bitbnot, bitbor, bitlshift = bit.band, bit.bnot, bit.bor, bit.lshift
+local mathfloor, mathmax, mathmin = math.floor, math.max, math.min
+local strformat, strmatch, strsplit, strtrim = string.format, string.match, string.split, string.trim
 local tIndexOf, tconcat, tinsert, tremove, tsort, twipe = tIndexOf, table.concat, table.insert, table.remove, table.sort, table.wipe
 
 local GetContainerItemID = GetContainerItemID
@@ -25,6 +25,7 @@ local IsInGMMode = C_Service.IsInGMMode
 local RoundToSignificantDigits = RoundToSignificantDigits
 local RunNextFrame = RunNextFrame
 local SendServerMessage = SendServerMessage
+local StringSplitEx = StringSplitEx
 local UpgradeLoadedVariables = UpgradeLoadedVariables
 
 local BATTLEPASS_QUEST_LINK_FALLBACK_DAILY = BATTLEPASS_QUEST_LINK_FALLBACK_DAILY
@@ -54,6 +55,7 @@ Enum.BattlePass.QuestState = {
 local EXPERIENCE_ITEMS = {
 	[61850] = 8000,
 	[71083] = 400,
+	[77080] = 400,
 	[149192] = 800,
 	[149193] = 4000,
 	[149194] = 8000,
@@ -65,79 +67,164 @@ local PREMIUM_ITEMS = {
 	[149212] = true,
 }
 
+local MODEL_FACING = math.rad(25)
+
 local PURCHASE_EXPERIENCE_OPTIONS = {
 	{
 		iconAtlas = "PKBT-BattlePass-Icon-Gem-Sapphire",
 		iconAnimAtlas = "PKBT-BattlePass-Icon-Gem-Sapphire-Animated",
 		checkedAtlas = "PKBT-BattlePass-Icon-Gem-Sapphire-Selected",
 		highlightAtlas = "PKBT-BattlePass-Icon-Gem-Sapphire-Highlight",
-		currencyAtlas = "PKBT-Icon-Currency-Bonus",
 	},
 	{
 		iconAtlas = "PKBT-BattlePass-Icon-Gem-Emerald",
 		iconAnimAtlas = "PKBT-BattlePass-Icon-Gem-Emerald-Animated",
 		checkedAtlas = "PKBT-BattlePass-Icon-Gem-Emerald-Selected",
 		highlightAtlas = "PKBT-BattlePass-Icon-Gem-Emerald-Highlight",
-		currencyAtlas = "PKBT-Icon-Currency-Bonus",
 	},
 	{
 		iconAtlas = "PKBT-BattlePass-Icon-Gem-Ruby",
 		iconAnimAtlas = "PKBT-BattlePass-Icon-Gem-Ruby-Animated",
 		checkedAtlas = "PKBT-BattlePass-Icon-Gem-Ruby-Selected",
 		highlightAtlas = "PKBT-BattlePass-Icon-Gem-Ruby-Highlight",
-		currencyAtlas = "PKBT-Icon-Currency-Bonus",
 	},
 	{
 		iconAtlas = "PKBT-BattlePass-Icon-Gem-Amethyst",
 		iconAnimAtlas = "PKBT-BattlePass-Icon-Gem-Amethyst-Animated",
 		checkedAtlas = "PKBT-BattlePass-Icon-Gem-Amethyst-Selected",
 		highlightAtlas = "PKBT-BattlePass-Icon-Gem-Amethyst-Highlight",
-		currencyAtlas = "PKBT-Icon-Currency-Bonus",
 	},
 }
 
-local STORE_CURRENCY = 1
-local STORE_CATEGORY = 101
-local STORE_SUBCATEGORY_EXPERIENCE = 1
-local STORE_SUBCATEGORY_PREMIUM = 2
-
-local PRODUCT_DATA = {
-	PRODUCT_ID		= 1,
-	ITEM_ID			= 2,
-	ITEM_COUNT		= 3,
-	PRICE			= 4,
-	DISCOUNT		= 5,
-	DISCOUNT_PRICE	= 6,
-	CREATURE_ID		= 7,
-	FLAGS			= 8,
-	ALT_CURRENCY	= 9,
-	ALT_PRICE		= 10,
-	IS_PVP			= 11,
-	SHOW_DISCOUNT	= 12,
-	TIME_REMAINING	= 13,
-}
-
-local PRODUCT_STORAGE_DATA = {
-	PRODUCT_ID		= 1,
-	ITEM_ID			= 2,
-	ITEM_COUNT		= 3,
-	PRICE			= 4,
-	REMAININGTIME	= 5,
-	DISCOUNT		= 6,
-	DISCOUNT_PRICE	= 7,
-	CREATURE_ID		= 8,
-	FLAGS			= 9,
-	ALT_CURRENCY	= 10,
-	ALT_PRICE		= 11,
-	ISPVP			= 12,
-	DISCOUNTSHOW	= 13,
+local SPLASH_DATA = {
+	[1] = {
+		title = BATTLE_PASS_SPLASH_NEW_SEASON_TITLE,
+		artwork = "Custom-Splash-BattlePass-2023-1",
+		buttonText = BATTLE_PASS_SPLASH_ACTION_LABLE,
+		buttonPoint = {"BOTTOM", 0, 20},
+	},
+	[2] = {
+		title = BATTLE_PASS_SPLASH_NEW_SEASON_TITLE,
+		artwork = "Custom-Splash-BattlePass-2024-1",
+		buttonText = SPLASH_ACTION_OPEN_LABLE,
+		buttonWidth = 110,
+		buttonPoint = {"CENTER", 0, 0},
+		buttonNormalFont = "PKBT_Button_Font_18",
+		buttonHighlightFont = "PKBT_ButtonHighlight_Font_18",
+		buttonDisabledFont = "PKBT_ButtonDisable_Font_18",
+		buttonNormalAtlas = "Custom-Splash-BattlePass-2024-1-Assets-Button",
+		buttonHighlightAtlas = "Custom-Splash-BattlePass-2024-1-Assets-Button-Highlight",
+	},
+	[3] = {
+		artwork = "Custom-Splash-BattlePass-2024-2",
+		buttonText = SPLASH_ACTION_OPEN_LABLE,
+		buttonWidth = 160,
+		buttonPoint = {"BOTTOM", 0, -26},
+		buttonNormalFont = "PKBT_Button_Font_18",
+		buttonHighlightFont = "PKBT_ButtonHighlight_Font_18",
+		buttonDisabledFont = "PKBT_ButtonDisable_Font_18",
+		buttonTemplate = "PKBT-128-RedButton",
+		buttonPushedOffsetX = 2, buttonPushedOffsetY = -2,
+		models = {
+			width = 100, height = 135,
+			offsetX = 40, offsetY = 45,
+			containerPoint = {"CENTER", 0, -25},
+			cardBorderLayour = "SplashBattlePass_2024_2",
+			cardBackgroundAtlas = "Custom-Splash-BattlePass-2024-2-Assets-Card-Background",
+			items = {
+				{157754, 153381, 110302, 155850, 155697},
+			},
+			modelHolderScales = {
+				{1, 1, 1.5, 1, 1},
+			},
+		},
+	},
+	[4] = {
+		artworkTemplate = "BattlePassSplashArtwork-2024-3-Template",
+		models = {
+			width = 180, height = 180,
+			offsetX = 20, offsetY = 0,
+			containerPoint = {"CENTER", 0, -10},
+			cardBorderAtlas = "Custom-Splash-BattlePass-2024-3-Assets-Card-Border",
+			cardBackgroundAtlas = "Custom-Splash-BattlePass-2024-3-Assets-Background",
+			cardBackgroundGlowAtlas = "Custom-Splash-BattlePass-2024-3-Assets-Card-BackgroundGlow",
+			cardBackgroundGlowColors = {
+				{{1, 0.72, 0.15}, {0.77, 0.38, 1}, {0.19, 0.58, 1}, {1, 0.4, 0.2}, nil},
+			},
+			items = {
+				{157501, 157092, 110126, 157365, 157490},
+			},
+			modelScales = {
+				{1.75, 1.75, 1.50, 1.40, 1.75},
+			},
+		},
+	},
+	[5] = {
+		artworkTemplate = "BattlePassSplashArtwork-2024-4-Template",
+		models = {
+			width = 180, height = 180,
+			offsetX = 20, offsetY = 0,
+			containerPoint = {"CENTER", 0, -10},
+			cardBorderAtlas = "Custom-Splash-BattlePass-2024-3-Assets-Card-Border",
+			cardBackgroundAtlas = "Custom-Splash-BattlePass-2024-3-Assets-Background",
+			cardBackgroundGlowAtlas = "Custom-Splash-BattlePass-2024-3-Assets-Card-BackgroundGlow",
+			cardBackgroundGlowColors = {
+				{{0.01, 0.91, 0.93}, {0.01, 0.81, 0.83}, {0.01, 0.71, 0.73}, {0.01, 0.61, 0.63}, {0.01, 0.51, 0.53}},
+			},
+			items = {
+				{157632, 157360, 110303, 157068, 157676},
+			},
+			itemBaseOverride = {
+				{nil, nil, 136083, nil, nil},
+			},
+			modelScales = {
+				{1.75, 1.75, 2.15, 1.40, 1.75},
+			},
+			modelFacing = {
+				{MODEL_FACING, MODEL_FACING, nil, nil, nil},
+			},
+			modelPosOffset = {
+				{nil, nil, {-1.5, 1, 1}, {0, 0.5, 0}, nil}
+			},
+		},
+	},
+	[6] = {
+		artworkTemplate = "BattlePassSplashArtwork-2025-1-Template",
+		models = {
+			width = 180, height = 180,
+			offsetX = 20, offsetY = 0,
+			containerPoint = {"CENTER", 0, -10},
+			cardBorderAtlas = "Custom-Splash-BattlePass-2024-3-Assets-Card-Border",
+			cardBackgroundAtlas = "Custom-Splash-BattlePass-2024-3-Assets-Background",
+			cardBackgroundGlowAtlas = "Custom-Splash-BattlePass-2024-3-Assets-Card-BackgroundGlow",
+			cardBackgroundGlowColors = {
+				{{0.01, 0.91, 0.93}, {0.01, 0.81, 0.83}, {0.01, 0.71, 0.73}, {0.01, 0.61, 0.63}, {0.01, 0.51, 0.53}},
+			},
+			items = {
+				{157604, 157347, 110305, 153455, 157630},
+			},
+			itemBaseOverride = {
+				{nil, nil, 136083, nil, nil},
+			},
+			modelScales = {
+				{1.1, 1.70, 2.15, 1.70, 1.1},
+			},
+			modelFacing = {
+				{MODEL_FACING, MODEL_FACING, nil, nil, nil},
+			},
+			modelPosOffset = {
+				{nil, {0, 0, 0.1}, {-1.5, 1, 1}, nil, nil}
+			},
+		},
+	},
 }
 
 local LEVEL_REWARD = {
 	ITEM_TYPE = 1,
-	ITEM_ID = 2,
-	AMOUNT_= 3,
-	FLAGS = 4,
+	ITEM_INDEX = 2,
+	ITEM_ID = 3,
+	AMOUNT_= 4,
+	FLAGS = 5,
 }
 
 local ITEM_REWARD_FLAG = {
@@ -156,6 +243,7 @@ local QUEST_MSG_STATUS = {
 	QUEST_ALREADY_COMPLETE	= 6,
 	REWARD_NOT_FOUND		= 7,
 	REWARD_INV_FULL			= 8,
+	ITEM_AMOUNT_LIMIT		= 9,
 }
 
 local QUEST_FLAG = {
@@ -173,17 +261,16 @@ local SECONDS_PER_DAY = 24 * 60 * 60
 
 local BATTLEPASS_LEVELS
 local BATTLEPASS_LEVEL_REWARDS
-local CUSTOM_BATTLEPASS_CACHE = {LEVEL_REWARD_TAKEN = {}}
+local CUSTOM_BATTLEPASS_CACHE = {LEVEL_REWARD_TAKEN = {}, SEEN_QUEST = {}}
 
 local ALLOW_DAILY_QUEST_CANCEL = true
 local ALLOW_WEEKLY_QUEST_REROLL = false
 
 local PRIVATE = {
 	ENABLED = false,
+	PER_REALM_DB = true,
 	MAX_LEVEL = 1,
-
-	PRODUCT_PREMIUM = nil,
-	PRODUCT_EXPERIENCE_LIST = {},
+	SPLASH_ID = 6,
 
 	LEVEL_INFO = {},
 	LEVEL_REWARD_ITEMS = {},
@@ -203,9 +290,16 @@ local PRIVATE = {
 	QUEST_REWARD_AWAIT = {},
 }
 
+local C_StoreSecure
+EventRegistry:RegisterFrameEventAndCallback("STORE_API_LOADED", function(owner, ...)
+	C_StoreSecure = _G.C_StoreSecure
+	EventRegistry:UnregisterFrameEventAndCallback("STORE_API_LOADED", owner)
+end, "BattlePass")
+
 PRIVATE.eventHandler = CreateFrame("Frame")
 PRIVATE.eventHandler:Hide()
 PRIVATE.eventHandler:RegisterEvent("VARIABLES_LOADED")
+PRIVATE.eventHandler:RegisterEvent("PLAYER_LOGIN")
 PRIVATE.eventHandler:RegisterEvent("PLAYER_LOGOUT")
 PRIVATE.eventHandler:RegisterEvent("CHAT_MSG_ADDON")
 
@@ -250,20 +344,30 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 				FireCustomClientEvent("BATTLEPASS_ACCOUNT_UPDATE", CUSTOM_BATTLEPASS_CACHE.PREMIUM_ACTIVE)
 				FireCustomClientEvent("BATTLEPASS_EXPERIENCE_UPDATE", CUSTOM_BATTLEPASS_CACHE.LEVEL, CUSTOM_BATTLEPASS_CACHE.LEVEL_EXPERIENCE)
 				FireCustomClientEvent("BATTLEPASS_QUEST_RESET_TIMER_UPDATE")
+
+				if PRIVATE.VARIABLES_LOADED then
+					PRIVATE.FireSplashScreenEvent()
+				end
 			else
+				if PRIVATE.VARIABLES_LOADED then
+					twipe(CUSTOM_BATTLEPASS_CACHE.SEEN_QUEST)
+				else
+					PRIVATE.QUEUED_SEEN_QUEST_WIPE = true
+				end
 				FireCustomClientEvent("BATTLEPASS_SEASON_UPDATE", 0)
 				FireCustomClientEvent("BATTLEPASS_ACCOUNT_UPDATE", false)
 				FireCustomClientEvent("BATTLEPASS_EXPERIENCE_UPDATE", 0, 0)
 				FireCustomClientEvent("BATTLEPASS_QUEST_RESET_TIMER_UPDATE")
 			end
 		elseif prefix == "ASMSG_BATTLEPASS_SETTINGS" then
-			local questRerollPrice, pointsBG, pointsArena, pointsArenaSoloQ, pointsArena1v1 = strsplit(":", msg)
+			local questRerollPrice, pointsBG, pointsArena, pointsArenaSoloQ, pointsArena1v1, pointsMiniGame = strsplit(":", msg)
 
 			CUSTOM_BATTLEPASS_CACHE.REROLL_PRICE		= COPPER_PER_GOLD * (tonumber(questRerollPrice) or 1000)
 			CUSTOM_BATTLEPASS_CACHE.POINTS_BG			= tonumber(pointsBG) or 0
 			CUSTOM_BATTLEPASS_CACHE.POINTS_ARENA		= tonumber(pointsArena) or 0
 			CUSTOM_BATTLEPASS_CACHE.POINTS_ARENA_SOLOQ	= tonumber(pointsArenaSoloQ) or 0
 			CUSTOM_BATTLEPASS_CACHE.POINTS_ARENA_V1		= tonumber(pointsArena1v1) or 0
+			CUSTOM_BATTLEPASS_CACHE.POINTS_MINIGAME		= tonumber(pointsMiniGame) or 30
 
 			FireCustomClientEvent("BATTLEPASS_POINTS_UPDATE")
 		elseif prefix == "ASMSG_BATTLEPASS_EXP" then
@@ -281,52 +385,41 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 				FireCustomClientEvent("BATTLEPASS_CARD_UPDATE_BUCKET")
 			end
 		elseif prefix == "ASMSG_BATTLEPASS_REWARDS_INFO" then
-			for _, reward in ipairs({strsplit(";", (strgsub(msg, ";$", "")))}) do
-				local level, rewardType = strsplit(":", reward)
+			for _, reward in ipairs({StringSplitEx(";", msg)}) do
+				local level, rewardType, rewardFlag = strsplit(":", reward)
 
 				level = tonumber(level)
 				rewardType = tonumber(rewardType)
+				rewardFlag = tonumber(rewardFlag)
 
-				local rewardFlag = PRIVATE.GetLevelRewardsFlag(rewardType)
-				CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level] = bitbor(CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level] or 0, rewardFlag)
+				PRIVATE.SetLevelRewardFlag(level, rewardType, rewardFlag)
 			end
 
 			FireCustomClientEvent("BATTLEPASS_CARD_UPDATE_BUCKET")
 		elseif prefix == "ASMSG_BATTLEPASS_TAKE_REWARD" then
-			local status, level, rewardType = strsplit(":", msg)
+			local status, level, rewardType, rewardFlag = strsplit(":", msg)
 			status = tonumber(status)
 			level = tonumber(level)
 			rewardType = tonumber(rewardType)
-
-			local rewardFlag = PRIVATE.GetLevelRewardsFlag(rewardType)
+			rewardFlag = tonumber(rewardFlag)
 
 			if status == QUEST_MSG_STATUS.OK then
-				CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level] = bitbor(CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level] or 0, rewardFlag)
+				local newRewardsFlag = PRIVATE.SetLevelRewardFlag(level, rewardType, rewardFlag)
 
-				if PRIVATE.LEVEL_REWARD_AWAIT[level] and bitband(PRIVATE.LEVEL_REWARD_AWAIT[level], rewardFlag) ~= 0 then
-					if PRIVATE.LEVEL_REWARD_AWAIT[level] == rewardFlag then
-						PRIVATE.LEVEL_REWARD_AWAIT[level] = nil
-					else
-						PRIVATE.LEVEL_REWARD_AWAIT[level] = PRIVATE.LEVEL_REWARD_AWAIT[level] - rewardFlag
-					end
-
-					local freeItems, premiumItems = PRIVATE.GetLevelRewards(level)
-					if rewardType == Enum.BattlePass.RewardType.Premium then
-						FireCustomClientEvent("BATTLEPASS_REWARD_ITEMS", premiumItems)
-					else
-						FireCustomClientEvent("BATTLEPASS_REWARD_ITEMS", freeItems)
+				if PRIVATE.RemoveLevelRewardTypeAwait(level, rewardType) then
+					if newRewardsFlag ~= -1 then
+						local items = PRIVATE.GetLevelRewards(level, rewardType, newRewardsFlag)
+						FireCustomClientEvent("BATTLEPASS_REWARD_ITEMS", items)
 					end
 				end
 			else
-				if PRIVATE.LEVEL_REWARD_AWAIT[level] and bitband(PRIVATE.LEVEL_REWARD_AWAIT[level], rewardFlag) ~= 0 then
-					if PRIVATE.LEVEL_REWARD_AWAIT[level] == rewardFlag then
-						PRIVATE.LEVEL_REWARD_AWAIT[level] = nil
-					else
-						PRIVATE.LEVEL_REWARD_AWAIT[level] = PRIVATE.LEVEL_REWARD_AWAIT[level] - rewardFlag
-					end
-				end
+				PRIVATE.SetLevelRewardFlag(level, rewardType, rewardFlag)
+				PRIVATE.RemoveLevelRewardTypeAwait(level, rewardType)
 
-				PRIVATE.HandleStatusMessage(status)
+				local errorHandled = PRIVATE.HandleStatusMessage(status)
+				if not errorHandled then
+					GMError(strformat("ASMSG_BATTLEPASS_TAKE_REWARD error #%i for level `%s` and reward type `%s`", status, tostring(level), tostring(rewardType)), 1)
+				end
 			end
 
 			FireCustomClientEvent("BATTLEPASS_CARD_UPDATE", level, rewardType)
@@ -347,7 +440,7 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 
 			local isActive = PRIVATE.IsActive()
 
-			for _, questStr in ipairs({strsplit(";", (strgsub(msg, ";$", "")))}) do
+			for _, questStr in ipairs({StringSplitEx(";", msg)}) do
 				local questID, questFlag, rewardAmount, rerollsDone, totalValue, currentValue, state = strsplit(":", questStr)
 				questID = tonumber(questID)
 				questFlag = tonumber(questFlag)
@@ -405,6 +498,10 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 				end
 			end
 
+			if PRIVATE.QUESTS_REQUESTED and PRIVATE.QUEST_REFRESH then
+				PRIVATE.QUESTS_RECEIVED = true
+			end
+
 			if not isActive then
 				return
 			end
@@ -416,7 +513,7 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 			PRIVATE.QUEST_REFRESH = nil
 			FireCustomClientEvent("BATTLEPASS_QUEST_LIST_UPDATE")
 		elseif prefix == "ASMSG_BATTLEPASS_REPLACE_QUEST" then
-			local status, replacedQuestID, questID, questFlag, rewardAmount, rerollsDone, totalValue, currentValue, state = strsplit(":", msg)
+			local status, replacedQuestID, questID, questFlag, rewardAmount, rerollsDone, totalValue, currentValue, state = strsplit(":", (msg:gsub(";$", "")))
 			status = tonumber(status)
 			replacedQuestID = tonumber(replacedQuestID)
 
@@ -457,10 +554,12 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 				}
 
 				PRIVATE.QUEST_REPLACE_AWAIT[replacedQuestID] = nil
+				CUSTOM_BATTLEPASS_CACHE.SEEN_QUEST[replacedQuestID] = nil
+				CUSTOM_BATTLEPASS_CACHE.SEEN_QUEST[questID] = nil
 				PRIVATE.ParseQuestTooltip(questID)
 				FireCustomClientEvent("BATTLEPASS_QUEST_REPLACED", questType, questIndex)
 			else
-				PRIVATE.HandleStatusMessage(status)
+				local errorHandled = PRIVATE.HandleStatusMessage(status)
 				PRIVATE.QUEST_REPLACE_AWAIT[replacedQuestID] = nil
 
 				if PRIVATE.QUEST_LIST[replacedQuestID] then
@@ -469,7 +568,9 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 					FireCustomClientEvent("BATTLEPASS_QUEST_REPLACE_FAILED", questType, questIndex)
 				end
 
-				GMError(strformat("BATTLEPASS_REPLACE_QUEST error #%i for questID `%s`", status, replacedQuestID), 1)
+				if not errorHandled then
+					GMError(strformat("BATTLEPASS_REPLACE_QUEST error #%i for questID `%s`", status, replacedQuestID), 1)
+				end
 			end
 		elseif prefix == "ASMSG_BATTLEPASS_QUEST_CANCEL" then
 			local status, questID = strsplit(":", msg)
@@ -480,18 +581,21 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 			local questIndex = tIndexOf(PRIVATE.QUEST_LIST_TYPED[questType], questID)
 
 			if status == QUEST_MSG_STATUS.OK then
-				PRIVATE.QUEST_REPLACE_AWAIT[questID] = nil
+				PRIVATE.QUEST_CANCEL_AWAIT[questID] = nil
 				PRIVATE.QUEST_LIST[questID] = nil
 				tremove(PRIVATE.QUEST_LIST_TYPED[questType], questIndex)
+				CUSTOM_BATTLEPASS_CACHE.SEEN_QUEST[questID] = nil
 				FireCustomClientEvent("BATTLEPASS_QUEST_CANCELED", questType, questIndex)
 			else
-				PRIVATE.HandleStatusMessage(status)
+				local errorHandled = PRIVATE.HandleStatusMessage(status)
 				if questType and questIndex then
 					PRIVATE.QUEST_CANCEL_AWAIT[questID] = nil
 					FireCustomClientEvent("BATTLEPASS_QUEST_CANCEL_FAILED", questType, questIndex)
 				end
 
-				GMError(strformat("BATTLEPASS_QUEST_CANCEL error #%i for questID `%s`", status, questID), 1)
+				if not errorHandled then
+					GMError(strformat("BATTLEPASS_QUEST_CANCEL error #%i for questID `%s`", status, questID), 1)
+				end
 			end
 		elseif prefix == "ASMSG_BATTLEPASS_QUEST_REWARD" then
 			local status, questID = strsplit(":", msg)
@@ -507,14 +611,20 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 						PRIVATE.QUEST_LIST[questID] = nil
 						tremove(PRIVATE.QUEST_LIST_TYPED[questType], questIndex)
 						PRIVATE.QUEST_REWARD_AWAIT[questID] = nil
+						CUSTOM_BATTLEPASS_CACHE.SEEN_QUEST[questID] = nil
 
 						FireCustomClientEvent("BATTLEPASS_QUEST_REWARD_RECIVED", questType, questIndex)
 						FireCustomClientEvent("BATTLEPASS_QUEST_DONE", questType, questIndex)
 					else
-						PRIVATE.HandleStatusMessage(status)
+						local errorHandled = PRIVATE.HandleStatusMessage(status)
+
 						if questType and questIndex then
 							PRIVATE.QUEST_REWARD_AWAIT[questID] = nil
 							FireCustomClientEvent("BATTLEPASS_QUEST_REWARD_FAILED", questType, questIndex)
+						end
+
+						if not errorHandled then
+							GMError(strformat("ASMSG_BATTLEPASS_QUEST_REWARD error #%i for questID `%s`", status, questID), 1)
 						end
 					end
 				end
@@ -535,7 +645,7 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 		itemID = tonumber(itemID)
 		if itemID then
 			if itemID == PRIVATE.STORE_AWAIT_ITEMID then
-				if PRIVATE.IsExperienceItem(itemID) or PRIVATE.IsPremiumItem(itemID) then
+				if PRIVATE.IsExperienceItem(itemID) then
 					PRIVATE.eventHandler:UnregisterEvent("CHAT_MSG_LOOT")
 					PRIVATE.LAST_PURCHASED_ITEM_ID = itemID
 					PRIVATE.LAST_PURCHASED_ITEM_AMOUNT = amount
@@ -576,6 +686,10 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 				end
 				savedVariables.SEASON_END_QUEST_LIST = nil
 			end
+			if PRIVATE.QUEUED_SEEN_QUEST_WIPE then
+				PRIVATE.QUEUED_SEEN_QUEST_WIPE = nil
+				twipe(savedVariables.SEEN_QUEST)
+			end
 		end)
 
 		PRIVATE.ENABLED = CUSTOM_BATTLEPASS_CACHE.ENABLED
@@ -588,8 +702,22 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 			FireCustomClientEvent("BATTLEPASS_EXPERIENCE_UPDATE", CUSTOM_BATTLEPASS_CACHE.LEVEL, CUSTOM_BATTLEPASS_CACHE.LEVEL_EXPERIENCE)
 			FireCustomClientEvent("BATTLEPASS_POINTS_UPDATE")
 			FireCustomClientEvent("BATTLEPASS_QUEST_RESET_TIMER_UPDATE")
+			PRIVATE.FireSplashScreenEvent()
+		end
+	elseif event == "PLAYER_LOGIN" then
+		if PRIVATE.SPLASH_AWAIT_LOGIN then
+			PRIVATE.SPLASH_AWAIT_LOGIN = nil
+			PRIVATE.FireSplashScreenEvent()
 		end
 	elseif event == "PLAYER_LOGOUT" then
+		if PRIVATE.QUESTS_RECEIVED then
+			for questID in pairs(CUSTOM_BATTLEPASS_CACHE.SEEN_QUEST) do
+				if not PRIVATE.QUEST_LIST[questID] then
+					CUSTOM_BATTLEPASS_CACHE.SEEN_QUEST[questID] = nil
+				end
+			end
+		end
+
 		_G.CUSTOM_BATTLEPASS_CACHE = CUSTOM_BATTLEPASS_CACHE
 	end
 end)
@@ -693,27 +821,39 @@ PRIVATE.HandleStatusMessage = function(status)
 	if status == QUEST_MSG_STATUS.OK then
 		-- pass
 	elseif status == QUEST_MSG_STATUS.QUEST_DATA_ERROR then
-		FireCustomClientEvent("BATTLEPASS_OPERATION_ERROR", BATTLEPASS_QUEST_MSG_STATUS_QUEST_DATA_ERROR)
+		FireCustomClientEvent("BATTLEPASS_OPERATION_ERROR", BATTLEPASS_STATUS_QUEST_DATA_ERROR)
 	elseif status == QUEST_MSG_STATUS.NOT_ENOUGH_MONEY then
 		FireCustomClientEvent("BATTLEPASS_OPERATION_ERROR", ERR_NOT_ENOUGH_GOLD)
 	elseif status == QUEST_MSG_STATUS.INVALIDE_QUEST then
-		FireCustomClientEvent("BATTLEPASS_OPERATION_ERROR", BATTLEPASS_QUEST_MSG_STATUS_INVALIDE_QUEST)
+		FireCustomClientEvent("BATTLEPASS_OPERATION_ERROR", BATTLEPASS_STATUS_INVALIDE_QUEST)
 	elseif status == QUEST_MSG_STATUS.DONT_HAVE_QUEST then
-		FireCustomClientEvent("BATTLEPASS_OPERATION_ERROR", BATTLEPASS_QUEST_MSG_STATUS_DONT_HAVE_QUEST)
+		FireCustomClientEvent("BATTLEPASS_OPERATION_ERROR", BATTLEPASS_STATUS_DONT_HAVE_QUEST)
 	elseif status == QUEST_MSG_STATUS.QUEST_NOT_COMPLETE then
-		FireCustomClientEvent("BATTLEPASS_OPERATION_ERROR", BATTLEPASS_QUEST_MSG_STATUS_QUEST_NOT_COMPLETE)
+		FireCustomClientEvent("BATTLEPASS_OPERATION_ERROR", BATTLEPASS_STATUS_QUEST_NOT_COMPLETE)
 	elseif status == QUEST_MSG_STATUS.QUEST_ALREADY_COMPLETE then
-		FireCustomClientEvent("BATTLEPASS_OPERATION_ERROR", BATTLEPASS_QUEST_MSG_STATUS_QUEST_ALREADY_COMPLETE)
+		FireCustomClientEvent("BATTLEPASS_OPERATION_ERROR", BATTLEPASS_STATUS_QUEST_ALREADY_COMPLETE)
 	elseif status == QUEST_MSG_STATUS.REWARD_NOT_FOUND then
-		FireCustomClientEvent("BATTLEPASS_OPERATION_ERROR", BATTLEPASS_QUEST_MSG_STATUS_LEVEL_REWARD_NOT_FOUND)
+		FireCustomClientEvent("BATTLEPASS_OPERATION_ERROR", BATTLEPASS_STATUS_REWARD_NOT_FOUND)
 	elseif status == QUEST_MSG_STATUS.REWARD_INV_FULL then
-		FireCustomClientEvent("BATTLEPASS_OPERATION_ERROR", BATTLEPASS_QUEST_MSG_STATUS_LEVEL_REWARD_INV_FULL)
+		FireCustomClientEvent("BATTLEPASS_OPERATION_ERROR", BATTLEPASS_STATUS_LEVEL_REWARD_INV_FULL)
+	elseif status == QUEST_MSG_STATUS.ITEM_AMOUNT_LIMIT then
+		FireCustomClientEvent("BATTLEPASS_OPERATION_ERROR", BATTLEPASS_STATUS_ITEM_AMOUNT_LIMIT)
+	else
+		return false
 	end
+
+	return true
 end
 
 PRIVATE.InitializeLevelData = function()
-	BATTLEPASS_LEVELS = _G.BATTLEPASS_LEVELS
-	BATTLEPASS_LEVEL_REWARDS = _G.BATTLEPASS_LEVEL_REWARDS
+	if PRIVATE.PER_REALM_DB then
+		local serverID = GetServerID()
+		BATTLEPASS_LEVELS = _G.BATTLEPASS_LEVELS[serverID] or _G.BATTLEPASS_LEVELS[9]
+		BATTLEPASS_LEVEL_REWARDS = _G.BATTLEPASS_LEVEL_REWARDS[serverID] or _G.BATTLEPASS_LEVEL_REWARDS[9]
+	else
+		BATTLEPASS_LEVELS = _G.BATTLEPASS_LEVELS
+		BATTLEPASS_LEVEL_REWARDS = _G.BATTLEPASS_LEVEL_REWARDS
+	end
 	_G.BATTLEPASS_LEVELS = nil
 	_G.BATTLEPASS_LEVEL_REWARDS = nil
 
@@ -775,6 +915,34 @@ PRIVATE.Initialize = function()
 	PRIVATE.InitializeTooltip()
 	PRIVATE.InitializeLevelData()
 	PRIVATE.InitializeRewardData()
+end
+
+PRIVATE.CanShowSplashScreen = function()
+	if PRIVATE.SPLASH_ID and SPLASH_DATA[PRIVATE.SPLASH_ID]
+	and PRIVATE.IsActive() and not PRIVATE.HasAnyClaimedReward() and UnitLevel("player") >= 20
+	and not C_RealmInfo.IsLegacyRealm(C_Service.GetRealmID())
+	then
+		return true
+	end
+	return false
+end
+
+PRIVATE.IsSplashScreenSeen = function()
+	return CUSTOM_BATTLEPASS_CACHE.SPLASH_SEEN == PRIVATE.SPLASH_ID --and not IsInterfaceDevClient()
+end
+
+PRIVATE.FireSplashScreenEvent = function(showSeen)
+	if (showSeen or not PRIVATE.IsSplashScreenSeen()) and PRIVATE.CanShowSplashScreen() then
+		local splash = PRIVATE.SPLASH_ID and SPLASH_DATA[PRIVATE.SPLASH_ID]
+		if splash then
+			if IsLoggedIn() then
+				CUSTOM_BATTLEPASS_CACHE.SPLASH_SEEN = PRIVATE.SPLASH_ID
+				FireCustomClientEvent("BATTLEPASS_SPLASH_SCREEN", PRIVATE.SPLASH_ID, CopyTable(splash))
+			else
+				PRIVATE.SPLASH_AWAIT_LOGIN = true
+			end
+		end
+	end
 end
 
 PRIVATE.ProcessQuestParseQueue = function()
@@ -875,81 +1043,8 @@ PRIVATE.CheckSeasonEnd = function()
 	end
 end
 
-PRIVATE.SortQuests = function(a, b)
-	return a < b
-end
-
-PRIVATE.SortProductsByID = function(a, b)
-	return a[PRODUCT_STORAGE_DATA.PRODUCT_ID] < b[PRODUCT_STORAGE_DATA.PRODUCT_ID]
-end
-
-PRIVATE.UpdateStoreData = function()
-	if PRIVATE.storeProductsUpdated then
-		return true
-	end
-
-	local storeData = STORE_PRODUCT_CACHE and STORE_PRODUCT_CACHE[STORE_CURRENCY] and STORE_PRODUCT_CACHE[STORE_CURRENCY][STORE_CATEGORY]
-	if storeData then
-		local premiumProducts = storeData[STORE_SUBCATEGORY_PREMIUM]
-		if premiumProducts and premiumProducts[0] and premiumProducts[0].data then
-			local productID, product = next(premiumProducts[0].data)
-			PRIVATE.PRODUCT_PREMIUM = product
-		else
-			PRIVATE.PRODUCT_PREMIUM = nil
-		end
-
-		twipe(PRIVATE.PRODUCT_EXPERIENCE_LIST)
-
-		local experienceProducts = storeData[STORE_SUBCATEGORY_EXPERIENCE]
-		if experienceProducts and experienceProducts[0] and experienceProducts[0].data then
-			for productID, product in pairs(experienceProducts[0].data) do
-				tinsert(PRIVATE.PRODUCT_EXPERIENCE_LIST, product)
-			end
-
-			tsort(PRIVATE.PRODUCT_EXPERIENCE_LIST, PRIVATE.SortProductsByID)
-
-			for index, product in ipairs(PRIVATE.PRODUCT_EXPERIENCE_LIST) do
-				local price, originalPrice, currency, altCurrency, altPrice = PRIVATE.GetProductPrice(product)
-				PURCHASE_EXPERIENCE_OPTIONS[index].price = price
-				PURCHASE_EXPERIENCE_OPTIONS[index].originalPrice = originalPrice
-				PURCHASE_EXPERIENCE_OPTIONS[index].currencyType = Enum.Store.CurrencyType.Bonus
-				PURCHASE_EXPERIENCE_OPTIONS[index].experience = EXPERIENCE_ITEMS[product[PRODUCT_STORAGE_DATA.ITEM_ID]] or 0
-			end
-		end
-
-		PRIVATE.storeProductsUpdated = PRIVATE.PRODUCT_PREMIUM and #PRIVATE.PRODUCT_EXPERIENCE_LIST > 0
-
-		return true
-	end
-
-	return false
-end
-
-PRIVATE.GetProductPrice = function(product)
-	local price = product[PRODUCT_STORAGE_DATA.PRICE]
-	local discount = product[PRODUCT_STORAGE_DATA.DISCOUNT_PRICE]
-	local currency = Enum.Store.CurrencyType.Bonus
-	local altCurrency = product[PRODUCT_STORAGE_DATA.ALT_CURRENCY]
-	local altPrice = product[PRODUCT_STORAGE_DATA.ALT_PRICE]
-	local originalPrice
-
-	if discount ~= 0 and discount < price then
-		originalPrice = price
-		price = discount
-	else
-		originalPrice = 0
-	end
-
-	return price, originalPrice, currency, altCurrency, altPrice
-end
-
-PRIVATE.GetPremiumPrice = function()
-	if PRIVATE.UpdateStoreData() and PRIVATE.PRODUCT_PREMIUM then
-		local price, originalPrice, currency, altCurrency, altPrice = PRIVATE.GetProductPrice(PRIVATE.PRODUCT_PREMIUM)
-		return price, originalPrice, currency
-	end
-
-	return -1, 0, 0
+PRIVATE.SortQuests = function(questIDa, questIDb)
+	return questIDa < questIDb
 end
 
 PRIVATE.IsLevelRewardItem = function(itemID)
@@ -962,12 +1057,6 @@ end
 
 PRIVATE.IsPremiumItem = function(itemID)
 	return PREMIUM_ITEMS[itemID] ~= nil
-end
-
-PRIVATE.GetExperienceOptionProduct = function(optionIndex)
-	if PRIVATE.UpdateStoreData() then
-		return PRIVATE.PRODUCT_EXPERIENCE_LIST[optionIndex]
-	end
 end
 
 PRIVATE.GetQuestTypeTimeLeft = function(questType)
@@ -1040,43 +1129,71 @@ PRIVATE.SortExperienceOptionsForLevel = function(a, b)
 	return a.optionIndex < b.optionIndex
 end
 
-PRIVATE.GetRequiredExperienceOptionsForLevel = function(level)
-	PRIVATE.UpdateStoreData()
+PRIVATE.GetRequiredExperienceOptionsForLevel = function(level, targetCurrencyType)
+	local experienceRequired = PRIVATE.GetRequiredExperienceForLevel(level)
+	if experienceRequired <= 0 then
+		return {}, -1, -1, targetCurrencyType
+	end
 
-	local experienceLeft = PRIVATE.GetRequiredExperienceForLevel(level)
 	local options = {}
-	local price = 0
-	local originalPrice = 0
-	local currencyType = Enum.Store.CurrencyType.Bonus
+	local finalPrice = 0
+	local finalOriginalPrice = 0
+	local numOptions = 0
 
-	for optionIndex = #PURCHASE_EXPERIENCE_OPTIONS, 1, -1 do
-		local option = PURCHASE_EXPERIENCE_OPTIONS[optionIndex]
-		if option.experience and option.currencyType == currencyType then
-			local amount = mathmodf(experienceLeft / option.experience)
-			local experienceMod = experienceLeft % option.experience
+	for optionIndex = 1, PRIVATE.GetNumExperiencePurchaseOptions() do
+		local itemID, experience, productID, price, originalPrice, currencyType, altPrice, altOriginalPrice, altCurrencyType = PRIVATE.GetExperiencePurchaseOptionInfo(optionIndex)
+		if experience and currencyType == targetCurrencyType then
+			local amount = 0
 
-			if optionIndex == 1 and experienceMod > 0 then
-				amount = amount + 1
+			if numOptions == 0 then
+				local experienceMod = experienceRequired % experience
+				amount = mathfloor(experienceRequired / experience)
+
+				if experienceMod > 0 then
+					amount = amount + 1
+				end
+			else
+				local optionPrev = options[numOptions]
+				local mult = mathfloor(experience / optionPrev.experience)
+				amount = mathfloor(optionPrev.amount / mult)
+
+				if amount > 0 then
+					if optionPrev.amount > mult * amount then
+						optionPrev.amount = optionPrev.amount - mult * amount
+					else
+						tremove(options, numOptions)
+						numOptions = numOptions - 1
+					end
+				end
 			end
 
 			if amount > 0 then
-				local product = PRIVATE.GetExperienceOptionProduct(optionIndex)
-
-				experienceLeft = experienceMod
-				price = price + option.price * amount
-				originalPrice = originalPrice + option.originalPrice * amount
-
 				tinsert(options, {
 					optionIndex = optionIndex,
+					experience = experience,
 					amount = amount,
-					itemID = product[PRODUCT_STORAGE_DATA.ITEM_ID],
+					itemID = itemID,
+					price = price,
+					originalPrice = originalPrice,
 				})
+				numOptions = numOptions + 1
 			end
 		end
 	end
 
-	tsort(options, PRIVATE.SortExperienceOptionsForLevel)
-	return options, price, originalPrice, currencyType
+	if numOptions > 0 then
+		tsort(options, PRIVATE.SortExperienceOptionsForLevel)
+
+		for index, option in ipairs(options) do
+			finalPrice = finalPrice + option.price * option.amount
+			finalOriginalPrice = finalOriginalPrice + option.originalPrice * option.amount
+		end
+	else
+		finalPrice = -1
+		finalOriginalPrice = -1
+	end
+
+	return options, finalPrice, finalOriginalPrice, targetCurrencyType
 end
 
 PRIVATE.GetNumVisiableCards = function()
@@ -1105,7 +1222,7 @@ PRIVATE.GetLevelByExperience = function(experience)
 	return 0, experience
 end
 
-PRIVATE.GetLevelRewardsFlag = function(rewardType)
+PRIVATE.GetLevelRewardAwaitFlag = function(rewardType)
 	if rewardType == Enum.BattlePass.RewardType.Premium then
 		return 2
 	else
@@ -1113,32 +1230,139 @@ PRIVATE.GetLevelRewardsFlag = function(rewardType)
 	end
 end
 
-PRIVATE.IsCardRewardAvailable = function(level, rewardType)
-	if CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level] then
-		return bitband(CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level], PRIVATE.GetLevelRewardsFlag(rewardType)) == 0
+PRIVATE.IsLevelRewardTypeAwaiting = function(level, rewardType)
+	if PRIVATE.LEVEL_REWARD_AWAIT[level] then
+		local rewardAwaitFlag = PRIVATE.GetLevelRewardAwaitFlag(rewardType)
+		return bitband(PRIVATE.LEVEL_REWARD_AWAIT[level], rewardAwaitFlag) ~= 0
 	end
-	return true
+	return false
 end
 
-PRIVATE.GetLevelRewards = function(level)
-	local freeItems = {}
-	local premiumItems = {}
+PRIVATE.AddLevelRewardTypeAwait = function(level, rewardType)
+	if not PRIVATE.IsLevelRewardTypeAwaiting(level, rewardType) then
+		local rewardAwaitFlag = PRIVATE.GetLevelRewardAwaitFlag(rewardType)
+		PRIVATE.LEVEL_REWARD_AWAIT[level] = bitbor(PRIVATE.LEVEL_REWARD_AWAIT[level] or 0, rewardAwaitFlag)
+		return true
+	end
+	return false
+end
+
+PRIVATE.RemoveLevelRewardTypeAwait = function(level, rewardType)
+	if PRIVATE.IsLevelRewardTypeAwaiting(level, rewardType) then
+		local rewardAwaitFlag = PRIVATE.GetLevelRewardAwaitFlag(rewardType)
+		if PRIVATE.LEVEL_REWARD_AWAIT[level] == rewardAwaitFlag then
+			PRIVATE.LEVEL_REWARD_AWAIT[level] = nil
+		else
+			PRIVATE.LEVEL_REWARD_AWAIT[level] = PRIVATE.LEVEL_REWARD_AWAIT[level] - rewardAwaitFlag
+		end
+		return true
+	end
+	return false
+end
+
+PRIVATE.SetLevelRewardFlag = function(level, rewardType, rewardFlag)
+	local diffRewardFlag
+
+	if type(rewardFlag) ~= "number" or rewardFlag == -1 then
+		if CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level] and CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level][rewardType] then
+			CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level][rewardType] = nil
+			if not next(CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level][level]) then
+				CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level] = nil
+			end
+		end
+
+		diffRewardFlag = -1
+	else
+		if CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level] then
+			local oldRewardFlag = CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level][rewardType]
+			if not oldRewardFlag then
+				diffRewardFlag = rewardFlag
+			elseif oldRewardFlag == rewardFlag then
+				diffRewardFlag = -1
+			else
+				diffRewardFlag = bitband(rewardFlag, bitbnot(oldRewardFlag))
+			end
+		else
+			CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level] = {}
+			diffRewardFlag = rewardFlag
+		end
+
+		CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level][rewardType] = rewardFlag
+	end
+
+	return diffRewardFlag
+end
+
+PRIVATE.GetItemIndexFlag = function(itemIndex)
+	return bitlshift(1, itemIndex - 1)
+end
+
+PRIVATE.IsLevelRewardCollectedAll = function(level, rewardType)
+	if CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level] then
+		return CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level][rewardType] == 0
+	end
+	return false
+end
+
+PRIVATE.IsLevelRewardCollectedAny = function(level, rewardType)
+	if CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level] and CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level][rewardType] then
+		return true
+	end
+	return false
+end
+
+PRIVATE.IsLevelRewardCollectedItemIndex = function(level, rewardType, itemIndex)
+	if CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level] and CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level][rewardType] then
+		if CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level][rewardType] == 0 then
+			return true
+		else
+			return bitband(CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level][rewardType], PRIVATE.GetItemIndexFlag(itemIndex)) ~= 0
+		end
+	end
+	return false
+end
+
+PRIVATE.IsCardRewardAvailable = function(level, rewardType)
+	return not PRIVATE.IsLevelRewardCollectedAll(level, rewardType)
+end
+
+PRIVATE.GetLevelRewards = function(level, rewardType, rewardFlag)
+	local items = {}
 
 	local faction = UnitFactionGroup("player")
 	local factionFlag = ITEM_REWARD_FLAG[faction]
 
 	for _, item in ipairs(BATTLEPASS_LEVEL_REWARDS[mathmin(level, PRIVATE.MAX_LEVEL)]) do
-		local itemType, itemID, amount, flags = unpack(item, 1, 4)
-		if flags == 0 or bitband(flags, factionFlag) ~= 0 then
-			if itemType == Enum.BattlePass.RewardType.Premium then
-				tinsert(premiumItems, {itemID = itemID, amount = amount})
-			else
-				tinsert(freeItems, {itemID = itemID, amount = amount})
+		local itemType, itemIndex, itemID, amount, flags = unpack(item, 1, 5)
+
+		if itemType == rewardType then
+			if flags == 0 or bitband(flags, factionFlag) ~= 0 then
+				itemIndex = itemIndex + 1
+				if not rewardFlag or rewardFlag == 0 or bitband(rewardFlag, PRIVATE.GetItemIndexFlag(itemIndex)) ~= 0 then
+					local isCollected = PRIVATE.IsLevelRewardCollectedItemIndex(level, rewardType, itemIndex)
+					tinsert(items, {index = itemIndex, itemID = itemID, amount = amount, isCollected = isCollected})
+				end
 			end
 		end
 	end
 
-	return freeItems, premiumItems
+	return items
+end
+
+PRIVATE.HasAnyClaimedReward = function()
+	if CUSTOM_BATTLEPASS_CACHE.LEVEL == 0 then
+		return false
+	end
+
+	for level = 1, CUSTOM_BATTLEPASS_CACHE.LEVEL do
+		if PRIVATE.IsLevelRewardCollectedAny(level, Enum.BattlePass.RewardType.Free)
+		or (CUSTOM_BATTLEPASS_CACHE.PREMIUM_ACTIVE and PRIVATE.IsLevelRewardCollectedAny(level, Enum.BattlePass.RewardType.Premium))
+		then
+			return true
+		end
+	end
+
+	return false
 end
 
 PRIVATE.HasUnclaimedReward = function()
@@ -1146,15 +1370,9 @@ PRIVATE.HasUnclaimedReward = function()
 		return false
 	end
 
-	local claimedMask = PRIVATE.GetLevelRewardsFlag(Enum.BattlePass.RewardType.Free)
-	if CUSTOM_BATTLEPASS_CACHE.PREMIUM_ACTIVE then
-		claimedMask = claimedMask + PRIVATE.GetLevelRewardsFlag(Enum.BattlePass.RewardType.Premium)
-	end
-
 	for level = 1, CUSTOM_BATTLEPASS_CACHE.LEVEL do
-		if not CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN[level]
-		or CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN == 0
-		or CUSTOM_BATTLEPASS_CACHE.LEVEL_REWARD_TAKEN ~= claimedMask
+		if PRIVATE.IsCardRewardAvailable(level, Enum.BattlePass.RewardType.Free)
+		or (CUSTOM_BATTLEPASS_CACHE.PREMIUM_ACTIVE and PRIVATE.IsCardRewardAvailable(level, Enum.BattlePass.RewardType.Premium))
 		then
 			return level
 		end
@@ -1273,7 +1491,8 @@ function C_BattlePass.GetSourceExperience()
 	return CUSTOM_BATTLEPASS_CACHE.POINTS_BG or 0,
 		CUSTOM_BATTLEPASS_CACHE.POINTS_ARENA or 0,
 		CUSTOM_BATTLEPASS_CACHE.POINTS_ARENA_SOLOQ or 0,
-		CUSTOM_BATTLEPASS_CACHE.POINTS_ARENA_V1 or 0
+		CUSTOM_BATTLEPASS_CACHE.POINTS_ARENA_V1 or 0,
+		CUSTOM_BATTLEPASS_CACHE.POINTS_MINIGAME or 30
 end
 
 function C_BattlePass.GetLevelInfo()
@@ -1326,11 +1545,11 @@ function C_BattlePass.GetRequiredExperienceForLevel(level)
 end
 
 function C_BattlePass.GetRequiredExperienceOptionsForLevel(level)
-	if not PRIVATE.IsEnabled() or not PRIVATE.IsActive() or not PURCHASE_EXPERIENCE_OPTIONS then
-		return {}, -1, 0, 0
+	if not PRIVATE.IsEnabled() or not PRIVATE.IsActive() or PRIVATE.GetNumExperiencePurchaseOptions() == 0 then
+		return {}, -1, -1, Enum.Store.CurrencyType.Bonus
 	end
 
-	return PRIVATE.GetRequiredExperienceOptionsForLevel(level)
+	return PRIVATE.GetRequiredExperienceOptionsForLevel(level, Enum.Store.CurrencyType.Bonus)
 end
 
 function C_BattlePass.IsLevelRewardItem(itemID)
@@ -1369,7 +1588,8 @@ function C_BattlePass.GetExperienceItemExpAmount(itemID)
 end
 
 function C_BattlePass.GetPremiumPrice()
-	return PRIVATE.GetPremiumPrice()
+	local itemID, productID, price, originalPrice, currencyType = C_StoreSecure.GetBattlePassPremiumProductInfo()
+	return price, originalPrice, currencyType
 end
 
 function C_BattlePass.IsPremiumActive()
@@ -1414,7 +1634,8 @@ function C_BattlePass.GetLevelCardRewardInfo(cardIndex)
 	end
 
 	local level = cardIndex
-	local freeItems, premiumItems = PRIVATE.GetLevelRewards(cardIndex)
+	local freeItems = PRIVATE.GetLevelRewards(cardIndex, Enum.BattlePass.RewardType.Free)
+	local premiumItems = PRIVATE.GetLevelRewards(cardIndex, Enum.BattlePass.RewardType.Premium)
 
 	local freeState, premiumState, shieldState
 	if cardIndex > CUSTOM_BATTLEPASS_CACHE.LEVEL then
@@ -1465,12 +1686,9 @@ function C_BattlePass.IsAwaitingLevelReward(cardIndex, rewardType)
 		error(strformat("rewardType out of range `%i`", rewardType), 2)
 	end
 
-	if PRIVATE.LEVEL_REWARD_ALL_AWAIT then
-		return true
-	end
-
-	local rewardFlag = PRIVATE.GetLevelRewardsFlag(rewardType)
-	if PRIVATE.LEVEL_REWARD_AWAIT[cardIndex] and bitband(PRIVATE.LEVEL_REWARD_AWAIT[cardIndex], rewardFlag) ~= 0 then
+	if PRIVATE.LEVEL_REWARD_ALL_AWAIT
+	or PRIVATE.IsLevelRewardTypeAwaiting(cardIndex, rewardType)
+	then
 		return true
 	end
 
@@ -1504,9 +1722,7 @@ function C_BattlePass.TakeLevelReward(cardIndex, rewardType)
 		return
 	end
 
-	local rewardFlag = PRIVATE.GetLevelRewardsFlag(rewardType)
-	if not PRIVATE.LEVEL_REWARD_AWAIT[cardIndex] or bitband(PRIVATE.LEVEL_REWARD_AWAIT[cardIndex], rewardFlag) == 0 then
-		PRIVATE.LEVEL_REWARD_AWAIT[cardIndex] = bitbor(PRIVATE.LEVEL_REWARD_AWAIT[cardIndex] or 0, rewardFlag)
+	if PRIVATE.AddLevelRewardTypeAwait(cardIndex, rewardType) then
 		FireCustomClientEvent("BATTLEPASS_CARD_REWARD_AWAIT", cardIndex, rewardType)
 		SendServerMessage("ACMSG_BATTLEPASS_TAKE_REWARD", strformat("%u:%u", cardIndex, rewardType))
 	end
@@ -1802,19 +2018,54 @@ function C_BattlePass.CollectQuestReward(questType, questIndex)
 	end
 end
 
-function C_BattlePass.RequestProductData()
-	if not PRIVATE.PRODUCTS_REQUESTED then
-		PRIVATE.PRODUCTS_REQUESTED = true
-		StoreRequestBattlePass()
+function C_BattlePass.IsNewQuest(questType, questIndex)
+	if not PRIVATE.IsEnabled() or not PRIVATE.IsActive() then
+		return
 	end
+
+	PRIVATE.ValidateQuestArgs("C_BattlePass.IsNewQuest", questType, questIndex)
+
+	local questID = PRIVATE.QUEST_LIST_TYPED[questType][questIndex]
+	if questID and CUSTOM_BATTLEPASS_CACHE.SEEN_QUEST[questID] then
+		return false
+	end
+
+	return true
+end
+
+function C_BattlePass.MarkQuestSeen(questType, questIndex)
+	if not PRIVATE.IsEnabled() or not PRIVATE.IsActive() then
+		return
+	end
+
+	PRIVATE.ValidateQuestArgs("C_BattlePass.MarkQuestSeen", questType, questIndex)
+
+	local questID = PRIVATE.QUEST_LIST_TYPED[questType][questIndex]
+	if questID then
+		CUSTOM_BATTLEPASS_CACHE.SEEN_QUEST[questID] = true
+	end
+end
+
+function C_BattlePass.RequestProductData()
+	C_StoreSecure.RequestBattlePassProducts()
 end
 
 function C_BattlePass.GetNumExperiencePurchaseOptions()
 	if not PRIVATE.IsEnabled() or not PRIVATE.IsActive() then
 		return 0
 	end
-	PRIVATE.UpdateStoreData()
-	return #PRIVATE.PRODUCT_EXPERIENCE_LIST
+
+	return PRIVATE.GetNumExperiencePurchaseOptions()
+end
+
+PRIVATE.GetNumExperiencePurchaseOptions = function()
+	return C_StoreSecure.GetNumBattlePassExperienceOptions()
+end
+
+PRIVATE.GetExperiencePurchaseOptionInfo = function(optionIndex)
+	local itemID, productID, price, originalPrice, currencyType, altPrice, altOriginalPrice, altCurrencyType = C_StoreSecure.GetBattlePassExperienceOption(optionIndex)
+	local experience = EXPERIENCE_ITEMS[itemID] or 0
+	return itemID, experience, productID, price, originalPrice, currencyType, altPrice, altOriginalPrice, altCurrencyType
 end
 
 function C_BattlePass.GetExperiencePurchaseOptionInfo(optionIndex)
@@ -1822,15 +2073,28 @@ function C_BattlePass.GetExperiencePurchaseOptionInfo(optionIndex)
 		return
 	end
 
-	PRIVATE.UpdateStoreData()
-
 	if type(optionIndex) ~= "number" then
 		error(strformat("bad argument #1 to 'C_BattlePass.GetExperiencePurchaseOptionInfo' (number expected, got %s)", type(optionIndex)), 2)
-	elseif optionIndex < 1 or optionIndex > #PRIVATE.PRODUCT_EXPERIENCE_LIST then
-		error(strformat("optionIndex out of range `%i`", optionIndex), 2)
+	elseif optionIndex < 1 or optionIndex > C_BattlePass.GetNumExperiencePurchaseOptions() then
+		error(strformat("bad argument #1 to 'C_BattlePass.GetExperiencePurchaseOptionInfo' (out of range `%i`)", optionIndex), 2)
 	end
 
-	return CopyTable(PURCHASE_EXPERIENCE_OPTIONS[optionIndex])
+	return PRIVATE.GetExperiencePurchaseOptionInfo(optionIndex)
+end
+
+function C_BattlePass.GetExperiencePurchaseOptionArtKit(optionIndex)
+	if not PRIVATE.IsEnabled() or not PRIVATE.IsActive() then
+		return
+	end
+
+	if type(optionIndex) ~= "number" then
+		error(strformat("bad argument #1 to 'C_BattlePass.GetExperiencePurchaseOptionArtKit' (number expected, got %s)", type(optionIndex)), 2)
+	elseif optionIndex < 1 or optionIndex > #PURCHASE_EXPERIENCE_OPTIONS then
+		error(strformat("bad argument #1 to 'C_BattlePass.GetExperiencePurchaseOptionArtKit' (out of range `%i`)", optionIndex), 2)
+	end
+
+	local artKit = PURCHASE_EXPERIENCE_OPTIONS[optionIndex]
+	return artKit.iconAtlas, artKit.iconAnimAtlas, artKit.checkedAtlas, artKit.highlightAtlas
 end
 
 function C_BattlePass.PurchaseExperience(optionIndex, amount)
@@ -1843,22 +2107,23 @@ function C_BattlePass.PurchaseExperience(optionIndex, amount)
 	elseif type(amount) ~= "number" then
 		error(strformat("bad argument #2 to 'C_BattlePass.PurchaseExperience' (number expected, got %s)", type(amount)), 2)
 	elseif optionIndex < 1 or optionIndex > #PURCHASE_EXPERIENCE_OPTIONS then
-		error(strformat("optionIndex out of range `%i`", optionIndex), 2)
+		error(strformat("bad argument #1 to 'C_BattlePass.PurchaseExperience' (optionIndex out of range `%i`)", optionIndex), 2)
 	elseif amount < 1 then
-		error(strformat("amount out of range `%i`", amount), 2)
+		error(strformat("bad argument #2 to 'C_BattlePass.PurchaseExperience' (amount out of range `%i`)", amount), 2)
 	end
 
-	PRIVATE.UpdateStoreData()
-
-	local option = PURCHASE_EXPERIENCE_OPTIONS[optionIndex]
-	if option.price then
-		local price = option.price * amount
-		if price <= Store_GetBalance(option.currencyType) or IsInGMMode() then
-			local product = PRIVATE.GetExperienceOptionProduct(optionIndex)
-			PRIVATE.STORE_AWAIT_ITEMID = product[PRODUCT_STORAGE_DATA.ITEM_ID]
-			PRIVATE.LAST_PURCHASED_OPTION_LIST = nil
-			PRIVATE.eventHandler:RegisterEvent("CHAT_MSG_LOOT")
-			SendServerMessage("ACMSG_SHOP_BUY_ITEM", strformat("%i|%u|0|0|0", product[PRODUCT_STORAGE_DATA.PRODUCT_ID], amount))
+	local itemID, productID, price, originalPrice, currencyType, altPrice, altOriginalPrice, altCurrencyType = C_StoreSecure.GetBattlePassExperienceOption(optionIndex)
+	if productID then
+		price = price * amount
+		if price <= C_StoreSecure.GetBalance(currencyType) or IsInGMMode() then
+			local success = C_StoreSecure.PurchaseBattlePassExperience(optionIndex, amount)
+			if success and itemID then
+				PRIVATE.eventHandler:RegisterEvent("CHAT_MSG_LOOT")
+				PRIVATE.STORE_AWAIT_ITEMID = itemID
+				PRIVATE.LAST_PURCHASED_OPTION_LIST = nil
+			end
+		else
+			C_StoreSecure.GenerateBalanceError(Enum.Store.ProductType.BattlePass, currencyType, string.join(".", "BPPE", productID))
 		end
 	else
 		GMError(strformat("No experience product id avaliable for %u option", optionIndex))
@@ -1866,21 +2131,24 @@ function C_BattlePass.PurchaseExperience(optionIndex, amount)
 end
 
 function C_BattlePass.PurchaseExperienceOptionsForLevel(level)
-	local options, price, originalPrice, currencyType = PRIVATE.GetRequiredExperienceOptionsForLevel(level)
+	local options, price, originalPrice, currencyType = PRIVATE.GetRequiredExperienceOptionsForLevel(level, Enum.Store.CurrencyType.Bonus)
 	if not next(options) then
 		PRIVATE.LAST_PURCHASED_OPTION_LIST = nil
 		return
 	end
 
-	if price <= Store_GetBalance(currencyType) or IsInGMMode() then
-		PRIVATE.LAST_PURCHASED_OPTION_LIST = options
+	if price <= C_StoreSecure.GetBalance(currencyType) or IsInGMMode() then
 		PRIVATE.STORE_AWAIT_ITEMID = nil
 
-		PRIVATE.eventHandler:RegisterEvent("CHAT_MSG_LOOT")
+		local registerEvent
 
 		for _, option in ipairs(options) do
-			local product = PRIVATE.GetExperienceOptionProduct(option.optionIndex)
-			SendServerMessage("ACMSG_SHOP_BUY_ITEM", strformat("%i|%u|0|0|0", product[PRODUCT_STORAGE_DATA.PRODUCT_ID], option.amount))
+			local success = C_StoreSecure.PurchaseBattlePassExperience(option.optionIndex, option.amount)
+			if success and not registerEvent then
+				registerEvent = true
+				PRIVATE.LAST_PURCHASED_OPTION_LIST = options
+				PRIVATE.eventHandler:RegisterEvent("CHAT_MSG_LOOT")
+			end
 		end
 	end
 end
@@ -1890,16 +2158,16 @@ function C_BattlePass.PurchasePremium()
 		return
 	end
 
-	PRIVATE.UpdateStoreData()
-
-	local price, originalPrice, currency = PRIVATE.GetPremiumPrice()
-	if price ~= -1 then
-		if price <= Store_GetBalance(currency) or IsInGMMode() then
-			PRIVATE.eventHandler:RegisterEvent("CHAT_MSG_LOOT")
-			PRIVATE.STORE_AWAIT_ITEMID = PRIVATE.PRODUCT_PREMIUM[PRODUCT_STORAGE_DATA.ITEM_ID]
-			SendServerMessage("ACMSG_SHOP_BUY_ITEM", strformat("%i|1|0|0|0", PRIVATE.PRODUCT_PREMIUM[PRODUCT_STORAGE_DATA.PRODUCT_ID]))
+	local itemID, productID, price, originalPrice, currencyType = C_StoreSecure.GetBattlePassPremiumProductInfo()
+	if productID then
+		if price <= C_StoreSecure.GetBalance(currencyType) or IsInGMMode() then
+			local success = C_StoreSecure.PurchaseBattlePassPremium()
+			if success and itemID then
+				PRIVATE.eventHandler:RegisterEvent("CHAT_MSG_LOOT")
+				PRIVATE.STORE_AWAIT_ITEMID = itemID
+			end
 		else
-			FireCustomClientEvent("BATTLEPASS_OPERATION_ERROR", STORE_BUY_ITEM_ERROR_5)
+			C_StoreSecure.GenerateBalanceError(Enum.Store.ProductType.BattlePass, currencyType, string.join(".", "BPPP", productID))
 		end
 	else
 		GMError("No premium product id avaliable")
@@ -1910,8 +2178,6 @@ function C_BattlePass.UsePurchasedItem()
 	if not PRIVATE.IsEnabled() then
 		return
 	end
-
-	PRIVATE.UpdateStoreData()
 
 	if PRIVATE.LAST_PURCHASED_ITEM_ID then
 		local itemID = PRIVATE.LAST_PURCHASED_ITEM_ID
@@ -1943,4 +2209,12 @@ function C_BattlePass.UsePurchasedItem()
 			FireCustomClientEvent("BATTLEPASS_PURCHASED_ITEM_USED")
 		end)
 	end
+end
+
+function C_BattlePass.HasSplashScreen()
+	return PRIVATE.CanShowSplashScreen()
+end
+
+function C_BattlePass.RequestSplashScreen(showSeen)
+	PRIVATE.FireSplashScreenEvent(showSeen)
 end

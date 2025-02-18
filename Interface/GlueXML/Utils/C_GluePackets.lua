@@ -14,10 +14,13 @@ C_GluePackets.OpCodes = {
 	SendCharactersOrderSave			= "001",
 	AnnounceCharacterDeletedLeave	= "010",
 	RequestCharacterList			= "100",
-	ToggleItemsForCustomize			= "111",
 	SendCharacterCreationInfo		= "0010",
 	SendCharacterCustomizationInfo	= "0011",
 	CharacterHardcoreProposalAnswer	= "0100",
+	RequestBoostSpecItems			= "0101",
+	RequestBoostCharacterItems		= "0111",
+	RequestBoostCancel				= "1000",
+	RequestBoostRefund				= "1100",
 }
 
 C_GluePackets.queue = {}
@@ -25,7 +28,14 @@ C_GluePackets.lastMessage = 0
 
 C_GluePackets.eventHandler = CreateFrame("Frame", nil, GlueParent)
 C_GluePackets.eventHandler:Hide()
+C_GluePackets.eventHandler:RegisterCustomEvent("CONNECTION_REALM_DISCONNECT")
 C_GluePackets.eventHandler.sinceUpdate = 0
+
+C_GluePackets.eventHandler:SetScript("OnEvent", function(self, event, ...)
+	if event == "CONNECTION_REALM_DISCONNECT" then
+		C_GluePackets:ClearQueue()
+	end
+end)
 
 C_GluePackets.eventHandler:SetScript("OnUpdate", function(self, elapsed)
 	self.sinceUpdate = self.sinceUpdate + elapsed
@@ -44,7 +54,17 @@ function C_GluePackets:SendNext()
 	end
 end
 
+function C_GluePackets:ClearQueue()
+	self.eventHandler:Hide()
+	table.wipe(self.queue)
+	GlueDialog:HideDialog("SERVER_WAITING")
+end
+
 function C_GluePackets:SendPacketThrottled(opcode, ...)
+	if not IsConnectedToServer() then
+		return false, false
+	end
+
 	if #self.queue > 0 then
 		self.queue[#self.queue + 1] = {opcode, ...}
 	else
@@ -53,9 +73,11 @@ function C_GluePackets:SendPacketThrottled(opcode, ...)
 			self.queue[#self.queue + 1] = {opcode, ...}
 			self.eventHandler.sinceUpdate = self.lastMessage - curTime
 			self.eventHandler:Show()
+			return true, true
 		else
 			self.lastMessage = curTime
 			self:SendPacket(opcode, ...)
+			return true, false
 		end
 	end
 end
@@ -79,11 +101,27 @@ local function toBits(num)
 	return reverse(t)
 end
 
+function C_GluePackets:SendBits(packet)
+	for index, bit in ipairs(packet) do
+		if not IsConnectedToServer() then
+			self:ClearQueue()
+			return false
+		end
+		SetRealmSplitState(bit)
+	end
+	return true
+end
+
 function C_GluePackets:SendPacket(opcode, ...)
+	if not IsConnectedToServer() then
+		self:ClearQueue()
+		return false
+	end
+
 	self.lastMessage = debugprofilestop()
 
-	SetRealmSplitState(2)
-	SetRealmSplitState(2)
+	local packet = {2, 2}
+
 	for o = 1, string.len(opcode) do
 		local subs = tostring(opcode):sub(o, o)
 		local nSubs = tonumber(subs)
@@ -92,9 +130,10 @@ function C_GluePackets:SendPacket(opcode, ...)
 			nSubs = 1
 		end
 
-		SetRealmSplitState(nSubs)
+		table.insert(packet, nSubs)
 	end
-	SetRealmSplitState(2)
+
+	table.insert(packet, 2)
 
 	if select("#", ...) ~= 0 then
 		local val = {...}
@@ -103,12 +142,26 @@ function C_GluePackets:SendPacket(opcode, ...)
 		for v = 1, #val do
 			local bits = toBits(val[v])
 			for i = 0, size - #bits - 1 do
-				SetRealmSplitState(0)
+				table.insert(packet, 0)
 			end
 
 			for i = 1, #bits do
-				SetRealmSplitState(bits[i])
+				table.insert(packet, bits[i])
 			end
+		end
+	end
+
+	local success = self:SendBits(packet)
+	return success
+end
+
+function C_GluePackets:SendPacketEx(opcode, onSuccessCallback, onErrorCallback, ...)
+	local success = self:SendPacket(opcode, ...)
+	local callback = success and onSuccessCallback or onErrorCallback
+	if type(callback) then
+		local suc, err = pcall(callback, opcode)
+		if not suc then
+			geterrorhandler()(err)
 		end
 	end
 end

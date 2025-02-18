@@ -60,8 +60,6 @@
 					GameTooltip_ShowCompareItem(self, 1);
 					self.comparing = true;
 				end
-
-				C_Tooltip_CustomRender(self)
 			</OnTooltipSetItem>
 			<OnDragStart>
 				self:StartMoving();
@@ -73,7 +71,7 @@
 					GameTooltip_ShowCompareItem(self, 1);
 					self.comparing = true;
 				end
-			</OnDragStop> 
+			</OnDragStop>
 			<OnEnter>
 				self:SetScript("OnUpdate", self.UpdateTooltip);
 			</OnEnter>

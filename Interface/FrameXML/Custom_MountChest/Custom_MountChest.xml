@@ -88,7 +88,7 @@
                 </Texture>
         	</Layer>
         	<Layer level="ARTWORK">
-                <Texture parentKey="Background" file="Interface\Store\CardBackground">
+                <Texture parentKey="Background" file="Interface\Custom\Misc\CardBackground">
                     <Anchors>
                         <Anchor point="TOPLEFT" x="2" y="-2" />
                         <Anchor point="BOTTOMRIGHT" x="-2" y="2" />

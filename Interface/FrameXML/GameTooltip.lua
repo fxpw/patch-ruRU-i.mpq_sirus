@@ -6,23 +6,26 @@ DEFAULT_TOOLTIP_POSITION = -13;
 
 function GameTooltip_UnitColor(unit)
 	local color
-
-	if UnitPlayerControlled(unit) then
-		if UnitCanAttack(unit, "player") then
-			if not UnitCanAttack("player", unit) then
+	if ( UnitPlayerControlled(unit) ) then
+		if ( UnitCanAttack(unit, "player") ) then
+			-- Hostile players are red
+			if ( not UnitCanAttack("player", unit) ) then
 				color = TOOLTIP_DEFAULT_COLOR
 			else
 				color = FACTION_BAR_COLORS[2]
 			end
-		elseif UnitCanAttack("player", unit) then
+		elseif ( UnitCanAttack("player", unit) ) then
+			-- Players we can attack but which are not hostile are yellow
 			color = FACTION_BAR_COLORS[4]
-		elseif UnitIsPVP(unit) then
+		elseif ( UnitIsPVP(unit) ) then
+			-- Players we can assist but are PvP flagged are green
 			color = FACTION_BAR_COLORS[6]
 		else
+			-- All other players are blue (the usual state on the "blue" server)
 			color = TOOLTIP_DEFAULT_COLOR
 		end
 	else
-		local reaction = UnitReaction(unit, "player")
+		local reaction = UnitReaction(unit, "player");
 
 		if reaction and FACTION_BAR_COLORS[reaction] then
 			color = FACTION_BAR_COLORS[reaction]
@@ -124,44 +127,37 @@ function GameTooltip_ClearMoney(self)
 end
 
 function GameTooltip_InsertFrame(tooltipFrame, frame)
-	local textSpacing = 2
-	local textHeight = _G[tooltipFrame:GetName().."TextLeft2"]:GetHeight()
-	local numLinesNeeded = math.ceil(frame:GetHeight() / (textHeight + textSpacing))
-	local currentLine = tooltipFrame:NumLines()
-
+	local textSpacing = 2;
+	local textHeight = _G[tooltipFrame:GetName().."TextLeft2"]:GetHeight();
+	local numLinesNeeded = math.ceil(frame:GetHeight() / (textHeight + textSpacing));
+	local currentLine = tooltipFrame:NumLines();
 	for i = 1, numLinesNeeded do
-		tooltipFrame:AddLine(" ")
+		tooltipFrame:AddLine(" ");
 	end
-
-	frame:SetParent(tooltipFrame)
-	frame:ClearAllPoints()
-	frame:SetPoint("TOPLEFT", tooltipFrame:GetName().."TextLeft"..(currentLine + 1), "TOPLEFT", 0, 0)
-
+	frame:SetParent(tooltipFrame);
+	frame:ClearAllPoints();
+	frame:SetPoint("TOPLEFT", tooltipFrame:GetName().."TextLeft"..(currentLine + 1), "TOPLEFT", 0, 0);
 	if ( not tooltipFrame.insertedFrames ) then
-		tooltipFrame.insertedFrames = { }
+		tooltipFrame.insertedFrames = { };
 	end
-
-	local frameWidth = frame:GetWidth()
-
-	if tooltipFrame:GetMinimumWidth() < frameWidth then
-		tooltipFrame:SetMinimumWidth(frameWidth)
+	local frameWidth = frame:GetWidth();
+	if ( tooltipFrame:GetMinimumWidth() < frameWidth ) then
+		tooltipFrame:SetMinimumWidth(frameWidth);
 	end
-
-	frame:Show()
-	table.insert(tooltipFrame.insertedFrames, frame)
-
-	return (numLinesNeeded * textHeight) + (numLinesNeeded - 1) * textSpacing
+	frame:Show();
+	tinsert(tooltipFrame.insertedFrames, frame);
+	-- return space taken so inserted frame can resize if needed
+	return (numLinesNeeded * textHeight) + (numLinesNeeded - 1) * textSpacing;
 end
 
 function GameTooltip_ClearInsertedFrames(self)
-	if self.insertedFrames then
+	if ( self.insertedFrames ) then
 		for i = 1, #self.insertedFrames do
-			self.insertedFrames[i]:SetParent(nil)
-			self.insertedFrames[i]:Hide()
+			self.insertedFrames[i]:SetParent(nil);
+			self.insertedFrames[i]:Hide();
 		end
 	end
-
-	self.insertedFrames = nil
+	self.insertedFrames = nil;
 end
 
 function GameTooltip_ClearStatusBars(self)
@@ -197,6 +193,7 @@ function GameTooltip_OnHide(self)
 	GameTooltip_ClearInsertedFrames(GameTooltip)
 
 	self.comparing = false;
+	self.merchantSlotIndex = nil
 end
 
 function GameTooltip_OnUpdate(self, elapsed)
@@ -215,6 +212,33 @@ function GameTooltip_OnUpdate(self, elapsed)
 	GameTooltip_FixLinePosition(self)
 end
 
+function GameTooltip_OnTooltipSetUnit(self)
+	if self:IsUnit("mouseover") then
+		_G[self:GetName().."TextLeft1"]:SetTextColor(GameTooltip_UnitColor("mouseover"));
+	end
+
+	local name, unit = self:GetUnit()
+	if unit and UnitIsPlayer(unit) then
+		local zodiacID, zodiacName, zodiacDescription, zodiacIcon, zodiacAtlas = C_Unit.GetZodiacByDebuff(unit)
+		if zodiacName then
+			for lineIndex = 1, GameTooltip:NumLines() do
+				local line = _G["GameTooltipTextLeft"..lineIndex]
+				local lineText = line:GetText()
+				if lineText and string.find(lineText, TOOLTIP_UNIT_ZODIAC_LABEL) then
+					line:SetText(string.gsub(lineText, TOOLTIP_UNIT_ZODIAC_LABEL, zodiacName))
+					break
+				end
+			end
+		end
+	end
+end
+
+function GameTooltip_OnTooltipSetItem(self)
+	if IsModifiedClick("COMPAREITEMS") or (GetCVarBool("alwaysCompareItems") and not self:IsEquippedItem()) then
+		GameTooltip_ShowCompareItem(self, 1);
+	end
+end
+
 function GameTooltip_FixLinePosition( self )
 	if self.TransmogText1:IsShown() then
 		self.TextLeft2:ClearAllPoints()
@@ -228,286 +252,6 @@ function GameTooltip_FixLinePosition( self )
 			self.TextLeft2:ClearAllPoints()
 			self.TextLeft2:SetPoint("TOPLEFT", self.TextLeft1, "BOTTOMLEFT", 0, -2)
 		end
-	end
-end
-
-function GameTooltip_OnTooltipSetSpell( self, ... )
-	local _, _, spellID = self:GetSpell()
-
-	if spellID and spellID == 1804 then
-		local currentSkillRank, maxSkillRank
-
-		for i = 1, GetNumSkillLines() do
-			local skillName, _, _, skillRank, _, _, skillMaxRank = GetSkillLineInfo(i)
-
-			if skillName == SKILL_NAME_LOCKPICKING then
-				currentSkillRank = skillRank
-				maxSkillRank = skillMaxRank
-				break
-			end
-		end
-
-		if currentSkillRank and maxSkillRank then
-			local currenBarValue = (currentSkillRank / maxSkillRank) * 100
-
-			GameTooltip_InsertFrame(GameTooltip, SpellTooltipStatusBar)
-
-			SpellTooltipStatusBar.Bar:SetValue(currenBarValue)
-			SpellTooltipStatusBar.Bar.Label:SetFontObject("GameFontNormal")
-			SpellTooltipStatusBar.Bar.Label:SetFormattedText("%d / %d", currentSkillRank, maxSkillRank)
-
-			SpellTooltipStatusBar.Bar.LeftDivider:Hide()
-			SpellTooltipStatusBar.Bar.RightDivider:Hide()
-		end
-	end
-end
-
-EQUIPMENT_SET_LAST_TOOLTIP = {}
-
-function GameTooltip_OnTooltipSetItem( self, ... )
-	local numLines 	= self:NumLines()
-	local itemName 	= self:GetItem()
-	local owner 	= self:GetOwner()
-
-	if itemName and owner and owner.containerID then
-		if not EQUIPMENT_SET_LAST_TOOLTIP[owner.containerID] then
-			EQUIPMENT_SET_LAST_TOOLTIP[owner.containerID] = {}
-		end
-
-		local slotID = owner.slotID or -1
-
-		EQUIPMENT_SET_LAST_TOOLTIP[owner.containerID][slotID] = {}
-
-		for i = 1, numLines do
-			local line = _G[self:GetName().."TextLeft"..i]
-			local text = line:GetText()
-
-			if text then
-				local sets = string.match(text, EQUIPMENT_SETS_PATTERN)
-
-				if sets then
-					local setsStorage 	= C_Split(sets, ", ")
-
-					EQUIPMENT_SET_LAST_TOOLTIP[owner.containerID][slotID] = setsStorage
-					break
-				end
-			end
-		end
-	end
-
-	if ( IsModifiedClick("COMPAREITEMS") or
-		(GetCVarBool("alwaysCompareItems") and not self:IsEquippedItem()) ) then
-		GameTooltip_ShowCompareItem(self, 1);
-	end
-
-	local owner = self:GetOwner();
-	self.IsMerchantTooltip = false
-
-	if owner and MerchantFrame then
-		local ownerFrame = owner:GetParent()
-
-		while ownerFrame and ownerFrame ~= MerchantFrame do
-			ownerFrame = ownerFrame:GetParent()
-		end
-
-		self.IsMerchantTooltip = ownerFrame == MerchantFrame
-	end
-
-	C_Tooltip_CustomRender( self, ... )
-end
-
-local equipSetsItemColor = CreateColor(0.999, 0.999, 0.592, 0.999)
-local grayTextColor = CreateColor(0.501, 0.501, 0.501, 0.999)
-local greenTextColor = CreateColor(0, 0.999, 0, 0.999)
-
-function C_Tooltip_CustomRender( self, ... )
-	local owner = self:GetOwner()
-
-	local setTextChecked
-	local startEquipmentSetLine, endEquipmentSetLine
-	local currentSetItems, totalSetItems
-	local setNumItems = 0
-
-	local newLines
-	local showAppearanceLine = false;
-
-	local _, itemLink = self:GetItem();
-	if itemLink then
-		local itemID = tonumber(string.match(itemLink, ":(%d+)"));
-		if itemID then
-			if C_BattlePass.IsExperienceItem(itemID) then
-				local itemExperience = C_BattlePass.GetExperienceItemExpAmount(itemID)
-				if itemExperience > 0 then
-					local level, levelExp, levelUpExp = C_BattlePass.GetLevelInfo()
-
-					if levelExp + itemExperience >= levelUpExp then
-						local newLevel = C_BattlePass.CalculateAddedExperience(itemExperience)
-						self:AddLine(string.format(BATTLEPASS_ITEM_ADD_LEVELS, newLevel - level), 0.53, 0.67, 1)
-					else
-						self:AddLine(string.format(BATTLEPASS_ITEM_EXP_TO_LEVEL, levelUpExp - levelExp), 0.53, 0.67, 1)
-					end
-
-					newLines = true
-				end
-			elseif C_TransmogCollection.PlayerCanCollectSource(itemID) and not C_TransmogCollection.IsCollectedSource(itemID) then
-				local _, _, _, isKnown, isUsable = GetItemModifiedAppearanceCategoryInfo(itemID, true);
-				if isKnown and isUsable then
-					showAppearanceLine = true;
-				end
-			end
-		end
-	end
-
-	for i = 1, self:NumLines() do
-		local line = _G[self:GetName().."TextLeft"..i]
-
-		if line then
-			local text = line:GetText()
-			local rbgTitle
-
-			if not totalSetItems then
-				currentSetItems, totalSetItems = string.match(text, "%((%d+)/(%d+)%)$")
-
-				if totalSetItems then
-					currentSetItems = tonumber(currentSetItems)
-					totalSetItems = tonumber(totalSetItems)
-
-					startEquipmentSetLine = i + 1
-					endEquipmentSetLine = i + totalSetItems
-				end
-			end
-
-			if (startEquipmentSetLine and endEquipmentSetLine) and WithinRange(i, startEquipmentSetLine, endEquipmentSetLine) then
-				local itemName = string.match(text, "%s+(.*)")
-
-				if itemName then
-					local equipmentItemsList = owner and owner.paperDoll and owner.paperDoll.equipmentItemsList or PaperDollFrame.equipmentItemsList
-					if equipmentItemsList then
-						if equipmentItemsList[itemName:lower()] then
-							setNumItems = setNumItems + 1
-							line:SetTextColor(equipSetsItemColor.r, equipSetsItemColor.g, equipSetsItemColor.b)
-						else
-							line:SetTextColor(grayTextColor.r, grayTextColor.g, grayTextColor.b)
-						end
-					end
-				end
-			end
-
-			if not setTextChecked and endEquipmentSetLine and i > endEquipmentSetLine then
-				if setNumItems > currentSetItems and setNumItems <= totalSetItems then
-					local setHeaderLine = _G[self:GetName().."TextLeft"..(startEquipmentSetLine - 1)]
-					setHeaderLine:SetText(setHeaderLine:GetText():gsub("%((%d+)/(%d+)%)$", string.format("(%i/%s)", setNumItems, "%2")))
-				end
-				setTextChecked = true
-			end
-
-			local setBonus = string.match(text, EQUIPMENT_SET_PATTERN)
-
-			if setBonus then
-				local numRequiredSetItems = tonumber(string.match(text, ITEM_SET_BONUS_GRAY_PATTERN))
-
-				if not numRequiredSetItems and setNumItems > 0 then
-					line:SetTextColor(greenTextColor.r, greenTextColor.g, greenTextColor.b)
-				elseif numRequiredSetItems and setNumItems >= numRequiredSetItems then
-					line:SetTextColor(greenTextColor.r, greenTextColor.g, greenTextColor.b)
-				else
-					line:SetTextColor(grayTextColor.r, grayTextColor.g, grayTextColor.b)
-				end
-			end
-
-			if text then
-				rbgTitle = string.match(text, string.sub(LOCKED_WITH_SPELL, 1, -3).."(.*)")
-			end
-
-			if text and string.find(text, CHARACTER_LINK_ITEM_LEVEL_TOOLTIP) then
-				line:SetTextColor(1.0, 0.82, 0, 1)
-			end
-
-			if rbgTitle then
-				local rankID = GetRatedBattlegroundRankByTitle(rbgTitle)
-
-				if rankID then
-					line:SetFormattedText(TOOLTIP_RBG_NEEDRANK, rbgTitle, rankID)
-
-					if not self.IsMerchantTooltip then
-						line:SetText("")
-					end
-				end
-			-- elseif text and string.find(text, "HONOR_RANK_REQ_LABEL") then
-			-- 	local needLevelText = string.match(text, ITEM_MIN_LEVEL_PATTERN)
-
-			-- 	if REQUIREMENT_ITEM_LIST[GetServerID()] then
-			-- 		local _, itemLink = self:GetItem()
-
-			-- 		if itemLink then
-			-- 			local itemEntry = string.match(itemLink, "item:(%d+)")
-
-			-- 			if itemEntry then
-			-- 				local merchantItemRequirement = REQUIREMENT_ITEM_LIST[GetServerID()][tonumber(itemEntry)]
-
-			-- 				if merchantItemRequirement and self.IsMerchantTooltip then
-			-- 					local factionID = UnitFactionGroup("player") or 0
-			-- 					local currTitle = _G[string.format("PVP_RANK_%d_%d", merchantItemRequirement, factionID == "Alliance" and 1 or 0)]
-
-			-- 					merchantItemRequirement = merchantItemRequirement - 4
-
-			-- 					if currTitle then
-			-- 						local formattedText = string.format(TOOLTIP_RBG_NEEDRANK, currTitle, merchantItemRequirement)
-			-- 						local _, _, currentRankID = GetRatedBattlegroundRankInfo()
-
-			-- 						if merchantItemRequirement > currentRankID then
-			-- 							formattedText = RED_FONT_COLOR:WrapTextInColorCode(formattedText)
-			-- 						else
-			-- 							formattedText = HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(formattedText)
-			-- 						end
-
-
-			-- 						text = string.gsub(text, "HONOR_RANK_REQ_LABEL", formattedText)
-			-- 						line:SetText(text)
-			-- 					end
-			-- 				else
-			-- 					if needLevelText then
-			-- 						line:SetText(needLevelText)
-			-- 					end
-			-- 				end
-			-- 			end
-			-- 		else
-			-- 			if needLevelText then
-			-- 				line:SetText(needLevelText)
-			-- 			end
-			-- 		end
-			-- 	else
-			-- 		if needLevelText then
-			-- 			line:SetText(needLevelText)
-			-- 		end
-			-- 	end
-			elseif text and string.find(text, ITEM_REQ_ARENA_RATING_3V3) then
-				local needRating = tonumber(string.match(text, "(%d+)"))
-				local _, _, _, _, rating = GetRatedBattlegroundRankInfo()
-
-				if rating >= needRating then
-					line:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
-				end
-			elseif text and string.find(text, ITEM_REQ_ARENA_RATING) then
-				local needRating = tonumber(string.match(text, "(%d+)"))
-				local rating = math.max(GetArenaRating(1), GetArenaRating(2))
-
-				if rating >= needRating then
-					line:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
-				end
-			elseif text == TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN then
-				showAppearanceLine = false;
-			end
-		end
-	end
-
-	if showAppearanceLine then
-		self:AddLine(TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN, 0.53, 0.67, 1);
-		newLines = true
-	end
-
-	if newLines then
-		self:Show();
 	end
 end
 
@@ -683,6 +427,97 @@ function GameTooltip_HideResetCursor()
 	ResetCursor();
 end
 
+GameTooltipMixin = {}
+
+function GameTooltipMixin:OnLoad()
+	GameTooltip_OnLoad(self)
+	self.shoppingTooltips = { ShoppingTooltip1, ShoppingTooltip2, ShoppingTooltip3 }
+
+	hooksecurefunc(GameTooltip, "SetInventoryItem", function(this, unit, slotID)
+		this:InventoryItemOnShow(unit, slotID)
+	end)
+end
+
+function GameTooltipMixin:SetToyByItemID(itemID)
+	if type(itemID) == "string" then
+		itemID = tonumber(itemID);
+	end
+
+	if type(itemID) ~= "number" then
+		return false;
+	end
+
+	self.isToyByItemID = true;
+	self:SetHyperlink(string.format("item:%d", itemID));
+	self.isToyByItemID = nil;
+
+	return true;
+end
+
+function GameTooltipMixin:SetHeirloomByItemID(itemID)
+	if type(itemID) == "string" then
+		itemID = tonumber(itemID);
+	end
+
+	if type(itemID) ~= "number" then
+		return false;
+	end
+
+	self.isHeirloomItemID = true;
+	self:SetHyperlink(string.format("item:%d", itemID));
+	self.isHeirloomItemID = nil;
+
+	return true;
+end
+
+function GameTooltipMixin:InventoryItemOnShow(unit, slotID)
+	if unit == "player" then
+		local transmogID = GetInventoryTransmogID(unit, slotID);
+
+		if transmogID then
+			self:SetTransmogrifyItem(transmogID)
+		end
+	end
+end
+
+function GameTooltipMixin:SetTransmogrifyItem(transmogID, hasPending, hasUndo)
+	local lastTransmogText, transmogTextHeight
+
+	if not self.TransmogText1:IsShown() and not self.TransmogText2:IsShown() then
+		if hasUndo then
+			self.TransmogText1:Show()
+			self.TransmogText1:SetText(TRANSMOGRIFY_TOOLTIP_REVERT)
+
+			lastTransmogText = self.TransmogText1
+			transmogTextHeight = self.TransmogText1:GetHeight() + 2
+		elseif transmogID then
+			local name = GetItemInfo(transmogID)
+			if name then
+				self.TransmogText1:Show()
+				self.TransmogText2:Show()
+				if hasPending then
+					self.TransmogText1:SetText(WILL_BE_TRANSMOGRIFIED_HEADER)
+				else
+					self.TransmogText1:SetText(TRANSMOGRIFIED_HEADER)
+				end
+				self.TransmogText2:SetText(name)
+
+				lastTransmogText = self.TransmogText2
+				transmogTextHeight = self.TransmogText1:GetHeight() + self.TransmogText2:GetHeight() + 4
+			end
+		end
+	end
+
+	if lastTransmogText and transmogTextHeight then
+		self.TextLeft2:ClearAllPoints()
+		self.TextLeft2:SetPoint("TOPLEFT", lastTransmogText, "BOTTOMLEFT", 0, -2)
+
+		self:SetHeight(self:GetHeight() + transmogTextHeight)
+
+		Hook:FireEvent("TRANSMOGRIFY_ITEM_UPDATE", self, transmogID)
+	end
+end
+
 local function GameTooltip_OnToyByItemID(self, itemID)
 	if not self.isToyByItemID or not itemID then
 		return;
@@ -760,124 +595,221 @@ local function GameTooltip_OnHeirloomByItemID(self, itemID)
 	self.isHeirloomItemID = nil;
 end
 
-local function GameTooltip_CustomOnTooltipSetItem(self, ...)
-	local _, itemLink = self:GetItem();
-	if itemLink then
-		local itemID = tonumber(string.match(itemLink, ":(%d+)"));
-		if itemID then
-			GameTooltip_OnToyByItemID(self, itemID);
-			GameTooltip_OnHeirloomByItemID(self, itemID);
+EQUIPMENT_SET_LAST_TOOLTIP = {}
+
+GameTooltip_SetScript("OnSetSpell", function(self, ...)
+	local _, _, spellID = self:GetSpell()
+
+	if spellID and spellID == 1804 then
+		local currentSkillRank, maxSkillRank
+
+		for i = 1, GetNumSkillLines() do
+			local skillName, _, _, skillRank, _, _, skillMaxRank = GetSkillLineInfo(i)
+
+			if skillName == SKILL_NAME_LOCKPICKING then
+				currentSkillRank = skillRank
+				maxSkillRank = skillMaxRank
+				break
+			end
+		end
+
+		if currentSkillRank and maxSkillRank then
+			local currenBarValue = (currentSkillRank / maxSkillRank) * 100
+
+			GameTooltip_InsertFrame(GameTooltip, SpellTooltipStatusBar)
+
+			SpellTooltipStatusBar.Bar:SetValue(currenBarValue)
+			SpellTooltipStatusBar.Bar.Label:SetFontObject("GameFontNormal")
+			SpellTooltipStatusBar.Bar.Label:SetFormattedText("%d / %d", currentSkillRank, maxSkillRank)
+
+			SpellTooltipStatusBar.Bar.LeftDivider:Hide()
+			SpellTooltipStatusBar.Bar.RightDivider:Hide()
+		end
+	end
+end)
+
+local equipSetsItemColor = CreateColor(0.999, 0.999, 0.592, 0.999)
+local grayTextColor = CreateColor(0.501, 0.501, 0.501, 0.999)
+local greenTextColor = CreateColor(0, 0.999, 0, 0.999)
+local setItemNameBlacklist = {}
+
+GameTooltip_SetScript("OnSetItem", function(self)
+	local tooltipName = self:GetName()
+	local owner = self:GetOwner()
+	local itemName, itemLink = self:GetItem()
+	local itemID = itemLink and tonumber(string.match(itemLink, ":(%d+)"))
+
+	local lineWasAdded
+	local showAppearanceLine = false
+
+	if itemID then
+		local _, canCollect = C_TransmogCollection.PlayerCanCollectSource(itemID);
+		if canCollect and not C_TransmogCollection.IsCollectedSource(itemID) then
+			showAppearanceLine = true
 		end
 	end
 
-	GameTooltip_OnTooltipSetItem(self, ...);
-end
+	if tooltipName then
+		local setTextChecked
+		local startEquipmentSetLine, endEquipmentSetLine
+		local currentSetItems, totalSetItems
+		local setNumItems = 0
 
-GameTooltipMixin = {}
-
-function GameTooltipMixin:OnLoad()
-	self.tooltipMetatable = getmetatable(self).__index;
-	self.funcList = {};
-
-	self:SetScript("OnTooltipSetItem", nil);
-
-	GameTooltip_OnLoad(self)
-	self.shoppingTooltips = { ShoppingTooltip1, ShoppingTooltip2, ShoppingTooltip3 }
-
-	hooksecurefunc(GameTooltip, "SetInventoryItem", function(self, unit, slotID)
-		self:InventoryItemOnShow(unit, slotID)
-	end)
-end
-
-function GameTooltipMixin:SetScript(handler, func)
-	if handler == "OnTooltipSetItem" then
-		self.tooltipMetatable.SetScript(self, handler, GameTooltip_CustomOnTooltipSetItem);
-
-		if type(func) == "function" then
-			table.wipe(self.funcList);
-			self.funcList[#self.funcList + 1] = func;
-			self.tooltipMetatable.HookScript(self, handler, func);
-		end
-	else
-		self.tooltipMetatable.SetScript(self, handler, func);
-	end
-end
-
-function GameTooltipMixin:HookScript(handler, func)
-	if handler == "OnTooltipSetItem" then
-		if type(func) == "function" then
-			self.funcList[#self.funcList + 1] = func;
-		end
-	end
-
-	self.tooltipMetatable.HookScript(self, handler, func);
-end
-
-function GameTooltipMixin:GetScript(handler)
-	if handler == "OnTooltipSetItem" then
-		local func = self.tooltipMetatable.GetScript(self, handler);
-		if func then
-			if func == GameTooltip_CustomOnTooltipSetItem then
-				return nil;
+		if itemName and owner and owner.containerID then
+			if not EQUIPMENT_SET_LAST_TOOLTIP[owner.containerID] then
+				EQUIPMENT_SET_LAST_TOOLTIP[owner.containerID] = {}
 			end
 
-			self.tooltipMetatable.SetScript(self, handler, nil);
-			for i = 1, #self.funcList do
-				self.tooltipMetatable.HookScript(self, handler, self.funcList[i]);
+			local slotID = owner.slotID or -1
+
+			EQUIPMENT_SET_LAST_TOOLTIP[owner.containerID][slotID] = {}
+
+			for i = 1, self:NumLines() do
+				local line = _G[tooltipName.."TextLeft"..i]
+				local text = line:GetText()
+
+				if text then
+					local sets = string.match(text, EQUIPMENT_SETS_PATTERN)
+
+					if sets then
+						local setsStorage 	= C_Split(sets, ", ")
+						EQUIPMENT_SET_LAST_TOOLTIP[owner.containerID][slotID] = setsStorage
+						break
+					end
+				end
 			end
+		end
 
-			func = self.tooltipMetatable.GetScript(self, handler);
+		for i = 1, self:NumLines() do
+			local line = _G[tooltipName.."TextLeft"..i]
 
-			self.tooltipMetatable.SetScript(self, handler, GameTooltip_CustomOnTooltipSetItem);
-			for i = 1, #self.funcList do
-				self.tooltipMetatable.HookScript(self, handler, self.funcList[i]);
+			if line then
+				local text = line:GetText()
+
+				if not totalSetItems then
+					currentSetItems, totalSetItems = string.match(text, "%((%d+)/(%d+)%)$")
+
+					if totalSetItems then
+						currentSetItems = tonumber(currentSetItems)
+						totalSetItems = tonumber(totalSetItems)
+
+						startEquipmentSetLine = i + 1
+						endEquipmentSetLine = i + totalSetItems
+						table.wipe(setItemNameBlacklist)
+					end
+				end
+
+				do -- set items
+					if (startEquipmentSetLine and endEquipmentSetLine) and WithinRange(i, startEquipmentSetLine, endEquipmentSetLine) then
+						local setItemName = string.match(text, "%s+(.*)")
+
+						if setItemName then
+							local equipmentItemsList = owner and owner.paperDoll and owner.paperDoll.equipmentItemsList or PaperDollFrame.equipmentItemsList
+							if equipmentItemsList then
+								setItemName = setItemName:lower()
+								if equipmentItemsList[setItemName] and not setItemNameBlacklist[setItemName] then
+									setItemNameBlacklist[setItemName] = true
+									setNumItems = setNumItems + 1
+									line:SetTextColor(equipSetsItemColor.r, equipSetsItemColor.g, equipSetsItemColor.b)
+								else
+									line:SetTextColor(grayTextColor.r, grayTextColor.g, grayTextColor.b)
+								end
+							end
+						end
+					end
+
+					if not setTextChecked and endEquipmentSetLine and i >= endEquipmentSetLine then
+						if setNumItems > currentSetItems and setNumItems <= totalSetItems then
+							local setHeaderLine = _G[tooltipName.."TextLeft"..(startEquipmentSetLine - 1)]
+							setHeaderLine:SetText(setHeaderLine:GetText():gsub("%((%d+)/(%d+)%)$", string.format("(%i/%s)", setNumItems, "%2")))
+						end
+						setTextChecked = true
+					end
+				end
+
+				if string.match(text, EQUIPMENT_SET_PATTERN) then -- set bonus
+					local numRequiredSetItems = tonumber(string.match(text, ITEM_SET_BONUS_GRAY_PATTERN))
+
+					if not numRequiredSetItems and setNumItems > 0 then
+						line:SetTextColor(greenTextColor.r, greenTextColor.g, greenTextColor.b)
+					elseif numRequiredSetItems and setNumItems >= numRequiredSetItems then
+						line:SetTextColor(greenTextColor.r, greenTextColor.g, greenTextColor.b)
+					else
+						line:SetTextColor(grayTextColor.r, grayTextColor.g, grayTextColor.b)
+					end
+				end
+
+				if string.find(text, CHARACTER_LINK_ITEM_LEVEL_TOOLTIP) then
+					line:SetTextColor(1.0, 0.82, 0, 1)
+				end
+
+				local rbgTitle = string.match(text, string.sub(LOCKED_WITH_SPELL, 1, -3).."(.*)")
+				if rbgTitle then
+					local rankID = GetRatedBattlegroundRankByTitle(rbgTitle)
+
+					if rankID then
+						line:SetFormattedText(TOOLTIP_RBG_NEEDRANK, rbgTitle, rankID)
+
+						if not self.merchantSlotIndex then
+							line:SetText("")
+						end
+					end
+				elseif text == TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN then
+					showAppearanceLine = false
+				elseif self.merchantSlotIndex and (string.match(text, ITEM_REQ_ARENA_RATING_PATTERN) or string.match(text, ITEM_REQ_ARENA_RATING_3V3_PATTERN)) then
+					local honorPoints, arenaPoints = GetMerchantItemCostInfo(self.merchantSlotIndex)
+					local requirementType, requiredRating = C_Item.GetRequiredPVPRating(itemLink, honorPoints, arenaPoints)
+
+					if requirementType == Enum.ItemRequirementType.Removed then
+						line:SetText("")
+					elseif requirementType ~= Enum.ItemRequirementType.None then
+						local rating
+						if requirementType == Enum.ItemRequirementType.Battleground then
+							rating = select(5, GetRatedBattlegroundRankInfo())
+							line:SetFormattedText(ITEM_REQ_ARENA_RATING_3V3, requiredRating)
+						elseif requirementType == Enum.ItemRequirementType.Arena then
+							rating = math.max(GetArenaRating(1), GetArenaRating(2))
+							line:SetFormattedText(ITEM_REQ_ARENA_RATING, requiredRating)
+						end
+
+						if rating >= requiredRating then
+							line:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+						else
+							line:SetTextColor(RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b)
+						end
+					end
+				end
 			end
-
-			return func;
 		end
 	end
 
-	return self.tooltipMetatable.GetScript(self, handler);
-end
+	if itemID then
+		GameTooltip_OnToyByItemID(self, itemID)
+		GameTooltip_OnHeirloomByItemID(self, itemID)
 
-function GameTooltipMixin:SetToyByItemID(itemID)
-	if type(itemID) == "string" then
-		itemID = tonumber(itemID);
-	end
+		if C_BattlePass.IsExperienceItem(itemID) then
+			local itemExperience = C_BattlePass.GetExperienceItemExpAmount(itemID)
+			if itemExperience > 0 then
+				local level, levelExp, levelUpExp = C_BattlePass.GetLevelInfo()
 
-	if type(itemID) ~= "number" then
-		return false;
-	end
+				if levelExp + itemExperience >= levelUpExp then
+					local newLevel = C_BattlePass.CalculateAddedExperience(itemExperience)
+					self:AddLine(string.format(BATTLEPASS_ITEM_ADD_LEVELS, newLevel - level), 0.53, 0.67, 1)
+				else
+					self:AddLine(string.format(BATTLEPASS_ITEM_EXP_TO_LEVEL, levelUpExp - levelExp), 0.53, 0.67, 1)
+				end
 
-	self.isToyByItemID = true;
-	self:SetHyperlink(string.format("item:%d", itemID));
-	self.isToyByItemID = nil;
-
-	return true;
-end
-
-function GameTooltipMixin:SetHeirloomByItemID(itemID)
-	if type(itemID) == "string" then
-		itemID = tonumber(itemID);
-	end
-
-	if type(itemID) ~= "number" then
-		return false;
-	end
-
-	self.isHeirloomItemID = true;
-	self:SetHyperlink(string.format("item:%d", itemID));
-	self.isHeirloomItemID = nil;
-
-	return true;
-end
-
-function GameTooltipMixin:InventoryItemOnShow(unit, slotID)
-	if unit == "player" then
-		local transmogID = GetInventoryTransmogID(unit, slotID);
-
-		if transmogID then
-			self:SetTransmogrifyItem(transmogID)
+				lineWasAdded = true
+			end
 		end
 	end
-end
+
+	if showAppearanceLine then
+		self:AddLine(TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN, 0.53, 0.67, 1)
+		lineWasAdded = true
+	end
+
+	if lineWasAdded then
+		self:Show()
+	end
+end)

@@ -1,9 +1,3 @@
---	Filename:	Sirus_Collections.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 UIPanelWindows["CollectionsJournal"] = { area = "left",	pushable = 0, whileDead = 1, xOffset = "15", yOffset = "-10", width = 703, height = 606 }
 
 local tutorialPointer;
@@ -50,43 +44,7 @@ function CollectionsJournal_UpdateSelectedTab(self)
 
 	CollectionsJournalTitleText:SetText(GetTitleText(selected));
 
-	local tutorialTab = CollectionsMicroButton.TutorialFrameTab;
-	if tutorialTab and self:IsShown() then
-		if CollectionsMicroButton.TutorialFrame then
-			NPE_TutorialPointerFrame:Hide(CollectionsMicroButton.TutorialFrame);
-			CollectionsMicroButton.TutorialFrame = nil;
-		end
-		if tutorialPointer then
-			NPE_TutorialPointerFrame:Hide(tutorialPointer);
-			tutorialPointer = nil;
-		end
-
-		if tutorialTab == 1 and not NPE_TutorialPointerFrame:GetKey("CollectionsJournal_Mount") then
-			if selected == 1 then
-				NPE_TutorialPointerFrame:SetKey("CollectionsJournal_Mount", true);
-			else
-				tutorialPointer = NPE_TutorialPointerFrame:Show(COLLECTIONS_JOURNAL_TUTORIAL_MOUNT_1, "RIGHT", CollectionsJournalTab1, 0, 0);
-			end
-		elseif tutorialTab == 2 and not NPE_TutorialPointerFrame:GetKey("CollectionsJournal_Pet") then
-			if selected == 2 then
-				NPE_TutorialPointerFrame:SetKey("CollectionsJournal_Pet", true);
-			else
-				tutorialPointer = NPE_TutorialPointerFrame:Show(COLLECTIONS_JOURNAL_TUTORIAL_PET_1, "RIGHT", CollectionsJournalTab2, 0, 0);
-			end
-		elseif tutorialTab == 4 and not NPE_TutorialPointerFrame:GetKey("CollectionsJournal_Toy") then
-			if selected == 4 then
-				NPE_TutorialPointerFrame:SetKey("CollectionsJournal_Toy", true);
-			else
-				tutorialPointer = NPE_TutorialPointerFrame:Show(COLLECTIONS_JOURNAL_TUTORIAL_TOY_1, "RIGHT", CollectionsJournalTab4, 0, 0);
-			end
-		elseif tutorialTab == 5 and not NPE_TutorialPointerFrame:GetKey("CollectionsJournal_Heirloom") then
-			if selected == 5 then
-				NPE_TutorialPointerFrame:SetKey("CollectionsJournal_Heirloom", true);
-			else
-				tutorialPointer = NPE_TutorialPointerFrame:Show(COLLECTIONS_JOURNAL_TUTORIAL_HEIRLOOM_1, "RIGHT", CollectionsJournalTab4, 0, 0);
-			end
-		end
-	end
+	EventRegistry:TriggerEvent("CollectionsJournal.SetTab", selected)
 end
 
 function CollectionsJournal_OnLoad(self)
@@ -108,9 +66,11 @@ function CollectionsJournal_OnShow(self)
 	UpdateMicroButtons();
 	MicroButtonPulseStop(CollectionsMicroButton);
 	CollectionsJournal_UpdateSelectedTab(self);
+	EventRegistry:TriggerEvent("CollectionsJournal.OnShow")
 end
 
 function CollectionsJournal_OnHide(self)
 	PlaySound("igCharacterInfoClose");
 	UpdateMicroButtons();
+	EventRegistry:TriggerEvent("CollectionsJournal.OnHide")
 end

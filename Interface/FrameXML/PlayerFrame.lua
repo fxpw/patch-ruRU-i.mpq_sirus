@@ -173,7 +173,6 @@ function PlayerFrame_OnEvent(self, event, ...)
 		if ( arg1 == "player" ) then
 			PlayerLevelText:SetText(UnitLevel(self.unit));
 			PlayerFrame_UpdatePvPStatus()
-			PlayerFrame_CheckTutorials(self);
 		end
 	elseif ( event == "UNIT_COMBAT" ) then
 		if ( arg1 == self.unit ) then
@@ -246,8 +245,6 @@ function PlayerFrame_OnEvent(self, event, ...)
 		PlayerFrame_UpdateReadyCheck();
 	elseif ( event == "READY_CHECK_FINISHED" ) then
 		ReadyCheck_Finish(PlayerFrameReadyCheck);
-	elseif ( event == "UNIT_RUNIC_POWER" and arg1 == "player" ) then
-		PlayerFrame_SetRunicPower(UnitPower("player"));
 	elseif ( event == "UNIT_ENTERING_VEHICLE" ) then
 		if ( arg1 == "player" ) then
 			if ( arg2 ) then
@@ -290,43 +287,6 @@ function PlayerFrame_OnEvent(self, event, ...)
 		if ( PLAYER_FRAME_CASTBARS_SHOWN ) then
 			PlayerFrame_AttachCastBar();
 		end
-
-		PlayerFrame_CheckTutorials(self);
-	end
-end
-
-function PlayerFrame_CheckTutorials(self)
-	if not self:IsShown() then
-		return;
-	end
-
-	if HelpTip:IsShowing(UIParent, REFUSE_XP_RATE_HELPTIP_TEXT) then
-		HelpTip:Hide(UIParent, REFUSE_XP_RATE_HELPTIP_TEXT);
-		return;
-	end
-
-	if not C_Service.CanEnableRateX1() or C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.SERVER_XP_RATE) then
-		return
-	end
-
-	if UnitLevel(self.unit) ~= 1 then
-		return;
-	end
-
-	if not C_CVar:GetCVarBitfield("C_CVAR_CLOSED_INFO_FRAMES", LE_FRAME_TUTORIAL_REFUSE_XP_RATE) then
-		local helpTipInfo = {
-			text = REFUSE_XP_RATE_HELPTIP_TEXT,
-			textJustifyH = "CENTER",
-			textFontObject = "GameFontNormal16",
-			cvarBitfield = "C_CVAR_CLOSED_INFO_FRAMES",
-			bitfieldFlag = LE_FRAME_TUTORIAL_REFUSE_XP_RATE,
-			offsetX = -42,
-			buttonStyle = HelpTip.ButtonStyle.Close,
-			targetPoint = HelpTip.Point.BottomEdgeCenter,
-			alignment = HelpTip.Alignment.Left,
-			extraWidth = 24,
-		};
-		HelpTip:Show(UIParent, helpTipInfo, self);
 	end
 end
 
@@ -576,6 +536,7 @@ end
 
 function PlayerFrame_UpdateGroupIndicator()
 	PlayerFrameGroupIndicator:Hide();
+--[[
 	local name, rank, subgroup;
 	if ( GetNumRaidMembers() == 0 ) then
 		PlayerFrameGroupIndicator:Hide();
@@ -589,10 +550,11 @@ function PlayerFrame_UpdateGroupIndicator()
 			if ( name == UnitName("player") ) then
 				PlayerFrameGroupIndicatorText:SetText(GROUP.." "..subgroup);
 				PlayerFrameGroupIndicator:SetWidth(PlayerFrameGroupIndicatorText:GetWidth()+40);
-				-- PlayerFrameGroupIndicator:Show();
+				PlayerFrameGroupIndicator:Show();
 			end
 		end
 	end
+--]]
 end
 
 function PlayerFrameDropDown_OnLoad (self)
@@ -624,69 +586,6 @@ end
 
 function PlayerFrame_SetupDeathKnightLayout ()
 	PlayerFrame:SetHitRectInsets(0,0,0,35);
-
-	--[[ PlayerFrame:SetPoint("TOPLEFT", -11, -8);
-	PlayerFrame:RegisterEvent("UNIT_RUNIC_POWER");
-	PlayerPortrait:SetDrawLayer("BACKGROUND");
-	PlayerFrameTexture:ClearAllPoints();
-	PlayerFrameTexture:SetTexture("Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight");
-	PlayerFrameTexture:SetPoint("TOPLEFT", 15, 15);
-	PlayerFrameTexture:SetTexCoord(0, 1, 0, 1)
-	PlayerFrameTexture:SetHeight(128);
-	PlayerFrameTexture:SetWidth(256)
-
-	PlayerFrame:CreateTexture("PlayerFrameBackgroundTexture", "BACKGROUND");
-	PlayerFrameBackgroundTexture:SetTexture("Interface\\PlayerFrame\\UI-PlayerFrame-DeathKnight-Background");
-	PlayerFrameBackgroundTexture:SetPoint("TOPLEFT", 15, 15);
-	PlayerFrameBackgroundTexture:SetWidth(256);
-	PlayerFrameBackgroundTexture:SetHeight(128);
-	PlayerFrameBackgroundTexture:SetDrawLayer("BORDER");
-	PlayerFrameBackground:SetDrawLayer("ARTWORK");
-	PlayerFrameBackground:SetHeight(4);
-	PlayerFrameBackground:SetWidth(4);
-	PlayerFrameBackground:SetPoint("TOPLEFT", 108, -24);
-
-	PlayerName:SetPoint("CENTER", 50, 18);
-	PlayerFrameHealthBar:SetPoint("TOPLEFT", PlayerFrame, "TOPLEFT", 113, -41);
-	PlayerFrameHealthBar:SetWidth(112);
-	PlayerFrameHealthBarText:SetPoint("CENTER", 53, 3);
-
-	-- Death Knight Specific Border Frame
-	PlayerFrame:CreateTexture("PlayerFrameRunicPowerOverlay", "OVERLAY");
-	PlayerFrameRunicPowerOverlay:SetPoint("TOPLEFT", 15, 15);
-	PlayerFrameRunicPowerOverlay:SetWidth(256);
-	PlayerFrameRunicPowerOverlay:SetHeight(128);
-	PlayerFrameRunicPowerOverlay:SetTexture("Interface\\PlayerFrame\\UI-PlayerFrame-DeathKnight-GoldBorder");
-
-	-- Death Knight Runic Power Glow
-	local frame = CreateFrame("Frame");
-	frame:SetPoint("TOPLEFT", PlayerFrame);
-	frame:SetPoint("BOTTOMRIGHT", PlayerFrame);
-
-	frame:CreateTexture("PlayerFrameRunicPowerGlow", "BORDER");
-	PlayerFrameRunicPowerGlow:SetPoint("TOPLEFT", 15, 15);
-	PlayerFrameRunicPowerGlow:SetPoint("BOTTOMRIGHT", PlayerFrameBackgroundTexture);
-	PlayerFrameRunicPowerGlow:SetAlpha(0.050);
-	PlayerFrameRunicPowerGlow:SetWidth(256);
-	PlayerFrameRunicPowerGlow:SetHeight(128);
-	PlayerFrameRunicPowerGlow:Hide();
-	PlayerFrameRunicPowerGlow:SetTexture("Interface\\PlayerFrame\\UI-PlayerFrame-DeathKnight-Sword-Glow");
-
-	--Hoorah for hacks!
-	PlayerFrameManaBar:UnregisterAllEvents();
-	PlayerFrameManaBar:Hide();
-	PlayerFrameManaBar:ClearAllPoints();
-	PlayerFrameManaBar:SetPoint("TOPLEFT", UIParent, "BOTTOMRIGHT");
-	PlayerFrameManaBarText:SetParent(PlayerFrameManaBar);
-
-	local runicPowerBar = PlayerFrame:CreateTexture("$parentRunicPowerBar", "ARTWORK");
-	-- Mmmm, runic Power Bars, my favorite kind. Tastes like Death Knnigget.
-	runicPowerBar:SetTexture("Interface\\PlayerFrame\\UI-PlayerFrame-DeathKnight-RunicPower");
-	runicPowerBar:SetPoint("BOTTOMLEFT", "$parent", "BOTTOMLEFT", 70, 24);
-	runicPowerBar:SetWidth(64);
-	runicPowerBar:SetHeight(63);
-
-	PlayerFrame_SetRunicPower(UnitPower("player"));--]]
 end
 
 CustomClassLayouts = {

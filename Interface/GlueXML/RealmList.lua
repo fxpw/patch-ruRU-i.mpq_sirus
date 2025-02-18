@@ -14,38 +14,42 @@ local realmCards = {
 	[C_RealmInfo.GetServerListName(E_REALM_ID.SCOURGE)] = {
 		cardFrame = "RealmListScourgeRealmCard",
 	},
-	[C_RealmInfo.GetServerListName(E_REALM_ID.ALGALON)] = {
-		cardFrame = "RealmListAlgalonRealmCard",
-	},
 }
 
 local realmCardsMini = {
 	[C_RealmInfo.GetServerListName(E_REALM_ID.NELTHARION)] = true,
 	[C_RealmInfo.GetServerListName(E_REALM_ID.LEGACY_X10)] = true,
+	[C_RealmInfo.GetServerListName(E_REALM_ID.ALGALON)] = true,
 }
 
 function RealmList_OnLoad(self)
 	self.buttonsList = {}
 	self:RegisterEvent("OPEN_REALM_LIST")
+	self:RegisterEvent("DISPLAY_SIZE_CHANGED")
 
 	self.entryPointIndex = tonumber(C_GlueCVars.GetCVar("REALM_ENTRY_POINT"))
 
 	local scale = GetScreenWidth() < 1100 and GetScreenWidth() / 1100 or 1
 	self.MainRealmCardHolder:SetScale(scale)
 
-	local numRealmCards = 0
+	self.realmCards = {}
+
 	for realmName, cardData in pairs(realmCards) do
-		_G[cardData.cardFrame]:SetScale(scale)
-		numRealmCards = numRealmCards + 1
+		local card = _G[cardData.cardFrame]
+		card:SetScale(scale)
+		table.insert(self.realmCards, card)
 	end
 
-	numRealmCards = 4
-	self.MainRealmCardHolder:SetWidth(250 * numRealmCards + 20 * (numRealmCards - 1))
+	self.MainRealmCardHolder:SetWidth(250 * #self.realmCards + 20 * (#self.realmCards - 1))
 end
 
 function RealmList_OnEvent(self, event)
 	if event == "OPEN_REALM_LIST" then
 		self:Show()
+	elseif event == "DISPLAY_SIZE_CHANGED" then
+		for index, card in ipairs(self.realmCards) do
+			card.BorderFrame:SetScale(PixelUtil.GetPixelToUIUnitFactor())
+		end
 	end
 end
 
@@ -439,9 +443,7 @@ function RealmListCardTemplateMixin:UpdateStyle()
 	end
 
 	if style.solidBorders then
-	--	local scale = 1024 / GetScreenWidth()
-		local scale = 768 / string.match(GetCVar("gxResolution"), "%d+x(%d+)")
-		self.BorderFrame:SetScale(scale)
+		self.BorderFrame:SetScale(PixelUtil.GetPixelToUIUnitFactor())
 		for _, border in ipairs(self.BorderFrame.borders) do
 			border:SetTexture(colorR, colorG, colorB)
 			border:Show()

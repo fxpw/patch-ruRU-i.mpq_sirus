@@ -497,6 +497,16 @@
 					<Anchor point="BOTTOMRIGHT" x="-10" y="10"/>
 				</Anchors>
 			</Frame>
+
+			<Button name="$parentTutorialButton" parentKey="TutorialButton" inherits="MainHelpPlateButton" toplevel="true">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentMainInset" relativePoint="TOPLEFT" x="-14" y="-16"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="HelpFrame_ToggleTutorial"/>
+				</Scripts>
+			</Button>
+
 			<Button name="$parentButton1" inherits="HelpFrameButtonTemplate" parentKey="button1" id="1">
 				<Anchors>
 					<Anchor point="TOP" relativeTo="$parentLeftInset" x="1" y="-10"/>
@@ -942,16 +952,33 @@
 							</Layer>
 						</Layers>
 						<Frames>
-							<ScrollFrame name="$parentSuggestionScroll" parentKey="SuggestionScroll" inherits="FauxScrollFrameTemplateTrim" enableMouse="true">
+							<ScrollFrame name="$parentSuggestionScroll" parentKey="SuggestionScroll" inherits="UIPanelScrollFrameCodeTemplate" enableMouse="true">
 								<Size x="0" y="116"/>
 								<Anchors>
 									<Anchor point="BOTTOMLEFT" x="0" y="0"/>
 									<Anchor point="BOTTOMRIGHT" x="-17" y="0"/>
 								</Anchors>
+
+								<Frames>
+									<Slider name="$parentScrollBar" inherits="UIPanelScrollBarTrimTemplate" parentKey="ScrollBar">
+										<Anchors>
+											<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="-16"/>
+											<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="16"/>
+										</Anchors>
+									</Slider>
+								</Frames>
+
+								<ScrollChild>
+									<Frame name="$parentScrollChildFrame">
+										<Size x="300" y="334"/>
+									</Frame>
+								</ScrollChild>
+
 								<Scripts>
 									<OnLoad function="HelpFrameTicketSuggestionScroll_OnLoad"/>
 									<OnShow function="HelpFrameTicketSuggestionScroll_OnShow"/>
 									<OnVerticalScroll function="HelpFrameTicketSuggestionScroll_OnVerticalScroll"/>
+									<OnScrollRangeChanged function=""/>
 								</Scripts>
 							</ScrollFrame>
 						</Frames>
@@ -989,7 +1016,7 @@
 							<Anchors>
 								<Anchor point="TOPLEFT" relativeTo="$parentExampleTexture" relativePoint="TOPLEFT" x="52" y="-91"/>
 							</Anchors>
-							<Color r="1" g="0.50196" b="1"/>
+							<Color r="1" g="1" b="1"/>
 						</FontString>
 					</Layer>
 					<Layer level="OVERLAY">

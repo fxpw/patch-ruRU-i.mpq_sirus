@@ -29,7 +29,7 @@ function ezSpectator_GossipWorker:Create(Parent)
     self.MainFrame:SetPoint('TOPLEFT', GossipFrame, 'TOPLEFT', 0, 0)
     self.MainFrame:SetBackdrop({
         bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
-        edgeFile = 'Interface\\ArenaSpectator\\TooltipEdge',
+        edgeFile = 'Interface\\Custom\\ArenaSpectator\\TooltipEdge',
         tile = true, tileSize = 16, edgeSize = 16,
         insets = {
             left = 4,
@@ -259,8 +259,8 @@ function ezSpectator_GossipWorker:ParseMatch(Data, Index)
         end
     end
 
-    Result['info1'] = Result['info1']:gsub('^%s*(.-)%s*$', '%1')
-    Result['info2'] = Result['info2']:gsub('^%s*(.-)%s*$', '%1')
+    Result['info1'] = string.gsub(Result['info1'], '^%s*(.-)%s*$', '%1')
+    Result['info2'] = string.gsub(Result['info2'], '^%s*(.-)%s*$', '%1')
 
     return Result
 end
@@ -417,7 +417,7 @@ function ezSpectator_GossipWorker:ShowMatch(Match)
         Match.MainFrame:SetSize(410, 35)
         Match.MainFrame:SetBackdrop({
             bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
-            edgeFile = 'Interface\\ArenaSpectator\\TooltipEdge',
+            edgeFile = 'Interface\\Custom\\ArenaSpectator\\TooltipEdge',
             tile = true, tileSize = 16, edgeSize = 16,
             insets = {
                 left = 4,
@@ -640,40 +640,4 @@ function ezSpectator_GossipWorker:overrideGossipHide()
     end
 
     CloseGossip()
-end
-
-
-
-function print_r ( t )
-    local print_r_cache={}
-    local function sub_print_r(t,indent)
-        if (print_r_cache[tostring(t)]) then
-            print(indent.."*"..tostring(t))
-        else
-            print_r_cache[tostring(t)]=true
-            if (type(t)=="table") then
-                for pos,val in pairs(t) do
-                    if (type(val)=="table") then
-                        print(indent.."["..pos.."] => "..tostring(t).." {")
-                        sub_print_r(val,indent..string.rep(" ",string.len(pos)+8))
-                        print(indent..string.rep(" ",string.len(pos)+6).."}")
-                    elseif (type(val)=="string") then
-                        print(indent.."["..pos..'] => "'..val..'"')
-                    else
-                        print(indent.."["..pos.."] => "..tostring(val))
-                    end
-                end
-            else
-                print(indent..tostring(t))
-            end
-        end
-    end
-    if (type(t)=="table") then
-        print(tostring(t).." {")
-        sub_print_r(t,"  ")
-        print("}")
-    else
-        sub_print_r(t,"  ")
-    end
-    print()
 end

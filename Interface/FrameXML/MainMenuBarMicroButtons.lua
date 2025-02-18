@@ -73,7 +73,7 @@ function UpdateMicroButtons()
 		StoreMicroButton:SetButtonState("NORMAL");
 	end
 
-	StoreMicroButton:SetEnabled(IsStoreEnable())
+	StoreMicroButton:SetEnabled(C_StorePublic.IsEnabled())
 	if StoreMicroButton:IsEnabled() == 1 then
 		StoreMicroButton:SetAlpha(1)
 	else
@@ -98,7 +98,6 @@ function UpdateMicroButtons()
 	end
 
 	if ( PVPUIFrame:IsShown() and (not PVPFrame_IsJustBG())) or (LFDParentFrame:IsShown()) or PVPLadderFrame:IsShown() or RenegadeLadderFrame:IsShown() then
-		LFDMicroButtonAlert:Hide()
 		LFDMicroButton:SetButtonState("PUSHED", 1);
 	else
 		if ( playerLevel < LFDMicroButton.minLevel or isNeutral ) then
@@ -132,7 +131,7 @@ function UpdateMicroButtons()
 			GuildMicroButtonTabard:SetAlpha(1)
 
 			if ( IsInGuild() ) then
-				if GetGuildXP() and GetGuildReputation() and GetGuildNumPerks() > 0 and GetGuildNumRewards() > 0 then
+				if IsGuildDataLoaded() then
 					GuildMicroButton.Spinner:Hide()
 					GuildMicroButton:SetButtonState("NORMAL");
 				else
@@ -222,6 +221,8 @@ function GuildMicroButton_OnEvent(self, event, ...)
 		if LookingForGuildFrame and not LookingForGuildFrame:IsShown() then
 			MicroButtonPulse(GuildMicroButton);
 		end
+	elseif event == "GUILD_DATA_LOADED" then
+		UpdateMicroButtons()
 	end
 end
 
@@ -232,7 +233,6 @@ function CharacterMicroButton_OnLoad(self)
 	self:RegisterEvent("UNIT_PORTRAIT_UPDATE");
 	self:RegisterEvent("UPDATE_BINDINGS");
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
-	self:RegisterEvent("PLAYER_LEVEL_UP")
 	self.tooltipText = MicroButtonTooltipText(CHARACTER_BUTTON, "TOGGLECHARACTER0");
 	self.newbieText = NEWBIE_TOOLTIP_CHARACTER;
 end
@@ -248,18 +248,6 @@ function CharacterMicroButton_OnEvent(self, event, ...)
 		SetPortraitTexture(MicroButtonPortrait, "player");
 	elseif ( event == "UPDATE_BINDINGS" ) then
 		self.tooltipText = MicroButtonTooltipText(CHARACTER_BUTTON, "TOGGLECHARACTER0");
-	elseif event == "PLAYER_LEVEL_UP" then
-		local level = ...
-
-		if LFDMicroButton:IsVisible() and not C_Unit.IsNeutral("player") then
-			if level == 10 and not C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.BATTLEGROUND) then
-				LFDMicroButtonAlert.Text:SetText(MICRO_MENU_LFD_ALERT1)
-				LFDMicroButtonAlert:Show()
-			elseif level == 15 and not C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.DUNGEON_AVAILABLE) then
-				LFDMicroButtonAlert.Text:SetText(MICRO_MENU_LFD_ALERT2)
-				LFDMicroButtonAlert:Show()
-			end
-		end
 	end
 end
 
@@ -308,59 +296,6 @@ function TalentMicroButton_OnEvent(self, event, ...)
 		UpdateMicroButtons();
 	elseif ( event == "UPDATE_BINDINGS" ) then
 		self.tooltipText =  MicroButtonTooltipText(TALENTS_BUTTON, "TOGGLETALENTS");
-	end
-end
-
-function CollectionsMicroButton_OnEvent(self, event, ...)
-	if not self:IsVisible() then
-		return;
-	end
-
-	if event == "COMPANION_LEARNED" then
-		if GetNumCompanions("MOUNT") == 1 then
-			if not NPE_TutorialPointerFrame:GetKey("CollectionsJournal_Mount") then
-				if self.TutorialFrame then
-					NPE_TutorialPointerFrame:Hide(self.TutorialFrame);
-					self.TutorialFrame = nil;
-				end
-
-				self.TutorialFrame = NPE_TutorialPointerFrame:Show(NEW_MOUNT_HELP_1, "DOWN", self, 0, 0);
-				self.TutorialFrameTab = 1;
-			end
-		end
-
-		if GetNumCompanions("CRITTER") == 1 then
-			if not self.TutorialFrame and not NPE_TutorialPointerFrame:GetKey("CollectionsJournal_Pet") then
-				self.TutorialFrame = NPE_TutorialPointerFrame:Show(NEW_PET_HELP_1, "DOWN", self, 0, 0);
-				self.TutorialFrameTab = 2;
-			end
-		end
-
-		SetButtonPulse(self, 60, 1);
-	elseif event == "TOYS_UPDATED" then
-		local _, new = ...;
-		if new then
-			if C_ToyBox.GetNumLearnedDisplayedToys() == 1 then
-				if not self.TutorialFrame and not NPE_TutorialPointerFrame:GetKey("CollectionsJournal_Toy") then
-					self.TutorialFrame = NPE_TutorialPointerFrame:Show(NEW_TOY_HELP_1, "DOWN", self, 0, 0);
-					self.TutorialFrameTab = 4;
-				end
-			end
-
-			SetButtonPulse(self, 60, 1);
-		end
-	elseif event == "HEIRLOOMS_UPDATED" then
-		local _, new = ...;
-		if new then
-			if C_Heirloom.GetNumLearnedHeirlooms() == 1 then
-				if not self.TutorialFrame and not NPE_TutorialPointerFrame:GetKey("CollectionsJournal_Heirloom") then
-					self.TutorialFrame = NPE_TutorialPointerFrame:Show(NEW_HEIRLOOM_HELP_1, "DOWN", self, 0, 0);
-					self.TutorialFrameTab = 5;
-				end
-			end
-
-			SetButtonPulse(self, 60, 1);
-		end
 	end
 end
 

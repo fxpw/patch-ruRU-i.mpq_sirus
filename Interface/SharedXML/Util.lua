@@ -45,14 +45,10 @@ local function tostringall(...)
 end
 
 function printc(...)
-	if S_Print then
+	if type(C_Dev) == "table" and type(C_Dev.PrintConsole) == "function" then
+		C_Dev.PrintConsole(strjoin(" ", tostringall(...)))
+	elseif type(S_Print) == "function" then
 		S_Print(strjoin(" ", tostringall(...)))
-	end
-end
-
-function printec(...)
-	if S_PrintConsole then
-		S_PrintConsole(strjoin(" ", tostringall(...)))
 	end
 end
 
@@ -65,19 +61,11 @@ else
 
 	function SendServerMessage(prefix, ...)
 		if select("#", ...) > 1 then
-			SendAddonMessage(prefix, strjoin(" ", tostringall(...)), "WHISPER", UnitName("player"))
+			SendAddonMessage(prefix, strjoin(":", tostringall(...)), "WHISPER", UnitName("player"))
 		else
 			SendAddonMessage(prefix, ..., "WHISPER", UnitName("player"))
 		end
 	end
-end
-
-function GetTexCoordsByMask(ws, hs, x, y, w, h)
-	return {x/ws, x/ws + w/ws, y/hs, y/hs + h/hs}
-end
-
-function GetSpriteFromImage(x, y, w, h, iw, ih)
-	return (x*w)/iw, ((x+1)*w)/iw, (y*h)/ih, ((y+1)*h)/ih
 end
 
 function C_Split(str, delimiter)
@@ -110,32 +98,7 @@ function C_Split(str, delimiter)
 	return ret
 end
 
-function AnimationStopAndPlay(object, ...)
-	local numVarArg = select("#", ...)
-	if numVarArg > 0 then
-		for i = 1, numVarArg do
-			local obj = select(i, ...)
-			if obj and obj:IsPlaying() then
-				obj:Stop()
-			end
-		end
-	end
-
-	if object then
-		if object:IsPlaying() then
-			object:Stop()
-		end
-
-		object:Play()
-	end
-end
-
-function isOneOf(val, ...)
-	for i = 1, select("#", ...) do
-		if select(i, ...) == val then
-			return true
-		end
-	end
+function IsNewYearDecorationEnabled()
 	return false
 end
 
@@ -173,15 +136,4 @@ function IsInterfaceDevClient(skipDevOverride)
 		return S_IsInterfaceDevClient()
 	end
 	return false
-end
-
-function PackNumber(n1, n2)
-	return bit.bor(n1, bit.lshift(n2, 16))
-end
-
-function UnpackNumber(n)
-	local n1 = bit.band(n, 0xFFFF)
-	local n2 = bit.band(bit.rshift(n, 16), 0xFFFF)
-
-	return n1, n2
 end

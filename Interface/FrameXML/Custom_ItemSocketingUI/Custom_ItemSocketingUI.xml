@@ -256,7 +256,6 @@
 						<Frames>
 							<GameTooltip name="ItemSocketingDescription" inherits="GameTooltipTemplate" setAllPoints="true" hidden="false">
 								<Scripts>
-									<OnTooltipSetItem function="C_Tooltip_CustomRender" />
 									<OnLoad>
 										self:SetBackdrop(nil);
 									</OnLoad>

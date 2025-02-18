@@ -1,11 +1,3 @@
-<!--
-
-	Filename:	Custom_PVPLadder.xml
-	Project:	Custom Game Interface
-	Author:		Nyll & Blizzard Entertainment
-
--->
-
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\..\FrameXML\UI.xsd">
 	<Script file="Custom_PVPLadder.lua"/>
@@ -173,15 +165,15 @@
 							<Color r="1" g="1" b="1"/>
 						</FontString>
 						<FontString name="$parentPlayerName" parentKey="PlayerName" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE">
-							<Size x="90" y="10"/>
+							<Size x="107" y="10"/>
 							<Anchors>
-								<Anchor point="LEFT" x="58" y="0" />
+								<Anchor point="LEFT" x="54" y="0" />
 							</Anchors>
 						</FontString>
 						<FontString name="$parentRating" parentKey="Rating" inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE">
 							<Size x="60" y="10"/>
 							<Anchors>
-								<Anchor point="RIGHT" x="-13" y="0" />
+								<Anchor point="RIGHT" x="-3" y="0" />
 							</Anchors>
 							<Color r="1" g="1" b="1"/>
 						</FontString>
@@ -191,16 +183,12 @@
 			<Frame name="$parentRaceIcon" parentKey="RaceIcon">
 				<Size x="18" y="18"/>
 				<Anchors>
-					<Anchor point="CENTER" x="20" y="0" />
+					<Anchor point="CENTER" x="18" y="0" />
 				</Anchors>
+				<HitRectInsets left="0" right="0" top="-3" bottom="-3"/>
 				<Layers>
 					<Layer level="OVERLAY">
-						<Texture name="$parentIcon" parentKey="Icon">
-							<Size x="18" y="18"/>
-							<Anchors>
-								<Anchor point="CENTER" x="0" y="0" />
-							</Anchors>
-						</Texture>
+						<Texture name="$parentIcon" parentKey="Icon" setAllPoints="true"/>
 					</Layer>
 				</Layers>
 				<Scripts>
@@ -219,14 +207,10 @@
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentRaceIcon" relativePoint="RIGHT" x="2" y="0" />
 				</Anchors>
+				<HitRectInsets left="0" right="0" top="-3" bottom="-3"/>
 				<Layers>
 					<Layer level="OVERLAY">
-						<Texture name="$parentIcon" parentKey="Icon">
-							<Size x="18" y="18"/>
-							<Anchors>
-								<Anchor point="CENTER" x="0" y="0" />
-							</Anchors>
-						</Texture>
+						<Texture name="$parentIcon" parentKey="Icon" setAllPoints="true"/>
 					</Layer>
 				</Layers>
 				<Scripts>
@@ -240,10 +224,34 @@
 					<OnLeave function="GameTooltip_Hide"/>
 				</Scripts>
 			</Frame>
+			<Frame name="$parentZodiacIcon" parentKey="ZodiacIcon">
+				<Size x="18" y="18"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentClassIcon" relativePoint="RIGHT" x="2" y="0"/>
+				</Anchors>
+				<HitRectInsets left="0" right="0" top="-3" bottom="-3"/>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture name="$parentIcon" parentKey="Icon" setAllPoints="true">
+							<TexCoords left="0.08" right="0.92" top="0.08" bottom="0.92"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnter>
+						if self.name then
+							GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+							GameTooltip:SetText(self.name)
+							GameTooltip:Show()
+						end
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Frame>
 			<Frame name="$parentFactionIcon" parentKey="FactionIcon">
 				<Size x="20" y="24"/>
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentClassIcon" relativePoint="RIGHT" x="14" y="0" />
+					<Anchor point="LEFT" relativeTo="$parentZodiacIcon" relativePoint="RIGHT" x="2" y="0"/>
 				</Anchors>
 				<Layers>
 					<Layer level="OVERLAY">
@@ -501,7 +509,17 @@
 	<Frame name="PVPLadderFrame" inherits="PortraitFrameTemplate2" toplevel="true" enableMouse="true" parent="UIParent" hidden="true">
 		<Size x="563" y="428"/>
 		<Frames>
-			<Frame parentKey="LeftInset" name="$parentLeftInset" inherits="InsetFrameTemplate4">
+			<Button name="$parentTutorialButton" parentKey="TutorialButton" inherits="MainHelpPlateButton" toplevel="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="40" y="18" />
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():ToggleTutorial()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Frame parentKey="LeftInset" name="$parentLeftInset" inherits="InsetFrameTemplate">
 				<Size x="217" y="496"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" x="4" y="-24" />
@@ -564,21 +582,21 @@
 									</Anchors>
 									<TexCoords left="0.26171875" right="0.51171875" top="0.00097656" bottom="0.06347656"/>
 								</Texture>
-								<Texture file="Interface\Common\bluemenu-vert" vertTile="true"> 	<!-- left line -->
+								<Texture file="Interface\Common\bluemenu-vert" vertTile="true">
 									<Size x="43" y="270"/>
 									<Anchors>
 										<Anchor point="TOPLEFT" x="7" y="-87" />
 									</Anchors>
 									<TexCoords left="0.06250000" right="0.39843750"/>
 								</Texture>
-								<Texture file="Interface\Common\bluemenu-vert" vertTile="true">	<!-- right line -->
+								<Texture file="Interface\Common\bluemenu-vert" vertTile="true">
 									<Size x="43" y="270"/>
 									<Anchors>
 										<Anchor point="TOPLEFT" x="172" y="-87" />
 									</Anchors>
 									<TexCoords left="0.41406250" right="0.75000000"/>
 								</Texture>
-								<Texture file="Interface\Common\bluemenu-goldborder-horiz" horizTile="true">	<!-- bottom line -->
+								<Texture file="Interface\Common\bluemenu-goldborder-horiz" horizTile="true">
 									<Size x="80" y="43"/>
 									<Anchors>
 										<Anchor point="BOTTOMLEFT" relativeTo="$parentBLCorner" relativePoint="BOTTOMRIGHT" x="0" y="0" />
@@ -598,6 +616,7 @@
 				</Frames>
 				<Scripts>
 					<OnLoad>
+						self.Bgs:Hide()
 						self:SetFrameLevel(2)
 					</OnLoad>
 				</Scripts>
@@ -821,20 +840,20 @@
 										<FontString name="$parentNumber" parentKey="Number" inherits="GameFontNormal">
 											<Size x="50" y="10"/>
 											<Anchors>
-												<Anchor point="LEFT" x="5" y="0" />
+												<Anchor point="LEFT" x="4" y="0" />
 											</Anchors>
 										</FontString>
 										<FontString name="$parentPlayerName" parentKey="PlayerName" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE">
 											<Size x="90" y="10"/>
 											<Anchors>
-												<Anchor point="LEFT" x="62" y="0" />
+												<Anchor point="LEFT" x="60" y="0" />
 											</Anchors>
 											<Color r="1" g="1" b="1"/>
 										</FontString>
 										<FontString name="$parentRating" parentKey="Rating" inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE">
 											<Size x="60" y="10"/>
 											<Anchors>
-												<Anchor point="RIGHT" x="-39" y="0" />
+												<Anchor point="RIGHT" x="-32" y="0" />
 											</Anchors>
 											<Color r="1" g="1" b="1"/>
 										</FontString>
@@ -844,16 +863,12 @@
 									<Frame name="$parentRaceIcon" parentKey="RaceIcon">
 										<Size x="18" y="18"/>
 										<Anchors>
-											<Anchor point="CENTER" x="8.5" y="0" />
+											<Anchor point="CENTER" x="7" y="0" />
 										</Anchors>
+										<HitRectInsets left="0" right="0" top="-3" bottom="-3"/>
 										<Layers>
 											<Layer level="OVERLAY">
-												<Texture name="$parentIcon" parentKey="Icon">
-													<Size x="18" y="18"/>
-													<Anchors>
-														<Anchor point="CENTER" x="0" y="0" />
-													</Anchors>
-												</Texture>
+												<Texture name="$parentIcon" parentKey="Icon" setAllPoints="true"/>
 											</Layer>
 										</Layers>
 										<Scripts>
@@ -872,14 +887,10 @@
 										<Anchors>
 											<Anchor point="LEFT" relativeTo="$parentRaceIcon" relativePoint="RIGHT" x="2" y="0" />
 										</Anchors>
+										<HitRectInsets left="0" right="0" top="-3" bottom="-3"/>
 										<Layers>
 											<Layer level="OVERLAY">
-												<Texture name="$parentIcon" parentKey="Icon">
-													<Size x="18" y="18"/>
-													<Anchors>
-														<Anchor point="CENTER" x="0" y="0" />
-													</Anchors>
-												</Texture>
+												<Texture name="$parentIcon" parentKey="Icon" setAllPoints="true"/>
 											</Layer>
 										</Layers>
 										<Scripts>
@@ -893,10 +904,34 @@
 											<OnLeave function="GameTooltip_Hide"/>
 										</Scripts>
 									</Frame>
+									<Frame name="$parentZodiacIcon" parentKey="ZodiacIcon">
+										<Size x="18" y="18"/>
+										<Anchors>
+											<Anchor point="LEFT" relativeTo="$parentClassIcon" relativePoint="RIGHT" x="2" y="0"/>
+										</Anchors>
+										<HitRectInsets left="0" right="0" top="-3" bottom="-3"/>
+										<Layers>
+											<Layer level="OVERLAY">
+												<Texture name="$parentIcon" parentKey="Icon" setAllPoints="true">
+													<TexCoords left="0.08" right="0.92" top="0.08" bottom="0.92"/>
+												</Texture>
+											</Layer>
+										</Layers>
+										<Scripts>
+											<OnEnter>
+												if self.name then
+													GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+													GameTooltip:SetText(self.name)
+													GameTooltip:Show()
+												end
+											</OnEnter>
+											<OnLeave function="GameTooltip_Hide"/>
+										</Scripts>
+									</Frame>
 									<Frame name="$parentFactionIcon" parentKey="FactionIcon">
 										<Size x="20" y="24"/>
 										<Anchors>
-											<Anchor point="LEFT" relativeTo="$parentClassIcon" relativePoint="RIGHT" x="14" y="0" />
+											<Anchor point="LEFT" relativeTo="$parentZodiacIcon" relativePoint="RIGHT" x="2" y="0" />
 										</Anchors>
 										<Layers>
 											<Layer level="OVERLAY">
@@ -928,16 +963,11 @@
 									</OnLoad>
 								</Scripts>
 							</Frame>
-							<Frame name="$parentCentralContainer" parentKey="CentralContainer" inherits="StandartInsetFrameTemplate">
+							<Frame name="$parentCentralContainer" parentKey="CentralContainer" inherits="InsetFrameTemplate">
 								<Size x="338" y="276"/>
 								<Anchors>
 									<Anchor point="BOTTOM" relativeTo="$parentBottomContainer" relativePoint="TOP" x="0" y="6" />
 								</Anchors>
-								<Layers>
-									<Layer level="BORDER">
-										<Texture name="$parentBackgroundOverlay" parentKey="BackgroundOverlay"/>
-									</Layer>
-								</Layers>
 								<Frames>
 									<ScrollFrame name="$parentScrollFrame" inherits="HybridScrollFrameTemplate" parentKey="ScrollFrame">
 										<Anchors>
@@ -981,7 +1011,7 @@
 												<Scripts>
 													<OnLoad>
 														self.LoadingSpinner.showRetrievingText = true
-														self.LoadingSpinner.Text:SetText(STORE_WAIT_SERVER_RESPONSE)
+														self.LoadingSpinner.Text:SetText(WAIT_SERVER_RESPONSE)
 														self.LoadingSpinner.Text:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 														self.LoadingSpinner.Dots:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 													</OnLoad>
@@ -1017,9 +1047,9 @@
 									</ScrollFrame>
 								</Frames>
 								<Scripts>
-									<OnShow>
-										self.BackgroundOverlay:SetAtlas("PVPLadder-table-background")
-									</OnShow>
+									<OnLoad>
+										self.Bgs:SetAtlas("PVPLadder-table-background")
+									</OnLoad>
 								</Scripts>
 							</Frame>
 							<Frame name="$parentTopContainer" parentKey="TopContainer">
@@ -1039,13 +1069,13 @@
 										<FontString name="$parentPlayerName" parentKey="PlayerName" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE" text="CALENDAR_PLAYER_NAME">
 											<Size x="80" y="10"/>
 											<Anchors>
-												<Anchor point="BOTTOMLEFT" x="64" y="4" />
+												<Anchor point="BOTTOMLEFT" x="62" y="4" />
 											</Anchors>
 										</FontString>
 										<FontString name="$parentRating" parentKey="Rating" inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE" text="PVP_LADDER_RATING">
 											<Size x="60" y="10"/>
 											<Anchors>
-												<Anchor point="BOTTOMRIGHT" x="-40" y="4" />
+												<Anchor point="BOTTOMRIGHT" x="-32" y="4" />
 											</Anchors>
 										</FontString>
 									</Layer>
@@ -1114,9 +1144,9 @@
 											<Anchor point="LEFT" relativeTo="$parentSearchBox" relativePoint="RIGHT" x="8" y="0" />
 										</Anchors>
 										<Scripts>
-											<OnClick>
-												self.StartDelay = function()
-													self.Delay = 10
+											<OnLoad>
+												self.StartDelay = function(this, delay)
+													self.Delay = delay or 10
 													self:Disable()
 													self:SetText(self.Delay)
 
@@ -1137,7 +1167,8 @@
 														end
 													end, self.Delay)
 												end
-
+											</OnLoad>
+											<OnClick>
 												local text = self:GetParent().SearchBox:GetText()
 												local selectedCategroy = self:GetParent():GetParent():GetParent():GetParent():GetSelectedCategory()
 
@@ -1215,16 +1246,11 @@
 			<Anchor point="LEFT" relativePoint="RIGHT" x="46" y="0" />
 		</Anchors>
 		<Frames>
-			<Frame name="$parentCentralContainer" parentKey="CentralContainer" inherits="StandartInsetFrameTemplate">
+			<Frame name="$parentCentralContainer" parentKey="CentralContainer" inherits="InsetFrameTemplate">
 				<Size x="340" y="286"/>
 				<Anchors>
 					<Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="6" />
 				</Anchors>
-				<Layers>
-					<Layer level="BORDER">
-						<Texture name="$parentBackgroundOverlay" parentKey="BackgroundOverlay"/>
-					</Layer>
-				</Layers>
 				<Frames>
 					<ScrollFrame name="$parentScrollFrame" inherits="HybridScrollFrameTemplate" parentKey="ScrollFrame">
 						<Anchors>
@@ -1280,7 +1306,7 @@
 								<Scripts>
 									<OnLoad>
 										self.LoadingSpinner.showRetrievingText = true
-										self.LoadingSpinner.Text:SetText(STORE_WAIT_SERVER_RESPONSE)
+										self.LoadingSpinner.Text:SetText(WAIT_SERVER_RESPONSE)
 										self.LoadingSpinner.Text:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 										self.LoadingSpinner.Dots:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 									</OnLoad>
@@ -1304,9 +1330,9 @@
 					</ScrollFrame>
 				</Frames>
 				<Scripts>
-					<OnShow>
-						self.BackgroundOverlay:SetAtlas("PVPLadder-table-background")
-					</OnShow>
+					<OnLoad>
+						self.Bgs:SetAtlas("PVPLadder-table-background")
+					</OnLoad>
 				</Scripts>
 			</Frame>
 			<Frame name="$parentTopContainer" parentKey="TopContainer">

@@ -344,11 +344,7 @@ function InputScrollFrame_OnMouseDown(self)
 	self.EditBox:SetFocus();
 end
 
-function InputScrollFrame_OnTabPressed(self)
-	if ( self.nextEditBox ) then
-		self.nextEditBox:SetFocus();
-	end
-end
+InputScrollFrame_OnTabPressed = EditBox_OnTabPressed;
 
 function InputScrollFrame_OnTextChanged(self)
 	local scrollFrame = self:GetParent();
@@ -359,10 +355,13 @@ function InputScrollFrame_OnTextChanged(self)
 		self.Instructions:Show();
 	end
 	scrollFrame.CharCount:SetText(self:GetMaxLetters() - self:GetNumLetters());
-	if ( scrollFrame.ScrollBar:IsShown() ) then
-		scrollFrame.CharCount:SetPoint("BOTTOMRIGHT", -17, 0);
-	else
-		scrollFrame.CharCount:SetPoint("BOTTOMRIGHT", 0, 0);
+
+	if scrollFrame.ScrollBar then
+		if ( scrollFrame.ScrollBar:IsShown() ) then
+			scrollFrame.CharCount:SetPoint("BOTTOMRIGHT", -17, 0);
+		else
+			scrollFrame.CharCount:SetPoint("BOTTOMRIGHT", 0, 0);
+		end
 	end
 end
 

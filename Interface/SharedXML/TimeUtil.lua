@@ -20,7 +20,7 @@ function HasTimePassed(testTime, amountOfTime)
 end
 
 SecondsFormatter = {};
-SecondsFormatter.Abbreviation = 
+SecondsFormatter.Abbreviation =
 {
 	None = 1, -- seconds, minutes, hours...
 	Truncate = 2, -- sec, min, hr...
@@ -159,7 +159,7 @@ function SecondsFormatterMixin:Format(seconds, abbreviation)
 		local unit = formatString:format(math.ceil(seconds / self:GetIntervalSeconds(interval)));
 		return string.format(LESS_THAN_OPERAND, unit);
 	end
-	
+
 	local output = "";
 	local appendedCount = 0;
 	local desiredCount = self:GetDesiredUnitCount(seconds);
@@ -224,9 +224,9 @@ function SecondsToClock(seconds, displayZeroHours)
 	local hours = math.floor(seconds / SECONDS_PER_HOUR);
 	local minutes = math.floor(seconds / SECONDS_PER_MIN);
 	if hours > 0 or displayZeroHours then
-		return format(HOURS_MINUTES_SECONDS, hours, minutes, seconds % SECONDS_PER_MIN);
+		return format(HOURS_MINUTES_SECONDS, hours, minutes % 60, seconds % SECONDS_PER_MIN);
 	else
-		return format(MINUTES_SECONDS, minutes, seconds % SECONDS_PER_MIN);
+		return format(MINUTES_SECONDS, minutes % 60, seconds % SECONDS_PER_MIN);
 	end
 end
 
@@ -370,4 +370,119 @@ function GetRemainingTime(seconds, daysformat)
 			return date("!%X", seconds)
 		end
 	end
+end
+
+function GetTimezoneOffset(timestamp)
+	local utcdate = date("!*t", timestamp)
+	local localdate = date("*t", timestamp)
+	localdate.isdst = false
+	return difftime(time(localdate), time(utcdate))
+end
+
+local localTimezone
+function GetLocalTimezoneOffset()
+	if not localTimezone then
+		localTimezone = GetTimezoneOffset()
+	end
+	return localTimezone
+end
+
+local TIME_DIFF_GROUP = {
+	{1, TIME_RELATIVE_NOW},
+	{SECONDS_PER_MIN, TIME_RELATIVE_SECOND, function(x) return x end},
+	{SECONDS_PER_HOUR, TIME_RELATIVE_MINUT, function(x) return math.floor(x / SECONDS_PER_MIN) end},
+	{SECONDS_PER_DAY, TIME_RELATIVE_HOUR, function(x) return math.floor(x / SECONDS_PER_HOUR) end},
+	{SECONDS_PER_MONTH, TIME_RELATIVE_DAY, function(x) return math.floor(x / SECONDS_PER_DAY) end},
+	{SECONDS_PER_YEAR, TIME_RELATIVE_MONTH, function(x) return math.floor(x / SECONDS_PER_MONTH) end},
+	{SECONDS_PER_YEAR * 10, TIME_RELATIVE_YEAR, function(x) return math.floor(x / SECONDS_PER_YEAR) end},
+}
+
+function FormatRelativeDate(unixTimestamp, offsetSeconds, fromTime, addAgoSuffix, timeDiffGroup)
+	if not fromTime then
+		fromTime = time()
+	end
+
+	if not timeDiffGroup then
+		timeDiffGroup = TIME_DIFF_GROUP
+	end
+
+	local timestamp = unixTimestamp + (offsetSeconds or 0)
+	local diff = difftime(fromTime, timestamp)
+	local diffString
+
+	if diff >= 0 then -- ignore diff from future
+		local index = 1
+		local diffInfo = timeDiffGroup[index]
+		while diffInfo do
+			if diff < diffInfo[1] then
+				if diffInfo[3] then
+					diffString = string.format(diffInfo[2], diffInfo[3](diff))
+				else
+					diffString = diffInfo[2]
+				end
+				break
+			end
+
+			index = index + 1
+			diffInfo = TIME_DIFF_GROUP[index]
+		end
+	end
+
+	if addAgoSuffix and diffString then
+		diffString = string.format(TIME_RELATIVE_AGO, diffString)
+	end
+
+	return diffString
+end
+
+function ParseTimeISO8061(timeString, suppressErrors)
+	if type(timeString) ~= "string" then
+		if suppressErrors then
+			GMError(string.format("bad argument #1 to 'ParseTimeISO8061' (string expected, got %s)", type(timeString)))
+			return timeString
+		else
+			error(string.format("bad argument #1 to 'ParseTimeISO8061' (string expected, got %s)", type(timeString)), 2)
+		end
+	end
+
+	local year, month, day, offsetType, hour, minute, second, milisecond, offsetSign, offsetHour, offsetMinute = string.match(timeString, "(%d%d%d%d)%-?(%d%d)%-?(%d%d)([TZ])(%d%d):(%d%d):(%d%d)%.?(%d*)([%+%-]?)(%d?%d?):?(%d?%d?)")
+
+	if not (year and month and day and hour and minute and second) then
+		if suppressErrors then
+			GMError(string.format("Parsing TimeISO8061 error: %s", timeString))
+			return timeString
+		else
+			error(string.format("Parsing TimeISO8061 error: %s", timeString), 2)
+		end
+	end
+
+	local offsetSecond = 0
+	if offsetType ~= 'Z' then
+		offsetSecond = ((tonumber(offsetHour) or 0) * 60 + (tonumber(offsetMinute) or 0)) * 60
+		if offsetSign == "-" and offsetSecond ~= 0 then
+			offsetSecond = -offsetSecond
+		end
+	end
+
+	local timeInfo = {
+		year = year,
+		month = month,
+		day = day,
+		hour = hour,
+		min = minute,
+		sec = second,
+--[[
+		milisecond = milisecond,
+
+		offsetType = offsetType,
+		offsetHour = offsetHour,
+		offsetMinute = offsetMinute,
+		offsetSecond = offsetSecond,
+--]]
+	}
+
+	local timestamp = time(timeInfo)
+	local unixTimestamp = timestamp - offsetSecond
+
+	return timestamp, unixTimestamp
 end

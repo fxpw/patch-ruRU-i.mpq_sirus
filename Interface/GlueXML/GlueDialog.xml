@@ -18,7 +18,7 @@
 	<Frame name="GlueDialog" parent="GlueParent" toplevel="true" frameStrata="DIALOG" setAllPoints="true" enableMouse="true" enableKeyboard="true" hidden="true">
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentBackground" parentKey="Background" alpha="0.6" file="Interface\Custom_Glues\UI-CharacterSelect-Background">
+				<Texture name="$parentBackground" parentKey="Background" alpha="0.6" file="Interface\Custom\Glue\Vignette-256">
 					<Anchors>
 						<Anchor point="TOPLEFT" x="-14" y="10" />
 						<Anchor point="BOTTOMRIGHT" x="14" y="-10" />
@@ -41,7 +41,7 @@
 
 				<Layers>
 					<Layer level="BACKGROUND">
-						<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark_dialogBackdrop2"/>
+						<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark-Backdrops-Dialog-Backdrop2"/>
 					</Layer>
 					<Layer level="ARTWORK">
 						<FontString name="$parentTitle" parentKey="Title" inherits="GlueFontNormal">

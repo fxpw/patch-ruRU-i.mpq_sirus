@@ -24,6 +24,7 @@ local REALM_INFO = {
 		type = Enum.RealmType.FFA,
 		rates = 10,
 		logo = "Custom-Realm-Logo-Sirus-Old",
+		legacy = true,
 	},
 	[E_REALM_ID.NELTHARION] = {
 		name = "Neltharion",
@@ -32,6 +33,7 @@ local REALM_INFO = {
 		type = Enum.RealmType.PVP,
 		rates = 3,
 		logo = "Custom-Realm-Logo-Neltharion",
+		legacy = true,
 	},
 	[E_REALM_ID.FROSTMOURNE] = {
 		name = "Frostmourne",
@@ -40,6 +42,7 @@ local REALM_INFO = {
 		type = Enum.RealmType.PVE,
 		rates = 1,
 		logo = "Custom-Realm-Logo-Scourge",
+		legacy = true,
 	},
 	[E_REALM_ID.SCOURGE] = {
 		name = "Scourge",
@@ -56,6 +59,7 @@ local REALM_INFO = {
 		type = Enum.RealmType.PVP,
 		rates = 4,
 		logo = "Custom-Realm-Logo-Algalon",
+		legacy = true,
 	},
 	[E_REALM_ID.SIRUS] = {
 		name = "Sirus",
@@ -112,5 +116,13 @@ function C_RealmInfo.GetServerInfo(serverID)
 	if not realm then
 		return
 	end
-	return realm.name, realm.desc, realm.rates, realm.type, realm.label
+	return realm.name, realm.desc, realm.rates, realm.type, realm.label, realm.legacy
+end
+
+function C_RealmInfo.IsLegacyRealm(serverID)
+	local realm = REALM_INFO[serverID]
+	if not realm then
+		return false
+	end
+	return realm.legacy == true
 end

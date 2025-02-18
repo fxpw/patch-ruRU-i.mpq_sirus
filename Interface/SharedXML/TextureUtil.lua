@@ -68,7 +68,11 @@ function GetTexCoordsForRole(role)
 	elseif ( role == "RANGEDAMAGER" ) then
 		return GetTexCoordsByGrid(3, 3, textureWidth, textureHeight, roleWidth, roleHeight);
 	else
-		error("Unknown role: "..tostring(role));
+		if role == "UNKNOWN" and IsGMAccount() then
+			return GetTexCoordsForRole("DAMAGER")
+		else
+			error(strconcat("Unknown role: ", tostring(role)));
+		end
 	end
 end
 
@@ -96,11 +100,13 @@ function GetTexCoordsForRoleSmall(role)
 	end
 end
 
-function CreateTextureMarkup(file, fileWidth, fileHeight, width, height, left, right, top, bottom)
-	return ("|T%s:%d:%d:0:0:%d:%d:%d:%d:%d:%d|t"):format(
+function CreateTextureMarkup(file, fileWidth, fileHeight, width, height, left, right, top, bottom, xOffset, yOffset)
+	return ("|T%s:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d|t"):format(
 		  file
 		, height
 		, width
+		, xOffset or 0
+		, yOffset or 0
 		, fileWidth
 		, fileHeight
 		, left * fileWidth
@@ -115,12 +121,17 @@ function CreateAtlasMarkup(atlasName, width, height, offsetX, offsetY, fileWidth
 		local atlasWidth, atlasHeight, left, right, top, bottom, _, _, texturePath = unpack(S_ATLAS_STORAGE[atlasName])
 		width = width or atlasWidth
 		height = height or atlasHeight
+
+		if not fileWidth or not fileHeight then
+			fileWidth, fileHeight = GetTextureSize(texturePath)
+		end
+
 		return ("|T%s:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d|t"):format(
 			  texturePath
-			, width
-			, height
-			, offsetX
-			, offsetY
+			, width or 0
+			, height or 0
+			, offsetX or 0
+			, offsetY or 0
 			, fileWidth
 			, fileHeight
 			, math.ceil(left * fileWidth)
