@@ -26,6 +26,7 @@ local tremove = table.remove;
 
 local ItemsCache = ItemsCache;
 local GetItemInfo = C_Item.GetItemInfoRaw;
+local GetContainerItemCharges = GetContainerItemCharges
 
 Enum.AuctionHouseFilterCategory = {
 	Uncategorized = 0,
@@ -1350,13 +1351,6 @@ function C_AuctionHouse.GetAuctionItemSubClasses(classID)
 	return subClasses;
 end
 
-local chargesPatterns = {};
-local startStr, plural, endStr = string.match(ITEM_SPELL_CHARGES, "^([^|]*)|4([^;]+);(.*)$");
-if startStr then
-	for _, variant in ipairs({string.split(":", plural)}) do
-		chargesPatterns[#chargesPatterns + 1] = string.gsub(strconcat(startStr, variant, endStr), "(%%[A-z])", "(%1+)");
-	end
-end
 local durationPatterns = {};
 startStr, plural, endStr = string.match(ITEM_DURATION_HOURS, "^([^|]*)|4([^;]+);(.*)$");
 if startStr then
@@ -1378,6 +1372,15 @@ end
 local LOCKED_WITH_SPELL = string.gsub(LOCKED_WITH_SPELL, "%%s", "");
 
 local function IsSellItemValid(bagID, slotID)
+	local minCharges, maxCharges = GetContainerItemCharges(bagID, slotID)
+	if minCharges and maxCharges and maxCharges > 0 then
+		if minCharges == maxCharges then
+			return true, true
+		else
+			return false
+		end
+	end
+
 	scanTooltip:SetOwner(WorldFrame, "ANCHOR_NONE");
 	scanTooltip:ClearLines();
 	scanTooltip:SetBagItem(bagID, slotID);
@@ -1434,14 +1437,6 @@ local function IsSellItemValid(bagID, slotID)
 		if i <= bindLines then
 			if AUCTION_HOUSE_BIND_TYPES[text] == 0 then
 				return false;
-			end
-		else
-			if #chargesPatterns > 0 then
-				for _, chargesText in ipairs(chargesPatterns) do
-					if string.find(text, chargesText) then
-						return true, true;
-					end
-				end
 			end
 		end
 	end

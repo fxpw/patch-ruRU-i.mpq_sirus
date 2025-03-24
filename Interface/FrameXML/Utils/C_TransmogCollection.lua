@@ -2127,19 +2127,19 @@ function EventHandler:ASMSG_C_I_ADD_MODEL(msg)
 			SIRUS_COLLECTION_COLLECTED_ITEM_APPEARANCES = {};
 		end
 
-		SIRUS_COLLECTION_COLLECTED_ITEM_APPEARANCES[itemID] = true;
+		local addCollectionMessage = SIRUS_COLLECTION_COLLECTED_ITEM_APPEARANCES[itemID] == nil
 
-		local addCollectionMessage = true
+		SIRUS_COLLECTION_COLLECTED_ITEM_APPEARANCES[itemID] = true;
 
 		local itemModifiedAppearanceInfo = ITEM_MODIFIED_APPEARANCE_STORAGE[itemID]
 		if itemModifiedAppearanceInfo then
-			local appearanceID = ITEM_MODIFIED_APPEARANCE_STORAGE[itemID][ITEM_MODIFIED_APPEARANCE_STORAGE_APPERANCEID];
+			local appearanceID = itemModifiedAppearanceInfo[ITEM_MODIFIED_APPEARANCE_STORAGE_APPERANCEID];
 			if appearanceID then
 				NEW_APPEARANCES[appearanceID] = true;
 				if HIDDEN_NOT_COLLECTED_APPEARANCE_SOURCE_TYPES[itemModifiedAppearanceInfo[ITEM_MODIFIED_APPEARANCE_STORAGE_SOURCETYPE]] then
 					local categoryID, subCategoryID = GetItemModifiedAppearanceCategory(itemID);
 					if IsUsableItemModifiedAppearanceByCategory(categoryID, subCategoryID) and IsKnownItemModifiedAppearance(itemID) then
-						CollectItemAppearance(itemModifiedAppearanceInfo[ITEM_MODIFIED_APPEARANCE_STORAGE_APPERANCEID], categoryID)
+						CollectItemAppearance(appearanceID, categoryID)
 					end
 				end
 				FireCustomClientEvent("TRANSMOG_COLLECTION_UPDATED");
@@ -2173,32 +2173,43 @@ function EventHandler:ASMSG_C_I_REMOVE_MODEL(msg)
 			SIRUS_COLLECTION_COLLECTED_ITEM_APPEARANCES = {};
 		end
 
+		local addCollectionMessage = SIRUS_COLLECTION_COLLECTED_ITEM_APPEARANCES[itemID] ~= nil
+
 		SIRUS_COLLECTION_COLLECTED_ITEM_APPEARANCES[itemID] = nil;
 
-		local appearanceID = ITEM_MODIFIED_APPEARANCE_STORAGE[itemID] and ITEM_MODIFIED_APPEARANCE_STORAGE[itemID][ITEM_MODIFIED_APPEARANCE_STORAGE_APPERANCEID];
-		if appearanceID then
-			local appearanceInfo = ITEM_APPEARANCE_STORAGE[appearanceID];
-			if appearanceInfo then
-				local foundCollected;
+		local itemModifiedAppearanceInfo = ITEM_MODIFIED_APPEARANCE_STORAGE[itemID]
+		if itemModifiedAppearanceInfo then
+			local appearanceID = itemModifiedAppearanceInfo[ITEM_MODIFIED_APPEARANCE_STORAGE_APPERANCEID];
+			if appearanceID then
+				local appearanceInfo = ITEM_APPEARANCE_STORAGE[appearanceID];
+				if appearanceInfo then
+					local foundCollected;
 
-				for i = 1, #appearanceInfo[ITEM_APPEARANCE_STORAGE_SOURCES] do
-					local sourceID = appearanceInfo[ITEM_APPEARANCE_STORAGE_SOURCES][i];
-					if SIRUS_COLLECTION_COLLECTED_ITEM_APPEARANCES[sourceID] then
-						foundCollected = true;
-						break;
+					for i = 1, #appearanceInfo[ITEM_APPEARANCE_STORAGE_SOURCES] do
+						local sourceID = appearanceInfo[ITEM_APPEARANCE_STORAGE_SOURCES][i];
+						if SIRUS_COLLECTION_COLLECTED_ITEM_APPEARANCES[sourceID] then
+							foundCollected = true;
+							break;
+						end
+					end
+
+					if not foundCollected then
+						SIRUS_COLLECTION_FAVORITE_APPEARANCES[appearanceID] = nil;
+						NEW_APPEARANCES[appearanceID] = nil;
 					end
 				end
 
-				if not foundCollected then
-					SIRUS_COLLECTION_FAVORITE_APPEARANCES[appearanceID] = nil;
-					NEW_APPEARANCES[appearanceID] = nil;
-				end
+				FireCustomClientEvent("TRANSMOG_COLLECTION_UPDATED");
 			end
 
-			FireCustomClientEvent("TRANSMOG_COLLECTION_UPDATED");
+			if NO_COLLECTION_MESSAGE_SOURCE_TYPES[itemModifiedAppearanceInfo[ITEM_MODIFIED_APPEARANCE_STORAGE_SOURCETYPE]] then
+				addCollectionMessage = false
+			end
 		end
 
-		AddChatTyppedMessage("SYSTEM", string.format(COLLECTION_REMOVE_FORMAT, string.format(COLLECTION_ITEM_HYPERLINK_FORMAT, itemID, GetItemInfo(itemID) or "")));
+		if addCollectionMessage then
+			AddChatTyppedMessage("SYSTEM", string.format(COLLECTION_REMOVE_FORMAT, string.format(COLLECTION_ITEM_HYPERLINK_FORMAT, itemID, GetItemInfo(itemID) or "")));
+		end
 	end
 
 	if not THROTTLED_TRANSMOG_SOURCE_COLLECTABILITY_UPDATE then

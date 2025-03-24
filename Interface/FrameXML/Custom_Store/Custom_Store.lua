@@ -169,7 +169,7 @@ end
 
 function StoreMixin:OnShow()
 	if not C_StorePublic.IsEnabled() then
-		self:Hide()
+		HideUIPanel(self)
 		return
 	end
 
@@ -438,13 +438,23 @@ function StoreMixin:ShowProductDressUp(parent, productID, allowToHide, allowEqui
 	local success = self.DressUp:SetProduct(productID, allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton)
 	if success then
 		self:ToggleDressUp(true, parent)
+	else
+		self:ToggleDressUp(false)
 	end
 end
 
 function StoreMixin:ShowItemDressUp(parent, itemLink, allowToHide, allowEquipmentToggle, allowPortraitCamera)
+	if self:IsProductPurchaseDialogShown(self) then
+		self:GetDialogWidget(Enum.StoreWidget.ProductPurchase):DressUpItemLink(itemLink)
+		return
+	elseif self:GetViewMode(Enum.StoreViewMode.ItemList):IsShown() then
+		self:GetViewMode(Enum.StoreViewMode.ItemList):ShowItemDressUp(itemLink, allowToHide, allowEquipmentToggle, allowPortraitCamera)
+		return
+	end
+
 	local success = self.DressUp:SetItem(itemLink, allowToHide, allowEquipmentToggle, allowPortraitCamera)
 	if success then
-		self:ToggleDressUp(true, parent)
+		self:ToggleDressUp(true, parent or self:GetActiveViewMode() or self:GetSelectedPage())
 	end
 end
 
@@ -505,6 +515,10 @@ function StoreMixin:GetBestDialogParent(parent, allowWorldFrame)
 	end
 end
 
+function StoreMixin:IsProductPurchaseDialogShown(parent)
+	return self:IsDialogShownWithParent(self:GetDialogWidget(Enum.StoreWidget.ProductPurchase), parent)
+end
+
 function StoreMixin:ShowProductPurchaseDialog(productID)
 	self:ShowDialogWidget(Enum.StoreWidget.ProductPurchase, nil, function(dialog)
 		local success = dialog:SetProductID(productID)
@@ -516,6 +530,12 @@ function StoreMixin:RegisterDialogWidget(dialogWidget, widgetType)
 	assert(Enum.StoreWidget[widgetType] ~= nil)
 	self.dialogWidgets[widgetType] = dialogWidget
 	dialogWidget:SetParent(self)
+end
+
+function StoreMixin:GetDialogWidget(widgetType)
+	assert(Enum.StoreWidget[widgetType] ~= nil)
+	local widget = self.dialogWidgets[widgetType]
+	return widget
 end
 
 function StoreMixin:ShowDialogWidget(widgetType, parent, preShowCallback)
@@ -687,7 +707,7 @@ function StoreMixin:RemoveActiveViewMode(viewModeType)
 end
 
 function StoreMixin:GetActiveViewMode()
-	return self.activeViewWidget
+	return self.activeViewWidget and self:GetViewMode(self.activeViewWidget)
 end
 
 function StoreMixin:AddPurchaseAlert(icon, title, description)
@@ -1300,6 +1320,7 @@ function StoreSubscriptionTrackerMixin:UpdateSubscription()
 
 	self.Name:SetText(name)
 	self.Artwork:SetAtlas(artworkAtlas)
+	self.DaysLeftText:SetFormattedText(STORE_SUBSCRIPTION_AMOUNT_PACKAGE_LEFT, remainingSupplyTimes)
 	self:SetTimeLeft(nextSupplyTimeLeft, nil, self.OnPackageCountdownUpdate)
 	self.subscriptionIndex = subscriptionIndex
 
@@ -1339,10 +1360,10 @@ function StoreSubscriptionTrackerMixin:UpdateSubscription()
 	if numItems > 0 then
 		self.ItemHolder:SetWidth(self.itemButtons[1]:GetWidth() * numItems + 10 * (numItems - 1))
 		self.ItemHolder:Show()
-		self:SetHeight(320)
+		self:SetHeight(335)
 	else
 		self.ItemHolder:Hide()
-		self:SetHeight(260)
+		self:SetHeight(275)
 	end
 
 	self:Show()
@@ -1364,9 +1385,11 @@ function StoreSubscriptionTrackerMixin:OnPackageCountdownUpdate(timeLeft, timerF
 		self.NextPackegeTimerText:SetFormattedText(STORE_SUBSCRIPTION_NEXT_PACKAGE_TIMELEFT_SHORT, GetRemainingTime(timeLeft))
 		self.NextPackegeTimerText:Show()
 		self.NextPackegeTimerIcon:Show()
+		self.DaysLeftText:Show()
 	else
 		self.NextPackegeTimerText:Hide()
 		self.NextPackegeTimerIcon:Hide()
+		self.DaysLeftText:Hide()
 
 		if timerFinished then
 			self:UpdateSubscription()
@@ -2959,6 +2982,7 @@ function StorePageCollectionsMixin:UpdateProducts()
 	local currentPage, numPages = self.Paginator:GetPage()
 	self.Paginator:SetShown(numPages > 1)
 
+	local mouseFocus = GetMouseFocus()
 	local offset = (currentPage - 1) * productsPerPage
 
 	for index = 1, productsPerPage do
@@ -2986,6 +3010,10 @@ function StorePageCollectionsMixin:UpdateProducts()
 			button:SetID(productIndex)
 			button:SetProductID(productID)
 			button:Show()
+
+			if button == mouseFocus then
+				button:OnEnter()
+			end
 		elseif button then
 			button:Hide()
 		end
@@ -3304,6 +3332,7 @@ function StoreSubscriptionPanelMixin:UpdateSubscriptionInfo()
 		self.PurchaseButton.Glow:Show()
 
 		self:SetNextSupplyCountdown(nextSupplyTimeLeft)
+		self.SupplyDays:SetFormattedText(STORE_SUBSCRIPTION_AMOUNT_PACKAGE_LEFT, remainingSupplyTimes)
 	end
 
 	self.PurchaseButton:Enable()
@@ -3319,8 +3348,10 @@ function StoreSubscriptionPanelMixin:OnCountdownUpdate(timeLeft, timerFinished)
 	if timeLeft > 0 and not timerFinished then
 		self.SupplyCountdown:SetText(GetRemainingTime(timeLeft))
 		self.SupplyCountdown:Show()
+		self.SupplyDays:Show()
 	else
 		self.SupplyCountdown:Hide()
+		self.SupplyDays:Hide()
 
 		self.InfoText:SetPoint("TOP", 0, -45)
 		self.InfoText:SetFormattedText("%s:", STORE_SUBSCRIPTION_INFO)

@@ -55,36 +55,26 @@ end
 LootCasePreviewMixin = {};
 
 function LootCasePreviewMixin:IsPreview(itemID)
-	return ITEMS_CHEST_LOOT and ITEMS_CHEST_LOOT[itemID];
+	return itemID and C_Item.IsItemChest(itemID)
 end
 
 function LootCasePreviewMixin:SetPreview(itemID)
-	if not itemID or not ITEMS_CHEST_LOOT[itemID] then
+	if not self:IsPreview(itemID) then
 		return;
 	end
-
-	self.previewData = ITEMS_CHEST_LOOT[itemID];
-
-	local numGroup = 0;
-	for index, itemData in ipairs(self.previewData) do
-		if type(itemData) ~= "table" then
-			numGroup = numGroup + 1;
-			table.remove(self.previewData, index);
-		end
-	end
-
-	self.numGroup = numGroup;
 
 	local name, _, quality, _, _, _, _, _, _, icon = GetItemInfo(itemID);
 
 	self:SetPortraitToAsset(icon)
 
 	local qualityColor = ITEM_QUALITY_COLORS[quality or 1];
-	self.ItemName:SetText(name);
+	self.ItemName:SetText(name or UNKNOWN);
 	self.ItemName:SetTextColor(qualityColor.r, qualityColor.g, qualityColor.b);
 
+	self.itemID = itemID
+
 	if not self:IsShown() then
-		ShowUIPanel(self);
+		self:Show()
 	end
 
 	self:SetPosition();
@@ -124,35 +114,29 @@ function LootCasePreviewMixin:SetPosition()
 end
 
 function LootCasePreviewMixin:UpdateScroll()
-	if not self.previewData then
+	if not self.itemID then
 		return;
 	end
 
 	local scrollFrame = self.ScrollFrame;
 	local offset = HybridScrollFrame_GetOffset(scrollFrame);
-	local buttons = scrollFrame.buttons;
-	local numButtons = #buttons;
+	local numItems = C_Item.GetNumItemChestItems(self.itemID)
 
-	for i = 1, numButtons do
-		local index = offset + i;
-		local button = buttons[i];
-
-		local itemData = self.previewData[index];
-		if itemData then
-			local itemID, minCount, maxCount = unpack(itemData);
-			local name, itemLink, quality, _, _, _, _, _, _, icon = GetItemInfo(itemID);
+	for index, button in ipairs(scrollFrame.buttons) do
+		local itemIndex = index + offset
+		if itemIndex <= numItems then
+			local itemID, amount, amountRangeMax = C_Item.GetItemChestItemData(self.itemID, itemIndex)
+			local name, itemLink, quality, _, _, _, _, _, _, icon = C_Item.GetItemInfo(itemID, false, nil, true, true)
 
 			button.itemLink = itemLink;
 
+			button.Name:SetText(name or UNKNOWN);
 			button.Icon:SetTexture(icon or "Interface\\ICONS\\INV_Misc_QuestionMark");
-			button.Name:SetText(name);
 
-			if minCount > 1 then
-				if minCount == maxCount then
-					button.Count:SetText(minCount);
-				else
-					button.Count:SetFormattedText("%d-%d", minCount, maxCount);
-				end
+			if amountRangeMax and amountRangeMax ~= amount then
+				button.Count:SetFormattedText("%d-%d", amount, amountRangeMax)
+			elseif amount > 1 then
+				button.Count:SetText(amount)
 			else
 				button.Count:SetText("");
 			end
@@ -170,7 +154,7 @@ function LootCasePreviewMixin:UpdateScroll()
 		end
 	end
 
-	HybridScrollFrame_Update(scrollFrame, (BUTTON_HEIGHT + BUTTON_SPACING) * #self.previewData - BUTTON_SPACING, scrollFrame:GetHeight());
+	HybridScrollFrame_Update(scrollFrame, (BUTTON_HEIGHT + BUTTON_SPACING) * numItems - BUTTON_SPACING, scrollFrame:GetHeight());
 end
 
 function LootCasePreviewMixin:OnLoad()

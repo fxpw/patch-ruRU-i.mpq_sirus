@@ -30,11 +30,9 @@ local FireCustomClientEvent = FireCustomClientEvent
 local SendServerMessage = SendServerMessage
 local geterrorhandler = geterrorhandler
 
-local EMPTY_HAIR_COLOR = EMPTY_HAIR_COLOR
 local ERR_NOT_ENOUGH_GOLD = ERR_NOT_ENOUGH_GOLD
 local E_CHARACTER_RACES = E_CHARACTER_RACES
 local E_SEX = E_SEX
-local FACIAL_HAIR_FEATURES_EARS = FACIAL_HAIR_FEATURES_EARS
 local SKIN_COLOR = SKIN_COLOR
 local STATUS_MESSAGE_INVALID_PARAMETERS = STATUS_MESSAGE_INVALID_PARAMETERS
 local S_CHARACTER_RACES_INFO_LOCALIZATION_ASSOC = S_CHARACTER_RACES_INFO_LOCALIZATION_ASSOC
@@ -387,20 +385,17 @@ PRIVATE.GetCustomizationOptionNameOldAPI = function(optionIndex)
 	if optionIndex == 1 then
 		return _G["HAIR_"..hairCustomization.."_STYLE"]
 	elseif optionIndex == 2 then
-		if _G["HAIR_"..hairCustomization.."_COLOR"] == EMPTY_HAIR_COLOR
-		or ((raceInfo.raceID == E_CHARACTER_RACES.RACE_PANDAREN_HORDE or raceInfo.raceID == E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE) and UnitSex("player") == E_SEX.MALE)
+		if ((raceInfo.raceID == E_CHARACTER_RACES.RACE_PANDAREN_HORDE or raceInfo.raceID == E_CHARACTER_RACES.RACE_PANDAREN_ALLIANCE) and UnitSex("player") == E_SEX.MALE)
 		then
 			return nil
+		elseif (raceInfo.raceID == E_CHARACTER_RACES.RACE_NAGA and UnitSex("player") == E_SEX.MALE) then
+			return HAIR_NORMAL_EYES_COLOR
 		else
 			return _G["HAIR_"..hairCustomization.."_COLOR"]
 		end
 	elseif optionIndex == 3 then
-		if (raceInfo.raceID == E_CHARACTER_RACES.RACE_NIGHTELF or raceInfo.raceID == E_CHARACTER_RACES.RACE_NIGHTELF_CREATURE) and UnitSex("player") == E_SEX.FEMALE then
-			return FACIAL_HAIR_FEATURES_EARS
-		else
-			local facialHair = GetFacialHairCustomization()
-			return _G["FACIAL_HAIR_"..facialHair]
-		end
+		local facialHair = GetFacialHairCustomization()
+		return _G["FACIAL_HAIR_"..facialHair]
 	elseif optionIndex == 4 and CanAlterSkin() then
 		return SKIN_COLOR
 	end

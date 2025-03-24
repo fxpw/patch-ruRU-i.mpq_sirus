@@ -56,10 +56,10 @@ local function ScriptRegion_GetScaledRect(self)
 	end
 end
 
-local function ScriptRegion_IsMouseOverEx(self, ignoreVisibility)
+local function ScriptRegion_IsMouseOverEx(self, ignoreVisibility, checkMouseFocus)
 	if ignoreVisibility or self:IsVisible() then
 		local l, r, t, b = self:GetHitRectInsets()
-		return self:IsMouseOver(-t, b, l, -r)
+		return self:IsMouseOver(-t, b, l, -r) and (not checkMouseFocus or self == GetMouseFocus())
 	end
 	return false
 end

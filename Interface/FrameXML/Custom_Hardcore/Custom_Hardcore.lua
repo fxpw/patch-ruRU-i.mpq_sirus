@@ -1741,6 +1741,8 @@ function HardcoreLossBannerMixin:OnEvent(event, ...)
 					data.title = string.format(HARDCORE_LOSS_BANNER_TEXT_PVP, classColorString, name, raceInfo.raceName:lower(), level, zone)
 				elseif reason == Enum.Hardcore.DeathSouce.FriendlyFire then
 					data.title = string.format(HARDCORE_LOSS_BANNER_TEXT_FRIENDLY_FIRE, classColorString, name, raceInfo.raceName:lower(), level, zone)
+				elseif reason == Enum.Hardcore.DeathSouce.Self then
+					data.title = string.format(HARDCORE_LOSS_BANNER_TEXT_SELF, classColorString, name, raceInfo.raceName:lower(), level, zone)
 				else
 					local reasonText = C_Hardcore.GetEnviromentalDamageText(reason)
 					data.title = string.format(HARDCORE_LOSS_BANNER_TEXT, classColorString, name, raceInfo.raceName:lower(), level, zone, reasonText)

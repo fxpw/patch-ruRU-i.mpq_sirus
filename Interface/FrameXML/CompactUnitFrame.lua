@@ -91,6 +91,15 @@ function CompactUnitFrame_OnLoad(self)
 	self.healthBar:SetFrameLevel(frameLevel);
 	self.powerBar:SetFrameLevel(frameLevel);
 
+	self.background:SetIgnoreParentAlpha(true)
+	self.horizDivider:SetIgnoreParentAlpha(true)
+	self.horizTopBorder:SetIgnoreParentAlpha(true)
+	self.horizBottomBorder:SetIgnoreParentAlpha(true)
+	self.vertLeftBorder:SetIgnoreParentAlpha(true)
+	self.vertRightBorder:SetIgnoreParentAlpha(true)
+	self.selectionHighlight:SetIgnoreParentAlpha(true)
+	self.readyCheckIcon:SetIgnoreParentAlpha(true)
+
 	self.maxBuffs = 0;
 	self.maxDebuffs = 0;
 	self.maxDispelDebuffs = 0;

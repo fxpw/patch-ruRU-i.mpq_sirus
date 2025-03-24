@@ -90,6 +90,7 @@ Enum.Hardcore.DeathSouce = {
 	NPC = 7,
 	PVP = 8,
 	FriendlyFire = 9,
+	Self = 10,
 }
 
 local ENVIROMENTAL_DAMAGE = {

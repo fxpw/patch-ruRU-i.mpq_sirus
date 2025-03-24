@@ -64,6 +64,7 @@ local OPTION_TEMPLATE = {
 local PRODUCT_FRAME_BASE_HEIGHT = 37
 local PRODUCT_FRAME_OPTION_PADDING = 15
 local PRODUCT_WIDGET_OFFSET_Y = -15
+local SECONDARY_DIALOG_OFFSET_X = 100
 
 local PRODUCT_DEFAULT_CURRENCY_INDEX = 0
 
@@ -267,17 +268,50 @@ end
 
 function StoreProductPurchaseTypeItemListMixin:SetProduct(product)
 	self.TopPanel.Item:SetProduct(product)
-	self.itemList = product.details and product.details.items
+	self.itemList = product.details and product.details.items and product.details.items[0] or {{itemID = product.itemID}}
+	self:ProcessItemList()
 	self.dirty = true
 	self:UpdateItemList()
+end
+
+function StoreProductPurchaseTypeItemListMixin:ProcessItemList()
+	do -- handle item chest loot
+		local itemIndex = 1
+		local itemData = self.itemList[itemIndex]
+		while itemData do
+			if C_Item.IsItemChest(itemData.itemID) then
+				local numChestItems = C_Item.GetNumItemChestItems(itemData.itemID)
+				if numChestItems > 0 then
+					local mult = itemData.amount or 1
+					for chestItemIndex = 1, numChestItems do
+						local chestItemID, amount, amountRangeMax = C_Item.GetItemChestItemData(itemData.itemID, chestItemIndex)
+						local chestItemData = {
+							itemID = chestItemID,
+							amount = amount * mult,
+							amountRangeMax = amountRangeMax and amountRangeMax * mult,
+						}
+
+						if chestItemIndex == 1 then
+							self.itemList[itemIndex] = chestItemData
+						else
+							table.insert(self.itemList, itemIndex + chestItemIndex - 1, chestItemData)
+						end
+					end
+					itemIndex = itemIndex + numChestItems - 1
+				end
+			end
+
+			itemIndex = itemIndex + 1
+			itemData = self.itemList[itemIndex]
+		end
+	end
 end
 
 function StoreProductPurchaseTypeItemListMixin:UpdateItemList()
 	local scrollFrame = self.OptionPanel.Scroll
 	local offset = HybridScrollFrame_GetOffset(scrollFrame)
-	local items = self.itemList[0]
-	local numItems = #items
 	local mouseFocus = GetMouseFocus()
+	local numItems = #self.itemList
 
 	for index, button in ipairs(scrollFrame.buttons) do
 		local itemIndex = index + offset
@@ -285,14 +319,14 @@ function StoreProductPurchaseTypeItemListMixin:UpdateItemList()
 			button:SetOwner(self)
 			button:SetID(itemIndex)
 
-			local itemData = items[itemIndex]
+			local itemData = self.itemList[itemIndex]
 			if itemData.isCurrency then
 				local name, description, link, texture, iconAtlas = C_StorePublic.GetCurrencyInfo(itemData.itemID)
 				local rarity = 1
-				button:SetItem(name, link, rarity, texture, itemData.amount)
+				button:SetItem(name, link, rarity, texture, itemData.amount, itemData.amountRangeMax)
 			else
 				local name, link, rarity, _, _, _, _, _, _, texture = GetItemInfo(itemData.itemID)
-				button:SetItem(name, link, rarity, texture, itemData.amount)
+				button:SetItem(name, link, rarity, texture, itemData.amount, itemData.amountRangeMax)
 			end
 
 			button:Show()
@@ -331,7 +365,9 @@ function StoreProductPurchaseTypeItemTooltipMixin:OnLoad()
 	self.OptionPanel.ItemTooltip:SetPadding(16)
 	self.OptionPanel.ItemTooltip:SetMinimumWidth(self.OptionPanel.ItemTooltip:GetWidth())
 
-	self.OptionPanel.ItemTooltip.IconBorder:SetAtlas("PKBT-ItemBorder-Normal", true)
+	Mixin(self.OptionPanel.Item, PKBT_OwnerMixin)
+	self.OptionPanel.Item:SetOwner(self)
+	self.OptionPanel.Item.IconBorder:SetAtlas("PKBT-ItemBorder-Normal", true)
 
 	self:ApplyColorToGlowNiceSlice(1, 0.82, 0, 0.5)
 end
@@ -341,6 +377,12 @@ function StoreProductPurchaseTypeItemTooltipMixin:OnShow()
 	self.TopPanel:SetHeight(topPanelHeight)
 
 	self.TopPanel.Text:SetPoint("CENTER", 0, -(7 + self.TopPanel.Title:GetHeight()) / 2)
+
+	if self.itemLink and not self.OptionPanel.ItemTooltip:GetItem() then
+		self.OptionPanel.ItemTooltip:SetOwner(self, "ANCHOR_PRESERVE")
+		self.OptionPanel.ItemTooltip:SetHyperlink(self.itemLink)
+		self.OptionPanel.ItemTooltip:Show()
+	end
 
 	if self.topPanelHeight ~= topPanelHeight then
 		self.topPanelHeight = topPanelHeight
@@ -366,12 +408,13 @@ function StoreProductPurchaseTypeItemTooltipMixin:SetProduct(product)
 	local _, link, _, _, _, _, _, _, _, texture = GetItemInfo(itemID)
 
 	self.__ignoreTooltipUpdate = true
+	self.productID = product.productID
 	self.itemLink = link
 	self.OptionPanel.ItemTooltip:SetOwner(self, "ANCHOR_PRESERVE")
-	self.OptionPanel.ItemTooltip:SetHyperlink(link)
+	self.OptionPanel.ItemTooltip:SetHyperlink(self.itemLink)
 	self.OptionPanel.ItemTooltip:Show()
-	self.OptionPanel.ItemTooltip.Icon:SetTexture(texture or [[Interface\Icons\INV_Misc_QuestionMark]])
-	self.OptionPanel.ItemTooltip.Amount:SetText(amount and amount > 1 and amount or "")
+	self.OptionPanel.Item.Icon:SetTexture(texture or [[Interface\Icons\INV_Misc_QuestionMark]])
+	self.OptionPanel.Item.Amount:SetText(amount and amount > 1 and amount or "")
 	self.__ignoreTooltipUpdate = nil
 
 	self:UpdateTooltipRect()
@@ -379,6 +422,7 @@ end
 
 function StoreProductPurchaseTypeItemTooltipMixin:Reset()
 	self.OptionPanel.ItemTooltip:Clear()
+	GameTooltip_OnHide(self.OptionPanel.ItemTooltip)
 end
 
 function StoreProductPurchaseTypeItemTooltipMixin:ApplyColorToGlowNiceSlice(r, g, b, a)
@@ -429,6 +473,33 @@ function StoreProductPurchaseTypeItemTooltipMixin:OnTooltipSizeChanged()
 		self:UpdateTooltipRect()
 		self:GetOwner():UpdateFrameRect(true)
 	end
+end
+
+function StoreProductPurchaseTypeItemTooltipMixin:OnEnter()
+	if self.itemLink then
+		GameTooltip:SetOwner(self.OptionPanel.Item, "ANCHOR_LEFT")
+		GameTooltip:SetHyperlink(self.itemLink)
+		if self.productID and (IsGMAccount() or IsInterfaceDevClient()) then
+			GameTooltip:AddDoubleLine("ProductID", self.productID, 0.44, 0.54, 0.68, 1, 1, 1)
+			local flags, dynamicFlags = C_StoreSecure.GetProductFlags(self.productID)
+			if flags then
+				GameTooltip:AddDoubleLine("ProductFlags", string.format("0x%x", flags), 0.44, 0.54, 0.68, 1, 1, 1)
+			end
+			if dynamicFlags then
+				GameTooltip:AddDoubleLine("ProductDynFlags", string.format("0x%x", dynamicFlags), 0.44, 0.54, 0.68, 1, 1, 1)
+			end
+		end
+		GameTooltip:Show()
+	end
+	CursorUpdate(self)
+end
+
+function StoreProductPurchaseTypeItemTooltipMixin:OnLeave()
+	StoreProductPurchaseItemButtonMixin.OnLeave(self)
+end
+
+function StoreProductPurchaseTypeItemTooltipMixin:OnClick(button)
+	StoreProductPurchaseItemButtonMixin.OnClick(self, button)
 end
 
 StoreProductPurchaseTypeSpecMixin = CreateFromMixins(StoreProductPurchaseTypeBaseMixin)
@@ -644,11 +715,19 @@ function StoreProductItemPlateMixin:OnClick(button)
 	end
 end
 
-function StoreProductItemPlateMixin:SetItem(name, itemLink, rarity, icon, amount)
+function StoreProductItemPlateMixin:SetItem(name, itemLink, rarity, icon, amount, amountRangeMax)
 	self.Name:SetText(name or UNKNOWN)
 	self.Name:SetTextColor(GetItemQualityColor(rarity or 1))
 	self.Icon:SetTexture(icon or [[Interface\Icons\INV_Misc_QuestionMark]])
-	self.Amount:SetText(amount and amount > 1 and amount or "")
+	if amount and amount > 1 then
+		if amountRangeMax and amountRangeMax > amount then
+			self.Amount:SetFormattedText("%d-%d", amount, amountRangeMax)
+		else
+			self.Amount:SetText(amount)
+		end
+	else
+		self.Amount:SetText("")
+	end
 	self.itemLink = itemLink
 end
 
@@ -659,6 +738,7 @@ function StoreProductOptionGiftMixin:OnLoad()
 
 	self.CheckButton.OnChecked = function(this, checked)
 		self:GetOwner().GiftPanel:SetShown(checked)
+		self:GetOwner():SetSecondaryDialogShown(not checked)
 		self:GetOwner():Summery()
 	end
 end
@@ -761,12 +841,15 @@ function StoreProductOptionCurrencySelectorMixin:AddCurrency(price, originalPric
 	currencyButton:Show()
 end
 
-function StoreProductOptionCurrencySelectorMixin:UpdateCurrencyList(product)
+function StoreProductOptionCurrencySelectorMixin:UpdateCurrencyList(productID, noOfferPrice)
 	self:ClearCurrencyList()
 
-	self:AddCurrency(product.price, product.originalPrice, product.currencyType)
-	if product.altCurrencyType and product.altPrice then
-		self:AddCurrency(product.altPrice, product.altOriginalPrice, product.altCurrencyType)
+	local price, originalPrice, currencyType, altPrice, altOriginalPrice, altCurrencyType = C_StoreSecure.GetProductPrice(productID, noOfferPrice)
+
+	self:AddCurrency(price, originalPrice, currencyType)
+
+	if altCurrencyType and altPrice then
+		self:AddCurrency(altPrice, altOriginalPrice, altCurrencyType)
 	end
 
 	self:UpdateRect()
@@ -893,8 +976,6 @@ end
 StoreProductPurchaseDialogMixin = CreateFromMixins(StoreDialogCloseHandlingMixin)
 
 function StoreProductPurchaseDialogMixin:OnLoad()
-	self:SetTitle(STORE_PRODUCT_PURCHASE_TITLE)
-
 	self.Content.BackgroundTop:SetAtlas("PKBT-Tile-Wood-128")
 	self.Content.BackgroundBottom:SetAtlas("PKBT-Store-Background-DarkSandstone-Bottom-Rounded", true)
 
@@ -917,8 +998,15 @@ function StoreProductPurchaseDialogMixin:OnLoad()
 	self.ModelPanel.AbilityOverlay:SetBasePoint("BOTTOMRIGHT", 4, 0)
 	self.ModelPanel.Overlay.EquipmentToggle:ClearAllPoints()
 	self.ModelPanel.Overlay.EquipmentToggle:SetPoint("TOPRIGHT", 0, -30)
+	self.ModelPanel.Overlay.PortraitCameraToggle:ClearAllPoints()
+	self.ModelPanel.Overlay.PortraitCameraToggle:SetPoint("TOP", self.ModelPanel.Overlay.EquipmentToggle, "BOTTOM", 0, -10)
 
-	C_StoreSecure.GetStoreFrame():RegisterDialogWidget(self, Enum.StoreWidget.ProductPurchase)
+	if self:IsPrimaryDialog() then
+		self:SetTitle(STORE_PRODUCT_PURCHASE_TITLE)
+		C_StoreSecure.GetStoreFrame():RegisterDialogWidget(self, Enum.StoreWidget.ProductPurchase)
+	else
+		self:SetTitle(STORE_PRODUCT_PURCHASE_OFFER_TITLE)
+	end
 end
 
 function StoreProductPurchaseDialogMixin:OnEvent(event, ...)
@@ -927,6 +1015,8 @@ function StoreProductPurchaseDialogMixin:OnEvent(event, ...)
 		self.Content.PurchaseButton:HideSpinner()
 		self.Content.PurchaseButton:CheckBalance()
 		self:Close()
+	elseif event == "STORE_PURCHASE_AWAIT" then
+		self:UpdatePurchaseButton()
 	elseif event == "STORE_PURCHASE_ERROR" then
 		self.Content.PurchaseButton:HideSpinner()
 		self.Content.PurchaseButton:CheckBalance()
@@ -940,17 +1030,12 @@ end
 function StoreProductPurchaseDialogMixin:OnShow()
 	self:RegisterCustomEvent("STORE_PURCHASE_ERROR")
 	self:RegisterCustomEvent("STORE_PURCHASE_COMPLETE")
+	self:RegisterCustomEvent("STORE_PURCHASE_AWAIT")
 	self:RegisterCustomEvent("STORE_PRODUCTS_CHANGED")
 	self:RegisterCustomEvent("STORE_PRODUCTS_REMOVED")
 	self:RegisterCustomEvent("STORE_BALANCE_UPDATE")
 
-	if C_StoreSecure.IsAwaitingPurchaseAnswer() then
-		self.Content.PurchaseButton:ShowSpinner()
-		self.Content.PurchaseButton:Disable()
-	else
-		self.Content.PurchaseButton:HideSpinner()
-		self.Content.PurchaseButton:CheckBalance()
-	end
+	self:UpdatePurchaseButton()
 end
 
 function StoreProductPurchaseDialogMixin:OnHide()
@@ -959,10 +1044,35 @@ function StoreProductPurchaseDialogMixin:OnHide()
 	self:UnregisterCustomEvent("STORE_PRODUCTS_CHANGED")
 	self:UnregisterCustomEvent("STORE_PRODUCTS_REMOVED")
 	self:UnregisterCustomEvent("STORE_BALANCE_UPDATE")
+end
 
+function StoreProductPurchaseDialogMixin:OnClose()
+	if self:IsPrimaryDialog() then
+		StoreDialogCloseHandlingMixin.OnClose(self)
+		if self:HasSecondaryDialog() then
+			self:GetSecondaryDialog():OnRelease()
+		end
+	else
+		StoreDialogCloseHandlingMixin.OnClose(self)
+		self:GetPrimaryDialog():OnClose()
+		self:OnRelease()
+	end
+end
+
+function StoreProductPurchaseDialogMixin:OnRelease()
 	self:ResetOptions()
 	self.ModelPanel:Close()
 	self.product = nil
+end
+
+function StoreProductPurchaseDialogMixin:UpdatePurchaseButton()
+	if C_StoreSecure.IsAwaitingPurchaseAnswer() then
+		self.Content.PurchaseButton:ShowSpinner()
+		self.Content.PurchaseButton:Disable()
+	else
+		self.Content.PurchaseButton:HideSpinner()
+		self.Content.PurchaseButton:CheckBalance()
+	end
 end
 
 function StoreProductPurchaseDialogMixin:ResetOptions()
@@ -1012,10 +1122,16 @@ function StoreProductPurchaseDialogMixin:GetProductWidgetTemplate(product)
 		return PRODUCT_TEMPLATE.Spec
 	elseif type(product.details) == "table" and type(product.details.items) == "table" and product.details.items[0] and #product.details.items[0] > 0 then
 		if #product.details.items[0] == 1 then
-			return PRODUCT_TEMPLATE.ItemTooltip
+			if C_Item.IsItemChest(product.details.items[0][1].itemID) then
+				return PRODUCT_TEMPLATE.ItemList
+			else
+				return PRODUCT_TEMPLATE.ItemTooltip
+			end
 		else
 			return PRODUCT_TEMPLATE.ItemList
 		end
+	elseif C_Item.IsItemChest(product.itemID) then
+		return PRODUCT_TEMPLATE.ItemList
 	end
 	return PRODUCT_TEMPLATE.Default
 end
@@ -1041,7 +1157,17 @@ function StoreProductPurchaseDialogMixin:ClearWidgets()
 	self.desiredPanelWidth = nil
 	self:ClearWidgetsFromList(self.topPanelWidgets)
 	self:ClearWidgetsFromList(self.optionPanelWidgets, true)
+	if self:IsPrimaryDialog() and self:HasSecondaryDialog() then
+		self:ClearSecondaryDialog()
+	end
 	self.dirty = true
+end
+
+function StoreProductPurchaseDialogMixin:ClearSecondaryDialog()
+	self:GetSecondaryDialog():Hide()
+	self:GetSecondaryDialog():ClearWidgets()
+	self.hasSecondaryDialog = nil
+	self.hideSecondaryDialog = nil
 end
 
 function StoreProductPurchaseDialogMixin:AddWidget(widget)
@@ -1075,7 +1201,7 @@ function StoreProductPurchaseDialogMixin:AddProductWidgets(widgetHandlerFrame)
 	widgetHandlerFrame:Show()
 end
 
-function StoreProductPurchaseDialogMixin:SetProductID(productID)
+function StoreProductPurchaseDialogMixin:SetProductID(productID, noOffers)
 	self.blockSummery = true
 
 	self:ClearWidgets()
@@ -1113,7 +1239,7 @@ function StoreProductPurchaseDialogMixin:SetProductID(productID)
 
 	if product.altCurrencyType and not product.noPurchaseCanGift then
 		local currencySelector = self:GetWidgetObject(OPTION_TEMPLATE.CurrencySelector)
-		currencySelector:UpdateCurrencyList(product)
+		currencySelector:UpdateCurrencyList(productID, self:HasSecondaryDialog())
 		self:AddWidget(currencySelector)
 	end
 
@@ -1145,50 +1271,111 @@ function StoreProductPurchaseDialogMixin:SetProductID(productID)
 	self:UpdateFrameRect()
 	self:UpdateDebugInfo()
 
-	self.blockSummery = nil
-	self:Summery()
+	if self:IsPrimaryDialog() then
+		if product.categoryID == Enum.Store.Category.Collections then
+			self.ModelPanel.CloseButton:Hide()
+			self.ModelPanel:SetModel(product.modelType, product.modelID)
+			self.ModelPanel:Show()
 
-	if product.categoryID == Enum.Store.Category.Collections then
-		self.ModelPanel.CloseButton:Hide()
-		self.ModelPanel:SetModel(product.modelType, product.modelID)
-		self.ModelPanel:Show()
-
-		local linkType, id, collectionID = GetDressUpItemLinkInfo(product.itemID)
-		if linkType == Enum.DressUpLinkType.Mount then
-			self.ModelPanel.AbilityOverlay:SetItemAbilities(product.itemID)
-		else
-			self.ModelPanel.AbilityOverlay:ClearItemAbilities()
-		end
-	elseif product.categoryID == Enum.Store.Category.Transmogrification then
-		if product.setProducts then
-			local setItemIDs = {}
-			for index, setItemData in ipairs(product.setProducts) do
-				setItemIDs[index] = setItemData.itemID
+			local linkType, id, collectionID = GetDressUpItemLinkInfo(product.itemID)
+			if linkType == Enum.DressUpLinkType.Mount then
+				self.ModelPanel.AbilityOverlay:SetItemAbilities(product.itemID)
+			else
+				self.ModelPanel.AbilityOverlay:ClearItemAbilities()
 			end
-			self.ModelPanel.CloseButton:Hide()
-			self.ModelPanel:SetModel(Enum.ModelType.ItemSet, setItemIDs, true)
-			self.ModelPanel.AbilityOverlay:ClearItemAbilities()
-			self.ModelPanel:Show()
+		elseif product.categoryID == Enum.Store.Category.Transmogrification then
+			if product.setProducts then
+				local setItemIDs = {}
+				for index, setItemData in ipairs(product.setProducts) do
+					setItemIDs[index] = setItemData.itemID
+				end
+				self.ModelPanel.CloseButton:Hide()
+				self.ModelPanel:SetModel(Enum.ModelType.ItemSet, setItemIDs)
+				self.ModelPanel.AbilityOverlay:ClearItemAbilities()
+				self.ModelPanel:Show()
+			else
+				self.ModelPanel.CloseButton:Hide()
+				self.ModelPanel:SetModel(Enum.ModelType.Item, product.itemID)
+				self.ModelPanel.AbilityOverlay:ClearItemAbilities()
+				self.ModelPanel:Show()
+			end
 		else
-			self.ModelPanel.CloseButton:Hide()
-			self.ModelPanel:SetModel(Enum.ModelType.Item, product.itemID)
-			self.ModelPanel.AbilityOverlay:ClearItemAbilities()
-			self.ModelPanel:Show()
-		end
-	else
-		local success = self:TryAnyProductModel()
-		if not success then
-			self.ModelPanel.CloseButton:Show()
-			self.ModelPanel.AbilityOverlay:ClearItemAbilities()
-			self.ModelPanel:Close()
+			local success = self:TryAnyProductModel()
+			if not success then
+				self.ModelPanel.CloseButton:Show()
+				self.ModelPanel.AbilityOverlay:ClearItemAbilities()
+				self.ModelPanel:Close()
+			end
 		end
 	end
+
+	if not noOffers and self:IsPrimaryDialog() then
+		local productOfferID = C_StoreSecure.GetOfferForProductID(productID)
+		if productOfferID then
+			local secondaryDialog = self:GetSecondaryDialog()
+			local success = secondaryDialog:SetProductID(productOfferID)
+			if success then
+				secondaryDialog:Show()
+				self.hasSecondaryDialog = true
+				self:UpdatePosition()
+			end
+		end
+	end
+
+	self.blockSummery = nil
+	self:Summery()
 
 	return true
 end
 
+function StoreProductPurchaseDialogMixin:IsPrimaryDialog()
+	return self:GetID() == 1
+end
+
+function StoreProductPurchaseDialogMixin:HasSecondaryDialog()
+	return self.hasSecondaryDialog
+end
+
+function StoreProductPurchaseDialogMixin:IsSecondaryDialogShown()
+	if self:HasSecondaryDialog() then
+		return not self.hideSecondaryDialog
+	end
+	return false
+end
+
+function StoreProductPurchaseDialogMixin:SetSecondaryDialogShown(shown)
+	if self:HasSecondaryDialog() then
+		self.hideSecondaryDialog = not shown
+		self:GetSecondaryDialog():SetShown(not self.hideSecondaryDialog)
+		self:UpdatePosition()
+		return true
+	end
+	return false
+end
+
+function StoreProductPurchaseDialogMixin:GetPrimaryDialog()
+	if not self:IsPrimaryDialog() then
+		return self:GetOwner()
+	end
+end
+
+function StoreProductPurchaseDialogMixin:GetSecondaryDialog()
+	if not self.secondaryDialog then
+		self.secondaryDialog = CreateFrame("Frame", "$parentProductPurchaseDialog2", C_StoreSecure.GetStoreFrame(), "StoreProductPurchaseDialogTemplate", 2)
+		self.secondaryDialog:SetParent(self)
+		self.secondaryDialog:ClearAllPoints()
+		self.secondaryDialog:SetPoint("LEFT", self, "RIGHT", SECONDARY_DIALOG_OFFSET_X, 0)
+
+		Mixin(self.secondaryDialog, PKBT_OwnerMixin)
+		self.secondaryDialog:SetOwner(self)
+
+		self.secondaryDialog.isSecondaryDialog = true
+	end
+	return self.secondaryDialog
+end
+
 function StoreProductPurchaseDialogMixin:TryAnyProductModel()
-	if not self.product then
+	if not self.product or not self:IsPrimaryDialog() then
 		return false
 	end
 
@@ -1319,6 +1506,18 @@ function StoreProductPurchaseDialogMixin:UpdateFrameRect(force)
 
 	self:SetWidth(self.desiredPanelWidth or self.defaultPanelWidth)
 	self:SetHeight(math.ceil(PRODUCT_FRAME_BASE_HEIGHT + topPanelHeight + optionPanelHeight + footerPanelHeight))
+
+	self:UpdatePosition()
+end
+
+function StoreProductPurchaseDialogMixin:UpdatePosition()
+	if self:IsPrimaryDialog() then
+		if self:HasSecondaryDialog() and self:IsSecondaryDialogShown() then
+			self:SetPoint("CENTER", -((self:GetSecondaryDialog():GetWidth() + SECONDARY_DIALOG_OFFSET_X) / 2), 0)
+		else
+			self:SetPoint("CENTER", 0, 0)
+		end
+	end
 end
 
 function StoreProductPurchaseDialogMixin:OnPurchaseClick(button)
@@ -1455,6 +1654,10 @@ function StoreProductPurchaseDialogMixin:IsGiftFieldsValid()
 end
 
 function StoreProductPurchaseDialogMixin:DressUpItemLink(link)
+	if not self:IsPrimaryDialog() then
+		return false
+	end
+
 	local success = self.ModelPanel:DressUpItemLink(link)
 	self.ModelPanel:SetShown(success)
 
@@ -1502,17 +1705,19 @@ function StoreProductPurchaseDialogMixin:GetPriceForSelectedCurrency()
 	local price, originalPrice, currencyType
 	local currencyOptionIndex
 
+	local _price, _originalPrice, _currencyType, _altPrice, _altOriginalPrice, _altCurrencyType = C_StoreSecure.GetProductPrice(self.productID, self:HasSecondaryDialog())
+
 	local currencyWidget = self:GetWidgetObject(OPTION_TEMPLATE.CurrencySelector)
 	if self.product.altCurrencyType and self.product.altPrice and currencyWidget:IsActive() then
 		currencyOptionIndex = currencyWidget:GetSelectedCurrencyIndex()
 		if currencyOptionIndex == 1 then
-			price, originalPrice, currencyType = self.product.price, self.product.originalPrice, self.product.currencyType
+			price, originalPrice, currencyType = _price, _originalPrice, _currencyType
 		elseif currencyOptionIndex ~= 0 then
-			price, originalPrice, currencyType = self.product.altPrice, self.product.altOriginalPrice, self.product.altCurrencyType
+			price, originalPrice, currencyType = _altPrice, _altOriginalPrice, _altCurrencyType
 		end
 	else
 		currencyOptionIndex = 1
-		price, originalPrice, currencyType = self.product.price, self.product.originalPrice, self.product.currencyType
+		price, originalPrice, currencyType = _price, _originalPrice, _currencyType
 	end
 
 	local giftWidget = self:GetWidgetObject(OPTION_TEMPLATE.Gift)

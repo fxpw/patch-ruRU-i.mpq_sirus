@@ -279,7 +279,7 @@ function ItemButtonMixin:GetItemInfo()
 		local itemIcon = C_Item.GetItemIcon(itemLocation);
 		return itemLink, itemQuality, itemIcon;
 	else
-		local _, itemLink, itemQuality, _, _, _, _, _, _, itemIcon = GetItemInfo(self:GetItem());
+		local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemIcon = GetItemInfo(self:GetItem());
 		return itemLink, itemQuality, itemIcon;
 	end
 end
@@ -290,7 +290,8 @@ function ItemButtonMixin:GetItemID()
 		return nil;
 	end
 
-	local itemID = tonumber(strmatch(itemLink, "item:(%d+)"));
+	-- Storing in a local for clarity, and to avoid additional returns.
+	local itemID = GetItemInfoInstant(itemLink);
 	return itemID;
 end
 

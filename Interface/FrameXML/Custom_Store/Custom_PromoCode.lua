@@ -55,7 +55,7 @@ function PromoCodeMixin:OnLoad()
 
 	self.Content.Code.EditBox:SetMaxLetters(C_StoreSecure.GetPromoCodeMaxLenght())
 	self.Content.Code.EditBox:SetCustomCharFilter(function(text)
-		return text:upper():gsub("[^A-Z]+", "")
+		return text:upper():gsub("[^A-Z0-9]+", "")
 	end)
 	self.Content.Code.EditBox.OnTextValueChanged = function(this, value, userInput)
 		self:ValidateCode()

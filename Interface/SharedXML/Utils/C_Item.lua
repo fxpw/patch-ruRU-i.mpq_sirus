@@ -1,12 +1,16 @@
 local _G = _G
 local error = error
 local pcall = pcall
+local select = select
 local tonumber = tonumber
 local type = type
+local unpack = unpack
 local strformat, strmatch = string.format, string.match
 local tIndexOf, tinsert, tremove = tIndexOf, table.insert, table.remove
 
 local GetItemInfo = GetItemInfo
+local GetItemInfoEx = GetItemInfoEx
+local GetItemRandomPropertyName = GetItemRandomPropertyName
 
 local itemQualityHexes = {}
 local itemClassMap = {}
@@ -80,12 +84,23 @@ local GLUEXML = IsOnGlueScreen()
 local LOCALE = GetLocale()
 local LOCALE_INDEX = LOCALE == "ruRU" and ITEM_CACHE_FIELD.NAME_RURU or ITEM_CACHE_FIELD.NAME_ENGB
 
-local function getItemID(item, funcName)
+local function getItemID(item, funcName, randomPropertyID)
 	if type(item) == "string" then
 		if ItemsCache[item] then
 			item = ItemsCache[item][ITEM_ID_FIELD]
 		else
-			item = tonumber(item) or tonumber(strmatch(item, "item:(%d+)"))
+			if randomPropertyID and type(randomPropertyID) ~= "number" then
+				local itemID = tonumber(item)
+				if itemID then
+					item = itemID
+				else
+					item, randomPropertyID = strmatch(item, "item:(%d+):?%d*:?%d*:?%d*:?%d*:?%d*:?(-?%d*)")
+					item = tonumber(item)
+					randomPropertyID = tonumber(randomPropertyID)
+				end
+			else
+				item = tonumber(item) or tonumber(strmatch(item, "item:(%d+)"))
+			end
 		end
 	end
 	if item then
@@ -94,13 +109,32 @@ local function getItemID(item, funcName)
 				error(string.format([[Usage: C_Item.%s(itemID|"name"|"itemlink")]], funcName), 3)
 			end
 		elseif item > 0 then
-			return item
+			return item, randomPropertyID
 		end
 	end
 end
 
+local function assertNumValue(arg, funcName, noError)
+	if arg == nil then
+		return
+	end
+
+	local argType = type(arg)
+	if argType == "number" then
+		return arg
+	elseif argType == "string" then
+		return tonumber(arg)
+	elseif not noError then
+		error(string.format([[Usage: C_Item.%s(itemID|"name"|"itemlink" [, ...])]], funcName), 3)
+	end
+end
+
 function C_Item.GetItemIDFromString(item)
-	return getItemID(item)
+	if type(item) ~= "number" and type(item) ~= "string" then
+		error([[Usage: C_Item.GetItemIDFromString(itemID|"name"|"itemlink")]], 3)
+	end
+	local itemID = GetItemInfoInstant(item)
+	return itemID or getItemID(item, "GetItemIDFromString")
 end
 
 ---@param itemType string
@@ -113,7 +147,15 @@ end
 ---@param itemSubType string
 ---@return integer? itemSubClassID
 function C_Item.GetItemSubClassID(classID, itemSubType)
-	return itemSubClassMap[classID][itemSubType]
+	if itemSubClassMap[classID] then
+		return itemSubClassMap[classID][itemSubType]
+	end
+end
+
+---@param itemEquipLoc string
+---@return integer? invEquipLocID
+function C_Item.GetItemEquipLocID(itemEquipLoc)
+	return itemInvTypeToID[itemEquipLoc] or 0
 end
 
 function C_Item.GetCreatedItemIDByItem(item)
@@ -124,10 +166,74 @@ function C_Item.GetCreatedItemIDByItem(item)
 	return ITEMS_CREATE_HEIRLOOM[item]
 end
 
----@param itemEquipLoc string
----@return integer? invEquipLocID
-function C_Item.GetItemEquipLocID(itemEquipLoc)
-	return itemInvTypeToID[itemEquipLoc] or 0
+function C_Item.IsItemChest(item)
+	item = getItemID(item, "IsItemChest")
+	if not item then
+		return
+	end
+	local itemChest = ITEMS_CHEST_LOOT[item]
+	if type(itemChest) == "table" then
+		for itemIndex, itemData in ipairs(itemChest) do
+			if type(itemData) == "table" then
+				return true
+			end
+		end
+	end
+	return false
+end
+
+function C_Item.GetNumItemChestItems(item)
+	item = getItemID(item, "GetNumItemChestItems")
+	if not item then
+		return
+	end
+	local itemChest = ITEMS_CHEST_LOOT[item]
+	if type(itemChest) == "table" then
+		local numItems = 0
+		for itemIndex, itemData in ipairs(itemChest) do
+			if type(itemData) == "table" then
+				numItems = numItems + 1
+			end
+		end
+		return numItems
+	end
+	return 0
+end
+
+function C_Item.GetItemChestItemData(item, index)
+	item = getItemID(item, "GetItemChestItemData")
+	if not item then
+		return
+	end
+
+	local itemChest = ITEMS_CHEST_LOOT[item]
+	if type(itemChest) ~= "table" then
+		return
+	end
+
+	local numItems = 0
+	--	local itemGroup
+	local itemChestItemData
+
+	for itemIndex, itemData in ipairs(itemChest) do
+		if type(itemData) == "table" then
+			numItems = numItems + 1
+			if numItems == index then
+				itemChestItemData = itemData
+			end
+	--	else
+	--		itemGroup = itemData
+		end
+	end
+
+	if index < 1 or index > numItems then
+		error(strformat("bad argument #2 to 'C_Item.GetItemChestItemData' (index %s out of range)", numItems), 2)
+	end
+
+	if itemChestItemData then
+		local itemID, amount, amountRangeMax = unpack(itemChestItemData, 1, 3)
+		return itemID, amount, amountRangeMax
+	end
 end
 
 if not GLUEXML then
@@ -151,7 +257,8 @@ if not GLUEXML then
 
 	local function tryItemData(queueData, itemID, itemName, ...)
 		if itemName then
-			FireCustomClientEvent("ITEM_DATA_LOAD_RESULT", true, itemID)
+			FireCustomClientEvent("ITEM_DATA_LOAD_RESULT", itemID, true)
+		--	FireCustomClientEvent("GET_ITEM_INFO_RECEIVED", itemID, true)
 			for i = 3, #queueData do
 				runItemCallback(queueData[i], itemID, itemName, ...)
 			end
@@ -167,7 +274,7 @@ if not GLUEXML then
 				local queueData = itemCacheQueue[index]
 				local itemID = queueData[2]
 
-				if tryItemData(queueData, itemID, GetItemInfo(itemID)) then
+				if tryItemData(queueData, itemID, GetItemInfoEx(itemID)) then
 					itemCacheUnique[itemID] = nil
 					tremove(itemCacheQueue, index)
 				else
@@ -244,6 +351,12 @@ if not GLUEXML then
 	end
 
 	---@param item integer | string
+	---@param randomPropertyID? integer | string
+	---@param uniqueID? integer | string
+	---@param enchantID? integer | string
+	---@param jewels1? integer | string
+	---@param jewels2? integer | string
+	---@param jewels3? integer | string
 	---@return string itemName
 	---@return string itemLink
 	---@return integer itemRarity
@@ -256,41 +369,108 @@ if not GLUEXML then
 	---@return string itemTexture
 	---@return integer vendorPrice
 	---@return integer itemID
-	function C_Item.GetItemInfoCache(item)
-		item = getItemID(item, "GetItemInfoCache")
+	---@return integer classID
+	---@return integer subclassID
+	---@return integer equipLocID
+	function C_Item.GetItemInfoCache(item, randomPropertyID, uniqueID, enchantID, jewels1, jewels2, jewels3)
+		item, randomPropertyID = getItemID(item, "GetItemInfoCache", randomPropertyID)
 		if not item then
 			return
 		end
 
 		local cacheData = ItemsCache[item]
-		if cacheData then
-			local itemName		= cacheData[LOCALE_INDEX]
-			local itemRarity	= cacheData[ITEM_CACHE_FIELD.RARITY]
-			local itemMinLevel	= cacheData[ITEM_CACHE_FIELD.MINLEVEL]
-			local classID		= cacheData[ITEM_CACHE_FIELD.TYPE]
-			local subclassID	= cacheData[ITEM_CACHE_FIELD.SUBTYPE]
-			local equipLocID	= cacheData[ITEM_CACHE_FIELD.EQUIPLOC]
-
-			if not cacheData.link then
-				cacheData.link = strformat("|c%s|Hitem:%d:0:0:0:0:0:0:0:%d|h[%s]|h|r", itemQualityHexes[itemRarity] or "ffffffff", cacheData[ITEM_ID_FIELD], itemMinLevel, itemName)
-			end
-
-			return itemName,
-				cacheData.link,
-				itemRarity,
-				cacheData[ITEM_CACHE_FIELD.ILEVEL],
-				itemMinLevel,
-				_G["ITEM_CLASS_"..classID],
-				_G["ITEM_SUB_CLASS_" .. classID .. "_" .. subclassID],
-				cacheData[ITEM_CACHE_FIELD.STACKCOUNT],
-				SHARED_INVTYPE_BY_ID[equipLocID],
-				"Interface\\Icons\\"..cacheData[ITEM_CACHE_FIELD.TEXTURE],
-				cacheData[ITEM_CACHE_FIELD.VENDORPRICE],
-				cacheData[ITEM_ID_FIELD],
-				classID,
-				subclassID,
-				equipLocID
+		if not cacheData then
+			return
 		end
+
+		randomPropertyID	= assertNumValue(randomPropertyID, "GetItemLinkCache")
+		uniqueID			= assertNumValue(uniqueID, "GetItemLinkCache")
+		enchantID			= assertNumValue(enchantID, "GetItemLinkCache")
+		jewels1				= assertNumValue(jewels1, "GetItemLinkCache")
+		jewels2				= assertNumValue(jewels2, "GetItemLinkCache")
+		jewels3				= assertNumValue(jewels3, "GetItemLinkCache")
+
+		local itemName		= cacheData[LOCALE_INDEX]
+		local itemRarity	= cacheData[ITEM_CACHE_FIELD.RARITY]
+		local itemMinLevel	= cacheData[ITEM_CACHE_FIELD.MINLEVEL]
+		local classID		= cacheData[ITEM_CACHE_FIELD.TYPE]
+		local subclassID	= cacheData[ITEM_CACHE_FIELD.SUBTYPE]
+		local equipLocID	= cacheData[ITEM_CACHE_FIELD.EQUIPLOC]
+
+		local link
+		if randomPropertyID and randomPropertyID ~= 0 then
+			local propertyName = GetItemRandomPropertyName(randomPropertyID)
+			if propertyName then
+				itemName = strformat(ITEM_SUFFIX_TEMPLATE, itemName, propertyName)
+				link = strformat("|c%s|Hitem:%d:%d:%d:%d:%d:0:%d:%d:%d|h[%s]|h|r", itemQualityHexes[itemRarity] or "ffffffff", cacheData[ITEM_ID_FIELD], enchantID or 0, jewels1 or 0, jewels2 or 0, jewels3 or 0, randomPropertyID, uniqueID or 0, itemMinLevel, itemName)
+			end
+		end
+
+		if not link and (uniqueID or enchantID or jewels1 or jewels2 or jewels3) then
+			link = strformat("|c%s|Hitem:%d:%d:%d:%d:%d:0:%d:%d:%d|h[%s]|h|r", itemQualityHexes[itemRarity] or "ffffffff", cacheData[ITEM_ID_FIELD], enchantID or 0, jewels1 or 0, jewels2 or 0, jewels3 or 0, 0, uniqueID or 0, itemMinLevel, itemName)
+		end
+
+		if not link and not cacheData.link then
+			cacheData.link = strformat("|c%s|Hitem:%d:0:0:0:0:0:0:0:%d|h[%s]|h|r", itemQualityHexes[itemRarity] or "ffffffff", cacheData[ITEM_ID_FIELD], itemMinLevel, itemName)
+		end
+
+		return itemName,
+			link or cacheData.link,
+			itemRarity,
+			cacheData[ITEM_CACHE_FIELD.ILEVEL],
+			itemMinLevel,
+			_G["ITEM_CLASS_"..classID],
+			_G["ITEM_SUB_CLASS_" .. classID .. "_" .. subclassID],
+			cacheData[ITEM_CACHE_FIELD.STACKCOUNT],
+			SHARED_INVTYPE_BY_ID[equipLocID],
+			"Interface\\Icons\\"..cacheData[ITEM_CACHE_FIELD.TEXTURE],
+			cacheData[ITEM_CACHE_FIELD.VENDORPRICE],
+			cacheData[ITEM_ID_FIELD],
+			classID,
+			subclassID,
+			equipLocID
+	end
+
+	function C_Item.GetItemLinkCache(item, randomPropertyID, uniqueID, enchantID, jewels1, jewels2, jewels3)
+		item, randomPropertyID = getItemID(item, "GetItemLinkCache", randomPropertyID)
+		if not item then
+			return
+		end
+
+		local cacheData = ItemsCache[item]
+		if not cacheData then
+			return
+		end
+
+		randomPropertyID	= assertNumValue(randomPropertyID, "GetItemLinkCache")
+		uniqueID			= assertNumValue(uniqueID, "GetItemLinkCache")
+		enchantID			= assertNumValue(enchantID, "GetItemLinkCache")
+		jewels1				= assertNumValue(jewels1, "GetItemLinkCache")
+		jewels2				= assertNumValue(jewels2, "GetItemLinkCache")
+		jewels3				= assertNumValue(jewels3, "GetItemLinkCache")
+
+		local itemName		= cacheData[LOCALE_INDEX]
+		local itemRarity	= cacheData[ITEM_CACHE_FIELD.RARITY]
+		local itemMinLevel	= cacheData[ITEM_CACHE_FIELD.MINLEVEL]
+
+		local link
+		if randomPropertyID and randomPropertyID ~= 0 then
+			local propertyName = GetItemRandomPropertyName(randomPropertyID)
+			if propertyName then
+				itemName = strformat(ITEM_SUFFIX_TEMPLATE, itemName, propertyName)
+				link = strformat("|c%s|Hitem:%d:%d:%d:%d:%d:0:%d:%d:%d|h[%s]|h|r", itemQualityHexes[itemRarity] or "ffffffff", cacheData[ITEM_ID_FIELD], enchantID or 0, jewels1 or 0, jewels2 or 0, jewels3 or 0, randomPropertyID, uniqueID or 0, itemMinLevel, itemName)
+			end
+		end
+
+		if not link and (uniqueID or enchantID or jewels1 or jewels2 or jewels3) then
+			link = strformat("|c%s|Hitem:%d:%d:%d:%d:%d:0:%d:%d:%d|h[%s]|h|r", itemQualityHexes[itemRarity] or "ffffffff", cacheData[ITEM_ID_FIELD], enchantID or 0, jewels1 or 0, jewels2 or 0, jewels3 or 0, 0, uniqueID or 0, itemMinLevel, itemName)
+		end
+
+		if not link and not cacheData.link then
+			cacheData.link = strformat("|c%s|Hitem:%d:0:0:0:0:0:0:0:%d|h[%s]|h|r", itemQualityHexes[itemRarity] or "ffffffff", cacheData[ITEM_ID_FIELD], itemMinLevel, itemName)
+		end
+
+		return link or cacheData.link
 	end
 
 	---@param item integer | string
@@ -318,14 +498,13 @@ if not GLUEXML then
 			return
 		end
 
-		local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice = GetItemInfo(item)
-		local itemID, classID, subClassID, equipLocID
 		local cacheWasUsed
+		local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice, itemID, classID, subClassID, equipLocID = GetItemInfoEx(item)
 
 		if not itemName then
 			if not noRequest then
 				C_Item.RequestServerCache(item, callback)
-				itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice = GetItemInfo(item)
+				itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice, itemID, classID, subClassID, equipLocID = GetItemInfoEx(item)
 			end
 
 			if not itemName and not skipClientCache then
@@ -334,29 +513,24 @@ if not GLUEXML then
 			end
 		end
 
-		if itemLink then
-			itemID = itemID or tonumber(strmatch(itemLink, "item:(%d+)"))
-
-			if itemID and (itemID == 43308 or itemID == 43307) then
-				local unitFaction = UnitFactionGroup("player")
-				if itemID == 43308 then
-					itemTexture = "Interface\\ICONS\\PVPCurrency-Honor-"..unitFaction
-				elseif itemID == 43307 then
-					itemTexture = "Interface\\ICONS\\PVPCurrency-Conquest-"..unitFaction
-				end
+		if itemID == 43308 or itemID == 43307 then
+			local unitFaction = UnitFactionGroup("player")
+			if itemID == 43308 then
+				itemTexture = "Interface\\ICONS\\PVPCurrency-Honor-"..unitFaction
+			elseif itemID == 43307 then
+				itemTexture = "Interface\\ICONS\\PVPCurrency-Conquest-"..unitFaction
 			end
 		end
 
 		if noAdditionalData then
 			return itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice
 		else
-			if not classID then
-				classID = C_Item.GetItemClassID(itemType)
-				subClassID = C_Item.GetItemSubClassID(classID, itemSubType)
-				equipLocID = C_Item.GetItemEquipLocID(itemEquipLoc)
-			end
-
-			return itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice, itemID, classID, subClassID, equipLocID, cacheWasUsed or false
+			return itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice,
+				itemID,
+				classID or C_Item.GetItemClassID(itemType),
+				subClassID or C_Item.GetItemSubClassID(classID, itemSubType),
+				equipLocID or C_Item.GetItemEquipLocID(itemEquipLoc),
+				cacheWasUsed or false
 		end
 	end
 
@@ -474,6 +648,29 @@ if not GLUEXML then
 		end
 
 		return Enum.ItemRequirementType.None, 0
+	end
+
+
+	function C_Item.IsWeapon(item)
+		item = getItemID(item, "IsWeapon")
+		if not item then
+			return
+		end
+
+		local itemID, itemType, itemSubType, itemEquipLoc, icon, classID, subClassID = GetItemInfoInstant(item)
+		if not itemID then
+			return
+		end
+
+		if classID == 2 or (classID == 4 and subClassID == 0) then
+			return true
+		end
+		local equipLocID = C_Item.GetItemEquipLocID(itemEquipLoc)
+		if equipLocID == 14 or equipLocID == 23 then
+			return true
+		end
+
+		return false
 	end
 
 	if IsInterfaceDevClient() then

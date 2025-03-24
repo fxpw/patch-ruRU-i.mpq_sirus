@@ -1055,7 +1055,7 @@ SecureCmdList["CAST"] = function(msg)
     local action, target = SecureCmdOptionParse(msg);
     if ( action ) then
 		local name, bag, slot = SecureCmdItemParse(action);
-		if ( slot or C_Item.GetItemInfo(name, true) ) then
+		if ( slot or C_Item.GetItemInfo(name, true, nil, true) ) then
 			SecureCmdUseItem(name, bag, slot, target);
 		else
 			CastSpellByName(action, target);

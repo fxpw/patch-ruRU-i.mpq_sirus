@@ -258,6 +258,8 @@ function StoreCollectionProductMixin:OnLoad()
 	self.ActionButton:SetMinWidth(140)
 	self.ActionButton:SetAllowReplenishment(C_StoreSecure.IsBonusReplenishmentAllowed(), false)
 
+	self.UpdateTooltip = self.OnEnter
+
 	self:RegisterCustomEvent("STORE_FAVORITE_UPDATE")
 end
 
@@ -277,14 +279,54 @@ function StoreCollectionProductMixin:OnShow()
 end
 
 function StoreCollectionProductMixin:OnEnter()
-	if self.showFavoriteOnEnter then
-		self.FavoriteButton:Show()
+	self:UpdateMouseOver()
+
+	if self.itemLink and not self.FavoriteButton:IsMouseOverEx() and not self.MagnifierButton:IsMouseOverEx() then
+		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+		GameTooltip:SetHyperlink(self.itemLink)
+		if self.productID and (IsGMAccount() or IsInterfaceDevClient()) then
+			GameTooltip:AddDoubleLine("ProductID", self.productID, 0.44, 0.54, 0.68, 1, 1, 1)
+			local flags, dynamicFlags = C_StoreSecure.GetProductFlags(self.productID)
+			if flags then
+				GameTooltip:AddDoubleLine("ProductFlags", string.format("0x%x", flags), 0.44, 0.54, 0.68, 1, 1, 1)
+			end
+			if dynamicFlags then
+				GameTooltip:AddDoubleLine("ProductDynFlags", string.format("0x%x", dynamicFlags), 0.44, 0.54, 0.68, 1, 1, 1)
+			end
+		end
+		GameTooltip:Show()
 	end
 end
 
 function StoreCollectionProductMixin:OnLeave()
-	if self.showFavoriteOnEnter and not self.FavoriteButton:IsMouseOverEx() then
+	GameTooltip:Hide()
+	self:UpdateMouseOver()
+end
+
+function StoreCollectionProductMixin:OnClick(button)
+	if IsAltKeyDown() and C_StoreSecure.AddProductItems(self.productID) then
+		return
+	end
+	if IsModifiedClick("DRESSUP") then
+		local allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton = true, false, false, true
+		C_StoreSecure.GetStoreFrame():ShowProductDressUp(self:GetOwner():GetParent(), self.productID, allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton)
+	elseif IsModifiedClick("CHATLINK") then
+	--	local link = C_StoreSecure.GenerateProductHyperlink(item.productID)
+		if self.itemLink and ChatEdit_InsertLink(self.itemLink) then
+			return true
+		end
+	end
+end
+
+function StoreCollectionProductMixin:UpdateMouseOver()
+	if self:IsMouseOverEx(false, true) or self.FavoriteButton:IsMouseOverEx(false, true) or self.MagnifierButton:IsMouseOverEx(false, true) then
+		if self.showFavoriteOnEnter then
+			self.FavoriteButton:Show()
+		end
+		self.MagnifierButton:Show()
+	else
 		self.FavoriteButton:Hide()
+		self.MagnifierButton:Hide()
 	end
 end
 
@@ -302,8 +344,11 @@ function StoreCollectionProductMixin:SetProductID(productID)
 	self.productID = productID
 	if product then
 		self.hasData = true
+
+		local name, itemLink = GetItemInfo(product.itemID)
+		self.itemLink = itemLink
 		self:SetModel(product.modelType, product.modelID, C_StorePublic.GetPreferredModelFacing())
-		self:SetName(GetItemInfo(product.itemID) or UNKNOWN)
+		self:SetName(name or UNKNOWN)
 		self:SetNew(product.isNew)
 		self:SetPrice(product.price, product.originalPrice, product.currencyType)
 		self:SetAvailable(not product.isUnavailable, product.isRollableUnavailable)
@@ -418,6 +463,22 @@ function StoreCollectionProductMixin:OnFavoriteLeave()
 	GameTooltip:Hide()
 end
 
+function StoreCollectionProductMixin:OnMagnifierClick(button)
+	local allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton = true, false, false, true
+	C_StoreSecure.GetStoreFrame():ShowProductDressUp(self:GetOwner():GetParent(), self.productID, allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton)
+end
+
+function StoreCollectionProductMixin:OnMagnifierEnter()
+	GameTooltip:SetOwner(self.MagnifierButton, "ANCHOR_RIGHT")
+	GameTooltip:AddLine(INSPECT)
+	GameTooltip:Show()
+end
+
+function StoreCollectionProductMixin:OnMagnifierLeave()
+	GameTooltip:Hide()
+	self:UpdateMouseOver()
+end
+
 StoreTransmogOfferButtonMixin = CreateFromMixins(PKBT_OwnerMixin)
 
 function StoreTransmogOfferButtonMixin:OnLoad()
@@ -516,11 +577,14 @@ function StoreModelPanelMixin:OnLoad()
 	self.ShadowRight:SetAtlas("PKBT-Background-Shadow-Small-44-Right", true)
 	self.ShadowTop:SetAtlas("PKBT-Background-Shadow-Small-44-Top", true)
 	self.ShadowBottom:SetAtlas("PKBT-Background-Shadow-Small-44-Bottom", true)
+
+	self:SetModelCallbacks()
 end
 
 function StoreModelPanelMixin:OnShow()
 	SetParentFrameLevel(self.Overlay, 2)
 	SetParentFrameLevel(self.EquipmentToggle, 3)
+	SetParentFrameLevel(self.PortraitCameraToggle, 3)
 	SetParentFrameLevel(self.AbilityOverlay, 3)
 end
 
@@ -529,13 +593,41 @@ function StoreModelPanelMixin:Close()
 	LootCasePreviewFrame:Hide()
 end
 
-StoreDressUpMixin = CreateFromMixins(PKBT_DressUpMixin, PKBT_CountdownThrottledBaseMixin)
+function StoreModelPanelMixin:SetModelCallbacks()
+	self.Model.OnPortraitCameraToggle = function(this, enabled)
+		self:OnPortraitCameraToggle(this, enabled)
+	end
+end
+
+function StoreModelPanelMixin:OnPortraitCameraToggle(model, enabled)
+	local modelType = self:GetModelType()
+	if modelType == Enum.ModelType.Item
+	or modelType == Enum.ModelType.ItemSet
+	then
+		if enabled and (modelType == Enum.ModelType.Item or self.allowPortraitCamera) then
+			self:SetPanningEnabled(true)
+			return
+		end
+		self:SetPanningEnabled(false)
+	elseif modelType == Enum.ModelType.Illusion then
+		if enabled then
+			self:SetRotateEnabled(false)
+			self:SetPanningEnabled(false)
+			self:SetPlayerEquipmentToggleEnabled(false)
+		else
+			self:SetRotateEnabled(true)
+			self:SetPanningEnabled(true)
+			self:SetPlayerEquipmentToggleEnabled(not self:IsPortraitCamera() and not self.forceDressed)
+		end
+	end
+end
+
+StoreDressUpMixin = CreateFromMixins(PKBT_DressUpMixin, PKBT_CountdownThrottledBaseMixin, StoreModelPanelMixin)
 
 function StoreDressUpMixin:OnLoad()
 	PKBT_DressUpMixin.OnLoad(self)
 
 	self.BackgroundAlt:SetAtlas("PKBT-Store-DressUp-Background-2", true)
-	self.MinimizeButton:SetMinimizeLook(false)
 
 	self.SetOverlay.Name:SetPoint("BOTTOM", self.SetOverlay.Items, "TOP", 0, 5)
 
@@ -547,19 +639,8 @@ function StoreDressUpMixin:OnLoad()
 	self.itemOffsetX = 5
 	self.setItemIDs = {}
 
+	self:SetModelCallbacks()
 	self:SetNoDisplayDataMode(true)
-
-	self.Model.OnPortraitCameraToggle = function(this, enabled)
-		if self.modelType == Enum.ModelType.Item
-		or self.modelType == Enum.ModelType.ItemSet
-		then
-			if enabled and self.allowPortraitCamera then
-				self:SetPanningEnabled(true)
-				return
-			end
-		end
-		self:SetPanningEnabled(false)
-	end
 end
 
 function StoreDressUpMixin:OnShow()
@@ -601,6 +682,11 @@ function StoreDressUpMixin:SetItem(itemLink, allowToHide, allowEquipmentToggle, 
 			canHaveAbilities = true
 		end
 	elseif linkType == Enum.DressUpLinkType.Illusion then
+		if type(itemLink) == "string" then
+			id = tonumber(strmatch(itemLink, "item:(%d+)"))
+		else
+			id = itemLink
+		end
 		modelType = Enum.ModelType.Illusion
 		modelID = id
 	else
@@ -625,7 +711,7 @@ function StoreDressUpMixin:SetItem(itemLink, allowToHide, allowEquipmentToggle, 
 	self.SetOverlay.Items:Hide()
 
 	self.VignetteTopRight:SetShown(not allowToHide)
-	self.MinimizeButton:SetShown(allowToHide)
+	self.CloseButton:SetShown(allowToHide)
 	self.PurchaseButton:Hide()
 	self:SetModel(self.modelType, self.modelID, true)
 
@@ -774,7 +860,7 @@ function StoreDressUpMixin:SetProduct(productID, allowToHide, allowEquipmentTogg
 	end
 
 	self.VignetteTopRight:SetShown(not allowToHide)
-	self.MinimizeButton:SetShown(allowToHide)
+	self.CloseButton:SetShown(allowToHide)
 	self.PurchaseButton:SetDisabledReason(self.disabledReason)
 	self.PurchaseButton:SetEnabled(self.disabledReason == nil)
 	self.PurchaseButton:SetShown(showPurchaseButton)
@@ -848,29 +934,32 @@ function StoreDressUpMixin:SetModel(modelType, modelID, undress, preserveFacting
 		if self.forceDressed then
 			undress = false
 		end
+		local allowItemCamera = modelType == Enum.ModelType.Item and modelID and not C_Item.IsWeapon(modelID)
 		self.Model:SetModelAuto(modelType, modelID, nil, nil, nil, nil, undress, preserveFacting, preservePosition)
 		self:SetZoomEnabled(false)
 		self:SetRotateEnabled(true)
-		self:SetPanningEnabled(self.allowPortraitCamera and self:IsPortraitCamera())
+		self:SetPanningEnabled((allowItemCamera or self.allowPortraitCamera) and self:IsPortraitCamera())
 		self:SetPlayerEquipmentToggleEnabled(not self.forceDressed and self.allowEquipmentToggle and modelType == Enum.ModelType.Item)
-		self:SetPortraitCameraToggleEnabled(self.allowPortraitCamera)
+		self:SetPortraitCameraToggleEnabled(allowItemCamera or self.allowPortraitCamera)
 		return true
 	elseif modelType == Enum.ModelType.Creature then
 		local facing = C_StorePublic.GetPreferredModelFacing()
-		self.Model:SetModelAuto(Enum.ModelType.Creature, modelID, -facing)
+		self.Model:SetModelAuto(modelType, modelID, -facing)
 		self:SetZoomEnabled(false)
 		self:SetRotateEnabled(true)
 		self:SetPanningEnabled(false)
 		self:SetPlayerEquipmentToggleEnabled(false)
 		self:SetPortraitCameraToggleEnabled(false)
 		return true
-	elseif modelType == Enum.ModelType.Illusion then
-		self.Model:SetModelAuto(Enum.ModelType.Illusion, modelID)
+	elseif modelType == Enum.ModelType.Illusion
+	or modelType == Enum.ModelType.ItemTransmog
+	then
+		self.Model:SetModelAuto(modelType, modelID)
 		self:SetZoomEnabled(false)
 		self:SetRotateEnabled(false)
 		self:SetPanningEnabled(false)
 		self:SetPlayerEquipmentToggleEnabled(false)
-		self:SetPortraitCameraToggleEnabled(false)
+		self:SetPortraitCameraToggleEnabled(true)
 		return true
 	else
 		self.Model:ResetFull()
@@ -907,10 +996,7 @@ function StoreDressUpMixin:SetNoDisplayDataMode(isNoDisplayDataMode)
 	self.Overlay:SetShown(not isNoDisplayDataMode)
 	self.SetOverlay:SetShown(not isNoDisplayDataMode)
 	self.AbilityOverlay:SetShown(not isNoDisplayDataMode)
-
-	if not isNoDisplayDataMode then
-		self.PurchaseButton:Hide()
-	end
+	self.PurchaseButton:Hide()
 end
 
 function StoreDressUpMixin:OnPurchaseClick(button)

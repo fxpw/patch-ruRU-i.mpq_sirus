@@ -490,9 +490,18 @@ function StoreItemListViewMixin:OnItemScrollUpdate(cacheReceived)
 		self.dirty = nil
 	end
 
+	self:UpdateItemSelection()
+
 	local isLoaded = C_StoreSecure.IsCategoryProductsLoaded(self.categoryIndex, self.subCategoryIndex)
 	self.List.NoProduct:SetShown(isLoaded and numItems == 0)
 	self.Loading:SetShown(not isLoaded)
+end
+
+function StoreItemListViewMixin:UpdateItemSelection()
+	local selectedProductID = self:GetDressUpProductID()
+	for index, button in ipairs(self.List.Scroll.buttons) do
+		button:SetSelected(selectedProductID and button.productID == selectedProductID)
+	end
 end
 
 function StoreItemListViewMixin:OnItemClick(item)
@@ -523,10 +532,9 @@ function StoreItemListViewMixin:OnItemClick(item)
 		local linkType, id, collectionID = GetDressUpItemLinkInfo(item.itemLink)
 		if linkType == Enum.DressUpLinkType.LootCase then
 			LootCasePreviewFrame:SetPreview(id)
-			LootCasePreviewFrame:Show()
 			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 		else
-			local allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton = true, true, false, false
+			local allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton = true, true, false, true
 
 			if self.categoryIndex == Enum.Store.Category.Equipment and self.subCategoryIndex == 1 then
 				allowPortraitCamera = true
@@ -544,8 +552,21 @@ function StoreItemListViewMixin:OnItemClick(item)
 	PlaySound(SOUNDKIT.UI_IG_STORE_BUY_BUTTON)
 end
 
+function StoreItemListViewMixin:GetDressUpProductID()
+	return self.DressUp:IsShown() and self.DressUp.productID or nil
+end
+
 function StoreItemListViewMixin:ShowProductDressUp(productID, allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton)
 	local success = self.DressUp:SetProduct(productID, allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton)
+	if success then
+		self:ToggleDressUp(true)
+		self:UpdateItemSelection()
+	end
+	return success
+end
+
+function StoreItemListViewMixin:ShowItemDressUp(itemLink, allowToHide, allowEquipmentToggle, allowPortraitCamera)
+	local success = self.DressUp:SetItem(itemLink, allowToHide, allowEquipmentToggle, allowPortraitCamera)
 	if success then
 		self:ToggleDressUp(true)
 	end
@@ -715,7 +736,9 @@ function StoreItemListViewMixin:UpdateFilters(cacheReceived)
 
 				holder:AddOptionWidget(checkButton)
 			end
-		elseif filterTypeData.type == Enum.Store.ProductFilterOption.CLASS then
+		elseif filterTypeData.type == Enum.Store.ProductFilterOption.CLASS
+		or filterTypeData.type == Enum.Store.ProductFilterOption.CONTENT_TYPE
+		then
 			holder:SetLabel(filterTypeData.name)
 			holder.isRadioButton = true
 
@@ -809,6 +832,7 @@ function StoreItemListViewMixin:UpdateFilterValues()
 			or filterTypeData.type == Enum.Store.ProductFilterOption.WEAPON_SUB_CLASS
 			or filterTypeData.type == Enum.Store.ProductFilterOption.ITEM_STATS
 			or filterTypeData.type == Enum.Store.ProductFilterOption.CLASS
+			or filterTypeData.type == Enum.Store.ProductFilterOption.CONTENT_TYPE
 			then
 				widget.value = value
 				widget:SetChecked(value)
@@ -1045,6 +1069,10 @@ function StoreProductListRowButtonMixin:Populate(rowData, dataIndex)
 	self:UpdateFavorite()
 end
 
+function StoreProductListRowButtonMixin:SetSelected(selected)
+	self.NineSliceSelection:SetShown(selected)
+end
+
 function StoreProductListRowButtonMixin:UpdateFavorite()
 	if C_StoreSecure.IsFavoriteProductID(self.productID) then
 		self.FavoriteButton:SetNormalAtlas("auctionhouse-icon-favorite", true)
@@ -1268,7 +1296,7 @@ function StoreProductFilterHolderMixin:UpdateRect()
 	if #self.widgets == 0 then
 		self:SetHeight(-5) -- yes, use negative height as offset compensation
 		self:Hide()
-		GMError(string.format("[STORE_LIST_VIEW] No filter options for filter \"%s\"", self.Label:GetText()))
+		GMError(string.format("[STORE_LIST_VIEW] No filter options for filter \"%s\"", self.Label:GetText() or self.type))
 		return
 	else
 		self:Show()

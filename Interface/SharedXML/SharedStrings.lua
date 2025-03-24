@@ -319,13 +319,14 @@ local SHARED_STRINGS = {
 		ruRU = "Цвет кожи и рогов",
 		enGB = "Skin and Horns Color"
 	},
+	["SKIN_COLOR_NAGA"] = {
+		ruRU = "Цвет чешуи",
+	},
 	["SKIN_COLOR_ZANDALARITROLL"] = {
 		ruRU = "Цвет кожи и клыков",
-		enGB = ""
 	},
 	["FACIAL_FACE_DRACTHYR"] = {
 		ruRU = "Лицо и узоры",
-		enGB = ""
 	},
 	["FACIAL_HAIR_DRACTHYR"] = {
 		ruRU = "Борода и Рога",
@@ -373,15 +374,16 @@ local SHARED_STRINGS = {
 	},
 	["FACIAL_HAIR_PANDA_FEM"] = {
 		ruRU = "Серьги и хвост",
-		enGB = ""
 	},
 	["FACIAL_HAIR_PIERCINGS"] = {
 		ruRU = "Пирсинг",
 		enGB = "Piercings"
 	},
 	["FACIAL_HAIR_TENTS"] = {
-		ruRU = "Щупальцы",
-		enGB = "Tentacles"
+		ruRU = "Щупальца и плавники",
+	},
+	["FACIAL_HAIR_TENTS_PIERCINGS"] = {
+		ruRU = "Плавники и пирсинг",
 	},
 	["FACIAL_HAIR_TUSKS"] = {
 		ruRU = "Клыки",
@@ -465,7 +467,6 @@ local SHARED_STRINGS = {
 	},
 	["HAIR_NORMAL_EYES_COLOR"] = {
 		ruRU = "Цвет глаз",
-		enGB = "Hair Color"
 	},
 	["HAIR_NORMAL_STYLE"] = {
 		ruRU = "Прическа",
@@ -475,13 +476,8 @@ local SHARED_STRINGS = {
 		ruRU = "Серьги и хвост",
 		enGB = "Hair Style"
 	},
-	["HAIR_VULPERA_COLOR"] = {
-		ruRU = "Цвет глаз",
-		enGB = ""
-	},
-	["HAIR_VULPERA_STYLE"] = {
+	["HAIR_NORMAL_EYES_STYLE"] = {
 		ruRU = "Мордочка",
-		enGB = ""
 	},
 	["HAIR_WORGEN_STYLE"] = {
 		ruRU = "Прическа",
@@ -533,7 +529,6 @@ local SHARED_STRINGS = {
 	},
 	["LESS_THAN_OPERAND"] = {
 		ruRU = "< %s",
-		enGB = ""
 	},
 	["LOW"] = {
 		ruRU = "Мин.",
@@ -1505,71 +1500,54 @@ local SHARED_STRINGS = {
 	},
 	["RACE_FACTION_0"] = {
 		ruRU = "Орда",
-		enGB = ""
 	},
 	["RACE_FACTION_1"] = {
 		ruRU = "Альянс",
-		enGB = ""
 	},
 	["RACE_FACTION_2"] = {
 		ruRU = "Нейтрал",
-		enGB = ""
 	},
 	["RACE_NIGHTELF_FEMALE"] = {
 		ruRU = "Ночная эльфийка",
-		enGB = ""
 	},
 	["RACE_SCOURGE_FEMALE"] = {
 		ruRU = "Нежить",
-		enGB = ""
 	},
 	["RACE_BLOODELF_FEMALE"] = {
 		ruRU = "Син'Дорейка",
-		enGB = ""
 	},
 	["RACE_WORGEN_FEMALE"] = {
 		ruRU = "Ворген",
-		enGB = ""
 	},
 	["RACE_NAGA_FEMALE"] = {
 		ruRU = "Нага",
-		enGB = ""
 	},
 	["RACE_PANDAREN_ALLIANCE_FEMALE"] = {
 		ruRU = "Пандарен (Альянс)",
-		enGB = ""
 	},
 	["RACE_QUELDO_FEMALE"] = {
 		ruRU = "Высшая эльфийка",
-		enGB = ""
 	},
 	["RACE_PANDAREN_HORDE_FEMALE"] = {
 		ruRU = "Пандарен (Орда)",
-		enGB = ""
 	},
 	["RACE_TAUNKA_FEMALE"] = {
 		ruRU = "Таунка",
-		enGB = ""
 	},
 	["RACE_NAGA_FEMALE_"] = {
 		ruRU = "Нага",
-		enGB = ""
 	},
 	["RACE_BROKEN_FEMALE"] = {
 		ruRU = "Падшая",
-		enGB = ""
 	},
 	["RACE_NIGHTELF_CREATURE_FEMALE"] = {
 		ruRU = "Ночная эльфийка",
-		enGB = ""
 	},
 	["RACE_SCOURGE_CREATURE_FEMALE"] = {
 		ruRU = "Нежить",
-		enGB = ""
 	},
 	["RACE_BLOODELF_CREATURE_FEMALE"] = {
 		ruRU = "Син'Дорейка",
-		enGB = ""
 	},
 	["RACE_DRACTHYR"] = {
 		ruRU = "Драктир",
@@ -1581,127 +1559,96 @@ local SHARED_STRINGS = {
 	},
 	["RACE_VULPERA_ALLIANCE"] = {
 		ruRU = "Вульпера (Альянс)",
-		enGB = ""
 	},
 	["RACE_VULPERA_ALLIANCE_FEMALE"] = {
 		ruRU = "Вульпера (Альянс)",
-		enGB = ""
 	},
 	["RACE_VULPERA_HORDE"] = {
 		ruRU = "Вульпера (Орда)",
-		enGB = ""
 	},
 	["RACE_VULPERA_HORDE_FEMALE"] = {
 		ruRU = "Вульпера (Орда)",
-		enGB = ""
 	},
 	["RACE_VULPERA_NEUTRAL"] = {
 		ruRU = "Вульпера (Нейтрал)",
-		enGB = ""
 	},
 	["RACE_VULPERA_NEUTRAL_FEMALE"] = {
 		ruRU = "Вульпера (Нейтрал)",
-		enGB = ""
 	},
 	["RACE_NIGHTBORNE"] = {
 		ruRU = "Ночнорожденный",
-		enGB = ""
 	},
 	["RACE_NIGHTBORNE_FEMALE"] = {
 		ruRU = "Ночнорожденная",
-		enGB = ""
 	},
 	["SERVER_WAITING_DATA"] = {
 		ruRU = "Ожидание данных с сервера",
-		enGB = ""
 	},
 	["RACE_VOIDELF"] = {
 		ruRU = "Эльф Бездны",
-		enGB = ""
 	},
 	["RACE_VOIDELF_FEMALE"] = {
 		ruRU = "Эльфийка Бездны",
-		enGB = ""
 	},
 	["RACE_VOIDELF_CONFIRM"] = {
 		ruRU = "Эльфом Бездны",
-		enGB = ""
 	},
 	["RACE_VOIDELF_FEMALE_CONFIRM"] = {
 		ruRU = "Эльфийкой Бездны",
-		enGB = ""
 	},
 	["RACE_NIGHTBORNE_CONFIRM"] = {
 		ruRU = "Ночнорожденным",
-		enGB = ""
 	},
 	["RACE_NIGHTBORNE_FEMALE_CONFIRM"] = {
 		ruRU = "Ночнорожденной",
-		enGB = ""
 	},
 	["RACE_EREDAR"] = {
 		ruRU = "Эредар",
-		enGB = ""
 	},
 	["RACE_EREDAR_FEMALE"] = {
 		ruRU = "Эредарка",
-		enGB = ""
 	},
 	["RACE_DARKIRONDWARF"] = {
 		ruRU = "Дворф Черного Железа",
-		enGB = ""
 	},
 	["RACE_DARKIRONDWARF_FEMALE"] = {
 		ruRU = "Дворф Черного Железа",
-		enGB = ""
 	},
 	["RACE_EREDAR_CONFIRM"] = {
 		ruRU = "Эредаром",
-		enGB = ""
 	},
 	["RACE_EREDAR_FEMALE_CONFIRM"] = {
 		ruRU = "Эредар",
-		enGB = ""
 	},
 	["RACE_DARKIRONDWARF_CONFIRM"] = {
 		ruRU = "Дворф Черного Железа",
-		enGB = ""
 	},
 	["RACE_DARKIRONDWARF_FEMALE_CONFIRM"] = {
 		ruRU = "Дворф Черного Железа",
-		enGB = ""
 	},
 	["RACE_ZANDALARITROLL"] = {
 		ruRU = "Зандалар",
-		enGB = ""
 	},
 	["RACE_ZANDALARITROLL_FEMALE"] = {
 		ruRU = "Зандаларка",
-		enGB = ""
 	},
 	["RACE_LIGHTFORGED"] = {
 		ruRU = "Озаренный дреней",
-		enGB = ""
 	},
 	["RACE_LIGHTFORGED_FEMALE"] = {
 		ruRU = "Озаренный дреней",
-		enGB = ""
 	},
 	["RACE_ZANDALARITROLL_CONFIRM"] = {
 		ruRU = "Зандаларом",
-		enGB = ""
 	},
 	["RACE_ZANDALARITROLL_FEMALE_CONFIRM"] = {
 		ruRU = "Зандаларкой",
-		enGB = ""
 	},
 	["RACE_LIGHTFORGED_CONFIRM"] = {
 		ruRU = "Озаренным дренеем",
-		enGB = ""
 	},
 	["RACE_LIGHTFORGED_FEMALE_CONFIRM"] = {
 		ruRU = "Озаренным дренеем",
-		enGB = ""
 	},
 	["DRAG_MODEL"] = {
 		ruRU = "Перетащить",
@@ -2417,7 +2364,6 @@ local SHARED_STRINGS = {
 	},
 	["STORE_BUY_FREE"] = {
 		ruRU = "Получить",
-		enGB = ""
 	},
 
 	["CHARACTER_CATEGORY_OOC"] = {

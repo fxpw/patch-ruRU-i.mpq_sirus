@@ -2729,11 +2729,17 @@ PKBT_MagnifierButtonMixin = {}
 function PKBT_MagnifierButtonMixin:OnLoad()
 	self:SetNormalAtlas("store-icon-magnifyingglass")
 	self:SetHighlightAtlas("store-icon-magnifyingglass")
-	self:SetCheckedAtlas("store-icon-magnifyingglass")
 end
 
 function PKBT_MagnifierButtonMixin:OnClick(button)
 	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+end
+
+PKBT_MagnifierCheckButtonMixin = CreateFromMixins(PKBT_MagnifierButtonMixin)
+
+function PKBT_MagnifierCheckButtonMixin:OnLoad()
+	PKBT_MagnifierButtonMixin.OnLoad(self)
+	self:SetCheckedAtlas("store-icon-magnifyingglass")
 end
 
 local TRANSMOG_CREATURE_ID = 413
@@ -2861,13 +2867,17 @@ function PKBT_ModelMixin:OnEvent(event, ...)
 			end
 		end
 	elseif event == "ITEM_DATA_LOAD_RESULT" then
-		local success, itemID = ...
+		local itemID, success = ...
 		if itemID == self.awaitItemDataID then
 			if success then
 				self.needsReload = true
 				self:UpdateModelPreset()
 			end
 			self:UnregisterCustomEvent(event)
+		end
+	elseif event == "DISPLAY_SIZE_CHANGED" then
+		if self:IsModelLoaded() then
+			self:UpdateModelPreset()
 		end
 	end
 end
@@ -2884,11 +2894,13 @@ function PKBT_ModelMixin:OnShow()
 	end
 
 	self:UpdateModelPreset()
+	self:RegisterEvent("DISPLAY_SIZE_CHANGED")
 end
 
 function PKBT_ModelMixin:OnHide()
 	self:DisablePortraitCamera()
 	self.needsReload = true
+	self:UnregisterEvent("DISPLAY_SIZE_CHANGED")
 end
 
 function PKBT_ModelMixin:OnUpdateModel()
@@ -2901,13 +2913,12 @@ function PKBT_ModelMixin:OnUpdateModel()
 		end)
 	end
 
-	if self.modelType == Enum.ModelType.Illusion
-	or self.modelType == Enum.ModelType.ItemTransmog
-	then
+	if self.modelType == Enum.ModelType.ItemTransmog then
 		self:SetSequence(self.animId or 3)
 	elseif self.portraitCamera and self.freezeSequence then
 		if self.modelType == Enum.ModelType.Item
 		or self.modelType == Enum.ModelType.ItemSet
+		or self.modelType == Enum.ModelType.Illusion
 		or self.modelType == Enum.ModelType.Unit
 		then
 			self:SetSequence(self.animId or 3)
@@ -2940,7 +2951,7 @@ function PKBT_ModelMixin:ResetModelData(preserveFacting, preservePosition)
 
 	if not preserveFacting then
 		self.preservedFacing = nil
-		self.rotation = self.defaultRotation
+		self.rotation = self.defaultRotation or 0
 	end
 	if not preservePosition then
 		self.basePositionOffsetX = nil
@@ -2962,6 +2973,7 @@ function PKBT_ModelMixin:ResetModelData(preserveFacting, preservePosition)
 end
 
 function PKBT_ModelMixin:ResetModel()
+	self.modelLoaded = nil
 	self:SetPosition(0, 0, 0)
 	self:SetFacing(0)
 	self:ClearModel()
@@ -2981,6 +2993,10 @@ function PKBT_ModelMixin:FireModelTypeChanged()
 			geterrorhandler()(err)
 		end
 	end
+end
+
+function PKBT_ModelMixin:GetModelType()
+	return self.modelType
 end
 
 function PKBT_ModelMixin:SetM2Model(model, facing, posOffsetX, posOffsetY, posOffsetZ)
@@ -3035,7 +3051,7 @@ function PKBT_ModelMixin:SetItemDressUp(itemLink, facing, posOffsetX, posOffsetY
 	self:PreserveCameraSettings(preserveFacting, preservePosition)
 	self:ResetFull(preserveFacting, preservePosition)
 	self.modelType = Enum.ModelType.Item
-	self.modelID = itemLink
+	self.modelID = GetItemInfoInstant(itemLink)
 	self.facing = facing
 	self.basePositionOffsetX = posOffsetX
 	self.basePositionOffsetY = posOffsetY
@@ -3081,7 +3097,7 @@ function PKBT_ModelMixin:SetItemTransmogModel(itemID, posOffsetX, posOffsetY, po
 	self:UpdateModelPreset()
 end
 
-function PKBT_ModelMixin:SetIllusionModel(illusionProductID, posOffsetX, posOffsetY, posOffsetZ, baseItemOverrideID)
+function PKBT_ModelMixin:SetIllusionModel(illusionProductID, posOffsetX, posOffsetY, posOffsetZ, baseItemOverrideID, useNonPortraitCamera)
 	local modelType = self.modelType
 	self:ResetFull()
 	self.modelType = Enum.ModelType.Illusion
@@ -3090,6 +3106,8 @@ function PKBT_ModelMixin:SetIllusionModel(illusionProductID, posOffsetX, posOffs
 	self.basePositionOffsetY = posOffsetY
 	self.basePositionOffsetZ = posOffsetZ
 	self.baseItemOverrideID = baseItemOverrideID
+	self.portraitCamera = not useNonPortraitCamera
+	self.freezeSequence = true
 	self.needsReload = true
 	if modelType ~= self.modelType then
 		self:FireModelTypeChanged()
@@ -3173,7 +3191,9 @@ function PKBT_ModelMixin:HasPreservedPosition()
 end
 
 function PKBT_ModelMixin:TogglePlayerEquipment(state)
-	if self.modelType == Enum.ModelType.Item then
+	if self.modelType == Enum.ModelType.Item
+	or (self.modelType == Enum.ModelType.Illusion and not self.portraitCamera)
+	then
 		state = not state
 		if self.undress ~= state then
 			self.undress = state
@@ -3191,18 +3211,37 @@ end
 
 function PKBT_ModelMixin:DisablePortraitCamera()
 	if self:IsPortraitCamera() then
-		self:RemovePreservedPosition()
-		self.portraitCamera = nil
-		self.freezeSequence = nil
+		local fireCallback
 
-		self.rotation = 0
-		self:ResetBasePositionOverride()
+		if self.modelType == Enum.ModelType.Item
+		or self.modelType == Enum.ModelType.ItemSet
+		or self.modelType == Enum.ModelType.Unit
+		then
+			self:RemovePreservedPosition()
+			self.portraitCamera = nil
+			self.freezeSequence = nil
 
-		self:SetFacing(0, 0, 0)
-		self:SetPosition(0, 0, 0)
+			self:ResetBasePositionOverride()
 
-		if type(self.OnPortraitCameraToggle) == "function" then
-			local success, err = pcall(self.OnPortraitCameraToggle, self, false)
+			self.rotation = 0
+			self.maxZoom = -(self.minZoom)
+			self.minZoom = 0
+			self.zoomLevel = self.minZoom
+
+			self:SetFacing(0)
+			self:SetPosition(0, 0, 0)
+
+			fireCallback = true
+		elseif self.modelType == Enum.ModelType.Illusion then
+			self.portraitCamera = nil
+			self.freezeSequence = nil
+			self.rotation = 0
+
+			fireCallback = true
+		end
+
+		if fireCallback and type(self.OnPortraitCameraToggle) == "function" then
+			local success, err = pcall(self.OnPortraitCameraToggle, self, not not self.portraitCamera)
 			if not success then
 				geterrorhandler()(err)
 			end
@@ -3234,6 +3273,8 @@ function PKBT_ModelMixin:TogglePortraitCamera(state)
 				local cameraID
 				if self.modelType == Enum.ModelType.Unit then
 					cameraID = GetUICameraIDByType(20, self.modelID)
+				elseif self.modelType == Enum.ModelType.Item and not C_Item.IsWeapon(self.modelID) then
+					cameraID = C_TransmogCollection.GetAppearanceCameraIDBySource(self.modelID)
 				else
 					cameraID = GetUICameraIDByType(20)
 				end
@@ -3241,16 +3282,19 @@ function PKBT_ModelMixin:TogglePortraitCamera(state)
 					self.portraitCamera = state
 					self.freezeSequence = true
 
-					self.rotation = 0
-
 					Model_ApplyUICamera(self, cameraID, nil, nil, nil)
+
+					self.rotation = self:GetFacing()
+					self.minZoom = -(self.maxZoom)
+					self.maxZoom = 0
+					self.zoomLevel = self.maxZoom
 
 					self:SetPositionAsBaseOverride()
 					self:PreserveFacing()
 					self:PreservePosition()
 
 					if type(self.OnPortraitCameraToggle) == "function" then
-						local success, err = pcall(self.OnPortraitCameraToggle, self, true)
+						local success, err = pcall(self.OnPortraitCameraToggle, self, not not self.portraitCamera)
 						if not success then
 							geterrorhandler()(err)
 						end
@@ -3261,12 +3305,33 @@ function PKBT_ModelMixin:TogglePortraitCamera(state)
 			else
 				self:DisablePortraitCamera()
 			end
+		elseif self.modelType == Enum.ModelType.Illusion then
+			if self.portraitCamera ~= state then
+				self.portraitCamera = state
+				self.freezeSequence = true
+				self.rotation = 0
+				self.needsReload = true
+				self:UpdateModelPreset()
+
+				if type(self.OnPortraitCameraToggle) == "function" then
+					local success, err = pcall(self.OnPortraitCameraToggle, self, not not self.portraitCamera)
+					if not success then
+						geterrorhandler()(err)
+					end
+				end
+			end
 		end
 	end
 end
 
 function PKBT_ModelMixin:IsPortraitCamera()
-	return self.portraitCamera and true or false
+	if self.modelType == Enum.ModelType.Item
+	or self.modelType == Enum.ModelType.ItemSet
+	or self.modelType == Enum.ModelType.Unit
+	or self.modelType == Enum.ModelType.Illusion
+	then
+		return self.portraitCamera and true or false
+	end
 end
 
 local function GetBestIllusionWeaponAppearance(...)
@@ -3312,6 +3377,7 @@ end
 
 function PKBT_ModelMixin:OnModelError(modelType, modelID)
 	self.queued = nil
+	self.modelLoaded = nil
 	if self.modelType == modelType and self.modelID == modelID then
 		self.LoadingSpinner:Hide()
 		self:Hide()
@@ -3322,6 +3388,7 @@ end
 function PKBT_ModelMixin:OnModelPresetDone()
 	self.preservedFacing = nil
 	self.preservedPosition = nil
+	self.modelLoaded = true
 
 	if type(self.OnModelPresetApplied) == "function" then
 		local success, err = pcall(self.OnModelPresetApplied, self)
@@ -3329,6 +3396,10 @@ function PKBT_ModelMixin:OnModelPresetDone()
 			geterrorhandler()(err)
 		end
 	end
+end
+
+function PKBT_ModelMixin:IsModelLoaded()
+	return self.modelLoaded
 end
 
 function PKBT_ModelMixin:UpdateModelPreset()
@@ -3339,6 +3410,7 @@ function PKBT_ModelMixin:UpdateModelPreset()
 
 	if self.needsReload then
 		self:ResetModel()
+		self.needsReload = nil
 	end
 
 	if self.modelType == Enum.ModelType.Creature then
@@ -3364,9 +3436,16 @@ function PKBT_ModelMixin:UpdateModelPreset()
 		local itemID, enchantID, dressUpLink = GetIllusionInfoByEntry(self.modelID, self.baseItemOverrideID)
 		if itemID and enchantID and dressUpLink then
 			DummyWardrobeUnitModel:Dress()
-			self:Undress()
 
-			self:SetCreature(TRANSMOG_CREATURE_ID)
+			if self.portraitCamera then
+				self:Undress()
+				self:SetCreature(TRANSMOG_CREATURE_ID)
+			else
+				self:SetUnit("player")
+				if self.undress then
+					self:Undress()
+				end
+			end
 
 			if self:GetModel() == self then
 				if ModelLoadHandler:IsInvalidOrCacheLoaded(self.modelType, self.modelID) then
@@ -3384,7 +3463,7 @@ function PKBT_ModelMixin:UpdateModelPreset()
 
 				if self:HasPreservedPosition() then
 					self:RestorePreservedPosition()
-				else
+				elseif self.portraitCamera then
 					local cameraID = C_TransmogCollection.GetAppearanceCameraIDBySource(itemID)
 					Model_ApplyUICamera(self, cameraID, self.basePositionOffsetX or 1, self.basePositionOffsetY or 1, self.basePositionOffsetZ or 0.8)
 				end
@@ -3400,8 +3479,9 @@ function PKBT_ModelMixin:UpdateModelPreset()
 			self:OnModelError(self.modelType, self.modelID)
 		end
 	elseif self.modelType == Enum.ModelType.ItemTransmog then
-		local itemLink, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice, itemID, classID, subClassID, equipLocID = C_Item.GetItemInfo(self.modelID)
-		if itemLink then
+		local itemID, itemType, itemSubType, itemEquipLoc, icon, classID, subClassID = GetItemInfoInstant(self.modelID)
+		if itemID then
+			local equipLocID = C_Item.GetItemEquipLocID(itemEquipLoc)
 			if ITEM_WEAPON_EQUIP_LOC_IDS[equipLocID] then
 				DummyWardrobeUnitModel:Dress()
 				self:Undress()
@@ -3512,8 +3592,6 @@ function PKBT_ModelMixin:UpdateModelPreset()
 		self:SetFacing(self.preservedFacing or self.facing or 0)
 		self:OnModelPresetDone()
 	end
-
-	self.needsReload = nil
 end
 
 PKBT_DressUpBaseMixin = CreateFromMixins(PKBT_OwnerMixin)
@@ -3652,16 +3730,20 @@ function PKBT_DressUpBaseMixin:TogglePortraitCamera(state)
 	self:UpdatePortraitCameraState()
 end
 
-function PKBT_DressUpBaseMixin:SetModel(modelType, modelID)
+function PKBT_DressUpBaseMixin:GetModelType()
+	return self.Model:GetModelType()
+end
+
+function PKBT_DressUpBaseMixin:SetModel(modelType, modelID, undress, preserveFacting, preservePosition)
 	if modelType == Enum.ModelType.Item
 	or modelType == Enum.ModelType.ItemSet
 	then
-		self.Model:SetModelAuto(modelType, modelID)
+		self.Model:SetModelAuto(modelType, modelID, nil, nil, nil, nil, undress, preserveFacting, preservePosition)
 		self:SetZoomEnabled(true)
 		self:SetRotateEnabled(true)
 		self:SetPanningEnabled(true)
 		self:SetPlayerEquipmentToggleEnabled(modelType == Enum.ModelType.Item)
-		self:SetPortraitCameraToggleEnabled(false)
+		self:SetPortraitCameraToggleEnabled(modelType == Enum.ModelType.Item and modelID and not C_Item.IsWeapon(modelID))
 		return true
 	elseif modelType == Enum.ModelType.Creature then
 		local facing = C_StorePublic and C_StorePublic.GetPreferredModelFacing() or math.rad(25)
@@ -3680,7 +3762,7 @@ function PKBT_DressUpBaseMixin:SetModel(modelType, modelID)
 		self:SetRotateEnabled(false)
 		self:SetPanningEnabled(false)
 		self:SetPlayerEquipmentToggleEnabled(false)
-		self:SetPortraitCameraToggleEnabled(false)
+		self:SetPortraitCameraToggleEnabled(modelType == Enum.ModelType.Illusion)
 		return true
 	else
 		self.Model:ResetFull()
@@ -3701,11 +3783,14 @@ function PKBT_DressUpBaseMixin:DressUpItemLink(link)
 	elseif linkType == Enum.DressUpLinkType.Pet or linkType == Enum.DressUpLinkType.Mount then
 		return self:SetModel(Enum.ModelType.Creature, id)
 	elseif linkType == Enum.DressUpLinkType.Illusion then
-		id = tonumber(strmatch(link, "item:(%d+)"))
+		if type(link) == "string" then
+			id = tonumber(strmatch(link, "item:(%d+)"))
+		else
+			id = link
+		end
 		return self:SetModel(Enum.ModelType.Illusion, id)
 	elseif linkType == Enum.DressUpLinkType.LootCase then
 		LootCasePreviewFrame:SetPreview(id)
-		LootCasePreviewFrame:Show()
 		return false
 	end
 

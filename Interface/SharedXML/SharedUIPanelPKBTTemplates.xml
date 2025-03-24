@@ -1798,7 +1798,7 @@
 		</Scripts>
 	</CheckButton>
 
-	<CheckButton name="PKBT_MagnifierButtonTemplate" virtual="true">
+	<Button name="PKBT_MagnifierButtonTemplate" virtual="true">
 		<Size x="31" y="35"/>
 		<NormalTexture/>
 		<HighlightTexture alphaMode="ADD"/>
@@ -1810,6 +1810,14 @@
 			<OnClick>
 				self:OnClick(button)
 			</OnClick>
+		</Scripts>
+	</Button>
+	<CheckButton name="PKBT_MagnifierCheckButtonTemplate" inherits="PKBT_MagnifierButtonTemplate" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, PKBT_MagnifierCheckButtonMixin)
+				self:OnLoad()
+			</OnLoad>
 		</Scripts>
 	</CheckButton>
 
@@ -1925,7 +1933,7 @@
 							</OnClick>
 						</Scripts>
 					</CheckButton>
-					<CheckButton name="$parentPortraitCameraToggle" parentKey="PortraitCameraToggle" inherits="PKBT_MagnifierButtonTemplate" hidden="true">
+					<CheckButton name="$parentPortraitCameraToggle" parentKey="PortraitCameraToggle" inherits="PKBT_MagnifierCheckButtonTemplate" hidden="true">
 						<Anchors>
 							<Anchor point="TOPRIGHT" x="-25" y="-160"/>
 						</Anchors>

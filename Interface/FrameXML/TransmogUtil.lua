@@ -125,7 +125,7 @@ function TransmogUtil.GetSetIcon(setID)
 		end
 	end
 	if bestItemID then
-		return select(3, GetItemInfo(bestItemID));
+		return select(5, GetItemInfoInstant(bestItemID));
 	else
 		return QUESTION_MARK_ICON;
 	end

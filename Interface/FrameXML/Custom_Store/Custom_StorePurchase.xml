@@ -380,29 +380,6 @@
 						<Anchors>
 							<Anchor point="TOP" x="33" y="-15"/>
 						</Anchors>
-						<Layers>
-							<Layer level="ARTWORK">
-								<Texture name="$parentIcon" parentKey="Icon">
-									<Size x="64" y="64"/>
-									<Anchors>
-										<Anchor point="TOPRIGHT" relativePoint="TOPLEFT" x="-2" y="-2"/>
-									</Anchors>
-								</Texture>
-							</Layer>
-							<Layer level="OVERLAY">
-								<Texture name="$parentIconBorder" parentKey="IconBorder">
-									<Anchors>
-										<Anchor point="TOPLEFT" relativeTo="$parentIcon" x="-4" y="4"/>
-										<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="4" y="-4"/>
-									</Anchors>
-								</Texture>
-								<FontString name="$parentAmount" parentKey="Amount" justifyH="RIGHT" justifyV="BOTTOM" inherits="PKBT_Font_10_OUTLINE">
-									<Anchors>
-										<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="-2" y="2"/>
-									</Anchors>
-								</FontString>
-							</Layer>
-						</Layers>
 						<Frames>
 							<Frame parentKey="GlowNineSlice" inherits="NineSlicePanelTemplate" setAllPoints="true" alpha="0">
 								<Attributes>
@@ -425,8 +402,44 @@
 								end
 							</OnSizeChanged>
 							<OnTooltipAddMoney></OnTooltipAddMoney>
+							<OnHide></OnHide>
 						</Scripts>
 					</GameTooltip>
+					<Button name="$parentItem" parentKey="Item">
+						<Size x="64" y="64"/>
+						<Anchors>
+							<Anchor point="TOPRIGHT" relativeTo="$parentItemTooltip" relativePoint="TOPLEFT" x="-2" y="-2"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture name="$parentIcon" parentKey="Icon" setAllPoints="true"/>
+							</Layer>
+							<Layer level="OVERLAY">
+								<Texture name="$parentIconBorder" parentKey="IconBorder">
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="$parentIcon" x="-4" y="4"/>
+										<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="4" y="-4"/>
+									</Anchors>
+								</Texture>
+								<FontString name="$parentAmount" parentKey="Amount" justifyH="RIGHT" justifyV="BOTTOM" inherits="PKBT_Font_10_OUTLINE">
+									<Anchors>
+										<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="-2" y="2"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnEnter>
+								self:GetOwner():OnEnter()
+							</OnEnter>
+							<OnLeave>
+								self:GetOwner():OnLeave()
+							</OnLeave>
+							<OnClick>
+								self:GetOwner():OnClick(button)
+							</OnClick>
+						</Scripts>
+					</Button>
 				</Frames>
 			</Frame>
 		</Frames>
@@ -602,7 +615,7 @@
 		</Scripts>
 	</Frame>
 
-	<Frame name="$parentProductPurchaseDialog" parentKey="ProductPurchaseDialog" parent="StoreFrame" inherits="PKBT_DialogTemplate" frameStrata="DIALOG" enableMouse="true" hidden="true">
+	<Frame name="StoreProductPurchaseDialogTemplate" parent="StoreFrame" inherits="PKBT_DialogTemplate" frameStrata="DIALOG" enableMouse="true" hidden="true" virtual="true">
 		<Size x="364" y="476"/>
 		<Anchors>
 			<Anchor point="CENTER" x="0" y="0"/>
@@ -738,4 +751,6 @@
 			</OnEvent>
 		</Scripts>
 	</Frame>
+
+	<Frame name="$parentProductPurchaseDialog" parentKey="ProductPurchaseDialogSecondary" inherits="StoreProductPurchaseDialogTemplate" id="1"/>
 </Ui>

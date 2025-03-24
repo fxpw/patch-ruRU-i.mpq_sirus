@@ -16,10 +16,18 @@ end
 function EventRegistry:OnAttributeChanged(frameEvent, value)
 	self = self.registry;
 
-	if value == 0 then
-		self.frameEventFrame:UnregisterEvent(frameEvent);
-	elseif value == 1 then
-		self.frameEventFrame:RegisterEvent(frameEvent);
+	if C_EventUtils.IsEventValid(frameEvent) then
+		if value == 0 then
+			self.frameEventFrame:UnregisterEvent(frameEvent);
+		elseif value == 1 then
+			self.frameEventFrame:RegisterEvent(frameEvent);
+		end
+	else
+		if value == 0 then
+			self.frameEventFrame:UnregisterCustomEvent(frameEvent);
+		elseif value == 1 then
+			self.frameEventFrame:RegisterCustomEvent(frameEvent);
+		end
 	end
 end
 

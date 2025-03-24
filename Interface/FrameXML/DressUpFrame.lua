@@ -1,3 +1,9 @@
+local C_StoreSecure
+EventRegistry:RegisterFrameEventAndCallback("STORE_API_LOADED", function(owner, ...)
+	C_StoreSecure = _G.C_StoreSecure
+	EventRegistry:UnregisterFrameEventAndCallback("STORE_API_LOADED", owner)
+end, "DressUp")
+
 Enum.DressUpLinkType = {
 	Default		= 0,
 	LootCase	= 1,
@@ -84,12 +90,10 @@ function DressUpItemLink(link)
 	end
 
 	local wasCreature = DressUpModel.isCreature
-	local isStoreDressUp = StoreFrame:IsShown()
 	local isBattlePass = BattlePassFrame:IsShown()
+	local isStore = C_StoreSecure.GetStoreFrame():IsShown()
 
-	if isStoreDressUp then
-		StoreDressUPFrame.creatureID = nil
-	else
+	if not isStore then
 		DressUpModel.disabledZooming = nil
 		DressUpModel.isCreature = nil
 		DressUpModel.petID = nil
@@ -120,51 +124,37 @@ function DressUpItemLink(link)
 
 	if linkType == Enum.DressUpLinkType.LootCase then
 		LootCasePreviewFrame:SetPreview(id)
+	elseif isStore then
+		C_StoreSecure.GetStoreFrame():ShowItemDressUp(nil, link, true, true, true)
 	elseif linkType == Enum.DressUpLinkType.Pet or linkType == Enum.DressUpLinkType.Mount then
-		if isStoreDressUp then
-			if not StoreDressUPFrame:IsShown() then
-				StoreDressUPFrame:Show()
-			end
-			StoreDressUPFrame.creatureID = id
-			StoreDressUPFrame.Display.DressUPModel:SetCreature(id)
+		if linkType == Enum.DressUpLinkType.Pet then
+			DressUpModel.petID = collectionID
 		else
-			if linkType == Enum.DressUpLinkType.Pet then
-				DressUpModel.petID = collectionID
-			else
-				DressUpModel.mountID = collectionID
-			end
+			DressUpModel.mountID = collectionID
+		end
 
-			DressUpModel.disabledZooming = true
-			DressUpModel.isCreature = true
+		DressUpModel.disabledZooming = true
+		DressUpModel.isCreature = true
 
+		if isBattlePass then
+			DressUpFrame:Show()
+		else
+			ShowUIPanel(DressUpFrame)
+		end
+		DressUpModel:SetCreature(id)
+	elseif linkType == Enum.DressUpLinkType.Default or linkType == Enum.DressUpLinkType.Illusion then
+		if not DressUpFrame:IsShown() then
 			if isBattlePass then
 				DressUpFrame:Show()
 			else
 				ShowUIPanel(DressUpFrame)
 			end
-			DressUpModel:SetCreature(id)
+			DressUpModel:SetUnit("player", true)
+		elseif wasCreature then
+			DressUpModel:SetUnit("player", true)
 		end
-	elseif linkType == Enum.DressUpLinkType.Default or linkType == Enum.DressUpLinkType.Illusion then
-		if isStoreDressUp then
-			if not StoreDressUPFrame:IsShown() then
-				StoreDressUPFrame:Show()
-				StoreDressUPFrame.Display.DressUPModel:SetUnit("player")
-			end
-			StoreDressUPFrame.Display.DressUPModel:TryOn(id)
-		else
-			if not DressUpFrame:IsShown() then
-				if isBattlePass then
-					DressUpFrame:Show()
-				else
-					ShowUIPanel(DressUpFrame)
-				end
-				DressUpModel:SetUnit("player", true)
-			elseif wasCreature then
-				DressUpModel:SetUnit("player", true)
-			end
 
-			DressUpModel:TryOn(id)
-		end
+		DressUpModel:TryOn(id)
 	end
 end
 

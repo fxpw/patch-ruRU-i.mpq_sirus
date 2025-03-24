@@ -608,6 +608,23 @@
 					</OnLeave>
 				</Scripts>
 			</Button>
+			<Button name="$parentMagnifierButton" parentKey="MagnifierButton" inherits="PKBT_MagnifierButtonTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-16" y="-16"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PKBT_MagnifierButtonMixin.OnClick(self, button)
+						self:GetParent():OnMagnifierClick(self)
+					</OnClick>
+					<OnEnter>
+						self:GetParent():OnMagnifierEnter(self)
+					</OnEnter>
+					<OnLeave>
+						self:GetParent():OnMagnifierLeave(self)
+					</OnLeave>
+				</Scripts>
+			</Button>
 			<Button name="$parentActionButton" parentKey="ActionButton" inherits="PKBT_RedButtonMultiWidgetPriceTemplate">
 				<Size x="140" y="51"/>
 				<Anchors>
@@ -637,6 +654,9 @@
 			<OnLeave>
 				self:OnLeave()
 			</OnLeave>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
 		</Scripts>
 	</Button>
 
@@ -790,7 +810,7 @@
 	</Button>
 
 	<Frame name="StoreSubscriptionPanelTemplate" virtual="true">
-		<Size x="360" y="250"/>
+		<Size x="370" y="258"/>
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture name="$parentBackground" parentKey="Background">
@@ -810,6 +830,12 @@
 				<FontString name="$parentSupplyCountdown" parentKey="SupplyCountdown" inherits="PKBT_Font_20">
 					<Anchors>
 						<Anchor point="TOP" relativeTo="$parentInfoText" relativePoint="BOTTOM" x="0" y="0"/>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+				<FontString name="$parentSupplyDays" parentKey="SupplyDays" inherits="PKBT_Font_14">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentSupplyCountdown" relativePoint="BOTTOM" x="0" y="-1"/>
 					</Anchors>
 					<Color r="1" g="1" b="1"/>
 				</FontString>
@@ -834,7 +860,7 @@
 			<Frame name="$parentItemHolder" parentKey="ItemHolder">
 				<Size x="68" y="68"/>
 				<Anchors>
-					<Anchor point="CENTER" x="0" y="7"/>
+					<Anchor point="CENTER" x="0" y="6"/>
 				</Anchors>
 			</Frame>
 
@@ -1220,7 +1246,7 @@
 
 			<Frame name="$parentAbilityOverlay" parentKey="AbilityOverlay" inherits="StoreMountAbilityOverlayTemplate" setAllPoints="true" hidden="true"/>
 
-			<Button name="$parentMinimizeButton" parentKey="MinimizeButton" inherits="PKBT_MaximizeMinimizeButtonTemplate" hidden="true">
+			<Button name="$parentCloseButton" parentKey="CloseButton" inherits="PKBT_CloseButtonTemplate" hidden="true">
 				<Size x="38" y="38"/>
 				<Anchors>
 					<Anchor point="TOPRIGHT" x="-1" y="-1"/>
@@ -1688,6 +1714,17 @@
 					<OnClick>
 						PKBT_WardrobeButtonMixin.OnClick(self, button)
 						self:GetParent():TogglePlayerEquipment(self:GetChecked() == 1)
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentPortraitCameraToggle" parentKey="PortraitCameraToggle" inherits="PKBT_MagnifierCheckButtonTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-25" y="-160"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PKBT_MagnifierButtonMixin.OnClick(self, button)
+						self:GetParent():GetParent():TogglePortraitCamera(self:GetChecked() == 1)
 					</OnClick>
 				</Scripts>
 			</CheckButton>

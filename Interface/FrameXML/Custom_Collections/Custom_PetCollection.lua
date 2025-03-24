@@ -1,4 +1,5 @@
 local CastSpellByID = CastSpellByID;
+local C_StoreSecure = C_StoreSecure
 
 local PET_BUTTON_HEIGHT = 46;
 local SUMMON_RANDOM_FAVORITE_PET_SPELL = 317619;

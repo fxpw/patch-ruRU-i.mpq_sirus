@@ -590,7 +590,7 @@
 						</Frames>
 					</Frame>
 					<Frame name="$parentSubscriptionTracker" parentKey="SubscriptionTracker" hidden="true">
-						<Size x="0" y="280"/>
+						<Size x="0" y="275"/>
 						<Anchors>
 							<Anchor point="BOTTOMLEFT" x="10" y="35"/>
 							<Anchor point="BOTTOMRIGHT" x="-10" y="35"/>
@@ -607,6 +607,12 @@
 								<FontString name="$parentNextPackegeTimerText" parentKey="NextPackegeTimerText" inherits="PKBT_Font_15" hidden="true">
 									<Anchors>
 										<Anchor point="TOP" relativeTo="$parentName" relativePoint="BOTTOM" x="8" y="-5"/>
+									</Anchors>
+									<Color r="0.553" g="0.521" b="0.494"/>
+								</FontString>
+								<FontString name="$parentDaysLeftText" parentKey="DaysLeftText" inherits="PKBT_Font_14" hidden="true">
+									<Anchors>
+										<Anchor point="TOP" relativeTo="$parentNextPackegeTimerText" relativePoint="BOTTOM" x="0" y="-1"/>
 									</Anchors>
 									<Color r="0.553" g="0.521" b="0.494"/>
 								</FontString>
@@ -628,7 +634,7 @@
 							<Frame name="$parentItemHolder" parentKey="ItemHolder" hidden="true">
 								<Size x="68" y="68"/>
 								<Anchors>
-									<Anchor point="TOP" relativeTo="$parentName" relativePoint="BOTTOM" x="0" y="-30"/>
+									<Anchor point="TOP" relativeTo="$parentName" relativePoint="BOTTOM" x="0" y="-45"/>
 								</Anchors>
 							</Frame>
 							<Button name="$parentActionButton" parentKey="ActionButton" inherits="PKBT_RedButtonTemplate" text="STORE_DETAILS">

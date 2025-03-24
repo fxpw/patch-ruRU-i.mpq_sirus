@@ -672,4 +672,31 @@ if not IN_GLUE_STATE then
 			return customMoney and tonumber(customMoney) or GetMoney()
 		end
 	end
+
+	do -- GetCompanionInfo
+		local GetCompanionInfo = GetCompanionInfo
+		local GetSpellInfo = GetSpellInfo
+
+		local CREATURE_OVERRIDE = {
+			[311546] = 20004,
+			[311563] = 20004,
+			[313667] = 20004,
+			[319179] = 20004,
+			[319180] = 20004,
+			[319181] = 20004,
+			[319182] = 20004,
+		}
+
+		_G.GetCompanionInfo = function(type, index)
+			local creatureID, creatureName, spellID, icon, active = GetCompanionInfo(type, index)
+			local creatureOverrideID = CREATURE_OVERRIDE[spellID]
+			if creatureOverrideID then
+				local spellName, spellLink, spellIcon = GetSpellInfo(spellID)
+				creatureID = creatureOverrideID
+				creatureName = creatureName or spellName
+				icon = spellIcon
+			end
+			return creatureID, creatureName, spellID, icon, active
+		end
+	end
 end

@@ -5733,11 +5733,7 @@ local GLOBAL_STRINGS = {
         ruRU = "По правилам распределения лидером только глава группы имеет право брать предметы выше установленного уровня. Остальные предметы и деньги распределяются между игроками по правилам очередности.",
         enGB = "Under master-looter rules, the group leader is the only group member allowed to loot items at or above the threshold. Items below threshold and money are distributed via the round robin rules."
     },
-    ["EMPTY_HAIR_COLOR"] = {
-        ruRU = "Не используется",
-        enGB = ""
-    },
-    ["SLASH_EQUIP_TO_SLOT2"] = {
+	["SLASH_EQUIP_TO_SLOT2"] = {
         ruRU = "/надеть",
         enGB = "/equipslot"
     },
@@ -20082,17 +20078,9 @@ local GLOBAL_STRINGS = {
         ruRU = "Приключения",
         enGB = ""
     },
-    ["HAIR_PLAVNIK_COLOR"] = {
-        ruRU = "Не используется",
-        enGB = ""
-    },
     ["VOICEMACRO_19_Hu_1"] = {
         ruRU = "Если я скажу, что у тебя классное тело, ты обидишься?",
         enGB = "If I said you had a good body, would you hold it against me?"
-    },
-    ["HAIR_PLAVNIK_STYLE"] = {
-        ruRU = "Плавник",
-        enGB = ""
     },
     ["SLASH_GUILD_ROSTER2"] = {
         ruRU = "/списокгильдии",
@@ -20104,10 +20092,6 @@ local GLOBAL_STRINGS = {
     },
     ["NEUTRAL_RACE_DISABLE_FEATURE"] = {
         ruRU = "Это действие становится доступным после того как вы выберете фракцию.",
-        enGB = ""
-    },
-    ["HAIR_WORGEN_COLOR"] = {
-        ruRU = "Не используется",
         enGB = ""
     },
     ["MONTH_SEPTEMBER"] = {
@@ -43682,6 +43666,9 @@ local GLOBAL_STRINGS = {
 	["HARDCORE_LOSS_BANNER_TEXT_FRIENDLY_FIRE"] = {
 		ruRU = "|c%s%s|r, |cffffffff%s %d-го уровня|r, погиб от действий союзника в зоне \"%s\"",
 	},
+	["HARDCORE_LOSS_BANNER_TEXT_SELF"] = {
+		ruRU = "|c%s%s|r, |cffffffff%s %d-го уровня|r, погиб от собственных действий в зоне \"%s\"",
+	},
 	["HARDCORE_LOSS_TOAST_TEXT"] = {
 		ruRU = "|c%s%s|r, %s %d-го уровня, умер в зоне \"%s\", причина смерти: %s",
 		enGB = "",
@@ -44730,6 +44717,18 @@ local GLOBAL_STRINGS = {
 	["STORE_FILTER_LABEL_CLASS"] = {
 		ruRU = "Класс",
 	},
+	["STORE_FILTER_LABEL_CONTENT_TYPE"] = {
+		ruRU = "Тип экипировки",
+	},
+	["STORE_FILTER_LABEL_CONTENT_TYPE_ALL"] = {
+		ruRU = "Все",
+	},
+	["STORE_FILTER_LABEL_CONTENT_TYPE_PVE"] = {
+		ruRU = "PvE",
+	},
+	["STORE_FILTER_LABEL_CONTENT_TYPE_PVP"] = {
+		ruRU = "PvP",
+	},
 	["STORE_FILTER_LABEL_NEW_ITEMS_LABEL"] = {
 		ruRU = "Новые предметы",
 	},
@@ -44952,6 +44951,9 @@ local GLOBAL_STRINGS = {
 	},
 	["STORE_PRODUCT_PURCHASE_TITLE"] = {
 		ruRU = "Подтверждение покупки",
+	},
+	["STORE_PRODUCT_PURCHASE_OFFER_TITLE"] = {
+		ruRU = "Специальное предложение",
 	},
 	["STORE_PRODUCT_REFUND_AMOUNT_LABEL"] = {
 		ruRU = "Вы получите при возврате",

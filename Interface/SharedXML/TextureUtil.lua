@@ -123,7 +123,8 @@ function CreateAtlasMarkup(atlasName, width, height, offsetX, offsetY, fileWidth
 		height = height or atlasHeight
 
 		if not fileWidth or not fileHeight then
-			fileWidth, fileHeight = GetTextureSize(texturePath)
+			fileWidth, fileHeight, success = GetTextureSourceSize(texturePath)
+			assert(success)
 		end
 
 		return ("|T%s:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d|t"):format(

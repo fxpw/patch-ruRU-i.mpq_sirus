@@ -60,11 +60,11 @@ do	-- GetCharacterCategoryInfoBySpell
 	end
 end
 
-do -- GetTextureSize
+do -- GetTextureSourceSize
 	local FRAME
-	function GetTextureSize(texture)
+	_G.GetTextureSourceSize = _G.GetTextureSourceSize or function(texture)
 		if type(texture) ~= "string" then
-			error(string.format("bad argument #1 to 'GetTextureSize' (string expected, got %s)", texture ~= nil and type(texture) or "no value"), 2)
+			error(string.format("bad argument #1 to 'GetTextureSourceSize' (string expected, got %s)", texture ~= nil and type(texture) or "no value"), 2)
 		end
 
 		if not FRAME then
@@ -77,7 +77,8 @@ do -- GetTextureSize
 		if success then
 			local width, height = FRAME.t:GetSize()
 			FRAME.t:SetTexture(nil)
-			return width, height
+			return width, height, true
 		end
+		return 0, 0, false
 	end
 end

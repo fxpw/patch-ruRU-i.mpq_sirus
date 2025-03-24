@@ -197,6 +197,12 @@
 			</Layer>
 		</Layers>
 		<Frames>
+			<Frame name="$parentNineSliceSelection" parentKey="NineSliceSelection" inherits="NineSlicePanelTemplate" hidden="true" alpha="0.5">
+				<Attributes>
+					<Attribute name="layoutType" value="PKBT_StoreItemPlateHighlight" type="string"/>
+					<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
+				</Attributes>
+			</Frame>
 			<Frame name="$parentNineSliceHighlight" parentKey="NineSliceHighlight" inherits="NineSlicePanelTemplate" hidden="true">
 				<Attributes>
 					<Attribute name="layoutType" value="PKBT_StoreItemPlateHighlight" type="string"/>

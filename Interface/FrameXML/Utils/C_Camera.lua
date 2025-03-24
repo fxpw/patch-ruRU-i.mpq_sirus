@@ -24,14 +24,24 @@ end
 C_Camera = {}
 
 C_Camera.Presets = {
-	View1			= {0, 0.175, 0},
-	View2			= {5.55, 0.175, 0},
-	View3			= {5.55, 0.350, 0},
-	View4			= {13.88, 0.525, 0},
-	View5			= {13.88, 0.175, 0},
+	View1 = 1,
+	View2 = 2,
+	View3 = 3,
+	View4 = 4,
+	View5 = 5,
+	BarberShop = 6,
+	BarberShopAlt = 7,
+}
 
-	BarberShop		= {2.102274, 0, math.pi},
-	BarberShopAlt	= {4.204548, 0, math.pi},
+local VIEW_ANGLE = {
+	[C_Camera.Presets.View1]			= {0, 0.175, 0},
+	[C_Camera.Presets.View2]			= {5.55, 0.175, 0},
+	[C_Camera.Presets.View3]			= {5.55, 0.350, 0},
+	[C_Camera.Presets.View4]			= {13.88, 0.525, 0},
+	[C_Camera.Presets.View5]			= {13.88, 0.175, 0},
+
+	[C_Camera.Presets.BarberShop]		= {2.102274, 0, math.pi},
+	[C_Camera.Presets.BarberShopAlt]	= {4.204548, 0, math.pi},
 }
 
 function C_Camera.CreateView(distance, yaw, pitch)
@@ -46,9 +56,11 @@ function C_Camera.CreateView(distance, yaw, pitch)
 	return {distance, yaw, pitch}
 end
 
-function C_Camera.SetCameraView(view, skipAnimation)
-	if type(view) ~= "table" then
-		error(string.format("bad argument #1 to 'C_Camera.SetCameraView' (table expected, got %s)", view ~= nil and type(view) or "no value"), 2)
+function C_Camera.SetCameraView(viewID, skipAnimation)
+	if type(viewID) ~= "number" then
+		error(string.format("bad argument #1 to 'C_Camera.SetCameraView' (number expected, got %s)", viewID ~= nil and type(viewID) or "no value"), 2)
+	elseif not VIEW_ANGLE[viewID] then
+		error(string.format("bad argument #1 to 'C_Camera.SetCameraView' (unknown view id %s)", viewID), 2)
 	end
 
 	local cameraViewBlendStyle = GetCVar("cameraViewBlendStyle")
@@ -59,7 +71,7 @@ function C_Camera.SetCameraView(view, skipAnimation)
 		SetCVar("cameraViewBlendStyle", 1)	-- override blend style
 	end
 
-	SaveViewRaw(CAMERA_STORAGE_INDEX, unpack(view, 1, 3))	-- save desired camera view
+	SaveViewRaw(CAMERA_STORAGE_INDEX, unpack(VIEW_ANGLE[viewID], 1, 3))	-- save desired camera view
 
 	if not skipAnimation and viewIndex == CAMERA_STORAGE_INDEX then
 		SetView(CAMERA_RESET_INDEX)		-- change index of current view to prevent animation skipping
