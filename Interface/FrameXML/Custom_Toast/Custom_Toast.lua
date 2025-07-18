@@ -17,26 +17,26 @@ E_TOAST_CATEGORY = Enum.CreateMirror({
 E_TOAST_DATA = {
 	[E_TOAST_CATEGORY.INTERFACE_HANDLED]	= { allowCustomEvent = true, },
 	[E_TOAST_CATEGORY.DEFAULT]				= { sound = SOUNDKIT.UI_BNET_TOAST },
-	[E_TOAST_CATEGORY.FRIENDS]				= { sound = SOUNDKIT.UI_BNET_TOAST,				cvar = "C_CVAR_SOCIAL_TOAST_SOUND" },
-	[E_TOAST_CATEGORY.HEAD_HUNTING]			= { sound = "UI_PetBattles_InitiateBattle",		cvar = "C_CVAR_HEAD_HUNTING_TOAST_SOUND" },
-	[E_TOAST_CATEGORY.BATTLE_PASS]			= { sound = "UI_FightClub_Start",				cvar = "C_CVAR_BATTLE_PASS_TOAST_SOUND" },
-	[E_TOAST_CATEGORY.BATTLE_PASS_QUEST]	= { sound = "UI_FightClub_Start",				cvar = "C_CVAR_BATTLE_PASS_TOAST_SOUND", allowCustomEvent = true },
-	[E_TOAST_CATEGORY.QUEUE]				= { sound = "UI_GroupFinderReceiveApplication",	cvar = "C_CVAR_QUEUE_TOAST_SOUND" },
-	[E_TOAST_CATEGORY.AUCTION_HOUSE]		= { sound = "UI_DigsiteCompletion_Toast",		cvar = "C_CVAR_AUCTION_HOUSE_TOAST_SOUND" },
-	[E_TOAST_CATEGORY.CALL_OF_ADVENTURE]	= { sound = "UI_CallOfAdventure_Toast",			cvar = "C_CVAR_CALL_OF_ADVENTURE_TOAST_SOUND" },
-	[E_TOAST_CATEGORY.MISC]					= { sound = "UI_Misc_Toast",					cvar = "C_CVAR_MISC_TOAST_SOUND" },
+	[E_TOAST_CATEGORY.FRIENDS]				= { sound = SOUNDKIT.UI_BNET_TOAST,				cvar = "toastSoundSocial" },
+	[E_TOAST_CATEGORY.HEAD_HUNTING]			= { sound = "UI_PetBattles_InitiateBattle",		cvar = "toastSoundHeadHunting" },
+	[E_TOAST_CATEGORY.BATTLE_PASS]			= { sound = "UI_FightClub_Start",				cvar = "toastSoundBattlePass" },
+	[E_TOAST_CATEGORY.BATTLE_PASS_QUEST]	= { sound = "UI_FightClub_Start",				cvar = "toastSoundBattlePass", allowCustomEvent = true },
+	[E_TOAST_CATEGORY.QUEUE]				= { sound = "UI_GroupFinderReceiveApplication",	cvar = "toastSoundQueue" },
+	[E_TOAST_CATEGORY.AUCTION_HOUSE]		= { sound = "UI_DigsiteCompletion_Toast",		cvar = "toastSoundAuctionHouse" },
+	[E_TOAST_CATEGORY.CALL_OF_ADVENTURE]	= { sound = "UI_CallOfAdventure_Toast",			cvar = "toastSoundCallOfAdventure" },
+	[E_TOAST_CATEGORY.MISC]					= { sound = "UI_Misc_Toast",					cvar = "toastSoundMisc" },
 	[E_TOAST_CATEGORY.VOTE_KICK]			= { sound = "ReadyCheck",						forced = true, allowCustomEvent = true },
 	[E_TOAST_CATEGORY.RAID]					= { sound = SOUNDKIT.UI_BNET_TOAST,				forced = true, },
 	[E_TOAST_CATEGORY.GUILD_INVITE]			= { sound = "LevelUp",							forced = true, },
 }
 
 local CATEGORY_BLOCKING_CVARS = {
-	[E_TOAST_CATEGORY.FRIENDS]				= "C_CVAR_SHOW_SOCIAL_TOAST",
-	[E_TOAST_CATEGORY.BATTLE_PASS]			= "C_CVAR_SHOW_BATTLE_PASS_TOAST",
-	[E_TOAST_CATEGORY.BATTLE_PASS_QUEST]	= "C_CVAR_SHOW_BATTLE_PASS_TOAST",
-	[E_TOAST_CATEGORY.AUCTION_HOUSE]		= "C_CVAR_SHOW_AUCTION_HOUSE_TOAST",
-	[E_TOAST_CATEGORY.CALL_OF_ADVENTURE]	= "C_CVAR_SHOW_CALL_OF_ADVENTURE_TOAST",
-	[E_TOAST_CATEGORY.MISC]					= "C_CVAR_SHOW_MISC_TOAST",
+	[E_TOAST_CATEGORY.FRIENDS]				= "toastShowSocial",
+	[E_TOAST_CATEGORY.BATTLE_PASS]			= "toastShowBattlePass",
+	[E_TOAST_CATEGORY.BATTLE_PASS_QUEST]	= "toastShowBattlePass",
+	[E_TOAST_CATEGORY.AUCTION_HOUSE]		= "toastShowAuctionHouse",
+	[E_TOAST_CATEGORY.CALL_OF_ADVENTURE]	= "toastShowCallOfAdventure",
+	[E_TOAST_CATEGORY.MISC]					= "toastShowMisc",
 }
 
 SocialToastMixin = {}
@@ -163,12 +163,17 @@ function SocialToastSystemMixin:OnShow()
 end
 
 function SocialToastSystemMixin:UpdatePosition()
-    local positionSettings = C_CVar:GetValue("C_CVAR_TOAST_POSITION")
+	local positionSettings = GetCVar("toastPoint")
 
-    if positionSettings then
-        self:ClearAndSetPoint(positionSettings.point, positionSettings.xOffset * GetScreenWidth(), positionSettings.yOffset * GetScreenHeight())
-        self:SetUserPlaced(true)
-        return
+    if positionSettings ~= "" then
+		local point, offsetX, offsetY = string.split(",", positionSettings)
+		offsetX = tonumber(offsetX)
+		offsetY = tonumber(offsetY)
+		if offsetX and offsetY then
+			self:ClearAndSetPoint(point, offsetX * GetScreenWidth(), offsetY * GetScreenHeight())
+			self:SetUserPlaced(true)
+			return
+		end
     end
 
     if DEFAULT_CHAT_FRAME.buttonFrame and (DEFAULT_CHAT_FRAME.buttonFrame:IsShown() and DEFAULT_CHAT_FRAME.buttonFrame:IsVisible()) then
@@ -217,7 +222,7 @@ function SocialToastSystemMixin:ShowToast(toastFrame)
 				PlaySound(toastInfo.sound)
 			end
 		elseif E_TOAST_DATA[toastInfo.categoryID].forced
-		or (C_CVar:GetValue("C_CVAR_PLAY_TOAST_SOUND") ~= "0" and C_CVar:GetValue(E_TOAST_DATA[toastInfo.categoryID].cvar) ~= "0")
+		or (GetCVarBool("toastSoundEnabled") and (not E_TOAST_DATA[toastInfo.categoryID].cvar or GetCVarBool(E_TOAST_DATA[toastInfo.categoryID].cvar)))
 		then
 			PlaySound(E_TOAST_DATA[toastInfo.categoryID].sound or E_TOAST_DATA[E_TOAST_CATEGORY.DEFAULT].sound)
 		end
@@ -259,13 +264,13 @@ function SocialToastSystemMixin:AddToast(toastInfo)
         end
     end
 
-	if #self.activeToasts < C_CVar:GetValue("C_CVAR_NUM_DISPLAY_SOCIAL_TOASTS") then
+	if #self.activeToasts < tonumber(GetCVar("toastMaxDisplayed")) then
 		self:ShowToast()
 	end
 end
 
 function SocialToastSystemMixin:CheckShowToast()
-	if #self.queue > 0 and #self.activeToasts < C_CVar:GetValue("C_CVAR_NUM_DISPLAY_SOCIAL_TOASTS") then
+	if #self.queue > 0 and #self.activeToasts < tonumber(GetCVar("toastMaxDisplayed")) then
 		self:ShowToast()
 	elseif #self.activeToasts == 0 and not self.MoveFrame:IsShown() then
 		self:Hide()
@@ -295,15 +300,11 @@ function SocialToastSystemMixin:SavedPosition()
         yOffset = self:GetBottom()/screenHeight
     end
 
-    C_CVar:SetValue("C_CVAR_TOAST_POSITION", {
-        point   = vertPoint..horizPoint,
-        xOffset = xOffset,
-        yOffset = yOffset
-    })
+	SetCVar("toastPoint", string.join(",", strconcat(vertPoint, horizPoint), RoundToSignificantDigits(xOffset, 2), RoundToSignificantDigits(yOffset, 2)))
 end
 
 function SocialToastSystemMixin:ClearPosition()
-    C_CVar:SetValue("C_CVAR_TOAST_POSITION", nil)
+	SetCVar("toastPoint", nil)
 end
 
 local TOAST_ITEM_ICON = {
@@ -396,8 +397,8 @@ function SocialToastSystemMixin:IsCategoryBlocked(categoryID)
 	if categoryID == E_TOAST_CATEGORY.INTERFACE_HANDLED then
 		return false
 	end
-	if C_CVar:GetValue("C_CVAR_SHOW_TOASTS") ~= "1"
-	or (CATEGORY_BLOCKING_CVARS[categoryID] and C_CVar:GetValue(CATEGORY_BLOCKING_CVARS[categoryID]) ~= "1")
+	if not GetCVarBool("toastShowWindow")
+	or (CATEGORY_BLOCKING_CVARS[categoryID] and not GetCVarBool(CATEGORY_BLOCKING_CVARS[categoryID]))
 	then
 		return true
 	end

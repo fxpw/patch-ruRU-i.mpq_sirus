@@ -937,10 +937,15 @@ function CharacterCreateRaceButtonMixin:UpdateButton()
 			allow = self.index == raceID
 		elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_RACE then
 			if C_CharacterCreation.IsNeutralBaseRace(raceID) then
-				factionIDOverride = factionID
-				allow = true
+				local overrideFactionID = C_CharacterList.GetCharacterFactionOverride(C_CharacterCreation.PaidChange_GetCharacterID())
+				if overrideFactionID == PLAYER_FACTION_GROUP.Renegade then
+					factionIDOverride = overrideFactionID
+					allow = true
+				else
+					allow = C_CharacterCreation.IsNeutralBaseRace(self.index) or faction == C_CharacterCreation.GetFactionForRace(self.index)
+				end
 			else
-				allow = C_CharacterCreation.IsNeutralBaseRace(self.index) or (PAID_RACE_SERVICE_DYNAMIC[self.index] or faction == C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
+				allow = (PAID_RACE_SERVICE_DYNAMIC[self.index] or faction == C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
 			end
 		elseif PAID_SERVICE_TYPE == E_PAID_SERVICE.CHANGE_FACTION then
 			allow = C_CharacterCreation.IsNeutralBaseRace(self.index) or (PAID_RACE_SERVICE_DYNAMIC[self.index] or faction ~= C_CharacterCreation.GetFactionForRace(self.index) or self.index == C_CharacterCreation.PaidChange_GetCurrentRaceIndex())
@@ -1266,7 +1271,7 @@ function CharacterCreateInteractiveButtonAlphaAnimMixin:UpdateAlpha(elapsed)
 
 	self.elapsed = self.elapsed + elapsed
 
-	local easing 	= C_outCirc(self.elapsed, self.startAlpha, self.endAlpha, self.animationTime)
+	local easing = EasingUtil.OutCirc2(self.elapsed, self.startAlpha, self.endAlpha, self.animationTime)
 
 	self:SetAlpha(easing)
 
@@ -1503,10 +1508,7 @@ end
 function CharacterCreateZodiacSignFrameMixin:OnEvent(event, ...)
 	if event == "GLUE_CHARACTER_CREATE_ZODIAC_SELECTED" then
 		if self:IsVisible() then
-			if self.Sign.ArtworkGlow.Pulse:IsPlaying() then
-				self.Sign.ArtworkGlow.Pulse:Stop()
-			end
-			self.Sign.ArtworkGlow.Pulse:Play()
+			self.Sign.ArtworkGlow.Pulse:Restart()
 		end
 		self:UpdateSignView()
 	end
@@ -1815,9 +1817,9 @@ function CharacterCreateZodiacSignEffectMixin:OnUpdate(elapsed)
 				local halfTime = star.flashT / 2
 				local progress
 				if flashElapsed < halfTime then
-					progress = inOutQuad(flashElapsed, 0, 1, halfTime)
+					progress = EasingUtil.InOutQuad(flashElapsed, 0, 1, halfTime)
 				else
-					progress = outQuad(flashElapsed - halfTime, 1, -1, halfTime)
+					progress = EasingUtil.OutQuad(flashElapsed - halfTime, 1, -1, halfTime)
 				end
 				if progress <= 1 then
 					star:SetAlpha(star.baseAlpha + ((1 - star.baseAlpha) * progress))

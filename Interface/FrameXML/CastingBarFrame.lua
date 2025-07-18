@@ -86,9 +86,9 @@ function CastingBarFrame_SetUnit(self, unit, showTradeSkills, showShield)
 			self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE");
 			self:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE");
 			self:RegisterEvent("PLAYER_ENTERING_WORLD");
-			self:RegisterEvent("UNIT_SPELLCAST_START");
-			self:RegisterEvent("UNIT_SPELLCAST_STOP");
-			self:RegisterEvent("UNIT_SPELLCAST_FAILED");
+			self:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
+			self:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
+			self:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
 
 			CastingBarFrame_OnEvent(self, "PLAYER_ENTERING_WORLD")
 		else

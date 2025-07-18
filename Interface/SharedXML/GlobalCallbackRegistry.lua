@@ -24,9 +24,9 @@ function EventRegistry:OnAttributeChanged(frameEvent, value)
 		end
 	else
 		if value == 0 then
-			self.frameEventFrame:UnregisterCustomEvent(frameEvent);
+			self.frameEventFrame:UnregisterCustomEvent(frameEvent:upper());
 		elseif value == 1 then
-			self.frameEventFrame:RegisterCustomEvent(frameEvent);
+			self.frameEventFrame:RegisterCustomEvent(frameEvent:upper());
 		end
 	end
 end

@@ -1,9 +1,3 @@
---	Filename:	Custom_ExtraActionButton.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 ExtraActionButtonMixIn = {}
 ExtraActionButtonMixIn.RegisteredButtons = {}
 
@@ -302,8 +296,8 @@ function ExtraActionButtonKey(id, isDown)
 	end
 end
 
-function EventHandler:INVOKE_CLIENT_BUTTON( msg )
-	local typeID, entityID, buttonStyle = unpack(C_Split(msg, ":"))
+function EventHandler:INVOKE_CLIENT_BUTTON(msg)
+	local typeID, entityID, buttonStyle = string.split(":", msg)
 
 	typeID 		= tonumber(typeID)
 	entityID 	= tonumber(entityID)
@@ -311,8 +305,8 @@ function EventHandler:INVOKE_CLIENT_BUTTON( msg )
 	securecall(ExtraActionBarFrame.AddButton, ExtraActionBarFrame, typeID, entityID, buttonStyle)
 end
 
-function EventHandler:REMOVE_CLIENT_BUTTON( msg )
-	local typeID, entityID = unpack(C_Split(msg, ":"))
+function EventHandler:REMOVE_CLIENT_BUTTON(msg)
+	local typeID, entityID = string.split(":", msg)
 
 	typeID 		= tonumber(typeID)
 	entityID	= tonumber(entityID)

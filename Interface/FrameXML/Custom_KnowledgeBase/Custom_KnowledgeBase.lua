@@ -1,3 +1,36 @@
+local error = error
+local next = next
+local pairs = pairs
+local ipairs = ipairs
+local pcall = pcall
+local tonumber = tonumber
+local type = type
+local bitband = bit.band
+local mathabs, mathceil, mathmax, mathmin = math.abs, math.ceil, math.max, math.min
+local strfind, strformat, strgmatch, strgsub, strrep = string.find, string.format, string.gmatch, string.gsub, string.rep
+local strlen, strlower, strmatch, strsplit, strsub, strtrim = string.len, string.lower, string.match, string.split, string.sub, string.trim
+local tconcat, tinsert, tremove, tsort, twipe = table.concat, table.insert, table.remove, table.sort, table.wipe
+local utf8byte, utf8len, utf8sub = utf8.byte, utf8.len, utf8.sub
+
+local CalculateStringEditDistance = CalculateStringEditDistance
+local GetFramerate = GetFramerate
+local KBSystem_GetMOTD = KBSystem_GetMOTD
+local KBSystem_GetServerNotice = KBSystem_GetServerNotice
+local KBSystem_GetServerStatus = KBSystem_GetServerStatus
+local debugprofilestop = debugprofilestop
+local geterrorhandler = geterrorhandler
+
+local ClampedPercentageBetween = ClampedPercentageBetween
+local CopyTable = CopyTable
+local FireCustomClientEvent = FireCustomClientEvent
+local GMError = GMError
+local IsGMAccount = IsGMAccount
+local IsInterfaceDevClient = IsInterfaceDevClient
+local RoundToSignificantDigits = RoundToSignificantDigits
+local RunNextFrame = RunNextFrame
+local tCompare = tCompare
+local tIndexOf = tIndexOf
+
 SIRUS_KNOWLEDGE_BASE_IDS = {}
 SIRUS_KNOWLEDGE_BASE_IDS.ROOT = Enum.CreateMirror({
 	ARTICLE = 1,
@@ -100,27 +133,57 @@ local KB_NO_PAGES = true
 local KB_SEARCH_LIMIT = 128
 local KB_SORT_ARTICLES = true
 local KB_SORT_CATEGORIES = true
-
-local KB_CATEGORIES = {}
-local KB_CURRENT_ARTICLES = {}
-local KB_TOP_ISSUES = {}
-
-local KB_KEYWORDS_CACHE = {}
-local KB_KEYWORDS_CACHE_LEN = 0
 local KB_KEYWORDS_DELIMITER = ","
+local KB_QUERY_SEACH_BY_TAGS = true
 
-local EVENT_HANDLER = CreateFrame("Frame")
-EVENT_HANDLER:Hide()
-EVENT_HANDLER:RegisterEvent("VARIABLES_LOADED")
-EVENT_HANDLER:RegisterEvent("PLAYER_LOGOUT")
-EVENT_HANDLER:SetScript("OnEvent", function(self, event, ...)
+local SEARCH_TYPE = {
+	QUERY = 1,
+	SUGGESTIONS = 2,
+}
+
+local KB_KEYWORD_TYPES = {
+	EXACT = "=",
+	CONTAINS = "+",
+	CONTAINS_DIST = "~",
+	STARTS_WITH = "^",
+	ENDS_WITH = "$",
+}
+
+local KB_SUGGESTION_WORD_DICT_ENUM = {
+	COUNT = 1,
+	INDEXES = 2,
+}
+
+local PRIVATE = {
+	ARTICLES_LOADED = false,
+	ARTICLE_DEFAULT_LOADED = false,
+	CATEGORIES_LOADED = false,
+	CATEGORY_DEFAULT_LOADED = false,
+
+	CATEGORIES = {},
+	CURRENT_ARTICLES = {},
+	TOP_ISSUES = {},
+
+	KEYWORDS_CACHE = {},
+	KEYWORDS_CACHE_LEN = 0,
+
+	SEARCHES_ACTIVE = {},
+	SEARCHES = {},
+	SEARCH_DISTANCE_CACHE = {},
+}
+
+PRIVATE.eventHandler = CreateFrame("Frame")
+PRIVATE.eventHandler:Hide()
+PRIVATE.eventHandler:RegisterEvent("VARIABLES_LOADED")
+PRIVATE.eventHandler:RegisterEvent("PLAYER_LOGOUT")
+PRIVATE.eventHandler:SetScript("OnEvent", function(this, event, ...)
 	if event == "VARIABLES_LOADED" then
 		if not SIRUS_KNOWLEDGE_BASE then
 			SIRUS_KNOWLEDGE_BASE = {}
 		elseif KNOWLEDGEBASE_VERSION then
 			local lastEditTime = SIRUS_KNOWLEDGE_BASE[SIRUS_KNOWLEDGE_BASE_IDS.ROOT.LAST_EDIT_TIME]
 			if not lastEditTime or lastEditTime < KNOWLEDGEBASE_VERSION then
-				table.wipe(SIRUS_KNOWLEDGE_BASE)
+				twipe(SIRUS_KNOWLEDGE_BASE)
 			end
 		end
 		for index in pairs(KNOWLEDGE_BASE_SAVE_TEMPLATE) do
@@ -129,19 +192,21 @@ EVENT_HANDLER:SetScript("OnEvent", function(self, event, ...)
 			end
 		end
 	elseif event == "PLAYER_LOGOUT" then
-		if not SIRUS_KNOWLEDGE_BASE then
+		if type(SIRUS_KNOWLEDGE_BASE) ~= "table" then
 			return
 		end
 		local t, r = 0, 0
 		for index in pairs(KNOWLEDGE_BASE_SAVE_TEMPLATE) do
 			t = t + 1
-			if not next(SIRUS_KNOWLEDGE_BASE[index]) then
+			if not SIRUS_KNOWLEDGE_BASE[index] then
+				r = r + 1
+			elseif not next(SIRUS_KNOWLEDGE_BASE[index]) then
 				SIRUS_KNOWLEDGE_BASE[index] = nil
 				r = r + 1
 			end
 		end
 		if t == r then
-			table.wipe(SIRUS_KNOWLEDGE_BASE)
+			twipe(SIRUS_KNOWLEDGE_BASE)
 		else
 			for index in pairs(SIRUS_KNOWLEDGE_BASE) do
 				if not SIRUS_KNOWLEDGE_BASE_IDS.ROOT[index] then
@@ -151,27 +216,138 @@ EVENT_HANDLER:SetScript("OnEvent", function(self, event, ...)
 		end
 	end
 end)
+PRIVATE.eventHandler:SetScript("OnUpdate", function(this, elapsed)
+	local index = 1
+	local search = PRIVATE.SEARCHES_ACTIVE[index]
+	while search do
+		local frametimeStep = search.FRAMETIME_TARGET - elapsed
 
-Custom_KnowledgeBase = {}
+		if frametimeStep ~= 0 then
+			frametimeStep = frametimeStep * 1000
+			search.FRAMETIME_AVAILABLE = mathmax(5, search.FRAMETIME_AVAILABLE + frametimeStep)
+		end
 
----@return string motd
-function Custom_KnowledgeBase.KBSystem_GetMOTD()
-	return KBSystem_GetMOTD()
+		if search.COROUTINE then
+			search.COROUTINE_TIMESTAMP = debugprofilestop()
+			local status, progress, result = coroutine.resume(search.COROUTINE)
+
+			if not status then
+				search.COROUTINE_RESULT = nil
+				search.COROUTINE = nil
+				tremove(PRIVATE.SEARCHES_ACTIVE, index)
+				index = index - 1
+				PRIVATE.SearchFireFinishCallback(search, false)
+				error(progress, 2)
+			elseif progress ~= -1 then
+				FireCustomClientEvent(search.EVENT_PROGRESS, progress)
+				if search.COROUTINE_DEBUG then print(search.EVENT_PROGRESS, progress) end
+			else
+				search.COROUTINE_RESULT = result
+				search.COROUTINE = nil
+				tremove(PRIVATE.SEARCHES_ACTIVE, index)
+				index = index - 1
+				PRIVATE.SendSearchAvailable(SEARCH_TYPE.SUGGESTIONS, "Delayed")
+				PRIVATE.SearchFireFinishCallback(search, true)
+			end
+		else
+			tremove(PRIVATE.SEARCHES_ACTIVE, index)
+			index = index - 1
+		end
+
+		index = index + 1
+		search = PRIVATE.SEARCHES_ACTIVE[index]
+	end
+
+	if #PRIVATE.SEARCHES_ACTIVE == 0 then
+		this:Hide()
+	end
+end)
+
+PRIVATE.Initialize = function()
+	PRIVATE.CreateSearchType(
+		SEARCH_TYPE.QUERY,
+		"KNOWLEDGE_BASE_QUERY_AVAILABLE",
+		"KNOWLEDGE_BASE_QUERY_NEXT",
+		"KNOWLEDGE_BASE_QUERY_PROGRESS"
+	)
+	PRIVATE.CreateSearchType(
+		SEARCH_TYPE.SUGGESTIONS,
+		"KNOWLEDGE_BASE_SUGGESTIONS_AVAILABLE",
+		"KNOWLEDGE_BASE_SUGGESTIONS_NEXT",
+		"KNOWLEDGE_BASE_SUGGESTIONS_PROGRESS"
+	)
+
+	if IsInterfaceDevClient(true) then
+		_G.PRIVATE_KB = PRIVATE
+	end
 end
 
----@return string? serverNotice
-function Custom_KnowledgeBase.KBSystem_GetServerNotice()
-	return KBSystem_GetServerNotice()
+PRIVATE.CreateSearchType = function(searchType, eventAvailable, eventNext, eventProgress)
+	if PRIVATE.SEARCHES[searchType] then
+		return
+	end
+	PRIVATE.SEARCHES[searchType] = {
+		TYPE = searchType,
+		EVENT_AVAILABLE = eventAvailable,
+		EVENT_NEXT = eventNext,
+		EVENT_PROGRESS = eventProgress,
+
+		DEBUG = false,
+		DEBUG_KEYWORDS = false,
+
+		MIN_CHARS = 2,
+		MAX_CHAR_DIFF = 8,
+
+		FRAMETIME_TARGET = 1 / 55,
+		FRAMETIME_AVAILABLE = 8,
+		FRAMETIME_RESERVE = 4,
+
+		COROUTINE_DEBUG = false,
+	--	COROUTINE = nil,
+	--	COROUTINE_TIMESTAMP = nil,
+	--	COROUTINE_RESULT = nil,
+
+	--	WORD_DISTANCE = nil,
+	--	WORD_ARRAY = nil,
+	--	WORD_DICT = nil,
+	--	WORD_DICT_LEN = nil,
+
+		REQUEST_KEYWORDS = false,
+	--	NEXT = nil,
+	}
 end
 
----@return string? serverStatus
-function Custom_KnowledgeBase.KBSystem_GetServerStatus()
-	return KBSystem_GetServerStatus()
+PRIVATE.GetSearchType = function(searchType)
+	local search = PRIVATE.SEARCHES[searchType]
+	assert(type(search) == "table")
+	return search
 end
 
+PRIVATE.SearchEnqueue = function(search)
+	tinsert(PRIVATE.SEARCHES_ACTIVE, search)
+	PRIVATE.eventHandler:Show()
+end
 
+PRIVATE.SearchDequeue = function(search)
+	local index = tIndexOf(PRIVATE.SEARCHES_ACTIVE, search)
+	if index then
+		tremove(PRIVATE.SEARCHES_ACTIVE, search)
+		if #PRIVATE.SEARCHES_ACTIVE == 0 then
+			PRIVATE.eventHandler:Hide()
+		end
+	end
+end
 
-local function upgradeEntry(entry, dataTypeIndex)
+PRIVATE.SearchFireFinishCallback = function(search, isSuccess)
+	if type(search.COROUTINE_ON_FINISH_CALLBACK) == "function" then
+		local success, err = pcall(search.COROUTINE_ON_FINISH_CALLBACK, search.TYPE, isSuccess)
+		if not success then
+			geterrorhandler()(err)
+		end
+	end
+end
+
+PRIVATE.UpgradeEntry = function(entry, dataTypeIndex)
 	if type(entry.hidden) == "boolean" then
 		entry.visibility = entry.hidden and KNOWLEDGE_BASE_VISIBILITY_FLAGS.NONE or KNOWLEDGE_BASE_VISIBILITY_FLAGS.ALL
 		entry.hidden = nil
@@ -190,7 +366,7 @@ local function upgradeEntry(entry, dataTypeIndex)
 	end
 end
 
-local function isEntryVisible(entry, realmID)
+PRIVATE.IsEntryVisible = function(entry, realmID)
 	if entry.visibility then
 		if entry.visibility == KNOWLEDGE_BASE_VISIBILITY_FLAGS.ALL then
 			return true
@@ -200,7 +376,7 @@ local function isEntryVisible(entry, realmID)
 			realmID = realmID or C_Service.GetRealmID()
 
 			if KNOWLEDGE_BASE_VISIBILITY_FLAGS[realmID] then
-				return bit.band(entry.visibility, KNOWLEDGE_BASE_VISIBILITY_FLAGS[realmID]) ~= 0
+				return bitband(entry.visibility, KNOWLEDGE_BASE_VISIBILITY_FLAGS[realmID]) ~= 0
 			else
 				return false
 			end
@@ -210,12 +386,12 @@ local function isEntryVisible(entry, realmID)
 	end
 end
 
-local function getOnPageNum(numItems, perPage, currentPage)
+PRIVATE.GetOnPageNum = function(numItems, perPage, currentPage)
 	local numOnPage = numItems - (currentPage - 1) * perPage
 	return numOnPage > perPage and perPage or numOnPage
 end
 
-local function sortArticles(a, b)
+PRIVATE.SortArticles = function(a, b)
 	if a.priority ~= b.priority then
 		return a.priority > b.priority
 	end
@@ -235,7 +411,7 @@ local function sortArticles(a, b)
 	return a.articleHeader < b.articleHeader
 end
 
-local function sortCategories(a, b)
+PRIVATE.SortCategories = function(a, b)
 	if a.priority ~= b.priority then
 		return a.priority > b.priority
 	end
@@ -243,11 +419,10 @@ local function sortCategories(a, b)
 	return a.caption < b.caption
 end
 
-local articlesLoaded, articleDefaultLoaded
-local function loadArticles()
-	if articlesLoaded and not Custom_KnowledgeBase.articlesChanged then return end
+PRIVATE.LoadArticles = function()
+	if PRIVATE.ARTICLES_LOADED and not Custom_KnowledgeBase.articlesChanged then return end
 
-	if not articleDefaultLoaded then
+	if not PRIVATE.ARTICLE_DEFAULT_LOADED then
 		for id, entry in pairs(KNOWLEDGEBASE_ARTICLES) do
 			for key, defaultValue in pairs(SIRUS_KNOWLEDGE_BASE_DEFAULTS.ARTICLE) do
 				if entry[key] == nil then
@@ -257,10 +432,10 @@ local function loadArticles()
 			if not entry.articleID then
 				entry.articleID = id
 			end
-			upgradeEntry(entry, SIRUS_KNOWLEDGE_BASE_IDS.ROOT.ARTICLE)
+			PRIVATE.UpgradeEntry(entry, SIRUS_KNOWLEDGE_BASE_IDS.ROOT.ARTICLE)
 		end
 
-		articleDefaultLoaded = true
+		PRIVATE.ARTICLE_DEFAULT_LOADED = true
 	end
 
 	if SIRUS_KNOWLEDGE_BASE[SIRUS_KNOWLEDGE_BASE_IDS.ROOT.ARTICLE] then
@@ -291,7 +466,7 @@ local function loadArticles()
 					if not entry.articleID then
 						entry.articleID = id
 					end
-					upgradeEntry(entry, SIRUS_KNOWLEDGE_BASE_IDS.ROOT.ARTICLE)
+					PRIVATE.UpgradeEntry(entry, SIRUS_KNOWLEDGE_BASE_IDS.ROOT.ARTICLE)
 					KNOWLEDGEBASE_ARTICLES[id] = entry
 				end
 			end
@@ -305,36 +480,35 @@ local function loadArticles()
 	end
 
 	do	-- TOP_ISSUES
-		table.wipe(KB_TOP_ISSUES)
+		twipe(PRIVATE.TOP_ISSUES)
 		local isGM = IsGMAccount()
 		local realmID = C_Service.GetRealmID()
 
 		for articleID, article in pairs(KNOWLEDGEBASE_ARTICLES) do
-			if article.isTopIssue and (isEntryVisible(article, realmID) or isGM) then
-				table.insert(KB_TOP_ISSUES, article)
+			if article.isTopIssue and (PRIVATE.IsEntryVisible(article, realmID) or isGM) then
+				tinsert(PRIVATE.TOP_ISSUES, article)
 			end
 		end
 
 		if KB_SORT_ARTICLES then
-			table.sort(KB_TOP_ISSUES, sortArticles)
+			tsort(PRIVATE.TOP_ISSUES, PRIVATE.SortArticles)
 		end
 	end
 
-	table.wipe(KB_KEYWORDS_CACHE)
-	KB_KEYWORDS_CACHE_LEN = 0
+	twipe(PRIVATE.KEYWORDS_CACHE)
+	PRIVATE.KEYWORDS_CACHE_LEN = 0
 
-	articlesLoaded = true
+	PRIVATE.ARTICLES_LOADED = true
 	Custom_KnowledgeBase.articlesChanged = nil
 end
 
-local categoriesLoaded, categoryDefaultLoaded
-local function loadCategories()
-	if categoriesLoaded and not Custom_KnowledgeBase.categoriesChanged then return end
+PRIVATE.LoadCategories = function()
+	if PRIVATE.CATEGORIES_LOADED and not Custom_KnowledgeBase.categoriesChanged then return end
 
 	local isGM = IsGMAccount()
 	local realmID = C_Service.GetRealmID()
 
-	if not categoryDefaultLoaded then
+	if not PRIVATE.CATEGORY_DEFAULT_LOADED then
 		for id, entry in pairs(KNOWLEDGEBASE_CATEGORIES) do
 			for key, defaultValue in pairs(SIRUS_KNOWLEDGE_BASE_DEFAULTS.CATEGORY) do
 				if entry[key] == nil then
@@ -344,7 +518,7 @@ local function loadCategories()
 			if not entry.categoryID then
 				entry.categoryID = id
 			end
-			upgradeEntry(entry, SIRUS_KNOWLEDGE_BASE_IDS.ROOT.CATEGORY)
+			PRIVATE.UpgradeEntry(entry, SIRUS_KNOWLEDGE_BASE_IDS.ROOT.CATEGORY)
 		end
 
 		for id, entry in pairs(KNOWLEDGEBASE_SUB_CATEGORIES) do
@@ -356,10 +530,10 @@ local function loadCategories()
 			if not entry.categoryID then
 				entry.categoryID = id
 			end
-			upgradeEntry(entry, SIRUS_KNOWLEDGE_BASE_IDS.ROOT.SUB_CATEGORY)
+			PRIVATE.UpgradeEntry(entry, SIRUS_KNOWLEDGE_BASE_IDS.ROOT.SUB_CATEGORY)
 		end
 
-		categoryDefaultLoaded = true
+		PRIVATE.CATEGORY_DEFAULT_LOADED = true
 	end
 
 	if SIRUS_KNOWLEDGE_BASE[SIRUS_KNOWLEDGE_BASE_IDS.ROOT.CATEGORY] then
@@ -390,7 +564,7 @@ local function loadCategories()
 					if not entry.categoryID then
 						entry.categoryID = id
 					end
-					upgradeEntry(entry, SIRUS_KNOWLEDGE_BASE_IDS.ROOT.CATEGORY)
+					PRIVATE.UpgradeEntry(entry, SIRUS_KNOWLEDGE_BASE_IDS.ROOT.CATEGORY)
 					KNOWLEDGEBASE_CATEGORIES[id] = entry
 				end
 			end
@@ -431,7 +605,7 @@ local function loadCategories()
 					if not entry.categoryID then
 						entry.categoryID = id
 					end
-					upgradeEntry(entry, SIRUS_KNOWLEDGE_BASE_IDS.ROOT.SUB_CATEGORY)
+					PRIVATE.UpgradeEntry(entry, SIRUS_KNOWLEDGE_BASE_IDS.ROOT.SUB_CATEGORY)
 					KNOWLEDGEBASE_SUB_CATEGORIES[id] = entry
 				end
 			end
@@ -445,642 +619,62 @@ local function loadCategories()
 	end
 
 	do	-- SORTED CATEGORIES
-		table.wipe(KB_CATEGORIES)
+		twipe(PRIVATE.CATEGORIES)
 
 		-- Wipe old subCategories
 		for categoryID, category in pairs(KNOWLEDGEBASE_CATEGORIES) do
-			if category.parentID == -1 and (isEntryVisible(category, realmID) or isGM) then
-				table.insert(KB_CATEGORIES, category)
+			if category.parentID == -1 and (PRIVATE.IsEntryVisible(category, realmID) or isGM) then
+				tinsert(PRIVATE.CATEGORIES, category)
 
 				if not category.subCategories then
 					category.subCategories = {}
 				else
-					table.wipe(category.subCategories)
+					twipe(category.subCategories)
 				end
 			end
 		end
 
 		-- Add subCategories
 		for categoryID, category in pairs(KNOWLEDGEBASE_SUB_CATEGORIES) do
-			if category.parentID ~= -1 and (isEntryVisible(category, realmID) or isGM) then
-				table.insert(KNOWLEDGEBASE_CATEGORIES[category.parentID].subCategories, category)
+			if category.parentID ~= -1 and (PRIVATE.IsEntryVisible(category, realmID) or isGM) then
+				tinsert(KNOWLEDGEBASE_CATEGORIES[category.parentID].subCategories, category)
 			end
 		end
 
 		-- Sort subCategories
 		if KB_SORT_CATEGORIES then
-			table.sort(KB_CATEGORIES, sortCategories)
+			tsort(PRIVATE.CATEGORIES, PRIVATE.SortCategories)
 
-			for categoryID, category in pairs(KB_CATEGORIES) do
+			for categoryID, category in pairs(PRIVATE.CATEGORIES) do
 				if category.parentID == -1 then
-					table.sort(category.subCategories, sortCategories)
+					tsort(category.subCategories, PRIVATE.SortCategories)
 				end
 			end
 		end
 	end
 
-	categoriesLoaded = true
+	PRIVATE.CATEGORIES_LOADED = true
 	Custom_KnowledgeBase.categoriesChanged = nil
 end
 
-function Custom_KnowledgeBase.ForceLoadData()
-	loadArticles()
-	loadCategories()
+PRIVATE.GetSubCategoryByIndex = function(categoryIndex, subCategoryIndex)
+	return PRIVATE.CATEGORIES[categoryIndex].subCategories[subCategoryIndex].categoryID
 end
 
----@return boolean isLoaded
-function Custom_KnowledgeBase.KBSetup_IsLoaded()
-	return Custom_KnowledgeBase.setupLoaded == true
+PRIVATE.ToArrayKeywords = function(t)
+	local newT = {}
+	local index = 1
+	for keyword in pairs(t) do
+		newT[index] = keyword
+		index = index + 1
+	end
+	tsort(newT)
+	return newT
 end
 
----@param articlesPerPage integer
----@param curPage integer
-function Custom_KnowledgeBase.KBSetup_BeginLoading(articlesPerPage, curPage)
-	articlesPerPage = tonumber(articlesPerPage)
-	curPage = tonumber(curPage)
-
-	table.wipe(KB_CURRENT_ARTICLES)
-	loadArticles()
-
-	if KB_NO_PAGES
-	or (articlesPerPage and articlesPerPage > 0 and curPage and (curPage + 1) <= (math.ceil(#KB_TOP_ISSUES / articlesPerPage)))
-	then
-		Custom_KnowledgeBase.articleID = nil
-		Custom_KnowledgeBase.categoryIndex = nil
-		Custom_KnowledgeBase.subCategoryIndex = nil
-		Custom_KnowledgeBase.languageIndex = 1
-		Custom_KnowledgeBase.articlesPerPage = articlesPerPage
-		Custom_KnowledgeBase.curPage = curPage + 1
-		Custom_KnowledgeBase.maxPage = math.ceil(#KB_TOP_ISSUES / articlesPerPage)
-		Custom_KnowledgeBase.setupLoaded = true
-
-		FireCustomClientEvent("KNOWLEDGE_BASE_SETUP_LOAD_SUCCESS")
-	else
-		Custom_KnowledgeBase.articleID = nil
-		Custom_KnowledgeBase.categoryIndex = nil
-		Custom_KnowledgeBase.subCategoryIndex = nil
-		Custom_KnowledgeBase.languageIndex = nil
-		Custom_KnowledgeBase.articlesPerPage = nil
-		Custom_KnowledgeBase.curPage = nil
-		Custom_KnowledgeBase.maxPage = nil
-		Custom_KnowledgeBase.setupLoaded = nil
-
-		FireCustomClientEvent("KNOWLEDGE_BASE_SETUP_LOAD_FAILURE")
-	end
-end
-
----@return integer articlesOnPage
-function Custom_KnowledgeBase.KBSetup_GetArticleHeaderCount()
-	if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
-		error("Custom_KnowledgeBase.KBSetup_GetArticleHeaderCount() failed because setup is not loaded", 2)
-	end
-
-	loadArticles()
-
-	return #KB_TOP_ISSUES
-end
-
----@return integer numArticlesInQuery
-function Custom_KnowledgeBase.KBSetup_GetTotalArticleCount()
-	if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
-		error("Custom_KnowledgeBase.KBSetup_GetTotalArticleCount() failed because setup is not loaded", 2)
-	end
-
-	loadArticles()
-
-	if KB_NO_PAGES then
-		return #KB_TOP_ISSUES
-	else
-		return getOnPageNum(#KB_TOP_ISSUES, Custom_KnowledgeBase.articlesPerPage, Custom_KnowledgeBase.curPage)
-	end
-end
-
----@param articleHeaderIndex integer
----@return integer articleID
----@return string articleHeader
----@return boolean isHot
----@return boolean isNew
-function Custom_KnowledgeBase.KBSetup_GetArticleHeaderData(articleHeaderIndex)
-	if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
-		error("Custom_KnowledgeBase.KBSetup_GetArticleHeaderData() failed because setup is not loaded", 2)
-	elseif articleHeaderIndex <= 0 or articleHeaderIndex > (KB_NO_PAGES and #KB_TOP_ISSUES or Custom_KnowledgeBase.KBSetup_GetTotalArticleCount()) then
-		error("Custom_KnowledgeBase.KBSetup_GetArticleHeaderData() called with invalid article header index", 2)
-	end
-
-	articleHeaderIndex = articleHeaderIndex + Custom_KnowledgeBase.articlesPerPage * (Custom_KnowledgeBase.curPage - 1)
-
-	local article = KB_TOP_ISSUES[articleHeaderIndex]
-	local articleHeader = article.articleHeader
-
-	if not isEntryVisible(article) then
-		articleHeader = string.format("%s |cffff0000(%s)|r", articleHeader, KBASE_ARTICLE_HIDDEN)
-	end
-
-	return article.articleID, articleHeader, article.isHot, article.isNew
-end
-
----@return integer numCategories
-function Custom_KnowledgeBase.KBSetup_GetCategoryCount()
-	if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
-		error("Custom_KnowledgeBase.KBSetup_GetCategoryCount() failed because setup is not loaded", 2)
-	end
-
-	loadCategories()
-
-	return #KB_CATEGORIES
-end
-
----@param categoryIndex integer
----@return integer categoryID
----@return string caption
-function Custom_KnowledgeBase.KBSetup_GetCategoryData(categoryIndex)
-	if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
-		error("Custom_KnowledgeBase.KBSetup_GetCategoryData() failed because setup is not loaded", 2)
-	elseif categoryIndex <= 0 or categoryIndex > Custom_KnowledgeBase.KBSetup_GetCategoryCount() then
-		error("Custom_KnowledgeBase.KBSetup_GetCategoryData() called with invalid category index", 2)
-	end
-
-	loadCategories()
-
-	Custom_KnowledgeBase.categoryIndex = categoryIndex
-	Custom_KnowledgeBase.subCategoryIndex = nil
-
-	local category = KB_CATEGORIES[categoryIndex]
-	local caption = category.caption
-
-	if not isEntryVisible(category) then
-		caption = string.format("%s |cffff0000(%s)|r", caption, KBASE_ARTICLE_HIDDEN)
-	end
-
-	return category.categoryID, caption
-end
-
----@return integer numLanguages
-function Custom_KnowledgeBase.KBSetup_GetLanguageCount()
-	if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
-		error("Custom_KnowledgeBase.KBSetup_GetLanguageCount() failed because setup is not loaded", 2)
-	end
-
-	return #KNOWLEDGEBASE_LANGUAGES
-end
-
----@param languageIndex integer
----@return integer languageID
----@return string languageName
-function Custom_KnowledgeBase.KBSetup_GetLanguageData(languageIndex)
-	if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
-		error("Custom_KnowledgeBase.KBSetup_GetCategoryData() failed because setup is not loaded", 2)
-	elseif languageIndex <= 0 or languageIndex > Custom_KnowledgeBase.KBSetup_GetLanguageCount() then
-		error("Custom_KnowledgeBase.KBSetup_GetCategoryData() called with invalid category index", 2)
-	end
-
-	Custom_KnowledgeBase.languageIndex = languageIndex
-	local language = KNOWLEDGEBASE_LANGUAGES[languageIndex]
-	return language.languageID, language.languageName
-end
-
----@param categoryIndex integer
----@return integer numSubCategory
-function Custom_KnowledgeBase.KBSetup_GetSubCategoryCount(categoryIndex)
-	if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
-		error("Custom_KnowledgeBase.KBSetup_GetSubCategoryCount() failed because setup is not loaded", 2)
-	end
-
-	loadCategories()
-
-	return KB_CATEGORIES[categoryIndex] and #KB_CATEGORIES[categoryIndex].subCategories or 0
-end
-
----@param categoryIndex integer
----@param subCategoryindex integer
----@return integer categoryID
----@return string caption
-function Custom_KnowledgeBase.KBSetup_GetSubCategoryData(categoryIndex, subCategoryindex)
-	if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
-		error("Custom_KnowledgeBase.KBSetup_GetCategoryData() failed because setup is not loaded", 2)
-	elseif (categoryIndex <= 0 or categoryIndex > Custom_KnowledgeBase.KBSetup_GetCategoryCount())
-		or (subCategoryindex <= 0 or subCategoryindex > Custom_KnowledgeBase.KBSetup_GetSubCategoryCount(categoryIndex))
-	then
-		error("Custom_KnowledgeBase.KBSetup_GetCategoryData() called with invalid category or sub category index", 2)
-	end
-
-	loadCategories()
-
-	Custom_KnowledgeBase.categoryID = categoryIndex
-	Custom_KnowledgeBase.subCategoryIndex = subCategoryindex
-
-	local subCategory = KB_CATEGORIES[categoryIndex].subCategories[subCategoryindex]
-	local caption = subCategory.caption
-
-	if not isEntryVisible(subCategory) then
-		caption = string.format("%s |cffff0000(%s)|r", caption, KBASE_ARTICLE_HIDDEN)
-	end
-
-	return subCategory.categoryID, caption
-end
-
-
-
----@return boolean isLoaded
-function Custom_KnowledgeBase.KBArticle_IsLoaded()
-	return Custom_KnowledgeBase.articleLoaded == true
-end
-
----@param articleID integer
----@param searchType integer
-function Custom_KnowledgeBase.KBArticle_BeginLoading(articleID, searchType)
-	loadArticles()
-
-	if KNOWLEDGEBASE_ARTICLES[articleID] then
-		Custom_KnowledgeBase.articleID = articleID
-		Custom_KnowledgeBase.articleSearchType = searchType	-- 1 | 2
-
-		Custom_KnowledgeBase.articleLoaded = true
-		FireCustomClientEvent("KNOWLEDGE_BASE_ARTICLE_LOAD_SUCCESS")
-	else
-		Custom_KnowledgeBase.articleLoaded = nil
-		FireCustomClientEvent("KNOWLEDGE_BASE_ARTICLE_LOAD_FAILURE")
-	end
-end
-
----@return integer articleID
----@return string subject
----@return string subjectAlt
----@return string text
----@return string keywords
----@return integer languageID
----@return boolean isHot
-function Custom_KnowledgeBase.KBArticle_GetData()
-	if not Custom_KnowledgeBase.KBArticle_IsLoaded() then
-		error("Custom_KnowledgeBase.KBArticle_GetData() failed because article is not loaded", 2)
-	end
-
-	loadArticles()
-
-	local article = KNOWLEDGEBASE_ARTICLES[Custom_KnowledgeBase.articleID]
-	local articleText = Custom_KnowledgeBase.FormatArticleText(article.text)
-	local subject = article.subject and article.subject ~= "" and article.subject or article.articleHeader
-	return article.articleID, subject or "", article.subjectAlt or "", articleText, article.keywords or "", article.languageID, article.isHot
-end
-
-
-
----@return boolean isLoaded
-function Custom_KnowledgeBase.KBQuery_IsLoaded()
-	return Custom_KnowledgeBase.queryLoaded == true
-end
-
-local SEARCH_BLACKLIST = {
-	["h1"] = true,
-	["h2"] = true,
-	["h3"] = true,
-	["img"] = true,
-	["br"] = true,
-	["li"] = true,
-	["hr"] = true,
-	["center"] = true,
-	["right"] = true,
-	["left"] = true,
-	["spacing"] = true,
-	["indent"] = true,
-	["color"] = true,
-	["align"] = true,
-}
-
-local function searchTextInArticle(article, text, split)
-	if text == "" then
-		return true
-	end
-
-	text = string.trim(text)
-
-	if strlenutf8(text) < 2 then
-		return false
-	end
-
-	text = text:lower()
-
-	local articleID = string.match(text, "^kb(%d+)$")
-	if articleID then
-		return article.articleID == tonumber(articleID)
-	end
-
-	text = text:gsub("%p+", " ")
-	text = text:gsub("%s+", " ")
-
-	if not split then
-		if string.find(article.articleHeader:lower(), text, 1, true)
-		or (article.subject ~= "" and string.find(article.subject:lower(), text, 1, true))
-		or (article.subjectAlt ~= "" and string.find(article.subjectAlt:lower(), text, 1, true))
-		or string.find(article.keywords, text, 1, true)
-		or string.find(article.text:lower(), text, 1, true)
-		then
-			return true
-		end
-	else
-		text = string.trim(text)
-
-		for _, word in ipairs({string.split(" ", text)}) do
-			if not SEARCH_BLACKLIST[word] then
-				if string.find(article.articleHeader:lower(), word, 1, true)
-				or (article.subject ~= "" and string.find(article.subject:lower(), word, 1, true))
-				or (article.subjectAlt ~= "" and string.find(article.subjectAlt:lower(), word, 1, true))
-				or string.find(article.keywords, word, 1, true)
-				or string.find(article.text:lower(), word, 1, true)
-				then
-					return true
-				end
-			end
-		end
-	end
-end
-
-local function getSubCategoryByIndex(categoryIndex, subCategoryIndex)
-	return KB_CATEGORIES[categoryIndex].subCategories[subCategoryIndex].categoryID
-end
-
----@param searchText string
----@param categoryIndex integer
----@param subcategoryIndex integer
----@param articlesPerPage integer
----@param curPage integer
-function Custom_KnowledgeBase.KBQuery_BeginLoading(searchText, categoryIndex, subcategoryIndex, articlesPerPage, curPage)
-	local errorText
-	if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
-		errorText = "Custom_KnowledgeBase.KBQuery_BeginLoading() failed because setup is not loaded"
-	elseif type(searchText) ~= "string" then
-		errorText = "Custom_KnowledgeBase.KBQuery_BeginLoading() called with a null string for search query"
-	elseif strlenutf8(searchText) > KB_SEARCH_LIMIT then
-		errorText = string.format("Custom_KnowledgeBase.KBQuery_BeginLoading() called with a string > %i bytes for search query", KB_SEARCH_LIMIT)
-	elseif not tonumber(categoryIndex) and subcategoryIndex then
-		errorText = "Custom_KnowledgeBase.KBQuery_BeginLoading() called with subcategory without category"
-	end
-
-	if errorText then
-		FireCustomClientEvent("KNOWLEDGE_BASE_QUERY_LOAD_FAILURE")
-		error(errorText, 2)
-	end
-
-	table.wipe(KB_CURRENT_ARTICLES)
-	loadArticles()
-
-	local allCategories = categoryIndex == 0
-	local allSubCategories = subcategoryIndex == 0
-	local isGM = IsGMAccount()
-	local realmID = C_Service.GetRealmID()
-
-	for _, article in pairs(KNOWLEDGEBASE_ARTICLES) do
-		if (isEntryVisible(article, realmID) or isGM)
-		and (allCategories or article.categoryID == KB_CATEGORIES[categoryIndex].categoryID)
-		and (allSubCategories or article.subCategoryID == getSubCategoryByIndex(categoryIndex, subcategoryIndex))
-		and searchTextInArticle(article, searchText, true)
-		then
-			table.insert(KB_CURRENT_ARTICLES, article)
-		end
-	end
-
-	if KB_SORT_ARTICLES then
-		table.sort(KB_CURRENT_ARTICLES, sortArticles)
-	end
-
-	Custom_KnowledgeBase.queryCategoryID = categoryIndex
-	Custom_KnowledgeBase.querySubCategoryIndex = subcategoryIndex
-	Custom_KnowledgeBase.queryArticlesPerPage = articlesPerPage
-	Custom_KnowledgeBase.queryCurPage = curPage + 1
-	Custom_KnowledgeBase.queryMaxPage = math.ceil(#KB_CURRENT_ARTICLES / articlesPerPage)
-	Custom_KnowledgeBase.queryLoaded = true
-
-	FireCustomClientEvent("KNOWLEDGE_BASE_QUERY_LOAD_SUCCESS")
-end
-
----@return integer numArticleHeadersInQuery
-function Custom_KnowledgeBase.KBQuery_GetArticleHeaderCount()
-	if not Custom_KnowledgeBase.KBQuery_IsLoaded() then
-		error("Custom_KnowledgeBase.KBQuery_GetArticleHeaderCount() failed because query is not loaded", 2)
-	end
-
-	return #KB_CURRENT_ARTICLES
-end
-
----@return integer numArticlesInQuery
-function Custom_KnowledgeBase.KBQuery_GetTotalArticleCount()
-	if not Custom_KnowledgeBase.KBQuery_IsLoaded() then
-		error("Custom_KnowledgeBase.KBQuery_GetTotalArticleCount() failed because query is not loaded", 2)
-	end
-
-	if KB_NO_PAGES then
-		return #KB_CURRENT_ARTICLES
-	else
-		return getOnPageNum(#KB_CURRENT_ARTICLES, Custom_KnowledgeBase.queryArticlesPerPage, Custom_KnowledgeBase.queryCurPage)
-	end
-end
-
----@param articleHeaderIndex integer
----@return integer articleID
----@return string articleHeader
----@return boolean isHot
----@return boolean isNew
-function Custom_KnowledgeBase.KBQuery_GetArticleHeaderData(articleHeaderIndex)
-	if not Custom_KnowledgeBase.KBQuery_IsLoaded() then
-		error("Custom_KnowledgeBase.KBQuery_GetArticleHeaderData() failed because query is not loaded", 2)
-	elseif articleHeaderIndex <= 0 or articleHeaderIndex > (KB_NO_PAGES and #KB_CURRENT_ARTICLES or Custom_KnowledgeBase.KBQuery_GetArticleHeaderCount()) then
-		error("Custom_KnowledgeBase.KBQuery_GetArticleHeaderData() called with invalid article header index", 2)
-	end
-
-	local article = KB_CURRENT_ARTICLES[articleHeaderIndex]
-	local articleHeader = article.articleHeader
-
-	if not isEntryVisible(article) then
-		articleHeader = string.format("%s |cffff0000(%s)|r", articleHeader, KBASE_ARTICLE_HIDDEN)
-	end
-
-	return article.articleID, articleHeader, article.isHot, article.isNew
-end
-
----@param articleID integer
----@return string? articleHeader
-function Custom_KnowledgeBase.GetArticleHeaderByID(articleID)
-	local article = KNOWLEDGEBASE_ARTICLES[articleID]
-	if article then
-		if not isEntryVisible(article) then
-			return string.format("%s |cffff0000(%s)|r", article.articleHeader, KBASE_ARTICLE_HIDDEN)
-		else
-			return article.articleHeader
-		end
-	end
-end
-
----@param articleID integer
----@return table? path
-function Custom_KnowledgeBase.GetArticlePath(articleID)
-	local article = KNOWLEDGEBASE_ARTICLES[articleID]
-	if article then
-		if isEntryVisible(article) then
-			local category = KNOWLEDGEBASE_CATEGORIES[article.categoryID]
-			local subCategory = KNOWLEDGEBASE_SUB_CATEGORIES[article.subCategoryID]
-			if category and isEntryVisible(category)
-			and subCategory and isEntryVisible(subCategory)
-			then
-				local subCategoryIndex = tIndexOf(category.subCategories, subCategory)
-
-				return {
-					{
-						id = category.categoryID,
-						name = category.caption,
-					},
-					{
-						id = subCategoryIndex,
-						name = subCategory.caption,
-						subcategory = true,
-					},
-				}
-			end
-		end
-	end
-end
-
-
-
-local string_distance
-do
-	local max, min = math.max, math.min
-	local utf8byte, utf8len = utf8.byte, strlenutf8
-
-	local aLen, bLen
-
-	string_distance = function(a, b, deleteCosts, insertCosts, substituteCosts)
-		aLen = utf8len(a)
-		bLen = utf8len(b)
-
-		if not deleteCosts then deleteCosts = 1 end
-		if not insertCosts then insertCosts = 1 end
-		if not substituteCosts then substituteCosts = 1 end
-
-		if aLen == 0 or bLen == 0 then
-			return max(aLen, bLen)
-		end
-
-		aLen = aLen + 1
-		bLen = bLen + 1
-
-		local matrix = {}
-
-		-- increment along the first column of each row
-		for i = 1, bLen do
-			matrix[i] = {i - insertCosts}
-		end
-
-		-- increment each column in the first row
-		for j = 1, aLen do
-			matrix[1][j] = j - deleteCosts
-		end
-
-		-- fill in the rest of the matrix
-		for i = 2, bLen do
-			for j = 2, aLen do
-				if utf8byte(b, i - 1) == utf8byte(a, j - 1) then
-					matrix[i][j] = matrix[i - 1][j - 1]
-				else
-					matrix[i][j] = min(
-						matrix[i - 1][j] + deleteCosts,			-- deletion
-						matrix[i][j - 1] + insertCosts,			-- insertion
-						matrix[i - 1][j - 1] + substituteCosts	-- substitution
-					)
-				end
-			end
-		end
-
-		return matrix[bLen][aLen]
-	end
-end
-
-local KB_SUGGESTIONS = {
-	DEBUG = false,
-	DEBUG_KEYWORDS = false,
-
-	MIN_CHARS = 2,
-	MAX_CHAR_DIFF = 8,
-
-	DISTANCE_CACHE = {},
-
-	FRAMETIME_TARGET = 1 / 55,
-	FRAMETIME_AVAILABLE = 8,
-	FRAMETIME_RESERVE = 4,
-
-	COROUTINE_DEBUG = false,
---	COROUTINE = nil,
---	COROUTINE_TIMESTAMP = nil,
---	COROUTINE_RESULT = nil,
-
---	WORD_DISTANCE = nil,
---	WORD_ARRAY = nil,
---	WORD_DICT = nil,
---	WORD_DICT_LEN = nil,
-
-	REQUEST_KEYWORDS = false,
---	NEXT = nil,
-}
-
-if IsInterfaceDevClient(true) then
-	_G.KB_SUGGESTIONS = KB_SUGGESTIONS
-end
-
-local KB_KEYWORD_TYPES = {
-	EXACT = "=",
-	CONTAINS = "+",
-	CONTAINS_DIST = "~",
-	STARTS_WITH = "^",
-	ENDS_WITH = "$",
-}
-
-local KB_SUGGESTION_WORD_DICT_ENUM = {
-	COUNT = 1,
-	INDEXES = 2,
-}
-
-local searchCoroutine
-do
-	local debugprofilestop = debugprofilestop
-	local strlenutf8 = strlenutf8
-	local pairs = pairs
-	local ipairs = ipairs
-	local max = math.max
-	local strfind = string.find
-	local tsort = table.sort
-	local utf8sub = utf8.sub
-
-	local CalculateStringEditDistance = CalculateStringEditDistance
-	local ClampedPercentageBetween = ClampedPercentageBetween
-
-	local sortDistance = function(a, b)
-		if a[2] ~= b[2] then
-			return a[2] > b[2]
-		elseif a[1].priority ~= b[1].priority then
-			return a[1].priority > b[1].priority
-		elseif a[1].articleHeader ~= b[1].articleHeader then
-			return a[1].articleHeader > b[1].articleHeader
-		end
-
-		return a[1].articleID > b[1].articleID
-	end
-
-	local getStringDistance = function(a, b, deleteCosts, insertCosts, substituteCosts)
-		if a == b then
-			return 0
-		end
-
-		if KB_SUGGESTIONS.DISTANCE_CACHE[a]
-		and KB_SUGGESTIONS.DISTANCE_CACHE[a][b]
-		then
-			return KB_SUGGESTIONS.DISTANCE_CACHE[a][b]
-		end
-
-		local distance = string_distance(a, b, deleteCosts, insertCosts, substituteCosts)
-		KB_SUGGESTIONS.DISTANCE_CACHE[a] = KB_SUGGESTIONS.DISTANCE_CACHE[a] or {}
-		KB_SUGGESTIONS.DISTANCE_CACHE[a][b] = distance
-
-		return distance
-	end
+do -- Search
+	local SEARCH_MIN_DISTANCE = 0.8
+	local SEARCH_MIN_DISTANCE_DEBUG = 0.6
 
 	local SCORE_VALUE = {
 		MATCH = 3,
@@ -1088,81 +682,6 @@ do
 		LONG = 1.5,
 		SHORT = 0.5,
 	}
-
-	local scoreStrings = function(word, kWord, wordLen, kWordLen)
-		if word == kWord then
-			return SCORE_VALUE.MATCH, 0
-		end
-
-		local keywordType = strsub(kWord, 1, 1)
-
-		if keywordType == KB_KEYWORD_TYPES.EXACT then
-			local keyword = strsub(kWord, 2)
-			if word == keyword then
-				return SCORE_VALUE.MATCH, -3
-			else
-				return 0, -1
-			end
-		elseif keywordType == KB_KEYWORD_TYPES.STARTS_WITH then
-			local keyword = strsub(kWord, 2)
-			if strfind(word, keyword, 1, true) == 1 then
-				return SCORE_VALUE.NEAR, -4
-			else
-				return 0, -1
-			end
-		elseif keywordType == KB_KEYWORD_TYPES.ENDS_WITH then
-			local keyword = strsub(kWord, 2)
-			if utf8sub(word, -(kWordLen or strlenutf8(keyword))) == keyword then
-				return SCORE_VALUE.NEAR, -5
-			else
-				return 0, -1
-			end
-		elseif keywordType == KB_KEYWORD_TYPES.CONTAINS or keywordType == KB_KEYWORD_TYPES.CONTAINS_DIST then
-			local keyword = strsub(kWord, 2)
-			if strfind(word, keyword, 1, true) then
-				return SCORE_VALUE.NEAR, -6
-			elseif keywordType == KB_KEYWORD_TYPES.CONTAINS then
-				return 0, -1
-			end
-		end
-
-		if not wordLen then wordLen = strlenutf8(word) end
-		if not kWordLen then kWordLen = strlenutf8(kWord) end
-
-		if abs(wordLen - kWordLen) > KB_SUGGESTIONS.MAX_CHAR_DIFF then
-			return 0, -9
-		end
-
-		local mult
-
-		if wordLen <= 3 or kWordLen <= 3 then
-			if word == kWord then
-				return SCORE_VALUE.MATCH, 0
-			elseif wordLen == kWordLen
-				or wordLen <= 2 or kWordLen <= 2
-				or wordLen > kWordLen and not strfind(word, kWord, 1, true)
-				or wordLen < kWordLen and not strfind(kWord, word, 1, true)
-			then
-				return 0, max(wordLen, kWordLen)
-			end
-
-			mult = SCORE_VALUE.SHORT
---		elseif strfind(wordLen > kWordLen and word or kWord, wordLen > kWordLen and kWord or word, 1, true) then
---			mult = SCORE_VALUE.LONG
-		end
-
-	--	local distance = getStringDistance(word, kWord, 1, 1, 1)
-		local distance = CalculateStringEditDistance(word, kWord)
-		local score = ClampedPercentageBetween(distance, 5, 1)
-
-		if not mult then
-			if score >= 1 then
-				mult = SCORE_VALUE.NEAR
-			end
-		end
-
-		return score * (mult or 1), distance
-	end
 
 	local WORD_BLACKLIST = {
 		["мы"] = true, ["нас"] = true, ["нам"] = true,
@@ -1204,241 +723,14 @@ do
 		["хочу"] = true, ["хотел"] = true,
 		["не"] = true,
 		["привет"] = true,
+
+		["h1"] = true, ["h2"] = true, ["h3"] = true,
+		["img"] = true, ["color"] = true,
+		["br"] = true, ["li"] = true, ["hr"] = true,
+		["center"] = true, ["right"] = true, ["left"] = true,
+		["spacing"] = true, ["indent"] = true, ["align"] = true,
 	}
 
-	local SEARCH_MIN_DISTANCE = 0.8
-	local SEARCH_MIN_DISTANCE_DEBUG = 0.6
-
-	searchCoroutine = function(wordArray, wordDict, wordCount, newWordDict)
-		local totalEntries = KB_KEYWORDS_CACHE_LEN * wordCount
-		local processedEntries = 0
-		local distanceList = newWordDict and KB_SUGGESTIONS.WORD_DISTANCE or {}
-		local articleDistance = {}
-
-		wordDict = wordDict or newWordDict
-
-		for word, wordData in pairs(wordDict) do
-			if not WORD_BLACKLIST[word] then
-				local wordLen = strlenutf8(word)
-
-				if wordLen >= KB_SUGGESTIONS.MIN_CHARS then
-					for keyword, data in pairs(KB_KEYWORDS_CACHE) do
-						local keywordParts = data[1]
-						local articles = data[2]
-
-						local score, distance
-
-						if type(keywordParts) == "string" then
-							score, distance = scoreStrings(word, keyword, wordLen)
-						else
-							local bestKeywordIndex
-							local bestKeywordScore = 0
-							local bestKeywordDistance = -1
-
-							for keywordIndex, keywordPart in ipairs(keywordParts) do
-								local keywordPartLen = strlenutf8(keywordPart)
-								if keywordPartLen > 2 then
-									local keywordScore, keywordDistance = scoreStrings(word, keywordPart, wordLen, keywordPartLen)
-									if keywordScore > bestKeywordScore then
-										bestKeywordIndex = keywordIndex
-										bestKeywordScore = keywordScore
-										bestKeywordDistance = keywordDistance
-									end
-								end
-							end
-
-							local sequenceFound
-							if bestKeywordIndex and bestKeywordScore > SEARCH_MIN_DISTANCE_DEBUG then
-								for _, currentWordIndex in ipairs(wordData[KB_SUGGESTION_WORD_DICT_ENUM.INDEXES]) do
-									local firstWordIndex = currentWordIndex - (bestKeywordIndex - 1)
-									local lastWordIndex = currentWordIndex + (#keywordParts - bestKeywordIndex)
-
-									local partKeywordScore, partKeywordDistance = 0, 99
-
-									if firstWordIndex > 0 and lastWordIndex <= #wordArray then
-										local validSequence
-
-										for wordIndex = firstWordIndex, lastWordIndex do
-											if wordIndex ~= currentWordIndex then
-												local keywordIndex = bestKeywordIndex + wordIndex - currentWordIndex
-												local offsettedWord = wordArray[wordIndex]
-												local keywordPart = keywordParts[keywordIndex]
-
-												local keywordScore, keywordDistance = scoreStrings(offsettedWord, keywordPart)
-
-												if keywordScore < SEARCH_MIN_DISTANCE then
-													validSequence = nil
-													break
-												else
-													partKeywordScore = partKeywordScore + keywordScore
-													partKeywordDistance = partKeywordDistance + keywordDistance
-													validSequence = true
-												end
-											end
-										end
-
-										if validSequence then
-											-- include skipped index
-											partKeywordScore = partKeywordScore + bestKeywordScore
-											bestKeywordDistance = bestKeywordDistance + partKeywordDistance
-
-											score, distance = partKeywordScore / #keywordParts, partKeywordDistance
-											sequenceFound = true
-											break
-										end
-									end
-								end
-
-								if not sequenceFound then
-									score, distance = 0, -1
-								end
-							else
-								score, distance = 0, -1
-							end
-						end
-
-						if KB_SUGGESTIONS.DEBUG and score >= SEARCH_MIN_DISTANCE_DEBUG then
-							print(word, keyword, wordLen, distance, RoundToSignificantDigits(score, 2))
-						end
-
-						if score >= SEARCH_MIN_DISTANCE then
-							local count = wordData[KB_SUGGESTION_WORD_DICT_ENUM.COUNT]
-
-							for _, article in ipairs(articles) do
-								if KB_SUGGESTIONS.REQUEST_KEYWORDS then
-									local keywordPrefix = strsub(keyword, 1, 1)
-									local keywordText = keyword
-
-									if not KB_SUGGESTIONS.DEBUG_KEYWORDS then
-										for _, prefixValue in pairs(KB_KEYWORD_TYPES) do
-											if prefixValue == keywordPrefix then
-												keywordText = strsub(keyword, 2)
-												break
-											end
-										end
-									end
-
-									if not articleDistance[article] then
-										articleDistance[article] = {score * count, {[keywordText] = true}}
-									else
-										articleDistance[article][1] = articleDistance[article][1] + score * count
-										articleDistance[article][2][keywordText] = true
-									end
-								else
-									if not articleDistance[article] then
-										articleDistance[article] = score * count
-									else
-										articleDistance[article] = articleDistance[article] + score * count
-									end
-								end
-							end
-						end
-
-						processedEntries = processedEntries + 1
-
-						if (debugprofilestop() - KB_SUGGESTIONS.COROUTINE_TIMESTAMP) > KB_SUGGESTIONS.FRAMETIME_AVAILABLE then
-							if KB_SUGGESTIONS.COROUTINE_DEBUG then print("yield", processedEntries / totalEntries, processedEntries, totalEntries) end
-							coroutine.yield(processedEntries / totalEntries)
-						end
-					end
-				end
-			end
-		end
-
-		if newWordDict then
-			if KB_SUGGESTIONS.REQUEST_KEYWORDS then
-				for i = #distanceList, 1, -1 do
-					local wordData = articleDistance[distanceList[i][1]]
-					if wordData then
-						distanceList[i][2] = distanceList[i][2] + wordData[1]
-						for word in pairs(wordData[2]) do
-							distanceList[i][3][word] = true
-						end
-						articleDistance[distanceList[i][1]] = nil
-					end
-				end
-			else
-				for i = #distanceList, 1, -1 do
-					local score = articleDistance[distanceList[i][1]]
-					if score then
-						distanceList[i][2] = distanceList[i][2] + score
-						articleDistance[distanceList[i][1]] = nil
-					end
-				end
-			end
-		end
-
-		if KB_SUGGESTIONS.REQUEST_KEYWORDS then
-			for article, wordData in pairs(articleDistance) do
-				distanceList[#distanceList + 1] = {article, wordData[1], wordData[2]}
-			end
-		else
-			for article, distance in pairs(articleDistance) do
-				distanceList[#distanceList + 1] = {article, distance}
-			end
-		end
-
-		tsort(distanceList, sortDistance)
-
-		KB_SUGGESTIONS.WORD_DISTANCE = distanceList
-
-		return -1, distanceList
-	end
-end
-
-local sendSuggestionsAvailable = function(dbgInfo)
-	FireCustomClientEvent("KNOWLEDGE_BASE_SUGGESTIONS_AVAILABLE")
-	if KB_SUGGESTIONS.COROUTINE_DEBUG then print(string.format("KNOWLEDGE_BASE_SUGGESTIONS_AVAILABLE %s", dbgInfo)) end
-
-	if KB_SUGGESTIONS.NEXT then
-		RunNextFrame(function()
-			Custom_KnowledgeBase.RequestSuggestions(KB_SUGGESTIONS.NEXT, KB_SUGGESTIONS.REQUEST_KEYWORDS)
-		end)
-		FireCustomClientEvent("KNOWLEDGE_BASE_SUGGESTIONS_NEXT")
-	end
-end
-
-EVENT_HANDLER:SetScript("OnUpdate", function(self, elapsed)
-	local frametimeStep = KB_SUGGESTIONS.FRAMETIME_TARGET - elapsed
-
-	if frametimeStep ~= 0 then
-		frametimeStep = frametimeStep * 1000
-		KB_SUGGESTIONS.FRAMETIME_AVAILABLE = math.max(5, KB_SUGGESTIONS.FRAMETIME_AVAILABLE + frametimeStep)
-	end
-
-	if KB_SUGGESTIONS.COROUTINE then
-		KB_SUGGESTIONS.COROUTINE_TIMESTAMP = debugprofilestop()
-		local status, progress, result = coroutine.resume(KB_SUGGESTIONS.COROUTINE)
-
-		if not status then
-			KB_SUGGESTIONS.COROUTINE_RESULT = nil
-			KB_SUGGESTIONS.COROUTINE = nil
-			self:Hide()
-			error(progress, 2)
-		elseif progress ~= -1 then
-			FireCustomClientEvent("KNOWLEDGE_BASE_SUGGESTIONS_PROGRESS", progress)
-			if KB_SUGGESTIONS.COROUTINE_DEBUG then print("KNOWLEDGE_BASE_SUGGESTIONS_PROGRESS", progress) end
-		else
-			KB_SUGGESTIONS.COROUTINE_RESULT = result
-			KB_SUGGESTIONS.COROUTINE = nil
-			self:Hide()
-			sendSuggestionsAvailable("Delayed")
-		end
-	else
-		self:Hide()
-	end
-end)
-
-function Custom_KnowledgeBase.AbortSuggestions()
-	if KB_SUGGESTIONS.COROUTINE then
-		KB_SUGGESTIONS.COROUTINE = nil
-		KB_SUGGESTIONS.COROUTINE_RESULT = nil
-		EVENT_HANDLER:Hide()
-	end
-end
-
-local WORD_MATCH_PATTERN
-do
 	local punctuationChars = {
 		"\033",		-- !
 		"\034",		-- "
@@ -1474,206 +766,602 @@ do
 		"\126",		-- ~
 	}
 
-	WORD_MATCH_PATTERN = string.format("([^%%s%%p][^%%s%%p][^%%s%s]+)", table.concat(punctuationChars, ""))
-end
+	local WORD_MATCH_PATTERN = strformat("([^%%s%%p][^%%s%%p][^%%s%s]+)", tconcat(punctuationChars, ""))
 
-local GetFramerate = GetFramerate
-function Custom_KnowledgeBase.RequestSuggestions(text, requestKeywords, force)
-	if not text then
-		KB_SUGGESTIONS.NEXT = nil
-		return false
-	end
+	PRIVATE.SearchTextInArticleFields = function(article, text, split)
+		if text == "" then
+			return true
+		end
 
-	text = string.trim(text)
+		text = strtrim(text)
 
-	if text == "" then
-		KB_SUGGESTIONS.NEXT = nil
-		return false
-	end
-
-	if KB_SUGGESTIONS.COROUTINE then
-		if force then
-			Custom_KnowledgeBase.AbortSuggestions()
-		else
-			KB_SUGGESTIONS.NEXT = text
+		if utf8len(text) < 2 then
 			return false
 		end
-	else
-		KB_SUGGESTIONS.NEXT = nil
-	end
 
-	if (requestKeywords and not KB_SUGGESTIONS.REQUEST_KEYWORDS)
-	or (not requestKeywords and KB_SUGGESTIONS.REQUEST_KEYWORDS)
-	then
-		KB_SUGGESTIONS.WORD_DISTANCE = nil
-	end
+		text = text:lower()
 
-	KB_SUGGESTIONS.REQUEST_KEYWORDS = not not requestKeywords
-
-	if not next(KB_KEYWORDS_CACHE) then
-		local numWords = 0
-
-		for _, article in pairs(KNOWLEDGEBASE_ARTICLES) do
-			if article.keywords ~= "" and isEntryVisible(article) then
-				local keywords = {string.split(KB_KEYWORDS_DELIMITER, article.keywords)}
-				for _, keyword in ipairs(keywords) do
-					if not KB_KEYWORDS_CACHE[keyword] then
-						local keywordParts
-						if string.find(keyword, " ", 1, true) then
-							keywordParts = {string.split(" ", keyword)}
-						else
-							keywordParts = keyword
-						end
-
-						KB_KEYWORDS_CACHE[keyword] = {
-							[1] = keywordParts,
-							[2] = {},
-						}
-
-						numWords = numWords + 1
-					end
-
-					table.insert(KB_KEYWORDS_CACHE[keyword][2], article)
-				end
-			end
+		local articleID = strmatch(text, "^kb(%d+)$")
+		if articleID then
+			return article.articleID == tonumber(articleID)
 		end
 
-		KB_KEYWORDS_CACHE_LEN = numWords
-	end
+		text = text:gsub("%p+", " ")
+		text = text:gsub("%s+", " ")
 
-	local wordArray = {}
-	local wordDict = {}
-	local wordIndex = 0
-	local wordCount = 0
-
-	for word in string.gmatch(text, WORD_MATCH_PATTERN) do
-		wordIndex = wordIndex + 1
-		word = string.lower(word)
-		word = string.gsub(word, "ё", "е")
-		wordArray[wordIndex] = word
-
-		if not wordDict[word] then
-			wordDict[word] = {
-				[KB_SUGGESTION_WORD_DICT_ENUM.COUNT] = 1,
-				[KB_SUGGESTION_WORD_DICT_ENUM.INDEXES] = {wordIndex},
-			}
-
-			wordCount = wordCount + 1
-		else
-			wordDict[word][KB_SUGGESTION_WORD_DICT_ENUM.COUNT] = wordDict[word][KB_SUGGESTION_WORD_DICT_ENUM.COUNT] + 1
-			table.insert(wordDict[word][KB_SUGGESTION_WORD_DICT_ENUM.INDEXES], wordIndex)
-		end
-	end
-
-	local newWordDict
-
-	if KB_SUGGESTIONS.WORD_DICT then
-		if wordCount == KB_SUGGESTIONS.WORD_DICT_LEN then
-			if tCompare(wordDict, KB_SUGGESTIONS.WORD_DICT) then
-				FireCustomClientEvent("KNOWLEDGE_BASE_SUGGESTIONS_AVAILABLE")
-				if KB_SUGGESTIONS.COROUTINE_DEBUG then print("KNOWLEDGE_BASE_SUGGESTIONS_AVAILABLE Cache") end
+		if not split then
+			if strfind(article.articleHeader:lower(), text, 1, true)
+			or (article.subject ~= "" and strfind(article.subject:lower(), text, 1, true))
+			or (article.subjectAlt ~= "" and strfind(article.subjectAlt:lower(), text, 1, true))
+			or strfind(article.keywords, text, 1, true)
+			or strfind(article.text:lower(), text, 1, true)
+			then
 				return true
 			end
-		elseif wordCount > KB_SUGGESTIONS.WORD_DICT_LEN then
-			local wordRemoved
-			for word in pairs(KB_SUGGESTIONS.WORD_DICT) do
-				if not wordDict[word] then
-					wordRemoved = true
-					break
-				end
-			end
-
-			if not wordRemoved then
-				newWordDict = {}
-
-				for word, data in pairs(wordDict) do
-					local count = data[KB_SUGGESTION_WORD_DICT_ENUM.COUNT]
-
-					if not KB_SUGGESTIONS.WORD_DICT[word] then
-						newWordDict[word] = count
-					end
-
-					KB_SUGGESTIONS.WORD_DICT[word] = count
-				end
-			end
-		end
-	end
-
-	KB_SUGGESTIONS.WORD_ARRAY = wordArray
-	KB_SUGGESTIONS.WORD_DICT = wordDict
-	KB_SUGGESTIONS.WORD_DICT_LEN = wordCount
-
-	local framerate = GetFramerate()
-	KB_SUGGESTIONS.FRAMETIME_TARGET = framerate > 63 and (1 / 60) or (1 / 55)
-	KB_SUGGESTIONS.FRAMETIME_AVAILABLE = 1000 / framerate - KB_SUGGESTIONS.FRAMETIME_RESERVE
-
-	KB_SUGGESTIONS.COROUTINE = coroutine.create(searchCoroutine)
-	KB_SUGGESTIONS.COROUTINE_TIMESTAMP = debugprofilestop()
-
-	local status, progress, result = coroutine.resume(KB_SUGGESTIONS.COROUTINE, wordArray, wordDict, wordCount, newWordDict)
-	if not status then
-		KB_SUGGESTIONS.COROUTINE_RESULT = nil
-		KB_SUGGESTIONS.COROUTINE = nil
-		EVENT_HANDLER:Hide()
-		error(progress, 2)
-	end
-
-	if coroutine.status(KB_SUGGESTIONS.COROUTINE) == "dead" then
-		KB_SUGGESTIONS.COROUTINE_RESULT = result
-		KB_SUGGESTIONS.COROUTINE = nil
-		sendSuggestionsAvailable("Instant")
-	else
-		FireCustomClientEvent("KNOWLEDGE_BASE_SUGGESTIONS_PROGRESS", progress)
-		if KB_SUGGESTIONS.COROUTINE_DEBUG then print("KNOWLEDGE_BASE_SUGGESTIONS_PROGRESS", progress) end
-		EVENT_HANDLER:Show()
-	end
-
-	return true
-end
-
-local toArrayKeywords = function(t)
-	local newT = {}
-	local index = 1
-	for keyword in pairs(t) do
-		newT[index] = keyword
-		index = index + 1
-	end
-	table.sort(newT)
-	return newT
-end
-
-function Custom_KnowledgeBase.GetSuggestions(numSuggestions)
-	if not KB_SUGGESTIONS.COROUTINE_RESULT then
-		if KB_SUGGESTIONS.COROUTINE then
-			return false, "SEARCH_IN_PROGRESS"
 		else
-			return false, "NO_SEARCH_REQUEST"
+			text = strtrim(text)
+
+			for _, word in ipairs({strsplit(" ", text)}) do
+				if not WORD_BLACKLIST[word] then
+					if strfind(article.articleHeader:lower(), word, 1, true)
+					or (article.subject ~= "" and strfind(article.subject:lower(), word, 1, true))
+					or (article.subjectAlt ~= "" and strfind(article.subjectAlt:lower(), word, 1, true))
+					or strfind(article.keywords, word, 1, true)
+					or strfind(article.text:lower(), word, 1, true)
+					then
+						return true
+					end
+				end
+			end
 		end
 	end
 
-	numSuggestions = numSuggestions and math.min(numSuggestions, #KB_SUGGESTIONS.COROUTINE_RESULT) or #KB_SUGGESTIONS.COROUTINE_RESULT
-	local suggestions = {}
-	local keywordsAvailable
+	PRIVATE.SortDistance = function(a, b)
+		if a[2] ~= b[2] then
+			return a[2] > b[2]
+		elseif a[1].priority ~= b[1].priority then
+			return a[1].priority > b[1].priority
+		elseif a[1].articleHeader ~= b[1].articleHeader then
+			return a[1].articleHeader > b[1].articleHeader
+		end
 
-	if KB_SUGGESTIONS.REQUEST_KEYWORDS then
-		for i = 1, numSuggestions do
-			suggestions[#suggestions + 1] = {KB_SUGGESTIONS.COROUTINE_RESULT[i][1], toArrayKeywords(KB_SUGGESTIONS.COROUTINE_RESULT[i][3])}
-		end
-		keywordsAvailable = true
-	else
-		for i = 1, numSuggestions do
-			suggestions[#suggestions + 1] = KB_SUGGESTIONS.COROUTINE_RESULT[i][1]
-		end
-		keywordsAvailable = false
+		return a[1].articleID > b[1].articleID
 	end
 
-	return true, suggestions, keywordsAvailable
+	local aLen, bLen
+	PRIVATE.StringDistance = function(a, b, deleteCosts, insertCosts, substituteCosts)
+		aLen = utf8len(a)
+		bLen = utf8len(b)
+
+		if not deleteCosts then deleteCosts = 1 end
+		if not insertCosts then insertCosts = 1 end
+		if not substituteCosts then substituteCosts = 1 end
+
+		if aLen == 0 or bLen == 0 then
+			return mathmax(aLen, bLen)
+		end
+
+		aLen = aLen + 1
+		bLen = bLen + 1
+
+		local matrix = {}
+
+		-- increment along the first column of each row
+		for i = 1, bLen do
+			matrix[i] = {i - insertCosts}
+		end
+
+		-- increment each column in the first row
+		for j = 1, aLen do
+			matrix[1][j] = j - deleteCosts
+		end
+
+		-- fill in the rest of the matrix
+		for i = 2, bLen do
+			for j = 2, aLen do
+				if utf8byte(b, i - 1) == utf8byte(a, j - 1) then
+					matrix[i][j] = matrix[i - 1][j - 1]
+				else
+					matrix[i][j] = mathmin(
+						matrix[i - 1][j] + deleteCosts,			-- deletion
+						matrix[i][j - 1] + insertCosts,			-- insertion
+						matrix[i - 1][j - 1] + substituteCosts	-- substitution
+					)
+				end
+			end
+		end
+
+		return matrix[bLen][aLen]
+	end
+
+	PRIVATE.GetStringDistance = function(a, b, deleteCosts, insertCosts, substituteCosts)
+		if a == b then
+			return 0
+		end
+
+		if PRIVATE.SEARCH_DISTANCE_CACHE[a]
+		and PRIVATE.SEARCH_DISTANCE_CACHE[a][b]
+		then
+			return PRIVATE.SEARCH_DISTANCE_CACHE[a][b]
+		elseif PRIVATE.SEARCH_DISTANCE_CACHE[b]
+		and PRIVATE.SEARCH_DISTANCE_CACHE[b][a]
+		then
+			return PRIVATE.SEARCH_DISTANCE_CACHE[b][a]
+		end
+
+		local distance = PRIVATE.StringDistance(a, b, deleteCosts, insertCosts, substituteCosts)
+		PRIVATE.SEARCH_DISTANCE_CACHE[a] = PRIVATE.SEARCH_DISTANCE_CACHE[a] or {}
+		PRIVATE.SEARCH_DISTANCE_CACHE[a][b] = distance
+
+		return distance
+	end
+
+	PRIVATE.ScoreStrings = function(search, word, kWord, wordLen, kWordLen)
+		if word == kWord then
+			return SCORE_VALUE.MATCH, 0
+		end
+
+		local keywordType = strsub(kWord, 1, 1)
+
+		if keywordType == KB_KEYWORD_TYPES.EXACT then
+			local keyword = strsub(kWord, 2)
+			if word == keyword then
+				return SCORE_VALUE.MATCH, -3
+			else
+				return 0, -1
+			end
+		elseif keywordType == KB_KEYWORD_TYPES.STARTS_WITH then
+			local keyword = strsub(kWord, 2)
+			if strfind(word, keyword, 1, true) == 1 then
+				return SCORE_VALUE.NEAR, -4
+			else
+				return 0, -1
+			end
+		elseif keywordType == KB_KEYWORD_TYPES.ENDS_WITH then
+			local keyword = strsub(kWord, 2)
+			if utf8sub(word, -(kWordLen or utf8len(keyword))) == keyword then
+				return SCORE_VALUE.NEAR, -5
+			else
+				return 0, -1
+			end
+		elseif keywordType == KB_KEYWORD_TYPES.CONTAINS or keywordType == KB_KEYWORD_TYPES.CONTAINS_DIST then
+			local keyword = strsub(kWord, 2)
+			if strfind(word, keyword, 1, true) then
+				return SCORE_VALUE.NEAR, -6
+			elseif keywordType == KB_KEYWORD_TYPES.CONTAINS then
+				return 0, -1
+			end
+		end
+
+		if not wordLen then wordLen = utf8len(word) end
+		if not kWordLen then kWordLen = utf8len(kWord) end
+
+		if mathabs(wordLen - kWordLen) > search.MAX_CHAR_DIFF then
+			return 0, -9
+		end
+
+		local mult
+
+		if wordLen <= 3 or kWordLen <= 3 then
+			if word == kWord then
+				return SCORE_VALUE.MATCH, 0
+			elseif wordLen == kWordLen
+				or wordLen <= 2 or kWordLen <= 2
+				or wordLen > kWordLen and not strfind(word, kWord, 1, true)
+				or wordLen < kWordLen and not strfind(kWord, word, 1, true)
+			then
+				return 0, mathmax(wordLen, kWordLen)
+			end
+
+			mult = SCORE_VALUE.SHORT
+--		elseif strfind(wordLen > kWordLen and word or kWord, wordLen > kWordLen and kWord or word, 1, true) then
+--			mult = SCORE_VALUE.LONG
+		end
+
+	--	local distance = PRIVATE.GetStringDistance(word, kWord, 1, 1, 1)
+		local distance = CalculateStringEditDistance(word, kWord)
+		local score = ClampedPercentageBetween(distance, 5, 1)
+
+		if not mult then
+			if score >= 1 then
+				mult = SCORE_VALUE.NEAR
+			end
+		end
+
+		return score * (mult or 1), distance
+	end
+
+	PRIVATE.SearchCoroutine = function(search, wordArray, wordDict, wordCount, newWordDict)
+		local totalEntries = PRIVATE.KEYWORDS_CACHE_LEN * wordCount
+		local processedEntries = 0
+		local distanceList = newWordDict and search.WORD_DISTANCE or {}
+		local articleDistance = {}
+
+		wordDict = wordDict or newWordDict
+
+		for word, wordData in pairs(wordDict) do
+			if not WORD_BLACKLIST[word] then
+				local wordLen = utf8len(word)
+
+				if wordLen >= search.MIN_CHARS then
+					for keyword, data in pairs(PRIVATE.KEYWORDS_CACHE) do
+						local keywordParts = data[1]
+						local articles = data[2]
+
+						local score, distance
+
+						if type(keywordParts) == "string" then
+							score, distance = PRIVATE.ScoreStrings(search, word, keyword, wordLen)
+						else
+							local bestKeywordIndex
+							local bestKeywordScore = 0
+							local bestKeywordDistance = -1
+
+							for keywordIndex, keywordPart in ipairs(keywordParts) do
+								local keywordPartLen = utf8len(keywordPart)
+								if keywordPartLen > 2 then
+									local keywordScore, keywordDistance = PRIVATE.ScoreStrings(search, word, keywordPart, wordLen, keywordPartLen)
+									if keywordScore > bestKeywordScore then
+										bestKeywordIndex = keywordIndex
+										bestKeywordScore = keywordScore
+										bestKeywordDistance = keywordDistance
+									end
+								end
+							end
+
+							local sequenceFound
+							if bestKeywordIndex and bestKeywordScore > SEARCH_MIN_DISTANCE_DEBUG then
+								for _, currentWordIndex in ipairs(wordData[KB_SUGGESTION_WORD_DICT_ENUM.INDEXES]) do
+									local firstWordIndex = currentWordIndex - (bestKeywordIndex - 1)
+									local lastWordIndex = currentWordIndex + (#keywordParts - bestKeywordIndex)
+
+									local partKeywordScore, partKeywordDistance = 0, 99
+
+									if firstWordIndex > 0 and lastWordIndex <= #wordArray then
+										local validSequence
+
+										for wordIndex = firstWordIndex, lastWordIndex do
+											if wordIndex ~= currentWordIndex then
+												local keywordIndex = bestKeywordIndex + wordIndex - currentWordIndex
+												local offsettedWord = wordArray[wordIndex]
+												local keywordPart = keywordParts[keywordIndex]
+
+												local keywordScore, keywordDistance = PRIVATE.ScoreStrings(search, offsettedWord, keywordPart)
+
+												if keywordScore < SEARCH_MIN_DISTANCE then
+													validSequence = nil
+													break
+												else
+													partKeywordScore = partKeywordScore + keywordScore
+													partKeywordDistance = partKeywordDistance + keywordDistance
+													validSequence = true
+												end
+											end
+										end
+
+										if validSequence then
+											-- include skipped index
+											partKeywordScore = partKeywordScore + bestKeywordScore
+											bestKeywordDistance = bestKeywordDistance + partKeywordDistance
+
+											score, distance = partKeywordScore / #keywordParts, partKeywordDistance
+											sequenceFound = true
+											break
+										end
+									end
+								end
+
+								if not sequenceFound then
+									score, distance = 0, -1
+								end
+							else
+								score, distance = 0, -1
+							end
+						end
+
+						if search.DEBUG and score >= SEARCH_MIN_DISTANCE_DEBUG then
+							print(word, keyword, wordLen, distance, RoundToSignificantDigits(score, 2))
+						end
+
+						if score >= SEARCH_MIN_DISTANCE then
+							local count = wordData[KB_SUGGESTION_WORD_DICT_ENUM.COUNT]
+
+							for _, article in ipairs(articles) do
+								if search.REQUEST_KEYWORDS then
+									local keywordPrefix = strsub(keyword, 1, 1)
+									local keywordText = keyword
+
+									if not search.DEBUG_KEYWORDS then
+										for _, prefixValue in pairs(KB_KEYWORD_TYPES) do
+											if prefixValue == keywordPrefix then
+												keywordText = strsub(keyword, 2)
+												break
+											end
+										end
+									end
+
+									if not articleDistance[article] then
+										articleDistance[article] = {score * count, {[keywordText] = true}}
+									else
+										articleDistance[article][1] = articleDistance[article][1] + score * count
+										articleDistance[article][2][keywordText] = true
+									end
+								else
+									if not articleDistance[article] then
+										articleDistance[article] = score * count
+									else
+										articleDistance[article] = articleDistance[article] + score * count
+									end
+								end
+							end
+						end
+
+						processedEntries = processedEntries + 1
+
+						if (debugprofilestop() - search.COROUTINE_TIMESTAMP) > search.FRAMETIME_AVAILABLE then
+							if search.COROUTINE_DEBUG then print("yield", processedEntries / totalEntries, processedEntries, totalEntries) end
+							coroutine.yield(processedEntries / totalEntries)
+						end
+					end
+				end
+			end
+		end
+
+		if newWordDict then
+			if search.REQUEST_KEYWORDS then
+				for i = #distanceList, 1, -1 do
+					local wordData = articleDistance[distanceList[i][1]]
+					if wordData then
+						distanceList[i][2] = distanceList[i][2] + wordData[1]
+						for word in pairs(wordData[2]) do
+							distanceList[i][3][word] = true
+						end
+						articleDistance[distanceList[i][1]] = nil
+					end
+				end
+			else
+				for i = #distanceList, 1, -1 do
+					local score = articleDistance[distanceList[i][1]]
+					if score then
+						distanceList[i][2] = distanceList[i][2] + score
+						articleDistance[distanceList[i][1]] = nil
+					end
+				end
+			end
+		end
+
+		if search.REQUEST_KEYWORDS then
+			for article, wordData in pairs(articleDistance) do
+				distanceList[#distanceList + 1] = {article, wordData[1], wordData[2]}
+			end
+		else
+			for article, distance in pairs(articleDistance) do
+				distanceList[#distanceList + 1] = {article, distance}
+			end
+		end
+
+		tsort(distanceList, PRIVATE.SortDistance)
+
+		search.WORD_DISTANCE = distanceList
+
+		return -1, distanceList
+	end
+
+	PRIVATE.SendSearchAvailable = function(searchType, dbgInfo)
+		local search = PRIVATE.GetSearchType(searchType)
+
+		FireCustomClientEvent(search.EVENT_AVAILABLE)
+		if search.COROUTINE_DEBUG then print(strformat("%s %s", search.EVENT_AVAILABLE, dbgInfo)) end
+
+		if search.NEXT then
+			RunNextFrame(function()
+				PRIVATE.StartSearch(searchType, search.NEXT, search.REQUEST_KEYWORDS)
+			end)
+			FireCustomClientEvent(search.EVENT_NEXT)
+		end
+	end
+
+	PRIVATE.StartSearch = function(searchType, text, requestKeywords, force, articleList, onFinishCallback)
+		local search = PRIVATE.GetSearchType(searchType)
+
+		if not text then
+			search.NEXT = nil
+			return false
+		end
+
+		text = strtrim(text)
+
+		if text == "" then
+			search.NEXT = nil
+			return false
+		end
+
+		if search.COROUTINE then
+			if force then
+				PRIVATE.StartSearch(searchType)
+			else
+				search.NEXT = text
+				return false
+			end
+		else
+			search.NEXT = nil
+		end
+
+		if (requestKeywords and not search.REQUEST_KEYWORDS)
+		or (not requestKeywords and search.REQUEST_KEYWORDS)
+		then
+			search.WORD_DISTANCE = nil
+		end
+
+		search.REQUEST_KEYWORDS = not not requestKeywords
+
+		if not next(PRIVATE.KEYWORDS_CACHE) then
+			local numWords = 0
+
+			for _, article in pairs((articleList or KNOWLEDGEBASE_ARTICLES)) do
+				if article.keywords ~= "" and PRIVATE.IsEntryVisible(article) then
+					local keywords = {strsplit(KB_KEYWORDS_DELIMITER, article.keywords)}
+					for _, keyword in ipairs(keywords) do
+						if not PRIVATE.KEYWORDS_CACHE[keyword] then
+							local keywordParts
+							if strfind(keyword, " ", 1, true) then
+								keywordParts = {strsplit(" ", keyword)}
+							else
+								keywordParts = keyword
+							end
+
+							PRIVATE.KEYWORDS_CACHE[keyword] = {
+								[1] = keywordParts,
+								[2] = {},
+							}
+
+							numWords = numWords + 1
+						end
+
+						tinsert(PRIVATE.KEYWORDS_CACHE[keyword][2], article)
+					end
+				end
+			end
+
+			PRIVATE.KEYWORDS_CACHE_LEN = numWords
+		end
+
+		local wordArray = {}
+		local wordDict = {}
+		local wordIndex = 0
+		local wordCount = 0
+
+		for word in strgmatch(text, WORD_MATCH_PATTERN) do
+			wordIndex = wordIndex + 1
+			word = strlower(word)
+			word = strgsub(word, "ё", "е")
+			wordArray[wordIndex] = word
+
+			if not wordDict[word] then
+				wordDict[word] = {
+					[KB_SUGGESTION_WORD_DICT_ENUM.COUNT] = 1,
+					[KB_SUGGESTION_WORD_DICT_ENUM.INDEXES] = {wordIndex},
+				}
+
+				wordCount = wordCount + 1
+			else
+				wordDict[word][KB_SUGGESTION_WORD_DICT_ENUM.COUNT] = wordDict[word][KB_SUGGESTION_WORD_DICT_ENUM.COUNT] + 1
+				tinsert(wordDict[word][KB_SUGGESTION_WORD_DICT_ENUM.INDEXES], wordIndex)
+			end
+		end
+
+		local newWordDict
+
+		if search.WORD_DICT then
+			if wordCount == search.WORD_DICT_LEN then
+				if tCompare(wordDict, search.WORD_DICT) then
+					FireCustomClientEvent(search.EVENT_AVAILABLE)
+					PRIVATE.SearchFireFinishCallback(search, true)
+					if search.COROUTINE_DEBUG then print(strformat("%s Cache", search.EVENT_AVAILABLE)) end
+					return true
+				end
+			elseif wordCount > search.WORD_DICT_LEN then
+				local wordRemoved
+				for word in pairs(search.WORD_DICT) do
+					if not wordDict[word] then
+						wordRemoved = true
+						break
+					end
+				end
+
+				if not wordRemoved then
+					newWordDict = {}
+
+					for word, data in pairs(wordDict) do
+						local count = data[KB_SUGGESTION_WORD_DICT_ENUM.COUNT]
+
+						if not search.WORD_DICT[word] then
+							newWordDict[word] = count
+						end
+
+						search.WORD_DICT[word] = count
+					end
+				end
+			end
+		end
+
+		search.WORD_ARRAY = wordArray
+		search.WORD_DICT = wordDict
+		search.WORD_DICT_LEN = wordCount
+
+		local framerate = GetFramerate()
+		search.FRAMETIME_TARGET = framerate > 63 and (1 / 60) or (1 / 55)
+		search.FRAMETIME_AVAILABLE = 1000 / framerate - search.FRAMETIME_RESERVE
+
+		search.COROUTINE_ON_FINISH_CALLBACK = onFinishCallback
+		search.COROUTINE = coroutine.create(PRIVATE.SearchCoroutine)
+		search.COROUTINE_TIMESTAMP = debugprofilestop()
+
+		local status, progress, result = coroutine.resume(search.COROUTINE, search, wordArray, wordDict, wordCount, newWordDict)
+		if not status then
+			search.COROUTINE_RESULT = nil
+			search.COROUTINE = nil
+			PRIVATE.SearchDequeue(search)
+			PRIVATE.SearchFireFinishCallback(search, false)
+			error(progress, 2)
+			return false
+		end
+
+		if coroutine.status(search.COROUTINE) == "dead" then
+			search.COROUTINE_RESULT = result
+			search.COROUTINE = nil
+			PRIVATE.SendSearchAvailable(SEARCH_TYPE.SUGGESTIONS, "Instant")
+			PRIVATE.SearchFireFinishCallback(search, true)
+		else
+			FireCustomClientEvent(search.EVENT_PROGRESS, progress)
+			if search.COROUTINE_DEBUG then print(search.EVENT_PROGRESS, progress) end
+			PRIVATE.SearchEnqueue(search)
+		end
+
+		return true
+	end
+
+	PRIVATE.GetSearchResults = function(searchType, numResults)
+		local search = PRIVATE.GetSearchType(searchType)
+
+		if not search.COROUTINE_RESULT then
+			if search.COROUTINE then
+				return false, "SEARCH_IN_PROGRESS"
+			else
+				return false, "NO_SEARCH_REQUEST"
+			end
+		end
+
+		numResults = numResults and mathmin(numResults, #search.COROUTINE_RESULT) or #search.COROUTINE_RESULT
+		local results = {}
+		local keywordsAvailable
+
+		if search.REQUEST_KEYWORDS then
+			for i = 1, numResults do
+				results[#results + 1] = {search.COROUTINE_RESULT[i][1], PRIVATE.ToArrayKeywords(search.COROUTINE_RESULT[i][3])}
+			end
+			keywordsAvailable = true
+		else
+			for i = 1, numResults do
+				results[#results + 1] = search.COROUTINE_RESULT[i][1]
+			end
+			keywordsAvailable = false
+		end
+
+		return true, results, keywordsAvailable
+	end
+
+	PRIVATE.AbortSearch = function(searchType)
+		local search = PRIVATE.GetSearchType(searchType)
+		if search.COROUTINE then
+			search.COROUTINE = nil
+			search.COROUTINE_RESULT = nil
+			PRIVATE.SearchDequeue(search)
+		end
+	end
 end
 
-
-
-local convertToHTML
-do
+do -- PRIVATE.FormatArticleText
 	local htmlTags = {
 		{"<h1", "</h1>"},
 		{"<h2", "</h2>"},
@@ -1689,7 +1377,7 @@ do
 		local minStartPos, minEndPos, minTag, _
 
 		for _, tag in ipairs(htmlTags) do
-			local startPos, endPos = string.find(str, tag[1], pos, true)
+			local startPos, endPos = strfind(str, tag[1], pos, true)
 			if startPos and (not minStartPos or startPos < minStartPos) then
 				minStartPos, minEndPos = startPos, endPos
 				minTag = tag
@@ -1698,7 +1386,7 @@ do
 
 		if minTag then
 			if minTag[2] then
-				_, minEndPos = string.find(str, minTag[2], minStartPos, true)
+				_, minEndPos = strfind(str, minTag[2], minStartPos, true)
 			end
 
 			return minStartPos, minEndPos
@@ -1706,7 +1394,7 @@ do
 	end
 
 	local formatPlainText = function(text)
-		return string.gsub(text, "(%s*)([^\n]+)(\n*)", "%1<p>%2</p>%3")
+		return strgsub(text, "(%s*)([^\n]+)(\n*)", "%1<p>%2</p>%3")
 	end
 
 	local formatHTMLText = function(text)
@@ -1723,28 +1411,28 @@ do
 			end
 		end
 
-		local textLen = string.len(text)
+		local textLen = strlen(text)
 		local tagsCount = #tags
 
 		local result = {}
-		result[#result + 1] = formatPlainText(string.sub(text, 0, tagsCount > 0 and (tags[1][1] - 1) or textLen))
+		result[#result + 1] = formatPlainText(strsub(text, 0, tagsCount > 0 and (tags[1][1] - 1) or textLen))
 
 		for i = 1, tagsCount do
 			local startPos = tags[i][2]
 			local endPos = i ~= tagsCount and tags[i + 1][1] or (textLen + 1)
 
-			result[#result + 1] = string.sub(text, tags[i][1], tags[i][2])
-			result[#result + 1] = formatPlainText(string.sub(text, startPos + 1, endPos - 1))
+			result[#result + 1] = strsub(text, tags[i][1], tags[i][2])
+			result[#result + 1] = formatPlainText(strsub(text, startPos + 1, endPos - 1))
 		end
 
-		return table.concat(result, "")
+		return tconcat(result, "")
 	end
 
 	local tabWidth = 5
-	local indent = string.rep("|cff000000 |r", tabWidth)
+	local indent = strrep("|cff000000 |r", tabWidth)
 	local li = [[<img src="Interface/Scenarios/ScenarioIcon-Combat" align="left"/>]] .. indent
 	local hr = [[<img src="Interface/HelpFrame/CS_HelpTextures_Separator" align="center" width="600" height="8"/>]]
-	local colorStart = string.format("<color=[\"'](%s)[\"']>", string.rep("[0-9A-Fa-f]", 6))
+	local colorStart = strformat("<color=[\"'](%s)[\"']>", strrep("[0-9A-Fa-f]", 6))
 	local colorEnd = "</color>"
 
 	local specialTags = {
@@ -1753,17 +1441,17 @@ do
 	}
 
 	local formatColor = function(hex)
-		return string.format("|cff%s", hex)
+		return strformat("|cff%s", hex)
 	end
 
 	local formatSpecialTag = function(tag, times)
 		if times ~= "" then
-			return string.rep(specialTags[tag], times)
+			return strrep(specialTags[tag], times)
 		end
 		return specialTags[tag]
 	end
 
-	convertToHTML = function(text)
+	PRIVATE.ConvertToHTML = function(text)
 		text = text:gsub("\r\n", "\n")
 		text = text:gsub("\r", "\n")
 		text = text:gsub("||", "|")
@@ -1783,8 +1471,488 @@ do
 		text = text:gsub("\n\n", "<br/>")
 		return text
 	end
+
+	PRIVATE.FormatArticleText = function(text)
+		return strformat("<html><body>%s<br/></body></html>", PRIVATE.ConvertToHTML(text))
+	end
 end
 
-function Custom_KnowledgeBase.FormatArticleText(text)
-	return string.format("<html><body>%s<br/></body></html>", convertToHTML(text))
+PRIVATE.Initialize()
+
+Custom_KnowledgeBase = {}
+
+do -- KBSystem
+	---@return string motd
+	function Custom_KnowledgeBase.KBSystem_GetMOTD()
+		return KBSystem_GetMOTD()
+	end
+
+	---@return string? serverNotice
+	function Custom_KnowledgeBase.KBSystem_GetServerNotice()
+		return KBSystem_GetServerNotice()
+	end
+
+	---@return string? serverStatus
+	function Custom_KnowledgeBase.KBSystem_GetServerStatus()
+		return KBSystem_GetServerStatus()
+	end
+end
+
+do -- KBSetup
+	---@return boolean isLoaded
+	function Custom_KnowledgeBase.KBSetup_IsLoaded()
+		return PRIVATE.SETUP_LOADED == true
+	end
+
+	---@param articlesPerPage integer
+	---@param curPage integer
+	function Custom_KnowledgeBase.KBSetup_BeginLoading(articlesPerPage, curPage)
+		articlesPerPage = tonumber(articlesPerPage)
+		curPage = tonumber(curPage)
+
+		twipe(PRIVATE.CURRENT_ARTICLES)
+		PRIVATE.LoadArticles()
+
+		if KB_NO_PAGES
+		or (articlesPerPage and articlesPerPage > 0 and curPage and (curPage + 1) <= (mathceil(#PRIVATE.TOP_ISSUES / articlesPerPage)))
+		then
+			PRIVATE.ARTICLE_ID = nil
+			PRIVATE.CATEGORY_INDEX = nil
+			PRIVATE.SUBCATEGORY_INDEX = nil
+			PRIVATE.LANGUAGE_INDEX = 1
+			PRIVATE.ARTICLES_PER_PAGE = articlesPerPage
+			PRIVATE.CUR_PAGE = curPage + 1
+			PRIVATE.MAX_PAGE = mathceil(#PRIVATE.TOP_ISSUES / articlesPerPage)
+			PRIVATE.SETUP_LOADED = true
+
+			FireCustomClientEvent("KNOWLEDGE_BASE_SETUP_LOAD_SUCCESS")
+		else
+			PRIVATE.ARTICLE_ID = nil
+			PRIVATE.CATEGORY_INDEX = nil
+			PRIVATE.SUBCATEGORY_INDEX = nil
+			PRIVATE.LANGUAGE_INDEX = nil
+			PRIVATE.ARTICLES_PER_PAGE = nil
+			PRIVATE.CUR_PAGE = nil
+			PRIVATE.MAX_PAGE = nil
+			PRIVATE.SETUP_LOADED = nil
+
+			FireCustomClientEvent("KNOWLEDGE_BASE_SETUP_LOAD_FAILURE")
+		end
+	end
+
+	---@return integer articlesOnPage
+	function Custom_KnowledgeBase.KBSetup_GetArticleHeaderCount()
+		if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
+			error("Custom_KnowledgeBase.KBSetup_GetArticleHeaderCount() failed because setup is not loaded", 2)
+		end
+
+		PRIVATE.LoadArticles()
+
+		return #PRIVATE.TOP_ISSUES
+	end
+
+	---@return integer numArticlesInQuery
+	function Custom_KnowledgeBase.KBSetup_GetTotalArticleCount()
+		if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
+			error("Custom_KnowledgeBase.KBSetup_GetTotalArticleCount() failed because setup is not loaded", 2)
+		end
+
+		PRIVATE.LoadArticles()
+
+		if KB_NO_PAGES then
+			return #PRIVATE.TOP_ISSUES
+		else
+			return PRIVATE.GetOnPageNum(#PRIVATE.TOP_ISSUES, PRIVATE.ARTICLES_PER_PAGE, PRIVATE.CUR_PAGE)
+		end
+	end
+
+	---@param articleHeaderIndex integer
+	---@return integer articleID
+	---@return string articleHeader
+	---@return boolean isHot
+	---@return boolean isNew
+	function Custom_KnowledgeBase.KBSetup_GetArticleHeaderData(articleHeaderIndex)
+		if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
+			error("Custom_KnowledgeBase.KBSetup_GetArticleHeaderData() failed because setup is not loaded", 2)
+		elseif articleHeaderIndex <= 0 or articleHeaderIndex > (KB_NO_PAGES and #PRIVATE.TOP_ISSUES or Custom_KnowledgeBase.KBSetup_GetTotalArticleCount()) then
+			error("Custom_KnowledgeBase.KBSetup_GetArticleHeaderData() called with invalid article header index", 2)
+		end
+
+		articleHeaderIndex = articleHeaderIndex + PRIVATE.ARTICLES_PER_PAGE * (PRIVATE.CUR_PAGE - 1)
+
+		local article = PRIVATE.TOP_ISSUES[articleHeaderIndex]
+		local articleHeader = article.articleHeader
+
+		if not PRIVATE.IsEntryVisible(article) then
+			articleHeader = strformat("%s |cffff0000(%s)|r", articleHeader, KBASE_ARTICLE_HIDDEN)
+		end
+
+		return article.articleID, articleHeader, article.isHot, article.isNew
+	end
+
+	---@return integer numCategories
+	function Custom_KnowledgeBase.KBSetup_GetCategoryCount()
+		if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
+			error("Custom_KnowledgeBase.KBSetup_GetCategoryCount() failed because setup is not loaded", 2)
+		end
+
+		PRIVATE.LoadCategories()
+
+		return #PRIVATE.CATEGORIES
+	end
+
+	---@param categoryIndex integer
+	---@return integer categoryID
+	---@return string caption
+	function Custom_KnowledgeBase.KBSetup_GetCategoryData(categoryIndex)
+		if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
+			error("Custom_KnowledgeBase.KBSetup_GetCategoryData() failed because setup is not loaded", 2)
+		elseif categoryIndex <= 0 or categoryIndex > Custom_KnowledgeBase.KBSetup_GetCategoryCount() then
+			error("Custom_KnowledgeBase.KBSetup_GetCategoryData() called with invalid category index", 2)
+		end
+
+		PRIVATE.LoadCategories()
+
+		PRIVATE.CATEGORY_INDEX = categoryIndex
+		PRIVATE.SUBCATEGORY_INDEX = nil
+
+		local category = PRIVATE.CATEGORIES[categoryIndex]
+		local caption = category.caption
+
+		if not PRIVATE.IsEntryVisible(category) then
+			caption = strformat("%s |cffff0000(%s)|r", caption, KBASE_ARTICLE_HIDDEN)
+		end
+
+		return category.categoryID, caption
+	end
+
+	---@return integer numLanguages
+	function Custom_KnowledgeBase.KBSetup_GetLanguageCount()
+		if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
+			error("Custom_KnowledgeBase.KBSetup_GetLanguageCount() failed because setup is not loaded", 2)
+		end
+
+		return #KNOWLEDGEBASE_LANGUAGES
+	end
+
+	---@param languageIndex integer
+	---@return integer languageID
+	---@return string languageName
+	function Custom_KnowledgeBase.KBSetup_GetLanguageData(languageIndex)
+		if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
+			error("Custom_KnowledgeBase.KBSetup_GetCategoryData() failed because setup is not loaded", 2)
+		elseif languageIndex <= 0 or languageIndex > Custom_KnowledgeBase.KBSetup_GetLanguageCount() then
+			error("Custom_KnowledgeBase.KBSetup_GetCategoryData() called with invalid category index", 2)
+		end
+
+		PRIVATE.LANGUAGE_INDEX = languageIndex
+		local language = KNOWLEDGEBASE_LANGUAGES[languageIndex]
+		return language.languageID, language.languageName
+	end
+
+	---@param categoryIndex integer
+	---@return integer numSubCategory
+	function Custom_KnowledgeBase.KBSetup_GetSubCategoryCount(categoryIndex)
+		if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
+			error("Custom_KnowledgeBase.KBSetup_GetSubCategoryCount() failed because setup is not loaded", 2)
+		end
+
+		PRIVATE.LoadCategories()
+
+		return PRIVATE.CATEGORIES[categoryIndex] and #PRIVATE.CATEGORIES[categoryIndex].subCategories or 0
+	end
+
+	---@param categoryIndex integer
+	---@param subCategoryindex integer
+	---@return integer categoryID
+	---@return string caption
+	function Custom_KnowledgeBase.KBSetup_GetSubCategoryData(categoryIndex, subCategoryindex)
+		if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
+			error("Custom_KnowledgeBase.KBSetup_GetCategoryData() failed because setup is not loaded", 2)
+		elseif (categoryIndex <= 0 or categoryIndex > Custom_KnowledgeBase.KBSetup_GetCategoryCount())
+			or (subCategoryindex <= 0 or subCategoryindex > Custom_KnowledgeBase.KBSetup_GetSubCategoryCount(categoryIndex))
+		then
+			error("Custom_KnowledgeBase.KBSetup_GetCategoryData() called with invalid category or sub category index", 2)
+		end
+
+		PRIVATE.LoadCategories()
+
+		PRIVATE.CATEGORY_INDEX = categoryIndex
+		PRIVATE.SUBCATEGORY_INDEX = subCategoryindex
+
+		local subCategory = PRIVATE.CATEGORIES[categoryIndex].subCategories[subCategoryindex]
+		local caption = subCategory.caption
+
+		if not PRIVATE.IsEntryVisible(subCategory) then
+			caption = strformat("%s |cffff0000(%s)|r", caption, KBASE_ARTICLE_HIDDEN)
+		end
+
+		return subCategory.categoryID, caption
+	end
+end
+
+do -- KBArticle
+	---@return boolean isLoaded
+	function Custom_KnowledgeBase.KBArticle_IsLoaded()
+		return PRIVATE.ARTICLE_LOADED == true
+	end
+
+	---@param articleID integer
+	---@param searchType integer
+	function Custom_KnowledgeBase.KBArticle_BeginLoading(articleID, searchType)
+		PRIVATE.LoadArticles()
+
+		if KNOWLEDGEBASE_ARTICLES[articleID] then
+			PRIVATE.ARTICLE_ID = articleID
+			PRIVATE.ARTICLE_SEARCH_TYPE = searchType	-- 1 | 2
+
+			PRIVATE.ARTICLE_LOADED = true
+			FireCustomClientEvent("KNOWLEDGE_BASE_ARTICLE_LOAD_SUCCESS")
+		else
+			PRIVATE.ARTICLE_LOADED = nil
+			FireCustomClientEvent("KNOWLEDGE_BASE_ARTICLE_LOAD_FAILURE")
+		end
+	end
+
+	---@return integer articleID
+	---@return string subject
+	---@return string subjectAlt
+	---@return string text
+	---@return string keywords
+	---@return integer languageID
+	---@return boolean isHot
+	function Custom_KnowledgeBase.KBArticle_GetData()
+		if not Custom_KnowledgeBase.KBArticle_IsLoaded() then
+			error("Custom_KnowledgeBase.KBArticle_GetData() failed because article is not loaded", 2)
+		end
+
+		PRIVATE.LoadArticles()
+
+		local article = KNOWLEDGEBASE_ARTICLES[PRIVATE.ARTICLE_ID]
+		local articleText = PRIVATE.FormatArticleText(article.text)
+		local subject = article.subject and article.subject ~= "" and article.subject or article.articleHeader
+		return article.articleID, subject or "", article.subjectAlt or "", articleText, article.keywords or "", article.languageID, article.isHot
+	end
+end
+
+do -- KBQuery
+	---@return boolean isLoaded
+	function Custom_KnowledgeBase.KBQuery_IsLoaded()
+		return PRIVATE.QUERY_LOADED == true
+	end
+
+	---@param searchText string
+	---@param categoryIndex integer
+	---@param subcategoryIndex integer
+	---@param articlesPerPage integer
+	---@param curPage integer
+	function Custom_KnowledgeBase.KBQuery_BeginLoading(searchText, categoryIndex, subcategoryIndex, articlesPerPage, curPage)
+		local errorText
+		if not Custom_KnowledgeBase.KBSetup_IsLoaded() then
+			errorText = "Custom_KnowledgeBase.KBQuery_BeginLoading() failed because setup is not loaded"
+		elseif type(searchText) ~= "string" then
+			errorText = "Custom_KnowledgeBase.KBQuery_BeginLoading() called with a null string for search query"
+		elseif utf8len(searchText) > KB_SEARCH_LIMIT then
+			errorText = strformat("Custom_KnowledgeBase.KBQuery_BeginLoading() called with a string > %i bytes for search query", KB_SEARCH_LIMIT)
+		elseif not tonumber(categoryIndex) and subcategoryIndex then
+			errorText = "Custom_KnowledgeBase.KBQuery_BeginLoading() called with subcategory without category"
+		end
+
+		if errorText then
+			FireCustomClientEvent("KNOWLEDGE_BASE_QUERY_LOAD_FAILURE")
+			error(errorText, 2)
+		end
+
+		twipe(PRIVATE.CURRENT_ARTICLES)
+		PRIVATE.LoadArticles()
+
+		local allCategories = categoryIndex == 0
+		local allSubCategories = subcategoryIndex == 0
+		local isGM = IsGMAccount()
+		local realmID = C_Service.GetRealmID()
+		local articleID
+
+		PRIVATE.QUERY_CATEGORY_INDEX = categoryIndex
+		PRIVATE.QUERY_SUBCATEGORY_INDEX = subcategoryIndex
+		PRIVATE.QUERY_ARTICLES_PER_PAGE = articlesPerPage or 50
+		PRIVATE.QUERY_CURRENT_PAGE = curPage + 1
+
+		do
+			searchText = strtrim(searchText)
+
+			if searchText ~= "" then
+				articleID = strmatch(searchText:lower(), "^[Kk][Bb](%d+)$")
+				if articleID then
+					articleID = tonumber(articleID)
+				end
+			end
+		end
+
+		if KB_QUERY_SEACH_BY_TAGS
+		and searchText ~= ""
+		and not articleID
+		and utf8len(searchText) > PRIVATE.GetSearchType(SEARCH_TYPE.QUERY).MIN_CHARS
+		then
+			local articles = {}
+
+			for _, article in pairs(KNOWLEDGEBASE_ARTICLES) do
+				if (PRIVATE.IsEntryVisible(article, realmID) or isGM)
+				and (allCategories or article.categoryID == PRIVATE.CATEGORIES[categoryIndex].categoryID)
+				and (allSubCategories or article.subCategoryID == PRIVATE.GetSubCategoryByIndex(categoryIndex, subcategoryIndex))
+				then
+					tinsert(articles, article)
+				end
+			end
+
+			PRIVATE.QUERY_MAX_PAGE = 0
+			PRIVATE.QUERY_LOADED = false
+
+			PRIVATE.StartSearch(SEARCH_TYPE.QUERY, searchText, false, true, articles, function(searchType, isSuccess)
+				local haveResults, results, keywordsAvailable = PRIVATE.GetSearchResults(searchType)
+				if haveResults and #results > 0 then
+					PRIVATE.CURRENT_ARTICLES = results
+
+					if KB_SORT_ARTICLES then
+						tsort(PRIVATE.CURRENT_ARTICLES, PRIVATE.SortArticles)
+					end
+				end
+
+				PRIVATE.QUERY_MAX_PAGE = mathceil(#PRIVATE.CURRENT_ARTICLES / articlesPerPage)
+				PRIVATE.QUERY_LOADED = isSuccess
+
+				FireCustomClientEvent("KNOWLEDGE_BASE_QUERY_LOAD_SUCCESS")
+			end)
+		else
+			for _, article in pairs(KNOWLEDGEBASE_ARTICLES) do
+				if (PRIVATE.IsEntryVisible(article, realmID) or isGM)
+				and (allCategories or article.categoryID == PRIVATE.CATEGORIES[categoryIndex].categoryID)
+				and (allSubCategories or article.subCategoryID == PRIVATE.GetSubCategoryByIndex(categoryIndex, subcategoryIndex))
+				and (not articleID or article.articleID == articleID)
+				and PRIVATE.SearchTextInArticleFields(article, searchText, true)
+				then
+					tinsert(PRIVATE.CURRENT_ARTICLES, article)
+				end
+			end
+
+			if KB_SORT_ARTICLES then
+				tsort(PRIVATE.CURRENT_ARTICLES, PRIVATE.SortArticles)
+			end
+
+			PRIVATE.QUERY_MAX_PAGE = mathceil(#PRIVATE.CURRENT_ARTICLES / articlesPerPage)
+			PRIVATE.QUERY_LOADED = true
+
+			FireCustomClientEvent("KNOWLEDGE_BASE_QUERY_LOAD_SUCCESS")
+		end
+	end
+
+	---@return integer numArticleHeadersInQuery
+	function Custom_KnowledgeBase.KBQuery_GetArticleHeaderCount()
+		if not Custom_KnowledgeBase.KBQuery_IsLoaded() then
+			error("Custom_KnowledgeBase.KBQuery_GetArticleHeaderCount() failed because query is not loaded", 2)
+		end
+
+		return #PRIVATE.CURRENT_ARTICLES
+	end
+
+	---@return integer numArticlesInQuery
+	function Custom_KnowledgeBase.KBQuery_GetTotalArticleCount()
+		if not Custom_KnowledgeBase.KBQuery_IsLoaded() then
+			error("Custom_KnowledgeBase.KBQuery_GetTotalArticleCount() failed because query is not loaded", 2)
+		end
+
+		if KB_NO_PAGES then
+			return #PRIVATE.CURRENT_ARTICLES
+		else
+			return PRIVATE.GetOnPageNum(#PRIVATE.CURRENT_ARTICLES, PRIVATE.QUERY_ARTICLES_PER_PAGE, PRIVATE.QUERY_CURRENT_PAGE)
+		end
+	end
+
+	---@param articleHeaderIndex integer
+	---@return integer articleID
+	---@return string articleHeader
+	---@return boolean isHot
+	---@return boolean isNew
+	function Custom_KnowledgeBase.KBQuery_GetArticleHeaderData(articleHeaderIndex)
+		if not Custom_KnowledgeBase.KBQuery_IsLoaded() then
+			error("Custom_KnowledgeBase.KBQuery_GetArticleHeaderData() failed because query is not loaded", 2)
+		elseif articleHeaderIndex <= 0 or articleHeaderIndex > (KB_NO_PAGES and #PRIVATE.CURRENT_ARTICLES or Custom_KnowledgeBase.KBQuery_GetArticleHeaderCount()) then
+			error("Custom_KnowledgeBase.KBQuery_GetArticleHeaderData() called with invalid article header index", 2)
+		end
+
+		local article = PRIVATE.CURRENT_ARTICLES[articleHeaderIndex]
+		local articleHeader = article.articleHeader
+
+		if not PRIVATE.IsEntryVisible(article) then
+			articleHeader = strformat("%s |cffff0000(%s)|r", articleHeader, KBASE_ARTICLE_HIDDEN)
+		end
+
+		return article.articleID, articleHeader, article.isHot, article.isNew
+	end
+end
+
+do -- Suggestions
+	function Custom_KnowledgeBase.AbortSuggestions()
+		PRIVATE.AbortSearch(SEARCH_TYPE.SUGGESTIONS)
+	end
+
+	function Custom_KnowledgeBase.RequestSuggestions(text, requestKeywords, force)
+		return PRIVATE.StartSearch(SEARCH_TYPE.SUGGESTIONS, text, requestKeywords, force)
+	end
+
+	function Custom_KnowledgeBase.GetSuggestions(numSuggestions)
+		return PRIVATE.GetSearchResults(SEARCH_TYPE.SUGGESTIONS, numSuggestions)
+	end
+end
+
+do -- Misc
+	function Custom_KnowledgeBase.ForceLoadData()
+		PRIVATE.LoadArticles()
+		PRIVATE.LoadCategories()
+	end
+
+	---@param articleID integer
+	---@return string? articleHeader
+	function Custom_KnowledgeBase.GetArticleHeaderByID(articleID)
+		local article = KNOWLEDGEBASE_ARTICLES[articleID]
+		if article then
+			if not PRIVATE.IsEntryVisible(article) then
+				return strformat("%s |cffff0000(%s)|r", article.articleHeader, KBASE_ARTICLE_HIDDEN)
+			else
+				return article.articleHeader
+			end
+		end
+	end
+
+	---@param articleID integer
+	---@return table? path
+	function Custom_KnowledgeBase.GetArticlePath(articleID)
+		local article = KNOWLEDGEBASE_ARTICLES[articleID]
+		if article then
+			if PRIVATE.IsEntryVisible(article) then
+				local category = KNOWLEDGEBASE_CATEGORIES[article.categoryID]
+				local subCategory = KNOWLEDGEBASE_SUB_CATEGORIES[article.subCategoryID]
+				if category and PRIVATE.IsEntryVisible(category)
+				and subCategory and PRIVATE.IsEntryVisible(subCategory)
+				then
+					local subCategoryIndex = tIndexOf(category.subCategories, subCategory)
+
+					return {
+						{
+							id = category.categoryID,
+							name = category.caption,
+						},
+						{
+							id = subCategoryIndex,
+							name = subCategory.caption,
+							subcategory = true,
+						},
+					}
+				end
+			end
+		end
+	end
+
+	function Custom_KnowledgeBase.FormatArticleText(text)
+		return PRIVATE.FormatArticleText(text)
+	end
 end

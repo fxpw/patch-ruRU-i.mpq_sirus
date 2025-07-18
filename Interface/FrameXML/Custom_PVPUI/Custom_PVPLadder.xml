@@ -493,7 +493,10 @@
 						self.Loop:SetAlpha(0.6)
 					</OnLeave>
 					<OnClick>
-						ArenaSpectatorFrame:WatchReplay( self:GetParent().replayID )
+						local replayID = self:GetParent().replayID
+						if replayID then
+							C_ArenaSpectator.WatchReplay(replayID)
+						end
 					</OnClick>
 					<OnMouseDown>
 						self.Loop:SetPoint("CENTER", -1, -1)
@@ -1511,9 +1514,12 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				Mixin(self, PVPLadderInfoFrameMixin, PortraitFrameMixin)
+				Mixin(self, PortraitFrameMixin, PVPLadderInfoFrameMixin)
 				self:OnLoad()
 			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
 			<OnShow>
 				self:OnShow()
 			</OnShow>

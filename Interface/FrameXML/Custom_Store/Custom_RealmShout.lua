@@ -108,8 +108,10 @@ function StoreRealmShoutMixin:ShowConfirmationDialog()
 	self:ToggleBlockFrame(true)
 
 	local onAccept = function(dialog)
-		C_StoreSecure.PurchaseRealmShout(text)
-		self:Reset()
+		self.Content.PurchaseButton:TakeConfirmationScreenshot(function(success)
+			C_StoreSecure.PurchaseRealmShout(text)
+			self:Reset()
+		end)
 		PlaySound(SOUNDKIT.UI_IG_STORE_CONFIRM_PURCHASE_BUTTON)
 		return true
 	end

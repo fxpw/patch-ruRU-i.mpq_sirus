@@ -111,8 +111,8 @@ function PartyMemberFrame_OnLoad (self)
 	self:RegisterEvent("PARTY_MEMBER_DISABLE");
 	self:RegisterEvent("UNIT_FLAGS");
 	self:RegisterCustomEvent("INCOMING_SUMMON_CHANGED");
-	self:RegisterEvent("UNIT_AURA");
-	self:RegisterEvent("UNIT_PET");
+	self:RegisterUnitEvent("UNIT_AURA", "party"..id, "partypet"..id);
+	self:RegisterUnitEvent("UNIT_PET",  "party"..id, "partypet"..id);
 	local showmenu = function()
 		ToggleDropDownMenu(1, nil, _G["PartyMemberFrame"..self:GetID().."DropDown"], self:GetName(), 47, 15);
 	end
@@ -124,7 +124,7 @@ function PartyMemberFrame_OnLoad (self)
 end
 
 function PartyMemberFrame_UpdateMember (self)
-	if ( GetCVar("C_CVAR_HIDE_PARTY_INTERFACE_IN_RAID") == "1" and GetDisplayedAllyFrames() ~= "party" ) then
+	if ( GetCVarBool("hidePartyFramesInRaid") and GetDisplayedAllyFrames() ~= "party" ) then
 		self:Hide();
 		UpdatePartyMemberBackground();
 		return;

@@ -1,9 +1,3 @@
---	Filename:	Sirus_TimeManager.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 
 -- speed optimizations (mostly so update functions are faster)
 local _G = getfenv(0);
@@ -307,9 +301,9 @@ function TimeManager_Update()
 	TimeManager_UpdateAlarmTime();
 	TimeManagerAlarmMessageEditBox:SetText(Settings.alarmMessage);
 	if ( Settings.alarmEnabled ) then
-		TimeManagerAlarmEnabledButton:SetChecked(true)
+		TimeManagerAlarmEnabledButton:SetChecked(true);
 	else
-		TimeManagerAlarmEnabledButton:SetChecked(false)
+		TimeManagerAlarmEnabledButton:SetChecked(false);
 	end
 	TimeManagerMilitaryTimeCheck:SetChecked(Settings.militaryTime);
 	TimeManagerLocalTimeCheck:SetChecked(Settings.localTime);
@@ -674,12 +668,12 @@ end
 
 function StopwatchFrame_OnUpdate(self)
 	if ( self.prevMouseIsOver ) then
-		if ( not MouseIsOver(self) ) then
+		if ( not self:IsMouseOver() ) then
 			UIFrameFadeOut(StopwatchTabFrame, CHAT_FRAME_FADE_TIME);
 			self.prevMouseIsOver = false;
 		end
 	else
-		if ( MouseIsOver(self) ) then
+		if ( self:IsMouseOver() ) then
 			UIFrameFadeIn(StopwatchTabFrame, CHAT_FRAME_FADE_TIME);
 			self.prevMouseIsOver = true;
 		end

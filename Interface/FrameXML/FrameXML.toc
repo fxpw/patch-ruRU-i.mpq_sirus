@@ -4,8 +4,11 @@
 FrameXMLPre.xml
 FrameXML.xml
 
-..\SharedXML\Utils\CVars.lua
-
+..\SharedXML\Util.lua
+..\SharedXML\Utils\CustomSharedAPI.lua
+..\SharedXML\CacheSystem.lua
+..\SharedXML\Utils\C_CVar.lua
+..\SharedXML\Utils\C_GlobalStorage.lua
 ..\SharedXML\C_TimerAugment.lua
 
 ..\SharedXML\AtlasStorage.lua
@@ -14,14 +17,12 @@ GlobalStrings.lua
 ..\SharedXML\middleclass.lua
 ..\SharedXML\JSON.lua
 ..\SharedXML\DataDumper.lua
-..\SharedXML\CacheSystem.lua
-..\SharedXML\Util.lua
 ..\SharedXML\Hook.lua
-..\SharedXML\Utils\CustomSharedAPI.lua
 ..\SharedXML\Mixin.lua
 ..\SharedXML\TableUtil.lua
 ..\SharedXML\EnumUtil.lua
 ..\SharedXML\FunctionUtil.lua
+..\SharedXML\EasingUtil.lua
 ..\SharedXML\FunctionOverride.lua
 ..\SharedXML\EventHandler.lua
 ..\SharedXML\MathUtil.lua
@@ -44,17 +45,14 @@ GlobalStrings.lua
 ..\SharedXML\MixinUtil.lua
 ..\SharedXML\Utils\C_Texture.lua
 ..\SharedXML\Utils\C_CreatureInfo.lua
-..\SharedXML\Utils\C_Talent.lua
 
 ..\SharedXML\ItemsCache1.lua
 ..\SharedXML\ItemsCache2.lua
-..\SharedXML\L_Easing.lua
 ..\SharedXML\SoundKitConstants.lua
 Constants.lua
 ..\SharedXML\SharedFontStyles.xml
 Localization.xml
 ..\SharedXML\SharedConstants.lua
-WorldMapFrameData.lua
 # add new modules below here
 
 ..\SharedXML\LayoutFrame.xml
@@ -62,13 +60,13 @@ WorldMapFrameData.lua
 ..\SharedXML\SharedTooltipTemplates.xml
 ..\SharedXML\TableBuilder.lua
 
-..\SharedXML\Utils\C_Cache.lua
 ..\SharedXML\Utils\C_Service.lua
 ..\SharedXML\Utils\C_RealmInfo.lua
 ..\SharedXML\Utils\C_ZodiacSign.lua
 ..\SharedXML\Utils\C_Item.lua
 
 ObjectAPI\ItemLocation.lua
+ObjectAPI\AsyncCallbackSystem.lua
 
 Custom_BattlePass\Custom_BattlePass_Data.lua
 Custom_Collections\Custom_MountCollection_Data.lua
@@ -81,23 +79,30 @@ Custom_Hardcore\Custom_HardcoreChallengesData.lua
 
 Utils\CustomAPI.lua
 Utils\CombatLogFix.lua
-Utils\Deprecated.lua
+Utils\TrinityCoreAPI.lua
 
-TrinityCoreAPI.lua
 ..\SharedXML\SharedExtendedMethods.lua
 
-Utils\C_CVar.lua
 Utils\C_Camera.lua
 Utils\C_ObjectGUID.lua
+Utils\C_Talent.lua
 Utils\C_FactionManager.lua
 Utils\C_Unit.lua
 Utils\C_AchievementManager.lua
 Utils\C_Map.lua
+Utils\C_PVP.lua
 Utils\C_BattlefieldScore.lua
 Utils\C_NewItems.lua
+Utils\C_ItemExpiration.lua
 Utils\C_Guild.lua
 Utils\C_Cursor.lua
 Utils\C_AuctionHouse.lua
+Utils\C_Inspect.lua
+Utils\C_ReplayInfo.lua
+Utils\C_QuestLog.lua
+Utils\C_TradeSkillUI.lua
+Utils\C_ArenaSpectator.lua
+Utils\C_BlackMarket.lua
 Utils\C_BattlePass.lua
 Utils\C_BattlefieldStatusManager.lua
 Utils\C_LookingForGuild.lua
@@ -114,6 +119,8 @@ Utils\C_Hardcore.lua
 Utils\BarbershopUI_Data.lua
 Utils\C_BarberShop.lua
 Utils\C_ServerNews.lua
+
+Utils\Deprecated.lua
 
 BasicControls.xml
 WorldFrame.xml
@@ -147,8 +154,8 @@ SecureGroupHeaders.xml
 ItemButtonTemplate.xml
 SparkleFrame.xml
 ..\SharedXML\HybridScrollFrame.xml
+..\SharedXML\TransactionConfirmation.xml
 GameMenuFrame.xml
-Sirus_ItemLevel.lua
 CharacterFrameTemplates.xml
 TextStatusBar.lua
 TextStatusBar.xml
@@ -212,7 +219,6 @@ ReputationFrame.xml
 HonorFrame.xml
 QuestFrame.xml
 QuestPOI.xml
-WatchFrame.xml
 QuestLogFrame.xml
 QuestInfo.xml
 MerchantFrame.xml
@@ -294,7 +300,7 @@ Custom_Collections\Custom_Collections.xml
 Custom_EncounterJournal\Custom_EncounterJournalLoader.xml
 Custom_BlackMarket\Custom_BlackMarket.xml
 Custom_Timer\Custom_Timer.xml
-Custom_TradeSkill\Custom_TradeSkill.xml
+Custom_TradeSkill\Custom_TradeSkillLoader.xml
 Custom_TrainerUI\Custom_TrainerUI.xml
 Custom_LootAlertFrame\Custom_LootAlertFrame.xml
 Custom_TalentUI\Custom_TalentUI.xml
@@ -331,9 +337,9 @@ Custom_CharacterCustomize\Custom_CharacterCustomize.xml
 Custom_BarbershopUI\Custom_BarbershopUI.xml
 Custom_ServerNews\Custom_ServerNews.xml
 Custom_Tutorials\Custom_Tutorials.xml
+Custom_ObjectiveTracker\Custom_ObjectiveTrackerLoader.xml
 
 # DEVELOPMENT
-#Custom_GuildHouseUI\Custom_GuildHouseUI.xml
 #Custom_AddonListUI\Custom_AddonListUI.xml
 # END DEVELOPMENT
 

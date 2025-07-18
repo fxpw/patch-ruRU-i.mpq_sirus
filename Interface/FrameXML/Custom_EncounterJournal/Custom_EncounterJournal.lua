@@ -7,8 +7,15 @@ local EJ_SearchData = {}
 local EJ_SearchBuffer = {}
 local EJ_slotFilter = 0
 
-local EJ_FLAG_INSTANCE_ISRAID = 16
-local EJ_FLAG_INSTANCE_HIDE_DIFFICULTY = 64
+local INSTANCE_FLAG = {
+	RAID					= 0x10,
+	HIDE_DIFFICULTY			= 0x40,
+	HIDE_REALM_SCOURGE		= 0x80,
+	HIDE_REALM_ALGALON		= 0x100,
+	HIDE_REALM_SIRUS		= 0x200,
+	HIDE_REALM_SOULSEEKER	= 0x400,
+	OPEN_WORLD				= 0x800,
+}
 
 local EJ_FLAG_CLASSMASK_WARRIOR = 1
 local EJ_FLAG_CLASSMASK_PALADIN = 2
@@ -454,14 +461,38 @@ function EJ_SelectTier( index )
 end
 
 local INSTANCE_REALM_FLAG = {
-	[E_REALM_ID.SCOURGE] = 0x80,
-	[E_REALM_ID.ALGALON] = 0x100,
-	[E_REALM_ID.SIRUS] = 0x200,
-	[E_REALM_ID.SOULSEEKER] = 0x400,
+	[E_REALM_ID.SCOURGE]	= INSTANCE_FLAG.HIDE_REALM_SCOURGE,
+	[E_REALM_ID.ALGALON]	= INSTANCE_FLAG.HIDE_REALM_ALGALON,
+	[E_REALM_ID.SIRUS]		= INSTANCE_FLAG.HIDE_REALM_SIRUS,
+	[E_REALM_ID.SOULSEEKER]	= INSTANCE_FLAG.HIDE_REALM_SOULSEEKER,
 };
 
-local function sortInstancesByOrderIndex(idA, idB)
-	return JOURNALINSTANCE[idA][EJ_CONST_INSTANCE_ORDERINDEX] < JOURNALINSTANCE[idB][EJ_CONST_INSTANCE_ORDERINDEX]
+local function sortInstancesByOrderIndex(instanceIDA, instanceIDB)
+	local intanceInfoA = JOURNALINSTANCE[instanceIDA]
+	local intanceInfoB = JOURNALINSTANCE[instanceIDB]
+
+	local isOpenWorldA = bit.band(intanceInfoA[EJ_CONST_INSTANCE_FLAGS], INSTANCE_FLAG.OPEN_WORLD) ~= 0
+	local isOpenWorldB = bit.band(intanceInfoB[EJ_CONST_INSTANCE_FLAGS], INSTANCE_FLAG.OPEN_WORLD) ~= 0
+
+	if isOpenWorldA ~= isOpenWorldB then
+		return not isOpenWorldB
+	end
+
+	local isOpenA, isActualA, minItemLevelA, maxItemLevelA = C_EncounterJournal.GetInstanceInfoEx(instanceIDA)
+	local isOpenB, isActualB, minItemLevelB, maxItemLevelB = C_EncounterJournal.GetInstanceInfoEx(instanceIDB)
+
+	if isOpenA ~= isOpenB then
+		return not isOpenB
+	elseif isActualA ~= isActualB then
+		return not isActualB
+	elseif maxItemLevelA ~= maxItemLevelB then
+		return maxItemLevelA > maxItemLevelB
+	elseif minItemLevelA ~= minItemLevelB then
+		return minItemLevelA > minItemLevelB
+	end
+
+	return intanceInfoA[EJ_CONST_INSTANCE_NAME] < intanceInfoB[EJ_CONST_INSTANCE_NAME]
+--	return intanceInfoA[EJ_CONST_INSTANCE_ORDERINDEX] < intanceInfoB[EJ_CONST_INSTANCE_ORDERINDEX]
 end
 
 local INSTANCE_BY_INDEX = {}
@@ -479,8 +510,7 @@ function EJ_GetInstanceByIndex(index, isRaid)
 			local instanceID = data[EJ_CONST_INSTANCE_ID]
 			if JOURNALTIERXINSTANCE[instanceID] == tierID
 			and bit.band(data[EJ_CONST_INSTANCE_FLAGS], realmFlag) == 0
-			and (bit.band(data[EJ_CONST_INSTANCE_FLAGS], EJ_FLAG_INSTANCE_ISRAID) ~= 0) == isRaid
-			and C_EncounterJournal.IsInstanceOpen(instanceID)
+			and (bit.band(data[EJ_CONST_INSTANCE_FLAGS], INSTANCE_FLAG.RAID) ~= 0) == isRaid
 			then
 				table.insert(INSTANCE_BY_INDEX, id)
 			end
@@ -506,7 +536,7 @@ function EJ_GetInstanceByIndex(index, isRaid)
 		local mapID = data[EJ_CONST_INSTANCE_MAPID]
 		local areaMapID = data[EJ_CONST_INSTANCE_AREAID]
 		local hyperlink = EJ_LinkGenerate(name, 0, instanceID, nil)
-		local shouldDisplayDifficulty = bit.band(data[EJ_CONST_INSTANCE_FLAGS], EJ_FLAG_INSTANCE_HIDE_DIFFICULTY) ~= EJ_FLAG_INSTANCE_HIDE_DIFFICULTY
+		local shouldDisplayDifficulty = bit.band(data[EJ_CONST_INSTANCE_FLAGS], INSTANCE_FLAG.HIDE_DIFFICULTY) ~= INSTANCE_FLAG.HIDE_DIFFICULTY
 
 		return instanceID, name, description, bgImage, buttonImage, loreImage, buttonSmallImage, areaMapID, hyperlink, shouldDisplayDifficulty, mapID
 	end
@@ -531,7 +561,7 @@ end
 function EJ_GetInstanceInfo( instanceID )
 	instanceID = instanceID or EncounterJournal.instanceID
 
-	if instanceID and JOURNALINSTANCE[instanceID] and C_EncounterJournal.IsInstanceOpen(instanceID) then
+	if instanceID and JOURNALINSTANCE[instanceID] then
 		local data = JOURNALINSTANCE[instanceID]
 		local name = data[EJ_CONST_INSTANCE_NAME]
 		local description = data[EJ_CONST_INSTANCE_DESCRIPTION]
@@ -542,7 +572,7 @@ function EJ_GetInstanceInfo( instanceID )
 		local areaMapID = data[EJ_CONST_INSTANCE_WORLDMAPAREAID]
 		local mapID = data[EJ_CONST_INSTANCE_MAPID]
 		local hyperlink = EJ_LinkGenerate(name, 0, instanceID)
-		local shouldDisplayDifficulty = bit.band(data[EJ_CONST_INSTANCE_FLAGS], EJ_FLAG_INSTANCE_HIDE_DIFFICULTY) ~= EJ_FLAG_INSTANCE_HIDE_DIFFICULTY
+		local shouldDisplayDifficulty = bit.band(data[EJ_CONST_INSTANCE_FLAGS], INSTANCE_FLAG.HIDE_DIFFICULTY) ~= INSTANCE_FLAG.HIDE_DIFFICULTY
 
 		description = string.gsub(description, "{(kbase:[^}]+)}", formatHyperlink)
 
@@ -554,7 +584,7 @@ end
 
 function EJ_IsRaid( instanceID )
 	if instanceID and JOURNALINSTANCE[instanceID] then
-		if bit.band(JOURNALINSTANCE[instanceID][EJ_CONST_INSTANCE_FLAGS], EJ_FLAG_INSTANCE_ISRAID) == EJ_FLAG_INSTANCE_ISRAID then
+		if bit.band(JOURNALINSTANCE[instanceID][EJ_CONST_INSTANCE_FLAGS], INSTANCE_FLAG.RAID) == INSTANCE_FLAG.RAID then
 			return true
 		end
 	end
@@ -1252,22 +1282,21 @@ function EJ_SetDifficulty( difficulty )
 	EncounterJournal_UpdateDifficulty(difficulty)
 end
 
-function EJ_GetValidationDifficulty( index, instanceID )
+function EJ_GetValidationDifficulty(index, instanceID)
 	if not index then
 		return nil
 	end
 
-	local buffer = {}
+	local validIndex = 0
 
 	for i = 1, #EJ_DIFFICULTIES do
 		local entry = EJ_DIFFICULTIES[i]
 		if EJ_IsValidInstanceDifficulty(entry.difficultyID, instanceID) and (entry.size ~= "5" == EJ_IsRaid(instanceID or EncounterJournal.instanceID)) then
-			table.insert(buffer, entry.difficultyID)
+			validIndex = validIndex + 1
+			if validIndex == index then
+				return entry.difficultyID
+			end
 		end
-	end
-
-	if buffer[index] then
-		return buffer[index]
 	end
 end
 
@@ -1283,18 +1312,15 @@ local function LoadEJData(self)
 
 	for _, data in pairs(JOURNALINSTANCE) do
 		local instanceID = data[EJ_CONST_INSTANCE_ID]
-
-		if C_EncounterJournal.IsInstanceOpen(instanceID) then
-			table.insert(EJ_SearchData, {
-				id			= instanceID,
-				name		= data[EJ_CONST_INSTANCE_NAME],
-				stype		= EJ_STYPE_INSTANCE,
-				instanceID	= instanceID,
-				encounterID	= -1,
-				difficulty	= 1,
-			--	link		= nil, -- TODO
-			})
-		end
+		table.insert(EJ_SearchData, {
+			id			= instanceID,
+			name		= data[EJ_CONST_INSTANCE_NAME],
+			stype		= EJ_STYPE_INSTANCE,
+			instanceID	= instanceID,
+			encounterID	= -1,
+			difficulty	= 1,
+		--	link		= nil, -- TODO
+		})
 	end
 
 	for _, container in pairs(JOURNALENCOUNTER) do
@@ -1304,17 +1330,15 @@ local function LoadEJData(self)
 
 			JOURNALENCOUNTER_BY_ENCOUNTER[encounterID] = data
 
-			if C_EncounterJournal.IsInstanceOpen(instanceID) then
-				table.insert(EJ_SearchData, {
-					id			= encounterID,
-					name		= data[EJ_CONST_ENCOUNTER_NAME],
-					stype		= EJ_STYPE_ENCOUNTER,
-					instanceID	= instanceID,
-					encounterID	= encounterID,
-					difficulty	= data[EJ_CONST_ENCOUNTER_DIFFICULTYMASK],
-				--	link		= nil, -- TODO
-				})
-			end
+			table.insert(EJ_SearchData, {
+				id			= encounterID,
+				name		= data[EJ_CONST_ENCOUNTER_NAME],
+				stype		= EJ_STYPE_ENCOUNTER,
+				instanceID	= instanceID,
+				encounterID	= encounterID,
+				difficulty	= data[EJ_CONST_ENCOUNTER_DIFFICULTYMASK],
+			--	link		= nil, -- TODO
+			})
 		end
 	end
 
@@ -1323,17 +1347,15 @@ local function LoadEJData(self)
 			local encounterID = data[EJ_CONST_ENCOUNTERCREATURE_ENCOUNTERID]
 			local instanceID = JOURNALENCOUNTER_BY_ENCOUNTER[encounterID][EJ_CONST_ENCOUNTER_INSTANCEID]
 
-			if C_EncounterJournal.IsInstanceOpen(instanceID) then
-				table.insert(EJ_SearchData, {
-					id			= data[EJ_CONST_ENCOUNTERCREATURE_ID],
-					name		= data[EJ_CONST_ENCOUNTERCREATURE_NAME],
-					stype		= EJ_STYPE_CREATURE,
-					instanceID	= instanceID,
-					encounterID	= encounterID,
-					difficulty	= JOURNALENCOUNTER_BY_ENCOUNTER[encounterID][EJ_CONST_ENCOUNTER_DIFFICULTYMASK],
-				--	link		= nil, -- TODO
-				})
-			end
+			table.insert(EJ_SearchData, {
+				id			= data[EJ_CONST_ENCOUNTERCREATURE_ID],
+				name		= data[EJ_CONST_ENCOUNTERCREATURE_NAME],
+				stype		= EJ_STYPE_CREATURE,
+				instanceID	= instanceID,
+				encounterID	= encounterID,
+				difficulty	= JOURNALENCOUNTER_BY_ENCOUNTER[encounterID][EJ_CONST_ENCOUNTER_DIFFICULTYMASK],
+			--	link		= nil, -- TODO
+			})
 		end
 	end
 
@@ -1341,17 +1363,15 @@ local function LoadEJData(self)
 		local encounterID = data[EJ_CONST_ENCOUNTERSECTION_ENCOUNTERID]
 		local instanceID = JOURNALENCOUNTER_BY_ENCOUNTER[encounterID][EJ_CONST_ENCOUNTER_INSTANCEID]
 
-		if C_EncounterJournal.IsInstanceOpen(instanceID) then
-			table.insert(EJ_SearchData, {
-				id			= data[EJ_CONST_ENCOUNTERSECTION_ID],
-				name		= data[EJ_CONST_ENCOUNTERSECTION_NAME],
-				stype		= EJ_STYPE_SECTION,
-				difficulty	= data[EJ_CONST_ENCOUNTERSECTION_DIFFCULTYMASK],
-				instanceID	= instanceID,
-				encounterID	= encounterID,
-			--	link		= nil, -- TODO
-			})
-		end
+		table.insert(EJ_SearchData, {
+			id			= data[EJ_CONST_ENCOUNTERSECTION_ID],
+			name		= data[EJ_CONST_ENCOUNTERSECTION_NAME],
+			stype		= EJ_STYPE_SECTION,
+			difficulty	= data[EJ_CONST_ENCOUNTERSECTION_DIFFCULTYMASK],
+			instanceID	= instanceID,
+			encounterID	= encounterID,
+		--	link		= nil, -- TODO
+		})
 	end
 
 	local queuedItems = {}
@@ -1393,16 +1413,15 @@ local function LoadEJData(self)
 
 	for encounterID, container in pairs(JOURNALENCOUNTERITEM) do
 		local instanceID = JOURNALENCOUNTER_BY_ENCOUNTER[encounterID][EJ_CONST_ENCOUNTER_INSTANCEID]
-		if C_EncounterJournal.IsInstanceOpen(instanceID) then
-			for _, item in ipairs(container) do
-				local itemID = item[EJ_CONST_ENCOUNTERITEM_ITEMENTRY]
-				local name, link, quality, iLevel, reqLevel, armorType, subclass, maxStack, equipSlot, icon, vendorPrice = C_Item.GetItemInfo(itemID, nil, nil, true, true)
-				if name then
-					addItemInfo(item, itemID, name, link, quality, iLevel, reqLevel, armorType, subclass, maxStack, equipSlot, icon, vendorPrice)
-				else
-					queuedItems[itemID] = item
-					C_Item.RequestServerCache(itemID, itemCacheResponse)
-				end
+
+		for _, item in ipairs(container) do
+			local itemID = item[EJ_CONST_ENCOUNTERITEM_ITEMENTRY]
+			local name, link, quality, iLevel, reqLevel, armorType, subclass, maxStack, equipSlot, icon, vendorPrice = C_Item.GetItemInfo(itemID, nil, nil, true, true)
+			if name then
+				addItemInfo(item, itemID, name, link, quality, iLevel, reqLevel, armorType, subclass, maxStack, equipSlot, icon, vendorPrice)
+			else
+				queuedItems[itemID] = item
+				C_Item.RequestServerCache(itemID, itemCacheResponse)
 			end
 		end
 	end
@@ -1416,7 +1435,7 @@ function EncounterJournal_InitTab(self)
 	if not C_Service.IsHardcoreEnabledOnRealm() then
 		PanelTemplates_HideTab(self, 3)
 	end
-	if not C_Service.IsGMAccount() then
+	if not C_Service.IsGMAccount() and not IsInterfaceDevClient() then
 		PanelTemplates_HideTab(self, 4)
 	end
 end
@@ -1640,10 +1659,10 @@ function EncounterJournal_OnShow(self)
 
 	local success = EncounterJournal_CheckAndDisplayEncounter()
 	if not success then
-		if EncounterJournal.instanceSelect:IsShown() then
-			EJ_ContentTab_Select(self.instanceSelect.selectedTab);
+		if instanceSelect:IsShown() then
+			EJ_ContentTab_Select(instanceSelect.selectedTab);
+			EncounterJournal_ListInstances()
 		end
-		EncounterJournal_ListInstances()
 	end
 
 	EventRegistry:TriggerEvent("EncounterJournal.OnShow")
@@ -1839,7 +1858,7 @@ function EncounterJournal_ListInstances()
 		instanceButton.mapID = mapID;
 		instanceButton:Show();
 
-		if minItemLevel ~= 0 then
+		if minItemLevel ~= 0 and isOpen then
 			if minItemLevel == maxItemLevel then
 				instanceButton.range:SetText(minItemLevel)
 			else
@@ -1859,11 +1878,14 @@ function EncounterJournal_ListInstances()
 
 		if hasRequirements then
 			instanceButton.Requirements.requirements = requirements
-			instanceButton.Requirements:Show()
+			instanceButton.Requirements.Icon:SetAtlas("PKBT-Icon-Notification")
 		else
 			instanceButton.Requirements.requirements = nil
-			instanceButton.Requirements:Hide()
+			instanceButton.Requirements.Icon:SetAtlas("PKBT-Icon-Notification-White")
 		end
+		instanceButton.Requirements.isRaid = showRaid
+		instanceButton.Requirements:SetShown(showRaid)
+		instanceButton.Unavailable:SetShown(not isOpen)
 
 		index = index + 1;
 		instanceID, name, description, _, buttonImage, _, _, _, link, _, mapID = EJ_GetInstanceByIndex(index, showRaid);
@@ -3240,8 +3262,7 @@ function EncounterJournal_SelectSearch(index)
 		creatureID = id;
 	end
 
-	local difficultyID = EJ_GetDifficultyByMask(difficultyMask, instanceID) or 1
-
+	local difficultyID = difficultyMask and EJ_GetDifficultyByMask(difficultyMask, instanceID) or 1
 	if not EJ_IsValidInstanceDifficulty(difficultyID, instanceID) then
 		difficultyID = EJ_GetValidationDifficulty(1)
 	end
@@ -4666,10 +4687,17 @@ function EncounterInstanceButtonRequirements_OnEnter(self)
 		self:GetParent():LockHighlight()
 	end
 
-	if self.requirements then
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-		GameTooltip_AddNormalLine(GameTooltip, EJ_INSTANCE_REQUIREMENT_LABLE, true)
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+	GameTooltip_AddNormalLine(GameTooltip, EJ_INSTANCE_REQUIREMENT_LABLE, true)
 
+	local parent = self:GetParent()
+	if self.isRaid and (parent.mapID ~= 1 and parent.mapID ~= 10009) then
+		GameTooltip_AddHighlightLine(GameTooltip, EJ_INSTANCE_REQUIREMENT_RAID_GROUP, true)
+	else
+		GameTooltip_AddHighlightLine(GameTooltip, EJ_INSTANCE_REQUIREMENT_NONE, true)
+	end
+
+	if self.requirements then
 		for index, requirement in ipairs(self.requirements) do
 			GameTooltip_AddBlankLineToTooltip(GameTooltip)
 
@@ -4694,8 +4722,8 @@ function EncounterInstanceButtonRequirements_OnEnter(self)
 			end
 
 			if requirement.itemLevel then
-				local playerItemLevel = ItemLevelMixIn:GetItemLevel(UnitGUID("player"))
-				local completed = playerItemLevel and playerItemLevel >= requirement.itemLevel
+				local avgItemLevelEquipped = GetAverageItemLevel()
+				local completed = avgItemLevelEquipped >= requirement.itemLevel
 				local color = completed and GREEN_FONT_COLOR or HIGHLIGHT_FONT_COLOR
 				GameTooltip_AddNormalLine(GameTooltip, string.format(EJ_INSTANCE_REQUIREMENT_ITEM_LEVEL, color:WrapTextInColorCode(requirement.itemLevel)), true)
 			end
@@ -4706,9 +4734,10 @@ function EncounterInstanceButtonRequirements_OnEnter(self)
 				GameTooltip_AddNormalLine(GameTooltip, EJ_INSTANCE_REQUIREMENT_QUESTS, true)
 				for questIndex, questID in ipairs(requirement.quests) do
 					local completed = IsQuestCompleted(questID)
-					local name = GetQuestNameByID(questID)
+					local name = GetTitleForQuestID(questID)
 					if not name and not self.awaitQuestCache[questID] then
 						self.awaitQuestCache[questID] = true
+						RequestQuestCacheByID(questID)
 					end
 					if IsGMAccount() then
 						name = string.format("%s [%d]", name or UNKNOWN, questID)
@@ -4730,9 +4759,9 @@ function EncounterInstanceButtonRequirements_OnEnter(self)
 				end
 			end
 		end
-
-		GameTooltip:Show()
 	end
+
+	GameTooltip:Show()
 end
 
 function EncounterInstanceButtonRequirements_OnLeave(self)

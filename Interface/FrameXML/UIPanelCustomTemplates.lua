@@ -97,3 +97,48 @@ end
 function UIPanelButtonChallengeStateHandlerMixin:IsDisabled()
 	return self.isDisabled
 end
+
+local EditModeSystemSelectionLayout =
+{
+	["TopRightCorner"] = { atlas = "%s-NineSlice-Corner", mirrorLayout = true, x=8, y=8 },
+	["TopLeftCorner"] = { atlas = "%s-NineSlice-Corner", mirrorLayout = true, x=-8, y=8 },
+	["BottomLeftCorner"] = { atlas = "%s-NineSlice-Corner", mirrorLayout = true, x=-8, y=-8 },
+	["BottomRightCorner"] = { atlas = "%s-NineSlice-Corner",  mirrorLayout = true, x=8, y=-8 },
+	["TopEdge"] = { atlas = "_%s-NineSlice-EdgeTop" },
+	["BottomEdge"] = { atlas = "_%s-NineSlice-EdgeBottom" },
+	["LeftEdge"] = { atlas = "!%s-NineSlice-EdgeLeft" },
+	["RightEdge"] = { atlas = "!%s-NineSlice-EdgeRight" },
+	["Center"] = { atlas = "%s-NineSlice-Center", x = -8, y = 8, x1 = 8, y1 = -8, },
+}
+
+EditModeSystemSelectionBaseMixin = CreateFromMixins(NineSlicePanelMixin)
+
+function EditModeSystemSelectionBaseMixin:OnLoad()
+	self:RegisterForDrag("LeftButton")
+
+	self.highlightTextureKit = self:GetAttribute("highlightTextureKit")
+	self.selectedTextureKit = self:GetAttribute("selectedTextureKit")
+
+	self.parent = self:GetParent()
+	self.parent:SetMovable(true)
+end
+
+function EditModeSystemSelectionBaseMixin:ShowHighlighted()
+	NineSliceUtil.ApplyLayout(self, EditModeSystemSelectionLayout, self.highlightTextureKit)
+	self.isSelected = false
+	self:Show()
+end
+
+function EditModeSystemSelectionBaseMixin:ShowSelected()
+	NineSliceUtil.ApplyLayout(self, EditModeSystemSelectionLayout, self.selectedTextureKit)
+	self.isSelected = true
+	self:Show()
+end
+
+function EditModeSystemSelectionBaseMixin:OnDragStart()
+	self.parent:OnDragStart()
+end
+
+function EditModeSystemSelectionBaseMixin:OnDragStop()
+	self.parent:OnDragStop()
+end

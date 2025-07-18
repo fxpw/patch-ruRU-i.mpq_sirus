@@ -1,41 +1,66 @@
 ezSpectator_ClickIcon = {}
 ezSpectator_ClickIcon.__index = ezSpectator_ClickIcon
 
---noinspection LuaOverlyLongMethod
-function ezSpectator_ClickIcon:Create(Parent, ParentFrame, Style, Size, ...)
+local ICON_ATLASES = {
+	["backward"]	= {"Custom-ArenaSpectator-Icon-Backward", 12},
+	["exit"]		= {"Custom-ArenaSpectator-Icon-Exit", 10},
+	["Eye_Normal"]	= {"Custom-ArenaSpectator-Icon-Eye-Normal", 18},
+	["Eye_Stroked"]	= {"Custom-ArenaSpectator-Icon-Eye-Stroked", 18},
+	["forward"]		= {"Custom-ArenaSpectator-Icon-Forward", 12},
+	["Logout"]		= {"Custom-ArenaSpectator-Icon-Logout", 14},
+	["pause"]		= {"Custom-ArenaSpectator-Icon-Pause", 12},
+	["play"]		= {"Custom-ArenaSpectator-Icon-Play", 12},
+	["Plus"]		= {"Custom-ArenaSpectator-Icon-Plus", 10},
+	["Refresh"]		= {"Custom-ArenaSpectator-Icon-Refresh", 10},
+	["report"]		= {"Custom-ArenaSpectator-Icon-Report", 10},
+	["settings"]	= {"Custom-ArenaSpectator-Icon-Settings", 10},
+	["share"]		= {"Custom-ArenaSpectator-Icon-Share", 12},
+}
+
+function ezSpectator_ClickIcon:Create(Parent, parentFrame, Style, Size, ...)
     local self = {}
     setmetatable(self, ezSpectator_ClickIcon)
+
+	if not parentFrame then
+		parentFrame = ArenaSpectatorFrame
+	end
 
     self.Parent = Parent
 
     self.Action = nil
     self.IsTextInteractive = false
 
-    self.Textures = ezSpectator_Textures:Create()
-    self.ParentFrame = ParentFrame or ArenaSpectatorFrame
-
-    self.Backdrop = CreateFrame('Frame', nil, self.ParentFrame)
+	self.Backdrop = CreateFrame("Frame", nil, parentFrame)
     self.Backdrop:SetFrameLevel(1)
     self.Backdrop:SetFrameStrata('HIGH')
     self.Backdrop:SetSize(Size, Size)
     self.Backdrop:SetScale(_ezSpectatorScale)
     self.Backdrop:SetPoint(...)
-    self.Textures:ClickIcon_Backdrop(self.Backdrop)
 
-    self.Normal = CreateFrame('Frame', nil, self.ParentFrame)
+	self.Backdrop.texture = self.Backdrop:CreateTexture(nil, "BACKGROUND")
+	self.Backdrop.texture:SetAllPoints()
+	self.Backdrop.texture:SetAtlas("Custom-ArenaSpectator-ClickIcon-Backdrop", true)
+
+	self.Normal = CreateFrame("Frame", nil, parentFrame)
     self.Normal:SetFrameLevel(4)
     self.Normal:SetFrameStrata('HIGH')
     self.Normal:SetSize(Size, Size)
     self.Normal:SetScale(_ezSpectatorScale)
     self.Normal:SetPoint(...)
 
-    self.Highlight = CreateFrame('Frame', nil, self.ParentFrame)
+	self.Normal.texture = self.Normal:CreateTexture(nil, "BACKGROUND")
+	self.Normal.texture:SetAllPoints()
+
+	self.Highlight = CreateFrame("Frame", nil, parentFrame)
     self.Highlight:SetFrameLevel(5)
     self.Highlight:SetFrameStrata('HIGH')
     self.Highlight:SetSize(Size, Size)
     self.Highlight:SetScale(_ezSpectatorScale)
     self.Highlight:SetPoint(...)
     self.Highlight:Hide()
+
+	self.Highlight.texture = self.Highlight:CreateTexture(nil, "BACKGROUND")
+	self.Highlight.texture:SetAllPoints()
 
     local StyleColor, StyleMode = strsplit('|', Style)
     if not StyleColor then
@@ -45,23 +70,20 @@ function ezSpectator_ClickIcon:Create(Parent, ParentFrame, Style, Size, ...)
     local OffsetX = 0
     local OffsetY = 0
     if StyleColor == 'gold' then
-        self.Textures:ClickIcon_Normal_Gold(self.Normal)
-        self.Textures:ClickIcon_Highlight_Gold(self.Highlight)
+		self.Normal.texture:SetAtlas("Custom-ArenaSpectator-ClickIcon-Normal-Gold", true)
+		self.Highlight.texture:SetAtlas("Custom-ArenaSpectator-ClickIcon-Highlight-Gold", true)
     elseif StyleColor == 'silver' then
-        self.Textures:ClickIcon_Normal_Silver(self.Normal)
-        self.Textures:ClickIcon_Highlight_Silver(self.Highlight)
-
-        --noinspection UnusedDef
+		self.Normal.texture:SetAtlas("Custom-ArenaSpectator-ClickIcon-Normal-Silver", true)
+		self.Highlight.texture:SetAtlas("Custom-ArenaSpectator-ClickIcon-Highlight-Silver", true)
         OffsetY = 0.5
     elseif StyleColor == 'mild' then
-        self.Backdrop.texture:SetTexture(EMPTY_TEXTURE)
-        self.Textures:ClickIcon_Normal_Mild(self.Normal)
-        self.Textures:ClickIcon_Highlight_Mild(self.Highlight)
-
+		self.Backdrop.texture:SetTexture(nil)
+		self.Normal.texture:SetAtlas("Custom-ArenaSpectator-ClickIcon-Normal-Mild", true)
+		self.Highlight.texture:SetAtlas("Custom-ArenaSpectator-ClickIcon-Highlight-Mild", true)
         OffsetX = -0.5
         OffsetY = 0.5
     elseif StyleColor == 'clear' then
-        self.Backdrop.texture:SetTexture(EMPTY_TEXTURE)
+		self.Backdrop.texture:SetTexture(nil)
     end
 
     self.IsToggleMode = StyleMode == 'toggle'
@@ -77,19 +99,26 @@ function ezSpectator_ClickIcon:Create(Parent, ParentFrame, Style, Size, ...)
     self.Icon:SetScale(_ezSpectatorScale)
     self.Icon:SetPoint('CENTER', self.Normal, 'CENTER', OffsetX, OffsetY)
 
+	self.Icon.texture = self.Icon:CreateTexture(nil, "BACKGROUND")
+	self.Icon.texture:SetAllPoints()
+
     self.TextIcon = self.Backdrop:CreateFontString(nil, 'BACKGROUND', 'PVPInfoTextFont')
     self.TextIcon:SetSize(Size, Size)
     self.TextIcon:SetPoint('CENTER', self.Normal, 'CENTER', 0.5, -0.5)
 
     self.Cooldown = CreateFrame('Frame', nil, self.Icon, "CustomCooldownFrameTemplate")
+	self.Cooldown:UseArenaSpectatorTimescale(true)
     self.Cooldown:SetFrameLevel(3)
     self.Cooldown:SetFrameStrata('HIGH')
     self.Cooldown:SetSize(Size, Size)
     self.Cooldown:SetPoint('CENTER', self.Normal, 'CENTER', OffsetX, OffsetY)
-    self.Cooldown:SetAlpha(0)
+
+	if self.Parent.HIDE_COOLDOWN_ANIMATION then
+		self.Cooldown:SetAlpha(0)
+	end
     -- self.Cooldown:SetDrawEdge(true)
 
-    self.TextFrame = CreateFrame('Frame', nil, self.ParentFrame)
+	self.TextFrame = CreateFrame("Frame", nil, parentFrame)
     self.TextFrame:SetFrameStrata('TOOLTIP')
     self.TextFrame:SetSize(1, 1)
     self.TextFrame:SetPoint('TOP', self.Normal, 'BOTTOM', 0, 5)
@@ -101,7 +130,7 @@ function ezSpectator_ClickIcon:Create(Parent, ParentFrame, Style, Size, ...)
     self.Text:SetShadowOffset(0, 1)
     self.Text:SetPoint('CENTER', 0, 1)
 
-    self.Reactor = CreateFrame('Frame', nil, self.ParentFrame)
+	self.Reactor = CreateFrame("Frame", nil, parentFrame)
     self.Reactor:SetFrameStrata('TOOLTIP')
     self.Reactor:SetSize(Size, Size)
     self.Reactor:SetScale(_ezSpectatorScale)
@@ -129,16 +158,17 @@ function ezSpectator_ClickIcon:Create(Parent, ParentFrame, Style, Size, ...)
     end)
     self.Reactor:SetScript('OnUpdate', function()
         if self.IsTextInteractive and not self.disable then
+			local uiEffectiveScale = UIParent:GetEffectiveScale()
             local OffsetX, OffsetY, Width, Height = self.Icon:GetBoundsRect()
-            OffsetX = OffsetX * 1.5 / UIParent:GetEffectiveScale()
-            OffsetY = OffsetY * 1.5 / UIParent:GetEffectiveScale()
+			OffsetX = OffsetX * 1.5 / uiEffectiveScale
+			OffsetY = OffsetY * 1.5 / uiEffectiveScale
 
             local CenterX = OffsetX + Width / 2
             local CenterY = OffsetY + Height / 2
 
             local CursorX, CursorY =  GetCursorPosition()
-            local CursorX = CursorX / UIParent:GetEffectiveScale()
-            local CursorY = CursorY / UIParent:GetEffectiveScale()
+			CursorX = CursorX / uiEffectiveScale
+			CursorY = CursorY / uiEffectiveScale
 
             local DiffX = abs(CenterX - CursorX)
             local DiffY = abs(CenterY - CursorY)
@@ -152,8 +182,6 @@ function ezSpectator_ClickIcon:Create(Parent, ParentFrame, Style, Size, ...)
     return self
 end
 
-
-
 function ezSpectator_ClickIcon:Show()
     self.Backdrop:Show()
     self.Normal:Show()
@@ -162,8 +190,6 @@ function ezSpectator_ClickIcon:Show()
     self.TextFrame:Show()
     self.Reactor:Show()
 end
-
-
 
 function ezSpectator_ClickIcon:Hide()
     self.Backdrop:Hide()
@@ -175,13 +201,17 @@ function ezSpectator_ClickIcon:Hide()
     self.Reactor:Hide()
 end
 
-
+function ezSpectator_ClickIcon:SetShown(shown)
+	if shown then
+		self:Show()
+	else
+		self:Hide()
+	end
+end
 
 function ezSpectator_ClickIcon:IsShown()
     return self.Backdrop:IsShown()
 end
-
-
 
 function ezSpectator_ClickIcon:SetAlpha(Value)
     self.Backdrop:SetAlpha(Value)
@@ -205,7 +235,6 @@ function ezSpectator_ClickIcon:SetEnabled( ... )
     end
 end
 
-
 function ezSpectator_ClickIcon:SetPoint(...)
     self.Backdrop:ClearAllPoints()
     self.Normal:ClearAllPoints()
@@ -218,17 +247,13 @@ function ezSpectator_ClickIcon:SetPoint(...)
     self.Reactor:SetPoint(...)
 end
 
-
-
-function ezSpectator_ClickIcon:SetBorderClassColor(Value)
-    local Class = self.Parent.Data.ClassTextEng[Value]
-    local Color = RAID_CLASS_COLORS[Class]
+function ezSpectator_ClickIcon:SetBorderClassColor(classID)
+	local className = self.Parent.Data.ClassTextEng[classID]
+	local Color = RAID_CLASS_COLORS[className] or RAID_CLASS_COLORS["PRIEST"]
 
     self.Normal.texture:SetVertexColor(Color.r, Color.g, Color.b, 1)
     self.Highlight.texture:SetVertexColor(Color.r, Color.g, Color.b, 1)
 end
-
-
 
 function ezSpectator_ClickIcon:SetToggleDown()
     if self.Backdrop:IsShown() then
@@ -244,8 +269,6 @@ function ezSpectator_ClickIcon:SetToggleDown()
     end
 end
 
-
-
 function ezSpectator_ClickIcon:SetToggleUp()
     if self.Backdrop:IsShown() then
         self.Backdrop:SetFrameStrata('LOW')
@@ -260,59 +283,38 @@ function ezSpectator_ClickIcon:SetToggleUp()
     end
 end
 
-
-
-function ezSpectator_ClickIcon:SetCooldown(Time, Duration)
-    self.Cooldown:SetCooldown(Time, Duration)
+function ezSpectator_ClickIcon:SetCooldown(startTime, duration)
+	self.Cooldown:SetCooldown(startTime, duration)
 end
 
+function ezSpectator_ClickIcon:SetTexture(texturePath, iconSize, cropIconBorder)
+	iconSize = iconSize / _ezSpectatorScale
 
+	self.Icon:SetSize(iconSize, iconSize)
+	self.Cooldown:SetSize(iconSize, iconSize)
 
-function ezSpectator_ClickIcon:SetTexture(Name, Size, CutBorders)
-    Size = Size / _ezSpectatorScale
-
-    self.Icon:SetSize(Size, Size)
-    self.Cooldown:SetSize(Size, Size)
-
-    local Texture = self.Textures:Load(self.Icon, Name)
-    if CutBorders then
-        Texture:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-    end
-    Texture:SetAllPoints(self.Icon)
-    self.Icon.texture = Texture
+	self.Icon.texture:SetTexture(texturePath)
+	if cropIconBorder then
+		self.Icon.texture:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+	end
 end
 
+function ezSpectator_ClickIcon:SetIcon(name)
+	local iconInfo = ICON_ATLASES[name]
+	if iconInfo then
+		local atlasName = iconInfo[1]
+		local size = iconInfo[2]
 
+		self.Icon:SetSize(size, size)
+		self.Cooldown:SetSize(size, size)
 
-function ezSpectator_ClickIcon:SetIcon(Name)
-    local Record
-
-    --noinspection UnusedDef
-    for Index, Value in pairs(self.Parent.Data.ClickIconOffset) do
-        if Value[1] == Name then
-            Record = Value
-            break
-        end
-    end
-
-    if Record then
-        self.Icon:SetSize(Record[6], Record[6])
-        self.Cooldown:SetSize(Record[6], Record[6])
-
-        local Texture = self.Textures:Load(self.Icon, 'Interface\\Custom\\ArenaSpectator\\Icons\\' .. Record[1])
-        Texture:SetTexCoord(Record[2], Record[3], Record[4], Record[5])
-        Texture:SetAllPoints(self.Icon)
-        self.Icon.texture = Texture
-    end
+		self.Icon.texture:SetAtlas(atlasName, true)
+	end
 end
-
-
 
 function ezSpectator_ClickIcon:SetFontIcon(Name)
     self.TextIcon:SetText(Name)
 end
-
-
 
 function ezSpectator_ClickIcon:SetTime(Value)
     if Value > 0 then
@@ -324,13 +326,9 @@ function ezSpectator_ClickIcon:SetTime(Value)
     end
 end
 
-
-
 function ezSpectator_ClickIcon:GetText()
     return self.Text and self.Text:GetText() or '00:00'
 end
-
-
 
 function ezSpectator_ClickIcon:SetTextInteractive(IsInteractive)
     self.IsTextInteractive = IsInteractive
@@ -339,8 +337,6 @@ function ezSpectator_ClickIcon:SetTextInteractive(IsInteractive)
         self.TextFrame:SetAlpha(1)
     end
 end
-
-
 
 function ezSpectator_ClickIcon:SetAction(Action)
     if not self.Action then

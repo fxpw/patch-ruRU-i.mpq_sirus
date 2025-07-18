@@ -796,7 +796,7 @@
 		end
 	</Binding>
 	<Binding name="TOGGLEUI">
-		if ezSpectator_TopFrameMainFrame and ezSpectator_TopFrameMainFrame:IsShown() then
+		if ArenaSpectatorFrame and ArenaSpectatorFrame:IsShown() then
 			return
 		end
 		if ( UIParent:IsShown() ) then

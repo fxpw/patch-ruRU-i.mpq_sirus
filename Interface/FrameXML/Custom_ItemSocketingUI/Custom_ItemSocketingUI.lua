@@ -1,9 +1,3 @@
---	Filename:	Custom_ItemSocketingUI.lua
---	Project:	Sirus Game Interface
---	Author:		Nyll
---	E-mail:		nyll@sirus.su
---	Web:		https://sirus.su/
-
 UIPanelWindows["ItemSocketingFrame"] =		{ area = "left",	pushable = 0 };
 
 GEM_TYPE_INFO = {};
@@ -51,13 +45,15 @@ end
 
 function ItemSocketingFrame_Update()
 	ItemSocketingFrame.destroyingGem = nil;
-	-- ItemSocketingFrame.itemIsRefundable = nil;
-	-- ItemSocketingFrame.itemIsBoundTradeable = nil;
-	-- if(GetSocketItemRefundable()) then
-	-- 	ItemSocketingFrame.itemIsRefundable = true;
-	-- elseif(GetSocketItemBoundTradeable()) then
-	-- 	ItemSocketingFrame.itemIsBoundTradeable = true;
-	-- end
+--[[
+	ItemSocketingFrame.itemIsRefundable = nil;
+	ItemSocketingFrame.itemIsBoundTradeable = nil;
+	if(GetSocketItemRefundable()) then
+		ItemSocketingFrame.itemIsRefundable = true;
+	elseif(GetSocketItemBoundTradeable()) then
+		ItemSocketingFrame.itemIsBoundTradeable = true;
+	end
+--]]
 
 	local numSockets = GetNumSockets();
 	local name, icon, quality, gemMatchesSocket;
@@ -116,14 +112,12 @@ function ItemSocketingFrame_Update()
 					-- Special stuff for meta gem sockets
 					SetDesaturation(openBracket, 1);
 					SetDesaturation(closedBracket, 1);
-					openBracket:SetTexCoord(gemInfo.OBLeft, gemInfo.OBRight, gemInfo.OBTop, gemInfo.OBBottom);
-					closedBracket:SetTexCoord(gemInfo.CBLeft, gemInfo.CBRight, gemInfo.CBTop, gemInfo.CBBottom);
 				else
 					SetDesaturation(openBracket, nil);
 					SetDesaturation(closedBracket, nil);
-					openBracket:SetTexCoord(gemInfo.OBLeft, gemInfo.OBRight, gemInfo.OBTop, gemInfo.OBBottom);
-					closedBracket:SetTexCoord(gemInfo.CBLeft, gemInfo.CBRight, gemInfo.CBTop, gemInfo.CBBottom);
 				end
+				openBracket:SetTexCoord(gemInfo.OBLeft, gemInfo.OBRight, gemInfo.OBTop, gemInfo.OBBottom);
+				closedBracket:SetTexCoord(gemInfo.CBLeft, gemInfo.CBRight, gemInfo.CBTop, gemInfo.CBBottom);
 				if ( ENABLE_COLORBLIND_MODE == "1" ) then
 					gemColorText = _G[socketName.."Color"];
 					gemColorText:SetText(_G[strupper(gemColor) .. "_GEM"]);
@@ -203,9 +197,8 @@ function ItemSocketingSocketButton_OnScrollRangeChanged()
 end
 
 function ItemSocketingSocketButton_OnEnter(self)
-	local newSocket 			= GetNewSocketInfo(self:GetID())
-	local existingSocket 		= GetExistingSocketInfo(self:GetID())
-	local existingSocketLink 	= GetExistingSocketLink(self:GetID())
+	local newSocket 			= GetNewSocketInfo(self:GetID());
+	local existingSocket 		= GetExistingSocketInfo(self:GetID());
 
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 	if ( newSocket ) then
@@ -213,11 +206,13 @@ function ItemSocketingSocketButton_OnEnter(self)
 	else
 		GameTooltip:SetExistingSocketGem(self:GetID());
 
-		local _, _, quality = GetItemInfo(existingSocketLink)
-
-		if quality == 5 then
-			GameTooltip:AddLine(ITEMSOCKET_TO_GET_BRILLIANT, 0, 0.8, 1)
-			GameTooltip:Show()
+		local existingSocketLink = GetExistingSocketLink(self:GetID())
+		if existingSocketLink then
+			local _, _, quality = GetItemInfo(existingSocketLink)
+			if quality == 5 then
+				GameTooltip:AddLine(ITEMSOCKET_TO_GET_BRILLIANT, 0, 0.8, 1)
+				GameTooltip:Show()
+			end
 		end
 	end
 	if ( newSocket and existingSocket ) then
@@ -238,7 +233,6 @@ function ItemSocketingSocketButton_OnEvent(self, event, ...)
 end
 
 function ItemSocketingSocketButton_Disable()
-	ItemSocketingSocketButton.disabled = 1;
 	ItemSocketingSocketButton:Disable();
 	ItemSocketingSocketButtonLeft:SetTexture("Interface\\Buttons\\UI-Panel-Button-Disabled");
 	ItemSocketingSocketButtonMiddle:SetTexture("Interface\\Buttons\\UI-Panel-Button-Disabled");
@@ -246,14 +240,13 @@ function ItemSocketingSocketButton_Disable()
 end
 
 function ItemSocketingSocketButton_Enable()
-	ItemSocketingSocketButton.disabled = nil;
 	ItemSocketingSocketButton:Enable();
 	ItemSocketingSocketButtonLeft:SetTexture("Interface\\Buttons\\UI-Panel-Button-Up");
 	ItemSocketingSocketButtonMiddle:SetTexture("Interface\\Buttons\\UI-Panel-Button-Up");
 	ItemSocketingSocketButtonRight:SetTexture("Interface\\Buttons\\UI-Panel-Button-Up");
 end
 
-function ItemSocketingSocketButton_OnClick( self, ... )
+function ItemSocketingSocketButton_OnClick(self, button)
 	if ( IsModifiedClick() ) then
 		local newSocketLink 		= GetNewSocketLink(self:GetID())
 		local existingSocketLink 	= GetExistingSocketLink(self:GetID())

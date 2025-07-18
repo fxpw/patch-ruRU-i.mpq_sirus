@@ -298,12 +298,6 @@
 								Mixin(self, WarModeActivateLockMixin)
 								self:OnLoad()
 							</OnLoad>
-							<OnShow>
-								self:OnShow()
-							</OnShow>
-							<OnHide>
-								self:OnHide()
-							</OnHide>
 						</Scripts>
 					</Frame>
 				</Frames>
@@ -341,6 +335,9 @@
 					<OnEnable>
 						self:OnEnable()
 					</OnEnable>
+					<OnDisable>
+						self:OnDisable()
+					</OnDisable>
 				</Scripts>
 			</Button>
 		</Frames>

@@ -812,7 +812,7 @@
 					<Anchor point="TOPLEFT" x="20" y="-15"/>
 				</Anchors>
 			</Button>
-			<Button name="$parentAcceptButton" parentKey="AcceptButton" inherits="GlueDark_ButtonTemplate" text="OKAY">
+			<Button name="$parentAcceptButton" parentKey="AcceptButton" inherits="GlueDark_ButtonTemplate,TransactionConfirmationTemplate" text="OKAY">
 				<Size x="86" y="26"/>
 				<Anchors>
 					<Anchor point="BOTTOM" x="-60" y="20"/>

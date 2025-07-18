@@ -123,6 +123,32 @@ NineSliceLayouts =
 		["RightEdge"] = { atlas = "!%s-NineSlice-EdgeRight", },
 	};
 
+	IdenticalCornersLayout =
+	{
+		["TopRightCorner"] = { atlas = "%s-NineSlice-Corner", mirrorLayout = true, },
+		["TopLeftCorner"] = { atlas = "%s-NineSlice-Corner", mirrorLayout = true,},
+		["BottomLeftCorner"] = { atlas = "%s-NineSlice-Corner", mirrorLayout = true, },
+		["BottomRightCorner"] = { atlas = "%s-NineSlice-Corner",  mirrorLayout = true,},
+		["TopEdge"] = { atlas = "_%s-NineSlice-EdgeTop" },
+		["BottomEdge"] = { atlas = "_%s-NineSlice-EdgeBottom" },
+		["LeftEdge"] = { atlas = "!%s-NineSlice-EdgeLeft" },
+		["RightEdge"] = { atlas = "!%s-NineSlice-EdgeRight" },
+		["Center"] = { atlas = "%s-NineSlice-Center" },
+	};
+
+	UniqueCornersLayout =
+	{
+		["TopRightCorner"] = { atlas = "%s-NineSlice-CornerTopRight" },
+		["TopLeftCorner"] = { atlas = "%s-NineSlice-CornerTopLeft" },
+		["BottomLeftCorner"] = { atlas = "%s-NineSlice-CornerBottomLeft" },
+		["BottomRightCorner"] = { atlas = "%s-NineSlice-CornerBottomRight" },
+		["TopEdge"] = { atlas = "_%s-NineSlice-EdgeTop" },
+		["BottomEdge"] = { atlas = "_%s-NineSlice-EdgeBottom" },
+		["LeftEdge"] = { atlas = "!%s-NineSlice-EdgeLeft" },
+		["RightEdge"] = { atlas = "!%s-NineSlice-EdgeRight" },
+		["Center"] = { atlas = "%s-NineSlice-Center" },
+	};
+
 	-- CUSTOM LAYOUTS
 	BFAMissionNeutral =
 	{

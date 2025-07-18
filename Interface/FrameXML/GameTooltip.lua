@@ -219,14 +219,45 @@ function GameTooltip_OnTooltipSetUnit(self)
 
 	local name, unit = self:GetUnit()
 	if unit and UnitIsPlayer(unit) then
-		local zodiacID, zodiacName, zodiacDescription, zodiacIcon, zodiacAtlas = C_Unit.GetZodiacByDebuff(unit)
-		if zodiacName then
-			for lineIndex = 1, GameTooltip:NumLines() do
-				local line = _G["GameTooltipTextLeft"..lineIndex]
-				local lineText = line:GetText()
-				if lineText and string.find(lineText, TOOLTIP_UNIT_ZODIAC_LABEL) then
-					line:SetText(string.gsub(lineText, TOOLTIP_UNIT_ZODIAC_LABEL, zodiacName))
-					break
+		do	-- AverageItemLevel
+			if UnitIsEnemy("player", unit) or not self.showUnitAdditionalInfo then
+				local tooltipName = self:GetName()
+				if tooltipName then
+					for lineIndex = 1, self:NumLines() do
+						local line = _G[string.format("%sTextLeft%i", tooltipName, lineIndex)]
+						local lineText = line:GetText()
+						if lineText then
+							local originalText = string.match(lineText, TOOLTIP_UNIT_LEVEL_RACE_CLASS_TYPE_PATTERN)
+							if originalText then
+								line:SetText(originalText)
+								break
+							end
+						end
+					end
+				end
+			else
+				local avgItemLevel = C_Inspect.GetAvgItemLevel(unit)
+				if avgItemLevel then
+					GameTooltip_UpdateUnitAvgItemLevel(self)
+				else
+					C_Inspect.RequestAvgItemLevel(unit)
+				end
+			end
+		end
+
+		do -- Zodiac
+			local zodiacID, zodiacName, zodiacDescription, zodiacIcon, zodiacAtlas = C_Unit.GetZodiacByDebuff(unit)
+			if zodiacName then
+				local tooltipName = self:GetName()
+				if tooltipName then
+					for lineIndex = 1, self:NumLines() do
+						local line = _G[string.format("%sTextLeft%i", tooltipName, lineIndex)]
+						local lineText = line:GetText()
+						if lineText and string.find(lineText, TOOLTIP_UNIT_ZODIAC_LABEL) then
+							line:SetText(string.gsub(lineText, TOOLTIP_UNIT_ZODIAC_LABEL, zodiacName))
+							break
+						end
+					end
 				end
 			end
 		end
@@ -387,6 +418,28 @@ function GameTooltip_ShowCompareItem(self, shift)
 	end
 end
 
+function GameTooltip_UpdateUnitAvgItemLevel(self)
+	local name, unit = self:GetUnit()
+	if unit and UnitIsPlayer(unit) and not UnitIsEnemy("player", unit) then
+		local avgItemLevel = C_Inspect.GetAvgItemLevel(unit)
+		if avgItemLevel then
+			local tooltipName = self:GetName()
+			if tooltipName then
+				for lineIndex = 1, self:NumLines() do
+					local line = _G[string.format("%sTextLeft%i", tooltipName, lineIndex)]
+					local lineText = line:GetText()
+					if lineText and string.find(lineText, TOOLTIP_UNIT_ITEM_LEVEL_LABEL) then
+						local color = GetItemLevelColor(avgItemLevel)
+						local newText = string.gsub(lineText, TOOLTIP_UNIT_ITEM_LEVEL_LABEL, strconcat("%1: ", color:WrapTextInColorCode(avgItemLevel)))
+						line:SetText(newText)
+						break
+					end
+				end
+			end
+		end
+	end
+end
+
 function GameTooltip_ShowStatusBar(self, min, max, value, text)
 	self:AddLine(" ", 1.0, 1.0, 1.0);
 	local numLines = self:NumLines();
@@ -433,9 +486,51 @@ function GameTooltipMixin:OnLoad()
 	GameTooltip_OnLoad(self)
 	self.shoppingTooltips = { ShoppingTooltip1, ShoppingTooltip2, ShoppingTooltip3 }
 
+	self:RegisterCustomEvent("PLAYER_AVG_ITEM_LEVEL_READY")
+	self:RegisterCustomEvent("INSPECT_ITEM_LEVEL_UPDATE")
+
+	self.showUnitAdditionalInfo = true
+
 	hooksecurefunc(GameTooltip, "SetInventoryItem", function(this, unit, slotID)
 		this:InventoryItemOnShow(unit, slotID)
 	end)
+end
+
+function GameTooltipMixin:OnEvent(event, ...)
+	if event == "PLAYER_AVG_ITEM_LEVEL_READY" then
+		if self:IsUnit("player") then
+			GameTooltip_UpdateUnitAvgItemLevel(self)
+		end
+	elseif event == "INSPECT_ITEM_LEVEL_UPDATE" then
+		local guid = ...
+		if self:IsShown() then
+			local name, unit = self:GetUnit()
+			if unit and UnitGUID(unit) == guid then
+				GameTooltip_UpdateUnitAvgItemLevel(self)
+			end
+		end
+	end
+end
+
+function GameTooltipMixin:SetItemByGUID(itemGUID)
+	if type(self) ~= "table" then
+		error("Attempt to find 'this' in non-table object (used '.' instead of ':' ?)", 2)
+	elseif type(itemGUID) ~= "string" then
+		error(string.format("Usage: %s:SetItemByGUID(\"itemGUID\")", self:GetName() or tostring(self)), 2)
+	end
+
+	local isInventory, slotIndex, bagID = C_Item.GetItemLocationRaw(itemGUID)
+	if not slotIndex then
+		return false
+	end
+
+	if isInventory then
+		self:SetInventoryItem("player", slotIndex)
+	else
+		self:SetBagItem(bagID, slotIndex)
+	end
+
+	return true
 end
 
 function GameTooltipMixin:SetToyByItemID(itemID)
@@ -472,8 +567,7 @@ end
 
 function GameTooltipMixin:InventoryItemOnShow(unit, slotID)
 	if unit == "player" then
-		local transmogID = GetInventoryTransmogID(unit, slotID);
-
+		local transmogID = C_Transmog.GetInventoryTransmogInfo(unit, slotID);
 		if transmogID then
 			self:SetTransmogrifyItem(transmogID)
 		end
@@ -514,7 +608,7 @@ function GameTooltipMixin:SetTransmogrifyItem(transmogID, hasPending, hasUndo)
 
 		self:SetHeight(self:GetHeight() + transmogTextHeight)
 
-		Hook:FireEvent("TRANSMOGRIFY_ITEM_UPDATE", self, transmogID)
+		EventRegistry:TriggerEvent("GameTooltip.OnTransmogrifyItem", self, transmogID)
 	end
 end
 
@@ -765,7 +859,7 @@ GameTooltip_SetScript("OnSetItem", function(self)
 					elseif requirementType ~= Enum.ItemRequirementType.None then
 						local rating
 						if requirementType == Enum.ItemRequirementType.Battleground then
-							rating = select(5, GetRatedBattlegroundRankInfo())
+							rating = C_PvP.GetRatedBattlegroundRating()
 							line:SetFormattedText(ITEM_REQ_ARENA_RATING_3V3, requiredRating)
 						elseif requirementType == Enum.ItemRequirementType.Arena then
 							rating = math.max(GetArenaRating(1), GetArenaRating(2))
@@ -786,6 +880,17 @@ GameTooltip_SetScript("OnSetItem", function(self)
 	if itemID then
 		GameTooltip_OnToyByItemID(self, itemID)
 		GameTooltip_OnHeirloomByItemID(self, itemID)
+
+		if C_MountJournal.IsMountItem(itemID)
+		or C_PetJournal.IsPetItem(itemID)
+		or C_TransmogCollection.IsIllusionItem(itemID)
+		then
+			self:AddLine(ITEM_PREVIEWABLE, 0.88, 0.5, 0.09)
+			lineWasAdded = true
+		elseif C_Item.IsItemChest(itemID) then
+			self:AddLine(ITEM_PREVIEWABLE_CONTAINER, 0.88, 0.5, 0.09)
+			lineWasAdded = true
+		end
 
 		if C_BattlePass.IsExperienceItem(itemID) then
 			local itemExperience = C_BattlePass.GetExperienceItemExpAmount(itemID)

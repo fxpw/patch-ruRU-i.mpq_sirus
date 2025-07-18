@@ -245,6 +245,18 @@
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
+			<CheckButton name="$parentCursorRefreshRateFix" inherits="VideoOptionsSmallCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentFixInputLag" relativePoint="RIGHT" x="164" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX
+						self.cvar = "enableCursorFix"
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
 			<CheckButton name="$parentWindowed" inherits="VideoOptionsSmallCheckButtonTemplate">
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentVSync" relativePoint="RIGHT">

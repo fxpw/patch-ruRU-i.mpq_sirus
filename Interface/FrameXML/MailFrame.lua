@@ -900,11 +900,22 @@ function OpenMailAttachment_OnClick(self, index)
 
 		local itemList = {}
 		for i = 1, ATTACHMENTS_MAX do
-			local itemLink = GetInboxItemLink(InboxFrame.openMailID, i)
-			if itemLink then
-				local _, _, count = GetInboxItem(InboxFrame.openMailID, i)
-				itemList[#itemList + 1] = count > 1 and string.format("%sx%d", itemLink, count) or itemLink
+			local name, _, count = GetInboxItem(InboxFrame.openMailID, i)
+			if not name then
+				break
 			end
+
+			local itemLink = GetInboxItemLink(InboxFrame.openMailID, i)
+			if not itemLink then
+				local hasItem, itemID, randomPropertyID, uniqueID, enchantID, jewels1, jewels2, jewels3 = GetInboxItemEx(InboxFrame.openMailID, i)
+				if hasItem then
+					itemLink = C_Item.GetItemLinkCache(itemID, randomPropertyID, uniqueID, enchantID, jewels1, jewels2, jewels3)
+				else
+					itemLink = name
+				end
+			end
+
+			itemList[#itemList + 1] = count > 1 and string.format("%sx%d", itemLink, count) or itemLink
 		end
 
 		StaticPopup_Show("COD_CONFIRMATION", table.concat(itemList, "\n"));
@@ -1328,8 +1339,9 @@ function MailManagmentMixin:Reset()
 	self.timeUntilNextRetrieval = nil;
 	self.blacklistedItemIDs = nil;
 	self.CommandPending = false
-	self.takeItemsList = nil
 	self.workState = nil
+	self.PendingMailIndex = nil
+	self.PendingAttachmentIndex = nil
 
 	self.initiallyAttachment = {}
 	self.finalAttachment = {}
@@ -1351,11 +1363,19 @@ function MailManagmentMixin:InboxScan( table )
 			end
 
 			for attachmentIndex = 1, ATTACHMENTS_MAX do
-				local _, _, count = GetInboxItem(mailIndex, attachmentIndex)
-				local itemLink = GetInboxItemLink(mailIndex, attachmentIndex)
-
-				if not itemLink then
+				local name, _, count = GetInboxItem(mailIndex, attachmentIndex)
+				if not name then
 					break
+				end
+
+				local itemLink = GetInboxItemLink(mailIndex, attachmentIndex)
+				if not itemLink then
+					local hasItem, itemID, randomPropertyID, uniqueID, enchantID, jewels1, jewels2, jewels3 = GetInboxItemEx(mailIndex, attachmentIndex)
+					if hasItem then
+						itemLink = C_Item.GetItemLinkCache(itemID, randomPropertyID, uniqueID, enchantID, jewels1, jewels2, jewels3)
+					else
+						itemLink = name
+					end
 				end
 
 				if not table[itemLink] then
@@ -1420,9 +1440,7 @@ function MailManagmentMixin:FoundAttachment()
 	local foundAttachment = false;
 	while ( not foundAttachment ) do
 		local _, _, _, _, money, CODAmount, daysLeft, itemCount, _, _, _, _, isGM = GetInboxHeaderInfo(self.mailIndex);
-		local itemLink = GetInboxItemLink(self.mailIndex, self.attachmentIndex)
-		local itemID = itemLink and tonumber(string.match(itemLink, "item:(%d+)"))
-		local hasBlacklistedItem = self:IsItemBlacklisted(itemID);
+		local hasBlacklistedItem = self:IsItemBlacklisted(self.mailIndex, self.attachmentIndex);
 		local hasCOD = CODAmount and CODAmount > 0;
 		local hasMoneyOrItem
 
@@ -1533,6 +1551,8 @@ function MailManagmentMixin:ProcessNextItem()
 		GetInboxText(self.mailIndex)
 	elseif (self.workState == 0 or self.workState == 3) and (itemCount and itemCount > 0) then
 		self.CommandPending = true
+		self.PendingMailIndex = self.mailIndex
+		self.PendingAttachmentIndex = self.attachmentIndex
 		TakeInboxItem(self.mailIndex, self.attachmentIndex);
 		self.timeUntilNextRetrieval = OPEN_ALL_MAIL_MIN_DELAY;
 		GetInboxText(self.mailIndex)
@@ -1552,15 +1572,18 @@ end
 function MailManagmentMixin:OnEvent(event, ...)
 	if event == "MAIL_SUCCESS" then
 		self.CommandPending = false
+		self.PendingMailIndex = nil
+		self.PendingAttachmentIndex = nil
 	elseif event == "MAIL_INBOX_UPDATE" then
 		if ( self.numToOpen ~= GetInboxNumItems() ) then
 			self.mailIndex = 1;
 			self.attachmentIndex = ATTACHMENTS_MAX;
 		end
 	elseif ( event == "MAIL_FAILED" ) then
-		local itemID = ...;
-		if ( itemID ) then
-			self:AddBlacklistedItem(itemID);
+		if ( self.PendingMailIndex and self.PendingAttachmentIndex ) then
+			self:AddBlacklistedItem(self.PendingMailIndex, self.PendingAttachmentIndex);
+			self.PendingMailIndex = self.mailIndex
+			self.PendingAttachmentIndex = self.attachmentIndex
 		end
 	end
 end
@@ -1593,16 +1616,18 @@ function MailManagmentMixin:OnHide()
 	self:StopManagment()
 end
 
-function MailManagmentMixin:AddBlacklistedItem(itemID)
+function MailManagmentMixin:AddBlacklistedItem(mailIndex, attachmentIndex)
 	if ( not self.blacklistedItemIDs ) then
 		self.blacklistedItemIDs = {};
 	end
 
-	self.blacklistedItemIDs[itemID or -2] = true;
+	local id = mailIndex * 100 + attachmentIndex
+	self.blacklistedItemIDs[id] = true;
 end
 
-function MailManagmentMixin:IsItemBlacklisted(itemID)
-	return self.blacklistedItemIDs and self.blacklistedItemIDs[itemID or 0]
+function MailManagmentMixin:IsItemBlacklisted(mailIndex, attachmentIndex)
+	local id = mailIndex * 100 + attachmentIndex
+	return self.blacklistedItemIDs and self.blacklistedItemIDs[id]
 end
 
 function MailManagmentMixin:CreateFinalData()
@@ -1645,7 +1670,7 @@ end
 MailListUpdateMixin = {}
 
 function MailListUpdateMixin:OnShow()
-	self.disableTime = C_CacheInstance:Get("ASMSG_MAIL_LIST_UPDATE", 0)
+	self.disableTime = C_GlobalStorage.GetVar("ASMSG_MAIL_LIST_UPDATE") or 0
 	self.elapsed = 0
 
 	if self.disableTime - time() < 0 then
@@ -1680,7 +1705,7 @@ function MailListUpdateMixin:Reset()
 	self:SetText(MAIL_LIST_UPDATE)
 
 	self.disableTime = 0
-	C_CacheInstance:Set("ASMSG_MAIL_LIST_UPDATE", 0)
+	C_GlobalStorage.SetVar("ASMSG_MAIL_LIST_UPDATE", nil)
 end
 
 function MailListUpdateMixin:UpdateState()
@@ -1747,7 +1772,7 @@ function EventHandler:ASMSG_MAIL_LIST_UPDATE( msg )
 	local currentTime = time()
 
 	timer = currentTime + timer
-	C_CacheInstance:Set("ASMSG_MAIL_LIST_UPDATE", timer)
+	C_GlobalStorage.SetVar("ASMSG_MAIL_LIST_UPDATE", timer)
 
 	UpdateMailButton.disableTime = timer
 	UpdateMailButton:UpdateState()

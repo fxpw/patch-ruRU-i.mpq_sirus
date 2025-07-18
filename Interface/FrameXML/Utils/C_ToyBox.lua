@@ -133,7 +133,7 @@ end
 local function SetFilteredToys()
 	table.wipe(FILTERED_TOYS);
 
-	local sourceFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_TOY_BOX_SOURCE_FILTERS")) or 0;
+	local sourceFiltersFlag = tonumber(GetCVar("toyBoxSourceFilters")) or 0;
 	local isGM = IsGMAccount()
 
 	for i = 1, #TOYS do
@@ -160,8 +160,8 @@ frame:RegisterEvent("VARIABLES_LOADED");
 frame:RegisterEvent("PLAYER_LOGIN");
 frame:SetScript("OnEvent", function(_, event)
 	if event == "VARIABLES_LOADED" then
-		COLLECTED_SHOWN = not C_CVar:GetCVarBitfield("C_CVAR_TOY_BOX_COLLECTED_FILTERS", TOY_BOX_COLLECTED);
-		UNCOLLECTED_SHOWN = not C_CVar:GetCVarBitfield("C_CVAR_TOY_BOX_COLLECTED_FILTERS", TOY_BOX_UNCOLLECTED);
+		COLLECTED_SHOWN = not GetCVarBitfield("toyBoxCollectedFilters", TOY_BOX_COLLECTED);
+		UNCOLLECTED_SHOWN = not GetCVarBitfield("toyBoxCollectedFilters", TOY_BOX_UNCOLLECTED);
 	elseif event == "PLAYER_LOGIN" then
 		local function UpdatePlayerFactionID()
 			local factionID = C_FactionManager.GetFactionOverrideCVar() or 3;
@@ -325,7 +325,7 @@ function C_ToyBox.SetSourceTypeFilter(index, checked)
 	end
 
 	if index > 0 and index <= NUM_SOURCE_TYPES then
-		C_CVar:SetCVarBitfield("C_CVAR_TOY_BOX_SOURCE_FILTERS", index, not checked);
+		SetCVarBitfield("toyBoxSourceFilters", index, not checked);
 
 		SetFilteredToys();
 	end
@@ -340,7 +340,7 @@ function C_ToyBox.SetAllSourceTypeFilters(checked)
 	end
 
 	for index = 1, NUM_SOURCE_TYPES do
-		C_CVar:SetCVarBitfield("C_CVAR_TOY_BOX_SOURCE_FILTERS", index, not checked);
+		SetCVarBitfield("toyBoxSourceFilters", index, not checked);
 	end
 
 	SetFilteredToys();
@@ -354,7 +354,7 @@ function C_ToyBox.IsSourceTypeFilterChecked(index)
 		error("Usage: local isChecked = C_ToyBox.IsSourceTypeFilterChecked(index)", 2);
 	end
 
-	if C_CVar:GetCVarBitfield("C_CVAR_TOY_BOX_SOURCE_FILTERS", index) then
+	if GetCVarBitfield("toyBoxSourceFilters", index) then
 		return false;
 	end
 
@@ -377,7 +377,7 @@ function C_ToyBox.SetCollectedShown(checked)
 	end
 
 	if checked ~= COLLECTED_SHOWN then
-		C_CVar:SetCVarBitfield("C_CVAR_TOY_BOX_COLLECTED_FILTERS", TOY_BOX_COLLECTED, not checked);
+		SetCVarBitfield("toyBoxCollectedFilters", TOY_BOX_COLLECTED, not checked);
 
 		COLLECTED_SHOWN = checked;
 
@@ -395,7 +395,7 @@ function C_ToyBox.SetUncollectedShown(checked)
 	end
 
 	if checked ~= UNCOLLECTED_SHOWN then
-		C_CVar:SetCVarBitfield("C_CVAR_TOY_BOX_COLLECTED_FILTERS", TOY_BOX_UNCOLLECTED, not checked);
+		SetCVarBitfield("toyBoxCollectedFilters", TOY_BOX_UNCOLLECTED, not checked);
 
 		UNCOLLECTED_SHOWN = checked;
 
@@ -442,8 +442,8 @@ end
 C_ToyBoxInfo = {};
 
 function C_ToyBoxInfo.SetDefaultFilters()
-	C_CVar:SetValue("C_CVAR_TOY_BOX_COLLECTED_FILTERS", "0");
-	C_CVar:SetValue("C_CVAR_TOY_BOX_SOURCE_FILTERS", "0");
+	SetCVar("toyBoxCollectedFilters", "0");
+	SetCVar("toyBoxSourceFilters", "0");
 
 	COLLECTED_SHOWN = true;
 	UNCOLLECTED_SHOWN = true;
@@ -452,7 +452,7 @@ function C_ToyBoxInfo.SetDefaultFilters()
 end
 
 function C_ToyBoxInfo.IsUsingDefaultFilters()
-	if tonumber(C_CVar:GetValue("C_CVAR_TOY_BOX_COLLECTED_FILTERS")) ~= 0 or tonumber(C_CVar:GetValue("C_CVAR_TOY_BOX_SOURCE_FILTERS")) ~= 0 then
+	if tonumber(GetCVar("toyBoxCollectedFilters")) ~= 0 or tonumber(GetCVar("toyBoxSourceFilters")) ~= 0 then
 		return false;
 	end
 

@@ -214,7 +214,7 @@ function CompactRaidFrameManager_UpdateOptionsFlowContainer(self)
 		self.displayFrame.filterOptions:Hide();
 	end
 
-	if ((IsRaidLeader() or IsRaidOfficer()) and GetNumRaidMembers() > 0) or (GetNumPartyMembers() > 0 and GetNumRaidMembers() == 0) or (GetNumPartyMembers() == 0 and GetCVar("C_CVAR_USE_COMPACT_SOLO_FRAMES") == "1") then
+	if ((IsRaidLeader() or IsRaidOfficer()) and GetNumRaidMembers() > 0) or (GetNumPartyMembers() > 0 and GetNumRaidMembers() == 0) or (GetNumPartyMembers() == 0 and GetCVarBool("useCompactSoloFrames")) then
 		FlowContainer_AddObject(container, self.displayFrame.raidMarkers);
 		self.displayFrame.raidMarkers:Show();
 	else

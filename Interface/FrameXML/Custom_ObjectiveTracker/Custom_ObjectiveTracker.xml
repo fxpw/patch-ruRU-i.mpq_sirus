@@ -1,0 +1,52 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Frame name="ObjectiveTrackerFrame" inherits="ObjectiveTrackerContainerTemplate" frameStrata="LOW" hidden="true">
+		<Frames>
+			<Frame name="$parentHeader" parentKey="Header" inherits="ObjectiveTrackerContainerHeaderTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+				</Anchors>
+			</Frame>
+			<ScrollFrame name="$parentScrollFrame" parentKey="ScrollFrame">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="4" y="0"/>
+				</Anchors>
+				<ScrollChild>
+					<Frame name="$parentScrollChildFrame" parentKey="ScrollChild">
+						<Size x="300" y="0"/>
+					</Frame>
+				</ScrollChild>
+				<Frames>
+					<Slider name="$parentScrollBar" inherits="DF_MinimalScrollBar" parentKey="ScrollBar">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="4" y="14"/>
+							<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="4" y="16"/>
+						</Anchors>
+					</Slider>
+				</Frames>
+				<Scripts>
+					<OnScrollRangeChanged function="ScrollFrame_OnScrollRangeChanged"/>
+					<OnVerticalScroll function="ScrollFrame_OnVerticalScroll"/>
+				</Scripts>
+			</ScrollFrame>
+			<Frame parentKey="Selection" inherits="EditModeSystemSelectionBaseTemplate" setAllPoints="true" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentNineSlice"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentNineSlice"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ObjectiveTrackerContainerMixin, ObjectiveTrackerFrameMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnMouseWheel>
+				self:OnMouseWheel(delta)
+			</OnMouseWheel>
+		</Scripts>
+	</Frame>
+</Ui>

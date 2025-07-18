@@ -886,11 +886,10 @@
 						else
 						PlaySound("igMainMenuOptionCheckBoxOff");
 						end
-						SetCVar("questPOI", self:GetChecked());
 						WorldMapQuestShowObjectives_Toggle();
 						if ( WORLDMAP_SETTINGS.size == WORLDMAP_WINDOWED_SIZE ) then
-						WatchFrame_GetCurrentMapQuests();
-						WatchFrame_Update();
+							QuestObjectiveTracker:GetCurrentMapQuests()
+							QuestObjectiveTracker:MarkDirty()
 						end
 						WorldMapFrame_DisplayQuests();
 					</OnClick>

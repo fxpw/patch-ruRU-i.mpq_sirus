@@ -195,7 +195,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX;
-						self.cvar = "C_CVAR_HIDE_PARTY_INTERFACE_IN_RAID";
+						self.cvar = "hidePartyFramesInRaid";
 						self.setFunc = function(value)
 							RaidOptionsFrame_UpdatePartyFrames()
 						end;
@@ -214,7 +214,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX;
-						self.cvar = "C_CVAR_USE_COMPACT_PARTY_FRAMES";
+						self.cvar = "useCompactPartyFrames";
 						self.setFunc = function(value)
 							RaidOptionsFrame_UpdatePartyFrames()
 							CompactRaidFrameManager_UpdateShown(CompactRaidFrameManager);
@@ -244,7 +244,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX;
-						self.cvar = "C_CVAR_USE_COMPACT_SOLO_FRAMES";
+						self.cvar = "useCompactSoloFrames";
 						self.setFunc = function(value)
 							CompactRaidFrameManager_UpdateShown(CompactRaidFrameManager);
 						end;

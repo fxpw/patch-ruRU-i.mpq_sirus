@@ -152,7 +152,7 @@ function HelpTip:SetHelpTipsEnabled(flag, enabled)
 end
 
 function HelpTip:AreHelpTipsEnabled()
-	if GetCVarBool("C_CVAR_HIDE_HELPTIPS") then
+	if GetCVarBool("hideHelptips") then
 		return false;
 	end
 
@@ -197,14 +197,8 @@ function HelpTip:CanShow(info)
 			end
 		end
 		if info.cvarBitfield then
-			if IsOnGlueScreen() then
-				if C_GlueCVars.GetCVarBitfield(info.cvarBitfield, info.bitfieldFlag) then
-					return false;
-				end
-			else
-				if C_CVar:GetCVarBitfield(info.cvarBitfield, info.bitfieldFlag) then
-					return false;
-				end
+			if GetCVarBitfield(info.cvarBitfield, info.bitfieldFlag) then
+				return false;
 			end
 		end
 	end
@@ -619,11 +613,7 @@ function HelpTipTemplateMixin:HandleAcknowledge()
 		SetCVar(info.cvar, info.cvarValue);
 	end
 	if info.cvarBitfield then
-		if IsOnGlueScreen() then
-			C_GlueCVars.SetCVarBitfield(info.cvarBitfield, info.bitfieldFlag, true)
-		else
-			C_CVar:SetCVarBitfield(info.cvarBitfield, info.bitfieldFlag, true);
-		end
+		SetCVarBitfield(info.cvarBitfield, info.bitfieldFlag, true);
 	end
 	self.acknowledged = true;
 end

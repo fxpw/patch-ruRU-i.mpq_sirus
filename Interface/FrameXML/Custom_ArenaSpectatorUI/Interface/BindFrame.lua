@@ -1,16 +1,12 @@
 ezSpectator_BindFrame = {}
 ezSpectator_BindFrame.__index = ezSpectator_BindFrame
 
---noinspection LuaOverlyLongMethod
-function ezSpectator_BindFrame:Create(Parent)
+function ezSpectator_BindFrame:Create(Parent, Worker, enableViewportClick)
     local self = {}
     setmetatable(self, ezSpectator_BindFrame)
 
     self.Parent = Parent
-
-    self.IsLocked = false
-
-    self.Textures = ezSpectator_Textures:Create()
+	self.Worker = Worker
 
     self.Backdrop = CreateFrame('Frame', nil, ArenaSpectatorFrame)
     self.Backdrop:SetFrameLevel(1)
@@ -18,7 +14,10 @@ function ezSpectator_BindFrame:Create(Parent)
     self.Backdrop:SetSize(192, 51)
     self.Backdrop:SetScale(_ezSpectatorScale)
     self.Backdrop:SetPoint('CENTER', 0, 0)
-    self.Textures:SmallFrame_Backdrop(self.Backdrop)
+
+	self.Backdrop.texture = self.Backdrop:CreateTexture(nil, "BACKGROUND")
+	self.Backdrop.texture:SetAllPoints()
+	self.Backdrop.texture:SetAtlas("Custom-ArenaSpectator-SmallFrame-Backdrop", true)
 
     self.Normal = CreateFrame('Frame', nil, ArenaSpectatorFrame)
     self.Normal:SetFrameLevel(1)
@@ -26,7 +25,10 @@ function ezSpectator_BindFrame:Create(Parent)
     self.Normal:SetSize(192, 51)
     self.Normal:SetScale(_ezSpectatorScale)
     self.Normal:SetPoint('CENTER', 0, 0)
-    self.Textures:SmallFrame_Normal(self.Normal)
+
+	self.Normal.texture = self.Normal:CreateTexture(nil, "BACKGROUND")
+	self.Normal.texture:SetAllPoints()
+	self.Normal.texture:SetAtlas("Custom-ArenaSpectator-SmallFrame-Normal", true)
 
     self.Highlight = CreateFrame('Frame', nil, ArenaSpectatorFrame)
     self.Highlight:SetFrameLevel(1)
@@ -34,8 +36,11 @@ function ezSpectator_BindFrame:Create(Parent)
     self.Highlight:SetSize(192, 51)
     self.Highlight:SetScale(_ezSpectatorScale)
     self.Highlight:SetPoint('CENTER', 0, 0)
-    self.Textures:SmallFrame_Highlight(self.Highlight)
     self.Highlight:Hide()
+
+	self.Highlight.texture = self.Highlight:CreateTexture(nil, "BACKGROUND")
+	self.Highlight.texture:SetAllPoints()
+	self.Highlight.texture:SetAtlas("Custom-ArenaSpectator-SmallFrame-Highlight", true)
 
     self.Reactor = CreateFrame('Frame', nil, ArenaSpectatorFrame)
     self.Reactor:SetFrameStrata('TOOLTIP')
@@ -57,19 +62,25 @@ function ezSpectator_BindFrame:Create(Parent)
             self.Normal:Show()
         end
     end)
+	if enableViewportClick then
+		self.Reactor:SetScript("OnMouseUp", function(this, button)
+			if self.Backdrop:IsShown() and (C_ArenaSpectator.IsInProgress() or C_ArenaSpectator.IsInPreparation()) then
+				self.Worker:BindViewpoint()
+			end
+		end)
+	end
 
     self.HealthBar = ezSpectator_HealthBar:Create(self.Parent, true, true, 10 * _ezSpectatorScale, 177, 26, _ezSpectatorScale, 'TOPLEFT', self.Normal, 'TOPLEFT', 7, -6)
 
     self.PowerBar = ezSpectator_PowerBar:Create(self.Parent, 177, 9, _ezSpectatorScale, 'TOPLEFT', self.Normal, 'TOPLEFT', 7, -36)
 
-    self.CastFrame = ezSpectator_CastFrame:Create(self.Parent, 'TOPLEFT', self.Normal, 'BOTTOMLEFT', 0, 5)
+	self.CastFrame = ezSpectator_CastFrame:Create(self.Parent, self.Normal, 'TOPLEFT', self.Normal, 'BOTTOMLEFT', 0, 5)
 
-    self.AuraFrame = ezSpectator_AuraFrame:Create(self.Parent, false, 'BOTTOMLEFT', self.Normal, 'TOPLEFT', 8, 27 * _ezSpectatorScale)
-
-    self.SpellFrame = nil
+    self.AuraFrame = ezSpectator_AuraFrame:Create(self.Parent, true, false, 'BOTTOMLEFT', self.Normal, 'TOPLEFT', 8, 35 * _ezSpectatorScale)
 
     self.TrinketIcon = ezSpectator_ClickIcon:Create(self.Parent, self.MainFrame, 'silver', 28, 'BOTTOMLEFT', self.Normal, 'TOPLEFT', 2, -4)
     self.TrinketIcon:SetTexture('Interface\\Icons\\INV_Jewelry_TrinketPVP_02', 17, true)
+	self.TrinketIcon.Cooldown:SetReverse(true)
 
     self.ControlIcon = ezSpectator_ClickIcon:Create(self.Parent, self.MainFrame, 'silver', 28, 'LEFT', self.TrinketIcon.Normal, 'RIGHT', -3, 0)
 
@@ -78,27 +89,24 @@ function ezSpectator_BindFrame:Create(Parent)
     return self
 end
 
-
-
 function ezSpectator_BindFrame:Hide()
     self.Backdrop:Hide()
     self.Normal:Hide()
     self.Highlight:Hide()
     self.HealthBar:Hide()
     self.PowerBar:Hide()
-    self.CastFrame:Hide()
     self.Reactor:Hide()
     self.AuraFrame:Hide()
     self.TrinketIcon:Hide()
     self.ControlIcon:Hide()
     self.SpecIcon:Hide()
 
+	self.CastFrame:Hide()
+
     if self.SpellFrame then
         self.SpellFrame:Hide()
     end
 end
-
-
 
 function ezSpectator_BindFrame:Show()
     self.Backdrop:Show()
@@ -112,18 +120,21 @@ function ezSpectator_BindFrame:Show()
     self.ControlIcon:Show()
     self.SpecIcon:Show()
 
+	self.CastFrame:CheckState()
+
     if self.SpellFrame then
         self.SpellFrame:Show()
     end
 end
 
-
+function ezSpectator_BindFrame:Reset()
+	self.CastFrame:Reset()
+	self.AuraFrame:Reset()
+end
 
 function ezSpectator_BindFrame:IsShown()
     return self.Backdrop:IsShown()
 end
-
-
 
 function ezSpectator_BindFrame:SetPoint(...)
     self.Backdrop:SetPoint(...)
@@ -132,16 +143,12 @@ function ezSpectator_BindFrame:SetPoint(...)
     self.Reactor:SetPoint(...)
 end
 
-
-
 function ezSpectator_BindFrame:ClearAllPoints()
     self.Backdrop:ClearAllPoints()
     self.Normal:ClearAllPoints()
     self.Highlight:ClearAllPoints()
     self.Reactor:ClearAllPoints()
 end
-
-
 
 function ezSpectator_BindFrame:SetAlpha(Value)
     self.Backdrop:SetAlpha(Value)

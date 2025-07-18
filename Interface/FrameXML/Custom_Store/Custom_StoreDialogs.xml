@@ -448,7 +448,7 @@
 					</Layer>
 				</Layers>
 				<Frames>
-					<Button name="$parentPurchaseButton" parentKey="PurchaseButton" inherits="PKBT_GoldButtonMultiWidgetPriceTemplate">
+					<Button name="$parentPurchaseButton" parentKey="PurchaseButton" inherits="PKBT_GoldButtonMultiWidgetPriceTemplate,TransactionConfirmationTemplate">
 						<Size x="272" y="72"/>
 						<Anchors>
 							<Anchor point="BOTTOM" x="0" y="35"/>

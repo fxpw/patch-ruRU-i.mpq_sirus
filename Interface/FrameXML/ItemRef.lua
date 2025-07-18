@@ -322,6 +322,8 @@ function SetItemRef(link, text, button, chatFrame)
 			ItemRefTooltip:SetOwner(UIParent, "ANCHOR_PRESERVE");
 		end
 		ItemRefTooltip:SetHyperlink(link);
+		ItemRefActionButton:Hide()
+		ItemRefActionButton:SetScript("OnClick", nil)
 
 		if ( strsub(link, 1, 11) == "achievement" ) then
 			local achievementID, GUID, completed = strsplit(":", strsub(link, 13));
@@ -353,6 +355,22 @@ function SetItemRef(link, text, button, chatFrame)
 					ItemRefTooltip:Show();
 				end
 			end
+		elseif strsub(link, 1, 5) == "spell" then
+			local spellID = tonumber(strsplit(":", strsub(link, 7)))
+			if spellID and C_TradeSkillUI.CanTrackRecipe(spellID) then
+				ItemRefActionButton:SetText(TRADESKILL_INSPECT_RECIPE)
+				ItemRefActionButton:Show()
+				ItemRefActionButton:SetScript("OnClick", ItemRefAtionButton_OnClick_Recipe)
+				ItemRefTooltip:SetHeight(ItemRefTooltip:GetHeight() + 10 + ItemRefActionButton:GetHeight())
+			end
+		elseif strsub(link, 1, 7) == "enchant" then
+			local enchantID = tonumber(strsplit(":", strsub(link, 9)))
+			if enchantID and C_TradeSkillUI.CanTrackRecipe(enchantID) then
+				ItemRefActionButton:SetText(TRADESKILL_INSPECT_RECIPE)
+				ItemRefActionButton:Show()
+				ItemRefActionButton:SetScript("OnClick", ItemRefAtionButton_OnClick_Recipe)
+				ItemRefTooltip:SetHeight(ItemRefTooltip:GetHeight() + 10 + ItemRefActionButton:GetHeight())
+			end
 		end
 	end
 end
@@ -378,4 +396,12 @@ function GetFixedLink(text)
 
 	--Nothing to change.
 	return text;
+end
+
+function ItemRefAtionButton_OnClick_Recipe(self, button)
+	local spellName, spellRank, spellID = self:GetParent():GetSpell()
+	if spellID and C_TradeSkillUI.CanTrackRecipe(spellID) then
+		HideUIPanel(ItemRefTooltip)
+		InspectRecipeFrame:Open(spellID)
+	end
 end

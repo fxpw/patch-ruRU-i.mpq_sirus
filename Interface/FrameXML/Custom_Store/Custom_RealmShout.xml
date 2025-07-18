@@ -80,7 +80,7 @@
 							<Anchor point="BOTTOMLEFT" x="30" y="25"/>
 						</Anchors>
 					</Frame>
-					<Button name="$parentPurchaseButton" parentKey="PurchaseButton" inherits="PKBT_RedButtonMultiWidgetPriceTemplate">
+					<Button name="$parentPurchaseButton" parentKey="PurchaseButton" inherits="PKBT_RedButtonMultiWidgetPriceTemplate,TransactionConfirmationTemplate">
 						<Size x="180" y="52"/>
 						<Anchors>
 							<Anchor point="BOTTOM" x="0" y="16"/>

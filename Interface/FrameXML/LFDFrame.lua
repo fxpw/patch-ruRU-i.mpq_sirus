@@ -721,7 +721,7 @@ function LFDDungeonReadyDialog_UpdateRewards(dungeonID)
 		local frameID = (i + rewardsOffset);
 		local frame = _G["LFDDungeonReadyDialogRewardsFrameReward"..frameID];
 		if ( not frame ) then
-			frame = CreateFrame("FRAME", "LFDDungeonReadyDialogRewardsFrameReward"..frameID, LFDDungeonReadyDialogRewardsFrame, LFDDungeonReadyRewardTemplate);
+			frame = CreateFrame("FRAME", "LFDDungeonReadyDialogRewardsFrameReward"..frameID, LFDDungeonReadyDialogRewardsFrame, "LFDDungeonReadyRewardTemplate");
 			frame:SetID(frameID);
 			LFD_MAX_REWARDS = frameID;
 		end

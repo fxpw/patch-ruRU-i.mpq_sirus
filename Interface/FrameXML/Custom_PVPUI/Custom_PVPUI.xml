@@ -1809,11 +1809,11 @@
 																self.qualifiedWeeksMax = 12
 																self.requiredMatches = 20
 
-																local pvpStats = C_CacheInstance:Get("ASMSG_PVP_STATS", {})
+																local pvpStats = C_GlobalStorage.GetVar("ASMSG_PVP_STATS")
 																local bracketID = 2
 																local qualifiedWeeks
 
-																if pvpStats[bracketID] then
+																if pvpStats and pvpStats[bracketID] then
 																	qualifiedWeeks = pvpStats[bracketID].qualifiedWeeks
 																end
 
@@ -1952,9 +1952,8 @@
 										</Anchors>
 										<Scripts>
 											<OnClick>
-												local parent = self:GetParent()
-												C_CVar:SetSessionCVar("NO_SEASON_ALERT", 1)
-												parent:Hide()
+												self:GetParent():Hide()
+												C_GlobalStorage.SetVar("NO_SEASON_ALERT", 1)
 											</OnClick>
 										</Scripts>
 									</Button>
@@ -2145,7 +2144,7 @@
 																self:SetFrameLevel(self:GetParent():GetFrameLevel() + 10)
 															</OnLoad>
 															<OnShow>
-																self.lockBattlegrounds = C_CacheInstance:Get("ASMSG_BATTLEGROUND_LOCKED", nil)
+																self.lockBattlegrounds = C_GlobalStorage.GetVar("ASMSG_BATTLEGROUND_LOCKED")
 
 																if not self.lockBattlegrounds then
 																	self:Hide()

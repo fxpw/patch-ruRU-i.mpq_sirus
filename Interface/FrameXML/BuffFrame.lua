@@ -32,12 +32,18 @@ DebuffTypeSymbol["Poison"] = DEBUFF_SYMBOL_POISON;
 
 local consolidatedBuffs = { };
 
+local FACTION_OVERRIDE_BY_DEBUFFS = FACTION_OVERRIDE_BY_DEBUFFS
+local S_CATEGORY_SPELL_ID = S_CATEGORY_SPELL_ID
+local S_VIP_STATUS_DATA = S_VIP_STATUS_DATA
+local S_PREMIUM_SPELL_ID = S_PREMIUM_SPELL_ID
+local ZODIAC_DEBUFFS = ZODIAC_DEBUFFS
+
 function BuffFrame_OnLoad(self)
 	self.BuffFrameUpdateTime = 0;
 	self.BuffFrameFlashTime = 0;
 	self.BuffFrameFlashState = 1;
 	self.BuffAlphaValue = 1;
-	self:RegisterEvent("UNIT_AURA");
+	self:RegisterUnitEvent("UNIT_AURA", "player", "vehicle");
 	self.numEnchants = 0;
 	self.numConsolidated = 0;
 	self.bottomEdgeExtent = 0;
@@ -92,6 +98,13 @@ function BuffFrame_Update()
 			BUFF_ACTUAL_DISPLAY = BUFF_ACTUAL_DISPLAY + 1;
 		end
 	end
+	for i = BUFF_ACTUAL_DISPLAY + 1, BUFF_MAX_DISPLAY do
+		local button = _G["BuffButton"..i]
+		if button then
+			button:Hide()
+			button.duration:Hide()
+		end
+	end
 	BuffFrame.numConsolidated = #consolidatedBuffs;
 	if ( BuffFrame.numConsolidated > 0 ) then
 		ConsolidatedBuffsCount:SetText(BuffFrame.numConsolidated);
@@ -112,6 +125,13 @@ function BuffFrame_Update()
 			DEBUFF_ACTUAL_DISPLAY = DEBUFF_ACTUAL_DISPLAY + 1;
 		end
 	end
+	for i = DEBUFF_ACTUAL_DISPLAY + 1, DEBUFF_MAX_DISPLAY do
+		local button = _G["DebuffButton"..i]
+		if button then
+			button:Hide()
+			button.duration:Hide()
+		end
+	end
 end
 
 function BuffFrame_UpdatePositions()
@@ -125,11 +145,36 @@ function BuffFrame_UpdatePositions()
 	BuffFrame_Update();
 end
 
+function BuffFrame_ShouldHideAura(spellID)
+	if spellID then
+		if (FACTION_OVERRIDE_BY_DEBUFFS[spellID] and SHOW_BUFF_FRAME_AURA_FACTION ~= "1")
+		or (ZODIAC_DEBUFFS[spellID] and SHOW_BUFF_FRAME_AURA_ZODIAC ~= "1")
+		or (S_CATEGORY_SPELL_ID[spellID] and SHOW_BUFF_FRAME_AURA_CATEGORY ~= "1")
+		or (S_VIP_STATUS_DATA[spellID] and SHOW_BUFF_FRAME_AURA_VIP ~= "1")
+		or (S_PREMIUM_SPELL_ID[spellID] and SHOW_BUFF_FRAME_AURA_PREMIUM ~= "1")
+		then
+			return true
+		end
+	end
+	return false
+end
+
 function AuraButton_Update(buttonName, index, filter)
 	local unit = PlayerFrame.unit;
-	local name, rank, texture, count, debuffType, duration, expirationTime, _, _, shouldConsolidate = UnitAura(unit, index, filter);
+	local name, rank, texture, count, debuffType, duration, expirationTime, _, _, shouldConsolidate, spellId = UnitAura(unit, index, filter);
 
-	local buffName = buttonName..index;
+	if BuffFrame_ShouldHideAura(spellId) then
+		return
+	end
+
+	local displayIndex
+	if buttonName == "DebuffButton" then
+	 	displayIndex = DEBUFF_ACTUAL_DISPLAY + 1
+	else
+		displayIndex = BUFF_ACTUAL_DISPLAY + 1
+	end
+
+	local buffName = buttonName..displayIndex;
 	local buff = _G[buffName];
 
 	if ( not name ) then
@@ -162,7 +207,7 @@ function AuraButton_Update(buttonName, index, filter)
 		-- Set filter-specific attributes
 		if ( not helpful ) then
 			-- Anchor Debuffs
-			DebuffButton_UpdateAnchors(buttonName, index);
+			DebuffButton_UpdateAnchors(buttonName, displayIndex);
 
 			-- Set color of debuff border based on dispel class.
 			local debuffSlot = _G[buffName.."Border"];
@@ -589,7 +634,7 @@ function GMAuraOnClickHandler( self, button )
 		local unitName = UnitIsPlayer(self.unit) and UnitName(self.unit) or ""
 
 		if spellID and unitName then
-			TrinityCoreMixIn:SendCommand(string.format("unaura %d %s", spellID, unitName))
+			TrinityCoreAPI.SendCommand(string.format("unaura %d %s", spellID, unitName))
 		end
 	end
 end

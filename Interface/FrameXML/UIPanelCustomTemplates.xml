@@ -97,4 +97,25 @@
 			</Frame>
 		</Frames>
 	</Button>
+
+	<Frame name="EditModeSystemSelectionBaseTemplate" parentKey="Selection" inherits="NineSliceCodeTemplate" frameStrata="MEDIUM" toplevel="true" enableMouse="true" dontSavePosition="true" virtual="true">
+		<Size x="1" y="1"/>
+		<Attributes>
+			<Attribute name="highlightTextureKit" value="EditMode-ActionBar-Highlight" type="string"/>
+			<Attribute name="selectedTextureKit" value="EditMode-ActionBar-Selected" type="string"/>
+			<Attribute name="ignoreInLayout" value="true" type="boolean"/>
+		</Attributes>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, EditModeSystemSelectionBaseMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnDragStart>
+				self:OnDragStart()
+			</OnDragStart>
+			<OnDragStop>
+				self:OnDragStop()
+			</OnDragStop>
+		</Scripts>
+	</Frame>
 </Ui>

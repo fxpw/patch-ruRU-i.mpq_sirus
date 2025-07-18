@@ -20,20 +20,20 @@ function ezSpectator_DataStack:Create(Mode)
     return self
 end
 
-
+function ezSpectator_DataStack:Reset()
+	self.First = 0
+	self.Last = -1
+	table.wipe(self.List)
+end
 
 function ezSpectator_DataStack:Push(Data)
     self.Last = self.Last + 1
     self.List[self.Last] = Data
 end
 
-
-
 function ezSpectator_DataStack:Pop()
     return self.InnerPop(self)
 end
-
-
 
 function ezSpectator_DataStack:GetCount()
     if self.First > self.Last then
@@ -42,8 +42,6 @@ function ezSpectator_DataStack:GetCount()
         return self.Last - self.First + 1
     end
 end
-
-
 
 function ezSpectator_DataStack.PopFIFO(self)
     if self.First > self.Last then
@@ -56,8 +54,6 @@ function ezSpectator_DataStack.PopFIFO(self)
 
     return Return
 end
-
-
 
 function ezSpectator_DataStack.PopFILO(self)
     if self.First > self.Last then

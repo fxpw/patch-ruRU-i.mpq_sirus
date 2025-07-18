@@ -82,6 +82,8 @@ function ContainerFrame_OnLoad(self)
 	self:RegisterEvent("BAG_CLOSED");
 	self:RegisterEvent("QUEST_ACCEPTED");
 	self:RegisterEvent("UNIT_QUEST_LOG_CHANGED");
+	self:RegisterCustomEvent("CONTAINER_ITEM_EXPIRATION_UPDATE")
+	self:RegisterCustomEvent("CONTAINER_ITEM_EXPIRATION_REMIND")
 	ContainerFrame1.bagsShown = 0;
 	ContainerFrame1.bags = {};
 end
@@ -138,6 +140,10 @@ function ContainerFrame_OnEvent(self, event, ...)
 		end
 	elseif ( event == "DISPLAY_SIZE_CHANGED" ) then
 		updateContainerFrameAnchors();
+	elseif event == "CONTAINER_ITEM_EXPIRATION_UPDATE" then
+		ContainerFrame_UpdateItemExpirationButton(self)
+	elseif event == "CONTAINER_ITEM_EXPIRATION_REMIND" then
+		ContainerItemExpirationFrame:Show()
 	end
 end
 
@@ -516,6 +522,8 @@ function ContainerFrame_Update(frame)
 	if bagButton then
 		bagButton:UpdateItemContextMatching();
 	end
+
+	ContainerFrame_UpdateItemExpirationButton(frame)
 end
 
 function ContainerFrame_UpdateLocked(frame)
@@ -791,6 +799,12 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 	frame:Show();
 end
 
+function ContainerFrame_UpdateItemExpirationButton(self)
+	if self:GetID() == 0 then
+		self.ExpirationItemButton:SetShown(C_ItemExpiration.GetNumExpirationItems() > 0)
+	end
+end
+
 function updateContainerFrameAnchors()
 	local frame, xOffset, yOffset, screenHeight, freeScreenHeight, leftMostPoint, column;
 	local screenWidth = GetScreenWidth();
@@ -848,19 +862,42 @@ function updateContainerFrameAnchors()
 			-- Start a new column
 			column = column + 1;
 			freeScreenHeight = screenHeight - yOffset;
-			frame:SetPoint("BOTTOMRIGHT", frame:GetParent(), "BOTTOMRIGHT", -(column * CONTAINER_WIDTH) - xOffset, yOffset );
+			frame:SetPoint("BOTTOMRIGHT", frame:GetParent(), "BOTTOMRIGHT", -(column * CONTAINER_WIDTH) - xOffset, yOffset + 2 );
 		else
 			-- Anchor to the previous bag
 			frame:SetPoint("BOTTOMRIGHT", ContainerFrame1.bags[index - 1], "TOPRIGHT", 0, CONTAINER_SPACING);
 		end
 		freeScreenHeight = freeScreenHeight - frame:GetHeight() - VISIBLE_CONTAINER_SPACING;
 	end
+
+	ContainerItemExpirationFrame:SetPoint("BOTTOMRIGHT", -((column + 1) * CONTAINER_WIDTH) - xOffset, yOffset + 2)
 end
 
 ContainerFrameItemButtonMixin = {};
 
 function ContainerFrameItemButtonMixin:GetItemContextMatchResult()
-	return ItemButtonUtil.GetItemContextMatchResultForItem(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()));
+	return ItemButtonUtil.GetItemContextMatchResultForItem(ItemLocation:CreateFromBagAndSlot(self:GetBagID(), self:GetID()));
+end
+
+function ContainerFrameItemButtonMixin:OnAttributeChanged(name, value)
+	if name == "bagid" then
+		self.bagID = value;
+	end
+end
+
+function ContainerFrameItemButtonMixin:SetBagID(id)
+	if self.bagID ~= id then
+		-- Prevent bagID from tainting all interaction with items through attributes
+		self:SetAttribute("bagid", id);
+	end
+end
+
+function ContainerFrameItemButtonMixin:GetBagID()
+	return self.bagID or self:GetParent():GetID();
+end
+
+function ContainerFrameItemButtonMixin:GetSlotAndBagID()
+	return self:GetID(), self:GetBagID();
 end
 
 function ContainerFrameItemButton_OnLoad(self)
@@ -870,7 +907,7 @@ function ContainerFrameItemButton_OnLoad(self)
 	self:RegisterForDrag("LeftButton");
 
 	self.SplitStack = function(button, split)
-		SplitContainerItem(button:GetParent():GetID(), button:GetID(), split);
+		SplitContainerItem(button:GetBagID(), button:GetID(), split);
 	end
 	self.UpdateTooltip = ContainerFrameItemButton_OnEnter;
 end
@@ -882,7 +919,7 @@ end
 function ContainerFrame_GetExtendedPriceString(itemButton, isEquipped, quantity)
 	quantity = (quantity or 1);
 	local slot = itemButton:GetID();
-	local bag = itemButton:GetParent():GetID();
+	local bag = itemButton:GetBagID();
 
 	local money, honorPoints, arenaPoints, itemCount, refundSec = GetContainerItemPurchaseInfo(bag, slot, isEquipped);
 	if ( not refundSec or ((honorPoints == 0) and (arenaPoints == 0) and (itemCount == 0) and (money == 0)) ) then
@@ -1002,14 +1039,15 @@ function ContainerFrameItemButton_OnClick(self, button)
 	if ( button == "LeftButton" ) then
 		local type, money = GetCursorInfo();
 		if ( SpellCanTargetItem() ) then
+			local bagID, slotID = self:GetBagID(), self:GetID()
 			-- Target the spell with the selected item
-			if ( CONTAINER_ATTENTION_ITEM_LINK ) then
-				CONTAINER_ATTENTION_BAG_ID = self:GetParent():GetID();
-				CONTAINER_ATTENTION_SLOT_ID = self:GetID();
+			if ( CONTAINER_ATTENTION_ITEM_LINK and GetContainerItemID(bagID, slotID) ) then
+				CONTAINER_ATTENTION_BAG_ID = bagID;
+				CONTAINER_ATTENTION_SLOT_ID = slotID;
 
 				StaticPopup_Show("ATTENTION_ON_USE_CONFIRM", CONTAINER_ATTENTION_ITEM_LINK);
 			else
-				UseContainerItem(self:GetParent():GetID(), self:GetID());
+				UseContainerItem(bagID, slotID);
 			end
 		elseif ( type == "guildbankmoney" ) then
 			WithdrawGuildBankMoney(money);
@@ -1023,17 +1061,17 @@ function ContainerFrameItemButton_OnClick(self, button)
 			elseif ( MerchantFrame.price and MerchantFrame.price >= MERCHANT_HIGH_PRICE_COST ) then
 				MerchantFrame_ConfirmHighCostItem(self);
 			else
-				PickupContainerItem(self:GetParent():GetID(), self:GetID());
+				PickupContainerItem(self:GetBagID(), self:GetID());
 			end
 		else
-			PickupContainerItem(self:GetParent():GetID(), self:GetID());
+			PickupContainerItem(self:GetBagID(), self:GetID());
 			if ( CursorHasItem() ) then
 				MerchantFrame_SetRefundItem(self);
 			end
 		end
 		StackSplitFrame:Hide();
 	else
-		local bagID, slotID = self:GetParent():GetID(), self:GetID()
+		local bagID, slotID = self:GetBagID(), self:GetID()
 		local itemID = GetContainerItemID(bagID, slotID)
 --[[
 		if WardrobeFrame:IsShown() then
@@ -1124,7 +1162,7 @@ function ContainerFrameItemButton_OnClick(self, button)
 			end
 		end
 
-		if ( CONTAINER_ATTENTION_ITEM_LINK and SpellCanTargetItem() ) then
+		if ( CONTAINER_ATTENTION_ITEM_LINK and SpellCanTargetItem() and itemID ) then
 			CONTAINER_ATTENTION_BAG_ID = bagID;
 			CONTAINER_ATTENTION_SLOT_ID = slotID;
 
@@ -1138,7 +1176,7 @@ end
 
 function ContainerFrameItemButton_CustomClickHandler(self, button)
 	if button == "RightButton" and IsShiftKeyDown() then
-		local containerID = self:GetParent():GetID()
+		local containerID = self:GetBagID()
 		local slotID = self:GetID()
 		local itemID = GetContainerItemID(containerID, slotID)
 		if itemID and JEWELERS_PIN_SWAP[itemID] then
@@ -1149,17 +1187,17 @@ function ContainerFrameItemButton_CustomClickHandler(self, button)
 end
 
 function ContainerFrameItemButton_OnModifiedClick(self, button)
-	if ( HandleModifiedItemClick(GetContainerItemLink(self:GetParent():GetID(), self:GetID())) ) then
+	if ( HandleModifiedItemClick(GetContainerItemLink(self:GetBagID(), self:GetID())) ) then
 		return;
 	end
 	if ( IsModifiedClick("SOCKETITEM") ) then
-		SocketContainerItem(self:GetParent():GetID(), self:GetID());
+		SocketContainerItem(self:GetBagID(), self:GetID());
 	end
 	if ( IsModifiedClick("SPLITSTACK") ) then
-		local texture, itemCount, locked = GetContainerItemInfo(self:GetParent():GetID(), self:GetID());
+		local texture, itemCount, locked = GetContainerItemInfo(self:GetBagID(), self:GetID());
 		if ( not locked ) then
 			self.SplitStack = function(button, split)
-				SplitContainerItem(button:GetParent():GetID(), button:GetID(), split);
+				SplitContainerItem(button:GetBagID(), button:GetID(), split);
 			end
 			OpenStackSplitFrame(itemCount, self, "BOTTOMRIGHT", "TOPRIGHT");
 		end
@@ -1177,13 +1215,13 @@ function ContainerFrameItemButton_OnEnter(self)
 	end
 
 	-- Keyring specific code
-	if ( self:GetParent():GetID() == KEYRING_CONTAINER ) then
+	if ( self:GetBagID() == KEYRING_CONTAINER ) then
 		GameTooltip:SetInventoryItem("player", KeyRingButtonIDToInvSlotID(self:GetID()));
 		CursorUpdate(self);
 		return;
 	end
 
-	C_NewItems.RemoveNewItem(self:GetParent():GetID(), self:GetID());
+	C_NewItems.RemoveNewItem(self:GetBagID(), self:GetID());
 
 	local highlightFrame = self.HighlightFrame;
 	local flash = highlightFrame.flash.Anim;
@@ -1197,7 +1235,7 @@ function ContainerFrameItemButton_OnEnter(self)
 	end
 
 	local showSell = nil;
-	local hasCooldown, repairCost = GameTooltip:SetBagItem(self:GetParent():GetID(), self:GetID());
+	local hasCooldown, repairCost = GameTooltip:SetBagItem(self:GetBagID(), self:GetID());
 	if ( InRepairMode() and (repairCost and repairCost > 0) ) then
 		GameTooltip:AddLine(REPAIR_COST, "", 1, 1, 1);
 		SetTooltipMoney(GameTooltip, repairCost);
@@ -1209,7 +1247,7 @@ function ContainerFrameItemButton_OnEnter(self)
 	if ( IsModifiedClick("DRESSUP") and self.hasItem ) then
 		ShowInspectCursor();
 	elseif ( showSell ) then
-		ShowContainerSellCursor(self:GetParent():GetID(),self:GetID());
+		ShowContainerSellCursor(self:GetBagID(), self:GetID());
 	elseif ( self.readable ) then
 		ShowInspectCursor();
 	else
@@ -1291,6 +1329,10 @@ function CloseAllBags()
 	for i=1, NUM_CONTAINER_FRAMES, 1 do
 		CloseBag(i);
 	end
+end
+
+function ToggleContainerItemExpiration()
+	ContainerItemExpirationFrame:SetShown(not ContainerItemExpirationFrame:IsShown())
 end
 
 --KeyRing functions
@@ -1417,5 +1459,389 @@ function ContainerFrame_UpdateAll()
 		for i = 1, NUM_BANKGENERIC_SLOTS, 1 do
 			BankFrameItemButton_Update(_G["BankFrameItem"..i])
 		end
+	end
+end
+
+ContainerItemExpirationMixin = CreateFromMixins(DefaultPanelMixin)
+
+function ContainerItemExpirationMixin:OnLoad()
+	self.backgroundMiddleList = {self.BackgroundMiddle1, self.BackgroundMiddle2}
+	self.buttons = {}
+
+	self.TextBackground:SetAtlas("PKBT-Tile-DarkSandstone-256")
+	SetPortraitToTexture(self.Portrait, "Interface\\Icons\\Ability_Mage_TimeWarp")
+
+	self:RegisterCustomEvent("CONTAINER_ITEM_EXPIRATION_UPDATE")
+end
+
+function ContainerItemExpirationMixin:OnEvent(event, ...)
+	if event == "CONTAINER_ITEM_EXPIRATION_UPDATE" then
+		self:CheckItems()
+	elseif event == "ITEM_LOCK_CHANGED" then
+		local bagID, slotID = ...
+		self:UpdateItemLock(bagID, slotID)
+	elseif event == "BAG_UPDATE_COOLDOWN" then
+		self:UpdateItemCooldown()
+	end
+end
+
+function ContainerItemExpirationMixin:OnShow()
+	self:RegisterEvent("ITEM_LOCK_CHANGED")
+	self:RegisterEvent("BAG_UPDATE_COOLDOWN")
+	self:CheckItems()
+end
+
+function ContainerItemExpirationMixin:OnHide()
+	self:UnregisterEvent("ITEM_LOCK_CHANGED")
+	self:UnregisterEvent("BAG_UPDATE_COOLDOWN")
+end
+
+function ContainerItemExpirationMixin:CheckItems()
+	if not self:IsShown() then
+		return
+	end
+
+	local numItems = C_ItemExpiration.GetNumExpirationItems()
+	if numItems == 0 then
+		self:Hide()
+	else
+		self:UpdateItems()
+	end
+end
+
+function ContainerItemExpirationMixin:UpdateItems()
+	local numItems = math.min(NUM_CONTAINER_COLUMNS * 12, C_ItemExpiration.GetNumExpirationItems())
+	if numItems == 0 then
+		return
+	end
+
+	local SPACING = 4
+	local numRows = math.ceil(numItems / NUM_CONTAINER_COLUMNS)
+
+	for index = 1, numItems do
+		local itemButton = self.buttons[index]
+		if not itemButton then
+			itemButton = CreateFrame("Button", string.format("$parentItemButton%d", index), self.ItemHolder, "ContainerItemExpirationButtonTemplate")
+			itemButton:ClearAllPoints()
+			if index == 1 then
+				itemButton:SetPoint("TOPLEFT", 0, 0)
+			elseif index % NUM_CONTAINER_COLUMNS == 1 then
+				itemButton:SetPoint("TOPLEFT", self.buttons[index - NUM_CONTAINER_COLUMNS], "BOTTOMLEFT", 0, -SPACING)
+			else
+				itemButton:SetPoint("TOPLEFT", self.buttons[index - 1], "TOPRIGHT", SPACING, 0)
+			end
+			self.buttons[index] = itemButton
+		end
+
+		local itemGUID, expirationTimeLeft = C_ItemExpiration.GetExpirationItemInfo(index)
+		itemButton:SetItemGUID(itemGUID)
+		itemButton:SetTimeLeft(expirationTimeLeft, 1)
+		itemButton:Show()
+	end
+
+	for index = numItems + 1, #self.buttons do
+		self.buttons[index]:Hide()
+		self.buttons[index]:ResetItem()
+	end
+
+	self.ItemHolder:SetHeight(2 + numRows * self.buttons[1]:GetHeight() + SPACING * (numRows - 1))
+
+	do
+		local columns = NUM_CONTAINER_COLUMNS
+		local rows = math.max(2, math.ceil(numItems / columns)) + 1
+
+		for i = 1, MAX_BG_TEXTURES do
+			self.backgroundMiddleList[i]:Hide()
+		end
+
+		local bgTextureCount, height
+		local rowHeight = 41
+		-- Subtract one, since the top texture contains one row already
+		local remainingRows = rows - 1
+
+		-- Calculate the number of background textures we're going to need
+		bgTextureCount = math.ceil(remainingRows / ROWS_IN_BG_TEXTURE)
+
+		if rows == 1 then
+			-- If only one row chop off the bottom of the texture
+			self.BackgroundTop:SetTexCoord(0, 1, 0.00390625, 0.16796875)
+			self.BackgroundTop:SetHeight(86)
+		else
+			self.BackgroundTop:SetTexCoord(0, 1, 0.00390625, 0.18359375)
+			self.BackgroundTop:SetHeight(94)
+		end
+
+		local middleBgHeight = 0
+		-- If one row only special case
+		if rows == 1 then
+			self.BackgroundBottom:SetPoint("TOP", self.BackgroundMiddle1, "TOP", 0, 0)
+			self.BackgroundBottom:Show()
+			-- Hide middle bg textures
+			for i = 1, MAX_BG_TEXTURES do
+				self.backgroundMiddleList[i]:Hide()
+			end
+		else
+			-- Try to cycle all the middle bg textures
+			local firstRowPixelOffset = 9
+			local firstRowTexCoordOffset = 0.353515625
+			local bgTextureMiddle
+			for i = 1, bgTextureCount do
+				bgTextureMiddle = self.backgroundMiddleList[i]
+				if remainingRows > ROWS_IN_BG_TEXTURE then
+					-- If more rows left to draw than can fit in a texture then draw the max possible
+					height = ROWS_IN_BG_TEXTURE * rowHeight + firstRowTexCoordOffset
+					bgTextureMiddle:SetHeight(height)
+					bgTextureMiddle:SetTexCoord(0, 1, firstRowTexCoordOffset, (height / BG_TEXTURE_HEIGHT + firstRowTexCoordOffset))
+					bgTextureMiddle:Show()
+					remainingRows = remainingRows - ROWS_IN_BG_TEXTURE
+					middleBgHeight = middleBgHeight + height
+				else
+					-- If not its a huge bag
+					bgTextureMiddle:Show()
+					height = remainingRows * rowHeight - firstRowPixelOffset
+					bgTextureMiddle:SetHeight(height)
+					bgTextureMiddle:SetTexCoord(0, 1, firstRowTexCoordOffset, (height / BG_TEXTURE_HEIGHT + firstRowTexCoordOffset))
+					middleBgHeight = middleBgHeight + height
+				end
+			end
+
+			self.BackgroundBottom:SetPoint("TOP", bgTextureMiddle:GetName(), "BOTTOM", 0, 0)
+			self.BackgroundBottom:Show()
+		end
+
+		self:SetHeight(self.BackgroundTop:GetHeight() + self.BackgroundBottom:GetHeight() + middleBgHeight)
+	end
+end
+
+function ContainerItemExpirationMixin:UpdateItemLock(bagID, slotID)
+	if not bagID or not slotID then
+		self:UpdateItems()
+		return
+	end
+
+	local numItems = C_ItemExpiration.GetNumExpirationItems()
+	if numItems > #self.buttons then
+		self:UpdateItems()
+		return
+	end
+
+	for index = 1, numItems do
+		local itemButton = self.buttons[index]
+		if itemButton:GetBagID() == bagID and itemButton:GetID() == slotID then
+			local texture, itemCount, locked, quality, readable, lootable, itemLink = GetContainerItemInfo(bagID, slotID)
+			SetItemButtonDesaturated(itemButton, locked, 0.5, 0.5, 0.5)
+			break
+		end
+	end
+end
+
+function ContainerItemExpirationMixin:UpdateItemCooldown()
+	local numItems = C_ItemExpiration.GetNumExpirationItems()
+	if numItems > #self.buttons then
+		self:UpdateItems()
+		return
+	end
+
+	for index = 1, numItems do
+		local itemButton = self.buttons[index]
+		if GetContainerItemInfo(itemButton:GetBagID(), itemButton:GetID()) then
+			ContainerFrame_UpdateCooldown(itemButton:GetBagID(), itemButton)
+		else
+			_G[itemButton:GetName().."Cooldown"]:Hide()
+		end
+	end
+end
+
+ContainerItemExpirationButtonMixin = CreateFromMixins(ItemButtonMixin, ContainerFrameItemButtonMixin, PKBT_CountdownThrottledBaseMixin)
+
+function ContainerItemExpirationButtonMixin:OnLoad()
+	self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+	self.IconBorder:SetAllPoints()
+	self.NormalTexture:Hide()
+	self.NormalTexture:SetSize(98, 98)
+	self.NormalTexture:SetAlpha(0)
+	self.UpdateTooltip = self.OnEnterUpdate
+end
+
+function ContainerItemExpirationButtonMixin:OnEvent(event, ...)
+	if event == "ITEM_LOCK_CHANGED" then
+		local bagID, slotIndex = ...
+		if slotIndex then
+			if self:IsEqualToBagAndSlot(bagID, slotIndex) then
+				local texture, itemCount, locked, quality, readable, lootable, itemLink = GetContainerItemInfo(bagID, slotIndex)
+				SetItemButtonDesaturated(self, locked, 0.5, 0.5, 0.5)
+			end
+		else
+			slotIndex = bagID
+			if self:IsEqualToEquipmentSlot(slotIndex) then
+				local locked = IsInventoryItemLocked(slotIndex)
+				SetItemButtonDesaturated(self, locked, 0.5, 0.5, 0.5)
+			end
+		end
+	end
+end
+
+function ContainerItemExpirationButtonMixin:OnShow()
+	SetParentFrameLevel(self.ItemExpirationOverlay, 2)
+end
+
+function ContainerItemExpirationButtonMixin:OnEnter()
+	self:UpdateItemLocation(true)
+	self:OnEnterUpdate()
+end
+
+function ContainerItemExpirationButtonMixin:OnEnterUpdate()
+	local itemLocation = self:GetItemLocation()
+	if itemLocation and itemLocation:IsValid() then
+		local anchor = (self:GetRight() >= (GetScreenWidth() / 2)) and "ANCHOR_LEFT" or "ANCHOR_RIGHT"
+		GameTooltip:SetOwner(self, anchor)
+		ItemLocation:ApplyLocationToTooltip(itemLocation, GameTooltip)
+	end
+
+	if (IsModifiedClick("DRESSUP") and self.hasItem)
+	or self.readable
+	then
+		ShowInspectCursor()
+	else
+		ResetCursor()
+	end
+end
+
+function ContainerItemExpirationButtonMixin:OnClick(button)
+	self:UpdateItemLocation()
+
+	local itemLocation = self:GetItemLocation()
+	if itemLocation and itemLocation:IsValid() then
+		if itemLocation:IsBagAndSlot() then
+			if ContainerFrameItemButton_CustomClickHandler(self, button) then
+				return
+			end
+
+			local modifiedClick = IsModifiedClick()
+			-- If we can loot the item and autoloot toggle is active, then do a normal click
+			if button ~= "LeftButton" and modifiedClick and IsModifiedClick("AUTOLOOTTOGGLE") then
+				local texture, itemCount, locked, quality, readable, lootable, itemLink = GetContainerItemInfo(self:GetBagID(), self:GetID())
+				if lootable then
+					modifiedClick = false
+				end
+			end
+			if modifiedClick then
+				HandleModifiedItemClick(GetContainerItemLink(self:GetBagID(), self:GetID()))
+			elseif button == "RightButton" then
+				ContainerFrameItemButton_OnClick(self, button)
+			end
+		else
+			if IsModifiedClick() then
+				PaperDollItemSlotButton_OnModifiedClick(self, button)
+			else
+				if button == "RightButton" then
+					local slotIndex = self:GetID()
+					UseInventoryItem(slotIndex)
+				end
+			end
+		end
+	end
+end
+
+function ContainerItemExpirationButtonMixin:ResetItem()
+	self:Reset()
+	self.itemGUID = nil
+	self.containerID = nil
+	self.slotID = nil
+	self.hasItem = nil
+	self.readable = nil
+end
+
+function ContainerItemExpirationButtonMixin:FormatTime(seconds)
+	if seconds >= SECONDS_PER_DAY then
+		return string.format(DAY_ONELETTER_ABBR, math.ceil(seconds / SECONDS_PER_DAY))
+	elseif seconds >= SECONDS_PER_MIN then
+		return date("!%H:%M", seconds)
+	else
+		return string.format(SECOND_ONELETTER_ABBR, seconds)
+	end
+end
+
+function ContainerItemExpirationButtonMixin:OnCountdownUpdate(timeLeft, isFinished)
+	if timeLeft > 0 and not isFinished then
+		self.ItemExpirationOverlay.TimeLeft:SetText(self:FormatTime(timeLeft))
+		if timeLeft < 1800 then
+			self.ItemExpirationOverlay.TimeLeft:SetTextColor(1, 0.3, 0.4)
+		else
+			self.ItemExpirationOverlay.TimeLeft:SetTextColor(1, 1, 1)
+		end
+		self.ItemExpirationOverlay:Show()
+	elseif isFinished then
+		self.ItemExpirationOverlay:Hide()
+	end
+end
+
+function ContainerItemExpirationButtonMixin:SetItemGUID(itemGUID)
+	self.itemGUID = itemGUID
+	self:UpdateItemLocation()
+end
+
+function ContainerItemExpirationButtonMixin:UpdateItemLocation(skipTooltipUpdate)
+	if self.itemGUID then
+		local itemLocation = C_Item.GetItemLocation(self.itemGUID)
+
+		local currentItemLocation = self:GetItemLocation()
+		if currentItemLocation and currentItemLocation:IsEqualTo(itemLocation) then
+			self:SetItemInternal(itemLocation)
+			self:UpdateItemButton(skipTooltipUpdate)
+			return
+		end
+
+		self:SetItemLocation(itemLocation)
+
+		if itemLocation then
+			if itemLocation:IsBagAndSlot() then
+				local bagID, slotIndex = itemLocation:GetBagAndSlot()
+				self:SetBagID(bagID)
+				self:SetID(slotIndex)
+			else
+				self:SetBagID(-1)
+				self:SetID(itemLocation:GetEquipmentSlot())
+			end
+
+			self:RegisterEvent("ITEM_LOCK_CHANGED")
+		else
+			self:UnregisterEvent("ITEM_LOCK_CHANGED")
+		end
+
+		self:UpdateItemButton(skipTooltipUpdate)
+	end
+end
+
+function ContainerItemExpirationButtonMixin:UpdateItemButton(skipTooltipUpdate)
+	local itemLocation = self:GetItemLocation()
+	if not itemLocation then
+		return
+	end
+
+	if itemLocation:IsBagAndSlot() then
+		local texture, itemCount, locked, quality, readable, lootable, itemLink = GetContainerItemInfo(self:GetBagID(), self:GetID())
+
+		SetItemButtonDesaturated(self, locked, 0.5, 0.5, 0.5)
+		ContainerFrame_UpdateCooldown(self:GetBagID(), self)
+		self.readable = readable
+		self.hasItem = 1
+
+		self.containerID = self:GetBagID()
+		self.slotID = self:GetID()
+	else
+		local locked = IsInventoryItemLocked(self:GetID())
+		SetItemButtonDesaturated(self, locked, 0.5, 0.5, 0.5)
+
+		local start, duration, enable = GetInventoryItemCooldown("player", self:GetID())
+		CooldownFrame_SetTimer(_G[self:GetName().."Cooldown"], start, duration, enable)
+
+		self.hasItem = 1
+
+		self.containerID = self:GetID()
+	end
+
+	if not skipTooltipUpdate and self == GameTooltip:GetOwner() then
+		self:OnEnterUpdate()
 	end
 end

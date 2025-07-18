@@ -1,3 +1,6 @@
+local function GetItemButtonIconTexture(button)
+	return button.Icon or button.icon or _G[button:GetName().."IconTexture"];
+end
 
 function SetItemButtonQuality(button, quality)
 	if button:GetAttribute("useCircularIconBorder") then
@@ -85,7 +88,7 @@ function SetItemButtonTexture(button, texture)
 		return;
 	end
 
-	local icon = button.Icon or button.icon or _G[button:GetName().."IconTexture"];
+	local icon = GetItemButtonIconTexture(button);
 	if ( texture ) then
 		icon:Show();
 	else
@@ -105,7 +108,7 @@ function SetItemButtonTextureVertexColor(button, r, g, b)
 		return;
 	end
 
-	local icon = button.Icon or button.icon or _G[button:GetName().."IconTexture"];
+	local icon = GetItemButtonIconTexture(button);
 	icon:SetVertexColor(r, g, b);
 end
 
@@ -113,7 +116,7 @@ function SetItemButtonDesaturated(button, desaturated, r, g, b)
 	if ( not button ) then
 		return;
 	end
-	local icon = button.Icon or button.icon or _G[button:GetName().."IconTexture"];
+	local icon = GetItemButtonIconTexture(button);
 	if ( not icon ) then
 		return;
 	end
@@ -191,7 +194,7 @@ end
 
 function ItemButtonMixin:SetMatchesSearch(matchesSearch)
 	self.matchesSearch = matchesSearch;
-	self:UpdateItemContextOverlay(self);
+	self:UpdateItemContextOverlay();
 end
 
 function ItemButtonMixin:GetMatchesSearch()
@@ -206,7 +209,7 @@ function ItemButtonMixin:UpdateItemContextMatching()
 		self.itemContextMatchResult = ItemButtonUtil.ItemContextMatchResult.DoesNotApply;
 	end
 
-	self:UpdateItemContextOverlay(self);
+	self:UpdateItemContextOverlay();
 end
 
 function ItemButtonMixin:UpdateItemContextOverlay()
@@ -264,6 +267,7 @@ function ItemButtonMixin:SetItemInternal(item)
 	end
 
 	local itemLink, itemQuality, itemIcon = self:GetItemInfo();
+
 	self.itemLink = itemLink;
 
 	SetItemButtonTexture(self, itemIcon);
@@ -279,8 +283,11 @@ function ItemButtonMixin:GetItemInfo()
 		local itemIcon = C_Item.GetItemIcon(itemLocation);
 		return itemLink, itemQuality, itemIcon;
 	else
-		local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemIcon = GetItemInfo(self:GetItem());
-		return itemLink, itemQuality, itemIcon;
+		local item = self:GetItem();
+		if item then
+			local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemIcon = GetItemInfo(item);
+			return itemLink, itemQuality, itemIcon;
+		end
 	end
 end
 
@@ -323,3 +330,26 @@ function ItemButtonMixin:SetAlpha(alpha)
 	self.Count:SetAlpha(alpha);
 end
 ]]
+
+function ItemButtonMixin:SetBagID(bagID)
+	self.bagID = bagID;
+end
+
+function ItemButtonMixin:GetBagID()
+	return self.bagID;
+end
+
+function ItemButtonMixin:GetSlotAndBagID()
+	return self:GetID(), self:GetBagID();
+end
+
+CircularGiantItemButtonMixin = {}
+
+function CircularGiantItemButtonMixin:OnLoad()
+	self.IconBorder:SetAtlas("auctionhouse-itemicon-border-white")
+	self:SetHighlightAtlas("auctionhouse-itemicon-border-white")
+end
+
+function CircularGiantItemButtonMixin:SetItemButtonQuality(quality)
+	SetItemButtonQuality(self, quality)
+end

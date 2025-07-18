@@ -1703,7 +1703,7 @@
 				</Layers>
 				<Frames>
 					<Frame parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
-					<Button name="$parentButton1" parentKey="Button1" inherits="PKBT_RedButtonMultiWidgetTemplate" text="YES">
+					<Button name="$parentButton1" parentKey="Button1" inherits="PKBT_RedButtonMultiWidgetTemplate,TransactionConfirmationTemplate" text="YES">
 						<Size x="124" y="50"/>
 						<Anchors>
 							<Anchor point="BOTTOM" x="-82" y="12"/>

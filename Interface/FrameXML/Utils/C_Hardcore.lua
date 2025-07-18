@@ -15,7 +15,7 @@ local strlower = strlower
 local strtrim = strtrim
 local strsplit = strsplit
 
-local C_CacheInstance = C_CacheInstance
+local C_GlobalStorageSecure = C_GlobalStorageSecure
 local CopyTable = CopyTable
 local HARDCORE_CHALLENGES = HARDCORE_CHALLENGES
 
@@ -163,7 +163,7 @@ local LEADERBOARD_CLASS_FILTER = 0
 C_Hardcore = {}
 
 function C_Hardcore.GetActiveChallengeID()
-	local challengeID = C_CacheInstance:Get("C_SERVICE_CHALLENGE_ID")
+	local challengeID = C_GlobalStorageSecure.GetGlobalVar("C_SERVICE_CHALLENGE_ID")
 	if challengeID and challengeID ~= 0 then
 		return challengeID
 	end
@@ -174,7 +174,7 @@ function C_Hardcore.IsFeatureAvailable(flag)
 		error("Usage: C_Hardcore.IsFeatureAvailable(flag)", 2)
 	end
 
-	local challengeID = C_CacheInstance:Get("C_SERVICE_CHALLENGE_ID")
+	local challengeID = C_GlobalStorageSecure.GetGlobalVar("C_SERVICE_CHALLENGE_ID")
 	if challengeID and challengeID ~= 0 then
 		local challengeInfo = CHALLENGE_INFO[challengeID]
 		if challengeInfo and challengeInfo.flags and bitband(challengeInfo.flags, flag) ~= 0 then
@@ -189,7 +189,7 @@ function C_Hardcore.IsFeature1Available(flag)
 		error("Usage: C_Hardcore.IsFeature1Available(flag)", 2)
 	end
 
-	local challengeID = C_CacheInstance:Get("C_SERVICE_CHALLENGE_ID")
+	local challengeID = C_GlobalStorageSecure.GetGlobalVar("C_SERVICE_CHALLENGE_ID")
 	if challengeID and challengeID ~= 0 then
 		local challengeInfo = CHALLENGE_INFO[challengeID]
 		if challengeInfo and challengeInfo.flags1 and bitband(challengeInfo.flags1, flag) ~= 0 then

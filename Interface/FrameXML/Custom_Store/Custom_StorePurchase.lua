@@ -161,7 +161,11 @@ function StoreProductPurchaseItemButtonMixin:OnClick(button)
 			end
 		end
 		if IsModifiedClick("DRESSUP") then
-			self:GetParent():GetOwner():DressUpItemLink(self.itemLink)
+			local owner = self:GetOwner()
+			if owner.GetOwner then
+				owner = owner:GetOwner()
+			end
+			owner:DressUpItemLink(self.itemLink)
 			return true
 		end
 	end
@@ -391,10 +395,7 @@ function StoreProductPurchaseTypeItemTooltipMixin:OnShow()
 
 	self:UpdateTooltipRect()
 
-	if self.OptionPanel.ItemTooltip.GlowNineSlice.Anim:IsPlaying() then
-		self.OptionPanel.ItemTooltip.GlowNineSlice.Anim:Stop()
-	end
-	self.OptionPanel.ItemTooltip.GlowNineSlice.Anim:Play()
+	self.OptionPanel.ItemTooltip.GlowNineSlice.Anim:Restart()
 end
 
 function StoreProductPurchaseTypeItemTooltipMixin:SetProduct(product)
@@ -947,7 +948,9 @@ function StoreProductOptionAmountMixin:OnLoad()
 	end
 
 	self.Amount.OnTextValueChanged = function(this, value, userInput)
-		self:GetOwner():Summery()
+		if self:IsActive() then
+			self:GetOwner():Summery()
+		end
 	end
 end
 
@@ -989,6 +992,12 @@ function StoreProductPurchaseDialogMixin:OnLoad()
 	self.Content.PurchaseButton:AddText(STORE_PRODUCT_PURCHASE_LABEL)
 	self.Content.PurchaseButton:SetAllowReplenishment(C_StoreSecure.IsBonusReplenishmentAllowed(), true)
 	self.Content.PurchaseButton.Price:SetFreeText(string.format("|cff00ff00%s|r", STORE_PRICE_FREE))
+
+	self.Content.PurchaseButton:SetConfirmationShownTimerText(false)
+	self.Content.PurchaseButton:SetConfirmationTimerDone(function()
+		self.Content.PurchaseButton:HideCountdown()
+		self.Content.PurchaseButton:CheckBalance()
+	end)
 
 	self.defaultPanelWidth = self:GetWidth() or 364
 	self.templates = {}
@@ -1069,9 +1078,8 @@ function StoreProductPurchaseDialogMixin:UpdatePurchaseButton()
 	if C_StoreSecure.IsAwaitingPurchaseAnswer() then
 		self.Content.PurchaseButton:ShowSpinner()
 		self.Content.PurchaseButton:Disable()
-	else
-		self.Content.PurchaseButton:HideSpinner()
-		self.Content.PurchaseButton:CheckBalance()
+	elseif self.product and self:IsVisible() then
+		self:Summery()
 	end
 end
 
@@ -1322,6 +1330,7 @@ function StoreProductPurchaseDialogMixin:SetProductID(productID, noOffers)
 		end
 	end
 
+	self.delayPurchaseAmount = nil
 	self.blockSummery = nil
 	self:Summery()
 
@@ -1570,11 +1579,26 @@ function StoreProductPurchaseDialogMixin:OnPurchaseClick(button)
 		options.giftMessage = text
 	end
 
-	local success = C_StoreSecure.PurchaseProduct(self.product.productID, options)
-	if success then
-		self.Content.PurchaseButton:ShowSpinner()
-		self.Content.PurchaseButton:Disable()
-		PlaySound(SOUNDKIT.UI_IG_STORE_CONFIRM_PURCHASE_BUTTON)
+	do
+		local price, originalPrice, currencyType, currencyOptionIndex = self:GetPriceForSelectedCurrency()
+		if currencyType == Enum.Store.CurrencyType.Loyality
+		or currencyType == Enum.Store.CurrencyType.Referral then
+			local success = C_StoreSecure.PurchaseProduct(self.product.productID, options)
+			if success then
+				self.Content.PurchaseButton:ShowSpinner()
+				self.Content.PurchaseButton:Disable()
+				PlaySound(SOUNDKIT.UI_IG_STORE_CONFIRM_PURCHASE_BUTTON)
+			end
+		else
+			self.Content.PurchaseButton:TakeConfirmationScreenshot(function(screenshotSuccess)
+				local success = C_StoreSecure.PurchaseProduct(self.product.productID, options)
+				if success then
+					self.Content.PurchaseButton:ShowSpinner()
+					self.Content.PurchaseButton:Disable()
+					PlaySound(SOUNDKIT.UI_IG_STORE_CONFIRM_PURCHASE_BUTTON)
+				end
+			end)
+		end
 	end
 end
 
@@ -1737,6 +1761,7 @@ function StoreProductPurchaseDialogMixin:Summery()
 	end
 
 	local price, originalPrice, currencyType, currencyOptionIndex = self:GetPriceForSelectedCurrency()
+	local delayPurchaseAmount
 
 	if currencyOptionIndex ~= 0 then
 		local balance = C_StoreSecure.GetBalance(currencyType)
@@ -1756,6 +1781,10 @@ function StoreProductPurchaseDialogMixin:Summery()
 
 		self.Content.PurchaseButton:SetPrice(price * amount, originalPrice * amount, currencyType)
 		self.purchasedDisabledReason = nil
+
+		if not self.delayPurchaseAmount or self.delayPurchaseAmount ~= amount then
+			delayPurchaseAmount = amount
+		end
 	else
 		self.Content.PurchaseButton:SetPrice(-1)
 		self.Content.PurchaseButton:Disable()
@@ -1766,4 +1795,11 @@ function StoreProductPurchaseDialogMixin:Summery()
 	self.Content.PurchaseButton:Show()
 
 	self:ValidateOptions()
+
+	if delayPurchaseAmount and self.Content.PurchaseButton:IsEnabled() == 1 then
+		self.delayPurchaseAmount = delayPurchaseAmount
+		self.Content.PurchaseButton:Disable()
+		self.Content.PurchaseButton:ShowCountdown(C_StoreSecure.GetPurchaseDelayTime())
+		self.Content.PurchaseButton:StartConfirmationTimer(false, C_StoreSecure.GetPurchaseDelayTime())
+	end
 end

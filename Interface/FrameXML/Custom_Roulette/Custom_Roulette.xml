@@ -529,7 +529,7 @@
                     <OnClick>
                         PlaySound("igMainMenuOptionCheckBoxOn")
                         local checked = self:GetChecked()
-                        C_CVar:SetValue("C_CVAR_ROULETTE_SKIP_ANIMATION", checked and 1 or 0)
+						SetCVar("rouletteSkipAnim", checked and 1 or 0)
                         self:GetParent():SetFastAnimationState(checked)
                     </OnClick>
                     <OnEnter>

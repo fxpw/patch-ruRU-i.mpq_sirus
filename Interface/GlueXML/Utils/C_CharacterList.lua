@@ -521,8 +521,11 @@ function C_CharacterList.EnterWorld(characterID)
 			challengeID = C_CharacterList.GetActiveChallengeID(characterID)
 		end
 
-		C_CacheInstance:Set("C_SERVICE_PLAYER_FLAG", flag)
-		C_CacheInstance:Set("C_SERVICE_CHALLENGE_ID", challengeID)
+		C_GlobalStorageSecure.SetGlobalVar("C_SERVICE_PLAYER_FLAG", flag)
+		C_GlobalStorageSecure.SetGlobalVar("C_SERVICE_CHALLENGE_ID", challengeID)
+		C_GlobalStorageSecure.SetGlobalVar("GLUE_CHAR_FORCE_CUSTOMIZATION", nil)
+		C_GlobalStorageSecure.SetGlobalVar("GLUE_CHAR_FACTION_CHANGE_EVENT", nil)
+
 		EnterWorld()
 	end
 end

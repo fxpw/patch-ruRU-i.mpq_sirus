@@ -9,19 +9,22 @@ function BankFrameBaseButton_OnLoad (self)
 	self.UpdateTooltip = BankFrameItemButton_OnEnter;
 end
 
-BankItemButtonMixin = {};
-
-function BankItemButtonMixin:GetItemContextMatchResult()
-	return ItemButtonUtil.GetItemContextMatchResultForItem(ItemLocation:CreateFromBagAndSlot(BANK_CONTAINER, self:GetID()));
-end
-
 function BankFrameItemButton_OnLoad (self)
 	Mixin(self, BankItemButtonMixin);
 
 	BankFrameBaseButton_OnLoad (self);
 	self.SplitStack = function(button, split)
-		SplitContainerItem(BANK_CONTAINER, button:GetID(), split);
+		SplitContainerItem(button:GetParent():GetID(), button:GetID(), split);
 	end
+end
+
+function BankFrameBagButton_OnLoad (self)
+	Mixin(self, BankItemButtonBagMixin);
+
+	self.isBag = 1;
+	BankFrameBaseButton_OnLoad(self);
+
+	self:SetBagID(self:GetID());
 end
 
 BankItemButtonBagMixin = {};
@@ -30,24 +33,24 @@ function BankItemButtonBagMixin:GetItemContextMatchResult()
 	return ItemButtonUtil.GetItemContextMatchResultForContainer(self:GetID() + NUM_BAG_SLOTS);
 end
 
-function BankFrameBagButton_OnLoad (self)
-	Mixin(self, BankItemButtonBagMixin);
-
-	self.isBag = 1;
-	BankFrameBaseButton_OnLoad(self);
-end
-
 function BankFrameItemButton_OnEnter (self)
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-	if ( not GameTooltip:SetInventoryItem("player", self:GetInventorySlot()) ) then
+
+	local hasItem = GameTooltip:SetInventoryItem("player", self:GetInventorySlot());
+	if ( not hasItem ) then
 		if ( self.isBag ) then
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 			GameTooltip:SetText(self.tooltipText);
 		end
 	end
+
+	GameTooltip:Show();
 	CursorUpdate(self);
 end
 
 function BankFrameItemButton_Update (button)
+	local container = button:GetParent():GetID();
+	local buttonID = button:GetID();
 	local texture = _G[button:GetName().."IconTexture"];
 	local inventoryID = button:GetInventorySlot();
 	local textureName = GetInventoryItemTexture("player",inventoryID);
@@ -60,7 +63,7 @@ function BankFrameItemButton_Update (button)
 	if( button.isBag ) then
 		id, slotTextureName = GetInventorySlotInfo(strsub(slotName,10));
 	else
-		local isQuestItem, questId, isActive = GetContainerItemQuestInfo(BANK_CONTAINER, button:GetID());
+		local isQuestItem, questId, isActive = GetContainerItemQuestInfo(container, buttonID);
 		local questTexture = _G[button:GetName().."IconQuestTexture"];
 		if ( questId and not isActive ) then
 			questTexture:SetTexture(TEXTURE_ITEM_QUEST_BANG);
@@ -74,7 +77,7 @@ function BankFrameItemButton_Update (button)
 
 		local searchText = ContainerFrame_GetSearchText()
 		if searchText then
-			local itemID = GetContainerItemID(BANK_CONTAINER, button:GetID())
+			local itemID = GetContainerItemID(container, buttonID)
 			if itemID then
 				local itemName = GetItemInfo(itemID)
 
@@ -105,7 +108,21 @@ function BankFrameItemButton_Update (button)
 	button:SetMatchesSearch(not isFiltered);
 
 	BankFrameItemButton_UpdateLocked(button);
-	BankFrame_UpdateCooldown(BANK_CONTAINER, button);
+	BankFrame_UpdateCooldown(container, button);
+end
+
+BankItemButtonMixin = {};
+
+function BankItemButtonMixin:GetItemContextMatchResult()
+	return ItemButtonUtil.GetItemContextMatchResultForItem(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()));
+end
+
+function BankItemButtonMixin:GetBagID()
+	if self.isBag then
+		return -4;
+	else
+		return self:GetParent():GetID();
+	end
 end
 
 function BankFrame_UpdateCooldown(container, button)
@@ -132,6 +149,7 @@ end
 function BankFrame_OnLoad (self)
 	self:RegisterEvent("BANKFRAME_OPENED");
 	self:RegisterEvent("BANKFRAME_CLOSED");
+	self:SetID(BANK_CONTAINER);
 end
 
 function UpdateBagSlotStatus ()
@@ -246,22 +264,24 @@ function BankFrame_OnHide (self)
 end
 
 function BankFrameItemButtonGeneric_OnClick (self, button)
+	local container = self:GetParent():GetID();
 	if ( button == "LeftButton" ) then
-		PickupContainerItem(BANK_CONTAINER, self:GetID());
+		PickupContainerItem(container, self:GetID());
 	else
-		UseContainerItem(BANK_CONTAINER, self:GetID());
+		UseContainerItem(container, self:GetID());
 	end
 end
 
 function BankFrameItemButtonGeneric_OnModifiedClick (self, button)
+	local container = self:GetParent():GetID();
 	if ( self.isBag ) then
 		return;
 	end
-	if ( HandleModifiedItemClick(GetContainerItemLink(BANK_CONTAINER, self:GetID())) ) then
+	if ( HandleModifiedItemClick(GetContainerItemLink(container, self:GetID())) ) then
 		return;
 	end
 	if ( IsModifiedClick("SPLITSTACK") ) then
-		local texture, itemCount, locked = GetContainerItemInfo(BANK_CONTAINER, self:GetID());
+		local texture, itemCount, locked = GetContainerItemInfo(container, self:GetID());
 		if ( not locked ) then
 			OpenStackSplitFrame(self.count, self, "BOTTOMLEFT", "TOPLEFT");
 		end

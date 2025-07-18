@@ -161,12 +161,7 @@
 				</Layers>
 			</Frame>
 
-			<PlayerModel parentKey="Model" enableMouse="false" frameStrata="TOOLTIP" toplevel="true">
-				<Size x="232" y="232" />
-				<Anchors>
-					<Anchor point="CENTER" x="0" y="0" />
-				</Anchors>
-			</PlayerModel>
+			<DressUpModel parentKey="Model" inherits="PKBT_ModelTemplate" frameStrata="TOOLTIP"/>
 
 			<Frame parentKey="Glow" frameLevel="110" alpha="0.25">
 				<Anchors>

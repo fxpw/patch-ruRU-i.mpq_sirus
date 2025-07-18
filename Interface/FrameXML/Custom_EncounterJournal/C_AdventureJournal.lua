@@ -101,20 +101,24 @@ local ACTION_BUTTON_TYPE = {
 
 local error = error
 local ipairs = ipairs
+local pairs = pairs
 local select = select
 local tonumber = tonumber
 local type = type
 local mathmax, mathmin, mathrandom = math.max, math.min, math.random
-local strformat, strgsub = string.format, string.gsub
+local strconcat, strformat, strgsub = strconcat, string.format, string.gsub
 local tinsert, tsort, twipe, tCompare = table.insert, table.sort, table.wipe, tCompare
 
 local CanQueueForWintergrasp = CanQueueForWintergrasp
 local GetAchievementInfo = GetAchievementInfo
 local GetFramerate = GetFramerate
 local GetItemCount = GetItemCount
+local GetQuestLinkByID = GetQuestLinkByID
 local GetSpellInfo = GetSpellInfo
+local GetTitleForQuestID = GetTitleForQuestID
 local IsLFGDungeonJoinable = IsLFGDungeonJoinable
 local IsQuestCompleted = IsQuestCompleted
+local IsQuestDataCached = IsQuestDataCached
 local IsSpellKnown = IsSpellKnown
 local QueryQuestStart = QueryQuestStart
 local UnitFactionGroup = UnitFactionGroup
@@ -126,18 +130,19 @@ local GetCurrentBrawlID = GetCurrentBrawlID
 local IsGameEventActive = IsGameEventActive
 local IsGMAccount = IsGMAccount
 local IsInterfaceDevClient = IsInterfaceDevClient
-local RequestLoadQuestByID = RequestLoadQuestByID
+--local RequestQuestCacheByID = RequestQuestCacheByID
 
 local AJ_ACTION_TEXT_JOIN_BATTLE = AJ_ACTION_TEXT_JOIN_BATTLE
 local AJ_ACTION_TEXT_JOIN_GROUP = AJ_ACTION_TEXT_JOIN_GROUP
 local AJ_ACTION_TEXT_OPEN_EJ = AJ_ACTION_TEXT_OPEN_EJ
 local AJ_ACTION_TEXT_SHOW_QUEST = AJ_ACTION_TEXT_SHOW_QUEST
 local AJ_ACTION_TEXT_START_HUNT = AJ_ACTION_TEXT_START_HUNT
---local AJ_ACTION_TEXT_START_QUEST = AJ_ACTION_TEXT_START_QUEST
+local AJ_ACTION_TEXT_START_QUEST = AJ_ACTION_TEXT_START_QUEST
 local AJ_PRIMARY_REWARD_TEXT = AJ_PRIMARY_REWARD_TEXT
 local UNKNOWN = UNKNOWN
 
-local QUESTION_MARK_ICON = QUESTION_MARK_ICON:gsub("%.BLP$", "")
+local COLOR_PATTERN = strformat("^|cff%s|H", string.rep("[0-9A-Fa-f]", 6))
+local QUESTION_MARK_ICON = strgsub(QUESTION_MARK_ICON, "%.BLP$", "")
 
 local NUM_SECONDARY_SUGGESTIONS = 2
 local MAX_INT = 2^32/2-1
@@ -152,18 +157,10 @@ local PRIVATE = {
 	REGISTRY = {},
 	SUGGESTIONS = {},
 	PRIMARY_OFFSET_INDEX = 1,
-
-	QUEST_NAMES = {},
 }
 
 PRIVATE.eventHandler = CreateFrame("Frame")
-PRIVATE.eventHandler:RegisterEvent("PLAYER_LOGIN")
 PRIVATE.eventHandler:Hide()
-PRIVATE.eventHandler:SetScript("OnEvent", function(this, event, ...)
-	if event == "PLAYER_LOGIN" then
-		C_BattlePass.RequestQuests()
-	end
-end)
 PRIVATE.eventHandler:SetScript("OnUpdate", function(self, elapsed)
 	local frametimeStep = PRIVATE.FRAMETIME_TARGET - elapsed
 
@@ -586,31 +583,24 @@ PRIVATE.OnItemLoadedContent = function()
 	FireCustomClientEvent("AJ_REFRESH_DISPLAY", false)
 end
 
-PRIVATE.OnQuestLoadedContent = function(questID, tooltipLines)
-	if tooltipLines[1] and tooltipLines[1][1] then
-		PRIVATE.QUEST_NAMES[questID] = tooltipLines[1][1]
-	end
+PRIVATE.OnQuestLoadedContent = function(questID)
 	FireCustomClientEvent("AJ_REFRESH_DISPLAY", false)
-end
-
-PRIVATE.GetQuestName = function(questID)
-	local name = PRIVATE.QUEST_NAMES[questID]
-	if not name then
-		PRIVATE.QUEST_NAMES[questID] = true
-		local hasQuestCache = RequestLoadQuestByID(questID, PRIVATE.OnQuestLoadedContent)
-		if hasQuestCache then
-			name = GetQuestNameByID(questID)
-			if name then
-				PRIVATE.QUEST_NAMES[questID] = name
-			end
-		end
-	end
-	return name ~= true and name or nil
 end
 
 PRIVATE.GetQuestLink = function(questID)
 	questID = tonumber(questID)
-	local name = PRIVATE.GetQuestName(questID)
+
+	if IsQuestDataCached(questID) then
+		local questLink = GetQuestLinkByID(questID)
+		if questLink then
+			questLink = strgsub(questLink, COLOR_PATTERN, "|cff8B0000|H")
+			return questLink
+		end
+	else
+		RequestQuestCacheByID(questID, PRIVATE.OnQuestLoadedContent)
+	end
+
+	local name = GetTitleForQuestID(questID)
 	if not name then
 		name = IsGMAccount() and strformat("%s (quest:%s)", UNKNOWN, questID) or UNKNOWN
 	end

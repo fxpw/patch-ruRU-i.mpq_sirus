@@ -1,7 +1,6 @@
 ezSpectator_SmallFrame = {}
 ezSpectator_SmallFrame.__index = ezSpectator_SmallFrame
 
---noinspection LuaOverlyLongMethod
 function ezSpectator_SmallFrame:Create(Parent, Worker)
     local self = {}
     setmetatable(self, ezSpectator_SmallFrame)
@@ -9,17 +8,16 @@ function ezSpectator_SmallFrame:Create(Parent, Worker)
     self.Parent = Parent
     self.Worker = Worker
 
-    self.IsLocked = false
-
-    self.Textures = ezSpectator_Textures:Create()
-
     self.Backdrop = CreateFrame('Frame', nil, ArenaSpectatorFrame)
     self.Backdrop:SetFrameLevel(1)
     self.Backdrop:SetFrameStrata('BACKGROUND')
     self.Backdrop:SetSize(192, 51)
     self.Backdrop:SetScale(_ezSpectatorScale)
     self.Backdrop:SetPoint('CENTER', 0, 0)
-    self.Textures:SmallFrame_Backdrop(self.Backdrop)
+
+	self.Backdrop.texture = self.Backdrop:CreateTexture(nil, "BACKGROUND")
+	self.Backdrop.texture:SetAllPoints()
+	self.Backdrop.texture:SetAtlas("Custom-ArenaSpectator-SmallFrame-Backdrop", true)
 
     self.Normal = CreateFrame('Frame', nil, ArenaSpectatorFrame)
     self.Normal:SetFrameLevel(1)
@@ -27,7 +25,10 @@ function ezSpectator_SmallFrame:Create(Parent, Worker)
     self.Normal:SetSize(192, 51)
     self.Normal:SetScale(_ezSpectatorScale)
     self.Normal:SetPoint('CENTER', 0, 0)
-    self.Textures:SmallFrame_Normal(self.Normal)
+
+	self.Normal.texture = self.Normal:CreateTexture(nil, "BACKGROUND")
+	self.Normal.texture:SetAllPoints()
+	self.Normal.texture:SetAtlas("Custom-ArenaSpectator-SmallFrame-Normal", true)
 
     self.Highlight = CreateFrame('Frame', nil, ArenaSpectatorFrame)
     self.Highlight:SetFrameLevel(1)
@@ -35,8 +36,11 @@ function ezSpectator_SmallFrame:Create(Parent, Worker)
     self.Highlight:SetSize(192, 51)
     self.Highlight:SetScale(_ezSpectatorScale)
     self.Highlight:SetPoint('CENTER', 0, 0)
-    self.Textures:SmallFrame_Highlight(self.Highlight)
     self.Highlight:Hide()
+
+	self.Highlight.texture = self.Highlight:CreateTexture(nil, "BACKGROUND")
+	self.Highlight.texture:SetAllPoints()
+	self.Highlight.texture:SetAtlas("Custom-ArenaSpectator-SmallFrame-Highlight", true)
 
     self.Reactor = CreateFrame('Frame', nil, ArenaSpectatorFrame)
     self.Reactor:SetFrameStrata('TOOLTIP')
@@ -59,7 +63,7 @@ function ezSpectator_SmallFrame:Create(Parent, Worker)
         end
     end)
     self.Reactor:SetScript('OnMouseUp', function()
-        if self.Backdrop:IsShown() and self.Parent.Interface.IsRunning then
+		if self.Backdrop:IsShown() and (C_ArenaSpectator.IsInProgress() or C_ArenaSpectator.IsInPreparation()) then
             self.Worker:BindViewpoint()
         end
     end)
@@ -70,22 +74,21 @@ function ezSpectator_SmallFrame:Create(Parent, Worker)
 
     self.Target = ezSpectator_TargetFrame:Create(self.Parent, 'BOTTOMRIGHT', self.Normal, 'TOPRIGHT', -5, -9)
 
-    self.CastFrame = ezSpectator_CastFrame:Create(self.Parent, 'TOPLEFT', self.Normal, 'BOTTOMLEFT', 0, 5)
+	self.CastFrame = ezSpectator_CastFrame:Create(self.Parent, self.Normal, 'TOPLEFT', self.Normal, 'BOTTOMLEFT', 0, 5)
 
-    self.AuraFrame = ezSpectator_AuraFrame:Create(self.Parent, true, 'TOPLEFT', self.Normal, 'BOTTOMLEFT', 8, -18 * _ezSpectatorScale)
-
-    self.SpellFrame = nil
+	if self.Parent.DRAW_AURAS_FOR_SMALL_FRAMES then
+		self.AuraFrame = ezSpectator_AuraFrame:Create(self.Parent, true, true, "TOPLEFT", self.Normal, "BOTTOMLEFT", 8, -18 * _ezSpectatorScale)
+	end
 
     self.TrinketIcon = ezSpectator_ClickIcon:Create(self.Parent, self.MainFrame, 'silver', 28, 'BOTTOMLEFT', self.Normal, 'TOPLEFT', 2, -4)
     self.TrinketIcon:SetTexture('Interface\\Icons\\INV_Jewelry_TrinketPVP_02', 17, true)
+	self.TrinketIcon.Cooldown:SetReverse(true)
 
     self.ControlIcon = ezSpectator_ClickIcon:Create(self.Parent, self.MainFrame, 'silver', 28, 'LEFT', self.TrinketIcon.Normal, 'RIGHT', -3, 0)
 
     self.SpecIcon = ezSpectator_ClickIcon:Create(self.Parent, self.MainFrame, 'silver', 28, 'LEFT', self.ControlIcon.Normal, 'RIGHT', -3, 0)
     return self
 end
-
-
 
 function ezSpectator_SmallFrame:Hide()
     self.Backdrop:Hide()
@@ -95,8 +98,12 @@ function ezSpectator_SmallFrame:Hide()
     self.PowerBar:Hide()
     self.Target:Hide()
     self.Reactor:Hide()
-    self.CastFrame:Hide()
-    self.AuraFrame:Hide()
+
+	self.CastFrame:Hide()
+
+	if self.Parent.DRAW_AURAS_FOR_SMALL_FRAMES then
+		self.AuraFrame:Hide()
+	end
 
     if self.TrinketIcon then
         self.TrinketIcon:Hide()
@@ -109,8 +116,6 @@ function ezSpectator_SmallFrame:Hide()
     end
 end
 
-
-
 function ezSpectator_SmallFrame:Show()
     self.Backdrop:Show()
     self.Normal:Show()
@@ -119,7 +124,12 @@ function ezSpectator_SmallFrame:Show()
     self.PowerBar:Show()
     self.Target:Show()
     self.Reactor:Show()
-    self.AuraFrame:Show()
+
+	self.CastFrame:CheckState()
+
+	if self.Parent.DRAW_AURAS_FOR_SMALL_FRAMES then
+		self.AuraFrame:Show()
+	end
 
     if self.TrinketIcon then
         self.TrinketIcon:Show()
@@ -132,19 +142,21 @@ function ezSpectator_SmallFrame:Show()
     end
 end
 
-
-
 function ezSpectator_SmallFrame:IsShown()
     return self.Backdrop:IsShown()
 end
 
-
+function ezSpectator_SmallFrame:Reset()
+	self.CastFrame:Reset()
+	self.Target:Reset()
+	if self.Parent.DRAW_AURAS_FOR_SMALL_FRAMES then
+		self.AuraFrame:Reset()
+	end
+end
 
 function ezSpectator_SmallFrame:IsCastProgressing()
     return self.CastFrame.UpdateFrame.IsProgressMode;
 end
-
-
 
 function ezSpectator_SmallFrame:SetPoint(...)
     self.Backdrop:SetPoint(...)
@@ -167,16 +179,12 @@ function ezSpectator_SmallFrame:SetPoint(...)
     end
 end
 
-
-
 function ezSpectator_SmallFrame:ClearAllPoints()
     self.Backdrop:ClearAllPoints()
     self.Normal:ClearAllPoints()
     self.Highlight:ClearAllPoints()
     self.Reactor:ClearAllPoints()
 end
-
-
 
 function ezSpectator_SmallFrame:SetAlpha(Value)
     self.Backdrop:SetAlpha(Value)
@@ -186,7 +194,10 @@ function ezSpectator_SmallFrame:SetAlpha(Value)
     self.PowerBar:SetAlpha(Value)
     self.Target:SetAlpha(Value)
     self.CastFrame:SetAlpha(Value)
-    self.AuraFrame:SetAlpha(Value)
+
+	if self.Parent.DRAW_AURAS_FOR_SMALL_FRAMES then
+		self.AuraFrame:SetAlpha(Value)
+	end
 
     if self.TrinketIcon then
         self.TrinketIcon:SetAlpha(Value)

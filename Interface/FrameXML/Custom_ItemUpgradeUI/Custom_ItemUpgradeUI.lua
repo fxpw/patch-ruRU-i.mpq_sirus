@@ -11,8 +11,6 @@ function ItemUpgradeFrame_Hide()
 	HideUIPanel(ItemUpgradeFrame);
 end
 
-local SHOW_LEFT_ITEMS;
-
 local function GetNumUpgradeItems()
 	local totalItems, upgradeItems = 0, 0;
 
@@ -48,8 +46,6 @@ function ItemUpgradeMixin:OnLoad()
 
 	self:RegisterCustomEvent("ITEM_UPGRADE_OPEN");
 	self:RegisterCustomEvent("ITEM_UPGRADE_CLOSE");
-	self:RegisterEvent("VARIABLES_LOADED");
-	self:RegisterEvent("CVAR_UPDATE");
 end
 
 function ItemUpgradeMixin:OnShow()
@@ -126,8 +122,6 @@ function ItemUpgradeMixin:OnEvent(event, arg1)
 		ItemUpgradeFrame_Show();
 	elseif event == "ITEM_UPGRADE_CLOSE" then
 		ItemUpgradeFrame_Hide();
-	elseif event == "VARIABLES_LOADED" or event == "CVAR_UPDATE" then
-		SHOW_LEFT_ITEMS = tonumber(C_CVar:GetValue("C_CVAR_ITEM_UPGRADE_LEFT_ITEM_LIST")) == 1;
 	end
 end
 
@@ -171,7 +165,7 @@ function ItemUpgradeMixin:Update()
 		self.ItemInfo:Setup(self.upgradeInfo);
 
 		local numUpgradeItems = GetNumUpgradeItems();
-		if SHOW_LEFT_ITEMS and numUpgradeItems > 1 then
+		if numUpgradeItems > 1 and GetCVarBool("itemUpgradeLeftItems") then
 			self.UpgradeItemButton:SetNormalTexture("");
 			self.UpgradeItemButton:SetPushedTexture("");
 
@@ -264,10 +258,7 @@ function ItemUpgradeMixin:UpdateButtonAndArrowStates(buttonDisabled, canUpgrade)
 		self.UpgradeButton.EnhancementIcon:Hide();
 	elseif not isReappearAnimPlaying then
 		self.Arrow.arrow.Anim.Translation:SetOffset(25 * self:GetEffectiveScale(), 0);
-		if self.Arrow.arrow.Anim:IsPlaying() then
-			self.Arrow.arrow.Anim:Stop();
-		end
-		self.Arrow.arrow.Anim:Play();
+		self.Arrow.arrow.Anim:Restart();
 		self.Arrow:Show();
 	end
 
@@ -276,11 +267,7 @@ function ItemUpgradeMixin:UpdateButtonAndArrowStates(buttonDisabled, canUpgrade)
 		self.UpgradeButton.EnhancementIcon.IconGlow:SetTexture(texture);
 		self.UpgradeButton.EnhancementIcon.Icon:SetTexture(texture);
 		self.UpgradeButton.EnhancementIcon:Show();
-
-		if self.UpgradeButton.EnhancementIcon.IconGlow.Anim:IsPlaying() then
-			self.UpgradeButton.EnhancementIcon.IconGlow.Anim:Stop()
-		end
-		self.UpgradeButton.EnhancementIcon.IconGlow.Anim:Play()
+		self.UpgradeButton.EnhancementIcon.IconGlow.Anim:Restart()
 	end
 end
 
@@ -466,16 +453,10 @@ function ItemUpgradeMixin:PlayUpgradedCelebration()
 	self.ItemInfo.ItemName:SetText(qualityColor:WrapTextInColorCode(self.upgradeInfo.name));
 	SetItemButtonQuality(self.UpgradeItemButton, displayQuality);
 
-	if self.LeftItemPreviewFrame.GlowNineSlice.Anim:IsPlaying() then
-		self.LeftItemPreviewFrame.GlowNineSlice.Anim:Stop();
-	end
-	self.LeftItemPreviewFrame.GlowNineSlice.Anim:Play();
+	self.LeftItemPreviewFrame.GlowNineSlice.Anim:Restart();
 	self.RightItemPreviewFrame:Hide();
 	self.Arrow:Hide();
-	if self.BottomBGFlash.Anim:IsPlaying() then
-		self.BottomBGFlash.Anim:Stop();
-	end
-	self.BottomBGFlash.Anim:Play();
+	self.BottomBGFlash.Anim:Restart();
 
 	self.tooltipReappearTimerInProgress = true;
 	C_Timer:After(tooltipReappearWaitTime, GenerateClosure(self.OnTooltipReappearTimerComplete, self));
@@ -488,10 +469,7 @@ end
 
 function ItemUpgradeMixin:OnTooltipReappearComplete()
 	self.Arrow.arrow.Anim.Translation:SetOffset(25 * self:GetEffectiveScale(), 0);
-	if self.Arrow.arrow.Anim:IsPlaying() then
-		self.Arrow.arrow.Anim:Stop();
-	end
-	self.Arrow.arrow.Anim:Play();
+	self.Arrow.arrow.Anim:Restart();
 	self.Arrow:Show();
 
 	if self.pendingButtonEnable then
@@ -991,7 +969,7 @@ function ItemUpgradePreviewMixin:GeneratePreviewTooltip(isUpgrade, parentFrame)
 		end
 	end
 
-	if (not isUpgrade and SHOW_LEFT_ITEMS) or isShownHelpTip then
+	if (not isUpgrade and GetCVarBool("itemUpgradeLeftItems")) or isShownHelpTip then
 		GameTooltip_AddBlankLineToTooltip(self);
 		GameTooltip_AddDisabledLine(self, ITEM_UPGRADE_RIGHT_CLICK_RETURN_TO_ITEM_LIST);
 	end
@@ -1016,7 +994,7 @@ function LeftItemUpgradePreviewMixin:OnLoad()
 end
 
 function LeftItemUpgradePreviewMixin:OnMouseUp(button)
-	if button == "RightButton" and SHOW_LEFT_ITEMS then
+	if button == "RightButton" and GetCVarBool("itemUpgradeLeftItems") then
 		C_ItemUpgrade.ClearItemUpgrade();
 	end
 end
@@ -1105,7 +1083,7 @@ function ItemUpgradeSlotMixin:OnClick(buttonName)
 				ClearCursor();
 			end
 		else
-			if not SHOW_LEFT_ITEMS then
+			if not GetCVarBool("itemUpgradeLeftItems") then
 				EquipmentFlyout_Show(self);
 			end
 		end

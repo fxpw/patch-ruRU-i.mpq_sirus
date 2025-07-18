@@ -124,7 +124,7 @@
 					<Anchors>
 						<Anchor point="LEFT" relativeTo="$parentIconBorder" relativePoint="RIGHT" x="10" y="0"/>
 					</Anchors>
-					<Color r="1" g="0.77647058823529" b="0"/>
+					<Color r="1" g="0.82" b="0"/>
 				</FontString>
 			</Layer>
 		</Layers>
@@ -148,6 +148,51 @@
 			<OnLoad>
 				Mixin(self, CharacterUpgradeSelectClassButtonMixin)
 			</OnLoad>
+		</Scripts>
+	</Button>
+	<Button name="CharacterServiceClassButtonPKBTTemplate" virtual="true">
+		<Size x="120" y="76"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="48" y="48"/>
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-2"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentIconBorder" parentKey="IconBorder">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentIcon" x="-2" y="2"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="2" y="-2"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentName" parentKey="Name" inherits="GlueDark_Font_Shadow_14" justifyH="CENTER" maxLines="1">
+					<Size x="120" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentIcon" relativePoint="BOTTOM" x="0" y="-8"/>
+					</Anchors>
+					<Color r="1" g="0.82" b="0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharacterUpgradeSelectClassButtonPKBTMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
 		</Scripts>
 	</Button>
 	<Button name="CharacterServiceSpecButtonTemplate" inherits="CharacterServiceIconButtonTemplate" virtual="true">
@@ -217,10 +262,9 @@
 		</Scripts>
 	</Button>
 	<Button name="CharacterServiceSpecButtonPKBTTemplate" inherits="CharacterServiceSpecButtonTemplate" virtual="true">
-		<Size x="36" y="36"/>
 		<Scripts>
 			<OnLoad>
-				Mixin(self, CharacterServiceSpecButtonMixin)
+				Mixin(self, CharacterServiceSpecButtonPKBTMixin)
 				self:OnLoad()
 			</OnLoad>
 		</Scripts>
@@ -685,7 +729,7 @@
 												<Anchor point="CENTER" relativeTo="$parentStepBackdrop"/>
 											</Anchors>
 										</Texture>
-										<FontString name="$parentSpecTitle" parentKey="SpecTitle" inherits="GlueDark_Font_Shadow_15" text="SPECIALIZATION_LABEL">
+										<FontString name="$parentSpecTitle" parentKey="SpecTitle" inherits="GlueDark_Font_Shadow_15" text="CHARACTER_BOOST_SPEC_PVE">
 											<Anchors>
 												<Anchor point="TOPLEFT" relativeTo="$parentStepBackdrop" relativePoint="TOPRIGHT" x="1" y="-35"/>
 											</Anchors>
@@ -776,7 +820,7 @@
 												<Anchor point="CENTER" relativeTo="$parentStepBackdrop"/>
 											</Anchors>
 										</Texture>
-										<FontString name="$parentSpecTitle" parentKey="SpecTitle" inherits="GlueDark_Font_Shadow_15" text="PVP_SPECIALIZATION_LABEL">
+										<FontString name="$parentSpecTitle" parentKey="SpecTitle" inherits="GlueDark_Font_Shadow_15" text="CHARACTER_BOOST_SPEC_PVP">
 											<Anchors>
 												<Anchor point="TOPLEFT" relativeTo="$parentStepBackdrop" relativePoint="TOPRIGHT" x="1" y="-35"/>
 											</Anchors>
@@ -1085,7 +1129,7 @@
 						</Texture>
 						<Texture name="$parentIcon" parentKey="Icon">
 							<Anchors>
-								<Anchor point="CENTER" x="0" y="0"/>
+								<Anchor point="CENTER" x="0" y="-3"/>
 							</Anchors>
 						</Texture>
 					</Layer>
@@ -1283,33 +1327,46 @@
 				</Frames>
 			</Frame>
 
-			<Button name="$parentNextButton" parentKey="NextButton" inherits="GlueDark_ButtonTemplate" motionScriptsWhileDisabled="true" text="CHARACTER_BOOST_NEXT">
-				<Size x="120" y="26"/>
+			<Button name="$parentNextButton" parentKey="NextButton" inherits="PKBT_RedButtonTemplate" motionScriptsWhileDisabled="true" text="CHARACTER_BOOST_NEXT">
+				<Size x="132" y="56"/>
 				<Anchors>
-					<Anchor point="BOTTOM" x="0" y="20"/>
+					<Anchor point="BOTTOMRIGHT" x="-40" y="25"/>
 				</Anchors>
 				<Scripts>
 					<OnClick>
 						self:GetParent():NextStep(true)
 					</OnClick>
 					<OnEnter>
-						GlueDark_ButtonMixin.OnEnter(self)
+						self:OnEnter()
 						self:GetParent():OnEnterNextButton(self)
 					</OnEnter>
 					<OnLeave>
-						GlueDark_ButtonMixin.OnLeave(self)
+						self:OnLeave()
 						self:GetParent():OnLeaveNextButton(self)
 					</OnLeave>
 				</Scripts>
 			</Button>
-			<Button name="$parentBackButton" parentKey="BackButton" inherits="GlueDark_ButtonTemplate" text="BACK" hidden="true">
-				<Size x="86" y="26"/>
+			<Button name="$parentBackButton" parentKey="BackButton" inherits="PKBT_BlueButtonTemplate" text="BACK" hidden="true">
+				<Size x="132" y="56"/>
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentNextButton" relativePoint="LEFT" x="-20" y="0"/>
+					<Anchor point="BOTTOMLEFT" x="40" y="25"/>
 				</Anchors>
 				<Scripts>
 					<OnClick>
 						self:GetParent():PreviousStep()
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<Button name="$parentPreviewButton" parentKey="PreviewButton" motionScriptsWhileDisabled="true">
+				<Size x="32" y="73"/>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="RIGHT" x="5" y="0"/>
+				</Anchors>
+				<HitRectInsets left="0" right="6" top="3" bottom="7"/>
+				<Scripts>
+					<OnClick>
+						self:GetParent():OnClickPreviewButton(this, button)
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -1428,6 +1485,123 @@
 		<Scripts>
 			<OnLoad>
 				Mixin(self, BoostServiceSpecItemScrollMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+		</Scripts>
+	</Frame>
+
+	<Button name="BoostServiceSpecItemButtonPKBTTemplate" virtual="true">
+		<Size x="0" y="50"/>
+		<Anchors>
+			<Anchor point="LEFT" x="0" y="0"/>
+			<Anchor point="RIGHT" x="0" y="0"/>
+		</Anchors>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="48" y="48"/>
+					<Anchors>
+						<Anchor point="LEFT" x="5" y="0"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentName" parentKey="Name" inherits="GlueDark_Font_14" justifyH="LEFT" maxLines="1">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="5" y="0"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentSlotType" parentKey="SlotType" inherits="GlueDark_Font_11">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentName" relativePoint="BOTTOMLEFT" x="0" y="-1"/>
+					</Anchors>
+					<Color r="0.553" g="0.522" b="0.494"/>
+				</FontString>
+				<FontString name="$parentItemLevel" parentKey="ItemLevel" inherits="GlueDark_Font_11">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentSlotType" relativePoint="BOTTOMLEFT" x="0" y="-1"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentIconBorder" parentKey="IconBorder">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentIcon" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="1" y="-1"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentAmount" parentKey="Amount" inherits="GlueDark_Font_Outline_11" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon" x="-2" y="2"/>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, BoostServiceSpecItemButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+		</Scripts>
+	</Button>
+	<Frame name="BoostServiceSpecItemScrollPKBTTemplate" virtual="true">
+		<Frames>
+			<ScrollFrame name="$parentScroll" parentKey="Scroll" inherits="HybridScrollFrameTemplate">
+				<Size x="379" y="400"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="0"/>
+					<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+				</Anchors>
+				<Frames>
+					<Slider name="$parentScrollBar" parentKey="ScrollBar" inherits="PKBT_HybridScrollBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="7" y="-27"/>
+							<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="7" y="25"/>
+						</Anchors>
+					</Slider>
+				</Frames>
+			</ScrollFrame>
+
+			<Frame name="$parentLoading" parentKey="Loading" enableMouse="true" setAllPoints="true" hidden="true">
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background" setAllPoints="true" alpha="0.6">
+							<Color r="0" g="0" b="0"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Frame name="$parentSpinner" parentKey="Spinner" inherits="LoadingSpinnerTemplate">
+						<Anchors>
+							<Anchor point="CENTER" x="0" y="0"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, BoostServiceSpecItemScrollPKBTMixin)
 				self:OnLoad()
 			</OnLoad>
 			<OnShow>
@@ -1589,12 +1763,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="BACKGROUND">
-								<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark-Backdrops-Background-Scroll">
-									<Anchors>
-										<Anchor point="TOPLEFT" x="0" y="0"/>
-										<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
-									</Anchors>
-								</Texture>
+								<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark-Backdrops-Background-Scroll" setAllPoints="true"/>
 							</Layer>
 						</Layers>
 					</Frame>
@@ -1607,24 +1776,19 @@
 						</Anchors>
 						<Layers>
 							<Layer level="BACKGROUND">
-								<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark-Backdrops-Background-Scroll">
-									<Anchors>
-										<Anchor point="TOPLEFT" x="0" y="0"/>
-										<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
-									</Anchors>
-								</Texture>
+								<Texture name="$parentBackground" parentKey="Background" inherits="GlueDark-Backdrops-Background-Scroll" setAllPoints="true"/>
 							</Layer>
 						</Layers>
 						<Frames>
 							<Frame name="$parentPVE" parentKey="PVE">
 								<Size x="0" y="0"/>
 								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="$parentBackground" x="0" y="0"/>
-									<Anchor point="BOTTOMLEFT" relativeTo="$parentBackground" x="0" y="0"/>
+									<Anchor point="TOPLEFT" x="0" y="0"/>
+									<Anchor point="BOTTOMLEFT" x="0" y="0"/>
 								</Anchors>
 								<Layers>
 									<Layer level="ARTWORK">
-										<FontString name="$parentTitle" parentKey="Title" inherits="GlueDark_Font_Shadow_14" text="SPECIALIZATIONS_PVE_LABEL">
+										<FontString name="$parentTitle" parentKey="Title" inherits="GlueDark_Font_Shadow_14" text="CHARACTER_BOOST_SPEC_PVE">
 											<Anchors>
 												<Anchor point="TOP" x="0" y="-7"/>
 											</Anchors>
@@ -1635,12 +1799,12 @@
 							<Frame name="$parentPVP" parentKey="PVP">
 								<Size x="0" y="0"/>
 								<Anchors>
-									<Anchor point="TOPRIGHT" relativeTo="$parentBackground" x="0" y="0"/>
-									<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackground" x="0" y="0"/>
+									<Anchor point="TOPRIGHT" x="0" y="0"/>
+									<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
 								</Anchors>
 								<Layers>
 									<Layer level="ARTWORK">
-										<FontString name="$parentTitle" parentKey="Title" inherits="GlueDark_Font_Shadow_14" text="SPECIALIZATIONS_PVP_LABEL">
+										<FontString name="$parentTitle" parentKey="Title" inherits="GlueDark_Font_Shadow_14" text="CHARACTER_BOOST_SPEC_PVP">
 											<Size x="0" y="0"/>
 											<Anchors>
 												<Anchor point="TOP" x="0" y="-7"/>
@@ -1693,6 +1857,181 @@
 		<Scripts>
 			<OnLoad>
 				Mixin(self, BoostServiceItemBrowserMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+		</Scripts>
+	</Frame>
+
+	<Frame name="CharacterServiceItemBrowserFrame" enableMouse="true" hidden="true">
+		<Size x="445" y="606"/>
+		<Anchors>
+			<Anchor point="LEFT" x="0" y="0"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="Background" setAllPoints="true"/>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentShadowTop" parentKey="ShadowTop">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentShadowBottom" parentKey="ShadowBottom">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentShadowLeft" parentKey="ShadowLeft">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentShadowRight" parentKey="ShadowRight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentTitle" parentKey="Title" inherits="GlueDark_Font_22" text="PREVIEW">
+					<Size x="340" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-30"/>
+					</Anchors>
+					<Color r="1" g="0.82" b="0"/>
+				</FontString>
+				<FontString name="$parentDescription" parentKey="Description" inherits="GlueDark_Font_16">
+					<Size x="340" y="0"/>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentTitle" relativePoint="BOTTOM" x="0" y="-10"/>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate">
+				<Attributes>
+					<Attribute name="layoutType" value="GlueDarkMetalTripleBorder" type="string"/>
+					<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
+				</Attributes>
+			</Frame>
+
+			<Frame name="$parentContainer" parentKey="Container">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="30" y="-100"/>
+					<Anchor point="BOTTOMRIGHT" x="-30" y="100"/>
+				</Anchors>
+
+				<Frames>
+					<Frame name="$parentNineSliceInset" parentKey="NineSliceInset" inherits="NineSlicePanelTemplate">
+						<Attributes>
+							<Attribute name="layoutType" value="PKBT_InsetFrameTemplate" type="string"/>
+							<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
+						</Attributes>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture name="$parentBackground" parentKey="Background" setAllPoints="true" alpha="0.5">
+									<Color r="0" g="0" b="0"/>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Frame>
+
+					<Frame name="$parentClassHolder" parentKey="ClassHolder">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="0" y="-30"/>
+							<Anchor point="BOTTOMRIGHT" x="0" y="10"/>
+						</Anchors>
+					</Frame>
+
+					<Frame name="$parentSpecHolder" parentKey="SpecHolder" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="0" y="-10"/>
+							<Anchor point="BOTTOMRIGHT" x="0" y="10"/>
+						</Anchors>
+						<Frames>
+							<Frame name="$parentPVE" parentKey="PVE">
+								<Size x="0" y="0"/>
+								<Anchors>
+									<Anchor point="TOPLEFT" x="0" y="0"/>
+									<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+								</Anchors>
+								<Layers>
+									<Layer level="ARTWORK">
+										<FontString name="$parentTitle" parentKey="Title" inherits="GlueDark_Font_Shadow_15" text="BOOST_SERVICE_BROWSE_SPEC_PVE">
+											<Anchors>
+												<Anchor point="TOP" x="0" y="-7"/>
+											</Anchors>
+											<Color r="0.553" g="0.522" b="0.494"/>
+										</FontString>
+									</Layer>
+								</Layers>
+							</Frame>
+							<Frame name="$parentPVP" parentKey="PVP">
+								<Size x="0" y="0"/>
+								<Anchors>
+									<Anchor point="TOPRIGHT" x="0" y="0"/>
+									<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+								</Anchors>
+								<Layers>
+									<Layer level="ARTWORK">
+										<FontString name="$parentTitle" parentKey="Title" inherits="GlueDark_Font_Shadow_15" text="BOOST_SERVICE_BROWSE_SPEC_PVP">
+											<Size x="0" y="0"/>
+											<Anchors>
+												<Anchor point="TOP" x="0" y="-7"/>
+											</Anchors>
+											<Color r="0.553" g="0.522" b="0.494"/>
+										</FontString>
+									</Layer>
+									<Layer level="ARTWORK">
+										<FontString name="$parentNotAvailable" parentKey="NotAvailable" inherits="GlueDark_Font_Shadow_16" setAllPoints="true" text="BOOST_PREVIEW_PVP_SPEC_NOT_AVAILABLE">
+											<Color r="0.553" g="0.522" b="0.494"/>
+										</FontString>
+									</Layer>
+								</Layers>
+							</Frame>
+						</Frames>
+					</Frame>
+
+					<Frame name="$parentItems" parentKey="Items" inherits="BoostServiceSpecItemScrollPKBTTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-4"/>
+							<Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+			</Frame>
+
+			<Button name="$parentBackButton" parentKey="BackButton" inherits="PKBT_RedButtonTemplate" text="BACK">
+				<Size x="132" y="56"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="25"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():OnClickBack(button)
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CharacterServiceItemBrowserMixin)
 				self:OnLoad()
 			</OnLoad>
 			<OnShow>
@@ -1805,7 +2144,7 @@
 				<FontString inherits="GlueDark_Font_Shadow_14" spacing="2.5"/>
 			</SimpleHTML>
 
-			<Button name="$parentPurchaseButton" parentKey="PurchaseButton" inherits="GlueDark_ButtonBoldTemplate" text="CHARACTER_SERVICES_BUY">
+			<Button name="$parentPurchaseButton" parentKey="PurchaseButton" inherits="GlueDark_ButtonBoldTemplate,TransactionConfirmationTemplate" text="CHARACTER_SERVICES_BUY">
 				<Size x="148" y="37" />
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" x="-76" y="37"/>

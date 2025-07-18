@@ -64,7 +64,7 @@ function GetDressUpItemLinkInfo(link)
 				if not creatureID then
 					local _, enchantID = C_TransmogCollection.GetIllusionInfoByItemID(itemID)
 					if enchantID then
-						local weaponItemID = (GetInventoryTransmogID("player", 16) or GetInventoryItemID("player", 16)) or C_TransmogCollection.GetFallbackWeaponAppearance()
+						local weaponItemID = (C_Transmog.GetInventoryTransmogInfo("player", 16) or GetInventoryItemID("player", 16)) or C_TransmogCollection.GetFallbackWeaponAppearance()
 						if weaponItemID then
 							id = string.format("item:%d:%d", weaponItemID, enchantID)
 							linkType = Enum.DressUpLinkType.Illusion

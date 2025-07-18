@@ -286,7 +286,7 @@ function ServerNewsEntryMixin:ShowHyperlinkTooltip(this, link, data, isHyperlink
 
 	GameTooltip:SetOwner(self, "ANCHOR_CURSOR_RIGHT", 10, 10)
 	if isHyperlink then
-		GameTooltip:SetHyperlink(data)
+		GameTooltip:SetHyperlink(link)
 	else
 		GameTooltip:AddLine(data, 1, 1, 1)
 	end

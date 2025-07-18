@@ -145,11 +145,7 @@ function AnimationStopAndPlay(object, ...)
 	end
 
 	if object then
-		if object:IsPlaying() then
-			object:Stop()
-		end
-
-		object:Play()
+		object:Restart()
 	end
 end
 
@@ -1329,7 +1325,7 @@ function TalentFramePanelSummary_OnUpdate(self, elapsed, ...)
     end
 
     if self.needAnimation then
-        local easing = outSine(self.elapsed, 0, 250 + iconYOffset, 0.500)
+		local easing = EasingUtil.OutSine(self.elapsed, 0, 250 + iconYOffset, 0.500)
         local offset = 0
 
         if self.isHiddenAnimation then

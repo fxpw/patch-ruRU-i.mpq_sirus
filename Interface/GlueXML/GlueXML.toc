@@ -1,7 +1,10 @@
 GlueXMLPre.xml
 GlueXML.xml
 
-..\SharedXML\Utils\CVars.lua
+..\SharedXML\Util.lua
+..\SharedXML\Utils\CustomSharedAPI.lua
+..\SharedXML\Utils\C_CVar.lua
+..\SharedXML\Utils\C_GlobalStorage.lua
 
 ..\SharedXML\AtlasStorage.lua
 ..\SharedXML\AddonVersion.lua
@@ -9,13 +12,12 @@ GlueXML.xml
 GlueStrings.lua
 ..\SharedXML\middleclass.lua
 ..\SharedXML\DataDumper.lua
-..\SharedXML\Util.lua
 ..\SharedXML\Hook.lua
-..\SharedXML\Utils\CustomSharedAPI.lua
 ..\SharedXML\MixIn.lua
 ..\SharedXML\TableUtil.lua
 ..\SharedXML\EnumUtil.lua
 ..\SharedXML\FunctionUtil.lua
+..\SharedXML\EasingUtil.lua
 ..\SharedXML\FunctionOverride.lua
 ..\SharedXML\EventHandler.lua
 ..\SharedXML\MathUtil.lua
@@ -47,7 +49,6 @@ GlueStrings.lua
 ..\SharedXML\SharedConstants.lua
 ..\SharedXML\C_TimerAugment.lua
 ..\SharedXML\SharedExtendedMethods.lua
-..\SharedXML\L_Easing.lua
 
 ..\SharedXML\SharedFontStyles.xml
 
@@ -58,15 +59,14 @@ GlueStrings.lua
 ..\SharedXML\SharedUIPanelPKBTTemplates.xml
 ..\SharedXML\SharedBasicControls.xml
 ..\SharedXML\HybridScrollFrame.xml
+..\SharedXML\TransactionConfirmation.xml
 
-..\SharedXML\Utils\C_Cache.lua
 ..\SharedXML\Utils\C_Service.lua
 ..\SharedXML\Utils\C_RealmInfo.lua
 ..\SharedXML\Utils\C_Item.lua
 
 Utils\C_ConnectManager.lua
 Utils\C_GluePackets.lua
-Utils\C_GlueCVars.lua
 Utils\C_RealmList.lua
 Utils\C_CharacterList.lua
 Utils\C_CharacterServices.lua

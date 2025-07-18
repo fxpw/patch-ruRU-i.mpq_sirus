@@ -132,7 +132,7 @@ function ItemBrowserMixin:OnEvent(event, ...)
 		if not C_Service.IsHardcoreEnabledOnRealm() then
 			PanelTemplates_HideTab(self, 3)
 		end
-		if not C_Service.IsGMAccount() then
+		if not C_Service.IsGMAccount() and not IsInterfaceDevClient() then
 			PanelTemplates_HideTab(self, 4)
 		end
 	end
@@ -364,7 +364,7 @@ function ItemBrowserSearchBoxMixin:OnLoad()
 
 	self:SetCustomCharFilter(function(text)
 		text = string.gsub(text, "%s%s+", " ")
-		text = utf8.gsub(text, "[^A-zА-я0-9' ]+", "")
+		text = utf8.gsub(text, "[^A-zА-я0-9':%- ]+", "")
 		return text
 	end)
 

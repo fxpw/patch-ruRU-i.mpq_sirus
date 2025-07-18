@@ -37,11 +37,18 @@ GlueDialogTypes["CHARACTER_SERVICES_GEAR_BOOST_CONFIRM"] = {
 	button1 = YES,
 	button2 = NO,
 	OnAccept = function(this)
-		C_CharacterServices.BoostCharacterGear(unpack(this.data))
+		local which = this.which
+		local data = this.data
+		this.Container.Button1:TakeConfirmationScreenshot(function(success)
+			C_CharacterServices.BoostCharacterGear(unpack(data))
+			GlueDialog:HideDialog(which)
+		end)
+		return true
 	end,
 	OnCancel = function()
 		CharacterServiceGearBoostFlowFrame:Hide()
 	end,
+	transactionConfirmation = true,
 }
 
 local factionLogoTextures = {
@@ -464,8 +471,8 @@ function CharacterServiceBoostFlowMixin:OnEvent(event, ...)
 			text = BOOST_SERVICE_UPDATE_TIP,
 			textJustifyH = "CENTER",
 			textFontObject = "GlueDark_Font_14",
-			checkCVars = false,
-			cvarBitfield = "HELPTIP_BITFIELD",
+			checkCVars = true,
+			cvarBitfield = "closedInfoFramesGlue",
 			bitfieldFlag = 1,
 			offsetX = 0,
 			buttonStyle = HelpTip.ButtonStyle.Close,
@@ -743,7 +750,7 @@ function CharacterServiceBoostFlowMixin:NextStep()
 					self.Flow.step5:Show();
 				else
 					PlaySound(SOUNDKIT.GS_TITLE_OPTIONS)
-					self:Hide()
+					self.NextButton:Hide()
 
 					local characterID = GetCharIDFromIndex(self.selectedCharacterIndex)
 					CharacterServiceBoostActivationDialog:ShowDialog(characterID)
@@ -776,7 +783,7 @@ function CharacterServiceBoostFlowMixin:NextStep()
 				self.Flow.step5:Show();
 			else
 				PlaySound(SOUNDKIT.GS_TITLE_OPTIONS)
-				self:Hide()
+				self.NextButton:Hide()
 
 				local characterID = GetCharIDFromIndex(self.selectedCharacterIndex)
 				CharacterServiceBoostActivationDialog:ShowDialog(characterID)
@@ -800,7 +807,7 @@ function CharacterServiceBoostFlowMixin:NextStep()
 			self.Flow.step5.finish.Faction:SetText(selectedFactionButton == 1 and FACTION_HORDE or FACTION_ALLIANCE)
 
 			PlaySound(SOUNDKIT.GS_TITLE_OPTIONS)
-			self:Hide()
+			self.NextButton:Hide()
 
 			local characterID = GetCharIDFromIndex(self.selectedCharacterIndex)
 			CharacterServiceBoostActivationDialog:ShowDialog(characterID)
@@ -1016,6 +1023,7 @@ function CharacterServiceGearBoostFlowMixin:OnHide()
 
 	self:ResetState()
 	self:UpdateCharacterButtons(false)
+	self:GetPreviewFrame():Hide()
 end
 
 function CharacterServiceGearBoostFlowMixin:OnDisplaySizeChanged()
@@ -1073,7 +1081,16 @@ end
 
 function CharacterServiceGearBoostFlowMixin:PreviousStep()
 	if self.stepIndex > 1 then
-		self:SetStep(self.stepIndex - 1)
+		self:GetPreviewFrame():SetBackActionBlocked(false)
+		self:GetPreviewFrame():Close()
+
+		if self.stepIndex == 2 then
+			self:ResetState()
+			self:UpdateCharacterButtons(true)
+			self:SetStep(1)
+		else
+			self:SetStep(self.stepIndex - 1)
+		end
 	end
 end
 
@@ -1130,13 +1147,30 @@ function CharacterServiceGearBoostFlowMixin:IsStepComplete()
 	return true
 end
 
+function CharacterServiceGearBoostFlowMixin:UpdatePreviewButton()
+	if self:GetPreviewFrame():IsClosed() then
+		self.PreviewButton:SetNormalAtlas("PKBT-SideButtonForward-Normal")
+		self.PreviewButton:SetPushedAtlas("PKBT-SideButtonForward-Pressed")
+		self.PreviewButton:SetDisabledAtlas("PKBT-SideButtonForward-Disabled")
+		self.PreviewButton:SetHighlightAtlas("PKBT-SideButtonForward-Hover")
+	else
+		self.PreviewButton:SetNormalAtlas("PKBT-SideButtonBack-Normal")
+		self.PreviewButton:SetPushedAtlas("PKBT-SideButtonBack-Pressed")
+		self.PreviewButton:SetDisabledAtlas("PKBT-SideButtonBack-Disabled")
+		self.PreviewButton:SetHighlightAtlas("PKBT-SideButtonBack-Hover")
+	end
+end
+
 function CharacterServiceGearBoostFlowMixin:SetStep(stepIndex)
 	self.stepIndex = stepIndex
 
+	self.PreviewButton:SetShown(self.stepIndex == 1)
+	self.BackButton:SetShown(self.stepIndex > 1)
 	self.TitleText:SetShown(self.stepIndex == 1)
 	self.steps[2].CharacterInfoBackground:SetShown(self.stepIndex == 2)
 	self.BackButton:SetEnabled(self.stepIndex > 1)
 	self:UpdateNextButton()
+	self:UpdatePreviewButton()
 
 	for index, step in ipairs(self.steps) do
 		step:SetShown(index == stepIndex)
@@ -1159,6 +1193,8 @@ function CharacterServiceGearBoostFlowMixin:SetStep(stepIndex)
 			step.Line2.Text:SetText(RPE_INFO_TEXT2_NOPVP)
 		end
 	elseif self.stepIndex == 2 then
+		self:GetPreviewFrame():Close()
+
 		self.Flow.NineSliceInset:ClearAllPoints()
 		self.Flow.NineSliceInset:SetPoint("TOPLEFT", step, "TOPLEFT", 0, 0)
 		self.Flow.NineSliceInset:SetPoint("RIGHT", step, "RIGHT", 0, 0)
@@ -1388,6 +1424,19 @@ function CharacterServiceGearBoostFlowMixin:OnLeaveEquipCheckButton(this)
 	GlueTooltip:Hide()
 end
 
+function CharacterServiceGearBoostFlowMixin:GetPreviewFrame()
+	return CharacterServiceItemBrowserFrame
+end
+
+function CharacterServiceGearBoostFlowMixin:ShowPreviewFrame(classID, specType, specIndex)
+	self:GetPreviewFrame():ShowPreview(self, classID, specType, specIndex)
+	self:UpdatePreviewButton()
+end
+
+function CharacterServiceGearBoostFlowMixin:OnClickPreviewButton(this, button)
+	self:ShowPreviewFrame()
+end
+
 CharacterServicePriceMixin = {}
 
 function CharacterServicePriceMixin:OnLoad()
@@ -1589,6 +1638,10 @@ function CharacterServiceDialogPriceMixin:OnLoad()
 		self.Artwork:Hide()
 	end
 
+	self.PurchaseButton:SetConfirmationTimerDone(function()
+		self:UpdateContent()
+	end)
+
 	self.Price.OnPriceChanged = function(price, originalPrice)
 		self:OnPriceChanged(price, originalPrice)
 	end
@@ -1640,7 +1693,7 @@ function CharacterServiceDialogPriceMixin:UpdatePurchaseButton()
 	local price = self.Price:GetPrice()
 	if price then
 		local balance = C_CharacterServices.GetBalance()
-		if self.Price:GetPrice() == 0 then
+		if price == 0 then
 			self.PurchaseButton:SetText(self:GetAttributeGlobalString("FreeUseText", CHARACTER_SERVICES_FREE_USE))
 		elseif balance >= price or IsGMAccount(true) then
 			self.PurchaseButton:SetText(self:GetAttributeGlobalString("PurchaseText", CHARACTER_SERVICES_BUY))
@@ -1653,6 +1706,11 @@ end
 function CharacterServiceDialogPriceMixin:SetPrice(price, originalPrice)
 	self.Price:SetPrice(price, originalPrice)
 	self:UpdatePurchaseButton()
+
+	local balance = C_CharacterServices.GetBalance()
+	if price == 0 or balance >= price then
+		self.PurchaseButton:StartConfirmationTimer(true)
+	end
 end
 
 function CharacterServiceDialogPriceMixin:OnPriceChanged(price, originalPrice)
@@ -1720,9 +1778,11 @@ end
 
 function CharacterServiceBoostPurchaseMixin:Purchase()
 	if C_CharacterServices.GetBalance() >= C_CharacterServices.GetBoostPrice() or IsGMAccount(true) then
-		PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
-		self:Hide()
-		C_CharacterServices.PurchaseBoost()
+		self.PurchaseButton:TakeConfirmationScreenshot(function(success)
+			PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
+			self:Hide()
+			C_CharacterServices.PurchaseBoost()
+		end)
 	else
 		PlaySound(SOUNDKIT.GS_LOGIN_NEW_ACCOUNT)
 		self:Hide()
@@ -1844,9 +1904,11 @@ end
 
 function CharacterServiceRestoreCharacterMixin:Purchase()
 	if C_CharacterServices.GetBalance() >= C_CharacterServices.GetCharacterRestorePrice() or IsGMAccount(true) then
-		PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_DEL_CHARACTER)
-		self:Hide()
-		C_CharacterServices.PurchaseRestoreCharacter(unpack(self.purchaseArgs))
+		self.PurchaseButton:TakeConfirmationScreenshot(function(success)
+			PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_DEL_CHARACTER)
+			self:Hide()
+			C_CharacterServices.PurchaseRestoreCharacter(unpack(self.purchaseArgs))
+		end)
 	else
 		PlaySound(SOUNDKIT.GS_LOGIN_NEW_ACCOUNT)
 		self:Hide()
@@ -1864,9 +1926,11 @@ end
 
 function CharacterServicePagePurchaseMixin:Purchase()
 	if C_CharacterServices.GetBalance() >= C_CharacterServices.GetListPagePrice() or IsGMAccount(true) then
-		PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
-		self:Hide()
-		C_CharacterServices.PurchaseCharacterListPage()
+		self.PurchaseButton:TakeConfirmationScreenshot(function(success)
+			PlaySound(SOUNDKIT.GS_CHARACTER_SELECTION_ACCT_OPTIONS)
+			self:Hide()
+			C_CharacterServices.PurchaseCharacterListPage()
+		end)
 	else
 		PlaySound(SOUNDKIT.GS_LOGIN_NEW_ACCOUNT)
 		self:Hide()
@@ -1900,9 +1964,13 @@ end
 function BoostServiceItemBrowserMixin:OnEvent(event, ...)
 	if event == "GLOBAL_MOUSE_DOWN" then
 		local button = ...
-		if button == "RightButton" and self.stepIndex > 1 then
+		if button == "RightButton" then
 			PlaySound("igMainMenuOptionCheckBoxOn")
-			self:SetStep(self.stepIndex - 1)
+			if self:IsBackActionBlocked() then
+				self:Close()
+			elseif self.stepIndex > 1 then
+				self:SetStep(self.stepIndex - 1)
+			end
 		end
 	end
 end
@@ -1926,17 +1994,15 @@ end
 function BoostServiceItemBrowserMixin:OnClickBack()
 	PlaySound("igMainMenuOptionCheckBoxOn")
 
-	if self.stepIndex > 1 then
+	if not self:IsBackActionBlocked() and self.stepIndex > 1 then
 		self:SetStep(self.stepIndex - 1)
 	else
-		self:Hide()
+		self:Close()
 	end
 end
 
 function BoostServiceItemBrowserMixin:SetStep(stepIndex)
 	self.stepIndex = stepIndex
-
-	self.Container.BackButton:SetText(self.stepIndex > 1 and BACK or CLOSE)
 
 	self.Container.Separator:SetShown(self.stepIndex > 1)
 	self.Container.Description:SetShown(self.stepIndex > 1)
@@ -1944,6 +2010,8 @@ function BoostServiceItemBrowserMixin:SetStep(stepIndex)
 	self.Container.ClassHolder:SetShown(self.stepIndex == 1)
 	self.Container.SpecHolder:SetShown(self.stepIndex == 2)
 	self.Container.Items:SetShown(self.stepIndex == 3)
+
+	self:UpdateBackActionButton()
 
 	if self.stepIndex == 1 then
 		self.Container.Title:SetText(BOOST_PREVIEW_SELECT_CLASS)
@@ -2079,6 +2147,19 @@ function BoostServiceItemBrowserMixin:OnClickSpecButton(this, button)
 
 	PlaySound("igMainMenuOptionCheckBoxOn")
 	self:SetStep(3)
+end
+
+function BoostServiceItemBrowserMixin:IsBackActionBlocked()
+	return self.backActionClose
+end
+
+function BoostServiceItemBrowserMixin:SetBackActionBlocked(blocked)
+	self.backActionClose = blocked
+	self:UpdateBackActionButton()
+end
+
+function BoostServiceItemBrowserMixin:UpdateBackActionButton()
+	self.Container.BackButton:SetText((self.stepIndex > 1 and not self:IsBackActionBlocked()) and BACK or CLOSE)
 end
 
 CharacterServiceIconButtonMixin = CreateFromMixins(PKBT_OwnerMixin)
@@ -2234,6 +2315,10 @@ CharacterServiceSpecButtonPKBTMixin = CreateFromMixins(CharacterServiceSpecButto
 
 function CharacterServiceSpecButtonPKBTMixin:OnLoad()
 	CharacterServiceSpecButtonMixin.OnLoad(self)
+
+	self.IconBorder:SetAtlas("PKBT-ItemBorder-Default", true)
+	self.IconBorder:SetAllPoints(self.Icon)
+
 	self.HelpButton:ClearAllPoints()
 	self.HelpButton:SetPoint("LEFT", self, "RIGHT")
 	self.HelpButton:SetSize(30, 30)
@@ -2248,9 +2333,6 @@ function CharacterUpgradeSelectSpecRadioButtonPKBTMixin:OnLoad()
 
 	self:SetHitRectInsets(0, -220, -17, -17)
 	self.Icon:SetPoint("LEFT", self, "RIGHT", 10, 0)
-
-	self.IconBorder:SetAtlas("PKBT-ItemBorder-Default", true)
-	self.IconBorder:SetAllPoints(self.Icon)
 end
 
 function CharacterUpgradeSelectSpecRadioButtonPKBTMixin:UpdateRect()
@@ -2258,6 +2340,11 @@ function CharacterUpgradeSelectSpecRadioButtonPKBTMixin:UpdateRect()
 
 	local l, r, t, b = self:GetHitRectInsets()
 	self.HelpButton:SetPoint("LEFT", self, "RIGHT", -r, 0)
+end
+
+function CharacterUpgradeSelectSpecRadioButtonPKBTMixin:ItemButtonOnClick(button)
+	PlaySound("igMainMenuOptionCheckBoxOn")
+	self:GetOwner():ShowPreviewFrame(self.classID, self.specType, self.specIndex)
 end
 
 local itemInvTypeSorted = {
@@ -2309,6 +2396,8 @@ function BoostServiceSpecItemScrollMixin:OnLoad()
 	self.Loading.Spinner.AnimFrame.Anim:Play()
 	self.Loading.Spinner.Text:SetText(BOOST_SPEC_ITEMS_LOADING)
 	self.Loading.Spinner.Text:Show()
+
+	self.qualityColorBorder = true
 end
 
 function BoostServiceSpecItemScrollMixin:OnEvent(event, ...)
@@ -2359,7 +2448,7 @@ function BoostServiceSpecItemScrollMixin:UpdateSpecItems()
 	for index, item in ipairs(self.items) do
 		local name, link, quality, itemLevel, reqLevel, armorType, subclass, maxStack, equipSlot, icon, vendorPrice, itemClassID, subclassID, equipLocID = C_Item.GetItemInfoCache(item.itemID)
 		item.name = name
-		item.equipLocID = itemInvTypeSorted[equipSlot]
+		item.equipLocID = equipSlot and itemInvTypeSorted[equipSlot] or nil
 	end
 
 	table.sort(self.items, function(a, b)
@@ -2387,7 +2476,7 @@ function BoostServiceSpecItemScrollMixin:OnItemScrollUpdate()
 		if itemIndex <= numItems then
 			local item = self.items[itemIndex]
 			button:SetID(itemIndex)
-			button:SetItem(item.itemID, item.amount)
+			button:SetItem(item.itemID, item.amount, self.qualityColorBorder)
 			button:Show()
 			if button:IsMouseOver() then
 				button:OnEnter()
@@ -2445,12 +2534,17 @@ function BoostServiceSpecItemButtonMixin:OnShow()
 end
 
 function BoostServiceSpecItemButtonMixin:OnEnter()
+	if GetMouseFocus() ~= self then
+		-- filter out erroneously script execution for buttons in scroll
+		return
+	end
+
 	if self.itemID and self:IsVisible() then
 		local name, link, quality, itemLevel, reqLevel, armorType, subclass, maxStack, equipSlot, icon, vendorPrice, classID, subclassID, equipLocID = C_Item.GetItemInfoCache(self.itemID)
 		local r, g, b = GetItemQualityColor(quality or 1)
 		GlueTooltip:SetOwner(self, "ANCHOR_LEFT")
 		GlueTooltip:SetMaxWidth(300)
-		GlueTooltip:AddLine(name, r, g, b)
+		GlueTooltip:AddLine(name or UNKNOWN, r, g, b)
 		if C_Item.HasItemInfoCache(self.itemID) then
 			GlueTooltip:AddLine(_G[equipSlot], 1, 1, 1)
 			GlueTooltip:AddLine(string.format(ITEM_LEVEL, itemLevel), 1, 1, 1)
@@ -2461,7 +2555,13 @@ function BoostServiceSpecItemButtonMixin:OnEnter()
 		if IsGMAccount() then
 			GlueTooltip:AddLine("")
 			GlueTooltip:AddLine(string.format("ItemID: |cffFFFFFF%d|r", self.itemID), 0.5, 0.5, 0.5)
-			GlueTooltip:AddLine(string.format("Icon: |cffFFFFFF%s|r", icon), 0.5, 0.5, 0.5)
+
+			if icon then
+				if StringStartsWith(icon, [[Interface\Icons\]], true) then
+					icon = icon:sub(17)
+				end
+				GlueTooltip:AddLine(string.format("Icon: |cffFFFFFF%s|r", icon), 0.5, 0.5, 0.5)
+			end
 		end
 
 		GlueTooltip:Show()
@@ -2485,14 +2585,17 @@ function BoostServiceSpecItemButtonMixin:UpdateRect()
 	self.Name:SetPoint("LEFT", self.Icon, "RIGHT", 5, offsetY / 2)
 end
 
-function BoostServiceSpecItemButtonMixin:SetItem(itemID, amount)
+function BoostServiceSpecItemButtonMixin:SetItem(itemID, amount, qualityColorBorder)
 	local name, link, quality, itemLevel, reqLevel, armorType, subclass, maxStack, equipSlot, icon, vendorPrice, classID, subclassID, equipLocID = C_Item.GetItemInfoCache(itemID)
-	self.Name:SetText(name)
-	self.Icon:SetTexture(icon)
+	self.Name:SetText(name or UNKNOWN)
+	self.Icon:SetTexture(icon or [[Interface\Icons\INV_Misc_QuestionMark]])
 
-	local r, g, b = GetItemQualityColor(quality)
+	local r, g, b = GetItemQualityColor(quality or 4)
 	self.Name:SetTextColor(r, g, b)
-	self.IconBorder:SetVertexColor(r, g, b)
+
+	if qualityColorBorder then
+		self.IconBorder:SetVertexColor(r, g, b)
+	end
 
 	if amount > 1 then
 		self.Amount:SetText(amount)
@@ -2502,7 +2605,7 @@ function BoostServiceSpecItemButtonMixin:SetItem(itemID, amount)
 	end
 
 	self.SlotType:SetText(_G[equipSlot])
-	self.ItemLevel:SetFormattedText(ITEM_LEVEL_COLORED, GetItemLevelColor(itemLevel):GenerateHexColor(), itemLevel)
+	self.ItemLevel:SetFormattedText(ITEM_LEVEL_COLORED, GetItemLevelColor(itemLevel or 0):GenerateHexColor(), itemLevel or 0)
 
 	self.itemID = itemID
 	self.link = link or C_Item.GetItemLink(itemID)
@@ -2541,19 +2644,321 @@ function CharacterServiceBoostActivationDialogMixin:UpdateContainer()
 	end
 end
 
+function CharacterServiceBoostActivationDialogMixin:ShowDialog(characterID, usePredefinedCharacterID)
+	CharacterActionDialogMixin.ShowDialog(self, characterID, usePredefinedCharacterID)
+
+	self.AcceptButton:SetConfirmationTimerDone(function()
+		self.AcceptButton:SetText(OKAY)
+	end)
+
+	self.AcceptButton:StartConfirmationTimer(true)
+end
+
 function CharacterServiceBoostActivationDialogMixin:OnAccept()
-	if self.characterID then
-		C_CharacterServices.BoostCharacter(self.characterID,
-			BOOST_SELECTED_PROFESSION_MAIN,
-			BOOST_SELECTED_PROFFESION_ADDITIONAL,
-			BOOST_SELECTED_SPEC_PVE,
-			BOOST_SELECTED_SPEC_PVP,
-			BOOST_SELECTED_FACTION or 0
-		)
-		return true
+	local characterID = self.characterID
+	if characterID then
+		self.AcceptButton:TakeConfirmationScreenshot(function(success)
+			CharacterServiceBoostFlowFrame:Hide()
+
+			C_CharacterServices.BoostCharacter(characterID,
+				BOOST_SELECTED_PROFESSION_MAIN,
+				BOOST_SELECTED_PROFFESION_ADDITIONAL,
+				BOOST_SELECTED_SPEC_PVE,
+				BOOST_SELECTED_SPEC_PVP,
+				BOOST_SELECTED_FACTION or 0
+			)
+
+			self:Hide()
+		end)
+		return false
 	end
 end
 
 function CharacterServiceBoostActivationDialogMixin:OnCancel()
 	CharacterServiceBoostFlowFrame:Hide()
+end
+
+CharacterServiceItemBrowserMixin = CreateFromMixins(GlueEasingAnimMixin, BoostServiceItemBrowserMixin)
+
+function CharacterServiceItemBrowserMixin:OnLoad()
+	self.Background:SetAtlas("PKBT-Tile-Oribos-256", true)
+
+	self.ShadowLeft:SetAtlas("PKBT-Background-Shadow-Small-44-Left", true)
+	self.ShadowRight:SetAtlas("PKBT-Background-Shadow-Small-44-Right", true)
+	self.ShadowTop:SetAtlas("PKBT-Background-Shadow-Small-44-Top", true)
+	self.ShadowBottom:SetAtlas("PKBT-Background-Shadow-Small-44-Bottom", true)
+
+
+	self.specPool = CreateFramePool("Button", self.Container.SpecHolder, "CharacterServiceSpecButtonPKBTTemplate", nil, nil, function(frame)
+		frame:SetHeight(40)
+		frame.Icon:SetSize(40, 40)
+		frame.RoleIcon:SetSize(24, 24)
+		frame.Name:SetWidth(120)
+	end)
+
+	self.classButtons = {}
+	self.stepIndex = 1
+
+	self.BUTTON_PADDING = 5
+
+	self:SetInitPosition()
+end
+
+function CharacterServiceItemBrowserMixin:OnHide()
+	BoostServiceItemBrowserMixin.OnHide(self)
+	self:SetBackActionBlocked(false)
+	self:SetParent(nil)
+end
+
+function CharacterServiceItemBrowserMixin:SetInitPosition()
+	local width = self:GetWidth()
+	self.basePoint = {self:GetPoint()}
+	self.startPoint = 10
+	self.endPoint = width + 15
+	self.duration = 0.5
+end
+
+function CharacterServiceItemBrowserMixin:SetPosition(easing, progress)
+	if easing then
+		self:ClearAndSetPoint(self.basePoint[1], easing, self.basePoint[5])
+	else
+		self:ClearAndSetPoint(self.basePoint[1], self.isRevers and self.startPoint or self.endPoint, self.basePoint[5])
+	end
+end
+
+function CharacterServiceItemBrowserMixin:Close(skipAnim)
+	if not self:IsShown() or self:IsAnimPlayingReverse() then
+		return
+	end
+
+	if skipAnim then
+		self:Hide()
+		self:Reset()
+	else
+		self:PlayAnim(true, function()
+			self:Hide()
+		end)
+	end
+end
+
+function CharacterServiceItemBrowserMixin:IsClosed()
+	return not self:IsShown() or self:IsAnimPlayingReverse()
+end
+
+function CharacterServiceItemBrowserMixin:SetStep(stepIndex)
+	self.stepIndex = stepIndex
+
+	self.Container.ClassHolder:SetShown(self.stepIndex == 1)
+	self.Container.SpecHolder:SetShown(self.stepIndex == 2)
+	self.Container.Items:SetShown(self.stepIndex == 3)
+
+	self:UpdateBackActionButton()
+
+	if self.stepIndex == 1 then
+		self.Title:SetText(PREVIEW)
+		self.Description:SetText(BOOST_PREVIEW_SELECT_CLASS)
+
+		self.classID = nil
+
+		if not self.classList then
+			self.classList = {}
+
+			for classID, classData in pairs(S_CLASS_SORT_ORDER) do
+				if classID ~= CLASS_ID_DEMONHUNTER then
+					table.insert(self.classList, classData)
+				end
+			end
+
+			table.sort(self.classList, function(a, b)
+				return a[4] < b[4]
+			end)
+		end
+
+		for index, classData in ipairs(self.classList) do
+			local button = self.classButtons[index]
+			if not button then
+				local flag, className, classID, localizedClassNameMale, localizedClassNameFemale = unpack(classData)
+				button = CreateFrame("Button", string.format("$parentClassButton%u", index), self.Container.ClassHolder, "CharacterServiceClassButtonPKBTTemplate", classID)
+				button:SetOwner(self)
+				button.Name:SetText(localizedClassNameMale)
+				button.Icon:SetTexture(string.format([[Interface\Custom\ClassIcon\CLASS_ICON_%s]], className))
+				button:ClearAllPoints()
+
+				if index == 1 then
+					button:SetPoint("TOPLEFT", 5, -5)
+				elseif index == 10 then
+					button:SetPoint("TOP", self.classButtons[index - 2], "BOTTOM", 0, -self.BUTTON_PADDING)
+				elseif index % 3 == 1 then
+					button:SetPoint("TOPLEFT", self.classButtons[index - 3], "BOTTOMLEFT", 0, -self.BUTTON_PADDING)
+				else
+					button:SetPoint("TOPLEFT", self.classButtons[index - 1], "TOPRIGHT", 5, 0)
+				end
+
+				self.classButtons[index] = button
+			end
+
+			button:Show()
+		end
+	elseif self.stepIndex == 2 then
+		local classInfo = C_CreatureInfo.GetClassInfo(self.classID)
+		local r, g, b, hex = GetClassColor(classInfo.classFile)
+		self.Title:SetFormattedText("|c%s%s|r", hex, classInfo.localizeName.male)
+
+		self.Description:SetText(BOOST_PREVIEW_SELECT_SPEC)
+
+		self.specIndex = nil
+		self.specType = nil
+
+		self.specPool:ReleaseAll()
+
+		local CONTAINER_WIDTH = self.Container.SpecHolder:GetWidth()
+		self.Container.SpecHolder.PVE:SetWidth(CONTAINER_WIDTH / 2)
+		self.Container.SpecHolder.PVP:SetWidth(CONTAINER_WIDTH / 2)
+
+		local specTypes = {}
+
+		if C_CharacterServices.IsBoostHasPVPEquipment() then
+			specTypes = {Enum.CharacterServices.SpecType.PVE, Enum.CharacterServices.SpecType.PVP}
+			self.Container.SpecHolder.PVP.NotAvailable:Hide()
+		else
+			specTypes = {Enum.CharacterServices.SpecType.PVE}
+			self.Container.SpecHolder.PVP.NotAvailable:Show()
+		end
+
+		for specTypeIndex, specType in ipairs(specTypes) do
+			local specs = C_CharacterServices.GetBoostCharacterSpecs(self.classID, specType)
+			local lastButton
+
+			for specIndex, spec in ipairs(specs) do
+				local button = self.specPool:Acquire()
+				button:SetOwner(self)
+				button:SetWidth(CONTAINER_WIDTH / 2 - self.BUTTON_PADDING * 2)
+				button.Name:SetText(spec.name)
+				button.Icon:SetTexture(spec.icon)
+				button.Icon:SetDesaturated(spec.iconDesaturate)
+				button.RoleIcon:SetAtlas(spec.role and ("GlueDark-IconRole-"..spec.role) or "GlueDark-IconRole-DAMAGER")
+				button.HelpButton.InfoHeader = spec.name
+				button.HelpButton.InfoText = spec.description
+
+				button.HelpButton:Hide()
+				button.ItemBrowse:EnableMouse(false)
+				button.ItemBrowse.noItemBrowseArrow = true
+
+				button:UpdateButtonInfo(self.classID, specType, specIndex)
+
+				if lastButton then
+					button:SetPoint("TOPLEFT", lastButton, "BOTTOMLEFT", 0, -20)
+				elseif specTypeIndex == 1 then
+					button:SetPoint("TOPLEFT", self.Container.SpecHolder.PVE, "TOPLEFT", self.BUTTON_PADDING * 2, -40)
+				elseif specTypeIndex == 2 then
+					button:SetPoint("TOPLEFT", self.Container.SpecHolder.PVP, "TOPLEFT", 0, -40)
+				end
+
+				button:Show()
+				lastButton = button
+			end
+		end
+	elseif self.stepIndex == 3 then
+		local specs = C_CharacterServices.GetBoostCharacterSpecs(self.classID, self.specType)
+		local spec = specs[self.specIndex]
+
+		local classInfo = C_CreatureInfo.GetClassInfo(self.classID)
+		local r, g, b, hex = GetClassColor(classInfo.classFile)
+
+		self.Title:SetFormattedText("|c%s%s|r - %s", hex, classInfo.localizeName.male, spec.name)
+		self.Description:SetText(self.specType == Enum.CharacterServices.SpecType.PVE and BOOST_SPEC_ITEMS_PVE or BOOST_SPEC_ITEMS_PVP)
+
+		self.Container.Items:ShowSpecItems(self.classID, self.specType, self.specIndex)
+	end
+end
+
+function CharacterServiceItemBrowserMixin:ShowSpecItems(classID, specType, specIndex)
+	self:SetBackActionBlocked(classID ~= nil)
+
+	if classID then
+		self.classID = classID
+
+		if specType and specIndex then
+			self.specType = specType
+			self.specIndex = specIndex
+			self:SetStep(3)
+		else
+			self:SetStep(2)
+		end
+	else
+		self:SetStep(1)
+	end
+end
+
+function CharacterServiceItemBrowserMixin:ShowPreview(parent, classID, specType, specIndex)
+	if self:GetParent() == parent then
+		if self.isRevers then
+			self:PlayAnim(false)
+		elseif not classID then
+			self:Close()
+		end
+	else
+		local frameLevel = parent:GetFrameLevel()
+		if frameLevel < 20 then
+			parent:SetFrameLevel(20)
+		end
+
+		self:SetParent(parent)
+		SetParentFrameLevel(self, -11)
+		self:PlayAnim(false, nil, true)
+	end
+
+	if classID then
+		self:ShowSpecItems(classID, specType, specIndex)
+	else
+		self:SetBackActionBlocked(false)
+	end
+end
+
+function CharacterServiceItemBrowserMixin:UpdateBackActionButton()
+	self.BackButton:SetText((self.stepIndex > 1 and not self:IsBackActionBlocked()) and BACK or CLOSE)
+end
+
+CharacterUpgradeSelectClassButtonPKBTMixin = CreateFromMixins(CharacterUpgradeSelectClassButtonMixin)
+
+function CharacterUpgradeSelectClassButtonPKBTMixin:OnLoad()
+	self.IconBorder:SetAtlas("PKBT-ItemBorder-Default", true)
+
+	self.Name:ClearAllPoints()
+	self.Name:SetPoint("TOP", self.Icon, "BOTTOM", 0, -10)
+	self.Name:SetTextColor(1, 1, 1)
+	self.Name:SetJustifyH("CENTER")
+end
+
+function CharacterUpgradeSelectClassButtonPKBTMixin:OnEnter()
+	if not self:IsObjectType("CheckButton") then
+		self.Name:SetVertexColor(1, 0.82, 0)
+	end
+end
+
+function CharacterUpgradeSelectClassButtonPKBTMixin:OnLeave()
+	if not self:IsObjectType("CheckButton") then
+		self.Name:SetVertexColor(1, 1, 1)
+	end
+end
+
+BoostServiceSpecItemScrollPKBTMixin = CreateFromMixins(BoostServiceSpecItemScrollMixin)
+
+function BoostServiceSpecItemScrollPKBTMixin:OnLoad()
+	self:RegisterCustomEvent("BOOST_SERVICE_ITEMS_LOADED")
+
+	self.Scroll.ScrollBar:SetPoint("TOPLEFT", self.Scroll, "TOPRIGHT", 5, -22)
+	self.Scroll.ScrollBar:SetPoint("BOTTOMLEFT", self.Scroll, "BOTTOMRIGHT", 5, 21)
+	self.Scroll.ScrollBar:SetBackgroundShown(false)
+
+	self.Scroll.update = function(scrollFrame)
+		self:OnItemScrollUpdate()
+	end
+	self.Scroll.scrollBar = self.Scroll.ScrollBar
+	HybridScrollFrame_SetDoNotHideScrollBar(self.Scroll, true)
+	HybridScrollFrame_CreateButtons(self.Scroll, "BoostServiceSpecItemButtonPKBTTemplate", 0, 0)
+
+	self.Loading.Spinner.AnimFrame.Anim:Play()
+	self.Loading.Spinner.Text:SetText(BOOST_SPEC_ITEMS_LOADING)
+	self.Loading.Spinner.Text:Show()
 end

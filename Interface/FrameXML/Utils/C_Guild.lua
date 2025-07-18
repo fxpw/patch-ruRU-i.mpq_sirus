@@ -150,14 +150,10 @@ do -- ACMSG_GUILD_LEVEL_REQUEST
 		end
 
 		if UnitIsUnit(unit, "player") then
-			return PRIVATE.XP_CURRENT, PRIVATE.XP_NEXT_LEVEL
+			return PRIVATE.XP_CURRENT, PRIVATE.XP_NEXT_LEVEL, PRIVATE.XP_DAILY_CAP
 		end
 
-		return 0, 0
-	end
-
-	function GetGuildXPDailtyCap()
-		return PRIVATE.XP_DAILY_CAP
+		return 0, 0, 0
 	end
 end
 
@@ -247,7 +243,7 @@ do -- ACMSG_GUILD_REPUTATION_REWARDS_REQUEST
 
 	function GetGuildRewardInfo(index)
 		if type(index) ~= "number" then
-			error("Usage: GetGuildRewards(index)", 2)
+			error("Usage: GetGuildRewardInfo(index)", 2)
 		end
 
 		local reward = PRIVATE.REPUTATION_REWARDS[index]
@@ -304,12 +300,12 @@ end
 
 do -- ASMSG_GUILD_TEAM
 	function EventHandler:ASMSG_GUILD_TEAM(msg)
-		C_CacheInstance:Set("ASMSG_GUILD_TEAM", tonumber(msg))
+		C_GlobalStorage.SetVar("ASMSG_GUILD_TEAM", tonumber(msg))
 		FireCustomClientEvent("GUILD_FACTION_CHANGED")
 	end
 
 	function GetGuildFaction()
-		local serverFactionGroupID = C_CacheInstance:Get("ASMSG_GUILD_TEAM")
+		local serverFactionGroupID = C_GlobalStorage.GetVar("ASMSG_GUILD_TEAM")
 		local factionTag = serverFactionGroupID and SERVER_PLAYER_FACTION_GROUP[serverFactionGroupID] or UnitFactionGroup("player")
 		local factionID = PLAYER_FACTION_GROUP[factionTag]
 		return factionTag, factionID

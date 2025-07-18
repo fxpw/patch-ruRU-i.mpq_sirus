@@ -450,11 +450,9 @@ local function GetRequirementToUpgrade(upgradeCostInfo)
 			local bracket = upgradeCostInfo[ItemUpgradeCost.Bracket];
 			if bracket == 0 then
 				local arenaRating = math.max(GetArenaRating(1) or 0, GetArenaRating(2) or 0);
-
 				return string.format(ITEM_REQ_ARENA_RATING, rating), arenaRating < rating;
 			elseif bracket == 1 then
-				local _, _, _, _, battlegroundRating = GetRatedBattlegroundRankInfo();
-
+				local battlegroundRating = C_PvP.GetRatedBattlegroundRating()
 				return string.format(ITEM_REQ_ARENA_RATING_3V3, rating), battlegroundRating < rating;
 			end
 		end

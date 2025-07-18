@@ -201,7 +201,8 @@ function SpellActivationOverlay_OnLoad(self)
 end
 
 function SpellActivationOverlay_ShowAllOverlays(self, spellID, texturePath, positions, scale, r, g, b, vFlip, hFlip)
-	if SpellOverlay_OverlayArtAlphaSlider.value and SpellOverlay_OverlayArtAlphaSlider.value ~= 0 then
+	local alpha = tonumber(GetCVar("spellActivationOverlayOpacity")) or 1
+	if alpha > 0 then
 		positions = strupper(positions)
 		if ( complexLocationTable[positions] ) then
 			for location, info in pairs(complexLocationTable[positions]) do
@@ -273,7 +274,7 @@ function SpellActivationOverlay_ShowOverlay(self, spellID, texturePath, position
 	end
 
 	scale = Saturate(tonumber(scale) or 1)
-	overlay:SetAlpha(SpellOverlay_OverlayArtAlphaSlider.value)
+	overlay:SetAlpha(tonumber(GetCVar("spellActivationOverlayOpacity")) or 1)
 	overlay:SetSize(width * scale, height * scale);
 
 	overlay.texture:SetTexture(texturePath);

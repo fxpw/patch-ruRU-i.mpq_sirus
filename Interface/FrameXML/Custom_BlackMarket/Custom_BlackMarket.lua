@@ -1,5 +1,3 @@
-C_BlackMarket = {}
-
 UIPanelWindows["BlackMarketFrame"] = { area = "doublewide", pushable = 0, width = 890, xOffset = "15", yOffset = "-10"};
 
 StaticPopupDialogs["BID_BLACKMARKET"] = {
@@ -7,49 +5,28 @@ StaticPopupDialogs["BID_BLACKMARKET"] = {
 	button1 = ACCEPT,
 	button2 = CANCEL,
 	OnAccept = function(self)
-		SendServerMessage("ACMSG_BLACK_MARKET_BID", string.format("%d:%d", self.data.auctionID, self.data.bid))
+		C_BlackMarket.ItemPlaceBid(self.data.auctionID, self.data.bid);
 	end,
-	OnCancel = function() BlackMarketFrameBidButton:Enable() end,
+	OnCancel = function(self)
+		BlackMarketFrame_UpdateBidButton()
+	end,
 	timeout = 0,
 	exclusive = 1,
 	hideOnEscape = 1,
 	hasItemFrame = 1,
 };
 
-function C_BlackMarket.GetNumItems()
-	return #C_BlackMarket.itemDataByIndex
+function BlackMarketFrame_Show()
+	ShowUIPanel(BlackMarketFrame);
+	if ( not BlackMarketFrame:IsShown() ) then
+		C_BlackMarket.Close();
+	end
+	PlaySound(SOUNDKIT.AUCTION_WINDOW_OPEN)
 end
 
-function C_BlackMarket.GetItemInfoByIndex( index )
-	if not index then
-		return nil
-	end
-
-	if C_BlackMarket.itemDataByIndex[index] then
-		return unpack(C_BlackMarket.itemDataByIndex[index])
-	end
-
-	return nil
-end
-
-function C_BlackMarket.GetItemInfoByID( marketID )
-	if not marketID then
-		return nil
-	end
-
-	if C_BlackMarket.itemDataByID[marketID] then
-		return unpack(C_BlackMarket.itemDataByID[marketID])
-	end
-
-	return nil
-end
-
-function C_BlackMarket.GetHotItem()
-	if C_BlackMarket.itemHotData then
-		return unpack(C_BlackMarket.itemHotData)
-	end
-
-	return nil
+function BlackMarketFrame_Hide()
+	HideUIPanel(BlackMarketFrame);
+	PlaySound(SOUNDKIT.AUCTION_WINDOW_CLOSE);
 end
 
 function BlackMarketFrame_OnLoad(self)
@@ -66,7 +43,11 @@ function BlackMarketFrame_OnLoad(self)
 	BlackMarketScrollFrame.scrollBar.doNotHide = true;
 	BlackMarketScrollFrame.scrollBar.trackBG:SetVertexColor(0, 0, 0, 0.4)
 	HybridScrollFrame_CreateButtons(BlackMarketScrollFrame, "BlackMarketItemTemplate", 5, -5)
-
+	self:RegisterCustomEvent("BLACK_MARKET_OPEN");
+	self:RegisterCustomEvent("BLACK_MARKET_CLOSE");
+	self:RegisterCustomEvent("BLACK_MARKET_ITEM_UPDATE");
+	self:RegisterCustomEvent("BLACK_MARKET_BID_RESULT");
+	self:RegisterCustomEvent("BLACK_MARKET_OUTBID");
 	MoneyInputFrame_SetGoldOnly(BlackMarketBidPrice, true);
 
 	BlackMarketBidPrice.gold:SetWidth(80);
@@ -74,29 +55,55 @@ function BlackMarketFrame_OnLoad(self)
 	BlackMarketBidPrice.onValueChangedFunc = BlackMarketFrame_UpdateBidButton;
 end
 
+function BlackMarketFrame_OnEvent(self, event, ...)
+	if ( event == "BLACK_MARKET_ITEM_UPDATE" ) then
+		BlackMarketScrollFrame_Update();
+	elseif ( event == "BLACK_MARKET_BID_RESULT" or event == "BLACK_MARKET_OUTBID" ) then
+		if (self:IsShown()) then
+			C_BlackMarket.RequestItems();
+		end
+	elseif ( event == "BLACK_MARKET_OPEN" ) then
+		if ( BlackMarketFrame_Show ) then
+			BlackMarketFrame_Show();
+		end
+		return
+	elseif ( event == "BLACK_MARKET_CLOSE" ) then
+		if ( BlackMarketFrame_Hide ) then
+			BlackMarketFrame_Hide();
+		end
+		return
+	end
+
+	-- do this on any event
+	local numItems = C_BlackMarket.GetNumItems();
+	self.Inset.NoItems:SetShown(not numItems or numItems <= 0);
+	BlackMarketFrame_UpdateHotItem(self);
+	BlackMarketFrame_UpdateBidButton()
+end
+
 function BlackMarketFrame_OnShow(self)
 	self.HotDeal:Hide();
+	C_BlackMarket.RequestItems();
 	MoneyInputFrame_SetCopper(BlackMarketBidPrice, 0);
---	if( C_BlackMarket.IsViewOnly() ) then
---		BlackMarketFrame.BidButton:Hide();
---		BlackMarketBidPrice:Hide();
---		BlackMarketMoneyFrame:Hide();
---		BlackMarketFrame.MoneyFrameBorder:Hide();
---	else
+	if( C_BlackMarket.IsViewOnly() ) then
+		BlackMarketFrame.BidButton:Hide();
+		BlackMarketBidPrice:Hide();
+		BlackMarketMoneyFrame:Hide();
+		BlackMarketFrame.MoneyFrameBorder:Hide();
+	else
 		BlackMarketFrame.BidButton:Show();
 		BlackMarketBidPrice:Show();
 		BlackMarketMoneyFrame:Show();
 		BlackMarketFrame.MoneyFrameBorder:Show();
---	end
+	end
 
 	BlackMarketFrame.BidButton:Disable();
-	PlaySound("AuctionWindowOpen");
-
-	BlackMarketScrollFrame_Update()
+	PlaySound(SOUNDKIT.AUCTION_WINDOW_OPEN);
 end
 
 function BlackMarketFrame_OnHide(self)
-	PlaySound("AuctionWindowClose");
+	C_BlackMarket.Close();
+	PlaySound(SOUNDKIT.AUCTION_WINDOW_CLOSE);
 end
 
 function BlackMarketFrame_UpdateHotItem(self)
@@ -140,7 +147,7 @@ function BlackMarketFrame_UpdateHotItem(self)
 		end
 		MoneyFrame_Update(HotItemCurrentBidMoneyFrame, bidAmount);
 
-		self.HotDeal.TimeLeft.Text:SetFormattedText(BLACK_MARKET_HOT_ITEM_TIME_LEFT, _G["AUCTION_TIME_LEFT"..timeLeft]);
+		self.HotDeal.TimeLeft.Text:SetText(format(BLACK_MARKET_HOT_ITEM_TIME_LEFT, _G["AUCTION_TIME_LEFT"..timeLeft]));
 		self.HotDeal.TimeLeft.tooltip = _G["AUCTION_TIME_LEFT"..timeLeft.."_DETAIL"];
 		self.HotDeal.itemLink = link;
 		self.HotDeal.selectedMarketID = marketID;
@@ -217,9 +224,11 @@ function BlackMarketScrollFrame_Update()
 				end
 
 				button:Show();
+			else
+				button:Hide()
 			end
 		else
-			button:Hide()
+			button:Hide();
 		end
 	end
 
@@ -273,97 +282,4 @@ function BlackMarketItem_OnEnter(self)
 	else
 		GameTooltip:Hide()
 	end
-end
-
-function EventHandler:ASMSG_BLACK_MARKET_LIST( msg )
-	local listData = {strsplit("|", msg)}
-
-	C_BlackMarket.itemDataByIndex = {}
-	C_BlackMarket.itemDataByID = {}
-	C_BlackMarket.itemHotData = {}
-
-	for i = 1, #listData do
-		local id, itemEntry, itemCount, creatureName, lastBet, timeLeft, flags = string.match(listData[i], "(%d+):(%d+):(%d+):(.-):(%d+):(%d+):(%d+)")
-		if id then
-			id 				= tonumber(id)
-			itemEntry 		= tonumber(itemEntry)
-			itemCount 		= tonumber(itemCount)
-			creatureName 	= creatureName
-			lastBet 		= tonumber(lastBet)
-			timeLeft 		= tonumber(timeLeft)
-			flags 			= tonumber(flags)
-
-			local _name, _link, _quality, _iLevel, _reqLevel, _class, _subclass, _maxStack, _equipSlot, _texture, _vendorPrice = GetItemInfo(itemEntry)
-
-			local name 				= _name
-			local texture 			= _texture
-			local quantity 			= itemCount
-			local itemType			= _subclass
-			local usable 			= true
-			local level 			= _iLevel
-			local levelType 		= -1
-			local sellerName 		= creatureName
-			local minBid 			= (lastBet * 1.05)
-			local minIncrement 		= (lastBet * 0.05)
-			local currBid 			= lastBet
-			local youHaveHighBid 	= bit.band(flags, 1) ~= 0
-			local numBids 			= -1
-			local timeLeft 			= timeLeft
-			local link 				= _link
-			local marketID 			= id
-			local quality 			= _quality
-			local flag 				= flags
-			local isHot				= bit.band(flags, 2) ~= 0
-
-			local data = {name, texture, quantity, itemType, usable, level, levelType, sellerName, minBid, minIncrement, currBid, youHaveHighBid, numBids, timeLeft, link, marketID, quality, flag}
-
-			if isHot then
-				C_BlackMarket.itemHotData = data
-			end
-
-			table.insert(C_BlackMarket.itemDataByIndex, data)
-			C_BlackMarket.itemDataByID[marketID] = data
-		end
-	end
-
-	local numItems = C_BlackMarket.GetNumItems()
-	BlackMarketFrame.Inset.NoItems:SetShown(not numItems or numItems <= 0)
-
-	if not BlackMarketFrame:IsShown() then
-		ShowUIPanel(BlackMarketFrame)
-	end
-
-	BlackMarketScrollFrame_Update()
-	BlackMarketFrame_UpdateHotItem(BlackMarketFrame)
-	BlackMarketFrame_UpdateBidButton()
-end
-
-function EventHandler:ASMSG_BLACK_MARKET_CLOSE( msg )
-	if BlackMarketFrame:IsShown() then
-		HideUIPanel(BlackMarketFrame)
-	end
-end
-
-function EventHandler:ASMSG_BLACK_MARKET_BID_R( msg )
-	local errorString = ""
-
-	msg = tonumber(msg)
-
-	if msg == 1 then
-		errorString = BLACK_MARKET_ERROR_1
-	elseif msg == 2 then
-		errorString = BLACK_MARKET_ERROR_2
-	elseif msg == 3 then
-		errorString = BLACK_MARKET_ERROR_3
-	elseif msg == 4 then
-		errorString = BLACK_MARKET_ERROR_4
-	elseif msg == 5 then
-		errorString = BLACK_MARKET_ERROR_5
-	elseif msg == 6 then
-		errorString = BLACK_MARKET_ERROR_6
-	end
-
-	UIErrorsFrame:AddMessage(errorString, 1.0, 0.1, 0.1, 1.0)
-	BlackMarketFrameBidButton:Enable()
-	BlackMarketFrame_UpdateBidButton()
 end

@@ -22,6 +22,9 @@
 		</Shadow>
 		<FontHeight val="11"/>
 	</Font>
+	<Font name="PKBT_Font_11_OUTLINE" font="Fonts\FRIZQT__.TTF" outline="NORMAL" virtual="true">
+		<FontHeight val="11"/>
+	</Font>
 	<Font name="PKBT_Font_12" font="Fonts\FRIZQT__.TTF" virtual="true">
 		<Shadow>
 			<Offset x="1" y="-1"/>
@@ -74,6 +77,13 @@
 	</Font>
 	<Font name="PKBT_Font_16_OUTLINE" font="Fonts\FRIZQT__.TTF" outline="NORMAL" virtual="true">
 		<FontHeight val="16"/>
+	</Font>
+	<Font name="PKBT_Font_17" font="Fonts\FRIZQT__.TTF" virtual="true">
+		<Shadow>
+			<Offset x="2" y="-2"/>
+			<Color r="0" g="0" b="0"/>
+		</Shadow>
+		<FontHeight val="17"/>
 	</Font>
 	<Font name="PKBT_Font_18" font="Fonts\FRIZQT__.TTF" virtual="true">
 		<Shadow>
@@ -1691,6 +1701,27 @@
 			<OnHide>
 				self.AnimFrame.Anim:Stop()
 			</OnHide>
+		</Scripts>
+	</Frame>
+
+	<Frame name="PKBT_LoadingCountdownTemplate" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" parentKey="Text" inherits="PKBT_Font_14">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+					<Color r="1" g="0.82" b="0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, PKBT_LoadingCountdown)
+			</OnLoad>
+			<OnUpdate>
+				self:OnUpdate(elapsed)
+			</OnUpdate>
 		</Scripts>
 	</Frame>
 

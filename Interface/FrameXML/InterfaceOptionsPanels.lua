@@ -4,8 +4,6 @@ local function SecureNext(elements, key)
 	return securecall(next, elements, key);
 end
 
-S_INTERFACE_OPTIONS_CACHE = C_Cache("INTERFACE_OPTIONS_CACHE", true)
-
 -- [[ Generic Interface Options Panel ]] --
 
 function InterfaceOptionsPanel_CheckButton_OnClick (checkButton)
@@ -152,20 +150,29 @@ function InterfaceOptionsDropDownMixin:OnLoad()
 	UIDropDownMenu_Initialize(self, self.initFunction)
 	UIDropDownMenu_SetSelectedValue(self, value)
 	self:RegisterEvent("VARIABLES_LOADED")
+	self:RegisterCustomEvent("VARIABLE_MIGRATED")
 end
 
-function InterfaceOptionsDropDownMixin:OnEvent(event)
+function InterfaceOptionsDropDownMixin:OnEvent(event, ...)
 	if event == "VARIABLES_LOADED" then
 		self:UnregisterEvent(event)
-
-		local value = GetCVar(self.cvar)
-		self.defaultValue = GetCVarDefault(self.cvar)
-		self.value = value
-		self.oldValue = value
-
-		if self:IsShown() then
-			self:RefreshValue()
+		self:FetchValue()
+	elseif event == "VARIABLE_MIGRATED" then
+		local cvar = ...
+		if cvar == self.cvar then
+			self:FetchValue()
 		end
+	end
+end
+
+function InterfaceOptionsDropDownMixin:FetchValue()
+	local value = GetCVar(self.cvar)
+	self.defaultValue = GetCVarDefault(self.cvar)
+	self.value = value
+	self.oldValue = value
+
+	if self:IsShown() then
+		self:RefreshValue()
 	end
 end
 
@@ -203,8 +210,8 @@ end
 function InterfaceOptionsDropDownMixin:GetTooltipText()
 	local tooltipKey = self.tooltipKey or string.gsub(self.cvar, "C_CVAR_", "")
 	if tooltipKey then
-		return _G[("OPTION_%s_%s"):format(self.tooltipKey, strupper(self.value))]
-			or _G[("OPTION_%s"):format(self.tooltipKey)]
+		return _G[("OPTION_%s_%s"):format(self.tooltipKey, self.value):upper()]
+			or _G[("OPTION_%s"):format(self.tooltipKey):upper()]
 	end
 end
 
@@ -222,9 +229,9 @@ ControlsPanelOptions = {
 	autoDismountFlying = { text = "AUTO_DISMOUNT_FLYING_TEXT" },
 	autoClearAFK = { text = "CLEAR_AFK" },
 	blockTrades = { text = "BLOCK_TRADES" },
-	C_CVAR_AUTO_ACCEPT_GROUP_INVITES = { text = "SETTINGS_AUTO_ACCEPT_GROUP_INVITES" },
-	C_CVAR_BLOCK_GROUP_INVITES = { text = "SETTINGS_BLOCK_GROUP_INVITES" },
-	C_CVAR_BLOCK_GUILD_INVITES = { text = "BLOCK_GUILD_INVITES" },
+	autoAcceptGroupInvites = { text = "SETTINGS_AUTO_ACCEPT_GROUP_INVITES" },
+	blockGroupInvites = { text = "SETTINGS_BLOCK_GROUP_INVITES" },
+	blockGuildInvites = { text = "BLOCK_GUILD_INVITES" },
 	lootUnderMouse = { text = "LOOT_UNDER_MOUSE_TEXT" },
 	autoLootDefault = { text = "AUTO_LOOT_DEFAULT_TEXT" }, -- When this gets changed, the function SetAutoLootDefault needs to get run with its value.
 	autoLootKey = { text = "AUTO_LOOT_KEY_TEXT", default = "NONE" },
@@ -381,10 +388,12 @@ CombatPanelOptions = {
 	showTargetCastbar = { text = "SHOW_TARGET_CASTBAR" },
 	showVKeyCastbar = { text = "SHOW_TARGET_CASTBAR_IN_V_KEY" },
 	ShowClassColorInNameplate = { text = "SHOW_CLASS_COLOR_IN_V_KEY" },
+	spellActivationOverlayOpacity = { text = "SETTINGS_SPELLOVERLAY_SLIDER_2", minValue = 0, maxValue = 1.0, valueStep = 0.05 },
+	spellActivationButtonOpacity = { text = "SETTINGS_SPELLOVERLAY_SLIDER_1", minValue = 0, maxValue = 1.0, valueStep = 0.05 },
+	ActionButtonUseKeyDown = { text = "ACTION_BUTTON_USE_KEY_DOWN" },
 	lossOfControl = { text = "LOSS_OF_CONTROL" },
-	C_CVAR_WARMODE_PVP_ASSIST_ENABLED = { text = "WARMODE_ASSIST_MODE_LABEL" },
-	C_CVAR_DRACTHYR_RETURN_MORTAL_FORM = { text = "DRACTHYR_RETURN_MORTAL_FORM" },
-	spellActivationOverlay = { text = "SPELL_ACTIVE_OVERLAY" }
+	warmodePvpAssist = { text = "WARMODE_ASSIST_MODE_LABEL" },
+	dracthyrReturnMortalForm = { text = "DRACTHYR_RETURN_MORTAL_FORM" },
 }
 
 function InterfaceOptionsCombatPanelTOTDropDown_OnEvent (self, event, ...)
@@ -689,7 +698,8 @@ DisplayPanelOptions = {
 	threatPlaySounds = { text = "PLAY_AGGRO_SOUNDS" },
 	colorblindMode = { text = "USE_COLORBLIND_MODE" },
 	showItemLevel = { text = "SHOW_ITEM_LEVEL" },
-	C_CVAR_LOOT_ALERT_THRESHOLD = { text = "SETTINGS_LOOT_ALERT_THRESHOLD" },
+	lootAlertThreshold = { text = "SETTINGS_LOOT_ALERT_THRESHOLD" },
+	enableSpellSelectRange = { text = "SETTINGS_SPELL_RANGE" },
 }
 
 function InterfaceOptionsDisplayPanel_OnLoad (self)
@@ -941,6 +951,22 @@ function InterfaceOptionsDisplayPanelLootAlertThresholdDropDown_Initialize(self)
 	end
 end
 
+function InterfaceOptionsDisplayPanelSpellRangeDropDown_Initialize(self)
+	local value = tostring(self.value)
+	local info = UIDropDownMenu_CreateInfo()
+	info.tooltipOnButton = true
+
+	for optionIndex = 0, 3 do
+		local optionName = _G[string.format("OPTION_SPELL_RANGE_%i", optionIndex)]
+		info.text = optionName
+		info.func = self.OnButtonClick
+		info.value = tostring(optionIndex)
+		info.checked = value == info.value
+		info.tooltipTitle = info.tooltipText and info.text or nil
+		UIDropDownMenu_AddButton(info)
+	end
+end
+
 -- [[ Objectives Options Panel ]] --
 
 ObjectivesPanelOptions = {
@@ -950,6 +976,9 @@ ObjectivesPanelOptions = {
 	mapQuestDifficulty = { text = "MAP_QUEST_DIFFICULTY_TEXT" },
 	advancedWorldMap = { text = "ADVANCED_WORLD_MAP_TEXT" },
 	watchFrameWidth = { text = "WATCH_FRAME_WIDTH_TEXT" },
+	objectiveTrackerHeight = { text = "TRACKER_HEIGHT", minValue = 20, maxValue = 1200, valueStep = 20 },
+	objectiveTrackerBackgroundOpacity = { text = "TRACKER_OPACITY", minValue = 0, maxValue = 100, valueStep = 1 },
+	objectiveTrackerTextSize = { text = "TRACKER_TEXT_SIZE", minValue = 12, maxValue = 20, valueStep = 1 },
 }
 
 function InterfaceOptionsObjectivesPanel_OnLoad (self)
@@ -977,7 +1006,7 @@ SocialPanelOptions = {
 	showChatIcons = { text="SHOW_CHAT_ICONS" },
 	wholeChatWindowClickable = { text = "CHAT_WHOLE_WINDOW_CLICKABLE" },
 	chatMouseScroll = { text = "CHAT_MOUSE_WHEEL_SCROLL" },
-	C_CVAR_AUTOJOIN_TO_LFG = { text = "SETTINGS_AUTOJOIN_TO_LFG" },
+	lfgAutoJoinChannel = { text = "SETTINGS_AUTOJOIN_TO_LFG" },
 }
 
 function InterfaceOptionsSocialPanel_OnLoad (self)
@@ -1262,7 +1291,7 @@ end
 
 function InterfaceOptionsSocialPanelWhisperMode_OnEvent (self, event, ...)
 	if ( event == "VARIABLES_LOADED" ) then
-		self.cvar = "C_CVAR_WHISPER_MODE";
+		self.cvar = "whisperMode";
 
 		local value = GetCVar(self.cvar)
 		self.defaultValue = GetCVarDefault(self.cvar)
@@ -1651,7 +1680,7 @@ StatusTextPanelOptions = {
 
 function InterfaceOptionsStatusTextDisplayDropDown_OnEvent (self, event, ...)
 	if ( event == "PLAYER_ENTERING_WORLD" ) then
-		self.cvar = "C_CVAR_STATUS_TEXT_DISPLAY"
+		self.cvar = "statusTextDisplay"
 
 		local value = GetCVar(self.cvar)
 		self.defaultValue = GetCVarDefault(self.cvar)
@@ -1898,6 +1927,11 @@ BuffsPanelOptions = {
 	showCastableBuffs = { text = "SHOW_CASTABLE_BUFFS_TEXT" },
 	consolidateBuffs = { text = "CONSOLIDATE_BUFFS_TEXT" },
 	showCastableDebuffs = { text = "SHOW_CASTABLE_DEBUFFS_TEXT" },
+	showBuffFrameAuraCategory = { text = "SHOW_BUFF_FRAME_AURA_CATEGORY_TEXT" },
+	showBuffFrameAuraVIP = { text = "SHOW_BUFF_FRAME_AURA_VIP_TEXT" },
+	showBuffFrameAuraFaction = { text = "SHOW_BUFF_FRAME_AURA_FACTION_TEXT" },
+	showBuffFrameAuraZodiac = { text = "SHOW_BUFF_FRAME_AURA_ZODIAC_TEXT" },
+	showBuffFrameAuraPremium = { text = "SHOW_BUFF_FRAME_AURA_PREMIUM_TEXT" },
 }
 
 function InterfaceOptionsBuffsPanel_OnLoad (self)
@@ -2054,7 +2088,7 @@ end
 
 FeaturesPanelOptions = {
 	equipmentManager = { text = "USE_EQUIPMENT_MANAGER" },
-	C_CVAR_ITEM_UPGRADE_LEFT_ITEM_LIST = { text = "ITEM_UPGRADE_LEFT_ITEM_LIST" },
+	itemUpgradeLeftItems = { text = "ITEM_UPGRADE_LEFT_ITEM_LIST" },
 --	previewTalents = { text = "PREVIEW_TALENT_CHANGES" },
 }
 
@@ -2067,7 +2101,8 @@ HelpPanelOptions = {
 	UberTooltips = { text = "USE_UBERTOOLTIPS" },
 	showNewbieTips = { text = "SHOW_NEWBIE_TIPS_TEXT" },
 	scriptErrors = { text = "SHOW_LUA_ERRORS" },
-	C_CVAR_SHOW_ACHIEVEMENT_TOOLTIP = { text = "SETTINGS_SHOW_ACHIEVEMENT_TOOLTIP" },
+	showAchievementTooltip = { text = "SETTINGS_SHOW_ACHIEVEMENT_TOOLTIP" },
+	itemExpirationReminder = { text = "SETTINGS_ITEM_EXPIRATION_REMINDER" },
 }
 
 -- [[ Languages Options Panel ]] --
@@ -2153,28 +2188,28 @@ end
 -- [[ Notification Panel ]] --
 
 NotificationPanelOptions = {
-	C_CVAR_FLASH_CLIENT_ICON				= { text = "SETTINGS_FLASH_CLIENT_ICON" },
+	flashClientIcon							= { text = "SETTINGS_FLASH_CLIENT_ICON" },
 
-	C_CVAR_SHOW_TOASTS						= { text = "SETTINGS_SHOW_TOASTS" },
-	C_CVAR_SHOW_SOCIAL_TOAST				= { text = "SETTINGS_SHOW_SOCIAL_TOAST" },
-	C_CVAR_SHOW_BATTLE_PASS_TOAST			= { text = "SETTINGS_SHOW_BATTLE_PASS_TOAST" },
-	C_CVAR_SHOW_AUCTION_HOUSE_TOAST			= { text = "SETTINGS_SHOW_AUCTION_HOUSE_TOAST" },
-	C_CVAR_SHOW_CALL_OF_ADVENTURE_TOAST		= { text = "SETTINGS_SHOW_CALL_OF_ADVENTURE_TOAST" },
-	C_CVAR_SHOW_MISC_TOAST					= { text = "SETTINGS_SHOW_MISC_TOAST" },
+	toastShowWindow							= { text = "SETTINGS_SHOW_TOASTS" },
+	toastShowSocial							= { text = "SETTINGS_SHOW_SOCIAL_TOAST" },
+	toastShowBattlePass						= { text = "SETTINGS_SHOW_BATTLE_PASS_TOAST" },
+	toastShowAuctionHouse					= { text = "SETTINGS_SHOW_AUCTION_HOUSE_TOAST" },
+	toastShowCallOfAdventure				= { text = "SETTINGS_SHOW_CALL_OF_ADVENTURE_TOAST" },
+	toastShowMisc							= { text = "SETTINGS_SHOW_MISC_TOAST" },
 
-	C_CVAR_PLAY_TOAST_SOUND					= { text = "SETTINGS_SOCIAL_SOUND" },
-	C_CVAR_SOCIAL_TOAST_SOUND				= { text = "SETTINGS_SOCIAL_TOAST_SOUND" },
-	C_CVAR_HEAD_HUNTING_TOAST_SOUND			= { text = "SETTINGS_HEAD_HUNTING_TOAST_SOUND" },
-	C_CVAR_BATTLE_PASS_TOAST_SOUND			= { text = "SETTINGS_BATTLE_PASS_TOAST_SOUND" },
-	C_CVAR_QUEUE_TOAST_SOUND				= { text = "SETTINGS_QUEUE_TOAST_SOUND" },
-	C_CVAR_AUCTION_HOUSE_TOAST_SOUND		= { text = "SETTINGS_AUCTION_HOUSE_TOAST_SOUND" },
-	C_CVAR_CALL_OF_ADVENTURE_TOAST_SOUND	= { text = "SETTINGS_CALL_OF_ADVENTURE_TOAST_SOUND" },
-	C_CVAR_MISC_TOAST_SOUND					= { text = "SETTINGS_MISC_TOAST_SOUND" },
+	toastSoundEnabled						= { text = "SETTINGS_SOCIAL_SOUND" },
+	toastSoundSocial						= { text = "SETTINGS_SOCIAL_TOAST_SOUND" },
+	toastSoundHeadHunting					= { text = "SETTINGS_HEAD_HUNTING_TOAST_SOUND" },
+	toastSoundBattlePass					= { text = "SETTINGS_BATTLE_PASS_TOAST_SOUND" },
+	toastSoundQueue							= { text = "SETTINGS_QUEUE_TOAST_SOUND" },
+	toastSoundAuctionHouse					= { text = "SETTINGS_AUCTION_HOUSE_TOAST_SOUND" },
+	toastSoundCallOfAdventure				= { text = "SETTINGS_CALL_OF_ADVENTURE_TOAST_SOUND" },
+	toastSoundMisc							= { text = "SETTINGS_MISC_TOAST_SOUND" },
 }
 
 -- [[ Hardcore Panel ]] --
 HardcorePanelOptions = {
-	C_CVAR_SHOW_HARDCORE_NOTIFICATION_SOUND	= { text = "SETTINGS_HARDCORE_NOTIFICATION_SOUND" },
+	hardcoreNotificationSound				= { text = "SETTINGS_HARDCORE_NOTIFICATION_SOUND" },
 }
 
 function InterfaceOptionsHardcorePanel_OnLoad(panel)

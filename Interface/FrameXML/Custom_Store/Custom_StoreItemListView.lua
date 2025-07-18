@@ -96,6 +96,7 @@ function StoreItemListViewMixin:OnLoad()
 	self.List.Scroll.scrollBar = self.List.Scroll.ScrollBar
 	HybridScrollFrame_CreateButtons(self.List.Scroll, "StoreProductListRowButtonTemplate", 5, 0)
 
+	self.dressUpCameraSettings = {}
 	self.headerButtons = {}
 	self.itemButtons = {}
 	self.filterHolders = {}
@@ -153,8 +154,13 @@ function StoreItemListViewMixin:OnLoad()
 	self.DressUp:SetRotateEnabled(true)
 --	self.DressUp:SetZoomEnabled(true)
 --	self.DressUp:SetPanningEnabled(true)
+	self.DressUp:SetKeepPortraitCamera(true)
 	self.DressUp.onClose = function(this)
+		self:SaveDressUpCamera()
 		self:ToggleDressUp(false)
+	end
+	self.DressUp.OnModelHide = function(this, modelType, modelID)
+		self:SaveDressUpCamera()
 	end
 	self.DressUp.PurchaseButton:SetAllowReplenishment(C_StoreSecure.IsBonusReplenishmentAllowed(), false)
 	self.isDressUpShown = false
@@ -557,18 +563,22 @@ function StoreItemListViewMixin:GetDressUpProductID()
 end
 
 function StoreItemListViewMixin:ShowProductDressUp(productID, allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton)
+	self:SaveDressUpCamera()
 	local success = self.DressUp:SetProduct(productID, allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton)
 	if success then
 		self:ToggleDressUp(true)
+		self:LoadDressUpCamera()
 		self:UpdateItemSelection()
 	end
 	return success
 end
 
 function StoreItemListViewMixin:ShowItemDressUp(itemLink, allowToHide, allowEquipmentToggle, allowPortraitCamera)
+	self:SaveDressUpCamera()
 	local success = self.DressUp:SetItem(itemLink, allowToHide, allowEquipmentToggle, allowPortraitCamera)
 	if success then
 		self:ToggleDressUp(true)
+		self:LoadDressUpCamera()
 	end
 	return success
 end
@@ -591,6 +601,47 @@ function StoreItemListViewMixin:ToggleDressUp(state, skipUpdate)
 	if not skipUpdate then
 		self:UpdateView()
 	end
+end
+
+function StoreItemListViewMixin:HandleDressUpCamera(save)
+	local cameraSettingID = self:GetCameraSettingID()
+
+	if cameraSettingID == -1 or not self.DressUp:IsShown() then
+		return
+	end
+
+	local modelType = self.DressUp:GetModelType()
+	if modelType == Enum.ModelType.Item
+	or modelType == Enum.ModelType.ItemSet
+	or modelType == Enum.ModelType.Unit
+	or modelType == Enum.ModelType.M2
+	or modelType == Enum.ModelType.Illusion
+	or modelType == Enum.ModelType.ItemTransmog
+	then
+		if save then
+			self.dressUpCameraSettings[cameraSettingID] = self.DressUp.Model:GetCameraSettings()
+		else
+			local cameraSetting = self.dressUpCameraSettings[cameraSettingID]
+			if cameraSetting then
+				self.DressUp.Model:SetCameraSettings(cameraSetting)
+			end
+		end
+	end
+end
+
+function StoreItemListViewMixin:LoadDressUpCamera()
+	self:HandleDressUpCamera(false)
+end
+
+function StoreItemListViewMixin:SaveDressUpCamera()
+	self:HandleDressUpCamera(true)
+end
+
+function StoreItemListViewMixin:GetCameraSettingID()
+	if not self.categoryIndex or not self.subCategoryIndex then
+		return -1
+	end
+	return self.categoryIndex * 100000 + self.subCategoryIndex
 end
 
 function StoreItemListViewMixin:IsFilterOptionListChanged(cacheReceived)

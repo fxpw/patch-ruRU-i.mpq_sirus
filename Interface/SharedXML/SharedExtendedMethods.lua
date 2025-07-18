@@ -21,6 +21,15 @@ local ModelMeta = getObjTypeMeta("Model")
 --local ColorSelectMeta = createAndGetMeta("ColorSelect")
 --local MovieFrameMeta = createAndGetMeta("MovieFrame")
 
+local AnimationGroup = FrameObj:CreateAnimationGroup()
+local AnimationGroupMeta = getmetatable(AnimationGroup).__index
+local AnimationAnimationMeta = getmetatable(AnimationGroup:CreateAnimation("Animation")).__index
+local AnimationAlphaMeta = getmetatable(AnimationGroup:CreateAnimation("Alpha")).__index
+local AnimationRotationMeta = getmetatable(AnimationGroup:CreateAnimation("Rotation")).__index
+local AnimationPathMeta = getmetatable(AnimationGroup:CreateAnimation("Path")).__index
+local AnimationScaleMeta = getmetatable(AnimationGroup:CreateAnimation("Scale")).__index
+local AnimationTranslationMeta = getmetatable(AnimationGroup:CreateAnimation("Translation")).__index
+
 local GameTooltipMeta, PlayerModelMeta, DressUpModelMeta, TabardModelMeta, ModelFFXMeta
 
 if IsOnGlueScreen() then
@@ -376,6 +385,13 @@ local function DressUpModel_SetUnit(self, unit, isCustomPosition, positionData)
 	self.basePositionOverrideXasZ = nil
 end
 
+local function Animation_Restart(self)
+	if self:IsPlaying() then
+		self:Stop()
+	end
+	self:Play()
+end
+
 FrameMeta.SetShown = ScriptRegion_SetShown
 FrameMeta.GetScaledRect = ScriptRegion_GetScaledRect
 FrameMeta.IsMouseOverEx = ScriptRegion_IsMouseOverEx
@@ -499,6 +515,14 @@ ModelMeta.GetScaledRect = ScriptRegion_GetScaledRect
 ModelMeta.ClearAndSetPoint = ScriptRegionResizing_ClearAndSetPoint
 ModelMeta.RegisterCustomEvent = Frame_RegisterCustomEvent
 ModelMeta.UnregisterCustomEvent = Frame_UnregisterCustomEvent
+
+AnimationGroupMeta.Restart = Animation_Restart
+AnimationAnimationMeta.Restart = Animation_Restart
+AnimationAlphaMeta.Restart = Animation_Restart
+AnimationRotationMeta.Restart = Animation_Restart
+AnimationPathMeta.Restart = Animation_Restart
+AnimationScaleMeta.Restart = Animation_Restart
+AnimationTranslationMeta.Restart = Animation_Restart
 
 if IsOnGlueScreen() then
 	ModelFFXMeta.SetShown = ScriptRegion_SetShown

@@ -231,7 +231,7 @@ function AccountLogin_OnEvent(self, event, ...)
 				SetSavedAccountName(accountName);
 
 				SetCVar("readTerminationWithoutNotice", oldPassword);
-				C_GlueCVars.SetCVar("AUTO_LOGIN", oldAutologin == "true" and "1" or "0");
+				SetCVar("accountAutoLogin", oldAutologin == "true" and "1" or "0");
 			end
 
 			AccountLoginAccountEdit:SetText(accountName)
@@ -240,7 +240,7 @@ function AccountLogin_OnEvent(self, event, ...)
 			if password and password ~= "" and password ~= "1" and password ~= "0" then
 				AccountLoginPasswordEdit:SetText(password)
 
-				if C_GlueCVars.GetCVar("AUTO_LOGIN") == "1" then
+				if GetCVarBool("accountAutoLogin") then
 					AccountLoginAutoLogin:SetChecked(1)
 				end
 			end
@@ -312,7 +312,7 @@ function AccountLogin_Login()
 				SetSavedAccountName(login)
 
 				SetCVar("readTerminationWithoutNotice", password);
-				C_GlueCVars.SetCVar("AUTO_LOGIN", AccountLoginAutoLogin:GetChecked() and "1" or "0");
+				SetCVar("accountAutoLogin", AccountLoginAutoLogin:GetChecked() and "1" or "0");
 			end
 		else
 			SetSavedAccountName("")
@@ -324,7 +324,7 @@ function AccountLogin_Login()
 end
 
 function AccountLogin_AutoLogin()
-	if C_GlueCVars.GetCVar("AUTO_LOGIN") == "1" then
+	if GetCVarBool("accountAutoLogin") then
 		C_Timer:NewTicker(0.01, function()
 			if AccountLogin:IsVisible() then
 				DefaultServerLogin(GetSavedAccountName(), GetCVar("readTerminationWithoutNotice"))
@@ -395,7 +395,7 @@ AccountLoginChooseRealmDropDownMixin = {}
 local function ChooseRealmDropdown_OnClick(self)
 	GlueDark_DropDownMenu_SetSelectedValue(AccountLoginChooseRealmDropDown, self.value)
 	SetCVar("realmList", self.value)
-	C_GlueCVars.SetCVar("ENTRY_POINT", self.value)
+	SetCVar("entryPoint", self.value)
 end
 
 local function ChooseRealmDropdownInit()
@@ -423,7 +423,7 @@ function AccountLoginChooseRealmDropDownMixin:Update()
 		return
 	end
 
-	local entryPoint = C_GlueCVars.GetCVar("ENTRY_POINT")
+	local entryPoint = GetCVar("entryPoint")
 	if entryPoint ~= "" then
 		for _, entryData in ipairs(self.realmStorage) do
 			if entryData.ip == entryPoint then

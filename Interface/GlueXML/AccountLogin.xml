@@ -132,7 +132,7 @@
 								<Scripts>
 									<OnClick>
 										PlaySound(SOUNDKIT.GS_LOGIN_NEW_ACCOUNT)
-										LaunchURL("https://sirus.su/pay")
+										LaunchURL("https://sirus.su/donate")
 									</OnClick>
 								</Scripts>
 							</Button>

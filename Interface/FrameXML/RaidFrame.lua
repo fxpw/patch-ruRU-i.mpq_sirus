@@ -99,7 +99,7 @@ end
 
 -- Function for raid options
 function RaidOptionsFrame_UpdatePartyFrames()
-	if ( GetCVar("C_CVAR_HIDE_PARTY_INTERFACE_IN_RAID") == "1" and GetDisplayedAllyFrames() ~= "party" ) then
+	if ( GetCVarBool("hidePartyFramesInRaid") and GetDisplayedAllyFrames() ~= "party" ) then
 		HidePartyFrame();
 	else
 		HidePartyFrame();

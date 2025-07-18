@@ -25,6 +25,12 @@
 		<Size x="296" y="16"/>
 		<Layers>
 			<Layer level="OVERLAY">
+				<Texture name="$parentTrackedIcon" parentKey="TrackedIcon" file="Interface\Buttons\UI-CheckBox-Check" hidden="true">
+					<Size x="16" y="16"/>
+					<Anchors>
+						<Anchor point="LEFT"/>
+					</Anchors>
+				</Texture>
 				<FontString name="$parentCount" inherits="GameFontNormal">
 					<Size x="0" y="13"/>
 					<Anchors>
@@ -37,8 +43,14 @@
 		</Layers>
 		<Scripts>
 			<OnClick>
-				if ( IsModifiedClick() ) then
+				if IsModifiedClick("CHATLINK") and ChatEdit_GetActiveWindow() then
 					HandleModifiedItemClick(GetTradeSkillRecipeLink(self:GetID()));
+				elseif IsModifiedClick("QUESTWATCHTOGGLE") then
+					local recipeID = C_TradeSkillUI.GetTradeSkillRecipeIDForIndex(self:GetID())
+					if recipeID then
+						local isTracked = C_TradeSkillUI.IsRecipeTracked(recipeID)
+						C_TradeSkillUI.SetRecipeTracked(recipeID, not isTracked)
+					end
 				else
 					TradeSkillSkillButton_OnClick(self, button);
 				end
@@ -458,7 +470,7 @@
 								<FontString name="TradeSkillDescription" parentKey="Description" inherits="GameFontHighlightSmall2" justifyH="LEFT" text="Description">
 									<Size x="290" y="0"/>
 									<Anchors>
-										<Anchor point="TOPLEFT" x="8" y="-85"/>
+										<Anchor point="TOPLEFT" x="8" y="-105"/>
 									</Anchors>
 								</FontString>
 								<FontString name="TradeSkillRequirementLabel" parentKey="RequirementLabel" inherits="GameFontNormalSmall" text="REQUIRES_LABEL">
@@ -585,6 +597,33 @@
 									<Anchor point="LEFT" relativeTo="TradeSkillReagent7" relativePoint="RIGHT" x="2" y="0"/>
 								</Anchors>
 							</Button>
+
+							<CheckButton name="TradeSkillTrackButton" parentKey="TrackButton" inherits="UICheckButtonTemplate">
+								<Size x="24" y="24"/>
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="TradeSkillSkillIcon" relativePoint="BOTTOMLEFT" x="-6" y="-10"/>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self.text:SetText(PROFESSIONS_TRACK_RECIPE)
+									</OnLoad>
+									<OnShow>
+										self:SetHitRectInsets(0, -(5 + self.text:GetStringWidth()), -4, -4)
+									</OnShow>
+									<OnClick>
+										local success
+										local recipeIndex = GetTradeSkillSelectionIndex()
+										local recipeID = C_TradeSkillUI.GetTradeSkillRecipeIDForIndex(recipeIndex)
+										if recipeID then
+											local isTracked = C_TradeSkillUI.IsRecipeTracked(recipeID)
+											success = C_TradeSkillUI.SetRecipeTracked(recipeID, not isTracked)
+										end
+										if not success then
+											self:SetChecked(false)
+										end
+									</OnClick>
+								</Scripts>
+							</CheckButton>
 						</Frames>
 					</Frame>
 				</ScrollChild>

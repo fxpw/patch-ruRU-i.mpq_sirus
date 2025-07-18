@@ -243,9 +243,6 @@ function InterfaceOptionsFrameOkay_OnClick (self, button, apply)
 	if ( not apply ) then
 		InterfaceOptionsFrame_Show();
 	end
-
-	S_INTERFACE_OPTIONS_CACHE:Set("SPELL_OVERLAY_SPELL_HIGHLIGHT", SpellOverlay_SpellHighlightAlphaSlider.value)
-	S_INTERFACE_OPTIONS_CACHE:Set("SPELL_OVERLAY_ART", SpellOverlay_OverlayArtAlphaSlider.value)
 end
 
 function InterfaceOptionsFrameCancel_OnClick (self, button)
@@ -263,9 +260,6 @@ function InterfaceOptionsFrameCancel_OnClick (self, button)
 	InterfaceOptionsFrame.logout = nil;
 
 	InterfaceOptionsFrame_Show();
-
-	SpellOverlay_SpellHighlightAlphaSlider:SetValue(S_INTERFACE_OPTIONS_CACHE:Get("SPELL_OVERLAY_SPELL_HIGHLIGHT", 100))
-	SpellOverlay_OverlayArtAlphaSlider:SetValue(S_INTERFACE_OPTIONS_CACHE:Get("SPELL_OVERLAY_ART", 100))
 end
 
 function InterfaceOptionsFrameDefaults_OnClick (self, button)
@@ -349,6 +343,11 @@ local UVARINFO = {
 	["SHOW_ARENA_ENEMY_CASTBAR"] = { default = "1", cvar = "showArenaEnemyCastbar", event = "SHOW_ARENA_ENEMY_CASTBAR_TEXT" },
 	["SHOW_ARENA_ENEMY_PETS"] = { default = "1", cvar = "showArenaEnemyPets", event = "SHOW_ARENA_ENEMY_PETS_TEXT" },
 	["SHOW_CASTABLE_DEBUFFS"] = { default = "0", cvar = "showCastableDebuffs", event = "SHOW_CASTABLE_DEBUFFS_TEXT" },
+	["SHOW_BUFF_FRAME_AURA_CATEGORY"] = { default = "1", cvar = "showBuffFrameAuraCategory", event = "SHOW_BUFF_FRAME_AURA_CATEGORY_TEXT" },
+	["SHOW_BUFF_FRAME_AURA_VIP"] = { default = "1", cvar = "showBuffFrameAuraVIP", event = "SHOW_BUFF_FRAME_AURA_VIP_TEXT" },
+	["SHOW_BUFF_FRAME_AURA_FACTION"] = { default = "1", cvar = "showBuffFrameAuraFaction", event = "SHOW_BUFF_FRAME_AURA_FACTION_TEXT" },
+	["SHOW_BUFF_FRAME_AURA_ZODIAC"] = { default = "1", cvar = "showBuffFrameAuraZodiac", event = "SHOW_BUFF_FRAME_AURA_ZODIAC_TEXT" },
+	["SHOW_BUFF_FRAME_AURA_PREMIUM"] = { default = "1", cvar = "showBuffFrameAuraPremium", event = "SHOW_BUFF_FRAME_AURA_PREMIUM_TEXT" },
 }
 
 function InterfaceOptionsFrame_InitializeUVars ()

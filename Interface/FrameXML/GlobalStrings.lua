@@ -51,10 +51,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Если вы зачаруете этот предмет, он станет персональным.",
         enGB = "Having this item enchanted will bind it to you."
     },
-    ["PVP_RANK_6_1"] = {
-        ruRU = "Капрал",
-        enGB = "Corporal"
-    },
     ["DEFAULT_STAT5_TOOLTIP"] = {
         ruRU = "Скорость восполнения здоровья увеличена на %d в секунду (вне боя).",
         enGB = "Increases Health Regeneration by %d Per Second while not in combat"
@@ -523,10 +519,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Целью должен быть игрок.",
         enGB = "Target is not a player"
     },
-    ["BLACK_MARKET_ERROR_4"] = {
-        ruRU = "Ставка слишком низкая",
-        enGB = "Your bid is too low"
-    },
     ["ERR_NO_PET"] = {
         ruRU = "У вас нет питомцев!",
         enGB = "You don't have a pet!"
@@ -751,10 +743,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Обновление состоится",
         enGB = "Lock Expire"
     },
-    ["ARENA_REPLAY_CONFIRMATION_WATCH"] = {
-        ruRU = "Вы действительно хотите посмотреть запись игры с номером %d?",
-        enGB = "Do you really want to replay game number %d?"
-    },
     ["VOICEMACRO_4_Gn_1"] = {
         ruRU = "Помогите мне прорваться туда!",
         enGB = "Help me attack over here!"
@@ -854,10 +842,6 @@ local GLOBAL_STRINGS = {
     ["GOSSIP_OPTIONS"] = {
         ruRU = "Параметры разговоров",
         enGB = "Gossip Options"
-    },
-    ["PVP_RANK_10_0_FEMALE"] = {
-        ruRU = "Каменный Страж",
-        enGB = "Stone Guard"
     },
     ["MALE"] = {
         ruRU = "Муж.",
@@ -1139,10 +1123,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Просмотр:",
         enGB = "View:"
     },
-    ["PVP_RANK_18_0"] = {
-        ruRU = "Верховный вождь",
-        enGB = "High Warlord"
-    },
     ["SPELL_FAILED_CUSTOM_ERROR_49"] = {
         ruRU = "Требуется быть великим мастером инженерного дела",
         enGB = "Requires Grand Master Engineer"
@@ -1387,10 +1367,6 @@ local GLOBAL_STRINGS = {
         ruRU = "/я",
         enGB = "/me"
     },
-    ["PVP_RANK_10_1"] = {
-        ruRU = "Рыцарь",
-        enGB = "Knight"
-    },
     ["DUNGEON_FLOOR_AZJOLNERUB1"] = {
         ruRU = "Родовая яма",
         enGB = "The Brood Pit"
@@ -1626,10 +1602,6 @@ local GLOBAL_STRINGS = {
     ["ROLE"] = {
         ruRU = "Роль",
         enGB = "Role"
-    },
-    ["PVP_RANK_11_1_FEMALE"] = {
-        ruRU = "Рыцарь-лейтенант",
-        enGB = "Knight-Lieutenant"
     },
     ["GUILD_CHALLENGE_PROGRESS_FORMAT"] = {
         ruRU = "%d / %d",
@@ -2581,10 +2553,6 @@ local GLOBAL_STRINGS = {
         ruRU = "/sigh",
         enGB = "/sigh"
     },
-    ["ARENAREPLAY_SHARED_REPLAY"] = {
-        ruRU = "Поделится записью",
-        enGB = "Share Replay"
-    },
     ["SLASH_STOPWATCH6"] = {
         ruRU = "/sw",
         enGB = "/sw"
@@ -3341,10 +3309,34 @@ local GLOBAL_STRINGS = {
         ruRU = "Очки талантов питомца были сброшены.",
         enGB = "Your pet's talents have been reset."
     },
-    ["RESISTANCE2_NAME"] = {
-        ruRU = "Сопротивление огню",
-        enGB = "Fire Resistance"
-    },
+	["RESISTANCE_LABEL"] = {
+		ruRU = "Сопротивление",
+		enGB = "Resistance"
+	},
+	["RESISTANCE1_NAME"] = {
+		ruRU = "Сопротивление светлой магии",
+		enGB = "Holy Resistance"
+	},
+	["RESISTANCE2_NAME"] = {
+		ruRU = "Сопротивление огню",
+		enGB = "Fire Resistance"
+	},
+	["RESISTANCE3_NAME"] = {
+		ruRU = "Сопротивление силам природы",
+		enGB = "Nature Resistance"
+	},
+	["RESISTANCE4_NAME"] = {
+		ruRU = "Сопротивление магии льда",
+		enGB = "Frost Resistance"
+	},
+	["RESISTANCE5_NAME"] = {
+		ruRU = "Сопротивление темной магии",
+		enGB = "Shadow Resistance"
+	},
+	["RESISTANCE6_NAME"] = {
+		ruRU = "Сопротивление тайной магии",
+		enGB = "Arcane Resistance"
+	},
     ["SPELL_FAILED_TARGET_NO_POCKETS"] = {
         ruRU = "У этого существа нет карманов.",
         enGB = "No pockets to pick"
@@ -3513,10 +3505,6 @@ local GLOBAL_STRINGS = {
         ruRU = "/sob",
         enGB = "/sob"
     },
-    ["PVP_RANK_5_1"] = {
-        ruRU = "Рядовой",
-        enGB = "Private"
-    },
     ["BUTTON_LAG_CHAT"] = {
         ruRU = "Чат",
         enGB = "Chat"
@@ -3584,10 +3572,6 @@ local GLOBAL_STRINGS = {
     ["LEVEL_UP_HEALTH"] = {
         ruRU = "Вы получили %d |4единицу:единицы:единиц; здоровья.",
         enGB = "You have gained %d hit points."
-    },
-    ["PVP_RANK_15_1_FEMALE"] = {
-        ruRU = "Командор",
-        enGB = "Commander"
     },
     ["OBJECTIVES_VIEW_ACHIEVEMENT"] = {
         ruRU = "Открыть достижение",
@@ -3713,10 +3697,6 @@ local GLOBAL_STRINGS = {
         ruRU = "/timer",
         enGB = "/timer"
     },
-    ["ARENAREPLAY_REFRESH_DESC"] = {
-        ruRU = "Обновить все параметры текущей записи боя.",
-        enGB = "Update all parameters of the current replay."
-    },
     ["BINDING_NAME_ITUNES_PLAYPAUSE"] = {
         ruRU = "iTunes: воспроизведение/пауза",
         enGB = "iTunes Play/Pause"
@@ -3752,10 +3732,6 @@ local GLOBAL_STRINGS = {
     ["SHOW_PET_NAMEPLATES"] = {
         ruRU = "Таблички с именами питомцев",
         enGB = "Pet Name Plates"
-    },
-    ["PVP_RANK_8_0_FEMALE"] = {
-        ruRU = "Старший сержант",
-        enGB = "Senior Sergeant"
     },
     ["CONFIRM_XP_LOSS_AGAIN_NO_SICKNESS"] = {
         ruRU = "Помните: отыскав свое тело, вы сможете воскреснуть без потерь. Если воскреснуть сейчас, прочность всех ваших предметов понизится на 25%. Уверены, что хотите этого?",
@@ -3864,10 +3840,6 @@ local GLOBAL_STRINGS = {
     ["SLASH_SCRIPT3"] = {
         ruRU = "/script",
         enGB = "/script"
-    },
-    ["RESISTANCE5_NAME"] = {
-        ruRU = "Сопротивление темной магии",
-        enGB = "Shadow Resistance"
     },
     ["SPELL_FAILED_NOT_ON_TAXI"] = {
         ruRU = "Вы в полете.",
@@ -4305,10 +4277,6 @@ local GLOBAL_STRINGS = {
         ruRU = "ровно %d |4камень:камня:камней; |3-1(%s) цвета",
         enGB = "exactly %d %s |4gem:gems;"
     },
-    ["ARENAREPLAY_REPORT_LABEL"] = {
-        ruRU = "Подача жалобы",
-        enGB = "Report Player"
-    },
     ["DAMAGE_SCHOOL4"] = {
         ruRU = "природа",
         enGB = "Nature"
@@ -4360,10 +4328,6 @@ local GLOBAL_STRINGS = {
     ["INSPECT_RATED_BATTLEGROUND_TABNAME"] = {
         ruRU = "РПБ",
         enGB = "RBG"
-    },
-    ["ARENAREPLAY_EXIT"] = {
-        ruRU = "Выход",
-        enGB = "Exit"
     },
     ["ERR_NOT_ENOUGH_GOLD"] = {
         ruRU = "Недостаточно золота.",
@@ -4428,10 +4392,6 @@ local GLOBAL_STRINGS = {
     ["VOICEMACRO_5_Ta_0_FEMALE"] = {
         ruRU = "Мне нужно восполнить ману!",
         enGB = "My mana must be replenished!"
-    },
-    ["PVP_RANK_3_1"] = {
-        ruRU = "Изгнание",
-        enGB = "Exiled"
     },
     ["RGB_RANK_5_ALLIANCE"] = {
         ruRU = "Старшина",
@@ -4701,6 +4661,12 @@ local GLOBAL_STRINGS = {
         ruRU = "<Щелкните правой кнопкой мыши, чтобы открыть.>",
         enGB = "<Right Click to Open>"
     },
+	["ITEM_PREVIEWABLE_CONTAINER"] = {
+		ruRU = "<Зажмите CTRL и щелкните левой кнопкой мышки, чтобы посмотреть содержимое.>",
+	},
+	["ITEM_PREVIEWABLE"] = {
+		ruRU = "<Зажмите CTRL и щелкните левой кнопкой мышки, чтобы осмотреть предмет.>",
+	},
     ["SLASH_MAINTANKON1"] = {
         ruRU = "/mt",
         enGB = "/mt"
@@ -5005,10 +4971,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Откуда вы? Хотя это неважно.",
         enGB = "Where are you from?  Not that it matters."
     },
-    ["PVP_RANK_19_1"] = {
-        ruRU = "Лидер",
-        enGB = "Leader"
-    },
     ["VOICEMACRO_20_Ni_1"] = {
         ruRU = "Видели cторожевые древа в Дарнасе? Они не такие уж и старые.",
         enGB = "You know those Ancient Protectors in Darnassas?  They're not that old."
@@ -5100,10 +5062,6 @@ local GLOBAL_STRINGS = {
     ["MEMBERS"] = {
         ruRU = "Члены",
         enGB = "Members"
-    },
-    ["PVP_RANK_12_1"] = {
-        ruRU = "Рыцарь-капитан",
-        enGB = "Knight-Captain"
     },
     ["EMOTE54_CMD1"] = {
         ruRU = "/оклик",
@@ -6141,10 +6099,6 @@ local GLOBAL_STRINGS = {
         ruRU = "/send",
         enGB = "/send"
     },
-    ["PVP_RANK_13_1"] = {
-        ruRU = "Рыцарь-защитник",
-        enGB = "Knight-Champion"
-    },
     ["KNOWLEDGE_BASE"] = {
         ruRU = "Энциклопедия",
         enGB = "Knowledge Base"
@@ -6177,10 +6131,6 @@ local GLOBAL_STRINGS = {
         ruRU = "1",
         enGB = "1"
     },
-    ["PVP_RANK_12_1_FEMALE"] = {
-        ruRU = "Рыцарь-капитан",
-        enGB = "Knight-Captain"
-    },
     ["ERR_OUT_OF_ENERGY"] = {
         ruRU = "Недостаточно энергии",
         enGB = "Not enough energy"
@@ -6204,10 +6154,6 @@ local GLOBAL_STRINGS = {
     ["LINK_TRADESKILL_TOOLTIP"] = {
         ruRU = "Щелкните здесь, чтобы создать ссылку на вашу профессию.",
         enGB = "Click here to create a link to your profession."
-    },
-    ["PVP_RANK_7_0_FEMALE"] = {
-        ruRU = "Сержант",
-        enGB = "Sergeant"
     },
     ["HELP_TEXT_LINE2"] = {
         ruRU = "- x – чтобы сесть или встать",
@@ -6496,10 +6442,6 @@ local GLOBAL_STRINGS = {
     ["ITEM_MOD_HASTE_RATING_SHORT"] = {
         ruRU = "к рейтингу скорости",
         enGB = "Haste Rating"
-    },
-    ["ARENAREPLAY_SHARED_REPLAY_MESSAGE_PH"] = {
-        ruRU = "Введите сопутствующее сообщение.",
-        enGB = "Enter accompanying message."
     },
     ["CHAT_NOT_OWNER_NOTICE_BN"] = {
         ruRU = "|Hchannel:CHANNEL:%d|h[%s]|h Вы не являетесь владельцем канала.",
@@ -6821,17 +6763,9 @@ local GLOBAL_STRINGS = {
         ruRU = "Если вы видите сверкание вокруг трупа только что поверженного противника, в нем есть добыча.|n|nЧтобы обыскать труп, щелкните по нему |cffffd200правой кнопкой мыши|r. Это откроет окно добычи. Щелкните |cffffd200правой кнопкой мыши|r по предметам в окне добычи, чтобы переложить их в свой рюкзак.",
         enGB = "If you defeat an enemy and see sparkles on its corpse, that means it has loot.|n|n|cffffd200Right Click|r on a creature's corpse to loot it. This will open a loot window. Then |cffffd200Right Click|r on any items in that window to move them to your backpack."
     },
-    ["PVP_RANK_18_1_FEMALE"] = {
-        ruRU = "Главнокомандующий",
-        enGB = "Grand Marshal"
-    },
     ["UNITFRAME_LABEL"] = {
         ruRU = "Рамки портретов",
         enGB = "UnitFrames"
-    },
-    ["PVP_RANK_14_0"] = {
-        ruRU = "Защитник",
-        enGB = "Champion"
     },
     ["GAME_VERSION_LABEL"] = {
         ruRU = "Версия",
@@ -7233,10 +7167,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Исцелите меня!",
         enGB = "I need healing!"
     },
-    ["PVP_RANK_16_1_FEMALE"] = {
-        ruRU = "Маршал",
-        enGB = "Marshal"
-    },
     ["CALENDAR_TOOLTIP_REMOVEBUTTON"] = {
         ruRU = "Удалить событие из календаря.",
         enGB = "Remove this event from your Calendar."
@@ -7489,10 +7419,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Сброс недельного лимита через: %s",
         enGB = "Weekly limit resets in: %s"
     },
-    ["ARENAREPLAY_FORWARD"] = {
-        ruRU = "Ускорить",
-        enGB = "Fast forward"
-    },
     ["CALENDAR_ERROR_NO_GUILD_INVITES"] = {
         ruRU = "Невозможно пригласить члена гильдии.",
         enGB = "Invites to guild members are not allowed."
@@ -7536,10 +7462,6 @@ local GLOBAL_STRINGS = {
     ["SPECIAL"] = {
         ruRU = "Особые",
         enGB = "Special"
-    },
-    ["PVP_RANK_5_1_FEMALE"] = {
-        ruRU = "Рядовой",
-        enGB = "Private"
     },
     ["RANGE_DAMAGE_COMBATLOG_TOOLTIP"] = {
         ruRU = "Отображение информации об атаках дальнего боя, наносящих полный или частичный урон.",
@@ -7728,10 +7650,6 @@ local GLOBAL_STRINGS = {
     ["USE_COLON"] = {
         ruRU = "Использование:",
         enGB = "Use:"
-    },
-    ["PVP_RANK_5_0"] = {
-        ruRU = "Разведчик",
-        enGB = "Scout"
     },
     ["PVPFRAME_STEPFRAME_RESET_LABEL"] = {
         ruRU = "Обновится через: %s",
@@ -8001,10 +7919,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Типы сообщений",
         enGB = "Message Types"
     },
-    ["ARENAREPLAY_SHARED_DESC"] = {
-        ruRU = "Поделитесь с сообществом лучшими моментами вашего боя!",
-        enGB = "Share the best moments of your match with the community!"
-    },
     ["ITEM_MOD_HEALTH_SHORT"] = {
         ruRU = "к здоровью",
         enGB = "Health"
@@ -8112,10 +8026,6 @@ local GLOBAL_STRINGS = {
     ["TRANSFER_ABORT_DIFFICULTY1"] = {
         ruRU = "Для подземелья \"%s\" недоступен обычный уровень сложности.",
         enGB = "Normal difficulty mode is not available for %s."
-    },
-    ["PVP_RANK_14_1_FEMALE"] = {
-        ruRU = "Лейтенант-командор",
-        enGB = "Lieutenant Commander"
     },
     ["COMBAT_TEXT_SHOW_DODGE_PARRY_MISS_TEXT"] = {
         ruRU = "Не достигшие цели удары",
@@ -8749,10 +8659,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Один из участников группы недавно занимал очередь на прохождение случайного подземелья и не может встать в очередь вновь.",
         enGB = "One of your group members has recently queued for a Random Dungeon and may not yet queue for another."
     },
-    ["ARENA_SPECTATOR_MATCH_REPLAY"] = {
-        ruRU = "Матчи обновляются автоматически!",
-        enGB = "Matches are updated automatically!"
-    },
     ["LEAVE_BATTLEGROUND"] = {
         ruRU = "Покинуть поле боя",
         enGB = "Leave Battleground"
@@ -8904,10 +8810,6 @@ local GLOBAL_STRINGS = {
     ["CHAT_MSG_RAID"] = {
         ruRU = "Рейд",
         enGB = "Raid"
-    },
-    ["PVP_RANK_0_1"] = {
-        ruRU = "Рядовой",
-        enGB = "Private"
     },
     ["CHAT_PLAYER_KICKED_NOTICE"] = {
         ruRU = "|Hchannel:%1$d|h[%2$s]|h %4$s исключает |3-3(%3$s).",
@@ -9088,10 +8990,6 @@ local GLOBAL_STRINGS = {
     ["COMBATLOG_XPGAIN_FIRSTPERSON_RAID"] = {
         ruRU = "%1$s погибает, вы получаете опыт: %2$d (рейдовый штраф: %3$d).",
         enGB = "%s dies, you gain %d experience. (-%d raid penalty)"
-    },
-    ["PVP_RANK_13_0"] = {
-        ruRU = "Центурион",
-        enGB = "Centurion"
     },
     ["CHARACTER_KEY_BINDINGS"] = {
         ruRU = "Клавиши для |3-1(%s)",
@@ -9328,10 +9226,6 @@ local GLOBAL_STRINGS = {
     ["LANGAUGE_BATTLEGROUND_HORDE"] = {
         ruRU = "орда",
         enGB = ""
-    },
-    ["PVP_RANK_2_1_FEMALE"] = {
-        ruRU = "Вне закона",
-        enGB = "Outlaw"
     },
     ["TIME_IN_QUEUE"] = {
         ruRU = "Время ожидания: %s",
@@ -9604,10 +9498,6 @@ local GLOBAL_STRINGS = {
     ["OPTION_TOOLTIP_SHOW_MULTIBAR1"] = {
         ruRU = "Отображение дополнительной панели команд в левой нижней части экрана.",
         enGB = "Toggles an optional actionbar in the bottom left area of the screen."
-    },
-    ["PVP_RANK_3_1_FEMALE"] = {
-        ruRU = "Изгнание",
-        enGB = "Exiled"
     },
     ["AFK"] = {
         ruRU = "Отсутствует",
@@ -9921,10 +9811,6 @@ local GLOBAL_STRINGS = {
         ruRU = "/командапригласить",
         enGB = "/teaminvite"
     },
-    ["RESISTANCE6_NAME"] = {
-        ruRU = "Сопротивление тайной магии",
-        enGB = "Arcane Resistance"
-    },
     ["VICTORY_TEXT2"] = {
         ruRU = "Ничья",
         enGB = "Draw"
@@ -10044,10 +9930,6 @@ local GLOBAL_STRINGS = {
     ["ERR_NAME_NO_NAME"] = {
         ruRU = "Пожалуйста, введите название.",
         enGB = "Please enter a name."
-    },
-    ["PVP_RANK_16_0"] = {
-        ruRU = "Генерал",
-        enGB = "General"
     },
     ["SPELL_FAILED_NO_AMMO"] = {
         ruRU = "Кончились боеприпасы.",
@@ -11345,10 +11227,6 @@ local GLOBAL_STRINGS = {
 		ruRU = "%d-й уровень",
 		enGB = "Level %d"
 	},
-    ["PVP_RANK_19_0"] = {
-        ruRU = "Лидер",
-        enGB = "Leader"
-    },
     ["WATER_COLLISION"] = {
         ruRU = "Брызги воды",
         enGB = "Water Collision"
@@ -11889,10 +11767,6 @@ local GLOBAL_STRINGS = {
         ruRU = "/moon",
         enGB = "/moon"
     },
-    ["ARENAREPLAY_SETTINGS_DESC"] = {
-        ruRU = "Хотите изменить что-то на свой вкус? Вам сюда!",
-        enGB = "Want to change something to suit your taste? You're in the right place!"
-    },
     ["SWING_MISSED_COMBATLOG_TOOLTIP"] = {
         ruRU = "Отображение атак в ближнем бою, не наносящих урона.",
         enGB = "Show melee swings that do not deal damage."
@@ -12300,10 +12174,6 @@ local GLOBAL_STRINGS = {
     ["ACTION_UNIT_DIED_FULL_TEXT"] = {
         ruRU = "%4$s погибает.",
         enGB = "%4$s died."
-    },
-    ["PVP_RANK_16_1"] = {
-        ruRU = "Маршал",
-        enGB = "Marshal"
     },
     ["POWER_TYPE_PYRITE"] = {
         ruRU = "Колчедан",
@@ -12973,10 +12843,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Выполняется",
         enGB = "You are on this quest"
     },
-    ["PVP_RANK_15_0_FEMALE"] = {
-        ruRU = "Лейтенант-генерал",
-        enGB = "Lieutenant General"
-    },
     ["ACTION_SPELL_MISSED_FULL_TEXT"] = {
         ruRU = "%2$s\" |3-1(%1$s) не попадает по |3-2(%4$s).",
         enGB = "%1$s %2$s missed %4$s."
@@ -13136,10 +13002,6 @@ local GLOBAL_STRINGS = {
     ["BN_INLINE_TOAST_BROADCAST_INFORM"] = {
         ruRU = "|TInterface\\FriendsFrame\\UI-Toast-ToastIcons.tga:16:16:0:0:128:64:2:29:2:29|tВаша рассылка отправлена.",
         enGB = "|TInterface\\FriendsFrame\\UI-Toast-ToastIcons.tga:16:16:0:0:128:64:2:29:2:29|tYour broadcast has been sent."
-    },
-    ["PVP_RANK_11_1"] = {
-        ruRU = "Рыцарь-лейтенант",
-        enGB = "Knight-Lieutenant"
     },
     ["SLASH_CLEARTARGET1"] = {
         ruRU = "/сбросцели",
@@ -13869,10 +13731,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Звуковые эффекты включены",
         enGB = "Sound Effects Enabled"
     },
-    ["PVP_RANK_19_1_FEMALE"] = {
-        ruRU = "Лидер",
-        enGB = "Leader"
-    },
     ["ERR_DIFFICULTY_CHANGE_COMBAT"] = {
         ruRU = "Пока игрок находится в бою, сложность подземелья изменить нельзя.",
         enGB = "Raid difficulty cannot be changed at this time. A player is in combat."
@@ -14052,10 +13910,6 @@ local GLOBAL_STRINGS = {
     ["PROC_EVENT8_DESC"] = {
         ruRU = "каждый такт",
         enGB = "every tick"
-    },
-    ["PVP_RANK_17_0_FEMALE"] = {
-        ruRU = "Вождь",
-        enGB = "Warlord"
     },
     ["EMOTE409_CMD1"] = {
         ruRU = "/предложение",
@@ -14269,10 +14123,6 @@ local GLOBAL_STRINGS = {
         ruRU = "/обморок",
         enGB = "/faint"
     },
-    ["PVP_RANK_4_1_FEMALE"] = {
-        ruRU = "Бесчестье",
-        enGB = "Dishonored"
-    },
     ["CONFIRM_ACCEPT_SOCKETS"] = {
         ruRU = "Инкрустировав предмет этим самоцветом, вы уничтожите один или несколько самоцветов. Вы действительно хотите это сделать?",
         enGB = "One or more gems will be destroyed by socketing. Do you really want to socket the new gem(s)?"
@@ -14388,10 +14238,6 @@ local GLOBAL_STRINGS = {
     ["SLASH_CHAT_AFK1"] = {
         ruRU = "/афк",
         enGB = "/afk"
-    },
-    ["PVP_RANK_3_0"] = {
-        ruRU = "Изгнание",
-        enGB = "Exiled"
     },
     ["ITEM_MOD_SPELL_DAMAGE_DONE"] = {
         ruRU = "Увеличивает наносимый игроком урон от магических эффектов и заклинаний на %d ед.",
@@ -15106,10 +14952,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Вы действительно хотите удалить это событие для гильдии?",
         enGB = "Are you sure you want to delete this guild event?"
     },
-    ["PVP_RANK_1_1_FEMALE"] = {
-        ruRU = "Пария",
-        enGB = "Pariah"
-    },
     ["VOICEMACRO_3_Dw_1"] = {
         ruRU = "Бежим!",
         enGB = "Let's run!"
@@ -15153,10 +14995,6 @@ local GLOBAL_STRINGS = {
     ["BINDING_NAME_TARGETPARTYMEMBER4"] = {
         ruRU = "Цель: 4-й член группы",
         enGB = "Target Party Member 4"
-    },
-    ["PVP_RANK_6_0_FEMALE"] = {
-        ruRU = "Рубака",
-        enGB = "Grunt"
     },
     ["CHAT_INVITE_SEND"] = {
         ruRU = "Пригласить",
@@ -15209,10 +15047,6 @@ local GLOBAL_STRINGS = {
     ["SLASH_UNINVITE9"] = {
         ruRU = "/голосисключ",
         enGB = "/votekick"
-    },
-    ["ARENA_SPECTATOR_START_MATCH_PATTERN"] = {
-        ruRU = "началось %d+ минут.* назад",
-        enGB = "started %d+ minute.* ago"
     },
     ["BATTLEFIELD_ALERT"] = {
         ruRU = "Вы можете войти на поле боя \"%s\". У вас осталось %s.",
@@ -15826,10 +15660,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Мана заканчивается!",
         enGB = "My mana is low!"
     },
-    ["PVP_RANK_7_1"] = {
-        ruRU = "Сержант",
-        enGB = "Sergeant"
-    },
     ["ERR_CANT_EQUIP_SKILL"] = {
         ruRU = "Вам недостает навыков, чтобы использовать этот предмет.",
         enGB = "You aren't skilled enough to use that item."
@@ -16431,10 +16261,6 @@ local GLOBAL_STRINGS = {
         ruRU = "ИЛИ",
         enGB = "OR"
     },
-    ["PVP_RANK_18_1"] = {
-        ruRU = "Главнокомандующий",
-        enGB = "Grand Marshal"
-    },
     ["ERR_FEIGN_DEATH_RESISTED"] = {
         ruRU = "Сопротивление",
         enGB = "Resisted"
@@ -16570,10 +16396,6 @@ local GLOBAL_STRINGS = {
     ["OPTION_TOOLTIP_WORLD_PVP_DISPLAY3"] = {
         ruRU = "Не отображать глобальные PvP-задачи.",
         enGB = "This will turn off the World PVP objectives."
-    },
-    ["PVP_RANK_12_0"] = {
-        ruRU = "Легионер",
-        enGB = "Legionnaire"
     },
     ["SLASH_TRADE1"] = {
         ruRU = "/tr",
@@ -16810,10 +16632,6 @@ local GLOBAL_STRINGS = {
     ["OPTION_TOOLTIP_SHOW_RAID_RANGE"] = {
         ruRU = "Прозрачность индикаторов здоровья участников рейда будет изменяться в зависимости от расстояния до них.",
         enGB = "Show the range of raid members when they are far away by fading out their health bars."
-    },
-    ["PVP_RANK_0_0_FEMALE"] = {
-        ruRU = "Разведчик",
-        enGB = "Scout"
     },
     ["SLASH_INVITE3"] = {
         ruRU = "/пригласить",
@@ -17219,17 +17037,9 @@ local GLOBAL_STRINGS = {
         ruRU = "Контратакующие заклинания",
         enGB = "Reactive Spells & Abilities"
     },
-    ["PVP_RANK_1_1"] = {
-        ruRU = "Пария",
-        enGB = "Pariah"
-    },
     ["ERR_AUCTION_OUTBID_S"] = {
         ruRU = "%s: предмет перекуплен.",
         enGB = "You have been outbid on %s."
-    },
-    ["PVP_RANK_8_1"] = {
-        ruRU = "Старший сержант",
-        enGB = "Master Sergeant"
     },
     ["BATTLENET_FRIEND"] = {
         ruRU = "Настоящее имя",
@@ -17631,10 +17441,6 @@ local GLOBAL_STRINGS = {
         ruRU = "7 (цифр. кл.)",
         enGB = "Num Pad 7"
     },
-    ["PVP_RANK_7_1_FEMALE"] = {
-        ruRU = "Сержант",
-        enGB = "Sergeant"
-    },
     ["PET_ACTION_WAIT"] = {
         ruRU = "Стоять",
         enGB = "Stay"
@@ -17658,10 +17464,6 @@ local GLOBAL_STRINGS = {
     ["SLASH_WHISPER8"] = {
         ruRU = "/t",
         enGB = "/t"
-    },
-    ["PVP_RANK_16_0_FEMALE"] = {
-        ruRU = "Генерал",
-        enGB = "General"
     },
     ["ERR_LOOT_MASTER_INV_FULL"] = {
         ruRU = "У этого игрока нет места",
@@ -18298,10 +18100,6 @@ local GLOBAL_STRINGS = {
         ruRU = "События",
         enGB = "Events"
     },
-    ["PVP_RANK_18_0_FEMALE"] = {
-        ruRU = "Верховный вождь",
-        enGB = "High Warlord"
-    },
     ["FEEDPET_LOG_THIRDPERSON"] = {
         ruRU = "Питомец |3-1(%s) съедает: %s.",
         enGB = "%s's pet begins eating a %s."
@@ -18553,10 +18351,6 @@ local GLOBAL_STRINGS = {
     ["TALENTS"] = {
         ruRU = "Таланты",
         enGB = "Talents"
-    },
-    ["ARENAREPLAY_REPORT_DESC"] = {
-        ruRU = "Заметили нарушение? Отправьте жалобу! Она будет рассмотрена в кратчайшие сроки, а нарушители будут наказаны.",
-        enGB = "Have you witnessed a violation? Report it! We'll examine the report as soon as possible and punish the offenders."
     },
     ["BLIZZARD_COMBAT_LOG_MENU_REVERT"] = {
         ruRU = "Последний фильтр",
@@ -18958,10 +18752,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Щелкните, чтобы пригласить одобренных и подтвержденных игроков в вашу группу.",
         enGB = "Invite Accepted and Confirmed players to your Party."
     },
-    ["PVP_RANK_4_1"] = {
-        ruRU = "Бесчестье",
-        enGB = "Dishonored"
-    },
     ["EMOTE127_CMD4"] = {
         ruRU = "/rdy",
         enGB = "/rdy"
@@ -18985,10 +18775,6 @@ local GLOBAL_STRINGS = {
     ["VOICEMACRO_8_Hu_0"] = {
         ruRU = "Исцелите меня!",
         enGB = "I need healing!"
-    },
-    ["PVP_RANK_14_0_FEMALE"] = {
-        ruRU = "Защитник",
-        enGB = "Champion"
     },
     ["SLASH_WORLD_MARKER1"] = {
         ruRU = "/м",
@@ -19041,10 +18827,6 @@ local GLOBAL_STRINGS = {
     ["ERR_ATTACK_STUNNED"] = {
         ruRU = "Вы оглушены и не можете атаковать.",
         enGB = "Can't attack while stunned."
-    },
-    ["PVP_RANK_14_1"] = {
-        ruRU = "Лейтенант-командор",
-        enGB = "Lieutenant Commander"
     },
     ["VOICEMACRO_0_Ni_2"] = {
         ruRU = "На помощь!",
@@ -19390,10 +19172,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Включить все шейдерные эффекты",
         enGB = "Enable All Shader Effects"
     },
-    ["PVP_RANK_2_1"] = {
-        ruRU = "Вне закона",
-        enGB = "Outlaw"
-    },
     ["NEWBIE_TOOLTIP_ALLIANCE"] = {
         ruRU = "Достойный представитель Альянса считает врагами всех подданных Орды (орков, троллей, тауренов, нежить, гоблинов и эльфов крови).",
         enGB = "A proud member of the Alliance, opposed to members of the Horde (Orcs, Trolls, Tauren, Undead, Blood Elves)."
@@ -19574,6 +19352,21 @@ local GLOBAL_STRINGS = {
         ruRU = "Отрицательные эффекты, наложенные вами",
         enGB = "Castable Debuffs"
     },
+	["SHOW_BUFF_FRAME_AURA_ZODIAC_TEXT"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tПоказывать Зодиак на персонаже",
+	},
+	["SHOW_BUFF_FRAME_AURA_CATEGORY_TEXT"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tПоказывать Категорию на персонаже",
+	},
+	["SHOW_BUFF_FRAME_AURA_VIP_TEXT"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tПоказывать VIP-Статус на персонаже",
+	},
+	["SHOW_BUFF_FRAME_AURA_FACTION_TEXT"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tПоказывать Фракцию на персонаже",
+	},
+	["SHOW_BUFF_FRAME_AURA_PREMIUM_TEXT"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tПоказывать Премиум на персонаже",
+	},
     ["EMOTE100_CMD2"] = {
         ruRU = "/tired",
         enGB = "/tired"
@@ -19786,10 +19579,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Вы можете отслеживать не более %d платежных средств одновременно.",
         enGB = "You may only watch %d currencies at a time"
     },
-    ["PVP_RANK_0_0"] = {
-        ruRU = "Разведчик",
-        enGB = "Scout"
-    },
     ["ACTION_SPELL_MISSED_PARRY_FULL_TEXT"] = {
         ruRU = "%4$s парирует способность \"%2$s\" |3-1(%1$s).",
         enGB = "%1$s %2$s was parried by %4$s."
@@ -19914,10 +19703,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Канал",
         enGB = "Channel"
     },
-    ["PVP_RANK_17_1_FEMALE"] = {
-        ruRU = "Фельдмаршал",
-        enGB = "Field Marshal"
-    },
     ["CHANNELPULLOUT_OPACITY_LABEL"] = {
         ruRU = "Изменить прозрачность",
         enGB = "Change Opacity"
@@ -19945,10 +19730,6 @@ local GLOBAL_STRINGS = {
     ["EXTERNAL_URL_POPUP"] = {
         ruRU = "Внешняя ссылка",
         enGB = ""
-    },
-    ["BLACK_MARKET_ERROR_1"] = {
-        ruRU = "Аукцион не найден",
-        enGB = "Auction not found"
     },
     ["REQUIRES_GUILD_FACTION_TOOLTIP"] = {
         ruRU = "Требуется репутация с гильдией: %s",
@@ -20938,17 +20719,9 @@ local GLOBAL_STRINGS = {
         ruRU = "У |3-1(%s) недостаточно хорошая экипировка.",
         enGB = "%s must obtain better gear."
     },
-    ["BLACK_MARKET_ERROR_6"] = {
-        ruRU = "Неверные параметры",
-        enGB = "Invalid parameters"
-    },
     ["UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_INTERACT"] = {
         ruRU = "Взаимодействие",
         enGB = "Interact"
-    },
-    ["BLACK_MARKET_ERROR_5"] = {
-        ruRU = "Ставка неверная",
-        enGB = "Incorrect bid"
     },
     ["ITEM_MOD_POWER_REGEN3_SHORT"] = {
         ruRU = "энергии в 5 сек.",
@@ -20994,37 +20767,13 @@ local GLOBAL_STRINGS = {
         ruRU = "Отображение выстрелов из ружей, луков, жезлов и бросков метательного оружия.",
         enGB = "Shows attacks from bows, guns, thrown weapons, and wands."
     },
-    ["ARENA_SPECTATOR_PLAYER_DEAD"] = {
-        ruRU = "МЁРТВ",
-        enGB = "DEAD"
-    },
     ["GLYPH_INACTIVE"] = {
         ruRU = "Свободно",
         enGB = "Empty"
     },
-    ["ARENA_SPECTATOR_FINAL_MATCH"] = {
-        ruRU = "Финальный матч",
-        enGB = "Final match"
-    },
     ["VOICEMACRO_14_Sc_0"] = {
         ruRU = "Да.",
         enGB = "Yes."
-    },
-    ["ARENA_SPECTATOR_3_PLACE_MATCH"] = {
-        ruRU = "Матч за третье место",
-        enGB = "Match for third place"
-    },
-    ["ARENA_SPECTATOR_BOTTOM_MESH"] = {
-        ruRU = "Нижняя сетка",
-        enGB = "Lower bracket"
-    },
-    ["ARENA_SPECTATOR_TOP_MESH"] = {
-        ruRU = "Верхняя сетка",
-        enGB = "Upper bracket"
-    },
-    ["ARENA_SPECTATOR_GROUP_STAGE"] = {
-        ruRU = "Групповой этап",
-        enGB = "Group stage"
     },
     ["ACTION_RANGE_DAMAGE_FULL_TEXT_NO_SOURCE"] = {
         ruRU = "Атака дальнего боя наносит |3-2(%4$s) %5$s%6$s.",
@@ -21038,25 +20787,9 @@ local GLOBAL_STRINGS = {
         ruRU = "/закатглаза",
         enGB = "/eyeroll"
     },
-    ["ARENAREPLAY_FORWARD_DESC"] = {
-        ruRU = "Увеличить скорость воспроизведения на 0.25.",
-        enGB = "Increase the playback speed by 0.25."
-    },
-    ["ARENAREPLAY_PLAY_DESC"] = {
-        ruRU = "Возобновить воспроизведение.",
-        enGB = "Resume playback."
-    },
     ["ERR_USE_LOCKED_WITH_ITEM_S"] = {
         ruRU = "Требуется: %s",
         enGB = "Requires %s"
-    },
-    ["ARENAREPLAY_PLAY"] = {
-        ruRU = "Продолжить",
-        enGB = "Continue"
-    },
-    ["ARENAREPLAY_PAUSE_DESC"] = {
-        ruRU = "Приостановить воспроизведение.",
-        enGB = "Pause playback."
     },
     ["CONFIRM_XP_LOSS_NO_SICKNESS"] = {
         ruRU = "Отыскав свое тело, вы воскреснете без потерь. Если же вас воскрешу я, прочность всех ваших предметов (надетых и находящихся в сумках) понизится на 25%%.",
@@ -21070,17 +20803,9 @@ local GLOBAL_STRINGS = {
         ruRU = "Покой",
         enGB = "Slowed"
     },
-    ["ARENAREPLAY_PAUSE"] = {
-        ruRU = "Пауза",
-        enGB = "Pause"
-    },
     ["WORLD_PVP_ENTER"] = {
         ruRU = "Вас призывают сразиться на Озере Ледяных Оков! Вступить в бой?|nОсталось %d %s.",
         enGB = "You have been called to join the Wintergrasp battle! Join now?|nTime remaining: %d %s"
-    },
-    ["PVP_RANK_10_1_FEMALE"] = {
-        ruRU = "Рыцарь",
-        enGB = "Knight"
     },
     ["SLASH_EMOTE3"] = {
         ruRU = "/эмоция",
@@ -21097,18 +20822,6 @@ local GLOBAL_STRINGS = {
     ["DRUNK_MESSAGE_ITEM_OTHER4"] = {
         ruRU = "%s напивается в стельку. %s – отличный напиток!",
         enGB = "%s is completely smashed from the %s."
-    },
-    ["ARENAREPLAY_REFRESH"] = {
-        ruRU = "Обновить",
-        enGB = "Refresh"
-    },
-    ["ARENAREPLAY_SETTINGS"] = {
-        ruRU = "Настройки",
-        enGB = "Options"
-    },
-    ["ARENAREPLAY_SHARED"] = {
-        ruRU = "Поделиться",
-        enGB = "Share"
     },
     ["BINDING_NAME_ACTIONBUTTON2"] = {
         ruRU = "Кнопка действия 2",
@@ -21602,10 +21315,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Кузня Душ",
         enGB = "The Forge of Souls"
     },
-    ["PVP_RANK_4_0_FEMALE"] = {
-        ruRU = "Бесчестье",
-        enGB = "Dishonored"
-    },
     ["WHO_LIST_GUILD_FORMAT"] = {
         ruRU = "|Hplayer:%1$s|h[%2$s]|h: |3-6(%4$s), |3-6(%5$s) %3$d-го уровня <%6$s> - %7$s",
         enGB = "|Hplayer:%s|h[%s]|h: Level %d %s %s <%s> - %s"
@@ -21810,10 +21519,38 @@ local GLOBAL_STRINGS = {
         ruRU = "Ауры",
         enGB = "Auras"
     },
-    ["ARENA_SPECTATOR_REPORT_DESC"] = {
-        ruRU = "Если вы считаете что кто-то из игроков нарушили правила нашего сервера, пожалуйста опишите суть замеченного вами нарушения и нажмите кнопку Отправить.\n\nОбращаем ваше внимание что за злоупотребление системой жалоб вы можете получить блокировку учетной записи.",
-        enGB = "If you believe that a player has violated the rules of our server, please describe the nature of the violation you noticed and click Send.\n\nPlease note that if you abuse the reporting system, your account may get blocked."
-    },
+	["ARENA_SPECTATOR_3_PLACE_MATCH"] = {
+		ruRU = "Матч за третье место",
+		enGB = "Match for third place"
+	},
+	["ARENA_SPECTATOR_BOTTOM_MESH"] = {
+		ruRU = "Нижняя сетка",
+		enGB = "Lower bracket"
+	},
+	["ARENA_SPECTATOR_FINAL_MATCH"] = {
+		ruRU = "Финальный матч",
+		enGB = "Final match"
+	},
+	["ARENA_SPECTATOR_GROUP_STAGE"] = {
+		ruRU = "Групповой этап",
+		enGB = "Group stage"
+	},
+	["ARENA_SPECTATOR_PLAYER_DEAD"] = {
+		ruRU = "МЁРТВ",
+		enGB = "DEAD"
+	},
+	["ARENA_SPECTATOR_REPORT_DESC"] = {
+		ruRU = "Если вы считаете что кто-то из игроков нарушили правила нашего сервера, пожалуйста опишите суть замеченного вами нарушения и нажмите кнопку Отправить.\n\nОбращаем ваше внимание что за злоупотребление системой жалоб вы можете получить блокировку учетной записи.",
+		enGB = "If you believe that a player has violated the rules of our server, please describe the nature of the violation you noticed and click Send.\n\nPlease note that if you abuse the reporting system, your account may get blocked."
+	},
+	["ARENA_SPECTATOR_START_MATCH_PATTERN"] = {
+		ruRU = "началось %d+ минут.* назад",
+		enGB = "started %d+ minute.* ago"
+	},
+	["ARENA_SPECTATOR_TOP_MESH"] = {
+		ruRU = "Верхняя сетка",
+		enGB = "Upper bracket"
+	},
     ["ERR_AUCTION_WON_S"] = {
         ruRU = "Вы выиграли торги. Куплен предмет: %s.",
         enGB = "You won an auction for %s"
@@ -22129,10 +21866,6 @@ local GLOBAL_STRINGS = {
     ["LOCALE_SPELL_MECHANIC_SILENCE"] = {
         ruRU = "Немота",
         enGB = "Silenced"
-    },
-    ["TOOLTIP_UNIT_LEVEL_RACE_CLASS_TYPE_PATTERN"] = {
-        ruRU = ".*, .* %d+-го уровня %(.*%)",
-        enGB = "Level %d+ .* .*%(.*%)"
     },
     ["LOCALE_SPELL_MECHANIC_SLOW_ATTACK"] = {
         ruRU = "Замедление",
@@ -23046,10 +22779,6 @@ local GLOBAL_STRINGS = {
         ruRU = "|cffffffffВы можете занять место в очереди на участие в битве на |nОзере Ледяных Оков. Подойдите к |nвоеначальнику Озера в любой столице.|r",
         enGB = "|cffffffffYou are now eligible to queue for|nWintergrasp. Please visit a Wintergrasp|nBattlemaster in any major city.|r"
     },
-    ["PVP_RANK_2_0"] = {
-        ruRU = "Вне закона",
-        enGB = "Outlaw"
-    },
     ["OPTION_TOOLTIP_SCROLL_UP"] = {
         ruRU = "Прокручивание текста в сторону верхней части экрана.",
         enGB = "Scrolls combat text towards the top of the screen."
@@ -23222,10 +22951,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Плавание почти ничем не отличается от ходьбы, за исключением того, что при плавании вы можете всплывать или погружаться, нажимая |cffffd200правую кнопку мыши|r и глядя в ту сторону, куда хотите направиться.",
         enGB = "Swimming is much like walking, except you can steer upwards and downwards by holding down the |cffffd200Right Mouse Button|r and looking in the direction you want to go."
     },
-    ["PVP_RANK_6_1_FEMALE"] = {
-        ruRU = "Капрал",
-        enGB = "Corporal"
-    },
     ["BONUS_DAMAGE"] = {
         ruRU = "Доп. урон",
         enGB = "Bonus Damage"
@@ -23257,10 +22982,6 @@ local GLOBAL_STRINGS = {
     ["SLASH_FOLLOW3"] = {
         ruRU = "/след",
         enGB = "/fol"
-    },
-    ["PVP_RANK_13_1_FEMALE"] = {
-        ruRU = "Рыцарь-защитник",
-        enGB = "Knight-Champion"
     },
     ["TRAINING"] = {
         ruRU = "ПОДГОТОВКА",
@@ -23297,10 +23018,6 @@ local GLOBAL_STRINGS = {
     ["TRANSFER_ABORT_INSUF_EXPAN_LVL1"] = {
         ruRU = "Необходимо установить The Burning Crusade, чтобы получить доступ к этой области.",
         enGB = "You must have The Burning Crusade expansion installed to access this area."
-    },
-    ["PVP_RANK_6_0"] = {
-        ruRU = "Рубака",
-        enGB = "Grunt"
     },
     ["BINDING_NAME_EXTRAACTIONBUTTON4"] = {
         ruRU = "Дополнительная кнопка действия 4",
@@ -24301,10 +24018,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Энциклопедия",
         enGB = "Knowledge Base"
     },
-    ["PVP_RANK_13_0_FEMALE"] = {
-        ruRU = "Центурион",
-        enGB = "Centurion"
-    },
     ["OPTION_TOOLTIP_SHOW_QUEST_FADING"] = {
         ruRU = "Отображение текста заданий полностью без задержки.",
         enGB = "Check this to make quest text appear instantly."
@@ -24404,10 +24117,6 @@ local GLOBAL_STRINGS = {
     ["EMOTE25_CMD2"] = {
         ruRU = "/confused",
         enGB = "/confused"
-    },
-    ["BLACK_MARKET_ERROR_3"] = {
-        ruRU = "Недостаточно денег",
-        enGB = "Not enough money"
     },
     ["EMOTE9_CMD2"] = {
         ruRU = "/bite",
@@ -25897,6 +25606,9 @@ local GLOBAL_STRINGS = {
         ruRU = "Берегись!",
         enGB = "Incoming!"
     },
+	["SPELL_FAILED_CUSTOM_ERROR_69"] = {
+		ruRU = "Невозможно использовать пока наемник активен.",
+	},
     ["SPELL_FAILED_CUSTOM_ERROR_100"] = {
         ruRU = "Целью не должен быть игрок.",
         enGB = "You must not be targeting a player."
@@ -27993,17 +27705,9 @@ local GLOBAL_STRINGS = {
         ruRU = "/победа",
         enGB = "/victory"
     },
-    ["ARENAREPLAY_EXIT_DESC"] = {
-        ruRU = "Закончить просмотр текущей записи боя.",
-        enGB = "Exit arena replay."
-    },
     ["VOICEMACRO_18_Or_2"] = {
         ruRU = "Вы достойны.",
         enGB = "You are worthy."
-    },
-    ["PVP_RANK_11_0_FEMALE"] = {
-        ruRU = "Кровавый страж",
-        enGB = "Blood Guard"
     },
     ["VOICEMACRO_LABEL_ATTACKMYTARGET2"] = {
         ruRU = "помощь",
@@ -28028,10 +27732,6 @@ local GLOBAL_STRINGS = {
     ["ERR_ARENA_TEAM_LEAVE_SS"] = {
         ruRU = "%s покидает команду \"%s\".",
         enGB = "%s has left %s."
-    },
-    ["PVP_RANK_15_0"] = {
-        ruRU = "Генерал-лейтенант",
-        enGB = "Lieutenant General"
     },
     ["BUG_CATEGORY9"] = {
         ruRU = "Искусство",
@@ -28077,10 +27777,6 @@ local GLOBAL_STRINGS = {
         ruRU = "/impatient",
         enGB = "/impatient"
     },
-    ["PVP_RANK_19_0_FEMALE"] = {
-        ruRU = "Лидер",
-        enGB = "Leader"
-    },
     ["VOICEMACRO_10_Gn_0"] = {
         ruRU = "Скорее, огонь!",
         enGB = "Hurry, fire!"
@@ -28125,10 +27821,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Название гильдии: %s",
         enGB = "Guild Name: %s"
     },
-    ["PVP_RANK_2_0_FEMALE"] = {
-        ruRU = "Вне закона",
-        enGB = "Outlaw"
-    },
     ["OPTION_TOOLTIP_SHOW_PLAYER_NAMES"] = {
         ruRU = "Отображение имен игроков.",
         enGB = "Always display player names in the game world."
@@ -28168,10 +27860,6 @@ local GLOBAL_STRINGS = {
     ["VOICEMACRO_10_Dw_1"] = {
         ruRU = "Огонь!",
         enGB = "Fire!"
-    },
-    ["PVP_RANK_5_0_FEMALE"] = {
-        ruRU = "Разведчик",
-        enGB = "Scout"
     },
     ["ERR_PLAYER_BUSY_S"] = {
         ruRU = "|3-2(%s) пока не до этого.",
@@ -28853,10 +28541,6 @@ local GLOBAL_STRINGS = {
         ruRU = "к броне",
         enGB = "Armor"
     },
-    ["RESISTANCE1_NAME"] = {
-        ruRU = "Сопротивление светлой магии",
-        enGB = "Holy Resistance"
-    },
     ["SPELL_FAILED_CUSTOM_ERROR_77"] = {
         ruRU = "Требуется инженерное дело (350)",
         enGB = "Requires Engineering (350)"
@@ -28864,10 +28548,6 @@ local GLOBAL_STRINGS = {
     ["INSTANCE_UNAVAILABLE_OTHER_EXPANSION_TOO_LOW"] = {
         ruRU = "У |3-1(%s) не установлено необходимое дополнение к World of Warcraft.",
         enGB = "%s does not have the correct World of Warcraft expansion."
-    },
-    ["RESISTANCE3_NAME"] = {
-        ruRU = "Сопротивление силам природы",
-        enGB = "Nature Resistance"
     },
     ["HELP_TEXT_LINE11"] = {
         ruRU = "- PageUp/PageDown: прокрутка окна чата.",
@@ -28892,10 +28572,6 @@ local GLOBAL_STRINGS = {
     ["EMOTE96_CMD2"] = {
         ruRU = "/question",
         enGB = "/question"
-    },
-    ["RESISTANCE_LABEL"] = {
-        ruRU = "Сопротивление",
-        enGB = "Resistance"
     },
     ["REPORT_MULTIPLE_PVP_AFK_SENT"] = {
         ruRU = "Уведомление отправлено всем избранным игрокам.",
@@ -28990,8 +28666,8 @@ local GLOBAL_STRINGS = {
         enGB = "There are no raids available at your level."
     },
     ["OBJECTIVES_LABEL"] = {
-        ruRU = "Задачи",
-        enGB = "Objectives"
+        ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tЗадачи",
+        enGB = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tObjectives"
     },
     ["CALENDAR_GUILDEVENT_INVITEDBY_YOURSELF"] = {
         ruRU = "Это ваше гильдейское событие",
@@ -29180,10 +28856,6 @@ local GLOBAL_STRINGS = {
     ["SPELL_FAILED_CUSTOM_ERROR_61"] = {
         ruRU = "Необходимо находиться рядом с девой озера Дыхания Зимы..",
         enGB = "You must be near the Maiden of Winter's Breath Lake."
-    },
-    ["PVP_RANK_8_0"] = {
-        ruRU = "Старший сержант",
-        enGB = "Senior Sergeant"
     },
     ["BLIZZARD_COMBAT_LOG_MENU_EVERYTHING"] = {
         ruRU = "Показывать все",
@@ -30317,10 +29989,6 @@ local GLOBAL_STRINGS = {
         ruRU = "/обнять",
         enGB = "/hug"
     },
-    ["ARENAREPLAY_REPORT"] = {
-        ruRU = "Пожаловаться",
-        enGB = "Report"
-    },
     ["BINDING_NAME_RESETVIEW5"] = {
         ruRU = "Сбросить ракурс 5",
         enGB = "Reset View 5"
@@ -30656,10 +30324,6 @@ local GLOBAL_STRINGS = {
     ["LOCALE_SPELL_MECHANIC_MOUNT"] = {
         ruRU = "Верхом",
         enGB = "Mounted"
-    },
-    ["PVP_RANK_17_1"] = {
-        ruRU = "Фельдмаршал",
-        enGB = "Field Marshal"
     },
     ["LOOT_ROLL_PASSED"] = {
         ruRU = "%s отказывается от предмета %s.",
@@ -31505,10 +31169,6 @@ local GLOBAL_STRINGS = {
         ruRU = "/удлдруга",
         enGB = "/remfriend"
     },
-    ["PVP_RANK_15_1"] = {
-        ruRU = "Командор",
-        enGB = "Commander"
-    },
     ["SLASH_REPLY1"] = {
         ruRU = "/о",
         enGB = "/r"
@@ -31849,10 +31509,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Вкладывать",
         enGB = "Deposit Items"
     },
-    ["PVP_RANK_9_0"] = {
-        ruRU = "Старшина",
-        enGB = "First Sergeant"
-    },
     ["SLASH_TARGET_NEAREST_ENEMY_PLAYER2"] = {
         ruRU = "/targetenemyplayer",
         enGB = "/targetenemyplayer"
@@ -31920,10 +31576,6 @@ local GLOBAL_STRINGS = {
     ["SLASH_TEAM_QUIT1"] = {
         ruRU = "/teamquit",
         enGB = "/teamquit"
-    },
-    ["PVP_RANK_11_0"] = {
-        ruRU = "Кровавый страж",
-        enGB = "Blood Guard"
     },
     ["BUG_CATEGORY6"] = {
         ruRU = "Монстры – баланс сил/способности",
@@ -32061,10 +31713,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Нападение на монстра или NPC, с которым уже сражается другой игрок",
         enGB = "Attacking a creep or NPC that another player has already engaged"
     },
-    ["RESISTANCE4_NAME"] = {
-        ruRU = "Сопротивление магии льда",
-        enGB = "Frost Resistance"
-    },
     ["EMOTE63_CMD1"] = {
         ruRU = "/massage",
         enGB = "/massage"
@@ -32160,10 +31808,6 @@ local GLOBAL_STRINGS = {
     ["SPELL_ON_NEXT_SWING"] = {
         ruRU = "Следующая атака",
         enGB = "Next melee"
-    },
-    ["PVP_RANK_3_0_FEMALE"] = {
-        ruRU = "Изгнание",
-        enGB = "Exiled"
     },
     ["END_REFUND"] = {
         ruRU = "Это действие не позволит вернуть предмет торговцу.",
@@ -32693,10 +32337,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Вы не знаете подходящей локации для телепорта.",
         enGB = "You do not have a valid teleport location."
     },
-    ["ARENAREPLAY_BACKWARD"] = {
-        ruRU = "Замедлить",
-        enGB = "Decrease Speed"
-    },
     ["TOOLTIP_TALENT_NEXT_RANK"] = {
         ruRU = "Следующий уровень:",
         enGB = "Next rank:"
@@ -32732,10 +32372,6 @@ local GLOBAL_STRINGS = {
     ["WORLD_PVP_PENDING"] = {
         ruRU = "Озеро Ледяных Оков заполнено.|n Вы находитесь в очереди, но еще не были призваны на битву. Вскоре вы будете выдворены.",
         enGB = "Wintergrasp is full.|n You are queued but have not yet been called to battle. You will be ported out in a few moments."
-    },
-    ["PVP_RANK_8_1_FEMALE"] = {
-        ruRU = "Сержант",
-        enGB = "Master Sergeant"
     },
     ["GENERAL_SUBTEXT"] = {
         ruRU = "С помощью этих настроек вы можете изменить значения детализации и размера для вашей видеокарты.",
@@ -33013,10 +32649,6 @@ local GLOBAL_STRINGS = {
         ruRU = "/eye",
         enGB = "/eye"
     },
-    ["PVP_RANK_7_0"] = {
-        ruRU = "Сержант",
-        enGB = "Sergeant"
-    },
     ["SPELL_FAILED_INVALID_GLYPH"] = {
         ruRU = "Невозможно начертать этот символ здесь.",
         enGB = "That Glyph cannot be inscribed there."
@@ -33206,16 +32838,16 @@ local GLOBAL_STRINGS = {
         enGB = "Are you sure you wish to exchange %s for the following item?"
     },
 	["CONFIRM_EXCHANGE_LEGENDARY_ITEM"] = {
-		ruRU = "Согласны ли вы отдать торговцу предмет – %s, чтобы получить указанную ниже награду?\n\n Введите \"СОГЛАСЕН\" для подтвержения действия.",
-		enGB = ""
+		ruRU = "Согласны ли вы отдать торговцу предмет – %s, чтобы получить указанную ниже награду?\n\n Введите \"ОТДАТЬ БРИЛЛИАНТ\" для подтвержения действия.",
 	},
 	["CONFIRM_EXCHANGE_LEGENDARY_INFO"] = {
 		ruRU = "Обратите внимание что вы отдадите торговцу предмет легендарного качества, это действие будет невозможно отменить.",
-		enGB = ""
 	},
 	["CONFIRM_TEXT_AGREE"] = {
 		ruRU = "СОГЛАСЕН",
-		enGB = ""
+	},
+	["CONFIRM_EXCHANGE_LEGENDARY_ITEM_TEXT_AGREE"] = {
+		ruRU = "ОТДАТЬ БРИЛЛИАНТ",
 	},
     ["SPELL_FAILED_ONLY_UNDERWATER"] = {
         ruRU = "Можно использовать только в воде.",
@@ -33537,10 +33169,6 @@ local GLOBAL_STRINGS = {
         ruRU = "противник: %s",
         enGB = "enemy %s"
     },
-    ["ARENAREPLAY_BACKWARD_DESC"] = {
-        ruRU = "Уменьшить скорость воспроизведения на 0.25.",
-        enGB = "Decrease the playback speed by 0.25."
-    },
     ["GUILD_CHALLENGE_TOOLTIP1"] = {
         ruRU = "Выиграйте битву на арене в составе группы гильдии.",
         enGB = "Win an arena battle while in a guild group."
@@ -33637,10 +33265,6 @@ local GLOBAL_STRINGS = {
         ruRU = "%s: противник",
         enGB = "enemy %s"
     },
-    ["PVP_RANK_17_0"] = {
-        ruRU = "Вождь",
-        enGB = "Warlord"
-    },
     ["RESISTANCE_GOOD"] = {
         ruRU = "Высокая",
         enGB = "Good"
@@ -33724,10 +33348,6 @@ local GLOBAL_STRINGS = {
     ["RAID_DIFFICULTY3"] = {
         ruRU = "10 игроков (героич.)",
         enGB = "10 Player (Heroic)"
-    },
-    ["PVP_RANK_1_0"] = {
-        ruRU = "Пария",
-        enGB = "Pariah"
     },
     ["SPIRIT_TOOLTIP"] = {
         ruRU = "Увеличивает скорость восполнения здоровья и маны. Дух\nвлияет на скорость восполнения здоровья и маны\nкак во время боя, так и вне его.",
@@ -33893,10 +33513,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Слизь",
         enGB = "Slime"
     },
-    ["PVP_RANK_12_0_FEMALE"] = {
-        ruRU = "Легионер",
-        enGB = "Legionnaire"
-    },
     ["ACTION_SWING_MISSED_DODGE_FULL_TEXT"] = {
         ruRU = "%4$s уклоняется от атаки |3-1(%1$s).",
         enGB = "%1$s attack was dodged by %4$s."
@@ -33968,10 +33584,6 @@ local GLOBAL_STRINGS = {
     ["ERR_OUT_OF_MANA"] = {
         ruRU = "Недостаточно маны",
         enGB = "Not enough mana"
-    },
-    ["PVP_RANK_9_1_FEMALE"] = {
-        ruRU = "Старший сержант",
-        enGB = "Sergeant Major"
     },
     ["VOICEMACRO_1_Or_0_FEMALE"] = {
         ruRU = "К бою!",
@@ -34205,10 +33817,30 @@ local GLOBAL_STRINGS = {
         ruRU = "/gasp",
         enGB = "/gasp"
     },
-    ["BLACK_MARKET_ERROR_2"] = {
-        ruRU = "Вы уже сделали ставку",
-        enGB = "You have already placed a bet"
-    },
+	["BLACK_MARKET_ERROR_1"] = {
+		ruRU = "Аукцион не найден",
+		enGB = "Auction not found"
+	},
+	["BLACK_MARKET_ERROR_2"] = {
+		ruRU = "Вы уже сделали ставку",
+		enGB = "You have already placed a bet"
+	},
+	["BLACK_MARKET_ERROR_3"] = {
+		ruRU = "Недостаточно денег",
+		enGB = "Not enough money"
+	},
+	["BLACK_MARKET_ERROR_4"] = {
+		ruRU = "Ставка слишком низкая",
+		enGB = "Your bid is too low"
+	},
+	["BLACK_MARKET_ERROR_5"] = {
+		ruRU = "Ставка неверная",
+		enGB = "Incorrect bid"
+	},
+	["BLACK_MARKET_ERROR_6"] = {
+		ruRU = "Неверные параметры",
+		enGB = "Invalid parameters"
+	},
     ["TEXT_MODE_A_STRING_DEST_UNIT"] = {
         ruRU = "%s|Hunit:%s:%s|h%s|h",
         enGB = "%s|Hunit:%s:%s|h%s|h"
@@ -34580,10 +34212,6 @@ local GLOBAL_STRINGS = {
     ["TOOLTIP_TRACKER_SORT_PROXIMITY"] = {
         ruRU = "Задания будут сортироваться по удаленности от зоны выполнения.",
         enGB = "Check this to sort quests by the distance from their map locations to you."
-    },
-    ["PVP_RANK_9_0_FEMALE"] = {
-        ruRU = "Высший сержант",
-        enGB = "First Sergeant"
     },
     ["TOOLTIP_UNIT_LEVEL_RACE_CLASS"] = {
         ruRU = "%2$s, |3-6(%3$s) %1$s-го уровня",
@@ -35116,10 +34744,6 @@ local GLOBAL_STRINGS = {
     ["CHAT_LABEL"] = {
         ruRU = "Чат",
         enGB = "Chat"
-    },
-    ["PVP_RANK_4_0"] = {
-        ruRU = "Бесчестье",
-        enGB = "Dishonored"
     },
     ["VOICEMACRO_19_Tr_0"] = {
         ruRU = "Хотите моей дикой страсти?",
@@ -35905,10 +35529,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Угу.",
         enGB = "Uh huh."
     },
-    ["PVP_RANK_9_1"] = {
-        ruRU = "Старшина",
-        enGB = "Sergeant Major"
-    },
     ["NEWBIE_TOOLTIP_HONOR_STANDING"] = {
         ruRU = "Этот показатель отражает ваш статус среди игроков фракции, к которой вы принадлежите (Альянс или Орда). К примеру, если он равен 150, это означает, что 149 игроков получили больше единиц чести, чем вы, за определенный период времени. Вы должны одерживать не меньше 25 почетных побед в неделю, чтобы претендовать на повышение статуса и ранга.",
         enGB = "Standing is how you are doing compared to all other players on your side (Horde or Alliance).   If your standing is 150, then there were 149 players who gained more honor than you did during that time period. You must get at least 25 Honorable Kills in a week in order to be eligible to gain Standing and Rank."
@@ -35976,10 +35596,6 @@ local GLOBAL_STRINGS = {
     ["VOICEMACRO_19_Ni_1_FEMALE"] = {
         ruRU = "Конечно, у меня во всяких местах пирсинг есть.",
         enGB = "Sure I've got exotic piercings."
-    },
-    ["PVP_RANK_0_1_FEMALE"] = {
-        ruRU = "Рядовой",
-        enGB = "Private"
     },
     ["PAPERDOLLFRAME_TOOLTIP_FORMAT"] = {
         ruRU = "%s:",
@@ -36368,10 +35984,6 @@ local GLOBAL_STRINGS = {
     ["VOICEMACRO_14_Or_0"] = {
         ruRU = "Дабу.",
         enGB = "D'abu."
-    },
-    ["PVP_RANK_1_0_FEMALE"] = {
-        ruRU = "Пария",
-        enGB = "Pariah"
     },
     ["VOICEMACRO_14_Or_0_FEMALE"] = {
         ruRU = "Дабу.",
@@ -37069,10 +36681,6 @@ local GLOBAL_STRINGS = {
         ruRU = "Отображать уровни некоторых предметов во всплывающих подсказках.",
         enGB = "Display item level in the tooltip for certain items."
     },
-    ["PVP_RANK_10_0"] = {
-        ruRU = "Каменный Страж",
-        enGB = "Stone Guard"
-    },
     ["VOICEMACRO_1_Ta_1"] = {
         ruRU = "К бою!",
         enGB = "On your guard!"
@@ -37348,6 +36956,10 @@ local GLOBAL_STRINGS = {
 	["TOOLTIP_UNIT_LEVEL_RACE_CLASS_TYPE"] = {
 		ruRU = "%2$s, |3-6(%3$s) %1$s-го уровня (%4$s)\nЗнак зодиака: Загрузка...\nУровень предметов: Загрузка...",
 		enGB = "Level %s %s %s (%s)\nZodiac Sign: Loading\nItem level: Loading..."
+	},
+	["TOOLTIP_UNIT_LEVEL_RACE_CLASS_TYPE_PATTERN"] = {
+		ruRU = ".*, .* [%d%?]+-го уровня %(.*%)",
+		enGB = "Level [%d%?]+ .* .*%(.*%)"
 	},
 	["TOOLTIP_UNIT_ITEM_LEVEL_LABEL"] = {
 		ruRU = "(Уровень предметов): Загрузка...",
@@ -38064,10 +37676,9 @@ local GLOBAL_STRINGS = {
         ruRU = "Для того чтобы назначить награду, выполните условия ниже.",
         enGB = ""
     },
-    ["HEADHUNTING_CONTRACT_DETAILS"] = {
-        ruRU = "Контракт на %d |4убийство:убийства:убийств;\nОбщий банк %s|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:-7|t\nНаграда за убийство %s|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:-7|t\nОсталось %s\n\n",
-        enGB = ""
-    },
+	["HEADHUNTING_CONTRACT_DETAILS"] = {
+		ruRU = "Контракт на %s |4убийство:убийства:убийств;\nОбщий банк %s|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:-7|t\nНаграда за убийство %s|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:-7|t\nОсталось %s\n\n",
+	},
     ["HEADHUNTING_STATS_PLAYER"] = {
         ruRU = "Игроки: %d |4контракт:контракта:контрактов; на %s|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:0|t",
         enGB = ""
@@ -38323,7 +37934,7 @@ local GLOBAL_STRINGS = {
     	enGB = ""
     },
 	["BATTLEGROUND_BRAWL_TOOLTIP_HEADER"] = {
-		ruRU = "Активная на этой неделе потасовка:",
+		ruRU = "Сейчас активна потасовка:",
 	},
     ["BATTLEGROUND_BRAWL_TOOLTIP_REWARDS_1"] = {
     	ruRU = "За первую победу в день вы получите:",
@@ -38397,6 +38008,12 @@ local GLOBAL_STRINGS = {
         ruRU = "Отображение подробных подсказок, всплывающих в правом нижнем углу экрана.",
         enGB = "Enable detailed tooltips in the lower right hand corner of the screen."
     },
+	["SETTINGS_ITEM_EXPIRATION_REMINDER"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tПредметы скоро исчезнут",
+	},
+	["OPTION_TOOLTIP_SETTINGS_ITEM_EXPIRATION_REMINDER"] = {
+		ruRU = "При входе в игровой мир уведомлять о предметах, которые скоро исчезнут.",
+	},
     ["ATTENTION_ON_USE_CONFIRM"] = {
         ruRU = "Вы уверены, что хотите использовать %s?\nДанное действие будет необратимо!",
         enGB = ""
@@ -40284,6 +39901,458 @@ local GLOBAL_STRINGS = {
         ruRU = "Взяв на себя эту роль, вы получите дополнительные награды!",
         enGB = "If you perform this role, you will receive bonus rewards!"
     },
+	["PVP_RANK_0_0"] = {
+		ruRU = "Разведчик",
+		enGB = "Scout"
+	},
+	["PVP_RANK_0_0_FEMALE"] = {
+		ruRU = "Разведчик",
+		enGB = "Scout"
+	},
+	["PVP_RANK_0_1"] = {
+		ruRU = "Рядовой",
+		enGB = "Private"
+	},
+	["PVP_RANK_0_1_FEMALE"] = {
+		ruRU = "Рядовой",
+		enGB = "Private"
+	},
+	["PVP_RANK_0_2"] = {
+		ruRU = "Рядовой",
+		enGB = "Private"
+	},
+	["PVP_RANK_0_2_FEMALE"] = {
+		ruRU = "Рядовой",
+		enGB = "Private"
+	},
+	["PVP_RANK_1_0"] = {
+		ruRU = "Пария",
+		enGB = "Pariah"
+	},
+	["PVP_RANK_1_0_FEMALE"] = {
+		ruRU = "Пария",
+		enGB = "Pariah"
+	},
+	["PVP_RANK_1_1"] = {
+		ruRU = "Пария",
+		enGB = "Pariah"
+	},
+	["PVP_RANK_1_1_FEMALE"] = {
+		ruRU = "Пария",
+		enGB = "Pariah"
+	},
+	["PVP_RANK_1_2"] = {
+		ruRU = "Пария",
+		enGB = "Pariah"
+	},
+	["PVP_RANK_1_2_FEMALE"] = {
+		ruRU = "Пария",
+		enGB = "Pariah"
+	},
+	["PVP_RANK_2_0"] = {
+		ruRU = "Вне закона",
+		enGB = "Outlaw"
+	},
+	["PVP_RANK_2_0_FEMALE"] = {
+		ruRU = "Вне закона",
+		enGB = "Outlaw"
+	},
+	["PVP_RANK_2_1"] = {
+		ruRU = "Вне закона",
+		enGB = "Outlaw"
+	},
+	["PVP_RANK_2_1_FEMALE"] = {
+		ruRU = "Вне закона",
+		enGB = "Outlaw"
+	},
+	["PVP_RANK_2_2"] = {
+		ruRU = "Вне закона",
+		enGB = "Outlaw"
+	},
+	["PVP_RANK_2_2_FEMALE"] = {
+		ruRU = "Вне закона",
+		enGB = "Outlaw"
+	},
+	["PVP_RANK_3_0"] = {
+		ruRU = "Изгнание",
+		enGB = "Exiled"
+	},
+	["PVP_RANK_3_0_FEMALE"] = {
+		ruRU = "Изгнание",
+		enGB = "Exiled"
+	},
+	["PVP_RANK_3_1"] = {
+		ruRU = "Изгнание",
+		enGB = "Exiled"
+	},
+	["PVP_RANK_3_1_FEMALE"] = {
+		ruRU = "Изгнание",
+		enGB = "Exiled"
+	},
+	["PVP_RANK_3_2"] = {
+		ruRU = "Изгнание",
+		enGB = "Exiled"
+	},
+	["PVP_RANK_3_2_FEMALE"] = {
+		ruRU = "Изгнание",
+		enGB = "Exiled"
+	},
+	["PVP_RANK_4_0"] = {
+		ruRU = "Бесчестье",
+		enGB = "Dishonored"
+	},
+	["PVP_RANK_4_0_FEMALE"] = {
+		ruRU = "Бесчестье",
+		enGB = "Dishonored"
+	},
+	["PVP_RANK_4_1"] = {
+		ruRU = "Бесчестье",
+		enGB = "Dishonored"
+	},
+	["PVP_RANK_4_1_FEMALE"] = {
+		ruRU = "Бесчестье",
+		enGB = "Dishonored"
+	},
+	["PVP_RANK_4_2"] = {
+		ruRU = "Бесчестье",
+		enGB = "Dishonored"
+	},
+	["PVP_RANK_4_2_FEMALE"] = {
+		ruRU = "Бесчестье",
+		enGB = "Dishonored"
+	},
+	["PVP_RANK_5_0"] = {
+		ruRU = "Разведчик",
+		enGB = "Scout"
+	},
+	["PVP_RANK_5_0_FEMALE"] = {
+		ruRU = "Разведчик",
+		enGB = "Scout"
+	},
+	["PVP_RANK_5_1"] = {
+		ruRU = "Рядовой",
+		enGB = "Private"
+	},
+	["PVP_RANK_5_1_FEMALE"] = {
+		ruRU = "Рядовой",
+		enGB = "Private"
+	},
+	["PVP_RANK_5_2"] = {
+		ruRU = "Бродяга",
+	},
+	["PVP_RANK_5_2_FEMALE"] = {
+		ruRU = "Бродяга",
+	},
+	["PVP_RANK_6_0"] = {
+		ruRU = "Рубака",
+		enGB = "Grunt"
+	},
+	["PVP_RANK_6_0_FEMALE"] = {
+		ruRU = "Рубака",
+		enGB = "Grunt"
+	},
+	["PVP_RANK_6_1"] = {
+		ruRU = "Капрал",
+		enGB = "Corporal"
+	},
+	["PVP_RANK_6_1_FEMALE"] = {
+		ruRU = "Капрал",
+		enGB = "Corporal"
+	},
+	["PVP_RANK_6_2"] = {
+		ruRU = "Падальщик",
+	},
+	["PVP_RANK_6_2_FEMALE"] = {
+		ruRU = "Падальщица",
+	},
+	["PVP_RANK_7_0"] = {
+		ruRU = "Сержант",
+		enGB = "Sergeant"
+	},
+	["PVP_RANK_7_0_FEMALE"] = {
+		ruRU = "Сержант",
+		enGB = "Sergeant"
+	},
+	["PVP_RANK_7_1"] = {
+		ruRU = "Сержант",
+		enGB = "Sergeant"
+	},
+	["PVP_RANK_7_1_FEMALE"] = {
+		ruRU = "Сержант",
+		enGB = "Sergeant"
+	},
+	["PVP_RANK_7_2"] = {
+		ruRU = "Грабитель",
+	},
+	["PVP_RANK_7_2_FEMALE"] = {
+		ruRU = "Грабительница",
+	},
+	["PVP_RANK_8_0"] = {
+		ruRU = "Старший сержант",
+		enGB = "Senior Sergeant"
+	},
+	["PVP_RANK_8_0_FEMALE"] = {
+		ruRU = "Старший сержант",
+		enGB = "Senior Sergeant"
+	},
+	["PVP_RANK_8_1"] = {
+		ruRU = "Старший сержант",
+		enGB = "Master Sergeant"
+	},
+	["PVP_RANK_8_1_FEMALE"] = {
+		ruRU = "Сержант",
+		enGB = "Master Sergeant"
+	},
+	["PVP_RANK_8_2"] = {
+		ruRU = "Мародер",
+	},
+	["PVP_RANK_8_2_FEMALE"] = {
+		ruRU = "Мародер",
+	},
+	["PVP_RANK_9_0"] = {
+		ruRU = "Старшина",
+		enGB = "First Sergeant"
+	},
+	["PVP_RANK_9_0_FEMALE"] = {
+		ruRU = "Высший сержант",
+		enGB = "First Sergeant"
+	},
+	["PVP_RANK_9_1"] = {
+		ruRU = "Старшина",
+		enGB = "Sergeant Major"
+	},
+	["PVP_RANK_9_1_FEMALE"] = {
+		ruRU = "Старший сержант",
+		enGB = "Sergeant Major"
+	},
+	["PVP_RANK_9_2"] = {
+		ruRU = "Осквернитель",
+	},
+	["PVP_RANK_9_2_FEMALE"] = {
+		ruRU = "Осквернительница",
+	},
+	["PVP_RANK_10_0"] = {
+		ruRU = "Каменный Страж",
+		enGB = "Stone Guard"
+	},
+	["PVP_RANK_10_0_FEMALE"] = {
+		ruRU = "Каменный Страж",
+		enGB = "Stone Guard"
+	},
+	["PVP_RANK_10_1"] = {
+		ruRU = "Рыцарь",
+		enGB = "Knight"
+	},
+	["PVP_RANK_10_1_FEMALE"] = {
+		ruRU = "Рыцарь",
+		enGB = "Knight"
+	},
+	["PVP_RANK_10_2"] = {
+		ruRU = "Мучитель",
+	},
+	["PVP_RANK_10_2_FEMALE"] = {
+		ruRU = "Мучительница",
+	},
+	["PVP_RANK_11_0"] = {
+		ruRU = "Кровавый страж",
+		enGB = "Blood Guard"
+	},
+	["PVP_RANK_11_0_FEMALE"] = {
+		ruRU = "Кровавый страж",
+		enGB = "Blood Guard"
+	},
+	["PVP_RANK_11_1"] = {
+		ruRU = "Рыцарь-лейтенант",
+		enGB = "Knight-Lieutenant"
+	},
+	["PVP_RANK_11_1_FEMALE"] = {
+		ruRU = "Рыцарь-лейтенант",
+		enGB = "Knight-Lieutenant"
+	},
+	["PVP_RANK_11_2"] = {
+		ruRU = "Жаждущий крови",
+	},
+	["PVP_RANK_11_2_FEMALE"] = {
+		ruRU = "Жаждущая крови",
+	},
+	["PVP_RANK_12_0"] = {
+		ruRU = "Легионер",
+		enGB = "Legionnaire"
+	},
+	["PVP_RANK_12_0_FEMALE"] = {
+		ruRU = "Легионер",
+		enGB = "Legionnaire"
+	},
+	["PVP_RANK_12_1"] = {
+		ruRU = "Рыцарь-капитан",
+		enGB = "Knight-Captain"
+	},
+	["PVP_RANK_12_1_FEMALE"] = {
+		ruRU = "Рыцарь-капитан",
+		enGB = "Knight-Captain"
+	},
+	["PVP_RANK_12_2"] = {
+		ruRU = "Горлорез",
+	},
+	["PVP_RANK_12_2_FEMALE"] = {
+		ruRU = "Горлорез",
+	},
+	["PVP_RANK_13_0"] = {
+		ruRU = "Центурион",
+		enGB = "Centurion"
+	},
+	["PVP_RANK_13_0_FEMALE"] = {
+		ruRU = "Центурион",
+		enGB = "Centurion"
+	},
+	["PVP_RANK_13_1"] = {
+		ruRU = "Рыцарь-защитник",
+		enGB = "Knight-Champion"
+	},
+	["PVP_RANK_13_1_FEMALE"] = {
+		ruRU = "Рыцарь-защитник",
+		enGB = "Knight-Champion"
+	},
+	["PVP_RANK_13_2"] = {
+		ruRU = "Потрошитель",
+	},
+	["PVP_RANK_13_2_FEMALE"] = {
+		ruRU = "Потрошительница",
+	},
+	["PVP_RANK_14_0"] = {
+		ruRU = "Защитник",
+		enGB = "Champion"
+	},
+	["PVP_RANK_14_0_FEMALE"] = {
+		ruRU = "Защитник",
+		enGB = "Champion"
+	},
+	["PVP_RANK_14_1"] = {
+		ruRU = "Лейтенант-командор",
+		enGB = "Lieutenant Commander"
+	},
+	["PVP_RANK_14_1_FEMALE"] = {
+		ruRU = "Лейтенант-командор",
+		enGB = "Lieutenant Commander"
+	},
+	["PVP_RANK_14_2"] = {
+		ruRU = "Живодер",
+	},
+	["PVP_RANK_14_2_FEMALE"] = {
+		ruRU = "Живодер",
+	},
+	["PVP_RANK_15_0"] = {
+		ruRU = "Генерал-лейтенант",
+		enGB = "Lieutenant General"
+	},
+	["PVP_RANK_15_0_FEMALE"] = {
+		ruRU = "Лейтенант-генерал",
+		enGB = "Lieutenant General"
+	},
+	["PVP_RANK_15_1"] = {
+		ruRU = "Командор",
+		enGB = "Commander"
+	},
+	["PVP_RANK_15_1_FEMALE"] = {
+		ruRU = "Командор",
+		enGB = "Commander"
+	},
+	["PVP_RANK_15_2"] = {
+		ruRU = "Проклятие улиц",
+	},
+	["PVP_RANK_15_2_FEMALE"] = {
+		ruRU = "Проклятие улиц",
+	},
+	["PVP_RANK_16_0"] = {
+		ruRU = "Генерал",
+		enGB = "General"
+	},
+	["PVP_RANK_16_0_FEMALE"] = {
+		ruRU = "Генерал",
+		enGB = "General"
+	},
+	["PVP_RANK_16_1"] = {
+		ruRU = "Маршал",
+		enGB = "Marshal"
+	},
+	["PVP_RANK_16_1_FEMALE"] = {
+		ruRU = "Маршал",
+		enGB = "Marshal"
+	},
+	["PVP_RANK_16_2"] = {
+		ruRU = "Ужас деревень",
+	},
+	["PVP_RANK_16_2_FEMALE"] = {
+		ruRU = "Ужас деревень",
+	},
+	["PVP_RANK_17_0"] = {
+		ruRU = "Вождь",
+		enGB = "Warlord"
+	},
+	["PVP_RANK_17_0_FEMALE"] = {
+		ruRU = "Вождь",
+		enGB = "Warlord"
+	},
+	["PVP_RANK_17_1"] = {
+		ruRU = "Фельдмаршал",
+		enGB = "Field Marshal"
+	},
+	["PVP_RANK_17_1_FEMALE"] = {
+		ruRU = "Фельдмаршал",
+		enGB = "Field Marshal"
+	},
+	["PVP_RANK_17_2"] = {
+		ruRU = "Опустошитель городов",
+	},
+	["PVP_RANK_17_2_FEMALE"] = {
+		ruRU = "Опустошительница городов",
+	},
+	["PVP_RANK_18_0"] = {
+		ruRU = "Верховный вождь",
+		enGB = "High Warlord"
+	},
+	["PVP_RANK_18_0_FEMALE"] = {
+		ruRU = "Верховный вождь",
+		enGB = "High Warlord"
+	},
+	["PVP_RANK_18_1"] = {
+		ruRU = "Главнокомандующий",
+		enGB = "Grand Marshal"
+	},
+	["PVP_RANK_18_1_FEMALE"] = {
+		ruRU = "Главнокомандующий",
+		enGB = "Grand Marshal"
+	},
+	["PVP_RANK_18_2"] = {
+		ruRU = "Кровавый тиран",
+	},
+	["PVP_RANK_18_2_FEMALE"] = {
+		ruRU = "Кровавый тиран",
+	},
+	["PVP_RANK_19_0"] = {
+		ruRU = "Лидер",
+		enGB = "Leader"
+	},
+	["PVP_RANK_19_0_FEMALE"] = {
+		ruRU = "Лидер",
+		enGB = "Leader"
+	},
+	["PVP_RANK_19_1"] = {
+		ruRU = "Лидер",
+		enGB = "Leader"
+	},
+	["PVP_RANK_19_1_FEMALE"] = {
+		ruRU = "Лидер",
+		enGB = "Leader"
+	},
+	["PVP_RANK_19_2"] = {
+		ruRU = "Лидер",
+		enGB = "Leader"
+	},
+	["PVP_RANK_19_2_FEMALE"] = {
+		ruRU = "Лидер",
+		enGB = "Leader"
+	},
     ["CR_ONSLAUGHT_RATING_REDUSE_TOOLTIP"] = {
 	    ruRU = "Рейтинг натиска: %d (рейтинг устойчивости противника снижен на %d ед.)",
 	    enGB = ""
@@ -41304,7 +41373,6 @@ local GLOBAL_STRINGS = {
 	},
 	["HELPFRAME_ACCOUNTSECURITY_TEXT"] = {
 		ruRU = "<html><body><p>|cffffd100Мошенничество|r</p><p>Рядом с именем представителя администрации проекта Sirus всегда отображается логотип |TInterface\\ChatFrame\\UI-ChatIcon-Blizz:20:40:0:2|t. Помните об этом, если вам поступит сообщение от лица администрации проекта Sirus.</p><br/><p>Если логотип рядом с именем отсутствует, значит это попытка мошенничества. Рекомендуем прекратить общение с данным игроком и сообщить об инциденте на форуме в разделе <a href=\"http:https://forum.sirus.su/forums/8/\">Жалобы на игроков</a>.</p><br/><p>|cffffd100Регулярно делайте проверку вашего компьютера|r</p><p>Одна из наиболее распространенных причин взлома учетных записей - сторонние вредоносные программы и патчи. Мы не рекомендуем использовать сторонние программы или устанавливать непроверенные патчи. Вы можете делать это лишь на свой страх и риск!</p><br/><p>|cffffd100Не раскрывайте данные своей учетной записи|r</p><p>Делиться данными своей учетной записи с другими пользователями небезопасно! Это может привести к негативным последствиям. Чтобы не подвергать учетную запись риску, держите свой пароль в секрете. Рекомендуется использовать для учетной записи отдельный уникальный пароль.\n\nТакже для дополнительной защиты учетной записи, вы можете подключить двухфакторную аутентификацию. Ознакомиться с более подробной информацией вы можете в статье <a href=\"kbase:1:13\">Двухфакторная аутентификация</a></p></body></html>",
-		enGB = ""
 	},
 	["HELPFRAME_ACCOUNTSECURITY_TITLE"] = {
 		ruRU = "Безопасность учетной записи",
@@ -41315,8 +41383,7 @@ local GLOBAL_STRINGS = {
 		enGB = "Contacts"
 	},
 	["HELPFRAME_CONTACTS_TEXT"] = {
-		ruRU = "<html><body><p>Мы очень дорожим вниманием всех игроков проекта Sirus.su, поэтому всегда стараемся предоставлять вовремя всю актуальную информацию по развитию проекта и отвечать на интересующие вас вопросы. В данном разделе представлен список всех ресурсов, на которых вы можете найти нас!\n</p><br/><p>Сайт: <a href=\"http:https://sirus.su/\">sirus.su</a></p><p>На нашем сайте вы сможете найти актуальную базу знаний, увидеть PVP и PVE ладдер, зайти в личный кабинет и многое другое!</p><br/><p>Форум: <a href=\"http:https://forum.sirus.su/\">forum.sirus.su</a></p><p>На форуме можно получить помощь, оставить свои предложения и пожелания, высказать свое мнение об обновлениях и изменениях, а также найти единомышленников для игры!</p><br/><p>Вконтакте: <a href=\"http:https://vk.com/sirussu\">vk.com/sirussu</a></p><p>Наша группа Вконтакте предназначена для отдыха и общения: игровые мемы, викторины, розыгрыши. Все это есть там! Вы также сможете найти актуальную информацию по обновлениям и внутриигровым изменениям в ленте нашей группы Вконтакте!</p><br/><p>Discord: <a href=\"http:https://discord.gg/sirus\">discord.gg/sirus</a></p><p>Для более тесного общения игроков друг с другом был создан сервер в Discord. Общайтесь с игроками и представителями администрации проекта, отслеживайте последние новости, участвуйте в еженедельных розыгрышах!</p></body></html>",
-		enGB = ""
+		ruRU = "<html><body><p>Мы очень дорожим вниманием всех игроков проекта Sirus.su! В этом разделе представлен список ресурсов, на которых вы можете найти нас.\n</p><br /><p>Сайт: <a href=\"http:https://sirus.su/\">sirus.su</a></p><p>На нашем сайте вы сможете найти актуальную базу знаний, увидеть PVP и PVE ладдер, зайти в личный кабинет и многое другое!</p><br /><p>Форум: <a href=\"http:https://forum.sirus.su/\">forum.sirus.su</a></p><p>На форуме можно получить помощь, оставить свои предложения и пожелания, высказать свое мнение об обновлениях и изменениях, а также найти единомышленников для игры!</p><br /><p>Вконтакте: <a href=\"http:https://vk.com/sirussu\">vk.com/sirussu</a></p><p>Наша группа Вконтакте предназначена для отдыха и общения: игровые мемы, викторины, розыгрыши. Все это есть там! Вы также сможете найти актуальную информацию по обновлениям и внутриигровым изменениям в ленте нашей группы Вконтакте!</p><br /><p>Discord: <a href=\"http:https://discord.gg/sirus\">discord.gg/sirus</a></p><p>Для более тесного общения игроков друг с другом был создан сервер в Discord. Общайтесь с игроками и представителями администрации проекта, отслеживайте последние новости, участвуйте в еженедельных розыгрышах!</p><br /><p>Telegram: <a href=\"http:https://t.me/sirus_su\">t.me/sirus_su</a></p><p>Подписывайтесь на наш канал в Telegram, чтобы не пропустить важные новости и быть в курсе событий!</p><br /><p>YouTube: <a href=\"http:https://www.youtube.com/@sirus7605\">youtube.com/@sirus7605</a></p><p>Добро пожаловать на наш YouTube канал! Новостные дайджесты и конкурсы комментариев, обзоры обновлений и видеогайды  ждут вас!</p></body></html>",
 	},
 	["HELPFRAME_ITEM_RESTORATION"] = {
 		ruRU = "Восстановить предмет",
@@ -42601,13 +42668,13 @@ local GLOBAL_STRINGS = {
 		ruRU = "Распространение на аккаунт",
 		enGB = ""
 	},
+	["ARENA_REPLAY_CONFIRMATION_WATCH"] = {
+		ruRU = "Вы действительно хотите посмотреть запись игры с номером %d?",
+		enGB = "Do you really want to replay game number %d?"
+	},
 	["ARENA_REPLAY_DISABLE"] = {
 		ruRU = "Просмотр записей арены в данный момент недоступен.",
 		enGB = "Arena replays are currently unavailable."
-	},
-	["ARENA_REPLAY_ESCAPE_HYPERLINK"] = {
-		ruRU = "\\124cffc79c6e\\124Hreplay:%d\\124h[Запись арены: %d (%s)]\\124h\\124r",
-		enGB = "\\124cffc79c6e\\124Hreplay:%d\\124h[Arena replay: %d (%s)]\\124h\\124r"
 	},
 	["ARENA_REPLAY_HYPERLINK"] = {
 		ruRU = "|cffc79c6e|Hreplay:%d|h[Запись арены: %d (%s)]|h|r",
@@ -42619,11 +42686,86 @@ local GLOBAL_STRINGS = {
 	},
 	["ARENA_REPLAY_NOT_FOUND"] = {
 		ruRU = "Повтор боя не найден",
-		enGB = "",
 	},
 	["ARENA_REPLAY_WIN"] = {
 		ruRU = "ПОБЕДА",
 		enGB = "VICTORY"
+	},
+	["ARENAREPLAY_FORWARD_DESC"] = {
+		ruRU = "Увеличить скорость воспроизведения на 0.25.",
+		enGB = "Increase the playback speed by 0.25."
+	},
+	["ARENAREPLAY_PLAY_DESC"] = {
+		ruRU = "Возобновить воспроизведение.",
+		enGB = "Resume playback."
+	},
+	["ARENAREPLAY_REPORT_DESC"] = {
+		ruRU = "Заметили нарушение? Отправьте жалобу! Она будет рассмотрена в кратчайшие сроки, а нарушители будут наказаны.",
+		enGB = "Have you witnessed a violation? Report it! We'll examine the report as soon as possible and punish the offenders."
+	},
+	["ARENAREPLAY_SHARED_DESC"] = {
+		ruRU = "Поделитесь с сообществом лучшими моментами вашего боя!",
+		enGB = "Share the best moments of your match with the community!"
+	},
+	["ARENAREPLAY_FORWARD"] = {
+		ruRU = "Ускорить",
+		enGB = "Fast forward"
+	},
+	["ARENAREPLAY_SHARED_REPLAY_MESSAGE_PH"] = {
+		ruRU = "Введите сопутствующее сообщение.",
+		enGB = "Enter accompanying message."
+	},
+	["ARENAREPLAY_EXIT"] = {
+		ruRU = "Выход",
+		enGB = "Exit"
+	},
+	["ARENAREPLAY_REPORT_LABEL"] = {
+		ruRU = "Подача жалобы",
+		enGB = "Report Player"
+	},
+	["ARENAREPLAY_REFRESH_DESC"] = {
+		ruRU = "Обновить все параметры текущей записи боя.",
+		enGB = "Update all parameters of the current replay."
+	},
+	["ARENAREPLAY_SHARED_REPLAY"] = {
+		ruRU = "Поделится записью",
+		enGB = "Share Replay"
+	},
+	["ARENAREPLAY_PLAY"] = {
+		ruRU = "Продолжить",
+		enGB = "Continue"
+	},
+	["ARENAREPLAY_PAUSE_DESC"] = {
+		ruRU = "Приостановить воспроизведение.",
+		enGB = "Pause playback."
+	},
+	["ARENAREPLAY_PAUSE"] = {
+		ruRU = "Пауза",
+		enGB = "Pause"
+	},
+	["ARENAREPLAY_REFRESH"] = {
+		ruRU = "Обновить",
+		enGB = "Refresh"
+	},
+	["ARENAREPLAY_SHARED"] = {
+		ruRU = "Поделиться",
+		enGB = "Share"
+	},
+	["ARENAREPLAY_EXIT_DESC"] = {
+		ruRU = "Закончить просмотр текущей записи боя.",
+		enGB = "Exit arena replay."
+	},
+	["ARENAREPLAY_REPORT"] = {
+		ruRU = "Пожаловаться",
+		enGB = "Report"
+	},
+	["ARENAREPLAY_BACKWARD"] = {
+		ruRU = "Замедлить",
+		enGB = "Decrease Speed"
+	},
+	["ARENAREPLAY_BACKWARD_DESC"] = {
+		ruRU = "Уменьшить скорость воспроизведения на 0.25.",
+		enGB = "Decrease the playback speed by 0.25."
 	},
 	["BATTLEPASS"] = {
 		ruRU = "Боевой пропуск",
@@ -43774,28 +43916,28 @@ local GLOBAL_STRINGS = {
 	["SETTINGS_HARDCORE_NOTIFICATION_SOUND"] = {
 		ruRU = "Звук уведомлений",
 	},
-	["OPTION_SHOW_HARDCORE_NOTIFICATION_0"] = {
+	["OPTION_HARDCORENOTIFICATION_0"] = {
 		ruRU = "Отключение любых уведомление о смертях игроков в режиме испытания.",
 	},
-	["OPTION_SHOW_HARDCORE_NOTIFICATION_1"] = {
+	["OPTION_HARDCORENOTIFICATION_1"] = {
 		ruRU = "Сокращенное уведомление появляется в небольшом окне над чатом.",
 	},
-	["OPTION_SHOW_HARDCORE_NOTIFICATION_2"] = {
+	["OPTION_HARDCORENOTIFICATION_2"] = {
 		ruRU = "Уведомление появляется по центру экрана.",
 	},
-	["OPTION_SHOW_HARDCORE_NOTIFICATION_LEVEL_1"] = {
+	["OPTION_HARDCORENOTIFICATION_LEVEL_1"] = {
 		ruRU = "Вы будете получать уведомления о смертях игроков, уровень которых равен или превышает 10.",
 	},
-	["OPTION_SHOW_HARDCORE_NOTIFICATION_LEVEL_2"] = {
+	["OPTION_HARDCORENOTIFICATION_LEVEL_2"] = {
 		ruRU = "Вы будете получать уведомления о смертях игроков, уровень которых равен или превышает 20.",
 	},
-	["OPTION_SHOW_HARDCORE_NOTIFICATION_LEVEL_3"] = {
+	["OPTION_HARDCORENOTIFICATION_LEVEL_3"] = {
 		ruRU = "Вы будете получать уведомления о смертях игроков, уровень которых равен или превышает 60.",
 	},
 	["SETTINGS_LOOT_ALERT_THRESHOLD"] = {
 		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tПолученная добыча",
 	},
-	["OPTION_LOOT_ALERT_THRESHOLD"] = {
+	["OPTION_LOOTALERTTHRESHOLD"] = {
 		ruRU = "Отображение всплывающего уведомления о получении добычи определенного качества и выше",
 	},
 	["OPTION_LOOT_ALERT_THRESHOLD_DISABLED"] = {
@@ -43860,6 +44002,24 @@ local GLOBAL_STRINGS = {
 	},
 	["OPTION_AUTO_ACCEPT_GROUP_INVITES_3"] = {
 		ruRU = "Автоматически принимаются приглашения в группу от друзей и членов вашей гильдии.",
+	},
+	["SETTINGS_SPELL_RANGE"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tРадиус применения заклинаний",
+	},
+	["OPTION_ENABLESPELLSELECTRANGE"] = {
+		ruRU = "При включении отображает максимальный радиус действия выбранного заклинания в виде визуального индикатора вокруг персонажа.\nВы можете выбрать цвет индикатора.",
+	},
+	["OPTION_SPELL_RANGE_0"] = {
+		ruRU = "Отключено",
+	},
+	["OPTION_SPELL_RANGE_1"] = {
+		ruRU = "|cff1eff00Зеленый|r",
+	},
+	["OPTION_SPELL_RANGE_2"] = {
+		ruRU = "|cffff0000Красный|r",
+	},
+	["OPTION_SPELL_RANGE_3"] = {
+		ruRU = "|cffffffffБелый|r",
 	},
 	["CHARACTER_FORM"] = {
 		ruRU = "Облик |3-1(%s)",
@@ -44393,6 +44553,14 @@ local GLOBAL_STRINGS = {
 	["TRANSMOG_HELP_CATEGORY_28_1"] = {
 		ruRU = "Метательное можно трансмогрифицировать в метательное."
 	},
+	["ACTION_BUTTON_USE_KEY_DOWN"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tСпособности при нажатии клавиш",
+		enGB = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tCast action keybinds on key down",
+	},
+	["OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN"] = {
+		ruRU = "Способности будут задействоваться, когда пользователь нажимает, а не отпускает клавишу.",
+		enGB = "Action button keybinds will respond on key down, rather than on key up.",
+	},
 	["ITEM_BROWSER"] = {
 		ruRU = "Предметы",
 	},
@@ -44438,8 +44606,14 @@ local GLOBAL_STRINGS = {
 	["EJ_INSTANCE_REQUIREMENT_ITEM_LEVEL"] = {
 		ruRU = "Средний уровень предметов: %s",
 	},
+	["EJ_INSTANCE_REQUIREMENT_NONE"] = {
+		ruRU = "Вход свободный",
+	},
 	["EJ_INSTANCE_REQUIREMENT_QUESTS"] = {
 		ruRU = "Задания:",
+	},
+	["EJ_INSTANCE_REQUIREMENT_RAID_GROUP"] = {
+		ruRU = "Для входа требуется быть участником рейдовой группы",
 	},
 	["EJ_INSTANCE_REQUIREMENT_ACHIEVEMENTS"] = {
 		ruRU = "Достижения:",
@@ -44750,6 +44924,9 @@ local GLOBAL_STRINGS = {
 	["STORE_FILTER_RESET"] = {
 		ruRU = "Сбросить",
 	},
+	["STORE_FILTER_STATS_RESISTANCE_ALL"] = {
+		ruRU = "ко всем видам сопротивления",
+	},
 	["STORE_GIFT_ERROR_NO_RECEIVER_NAME"] = {
 		ruRU = "Не указано имя получателя",
 	},
@@ -44895,11 +45072,20 @@ local GLOBAL_STRINGS = {
 	["STORE_PREMIUM_PERMANENT"] = {
 		ruRU = "Перманентный",
 	},
+	["STORE_PREMIUM_PURCHASE"] = {
+		ruRU = "Купить «Premium»",
+	},
+	["STORE_PREMIUM_PURCHASE_ALT"] = {
+		ruRU = "Получить «Premium»",
+	},
 	["STORE_PREMIUM_PURCHASE_OPTION_HINT"] = {
 		ruRU = "Премиум-статус можно приобрести тут или проголосовав за сервер",
 	},
 	["STORE_PREMIUM_PURCHASE_OPTION_LABEL"] = {
 		ruRU = "Выберите длительность",
+	},
+	["STORE_PREMIUM_RENEW"] = {
+		ruRU = "Продлить «Premium»",
 	},
 	["STORE_PREMIUM_TITLE"] = {
 		ruRU = "Покупка премиум-статуса",
@@ -45120,6 +45306,24 @@ local GLOBAL_STRINGS = {
 	["STORE_PURCHASE_ERROR_28"] = {
 		ruRU = "Предмет недоступен для приобретения. Возможно, вы уже его покупали ранее?",
 	},
+	["STORE_PURCHASE_ERROR_29"] = {
+		ruRU = "Предмет не подходит игроку %s по типу объекта.",
+	},
+	["STORE_PURCHASE_ERROR_30"] = {
+		ruRU = "Предмет не подходит вам по типу объекта.",
+	},
+	["STORE_PURCHASE_ERROR_31"] = {
+		ruRU = "Этот предмет вам недоступен",
+	},
+	["STORE_PURCHASE_ERROR_32"] = {
+		ruRU = "Специальное предложение раздела трансмогрификации не найдено.",
+	},
+	["STORE_PURCHASE_ERROR_33"] = {
+		ruRU = "Нельзя дарить специальное предложение раздела трансмогрификации.",
+	},
+	["STORE_PURCHASE_ERROR_34"] = {
+		ruRU = "Вы можете купить только %s [%s] из-за %s лимита.",
+	},
 	["STORE_PURCHASE_ERROR_BALANCE_BONUS"] = {
 		ruRU = "Недостаточно средств для покупки.",
 		enGB = "Not enought funds to buy."
@@ -45128,11 +45332,11 @@ local GLOBAL_STRINGS = {
 		ruRU = "Вашего уровня лояльности недостаточно для покупки.",
 		enGB = "You loyalty level isn't high enough to buy this."
 	},
-	["STORE_PURCHASE_PREMIUM"] = {
-		ruRU = "Купить «Premium»",
+	["STORE_PURCHASE_ERROR_LIMIT_OVERALL"] = {
+		ruRU = "общего",
 	},
-	["STORE_PURCHASE_PREMIUM_ALT"] = {
-		ruRU = "Получить «Premium»",
+	["STORE_PURCHASE_ERROR_LIMIT_WEEKLY"] = {
+		ruRU = "недельного",
 	},
 	["STORE_REALM_SHOUT_BODY"] = {
 		ruRU = "Отправляя сообщение вы соглашаетесь с тем, что ознакомлены с правилами сервера и обязуетесь их соблюдать.\n\nДля нас очень важна атмосфера на проекте, поэтому мы так же предупреждаем вас, что любое нарушение правил при помощи этой функции приведёт к блокировке вашего аккаунта.\n\nВозвраты невозможны ни в каком виде.",
@@ -45414,6 +45618,108 @@ local GLOBAL_STRINGS = {
 	},
 	["PLAYER_EQUIPMENT_HIDE"] = {
 		ruRU = "Скрыть экипировку",
+	},
+	["ITEM_EXPIRATION_TITLE"] = {
+		ruRU = "Внимание!",
+	},
+	["ITEM_EXPIRATION_TOOLTIP"] = {
+		ruRU = "Показать окно с предметами, которые скоро исчезнут",
+	},
+	["ITEM_EXPIRATION_WARNING"] = {
+		ruRU = "Эти предметы исчезнут, если их не использовать!",
+	},
+	["GOSSIP_PRICE_MATCH_PATTERN"] = {
+		ruRU = "Цена: (%d+) бонусов",
+	},
+	["CUSTOM_GOSSIP_CONFIRMATION_TEXT_1"] = {
+		ruRU = "Разделить 2 любых заряженных черных бриллианта на 3 черных бриллианта",
+	},
+	["CUSTOM_GOSSIP_CONFIRMATION_TEXT_2"] = {
+		ruRU = "Разделить изначальный алмаз бездны на 6 черных бриллиантов",
+	},
+	["CUSTOM_GOSSIP_CONFIRMATION_TEXT_3"] = {
+		ruRU = "Обратите внимание, что вы будете использовать бонусы.",
+	},
+	["PERCENTAGE_STRING"] = {
+		ruRU = "%d%%",
+	},
+	["TRACKER_ALL_OBJECTIVES"] = {
+		ruRU = "Все задачи",
+	},
+	["TRACKER_HEADER_ACHIEVEMENTS"] = {
+		ruRU = "Достижения",
+	},
+	["TRACKER_HEADER_QUESTS"] = {
+		ruRU = "Задания",
+	},
+	["TRACKER_QUEST_TIMERS_FORMAT"] = {
+		ruRU = "|cffff0000Время на задание: %s|r",
+	},
+	["TRACKER_RESET_POSITION"] = {
+		ruRU = "Сбросить позицию",
+	},
+	["TRACKER_TOGGLE_SELECTION"] = {
+		ruRU = "Изменить позицию",
+	},
+	["TRACKER_HEIGHT"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tВысота",
+	},
+	["OPTION_TOOLTIP_TRACKER_HEIGHT"] = {
+		ruRU = "Изменение высоты панели отслеживания задач, если не используется позиция по умолчанию.",
+	},
+	["TRACKER_OPACITY"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tНепрозрачность",
+	},
+	["OPTION_TOOLTIP_TRACKER_OPACITY"] = {
+		ruRU = "Изменение прозрачности фона в панели отслеживания задач.",
+	},
+	["TRACKER_TEXT_SIZE"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tРазмер текста",
+	},
+	["OPTION_TOOLTIP_TRACKER_TEXT_SIZE"] = {
+		ruRU = "Изменение размера текста в панели отслеживания задач.",
+	},
+	["BATTLEPASS_WATCH_TOO_MANY"] = {
+		ruRU = "Одновременно можно следить за выполнением %d заданий.",
+	},
+	["BATTLEPASS_TRACKER_HEADER_QUEST"] = {
+		ruRU = "Боевой пропуск",
+	},
+	["BATTLEPASS_TRACKER_CRITERIA_COUNT_FORMAT"] = {
+		ruRU = "%1$s/%2$d",
+	},
+	["BATTLEPASS_UNTRACK_QUEST"] = {
+		ruRU = "Не отслеживать",
+	},
+	["PROFESSIONS_WATCH_TOO_MANY"] = {
+		ruRU = "Одновременно можно следить за выполнением %d рецептов.",
+	},
+	["PROFESSIONS_TRACKER_HEADER_PROFESSION"] = {
+		ruRU = "Профессия",
+	},
+	["PROFESSIONS_CRAFTING_FORM_RECRAFTING_HEADER"] = {
+		ruRU = "Переделка: %1$s",
+	},
+	["PROFESSIONS_TRACKER_REAGENT_FORMAT"] = {
+		ruRU = "%s %s",
+	},
+	["PROFESSIONS_TRACKER_REAGENT_COUNT_FORMAT"] = {
+		ruRU = "%1$s/%2$d",
+	},
+	["PROFESSIONS_TRACK_RECIPE"] = {
+		ruRU = "Отслеживать",
+	},
+	["PROFESSIONS_UNTRACK_RECIPE"] = {
+		ruRU = "Не отслеживать",
+	},
+	["PROFESSIONS_REAGENT_CONTAINER_LABEL"] = {
+		ruRU = "Реагенты:",
+	},
+	["TRADESKILL_REAGENT_COUNT"] = {
+		ruRU = "%1$s/%2$d",
+	},
+	["TRADESKILL_INSPECT_RECIPE"] = {
+		ruRU = "Осмотреть рецепт",
 	},
 }
 

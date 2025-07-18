@@ -12,6 +12,9 @@
 				Mixin(self, GameTooltipMixin)
 				self:OnLoad()
 			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
 			<OnTooltipSetUnit function="GameTooltip_OnTooltipSetUnit" />
 			<OnTooltipSetItem function="GameTooltip_OnTooltipSetItem" />
 			<OnHide>

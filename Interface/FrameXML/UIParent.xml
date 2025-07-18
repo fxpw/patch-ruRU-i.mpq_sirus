@@ -23,9 +23,6 @@
 				<!-- Register session CVar -->
 				RegisterCVar("ShowSpellUnassignedBorder", "1")
 				RegisterCVar("miniTradeSkillFrame", 0)
-
-				SetSafeCVar("ForceChangeFactionEvent", -1)
-				SetSafeCVar("FORCE_CHAR_CUSTOMIZATION", -1)
 			</OnLoad>
 			<!-- Respond here to any events you want to monitor globally -->
 			<OnEvent function="UIParent_OnEvent"/>

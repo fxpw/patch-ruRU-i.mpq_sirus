@@ -5,116 +5,79 @@ function ezSpectator_InterfaceWorker:Create(Parent)
     local self = {}
     setmetatable(self, ezSpectator_InterfaceWorker)
 
-    -- WorldStateScoreFrame:SetParent(nil)
-
     self.Parent = Parent
-
-    self.IsRunning = false
-	self.IsPaused = false
-    self.IsSpectating = false
     self.Viewpoint = nil
 
     self.TopFrame = ezSpectator_TopFrame:Create(self.Parent)
 
     self.Reactor = CreateFrame('Frame', nil, ArenaSpectatorFrame)
     self.Reactor.Parent = self
-    self.Reactor.ElapsedTick = 0
-    self.Reactor:SetScript('OnUpdate', function(self, Elapsed)
-        self.ElapsedTick = self.ElapsedTick + Elapsed
 
-        if self.ElapsedTick > 0.5 then
-            local Winner = GetBattlefieldWinner()
-            if Winner then
-                if self.Parent.IsRunning then
-                    self.Parent.IsRunning = false
+	self.Nameplates = ezSpectator_Nameplates:Create(self.Parent)
 
-                    self.Parent:ProcessWinner(Winner, 'DEFAULT')
-                end
-            end
-        end
+	self.inactivePlayerObjects = {}
 
-        self.Parent:ProcessCastQueue()
-    end)
+	self.Players = {}
+	self.Teams = {[1] = {}, [2] = {}}
 
-    self.Nameplates = ezSpectator_Nameplates:Create(self.Parent)
-
-    self.EventFrame = CreateFrame('Frame', nil, ArenaSpectatorFrame);
-    self.EventFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
-    self.EventFrame.Parent = self;
-    self.EventFrame:SetScript('OnEvent', function(self)
-        if self.Parent.IsSpectating then
-           self.Parent:SetMode(0)
-        end
-    end);
-
-    self:Reset()
     return self
 end
 
-
-
 function ezSpectator_InterfaceWorker:Reset()
-    self.Teams = {}
-    self.Teams[1] = {}
-    self.Teams[2] = {}
+	for playerName, playerObject in pairs(self.Players) do
+		playerObject.SmallFrame.CastFrame:Hide()
+		playerObject:Reset()
+		playerObject:Hide()
+		table.insert(self.inactivePlayerObjects, playerObject)
+		self.Players[playerName] = nil
+	end
 
-    self.Players = {}
-    ArenaSpectatorFrame:SetSpeed(1, true)
+	table.wipe(self.Teams[1])
+	table.wipe(self.Teams[2])
 end
 
-
-
-function ezSpectator_InterfaceWorker:CheckVersion(Value)
-    -- local Major, Minor, Build, Revision = strsplit('.', Value, 4)
-
-    -- local IsActual = (tonumber(Major) == self.Parent.Data.Version.Major) and
-    --             (tonumber(Minor) == self.Parent.Data.Version.Minor) and
-    --             (tonumber(Build) == self.Parent.Data.Version.Build) and
-    --             (tonumber(Revision) == self.Parent.Data.Version.Revision)
-
-    -- if not IsActual then
-    --     self.UpdateFrame = ezSpectator_UpdateFrame:Create()
-    -- end
+function ezSpectator_InterfaceWorker:GetPlayerObject(playerName)
+	local playerObject = self.Players[playerName]
+	if not playerObject then
+		return self:AcquirePlayerObject(playerName)
+	end
+	return playerObject
 end
 
+function ezSpectator_InterfaceWorker:AcquirePlayerObject(playerName)
+	local playerObject
+	local numInactiveObjects = #self.inactivePlayerObjects
 
+	if self.Parent.USE_PLAYER_OBJECT_POOLS and numInactiveObjects > 0 then
+		playerObject = self.inactivePlayerObjects[numInactiveObjects]
+		self.inactivePlayerObjects[numInactiveObjects] = nil
+	else
+		playerObject = ezSpectator_PlayerWorker:Create(self.Parent)
+	end
 
-function ezSpectator_InterfaceWorker:SetMode(Value)
-    self:ResetViewpoint()
+	self.Players[playerName] = playerObject
 
-    if Value == 0 then
-        self.IsRunning = false
-		self.IsPaused = false
-        self.IsSpectating = false
-        self.IsTournament = false
+	playerObject:SetNickname(playerName)
+	playerObject:Hide()
 
-        UIParent:Show()
-
-        --noinspection UnusedDef
-        for Index, Player in pairs(self.Players) do
-            Player:Hide()
-            Player.SmallFrame.CastFrame:Hide()
-        end
-        self.TopFrame:Hide()
-        ArenaSpectatorFrame:Hide()
-        ezSpectatorResumeReplay:Hide()
-        self.TopFrame.MatchTime = nil;
-
-        self:Reset()
-    else
-        self.IsRunning = true
-		self.IsPaused = false
-        self.IsSpectating = true
-        self.IsTournament = Value > 1
-
-        self.TopFrame:Show()
-        ArenaSpectatorFrame:Show()
-
-        UIParent:Hide()
-    end
+	return playerObject
 end
 
+function ezSpectator_InterfaceWorker:SetMode(spectatorMode)
+	local isDisabled = spectatorMode == Enum.ArenaSpectator.Mode.Disabled
 
+	UIParent:SetShown(isDisabled)
+	ArenaSpectatorFrame:SetShown(not isDisabled)
+	self.TopFrame:SetShown(not isDisabled)
+	self.Nameplates:SetScanEnabled(not isDisabled)
+	self:SetMatchInProgress(not isDisabled and C_ArenaSpectator.IsInProgress())
+
+	self:ResetViewpoint()
+
+	if isDisabled then
+		self:Reset()
+	end
+end
 
 function ezSpectator_InterfaceWorker:SetTeamName(TeamID, Value)
     if not TeamID then
@@ -133,8 +96,6 @@ function ezSpectator_InterfaceWorker:SetTeamName(TeamID, Value)
     end
 end
 
-
-
 function ezSpectator_InterfaceWorker:SetTeamColor(TeamID, Value)
     if not TeamID then
         return
@@ -150,8 +111,6 @@ function ezSpectator_InterfaceWorker:SetTeamColor(TeamID, Value)
         self.TopFrame.RightTeam:SetColor(Value)
     end
 end
-
-
 
 function ezSpectator_InterfaceWorker:SetTeamScore(TeamID, Value)
     if not TeamID then
@@ -169,66 +128,63 @@ function ezSpectator_InterfaceWorker:SetTeamScore(TeamID, Value)
     end
 end
 
-
-
 function ezSpectator_InterfaceWorker:SetStage(Value)
     self.TopFrame:SetStage(Value)
     self.TopFrame:UpdateTournamentTextFrame()
 end
-
-
 
 function ezSpectator_InterfaceWorker:SetBOX(Value)
     self.TopFrame:SetBOX(Value)
     self.TopFrame:UpdateTournamentTextFrame()
 end
 
-
-
-function ezSpectator_InterfaceWorker:SetMatchElapsed(Value)
-    if not Value then
-        return
-    end
-
-    self.TopFrame:StartTimer(Value)
+function ezSpectator_InterfaceWorker:SetMatchInProgress(IsInProgress)
+	self.TopFrame:SetMatchInProgress(IsInProgress)
 end
 
+function ezSpectator_InterfaceWorker:SetPaused(isPaused)
+	self.TopFrame.Play:SetShown(isPaused)
+	self.TopFrame.Pause:SetShown(not isPaused)
+end
 
+function ezSpectator_InterfaceWorker:GetTeam(teamID)
+	if teamID == 1 then
+		return self.TopFrame.LeftTeam
+	elseif teamID == 2 then
+		return self.TopFrame.RightTeam
+	end
+end
 
 function ezSpectator_InterfaceWorker:UpdateTargets()
-    --noinspection UnusedDef
-    for Index, Player in pairs(self.Players) do
-        if not Player.SmallFrame.IsLocked and not Player.IsDead then
-            Player.SmallFrame.Target:Update()
-        else
-            Player.SmallFrame.Target:Hide()
-        end
-    end
+	for playerName, playerObject in pairs(self.Players) do
+		if not playerObject.IsDead and playerObject:IsReady() then
+			playerObject.SmallFrame.Target:Update()
+		else
+			playerObject.SmallFrame.Target:Hide()
+		end
+	end
 end
 
-
-
 function ezSpectator_InterfaceWorker:UpdateTeams()
-    if not self.IsRunning then
+	if not C_ArenaSpectator.IsInProgress() and not C_ArenaSpectator.IsInPreparation() then
         return
     end
 
     local LeftMax, LeftVal, RightMax, RightVal = 0, 0, 0, 0
 
-    --noinspection UnusedDef
-    for Index, Player in pairs(self.Players) do
-        if Player and Player:IsReady() then
-            if Player.Team == 1 then
-                LeftMax = LeftMax + Player.MaxHealth
-                LeftVal = LeftVal + Player.Health
-            end
+	for playerName, playerObject in pairs(self.Players) do
+		if playerObject and playerObject:IsReady() then
+			if playerObject.Team == 1 then
+				LeftMax = LeftMax + playerObject.MaxHealth
+				LeftVal = LeftVal + playerObject.Health
+			end
 
-            if Player.Team == 2 then
-                RightMax = RightMax + Player.MaxHealth
-                RightVal = RightVal + Player.Health
-            end
-        end
-    end
+			if playerObject.Team == 2 then
+				RightMax = RightMax + playerObject.MaxHealth
+				RightVal = RightVal + playerObject.Health
+			end
+		end
+	end
 
     self.TopFrame.LeftTeam.HealthBar:SetMaxValue(LeftMax)
     self.TopFrame.LeftTeam.HealthBar:SetValue(LeftVal)
@@ -237,56 +193,27 @@ function ezSpectator_InterfaceWorker:UpdateTeams()
     self.TopFrame.RightTeam.HealthBar:SetValue(RightVal)
 end
 
-
-
-function ezSpectator_InterfaceWorker:ProcessWinner(Value, Mode)
-    Value = Value + 1
-
-    --noinspection UnusedDef
-    for Index, Player in pairs(self.Players) do
-        Player:SetWinner(Value == Player.Team)
-    end
-
-    local SoundName = self.Parent.Data.MatchEndings[Mode]
-    if type(SoundName) == 'table' then
-        SoundName = SoundName[math.random(#SoundName)]
-    end
-
-    self.Parent.Sound:Play(SoundName, 2)
+function ezSpectator_InterfaceWorker:ProcessWinner(winnerTeamID)
+	for playerName, playerObject in pairs(self.Players) do
+		playerObject:SetWinner(winnerTeamID == playerObject.Team)
+	end
 end
-
-
-
-function ezSpectator_InterfaceWorker:ProcessCastQueue()
-    --noinspection UnusedDef
-    for Index, Player in pairs(self.Players) do
-        if Player.CastQueue:GetCount() > 0 then
-            Player:SetCast()
-        end
-    end
-end
-
-
 
 function ezSpectator_InterfaceWorker:ResetViewpoint()
-    self.Viewpoint = nil
+	self.Viewpoint = nil
 
-    --noinspection UnusedDef
-    for Index, Player in pairs(self.Players) do
-        if not Player.IsDead then
-            Player.SmallFrame:SetAlpha(1)
-        end
+	for playerName, playerObject in pairs(self.Players) do
+		if not playerObject.IsDead then
+			playerObject.SmallFrame:SetAlpha(1)
+		end
 
-        Player.PlayerFrame:Hide()
-        Player.VictimFrame:Hide()
-    end
+		playerObject.PlayerFrame:Hide()
+		playerObject.VictimFrame:Hide()
+	end
 end
 
-
-
 function ezSpectator_InterfaceWorker:ResetVictims()
-    --noinspection UnusedDef
-    for Index, Player in pairs(self.Players) do
-        Player.VictimFrame:Hide()
-    end
+	for playerName, playerObject in pairs(self.Players) do
+		playerObject.VictimFrame:Hide()
+	end
 end

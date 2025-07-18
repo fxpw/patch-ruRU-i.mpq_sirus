@@ -294,7 +294,7 @@ PRIVATE.QueueTutorial = function(handler, ...)
 	return true, true
 end
 
-PRIVATE.DequeueTuturial = function(handler)
+PRIVATE.DequeueTutorial = function(handler)
 	for index, tutorial in ipairs(PRIVATE.QUEUE_TUTORIALS) do
 		if tutorial.handler == handler then
 			tutorial.handler.isShown = nil
@@ -353,15 +353,27 @@ PRIVATE.ProcessQueue = function(owner, recurse)
 		return
 	end
 
-	for index, tutorial in ipairs(PRIVATE.QUEUE_TUTORIALS) do
-		if tutorial.handler.owner == owner and not tutorial.handler.isShown then
-			local success, isShown = tutorial.handler:Trigger(unpack(tutorial.args))
-			if success and isShown
-			and tutorial.handler.owner == owner -- owner wasn't changed
-			then
-				PRIVATE.PROCESSING_QUEUE[owner] = nil
-				return
+	do -- try to trigger any tutorial from queue
+		local index = 1
+		local tutorial = PRIVATE.QUEUE_TUTORIALS[index]
+		while tutorial do
+			if tutorial.handler.owner == owner and not tutorial.handler.isShown then
+				local success, isShown = tutorial.handler:Trigger(unpack(tutorial.args))
+				if success and isShown
+				and tutorial.handler.owner == owner -- owner wasn't changed
+				then
+					PRIVATE.PROCESSING_QUEUE[owner] = nil
+					return
+				else
+					-- check if handler was dequeued
+					if tutorial ~= PRIVATE.QUEUE_TUTORIALS[index] then
+						index = index - 1
+					end
+				end
 			end
+
+			index = index + 1
+			tutorial = PRIVATE.QUEUE_TUTORIALS[index]
 		end
 	end
 
@@ -684,6 +696,7 @@ function TutorialPrototypeMixin:UnregisterCallbacks()
 	end
 	if self.eventCallbacks then
 		for frameEvent, func in pairs(self.eventCallbacks) do
+			self.eventCallbacks[frameEvent] = nil
 			EventRegistry:UnregisterFrameEventAndCallback(frameEvent, self)
 		end
 	end
@@ -721,7 +734,7 @@ function TutorialPrototypeMixin:QueueTrigger(...)
 end
 
 function TutorialPrototypeMixin:DeQueueTrigger(...)
-	local success = PRIVATE.DequeueTuturial(self)
+	local success = PRIVATE.DequeueTutorial(self)
 	if success then
 		if self.owner then
 			PRIVATE.ProcessQueue(self.owner)
@@ -1938,6 +1951,7 @@ do	-- LFDMicroButton
 			return level >= TARGET_LEVEL and level <= MAX_LEVEL and C_BattlePass.IsActiveOrHasRewards() and self:GetTarget(1):IsShown()
 				and C_FactionManager.IsFactionDataAvailable() and not C_Unit.IsNeutral("player")
 				and not C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.DUNGEON_AVAILABLE)
+				and not C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.BATTLEPASS_REWARDS)
 		end
 
 		function LFG_PVP_BattlePass_20:CanFinishPreemptively()

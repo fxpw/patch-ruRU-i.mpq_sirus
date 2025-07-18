@@ -120,7 +120,7 @@ function StoreMixin:OnLoad()
 	Mixin(premiumPanel.Purchase, PKBT_OwnerMixin)
 	premiumPanel.Purchase:SetOwner(self)
 	premiumPanel.Purchase:AddTextureAtlas("PKBT-Icon-Crown", true, 60, 60, -16, 0)
-	premiumPanel.Purchase:AddText(STORE_PURCHASE_PREMIUM, -10, 0, "PKBT_Font_18")
+	premiumPanel.Purchase.buttonText = premiumPanel.Purchase:AddText(STORE_PREMIUM_PURCHASE, -10, 0, "PKBT_Font_17")
 	premiumPanel.Purchase:SetPadding(28)
 
 	self.dialogFramePool = CreateFramePool("Frame", self, "StoreGenericDialogTemplate")
@@ -177,6 +177,7 @@ function StoreMixin:OnShow()
 
 	self:RequestData()
 
+	C_StoreSecure.ClearPopupQueue()
 	self:HidePopup()
 	self:UpdatePortrait()
 	self:UpdateAccountInfo()
@@ -221,8 +222,6 @@ function StoreMixin:OnHide()
 		self.closeTimestamp = nil
 	end
 
-	self.transmogInfoRequested = nil
-
 	self:UpdateMicroButtonPulse()
 	UpdateMicroButtons()
 
@@ -251,13 +250,6 @@ function StoreMixin:OnEvent(event, ...)
 		self:UpdateCategoryContent(categoryIndex, subCategoryIndex)
 		self:UpdateSubscriptionTracker()
 		C_StoreSecure.SetCategoryRenewSeen(categoryIndex)
-
-		if categoryIndex == Enum.Store.Category.Transmogrification then
-			if not self.transmogInfoRequested then
-				self.transmogInfoRequested = true
-				RequestInventoryTransmogInfo(true)
-			end
-		end
 	elseif event == "STORE_CATEGORY_INFO_UPDATE" then
 		local categoryIndex, subCategoryIndex = ...
 		if categoryIndex then
@@ -803,7 +795,7 @@ function StoreMixin:UpdatePremium()
 	local navPanel = self:GetNavPanel()
 	local premiumPanel = self:GetPremiumPanel()
 
-	if C_StoreSecure.IsPremiumActive() then
+	if C_StoreSecure.IsPremiumPermanent() then
 		navPanel.Background:SetTexCoord(
 			self.navPanelAtlas.leftTexCoord,
 			self.navPanelAtlas.rightTexCoord,
@@ -822,6 +814,13 @@ function StoreMixin:UpdatePremium()
 		)
 
 		navPanel:SetPoint("TOPLEFT", premiumPanel, "BOTTOMLEFT", 0, -4)
+
+		if C_StoreSecure.IsPremiumActive() then
+			premiumPanel.Purchase.buttonText:SetText(STORE_PREMIUM_RENEW)
+		else
+			premiumPanel.Purchase.buttonText:SetText(STORE_PREMIUM_PURCHASE)
+		end
+
 		premiumPanel:Show()
 	end
 end
@@ -1961,7 +1960,7 @@ function StoreOfferAnnouncementMixin:OnCountdownUpdate(timeLeft, timerFinished)
 	else
 		self:Hide()
 
-		if timerFinished then
+		if timerFinished and C_StoreSecure.IsNextSpecialOfferLoaded() then
 			C_StoreSecure.RequestNextSpecialOfferTime()
 		end
 	end
@@ -2650,7 +2649,7 @@ function StoreRefundViewMixin:Summery()
 
 	for index, selected in pairs(self.selectionDict) do
 		if selected then
-			local itemLink, amount, purchaseDate, remainingTime, penalty, price, originalPrice, currencyType = C_StoreSecure.GetRefundProductInfo(index)
+			local itemLink, itemGUID, amount, purchaseDate, remainingTime, penalty, price, originalPrice, currencyType = C_StoreSecure.GetRefundProductInfo(index)
 			numSelected = numSelected + 1
 
 			if currencyList[currencyType] then
@@ -2697,9 +2696,13 @@ end
 function StoreRefundProductPlateMixin:OnEnter()
 	self.Background:SetTexture(0.157, 0.157, 0.157)
 
-	if self.link then
+	if self.itemGUID or self.itemLink then
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-		GameTooltip:SetHyperlink(self.link)
+		if self.itemGUID then
+			GameTooltip:SetItemByGUID(self.itemGUID)
+		else
+			GameTooltip:SetHyperlink(self.itemLink)
+		end
 		GameTooltip:Show()
 	end
 end
@@ -2739,7 +2742,7 @@ function StoreRefundProductPlateMixin:GetChecked()
 end
 
 function StoreRefundProductPlateMixin:UpdateProductInfo()
-	local itemLink, amount, purchaseDate, remainingTime, penalty, price, originalPrice, currencyType = C_StoreSecure.GetRefundProductInfo(self:GetID())
+	local itemLink, itemGUID, amount, purchaseDate, remainingTime, penalty, price, originalPrice, currencyType = C_StoreSecure.GetRefundProductInfo(self:GetID())
 	local name, link, rarity, level, minLevel, itemType, itemSubType, stackCount, equipLoc, icon, vendorPrice = GetItemInfo(itemLink)
 
 	self.Item:SetIcon(icon)
@@ -2749,7 +2752,8 @@ function StoreRefundProductPlateMixin:UpdateProductInfo()
 	self.Name:SetTextColor(GetItemQualityColor(rarity))
 	self.PurchaseDate:SetFormattedText(STORE_PRODUCT_REFUND_PURCHASE_DATE, date("%d.%m.%Y", purchaseDate))
 	self.Penalty:SetFormattedText(STORE_PRODUCT_REFUND_PURCHASE_PENALTY, penalty)
-	self.link = itemLink
+	self.itemLink = itemLink
+	self.itemGUID = itemGUID
 
 	self.Price:SetPrice(price, originalPrice, currencyType)
 	self:SetCountdown(remainingTime)
@@ -3325,10 +3329,7 @@ function StoreSubscriptionPanelMixin:UpdateSubscriptionInfo()
 		self.InfoText:SetTextColor(1, 1, 1)
 		self.TimerIcon:Show()
 
-		if self.PurchaseButton.Glow.AlphaAnim:IsPlaying() then
-			self.PurchaseButton.Glow.AlphaAnim:Stop()
-		end
-		self.PurchaseButton.Glow.AlphaAnim:Play()
+		self.PurchaseButton.Glow.AlphaAnim:Restart()
 		self.PurchaseButton.Glow:Show()
 
 		self:SetNextSupplyCountdown(nextSupplyTimeLeft)
@@ -3866,6 +3867,10 @@ end
 function StorePageTransmogrificationMixin:UpdateTransmogOfferRefreshTimer()
 	local transmogOfferTimeLeft = C_StoreSecure.GetNextTransmogOfferTimeLeft()
 	self.List.OfferHeader:SetTimeLeft(transmogOfferTimeLeft or 0)
+
+	if transmogOfferTimeLeft == 0 and C_StoreSecure.IsNextTransmogOfferLoaded() then
+		C_StoreSecure.RequestNextTransmogOfferTime()
+	end
 end
 
 function StorePageTransmogrificationMixin:OnReRollClick(button)
@@ -3998,11 +4003,9 @@ function StorePageTransmogrificationMixin:UpdateItemSetOffer()
 		local transmogOfferTimeLeft = C_StoreSecure.GetNextTransmogOfferTimeLeft()
 		self.OfferDressUp:SetOfferCountdown(transmogOfferTimeLeft or 0)
 
-		if not transmogOfferTimeLeft or transmogOfferTimeLeft > 0 then
-			local allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton = false, true, true, true
-			self.OfferDressUp:SetProduct(productID, allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton)
-			self.OfferDressUp.Header:SetShown(price ~= originalPrice and price < originalPrice)
-		end
+		local allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton = false, true, true, true
+		self.OfferDressUp:SetProduct(productID, allowToHide, allowEquipmentToggle, allowPortraitCamera, showPurchaseButton)
+		self.OfferDressUp.Header:SetShown(price ~= originalPrice and price < originalPrice)
 	else
 		self.OfferDressUp:SetOfferCountdown(0)
 		self.OfferDressUp:ShowItemSetModel(0)

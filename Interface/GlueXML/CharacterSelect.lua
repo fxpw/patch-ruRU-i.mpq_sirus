@@ -24,6 +24,12 @@ local MOVING_PRETEXT_ICON_OFFSET_Y = 5
 local translationTable = {}
 local translationServerCache = {}
 
+local FORCE_CHANGE_FACTION_TEXT = {
+	[0] = FORCE_CHANGE_FACTION_EVENT_PANDA,
+	[1] = FORCE_CHANGE_FACTION_EVENT_VULPERA,
+	[2] = FORCE_CHANGE_FACTION_EVENT_COMMON
+}
+
 local SERVICE_BUTTON_ACTIVATION_DELAY = 0.400
 
 function CharacterSelect_SaveCharacterOrder()
@@ -88,10 +94,7 @@ function CharacterSelect_OnShow()
 	CharacterBoostRefundDialog:Hide()
 	CharacterSelect.AutoEnterWorldCharacterIndex = nil
 
-	local forceChangeFactionEvent = tonumber(GetSafeCVar("ForceChangeFactionEvent") or "-1")
-	local isNeedShowDialogWaitData = (forceChangeFactionEvent and forceChangeFactionEvent == -1) and not C_Service.GetAccountID()
-
-	if isNeedShowDialogWaitData then
+	if not C_GlobalStorageSecure.GetGlobalVar("GLUE_CHAR_FACTION_CHANGE_EVENT") and not C_Service.GetAccountID() then
 		GlueDialog:ShowDialog("SERVER_WAITING")
 	else
 		GlueDialog:HideDialog("SERVER_WAITING")
@@ -170,8 +173,8 @@ function CharacterSelect_OnHide()
 	end
 	SERVER_SPLIT_STATE_PENDING = -1;
 
-    SetSafeCVar("ForceChangeFactionEvent", -1)
-	SetSafeCVar("FORCE_CHAR_CUSTOMIZATION", -1)
+	C_GlobalStorageSecure.SetGlobalVar("GLUE_CHAR_FACTION_CHANGE_EVENT", nil)
+	C_GlobalStorageSecure.SetGlobalVar("GLUE_CHAR_FORCE_CUSTOMIZATION", nil)
 
 	CharacterSelect_UIResetAnim()
 end
@@ -245,10 +248,9 @@ function CharacterSelect_OnUpdate(self, elapsed)
 		end
 	end
 
-    local factionEvent = GetSafeCVar("ForceChangeFactionEvent")
-	if not GlueDialog:IsShown() and not GlueParent.dontShowInvalidVersionAddonDialog and (not factionEvent or factionEvent ~= 1) then
+	if not GlueDialog:IsShown() and not GlueParent.dontShowInvalidVersionAddonDialog and not C_GlobalStorageSecure.GetGlobalVar("GLUE_CHAR_FACTION_CHANGE_EVENT") then
 		if AddonList_HasNewVersion() then
-			if C_GlueCVars.GetCVar("IGNORE_ADDON_VERSION") ~= "1" then
+			if not GetCVarBool("ignoreAddonVersion") then
 				if IsGMAccount(true) then
 					GlueDialog:ShowDialog("ADDON_INVALID_VERSION_DIALOG_NSA")
 				else
@@ -258,7 +260,7 @@ function CharacterSelect_OnUpdate(self, elapsed)
 				GlueParent.dontShowInvalidVersionAddonDialog = true
 			end
 		else
-			C_GlueCVars.SetCVar("IGNORE_ADDON_VERSION", nil)
+			SetCVar("ignoreAddonVersion", nil)
 			GlueParent.dontShowInvalidVersionAddonDialog = true
 		end
 	end
@@ -322,12 +324,6 @@ function CharacterSelect_OnKeyDown(self,key)
 		end
 	end
 end
-
-enum:E_FORCE_CHANGE_FACTION_TEXT {
-	[0] = FORCE_CHANGE_FACTION_EVENT_PANDA,
-	[1] = FORCE_CHANGE_FACTION_EVENT_VULPERA,
-	[2] = FORCE_CHANGE_FACTION_EVENT_COMMON
-}
 
 function UpdateCharacterSelectListView()
 	local connected = IsConnectedToServer() == 1
@@ -421,10 +417,9 @@ function CharacterSelect_OnEvent(self, event, ...)
 		UpdateCharacterSelectListView()
 		UpdateCharacterSelection()
 
-		local forceChangeFactionEvent = tonumber(GetSafeCVar("ForceChangeFactionEvent") or "-1")
-
-		if forceChangeFactionEvent and forceChangeFactionEvent ~= -1 then
-			local factionText = E_FORCE_CHANGE_FACTION_TEXT[forceChangeFactionEvent]
+		local factionChangeID = C_GlobalStorageSecure.GetGlobalVar("GLUE_CHAR_FACTION_CHANGE_EVENT")
+		if factionChangeID then
+			local factionText = FORCE_CHANGE_FACTION_TEXT[factionChangeID]
 
 			if factionText then
 				CharacterSelectUI:Hide()
@@ -435,7 +430,7 @@ function CharacterSelect_OnEvent(self, event, ...)
 				end)
 			end
 
-			SetSafeCVar("ForceChangeFactionEvent", -1)
+			C_GlobalStorageSecure.SetGlobalVar("GLUE_CHAR_FACTION_CHANGE_EVENT", nil)
 		else
 			CharacterSelectUI:Show()
 		end
@@ -498,8 +493,7 @@ function CharacterSelect_OnEvent(self, event, ...)
 			CharSelectChangeRealmButton:SetWidth(math.max(160, math.floor(CharSelectChangeRealmButton:GetTextWidth() + 0.5) + 20))
 		end
 	elseif event == "SERVICE_DATA_UPDATE" then
-		local forceChangeFactionEvent = tonumber(GetSafeCVar("ForceChangeFactionEvent")) or -1
-		if forceChangeFactionEvent == -1 then
+		if not C_GlobalStorageSecure.GetGlobalVar("GLUE_CHAR_FACTION_CHANGE_EVENT") then
 			GlueDialog:HideDialog("SERVER_WAITING")
 		end
 	elseif event == "CUSTOM_CHARACTER_LIST_UPDATE" then
@@ -844,13 +838,12 @@ function CharacterSelect_SelectCharacter(characterIndex, noCreate)
 
 			SelectCharacter(characterID);
 
-			local forceCharCustomization = tonumber(GetSafeCVar("FORCE_CHAR_CUSTOMIZATION")) or -1
-			if forceCharCustomization ~= -1 then
-				if PAID_SERVICE_CHARACTER_ID ~= 0 then
+			if C_GlobalStorageSecure.GetGlobalVar("GLUE_CHAR_FORCE_CUSTOMIZATION") then
+				if C_CharacterCreation.PaidChange_GetCharacterID() then
 					RunNextFrame(function()
 						CharacterSelect_OpenCharacterCreate(E_PAID_SERVICE.CUSTOMIZATION, characterID, nil, true, true)
 					end)
-					SetSafeCVar("FORCE_CHAR_CUSTOMIZATION", -1)
+					C_GlobalStorageSecure.SetGlobalVar("GLUE_CHAR_FORCE_CUSTOMIZATION", nil)
 					return
 				end
 			end
@@ -891,7 +884,7 @@ function CharacterSelect_EnterWorld()
 
 	if C_CharacterList.HasCharacterForcedCustomization(characterID) then
 		CharacterSelect_OpenCharacterCreate(E_PAID_SERVICE.CUSTOMIZATION, characterID)
-		SetSafeCVar("FORCE_CHAR_CUSTOMIZATION", -1)
+		C_GlobalStorageSecure.SetGlobalVar("GLUE_CHAR_FORCE_CUSTOMIZATION", nil)
 		return
 	elseif C_CharacterList.HasCharacterHardcoreProposal(characterID) then
 		GlueDialog:ShowDialog("HARDCORE_PROPOSAL", nil, characterID)
@@ -2545,6 +2538,10 @@ function CharacterPaidServiceSelectionMixin:UpdateState()
 	self:SetSize(numCustomizations * self.buttonList[1]:GetWidth() + (numCustomizations - 1) * self.OFFSET_X, self.buttonList[1]:GetHeight())
 	self:Show()
 
+	if not self:IsAnimPlaying() and self:GetAlpha() ~= 1 then
+		self:SetAlpha(1)
+	end
+
 	local tooltipOwner = GlueTooltip:GetOwner()
 	if tooltipOwner then
 		for index, button in ipairs(self.buttonList) do
@@ -2556,10 +2553,7 @@ function CharacterPaidServiceSelectionMixin:UpdateState()
 end
 
 function CharacterPaidServiceSelectionMixin:PlayHighlightAnim()
-	if self.BackgroundHighlight.AnimPulse:IsPlaying() then
-		self.BackgroundHighlight.AnimPulse:Stop()
-	end
-	self.BackgroundHighlight.AnimPulse:Play()
+	self.BackgroundHighlight.AnimPulse:Restart()
 end
 
 function CharacterPaidServiceSelectionMixin:SetPosition(easing, progress)

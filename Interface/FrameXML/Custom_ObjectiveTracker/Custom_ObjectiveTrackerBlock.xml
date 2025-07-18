@@ -1,0 +1,52 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+
+	<Frame name="ObjectiveTrackerBlockTemplate" hidden="true" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentHeaderText" parentKey="HeaderText" maxLines="2" inherits="ObjectiveTrackerLineFont">
+					<Size x="240" y="0"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="RIGHT"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AddAnim">
+							<Alpha duration="0" order="1" change="-1"/>
+							<Alpha duration="0.03" order="2" change="1"/>
+						</AnimationGroup>
+					</Animations>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentHeaderButton" parentKey="HeaderButton">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentHeaderText"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentHeaderText"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						Mixin(self, ObjectiveTrackerBlockHeaderMixin)
+						self:OnLoad()
+					</OnLoad>
+					<OnClick>
+						self:OnClick(button)
+					</OnClick>
+					<OnEnter>
+						self:OnEnter()
+					</OnEnter>
+					<OnLeave>
+						self:OnLeave()
+					</OnLeave>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ObjectiveTrackerBlockMixin)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+</Ui>

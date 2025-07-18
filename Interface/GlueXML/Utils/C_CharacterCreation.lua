@@ -1093,9 +1093,9 @@ eventHandler:SetScript("OnUpdate", function(self, elapsed)
 	self.elapsed = self.elapsed + elapsed
 
 	if self.elapsed < self.duration then
-		local xOffset = C_outCirc(self.elapsed, self.startPosition[1], self.endPosition[1], self.duration)
-		local yOffset = C_outCirc(self.elapsed, self.startPosition[2], self.endPosition[2], self.duration)
-		local zOffset = C_outCirc(self.elapsed, self.startPosition[3], self.endPosition[3], self.duration)
+		local xOffset = EasingUtil.OutCirc2(self.elapsed, self.startPosition[1], self.endPosition[1], self.duration)
+		local yOffset = EasingUtil.OutCirc2(self.elapsed, self.startPosition[2], self.endPosition[2], self.duration)
+		local zOffset = EasingUtil.OutCirc2(self.elapsed, self.startPosition[3], self.endPosition[3], self.duration)
 
 		MODEL_FRAME:SetPosition(xOffset, yOffset, zOffset)
 		FireCustomClientEvent("GLUE_CHARACTER_CREATE_ZOOM_UPDATE")
@@ -1287,6 +1287,10 @@ function C_CharacterCreation.PaidChange_IsActive(ignoreBoostNewCharater)
 		end
 	end
 	return false
+end
+
+function C_CharacterCreation.PaidChange_GetCharacterID()
+	return PAID_SERVICE_CHARACTER_ID
 end
 
 function C_CharacterCreation.PaidChange_GetName()

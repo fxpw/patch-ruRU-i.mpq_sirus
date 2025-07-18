@@ -145,13 +145,13 @@ function SetLookingForGuildSettings(index, bool)
 	end
 
 	if bool and (index == LFGUILD_PARAM_SMALL or index == LFGUILD_PARAM_MEDIUM or index == LFGUILD_PARAM_LARGE) then
-		C_CVar:SetCVarBitfield("C_CVAR_FL_GUILD_SETTINGS2", LFGUILD_PARAM_SMALL, false);
-		C_CVar:SetCVarBitfield("C_CVAR_FL_GUILD_SETTINGS2", LFGUILD_PARAM_MEDIUM, false);
-		C_CVar:SetCVarBitfield("C_CVAR_FL_GUILD_SETTINGS2", LFGUILD_PARAM_LARGE, false);
+		SetCVarBitfield("lfGuildSettings", LFGUILD_PARAM_SMALL, false);
+		SetCVarBitfield("lfGuildSettings", LFGUILD_PARAM_MEDIUM, false);
+		SetCVarBitfield("lfGuildSettings", LFGUILD_PARAM_LARGE, false);
 	end
 
 	if index > 0 then
-		C_CVar:SetCVarBitfield("C_CVAR_FL_GUILD_SETTINGS2", index, bool);
+		SetCVarBitfield("lfGuildSettings", index, bool);
 	end
 end
 
@@ -164,13 +164,13 @@ function GetLookingForGuildSettingsByIndex(index)
 		error("Usage: local value = GetLookingForGuildSettingsByIndex(index)", 2);
 	end
 
-	return C_CVar:GetCVarBitfield("C_CVAR_FL_GUILD_SETTINGS2", index);
+	return GetCVarBitfield("lfGuildSettings", index);
 end
 
 function GetLookingForGuildFlagsSelectedCount()
 	local selectedCount = 0;
 
-	local value = C_CVar:GetValue("C_CVAR_FL_GUILD_SETTINGS2") or 0;
+	local value = tonumber(GetCVar("lfGuildSettings")) or 0;
 
 	for index = (LFGUILD_PARAM_QUESTS - 1), (LFGUILD_PARAM_NIGHT - 1) do
 		if bit.band(value, bit.lshift(1, index)) ~= 0 then
@@ -182,11 +182,11 @@ function GetLookingForGuildFlagsSelectedCount()
 end
 
 function SetLookingForGuildComment(text)
-	C_CVar:SetValue("C_CVAR_FL_GUILD_COMMENT", text);
+	SetCVar("lfGuildComment", text);
 end
 
 function GetLookingForGuildComment()
-	return C_CVar:GetValue("C_CVAR_FL_GUILD_COMMENT");
+	return GetCVar("lfGuildComment");
 end
 
 function CancelGuildMembershipRequest(index)
@@ -363,7 +363,7 @@ function RequestGuildMembership(index, text)
 
 	local guildID = RECRUITING_GUILD_INFO[index] and RECRUITING_GUILD_INFO[index][30];
 	if guildID then
-		local value = tonumber(C_CVar:GetValue("C_CVAR_FL_GUILD_SETTINGS2")) or 0;
+		local value = tonumber(GetCVar("lfGuildSettings")) or 0;
 
 		local interests, availability, classRoles, activityTimes = 0, 0, 0, 0;
 
@@ -417,7 +417,7 @@ function RequestRecruitingGuildsList(searchName)
 		searchName = "";
 	end
 
-	local value = tonumber(C_CVar:GetValue("C_CVAR_FL_GUILD_SETTINGS2")) or 0;
+	local value = tonumber(GetCVar("lfGuildSettings")) or 0;
 
 	local interests, availability, classRoles, activityTimes, guildSize = 0, 0, 0, 0, 0;
 

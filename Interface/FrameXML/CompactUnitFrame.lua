@@ -11,6 +11,7 @@ local CUF_SPELL_VISIBILITY_TYPES = CUF_SPELL_VISIBILITY_TYPES
 local FACTION_OVERRIDE_BY_DEBUFFS = FACTION_OVERRIDE_BY_DEBUFFS
 local S_CATEGORY_SPELL_ID = S_CATEGORY_SPELL_ID
 local S_VIP_STATUS_DATA = S_VIP_STATUS_DATA
+local S_PREMIUM_SPELL_ID = S_PREMIUM_SPELL_ID
 local ZODIAC_DEBUFFS = ZODIAC_DEBUFFS
 
 local unitPetOwnerMap = {
@@ -1000,6 +1001,7 @@ function CompactUnitFrame_Util_ShouldDisplayDebuff(unit, ...)
 	or ZODIAC_DEBUFFS[spellId]
 	or S_CATEGORY_SPELL_ID[spellId]
 	or S_VIP_STATUS_DATA[spellId]
+	or S_PREMIUM_SPELL_ID[spellId]
 	then
 		return false
 	end
@@ -1021,6 +1023,7 @@ function CompactUnitFrame_Util_IsBossAura(...)
 	or ZODIAC_DEBUFFS[spellId]
 	or S_CATEGORY_SPELL_ID[spellId]
 	or S_VIP_STATUS_DATA[spellId]
+	or S_PREMIUM_SPELL_ID[spellId]
 	then
 		return false
 	end
@@ -1511,6 +1514,7 @@ function CompactUnitFrame_Util_SpellIsBlacklisted(spellId)
 	or ZODIAC_DEBUFFS[spellId]
 	or S_CATEGORY_SPELL_ID[spellId]
 	or S_VIP_STATUS_DATA[spellId]
+	or S_PREMIUM_SPELL_ID[spellId]
 	then
 		return true;
 	end

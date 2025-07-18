@@ -197,7 +197,13 @@ function StorePremiumPurchaseDialogMixin:OnLoad()
 	self.Content.Divider:SetAtlas("PKBT-Divider-Dark", true)
 
 	self.Content.PurchaseButton:SetAllowReplenishment(C_StoreSecure.IsBonusReplenishmentAllowed(), true)
-	self.Content.PurchaseButton:AddText(STORE_PURCHASE_PREMIUM_ALT)
+	self.Content.PurchaseButton:AddText(STORE_PREMIUM_PURCHASE_ALT)
+
+	self.Content.PurchaseButton:SetConfirmationShownTimerText(false)
+	self.Content.PurchaseButton:SetConfirmationTimerDone(function()
+		self.Content.PurchaseButton:HideCountdown()
+		self.Content.PurchaseButton:CheckBalance()
+	end)
 
 	self.bonusList = {}
 	self.optionList = {}
@@ -236,6 +242,7 @@ function StorePremiumPurchaseDialogMixin:Reset()
 	self.selectedOptionIndex = 1
 	self:UpdateOptionList()
 	self.Content.PurchaseButton:HideSpinner()
+	self.Content.PurchaseButton:HideCountdown()
 	self:UpdatePrice()
 end
 
@@ -299,6 +306,12 @@ end
 function StorePremiumPurchaseDialogMixin:UpdatePrice()
 	local _, _, price, originalPrice, currencyType = C_StoreSecure.GetPremiumOptionInfo(self.selectedOptionIndex)
 	self.Content.PurchaseButton:SetPrice(price, originalPrice, currencyType)
+
+	if self.Content.PurchaseButton:IsEnabled() == 1 then
+		self.Content.PurchaseButton:Disable()
+		self.Content.PurchaseButton:ShowCountdown(C_StoreSecure.GetPurchaseDelayTime())
+		self.Content.PurchaseButton:StartConfirmationTimer(false, C_StoreSecure.GetPurchaseDelayTime())
+	end
 end
 
 function StorePremiumPurchaseDialogMixin:SetSelectedOption(index)
@@ -329,9 +342,12 @@ function StorePremiumPurchaseDialogMixin:OnPurchaseClick(button)
 		end
 	end
 
-	self.Content.PurchaseButton:ShowSpinner()
-	self.Content.PurchaseButton:Disable()
-	C_StoreSecure.PurchasePremiumOption(self.selectedOptionIndex)
+	self.Content.PurchaseButton:TakeConfirmationScreenshot(function(screenshotSuccess)
+		self.Content.PurchaseButton:ShowSpinner()
+		self.Content.PurchaseButton:Disable()
+		C_StoreSecure.PurchasePremiumOption(self.selectedOptionIndex)
+		PlaySound(SOUNDKIT.UI_IG_STORE_CONFIRM_PURCHASE_BUTTON)
+	end)
 end
 
 StorePremiumOptionMixin = CreateFromMixins(PKBT_OwnerMixin)

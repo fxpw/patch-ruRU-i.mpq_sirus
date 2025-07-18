@@ -31,6 +31,12 @@ function FrameUtil.UnregisterFrameForEvents(frame, events)
 	end
 end
 
+function FrameUtil.RegisterFrameForUnitEvents(frame, events, ...)
+	for i, event in ipairs(events) do 
+		frame:RegisterUnitEvent(event, ...);
+	end
+end
+
 function FrameUtil.RegisterFrameForCustomEvents(frame, events)
 	for i, event in ipairs(events) do
 		frame:RegisterCustomEvent(event);

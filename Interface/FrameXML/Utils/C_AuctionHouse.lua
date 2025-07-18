@@ -24,9 +24,10 @@ local tinsert = table.insert;
 local tconcat = table.concat;
 local tremove = table.remove;
 
-local ItemsCache = ItemsCache;
 local GetItemInfo = C_Item.GetItemInfoRaw;
 local GetContainerItemCharges = GetContainerItemCharges
+
+local FireCustomClientEvent = FireCustomClientEvent
 
 Enum.AuctionHouseFilterCategory = {
 	Uncategorized = 0,
@@ -1151,14 +1152,6 @@ local COMMODITY_QUOTE_TIME;
 
 SIRUS_AUCTION_HOUSE_FAVORITE_ITEMS = {};
 
-local ITEMS_CACHE_NAME = GetLocale() == "ruRU" and 2 or 1;
-local ITEMS_CACHE_RARITY = 3;
-local ITEMS_CACHE_MINLEVEL = 5;
-local ITEMS_CACHE_TYPE = 6;
-local ITEMS_CACHE_SUBTYPE = 7;
-local ITEMS_CACHE_STACK_COUNT = 8;
-local ITEMS_CACHE_TEXTURE = 10;
-
 local browse = AuctionHouseUtil:CreateBrowse();
 local search = AuctionHouseUtil:CreateSearch();
 local ownerAuction = AuctionHouseUtil:CreateAuctions();
@@ -1669,45 +1662,49 @@ function C_AuctionHouse.GetItemKeyFromItem(item)
 	end
 end
 
-local ITEM_KEY_INFO = {};
+local function GetItemKeyInfoCallback(itemID)
+	FireCustomClientEvent("ITEM_KEY_ITEM_INFO_RECEIVED", itemID)
+end
+
+local function GetItemKeyInfoByItemLink(itemLink)
+	local itemName, _itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice = C_Item.GetItemInfo(itemLink, true, GetItemKeyInfoCallback, true)
+	if not itemName then
+		itemName, _itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, vendorPrice = C_Item.GetItemInfoCache(itemLink, true)
+	end
+
+	local isCommodity = itemStackCount and itemStackCount > 1 or false
+	local isEquipment = itemType and (itemType == ITEM_CLASS_2 or itemType == ITEM_CLASS_4) or false
+
+	return itemName or "", isCommodity, isEquipment, itemTexture or [[Interface\ICONS\INV_Misc_QuestionMark]], itemRarity or 1, itemMinLevel or 1
+end
 
 local function GetItemKeyInfo(itemKey, restrictQualityToFilter)
 	local itemID = itemKey.itemID;
-	local itemSuffix = itemKey.itemSuffix or 0;
 
-	if not ITEM_KEY_INFO[itemID] then ITEM_KEY_INFO[itemID] = {}; end
-	if not ITEM_KEY_INFO[itemID][itemSuffix] then ITEM_KEY_INFO[itemID][itemSuffix] = {}; end
-
-	local itemLink = itemSuffix == 0 and format("item:%d", itemID) or format("item:%d:%d:::::%d", itemID, itemKey.enchantID or 0, itemKey.enchantID and (itemKey.uniqueID or -itemSuffix) or 0);
-	local itemName, _, itemRarity, _, itemMinLevel, itemType, _, itemStackCount, _, itemTexture = GetItemInfo(itemLink);
-
-	if not itemName then
-		local itemCache = ItemsCache[itemID];
-		if itemCache then
-			itemName = itemCache[ITEMS_CACHE_NAME];
-			itemRarity = itemCache[ITEMS_CACHE_RARITY];
-			itemMinLevel = itemCache[ITEMS_CACHE_MINLEVEL];
-			itemType = _G[format("ITEM_CLASS_%d", itemCache[ITEMS_CACHE_TYPE])];
-			itemStackCount = itemCache[ITEMS_CACHE_STACK_COUNT];
-			itemTexture = format("Interface/ICONS/%s", itemCache[ITEMS_CACHE_TEXTURE]);
-		else
-			itemName, itemRarity, itemMinLevel, itemType, itemStackCount, itemTexture = "", 1, "", "", 0, "Interface\\ICONS\\INV_Misc_QuestionMark";
-		end
-
-		scanTooltip:SetHyperlink(itemLink);
+	local itemLink
+	if not itemKey.itemSuffix or itemKey.itemSuffix == 0 then
+		itemLink = format("item:%d", itemID);
+	elseif itemKey.enchantID and itemKey.enchantID ~= 0 then
+		itemLink = format("item:%d:%d:::::%d", itemID, itemKey.enchantID, itemKey.itemUnique or -itemKey.itemSuffix);
+	elseif itemKey.itemUnique and itemKey.itemUnique ~= 0 then
+		itemLink = format("item:%d:%d:::::%d:%d", itemID, itemKey.enchantID or 0, itemKey.itemSuffix or 0, itemKey.itemUnique or 0);
+	else
+		itemLink = format("item:%d::::::%d", itemID, itemKey.itemSuffix);
 	end
 
-	local itemKeyInfo = ITEM_KEY_INFO[itemID][itemSuffix];
-	if itemKeyInfo.itemName ~= itemName then
-		itemKeyInfo.itemName = itemName or "";
-		itemKeyInfo.isCommodity = itemStackCount and itemStackCount > 1;
-		itemKeyInfo.isEquipment = itemType and (ITEM_CLASS_2 == itemType or ITEM_CLASS_4 == itemType);
-		itemKeyInfo.iconFileID = itemTexture or "Interface\\ICONS\\INV_Misc_QuestionMark";
-		itemKeyInfo.quality = itemRarity or 1;
-		itemKeyInfo.itemMinLevel = itemMinLevel or 1;
+	local itemName, isCommodity, isEquipment, iconFileID, quality, itemMinLevel = GetItemKeyInfoByItemLink(itemLink);
+	if not itemName or itemName == "" then
+		return;
 	end
 
-	return itemKeyInfo;
+	return {
+		itemName = itemName,
+		isCommodity = isCommodity,
+		isEquipment = isEquipment,
+		iconFileID = iconFileID,
+		quality = quality,
+		itemMinLevel = itemMinLevel,
+	};
 end
 
 function C_AuctionHouse.GetItemKeyInfo(itemKey, restrictQualityToFilter)
@@ -1729,7 +1726,7 @@ function C_AuctionHouse.GetItemSearchResultInfo(itemKey, itemSearchResultIndex)
 		error(format("attempt to index a %s value", itemKeyType), 2);
 	end
 
-	local itemSearchResultInfo = search:GetItem(itemKey.itemID, itemKey.itemSuffix):GetBucketByIndex(itemSearchResultIndex);
+	local itemSearchResultInfo = search:GetItem(itemKey.itemID, abs(itemKey.itemSuffix)):GetBucketByIndex(itemSearchResultIndex);
 	if itemSearchResultInfo then
 		return CopyTable(itemSearchResultInfo);
 	end
@@ -1828,7 +1825,7 @@ function C_AuctionHouse.GetNumItemSearchResults(itemKey)
 		error(format("attempt to index a %s value", itemKeyType), 2);
 	end
 
-	return search:GetItem(itemKey.itemID, itemKey.itemSuffix):GetNumBuckets();
+	return search:GetItem(itemKey.itemID, abs(itemKey.itemSuffix)):GetNumBuckets();
 end
 
 function C_AuctionHouse.GetNumOwnedAuctionTypes()
@@ -1953,7 +1950,7 @@ function C_AuctionHouse.HasFullItemSearchResults(itemKey)
 		error(format("attempt to index a %s value", itemKeyType), 2);
 	end
 
-	return search:GetItem(itemKey.itemID, itemKey.itemSuffix):HasFullResults();
+	return search:GetItem(itemKey.itemID, abs(itemKey.itemSuffix)):HasFullResults();
 end
 
 function C_AuctionHouse.HasFullOwnedAuctionResults()
@@ -2008,18 +2005,23 @@ end
 local function MakeItemKey(itemID, itemLevel, itemSuffix)
 	itemSuffix = itemSuffix or 0;
 
-	local keyInfo = ITEM_KEY_INFO[itemID] and ITEM_KEY_INFO[itemID][itemSuffix];
+	if not itemLevel then
+		local _, _, _, iLvl, _, itemType = GetItemInfo(itemID)
+		if itemType == ITEM_CLASS_2 or itemType == ITEM_CLASS_4 then
+			itemLevel = iLvl;
+		end
+	end
 
 	return {
 		itemID = itemID,
-		itemLevel = (itemLevel or keyInfo and keyInfo.isEquipment and select(4, GetItemInfo(itemID))) or 0,
+		itemLevel = itemLevel or 0,
 		itemSuffix = itemSuffix,
 	};
 end
 
 function C_AuctionHouse.MakeItemKey(itemID, itemLevel, itemSuffix)
 	if not itemID then
-		error("Usage: local itemKey = C_AuctionHouse.MakeItemKey(itemID [, itemLevel, itemSuffix, battlePetSpeciesID])", 2);
+		error("Usage: local itemKey = C_AuctionHouse.MakeItemKey(itemID [, itemLevel, itemSuffix])", 2);
 	end
 	if type(itemID) == "string" then
 		itemID = tonumber(itemID);
@@ -2446,10 +2448,9 @@ local function SendSearchQuery(itemKey, sorts, separateOwnerItems, item)
 		item:SetSorts(sorts);
 		item:SetSeparateOwnerItems(separateOwnerItems);
 
-		local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(itemKey);
+		local itemKeyInfo = GetItemKeyInfo(itemKey);
 		local itemLevel = itemKeyInfo and itemKeyInfo.isCommodity and 0 or itemKey.itemLevel;
-
-		SendServerMessage("ACMSG_AUCTION_LIST_ITEMS_BY_BUCKET_KEY", format("%s:%d:%d:%d:%d:%d:%d", ACTION_HOUSE_NPC_GUID, item:GetOffset(), item:GetSortOrder(), item:GetReverseSort(), itemKey.itemID, itemLevel, abs(itemKey.itemSuffix or 0)));
+		SendServerMessage("ACMSG_AUCTION_LIST_ITEMS_BY_BUCKET_KEY", format("%s:%d:%d:%d:%d:%d:%d", ACTION_HOUSE_NPC_GUID, item:GetOffset(), item:GetSortOrder(), item:GetReverseSort(), itemKey.itemID, itemLevel or 0, abs(itemKey.itemSuffix or 0)));
 
 		return true;
 	end
@@ -2615,8 +2616,6 @@ frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 frame:RegisterCustomEvent("VARIABLES_LOADED_INITIAL");
 frame:SetScript("OnEvent", function(self, event, ...)
 	if event == "VARIABLES_LOADED" then
-		AH_CACHE:Set("FAVORITE_ITEMS", nil); -- Remove later, unused
-
 		AH_SEARCH_HISTORY = AH_CACHE:Get("SEARCH_HISTORY", {});
 
 		g_activeBidAuctionIDs = AH_CACHE:Get("BID_AUCTION_IDS") or AH_CACHE:Get("BID_AUCTION_IDS", {});
@@ -2645,15 +2644,13 @@ frame:SetScript("OnEvent", function(self, event, ...)
 	end
 end);
 
-local function CreateItemLink(itemKey, enchantID, jewelID1, jewelID2, jewelID3, jewelID4, suffixID, uniqueID)
-	if type(itemKey) ~= "table" or type(itemKey.itemID) ~= "number" then
-		return "";
-	end
+local function CreateItemLink(itemID, enchantID, jewelID1, jewelID2, jewelID3, jewelID4, suffixID, uniqueID)
+	suffixID = suffixID or "0";
 
-	local itemKeyInfo = GetItemKeyInfo(itemKey);
-	local r, g, b = GetItemQualityColor(itemKeyInfo.quality or 1);
+	local itemName, _, _, _, quality, itemMinLevel = GetItemKeyInfoByItemLink(format("item:%s::::::%s", itemID, suffixID));
+	local r, g, b = GetItemQualityColor(quality or 1);
 
-	return format("|cff%02x%02x%02x|Hitem:%s:%s:%s:%s:%s:%s:%s:%s:%s|h[%s]|h|r", r * 255, g * 255, b * 255, itemKey.itemID, enchantID or "0", jewelID1 or "0", jewelID2 or "0", jewelID3 or "0", jewelID4 or "0", suffixID or "0", uniqueID or "0", itemKeyInfo.itemMinLevel or "0", itemKeyInfo.itemName or "")
+	return format("|cff%02x%02x%02x|Hitem:%s:%s:%s:%s:%s:%s:%s:%s:%s|h[%s]|h|r", r * 255, g * 255, b * 255, itemID, enchantID or "0", jewelID1 or "0", jewelID2 or "0", jewelID3 or "0", jewelID4 or "0", suffixID, uniqueID or "0", itemMinLevel or "0", itemName or "")
 end
 
 local AUCTION_FAVORITE_LIST_MSG = {};
@@ -2715,15 +2712,12 @@ function EventHandler:ASMSG_AUCTION_LIST_BUCKETS_RESULT(msg)
 			itemID, itemLevel, itemSuffix, enchantID, uniqueID, minPrice, extraInfo, totalQuantity, containsOwnerItem = split(":", browseResult);
 			itemID, itemSuffix, enchantID, uniqueID, minPrice, totalQuantity = tonumber(itemID), tonumber(itemSuffix) or 0, tonumber(enchantID), tonumber(uniqueID), tonumber(minPrice), tonumber(totalQuantity);
 
-			if not ITEM_KEY_INFO[itemID] then ITEM_KEY_INFO[itemID] = {}; end
-			if not ITEM_KEY_INFO[itemID][itemSuffix] then ITEM_KEY_INFO[itemID][itemSuffix] = {}; end
-
 			local itemKey = {
 				itemID = itemID,
 				itemLevel = tonumber(itemLevel),
 				itemSuffix = itemSuffix,
 				enchantID = enchantID ~= 0 and enchantID or nil,
-				uniqueID = uniqueID ~= 0 and uniqueID or nil
+				itemUnique = uniqueID ~= 0 and uniqueID or nil
 			};
 
 			browse:SetExtraInfo(itemKey, tonumber(extraInfo));
@@ -2938,7 +2932,7 @@ function EventHandler:ASMSG_AUCTION_LIST_ITEMS_RESULT(msg)
 						timeLeft = tonumber(itemData[itemEnum.TimeLeft]),
 						auctionID = tonumber(itemData[itemEnum.AuctionID]),
 						quantity = tonumber(itemData[itemEnum.Quantity]),
-						itemLink = CreateItemLink(itemKey, itemData[itemEnum.EnchantID], itemData[itemEnum.JewelID1], itemData[itemEnum.JewelID2], itemData[itemEnum.JewelID3], itemData[itemEnum.JewelID4], itemData[itemEnum.SuffixID], itemData[itemEnum.UniqueID]),
+						itemLink = CreateItemLink(itemID, itemData[itemEnum.EnchantID], itemData[itemEnum.JewelID1], itemData[itemEnum.JewelID2], itemData[itemEnum.JewelID3], itemData[itemEnum.JewelID4], itemData[itemEnum.SuffixID], itemData[itemEnum.UniqueID]),
 						isOwnerItem = ownerName == "player",
 						isAccountItem = itemData[itemEnum.HasAccountItem] == "0",
 						isSocketedItem = itemData[itemEnum.HasSocketedItem] == "1",
@@ -3046,13 +3040,24 @@ function EventHandler:ASMSG_AUCTION_LIST_OWNED_ITEMS_RESULT(msg)
 			ownerAuction:SetMaxBid(bidAmount or 0);
 			ownerAuction:SetMaxBuyout(buyoutAmount);
 
-			local bucketType = itemSuffix ~= 0 and (itemID..":"..itemSuffix) or itemID;
-			ownerAuction:AddBucket(bucketType, itemKey);
+			local suffixID, uniqueID = tonumber(itemData[itemEnum.SuffixID]) or 0, tonumber(itemData[itemEnum.UniqueID]);
+			local bucketType = suffixID ~= 0 and (itemID..":"..suffixID) or itemID;
+			ownerAuction:AddBucket(bucketType, {
+				itemID = itemID,
+				itemLevel = itemLevel,
+				itemSuffix = suffixID,
+				itemUnique = uniqueID ~= 0 and uniqueID or nil
+			});
 
 			ownerAuction:AddItem({
 				auctionID = tonumber(itemData[itemEnum.AuctionID]),
-				itemKey = itemKey,
-				itemLink = CreateItemLink(itemKey, itemData[itemEnum.EnchantID], itemData[itemEnum.JewelID1], itemData[itemEnum.JewelID2], itemData[itemEnum.JewelID3], itemData[itemEnum.JewelID4], itemData[itemEnum.SuffixID], itemData[itemEnum.UniqueID]),
+				itemKey = {
+					itemID = itemID,
+					itemLevel = itemLevel,
+					itemSuffix = suffixID,
+					itemUnique = uniqueID ~= 0 and uniqueID or nil
+				},
+				itemLink = CreateItemLink(itemID, itemData[itemEnum.EnchantID], itemData[itemEnum.JewelID1], itemData[itemEnum.JewelID2], itemData[itemEnum.JewelID3], itemData[itemEnum.JewelID4], itemData[itemEnum.SuffixID], itemData[itemEnum.UniqueID]),
 				status = 0,
 				quantity = tonumber(itemData[itemEnum.Quantity]),
 				timeLeftSeconds = tonumber(itemData[itemEnum.TimeLeftSeconds]),
@@ -3132,7 +3137,7 @@ function EventHandler:ASMSG_AUCTION_LIST_BIDDED_ITEMS_RESULT(msg)
 			bids:AddItem({
 				auctionID = tonumber(itemData[itemEnum.AuctionID]),
 				itemKey = itemKey,
-				itemLink = CreateItemLink(itemKey, itemData[itemEnum.EnchantID], itemData[itemEnum.JewelID1], itemData[itemEnum.JewelID2], itemData[itemEnum.JewelID3], itemData[itemEnum.JewelID4], itemData[itemEnum.SuffixID], itemData[itemEnum.UniqueID]),
+				itemLink = CreateItemLink(itemID, itemData[itemEnum.EnchantID], itemData[itemEnum.JewelID1], itemData[itemEnum.JewelID2], itemData[itemEnum.JewelID3], itemData[itemEnum.JewelID4], itemData[itemEnum.SuffixID], itemData[itemEnum.UniqueID]),
 				quantity = tonumber(itemData[itemEnum.Quantity]),
 				timeLeftSeconds = tonumber(itemData[itemEnum.TimeLeftSeconds]),
 				timeLeft = tonumber(itemData[itemEnum.TimeLeft]),
@@ -3251,17 +3256,16 @@ function EventHandler:ASMSG_AUCTION_WON_NOTIFICATION(msg)
 	local auctionID, itemID, itemSuffix, itemCount = split(":", msg);
 	auctionID, itemID, itemSuffix, itemCount = tonumber(auctionID), tonumber(itemID), tonumber(itemSuffix), tonumber(itemCount) or 1;
 
-	local itemKey = C_AuctionHouse.MakeItemKey(itemID, nil, itemSuffix);
-	local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(itemKey);
-	if itemKeyInfo then
-		if itemKeyInfo.isCommodity then
+	local itemName, isCommodity = GetItemKeyInfoByItemLink(format("item:%s::::::%s", itemID, itemSuffix));
+	if itemName then
+		if isCommodity then
 			FireCustomClientEvent("AUCTION_CANCELED", auctionID);
 
-			AddChatTyppedMessage("SYSTEM", format(ERR_AUCTION_COMMODITY_WON_S, itemKeyInfo.itemName, itemCount));
+			AddChatTyppedMessage("SYSTEM", format(ERR_AUCTION_COMMODITY_WON_S, itemName, itemCount));
 
-			FireCustomClientEvent("COMMODITY_PURCHASE_SUCCEEDED", itemKey.itemID, itemCount);
+			FireCustomClientEvent("COMMODITY_PURCHASE_SUCCEEDED", itemID, itemCount);
 		else
-			AddChatTyppedMessage("SYSTEM", format(ERR_AUCTION_WON_S, itemKeyInfo.itemName));
+			AddChatTyppedMessage("SYSTEM", format(ERR_AUCTION_WON_S, itemName));
 
 			local item = search:GetItem(itemID, itemSuffix);
 			local itemsResult = item.results;
@@ -3275,6 +3279,7 @@ function EventHandler:ASMSG_AUCTION_WON_NOTIFICATION(msg)
 					if result.auctionID == auctionID then
 						tremove(itemsResult, index);
 						item:RefreshResults(0);
+						local itemKey = C_AuctionHouse.MakeItemKey(itemID, nil, itemSuffix);
 						FireCustomClientEvent("ITEM_SEARCH_RESULTS_UPDATED", itemKey, numItemsResult > 1 and (itemsResult[numItemsResult == index and (index - 1) or index].auctionID) or nil);
 						break;
 					else
@@ -3291,13 +3296,12 @@ end
 function EventHandler:ASMSG_AUCTION_CLOSED_NOTIFICATION(msg)
 	local auctionID, _, itemID, itemSuffix, _, _, isSold = split(":", msg);
 
-	local itemKey = C_AuctionHouse.MakeItemKey(tonumber(itemID), nil, tonumber(itemSuffix));
-	local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(itemKey);
-	if itemKeyInfo then
+	local itemName = GetItemKeyInfoByItemLink(format("item:%s::::::%s", itemID, itemSuffix));
+	if itemName then
 		if isSold == "1" then
-			AddChatTyppedMessage("SYSTEM", format(ERR_AUCTION_SOLD_S, itemKeyInfo.itemName));
+			AddChatTyppedMessage("SYSTEM", format(ERR_AUCTION_SOLD_S, itemName));
 		else
-			AddChatTyppedMessage("SYSTEM", format(ERR_AUCTION_EXPIRED_S, itemKeyInfo.itemName));
+			AddChatTyppedMessage("SYSTEM", format(ERR_AUCTION_EXPIRED_S, itemName));
 		end
 
 		FireCustomClientEvent("AUCTION_CANCELED", tonumber(auctionID));
@@ -3320,9 +3324,9 @@ end
 function EventHandler:ASMSG_AUCTION_OUTBID_NOTIFICATION(msg)
 	local _, itemID, itemSuffix = split(":", msg);
 
-	local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo({itemID = tonumber(itemID), itemSuffix = tonumber(itemSuffix)});
-	if itemKeyInfo then
-		AddChatTyppedMessage("SYSTEM", format(AUCTION_OUTBID_MAIL_SUBJECT, itemKeyInfo.itemName));
+	local itemName = GetItemKeyInfoByItemLink(format("item:%s::::::%s", itemID, itemSuffix));
+	if itemName then
+		AddChatTyppedMessage("SYSTEM", format(AUCTION_OUTBID_MAIL_SUBJECT, itemName));
 	end
 
 	FireCustomClientEvent("BIDS_UPDATED");

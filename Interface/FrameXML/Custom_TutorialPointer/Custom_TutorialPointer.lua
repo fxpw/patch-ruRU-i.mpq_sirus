@@ -35,6 +35,17 @@ NPE_TutorialPointerFrame.DirectionData = {
 	},
 }
 
+Enum.NPE_Tutorial = {
+	KeyRing = 1,
+	BattlePassTutorial_1 = 2,
+	PaperDollFrame_Strengthen = 3,
+	AURA_309133 = 4,
+	SpellBook_Learn_307810_1 = 5,
+	SpellBook_Learn_307810_2 = 6,
+	SpellBook_Learn_308230_1 = 7,
+	SpellBook_Learn_308230_2 = 8,
+}
+
 -- ------------------------------------------------------------------------------------------------------------
 function NPE_TutorialPointerFrame:Initialize()
 	self.NextID = 1;
@@ -42,22 +53,53 @@ function NPE_TutorialPointerFrame:Initialize()
 	self.InUseFrames = {};
 	self.FrameCount = 0;
 	self.disableContent = {}
+
+	EventRegistry:RegisterFrameEventAndCallback("VARIABLES_LOADED_INITIAL", function(owner, ...)
+		EventRegistry:UnregisterFrameEventAndCallback("VARIABLES_LOADED_INITIAL", owner)
+
+		local name = UnitName("player")
+		if SIRUS_TUTORIAL_KEY and SIRUS_TUTORIAL_KEY[name] then
+			for key, value in pairs(SIRUS_TUTORIAL_KEY[name]) do
+				local index = Enum.NPE_Tutorial[key]
+				if index then
+					SetCVarBitfield("customNPETutorials", index, value)
+			--	else
+			--		GMError(string.format("Unknown tutorial key [%s]", key))
+				end
+			end
+			SIRUS_TUTORIAL_KEY[name] = nil
+		end
+	end)
 end
 
 function NPE_TutorialPointerFrame:SetKey(key, value)
-	local name = UnitName("player")
-	if SIRUS_TUTORIAL_KEY and not SIRUS_TUTORIAL_KEY[name] then
-		SIRUS_TUTORIAL_KEY[name] = {}
+	local index = Enum.NPE_Tutorial[key]
+	if not index then
+		GMError(string.format("Unknown tutorial key [%s]", key))
+		return
 	end
-
-	SIRUS_TUTORIAL_KEY[name][key] = value
+	SetCVarBitfield("customNPETutorials", index, value)
 end
 
 function NPE_TutorialPointerFrame:GetKey(key)
-	local name = UnitName("player")
-	if SIRUS_TUTORIAL_KEY[UnitName("player")] then
-		return SIRUS_TUTORIAL_KEY[name][key]
+	local index = Enum.NPE_Tutorial[key]
+	if not index then
+		GMError(string.format("Unknown tutorial key [%s]", key))
+		return
 	end
+	return GetCVarBitfield("customNPETutorials", index)
+end
+
+function NPE_TutorialPointerFrame:MarkTutorialSeen(index)
+	SetCVarBitfield("customNPETutorials", index, true)
+end
+
+function NPE_TutorialPointerFrame:ResetTutorialIndex(index)
+	SetCVarBitfield("customNPETutorials", index, false)
+end
+
+function NPE_TutorialPointerFrame:IsTutorialSeen(index)
+	return GetCVarBitfield("customNPETutorials", index)
 end
 
 function NPE_TutorialPointerFrame:Disable(content)
@@ -147,24 +189,17 @@ function NPE_TutorialPointerFrame:Show(content, direction, anchorFrame, ofsX, of
 		end)
 	-- ----------------------------------
 
-	local model = frame.Model
-
-	if model then
-		if modelData then
-			local creatureID, rotation, anchor, relativePoint, offsetX, offsetY, width, height, scale = unpack(modelData)
-
-			model:SetWidth(width)
-			model:SetHeight(height)
-
-			model:ClearAllPoints()
-			model:SetPoint(anchor, frame.Content, relativePoint, offsetX, offsetY)
-
-			model:SetCreature(creatureID)
-			model:SetRotation(rotation)
-			model:SetModelScale(scale)
+	if frame.Model then
+		if type(modelData) == "table" then
+			local creatureID, facing, anchor, relativePoint, offsetX, offsetY, width, height = unpack(modelData)
+			frame.Model:SetSize(width, height)
+			frame.Model:ClearAllPoints()
+			frame.Model:SetPoint(anchor, frame.Content, relativePoint, offsetX, offsetY)
+			frame.Model:SetCreatureModel(creatureID, facing)
+			frame.Model:Show()
+		else
+			frame.Model:Hide()
 		end
-
-		model:SetShown(modelData)
 	end
 
 	if type(closeButtonCallback) == "function" then

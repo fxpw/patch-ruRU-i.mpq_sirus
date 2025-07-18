@@ -174,6 +174,10 @@ local function sortData(a, b)
 end
 
 function LossOfControlFrame_UpdateData()
+	if not GetCVarBool("lossOfControl") then
+		return
+	end
+
 	table.wipe(lossOfControlData)
 
 	for _, spellData in pairs(tempLossOfControlData) do
@@ -182,10 +186,8 @@ function LossOfControlFrame_UpdateData()
 
 	table.sort(lossOfControlData, sortData);
 
-	local isEnable = S_INTERFACE_OPTIONS_CACHE:Get("LOSS_OF_CONTROL_TOGGLE", 1)
 	local eventIndex = #lossOfControlData
-
-	if isEnable and isEnable == 0 or eventIndex == 0 then
+	if not eventIndex == 0 then
 		return
 	end
 
@@ -258,7 +260,7 @@ end
 local auraTrackerStorage = {}
 function LossOfControlFrame_OnEvent(self, event, unit)
 	if event == "VARIABLES_LOADED" then
-		LossOfControlFrame_SetScale(self, tonumber(C_CVar:GetValue("C_CVAR_LOSS_OF_CONTROL_SCALE")) or 1);
+		LossOfControlFrame_SetScale(self, tonumber(GetCVar("lossOfControlScale")) or 1);
 	elseif event == "UNIT_AURA" and unit == "player" then
 		for auraIndex = 1, 40 do
 			local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, shouldConsolidate, spellID, canApplyAura, isBossDebuff, isCastByPlayer, value2, value3 = UnitAura("player", auraIndex, "HARMFUL")

@@ -11,12 +11,12 @@ local type = type
 local unpack = unpack
 local bitband, bitbor, bitlshift = bit.band, bit.bor, bit.lshift
 local mathceil, mathfloor, mathmax, mathmin = math.ceil, math.floor, math.max, math.min
-local strconcat, strfind, strformat, strjoin, strlen, strlower, strmatch, strsplit, strsub, strtrim = strconcat, string.find, string.format, string.join, string.len, string.lower, string.match, string.split, string.sub, string.trim
+local strconcat, strfind, strformat, strgsub, strjoin, strlen, strlower, strmatch, strsplit, strsub, strtrim = strconcat, string.find, string.format, string.gsub, string.join, string.len, string.lower, string.match, string.split, string.sub, string.trim
 local tCompare, tIndexOf, tconcat, tinsert, tremove, tsort, twipe = tCompare, tIndexOf, table.concat, table.insert, table.remove, table.sort, table.wipe
 local utf8len, utf8sub = utf8.len, utf8.sub
 
-local GetContainerItemID = GetContainerItemID
-local GetContainerItemLink = GetContainerItemLink
+--local GetContainerItemID = GetContainerItemID
+--local GetContainerItemLink = GetContainerItemLink
 local GetInventoryItemID = GetInventoryItemID
 local GetInventoryItemLink = GetInventoryItemLink
 local GetInventorySlotInfo = GetInventorySlotInfo
@@ -32,7 +32,7 @@ local issecure = issecure
 local securecall = securecall
 
 local Enum = Enum
-local C_CVar = C_CVar
+local C_GlobalStorageSecure = C_GlobalStorageSecure
 local C_Hardcore = C_Hardcore
 local C_Heirloom = C_Heirloom
 local C_Item = C_Item
@@ -80,6 +80,7 @@ local STORE_ILLUSION_REFRESH_TITLE = STORE_ILLUSION_REFRESH_TITLE
 local STORE_MOUNT_REFRESH_TITLE = STORE_MOUNT_REFRESH_TITLE
 local STORE_PET_REFRESH_TITLE = STORE_PET_REFRESH_TITLE
 local STORE_PURCHASE_ERROR_11 = STORE_PURCHASE_ERROR_11
+local STORE_PURCHASE_ERROR_34 = STORE_PURCHASE_ERROR_34
 local STORE_PURCHASE_ERROR_BALANCE_BONUS = STORE_PURCHASE_ERROR_BALANCE_BONUS
 local STORE_PURCHASE_ERROR_LOYALITY_LEVEL = STORE_PURCHASE_ERROR_LOYALITY_LEVEL
 local STORE_REFRESH_DESCRIPTION_GENERIC = STORE_REFRESH_DESCRIPTION_GENERIC
@@ -155,10 +156,16 @@ Enum.Store.GiftType = {
 	Normal = 1,
 	Loyality = 2,
 }
+Enum.Store.PopupType = {
+	ProductsVersionNew = 0,
+	OfferNew = 1,
+	OfferLastHours = 2,
+}
 
 local ALLOW_BONUS_REPLENISHMENT = true
 local BLOCK_COLLECTION_LISTS_WITHOUT_ROLL_TIMER = false
 local FAVORITE_SORT_AFTER_STATE_CHANGE = false
+local DETECT_MODEL_BY_DRESSUP_LINK_TYPE = false
 
 local ICON_UNKNOWN = [[Interface\Icons\INV_Misc_QuestionMark]]
 local ITEM_RARITY_FALLBACK = 1
@@ -181,6 +188,8 @@ local PRODUCT_MODEL_FACING = math.rad(25)
 
 local QUEARY_ALL_ITEMS = true
 local LOADING_DATA_TIME = IsGMAccount() and 0 or 60
+local SPECIAL_OFFER_NEXT_THROTTLE_SECONDS = 10
+local TRANSMOG_OFFER_NEXT_THROTTLE_SECONDS = 10
 
 local ALLOW_SEARCH_BY_PRODUCT_ID = IsGMAccount() or IsInterfaceDevClient()
 
@@ -411,6 +420,7 @@ local PRIVATE = {
 
 	OFFER_LIST = {},
 	OFFER_MAP = {},
+	OFFER_HOUR_QUEUED = {},
 
 	OFFER_DETAIL_LIST = {},
 	OFFER_IS_NEW = {},
@@ -426,6 +436,8 @@ local PRIVATE = {
 
 	PROMO_CODE_LAST_VALID = nil,
 	PROMO_CODE_ITEMS = {},
+
+	POPUP_QUEUE = {},
 }
 
 PRIVATE.CURRENCY_INFO = {
@@ -606,8 +618,6 @@ PRIVATE.SUB_CATEGORIES = {
 			IsAvailablePost = function()
 				if C_Unit.IsNeutral("player") then
 					return true, false, STORE_CATEGORY_UNAVAILABLE_NEUTRAL_FACTION
-				elseif UnitLevel("player") < 10 then
-					return true, false, strformat(STORE_CATEGORY_UNAVAILABLE_LEVEL, 10)
 				end
 				return true, true
 			end,
@@ -732,7 +742,7 @@ PRIVATE.PREMIUM_BONUSES = {
 
 PRIVATE.OFFERS_MODEL_DATA = {
 	[62] = { -- AF2023
-		PopupModelInfo = {50027, -0.68, "BOTTOM", "TOP", 0, -15, 300, 220, 1},
+		PopupModelInfo = {50027, -0.68, "BOTTOM", "TOP", 0, -15, 300, 220},
 
 		Banner = {
 			BorderColor 		= {0.071, 0.565, 1},
@@ -750,7 +760,7 @@ PRIVATE.OFFERS_MODEL_DATA = {
 		},
 	},
 	[64] = { -- NY2024
-		PopupModelInfo = {131420, -0.68, "BOTTOM", "TOP", -10, -100, 510, 442, 1},
+		PopupModelInfo = {131420, -0.68, "BOTTOM", "TOP", -10, -100, 510, 442},
 
 		Banner = {
 			BorderColor			= {0.11, 0.67, 0.84},
@@ -768,7 +778,7 @@ PRIVATE.OFFERS_MODEL_DATA = {
 		},
 	},
 	[65] = { -- LoveFoxPink
-		PopupModelInfo = {131785, -0.68, "BOTTOM", "TOP", -10, -100, 810, 542, 1},
+		PopupModelInfo = {131785, -0.68, "BOTTOM", "TOP", -10, -100, 810, 542},
 
 		Banner = {
 			BorderColor			= {0, 1, 1},
@@ -785,7 +795,7 @@ PRIVATE.OFFERS_MODEL_DATA = {
 		},
 	},
 	[66] = { -- LoveFoxBlue
-		PopupModelInfo = {131786, -0.68, "BOTTOM", "TOP", -10, -100, 810, 542, 1},
+		PopupModelInfo = {131786, -0.68, "BOTTOM", "TOP", -10, -100, 810, 542},
 
 		Banner = {
 			BorderColor			= {0, 1, 0},
@@ -802,7 +812,7 @@ PRIVATE.OFFERS_MODEL_DATA = {
 		},
 	},
 	[67] = { -- LoveFoxPurple
-		PopupModelInfo = {131787, -0.68, "BOTTOM", "TOP", -10, -100, 810, 542, 1},
+		PopupModelInfo = {131787, -0.68, "BOTTOM", "TOP", -10, -100, 810, 542},
 
 		Banner = {
 			BorderColor			= {0.933, 0.51, 0.933},
@@ -819,7 +829,7 @@ PRIVATE.OFFERS_MODEL_DATA = {
 		},
 	},
 	[68] = { -- AF20241
-		PopupModelInfo = {131224, -0.68, "BOTTOM", "TOP", 30, -80, 420, 300, 1},
+		PopupModelInfo = {131224, -0.68, "BOTTOM", "TOP", 30, -80, 420, 300},
 
 		Banner = {
 			BorderColor			= {0.55, 0.69, 0.99},
@@ -836,7 +846,7 @@ PRIVATE.OFFERS_MODEL_DATA = {
 		},
 	},
 	[69] = { -- AF20242
-		PopupModelInfo = {131225, -0.68, "BOTTOM", "TOP", 30, -80, 420, 300, 1},
+		PopupModelInfo = {131225, -0.68, "BOTTOM", "TOP", 30, -80, 420, 300},
 
 		Banner = {
 			BorderColor			= {0.94, 0.44, 0.4},
@@ -853,7 +863,7 @@ PRIVATE.OFFERS_MODEL_DATA = {
 		},
 	},
 	[70] = { -- AF20243
-		PopupModelInfo = {131226, -0.68, "BOTTOM", "TOP", 30, -80, 420, 300, 1},
+		PopupModelInfo = {131226, -0.68, "BOTTOM", "TOP", 30, -80, 420, 300},
 
 		Banner = {
 			BorderColor			= {0.17, 0.75, 0.51},
@@ -870,7 +880,7 @@ PRIVATE.OFFERS_MODEL_DATA = {
 		},
 	},
 	[71] = { -- HW2024
-		PopupModelInfo = {131436, -0.68, "BOTTOM", "TOP", 30, -80, 420, 300, 1},
+		PopupModelInfo = {131436, -0.68, "BOTTOM", "TOP", 30, -80, 420, 300},
 
 		Banner = {
 			BorderColor			= {1, 0.53, 0},
@@ -888,7 +898,7 @@ PRIVATE.OFFERS_MODEL_DATA = {
 		},
 	},
 	[72] = { -- NY2025
-		PopupModelInfo = {131793, -0.68, "BOTTOM", "TOP", -40, -40, 320, 300, 1},
+		PopupModelInfo = {131793, -0.68, "BOTTOM", "TOP", -40, -40, 320, 300},
 
 		Banner = {
 			BorderColor			= {0.26, 0.67, 1},
@@ -906,7 +916,7 @@ PRIVATE.OFFERS_MODEL_DATA = {
 		},
 	},
 	[75] = { -- VD2025
-		PopupModelInfo = {131801, -0.68, "BOTTOM", "TOP", 30, -70, 370, 300, 1},
+		PopupModelInfo = {131801, -0.68, "BOTTOM", "TOP", 30, -70, 370, 300},
 
 		Banner = {
 			BorderColor			= {0.933, 0.51, 0.933},
@@ -1011,11 +1021,13 @@ PRIVATE.EventHandler:SetScript("OnEvent", function(self, event, ...)
 		local isInitialLogin, isReloadingUI = ...
 		if isInitialLogin then
 			if LOADING_DATA_TIME and LOADING_DATA_TIME > 0 then
-				C_CVar:SetSessionCVar("STORE_LOADING_DATA_TIMESTAMP", time())
+				C_GlobalStorageSecure.SetVar("STORE_LOADING_DATA_TIMESTAMP", time())
 				FireCustomClientEvent("STORE_AVAILABILITY_CHANGED")
 				PRIVATE.StartDataLoadingTimer()
 			end
 		end
+
+		PRIVATE.ProcessPopupQueue()
 	elseif event == "PLAYER_LOGIN" then
 		PRIVATE.BuildEquipmentSubCategories()
 
@@ -1120,6 +1132,12 @@ PRIVATE.EventHandler:SetScript("OnUpdate", function(self, elapsed)
 		end
 	end
 
+--[[
+	if next(PRIVATE.REFUND_LIST) then
+		PRIVATE.CheckRefundProductTimers()
+	end
+--]]
+
 	if next(PRIVATE.OFFER_TIMER) then
 		local now = time()
 		local index = 1
@@ -1129,24 +1147,36 @@ PRIVATE.EventHandler:SetScript("OnUpdate", function(self, elapsed)
 			if timeLeft > 0 then
 				if timeLeft <= OFFER_ALERT_LAST_HOUR_SECONDS
 				and not offer.isDynamic
-				and not STORE_DATA_CACHE.OFFER_LAST_HOUR_SEEN[offer.offerID]
+				and not (PRIVATE.OFFER_HOUR_QUEUED[offer.offerID] or STORE_DATA_CACHE.OFFER_LAST_HOUR_SEEN[offer.offerID])
 				then
-					STORE_DATA_CACHE.OFFER_LAST_HOUR_SEEN[offer.offerID] = true
-
-					local offerIndex = tIndexOf(PRIVATE.OFFER_LIST, offer)
-					if offerIndex then
-						if PRIVATE.IsDataLoaded() then
-							FireCustomClientEvent("STORE_SPECIAL_OFFER_ALERT_LAST_HOUR", offerIndex)
-						else
-							PRIVATE.READY_SPECIAL_OFFER_ALERT_LAST_HOUR_ID = offer.offerID
-						end
-					end
+					PRIVATE.OFFER_HOUR_QUEUED[offer.offerID] = true
+					PRIVATE.PopupEnqueue(Enum.Store.PopupType.OfferLastHours, offer.offerID)
 				end
 				index = index + 1
 			else
 				PRIVATE.RemoveOfferByID(offer.offerID)
 			end
 			offer = PRIVATE.OFFER_LIST[index]
+		end
+	end
+
+	if PRIVATE.SPECIAL_OFFER_NEXT_REQUEST_TIMESTAMP then
+		local now = time()
+		if now - PRIVATE.SPECIAL_OFFER_NEXT_REQUEST_TIMESTAMP >= SPECIAL_OFFER_NEXT_THROTTLE_SECONDS then
+			PRIVATE.SPECIAL_OFFER_NEXT_REQUEST_TIMESTAMP = nil
+			if not STORE_DATA_CACHE.SPECIAL_OFFER_NEXT_TIMESTAMP then
+				FireCustomClientEvent("STORE_SPECIAL_OFFER_NEXT_TIMER_READY")
+			end
+		end
+	end
+
+	if PRIVATE.TRANSMOG_OFFER_NEXT_REQUEST_TIMESTAMP then
+		local now = time()
+		if now - PRIVATE.TRANSMOG_OFFER_NEXT_REQUEST_TIMESTAMP >= TRANSMOG_OFFER_NEXT_THROTTLE_SECONDS then
+			PRIVATE.TRANSMOG_OFFER_NEXT_REQUEST_TIMESTAMP = nil
+			if not STORE_DATA_CACHE.TRANSMOG_OFFER_NEXT_TIMESTAMP then
+				FireCustomClientEvent("STORE_TRANSMOG_OFFER_NEXT_TIMER_READY")
+			end
 		end
 	end
 end)
@@ -1244,7 +1274,7 @@ end
 
 do -- Data loading
 	PRIVATE.StartDataLoadingTimer = function()
-		local loadingTimestamp = C_CVar:GetSessionCVar("STORE_LOADING_DATA_TIMESTAMP")
+		local loadingTimestamp = C_GlobalStorageSecure.GetVar("STORE_LOADING_DATA_TIMESTAMP")
 		if loadingTimestamp then
 			local timeLeft = (loadingTimestamp + LOADING_DATA_TIME) - time()
 			if timeLeft > 0 then
@@ -1254,7 +1284,7 @@ do -- Data loading
 	end
 
 	PRIVATE.IsDataLoaded = function()
-		local loadingTimestamp = C_CVar:GetSessionCVar("STORE_LOADING_DATA_TIMESTAMP")
+		local loadingTimestamp = C_GlobalStorageSecure.GetVar("STORE_LOADING_DATA_TIMESTAMP")
 		if loadingTimestamp then
 			local timeLeft = (loadingTimestamp + LOADING_DATA_TIME) - time()
 			if timeLeft > 0 then
@@ -1268,27 +1298,11 @@ do -- Data loading
 	end
 
 	PRIVATE.OnDataLoaded = function()
-		if C_CVar:GetSessionCVar("STORE_LOADING_DATA_TIMESTAMP") then
-			C_CVar:SetSessionCVar("STORE_LOADING_DATA_TIMESTAMP", nil)
+		if C_GlobalStorageSecure.GetVar("STORE_LOADING_DATA_TIMESTAMP") then
+			C_GlobalStorageSecure.SetVar("STORE_LOADING_DATA_TIMESTAMP", nil)
 			FireCustomClientEvent("STORE_AVAILABILITY_CHANGED")
 		end
-
-		if PRIVATE.READY_OFFER_POPUP_SMALL_SHOW_ID then
-			local offerIndex = tIndexOf(PRIVATE.OFFER_POPUP_SMALL_LIST, PRIVATE.READY_OFFER_POPUP_SMALL_SHOW_ID)
-			if offerIndex then
-				FireCustomClientEvent("STORE_SPECIAL_OFFER_POPUP_SMALL_SHOW", offerIndex)
-			end
-			PRIVATE.READY_OFFER_POPUP_SMALL_SHOW_ID = nil
-		end
-		if PRIVATE.READY_SPECIAL_OFFER_ALERT_LAST_HOUR_ID then
-			local offer = PRIVATE.OFFER_MAP[PRIVATE.READY_SPECIAL_OFFER_ALERT_LAST_HOUR_ID]
-			if offer then
-				local offerIndex = tIndexOf(PRIVATE.OFFER_LIST, offer)
-				if offerIndex then
-					FireCustomClientEvent("STORE_SPECIAL_OFFER_ALERT_LAST_HOUR", offerIndex)
-				end
-			end
-		end
+		PRIVATE.ProcessPopupQueue()
 	end
 end
 
@@ -1431,6 +1445,7 @@ do -- Product storage
 		end
 
 		if cacheInvalid then
+			twipe(PRIVATE.OFFER_HOUR_QUEUED)
 			twipe(STORE_DATA_CACHE.OFFER_LAST_HOUR_SEEN)
 			twipe(STORE_DATA_CACHE.EQUIPMENT_ITEM_LEVELS)
 			FireCustomClientEvent("STORE_EQUIPMENT_ITEM_LEVELS_OUTDATE")
@@ -1865,11 +1880,13 @@ do -- Products
 	end
 
 	PRIVATE.ASMSG_SHOP_ITEMS_DELETE = function(msg)
-		local categoryID, subCategoryID = strsplit(":", msg)
-		categoryID = tonumber(categoryID)
-		subCategoryID = tonumber(subCategoryID)
-		local categoryIndex, subCategoryIndex = PRIVATE.GetVirtualCategoryIDs(Enum.Store.CurrencyType.Bonus, categoryID, subCategoryID)
-		PRIVATE.SignalCategoryProductsRenew(categoryIndex, subCategoryIndex)
+		for index, categodyData in ipairs({StringSplitEx(";", msg)}) do
+			local categoryID, subCategoryID = strsplit(":", categodyData)
+			categoryID = tonumber(categoryID)
+			subCategoryID = tonumber(subCategoryID)
+			local categoryIndex, subCategoryIndex = PRIVATE.GetVirtualCategoryIDs(Enum.Store.CurrencyType.Bonus, categoryID, subCategoryID)
+			PRIVATE.SignalCategoryProductsRenew(categoryIndex, subCategoryIndex)
+		end
 	end
 
 	PRIVATE.RequestGetCurrent = function()
@@ -2117,6 +2134,9 @@ do -- Products
 			currencyType = product.currencyType or Enum.Store.CurrencyType.Bonus
 			price = product.price
 			originalPrice = product.originalPrice
+			altCurrencyType = product.altCurrencyType
+			altPrice = product.altPrice
+			altOriginalPrice = product.altOriginalPrice or altPrice
 
 			if product.productType == Enum.Store.ProductType.SpecialOffer then
 				if price == originalPrice then
@@ -2277,6 +2297,18 @@ do -- Products
 		elseif product[PRODUCT_DATA_FIELD.CREATURE_ID] then
 			modelType = Enum.ModelType.Creature
 			modelID = product[PRODUCT_DATA_FIELD.CREATURE_ID]
+		elseif DETECT_MODEL_BY_DRESSUP_LINK_TYPE and product[PRODUCT_DATA_FIELD.ITEM_ID] then
+			local linkType, id, collectionID = GetDressUpItemLinkInfo(product[PRODUCT_DATA_FIELD.ITEM_ID])
+			if linkType == Enum.DressUpLinkType.Default then
+				modelType = Enum.ModelType.Item
+				modelID = product[PRODUCT_DATA_FIELD.ITEM_ID]
+			elseif linkType == Enum.DressUpLinkType.Pet or linkType == Enum.DressUpLinkType.Mount then
+				modelType = Enum.ModelType.Creature
+				modelID = product[PRODUCT_DATA_FIELD.ITEM_ID]
+			elseif linkType == Enum.DressUpLinkType.Illusion then
+				modelType = Enum.ModelType.Illusion
+				modelID = product[PRODUCT_DATA_FIELD.ITEM_ID]
+			end
 		end
 
 		return modelType, modelID
@@ -2469,8 +2501,7 @@ do -- Category
 			local version = PRIVATE.GetProductListVersion()
 			local newItemsVersion = STORE_PRODUCT_CACHE[PRODUCT_CACHE_FIELD.VERSION_SEEN]
 			if newItemsVersion ~= version then
-				STORE_PRODUCT_CACHE[PRODUCT_CACHE_FIELD.VERSION_SEEN] = version
-				FireCustomClientEvent("STORE_NEW_ITEMS_AVAILABLE")
+				PRIVATE.PopupEnqueue(Enum.Store.PopupType.ProductsVersionNew, version)
 			end
 		end
 
@@ -2772,10 +2803,11 @@ do -- Premium
 		end
 	end
 
-	PRIVATE.UpdatePremiumRemainingTime = function()
+	PRIVATE.GetPremiumRemainingTime = function()
 		if PRIVATE.PREMIUM_REQUEST_TIME and PRIVATE.PREMIUM_REMAINING_TIME ~= STORE_PERMANENT_PREMIUM then
-			PRIVATE.PREMIUM_REMAINING_TIME = PRIVATE.PREMIUM_REMAINING_TIME - (time() - PRIVATE.PREMIUM_REQUEST_TIME)
+			return PRIVATE.PREMIUM_REMAINING_TIME - (time() - PRIVATE.PREMIUM_REQUEST_TIME)
 		end
+		return PRIVATE.PREMIUM_REMAINING_TIME or 0
 	end
 
 	PRIVATE.PurchasePremium = function(optionIndex)
@@ -2804,23 +2836,25 @@ do -- Refund
 			local requestTime = time()
 
 			for _, itemInfo in ipairs({StringSplitEx("|", msg)}) do
-				local itemGUID, bag, slot, purchaseDate, remainingTime, originalPrice, penalty, refundCurrencyAmount, refundCurrencyType = strsplit(":", itemInfo)
-				if itemGUID and bag and slot then
+				local itemGUID, bagID, slotIndex, purchaseDate, remainingTime, originalPrice, penalty, refundCurrencyAmount, refundCurrencyType = strsplit(":", itemInfo)
+				if itemGUID and bagID and slotIndex then
 					local itemID, itemLink
 
-					bag = tonumber(bag)
-					slot = tonumber(slot)
+				--	bagID = tonumber(bagID)
+				--	slotIndex = tonumber(slotIndex)
 					penalty = tonumber(penalty) or 0
 					refundCurrencyAmount = tonumber(refundCurrencyAmount) or 0
 					originalPrice = tonumber(originalPrice) or 0
 
-					if bag == 255 then
-						itemID = GetInventoryItemID("player", slot)
-						itemLink = GetInventoryItemLink("player", slot)
+				--[[
+					if bagID == 255 then
+						itemID = GetInventoryItemID("player", slotIndex)
+						itemLink = GetInventoryItemLink("player", slotIndex)
 					else
-						itemID = GetContainerItemID(bag, slot)
-						itemLink = GetContainerItemLink(bag, slot)
+						itemID = GetContainerItemID(bagID, slotIndex)
+						itemLink = GetContainerItemLink(bagID, slotIndex)
 					end
+				--]]
 
 					if penalty == 0 then
 						originalPrice = refundCurrencyAmount
@@ -2838,8 +2872,8 @@ do -- Refund
 					tinsert(PRIVATE.REFUND_LIST, {
 						productType		= Enum.Store.ProductType.Refund,
 
-					--	bag				= bag,
-					--	slot			= slot,
+					--	bagID			= bagID,
+					--	slotIndex		= slotIndex,
 
 						penalty			= penalty,
 						purchaseDate	= purchaseDate,
@@ -2850,8 +2884,8 @@ do -- Refund
 						originalPrice	= originalPrice,
 
 						itemGUID		= itemGUID,
-						itemID			= itemID,
-						itemLink		= itemLink,
+					--	itemID			= itemID,
+					--	itemLink		= itemLink,
 						requestTime		= requestTime,
 					})
 				end
@@ -2942,7 +2976,7 @@ do -- Refund
 
 	PRIVATE.CheckRefundProductTimers = function()
 		if PRIVATE.REFUND_BLOCK_UPDATE then
-			return
+			return false
 		end
 
 		local listChanged
@@ -2961,16 +2995,18 @@ do -- Refund
 
 		PRIVATE.REFUND_BLOCK_UPDATE = true
 		if listChanged then
-			PRIVATE.RequestRefundList(true)
+			return PRIVATE.RequestRefundList(true)
 		else
 			RunNextFrame(PRIVATE.RemoveRefundCheckBlocker)
+			return false
 		end
 	end
 
-	PRIVATE.IsItemRefundable = function(itemID)
+	PRIVATE.IsItemRefundable = function(itemGUID)
 		for _, product in ipairs(PRIVATE.REFUND_LIST) do
-			if product.itemID == itemID then
-				return product.remainingTime - (time() - product.requestTime) > 0
+			if product.itemGUID == itemGUID then
+				local timeLeft = product.remainingTime - (time() - product.requestTime)
+				return timeLeft > 0, mathmax(0, timeLeft)
 			end
 		end
 		return false
@@ -3073,8 +3109,10 @@ do -- Offer
 			end
 
 			PRIVATE.ProductRemove(offer.productID)
+			PRIVATE.PopupDequeue(nil, offer.offerID)
 
 			PRIVATE.OFFER_MAP[offerID] = nil
+			PRIVATE.OFFER_HOUR_QUEUED[offerID] = nil
 			STORE_DATA_CACHE.OFFER_LAST_HOUR_SEEN[offerID] = nil
 
 			local offerListIndex = tIndexOf(PRIVATE.OFFER_LIST, offer)
@@ -3104,7 +3142,13 @@ do -- Offer
 
 	PRIVATE.RequestNextSpecialOfferTime = function()
 		if not PRIVATE.SPECIAL_OFFER_NEXT_AWAIT then
+			local now = time()
+			if PRIVATE.SPECIAL_OFFER_NEXT_REQUEST_TIMESTAMP and (now - PRIVATE.SPECIAL_OFFER_NEXT_REQUEST_TIMESTAMP < SPECIAL_OFFER_NEXT_THROTTLE_SECONDS) then
+				return
+			end
+
 			PRIVATE.SPECIAL_OFFER_NEXT_AWAIT = true
+			PRIVATE.SPECIAL_OFFER_NEXT_REQUEST_TIMESTAMP = now
 			FireCustomClientEvent("STORE_SPECIAL_OFFER_NEXT_TIMER_WAIT")
 			SendServerMessage("ACMSG_SHOP_SPECIAL_OFFER_NEXT_TIMER")
 		end
@@ -3281,12 +3325,7 @@ do -- Offer
 		end
 
 		PRIVATE.OFFER_IS_NEW[offerID] = true
-
-		if PRIVATE.IsDataLoaded() then
-			FireCustomClientEvent("STORE_SPECIAL_OFFER_POPUP_SMALL_SHOW", offerIndex)
-		else
-			PRIVATE.READY_OFFER_POPUP_SMALL_SHOW_ID = offerID
-		end
+		PRIVATE.PopupEnqueue(Enum.Store.PopupType.OfferNew, offerID)
 	end
 
 	PRIVATE.ASMSG_SHOP_SPECIAL_OFFER_DATA_READY = function(msg)
@@ -3959,7 +3998,13 @@ end
 do -- Renew Transmog offers
 	PRIVATE.RequestNextTransmogOfferTime = function()
 		if not PRIVATE.TRANSMOG_OFFER_NEXT_AWAIT then
+			local now = time()
+			if PRIVATE.TRANSMOG_OFFER_NEXT_REQUEST_TIMESTAMP and (now - PRIVATE.TRANSMOG_OFFER_NEXT_REQUEST_TIMESTAMP < TRANSMOG_OFFER_NEXT_THROTTLE_SECONDS) then
+				return
+			end
+
 			PRIVATE.TRANSMOG_OFFER_NEXT_AWAIT = true
+			PRIVATE.TRANSMOG_OFFER_NEXT_REQUEST_TIMESTAMP = now
 			FireCustomClientEvent("STORE_TRANSMOG_OFFER_NEXT_TIMER_WAIT")
 			SendServerMessage("ACMSG_SHOP_TRANSMOG_OFFER_NEXT_TIMER")
 		end
@@ -4004,19 +4049,36 @@ do -- Purchase product
 		ERROR_CLASS_FOR						= 22, -- characterName
 		ERROR_SPELL_FOR						= 23, -- characterName
 		ERROR_OFFLINE_FOR					= 24, -- characterName
+		ERROR_LEVEL_SELF					= 25,
+		ERROR_FACTION_SELF					= 26,
+		ERROR_CLASS_SELF					= 27,
+		ERROR_SPELL_SELF					= 28,
+		ERROR_TYPE_MASK_FOR					= 29, -- characterName
+		ERROR_TYPE_MASK_SELF				= 30,
+		ERROR_NOT_AVAILABLE_SELF			= 31,
+		ERROR_NO_DEAL						= 32,
+		ERROR_DEAL_CANT_GIFT				= 33,
+		ERROR_CURRENCY_LIMIT				= 34,
+	}
+	local CURRENCY_LIMIT_TYPE = {
+		[0] = STORE_PURCHASE_ERROR_LIMIT_OVERALL,
+		[1] = STORE_PURCHASE_ERROR_LIMIT_WEEKLY,
 	}
 
 	PRIVATE.ASMSG_SHOP_BUY_ITEM_RESPONSE = function(msg)
-		local status, value, productID = strsplit(":", msg)
+		local status, payload = strsplit(":", msg, 2)
 		status = tonumber(status)
 
 		if status == PURCHASE_PRODUCT_STATUS.SUCCESS then
-			local itemID = tonumber(value)
+			local itemID, productID = strsplit(":", payload)
+			itemID = tonumber(itemID)
 			productID = tonumber(productID)
 			local wasGifted = PRIVATE.PENDING_PURCHASE_IS_GIFT or false
 			PRIVATE.OnPurchaseSuccess(productID, itemID, wasGifted)
+		elseif payload then
+			PRIVATE.OnPurchaseError(status, strsplit(":", payload))
 		else
-			PRIVATE.OnPurchaseError(status, value)
+			PRIVATE.OnPurchaseError(status)
 		end
 	end
 
@@ -4048,12 +4110,30 @@ do -- Purchase product
 			else
 				FireCustomClientEvent(event, STORE_PURCHASE_ERROR_BALANCE_BONUS, debugInfo)
 			end
+		elseif status == PURCHASE_PRODUCT_STATUS.ERROR_CURRENCY_LIMIT then
+			local amountAvailable, itemID, limitType = ...
+			amountAvailable = tonumber(amountAvailable)
+			itemID = tonumber(itemID)
+			limitType = tonumber(limitType) or 0
+
+			local limitStr = CURRENCY_LIMIT_TYPE[limitType] or CURRENCY_LIMIT_TYPE[1]
+			local _, itemLink = C_Item.GetItemInfo(itemID, false, nil, true)
+
+			if itemLink then
+				itemLink = strgsub(strgsub(itemLink, "(\124h)%[", "%1"), "%](\124h)", "%1")
+			else
+				itemLink = strformat("item:%i", itemID)
+			end
+
+			local errorText = strformat(STORE_PURCHASE_ERROR_34, amountAvailable, itemLink, limitStr)
+			FireCustomClientEvent(event, errorText, debugInfo)
 		elseif status == PURCHASE_PRODUCT_STATUS.ERROR_NOT_AVAILABLE_FOR
 		or status == PURCHASE_PRODUCT_STATUS.ERROR_LEVEL_FOR
 		or status == PURCHASE_PRODUCT_STATUS.ERROR_FACTION_FOR
 		or status == PURCHASE_PRODUCT_STATUS.ERROR_CLASS_FOR
 		or status == PURCHASE_PRODUCT_STATUS.ERROR_SPELL_FOR
 		or status == PURCHASE_PRODUCT_STATUS.ERROR_OFFLINE_FOR
+		or status == PURCHASE_PRODUCT_STATUS.ERROR_TYPE_MASK_FOR
 		then
 			local playerName = ...
 
@@ -4516,6 +4596,117 @@ do -- Favorite products
 	end
 end
 
+do -- Popups
+	PRIVATE.CanShowPopups = function()
+		local inInstance, instanceType = IsInInstance()
+		if instanceType == "none" and PRIVATE.IsDataLoaded() then
+			return true
+		end
+		return false
+	end
+
+	PRIVATE.PopupIsInQueue = function(popupType, id)
+		for index, popupInfo in ipairs(PRIVATE.POPUP_QUEUE) do
+			if popupInfo[1] == popupType and popupInfo[2] == id then
+				return index
+			end
+		end
+	end
+
+	PRIVATE.PopupEnqueue = function(popupType, id)
+		if PRIVATE.PopupIsInQueue(popupType, id) then
+			return false
+		end
+
+		if PRIVATE.CanShowPopups() then
+			PRIVATE.PopupFire(popupType, id)
+		else
+			tinsert(PRIVATE.POPUP_QUEUE, {popupType, id})
+		end
+
+		return true
+	end
+
+	PRIVATE.PopupDequeue = function(popupType, id)
+		if popupType and id then
+			local index = PRIVATE.PopupIsInQueue(popupType, id)
+			if index then
+				tremove(PRIVATE.POPUP_QUEUE, index)
+			end
+		else
+			local index = 1
+			local popupInfo = PRIVATE.POPUP_QUEUE[index]
+			while popupInfo do
+				if popupInfo[1] == popupType or popupInfo[2] == id then
+					tremove(PRIVATE.POPUP_QUEUE, index)
+				else
+					index = index + 1
+				end
+				popupInfo = PRIVATE.POPUP_QUEUE[index]
+			end
+		end
+	end
+
+	PRIVATE.PopupClearQueue = function()
+		twipe(PRIVATE.POPUP_QUEUE)
+	end
+
+	PRIVATE.PopupFire = function(popupType, id)
+		if popupType == Enum.Store.PopupType.ProductsVersionNew then
+			STORE_PRODUCT_CACHE[PRODUCT_CACHE_FIELD.VERSION_SEEN] = id
+			FireCustomClientEvent("STORE_NEW_ITEMS_AVAILABLE")
+		elseif popupType == Enum.Store.PopupType.OfferNew then
+			local offer = PRIVATE.OFFER_POPUP_DATA[id]
+			if offer then
+				local offerIndex = tIndexOf(PRIVATE.OFFER_POPUP_SMALL_LIST, id)
+				if offerIndex then
+					FireCustomClientEvent("STORE_SPECIAL_OFFER_POPUP_SMALL_SHOW", offerIndex)
+					return true
+				end
+			end
+		elseif popupType == Enum.Store.PopupType.OfferLastHours then
+			local offer = PRIVATE.OFFER_MAP[id]
+			if offer then
+				local offerIndex = tIndexOf(PRIVATE.OFFER_LIST, offer)
+				if offerIndex then
+					STORE_DATA_CACHE.OFFER_LAST_HOUR_SEEN[offer.offerID] = true
+					FireCustomClientEvent("STORE_SPECIAL_OFFER_ALERT_LAST_HOUR", offerIndex)
+					return true
+				end
+			end
+		end
+	--[[
+		local product = PRIVATE.GetProductByID(id)
+		if not product then
+			return false
+		end
+	--]]
+
+		return false
+	end
+
+	PRIVATE.ProcessPopupQueue = function(single)
+		if not PRIVATE.CanShowPopups() then
+			return
+		end
+
+		if single then
+			for index, popupInfo in ipairs(PRIVATE.POPUP_QUEUE) do
+				local success = PRIVATE.PopupFire(popupInfo[1], popupInfo[2])
+				if success then
+					tremove(PRIVATE.POPUP_QUEUE, index)
+					return
+				end
+			end
+		else
+			for index, popupInfo in ipairs(PRIVATE.POPUP_QUEUE) do
+				PRIVATE.PopupFire(popupInfo[1], popupInfo[2])
+			end
+			twipe(PRIVATE.POPUP_QUEUE)
+		end
+	end
+end
+
 do -- Other
 	PRIVATE.ASMSG_ACTIVATE_SHOP_SERVICE = function(msg)
 		local flag = tonumber(msg)
@@ -4565,7 +4756,7 @@ function C_StoreSecure.GetProductListVersion()
 end
 
 function C_StoreSecure.GetDonationLink()
-	return "https://sirus.su/pay"
+	return "https://sirus.su/donate"
 end
 
 function C_StoreSecure.GenerateDonationLinkForAmount(amount)
@@ -4806,6 +4997,14 @@ function C_StoreSecure.GenerateBalanceError(productType, currencyType, debugInfo
 	end
 end
 
+function C_StoreSecure.CheckPopupQueue()
+	PRIVATE.ProcessPopupQueue()
+end
+
+function C_StoreSecure.ClearPopupQueue()
+	PRIVATE.PopupClearQueue()
+end
+
 do -- Product list
 	local PRODUCT_ITEM_INFO = {
 		NAME			= 1,
@@ -4836,6 +5035,7 @@ do -- Product list
 		TransmogArmor = 3,
 		TransmogWeapon = 4,
 		TransmogItemSet = 5,
+		Trinket = 6,
 	}
 	Enum.Store.ProductFilterOption = {
 		SEARCH_NAME			= 0,
@@ -5077,6 +5277,17 @@ do -- Product list
 			PRODUCT_LIST_FILTER_OPTION.RARITY,
 			PRODUCT_LIST_FILTER_OPTION.ARMOR_SUB_CLASS,
 			PRODUCT_LIST_FILTER_OPTION.ITEM_STATS,
+			PRODUCT_LIST_FILTER_OPTION.ITEM_LEVEL_RANGE,
+			PRODUCT_LIST_FILTER_OPTION.PRODUCT_PRICE_RANGE,
+		},
+		[PRODUCT_LIST_FILTER_TYPE.Trinket] = {
+			PRODUCT_LIST_FILTER_OPTION.SEARCH_NAME,
+			PRODUCT_LIST_FILTER_OPTION.NON_CLASS_ITEMS,
+			PRODUCT_LIST_FILTER_OPTION.NEW_PRODUCT,
+			PRODUCT_LIST_FILTER_OPTION.CONTENT_TYPE,
+			PRODUCT_LIST_FILTER_OPTION.RARITY,
+			PRODUCT_LIST_FILTER_OPTION.ARMOR_SUB_CLASS,
+		--	PRODUCT_LIST_FILTER_OPTION.ITEM_STATS,
 			PRODUCT_LIST_FILTER_OPTION.ITEM_LEVEL_RANGE,
 			PRODUCT_LIST_FILTER_OPTION.PRODUCT_PRICE_RANGE,
 		},
@@ -5397,9 +5608,13 @@ do -- Product list
 
 		if filterInfo.CONTENT_TYPE and filterInfo.CONTENT_TYPE > 0x1 then
 			if bitband(product[PRODUCT_DATA_FIELD.FLAGS], PRODUCT_FLAG.PVP) == 0 then
-				return filterInfo.CONTENT_TYPE == 0x2
+				if filterInfo.CONTENT_TYPE ~= 0x2 then
+					return false
+				end
 			else
-				return filterInfo.CONTENT_TYPE == 0x4
+				if filterInfo.CONTENT_TYPE ~= 0x4 then
+					return false
+				end
 			end
 		end
 
@@ -5605,8 +5820,10 @@ do -- Product list
 		if PRIVATE.IsValidCategoryProductList(categoryIndex, subCategoryIndex) then
 			local filterOptionType
 			if categoryIndex == Enum.Store.Category.Equipment then
-				if subCategoryIndex <= 12 then
+				if subCategoryIndex <= 11 then
 					filterOptionType = PRODUCT_LIST_FILTER_TYPE.Armor
+				elseif subCategoryIndex == 12 then
+					filterOptionType = PRODUCT_LIST_FILTER_TYPE.Trinket
 				else
 					filterOptionType = PRODUCT_LIST_FILTER_TYPE.Weapon
 				end
@@ -5758,6 +5975,26 @@ do -- Product list
 			end
 		end
 	end
+	PRIVATE.ProcessItemStats = function(itemStats)
+		local resistanceValue = itemStats["RESISTANCE1_NAME"]
+		if resistanceValue
+		and resistanceValue == itemStats["RESISTANCE2_NAME"]
+		and resistanceValue == itemStats["RESISTANCE3_NAME"]
+		and resistanceValue == itemStats["RESISTANCE4_NAME"]
+		and resistanceValue == itemStats["RESISTANCE5_NAME"]
+		and resistanceValue == itemStats["RESISTANCE6_NAME"]
+		then
+			itemStats["RESISTANCE1_NAME"] = nil
+			itemStats["RESISTANCE2_NAME"] = nil
+			itemStats["RESISTANCE3_NAME"] = nil
+			itemStats["RESISTANCE4_NAME"] = nil
+			itemStats["RESISTANCE5_NAME"] = nil
+			itemStats["RESISTANCE6_NAME"] = nil
+			itemStats["STORE_FILTER_STATS_RESISTANCE_ALL"] = resistanceValue
+		end
+
+		return itemStats
+	end
 	PRIVATE.UpdateCategoryProductListItemInfo = function(productList)
 		productList.dirtyItemInfo = nil
 
@@ -5805,6 +6042,7 @@ do -- Product list
 				local itemLink = product.itemInfo[PRODUCT_ITEM_INFO.LINK]
 				if itemLink then
 					GetItemStats(itemLink, product.itemStats)
+					PRIVATE.ProcessItemStats(product.itemStats)
 
 					for statName in pairs(product.itemStats) do
 						itemStats[statName] = true
@@ -6490,18 +6728,15 @@ end
 
 do -- Premium
 	function C_StoreSecure.IsPremiumActive()
-		PRIVATE.UpdatePremiumRemainingTime()
-		return PRIVATE.PREMIUM_REMAINING_TIME ~= 0
+		return PRIVATE.GetPremiumRemainingTime() ~= 0
 	end
 
 	function C_StoreSecure.IsPremiumPermanent()
-		PRIVATE.UpdatePremiumRemainingTime()
-		return PRIVATE.PREMIUM_REMAINING_TIME == STORE_PERMANENT_PREMIUM
+		return PRIVATE.GetPremiumRemainingTime() == STORE_PERMANENT_PREMIUM
 	end
 
 	function C_StoreSecure.GetPremiumTimeLeft()
-		PRIVATE.UpdatePremiumRemainingTime()
-		return mathfloor(PRIVATE.PREMIUM_REMAINING_TIME)
+		return mathfloor(PRIVATE.GetPremiumRemainingTime())
 	end
 
 	function C_StoreSecure.GetNumPremiumBonuses()
@@ -6840,7 +7075,8 @@ end
 
 do -- Refund
 	function C_StoreSecure.RequestRefundList()
-		PRIVATE.RequestRefundList()
+	--	return PRIVATE.RequestRefundList()
+		return PRIVATE.CheckRefundProductTimers()
 	end
 
 	function C_StoreSecure.GetNumRefundProducts()
@@ -6859,8 +7095,20 @@ do -- Refund
 
 		local product = PRIVATE.REFUND_LIST[index]
 		local remainingTime = mathmax(0, product.remainingTime - (time() - product.requestTime))
+		local itemLink
 
-		return product.itemLink or product.itemID,
+		if product.itemGUID then
+			itemLink = C_Item.GetItemLinkByGUID(product.itemGUID)
+			if not itemLink then
+				local itemID = C_Item.GetItemIDByGUID(product.itemGUID)
+				if itemID then
+					itemLink = C_Item.GetItemLinkCache(itemID) or itemID
+				end
+			end
+		end
+
+		return itemLink,
+			product.itemGUID,
 			product.amount or 1,
 			product.purchaseDate,
 			remainingTime,
@@ -6995,6 +7243,10 @@ do -- Purchase product
 		local success = PRIVATE.PurchaseProduct(product, options)
 		return success
 	end
+
+	function C_StoreSecure.GetPurchaseDelayTime()
+		return 3
+	end
 end
 
 do -- Subscription
@@ -7008,6 +7260,7 @@ do -- Subscription
 		local nextSupplyTime, remainingSupplyTimes
 
 		if remainingTime <= 0 then
+			subscription.timestamp = nil
 			subscription.remainingSubscriptionSeconds = nil
 			subscription.nextSupplySeconds = nil
 			subscription.remainingDays = nil
@@ -7016,13 +7269,23 @@ do -- Subscription
 			PRIVATE.RequestSubscriptions()
 		end
 
-		if remainingTime and remainingTime > 0 then
+		if remainingTime > 0 then
 			if timeSinceUpdate < subscription.nextSupplySeconds then
 				nextSupplyTime = subscription.nextSupplySeconds - timeSinceUpdate
 			else
 				nextSupplyTime = remainingTime % SECONDS_PER_DAY
 			end
+
 			remainingSupplyTimes = mathfloor((remainingTime - nextSupplyTime) / SECONDS_PER_DAY)
+
+			if nextSupplyTime == 0 and remainingTime > 0 then
+				-- request time until next supply
+				PRIVATE.RequestSubscriptions()
+
+				if remainingSupplyTimes > 0 then
+					remainingSupplyTimes = remainingSupplyTimes - 1
+				end
+			end
 		else
 			remainingTime = 0
 			nextSupplyTime = 0
@@ -7485,9 +7748,7 @@ do -- Transmog
 	end
 
 	function C_StoreSecure.GetNumTransmogOffers()
-		if PRIVATE.TRANSMOG_OFFER_NEXT_AWAIT
-		or not STORE_DATA_CACHE.TRANSMOG_OFFER_NEXT_TIMESTAMP
-		then
+		if PRIVATE.TRANSMOG_OFFER_NEXT_AWAIT then
 			return 0
 		end
 
@@ -7500,9 +7761,7 @@ do -- Transmog
 			error(strformat("bad argument #1 to 'C_StoreSecure.GetTransmogOfferInfo' (number expected, got %s)", index ~= nil and type(index) or "no value"), 2)
 		end
 
-		if PRIVATE.TRANSMOG_OFFER_NEXT_AWAIT
-		or not STORE_DATA_CACHE.TRANSMOG_OFFER_NEXT_TIMESTAMP
-		then
+		if PRIVATE.TRANSMOG_OFFER_NEXT_AWAIT then
 			return
 		end
 
@@ -7527,9 +7786,7 @@ do -- Transmog
 	end
 
 	function C_StoreSecure.GetTransomgItemSetOffer()
-		if PRIVATE.TRANSMOG_OFFER_NEXT_AWAIT
-		or not STORE_DATA_CACHE.TRANSMOG_OFFER_NEXT_TIMESTAMP
-		then
+		if PRIVATE.TRANSMOG_OFFER_NEXT_AWAIT then
 			return
 		end
 
@@ -7550,9 +7807,7 @@ do -- Transmog
 	end
 
 	function C_StoreSecure.GetTransomgItemSetOfferProductID()
-		if PRIVATE.TRANSMOG_OFFER_NEXT_AWAIT
-		or not STORE_DATA_CACHE.TRANSMOG_OFFER_NEXT_TIMESTAMP
-		then
+		if PRIVATE.TRANSMOG_OFFER_NEXT_AWAIT then
 			return
 		end
 
@@ -7815,16 +8070,20 @@ function C_StorePublic.IsEnabled()
 	return true, not isDataLoaded, nil
 end
 
+function C_StorePublic.WipeProductCache()
+	PRIVATE.WipeProductCache()
+end
+
 function C_StorePublic.GetPreferredModelFacing()
 	return PRODUCT_MODEL_FACING
 end
 
-function C_StorePublic.IsItemRefundable(itemID)
-	if type(itemID) ~= "number" then
-		error(strformat("bad argument #1 to 'C_StorePublic.IsItemRefundable' (number expected, got %s)", itemID ~= nil and type(itemID) or "no value"), 3)
+function C_StorePublic.IsItemRefundable(itemGUID)
+	if type(itemGUID) ~= "string" then
+		error(strformat("bad argument #1 to 'C_StorePublic.IsItemRefundable' (string expected, got %s)", itemGUID ~= nil and type(itemGUID) or "no value"), 3)
 	end
 
-	return PRIVATE.IsItemRefundable(itemID)
+	return PRIVATE.IsItemRefundable(itemGUID)
 end
 
 function C_StorePublic.GetBalance(currencyType)

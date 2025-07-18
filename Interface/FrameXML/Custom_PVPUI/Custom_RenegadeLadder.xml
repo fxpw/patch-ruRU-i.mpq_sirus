@@ -730,12 +730,12 @@
                                                 <Scripts>
                                                     <OnShow>
                                                         local mainFrame = self:GetParent():GetParent():GetParent():GetParent():GetParent()
-                                                        local cache = mainFrame:GetCache("LADDER_PLAYERS_CACHE_2")
-
+														local cache, expiredTTL = C_GlobalStorage.GetTTLVar("RENEGADE_LADDER_PLAYERS_CACHE_2")
                                                         if not cache then
+															C_GlobalStorage.SetVar("RENEGADE_LADDER_SEARCH_TEXT", nil)
                                                             self:SetText("")
                                                         else
-                                                            local searchTextCache = mainFrame:GetCache("SEARCH_TEXT")
+															local searchTextCache = C_GlobalStorage.GetVar("RENEGADE_LADDER_SEARCH_TEXT")
                                                             if searchTextCache then
                                                                 self:SetText(searchTextCache)
                                                             end
@@ -795,7 +795,7 @@
 
                                                         if #text >= 2 then
                                                         	local mainFrame = self:GetParent():GetParent():GetParent():GetParent():GetParent()
-                                                        	mainFrame:SetCache("RENEGADE_SEARCH_TEXT", text, true)
+															C_GlobalStorage.SetVar("RENEGADE_LADDER_SEARCH_TEXT", text)
 
                                                         	AutoComplete_HideIfAttachedTo(self:GetParent().SearchBox)
                                                         	SendServerMessage("ACMSG_PVP_LADDER_GET_SEARCH", string.format("%d:%s", E_LADDER_BRACKET.RENEGADE, text))

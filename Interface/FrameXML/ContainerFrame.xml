@@ -72,7 +72,7 @@
 				local modifiedClick = IsModifiedClick();
 				-- If we can loot the item and autoloot toggle is active, then do a normal click
 				if ( button ~= "LeftButton" and modifiedClick and IsModifiedClick("AUTOLOOTTOGGLE") ) then
-					local _, _, _, _, _, lootable = GetContainerItemInfo(self:GetParent():GetID(), self:GetID());
+					local _, _, _, _, _, lootable = GetContainerItemInfo(self:GetBagID(), self:GetID());
 					if ( lootable ) then
 						modifiedClick = false;
 					end
@@ -93,7 +93,7 @@
 				ContainerFrameItemButton_OnEnter(self, motion);
 			</OnEnter>
 			<OnLeave>
-				GameTooltip:Hide();
+				GameTooltip_Hide();
 				ResetCursor();
 			</OnLeave>
 			<OnHide>
@@ -107,89 +107,60 @@
 			<OnReceiveDrag>
 				ContainerFrameItemButton_OnDrag(self);
 			</OnReceiveDrag>
+			<OnAttributeChanged>
+				self:OnAttributeChanged(name, value)
+			</OnAttributeChanged>
 		</Scripts>
 	</Button>
 	<Frame name="ContainerFrameTemplate" frameStrata="HIGH" toplevel="true" movable="true" enableMouse="true" hidden="true" virtual="true">
-		<Size>
-			<AbsDimension x="256" y="256"/>
-		</Size>
+		<Size x="256" y="256"/>
 		<Layers>
 			<Layer level="BACKGROUND">
-                <Texture name="$parentPortrait">
-                    <Size>
-                        <AbsDimension x="40" y="40"/>
-                    </Size>
+                <Texture name="$parentPortrait" parentKey="Portrait">
+                    <Size x="40" y="40"/>
                     <Anchors>
-                        <Anchor point="TOPLEFT">
-                            <Offset>
-                                <AbsDimension x="7" y="-5"/>
-                            </Offset>
-                        </Anchor>
+                        <Anchor point="TOPLEFT" x="7" y="-5"/>
                     </Anchors>
                 </Texture>
             </Layer>
 			<Layer level="ARTWORK">
 				<Texture name="$parentBackgroundTop" file="Interface\ContainerFrame\UI-Bag-Components">
-					<Size>
-						<AbsDimension x="256" y="512"/>
-					</Size>
+					<Size x="256" y="512"/>
 					<Anchors>
-						<Anchor point="TOPRIGHT" relativeTo="$parent">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPRIGHT" relativeTo="$parent" x="0" y="0"/>
 					</Anchors>
 				</Texture>
 				<Texture name="$parentBackgroundMiddle1" file="Interface\ContainerFrame\UI-Bag-Components">
-					<Size>
-						<AbsDimension x="256" y="512"/>
-					</Size>
+					<Size x="256" y="512"/>
 					<Anchors>
 						<Anchor point="TOP" relativeTo="$parentBackgroundTop" relativePoint="BOTTOM"/>
 					</Anchors>
 					<TexCoords left="0" right="1" top="0.3515625" bottom="0.8515625"/>
 				</Texture>
 				<Texture name="$parentBackgroundMiddle2" file="Interface\ContainerFrame\UI-Bag-Components" hidden="true">
-					<Size>
-						<AbsDimension x="256" y="256"/>
-					</Size>
+					<Size x="256" y="256"/>
 					<Anchors>
 						<Anchor point="TOP" relativeTo="$parentBackgroundMiddle1" relativePoint="BOTTOM"/>
 					</Anchors>
 					<TexCoords left="0" right="1" top="0.353515625" bottom="0.8515625"/>
 				</Texture>
 				<Texture name="$parentBackgroundBottom" file="Interface\ContainerFrame\UI-Bag-Components">
-					<Size>
-						<AbsDimension x="256" y="10"/>
-					</Size>
+					<Size x="256" y="10"/>
 					<Anchors>
 						<Anchor point="TOP" relativeTo="$parentBackgroundMiddle1" relativePoint="BOTTOM"/>
 					</Anchors>
 					<TexCoords left="0" right="1" top="0.330078125" bottom="0.349609375"/>
 				</Texture>
 				<FontString name="$parentName" inherits="GameFontHighlight">
-					<Size>
-						<AbsDimension x="112" y="12"/>
-					</Size>
+					<Size x="112" y="12"/>
 					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="47" y="-10"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" x="47" y="-10"/>
 					</Anchors>
 				</FontString>
 				<Texture name="$parentBackground1Slot" file="Interface\ContainerFrame\UI-Bag-1Slot" hidden="true">
-					<Size>
-						<AbsDimension x="99" y="74"/>
-					</Size>
+					<Size x="99" y="74"/>
 					<Anchors>
-						<Anchor point="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
 					</Anchors>
 					<TexCoords left="0" right="0.7734375" top="0" bottom="0.578125"/>
 				</Texture>
@@ -198,11 +169,7 @@
 		<Frames>
 			<Frame name="$parentMoneyFrame" inherits="SmallMoneyFrameTemplate" hidden="true">
 				<Anchors>
-					<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
-						<Offset>
-							<AbsDimension x="-2" y="-231"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT" x="-2" y="-231"/>
 				</Anchors>
 			</Frame>
 			<Frame name="$parentKeyRingFrame" toplevel="true" hidden="true">
@@ -325,16 +292,10 @@
 			<Button name="$parentItem35" inherits="ContainerFrameItemButtonTemplate"/>
 			<Button name="$parentItem36" inherits="ContainerFrameItemButtonTemplate"/>
 
-			<Button name="$parentPortraitButton">
-				<Size>
-					<AbsDimension x="40" y="40"/>
-				</Size>
+			<Button name="$parentPortraitButton" parentKey="PortraitButton">
+				<Size x="40" y="40"/>
 				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset>
-							<AbsDimension x="7" y="-5"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" x="7" y="-5"/>
 				</Anchors>
 				<Scripts>
 					<OnEnter>
@@ -363,16 +324,39 @@
 			</Button>
 			<Button name="$parentCloseButton" inherits="UIPanelCloseButton">
 				<Anchors>
-					<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
-						<Offset>
-							<AbsDimension x="0" y="-1"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT" x="0" y="-1"/>
 				</Anchors>
 				<Scripts>
 					<OnClick>
 						ToggleBag(self:GetParent():GetID());
 					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentExpirationItemButton" parentKey="ExpirationItemButton" hidden="true">
+				<Size x="20" y="20"/>
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentCloseButton" relativePoint="LEFT" x="3" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentIcon" parentKey="Icon" file="Interface\Icons\Ability_BossMagistrix_Timewarp1" setAllPoints="true"/>
+					</Layer>
+				</Layers>
+				<NormalTexture file="Interface\Icons\Ability_BossMagistrix_Timewarp1"/>
+				<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
+				<Scripts>
+					<OnShow>
+						SetParentFrameLevel(self, 2)
+					</OnShow>
+					<OnClick function="ToggleContainerItemExpiration"/>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+						GameTooltip:AddLine(ITEM_EXPIRATION_TOOLTIP, 1, 1, 1, true)
+						GameTooltip:Show()
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide()
+					</OnLeave>
 				</Scripts>
 			</Button>
 		</Frames>
@@ -409,6 +393,152 @@
 		<Scripts>
 			<OnLoad function="ContainerFrameManager_OnLoad"/>
 			<OnEvent function="ContainerFrameManager_OnEvent"/>
+		</Scripts>
+	</Frame>
+
+	<Button name="ContainerItemExpirationButtonTemplate" inherits="ContainerFrameItemButtonTemplate" hidden="true" virtual="true">
+		<Size x="37" y="37"/>
+		<Frames>
+			<Frame name="$parentItemExpirationOverlay" parentKey="ItemExpirationOverlay" setAllPoints="true">
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentTimeLeft" parentKey="TimeLeft" inherits="PKBT_Font_11_OUTLINE" justifyH="CENTER">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+					<Layer level="ARTWORK">
+						<Texture name="$parentTimeBackdrop" parentKey="TimeBackdrop">
+							<Anchors>
+								<Anchor point="LEFT" x="2" y="0"/>
+								<Anchor point="RIGHT" x="-1" y="0"/>
+								<Anchor point="TOP" relativeTo="$parentTimeLeft" x="0" y="1"/>
+								<Anchor point="BOTTOM" relativeTo="$parentTimeLeft" x="0" y="-1"/>
+							</Anchors>
+							<Color r="0" g="0" b="0" a="0.5"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ContainerItemExpirationButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnEnter>
+				self:OnEnter(button)
+			</OnEnter>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+			<OnEvent></OnEvent>
+			<OnDragStart></OnDragStart>
+			<OnReceiveDrag></OnReceiveDrag>
+		</Scripts>
+	</Button>
+	<Frame name="ContainerItemExpirationFrame" parent="UIParent" frameStrata="HIGH" toplevel="true" enableMouse="true" hidden="true">
+		<Size x="177" y="200"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentPortrait" parentKey="Portrait">
+					<Size x="34" y="34"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-8" y="-6"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentBackgroundTop" parentKey="BackgroundTop" file="Interface\ContainerFrame\UI-Bag-Components">
+					<Size x="256" y="512"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parent" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBackgroundMiddle1" parentKey="BackgroundMiddle1" file="Interface\ContainerFrame\UI-Bag-Components">
+					<Size x="256" y="512"/>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentBackgroundTop" relativePoint="BOTTOM"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0.3515625" bottom="0.8515625"/>
+				</Texture>
+				<Texture name="$parentBackgroundMiddle2" parentKey="BackgroundMiddle2" file="Interface\ContainerFrame\UI-Bag-Components" hidden="true">
+					<Size x="256" y="256"/>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentBackgroundMiddle1" relativePoint="BOTTOM"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0.353515625" bottom="0.8515625"/>
+				</Texture>
+				<Texture name="$parentBackgroundBottom" parentKey="BackgroundBottom" file="Interface\ContainerFrame\UI-Bag-Components">
+					<Size x="256" y="10"/>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentBackgroundMiddle1" relativePoint="BOTTOM"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0.330078125" bottom="0.349609375"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentTextBackground" parentKey="TextBackground">
+					<Size x="0" y="42"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="-2" y="5"/>
+						<Anchor point="BOTTOMRIGHT" x="-8" y="5"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="$parentTitle" parentKey="Title" inherits="GameFontHighlight" text="ITEM_EXPIRATION_TITLE">
+					<Size x="112" y="12"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="30" y="-10"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentWarning" parentKey="Warning" inherits="PKBT_Font_12" maxLines="0" text="ITEM_EXPIRATION_WARNING">
+					<Size x="150" y="0"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentTextBackground" relativePoint="CENTER" x="0" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentItemHolder" parentKey="ItemHolder">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="3" y="-51"/>
+					<Anchor point="TOPRIGHT" x="-2" y="-22"/>
+				</Anchors>
+			</Frame>
+
+			<Button name="$parentCloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT" x="0" y="-1"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="UIPanelCloseButton_OnClick"/>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ContainerItemExpirationMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
 		</Scripts>
 	</Frame>
 </Ui>

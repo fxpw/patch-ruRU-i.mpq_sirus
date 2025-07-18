@@ -7,8 +7,8 @@ local tostring = tostring
 local type = type
 local mathmax = math.max
 local utf8byte, utf8clean, utf8gsub, utf8len, utf8remove = utf8.byte, utf8.clean, utf8.gsub, utf8.len, utf8.remove
-local strformat, strgmatch, strgsub, strsplit, strtrim = string.format, string.gmatch, string.gsub, string.split, string.trim
-local tconcat, tinsert, tsort, twipe = table.concat, table.insert, table.sort, table.wipe
+local strfind, strformat, strgmatch, strgsub, strsplit, strtrim = string.find, string.format, string.gmatch, string.gsub, string.split, string.trim
+local tconcat, tinsert, tremove, tsort, twipe = table.concat, table.insert, table.remove, table.sort, table.wipe
 
 local strconcat = strconcat
 local UnitName = UnitName
@@ -38,6 +38,33 @@ local VISIBILITY_TAG = {
 	["#x5"] = E_REALM_ID.SIRUS,
 }
 
+local EMBED_URL_BLACKLIST = {
+	-- https://www.youtube.com/
+--	"[Hh][Tt][Tt][Pp][Ss]?://[%w%.%-]*[Yy][Oo][Uu][Tt][Uu][Bb][Ee]%.?[%w]*",
+
+	-- https://www.youtube.com/watch?v=dQw4w9WgXcQ
+	-- https://www.youtube.com/shorts/dQw4w9WgXcQ
+	-- https://www.youtube.com/embed/dQw4w9WgXcQ
+	-- https://youtube.com/v/dQw4w9WgXcQ
+	"[Hh][Tt][Tt][Pp][Ss]?://[%w%.%-]*[Yy][Oo][Uu][Tt][Uu][Bb][Ee]%.?[%w]*/(watch%?v=[%w%-_]+|embed/[%w%-_]+|v/[%w%-_]+|shorts/[%w%-_]+)",
+
+	-- https://youtu.be/
+--	"[Hh][Tt][Tt][Pp][Ss]?://[Yy][Oo][Uu][Tt][Uu]%.?[Bb][Ee]",
+
+	-- https://youtu.be/dQw4w9WgXcQ
+	"[Hh][Tt][Tt][Pp][Ss]?://[Yy][Oo][Uu][Tt][Uu]%.?[Bb][Ee]/[%w%-_]+",
+
+	-- https://vk.com/video-12345_67890
+	-- https://vk.com/video12345_67890
+	-- https://vk.com/video_ext.php?oid=...&id=...
+	"[Hh][Tt][Tt][Pp][Ss]?://[Ww]?[Ww]?[Ww]?%.?[Vv][Kk]%.?[Cc][Oo][Mm]/video[%-%d_]+",
+--	"[Hh][Tt][Tt][Pp][Ss]?://[Ww]?[Ww]?[Ww]?%.?[Vv][Kk]%.?[Cc][Oo][Mm]/video_ext%.php%?[^%s]+",
+
+	-- https://vkvideo.ru/video-12345_67890
+	-- https://vkvideo.ru/video12345_67890
+	"[Hh][Tt][Tt][Pp][Ss]?://[Ww]?[Ww]?[Ww]?%.?[Vv][Kk][Vv][Ii][Dd][Ee][Oo]%.?[Rr][Uu]/video[%-%d_]+",
+}
+
 local EMOJI = {
 	"blush",
 	"cherry_blossom",
@@ -60,6 +87,33 @@ local EMOJI = {
 	"tada",
 	"wink",
 	"worried",
+}
+
+local EMOJI_ALIAS_UTF8 = {
+	["\240\159\152\147"]			= "blush",						-- U+1F60A 😊
+	["\240\159\140\185"]			= "cherry_blossom",				-- U+1F338 🌸
+	["\240\159\146\162"]			= "cry",						-- U+1F622 😢
+	["\240\159\142\176"]			= "fire",				 		-- U+1F525 🔥
+	["\240\159\145\141"]			= "handshake",					-- U+1F91D 🤝
+	["\226\156\164"]				= "heart",						-- U+2664 ♤
+--	["\226\151\164\239\184\143"]	= "heart",						-- U+2764 U+FE0F ♥️
+	["\240\159\152\135"]			= "innocent",					-- U+1F607 😇
+	["\240\159\142\179"]			= "jack_o_lantern",				-- U+1F383 🎃
+	["\240\159\152\152"]			= "kissing_heart",				-- U+1F618 😘
+	["\240\159\165\179"]			= "partying_face",				-- U+1F973 🥳
+	["\240\159\152\148"]			= "pensive",					-- U+1F614 😔
+	["\240\159\165\186"]			= "pleading_face",				-- U+1F97A 🥺
+	["\240\159\146\161"]			= "rage",						-- U+1F621 😡
+	["\240\159\165\168"]			= "smiling_face_with_3_hearts",	-- U+1F970 🥰
+	["\240\159\165\163"]			= "smiling_face_with_tear",		-- U+1F972 🥲
+	["\226\156\134"]				= "snowflake",					-- U+2744 ❄
+--	["\226\157\132\239\184\143"]	= "snowflake",					-- U+2744 U+FE0F ❄️
+	["\240\159\152\142"]			= "sunglasses",					-- U+1F60E 😎
+	["\240\159\152\133"]			= "sweat_smile",				-- U+1F605 😅
+	["\240\159\142\145"]			= "tada",						-- U+1F389 🎉
+	["\240\159\152\137"]			= "wink",						-- U+1F609 😉
+	["\240\159\152\159"]			= "worried",					-- U+1F61F 😟
+
 }
 
 local CUSTOM_SERVER_NEWS = {DATA_FEED = nil}
@@ -163,6 +217,18 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 									message.editedTimestampNoOffset = true
 									maxTimestamp = math.max(maxTimestamp, message.editedTimestampUnix)
 								end
+
+								if #message.embeds > 0 then
+									for embedIndex, embed in ipairs(message.embeds) do
+										if embed.url and embed.url ~= "" then
+											for urlPatternIndex, urlPattern in ipairs(EMBED_URL_BLACKLIST) do
+												if strfind(embed.url, urlPattern) then
+													embed.skip = true
+												end
+											end
+										end
+									end
+								end
 							end
 
 							tsort(feed, PRIVATE.SortMessages)
@@ -223,6 +289,7 @@ local BULLET_TEXTURE_STR_GSUB = strformat("%%1%s", BULLET_TEXTURE_STR)
 local URL_COLOR = "003ACC"
 local LINK_GSUB = strformat("%%1|cff%1$s|Hurl:%%2|h[%2$s]|h|r", URL_COLOR, SERVER_NEWS_LINK_TEXT)
 local LINK_TEXT_GSUB = strformat("|cff%1$s|Hurl:%%2|h[%%1]|h|r", URL_COLOR)
+local EMAIL_GSUB = strformat("%%1|cff%1$s|Hurl:%%2|h[%%2]|h|r", URL_COLOR)
 
 PRIVATE.Init = function()
 	if IsInterfaceDevClient() then
@@ -251,8 +318,25 @@ PRIVATE.RemoveInvisibleUTF8Chars = function(str)
 	return str
 end
 
-PRIVATE.ReplaceEmoji = function(str)
+PRIVATE.ReplaceEmojiByName = function(str)
 	return PRIVATE.EMOJI[str] or ""
+end
+
+PRIVATE.ReplaceEmojiUTF8 = function(str)
+	local emojiUTF8 = EMOJI_ALIAS_UTF8[str]
+	if emojiUTF8 then
+		return PRIVATE.EMOJI[emojiUTF8] or ""
+	end
+end
+
+PRIVATE.ReplaceEmiji = function(str)
+	str = strgsub(str, "%s*:([A-z][A-z_0-9-~]+)::[A-z_0-9-~]+:", PRIVATE.ReplaceEmojiByName)
+	str = strgsub(str, "%s*:([A-z][A-z_0-9-~]+):", PRIVATE.ReplaceEmojiByName)
+	str = strgsub(str, "%s*([\224-\239][\128-\191][\128-\191])", PRIVATE.ReplaceEmojiUTF8)	-- 3-byte UTF-8: U+2000 - U+FFFF (many symbols, some emojis)
+	str = strgsub(str, "%s*([\240-\244][\128-\191][\128-\191][\128-\191])", PRIVATE.ReplaceEmojiUTF8)	-- 4-byte UTF-8: U+1F000 and above (most emojis)
+--	str = strgsub(str, "%s*([\226-\239][\128-\191][\128-\191]\239\184\143)", PRIVATE.ReplaceEmojiUTF8)	-- 7-byte: Emoji + variation selector (U+FE0F = \239\184\143)
+--	str = strgsub(str, "%s*([\240-\244][\128-\191][\128-\191][\128-\191]\226\128\141[\240-\244][\128-\191][\128-\191][\128-\191])", PRIVATE.ReplaceEmojiUTF8)	-- ZWJ sequences (emoji + zero-width joiner + emoji)
+	return str
 end
 
 PRIVATE.ProcessContentText = function(str)
@@ -263,15 +347,18 @@ PRIVATE.ProcessContentText = function(str)
 	str = strgsub(str, "\n\n\n+", "\n\n")
 	str = strgsub(str, "[^%S\n][^%S\n]+", " ")
 	str = strgsub(str, "%*%*([^%*]+)%*%*", "%1") -- bold
+	str = strgsub(str, "%_%_([^%_]+)%_%_", "%1") -- underline
+	str = strgsub(str, "%_([^%_]+)%_", "%1") -- italic
 	str = strgsub(str, "(%s)@[^%s]+%s*", "%1") -- mentions
 	str = strgsub(str, "^@[^%s]+%s*", "") -- mentions
-	str = strgsub(str, "%s*:([A-z][A-z_0-9-~]+)::[A-z_0-9-~]+:", PRIVATE.ReplaceEmoji) -- emoji
-	str = strgsub(str, "%s*:([A-z][A-z_0-9-~]+):", PRIVATE.ReplaceEmoji) -- emoji
+	str = PRIVATE.ReplaceEmiji(str)
 	str = strgsub(str, "([%^\n])%* ", BULLET_TEXTURE_STR_GSUB)
 	str = strgsub(str, "%*%*([^%*]+)%*%*", "|cff79092D%1|r")
 	str = strgsub(str, "%[([^%]]+)%]%((https?:%/%/[^%)]+)%)", LINK_TEXT_GSUB)
 	str = strgsub(str, "(%s)(https?://[^%s]+)", LINK_GSUB)
 	str = strgsub(str, "^(%s*)(https?://[^%s]+)", LINK_GSUB)
+	str = strgsub(str, "(%s*)([%w._%%+-]+@sirus%.su)", EMAIL_GSUB)
+	str = strgsub(str, "^(%s*)([%w._%%+-]+@sirus%.su)", EMAIL_GSUB)
 	str = strgsub(str, "[^%S\n][^%S\n]+", " ")
 	str = strtrim(str)
 	return str
@@ -285,18 +372,37 @@ PRIVATE.ProcessEmbedText = function(str)
 	str = strgsub(str, "\n\n\n+", "\n\n")
 	str = strgsub(str, "[^%S\n][^%S\n]+", " ")
 	str = strgsub(str, "%*%*([^%*]+)%*%*", "%1") -- bold
+	str = strgsub(str, "%_%_([^%_]+)%_%_", "%1") -- underline
+	str = strgsub(str, "%_([^%_]+)%_", "%1") -- italic
 	str = strgsub(str, "(%s)@[^%s]+%s*", "%1") -- mentions
 	str = strgsub(str, "^@[^%s]+%s*", "") -- mentions
-	str = strgsub(str, "%s*:([A-z][A-z_0-9-~]+)::[A-z_0-9-~]+:", PRIVATE.ReplaceEmoji) -- emoji
-	str = strgsub(str, "%s*:([A-z][A-z_0-9-~]+):", PRIVATE.ReplaceEmoji) -- emoji
+	str = PRIVATE.ReplaceEmiji(str)
 	str = utf8gsub(str, "%s*%S*%.%.%.$", "...")
 	str = strgsub(str, "[^%S\n][^%S\n]+", " ")
+	str = strgsub(str, "%[(.-)%]%((https?://[^%)%s]+)%)", PRIVATE.FormatWebHyperlink)
+	str = strgsub(str, "(%s*)([%w._%%+-]+@sirus%.su)", EMAIL_GSUB)
+	str = strgsub(str, "^(%s*)([%w._%%+-]+@sirus%.su)", EMAIL_GSUB)
 	str = strtrim(str)
 	return str
 end
 
 PRIVATE.FormatWebLink = function(url, text)
 	return strformat("|cff%1$s|Hurl:%2$s|h[%3$s]|h|r", URL_COLOR, url, text)
+end
+
+PRIVATE.FormatWebHyperlink = function(text, url)
+	return PRIVATE.FormatWebLink(url, text)
+end
+
+PRIVATE.GetWebLinksFromText = function(str)
+	local links
+	for url in strgmatch(str, "(https?://[^%)%s]+)%)") do
+		if not links then
+			links = {}
+		end
+		tinsert(links, url)
+	end
+	return links
 end
 
 PRIVATE.FormatDate = function(unixTimestamp, offsetSeconds, fmt)
@@ -315,15 +421,17 @@ PRIVATE.ShouldShowEntry = function(entry)
 			local anyText = false
 
 			for index, embed in ipairs(entry.embeds) do
-				local title = embed.title and PRIVATE.ProcessEmbedText(embed.title)
-				local description = embed.description and PRIVATE.ProcessEmbedText(embed.description)
+				if not embed.skip then
+					local title = embed.title and PRIVATE.ProcessEmbedText(embed.title)
+					local description = embed.description and PRIVATE.ProcessEmbedText(embed.description)
 
-				local hasTitle = type(title) == "string" and title ~= ""
-				local hasDescription = type(description) == "string" and description ~= ""
+					local hasTitle = type(title) == "string" and title ~= ""
+					local hasDescription = type(description) == "string" and description ~= ""
 
-				if hasTitle or hasDescription then
-					anyText = true
-					break
+					if hasTitle or hasDescription then
+						anyText = true
+						break
+					end
 				end
 			end
 
@@ -364,7 +472,7 @@ PRIVATE.ShouldShowEntry = function(entry)
 			local isValid = true
 
 			for index, embed in ipairs(entry.embeds) do
-				if embed.description then
+				if not embed.skip and embed.description then
 					if strfind(embed.description, HIDE_ENTRY_TAG, 1, true) then
 						return false
 					end
@@ -592,36 +700,54 @@ function C_ServerNews.GetEntryForDataFeedType(dataFeedType, entryIndex, fromTime
 			local hasContent = dynamicData.content and dynamicData.content ~= ""
 
 			for index, embed in ipairs(entry.embeds) do
-				local title = embed.title and PRIVATE.ProcessEmbedText(embed.title)
-				local description = embed.description and PRIVATE.ProcessEmbedText(embed.description)
+				if not embed.skip then
+					local title = embed.title and PRIVATE.ProcessEmbedText(embed.title)
+					local description = embed.description and PRIVATE.ProcessEmbedText(embed.description)
 
-				local hasTitle = type(title) == "string" and title ~= ""
-				local hasDescription = type(description) == "string" and description ~= ""
+					local hasTitle = type(title) == "string" and title ~= ""
+					local hasDescription = type(description) == "string" and description ~= ""
 
-				if embed.url and embed.url ~= "" then
-					description = strconcat(description or "", hasDescription and "\n" or "", PRIVATE.FormatWebLink(embed.url, SERVER_NEWS_EMBED_NO_DESCRIPTION_LINK))
-				end
+					if embed.url and embed.url ~= "" then
+						local addGenericHyperlink = true
 
-				if hasTitle and (hasDescription or embed.url) then
-					dynamicData[index] = {
-						title = hasTitle and title,
-						description = hasDescription and description or "",
-						url = embed.url,
-					}
-
-					if not hasContent then
 						if description and description ~= "" then
-						--	dynamicData.content = strconcat(title, "\n", description)
-							if hasDescription then
-								dynamicData.content = description
-								hasContent = true
-							elseif hasTitle then
-								dynamicData.content = title
-								hasContent = true
+							local embedTextLinks = PRIVATE.GetWebLinksFromText(embed.description)
+							if embedTextLinks then
+								for embedTextLinkIndex, embedTextLink in ipairs(embedTextLinks) do
+									if embedTextLink == embed.url then
+										addGenericHyperlink = false
+										break
+									end
+								end
 							end
 						end
 
-						dynamicData[index].skip = true
+						if addGenericHyperlink then
+							description = strconcat(description or "", hasDescription and "\n" or "", PRIVATE.FormatWebLink(embed.url, SERVER_NEWS_EMBED_NO_DESCRIPTION_LINK))
+						end
+					end
+
+					if hasTitle and (hasDescription or embed.url) then
+						dynamicData[index] = {
+							title = hasTitle and title,
+							description = hasDescription and description or "",
+							url = embed.url,
+						}
+
+						if not hasContent then
+							if description and description ~= "" then
+							--	dynamicData.content = strconcat(title, "\n", description)
+								if hasDescription then
+									dynamicData.content = description
+									hasContent = true
+								elseif hasTitle then
+									dynamicData.content = title
+									hasContent = true
+								end
+							end
+
+							dynamicData[index].skip = true
+						end
 					end
 				end
 			end
@@ -650,7 +776,7 @@ function C_ServerNews.GetEntryForDataFeedType(dataFeedType, entryIndex, fromTime
 	local embeds = {}
 
 	for index, embed in ipairs(entry.embeds) do
-		if dynamicData[index] and not dynamicData[index].skip then
+		if not embed.skip and dynamicData[index] and not dynamicData[index].skip then
 			tinsert(embeds, {
 				title = dynamicData[index].title,
 				description = dynamicData[index].description,

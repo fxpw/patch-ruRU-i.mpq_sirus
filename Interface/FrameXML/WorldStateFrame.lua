@@ -48,23 +48,6 @@ CLASS_BUTTONS = {
 
 ExtendedUI = {};
 
-local RatedBattleGroundRankCoords = {
-	{0.0009765625, 0.1259765625, 0.001953125, 0.251953125},
-	{0.1259765625, 0.2509765625, 0.001953125, 0.251953125},
-	{0.1259765625, 0.2509765625, 0.251953125, 0.501953125},
-	{0.1259765625, 0.2509765625, 0.501953125, 0.751953125},
-	{0.3759765625, 0.5009765625, 0.501953125, 0.751953125},
-	{0.5009765625, 0.6259765625, 0.001953125, 0.251953125},
-	{0.2509765625, 0.3759765625, 0.001953125, 0.251953125},
-	{0.5009765625, 0.6259765625, 0.251953125, 0.501953125},
-	{0.2509765625, 0.3759765625, 0.251953125, 0.501953125},
-	{0.2509765625, 0.3759765625, 0.501953125, 0.751953125},
-	{0.3759765625, 0.5009765625, 0.001953125, 0.251953125},
-	{0.3759765625, 0.5009765625, 0.251953125, 0.501953125},
-	{0.0009765625, 0.1259765625, 0.251953125, 0.501953125},
-	{0.0009765625, 0.1259765625, 0.501953125, 0.751953125},
-}
-
 local DEFAULT_ICON_TEXCOORDS = {0, 1, 0, 1}
 local EYE_OF_THE_STORM_FLAG_COLOR = {0.5, 0.85, 0.3}
 
@@ -72,18 +55,13 @@ local rankScoreSorted = nil
 local playerRatingData = {}
 
 function C_GetBattlefieldResoult()
-    local data = C_CacheInstance:Get("ASMSG_BG_BATTLE_RESULT", {
-        efficiency  = 0,
-        honor 		= 0,
-        rating 		= 0
-    })
-
-    local honor = data.honor -- real value for player
-    local bonusHonor = honor - data.honor -- diff between real value and normal value
-
-    return data.efficiency, honor, data.rating, bonusHonor
+	local data = C_GlobalStorage.GetVar("ASMSG_BG_BATTLE_RESULT")
+	if data then
+		return data.efficiency or 0, data.honor or 0, data.rating or 0, 0
+	else
+		return 0, 0, 0, 0
+	end
 end
-
 
 function C_BattlefieldScoreSorted()
 	rankScoreSorted = not rankScoreSorted
@@ -764,6 +742,12 @@ function WorldStateScoreFrame_OnShow( self, ... )
 	WorldStateScoreFrameTab_OnClick(WorldStateScoreFrameTab1)
 end
 
+function WorldStateScoreFrame_OnHide(self)
+	if C_ArenaSpectator.IsOnSpectatorMap() then
+		C_ArenaSpectator.Leave()
+	end
+end
+
 function WorldStateScoreFrame_OnEvent( self, event, ... )
 	-- if	( event == "UPDATE_BATTLEFIELD_SCORE" or event == "UPDATE_WORLD_STATES") then
 	-- 	if ( WorldStateScoreFrame:IsVisible() or GetBattlefieldWinner() ) then
@@ -777,11 +761,6 @@ function WorldStateScoreFrame_OnEvent( self, event, ... )
 
 		HideUIPanel(WorldStateScoreFrame);
 		BATTLEFIELD_SHUTDOWN_TIMER = 0;
-
-		local _, instanceTyp = IsInInstance()
-		if instanceTyp == "none" then
-			C_CacheInstance:Set("ASMSG_BG_STAT_RATING_BALANCE", {alliance = nil, horde = nil})
-		end
 	elseif event == "UPDATE_BATTLEFIELD_SCORE" then
 		WorldStateScoreFrame_Resize()
 		WorldStateScoreFrame_Update()
@@ -793,20 +772,12 @@ function WorldStateScoreFrame_OnEvent( self, event, ... )
 	end
 end
 
-local saveTime = 0
-local recallCount = 5
-function WorldStateScoreFrame_Update( needSleep )
+function WorldStateScoreFrame_Update()
 	local isArena, isRegistered = IsActiveBattlefieldArena();
+	local isOnSpectatorMap = C_ArenaSpectator.IsOnSpectatorMap()
 
-	local data = C_CacheInstance:Get("ASMSG_BG_STAT_RATING_BALANCE")
-
-	if (data and data.alliance and data.horde) and not isArena then
-		local MAX_BAR = BattlegroundBalanceProgressBar:GetWidth() - 6
-		local progressBarValue = data.alliance / (data.alliance + data.horde)
-
-		BattlegroundBalanceProgressBar.TextLeft:SetText(data.alliance)
-		BattlegroundBalanceProgressBar.TextRight:SetText(data.horde)
-		BattlegroundBalanceProgressBar.Alliance:SetWidth(MAX_BAR * progressBarValue + 1)
+	if isOnSpectatorMap then
+		isArena = true
 	end
 
 	WorldStateScoreFrame_UpdateFactionGroup()
@@ -841,6 +812,9 @@ function WorldStateScoreFrame_Update( needSleep )
 			WorldStateScoreFrameTeamSkill:Hide();
 			WorldStateScoreFrameKB:SetPoint("LEFT", "WorldStateScoreFrameName", "RIGHT", 4, 0);
 		end
+
+		BattlegroundBalanceProgressBar:Hide()
+		BattlegroundBalanceProgressBarHitArea:Hide()
 	else
 		-- Show Tabs
 		WorldStateScoreFrameTab1:Show();
@@ -859,6 +833,21 @@ function WorldStateScoreFrame_Update( needSleep )
 		-- Reanchor some columns.
 		WorldStateScoreFrameDamageDone:SetPoint("LEFT", "WorldStateScoreFrameHK", "RIGHT", -5, 0);
 		WorldStateScoreFrameKB:SetPoint("LEFT", "WorldStateScoreFrameName", "RIGHT", 4, 0);
+
+		local allianceAvgRating, hordeAvgRating = C_BattlefieldScore.GetBattlefieldRatingBalance()
+		if allianceAvgRating ~= 0 and hordeAvgRating ~= 0 then
+			local MAX_BAR = BattlegroundBalanceProgressBar:GetWidth() - 6
+			local progressBarValue = allianceAvgRating / (allianceAvgRating + hordeAvgRating)
+
+			BattlegroundBalanceProgressBar.TextLeft:SetText(allianceAvgRating)
+			BattlegroundBalanceProgressBar.TextRight:SetText(hordeAvgRating)
+			BattlegroundBalanceProgressBar.Alliance:SetWidth(MAX_BAR * progressBarValue + 1)
+			BattlegroundBalanceProgressBar:Show()
+			BattlegroundBalanceProgressBarHitArea:Show()
+		else
+			BattlegroundBalanceProgressBar:Hide()
+			BattlegroundBalanceProgressBarHitArea:Hide()
+		end
 	end
 
 	--Show the frame if its hidden and there is a victor
@@ -866,7 +855,7 @@ function WorldStateScoreFrame_Update( needSleep )
 
 	WorldStateScoreFrameLeaveButton:SetShown(battlefieldWinner and battlefieldWinner)
 	WorldStateScoreFrame.Winner:SetShown(battlefieldWinner)
-	WorldStateScoreFrame.Container.BattlegroundCloseLabel:SetShown(battlefieldWinner)
+	WorldStateScoreFrame.Container.BattlegroundCloseLabel:SetShown(battlefieldWinner and not isOnSpectatorMap)
 
 	WorldStateScoreFrame.Container.AllianceGlow:SetShown(not isArena)
 	WorldStateScoreFrame.Container.HordeGlow:SetShown(not isArena)
@@ -875,10 +864,6 @@ function WorldStateScoreFrame_Update( needSleep )
 	WorldStateScoreFrame.Container.HordeScore:SetShown(not isArena)
 	WorldStateScoreFrame.Alliance:SetShown(not isArena)
 	WorldStateScoreFrame.Horde:SetShown(not isArena)
-	if (BattlegroundBalanceProgressBar.TextLeft:GetText() ~= "0" and BattlegroundBalanceProgressBar.TextRight:GetText() ~= "0") then
-		BattlegroundBalanceProgressBar:SetShown(not isArena)
-		BattlegroundBalanceProgressBarHitArea:SetShown(not isArena)
-	end
 	WorldStateScoreFrame.Container.YouFactionLabel:SetShown(not isArena)
 	WorldStateScoreFrame.Container.YouFaction:SetShown(not isArena)
 	WorldStateScoreFrame.Container.FactionGlow:SetShown(not isArena)
@@ -888,13 +873,7 @@ function WorldStateScoreFrame_Update( needSleep )
 	end
 
 	if battlefieldWinner then
-		if IsDevClient(true) and GetCVarBool("devSkipScoreboard") then
-			LeaveBattlefield()
-		end
-
-		local teamName = GetBattlefieldTeamInfo(battlefieldWinner)
-
-		WorldStateScoreFrameLeaveButton:SetText(isArena and LEAVE_ARENA or LEAVE_BATTLEGROUND)
+		WorldStateScoreFrameLeaveButton:SetText((isArena) and LEAVE_ARENA or LEAVE_BATTLEGROUND)
 		WorldStateScoreFrame.Winner.Glow:SetTexture(isArena and "Interface\\PVPFrame\\ScoreboardArena" or "Interface\\PVPFrame\\Scoreboard")
 		WorldStateScoreFrame.Winner.FactionLogo:SetShown(not isArena and battlefieldWinner ~= 2)
 
@@ -987,7 +966,7 @@ function WorldStateScoreFrame_Update( needSleep )
 
 	-- Last button shown is what the player count anchors to
 	local lastButtonShown
-	local teamDataFailed, coords;
+	local teamDataFailed;
 
 	for i=1, MAX_WORLDSTATE_SCORE_BUTTONS do
 		-- Need to create an index adjusted by the scrollframe offset
@@ -1029,21 +1008,18 @@ function WorldStateScoreFrame_Update( needSleep )
 				newTeamRating = (newTeamRating or 0) - (teamRating or 0)
 			end
 
-			buttonRank.RankIcon:SetShown(rank and rank > 0)
-			buttonRank.FactionIcon:SetShown(not rank or rank == 0)
-			buttonClassIcon:SetShown(classToken)
-
-			if rank ~= 0 then
-				local texCoord = RatedBattleGroundRankCoords[rank]
-
-				if texCoord then
-					buttonRank.RankIcon:SetTexCoord(unpack(texCoord))
-
-					if rank > 0 then
-						buttonRank.tooltip = string.format(RBG_SCORE_TOOLTIP_RANK, _G[string.format("PVP_RANK_%d_%d", 4 + rank, faction == "Alliance" and 1 or 0)], rank)
-					end
+			local rankInfoFound
+			if rank and rank > 0 then
+				local rankName, rankIconAtlas = C_PvP.GetRankInfo(rank, faction)
+				if rankName then
+					buttonRank.tooltip = string.format(RBG_SCORE_TOOLTIP_RANK, rankName, rank)
+					buttonRank.RankIcon:SetAtlas(rankIconAtlas)
+					buttonRank.RankIcon:Show()
+					buttonRank.FactionIcon:Hide()
+					rankInfoFound = true
 				end
-			else
+			end
+			if not rankInfoFound then
 				buttonRank.tooltip = nil
 
 				if faction == 1 then
@@ -1051,19 +1027,23 @@ function WorldStateScoreFrame_Update( needSleep )
 				else
 					buttonRank.FactionIcon:SetTexCoord(0.00390625, 0.136719, 0.679688, 0.839844)
 				end
+
+				buttonRank.RankIcon:Hide()
+				buttonRank.FactionIcon:Show()
 			end
 
 			if classToken then
-				coords = CLASS_BUTTONS[classToken]
-				buttonClassIcon:SetTexCoord(unpack(coords))
+				buttonClassIcon:SetTexCoord(unpack(CLASS_BUTTONS[classToken]))
+				buttonClassIcon:Show()
+			else
+				buttonClassIcon:Hide()
 			end
+
+			local classColor = classToken and RAID_CLASS_COLORS[classToken] or RAID_CLASS_COLORS.PRIEST
+			buttonNameText:SetTextColor(classColor.r, classColor.g, classColor.b)
 
 			buttonNameText:SetText(name --[[.." - ".. i .. " - " .. index]] or UNKNOWNOBJECT)
 			buttonNameText:Show()
-
-			if classToken and RAID_CLASS_COLORS[classToken] then
-				buttonNameText:SetTextColor(RAID_CLASS_COLORS[classToken].r, RAID_CLASS_COLORS[classToken].g, RAID_CLASS_COLORS[classToken].b)
-			end
 
 			buttonName.name = name
 			buttonName.tooltip = string.format("%s %s", race or "-", class or "-")
@@ -1225,7 +1205,13 @@ function WorldStateScoreFrame_Update( needSleep )
 		end
 	end
 
-	local elapsedTime = floor((GetBattlefieldInstanceRunTime() / 1000) / 60)
+	local elapsedTime
+	if isOnSpectatorMap then
+		elapsedTime = C_ArenaSpectator.GetFightTime() / 60
+	else
+		elapsedTime = floor((GetBattlefieldInstanceRunTime() / 1000) / 60)
+	end
+
 	WorldStateScoreFrame.Container.ElapsedTime:SetFormattedText(WORLDSTATE_SCORE_ELAPSED_TIME, elapsedTime)
 end
 
@@ -1264,6 +1250,12 @@ end
 
 function WorldStateScoreFrame_Resize(width)
 	local isArena, isRegistered = IsActiveBattlefieldArena();
+	local isOnSpectatorMap = C_ArenaSpectator.IsOnSpectatorMap()
+
+	if isOnSpectatorMap then
+		isArena = true
+	end
+
 	local columns = WORLDSTATESCOREFRAME_BASE_COLUMNS;
 	local scrollBar = 37;
 	local name;
@@ -1408,10 +1400,10 @@ function EfficiencyFrame_OnUpdate( self, elapsed )
 	local efficiency, honor, rating, bonusHonor = C_GetBattlefieldResoult()
 
 	if not self.Animations and efficiency and honor and rating then
-		WorldStateScoreFrame.EfficiencyFrame.HonorLabel:SetFormattedText(WORLDSTATE_SCORE_HONORLABEL, math.floor(outQuint(self.elapsed, 0, honor, 1)), Round(outQuint(self.elapsed, 0, bonusHonor, 1)))
-		WorldStateScoreFrame.EfficiencyFrame.RatingLabel:SetFormattedText(WORLDSTATE_SCORE_RATINGLABEL, math.floor(outQuint(self.elapsed, 0, rating, 1)))
-		WorldStateScoreFrame.EfficiencyFrame.EfficiencyBar.Text:SetFormattedText(WORLDSTATE_SCORE_EFFICIENCY, math.floor(outQuint(self.elapsed, 0, efficiency, 1)))
-		WorldStateScoreFrame.EfficiencyFrame.EfficiencyBar:SetValue(outQuint(self.elapsed, 0, efficiency / 200, 1))
+		WorldStateScoreFrame.EfficiencyFrame.HonorLabel:SetFormattedText(WORLDSTATE_SCORE_HONORLABEL, math.floor(EasingUtil.OutQuint(self.elapsed, 0, honor, 1)), Round(EasingUtil.OutQuint(self.elapsed, 0, bonusHonor, 1)))
+		WorldStateScoreFrame.EfficiencyFrame.RatingLabel:SetFormattedText(WORLDSTATE_SCORE_RATINGLABEL, math.floor(EasingUtil.OutQuint(self.elapsed, 0, rating, 1)))
+		WorldStateScoreFrame.EfficiencyFrame.EfficiencyBar.Text:SetFormattedText(WORLDSTATE_SCORE_EFFICIENCY, math.floor(EasingUtil.OutQuint(self.elapsed, 0, efficiency, 1)))
+		WorldStateScoreFrame.EfficiencyFrame.EfficiencyBar:SetValue(EasingUtil.OutQuint(self.elapsed, 0, efficiency / 200, 1))
 		self.elapsed = self.elapsed + elapsed
 		if self.elapsed > 1 then
 			self.Animations = true
@@ -1629,7 +1621,7 @@ function WorldStateTopCenterFrame_UpdateState( self )
 		end
 	elseif currentMapAreaID == BATTLEGROUND_EYE_OF_THE_STORM or currentMapAreaID == BATTLEGROUND_GRAVITY_LAPSE then
 		if GetNumBattlefieldFlagPositions() ~= 0 then
-			local factionOverrideID = C_CacheInstance:Get("ASMSG_UPDATE_BATTLEFIELD_FLAG1")
+			local factionOverrideID = C_GlobalStorage.GetVar("ASMSG_UPDATE_BATTLEFIELD_FLAG1")
 			local factionToken
 			if factionOverrideID then
 				factionToken = SERVER_PLAYER_FACTION_GROUP[factionOverrideID]
@@ -1733,29 +1725,17 @@ function EventHandler:ASMSG_BG_SCORE_RANKS( msg )
 	end
 end
 
-
 function EventHandler:ASMSG_BG_BATTLE_RESULT( msg )
-	local efficiency, honor, rating = unpack(C_Split(msg, ":"))
+	local efficiency, honor, rating = string.split(":", msg)
 
-	C_CacheInstance:Set("ASMSG_BG_BATTLE_RESULT", {
-		efficiency  = math.floor(tonumber(efficiency)),
+	C_GlobalStorage.SetVar("ASMSG_BG_BATTLE_RESULT", {
+		efficiency	= math.floor(tonumber(efficiency)),
 		honor 		= tonumber(honor),
 		rating 		= tonumber(rating)
 	})
 
 	WorldStateScoreFrame.EfficiencyFrame:Show()
 	WorldStateScoreFrame.EfficiencyFrame.Shown = true
-end
-
-function EventHandler:ASMSG_BG_STAT_RATING_BALANCE( msg )
-	local splitData = C_Split(msg, ":")
-
-	if splitData and #splitData > 0 then
-		C_CacheInstance:Set("ASMSG_BG_STAT_RATING_BALANCE", {
-			alliance = tonumber(splitData[1]),
-			horde = tonumber(splitData[2])
-		})
-	end
 end
 
 function EventHandler:ASMSG_ARENA_SCOREBOARD_RATING_CHANGES( msg )

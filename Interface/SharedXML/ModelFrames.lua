@@ -816,13 +816,13 @@ UI_CAMERA = {
 	},
 };
 
-MODELFRAME_DRAG_ROTATION_CONSTANT = 0.010
-MODELFRAME_MAX_ZOOM = 0.7
-MODELFRAME_MIN_ZOOM = 0.0
-MODELFRAME_ZOOM_STEP = 0.15
-MODELFRAME_DEFAULT_ROTATION = 0.61
-ROTATIONS_PER_SECOND = .5
-MODELFRAME_MAX_PLAYER_ZOOM = 0.8
+MODELFRAME_DRAG_ROTATION_CONSTANT = 0.010;
+MODELFRAME_MAX_ZOOM = 0.7;
+MODELFRAME_MIN_ZOOM = 0.0;
+MODELFRAME_ZOOM_STEP = 0.15;
+MODELFRAME_DEFAULT_ROTATION = 0.61;
+ROTATIONS_PER_SECOND = .5;
+MODELFRAME_MAX_PLAYER_ZOOM = 0.8;
 
 local ModelSettings = {
 	["HumanMale"]				= { panMaxLeft = -0.4, panMaxRight = 0.4, panMaxTop = 1.2, panMaxBottom = -0.3, panValue = 38 },
@@ -877,22 +877,22 @@ local ModelSettings = {
 	["DracthyrFemale"]			= { panMaxLeft = -0.3, panMaxRight = 0.3, panMaxTop = 1.2, panMaxBottom = -0.2, panValue = 45 },
 }
 
-local playerRaceSex
-if ( UIParent ) then
-	local _
-	_, playerRaceSex = UnitRace("player")
+local playerRaceSex;
+if ( not IsOnGlueScreen() ) then
+	local _;
+	_, playerRaceSex = UnitRace("player");
 	if ( UnitSex("player") == 2 ) then
-		playerRaceSex = playerRaceSex.."Male"
+		playerRaceSex = playerRaceSex.."Male";
 	else
-		playerRaceSex = playerRaceSex.."Female"
+		playerRaceSex = playerRaceSex.."Female";
 	end
 end
 
-function SharedXML_Model_OnLoad( self, maxZoom, minZoom, defaultRotation, onMouseUp )
-	self.maxZoom = maxZoom or MODELFRAME_MAX_ZOOM
-	self.minZoom = minZoom or MODELFRAME_MIN_ZOOM
-	self.defaultRotation = defaultRotation or MODELFRAME_DEFAULT_ROTATION
-	self.onMouseUpFunc = onMouseUp or SharedXML_Model_OnMouseUp
+function SharedXML_Model_OnLoad(self, maxZoom, minZoom, defaultRotation, onMouseUp)
+	self.maxZoom = maxZoom or MODELFRAME_MAX_ZOOM;
+	self.minZoom = minZoom or MODELFRAME_MIN_ZOOM;
+	self.defaultRotation = defaultRotation or MODELFRAME_DEFAULT_ROTATION;
+	self.onMouseUpFunc = onMouseUp or SharedXML_Model_OnMouseUp;
 
 	self.rotation = self.defaultRotation;
 	self:SetRotation(self.rotation);
@@ -901,37 +901,37 @@ function SharedXML_Model_OnLoad( self, maxZoom, minZoom, defaultRotation, onMous
 end
 
 function SharedXML_Model_OnEvent(self, event, ...)
---	self:RefreshCamera()
+--	self:RefreshCamera();
 end
 
 function SharedXML_Model_RotateLeft(model, rotationIncrement)
 	if ( not rotationIncrement ) then
-		rotationIncrement = 0.03
+		rotationIncrement = 0.03;
 	end
-	model.rotation = model.rotation - rotationIncrement
-	model:SetRotation(model.rotation)
-	PlaySound("igInventoryRotateCharacter")
+	model.rotation = model.rotation + rotationIncrement;
+	model:SetRotation(model.rotation);
+	PlaySound("igInventoryRotateCharacter");
 end
 
 function SharedXML_Model_RotateRight(model, rotationIncrement)
 	if ( not rotationIncrement ) then
-		rotationIncrement = 0.03
+		rotationIncrement = 0.03;
 	end
-	model.rotation = model.rotation + rotationIncrement
-	model:SetRotation(model.rotation)
-	PlaySound("igInventoryRotateCharacter")
+	model.rotation = model.rotation - rotationIncrement;
+	model:SetRotation(model.rotation);
+	PlaySound("igInventoryRotateCharacter");
 end
 
 function SharedXML_Model_OnMouseDown(model, button)
 	if ( not button or button == "LeftButton" ) then
-		model.mouseDown = true
-		model.rotationCursorStart = GetCursorPosition()
+		model.mouseDown = true;
+		model.rotationCursorStart = GetCursorPosition();
 	end
 end
 
 function SharedXML_Model_OnMouseUp(model, button)
 	if ( not button or button == "LeftButton" ) then
-		model.mouseDown = false
+		model.mouseDown = false;
 	end
 end
 
@@ -940,143 +940,149 @@ function SharedXML_Model_OnMouseWheel(self, delta, maxZoom, minZoom)
 		return
 	end
 
-	maxZoom = maxZoom or self.maxZoom
-	minZoom = minZoom or self.minZoom
-	local zoomLevel = self.zoomLevel or minZoom
-	zoomLevel = zoomLevel + delta * MODELFRAME_ZOOM_STEP
-	zoomLevel = min(zoomLevel, maxZoom)
-	zoomLevel = max(zoomLevel, minZoom)
+	maxZoom = maxZoom or self.maxZoom;
+	minZoom = minZoom or self.minZoom;
+	local zoomLevel = self.zoomLevel or minZoom;
+	zoomLevel = zoomLevel + delta * MODELFRAME_ZOOM_STEP;
+	zoomLevel = min(zoomLevel, maxZoom);
+	zoomLevel = max(zoomLevel, minZoom);
 	local _, cameraY, cameraZ = self:GetPosition()
 	self:SetPosition((self.basePositionOverrideX or 0) + zoomLevel, cameraY, cameraZ)
-	self.zoomLevel = zoomLevel
+	self.zoomLevel = zoomLevel;
 end
 
 function SharedXML_Model_OnUpdate(self, elapsedTime, rotationsPerSecond)
 	if ( not rotationsPerSecond ) then
-		rotationsPerSecond = ROTATIONS_PER_SECOND
+		rotationsPerSecond = ROTATIONS_PER_SECOND;
 	end
 
 	-- Mouse drag rotation
 	if (self.mouseDown) then
 		if ( self.rotationCursorStart ) then
-			local x = GetCursorPosition()
-			local diff = (x - self.rotationCursorStart) * MODELFRAME_DRAG_ROTATION_CONSTANT
-			self.rotationCursorStart = GetCursorPosition()
-			self.rotation = self.rotation + diff
+			local x = GetCursorPosition();
+			local diff = (x - self.rotationCursorStart) * MODELFRAME_DRAG_ROTATION_CONSTANT;
+			self.rotationCursorStart = GetCursorPosition();
+			self.rotation = self.rotation + diff;
 			if ( self.rotation < 0 ) then
-				self.rotation = self.rotation + (2 * PI)
+				self.rotation = self.rotation + (2 * PI);
 			end
 			if ( self.rotation > (2 * PI) ) then
-				self.rotation = self.rotation - (2 * PI)
+				self.rotation = self.rotation - (2 * PI);
 			end
-			self:SetRotation(self.rotation, false)
+			self:SetRotation(self.rotation, false);
 		end
 	elseif ( self.panning ) then
-		local modelScale = self:GetModelScale()
-		local cursorX, cursorY = GetCursorPosition()
-		local scale = UIParent:GetEffectiveScale()
-		ModelPanningFrame:SetPoint("BOTTOMLEFT", cursorX / scale - 16, cursorY / scale - 16)	-- half the texture size to center it on the cursor
+		local modelScale = self:GetModelScale();
+		local cursorX, cursorY = GetCursorPosition();
+		local scale = UIParent:GetEffectiveScale();
+		ModelPanningFrame:SetPoint("BOTTOMLEFT", cursorX / scale - 16, cursorY / scale - 16);	-- half the texture size to center it on the cursor
 		-- settings
-		local settings = ModelSettings[playerRaceSex]
+		local settings = ModelSettings[playerRaceSex];
 
-		local zoom = self.zoomLevel or self.minZoom
-		zoom = 1 + zoom - self.minZoom	-- want 1 at minimum zoom
+		local zoom = self.zoomLevel or self.minZoom;
+		zoom = 1 + zoom - self.minZoom;	-- want 1 at minimum zoom
 
 		-- Panning should require roughly the same mouse movement regardless of zoom level so the model moves at the same rate as the cursor
 		-- This formula more or less works for all zoom levels, found via trial and error
-		local transformationRatio = settings.panValue * 2 ^ (zoom * 2) * scale / modelScale
+		local transformationRatio = settings.panValue * 2 ^ (zoom * 2) * scale / modelScale;
 
 		local positionY = self.basePositionOverrideY or 0
 		local positionZ = self.basePositionOverrideZ or 0
 		if self.basePositionOverrideXasZ then
 			positionZ = self.basePositionOverrideX or 0
 		end
-		local dx = (cursorX - self.cursorX) / transformationRatio
-		local dy = (cursorY - self.cursorY) / transformationRatio
+		local dx = (cursorX - self.cursorX) / transformationRatio;
+		local dy = (cursorY - self.cursorY) / transformationRatio;
 		local cameraY = self.cameraY + dx - positionY
 		local cameraZ = self.cameraZ + dy - positionZ
 		-- bounds
-		scale = scale * modelScale
-		local maxCameraY = settings.panMaxRight * scale
-		cameraY = min(cameraY, maxCameraY)
-		local minCameraY = settings.panMaxLeft * scale
-		cameraY = max(cameraY, minCameraY)
-		local maxCameraZ = settings.panMaxTop * scale
-		cameraZ = min(cameraZ, maxCameraZ)
-		local minCameraZ = settings.panMaxBottom * scale
-		cameraZ = max(cameraZ, minCameraZ)
+		scale = scale * modelScale;
+		local maxCameraY = settings.panMaxRight * scale;
+		cameraY = min(cameraY, maxCameraY);
+		local minCameraY = settings.panMaxLeft * scale;
+		cameraY = max(cameraY, minCameraY);
+		local maxCameraZ = settings.panMaxTop * scale;
+		cameraZ = min(cameraZ, maxCameraZ);
+		local minCameraZ = settings.panMaxBottom * scale;
+		cameraZ = max(cameraZ, minCameraZ);
 
 		self:SetPosition(self.cameraX, cameraY + positionY, cameraZ + positionZ)
 	end
 
 	-- Rotate buttons
-	local leftButton, rightButton
+	local leftButton, rightButton;
 	if ( self.controlFrame ) then
-		leftButton = self.controlFrame.rotateLeftButton
-		rightButton = self.controlFrame.rotateRightButton
+		leftButton = self.controlFrame.rotateLeftButton;
+		rightButton = self.controlFrame.rotateRightButton;
 	else
-		leftButton = self.RotateLeftButton or (self:GetName() and _G[self:GetName().."RotateLeftButton"])
-		rightButton = self.RotateRightButton or (self:GetName() and _G[self:GetName().."RotateRightButton"])
+		leftButton = self.RotateLeftButton or (self:GetName() and _G[self:GetName().."RotateLeftButton"]);
+		rightButton = self.RotateRightButton or (self:GetName() and _G[self:GetName().."RotateRightButton"]);
 	end
 
-	if ( leftButton and leftButton:GetButtonState() == "PUSHED" ) then
-		self.rotation = self.rotation + (elapsedTime * 2 * PI * rotationsPerSecond)
-		if ( self.rotation < 0 ) then
-			self.rotation = self.rotation + (2 * PI)
-		end
-		self:SetRotation(self.rotation)
-	elseif ( rightButton and rightButton:GetButtonState() == "PUSHED" ) then
-		self.rotation = self.rotation - (elapsedTime * 2 * PI * rotationsPerSecond)
+	SharedXML_Model_UpdateRotation(self, leftButton, rightButton, elapsedTime, rotationsPerSecond);
+end
+
+function SharedXML_Model_UpdateRotation(self, leftButton, rightButton, elapsedTime, rotationsPerSecond)
+	rotationsPerSecond = rotationsPerSecond or ROTATIONS_PER_SECOND;
+
+	if ( rightButton and rightButton:GetButtonState() == "PUSHED" ) then
+		self.rotation = self.rotation + (elapsedTime * 2 * PI * rotationsPerSecond);
 		if ( self.rotation > (2 * PI) ) then
-			self.rotation = self.rotation - (2 * PI)
+			self.rotation = self.rotation - (2 * PI);
 		end
-		self:SetRotation(self.rotation)
+		self:SetRotation(self.rotation);
+	elseif ( leftButton and leftButton:GetButtonState() == "PUSHED" ) then
+		self.rotation = self.rotation - (elapsedTime * 2 * PI * rotationsPerSecond);
+		if ( self.rotation < 0 ) then
+			self.rotation = self.rotation + (2 * PI);
+		end
+		self:SetRotation(self.rotation);
 	end
 end
 
 function SharedXML_Model_SetDefaultRotation(self, rotation)
-	self.defaultRotation = rotation
-	self.rotation = rotation
-	self:SetRotation(rotation)
+	self.defaultRotation = rotation;
+	self.rotation = rotation;
+	self:SetRotation(rotation);
 end
 
 function SharedXML_Model_Reset(self)
-	self.rotation = self.defaultRotation
-	self:SetRotation(self.rotation)
-	self:SetPosition(self.basePositionOverrideX or 0, self.basePositionOverrideY or 0, self.basePositionOverrideZ or 0)
-	self.zoomLevel = self.minZoom
+	self.rotation = self.defaultRotation;
+	self:SetRotation(self.rotation);
+	self:SetPosition(self.basePositionOverrideX or 0, self.basePositionOverrideY or 0, self.basePositionOverrideZ or 0);
+	self.zoomLevel = self.minZoom;
 end
 
 function SharedXML_Model_StartPanning(self, usePanningFrame)
 	if ( usePanningFrame ) then
-		ModelPanningFrame.model = self
-		ModelPanningFrame:Show()
+		ModelPanningFrame.model = self;
+		ModelPanningFrame:Show();
 	end
-	self.panning = true
-	local cameraX, cameraY, cameraZ = self:GetPosition()
-	self.cameraX = cameraX
-	self.cameraY = cameraY
-	self.cameraZ = cameraZ
-	local cursorX, cursorY = GetCursorPosition()
-	self.cursorX = cursorX
-	self.cursorY = cursorY
+	self.panning = true;
+	local cameraX, cameraY, cameraZ = self:GetPosition();
+	self.cameraX = cameraX;
+	self.cameraY = cameraY;
+	self.cameraZ = cameraZ;
+	local cursorX, cursorY = GetCursorPosition();
+	self.cursorX = cursorX;
+	self.cursorY = cursorY;
 end
 
 function SharedXML_Model_StopPanning(self)
-	self.panning = false
-	ModelPanningFrame:Hide()
+	self.panning = false;
+	ModelPanningFrame:Hide();
 end
 
 function ModelControlButton_OnMouseDown(self)
-	self.bg:SetTexCoord(0.01562500, 0.26562500, 0.14843750, 0.27343750)
-	self.icon:SetPoint("CENTER", 1, -1)
-	self:GetParent().buttonDown = self
+	self.bg:SetTexCoord(0.01562500, 0.26562500, 0.14843750, 0.27343750);
+	self.icon:SetPoint("CENTER", 1, -1);
+	self:GetParent().buttonDown = self;
 end
 
 function ModelControlButton_OnMouseUp(self)
-	self.bg:SetTexCoord(0.29687500, 0.54687500, 0.14843750, 0.27343750)
-	self.icon:SetPoint("CENTER", 0, 0)
-	self:GetParent().buttonDown = nil
+	self.bg:SetTexCoord(0.29687500, 0.54687500, 0.14843750, 0.27343750);
+	self.icon:SetPoint("CENTER", 0, 0);
+	self:GetParent().buttonDown = nil;
 end
 
 function GetUICameraInfo(uiCameraID)

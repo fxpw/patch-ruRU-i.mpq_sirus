@@ -9,44 +9,41 @@ function ezSpectator_TeamFrame:Create(Parent, IsLeft, ...)
 
     self.Parent = Parent
 
-    self.Textures = ezSpectator_Textures:Create()
-
     self.Normal = CreateFrame('Frame', nil, ArenaSpectatorFrame)
     self.Normal:SetFrameStrata('LOW')
     self.Normal:SetSize(482, 44)
     self.Normal:SetScale(0.75 * _ezSpectatorScale)
     self.Normal:SetPoint(...)
-    self.Textures:TeamFrame_Normal(self.Normal)
+
+	self.Normal.texture = self.Normal:CreateTexture(nil, "BACKGROUND")
+	self.Normal.texture:SetAllPoints()
+	self.Normal.texture:SetAtlas("Custom-ArenaSpectator-TeamFrame-Normal", true)
 
     self.HealthBar = ezSpectator_HealthBar:Create(self.Parent, IsLeft, false, 12 * _ezSpectatorScale, 462, 24, 0.75 * _ezSpectatorScale, 'TOPLEFT', self.Normal, 'TOPLEFT', 10, -9)
-    self.SpellCooldown = ezSpectator_CooldownFrame:Create(self.Parent, self.Normal, IsLeft)
+
+	if not self.Parent.SHOW_TEAM_SCORE then
+		self.Normal:Hide()
+		self.HealthBar:Hide()
+	end
 
     return self
 end
 
-
-
 function ezSpectator_TeamFrame:Hide()
     self.Normal:Hide()
     self.HealthBar:Hide()
-    self.SpellCooldown:Hide()
 end
-
-
 
 function ezSpectator_TeamFrame:Show()
-    self.Normal:Show()
-    self.HealthBar:Show()
-    self.SpellCooldown:Show()
+	if self.Parent.SHOW_TEAM_SCORE then
+		self.Normal:Show()
+		self.HealthBar:Show()
+	end
 end
-
-
 
 function ezSpectator_TeamFrame:SetName(Value)
     self.HealthBar:SetNickname(Value)
 end
-
-
 
 function ezSpectator_TeamFrame:SetColor(Value)
     if Value == 'gold' then
@@ -60,14 +57,6 @@ function ezSpectator_TeamFrame:SetColor(Value)
     end
 end
 
-
-
 function ezSpectator_TeamFrame:SetScore(Value)
     self.HealthBar:SetDescription(Value)
-end
-
-
-
-function ezSpectator_TeamFrame:SetCooldown(Nickname, Spell, Value)
-    self.SpellCooldown:Push(Nickname, Spell, Value)
 end

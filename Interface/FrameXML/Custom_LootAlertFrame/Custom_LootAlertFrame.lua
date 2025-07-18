@@ -11,7 +11,7 @@ LootAlertFrameMixIn.alertButton = {}
 
 function LootAlertFrameMixIn:AddAlert( itemID, name, link, quality, texture, count, skipQualityCheck, tooltipText )
  	if not skipQualityCheck and (itemID and not ignoreQualityCheck[itemID]) then
-		local alertThreshold = tonumber(C_CVar:GetValue("C_CVAR_LOOT_ALERT_THRESHOLD")) or 0
+		local alertThreshold = tonumber(GetCVar("lootAlertThreshold")) or 0
 		if alertThreshold == -1 or alertThreshold > quality then
 			return
 		end

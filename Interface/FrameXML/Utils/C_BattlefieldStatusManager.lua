@@ -1,5 +1,3 @@
-local GetCurrentMapAreaID = GetCurrentMapAreaID
-
 local BattlegroundStatus = {
 	[-1] = "error",
 	[0] = "none",
@@ -160,11 +158,9 @@ function C_BattlefieldStatusManagerMixin:ASMSG_BATTLEFIELD_STATUS_FAKE(msg)
 end
 
 function C_BattlefieldStatusManagerMixin:ASMSG_BATTLEFIELD_QUEUE_ACCEPT(msg)
-
 end
 
 function C_BattlefieldStatusManagerMixin:ASMSG_BATTLEFIELD_QUEUE_LEAVE(msg)
-
 end
 
 function C_BattlefieldStatusManagerMixin:ASMSG_BF_QUEUE_STATUS(msg)
@@ -234,14 +230,4 @@ end
 
 function GetBFQueueStatus(index)
 	return C_BattlefieldStatusManager.bfStatusData[index]
-end
-
-C_PvP = {}
-
-function C_PvP.IsInBrawl()
-	local currentMapAreaID = GetCurrentMapAreaID()
-	if currentMapAreaID == BATTLEGROUND_ARATHI_BLIZZARD or currentMapAreaID == BATTLEGROUND_THE_MAGNIFICENT_FIVE or currentMapAreaID == BATTLEGROUND_GRAVITY_LAPSE then
-		return true
-	end
-	return false
 end

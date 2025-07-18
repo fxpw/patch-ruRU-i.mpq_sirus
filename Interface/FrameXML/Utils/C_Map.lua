@@ -7,10 +7,11 @@ local GetCurrentMapAreaID = GetCurrentMapAreaID
 local GetCurrentMapContinent = GetCurrentMapContinent
 local GetCurrentMapDungeonLevel = GetCurrentMapDungeonLevel
 local GetCurrentMapZone = GetCurrentMapZone
-local GetMapZones = GetMapZones
 local GetMapContinents = GetMapContinents
+local GetMapInfoEx = GetMapInfoEx
 local GetMapLandmarkInfo = GetMapLandmarkInfo
 local GetNumMapLandmarks = GetNumMapLandmarks
+local GetMapZones = GetMapZones
 local ProcessMapClick = ProcessMapClick
 local SetMapByID = SetMapByID
 local SetMapZoom = SetMapZoom
@@ -19,8 +20,6 @@ local ZoomOut = ZoomOut
 
 local GetServerID = GetServerID
 local IsGMAccount = IsGMAccount
-
-local WORLDMAP_MAP_NAME_BY_ID = WORLDMAP_MAP_NAME_BY_ID
 
 local WORLDMAP_HIDDEN_CONTININT_ID = -2
 local WORLDMAP_COSMIC_ID = -1
@@ -88,6 +87,7 @@ local MAP_ZOOMOUT_OVERRIDE = {
 	[955] = 14,
 	[908] = 955,
 	[982] = 485,
+	[993] = 953,
 }
 
 local MAP_LEVELS = {
@@ -202,14 +202,16 @@ PRIVATE.GetAreaNameByID = function(mapAreaID)
 	if not mapAreaID then
 		mapAreaID = PRIVATE.GetCurrentMapAreaID()
 	end
-	return WORLDMAP_MAP_NAME_BY_ID[mapAreaID] and WORLDMAP_MAP_NAME_BY_ID[mapAreaID][MAP_DATA_INDEX[PRIVATE.AREA_NAME_LOCALE]]
+	local name, parentWorldMapID, instanceType, maxPlayers, expansionID = GetMapInfoEx(mapAreaID)
+	return name
 end
 
 PRIVATE.GetParentMapID = function(mapAreaID)
 	if not mapAreaID then
 		mapAreaID = PRIVATE.GetCurrentMapAreaID()
 	end
-	return WORLDMAP_MAP_NAME_BY_ID[mapAreaID] and WORLDMAP_MAP_NAME_BY_ID[mapAreaID][MAP_DATA_INDEX.PARENT_WORLD_MAP_ID]
+	local name, parentWorldMapID, instanceType, maxPlayers, expansionID = GetMapInfoEx(mapAreaID)
+	return parentWorldMapID
 end
 
 PRIVATE.RemapContinents = function(...)
@@ -302,10 +304,6 @@ PRIVATE.GetCurrentMapAreaID = function()
 	else
 		return 0
 	end
-end
-
-function ReloadWorldMapData()
-	WORLDMAP_MAP_NAME_BY_ID = _G.WORLDMAP_MAP_NAME_BY_ID
 end
 
 _G.UpdateMapHighlight = function(x, y)

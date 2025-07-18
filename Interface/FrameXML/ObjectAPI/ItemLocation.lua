@@ -1,21 +1,29 @@
 ItemLocation = {};
 ItemLocationMixin = {};
 
-function ItemLocation:CreateEmpty()
+--[[static]] function ItemLocation:CreateEmpty()
 	local itemLocation = CreateFromMixins(ItemLocationMixin);
 	return itemLocation;
 end
 
-function ItemLocation:CreateFromBagAndSlot(bagID, slotIndex)
+--[[static]] function ItemLocation:CreateFromBagAndSlot(bagID, slotIndex)
 	local itemLocation = ItemLocation:CreateEmpty();
 	itemLocation:SetBagAndSlot(bagID, slotIndex);
 	return itemLocation;
 end
 
-function ItemLocation:CreateFromEquipmentSlot(equipmentSlotIndex)
+--[[static]] function ItemLocation:CreateFromEquipmentSlot(equipmentSlotIndex)
 	local itemLocation = ItemLocation:CreateEmpty();
 	itemLocation:SetEquipmentSlot(equipmentSlotIndex);
 	return itemLocation;
+end
+
+--[[static]] function ItemLocation:ApplyLocationToTooltip(itemLocation, tooltip)
+	if itemLocation:IsEquipmentSlot() then
+		tooltip:SetInventoryItem("player", itemLocation:GetEquipmentSlot());
+	elseif itemLocation:IsBagAndSlot() then
+		tooltip:SetBagItem(itemLocation:GetBagAndSlot());
+	end
 end
 
 function ItemLocationMixin:Clear()
@@ -58,15 +66,7 @@ function ItemLocationMixin:HasAnyLocation()
 end
 
 function ItemLocationMixin:IsValid()
-	local bagID, slotIndex = self:GetBagAndSlot();
-	if bagID and slotIndex then
-		return GetContainerItemID(bagID, slotIndex);
-	end
-
-	local equipmentSlotIndex = self:GetEquipmentSlot();
-	if equipmentSlotIndex then
-		return GetInventoryItemID("player", equipmentSlotIndex);
-	end
+	return C_Item.DoesItemExist(self);
 end
 
 function ItemLocationMixin:IsEqualToBagAndSlot(otherBagID, otherSlotIndex)

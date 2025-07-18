@@ -56,6 +56,16 @@ if IsOnGlueScreen() then
 	_G.print = printc
 	_G.tostringall = tostringall
 else
+	function print(...)
+		local success, err = pcall(printc, ...)
+		if not success then
+			local errorHandler = geterrorhandler()
+			if errorHandler then
+				errorHandler(err)
+			end
+		end
+	end
+
 	local UnitName = UnitName
 	local SendAddonMessage = SendAddonMessage
 

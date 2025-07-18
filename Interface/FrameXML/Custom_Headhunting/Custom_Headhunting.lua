@@ -195,7 +195,8 @@ StaticPopupDialogs["HEADHUNTING_SETREWARD_CONFIRMATION"] = {
     button1 = ACCEPT,
     button2 = CANCEL,
     OnAccept = function(self)
-        self.data[1]:SendServerRequest("ACMSG_HEADHUNTING_CONTRACT_REGISTER", self.data[2])
+		self.data[1]:ShowLoading()
+		SendServerMessage("ACMSG_HEADHUNTING_CONTRACT_REGISTER", self.data[2])
     end,
     OnCancel = function()
     end,
@@ -311,7 +312,7 @@ function HeadHuntingMixin:UpdateTabs()
 	if not C_Service.IsHardcoreEnabledOnRealm() then
 		PanelTemplates_HideTab(self, 3)
 	end
-	if not C_Service.IsGMAccount() then
+	if not C_Service.IsGMAccount() and not IsInterfaceDevClient() then
 		PanelTemplates_HideTab(self, 4)
 	end
 end
@@ -381,15 +382,17 @@ function HeadHuntingMixin:RequestContractsList()
     local filterFlags       = self:GetFilterFlags()
     local serachName        = self:GetFilterSearchName()
 
-    C_CacheInstance:Set("ASMSG_HEADHUNTING_CONTRACTS_LIST", {})
-    self:SendServerRequest("ACMSG_HEADHUNTING_CONTRACTS_LIST", string.format("%s,%s,%s,%s,%s", selectedCategory - 1, sortOrder, sortOrderState, filterFlags, serachName or ""))
+	C_GlobalStorage.SetVar("ASMSG_HEADHUNTING_CONTRACTS_LIST", nil)
+	self:ShowLoading()
+	SendServerMessage("ACMSG_HEADHUNTING_CONTRACTS_LIST", string.format("%s,%s,%s,%s,%s", selectedCategory - 1, sortOrder, sortOrderState, filterFlags, serachName or ""))
 end
 
 function HeadHuntingMixin:RequestPlayerContractsList()
     local selectedCategory = self:GetSelectedCategory()
 
-    C_CacheInstance:Set("ASMSG_HEADHUNTING_PLAYER_CONTRACTS_LIST", {})
-    self:SendServerRequest("ACMSG_HEADHUNTING_PLAYER_CONTRACTS_LIST", selectedCategory - 1)
+	C_GlobalStorage.SetVar("ASMSG_HEADHUNTING_PLAYER_CONTRACTS_LIST", nil)
+	self:ShowLoading()
+	SendServerMessage("ACMSG_HEADHUNTING_PLAYER_CONTRACTS_LIST", selectedCategory - 1)
 end
 
 function HeadHuntingMixin:RequestContracts()
@@ -419,9 +422,8 @@ function HeadHuntingMixin:UpdateContent( onlyUpdate, dontUpdateColumns )
 
         if self.Container[self.panels[selectedTab].name].ContractOnPlayer then
             local selectedCategory = self:GetSelectedCategory()
-            local data = C_CacheInstance:Get("ASMSG_HEADHUNTING_CONTRACTS_ON_PLAYER", {})
-
-            self.Container[self.panels[selectedTab].name].ContractOnPlayer:ToggleContractContent(not data[selectedCategory])
+			local data = C_GlobalStorage.GetVar("ASMSG_HEADHUNTING_CONTRACTS_ON_PLAYER")
+			self.Container[self.panels[selectedTab].name].ContractOnPlayer:ToggleContractContent(not (data and data[selectedCategory]))
         end
 
         self.Container[self.panels[selectedTab].name].ScrollFrame:UpdateButtons()
@@ -557,6 +559,10 @@ function HeadHuntingMixin:UpdateNavBar()
     })
 end
 
+local sortSearchResults = function(a, b)
+	return a.name < b.name
+end
+
 function HeadHuntingMixin:BuildPlayerInfo( key, structure, msg )
     local playerStorage = C_Split(msg, "|")
 
@@ -564,24 +570,20 @@ function HeadHuntingMixin:BuildPlayerInfo( key, structure, msg )
         return
     end
 
-    local playerContractStorage = C_CacheInstance:Get(key, {})
-
-    if not playerContractStorage[E_HEADHUNTING_CATEGORY.REWARD_FOR_HEAD] then
-        playerContractStorage[E_HEADHUNTING_CATEGORY.REWARD_FOR_HEAD] = {}
-    end
+	local storage = C_GlobalStorage.GetVar(key)
+	if not storage then
+		storage = {}
+		C_GlobalStorage.SetVar(key, storage)
+	end
+	local contractStorage = storage[E_HEADHUNTING_CATEGORY.REWARD_FOR_HEAD]
+	if not contractStorage then
+		contractStorage = {}
+		storage[E_HEADHUNTING_CATEGORY.REWARD_FOR_HEAD] = contractStorage
+	end
 
     for _, playerInfo in pairs(playerStorage) do
         local playerData    = C_Split(playerInfo, ",")
 
-        -- Статичные
-        local GUID          = tonumber(playerData[structure.GUID])
-        local name          = playerData[structure.NAME]
-        local teamID        = tonumber(playerData[structure.TEAMID])
-        local raceID        = tonumber(playerData[structure.RACE])
-        local classID       = tonumber(playerData[structure.CLASS])
-        local genderID      = tonumber(playerData[structure.GENDER])
-
-        -- Опциональный
         local moneyInBank       = structure.MONEYINBANK and tonumber(playerData[structure.MONEYINBANK])
         local moneyPerKill      = structure.MONEYPERKILL and tonumber(playerData[structure.MONEYPERKILL])
         local totalKills        = structure.TOTALKILLS and tonumber(playerData[structure.TOTALKILLS])
@@ -595,14 +597,13 @@ function HeadHuntingMixin:BuildPlayerInfo( key, structure, msg )
             moneyInBank = moneyPerKill * totalKills
         end
 
-        playerContractStorage[E_HEADHUNTING_CATEGORY.REWARD_FOR_HEAD][#playerContractStorage[E_HEADHUNTING_CATEGORY.REWARD_FOR_HEAD] + 1] = {
-            -- Статичные
-            GUID                = GUID,
-            name                = name,
-            teamID              = SERVER_FACTION_TO_GAME_FACTION[teamID],
-            raceID              = raceID,
-            classID             = classID,
-            genderID            = genderID,
+		contractStorage[#contractStorage + 1] = {
+			GUID				= tonumber(playerData[structure.GUID]),
+			name				= playerData[structure.NAME] or "",
+			teamID				= SERVER_FACTION_TO_GAME_FACTION[tonumber(playerData[structure.TEAMID])],
+			raceID				= tonumber(playerData[structure.RACE]),
+			classID				= tonumber(playerData[structure.CLASS]),
+			genderID			= tonumber(playerData[structure.GENDER]),
 
             -- Опциональный
             moneyPerKill        = moneyPerKill,
@@ -616,6 +617,10 @@ function HeadHuntingMixin:BuildPlayerInfo( key, structure, msg )
         }
     end
 
+	if key == "ASMSG_HEADHUNTING_SEARCH_RESPONSE" then
+		table.sort(contractStorage, sortSearchResults)
+	end
+
     self:UpdateContent(true, true)
 end
 
@@ -626,26 +631,20 @@ function HeadHuntingMixin:BuildGuildInfo( key, structure, msg )
         return
     end
 
-    local guildContractStorage = C_CacheInstance:Get(key, {})
-
-    if not guildContractStorage[E_HEADHUNTING_CATEGORY.REWARD_FOR_GUILD] then
-        guildContractStorage[E_HEADHUNTING_CATEGORY.REWARD_FOR_GUILD] = {}
-    end
+	local storage = C_GlobalStorage.GetVar(key)
+	if not storage then
+		storage = {}
+		C_GlobalStorage.SetVar(key, storage)
+	end
+	local contractStorage = storage[E_HEADHUNTING_CATEGORY.REWARD_FOR_GUILD]
+	if not contractStorage then
+		contractStorage = {}
+		storage[E_HEADHUNTING_CATEGORY.REWARD_FOR_GUILD] = contractStorage
+	end
 
     for _, guildInfo in pairs(guildStorage) do
         local guildData     = C_Split(guildInfo, ",")
 
-        -- Статичные
-        local GUID              = tonumber(guildData[structure.GUID])
-        local name              = guildData[structure.NAME]
-        local teamID            = tonumber(guildData[structure.TEAMID])
-        local emblemID          = tonumber(guildData[structure.STYLE])
-        local emblemColorID     = tonumber(guildData[structure.COLOR])
-        local borderStyleID     = tonumber(guildData[structure.BORDERSTYLE])
-        local borderColorID     = tonumber(guildData[structure.BORDERCOLOR])
-        local backgroundColorID = tonumber(guildData[structure.BACKGROUNDCOLOR])
-
-        -- Опциональный
         local moneyInBank       = structure.MONEYINBANK and tonumber(guildData[structure.MONEYINBANK])
         local moneyPerKill      = structure.MONEYPERKILL and tonumber(guildData[structure.MONEYPERKILL])
         local totalKills        = structure.TOTALKILLS and tonumber(guildData[structure.TOTALKILLS])
@@ -656,16 +655,15 @@ function HeadHuntingMixin:BuildGuildInfo( key, structure, msg )
             moneyInBank = moneyPerKill * totalKills
         end
 
-        guildContractStorage[E_HEADHUNTING_CATEGORY.REWARD_FOR_GUILD][#guildContractStorage[E_HEADHUNTING_CATEGORY.REWARD_FOR_GUILD] + 1] = {
-            -- Статичные
-            GUID                = GUID,
-            name                = name,
-            teamID              = SERVER_FACTION_TO_GAME_FACTION[teamID],
-            emblemID            = emblemID,
-            emblemColorID       = emblemColorID,
-            borderStyleID       = borderStyleID,
-            borderColorID       = borderColorID,
-            backgroundColorID   = backgroundColorID,
+		contractStorage[#contractStorage + 1] = {
+			GUID				= tonumber(guildData[structure.GUID]),
+			name				= guildData[structure.NAME] or "",
+			teamID				= SERVER_FACTION_TO_GAME_FACTION[tonumber(guildData[structure.TEAMID])],
+			emblemID			= tonumber(guildData[structure.STYLE]),
+			emblemColorID		= tonumber(guildData[structure.COLOR]),
+			borderStyleID		= tonumber(guildData[structure.BORDERSTYLE]),
+			borderColorID		= tonumber(guildData[structure.BORDERCOLOR]),
+			backgroundColorID	= tonumber(guildData[structure.BACKGROUNDCOLOR]),
 
             -- Опциональный
             moneyPerKill        = moneyPerKill,
@@ -676,35 +674,39 @@ function HeadHuntingMixin:BuildGuildInfo( key, structure, msg )
         }
     end
 
+	if key == "ASMSG_HEADHUNTING_SEARCH_RESPONSE" then
+		table.sort(contractStorage, sortSearchResults)
+	end
+
     self:UpdateContent(true, true)
 end
 
 function HeadHuntingMixin:GetNumRecords()
-    local selectedTab   = self:GetSelectedTab()
-    local numRecords    = 0
+	local selectedTab = self:GetSelectedTab()
+	local numRecords
 
-    if selectedTab == E_HEADHUNTING_TAB.ALL_TARGETS then
-        local data = C_CacheInstance:Get("ASMSG_HEADHUNTING_CONTRACTS_LIST", {})
-        numRecords = tCount(data[self:GetSelectedCategory()])
-    elseif selectedTab == E_HEADHUNTING_TAB.YOU_TARGETS then
-        local data = C_CacheInstance:Get("ASMSG_HEADHUNTING_PLAYER_CONTRACTS_LIST", {})
-        numRecords = tCount(data[self:GetSelectedCategory()])
-    end
+	if selectedTab == E_HEADHUNTING_TAB.ALL_TARGETS then
+		local data = C_GlobalStorage.GetVar("ASMSG_HEADHUNTING_CONTRACTS_LIST")
+		numRecords = data and tCount(data[self:GetSelectedCategory()])
+	elseif selectedTab == E_HEADHUNTING_TAB.YOU_TARGETS then
+		local data = C_GlobalStorage.GetVar("ASMSG_HEADHUNTING_PLAYER_CONTRACTS_LIST")
+		numRecords = data and tCount(data[self:GetSelectedCategory()])
+	end
 
-    return numRecords
+	return numRecords or 0
 end
 
 function HeadHuntingMixin:GetRecord( index )
-    local selectedTab   = self:GetSelectedTab()
-    local data
+	local selectedTab = self:GetSelectedTab()
+	local data
 
-    if selectedTab == E_HEADHUNTING_TAB.ALL_TARGETS then
-        data = C_CacheInstance:Get("ASMSG_HEADHUNTING_CONTRACTS_LIST", {})
-    elseif selectedTab == E_HEADHUNTING_TAB.YOU_TARGETS then
-        data = C_CacheInstance:Get("ASMSG_HEADHUNTING_PLAYER_CONTRACTS_LIST", {})
-    end
+	if selectedTab == E_HEADHUNTING_TAB.ALL_TARGETS then
+		data = C_GlobalStorage.GetVar("ASMSG_HEADHUNTING_CONTRACTS_LIST")
+	elseif selectedTab == E_HEADHUNTING_TAB.YOU_TARGETS then
+		data = C_GlobalStorage.GetVar("ASMSG_HEADHUNTING_PLAYER_CONTRACTS_LIST")
+	end
 
-    return data[self:GetSelectedCategory()] and data[self:GetSelectedCategory()][index]
+	return data and data[self:GetSelectedCategory()] and data[self:GetSelectedCategory()][index]
 end
 
 function HeadHuntingMixin:GetSortOrderState()
@@ -814,12 +816,6 @@ function HeadHuntingMixin:HideError()
 	self:ShowError(nil)
 end
 
-function HeadHuntingMixin:SendServerRequest( prefix, msg )
-    self:ShowLoading()
-
-    SendServerMessage(prefix, msg)
-end
-
 function HeadHuntingMixin:CloaseAllPopup()
     for _, frame in pairs(self.popupFrames) do
         frame:Hide()
@@ -905,7 +901,7 @@ function HeadHuntingMixin:ASMSG_HEADHUNTING_ZONE_NOTIFICATIONS( msg )
             return
         end
 
-        C_CacheInstance:Set("ASMSG_HEADHUNTING_ZONE_NOTIFICATIONS", resultID)
+		C_GlobalStorage.SetVar("ASMSG_HEADHUNTING_ZONE_NOTIFICATIONS", resultID)
     end
 end
 
@@ -1477,7 +1473,8 @@ function HeadHuntingDetailsFrameMixin:ShowDetails( GUID )
 
     local selectedCategory = self.mainFrame:GetSelectedCategory() - 1
 
-    self.mainFrame:SendServerRequest("ACMSG_HEADHUNTING_CONTRACT_NOTIFICATIONS", string.format("%s,%s", selectedCategory, GUID))
+	self.mainFrame:ShowLoading()
+	SendServerMessage("ACMSG_HEADHUNTING_CONTRACT_NOTIFICATIONS", string.format("%s,%s", selectedCategory, GUID))
 end
 
 function HeadHuntingDetailsFrameMixin:RemoveContract()
@@ -1580,12 +1577,13 @@ function HeadHuntingCheckButtonMixin:OnLoad()
 end
 
 function HeadHuntingCheckButtonMixin:OnClick()
-    self.mainFrame:SendServerRequest(self.addonMessage, string.format("%s,%s,%s,%s",
-            self.mainFrame:GetSelectedCategory() - 1,
-            self.detailsFrame:GetGUID(),
-            self:GetID(),
-            self:GetChecked() or 0
-    ))
+	self.mainFrame:ShowLoading()
+	SendServerMessage(self.addonMessage, string.format("%s,%s,%s,%s",
+		self.mainFrame:GetSelectedCategory() - 1,
+		self.detailsFrame:GetGUID(),
+		self:GetID(),
+		self:GetChecked() or 0
+	))
 end
 
 function HeadHuntingCheckButtonMixin:OnEnter()
@@ -1626,21 +1624,19 @@ function HeadHuntingSetRewardFrameMixin:OnHide()
 end
 
 function HeadHuntingSetRewardFrameMixin:GetNumRecords()
-    local data = C_CacheInstance:Get("ASMSG_HEADHUNTING_SEARCH_RESPONSE", {})
-    local numRecords = tCount(data[self.mainFrame:GetSelectedCategory()])
-
-    return numRecords or 0
+	local data = C_GlobalStorage.GetVar("ASMSG_HEADHUNTING_SEARCH_RESPONSE")
+	local numRecords = data and tCount(data[self.mainFrame:GetSelectedCategory()])
+	return numRecords or 0
 end
 
 function HeadHuntingSetRewardFrameMixin:GetRecord( index )
-    local storage = C_CacheInstance:Get("ASMSG_HEADHUNTING_SEARCH_RESPONSE", {})
-    local data = storage[self.mainFrame:GetSelectedCategory()] and storage[self.mainFrame:GetSelectedCategory()][index]
-
-    return data
+	local storage = C_GlobalStorage.GetVar("ASMSG_HEADHUNTING_SEARCH_RESPONSE")
+	local data = storage and storage[self.mainFrame:GetSelectedCategory()] and storage[self.mainFrame:GetSelectedCategory()][index]
+	return data
 end
 
 function HeadHuntingSetRewardFrameMixin:ClearData( dontResetUI )
-    C_CacheInstance:Set("ASMSG_HEADHUNTING_SEARCH_RESPONSE", {})
+	C_GlobalStorage.SetVar("ASMSG_HEADHUNTING_SEARCH_RESPONSE", nil)
 
     if not dontResetUI then
         local selectedCategory = self.mainFrame:GetSelectedCategory()
@@ -1755,7 +1751,8 @@ function HeadHuntingSearchFrameMixin:Search(guid)
 		category = self.mainFrame:GetSelectedCategory() - 1
 	end
 
-	self.mainFrame:SendServerRequest("ACMSG_HEADHUNTING_SEARCH_REQUEST", string.format("%s,%s", category, guid and tonumber(guid) or self.SearchBox:GetText()))
+	self.mainFrame:ShowLoading()
+	SendServerMessage("ACMSG_HEADHUNTING_SEARCH_REQUEST", string.format("%s,%s", category, guid and tonumber(guid) or self.SearchBox:GetText()))
 	self.SearchButton:UpdateButtonState()
 end
 
@@ -2081,7 +2078,8 @@ function HeadHuntingAllTargetsBaseScrollButtonTemplateMixin:OnClick()
     self.scrollFrame:SetSelectedGUID(self.GUID)
     self.scrollFrame:SetSelectedButton(self)
 
-    self.mainFrame:SendServerRequest("ACMSG_HEADHUNTING_CONTRACT_DETAILS", string.format("%s,%s", selectedCategory, self.GUID))
+	self.mainFrame:ShowLoading()
+	SendServerMessage("ACMSG_HEADHUNTING_CONTRACT_DETAILS", string.format("%s,%s", selectedCategory, self.GUID))
 end
 
 HeadHuntingInfoFrameMixin = {}
@@ -2171,8 +2169,8 @@ function HeadHuntingStatsFrameMixin:SetStats( count, money )
 end
 
 function HeadHuntingStatsFrameMixin:InitData()
-    local statsStorage = C_CacheInstance:Get("ASMSG_HEADHUNTING_SUMMARY_INFO", {})
-    local statsData = statsStorage[self:GetID()]
+	local statsStorage = C_GlobalStorage.GetVar("ASMSG_HEADHUNTING_SUMMARY_INFO")
+	local statsData = statsStorage and statsStorage[self:GetID()]
 
     if statsData then
         self:SetStats(statsData.contractCount or 0, statsData.totalMoney or 0)
@@ -2197,7 +2195,7 @@ function HeadHuntingSummaryFrameMixin:ASMSG_HEADHUNTING_SUMMARY_INFO( msg )
     for index, dataMSG in pairs(dataStorage) do
         local data = C_Split(dataMSG, ",")
 
-        C_CacheInstance:Set("ASMSG_HEADHUNTING_SUMMARY_INFO", {
+		C_GlobalStorage.SetVar("ASMSG_HEADHUNTING_SUMMARY_INFO", {
             [index] = {
                 contractCount   = tonumber(data[E_HEADHUNTING_SUMMARY_INFO.CONTRACTCOUNT] or 0),
                 totalMoney      = tonumber(data[E_HEADHUNTING_SUMMARY_INFO.TOTALMONEY] or 0)
@@ -2342,8 +2340,8 @@ function HeadHuntingContractOnPlayerFrameMixin:ToggleContractContent( isNoContra
     self.PlayerFrame:SetShown(not isNoContract and selectedCategory == E_HEADHUNTING_CATEGORY.REWARD_FOR_HEAD)
     self.GuildFrame:SetShown(not isNoContract and selectedCategory == E_HEADHUNTING_CATEGORY.REWARD_FOR_GUILD)
 
-    local contentStorage    = C_CacheInstance:Get("ASMSG_HEADHUNTING_CONTRACTS_ON_PLAYER", {})
-    local contentData       = contentStorage[selectedCategory] and contentStorage[selectedCategory][1]
+	local contentStorage = C_GlobalStorage.GetVar("ASMSG_HEADHUNTING_CONTRACTS_ON_PLAYER")
+	local contentData = contentStorage and contentStorage[selectedCategory] and contentStorage[selectedCategory][1]
 
     if not contentData then
         return

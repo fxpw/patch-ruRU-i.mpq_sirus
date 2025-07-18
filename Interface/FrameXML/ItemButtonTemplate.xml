@@ -21,30 +21,20 @@
 	</Button>
 
  	<Button name="ItemButtonTemplate" inherits="ItemButtonWidget" virtual="true">
-		<Size>
-			<AbsDimension x="37" y="37"/>
-		</Size>
+		<Size x="37" y="37"/>
 		<Layers>
 			<Layer level="BORDER">
 				<Texture name="$parentIconTexture" parentKey="icon"/>
 			</Layer>
 			<Layer level="ARTWORK">
-				<FontString name="$parentCount" parentKey="Count" inherits="NumberFontNormal" justifyH="RIGHT" hidden="true">
+				<FontString name="$parentCount" inherits="NumberFontNormal" justifyH="RIGHT" hidden="true" parentKey="Count">
 					<Anchors>
-						<Anchor point="BOTTOMRIGHT">
-							<Offset>
-								<AbsDimension x="-5" y="2"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="BOTTOMRIGHT" x="-5" y="2"/>
 					</Anchors>
 				</FontString>
 				<FontString name="$parentStock" parentKey="Stock" inherits="NumberFontNormalYellow" justifyH="LEFT" hidden="true">
 					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-2"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" x="0" y="-2"/>
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -57,20 +47,14 @@
 				</Texture>
 			</Layer>
 		</Layers>
-		<NormalTexture name="$parentNormalTexture" file="Interface\Buttons\UI-Quickslot2">
-			<Size>
-				<AbsDimension x="64" y="64"/>
-			</Size>
+		<NormalTexture name="$parentNormalTexture" parentKey="NormalTexture" file="Interface\Buttons\UI-Quickslot2">
+			<Size x="64" y="64"/>
 			<Anchors>
-				<Anchor point="CENTER">
-					<Offset>
-						<AbsDimension x="0" y="-1"/>
-					</Offset>
-				</Anchor>
+				<Anchor point="CENTER" x="0" y="-1"/>
 			</Anchors>
 		</NormalTexture>
-		<PushedTexture file="Interface\Buttons\UI-Quickslot-Depress"/>
-		<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
+		<PushedTexture parentKey="PushedTexture" file="Interface\Buttons\UI-Quickslot-Depress"/>
+		<HighlightTexture parentKey="HighlightTexture" file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
 		<Frames>
 			<Frame name="$parentItemContextOverlay" parentKey="ItemContextOverlay" setAllPoints="true" hidden="true">
 				<Layers>
@@ -89,35 +73,21 @@
 		</Frames>
 	</Button>
 	<CheckButton name="SimplePopupButtonTemplate" virtual="true">
-		<Size>
-			<AbsDimension x="36" y="36"/>
-		</Size>
+		<Size x="36" y="36"/>
 		<Layers>
 			<Layer level="OVERLAY">
-				<FontString name="$parentName" inherits="GameFontHighlightSmallOutline">
-					<Size>
-						<AbsDimension x="36" y="10"/>
-					</Size>
+				<FontString name="$parentName" inherits="GameFontHighlightSmallOutline" parentKey="Name">
+					<Size x="36" y="10"/>
 					<Anchors>
-						<Anchor point="BOTTOM">
-							<Offset>
-								<AbsDimension x="0" y="2"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="BOTTOM" x="0" y="2"/>
 					</Anchors>
 				</FontString>
 			</Layer>
 			<Layer level="BACKGROUND">
 				<Texture file="Interface\Buttons\UI-EmptySlot-Disabled">
-					<Size>
-						<AbsDimension x="45" y="45"/>
-					</Size>
+					<Size x="45" y="45"/>
 					<Anchors>
-						<Anchor point="CENTER">
-							<Offset>
-								<AbsDimension x="0" y="-1"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="CENTER" x="0" y="-1"/>
 					</Anchors>
 					<TexCoords left="0.140625" right="0.84375" top="0.140625" bottom="0.84375"/>
 				</Texture>
@@ -141,59 +111,96 @@
 		<CheckedTexture alphaMode="ADD" file="Interface\Buttons\CheckButtonHilight"/>
 	</CheckButton>
 	<Button name="LargeItemButtonTemplate" virtual="true">
-		<Size>
-			<AbsDimension x="147" y="41"/>
-		</Size>
+		<Size x="147" y="41"/>
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture name="$parentIconTexture" parentKey="Icon">
-					<Size>
-						<AbsDimension x="39" y="39"/>
-					</Size>
+					<Size x="39" y="39"/>
 					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" />
 					</Anchors>
 				</Texture>
 				<Texture name="$parentNameFrame" file="Interface\QuestFrame\UI-QuestItemNameFrame" parentKey="NameFrame">
-					<Size>
-						<AbsDimension x="128" y="64"/>
-					</Size>
+					<Size x="128" y="64"/>
 					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentIconTexture" relativePoint="RIGHT">
-							<Offset>
-								<AbsDimension x="-10" y="0"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="LEFT" relativeTo="$parentIconTexture" relativePoint="RIGHT" x="-10" y="0" />
 					</Anchors>
 				</Texture>
 				<FontString name="$parentName" inherits="GameFontHighlight" justifyH="LEFT" parentKey="Name">
-					<Size>
-						<AbsDimension x="90" y="36"/>
-					</Size>
+					<Size x="90" y="36"/>
 					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentNameFrame">
-							<Offset>
-								<AbsDimension x="15" y="0"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="LEFT" relativeTo="$parentNameFrame" x="15" y="0" />
 					</Anchors>
 				</FontString>
 			</Layer>
 			<Layer level="ARTWORK">
-				<FontString name="$parentCount" inherits="NumberFontNormal" justifyH="RIGHT">
+				<FontString name="$parentCount" inherits="NumberFontNormal" justifyH="RIGHT" parentKey="Count">
 					<Anchors>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIconTexture">
-							<Offset>
-								<AbsDimension x="-1" y="1"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentIconTexture" x="-1" y="1" />
 					</Anchors>
 				</FontString>
 			</Layer>
 		</Layers>
+	</Button>
+
+	<Button name="CircularGiantItemButtonTemplate" registerForClicks="LeftButtonUp, RightButtonUp" virtual="true">
+		<Size x="54" y="54"/>
+		<Attributes>
+			<Attribute name="useCircularIconBorder" value="true" type="boolean"/>
+		</Attributes>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentIcon" parentKey="Icon">
+					<Size x="44" y="44"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+					<TexCoords left="0.078125" right="0.921875" top="0.078125" bottom="0.921875"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="IconBorder" hidden="true">
+					<Size x="68" y="68"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Count" inherits="NumberFontNormal" justifyH="RIGHT" hidden="true">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="-5" y="2"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<HighlightTexture alpha="0.2" alphaMode="ADD">
+			<Size x="66" y="66"/>
+			<Anchors>
+				<Anchor point="CENTER"/>
+			</Anchors>
+		</HighlightTexture>
+		<Frames>
+			<Frame name="$parentItemContextOverlay" parentKey="ItemContextOverlay" setAllPoints="true" hidden="true">
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture parentKey="Texture">
+							<Color r="0" g="0" b="0" a="0.8"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnShow>
+						self:SetFrameLevel(self:GetParent():GetFrameLevel() + 5);
+					</OnShow>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, CircularGiantItemButtonMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
 	</Button>
  </Ui>

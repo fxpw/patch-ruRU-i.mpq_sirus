@@ -295,7 +295,7 @@ function PromoCodeMixin:OnUpdate(elapsed)
 	local buttonHeight = self.Content.Scroll.buttons[1]:GetHeight()
 	local scrollHeight = (buttonHeight * numScrollItems) + (self.SCROLL_OFFSET_Y + self.BUTTON_OFFSET_Y * (numScrollItems - 1)) + 2
 	local animElapsed = math.min(self.elapsed, ANIMATION_DURATION)
-	local progressHeight = inBack(animElapsed, 0, scrollHeight, ANIMATION_DURATION, 1.5)
+	local progressHeight = EasingUtil.InBack(animElapsed, 0, scrollHeight, ANIMATION_DURATION, 1.5)
 
 	if self.animExpand then
 		self:SetHeight(self.BASE_HEIGHT + progressHeight)

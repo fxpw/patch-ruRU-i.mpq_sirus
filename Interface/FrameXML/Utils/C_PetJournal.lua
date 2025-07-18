@@ -147,7 +147,7 @@ local function FilteredPetJornal()
 	NUM_OWNED_PETS = 0;
 	table.wipe(PET_INFO_BY_INDEX);
 
-	local sourceFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_PET_JOURNAL_SOURCE_FILTERS")) or 0;
+	local sourceFiltersFlag = tonumber(GetCVar("petJournalSourceFilters")) or 0;
 	local isGM = IsGMAccount()
 
 	for i = 1, #COLLECTION_PETDATA do
@@ -271,18 +271,18 @@ frame:SetScript("OnEvent", function(_, event, arg1, ...)
 		table.wipe(SIRUS_COLLECTION_FAVORITE_TOY);
 	elseif event == "VARIABLES_LOADED" then
 		for index = 1, NUM_PET_FILTERS do
-			PET_FILTER_CHECKED[index] = C_CVar:GetCVarBitfield("C_CVAR_PET_JOURNAL_FILTERS", index);
+			PET_FILTER_CHECKED[index] = GetCVarBitfield("petJournalFilters", index);
 		end
 
 		for index = 1, NUM_PET_TYPES do
-			PET_TYPE_CHECKED[index] = C_CVar:GetCVarBitfield("C_CVAR_PET_JOURNAL_TYPE_FILTERS", index);
+			PET_TYPE_CHECKED[index] = GetCVarBitfield("petJournalTypeFilters", index);
 		end
 
 		for index = 1, NUM_PET_EXPANSIONS do
-			PET_EXPANSION_CHECKED[index] = C_CVar:GetCVarBitfield("C_CVAR_PET_JOURNAL_EXPANSION_FILTERS", index);
+			PET_EXPANSION_CHECKED[index] = GetCVarBitfield("petJournalExpansionFilters", index);
 		end
 
-		PET_SORT_PARAMETER = tonumber(C_CVar:GetValue("C_CVAR_PET_JOURNAL_SORT")) or 1;
+		PET_SORT_PARAMETER = tonumber(GetCVar("petJournalSort")) or 1;
 	elseif event == "PLAYER_LOGIN" then
 		PopulatePetInfo();
 	elseif event == "STORE_ROLLED_ITEM_HASHES" then
@@ -314,7 +314,7 @@ function C_PetJournal.SetFilterChecked(filterType, value)
 	end
 
 	if LE_PET_JOURNAL_FILTER_COLLECTED or LE_PET_JOURNAL_FILTER_NOT_COLLECTED then
-		C_CVar:SetCVarBitfield("C_CVAR_PET_JOURNAL_FILTERS", filterType, not value);
+		SetCVarBitfield("petJournalFilters", filterType, not value);
 
 		PET_FILTER_CHECKED[filterType] = not value;
 
@@ -335,7 +335,7 @@ end
 
 function C_PetJournal.SetPetSortParameter(sortParametr)
 	PET_SORT_PARAMETER = sortParametr;
-	C_CVar:SetValue("C_CVAR_PET_JOURNAL_SORT", tostring(sortParametr));
+	SetCVar("petJournalSort", sortParametr);
 	FilteredPetJornal();
 end
 
@@ -371,7 +371,7 @@ function C_PetJournal.SetPetTypeFilter(petTypeIndex, value)
 	end
 
 	if petTypeIndex > 0 and petTypeIndex <= NUM_PET_TYPES then
-		C_CVar:SetCVarBitfield("C_CVAR_PET_JOURNAL_TYPE_FILTERS", petTypeIndex, not value);
+		SetCVarBitfield("petJournalTypeFilters", petTypeIndex, not value);
 
 		PET_TYPE_CHECKED[petTypeIndex] = not value;
 
@@ -399,7 +399,7 @@ function C_PetJournal.SetAllPetTypesChecked(checked)
 	end
 
 	for index = 1, NUM_PET_TYPES do
-		C_CVar:SetCVarBitfield("C_CVAR_PET_JOURNAL_TYPE_FILTERS", index, not checked);
+		SetCVarBitfield("petJournalTypeFilters", index, not checked);
 
 		PET_TYPE_CHECKED[index] = not checked;
 	end
@@ -419,7 +419,7 @@ function C_PetJournal.SetPetSourceChecked(petSourceIndex, value)
 	end
 
 	if petSourceIndex > 0 and petSourceIndex <= NUM_PET_SOURCES then
-		C_CVar:SetCVarBitfield("C_CVAR_PET_JOURNAL_SOURCE_FILTERS", petSourceIndex, not value);
+		SetCVarBitfield("petJournalSourceFilters", petSourceIndex, not value);
 
 		FilteredPetJornal();
 	end
@@ -433,7 +433,7 @@ function C_PetJournal.IsPetSourceChecked(petSourceIndex)
 		error("Usage: local isChecked = C_PetJournal.IsPetSourceChecked(petSourceIndex)", 2);
 	end
 
-	if C_CVar:GetCVarBitfield("C_CVAR_PET_JOURNAL_SOURCE_FILTERS", petSourceIndex) then
+	if GetCVarBitfield("petJournalSourceFilters", petSourceIndex) then
 		return false;
 	end
 
@@ -449,7 +449,7 @@ function C_PetJournal.SetAllPetSourcesChecked(checked)
 	end
 
 	for index = 1, NUM_PET_SOURCES do
-		C_CVar:SetCVarBitfield("C_CVAR_PET_JOURNAL_SOURCE_FILTERS", index, not checked);
+		SetCVarBitfield("petJournalSourceFilters", index, not checked);
 	end
 
 	FilteredPetJornal();
@@ -467,7 +467,7 @@ function C_PetJournal.SetPetExpansionChecked(petExpansionIndex, value)
 	end
 
 	if petExpansionIndex > 0 and petExpansionIndex <= NUM_PET_EXPANSIONS then
-		C_CVar:SetCVarBitfield("C_CVAR_PET_JOURNAL_EXPANSION_FILTERS", petExpansionIndex, not value);
+		SetCVarBitfield("petJournalExpansionFilters", petExpansionIndex, not value);
 
 		PET_EXPANSION_CHECKED[petExpansionIndex] = not value;
 
@@ -495,7 +495,7 @@ function C_PetJournal.SetAllPetExpansionsChecked(checked)
 	end
 
 	for index = 1, NUM_PET_EXPANSIONS do
-		C_CVar:SetCVarBitfield("C_CVAR_PET_JOURNAL_EXPANSION_FILTERS", index, not checked);
+		SetCVarBitfield("petJournalExpansionFilters", index, not checked);
 
 		PET_EXPANSION_CHECKED[index] = not checked;
 	end
@@ -516,6 +516,18 @@ end
 
 function C_PetJournal.GetPetInfoByPetID(petID)
 	return GetPetInfo(PET_INFO_BY_PET_ID, petID);
+end
+
+function C_PetJournal.IsPetItem(itemID)
+	if type(itemID) ~= "number" then
+		error("Usage: C_PetJournal.IsPetItem(itemID)", 2);
+	end
+
+	if itemID == 0 then
+		return false
+	end
+
+	return PET_INFO_BY_ITEM_ID[itemID] ~= nil
 end
 
 function C_PetJournal.GetPetInfoByItemID(itemID)
@@ -595,10 +607,10 @@ function C_PetJournal.GetPetLink(petID)
 end
 
 function C_PetJournal.SetDefaultFilters()
-	C_CVar:SetValue("C_CVAR_PET_JOURNAL_FILTERS", "0");
-	C_CVar:SetValue("C_CVAR_PET_JOURNAL_TYPE_FILTERS", "0");
-	C_CVar:SetValue("C_CVAR_PET_JOURNAL_SOURCE_FILTERS", "0");
-	C_CVar:SetValue("C_CVAR_PET_JOURNAL_EXPANSION_FILTERS", "0");
+	SetCVar("petJournalFilters", "0");
+	SetCVar("petJournalTypeFilters", "0");
+	SetCVar("petJournalSourceFilters", "0");
+	SetCVar("petJournalExpansionFilters", "0");
 
 	table.wipe(PET_FILTER_CHECKED);
 	table.wipe(PET_TYPE_CHECKED);
@@ -608,10 +620,10 @@ function C_PetJournal.SetDefaultFilters()
 end
 
 function C_PetJournal.IsUsingDefaultFilters()
-	if tonumber(C_CVar:GetValue("C_CVAR_PET_JOURNAL_FILTERS")) ~= 0
-	or tonumber(C_CVar:GetValue("C_CVAR_PET_JOURNAL_TYPE_FILTERS")) ~= 0
-	or tonumber(C_CVar:GetValue("C_CVAR_PET_JOURNAL_SOURCE_FILTERS")) ~= 0
-	or tonumber(C_CVar:GetValue("C_CVAR_PET_JOURNAL_EXPANSION_FILTERS")) ~= 0
+	if tonumber(GetCVar("petJournalFilters")) ~= 0
+	or tonumber(GetCVar("petJournalTypeFilters")) ~= 0
+	or tonumber(GetCVar("petJournalSourceFilters")) ~= 0
+	or tonumber(GetCVar("petJournalExpansionFilters")) ~= 0
 	then
 		return false;
 	end

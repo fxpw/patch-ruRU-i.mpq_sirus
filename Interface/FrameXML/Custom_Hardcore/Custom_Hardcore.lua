@@ -117,11 +117,17 @@ function HardcoreMixin:OnEvent(event, ...)
 
 		self:SetAttribute("UIPanelLayout-neverAllowOtherPanels", nil)
 		self:SetAttribute("UIPanelLayout-disableClosePanel", nil)
-	elseif event == "SERVICE_DATA_UPDATE"
-	or (event == "CUSTOM_CHALLENGE_DEACTIVATED" and select(2, ...) ~= Enum.HardcoreDeathReason.FAILED_DEATH)
-	then
-		UpdateMicroButtons()
+	elseif event == "CUSTOM_CHALLENGE_DEACTIVATED" then
+		local challengeID, reason = ...
+		if reason ~= Enum.HardcoreDeathReason.FAILED_DEATH then
+			UpdateMicroButtons()
 
+			self:SetAttribute("UIPanelLayout-neverAllowOtherPanels", nil)
+			self:SetAttribute("UIPanelLayout-disableClosePanel", nil)
+			self:UpdateBottomTabs()
+		end
+	elseif event == "SERVICE_DATA_UPDATE" then
+		UpdateMicroButtons()
 		self:UpdateBottomTabs()
 	end
 end
@@ -161,7 +167,7 @@ function HardcoreMixin:UpdateBottomTabs()
 	if not C_Service.IsHardcoreEnabledOnRealm() then
 		PanelTemplates_HideTab(self, 3)
 	end
-	if not C_Service.IsGMAccount() then
+	if not C_Service.IsGMAccount() and not IsInterfaceDevClient() then
 		PanelTemplates_HideTab(self, 4)
 	end
 end
@@ -1663,11 +1669,17 @@ function HardcoreStaticPopupConfirmMixin:OnLoad()
 
 	self.Background:SetTexture(0.110, 0.102, 0.098)
 	self.Background:SetAlpha(0.95)
+
+	self.Button1:SetConfirmationTimerDone(function()
+		self.Button1:SetText(YES)
+	end)
 end
 
 function HardcoreStaticPopupConfirmMixin:OnShow()
 	SetParentFrameLevel(self.OverlayFrame, 4)
 	SetParentFrameLevel(self, 5)
+
+	self.Button1:StartConfirmationTimer(true)
 end
 
 function HardcoreStaticPopupConfirmMixin:OnHide()
@@ -1675,9 +1687,11 @@ function HardcoreStaticPopupConfirmMixin:OnHide()
 end
 
 function HardcoreStaticPopupConfirmMixin:Okay()
-	C_HardcoreSecure.SaveCharacter()
+	self.Button1:TakeConfirmationScreenshot(function(success)
+		C_HardcoreSecure.SaveCharacter()
 
-	StaticPopupSpecial_Hide(self:GetParent())
+		StaticPopupSpecial_Hide(self:GetParent())
+	end)
 end
 
 HardcoreLossBannerMixin = {}
@@ -1706,15 +1720,15 @@ end
 
 function HardcoreLossBannerMixin:OnEvent(event, ...)
 	if event == "VARIABLES_LOADED" then
-		self:SetScale(tonumber(C_CVar:GetValue("C_CVAR_SHOW_HARDCORE_NOTIFICATION_SCALE")) or 1)
+		self:SetScale(tonumber(GetCVar("hardcoreNotificationScale")) or 1)
 	elseif event == "HARDCORE_DEATH" then
-		if C_CVar:GetValue("C_CVAR_SHOW_HARDCORE_NOTIFICATION") == "0" then
+		if GetCVar("hardcoreNotification") == "0" then
 			return
 		end
 
 		local name, race, gender, class, level, zone, reason, npc, npcLevel = ...
 
-		local levelFilter = C_CVar:GetValue("C_CVAR_SHOW_HARDCORE_NOTIFICATION_LEVEL")
+		local levelFilter = GetCVar("hardcoreNotificationLevel")
 		if levelFilter == "3" and level < 60
 		or levelFilter == "2" and level < 20
 		or levelFilter == "1" and level < 10
@@ -1726,9 +1740,10 @@ function HardcoreLossBannerMixin:OnEvent(event, ...)
 		local _, classFileName = GetClassInfo(class)
 		if raceInfo and classFileName then
 			local classColorString = select(4, GetClassColor(classFileName))
-			local playSound = C_CVar:GetValue("C_CVAR_SHOW_HARDCORE_NOTIFICATION_SOUND") == "1"
+			local notificationState = GetCVar("hardcoreNotification")
+			local playSound = GetCVarBool("hardcoreNotificationSound")
 
-			if C_CVar:GetValue("C_CVAR_SHOW_HARDCORE_NOTIFICATION") == "2" then
+			if notificationState == "2" then
 				local data = {playSound = playSound}
 
 				if reason == Enum.Hardcore.DeathSouce.NPC then
@@ -1749,7 +1764,7 @@ function HardcoreLossBannerMixin:OnEvent(event, ...)
 				end
 
 				self:PlayBanner(data)
-			elseif C_CVar:GetValue("C_CVAR_SHOW_HARDCORE_NOTIFICATION") == "1" then
+			elseif notificationState == "1" then
 				local text, sound
 
 				if reason == Enum.Hardcore.DeathSouce.NPC then
@@ -1778,9 +1793,10 @@ function HardcoreLossBannerMixin:OnEvent(event, ...)
 		local challengeName = C_Hardcore.GetChallengeInfoByID(challengeID) or ""
 		if raceInfo and className and classFileName then
 			local classColorString = select(4, GetClassColor(classFileName))
-			local playSound = C_CVar:GetValue("C_CVAR_SHOW_HARDCORE_NOTIFICATION_SOUND") == "1"
+			local notificationState = GetCVar("hardcoreNotification")
+			local playSound = GetCVarBool("hardcoreNotificationSound")
 
-			if C_CVar:GetValue("C_CVAR_SHOW_HARDCORE_NOTIFICATION") == "2" then
+			if notificationState == "2" then
 				local data = {
 					playSound = true,
 					isComplete = true,
@@ -1788,7 +1804,7 @@ function HardcoreLossBannerMixin:OnEvent(event, ...)
 				}
 
 				self:PlayBanner(data)
-			elseif C_CVar:GetValue("C_CVAR_SHOW_HARDCORE_NOTIFICATION") == "1" then
+			elseif notificationState == "1" then
 				local sound
 				local text = string.format(HARDCORE_COMPLETE_BANNER_TEXT, classColorString, name, raceInfo.raceName:lower(), className:lower(), challengeName)
 

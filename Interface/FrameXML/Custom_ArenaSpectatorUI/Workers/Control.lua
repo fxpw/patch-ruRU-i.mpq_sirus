@@ -7,11 +7,9 @@ function ezSpectator_ControlWorker:Create(Parent)
 
     self.Parent = Parent
 
-    self.ControlIcon = nil
-    self.Class = nil
+	self.iconSize = 17
+	self.auraPriority = 0
 
-    self.CurrentAura = nil
-    self.CurrentAuraLevel = -1
     self.IsAnimated = false
 
     self.UpdateFrame = CreateFrame('Frame', nil, ArenaSpectatorFrame)
@@ -20,55 +18,67 @@ function ezSpectator_ControlWorker:Create(Parent)
     self.UpdateFrame.UpdateTick = 0.5
     self.UpdateFrame.IsRising = false
     self.UpdateFrame.CurrentAlpha = 1
-    self.UpdateFrame:SetScript('OnUpdate', function(self, Elapsed)
-        self.ElapsedTick = self.ElapsedTick + Elapsed
+	self.UpdateFrame:SetScript("OnUpdate", function(this, elapsed)
+		this.ElapsedTick = this.ElapsedTick + elapsed
 
-        if self.ElapsedTick > self.UpdateTick then
-            self.ElapsedTick = 0
-            self.UpdateTick = 0.01
+		if this.ElapsedTick > this.UpdateTick then
+			this.ElapsedTick = 0
+			this.UpdateTick = 0.01
 
-            if self.Parent.IsAnimated and self.Parent.ControlIcon and self.Parent.ControlIcon.Backdrop:IsShown() then
-                if self.IsRising == true then
-                    self.CurrentAlpha = self.CurrentAlpha - 0.07
-                    if self.CurrentAlpha < 0.2 then
-                        self.IsRising = false
-                    end
-                else
-                    self.CurrentAlpha = self.CurrentAlpha + 0.07
-                    if self.CurrentAlpha > 1 then
-                        self.IsRising = true
-                    end
-                end
+			if self.IsAnimated and self.ControlIcon and self.ControlIcon.Backdrop:IsShown() then
+				if this.IsRising then
+					this.CurrentAlpha = this.CurrentAlpha - 0.07
+					if this.CurrentAlpha < 0.2 then
+						this.IsRising = false
+					end
+				else
+					this.CurrentAlpha = this.CurrentAlpha + 0.07
+					if this.CurrentAlpha > 1 then
+						this.IsRising = true
+					end
+				end
 
-                self.Parent.ControlIcon.Icon:SetAlpha(self.CurrentAlpha)
-            end
-        end
-    end)
+				self.ControlIcon.Icon:SetAlpha(this.CurrentAlpha)
+			end
+		end
+	end)
 
     return self
 end
 
-
-
 function ezSpectator_ControlWorker:BindIcon(IconClass)
     self.ControlIcon = IconClass
+	self.ControlIcon.Reactor:SetScript("OnMouseUp", function(this, button)
+		if self.zodiacID then
+			local raceID, name, description, icon, atlas = C_ZodiacSign.GetZodiacSignInfo(self.zodiacID)
+			if name then
+				self.Parent.Tooltip:ShowText(this, name, description)
+				if IsGMAccount() then
+					self.Parent.Tooltip.TooltipFrame:AddLine(strconcat("ZodiacID: ", self.zodiacID), 0.4, 0.4, 0.4)
+					self.Parent.Tooltip.TooltipFrame:Show()
+				end
+			end
+		end
+	end)
 end
 
-
-
-function ezSpectator_ControlWorker:SetClass(Class, Size)
-    Size = Size or 17
-
-    self.CurrentAuraLevel = -1
+function ezSpectator_ControlWorker:SetClass(Class, iconSize)
+	self.iconSize = iconSize or 17
+	self.currentAuraPriority = 0
 
     if Class then
         self.Class = Class
     end
 
+	if self.zodiacIcon then
+		self.ControlIcon:SetTexture(self.zodiacIcon, self.iconSize, true)
+		return
+	end
+
     if self.Class then
         local OffsetTable = self.Parent.Data.ClassIconOffset[self.Class]
         if OffsetTable then
-            self.ControlIcon:SetTexture('Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes', Size, false)
+			self.ControlIcon:SetTexture('Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes', self.iconSize, false)
             local Left, Right, Top, Bottom = unpack(OffsetTable)
             Left = Left + (Right - Left) * 0.08
             Right = Right - (Right - Left) * 0.08
@@ -80,37 +90,67 @@ function ezSpectator_ControlWorker:SetClass(Class, Size)
     end
 end
 
+function ezSpectator_ControlWorker:SetZodiac(zodiacID)
+	if zodiacID == 0 then
+		self.zodiacID = nil
+		self.zodiacIcon = nil
 
+		if not self.auraInfo then
+			self:SetClass(self.Class, self.iconSize)
+		end
+	else
+		local raceID, name, description, icon, atlas = C_ZodiacSign.GetZodiacSignInfo(zodiacID)
+		if icon then
+			self.zodiacID = zodiacID
+			self.zodiacIcon = icon
 
-function ezSpectator_ControlWorker:Update(AuraFrame, Size)
-    Size = Size or 17
-
-    local IsAuraFound = false
-
-    if AuraFrame then
-        for _, AuraRecord in pairs(AuraFrame.AuraStack) do
-            if self.Parent.Data.ControlList[AuraRecord.Spell] ~= nil then
-                if self.Parent.Data.ControlList[AuraRecord.Spell] >= self.CurrentAuraLevel then
-                    IsAuraFound = true
-
-                    self.CurrentAura = AuraRecord
-                    self.CurrentAuraLevel = self.Parent.Data.ControlList[AuraRecord.Spell]
-                end
-            end
-        end
-    end
-
-    if IsAuraFound then
-        local _, _, AuraTexture = GetSpellInfo(self.CurrentAura.Spell)
-        self.ControlIcon:SetTexture(AuraTexture, Size, true)
-        self:DoAnimate(true)
-    else
-        self:SetClass(nil, Size)
-        self:DoAnimate(false)
-    end
+			if not self.auraInfo then
+				self.ControlIcon:SetTexture(self.zodiacIcon, self.iconSize, true)
+			end
+		end
+	end
 end
 
+function ezSpectator_ControlWorker:Reset()
+	self.iconSize = 17
+	self.zodiacID = nil
+	self.zodiacIcon = nil
+	self:ResetIcon()
+end
 
+function ezSpectator_ControlWorker:ResetIcon(iconSize)
+	self.iconSize = iconSize or 17
+	self.auraPriority = 0
+	self.auraInfo = nil
+	self.ControlIcon.Cooldown:Clear()
+	self:SetClass(nil, iconSize)
+--	self:DoAnimate(false)
+end
+
+function ezSpectator_ControlWorker:Update(auraWidget, iconSize)
+	self.iconSize = iconSize or 17
+
+	local priority, auraInfo = auraWidget:GetBestCrowdControlAura(self.auraPriority, self.auraInfo)
+	if auraInfo then
+		if self.auraInfo
+		and self.auraInfo.spellID == auraInfo.spellID
+		and self.auraInfo.casterGUID == auraInfo.casterGUID
+		then
+			-- same aura
+			return
+		end
+
+		self.auraPriority = priority
+		self.auraInfo = auraInfo
+
+		local _, _, spellIcon = GetSpellInfo(auraInfo.spellID)
+		self.ControlIcon:SetTexture(spellIcon or [[Interface\Icons\INV_Misc_QuestionMark]], self.iconSize, true)
+		self.ControlIcon.Cooldown:SetCooldown(auraInfo.castTime, auraInfo.duration / 1000)
+	--	self:DoAnimate(true)
+	elseif self.auraInfo then
+		self:ResetIcon(iconSize)
+	end
+end
 
 function ezSpectator_ControlWorker:DoAnimate(Value)
     if not self.IsAnimated and Value then

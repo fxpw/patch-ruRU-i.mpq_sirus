@@ -1353,22 +1353,6 @@
 						</Frames>
 					</Frame>
 				</Frames>
-				<Scripts>
-					<OnLoad>
-						self.factionEmblem = {
-							[PLAYER_FACTION_GROUP.Horde] = {0.6416015625, 0.689453125, 0.60546875, 0.73046875},
-							[PLAYER_FACTION_GROUP.Alliance] = {0.697265625, 0.7451171875, 0.60546875, 0.73046875},
-							[PLAYER_FACTION_GROUP.Renegade] = {0.7529296875, 0.80078125, 0.60546875, 0.73046875}
-						}
-					</OnLoad>
-					<OnShow>
-						local factionID = C_Unit.GetFactionID("player")
-
-						if factionID then
-							self.Container.Faction:SetTexCoord(unpack(self.factionEmblem[factionID]))
-						end
-					</OnShow>
-				</Scripts>
 			</Frame>
 			<Frame name="$parentStatistics" parentKey="Statistics" hidden="true" setAllPoints="true">
 				<Frames>
@@ -1740,7 +1724,7 @@
 				</Frames>
 				<Scripts>
 					<OnLoad>
-						Mixin(self, PVPLadderInfoFrameMixin, InspectLadderMixin)
+						Mixin(self, InspectLadderMixin)
 						self:OnLoad()
 						self:InitializeScrollFrame()
 					</OnLoad>

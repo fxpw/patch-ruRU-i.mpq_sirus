@@ -112,7 +112,7 @@ end
 local function SetFilteredHeirlooms()
 	table.wipe(HEIRLOOMS);
 
-	local sourceFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_HEIRLOOM_SOURCE_FILTERS")) or 0;
+	local sourceFiltersFlag = tonumber(GetCVar("heirloomSourceFilters")) or 0;
 	local classFlag = CLASS_FILTER ~= 0 and bit.lshift(1, CLASS_FILTER - 1);
 	local specFlag = SPEC_FILTER ~= 0 and HEIRLOOM_SPEC_ROLE_FLAG[SPEC_FILTER];
 	local isGM = IsGMAccount()
@@ -141,8 +141,8 @@ frame:RegisterEvent("VARIABLES_LOADED");
 frame:RegisterEvent("PLAYER_LOGIN");
 frame:SetScript("OnEvent", function(_, event)
 	if event == "VARIABLES_LOADED" then
-		COLLECTED_SHOWN = not C_CVar:GetCVarBitfield("C_CVAR_HEIRLOOM_COLLECTED_FILTERS", HEIRLOOM_COLLECTED);
-		UNCOLLECTED_SHOWN = not C_CVar:GetCVarBitfield("C_CVAR_HEIRLOOM_COLLECTED_FILTERS", HEIRLOOM_UNCOLLECTED);
+		COLLECTED_SHOWN = not GetCVarBitfield("heirloomCollectedFilters", HEIRLOOM_COLLECTED);
+		UNCOLLECTED_SHOWN = not GetCVarBitfield("heirloomCollectedFilters", HEIRLOOM_UNCOLLECTED);
 	elseif event == "PLAYER_LOGIN" then
 		for i = 1, #COLLECTION_HEIRLOOMDATA do
 			local data = COLLECTION_HEIRLOOMDATA[i];
@@ -295,7 +295,7 @@ function C_Heirloom.SetHeirloomSourceFilter(index, checked)
 	end
 
 	if VALID_SOURCE_FILTERS[index] then
-		C_CVar:SetCVarBitfield("C_CVAR_HEIRLOOM_SOURCE_FILTERS", index, not checked);
+		SetCVarBitfield("heirloomSourceFilters", index, not checked);
 
 		SetFilteredHeirlooms();
 	end
@@ -309,7 +309,7 @@ function C_Heirloom.GetHeirloomSourceFilter(index)
 		error("Usage: local isChecked = C_Heirloom.GetHeirloomSourceFilter(index)", 2);
 	end
 
-	if C_CVar:GetCVarBitfield("C_CVAR_HEIRLOOM_SOURCE_FILTERS", index) then
+	if GetCVarBitfield("heirloomSourceFilters", index) then
 		return false;
 	end
 
@@ -326,7 +326,7 @@ function C_Heirloom.SetCollectedHeirloomFilter(checked)
 	end
 
 	if checked ~= COLLECTED_SHOWN then
-		C_CVar:SetCVarBitfield("C_CVAR_HEIRLOOM_COLLECTED_FILTERS", HEIRLOOM_COLLECTED, not checked);
+		SetCVarBitfield("heirloomCollectedFilters", HEIRLOOM_COLLECTED, not checked);
 
 		COLLECTED_SHOWN = checked;
 
@@ -348,7 +348,7 @@ function C_Heirloom.SetUncollectedHeirloomFilter(checked)
 	end
 
 	if checked ~= UNCOLLECTED_SHOWN then
-		C_CVar:SetCVarBitfield("C_CVAR_HEIRLOOM_COLLECTED_FILTERS", HEIRLOOM_UNCOLLECTED, not checked);
+		SetCVarBitfield("heirloomCollectedFilters", HEIRLOOM_UNCOLLECTED, not checked);
 
 		UNCOLLECTED_SHOWN = checked;
 
@@ -414,8 +414,8 @@ end
 C_HeirloomInfo = {};
 
 function C_HeirloomInfo.SetDefaultFilters()
-	C_CVar:SetValue("C_CVAR_HEIRLOOM_COLLECTED_FILTERS", "0");
-	C_CVar:SetValue("C_CVAR_HEIRLOOM_SOURCE_FILTERS", "0");
+	SetCVar("heirloomCollectedFilters", "0");
+	SetCVar("heirloomSourceFilters", "0");
 
 	COLLECTED_SHOWN = true;
 	UNCOLLECTED_SHOWN = true;
@@ -424,7 +424,7 @@ function C_HeirloomInfo.SetDefaultFilters()
 end
 
 function C_HeirloomInfo.IsUsingDefaultFilters()
-	if tonumber(C_CVar:GetValue("C_CVAR_HEIRLOOM_COLLECTED_FILTERS")) ~= 0 or tonumber(C_CVar:GetValue("C_CVAR_HEIRLOOM_SOURCE_FILTERS")) ~= 0 then
+	if tonumber(GetCVar("heirloomCollectedFilters")) ~= 0 or tonumber(GetCVar("heirloomSourceFilters")) ~= 0 then
 		return false;
 	end
 
@@ -456,8 +456,8 @@ function C_HeirloomInfo.SetAllCollectionFilters(checked)
 		checked = not not checked;
 	end
 
-	C_CVar:SetValue("C_CVAR_HEIRLOOM_COLLECTED_FILTERS", HEIRLOOM_COLLECTED);
-	C_CVar:SetValue("C_CVAR_HEIRLOOM_COLLECTED_FILTERS", HEIRLOOM_UNCOLLECTED);
+	SetCVarBitfield("heirloomCollectedFilters", HEIRLOOM_COLLECTED, true);
+	SetCVarBitfield("heirloomCollectedFilters", HEIRLOOM_UNCOLLECTED, true);
 
 	SetFilteredHeirlooms();
 end
@@ -472,7 +472,7 @@ function C_HeirloomInfo.SetAllSourceFilters(checked)
 	end
 
 	for index in pairs(VALID_SOURCE_FILTERS) do
-		C_CVar:SetCVarBitfield("C_CVAR_HEIRLOOM_SOURCE_FILTERS", index, not checked);
+		SetCVarBitfield("heirloomSourceFilters", index, not checked);
 	end
 
 	SetFilteredHeirlooms();

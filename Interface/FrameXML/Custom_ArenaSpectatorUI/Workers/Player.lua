@@ -1,7 +1,12 @@
 ezSpectator_PlayerWorker = {}
 ezSpectator_PlayerWorker.__index = ezSpectator_PlayerWorker
 
---noinspection LuaOverlyLongMethod
+local FACTION_OVERRIDE_BY_DEBUFFS = FACTION_OVERRIDE_BY_DEBUFFS
+local S_CATEGORY_SPELL_ID = S_CATEGORY_SPELL_ID
+local S_VIP_STATUS_DATA = S_VIP_STATUS_DATA
+local S_PREMIUM_SPELL_ID = S_PREMIUM_SPELL_ID
+local ZODIAC_DEBUFFS = ZODIAC_DEBUFFS
+
 function ezSpectator_PlayerWorker:Create(Parent)
     local self = {}
     setmetatable(self, ezSpectator_PlayerWorker)
@@ -9,90 +14,123 @@ function ezSpectator_PlayerWorker:Create(Parent)
     self.Parent = Parent
     self.IsHealer = false
 
-    self.SpecWorker = ezSpectator_SpecWorker:Create(self.Parent)
-
     self.SmallFrame = ezSpectator_SmallFrame:Create(self.Parent, self)
     self.SmallFrame:Hide()
+	self.SmallFrame.SpellFrame = ezSpectator_SpellFrame:Create(self.Parent, 3)
 
     self.SmallControlWorker = ezSpectator_ControlWorker:Create(self.Parent)
     self.SmallControlWorker:BindIcon(self.SmallFrame.ControlIcon)
 
-    self.PlayerFrame = ezSpectator_BindFrame:Create(self.Parent)
-    self.PlayerFrame:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOM', -10, 50)
-    self.PlayerFrame.SpellFrame = ezSpectator_SpellFrame:Create(self.Parent, false, 'TOPRIGHT', self.PlayerFrame.Normal, 'TOPLEFT', 0, -19)
+	self.PlayerFrame = ezSpectator_BindFrame:Create(self.Parent, self, false)
+	self.PlayerFrame:SetPoint("BOTTOMRIGHT", ArenaSpectatorFrame, "BOTTOM", -10, 20)
     self.PlayerFrame:Hide()
+	self.PlayerFrame.AuraFrame:SetAlignment(true, false)
+--	self.PlayerFrame.AuraFrame:SetShowBuffs(false)
+	self.PlayerFrame.SpellFrame = ezSpectator_SpellFrame:Create(self.Parent, 4)
+	self.PlayerFrame.SpellFrame:SetPoint("TOPRIGHT", self.PlayerFrame.Normal, "TOPLEFT", 0, -19)
+	self.PlayerFrame.SpellFrame:SetAlignment(false)
 
     self.PlayerControlWorker = ezSpectator_ControlWorker:Create(self.Parent)
     self.PlayerControlWorker:BindIcon(self.PlayerFrame.ControlIcon)
 
-    self.VictimFrame = ezSpectator_BindFrame:Create(self.Parent)
-    self.VictimFrame:SetPoint('BOTTOMLEFT', UIParent, 'BOTTOM', 10, 50)
-    self.VictimFrame.SpellFrame = ezSpectator_SpellFrame:Create(self.Parent, true, 'TOPLEFT', self.VictimFrame.Normal, 'TOPRIGHT', 0, -19)
+	self.VictimFrame = ezSpectator_BindFrame:Create(self.Parent, self, true)
+	self.VictimFrame:SetPoint("BOTTOMLEFT", ArenaSpectatorFrame, "BOTTOM", 10, 20)
     self.VictimFrame:Hide()
+	self.VictimFrame.AuraFrame:SetAlignment(false, false)
+--	self.PlayerFrame.AuraFrame:SetShowBuffs(false)
+	self.VictimFrame.SpellFrame = ezSpectator_SpellFrame:Create(self.Parent, 4)
+	self.VictimFrame.SpellFrame:SetPoint("TOPLEFT", self.VictimFrame.Normal, "TOPRIGHT", 0, -19)
+	self.VictimFrame.SpellFrame:SetAlignment(true)
 
     self.VictimControlWorker = ezSpectator_ControlWorker:Create(self.Parent)
     self.VictimControlWorker:BindIcon(self.VictimFrame.ControlIcon)
 
     self.CastQueue = ezSpectator_DataStack:Create('FIFO')
 
-    self.CurrentTarget = nil
-    self.IsNicknameSet = false
-    self.Nickname = nil
-    self.IsClassSet = false
-    self.Class = nil
-    self.IsPowerTypeSet = false
-    self.IsMaxHealthSet = false
-    self.MaxHealth = nil
-    self.IsMaxPowerSet = false
-    self.IsHealthSet = false
-    self.Health = nil
-    self.IsPowerSet = false
-    self.IsTeamSet = false
-    self.Team = nil
-    self.TeamFrame = nil
-    self.Nameplate = nil
+	self.SpellCooldown = ezSpectator_CooldownFrame:Create(self.Parent)
+	self.SpellCooldown:SetDisplaySettings(6, 3)
+	self.SpellCooldown:Hide()
 
-    self.IsLocked = false
-    self.IsDead = false
+	self:Reset()
 
     return self
 end
-
-
 
 function ezSpectator_PlayerWorker:Hide()
     self.SmallFrame:Hide()
     self.PlayerFrame:Hide()
     self.VictimFrame:Hide()
+	self.SpellCooldown:Hide()
 end
-
-
 
 function ezSpectator_PlayerWorker:Show()
     self.SmallFrame:Show()
 end
 
-
-
 function ezSpectator_PlayerWorker:IsShown()
     return self.SmallFrame.Backdrop:IsShown()
 end
 
+function ezSpectator_PlayerWorker:Reset()
+	self.CastQueue:Reset()
+	self.SmallFrame:Reset()
+	self.PlayerFrame:Reset()
+	self.VictimFrame:Reset()
 
-function ezSpectator_PlayerWorker:IsReady()
-    if self.SmallFrame.IsLocked then
-        return false
-    end
+	self.NameplateObject = nil
+	self.TargetObject = nil
+	self.TeamFrame = nil
 
-    return self.IsNicknameSet and self.IsClassSet and self.IsPowerTypeSet and self.IsMaxHealthSet and self.IsMaxPowerSet and self.IsHealthSet and self.IsPowerSet and self.IsTeamSet
+	self.isHidden = false
+	self.IsDead = false
+
+	self.IsNicknameSet = false
+	self.Nickname = nil
+
+	self.IsClassSet = false
+	self.Class = nil
+
+	self.IsMaxHealthSet = false
+	self.MaxHealth = nil
+
+	self.IsHealthSet = false
+	self.Health = nil
+
+	self.IsMaxPowerSet = false
+	self.IsPowerTypeSet = false
+	self.IsPowerSet = false
+
+	self.IsTeamSet = false
+	self.Team = nil
 end
 
+function ezSpectator_PlayerWorker:ShowOnDataReady()
+	if not self:IsShown() and self:IsReady() then
+		self:Show()
+	end
+end
 
+function ezSpectator_PlayerWorker:IsReady()
+	if self.isHidden then
+		return false
+	end
+
+	return self.IsTeamSet and self.IsNicknameSet and self.IsClassSet and self.IsPowerTypeSet and self.IsMaxHealthSet and self.IsMaxPowerSet and self.IsHealthSet and self.IsPowerSet
+end
+
+function ezSpectator_PlayerWorker:GetSpecData(specIndex)
+	if not self.Class or not specIndex or specIndex == 0 then
+		return ""
+	end
+
+	local specID, name, description, icon, roleFlag, isRecommended, specNum = GetSpecializationInfoForClassID(tonumber(self.Class), specIndex)
+	return name, icon, bit.band(roleFlag, S_SPECIALIZATION_ROLE_HEAL_FLAG)
+end
 
 function ezSpectator_PlayerWorker:SetNickname(Nickname)
-    if self.SmallFrame.IsLocked then
-        return
-    end
+	if self.isHidden then
+		return
+	end
 
     self.Nickname = Nickname
     self.IsNicknameSet = true
@@ -100,14 +138,14 @@ function ezSpectator_PlayerWorker:SetNickname(Nickname)
     self.SmallFrame.HealthBar:SetNickname(Nickname)
     self.PlayerFrame.HealthBar:SetNickname(Nickname)
     self.VictimFrame.HealthBar:SetNickname(Nickname)
+
+	self:ShowOnDataReady()
 end
 
-
-
 function ezSpectator_PlayerWorker:SetClass(Class)
-    if self.SmallFrame.IsLocked then
-        return
-    end
+	if self.isHidden then
+		return
+	end
 
     self.Class = Class
     self.IsClassSet = true
@@ -119,27 +157,27 @@ function ezSpectator_PlayerWorker:SetClass(Class)
     self.SmallFrame.HealthBar:SetClass(Class)
     self.PlayerFrame.HealthBar:SetClass(Class)
     self.VictimFrame.HealthBar:SetClass(Class)
+
+	self:ShowOnDataReady()
 end
 
-
-
 function ezSpectator_PlayerWorker:SetPowerType(Power)
-    if self.SmallFrame.IsLocked then
-        return
-    end
+	if self.isHidden then
+		return
+	end
 
     self.IsPowerTypeSet = true
     self.SmallFrame.PowerBar:SetPowerType(Power)
     self.PlayerFrame.PowerBar:SetPowerType(Power)
     self.VictimFrame.PowerBar:SetPowerType(Power)
+
+	self:ShowOnDataReady()
 end
 
-
-
 function ezSpectator_PlayerWorker:SetMaxHealth(Value)
-    if self.SmallFrame.IsLocked then
-        return
-    end
+	if self.isHidden then
+		return
+	end
 
     self.MaxHealth = Value
     self.IsMaxHealthSet = true
@@ -147,27 +185,27 @@ function ezSpectator_PlayerWorker:SetMaxHealth(Value)
     self.SmallFrame.HealthBar:SetMaxValue(Value)
     self.PlayerFrame.HealthBar:SetMaxValue(Value)
     self.VictimFrame.HealthBar:SetMaxValue(Value)
+
+	self:ShowOnDataReady()
 end
 
-
-
 function ezSpectator_PlayerWorker:SetMaxPower(Value)
-    if self.SmallFrame.IsLocked then
-        return
-    end
+	if self.isHidden then
+		return
+	end
 
     self.IsMaxPowerSet = true
     self.SmallFrame.PowerBar:SetMaxValue(Value)
     self.PlayerFrame.PowerBar:SetMaxValue(Value)
     self.VictimFrame.PowerBar:SetMaxValue(Value)
+
+	self:ShowOnDataReady()
 end
 
-
-
 function ezSpectator_PlayerWorker:SetHealth(Value)
-    if self.SmallFrame.IsLocked then
-        return
-    end
+	if self.isHidden then
+		return
+	end
 
     self.Health = Value
     self.IsHealthSet = true
@@ -175,143 +213,150 @@ function ezSpectator_PlayerWorker:SetHealth(Value)
     self.SmallFrame.HealthBar:SetValue(Value)
     self.PlayerFrame.HealthBar:SetValue(Value)
     self.VictimFrame.HealthBar:SetValue(Value)
+
+	self:ShowOnDataReady()
 end
 
-
-
 function ezSpectator_PlayerWorker:SetPower(Value)
-    if self.SmallFrame.IsLocked then
-        return
-    end
+	if self.isHidden then
+		return
+	end
 
     self.IsPowerSet = true
     self.SmallFrame.PowerBar:SetValue(Value)
     self.PlayerFrame.PowerBar:SetValue(Value)
     self.VictimFrame.PowerBar:SetValue(Value)
+
+	self:ShowOnDataReady()
 end
 
+function ezSpectator_PlayerWorker:SetCast(spellID, castTime)
+	if self.isHidden or not spellID or not castTime then
+		return false
+	end
 
+	if (self.Parent.Data.Trinkets[spellID] ~= nil) then
+		local now = C_ArenaSpectator.GetMatchTime()
+		local cooldownTime = self.Parent.Data.Trinkets[spellID]
 
-function ezSpectator_PlayerWorker:SetCast(Spell, Time)
-    if self.SmallFrame.IsLocked or not Spell or not Time then
-        return false
-    end
+		self.SmallFrame.SpellFrame:LogSpellCast(spellID)
+		self.SmallFrame.TrinketIcon:SetCooldown(now, cooldownTime)
 
-    if (self.Parent.Data.Trinkets[Spell] ~= nil) then
-        self.SmallFrame.SpellFrame:Push(Spell)
-        self.SmallFrame.TrinketIcon:SetCooldown(GetTime(), self.Parent.Data.Trinkets[Spell])
+		self.PlayerFrame.SpellFrame:LogSpellCast(spellID)
+		self.PlayerFrame.TrinketIcon:SetCooldown(now, cooldownTime)
 
-        self.PlayerFrame.SpellFrame:Push(Spell)
-        self.PlayerFrame.TrinketIcon:SetCooldown(GetTime(), self.Parent.Data.Trinkets[Spell])
+		self.VictimFrame.SpellFrame:LogSpellCast(spellID)
+		self.VictimFrame.TrinketIcon:SetCooldown(now, cooldownTime)
+		return true
+	end
 
-        self.VictimFrame.SpellFrame:Push(Spell)
-        self.VictimFrame.TrinketIcon:SetCooldown(GetTime(), self.Parent.Data.Trinkets[Spell])
-        return true
-    end
+	if castTime == Enum.ArenaSpectator.CastType.Success then
+		self.SmallFrame.SpellFrame:LogSpellCast(spellID)
+		self.PlayerFrame.SpellFrame:LogSpellCast(spellID)
+		self.VictimFrame.SpellFrame:LogSpellCast(spellID)
+	end
 
-    if Time == self.Parent.Data.CAST_SUCCESS then
-	--	self.SmallFrame.SpellFrame:Push(Spell)
-        self.PlayerFrame.SpellFrame:Push(Spell)
-        self.VictimFrame.SpellFrame:Push(Spell)
-    end
+	local IsCastState = self.Parent.Data.CastInfo[castTime] ~= nil
 
-    local IsCastState = self.Parent.Data.CastInfo[Time] ~= nil
+	if self.SmallFrame:IsCastProgressing() and not IsCastState then
+		if spellID and castTime then
+			local castInfo = {}
+			castInfo.spellID = spellID
+			castInfo.castTime = castTime
+			castInfo.startTime = C_ArenaSpectator.GetMatchTime()
 
-    if self.SmallFrame:IsCastProgressing() and not IsCastState then
-        if Spell and Time then
-            local CastRecord = {}
-            CastRecord.Spell = Spell
-            CastRecord.Time = Time
-            CastRecord.Added = GetTime()
+			self.CastQueue:Push(castInfo)
+		end
 
-            self.CastQueue:Push(CastRecord)
-        end
+		return false
+	else
+		local castElapsed = 0
+		if not IsCastState then
+			local castInfo = self.CastQueue:Pop()
+			if castInfo then
+				spellID = castInfo.spellID
+				castTime = castInfo.castTime
+				castElapsed = (C_ArenaSpectator.GetMatchTime() - castInfo.startTime)
+			end
+		end
 
-        return false
-    else
-        local Shift = 0
-        if not IsCastState then
-            local CastRecord = self.CastQueue:Pop()
-            if CastRecord then
-                Spell = CastRecord.Spell
-                Time = CastRecord.Time
-                Shift = (GetTime() - CastRecord.Added)
-            end
-        end
+		self.SmallFrame.CastFrame:ShowCast(spellID, castTime, castElapsed)
+		self.PlayerFrame.CastFrame:ShowCast(spellID, castTime, castElapsed)
+		self.VictimFrame.CastFrame:ShowCast(spellID, castTime, castElapsed)
 
-        self.SmallFrame.CastFrame:ShowCast(Spell, Time, Shift)
-        if self.PlayerFrame:IsShown() then
-            self.PlayerFrame.CastFrame:ShowCast(Spell, Time, Shift)
-        end
-        if self.VictimFrame:IsShown() then
-            self.VictimFrame.CastFrame:ShowCast(Spell, Time, Shift)
-        end
-        if self.Nameplate then
-            self.Nameplate:SetCast(Spell, Time, Shift)
-        end
+		if self.NameplateObject then
+			self.NameplateObject:ShowCast(spellID, castTime, castElapsed)
+		end
 
-        return true
-    end
+		return true
+	end
 end
 
+function ezSpectator_PlayerWorker:SetTeam(teamID)
+	if self.isHidden or not teamID or self.IsTeamSet then
+		return
+	end
 
+	if teamID == 67 then
+		teamID = 1
+		self.TeamFrame = self.Parent.Interface:GetTeam(teamID)
+	elseif teamID == 469 then
+		teamID = 2
+		self.TeamFrame = self.Parent.Interface:GetTeam(teamID)
+	else
+		self.TeamFrame = nil
+		return
+	end
 
-function ezSpectator_PlayerWorker:SetTeam(Value)
-    if self.SmallFrame.IsLocked then
-        return
-    end
+	self.Team = teamID
+	self.IsTeamSet = true
 
-    if not Value or self.IsTeamSet then
-        return
-    end
+	table.insert(self.Parent.Interface.Teams[teamID], self)
+	self:SetPosition(teamID, #self.Parent.Interface.Teams[teamID])
 
-    if Value == 67 then
-        Value = 1
-        self.TeamFrame = self.Parent.Interface.TopFrame.LeftTeam
-    elseif Value == 469 then
-        --noinspection UnusedDef
-        Value = 2
-        self.TeamFrame = self.Parent.Interface.TopFrame.RightTeam
-    else
-        self.TeamFrame = nil
-        return
-    end
-
-    self.Team = Value
-    self.IsTeamSet = true
-
-    table.insert(self.Parent.Interface.Teams[Value], self)
-    self:SetPosition(Value, #self.Parent.Interface.Teams[Value])
+	self:ShowOnDataReady()
 end
 
+function ezSpectator_PlayerWorker:SetPosition(teamID, playerIndex)
+	if self.isHidden then
+		return
+	end
 
+	local offsetY = ((playerIndex - 1) * 180 + 125) * -1
 
-function ezSpectator_PlayerWorker:SetPosition(Team, Position)
-    if self.SmallFrame.IsLocked then
-        return
-    end
+	self.SmallFrame.teamID = teamID or -1
 
-    local FramePosition = ((Position - 1) * 173 + 125) * -1
+	self.SmallFrame:ClearAllPoints()
+	self.SmallFrame.SpellFrame:ClearAllPoints()
+	self.SpellCooldown.MainFrame:ClearAllPoints()
 
-    self.SmallFrame:ClearAllPoints()
-    self.SmallFrame.teamID = Team or -1
-    if Team == 1 then
-        self.SmallFrame:SetPoint('TOPLEFT', UIParent, 'TOPLEFT', 0, FramePosition)
-        self.SmallFrame.SpellFrame = ezSpectator_SpellFrame:Create(self.Parent, true, 'TOPLEFT', self.SmallFrame.Normal, 'TOPRIGHT', 0, -19)
-    end
+	if teamID == 1 then
+		self.SmallFrame:SetPoint("TOPLEFT", ArenaSpectatorFrame, "TOPLEFT", 0, offsetY)
+		self.SmallFrame.SpellFrame:SetPoint("TOPLEFT", self.SmallFrame.Normal, "TOPRIGHT", 0, -19)
+		self.SpellCooldown.MainFrame:SetPoint("TOPLEFT", self.SmallFrame.Normal, "BOTTOMLEFT", 2, -12)
 
-    if Team == 2 then
-        self.SmallFrame.SpellFrame = ezSpectator_SpellFrame:Create(self.Parent, false, 'TOPRIGHT', self.SmallFrame.Normal, 'TOPLEFT', 0, -19)
-        self.SmallFrame:SetPoint('TOPRIGHT', UIParent, 'TOPRIGHT', 0, FramePosition)
-    end
+		if self.Parent.DRAW_AURAS_FOR_SMALL_FRAMES then
+			self.SmallFrame.AuraFrame:SetAlignment(true, true)
+		end
+	elseif teamID == 2 then
+		self.SmallFrame:SetPoint("TOPRIGHT", ArenaSpectatorFrame, "TOPRIGHT", 0, offsetY)
+		self.SmallFrame.SpellFrame:SetPoint("TOPRIGHT", self.SmallFrame.Normal, "TOPLEFT", 0, -19)
+		self.SpellCooldown.MainFrame:SetPoint("TOPRIGHT", self.SmallFrame.Normal, "BOTTOMRIGHT", -2, -12)
+
+		if self.Parent.DRAW_AURAS_FOR_SMALL_FRAMES then
+			self.SmallFrame.AuraFrame:SetAlignment(false, true)
+		end
+	end
+
+	self.SmallFrame.SpellFrame:SetAlignment(teamID == 1)
+	self.SpellCooldown:SetAlignment(teamID == 1)
+	self.SpellCooldown:Show()
 end
-
-
 
 function ezSpectator_PlayerWorker:SetStatus(Value)
-    if self.SmallFrame.IsLocked then
-        return
-    end
+	if self.isHidden then
+		return
+	end
 
     self.IsDead = Value == 0
 
@@ -321,7 +366,9 @@ function ezSpectator_PlayerWorker:SetStatus(Value)
 
         self.SmallFrame:SetAlpha(0.5)
         self.SmallFrame.HealthBar:SetOverride(ARENA_SPECTATOR_PLAYER_DEAD)
-        self.SmallFrame.AuraFrame:Hide()
+		if self.Parent.DRAW_AURAS_FOR_SMALL_FRAMES then
+			self.SmallFrame.AuraFrame:Hide()
+		end
 
         self.PlayerFrame:SetAlpha(0.5)
         self.PlayerFrame.HealthBar:SetOverride(ARENA_SPECTATOR_PLAYER_DEAD)
@@ -343,39 +390,38 @@ function ezSpectator_PlayerWorker:SetStatus(Value)
         self.VictimFrame.HealthBar:SetOverride(nil)
 
         if self:IsReady() then
-            self.SmallFrame.AuraFrame:Show()
+			if self.Parent.DRAW_AURAS_FOR_SMALL_FRAMES then
+				self.SmallFrame.AuraFrame:Show()
+			end
             self.PlayerFrame.AuraFrame:Show()
             self.VictimFrame.AuraFrame:Show()
         end
     end
 end
 
+function ezSpectator_PlayerWorker:SetTarget(targetName)
+	if self.isHidden then
+		return
+	end
 
+	local targetObject = self.Parent.Interface.Players[targetName]
+	if targetObject then
+		self.TargetObject = targetObject
+		self.SmallFrame.Target:SetUnit(targetObject)
+	end
 
-function ezSpectator_PlayerWorker:SetTarget(Value)
-    if self.SmallFrame.IsLocked then
-        return
-    end
-
-    if Value then
-        self.CurrentTarget = Value
-        self.SmallFrame.Target:SetUnit(Value)
-    end
-
-    if self.CurrentTarget and self.PlayerFrame:IsShown() then
+	if self.TargetObject and self.PlayerFrame:IsShown() then
         self.Parent.Interface:ResetVictims()
-        self.CurrentTarget.VictimFrame:Show()
+		self.TargetObject.VictimFrame:Show()
     end
 end
 
+function ezSpectator_PlayerWorker:SetSpec(specIndex)
+	if self.isHidden then
+		return
+	end
 
-
-function ezSpectator_PlayerWorker:SetSpec(Value)
-    if self.SmallFrame.IsLocked then
-        return
-    end
-
-    local SpecName, SpecIcon, IsHealer = self.SpecWorker:GetData(self.Class, Value)
+	local SpecName, SpecIcon, IsHealer = self:GetSpecData(specIndex)
     self.IsHealer = IsHealer
 
     self.SmallFrame.HealthBar:SetDescription(SpecName)
@@ -387,33 +433,59 @@ function ezSpectator_PlayerWorker:SetSpec(Value)
     self.VictimFrame.SpecIcon:SetTexture(SpecIcon or "Interface\\ICONS\\INV_Misc_QuestionMark", 17, true)
 end
 
+function ezSpectator_PlayerWorker:SetAura(spellID, isRemoved, ...)
+	if self.isHidden then
+		return
+	end
 
+	if self.Parent.Data.AuraBlockList[spellID] then
+		return
+	end
 
-function ezSpectator_PlayerWorker:SetAura(...)
-    if self.SmallFrame.IsLocked then
-        return
-    end
+	if ZODIAC_DEBUFFS[spellID] then
+		local zodiacID
+		if isRemoved then
+			zodiacID = 0
+		else
+			zodiacID = ZODIAC_DEBUFFS[spellID]
+		end
 
-    self.SmallFrame.AuraFrame:SetAura(...)
-    self.PlayerFrame.AuraFrame:SetAura(...)
-    self.VictimFrame.AuraFrame:SetAura(...)
+		self.SmallControlWorker:SetZodiac(zodiacID)
+		self.PlayerControlWorker:SetZodiac(zodiacID)
+		self.VictimControlWorker:SetZodiac(zodiacID)
+		return
+	end
 
-    self.SmallControlWorker:Update(self.SmallFrame.AuraFrame)
+	if FACTION_OVERRIDE_BY_DEBUFFS[spellID]
+	or S_CATEGORY_SPELL_ID[spellID]
+	or S_VIP_STATUS_DATA[spellID]
+	or S_PREMIUM_SPELL_ID[spellID]
+	then
+		return
+	end
+
+	if not isRemoved and self.Parent.Data.AuraCooldown[spellID] then
+		self:SetAbilityCooldown(spellID, self.Parent.Data.AuraCooldown[spellID])
+	end
+
+	if self.Parent.DRAW_AURAS_FOR_SMALL_FRAMES then
+		self.SmallFrame.AuraFrame:SetAura(spellID, isRemoved, ...)
+	end
+	self.PlayerFrame.AuraFrame:SetAura(spellID, isRemoved, ...)
+	self.VictimFrame.AuraFrame:SetAura(spellID, isRemoved, ...)
+
+	self.SmallControlWorker:Update(self.PlayerFrame.AuraFrame)
     self.PlayerControlWorker:Update(self.PlayerFrame.AuraFrame)
     self.VictimControlWorker:Update(self.VictimFrame.AuraFrame)
 
-    if self.Nameplate then
-        self.Nameplate:SetAura()
-    end
+	if self.NameplateObject then
+		self.NameplateObject:SetAura()
+	end
 end
 
-
-
-function ezSpectator_PlayerWorker:SetLock(Value)
-    self.SmallFrame.IsLocked = Value == 1
+function ezSpectator_PlayerWorker:SetHidden(isLocked)
+	self.isHidden = isLocked
 end
-
-
 
 function ezSpectator_PlayerWorker:SetWinner(IsWinner)
     if IsWinner then
@@ -426,13 +498,13 @@ function ezSpectator_PlayerWorker:SetWinner(IsWinner)
         self.VictimFrame:SetAlpha(1)
         self.VictimFrame.HealthBar:SetOverride(ARENA_REPLAY_WIN)
     else
-        local LockState = self.SmallFrame.IsLocked
-        self.SmallFrame.IsLocked = false
+		local isHidden = self.isHidden
+		self.isHidden = false
 
         self:SetHealth(0)
         self:SetPower(0)
 
-        self.SmallFrame.IsLocked = LockState
+		self.isHidden = isHidden
 
         self.SmallFrame:SetAlpha(0.5)
         self.SmallFrame.HealthBar:SetOverride(ARENA_REPLAY_LOSE)
@@ -445,28 +517,24 @@ function ezSpectator_PlayerWorker:SetWinner(IsWinner)
     end
 end
 
-
-
-function ezSpectator_PlayerWorker:SetNameplate(Value)
-    self.Nameplate = Value
+function ezSpectator_PlayerWorker:SetNameplate(nameplateObject)
+	self.NameplateObject = nameplateObject
 end
 
-
-
-function ezSpectator_PlayerWorker:SetCooldown(Spell, Value)
-    if self.IsTeamSet then
-        self.TeamFrame:SetCooldown(self.Nickname, Spell, Value)
-    end
+function ezSpectator_PlayerWorker:GetNameplate()
+	return self.NameplateObject
 end
 
-
+function ezSpectator_PlayerWorker:SetAbilityCooldown(spellID, cooldownTime)
+	self.SpellCooldown:StartCooldown(self.Nickname, spellID, cooldownTime)
+end
 
 function ezSpectator_PlayerWorker:BindViewpoint()
-    SendServerMessage("ACMSG_AR_SPECTATE_VIEW", self.Nickname)
+	C_ArenaSpectator.SetUnitSpectation(self.Nickname)
     self.Parent.Interface:ResetViewpoint()
 
     self.Parent.Interface.Viewpoint = self
-    self.SmallFrame:SetAlpha(self.Parent.Data.ViewpointAlpha)
+	self.SmallFrame:SetAlpha(self.Parent.VIEWPOINT_ALPHA)
 
     self.PlayerFrame:Show()
     self:SetTarget(nil)

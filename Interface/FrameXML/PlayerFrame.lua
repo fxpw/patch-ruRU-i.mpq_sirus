@@ -24,7 +24,7 @@ function PlayerFrame_OnLoad(self)
 	self:RegisterEvent("UNIT_COMBAT");
 	self:RegisterEvent("UNIT_FACTION");
 	self:RegisterEvent("UNIT_MAXMANA");
-	self:RegisterEvent("UNIT_AURA")
+	self:RegisterUnitEvent("UNIT_AURA", "player")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 	self:RegisterEvent("PLAYER_ENTER_COMBAT");
 	self:RegisterEvent("PLAYER_LEAVE_COMBAT");
@@ -45,6 +45,8 @@ function PlayerFrame_OnLoad(self)
 	self:RegisterEvent("PLAYER_FLAGS_CHANGED");
 	self:RegisterEvent("PLAYER_ROLES_ASSIGNED");
 	self:RegisterEvent("VARIABLES_LOADED");
+
+	self:RegisterCustomEvent("PLAYER_PVP_STATS_UPDATE")
 
 	-- Chinese playtime stuff
 	self:RegisterEvent("PLAYTIME_CHANGED");
@@ -115,19 +117,14 @@ function PlayerFrame_UpdatePvPStatus()
 		return
 	end
 
-	local _, curRankID, curRankIconCoord, rankBackgroundTexCoord, isBattlegroundRanked
-
-	if GetRatedBattlegroundRankInfo then
-		_, _, curRankID, curRankIconCoord, _, _, _, _, _, _, _, _, _, _, rankBackgroundTexCoord = GetRatedBattlegroundRankInfo()
-		isBattlegroundRanked = curRankID ~= 0
-	end
+	local _, _, rankID, rankIconAtlas, _, _, _, _, _, _, _, _, _, _, backgroundAtlas = C_PvP.GetRatedBattlegroundRankInfo()
+	local isBattlegroundRanked = rankID ~= 0
 
 	local unitIsPlayer = UnitIsPlayer("player")
 
 	PlayerPVPIcon:SetShown(factionID ~= PLAYER_FACTION_GROUP.Renegade and unitIsPlayer)
 	PlayerRenegadeIcon:SetShown(factionID == PLAYER_FACTION_GROUP.Renegade and unitIsPlayer)
 	RatedBattlegroundRankFrame:SetShown(isBattlegroundRanked and unitIsPlayer)
-	RatedBattlegroundRankFrame.Icons:SetShown(curRankIconCoord)
 
 	PVPIconFrame:ClearAllPoints()
 
@@ -137,16 +134,17 @@ function PlayerFrame_UpdatePvPStatus()
 		PVPIconFrame:SetPoint("CENTER", RatedBattlegroundRankFrame, "CENTER", 10, -10)
 	end
 
-	if curRankIconCoord then
-		RatedBattlegroundRankFrame.Icons:SetTexCoord(unpack(curRankIconCoord))
+	if rankIconAtlas then
+		RatedBattlegroundRankFrame.Icons:SetAtlas(rankIconAtlas)
+		RatedBattlegroundRankFrame.Icons:Show()
+	else
+		RatedBattlegroundRankFrame.Icons:Hide()
 	end
+
+	RatedBattlegroundRankFrame.Background:SetAtlas(backgroundAtlas or "honorsystem-portrait-neutral-1")
 
 	if UnitIsPVPFreeForAll("player") then
 		PlayerPVPIcon:SetTexture("Interface\\TargetingFrame\\UI-PVP-FFA")
-
-		if rankBackgroundTexCoord then
-			RatedBattlegroundRankFrame.Background:SetTexCoord(unpack(rankBackgroundTexCoord["Neutral"]))
-		end
 
 		PlayerFrame.PVPTooltipTitle = PVPFFA
 		PlayerFrame.PVPTooltipText = NEWBIE_TOOLTIP_PVPFFA
@@ -155,10 +153,6 @@ function PlayerFrame_UpdatePvPStatus()
 		PlayerPVPTimerText.timeLeft = nil
 	elseif factionGroup then
 		PlayerPVPIcon:SetTexture("Interface\\TargetingFrame\\UI-PVP-"..factionGroup)
-
-		if rankBackgroundTexCoord and rankBackgroundTexCoord[factionGroup] then
-			RatedBattlegroundRankFrame.Background:SetTexCoord(unpack(rankBackgroundTexCoord[factionGroup]))
-		end
 
 		PlayerFrame.PVPTooltipTitle = factionName
 		PlayerFrame.PVPTooltipText = _G["NEWBIE_TOOLTIP_"..strupper(factionGroup)]
@@ -287,6 +281,8 @@ function PlayerFrame_OnEvent(self, event, ...)
 		if ( PLAYER_FRAME_CASTBARS_SHOWN ) then
 			PlayerFrame_AttachCastBar();
 		end
+	elseif event == "PLAYER_PVP_STATS_UPDATE" then
+		PlayerFrame_UpdatePvPStatus()
 	end
 end
 

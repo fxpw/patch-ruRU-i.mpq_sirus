@@ -418,7 +418,7 @@ function BattlefieldMinimap_OnUpdate(self, elapsed)
 					flagY = -flagY * BattlefieldMinimap:GetHeight();
 					flagFrame:SetPoint("CENTER", "BattlefieldMinimap", "TOPLEFT", flagX, flagY);
 
-					local factionOverrideID = C_CacheInstance:Get("ASMSG_UPDATE_BATTLEFIELD_FLAG"..i)
+					local factionOverrideID = C_GlobalStorage.GetVar("ASMSG_UPDATE_BATTLEFIELD_FLAG"..i)
 					if factionOverrideID then
 						local factionName = factionOverrideID and SERVER_PLAYER_FACTION_GROUP[factionOverrideID]
 						flagToken = factionName.."Flag"

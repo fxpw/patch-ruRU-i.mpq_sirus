@@ -1,7 +1,6 @@
 ezSpectator_HealthBar = {}
 ezSpectator_HealthBar.__index = ezSpectator_HealthBar
 
---noinspection LuaOverlyLongMethod
 function ezSpectator_HealthBar:Create(Parent, DirectOrder, PersonalMode, FontSize, Width, Height, Scale, Point, RelativeFrame, RelativePoint, OffsetX, OffsetY)
     local self = {}
     setmetatable(self, ezSpectator_HealthBar)
@@ -17,7 +16,6 @@ function ezSpectator_HealthBar:Create(Parent, DirectOrder, PersonalMode, FontSiz
     self.CurrentValue = nil
     self.TargetValue = 0
 
-    self.Textures = ezSpectator_Textures:Create()
     self.Width = Width - 2
 
     self.Backdrop = CreateFrame('Frame', nil, ArenaSpectatorFrame)
@@ -26,7 +24,10 @@ function ezSpectator_HealthBar:Create(Parent, DirectOrder, PersonalMode, FontSiz
     self.Backdrop:SetSize(Width, Height)
     self.Backdrop:SetScale(Scale)
     self.Backdrop:SetPoint(Point, RelativeFrame, RelativePoint, OffsetX, OffsetY)
-    self.Textures:HealthBar_Backdrop(self.Backdrop)
+
+	self.Backdrop.texture = self.Backdrop:CreateTexture(nil, "BACKGROUND")
+	self.Backdrop.texture:SetAllPoints()
+	self.Backdrop.texture:SetTexture([[Interface/Custom/ArenaSpectator/HealthBar_Backdrop]])
 
     self.ProgressBar = CreateFrame('Frame', nil, ArenaSpectatorFrame)
     self.ProgressBar:SetFrameLevel(1)
@@ -34,7 +35,10 @@ function ezSpectator_HealthBar:Create(Parent, DirectOrder, PersonalMode, FontSiz
     self.ProgressBar:SetSize(self.Width, Height - 2)
     self.ProgressBar:SetScale(Scale)
     self.ProgressBar:SetPoint(Point, RelativeFrame, RelativePoint, OffsetX + 1, OffsetY - 1)
-    self.Textures:HealthBar_Normal(self.ProgressBar)
+
+	self.ProgressBar.texture = self.ProgressBar:CreateTexture(nil, "BACKGROUND")
+	self.ProgressBar.texture:SetAllPoints()
+	self.ProgressBar.texture:SetTexture([[Interface/Custom/ArenaSpectator/HealthBar_Normal]])
     self.ProgressBar.texture:SetVertexColor(1, 0, 0)
 
     self.Spark = CreateFrame('Frame', nil, self.ProgressBar)
@@ -43,9 +47,11 @@ function ezSpectator_HealthBar:Create(Parent, DirectOrder, PersonalMode, FontSiz
     self.Spark:SetSize(128, Height - 2)
     self.Spark:SetAlpha(0.75)
     self.Spark:SetPoint('TOP', self.ProgressBar, 'TOPRIGHT', 0, 0)
-    self.Textures:StatusBar_Spark(self.Spark)
-    self.Spark.texture:SetVertexColor(1, 0, 0)
     self.Spark:Hide()
+	self.Spark.texture = self.Spark:CreateTexture(nil, "BACKGROUND")
+	self.Spark.texture:SetAllPoints()
+	self.Spark.texture:SetTexture([[Interface/Custom/ArenaSpectator/StatusBar_Spark]])
+    self.Spark.texture:SetVertexColor(1, 0, 0)
 
     if self.IsLayerAnimated then
         self.AnimationDownBar = CreateFrame('Frame', nil, ArenaSpectatorFrame)
@@ -54,7 +60,10 @@ function ezSpectator_HealthBar:Create(Parent, DirectOrder, PersonalMode, FontSiz
         self.AnimationDownBar:SetSize(self.Width, Height - 2)
         self.AnimationDownBar:SetScale(Scale)
         self.AnimationDownBar:SetPoint(Point, RelativeFrame, RelativePoint, OffsetX + 1, OffsetY - 1)
-        self.Textures:HealthBar_Normal(self.AnimationDownBar)
+
+		self.AnimationDownBar.texture = self.AnimationDownBar:CreateTexture(nil, "BACKGROUND")
+		self.AnimationDownBar.texture:SetAllPoints()
+		self.AnimationDownBar.texture:SetTexture([[Interface/Custom/ArenaSpectator/HealthBar_Normal]])
         self.AnimationDownBar.texture:SetVertexColor(1, 0, 0)
 
         self.AnimationUpBar = CreateFrame('Frame', nil, ArenaSpectatorFrame)
@@ -63,7 +72,10 @@ function ezSpectator_HealthBar:Create(Parent, DirectOrder, PersonalMode, FontSiz
         self.AnimationUpBar:SetSize(0, Height - 2)
         self.AnimationUpBar:SetScale(Scale)
         self.AnimationUpBar:SetPoint('RIGHT', self.ProgressBar, 'RIGHT', 0, 0)
-        self.Textures:HealthBar_Normal(self.AnimationUpBar)
+
+		self.AnimationUpBar.texture = self.AnimationUpBar:CreateTexture(nil, "BACKGROUND")
+		self.AnimationUpBar.texture:SetAllPoints()
+		self.AnimationUpBar.texture:SetTexture([[Interface/Custom/ArenaSpectator/HealthBar_Normal]])
         self.AnimationUpBar.texture:SetVertexColor(0, 1, 0)
     end
 
@@ -73,7 +85,10 @@ function ezSpectator_HealthBar:Create(Parent, DirectOrder, PersonalMode, FontSiz
     self.Overlay:SetSize(Width, Height)
     self.Overlay:SetScale(Scale)
     self.Overlay:SetPoint(Point, RelativeFrame, RelativePoint, OffsetX, OffsetY)
-    self.Textures:HealthBar_Overlay(self.Overlay)
+
+	self.Overlay.texture = self.Overlay:CreateTexture(nil, "BACKGROUND")
+	self.Overlay.texture:SetAllPoints()
+	self.Overlay.texture:SetTexture([[Interface/Custom/ArenaSpectator/HealthBar_Overlay]])
 
     local TextOffset = 3 * Scale
     if FontSize >= 12 * Scale then
@@ -155,26 +170,24 @@ function ezSpectator_HealthBar:Create(Parent, DirectOrder, PersonalMode, FontSiz
     self.IsAnimatingUp = false
 
     self.UpdateFrame.ElapsedTick = 0
-    self.UpdateFrame:SetScript('OnUpdate', function(self, Elapsed)
-        self.ElapsedTick = self.ElapsedTick + Elapsed
+	self.UpdateFrame:SetScript("OnUpdate", function(this, elapsed)
+		this.ElapsedTick = this.ElapsedTick + elapsed
 
-        if self.ElapsedTick > 0.03 then
-            if self.Parent.IsAnimatingDown then
-                self.Parent:DecAnimatedValue()
-            end
+		if this.ElapsedTick > 0.03 then
+			if self.IsAnimatingDown then
+				self:DecAnimatedValue()
+			end
 
-            if self.Parent.IsAnimatingUp then
-                self.Parent:IncAnimatedValue()
-            end
+			if self.IsAnimatingUp then
+				self:IncAnimatedValue()
+			end
 
-            self.ElapsedTick = 0
-        end
-    end)
+			this.ElapsedTick = 0
+		end
+	end)
 
     return self
 end
-
-
 
 function ezSpectator_HealthBar:DecAnimatedValue()
     if self.IsLayerAnimated then
@@ -188,7 +201,7 @@ function ezSpectator_HealthBar:DecAnimatedValue()
                 self.AnimationDownBar:Show()
             end
         end
-        self.AnimationDownBar:SetWidth(self.Parent.Data:SafeSize(AnimateWidth))
+		self.AnimationDownBar:SetWidth(AnimateWidth)
         self.AnimationDownBar.texture:SetTexCoord(0, self.Parent.Data:SafeTexCoord(AnimateWidth / self.Width), 0, 1)
 
         self.IsAnimatingDown = self.AnimationDownBar:GetWidth() >= self.ProgressBar:GetWidth()
@@ -207,8 +220,6 @@ function ezSpectator_HealthBar:DecAnimatedValue()
     end
 end
 
-
-
 function ezSpectator_HealthBar:IncAnimatedValue()
     if self.IsLayerAnimated then
         self.AnimationUpCycle = self.AnimationUpCycle + self.AnimationProgress
@@ -221,7 +232,7 @@ function ezSpectator_HealthBar:IncAnimatedValue()
                 self.AnimationUpBar:Show()
             end
         end
-        self.AnimationUpBar:SetWidth(self.Parent.Data:SafeSize(AnimateWidth))
+		self.AnimationUpBar:SetWidth(AnimateWidth)
         self.AnimationUpBar.texture:SetTexCoord(
             self.Parent.Data:SafeTexCoord((self.Width - (self.Width - self.ProgressBar:GetWidth()) - self.AnimationUpBar:GetWidth()) / self.Width),
             self.Parent.Data:SafeTexCoord(self.ProgressBar:GetWidth() / self.Width),
@@ -245,8 +256,6 @@ function ezSpectator_HealthBar:IncAnimatedValue()
     end
 end
 
-
-
 function ezSpectator_HealthBar:Hide()
     self.Backdrop:Hide()
     self.ProgressBar:Hide()
@@ -261,8 +270,6 @@ function ezSpectator_HealthBar:Hide()
     self.TextFrame:Hide()
 end
 
-
-
 function ezSpectator_HealthBar:Show()
     self.Backdrop:Show()
     self.ProgressBar:Show()
@@ -274,8 +281,6 @@ function ezSpectator_HealthBar:Show()
         self:SetValue(self.CurrentValue, true)
     end
 end
-
-
 
 function ezSpectator_HealthBar:SetAlpha(Value)
     self.Backdrop:SetAlpha(Value)
@@ -290,8 +295,6 @@ function ezSpectator_HealthBar:SetAlpha(Value)
     self.TextFrame:SetAlpha(Value)
 end
 
-
-
 function ezSpectator_HealthBar:ResetAnimation()
     if self.IsLayerAnimated then
         self.AnimationUpBar:SetWidth(0)
@@ -302,8 +305,6 @@ function ezSpectator_HealthBar:ResetAnimation()
         self:SetValue(self.CurrentValue, true)
     end
 end
-
-
 
 function ezSpectator_HealthBar:SetClass(Value)
     local Class, Color
@@ -321,8 +322,6 @@ function ezSpectator_HealthBar:SetClass(Value)
     end
 end
 
-
-
 function ezSpectator_HealthBar:SetMaxValue(Value)
     if Value == 0 then
         self:SetValue(0, true)
@@ -335,8 +334,6 @@ function ezSpectator_HealthBar:SetMaxValue(Value)
         end
     end
 end
-
-
 
 function ezSpectator_HealthBar:SetValue(Value, IsInnerCall)
     if not self.MaxValue then
@@ -351,14 +348,14 @@ function ezSpectator_HealthBar:SetValue(Value, IsInnerCall)
         Value = self.MaxValue
     end
 
-    local ProgressWidth = self.Parent.Data:SafeSize(Value * self.Weight)
+	local ProgressWidth = Value * self.Weight
 
     if self.CurrentValue and (IsInnerCall ~= true) then
         if Value > self.CurrentValue then
             if self.IsLayerAnimated then
                 local AnimationWidth = self.AnimationUpBar:GetWidth() + ProgressWidth - self.ProgressBar:GetWidth()
 
-                self.AnimationUpBar:SetWidth(self.Parent.Data:SafeSize(AnimationWidth))
+				self.AnimationUpBar:SetWidth(AnimationWidth)
                 self.AnimationUpBar.texture:SetTexCoord(
                     self.Parent.Data:SafeTexCoord((self.Width - (self.Width - ProgressWidth) - self.AnimationUpBar:GetWidth()) / self.Width),
                     self.Parent.Data:SafeTexCoord(ProgressWidth / self.Width),
@@ -388,7 +385,7 @@ function ezSpectator_HealthBar:SetValue(Value, IsInnerCall)
             if self.IsLayerAnimated then
                 local AnimationWidth = self.AnimationUpBar:GetWidth() + ProgressWidth - self.ProgressBar:GetWidth()
 
-                self.AnimationUpBar:SetWidth(self.Parent.Data:SafeSize(AnimationWidth))
+				self.AnimationUpBar:SetWidth(AnimationWidth)
                 self.AnimationUpBar.texture:SetTexCoord(
                     self.Parent.Data:SafeTexCoord((self.Width - (self.Width - ProgressWidth) - self.AnimationUpBar:GetWidth()) / self.Width),
                     self.Parent.Data:SafeTexCoord(ProgressWidth / self.Width),
@@ -430,14 +427,14 @@ function ezSpectator_HealthBar:SetValue(Value, IsInnerCall)
     local SparkWidth = ProgressWidth + 64
     if SparkWidth > self.Width then
         SparkWidth = 64 + self.Width - ProgressWidth
-        self.Spark:SetWidth(self.Parent.Data:SafeSize(SparkWidth))
+		self.Spark:SetWidth(SparkWidth)
         self.Spark.texture:SetTexCoord(0, self.Parent.Data:SafeTexCoord(SparkWidth / 128), 0, 1)
 
         self.Spark:ClearAllPoints()
         self.Spark:SetPoint('LEFT', self.ProgressBar, 'RIGHT', -64, 0)
     elseif ProgressWidth < 64 then
         SparkWidth = ProgressWidth + 64
-        self.Spark:SetWidth(self.Parent.Data:SafeSize(SparkWidth))
+		self.Spark:SetWidth(SparkWidth)
         self.Spark.texture:SetTexCoord(self.Parent.Data:SafeTexCoord(1 - SparkWidth / 128), 1, 0, 1)
 
         self.Spark:ClearAllPoints()
@@ -465,13 +462,9 @@ function ezSpectator_HealthBar:SetValue(Value, IsInnerCall)
     end
 end
 
-
-
 function ezSpectator_HealthBar:SetNickname(Value)
     self.Nickname:SetText(Value)
 end
-
-
 
 function ezSpectator_HealthBar:SetOverride(Value)
     if Value then
@@ -483,8 +476,6 @@ function ezSpectator_HealthBar:SetOverride(Value)
         self.Percent:Show()
     end
 end
-
-
 
 function ezSpectator_HealthBar:SetDescription(Value)
     self.Description:SetText(Value)

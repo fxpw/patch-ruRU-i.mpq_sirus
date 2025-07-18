@@ -511,7 +511,6 @@ CUF_SPELL_VISIBILITY_BLACKLIST = {
 	[69127] = true,
 	[71328] = true,
 	[72221] = true,
-	[90037] = true,
 	[305028] = true,
 	[305029] = true,
 	[305087] = true,

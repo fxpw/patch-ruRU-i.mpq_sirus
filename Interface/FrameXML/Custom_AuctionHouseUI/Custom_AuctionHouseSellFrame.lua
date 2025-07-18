@@ -161,7 +161,7 @@ function AuctionHouseDurationDropDownMixin:OnShow()
 	UIDropDownMenu_Initialize(self, AuctionHouseDurationDropDownMixin.Initialize);
 
 	if self.durationValue == nil then
-		self:SetDuration(tonumber(C_CVar:GetValue("C_CVAR_AUCTION_HOUSE_DURATION_DROPDOWN")));
+		self:SetDuration(tonumber(GetCVar("auctionHouseDurationDropdown")));
 	end
 end
 
@@ -174,7 +174,7 @@ local AUCTION_DURATIONS = {
 function AuctionHouseDurationDropDownMixin:Initialize()
 	local function AuctionHouseDurationDropDownButton_OnClick(button)
 		self:SetDuration(button.value);
-		C_CVar:SetValue("C_CVAR_AUCTION_HOUSE_DURATION_DROPDOWN", button.value);
+		SetCVar("auctionHouseDurationDropdown", button.value);
 	end
 
 	for i, durationText in ipairs(AUCTION_DURATIONS) do
@@ -196,7 +196,7 @@ function AuctionHouseDurationDropDownMixin:SetDuration(durationValue)
 end
 
 function AuctionHouseDurationDropDownMixin:GetDuration()
-	return self.durationValue or tonumber(C_CVar:GetValue("C_CVAR_AUCTION_HOUSE_DURATION_DROPDOWN"));
+	return self.durationValue or tonumber(GetCVar("auctionHouseDurationDropdown"));
 end
 
 

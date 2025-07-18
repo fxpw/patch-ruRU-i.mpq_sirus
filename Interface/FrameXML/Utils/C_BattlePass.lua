@@ -9,18 +9,26 @@ local type = type
 local unpack = unpack
 local bitband, bitbnot, bitbor, bitlshift = bit.band, bit.bnot, bit.bor, bit.lshift
 local mathfloor, mathmax, mathmin = math.floor, math.max, math.min
-local strformat, strmatch, strsplit, strtrim = string.format, string.match, string.split, string.trim
+local strformat, strjoin, strmatch, strsplit, strtrim = string.format, string.join, string.match, string.split, string.trim
 local tIndexOf, tconcat, tinsert, tremove, tsort, twipe = tIndexOf, table.concat, table.insert, table.remove, table.sort, table.wipe
 
+local GetCVar = GetCVar
 local GetContainerItemID = GetContainerItemID
 local GetContainerNumSlots = GetContainerNumSlots
 local GetMoney = GetMoney
+local GetQuestLinkByID = GetQuestLinkByID
+local GetQuestLogQuestTextByID = GetQuestLogQuestTextByID
+local GetTitleForQuestID = GetTitleForQuestID
+local IsQuestDataCached = IsQuestDataCached
+local SetCVar = SetCVar
 local UnitFactionGroup = UnitFactionGroup
+local UnitLevel = UnitLevel
 local UnitName = UnitName
 local UseContainerItem = UseContainerItem
 
 local CopyTable = CopyTable
 local FireCustomClientEvent = FireCustomClientEvent
+local GetServerID = GetServerID
 local IsInGMMode = C_Service.IsInGMMode
 local RoundToSignificantDigits = RoundToSignificantDigits
 local RunNextFrame = RunNextFrame
@@ -30,6 +38,8 @@ local UpgradeLoadedVariables = UpgradeLoadedVariables
 
 local BATTLEPASS_QUEST_LINK_FALLBACK_DAILY = BATTLEPASS_QUEST_LINK_FALLBACK_DAILY
 local BATTLEPASS_QUEST_LINK_FALLBACK_WEEKLY = BATTLEPASS_QUEST_LINK_FALLBACK_WEEKLY
+local BATTLEPASS_WATCH_TOO_MANY = BATTLEPASS_WATCH_TOO_MANY
+local UNKNOWN = UNKNOWN
 
 Enum.BattlePass = {}
 Enum.BattlePass.CardState = {
@@ -217,6 +227,35 @@ local SPLASH_DATA = {
 			},
 		},
 	},
+	[7] = {
+		artworkTemplate = "BattlePassSplashArtwork-2025-2-Template",
+		models = {
+			width = 180, height = 180,
+			offsetX = 20, offsetY = 0,
+			containerPoint = {"CENTER", 0, -10},
+			cardBorderAtlas = "Custom-Splash-BattlePass-2024-3-Assets-Card-Border",
+			cardBackgroundAtlas = "Custom-Splash-BattlePass-2024-3-Assets-Background",
+			cardBackgroundGlowAtlas = "Custom-Splash-BattlePass-2024-3-Assets-Card-BackgroundGlow",
+			cardBackgroundGlowColors = {
+				{{1, 0.96, 0.68}, {1, 0.96, 0.68}, {1, 0.96, 0.68}, {1, 0.96, 0.68}, {1, 0.96, 0.68}},
+			},
+			items = {
+				{157383, 157547, 110596, 157550, 157244},
+			},
+			itemBaseOverride = {
+				{nil, nil, 65094, nil, nil},
+			},
+			modelScales = {
+				{1.7, 1.70, 2.15, 1.70, 1.5},
+			},
+			modelFacing = {
+				{MODEL_FACING, MODEL_FACING, nil, nil, nil},
+			},
+			modelPosOffset = {
+				{nil, {0, 0.05, -0.1}, {-1.5, 1, 1}, nil, {0, 0.5, 0.2}}
+			},
+		},
+	},
 }
 
 local LEVEL_REWARD = {
@@ -259,6 +298,9 @@ local COPPER_PER_GOLD = COPPER_PER_SILVER * SILVER_PER_GOLD
 
 local SECONDS_PER_DAY = 24 * 60 * 60
 
+local BATTLEPASS_TRACKED_QUEST_DELIMITER = ";"
+local BATTLEPASS_TRACKED_QUEST_LIMIT = 20
+
 local BATTLEPASS_LEVELS
 local BATTLEPASS_LEVEL_REWARDS
 local CUSTOM_BATTLEPASS_CACHE = {LEVEL_REWARD_TAKEN = {}, SEEN_QUEST = {}}
@@ -267,10 +309,11 @@ local ALLOW_DAILY_QUEST_CANCEL = true
 local ALLOW_WEEKLY_QUEST_REROLL = false
 
 local PRIVATE = {
+	DEBUG = false,
 	ENABLED = false,
 	PER_REALM_DB = true,
 	MAX_LEVEL = 1,
-	SPLASH_ID = 6,
+	SPLASH_ID = 7,
 
 	LEVEL_INFO = {},
 	LEVEL_REWARD_ITEMS = {},
@@ -282,8 +325,6 @@ local PRIVATE = {
 		[Enum.BattlePass.QuestType.Daily] = {},
 		[Enum.BattlePass.QuestType.Weekly] = {},
 	},
-	QUEST_PARSED = {},
-	QUEST_PARSE_QUEUE = {},
 
 	QUEST_REPLACE_AWAIT = {},
 	QUEST_CANCEL_AWAIT = {},
@@ -340,6 +381,8 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 			PRIVATE.eventHandler:Show()
 
 			if PRIVATE.ENABLED then
+				PRIVATE.RequestQuests()
+
 				FireCustomClientEvent("BATTLEPASS_SEASON_UPDATE", CUSTOM_BATTLEPASS_CACHE.SEASON_END_TIME)
 				FireCustomClientEvent("BATTLEPASS_ACCOUNT_UPDATE", CUSTOM_BATTLEPASS_CACHE.PREMIUM_ACTIVE)
 				FireCustomClientEvent("BATTLEPASS_EXPERIENCE_UPDATE", CUSTOM_BATTLEPASS_CACHE.LEVEL, CUSTOM_BATTLEPASS_CACHE.LEVEL_EXPERIENCE)
@@ -489,7 +532,7 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 						}
 
 						tinsert(PRIVATE.QUEST_LIST_TYPED[questType], questID)
-						PRIVATE.ParseQuestTooltip(questID)
+						PRIVATE.RequestQuestData(questID)
 					end
 				else
 					if tonumber(state) == Enum.BattlePass.QuestState.Complete then
@@ -510,6 +553,7 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 				tsort(questList, PRIVATE.SortQuests)
 			end
 
+		--	PRIVATE.ValidateTrackedQuests()
 			PRIVATE.QUEST_REFRESH = nil
 			FireCustomClientEvent("BATTLEPASS_QUEST_LIST_UPDATE")
 		elseif prefix == "ASMSG_BATTLEPASS_REPLACE_QUEST" then
@@ -556,7 +600,8 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 				PRIVATE.QUEST_REPLACE_AWAIT[replacedQuestID] = nil
 				CUSTOM_BATTLEPASS_CACHE.SEEN_QUEST[replacedQuestID] = nil
 				CUSTOM_BATTLEPASS_CACHE.SEEN_QUEST[questID] = nil
-				PRIVATE.ParseQuestTooltip(questID)
+				PRIVATE.RequestQuestData(questID)
+				PRIVATE.ValidateTrackedQuests()
 				FireCustomClientEvent("BATTLEPASS_QUEST_REPLACED", questType, questIndex)
 			else
 				local errorHandled = PRIVATE.HandleStatusMessage(status)
@@ -585,6 +630,7 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 				PRIVATE.QUEST_LIST[questID] = nil
 				tremove(PRIVATE.QUEST_LIST_TYPED[questType], questIndex)
 				CUSTOM_BATTLEPASS_CACHE.SEEN_QUEST[questID] = nil
+				PRIVATE.ValidateTrackedQuests()
 				FireCustomClientEvent("BATTLEPASS_QUEST_CANCELED", questType, questIndex)
 			else
 				local errorHandled = PRIVATE.HandleStatusMessage(status)
@@ -612,6 +658,7 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 						tremove(PRIVATE.QUEST_LIST_TYPED[questType], questIndex)
 						PRIVATE.QUEST_REWARD_AWAIT[questID] = nil
 						CUSTOM_BATTLEPASS_CACHE.SEEN_QUEST[questID] = nil
+						PRIVATE.ValidateTrackedQuests()
 
 						FireCustomClientEvent("BATTLEPASS_QUEST_REWARD_RECIVED", questType, questIndex)
 						FireCustomClientEvent("BATTLEPASS_QUEST_DONE", questType, questIndex)
@@ -705,6 +752,8 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 			PRIVATE.FireSplashScreenEvent()
 		end
 	elseif event == "PLAYER_LOGIN" then
+		PRIVATE.RequestQuests()
+
 		if PRIVATE.SPLASH_AWAIT_LOGIN then
 			PRIVATE.SPLASH_AWAIT_LOGIN = nil
 			PRIVATE.FireSplashScreenEvent()
@@ -888,47 +937,55 @@ PRIVATE.InitializeRewardData = function()
 	end
 end
 
-PRIVATE.InitializeTooltip = function()
-	PRIVATE.tooltip = CreateFrame("GameTooltip")
-	PRIVATE.tooltip:Hide()
-
-	PRIVATE.tooltipChecker = CreateFrame("Frame")
-	PRIVATE.tooltipChecker:Hide()
-	PRIVATE.tooltipChecker:SetScript("OnUpdate", function()
-		PRIVATE.ProcessQuestParseQueue()
-	end)
-
-	PRIVATE.tooltip.linesLeft = {}
-	PRIVATE.tooltip.linesRight = {}
-
-	for i = 1, 3 do
-		local leftLine = PRIVATE.tooltip:CreateFontString(nil, nil, "GameTooltipText")
-		local rightLine = PRIVATE.tooltip:CreateFontString(nil, nil, "GameTooltipText")
-
-		PRIVATE.tooltip.linesLeft[i] = leftLine
-		PRIVATE.tooltip.linesRight[i] = rightLine
-		PRIVATE.tooltip:AddFontStrings(leftLine, rightLine)
-	end
-end
-
 PRIVATE.Initialize = function()
-	PRIVATE.InitializeTooltip()
 	PRIVATE.InitializeLevelData()
 	PRIVATE.InitializeRewardData()
 end
 
+PRIVATE.RequestQuests = function()
+	if not PRIVATE.IsEnabled() then
+		return
+	end
+
+	if PRIVATE.QUESTS_REQUESTED then
+		if not PRIVATE.IsActive() then
+			PRIVATE.CheckSeasonEnd()
+			return
+		elseif not PRIVATE.RESET_TIMER_CHANGED then
+			local _, changedDaily = PRIVATE.GetQuestTypeTimeLeft(Enum.BattlePass.QuestType.Daily)
+			local _, changedWeekly = PRIVATE.GetQuestTypeTimeLeft(Enum.BattlePass.QuestType.Weekly)
+			if not changedDaily and not changedWeekly then
+				return
+			end
+		end
+	end
+
+	PRIVATE.QUESTS_REQUESTED = true
+	PRIVATE.QUEST_REFRESH = true
+	PRIVATE.RESET_TIMER_CHANGED = nil
+	SendServerMessage("ACMSG_BATTLEPASS_QUESTS_REQUEST")
+end
+
 PRIVATE.CanShowSplashScreen = function()
-	if PRIVATE.SPLASH_ID and SPLASH_DATA[PRIVATE.SPLASH_ID]
-	and PRIVATE.IsActive() and not PRIVATE.HasAnyClaimedReward() and UnitLevel("player") >= 20
-	and not C_RealmInfo.IsLegacyRealm(C_Service.GetRealmID())
-	then
-		return true
+	if PRIVATE.SPLASH_ID and SPLASH_DATA[PRIVATE.SPLASH_ID] then
+		if PRIVATE.DEBUG then
+			return true
+		end
+		if PRIVATE.IsActive() and not PRIVATE.HasAnyClaimedReward() and UnitLevel("player") >= 20
+		and not C_RealmInfo.IsLegacyRealm(C_Service.GetRealmID())
+		then
+			return true
+		end
 	end
 	return false
 end
 
 PRIVATE.IsSplashScreenSeen = function()
-	return CUSTOM_BATTLEPASS_CACHE.SPLASH_SEEN == PRIVATE.SPLASH_ID --and not IsInterfaceDevClient()
+	if PRIVATE.DEBUG then
+		return false
+	end
+	local latestSplashScreen = tonumber(GetCVar("latestSplashScreen"))
+	return latestSplashScreen == PRIVATE.SPLASH_ID
 end
 
 PRIVATE.FireSplashScreenEvent = function(showSeen)
@@ -936,7 +993,7 @@ PRIVATE.FireSplashScreenEvent = function(showSeen)
 		local splash = PRIVATE.SPLASH_ID and SPLASH_DATA[PRIVATE.SPLASH_ID]
 		if splash then
 			if IsLoggedIn() then
-				CUSTOM_BATTLEPASS_CACHE.SPLASH_SEEN = PRIVATE.SPLASH_ID
+				SetCVar("latestSplashScreen", PRIVATE.SPLASH_ID)
 				FireCustomClientEvent("BATTLEPASS_SPLASH_SCREEN", PRIVATE.SPLASH_ID, CopyTable(splash))
 			else
 				PRIVATE.SPLASH_AWAIT_LOGIN = true
@@ -945,47 +1002,17 @@ PRIVATE.FireSplashScreenEvent = function(showSeen)
 	end
 end
 
-PRIVATE.ProcessQuestParseQueue = function()
-	local index = 1
-	while index <= #PRIVATE.QUEST_PARSE_QUEUE do
-		local questID = PRIVATE.QUEST_PARSE_QUEUE[index]
-		if PRIVATE.ParseQuestTooltip(questID, true) then
-			tremove(PRIVATE.QUEST_PARSE_QUEUE, index)
-
-			local questType = PRIVATE.QUEST_LIST[questID].type
-			local questIndex = tIndexOf(PRIVATE.QUEST_LIST_TYPED[questType], questID)
-			FireCustomClientEvent("BATTLEPASS_QUEST_UPDATE_TEXT", questType, questIndex)
-		else
-			index = index + 1
-		end
-	end
-
-	if #PRIVATE.QUEST_PARSE_QUEUE == 0 then
-		PRIVATE.tooltipChecker:Hide()
-	end
+PRIVATE.OnQuestDataUpdate = function(questID)
+	local questType = PRIVATE.QUEST_LIST[questID].type
+	local questIndex = tIndexOf(PRIVATE.QUEST_LIST_TYPED[questType], questID)
+	FireCustomClientEvent("BATTLEPASS_QUEST_DATA_UPDATE", questType, questIndex)
 end
 
-PRIVATE.ParseQuestTooltip = function(questID, rescan)
-	if PRIVATE.QUEST_PARSED[questID] then
+PRIVATE.RequestQuestData = function(questID, rescan)
+	if not IsQuestDataCached(questID) then
+		RequestQuestCacheByID(questID, PRIVATE.OnQuestDataUpdate)
 		return true
 	end
-
-	PRIVATE.tooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
-	PRIVATE.tooltip:SetHyperlink(strformat("quest:%i", questID))
-
-	local title = PRIVATE.tooltip.linesLeft[1]:GetText()
-	if not title then
-		if not rescan then
-			tinsert(PRIVATE.QUEST_PARSE_QUEUE, questID)
-			PRIVATE.tooltipChecker:Show()
-		end
-		return false
-	end
-
-	local desc = PRIVATE.tooltip.linesLeft[3]:GetText()
-	PRIVATE.QUEST_PARSED[questID] = {strtrim(title), strtrim(desc or "")}
-
-	return true
 end
 
 PRIVATE.CheckSeasonTimer = function()
@@ -1441,6 +1468,188 @@ PRIVATE.CanCancelQuest = function(questID)
 	return PRIVATE.QUEST_LIST[questID].type == Enum.BattlePass.QuestType.Daily and ALLOW_DAILY_QUEST_CANCEL
 end
 
+PRIVATE.GetQuestInfo = function(questID)
+	if not PRIVATE.IsEnabled() or not PRIVATE.QUEST_LIST[questID] then
+		return "", "", 0, 0, 0, false
+	end
+
+	local quest = PRIVATE.QUEST_LIST[questID]
+	local name, questDescription, questObjectiveText
+	if IsQuestDataCached(questID) then
+		name = GetTitleForQuestID(questID)
+		questDescription, questObjectiveText = GetQuestLogQuestTextByID(questID)
+	end
+
+	local rewardAmount = quest.rewardAmount
+	local isPercents = bitband(quest.flags, QUEST_FLAG.SHOW_PERCENT) ~= 0
+	local progressValue, progressMaxValue
+
+	if PRIVATE.IsQuestComplete(questID) then
+		progressMaxValue = mathmax(quest.totalValue, 1)
+		progressValue = progressMaxValue
+	elseif isPercents then
+		progressMaxValue = 100
+		progressValue = RoundToSignificantDigits(quest.currentValue / quest.totalValue * 100, 2)
+	else
+		progressMaxValue = quest.totalValue
+		progressValue = quest.currentValue
+	end
+
+	return name or "", questObjectiveText or "", rewardAmount, progressValue, progressMaxValue, isPercents
+end
+
+PRIVATE.GetQuestLink = function(questID)
+	if IsQuestDataCached(questID) then
+		local link = GetQuestLinkByID(questID)
+		if link then
+			return link
+		end
+	end
+
+	local name
+	local questType, questIndex = PRIVATE.GetQuestTypeAndIndex(questID)
+	if questType == Enum.BattlePass.QuestType.Daily then
+		name = BATTLEPASS_QUEST_LINK_FALLBACK_DAILY
+	elseif questType == Enum.BattlePass.QuestType.Weekly then
+		name = BATTLEPASS_QUEST_LINK_FALLBACK_WEEKLY
+	end
+
+	return strformat("|cffffff00|Hquest:%u:-1|h[%s]|h|r", questID, name or UNKNOWN)
+end
+
+PRIVATE.GetQuestTypeAndIndex = function(questID)
+	local quest = PRIVATE.QUEST_LIST[questID]
+	if quest then
+		local questType = quest.type
+		local questIndex = tIndexOf(PRIVATE.QUEST_LIST_TYPED[questType], questID)
+		if questIndex then
+			return questType, questIndex
+		end
+	end
+end
+
+PRIVATE.GetTrackedQuests = function(skipQuestListCheck)
+	if not PRIVATE.IsActive() then
+		return
+	end
+
+	local value = GetCVar("trackedBattlePassQuests")
+	if value ~= "" then
+		local list = {}
+		local revalidate
+		for index, questID in ipairs({strsplit(BATTLEPASS_TRACKED_QUEST_DELIMITER, value)}) do
+			questID = tonumber(questID)
+			if questID then
+				if skipQuestListCheck or PRIVATE.QUEST_LIST[questID] ~= nil then
+					tinsert(list, tonumber(questID))
+				elseif PRIVATE.QUESTS_RECEIVED then
+					revalidate = true
+				end
+			end
+		end
+
+		if revalidate then
+			PRIVATE.ValidateTrackedQuests()
+		end
+
+		return list
+	end
+end
+
+PRIVATE.SetTrackedQuest = function(questID, tracked)
+	if questID < 0
+	or not PRIVATE.QUEST_LIST[questID]
+	or not PRIVATE.IsActive()
+	then
+		return false
+	end
+
+	local questList = PRIVATE.GetTrackedQuests()
+	if not questList then
+		if tracked then
+			SetCVar("trackedBattlePassQuests", questID)
+		else
+			return false
+		end
+	else
+		if tracked then
+			if not tIndexOf(questList, questID) then
+				if #questList >= BATTLEPASS_TRACKED_QUEST_LIMIT then
+						FireClientEvent("UI_ERROR_MESSAGE", strformat(BATTLEPASS_WATCH_TOO_MANY, BATTLEPASS_TRACKED_QUEST_LIMIT))
+					return
+				end
+				tinsert(questList, questID)
+				SetCVar("trackedBattlePassQuests", tconcat(questList, BATTLEPASS_TRACKED_QUEST_DELIMITER))
+			else
+				return false
+			end
+		else
+			local index = tIndexOf(questList, questID)
+			if index then
+				tremove(questList, index)
+				SetCVar("trackedBattlePassQuests", tconcat(questList, BATTLEPASS_TRACKED_QUEST_DELIMITER))
+			else
+				return false
+			end
+		end
+	end
+
+	tracked = not not tracked
+
+	local questType, questIndex = PRIVATE.GetQuestTypeAndIndex(questID)
+	if questIndex then
+		FireCustomClientEvent("BATTLEPASS_QUEST_TRACKED", questType, questIndex, tracked)
+	end
+	FireCustomClientEvent("TRACKED_BATTLEPASS_QUEST_UPDATE", questID, tracked)
+
+	return true
+end
+
+PRIVATE.IsQuestTracked = function(questID)
+	if not PRIVATE.IsActive() then
+		return false
+	end
+
+	local questIDs = PRIVATE.GetTrackedQuests()
+	if questIDs then
+		return tIndexOf(questIDs, questID) ~= nil
+	end
+
+	return false
+end
+
+PRIVATE.ValidateTrackedQuests = function()
+	if not PRIVATE.QUESTS_RECEIVED then
+		return false
+	end
+
+	if PRIVATE.IsEnabled() and not PRIVATE.IsActive() then
+		SetCVar("trackedBattlePassQuests", "")
+		return true
+	end
+
+	local questList = PRIVATE.GetTrackedQuests(true)
+	if questList then
+		local changed
+		local index = #questList
+		local questID = questList[index]
+		while questID do
+			if index > BATTLEPASS_TRACKED_QUEST_LIMIT or not PRIVATE.QUEST_LIST[questID] then
+				tremove(questList, index)
+				changed = true
+			else
+				index = index - 1
+			end
+			questID = questList[index]
+		end
+		if changed then
+			SetCVar("trackedBattlePassQuests", tconcat(questList, BATTLEPASS_TRACKED_QUEST_DELIMITER))
+			return true
+		end
+	end
+	return false
+end
+
 do
 	if IsInterfaceDevClient() then
 		PRIVATE_BP = PRIVATE
@@ -1781,27 +1990,7 @@ function C_BattlePass.CheckSeasonEnd()
 end
 
 function C_BattlePass.RequestQuests()
-	if not PRIVATE.IsEnabled() then
-		return
-	end
-
-	if PRIVATE.QUESTS_REQUESTED then
-		if not PRIVATE.IsActive() then
-			PRIVATE.CheckSeasonEnd()
-			return
-		elseif not PRIVATE.RESET_TIMER_CHANGED then
-			local _, changedDaily = PRIVATE.GetQuestTypeTimeLeft(Enum.BattlePass.QuestType.Daily)
-			local _, changedWeekly = PRIVATE.GetQuestTypeTimeLeft(Enum.BattlePass.QuestType.Weekly)
-			if not changedDaily and not changedWeekly then
-				return
-			end
-		end
-	end
-
-	PRIVATE.QUESTS_REQUESTED = true
-	PRIVATE.QUEST_REFRESH = true
-	PRIVATE.RESET_TIMER_CHANGED = nil
-	SendServerMessage("ACMSG_BATTLEPASS_QUESTS_REQUEST")
+	PRIVATE.RequestQuests()
 end
 
 function C_BattlePass.HasCompleteQuests()
@@ -1831,6 +2020,15 @@ PRIVATE.ValidateQuestArgs = function(funcName, questType, questIndex)
 	end
 end
 
+function C_BattlePass.IsQuestListLoaded()
+	if PRIVATE.IsEnabled()
+	and PRIVATE.QUESTS_RECEIVED
+	then
+		return true
+	end
+	return false
+end
+
 function C_BattlePass.GetQuestTypeTimeLeft(questType)
 	if not PRIVATE.IsEnabled() or not PRIVATE.IsActive() then
 		return 0
@@ -1851,37 +2049,10 @@ function C_BattlePass.GetNumQuests(questType)
 end
 
 function C_BattlePass.GetQuestInfo(questType, questIndex)
-	if not PRIVATE.IsEnabled() then
-		return "", "", 0, 0, 0, false
-	end
-
 	PRIVATE.ValidateQuestArgs("C_BattlePass.GetQuestInfo", questType, questIndex)
 
 	local questID = PRIVATE.QUEST_LIST_TYPED[questType][questIndex]
-	local quest = PRIVATE.QUEST_LIST[questID]
-
-	local name, description
-	local questTextData = PRIVATE.QUEST_PARSED[questID]
-	if questTextData then
-		name, description = unpack(questTextData, 1, 2)
-	end
-
-	local rewardAmount = quest.rewardAmount
-	local isPercents = bitband(quest.flags, QUEST_FLAG.SHOW_PERCENT) ~= 0
-	local progressValue, progressMaxValue
-
-	if PRIVATE.IsQuestComplete(questID) then
-		progressMaxValue = mathmax(quest.totalValue, 1)
-		progressValue = progressMaxValue
-	elseif isPercents then
-		progressMaxValue = 100
-		progressValue = RoundToSignificantDigits(quest.currentValue / quest.totalValue * 100, 2)
-	else
-		progressMaxValue = quest.totalValue
-		progressValue = quest.currentValue
-	end
-
-	return name or "", description or "", rewardAmount, progressValue, progressMaxValue, isPercents
+	return PRIVATE.GetQuestInfo(questID)
 end
 
 function C_BattlePass.GetQuestLink(questType, questIndex)
@@ -1892,16 +2063,7 @@ function C_BattlePass.GetQuestLink(questType, questIndex)
 	PRIVATE.ValidateQuestArgs("C_BattlePass.GetQuestLink", questType, questIndex)
 
 	local questID = PRIVATE.QUEST_LIST_TYPED[questType][questIndex]
-	local questTextData = PRIVATE.QUEST_PARSED[questID]
-	local name
-	if questTextData and questTextData[1] then
-		name = questTextData[1]
-	elseif questType == Enum.BattlePass.QuestType.Daily then
-		name = BATTLEPASS_QUEST_LINK_FALLBACK_DAILY
-	elseif questType == Enum.BattlePass.QuestType.Weekly then
-		name = BATTLEPASS_QUEST_LINK_FALLBACK_WEEKLY
-	end
-	return strformat("|cffffff00|Hquest:%u:-1|h[%s]|h|r", questID, name)
+	return PRIVATE.GetQuestLink(questID, questType)
 end
 
 function C_BattlePass.IsQuestComplete(questType, questIndex)
@@ -2046,6 +2208,120 @@ function C_BattlePass.MarkQuestSeen(questType, questIndex)
 	end
 end
 
+function C_BattlePass.GetQuestID(questType, questIndex)
+	PRIVATE.ValidateQuestArgs("C_BattlePass.GetQuestID", questType, questIndex)
+
+	local questID = PRIVATE.QUEST_LIST_TYPED[questType][questIndex]
+	return questID
+end
+
+function C_BattlePass.GetQuestTypeAndIndex(questID)
+	if type(questID) ~= "number" then
+		error(strformat("bad argument #1 to 'C_BattlePass.GetQuestTypeIndex' (number expected, got %s)", questID ~= nil and type(questID) or "no value"), 2)
+	elseif questID < 0 then
+		return false
+	end
+
+	return PRIVATE.GetQuestTypeAndIndex(questID)
+end
+
+function C_BattlePass.GetQuestLinkByID(questID)
+	if type(questID) ~= "number" then
+		error(strformat("bad argument #1 to 'C_BattlePass.GetQuestLink' (number expected, got %s)", questID ~= nil and type(questID) or "no value"), 2)
+	elseif questID < 0 then
+		return false
+	end
+
+	return PRIVATE.GetQuestLink(questID)
+end
+
+function C_BattlePass.HasQuest(questID)
+	if type(questID) ~= "number" then
+		error(strformat("bad argument #1 to 'C_BattlePass.HasQuest' (number expected, got %s)", questID ~= nil and type(questID) or "no value"), 2)
+	elseif questID < 0 then
+		return false
+	end
+
+	return PRIVATE.QUEST_LIST[questID] ~= nil
+end
+
+function C_BattlePass.SetQuestTracked(questType, questIndex, tracked)
+	PRIVATE.ValidateQuestArgs("C_BattlePass.SetQuestTracked", questType, questIndex)
+
+	local questID = PRIVATE.QUEST_LIST_TYPED[questType][questIndex]
+	if questID then
+		return PRIVATE.SetTrackedQuest(questID, tracked)
+	end
+	return false
+end
+
+function C_BattlePass.IsQuestTracked(questType, questIndex)
+	PRIVATE.ValidateQuestArgs("C_BattlePass.IsQuestTracked", questType, questIndex)
+
+	local questID = PRIVATE.QUEST_LIST_TYPED[questType][questIndex]
+	if questID then
+		return PRIVATE.IsQuestTracked(questID)
+	end
+	return false
+end
+
+function C_BattlePass.SetQuestTrackedByID(questID, tracked)
+	if type(questID) ~= "number" then
+		error(strformat("bad argument #1 to 'C_BattlePass.SetQuestTracked' (number expected, got %s)", questID ~= nil and type(questID) or "no value"), 2)
+	end
+
+	return PRIVATE.SetTrackedQuest(questID, tracked)
+end
+
+function C_BattlePass.IsQuestTrackedByID(questID)
+	if type(questID) ~= "number" then
+		error(strformat("bad argument #1 to 'C_BattlePass.IsQuestTrackedByID' (number expected, got %s)", questID ~= nil and type(questID) or "no value"), 2)
+	end
+
+	return PRIVATE.IsQuestTracked(questID)
+end
+
+function C_BattlePass.GetQuestTracked()
+	local questIDs = PRIVATE.GetTrackedQuests()
+	return questIDs or {}
+end
+
+function C_BattlePass.GetQuestInfoID(questID)
+	if type(questID) ~= "number" then
+		error(strformat("bad argument #1 to 'C_BattlePass.GetQuestInfoID' (number expected, got %s)", questID ~= nil and type(questID) or "no value"), 2)
+	elseif questID < 0 then
+		return false
+	end
+
+	return PRIVATE.GetQuestInfo(questID)
+end
+
+function C_BattlePass.IsQuestCompleteByID(questID)
+	if type(questID) ~= "number" then
+		error(strformat("bad argument #1 to 'C_BattlePass.GetQuestInfoID' (number expected, got %s)", questID ~= nil and type(questID) or "no value"), 2)
+	elseif questID < 0 then
+		return false
+	end
+
+	if not PRIVATE.IsEnabled() then
+		return false
+	end
+
+	return PRIVATE.IsQuestComplete(questID)
+end
+
+function C_BattlePass.OpenQuest(questID)
+	if type(questID) ~= "number" then
+		error(strformat("bad argument #1 to 'C_BattlePass.OpenQuest' (number expected, got %s)", questID ~= nil and type(questID) or "no value"), 2)
+	elseif questID < 0 then
+		return false
+	end
+
+	if PRIVATE.QUEST_LIST[questID] then
+		FireCustomClientEvent("BATTLEPASS_OPEN_QUEST", questID)
+	end
+end
+
 function C_BattlePass.RequestProductData()
 	C_StoreSecure.RequestBattlePassProducts()
 end
@@ -2123,7 +2399,7 @@ function C_BattlePass.PurchaseExperience(optionIndex, amount)
 				PRIVATE.LAST_PURCHASED_OPTION_LIST = nil
 			end
 		else
-			C_StoreSecure.GenerateBalanceError(Enum.Store.ProductType.BattlePass, currencyType, string.join(".", "BPPE", productID))
+			C_StoreSecure.GenerateBalanceError(Enum.Store.ProductType.BattlePass, currencyType, strjoin(".", "BPPE", productID))
 		end
 	else
 		GMError(strformat("No experience product id avaliable for %u option", optionIndex))
@@ -2167,7 +2443,7 @@ function C_BattlePass.PurchasePremium()
 				PRIVATE.STORE_AWAIT_ITEMID = itemID
 			end
 		else
-			C_StoreSecure.GenerateBalanceError(Enum.Store.ProductType.BattlePass, currencyType, string.join(".", "BPPP", productID))
+			C_StoreSecure.GenerateBalanceError(Enum.Store.ProductType.BattlePass, currencyType, strjoin(".", "BPPP", productID))
 		end
 	else
 		GMError("No premium product id avaliable")

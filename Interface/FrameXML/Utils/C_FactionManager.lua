@@ -1,6 +1,8 @@
 local issecure = issecure
 local securecall = securecall
 
+local C_GlobalStorage = C_GlobalStorage
+
 local secureCallbacks = {}
 local addonCallbacks = {}
 
@@ -32,31 +34,6 @@ local function fireCallbackType(callbacks, secure)
 			index = index + 1
 		end
 	end
-end
-
-local function fireCallbacks()
-	fireCallbackType(secureCallbacks, true)
-	fireCallbackType(addonCallbacks)
-end
-
-local function setOriginalFaction(factionID)
-	ORIGINAL_FACTION_ID = factionID
-
-	if not GetSafeCVar("originalFaction") then
-		RegisterCVar("originalFaction", "")
-	end
-
-	SetSafeCVar("originalFaction", factionID)
-end
-
-local function setFactionOverride(factionID)
-	OVERRIDE_FACTION_ID = factionID
-
-	if not GetSafeCVar("factionOverride") then
-		RegisterCVar("factionOverride", "")
-	end
-
-	SetSafeCVar("factionOverride", factionID)
 end
 
 local localizedFactionName = setmetatable({}, {
@@ -101,9 +78,16 @@ end
 
 function C_FactionManagerMixin:ASMSG_PLAYER_FACTION_CHANGE(msg)
 	local originalFactionID, factionID = string.split(",", msg)
-	setOriginalFaction(PLAYER_FACTION_GROUP[SERVER_PLAYER_FACTION_GROUP[tonumber(originalFactionID)]])
-	setFactionOverride(PLAYER_FACTION_GROUP[SERVER_PLAYER_FACTION_GROUP[tonumber(factionID)]])
-	fireCallbacks()
+
+	ORIGINAL_FACTION_ID = PLAYER_FACTION_GROUP[SERVER_PLAYER_FACTION_GROUP[tonumber(originalFactionID)]]
+	C_GlobalStorage.SetVar("FACTION_MANAGER_ORIGINAL_ID", ORIGINAL_FACTION_ID)
+
+	OVERRIDE_FACTION_ID = PLAYER_FACTION_GROUP[SERVER_PLAYER_FACTION_GROUP[tonumber(factionID)]]
+	C_GlobalStorage.SetVar("FACTION_MANAGER_OVERRIDE_ID", OVERRIDE_FACTION_ID)
+
+	fireCallbackType(secureCallbacks, true)
+	fireCallbackType(addonCallbacks)
+
 	EventRegistry:TriggerEvent("PlayerFaction.Update")
 end
 
@@ -157,26 +141,20 @@ function C_FactionManager.UnregisterCallback(callback)
 end
 
 function C_FactionManager.IsFactionDataAvailable()
-	if GetSafeCVar("originalFaction", "") ~= "" and GetSafeCVar("factionOverride", "") ~= "" then
+	if C_GlobalStorage.GetVar("FACTION_MANAGER_ORIGINAL_ID") and C_GlobalStorage.GetVar("FACTION_MANAGER_OVERRIDE_ID") then
 		return true
 	end
 	return false
 end
 
 function C_FactionManager.GetOriginalFactionCVar()
-	local factionID = GetSafeCVar("originalFaction", "")
-	if factionID == "" then
-		return
-	end
-	return tonumber(factionID)
+	local factionID = C_GlobalStorage.GetVar("FACTION_MANAGER_ORIGINAL_ID")
+	return factionID
 end
 
 function C_FactionManager.GetFactionOverrideCVar()
-	local factionID = GetSafeCVar("factionOverride", "")
-	if factionID == "" then
-		return
-	end
-	return tonumber(factionID)
+	local factionID = C_GlobalStorage.GetVar("FACTION_MANAGER_OVERRIDE_ID")
+	return factionID
 end
 
 ---@return integer factionID

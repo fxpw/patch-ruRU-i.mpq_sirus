@@ -284,11 +284,11 @@ function GetMaxNumCUFProfiles()
 end
 
 function SetActiveRaidProfile(profile)
-	C_CVar:SetValue("C_CVAR_SET_ACTIVE_CUF_PROFILE", profile);
+	SetCVar("activeCUFProfile", profile);
 end
 
 function GetActiveRaidProfile()
-	return C_CVar:GetValue("C_CVAR_SET_ACTIVE_CUF_PROFILE");
+	return GetCVar("activeCUFProfile");
 end
 
 function CompactUnitFrameProfiles_OnLoad(self)
@@ -296,13 +296,14 @@ function CompactUnitFrameProfiles_OnLoad(self)
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 	self:RegisterEvent("PARTY_MEMBERS_CHANGED");
 	self:RegisterEvent("RAID_ROSTER_UPDATE");
+	self:RegisterCustomEvent("VARIABLE_MIGRATED")
 
 	--Get this working with the InterfaceOptions panel.
 	self.name = COMPACT_UNIT_FRAME_PROFILES_LABEL;
 	self.options = {
-		C_CVAR_USE_COMPACT_SOLO_FRAMES = { text = "USE_RAID_STYLE_SOLO_FRAMES" },
-		C_CVAR_USE_COMPACT_PARTY_FRAMES = { text = "USE_RAID_STYLE_PARTY_FRAMES" },
-		C_CVAR_HIDE_PARTY_INTERFACE_IN_RAID = { text = "HIDE_PARTY_INTERFACE_TEXT" },
+		useCompactSoloFrames = { text = "USE_RAID_STYLE_SOLO_FRAMES" },
+		useCompactPartyFrames = { text = "USE_RAID_STYLE_PARTY_FRAMES" },
+		hidePartyFramesInRaid = { text = "HIDE_PARTY_INTERFACE_TEXT" },
 	};
 
 	BlizzardOptionsPanel_OnLoad(self, CompactUnitFrameProfiles_SaveChanges, CompactUnitFrameProfiles_CancelCallback, CompactUnitFrameProfiles_DefaultCallback, CompactUnitFrameProfiles_UpdateCurrentPanel);
@@ -329,6 +330,11 @@ function CompactUnitFrameProfiles_OnEvent(self, event, ...)
 		CompactUnitFrameProfiles_CheckAutoActivation();
 	elseif ( event == "PARTY_MEMBERS_CHANGED" or event == "RAID_ROSTER_UPDATE" ) then
 		CompactUnitFrameProfiles_CheckAutoActivation();
+	elseif event == "VARIABLE_MIGRATED" then
+		local cvar = ...
+		if cvar == "activeCUFProfile" then
+			CompactUnitFrameProfiles_ValidateProfilesLoaded(self)
+		end
 	end
 end
 

@@ -165,12 +165,12 @@ function FilteredMountJornal()
 			end
 		end
 	else
-		local collectedShown = C_CVar:GetCVarBitfield("C_CVAR_MOUNT_JOURNAL_GENERAL_FILTERS", LE_MOUNT_JOURNAL_FILTER_COLLECTED);
-		local notCollectedShown = C_CVar:GetCVarBitfield("C_CVAR_MOUNT_JOURNAL_GENERAL_FILTERS", LE_MOUNT_JOURNAL_FILTER_NOT_COLLECTED);
-		local abilityFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_ABILITY_FILTER")) or 0;
-		local sourceFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_SOURCE_FILTER")) or 0;
-		local travelingMerchantFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_TRAVELING_MERCHANT_FILTER")) or 0;
-		local factionFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_FACTION_FILTER")) or 0;
+		local collectedShown = GetCVarBitfield("mountJournalGeneralFilters", LE_MOUNT_JOURNAL_FILTER_COLLECTED);
+		local notCollectedShown = GetCVarBitfield("mountJournalGeneralFilters", LE_MOUNT_JOURNAL_FILTER_NOT_COLLECTED);
+		local abilityFiltersFlag = tonumber(GetCVar("mountJournalAbilityFilters")) or 0;
+		local sourceFiltersFlag = tonumber(GetCVar("mountJournalSourcesFilter")) or 0;
+		local travelingMerchantFiltersFlag = tonumber(GetCVar("mountJournalTravelingMerchantFilter")) or 0;
+		local factionFiltersFlag = tonumber(GetCVar("mountJournalFactionFilter")) or 0;
 		local isGM = IsGMAccount()
 
 		for i = 1, #COLLECTION_MOUNTDATA do
@@ -303,6 +303,7 @@ local function GetMountInfo(infoTable, value)
 		else
 			local factionGroup = UnitFactionGroup("player");
 			priceText = mountInfo.priceText:gsub("-Team.", "-"..factionGroup..".");
+			priceText = mountInfo.priceText:gsub("colbuildenm.custom_froms%d+", ITEM_SUB_CLASS_16_6);
 		end
 
 		return mountInfo.name, mountInfo.spellID, mountInfo.icon, active, sourceType, isFavorite,
@@ -388,6 +389,18 @@ function C_MountJournal.GetDisplayedMountInfo(displayIndex)
 	if mountIndex then
 		return GetMountInfo(COLLECTION_MOUNTDATA, mountIndex);
 	end
+end
+
+function C_MountJournal.IsMountItem(itemID)
+	if type(itemID) ~= "number" then
+		error("Usage: C_MountJournal.IsMountItem(itemID)", 2)
+	end
+
+	if itemID == 0 then
+		return false
+	end
+
+	return MOUNT_INFO_BY_ITEM_ID[itemID] ~= nil
 end
 
 function C_MountJournal.GetMountFromItem(itemID)
@@ -568,7 +581,7 @@ function C_MountJournal.SetCollectedFilterSetting(filterIndex, isChecked)
 	end
 
 	if filterIndex > 0 and filterIndex <= NUM_MOUNT_FILTERS then
-		C_CVar:SetCVarBitfield("C_CVAR_MOUNT_JOURNAL_GENERAL_FILTERS", filterIndex, not isChecked);
+		SetCVarBitfield("mountJournalGeneralFilters", filterIndex, not isChecked);
 
 		FilteredMountJornal();
 	end
@@ -582,7 +595,7 @@ function C_MountJournal.GetCollectedFilterSetting(filterIndex)
 		error("Usage: C_MountJournal.GetCollectedFilterSetting(filterIndex)", 2);
 	end
 
-	if C_CVar:GetCVarBitfield("C_CVAR_MOUNT_JOURNAL_GENERAL_FILTERS", filterIndex) then
+	if GetCVarBitfield("mountJournalGeneralFilters", filterIndex) then
 		return false;
 	end
 
@@ -605,7 +618,7 @@ function C_MountJournal.SetAbilityFilter(filterIndex, isChecked)
 	end
 
 	if filterIndex > 0 and filterIndex <= NUM_MOUNT_ABILITIES then
-		C_CVar:SetCVarBitfield("C_CVAR_MOUNT_JOURNAL_ABILITY_FILTER", filterIndex, not isChecked);
+		SetCVarBitfield("mountJournalAbilityFilters", filterIndex, not isChecked);
 
 		FilteredMountJornal();
 	end
@@ -620,7 +633,7 @@ function C_MountJournal.SetAllAbilityFilters(isChecked)
 	end
 
 	for index = 1, NUM_MOUNT_ABILITIES do
-		C_CVar:SetCVarBitfield("C_CVAR_MOUNT_JOURNAL_ABILITY_FILTER", index, not isChecked);
+		SetCVarBitfield("mountJournalAbilityFilters", index, not isChecked);
 	end
 
 	FilteredMountJornal();
@@ -634,7 +647,7 @@ function C_MountJournal.IsAbilityChecked(filterIndex)
 		error("Usage: local isChecked = C_MountJournal.IsAbilityChecked(filterIndex)", 2);
 	end
 
-	if C_CVar:GetCVarBitfield("C_CVAR_MOUNT_JOURNAL_ABILITY_FILTER", filterIndex) then
+	if GetCVarBitfield("mountJournalAbilityFilters", filterIndex) then
 		return false;
 	end
 
@@ -668,7 +681,7 @@ function C_MountJournal.SetSourceFilter(filterIndex, isChecked)
 	end
 
 	if filterIndex > 0 and filterIndex <= NUM_MOUNT_SOURCES then
-		C_CVar:SetCVarBitfield("C_CVAR_MOUNT_JOURNAL_SOURCE_FILTER", filterIndex, not isChecked);
+		SetCVarBitfield("mountJournalSourcesFilter", filterIndex, not isChecked);
 
 		FilteredMountJornal();
 	end
@@ -683,7 +696,7 @@ function C_MountJournal.SetAllSourceFilters(isChecked)
 	end
 
 	for index = 1, NUM_MOUNT_SOURCES do
-		C_CVar:SetCVarBitfield("C_CVAR_MOUNT_JOURNAL_SOURCE_FILTER", index, not isChecked);
+		SetCVarBitfield("mountJournalSourcesFilter", index, not isChecked);
 	end
 
 	FilteredMountJornal();
@@ -697,7 +710,7 @@ function C_MountJournal.IsSourceChecked(filterIndex)
 		error("Usage: local isChecked = C_MountJournal.IsSourceChecked(filterIndex)", 2);
 	end
 
-	if C_CVar:GetCVarBitfield("C_CVAR_MOUNT_JOURNAL_SOURCE_FILTER", filterIndex) then
+	if GetCVarBitfield("mountJournalSourcesFilter", filterIndex) then
 		return false;
 	end
 
@@ -735,7 +748,7 @@ function C_MountJournal.SetTravelingMerchantFilter(filterIndex, isChecked)
 	end
 
 	if filterIndex > 0 and filterIndex <= NUM_MOUNT_TRAVELING_MERCHANTS then
-		C_CVar:SetCVarBitfield("C_CVAR_MOUNT_JOURNAL_TRAVELING_MERCHANT_FILTER", filterIndex, not isChecked);
+		SetCVarBitfield("mountJournalTravelingMerchantFilter", filterIndex, not isChecked);
 
 		FilteredMountJornal();
 	end
@@ -750,7 +763,7 @@ function C_MountJournal.SetAllTravelingMerchantFilters(isChecked)
 	end
 
 	for index = 1, NUM_MOUNT_TRAVELING_MERCHANTS do
-		C_CVar:SetCVarBitfield("C_CVAR_MOUNT_JOURNAL_TRAVELING_MERCHANT_FILTER", index, not isChecked);
+		SetCVarBitfield("mountJournalTravelingMerchantFilter", index, not isChecked);
 	end
 
 	FilteredMountJornal();
@@ -764,7 +777,7 @@ function C_MountJournal.IsTravelingMerchantChecked(filterIndex)
 		error("Usage: local isChecked = C_MountJournal.IsTravelingMerchantChecked(filterIndex)", 2);
 	end
 
-	if C_CVar:GetCVarBitfield("C_CVAR_MOUNT_JOURNAL_TRAVELING_MERCHANT_FILTER", filterIndex) then
+	if GetCVarBitfield("mountJournalTravelingMerchantFilter", filterIndex) then
 		return false;
 	end
 
@@ -798,7 +811,7 @@ function C_MountJournal.SetFactionFilter(filterIndex, isChecked)
 	end
 
 	if filterIndex > 0 and filterIndex <= NUM_MOUNT_FACTIONS then
-		C_CVar:SetCVarBitfield("C_CVAR_MOUNT_JOURNAL_FACTION_FILTER", filterIndex, not isChecked);
+		SetCVarBitfield("mountJournalFactionFilter", filterIndex, not isChecked);
 
 		FilteredMountJornal();
 	end
@@ -813,7 +826,7 @@ function C_MountJournal.SetAllFactionFilters(isChecked)
 	end
 
 	for index = 1, NUM_MOUNT_FACTIONS do
-		C_CVar:SetCVarBitfield("C_CVAR_MOUNT_JOURNAL_FACTION_FILTER", index, not isChecked);
+		SetCVarBitfield("mountJournalFactionFilter", index, not isChecked);
 	end
 
 	FilteredMountJornal();
@@ -827,7 +840,7 @@ function C_MountJournal.IsFactionChecked(filterIndex)
 		error("Usage: local isChecked = C_MountJournal.IsFactionChecked(petSourceIndex)", 2);
 	end
 
-	if C_CVar:GetCVarBitfield("C_CVAR_MOUNT_JOURNAL_FACTION_FILTER", filterIndex) then
+	if GetCVarBitfield("mountJournalFactionFilter", filterIndex) then
 		return false;
 	end
 
@@ -850,21 +863,21 @@ function C_MountJournal.IsValidFactionFilter(filterIndex)
 end
 
 function C_MountJournal.SetDefaultFilters()
-	C_CVar:SetValue("C_CVAR_MOUNT_JOURNAL_GENERAL_FILTERS", "0");
-	C_CVar:SetValue("C_CVAR_MOUNT_JOURNAL_ABILITY_FILTER", "0");
-	C_CVar:SetValue("C_CVAR_MOUNT_JOURNAL_SOURCE_FILTER", "0");
-	C_CVar:SetValue("C_CVAR_MOUNT_JOURNAL_TRAVELING_MERCHANT_FILTER", "0");
-	C_CVar:SetValue("C_CVAR_MOUNT_JOURNAL_FACTION_FILTER", "0");
+	SetCVar("mountJournalGeneralFilters", "0");
+	SetCVar("mountJournalAbilityFilters", "0");
+	SetCVar("mountJournalSourcesFilter", "0");
+	SetCVar("mountJournalTravelingMerchantFilter", "0");
+	SetCVar("mountJournalFactionFilter", "0");
 
 	FilteredMountJornal();
 end
 
 function C_MountJournal.IsUsingDefaultFilters()
-	if tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_GENERAL_FILTERS")) ~= 0
-	or tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_ABILITY_FILTER")) ~= 0
-	or tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_SOURCE_FILTER")) ~= 0
-	or tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_TRAVELING_MERCHANT_FILTER")) ~= 0
-	or tonumber(C_CVar:GetValue("C_CVAR_MOUNT_JOURNAL_FACTION_FILTER")) ~= 0
+	if tonumber(GetCVar("mountJournalGeneralFilters")) ~= 0
+	or tonumber(GetCVar("mountJournalAbilityFilters")) ~= 0
+	or tonumber(GetCVar("mountJournalSourcesFilter")) ~= 0
+	or tonumber(GetCVar("mountJournalTravelingMerchantFilter")) ~= 0
+	or tonumber(GetCVar("mountJournalFactionFilter")) ~= 0
 	then
 		return false;
 	end

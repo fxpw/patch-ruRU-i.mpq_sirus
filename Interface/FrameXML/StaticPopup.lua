@@ -183,7 +183,7 @@ StaticPopupDialogs["CONFIRM_EXCHANGE_LEGENDARY_ITEM"] = {
 		end
 	end,
 	EditBoxOnTextChanged = function (self)
-		StaticPopup_StandardConfirmationTextHandler(self, CONFIRM_TEXT_AGREE);
+		StaticPopup_StandardConfirmationTextHandler(self, CONFIRM_EXCHANGE_LEGENDARY_ITEM_TEXT_AGREE);
 	end,
 	EditBoxOnEscapePressed = function(self)
 		StaticPopup_StandardEditBoxOnEscapePressed(self)
@@ -550,10 +550,6 @@ StaticPopupDialogs["CONFIRM_BATTLEFIELD_ENTRY"] = {
 	button1 = ENTER_BATTLE,
 	button2 = LEAVE_QUEUE,
 	OnShow = function(self, data)
-		if IsDevClient(true) and GetCVarBool("devSkipBattlegroundInvite") then
-			C_Timer:After(0.5, function() AcceptBattlefieldPort(data, 1) end)
-		end
-
 		local status, mapName, instanceID, levelRangeMin, levelRangeMax, teamSize, registeredMatch = GetBattlefieldStatus(data);
 		if ( teamSize == 0 ) then
 			self.button2:Enable();
@@ -594,7 +590,7 @@ StaticPopupDialogs["CONFIRM_BATTLEFIELD_ENTRY"] = {
         self.elapsedTime = elapsedTime
         local fromValue = self.fromValue
 
-		self.bar:SetValue(linear(elapsedTime, fromValue, -fromValue, self.animTime))
+		self.bar:SetValue(EasingUtil.Linear(elapsedTime, fromValue, -fromValue, self.animTime))
 		self.bar.timeText:SetText(string.format("%d:%02d", minutes, seconds))
 
 		if UnitAffectingCombat("player") then
@@ -1363,7 +1359,7 @@ StaticPopupDialogs["DEATH"] = {
 
 			self.ButtonSpecific:SetScript("OnClick", function()
 				local name = UnitName("player")
-				TrinityCoreMixIn:SendCommand("revive "..name)
+				TrinityCoreAPI.SendCommand(string.format("revive %s", name))
 			end)
 		end
 	end,
@@ -1545,12 +1541,6 @@ StaticPopupDialogs["PARTY_INVITE"] = {
 	button2 = DECLINE,
 	sound = "igPlayerInvite",
 	OnShow = function(self)
-		if GetCVarBool("devPartyAutoJoin") then
-			AcceptGroup()
-			self.inviteAccepted = 1
-			self:Hide()
-			return
-		end
 		self.inviteAccepted = nil;
 	end,
 	OnAccept = function(self)
@@ -2847,8 +2837,17 @@ StaticPopupDialogs["GOSSIP_CONFIRM"] = {
 	text = "%s",
 	button1 = ACCEPT,
 	button2 = CANCEL,
-	OnAccept = function(self, data)
-		SelectGossipOption(data, "", true);
+	OnAccept = function(self, data, takeScreenshot)
+		if takeScreenshot then
+			self.button1:TakeConfirmationScreenshot(function(success)
+				SelectGossipOption(data, "", true);
+				self:Hide();
+			end);
+			return true
+		else
+			SelectGossipOption(data, "", true);
+			return false
+		end
 	end,
 	hasMoneyFrame = 1,
 	timeout = 0,
@@ -3394,17 +3393,21 @@ StaticPopupDialogs["ARENA_REPLAY_CONFIRMATION_WATCH"] = {
 	button1 = YES,
 	button2 = CANCEL,
 	OnShow = function(self, data)
-		local resultLabel = {[1] = self.ReplayInfoFrame.ResultLeft, [0] = self.ReplayInfoFrame.ResultRight}
+		local replayID, bracketID, bracketName, bracketSize, winnerTeamID, team1Rating, team2Rating = C_ReplayInfo.GetReplayInfo(data)
+		if not replayID then
+			self:Hide()
+			return
+		end
 
-		if data[4] == 2 then
+		if winnerTeamID == 0 then
 			self.ReplayInfoFrame.ResultLeft:SetText(VICTORY_TEXT2)
 			self.ReplayInfoFrame.ResultLeft:SetTextColor(1, 0.82, 0)
 
 			self.ReplayInfoFrame.ResultRight:SetText(VICTORY_TEXT2)
 			self.ReplayInfoFrame.ResultRight:SetTextColor(1, 0.82, 0)
 		else
-			for index, label in pairs(resultLabel) do
-				if index == data[4] then
+			for index, label in ipairs({self.ReplayInfoFrame.ResultLeft, self.ReplayInfoFrame.ResultRight}) do
+				if index == winnerTeamID then
 					label:SetText(WIN)
 					label:SetTextColor(0, 1, 0)
 				else
@@ -3414,38 +3417,45 @@ StaticPopupDialogs["ARENA_REPLAY_CONFIRMATION_WATCH"] = {
 			end
 		end
 
-		self.ReplayInfoFrame.RatingLeft:SetText(data[5])
-		self.ReplayInfoFrame.RatingRight:SetText(data[6])
+		self.ReplayInfoFrame.RatingLeft:SetText(team1Rating)
+		self.ReplayInfoFrame.RatingRight:SetText(team2Rating)
+
+		local team1Players, team2Players = C_ReplayInfo.GetReplayRoster(replayID)
 
 		for i = 1, 3 do
-			local playerLeft = data[7][i]
-			local playerRight = data[8][i]
+			local playerLeft = team1Players[i]
+			local playerRight = team2Players[i]
 
 			local leftPlayerFrame = self.ReplayInfoFrame.playerLeftButtons[i]
 			local rightPlayerFrame 	= self.ReplayInfoFrame.playerRightButtons[i]
 
-			leftPlayerFrame:SetShown(playerLeft)
-			rightPlayerFrame:SetShown(playerRight)
-
 			if playerLeft then
-				local r, g, b = GetClassColor(playerLeft.classFileString)
+				local className, classFileString = GetClassInfo(playerLeft.classID)
+				local r, g, b = GetClassColor(classFileString)
 				leftPlayerFrame.PlayerName:SetText(playerLeft.name)
 				leftPlayerFrame.PlayerName:SetTextColor(r, g, b)
-				leftPlayerFrame.ClassIcon.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..playerLeft.classFileString)
-				leftPlayerFrame.ClassIcon.className = playerLeft.className
+				leftPlayerFrame.ClassIcon.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..classFileString)
+				leftPlayerFrame.ClassIcon.className = className
+				leftPlayerFrame:Show()
+			else
+				leftPlayerFrame:Hide()
 			end
 
 			if playerRight then
-				local r, g, b = GetClassColor(playerRight.classFileString)
+				local className, classFileString = GetClassInfo(playerRight.classID)
+				local r, g, b = GetClassColor(classFileString)
 				rightPlayerFrame.PlayerName:SetText(playerRight.name)
 				rightPlayerFrame.PlayerName:SetTextColor(r, g, b)
-				rightPlayerFrame.ClassIcon.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..playerRight.classFileString)
-				rightPlayerFrame.ClassIcon.className = playerRight.className
+				rightPlayerFrame.ClassIcon.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..classFileString)
+				rightPlayerFrame.ClassIcon.className = className
+				rightPlayerFrame:Show()
+			else
+				rightPlayerFrame:Hide()
 			end
 		end
 	end,
 	OnAccept = function(self, replayID)
-		ArenaSpectatorFrame:WatchReplay( replayID )
+		C_ArenaSpectator.WatchReplay(replayID)
 	end,
 	timeout = 0,
 	whileDead = 1,
@@ -4018,16 +4028,13 @@ function StaticPopup_Resize(dialog, which, hiddenButton)
 	end
 
 	if info.replayInfo then
-		if dialog.data[2] == 5 then
-			height = height + 80
-			dialog.ReplayInfoFrame:SetHeight(48)
-		elseif dialog.data[2] == 1 then
-			height = height + 100
-			dialog.ReplayInfoFrame:SetHeight(68)
-		else
-			height = height + 120
-			dialog.ReplayInfoFrame:SetHeight(88)
+		local replayID, bracketID, bracketName, bracketSize, winnerTeamID, team1Rating, team2Rating = C_ReplayInfo.GetReplayInfo(dialog.data or 0)
+		if not replayID then
+			bracketSize = 3
 		end
+		local additionlHeight = (20 * math.min(3, bracketSize))
+		height = height + 60 + additionlHeight
+		dialog.ReplayInfoFrame:SetHeight(28 + additionlHeight)
 	end
 
 	if dialog.equipmentSetCount then
@@ -4432,6 +4439,13 @@ function StaticPopup_Show(which, text_arg1, text_arg2, data)
 		end
 		button1:Enable();
 		button1:Show();
+
+		if info.transactionConfirmation then
+			button1:SetConfirmationTimerDone(function()
+				button1:SetText(info.button1)
+			end)
+			button1:StartConfirmationTimer(true)
+		end
 	else
 		button1:Hide();
 	end
@@ -4444,6 +4458,7 @@ function StaticPopup_Show(which, text_arg1, text_arg2, data)
 	dialog.enterClicksFirstButton = info.enterClicksFirstButton;
 	-- Clear out data
 	dialog.data = data;
+	dialog.data2 = nil;
 
 	if ( info.StartDelay ) then
 		dialog.startDelay = info.StartDelay();

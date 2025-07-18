@@ -1,3 +1,18 @@
+local error = error
+local ipairs = ipairs
+local tonumber = tonumber
+local type = type
+local strformat, strsplit = string.format, string.split
+local twipe = table.wipe
+
+local UnitGUID = UnitGUID
+local UnitIsUnit = UnitIsUnit
+local UnitName = UnitName
+
+local FireCustomClientEvent = FireCustomClientEvent
+local SendServerMessage = SendServerMessage
+local StringSplitEx = StringSplitEx
+
 Enum = Enum or {};
 Enum.TransmogModification = {Main = 0, Secondary = 1};
 Enum.TransmogPendingType = {Apply = 0, Revert = 1, ToggleOn = 2, ToggleOff = 3};
@@ -16,6 +31,136 @@ TRANSMOG_INVALID_CODES = {
 	"CANNOT_USE",
 	"SLOT_FOR_RACE",
 }
+
+local TRANSMOG_INFO_FIELD = {
+	TRANSMOGIFY_ID = 1,
+	ENCHANT_ID = 2,
+}
+
+local TRANSMOG_SLOTS = {
+	[INVSLOT_HEAD] = true,
+	[INVSLOT_SHOULDER] = true,
+	[INVSLOT_BACK] = true,
+	[INVSLOT_CHEST] = true,
+	[INVSLOT_BODY] = true,
+	[INVSLOT_TABARD] = true,
+	[INVSLOT_WRIST] = true,
+	[INVSLOT_HAND] = true,
+	[INVSLOT_WAIST] = true,
+	[INVSLOT_LEGS] = true,
+	[INVSLOT_FEET] = true,
+	[INVSLOT_MAINHAND] = true,
+	[INVSLOT_OFFHAND] = true,
+	[INVSLOT_RANGED] = true,
+}
+
+local PRIVATE = {
+	INVENTORY_TRANSMOG_INFO = {},
+
+--	AWAIT_TRANSMOG_INFO = nil,
+--	TRANSMOG_INFO_QUEUE = nil,
+--	TRANSMOG_INFO_QUEUE_PLAYER = nil,
+--	PLAYER_TRANSMOG_INFO_TIMER = nil,
+}
+
+PRIVATE.EventHandler = CreateFrame("Frame")
+PRIVATE.EventHandler:Hide()
+PRIVATE.EventHandler:RegisterEvent("CHAT_MSG_ADDON")
+PRIVATE.EventHandler:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+PRIVATE.EventHandler:RegisterEvent("PLAYER_ENTERING_WORLD")
+PRIVATE.EventHandler:SetScript("OnEvent", function(self, event, ...)
+	if event == "CHAT_MSG_ADDON" then
+		local prefix, message, channel, sender = ...
+		if channel == "UNKNOWN" and sender == UnitName("player") then
+			if PRIVATE[prefix] then
+				PRIVATE[prefix](message)
+			end
+		end
+	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
+		local slotID, hasItem = ...
+		if TRANSMOG_SLOTS[slotID] then
+			if hasItem then
+				PRIVATE.OnUnitItemsChanged("player")
+			else
+				PRIVATE.INVENTORY_TRANSMOG_INFO[slotID] = nil
+				FireCustomClientEvent("PLAYER_TRANSMOGRIFICATION_CHANGED")
+			end
+		end
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		local isInitialLogin, isReloadingUI = ...
+		if isInitialLogin or isReloadingUI then
+			PRIVATE.OnUnitItemsChanged("player")
+		end
+	end
+end)
+
+do -- InventoryTransmogInfo
+	PRIVATE.ASMSG_TRANSMOGRIFICATION_INFO_RESPONSE = function(msg)
+	--	local guid = PRIVATE.AWAIT_TRANSMOG_INFO
+		PRIVATE.AWAIT_TRANSMOG_INFO = nil
+		twipe(PRIVATE.INVENTORY_TRANSMOG_INFO)
+
+		local unitGUID, transmogInfo = strsplit(";", msg, 2)
+
+		if tonumber(unitGUID) == tonumber(UnitGUID("player")) then
+			for transmogInfoIndex, transmogInfoStr in ipairs({StringSplitEx(";", transmogInfo)}) do
+				local slotID, transmogrifyID, enchantID = strsplit(":", transmogInfoStr)
+
+				slotID = tonumber(slotID)
+				transmogrifyID = tonumber(transmogrifyID)
+				enchantID = tonumber(enchantID)
+
+				if slotID and (transmogrifyID or enchantID) then
+					PRIVATE.INVENTORY_TRANSMOG_INFO[slotID] = {
+						[TRANSMOG_INFO_FIELD.TRANSMOGIFY_ID] = transmogrifyID ~= 0 and transmogrifyID or nil,
+						[TRANSMOG_INFO_FIELD.ENCHANT_ID] = enchantID ~= 0 and enchantID or nil,
+					}
+				end
+			end
+
+			FireCustomClientEvent("PLAYER_TRANSMOGRIFICATION_CHANGED")
+		end
+	end
+
+	PRIVATE.RequestTransmogInfo = function(guid, isPlayer)
+		if PRIVATE.AWAIT_TRANSMOG_INFO then
+			if PRIVATE.AWAIT_TRANSMOG_INFO == guid then
+				return false
+			elseif isPlayer then
+				PRIVATE.TRANSMOG_INFO_QUEUE_PLAYER = guid
+			else
+				PRIVATE.TRANSMOG_INFO_QUEUE = guid
+			end
+			return false
+		end
+
+		PRIVATE.AWAIT_TRANSMOG_INFO = guid
+		SendServerMessage("ACMSG_TRANSMOGRIFICATION_INFO_REQUEST", guid)
+		return true
+	end
+
+	PRIVATE.OnUnitItemsChanged = function(unit)
+		local guid = UnitGUID(unit)
+		if UnitIsUnit("player", unit) then
+			if PRIVATE.PLAYER_TRANSMOG_INFO_TIMER then
+				PRIVATE.PLAYER_TRANSMOG_INFO_TIMER:Cancel()
+			end
+			PRIVATE.PLAYER_TRANSMOG_INFO_TIMER = C_Timer:After(0.05, function()
+				PRIVATE.RequestTransmogInfo(guid, true)
+				PRIVATE.PLAYER_TRANSMOG_INFO_TIMER = nil
+			end)
+		end
+	end
+
+	PRIVATE.GetInventoryTransmogInfo = function(unit, slotID)
+		if UnitIsUnit("player", unit) then
+			local transmogInfo = PRIVATE.INVENTORY_TRANSMOG_INFO[slotID]
+			if transmogInfo then
+				return transmogInfo[TRANSMOG_INFO_FIELD.TRANSMOGIFY_ID], transmogInfo[TRANSMOG_INFO_FIELD.ENCHANT_ID]
+			end
+		end
+	end
+end
 
 local scanTooltip = CreateFrame("GameTooltip", "TransmogScanTooltip");
 scanTooltip:AddFontStrings(
@@ -577,7 +722,7 @@ function C_Transmog.GetSlotVisualInfo(transmogLocation)
 				appliedVisualID = appliedData.visualID;
 			end
 		else
-			local transmogID = GetInventoryTransmogID("player", slotID) or 0;
+			local transmogID = PRIVATE.GetInventoryTransmogInfo("player", slotID) or 0;
 			appliedSourceID = transmogID;
 			appliedVisualID = select(3, C_TransmogCollection.GetAppearanceSourceInfo(transmogID));
 		end
@@ -644,6 +789,16 @@ function C_Transmog.SetPending(transmogLocation, pendingInfo)
 	end
 end
 
+function C_Transmog.GetInventoryTransmogInfo(unit, slotID)
+	if type(unit) ~= "string" then
+		error(strformat("bad argument #1 to 'C_Transmog.GetInventoryTransmogID' (string expected, got %s)", type(unit)), 2)
+	elseif type(slotID) ~= "number" then
+		error(strformat("bad argument #2 to 'C_Transmog.GetInventoryTransmogID' (number expected, got %s)", type(slotID)), 2)
+	end
+
+	return PRIVATE.GetInventoryTransmogInfo(unit, slotID)
+end
+
 function C_Item.GetAppliedItemTransmogInfo(itemLocation)
 	local appliedSourceID, appliedIllusionID;
 
@@ -669,8 +824,6 @@ function C_Item.GetBaseItemTransmogInfo(itemLocation)
 end
 
 function EventHandler:ASMSG_TRANSMOGRIFICATION_MENU_OPEN(msg)
-	SendServerMessage("ACMSG_SHOP_REFUNDABLE_PURCHASE_LIST_REQUEST");
-
 	for _, block in ipairs({strsplit(";", msg)}) do
 		local slotID, transmogID, enchantID = strsplit(":", block);
 		slotID = tonumber(slotID);
@@ -785,12 +938,11 @@ function EventHandler:ASMSG_TRANSMOGRIFICATION_APPLY_RESPONSE(msg)
 				end
 
 				FireCustomClientEvent("TRANSMOGRIFY_SUCCESS", CreateAndSetFromMixin(TransmogLocationMixin, slotID, transmogType, Enum.TransmogModification.Main));
+				PRIVATE.OnUnitItemsChanged("player")
 			end
 		end
 
 		TRANSMOG_INFO:Clear("Pending");
-
-
 	else
 		local error = _G["TRANSMOGRIFY_ERROR_"..msg];
 		if error then

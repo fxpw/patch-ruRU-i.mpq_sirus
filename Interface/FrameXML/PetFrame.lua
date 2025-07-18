@@ -15,14 +15,14 @@ function PetFrame_OnLoad (self)
 	--self.flashTimer = 0;
 	CombatFeedback_Initialize(self, PetHitIndicator, 30);
 	PetFrame_Update(self);
-	self:RegisterEvent("UNIT_PET");
-	self:RegisterEvent("UNIT_COMBAT");
-	self:RegisterEvent("UNIT_AURA");
+	self:RegisterUnitEvent("UNIT_PET", "player");
 	self:RegisterEvent("PET_ATTACK_START");
 	self:RegisterEvent("PET_ATTACK_STOP");
 	self:RegisterEvent("UNIT_HAPPINESS");
 	self:RegisterEvent("PET_UI_UPDATE");
 	self:RegisterEvent("PET_RENAMEABLE");
+	self:RegisterUnitEvent("UNIT_COMBAT", "pet", "player");
+	self:RegisterUnitEvent("UNIT_AURA", "pet", "player");
 	local showmenu = function()
 		ToggleDropDownMenu(1, nil, PetFrameDropDown, "PetFrame", 44, 8);
 	end

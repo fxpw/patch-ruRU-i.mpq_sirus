@@ -37,6 +37,8 @@ TIMER_NUMBERS_SETS["BigGold"] = {
 	numberHalfWidths = {35/128, 14/128, 33/128, 32/128, 36/128, 32/128, 33/128, 29/128, 31/128, 31/128}
 }
 
+local checkActiveTimers
+
 local function getBattlegroundTimerType()
 	local timerType = tonumber(GetCVar("BattlegroundTimerType"))
 	return timerType or 0
@@ -202,7 +204,7 @@ function TimerTracker_OnEvent(self, event, ...)
 
 				if TIMER_DATA[timerType].readyButton then
 					TimerTracker_ReadyStatusButton:Toggle(false)
-					C_CacheInstance:Set("TimerTrackerReadyButtonState", {value = false})
+					C_GlobalStorage.SetVar("TIMER_READY_STATE", false)
 				end
 			end
 		end
@@ -222,6 +224,11 @@ function TimerTracker_OnEvent(self, event, ...)
 					SetCVar("BattlegroundStartTimer", 0)
 				end
 			end
+		end
+
+		local isInitialLogin, isReloadingUI = ...
+		if isReloadingUI then
+			checkActiveTimers()
 		end
 	elseif event == "PLAYER_ENTERING_BATTLEGROUND" then
 		local cvarTime = GetCVar("BattlegroundStartTimer")
@@ -464,7 +471,7 @@ function StartTimer_NumberAnimOnFinished(self)
 		self.barShowing = false
 		self.GoTextureAnim:Play();
 
-		C_CacheInstance:Set("TimerTrackerReadyButtonState", {value = false})
+		C_GlobalStorage.SetVar("TIMER_READY_STATE", false)
 
 		if self.type == TIMER_TYPE_SERVER_HANDLED then
 			FlashClientIcon()
@@ -496,7 +503,7 @@ function TimerTrackerReadyButtonMixin:OnEvent(event, ... )
 	local _, instanceTyp = IsInInstance()
 	if instanceTyp == "none" then
 		self:Hide()
-		C_CacheInstance:Set("TimerTrackerReadyButtonState", {value = false})
+		C_GlobalStorage.SetVar("TIMER_READY_STATE", false)
 	end
 end
 
@@ -533,7 +540,7 @@ function TimerTrackerReadyButtonMixin:OnClick(button)
 
 		self.checked = self:GetChecked() == 1
 
-		C_CacheInstance:Set("TimerTrackerReadyButtonState", {value = self.checked})
+		C_GlobalStorage.SetVar("TIMER_READY_STATE", self.checked)
 		SendServerMessage("ACMSG_ARENA_READY_STATUS", self.checked and 1 or 0)
 
 		self:UpdateText(true)
@@ -555,50 +562,46 @@ function TimerTrackerReadyButtonMixin:OnMouseUp(button)
 end
 
 function TimerTrackerReadyButtonMixin:UpdateText(forceUpdate)
-	local state = C_CacheInstance:Get("TimerTrackerReadyButtonState")
+	local state = C_GlobalStorage.GetVar("TIMER_READY_STATE")
+	local needAnimationText = self.checked ~= state
+
+	if needAnimationText and not forceUpdate then
+		self.ReadyText.AnimSwap:Play()
+		self.ReadyTextDescription.AnimSwap:Play()
+	end
 
 	if state then
-		local needAnimationText = self.checked ~= state.value
-
-		if needAnimationText and not forceUpdate then
-			self.ReadyText.AnimSwap:Play()
-			self.ReadyTextDescription.AnimSwap:Play()
+		if self.Glow.AlphaAnim:IsPlaying() then
+			self.Glow.AlphaAnim:Stop()
 		end
+	else
+		self.Glow.AlphaAnim:Play()
+	end
 
-		if state.value then
-			if self.Glow.AlphaAnim:IsPlaying() then
-				self.Glow.AlphaAnim:Stop()
-			end
+	self.checked = state
+	self:SetChecked(state)
+
+	if not forceUpdate then
+		if state then
+			self.Selection:Show()
+			self.Selection:SetAlpha(0.2)
 		else
-			self.Glow.AlphaAnim:Play()
+			self.Selection:Hide()
 		end
+	end
 
-		self.checked = state.value
-		self:SetChecked(state.value)
-
-		if not forceUpdate then
-			if self:GetChecked() then
-				self.Selection:Show()
-				self.Selection:SetAlpha(0.2)
-			else
-				self.Selection:Hide()
-			end
+	if state then
+		local data = C_GlobalStorage.GetVar("ASMSG_ARENA_READY_STATUS")
+		if data and data.bracket and data.readyCount then
+			self.ReadyText:SetFormattedText("%d / %d", data.readyCount, data.bracket)
+			self.ReadyTextDescription:SetText(READY_ARENA_WAIT_PLAYER_LABEL)
 		end
-
-		if state.value == true then
-			local data = C_CacheInstance:Get("ASMSG_ARENA_READY_STATUS")
-
-			if data and data.bracket and data.readyCount then
-				self.ReadyText:SetFormattedText("%d / %d", data.readyCount, data.bracket)
-				self.ReadyTextDescription:SetText(READY_ARENA_WAIT_PLAYER_LABEL)
-			end
+	else
+		self.ReadyText:SetText(READY_LABEL)
+		if C_MiniGames.GetActiveID() then
+			self.ReadyTextDescription:SetText(READY_MINIGAME_DESCRIPTION_LABEL)
 		else
-			self.ReadyText:SetText(READY_LABEL)
-			if C_MiniGames.GetActiveID() then
-				self.ReadyTextDescription:SetText(READY_MINIGAME_DESCRIPTION_LABEL)
-			else
-				self.ReadyTextDescription:SetText(READY_ARENA_DESCRIPTION_LABEL)
-			end
+			self.ReadyTextDescription:SetText(READY_ARENA_DESCRIPTION_LABEL)
 		end
 	end
 end
@@ -659,7 +662,7 @@ function EventHandler:ASMSG_ARENA_READY_STATUS(msg)
 	local bracket, readyCount = string.split("|", msg)
 
 	if readyCount then
-		C_CacheInstance:Set("ASMSG_ARENA_READY_STATUS", {
+		C_GlobalStorage.SetVar("ASMSG_ARENA_READY_STATUS", {
 			bracket = tonumber(bracket),
 			readyCount = tonumber(readyCount)
 		})
@@ -674,6 +677,7 @@ function EventHandler:ASMSG_EVENT_START_TIMER(msg)
 	totalTimeMS = tonumber(totalTimeMS)
 
 	if totalTimeMS <= 0 then
+		C_GlobalStorage.SetVar("ASMSG_EVENT_START_TIMER", nil)
 		FireCustomClientEvent("STOP_TIMER_OF_TYPE", TIMER_TYPE_SERVER_HANDLED)
 		return
 	end
@@ -682,14 +686,34 @@ function EventHandler:ASMSG_EVENT_START_TIMER(msg)
 	mediumMarker = tonumber(mediumMarker)
 	largeMarker = tonumber(largeMarker)
 
+	local timerData = C_GlobalStorage.GetVar("ASMSG_EVENT_START_TIMER")
+	if not timerData then
+		timerData = {}
+		C_GlobalStorage.SetVar("ASMSG_EVENT_START_TIMER", timerData)
+	else
+		table.wipe(timerData)
+	end
+
 	local markeyTimeOffset = timeRemainingMS * 0.001 <= mediumMarker and 1 or 2
+	local instanceName, instanceType = GetInstanceInfo()
 
-	TIMER_DATA[TIMER_TYPE_SERVER_HANDLED].mediumMarker = mediumMarker > 0 and (mediumMarker + markeyTimeOffset) or 0
-	TIMER_DATA[TIMER_TYPE_SERVER_HANDLED].largeMarker = largeMarker > 0 and (largeMarker + markeyTimeOffset) or 0
-	TIMER_DATA[TIMER_TYPE_SERVER_HANDLED].goTexture = tonumber(goTexture)
-	TIMER_DATA[TIMER_TYPE_SERVER_HANDLED].readyButton = readyButton == "1"
+	timerData.instanceName = instanceName
+	timerData.instanceType = instanceType
+	timerData.timestamp = GetTime()
+	timerData.guid = UnitGUID("player")
+	timerData.totalTime = totalTimeMS * 0.001
+	timerData.timeRemaining = timeRemainingMS * 0.001
+	timerData.mediumMarker = mediumMarker > 0 and (mediumMarker + markeyTimeOffset) or 0
+	timerData.largeMarker = largeMarker > 0 and (largeMarker + markeyTimeOffset) or 0
+	timerData.goTexture = tonumber(goTexture)
+	timerData.readyButton = readyButton == "1"
 
-	if readyButton == "1" then
+	TIMER_DATA[TIMER_TYPE_SERVER_HANDLED].mediumMarker = timerData.mediumMarker
+	TIMER_DATA[TIMER_TYPE_SERVER_HANDLED].largeMarker = timerData.largeMarker
+	TIMER_DATA[TIMER_TYPE_SERVER_HANDLED].goTexture = timerData.goTexture
+	TIMER_DATA[TIMER_TYPE_SERVER_HANDLED].readyButton = timerData.readyButton
+
+	if timerData.readyButton then
 		FlashClientIcon()
 	else
 		TimerTracker_ReadyStatusButton:Toggle(false)
@@ -697,7 +721,44 @@ function EventHandler:ASMSG_EVENT_START_TIMER(msg)
 
 	FreeAllTimerTrackerTimer()
 --	FireCustomClientEvent("STOP_TIMER_OF_TYPE", TIMER_TYPE_SERVER_HANDLED)
-	FireCustomClientEvent("START_TIMER", TIMER_TYPE_SERVER_HANDLED, timeRemainingMS * 0.001, totalTimeMS * 0.001)
+	FireCustomClientEvent("START_TIMER", TIMER_TYPE_SERVER_HANDLED, timerData.timeRemaining, timerData.totalTime)
+end
+
+function checkActiveTimers()
+	local timerData = C_GlobalStorage.GetVar("ASMSG_EVENT_START_TIMER")
+	if timerData then
+		local instanceName, instanceType = GetInstanceInfo()
+		local guid = UnitGUID("player")
+		if timerData.instanceName == instanceName
+		and timerData.instanceType == instanceType
+		and timerData.guid == guid
+		then
+			local now = GetTime()
+			local endTime = timerData.timestamp + timerData.timeRemaining
+			if now < endTime then
+				local timeRemaining = endTime - now
+
+				TIMER_DATA[TIMER_TYPE_SERVER_HANDLED].mediumMarker = timerData.mediumMarker
+				TIMER_DATA[TIMER_TYPE_SERVER_HANDLED].largeMarker = timerData.largeMarker
+				TIMER_DATA[TIMER_TYPE_SERVER_HANDLED].goTexture = timerData.goTexture
+				TIMER_DATA[TIMER_TYPE_SERVER_HANDLED].readyButton = timerData.readyButton
+
+				if timerData.readyButton then
+					FlashClientIcon()
+				else
+					TimerTracker_ReadyStatusButton:Toggle(false)
+				end
+
+				FreeAllTimerTrackerTimer()
+			--	FireCustomClientEvent("STOP_TIMER_OF_TYPE", TIMER_TYPE_SERVER_HANDLED)
+				FireCustomClientEvent("START_TIMER", TIMER_TYPE_SERVER_HANDLED, timeRemaining, timerData.totalTime)
+			else
+				C_GlobalStorage.SetVar("ASMSG_EVENT_START_TIMER", nil)
+			end
+		else
+			C_GlobalStorage.SetVar("ASMSG_EVENT_START_TIMER", nil)
+		end
+	end
 end
 
 local TIMEOUT_LIST = {}

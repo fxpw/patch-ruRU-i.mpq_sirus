@@ -13,6 +13,8 @@ local STORE_PRODUCT_UNAVAILABLE = STORE_PRODUCT_UNAVAILABLE
 local ACCEPT = ACCEPT
 local CLOSE = CLOSE
 
+local ITEM_RARITY_FALLBACK = 1
+
 Enum.StoreDialogStyle = {
 	Wood = 1,
 	Paper = 2,
@@ -217,10 +219,7 @@ end
 function StoreEquipmentButtonMixin:SetNewShown(shown)
 	if shown then
 		self.NewIcon:Show()
-		if self.NewIcon.Anim:IsPlaying() then
-			self.NewIcon.Anim:Stop()
-		end
-		self.NewIcon.Anim:Play()
+		self.NewIcon.Anim:Restart()
 	else
 		self.NewIcon.Anim:Stop()
 		self.NewIcon:Hide()
@@ -230,10 +229,7 @@ end
 function StoreEquipmentButtonMixin:SetUpgradeShown(shown)
 	if shown then
 		self.Icon.Upgrade:Show()
-		if self.Icon.Upgrade.Anim:IsPlaying() then
-			self.Icon.Upgrade.Anim:Stop()
-		end
-		self.Icon.Upgrade.Anim:Play()
+		self.Icon.Upgrade.Anim:Restart()
 	else
 		self.Icon.Upgrade.Anim:Stop()
 		self.Icon.Upgrade:Hide()
@@ -276,6 +272,7 @@ function StoreCollectionProductMixin:OnShow()
 	SetParentFrameLevel(self.New, 2)
 	SetParentFrameLevel(self.FavoriteButton, 2)
 	SetParentFrameLevel(self.ActionButton, 2)
+	SetParentFrameLevel(self.MagnifierButton, 3)
 end
 
 function StoreCollectionProductMixin:OnEnter()
@@ -325,7 +322,9 @@ function StoreCollectionProductMixin:UpdateMouseOver()
 		end
 		self.MagnifierButton:Show()
 	else
-		self.FavoriteButton:Hide()
+		if self.showFavoriteOnEnter then
+			self.FavoriteButton:Hide()
+		end
 		self.MagnifierButton:Hide()
 	end
 end
@@ -373,6 +372,7 @@ end
 
 function StoreCollectionProductMixin:SetNew(isNew)
 	self.New:SetShown(isNew)
+	self.MagnifierButton:SetPoint("TOPRIGHT", -16, isNew and -52 or -16)
 end
 
 function StoreCollectionProductMixin:UpdateFavorite()
@@ -544,8 +544,8 @@ function StoreTransmogOfferButtonMixin:SetOfferIndex(offerIndex)
 	self.Name:SetText(name)
 	self.Name:ClearAllPoints()
 	self.Icon:SetTexture(icon)
-	self.Amount:SetText(amount > 1 and amount or "")
-	local r, g, b = GetItemQualityColor(rarity)
+	self.Amount:SetText(amount and amount > 1 and amount or "")
+	local r, g, b = GetItemQualityColor(rarity or ITEM_RARITY_FALLBACK)
 	self.IconBorder:SetVertexColor(r, g, b)
 
 	if originalPrice and originalPrice ~= price and originalPrice > 0 then
@@ -594,20 +594,31 @@ function StoreModelPanelMixin:Close()
 end
 
 function StoreModelPanelMixin:SetModelCallbacks()
+	self.Model.OnPlayerEquipmentToggle = function(this, enabled)
+		self:OnPlayerEquipmentToggle(this, enabled)
+	end
 	self.Model.OnPortraitCameraToggle = function(this, enabled)
 		self:OnPortraitCameraToggle(this, enabled)
 	end
 end
 
+function StoreModelPanelMixin:OnPlayerEquipmentToggle(model, enabled)
+	self.Overlay.EquipmentToggle:SetChecked(not enabled)
+end
+
 function StoreModelPanelMixin:OnPortraitCameraToggle(model, enabled)
+	self.Overlay.PortraitCameraToggle:SetChecked(enabled)
+
 	local modelType = self:GetModelType()
 	if modelType == Enum.ModelType.Item
 	or modelType == Enum.ModelType.ItemSet
 	then
 		if enabled and (modelType == Enum.ModelType.Item or self.allowPortraitCamera) then
+			self:SetZoomEnabled(true)
 			self:SetPanningEnabled(true)
 			return
 		end
+		self:SetZoomEnabled(false)
 		self:SetPanningEnabled(false)
 	elseif modelType == Enum.ModelType.Illusion then
 		if enabled then
@@ -767,7 +778,7 @@ function StoreDressUpMixin:SetProduct(productID, allowToHide, allowEquipmentTogg
 			end
 		elseif linkType == Enum.DressUpLinkType.Illusion then
 			modelType = Enum.ModelType.Illusion
-			modelID = product.modelID
+			modelID = product.modelID or product.itemID
 		else
 			self:SetNoDisplayDataMode(true)
 			return false
@@ -1393,6 +1404,8 @@ function StoreGenericDialogMixin:OnHyperlinkClick(this, link, text, button)
 	local linkType, linkData = string.split(":", link, 2)
 	if linkType == "url" then
 		C_StoreSecure.GetStoreFrame():ShowLinkDialog(self:GetParent(), nil, nil, linkData)
+	elseif linkType == "item" then
+		SetItemRef(link)
 	else
 		GMError(string.format("[STORE_DIALOG] Unknown hyperlink type [%s] for link \"%s\"", tostring(linkType), tostring(linkData)))
 	end
@@ -1406,7 +1419,7 @@ function StoreGenericDialogMixin:ShowHyperlinkTooltip(this, link, data, isHyperl
 
 	GameTooltip:SetOwner(self, "ANCHOR_CURSOR_RIGHT", 10, 10)
 	if isHyperlink then
-		GameTooltip:SetHyperlink(data)
+		GameTooltip:SetHyperlink(link)
 	else
 		GameTooltip:AddLine(data, 1, 1, 1)
 	end
@@ -1418,6 +1431,8 @@ function StoreGenericDialogMixin:OnHyperlinkEnter(this, link, text)
 	if linkType == "url" then
 		self:ShowHyperlinkTooltip(this, link, linkData, false)
 		SetCursor("Interface/Cursor/Cast")
+	elseif linkType == "item" then
+		self:ShowHyperlinkTooltip(this, link, linkData, true)
 	end
 end
 

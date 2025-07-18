@@ -4,7 +4,7 @@ local tutorialPointer;
 
 function CollectionsJournal_SetTab(self, tab)
 	PanelTemplates_SetTab(self, tab);
-	C_CVar:SetValue("C_CVAR_PET_JOURNAL_TAB", tostring(tab));
+	SetCVar("petJournalTab", tab);
 	CollectionsJournal_UpdateSelectedTab(self);
 end
 
@@ -57,7 +57,7 @@ end
 
 function CollectionsJournal_OnEvent(self, event)
 	if event == "VARIABLES_LOADED" then
-		PanelTemplates_SetTab(self, tonumber(C_CVar:GetValue("C_CVAR_PET_JOURNAL_TAB")) or 1);
+		PanelTemplates_SetTab(self, tonumber(GetCVar("petJournalTab")) or 1);
 	end
 end
 

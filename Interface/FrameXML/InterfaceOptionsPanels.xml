@@ -264,7 +264,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX;
-						self.cvar = "C_CVAR_BLOCK_GUILD_INVITES";
+						self.cvar = "blockGuildInvites";
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
 					</OnLoad>
 				</Scripts>
@@ -343,7 +343,7 @@
 				<Attributes>
 					<Attribute name="width" type="number" value="180"/>
 					<Attribute name="label" type="string" value="SETTINGS_BLOCK_GROUP_INVITES"/>
-					<Attribute name="cvar" type="string" value="C_CVAR_BLOCK_GROUP_INVITES"/>
+					<Attribute name="cvar" type="string" value="blockGroupInvites"/>
 					<Attribute name="initFunction" type="string" value="InterfaceOptionsDisplayPanelBlockGroupInvitesDropDown_Initialize"/>
 				</Attributes>
 				<Anchors>
@@ -354,7 +354,7 @@
 				<Attributes>
 					<Attribute name="width" type="number" value="180"/>
 					<Attribute name="label" type="string" value="SETTINGS_AUTO_ACCEPT_GROUP_INVITES"/>
-					<Attribute name="cvar" type="string" value="C_CVAR_AUTO_ACCEPT_GROUP_INVITES"/>
+					<Attribute name="cvar" type="string" value="autoAcceptGroupInvites"/>
 					<Attribute name="initFunction" type="string" value="InterfaceOptionsDisplayPanelAutoAcceptGroupInvitesDropDown_Initialize"/>
 				</Attributes>
 				<Anchors>
@@ -454,11 +454,7 @@
 			</CheckButton>
 			<CheckButton name="$parentAutoRange" inherits="InterfaceOptionsCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentAttackOnAssist" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="-8"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentAttackOnAssist" relativePoint="BOTTOMLEFT" x="0" y="-6"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -470,11 +466,7 @@
 			</CheckButton>
 			<CheckButton name="$parentStopAutoAttack" inherits="InterfaceOptionsCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentAutoRange" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="-8"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentAutoRange" relativePoint="BOTTOMLEFT" x="0" y="-6"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -486,11 +478,7 @@
 			</CheckButton>
 			<CheckButton name="$parentNameplateClassColors" inherits="InterfaceOptionsCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentStopAutoAttack" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="-8"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentStopAutoAttack" relativePoint="BOTTOMLEFT" x="0" y="-6"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -502,7 +490,7 @@
 			</CheckButton>
 			<CheckButton name="$parentAutoSelfCast" inherits="InterfaceOptionsCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentNameplateClassColors" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+					<Anchor point="TOPLEFT" relativeTo="$parentNameplateClassColors" relativePoint="BOTTOMLEFT" x="0" y="-6"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -514,38 +502,27 @@
 			</CheckButton>
 			<CheckButton name="$parentLossOfControll" parentKey="LossOfControll" inherits="InterfaceOptionsCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentAutoSelfCast" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+					<Anchor point="TOPLEFT" relativeTo="$parentAutoSelfCast" relativePoint="BOTTOMLEFT" x="0" y="-6"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						self:RegisterEvent("PLAYER_ENTERING_WORLD")
-
-						self.Text:SetText(LOSS_OF_CONTROL)
+						self.type = CONTROLTYPE_CHECKBOX;
+						self.cvar = "lossOfControl";
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
 					</OnLoad>
-					<OnEnter>
-						GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-						GameTooltip:SetText(OPTION_TOOLTIP_LOSS_OF_CONTROL, nil, nil, nil, nil, 1)
-						GameTooltip:Show()
-					</OnEnter>
-					<OnClick>
-						S_INTERFACE_OPTIONS_CACHE:Set("LOSS_OF_CONTROL_TOGGLE", self:GetChecked() and 1 or 0)
-					</OnClick>
-					<OnEvent>
-						self:SetChecked(S_INTERFACE_OPTIONS_CACHE:Get("LOSS_OF_CONTROL_TOGGLE", 1))
-					</OnEvent>
 					<OnLeave function="GameTooltip_Hide"/>
 				</Scripts>
 			</CheckButton>
 			<CheckButton name="$parentAssistModeCheckButton" parentKey="AssistModeCheckButton" inherits="InterfaceOptionsCheckButtonTemplate" motionScriptsWhileDisabled="true">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentLossOfControll" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+					<Anchor point="TOPLEFT" relativeTo="$parentLossOfControll" relativePoint="BOTTOMLEFT" x="0" y="-6"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
 						self:RegisterCustomEvent("WARMODE_ASSIST_SET_INACTIVE")
 
 						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_WARMODE_PVP_ASSIST_ENABLED"
+						self.cvar = "warmodePvpAssist"
 
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
 					</OnLoad>
@@ -561,70 +538,108 @@
 					</OnEvent>
 				</Scripts>
 			</CheckButton>
+			<CheckButton name="$parentActionButtonUseKeyDown" inherits="InterfaceOptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAssistModeCheckButton" relativePoint="BOTTOMLEFT" x="0" y="-6"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX;
+						self.cvar = "ActionButtonUseKeyDown";
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
 			<CheckButton name="$parentDracthyrReturnMortalForm" inherits="InterfaceOptionsCheckButtonTemplate" hidden="true">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentAssistModeCheckButton" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+					<Anchor point="TOPLEFT" relativeTo="$parentActionButtonUseKeyDown" relativePoint="BOTTOMLEFT" x="0" y="-6"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
 						self:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_DRACTHYR_RETURN_MORTAL_FORM"
+						self.cvar = "dracthyrReturnMortalForm"
 
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
 					</OnLoad>
 					<OnEvent>
 						self:UnregisterEvent(event)
 						local _, _, raceID = UnitRace("player")
-						if raceID == E_CHARACTER_RACES.RACE_DRACTHYR then
-							self:Show()
-						end
+						self:SetShown(raceID == E_CHARACTER_RACES.RACE_DRACTHYR)
 					</OnEvent>
 				</Scripts>
 			</CheckButton>
 
-			<Slider name="SpellOverlay_SpellHighlightAlphaSlider" valueStep="0.01" minValue="0" maxValue="1" inherits="OptionsSliderTemplate">
+			<Slider name="SpellOverlay_SpellHighlightAlphaSlider" inherits="OptionsSliderTemplate">
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeTo="$parentColorblindFiltersSeparator" x="24" y="-88"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						self:RegisterEvent("PLAYER_ENTERING_WORLD")
-
+						self.type = CONTROLTYPE_SLIDER;
+						self.cvar = "spellActivationButtonOpacity";
 						self.Text:SetText(SETTINGS_SPELLOVERLAY_SLIDER_1)
-						self.Low:SetText(OFF_ABBR)
+						self.Low:SetText(OFF);
+						self.SetDisplayValue = self.SetValue;
+						self.SetValue = function (self, value)
+							value = math.floor(value * 100 + 0.5) / 100;
+							self:SetDisplayValue(value);
+							ActionButton_AllOverlayAlphaUpdate(self.value)
+						end
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
+						self:RegisterEvent("VARIABLES_LOADED");
 					</OnLoad>
 					<OnValueChanged>
-						self.value = value
-						ActionButton_AllOverlayAlphaUpdate(self.value)
+						value = math.floor(value * 100 + 0.5) / 100;
+						if (value ~= 0) then
+							value = math.max(0.5, value);
+						end
+						self.value = value;
+						self:SetValue(self.value);
+						SetCVar(self.cvar, value);
 					</OnValueChanged>
 					<OnEvent>
-						self.value = S_INTERFACE_OPTIONS_CACHE:Get("SPELL_OVERLAY_SPELL_HIGHLIGHT", 100)
-						self:SetValue(self.value)
+						local value = tonumber(GetCVar(self.cvar));
+						value = math.floor(value * 100 + 0.5) / 100;
+						self:SetValue(value);
 					</OnEvent>
 				</Scripts>
 			</Slider>
-			<Slider name="SpellOverlay_OverlayArtAlphaSlider" valueStep="0.01" minValue="0" maxValue="1" inherits="OptionsSliderTemplate">
+			<Slider name="SpellOverlay_OverlayArtAlphaSlider" inherits="OptionsSliderTemplate">
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" relativeTo="$parentColorblindFiltersSeparator" x="-24" y="-88"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						self:RegisterEvent("PLAYER_ENTERING_WORLD")
-
+						self.type = CONTROLTYPE_SLIDER;
+						self.cvar = "spellActivationOverlayOpacity";
 						self.Text:SetText(SETTINGS_SPELLOVERLAY_SLIDER_2)
-						self.Low:SetText(OFF_ABBR)
+						self.Low:SetText(OFF);
+						self.SetDisplayValue = self.SetValue;
+						self.SetValue = function (self, value)
+							value = math.floor(value * 100 + 0.5) / 100;
+							self:SetDisplayValue(value);
+							SpellActivationOverlayFrame:SetAlpha(value);
+							SpellActivationOverlay_RestoreAllOverlays(SpellActivationOverlayFrame)
+							SpellActivationOverlay_UpdateAlphaAllOverlays(SpellActivationOverlayFrame)
+						end
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
+						self:RegisterEvent("VARIABLES_LOADED");
 					</OnLoad>
 					<OnValueChanged>
-						self.value = value
-						SpellActivationOverlay_RestoreAllOverlays(SpellActivationOverlayFrame)
-						SpellActivationOverlayFrame:SetAlpha(self.value)
-						SpellActivationOverlay_UpdateAlphaAllOverlays(SpellActivationOverlayFrame)
+						value = math.floor(value * 100 + 0.5) / 100;
+						if (value ~= 0) then
+							value = math.max(0.5, value);
+						end
+						self.value = value;
+						self:SetValue(self.value);
+						SetCVar(self.cvar, value);
 					</OnValueChanged>
 					<OnEvent>
-						self.value = S_INTERFACE_OPTIONS_CACHE:Get("SPELL_OVERLAY_ART", 0)
-						self:SetValue(self.value)
+						local value = tonumber(GetCVar(self.cvar));
+						value = math.floor(value * 100 + 0.5) / 100;
+						self:SetValue(value);
 					</OnEvent>
 				</Scripts>
 			</Slider>
@@ -640,11 +655,11 @@
 					</OnLoad>
 					<OnValueChanged>
 						self.value = value;
-						C_CVar:SetValue("C_CVAR_LOSS_OF_CONTROL_SCALE", tostring(value));
+						SetCVar("lossOfControlScale", tostring(value));
 						LossOfControlFrame_SetScale(LossOfControlFrame, value);
 					</OnValueChanged>
 					<OnEvent>
-						self.value = tonumber(C_CVar:GetValue("C_CVAR_LOSS_OF_CONTROL_SCALE")) or 1;
+						self.value = tonumber(GetCVar("lossOfControlScale")) or 1;
 						self:SetValue(self.value);
 					</OnEvent>
 				</Scripts>
@@ -1092,7 +1107,7 @@
 						self.type = CONTROLTYPE_CHECKBOX;
 						self.cvar = "colorblindMode";
 						self.uvar = "ENABLE_COLORBLIND_MODE";
-						self.setFunc = function() WatchFrame_Update(); if ( IsAddOnLoaded("Blizzard_AchievementUI") ) then AchievementFrame_ForceUpdate(); end end;
+						self.setFunc = function() QuestObjectiveTracker:MarkDirty(); if ( IsAddOnLoaded("Blizzard_AchievementUI") ) then AchievementFrame_ForceUpdate(); end end;
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
 					</OnLoad>
 				</Scripts>
@@ -1170,11 +1185,22 @@
 				<Attributes>
 					<Attribute name="width" type="number" value="120"/>
 					<Attribute name="label" type="string" value="SETTINGS_LOOT_ALERT_THRESHOLD"/>
-					<Attribute name="cvar" type="string" value="C_CVAR_LOOT_ALERT_THRESHOLD"/>
+					<Attribute name="cvar" type="string" value="lootAlertThreshold"/>
 					<Attribute name="initFunction" type="string" value="InterfaceOptionsDisplayPanelLootAlertThresholdDropDown_Initialize"/>
 				</Attributes>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentCinematicSubtitles" relativePoint="BOTTOMLEFT" x="-13" y="-24"/>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentSpellRange" inherits="InterfaceOptionsDropDownCustomTemplate">
+				<Attributes>
+					<Attribute name="width" type="number" value="120"/>
+					<Attribute name="label" type="string" value="SETTINGS_SPELL_RANGE"/>
+					<Attribute name="cvar" type="string" value="enableSpellSelectRange"/>
+					<Attribute name="initFunction" type="string" value="InterfaceOptionsDisplayPanelSpellRangeDropDown_Initialize"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentLootAlertThreshold" relativePoint="BOTTOMLEFT" x="0" y="-24"/>
 				</Anchors>
 			</Frame>
 		</Frames>
@@ -1311,6 +1337,117 @@
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
+			<Button name="$parentTrackerResetPosition" inherits="UIPanelButtonTemplate" text="TRACKER_RESET_POSITION">
+				<Size x="136" y="22"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="16" y="16" />
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						ObjectiveTrackerFrame:ClearAllPoints()
+						ObjectiveTrackerFrame:SetUserPlaced(false)
+						ObjectiveTrackerFrame:MarkDirty()
+					</OnClick>
+				</Scripts>
+				<NormalFont style="GameFontNormalSmall"/>
+				<HighlightFont style="GameFontHighlightSmall"/>
+			</Button>
+			<CheckButton name="$parentTrackerToggleSelection" inherits="OptionsBaseCheckButtonTemplate">
+				<Size x="26" y="26"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTrackerResetPosition" relativePoint="RIGHT" x="4" y="0" />
+				</Anchors>
+				<HitRectInsets>
+					<AbsInset left="0" right="0" top="0" bottom="0"/>
+				</HitRectInsets>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="$parentText" inherits="GameFontNormalSmall" text="TRACKER_TOGGLE_SELECTION">
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="RIGHT" x="0" y="1"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnShow>
+						self:SetChecked(ObjectiveTrackerFrame.Selection:IsShown())
+					</OnShow>
+					<OnClick>
+						if self:GetChecked() then
+							ObjectiveTrackerFrame.Selection:ShowSelected()
+						else
+							ObjectiveTrackerFrame.Selection:Hide()
+						end
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<Slider name="$parentTrackerHeight" inherits="OptionsSliderTemplate">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentTrackerResetPosition" relativePoint="TOPLEFT" x="4" y="24"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_SLIDER
+						self.cvar = "objectiveTrackerHeight"
+						self.SetDisplayValue = self.SetValue
+						self.SetValue = function(self, value)
+							self:SetDisplayValue(value)
+							self.value = value
+							SetCVar(self.cvar, value)
+							ObjectiveTrackerFrame:UpdateHeight()
+						end
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+					</OnLoad>
+					<OnValueChanged>
+						self:SetValue(value)
+					</OnValueChanged>
+				</Scripts>
+			</Slider>
+			<Slider name="$parentTrackerOpacity" inherits="OptionsSliderTemplate">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentTrackerHeight" relativePoint="TOPLEFT" x="0" y="24"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_SLIDER;
+						self.cvar = "objectiveTrackerBackgroundOpacity"
+						self.SetDisplayValue = self.SetValue;
+						self.SetValue = function(self, value)
+							self:SetDisplayValue(value)
+							self.value = value
+							SetCVar(self.cvar, value)
+							ObjectiveTrackerFrame:UpdateOpacity()
+						end
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+					</OnLoad>
+					<OnValueChanged>
+						self:SetValue(value)
+					</OnValueChanged>
+				</Scripts>
+			</Slider>
+			<Slider name="$parentTrackerFontSize" inherits="OptionsSliderTemplate">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentTrackerOpacity" relativePoint="TOPLEFT" x="0" y="24"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_SLIDER;
+						self.cvar = "objectiveTrackerTextSize"
+						self.SetDisplayValue = self.SetValue;
+						self.SetValue = function(self, value)
+							self:SetDisplayValue(value)
+							self.value = value
+							SetCVar(self.cvar, value)
+							ObjectiveTrackerFrame:UpdateTextSize()
+						end
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+					</OnLoad>
+					<OnValueChanged>
+						self:SetValue(value)
+					</OnValueChanged>
+				</Scripts>
+			</Slider>
 		</Frames>
 		<Scripts>
 			<OnLoad function="InterfaceOptionsObjectivesPanel_OnLoad"/>
@@ -1499,7 +1636,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_AUTOJOIN_TO_LFG"
+						self.cvar = "lfgAutoJoinChannel"
 
 						self.setFunc = function(value)
 							UpdateAutoJoinLFG()
@@ -3202,6 +3339,106 @@
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
+			<CheckButton name="$parentShowBuffFrameAuraCategory" inherits="InterfaceOptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentShowCastableDebuffs" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-8"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX;
+						self.cvar = "showBuffFrameAuraCategory";
+						self.uvar = "SHOW_BUFF_FRAME_AURA_CATEGORY";
+						self.setFunc = function(value)
+							BuffFrame_Update()
+						end
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentShowBuffFrameAuraVIP" inherits="InterfaceOptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentShowBuffFrameAuraCategory" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-8"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX;
+						self.cvar = "showBuffFrameAuraVIP";
+						self.uvar = "SHOW_BUFF_FRAME_AURA_VIP";
+						self.setFunc = function(value)
+							BuffFrame_Update()
+						end
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentShowBuffFrameAuraFaction" inherits="InterfaceOptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentShowBuffFrameAuraVIP" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-8"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX;
+						self.cvar = "showBuffFrameAuraFaction";
+						self.uvar = "SHOW_BUFF_FRAME_AURA_FACTION";
+						self.setFunc = function(value)
+							BuffFrame_Update()
+						end
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentShowBuffFrameAuraZodiac" inherits="InterfaceOptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentShowBuffFrameAuraFaction" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-8"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX;
+						self.cvar = "showBuffFrameAuraZodiac";
+						self.uvar = "SHOW_BUFF_FRAME_AURA_ZODIAC";
+						self.setFunc = function(value)
+							BuffFrame_Update()
+						end
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentShowBuffFrameAuraPremium" inherits="InterfaceOptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentShowBuffFrameAuraZodiac" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-8"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX;
+						self.cvar = "showBuffFrameAuraPremium";
+						self.uvar = "SHOW_BUFF_FRAME_AURA_PREMIUM";
+						self.setFunc = function(value)
+							BuffFrame_Update()
+						end
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
 		</Frames>
 		<Scripts>
 			<OnLoad function="InterfaceOptionsBuffsPanel_OnLoad"/>
@@ -3855,7 +4092,7 @@
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetFontObject(GameFontNormal);
 						self.type = CONTROLTYPE_CHECKBOX;
-						self.cvar = "C_CVAR_ITEM_UPGRADE_LEFT_ITEM_LIST";
+						self.cvar = "itemUpgradeLeftItems";
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
 					</OnLoad>
 				</Scripts>
@@ -4051,6 +4288,9 @@
 					<OnClick>
 						PlaySound("gsTitleOptionOK");
 						if ( CanResetTutorials() ) then
+							SetCVar("closedInfoFrames", "");			-- reset the help plates too
+							SetCVar("closedInfoFramesAccountWide", "");
+							SetCVar("customNPETutorials", "");
 							ResetTutorials();
 							TutorialFrame_ClearQueue();
 							local tutorialsCheckButton = _G[self:GetParent():GetName() .. "ShowTutorials"];
@@ -4086,7 +4326,19 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX;
-						self.cvar = "C_CVAR_SHOW_ACHIEVEMENT_TOOLTIP";
+						self.cvar = "showAchievementTooltip";
+						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentItemExpirationReminder" inherits="InterfaceOptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentShowAchievementTooltip" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.type = CONTROLTYPE_CHECKBOX;
+						self.cvar = "itemExpirationReminder";
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent());
 					</OnLoad>
 				</Scripts>
@@ -4225,7 +4477,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_FLASH_CLIENT_ICON"
+						self.cvar = "flashClientIcon"
 
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
 						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelShowToasts, self)
@@ -4240,7 +4492,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_SHOW_TOASTS"
+						self.cvar = "toastShowWindow"
 
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
 					</OnLoad>
@@ -4253,7 +4505,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_SHOW_SOCIAL_TOAST"
+						self.cvar = "toastShowSocial"
 
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
 						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelShowToasts, self)
@@ -4267,7 +4519,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_SHOW_BATTLE_PASS_TOAST"
+						self.cvar = "toastShowBattlePass"
 
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
 						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelShowToasts, self)
@@ -4281,7 +4533,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_SHOW_AUCTION_HOUSE_TOAST"
+						self.cvar = "toastShowAuctionHouse"
 
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
 						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelShowToasts, self)
@@ -4295,7 +4547,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_SHOW_CALL_OF_ADVENTURE_TOAST"
+						self.cvar = "toastShowCallOfAdventure"
 
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
 						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelShowToasts, self)
@@ -4309,7 +4561,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_SHOW_MISC_TOAST"
+						self.cvar = "toastShowMisc"
 
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
 						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelShowToasts, self)
@@ -4324,7 +4576,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_PLAY_TOAST_SOUND"
+						self.cvar = "toastSoundEnabled"
 
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
 						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelShowToasts, self)
@@ -4338,7 +4590,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_SOCIAL_TOAST_SOUND"
+						self.cvar = "toastSoundSocial"
 
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
 						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelShowToasts, self)
@@ -4357,7 +4609,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_HEAD_HUNTING_TOAST_SOUND"
+						self.cvar = "toastSoundHeadHunting"
 
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
 						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelShowToasts, self)
@@ -4376,7 +4628,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_BATTLE_PASS_TOAST_SOUND"
+						self.cvar = "toastSoundBattlePass"
 
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
 						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelShowToasts, self)
@@ -4395,7 +4647,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_QUEUE_TOAST_SOUND"
+						self.cvar = "toastSoundQueue"
 
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
 						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelShowToasts, self)
@@ -4414,7 +4666,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_AUCTION_HOUSE_TOAST_SOUND"
+						self.cvar = "toastSoundAuctionHouse"
 
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
 						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelShowToasts, self)
@@ -4433,7 +4685,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_CALL_OF_ADVENTURE_TOAST_SOUND"
+						self.cvar = "toastSoundCallOfAdventure"
 
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
 						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelShowToasts, self)
@@ -4452,7 +4704,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_MISC_TOAST_SOUND"
+						self.cvar = "toastSoundMisc"
 
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
 						BlizzardOptionsPanel_SetupDependentControl(InterfaceOptionsNotificationPanelShowToasts, self)
@@ -4531,11 +4783,11 @@
 					</OnLoad>
 					<OnValueChanged>
 						self.value = value
-						C_CVar:SetValue("C_CVAR_NUM_DISPLAY_SOCIAL_TOASTS", self.value)
+						SetCVar("toastMaxDisplayed", self.value)
 						SocialToastAnchorFrame:CheckShowToast()
 					</OnValueChanged>
 					<OnEvent>
-						self.value = C_CVar:GetValue("C_CVAR_NUM_DISPLAY_SOCIAL_TOASTS")
+						self.value = GetCVar("toastMaxDisplayed")
 						self:SetValue(self.value)
 					</OnEvent>
 				</Scripts>
@@ -4574,7 +4826,7 @@
 				<Attributes>
 					<Attribute name="width" type="number" value="130"/>
 					<Attribute name="label" type="string" value="HARDCORE_NOTIFICATION_TYPE_OPTION_LABEL"/>
-					<Attribute name="cvar" type="string" value="C_CVAR_SHOW_HARDCORE_NOTIFICATION"/>
+					<Attribute name="cvar" type="string" value="hardcoreNotification"/>
 					<Attribute name="initFunction" type="string" value="InterfaceOptionsHardcorePanelNotificationTypeDropDown_Initialize"/>
 				</Attributes>
 				<Anchors>
@@ -4585,7 +4837,7 @@
 				<Attributes>
 					<Attribute name="width" type="number" value="100"/>
 					<Attribute name="label" type="string" value="HARDCORE_NOTIFICATION_LEVEL_OPTION_LABEL"/>
-					<Attribute name="cvar" type="string" value="C_CVAR_SHOW_HARDCORE_NOTIFICATION_LEVEL"/>
+					<Attribute name="cvar" type="string" value="hardcoreNotificationLevel"/>
 					<Attribute name="initFunction" type="string" value="InterfaceOptionsHardcorePanelNotificationLevelDropDown_Initialize"/>
 				</Attributes>
 				<Anchors>
@@ -4599,7 +4851,7 @@
 				<Scripts>
 					<OnLoad>
 						self.type = CONTROLTYPE_CHECKBOX
-						self.cvar = "C_CVAR_SHOW_HARDCORE_NOTIFICATION_SOUND"
+						self.cvar = "hardcoreNotificationSound"
 
 						BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
 					</OnLoad>
@@ -4616,14 +4868,14 @@
 					</OnLoad>
 					<OnValueChanged>
 						self.value = value
-						C_CVar:SetValue("C_CVAR_SHOW_HARDCORE_NOTIFICATION_SCALE", tostring(value))
+						SetCVar("hardcoreNotificationScale", tostring(value))
 						HardcoreLossBanner:SetScale(value)
 						if self.userInput then
 							HardcoreLossBanner:TestFrame()
 						end
 					</OnValueChanged>
 					<OnEvent>
-						self.value = tonumber(C_CVar:GetValue("C_CVAR_SHOW_HARDCORE_NOTIFICATION_SCALE")) or 1
+						self.value = tonumber(GetCVar("hardcoreNotificationScale")) or 1
 						self:SetValue(self.value)
 					</OnEvent>
 					<OnMouseDown>

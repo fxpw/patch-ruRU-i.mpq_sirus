@@ -1,0 +1,22 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="TransactionConfirmation.lua"/>
+
+	<Button name="TransactionConfirmationTemplate" virtual="true">
+		<Frames>
+			<Frame parentKey="ConfirmationController">
+				<Scripts>
+					<OnLoad>
+						Mixin(self:GetParent(), TransactionConfirmationMixin)
+					</OnLoad>
+					<OnEvent>
+						self:GetParent():ConfirmationControllerOnEvent(event, ...)
+					</OnEvent>
+					<OnHide>
+						self:GetParent():ConfirmationControllerOnHide()
+					</OnHide>
+				</Scripts>
+			</Frame>
+		</Frames>
+	</Button>
+</Ui>

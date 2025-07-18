@@ -66,7 +66,7 @@ function TextStatusBar_UpdateTextStringWithValues(statusFrame, textString, value
 			valueMaxDisplay = AbbreviateLargeNumbers(valueMax);
 		end
 
-		local textDisplay = GetCVar("C_CVAR_STATUS_TEXT_DISPLAY");
+		local textDisplay = GetCVar("statusTextDisplay");
 		if ( value and valueMax > 0 and ( (textDisplay ~= "NUMERIC" and textDisplay ~= "NONE") or statusFrame.showPercentage ) and not statusFrame.showNumeric) then
 			if ( value == 0 and statusFrame.zeroText ) then
 				textString:SetText(statusFrame.zeroText);

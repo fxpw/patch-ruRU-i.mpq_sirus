@@ -1,0 +1,98 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+
+	<Button name="ObjectiveTrackerContainerMinimizeButtonTemplate" virtual="true">
+		<Size x="18" y="19"/>
+		<NormalTexture parentKey="NormalTexture"/>
+		<PushedTexture parentKey="PushedTexture"/>
+		<HighlightTexture parentKey="HighlightTexture" alphaMode="ADD"/>
+		<Scripts>
+			<OnLoad>
+				self.NormalTexture:SetAtlas("UI-QuestTrackerButton-Collapse-All", true)
+				self.PushedTexture:SetAtlas("UI-QuestTrackerButton-Collapse-All-Pressed", true)
+				self.HighlightTexture:SetAtlas("UI-QuestTrackerButton-Red-Highlight", true)
+			</OnLoad>
+		</Scripts>
+	</Button>
+
+	<Button name="ObjectiveTrackerContainerFilterButtonTemplate" virtual="true">
+		<Size x="18" y="19"/>
+		<NormalTexture parentKey="NormalTexture"/>
+		<PushedTexture parentKey="PushedTexture"/>
+		<HighlightTexture parentKey="HighlightTexture" alphaMode="ADD"/>
+		<Scripts>
+			<OnLoad>
+				self.NormalTexture:SetAtlas("UI-QuestTrackerButton-Filter", true)
+				self.PushedTexture:SetAtlas("UI-QuestTrackerButton-Filter-Pressed", true)
+				self.HighlightTexture:SetAtlas("UI-QuestTrackerButton-Red-Highlight", true)
+			</OnLoad>
+		</Scripts>
+	</Button>
+
+	<Frame name="ObjectiveTrackerContainerHeaderTemplate" virtual="true">
+		<Size x="260" y="32"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Background">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Text" inherits="ObjectiveTrackerHeaderFont" maxLines="1" justifyH="LEFT">
+					<Size x="208" y="0"/>
+					<Anchors>
+						<Anchor point="LEFT" x="7" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentMinimizeButton" parentKey="MinimizeButton" inherits="ObjectiveTrackerContainerMinimizeButtonTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" x="-1"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentFilterButton" parentKey="FilterButton" inherits="ObjectiveTrackerContainerFilterButtonTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentMinimizeButton" relativePoint="LEFT" x="-2"/>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ObjectiveTrackerContainerHeaderMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="ObjectiveTrackerContainerTemplate" parent="UIParent" virtual="true">
+		<Size x="260" y="32"/>
+		<Frames>
+			<Frame name="$parentNineSlice" parentKey="NineSlice" inherits="NineSlicePanelTemplate">
+				<Attributes>
+					<Attribute name="layoutType" value="UniqueCornersLayout" type="string"/>
+					<Attribute name="layoutTextureKit" value="Common-Opacity-Background" type="string"/>
+					<Attribute name="layoutParentFrameLevel" value="true" type="boolean"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="-30"/>
+					<Anchor point="TOPRIGHT" x="25"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ObjectiveTrackerContainerMixin)
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnSizeChanged>
+				self:OnSizeChanged()
+			</OnSizeChanged>
+		</Scripts>
+	</Frame>
+</Ui>

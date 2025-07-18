@@ -237,6 +237,8 @@ PRIVATE.Initialize = function()
 		local raceFile = S_CHARACTER_RACES_INFO[sign.raceID].clientFileString
 		sign.activeSpells = PRIVATE.GetSpellsFromDescription(raceFile, "CHAR_INFO_RACE_%s_SPELL_ACTIVE%d", isOnGlueScreen)
 		sign.passiveSpells = PRIVATE.GetSpellsFromDescription(raceFile, "CHAR_INFO_RACE_%s_SPELL_PASSIVE%d", isOnGlueScreen)
+		sign.activeSpells69 = PRIVATE.GetSpellsFromDescription(raceFile, "CHAR_INFO_RACE_%s_SPELL_ACTIVE%d_69", isOnGlueScreen)
+		sign.passiveSpells69 = PRIVATE.GetSpellsFromDescription(raceFile, "CHAR_INFO_RACE_%s_SPELL_PASSIVE%d_69", isOnGlueScreen)
 	end
 
 	if isOnGlueScreen then
@@ -320,6 +322,9 @@ function C_ZodiacSign.GetZodiacSignSpells(raceID)
 	local index = PRIVATE.GetZodiacSignIndexByRaceID(raceID)
 	local sign = ZODIAC_SIGNS[index]
 	if sign then
+		if C_Service.GetRealmID() == 69 then
+			return sign.activeSpells69, sign.passiveSpells69
+		end
 		return sign.activeSpells, sign.passiveSpells
 	end
 end

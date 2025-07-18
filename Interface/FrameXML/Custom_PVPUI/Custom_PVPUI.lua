@@ -262,175 +262,97 @@ local panels = {
 	{ name = "RenegadeLadderFrame", addon = nil },
 }
 
-local RatedBattleGroundRankCoords = {
-	{0.0009765625, 0.1259765625, 0.001953125, 0.251953125},
-	{0.1259765625, 0.2509765625, 0.001953125, 0.251953125},
-	{0.1259765625, 0.2509765625, 0.251953125, 0.501953125},
-	{0.1259765625, 0.2509765625, 0.501953125, 0.751953125},
-	{0.3759765625, 0.5009765625, 0.501953125, 0.751953125},
-	{0.5009765625, 0.6259765625, 0.001953125, 0.251953125},
-	{0.2509765625, 0.3759765625, 0.001953125, 0.251953125},
-	{0.5009765625, 0.6259765625, 0.251953125, 0.501953125},
-	{0.2509765625, 0.3759765625, 0.251953125, 0.501953125},
-	{0.2509765625, 0.3759765625, 0.501953125, 0.751953125},
-	{0.3759765625, 0.5009765625, 0.001953125, 0.251953125},
-	{0.3759765625, 0.5009765625, 0.251953125, 0.501953125},
-	{0.0009765625, 0.1259765625, 0.251953125, 0.501953125},
-	{0.0009765625, 0.1259765625, 0.501953125, 0.751953125},
-}
-
-
-local RatedBattlegroundLaurelTexCoord = {
-	{0.6240234375, 0.8798828125, 0.0009765625, 0.2158203125},
-	{0.482421875, 0.73828125, 0.4609375, 0.67578125},
-	{0.7421875, 0.998046875, 0.4609375, 0.67578125},
-}
-
-local RatedBattlegroundRankBackgroundTexCoord = {
-	{
-		["Neutral"] 	= {0, 0.04296875, 0.75, 0.8359375},
-		["Horde"] 		= {0.12890625, 0.171875, 0.75, 0.8359375},
-		["Alliance"] 	= {0.2578125, 0.30078125, 0.75, 0.8359375},
-		["Renegade"] 	= {0.38671875, 0.4296875, 0.75, 0.8359375},
-	},
-	{
-		["Neutral"] 	= {0.04296875, 0.0859375, 0.75, 0.8359375},
-		["Horde"] 		= {0.171875, 0.21484375, 0.75, 0.8359375},
-		["Alliance"]	= {0.30078125, 0.34375, 0.75, 0.8359375},
-		["Renegade"] 	= {0.4296875, 0.47265625, 0.75, 0.8359375},
-	},
-	{
-		["Neutral"] 	= {0.0859375, 0.12890625, 0.75, 0.8359375},
-		["Horde"] 		= {0.21484375, 0.2578125, 0.75, 0.8359375},
-		["Alliance"] 	= {0.34375, 0.38671875, 0.75, 0.8359375},
-		["Renegade"] 	= {0.47265625, 0.515625, 0.75, 0.8359375},
-	}
-}
-
-local RatedBattlegroundRankIndex = {
-	[PVP_RANK_5_0] = 1,
-	[PVP_RANK_6_0] = 2,
-	[PVP_RANK_7_0] = 3,
-	[PVP_RANK_8_0] = 4,
-	[PVP_RANK_9_0] = 5,
-	[PVP_RANK_10_0] = 6,
-	[PVP_RANK_11_0] = 7,
-	[PVP_RANK_12_0] = 8,
-	[PVP_RANK_13_0] = 9,
-	[PVP_RANK_14_0] = 10,
-	[PVP_RANK_15_0] = 11,
-	[PVP_RANK_16_0] = 12,
-	[PVP_RANK_17_0] = 13,
-	[PVP_RANK_18_0] = 14,
-	[PVP_RANK_5_1] = 1,
-	[PVP_RANK_6_1] = 2,
-	[PVP_RANK_7_1] = 3,
-	[PVP_RANK_8_1] = 4,
-	[PVP_RANK_9_1] = 5,
-	[PVP_RANK_10_1] = 6,
-	[PVP_RANK_11_1] = 7,
-	[PVP_RANK_12_1] = 8,
-	[PVP_RANK_13_1] = 9,
-	[PVP_RANK_14_1] = 10,
-	[PVP_RANK_15_1] = 11,
-	[PVP_RANK_16_1] = 12,
-	[PVP_RANK_17_1] = 13,
-	[PVP_RANK_18_1] = 14,
-}
-
 local CONQUEST_TYPE = {
 	CONQUEST_SOLOQ = 1,
 	CONQUEST_2v2 = 2,
 	CONQUEST_1v1 = 5,
 }
 
-function TryToJoinSoloQ( isRated )
-	SendServerMessage("ACMSG_ARENA_SOLOQ_JOIN", isRated and 1 or 0)
-end
-
 function GetArenaRating( bracketID )
-	local pvpStats = C_CacheInstance:Get("ASMSG_PVP_STATS", {})
-	if pvpStats[bracketID] then
+	local pvpStats = C_GlobalStorage.GetVar("ASMSG_PVP_STATS")
+	if pvpStats and pvpStats[bracketID] then
 		return pvpStats[bracketID].pvpRating or 0
 	end
 	return 0
 end
 
 function GetArenaDistributionTime()
-	return C_CacheInstance:Get("ASMSG_NEXT_ARENA_DISTRIBUTION_TIME", 0) - time()
+	return (C_GlobalStorage.GetVar("ASMSG_NEXT_ARENA_DISTRIBUTION_TIME") or 0) - time()
 end
 
 function GetArenaPointsPredict()
-	return C_CacheInstance:Get("ASMSG_ARENA_POINTS_PREDICT", 0)
+	return C_GlobalStorage.GetVar("ASMSG_ARENA_POINTS_PREDICT") or 0
 end
 
-function GetUnitArenaTooltipInfo( unit, teamID, index )
+function GetUnitArenaTooltipInfo(unit, teamID, index)
 	if not unit or not teamID and index then
 		return
 	end
 
-	local data 		 = C_CacheInstance:Get("ASMSG_CHARACTER_ARENA_INFO")
-	local playerGUID = tonumber(UnitGUID(unit))
-
-	local name, games, wins, rating
-
-	if data then
-		if data[playerGUID] then
-			if data[playerGUID][teamID] then
-				if data[playerGUID][teamID][index] then
-					local playerData = data[playerGUID][teamID][index]
-
-					name 	= playerData.name
-					games 	= playerData.seasonGame
-					wins 	= playerData.seasonWin
-					rating 	= playerData.rating
-				end
-			end
-		else
-			-- PH request data. used in GetUnitRatedBattlegroundRankInfo
-		end
+	local guid = UnitGUID(unit)
+	if not guid then
+		return
 	end
 
-	return name, games, wins, rating
+	local data = C_GlobalStorage.GetVar("ASMSG_CHARACTER_ARENA_INFO")
+
+	if data then
+		guid = tonumber(guid)
+
+		if data[guid]
+		and data[guid][teamID]
+		and data[guid][teamID][index]
+		then
+			local playerData = data[guid][teamID][index]
+			return playerData.name, playerData.seasonGame, playerData.seasonWin, playerData.rating
+		end
+	end
 end
 
-function GetNumUnitArenaTooltipInfo( unit, teamID )
+function GetNumUnitArenaTooltipInfo(unit, teamID)
 	if not unit or not teamID then
 		return
 	end
 
-	local data 		 = C_CacheInstance:Get("ASMSG_CHARACTER_ARENA_INFO")
-	local playerGUID = tonumber(UnitGUID(unit))
+	local guid = UnitGUID(unit)
+	if not guid then
+		return
+	end
 
+	local data = C_GlobalStorage.GetVar("ASMSG_CHARACTER_ARENA_INFO")
 	if data then
-		if data[playerGUID] and data[playerGUID][teamID] then
-			return #data[playerGUID][teamID]
+		guid = tonumber(guid)
+
+		if data[guid]
+		and data[guid][teamID]
+		then
+			return #data[guid][teamID]
 		end
 	end
 
 	return 0
 end
 
-function GetUnitRatedBattlegroundInfo( unit )
+function GetUnitRatedBattlegroundInfo(unit)
 	if not unit then
 		return
 	end
 
-	local data = C_CacheInstance:Get("ASMSG_CHARACTER_RBG_STATS")
+	local guid = UnitGUID(unit)
+	if not guid then
+		return
+	end
+
+	local data = C_GlobalStorage.GetVar("ASMSG_CHARACTER_RBG_STATS")
+
 	local currRating, weekWins, weekGames, totalWins, totalGames
 
-	if data then
-		local playerGUID = UnitGUID(unit)
-
-		if data.GUID == tonumber(playerGUID) then
-			currRating 	= data.currRating
-			weekWins 	= data.weekWins
-			weekGames 	= data.weekGames
-			totalWins 	= data.totalWins
-			totalGames 	= data.totalGames
-		else
-			-- PH request data. used in GetUnitRatedBattlegroundRankInfo
-		end
+	if data and data.GUID == tonumber(guid) then
+		currRating 	= data.currRating
+		weekWins 	= data.weekWins
+		weekGames 	= data.weekGames
+		totalWins 	= data.totalWins
+		totalGames 	= data.totalGames
 	end
 
 	currRating 	= currRating or 0
@@ -461,7 +383,7 @@ function GetBattlegroundStatistics( battleGroundID, statIndex, unitGUID )
 
 	local title, week, season
 
-	local cache = C_CacheInstance:Get("ASMSG_CHARACTER_BG_STATS")
+	local cache = C_GlobalStorage.GetVar("ASMSG_CHARACTER_BG_STATS")
 	unitGUID 	= not unitGUID and tonumber(UnitGUID("player")) or tonumber(unitGUID)
 
 	if cache and cache[unitGUID] then
@@ -486,7 +408,7 @@ function GetBattlegroundRecordStatistics( battleGroundID, unitGUID )
 
 	local win, lose
 
-	local cache = C_CacheInstance:Get("ASMSG_CHARACTER_BG_STATS")
+	local cache = C_GlobalStorage.GetVar("ASMSG_CHARACTER_BG_STATS")
 	unitGUID 	= not unitGUID and tonumber(UnitGUID("player")) or tonumber(unitGUID)
 
 	if cache and cache[unitGUID] then
@@ -524,147 +446,10 @@ function GetBattlegroundInfoByID( battlegroundID )
 end
 
 function GetCurrentBrawlID()
-	local brawlInfo = C_CacheInstance:Get("ASMSG_BRAWL_SELECTED")
+	local brawlInfo = C_GlobalStorage.GetVar("ASMSG_BRAWL_SELECTED")
 	if type(brawlInfo) then
 		return brawlInfo.id
 	end
-end
-
-function GetRatedBattlegroundRankInfo()
-	local data = C_CacheInstance:Get("ASMSG_UPDATE_BG_RANK")
-	local factionGroup, factionName = UnitFactionGroup("player")
-	local currTitle, currStRank, currRankID, currRankIconCoord, currRating, nextTitle, nextRankID, nextRankIconCoord, nextRating, weekWins, weekGames, totalWins, totalGames, laurelCoord, rankBackgroundTexCoord
-
-	if data then
-		currStRank 	= data.currentStRank and tonumber( data.currentStRank ) or 0
-		currRankID 	= data.currentRank and tonumber( data.currentRank ) or 0
-		currRating 	= data.currentRating and tonumber( data.currentRating ) or 0
-		nextRankID 	= data.nextRank and tonumber( data.nextRank ) or 0
-		nextRating 	= data.nextRating and tonumber( data.nextRating ) or 0
-		weekWins 	= data.weekWins and tonumber( data.weekWins ) or 0
-		weekGames 	= data.weekGames and tonumber( data.weekGames ) or 0
-		totalWins 	= data.totalWins and tonumber( data.totalWins ) or 0
-		totalGames 	= data.totalGames and tonumber( data.totalGames ) or 0
-
-		if currRankID and currRankID ~= 0 then
-			if factionGroup then
-				currTitle = _G[string.format("PVP_RANK_%d_%d", (currRankID + 4), factionGroup == "Alliance" and 1 or 0)]
-			end
-		else
-			currTitle = RATED_BATTLEGROUND_NORANK
-		end
-
-		if factionGroup then
-			nextTitle = _G[string.format("PVP_RANK_%d_%d", ((nextRankID == 0 and 1 or nextRankID) + 4), factionGroup == "Alliance" and 1 or 0)]
-		end
-
-		if currRankID and RatedBattleGroundRankCoords[currRankID] then
-			currRankIconCoord = RatedBattleGroundRankCoords[currRankID]
-		end
-
-		if currRankID >= 14 then
-			nextRankIconCoord = RatedBattleGroundRankCoords[14]
-		else
-			if RatedBattleGroundRankCoords[nextRankID == 0 and 1 or nextRankID] then
-				nextRankIconCoord = RatedBattleGroundRankCoords[nextRankID == 0 and 1 or nextRankID]
-			end
-		end
-
-		if currRankID then
-			if WithinRange(currRankID, 0, 5) then
-				laurelCoord = RatedBattlegroundLaurelTexCoord[1]
-				rankBackgroundTexCoord = RatedBattlegroundRankBackgroundTexCoord[1]
-			elseif WithinRange(currRankID, 6, 10) then
-				laurelCoord = RatedBattlegroundLaurelTexCoord[2]
-				rankBackgroundTexCoord = RatedBattlegroundRankBackgroundTexCoord[2]
-			elseif WithinRange(currRankID, 11, 14) then
-				laurelCoord = RatedBattlegroundLaurelTexCoord[3]
-				rankBackgroundTexCoord = RatedBattlegroundRankBackgroundTexCoord[3]
-			end
-		end
-	end
-
-	currStRank = currStRank or 0
-	currRankID = currRankID or 0
-	currRating = currRating or 0
-	nextRankID = nextRankID or 0
-	nextRating = nextRating or 0
-	weekWins = weekWins or 0
-	weekGames = weekGames or 0
-	totalWins = totalWins or 0
-	totalGames = totalGames or 0
-	nextRankIconCoord = nextRankIconCoord or RatedBattleGroundRankCoords[nextRankID == 0 and 1 or nextRankID]
-	laurelCoord = laurelCoord or RatedBattlegroundLaurelTexCoord[1]
-
-	return currTitle, currStRank, currRankID, currRankIconCoord, currRating, nextTitle, nextRankID, nextRankIconCoord, nextRating, weekWins, weekGames, totalWins, totalGames, laurelCoord, rankBackgroundTexCoord
-end
-
-function GetUnitRatedBattlegroundRankInfo( unit )
-	local currTitle, currRankID, currRankIconCoord, currRating, weekWins, weekGames, totalWins, totalGames, laurelCoord, rankBackgroundTexCoord
-
-	if unit then
-		local playerGUID = UnitGUID(unit)
-
-		if playerGUID and UnitIsPlayer(unit) then
-			local storage 	= C_CacheInstance:Get("ASMSG_CHARACTER_BG_INFO", {})
-			local data 		= storage[tonumber(playerGUID)]
-
-			if data and (data.ttl and data.ttl > time()) then
-				currRankID 	= data.currRankID or 0
-				currRating 	= data.currRating or 0
-				weekWins 	= data.weekWins or 0
-				weekGames 	= data.weekGames or 0
-				totalWins 	= data.totalWins or 0
-				totalGames 	= data.totalGames or 0
-
-				if currRankID and currRankID ~= 0 then
-					local factionGroup, factionName = UnitFactionGroup(unit)
-
-					if factionGroup then
-						currTitle = _G[string.format("PVP_RANK_%d_%d", (currRankID + 4), factionGroup == "Alliance" and 1 or 0)]
-					end
-				else
-					currTitle = RATED_BATTLEGROUND_NORANK
-				end
-
-				if currRankID and RatedBattleGroundRankCoords[currRankID] then
-					currRankIconCoord = RatedBattleGroundRankCoords[currRankID]
-				end
-
-				if currRankID then
-					if WithinRange(currRankID, 0, 5) then
-						laurelCoord = RatedBattlegroundLaurelTexCoord[1]
-						rankBackgroundTexCoord = RatedBattlegroundRankBackgroundTexCoord[1]
-					elseif WithinRange(currRankID, 6, 10) then
-						laurelCoord = RatedBattlegroundLaurelTexCoord[2]
-						rankBackgroundTexCoord = RatedBattlegroundRankBackgroundTexCoord[2]
-					elseif WithinRange(currRankID, 11, 14) then
-						laurelCoord = RatedBattlegroundLaurelTexCoord[3]
-						rankBackgroundTexCoord = RatedBattlegroundRankBackgroundTexCoord[3]
-					end
-				end
-			else
-				if UnitIsPlayer(unit) then
-					SendServerMessage("ACMSG_BG_STATS_REQUEST", playerGUID)
-				end
-			end
-		end
-	end
-
-	currRankID 	= currRankID or 0
-	currRating 	= currRating or 0
-	weekWins 	= weekWins or 0
-	weekGames 	= weekGames or 0
-	totalWins 	= totalWins or 0
-	totalGames 	= totalGames or 0
-
-	laurelCoord = laurelCoord or RatedBattlegroundLaurelTexCoord[1]
-
-	return currTitle, currRankID, currRankIconCoord, currRating, weekWins, weekGames, totalWins, totalGames, laurelCoord, rankBackgroundTexCoord, unit
-end
-
-function GetRatedBattlegroundRankByTitle( title )
-	return RatedBattlegroundRankIndex[title]
 end
 
 function TogglePVPUIFrame()
@@ -727,10 +512,10 @@ function PVPUIFrame_OnLoad( self, ... )
 end
 
 function PVPFrame_SetupTitle()
-	local seasonInfo = C_CacheInstance:Get("ASMSG_PVP_SEASON", {})
 	local isActiveSeason = GetCurrentArenaSeason() ~= NO_ARENA_SEASON
 	if isActiveSeason then
-		if seasonInfo.currentSeason and seasonInfo.seasonEnd then
+		local seasonInfo = C_GlobalStorage.GetVar("ASMSG_PVP_SEASON")
+		if seasonInfo and seasonInfo.currentSeason and seasonInfo.seasonEnd then
 			local remainingTime = seasonInfo.seasonEnd - time()
 
 			if remainingTime > 0 then
@@ -1398,7 +1183,7 @@ function PVPQueueFrame_SelectArena( state )
 		PVPFrame_StepButtonAndCapBarDisable()
 	end
 
-	ConquestFrame.NoSeason:SetShown(not C_CVar:GetSessionCVar("NO_SEASON_ALERT") and GetCurrentArenaSeason() == NO_ARENA_SEASON and state ~= 2)
+	ConquestFrame.NoSeason:SetShown(not C_GlobalStorage.GetVar("NO_SEASON_ALERT") and GetCurrentArenaSeason() == NO_ARENA_SEASON and state ~= 2)
 	ConquestFrame_UpdateJoinButton()
 end
 
@@ -1522,14 +1307,15 @@ function ConquestFrameButton_OnEnter( self, ... )
 	if self:IsEnabled() ~= 0 then
 		local tooltip = ConquestTooltip
 		local buttonID = self:GetID()
-		local pvpStats = C_CacheInstance:Get("ASMSG_PVP_STATS", {})
+		local pvpStats = C_GlobalStorage.GetVar("ASMSG_PVP_STATS")
+		local stats = pvpStats and pvpStats[buttonID]
 
-		tooltip.TodayBest:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKWINS, pvpStats[buttonID] and pvpStats[buttonID].todayWins or 0)
-		tooltip.TodayGamesPlayed:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKGAME, pvpStats[buttonID] and pvpStats[buttonID].todayGames or 0)
-		tooltip.WeeklyBest:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKWINS, pvpStats[buttonID] and pvpStats[buttonID].weekWins or 0)
-		tooltip.WeeklyGamesPlayed:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKGAME, pvpStats[buttonID] and pvpStats[buttonID].weekGames or 0)
-		tooltip.SeasonBest:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKWINS, pvpStats[buttonID] and pvpStats[buttonID].seasonWins or 0)
-		tooltip.SeasonGamesPlayed:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKGAME, pvpStats[buttonID] and pvpStats[buttonID].seasonGames or 0)
+		tooltip.TodayBest:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKWINS, stats and stats.todayWins or 0)
+		tooltip.TodayGamesPlayed:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKGAME, stats and stats.todayGames or 0)
+		tooltip.WeeklyBest:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKWINS, stats and stats.weekWins or 0)
+		tooltip.WeeklyGamesPlayed:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKGAME, stats and stats.weekGames or 0)
+		tooltip.SeasonBest:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKWINS, stats and stats.seasonWins or 0)
+		tooltip.SeasonGamesPlayed:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKGAME, stats and stats.seasonGames or 0)
 
 		tooltip:SetPoint("TOPLEFT", self, "TOPRIGHT", 0, 0)
 		tooltip:Show()
@@ -1739,7 +1525,7 @@ end
 
 function RatedBattlegroundHitArea_OnEnter( self, ... )
 	local tooltip = RatedBattlegroundTooltip
-	local _, _, _, _, _, _, _, _, _, weekWins, weekGames, totalWins, totalGames = GetRatedBattlegroundRankInfo()
+	local _, _, _, _, _, _, _, _, _, weekWins, weekGames, totalWins, totalGames = C_PvP.GetRatedBattlegroundRankInfo()
 
 	tooltip.WeeklyBest:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKWINS, weekWins)
 	tooltip.WeeklyGamesPlayed:SetFormattedText(RATED_BATTLEGROUND_TOOLTIP_WEEKGAME, weekGames)
@@ -1891,7 +1677,7 @@ PVPFRAME_PRESTIGE_FACTION_ICONS = {
 }
 
 function RatedBattlegroundFrame_OnShow( self, ... )
-	local currTitle, currStRank, currRankID, currRankIconCoord, currRating, nextTitle, _, nextRankIconCoord, nextRating, weekWins, weekGames, totalWins, totalGames, laurelCoord = GetRatedBattlegroundRankInfo()
+	local rankName, rankBaseRating, rankID, rankIconAtlas, rating, nextRankName, nextRankID, nextRankIconAtlas, nextRating, weekWins, weekGames, totalWins, totalGames, laurelAtlas, backgroundAtlas = C_PvP.GetRatedBattlegroundRankInfo()
 	local factionID = C_Unit.GetFactionID("player")
 
 	PVPHonorFrame.type = "bonus"
@@ -1906,18 +1692,16 @@ function RatedBattlegroundFrame_OnShow( self, ... )
 	self.Container.WeekProc:SetText(weekGames == 0 and "0%" or math.ceil(weekWins / weekGames * 100).."%")
 	self.Container.SezonProc:SetText(totalGames == 0 and "0%" or math.ceil(totalWins / totalGames * 100).."%")
 
-	self.Container.CurrentRankLabel:SetText(not currTitle and RATED_BATTLEGROUND_NORANK or currTitle)
-	if currRating == 0 then
-		self.Container.YouRating:SetFormattedText(RATED_BATTLEGROUND_YOURATING, "-", currRankID)
+	self.Container.CurrentRankLabel:SetText(rankName or RATED_BATTLEGROUND_NORANK)
+	if rating == 0 then
+		self.Container.YouRating:SetFormattedText(RATED_BATTLEGROUND_YOURATING, "-", rankID)
 	else
-		self.Container.YouRating:SetFormattedText(RATED_BATTLEGROUND_YOURATING, currRating, currRankID)
+		self.Container.YouRating:SetFormattedText(RATED_BATTLEGROUND_YOURATING, rating, rankID)
 	end
 
-	if laurelCoord then
-		self.Container.Laurel:SetTexCoord(unpack(laurelCoord))
-	end
+	self.Container.Laurel:SetAtlas(laurelAtlas or "honorsystem-prestige-laurel")
 
-	if currRankID == 0 and factionID then
+	if rankID == 0 and factionID then
 		self.Container.RankIcon:ClearAllPoints()
 		self.Container.RankIcon:SetPoint("CENTER", self.Container.Laurel, 0, 2)
 		self.Container.RankIcon:SetTexture("Interface\\PVPFrame\\PvPQueue")
@@ -1929,27 +1713,27 @@ function RatedBattlegroundFrame_OnShow( self, ... )
 		self.Container.RankIcon:SetPoint("CENTER", self.Container.Laurel, -2, 3)
 		self.Container.RankIcon:SetTexture("Interface\\PVPFrame\\PvPPrestigeIcons")
 		self.Container.RankIcon:SetSize(64, 64)
-	end
 
-	if currRankIconCoord then
-		self.Container.RankIcon:SetTexCoord(unpack(currRankIconCoord))
+		self.Container.RankIcon:SetAtlas(rankIconAtlas)
 	end
 
 	self.Container.LaurelBackground:SetTexCoord(unpack(PVPFRAME_PRESTIGE_LARGE_BACKGROUNDS[factionID]))
 
-	RatedBattlegroundProgressBarFrame.NextRankIcon:SetShown(nextRankIconCoord)
-	if nextRankIconCoord then
-		RatedBattlegroundProgressBarFrame.NextRankIcon:SetTexCoord(unpack(nextRankIconCoord))
+	if nextRankIconAtlas then
+		RatedBattlegroundProgressBarFrame.NextRankIcon:SetAtlas(nextRankIconAtlas)
+		RatedBattlegroundProgressBarFrame.NextRankIcon:Show()
+	else
+		RatedBattlegroundProgressBarFrame.NextRankIcon:Hide()
 	end
 
-	RatedBattlegroundProgressBarFrame.Level:SetShown(currRankID < 14)
+	RatedBattlegroundProgressBarFrame.Level:SetShown(rankID < 14)
 
-	if nextTitle and currRankID < 14 then
-		RatedBattlegroundProgressBarFrame.Level:SetFormattedText(RATED_BATTLEGROUND_NEXTRANK, nextTitle)
+	if nextRankName and rankID < 14 then
+		RatedBattlegroundProgressBarFrame.Level:SetFormattedText(RATED_BATTLEGROUND_NEXTRANK, nextRankName)
 	end
 
 	-- currRating = currRankID >= 14 and 9999 or currRating
-	RateBattleground_SetProgress(RatedBattlegroundProgressBarFrame, currRating ~= 0 and ((nextRating - currStRank) - (nextRating - currRating)) / (nextRating - currStRank) or currRating, nextRating)
+	RateBattleground_SetProgress(RatedBattlegroundProgressBarFrame, rating ~= 0 and ((nextRating - rankBaseRating) - (nextRating - rating)) / (nextRating - rankBaseRating) or rating, nextRating)
 end
 
 function RatedBattlegroundFrame_OnHide( self, ... )
@@ -1958,11 +1742,11 @@ function RatedBattlegroundFrame_OnHide( self, ... )
 end
 
 function RatedBattlegroundProgressBarFrame_OnEnter( self, ... )
-	local currTitle, currStRank, currRankID, currRankIconCoord, currRating, nextTitle, nextRankID, nextRankIconCoord, nextRating, weekWins, weekGames, totalWins, totalGames = GetRatedBattlegroundRankInfo()
-	if nextTitle and currRating and nextRating then
+	local rankName, rankBaseRating, rankID, rankIconAtlas, rating, nextRankName, nextRankID, nextRankIconAtlas, nextRating, weekWins, weekGames, totalWins, totalGames = C_PvP.GetRatedBattlegroundRankInfo()
+	if nextRankName and rating and nextRating then
 		GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
 		GameTooltip:SetText(RATED_BATTLEGROUND_TOOLTIP_NEXTRANK, 1, 1, 1)
-		GameTooltip:AddLine(string.format( "%d / %d", currRating, nextRating), nil, nil, nil, true)
+		GameTooltip:AddLine(string.format("%d / %d", rating, nextRating), nil, nil, nil, true)
 		GameTooltip:Show()
 	end
 end
@@ -1976,13 +1760,20 @@ local ConquestFrame_HelpPlate = {
 }
 
 function ConquestFrame_ToggleTutorial( self, ... )
-	local rewardFinalStepCurrency = C_CacheInstance:Get("ASMSG_PVP_DAILY_REWARDS", {})
-	local arenaReward = ConquestFrame.selectedButton == ConquestFrame.BottomInset.SoloArenaContainer.ArenaSolo and rewardFinalStepCurrency.arenaRewardSolo
-		or ConquestFrame.selectedButton == ConquestFrame.BottomInset.ArenaContainer.Arena1v1 and rewardFinalStepCurrency.arenaReward1v1
-		or rewardFinalStepCurrency.arenaReward2v2
+	local rewardFinalStepCurrency = C_GlobalStorage.GetVar("ASMSG_PVP_DAILY_REWARDS")
+	if rewardFinalStepCurrency then
+		local arenaReward
+		if ConquestFrame.selectedButton == ConquestFrame.BottomInset.SoloArenaContainer.ArenaSolo then
+			arenaReward = rewardFinalStepCurrency.arenaRewardSolo
+		elseif ConquestFrame.selectedButton == ConquestFrame.BottomInset.ArenaContainer.Arena1v1 then
+			arenaReward = rewardFinalStepCurrency.arenaReward1v1
+		else
+			arenaReward = rewardFinalStepCurrency.arenaReward2v2
+		end
 
-	if arenaReward then
-		ConquestFrame_HelpPlate[4] = { ButtonPos = { x = 312, y = -336 }, HighLightBox = { x = 2, y = -334, width = 336, height = 48 }, ToolTipDir = "RIGHT", ToolTipText = string.format(HEPLPLATE_CONQUESTFRAME_TUTORIAL_3, arenaReward) }
+		if arenaReward then
+			ConquestFrame_HelpPlate[4] = { ButtonPos = { x = 312, y = -336 }, HighLightBox = { x = 2, y = -334, width = 336, height = 48 }, ToolTipDir = "RIGHT", ToolTipText = string.format(HEPLPLATE_CONQUESTFRAME_TUTORIAL_3, arenaReward) }
+		end
 	end
 
 	local helpPlate = ConquestFrame_HelpPlate
@@ -2004,12 +1795,12 @@ local PVPHonorFrame_HelpPlate = {
 }
 
 function PVPHonorFrame_ToggleTutorial( ... )
-	local brawlData = C_CacheInstance:Get("ASMSG_BRAWL_SELECTED", nil)
+	local brawlData = C_GlobalStorage.GetVar("ASMSG_BRAWL_SELECTED")
 	if brawlData then
 		PVPHonorFrame_HelpPlate[4].ToolTipText = HEPLPLATE_PVPHONORFRAME_TUTORIAL_3:format(brawlData.itemLevelRequirement or 0)
 	end
 
-	local rewardFinalStepCurrency = C_CacheInstance:Get("ASMSG_PVP_DAILY_REWARDS", {})
+	local rewardFinalStepCurrency = C_GlobalStorage.GetVar("ASMSG_PVP_DAILY_REWARDS")
 	if rewardFinalStepCurrency and rewardFinalStepCurrency.battlegroundReward then
 		PVPHonorFrame_HelpPlate[5] = { ButtonPos = { x = 312, y = -336 }, HighLightBox = { x = 2, y = -334, width = 336, height = 48 }, ToolTipDir = "RIGHT", ToolTipText = string.format(HEPLPLATE_PVPHONORFRAME_TUTORIAL_4, rewardFinalStepCurrency.battlegroundReward) }
 	end
@@ -2236,16 +2027,27 @@ function BattlegroundInviteMixin:OnUpdate( elapsed )
 end
 
 function BattlegroundInviteMixin:Init()
-	local data 			= C_CacheInstance:Get("ASMSG_SEND_BG_INVITE", {})
-	local readyCount 	= C_CacheInstance:Get("ASMSG_SEND_BG_INVITE_STATUS", 0)
+	local inviteData = C_GlobalStorage.GetVar("ASMSG_SEND_BG_INVITE")
+	local readyCount = C_GlobalStorage.GetVar("ASMSG_SEND_BG_INVITE_STATUS")
 
-	self.readyButtons 	= self.readyButtons or {}
+	if not self.readyButtons then
+		self.readyButtons = {}
+	end
+
 	self.readyPlayers 	= 0
-	self.inviteID 		= data.inviteID
-	self.inviteState 	= data.inviteState
-	self.remainingTime 	= data.remainingTime
-	self.inviteType 	= data.inviteType
-	self.readyCount 	= readyCount
+	self.readyCount 	= readyCount or 0
+
+	if inviteData then
+		self.inviteID 		= inviteData.inviteID
+		self.inviteState 	= inviteData.inviteState
+		self.remainingTime 	= inviteData.remainingTime
+		self.inviteType 	= inviteData.inviteType
+	else
+		self.inviteID 		= nil
+		self.inviteState 	= nil
+		self.remainingTime 	= nil
+		self.inviteType 	= nil
+	end
 
 	self.elapsedReady 	= 0
 	self.elapsedTimer 	= 1
@@ -2266,8 +2068,8 @@ function BattlegroundInviteMixin:Reset( forceHide )
 	self.hideUI:Stop()
 	self.fastHideUI:Stop()
 
-	C_CacheInstance:Set("ASMSG_SEND_BG_INVITE", {})
-	C_CacheInstance:Set("ASMSG_SEND_BG_INVITE_STATUS", 0)
+	C_GlobalStorage.SetVar("ASMSG_SEND_BG_INVITE", nil)
+	C_GlobalStorage.SetVar("ASMSG_SEND_BG_INVITE_STATUS", nil)
 
 	self:Init()
 
@@ -2316,7 +2118,7 @@ function BattlegroundInviteMixin:ResetReadyButtons()
 end
 
 function BattlegroundInviteMixin:Accept()
-	local data = C_CacheInstance:Get("ASMSG_SEND_BG_INVITE")
+	local data = C_GlobalStorage.GetVar("ASMSG_SEND_BG_INVITE")
 
 	if not data then
 		self:Hide()
@@ -2483,14 +2285,7 @@ function BattlegroundInviteQueueMixin:HideFrame()
 	if self.pulse:IsPlaying() then
 		self.pulse:Stop()
 	end
-
-	if self.hideUI:IsPlaying() then
-		self.hideUI:Stop()
-	end
-
-	if not self.hideUI:IsPlaying() then
-		self.hideUI:Play()
-	end
+	self.hideUI:Restart()
 end
 
 function BattlegroundInviteQueueMixin:GlowBlink()
@@ -2697,9 +2492,28 @@ function PVPFrameStepButtonTemplate_OnLoad( self, ... )
 end
 
 function PVPFrameStepButton_UpdateState( categoryID )
-	local overlimitStats = C_CacheInstance:Get("ASMSG_PVP_DAILY_STATS", {})
-	local arenaGames = ((ConquestFrame.selectedButton == ConquestFrame.BottomInset.SoloArenaContainer.ArenaSolo and overlimitStats.arenaGamesSolo) or (ConquestFrame.selectedButton == ConquestFrame.BottomInset.ArenaContainer.Arena1v1 and overlimitStats.arenaGames1v1) or overlimitStats.arenaGames) or 0
-	local battlegroundGames = overlimitStats.battlegroundGames or 0
+	local overlimitStats = C_GlobalStorage.GetVar("ASMSG_PVP_DAILY_STATS")
+
+	local arenaGames, battlegroundGames
+
+	if overlimitStats then
+		if ConquestFrame.selectedButton == ConquestFrame.BottomInset.SoloArenaContainer.ArenaSolo then
+			arenaGames = overlimitStats.arenaGamesSolo
+		elseif ConquestFrame.selectedButton == ConquestFrame.BottomInset.ArenaContainer.Arena1v1 then
+			arenaGames = overlimitStats.arenaGames1v1
+		else
+			arenaGames = overlimitStats.arenaGames
+		end
+
+		battlegroundGames = overlimitStats.battlegroundGames
+	end
+
+	if not arenaGames then
+		arenaGames = 0
+	end
+	if not battlegroundGames then
+		battlegroundGames = 0
+	end
 
 	if categoryID == 2 then
 		for i = 1, 5 do
@@ -2754,40 +2568,40 @@ function PVPFrameStepButton_UpdateState( categoryID )
 end
 
 function PVPQueueFrameCapTopFrameStatusBar_UpdateValue( categoryID )
-	local pvpCapRewardCurrency = C_CacheInstance:Get("ASMSG_PVP_WEEKLY_LIMIT", {})
+	local limit = C_GlobalStorage.GetVar("ASMSG_PVP_WEEKLY_LIMIT")
 
 	if categoryID == 2 then
 		if ConquestFrame.selectedButton == ConquestFrame.BottomInset.SoloArenaContainer.ArenaSolo then
-			PVPQueueFrame.CapTopFrame.StatusBar:SetMinMaxValues(0, pvpCapRewardCurrency.maxArenaSolo or 100, categoryID)
-			PVPQueueFrame.CapTopFrame.StatusBar:SetBarValue(pvpCapRewardCurrency.currentArenaSolo or 0, categoryID)
+			PVPQueueFrame.CapTopFrame.StatusBar:SetMinMaxValues(0, limit and limit.maxArenaSolo or 100, categoryID)
+			PVPQueueFrame.CapTopFrame.StatusBar:SetBarValue(limit and limit.currentArenaSolo or 0, categoryID)
 		else
-			PVPQueueFrame.CapTopFrame.StatusBar:SetMinMaxValues(0, pvpCapRewardCurrency.maxArena or 100, categoryID)
-			PVPQueueFrame.CapTopFrame.StatusBar:SetBarValue(pvpCapRewardCurrency.currentArena or 0, categoryID)
+			PVPQueueFrame.CapTopFrame.StatusBar:SetMinMaxValues(0, limit and limit.maxArena or 100, categoryID)
+			PVPQueueFrame.CapTopFrame.StatusBar:SetBarValue(limit and limit.currentArena or 0, categoryID)
 		end
 	elseif categoryID == 3 then
-		PVPQueueFrame.CapTopFrame.StatusBar:SetMinMaxValues(0, pvpCapRewardCurrency.maxHonor or 100, categoryID)
-		PVPQueueFrame.CapTopFrame.StatusBar:SetBarValue(pvpCapRewardCurrency.currentHonor or 0, categoryID)
+		PVPQueueFrame.CapTopFrame.StatusBar:SetMinMaxValues(0, limit and limit.maxHonor or 100, categoryID)
+		PVPQueueFrame.CapTopFrame.StatusBar:SetBarValue(limit and limit.currentHonor or 0, categoryID)
 	end
 end
 
 function PVPFrameStepButton_UpdateReward( categoryID )
-	local rewardFinalStepCurrency = C_CacheInstance:Get("ASMSG_PVP_DAILY_REWARDS", {})
+	local reward = C_GlobalStorage.GetVar("ASMSG_PVP_DAILY_REWARDS")
 
 	if categoryID == 2 then
 		if ConquestFrame.selectedButton == ConquestFrame.BottomInset.SoloArenaContainer.ArenaSolo then
-			PVPQueueFrame.StepBottomFrame.StepEnd.Amount:SetText(rewardFinalStepCurrency.arenaRewardSolo or 0)
+			PVPQueueFrame.StepBottomFrame.StepEnd.Amount:SetText(reward and reward.arenaRewardSolo or 0)
 		elseif ConquestFrame.selectedButton == ConquestFrame.BottomInset.ArenaContainer.Arena1v1 then
-			PVPQueueFrame.StepBottomFrame.StepEnd.Amount:SetText(rewardFinalStepCurrency.arenaReward1v1 or 0)
+			PVPQueueFrame.StepBottomFrame.StepEnd.Amount:SetText(reward and reward.arenaReward1v1 or 0)
 		else
-			PVPQueueFrame.StepBottomFrame.StepEnd.Amount:SetText(rewardFinalStepCurrency.arenaReward2v2 or 0)
+			PVPQueueFrame.StepBottomFrame.StepEnd.Amount:SetText(reward and reward.arenaReward2v2 or 0)
 		end
 	elseif categoryID == 3 then
-		PVPQueueFrame.StepBottomFrame.StepEnd.Amount:SetText(rewardFinalStepCurrency.battlegroundReward or 0)
+		PVPQueueFrame.StepBottomFrame.StepEnd.Amount:SetText(reward and reward.battlegroundReward or 0)
 	end
 end
 
 function PVPFrameBrawlButton_OnShow(self)
-	local brawlInfo = C_CacheInstance:Get("ASMSG_BRAWL_SELECTED")
+	local brawlInfo = C_GlobalStorage.GetVar("ASMSG_BRAWL_SELECTED")
 	local hasBrawlInfo = type(brawlInfo) == "table"
 
 	self:SetEnabled(hasBrawlInfo)
@@ -2803,7 +2617,7 @@ function PVPFrameBrawlButton_OnShow(self)
 end
 
 function PVPFrameBrawlButton_OnEnter(self)
-	local brawlInfo = C_CacheInstance:Get("ASMSG_BRAWL_SELECTED")
+	local brawlInfo = C_GlobalStorage.GetVar("ASMSG_BRAWL_SELECTED")
 	if not brawlInfo then
 		return
 	end
@@ -2841,7 +2655,7 @@ ASMSG_PVP_REWARDS_ARENA_1V1 	= 6
 
 function PVPQueueFrame_UpdateReward( categoryID )
 	if categoryID == 2 then
-		local pvpRewards = C_CacheInstance:Get("ASMSG_PVP_REWARDS")
+		local pvpRewards = C_GlobalStorage.GetVar("ASMSG_PVP_REWARDS")
 		local pointsBG, pointsArena, pointsArenaSoloQ, pointsArena1v1, pointsMiniGame = C_BattlePass.GetSourceExperience()
 		local rewardData, rewardBP
 
@@ -2889,7 +2703,7 @@ function PVPQueueFrame_UpdateReward( categoryID )
 		arenaRewardFrame.LootReward:SetShown(rewardLoot == 1)
 		soloQRewardFrame.LootReward:SetShown(rewardLootSoloQ == 1)
 	elseif categoryID == 3 then
-		local pvpRewards = C_CacheInstance:Get("ASMSG_PVP_REWARDS")
+		local pvpRewards = C_GlobalStorage.GetVar("ASMSG_PVP_REWARDS")
 		local pointsBG, pointsArena, pointsArenaSoloQ, pointsArena1v1, pointsMiniGame = C_BattlePass.GetSourceExperience()
 
 		local rewardDataBG = pvpRewards and pvpRewards[ASMSG_PVP_REWARDS_BG]
@@ -2930,13 +2744,13 @@ end
 
 function ConquestFrameButton_OnShow( self, ... )
 	local buttonID = self:GetID()
-	local pvpStats = C_CacheInstance:Get("ASMSG_PVP_STATS", {})
+	local pvpStats = C_GlobalStorage.GetVar("ASMSG_PVP_STATS")
 
-	local pvpRating = pvpStats[buttonID] and pvpStats[buttonID].pvpRating or 0;
+	local pvpRating = pvpStats and pvpStats[buttonID] and pvpStats[buttonID].pvpRating or 0
 
 	if buttonID ~= 3 then -- TEMP
-		self.Wins:SetText(pvpStats[buttonID] and pvpStats[buttonID].seasonWins or 0)
-		self.BestRating:SetText(pvpStats[buttonID] and pvpStats[buttonID].seasonGames - pvpStats[buttonID].seasonWins or 0)
+		self.Wins:SetText(pvpStats and pvpStats[buttonID] and pvpStats[buttonID].seasonWins or 0)
+		self.BestRating:SetText(pvpStats and pvpStats[buttonID] and pvpStats[buttonID].seasonGames - pvpStats[buttonID].seasonWins or 0)
 		self.CurrentRating:SetText(pvpRating)
 	end
 
@@ -2948,33 +2762,35 @@ local function CalculateArenaLimit( rating )
 end
 
 local function CalculateHonorLimit()
-	local _, _, battlegroundRank = GetRatedBattlegroundRankInfo()
+	local _, _, battlegroundRank = C_PvP.GetRatedBattlegroundRankInfo()
 	return 1044 + (battlegroundRank * 300)
 end
 
 function PVPQueueFrameCapTopFrameLockOverlayCompleteFrame_OnEnter( self, ... )
-	local timeData = C_CacheInstance:Get("ASMSG_PVP_LIMITS_TIMERS", {})
+	local timeData = C_GlobalStorage.GetVar("ASMSG_PVP_LIMITS_TIMERS")
 
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 	if PVPQueueFrame.selectedCategory == 2 then
-		local pvpStats = C_CacheInstance:Get("ASMSG_PVP_STATS", {})
+		local pvpStats = C_GlobalStorage.GetVar("ASMSG_PVP_STATS")
 		local arenaRating
 
-		if ConquestFrame.selectedButton == ConquestFrame.BottomInset.SoloArenaContainer.ArenaSolo then
-			arenaRating = pvpStats[1].pvpRating
-		else
-			arenaRating = pvpStats[2].pvpRating
+		if pvpStats then
+			if ConquestFrame.selectedButton == ConquestFrame.BottomInset.SoloArenaContainer.ArenaSolo then
+				arenaRating = pvpStats[1].pvpRating
+			else
+				arenaRating = pvpStats[2].pvpRating
+			end
 		end
 
 		GameTooltip:SetText(PVPFRAME_CONQUEST_CAPBAR_COMPLETEFRAME_TOOLTIP_HEAD)
-		GameTooltip:AddLine(string.format(PVPFRAME_CONQUEST_CAPBAR_COMPLETEFRAME_TOOLTIP, CalculateArenaLimit(arenaRating)), 1, 1, 1, true)
+		GameTooltip:AddLine(string.format(PVPFRAME_CONQUEST_CAPBAR_COMPLETEFRAME_TOOLTIP, CalculateArenaLimit(arenaRating or 0)), 1, 1, 1, true)
 	elseif PVPQueueFrame.selectedCategory == 3 then
 		GameTooltip:SetText(PVPFRAME_HONOR_CAPBAR_COMPLETEFRAME_TOOLTIP_HEAD)
 		GameTooltip:AddLine(string.format(PVPFRAME_HONOR_CAPBAR_COMPLETEFRAME_TOOLTIP, CalculateHonorLimit()), 1, 1, 1, true)
 	end
 
 	GameTooltip:AddLine(" ")
-	GameTooltip:AddLine(string.format(PVPFRAME_CAPBAR_RESET_LABEL, GetRemainingTime(timeData.weeklySeconds and timeData.weeklySeconds - time() or 0)))
+	GameTooltip:AddLine(string.format(PVPFRAME_CAPBAR_RESET_LABEL, GetRemainingTime(timeData and timeData.weeklySeconds and timeData.weeklySeconds - time() or 0)))
 	GameTooltip:Show()
 end
 
@@ -2983,7 +2799,7 @@ function PVPQueueFrameCapTopFrameStatusBar_OnEnter( self, ... )
 	local value = self:GetValue()
 
 	if value ~= maxValue then
-		local timeData = C_CacheInstance:Get("ASMSG_PVP_LIMITS_TIMERS", {})
+		local timeData = C_GlobalStorage.GetVar("ASMSG_PVP_LIMITS_TIMERS")
 
 		self.SubLayer.barText:SetFormattedText("%d / %d (%d)", value, maxValue, maxValue - value)
 
@@ -2997,7 +2813,7 @@ function PVPQueueFrameCapTopFrameStatusBar_OnEnter( self, ... )
 		end
 
 		GameTooltip:AddLine(" ")
-		GameTooltip:AddLine(string.format(PVPFRAME_CAPBAR_RESET_LABEL, GetRemainingTime(timeData.weeklySeconds and timeData.weeklySeconds - time() or 0)))
+		GameTooltip:AddLine(string.format(PVPFRAME_CAPBAR_RESET_LABEL, GetRemainingTime(timeData and timeData.weeklySeconds and timeData.weeklySeconds - time() or 0)))
 		GameTooltip:Show()
 	end
 end
@@ -3014,40 +2830,40 @@ function PVPQueueFrameCapTopFrameStatusBar_OnLeave(self)
 end
 
 function PVPQueueFrameCapTopFrameStatusBar_UpdateTooltip( self, ... )
-	local timeData = C_CacheInstance:Get("ASMSG_PVP_LIMITS_TIMERS", {})
+	local timeData = C_GlobalStorage.GetVar("ASMSG_PVP_LIMITS_TIMERS")
 
-	if timeData.weeklySeconds then
+	if timeData and timeData.weeklySeconds then
 		for i = 1, GameTooltip:NumLines() do
 			local line = _G[GameTooltip:GetName().."TextLeft"..i]
 			local lineText = line:GetText()
 
 			if lineText and string.find(lineText, PVPFRAME_CAPBAR_RESET_LABEL_PATTERN) then
-				line:SetFormattedText(PVPFRAME_CAPBAR_RESET_LABEL, GetRemainingTime(timeData.weeklySeconds and timeData.weeklySeconds - time() or 0))
+				line:SetFormattedText(PVPFRAME_CAPBAR_RESET_LABEL, GetRemainingTime(timeData.weeklySeconds - time()))
 			end
 		end
 	end
 end
 
 function PVPQueueFrameStepFrameStatusBar_UpdateTooltip( self, ... )
-	local timeData = C_CacheInstance:Get("ASMSG_PVP_LIMITS_TIMERS", {})
+	local timeData = C_GlobalStorage.GetVar("ASMSG_PVP_LIMITS_TIMERS")
 
-	if timeData.dailySeconds then
+	if timeData and timeData.dailySeconds then
 		for i = 1, GameTooltip:NumLines() do
 			local line = _G[GameTooltip:GetName().."TextLeft"..i]
 			local lineText = line:GetText()
 
 			if lineText and string.find(lineText, PVPFRAME_STEPFRAME_RESET_LABEL_PATTERN) then
-				line:SetFormattedText(PVPFRAME_STEPFRAME_RESET_LABEL, GetRemainingTime(timeData.dailySeconds and timeData.dailySeconds - time() or 0))
+				line:SetFormattedText(PVPFRAME_STEPFRAME_RESET_LABEL, GetRemainingTime(timeData.dailySeconds - time()))
 			end
 		end
 	end
 end
 
 function PVPQueueFrameStepBottomFrameLockOverlay_OnEnter( self, ... )
-	local timeData = C_CacheInstance:Get("ASMSG_PVP_LIMITS_TIMERS", {})
+	local timeData = C_GlobalStorage.GetVar("ASMSG_PVP_LIMITS_TIMERS")
 
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-	GameTooltip:SetText(string.format(PVPFRAME_STEPFRAME_RESET_LABEL, GetRemainingTime(timeData.dailySeconds and timeData.dailySeconds - time() or 0)))
+	GameTooltip:SetText(string.format(PVPFRAME_STEPFRAME_RESET_LABEL, GetRemainingTime(timeData and timeData.dailySeconds and timeData.dailySeconds - time() or 0)))
 	GameTooltip:Show()
 end
 
@@ -3075,54 +2891,13 @@ function EventHandler:ASMSG_CHARACTER_BG_STATS( msg )
 		end
 	end
 
-	C_CacheInstance:Set("ASMSG_CHARACTER_BG_STATS", buffer)
-end
-
-function EventHandler:ASMSG_UPDATE_BG_RANK( msg )
-	local currentStRank, currentRank, currentRating, nextRank, nextRating, weekWins, weekGames, totalWins, totalGames = unpack( C_Split(msg, "|") )
-
-	C_CacheInstance:Set("ASMSG_UPDATE_BG_RANK", {
-		currentStRank 	= tonumber(currentStRank),
-		currentRank 	= tonumber(currentRank),
-		currentRating 	= tonumber(currentRating),
-		nextRank 		= tonumber(nextRank),
-		nextRating 		= tonumber(nextRating),
-		weekWins 		= tonumber(weekWins),
-		weekGames 		= tonumber(weekGames),
-		totalWins 		= tonumber(totalWins),
-		totalGames 		= tonumber(totalGames),
-	})
-
-	PlayerFrame_UpdatePvPStatus()
-end
-
-function EventHandler:ASMSG_CHARACTER_BG_INFO( msg )
-	local currGUID, currRating, currRankID, weekWins, weekGames, totalWins, totalGames = unpack( C_Split(msg, "|") )
-
-	local GUID = tonumber(currGUID)
-	local data = C_CacheInstance:Get("ASMSG_CHARACTER_BG_INFO", {})
-
-	data[GUID] = {
-		currGUID 	= GUID,
-		currRating 	= tonumber(currRating),
-		currRankID 	= tonumber(currRankID),
-		weekWins 	= tonumber(weekWins),
-		weekGames 	= tonumber(weekGames),
-		totalWins 	= tonumber(totalWins),
-		totalGames 	= tonumber(totalGames),
-		ttl 		= 300 + time()
-	}
-
-	C_CacheInstance:Set("ASMSG_CHARACTER_BG_INFO", data)
-
-	TargetFrame_CheckFaction(TargetFrame)
-	InspectRatedBattleGrounds_OnShow(InspectPVPFrame.Service)
+	C_GlobalStorage.SetVar("ASMSG_CHARACTER_BG_STATS", buffer)
 end
 
 function EventHandler:ASMSG_CHARACTER_RBG_STATS( msg )
 	local GUID, currRating, weekWins, weekGames, totalWins, totalGames = unpack(C_Split( msg, "|"))
 
-	C_CacheInstance:Set("ASMSG_CHARACTER_RBG_STATS", {
+	C_GlobalStorage.SetVar("ASMSG_CHARACTER_RBG_STATS", {
 		GUID 		= tonumber(GUID),
 		currRating 	= tonumber(currRating),
 		weekWins 	= tonumber(weekWins),
@@ -3166,16 +2941,16 @@ function EventHandler:ASMSG_CHARACTER_ARENA_INFO( msg )
 		end
 	end
 
-	C_CacheInstance:Set("ASMSG_CHARACTER_ARENA_INFO", buffer)
+	C_GlobalStorage.SetVar("ASMSG_CHARACTER_ARENA_INFO", buffer)
 end
 
 function EventHandler:ASMSG_ARENA_POINTS_PREDICT( msg )
-	C_CacheInstance:Set("ASMSG_ARENA_POINTS_PREDICT", tonumber(msg))
+	C_GlobalStorage.SetVar("ASMSG_ARENA_POINTS_PREDICT", tonumber(msg))
 end
 
 function EventHandler:ASMSG_NEXT_ARENA_DISTRIBUTION_TIME( msg )
 	local arenaDistributionTime = time() + tonumber(msg)
-	C_CacheInstance:Set("ASMSG_NEXT_ARENA_DISTRIBUTION_TIME", arenaDistributionTime)
+	C_GlobalStorage.SetVar("ASMSG_NEXT_ARENA_DISTRIBUTION_TIME", arenaDistributionTime)
 end
 
 function EventHandler:ASMSG_PVP_WEEKLY_LIMIT( msg )
@@ -3188,7 +2963,7 @@ function EventHandler:ASMSG_PVP_WEEKLY_LIMIT( msg )
 	local currentArenaSolo 	= tonumber(splitData[5])
 	local maxArenaSolo 		= tonumber(splitData[6])
 
-	C_CacheInstance:Set("ASMSG_PVP_WEEKLY_LIMIT", {
+	C_GlobalStorage.SetVar("ASMSG_PVP_WEEKLY_LIMIT", {
 		currentArena 		= currentArena,
 		maxArena 			= maxArena,
 		currentHonor 		= currentHonor,
@@ -3215,17 +2990,17 @@ function EventHandler:ASMSG_PVP_REWARDS( msg )
 		})
 	end
 
-	C_CacheInstance:Set("ASMSG_PVP_REWARDS", buffer)
+	C_GlobalStorage.SetVar("ASMSG_PVP_REWARDS", buffer)
 
 	PVPQueueFrame_UpdateReward(2)
 	PVPQueueFrame_UpdateReward(3)
 end
 
 function EventHandler:ASMSG_PVP_STATS(msg)
-	local pvpStats = C_CacheInstance:Get("ASMSG_PVP_STATS")
+	local pvpStats = C_GlobalStorage.GetVar("ASMSG_PVP_STATS")
 	if not pvpStats then
 		pvpStats = {}
-		C_CacheInstance:Set("ASMSG_PVP_STATS", pvpStats)
+		C_GlobalStorage.SetVar("ASMSG_PVP_STATS", pvpStats)
 	else
 		table.wipe(pvpStats)
 	end
@@ -3255,7 +3030,7 @@ function EventHandler:ASMSG_PVP_DAILY_STATS( msg )
 	local arenaGamesSolo 	= tonumber(splitData[3])
 	local arenaGames1v1 	= tonumber(splitData[4])
 
-	C_CacheInstance:Set("ASMSG_PVP_DAILY_STATS", {
+	C_GlobalStorage.SetVar("ASMSG_PVP_DAILY_STATS", {
 		arenaGames 			= arenaGames,
 		battlegroundGames 	= battlegroundGames,
 		arenaGamesSolo 		= arenaGamesSolo,
@@ -3271,7 +3046,7 @@ function EventHandler:ASMSG_PVP_DAILY_REWARDS( msg )
 	local arenaRewardSolo       = tonumber(splitData[3])
 	local battlegroundReward    = tonumber(splitData[4])
 
-	C_CacheInstance:Set("ASMSG_PVP_DAILY_REWARDS", {
+	C_GlobalStorage.SetVar("ASMSG_PVP_DAILY_REWARDS", {
 		arenaReward2v2 		= arenaReward2x2,
 		arenaReward1v1 		= arenaReward1v1,
 		arenaRewardSolo 	= arenaRewardSolo,
@@ -3285,7 +3060,7 @@ function EventHandler:ASMSG_PVP_SEASON( msg )
 	local currentSeason = tonumber(splitData[1])
 	local seasonEnd = time() + tonumber(splitData[2])
 
-	C_CacheInstance:Set("ASMSG_PVP_SEASON", {
+	C_GlobalStorage.SetVar("ASMSG_PVP_SEASON", {
 		currentSeason = currentSeason,
 		seasonEnd = seasonEnd
 	})
@@ -3299,7 +3074,7 @@ function EventHandler:ASMSG_PVP_LIMITS_TIMERS( msg )
 	local dailySeconds = time() + tonumber(splitData[1])
 	local weeklySeconds = time() + tonumber(splitData[2])
 
-	C_CacheInstance:Set("ASMSG_PVP_LIMITS_TIMERS", {
+	C_GlobalStorage.SetVar("ASMSG_PVP_LIMITS_TIMERS", {
 		dailySeconds = dailySeconds,
 		weeklySeconds = weeklySeconds
 	})
@@ -3314,7 +3089,7 @@ function EventHandler:ASMSG_SEND_BG_INVITE( msg )
 	local remainingTime = time() + tonumber(splitData[2])
 	local inviteType	= tonumber(splitData[3])
 
-	C_CacheInstance:Set("ASMSG_SEND_BG_INVITE", {
+	C_GlobalStorage.SetVar("ASMSG_SEND_BG_INVITE", {
 		inviteID 		= inviteID,
 		inviteState 	= inviteState,
 		remainingTime 	= remainingTime,
@@ -3327,7 +3102,7 @@ end
 
 function EventHandler:ASMSG_SEND_BG_INVITE_STATUS( msg )
 	local playerIndex = tonumber(msg)
-	C_CacheInstance:Set("ASMSG_SEND_BG_INVITE_STATUS", playerIndex)
+	C_GlobalStorage.SetVar("ASMSG_SEND_BG_INVITE_STATUS", playerIndex)
 
 	if BattlegroundInviteFrame.PopupFrame:IsVisible() and BattlegroundInviteFrame.PopupFrame.ReadyButtonFrame:IsVisible() then
 		for i = 1, playerIndex do
@@ -3342,7 +3117,7 @@ function EventHandler:ASMSG_SEND_BG_INVITE_STATUS( msg )
 end
 
 function EventHandler:ASMSG_SEND_BG_INVITE_ABADDON()
-	C_CacheInstance:Set("ASMSG_SEND_BG_INVITE", nil)
+	C_GlobalStorage.SetVar("ASMSG_SEND_BG_INVITE", nil)
 	BattlegroundInviteFrame:AbandonInvite()
 end
 
@@ -3356,18 +3131,17 @@ function EventHandler:ASMSG_BATTLEGROUND_LOCKED( msg )
 
 	for index, battlegroundID in pairs(battlegroundLockIDs) do
 		local name = GetBattlegroundInfoByID(battlegroundID)
-
 		battlegroundLockIDStorage[index] = name
 	end
 
-	C_CacheInstance:Set("ASMSG_BATTLEGROUND_LOCKED", battlegroundLockIDStorage)
+	C_GlobalStorage.SetVar("ASMSG_BATTLEGROUND_LOCKED", battlegroundLockIDStorage)
 end
 
 function EventHandler:ASMSG_BRAWL_SELECTED( msg )
 	local brawlID, itemLevelRequirement, rewardData = StringSplitEx("|", msg, 3)
 
 	if brawlID == "0" then
-		C_CacheInstance:Set("ASMSG_BRAWL_SELECTED", nil)
+		C_GlobalStorage.SetVar("ASMSG_BRAWL_SELECTED", nil)
 		return
 	end
 
@@ -3396,7 +3170,7 @@ function EventHandler:ASMSG_BRAWL_SELECTED( msg )
 		end
 	end
 
-	C_CacheInstance:Set("ASMSG_BRAWL_SELECTED", brawlInfo)
+	C_GlobalStorage.SetVar("ASMSG_BRAWL_SELECTED", brawlInfo)
 
 	local lastBrawlID = tonumber(GetCVar("lastSeenBrawlID"))
 	SetCVar("lastSeenBrawlID", brawlInfo.id)

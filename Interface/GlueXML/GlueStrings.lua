@@ -775,7 +775,7 @@ local GLUE_STRINGS = {
 		enGB = "Great news! Our Gnomish engineers were able to invent a time machine and bring your future self back in time! We can now even edit this future and teach you anything you want, just like in the Goblin Matrix!\n\nYour hero will receive excellent equipment, learn a couple of professions, and instantly reach level 80!"
 	},
 	["CHARACTER_SERVICES_BOOST_PURCHASE_WARNING"] = {
-		ruRU = "<html><body><p align=\"CENTER\">|cffd53838«Внимание! Есть ограничения!»|r</p><p align=\"CENTER\">|cffd53838Только для низкоуровневых персонажей.|r</p><p align=\"CENTER\"><a href=\"https://forum.sirus.su/threads/60986/\">Подробности</a></p></body></html>",
+		ruRU = "<html><body><p align=\"CENTER\">|cffd53838«Внимание! Есть ограничения!»|r</p><p align=\"CENTER\">|cffd53838Только для низкоуровневых персонажей.|r</p><p align=\"CENTER\"><a href=\"https://forum.sirus.su/resources/146/\">Подробности</a></p></body></html>",
 	},
 	["CHARACTER_SERVICES_BOOST_REFUND_ACTION"] = {
 		ruRU = "Вернуть",
@@ -1303,17 +1303,21 @@ local GLUE_STRINGS = {
 		ruRU = "Специализация:",
 		enGB = "Specialization:"
 	},
-	["PVP_SPECIALIZATION_LABEL"] = {
-		ruRU = "PVP Специализация:",
+	["BOOST_SERVICE_BROWSE_SPEC_PVE"] = {
+		ruRU = "PVE специализации:",
+		enGB = "PVE Specializations:"
+	},
+	["BOOST_SERVICE_BROWSE_SPEC_PVP"] = {
+		ruRU = "PVP специализации:",
+		enGB = "PVP Specializations:"
+	},
+	["CHARACTER_BOOST_SPEC_PVE"] = {
+		ruRU = "PVE специализация:",
+		enGB = "PVE Specialization:"
+	},
+	["CHARACTER_BOOST_SPEC_PVP"] = {
+		ruRU = "PVP специализация:",
 		enGB = "PVP Specialization:"
-	},
-	["SPECIALIZATIONS_PVE_LABEL"] = {
-		ruRU = "PVE Специализации",
-		enGB = "PVE Specializations"
-	},
-	["SPECIALIZATIONS_PVP_LABEL"] = {
-		ruRU = "PVP Специализации",
-		enGB = "PVP Specializations"
 	},
 	["CHAR_FACTION_CHANGE_GOLD_LIMIT"] = {
 		ruRU = "Вы превысили лимит на количество золота, предусмотренный для смены фракции.",
@@ -2767,8 +2771,8 @@ local GLUE_STRINGS = {
 		enGB = "- Damage increased versus beasts."
 	},
 	["CHARACTER_DELETE_RESTORE_ERROR_5"] = {
-		ruRU = "<html><body><p align=\"CENTER\">Недостаточно бонусов!</p><p align=\"CENTER\">Внести добровольное пожертвование в <a href=\"https://sirus.su/pay\">личном кабинете</a></p></body></html>",
-		enGB = "<html><body><p align=\"\"CENTER\"\">Not enough bonuses!</p><p align=\"\"CENTER\"\">Make a donation in <a href=\"\"https://sirus.su/pay\"\">your account</a></p></body></html>"
+		ruRU = "<html><body><p align=\"CENTER\">Недостаточно бонусов!</p><p align=\"CENTER\">Внести добровольное пожертвование в <a href=\"https://sirus.su/donate\">личном кабинете</a></p></body></html>",
+		enGB = "<html><body><p align=\"\"CENTER\"\">Not enough bonuses!</p><p align=\"\"CENTER\"\">Make a donation in <a href=\"\"https://sirus.su/donate\"\">your account</a></p></body></html>"
 	},
 	["SERVER_ALERT_TITLE"] = {
 		ruRU = "Последние новости",
@@ -3586,8 +3590,8 @@ local GLUE_STRINGS = {
 		enGB = "Ability_DeathKnight_BoneShield|The Death Knight is surrounded by 3 whirling bones. Each damaging attack that lands consumes 1 bone. While at least 1 bone remains, the Death Knight takes 20% less damage from all sources and deals 2% more damage with all attacks, spells and abilities.",
 	},
 	["CHAR_INFO_CLASS_DEATHKNIGHT_SPELL5"] = {
-		ruRU = "Spell_DeathKnight_BladedArmor|Погружает дружественную цель в кровожадное безумие на 30 сек. Цель впадает в исступление: наносимый ею физический урон увеличивается на 20%, но каждую секунду она теряет 1% от максимального запаса здоровья.",
-		enGB = "Spell_DeathKnight_BladedArmor|Induces a friendly unit into a killing frenzy for 30 sec. The target is Enraged, which increases their physical damage by 20%, but causes them to lose health equal to 1% of their maximum health every second.",
+		ruRU = "Spell_DeathKnight_BladedArmor|Погружает дружественную цель в кровожадное безумие на 30 сек. Цель впадает в исступление: наносимый ею физический урон увеличивается на 25%, но каждую секунду она теряет 1% от максимального запаса здоровья.",
+		enGB = "Spell_DeathKnight_BladedArmor|Induces a friendly unit into a killing frenzy for 30 sec. The target is Enraged, which increases their physical damage by 25%, but causes them to lose health equal to 1% of their maximum health every second.",
 	},
 	["CHAR_INFO_CLASS_SHAMAN_DESC"] = {
 		ruRU = "В бою шаман ставит на землю контролирующие и наносящие урон тотемы, чтобы помочь союзникам и ослабить противника. Шаманы могут как вступать в ближний бой, так и атаковать с расстояния. Мудрый шаман всегда старается учитывать сильные и слабые стороны врага.",
@@ -4205,8 +4209,8 @@ local GLUE_STRINGS = {
 		enGB = "Character not found."
 	},
 	["CHARACTER_UNDELETE_STATUS_5"] = {
-		ruRU = "<html><body><p align=\"CENTER\">Недостаточно бонусов!</p><p align=\"CENTER\">Внести добровольное пожертвование в <a href=\"https://sirus.su/pay\">личном кабинете</a></p></body></html>",
-		enGB = "<html><body><p align=\"\"CENTER\"\">Not enough bonuses!</p><p align=\"\"CENTER\"\">Make a donation in <a href=\"\"https://sirus.su/pay\"\">your account</a></p></body></html>"
+		ruRU = "<html><body><p align=\"CENTER\">Недостаточно бонусов!</p><p align=\"CENTER\">Внести добровольное пожертвование в <a href=\"https://sirus.su/donate\">личном кабинете</a></p></body></html>",
+		enGB = "<html><body><p align=\"\"CENTER\"\">Not enough bonuses!</p><p align=\"\"CENTER\"\">Make a donation in <a href=\"\"https://sirus.su/donate\"\">your account</a></p></body></html>"
 	},
 	["CHARACTER_UNDELETE_STATUS_6"] = {
 		ruRU = "Вы не можете восстановить рыцаря смерти, так как достигли лимита персонажей этого класса.",

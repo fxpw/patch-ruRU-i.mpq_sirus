@@ -281,7 +281,9 @@
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
-						<Texture name="$parentRankIcon" parentKey="RankIcon" file="Interface/PVPFrame/PvPPrestigeIcons"/>
+						<Texture name="$parentRankIcon" parentKey="RankIcon">
+							<Size x="16" y="18"/>
+						</Texture>
 						<Texture name="$parentFactionIcon" parentKey="FactionIcon" file="Interface\QUESTFRAME\objectivewidget">
 							<Size x="16" y="18"/>
 						</Texture>
@@ -938,7 +940,7 @@
 							</Anchors>
 							<Color r="1" g="1" b="1"/>
 						</FontString>
-						<Texture name="$parentBorder" parentKey="Border" file="Interface\QUESTFRAME\Legionfall">
+						<Texture name="$parentBorder" parentKey="Border" file="Interface\Legionfall\Legionfall">
 							<Size x="207" y="32"/>
 							<Anchors>
 								<Anchor point="CENTER" x="0" y="0" />
@@ -955,7 +957,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="BACKGROUND">
-								<Texture name="$parentSpark" parentKey="Spark" atlas="Legionfall_BarSpark" file="Interface\QUESTFRAME\Legionfall" alphaMode="ADD">
+								<Texture name="$parentSpark" parentKey="Spark" file="Interface\Legionfall\Legionfall" alphaMode="ADD">
 									<TexCoords left="0.853516" right="0.869141" top="0.046875" bottom="0.109375"/>
 								</Texture>
 							</Layer>
@@ -1771,6 +1773,7 @@
 			<OnLoad function="WorldStateScoreFrame_OnLoad"/>
 			<OnEvent function="WorldStateScoreFrame_OnEvent"/>
 			<OnShow function="WorldStateScoreFrame_OnShow"/>
+			<OnHide function="WorldStateScoreFrame_OnHide"/>
 			<OnUpdate function="RequestBattlefieldScoreData"/>
 		</Scripts>
 	</Frame>

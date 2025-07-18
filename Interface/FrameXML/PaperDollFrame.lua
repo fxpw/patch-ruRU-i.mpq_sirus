@@ -94,28 +94,6 @@ PLAYER_TITLE_HEIGHT = 16;
 local BONUS_STAT_VALUES = {}
 local BONUS_STAT_MULTIPLIERS = {}
 
-local InspectSlotButton = {
-	"InspectHeadSlot",
-	"InspectNeckSlot",
-	"InspectShoulderSlot",
-	"InspectBackSlot",
-	"InspectChestSlot",
-	"InspectShirtSlot",
-	"InspectTabardSlot",
-	"InspectWristSlot",
-	"InspectHandsSlot",
-	"InspectWaistSlot",
-	"InspectLegsSlot",
-	"InspectFeetSlot",
-	"InspectFinger0Slot",
-	"InspectFinger1Slot",
-	"InspectTrinket0Slot",
-	"InspectTrinket1Slot",
-	"InspectMainHandSlot",
-	"InspectSecondaryHandSlot",
-	"InspectRangedSlot",
-}
-
 local itemSlotButtons = {};
 
 local StrengthenStats = {SPELL_STAT1_NAME, SPELL_STAT2_NAME, SPELL_STAT3_NAME, SPELL_STAT4_NAME, SPELL_STAT5_NAME, PAPERDOLLFRAME_UPS_SPELL_POWER, ATTACK_POWER}
@@ -162,11 +140,9 @@ function PaperDollFrame_OnLoad (self)
 	self:RegisterEvent("KNOWN_TITLES_UPDATE");
 	self:RegisterEvent("UNIT_NAME_UPDATE");
 	self:RegisterEvent("ADDON_LOADED")
-	self:RegisterEvent("PLAYER_TARGET_CHANGED");
-	self:RegisterEvent("PARTY_MEMBERS_CHANGED");
 	self:RegisterEvent("UNIT_INVENTORY_CHANGED");
 	self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-	self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+	self:RegisterCustomEvent("PLAYER_AVG_ITEM_LEVEL_READY");
 
 	-- flyout settings
 	PaperDollFrameEquipInset.flyoutSettings = {
@@ -202,6 +178,12 @@ function CharacterModelFrame_OnMouseUp (self, button)
 	if ( button == "LeftButton" ) then
 		AutoEquipCursorItem();
 	end
+end
+
+-- This makes sure the update only happens once at the end of the frame
+function PaperDollFrame_QueuedUpdate(self)
+	self:SetScript("OnUpdate", nil);
+	PaperDollFrame_UpdateStats();
 end
 
 function EventHandler:UPS_INFO( msg )
@@ -280,10 +262,6 @@ end
 function PaperDollFrame_OnEvent (self, event, ...)
 	local unit = ...;
 
-	if event == "PLAYER_ENTERING_WORLD" then
-		RequestInventoryTransmogInfo()
-	end
-
 	if event == "PLAYER_ENTERING_WORLD"
 	or (event == "UNIT_INVENTORY_CHANGED" and unit == "player")
 	then
@@ -300,22 +278,10 @@ function PaperDollFrame_OnEvent (self, event, ...)
 		end
 	end
 
-	if event == "PLAYER_EQUIPMENT_CHANGED" then
-		RequestInventoryTransmogInfo(true)
-	end
-
 	if ( event == "ADDON_LOADED" ) then
 		if ... == "Blizzard_InspectUI" then
 			hooksecurefunc("InspectPaperDollItemSlotButton_OnEnter", InspectTransmogTooltipAddLine)
 			self:UnregisterEvent(event)
-		end
-	end
-	if ( event == "PLAYER_TARGET_CHANGED" or event == "PARTY_MEMBERS_CHANGED" or event == "UNIT_INVENTORY_CHANGED") then
-		if (InspectFrame) and InspectFrame:IsShown() then
-			local unit = InspectFrame.unit
-			if ( CanInspect(unit) and InspectFrame.ilvlframe ) then
-				ItemLevelMixIn:Request( unit )
-			end
 		end
 	end
 	if ( event == "PLAYER_ENTERING_WORLD" or
@@ -337,7 +303,13 @@ function PaperDollFrame_OnEvent (self, event, ...)
 				SetCVar("playerStatRightDropdown", "PLAYERSTAT_MELEE_COMBAT");
 			end
 		end
-		PaperDollFrame_UpdateStats(self);
+		self:SetScript("OnUpdate", PaperDollFrame_QueuedUpdate);
+	elseif event == "PLAYER_AVG_ITEM_LEVEL_READY" then
+		local avgItemLevelEquipped = GetAverageItemLevel()
+		local color = GetItemLevelColor(avgItemLevelEquipped)
+		CharacterItemLevelFrame.ilvltext:SetTextColor(color.r, color.g, color.b)
+		CharacterItemLevelFrame.ilvltext:SetText(avgItemLevelEquipped)
+		CharacterItemLevelFrame.ilevel = avgItemLevelEquipped
 	elseif ( event == "KNOWN_TITLES_UPDATE" or (event == "UNIT_NAME_UPDATE" and unit == "player")) then
 		PlayerTitleFrame_UpdateTitles();
 		-- CharacterNamesText:SetText(UnitPVPName("player"))
@@ -350,18 +322,24 @@ function PaperDollFrame_OnEvent (self, event, ...)
 	if ( unit == "player" ) then
 		if ( event == "UNIT_LEVEL" ) then
 			PaperDollFrame_SetLevel();
-		elseif ( event == "UNIT_DAMAGE" or event == "PLAYER_DAMAGE_DONE_MODS" or event == "UNIT_ATTACK_SPEED" or event == "UNIT_RANGEDDAMAGE" or event == "UNIT_ATTACK" or event == "UNIT_STATS" or event == "UNIT_RANGED_ATTACK_POWER" ) then
-			PaperDollFrame_UpdateStats();
+		elseif ( event == "UNIT_DAMAGE" or
+				event == "PLAYER_DAMAGE_DONE_MODS" or
+				event == "UNIT_ATTACK_SPEED" or
+				event == "UNIT_RANGEDDAMAGE" or
+				event == "UNIT_ATTACK" or
+				event == "UNIT_STATS" or
+				event == "UNIT_RANGED_ATTACK_POWER" ) then
+			self:SetScript("OnUpdate", PaperDollFrame_QueuedUpdate);
 		elseif ( event == "UNIT_RESISTANCES" ) then
 			PaperDollFrame_SetResistances();
-			PaperDollFrame_UpdateStats();
+			self:SetScript("OnUpdate", PaperDollFrame_QueuedUpdate);
 		elseif ( event == "UNIT_RANGED_ATTACK_POWER" ) then
 			PaperDollFrame_SetRangedAttack();
 		end
 	end
 
 	if ( event == "COMBAT_RATING_UPDATE" ) then
-		PaperDollFrame_UpdateStats();
+		self:SetScript("OnUpdate", PaperDollFrame_QueuedUpdate);
 	end
 end
 
@@ -2675,43 +2653,6 @@ function InspectTransmogTooltipAddLine( self, ... )
 		end
 	end
 end
-
-function RefreshInspectFrameHack()
-	if not InspectFrame then return end
-	if InspectFrame:IsShown() then
-		local unit = InspectFrame.unit;
-		for _, slot in pairs(InspectSlotButton) do
-			local button = _G[slot]
-			local link = GetInventoryItemLink(unit, button:GetID())
-			local textureName = GetInventoryItemTexture(unit, button:GetID())
-			if textureName then
-				-- SetItemButtonTexture(button, textureName)
-				if link then
-					local name, links, quality, _, _, _, _, _, _, texture = GetItemInfo(link)
-					SetItemButtonQuality(button, quality)
-					SetItemButtonTexture(button, texture)
-				end
-				button.hasItem = 1
-			else
-				local textureName = button.backgroundTextureName
-				SetItemButtonQuality(button, nil)
-				SetItemButtonTexture(button, textureName)
-				button.hasItem = nil
-			end
-		end
-
-		local class, classfilename = UnitClass(unit)
-		local _, _, _, hexcolor = GetClassColor(classfilename)
-		InspectLevelText:ClearAllPoints()
-		InspectLevelText:SetPoint("TOP", 0, -50)
-		InspectLevelText:SetFormattedText(PAPERDOLLFRAME_PLAYER_INFO, hexcolor, class, UnitLevel(unit))
-		InspectNameText:SetSize(209, 16)
-		InspectNameText:SetText(UnitPVPName(unit))
-	end
-end
-
-local RefreshInspectFrameH = CreateFrame("Frame")
--- RefreshInspectFrameH:SetScript("OnUpdate", RefreshInspectFrameHack)
 
 function CharacterStrengthenButton_OnClick( self, ... )
 	local id = self:GetParent():GetID()

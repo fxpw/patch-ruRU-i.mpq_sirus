@@ -471,12 +471,12 @@ function UnitFrameManaBar_UnregisterDefaultEvents(self)
 end
 
 function UnitFrameManaBar_RegisterDefaultEvents(self)
-	self:RegisterEvent("UNIT_MANA");
-	self:RegisterEvent("UNIT_RAGE");
-	self:RegisterEvent("UNIT_FOCUS");
-	self:RegisterEvent("UNIT_ENERGY");
-	self:RegisterEvent("UNIT_HAPPINESS");
-	self:RegisterEvent("UNIT_RUNIC_POWER");
+	self:RegisterUnitEvent("UNIT_MANA", self.unit);
+	self:RegisterUnitEvent("UNIT_RAGE", self.unit);
+	self:RegisterUnitEvent("UNIT_FOCUS", self.unit);
+	self:RegisterUnitEvent("UNIT_ENERGY", self.unit);
+	self:RegisterUnitEvent("UNIT_HAPPINESS", self.unit);
+	self:RegisterUnitEvent("UNIT_RUNIC_POWER", self.unit);
 end
 
 function UnitFrameManaBar_Initialize (unit, statusbar, statustext, frequentUpdates)
@@ -496,12 +496,12 @@ function UnitFrameManaBar_Initialize (unit, statusbar, statustext, frequentUpdat
 	else
 		UnitFrameManaBar_RegisterDefaultEvents(statusbar);
 	end
-	statusbar:RegisterEvent("UNIT_MAXMANA");
-	statusbar:RegisterEvent("UNIT_MAXRAGE");
-	statusbar:RegisterEvent("UNIT_MAXFOCUS");
-	statusbar:RegisterEvent("UNIT_MAXENERGY");
-	statusbar:RegisterEvent("UNIT_MAXHAPPINESS");
-	statusbar:RegisterEvent("UNIT_MAXRUNIC_POWER");
+	statusbar:RegisterUnitEvent("UNIT_MAXMANA", unit);
+	statusbar:RegisterUnitEvent("UNIT_MAXRAGE", unit);
+	statusbar:RegisterUnitEvent("UNIT_MAXFOCUS", unit);
+	statusbar:RegisterUnitEvent("UNIT_MAXENERGY", unit);
+	statusbar:RegisterUnitEvent("UNIT_MAXHAPPINESS", unit);
+	statusbar:RegisterUnitEvent("UNIT_MAXRUNIC_POWER", unit);
 	statusbar:RegisterEvent("UNIT_DISPLAYPOWER");
 	if ( statusbar.unit == "player" ) then
 		statusbar:RegisterEvent("PLAYER_DEAD");

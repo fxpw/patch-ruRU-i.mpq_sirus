@@ -2874,7 +2874,7 @@ function ChatFrame_MessageEventHandler(self, event, ...)
 			if ( self.privateMessageList and not self.privateMessageList[strlower(arg2)] ) then
 				return true;
 			elseif ( self.excludePrivateMessageList and self.excludePrivateMessageList[strlower(arg2)]
-					and ( (chatGroup == "WHISPER" and GetCVar("C_CVAR_WHISPER_MODE") ~= "popout_and_inline") or (chatGroup == "BN_WHISPER" and GetCVar("C_CVAR_WHISPER_MODE") ~= "popout_and_inline") ) ) then
+					and ( (chatGroup == "WHISPER" and GetCVar("whisperMode") ~= "popout_and_inline") or (chatGroup == "BN_WHISPER" and GetCVar("whisperMode") ~= "popout_and_inline") ) ) then
 				return true;
 			end
 		elseif ( chatGroup == "BN_CONVERSATION" ) then
@@ -4543,7 +4543,7 @@ function LanguageMenu_OnEvent(self, event, ...)
 		else
 			if self.numLanguages == GetNumLanguages() then
 				if not IsSelectedLanguageKnown() then
-					C_CacheInstance:Set("selectedLanguage", nil)
+					C_GlobalStorage.SetVar("CHAT_SELECTED_LANGUAGE", nil)
 				end
 
 				if self.updateLanguagesTimer then
@@ -4554,7 +4554,7 @@ function LanguageMenu_OnEvent(self, event, ...)
 				self.updateLanguagesTimer = C_Timer:NewTicker(1, function()
 					if self.numLanguages ~= GetNumLanguages() then
 						if not IsSelectedLanguageKnown() then
-							C_CacheInstance:Set("selectedLanguage", nil)
+							C_GlobalStorage.SetVar("CHAT_SELECTED_LANGUAGE", nil)
 						end
 
 						LanguageMenu_UpdateLanguage(self)
@@ -4582,7 +4582,7 @@ function GetOriginalLanguage()
 end
 
 function IsSelectedLanguageKnown()
-	local selectedLanguage = C_CacheInstance:Get("selectedLanguage")
+	local selectedLanguage = C_GlobalStorage.GetVar("CHAT_SELECTED_LANGUAGE")
 	if selectedLanguage then
 		for i = 1, GetNumLanguages(), 1 do
 			if GetLanguageByIndex(i) == selectedLanguage then
@@ -4595,7 +4595,7 @@ end
 function GetDefaultLearnLanguage()
 	local knowLanguage = false
 	local defaultLanguage = GetDefaultLanguage()
-	local language = defaultLanguage == GetOriginalLanguage() and C_CacheInstance:Get("selectedLanguage") or defaultLanguage
+	local language = defaultLanguage == GetOriginalLanguage() and C_GlobalStorage.GetVar("CHAT_SELECTED_LANGUAGE") or defaultLanguage
 
 	for i = 1, GetNumLanguages(), 1 do
 		local _language = GetLanguageByIndex(i)
@@ -4628,7 +4628,7 @@ function LanguageMenu_LoadLanguages(self)
 
 	local language, setForDefault
 	local defaultLanguage = GetDefaultLanguage()
-	local selectedLanguage = C_CacheInstance:Get("selectedLanguage")
+	local selectedLanguage = C_GlobalStorage.GetVar("CHAT_SELECTED_LANGUAGE")
 
 	if defaultLanguage == GetOriginalLanguage() then
 		if selectedLanguage then
@@ -4661,11 +4661,8 @@ end
 
 function LanguageMenu_Click(self)
 	local selectedLanguage = GetLanguageByIndex(self:GetID())
-
-	C_CacheInstance:Set("selectedLanguage", selectedLanguage)
-
+	C_GlobalStorage.SetVar("CHAT_SELECTED_LANGUAGE", selectedLanguage)
 	SetLanguageForAllChatTabs(selectedLanguage)
-
 	ChatMenu:Hide();
 end
 

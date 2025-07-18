@@ -745,13 +745,6 @@ function EventHandler:ASMSG_MG_WON()
 	FireCustomClientEvent("MINI_GAME_WON");
 end
 
-function EventHandler:ASMSG_MG_EVENT_START_TIMER(msg)
-	if self.ASMSG_BG_EVENT_START_TIMER then
-		local timeLeft, shortType = string.split(":", msg)
-		self:ASMSG_BG_EVENT_START_TIMER(string.format("%s:%i", timeLeft, shortType == "1" and 3 or 2));
-	end
-end
-
 local SORT_LOG_DATA = {};
 local SORT_WINNERS_DICT = {}
 local SORT_DEFAULT_FIELD

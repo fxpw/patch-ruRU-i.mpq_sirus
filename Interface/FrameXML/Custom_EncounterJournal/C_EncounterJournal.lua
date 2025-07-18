@@ -48,7 +48,6 @@ local PRIVATE = {
 
 --	INSTANCE_INFO_EX = nil,
 --	PLAYER_FACTION_ID = nil,
---	PLAYER_GUID = nil,
 }
 
 PRIVATE.Initialize = function()
@@ -65,7 +64,6 @@ PRIVATE.Initialize = function()
 		else
 			PRIVATE.PLAYER_FACTION_ID = PLAYER_FACTION_GROUP[factionGroup]
 		end
-		PRIVATE.PLAYER_GUID = UnitGUID("player")
 	end, true, true)
 end
 
@@ -268,8 +266,8 @@ PRIVATE.IsInstanceAvailableForPlayer = function(instanceInfoEx, checkPlayerLevel
 	if checkPlayerItemLevel then
 		local itemLevel = instanceInfoEx[INSTANCE_INFO_EX_FIELD.REQUIRED_ITEM_LEVEL] or 0
 		if itemLevel ~= 0 then
-			local playerItemLevel = ItemLevelMixIn:GetItemLevel(PRIVATE.PLAYER_GUID)
-			if playerItemLevel and playerItemLevel < itemLevel then
+			local avgItemLevelEquipped = GetAverageItemLevel()
+			if avgItemLevelEquipped < itemLevel then
 				return false
 			end
 		end

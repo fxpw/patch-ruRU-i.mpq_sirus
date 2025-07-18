@@ -1,0 +1,26 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Include file="Custom_ObjectiveTrackerFonts.xml"/>
+	<Script file="Custom_ObjectiveTrackerManager.lua"/>
+	<Script file="Custom_ObjectiveTrackerShared.lua"/>
+	<Include file="Custom_ObjectiveTrackerShared.xml"/>
+	<Script file="Custom_ObjectiveTrackerBlock.lua"/>
+	<Include file="Custom_ObjectiveTrackerBlock.xml"/>
+	<Script file="Custom_ObjectiveTrackerModule.lua"/>
+	<Include file="Custom_ObjectiveTrackerModule.xml"/>
+	<Script file="Custom_ObjectiveTrackerContainer.lua"/>
+	<Include file="Custom_ObjectiveTrackerContainer.xml"/>
+
+	<Include file="Custom_ObjectiveTrackerAnimTemplates.xml"/>
+	<Script file="Custom_ObjectiveTrackerAnimTemplates.lua"/>
+
+	<Script file="Custom_AchievementObjectiveTracker.lua"/>
+	<Include file="Custom_AchievementObjectiveTracker.xml"/>
+	<Script file="Custom_QuestObjectiveTracker.lua"/>
+	<Include file="Custom_QuestObjectiveTracker.xml"/>
+	<Include file="Custom_BattlePassQuestObjectiveTracker.xml"/>
+	<Include file="Custom_ProfessionsRecipeTracker.xml"/>
+
+	<Script file="Custom_ObjectiveTracker.lua"/>
+	<Include file="Custom_ObjectiveTracker.xml"/>
+</Ui>

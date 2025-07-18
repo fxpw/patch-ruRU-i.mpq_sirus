@@ -174,7 +174,7 @@
 			<Frame name="$parentTopPanel" parentKey="TopPanel">
 				<Size x="10" y="200"/>
 				<Frames>
-					<Frame name="$parentItem" parentKey="Item">
+					<Button name="$parentItem" parentKey="Item">
 						<Size x="64" y="64"/>
 						<Anchors>
 							<Anchor point="CENTER" x="0" y="20"/>
@@ -212,7 +212,7 @@
 								self:OnLoad()
 							</OnLoad>
 						</Scripts>
-					</Frame>
+					</Button>
 				</Frames>
 			</Frame>
 			<Frame name="$parentOptionPanel" parentKey="OptionPanel">
@@ -711,7 +711,7 @@
 							<Anchor point="BOTTOMRIGHT" relativeTo="$parentBackgroundMiddle" x="0" y="0"/>
 						</Anchors>
 					</Frame>
-					<Button name="$parentPurchaseButton" parentKey="PurchaseButton" inherits="PKBT_RedButtonMultiWidgetPriceTemplate">
+					<Button name="$parentPurchaseButton" parentKey="PurchaseButton" inherits="PKBT_RedButtonMultiWidgetPriceTemplate,TransactionConfirmationTemplate">
 						<Size x="162" y="52"/>
 						<Anchors>
 							<Anchor point="BOTTOM" x="0" y="25"/>

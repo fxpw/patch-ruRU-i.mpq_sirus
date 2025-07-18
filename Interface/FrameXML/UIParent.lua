@@ -1,9 +1,16 @@
+local C_StoreSecure
+EventRegistry:RegisterFrameEventAndCallback("STORE_API_LOADED", function(owner, ...)
+	C_StoreSecure = _G.C_StoreSecure
+	EventRegistry:UnregisterFrameEventAndCallback("STORE_API_LOADED", owner)
+end, "UIParent")
+
 TOOLTIP_UPDATE_TIME = 0.2;
 BOSS_FRAME_CASTBAR_HEIGHT = 16;
 ROTATIONS_PER_SECOND = .5;
 
+local C_GlobalStorage = C_GlobalStorage
+local C_GlobalStorageSecure = C_GlobalStorageSecure
 local ClearTarget = ClearTarget
-local TRACKED_CVARS = TRACKED_CVARS
 
 -- Pulsing stuff
 PULSEBUTTONS = {};
@@ -58,6 +65,7 @@ UIPanelWindows["ChatConfigFrame"] =		{ area = "center",	pushable = 0,	whileDead 
 UIPanelWindows["PVPParentFrame"] =			{ area = "left",	pushable = 0,	whileDead = 1 };
 UIPanelWindows["StoreFrame"] =			{ area = "center",	pushable = 0,	whileDead = 1, checkFit = 1, checkFitExtraWidth = 360, checkFitExtraHeight = 170 }
 UIPanelWindows["PromoCodeFrame"] =		{ area = "center",	pushable = 0,	whileDead = 1 }
+UIPanelWindows["RealmShoutFrame"] =		{ area = "center",	pushable = 0,	whileDead = 1 }
 UIPanelWindows["BattlePassFrame"] =	{ area = "center",	pushable = 0,	whileDead = 1, checkFit = 1, checkFitExtraWidth = 360, checkFitExtraHeight = 170 }
 UIPanelWindows["CustomBarberShopFrame"] =	{ area = "full",	pushable = 0, ignoreControlLost = 1};
 UIPanelWindows["ServerNewsFrame"] =		{ area = "center",	pushable = 0,	whileDead = 1, ignoreControlLost = 1};
@@ -68,6 +76,14 @@ local function SetFrameAttributes(frame, attributes)
 		frame:SetAttribute("UIPanelLayout-"..name, value);
 	end
 	frame:SetAttribute("UIPanelLayout-enabled", true);
+end
+
+function RegisterUIPanel(frame, attributes)
+	local name = frame:GetName();
+	if not UIPanelWindows[name] then
+		UIPanelWindows[name] = attributes;
+		--SetFrameAttributes(frame, attributes);
+	end
 end
 
 local function GetUIPanelAttribute(frame, name)
@@ -115,7 +131,8 @@ UIChildWindows = {
 UISpecialFrames = {
 	"ItemRefTooltip",
 	"ColorPickerFrame",
-	"ItemPreviewFrame"
+	"ItemPreviewFrame",
+	"ContainerItemExpirationFrame",
 };
 
 UIMenus = {
@@ -647,15 +664,6 @@ function UIParent_OnEvent(self, event, ...)
 		-- You can override this if you want a Combat Log replacement
 		CombatLog_LoadUI();
 		SendServerMessage("ACMSG_EVENT_PLAYER_LOGON")
-
-		do
-			local msg = {}
-			for index, cvar in ipairs(TRACKED_CVARS) do
-				msg[#msg + 1] = string.format("%i:%s", index, tostring(GetCVar(cvar) or 0))
-			end
-
-			SendServerMessage("ACMSG_I_S", table.concat(msg, "|"))
-		end
 	elseif ( event == "PLAYER_DEAD" ) then
 		if C_Service.IsHardcoreCharacter() then
 			HardcoreStaticPopupFrame:Show()
@@ -1043,9 +1051,28 @@ function UIParent_OnEvent(self, event, ...)
 		else
 			StaticPopupDialogs["GOSSIP_CONFIRM"].hasMoneyFrame = nil;
 		end
+
+		local confirmText, hasTransactionConfirmation, takeScreenshot = arg2, nil, nil
+		if confirmText then
+			for _, gossipOptionText in ipairs(CUSTOM_GOSSIP_CONFIRMATION_TEXTS) do
+				if string.find(confirmText, gossipOptionText, 1, true) then
+					hasTransactionConfirmation = true
+					local price = string.match(confirmText, GOSSIP_PRICE_MATCH_PATTERN);
+					price = tonumber(price)
+					if price and price <= C_StoreSecure.GetBalance(Enum.Store.CurrencyType.Bonus) then
+						takeScreenshot = true
+					end
+					break
+				end
+			end
+		end
+
+		StaticPopupDialogs["GOSSIP_CONFIRM"].transactionConfirmation = hasTransactionConfirmation
+
 		local dialog = StaticPopup_Show("GOSSIP_CONFIRM", arg2);
 		if ( dialog ) then
 			dialog.data = arg1;
+			dialog.data2 = takeScreenshot
 			if ( arg3 > 0 ) then
 				MoneyFrame_Update(dialog:GetName().."MoneyFrame", arg3);
 			end
@@ -1905,9 +1932,7 @@ function FramePositionDelegate:UpdateUIPanelPositions(currentFrame)
 			end
 			self:SetUIPanel("right", nil, 1);
 		end
-		if ( frame ) then
-			frame:Raise();
-		end
+		frame:Raise();
 	end
 
 	if ( currentFrame and GetUIPanelAttribute(currentFrame, "checkFit") == 1 ) then
@@ -2128,19 +2153,19 @@ function FramePositionDelegate:UIParentManageFramePositions()
 	if ( rightActionBars > 0 ) then
 		anchorY = min(anchorY, buffsAnchorY);
 	end
-	if ( WatchFrame and not WatchFrame:IsUserPlaced() ) then
-		local numArenaOpponents = GetNumArenaOpponents();
-		if ( ArenaEnemyFrames and ArenaEnemyFrames:IsShown() and (numArenaOpponents > 0) ) then
-			WatchFrame:ClearAllPoints();
-			WatchFrame:SetPoint("TOPRIGHT", ArenaEnemyFrames_GetBestAnchorUnitFrameForOppponent(numArenaOpponents), "BOTTOMRIGHT", 2 - 12, -35 - 12);
+	if ObjectiveTrackerFrame and not ObjectiveTrackerFrame:IsUserPlaced() then
+		local numArenaOpponents = GetNumArenaOpponents()
+		ObjectiveTrackerFrame:ClearAllPoints()
+		if ArenaEnemyFrames and ArenaEnemyFrames:IsShown() and (numArenaOpponents > 0) then
+			ObjectiveTrackerFrame:SetPoint("TOPRIGHT", ArenaEnemyFrames_GetBestAnchorUnitFrameForOppponent(numArenaOpponents), "BOTTOMRIGHT", 2 - 12, -35 - 12)
 		else
-			-- We're using Simple Quest Tracking, automagically size and position!
-			WatchFrame:ClearAllPoints();
-			-- move up if only the minimap cluster is above, move down a little otherwise
-			WatchFrame:SetPoint("TOPRIGHT", "MinimapCluster", "BOTTOMRIGHT", -CONTAINER_OFFSET_X, anchorY - 10);
-			-- OnSizeChanged for WatchFrame handles its redraw
+			ObjectiveTrackerFrame:SetPoint("TOPRIGHT", "MinimapCluster", "BOTTOMRIGHT", -(CONTAINER_OFFSET_X + 12), anchorY - 10)
 		end
-		WatchFrame:SetPoint("BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -CONTAINER_OFFSET_X, CONTAINER_OFFSET_Y);
+		ObjectiveTrackerFrame:SetPoint("BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -(CONTAINER_OFFSET_X + 12), CONTAINER_OFFSET_Y)
+
+		if ObjectiveTrackerFrame:IsShown() then
+			ObjectiveTrackerFrame:UpdateHeight()
+		end
 	end
 
 	-- Update chat dock since the dock could have moved
@@ -2798,7 +2823,7 @@ end
 
 -- Function that handles the escape key functions
 function ToggleGameMenu()
-	if ( not UIParent:IsShown() and (ezSpectator_TopFrameMainFrame and not ezSpectator_TopFrameMainFrame:IsShown()) ) then
+	if ( not UIParent:IsShown() and (ArenaSpectatorFrame and not ArenaSpectatorFrame:IsShown()) ) then
 		UIParent:Show();
 		SetUIVisibility(true);
 	elseif ( securecall("StaticPopup_EscapePressed") ) then
@@ -3316,6 +3341,28 @@ function RefreshDebuffs(frame, unit, numDebuffs, suffix, checkCVar)
 	end
 end
 
+-- New Color API
+-- This function is intended to be used with C++ wrapped functions that return the difficulty of content instead
+-- of hand calculating the difficulty in the UI like the below APIs do. You should get difficulty color
+-- like this:
+-- local difficulty = C_PlayerInfo.GetContentDifficultyCreatureForPlayer(self.unit)
+-- local color = GetDifficultyColor(difficulty);
+function GetDifficultyColorEx(difficulty)
+	if (difficulty == 0) then
+		return QuestDifficultyColors["trivial"]; -- Grey
+	elseif (difficulty == 1) then
+		return QuestDifficultyColors["standard"]; -- Green
+	elseif (difficulty == 2) then
+		return QuestDifficultyColors["difficult"]; -- Yellow
+	elseif (difficulty == 3) then
+		return QuestDifficultyColors["verydifficult"]; -- Orange
+	elseif (difficulty == 4) then
+		return QuestDifficultyColors["impossible"]; -- Red
+	else
+		return QuestDifficultyColors["difficult"]; -- Yellow
+	end
+end
+
 function GetQuestDifficultyColor(level)
 	local levelDiff = level - UnitLevel("player");
 	if ( levelDiff >= 5 ) then
@@ -3575,14 +3622,14 @@ function SetSmallGuildTabardTextures(frame, id)
 end
 
 function GetDisplayedAllyFrames()
-	local useCompact = GetCVar("C_CVAR_USE_COMPACT_PARTY_FRAMES") == "1"
+	local useCompact = GetCVarBool("useCompactPartyFrames")
 	if ( IsActiveBattlefieldArena() and not useCompact ) then
 		return "party";
 	elseif ( (GetNumRaidMembers() > 0 or (GetNumPartyMembers() > 0 and useCompact)) ) then
 		return "raid";
 	elseif ( GetNumPartyMembers() > 0 ) then
 		return "party";
-	elseif ( GetCVar("C_CVAR_USE_COMPACT_SOLO_FRAMES") == "1" ) then
+	elseif ( GetCVarBool("useCompactSoloFrames") ) then
 		return "raid";
 	else
 		return nil;
@@ -3834,20 +3881,12 @@ function EventHandler:ASMSG_PLAYER_ATTACK_STOP()
 	StopAttack()
 end
 
-function EventHandler:ASMSG_FACTION_SELECT_LOGOUT( textID )
-    if not GetSafeCVar("ForceChangeFactionEvent") then
-        RegisterCVar("ForceChangeFactionEvent", textID)
-    end
-
-    SetSafeCVar("ForceChangeFactionEvent", textID) -- На всякий случай.
+function EventHandler:ASMSG_FACTION_SELECT_LOGOUT(eventID)
+	C_GlobalStorageSecure.SetGlobalVar("GLUE_CHAR_FACTION_CHANGE_EVENT", eventID)
 end
 
 function EventHandler:ASMSG_FORCE_CHAR_CUSTOMIZATION()
-	if not GetSafeCVar("FORCE_CHAR_CUSTOMIZATION") then
-		RegisterCVar("FORCE_CHAR_CUSTOMIZATION", 1)
-	end
-
-	SetSafeCVar("FORCE_CHAR_CUSTOMIZATION", 1)
+	C_GlobalStorageSecure.SetGlobalVar("GLUE_CHAR_FORCE_CUSTOMIZATION", true)
 end
 
 local INVISIBLE_STATUS;
@@ -3970,13 +4009,13 @@ function UpdateAutoJoinLFG(forceUpdateConfig)
 		--	LeaveChannelByName(LFG_CHANNEL_NAME_HORDE)
 		end
 
-		if C_CVar:GetValue("C_CVAR_AUTOJOIN_TO_LFG") == "1" then
-			if not C_CacheInstance:Get("AUTOJOIN_TO_LFG_HARDCORE") then
+		if GetCVarBool("lfgAutoJoinChannel") then
+			if not C_GlobalStorage.GetVar("AUTOJOIN_TO_LFG_HARDCORE") then
 				JoinPermanentChannel(LFG_HARDCORE_CHANNEL_NAME)
 				if forceUpdateConfig then
 					awaitChannelJoin[LFG_HARDCORE_CHANNEL_NAME] = true
 				end
-				C_CacheInstance:Set("AUTOJOIN_TO_LFG_HARDCORE", true)
+				C_GlobalStorage.SetVar("AUTOJOIN_TO_LFG_HARDCORE", true)
 			end
 
 			if awaitChannelJoin[LFG_HARDCORE_CHANNEL_NAME] then
@@ -3984,8 +4023,8 @@ function UpdateAutoJoinLFG(forceUpdateConfig)
 			end
 		end
 	else
-		if C_CVar:GetValue("C_CVAR_AUTOJOIN_TO_LFG") == "1" then
-			if not C_CacheInstance:Get("AUTOJOIN_TO_LFG") then
+		if GetCVarBool("lfgAutoJoinChannel") then
+			if not C_GlobalStorage.GetVar("AUTOJOIN_TO_LFG") then
 				JoinPermanentChannel(LFG_CHANNEL_NAME)
 				JoinPermanentChannel(LFG_CHANNEL_NAME_ALLIANCE)
 				JoinPermanentChannel(LFG_CHANNEL_NAME_HORDE)
@@ -3994,7 +4033,7 @@ function UpdateAutoJoinLFG(forceUpdateConfig)
 					awaitChannelJoin[LFG_CHANNEL_NAME_ALLIANCE] = true
 					awaitChannelJoin[LFG_CHANNEL_NAME_HORDE] = true
 				end
-				C_CacheInstance:Set("AUTOJOIN_TO_LFG", true)
+				C_GlobalStorage.SetVar("AUTOJOIN_TO_LFG", true)
 			end
 
 			if awaitChannelJoin[LFG_CHANNEL_NAME] or awaitChannelJoin[LFG_CHANNEL_NAME_ALLIANCE] or awaitChannelJoin[LFG_CHANNEL_NAME_HORDE] then
@@ -4004,4 +4043,15 @@ function UpdateAutoJoinLFG(forceUpdateConfig)
 			end
 		end
 	end
+end
+
+function OpenAchievementFrameToAchievement(achievementID)
+	if not AchievementFrame then
+		AchievementFrame_LoadUI()
+	end
+	if not AchievementFrame:IsShown() then
+		AchievementFrame_ToggleAchievementFrame()
+	end
+
+	AchievementFrame_SelectAchievement(achievementID)
 end

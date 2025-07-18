@@ -16,6 +16,9 @@
 			<OnUpdate>
 				self:OnUpdate(elapsed)
 			</OnUpdate>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
 		</Scripts>
 	</Frame>
 </Ui>

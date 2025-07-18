@@ -504,7 +504,7 @@ GlueDialogTypes["ADDON_INVALID_VERSION_DIALOG_NSA"] = {
 		AddonList:Show()
 	end,
 	OnAlt = function()
-		C_GlueCVars.SetCVar("IGNORE_ADDON_VERSION", "1")
+		SetCVar("ignoreAddonVersion", "1")
 		GlueParent.dontShowInvalidVersionAddonDialog = true
 	end,
 }
@@ -986,6 +986,13 @@ function GlueDialogMixin:ShowDialog(which, text, data)
 		displayHeight = displayHeight + self.Container.HardcoreProposal:GetHeight() + 20
 	end
 
+	if dialogInfo.transactionConfirmation and dialogInfo.button1 then
+		self.Container.Button1:SetConfirmationTimerDone(function()
+			self.Container.Button1:SetText(dialogInfo.button1)
+		end)
+		self.Container.Button1:StartConfirmationTimer(true)
+	end
+
 	self.Container:SetHeight(math.floor(displayHeight + 0.5))
 
 	self:Show()
@@ -1114,17 +1121,30 @@ function GlueDialogButtonMixin:OnClick()
 	if id == 1 then
 		local OnAccept = GlueDialogTypes[self.dialog.which].OnAccept
 		if OnAccept then
-			hide = not OnAccept(self.dialog)
+			local success, result = pcall(OnAccept, self.dialog)
+			if not success then
+				geterrorhandler()(result)
+			else
+				hide = not result
+			end
 		end
 	elseif id == 2 then
 		local OnCancel = GlueDialogTypes[self.dialog.which].OnCancel
 		if OnCancel then
-			hide = not OnCancel(self.dialog)
+			local success, result = pcall(OnCancel, self.dialog)
+			if not success then
+				geterrorhandler()(result)
+			else
+				hide = not result
+			end
 		end
 	elseif id == 3 then
 		local OnAlt = GlueDialogTypes[self.dialog.which].OnAlt
 		if OnAlt then
-			OnAlt(self.dialog)
+			local success, result = pcall(OnAlt, self.dialog)
+			if not success then
+				geterrorhandler()(result)
+			end
 		end
 	end
 

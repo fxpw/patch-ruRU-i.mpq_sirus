@@ -1,0 +1,186 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Script file="Custom_TradeSkillInspectRecipe.lua"/>
+
+	<Frame name="ProfessionsReagentSlotTemplate" virtual="true">
+		<Size x="180" y="37"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="CustomerState" hidden="true">
+					<Size x="10" y="10"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+					<Color r="1" g="1" b="1" a=".7"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<FontString parentKey="Name" inherits="GameFontHighlight_NoShadow" justifyH="LEFT">
+					<Size x="108" y="36" />
+					<Anchors>
+						<Anchor point="LEFT" x="46" y="0" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentButton" parentKey="Button" inherits="ItemButtonTemplate">
+				<Anchors>
+					<Anchor point="LEFT"/>
+				</Anchors>
+				<Scripts>
+					<OnEnter>
+						self:GetParent():OnButtonEnter()
+					</OnEnter>
+					<OnLeave>
+						self:GetParent():OnButtonLeave()
+					</OnLeave>
+					<OnClick>
+						self:GetParent():OnButtonClick(button)
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ProfessionsReagentSlotMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Button name="ProfessionsOutputButtonTemplate" inherits="CircularGiantItemButtonTemplate" registerForClicks="LeftButtonUp, RightButtonUp" virtual="true">
+		<Size x="47" y="47"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parentCount" parentKey="Count" inherits="NumberFontNormalLarge" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="BOTTOM" relativeTo="$parent" relativePoint="BOTTOMRIGHT" x="-4" y="1"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentCountShadow" parentKey="CountShadow" alpha=".8">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentCount" relativePoint="TOPLEFT" x="-10" y="10"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentCount" relativePoint="BOTTOMRIGHT" x="10" y="-10"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ProfessionsRecipeOutputIconMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				self:OnLeave()
+			</OnLeave>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Frame name="ProfessionsRecipeSchematicFormTemplate" virtual="true">
+		<Frames>
+			<Button name="$parentOutputIcon" parentKey="OutputIcon" inherits="ProfessionsOutputButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="28" y="-33"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="$parentText" parentKey="Text" inherits="GameFontHighlightMed2" justifyV="TOP" justifyH="LEFT">
+							<Size x="260" y="0"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parent" relativePoint="RIGHT" x="14" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Button>
+			<CheckButton name="$parentTrackRecipeCheckbox" parentKey="TrackRecipeCheckbox" inherits="UICheckButtonTemplate">
+				<Size x="26" y="26"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-75" y="-6"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.text:SetText(PROFESSIONS_TRACK_RECIPE)
+					</OnLoad>
+					<OnShow>
+						self:SetHitRectInsets(0, -(5 + self.text:GetStringWidth()), -4, -4)
+						self:SetPoint("TOPRIGHT", -(10 + self.text:GetStringWidth()), -6)
+					</OnShow>
+					<OnClick>
+						self:GetParent():OnTrackRecipeClicked(button)
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<Frame name="$parentReagents" parentKey="Reagents">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentOutputIcon" relativePoint="BOTTOMLEFT" x="0" y="-40"/>
+					<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<FontString parentKey="Label" inherits="GameFontNormalSmall" justifyH="LEFT" text="PROFESSIONS_REAGENT_CONTAINER_LABEL">
+							<Size x="180" y="20"/>
+							<Anchors>
+								<Anchor point="TOPLEFT"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ProfessionsRecipeSchematicFormMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="InspectRecipeFrame" inherits="PortraitFrameTemplateNoCloseButton" parent="UIParent" toplevel="true" hidden="true" enableMouse="true">
+		<Size x="404" y="496"/>
+		<Frames>
+			<Button name="$parentCloseButton" parentKey="CloseButton" inherits="UIPanelCloseButtonDefaultAnchors"/>
+			<Frame name="$parentSchematicForm" parentKey="SchematicForm" inherits="ProfessionsRecipeSchematicFormTemplate">
+				<Size x="395" y="391"/>
+				<Attributes>
+					<Attribute name="layoutType" value="InsetFrameTemplate" type="string"/>
+				</Attributes>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="5" y="-72"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BORDER">
+						<Texture parentKey="Background" setAllPoints="true" file="Interface/TradeSkillFrame/Tradeskills" vertTile="true" horizTile="true"/>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Frame parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, InspectRecipeMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+		</Scripts>
+	</Frame>
+</Ui>

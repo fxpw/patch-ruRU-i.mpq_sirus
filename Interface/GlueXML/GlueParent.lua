@@ -306,11 +306,6 @@ function GlueParent_OnLoad(self)
 	self:RegisterEvent("GLOBAL_MOUSE_UP");
 
 	OnDisplaySizeChanged(self);
-
-	-- Reset CVar
-	SetSafeCVar("originalFaction", "")
-	SetSafeCVar("factionOverride", "")
-	SetSafeCVar("showToolsUI", "return {}")
 end
 
 local function IsGlobalMouseEventHandled(buttonID, event)
@@ -685,9 +680,9 @@ function GlueEasingAnimMixin:PlayAnim(isRevers, finishCallback, resetAnimation, 
 	end
 
 	if isRevers then
-		self:SetPosition(C_inOutSine(self.elapsed, self.endPoint or 0, self.startPoint or 1, self.duration), self.elapsed / self.duration)
+		self:SetPosition(EasingUtil.InOutSine2(self.elapsed, self.endPoint or 0, self.startPoint or 1, self.duration), self.elapsed / self.duration)
 	else
-		self:SetPosition(C_inOutSine(self.elapsed, self.startPoint or 1, self.endPoint or 0, self.duration), self.elapsed / self.duration)
+		self:SetPosition(EasingUtil.InOutSine2(self.elapsed, self.startPoint or 1, self.endPoint or 0, self.duration), self.elapsed / self.duration)
 	end
 
 	self:SetScript("OnUpdate", self.OnUpdate)
@@ -716,9 +711,9 @@ function GlueEasingAnimMixin:OnUpdate(elapsed)
 			self:SetPosition()
 		else
 			if self.isRevers then
-				self:SetPosition(C_inOutSine(self.elapsed, self.endPoint or 0, self.startPoint or 1, self.duration), self.elapsed / self.duration)
+				self:SetPosition(EasingUtil.InOutSine2(self.elapsed, self.endPoint or 0, self.startPoint or 1, self.duration), self.elapsed / self.duration)
 			else
-				self:SetPosition(C_inOutSine(self.elapsed, self.startPoint or 1, self.endPoint or 0, self.duration), self.elapsed / self.duration)
+				self:SetPosition(EasingUtil.InOutSine2(self.elapsed, self.startPoint or 1, self.endPoint or 0, self.duration), self.elapsed / self.duration)
 			end
 		end
 	end

@@ -144,9 +144,11 @@ function PKBT_ButtonMixin:ShowSpinner()
 		self.__spinner:SetPoint("CENTER", 0, 0)
 	end
 
-	local spinnderHeight = self:GetHeight() - 10
-	self.__spinner:SetSize(spinnderHeight, spinnderHeight)
+	local height = self:GetHeight() - 10
+	self.__spinner:SetSize(height, height)
 	self.__spinner:Show()
+
+	self:HideCountdown()
 
 	if self.ButtonText then
 		self.ButtonText:Hide()
@@ -160,6 +162,52 @@ function PKBT_ButtonMixin:HideSpinner()
 	if self.ButtonText then
 		self.ButtonText:Show()
 	end
+end
+
+function PKBT_ButtonMixin:IsSpinnerShown()
+	if self.__spinner and self.__spinner:IsShown() then
+		return true
+	end
+	return false
+end
+
+function PKBT_ButtonMixin:ShowCountdown(countdownSeconds)
+	if not self.__countdown then
+		self.__countdown = CreateFrame("Frame", "$parentCountdown", self, "PKBT_LoadingCountdownTemplate")
+		self.__countdown:SetPoint("CENTER", 0, 0)
+	end
+
+	local height = self:GetHeight() - 10
+	self.__countdown:SetSize(height, height)
+	self.__countdown:Show()
+	self.__countdown:SetTimeLeft(countdownSeconds or 5)
+
+	self:HideSpinner()
+
+	if self.ButtonText then
+		self.ButtonText:Hide()
+	end
+end
+
+function PKBT_ButtonMixin:HideCountdown()
+	if self.__countdown then
+		self.__countdown:Hide()
+		self.__countdown:CancelCountdown()
+	end
+	if self.ButtonText then
+		self.ButtonText:Show()
+	end
+end
+
+function PKBT_ButtonMixin:IsCountdownShown()
+	if self.__countdown and self.__countdown:IsShown() then
+		return true
+	end
+	return false
+end
+
+function PKBT_ButtonMixin:OnCountdownEnd(countdownFrame, isFinished)
+	self:HideCountdown()
 end
 
 PKBT_ButtonGlowMixin = {}
@@ -512,7 +560,7 @@ function PKBT_ButtonMultiWidgetMixin:UpdateHolderRect()
 		holderWidth = self:UpdateWidgetPosition(obj, holderWidth)
 	end
 
-	local spinnerShown = self.__spinner and self.__spinner:IsShown()
+	local spinnerShown = self:IsSpinnerShown()
 	if spinnerShown then
 		local spinnderHeight = self:GetHeight() - 10
 		self.__spinner:SetSize(spinnderHeight, spinnderHeight)
@@ -520,7 +568,7 @@ function PKBT_ButtonMultiWidgetMixin:UpdateHolderRect()
 
 	if holderWidth ~= 0 then
 		self.WidgetHolder:SetWidth(holderWidth)
-		self.WidgetHolder:SetShown(not spinnerShown)
+		self.WidgetHolder:SetShown(not spinnerShown and not self:IsCountdownShown())
 	else
 		self.WidgetHolder:Hide()
 	end
@@ -683,6 +731,18 @@ end
 function PKBT_ButtonMultiWidgetMixin:HideSpinner()
 	PKBT_ButtonMixin.HideSpinner(self)
 	if self.__spinner then
+		self.WidgetHolder:Show()
+	end
+end
+
+function PKBT_ButtonMultiWidgetMixin:ShowCountdown(countdownSeconds)
+	PKBT_ButtonMixin.ShowCountdown(self, countdownSeconds)
+	self.WidgetHolder:Hide()
+end
+
+function PKBT_ButtonMultiWidgetMixin:HideCountdown()
+	PKBT_ButtonMixin.HideCountdown(self)
+	if self.__countdown then
 		self.WidgetHolder:Show()
 	end
 end
@@ -1323,7 +1383,7 @@ function PKBT_ButtonMultiWidgetPriceMixin:SetPrice(price, originalPrice, currenc
 		self.Price:Hide()
 	else
 		self.Price:Show()
-		self:CheckBalance()
+		self:CheckBalance(true)
 	end
 
 	self.__dirty = true
@@ -1337,7 +1397,7 @@ function PKBT_ButtonMultiWidgetPriceMixin:HasDiscount()
 	return self.Price:HasDiscount()
 end
 
-function PKBT_ButtonMultiWidgetPriceMixin:CheckBalance()
+function PKBT_ButtonMultiWidgetPriceMixin:CheckBalance(skipButtonUpdate)
 	if self.Price.currencyType and self.Price.value then
 		local balance = C_StorePublic and C_StorePublic.GetBalance(self.Price.currencyType) or 0
 
@@ -1360,6 +1420,10 @@ function PKBT_ButtonMultiWidgetPriceMixin:CheckBalance()
 	end
 
 	self.Price:SetPriceDesaturated(self:IsEnabled() ~= 1)
+
+	if not skipButtonUpdate then
+		self:UpdateButton()
+	end
 end
 
 function PKBT_ButtonMultiWidgetPriceMixin:SetAllowReplenishment(state, showIcon)
@@ -2622,6 +2686,23 @@ function PKBT_CountdownThrottledBaseMixin:OnUpdate(elapsed)
 	end
 end
 
+PKBT_LoadingCountdown = CreateFromMixins(PKBT_OwnerMixin, PKBT_CountdownThrottledBaseMixin)
+
+function PKBT_LoadingCountdown:OnCountdownUpdate(timeLeft, isFinished)
+	if timeLeft > 0 then
+		self.Text:SetText(timeLeft)
+		self.Text:Show()
+	else
+		self.Text:SetText(0)
+		self.Text:Hide()
+
+		local owner = self:GetOwner()
+		if owner and type(owner.OnCountdownEnd) == "function" then
+			owner:OnCountdownEnd(self, isFinished)
+		end
+	end
+end
+
 PKBT_ItemIconMixin = {}
 
 function PKBT_ItemIconMixin:OnLoad()
@@ -2743,13 +2824,36 @@ function PKBT_MagnifierCheckButtonMixin:OnLoad()
 end
 
 local TRANSMOG_CREATURE_ID = 413
+local ALLOW_NON_PLAYER_UNITS = false
 local ModelLoadHandler = CreateFrame("Frame")
 if not IsOnGlueScreen() then
+	local IsItemDataCachedByID = IsItemDataCachedByID
+	local RequestLoadCreatureByID = RequestLoadCreatureByID
+
 	local TOOLTIP = CreateFrame("GameTooltip")
 	TOOLTIP:AddFontStrings(TOOLTIP:CreateFontString(), TOOLTIP:CreateFontString())
 
+	local CACHE_REQUESTS = {}
+	local CACHE_REQUEST_OBJ = {}
+	local CACHE_BLACKLIST = {}
+
 	ModelLoadHandler.modelQueue = {}
 	ModelLoadHandler:Hide()
+	ModelLoadHandler:RegisterEvent("CREATURE_DATA_LOAD_RESULT")
+	ModelLoadHandler:SetScript("OnEvent", function(self, event, ...)
+		if event == "CREATURE_DATA_LOAD_RESULT" then
+			local creatureID, success = ...
+
+			if not success then
+				CACHE_BLACKLIST[creatureID] = true
+			end
+
+			if CACHE_REQUESTS[creatureID] then
+				self:HandleCacheCallbacks(creatureID, success)
+				CACHE_REQUESTS[creatureID] = nil
+			end
+		end
+	end)
 	ModelLoadHandler:SetScript("OnUpdate", function(self, elapsed)
 		local index = 1
 		local queueLen = #self.modelQueue
@@ -2791,6 +2895,43 @@ if not IsOnGlueScreen() then
 		end
 	end)
 
+	function ModelLoadHandler:HandleCacheCallbacks(creatureID, success)
+		local cacheRequests = CACHE_REQUESTS[creatureID]
+		if cacheRequests then
+			for index, cacheRequest in ipairs(cacheRequests) do
+				self:FireCacheCallback(cacheRequest, success)
+			end
+		end
+	end
+
+	function ModelLoadHandler:FireCacheCallback(cacheRequest, success)
+		self:UnqueueModel(cacheRequest)
+
+		local callback
+		if success then
+			callback = cacheRequest[4]
+		else
+			callback = cacheRequest[5]
+		end
+
+		if callback then
+			local _success, err = pcall(callback, cacheRequest[1], cacheRequest[2], cacheRequest[3])
+			if not _success then
+				geterrorhandler()(err)
+			end
+		end
+	end
+
+	function ModelLoadHandler:GetModelCacheCreatureID(modelType, modelID)
+		if modelType == Enum.ModelType.Creature then
+			return modelID
+		elseif modelType == Enum.ModelType.Illusion
+		or modelType == Enum.ModelType.ItemTransmog
+		then
+			return TRANSMOG_CREATURE_ID
+		end
+	end
+
 	function ModelLoadHandler:GetModelCacheHyperlink(modelType, modelID)
 		if modelType == Enum.ModelType.Creature then
 			return string.format("unit:0xF5300%05X000000", modelID)
@@ -2807,52 +2948,130 @@ if not IsOnGlueScreen() then
 	end
 
 	function ModelLoadHandler:IsInvalidOrCacheLoaded(modelType, modelID)
+		local creatureID = self:GetModelCacheCreatureID(modelType, modelID)
+		if creatureID then
+			return IsItemDataCachedByID(creatureID)
+		end
+
 		local link = self:GetModelCacheHyperlink(modelType, modelID)
 		if link then
 			TOOLTIP:SetOwner(WorldFrame, "ANCHOR_NONE")
 			TOOLTIP:SetHyperlink(link)
 			return TOOLTIP:IsShown() == 1
 		end
+
 		return true
 	end
 
 	function ModelLoadHandler:QueueModel(model, modelType, modelID, successCallback, errorCallback)
-		local found
-		for index, modelRequest in ipairs(self.modelQueue) do
-			if modelRequest[1] == model and (successCallback == nil or modelRequest[4] == successCallback) then
-				modelRequest[2] = modelType
-				modelRequest[3] = modelID
-				modelRequest[4] = successCallback
-				modelRequest[5] = errorCallback
-				found = true
-				break
+		local creatureID = self:GetModelCacheCreatureID(modelType, modelID)
+		if creatureID then
+			if CACHE_BLACKLIST[creatureID] then
+				return false
 			end
+
+			if IsItemDataCachedByID(creatureID) then
+				local success, err = pcall(successCallback, model, modelType, creatureID)
+				if not success then
+					geterrorhandler()(err)
+				end
+				return false
+			end
+
+			local cacheRequestObj = CACHE_REQUEST_OBJ[model]
+			if cacheRequestObj then
+				if cacheRequestObj[2] == modelType or cacheRequestObj[3] == modelID then
+					-- same model, update callbacks
+					cacheRequestObj[4] = successCallback
+					cacheRequestObj[5] = errorCallback
+				else
+					-- remove old request
+					if self:UnqueueModel(model) then
+						cacheRequestObj = nil
+					end
+				end
+			end
+
+			if not cacheRequestObj then
+				local cacheRequest = {model, modelType, modelID, successCallback, errorCallback}
+				CACHE_REQUEST_OBJ[model] = cacheRequest
+
+				if not CACHE_REQUESTS[creatureID] then
+					CACHE_REQUESTS[creatureID] = {cacheRequest}
+				else
+					table.insert(CACHE_REQUESTS[creatureID], cacheRequest)
+				end
+
+				RequestLoadCreatureByID(creatureID)
+			end
+
+			return true
 		end
-		if not found then
-			table.insert(self.modelQueue, {model, modelType, modelID, successCallback, errorCallback})
+
+		do
+			local found
+			for index, cacheRequest in ipairs(self.modelQueue) do
+				if cacheRequest[1] == model and (successCallback == nil or cacheRequest[4] == successCallback) then
+					cacheRequest[2] = modelType
+					cacheRequest[3] = modelID
+					cacheRequest[4] = successCallback
+					cacheRequest[5] = errorCallback
+					found = true
+					break
+				end
+			end
+
+			if not found then
+				table.insert(self.modelQueue, {model, modelType, modelID, successCallback, errorCallback})
+				self:Show()
+			end
+
+			return true
 		end
-		self:Show()
-		return true
+
+		return false
 	end
 
-	function ModelLoadHandler:UnqueueModel(model, successCallback)
-		local removed
-		for index, modelRequest in ipairs(self.modelQueue) do
-			if modelRequest[1] == model and (successCallback == nil or modelRequest[4] == successCallback) then
-				table.remove(self.modelQueue, index)
-				removed = true
-				break
+	function ModelLoadHandler:UnqueueModel(model)
+		local cacheRequest = CACHE_REQUEST_OBJ[model]
+		if cacheRequest then
+			local cacheRequestModelID = cacheRequest[3]
+			if CACHE_REQUESTS[cacheRequestModelID] then
+				local index = tIndexOf(CACHE_REQUESTS[cacheRequestModelID], cacheRequest)
+				if index then
+					table.remove(CACHE_REQUESTS[cacheRequestModelID], index)
+					if #CACHE_REQUESTS[cacheRequestModelID] == 0 then
+						CACHE_REQUESTS[cacheRequestModelID] = nil
+					end
+				end
 			end
+			CACHE_REQUEST_OBJ[model] = nil
+			return true
 		end
-		if removed and #self.modelQueue == 0 then
-			self:Hide()
+
+		do
+			local removed
+			for index, modelRequest in ipairs(self.modelQueue) do
+				if modelRequest[1] == model then
+					table.remove(self.modelQueue, index)
+					removed = true
+					break
+				end
+			end
+			if removed and #self.modelQueue == 0 then
+				self:Hide()
+			end
+			return removed
 		end
-		return removed
+
+		return false
 	end
 end
 
 local TRANSMOG_SLOT_ITEM = {110000, 110001, 110002, 110003, 110004}
 local ITEM_WEAPON_EQUIP_LOC_IDS = {[13] = true, [14] = true, [15] = true, [17] = true, [21] = true, [22] = true, [25] = true, [26] = true}
+local MODELFRAME_MAX_ZOOM = MODELFRAME_MAX_ZOOM or 0.7
+local MODELFRAME_MIN_ZOOM = MODELFRAME_MIN_ZOOM or 0.0
 
 PKBT_ModelMixin = {}
 
@@ -2870,8 +3089,10 @@ function PKBT_ModelMixin:OnEvent(event, ...)
 		local itemID, success = ...
 		if itemID == self.awaitItemDataID then
 			if success then
-				self.needsReload = true
-				self:UpdateModelPreset()
+				RunNextFrame(function()
+					self.needsReload = true
+					self:UpdateModelPreset()
+				end)
 			end
 			self:UnregisterCustomEvent(event)
 		end
@@ -2898,7 +3119,18 @@ function PKBT_ModelMixin:OnShow()
 end
 
 function PKBT_ModelMixin:OnHide()
-	self:DisablePortraitCamera()
+	local parent = self:GetParent()
+	local handler = parent.OnModelHide
+	if type(handler) == "function" then
+		local success, err = pcall(handler, parent, self.modelType, self.modelID)
+		if not success then
+			geterrorhandler()(err)
+		end
+	end
+
+	if not self.keepPortraitCamera then
+		self:DisablePortraitCamera()
+	end
 	self.needsReload = true
 	self:UnregisterEvent("DISPLAY_SIZE_CHANGED")
 end
@@ -2968,7 +3200,7 @@ function PKBT_ModelMixin:ResetModelData(preserveFacting, preservePosition)
 	end
 
 	self:UnregisterEvent("UNIT_MODEL_CHANGED")
-	self:UnregisterCustomEvent("ITEM_DATA_LOAD_RESULT")
+	self:UnregisterEvent("ITEM_DATA_LOAD_RESULT")
 	self.LoadingSpinner:Hide()
 end
 
@@ -3015,6 +3247,11 @@ function PKBT_ModelMixin:SetM2Model(model, facing, posOffsetX, posOffsetY, posOf
 end
 
 function PKBT_ModelMixin:SetUnitModel(unit, facing, posOffsetX, posOffsetY, posOffsetZ)
+	if not ALLOW_NON_PLAYER_UNITS and not UnitIsUnit("player", unit) then
+		error(string.format("bad argument #1 to 'model:SetUnitModel(unit, ...)' (only 'player' unit token supported)"), 2)
+		return
+	end
+
 	local modelType = self.modelType
 	self:ResetFull()
 	self.modelType = Enum.ModelType.Unit
@@ -3176,6 +3413,7 @@ function PKBT_ModelMixin:RestorePreservedPosition()
 		self.basePositionOverrideX = self.preservedBasePositionOverrideX
 		self.basePositionOverrideY = self.preservedBasePositionOverrideY
 		self.basePositionOverrideZ = self.preservedBasePositionOverrideZ
+		self:FirePortraitCameraCallback()
 	end
 end
 
@@ -3190,6 +3428,78 @@ function PKBT_ModelMixin:HasPreservedPosition()
 	return not not self.preservedPosition
 end
 
+function PKBT_ModelMixin:GetCameraSettings()
+	if not self.modelType or not self.modelLoaded then
+		return {}
+	end
+
+	local posX, posY, posZ = self:GetPosition()
+	local facing = self:GetFacing()
+
+	return {
+		modelType = self.modelType,
+		posX = posX, posY = posY, posZ = posZ,
+		facing = facing,
+		undress = self.undress,
+		portraitCamera = self.portraitCamera,
+		freezeSequence = self.freezeSequence,
+		basePositionOverrideX = self.basePositionOverrideX,
+		basePositionOverrideY = self.basePositionOverrideY,
+		basePositionOverrideZ = self.basePositionOverrideZ,
+		preservedBasePositionOverrideX = self.preservedBasePositionOverrideX,
+		preservedBasePositionOverrideY = self.preservedBasePositionOverrideY,
+		preservedBasePositionOverrideZ = self.preservedBasePositionOverrideZ,
+		maxZoom = self.maxZoom,
+		minZoom = self.minZoom,
+		zoomLevel = self.zoomLevel,
+		cameraX = self.cameraX,
+		cameraY = self.cameraY,
+		cameraZ = self.cameraZ,
+	}
+end
+
+function PKBT_ModelMixin:SetCameraSettings(cameraSettings)
+	assert(type(cameraSettings) == "table")
+
+	if not self.modelType or self.modelType ~= cameraSettings.modelType then
+		return false
+	end
+
+	self.rotation = cameraSettings.facing or self.rotation or 0
+	self.maxZoom = cameraSettings.maxZoom or self.maxZoom or MODELFRAME_MAX_ZOOM or 0.7
+	self.minZoom = cameraSettings.minZoom or self.minZoom or MODELFRAME_MIN_ZOOM or 0
+	self.zoomLevel = cameraSettings.zoomLevel or self.zoomLevel or self.minZoom
+	self.cameraX = cameraSettings.cameraX
+	self.cameraY = cameraSettings.cameraY
+	self.cameraZ = cameraSettings.cameraZ
+
+	self.preservedFacing = self.rotation
+	self.preservedPosition = {cameraSettings.posX, cameraSettings.posY, cameraSettings.posZ}
+	self.preservedPortraitCamera = cameraSettings.portraitCamera
+	self.preservedFreezeSequence = cameraSettings.freezeSequence
+	self.basePositionOverrideX = cameraSettings.basePositionOverrideX
+	self.basePositionOverrideY = cameraSettings.basePositionOverrideY
+	self.basePositionOverrideZ = cameraSettings.basePositionOverrideZ
+	self.preservedBasePositionOverrideX = cameraSettings.preservedBasePositionOverrideX
+	self.preservedBasePositionOverrideY = cameraSettings.preservedBasePositionOverrideY
+	self.preservedBasePositionOverrideZ = cameraSettings.preservedBasePositionOverrideZ
+
+	self.undress = cameraSettings.undress
+	self.portraitCamera = cameraSettings.portraitCamera
+	self.freezeSequence = cameraSettings.freezeSequence
+
+	if not self.needsReload then
+		self.needsReload = true
+		if self:IsVisible() then
+			self:UpdateModelPreset()
+		end
+	end
+	self:FirePlayerEquipmentCallback()
+	self:FirePortraitCameraCallback()
+
+	return true
+end
+
 function PKBT_ModelMixin:TogglePlayerEquipment(state)
 	if self.modelType == Enum.ModelType.Item
 	or (self.modelType == Enum.ModelType.Illusion and not self.portraitCamera)
@@ -3201,6 +3511,16 @@ function PKBT_ModelMixin:TogglePlayerEquipment(state)
 			self:PreserveFacing()
 			self:PreservePosition()
 			self:UpdateModelPreset()
+			self:FirePlayerEquipmentCallback()
+		end
+	end
+end
+
+function PKBT_ModelMixin:FirePlayerEquipmentCallback()
+	if type(self.OnPlayerEquipmentToggle) == "function" then
+		local success, err = pcall(self.OnPlayerEquipmentToggle, self, not not self.undress)
+		if not success then
+			geterrorhandler()(err)
 		end
 	end
 end
@@ -3224,8 +3544,8 @@ function PKBT_ModelMixin:DisablePortraitCamera()
 			self:ResetBasePositionOverride()
 
 			self.rotation = 0
-			self.maxZoom = -(self.minZoom)
 			self.minZoom = 0
+			self.maxZoom = self.zoomMaxBase or MODELFRAME_MAX_ZOOM
 			self.zoomLevel = self.minZoom
 
 			self:SetFacing(0)
@@ -3240,11 +3560,8 @@ function PKBT_ModelMixin:DisablePortraitCamera()
 			fireCallback = true
 		end
 
-		if fireCallback and type(self.OnPortraitCameraToggle) == "function" then
-			local success, err = pcall(self.OnPortraitCameraToggle, self, not not self.portraitCamera)
-			if not success then
-				geterrorhandler()(err)
-			end
+		if fireCallback then
+			self:FirePortraitCameraCallback()
 		end
 	end
 end
@@ -3285,7 +3602,7 @@ function PKBT_ModelMixin:TogglePortraitCamera(state)
 					Model_ApplyUICamera(self, cameraID, nil, nil, nil)
 
 					self.rotation = self:GetFacing()
-					self.minZoom = -(self.maxZoom)
+					self.minZoom = -(self.zoomMaxBase or MODELFRAME_MAX_ZOOM)
 					self.maxZoom = 0
 					self.zoomLevel = self.maxZoom
 
@@ -3293,12 +3610,7 @@ function PKBT_ModelMixin:TogglePortraitCamera(state)
 					self:PreserveFacing()
 					self:PreservePosition()
 
-					if type(self.OnPortraitCameraToggle) == "function" then
-						local success, err = pcall(self.OnPortraitCameraToggle, self, not not self.portraitCamera)
-						if not success then
-							geterrorhandler()(err)
-						end
-					end
+					self:FirePortraitCameraCallback()
 				else
 					self:DisablePortraitCamera()
 				end
@@ -3312,14 +3624,17 @@ function PKBT_ModelMixin:TogglePortraitCamera(state)
 				self.rotation = 0
 				self.needsReload = true
 				self:UpdateModelPreset()
-
-				if type(self.OnPortraitCameraToggle) == "function" then
-					local success, err = pcall(self.OnPortraitCameraToggle, self, not not self.portraitCamera)
-					if not success then
-						geterrorhandler()(err)
-					end
-				end
+				self:FirePortraitCameraCallback()
 			end
+		end
+	end
+end
+
+function PKBT_ModelMixin:FirePortraitCameraCallback()
+	if type(self.OnPortraitCameraToggle) == "function" then
+		local success, err = pcall(self.OnPortraitCameraToggle, self, not not self.portraitCamera)
+		if not success then
+			geterrorhandler()(err)
 		end
 	end
 end
@@ -3332,6 +3647,19 @@ function PKBT_ModelMixin:IsPortraitCamera()
 	then
 		return self.portraitCamera and true or false
 	end
+end
+
+function PKBT_ModelMixin:SetKeepPortraitCamera(state)
+	self.keepPortraitCamera = not not state
+end
+
+function PKBT_ModelMixin:GetKeepPortraitCamera()
+	return self.keepPortraitCamera
+end
+
+function PKBT_ModelMixin:SetZoomLimits(zoomMax, zoomMin)
+	self.zoomMaxBase = zoomMax
+	self.zoomMinBase = zoomMin
 end
 
 local function GetBestIllusionWeaponAppearance(...)
@@ -3349,7 +3677,7 @@ end
 local function GetIllusionInfoByEntry(entry, baseItemOverrideID)
 	local _, enchantID = C_TransmogCollection.GetIllusionInfoByItemID(entry)
 	if enchantID then
-		local itemID = GetBestIllusionWeaponAppearance(baseItemOverrideID, GetInventoryTransmogID("player", 16), GetInventoryItemID("player", 16))
+		local itemID = GetBestIllusionWeaponAppearance(baseItemOverrideID, C_Transmog.GetInventoryTransmogInfo("player", 16), GetInventoryItemID("player", 16))
 		if not itemID then
 			itemID = C_TransmogCollection.GetFallbackWeaponAppearance()
 		end
@@ -3457,8 +3785,8 @@ function PKBT_ModelMixin:UpdateModelPreset()
 			else
 				if not C_Item.IsItemInfoLoaded(dressUpLink) and self.awaitItemDataID ~= itemID then
 					self.awaitItemDataID = itemID
-					self:RegisterCustomEvent("ITEM_DATA_LOAD_RESULT")
-					C_Item.RequestServerCache(dressUpLink)
+					self:RegisterEvent("ITEM_DATA_LOAD_RESULT")
+					C_Item.RequestServerCache(itemID)
 				end
 
 				if self:HasPreservedPosition() then
@@ -3610,6 +3938,7 @@ function PKBT_DressUpBaseMixin:OnLoad()
 		self.Overlay.MouseInstruction.MousePanning,
 	}
 
+	self.Model:SetZoomLimits(MODELFRAME_MAX_ZOOM * 2, MODELFRAME_MIN_ZOOM)
 	SharedXML_Model_OnLoad(self.Model, MODELFRAME_MAX_ZOOM * 2, MODELFRAME_MIN_ZOOM, 0)
 end
 
@@ -3719,6 +4048,14 @@ end
 
 function PKBT_DressUpBaseMixin:IsPortraitCamera()
 	return self.Model:IsPortraitCamera()
+end
+
+function PKBT_DressUpBaseMixin:SetKeepPortraitCamera(state)
+	self.Model:SetKeepPortraitCamera(state)
+end
+
+function PKBT_DressUpBaseMixin:GetKeepPortraitCamera()
+	return self.Model:GetKeepPortraitCamera()
 end
 
 function PKBT_DressUpBaseMixin:UpdatePortraitCameraState()

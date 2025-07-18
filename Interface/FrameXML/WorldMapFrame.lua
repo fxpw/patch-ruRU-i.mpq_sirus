@@ -143,7 +143,7 @@ function GetBattlefieldVehicleInfo( index )
 		if orbID then
 			orbID = tonumber(orbID)
 
-			local orbData = C_CacheInstance:Get("ASMSG_BG_KT_ORB_STATE", {})
+			local orbData = C_GlobalStorage.GetVar("ASMSG_BG_KT_ORB_STATE")
 
 			if orbData and orbData[orbID] then
 				factionID = SERVER_FACTION_TO_GAME_FACTION[orbData[orbID]]
@@ -155,8 +155,8 @@ function GetBattlefieldVehicleInfo( index )
 			local vehicleKey = unitName
 
 			if vehicleKey then
-				local vehicleInfo = C_CacheInstance:Get("ASMSG_BG_SM_CART_STATES", {})
-				local customVehicleType = vehicleInfo[vehicleKey] or VEHICLE_CUSTOM_INFO[vehicleKey]
+				local vehicleInfo = C_GlobalStorage.GetVar("ASMSG_BG_SM_CART_STATES", {})
+				local customVehicleType = vehicleInfo and vehicleInfo[vehicleKey] or VEHICLE_CUSTOM_INFO[vehicleKey]
 
 				if customVehicleType then
 					unitName 	= vehicleKey
@@ -238,7 +238,6 @@ function WorldMapFrame_OnLoad(self)
 	WorldMapQuestDetailScrollChildFrame:SetScale(0.9);
 	WorldMapQuestRewardScrollChildFrame:SetScale(0.9);
 	WorldMapFrame.numQuests = 0;
-	WatchFrame.showObjectives = WorldMapQuestShowObjectives:GetChecked();
 	WorldMapPOIFrame.allowBlobTooltip = true;
 	WorldMapQuestDetailScrollFrame.scrollBarHideable = true;
 	WorldMapQuestRewardScrollFrame.scrollBarHideable = true;
@@ -250,7 +249,7 @@ function WorldMapFrame_OnShow(self)
 	if ( WORLDMAP_SETTINGS.size ~= WORLDMAP_WINDOWED_SIZE ) then
 		SetupFullscreenScale(self);
 		WorldMap_LoadTextures();
-		if ( not WatchFrame.showObjectives and WORLDMAP_SETTINGS.size ~= WORLDMAP_FULLMAP_SIZE ) then
+		if ( not ObjectiveTrackerManager:CanShowPOIs(QuestObjectiveTracker) and WORLDMAP_SETTINGS.size ~= WORLDMAP_FULLMAP_SIZE ) then
 			WorldMapFrame_SetFullMapView();
 		end
 	end
@@ -290,8 +289,8 @@ function WorldMapFrame_OnEvent(self, event, ...)
 
 		local _, instanceType = IsInInstance()
 		if instanceType == "none" then
-			C_CacheInstance:Set("ASMSG_UPDATE_BATTLEFIELD_FLAG1", nil)
-			C_CacheInstance:Set("ASMSG_UPDATE_BATTLEFIELD_FLAG2", nil)
+			C_GlobalStorage.SetVar("ASMSG_UPDATE_BATTLEFIELD_FLAG1", nil)
+			C_GlobalStorage.SetVar("ASMSG_UPDATE_BATTLEFIELD_FLAG2", nil)
 		end
 	elseif ( event == "WORLD_MAP_UPDATE" ) then
 		if ( not self.blockWorldMapUpdate and self:IsShown() ) then
@@ -317,7 +316,7 @@ function WorldMapFrame_OnEvent(self, event, ...)
 		end
 	elseif ( event == "DISPLAY_SIZE_CHANGED" ) then
 		WorldMapQuestShowObjectives_AdjustPosition();
-		if ( WatchFrame.showObjectives and self:IsShown() ) then
+		if ( ObjectiveTrackerManager:CanShowPOIs(QuestObjectiveTracker) and self:IsShown() ) then
 			WorldMapFrame_UpdateQuests();
 		end
 	elseif ( ( event == "QUEST_LOG_UPDATE" or event == "QUEST_POI_UPDATE" ) and self:IsShown() ) then
@@ -1287,7 +1286,7 @@ function WorldMapButton_OnUpdate(self, elapsed)
 			flagY = -flagY * WorldMapDetailFrame:GetHeight();
 			flagFrame:SetPoint("CENTER", "WorldMapDetailFrame", "TOPLEFT", flagX, flagY);
 
-			local factionOverrideID = C_CacheInstance:Get("ASMSG_UPDATE_BATTLEFIELD_FLAG"..i)
+			local factionOverrideID = C_GlobalStorage.GetVar("ASMSG_UPDATE_BATTLEFIELD_FLAG"..i)
 			if factionOverrideID then
 				local factionName = factionOverrideID and SERVER_PLAYER_FACTION_GROUP[factionOverrideID]
 				flagToken = factionName.."Flag"
@@ -1862,14 +1861,13 @@ function WorldMapFrame_ResetFrameLevels()
 end
 
 function WorldMapQuestShowObjectives_Toggle()
+	SetCVar("questPOI", WorldMapQuestShowObjectives:GetChecked(), "questPOI");
 	if ( WorldMapQuestShowObjectives:GetChecked() ) then
-		WatchFrame.showObjectives = true;
 		QuestLogFrameShowMapButton:Show();
 	else
-		WatchFrame.showObjectives = nil;
-		WatchFrame_Update();
 		QuestLogFrameShowMapButton:Hide();
 	end
+	QuestObjectiveTracker:MarkDirty()
 end
 
 function WorldMapQuestShowObjectives_AdjustPosition()
@@ -1962,7 +1960,7 @@ function WorldMapFrame_UpdateMap(questId)
 
 	WorldMapFrame_SetMapName();
 	EncounterJournal_AddMapButtons()
-	if ( WatchFrame.showObjectives ) then
+	if ( ObjectiveTrackerManager:CanShowPOIs(QuestObjectiveTracker) ) then
 		WorldMapFrame_DisplayQuests(questId);
 	end
 end
@@ -2128,7 +2126,7 @@ function WorldMapFrame_SelectQuestFrame(questFrame)
 		ScrollFrame_OnScrollRangeChanged(WorldMapQuestRewardScrollFrame);
 	else
 		-- need to select the appropriate poi in the objectives tracker
-		QuestPOI_SelectButtonByQuestId("WatchFrameLines", questFrame.questId, true);
+		QuestPOI_SelectButtonByQuestId("QuestObjectiveTrackerContentsFrame", questFrame.questId, true);
 	end
 	-- track quest checkbark
 	WorldMapTrackQuest:SetChecked(IsQuestWatched(questFrame.questLogIndex));
@@ -2664,7 +2662,7 @@ function WorldMapTrackQuest_Toggle(isChecked)
 		LOCAL_MAP_QUESTS[WORLDMAP_SETTINGS.selectedQuestId] = nil;
 		RemoveQuestWatch(questIndex);
 	end
-	WatchFrame_Update();
+	QuestObjectiveTracker:MarkDirty()
 	WorldMapFrame_DisplayQuests(WORLDMAP_SETTINGS.selectedQuestId);
 end
 
@@ -2789,12 +2787,15 @@ function EventHandler:ASMSG_BG_SM_TRACK_STATES( msg )
 end
 
 function EventHandler:ASMSG_BG_SM_CART_STATES( msg )
-	local splitData = C_Split(msg, ":")
+	local vehicleKey, vahicleType = string.split(":", msg)
+	vehicleKey = tonumber(vehicleKey)
+	vahicleType = tonumber(vahicleType)
 
-	local vehicleKey 	= tonumber(splitData[1])
-	local vahicleType 	= tonumber(splitData[2])
-
-	local vehicleInfo = C_CacheInstance:Get("ASMSG_BG_SM_CART_STATES", {})
+	local vehicleInfo = C_GlobalStorage.GetVar("ASMSG_BG_SM_CART_STATES")
+	if not vehicleInfo then
+		vehicleInfo = {}
+		C_GlobalStorage.SetVar("ASMSG_BG_SM_CART_STATES", vehicleInfo)
+	end
 
 	if not vehicleInfo[vehicleKey] then
 		vehicleInfo[vehicleKey] = {}
@@ -2815,14 +2816,18 @@ end
 
 function EventHandler:ASMSG_UPDATE_BATTLEFIELD_FLAG(msg)
 	local carrierFactionID_1, carrierFactionID_2 = string.split(":", msg)
-	C_CacheInstance:Set("ASMSG_UPDATE_BATTLEFIELD_FLAG1", tonumber(carrierFactionID_1))
-	C_CacheInstance:Set("ASMSG_UPDATE_BATTLEFIELD_FLAG2", tonumber(carrierFactionID_2))
+	C_GlobalStorage.SetVar("ASMSG_UPDATE_BATTLEFIELD_FLAG1", tonumber(carrierFactionID_1))
+	C_GlobalStorage.SetVar("ASMSG_UPDATE_BATTLEFIELD_FLAG2", tonumber(carrierFactionID_2))
 	WorldStateTopCenterFrame_UpdateState(WorldStateTopCenterFrame)
 end
 
 function EventHandler:ASMSG_BG_KT_ORB_STATE(msg)
 	local orbID, factionID = string.split(",", msg)
 
-	local orbData = C_CacheInstance:Get("ASMSG_BG_KT_ORB_STATE", {})
+	local orbData = C_GlobalStorage.GetVar("ASMSG_BG_KT_ORB_STATE")
+	if not orbData then
+		orbData = {}
+		C_GlobalStorage.SetVar("ASMSG_BG_KT_ORB_STATE", orbData)
+	end
 	orbData[tonumber(orbID)] = tonumber(factionID)
 end

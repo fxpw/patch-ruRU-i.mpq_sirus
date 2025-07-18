@@ -126,6 +126,7 @@ function BattlePassMixin:OnLoad()
 	self:RegisterCustomEvent("BATTLEPASS_REWARD_ITEMS")
 	self:RegisterCustomEvent("BATTLEPASS_QUEST_LIST_UPDATE")
 	self:RegisterCustomEvent("BATTLEPASS_POINTS_UPDATE")
+	self:RegisterCustomEvent("BATTLEPASS_OPEN_QUEST")
 	self:RegisterCustomEvent("AJ_ACTION_BATTLE_PASS")
 
 	C_BattlePass.SetUIFrame(self)
@@ -173,18 +174,16 @@ function BattlePassMixin:OnEvent(event, ...)
 		end
 	elseif event == "BATTLEPASS_POINTS_UPDATE" then
 		self:UpdateTutorialTexts()
+	elseif event == "BATTLEPASS_OPEN_QUEST" then
+		local questID = ...
+		if C_BattlePass.IsActiveOrHasRewards() and not C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.BATTLEPASS_REWARDS) then
+			self:ShowQuestID(questID)
+		end
 	elseif event == "AJ_ACTION_BATTLE_PASS" then
 		local showQuestTab = ...
 		if C_BattlePass.IsActiveOrHasRewards() and not C_Hardcore.IsFeature1Available(Enum.Hardcore.Features1.BATTLEPASS_REWARDS) then
-			if not self:IsShown() then
-				ShowUIPanel(self)
-			end
-
 			local targetPage = showQuestTab and PAGE_TYPE.QUESTS or PAGE_TYPE.CARDS
-
-			if self:GetPage() ~= targetPage then
-				self:SetPage(targetPage)
-			end
+			self:ShowPage(targetPage)
 		end
 	end
 end
@@ -374,6 +373,19 @@ function BattlePassMixin:ShowCardWithItem(itemID)
 		end
 
 		cardsPage:ScrollToLevel(level)
+	end
+end
+
+function BattlePassMixin:ShowQuestID(questID)
+	if C_BattlePass.HasQuest(questID) then
+		self:ShowPage(PAGE_TYPE.QUESTS)
+
+		local questPage = self:GetPage(PAGE_TYPE.QUESTS)
+		if not questPage:IsShown() then
+			questPage:Show()
+		end
+
+		questPage:ScrollToQuestID(questID)
 	end
 end
 
@@ -722,9 +734,9 @@ function BattlePassMainPageMixin:OnUpdate(elapsed)
 	local alpha
 	local halfTime = self.animGlowTime / 2
 	if self.elapsed < halfTime then
-		alpha = inOutQuad(self.elapsed, 0, 1, halfTime)
+		alpha = EasingUtil.InOutQuad(self.elapsed, 0, 1, halfTime)
 	else
-		alpha = outQuad(self.elapsed - halfTime, 1, -1, halfTime)
+		alpha = EasingUtil.OutQuad(self.elapsed - halfTime, 1, -1, halfTime)
 	end
 
 	for _, card in ipairs(self.cards) do
@@ -1279,7 +1291,7 @@ function BattlePassQuestPageMixin:OnLoad()
 	self:RegisterEvent("PLAYER_MONEY")
 	self:RegisterCustomEvent("BATTLEPASS_QUEST_LIST_UPDATE")
 	self:RegisterCustomEvent("BATTLEPASS_QUEST_UPDATE")
-	self:RegisterCustomEvent("BATTLEPASS_QUEST_UPDATE_TEXT")
+	self:RegisterCustomEvent("BATTLEPASS_QUEST_DATA_UPDATE")
 	self:RegisterCustomEvent("BATTLEPASS_QUEST_ACTION_AWAIT")
 	self:RegisterCustomEvent("BATTLEPASS_QUEST_REPLACED")
 	self:RegisterCustomEvent("BATTLEPASS_QUEST_REPLACE_FAILED")
@@ -1287,6 +1299,7 @@ function BattlePassQuestPageMixin:OnLoad()
 	self:RegisterCustomEvent("BATTLEPASS_QUEST_CANCELED")
 	self:RegisterCustomEvent("BATTLEPASS_QUEST_DONE")
 	self:RegisterCustomEvent("BATTLEPASS_QUEST_REWARD_FAILED")
+	self:RegisterCustomEvent("BATTLEPASS_QUEST_TRACKED")
 end
 
 function BattlePassQuestPageMixin:OnEvent(event, ...)
@@ -1304,7 +1317,7 @@ function BattlePassQuestPageMixin:OnEvent(event, ...)
 	elseif event == "BATTLEPASS_QUEST_LIST_UPDATE" then
 		self:UpdateQuestHolders()
 	elseif event == "BATTLEPASS_QUEST_UPDATE"
-	or event == "BATTLEPASS_QUEST_UPDATE_TEXT"
+	or event == "BATTLEPASS_QUEST_DATA_UPDATE"
 	then
 		local questType, questIndex = ...
 
@@ -1312,7 +1325,7 @@ function BattlePassQuestPageMixin:OnEvent(event, ...)
 		if questHolder then
 			local questFrame = questHolder.questFrames[questIndex]
 			if questFrame and questFrame:IsShown() then
-				questHolder:UpdateQuest(questIndex, event == "BATTLEPASS_QUEST_UPDATE_TEXT")
+				questHolder:UpdateQuest(questIndex, event == "BATTLEPASS_QUEST_DATA_UPDATE")
 				return
 			end
 
@@ -1332,11 +1345,20 @@ function BattlePassQuestPageMixin:OnEvent(event, ...)
 		if questHolder then
 			questHolder:UpdateQuest(questIndex, nil, event == "BATTLEPASS_QUEST_REPLACED")
 		end
+	elseif event == "BATTLEPASS_QUEST_TRACKED" then
+		local questType, questIndex, tracked = ...
+		local questHolder = self.questHolders[questType]
+		if questHolder then
+			questHolder:UpdateQuestTracked(questIndex, tracked)
+		end
 	elseif event == "BATTLEPASS_QUEST_DONE"
 	or event == "BATTLEPASS_QUEST_CANCELED"
 	then
 		local questType, questIndex = ...
-		self.questHolders[questType]:UpdateQuests()
+		local questHolder = self.questHolders[questType]
+		if questHolder then
+			questHolder:UpdateQuests()
+		end
 	elseif event == "BATTLEPASS_QUEST_REWARD_FAILED" then
 		local questType, questIndex = ...
 
@@ -1402,6 +1424,35 @@ function BattlePassQuestPageMixin:UpdateQuestHolders()
 
 	self.ScrollFrame.ScrollChild:SetSize(self.ScrollFrame:GetWidth(), height)
 	self.ScrollFrame:UpdateScrollChildRect()
+end
+
+function BattlePassQuestPageMixin:ScrollToQuest(questType, questIndex)
+	local questHolder = self.questHolders[questType]
+	if questHolder then
+		local questFrame = questHolder.questFrames[questIndex]
+		if questFrame then
+			local scrollTop = self.ScrollFrame:GetTop()
+			local questCenterX, questCenterY = questFrame:GetCenter()
+			if scrollTop and questCenterY and self.ScrollFrame:GetVerticalScrollRange() ~= 0 then
+				local scrollValue = self.ScrollFrame:GetVerticalScroll()
+				local scrollHeight = self.ScrollFrame:GetHeight() / 2
+				local offset = scrollValue - (questCenterY - scrollTop + scrollHeight)
+				self.ScrollFrame.ScrollBar:SetValue(offset)
+				questFrame:PulseOnce()
+			else
+				RunNextFrame(function()
+					self:ScrollToQuest(questType, questIndex)
+				end)
+			end
+		end
+	end
+end
+
+function BattlePassQuestPageMixin:ScrollToQuestID(questID)
+	local questType, questIndex = C_BattlePass.GetQuestTypeAndIndex(questID)
+	if questType and questIndex then
+		self:ScrollToQuest(questType, questIndex)
+	end
 end
 
 BattlePassQuestHeaderMixin = {}
@@ -1523,7 +1574,14 @@ function BattlePassQuestHolderMixin:UpdateQuest(questIndex, isTextUpdate, wasRep
 
 	if not isTextUpdate then
 		questFrame:SetProgress(progressValue, progressMaxValue, isPercents, wasReplaced)
+		local isTracked = C_BattlePass.IsQuestTracked(self.api.questType, questIndex)
+		questFrame:SetTracked(isTracked)
 	end
+end
+
+function BattlePassQuestHolderMixin:UpdateQuestTracked(questIndex, isTracked)
+	local questFrame = self.questFrames[questIndex]
+	questFrame:SetTracked(isTracked)
 end
 
 function BattlePassQuestHolderMixin:MaskQuestsSeen()
@@ -1552,6 +1610,8 @@ function BattlePassQuestMixin:OnLoad()
 
 	self.ActionButton:SetFixedWidth(117)
 
+	self.TrackButton:SetHighlightAtlas("PKBT-BattlePass-Quest-Status-InProgress", true)
+
 	self.elapsed = 0
 	self.animGlowTime = 1
 	self.animHoldTime = 1
@@ -1567,7 +1627,7 @@ function BattlePassQuestMixin:OnUpdate(elapsed)
 	self.elapsed = self.elapsed + elapsed
 
 	if self.elapsed < self.animGlowTime then
-		self.NineSliceGlow:SetBorderAlpha(inOutQuad(self.elapsed, 0, 1, self.animGlowTime / 2))
+		self.NineSliceGlow:SetBorderAlpha(EasingUtil.InOutQuad(self.elapsed, 0, 1, self.animGlowTime / 2))
 	else
 		self.NineSliceGlow:SetBorderAlpha(0)
 
@@ -1586,10 +1646,7 @@ end
 
 function BattlePassQuestMixin:ToggleGlowAnim(state)
 	if state then
-		if self.Progress.StatusBar.Glow.AlphaAnim:IsPlaying() then
-			self.Progress.StatusBar.Glow.AlphaAnim:Stop()
-		end
-		self.Progress.StatusBar.Glow.AlphaAnim:Play()
+		self.Progress.StatusBar.Glow.AlphaAnim:Restart()
 		self.elapsed = 0
 		self:SetScript("OnUpdate", self.OnUpdate)
 		self.Progress.StatusBar.BarTexture:SetAtlas("PKBT-BattlePass-StatusBar-Texture-1")
@@ -1614,12 +1671,10 @@ function BattlePassQuestMixin:SetProgress(value, maxValue, isPercents, wasReplac
 
 	local isComplete = C_BattlePass.IsQuestComplete(self.questType, self:GetID())
 	local isAwaiting = C_BattlePass.IsAwaitingQuestAction(self.questType, self:GetID())
+	local canCancel = C_BattlePass.CanCancelQuest(self.questType, self:GetID())
 
 	if isComplete then
 		self.Progress.StatusBar.Value:SetText(BATTLEPASS_QUEST_COMPLETED)
---		self.Progress.Status:SetAtlas("PKBT-BattlePass-Quest-Status-Complete", true)
-	else
---		self.Progress.Status:SetAtlas("PKBT-BattlePass-Quest-Status-InProgress", true)
 	end
 
 	self.Progress.StatusBar:ToggleStatusBarAnimation(isComplete)
@@ -1627,13 +1682,26 @@ function BattlePassQuestMixin:SetProgress(value, maxValue, isPercents, wasReplac
 	self.Progress.StatusBar.Glow:SetShown(isComplete)
 	self:ToggleGlowAnim(isComplete)
 
-	self.CancelButton:SetShown(C_BattlePass.CanCancelQuest(self.questType, self:GetID()))
+	self.CancelButton:SetShown(canCancel)
 
 	if not isComplete and wasReplaced then
 		self:PulseOnce()
 	end
 
 	self:UpdateActionButton(isComplete, isAwaiting)
+end
+
+function BattlePassQuestMixin:SetTracked(isTracked)
+	if isTracked then
+		self.TrackButton:SetNormalAtlas("PKBT-BattlePass-Quest-Status-Complete", true)
+	else
+		self.TrackButton:SetNormalAtlas("PKBT-BattlePass-Quest-Status-InProgress", true)
+	end
+end
+
+function BattlePassQuestMixin:ToggleTrackedState()
+	local isTracked = C_BattlePass.IsQuestTracked(self.questType, self:GetID())
+	C_BattlePass.SetQuestTracked(self.questType, self:GetID(), not isTracked)
 end
 
 function BattlePassQuestMixin:UpdateActionButton(isComplete, isAwaiting)
@@ -1711,12 +1779,28 @@ function BattlePassQuestMixin:CancelClick(button)
 	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 end
 
+function BattlePassQuestMixin:OnTrackButtonEnter()
+	GameTooltip:SetOwner(self.TrackButton, "ANCHOR_RIGHT")
+	GameTooltip:AddLine(TRACK_QUEST)
+	GameTooltip:Show()
+end
+
+function BattlePassQuestMixin:OnTrackButtonLeave()
+	GameTooltip:Hide()
+end
+
+function BattlePassQuestMixin:OnTrackButtonClick(button)
+	self:ToggleTrackedState()
+end
+
 function BattlePassQuestMixin:OnClick(button)
-	if IsModifiedClick("CHATLINK") then
+	if IsModifiedClick("CHATLINK") and ChatEdit_GetActiveWindow() then
 		local link = C_BattlePass.GetQuestLink(self.questType, self:GetID())
 		if link then
 			ChatEdit_InsertLink(link)
 		end
+	elseif IsModifiedClick("QUESTWATCHTOGGLE") then
+		self:ToggleTrackedState()
 	end
 end
 
@@ -1826,6 +1910,11 @@ function BattlePassPurchasePremiumDialogMixin:OnLoad()
 	self.BodyText:SetWidth(self:GetWidth() - 230)
 
 	self.PurchaseButton:SetAllowReplenishment(C_StoreSecure.IsBonusReplenishmentAllowed(), true)
+	self.PurchaseButton:SetConfirmationShownTimerText(false)
+	self.PurchaseButton:SetConfirmationTimerDone(function()
+		self.PurchaseButton:HideCountdown()
+		self.PurchaseButton:CheckBalance()
+	end)
 	self.PurchaseButton:AddText(BATTLEPASS_PURCHASE_PREMIUM)
 
 	self:RegisterCustomEvent("BATTLEPASS_PRODUCT_LIST_UPDATE")
@@ -1858,6 +1947,12 @@ end
 function BattlePassPurchasePremiumDialogMixin:UpdatePrice()
 	local price, originalPrice, currencyType = C_BattlePass.GetPremiumPrice()
 	self.PurchaseButton:SetPrice(price, originalPrice, currencyType)
+
+	if self.PurchaseButton:IsEnabled() == 1 or self.PurchaseButton:IsCountdownShown() then
+		self.PurchaseButton:Disable()
+		self.PurchaseButton:ShowCountdown(C_StoreSecure.GetPurchaseDelayTime())
+		self.PurchaseButton:StartConfirmationTimer(false, C_StoreSecure.GetPurchaseDelayTime())
+	end
 end
 
 function BattlePassPurchasePremiumDialogMixin:PurchaseOnClick(button)
@@ -1871,9 +1966,11 @@ function BattlePassPurchasePremiumDialogMixin:PurchaseOnClick(button)
 		end
 	end
 
-	self:Hide()
-	C_BattlePass.PurchasePremium()
-	PlaySound(SOUNDKIT.UI_IG_STORE_CONFIRM_PURCHASE_BUTTON)
+	self.PurchaseButton:TakeConfirmationScreenshot(function(success)
+		self:Hide()
+		C_BattlePass.PurchasePremium()
+		PlaySound(SOUNDKIT.UI_IG_STORE_CONFIRM_PURCHASE_BUTTON)
+	end)
 end
 
 BattlePassPurchaseExperienceDialogMixin = CreateFromMixins(PKBT_DialogMixin)
@@ -1896,6 +1993,11 @@ function BattlePassPurchaseExperienceDialogMixin:OnLoad()
 	self.optionButtons = {}
 
 	self.PurchaseButton:SetAllowReplenishment(C_StoreSecure.IsBonusReplenishmentAllowed(), true)
+	self.PurchaseButton:SetConfirmationShownTimerText(false)
+	self.PurchaseButton:SetConfirmationTimerDone(function()
+		self.PurchaseButton:HideCountdown()
+		self.PurchaseButton:CheckBalance()
+	end)
 
 	self.OptionAmount:SetNumberNoScript(0)
 	self.OptionAmount.limit = 1000
@@ -1968,9 +2070,11 @@ function BattlePassPurchaseExperienceDialogMixin:PurchaseOnClick()
 		end
 	end
 
-	C_BattlePass.PurchaseExperience(self.selectedOptionIndex, self.OptionAmount:GetNumber())
-	self:Hide()
-	PlaySound(SOUNDKIT.UI_IG_STORE_CONFIRM_PURCHASE_BUTTON)
+	self.PurchaseButton:TakeConfirmationScreenshot(function(success)
+		C_BattlePass.PurchaseExperience(self.selectedOptionIndex, self.OptionAmount:GetNumber())
+		self:Hide()
+		PlaySound(SOUNDKIT.UI_IG_STORE_CONFIRM_PURCHASE_BUTTON)
+	end)
 end
 
 function BattlePassPurchaseExperienceDialogMixin:UpdateOptions()
@@ -2056,6 +2160,12 @@ function BattlePassPurchaseExperienceDialogMixin:Summery()
 
 		self.PurchaseButton:SetPrice(price, originalPrice, currencyType)
 		self.PurchaseButton:Show()
+
+		if self.PurchaseButton:IsEnabled() == 1 or self.PurchaseButton:IsCountdownShown() then
+			self.PurchaseButton:Disable()
+			self.PurchaseButton:ShowCountdown(C_StoreSecure.GetPurchaseDelayTime())
+			self.PurchaseButton:StartConfirmationTimer(false, C_StoreSecure.GetPurchaseDelayTime())
+		end
 
 		if currencyType == Enum.Store.CurrencyType.Bonus and C_StoreSecure.IsBonusReplenishmentAllowed() then
 			self.OptionAmount.IncrementButton:SetEnabled(amount < self.OptionAmount.limit)
@@ -2150,6 +2260,11 @@ function BattlePassPurchaseLevelExperienceDialogMixin:OnLoad()
 	self.optionButtons = {}
 
 	self.PurchaseButton:SetAllowReplenishment(C_StoreSecure.IsBonusReplenishmentAllowed(), true)
+	self.PurchaseButton:SetConfirmationShownTimerText(false)
+	self.PurchaseButton:SetConfirmationTimerDone(function()
+		self.PurchaseButton:HideCountdown()
+		self.PurchaseButton:CheckBalance()
+	end)
 
 	self:GetParent():RegisterDialogWidget(DIALOG_TYPE.PurchaseLevelExperience, self)
 end
@@ -2198,6 +2313,13 @@ function BattlePassPurchaseLevelExperienceDialogMixin:ShowLevelDialog(level)
 	end
 
 	self.PurchaseButton:SetPrice(price, originalPrice, currencyType)
+
+	if self.PurchaseButton:IsEnabled() == 1 or self.PurchaseButton:IsCountdownShown() then
+		self.PurchaseButton:Disable()
+		self.PurchaseButton:ShowCountdown(C_StoreSecure.GetPurchaseDelayTime())
+		self.PurchaseButton:StartConfirmationTimer(false, C_StoreSecure.GetPurchaseDelayTime())
+	end
+
 	self:Show()
 end
 
@@ -2213,9 +2335,11 @@ function BattlePassPurchaseLevelExperienceDialogMixin:PurchaseOnClick()
 		end
 	end
 
-	C_BattlePass.PurchaseExperienceOptionsForLevel(self.level)
-	self:Hide()
-	PlaySound(SOUNDKIT.UI_IG_STORE_CONFIRM_PURCHASE_BUTTON)
+	self.PurchaseButton:TakeConfirmationScreenshot(function(success)
+		C_BattlePass.PurchaseExperienceOptionsForLevel(self.level)
+		self:Hide()
+		PlaySound(SOUNDKIT.UI_IG_STORE_CONFIRM_PURCHASE_BUTTON)
+	end)
 end
 
 BattlePassInfoDialogMixin = CreateFromMixins(BattlePassDialogMixin)
@@ -2283,7 +2407,7 @@ function BattlePassItemRewardFrameMixin:OnUpdate(elapsed)
 	self.elapsed = self.elapsed + elapsed
 
 	if self.elapsed <= self.animInOutTime then
-		self:SetAlpha(outCubic(self.elapsed, 0, 1, self.animInOutTime))
+		self:SetAlpha(EasingUtil.OutCubic(self.elapsed, 0, 1, self.animInOutTime))
 	elseif self:IsMouseOver() then
 		self.elapsed = self.animInOutTime
 		self:SetAlpha(1)
@@ -2292,7 +2416,7 @@ function BattlePassItemRewardFrameMixin:OnUpdate(elapsed)
 		if self.elapsed <= outDelay then
 			self:SetAlpha(1)
 		elseif self.elapsed < outDelay + self.animInOutTime then
-			self:SetAlpha(linear(self.elapsed - outDelay, 1, -1, self.animInOutTime))
+			self:SetAlpha(EasingUtil.Linear(self.elapsed - outDelay, 1, -1, self.animInOutTime))
 		else
 			self:Hide()
 		end
@@ -2607,7 +2731,7 @@ end
 BattlePassSplashModelHolderMixin = {}
 
 function BattlePassSplashModelHolderMixin:OnLoad()
-	self.modelPool = CreateFramePool("Frame", self, "BattlePassSplashModelTemplate", function(framePool, frame)
+	self.modelPool = CreateFramePool("Button", self, "BattlePassSplashModelTemplate", function(framePool, frame)
 		frame.Model:ResetFull()
 		FramePool_HideAndClearAnchors(framePool, frame)
 	end)
@@ -2773,6 +2897,22 @@ end
 
 function BattlePassSplashModelMixin:OnLeave()
 	GameTooltip:Hide()
+end
+
+function BattlePassSplashModelMixin:OnClick(button)
+	if self.itemLink then
+		if IsModifiedClick("DRESSUP") then
+			DressUpItemLink(self.itemLink)
+		elseif IsModifiedClick("CHATLINK") then
+			local itemName, itemLink = GetItemInfo(self.itemLink)
+			if not itemLink then
+				itemLink = C_Item.GetItemLinkCache(self.itemLink)
+			end
+			if ChatEdit_InsertLink(itemLink) then
+				return true
+			end
+		end
+	end
 end
 
 function BattlePassSplashModelMixin:DressUpItemLink(link, facing, undress, posMultX, posMultY, posMultZ, baseItemOverrideID)

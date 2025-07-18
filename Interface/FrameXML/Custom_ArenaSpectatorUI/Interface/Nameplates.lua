@@ -4,226 +4,247 @@ ezSpectator_Nameplates.__index = ezSpectator_Nameplates
 function ezSpectator_Nameplates:Create(Parent)
     local self = {}
     setmetatable(self, ezSpectator_Nameplates)
-    
+
     self.Parent = Parent
-    
-    self.ChildrensChecked = -1
-    self.EventFrame = CreateFrame('Frame')
-    
-    self.EventFrame.Parent = self
-    self.EventFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
-    self.EventFrame:SetScript('OnEvent', self.EventHandler)
-    self.EventFrame:SetScript('OnUpdate', function(self)
-        if WorldFrame:GetNumChildren() ~= self.Parent.ChildrensChecked then
-            self.Parent.ChildrensChecked = WorldFrame:GetNumChildren()
-            self.Parent:ApplyHook(WorldFrame:GetChildren())
-        end
-    end)
+
+	self.lastChildern = 0
+	self.numChildren = 0
+	self.nameplates = {}
+
+	self.EventFrame = CreateFrame("Frame")
+	self.EventFrame:Hide()
+	self.EventFrame:SetScript("OnUpdate", function(this, elapsed)
+		self.numChildren = WorldFrame:GetNumChildren()
+		if self.lastChildern ~= self.numChildren then
+			self:FindNewNamePlates(WorldFrame:GetChildren())
+			self.lastChildern = self.numChildren
+		end
+	end)
 
     return self
 end
 
-
-
-function ezSpectator_Nameplates:EventHandler(Event)
-    if Event == 'PLAYER_ENTERING_WORLD' then
-        self.Parent.ChildrensChecked = -1
-    end
+function ezSpectator_Nameplates:SetScanEnabled(isEnabled)
+	self.EventFrame:SetShown(isEnabled)
+	self:ForceUpdate()
 end
 
-
-
-function ezSpectator_Nameplates:EncodeTexCoord(Texture)
-    local ULx, ULy, LLx, LLy, URx, URy, LRx, LRy = Texture:GetTexCoord()
-
-    Texture.OriginalTexCoord = {}
-    Texture.OriginalTexCoord.ULx = ULx
-    Texture.OriginalTexCoord.ULy = ULy
-    Texture.OriginalTexCoord.LLx = LLx
-    Texture.OriginalTexCoord.LLy = LLy
-    Texture.OriginalTexCoord.URx = URx
-    Texture.OriginalTexCoord.URy = URy
-    Texture.OriginalTexCoord.LRx = LRx
-    Texture.OriginalTexCoord.LRy = LRy
+function ezSpectator_Nameplates:ForceUpdate()
+	for nameplate in pairs(self.nameplates) do
+		self:UpdateNameplate(nameplate)
+	end
 end
 
-
-
-function ezSpectator_Nameplates:DecodeTexCoord(Texture)
-    return
-        Texture.OriginalTexCoord.ULx,
-        Texture.OriginalTexCoord.ULy,
-        Texture.OriginalTexCoord.LLx,
-        Texture.OriginalTexCoord.LLy,
-        Texture.OriginalTexCoord.URx,
-        Texture.OriginalTexCoord.URy,
-        Texture.OriginalTexCoord.LRx,
-        Texture.OriginalTexCoord.LRy
+function ezSpectator_Nameplates:FindNewNamePlates(...)
+	for i = self.lastChildern + 1, self.numChildren do
+		local frame = select(i, ...)
+		if not self.nameplates[frame]
+		and not frame.UnitFrame -- nameplate addons
+		then
+			local _, border = frame:GetRegions()
+			if border and border:GetObjectType() == "Texture" and border:GetTexture() == [[Interface\Tooltips\Nameplate-Border]] then
+				self:UpdateNameplate(frame)
+				self.nameplates[frame] = true
+			end
+		end
+	end
 end
 
-
-
---noinspection UnusedDef
-function ezSpectator_Nameplates:SaveOriginalNameplate(Healthbar, ThreatGlow, HealthBorder, CastBorder, CastUninterruptible, SpellIcon, HighlightTexture, NameText, LevelText, BossIcon, RaidIcon, MobIcon)
-    Healthbar.OriginalStatusBarTexture = Healthbar:GetStatusBarTexture():GetTexture()
-    Healthbar.CastbarObject.OriginalStatusBarTexture = Healthbar.CastbarObject:GetStatusBarTexture():GetTexture()
-    self:EncodeTexCoord(ThreatGlow)
-    self:EncodeTexCoord(HealthBorder)
-    self:EncodeTexCoord(CastBorder)
-    self:EncodeTexCoord(CastUninterruptible)
-    self:EncodeTexCoord(HighlightTexture)
-    self:EncodeTexCoord(MobIcon)
-    BossIcon.OriginalAlpha = BossIcon:GetAlpha()
-    RaidIcon.OriginalAlpha = RaidIcon:GetAlpha()
-    SpellIcon.OriginalWidth = SpellIcon:GetWidth()
+function ezSpectator_Nameplates:HideOriginalObject(object, altRoute)
+	local objectType = object:GetObjectType()
+	if objectType == "Texture" then
+		if altRoute == 1 then
+			if not object.__original then
+				object.__originalAlpha = object:GetAlpha()
+				object.__original = true
+			end
+			object:SetAlpha(0)
+		elseif altRoute == 2 then
+			if not object.__original then
+				object.__originalWidth = object:GetWidth()
+				object.__original = true
+			end
+			object:SetWidth(0.001)
+		else
+			if not object.__original then
+				object.__originalTexture = object:GetTexture()
+				object.__originalCoords = {object:GetTexCoord()}
+				object.__original = true
+			end
+			object:SetTexture("")
+			object:SetTexCoord(0, 0, 0, 0)
+		end
+	elseif objectType == "FontString" then
+		if not object.__original then
+			object.__original = true
+		end
+		object:SetWidth(0.001)
+	elseif objectType == "StatusBar" then
+		if not object.__original then
+			object.__originalTexture = object:GetStatusBarTexture():GetTexture()
+			object.__original = true
+		end
+		object:SetStatusBarTexture("")
+	end
 end
 
+function ezSpectator_Nameplates:RestoreOriginalObject(object, altRoute)
+	if not object.__original then
+		return
+	end
 
-
-function ezSpectator_Nameplates:HideOriginalNameplate(Healthbar, ThreatGlow, HealthBorder, CastBorder, CastUninterruptible, SpellIcon, HighlightTexture, NameText, LevelText, BossIcon, RaidIcon, MobIcon)
-    Healthbar:SetStatusBarTexture(EMPTY_TEXTURE)
-    Healthbar.CastbarObject:SetStatusBarTexture(EMPTY_TEXTURE)
-    ThreatGlow:SetTexCoord(0, 0, 0, 0)
-    HealthBorder:SetTexCoord(0, 0, 0, 0)
-    CastBorder:SetTexCoord(0, 0, 0, 0)
-    CastUninterruptible:SetTexCoord(0, 0, 0, 0)
-    HighlightTexture:SetTexCoord(0, 0, 0, 0)
-    MobIcon:SetTexCoord(0, 0, 0, 0)
-    NameText:SetWidth(0.001)
-    LevelText:SetWidth(0.001)
-    BossIcon:SetAlpha(0)
-    RaidIcon:SetAlpha(0)
-    SpellIcon:SetWidth(0.001)
-    
-    Healthbar.IsHidden = true
+	local objectType = object:GetObjectType()
+	if objectType == "Texture" then
+		if altRoute == 1 then
+			object:SetAlpha(object.__originalAlpha or 1)
+		elseif altRoute == 2 then
+			object:SetWidth(object.__originalWidth or 1)
+		else
+			object:SetTexture(object.__originalTexture)
+			object:SetTexCoord(unpack(object.__originalCoords))
+		end
+	elseif objectType == "FontString" then
+		object:SetWidth(0)
+	elseif objectType == "StatusBar" then
+		object:SetStatusBarTexture(object.__originalTexture)
+	end
 end
 
+function ezSpectator_Nameplates:HideOriginalNameplate(nameplate, healthBar, castBar, threatGlow, healthBorder, castBorder, castUninterruptible, spellIcon, highlightTexture, nameText, levelText, bossIcon, raidIcon, eliteIcon)
+	if nameplate.arenaSpectatorEnabled then
+		return
+	end
 
+	self:HideOriginalObject(healthBar)
+	self:HideOriginalObject(castBar)
+	self:HideOriginalObject(threatGlow)
+	self:HideOriginalObject(healthBorder)
+	self:HideOriginalObject(castBorder)
+	self:HideOriginalObject(castUninterruptible)
+	self:HideOriginalObject(highlightTexture)
 
-function ezSpectator_Nameplates:ShowOriginalNameplate(Healthbar, ThreatGlow, HealthBorder, CastBorder, CastUninterruptible, SpellIcon, HighlightTexture, NameText, LevelText, BossIcon, RaidIcon, MobIcon)
-    Healthbar:SetStatusBarTexture(Healthbar.OriginalStatusBarTexture)
-    Healthbar.CastbarObject:SetStatusBarTexture(Healthbar.CastbarObject.OriginalStatusBarTexture)
-    ThreatGlow:SetTexCoord(self:DecodeTexCoord(ThreatGlow))
-    HealthBorder:SetTexCoord(self:DecodeTexCoord(HealthBorder))
-    CastBorder:SetTexCoord(self:DecodeTexCoord(CastBorder))
-    CastUninterruptible:SetTexCoord(self:DecodeTexCoord(CastUninterruptible))
-    HighlightTexture:SetTexCoord(self:DecodeTexCoord(HighlightTexture))
-    MobIcon:SetTexCoord(self:DecodeTexCoord(MobIcon))
-    NameText:SetWidth(0)
-    LevelText:SetWidth(0)
-    BossIcon:SetAlpha(BossIcon.OriginalAlpha)
-    RaidIcon:SetAlpha(RaidIcon.OriginalAlpha)
-    SpellIcon:SetWidth(SpellIcon.OriginalWidth)
+	self:HideOriginalObject(nameText)
+	self:HideOriginalObject(levelText)
 
-    HealthBorder.ezSpectator_Nameplate:Hide()
-    Healthbar.IsHidden = false
+	self:HideOriginalObject(eliteIcon, 1)
+	self:HideOriginalObject(bossIcon, 1)
+	self:HideOriginalObject(raidIcon, 1)
+	self:HideOriginalObject(spellIcon, 2)
+
+	nameplate.arenaSpectatorEnabled = true
 end
 
+function ezSpectator_Nameplates:ShowOriginalNameplate(nameplate, healthBar, castBar, threatGlow, healthBorder, castBorder, castUninterruptible, spellIcon, highlightTexture, nameText, levelText, bossIcon, raidIcon, eliteIcon)
+	if not nameplate.arenaSpectatorEnabled then
+		return
+	end
 
+	self:RestoreOriginalObject(healthBar)
+	self:RestoreOriginalObject(castBar)
+	self:RestoreOriginalObject(threatGlow)
+	self:RestoreOriginalObject(healthBorder)
+	self:RestoreOriginalObject(castBorder)
+	self:RestoreOriginalObject(castUninterruptible)
+	self:RestoreOriginalObject(highlightTexture)
 
-function ezSpectator_Nameplates:ProcessNameplate(SkipAnimation, Healthbar, ThreatGlow, HealthBorder, CastBorder, CastUninterruptible, SpellIcon, HighlightTexture, NameText, LevelText, BossIcon, RaidIcon, MobIcon)
-    if self.Parent.Interface.IsRunning then
-        if not Healthbar.IsHidden then
-            self:SaveOriginalNameplate(Healthbar, ThreatGlow, HealthBorder, CastBorder, CastUninterruptible, SpellIcon, HighlightTexture, NameText, LevelText, BossIcon, RaidIcon, MobIcon)
-            self:HideOriginalNameplate(Healthbar, ThreatGlow, HealthBorder, CastBorder, CastUninterruptible, SpellIcon, HighlightTexture, NameText, LevelText, BossIcon, RaidIcon, MobIcon)
-        end
+	self:RestoreOriginalObject(nameText)
+	self:RestoreOriginalObject(levelText)
 
-        if not HealthBorder.ezSpectator_Nameplate then
-            HealthBorder.ezSpectator_Nameplate = ezSpectator_Nameplate:Create(self.Parent, Healthbar, 'BOTTOM', HealthBorder, 'BOTTOM', 0, 10)
-        else
-            HealthBorder.ezSpectator_Nameplate:Show()
-        end
+	self:RestoreOriginalObject(eliteIcon, 1)
+	self:RestoreOriginalObject(bossIcon, 1)
+	self:RestoreOriginalObject(raidIcon, 1)
+	self:RestoreOriginalObject(spellIcon, 2)
 
-        local MaxValue = select(2, Healthbar:GetMinMaxValues())
-        HealthBorder.ezSpectator_Nameplate:SetMaxValue(MaxValue)
-
-        local Value = Healthbar:GetValue()
-
-        if not SkipAnimation then
-            SkipAnimation = HealthBorder.ezSpectator_Nameplate.IsUpdating
-            HealthBorder.ezSpectator_Nameplate.IsUpdating = false
-        else
-            HealthBorder.ezSpectator_Nameplate.IsUpdating = true
-        end
-
-        if SkipAnimation then
-            HealthBorder.ezSpectator_Nameplate:ResetAnimation()
-        end
-        HealthBorder.ezSpectator_Nameplate:SetValue(Value, SkipAnimation)
-
-        HealthBorder.ezSpectator_Nameplate:SetNickname(NameText:GetText())
-        if self.Parent.Interface.Players[NameText:GetText()] then
-            HealthBorder.ezSpectator_Nameplate:SetTeam(self.Parent.Interface.Players[NameText:GetText()].Team)
-            HealthBorder.ezSpectator_Nameplate:SetClass(self.Parent.Interface.Players[NameText:GetText()].Class)
-
-            self.Parent.Interface.Players[NameText:GetText()]:SetNameplate(HealthBorder.ezSpectator_Nameplate)
-            HealthBorder.ezSpectator_Nameplate:SetPlayer(self.Parent.Interface.Players[NameText:GetText()])
-        else
-            HealthBorder.ezSpectator_Nameplate:SetTeam(nil)
-            HealthBorder.ezSpectator_Nameplate:SetClass(nil)
-            HealthBorder.ezSpectator_Nameplate:SetPlayer(nil)
-        end
-
-        if self.Parent.Interface.Viewpoint then
-            if self.Parent.Interface.Viewpoint.CurrentTarget and
-                    (HealthBorder.ezSpectator_Nameplate.Nickname:GetText() == self.Parent.Interface.Viewpoint.CurrentTarget.Nickname)
-            then
-                HealthBorder.ezSpectator_Nameplate:SetAlpha(1)
-                HealthBorder.ezSpectator_Nameplate.IsTarget = true
-            else
-                HealthBorder.ezSpectator_Nameplate:SetAlpha(self.Parent.Data.ViewpointNameplateAlpha)
-                HealthBorder.ezSpectator_Nameplate.IsTarget = false
-            end
-        else
-            HealthBorder.ezSpectator_Nameplate:SetAlpha(1)
-            HealthBorder.ezSpectator_Nameplate.IsTarget = false
-        end
-    else
-        if Healthbar.IsHidden then
-            self:ShowOriginalNameplate(Healthbar, ThreatGlow, HealthBorder, CastBorder, CastUninterruptible, SpellIcon, HighlightTexture, NameText, LevelText, BossIcon, RaidIcon, MobIcon)
-        end
-    end
+	nameplate.spectatorNP:Hide()
+	nameplate.arenaSpectatorEnabled = nil
 end
 
+function ezSpectator_Nameplates:ProcessNameplate(skipAnimation, nameplate, healthBar, castBar, ...)
+	local isActive = C_ArenaSpectator.IsActive() and (C_ArenaSpectator.IsInProgress() or C_ArenaSpectator.IsInPreparation())
+	if not isActive then
+		if nameplate.arenaSpectatorEnabled then
+			self:ShowOriginalNameplate(nameplate, healthBar, castBar, ...)
+		end
+	else
+		if not nameplate.arenaSpectatorEnabled then
+			self:HideOriginalNameplate(nameplate, healthBar, castBar, ...)
+		end
 
+		local threatGlow, healthBorder, castBorder, castUninterruptible, spellIcon, highlightTexture, nameText, levelText, bossIcon, raidIcon, eliteIcon = ...
 
-function ezSpectator_Nameplates:OnShowHook(Healthbar)
-    local ThreatGlow, HealthBorder, CastBorder, CastUninterruptible, SpellIcon, HighlightTexture, NameText, LevelText, BossIcon, RaidIcon, MobIcon = Healthbar:GetParent():GetRegions()
-    
-    self:ProcessNameplate(true, Healthbar, ThreatGlow, HealthBorder, CastBorder, CastUninterruptible, SpellIcon, HighlightTexture, NameText, LevelText, BossIcon, RaidIcon, MobIcon)
+		if not nameplate.spectatorNP then
+			nameplate.spectatorNP = ezSpectator_Nameplate:Create(self.Parent, healthBar, "BOTTOM", healthBorder, "BOTTOM", 0, 10)
+		else
+			nameplate.spectatorNP:Show()
+		end
+
+		local value = healthBar:GetValue()
+		local minValue, maxValue = healthBar:GetMinMaxValues()
+		nameplate.spectatorNP:SetMaxValue(maxValue)
+
+		if not skipAnimation then
+			skipAnimation = nameplate.spectatorNP.IsUpdating
+			nameplate.spectatorNP.IsUpdating = false
+		else
+			nameplate.spectatorNP.IsUpdating = true
+		end
+
+		if skipAnimation then
+			nameplate.spectatorNP:ResetAnimation()
+		end
+		nameplate.spectatorNP:SetValue(value, skipAnimation)
+
+		local unitName = nameText:GetText()
+		local playerObject = self.Parent.Interface.Players[unitName]
+
+		nameplate.spectatorNP:SetNickname(unitName)
+
+		if playerObject then
+			nameplate.spectatorNP:SetTeam(playerObject.Team)
+			nameplate.spectatorNP:SetClass(playerObject.Class)
+
+			playerObject:SetNameplate(nameplate.spectatorNP)
+			nameplate.spectatorNP:SetPlayer(playerObject)
+		else
+			nameplate.spectatorNP:SetTeam(nil)
+			nameplate.spectatorNP:SetClass(nil)
+			nameplate.spectatorNP:SetPlayer(nil)
+		end
+
+		if self.Parent.Interface.Viewpoint then
+			if self.Parent.Interface.Viewpoint.TargetObject
+			and self.Parent.Interface.Viewpoint.TargetObject.Nickname == unitName
+			then
+				nameplate.spectatorNP:SetAlpha(1)
+				nameplate.spectatorNP.IsTarget = true
+			else
+				nameplate.spectatorNP:SetAlpha(self.Parent.VIEWPOINT_NAMEPLATE_ALPHA)
+				nameplate.spectatorNP.IsTarget = false
+			end
+		else
+			nameplate.spectatorNP:SetAlpha(1)
+			nameplate.spectatorNP.IsTarget = false
+		end
+	end
 end
 
+function ezSpectator_Nameplates:UpdateNameplate(nameplate)
+	local healthBar, castBar = nameplate:GetChildren()
+	local threatGlow, healthBorder, castBorder, castUninterruptible, spellIcon, highlightTexture, nameText, levelText, bossIcon, raidIcon, eliteIcon = nameplate:GetRegions()
 
+	if not nameplate.spectatorHooks then
+		healthBar:HookScript("OnShow", function(this)
+			if nameplate.arenaSpectatorEnabled then
+				self:ProcessNameplate(true, nameplate, healthBar, castBar, threatGlow, healthBorder, castBorder, castUninterruptible, spellIcon, highlightTexture, nameText, levelText, bossIcon, raidIcon, eliteIcon)
+			end
+		end)
+		healthBar:SetScript("OnUpdate", function(this, elapsed)
+			if nameplate.arenaSpectatorEnabled then
+				self:ProcessNameplate(false, nameplate, healthBar, castBar, threatGlow, healthBorder, castBorder, castUninterruptible, spellIcon, highlightTexture, nameText, levelText, bossIcon, raidIcon, eliteIcon)
+			end
+		end)
+		nameplate.spectatorHooks = true
+	end
 
-function ezSpectator_Nameplates:OnUpdateHook(Healthbar)
-    local ThreatGlow, HealthBorder, CastBorder, CastUninterruptible, SpellIcon, HighlightTexture, NameText, LevelText, BossIcon, RaidIcon, MobIcon = Healthbar:GetParent():GetRegions()
-    
-    self:ProcessNameplate(false, Healthbar, ThreatGlow, HealthBorder, CastBorder, CastUninterruptible, SpellIcon, HighlightTexture, NameText, LevelText, BossIcon, RaidIcon, MobIcon)
-end
-
-
-
-function ezSpectator_Nameplates:ApplyHook(...)
-    for FrameLoop = 1, select('#', ...) do
-        local CurrentFrame = select(FrameLoop, ...)
-        local CurrentRegion = CurrentFrame:GetRegions()
-        
-        if CurrentRegion and (CurrentRegion:GetObjectType() == 'Texture') and (CurrentRegion:GetTexture() == 'Interface\\TargetingFrame\\UI-TargetingFrame-Flash') then
-            local Healthbar, Castbar = CurrentFrame:GetChildren()
-            Healthbar.CastbarObject = Castbar
-
-            Healthbar.ezSpectator_Nameplates = self
-            Healthbar:HookScript('OnShow', function(Frame)
-                if Frame.ezSpectator_Nameplates then
-                    Frame.ezSpectator_Nameplates:OnShowHook(Frame)
-                end
-            end)
-            Healthbar:SetScript('OnUpdate', function(Frame)
-                if Frame.ezSpectator_Nameplates then
-                    Frame.ezSpectator_Nameplates:OnUpdateHook(Frame)
-                end
-            end)
-            self:OnUpdateHook(Healthbar)
-        end
-    end
+	self:ProcessNameplate(false, nameplate, healthBar, castBar, threatGlow, healthBorder, castBorder, castUninterruptible, spellIcon, highlightTexture, nameText, levelText, bossIcon, raidIcon, eliteIcon)
 end

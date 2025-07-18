@@ -17,6 +17,9 @@
 				self.maxDisplayCount = 99;
 				_G[self:GetName().."Icon"]:SetTexCoord(4/64, 60/64, 4/64, 60/64);
 			</OnLoad>
+			<OnShow>
+				SetParentFrameLevel(self, 1)
+			</OnShow>
 			<OnClick>
 				SpellFlyoutButton_OnClick(self);
 			</OnClick>

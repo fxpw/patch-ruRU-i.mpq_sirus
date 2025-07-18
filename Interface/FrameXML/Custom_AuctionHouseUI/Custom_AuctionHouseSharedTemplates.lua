@@ -85,16 +85,9 @@ function AuctionHouseItemDisplayMixin:OnEnter()
 	else
 		local itemKey = self:GetItemKey();
 		if itemKey then
+			local itemLink = AuctionHouseUtil.GetItemLinkFromItemKey(itemKey)
 			GameTooltip:SetOwner(self.ItemButton, "ANCHOR_RIGHT");
-			GameTooltip:SetHyperlink(string.format("item:%d:%d:::::%d", itemKey.itemID, itemKey.enchantID or 0, itemKey.enchantID and (itemKey.uniqueID or -itemKey.itemSuffix) or 0));
-
-			--[[
-			if itemKey.itemUnique and itemKey.itemSuffix and itemKey.itemUnique > 0 then
-				GameTooltip:SetHyperlink(string.format("item:%d::::::%d:%d:", itemKey.itemID, -itemKey.itemSuffix, 0));
-			else
-				GameTooltip:SetHyperlink(string.format("item:%d::::::%d::", itemKey.itemID, itemKey.itemSuffix or 0));
-			end
-			]]
+			GameTooltip:SetHyperlink(itemLink)
 			GameTooltip:Show();
 		else
 			local itemLink = self:GetItemLink();

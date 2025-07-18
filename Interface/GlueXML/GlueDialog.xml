@@ -83,7 +83,7 @@
 						<FontStringHeader1 inherits="GlueFontNormal" spacing="4"/>
 						<FontStringHeader2 inherits="GlueFontNormal" spacing="4"/>
 					</SimpleHTML>
-					<Button name="$parentButton1" parentKey="Button1" inherits="GlueDialogButtonTemplate" id="1"/>
+					<Button name="$parentButton1" parentKey="Button1" inherits="GlueDialogButtonTemplate,TransactionConfirmationTemplate" id="1"/>
 					<Button name="$parentButton2" parentKey="Button2" inherits="GlueDialogButtonTemplate" id="2"/>
 					<Button name="$parentButton3" parentKey="Button3" inherits="GlueDialogButtonTemplate" id="3"/>
 					<Button name="$parentInfoIcon" parentKey="InfoIcon" inherits="GlueDark_InfoButtonTemplate"/>

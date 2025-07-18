@@ -44,7 +44,7 @@ function QueueStatusMinimapButton_OnClick(self, button)
 		elseif ( inBattlefield and showScoreboard ) then
 			ToggleWorldStateScoreFrame();
 		else
-			local bgInviteData = C_CacheInstance:Get("ASMSG_SEND_BG_INVITE");
+			local bgInviteData = C_GlobalStorage.GetVar("ASMSG_SEND_BG_INVITE")
 			local miniGameInviteID, miniGameID, acceptedPlayers, maxPlayers = C_MiniGames.GetInviteID();
 
 			if bgInviteData and bgInviteData.inviteID then
@@ -194,7 +194,7 @@ function QueueStatusFrame_CreateHelpTip(text, bitfieldFlag)
 		text = text,
 		textJustifyH = "LEFT",
 		checkCVars = type(bitfieldFlag) == "number",
-		cvarBitfield = "C_CVAR_CLOSED_INFO_FRAMES",
+		cvarBitfield = "closedInfoFrames",
 		bitfieldFlag = bitfieldFlag,
 		buttonStyle = HelpTip.ButtonStyle.None,
 		targetPoint = HelpTip.Point.LeftEdgeCenter,
@@ -842,7 +842,7 @@ function QueueStatusDropDown_AddBattlefieldButtons(idx, shownHearthAndRes)
 		end
 
 		if ( status == "queued" ) then
-			local bgInviteData = C_CacheInstance:Get("ASMSG_SEND_BG_INVITE");
+			local bgInviteData = C_GlobalStorage.GetVar("ASMSG_SEND_BG_INVITE")
 			local bgInviteID = bgInviteData and bgInviteData.inviteID
 			if bgInviteID then
 				info.text = ENTER;

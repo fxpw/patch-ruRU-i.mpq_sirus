@@ -1,11 +1,3 @@
-<!--
-
-	Filename:	Custom_TimeManager.xml
-	Project:	Custom Game Interface
-	Author:		Nyll & Blizzard Entertainment
-
--->
-
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\..\FrameXML\UI.xsd">
 	<Script file="Custom_TimeManager.lua"/>
@@ -13,20 +5,14 @@
 	<Frame name="TimeManagerFrame" toplevel="true" parent="UIParent" enableMouse="true" frameStrata="DIALOG" hidden="true">
 		<Size x="256" y="256"/>
 		<Anchors>
-			<Anchor point="TOPRIGHT">
-				<Offset x="45" y="-170"/>
-			</Anchor>
+			<Anchor point="TOPRIGHT" x="45" y="-170"/>
 		</Anchors>
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture name="TimeManagerGlobe" file="Interface\TimeManager\GlobeIcon">
 					<Size x="64" y="64"/>
 					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="6" y="-4"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" x="6" y="-4"/>
 					</Anchors>
 				</Texture>
 			</Layer>
@@ -34,59 +20,39 @@
 				<Texture file="Interface\PaperDollInfoFrame\UI-Character-General-TopLeft">
 					<Size x="172" y="240"/>
 					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
 					</Anchors>
 					<TexCoords left="0" right="0.671875" top="0" bottom="0.937500"/>
 				</Texture>
 				<Texture file="Interface\PaperDollInfoFrame\UI-Character-General-TopRight">
 					<Size x="68" y="240"/>
 					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="172" y="0"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" x="172" y="0"/>
 					</Anchors>
 					<TexCoords left="0.46875" right="1" top="0" bottom="0.937500"/>
 				</Texture>
 				<Texture file="Interface\PaperDollInfoFrame\UI-Character-General-BottomLeft">
 					<Size x="172" y="88"/>
 					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-240"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" x="0" y="-240"/>
 					</Anchors>
 					<TexCoords left="0" right="0.671875" top="0.65625" bottom="1.0"/>
 				</Texture>
 				<Texture file="Interface\PaperDollInfoFrame\UI-Character-General-BottomRight">
 					<Size x="68" y="88"/>
 					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="172" y="-240"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" x="172" y="-240"/>
 					</Anchors>
 					<TexCoords left="0.46875" right="1.0" top="0.65625" bottom="1.0"/>
 				</Texture>
 				<FontString name="TimeManagerFrameTicker" inherits="GameFontHighlightLarge" text="TIMEMANAGER_TICKER" justifyH="CENTER">
 					<Anchors>
-						<Anchor point="CENTER" relativeTo="TimeManagerGlobe">
-							<Offset x="-2" y="0"/>
-						</Anchor>
+						<Anchor point="CENTER" relativeTo="TimeManagerGlobe" x="-2" y="0"/>
 					</Anchors>
 				</FontString>
 				<FontString inherits="GameFontWhite" text="TIMEMANAGER_TITLE">
 					<Anchors>
-						<Anchor point="TOP">
-							<Offset x="0" y="-17"/>
-						</Anchor>
+						<Anchor point="TOP" x="0" y="-17"/>
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -94,9 +60,7 @@
 		<Frames>
 			<Button name="TimeManagerCloseButton" inherits="UIPanelCloseButton">
 				<Anchors>
-					<Anchor point="TOPRIGHT">
-						<Offset x="-46" y="-8"/>
-					</Anchor>
+					<Anchor point="TOPRIGHT" x="-46" y="-8"/>
 				</Anchors>
 				<Scripts>
 					<OnClick function="TimeManagerCloseButton_OnClick"/>
@@ -105,29 +69,21 @@
 			<Frame name="TimeManagerStopwatchFrame">
 				<Size x="160" y="60"/>
 				<Anchors>
-					<Anchor point="TOPRIGHT">
-						<Offset x="-40" y="-24"/>
-					</Anchor>
+					<Anchor point="TOPRIGHT" x="-40" y="-24"/>
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
 						<Texture name="TimeManagerStopwatchFrameBackground" file="Interface\QuestFrame\UI-QuestItemNameFrame">
 							<Size x="150" y="50"/>
 							<Anchors>
-								<Anchor point="RIGHT">
-									<Offset>
-										<AbsDimension x="-4" y="0"/>
-									</Offset>
-								</Anchor>
+								<Anchor point="RIGHT" x="-4" y="0"/>
 							</Anchors>
 						</Texture>
 					</Layer>
 					<Layer level="ARTWORK">
 						<FontString name="TimeManagerStopwatchFrameText" text="TIMEMANAGER_SHOW_STOPWATCH" inherits="GameFontNormalSmall" justifyH="RIGHT">
 							<Anchors>
-								<Anchor point="RIGHT">
-									<Offset x="-48" y="0"/>
-								</Anchor>
+								<Anchor point="RIGHT" x="-48" y="0"/>
 							</Anchors>
 						</FontString>
 					</Layer>
@@ -136,9 +92,7 @@
 					<CheckButton name="TimeManagerStopwatchCheck">
 						<Size x="28" y="28"/>
 						<Anchors>
-							<Anchor point="RIGHT">
-								<Offset x="-17" y="1"/>
-							</Anchor>
+							<Anchor point="RIGHT" x="-17" y="1"/>
 						</Anchors>
 						<Scripts>
 							<OnClick function="TimeManagerStopwatchCheck_OnClick"/>
@@ -146,11 +100,7 @@
 						<NormalTexture file="Interface\Icons\INV_Misc_PocketWatch_01">
 							<Size x="28" y="28"/>
 							<Anchors>
-								<Anchor point="CENTER">
-									<Offset>
-										<AbsDimension x="0" y="-1"/>
-									</Offset>
-								</Anchor>
+								<Anchor point="CENTER" x="0" y="-1"/>
 							</Anchors>
 						</NormalTexture>
 						<HighlightTexture alphaMode="ADD" file="Interface\Buttons\ButtonHilight-Square"/>
@@ -161,24 +111,18 @@
 			<Frame name="TimeManagerAlarmTimeFrame">
 				<Size x="145" y="52"/>
 				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="25" y="-80"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" x="25" y="-80"/>
 				</Anchors>
 				<Layers>
 					<Layer level="ARTWORK">
 						<FontString name="TimeManagerAlarmTimeLabel" inherits="GameFontNormalSmall" text="TIMEMANAGER_ALARM_TIME">
 							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset x="0" y="0"/>
-								</Anchor>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
 							</Anchors>
 						</FontString>
 						<FontString name="TimeManagerAMPMDummyText" inherits="GameFontHighlightSmall" hidden="true">
 							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset x="0" y="0"/>
-								</Anchor>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
 							</Anchors>
 						</FontString>
 					</Layer>
@@ -186,23 +130,17 @@
 				<Frames>
 					<Frame name="TimeManagerAlarmHourDropDown" inherits="UIDropDownMenuTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="TimeManagerAlarmTimeLabel" relativePoint="BOTTOMLEFT">
-								<Offset x="-20" y="-4"/>
-							</Anchor>
+							<Anchor point="TOPLEFT" relativeTo="TimeManagerAlarmTimeLabel" relativePoint="BOTTOMLEFT" x="-20" y="-4"/>
 						</Anchors>
 					</Frame>
 					<Frame name="TimeManagerAlarmMinuteDropDown" inherits="UIDropDownMenuTemplate">
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="TimeManagerAlarmHourDropDown" relativePoint="RIGHT">
-								<Offset x="-22" y="0"/>
-							</Anchor>
+							<Anchor point="LEFT" relativeTo="TimeManagerAlarmHourDropDown" relativePoint="RIGHT" x="-22" y="0"/>
 						</Anchors>
 					</Frame>
 					<Frame name="TimeManagerAlarmAMPMDropDown" inherits="UIDropDownMenuTemplate">
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="TimeManagerAlarmMinuteDropDown" relativePoint="RIGHT">
-								<Offset x="-22" y="0"/>
-							</Anchor>
+							<Anchor point="LEFT" relativeTo="TimeManagerAlarmMinuteDropDown" relativePoint="RIGHT" x="-22" y="0"/>
 						</Anchors>
 					</Frame>
 				</Frames>
@@ -210,17 +148,13 @@
 			<Frame name="TimeManagerAlarmMessageFrame">
 				<Size x="160" y="40"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="TimeManagerAlarmHourDropDown" relativePoint="BOTTOMLEFT">
-						<Offset x="20" y="0"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="TimeManagerAlarmHourDropDown" relativePoint="BOTTOMLEFT" x="20" y="0"/>
 				</Anchors>
 				<Layers>
 					<Layer level="ARTWORK">
 						<FontString name="TimeManagerAlarmMessageLabel" inherits="GameFontNormalSmall" text="TIMEMANAGER_ALARM_MESSAGE">
 							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset x="0" y="0"/>
-								</Anchor>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
 							</Anchors>
 						</FontString>
 					</Layer>
@@ -229,9 +163,7 @@
 					<EditBox name="TimeManagerAlarmMessageEditBox" inherits="InputBoxTemplate" autoFocus="false" letters="32" historyLines="1">
 						<Size x="160" y="20"/>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="TimeManagerAlarmMessageLabel" relativePoint="BOTTOMLEFT">
-								<Offset x="4" y="-4"/>
-							</Anchor>
+							<Anchor point="TOPLEFT" relativeTo="TimeManagerAlarmMessageLabel" relativePoint="BOTTOMLEFT" x="4" y="-4"/>
 						</Anchors>
 						<Scripts>
 							<OnEnterPressed function="TimeManagerAlarmMessageEditBox_OnEnterPressed"/>
@@ -256,9 +188,7 @@
 			<CheckButton name="TimeManagerMilitaryTimeCheck" inherits="UICheckButtonTemplate">
 				<Size x="24" y="24"/>
 				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="171" y="-203"/>
-					</Anchor>
+					<Anchor point="TOPLEFT" x="171" y="-203"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -273,9 +203,7 @@
 			<CheckButton name="TimeManagerLocalTimeCheck" inherits="UICheckButtonTemplate">
 				<Size x="24" y="24"/>
 				<Anchors>
-					<Anchor point="TOPRIGHT" relativeTo="TimeManagerMilitaryTimeCheck" relativePoint="BOTTOMRIGHT">
-						<Offset x="0" y="6"/>
-					</Anchor>
+					<Anchor point="TOPRIGHT" relativeTo="TimeManagerMilitaryTimeCheck" relativePoint="BOTTOMRIGHT" x="0" y="6"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -299,9 +227,7 @@
 	<Button name="TimeManagerClockButton" parent="Minimap" hidden="true">
 		<Size x="60" y="28"/>
 		<Anchors>
-			<Anchor point="CENTER">
-				<Offset x="0" y="-68"/>
-			</Anchor>
+			<Anchor point="CENTER" x="0" y="-68"/>
 		</Anchors>
 		<Layers>
 			<Layer level="BORDER">
@@ -312,9 +238,7 @@
 			<Layer level="ARTWORK">
 				<FontString name="TimeManagerClockTicker" inherits="GameFontHighlightSmall">
 					<Anchors>
-						<Anchor point="CENTER">
-							<Offset x="0" y="0"/>
-						</Anchor>
+						<Anchor point="CENTER" x="0" y="0"/>
 					</Anchors>
 				</FontString>
 				<Texture name="TimeManagerAlarmFiredTexture" file="Interface\TimeManager\ClockBackground" alphaMode="ADD" hidden="true" setAllPoints="true">
@@ -334,9 +258,7 @@
 	<Frame name="StopwatchFrame" toplevel="true" parent="UIParent" movable="true" enableMouse="true" hidden="true" clampedToScreen="true" frameStrata="DIALOG">
 		<Size x="132" y="44"/>
 		<Anchors>
-			<Anchor point="TOPRIGHT">
-				<Offset x="-250" y="-300"/>
-			</Anchor>
+			<Anchor point="TOPRIGHT" x="-250" y="-300"/>
 		</Anchors>
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -360,45 +282,33 @@
 			<Frame name="StopwatchTicker">
 				<Size x="100" y="20"/>
 				<Anchors>
-					<Anchor point="BOTTOMRIGHT">
-						<Offset x="-49" y="3"/>
-					</Anchor>
+					<Anchor point="BOTTOMRIGHT" x="-49" y="3"/>
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
 						<FontString name="StopwatchTickerSecond" inherits="GameFontHighlightLarge" justifyH="CENTER">
 							<Anchors>
-								<Anchor point="TOPRIGHT">
-									<Offset x="0" y="0"/>
-								</Anchor>
+								<Anchor point="TOPRIGHT" x="0" y="0"/>
 							</Anchors>
 						</FontString>
 						<FontString text=":" inherits="GameFontHighlightLarge">
 							<Anchors>
-								<Anchor point="TOPRIGHT">
-									<Offset x="-22" y="0"/>
-								</Anchor>
+								<Anchor point="TOPRIGHT" x="-22" y="0"/>
 							</Anchors>
 						</FontString>
 						<FontString name="StopwatchTickerMinute" inherits="GameFontHighlightLarge" justifyH="CENTER">
 							<Anchors>
-								<Anchor point="TOPRIGHT">
-									<Offset x="-27" y="0"/>
-								</Anchor>
+								<Anchor point="TOPRIGHT" x="-27" y="0"/>
 							</Anchors>
 						</FontString>
 						<FontString text=":" inherits="GameFontHighlightLarge">
 							<Anchors>
-								<Anchor point="TOPRIGHT">
-									<Offset x="-49" y="0"/>
-								</Anchor>
+								<Anchor point="TOPRIGHT" x="-49" y="0"/>
 							</Anchors>
 						</FontString>
 						<FontString name="StopwatchTickerHour" inherits="GameFontHighlightLarge" justifyH="CENTER">
 							<Anchors>
-								<Anchor point="TOPRIGHT">
-									<Offset x="-54" y="0"/>
-								</Anchor>
+								<Anchor point="TOPRIGHT" x="-54" y="0"/>
 							</Anchors>
 						</FontString>
 					</Layer>
@@ -407,9 +317,7 @@
 			<Frame name="StopwatchTabFrame">
 				<Size x="126" y="16"/>
 				<Anchors>
-					<Anchor point="TOP">
-						<Offset x="0" y="0"/>
-					</Anchor>
+					<Anchor point="TOP" x="0" y="0"/>
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
@@ -442,9 +350,7 @@
 						</Texture>
 						<FontString name="StopwatchTitle" text="STOPWATCH_TITLE" inherits="GameFontNormalSmall" justifyH="CENTER">
 							<Anchors>
-								<Anchor point="TOP">
-									<Offset x="0" y="-3"/>
-								</Anchor>
+								<Anchor point="TOP" x="0" y="-3"/>
 							</Anchors>
 						</FontString>
 					</Layer>
@@ -453,9 +359,7 @@
 					<Button name="StopwatchCloseButton" inherits="UIPanelCloseButton">
 						<Size x="20" y="20"/>
 						<Anchors>
-							<Anchor point="TOPRIGHT">
-								<Offset x="1" y="1"/>
-							</Anchor>
+							<Anchor point="TOPRIGHT" x="1" y="1"/>
 						</Anchors>
 						<Scripts>
 							<OnClick function="StopwatchCloseButton_OnClick"/>
@@ -466,9 +370,7 @@
 			<Button name="StopwatchResetButton">
 				<Size x="24" y="24"/>
 				<Anchors>
-					<Anchor point="BOTTOMRIGHT">
-						<Offset x="-2" y="3"/>
-					</Anchor>
+					<Anchor point="BOTTOMRIGHT" x="-2" y="3"/>
 				</Anchors>
 				<Scripts>
 					<OnEnter>
@@ -483,9 +385,7 @@
 			<Button name="StopwatchPlayPauseButton">
 				<Size x="24" y="24"/>
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="StopwatchResetButton" relativePoint="LEFT">
-						<Offset x="5" y="0"/>
-					</Anchor>
+					<Anchor point="RIGHT" relativeTo="StopwatchResetButton" relativePoint="LEFT" x="5" y="0"/>
 				</Anchors>
 				<Scripts>
 					<OnEnter>

@@ -19,7 +19,7 @@ function QuestPOI_DisplayButton(parentName, buttonType, buttonIndex, questId)
 	local buttonName = "poi"..parentName..buttonType.."_"..buttonIndex;
 	local poiButton = _G[buttonName];
 	local swapButton;
-	
+
 	if ( not poiButton ) then
 		if (not QUEST_POI_BUTTONS_MAX[parentName..buttonType] and buttonIndex > 1)
 		or (QUEST_POI_BUTTONS_MAX[parentName..buttonType] and (QUEST_POI_BUTTONS_MAX[parentName..buttonType] + 1 < buttonIndex))
@@ -37,9 +37,9 @@ function QuestPOI_DisplayButton(parentName, buttonType, buttonIndex, questId)
 			poiButton = CreateFrame("Button", buttonName, _G[parentName], "QuestPOITemplate");
 		end
 		-- frame-specific stuff
-		if ( parentName == "WatchFrameLines" ) then
+		if ( parentName == "WatchFrameLines" or parentName == "QuestObjectiveTrackerContentsFrame" ) then
 			poiButton:SetScale(0.9);
-			poiButton:SetScript("OnClick", WatchFrameQuestPOI_OnClick);
+			poiButton:SetScript("OnClick", QuestObjectiveTrackerPOI_OnClick);
 		elseif ( parentName == "WorldMapPOIFrame" ) then
 			poiButton:SetScript("OnEnter", WorldMapQuestPOI_OnEnter);
 			poiButton:SetScript("OnLeave", WorldMapQuestPOI_OnLeave);
@@ -57,7 +57,7 @@ function QuestPOI_DisplayButton(parentName, buttonType, buttonIndex, questId)
 				swapButton.pushedTexture:SetTexCoord(0.375, 0.500, 0.375, 0.5);
 				swapButton.highlightTexture:SetTexCoord(0.625, 0.750, 0.375, 0.5);
 				swapButton.turnin:Show();
-				swapButton.number:Hide();		
+				swapButton.number:Hide();
 			end
 		end
 		-- *
@@ -92,7 +92,7 @@ end
 local function QuestPOI_FindButtonByQuestId(parentName, questId)
 	local poiButton;
 	local numButtons;
-		
+
 	for i = 1, QUEST_POI_MAX_TYPES do
 		numButtons = QUEST_POI_BUTTONS_MAX[parentName..i];
 		if ( numButtons ) then
@@ -131,11 +131,11 @@ function QuestPOI_SelectButton(poiButton)
 				return;
 			else
 				QuestPOI_DeselectButton(QUEST_POI_BUTTONS_SELECTED[parentName]);
-			end		
+			end
 		end
 		-- select
 		QUEST_POI_BUTTONS_SELECTED[parentName] = poiButton;
-		poiButton.isSelected = true;		
+		poiButton.isSelected = true;
 		if ( poiButton.type == QUEST_POI_NUMERIC ) then
 			poiButton.selectionGlow:Show();
 			poiButton.normalTexture:SetTexCoord(0.500, 0.625, 0.375, 0.5);
@@ -146,7 +146,7 @@ function QuestPOI_SelectButton(poiButton)
 			poiButton.selectionGlow:Show();
 			poiButton.normalTexture:SetTexCoord(0.500, 0.625, 0.375, 0.5);
 			poiButton.pushedTexture:SetTexCoord(0.375, 0.500, 0.375, 0.5);
-			poiButton.highlightTexture:SetTexCoord(0.625, 0.750, 0.375, 0.5);		
+			poiButton.highlightTexture:SetTexCoord(0.625, 0.750, 0.375, 0.5);
 		elseif ( poiButton.type == QUEST_POI_COMPLETE_OUT ) then
 			-- has no selected mode, should switch to QUEST_POI_COMPLETE_IN type upon being selected
 		elseif ( poiButton.type == QUEST_POI_COMPLETE_SWAP ) then
@@ -195,12 +195,12 @@ function QuestPOI_SetTextColor(poiButton, yOffset)
 	local index = poiButton.index - 1
 	yOffset = yOffset + floor(index / QUEST_POI_ICONS_PER_ROW) * QUEST_POI_ICON_SIZE;
 	local xOffset = mod(index, QUEST_POI_ICONS_PER_ROW) * QUEST_POI_ICON_SIZE;
-	poiButton.number:SetTexCoord(xOffset, xOffset + QUEST_POI_ICON_SIZE, yOffset, yOffset + QUEST_POI_ICON_SIZE);	
+	poiButton.number:SetTexCoord(xOffset, xOffset + QUEST_POI_ICON_SIZE, yOffset, yOffset + QUEST_POI_ICON_SIZE);
 end
 
 function QuestPOI_HideButtons(parentName, buttonType, buttonIndex)
 	local numButtons;
-		
+
 	numButtons = QUEST_POI_BUTTONS_MAX[parentName..buttonType];
 	if ( numButtons ) then
 		local poiButton;
@@ -218,7 +218,7 @@ end
 
 function QuestPOI_HideAllButtons(parentName)
 	local numButtons;
-	
+
 	for i = 1, QUEST_POI_MAX_TYPES do
 		numButtons = QUEST_POI_BUTTONS_MAX[parentName..i];
 		if ( numButtons ) then

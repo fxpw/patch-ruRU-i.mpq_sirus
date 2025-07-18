@@ -21,7 +21,8 @@ local spellOverlayCache = {}
 function IsSpellOverlayed( spell, spellRank )
 	local spellID
 
-	if SpellOverlay_SpellHighlightAlphaSlider.value == 0 then
+	local alpha = tonumber(GetCVar("spellActivationButtonOpacity")) or 1
+	if alpha == 0 then
 		return nil
 	end
 
@@ -161,9 +162,7 @@ function ActionButton_GetOverlayGlow()
 		overlay = CreateFrame("Frame", "ActionButtonOverlay"..numOverlays, UIParent, "ActionBarButtonSpellActivationAlert")
 	end
 
-	if SpellOverlay_SpellHighlightAlphaSlider.value then
-		overlay:SetAlpha(SpellOverlay_SpellHighlightAlphaSlider.value)
-	end
+	overlay:SetAlpha(tonumber(GetCVar("spellActivationButtonOpacity")) or 1)
 
 	usedOverlayGlows[overlay] = true
 
@@ -277,6 +276,10 @@ function ActionButtonDown(id)
 	if ( button:GetButtonState() == "NORMAL" ) then
 		button:SetButtonState("PUSHED");
 	end
+	if (GetCVarBool("ActionButtonUseKeyDown")) then
+		SecureActionButton_OnClick(button, "LeftButton");
+		ActionButton_UpdateState(button);
+	end
 end
 
 function ActionButtonUp(id)
@@ -290,8 +293,10 @@ function ActionButtonUp(id)
 	end
 	if ( button:GetButtonState() == "PUSHED" ) then
 		button:SetButtonState("NORMAL");
-		SecureActionButton_OnClick(button, "LeftButton");
-		ActionButton_UpdateState(button);
+		if (not GetCVarBool("ActionButtonUseKeyDown")) then
+			SecureActionButton_OnClick(button, "LeftButton");
+			ActionButton_UpdateState(button);
+		end
 	end
 end
 

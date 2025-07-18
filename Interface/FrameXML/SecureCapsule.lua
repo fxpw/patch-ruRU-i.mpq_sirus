@@ -3,9 +3,10 @@ local issecure = issecure;
 local type = type;
 local pairs = pairs;
 local select = select;
-local IsInterfaceDevClient = IsInterfaceDevClient
 
 EventRegistry:TriggerEvent("SECURE_CAPSULE")
+
+local IS_DEV = IsInterfaceDevClient()
 
 --Create a local version of this function just so we don't have to worry about changes
 local function copyTable(tab)
@@ -21,7 +22,7 @@ local function copyTable(tab)
 end
 
 function SecureCapsuleGet(name)
-	if ( not issecure() and not IsInterfaceDevClient() ) then
+	if ( not issecure() and not IS_DEV ) then
 		return;
 	end
 
@@ -49,12 +50,16 @@ end
 --Takes name and removes it from the global environment (note: make sure that nothing else has saved off a copy)
 local function take(name)
 	contents[name] = _G[name];
-	_G[name] = nil;
+	if not IS_DEV then
+		_G[name] = nil;
+	end
 end
 
 --Removes something from the global environment entirely (note: make sure that any saved references are local and will not be returned or otherwise exposed under any circumstances)
 local function remove(name)
-	_G[name] = nil;
+	if not IS_DEV then
+		_G[name] = nil;
+	end
 end
 
 -- We create the "Enum" table directly in contents because we dont want the reference from _G in the secure environment
@@ -70,7 +75,9 @@ local function takeenum(name)
 		contents["Enum"] = {};
 	end
 	contents["Enum"][name] = _G.Enum[name];
-	_G.Enum[name] = nil;
+	if not IS_DEV then
+		_G.Enum[name] = nil;
+	end
 end
 
 -------------------------------
@@ -243,6 +250,7 @@ take("CreateSecureMixinCopy");
 retain("GetFinalNameFromTextureKit")
 retain("C_Texture");
 take("C_HardcoreSecure");
+take("C_GlobalStorageSecure");
 
 --retain("C_RecruitAFriend");
 take("C_Camera");
@@ -250,14 +258,19 @@ take("C_Clipboard");
 take("C_Library");
 take("C_Sirus");
 take("C_Verify");
-take("S_SharedStorage");
+take("C_Timer2");
 take("Barbershop_Dress");
 take("Barbershop_Undress");
 take("GameTooltip_SetScript");
 take("GetSharedStorage");
+take("IsSpellHiddenInCombatLog");
+take("IsSpellHiddenOnCastBar");
 take("LaunchURL");
 take("RegisterCVar2");
 take("SaveViewRaw");
+take("IsItemDataCachedByID")
+take("RequestLoadCreatureByID")
+take("ScreenshotStore")
 
 -- retain shared constants
 
@@ -266,19 +279,18 @@ remove("SECURE_SetForbidden");
 
 remove("RegisterCustomEvent");
 remove("UnregisterCustomEvent");
-remove("TRACKED_CVARS");
 
 remove("ReloadCollectionHearloomData");
 remove("ReloadCollectionModelData");
 remove("ReloadCollectionMountData");
 remove("ReloadCollectionPetData");
 remove("ReloadCollectionToyData");
-remove("ReloadWorldMapData");
 
 retain("ZODIAC_DEBUFFS");
 retain("FACTION_OVERRIDE_BY_DEBUFFS");
 retain("S_CATEGORY_SPELL_ID");
 retain("S_VIP_STATUS_DATA");
+retain("S_PREMIUM_SPELL_ID");
 
 take("COLLECTION_MOUNTDATA");
 take("COLLECTION_PETDATA");

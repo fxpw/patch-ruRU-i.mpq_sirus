@@ -26,52 +26,61 @@ function ezSpectator_TooltipWorker:HideTooltipFrame()
     self.TooltipFrame:Hide()
 end
 
-function ezSpectator_TooltipWorker:ShowText(ParentFrame, header, textData)
+function ezSpectator_TooltipWorker:ShowText(tooltipOwner, title, lineText)
     self.ReactorFrame:Hide()
 
-    self.TooltipFrame:SetOwner(ParentFrame, 'ANCHOR_BOTTOMRIGHT')
-    self.TooltipFrame:ClearLines()
+	local isLeft = GetCursorPosition() < (GetScreenWidth() * UIParent:GetEffectiveScale() / 2)
+	if isLeft then
+		self.TooltipFrame:SetOwner(tooltipOwner, "ANCHOR_TOPLEFT")
+	else
+		self.TooltipFrame:SetOwner(tooltipOwner, "ANCHOR_TOPRIGHT")
+	end
 
-    if header then
-        self.TooltipFrame:SetText(header)
-    end
+	if title then
+		self.TooltipFrame:SetText(title)
+	end
 
-    for _, lineText in pairs(textData) do
-        self.TooltipFrame:AddLine(lineText, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, true)
-    end
-
-    self:Stylize()
-    self.TooltipFrame:Show()
-end
-
-function ezSpectator_TooltipWorker:ShowSpell(ParentFrame, SpellID)
-    self.ReactorFrame:ClearAllPoints()
-    self.ReactorFrame:SetAllPoints(ParentFrame)
-
-    self.ReactorFrame:SetScript('OnLeave', function(self)
-        self.Parent.TooltipFrame:Hide()
-
-        self:Hide()
-        self:SetScript('OnLeave', nil)
-    end)
-    self.ReactorFrame:Show()
-
-    local IsLeft = select(1, GetCursorPosition()) < GetScreenWidth() * UIParent:GetEffectiveScale() / 2
-    if IsLeft then
-        self.TooltipFrame:SetOwner(ParentFrame, 'ANCHOR_BOTTOMLEFT')
-    else
-        self.TooltipFrame:SetOwner(ParentFrame, 'ANCHOR_BOTTOMRIGHT')
-    end
-
-    self.TooltipFrame:ClearLines()
-    self.TooltipFrame:SetHyperlink('|cff71d5ff|Hspell:' .. SpellID .. '|h[Blizzard Sucks]|h|r')
-    self.TooltipFrame:AddDoubleLine('\nID #' .. SpellID, '', 0.4, 0.4, 0.4)
+	if type(lineText) == "table" then
+		for _, lineText in ipairs(lineText) do
+			self.TooltipFrame:AddLine(lineText, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, true)
+		end
+	elseif type(lineText) == "string" then
+		self.TooltipFrame:AddLine(lineText, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, true)
+	end
 
     self:Stylize()
     self.TooltipFrame:Show()
 end
 
+function ezSpectator_TooltipWorker:ShowSpell(tooltipOwner, spellID, noReactorFrame)
+	if not noReactorFrame then
+		self.ReactorFrame:Hide()
+		self.ReactorFrame:ClearAllPoints()
+		self.ReactorFrame:SetAllPoints(tooltipOwner)
 
+		self.ReactorFrame:SetScript("OnLeave", function(this)
+			self.TooltipFrame:Hide()
+
+			this:Hide()
+			this:SetScript("OnLeave", nil)
+		end)
+		self.ReactorFrame:Show()
+	end
+
+	local isLeft = GetCursorPosition() < (GetScreenWidth() * UIParent:GetEffectiveScale() / 2)
+	if isLeft then
+		self.TooltipFrame:SetOwner(tooltipOwner, "ANCHOR_TOPLEFT")
+	else
+		self.TooltipFrame:SetOwner(tooltipOwner, "ANCHOR_TOPRIGHT")
+	end
+
+	self.TooltipFrame:SetHyperlink(strconcat("spell:", spellID))
+	self.TooltipFrame:AddLine(" ")
+	self.TooltipFrame:AddDoubleLine("Spell ID: " .. spellID, "", 0.4, 0.4, 0.4)
+
+    self:Stylize()
+    self.TooltipFrame:Show()
+end
 
 function ezSpectator_TooltipWorker:Stylize()
     self.TooltipFrame:SetBackdrop({

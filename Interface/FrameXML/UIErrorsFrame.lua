@@ -6,12 +6,14 @@ function UIErrorsFrame_OnLoad(self)
 end
 
 function UIErrorsFrame_OnEvent(self, event, ...)
-	local arg1, arg2, arg3, arg4 = ...
-	if ( event == "SYSMSG" ) then
-		self:AddMessage(arg1, arg2, arg3, arg4, 1.0);
-	elseif ( event == "UI_INFO_MESSAGE" ) then
-		self:AddMessage(arg1, 1.0, 1.0, 0.0, 1.0);
-	elseif ( event == "UI_ERROR_MESSAGE" ) then
-		self:AddMessage(arg1, 1.0, 0.1, 0.1, 1.0);
+	if event == "SYSMSG" then
+		local message, r, g, b = ...;
+		self:AddMessage(message, r, g, b, 1.0);
+	elseif event == "UI_INFO_MESSAGE" then
+		local message = ...;
+		self:AddMessage(message, 1.0, 1.0, 0.0, 1.0);
+	elseif event == "UI_ERROR_MESSAGE" then
+		local message = ...;
+		self:AddMessage(message, 1.0, 0.1, 0.1, 1.0);
 	end
 end

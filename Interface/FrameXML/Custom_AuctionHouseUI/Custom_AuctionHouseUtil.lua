@@ -498,15 +498,8 @@ function AuctionHouseUtil.SetAuctionHouseTooltip(owner, rowData)
 		local hideVendorPrice = true;
 		GameTooltip:SetHyperlink(rowData.itemLink, nil, nil, nil, hideVendorPrice);
 	elseif tooltipType == AuctionHouseTooltipType.ItemKey then
-		GameTooltip:SetHyperlink(string.format("item:%d:%d:::::%d", data.itemID, data.enchantID or 0, data.enchantID and (data.uniqueID or -data.itemSuffix) or 0));
-
-		--[[
-		if data.itemUnique and data.itemSuffix and data.itemUnique > 0 then
-			GameTooltip:SetHyperlink(string.format("item:%d::::::%d:%d:", data.itemID, -data.itemSuffix, 0));
-		else
-			GameTooltip:SetHyperlink(string.format("item:%d::::::%d::", data.itemID, data.itemSuffix or 0));
-		end
-		]]
+		local itemLink = AuctionHouseUtil.GetItemLinkFromItemKey(data)
+		GameTooltip:SetHyperlink(itemLink)
 	end
 
 	if rowData.owners then
@@ -635,4 +628,12 @@ end
 
 function AuctionHouseUtil.CreateVirtualRowData(virtualEntryText, isSelectedVirtualEntry)
 	return { isVirtualEntry = true, virtualEntryText = virtualEntryText, isSelectedVirtualEntry = isSelectedVirtualEntry, };
+end
+
+function AuctionHouseUtil.GetItemLinkFromItemKey(itemKey)
+	if itemKey.enchantID and itemKey.enchantID ~= 0 then
+		return string.format("item:%d:%d:::::%d", itemKey.itemID, itemKey.enchantID or 0, itemKey.enchantID and (itemKey.itemUnique or -itemKey.itemSuffix) or itemKey.itemSuffix)
+	else
+		return string.format("item:%d::::::%d:%d:", itemKey.itemID, itemKey.itemSuffix or 0, itemKey.itemUnique or 0)
+	end
 end

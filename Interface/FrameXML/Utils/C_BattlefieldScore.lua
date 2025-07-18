@@ -1,13 +1,23 @@
+local error = error
+local ipairs = ipairs
+local tonumber = tonumber
+local type = type
+local unpack = unpack
+local strsplit = string.split
+local tinsert, twipe = table.insert, table.wipe
+
+local GetBattlefieldScore = GetBattlefieldScore
+local GetBattlefieldStatData = GetBattlefieldStatData
 local GetNumBattlefieldScores = GetNumBattlefieldScores
 local GetNumBattlefieldStats = GetNumBattlefieldStats
-local GetBattlefieldStatData = GetBattlefieldStatData
-local GetBattlefieldScore = GetBattlefieldScore
+local IsActiveBattlefieldArena = IsActiveBattlefieldArena
+local IsInInstance = IsInInstance
 local SetBattlefieldScoreFaction = SetBattlefieldScoreFaction
 local UnitGUID = UnitGUID
 
-local tinsert, twipe = table.insert, table.wipe
+local C_GlobalStorage = C_GlobalStorage
 
-BATTLEFIELD_SCORE_FACTION = Enum.CreateMirror({
+local BATTLEFIELD_SCORE_FACTION = Enum.CreateMirror({
 	BOTH			= -1,
 	HORDE			= 0,
 	ALLIANCE		= 1,
@@ -55,6 +65,10 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 		PRIVATE.IN_BATTLEGROUND = inInstance == 1 and instanceType == "pvp"
 		PRIVATE.IN_ARENA_BATTLEFIELD = IsActiveBattlefieldArena()
 		PRIVATE.uptodate = nil
+
+		if instanceType == "none" then
+			C_GlobalStorage.SetVar("ASMSG_BG_STAT_RATING_BALANCE", nil)
+		end
 
 		if onBattleground ~= PRIVATE.IsPlayerOnBattleground() then
 			PRIVATE.FILTER_FACTION = BATTLEFIELD_SCORE_FACTION.BOTH
@@ -167,6 +181,22 @@ PRIVATE.GetBattlefieldStatData = function(scoreIndex, statIndex, faction)
 	return columnData or 0
 end
 
+function EventHandler:ASMSG_BG_STAT_RATING_BALANCE(msg)
+	local allianceAvgRating, hordeAvgRating = strsplit(":", msg)
+	if allianceAvgRating and hordeAvgRating then
+		local balanceInfo = C_GlobalStorage.GetVar("ASMSG_BG_STAT_RATING_BALANCE")
+		if not balanceInfo then
+			balanceInfo = {}
+			C_GlobalStorage.SetVar("ASMSG_BG_STAT_RATING_BALANCE", balanceInfo)
+		else
+			twipe(balanceInfo)
+		end
+
+		balanceInfo.allianceAvgRating = tonumber(allianceAvgRating)
+		balanceInfo.hordeAvgRating = tonumber(hordeAvgRating)
+	end
+end
+
 C_BattlefieldScore = {}
 
 function C_BattlefieldScore.GetEntryByName(name, faction)
@@ -205,6 +235,19 @@ function C_BattlefieldScore.GetBattlefieldStatData(scoreIndex, statIndex, factio
 	end
 
 	return PRIVATE.GetBattlefieldStatData(scoreIndex, statIndex, faction or BATTLEFIELD_SCORE_FACTION.BOTH)
+end
+
+function C_BattlefieldScore.GetBattlefieldRatingBalance()
+	if not PRIVATE.IsPlayerOnBattleground() then
+		return 0, 0
+	end
+
+	local balanceInfo = C_GlobalStorage.GetVar("ASMSG_BG_STAT_RATING_BALANCE")
+	if balanceInfo then
+		return balanceInfo.allianceAvgRating, balanceInfo.hordeAvgRating
+	end
+
+	return 0, 0
 end
 
 _G.SetBattlefieldScoreFaction = function(factionMode)

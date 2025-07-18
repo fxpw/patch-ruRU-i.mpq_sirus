@@ -720,6 +720,7 @@
 		</Frames>
 		<Scripts>
 			<OnLoad function="BlackMarketFrame_OnLoad"/>
+			<OnEvent function="BlackMarketFrame_OnEvent"/>
 			<OnShow function="BlackMarketFrame_OnShow"/>
 			<OnHide function="BlackMarketFrame_OnHide"/>
 		</Scripts>

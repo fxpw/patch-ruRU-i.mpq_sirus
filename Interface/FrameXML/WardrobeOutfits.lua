@@ -419,7 +419,7 @@ end
 
 function WardrobeOutfitFrameMixin:SaveLastOutfit(outfitID)
 	local value = outfitID or "";
-	C_CVar:SetValue("C_CVAR_LAST_TRANSMOG_OUTFIT_ID", value);
+	SetCVar("lastTransmogOutfit", value);
 end
 
 function WardrobeOutfitFrameMixin:OverwriteOutfit(outfitID)

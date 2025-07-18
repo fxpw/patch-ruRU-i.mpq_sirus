@@ -5,6 +5,7 @@ local tinsert, twipe = table.insert, table.wipe
 
 local GetAchievementInfo = GetAchievementInfo
 local GetCategoryNumAchievements = GetCategoryNumAchievements
+local RemoveTrackedAchievement = RemoveTrackedAchievement
 local UnitFactionGroup = UnitFactionGroup
 
 local IsDevClient = IsDevClient
@@ -31,10 +32,17 @@ local PRIVATE = {
 PRIVATE.eventHandler = CreateFrame("Frame")
 PRIVATE.eventHandler:Hide()
 PRIVATE.eventHandler:RegisterEvent("PLAYER_ENTERING_WORLD")
+PRIVATE.eventHandler:RegisterEvent("VARIABLES_LOADED")
 PRIVATE.eventHandler:RegisterEvent("ACHIEVEMENT_EARNED")
 PRIVATE.eventHandler:SetScript("OnEvent", function(this, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" or event == "ACHIEVEMENT_EARNED" then
 		twipe(PRIVATE.storage)
+	elseif event == "VARIABLES_LOADED" then
+		if C_FactionManager.IsFactionDataAvailable() then
+			PRIVATE.ValidateAchievements()
+		else
+			C_FactionManager.RegisterCallback(PRIVATE.ValidateAchievements, false, false)
+		end
 	end
 end)
 
@@ -57,6 +65,14 @@ PRIVATE.IsAvailableForPlayerFaction = function(achievementID)
 	end
 
 	return true
+end
+
+PRIVATE.ValidateAchievements = function()
+	for index, achievementID in ipairs({GetTrackedAchievements()}) do
+		if not PRIVATE.IsAvailableForPlayerFaction(achievementID) then
+			RemoveTrackedAchievement(achievementID)
+		end
+	end
 end
 
 PRIVATE.GetAchievementInfo = function(categoryID, index)

@@ -90,26 +90,29 @@ function PVPLadderFrameMixin:GetPlayerInfo( index )
 	local data
 
 	if selectedTab == 1 then
-		local storage = C_CacheInstance:Get("ASMSG_PVP_LADDER_TOP", {}, CACHE_TIME_TO_LIFE)
-
-		data = storage[selectedCategory]
+		local storage = C_GlobalStorage.GetTTLVar("ASMSG_PVP_LADDER_TOP", CACHE_TIME_TO_LIFE)
+		if storage then
+			data = storage[selectedCategory]
+		end
 	elseif selectedTab == 2 then
 		if self.searchBuffer[selectedCategory] then
-			self.topBuffertopBuffer 	= {}
-			data 			= self.searchBuffer[selectedCategory]
+			data = self.searchBuffer[selectedCategory]
 		end
 	elseif selectedTab > 2 then
-		local storage = C_CacheInstance:Get("ASMSG_PVP_LADDER_CLASS_TOP", {}, CACHE_TIME_TO_LIFE)
-		local button  = self.tabButtons[selectedTab]
-
-		if storage[selectedCategory] and storage[selectedCategory][button.buttonID] then
-			data = storage[selectedCategory][button.buttonID]
+		local storage = C_GlobalStorage.GetTTLVar("ASMSG_PVP_LADDER_CLASS_TOP")
+		if storage and storage[selectedCategory] then
+			local button = self.tabButtons[selectedTab]
+			if storage[selectedCategory][button.buttonID] then
+				data = storage[selectedCategory][button.buttonID]
+			end
 		end
 	end
 
-	self.topBuffer = data or self.topBuffer
+	if data then
+		self.topBuffer = data
+	end
 
-	local entry = self.topBuffer[index]
+	local entry = self.topBuffer and self.topBuffer[index]
 
 	if entry then
 		return entry.rank, entry.name, entry.raceID, entry.classID, entry.gender, entry.zodiacID, entry.factionID,
@@ -122,8 +125,10 @@ function PVPLadderFrameMixin:GetNumPlayers()
 	local selectedCategory 	= self:GetSelectedCategory()
 
 	if selectedTab == 1 then
-		local storage 	= C_CacheInstance:Get("ASMSG_PVP_LADDER_TOP", {}, CACHE_TIME_TO_LIFE)
-		self.topBuffer 	= storage[selectedCategory] or self.topBuffer
+		local storage 	= C_GlobalStorage.GetTTLVar("ASMSG_PVP_LADDER_TOP", CACHE_TIME_TO_LIFE)
+		if storage then
+			self.topBuffer = storage[selectedCategory]
+		end
 
 		return tCount(self.topBuffer)
 	elseif selectedTab == 2 then
@@ -133,14 +138,14 @@ function PVPLadderFrameMixin:GetNumPlayers()
 				self.searchData[selectedCategory].ttl 	= nil
 			end
 
-			return tCount(self.searchBuffer[selectedCategory]) or 0
+			return tCount(self.searchBuffer[selectedCategory])
 		end
 		return 0
 	elseif selectedTab > 2 then
-		local storage 		= C_CacheInstance:Get("ASMSG_PVP_LADDER_CLASS_TOP", {}, CACHE_TIME_TO_LIFE)
-		local button  		= self.tabButtons[selectedTab]
+		local storage 		= C_GlobalStorage.GetTTLVar("ASMSG_PVP_LADDER_CLASS_TOP", CACHE_TIME_TO_LIFE)
+		local button		= self.tabButtons[selectedTab]
 
-		if storage[selectedCategory] and storage[selectedCategory][button.buttonID] then
+		if storage and storage[selectedCategory] and storage[selectedCategory][button.buttonID] then
 			self.classBuffer = storage[selectedCategory][button.buttonID]
 		else
 			self.classBuffer = self.classBuffer
@@ -151,9 +156,9 @@ function PVPLadderFrameMixin:GetNumPlayers()
 end
 
 function PVPLadderFrameMixin:UpdateSelfPlayerInfo()
-	local storage 		= C_CacheInstance:Get("ASMSG_PVP_LADDER_PLAYER", {})
-	local data 			= storage[self:GetSelectedCategory()]
-	local frame   		= self.Container.RightContainer.BottomContainer
+	local storage 		= C_GlobalStorage.GetTTLVar("ASMSG_PVP_LADDER_PLAYER")
+	local data 			= storage and storage[self:GetSelectedCategory()]
+	local frame			= self.Container.RightContainer.BottomContainer
 
 	if data then
 		local raceInfo 		= C_CreatureInfo.GetRaceInfo(data.raceID)
@@ -163,7 +168,7 @@ function PVPLadderFrameMixin:UpdateSelfPlayerInfo()
 		frame.PlayerName:SetText(data.name)
 		frame.Rating:SetText(data.totalRating)
 
-		frame.RaceIcon.Icon:SetTexture(string.format("Interface\\Custom\\RaceIcon\\RACE_ICON_%s%s", string.upper(raceInfo.clientFileString), S_GENDER_FILESTRING[data.gender]))
+		frame.RaceIcon.Icon:SetTexture(string.format("Interface\\Custom\\RaceIcon\\RACE_ICON_%s%s", string.upper(raceInfo.clientFileString), S_GENDER_FILESTRING[data.gender] or "MALE"))
 		frame.RaceIcon.raceName = raceInfo.raceName
 
 		frame.ClassIcon.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..string.upper(classFileString))
@@ -267,7 +272,7 @@ function PVPLadderFrameMixin:UpdateScrollFrame( isHideSpinner )
 			button.FontStringFrame.PlayerName:SetText(name)
 			button.FontStringFrame.PlayerName:SetTextColor(r, g, b)
 
-			button.RaceIcon.Icon:SetTexture(string.format("Interface\\Custom\\RaceIcon\\RACE_ICON_%s%s", string.upper(raceInfo.clientFileString), S_GENDER_FILESTRING[gender]))
+			button.RaceIcon.Icon:SetTexture(string.format("Interface\\Custom\\RaceIcon\\RACE_ICON_%s%s", string.upper(raceInfo.clientFileString), S_GENDER_FILESTRING[gender] or "MALE"))
 			button.RaceIcon.raceName = raceInfo.raceName
 
 			button.ClassIcon.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..string.upper(classFileString))
@@ -402,14 +407,14 @@ function PVPLadderTabsMixin:TabClick()
 	local data, expiredTTL
 
 	if selectedTab == 1 then
-		data, expiredTTL = C_CacheInstance:Get("ASMSG_PVP_LADDER_TOP", {}, CACHE_TIME_TO_LIFE)
+		data, expiredTTL = C_GlobalStorage.GetTTLVar("ASMSG_PVP_LADDER_TOP", CACHE_TIME_TO_LIFE)
 	elseif selectedTab > 2 then
-		data, expiredTTL = C_CacheInstance:Get("ASMSG_PVP_LADDER_CLASS_TOP", {}, CACHE_TIME_TO_LIFE)
+		data, expiredTTL = C_GlobalStorage.GetTTLVar("ASMSG_PVP_LADDER_CLASS_TOP", CACHE_TIME_TO_LIFE)
 	end
 
 	if self:GetSelectedTab() and self:GetSelectedTab() == self.buttonIndex then
 		self:SetChecked(true)
-		if not expiredTTL then
+		if data and not expiredTTL then
 			return
 		end
 	end
@@ -421,7 +426,7 @@ function PVPLadderTabsMixin:TabClick()
 	local selectedCategory 	= self:GetSelectedCategory()
 
 	if selectedTab == 1 then
-		if data[selectedCategory] and data[selectedCategory][1] then
+		if data and data[selectedCategory] and data[selectedCategory][1] then
 			PVPLadderFrame:UpdateScrollFrame( true )
 		else
 			SendServerMessage("ACMSG_PVP_LADDER_GET_TOP", selectedCategory)
@@ -430,8 +435,8 @@ function PVPLadderTabsMixin:TabClick()
 		PVPLadderFrame.Container.RightContainer.CentralContainer.ScrollFrame.TextLabelFrame.Text:SetText(PVP_LADDER_SEARCH_TUTORIAL)
 		PVPLadderFrame:UpdateScrollFrame( true )
 	elseif selectedTab > 2 then
-		local button  	= self.tabButtons[selectedTab]
-		if data[selectedCategory] and (data[selectedCategory][button.buttonID] and data[selectedCategory][button.buttonID][1]) then
+		local button = self.tabButtons[selectedTab]
+		if data and data[selectedCategory] and (data[selectedCategory][button.buttonID] and data[selectedCategory][button.buttonID][1]) then
 			PVPLadderFrame:UpdateScrollFrame( true )
 		else
 			SendServerMessage("ACMSG_PVP_LADDER_GET_CLASS_TOP", string.format("%d:%d", selectedCategory, self.buttonID))
@@ -474,9 +479,7 @@ function PVPLadderTabsMixin:GetSelectedTab()
 	return self.tabData.selectedRightTab
 end
 
-PVPLadderInfoFrameMixin = {
-	replayData = {}
-}
+PVPLadderInfoFrameMixin = {}
 
 function PVPLadderInfoFrameMixin:OnLoad()
 	self:SetBorder("ButtonFrameTemplateNoPortrait")
@@ -486,6 +489,9 @@ function PVPLadderInfoFrameMixin:OnLoad()
 		"PlayerTalentFrame",
 		"CharacterFrame"
 	}
+
+	self:RegisterCustomEvent("LADDER_REPLAY_LIST_LOADING")
+	self:RegisterCustomEvent("LADDER_REPLAY_LIST_UPDATE")
 end
 
 function PVPLadderInfoFrameMixin:OnShow()
@@ -500,44 +506,53 @@ function PVPLadderInfoFrameMixin:OnHide()
 	PVPLadderFrame:ShowDetailsFrame(nil)
 end
 
-function PVPLadderInfoFrameMixin:RequestInfo(name)
-	self:ShowLoadingSpinner()
-
-	self.replayData = {
-		[0] = {},
-		[1] = {},
-		[2] = {},
-		[3] = {},
-	}
-	self.requestForPlayer = name
-	SendServerMessage("ACMSG_AR_LAST_REPLAYS", name)
-end
-
-function PVPLadderInfoFrameMixin:GetPlayerWithRequest()
-	return self.requestForPlayer
-end
-
-function PVPLadderInfoFrameMixin:GetReplayInfo( replayIndex )
-	local data = self.replayData[PVPLadderFrame:GetSelectedCategory() or 0][replayIndex]
-
-	if not data then
-		return
+function PVPLadderInfoFrameMixin:OnEvent(event, ...)
+	if event == "LADDER_REPLAY_LIST_UPDATE" then
+		local success = ...
+		PVPLadderInfoFrame:HideLoadingSpinner()
+		PVPLadderInfoFrame:UpdateScrollFrame()
+	elseif event == "LADDER_REPLAY_LIST_LOADING" then
+		self:ShowLoadingSpinner()
 	end
-
-	local replayID 		= data.replayID
-	local bracket 		= data.bracket
-	local winnerTeam 	= data.winnerTeam
-	local playerTeam 	= data.playerTeam
-	local team1Rating 	= data.team1Rating
-	local team2Rating 	= data.team2Rating
-	local team1Players 	= self.replayData[PVPLadderFrame:GetSelectedCategory() or 0][replayIndex].players[1]
-	local team2Players 	= self.replayData[PVPLadderFrame:GetSelectedCategory() or 0][replayIndex].players[2]
-
-	return replayID, bracket, winnerTeam, playerTeam, team1Rating, team2Rating, team1Players, team2Players
 end
 
-function PVPLadderInfoFrameMixin:GetReplayCount()
-	return self.replayData[PVPLadderFrame:GetSelectedCategory() or 0] and #self.replayData[PVPLadderFrame:GetSelectedCategory() or 0] or 0
+function PVPLadderInfoFrameMixin:GetSelectedBracketID()
+	local bracketIndex = PVPLadderFrame:GetSelectedCategory() or 0
+	if bracketIndex == 2 then
+		return 5
+	end
+	return bracketIndex
+end
+
+function PVPLadderInfoFrameMixin:GetNumReplays()
+	if self.index then
+		local rank, name, raceID, classID, gender, zodiacID, factionID, totalRating, seasonGames, weekGames, dayGames, seasonWins, weekWins, dayWins = PVPLadderFrame:GetPlayerInfo(self.index)
+		if name then
+			local bracketID = self:GetSelectedBracketID()
+		 	return C_ReplayInfo.GetNumLadderReplays(name, bracketID)
+		end
+	end
+	return 0
+end
+
+function PVPLadderInfoFrameMixin:GetReplayInfo(replayIndex)
+	if self.index then
+		local rank, name, raceID, classID, gender, zodiacID, factionID, totalRating, seasonGames, weekGames, dayGames, seasonWins, weekWins, dayWins = PVPLadderFrame:GetPlayerInfo(self.index)
+		if name then
+			local bracketID = self:GetSelectedBracketID()
+		 	return C_ReplayInfo.GetLadderReplayInfo(name, bracketID, replayIndex)
+		end
+	end
+end
+
+function PVPLadderInfoFrameMixin:GetReplayRoster(replayIndex)
+	if self.index then
+		local rank, name, raceID, classID, gender, zodiacID, factionID, totalRating, seasonGames, weekGames, dayGames, seasonWins, weekWins, dayWins = PVPLadderFrame:GetPlayerInfo(self.index)
+		if name then
+			local bracketID = self:GetSelectedBracketID()
+		 	return C_ReplayInfo.GetLadderReplayRoster(name, bracketID, replayIndex)
+		end
+	end
 end
 
 function PVPLadderInfoFrameMixin:ShowFrame( playerIndex )
@@ -551,7 +566,7 @@ function PVPLadderInfoFrameMixin:ShowFrame( playerIndex )
 	local rank, name, raceID, classID, gender, zodiacID, factionID, totalRating, seasonGames, weekGames, dayGames, seasonWins, weekWins, dayWins = PVPLadderFrame:GetPlayerInfo(playerIndex)
 	local raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
 
-	self:RequestInfo(name)
+	C_ReplayInfo.RequestLadderReplays(name)
 
 	if self:IsShown() then
 		self:UpdateScrollFrame()
@@ -576,9 +591,8 @@ function PVPLadderInfoFrameMixin:ShowFrame( playerIndex )
 	ShowUIPanel(self)
 end
 
-local BRACKET1_BUTTON_HEIGHT = 48
-local BRACKET2_BUTTON_HEIGHT = 68
-local BRACKET3_BUTTON_HEIGHT = 88
+local BRACKET_BUTTON_HEADER_HEIGHT = 28
+local BRACKET_BUTTON_MEMBER_HEIGHT = 20
 local BRACKET_BUTTON_OFFSET = 4
 local BRACKET_LIST_PADDING = 2
 
@@ -594,19 +608,11 @@ end
 function PVPLadderInfoFrameMixin:CalculateScrollOffset(offset)
 	local usedHeight = 0
 
-	for i = 1, self:GetReplayCount() do
-		local replayID, bracket, winnerTeam, playerTeam, team1Rating, team2Rating, team1Players, team2Players = self:GetReplayInfo(i)
-		local height
-
-		if bracket == 1 then
-			height = BRACKET1_BUTTON_HEIGHT + BRACKET_BUTTON_OFFSET
-		elseif bracket == 2 then
-			height = BRACKET2_BUTTON_HEIGHT + BRACKET_BUTTON_OFFSET
-		else
-			height = BRACKET3_BUTTON_HEIGHT + BRACKET_BUTTON_OFFSET
-		end
+	for replayIndex = 1, self:GetNumReplays() do
+		local replayID, bracketID, bracketName, bracketSize, winnerTeamID, team1Rating, team2Rating, playerTeamID = self:GetReplayInfo(replayIndex)
+		local height = BRACKET_BUTTON_HEADER_HEIGHT + BRACKET_BUTTON_MEMBER_HEIGHT * bracketSize + BRACKET_BUTTON_OFFSET
 		if ( usedHeight + height >= offset ) then
-			return i - 1, offset - usedHeight
+			return replayIndex - 1, offset - usedHeight
 		else
 			usedHeight = usedHeight + height
 		end
@@ -630,7 +636,7 @@ function PVPLadderInfoFrameMixin:UpdateScrollFrame()
 	local numButtons = #buttons
 	local buttonCount = -offset
 	local button, index
-	local replayCount = self:GetReplayCount()
+	local replayCount = self:GetNumReplays()
 	local displayedHeight = 0
 
 	if scrollFrame.Spinner:IsShown() then
@@ -647,13 +653,11 @@ function PVPLadderInfoFrameMixin:UpdateScrollFrame()
 		scrollFrame.TextLabelFrame.Text:SetText(PVP_LADDER_SEARCH_NOT_RESULT)
 	end
 
-	local totalHeight = replayCount * (BRACKET2_BUTTON_HEIGHT + BRACKET_BUTTON_OFFSET) + BRACKET_LIST_PADDING * 2
+	local totalHeight = BRACKET_LIST_PADDING * 2
 
 	for i = 1, replayCount do
-		local replayID, bracket, winnerTeam, playerTeam, team1Rating, team2Rating, team1Players, team2Players = self:GetReplayInfo(i)
-		if bracket == 3 then
-			totalHeight = totalHeight + BRACKET3_BUTTON_HEIGHT - BRACKET2_BUTTON_HEIGHT
-		end
+		local replayID, bracketID, bracketName, bracketSize, winnerTeamID, team1Rating, team2Rating, playerTeamID = self:GetReplayInfo(i)
+		totalHeight = totalHeight + BRACKET_BUTTON_HEADER_HEIGHT + BRACKET_BUTTON_MEMBER_HEIGHT * bracketSize + BRACKET_BUTTON_OFFSET
 	end
 
 	for i = 1, numButtons do
@@ -661,64 +665,68 @@ function PVPLadderInfoFrameMixin:UpdateScrollFrame()
 		index = offset + i
 
 		if index <= replayCount then
-			local replayID, bracket, winnerTeam, playerTeam, team1Rating, team2Rating, team1Players, team2Players = self:GetReplayInfo(index)
-			local resultLabel = {[0] = button.ResultLeft, [1] = button.ResultRight}
+			local replayID, bracketID, bracketName, bracketSize, winnerTeamID, team1Rating, team2Rating, playerTeamID = self:GetReplayInfo(index)
+			local team1Players, team2Players = self:GetReplayRoster(index)
+			local resultLabel = {button.ResultLeft, button.ResultRight}
 
 			button.RatingLeft:SetText(team1Rating)
 			button.RatingRight:SetText(team2Rating)
 
-			if winnerTeam == 2 then
+			if winnerTeamID == 0 then
 				button.ResultLeft:SetText(VICTORY_TEXT2)
 				button.ResultLeft:SetTextColor(1, 0.82, 0)
 
 				button.ResultRight:SetText(VICTORY_TEXT2)
 				button.ResultRight:SetTextColor(1, 0.82, 0)
 			else
-				resultLabel[0]:SetText(WIN)
-				resultLabel[0]:SetTextColor(0, 1, 0)
-				resultLabel[1]:SetText(LOSS)
-				resultLabel[1]:SetTextColor(1, 0, 0)
+				resultLabel[1]:SetText(WIN)
+				resultLabel[1]:SetTextColor(0, 1, 0)
+				resultLabel[2]:SetText(LOSS)
+				resultLabel[2]:SetTextColor(1, 0, 0)
 			end
 
-			for i = 0, 1 do
-				if winnerTeam == 2 or i == playerTeam then
-					resultLabel[i]:Show()
+			for teamIndex = 1, 2 do
+				if winnerTeamID == 0 or teamIndex == playerTeamID then
+					resultLabel[teamIndex]:Show()
 				else
-					resultLabel[i]:Hide()
+					resultLabel[teamIndex]:Hide()
 				end
 			end
 
-			for i = 1, bracket do
-				local leftPlayerFrame 	= button.playerLeftButtons[i]
-				local leftPlayer 		= team1Players[i]
+			for playerIndex = 1, bracketSize do
+				local playerLeft = team1Players[playerIndex]
+				local playerRight = team2Players[playerIndex]
 
-				local rightPlayerFrame 	= button.playerRightButtons[i]
-				local rightPlayer 		= team2Players[i]
+				local leftPlayerFrame = button.playerLeftButtons[playerIndex]
+				local rightPlayerFrame = button.playerRightButtons[playerIndex]
 
-
-				if leftPlayer then
-					leftPlayerFrame.PlayerName:SetText(leftPlayer.name)
-					leftPlayerFrame.ClassIcon.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..leftPlayer.classFileString)
-					leftPlayerFrame.ClassIcon.className = leftPlayer.className
+				if playerLeft then
+					local className, classFileString = GetClassInfo(playerLeft.classID)
+					leftPlayerFrame.PlayerName:SetText(playerLeft.name)
+					leftPlayerFrame.ClassIcon.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..classFileString)
+					leftPlayerFrame.ClassIcon.className = className
+					leftPlayerFrame:Show()
+				else
+					leftPlayerFrame:Hide()
 				end
 
-				leftPlayerFrame:SetShown(leftPlayer)
-
-				if rightPlayer then
-					rightPlayerFrame.PlayerName:SetText(rightPlayer.name)
-					rightPlayerFrame.ClassIcon.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..rightPlayer.classFileString)
-					rightPlayerFrame.ClassIcon.className = rightPlayer.className
+				if playerRight then
+					local className, classFileString = GetClassInfo(playerRight.classID)
+					rightPlayerFrame.PlayerName:SetText(playerRight.name)
+					rightPlayerFrame.ClassIcon.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..classFileString)
+					rightPlayerFrame.ClassIcon.className = className
+					rightPlayerFrame:Show()
+				else
+					rightPlayerFrame:Hide()
 				end
-
-				rightPlayerFrame:SetShown(rightPlayer)
 			end
 
-			button:SetHeight(bracket == 1 and BRACKET1_BUTTON_HEIGHT or bracket == 2 and BRACKET2_BUTTON_HEIGHT or BRACKET3_BUTTON_HEIGHT)
+			button:SetHeight(BRACKET_BUTTON_HEADER_HEIGHT + BRACKET_BUTTON_MEMBER_HEIGHT * bracketSize)
 
-			button.PlayerLeft2:SetShown(bracket ~= 1)
-			button.PlayerRight2:SetShown(bracket ~= 1)
-			button.PlayerLeft3:SetShown(bracket == 3)
-			button.PlayerRight3:SetShown(bracket == 3)
+			button.PlayerLeft2:SetShown(bracketSize >= 2)
+			button.PlayerRight2:SetShown(bracketSize >= 2)
+			button.PlayerLeft3:SetShown(bracketSize >= 3)
+			button.PlayerRight3:SetShown(bracketSize >= 3)
 
 			button.replayID = replayID
 
@@ -804,21 +812,27 @@ function EventHandler:ASMSG_PVP_LADDER_TOP(msg)
 	end
 
 	if playerData and playerData ~= "" then
-		local storage = C_CacheInstance:Get("ASMSG_PVP_LADDER_TOP", {}, CACHE_TIME_TO_LIFE)
+		local storage = C_GlobalStorage.GetTTLVar("ASMSG_PVP_LADDER_TOP", CACHE_TIME_TO_LIFE)
+		if not storage then
+			storage = {}
+			C_GlobalStorage.SetTTLVar("ASMSG_PVP_LADDER_TOP", storage, CACHE_TIME_TO_LIFE)
+		end
+
+		if not storage[selectedCategory] then
+			storage[selectedCategory] = {}
+		else
+			table.wipe(storage[selectedCategory])
+		end
 
 		for _, playerEntryStr in ipairs({StringSplitEx("|", playerData)}) do
 			local entry = createLadderEntryData(playerEntryStr)
 			if entry then
-				if not storage[selectedCategory] then
-					storage[selectedCategory] = {}
-				end
-
 				table.insert(storage[selectedCategory], entry)
 			end
 		end
 	else
 		PVPLadderFrame:ResetFrame(true)
-		C_CacheInstance:Set("ASMSG_PVP_LADDER_TOP", {}, CACHE_TIME_TO_LIFE)
+		C_GlobalStorage.SetTTLVar("ASMSG_PVP_LADDER_TOP", nil)
 	end
 
 	PVPLadderFrame:UpdateScrollFrame( true )
@@ -835,21 +849,27 @@ function EventHandler:ASMSG_PVP_LADDER_CLASS_TOP(msg)
 		return
 	end
 
-	local storage = C_CacheInstance:Get("ASMSG_PVP_LADDER_CLASS_TOP", {}, CACHE_TIME_TO_LIFE)
+	local storage = C_GlobalStorage.GetTTLVar("ASMSG_PVP_LADDER_CLASS_TOP")
+	if not storage then
+		storage = {}
+		C_GlobalStorage.SetTTLVar("ASMSG_PVP_LADDER_CLASS_TOP", storage, CACHE_TIME_TO_LIFE)
+	end
 
 	if playerData and playerData ~= "" then
+		if not storage[selectedCategory] then
+			storage[selectedCategory] = {}
+		end
+
+		if not storage[selectedCategory][selectedClassID] then
+			storage[selectedCategory][selectedClassID] = {}
+		else
+			table.wipe(storage[selectedCategory][selectedClassID])
+		end
+
 		for _, playerEntryStr in ipairs({StringSplitEx("|", playerData)}) do
 			local entry = createLadderEntryData(playerEntryStr)
 			if entry then
-				if not storage[selectedCategory] then
-					storage[selectedCategory] = {}
-				end
-
-				if not storage[selectedCategory][entry.classID] then
-					storage[selectedCategory][entry.classID] = {}
-				end
-
-				table.insert(storage[selectedCategory][entry.classID], entry)
+				table.insert(storage[selectedCategory][selectedClassID], entry)
 			end
 		end
 	else
@@ -873,16 +893,24 @@ function EventHandler:ASMSG_PVP_LADDER_PLAYER(msg)
 		return
 	end
 
-	local storage = C_CacheInstance:Get("ASMSG_PVP_LADDER_PLAYER", {}, CACHE_TIME_TO_LIFE)
-
 	if playerEntryStr and playerEntryStr ~= "" then
 		local entry = createLadderEntryData(playerEntryStr)
 		if entry then
+			local storage = C_GlobalStorage.GetTTLVar("ASMSG_PVP_LADDER_PLAYER")
+			if not storage then
+				storage = {}
+				C_GlobalStorage.SetTTLVar("ASMSG_PVP_LADDER_PLAYER", storage, CACHE_TIME_TO_LIFE)
+			end
+
 			storage[selectedCategory] = entry
 			PVPLadderFrame:UpdateSelfPlayerInfo()
 		end
 	else
-		storage[selectedCategory] = nil
+		local storage = C_GlobalStorage.GetTTLVar("ASMSG_PVP_LADDER_PLAYER")
+		if storage then
+			storage[selectedCategory] = nil
+			C_GlobalStorage.UpdateVarTTL("ASMSG_PVP_LADDER_PLAYER", CACHE_TIME_TO_LIFE)
+		end
 	end
 end
 
@@ -954,99 +982,4 @@ function EventHandler:ASMSG_PVP_LADDER_PLAYER_INSPECT(msg)
 		entry = createLadderEntryData(playerEntryStr)
 	end
 	FireCustomClientEvent("INSPECT_PVP_LADDER", tonumber(selectedCategory), entry)
-end
-
-local bracketOverride = {
-	[0] = 3,
-	[1] = 2,
-	[2] = 1,
-	[3] = 5
-}
-
-function EventHandler:ASMSG_AR_LAST_REPLAYS( msg )
-	if not msg then
-		return
-	end
-
-	local replayStorage 	= C_Split(msg, "|")
-	local bracketID		 	= tonumber(table.remove(replayStorage, 1))
-
-	if bracketID == 5 then
-		bracketID = 2
-	end
-
-	local playerWithRequest = PVPLadderInfoFrame:GetPlayerWithRequest()
-
-	PVPLadderInfoFrame.replayData[bracketID] = {}
-
-	if replayStorage then
-		for index, replayMsg in pairs(replayStorage) do
-			local replayData 	= C_Split(replayMsg, ":")
-			local replayID 		= tonumber(table.remove(replayData, 1))
-			local winnerTeam 	= tonumber(table.remove(replayData, 3))
-
-			local winTeam 	= 1
-			local lossTeam 	= 2
-
-			if winnerTeam ~= 2 then
-				if winnerTeam == 1 then
-					winTeam 	= 1
-					lossTeam 	= 2
-				else
-					winTeam 	= 2
-					lossTeam 	= 1
-				end
-			end
-
-			local team1Data 	= C_Split(replayData[winTeam], ",")
-			local team2Data 	= C_Split(replayData[lossTeam], ",")
-			local rating 		= C_Split(replayData[3], ",")
-
-			PVPLadderInfoFrame.replayData[bracketID][index] = {
-				replayID 	= replayID,
-				winnerTeam 	= winnerTeam,
-				bracket 	= bracketOverride[bracketID],
-				team1Rating = rating[winTeam],
-				team2Rating = rating[lossTeam],
-			}
-
-			PVPLadderInfoFrame.replayData[bracketID][index].players = {
-				[1] = {},
-				[2] = {}
-			}
-
-			for i = 1, #team1Data, 2 do
-				local team1PlayerName 						= team1Data[i]
-				local team1ClassID 							= max(1, team1Data[i + 1])
-				local team1ClassName, team1ClassFileString 	= GetClassInfo(tonumber(team1ClassID))
-
-				local team2PlayerName 						= team2Data[i]
-				local team2ClassID 							= max(1, team2Data[i + 1])
-				local team2ClassName, team2ClassFileString 	= GetClassInfo(tonumber(team2ClassID))
-
-				table.insert(PVPLadderInfoFrame.replayData[bracketID][index].players[1], {
-					name 			= team1PlayerName,
-					className 		= team1ClassName,
-					classFileString = team1ClassFileString
-				})
-
-				table.insert(PVPLadderInfoFrame.replayData[bracketID][index].players[2], {
-					name 			= team2PlayerName,
-					className 		= team2ClassName,
-					classFileString = team2ClassFileString
-				})
-
-				if playerWithRequest then
-					if playerWithRequest == team1PlayerName then
-						PVPLadderInfoFrame.replayData[bracketID][index].playerTeam = 0
-					elseif playerWithRequest == team2PlayerName then
-						PVPLadderInfoFrame.replayData[bracketID][index].playerTeam = 1
-					end
-				end
-			end
-		end
-	end
-
-	PVPLadderInfoFrame:HideLoadingSpinner()
-	PVPLadderInfoFrame:UpdateScrollFrame()
 end

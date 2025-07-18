@@ -2,7 +2,7 @@ local bitband, bitbnot = bit.band, bit.bnot
 local tonumber = tonumber
 local strconcat, strsplit = strconcat, string.split
 
-local C_CacheInstance = C_CacheInstance
+local C_GlobalStorageSecure = C_GlobalStorageSecure
 local FireCustomClientEvent = FireCustomClientEvent
 local IsInterfaceDevClient = IsInterfaceDevClient
 local IsOnGlueScreen = IsOnGlueScreen
@@ -66,12 +66,12 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 		if prefix == "ASMSG_SERVICE_MSG" then
 			local isGM, realmID, accountID, realmFlag, realmStage = strsplit("|", content)
 
-			C_CacheInstance:Set("C_SERVICE_IS_GM", tonumber(isGM) ~= 0)
-			C_CacheInstance:Set("C_SERVICE_REALM_ID", tonumber(realmID))
-			C_CacheInstance:Set("C_SERVICE_ACCOUNT_ID", tonumber(accountID))
-			C_CacheInstance:Set("C_SERVICE_REALM_FLAG", tonumber(realmFlag))
-			C_CacheInstance:Set("C_SERVICE_REALM_STAGE", tonumber(realmStage))
-			C_CacheInstance:Set("C_SERVICE_IS_GM_MODE", nil)
+			C_GlobalStorageSecure.SetGlobalVar("C_SERVICE_IS_GM", tonumber(isGM) ~= 0)
+			C_GlobalStorageSecure.SetGlobalVar("C_SERVICE_REALM_ID", tonumber(realmID))
+			C_GlobalStorageSecure.SetGlobalVar("C_SERVICE_ACCOUNT_ID", tonumber(accountID))
+			C_GlobalStorageSecure.SetGlobalVar("C_SERVICE_REALM_FLAG", tonumber(realmFlag))
+			C_GlobalStorageSecure.SetGlobalVar("C_SERVICE_REALM_STAGE", tonumber(realmStage))
+			C_GlobalStorageSecure.SetGlobalVar("C_SERVICE_IS_GM_MODE", nil)
 
 			FireCustomClientEvent("SERVICE_DATA_UPDATE")
 		end
@@ -84,10 +84,10 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 		if prefix == "ASMSG_C_V" then
 			local id, value = string.split(":", msg)
 
-			local customValues = C_CacheInstance:Get("ASMSG_C_V")
+			local customValues = C_GlobalStorageSecure.GetGlobalVar("ASMSG_C_V")
 			if not customValues then
 				customValues = {}
-				C_CacheInstance:Set("ASMSG_C_V", customValues)
+				C_GlobalStorageSecure.SetGlobalVar("ASMSG_C_V", customValues)
 			end
 
 			customValues[tonumber(id)] = tonumber(value)
@@ -96,9 +96,9 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 		elseif prefix == "ASMSG_ENABLE_X1_RATE" then
 			local status = tonumber(msg)
 			if status == ENABLE_X1_RATE_STATUS.SUCCESS
-			or (status == ENABLE_X1_RATE_STATUS.ALREADY_ENABLED and not C_CacheInstance:Get("ASMSG_ENABLE_X1_RATE"))
+			or (status == ENABLE_X1_RATE_STATUS.ALREADY_ENABLED and not C_GlobalStorageSecure.GetGlobalVar("ASMSG_ENABLE_X1_RATE"))
 			then
-				C_CacheInstance:Set("ASMSG_ENABLE_X1_RATE", true)
+				C_GlobalStorageSecure.SetGlobalVar("ASMSG_ENABLE_X1_RATE", true)
 				FireCustomClientEvent("SERVICE_RATE_UPDATE")
 			end
 		elseif prefix == "ASMSG_HARDCORE_CHALLENGE_ACTIVATE"
@@ -135,13 +135,13 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 	elseif event == "UI_ERROR_MESSAGE" then
 		local msg = ...
 		if msg == ERROR_MESSAGE_GM_ON then
-			if not C_CacheInstance:Get("C_SERVICE_IS_GM_MODE") then
-				C_CacheInstance:Set("C_SERVICE_IS_GM_MODE", true)
+			if not C_GlobalStorageSecure.GetGlobalVar("C_SERVICE_IS_GM_MODE") then
+				C_GlobalStorageSecure.SetGlobalVar("C_SERVICE_IS_GM_MODE", true)
 				FireCustomClientEvent("SERVICE_STATE_UPDATE", true)
 			end
 		elseif msg == ERROR_MESSAGE_GM_OFF then
-			if C_CacheInstance:Get("C_SERVICE_IS_GM_MODE") then
-				C_CacheInstance:Set("C_SERVICE_IS_GM_MODE", nil)
+			if C_GlobalStorageSecure.GetGlobalVar("C_SERVICE_IS_GM_MODE") then
+				C_GlobalStorageSecure.SetGlobalVar("C_SERVICE_IS_GM_MODE", nil)
 				FireCustomClientEvent("SERVICE_STATE_UPDATE", false)
 			end
 		end
@@ -160,7 +160,7 @@ PRIVATE.eventHandler:SetScript("OnEvent", function(self, event, ...)
 end)
 
 PRIVATE.GetRealmFlag = function(flag)
-	local realmFlag = C_CacheInstance:Get("C_SERVICE_REALM_FLAG")
+	local realmFlag = C_GlobalStorageSecure.GetGlobalVar("C_SERVICE_REALM_FLAG")
 	if realmFlag then
 		return bitband(realmFlag, flag)
 	end
@@ -168,7 +168,7 @@ PRIVATE.GetRealmFlag = function(flag)
 end
 
 PRIVATE.GetPlayerFlag = function(flag)
-	local playerFlag = C_CacheInstance:Get("C_SERVICE_PLAYER_FLAG")
+	local playerFlag = C_GlobalStorageSecure.GetGlobalVar("C_SERVICE_PLAYER_FLAG")
 	if playerFlag then
 		return bitband(playerFlag, flag)
 	end
@@ -176,22 +176,23 @@ PRIVATE.GetPlayerFlag = function(flag)
 end
 
 PRIVATE.ChallengeModeEnable = function(challengeID)
-	C_CacheInstance:Set("C_SERVICE_CHALLENGE_ID", challengeID)
+	C_GlobalStorageSecure.SetGlobalVar("C_SERVICE_CHALLENGE_ID", challengeID)
 	FireCustomClientEvent("CUSTOM_CHALLENGE_ACTIVATED", challengeID)
 end
 
 PRIVATE.ChallengeModeDisable = function(reason)
 	if reason == CHALLENGE_DISABLE_REASON.COMPLETE
 	or reason == CHALLENGE_DISABLE_REASON.RESTORE
+	or reason == CHALLENGE_DISABLE_REASON.DEACTIVATED
 	then
-		local playerFlag = C_CacheInstance:Get("C_SERVICE_PLAYER_FLAG")
+		local playerFlag = C_GlobalStorageSecure.GetGlobalVar("C_SERVICE_PLAYER_FLAG")
 		if playerFlag then
-			C_CacheInstance:Set("C_SERVICE_PLAYER_FLAG", bitband(playerFlag, bitbnot(CLIENT_PLAYER_FLAGS.HARDCORE)))
-
-			local challengeID = C_CacheInstance:Get("C_SERVICE_CHALLENGE_ID")
-			C_CacheInstance:Set("C_SERVICE_CHALLENGE_ID", 0)
-			FireCustomClientEvent("CUSTOM_CHALLENGE_DEACTIVATED", challengeID, reason)
+			C_GlobalStorageSecure.SetGlobalVar("C_SERVICE_PLAYER_FLAG", bitband(playerFlag, bitbnot(CLIENT_PLAYER_FLAGS.HARDCORE)))
 		end
+
+		local challengeID = C_GlobalStorageSecure.GetGlobalVar("C_SERVICE_CHALLENGE_ID") or 0
+		C_GlobalStorageSecure.SetGlobalVar("C_SERVICE_CHALLENGE_ID", 0)
+		FireCustomClientEvent("CUSTOM_CHALLENGE_DEACTIVATED", challengeID, reason)
 	end
 end
 
@@ -207,19 +208,19 @@ PRIVATE.IsGMAccount = function(skipDevOverride)
 			end
 		end
 	end
-	return C_CacheInstance:Get("C_SERVICE_IS_GM") or false
+	return C_GlobalStorageSecure.GetGlobalVar("C_SERVICE_IS_GM") or false
 end
 
 PRIVATE.GetAccountID = function()
-	return C_CacheInstance:Get("C_SERVICE_ACCOUNT_ID") or 0
+	return C_GlobalStorageSecure.GetGlobalVar("C_SERVICE_ACCOUNT_ID") or 0
 end
 
 PRIVATE.GetRealmID = function()
-	return C_CacheInstance:Get("C_SERVICE_REALM_ID") or 0
+	return C_GlobalStorageSecure.GetGlobalVar("C_SERVICE_REALM_ID") or 0
 end
 
 PRIVATE.GetRealmStage = function()
-	return C_CacheInstance:Get("C_SERVICE_REALM_STAGE") or 0
+	return C_GlobalStorageSecure.GetGlobalVar("C_SERVICE_REALM_STAGE") or 0
 end
 
 PRIVATE.IsStoreEnabled = function()
@@ -227,7 +228,7 @@ PRIVATE.IsStoreEnabled = function()
 end
 
 PRIVATE.IsRateX1Enabled = function()
-	return C_CacheInstance:Get("ASMSG_ENABLE_X1_RATE") or false
+	return C_GlobalStorageSecure.GetGlobalVar("ASMSG_ENABLE_X1_RATE") or false
 end
 
 PRIVATE.CanChangeExpRate = function()
@@ -331,7 +332,7 @@ function C_Service.HasActiveChallenges()
 	if IsOnGlueScreen() then
 		return C_CharacterList.GetActiveChallengeID() ~= 0
 	else
-		local challengeID = C_CacheInstance:Get("C_SERVICE_CHALLENGE_ID")
+		local challengeID = C_GlobalStorageSecure.GetGlobalVar("C_SERVICE_CHALLENGE_ID")
 		if challengeID then
 			return challengeID ~= 0
 		end
@@ -347,7 +348,7 @@ function C_Service.IsChallengeActive(challengeID)
 	if IsOnGlueScreen() then
 		return C_CharacterList.IsChallengeActive(nil, challengeID)
 	else
-		return C_CacheInstance:Get("C_SERVICE_CHALLENGE_ID") == challengeID
+		return C_GlobalStorageSecure.GetGlobalVar("C_SERVICE_CHALLENGE_ID") == challengeID
 	end
 end
 
@@ -356,7 +357,7 @@ function C_Service.IsGMAccount(skipDevOverride)
 end
 
 function C_Service.IsInGMMode()
-	return PRIVATE.IsGMAccount(true) and C_CacheInstance:Get("C_SERVICE_IS_GM_MODE") or false
+	return PRIVATE.IsGMAccount(true) and C_GlobalStorageSecure.GetGlobalVar("C_SERVICE_IS_GM_MODE") or false
 end
 
 function C_Service.GetCustomValue(id)
@@ -364,7 +365,7 @@ function C_Service.GetCustomValue(id)
 		error(string.format("bad argument #1 to 'C_Service.GetCustomValue' (table expected, got %s)", id ~= nil and type(id) or "no value"), 2)
 	end
 
-	local customValues = C_CacheInstance:Get("ASMSG_C_V")
+	local customValues = C_GlobalStorageSecure.GetGlobalVar("ASMSG_C_V")
 	if customValues and customValues[id] then
 		return customValues[id] or nil
 	end

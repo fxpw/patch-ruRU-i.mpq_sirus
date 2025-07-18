@@ -111,20 +111,22 @@ function MerchantFrame_UpdateMerchantInfo()
 			SetItemButtonTexture(itemButton, texture);
 
 			local itemLink = GetMerchantItemLink(index)
-			local honorPoints, arenaPoints = GetMerchantItemCostInfo(index);
-			local requirementType, requiredRating = C_Item.GetRequiredPVPRating(itemLink, honorPoints, arenaPoints)
+			if itemLink then
+				local honorPoints, arenaPoints = GetMerchantItemCostInfo(index)
+				local requirementType, requiredRating = C_Item.GetRequiredPVPRating(itemLink, honorPoints, arenaPoints)
 
-			if requirementType == Enum.ItemRequirementType.Removed then
-				isUsable = true
-			elseif requirementType == Enum.ItemRequirementType.Battleground then
-				local _, _, _, _, rating = GetRatedBattlegroundRankInfo()
-				if rating >= requiredRating then
+				if requirementType == Enum.ItemRequirementType.Removed then
 					isUsable = true
-				end
-			elseif requirementType == Enum.ItemRequirementType.Arena then
-				local rating = math.max(GetArenaRating(1), GetArenaRating(2))
-				if rating >= requiredRating then
-					isUsable = true
+				elseif requirementType == Enum.ItemRequirementType.Battleground then
+					local rating = C_PvP.GetRatedBattlegroundRating()
+					if rating >= requiredRating then
+						isUsable = true
+					end
+				elseif requirementType == Enum.ItemRequirementType.Arena then
+					local rating = math.max(GetArenaRating(1), GetArenaRating(2))
+					if rating >= requiredRating then
+						isUsable = true
+					end
 				end
 			end
 

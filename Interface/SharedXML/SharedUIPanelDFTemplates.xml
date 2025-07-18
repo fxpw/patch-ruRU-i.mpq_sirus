@@ -284,4 +284,116 @@
 			<Button parentKey="CloseButton" inherits="DF_UIPanelCloseButtonDefaultAnchors"/>
 		</Frames>
 	</Frame>
+
+	<Slider name="DF_MinimalScrollBar" virtual="true">
+		<Size x="8" y="560"/>
+		<ThumbTexture name="$parentThumbTexture" parentKey="ThumbTexture">
+			<Size x="8" y="260"/>
+		</ThumbTexture>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentTop" parentKey="Top">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBottom" parentKey="Bottom">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentMiddle" parentKey="Middle">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentTop" relativePoint="BOTTOMLEFT"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentBottom" relativePoint="TOPRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentThumbBottom" parentKey="ThumbBottom">
+					<Anchors>
+						<Anchor point="BOTTOM" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentThumbTop" parentKey="ThumbTop">
+					<Anchors>
+						<Anchor point="TOP" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentThumbMiddle" parentKey="ThumbMiddle">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentThumbTop" relativePoint="BOTTOMLEFT"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentThumbBottom" relativePoint="TOPRIGHT" y="-28"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentScrollUpButton" parentKey="ScrollUpButton">
+				<Size x="17" y="11"/>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="19"/>
+				</Anchors>
+				<NormalTexture parentKey="NormalTexture"/>
+				<PushedTexture parentKey="PushedTexture"/>
+				<DisabledTexture parentKey="DisabledTexture"/>
+				<HighlightTexture parentKey="HighlightTexture" alphaMode="ADD"/>
+				<Scripts>
+					<OnLoad>
+						self.NormalTexture:SetAtlas("minimal-scrollbar-arrow-top")
+						self.PushedTexture:SetAtlas("minimal-scrollbar-arrow-top-down")
+						self.DisabledTexture:SetAtlas("minimal-scrollbar-arrow-top")
+						self.HighlightTexture:SetAtlas("minimal-scrollbar-arrow-top-over")
+					</OnLoad>
+					<OnClick function="UIPanelScrollBarScrollUpButton_OnClick"/>
+				</Scripts>
+			</Button>
+			<Button name="$parentScrollDownButton" parentKey="ScrollDownButton">
+				<Size x="17" y="11"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="-19"/>
+				</Anchors>
+				<NormalTexture parentKey="NormalTexture"/>
+				<PushedTexture parentKey="PushedTexture"/>
+				<DisabledTexture parentKey="DisabledTexture"/>
+				<HighlightTexture parentKey="HighlightTexture" alphaMode="ADD"/>
+				<Scripts>
+					<OnLoad>
+						self.NormalTexture:SetAtlas("minimal-scrollbar-arrow-bottom")
+						self.PushedTexture:SetAtlas("minimal-scrollbar-arrow-bottom-down")
+						self.DisabledTexture:SetAtlas("minimal-scrollbar-arrow-bottom")
+						self.HighlightTexture:SetAtlas("minimal-scrollbar-arrow-bottom-over")
+					</OnLoad>
+					<OnClick function="UIPanelScrollBarScrollDownButton_OnClick"/>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				self.Top:SetAtlas("minimal-scrollbar-track-top", true)
+				self.Bottom:SetAtlas("minimal-scrollbar-track-bottom", true)
+				self.Middle:SetAtlas("!minimal-scrollbar-track-middle")
+
+				self.ThumbTop:SetAtlas("minimal-scrollbar-thumb-top", true)
+				self.ThumbBottom:SetAtlas("minimal-scrollbar-thumb-bottom", true)
+				self.ThumbMiddle:SetAtlas("minimal-scrollbar-thumb-middle")
+
+				self.ThumbTop:SetPoint("TOP", self.ThumbTexture, "TOP", 0, 0)
+				self.ThumbBottom:SetPoint("BOTTOM", self.ThumbTexture, "BOTTOM", 0, 0)
+
+				Mixin(self, PKBT_UIPanelScrollBarMixin)
+			</OnLoad>
+			<OnValueChanged function="UIPanelScrollBar_OnValueChanged"/>
+			<OnSizeChanged>
+				if self.OnSizeChanged then
+					self:OnSizeChanged(w, h)
+				end
+			</OnSizeChanged>
+			<OnMinMaxChanged>
+				self:OnMinMaxChanged(min, max)
+			</OnMinMaxChanged>
+		</Scripts>
+	</Slider>
 </Ui>

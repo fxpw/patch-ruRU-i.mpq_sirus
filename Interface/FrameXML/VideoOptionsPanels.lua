@@ -89,6 +89,7 @@ ResolutionPanelOptions = {
 	desktopGamma = { text = "DESKTOP_GAMMA" },
 	gamma = { text = "GAMMA", minValue = -.5, maxValue = .5, valueStep = .1 },
 	uiscale = { text = "", minValue = .64, maxValue = .90, valueStep = .01 },
+	enableCursorFix = { text = "CURSOR_REFRESH_RATE_FIX" },
 }
 
 function VideoOptionsResolutionPanel_Default (self, skipRestore)

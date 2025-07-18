@@ -688,11 +688,14 @@ function TutorialFrame_Update(currentTutorial)
 	TutorialFrame:SetSize(TUTORIALFRAME_WIDTH, height);
 
 	-- setup the text
-	local title = _G["TUTORIAL_TITLE"..currentTutorial];
 	local text = _G["TUTORIAL"..currentTutorial];
-	if ( title and text) then
-		TutorialFrameTitle:SetText(title);
+	local title = _G["TUTORIAL_TITLE"..currentTutorial];
+	if (text) then
 		TutorialFrameText:SetText(text);
+	end
+
+	if (title) then
+		TutorialFrameTitle:SetText(title);
 	end
 	if ( displayData.textBox) then
 		TutorialFrameTextScrollFrame:SetPoint("TOPLEFT", TutorialFrame, "TOPLEFT", displayData.textBox.topLeft_xOff, displayData.textBox.topLeft_yOff);
@@ -970,10 +973,7 @@ end
 function HelpPlate_ShowTutorialPrompt( self, mainHelpButton )
 	mainHelpButton.initialTutorial = true;
 	Main_HelpPlate_Button_ShowTooltip(mainHelpButton);
-	if HelpPlateTooltip.LingerAndFade:IsPlaying() then
-		HelpPlateTooltip.LingerAndFade:Stop()
-	end
-	HelpPlateTooltip.LingerAndFade:Play();
+	HelpPlateTooltip.LingerAndFade:Restart();
 end
 
 local HELP_PLATE_CURRENT_PLATE = nil;

@@ -688,11 +688,11 @@ function UnitPopup_ShowMenu (dropdownMenu, which, unit, name, userData)
 						info.checked = 1;
 					end
 				elseif value == "HEADHUNTING_ENABLE" then
-					if C_CacheInstance:Get("ASMSG_HEADHUNTING_ZONE_NOTIFICATIONS", 0) == 1 then
+					if C_GlobalStorage.GetVar("ASMSG_HEADHUNTING_ZONE_NOTIFICATIONS") == 1 then
 						info.checked = 1
 					end
 				elseif value == "HEADHUNTING_DISABLE" then
-					if C_CacheInstance:Get("ASMSG_HEADHUNTING_ZONE_NOTIFICATIONS", 0) == 0 then
+					if C_GlobalStorage.GetVar("ASMSG_HEADHUNTING_ZONE_NOTIFICATIONS") == 0 then
 						info.checked = 1
 					end
 				elseif value == "GM_INFO_ACCOUNT" or value == "GM_INFO_IP" or value == "GM_INFO_CONFIG" or value == "GM_INFO_MUTEHISTORY" then

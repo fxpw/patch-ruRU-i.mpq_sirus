@@ -85,8 +85,9 @@ function TargetFrame_OnLoad(self, unit, menuFunc)
 	end
 	self:RegisterEvent("PARTY_MEMBERS_CHANGED");
 	self:RegisterEvent("RAID_TARGET_UPDATE");
-	self:RegisterEvent("UNIT_AURA");
+	self:RegisterUnitEvent("UNIT_AURA", unit);
 	self:RegisterCustomEvent("UNIT_HEADHUNTING_WANTED")
+	self:RegisterCustomEvent("INSPECT_BG_INFO_AVAILABLE")
 
 	SetParentFrameLevel(self.TextureFrame, 2)
 
@@ -234,6 +235,8 @@ function TargetFrame_OnEvent (self, event, ...)
 			SHOW_CASTABLE_DEBUFFS = GetCVar("showCastableDebuffs");
 			TargetFrame_UpdateAuras(self);
 		end
+	elseif event == "INSPECT_BG_INFO_AVAILABLE" then
+		TargetFrame_CheckFaction(self)
 	elseif event == "UNIT_HEADHUNTING_WANTED" then
 		local unit = ...
 		if self:IsShown() and self.unit == unit then
@@ -266,7 +269,8 @@ function TargetFrame_CheckLevel (self)
 		self.levelText:SetText(targetLevel);
 		-- Color level number
 		if ( UnitCanAttack("player", self.unit) ) then
-			local color = GetQuestDifficultyColor(targetLevel);
+			local difficulty = C_PlayerInfo.GetContentDifficultyCreatureForPlayer(self.unit)
+			local color = GetDifficultyColorEx(difficulty);
 			self.levelText:SetVertexColor(color.r, color.g, color.b);
 		else
 			self.levelText:SetVertexColor(1.0, 0.82, 0.0);
@@ -301,25 +305,16 @@ function TargetFrame_CheckFaction (self)
 			return
 		end
 
-		if not GetUnitRatedBattlegroundRankInfo then
-			return
-		end
-
-		local currTitle, currRankID, currRankIconCoord, currRating, weekWins, weekGames, totalWins, totalGames, laurelCoord, rankBackgroundTexCoord, unit = GetUnitRatedBattlegroundRankInfo( self.unit )
-
-		if unit ~= self.unit or UnitGUID(unit) ~= UnitGUID(self.unit) then
-			return
-		end
+		local rankName, rankID, rankIconAtlas, rating, weekWins, weekGames, totalWins, totalGames, laurelAtlas, backgroundAtlas = C_PvP.GetUnitRatedBattlegroundRankInfo(self.unit)
 
 		local unitIsPlayer 			= UnitIsPlayer(self.unit)
 		local isRenegade			= C_Unit.IsRenegade(self.unit)
 		local factionGroup 			= UnitFactionGroup(self.unit) or "Neutral"
-		local isBattlegroundRanked 	= currRankID ~= 0 and unitIsPlayer
+		local isBattlegroundRanked 	= rankID ~= 0 and unitIsPlayer
 
 		self.pvpIcon:SetShown(not isRenegade and unitIsPlayer)
 		self.renegadeIcon:SetShown(isRenegade and unitIsPlayer)
 		self.TextureFrame.RankFrame:SetShown(isBattlegroundRanked and unitIsPlayer)
-		self.TextureFrame.RankFrame.Icons:SetShown(currRankIconCoord)
 
 		self.pvpIcon:ClearAllPoints()
 		self.renegadeIcon:ClearAllPoints()
@@ -332,20 +327,17 @@ function TargetFrame_CheckFaction (self)
 			self.renegadeIcon:SetPoint("CENTER", self.TextureFrame.RankFrame, "CENTER", 0, 0)
 		end
 
-		if rankBackgroundTexCoord and rankBackgroundTexCoord[factionGroup] then
-			self.TextureFrame.RankFrame.Background:SetTexCoord(unpack(rankBackgroundTexCoord[factionGroup]))
+		if rankIconAtlas then
+			self.TextureFrame.RankFrame.Icons:SetAtlas(rankIconAtlas)
+			self.TextureFrame.RankFrame.Icons:Show()
+		else
+			self.TextureFrame.RankFrame.Icons:Hide()
 		end
 
-		if currRankIconCoord then
-			self.TextureFrame.RankFrame.Icons:SetTexCoord(unpack(currRankIconCoord))
-		end
+		self.TextureFrame.RankFrame.Background:SetAtlas(backgroundAtlas or "honorsystem-portrait-neutral-1")
 
 		if UnitIsPVPFreeForAll(self.unit) then
 			self.pvpIcon:SetTexture("Interface\\TargetingFrame\\UI-PVP-FFA")
-
-			if rankBackgroundTexCoord then
-				self.TextureFrame.RankFrame.Background:SetTexCoord(unpack(rankBackgroundTexCoord["Neutral"]))
-			end
 		elseif factionGroup then
 			self.pvpIcon:SetTexture("Interface\\TargetingFrame\\UI-PVP-"..factionGroup)
 		end

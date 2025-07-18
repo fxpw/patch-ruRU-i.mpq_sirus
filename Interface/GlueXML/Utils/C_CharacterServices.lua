@@ -484,13 +484,13 @@ PRIVATE.CheckBoostServiceStage = function(classID)
 	local avgItemLevel = math.ceil(pveAvgItemLevel)
 
 	local realmID = C_Service.GetRealmID()
-	local value = C_GlueCVars.GetCVar("BOOST_ITEM_LEVLS")
+	local value = GetCVar("boostItemLevels")
 	local valueChanged
 	local notSeen
 
 	if value == "" then
 		local newValue = string.format("%d:%d:0", realmID, avgItemLevel)
-		C_GlueCVars.SetCVar("BOOST_ITEM_LEVLS", newValue)
+		SetCVar("boostItemLevels", newValue)
 		valueChanged = true
 	else
 		local valueFound
@@ -513,7 +513,7 @@ PRIVATE.CheckBoostServiceStage = function(classID)
 		end
 
 		if valueChanged then
-			C_GlueCVars.SetCVar("BOOST_ITEM_LEVLS", newValue)
+			SetCVar("boostItemLevels", newValue)
 		end
 	end
 
@@ -524,12 +524,12 @@ end
 
 PRIVATE.MarkBoostServiceItemStageSeen = function()
 	local realmID = C_Service.GetRealmID()
-	local value = C_GlueCVars.GetCVar("BOOST_ITEM_LEVLS")
+	local value = GetCVar("boostItemLevels")
 	local pattern = string.format("(%d:%%d+:)%%d+", realmID)
 	local newValue = string.gsub(value, pattern, function(res)
 		return strconcat(res, "1")
 	end)
-	C_GlueCVars.SetCVar("BOOST_ITEM_LEVLS", newValue)
+	SetCVar("boostItemLevels", newValue)
 end
 
 PRIVATE.GetBoostRefundTimeLeft = function(characterID)

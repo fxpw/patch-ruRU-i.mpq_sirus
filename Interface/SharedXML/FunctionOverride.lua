@@ -1,175 +1,6 @@
-local securecall = securecall
+local C_GlobalStorageSecure = C_GlobalStorageSecure
 
 local IN_GLUE_STATE = IsOnGlueScreen()
-
-do	-- CVars
-	if IN_GLUE_STATE then
-		local SetCVar = SetCVar
-		_G.SetCVar = function(cvar, value, raiseEvent)
-			if C_GlueCVars and C_GlueCVars.HasCVar(cvar) then
-				C_GlueCVars.SetCVar(cvar, value)
-				return
-			end
-
-			SetCVar(cvar, value, raiseEvent)
-		end
-
-		local GetCVar = GetCVar
-		_G.GetCVar = function(cvar)
-			if C_GlueCVars and C_GlueCVars.HasCVar(cvar) then
-				return C_GlueCVars.GetCVar(cvar)
-			end
-			return GetCVar(cvar)
-		end
-
-		local GetCVarBool = GetCVarBool
-		_G.GetCVarBool = function(cvar)
-			if C_GlueCVars and C_GlueCVars.HasCVar(cvar) then
-				return ValueToBoolean(C_GlueCVars.GetCVar(cvar))
-			end
-			return GetCVarBool(cvar)
-		end
-
-		local GetCVarDefault = GetCVarDefault
-		_G.GetCVarDefault = function(cvar)
-			if C_GlueCVars and C_GlueCVars.HasCVar(cvar) then
-				return C_GlueCVars.GetCVarDefault(cvar)
-			end
-			return GetCVarDefault(cvar)
-		end
-	else
-		TRACKED_CVARS = {
-			"autoDismountFlying",
-			"C_CVAR_DRACTHYR_RETURN_MORTAL_FORM",
-			"C_CVAR_WARMODE_PVP_ASSIST_ENABLED",
-			"C_CVAR_BLOCK_GROUP_INVITES",
-			"C_CVAR_BLOCK_GUILD_INVITES",
-			"C_CVAR_AUTO_ACCEPT_GROUP_INVITES",
-		}
-
-		local tonumber = tonumber
-		local tostring = tostring
-		local strformat, strsub = string.format, string.sub
-		local TRACKED_CVARS = TRACKED_CVARS
-
-		local CVAR_FORCE_VALUE = {
-			showItemLevel = "1",
-			projectedTextures = "1",
-			previewTalents = "1",
-		}
-
-		local SetCVar = SetCVar
-		local _SetCVar = function(cvar, value, raiseEvent)
-			if CVAR_FORCE_VALUE[cvar] and CVAR_FORCE_VALUE[cvar] ~= tostring(value) then
-				return
-			end
-
-			if strsub(cvar, 1, 7) == "C_CVAR_" then
-				return C_CVar:SetValue(cvar, value, raiseEvent)
-			end
-
-			local trackedIndex = tIndexOf(TRACKED_CVARS, cvar)
-			if trackedIndex then
-				SendServerMessage("ACMSG_I_S", strformat("%i:%i", trackedIndex, tonumber(value) or 0))
-			end
-
-			SetCVar(cvar, value, raiseEvent)
-		end
-		_G.SetCVar = function(cvar, value, raiseEvent)
-			securecall(_SetCVar, cvar, value, raiseEvent)
-		end
-
-		local GetCVar = GetCVar
-		local _GetCVar = function(cvar)
-			if strsub(cvar, 1, 7) == "C_CVAR_" then
-				return C_CVar:GetValue(cvar)
-			end
-			return GetCVar(cvar)
-		end
-		_G.GetCVar = function(cvar)
-			return securecall(_GetCVar, cvar)
-		end
-
-		local GetCVarBool = GetCVarBool
-		local _GetCVarBool = function(cvar)
-			if strsub(cvar, 1, 7) == "C_CVAR_" then
-				return ValueToBoolean(C_CVar:GetValue(cvar))
-			end
-			return GetCVarBool(cvar)
-		end
-		_G.GetCVarBool = function(cvar)
-			return securecall(_GetCVarBool, cvar)
-		end
-
-		local GetCVarDefault = GetCVarDefault
-		local _GetCVarDefault = function(cvar)
-			if strsub(cvar, 1, 7) == "C_CVAR_" then
-				return C_CVar:GetDefaultValue(cvar)
-			end
-			return GetCVarDefault(cvar)
-		end
-		_G.GetCVarDefault = function(cvar)
-			return securecall(_GetCVarDefault, cvar)
-		end
-	end
-
-	_G.GetSafeCVar = function(cvar, default)
-		local success, res = pcall(GetCVar, cvar)
-		if not success then
-			return default
-		elseif res then
-			return res
-		end
-	end
-	_G.SetSafeCVar = function(cvar, value, raiseEvent)
-		local val = GetSafeCVar(cvar)
-		if val then
-			SetCVar(cvar, value, raiseEvent)
-		end
-	end
-end
-
-do -- C_CacheInstance
-	if IN_GLUE_STATE then
-		local EnterWorld = EnterWorld
-		_G.EnterWorld = function()
-			C_CacheInstance:SaveData()
-			EnterWorld()
-		end
-	else
-		local CancelLogout = CancelLogout
-		_G.CancelLogout = function()
-			C_CacheInstance:SetSavedState(false)
-			CancelLogout()
-		end
-
-		local Logout = Logout
-		_G.Logout = function()
-			C_CacheInstance:SaveData()
-			Logout()
-		end
-	end
-
-	local ConsoleExec = ConsoleExec
-	_G.ConsoleExec = function(command)
-		if string.upper(command) == "RELOADUI" then
-			C_CacheInstance:SaveData()
-		end
-		ConsoleExec(command)
-	end
-
-	local ReloadUI = ReloadUI
-	_G.ReloadUI = function()
-		C_CacheInstance:SaveData()
-		ReloadUI()
-	end
-
-	local RestartGx = RestartGx
-	_G.RestartGx = function()
-		C_CacheInstance:SaveData()
-		RestartGx()
-	end
-end
 
 do -- AddonManager
 	local strgsub, strmatch = string.gsub, string.match
@@ -654,21 +485,21 @@ if not IN_GLUE_STATE then
 					local money = tonumber(msg)
 					money = type(money) == "number" and money or nil
 
-					local customMoney = C_CacheInstance and tonumber(C_CacheInstance:Get("PLAYER_MONEY")) or nil
+					local customMoney = tonumber(C_GlobalStorageSecure.GetVar("PLAYER_MONEY")) or nil
 					if customMoney -- skip initial msg
 					and customMoney ~= money -- changed
 					and customMoney >= MAX_NATIVE_MONEY -- native was already overflowed
 					then
 						PlaySound("LOOTWINDOWCOINSOUND")
 					end
-					C_CacheInstance:Set("PLAYER_MONEY", money)
+					C_GlobalStorageSecure.SetVar("PLAYER_MONEY", money)
 					FireClientEvent("PLAYER_MONEY")
 				end
 			end
 		end)
 
 		_G.GetMoney = function()
-			local customMoney = C_CacheInstance and C_CacheInstance:Get("PLAYER_MONEY") or nil
+			local customMoney = C_GlobalStorageSecure.GetVar("PLAYER_MONEY") or nil
 			return customMoney and tonumber(customMoney) or GetMoney()
 		end
 	end

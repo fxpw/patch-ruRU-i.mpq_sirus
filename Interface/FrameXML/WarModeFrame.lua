@@ -54,10 +54,10 @@ function WarModeMixin:OnEvent(event, ...)
 			status = tonumber(status)
 
 			if status == 0 then
-				local cache = C_CacheInstance:Get("WARMODE")
+				local cache = C_GlobalStorage.GetVar("WARMODE_STATE")
 				if not cache then
 					cache = {}
-					C_CacheInstance:Set("WARMODE", cache)
+					C_GlobalStorage.SetVar("WARMODE_STATE", cache)
 				end
 
 				cache.state = tonumber(state) or -1
@@ -119,7 +119,7 @@ function WarModeMixin:UpdateFactionInfo()
 end
 
 function WarModeMixin:GetTimeLeft()
-	local cache = C_CacheInstance:Get("WARMODE")
+	local cache = C_GlobalStorage.GetVar("WARMODE_STATE")
 	if cache and cache.cooldown then
 		return cache.cooldown - time()
 	end
@@ -127,7 +127,7 @@ function WarModeMixin:GetTimeLeft()
 end
 
 function WarModeMixin:GetState()
-	local cache = C_CacheInstance:Get("WARMODE")
+	local cache = C_GlobalStorage.GetVar("WARMODE_STATE")
 	return cache and cache.state or -1
 end
 
@@ -192,6 +192,10 @@ function WarModeActivateMixin:OnEnable()
 	self:UpdateState()
 end
 
+function WarModeActivateMixin:OnDisable()
+	self:UpdateState()
+end
+
 function WarModeActivateMixin:UpdateState(playAnimation)
 	self.LockFrame:CheckCooldownTime()
 
@@ -216,7 +220,7 @@ function WarModeActivateMixin:UpdateState(playAnimation)
 		end
 	end
 
-	if self:IsEnabled() == 1 and self:IsMouseOver() then
+	if self:IsMouseOver() then
 		self:OnEnter()
 	end
 end
@@ -232,14 +236,6 @@ function WarModeActivateLockMixin:OnLoad()
 	self.LockIcon:SetAtlas("Monuments-Lock")
 	self.LockIcon:SetDesaturated(true)
 	self.TextBackground:SetAtlas("Monuments-LockedOverlay", true)
-end
-
-function WarModeActivateLockMixin:OnShow()
-	self:GetParent():Disable()
-end
-
-function WarModeActivateLockMixin:OnHide()
-	self:GetParent():Enable()
 end
 
 function WarModeActivateLockMixin:UpdateTime()
@@ -271,7 +267,9 @@ function WarModeActivateLockMixin:CheckCooldownTime()
 		self:SetScript("OnUpdate", self.timeLeft > 0 and self.OnUpdate or nil)
 		self:UpdateTime()
 		self:Show()
+		mainFrame.ActivateButton:SetEnabled(false)
 	else
 		self:Hide()
+		mainFrame.ActivateButton:SetEnabled(true)
 	end
 end

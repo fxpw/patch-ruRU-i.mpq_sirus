@@ -430,8 +430,7 @@ function GuildFrame_TabClicked( newID )
 			GuildRoster_Update()
 		elseif newID == 2 then
 			local guildLevel, maxGuildLevel = GetGuildLevel()
-			local currentXP, nextLevelXP = UnitGetGuildXP("player")
-			local dailyCapXP = GetGuildXPDailtyCap()
+			local currentXP, nextLevelXP, dailyCapXP = UnitGetGuildXP("player")
 
 			ButtonFrameTemplate_HideButtonBar(GuildFrame)
 			GuildFrameInset:SetPoint("TOPLEFT", 4, -65)
@@ -474,9 +473,9 @@ end
 
 function GuildFrame_UpdateXP()
 	if GuildFrame:IsShown() and PanelTemplates_GetSelectedTab(GuildFrame) == 2 then
-		local currentXP, nextLevelXP = UnitGetGuildXP("player");
+		local currentXP, nextLevelXP, dailyCapXP = UnitGetGuildXP("player");
 		if ( nextLevelXP > 0 ) then
-			GuildBar_SetProgress(GuildXPBar, currentXP, nextLevelXP + currentXP, GetGuildXPDailtyCap());
+			GuildBar_SetProgress(GuildXPBar, currentXP, nextLevelXP, dailyCapXP);
 		end
 	end
 
@@ -1254,8 +1253,7 @@ function GuildXPBar_OnEnter( self, ... )
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 
 	if tabID == 2 then
-		local currentXP, nextLevelXP = UnitGetGuildXP("player")
-		local dailyCapXP = GetGuildXPDailtyCap()
+		local currentXP, nextLevelXP, dailyCapXP = UnitGetGuildXP("player")
 
 		local percentTotal = tostring(math.ceil((currentXP / nextLevelXP) * 100))
 
@@ -1656,6 +1654,17 @@ function GuildInfoFrame_UpdatePermissions()
 			PanelTemplates_SetTab(guildInfoFrame, 1);
 			PanelTemplates_UpdateTabs(guildInfoFrame);
 			RequestGuildApplicantsList();
+		end
+
+		local guildMemberInfo = GUILD_MEMBER_INFO_BY_NAME_DATA[UnitName("player")]
+		if guildMemberInfo and guildMemberInfo[3] <= 1 then
+			PanelTemplates_EnableTab(GuildInfoFrame, 2)
+		else
+			if PanelTemplates_GetSelectedTab(guildInfoFrame) == 2 then
+				PanelTemplates_SetTab(guildInfoFrame, 1)
+				GuildInfoFrame_Update()
+			end
+			PanelTemplates_DisableTab(GuildInfoFrame, 2)
 		end
 	else
 		GuildAddMemberButton:Disable();

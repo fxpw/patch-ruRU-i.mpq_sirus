@@ -131,8 +131,6 @@ function TransmogFrameMixin:OnEvent(event, ...)
 		if slotButton then
 			slotButton:OnTransmogrifySuccess();
 		end
-
-		RequestInventoryTransmogInfo(true)
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
 		if C_Transmog.IsAtTransmogNPC() then
 			HideUIPanel(WardrobeFrame);
@@ -355,7 +353,7 @@ function WardrobeOutfitMixin:GetItemTransmogInfoList()
 end
 
 function WardrobeOutfitMixin:GetLastOutfitID()
-	return tonumber(C_CVar:GetValue("C_CVAR_LAST_TRANSMOG_OUTFIT_ID"));
+	return tonumber(GetCVar("lastTransmogOutfit"));
 end
 
 TransmogSlotButtonMixin = {};
@@ -1324,7 +1322,7 @@ function WardrobeItemsCollectionMixin:IsValidWeaponCategoryForSlot(categoryID)
 		if (self.transmogLocation:IsMainHand() and canMainHand) or (self.transmogLocation:IsOffHand() and canOffHand) or (self.transmogLocation:IsRanged() and canRanged) then
 			if C_Transmog.IsAtTransmogNPC() then
 				local slotID = self.transmogLocation:GetSlotID();
-				local equippedItemID = GetInventoryTransmogID("player", slotID) or GetInventoryItemID("player", slotID);
+				local equippedItemID = C_Transmog.GetInventoryTransmogInfo("player", slotID) or GetInventoryItemID("player", slotID);
 				return C_TransmogCollection.IsCategoryValidForItem(categoryID, nil, equippedItemID);
 			else
 				return true;
@@ -2437,7 +2435,7 @@ function WardrobeCollectionFrameWeaponDropDown_Init(self)
 	local info = UIDropDownMenu_CreateInfo();
 	info.func = WardrobeCollectionFrameWeaponDropDown_OnClick;
 	local slotID = transmogLocation:GetSlotID();
-	local equippedItemID = GetInventoryTransmogID("player", slotID) or GetInventoryItemID("player", slotID);
+	local equippedItemID = C_Transmog.GetInventoryTransmogInfo("player", slotID) or GetInventoryItemID("player", slotID);
 	local isAtTransmogNPC = C_Transmog.IsAtTransmogNPC();
 	local checkCategory = equippedItemID and isAtTransmogNPC;
 	if checkCategory then

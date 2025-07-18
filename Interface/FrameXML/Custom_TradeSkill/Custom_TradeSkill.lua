@@ -122,7 +122,7 @@ function TradeSkillFrame_ToggleMode( value )
 		TradeSkillSkillIcon.ResultBorder:SetSize(42, 42)
 
 		TradeSkillDescription:ClearAllPoints()
-		TradeSkillDescription:SetPoint("TOPLEFT", 8, -70)
+		TradeSkillDescription:SetPoint("TOPLEFT", 8, -90)
 
 		TradeSkillRankFrame:SetSize(230, 14)
 		TradeSkillRankFrame:ClearAllPoints()
@@ -175,7 +175,7 @@ function TradeSkillFrame_ToggleMode( value )
 		TradeSkillSkillIcon.ResultBorder:SetSize(51, 51)
 
 		TradeSkillDescription:ClearAllPoints()
-		TradeSkillDescription:SetPoint("TOPLEFT", 8, -85)
+		TradeSkillDescription:SetPoint("TOPLEFT", 8, -105)
 
 		TradeSkillRankFrame:SetSize(560, 14)
 		TradeSkillRankFrame:ClearAllPoints()
@@ -218,6 +218,7 @@ function TradeSkillFrame_OnLoad(self)
 	self:RegisterEvent("TRADE_SKILL_FILTER_UPDATE");
 	self:RegisterEvent("UNIT_PORTRAIT_UPDATE");
 	self:RegisterEvent("UPDATE_TRADESKILL_RECAST");
+	self:RegisterCustomEvent("TRACKED_RECIPE_UPDATE")
 
 	self.minimalizeMode = false
 
@@ -265,6 +266,9 @@ function TradeSkillFrame_OnEvent(self, event, ...)
 		end
 	elseif ( event == "UPDATE_TRADESKILL_RECAST" ) then
 		TradeSkillInputBox:SetNumber(GetTradeskillRepeatCount());
+	elseif event == "TRACKED_RECIPE_UPDATE" then
+		local recipeID, added = ...
+		TradeSkillFrame_Update()
 	end
 end
 
@@ -304,6 +308,9 @@ function TradeSkillFrame_Update()
 		TradeSkillSkillIcon:Show();
 		TradeSkillCollapseAllButton:Enable();
 	end
+
+	TradeSkillFrame_UpdateTrackButton()
+
 	-- ScrollFrame update
 	FauxScrollFrame_Update(TradeSkillListScrollFrame, numTradeSkills, TRADE_SKILLS_DISPLAYED, TRADE_SKILL_HEIGHT, nil, nil, nil, TradeSkillHighlightFrame, 298, 316, true );
 
@@ -311,6 +318,8 @@ function TradeSkillFrame_Update()
 	local skillName, skillType, numAvailable, isExpanded, altVerb;
 	local skillIndex, skillButton, skillButtonText, skillButtonCount;
 	local nameWidth, countWidth;
+
+	local trackedRecipes = C_TradeSkillUI.GetRecipesTracked()
 
 	local skillNamePrefix = " ";
 	for i=1, TRADE_SKILLS_DISPLAYED, 1 do
@@ -351,6 +360,7 @@ function TradeSkillFrame_Update()
 				else
 					skillButton:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-Up");
 				end
+				skillButton.TrackedIcon:Hide()
 				_G["TradeSkillSkill"..i.."Highlight"]:SetTexture("Interface\\Buttons\\UI-PlusButton-Hilight");
 				_G["TradeSkillSkill"..i]:UnlockHighlight();
 			else
@@ -377,6 +387,12 @@ function TradeSkillFrame_Update()
 					end
 				end
 
+				do -- Tracking
+					local recipeID = C_TradeSkillUI.GetTradeSkillRecipeIDForIndex(skillIndex)
+					local isTracked = recipeID and tIndexOf(trackedRecipes, recipeID) ~= nil or false
+					skillButton.TrackedIcon:SetShown(isTracked)
+				end
+
 				-- Place the highlight and lock the highlight state
 				if ( GetTradeSkillSelectionIndex() == skillIndex ) then
 					TradeSkillHighlightFrame:SetPoint("TOPLEFT", "TradeSkillSkill"..i, "TOPLEFT", 0, 0);
@@ -389,7 +405,6 @@ function TradeSkillFrame_Update()
 					skillButton.isHighlighted = false;
 				end
 			end
-
 		else
 			skillButton:Hide();
 		end
@@ -553,7 +568,7 @@ function TradeSkillFrame_SetSelection(id)
 		TradeSkillRequirementLabel:SetPoint("TOPLEFT", "TradeSkillDescription", "BOTTOMLEFT", 0, -14);
 	else
 		TradeSkillDescription:SetText(" ");
-		TradeSkillRequirementLabel:SetPoint("TOPLEFT", 8, -85);
+		TradeSkillRequirementLabel:SetPoint("TOPLEFT", 8, -105);
 	end
 
 	-- Reset the number of items to be created
@@ -602,6 +617,26 @@ function TradeSkillFrame_SetSelection(id)
 		TradeSkillCreateButton:SetText(altVerb or CREATE);
 		TradeSkillCreateButton:Show();
     end
+
+	TradeSkillFrame_UpdateTrackButton()
+end
+
+function TradeSkillFrame_UpdateTrackButton()
+	local recipeIndex = GetTradeSkillSelectionIndex()
+	if recipeIndex > GetNumTradeSkills() then
+		TradeSkillTrackButton:Hide()
+		return;
+	end
+
+	local recipeID = C_TradeSkillUI.GetTradeSkillRecipeIDForIndex(recipeIndex)
+	if recipeID and C_TradeSkillUI.CanTrackRecipe(recipeID) then
+		local trackedRecipes = C_TradeSkillUI.GetRecipesTracked()
+		local isTracked = recipeID and tIndexOf(trackedRecipes, recipeID) ~= nil or false
+		TradeSkillTrackButton:SetChecked(isTracked)
+		TradeSkillTrackButton:Show()
+	else
+		TradeSkillTrackButton:Hide()
+	end
 end
 
 function TradeSkillSkillButton_OnClick(self, button)

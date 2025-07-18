@@ -87,7 +87,7 @@
 	<Frame name="StoreProductListCellNameTemplate" virtual="true">
 		<Layers>
 			<Layer level="ARTWORK">
-				<FontString name="$parentText" parentKey="Text" inherits="PKBT_Font_15" justifyH="LEFT" maxLines="3">
+				<FontString name="$parentText" parentKey="Text" inherits="PKBT_Font_17" justifyH="LEFT" maxLines="3">
 					<Size x="0" y="0"/>
 					<Anchors>
 						<Anchor point="LEFT" x="0" y="0"/>

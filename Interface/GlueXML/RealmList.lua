@@ -27,7 +27,7 @@ function RealmList_OnLoad(self)
 	self:RegisterEvent("OPEN_REALM_LIST")
 	self:RegisterEvent("DISPLAY_SIZE_CHANGED")
 
-	self.entryPointIndex = tonumber(C_GlueCVars.GetCVar("REALM_ENTRY_POINT"))
+	self.entryPointIndex = tonumber(GetCVar("realmProxy"))
 
 	local scale = GetScreenWidth() < 1100 and GetScreenWidth() / 1100 or 1
 	self.MainRealmCardHolder:SetScale(scale)
@@ -560,7 +560,7 @@ function RealmProxyDialogMixin:SetStep(step)
 		self.Container.Text:SetFormattedText(WORLD_PROXY_LOCATION_TEXT, ENTRY_LIST[self.selectedEntryIndex][3])
 		self.Container.Text:Show()
 
-		C_GlueCVars.SetCVar("REALM_ENTRY_POINT", self.selectedEntryIndex)
+		SetCVar("realmProxy", self.selectedEntryIndex)
 		RealmList.entryPointIndex = self.selectedEntryIndex
 		RealmList.EntryPoint:SetProxyList(nil, true)
 
@@ -587,7 +587,7 @@ end
 function RealmProxyDialogMixin:Cancel()
 	if self.step == 1 then
 		RealmList.entryPointIndex = 1
-		C_GlueCVars.SetCVar("REALM_ENTRY_POINT", 1)
+		SetCVar("realmProxy", 1)
 		RealmList.EntryPoint:SetProxyList(nil, true)
 		self:Hide()
 	elseif self.step == 2 then
@@ -775,7 +775,7 @@ function RealmEntrySelectButtonMixin:OnClick(button)
 
 	self.parent.selectedEntryIndex = index
 	RealmList.entryPointIndex = index
-	C_GlueCVars.SetCVar("REALM_ENTRY_POINT", index)
+	SetCVar("realmProxy", index)
 
 	GlueTooltip:Hide()
 	self:GetParent():OnEnter()

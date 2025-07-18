@@ -1,0 +1,184 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+
+	<Button name="ObjectiveTrackerModuleMinimizeButtonTemplate" virtual="true">
+		<Size x="16" y="16"/>
+		<NormalTexture parentKey="NormalTexture"/>
+		<PushedTexture parentKey="PushedTexture"/>
+		<HighlightTexture parentKey="HighlightTexture" alphaMode="ADD"/>
+		<Scripts>
+			<OnLoad>
+				self.NormalTexture:SetAtlas("UI-QuestTrackerButton-Secondary-Collapse", true)
+				self.PushedTexture:SetAtlas("UI-QuestTrackerButton-Secondary-Collapse-Pressed", true)
+				self.HighlightTexture:SetAtlas("UI-QuestTrackerButton-Yellow-Highlight", true)
+			</OnLoad>
+		</Scripts>
+	</Button>
+
+	<Button name="ObjectiveTrackerModuleFilterButtonTemplate" virtual="true">
+		<Size x="16" y="16"/>
+		<NormalTexture parentKey="NormalTexture" alphaMode="ADD"/>
+		<PushedTexture parentKey="PushedTexture" alphaMode="ADD"/>
+		<HighlightTexture parentKey="HighlightTexture" alphaMode="ADD"/>
+		<Scripts>
+			<OnLoad>
+				self.NormalTexture:SetAtlas("Map-Filter-Button")
+				self.NormalTexture:SetVertexColor(0.86, 0.94, 1)
+				self.PushedTexture:SetAtlas("Map-Filter-Button-down")
+				self.HighlightTexture:SetAtlas("UI-QuestTrackerButton-Yellow-Highlight", true)
+			</OnLoad>
+		</Scripts>
+	</Button>
+
+	<Frame name="ObjectiveTrackerModuleHeaderTemplate" virtual="true">
+		<Size x="260" y="26"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Background">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AddAnim">
+							<Alpha duration="0" order="1" change="-1"/>
+							<Alpha duration="0.5" order="2" change="1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Text" inherits="ObjectiveTrackerHeaderFont" maxLines="1" justifyH="LEFT">
+					<Size x="200" y="0"/>
+					<Anchors>
+						<Anchor point="LEFT" x="7" y="0"/>
+					</Anchors>
+				</FontString>
+				<Texture parentKey="Shine" alpha="0">
+					<Anchors>
+						<Anchor point="CENTER" x="-150" y="1"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AddAnim">
+							<Translation parentKey="Translation" duration="0.7" order="1" startDelay="0.2" smoothing="IN_OUT" offsetX="200" offsetY="0"/>
+							<Alpha duration="1" order="1" startDelay="0.2" change="1"/>
+							<Alpha duration="1.2" order="1" startDelay="0.2" change="-1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Glow" alpha="0">
+					<Anchors>
+						<Anchor point="CENTER" x="-120" y="1"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="AddAnim">
+							<Alpha duration="0.2" order="1" change="1"/>
+							<Alpha duration="0.6" order="1" startDelay="0.2" change="-1"/>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentMinimizeButton" parentKey="MinimizeButton" inherits="ObjectiveTrackerModuleMinimizeButtonTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" x="1" y="0"/>
+				</Anchors>
+				<Animations>
+					<AnimationGroup parentKey="AddAnim">
+						<Alpha duration="0" order="1" change="-1"/>
+						<Alpha duration="1" order="2" change="1"/>
+					</AnimationGroup>
+				</Animations>
+			</Button>
+			<Button name="$parentFilterButton" parentKey="FilterButton" inherits="ObjectiveTrackerModuleFilterButtonTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentMinimizeButton" relativePoint="LEFT" x="-2"/>
+				</Anchors>
+				<Animations>
+					<AnimationGroup parentKey="AddAnim">
+						<Alpha duration="0" order="1" change="-1"/>
+						<Alpha duration="1" order="2" change="1"/>
+					</AnimationGroup>
+				</Animations>
+			</Button>
+			<Frame name="$parentFilterDropDown" parentKey="FilterDropDown" inherits="UIDropDownMenuTemplate"/>
+		</Frames>
+		<Animations>
+			<AnimationGroup parentKey="AddAnim">
+				<Alpha duration="1.4" order="1"/>
+				<Scripts>
+					<OnPlay>
+						local parent = self:GetParent()
+						parent.Shine.AddAnim.Translation:SetOffset(200 * parent:GetEffectiveScale(), 0)
+						parent.Background.AddAnim:Play()
+						parent.MinimizeButton.AddAnim:Play()
+						parent.FilterButton.AddAnim:Play()
+						parent.Glow.AddAnim:Play()
+						parent.Shine.AddAnim:Play()
+					</OnPlay>
+					<OnStop>
+						local parent = self:GetParent()
+						if parent.Background.AddAnim:IsPlaying() then
+							parent.Background.AddAnim:Stop()
+						end
+						if parent.MinimizeButton.AddAnim:IsPlaying() then
+							parent.MinimizeButton.AddAnim:Stop()
+						end
+						if parent.FilterButton.AddAnim:IsPlaying() then
+							parent.FilterButton.AddAnim:Stop()
+						end
+						if parent.Glow.AddAnim:IsPlaying() then
+							parent.Glow.AddAnim:Stop()
+						end
+						if parent.Shine.AddAnim:IsPlaying() then
+							parent.Shine.AddAnim:Stop()
+						end
+					</OnStop>
+				</Scripts>
+			</AnimationGroup>
+		</Animations>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ObjectiveTrackerModuleHeaderMixin)
+				self:OnLoad()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="ObjectiveTrackerModuleTemplate" hidden="true" virtual="true">
+		<!-- this needs to have a valid rect or first layout will be off -->
+		<Size x="260" y="10"/>
+		<Anchors>
+			<Anchor point="TOP"/>
+		</Anchors>
+		<Frames>
+			<Frame name="$parentHeader" parentKey="Header" inherits="ObjectiveTrackerModuleHeaderTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentContentsFrame" parentKey="ContentsFrame">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentHeader" relativePoint="BOTTOM"/>
+					<Anchor point="LEFT"/>
+					<Anchor point="RIGHT"/>
+					<Anchor point="BOTTOM"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Mixin(self, ObjectiveTrackerModuleMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+</Ui>

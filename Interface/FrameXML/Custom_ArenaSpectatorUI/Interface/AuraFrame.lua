@@ -1,199 +1,350 @@
 ezSpectator_AuraFrame = {}
 ezSpectator_AuraFrame.__index = ezSpectator_AuraFrame
 
-function ezSpectator_AuraFrame:Create(Parent, IsUpfilling, ...)
+function ezSpectator_AuraFrame:Create(Parent, alignLeft, alignTop, ...)
     local self = {}
     setmetatable(self, ezSpectator_AuraFrame)
 
     self.Parent = Parent
 
-    self.IsUpfilling = IsUpfilling
+	self.perRow = 9
+	self.drawDebuffsFirst = false
 
-    self.BuffLines = 2
-    self.DebuffLines = 2
-    self.PerLine = 9
+	self.iconSize = 20
+	self.iconOffsetX = 4
+	self.iconOffsetY = 4
 
-    self.IconSize = 20
+	self.showBuffs = true
+	self.showDebuffs = true
+
+	self.alignTop = true
+	self.alignLeft = true
 
     self.MainFrame = CreateFrame('Frame', nil, ArenaSpectatorFrame)
     self.MainFrame:SetFrameLevel(1)
-    self.MainFrame:SetSize(192, 120)
+	self.MainFrame:SetSize(192 - 16, 1)
     self.MainFrame:SetScale(_ezSpectatorScale)
     self.MainFrame:SetPoint(...)
 
-    self.AuraStack = {}
-    self.AuraIcons = {}
+	self.buffList = {}
+	self.debuffList = {}
 
-    for Line = 1, self.BuffLines + self.DebuffLines, 1 do
-        self.AuraIcons[Line] = {}
-        for Index = 1, self.PerLine, 1 do
-            if IsUpfilling then
-                self.AuraIcons[Line][Index] = ezSpectator_AuraIcon:Create(self.Parent, self.MainFrame, self.IconSize - 4, 'TOPLEFT', self.MainFrame, 'TOPLEFT', (Index - 1) * self.IconSize, (Line - 1) * self.IconSize * -1 + (_ezSpectatorScale - 1) * 10)
-            else
-                self.AuraIcons[Line][Index] = ezSpectator_AuraIcon:Create(self.Parent, self.MainFrame, self.IconSize - 4, 'BOTTOMLEFT', self.MainFrame, 'BOTTOMLEFT', (Index - 1) * self.IconSize, (Line - 1) * self.IconSize)
-            end
-        end
-    end
+	self.buffIcons = {}
+	self.debuffIcons = {}
+
+	self.activeIcons = {}
+	self.inactiveIcons = {}
 
     return self
 end
-
-
 
 function ezSpectator_AuraFrame:Show()
     self.MainFrame:Show()
 end
 
-
-
 function ezSpectator_AuraFrame:Hide()
     self.MainFrame:Hide()
 end
 
-
+function ezSpectator_AuraFrame:Reset()
+	table.wipe(self.buffList)
+	table.wipe(self.debuffList)
+	table.wipe(self.buffIcons)
+	table.wipe(self.debuffIcons)
+	self:FreeAllIcons()
+end
 
 function ezSpectator_AuraFrame:SetAlpha(Value)
     self.MainFrame:SetAlpha(Value)
 end
 
-
-
-function ezSpectator_AuraFrame:PeekAura(IsPositive, DesiredIndex)
-    local Line, Index
-    local InnerIndex = 1
-
-    --noinspection UnusedDef
-    for IndexLoop, Record in ipairs(self.AuraStack) do
-        if (InnerIndex == DesiredIndex) and (Record.IsPositive == IsPositive) then
-            return Record
-        end
-
-        if Record.IsPositive == IsPositive then
-            InnerIndex = InnerIndex + 1
-        end
-    end
-
-    return nil
+function ezSpectator_AuraFrame:SetAlignment(alignLeft, alignTop)
+	if self.alignLeft ~= alignLeft or self.alignTop ~= alignTop then
+		self.alignLeft = alignLeft
+		self.alignTop = alignTop
+		self:UpdateIconPosition()
+	end
 end
 
-
-
-function ezSpectator_AuraFrame:DrawAura(Record, Line, Index)
-    local DoDraw
-    if Record.Line and Record.Index then
-        --noinspection UnusedDef
-        DoDraw = Record.IsNeedUpdate or (Index ~= Record.Index) or (Line ~= Record.Line)
-    else
-        DoDraw = true
-    end
-
-    if DoDraw then
-        local TimeOverride
-        if Record.Line and Record.Index then
-            if not Record.IsNeedUpdate then
-                TimeOverride = self.AuraIcons[Record.Line][Record.Index].Cooldown.StartTime
-            end
-        end
-
-        Record.Line = Line
-        Record.Index = Index
-
-        self.AuraIcons[Line][Index]:Show(Record.Spell, Record.StackCount, Record.Expiration, Record.Duration, Record.DebuffType, Record.IsPositive, TimeOverride, not Record.IsNeedUpdate)
-        Record.IsNeedUpdate = false
-    end
+function ezSpectator_AuraFrame:SetShowBuffs(showBuffs)
+	self.showBuffs = showBuffs
 end
 
-
-
-function ezSpectator_AuraFrame:Redraw()
-    local AuraType
-    local LastUsedLine = 0
-
-    if self.IsUpfilling then
-        --noinspection UnusedDef
-        AuraType = 0
-    else
-        AuraType = 1
-    end
-
-    for LineLoop = 1, self.DebuffLines, 1 do
-        for IndexLoop = 1, self.PerLine, 1 do
-            local Record = self:PeekAura(AuraType, IndexLoop + (LineLoop - 1) * self.PerLine)
-            if Record then
-                LastUsedLine = LineLoop
-                self:DrawAura(Record, LineLoop, IndexLoop)
-            else
-                if LineLoop == LastUsedLine then
-                    self.AuraIcons[LineLoop][IndexLoop]:Hide()
-                end
-            end
-        end
-    end
-
-    local LinesLeft = self.BuffLines + self.DebuffLines - LastUsedLine
-
-    if self.IsUpfilling then
-        --noinspection UnusedDef
-        AuraType = 1
-    else
-        AuraType = 0
-    end
-
-    for LineLoop = 1, LinesLeft, 1 do
-        for IndexLoop = 1, self.PerLine, 1 do
-            local Record = self:PeekAura(AuraType, IndexLoop + (LineLoop - 1) * self.PerLine)
-            if Record then
-                self:DrawAura(Record, LineLoop + LastUsedLine, IndexLoop)
-            else
-                self.AuraIcons[LineLoop + LastUsedLine][IndexLoop]:Hide()
-            end
-        end
-    end
+function ezSpectator_AuraFrame:SetShowDebuffs(showDebuffs)
+	self.showDebuffs = showDebuffs
 end
 
+function ezSpectator_AuraFrame:CreateIcon()
+	local icon = ezSpectator_AuraIcon:Create(self.Parent, self.MainFrame, self.iconSize - 4)
+	icon:Hide()
+	return icon
+end
 
+function ezSpectator_AuraFrame:AcquireIcon()
+	local numInactiveIcons = #self.inactiveIcons
+	if numInactiveIcons > 0 then
+		local icon = self.inactiveIcons[numInactiveIcons]
+		table.insert(self.activeIcons, icon)
+		self.inactiveIcons[numInactiveIcons] = nil
+		return icon
+	end
 
-function ezSpectator_AuraFrame:SetAura(IsRemoved, StackCount, Expiration, Duration, Spell, DebuffType, IsPositive, Caster)
-    local SpellTexture = select(3, GetSpellInfo(Spell))
-    if not SpellTexture then
-        return
-    end
+	local icon = self:CreateIcon()
+	if icon then
+		table.insert(self.activeIcons, icon)
+		return icon
+	end
+end
 
-    local Record = {}
-    local RecordIndex
+function ezSpectator_AuraFrame:FreeIcon(icon)
+	local index = tIndexOf(self.activeIcons, icon)
+	if index then
+		icon.auraIndex = nil
+		icon.auraInfo = nil
+		icon:Hide()
+		icon:ClearAllPoints()
 
-    Record.IsNeedUpdate = false
-    for Index, Value in ipairs(self.AuraStack) do
-        if (Value.Spell == Spell) and (Value.Caster == Caster) then
-            Record = Value
-            RecordIndex = Index
+		table.insert(self.inactiveIcons, icon)
+		table.remove(self.activeIcons, index)
+	end
+end
 
-            Record.IsNeedUpdate = (Record.StackCount ~= StackCount) or (Record.Expiration ~= Expiration) or (Record.Duration ~= Duration)
-        end
-    end
+function ezSpectator_AuraFrame:FreeAllIcons()
+	for index = #self.activeIcons, 1, -1 do
+		self:FreeIcon(self.activeIcons[index])
+	end
+end
 
-    Record.IsNeedUpdate = Record.IsNeedUpdate or (RecordIndex == nil)
-    if IsRemoved == 0 then
-        Record.Spell = Spell
-        Record.DebuffType = DebuffType
-        Record.IsPositive = IsPositive
-        Record.Caster = Caster
+function ezSpectator_AuraFrame:GetAligmentPoints()
+	if self.alignTop then
+		if self.alignLeft then
+			return "TOPLEFT", "BOTTOMLEFT"
+		else
+			return "TOPRIGHT", "BOTTOMRIGHT"
+		end
+	else
+		if self.alignLeft then
+			return "BOTTOMLEFT", "TOPLEFT"
+		else
+			return "BOTTOMRIGHT", "TOPRIGHT"
+		end
+	end
+end
 
-        if Record.IsNeedUpdate then
-            Record.StackCount = StackCount
-            Record.Expiration = Expiration
-            Record.Duration = Duration
-        end
+function ezSpectator_AuraFrame:UpdateIconListPosition(iconList, anchor, offsetY)
+	local point, relativePoint = self:GetAligmentPoints()
 
-        if RecordIndex == nil then
-            table.insert(self.AuraStack, Record)
-        end
-    else
-        if (RecordIndex ~= nil) and Record.Line and Record.Index then
-            self.AuraIcons[Record.Line][Record.Index]:Hide()
-            table.remove(self.AuraStack, RecordIndex)
-        end
-    end
+	for index, icon in ipairs(iconList) do
+		icon:ClearAllPoints()
 
-    self:Redraw()
+		if index == 1 or (index % self.perRow == 1) then
+			local iconOffsetY
+			if index == 1 then
+				iconOffsetY = self.alignTop and -offsetY or offsetY
+			else
+				iconOffsetY = self.alignTop and -self.iconOffsetY or self.iconOffsetY
+			end
+
+			icon:SetPoint(point, anchor, relativePoint, 0, iconOffsetY)
+
+			anchor = icon.MainFrame
+		else
+			if self.alignLeft then
+				icon:SetPoint("TOPLEFT", iconList[index - 1].MainFrame, "TOPRIGHT", self.iconOffsetX, 0)
+			else
+				icon:SetPoint("TOPRIGHT", iconList[index - 1].MainFrame, "TOPLEFT", -self.iconOffsetX, 0)
+			end
+		end
+	end
+
+	return anchor
+end
+
+function ezSpectator_AuraFrame:UpdateIconPosition()
+	local anchor = self.MainFrame
+	local offsetY = 0
+
+	if self.drawDebuffsFirst then
+		if self.showDebuffs then
+			anchor = self:UpdateIconListPosition(self.buffIcons, anchor, offsetY)
+			offsetY = offsetY + 10
+		end
+		if self.showBuffs then
+			self:UpdateIconListPosition(self.debuffIcons, anchor, offsetY)
+		end
+	else
+		if self.showBuffs then
+			anchor = self:UpdateIconListPosition(self.debuffIcons, anchor, offsetY)
+			offsetY = offsetY + 10
+		end
+		if self.showDebuffs then
+			self:UpdateIconListPosition(self.buffIcons, anchor, offsetY)
+		end
+	end
+end
+
+function ezSpectator_AuraFrame:GetAurasIconForAuraInfo(auraInfo)
+	local isDebuff = auraInfo.isDebuff
+	local auraList = isDebuff and self.debuffList or self.buffList
+	local iconList = isDebuff and self.debuffIcons or self.buffIcons
+	local auraListIndex = tIndexOf(auraList, auraInfo)
+	return iconList[auraListIndex]
+end
+
+function ezSpectator_AuraFrame:UpdateAurasIcon(auraInfo, icon, forceAnimation)
+	if auraInfo._AWAIT_UPDATE then
+		local skipFadeAnimation = not auraInfo._AWAIT_UPDATE
+		icon:SetAuraInfo(auraInfo, skipFadeAnimation or forceAnimation)
+		auraInfo._AWAIT_UPDATE = nil
+	end
+end
+
+function ezSpectator_AuraFrame:OnAuraUpdate(auraInfo, auraIndex)
+	local icon = self:GetAurasIconForAuraInfo(auraInfo)
+	self:UpdateAurasIcon(auraInfo, icon)
+end
+
+function ezSpectator_AuraFrame:OnAuraAdd(auraInfo)
+	local isDebuff = auraInfo.isDebuff
+	local auraList = isDebuff and self.debuffList or self.buffList
+	local iconList = isDebuff and self.debuffIcons or self.buffIcons
+
+	local icon = self:AcquireIcon()
+	self:UpdateAurasIcon(auraInfo, icon)
+
+	table.insert(auraList, auraInfo)
+	table.insert(iconList, icon)
+
+	self:UpdateIconPosition()
+end
+
+function ezSpectator_AuraFrame:OnAuraRemove(auraInfo)
+	if auraInfo.isDebuff then
+		local debuffIndex = tIndexOf(self.debuffList, auraInfo)
+		if debuffIndex then
+			table.remove(self.debuffList, debuffIndex)
+
+			local icon = table.remove(self.debuffIcons, debuffIndex)
+			self:FreeIcon(icon)
+		end
+	else
+		local buffIndex = tIndexOf(self.buffList, auraInfo)
+		if buffIndex then
+			table.remove(self.buffList, buffIndex)
+
+			local icon = table.remove(self.buffIcons, buffIndex)
+			self:FreeIcon(icon)
+		end
+	end
+
+	self:UpdateIconPosition()
+end
+
+function ezSpectator_AuraFrame:GetBestCrowdControlAura(minPriority, currentCCAuraInfo)
+	local priorityInfo = self.Parent.Data.CrowdControlPriority
+	local maxPriority = minPriority or 1
+	local ccAura
+
+	local now
+	local currentTimeLeft
+
+	if currentCCAuraInfo and currentCCAuraInfo.castTime then
+		now = C_ArenaSpectator.GetMatchTime()
+		currentTimeLeft = (currentCCAuraInfo.duration / 1000) - (now - currentCCAuraInfo.castTime)
+	end
+
+	for index, auraInfo in ipairs(self.debuffList) do
+		local priority = priorityInfo[auraInfo.spellID]
+		if priority and priority >= maxPriority then
+			if currentTimeLeft then
+				local timeLeft = (auraInfo.duration / 1000) - (now - auraInfo.castTime)
+				if timeLeft >= currentTimeLeft then
+					maxPriority = priority
+					ccAura = auraInfo
+				end
+			else
+				maxPriority = priority
+				ccAura = auraInfo
+			end
+		end
+	end
+	for index, auraInfo in ipairs(self.buffList) do
+		local priority = priorityInfo[auraInfo.spellID]
+		if priority and priority >= maxPriority then
+			if currentTimeLeft then
+				local timeLeft = auraInfo.duration - (now - auraInfo.castTime)
+				if timeLeft >= currentTimeLeft then
+					maxPriority = priority
+					ccAura = auraInfo
+				end
+			else
+				maxPriority = priority
+				ccAura = auraInfo
+			end
+		end
+	end
+
+	return maxPriority, ccAura
+end
+
+function ezSpectator_AuraFrame:FindAuraBySpellForCaster(spellID, isDebuff, casterGUID)
+	local auraList = isDebuff and self.debuffList or self.buffList
+	for index, auraInfo in ipairs(auraList) do
+		if auraInfo.spellID == spellID and (auraInfo.casterGUID == casterGUID) then
+			return auraInfo, index
+		end
+	end
+end
+
+function ezSpectator_AuraFrame:SetAura(spellID, isRemoved, stackCount, expirationTime, duration, debuffType, isDebuff, casterGUID)
+	if (isDebuff and not self.showDebuffs)
+	or (not isDebuff and not self.showBuffs)
+	then
+		return
+	end
+
+	local spellIcon = select(3, GetSpellInfo(spellID))
+	if not spellIcon then
+		return
+	end
+
+	local auraInfo, auraIndex = self:FindAuraBySpellForCaster(spellID, isDebuff, casterGUID)
+	if auraInfo then
+		if auraInfo.isDebuff ~= isDebuff then
+			-- remove old
+			self:OnAuraRemove(auraInfo)
+
+			-- treat as new
+			auraIndex = nil
+			auraInfo = {_AWAIT_UPDATE = true}
+		elseif auraInfo.stackCount ~= stackCount
+		or auraInfo.expirationTime ~= expirationTime
+		or auraInfo.duration ~= duration
+		then
+			auraInfo._AWAIT_UPDATE = true
+		end
+	elseif isRemoved then
+		return
+	else
+		auraInfo = {_AWAIT_UPDATE = true}
+	end
+
+	if isRemoved then
+		self:OnAuraRemove(auraInfo)
+	else
+		auraInfo.spellID = spellID
+		auraInfo.debuffType = debuffType
+		auraInfo.isDebuff = isDebuff
+		auraInfo.casterGUID = casterGUID
+		auraInfo.stackCount = stackCount
+		auraInfo.expirationTime = expirationTime
+		auraInfo.duration = duration
+
+		if auraIndex then
+			self:OnAuraUpdate(auraInfo, auraIndex)
+		else
+			auraInfo.castTime = C_ArenaSpectator.GetMatchTime()
+			self:OnAuraAdd(auraInfo)
+		end
+	end
 end

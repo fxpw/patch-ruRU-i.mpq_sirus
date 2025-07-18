@@ -1,7 +1,3 @@
---	Filename:	Custom_MountChest.lua
---	Project:	Custom Game Interface
---	Author:		Nyll & Blizzard Entertainment
-
 UIPanelWindows["Custom_MountChestFrame"] = { area = "center",	pushable = 0,	whileDead = 1 }
 
 MountChestFrameMixin = {}
@@ -69,7 +65,7 @@ enum:E_LOTTERY_MOUNT_CHEST {
 }
 
 function MountChestFrameMixin:Reset()
-    local disabledCards = C_CacheInstance:Get("ASMSG_LOTTERY_MOUNT_CHEST_INFO", {})
+	local disabledCards = C_GlobalStorage.GetVar("ASMSG_LOTTERY_MOUNT_CHEST_INFO")
 
     for y = self.cardsCountH, 1, -1 do
         for x = 1, self.cardsCountW do
@@ -99,7 +95,7 @@ function MountChestFrameMixin:Reset()
                 self.cards[pi].NameArtFrame.Name:SetText(spellName)
             end
 
-            self.cards[pi]:SetDisabledCard(disabledCards[pi])
+			self.cards[pi]:SetDisabledCard(disabledCards and disabledCards[pi])
 
             self.cards[pi].HideDisabledCard:Stop()
             self.cards[pi].ArtFrame.HideDisabledCard:Stop()
@@ -125,7 +121,7 @@ function MountChestFrameMixin:Reset()
     self.animationStage = 0
     self.cardsBuffer    = {}
 
-    self.TakeButton:SetEnabled(tCount(disabledCards) < tCount(LOTTERY_MOUNT_CHEST))
+	self.TakeButton:SetEnabled(not disabledCards or tCount(disabledCards) < tCount(LOTTERY_MOUNT_CHEST))
     self.TakeButton.Text:SetText(MOUNT_CHEST_TAKE_LABEL)
     self.TakeButton.isCloseButton = false
 end
@@ -230,12 +226,12 @@ end
 ---@param elapsed number
 function CustomMountChestCardMixin:OnUpdate( elapsed )
     if self:GetParent().animationStage == 4 and self.winnerXOffset and self.winnerYOffset then
-        local xOffset       = C_inOutSine(self.elapsed, self.winnerXOffset, 0, 0.500)
-        local yOffset       = C_inOutSine(self.elapsed, self.winnerYOffset, 0, 0.500)
-        local sizeOffset    = C_inOutSine(self.elapsed, 0, 200, 0.500)
+		local xOffset		= EasingUtil.InOutSine2(self.elapsed, self.winnerXOffset, 0, 0.500)
+		local yOffset		= EasingUtil.InOutSine2(self.elapsed, self.winnerYOffset, 0, 0.500)
+		local sizeOffset	= EasingUtil.InOutSine2(self.elapsed, 0, 200, 0.500)
 
-        local colorG        = C_inOutSine(self.elapsed, 1, 0.50196, 0.500)
-        local colorB        = C_inOutSine(self.elapsed, 1, 0, 0.500)
+		local colorG		= EasingUtil.InOutSine2(self.elapsed, 1, 0.50196, 0.500)
+		local colorB		= EasingUtil.InOutSine2(self.elapsed, 1, 0, 0.500)
 
         self.ArtFrame.Border:SetVertexColor(1, colorG, colorB)
 
@@ -332,20 +328,14 @@ function MountChestFrameMixin:ASMSG_LOTTERY_MOUNT_CHEST_INFO( msg )
         buffer[tonumber(cards)] = true
     end
 
-    C_CacheInstance:Set("ASMSG_LOTTERY_MOUNT_CHEST_INFO", buffer)
+	C_GlobalStorage.SetVar("ASMSG_LOTTERY_MOUNT_CHEST_INFO", buffer)
 
-    if not self:IsShown() then
-        ShowUIPanel(self)
-    end
-
-    self:Reset()
+	ShowUIPanel(self)
+	self:Reset()
 end
 
 function MountChestFrameMixin:ASMSG_LTTERY_MOUNT_CHEST_RESULT( msg )
-    if not self:IsShown() then
-        ShowUIPanel(self)
-    end
-
+	ShowUIPanel(self)
     self:SetWinnerID(msg)
     self:SetAnimationStage(1)
 end

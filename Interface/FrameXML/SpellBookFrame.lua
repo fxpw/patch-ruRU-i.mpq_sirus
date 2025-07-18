@@ -15,6 +15,8 @@ SPELLBOOK_PAGENUMBERS = {}
 local CastSpell = CastSpell;
 local CastSpellByID = CastSpellByID
 
+local IsGMAccount = IsGMAccount
+
 local tutorialSpellBook = {}
 
 SIRUS_SPELLBOOK_SPELL = {}
@@ -560,16 +562,16 @@ function IsSpellIgnore( spellID )
 		error("IsSpellIgnore - not spellID")
 	end
 
-	if IsGMAccount() then
-		return false
-	end
-
 	for _, floyutData in pairs(FLYOUT_STORAGE) do
 		for _, flyoutSpellID in pairs(floyutData) do
 			if flyoutSpellID == spellID then
 				return true
 			end
 		end
+	end
+
+	if IsGMAccount() then
+		return false
 	end
 
 	return tContains(spellbookCustomHiddenSpell, spellID)

@@ -1,38 +1,34 @@
 ezSpectator_TopFrame = {}
 ezSpectator_TopFrame.__index = ezSpectator_TopFrame
 
-
---noinspection LuaOverlyLongMethod
 function ezSpectator_TopFrame:Create(Parent)
     local self = {}
     setmetatable(self, ezSpectator_TopFrame)
 
     self.Parent = Parent
 
-    self.MatchTime = nil
     self.TournamentStage = nil
     self.TournamentBOX = nil
-    self.Textures = ezSpectator_Textures:Create()
 
-    self.MainFrame = CreateFrame('Frame', "ezSpectator_TopFrameMainFrame", ArenaSpectatorFrame)
+	self.MainFrame = CreateFrame("Frame", "$parentTopFrameMainFrame", ArenaSpectatorFrame)
     self.MainFrame:SetFrameStrata('BACKGROUND')
-    self.MainFrame:SetWidth(self.Parent.Data:SafeSize(GetScreenWidth() / _ezSpectatorScale))
+	self.MainFrame:SetWidth(GetScreenWidth() / _ezSpectatorScale)
     self.MainFrame:SetHeight(35)
     self.MainFrame:SetScale(_ezSpectatorScale)
     self.MainFrame:SetPoint('TOP', 0, 0)
 
-    self.ServerLogo = CreateFrame('Frame', nil,  self.MainFrame)
+	self.ServerLogo = CreateFrame("Frame", nil, self.MainFrame)
     self.ServerLogo:SetFrameStrata('TOOLTIP')
-    self.ServerLogo:SetPoint('TOPRIGHT', UIParent, 'TOPRIGHT', 0, 0)
+	self.ServerLogo:SetPoint("TOPRIGHT", ArenaSpectatorFrame, "TOPRIGHT", -10, -10)
     self.ServerLogo:SetSize(128, 64)
     self.ServerLogo:SetScale(_ezSpectatorScale)
-    self.Textures:SetServerLogo(self.ServerLogo)
-    self.ServerLogo.texture:SetVertexColor(1, 1, 1, 0.5)
+
+	self.ServerLogo.texture = self.ServerLogo:CreateTexture(nil, "BACKGROUND")
+	self.ServerLogo.texture:SetAllPoints()
+	self.ServerLogo.texture:SetAlpha(0.5)
 
     self.LeftTeam = ezSpectator_TeamFrame:Create(self.Parent, true, 'TOP', -290, -1)
     self.RightTeam = ezSpectator_TeamFrame:Create(self.Parent, false, 'TOP', 290, -1)
-
-    self.EnrageOrb = ezSpectator_EnrageOrb:Create(self.Parent, 170, 22, 'TOP', self.MainFrame, 'BOTTOM', 0, -10 * _ezSpectatorScale)
 
     self.TimeTextFrame = CreateFrame('Frame', nil, self.MainFrame)
     self.TimeTextFrame:SetFrameStrata('TOOLTIP')
@@ -44,21 +40,14 @@ function ezSpectator_TopFrame:Create(Parent)
 
     self.UpdateFrame = CreateFrame('Frame', nil, ArenaSpectatorFrame)
     self.UpdateFrame.Parent = self
-    self.UpdateFrame:SetScript('OnUpdate', function(self, Elapsed)
-        if self.Parent.MatchTime ~= nil and self.Parent.Parent.Interface.IsRunning then
-			if not self.Parent.Parent.Interface.IsPaused then
-				self.Parent.MatchTime = self.Parent.MatchTime + (Elapsed * ArenaSpectatorFrame:GetSpeed())
-			end
+	self.UpdateFrame:Hide()
+	self.UpdateFrame:SetScript("OnUpdate", function(this, elapsed)
+		if C_ArenaSpectator.IsInProgress() and not C_ArenaSpectator.IsPaused() then
+			local fightTime = C_ArenaSpectator.GetFightTime()
 
-            self.Parent.Time:SetText(self.Parent.Parent.Data:SecondsToTime(self.Parent.MatchTime))
-
-            if self.Parent.Parent.Interface.IsTournament then
-                self.Parent.EnrageOrb:SetTime(self.Parent.MatchTime)
-            end
-        else
-            self.Parent.Time:SetText('00:00')
-        end
-    end)
+			self.Time:SetText(self.Parent.Data:SecondsToTime(fightTime))
+		end
+	end)
 
     self.TournamentTextFrame = CreateFrame('Frame', nil, self.MainFrame)
     self.TournamentTextFrame:SetFrameStrata('TOOLTIP')
@@ -73,7 +62,6 @@ function ezSpectator_TopFrame:Create(Parent)
     self.Report:SetAction(function()
         ArenaSpectatorFrame.ReportFrame:SetShown(not ArenaSpectatorFrame.ReportFrame:IsShown())
     end)
-    -- self.Report:SetEnabled(false)
     self.Report:SetTooltip(ARENAREPLAY_REPORT, ARENAREPLAY_REPORT_DESC)
 
     self.Share = ezSpectator_ClickIcon:Create(self.Parent, self.MainFrame, 'gold', 34 / _ezSpectatorScale, 'LEFT', self.Report.Normal, 'RIGHT', -3, 0)
@@ -82,17 +70,11 @@ function ezSpectator_TopFrame:Create(Parent)
         ArenaSpectatorFrame.SharedReplay:SetShown(not ArenaSpectatorFrame.SharedReplay:IsShown())
     end)
     self.Share:SetTooltip(ARENAREPLAY_SHARED, ARENAREPLAY_SHARED_DESC)
---[[
-    self.Settings = ezSpectator_ClickIcon:Create(self.Parent, self.MainFrame, 'gold', 34 / _ezSpectatorScale, 'LEFT', self.Share.Normal, 'RIGHT', -3, 0)
-    self.Settings:SetIcon('settings')
-    self.Settings:SetAction(function() end)
-    self.Settings:SetEnabled(false)
-    self.Settings:SetTooltip(ARENAREPLAY_SETTINGS, ARENAREPLAY_SETTINGS_DESC)
---]]
+
     self.Reset = ezSpectator_ClickIcon:Create(self.Parent, self.MainFrame, 'gold', 34 / _ezSpectatorScale, 'LEFT', self.Share.Normal, 'RIGHT', -3, 0)
     self.Reset:SetIcon('Refresh')
     self.Reset:SetAction(function()
-        SendServerMessage("ACMSG_AR_SPECTATE_VIEW", UnitName('player'))
+		C_ArenaSpectator.SetUnitSpectation(UnitName("player"))
         self.Parent.Interface:ResetViewpoint()
     end)
     self.Reset:SetTooltip(ARENAREPLAY_REFRESH, ARENAREPLAY_REFRESH_DESC)
@@ -109,8 +91,7 @@ function ezSpectator_TopFrame:Create(Parent)
     self.Pause:SetAction(function()
         self.Pause:Hide()
         self.Play:Show()
-
-        SendServerMessage("ACMSG_AR_PAUSED", 1)
+		C_ArenaSpectator.SetPaused(true)
     end)
     self.Pause:SetTooltip(ARENAREPLAY_PAUSE, ARENAREPLAY_PAUSE_DESC)
 
@@ -120,8 +101,7 @@ function ezSpectator_TopFrame:Create(Parent)
     self.Play:SetAction(function()
         self.Play:Hide()
         self.Pause:Show()
-
-        SendServerMessage("ACMSG_AR_PAUSED", 2)
+		C_ArenaSpectator.SetPaused(false)
     end)
     self.Play:SetTooltip(ARENAREPLAY_PLAY, ARENAREPLAY_PLAY_DESC)
 
@@ -147,13 +127,10 @@ function ezSpectator_TopFrame:Create(Parent)
     return self
 end
 
-
-
 function ezSpectator_TopFrame:Hide()
     self.MainFrame:Hide()
     self.LeftTeam:Hide()
     self.RightTeam:Hide()
-    self.EnrageOrb:Hide()
     self.ServerLogo:Hide()
     self.TournamentInfo:SetText('')
 
@@ -161,44 +138,40 @@ function ezSpectator_TopFrame:Hide()
     self.Pause:Show()
 end
 
-
-
 function ezSpectator_TopFrame:Show()
     self.MainFrame:Show()
     self.LeftTeam:Show()
     self.RightTeam:Show()
-    self.Textures:SetServerLogo(self.ServerLogo)
+	self.ServerLogo.texture:SetAtlas(C_RealmInfo.GetServerLogo(GetServerID()))
     self.ServerLogo:Show()
-    if self.Parent.Interface.IsTournament then
-        self.EnrageOrb:Show()
+	if C_ArenaSpectator.IsTournament() then
         self.TournamentStage = nil
         self.TournamentBOX = nil
     end
 end
 
-
-
-function ezSpectator_TopFrame:StartTimer(Value)
-    if Value and Value >= 0 then
-        self.MatchTime = Value
-    else
-        self.MatchTime = nil
-    end
+function ezSpectator_TopFrame:SetShown(shown)
+	if shown then
+		self:Show()
+	else
+		self:Hide()
+	end
 end
 
-
+function ezSpectator_TopFrame:SetMatchInProgress(isInProgress)
+	if not isInProgress then
+		self.Time:SetText("00:00")
+	end
+	self.UpdateFrame:SetShown(isInProgress)
+end
 
 function ezSpectator_TopFrame:SetStage(Value)
     self.TournamentStage = self.Parent.Data.TournamentStages[Value]
 end
 
-
-
 function ezSpectator_TopFrame:SetBOX(Value)
     self.TournamentBOX = Value
 end
-
-
 
 function ezSpectator_TopFrame:UpdateTournamentTextFrame()
     if self.TournamentStage and self.TournamentBOX then

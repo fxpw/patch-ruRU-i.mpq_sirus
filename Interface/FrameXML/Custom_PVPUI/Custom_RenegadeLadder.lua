@@ -95,22 +95,9 @@ function RenegadeLadderFrameMixin:GetActiveTab()
     return self.activeTab or 0
 end
 
----@param key string
----@param value string | number | table
----@param isNeedTTL? boolean
-function RenegadeLadderFrameMixin:SetCache( key, value, isNeedTTL )
-    C_CacheInstance:Set(key, value, isNeedTTL and CACHE_TIME_TO_LIFE)
-end
-
----@param key string
----@return string | number | table cache
-function RenegadeLadderFrameMixin:GetCache( key, dafaultValue )
-    return C_CacheInstance:Get(key, dafaultValue)
-end
-
 ---@return table playerInfo
 function RenegadeLadderFrameMixin:GetLocalPlayerInfo()
-    local playerInfoCache = self:GetCache("RENEGADE_LADDER_PLAYER")
+	local playerInfoCache = C_GlobalStorage.GetTTLVar("RENEGADE_LADDER_PLAYER")
 
     if not playerInfoCache or #playerInfoCache == 0 then
         return
@@ -132,7 +119,7 @@ end
 
 ---@param index number
 function RenegadeLadderFrameMixin:GetKingInfo( index )
-    local kingCache = self:GetCache("ASMSG_RENEGADE_KINGS")
+	local kingCache = C_GlobalStorage.GetTTLVar("ASMSG_RENEGADE_KINGS")
 
     if (not kingCache or #kingCache == 0) or not kingCache[index] then
         return
@@ -154,7 +141,7 @@ function RenegadeLadderFrameMixin:UpdateLocalPlayerInfo()
         frame.PlayerName:SetText(playerInfo.name)
         frame.Rating:SetText(playerInfo.kills)
 
-        frame.RaceIcon.Icon:SetTexture(string.format("Interface\\Custom\\RaceIcon\\RACE_ICON_%s%s", string.upper(playerInfo.raceInfo.clientFileString), S_GENDER_FILESTRING[playerInfo.gender]))
+		frame.RaceIcon.Icon:SetTexture(string.format("Interface\\Custom\\RaceIcon\\RACE_ICON_%s%s", string.upper(playerInfo.raceInfo.clientFileString), S_GENDER_FILESTRING[playerInfo.gender] or "MALE"))
         frame.RaceIcon.raceName = playerInfo.raceInfo.raceName
 
         frame.ClassIcon.Icon:SetTexture("Interface\\Custom\\ClassIcon\\CLASS_ICON_"..string.upper(playerInfo.classInfo.fileString))
@@ -206,14 +193,14 @@ end
 
 ---@return number playerCache
 function RenegadeLadderFrameMixin:GetLadderPlayerCount()
-    local playerCache = self:GetCache("RENEGADE_LADDER_PLAYERS_CACHE_"..self:GetActiveTab())
+	local playerCache = C_GlobalStorage.GetTTLVar("RENEGADE_LADDER_PLAYERS_CACHE_"..self:GetActiveTab())
     return playerCache and #playerCache or 0
 end
 
 ---@param index number
 ---@return table playerInfo
 function RenegadeLadderFrameMixin:GetLadderPlayerInfo( index )
-    local playerCache = self:GetCache("RENEGADE_LADDER_PLAYERS_CACHE_"..self:GetActiveTab())
+	local playerCache = C_GlobalStorage.GetTTLVar("RENEGADE_LADDER_PLAYERS_CACHE_"..self:GetActiveTab())
 
     if (not playerCache or playerCache == 0) or not playerCache[index] then
         return
@@ -229,8 +216,8 @@ function RenegadeLadderFrameMixin:GetLadderPlayerInfo( index )
         icon            = "Interface\\Custom\\ClassIcon\\CLASS_ICON_"..string.upper(classFileString)
     }
 
-    playerInfo.raceInfo = playerInfo.raceInfo or C_CreatureInfo.GetRaceInfo(playerInfo.raceID)
-    playerInfo.raceInfo.icon = playerInfo.raceInfo.icon or string.format("Interface\\Custom\\RaceIcon\\RACE_ICON_%s%s", string.upper(playerInfo.raceInfo.clientFileString), S_GENDER_FILESTRING[playerInfo.gender])
+	playerInfo.raceInfo = playerInfo.raceInfo or C_CreatureInfo.GetRaceInfo(playerInfo.raceID)
+    playerInfo.raceInfo.icon = playerInfo.raceInfo.icon or string.format("Interface\\Custom\\RaceIcon\\RACE_ICON_%s%s", string.upper(playerInfo.raceInfo.clientFileString), S_GENDER_FILESTRING[playerInfo.gender] or "MALE")
 
     playerInfo.factionInfo = playerInfo.factionInfo or {}
 	playerInfo.factionInfo.name = _G["FACTION_"..string.upper(PLAYER_FACTION_GROUP[playerInfo.factionID])]
@@ -307,12 +294,12 @@ end
 function RenegadeLadderFrameMixin:RENEGADE_LADDER_TOP(playerEntryList)
 	if not playerEntryList then
         for _, tabButton in pairs(self.tabs) do
-            self:SetCache("RENEGADE_LADDER_PLAYERS_CACHE_"..tabButton.buttonID, {}, true)
+			C_GlobalStorage.SetTTLVar("RENEGADE_LADDER_PLAYERS_CACHE_"..tabButton.buttonID, nil, CACHE_TIME_TO_LIFE)
         end
 
-        self:SetCache("RENEGADE_LADDER_PLAYER", {}, true)
+		C_GlobalStorage.SetTTLVar("RENEGADE_LADDER_PLAYER", nil)
     else
-		self:SetCache("RENEGADE_LADDER_PLAYERS_CACHE_"..self:GetActiveTab(), playerEntryList, true)
+		C_GlobalStorage.SetTTLVar("RENEGADE_LADDER_PLAYERS_CACHE_"..self:GetActiveTab(), playerEntryList, CACHE_TIME_TO_LIFE)
     end
 
     self:HideLoading()
@@ -320,14 +307,14 @@ function RenegadeLadderFrameMixin:RENEGADE_LADDER_TOP(playerEntryList)
 end
 
 function RenegadeLadderFrameMixin:RENEGADE_LADDER_CLASS_TOP(playerEntryList)
-	self:SetCache("RENEGADE_LADDER_PLAYERS_CACHE_"..self:GetActiveTab(), playerEntryList, true)
+	C_GlobalStorage.SetTTLVar("RENEGADE_LADDER_PLAYERS_CACHE_"..self:GetActiveTab(), playerEntryList, CACHE_TIME_TO_LIFE)
 
     self:HideLoading()
     self:UpdateLadderScrollFrame()
 end
 
 function RenegadeLadderFrameMixin:RENEGADE_LADDER_PLAYER(playerEntryList)
-	self:SetCache("RENEGADE_LADDER_PLAYER", playerEntryList, true)
+	C_GlobalStorage.SetTTLVar("RENEGADE_LADDER_PLAYER", playerEntryList, CACHE_TIME_TO_LIFE)
     self:UpdateLocalPlayerInfo()
 end
 
@@ -338,21 +325,26 @@ end
 
 function RenegadeLadderFrameMixin:ASMSG_RENEGADE_KINGS( msg )
     local kingsData     = C_Split(msg, "|")
-    local kingCache     = self:GetCache("ASMSG_RENEGADE_KINGS", {})
+	local kingCache = C_GlobalStorage.GetTTLVar("ASMSG_RENEGADE_KINGS")
 
     if not kingsData or #kingsData == 0 then
-        self:SetCache("ASMSG_RENEGADE_KINGS", {})
-    end
+		C_GlobalStorage.SetTTLVar("ASMSG_RENEGADE_KINGS", nil)
+	else
+		if not kingCache then
+			kingCache = {}
+			C_GlobalStorage.SetTTLVar("ASMSG_RENEGADE_KINGS", kingCache, CACHE_TIME_TO_LIFE)
+		end
 
-    for index, data in pairs(kingsData) do
-        local kingInfo = C_Split(data, ":")
+		for index, data in pairs(kingsData) do
+			local kingInfo = C_Split(data, ":")
 
-        kingCache[index] = {
-            name    = kingInfo[E_RENEGADE_KINGS.NAME],
-            classID = tonumber(kingInfo[E_RENEGADE_KINGS.CLASSID]),
-            kills   = tonumber(kingInfo[E_RENEGADE_KINGS.KILLS]),
-            areaID  = tonumber(kingInfo[E_RENEGADE_KINGS.AREAID])
-        }
+			kingCache[index] = {
+				name	= kingInfo[E_RENEGADE_KINGS.NAME],
+				classID	= tonumber(kingInfo[E_RENEGADE_KINGS.CLASSID]),
+				kills	= tonumber(kingInfo[E_RENEGADE_KINGS.KILLS]),
+				areaID	= tonumber(kingInfo[E_RENEGADE_KINGS.AREAID])
+			}
+		end
     end
 
     self:UpdateKingsFrame()
@@ -380,11 +372,11 @@ end
 
 function RenegadeLadderTabsMixin:OnClick()
     local mainFrame = self:GetParent():GetParent()
-	local playerCache, expiredTTL = mainFrame:GetCache("RENEGADE_LADDER_PLAYERS_CACHE_"..self.buttonID)
+	local playerCache, expiredTTL = C_GlobalStorage.GetTTLVar("RENEGADE_LADDER_PLAYERS_CACHE_"..self.buttonID)
 
     if mainFrame:GetActiveTab() == self.buttonID then
         self:SetChecked(true)
-		if not expiredTTL then
+		if playerCache and not expiredTTL then
 			return
 		end
     end

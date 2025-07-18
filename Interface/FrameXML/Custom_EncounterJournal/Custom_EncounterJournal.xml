@@ -432,17 +432,17 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Frame name="$parentRequirements" parentKey="Requirements" hidden="true">
+			<Frame name="$parentRequirements" parentKey="Requirements">
 				<Size x="20" y="20"/>
 				<Anchors>
 					<Anchor point="TOPRIGHT" x="-8" y="-8"/>
 				</Anchors>
 				<Layers>
 					<Layer level="ARTWORK">
-						<Texture name="$parentIcon" parentKey="Icon" file="Interface\EncounterJournal\UI-EJ-Icons">
-							<Size x="32" y="32"/>
+						<Texture name="$parentIcon" parentKey="Icon">
+							<Size x="22" y="22"/>
 							<Anchors>
-								<Anchor point="CENTER" x="-1" y="1"/>
+								<Anchor point="CENTER" x="0" y="0"/>
 							</Anchors>
 						</Texture>
 					</Layer>
@@ -453,6 +453,28 @@
 					<OnEnter function="EncounterInstanceButtonRequirements_OnEnter"/>
 					<OnLeave function="EncounterInstanceButtonRequirements_OnLeave"/>
 				</Scripts>
+			</Frame>
+			<Frame name="$parentUnavailable" parentKey="Unavailable" hidden="true">
+				<Size x="0" y="35"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="4" y="3"/>
+					<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground" parentKey="Background" setAllPoints="true" alpha="0.7">
+							<Color r="0" g="0" b="0"/>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<FontString name="$parentText" parentKey="Text" inherits="PKBT_Font_14" text="UNAVAILABLE">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0"/>
+							</Anchors>
+							<Color r="0.7" g="0.7" b="0.7"/>
+						</FontString>
+					</Layer>
+				</Layers>
 			</Frame>
 		</Frames>
 		<NormalTexture inherits="UI-EJ-DungeonButton-Up">
@@ -2760,7 +2782,7 @@
 				</Frames>
 			</Frame>
 
-			<Frame name="$parentSuggestFrame" setAllPoints="true" parentKey="suggestFrame" enableMouse="true" hidden="true">
+			<Frame name="$parentSuggestFrame" parentKey="suggestFrame" enableMouse="true" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentInset" x="5" y="-51" />
 					<Anchor point="BOTTOMRIGHT" relativeTo="$parentInset" x="-3" y="0"/>

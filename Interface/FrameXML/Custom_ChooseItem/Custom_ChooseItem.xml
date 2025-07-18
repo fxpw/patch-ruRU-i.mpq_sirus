@@ -19,7 +19,7 @@
 		<TexCoords left="0.82617188" right="0.89062500" top="0.30468750" bottom="0.48046875"/>
 	</Texture>
 
-	<Button name="QuestChoiceOptionTemplate" hidden="true" virtual="true">
+	<Button name="ChooseItemOptionTemplate" virtual="true">
 		<Size x="210" y="220"/>
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -38,7 +38,7 @@
 					<Color r="0" g="0" b="0" a="0.2"/>
 				</Texture>
 			</Layer>
-			<Layer level="ARTWORK">
+			<Layer level="BORDER">
 				<Texture parentKey="RoleBorder" file="Interface\QuestionFrame\Question_ItemMain">
 					<Size x="226" y="126"/>
 					<Anchors>
@@ -46,12 +46,33 @@
 					</Anchors>
 					<TexCoords left="0.029296875" right="0.46484375" top="0.0546875" bottom="0.9609375"/>
 				</Texture>
-			</Layer>
-			<Layer level="OVERLAY">
 				<Texture name="$parentRoleTexture" parentKey="RoleTexture" file="Interface\QuestionFrame\UI-LFG-ICON-ROLES">
 					<Size x="62" y="62"/>
 					<Anchors>
-						<Anchor point="CENTER" relativeTo="$parentRoleBackground" x="0" y="-8" />
+						<Anchor point="CENTER" relativeTo="$parentRoleBackground" relativePoint="CENTER" x="0" y="-8"/>
+					</Anchors>
+					<TexCoords left="0" right="0.2617" top="0.2617" bottom="0.5234"/>
+				</Texture>
+				<Texture name="$parentSpecIcon" parentKey="SpecIcon" hidden="true">
+					<Size x="54" y="54"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentRoleBackground" relativePoint="CENTER" x="0" y="-5"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentSpecBorder" parentKey="SpecBorder" hidden="true">
+					<Size x="62" y="62"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentSpecIcon" relativePoint="CENTER" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentSpecRoleIcon" parentKey="SpecRoleIcon" file="Interface\QuestionFrame\UI-LFG-ICON-ROLES" hidden="true">
+					<Size x="32" y="32"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentSpecBorder" relativePoint="BOTTOMRIGHT" x="2" y="-2"/>
 					</Anchors>
 					<TexCoords left="0" right="0.2617" top="0.2617" bottom="0.5234"/>
 				</Texture>
@@ -64,7 +85,9 @@
 					<Anchor point="BOTTOM" x="0" y="2" />
 				</Anchors>
 				<Scripts>
-					<OnClick function="QuestChoiceOptionButton_OnClick"/>
+					<OnClick>
+						self:GetParent():Activate(button)
+					</OnClick>
 				</Scripts>
 			</Button>
 			<Frame name="$parentHeader" parentKey="Header">
@@ -108,7 +131,7 @@
 									<Alpha change="-1" duration="1" order="3"/>
 									<Scripts>
 										<OnFinished>
-											self:GetParent():Hide();
+											self:GetParent():Hide()
 										</OnFinished>
 									</Scripts>
 								</AnimationGroup>
@@ -147,14 +170,21 @@
 					</Layer>
 				</Layers>
 				<Scripts>
-					<OnEnter function="QuestChoiceOption_OnEnter"/>
+					<OnEnter>
+						self:GetParent():OnItemEnter(self)
+					</OnEnter>
 					<OnLeave function="GameTooltip_Hide"/>
-					<OnClick function="QuestChoiceOption_OnClick"/>
+					<OnClick>
+						self:GetParent():OnItemClick(button)
+					</OnClick>
 				</Scripts>
 			</Button>
 		</Frames>
 		<Scripts>
-			<OnLoad function="QuestChoiceOption_OnLoad"/>
+			<OnLoad>
+				Mixin(self, ChooseItemOptionMixin)
+				self:OnLoad()
+			</OnLoad>
 		</Scripts>
 	</Button>
 
@@ -285,26 +315,6 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Frame name="ChooseItemOption1" parentKey="Option1" inherits="QuestChoiceOptionTemplate">
-				<Anchors>
-					<Anchor point="LEFT" x="64" y="4" />
-				</Anchors>
-			</Frame>
-			<Frame name="ChooseItemOption2" parentKey="Option2" inherits="QuestChoiceOptionTemplate">
-				<Anchors>
-					<Anchor point="LEFT" relativeTo="ChooseItemOption1" relativePoint="RIGHT" x="24" y="0" />
-				</Anchors>
-			</Frame>
-			<Frame name="ChooseItemOption3" parentKey="Option3" inherits="QuestChoiceOptionTemplate">
-				<Anchors>
-					<Anchor point="LEFT" relativeTo="ChooseItemOption2" relativePoint="RIGHT" x="24" y="0" />
-				</Anchors>
-			</Frame>
-			<Frame name="ChooseItemOption4" parentKey="Option4" inherits="QuestChoiceOptionTemplate">
-				<Anchors>
-					<Anchor point="LEFT" relativeTo="ChooseItemOption3" relativePoint="RIGHT" x="24" y="0" />
-				</Anchors>
-			</Frame>
 			<Button parentKey="CloseButton" inherits="UIPanelCloseButton">
 				<Anchors>
 					<Anchor point="TOPRIGHT" x="-10" y="-10" />
@@ -312,9 +322,16 @@
 			</Button>
 		</Frames>
 		<Scripts>
-			<OnLoad function="ChooseItemFrame_OnLoad"/>
-			<OnEvent function="ChooseItemFrame_OnEvent"/>
-			<OnShow function="ChooseItemFrame_OnShow"/>
+			<OnLoad>
+				Mixin(self, ChooseItemFrameMixin)
+				self:OnLoad()
+			</OnLoad>
+			<OnEvent>
+				self:OnEvent(event, ...)
+			</OnEvent>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
 		</Scripts>
 	</Frame>
 </Ui>

@@ -1,45 +1,17 @@
 ezSpectator_DataWorker = {}
 ezSpectator_DataWorker.__index = ezSpectator_DataWorker
 
---noinspection LuaOverlyLongMethod
+local CROWD_CONTROL_PRIORITY = {
+	ROOT = 1,
+	SILENCE = 2,
+	CROWD_CONTROL = 3,
+	STUN = 4,
+	IMMUNITY = 5,
+}
+
 function ezSpectator_DataWorker:Create()
     local self = {}
     setmetatable(self, ezSpectator_DataWorker)
-
-    self.Version = {
-        ['Major'] = 1,
-        ['Minor'] = 1,
-        ['Build'] = 15,
-        ['Revision'] = 187
-    }
-
-    self.NamePlateLevel = 0
-
-    self.ViewpointAlpha = 0.33
-    self.ViewpointNameplateAlpha = 0.50
-
-    self.EnrageStartAt = 480
-    self.EnrageStackInterval = 30
-    self.EnrageStackMax = 10
-
-    self.TimeWarnings = {
-        [300] = '5_minute_warning',
-        [180] = '3_minutes_remain',
-        [120] = '2_minutes_remain',
-        [60] = '1_minute_remains',
-        [30] = '30_seconds_remain',
-        [20] = '20_seconds',
-        [10] = 'ten',
-        [9] = 'nine',
-        [8] = 'eight',
-        [7] = 'seven',
-        [6] = 'six',
-        [5] = 'five',
-        [4] = 'four',
-        [3] = 'three',
-        [2] = 'two',
-        [1] = 'one'
-    }
 
     self.TournamentStages = {
         ['G'] = ARENA_SPECTATOR_GROUP_STAGE,
@@ -47,18 +19,6 @@ function ezSpectator_DataWorker:Create()
         ['L'] = ARENA_SPECTATOR_BOTTOM_MESH,
         ['T'] = ARENA_SPECTATOR_3_PLACE_MATCH,
         ['F'] = ARENA_SPECTATOR_FINAL_MATCH
-    }
-
-    self.MatchEndings = {
-        ['DEFAULT'] = {
-            'EndOfRound',
-            'SKAARJannihilation',
-            'SKAARJbloodbath',
-            'SKAARJerradication',
-            'SKAARJextermination',
-            'SKAARJslaughter',
-            'SKAARJtermination'
-        }
     }
 
     self.ClassTextEng = {
@@ -89,108 +49,11 @@ function ezSpectator_DataWorker:Create()
         {0.7421875, 0.98828125, 0, 0.25}
     }
 
-    self.ClassTreeInfo = {
-        --Воин
-        {{WARRIOR_SPEC_ARMS_TITLE, '2098', false}, {WARRIOR_SPEC_FURY_TITLE, '41368', false}, {WARRIOR_SPEC_PROTECTION_TITLE, '71', false}},
-        --Паладин
-        {{PALADIN_SPEC_HOLY_TITLE, '18984', true}, {PALADIN_SPEC_PROTECTION_TITLE, '52442', false}, {PALADIN_SPEC_RETRIBUTION_TITLE, '13008', false}},
-        --Охотник
-        {{HUNTER_SPEC_BEASTMASTERY_TITLE, '1515', false}, {HUNTER_SPEC_MARKSMANSHIP_TITLE, '58434', false}, {HUNTER_SPEC_SURVIVAL_TITLE, '37413', false}},
-        --Разбойник
-        {{ROGUE_SPEC_ASSASSINATION_TITLE, '2098', false}, {ROGUE_SPEC_COMBAT_TITLE, '53', false}, {ROGUE_SPEC_SUBTLETY_TITLE, '19885', false}},
-        --Жрец
-        {{PRIEST_SPEC_DISCIPLINE_TITLE, '34020', true}, {PRIEST_SPEC_HOLY_TITLE, '18984', true}, {PRIEST_SPEC_SHADOW_TITLE, '589', false}},
-        --Рыцарь смерти
-        {{DEATHKNIGHT_SPEC_BLOOD_TITLE, '48263', false}, {DEATHKNIGHT_SPEC_FROST_TITLE, '48266', false}, {DEATHKNIGHT_SPEC_UNHOLY_TITLE, '48265', false}},
-        --Шаман
-        {{SHAMAN_SPEC_ELEMENTAL_TITLE, '41265', false}, {SHAMAN_SPEC_ENHANCEMENT_TITLE, '324', false}, {SHAMAN_SPEC_RESTORATION_TITLE, '48700', true}},
-        --Маг
-        {{MAGE_SPEC_ARCANE_TITLE, '32848', false}, {MAGE_SPEC_FIRE_TITLE, '38066', false}, {MAGE_SPEC_FROST_TITLE, '10737', false}},
-        --Чернокнижник
-        {{WARLOCK_AFFLICTION_TITLE, '23127', false}, {WARLOCK_DEMONOLOGY_TITLE, '13166', false}, {WARLOCK_DESTRUCTION_TITLE, '39273', false}},
-        --Blizzard sucks
-        {{'', ''}, {'', ''}, {'', ''}},
-        --Друид
-        {{DRUID_BALANCE_TITLE, '8921', false}, {DRUID_FERAL_TITLE, '40794', false}, {DRUID_RESTORATION_TITLE, '43422', true}}
-    }
-
-    self.SpellFunctor = {}
-    self.SpellFunctor.RESET_COOLDOWN = 1
-
-    self.ClassSpellInfo = {
-        --Воин
-        {
-
-        },
-        --Паладин
-        {
-
-        },
-        --Охотник
-        {
-            --Готовность (Стрельба)
-            [23989] = {
-                functor = self.SpellFunctor.RESET_COOLDOWN,
-                params = {19263, 34490, 53271, 19503, 60192, 49012}
-            }
-        },
-        --Разбойник
-        {
-            --Подготовка (Скрытность)
-            [14185] = {
-                functor = self.SpellFunctor.RESET_COOLDOWN,
-                params = {26889}
-            }
-        },
-        --Жрец
-        {
-
-        },
-        --Рыцарь смерти
-        {
-
-        },
-        --Шаман
-        {
-
-        },
-        --Маг
-        {
-
-        },
-        --Чернокнижник
-        {
-
-        },
-        --Blizzard sucks
-        {},
-        --Друид
-        {
-
-        }
-    }
-
     self.Trinkets = {
         [65547] = 120,
         [42292] = 120,
         [59752] = 120,
         [7744] = 45
-    }
-
-    self.ClickIconOffset = {
-        {'Eye_Normal', 0.21875, 0.7890625, 0.21875, 0.7890625, 18},
-        {'Eye_Stroked', 0.21875, 0.7890625, 0.21875, 0.7890625, 18},
-        {'Logout', 0.25, 0.7578125, 0.25, 0.7578125, 14},
-        {'Refresh', 0.25, 0.7578125, 0.25, 0.7578125, 10},
-        {'Plus', 0, 1, 0, 1, 10},
-        {'exit', 0, 1, 0, 1, 10},
-        {'report', 0, 1, 0, 1, 10},
-        {'settings', 0, 1, 0, 1, 10},
-        {'share', 0, 1, 0, 1, 12},
-        {'backward', 0, 1, 0, 1, 12},
-        {'forward', 0, 1, 0, 1, 12},
-        {'pause', 0, 1, 0, 1, 12},
-        {'play', 0, 1, 0, 1, 12},
     }
 
     self.DebuffList = {
@@ -209,20 +72,13 @@ function ezSpectator_DataWorker:Create()
         ['poison'] = {r = 0.00, g = 0.60, b = 0}
     }
 
-    self.CAST_SUCCESS = 99997
     self.CastInfo = {
-        --range
-        [99995] = {r = 1, g = 1, b = 0, Text = CANCELED, IsProgressMode = false},
-        --los
-        [99996] = {r = 1, g = 1, b = 0, Text = CANCELED, IsProgressMode = false},
-        --success
-        [self.CAST_SUCCESS] = {r = 0, g = 1, b = 0, Text = SUCCESSFULLY, IsProgressMode = false},
-        --canceled
-        [99998] = {r = 1, g = 1, b = 0, Text = CANCELED, IsProgressMode = false},
-        --interrupt
-        [99999] = {r = 1, g = 0, b = 0, Text = INTERRUPTED, IsProgressMode = false},
-        --casting
-        [100000] = {r = 0, g = 1, b = 1, Text = nil, IsProgressMode = true}
+		[Enum.ArenaSpectator.CastType.Range] = {r = 1, g = 1, b = 0, Text = CANCELED, IsProgressMode = false},
+		[Enum.ArenaSpectator.CastType.LOS] = {r = 1, g = 1, b = 0, Text = CANCELED, IsProgressMode = false},
+		[Enum.ArenaSpectator.CastType.Success] = {r = 0, g = 1, b = 0, Text = SUCCESSFULLY, IsProgressMode = false},
+		[Enum.ArenaSpectator.CastType.Cancel] = {r = 1, g = 1, b = 0, Text = CANCELED, IsProgressMode = false},
+		[Enum.ArenaSpectator.CastType.Interrupt] = {r = 1, g = 0, b = 0, Text = INTERRUPTED, IsProgressMode = false},
+		[Enum.ArenaSpectator.CastType.Casting] = {r = 0, g = 1, b = 1, Text = nil, IsProgressMode = true}
     }
 
     self.PowerInfo = {
@@ -236,197 +92,191 @@ function ezSpectator_DataWorker:Create()
         [6] = {r = 0, g = 1, b = 1, AnimationStartSpeed = 5, AnimationProgress = 1}
     }
 
-    self.AuraRootEffect = 1
-    self.AuraSilenceEffect = 2
-    self.AuraCrowdControlEffect = 3
-    self.AuraStunEffect = 4
-    self.AuraImmunitylEffect = 5
+	self.CrowdControlPriority = {
+		-- Death Knight
+		[47481] = CROWD_CONTROL_PRIORITY.STUN,			-- Gnaw (Ghoul)
+		[51209] = CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Hungering Cold
+		[47476] = CROWD_CONTROL_PRIORITY.SILENCE,		-- Strangulate
+		-- Druid
+		[8983]	= CROWD_CONTROL_PRIORITY.STUN,			-- Bash (also Shaman Spirit Wolf ability)
+		[33786] = CROWD_CONTROL_PRIORITY.STUN,			-- Cyclone
+		[18658] = CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Hibernate (works against Druids in most forms and Shamans using Ghost Wolf)
+		[49802] = CROWD_CONTROL_PRIORITY.STUN,			-- Maim
+		[49803] = CROWD_CONTROL_PRIORITY.STUN,			-- Pounce
+		[53308] = CROWD_CONTROL_PRIORITY.ROOT,			-- Entangling Roots
+		[53313] = CROWD_CONTROL_PRIORITY.ROOT,			-- Entangling Roots (Nature's Grasp)
+		[45334] = CROWD_CONTROL_PRIORITY.ROOT,			-- Feral Charge Effect (immobilize with interrupt [spell lockout, not silence])
+		-- Hunter
+		[60210] = CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Freezing Arrow Effect
+		[14309] = CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Freezing Trap Effect
+		[24394] = CROWD_CONTROL_PRIORITY.STUN,			-- Intimidation
+		[14327] = CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Scare Beast (works against Druids in most forms and Shamans using Ghost Wolf)
+		[19503] = CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Scatter Shot
+		[49012] = CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Wyvern Sting
+		[34490] = CROWD_CONTROL_PRIORITY.SILENCE,		-- Silencing Shot
+		[53359] = CROWD_CONTROL_PRIORITY.SILENCE,		-- Chimera Shot - Scorpid
+		[19306] = CROWD_CONTROL_PRIORITY.ROOT,			-- Counterattack
+		[64804] = CROWD_CONTROL_PRIORITY.ROOT,			-- Entrapment
+		-- Hunter Pets
+		[53568] = CROWD_CONTROL_PRIORITY.STUN,			-- Sonic Blast (Bat)
+		[53543] = CROWD_CONTROL_PRIORITY.SILENCE,		-- Snatch (Bird of Prey)
+		[53548] = CROWD_CONTROL_PRIORITY.ROOT,			-- Pin (Crab)
+		[53562] = CROWD_CONTROL_PRIORITY.STUN,			-- Ravage (Ravager)
+		[55509] = CROWD_CONTROL_PRIORITY.ROOT,			-- Venom Web Spray (Silithid)
+		[4167]	= CROWD_CONTROL_PRIORITY.ROOT,			-- Web (Spider)
+		-- Mage
+		[44572] = CROWD_CONTROL_PRIORITY.STUN,			-- Deep Freeze
+		[31661] = CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Dragon's Breath
+		[12355] = CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Impact
+		[12826] = CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Polymorph
+		[55021] = CROWD_CONTROL_PRIORITY.SILENCE,		-- Silenced - Improved Counterspell
+		[64346] = CROWD_CONTROL_PRIORITY.SILENCE,		-- Fiery Payback
+		[33395] = CROWD_CONTROL_PRIORITY.ROOT,			-- Freeze (Water Elemental)
+		[42917] = CROWD_CONTROL_PRIORITY.ROOT,			-- Frost Nova
+		[12494] = CROWD_CONTROL_PRIORITY.ROOT,			-- Frostbite
+		[55080] = CROWD_CONTROL_PRIORITY.ROOT,			-- Shattered Barrier
+		-- Paladin
+		[10308] = CROWD_CONTROL_PRIORITY.STUN,			-- Hammer of Justice
+		[48817] = CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Holy Wrath (works against Warlocks using Metamorphasis and Death Knights using Lichborne)
+		[20066] = CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Repentance
+		[20170] = CROWD_CONTROL_PRIORITY.STUN,			-- Stun (Seal of Justice proc)
+		[10326] = CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Turn Evil (works against Warlocks using Metamorphasis and Death Knights using Lichborne)
+		[63529] = CROWD_CONTROL_PRIORITY.SILENCE,		-- Shield of the Templar
+		-- Priest
+		[605]	= CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Mind Control
+		[64044] = CROWD_CONTROL_PRIORITY.STUN,			-- Psychic Horror
+		[10890] = CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Psychic Scream
+		[10955] = CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Shackle Undead (works against Death Knights using Lichborne)
+		[15487] = CROWD_CONTROL_PRIORITY.SILENCE,		-- Silence
+		[64058] = CROWD_CONTROL_PRIORITY.SILENCE,		-- Psychic Horror (duplicate debuff names not allowed atm, need to figure out how to support this later)
+		-- Rogue
+		[2094]	= CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Blind
+		[1833]	= CROWD_CONTROL_PRIORITY.STUN,			-- Cheap Shot
+		[1776]	= CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Gouge
+		[8643]	= CROWD_CONTROL_PRIORITY.STUN,			-- Kidney Shot
+		[51724] = CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Sap
+		[1330]	= CROWD_CONTROL_PRIORITY.SILENCE,		-- Garrote - Silence
+		[18425] = CROWD_CONTROL_PRIORITY.SILENCE,		-- Silenced - Improved Kick
+		[51722] = CROWD_CONTROL_PRIORITY.SILENCE,		-- Dismantle
+		-- Shaman
+		[39796] = CROWD_CONTROL_PRIORITY.STUN,			-- Stoneclaw Stun
+		[51514] = CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Hex (although effectively a silence+disarm effect, it is conventionally thought of as a AURA_TYPE.CROWD_CONTROL, plus you can trinket out of it)
+		[64695] = CROWD_CONTROL_PRIORITY.ROOT,			-- Earthgrab (Storm, Earth and Fire)
+		[63685] = CROWD_CONTROL_PRIORITY.ROOT,			-- Freeze (Frozen Power)
+		-- Warlock
+		[18647] = CROWD_CONTROL_PRIORITY.STUN,			-- Banish (works against Warlocks using Metamorphasis and Druids using Tree Form)
+		[47860] = CROWD_CONTROL_PRIORITY.STUN,			-- Death Coil
+		[6215]	= CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Fear
+		[17928] = CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Howl of Terror
+		[6358]	= CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Seduction (Succubus)
+		[47847] = CROWD_CONTROL_PRIORITY.STUN,			-- Shadowfury
+		[24259] = CROWD_CONTROL_PRIORITY.SILENCE,		-- Spell Lock (Felhunter)
+		-- Warrior
+		[7922]	= CROWD_CONTROL_PRIORITY.STUN,			-- Charge Stun
+		[12809] = CROWD_CONTROL_PRIORITY.STUN,			-- Concussion Blow
+		[20253] = CROWD_CONTROL_PRIORITY.STUN,			-- Intercept (also Warlock Felguard ability)
+		[20511] = CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Intimidating Shout
+		[5246]	= CROWD_CONTROL_PRIORITY.CROWD_CONTROL,	-- Intimidating Shout
+		[12798] = CROWD_CONTROL_PRIORITY.STUN,			-- Revenge Stun
+		[46968] = CROWD_CONTROL_PRIORITY.STUN,			-- Shockwave
+		[18498] = CROWD_CONTROL_PRIORITY.SILENCE,		-- Silenced - Gag Order
+		[676]	= CROWD_CONTROL_PRIORITY.SILENCE,		-- Disarm
+		[58373] = CROWD_CONTROL_PRIORITY.ROOT,			-- Glyph of Hamstring
+		[23694] = CROWD_CONTROL_PRIORITY.ROOT,			-- Improved Hamstring
+		-- Other
+		[20549] = CROWD_CONTROL_PRIORITY.STUN,			-- War Stomp
+		[28730] = CROWD_CONTROL_PRIORITY.SILENCE,		-- Arcane Torrent
+		-- Immunities
+		[46924] = CROWD_CONTROL_PRIORITY.IMMUNITY,		-- Bladestorm (Warrior)
+		[642]	= CROWD_CONTROL_PRIORITY.IMMUNITY,		-- Divine Shield (Paladin)
+		[45438] = CROWD_CONTROL_PRIORITY.IMMUNITY,		-- Ice Block (Mage)
+		[34471] = CROWD_CONTROL_PRIORITY.IMMUNITY,		-- The Beast Within (Hunter)
+		[12051] = CROWD_CONTROL_PRIORITY.IMMUNITY,		-- Evocation (Mage)
+		[47585] = CROWD_CONTROL_PRIORITY.IMMUNITY		-- Dispersion (Priest)
+	}
 
-    self.BLOCK_ALWAYS = 1
-    self.DETAILED_VIEW = 2
-    self.AuraBlockList = {
-        --Новая надежда
-        [63944] = true,
-        --Улучшенная аура благочестия
-        [63514] = true,
-        --Благословение неприкосновенности
-        [67480] = true,
-        --Спринт (лишнее)
-        [61922] = true,
-        --Благословение мудрости
-        [48936] = true,
-        --Благословение королей
-        [20217] = true,
-        --Слово силы стойкость
-        [48161] = true,
-        --Защита от темной магии
-        [48169] = true,
-        --Божественный дух
-        [48073] = true,
-        --Шаг сквозь тень (лишнее)
-        [36563] = true,
-        --Великое благословение королей
-        [25898] = true,
-        --Молитва духа
-        [48074] = true,
-        --Молитва стойкости
-        [48162] = true,
-        --Молитва защиты от темной магии
-        [48170] = true,
-        --Боевой дух (Дреней)
-        [28878] = true,
-        --Снижение урона (эффект)
-        [68066] = true,
-        --Благословение мудрости
-        [48934] = true,
-        --Знак дикой природы
-        [48469] = true,
-        --Дар дикой природы
-        [48470] = true,
-        --Символ озарения
-        [54833] = true,
-        --Власть льда (лишнее)
-        [61261] = true,
-        --В3ласть нечестивости (лишнее)
-        [49772] = true,
-        --Настой севера
-        [67016] = true,
-        --Искусный оборотень
-        [48422] = true,
-        --Древо жизни (аура)
-        [34123] = true,
-        --Великая власть нечестивости (лишнее)
-        [63622] = true,
-        --Пассивка танка
-        [57340] = true,
-        --Ленточка прелести
-        [72968] = true,
-        --Улучшенная аура сосредоточенности (эффект таланта)
-        [63510] = true,
-        --Частица света (триггер)
-        [53651] = true
-    }
+	self.AuraCooldown = {
+		[31616] = 30,
+		[45182] = 60,
+	}
 
-    self.ControlList = {
-        -- Death Knight
-        [47481] = self.AuraStunEffect,            -- Gnaw (Ghoul)
-        [51209] = self.AuraCrowdControlEffect,    -- Hungering Cold
-        [47476] = self.AuraSilenceEffect,        -- Strangulate
-        -- Druid
-        [8983]  = self.AuraStunEffect,            -- Bash (also Shaman Spirit Wolf ability)
-        [33786] = self.AuraStunEffect,            -- Cyclone
-        [18658] = self.AuraCrowdControlEffect,    -- Hibernate (works against Druids in most forms and Shamans using Ghost Wolf)
-        [49802] = self.AuraStunEffect,            -- Maim
-        [49803] = self.AuraStunEffect,            -- Pounce
-        [53308] = self.AuraRootEffect,            -- Entangling Roots
-        [53313] = self.AuraRootEffect,            -- Entangling Roots (Nature's Grasp)
-        [45334] = self.AuraRootEffect,            -- Feral Charge Effect (immobilize with interrupt [spell lockout, not silence])
-        -- Hunter
-        [60210] = self.AuraCrowdControlEffect,    -- Freezing Arrow Effect
-        [14309] = self.AuraCrowdControlEffect,    -- Freezing Trap Effect
-        [24394] = self.AuraStunEffect,            -- Intimidation
-        [14327] = self.AuraCrowdControlEffect,    -- Scare Beast (works against Druids in most forms and Shamans using Ghost Wolf)
-        [19503] = self.AuraCrowdControlEffect,    -- Scatter Shot
-        [49012] = self.AuraCrowdControlEffect,    -- Wyvern Sting
-        [34490] = self.AuraSilenceEffect,        -- Silencing Shot
-        [53359] = self.AuraSilenceEffect,        -- Chimera Shot - Scorpid
-        [19306] = self.AuraRootEffect,            -- Counterattack
-        [64804] = self.AuraRootEffect,            -- Entrapment
-        -- Hunter Pets
-        [53568] = self.AuraStunEffect,            -- Sonic Blast (Bat)
-        [53543] = self.AuraSilenceEffect,        -- Snatch (Bird of Prey)
-        [53548] = self.AuraRootEffect,            -- Pin (Crab)
-        [53562] = self.AuraStunEffect,            -- Ravage (Ravager)
-        [55509] = self.AuraRootEffect,            -- Venom Web Spray (Silithid)
-        [4167]  = self.AuraRootEffect,            -- Web (Spider)
-        -- Mage
-        [44572] = self.AuraStunEffect,            -- Deep Freeze
-        [31661] = self.AuraCrowdControlEffect,    -- Dragon's Breath
-        [12355] = self.AuraCrowdControlEffect,    -- Impact
-        [12826] = self.AuraCrowdControlEffect,    -- Polymorph
-        [55021] = self.AuraSilenceEffect,        -- Silenced - Improved Counterspell
-        [64346] = self.AuraSilenceEffect,        -- Fiery Payback
-        [33395] = self.AuraRootEffect,            -- Freeze (Water Elemental)
-        [42917] = self.AuraRootEffect,            -- Frost Nova
-        [12494] = self.AuraRootEffect,            -- Frostbite
-        [55080] = self.AuraRootEffect,            -- Shattered Barrier
-        -- Paladin
-        [10308] = self.AuraStunEffect,            -- Hammer of Justice
-        [48817] = self.AuraCrowdControlEffect,    -- Holy Wrath (works against Warlocks using Metamorphasis and Death Knights using Lichborne)
-        [20066] = self.AuraCrowdControlEffect,    -- Repentance
-        [20170] = self.AuraStunEffect,            -- Stun (Seal of Justice proc)
-        [10326] = self.AuraCrowdControlEffect,    -- Turn Evil (works against Warlocks using Metamorphasis and Death Knights using Lichborne)
-        [63529] = self.AuraSilenceEffect,        -- Shield of the Templar
-        -- Priest
-        [605]   = self.AuraCrowdControlEffect,    -- Mind Control
-        [64044] = self.AuraStunEffect,            -- Psychic Horror
-        [10890] = self.AuraCrowdControlEffect,    -- Psychic Scream
-        [10955] = self.AuraCrowdControlEffect,    -- Shackle Undead (works against Death Knights using Lichborne)
-        [15487] = self.AuraSilenceEffect,        -- Silence
-        [64058] = self.AuraSilenceEffect,        -- Psychic Horror (duplicate debuff names not allowed atm, need to figure out how to support this later)
-        -- Rogue
-        [2094]  = self.AuraCrowdControlEffect,    -- Blind
-        [1833]  = self.AuraStunEffect,            -- Cheap Shot
-        [1776]  = self.AuraCrowdControlEffect,    -- Gouge
-        [8643]  = self.AuraStunEffect,            -- Kidney Shot
-        [51724] = self.AuraCrowdControlEffect,    -- Sap
-        [1330]  = self.AuraSilenceEffect,        -- Garrote - Silence
-        [18425] = self.AuraSilenceEffect,        -- Silenced - Improved Kick
-        [51722] = self.AuraSilenceEffect,        -- Dismantle
-        -- Shaman
-        [39796] = self.AuraStunEffect,            -- Stoneclaw Stun
-        [51514] = self.AuraCrowdControlEffect,    -- Hex (although effectively a silence+disarm effect, it is conventionally thought of as a self.AuraCrowdControlEffect, plus you can trinket out of it)
-        [64695] = self.AuraRootEffect,            -- Earthgrab (Storm, Earth and Fire)
-        [63685] = self.AuraRootEffect,            -- Freeze (Frozen Power)
-        -- Warlock
-        [18647] = self.AuraStunEffect,            -- Banish (works against Warlocks using Metamorphasis and Druids using Tree Form)
-        [47860] = self.AuraStunEffect,            -- Death Coil
-        [6215]  = self.AuraCrowdControlEffect,    -- Fear
-        [17928] = self.AuraCrowdControlEffect,    -- Howl of Terror
-        [6358]  = self.AuraCrowdControlEffect,    -- Seduction (Succubus)
-        [47847] = self.AuraStunEffect,            -- Shadowfury
-        [24259] = self.AuraSilenceEffect,        -- Spell Lock (Felhunter)
-        -- Warrior
-        [7922]  = self.AuraStunEffect,            -- Charge Stun
-        [12809] = self.AuraStunEffect,            -- Concussion Blow
-        [20253] = self.AuraStunEffect,            -- Intercept (also Warlock Felguard ability)
-        [20511] = self.AuraCrowdControlEffect,    -- Intimidating Shout
-        [5246]  = self.AuraCrowdControlEffect,    -- Intimidating Shout
-        [12798] = self.AuraStunEffect,            -- Revenge Stun
-        [46968] = self.AuraStunEffect,            -- Shockwave
-        [18498] = self.AuraSilenceEffect,        -- Silenced - Gag Order
-        [676]   = self.AuraSilenceEffect,        -- Disarm
-        [58373] = self.AuraRootEffect,            -- Glyph of Hamstring
-        [23694] = self.AuraRootEffect,            -- Improved Hamstring
-        -- Other
-        [20549] = self.AuraStunEffect,            -- War Stomp
-        [28730] = self.AuraSilenceEffect,        -- Arcane Torrent
-        -- Immunities
-        [46924] = self.AuraImmunitylEffect,        -- Bladestorm (Warrior)
-        [642]   = self.AuraImmunitylEffect,        -- Divine Shield (Paladin)
-        [45438] = self.AuraImmunitylEffect,        -- Ice Block (Mage)
-        [34471] = self.AuraImmunitylEffect,        -- The Beast Within (Hunter)
-        [12051] = self.AuraImmunitylEffect,        -- Evocation (Mage)
-        [47585] = self.AuraImmunitylEffect        -- Dispersion (Priest)
-    }
+	self.AuraBlockList = {
+	--[[
+		[63944] = true,	-- Новая надежда
+		[63514] = true,	-- Улучшенная аура благочестия
+		[67480] = true,	-- Благословение неприкосновенности
+		[61922] = true,	-- Спринт (лишнее)
+		[48936] = true,	-- Благословение мудрости
+		[20217] = true,	-- Благословение королей
+		[48161] = true,	-- Слово силы стойкость
+		[48169] = true,	-- Защита от темной магии
+		[48073] = true,	-- Божественный дух
+		[36563] = true,	-- Шаг сквозь тень (лишнее)
+		[25898] = true,	-- Великое благословение королей
+		[48074] = true,	-- Молитва духа
+		[48162] = true,	-- Молитва стойкости
+		[48170] = true,	-- Молитва защиты от темной магии
+		[28878] = true,	-- Боевой дух (Дреней)
+		[68066] = true,	-- Снижение урона (эффект)
+		[48934] = true,	-- Благословение мудрости
+		[48469] = true,	-- Знак дикой природы
+		[48470] = true,	-- Дар дикой природы
+		[54833] = true,	-- Символ озарения
+		[61261] = true,	-- Власть льда (лишнее)
+		[49772] = true,	-- Власть нечестивости (лишнее)
+		[67016] = true,	-- Настой севера
+		[48422] = true,	-- Искусный оборотень
+		[34123] = true,	-- Древо жизни (аура)
+		[63622] = true,	-- Великая власть нечестивости (лишнее)
+		[57340] = true,	-- Пассивка танка
+		[72968] = true,	-- Ленточка прелести
+		[63510] = true,	-- Улучшенная аура сосредоточенности (эффект таланта)
+		[53651] = true,	-- Частица света (триггер)
+	--]]
+		-- technical
+		[32727] = true,
+		[317903] = true,
+	}
 
-    -- Список игроков, чьи ники будут отображаться "особенно"
-    self.PinkList = {
-    }
+	self.CastBlacklist = {
+		[320423] = true,
+	}
 
-    self.ClientLocale = GetLocale()
-    self.Strings = {
-        ['ruRU'] = {
-            ['GOSSIP_SPECTATOR_TEXT'] = 'GOSSIP_SPECTATOR_TEXT',
-            ['GOSSIP_SPECTATOR_SUBSCRIBE'] = 'GOSSIP_SPECTATOR_SUBSCRIBE',
-            ['GOSSIP_SPECTATOR_UNSUBSCRIBE'] = 'GOSSIP_SPECTATOR_UNSUBSCRIBE',
-        }
-    }
+	self.CooldownBlacklist = {
+		[71] = true,
+		[818] = true,
+		[1784] = true,
+		[2457] = true,
+		[2458] = true,
+		[5118] = true,
+		[7384] = true,
+		[13159] = true,
+		[13161] = true,
+		[13163] = true,
+		[14183] = true,
+		[15473] = true,
+		[20271] = true,
+		[27044] = true,
+		[27138] = true,
+		[30161] = true,
+		[34074] = true,
+		[35395] = true,
+		[42931] = true,
+		[47486] = true,
+		[47488] = true,
+		[49071] = true,
+		[52150] = true,
+		[57653] = true,
+		[58887] = true,
+		[59637] = true,
+		[61411] = true,
+		[61847] = true,
+		[63619] = true,
+		[71909] = true,
+	}
 
     return self
 end
-
-
 
 function ezSpectator_DataWorker:SafeTexCoord(Value)
     if Value > 1 then
@@ -440,18 +290,6 @@ function ezSpectator_DataWorker:SafeTexCoord(Value)
     return Value
 end
 
-
-
-function ezSpectator_DataWorker:SafeSize(Value)
-    --if Value < 0 then
-    --    Value = 0
-    --end
-
-    return Value
-end
-
-
-
 function ezSpectator_DataWorker:SecondsToTime(Value, IsShort)
     if Value then
         local Time = math.floor(Value)
@@ -461,16 +299,6 @@ function ezSpectator_DataWorker:SecondsToTime(Value, IsShort)
         else
             return string.format('%.2d:%.2d', Time / 60 % 60, Time % 60)
         end
-    else
-        return ''
-    end
-end
-
-
-
-function ezSpectator_DataWorker:GetString(Value)
-    if self.Strings[self.ClientLocale] and self.Strings[self.ClientLocale][Value] then
-        return self.Strings[self.ClientLocale][Value]
     else
         return ''
     end

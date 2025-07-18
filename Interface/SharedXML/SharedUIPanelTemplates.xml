@@ -296,6 +296,13 @@
 		<PushedTexture parentKey="PushedTexture" file="Interface\Buttons\UI-Panel-MinimizeButton-Down"/>
 		<HighlightTexture parentKey="HighlightTexture" file="Interface\Buttons\UI-Panel-MinimizeButton-Highlight" alphaMode="ADD"/>
 	</Button>
+	<Button name="UIPanelCloseButtonDefaultAnchors" inherits="UIPanelCloseButton" virtual="true">
+		<Anchors>
+			<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
+				<Offset x="4" y="5"/>
+			</Anchor>
+		</Anchors>
+	</Button>
 
 	<Frame name="ShadowOverlayTemplate" virtual="true">
 		<Layers>

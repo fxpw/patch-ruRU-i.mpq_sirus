@@ -622,7 +622,7 @@
 									</Anchors>
 								</Texture>
 
-								<Texture name="$parentArtwork" parentKey="Artwork" file="Interface\Custom\Store\PKBT-Store-Collection-Artwork-Julia">
+								<Texture name="$parentArtwork" parentKey="Artwork">
 									<Size x="210" y="210"/>
 									<Anchors>
 										<Anchor point="BOTTOM" x="0" y="26"/>
@@ -1592,7 +1592,7 @@
 	</Frame>
 
 	<!-- ViewModes -->
-	<Frame name="$parentRefundView" parentKey="RefundView" parent="StoreFrame" hidden="true">
+	<Frame name="$parentRefundView" parentKey="RefundView" parent="StoreFrame" enableMouse="true" hidden="true">
 		<Anchors>
 			<Anchor point="TOPLEFT" relativeTo="$parentContent" x="0" y="0"/>
 			<Anchor point="BOTTOMRIGHT" relativeTo="$parentContent" x="0" y="0"/>

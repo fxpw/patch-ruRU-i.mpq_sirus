@@ -404,11 +404,6 @@
 								<Anchor point="LEFT" x="0" y="20"/>
 							</Anchors>
 						</FontString>
-						<!-- <Texture name="$parentStatus" parentKey="Status">
-							<Anchors>
-								<Anchor point="TOPRIGHT" x="82" y="4"/>
-							</Anchors>
-						</Texture> -->
 					</Layer>
 				</Layers>
 				<Frames>
@@ -472,6 +467,24 @@
 				<Scripts>
 					<OnClick>
 						self:GetParent():GetParent():CancelClick(button)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentTrackButton" parentKey="TrackButton">
+				<Size x="29" y="31"/>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="-8" y="4"/>
+				</Anchors>
+				<HighlightTexture alphaMode="ADD" alpha="0.5"/>
+				<Scripts>
+					<OnEnter>
+						self:GetParent():OnTrackButtonEnter()
+					</OnEnter>
+					<OnLeave>
+						self:GetParent():OnTrackButtonLeave()
+					</OnLeave>
+					<OnClick>
+						self:GetParent():OnTrackButtonClick(button)
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -1413,7 +1426,7 @@
 		<Frames>
 			<Button name="$parentCloseButton" parentKey="CloseButton" inherits="PKBT_CloseButtonTemplate"/>
 
-			<Button name="$parentPurchaseButton" parentKey="PurchaseButton" inherits="PKBT_GoldButtonMultiWidgetPriceTemplate">
+			<Button name="$parentPurchaseButton" parentKey="PurchaseButton" inherits="PKBT_GoldButtonMultiWidgetPriceTemplate,TransactionConfirmationTemplate">
 				<Size x="300" y="72"/>
 				<Anchors>
 					<Anchor point="BOTTOM" x="0" y="53"/>
@@ -1521,7 +1534,7 @@
 					</Layer>
 				</Layers>
 			</EditBox>
-			<Button name="$parentPurchaseButton" parentKey="PurchaseButton" inherits="PKBT_RedButtonMultiWidgetPriceTemplate">
+			<Button name="$parentPurchaseButton" parentKey="PurchaseButton" inherits="PKBT_RedButtonMultiWidgetPriceTemplate,TransactionConfirmationTemplate">
 				<Size x="120" y="40"/>
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentOptionAmount" relativePoint="RIGHT" x="15" y="-2"/>
@@ -1601,7 +1614,7 @@
 					<Anchor point="BOTTOM" x="0" y="108"/>
 				</Anchors>
 			</Frame>
-			<Button name="$parentPurchaseButton" parentKey="PurchaseButton" inherits="PKBT_RedButtonMultiWidgetPriceTemplate">
+			<Button name="$parentPurchaseButton" parentKey="PurchaseButton" inherits="PKBT_RedButtonMultiWidgetPriceTemplate,TransactionConfirmationTemplate">
 				<Size x="120" y="52"/>
 				<Anchors>
 					<Anchor point="BOTTOM" x="0" y="32"/>
@@ -1853,7 +1866,7 @@
 			</OnHide>
 		</Scripts>
 	</Frame>
-	<Frame name="BattlePassSplashModelTemplate" virtual="true">
+	<Button name="BattlePassSplashModelTemplate" virtual="true">
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture name="$parentBackground" parentKey="Background" setAllPoints="true"/>
@@ -1884,8 +1897,11 @@
 			<OnLeave>
 				self:OnLeave()
 			</OnLeave>
+			<OnClick>
+				self:OnClick(button)
+			</OnClick>
 		</Scripts>
-	</Frame>
+	</Button>
 	<Frame name="BattlePassSplashArtworkBase243Template" virtual="true">
 		<Size x="1024" y="610"/>
 		<Anchors>
@@ -2038,6 +2054,20 @@
 
 				self.ModelPanel.ActionButton:SetNormalAtlas("Custom-Splash-BattlePass-2025-1-Assets-Button", true)
 				self.ModelPanel.ActionButton:SetPushedAtlas("Custom-Splash-BattlePass-2025-1-Assets-Button-Pressed", true)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="BattlePassSplashArtwork-2025-2-Template" inherits="BattlePassSplashArtworkBase243Template" virtual="true">
+		<Scripts>
+			<OnLoad>
+				Mixin(self, BattlePassSplashArtworkBase243Mixin)
+				self:OnLoad()
+
+				self.Artwork:SetAtlas("Custom-Splash-BattlePass-2025-2", true)
+				self.Artwork:SetSubTexCoord(0, 1, 0.18, 1.18)
+
+				self.ModelPanel.ActionButton:SetNormalAtlas("Custom-Splash-BattlePass-2025-2-Assets-Button", true)
+				self.ModelPanel.ActionButton:SetPushedAtlas("Custom-Splash-BattlePass-2025-2-Assets-Button-Pressed", true)
 			</OnLoad>
 		</Scripts>
 	</Frame>

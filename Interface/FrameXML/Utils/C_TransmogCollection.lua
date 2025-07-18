@@ -351,9 +351,9 @@ local function SetSearchAndFilterAppearances()
 
 	local baseAppearances = BASE_APPEARANCES[SEARCH_AND_FILTER_CATEGORY]
 	if baseAppearances then
-		local collectedShown = tonumber(C_CVar:GetValue("C_CVAR_WARDROBE_SHOW_COLLECTED")) == 1
-		local uncollectedShown = tonumber(C_CVar:GetValue("C_CVAR_WARDROBE_SHOW_UNCOLLECTED")) == 1
-		local sourceFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_WARDROBE_SOURCE_FILTERS")) or 0
+		local collectedShown = GetCVarBool("wardrobeShowCollected")
+		local uncollectedShown = GetCVarBool("wardrobeShowUncollected")
+		local sourceFiltersFlag = tonumber(GetCVar("wardrobeSourceFilters")) or 0
 		local searchID = tonumber(searchText)
 		local isGM = IsGMAccount()
 
@@ -553,9 +553,9 @@ local function SearchAndFilterIllusions()
 
 	local searchText = SEARCH_TYPE and SEARCH_TYPES[SEARCH_TYPE] and SEARCH_TYPES[SEARCH_TYPE] ~= "";
 
-	local collectedShown = tonumber(C_CVar:GetValue("C_CVAR_ILLUSION_SHOW_COLLECTED")) == 0;
-	local uncollectedShown = tonumber(C_CVar:GetValue("C_CVAR_ILLUSION_SHOW_UNCOLLECTED")) == 0;
-	local sourceFiltersFlag = tonumber(C_CVar:GetValue("C_CVAR_ILLUSION_SOURCE_FILTERS")) or 0;
+	local collectedShown = tonumber(GetCVar("illusionShowCollected")) == 0;
+	local uncollectedShown = tonumber(GetCVar("illusionShowUncollected")) == 0;
+	local sourceFiltersFlag = tonumber(GetCVar("illusionSourceFilters")) or 0;
 	local searchID = tonumber(SEARCH_TYPES[SEARCH_TYPE])
 	local isGM = IsGMAccount()
 
@@ -1329,7 +1329,7 @@ function C_TransmogCollection.GetCategoryTotal(category, subCategory, exclusion)
 end
 
 function C_TransmogCollection.GetCollectedShown()
-	return tonumber(C_CVar:GetValue("C_CVAR_WARDROBE_SHOW_COLLECTED")) == 1;
+	return GetCVarBool("wardrobeShowCollected");
 end
 
 function C_TransmogCollection.GetIsAppearanceFavorite(itemAppearanceID)
@@ -1404,7 +1404,7 @@ function C_TransmogCollection.GetOutfits()
 end
 
 function C_TransmogCollection.GetUncollectedShown()
-	return tonumber(C_CVar:GetValue("C_CVAR_WARDROBE_SHOW_UNCOLLECTED")) == 1;
+	return GetCVarBool("wardrobeShowUncollected");
 end
 
 function C_TransmogCollection.IsCategoryValidForItem(categoryID, subCategoryID, equippedItemID)
@@ -1464,7 +1464,7 @@ function C_TransmogCollection.IsSourceTypeFilterChecked(index)
 		error("Usage: local checked = C_TransmogCollection.IsSourceTypeFilterChecked(index)", 2);
 	end
 
-	if not C_CVar:GetCVarBitfield("C_CVAR_WARDROBE_SOURCE_FILTERS", index) then
+	if not GetCVarBitfield("wardrobeSourceFilters", index) then
 		return true;
 	end
 
@@ -1607,7 +1607,7 @@ function C_TransmogCollection.SetAllSourceTypeFilters(checked)
 	end
 
 	for index = 1, NUM_TRANSMOG_SOURCE_TYPES do
-		C_CVar:SetCVarBitfield("C_CVAR_WARDROBE_SOURCE_FILTERS", index, not checked);
+		SetCVarBitfield("wardrobeSourceFilters", index, not checked);
 	end
 
 	SetSearchAndFilterAppearances()
@@ -1618,9 +1618,8 @@ function C_TransmogCollection.SetCollectedShown(checked)
 		checked = checked and true or false;
 	end
 
-	local collectedShown = tonumber(C_CVar:GetValue("C_CVAR_WARDROBE_SHOW_COLLECTED")) == 1
-	if checked ~= collectedShown then
-		C_CVar:SetValue("C_CVAR_WARDROBE_SHOW_COLLECTED", checked and "1" or "0");
+	if checked ~= GetCVarBool("wardrobeShowCollected") then
+		SetCVar("wardrobeShowCollected", checked and "1" or "0");
 
 		SetSearchAndFilterAppearances()
 	end
@@ -1766,7 +1765,7 @@ function C_TransmogCollection.SetSourceTypeFilter(index, checked)
 	end
 
 	if index > 0 and index <= NUM_TRANSMOG_SOURCE_TYPES then
-		C_CVar:SetCVarBitfield("C_CVAR_WARDROBE_SOURCE_FILTERS", index, not checked);
+		SetCVarBitfield("wardrobeSourceFilters", index, not checked);
 
 		SetSearchAndFilterAppearances()
 	end
@@ -1777,9 +1776,8 @@ function C_TransmogCollection.SetUncollectedShown(checked)
 		checked = checked and true or false;
 	end
 
-	local uncollectedShown = tonumber(C_CVar:GetValue("C_CVAR_WARDROBE_SHOW_UNCOLLECTED")) == 1;
-	if checked ~= uncollectedShown then
-		C_CVar:SetValue("C_CVAR_WARDROBE_SHOW_UNCOLLECTED", checked and "1" or "0");
+	if checked ~= GetCVarBool("wardrobeShowUncollected") then
+		SetCVar("wardrobeShowUncollected", checked and "1" or "0");
 
 		SetSearchAndFilterAppearances()
 	end
@@ -1790,15 +1788,15 @@ function C_TransmogCollection.UpdateUsableAppearances()
 end
 
 function C_TransmogCollection.SetDefaultFilters()
-	C_CVar:SetValue("C_CVAR_WARDROBE_SHOW_COLLECTED", "1");
-	C_CVar:SetValue("C_CVAR_WARDROBE_SHOW_UNCOLLECTED", "1");
-	C_CVar:SetValue("C_CVAR_WARDROBE_SOURCE_FILTERS", "0");
+	SetCVar("wardrobeShowCollected", "1");
+	SetCVar("wardrobeShowUncollected", "1");
+	SetCVar("wardrobeSourceFilters", "0");
 
 	SetSearchAndFilterAppearances()
 end
 
 function C_TransmogCollection.IsUsingDefaultFilters()
-	if tonumber(C_CVar:GetValue("C_CVAR_WARDROBE_SHOW_COLLECTED")) ~= 1 or tonumber(C_CVar:GetValue("C_CVAR_WARDROBE_SHOW_UNCOLLECTED")) ~= 1 or tonumber(C_CVar:GetValue("C_CVAR_WARDROBE_SOURCE_FILTERS")) ~= 0 then
+	if not GetCVarBool("wardrobeShowCollected") or not GetCVarBool("wardrobeShowUncollected") or tonumber(GetCVar("wardrobeSourceFilters")) ~= 0 then
 		return false;
 	end
 
@@ -1922,6 +1920,18 @@ function C_TransmogCollection.GetIllusionStrings(sourceID)
 	end
 end
 
+function C_TransmogCollection.IsIllusionItem(itemID)
+	if type(itemID) ~= "number" then
+		error("Usage: C_TransmogCollection.IsIllusionItem(itemID)", 2);
+	end
+
+	if itemID == 0 then
+		return false
+	end
+
+	return ILLUSION_BY_ITEMID[itemID] ~= nil
+end
+
 function C_TransmogCollection.GetIllusionInfoByItemID(itemID)
 	if type(itemID) == "string" then
 		itemID = tonumber(itemID);
@@ -1941,16 +1951,16 @@ function C_TransmogCollection.SetIllusionCollectedShown(checked)
 		checked = checked and true or false;
 	end
 
-	local collectedShown = tonumber(C_CVar:GetValue("C_CVAR_ILLUSION_SHOW_COLLECTED")) == 0;
+	local collectedShown = not GetCVarBool("illusionShowCollected");
 	if checked ~= collectedShown then
-		C_CVar:SetValue("C_CVAR_ILLUSION_SHOW_COLLECTED", checked and "0" or "1");
+		SetCVar("illusionShowCollected", checked and "0" or "1");
 
 		SearchAndFilterIllusions();
 	end
 end
 
 function C_TransmogCollection.GetIllusionCollectedShown()
-	return tonumber(C_CVar:GetValue("C_CVAR_ILLUSION_SHOW_COLLECTED")) == 0;
+	return not GetCVarBool("illusionShowCollected");
 end
 
 function C_TransmogCollection.SetIllusionUncollectedShown(checked)
@@ -1958,16 +1968,16 @@ function C_TransmogCollection.SetIllusionUncollectedShown(checked)
 		checked = checked and true or false;
 	end
 
-	local uncollectedShown = tonumber(C_CVar:GetValue("C_CVAR_ILLUSION_SHOW_UNCOLLECTED")) == 0;
+	local uncollectedShown = tonumber(GetCVar("illusionShowUncollected")) == 0;
 	if checked ~= uncollectedShown then
-		C_CVar:SetValue("C_CVAR_ILLUSION_SHOW_UNCOLLECTED", checked and "0" or "1");
+		SetCVar("illusionShowUncollected", checked and "0" or "1");
 
 		SearchAndFilterIllusions();
 	end
 end
 
 function C_TransmogCollection.GetIllusionUncollectedShown()
-	return tonumber(C_CVar:GetValue("C_CVAR_ILLUSION_SHOW_UNCOLLECTED")) == 0;
+	return tonumber(GetCVar("illusionShowUncollected")) == 0;
 end
 
 function C_TransmogCollection.SetIllusionSourceTypeFilter(index, checked)
@@ -1982,7 +1992,7 @@ function C_TransmogCollection.SetIllusionSourceTypeFilter(index, checked)
 	end
 
 	if index > 0 and index <= NUM_TRANSMOG_SOURCE_TYPES then
-		C_CVar:SetCVarBitfield("C_CVAR_ILLUSION_SOURCE_FILTERS", index, not checked);
+		SetCVarBitfield("illusionSourceFilters", index, not checked);
 
 		SearchAndFilterIllusions();
 	end
@@ -1996,7 +2006,7 @@ function C_TransmogCollection.IsIllusionSourceTypeFilterChecked(index)
 		error("Usage: local checked = C_TransmogCollection.IsIllusionSourceTypeFilterChecked(index)", 2);
 	end
 
-	if C_CVar:GetCVarBitfield("C_CVAR_ILLUSION_SOURCE_FILTERS", index) then
+	if GetCVarBitfield("illusionSourceFilters", index) then
 		return false;
 	end
 
@@ -2045,15 +2055,15 @@ end
 C_IllusionInfo = {};
 
 function C_IllusionInfo.SetDefaultFilters()
-	C_CVar:SetValue("C_CVAR_ILLUSION_SHOW_COLLECTED", "0");
-	C_CVar:SetValue("C_CVAR_ILLUSION_SHOW_UNCOLLECTED", "0");
-	C_CVar:SetValue("C_CVAR_ILLUSION_SOURCE_FILTERS", "0");
+	SetCVar("illusionShowCollected", "0");
+	SetCVar("illusionShowUncollected", "0");
+	SetCVar("illusionSourceFilters", "0");
 
 	SearchAndFilterIllusions();
 end
 
 function C_IllusionInfo.IsUsingDefaultFilters()
-	if tonumber(C_CVar:GetValue("C_CVAR_ILLUSION_SHOW_COLLECTED")) ~= 0 or tonumber(C_CVar:GetValue("C_CVAR_ILLUSION_SHOW_UNCOLLECTED")) ~= 0 or tonumber(C_CVar:GetValue("C_CVAR_ILLUSION_SOURCE_FILTERS")) ~= 0 then
+	if tonumber(GetCVar("illusionShowCollected")) ~= 0 or tonumber(GetCVar("illusionShowUncollected")) ~= 0 or tonumber(GetCVar("illusionSourceFilters")) ~= 0 then
 		return false;
 	end
 
@@ -2070,7 +2080,7 @@ function C_IllusionInfo.SetAllSourceFilters(checked)
 	end
 
 	for index = 1, NUM_ILLUSION_SOURCE_TYPES do
-		C_CVar:SetCVarBitfield("C_CVAR_ILLUSION_SOURCE_FILTERS", index, not checked);
+		SetCVarBitfield("illusionSourceFilters", index, not checked);
 	end
 
 	SearchAndFilterIllusions();

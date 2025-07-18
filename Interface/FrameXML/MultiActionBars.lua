@@ -10,14 +10,20 @@ function MultiActionButtonDown (bar, id)
 	if ( button:GetButtonState() == "NORMAL" ) then
 		button:SetButtonState("PUSHED");
 	end
+	if (GetCVarBool("ActionButtonUseKeyDown")) then
+		SecureActionButton_OnClick(button, "LeftButton");
+		ActionButton_UpdateState(button);
+	end
 end
 
 function MultiActionButtonUp (bar, id)
 	local button = _G[bar.."Button"..id];
 	if ( button:GetButtonState() == "PUSHED" ) then
 		button:SetButtonState("NORMAL");
-		SecureActionButton_OnClick(button, "LeftButton");
-		ActionButton_UpdateState(button);
+		if(not GetCVarBool("ActionButtonUseKeyDown")) then
+			SecureActionButton_OnClick(button, "LeftButton");
+			ActionButton_UpdateState(button);
+		end
 	end
 end
 
@@ -125,4 +131,3 @@ function MultiBar4_IsVisible ()
 	STATE_MultiBar4 = SHOW_MULTI_ACTIONBAR_4;
 	return SHOW_MULTI_ACTIONBAR_4;
 end
-
