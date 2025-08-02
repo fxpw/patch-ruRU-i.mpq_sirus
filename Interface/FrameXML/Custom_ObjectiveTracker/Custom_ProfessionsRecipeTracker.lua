@@ -77,7 +77,13 @@ function ProfessionsRecipeTrackerMixin:LayoutContents()
 end
 
 function ProfessionsRecipeTrackerMixin:AddRecipes(isRecraft)
+	local isFiltered = GetCVarBitfield("objectiveTrackerFilter", Enum.ObjectiveTrackerFilter.Professions)
+
 	for _, recipeID in ipairs(C_TradeSkillUI.GetRecipesTracked(isRecraft)) do
+		if isFiltered and not self.isFiltered then
+			self.isFiltered = isFiltered
+		end
+
 		if not self:AddRecipe(recipeID, isRecraft) then
 			return false;
 		end

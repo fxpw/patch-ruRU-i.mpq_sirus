@@ -908,7 +908,7 @@ function QueryCastSequence(sequence)
 				spells = sequence;
 			end
 			local action = strlower(strtrim((strsplit(",", spells))));
-			if ( GetItemInfo(action) or select(3, SecureCmdItemParse(action)) ) then
+			if ( select(3, SecureCmdItemParse(action)) or GetItemInfoRaw(action) ) then
 				item, spell = action, strlower(GetItemSpell(action) or "");
 			else
 				item, spell = nil, action;
@@ -1080,7 +1080,7 @@ SecureCmdList["USERANDOM"] = SecureCmdList["CASTRANDOM"];
 
 SecureCmdList["CASTSEQUENCE"] = function(msg)
 	local sequence, target = SecureCmdOptionParse(msg);
-	if ( sequence ) then
+	if ( sequence and sequence ~= "" ) then
 		ExecuteCastSequence(sequence, target);
 	end
 end
@@ -2400,7 +2400,7 @@ function ChatFrame_OnLoad(self)
 	self.zoneChannelList = {};
 	self.messageTypeList = {};
 
-	C_FactionManager:RegisterFactionOverrideCallback(function()
+	C_FactionManager.RegisterCallback(function()
 		self.defaultLanguage = GetDefaultLanguage(); --If PLAYER_ENTERING_WORLD hasn't been called yet, this is nil, but it'll be fixed whent he event is fired.
 	end, true)
 end
@@ -2627,7 +2627,7 @@ end
 
 function ChatFrame_ConfigEventHandler(self, event, ...)
 	if ( event == "PLAYER_ENTERING_WORLD" ) then
-		C_FactionManager:RegisterFactionOverrideCallback(function()
+		C_FactionManager.RegisterCallback(function()
 			self.defaultLanguage = GetDefaultLanguage()
 		end, true)
 		return true;
@@ -2837,12 +2837,12 @@ function ChatFrame_MessageEventHandler(self, event, ...)
 				end
 			end
 
-			local found = 0;
+			local found = false;
 			for index, value in pairs(self.channelList) do
 				if ( channelLength > strlen(value) ) then
 					-- arg9 is the channel name without the number in front...
 					if ( ((arg7 > 0) and (self.zoneChannelList[index] == arg7)) or (strupper(value) == strupper(arg9)) ) then
-						found = 1;
+						found = true;
 						infoType = "CHANNEL"..arg8;
 						info = ChatTypeInfo[infoType];
 						if ( (type == "CHANNEL_NOTICE") and (arg1 == "YOU_LEFT") ) then
@@ -2853,7 +2853,7 @@ function ChatFrame_MessageEventHandler(self, event, ...)
 					end
 				end
 			end
-			if ( (found == 0) or not info ) then
+			if not found or not info then
 				return true;
 			end
 		end
@@ -2927,7 +2927,7 @@ function ChatFrame_MessageEventHandler(self, event, ...)
 			if ( not globalstring ) then
 				globalstring = _G["CHAT_"..arg1.."_NOTICE"];
 			end
-			if(strlen(arg5) > 0) then
+			if(arg5 ~= "") then
 				-- TWO users in this notice (E.G. x kicked y)
 				self:AddMessage(format(globalstring, arg8, arg4, arg2, arg5), info.r, info.g, info.b, info.id);
 			elseif ( arg1 == "INVITE" ) then
@@ -3046,15 +3046,15 @@ function ChatFrame_MessageEventHandler(self, event, ...)
 				playerLink = "|HBNplayer:"..arg2..":"..arg13..":"..arg11..":"..chatGroup..(chatTarget and ":"..chatTarget or "").."|h";
 			end
 
-			if ( (strlen(arg3) > 0) and (((arg3 ~= "Universal") and (arg3 ~= self.defaultLanguage)) or arg3 == LANGUAGE_RENEGADE) ) then
+			if ( (arg3 ~= "") and (((arg3 ~= "Universal") and (arg3 ~= self.defaultLanguage)) or arg3 == LANGUAGE_RENEGADE) ) then
 				local languageHeader = "["..arg3.."] ";
-				if ( showLink and (strlen(arg2) > 0) ) then
+				if ( showLink and (arg2 ~= "") ) then
 					body = format(_G["CHAT_"..type.."_GET"]..languageHeader..arg1, pflag..playerLink.."["..coloredName.."]".."|h");
 				else
 					body = format(_G["CHAT_"..type.."_GET"]..languageHeader..arg1, pflag..arg2);
 				end
 			else
-				if ( not showLink or strlen(arg2) == 0 ) then
+				if ( not showLink or arg2 == "" ) then
 					body = format(_G["CHAT_"..type.."_GET"]..arg1, pflag..arg2, arg2);
 				else
 					if ( type == "EMOTE" ) then
@@ -3088,7 +3088,8 @@ function ChatFrame_MessageEventHandler(self, event, ...)
 		if ( type == "WHISPER" or type == "BN_WHISPER" ) then
 			--BN_WHISPER FIXME
 			ChatEdit_SetLastTellTarget(arg2);
-			if ( self.tellTimer and (GetTime() > self.tellTimer) ) then
+
+			if ( not self.tellTimer or (GetTime() > self.tellTimer) ) then
 				PlaySound("TellMessage");
 			end
 			self.tellTimer = GetTime() + CHAT_TELL_ALERT_TIME;
@@ -3278,14 +3279,6 @@ function ChatFrame_SendTell(name, chatFrame)
 		editBox:SetText(SLASH_WHISPER1.." "..name.." ");
 	end
 	ChatEdit_ParseText(editBox, 0);
---[[
-	chatFrame.editBox:SetAttribute("chatType", "WHISPER");
-	chatFrame.editBox:SetAttribute("tellTarget", name);
-	ChatEdit_UpdateHeader(chatFrame.editBox);
-	if ( editBox ~= ChatEdit_GetActiveWindow() ) then
-		ChatFrame_OpenChat("", chatFrame);
-	end
-]]
 end
 
 function ChatFrame_ReplyTell(chatFrame)
@@ -3462,11 +3455,9 @@ function ChatEdit_OnLoad(self)
 	self:SetAttribute("chatType", "SAY");
 	self:SetAttribute("stickyType", "SAY");
 
-	local function UpdateFaction()
+	C_FactionManager.RegisterCallback(function()
 		self.chatLanguage = GetDefaultLanguage();
-	end
-
-	C_FactionManager:RegisterFactionOverrideCallback(UpdateFaction, true)
+	end, true)
 
 	self:RegisterEvent("UPDATE_CHAT_COLOR");
 
@@ -3617,7 +3608,7 @@ function ChatEdit_SetLastActiveWindow(editBox)
 	end
 
 	LAST_ACTIVE_CHAT_EDIT_BOX = editBox;
-	if ( GetCVar("chatStyle") == "im" and ACTIVE_CHAT_EDIT_BOX ~= editBox ) then
+	if ( editBox and GetCVar("chatStyle") == "im" and ACTIVE_CHAT_EDIT_BOX ~= editBox ) then
 		editBox:Show();
 		ChatEdit_SetDeactivated(editBox);
 	end
@@ -3625,7 +3616,10 @@ function ChatEdit_SetLastActiveWindow(editBox)
 	if ( previousValue ) then
 		FCFClickAnywhereButton_UpdateState(previousValue.chatFrame.clickAnywhereButton);
 	end
-	FCFClickAnywhereButton_UpdateState(editBox.chatFrame.clickAnywhereButton);
+
+	if ( editBox ) then
+		FCFClickAnywhereButton_UpdateState(editBox.chatFrame.clickAnywhereButton);
+	end
 end
 
 function ChatEdit_GetActiveWindow()
@@ -3820,11 +3814,11 @@ function ChatEdit_AddHistory(editBox)
 	end
 
 	local editBoxText = editBox:GetText();
-	if ( strlen(editBoxText) > 0 ) then
+	if ( editBoxText ~= "" ) then
 		text = text.." "..editBox:GetText();
 	end
 
-	if ( strlen(text) > 0 ) then
+	if ( text ~= "" ) then
 		editBox:AddHistoryLine(text);
 	end
 end
@@ -4173,7 +4167,7 @@ end
 function ChatEdit_ParseText(editBox, send, parseIfNoSpaces)
 
 	local text = editBox:GetText();
-	if ( strlen(text) <= 0 ) then
+	if ( text == "" ) then
 		return;
 	end
 
@@ -4189,7 +4183,6 @@ function ChatEdit_ParseText(editBox, send, parseIfNoSpaces)
 	-- If the string is in the format "/cmd blah", command will be "/cmd"
 	local command = strmatch(text, "^(/[^%s]+)") or "";
 	local msg = "";
-
 
 	if ( command ~= text ) then
 		msg = strsub(text, strlen(command) + 2);
@@ -4512,6 +4505,12 @@ function LanguageMenu_OnLoad(self)
 	self.parentMenu = "ChatMenu";
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 	self:RegisterEvent("LANGUAGE_LIST_CHANGED");
+
+	C_FactionManager.RegisterCallback(function()
+		if GetNumLanguages() then
+			LanguageMenu_UpdateLanguage(self)
+		end
+	end, false, true)
 end
 
 function VoiceMacroMenu_Click(self)
@@ -4532,44 +4531,39 @@ end
 local isNeedRegisterCallback = true
 function LanguageMenu_OnEvent(self, event, ...)
 	if ( event == "PLAYER_ENTERING_WORLD" ) then
-		C_FactionManager:RegisterFactionOverrideCallback(function() LanguageMenu_UpdateLanguage(self) end, true)
 		self.numLanguages = GetNumLanguages()
+		LanguageMenu_UpdateLanguage(self)
 		return;
 	end
 	if ( event == "LANGUAGE_LIST_CHANGED" ) then
-		if isNeedRegisterCallback then
-			C_FactionManager:RegisterFactionOverrideCallback(function() LanguageMenu_UpdateLanguage(self) end, true, true)
-			isNeedRegisterCallback = false
-		else
-			if self.numLanguages == GetNumLanguages() then
-				if not IsSelectedLanguageKnown() then
-					C_GlobalStorage.SetVar("CHAT_SELECTED_LANGUAGE", nil)
-				end
-
-				if self.updateLanguagesTimer then
-					self.updateLanguagesTimer:Cancel()
-					self.updateLanguagesTimer = nil
-				end
-
-				self.updateLanguagesTimer = C_Timer:NewTicker(1, function()
-					if self.numLanguages ~= GetNumLanguages() then
-						if not IsSelectedLanguageKnown() then
-							C_GlobalStorage.SetVar("CHAT_SELECTED_LANGUAGE", nil)
-						end
-
-						LanguageMenu_UpdateLanguage(self)
-
-						if self.updateLanguagesTimer then
-							self.updateLanguagesTimer:Cancel()
-							self.updateLanguagesTimer = nil
-						end
-					end
-				end, 5)
+		if self.numLanguages == GetNumLanguages() then
+			if not IsSelectedLanguageKnown() then
+				C_GlobalStorage.SetVar("CHAT_SELECTED_LANGUAGE", nil)
 			end
 
-			LanguageMenu_UpdateLanguage(self)
+			if self.updateLanguagesTimer then
+				self.updateLanguagesTimer:Cancel()
+				self.updateLanguagesTimer = nil
+			end
+
+			self.updateLanguagesTimer = C_Timer:NewTicker(1, function()
+				if self.numLanguages ~= GetNumLanguages() then
+					if not IsSelectedLanguageKnown() then
+						C_GlobalStorage.SetVar("CHAT_SELECTED_LANGUAGE", nil)
+					end
+
+					LanguageMenu_UpdateLanguage(self)
+
+					if self.updateLanguagesTimer then
+						self.updateLanguagesTimer:Cancel()
+						self.updateLanguagesTimer = nil
+					end
+				end
+			end, 5)
 		end
-		return
+
+		LanguageMenu_UpdateLanguage(self)
+		return;
 	end
 end
 
@@ -4829,7 +4823,7 @@ function Chat_GetColoredChatName(chatType, chatTarget)
 		local info = ChatTypeInfo["CHANNEL"..chatTarget];
 		local colorString = format("|cff%02x%02x%02x", info.r * 255, info.g * 255, info.b * 255);
 		local chanNum, channelName = GetChannelName(chatTarget);
-		return format("%s|Hchannel:channel:%d|h[%d. %s]|h", colorString, chanNum, chanNum, gsub(channelName, "%s%-%s.*", ""));	--The gsub removes zone-specific markings (e.g. "General - Ironforge" to "General")
+		return format("%s|Hchannel:channel:%d|h[%d. %s]|h|r", colorString, chanNum, chanNum, gsub(channelName, "%s%-%s.*", ""));	--The gsub removes zone-specific markings (e.g. "General - Ironforge" to "General")
 	elseif ( chatType == "WHISPER" ) then
 		local info = ChatTypeInfo["WHISPER"];
 		local colorString = format("|cff%02x%02x%02x", info.r * 255, info.g * 255, info.b * 255);
@@ -4878,17 +4872,6 @@ function ChatUrlHyperlink_OnClick( link, text )
 		HandleModifiedItemClick(text)
 		return
 	end
---[[
-	local linkData = C_Split(link, ":")
-
-	if linkData then
-		local id, arg1, arg2, arg3 = unpack(linkData, 2)
-
-		if linkData then
-			C_SendOpcode(CMSG_SIRUS_OPEN_URL, tonumber(id), arg1, arg2, arg3)
-		end
-	end
---]]
 end
 
 local ChatLinksData = {

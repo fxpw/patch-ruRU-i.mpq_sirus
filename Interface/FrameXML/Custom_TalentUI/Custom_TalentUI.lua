@@ -891,7 +891,7 @@ function PlayerTalentFrame_OnShow(self)
     end
 
     -- Stop buttons from flashing after skill up
-    SetButtonPulse(TalentMicroButton, 0, 1);
+    MicroButtonPulseStop(TalentMicroButton);
 
     PlaySound("TalentScreenOpen");
     UpdateMicroButtons();

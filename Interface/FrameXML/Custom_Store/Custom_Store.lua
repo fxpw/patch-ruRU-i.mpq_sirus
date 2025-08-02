@@ -154,7 +154,7 @@ function StoreMixin:OnLoad()
 	self:RegisterCustomEvent("STORE_SERVICE_DIALOG")
 	self:RegisterCustomEvent("STORE_NEW_ITEMS_AVAILABLE")
 
-	C_FactionManager:RegisterFactionOverrideCallback(function()
+	C_FactionManager.RegisterCallback(function()
 		self:UpdatePortraitFallback()
 	end, true)
 
@@ -336,8 +336,8 @@ end
 
 function StoreMixin:UpdateMicroButtonPulse()
 	if C_StorePublic.IsEnabled() and C_StoreSecure.IsAnyCategoryRenewed() then
-		if StoreMicroButton:IsEnabled() == 1 and not tContains(PULSEBUTTONS, StoreMicroButton) then
-			SetButtonPulse(StoreMicroButton, 60, 0.50)
+		if StoreMicroButton:IsEnabled() == 1 then
+			MicroButtonPulse(StoreMicroButton, 60)
 		end
 		if GameMenuButtonStore:IsEnabled() == 1 and not tContains(PULSEBUTTONS, GameMenuButtonStore) then
 			SetButtonPulse(GameMenuButtonStore, 60, 0.50)
@@ -348,7 +348,7 @@ function StoreMixin:UpdateMicroButtonPulse()
 end
 
 function StoreMixin:StopMicroButtonPulse()
-	ButtonPulse_StopPulse(StoreMicroButton)
+	MicroButtonPulseStop(StoreMicroButton)
 	ButtonPulse_StopPulse(GameMenuButtonStore)
 end
 
@@ -2571,7 +2571,7 @@ end
 function StoreRefundViewMixin:OnShow()
 	StoreSubViewMixin.OnShow(self)
 
-	C_StoreSecure.RequestRefundList()
+	C_StoreSecure.RequestRefundList(true)
 
 	SetParentFrameLevel(self.Loading, 10)
 	self.Loading:SetShown(C_StoreSecure.IsAwaitingRefundList())

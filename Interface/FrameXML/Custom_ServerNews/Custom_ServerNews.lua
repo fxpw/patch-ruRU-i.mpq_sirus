@@ -80,7 +80,10 @@ local CONTENT_OFFSET = 5
 local ENTRY_PADDING = 5
 
 function ServerNewsDataFeedMixin:UpdateFeed()
-	if not self.dataFeedType or not self.dirty or not self:IsVisible() or not C_ServerNews.CanViewNews() then
+	if not self.dataFeedType or not self.dirty or not self:IsVisible()
+	or not C_ServerNews.CanViewNews()
+	or not C_ServerNews.IsDataFeedAvailable(self.dataFeedType)
+	then
 		return
 	end
 

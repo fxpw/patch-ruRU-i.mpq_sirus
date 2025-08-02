@@ -45661,6 +45661,18 @@ local GLOBAL_STRINGS = {
 	["TRACKER_TOGGLE_SELECTION"] = {
 		ruRU = "Изменить позицию",
 	},
+	["TRACKER_HEADER_STYLE"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tФон заголовка",
+	},
+	["OPTION_TOOLTIP_TRACKER_HEADER_STYLE"] = {
+		ruRU = "Показывать фон заголовка панели отслеживания задач в свернутом режиме.",
+	},
+	["TRACKER_HEADER_ALPHA"] = {
+		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tПрозрачность фона заголовка",
+	},
+	["OPTION_TOOLTIP_TRACKER_HEADER_ALPHA"] = {
+		ruRU = "Изменение прозрачности фона заколовков панели отслеживания задач.",
+	},
 	["TRACKER_HEIGHT"] = {
 		ruRU = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tВысота",
 	},
@@ -45720,6 +45732,18 @@ local GLOBAL_STRINGS = {
 	},
 	["TRADESKILL_INSPECT_RECIPE"] = {
 		ruRU = "Осмотреть рецепт",
+	},
+	["TRACKER_FILTER_BATTLEPASS"] = {
+		ruRU = "Боевой пропуск",
+	},
+	["TOOLTIP_TRACKER_FILTER_BATTLEPASS"] = {
+		ruRU = "Уберите галочку, чтобы скрыть отслеживаемые задания боевого пропуска.",
+	},
+	["TRACKER_FILTER_PROFESSIONS"] = {
+		ruRU = "Профессии",
+	},
+	["TOOLTIP_TRACKER_FILTER_PROFESSIONS"] = {
+		ruRU = "Уберите галочку, чтобы скрыть отслеживаемые рецепты.",
 	},
 }
 

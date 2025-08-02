@@ -370,6 +370,7 @@ function BlizzardOptionsPanel_LoadControl(control, entry)
 			text:SetText(_G[entry.text] or entry.text);
 		end
 	end
+	control.showTooltipWhenDisabled = entry.showTooltipWhenDisabled;
 	control.tooltipRequirement = entry.tooltipRequirement;
 
 	control.gameRestart = entry.gameRestart;

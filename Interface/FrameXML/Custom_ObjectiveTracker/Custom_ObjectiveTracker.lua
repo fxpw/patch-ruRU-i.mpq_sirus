@@ -14,6 +14,7 @@ function ObjectiveTrackerFrameMixin:OnLoad()
 	self.moduleSpacing = 10
 	self.headerText = TRACKER_ALL_OBJECTIVES
 	self.collapseType = Enum.ObjectiveTrackerCollapsedStateType.Main
+	self.hasFilters = true
 
 	self.ScrollFrame.scrollBarHideable = true
 	self.ScrollFrame:SetPoint("TOPLEFT", self.Header, -self.leftPadding, -self.topModulePadding)
@@ -26,6 +27,7 @@ function ObjectiveTrackerFrameMixin:OnEvent(event, ...)
 	if event == "VARIABLES_LOADED" then
 		self:UpdateOpacity()
 		self:UpdateTextSize()
+		self:UpdateHeaderAlpha()
 	elseif event == "DISPLAY_SIZE_CHANGED" then
 		RunNextFrame(function()
 			self:Update()
@@ -59,9 +61,9 @@ end
 function ObjectiveTrackerFrameMixin:UpdateOpacity()
 	local opacity = tonumber(GetCVar("objectiveTrackerBackgroundOpacity")) or DEFAULT_TEXT_SIZE
 	opacity = math.max(DEFAULT_OPACITY, math.min(MAX_OPACITY, opacity))
-	if self.trackerTextSize ~= opacity then
+	if self.opacity ~= opacity then
 		ObjectiveTrackerManager:SetOpacity(opacity)
-		self.trackerOpacity = opacity
+		self.opacity = opacity
 	end
 end
 
@@ -72,4 +74,51 @@ function ObjectiveTrackerFrameMixin:UpdateTextSize()
 		ObjectiveTrackerManager:SetTextSize(textSize)
 		self.trackerTextSize = textSize
 	end
+end
+function ObjectiveTrackerFrameMixin:UpdateHeaderAlpha()
+	local headerAlpha = tonumber(GetCVar("objectiveTrackerHeaderAlpha")) or 1
+	headerAlpha = math.max(0, math.min(1, headerAlpha))
+	if self.headerAlpha ~= headerAlpha then
+		ObjectiveTrackerManager:SetHeaderAlpha(headerAlpha)
+		self.headerAlpha = headerAlpha
+	end
+end
+
+local function SetObjectiveTrackerFilterCompletedQuests(checked)
+	SetCVarBitfield("objectiveTrackerFilter", Enum.ObjectiveTrackerFilter.CompletedQuests, not checked)
+	ObjectiveTrackerFrame:Update()
+end
+local function SetObjectiveTrackerFilterRemoteZones(checked)
+	SetCVarBitfield("objectiveTrackerFilter", Enum.ObjectiveTrackerFilter.RemoteZones, not checked)
+	ObjectiveTrackerFrame:Update()
+end
+local function SetObjectiveTrackerFilterAchievements(checked)
+	SetCVarBitfield("objectiveTrackerFilter", Enum.ObjectiveTrackerFilter.Achievements, not checked)
+	ObjectiveTrackerFrame:Update()
+end
+local function SetObjectiveTrackerFilterBattlePass(checked)
+	SetCVarBitfield("objectiveTrackerFilter", Enum.ObjectiveTrackerFilter.BattlePass, not checked)
+	ObjectiveTrackerFrame:Update()
+end
+local function SetObjectiveTrackerFilterProfessions(checked)
+	SetCVarBitfield("objectiveTrackerFilter", Enum.ObjectiveTrackerFilter.Professions, not checked)
+	ObjectiveTrackerFrame:Update()
+end
+
+local function GetObjectiveTrackerFilter(filter)
+	return not GetCVarBitfield("objectiveTrackerFilter", filter)
+end
+
+function ObjectiveTrackerFrameFilterDropDown_Initialize(self, level)
+	local filterSystem = {
+		filters = {
+			{ type = FilterComponent.Checkbox, text = TRACKER_FILTER_COMPLETED_QUESTS, filter = Enum.ObjectiveTrackerFilter.CompletedQuests, set = SetObjectiveTrackerFilterCompletedQuests, isSet = GetObjectiveTrackerFilter, },
+			{ type = FilterComponent.Checkbox, text = TRACKER_FILTER_REMOTE_ZONES, filter = Enum.ObjectiveTrackerFilter.RemoteZones, set = SetObjectiveTrackerFilterRemoteZones, isSet = GetObjectiveTrackerFilter, },
+			{ type = FilterComponent.Checkbox, text = TRACKER_FILTER_ACHIEVEMENTS, filter = Enum.ObjectiveTrackerFilter.Achievements, set = SetObjectiveTrackerFilterAchievements, isSet = GetObjectiveTrackerFilter, },
+			{ type = FilterComponent.Checkbox, text = TRACKER_FILTER_BATTLEPASS, filter = Enum.ObjectiveTrackerFilter.BattlePass, set = SetObjectiveTrackerFilterBattlePass, isSet = GetObjectiveTrackerFilter, },
+			{ type = FilterComponent.Checkbox, text = TRACKER_FILTER_PROFESSIONS, filter = Enum.ObjectiveTrackerFilter.Professions, set = SetObjectiveTrackerFilterProfessions, isSet = GetObjectiveTrackerFilter, },
+		},
+	}
+
+	FilterDropDownSystem.Initialize(self, filterSystem, level)
 end

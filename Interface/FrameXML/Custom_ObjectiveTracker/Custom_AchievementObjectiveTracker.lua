@@ -133,6 +133,8 @@ function AchievementObjectiveTrackerMixin:LayoutContents()
 		self.numTrackedAchievements = numTrackedAchievements
 	end
 
+	local isFiltered = GetCVarBitfield("objectiveTrackerFilter", Enum.ObjectiveTrackerFilter.Achievements)
+
 	for _, achievementID in ipairs(trackedAchievements) do
 		local _, achievementName, _, completed, _, _, _, description, _, icon = GetAchievementInfo(achievementID);
 		-- check filters
@@ -144,6 +146,10 @@ function AchievementObjectiveTrackerMixin:LayoutContents()
 		end
 
 		if showAchievement then
+			if isFiltered and not self.isFiltered then
+				self.isFiltered = isFiltered
+			end
+
 			if not self:AddAchievement(achievementID, achievementName, description) then
 				return;
 			end

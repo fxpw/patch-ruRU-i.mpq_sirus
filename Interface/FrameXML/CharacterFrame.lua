@@ -129,7 +129,7 @@ function CharacterFrame_OnShow (self)
 	ShowTextStatusBarText(PetFrameManaBar);
 	ShowWatchedReputationBarText();
 
-	SetButtonPulse(CharacterMicroButton, 0, 1);	--Stop the button pulse
+	MicroButtonPulseStop(CharacterMicroButton);	--Stop the button pulse
 end
 
 function CharacterFrame_OnHide (self)

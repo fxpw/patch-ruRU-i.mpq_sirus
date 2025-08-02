@@ -7074,9 +7074,12 @@ do -- Offer
 end
 
 do -- Refund
-	function C_StoreSecure.RequestRefundList()
-	--	return PRIVATE.RequestRefundList()
-		return PRIVATE.CheckRefundProductTimers()
+	function C_StoreSecure.RequestRefundList(force)
+		if force then
+			return PRIVATE.RequestRefundList()
+		else
+			return PRIVATE.CheckRefundProductTimers()
+		end
 	end
 
 	function C_StoreSecure.GetNumRefundProducts()

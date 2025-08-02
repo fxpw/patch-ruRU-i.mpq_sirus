@@ -59,12 +59,16 @@
 					<Anchor point="RIGHT" relativeTo="$parentMinimizeButton" relativePoint="LEFT" x="-2"/>
 				</Anchors>
 			</Button>
+			<Frame name="$parentFilterDropDown" parentKey="FilterDropDown" inherits="UIDropDownMenuTemplate"/>
 		</Frames>
 		<Scripts>
 			<OnLoad>
 				Mixin(self, ObjectiveTrackerContainerHeaderMixin)
 				self:OnLoad()
 			</OnLoad>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
 		</Scripts>
 	</Frame>
 

@@ -3,7 +3,8 @@ ObjectiveTrackerModuleState = EnumUtil.MakeEnum(
 	"NoObjectives",		-- module has no objectives to show
 	"NotShown",			-- module has objectives but there was not enough room to display anything
 	"ShownPartially",	-- at least 1 objective is shown
-	"ShownFully"		-- all objectives are shown, or header is collapsed and at least 1 objective could have shown
+	"ShownFully",		-- all objectives are shown, or header is collapsed and at least 1 objective could have shown
+	"Filtered"
 );
 
 local settings = {
@@ -90,6 +91,8 @@ function ObjectiveTrackerModuleMixin:SetContainer(container)
 		if self.collapseType and GetCVarBitfield("objectiveTrackerCollapsedState", self.collapseType) then
 			self:SetCollapsedForce(true)
 		end
+
+		self.Header:SetBackgroundAlpha(tonumber(GetCVar("objectiveTrackerHeaderAlpha")))
 	end
 end
 
@@ -113,7 +116,7 @@ function ObjectiveTrackerModuleMixin:HasContents()
 end
 
 function ObjectiveTrackerModuleMixin:IsDisplayable()
-	return self.state >= ObjectiveTrackerModuleState.ShownPartially;
+	return self.state >= ObjectiveTrackerModuleState.ShownPartially and self.state ~= ObjectiveTrackerModuleState.Filtered;
 end
 
 function ObjectiveTrackerModuleMixin:IsFullyDisplayable()
@@ -126,6 +129,10 @@ end
 
 function ObjectiveTrackerModuleMixin:IsTruncated()
 	return self.state == ObjectiveTrackerModuleState.NotShown or self.state == ObjectiveTrackerModuleState.ShownPartially;
+end
+
+function ObjectiveTrackerModuleMixin:IsFiltered()
+	return self.state == ObjectiveTrackerModuleState.Filtered;
 end
 
 function ObjectiveTrackerModuleMixin:GetContentsHeight()
@@ -161,13 +168,18 @@ function ObjectiveTrackerModuleMixin:Update(availableHeight, dirtyUpdate)
 		self:LayoutContents();
 		self:CheckCachedBlocks();
 		if self.hasContents then
-			if self.hasSkippedBlocks and not self:IsCollapsed() then
+			if self.isFiltered then
+				self:BeginLayout()
+				self.state = ObjectiveTrackerModuleState.Filtered
+			elseif self.hasSkippedBlocks and not self:IsCollapsed() then
 				self.state = ObjectiveTrackerModuleState.ShownPartially;
 			else
 				self.state = ObjectiveTrackerModuleState.ShownFully;
 			end
 		else
-			if self.hasTriedBlocks then
+			if self.isFiltered then
+				self.state = ObjectiveTrackerModuleState.Filtered
+			elseif self.hasTriedBlocks then
 				self.state = ObjectiveTrackerModuleState.NotShown;
 			else
 				self.state = ObjectiveTrackerModuleState.NoObjectives;
@@ -196,6 +208,7 @@ function ObjectiveTrackerModuleMixin:BeginLayout()
 	self.hasTriedBlocks = false;
 	self.hasSkippedBlocks = false;
 	self.hasContents = false;
+	self.isFiltered = false;
 
 	self.lastBlock = nil;
 	self.firstBlock = nil;
@@ -796,6 +809,10 @@ function ObjectiveTrackerModuleHeaderMixin:OnLoad()
 	self.MinimizeButton:SetScript("OnClick", GenerateClosure(self.OnToggle, self));
 	local collapsed = false;
 	self:SetCollapsed(collapsed);
+end
+
+function ObjectiveTrackerModuleHeaderMixin:SetBackgroundAlpha(alpha)
+	self.Background:SetAlpha(alpha or 1)
 end
 
 function ObjectiveTrackerModuleHeaderMixin:PlayAddAnimation()

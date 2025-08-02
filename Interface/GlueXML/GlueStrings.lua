@@ -1813,7 +1813,7 @@ local GLUE_STRINGS = {
 		enGB = "You are using a personal fixed plan.  Your plan will expire in %s."
 	},
 	["CHAR_NAME_THREE_CONSECUTIVE"] = {
-		ruRU = "Вы не можете использовать один и тот же символ три раза подряд",
+		ruRU = "Вы не можете использовать один и тот же символ в имени три раза подряд",
 		enGB = "You cannot use the same letter three times consecutively"
 	},
 	["QUEUE_FCM_BUTTON"] = {

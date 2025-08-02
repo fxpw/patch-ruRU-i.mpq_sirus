@@ -703,6 +703,9 @@ else
 	PRIVATE.RegisterCVar("showBuffFrameAuraZodiac", 1, CVarFlags.STORE_CHARATER_WIDE)
 	PRIVATE.RegisterCVar("showBuffFrameAuraPremium", 1, CVarFlags.STORE_CHARATER_WIDE)
 
+	PRIVATE.RegisterCVar("objectiveTrackerFilter", 0, CVarFlags.STORE_CHARATER_WIDE)
+	PRIVATE.RegisterCVar("objectiveTrackerHeaderStyle", 1, CVarFlags.STORE_CHARATER_WIDE)
+	PRIVATE.RegisterCVar("objectiveTrackerHeaderAlpha", 1, CVarFlags.STORE_CHARATER_WIDE)
 	PRIVATE.RegisterCVar("objectiveTrackerCollapsedState", 0, CVarFlags.STORE_CHARATER_WIDE)
 	PRIVATE.RegisterCVar("objectiveTrackerHeight", 600, CVarFlags.STORE_CHARATER_WIDE)
 	PRIVATE.RegisterCVar("objectiveTrackerTextSize", 12, CVarFlags.STORE_CHARATER_WIDE)

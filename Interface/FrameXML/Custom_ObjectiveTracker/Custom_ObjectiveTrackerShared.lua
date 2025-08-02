@@ -6,6 +6,14 @@ Enum.ObjectiveTrackerCollapsedStateType = {
 	ProfessionRecipeTracker = 5,
 }
 
+Enum.ObjectiveTrackerFilter = {
+	CompletedQuests = 1,
+	RemoteZones = 2,
+	Achievements = 3,
+	BattlePass = 4,
+	Professions = 5,
+}
+
 OBJECTIVE_TRACKER_COLOR = {
 	["Normal"] = { r = 0.8, g = 0.8, b = 0.8 },
 	["NormalHighlight"] = { r = HIGHLIGHT_FONT_COLOR.r, g = HIGHLIGHT_FONT_COLOR.g, b = HIGHLIGHT_FONT_COLOR.b },

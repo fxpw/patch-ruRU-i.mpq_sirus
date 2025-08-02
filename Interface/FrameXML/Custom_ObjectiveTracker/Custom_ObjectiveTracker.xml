@@ -29,10 +29,11 @@
 					<OnVerticalScroll function="ScrollFrame_OnVerticalScroll"/>
 				</Scripts>
 			</ScrollFrame>
-			<Frame parentKey="Selection" inherits="EditModeSystemSelectionBaseTemplate" setAllPoints="true" hidden="true">
+			<Frame name="$parentSelection" parentKey="Selection" inherits="EditModeSystemSelectionBaseTemplate" setAllPoints="true" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentNineSlice"/>
-					<Anchor point="BOTTOMRIGHT" relativeTo="$parentNineSlice"/>
+					<Anchor point="TOPRIGHT" relativeTo="$parentNineSlice"/>
+					<Anchor point="BOTTOM"/>
 				</Anchors>
 			</Frame>
 		</Frames>

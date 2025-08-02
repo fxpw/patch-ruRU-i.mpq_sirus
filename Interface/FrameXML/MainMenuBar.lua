@@ -243,7 +243,7 @@ function MainMenuBar_OnEvent(self, event, ...)
 			if ( (not showTokenFrame) and (hasNormalTokens) ) then
 				SetCVar("showTokenFrame", 1);
 				if ( not CharacterFrame:IsVisible() ) then
-					SetButtonPulse(CharacterMicroButton, 60, 1);
+					MicroButtonPulse(CharacterMicroButton, 60);
 				end
 				if ( not TokenFrame:IsVisible() ) then
 					SetButtonPulse(CharacterFrameTab4, 60, 1);
@@ -252,7 +252,7 @@ function MainMenuBar_OnEvent(self, event, ...)
 			if ( (not showTokenFrameHonor) and (hasPVPTokens) ) then
 				SetCVar("showTokenFrameHonor", 1);
 				if ( not CharacterFrame:IsVisible() ) then
-					SetButtonPulse(CharacterMicroButton, 60, 1);
+					MicroButtonPulse(CharacterMicroButton, 60);
 				end
 				if ( not TokenFrame:IsVisible() ) then
 					SetButtonPulse(CharacterFrameTab4, 60, 1);

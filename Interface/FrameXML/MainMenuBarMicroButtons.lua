@@ -290,7 +290,7 @@ function TalentMicroButton_OnEvent(self, event, ...)
 		local level = ...;
 		UpdateMicroButtons();
 		if ( not CharacterFrame:IsShown() and level >= SHOW_TALENT_LEVEL) then
-			SetButtonPulse(self, 60, 1);
+			MicroButtonPulse(self, 60);
 		end
 	elseif ( event == "UNIT_LEVEL" or event == "PLAYER_ENTERING_WORLD" ) then
 		UpdateMicroButtons();

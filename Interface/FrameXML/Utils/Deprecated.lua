@@ -1,3 +1,5 @@
+local VOID = function() end
+
 function DrawRouteLine(texture, canvasFrame, startX, startY, endX, endY, lineWidth, relPoint)
 	DrawLine(texture, canvasFrame, startX, startY, endX, endY, lineWidth, TAXIROUTE_LINEFACTOR, relPoint)
 end
@@ -87,4 +89,9 @@ function GetUnitRatedBattlegroundRankInfo(unitToken)
 end
 
 GetInventoryTransmogID = C_Transmog.GetInventoryTransmogInfo
-RequestInventoryTransmogInfo = function() end
+RequestInventoryTransmogInfo = VOID
+
+WatchFrame = CreateFrame("Frame", "WatchFrame")
+WatchFrame:Hide()
+
+WatchFrame_Update = VOID

@@ -89,6 +89,15 @@ function ObjectiveTrackerManager:SetOpacity(opacity)
 	end
 end
 
+function ObjectiveTrackerManager:SetHeaderAlpha(alpha)
+	for container in pairs(self.containers) do
+		container.Header:SetBackgroundAlpha(alpha)
+		for i, module in ipairs(container.modules) do
+			module.Header:SetBackgroundAlpha(alpha)
+		end
+	end
+end
+
 local minLineFontSize = 12;
 local maxLineFontSize = 20;
 local headerExtraSize = 2;

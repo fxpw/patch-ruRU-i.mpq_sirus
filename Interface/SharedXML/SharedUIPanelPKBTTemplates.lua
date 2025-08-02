@@ -1762,7 +1762,7 @@ function PKBT_UIPanelScrollBarMixin:UpdateThumbSize(width, height, minValue, max
 		self.ThumbTexture:SetHeight(self:GetHeight())
 	elseif maxValue ~= 0 then
 		if not height then
-			height = self:GetHeight()
+			height = select(4, self:GetRect()) or self:GetHeight()
 		end
 		local parentHeight = self:GetParent():GetHeight()
 		local visibleHeight = parentHeight / (maxValue + parentHeight) * height

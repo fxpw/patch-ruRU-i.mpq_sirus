@@ -84,7 +84,13 @@ function BattlePassQuestTrackerMixin:LayoutContents()
 end
 
 function BattlePassQuestTrackerMixin:AddQuests()
+	local isFiltered = GetCVarBitfield("objectiveTrackerFilter", Enum.ObjectiveTrackerFilter.BattlePass)
+
 	for _, questID in ipairs(C_BattlePass.GetQuestTracked()) do
+		if isFiltered and not self.isFiltered then
+			self.isFiltered = isFiltered
+		end
+
 		if not self:AddQuest(questID) then
 			return false
 		end

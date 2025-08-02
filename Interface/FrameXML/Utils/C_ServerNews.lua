@@ -508,171 +508,7 @@ PRIVATE.IsValidEntry = function(entry)
 	return isValid
 end
 
-PRIVATE.Init()
-
-C_ServerNews = {}
-
-function C_ServerNews.CanViewNews()
-	return true
-end
-
-function C_ServerNews.HasAnyNewEntries(ignorePreviousTimestamp)
-	if not CUSTOM_SERVER_NEWS.DATA_FEED
-	or (not CUSTOM_SERVER_NEWS.LAST_MESSAGE_TIMESTAMP or CUSTOM_SERVER_NEWS.LAST_MESSAGE_TIMESTAMP <= 0)
-	then
-		return false
-	end
-
-	if not CUSTOM_SERVER_NEWS.LAST_SEEN_TIMESTAMP or CUSTOM_SERVER_NEWS.LAST_SEEN_TIMESTAMP == 0 then
-		return true
-	end
-
-	if CUSTOM_SERVER_NEWS.LAST_SEEN_TIMESTAMP < CUSTOM_SERVER_NEWS.LAST_MESSAGE_TIMESTAMP then
-		return true
-	elseif PRIVATE.PREVIOUS_SEEN_TIMESTAMP and not ignorePreviousTimestamp then
-		return true
-	end
-
-	return false
-end
-
-function C_ServerNews.MarkEntriesSeen()
-	if not CUSTOM_SERVER_NEWS.DATA_FEED
-	or (not CUSTOM_SERVER_NEWS.LAST_MESSAGE_TIMESTAMP or CUSTOM_SERVER_NEWS.LAST_MESSAGE_TIMESTAMP <= 0)
-	then
-		return false
-	end
-
-	if CUSTOM_SERVER_NEWS.LAST_SEEN_TIMESTAMP ~= CUSTOM_SERVER_NEWS.LAST_MESSAGE_TIMESTAMP then
-		PRIVATE.PREVIOUS_SEEN_TIMESTAMP = CUSTOM_SERVER_NEWS.LAST_SEEN_TIMESTAMP or 0
-	end
-
-	CUSTOM_SERVER_NEWS.LAST_SEEN_TIMESTAMP = CUSTOM_SERVER_NEWS.LAST_MESSAGE_TIMESTAMP
-
-	return true
-end
-
-function C_ServerNews.GetLastSeenTimestamp()
-	return PRIVATE.PREVIOUS_SEEN_TIMESTAMP or 0
-end
-
-function C_ServerNews.IsAnyDataFeedAvailable()
-	if not CUSTOM_SERVER_NEWS.DATA_FEED then
-		return false
-	end
-
-	for datafeedType, dataFeed in ipairs(CUSTOM_SERVER_NEWS.DATA_FEED) do
-		if #dataFeed > 0 then
-			return true
-		end
-	end
-
-	return false
-end
-
-function C_ServerNews.IsDataFeedAvailable(dataFeedType)
-	if type(dataFeedType) ~= "number" then
-		error(strformat("bad argument #1 to 'C_ServerNews.IsDataFeedAvailable' (number expected, got %s)", type(dataFeedType)), 2)
-	elseif not WithinRange(dataFeedType, 1, 2) then
-		error(strformat("bad argument #1 to 'C_ServerNews.IsDataFeedAvailable' (dataFeedType out of range `%i`)", type(dataFeedType)), 2)
-	end
-
-	local dataFeed = CUSTOM_SERVER_NEWS.DATA_FEED and CUSTOM_SERVER_NEWS.DATA_FEED[dataFeedType]
-
-	if type(dataFeed) ~= "table" then
-		return false
-	end
-
-	return #dataFeed > 0
-end
-
-function C_ServerNews.GetNumEntriesForDataFeedType(dataFeedType, fromTimeStamp)
-	if type(dataFeedType) ~= "number" then
-		error(strformat("bad argument #1 to 'C_ServerNews.GetNumEntriesForDataFeedType' (number expected, got %s)", type(dataFeedType)), 2)
-	elseif not WithinRange(dataFeedType, 1, 2) then
-		error(strformat("bad argument #1 to 'C_ServerNews.GetNumEntriesForDataFeedType' (dataFeedType out of range `%i`)", type(dataFeedType)), 2)
-	elseif fromTimeStamp ~= nil and type(fromTimeStamp) ~= "number" then
-		error(strformat("bad argument #2 to 'C_ServerNews.GetNumEntriesForDataFeedType' (number expected, got %s)", type(fromTimeStamp)), 2)
-	end
-
-	local dataFeed = CUSTOM_SERVER_NEWS.DATA_FEED and CUSTOM_SERVER_NEWS.DATA_FEED[dataFeedType]
-
-	if type(dataFeed) ~= "table" then
-		return 0
-	end
-
-	local numNotSeenMessages = 0
-
-	if not fromTimeStamp or fromTimeStamp <= 0 then
-		for messageIndex, message in ipairs(dataFeed) do
-			if PRIVATE.IsValidEntry(message) then
-				numNotSeenMessages = numNotSeenMessages + 1
-			end
-		end
-	else
-		for messageIndex, message in ipairs(dataFeed) do
-			local unitTimestamp = message.editedTimestampUnix or message.createdTimestampUnix
-
-			if unitTimestamp and (unitTimestamp == 0 or unitTimestamp > fromTimeStamp)
-			and PRIVATE.IsValidEntry(message)
-			then
-				numNotSeenMessages = numNotSeenMessages + 1
-			end
-		end
-	end
-
-	return numNotSeenMessages
-end
-
-function C_ServerNews.GetEntryForDataFeedType(dataFeedType, entryIndex, fromTimeStamp)
-	if type(dataFeedType) ~= "number" then
-		error(strformat("bad argument #1 to 'C_ServerNews.GetEntryForDataFeedType' (number expected, got %s)", type(dataFeedType)), 2)
-	elseif not WithinRange(dataFeedType, 1, 2) then
-		error(strformat("bad argument #1 to 'C_ServerNews.GetEntryForDataFeedType' (dataFeedType out of range `%i`)", type(dataFeedType)), 2)
-	elseif fromTimeStamp and type(fromTimeStamp) ~= "number" then
-		error(strformat("bad argument #3 to 'C_ServerNews.GetEntryForDataFeedType' (number expected, got %s)", type(fromTimeStamp)), 2)
-	end
-
-	local dataFeed = CUSTOM_SERVER_NEWS.DATA_FEED and CUSTOM_SERVER_NEWS.DATA_FEED[dataFeedType]
-
-	if type(dataFeed) ~= "table" then
-		error(strformat("bad argument #1 to 'C_ServerNews.GetEntryForDataFeedType' (DataFeed not found)", type(entryIndex)), 2)
-	end
-
-	local entry
-
-	if not fromTimeStamp or fromTimeStamp <= 0 then
-		local numNotSeenMessages = 0
-		for messageIndex, message in ipairs(dataFeed) do
-			if PRIVATE.IsValidEntry(message) then
-				numNotSeenMessages = numNotSeenMessages + 1
-				if numNotSeenMessages == entryIndex then
-					entry = message
-					break
-				end
-			end
-		end
-	else
-		local numNotSeenMessages = 0
-		for messageIndex, message in ipairs(dataFeed) do
-			local unitTimestamp = message.editedTimestampUnix or message.createdTimestampUnix
-
-			if unitTimestamp and (unitTimestamp == 0 or unitTimestamp > fromTimeStamp)
-			and PRIVATE.IsValidEntry(message)
-			then
-				numNotSeenMessages = numNotSeenMessages + 1
-				if numNotSeenMessages == entryIndex then
-					entry = message
-					break
-				end
-			end
-		end
-	end
-
-	if not entry then
-		error(strformat("bad argument #1 to 'C_ServerNews.GetEntryForDataFeedType' (entryIndex out of range `%i`)", type(entryIndex)), 2)
-	end
-
+PRIVATE.GetDynamicData = function(entry)
 	local dynamicData = PRIVATE.DATA_FEED_DYNAMIC[entry.id or entry]
 	if not dynamicData then
 		-- cache processed text
@@ -755,6 +591,182 @@ function C_ServerNews.GetEntryForDataFeedType(dataFeedType, entryIndex, fromTime
 
 		PRIVATE.DATA_FEED_DYNAMIC[entry.id or entry] = dynamicData
 	end
+
+	return dynamicData
+end
+
+PRIVATE.Init()
+
+C_ServerNews = {}
+
+function C_ServerNews.CanViewNews()
+	return true
+end
+
+function C_ServerNews.HasAnyNewEntries(ignorePreviousTimestamp)
+	if not CUSTOM_SERVER_NEWS.DATA_FEED
+	or (not CUSTOM_SERVER_NEWS.LAST_MESSAGE_TIMESTAMP or CUSTOM_SERVER_NEWS.LAST_MESSAGE_TIMESTAMP <= 0)
+	then
+		return false
+	end
+
+	if not CUSTOM_SERVER_NEWS.LAST_SEEN_TIMESTAMP or CUSTOM_SERVER_NEWS.LAST_SEEN_TIMESTAMP == 0 then
+		return true
+	end
+
+	if CUSTOM_SERVER_NEWS.LAST_SEEN_TIMESTAMP < CUSTOM_SERVER_NEWS.LAST_MESSAGE_TIMESTAMP then
+		return true
+	elseif PRIVATE.PREVIOUS_SEEN_TIMESTAMP and not ignorePreviousTimestamp then
+		return true
+	end
+
+	return false
+end
+
+function C_ServerNews.MarkEntriesSeen()
+	if not CUSTOM_SERVER_NEWS.DATA_FEED
+	or (not CUSTOM_SERVER_NEWS.LAST_MESSAGE_TIMESTAMP or CUSTOM_SERVER_NEWS.LAST_MESSAGE_TIMESTAMP <= 0)
+	then
+		return false
+	end
+
+	if CUSTOM_SERVER_NEWS.LAST_SEEN_TIMESTAMP ~= CUSTOM_SERVER_NEWS.LAST_MESSAGE_TIMESTAMP then
+		PRIVATE.PREVIOUS_SEEN_TIMESTAMP = CUSTOM_SERVER_NEWS.LAST_SEEN_TIMESTAMP or 0
+	end
+
+	CUSTOM_SERVER_NEWS.LAST_SEEN_TIMESTAMP = CUSTOM_SERVER_NEWS.LAST_MESSAGE_TIMESTAMP
+
+	return true
+end
+
+function C_ServerNews.GetLastSeenTimestamp()
+	return PRIVATE.PREVIOUS_SEEN_TIMESTAMP or 0
+end
+
+function C_ServerNews.IsAnyDataFeedAvailable()
+	if not CUSTOM_SERVER_NEWS.DATA_FEED then
+		return false
+	end
+
+	for datafeedType, dataFeed in ipairs(CUSTOM_SERVER_NEWS.DATA_FEED) do
+		for messageIndex, message in ipairs(dataFeed) do
+			if PRIVATE.IsValidEntry(message) then
+				return true
+			end
+		end
+	end
+
+	return false
+end
+
+function C_ServerNews.IsDataFeedAvailable(dataFeedType)
+	if type(dataFeedType) ~= "number" then
+		error(strformat("bad argument #1 to 'C_ServerNews.IsDataFeedAvailable' (number expected, got %s)", type(dataFeedType)), 2)
+	elseif not WithinRange(dataFeedType, 1, 2) then
+		error(strformat("bad argument #1 to 'C_ServerNews.IsDataFeedAvailable' (dataFeedType out of range `%i`)", type(dataFeedType)), 2)
+	end
+
+	local dataFeed = CUSTOM_SERVER_NEWS.DATA_FEED and CUSTOM_SERVER_NEWS.DATA_FEED[dataFeedType]
+
+	if type(dataFeed) == "table" then
+		for messageIndex, message in ipairs(dataFeed) do
+			if PRIVATE.IsValidEntry(message) then
+				return true
+			end
+		end
+	end
+
+	return false
+end
+
+function C_ServerNews.GetNumEntriesForDataFeedType(dataFeedType, fromTimeStamp)
+	if type(dataFeedType) ~= "number" then
+		error(strformat("bad argument #1 to 'C_ServerNews.GetNumEntriesForDataFeedType' (number expected, got %s)", type(dataFeedType)), 2)
+	elseif not WithinRange(dataFeedType, 1, 2) then
+		error(strformat("bad argument #1 to 'C_ServerNews.GetNumEntriesForDataFeedType' (dataFeedType out of range `%i`)", type(dataFeedType)), 2)
+	elseif fromTimeStamp ~= nil and type(fromTimeStamp) ~= "number" then
+		error(strformat("bad argument #2 to 'C_ServerNews.GetNumEntriesForDataFeedType' (number expected, got %s)", type(fromTimeStamp)), 2)
+	end
+
+	local dataFeed = CUSTOM_SERVER_NEWS.DATA_FEED and CUSTOM_SERVER_NEWS.DATA_FEED[dataFeedType]
+
+	if type(dataFeed) ~= "table" then
+		return 0
+	end
+
+	local numValidEntries = 0
+
+	if not fromTimeStamp or fromTimeStamp <= 0 then
+		for messageIndex, message in ipairs(dataFeed) do
+			if PRIVATE.IsValidEntry(message) then
+				numValidEntries = numValidEntries + 1
+			end
+		end
+	else
+		for messageIndex, message in ipairs(dataFeed) do
+			local unitTimestamp = message.editedTimestampUnix or message.createdTimestampUnix
+
+			if unitTimestamp and (unitTimestamp == 0 or unitTimestamp > fromTimeStamp)
+			and PRIVATE.IsValidEntry(message)
+			then
+				numValidEntries = numValidEntries + 1
+			end
+		end
+	end
+
+	return numValidEntries
+end
+
+function C_ServerNews.GetEntryForDataFeedType(dataFeedType, entryIndex, fromTimeStamp)
+	if type(dataFeedType) ~= "number" then
+		error(strformat("bad argument #1 to 'C_ServerNews.GetEntryForDataFeedType' (number expected, got %s)", type(dataFeedType)), 2)
+	elseif not WithinRange(dataFeedType, 1, 2) then
+		error(strformat("bad argument #1 to 'C_ServerNews.GetEntryForDataFeedType' (dataFeedType out of range `%i`)", type(dataFeedType)), 2)
+	elseif fromTimeStamp and type(fromTimeStamp) ~= "number" then
+		error(strformat("bad argument #3 to 'C_ServerNews.GetEntryForDataFeedType' (number expected, got %s)", type(fromTimeStamp)), 2)
+	end
+
+	local dataFeed = CUSTOM_SERVER_NEWS.DATA_FEED and CUSTOM_SERVER_NEWS.DATA_FEED[dataFeedType]
+
+	if type(dataFeed) ~= "table" then
+		error(strformat("bad argument #1 to 'C_ServerNews.GetEntryForDataFeedType' (DataFeed not found)", type(entryIndex)), 2)
+	end
+
+	local entry
+
+	if not fromTimeStamp or fromTimeStamp <= 0 then
+		local numNotSeenMessages = 0
+		for messageIndex, message in ipairs(dataFeed) do
+			if PRIVATE.IsValidEntry(message) then
+				numNotSeenMessages = numNotSeenMessages + 1
+				if numNotSeenMessages == entryIndex then
+					entry = message
+					break
+				end
+			end
+		end
+	else
+		local numNotSeenMessages = 0
+		for messageIndex, message in ipairs(dataFeed) do
+			local unitTimestamp = message.editedTimestampUnix or message.createdTimestampUnix
+
+			if unitTimestamp and (unitTimestamp == 0 or unitTimestamp > fromTimeStamp)
+			and PRIVATE.IsValidEntry(message)
+			then
+				numNotSeenMessages = numNotSeenMessages + 1
+				if numNotSeenMessages == entryIndex then
+					entry = message
+					break
+				end
+			end
+		end
+	end
+
+	if not entry then
+		error(strformat("bad argument #1 to 'C_ServerNews.GetEntryForDataFeedType' (entryIndex out of range `%i`)", type(entryIndex)), 2)
+	end
+
+	local dynamicData = PRIVATE.GetDynamicData(entry)
 
 	local entryData = {
 		id = entry.id,

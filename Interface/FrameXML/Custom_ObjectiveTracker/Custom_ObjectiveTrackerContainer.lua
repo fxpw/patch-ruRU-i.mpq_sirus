@@ -9,7 +9,8 @@ local settings = {
 	isCollapsed = false,	-- whether the container is collapsed, not showing any modules
 	needsSorting = false,	-- will be set to true whenever a module is added or removed
 	init = false,			-- when a container is first added, it will run Init()
-	isForceCollapsed = false
+	isForceCollapsed = false,
+	hasFilters = false,
 };
 
 ObjectiveTrackerContainerMixin = CreateFromMixins(DirtiableMixin, settings);
@@ -32,6 +33,8 @@ function ObjectiveTrackerContainerMixin:OnAdded(backgroundAlpha)
 		if self.collapseType and GetCVarBitfield("objectiveTrackerCollapsedState", self.collapseType) then
 			self:SetCollapsedForce(true)
 		end
+
+		self.Header:SetBackgroundAlpha(tonumber(GetCVar("objectiveTrackerHeaderAlpha")))
 	end
 	self:SetBackgroundAlpha(backgroundAlpha);
 end
@@ -62,6 +65,7 @@ function ObjectiveTrackerContainerMixin:Update(dirtyUpdate)
 	end
 
 	local prevModule = nil;
+	local isFilteredModule = nil
 	local availableHeight = self:GetAvailableHeight();
 	local contentsHeight = 0;
 
@@ -101,10 +105,13 @@ function ObjectiveTrackerContainerMixin:Update(dirtyUpdate)
 		if module:IsTruncated() then
 			availableHeight = 0;
 		end
+		if module:IsFiltered() then
+			isFilteredModule = true
+		end
 	end
 
 	if self:IsCollapsed() then
-		if not prevModule and self.collapseType then
+		if not isFilteredModule and not prevModule and self.collapseType then
 			if self.isForceCollapsed then
 				SetCVarBitfield("objectiveTrackerCollapsedState", self.collapseType, false)
 			end
@@ -118,7 +125,7 @@ function ObjectiveTrackerContainerMixin:Update(dirtyUpdate)
 	self.ScrollFrame.ScrollChild:SetSize(self.ScrollFrame:GetWidth(), contentsHeight)
 	self.ScrollFrame:UpdateScrollChildRect()
 
-	if prevModule then
+	if prevModule or isFilteredModule then
 		if contentsHeight == 0 then
 			self.NineSlice:SetPoint("BOTTOM", self.Header, "BOTTOM", 0, 1)
 		elseif contentsHeight > self.ScrollFrame:GetHeight() then
@@ -127,8 +134,11 @@ function ObjectiveTrackerContainerMixin:Update(dirtyUpdate)
 			self.NineSlice:SetPoint("BOTTOM", prevModule, "BOTTOM", 0, -(self.bottomModulePadding + 6))
 		end
 		self.NineSlice:Show();
-		local wasShown = self.Header:IsShown();
 		self:Show();
+		local wasShown = self.Header:IsShown();
+		if wasShown then
+			self.Header.FilterButton:SetShown(self.hasFilters)
+		end
 	else
 		self:Hide();
 	end
@@ -217,6 +227,8 @@ function ObjectiveTrackerContainerMixin:IsCollapsed()
 end
 
 function ObjectiveTrackerContainerMixin:UpdateHeight()
+	EventRegistry:TriggerEvent("ObjectiveTrackerFrame.IsUserPlaced")
+
 	if self:IsUserPlaced() then
 		local height = 0;
 		if self.modules then
@@ -270,6 +282,18 @@ function ObjectiveTrackerContainerHeaderMixin:OnLoad()
 	self.MinimizeButton:SetScript("OnClick", GenerateClosure(self.OnToggle, self));
 	local collapsed = false;
 	self:SetCollapsed(collapsed);
+	self.FilterButton:SetScript("OnClick", GenerateClosure(self.ToggleFilter, self));
+end
+
+function ObjectiveTrackerContainerHeaderMixin:OnShow()
+	if not self.initFilter then
+		self.initFilter = true
+		UIDropDownMenu_Initialize(self.FilterDropDown, ObjectiveTrackerFrameFilterDropDown_Initialize, "MENU")
+	end
+end
+
+function ObjectiveTrackerContainerHeaderMixin:SetBackgroundAlpha(alpha)
+	self.Background:SetAlpha(alpha or 1)
 end
 
 function ObjectiveTrackerContainerHeaderMixin:OnToggle()
@@ -282,14 +306,32 @@ function ObjectiveTrackerContainerHeaderMixin:OnToggle()
 	end
 end
 
+function ObjectiveTrackerContainerHeaderMixin:ToggleFilter()
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+	ToggleDropDownMenu(1, nil, self.FilterDropDown, self.FilterButton, 74, 15)
+end
+
 function ObjectiveTrackerContainerHeaderMixin:SetCollapsed(collapsed)
 	local normalTexture = self.MinimizeButton:GetNormalTexture();
 	local pushedTexture = self.MinimizeButton:GetPushedTexture();
 
+	local isBackgroundShown = GetCVarBool("objectiveTrackerHeaderStyle")
+	self.Text:ClearAllPoints()
 	if collapsed then
+		self.Background:SetShown(isBackgroundShown)
+		if isBackgroundShown then
+			self.Text:SetJustifyH("LEFT")
+			self.Text:SetPoint("LEFT", 7, 0)
+		else
+			self.Text:SetJustifyH("RIGHT")
+			self.Text:SetPoint("RIGHT", self.FilterButton, "LEFT", -8, 0)
+		end
 		normalTexture:SetAtlas("UI-QuestTrackerButton-Expand-All", true);
 		pushedTexture:SetAtlas("UI-QuestTrackerButton-Expand-All-Pressed", true);
 	else
+		self.Background:Show()
+		self.Text:SetJustifyH("LEFT")
+		self.Text:SetPoint("LEFT", 7, 0)
 		normalTexture:SetAtlas("UI-QuestTrackerButton-Collapse-All", true);
 		pushedTexture:SetAtlas("UI-QuestTrackerButton-Collapse-All-Pressed", true);
 	end

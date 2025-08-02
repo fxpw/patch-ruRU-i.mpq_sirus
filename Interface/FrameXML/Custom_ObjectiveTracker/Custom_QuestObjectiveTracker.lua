@@ -252,12 +252,20 @@ function QuestObjectiveTrackerMixin:BuildQuestWatchInfos()
 	self.numPOICompleteOut = 0
 
 	local numVisible = 0
+	local numWatches = GetNumQuestWatches()
 
 	local infos = {};
 	local trackedQuests = {}
-	for index = 1, GetNumQuestWatches() do
+	for index = 1, numWatches do
 		local questLogIndex = GetQuestIndexForWatch(index)
 		local title, level, questTag, suggestedGroup, isHeader, isCollapsed, isComplete, isDaily, questID = GetQuestLogTitle(questLogIndex)
+		local requiredMoney = GetQuestLogRequiredMoney(questLogIndex)
+		local numObjectives = GetNumQuestLeaderBoards(questLogIndex)
+		if isComplete and isComplete < 0 then
+			isComplete = false
+		elseif numObjectives == 0 and self.playerMoney >= requiredMoney then
+			isComplete = true
+		end
 
 		table.insert(trackedQuests, questID)
 
@@ -266,12 +274,14 @@ function QuestObjectiveTrackerMixin:BuildQuestWatchInfos()
 			self:SetNeedsFanfare(questID)
 		end
 
-		if self:ShouldDisplayQuest() then
+		if self:ShouldDisplayQuest(questID, isComplete) then
 			table.insert(infos, index);
 			numVisible = numVisible + 1;
 			table.insert(VISIBLE_WATCHES, numVisible, questLogIndex) -- save the quest log index because watch order can change after dropdown is opened
 		end
 	end
+
+	self.isFiltered = numWatches ~= 0 and numVisible == 0
 
 	for questID in pairs(TRACKING_QUESTS) do
 		if not tContainsValue(trackedQuests, questID) then
@@ -479,7 +489,12 @@ function QuestObjectiveTrackerMixin:LayoutContents()
 	end
 end
 
-function QuestObjectiveTrackerMixin:ShouldDisplayQuest()
+function QuestObjectiveTrackerMixin:ShouldDisplayQuest(questID, isComplete)
+	if isComplete and GetCVarBitfield("objectiveTrackerFilter", Enum.ObjectiveTrackerFilter.CompletedQuests) then
+		return false
+	elseif not LOCAL_MAP_QUESTS[questID] and GetCVarBitfield("objectiveTrackerFilter", Enum.ObjectiveTrackerFilter.RemoteZones) then
+		return false
+	end
 	return true;
 end
 

@@ -303,7 +303,6 @@ local function GetMountInfo(infoTable, value)
 		else
 			local factionGroup = UnitFactionGroup("player");
 			priceText = mountInfo.priceText:gsub("-Team.", "-"..factionGroup..".");
-			priceText = mountInfo.priceText:gsub("colbuildenm.custom_froms%d+", ITEM_SUB_CLASS_16_6);
 		end
 
 		return mountInfo.name, mountInfo.spellID, mountInfo.icon, active, sourceType, isFavorite,

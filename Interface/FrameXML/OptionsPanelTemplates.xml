@@ -106,7 +106,7 @@
 				self.type = CONTROLTYPE_SLIDER
 			</OnLoad>
 			<OnEnter>
-				if ( self:IsEnabled() == 1 ) then
+				if ( self.showTooltipWhenDisabled or self:IsEnabled() == 1 ) then
 					if ( self.tooltipText ) then
 						GameTooltip:SetOwner(self, self.tooltipOwnerPoint or "ANCHOR_RIGHT");
 						GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, 1);

@@ -208,8 +208,7 @@ function InterfaceOptionsDropDownMixin:RefreshValue()
 end
 
 function InterfaceOptionsDropDownMixin:GetTooltipText()
-	local tooltipKey = self.tooltipKey or string.gsub(self.cvar, "C_CVAR_", "")
-	if tooltipKey then
+	if self.tooltipKey then
 		return _G[("OPTION_%s_%s"):format(self.tooltipKey, self.value):upper()]
 			or _G[("OPTION_%s"):format(self.tooltipKey):upper()]
 	end
@@ -976,7 +975,9 @@ ObjectivesPanelOptions = {
 	mapQuestDifficulty = { text = "MAP_QUEST_DIFFICULTY_TEXT" },
 	advancedWorldMap = { text = "ADVANCED_WORLD_MAP_TEXT" },
 	watchFrameWidth = { text = "WATCH_FRAME_WIDTH_TEXT" },
-	objectiveTrackerHeight = { text = "TRACKER_HEIGHT", minValue = 20, maxValue = 1200, valueStep = 20 },
+	objectiveTrackerHeaderStyle = { text = "TRACKER_HEADER_STYLE" },
+	objectiveTrackerHeaderAlpha = { text = "TRACKER_HEADER_ALPHA", minValue = 0, maxValue = 1, valueStep = 0.05 },
+	objectiveTrackerHeight = { text = "TRACKER_HEIGHT", minValue = 100, maxValue = 1200, valueStep = 20, showTooltipWhenDisabled = true },
 	objectiveTrackerBackgroundOpacity = { text = "TRACKER_OPACITY", minValue = 0, maxValue = 100, valueStep = 1 },
 	objectiveTrackerTextSize = { text = "TRACKER_TEXT_SIZE", minValue = 12, maxValue = 20, valueStep = 1 },
 }
@@ -991,6 +992,14 @@ end
 
 function InterfaceOptionsObjectivesPanel_OnEvent (self, event, ...)
 	BlizzardOptionsPanel_OnEvent(self, event, ...);
+end
+
+function InterfaceOptionsObjectivesPanelTrackerHeight_Callback()
+	if ObjectiveTrackerFrame:IsUserPlaced() then
+		BlizzardOptionsPanel_Slider_Enable(InterfaceOptionsObjectivesPanelTrackerHeight)
+	else
+		BlizzardOptionsPanel_Slider_Disable(InterfaceOptionsObjectivesPanelTrackerHeight)
+	end
 end
 
 -- [[ Social Options Panel ]] --
